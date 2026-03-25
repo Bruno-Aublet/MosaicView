@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "数字漫画收藏家的瑞士军刀",
+  "buttons": {
+    "open_file": "打开 CBZ/CBR/CB7/PDF",
+    "close_file": "关闭文件",
+    "create_cbz": "创建 CBZ 压缩包",
+    "flatten_dirs": "将所有文件移至\n根目录并删除\n子目录",
+    "renumber": "重新编号\n页面",
+    "undo": "⤺ 撤销",
+    "redo": "重做 ⤻",
+    "copy": "复制",
+    "cut": "剪切",
+    "paste": "粘贴",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "转换为其他\n图像格式",
+    "join_pages": "合并页面",
+    "split_page": "分割页面",
+    "save_as": "另存为\n(创建新的 CBZ)",
+    "save_selection": "将选中内容\n保存为 CBZ",
+    "print_selection": "打印选中内容",
+    "print_all": "打印整本漫画",
+    "sort": "排序",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "转换",
+    "cancel": "取消",
+    "split_button": "分割",
+    "join_button": "开始",
+    "validate_crop": "确认裁剪",
+    "ok": "确定",
+    "close": "关闭",
+    "apply_and_save": "应用修改并保存文件",
+    "apply_and_create": "应用修改并创建 CBZ 文件",
+    "close_and_lose": "关闭文件并放弃修改",
+    "cancel_return": "取消并返回缩略图",
+    "update_page_count": "更新元数据中的\n页数",
+    "invert_selection": "反选",
+    "reduce_size": "调整页面大小",
+    "mirror_vertical": "⇅",
+    "create_gif": "创建GIF",
+    "edit_gif": "编辑动画GIF",
+    "save_to_folder": "导出所选\n页面",
+    "continue": "继续",
+    "reset": "↻",
+    "yes": "是",
+    "no": "否",
+    "renumber_recommended": "重新编号（推荐）",
+    "ignore_and_save": "忽略并保存",
+    "rename_to_cbz": "重命名为 .cbz",
+    "open_without_rename": "打开而不重命名",
+    "rename_to_cbr": "重命名为 .cbr",
+    "adjustments": "亮度、\n对比度等",
+    "batch_cbr_to_cbz": "批量转换\n CBR文件为CBZ",
+    "batch_pdf_to_cbz": "批量转换\n PDF文件为CBZ",
+    "batch_img_to_cbz": "批量转换\n 独立图像为 CBZ",
+    "icon_toolbar_reset": "重置",
+    "delete_selected": "删除",
+    "save": "保存",
+    "rename_to_cb7": "重命名为 .cb7",
+    "split_ui": "将界面分割为两个面板",
+    "unsplit_ui": "关闭第二个面板"
+  },
+  "tabs": {
+    "mosaic": "缩略图",
+    "metadata": "元数据"
+  },
+  "viewer": {
+    "title": "查看器",
+    "mode_single": "单页  [D]",
+    "mode_double": "双页  [D]",
+    "mode_continuous": "连续模式  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "上一页 (←)",
+      "next_page": "下一页 (→)",
+      "zoom_in": "放大 (Ctrl+Plus)",
+      "zoom_out": "缩小 (Ctrl+Minus)",
+      "zoom_reset": "重置缩放 (Ctrl+0)",
+      "reading_mode_double": "更改阅读模式 (D) → 双页",
+      "reading_mode_continuous": "更改阅读模式 (D) → 连续双页",
+      "reading_mode_single": "更改阅读模式 (D) → 单页",
+      "fullscreen_exit": "退出全屏 (F11)",
+      "fullscreen": "全屏 (F11)",
+      "close_viewer": "关闭查看器 (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ 损坏的图像 - 替换",
+      "corrupted_delete": "⚠️ 删除此图像",
+      "copy": "复制 (Ctrl+C)",
+      "cut": "剪切 (Ctrl+X)",
+      "paste": "粘贴 (Ctrl+V)",
+      "paste_clipboard": "从剪贴板粘贴 (Ctrl+V)",
+      "delete": "删除 (Del)",
+      "deselect": "取消选择 (ESC)",
+      "rotate_right": "↻ 向右旋转",
+      "rotate_left": "↺ 向左旋转",
+      "mirror": "⇄ 水平镜像",
+      "crop": "裁剪",
+      "convert": "转换为其他格式...",
+      "join": "合并选中的页面",
+      "split": "分割选中的页面",
+      "save_selection": "将选中内容保存为 CBZ",
+      "print_selection": "打印选中内容",
+      "copy_archive": "复制完整压缩包",
+      "undo": "撤销 (Ctrl+Z)",
+      "redo": "重做 (Ctrl+Y)",
+      "renumber_auto": "重新编号页面 (自动检测多页)",
+      "renumber_simple": "重新编号页面 (简单编号)",
+      "sort_submenu": "排序页面",
+      "sort_name": "按名称",
+      "sort_type": "按类型",
+      "sort_size": "按大小",
+      "sort_width": "按宽度",
+      "sort_height": "按高度",
+      "sort_resolution": "按分辨率",
+      "sort_dpi": "按 DPI",
+      "create_cbz": "创建 CBZ 压缩包",
+      "save_as": "另存为...",
+      "close_file": "关闭文件",
+      "help": "使用说明",
+      "update_page_count": "更新元数据中的页数",
+      "invert_selection": "反选 (Ctrl+I)",
+      "reduce_size": "调整页面大小",
+      "mirror_vertical": "⇅ 垂直镜像",
+      "edit_animated_gif": "编辑动画GIF...",
+      "save_to_folder": "导出所选页面",
+      "adjustments": "亮度、对比度、颜色...",
+      "refresh_mosaic": "刷新拼图 (F5)",
+      "create_ico": "创建 .ico 文件"
+    },
+    "canvas_no_file": {
+      "open": "打开 CBZ/CBR/CB7/PDF",
+      "recent_files": "最近的文件",
+      "clear_history": "清除历史记录"
+    },
+    "canvas_with_file": {
+      "close": "关闭文件",
+      "paste": "粘贴 (Ctrl+V)",
+      "paste_clipboard": "从剪贴板粘贴 (Ctrl+V)",
+      "select_all": "全选 (Ctrl+A)",
+      "deselect": "取消选择 (ESC)",
+      "copy_archive": "复制完整压缩包",
+      "print_all": "打印整本漫画",
+      "renumber_auto": "重新编号页面 (自动检测多页)",
+      "renumber_simple": "重新编号页面 (简单编号)",
+      "flatten": "展平文件夹",
+      "save_selection": "将选中内容保存为 CBZ",
+      "hide_sidebar": "« 隐藏按钮栏",
+      "show_sidebar": "» 显示按钮栏",
+      "decrease_thumbs": "减小缩略图大小",
+      "increase_thumbs": "增大缩略图大小",
+      "theme_dark": "切换到深色主题",
+      "theme_light": "切换到浅色主题",
+      "sort_submenu": "排序页面",
+      "undo": "撤销 (Ctrl+Z)",
+      "redo": "重做 (Ctrl+Y)",
+      "create_cbz": "创建 CBZ 压缩包",
+      "save_as": "另存为...",
+      "help": "使用说明",
+      "update_page_count": "更新元数据中的页数",
+      "invert_selection": "反选 (Ctrl+I)",
+      "fullscreen": "全屏 (F11)",
+      "fullscreen_exit": "退出全屏 (F11或ESC)",
+      "quit": "关闭应用程序"
+    },
+    "canvas": {
+      "quit": "关闭应用程序",
+      "reset": "重置应用程序:\n• 窗口大小和位置\n• 深色模式 → 浅色\n• 缩略图大小 → 普通\n• 侧边栏 → 可见 / 220 px\n• 语言 → 自动检测\n• 字体大小 → 默认",
+      "reset_label": "重置应用程序"
+    },
+    "font_size": {
+      "decrease": "减小字体大小",
+      "increase": "增大字体大小"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "按名称排序",
+    "sort_type": "按类型排序",
+    "sort_size": "按大小排序",
+    "sort_width": "按宽度排序",
+    "sort_height": "按高度排序",
+    "sort_resolution": "按分辨率排序",
+    "sort_dpi": "按 DPI 排序"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "空压缩包",
+        "message": "CBZ 压缩包不包含任何文件。"
+      },
+      "empty_cbr": {
+        "title": "空压缩包",
+        "message": "CBR 压缩包不包含任何文件。"
+      },
+      "files_ignored": {
+        "title": "文件已忽略"
+      },
+      "no_selection_crop": {
+        "title": "未选择",
+        "message": "请选择要裁剪的图像。"
+      },
+      "multi_selection_crop": {
+        "title": "多个选择",
+        "message": "一次只能裁剪一个图像。\n请选择单个图像。"
+      },
+      "invalid_selection_crop": {
+        "title": "无效选择",
+        "message": "只能裁剪图像。"
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "功能不可用",
+        "message": "在子目录中无法移动页面。\n请展平文件夹或返回根目录。"
+      },
+      "no_selection_convert": {
+        "title": "未选择",
+        "message": "请至少选择一个要转换的图像。"
+      },
+      "invalid_selection_convert": {
+        "title": "无效选择",
+        "message": "只能转换图像。"
+      },
+      "no_selection_split": {
+        "title": "未选择",
+        "message": "请选择要分割的图像。"
+      },
+      "multi_selection_split": {
+        "title": "多个选择",
+        "message": "一次只能分割一个图像。\n请选择单个图像。"
+      },
+      "invalid_selection_split": {
+        "title": "无效选择",
+        "message": "只能分割图像。"
+      },
+      "invalid_number_split": {
+        "title": "无效数字",
+        "message": "页面数必须在 2 到 10 之间。"
+      },
+      "insufficient_selection_join": {
+        "title": "选择不足",
+        "message": "请至少选择 2 个要合并的图像。"
+      },
+      "invalid_selection_join": {
+        "title": "无效选择",
+        "message": "只能合并图像。"
+      },
+      "pil_not_available": {
+        "title": "PIL 不可用",
+        "message": "PIL 模块不可用,无法从系统剪贴板粘贴。"
+      },
+      "format_not_supported": {
+        "title": "不支持的格式",
+        "message": "不支持的图像格式或文件已损坏。\n支持的格式:JPG、PNG、WEBP、BMP、TIFF、GIF、ICO"
+      },
+      "no_crop_selection": {
+        "title": "未选择",
+        "message": "请先绘制裁剪矩形。"
+      },
+      "cannot_open_file": {
+        "title": "无法打开文件",
+        "message": "无法加载文件。"
+      },
+      "corrupted_images": {
+        "title": "损坏的图像",
+        "summary": "在 {total} 张图片中检测到 {count} 张损坏图片。",
+        "hint": "它们以特殊图标显示。\n右键单击损坏的图片以替换或删除它。",
+        "more": "... 还有 {count} 张"
+      },
+      "no_image_print": {
+        "title": "没有图像",
+        "message": "没有可打印的图像。"
+      },
+      "no_valid_image_print": {
+        "title": "没有图像",
+        "message": "没有有效的可打印图像。"
+      },
+      "no_selection_print": {
+        "title": "未选择",
+        "message": "请至少选择一个图像。"
+      },
+      "no_valid_selection_print": {
+        "title": "没有图像",
+        "message": "选中内容中没有有效图像。"
+      },
+      "save_cancelled": {
+        "title": "保存已取消",
+        "message": "请在保存前手动更正文件名。"
+      },
+      "empty_pdf": {
+        "title": "空 PDF",
+        "message": "PDF 文件不包含任何页面。"
+      },
+      "no_selection_save": {
+        "title": "注意",
+        "message": "请至少选择一个要保存的页面。"
+      },
+      "drag_disabled_subdirectory": {
+        "title": "拖放已禁用",
+        "message": "拖放移动页面仅在漫画根目录中可用。\n\n要移动页面:\n1. 点击向上图标返回根目录\n2. 或展平漫画以删除子目录"
+      },
+      "no_selection_reduce": {
+        "title": "未选择",
+        "message": "请至少选择一页进行缩小。"
+      },
+      "invalid_selection_reduce": {
+        "title": "无效选择",
+        "message": "只能缩小图像。"
+      },
+      "invalid_dimensions": {
+        "title": "无效尺寸",
+        "message": "请输入有效尺寸（正整数）。"
+      },
+      "no_images_for_gif": {
+        "title": "没有图像",
+        "message": "至少需要一个图像来创建动画GIF。"
+      },
+      "no_valid_images": {
+        "title": "没有有效图像",
+        "message": "未找到有效图像来创建GIF。"
+      },
+      "animated_gif_in_comic": {
+        "title": "检测到动画GIF",
+        "message": "警告：此漫画包含一个或多个动画GIF。\\n\\n漫画阅读器（CDisplayEx、YACReader等）只会将每个GIF的第一帧显示为静态页面。\\n\\n要正确查看动画GIF，您必须使用\"导出所选页面\"或\"编辑动画GIF\"按钮将其单独保存在漫画之外。\\n\\n您还要继续保存漫画吗？"
+      },
+      "no_selection_adjust": {
+        "title": "未选择",
+        "message": "请至少选择一张图像以应用调整。"
+      },
+      "invalid_selection_adjust": {
+        "title": "选择无效",
+        "message": "调整只能应用于图像。"
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "功能不可用",
+        "message": "在文件夹被展平之前，无法进行重新编号。\n请在重新编号之前先展平文件夹。"
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP 错误",
+        "message": "该文件不是有效的 '{file}' ZIP 压缩包或已损坏。"
+      },
+      "zip_cannot_open": {
+        "title": "ZIP 错误",
+        "message": "无法打开 CBZ 文件:{error}"
+      },
+      "rar_invalid": {
+        "title": "RAR 错误",
+        "message": "该文件不是有效的 '{file}' RAR 压缩包或已损坏。"
+      },
+      "rar_cannot_open": {
+        "title": "RAR 错误",
+        "message": "无法打开 CBR 压缩包:{error}"
+      },
+      "cbr_unexpected": {
+        "title": "错误",
+        "message": "打开 CBR 时发生意外错误:{error}"
+      },
+      "join_failed": {
+        "title": "错误",
+        "message": "无法合并图像。"
+      },
+      "paste_failed": {
+        "title": "错误",
+        "message": "粘贴时出错:{error}"
+      },
+      "copy_archive_failed": {
+        "title": "错误",
+        "message": "无法复制压缩包:{error}"
+      },
+      "crop_invalid": {
+        "title": "错误",
+        "message": "裁剪区域无效。"
+      },
+      "crop_failed": {
+        "title": "错误",
+        "message": "无法裁剪图像:{error}"
+      },
+      "load_image_failed": {
+        "title": "错误",
+        "message": "无法加载图像:\n{error}"
+      },
+      "print_error": {
+        "title": "打印错误",
+        "message": "打印时出错:\n{error}"
+      },
+      "print_not_available": {
+        "title": "打印不可用",
+        "message": "未安装 win32print 模块。\n请使用以下命令安装:pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "文件未找到",
+        "message": "文件不再存在:\n{path}"
+      },
+      "import_failed": {
+        "title": "导入错误",
+        "message": "无法导入文件:{error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF 未安装",
+        "message": "未安装 PyMuPDF (fitz) 库。\n请使用以下命令安装:pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "错误",
+        "message": "导入 PDF 时出错:{error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF 错误",
+        "message": "无法加载 PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "重复的文件名",
+        "intro": "检测到 {count} 个重复文件名:\n\n",
+        "item": "  • {name}（{times} 次）\n",
+        "more": "  ... 以及另外 {more} 个\n",
+        "footer": "\nZIP 压缩包不接受重复名称。\n请在保存前重命名这些文件。"
+      },
+      "save_failed": {
+        "title": "错误",
+        "message": "无法保存文件:{error}"
+      },
+      "create_archive_failed": {
+        "title": "错误",
+        "message": "无法创建压缩包:{error}"
+      },
+      "save_selection_failed": {
+        "title": "错误",
+        "message": "无法保存选中内容:{error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF创建错误",
+        "message": "无法创建动画GIF：\n{error}"
+      },
+      "save_files_failed": {
+        "title": "保存失败",
+        "message": "无法保存文件：{error}"
+      },
+      "rename_failed": {
+        "title": "重命名错误",
+        "message": "无法重命名文件：{error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF受密码保护",
+        "message": "此PDF文件已加密并受密码保护。\n没有密码无法打开。"
+      },
+      "pdf_unlock_failed": {
+        "title": "错误",
+        "message": "无法保存已解锁的PDF文件:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: 加密的PDF（需要密码），已跳过",
+      "file_too_large": {
+        "title": "文件过大",
+        "message": "文件 {filename} 大小为 {size}，超过了图像允许的最大大小（500 MB）。"
+      },
+      "license_file_not_found": {
+        "message": "未找到许可证文件: {path}"
+      },
+      "license_file_read_error": {
+        "message": "无法读取许可证文件: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z 错误",
+        "message": "文件“{file}”不是有效的 7Z 压缩包或已损坏。"
+      },
+      "delete_error": "删除时出错: {error}",
+      "export_error": "导出时出错: {error}",
+      "font_source_not_found": "未找到字体源文件: {path}",
+      "no_tengwar_font": "未找到Tengwar字体。",
+      "no_icons_found": "未找到图标。",
+      "unsupported_files": {
+        "title": "不支持的文件",
+        "message": "以下文件不受支持，已被忽略:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF创建成功",
+        "message": "动画GIF '{name}' 已创建并添加到马赛克中。"
+      },
+      "pywin32_required": {
+        "title": "功能不可用",
+        "message": "从系统剪贴板粘贴需要 pywin32 模块。\n请使用以下命令安装:pip install pywin32"
+      },
+      "images_imported": {
+        "title": "图像已导入",
+        "message": "已导入 {count} 个图像"
+      },
+      "archive_copied": {
+        "title": "压缩包已复制",
+        "message": "已将存档复制到剪贴板。"
+      },
+      "function_not_available": {
+        "title": "功能不可用",
+        "message": "此功能暂时不可用。"
+      },
+      "duplicate_detected": {
+        "title": "检测到重复",
+        "message": "已存在同名文件。\n\n文件已重命名为:\n{name}"
+      },
+      "replace_success": {
+        "title": "成功",
+        "message": "图像 '{name}' 已成功替换。"
+      },
+      "history_cleared": {
+        "title": "历史记录已清除",
+        "message": "最近文件列表已清除。"
+      },
+      "files_copied_clipboard": {
+        "title": "文件已复制到剪贴板",
+        "message": "由于技术原因,无法拖出应用程序。\n\n✓ {count} 个{word}已复制到剪贴板\n\n您现在可以在任何位置粘贴:\n  • 右键点击 → 粘贴\n  • 或 Ctrl+V"
+      },
+      "correction_done": {
+        "title": "更正完成",
+        "message": "已更正 {count} 个文件名。"
+      },
+      "import_success": {
+        "title": "导入成功",
+        "message": "已从 {file} 导入 {count} 页"
+      },
+      "pdf_import_success": {
+        "title": "导入成功",
+        "message": "已从 {file} 导入 {count} 页 PDF\n质量:{dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "成功",
+        "message": "PDF 转换成功!\n已加载 {count} 页,质量为 {dpi} DPI。"
+      },
+      "cbz_saved": {
+        "title": "成功",
+        "message": "CBZ文件已成功保存:"
+      },
+      "cbz_converted": {
+        "title": "成功",
+        "message": "文件已成功转换为CBZ:",
+        "question": "您要删除原始CBR文件吗?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "成功",
+        "message": "文件已成功转换为CBZ:",
+        "question": "您要删除原始PDF文件吗?"
+      },
+      "cbz_save_as": {
+        "title": "成功",
+        "message": "新 CBZ 文件已保存:{path}"
+      },
+      "cbz_created": {
+        "title": "成功",
+        "message": "CBZ存档已成功创建:"
+      },
+      "selection_saved": {
+        "title": "成功",
+        "message": "选择已成功保存:"
+      },
+      "flatten_done": {
+        "title": "展平完成",
+        "message": "已从 {dirs} 个子文件夹移动 {files} 个文件。"
+      },
+      "language_changed": {
+        "title": "语言已更改",
+        "message": "界面语言已成功更改。"
+      },
+      "new_cbz_saved": {
+        "title": "文件已保存",
+        "message": "新的CBZ文件已成功保存：",
+        "question": "您想删除原始文件吗？"
+      },
+      "page_count_updated": {
+        "title": "页数已更新",
+        "message": "元数据中的页数已更新为 {count} 页。"
+      },
+      "files_saved": {
+        "title": "文件已保存",
+        "message": "{count}个文件已保存到{folder}",
+        "open_folder": "是否要打开文件夹？"
+      },
+      "adjustments_applied": {
+        "title": "已应用调整",
+        "message": "调整已成功应用。"
+      },
+      "pdf_unlocked": {
+        "title": "PDF已解锁",
+        "message": "已解锁的PDF文件已保存:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "大型压缩包",
+        "message": "此压缩包解压后为 {size} MB。\n加载可能会消耗大量内存 (RAM)。\n\n是否继续?"
+      },
+      "confirm_delete": {
+        "title": "确认",
+        "message": "您确定要删除 {count} 个文件 ({size}) 吗?"
+      },
+      "delete_source_files": {
+        "title": "删除源文件?",
+        "message": "是否删除已合并的图像?\n\n是 = 删除源文件\n否 = 保留源文件\n取消 = 取消操作"
+      },
+      "invalid_filenames": {
+        "title": "无效的文件名",
+        "intro": "{count}个文件包含禁止字符:",
+        "item": "  • {name}",
+        "more": "  ... 还有{more}个",
+        "forbidden_chars": "禁止字符: {chars}",
+        "fix_question": "是否自动修正这些文件名?\n(禁止字符将被替换为'_')"
+      },
+      "close_without_save": {
+        "title": "关闭前保存?",
+        "message": "已添加图像。是否在关闭前创建 CBZ 压缩包?"
+      },
+      "flatten_folders": {
+        "title": "展平文件夹",
+        "subdirs_detected": "检测到子文件夹:",
+        "files_to_move": "{count} 个文件将移至根目录。",
+        "folders_to_delete": "{count} 个子文件夹将被删除。",
+        "continue_question": "是否继续?"
+      },
+      "update_page_count": {
+        "title": "更新页数",
+        "message": "漫画的页数已更改。\n\n元数据中指示的页数：{original}\n当前页数：{current}\n\n要更新元数据中的页数吗？"
+      },
+      "conversion_complete": {
+        "title": "转换完成",
+        "message": "转换完成！\n\n{count}张图像已转换为{format}格式并添加到您的选择之后。\n\n删除原始图像吗？",
+        "delete_originals": "删除原始文件\n{count} 个文件 - {size}",
+        "keep_all": "保留全部\n{count} 个文件 - {size}",
+        "cancel_conversion": "取消转换\n{count} 个文件 - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "检测到不正确的扩展名：此文件是 CBZ，而不是 CBR。是否重命名？",
+      "title": "扩展名错误"
+    },
+    "extension_mismatch_cbr": {
+      "message": "检测到错误的扩展名：此文件是 CBR，而不是 CBZ。重命名？"
+    },
+    "extension_mismatch_cb7": {
+      "message": "检测到扩展名有误：文件“{filename}”是 CB7，而非 CBZ/CBR。是否重命名？"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "缩略图大小",
+    "loading": "请稍候,正在加载...\n{percent}%",
+    "resizing": "请稍候,正在调整大小...\n{percent}%",
+    "converting": "请稍候，正在转换...\n{percent}%",
+    "loading_lazy": "请稍候，正在加载...\n{percent}%\n\n由于此文件较大（{size} MB），页面将逐步加载。屏幕上可见的页面会立即加载，其他页面将在滚动时自动加载。",
+    "apply_save_cbz": "应用修改\n并保存 CBZ 文件",
+    "apply_create_cbz": "应用修改\n并创建 CBZ 文件",
+    "import_progress": "正在导入...\n{percent}%",
+    "pdf_import_progress": "正在导入 PDF...\n{percent}%",
+    "pdf_opening": "正在打开 PDF 文件...",
+    "pdf_page": "第 {current} 页 / 共 {total} 页",
+    "warning_close": "注意!修改尚未保存,将会丢失!",
+    "language_label": "语言:",
+    "directory_tooltip": "文件夹:{name}\n{count} 个文件\n总大小:{size} MB",
+    "folder_up_tooltip": "双击返回\n上一级目录",
+    "status_bar": "{dirs} 个文件夹  |  {files} 个文件 ({total_size})  |  {selected} 个已选 ({selected_size})",
+    "pdf_converting": "正在将{total}页转换为{dpi} DPI的图像...",
+    "pdf_converting_no_change": "正在提取{total}页而不修改...",
+    "print_progress": "准备打印中...\n{percent}%",
+    "print_preparing": "请稍候，准备打印中...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU 通用公共许可证 v3 摘要\n\n授予的自由\n您可以使用、复制、修改和再分发\nMosaicView，包括用于商业目的。\n\n义务\n任何再分发（原始版或修改版）必须 :\n– 保留 GPL v3 许可证\n– 包含源代码或注明获取途径\n– 不得施加额外限制\n\n保证\n本软件在不提供任何保证的情况下分发。\n作者不对使用本软件所造成的损失承担责任。\n\n您应该已随本程序收到 GNU 通用公共许可证的副本。 如果没有，请访问 <https://www.gnu.org/licenses/>。",
+    "view_full_license": "查看完整许可证",
+    "license_unrar_text": "CBZ 文件基于 ZIP 格式，这是一种自由开放的格式。CBR 文件则基于 RAR 格式，这是一种专有格式。\n\nMosaicView 可以借助 UnRAR 打开 CBR 文件，UnRAR 是由 RARlab 开发的可自由再发行的实用程序。\n\n官方网站: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "查看 UnRAR 许可证",
+    "saving_cbz": "正在保存... {percent}%",
+    "empty_canvas_line1": "将一个或多个CBZ/CBR/CB7/PDF文件或你的图片放置在这里",
+    "empty_canvas_line2": "打开文件后，你可以继续放置其他文件",
+    "empty_canvas_line3": "放入一个或多个文件夹以开始批量处理",
+    "icon_toolbar_config_title": "图标工具栏配置",
+    "icon_toolbar_active": "工具栏中的图标",
+    "icon_toolbar_hidden": "备用图标",
+    "license_gpl_full": "GNU GPL v3 许可证",
+    "license_unrar_full": "UnRAR 许可证",
+    "licenses_button": "许可证",
+    "view_full_gpl_license": "查看完整 GNU GPL v3 许可证",
+    "license_7zip_text": "CB7 文件基于 7z 格式，由 Igor Pavlov 开发，并在 GNU LGPL 许可证下发布。\n\nMosaicView 可以借助 7-Zip 打开 CB7 文件 — 一款免费的开源工具。\n\n官方网站 : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "查看 7-Zip 许可证",
+    "license_7zip_full": "7-Zip 许可证",
+    "icon_toolbar_show_thumb_slider": "显示缩略图大小滑块",
+    "icon_toolbar_show_lang_combo": "显示语言选择器",
+    "adjusting": "请稍候，正在调整...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS 字体许可证",
+    "license_tengwar_full": "Alcarin Tengwar字体许可证",
+    "view_full_piqad_license": "查看完整 pIqaD qolqoS 许可证"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "图像转换",
+      "title": "转换 {count} 个{word}",
+      "word_image": "图像",
+      "word_images": "图像",
+      "info": "选择目标格式:",
+      "format_png": "PNG (无损)",
+      "format_jpg": "JPEG (有损压缩)",
+      "format_webp": "WEBP (现代格式)",
+      "format_bmp": "BMP (位图)",
+      "format_tiff": "TIFF (高质量)",
+      "format_gif": "GIF (动画)",
+      "quality_label": "JPG/WEBP 质量:",
+      "quality_maximum": "最高 — 质量 95/100",
+      "quality_high": "高 — 质量 85/100",
+      "quality_medium": "中等 — 质量 75/100",
+      "quality_low": "低 — 质量 60/100",
+      "quality_custom_option": "自定义",
+      "quality_custom": "质量 自定义 : {value}/100",
+      "quality_note": "(此设置仅影响 JPG 和 WEBP 格式)",
+      "quality_window_title": "质量选择",
+      "format_gif_static": "静态GIF",
+      "format_gif_animated": "动画GIF（选择多个图像）"
+    },
+    "split": {
+      "window_title": "分割页面",
+      "title": "分割页面",
+      "pages_label": "页面数:",
+      "direction_label": "分割方向:",
+      "horizontal": "水平 (左 → 右)",
+      "vertical": "垂直 (上 → 下)",
+      "warning": "⚠ 由于分割是自动计算的,\n可能需要手动调整。",
+      "button_split": "分割",
+      "button_cancel": "取消"
+    },
+    "join": {
+      "window_title": "合并页面 - 重新排列顺序",
+      "instructions": "排列图像:\n• 垂直(上/下)进行垂直拼接\n• 水平(左/右)进行水平拼接",
+      "merged_filename_prefix": "拼接",
+      "heights_label": "高度",
+      "widths_label": "宽度",
+      "size_adjustment_title": "大小调整",
+      "size_adjustment_warning": "⚠️ 选定的图像具有不同的尺寸。\n请选择如何调整它们的大小以进行合并。\n每个图像的纵横比将始终保留。",
+      "keep_original": "保持原始大小",
+      "keep_original_desc": "(添加黑条填充)",
+      "enlarge_small": "放大小图像",
+      "enlarge_small_desc": "(对齐到最大尺寸)",
+      "reduce_large": "缩小大图像",
+      "reduce_large_desc": "(对齐到最小尺寸)",
+      "back_to_arrangement": "返回"
+    },
+    "pdf": {
+      "quality_merge": "选择合并质量:",
+      "quality_export": "选择导出质量:",
+      "merge_quality_title": "PDF合并质量",
+      "export_quality_title": "PDF导出质量",
+      "loading_title": "正在加载PDF...",
+      "dpi_90": "90 DPI - 网络发布",
+      "dpi_150": "150 DPI - 良好质量（推荐用于显示）",
+      "dpi_200": "200 DPI - 非常好的质量",
+      "dpi_300": "300 DPI - 优秀质量（漫画标准）",
+      "dpi_600": "600 DPI - 最高质量（大文件）",
+      "dpi_original": "不修改图像",
+      "dpi_original_tooltip": "智能分析每个PDF页面：\n• 仅图像页面：保留原始DPI\n• 仅文本页面：300 DPI\n• 混合页面（文本+图像）：如果图像DPI >= 300则使用图像DPI，否则使用300 DPI\n最大值：2400 DPI以限制文件大小"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "需要 PyMuPDF",
+      "pymupdf_required_message": "PyMuPDF (fitz) 未安装。无法转换 PDF 文件。",
+      "select_directory_title": "选择包含 PDF 文件的目录",
+      "no_pdf_title": "没有 PDF 文件",
+      "no_pdf_message": "在目录中未找到 PDF 文件：\n{directory}",
+      "confirm_title": "批量将 PDF 转换为 CBZ",
+      "confirm_message": "{directory} 中有 {count} 个 PDF 文件待转换（包含子目录）。",
+      "checkbox_permanent_delete": "删除原始 PDF 文件且不经过\n回收站（无法撤销）",
+      "start_button": "开始",
+      "converting_title": "正在转换...",
+      "converting_progress": "正在转换文件 {current} / {total}",
+      "page_progress": "页面 {current} / {total}",
+      "complete_title": "转换完成",
+      "complete_message": "目录中已转换 {count} 个 PDF 文件：",
+      "complete_message_errors": "目录中已转换 {total} 个中的 {count} 个 PDF 文件：",
+      "errors_count": "遇到 {count} 个错误。"
+    },
+    "batch_cbr": {
+      "select_directory_title": "选择包含CBR文件的目录",
+      "no_cbr_title": "没有CBR文件",
+      "no_cbr_message": "在目录中未找到CBR文件：\\n{directory}",
+      "confirm_title": "批量转换CBR为CBZ",
+      "confirm_message": "{directory}中有{count}个CBR文件待转换（含子目录）。",
+      "checkbox_permanent_delete": "不经回收站直接删除原始CBR文件\n（无法撤销）",
+      "start_button": "开始",
+      "converting_title": "转换中...",
+      "converting_progress": "正在转换文件 {current} / {total}",
+      "page_progress": "页面 {current} / {total}",
+      "complete_title": "转换完成",
+      "complete_message": "目录中已转换{count}个CBR文件：",
+      "complete_message_errors": "目录中已转换{total}个中的{count}个CBR文件：",
+      "errors_count": "遇到{count}个错误。",
+      "renamed_count": "{count}个文件已重命名为CBZ",
+      "rarfile_unavailable": "rarfile模块不可用，无法转换CBR文件。"
+    },
+    "close_warning": {
+      "title": "注意!",
+      "message": "修改尚未保存,将会丢失!",
+      "btn_close_lose": "关闭文件并放弃修改",
+      "btn_save_cbz": "应用修改并保存文件",
+      "btn_create_cbz": "应用修改并创建 CBZ 文件",
+      "btn_cancel": "取消并返回缩略图"
+    },
+    "replace_image": {
+      "title": "替换损坏的图像"
+    },
+    "reduce_size": {
+      "window_title": "图像大小调整",
+      "title": "调整{count}{word}的大小",
+      "word_image": "图像",
+      "word_images": "图像",
+      "current_size": "当前大小：{size} MB",
+      "current_dimensions": "当前尺寸：{width} × {height} px",
+      "choose_method": "选择调整大小方法：",
+      "custom_dimensions": "自定义尺寸",
+      "width_label": "宽度：",
+      "height_label": "高度：",
+      "use_custom_dimensions": "使用这些尺寸",
+      "different_dimensions_warning": "所选页面具有不同的尺寸。自定义尺寸将强制所有页面为相同大小。在继续之前，请确保您了解其影响。",
+      "estimated_size": "估计大小：{size} MB",
+      "percentage_reduction": "百分比缩减",
+      "percentage_enlargement": "百分比放大",
+      "reduce_0": "0%（无变化）",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0%（无变化）",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "最常见的页面宽度是 1024、1280、1600、1920 和 2000 像素，但其他值也适用。",
+      "multi_page_width": "自动检测并调整多页大小（宽度/高度）",
+      "multi_page_width_tooltip": "启用多页自动检测：双页、三页等。乘数系数根据每页的比例自动计算，无论是宽度（并排页面）还是高度（堆叠页面）"
+    },
+    "gif_animated": {
+      "window_title": "创建动画GIF",
+      "images_title": "动画图像",
+      "params_title": "GIF参数",
+      "frame_delay_label": "图像间延迟：",
+      "fps_normal": "{fps} 帧/秒",
+      "fps_slow": "每{seconds}秒1帧",
+      "loop_label": "重复次数：",
+      "loop_info": "（0 = 无限循环）",
+      "disposal_label": "图像处理：",
+      "disposal_0": "未指定",
+      "disposal_1": "保留前一图像",
+      "disposal_2": "恢复为背景色",
+      "disposal_3": "恢复为之前状态",
+      "optimize": "优化文件（仅保存差异）",
+      "metadata_title": "GIF元数据",
+      "metadata_dimensions": "尺寸：{width} × {height} 像素",
+      "metadata_frames": "帧数：{count}",
+      "metadata_duration": "总时长：{duration} 秒",
+      "metadata_fps": "频率：{fps} fps",
+      "metadata_palette": "调色板：最多256色",
+      "metadata_size": "预计大小：{size} KB",
+      "comment_label": "评论（可选）：",
+      "no_images": "未选择图像",
+      "creating_progress": "正在加载图片... ({current}/{total})",
+      "creating_normalizing": "正在标准化图片... ({current}/{total})",
+      "creating_quantizing": "正在量化颜色... ({current}/{total})",
+      "creating_saving": "正在保存 GIF..."
+    },
+    "save_to_folder": {
+      "title": "选择目标文件夹"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ 文件名重复",
+      "message": "检测到相同的文件名。虽然技术上可以保存，但这可能会导致某些\n漫画阅读器应用程序出现阅读问题（显示不完整、页面丢失等）。\n\n建议在保存之前重新编号页面。"
+    },
+    "adjustments": {
+      "window_title": "图像调整",
+      "title": "{count}张{word}的调整",
+      "word_image": "图像",
+      "word_images": "图像",
+      "apply_button": "应用",
+      "color_depth_section": "色彩深度",
+      "brightness_contrast_section": "亮度和对比度",
+      "compression_section": "压缩",
+      "effects_section": "效果",
+      "sharpness_section": "锐度",
+      "levels_section": "黑/白色阶",
+      "depth_unchanged": "不更改",
+      "depth_32bit": "32位 (RGBA - 颜色+透明度)",
+      "depth_24bit": "24位 (RGB - 颜色)",
+      "depth_8bit": "8 wei (PNG diaoseban / JPEG huidu)",
+      "depth_1bit": "1位 (黑白)",
+      "brightness_label": "亮度: {value}",
+      "contrast_label": "对比度: {value}",
+      "compression_enable": "启用重新压缩",
+      "compression_quality_label": "质量 : {value}/100",
+      "sharpness_label": "锐度: {value}",
+      "effect_none": "无效果",
+      "effect_grayscale": "灰度",
+      "effect_sepia": "棕褐色",
+      "levels_none": "无调整",
+      "levels_threshold": "阈值 (纯黑或纯白)",
+      "levels_advanced": "高级色阶 (阴影/中间调/高光)",
+      "threshold_label": "阈值: {value}",
+      "black_point_label": "黑场: {value}",
+      "gamma_label": "伽马 (中间调): {value}",
+      "white_point_label": "白场: {value}",
+      "auto_levels_button": "自动调整",
+      "open_viewer_button": "使用查看器调整 (推荐)",
+      "compression_info": "压缩仅适用于JPG和WebP图像",
+      "open_viewer_button_simple": "使用查看器调整",
+      "reset_button": "重置",
+      "preview_section": "预览",
+      "effect_invert": "颜色反转",
+      "preview_warning": "预览可能与最终结果不同",
+      "effect_remove_colors": "去除颜色",
+      "remove_colors_intensity_label": "强度 : {value}",
+      "image_mode_section": "图像模式",
+      "image_mode_rgb": "RGB (彩色)",
+      "image_mode_rgba": "RGBA (彩色 + 透明度)",
+      "image_mode_l": "L (灰度)",
+      "image_mode_la": "LA (灰度 + 透明度)",
+      "image_mode_cmyk": "CMYK (印刷)",
+      "image_mode_1": "1 (纯黑白)",
+      "image_mode_p": "P (256色调色板)",
+      "saturation_section": "饱和度",
+      "saturation_label": "饱和度 : {value}",
+      "saturation_viewer_title": "饱和度调整",
+      "transparency_section": "透明度",
+      "transparency_info": "透明度仅适用于 PNG、WebP 和 ICO 图像",
+      "transparency_type_label": "类型 :",
+      "transparency_type_flood": "区域",
+      "transparency_type_global": "全局",
+      "transparency_tolerance_label": "容差 : {value}",
+      "transparency_viewer_title": "透明度调整",
+      "transparency_click_instruction": "点击要变为透明的颜色",
+      "transparency_undo": "撤销上次点击",
+      "transparency_redo": "重做",
+      "transparency_type_flood_tooltip": "洪水填充 : 使点击像素周围的均匀色彩区域变为透明",
+      "transparency_type_global_tooltip": "全局透明度 : 影响图像中所有颜色与点击颜色相近的像素",
+      "transparency_apply": "应用",
+      "transparency_skipped_warning": "{count} 张图像已跳过 — 格式与透明度不兼容。如需包含，请先转换为 PNG。",
+      "unsharp_section": "自适应锐化",
+      "unsharp_radius_label": "半径: {value}",
+      "unsharp_percent_label": "强度: {value}%",
+      "unsharp_threshold_label": "阈值: {value}",
+      "unsharp_viewer_title": "自适应锐化",
+      "auto_levels_tooltip": "分析每一页并自动调整黑白色阶以最大化对比度。\n若要逐页选择，请使用查看器。"
+    },
+    "levels_viewer": {
+      "title": "使用吸管调整色阶",
+      "apply_current": "应用于此页",
+      "apply_all": "应用于所有选定的页面",
+      "black_pipette": "黑点吸管",
+      "white_pipette": "白点吸管",
+      "black_pipette_tooltip": "点击应该完全黑色的像素。注意：很容易做过头！",
+      "white_pipette_tooltip": "点击应该完全白色的像素。注意：很容易做过头！"
+    },
+    "sharpness_viewer": {
+      "title": "清晰度调整"
+    },
+    "brightness_viewer": {
+      "title": "亮度和对比度调整"
+    },
+    "compression_viewer": {
+      "title": "压缩调整"
+    },
+    "outliers": {
+      "title": "尺寸异常的页面",
+      "message": "以下页面的尺寸与其他页面有很大不同。请选择如何处理它们:",
+      "width": "宽度",
+      "height": "高度",
+      "unusual": "异常",
+      "skip": "不调整大小",
+      "keep": "保持"
+    },
+    "first_page_multi": {
+      "title": "第一页是多页",
+      "message": "第一页被检测为多页。您希望如何编号？",
+      "option_auto_desc": "常规重新编号，自动检测。",
+      "option_joint_desc": "漫画第一页与最后一页的联接。",
+      "option_exclude_label": "不包含在重新编号中",
+      "option_exclude_desc": "页面保留其当前名称并保持在第一位置。您可以稍后手动重命名。"
+    },
+    "batch_img": {
+      "select_directory_title": "选择包含图像的文件夹",
+      "no_img_title": "未找到图像文件",
+      "no_img_message": "在文件夹中未找到独立图像文件 :\n{directory}",
+      "confirm_title": "批量将独立图像转换为 CBZ",
+      "confirm_message": "{directory} 中有 {count} 个图像文件待转换（包含子文件夹）。",
+      "checkbox_permanent_delete": "永久删除原始图像文件，不发送到\n回收站（无法撤销）",
+      "start_button": "开始",
+      "converting_title": "正在转换...",
+      "converting_progress": "正在转换第 {current} 个文件，共 {total} 个",
+      "complete_title": "转换完成",
+      "complete_message": "文件夹中已转换 {count} 个图像文件 :",
+      "complete_message_errors": "文件夹中已转换 {total} 个中的 {count} 个图像文件 :",
+      "errors_count": "遇到 {count} 个错误。",
+      "converted_by_ext": "{ext} : {count} 个文件",
+      "mode_title": "将图片转换为CBZ",
+      "mode_intro": "您希望如何分组图片？",
+      "mode_one_per_image": "将每张图片转换为单独的CBZ文件",
+      "mode_one_per_image_sub": "(每张图片成为一个单独的CBZ文件)",
+      "mode_all_in_one": "将所有图片合并为一个CBZ文件",
+      "mode_all_in_one_sub": "(目录中的所有图片合并为一个CBZ文件)"
+    },
+    "batch_drop": {
+      "window_title": "文件夹批量处理",
+      "intro_single": "已放入1个文件夹。您想应用哪种处理？",
+      "intro_multiple": "已放入{count}个文件夹。您想应用哪种处理？",
+      "recursive_note": "子文件夹也将被扫描。",
+      "mixed_drop_title": "不支持此放置操作",
+      "mixed_drop_message": "您同时放入了文件和文件夹。请只放入文件或只放入文件夹。"
+    },
+    "pdf_unlock": {
+      "title": "PDF受保护，禁止修改",
+      "message": "页面已正常导入。\n\n此PDF文件受保护，禁止修改（所有者密码）。\n\n是否要保存不含此保护的PDF文件副本?",
+      "yes": "是，保存已解锁的副本",
+      "no": "否，继续而不解锁"
+    },
+    "batch_pdf_unlock": {
+      "title": "受保护不可修改的PDF文件",
+      "message_single": "检测到1个受保护不可修改的PDF文件。已正常转换为CBZ。\n\n是否要在其原始目录中保存解锁的副本？",
+      "message_plural": "检测到{count}个受保护不可修改的PDF文件。已正常转换为CBZ。\n\n是否要在每个文件的原始目录中保存解锁的副本？",
+      "yes": "是，保存解锁的副本",
+      "no": "否，不解锁继续"
+    },
+    "ico_creator": {
+      "title": "创建 .ico 图标",
+      "info_message": "图像将调整为多种分辨率 (16, 32, 48, 64, 128, 256 px)。\n当前框架大小: {w} × {h} px",
+      "btn_validate_crop": "确认裁剪",
+      "btn_validate_no_crop": "确认不裁剪",
+      "btn_cancel": "取消",
+      "btn_transparency": "设置透明度",
+      "btn_validate_final": "确认",
+      "tolerance_label": "容差:",
+      "success_title": ".ico 文件已创建",
+      "success_message": "文件 {filename} 已成功创建。",
+      "overwrite_title": "文件已存在",
+      "overwrite_message": "文件 {filename} 已存在。是否覆盖？",
+      "save_blocked_title": "无法保存",
+      "save_blocked_message": "此存档包含一个或多个不是漫画图像的 .ico 文件。只要这些文件存在于马赛克中，保存功能将被禁用。\n要重新启用保存，请从马赛克中删除它们 (Del 键) 或剪切 (Ctrl+X) 后粘贴到其他地方。",
+      "btn_back_to_crop": "返回裁剪"
+    },
+    "video_save_blocked": {
+      "title": "无法保存",
+      "message": "此存档包含一个或多个视频文件。只要这些文件存在于马赛克中，保存功能就会被禁用。\n要重新启用保存，请从马赛克中删除它们（Del键）或剪切它们（Ctrl+X）以粘贴到其他地方。"
+    },
+    "open_file": {
+      "title": "打开归档文件",
+      "filter_archives": "归档文件 (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "所有文件 (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - 许可证"
+    },
+    "replace_corrupted_image": {
+      "title": "替换损坏的图片",
+      "filter_images": "图片 (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "所有文件 (*)"
+    },
+    "see_log": "查看日志"
+  },
+  "tooltip": {
+    "source_archive": "源文件: {name}",
+    "file": "文件:{name}",
+    "reason": "原因:{reason}",
+    "size_kb": "大小:{size} KB",
+    "size_mb": "大小:{size} MB",
+    "file_size": "大小:{size}",
+    "dimensions": "尺寸:{width} × {height} 像素",
+    "resolution": "分辨率:{mp} MP",
+    "dpi_single": "DPI:{dpi}",
+    "dpi_double": "DPI:{dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI：未定义",
+    "cbr_info": "CBR 文件使用 RAR 格式，该格式是专有且已获专利的；\n无法修改它们，更改将保存到新的 CBZ 文件中。",
+    "rotate_left": "向左旋转90度",
+    "rotate_right": "向右旋转90度",
+    "mirror_horizontal": "水平翻转",
+    "mirror_vertical": "垂直翻转",
+    "fullscreen": "全屏",
+    "help_button": "用户手册",
+    "theme_button": "在浅色和深色主题之间切换",
+    "font_decrease_button": "减小字体大小",
+    "font_increase_button": "增大字体大小",
+    "color_depth": "颜色：{bits} 位 ({mode})",
+    "batch_pdf_to_cbz": "将目录及其子目录中的所有PDF文件\n转换为CBZ。图像按原样提取并归档，\n不进行任何重新压缩。",
+    "batch_pdf_permanent_delete": "警告：如果选中此选项，\n原始PDF文件将在转换后被\n永久删除，无法恢复。\n请确保您有备份（如有必要）。",
+    "batch_cbr_to_cbz": "将目录及其子目录中的\n所有CBR文件转换为CBZ。",
+    "batch_cbr_permanent_delete": "警告：如果勾选此选项，\n原始CBR文件将在转换后\n被永久删除，无法恢复。\n请确保您已备份，\n如有必要。",
+    "renumber_btn_1": "自动检测多页模式\n右键单击切换模式",
+    "renumber_btn_2": "简单编号模式\n右键单击切换模式",
+    "corrupted_header": "图片已损坏",
+    "right_click_instruction1": "右键单击以替换或删除",
+    "right_click_instruction2": "此图片。",
+    "unknown_error": "未知错误",
+    "batch_img_to_cbz": "将文件夹及其子文件夹中找到的所有\n图像文件转换为 CBZ，\n每张图像生成一个 CBZ 文件。",
+    "batch_img_permanent_delete": "警告 : 如果选中此选项，\n原始图像文件将在转换后被永久删除，\n无法恢复。如有必要，\n请确保您有备份。",
+    "too_large_header": "图像太大无法加载",
+    "too_large_pixels": "尺寸: {pixels}",
+    "icon_toolbar_config_button": "图标配置",
+    "icon_toolbar_size_decrease": "减小图标尺寸",
+    "icon_toolbar_size_increase": "增大图标尺寸",
+    "source_loose": "独立图片",
+    "source_web": "网络图片"
+  },
+  "help": {
+    "title": "MosaicView - 使用说明",
+    "intro": "MosaicView 允许您操作和编辑漫画(数字漫画书),而无需将其从压缩包中提取。该应用程序支持 CBZ (ZIP)、CBR (RAR) 和 PDF 格式。 本应用程序仅兼容64位系统。",
+    "open_files": "打开文件",
+    "open_files_content": "• 点击\"打开 CBZ/CBR/CB7/PDF\"按钮\n• 或直接将文件拖放到窗口中\n• 支持的格式:CBZ、CBR、PDF、图像(JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). 也可以打开EPUB文件，但只会提取其图像（文本会被忽略）。\n• 已加密的PDF（打开时需要密码）:文件无法导入，将显示错误信息。\n• 受保护禁止修改的PDF（owner password）:页面正常导入。MosaicView建议在同一文件夹中保存一份解锁的副本。",
+    "mosaic": "缩略图",
+    "mosaic_content": "马赛克以缩略图形式显示您漫画的所有页面。您可以：\n• 通过拖放重新排列页面（页码将自动更新，并按照当前活动的重新编号模式进行）\n• 选择多个页面（Ctrl+点击或Shift+点击）\n• 使用滑块调整缩略图大小\n• 点击文件名手动重命名文件\n• 从Windows资源管理器直接拖放漫画文件（CBZ/CBR/PDF）到另一个打开的漫画中以合并其内容",
+    "manipulation": "页面操作",
+    "manipulation_content": "• 拖放页面以重新排列\n• 将整本漫画拖入另一本以合并\n• 右键单击页面以访问选项（旋转、删除等）\n• 双击页面以打开查看器\n• 将单个页面拖到 Windows 文件夹中导出，或通过 Ctrl+C / Ctrl+V",
+    "renumber": "页面重新编号",
+    "renumber_content": "MosaicView 提供两种页面重新编号模式, 可通过重新编号按钮, 右键菜单或拖放时自动访问:\n\n• 多页自动检测模式(默认模式): 应用程序分析每个页面的宽度, 以检测双页, 三页等。多页将相应地重新编号(例: 双页将命名为 003-004, 三页为 005-006-007)。超过 4 页时, 仅显示第一个和最后一个编号(例: 010---025)。\n\n• 简单编号模式: 每个页面获得一个唯一的顺序编号(001, 002, 003...), 不考虑页面宽度。\n\n要在两种模式之间切换, 右键单击重新编号按钮。工具提示显示当前活动模式。所选模式也适用于拖放时的自动重新编号。",
+    "flatten": "展平目录",
+    "flatten_content": "如果您的压缩包包含子文件夹,请使用\"展平目录\"将所有图像移至同一级别。",
+    "viewer": "查看器",
+    "viewer_content": "双击页面打开查看器:\n• ← → 键:在页面间导航\n• D 键:在 3 种阅读模式间切换\n  - 单页:一次一页\n  - 双页:第 1 页单独,然后 2-3、4-5 等\n  - 连续双页:第 1 页单独,然后 2-3、3-4、4-5 等\n• 鼠标滚轮:快速导航\n• Ctrl+滚轮或 Ctrl+加/减:缩放\n• Ctrl+0:重置缩放\n• F11 键:全屏\n• 双击:切换全屏\n• Esc 键:取消裁剪框 / 退出查看器",
+    "join_pages": "合并页面",
+    "join_pages_content": "选择多个连续页面，右键单击→'合并选定页面'以水平或垂直合并页面。生成图像的格式与源页面的格式一致(如果它们全部相同)，否则默认为PNG。",
+    "split_pages": "分割页面",
+    "split_pages_content": "要自动分割双页:\n• 选择要分割的页面\n• 右键点击 → '分割选中的页面'\n• 选择方向(垂直或水平)",
+    "crop": "查看器中的裁剪",
+    "crop_content": "在查看器中,在图像上绘制矩形以定义裁剪区域:\n• 用鼠标绘制矩形\n• 通过拖动边缘或角来调整大小\n• 点击'确认裁剪'应用\n• 裁剪应用于当前图像\n• Esc 键:取消裁剪框",
+    "shortcuts": "键盘快捷键",
+    "shortcuts_content": "• Ctrl+Z:撤销上一操作\n• Ctrl+Y:重做撤销的操作\n• Ctrl+A:选择所有页面\n• Ctrl+I：反选\n• Ctrl+C:复制选中的页面\n• Ctrl+X:剪切选中的页面\n• Ctrl+V:粘贴页面\n• Del:删除选中的页面\n• F5：更新马赛克显示\n• F11：切换全屏（按F11或ESC退出）",
+    "dark_mode": "深色模式",
+    "dark_mode_content": "点击太阳/月亮按钮在浅色和深色主题之间切换。",
+    "sort": "排序页面",
+    "sort_content": "使用'排序'按钮自动重新排列页面,按:\n• 名称、类型、大小、宽度、高度、分辨率或 DPI",
+    "save": "保存",
+    "save_content": "• '保存':将修改保存到原始文件\n• '另存为':创建新压缩包\n• '创建 CBZ':仅在图像模式下可用(无压缩包)",
+    "other": "其他功能",
+    "other_content": "• 旋转:旋转一个或多个页面\n• 转换:将图像转换为不同格式（PNG、JPEG、WEBP、BMP、TIFF、GIF）。注意:CMYK模式的图像会自动转换为RGB\n• 打印:打印选中的页面或所有页面\n• 提取:提取特定页面\n• 元数据选项卡:显示 ComicInfo.xml 文件的信息(如果压缩包中存在)。如果您从包含元数据的漫画中添加或删除页面,应用程序将建议修改其中指示的页数。其他元数据无法修改。此限制是有意的,是设计选择的结果。",
+    "config_files": "配置文件和临时文件",
+    "config_files_content": "MosaicView创建一个名为.mosaicview_config.json的文件。此文件包含重置按钮正常工作所需的一些参数，以及最近打开的漫画列表，这显然是显示最近打开的文件所必需的。MosaicView还保存临时文件，这些文件是各种图像处理操作所必需的。\n所有这些文件都位于{temp_dir}目录中。\n每次关闭应用程序时都会删除临时文件，但.mosaicview_config.json文件由于其性质而应保留。\n但是，您可以通过转到{temp_dir}目录或单击下面的按钮手动删除这些文件。每次打开应用程序时都会重新创建.mosaicview_config.json文件，并根据需要重新创建临时文件。",
+    "config_clear_temp": "删除临时文件",
+    "config_clear_recent": "清除最近文件",
+    "config_clear_config": "删除配置文件",
+    "config_temp_cleared": "临时文件已成功删除。",
+    "config_config_cleared": "配置文件已成功删除。\n将在下次启动应用程序时重新创建。",
+    "language": "语言选择",
+    "language_content": "MosaicView 提供多种语言版本。\n默认情况下,应用程序会自动检测您操作系统的语言,并在支持的情况下以该语言显示。如果您的系统使用不支持的语言,界面将以英语显示。\n您可以随时使用位于按钮栏底部、缩略图大小滑块下方的下拉菜单手动更改语言。您的选择将被保存并在下次启动应用程序时应用。\n可用语言:阿拉伯语、爱尔兰语、爱沙尼亚语、保加利亚语、冰岛语、波兰语、丹麦语、德语、俄语(乌克兰语)、法语、芬兰语、韩语、荷兰语、克罗地亚语、拉脱维亚语、立陶宛语、罗马尼亚语、马来语、马耳他语、挪威语、葡萄牙语、日语、瑞典语、斯洛伐克语、斯洛文尼亚语、泰米尔语、泰语、土耳其语、西班牙语、希伯来语、希腊语、匈牙利语、亚美尼亚语、意大利语、印地语、印度尼西亚语、英语、越南语、中文(繁体)、中文(简体)、捷克语。\n\n此实用程序使用Windows字体，但pIqaD（克林贡语）和tengwar（精灵语：辛达林和昆雅）字体除外。这些字体是免费的，来自以下网站：\n- pIqaD（克林贡字母）：{url_piqad}\n- tengwar（精灵字母，用于辛达林和昆雅）：{url_tengwar}\n如果这些网站不再活跃，您可以通过单击下面的按钮来获取pIqaD和tengwar字体：\n\n本软件以法语开发。其他语言的翻译是通过 AI(特别是 Claude)完成的。我决定支持大约四十种语言。但显然,我不会说所有这些语言。因此,我别无选择,只能求助于 AI,因为雇用和支付 40 名不同的翻译人员不在考虑范围内。由于这些翻译是自动完成的,可能存在错误。对此我深表歉意。\n可用虚构语言: 克林贡语（拉丁字母和pIqaD字母版本），辛达林语（拉丁字母和tengwar字母版本），昆雅语（拉丁字母和tengwar字母版本）.",
+    "credits": "Vibe Coding，我的爱",
+    "credits_content": "我对编程一窍不通。完全不懂。因此,我使用 Anthropic 的 AI Claude(更具体地说是 Claude Code)开发了这个软件。我强烈推荐 Claude Code,这个应用程序太棒了!",
+    "resize_pages": "修改页面大小",
+    "resize_pages_content": "要缩小或放大页面：\n• 选择一个或多个页面\n• 右键单击→'调整大小'\n• 三个选项可用：\n  - 自定义尺寸：输入所需的宽度或高度（纵横比自动保留）。\n  - 百分比缩小：选择10%到90%的百分比\n  - 百分比放大：选择10%到100%的百分比\n• 应用程序显示修改后图像的估计大小\n• 修改立即应用于所有选定的页面",
+    "language_export_piqad": "pIqaD字体",
+    "language_export_tengwar": "Tengwar字体",
+    "language_export_piqad_success": "字体已导出：{filename}\n位置：",
+    "language_export_tengwar_success": "已导出 {count} 个字体\n位置：",
+    "icons": "图标",
+    "icons_content": "本实用程序中使用的大多数图标来自此网站，可免费用于非商业目的: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\n其中一些由我进行了修改。\n只有一个图标，即Windows可执行文件图标，是我创建的（但使用了AI，因为我是一个非常、非常、非常糟糕的平面设计师）。只要您注明来源，您就可以随意使用此图标。",
+    "icons_view_button": "查看图标",
+    "icons_window_title": "MosaicView图标",
+    "icons_save_all": "保存图标",
+    "icons_saved_success": "{count}个图标已保存到：",
+    "icons_save_failed": "无法保存图标：{error}",
+    "split_ui": "双面板界面",
+    "split_ui_content": "MosaicView允许同时并排显示两个档案。\n\n点击分割图标打开第二个面板。每个面板都是独立的：您可以分别打开、编辑和保存档案。活动面板以蓝色边框标示。\n\n要将页面从一个面板移动到另一个面板，直接拖动即可。如果选择了多个页面，它们将一起移动。页面将插入到红色条所指示的位置。\n\n点击关闭第二个面板图标以返回单面板模式。",
+    "license_gpl": "GPL v3 许可证",
+    "license_unrar": "UnRAR 许可证",
+    "config_clear_clipboard": "清除剪贴板文件",
+    "config_clipboard_note": "例外：Windows剪贴板使用的临时文件（clipboard_XXXXX文件）在复制后会保留12小时，因此即使关闭应用程序后您也可以粘贴它们。12小时后，它们会被自动删除。",
+    "config_log_note": "批量转换（PDF转CBZ和CBR转CBZ）在出现错误时会创建日志文件。这些文件（Log_pdftocbz_.txt和Log_cbrtocbz_.txt）即使在关闭应用程序后也会保留，以便日后查看。它们仅通过上方的\"删除临时文件\"按钮删除。",
+    "config_clipboard_cleared": "剪贴板文件已成功清除。",
+    "adjust_images": "图像调整",
+    "adjust_images_content": "此功能允许您直接在 MosaicView 中修饰图像。您可以调整亮度、对比度、锐度、色阶、饱和度，应用效果（黑白、棕褐色、颜色反转），调整压缩质量，删除颜色，应用透明度或转换为不同的颜色深度。某些设置具有专用查看器，可在应用前以全分辨率查看结果。主窗口中的缩略图预览实时显示结果。",
+    "create_icon": "创建图标",
+    "create_icon_content": "MosaicView允许您从马赛克中的任何图像创建图标文件(.ico)。\n• 右键单击图像 → '创建图标'\n• 在查看器中框选所需区域（图标必须为正方形）\n• 如有需要，调整透明度\n• 确认：.ico文件直接添加到马赛克中\n• .ico文件自动包含所有标准分辨率（从16×16到256×256）\n• 只要马赛克中存在.ico文件，保存到CBZ压缩包就会被阻止，因为这些压缩包不支持ICO格式。单独导出.ico文件（Ctrl+C然后粘贴到Windows文件夹），然后在保存前从马赛克中删除它。",
+    "batch_convert": "批量转换",
+    "batch_convert_content": "MosaicView提供三个批量转换功能，仅在马赛克为空时可用。每个功能的原则相同：选择目录，确认，实时跟踪进度，查看最终摘要。一个选项允许永久删除原始文件，而不是将其发送到回收站。\n• CBR → CBZ：转换目录及其子目录中的所有CBR (RAR) 文件。如果CBR实际上是ZIP，则仅重命名而不进行转换。\n• PDF → CBZ：转换目录及其子目录中的所有PDF文件。图像在不重新压缩的情况下提取。\n• 独立图像 → CBZ：为目录及其子目录中找到的每个图像文件创建单独的CBZ。无效、损坏、多页 (TIFF) 或动画 (GIF) 图像将被忽略并记录在日志中。",
+    "config_open_temp_folder": "打开临时文件夹",
+    "icon_toolbar": "图标工具栏",
+    "icon_toolbar_content": "图标工具栏可快速访问应用程序的主要功能。您可以通过直接在工具栏中拖动图标来随意重新排列。要选择显示或隐藏哪些图标，请单击工具栏底部的齿轮按钮:将打开一个配置窗口，您可以在活动工具栏和备用区之间移动图标。使用 « + » 和 « − » 按钮调整图标大小。配置将自动保存。",
+    "license_7zip": "7-Zip 许可证"
+  },
+  "misc": {
+    "file_word": "文件",
+    "files_word": "文件",
+    "corrupted": "已损坏",
+    "yes": "是",
+    "no": "否",
+    "cancel": "取消",
+    "selection_suffix": "副本-选择"
+  },
+  "metadata": {
+    "title": "标题",
+    "series": "系列",
+    "number": "编号",
+    "volume": "卷",
+    "summary": "摘要",
+    "writer": "编剧",
+    "penciller": "铅笔画家",
+    "inker": "描线师",
+    "colorist": "上色师",
+    "letterer": "字体师",
+    "cover_artist": "封面艺术家",
+    "editor": "编辑(人)",
+    "publisher": "出版社",
+    "imprint": "丛书",
+    "genre": "类型",
+    "web": "网站",
+    "page_count": "页数",
+    "language_iso": "语言",
+    "format": "格式",
+    "black_and_white": "黑白",
+    "manga": "漫画",
+    "year": "年",
+    "month": "月",
+    "day": "日",
+    "notes": "备注",
+    "characters": "角色",
+    "locations": "地点",
+    "teams": "团队",
+    "story_arc": "故事弧",
+    "story_arc_number": "故事弧编号",
+    "series_group": "系列组",
+    "count": "期数",
+    "alternate_series": "替代系列",
+    "alternate_number": "替代编号",
+    "alternate_count": "替代计数",
+    "age_rating": "年龄分级",
+    "series_complete": "系列完结",
+    "translator": "译者",
+    "tags": "标签",
+    "scan_information": "扫描信息",
+    "community_rating": "社区评分",
+    "review": "评论",
+    "gtin": "GTIN",
+    "pages": "页面",
+    "pages_col_image": "图像",
+    "pages_col_type": "类型",
+    "pages_col_width": "宽度",
+    "pages_col_height": "高度",
+    "pages_col_size": "大小 (B)"
+  },
+  "web": {
+    "web_download_progress": "下载中：{downloaded}/{total} 张图片...",
+    "web_download_cancel": "取消",
+    "web_no_images": "无图片",
+    "web_no_images_found": "此页面未找到图片。",
+    "web_imported": "从网页导入了 {count} 张图片",
+    "web_drag_drop_title": "网页图片拖放",
+    "web_copy_paste_message": "不支持从网络浏览器直接拖放。\\n\\n替代解决方案（更简单）：\\n\\n1. 在浏览器中右键点击图片\\n2. 选择\"复制图片\"\\n3. 在 MosaicView 中，使用\"粘贴\"按钮或 Ctrl+V\\n\\n此方法适用于所有网页图片！",
+    "import_web_button": "网页导入",
+    "import_web_tooltip": "粘贴网址以获取页面中的所有图片",
+    "import_web_menu": "网页导入...",
+    "import_web_dialog_title": "从网页导入图片",
+    "import_web_url_label": "网页地址：",
+    "import_web_ok_button": "确定",
+    "import_web_cancel_button": "取消",
+    "import_web_invalid_url": "无效的 URL。请输入有效的网址。"
+  },
+  "donation": {
+    "menu_label": "向作者捐赠",
+    "title": "进行捐赠",
+    "message": "您喜欢这个小工具，并经常使用它。我在它上面投入了几百个小时。您会考虑通过捐赠来感谢我吗？请善良一点，我真的需要钱来用香槟填满我的游泳池。\n\n无论您想给我寄几分钱还是几十亿欧元，我都接受所有金额。您可以通过paypal进行捐赠"
+  },
+  "mail": {
+    "tooltip": "此按钮打开Windows中的默认电子邮件软件以发送电子邮件。如果未配置软件（例如，如果您仅使用网络邮件），则可以通过右键单击图标将MosaicView地址复制到剪贴板。",
+    "copy_address": "复制 MosaicView 电子邮件地址",
+    "menu_label": "向MosaicView发送电子邮件",
+    "icon_label": "发送电子邮件"
+  },
+  "menu": {
+    "file": "文件",
+    "file_open": "打开文件",
+    "file_close": "关闭文件",
+    "batch_convert": "批量转换文件",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "独立图片 → CBZ",
+    "edit": "编辑",
+    "undo": "撤销",
+    "redo": "重做",
+    "paste": "粘贴",
+    "delete": "删除",
+    "invert_selection": "反选",
+    "select_all": "全选",
+    "deselect": "取消选择",
+    "refresh_mosaic": "刷新拼图",
+    "images": "图片",
+    "rotation": "旋转",
+    "archives": "档案",
+    "sort": "排序",
+    "system": "系统",
+    "decrease_font": "缩小字体",
+    "increase_font": "放大字体",
+    "language": "语言",
+    "language_real": "真实语言",
+    "language_fictional": "虚构语言",
+    "about": "关于",
+    "export_piqad_font": "保存 pIqaD 字体",
+    "export_tengwar_fonts": "保存 tengwar 字体"
+  }
+}

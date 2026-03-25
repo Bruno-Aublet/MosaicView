@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Dijital çizgi roman koleksiyoncuları için İsviçre çakısı",
+  "buttons": {
+    "open_file": "CBZ/CBR/CB7/PDF Aç",
+    "close_file": "Dosyayı kapat",
+    "create_cbz": "CBZ arşivi oluştur",
+    "flatten_dirs": "Tüm dosyaları kök dizine taşı\nve alt dizini sil",
+    "renumber": "Sayfaları\nyeniden numaralandır",
+    "undo": "⤺ Geri al",
+    "redo": "Yinele ⤻",
+    "copy": "Kopyala",
+    "cut": "Kes",
+    "paste": "Yapıştır",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Başka bir görüntü\nformatına dönüştür",
+    "join_pages": "Sayfaları birleştir",
+    "split_page": "Sayfayı böl",
+    "save_as": "Farklı kaydet\n(yeni CBZ oluştur)",
+    "save_selection": "Seçimi CBZ\nolarak kaydet",
+    "print_selection": "Seçimi yazdır",
+    "print_all": "Tüm çizgi romanı yazdır",
+    "sort": "Sırala",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Dönüştür",
+    "cancel": "İptal",
+    "split_button": "Böl",
+    "join_button": "Başla",
+    "validate_crop": "Kırpmayı onayla",
+    "ok": "Tamam",
+    "close": "Kapat",
+    "apply_and_save": "Değişiklikleri uygula ve dosyayı kaydet",
+    "apply_and_create": "Değişiklikleri uygula ve CBZ dosyası oluştur",
+    "close_and_lose": "Dosyayı kapat ve değişiklikleri kaybet",
+    "cancel_return": "İptal et ve mozaiğe dön",
+    "update_page_count": "Sayfa sayısını\nmetadata'da güncelle",
+    "invert_selection": "Seçimi ters çevir",
+    "reduce_size": "Sayfa boyutlandır",
+    "mirror_vertical": "⇅",
+    "create_gif": "GIF Oluştur",
+    "edit_gif": "Animasyonlu GIF'i düzenle",
+    "save_to_folder": "Seçili sayfaları\ndışa aktar",
+    "continue": "Devam et",
+    "reset": "↻",
+    "yes": "Evet",
+    "no": "Hayır",
+    "renumber_recommended": "Yeniden numaralandır (önerilen)",
+    "ignore_and_save": "Yoksay ve kaydet",
+    "rename_to_cbz": ".cbz olarak yeniden adlandır",
+    "open_without_rename": "Yeniden adlandırmadan aç",
+    "rename_to_cbr": ".cbr olarak yeniden adlandır",
+    "adjustments": "Parlaklık,\nkontrast vb.",
+    "batch_cbr_to_cbz": "CBR dosyalarını\n topluca CBZ'ye dönüştür",
+    "batch_pdf_to_cbz": "PDF dosyalarını toplu\n CBZ’ye dönüştürme",
+    "batch_img_to_cbz": "Bağımsız resimlerin\n toplu CBZ'ye dönüştürülmesi",
+    "icon_toolbar_reset": "Sıfırla",
+    "delete_selected": "Sil",
+    "save": "Kaydet",
+    "rename_to_cb7": ".cb7 olarak yeniden adlandır",
+    "split_ui": "Arayüzü iki panele böl",
+    "unsplit_ui": "İkinci paneli kapat"
+  },
+  "tabs": {
+    "mosaic": "Mozaik",
+    "metadata": "Meta veriler"
+  },
+  "viewer": {
+    "title": "Görüntüleyici",
+    "mode_single": "Tek sayfa  [D]",
+    "mode_double": "Çift sayfa  [D]",
+    "mode_continuous": "Sürekli mod  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Önceki sayfa (←)",
+      "next_page": "Sonraki sayfa (→)",
+      "zoom_in": "Yakınlaştır (Ctrl+Artı)",
+      "zoom_out": "Uzaklaştır (Ctrl+Eksi)",
+      "zoom_reset": "Yakınlaştırmayı sıfırla (Ctrl+0)",
+      "reading_mode_double": "Okuma modunu değiştir (D) → Çift sayfa",
+      "reading_mode_continuous": "Okuma modunu değiştir (D) → Sürekli çift sayfa",
+      "reading_mode_single": "Okuma modunu değiştir (D) → Tek sayfa",
+      "fullscreen_exit": "Tam ekrandan çık (F11)",
+      "fullscreen": "Tam ekran (F11)",
+      "close_viewer": "Görüntüleyiciyi kapat (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Bozuk görüntü - Değiştir",
+      "corrupted_delete": "⚠️ Bu görüntüyü sil",
+      "copy": "Kopyala (Ctrl+C)",
+      "cut": "Kes (Ctrl+X)",
+      "paste": "Yapıştır (Ctrl+V)",
+      "paste_clipboard": "Panodan yapıştır (Ctrl+V)",
+      "delete": "Sil (Delete)",
+      "deselect": "Seçimi kaldır (ESC)",
+      "rotate_right": "↻ Sağa döndür",
+      "rotate_left": "↺ Sola döndür",
+      "mirror": "⇄ Yatay ayna",
+      "crop": "Kırp",
+      "convert": "Başka bir formata dönüştür...",
+      "join": "Seçili sayfaları birleştir",
+      "split": "Seçili sayfayı böl",
+      "save_selection": "Seçimi CBZ olarak kaydet",
+      "print_selection": "Seçimi yazdır",
+      "copy_archive": "Tüm arşivi kopyala",
+      "undo": "Geri al (Ctrl+Z)",
+      "redo": "Yinele (Ctrl+Y)",
+      "renumber_auto": "Sayfaları yeniden numarala (birden fazla sayfayı otomatik algıla)",
+      "renumber_simple": "Sayfaları yeniden numarala (basit numaralandırma)",
+      "sort_submenu": "Sayfaları sırala",
+      "sort_name": "İsme göre",
+      "sort_type": "Türe göre",
+      "sort_size": "Boyuta göre",
+      "sort_width": "Genişliğe göre",
+      "sort_height": "Yüksekliğe göre",
+      "sort_resolution": "Çözünürlüğe göre",
+      "sort_dpi": "DPI'ye göre",
+      "create_cbz": "CBZ arşivi oluştur",
+      "save_as": "Farklı kaydet...",
+      "close_file": "Dosyayı kapat",
+      "help": "Kullanım kılavuzu",
+      "update_page_count": "Sayfa sayısını metadata'da güncelle",
+      "invert_selection": "Seçimi ters çevir (Ctrl+I)",
+      "reduce_size": "Sayfa boyutlandır",
+      "mirror_vertical": "⇅ Dikey ayna",
+      "edit_animated_gif": "Animasyonlu GIF'i düzenle...",
+      "save_to_folder": "Seçili sayfaları dışa aktar",
+      "adjustments": "Parlaklık, kontrast, renkler...",
+      "refresh_mosaic": "Mozaiği yenile (F5)",
+      "create_ico": ".ico dosyası oluştur"
+    },
+    "canvas_no_file": {
+      "open": "CBZ/CBR/CB7/PDF Aç",
+      "recent_files": "Son dosyalar",
+      "clear_history": "Geçmişi temizle"
+    },
+    "canvas_with_file": {
+      "close": "Dosyayı kapat",
+      "paste": "Yapıştır (Ctrl+V)",
+      "paste_clipboard": "Panodan yapıştır (Ctrl+V)",
+      "select_all": "Tümünü seç (Ctrl+A)",
+      "deselect": "Seçimi kaldır (ESC)",
+      "copy_archive": "Tüm arşivi kopyala",
+      "print_all": "Tüm çizgi romanı yazdır",
+      "renumber_auto": "Sayfaları yeniden numarala (birden fazla sayfayı otomatik algıla)",
+      "renumber_simple": "Sayfaları yeniden numarala (basit numaralandırma)",
+      "flatten": "Klasörleri düzleştir",
+      "save_selection": "Seçimi CBZ olarak kaydet",
+      "hide_sidebar": "« Düğme sütununu gizle",
+      "show_sidebar": "» Düğme sütununu göster",
+      "decrease_thumbs": "Küçük resimleri küçült",
+      "increase_thumbs": "Küçük resimleri büyüt",
+      "theme_dark": "Koyu temaya geç",
+      "theme_light": "Açık temaya geç",
+      "sort_submenu": "Sayfaları sırala",
+      "undo": "Geri al (Ctrl+Z)",
+      "redo": "Yinele (Ctrl+Y)",
+      "create_cbz": "CBZ arşivi oluştur",
+      "save_as": "Farklı kaydet...",
+      "help": "Kullanım kılavuzu",
+      "update_page_count": "Sayfa sayısını metadata'da güncelle",
+      "invert_selection": "Seçimi ters çevir (Ctrl+I)",
+      "fullscreen": "Tam ekran (F11)",
+      "fullscreen_exit": "Tam ekrandan çık (F11 veya ESC)",
+      "quit": "Uygulamayı kapat"
+    },
+    "canvas": {
+      "quit": "Uygulamayı kapat",
+      "reset": "Uygulamayı sıfırla:\n• pencere boyutu ve konumu\n• karanlık mod → aydınlık\n• küçük resim boyutu → normal\n• kenar çubuğu → görünür / 220 px\n• dil → otomatik algılama\n• yazı tipi boyutu → varsayılan",
+      "reset_label": "Uygulamayı sıfırla"
+    },
+    "font_size": {
+      "decrease": "Yazı tipi boyutunu küçült",
+      "increase": "Yazı tipi boyutunu büyüt"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "İsme göre sırala",
+    "sort_type": "Türe göre sırala",
+    "sort_size": "Boyuta göre sırala",
+    "sort_width": "Genişliğe göre sırala",
+    "sort_height": "Yüksekliğe göre sırala",
+    "sort_resolution": "Çözünürlüğe göre sırala",
+    "sort_dpi": "DPI'ye göre sırala"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Boş arşiv",
+        "message": "CBZ arşivi hiçbir dosya içermiyor."
+      },
+      "empty_cbr": {
+        "title": "Boş arşiv",
+        "message": "CBR arşivi hiçbir dosya içermiyor."
+      },
+      "files_ignored": {
+        "title": "Dosyalar yok sayıldı"
+      },
+      "no_selection_crop": {
+        "title": "Seçim yok",
+        "message": "Lütfen kırpılacak bir görüntü seçin."
+      },
+      "multi_selection_crop": {
+        "title": "Çoklu seçim",
+        "message": "Aynı anda yalnızca bir görüntü kırpabilirsiniz.\nLütfen tek bir görüntü seçin."
+      },
+      "invalid_selection_crop": {
+        "title": "Geçersiz seçim",
+        "message": "Yalnızca görüntüler kırpılabilir."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "İşlev kullanılamıyor",
+        "message": "Sayfa taşıma alt dizinlerde kullanılamaz.\nLütfen klasörleri düzleştirin veya kök dizine dönün."
+      },
+      "no_selection_convert": {
+        "title": "Seçim yok",
+        "message": "Lütfen dönüştürülecek en az bir görüntü seçin."
+      },
+      "invalid_selection_convert": {
+        "title": "Geçersiz seçim",
+        "message": "Yalnızca görüntüler dönüştürülebilir."
+      },
+      "no_selection_split": {
+        "title": "Seçim yok",
+        "message": "Lütfen bölünecek bir görüntü seçin."
+      },
+      "multi_selection_split": {
+        "title": "Çoklu seçim",
+        "message": "Aynı anda yalnızca bir görüntü bölebilirsiniz.\nLütfen tek bir görüntü seçin."
+      },
+      "invalid_selection_split": {
+        "title": "Geçersiz seçim",
+        "message": "Yalnızca görüntüler bölünebilir."
+      },
+      "invalid_number_split": {
+        "title": "Geçersiz sayı",
+        "message": "Sayfa sayısı 2 ile 10 arasında olmalıdır."
+      },
+      "insufficient_selection_join": {
+        "title": "Yetersiz seçim",
+        "message": "Lütfen birleştirilecek en az 2 görüntü seçin."
+      },
+      "invalid_selection_join": {
+        "title": "Geçersiz seçim",
+        "message": "Yalnızca görüntüler birleştirilebilir."
+      },
+      "pil_not_available": {
+        "title": "PIL kullanılamıyor",
+        "message": "Sistem panosundan yapıştırma için PIL modülü kullanılamıyor."
+      },
+      "format_not_supported": {
+        "title": "Format desteklenmiyor",
+        "message": "Görüntü formatı desteklenmiyor veya dosya bozuk.\nDesteklenen formatlar: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Seçim yok",
+        "message": "Lütfen önce bir kırpma dikdörtgeni çizin."
+      },
+      "cannot_open_file": {
+        "title": "Dosya açılamıyor",
+        "message": "Dosya yüklenemiyor."
+      },
+      "corrupted_images": {
+        "title": "Bozuk görüntüler",
+        "summary": "{total} görüntüden {count} bozuk görüntü tespit edildi.",
+        "hint": "Özel bir simgeyle görüntülenirler.\nDeğiştirmek veya silmek için bozuk bir görüntüye sağ tıklayın.",
+        "more": "... ve {count} daha"
+      },
+      "no_image_print": {
+        "title": "Görüntü yok",
+        "message": "Yazdırılacak görüntü yok."
+      },
+      "no_valid_image_print": {
+        "title": "Görüntü yok",
+        "message": "Yazdırılacak geçerli görüntü yok."
+      },
+      "no_selection_print": {
+        "title": "Seçim yok",
+        "message": "Lütfen en az bir görüntü seçin."
+      },
+      "no_valid_selection_print": {
+        "title": "Görüntü yok",
+        "message": "Seçimde geçerli görüntü yok."
+      },
+      "save_cancelled": {
+        "title": "Kaydetme iptal edildi",
+        "message": "Lütfen kaydetmeden önce dosya adlarını manuel olarak düzeltin."
+      },
+      "empty_pdf": {
+        "title": "Boş PDF",
+        "message": "PDF dosyası hiçbir sayfa içermiyor."
+      },
+      "no_selection_save": {
+        "title": "Uyarı",
+        "message": "Lütfen kaydedilecek en az bir sayfa seçin."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Taşıma devre dışı",
+        "message": "Sürükle-bırak ile sayfa taşıma yalnızca çizgi romanın kök dizininde kullanılabilir.\n\nSayfa taşımak için:\n1. Yukarı çıkma simgesine tıklayarak kök dizine dönün\n2. Veya alt dizinleri kaldırmak için çizgi romanı düzleştirin"
+      },
+      "no_selection_reduce": {
+        "title": "Seçim yok",
+        "message": "Lütfen küçültmek için en az bir sayfa seçin."
+      },
+      "invalid_selection_reduce": {
+        "title": "Geçersiz seçim",
+        "message": "Yalnızca görseller küçültülebilir."
+      },
+      "invalid_dimensions": {
+        "title": "Geçersiz boyutlar",
+        "message": "Lütfen geçerli boyutlar girin (pozitif tam sayılar)."
+      },
+      "no_images_for_gif": {
+        "title": "Görsel yok",
+        "message": "Animasyonlu GIF oluşturmak için en az bir görsel gereklidir."
+      },
+      "no_valid_images": {
+        "title": "Geçerli görsel yok",
+        "message": "GIF oluşturmak için geçerli görsel bulunamadı."
+      },
+      "animated_gif_in_comic": {
+        "title": "Hareketli GIF algılandı",
+        "message": "Uyarı: Bu çizgi roman bir veya daha fazla animasyonlu GIF içeriyor.\\n\\nÇizgi roman okuyucuları (CDisplayEx, YACReader, vb.) her GIF'in yalnızca ilk karesini statik sayfa olarak görüntüler.\\n\\nAnimasyonlu GIF'i düzgün görüntülemek için, \"Seçili sayfaları dışa aktar\" veya \"Animasyonlu GIF'i düzenle\" düğmesini kullanarak çizgi romanın dışında ayrı olarak kaydetmelisiniz.\\n\\nYine de çizgi romanı kaydetmeye devam etmek istiyor musunuz?"
+      },
+      "no_selection_adjust": {
+        "title": "Secim yok",
+        "message": "Ayarlari uygulamak icin en az bir goruntu secin."
+      },
+      "invalid_selection_adjust": {
+        "title": "Gecersiz secim",
+        "message": "Ayarlar yalnizca goruntuler icin uygulanabilir."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Özellik kullanılamıyor",
+        "message": "Klasörler düzleştirilene kadar yeniden numaralandırma kullanılamaz.\nYeniden numaralandırmadan önce klasörleri düzleştirin."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP hatası",
+        "message": "Dosya '{file}' geçerli bir ZIP arşivi değil veya bozuk."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP hatası",
+        "message": "CBZ dosyası açılamıyor: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR hatası",
+        "message": "Dosya '{file}' geçerli bir RAR arşivi değil veya bozuk."
+      },
+      "rar_cannot_open": {
+        "title": "RAR hatası",
+        "message": "CBR arşivi açılamıyor: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Hata",
+        "message": "CBR açılırken beklenmeyen hata: {error}"
+      },
+      "join_failed": {
+        "title": "Hata",
+        "message": "Görüntüler birleştirilemiyor."
+      },
+      "paste_failed": {
+        "title": "Hata",
+        "message": "Yapıştırma hatası: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Hata",
+        "message": "Arşiv kopyalanamıyor: {error}"
+      },
+      "crop_invalid": {
+        "title": "Hata",
+        "message": "Kırpma alanı geçersiz."
+      },
+      "crop_failed": {
+        "title": "Hata",
+        "message": "Görüntü kırpılamıyor: {error}"
+      },
+      "load_image_failed": {
+        "title": "Hata",
+        "message": "Görüntü yüklenemiyor:\n{error}"
+      },
+      "print_error": {
+        "title": "Yazdırma hatası",
+        "message": "Yazdırma sırasında hata:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Yazdırma kullanılamıyor",
+        "message": "win32print modülü yüklü değil.\nYüklemek için: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Dosya bulunamadı",
+        "message": "Dosya artık mevcut değil:\n{path}"
+      },
+      "import_failed": {
+        "title": "İçe aktarma hatası",
+        "message": "Dosya içe aktarılamıyor: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF yüklü değil",
+        "message": "PyMuPDF (fitz) kütüphanesi yüklü değil.\nYüklemek için: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Hata",
+        "message": "PDF içe aktarma hatası: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF hatası",
+        "message": "PDF yüklenemiyor:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Yinelenen dosya adları",
+        "intro": "{count} yinelenen dosya adı tespit edildi:\n\n",
+        "item": "  • {name} ({times} kez)\n",
+        "more": "  ... ve {more} daha\n",
+        "footer": "\nZIP arşivleri yinelenen adları kabul etmez.\nLütfen kaydetmeden önce bu dosyaları yeniden adlandırın."
+      },
+      "save_failed": {
+        "title": "Hata",
+        "message": "Dosya kaydedilemiyor: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Hata",
+        "message": "Arşiv oluşturulamıyor: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Hata",
+        "message": "Seçim kaydedilemiyor: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF Oluşturma Hatası",
+        "message": "Animasyonlu GIF oluşturulamıyor:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Kaydetme hatası",
+        "message": "Dosyalar kaydedilirken hata oluştu:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Yeniden Adlandırma Hatası",
+        "message": "Dosya yeniden adlandırılamıyor: {error}"
+      },
+      "pdf_password_required": {
+        "title": "Parola ile korunan PDF",
+        "message": "Bu PDF dosyası şifrelenmiş ve parola ile korunmaktadır.\nParola olmadan açılamaz."
+      },
+      "pdf_unlock_failed": {
+        "title": "Hata",
+        "message": "Kilidi açılmış PDF dosyası kaydedilemedi:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: şifreli PDF (parola gerekli), atlandı",
+      "file_too_large": {
+        "title": "Dosya çok büyük",
+        "message": "{filename} dosyası {size} boyutundadır ve bir görüntü için izin verilen maksimum boyutu (500 MB) aşıyor."
+      },
+      "license_file_not_found": {
+        "message": "Lisans dosyası bulunamadı: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Lisans dosyası okunamıyor: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z Hatası",
+        "message": "'{file}' dosyası geçerli bir 7Z arşivi değil veya bozuk."
+      },
+      "delete_error": "Silme sırasında hata: {error}",
+      "export_error": "Dışa aktarma sırasında hata: {error}",
+      "font_source_not_found": "Yazı tipi kaynak dosyası bulunamadı: {path}",
+      "no_tengwar_font": "Tengwar yazı tipi bulunamadı.",
+      "no_icons_found": "Simge bulunamadı.",
+      "unsupported_files": {
+        "title": "Desteklenmeyen dosyalar",
+        "message": "Aşağıdaki dosyalar desteklenmemektedir ve yok sayıldı:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF Başarıyla Oluşturuldu",
+        "message": "'{name}' animasyonlu GIF'i oluşturuldu ve mozaiğe eklendi."
+      },
+      "pywin32_required": {
+        "title": "İşlev kullanılamıyor",
+        "message": "Sistem panosundan yapıştırma için pywin32 modülü gerekli.\nYüklemek için: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Görüntüler içe aktarıldı",
+        "message": "{count} görüntü içe aktarıldı"
+      },
+      "archive_copied": {
+        "title": "Arşiv kopyalandı",
+        "message": "Arşiv panoya kopyalandı."
+      },
+      "function_not_available": {
+        "title": "İşlev kullanılamıyor",
+        "message": "Bu işlev şu anda kullanılamıyor."
+      },
+      "duplicate_detected": {
+        "title": "Kopya tespit edildi",
+        "message": "Bu adda bir dosya zaten vardı.\n\nDosya şu şekilde yeniden adlandırıldı:\n{name}"
+      },
+      "replace_success": {
+        "title": "Başarılı",
+        "message": "'{name}' görüntüsü başarıyla değiştirildi."
+      },
+      "history_cleared": {
+        "title": "Geçmiş temizlendi",
+        "message": "Son dosyalar listesi temizlendi."
+      },
+      "files_copied_clipboard": {
+        "title": "Dosyalar panoya kopyalandı",
+        "message": "Teknik nedenlerden dolayı dışarı sürükle-bırak kullanılamıyor.\n\n✓ {count} {word} panoya kopyalandı\n\nŞimdi istediğiniz yere yapıştırabilirsiniz:\n  • Sağ tıklayın → Yapıştır\n  • Veya Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Düzeltme tamamlandı",
+        "message": "{count} dosya adı düzeltildi."
+      },
+      "import_success": {
+        "title": "İçe aktarma başarılı",
+        "message": "{file} dosyasından {count} sayfa içe aktarıldı"
+      },
+      "pdf_import_success": {
+        "title": "İçe aktarma başarılı",
+        "message": "{file} dosyasından {count} PDF sayfası içe aktarıldı\nKalite: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Başarılı",
+        "message": "PDF başarıyla dönüştürüldü!\n{count} sayfa {dpi} DPI'de yüklendi."
+      },
+      "cbz_saved": {
+        "title": "Başarılı",
+        "message": "CBZ dosyası başarıyla kaydedildi:"
+      },
+      "cbz_converted": {
+        "title": "Başarılı",
+        "message": "Dosya başarıyla CBZ'ye dönüştürüldü:",
+        "question": "Orijinal CBR dosyasını silmek istiyor musunuz?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Başarılı",
+        "message": "Dosya başarıyla CBZ'ye dönüştürüldü:",
+        "question": "Orijinal PDF dosyasını silmek istiyor musunuz?"
+      },
+      "cbz_save_as": {
+        "title": "Başarılı",
+        "message": "Yeni CBZ dosyası kaydedildi: {path}"
+      },
+      "cbz_created": {
+        "title": "Başarılı",
+        "message": "CBZ arşivi başarıyla oluşturuldu:"
+      },
+      "selection_saved": {
+        "title": "Başarılı",
+        "message": "Seçim başarıyla kaydedildi:"
+      },
+      "flatten_done": {
+        "title": "Düzleştirme tamamlandı",
+        "message": "{dirs} alt klasörden {files} dosya taşındı."
+      },
+      "language_changed": {
+        "title": "Dil değiştirildi",
+        "message": "Arayüz dili başarıyla değiştirildi."
+      },
+      "new_cbz_saved": {
+        "title": "Dosya Kaydedildi",
+        "message": "Yeni CBZ dosyası başarıyla kaydedildi:",
+        "question": "Orijinal dosyayı silmek istiyor musunuz?"
+      },
+      "page_count_updated": {
+        "title": "Sayfa sayısı güncellendi",
+        "message": "Metadata'daki sayfa sayısı {count} sayfaya güncellendi."
+      },
+      "files_saved": {
+        "title": "Başarıyla kaydedildi",
+        "message": "{count} dosya şuraya kaydedildi:\n{folder}",
+        "open_folder": "Klasörü açmak ister misiniz?"
+      },
+      "adjustments_applied": {
+        "title": "Ayarlar uygulandi",
+        "message": "Ayarlar basariyla uygulandi."
+      },
+      "pdf_unlocked": {
+        "title": "PDF kilidi açıldı",
+        "message": "Kilidi açılmış PDF dosyası kaydedildi:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Büyük arşiv",
+        "message": "Bu arşiv açıldığında {size} MB yer kaplar.\nYükleme çok fazla bellek (RAM) tüketebilir.\n\nDevam etmek istiyor musunuz?"
+      },
+      "confirm_delete": {
+        "title": "Onay",
+        "message": "Gerçekten {count} dosya ({size}) silmek istiyor musunuz?"
+      },
+      "delete_source_files": {
+        "title": "Kaynak dosyalar silinsin mi?",
+        "message": "Birleştirilen görüntüler silinsin mi?\n\nEvet = Kaynak dosyaları sil\nHayır = Kaynak dosyaları koru\nİptal = İşlemi iptal et"
+      },
+      "invalid_filenames": {
+        "title": "Geçersiz dosya adları",
+        "intro": "{count} dosya yasaklı karakter içeriyor:",
+        "item": "  • {name}",
+        "more": "  ... ve {more} daha",
+        "forbidden_chars": "Yasaklı karakterler: {chars}",
+        "fix_question": "Bu isimleri otomatik olarak düzeltmek ister misiniz?\n(Yasaklı karakterler '_' ile değiştirilecek)"
+      },
+      "close_without_save": {
+        "title": "Kapatmadan önce kaydet?",
+        "message": "Görüntüler eklendi. Kapatmadan önce bir CBZ arşivi oluşturmak ister misiniz?"
+      },
+      "flatten_folders": {
+        "title": "Klasörleri düzleştir",
+        "subdirs_detected": "Alt klasörler tespit edildi:",
+        "files_to_move": "{count} dosya kök dizine taşınacak.",
+        "folders_to_delete": "{count} alt klasör silinecek.",
+        "continue_question": "Devam etmek istiyor musunuz?"
+      },
+      "update_page_count": {
+        "title": "Sayfa sayısını güncelle",
+        "message": "Çizgi romandaki sayfa sayısı değişti.\n\nMetadata'da belirtilen sayfa sayısı: {original}\nGüncel sayfa sayısı: {current}\n\nMetadata'daki sayfa sayısını güncellemek ister misiniz?"
+      },
+      "conversion_complete": {
+        "title": "Dönüştürme tamamlandı",
+        "message": "Dönüştürme tamamlandı!\n\n{count} görüntü {format} formatına dönüştürüldü ve seçiminizin ardına eklendi.\n\nOrijinal görselleri silinsin mi?",
+        "delete_originals": "Orijinalleri sil\n{count} dosya - {size}",
+        "keep_all": "Tümünü koru\n{count} dosya - {size}",
+        "cancel_conversion": "Dönüştürmeyi iptal et\n{count} dosya - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Yanlış uzantı algılandı: bu '{filename}' dosya CBZ, CBR değil. Yeniden adlandırılsın mı?",
+      "title": "Yanlış uzantı"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Yanlış uzantı algılandı: bu '{filename}' dosya CBZ değil CBR. Yeniden adlandırılsın mı?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Yanlış uzantı tespit edildi: '{filename}' dosyası CB7, CBZ/CBR değil. Yeniden adlandır?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Küçük resim boyutu",
+    "loading": "Lütfen bekleyin, yükleniyor...\n{percent}%",
+    "resizing": "Lütfen bekleyin, yeniden boyutlandırma...\n{percent}%",
+    "converting": "Lütfen bekleyin, dönüştürülüyor...\n{percent}%",
+    "loading_lazy": "Lütfen bekleyin, yükleniyor...\n{percent}%\n\nBu dosyanın büyük boyutu nedeniyle ({size} MB), sayfalar kademeli olarak yüklenecektir. Ekranda görünen sayfalar hemen yüklenir, diğerleri kaydırma sırasında otomatik olarak yüklenecektir.",
+    "apply_save_cbz": "Değişiklikleri uygula\nve CBZ dosyasını kaydet",
+    "apply_create_cbz": "Değişiklikleri uygula\nve CBZ dosyası oluştur",
+    "import_progress": "İçe aktarılıyor...\n{percent}%",
+    "pdf_import_progress": "PDF içe aktarılıyor...\n{percent}%",
+    "pdf_opening": "PDF dosyası açılıyor...",
+    "pdf_page": "Sayfa {current} / {total}",
+    "warning_close": "Dikkat! Değişiklikler kaydedilmedi ve kaybolacak!",
+    "language_label": "Dil:",
+    "directory_tooltip": "Klasör: {name}\n{count} dosya\nToplam boyut: {size} MB",
+    "folder_up_tooltip": "Ağaçta bir seviye yukarı\nçıkmak için çift tıklayın",
+    "status_bar": "{dirs} klasör  |  {files} dosya ({total_size})  |  {selected} seçili ({selected_size})",
+    "pdf_converting": "{total} sayfa {dpi} DPI'de görüntülere dönüştürülüyor...",
+    "pdf_converting_no_change": "{total} sayfa değişiklik olmadan çıkarılıyor...",
+    "print_progress": "Yazdırma hazırlanıyor...\n{percent}%",
+    "print_preparing": "Lütfen bekleyin, yazdırma hazırlanıyor...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU Genel Kamu Lisansı v3 Özeti\n\nTANINAN ÖZGÜRLÜKLER\nMosaicView'i ticari amaçlar dahil olmak üzere\nkullanabilir, kopyalayabilir, değiştirebilir ve yeniden dağıtabilirsiniz.\n\nYÜKÜMLÜLÜKLER\nHer yeniden dağıtım (orijinal veya değiştirilmiş) şunları sağlamalıdır :\n– GPL v3 lisansını korumalı\n– kaynak kodu içermeli veya nereden alınacağını belirtmeli\n– ek kısıtlamalar getirmemeli\n\nGARANTİLER\nBu yazılım HİÇBİR GARANTİ vermeksizin dağıtılmaktadır.\nYazarı, kullanımdan kaynaklanan zararlardan sorumlu tutulamaz.\n\nBu programla birlikte GNU Genel Kamu Lisansı'nın bir kopyasını almış olmanız gerekir. Almadıysanız, bkz. <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Tam lisansı görüntüle",
+    "license_unrar_text": "CBZ dosyaları, özgür ve açık bir format olan ZIP formatına dayanmaktadır. CBR dosyaları ise tescilli bir format olan RAR formatına dayanmaktadır.\n\nMosaicView, RARlab tarafından geliştirilen ve serbestçe dağıtılabilen bir yardımcı program olan UnRAR sayesinde CBR dosyalarını açabilmektedir.\n\nResmi web sitesi: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "UnRAR Lisansını Görüntüle",
+    "saving_cbz": "Kaydediliyor... {percent}%",
+    "empty_canvas_line1": "Buraya bir veya daha fazla CBZ/CBR/CB7/PDF dosyasi veya resimlerinizi birakin",
+    "empty_canvas_line2": "Bir dosya acildiktan sonra, baskalarini birakmayi surdurebilirsiniz",
+    "empty_canvas_line3": "Toplu işlem başlatmak için bir veya daha fazla klasör bırakın",
+    "icon_toolbar_config_title": "Simge araç çubuğu yapılandırması",
+    "icon_toolbar_active": "Çubuktaki simgeler",
+    "icon_toolbar_hidden": "Yedekteki simgeler",
+    "license_gpl_full": "GNU GPL v3 Lisansı",
+    "license_unrar_full": "UnRAR Lisansı",
+    "licenses_button": "Lisanslar",
+    "view_full_gpl_license": "GNU GPL v3 lisansının tamamını görüntüle",
+    "license_7zip_text": "CB7 dosyaları, Igor Pavlov tarafından geliştirilen ve GNU LGPL lisansı altında dağıtılan 7z biçimine dayanmaktadır.\n\nMosaicView, 7-Zip sayesinde CB7 dosyalarını açabilir — ücretsiz ve açık kaynaklı bir yardımcı program.\n\nResmi web sitesi : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "7-Zip lisansını görüntüle",
+    "license_7zip_full": "7-Zip Lisansı",
+    "icon_toolbar_show_thumb_slider": "Küçük resim boyutu kaydırıcısını göster",
+    "icon_toolbar_show_lang_combo": "Dil seçiciyi göster",
+    "adjusting": "Lütfen bekleyin, ayarlamalar devam ediyor...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS yazı tipi lisansı",
+    "license_tengwar_full": "Alcarin Tengwar yazı tipi lisansı",
+    "view_full_piqad_license": "Tam pIqaD qolqoS lisansını görüntüle"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Görüntü dönüştürme",
+      "title": "{count} {word} dönüştürme",
+      "word_image": "görüntü",
+      "word_images": "görüntü",
+      "info": "Hedef formatı seçin:",
+      "format_png": "PNG (kayıpsız)",
+      "format_jpg": "JPEG (sıkıştırmalı)",
+      "format_webp": "WEBP (modern)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (yüksek kalite)",
+      "format_gif": "GIF (animasyon)",
+      "quality_label": "JPG/WEBP kalitesi:",
+      "quality_maximum": "Maksimum — kalite 95/100",
+      "quality_high": "Yüksek — kalite 85/100",
+      "quality_medium": "Orta — kalite 75/100",
+      "quality_low": "Düşük — kalite 60/100",
+      "quality_custom_option": "Özel",
+      "quality_custom": "Kalite özel : {value}/100",
+      "quality_note": "(Bu ayar yalnızca JPG ve WEBP formatlarını etkiler)",
+      "quality_window_title": "Kalite seçimi",
+      "format_gif_static": "Statik GIF",
+      "format_gif_animated": "Hareketli GIF (birden fazla resim seçin)"
+    },
+    "split": {
+      "window_title": "Sayfayı böl",
+      "title": "Sayfayı böl",
+      "pages_label": "Sayfa sayısı:",
+      "direction_label": "Bölme yönü:",
+      "horizontal": "Yatay (sol → sağ)",
+      "vertical": "Dikey (üst → alt)",
+      "warning": "⚠ Bölme otomatik olarak hesaplandığından,\nmanuel ayarlama gerekebilir.",
+      "button_split": "Böl",
+      "button_cancel": "İptal"
+    },
+    "join": {
+      "window_title": "Sayfaları birleştir - Sırayı düzenleyin",
+      "instructions": "Görüntüleri düzenleyin:\n• Dikey (üst/alt) dikey birleştirme için\n• Yatay (sol/sağ) yatay birleştirme için",
+      "merged_filename_prefix": "Birlestirilmis",
+      "heights_label": "Yükseklikler",
+      "widths_label": "Genişlikler",
+      "size_adjustment_title": "Boyut ayarlama",
+      "size_adjustment_warning": "⚠️ Seçilen görseller farklı boyutlara sahip.\nBirleştirme için boyutlarını nasıl ayarlayacağınızı seçin.\nHer görselin en-boy oranı her zaman korunacaktır.",
+      "keep_original": "Orijinal boyutları koru",
+      "keep_original_desc": "(doldurmak için siyah çubuklar ekler)",
+      "enlarge_small": "Küçük görselleri büyüt",
+      "enlarge_small_desc": "(maksimum boyuta hizala)",
+      "reduce_large": "Büyük görselleri küçült",
+      "reduce_large_desc": "(minimum boyuta hizala)",
+      "back_to_arrangement": "Geri"
+    },
+    "pdf": {
+      "quality_merge": "Birleştirme kalitesini seçin:",
+      "quality_export": "Dışa aktarma kalitesini seçin:",
+      "merge_quality_title": "PDF birleştirme kalitesi",
+      "export_quality_title": "PDF dışa aktarma kalitesi",
+      "loading_title": "PDF yükleniyor...",
+      "dpi_90": "90 DPI - Web yayını",
+      "dpi_150": "150 DPI - İyi kalite (görüntüleme için önerilir)",
+      "dpi_200": "200 DPI - Çok iyi kalite",
+      "dpi_300": "300 DPI - Mükemmel kalite (çizgi roman standardı)",
+      "dpi_600": "600 DPI - Maksimum kalite (büyük dosyalar)",
+      "dpi_original": "Görüntü değişikliği yok",
+      "dpi_original_tooltip": "Her PDF sayfasının akıllı analizi:\n• Yalnızca resimli sayfalar: orijinal DPI'yi korur\n• Yalnızca metinli sayfalar: 300 DPI\n• Karışık sayfalar (metin + resimler): >= 300 ise resim DPI'si, aksi takdirde 300 DPI\nMaksimum: Dosya boyutunu sınırlamak için 2400 DPI"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF gerekli",
+      "pymupdf_required_message": "PyMuPDF (fitz) yüklü değil. PDF dosyaları dönüştürülemiyor.",
+      "select_directory_title": "PDF dosyalarını içeren dizini seçin",
+      "no_pdf_title": "PDF dosyası yok",
+      "no_pdf_message": "Dizinde PDF dosyası bulunamadı:\n{directory}",
+      "confirm_title": "Toplu PDF'den CBZ'ye dönüştürme",
+      "confirm_message": "{directory} içinde dönüştürülecek {count} PDF dosyası (alt dizinler dahil).",
+      "checkbox_permanent_delete": "Orijinal PDF dosyalarını geri dönüşüm kutusunu\nkullanmadan silin (GERİ ALINAMAZ)",
+      "start_button": "Başlat",
+      "converting_title": "Dönüştürme devam ediyor...",
+      "converting_progress": "Dosya dönüştürülüyor {current} / {total}",
+      "page_progress": "Sayfa {current} / {total}",
+      "complete_title": "Dönüştürme tamamlandı",
+      "complete_message": "{count} PDF dosyası dizinde dönüştürüldü:",
+      "complete_message_errors": "{count} / {total} PDF dosyası dizinde dönüştürüldü:",
+      "errors_count": "{count} hata ile karşılaşıldı."
+    },
+    "batch_cbr": {
+      "select_directory_title": "CBR dosyalarını içeren dizini seçin",
+      "no_cbr_title": "CBR dosyası bulunamadı",
+      "no_cbr_message": "Dizinde CBR dosyası bulunamadı:\\n{directory}",
+      "confirm_title": "CBR'den CBZ'ye toplu dönüştürme",
+      "confirm_message": "{directory} içindeki {count} CBR dosyası dönüştürülecek (alt dizinler dahil).",
+      "checkbox_permanent_delete": "Orijinal CBR dosyalarını geri dönüşüm kutusu\nkullanmadan sil (GERİ ALINAMAZ)",
+      "start_button": "Başla",
+      "converting_title": "Dönüştürülüyor...",
+      "converting_progress": "Dosya {current} / {total} dönüştürülüyor",
+      "page_progress": "Sayfa {current} / {total}",
+      "complete_title": "Dönüştürme tamamlandı",
+      "complete_message": "Dizinde {count} CBR dosyası dönüştürüldü:",
+      "complete_message_errors": "Dizinde {total} dosyadan {count} CBR dosyası dönüştürüldü:",
+      "errors_count": "{count} hata ile karşılaşıldı.",
+      "renamed_count": "{count} dosya CBZ olarak yeniden adlandırıldı",
+      "rarfile_unavailable": "rarfile modülü mevcut değil. CBR dosyaları dönüştürülemiyor."
+    },
+    "close_warning": {
+      "title": "Dikkat!",
+      "message": "Değişiklikler kaydedilmedi ve kaybolacak!",
+      "btn_close_lose": "Dosyayı kapat ve değişiklikleri kaybet",
+      "btn_save_cbz": "Değişiklikleri uygula ve dosyayı kaydet",
+      "btn_create_cbz": "Değişiklikleri uygula ve CBZ dosyası oluştur",
+      "btn_cancel": "İptal et ve mozaiğe dön"
+    },
+    "replace_image": {
+      "title": "Bozuk görüntüyü değiştir"
+    },
+    "reduce_size": {
+      "window_title": "Görüntü boyutlandırma",
+      "title": "{count} {word} boyutlandırma",
+      "word_image": "görüntü",
+      "word_images": "görüntüler",
+      "current_size": "Mevcut boyut: {size} MB",
+      "current_dimensions": "Mevcut boyutlar: {width} × {height} px",
+      "choose_method": "Boyutlandırma yöntemini seçin:",
+      "custom_dimensions": "Özel boyutlar",
+      "width_label": "Genişlik:",
+      "height_label": "Yükseklik:",
+      "use_custom_dimensions": "Bu boyutları kullan",
+      "different_dimensions_warning": "Seçilen sayfaların farklı boyutları var. Özel boyutlar tüm sayfaları aynı boyuta zorlayacaktır. Devam etmeden önce sonuçları anladığınızdan emin olun.",
+      "estimated_size": "Tahmini boyut: {size} MB",
+      "percentage_reduction": "Yüzde azaltma",
+      "percentage_enlargement": "Yüzde büyütme",
+      "reduce_0": "0% (değişiklik yok)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (değişiklik yok)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "En yaygın sayfa genişlikleri 1024, 1280, 1600, 1920 ve 2000 pikseldir, ancak diğer değerler de uygundur.",
+      "multi_page_width": "Birden çok sayfayı otomatik olarak algıla ve yeniden boyutlandır (genişlik/yükseklik)",
+      "multi_page_width_tooltip": "Birden çok sayfanın otomatik algılanmasını etkinleştirir: çift sayfa, üçlü sayfa vb. Çarpan katsayısı, genişlikte (yan yana sayfalar) veya yükseklikte (üst üste yığılmış sayfalar) olsun, her sayfanın oranına göre otomatik olarak hesaplanır"
+    },
+    "gif_animated": {
+      "window_title": "Animasyonlu GIF oluşturma",
+      "images_title": "Animasyon görselleri",
+      "params_title": "GIF parametreleri",
+      "frame_delay_label": "Görseller arası gecikme:",
+      "fps_normal": "{fps} kare/saniye",
+      "fps_slow": "Her {seconds} saniyede 1 kare",
+      "loop_label": "Tekrar sayısı:",
+      "loop_info": "(0 = sonsuz döngü)",
+      "disposal_label": "Görsel düzeni:",
+      "disposal_0": "Belirtilmemiş",
+      "disposal_1": "Önceki görseli koru",
+      "disposal_2": "Arka plan rengine geri dön",
+      "disposal_3": "Önceki duruma geri dön",
+      "optimize": "Dosyayı optimize et (sadece farkları kaydet)",
+      "metadata_title": "GIF meta verileri",
+      "metadata_dimensions": "Boyutlar: {width} × {height} px",
+      "metadata_frames": "Kare sayısı: {count}",
+      "metadata_duration": "Toplam süre: {duration} sn",
+      "metadata_fps": "Frekans: {fps} fps",
+      "metadata_palette": "Palet: 256'ya kadar renk",
+      "metadata_size": "Tahmini boyut: {size} KB",
+      "comment_label": "Yorum (isteğe bağlı):",
+      "no_images": "Görsel seçilmedi",
+      "creating_progress": "Görseller yükleniyor... ({current}/{total})",
+      "creating_normalizing": "Görseller normalleştiriliyor... ({current}/{total})",
+      "creating_quantizing": "Renkler nicelendiriliyor... ({current}/{total})",
+      "creating_saving": "GIF kaydediliyor..."
+    },
+    "save_to_folder": {
+      "title": "Hedef klasörü seçin"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Yinelenen dosya adları",
+      "message": "Aynı dosya adları tespit edildi. Kaydetme teknik olarak mümkün olsa da,\nbu bazı çizgi roman okuyucu uygulamalarında okuma sorunlarına neden\nolabilir (eksik görüntüleme, eksik sayfalar vb.).\n\nKaydetmeden önce sayfaları yeniden numaralandırmanız önerilir."
+    },
+    "adjustments": {
+      "window_title": "Goruntu ayarlari",
+      "title": "{count} {word} icin ayarlar",
+      "word_image": "goruntu",
+      "word_images": "goruntu",
+      "apply_button": "Uygula",
+      "color_depth_section": "Renk derinligi",
+      "brightness_contrast_section": "Parlaklik ve kontrast",
+      "compression_section": "Sikistirma",
+      "effects_section": "Efektler",
+      "sharpness_section": "Keskinlik",
+      "levels_section": "Siyah/beyaz seviyeleri",
+      "depth_unchanged": "Degistirme",
+      "depth_32bit": "32 bit (RGBA - renkler + seffaflik)",
+      "depth_24bit": "24 bit (RGB - renkler)",
+      "depth_8bit": "8 bit (PNG paleti / JPEG gri tonlari)",
+      "depth_1bit": "1 bit (siyah ve beyaz)",
+      "brightness_label": "Parlaklik: {value}",
+      "contrast_label": "Kontrast: {value}",
+      "compression_enable": "Yeniden sikistirmayi etkinlestir",
+      "compression_quality_label": "Kalite : {value}/100",
+      "sharpness_label": "Keskinlik: {value}",
+      "effect_none": "Efekt yok",
+      "effect_grayscale": "Gri tonlari",
+      "effect_sepia": "Sepya",
+      "levels_none": "Ayar yok",
+      "levels_threshold": "Esik (saf siyah veya beyaz)",
+      "levels_advanced": "Gelismis seviyeler (golgeler/orta tonlar/parlakliklar)",
+      "threshold_label": "Esik: {value}",
+      "black_point_label": "Siyah nokta: {value}",
+      "gamma_label": "Gama (orta tonlar): {value}",
+      "white_point_label": "Beyaz nokta: {value}",
+      "auto_levels_button": "Otomatik ayarlama",
+      "open_viewer_button": "Görüntüleyici ile ayarla (önerilir)",
+      "compression_info": "Sıkıştırma yalnızca JPG ve WebP görüntülerine uygulanır",
+      "open_viewer_button_simple": "Görüntüleyici ile ayarla",
+      "reset_button": "Sıfırla",
+      "preview_section": "Önizleme",
+      "effect_invert": "Renk tersine çevirme",
+      "preview_warning": "Önizleme nihai sonuçtan farklı olabilir",
+      "effect_remove_colors": "Renk kaldırma",
+      "remove_colors_intensity_label": "Yoğunluk : {value}",
+      "image_mode_section": "Görüntü modu",
+      "image_mode_rgb": "RGB (renkler)",
+      "image_mode_rgba": "RGBA (renkler + saydamlık)",
+      "image_mode_l": "L (gri tonları)",
+      "image_mode_la": "LA (gri tonları + saydamlık)",
+      "image_mode_cmyk": "CMYK (baskı)",
+      "image_mode_1": "1 (saf siyah-beyaz)",
+      "image_mode_p": "P (256 renk paleti)",
+      "saturation_section": "Doygunluk",
+      "saturation_label": "Doygunluk : {value}",
+      "saturation_viewer_title": "Doygunluk ayarı",
+      "transparency_section": "Şeffaflık",
+      "transparency_info": "Şeffaflık yalnızca PNG, WebP ve ICO görüntülerine uygulanır",
+      "transparency_type_label": "Tür :",
+      "transparency_type_flood": "Bölge",
+      "transparency_type_global": "Genel",
+      "transparency_tolerance_label": "Tolerans : {value}",
+      "transparency_viewer_title": "Şeffaflık ayarı",
+      "transparency_click_instruction": "Şeffaf yapmak istediğiniz renge tıklayın",
+      "transparency_undo": "Son tıklamayı geri al",
+      "transparency_redo": "Yeniden yap",
+      "transparency_type_flood_tooltip": "Flood fill : tıklanan pikselin etrafındaki düzgün renk alanını şeffaf yapar",
+      "transparency_type_global_tooltip": "Genel şeffaflık : görüntüdeki tıklanan renge yakın tüm pikselleri etkiler",
+      "transparency_apply": "Uygula",
+      "transparency_skipped_warning": "{count} görüntü atlandı — format saydamlıkla uyumlu değil. Dahil etmek için önce PNG'ye dönüştürün.",
+      "unsharp_section": "Uyarlamalı keskinlik",
+      "unsharp_radius_label": "Yarıçap: {value}",
+      "unsharp_percent_label": "Yoğunluk: {value} %",
+      "unsharp_threshold_label": "Eşik: {value}",
+      "unsharp_viewer_title": "Uyarlamalı keskinlik",
+      "auto_levels_tooltip": "Her sayfayı analiz eder ve kontrastı en üst düzeye çıkarmak için siyah ve beyaz düzeylerini otomatik olarak ayarlar.\nSayfa sayfa seçmek için görüntüleyiciyi kullanın."
+    },
+    "levels_viewer": {
+      "title": "Damlalık ile seviye ayari",
+      "apply_current": "Bu sayfaya uygula",
+      "apply_all": "Seçili tüm sayfalara uygula",
+      "black_pipette": "Siyah nokta damlalık",
+      "white_pipette": "Beyaz nokta damlalık",
+      "black_pipette_tooltip": "Tamamen siyah olması gereken bir piksele tıklayın. Dikkat: aşırıya kaçmak kolaydır!",
+      "white_pipette_tooltip": "Tamamen beyaz olması gereken bir piksele tıklayın. Dikkat: aşırıya kaçmak kolaydır!"
+    },
+    "sharpness_viewer": {
+      "title": "Keskinlik Ayarı"
+    },
+    "brightness_viewer": {
+      "title": "Parlaklık ve Kontrast Ayarı"
+    },
+    "compression_viewer": {
+      "title": "Sıkıştırma Ayarı"
+    },
+    "outliers": {
+      "title": "Olağandışı boyutlara sahip sayfalar",
+      "message": "Aşağıdaki sayfalar diğerlerinden önemli ölçüde farklı boyutlara sahiptir. Lütfen nasıl işleneceğini seçin:",
+      "width": "Genişlik",
+      "height": "Yükseklik",
+      "unusual": "olağandışı",
+      "skip": "Yeniden boyutlandırma",
+      "keep": "koru"
+    },
+    "first_page_multi": {
+      "title": "İlk sayfa çok sayfalı",
+      "message": "İlk sayfa çok sayfalı olarak algılandı. Nasıl numaralandırmak istersiniz?",
+      "option_auto_desc": "Otomatik algılama ile normal yeniden numaralandırma.",
+      "option_joint_desc": "Çizgi romanın ilk ve son sayfasının birleşimi.",
+      "option_exclude_label": "Yeniden numaralandırmaya dahil etme",
+      "option_exclude_desc": "Sayfa mevcut adını korur ve ilk konumda kalır. Daha sonra manuel olarak yeniden adlandırabilirsiniz."
+    },
+    "batch_img": {
+      "select_directory_title": "Resimleri içeren klasörü seçin",
+      "no_img_title": "Resim dosyası bulunamadı",
+      "no_img_message": "Klasörde bağımsız resim dosyası bulunamadı :\n{directory}",
+      "confirm_title": "Bağımsız resimlerin toplu CBZ'ye dönüştürülmesi",
+      "confirm_message": "{directory} içinde dönüştürülecek {count} resim dosyası (alt klasörler dahil).",
+      "checkbox_permanent_delete": "Orijinal resim dosyalarını geri dönüşüm kutusuna\ngöndermeden kalıcı olarak sil (GERİ ALINAMAZ)",
+      "start_button": "Başlat",
+      "converting_title": "Dönüştürme devam ediyor...",
+      "converting_progress": "Toplam {total} dosyadan {current}. dosya dönüştürülüyor",
+      "complete_title": "Dönüştürme tamamlandı",
+      "complete_message": "Klasörde {count} resim dosyası dönüştürüldü :",
+      "complete_message_errors": "Klasörde {total} dosyadan {count} tanesi dönüştürüldü :",
+      "errors_count": "{count} hata oluştu.",
+      "converted_by_ext": "{ext} : {count} dosya",
+      "mode_title": "Görüntüleri CBZ'ye dönüştür",
+      "mode_intro": "Görüntüleri nasıl gruplamak istersiniz?",
+      "mode_one_per_image": "Her görüntüyü ayrı CBZ dosyalarına dönüştür",
+      "mode_one_per_image_sub": "(Her görüntü ayrı bir CBZ dosyası olur)",
+      "mode_all_in_one": "Tüm görüntüleri tek bir CBZ dosyasında grupla",
+      "mode_all_in_one_sub": "(Dizindeki tüm görüntüler tek bir CBZ dosyasında gruplanır)"
+    },
+    "batch_drop": {
+      "window_title": "Klasörlerin toplu işlemi",
+      "intro_single": "1 klasör bırakıldı. Hangi işlemi uygulamak istiyorsunuz?",
+      "intro_multiple": "{count} klasör bırakıldı. Hangi işlemi uygulamak istiyorsunuz?",
+      "recursive_note": "Alt klasörler de taranacaktır.",
+      "mixed_drop_title": "Bırakma desteklenmiyor",
+      "mixed_drop_message": "Aynı anda hem dosyalar hem de klasörler bıraktınız. Lütfen yalnızca dosyalar veya yalnızca klasörler bırakın."
+    },
+    "pdf_unlock": {
+      "title": "PDF değişikliklere karşı korumalı",
+      "message": "Sayfalar normal olarak içe aktarıldı.\n\nBu PDF dosyası değişikliklere karşı korumalıdır (sahip parolası).\n\nBu koruma olmadan PDF dosyasının bir kopyasını kaydetmek ister misiniz?",
+      "yes": "Evet, kilidi açılmış bir kopya kaydet",
+      "no": "Hayır, kilit açmadan devam et"
+    },
+    "batch_pdf_unlock": {
+      "title": "Değişikliklere karşı korumalı PDF dosyaları",
+      "message_single": "Değişikliklere karşı korumalı 1 PDF dosyası tespit edildi. CBZ'ye normal olarak dönüştürüldü.\n\nOrijinal dizininde kilitlenmemiş bir kopyasını kaydetmek ister misiniz?",
+      "message_plural": "Değişikliklere karşı korumalı {count} PDF dosyası tespit edildi. CBZ'ye normal olarak dönüştürüldü.\n\nHer birinin orijinal dizininde kilitlenmemiş bir kopyasını kaydetmek ister misiniz?",
+      "yes": "Evet, kilitlenmemiş kopyaları kaydet",
+      "no": "Hayır, kilitlenmeden devam et"
+    },
+    "ico_creator": {
+      "title": ".ico simgesi oluştur",
+      "info_message": "Görüntü birden fazla çözünürlüğe yeniden boyutlandırılacak (16, 32, 48, 64, 128, 256 px).\nMevcut çerçeve boyutu: {w} × {h} px",
+      "btn_validate_crop": "Kırpmayı onayla",
+      "btn_validate_no_crop": "Kırpma olmadan onayla",
+      "btn_cancel": "İptal",
+      "btn_transparency": "Saydamlığı ayarla",
+      "btn_validate_final": "Onayla",
+      "tolerance_label": "Tolerans:",
+      "success_title": ".ico dosyası oluşturuldu",
+      "success_message": "{filename} dosyası başarıyla oluşturuldu.",
+      "overwrite_title": "Dosya zaten mevcut",
+      "overwrite_message": "{filename} dosyası zaten mevcut. Üzerine yazılsın mı?",
+      "save_blocked_title": "Kaydetme mümkün değil",
+      "save_blocked_message": "Bu arşiv, çizgi roman görüntüsü olmayan bir veya daha fazla .ico dosyası içeriyor. Bu dosyalar mozaikte bulunduğu sürece kaydetme devre dışı bırakılmıştır.\nKaydetmeyi yeniden etkinleştirmek için mozaikten silin (Del tuşu) veya kesin (Ctrl+X) ve başka bir yere yapıştırın.",
+      "btn_back_to_crop": "Kırpmaya geri dön"
+    },
+    "video_save_blocked": {
+      "title": "Kaydedilemez",
+      "message": "Bu arşiv bir veya daha fazla video dosyası içeriyor. Bu dosyalar mozaikte mevcut olduğu sürece kaydetme devre dışıdır.\nKaydetmeyi yeniden etkinleştirmek için bunları mozaikten silin (Del tuşu) veya kesin (Ctrl+X) ve başka bir yere yapıştırın."
+    },
+    "open_file": {
+      "title": "Bir arşiv aç",
+      "filter_archives": "Arşivler (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Tüm dosyalar (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Lisans"
+    },
+    "replace_corrupted_image": {
+      "title": "Bozuk görüntüyü değiştir",
+      "filter_images": "Görüntüler (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Tüm dosyalar (*)"
+    },
+    "see_log": "GÜNLÜĞÜ GÖR"
+  },
+  "tooltip": {
+    "source_archive": "Kaynak dosya: {name}",
+    "file": "Dosya: {name}",
+    "reason": "Neden: {reason}",
+    "size_kb": "Boyut: {size} KB",
+    "size_mb": "Boyut: {size} MB",
+    "file_size": "Boyut: {size}",
+    "dimensions": "Boyutlar: {width} × {height} px",
+    "resolution": "Çözünürlük: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: tanımsız",
+    "cbr_info": "CBR dosyaları, tescilli ve patentli olan RAR formatını kullanır;\ndeğiştirilemezler, değişiklikler yeni bir CBZ dosyasına kaydedilir.",
+    "rotate_left": "90 derece sola döndür",
+    "rotate_right": "90 derece sağa döndür",
+    "mirror_horizontal": "Yatay çevir",
+    "mirror_vertical": "Dikey çevir",
+    "fullscreen": "Tam ekran",
+    "help_button": "Kullanım kılavuzu",
+    "theme_button": "Açık ve koyu tema arasında geçiş yap",
+    "font_decrease_button": "Yazı tipi boyutunu küçült",
+    "font_increase_button": "Yazı tipi boyutunu büyüt",
+    "color_depth": "Renkler: {bits} bit ({mode})",
+    "batch_pdf_to_cbz": "Bir klasör ve alt klasörlerindeki tüm PDF\ndosyalarını CBZ'ye dönüştürür. Görseller olduğu\ngibi çıkarılır ve arşivlenir, herhangi bir\nyeniden sıkıştırma yapılmaz.",
+    "batch_pdf_permanent_delete": "DİKKAT: bu seçenek işaretlenirse,\norijinal PDF dosyaları dönüştürme\nsonrasında kalıcı olarak silinecek,\nkurtarma imkânı olmayacaktır.\nGerekirse bir yedeğinizin olduğundan\nemin olun.",
+    "batch_cbr_to_cbz": "Bir dizin ve alt dizinlerindeki\ntüm CBR dosyalarını CBZ'ye dönüştürür.",
+    "batch_cbr_permanent_delete": "DİKKAT: bu seçenek işaretlenmişse,\norijinal CBR dosyaları dönüştürmeden\nsonra kalıcı olarak silinecek,\nkurtarılma olasılığı olmadan.\nGerekli ise bir yedek kopyanız\nolduğundan emin olun.",
+    "renumber_btn_1": "Birden fazla sayfayı otomatik algılama modu\nMod değiştirmek için sağ tıklayın",
+    "renumber_btn_2": "Basit numaralandırma modu\nMod değiştirmek için sağ tıklayın",
+    "corrupted_header": "Bozuk görsel",
+    "right_click_instruction1": "Değiştirmek veya silmek için",
+    "right_click_instruction2": "sağ tıklayın.",
+    "unknown_error": "Bilinmeyen hata",
+    "batch_img_to_cbz": "Bir klasörde ve alt klasörlerinde bulunan tüm\nresim dosyalarını CBZ'ye dönüştürür,\nher resim için bir CBZ dosyası oluşturur.",
+    "batch_img_permanent_delete": "UYARI : bu seçenek işaretliyse,\norijinal resim dosyaları dönüştürme sonrasında\nkalıcı olarak silinir, geri yükleme\nimkânı olmaz. Gerekirse yedek\nkopyaya sahip olduğunuzdan emin olun.",
+    "too_large_header": "Görüntü yüklemek için çok büyük",
+    "too_large_pixels": "Boyutlar: {pixels}",
+    "icon_toolbar_config_button": "Simge yapılandırması",
+    "icon_toolbar_size_decrease": "Simge boyutunu küçült",
+    "icon_toolbar_size_increase": "Simge boyutunu büyüt",
+    "source_loose": "Bağımsız görsel",
+    "source_web": "Web görseli"
+  },
+  "help": {
+    "title": "MosaicView - Kullanım Kılavuzu",
+    "intro": "MosaicView, arşivlerden çıkartmadan çizgi romanları (dijital çizgi romanlar) düzenlemenize ve değiştirmenize olanak tanır. Uygulama CBZ (ZIP), CBR (RAR) ve PDF formatlarını destekler. Uygulama yalnızca 64 bit sistemlerle uyumludur.",
+    "open_files": "Dosya açma",
+    "open_files_content": "• 'CBZ/CBR/CB7/PDF Aç' düğmesine tıklayın\n• Veya doğrudan bir dosyayı pencereye sürükleyip bırakın\n• Desteklenen formatlar: CBZ, CBR, CB7, PDF, görüntüler (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB dosyalari da acilabilir, ancak yalnizca goruntuleri cikarilir (metin yok sayilir).\n• Şifreli PDF (açmak için parola gerekli): dosya içe aktarılamaz, bir hata mesajı görüntülenir.\n• Değişikliklere karşı korumalı PDF (owner password): sayfalar normal olarak içe aktarılır. MosaicView, aynı klasörde dosyanın kilit açılmış bir kopyasını kaydetmeyi teklif eder.",
+    "mosaic": "Mozaik",
+    "mosaic_content": "Mozaik, çizgi romanınızın tüm sayfalarını küçük resim olarak görüntüler. Şunları yapabilirsiniz:\n• Sürükle ve bırak ile sayfaları yeniden düzenleyin (sayfa numaralandırma otomatik olacak ve etkin yeniden numaralandırma moduna göre yapılacaktır)\n• Birden fazla sayfa seçin (Ctrl+tıklama veya Shift+tıklama)\n• Kaydırıcı ile küçük resim boyutunu ayarlayın\n• Dosyaları adlarına tıklayarak manuel olarak yeniden adlandırın\n• Windows Gezgini'nden çizgi roman dosyalarını (CBZ/CBR/PDF) içeriklerini birleştirmek için doğrudan başka bir açık çizgi romana sürükleyip bırakın",
+    "manipulation": "Sayfa düzenleme",
+    "manipulation_content": "• Sayfaları yeniden düzenlemek için sürükleyip bırakın\n• İki çizgi romanı birleştirmek için birini diğerine sürükleyin\n• Seçeneklere erişmek için sayfaya sağ tıklayın (döndürme, silme vb.)\n• Görüntüleyiciyi açmak için sayfaya çift tıklayın\n• Tek tek sayfaları bir Windows klasörüne sürükleyerek veya Ctrl+C / Ctrl+V ile dışa aktarın",
+    "renumber": "Sayfa yeniden numaralandırma",
+    "renumber_content": "MosaicView, yeniden numaralandırma düğmesi, bağlam menüsü (sağ tıklama) veya sürükle bırak sırasında otomatik olarak erişilebilen iki sayfa yeniden numaralandırma modu sunar:\n\n• Çoklu sayfa otomatik algılama modu (varsayılan mod): uygulama, çift, üçlü vb. sayfaları algılamak için her sayfanın genişliğini analiz eder. Çoklu sayfalar buna göre yeniden numaralandırılır (örn.: çift sayfa 003-004, üçlü 005-006-007 olarak adlandırılır). 4 sayfadan fazlasında yalnızca ilk ve son numara gösterilir (örn.: 010---025).\n\n• Basit numaralandırma modu: her sayfa, sayfa genişliğinden bağımsız olarak benzersiz bir sıra numarası alır (001, 002, 003...).\n\nİki mod arasında geçiş yapmak için yeniden numaralandırma düğmesine sağ tıklayın. Bir araç ipucu aktif modu gösterir. Seçilen mod, sürükle bırak sırasındaki otomatik yeniden numaralandırma için de geçerlidir.",
+    "flatten": "Dizinleri düzleştirme",
+    "flatten_content": "Arşiviniz alt klasörler içeriyorsa, tüm görüntüleri aynı seviyeye getirmek için 'Dizinleri düzleştir' seçeneğini kullanın.",
+    "viewer": "Görüntüleyici",
+    "viewer_content": "Görüntüleyiciyi açmak için bir sayfaya çift tıklayın:\n• ← → tuşları: sayfalar arasında gezinme\n• D tuşu: 3 okuma modu arasında geçiş\n  - Tek sayfa: bir seferde bir sayfa\n  - Çift sayfa: önce sayfa 1, sonra 2-3, 4-5, vb.\n  - Sürekli çift sayfa: önce sayfa 1, sonra 2-3, 3-4, 4-5, vb.\n• Fare tekerleği: hızlı gezinme\n• Ctrl+Tekerlek veya Ctrl+Artı/Eksi: yakınlaştırma\n• Ctrl+0: yakınlaştırmayı sıfırla\n• F11 tuşu: tam ekran\n• Çift tıklama: tam ekrana geç\n• Esc tuşu: kırpma çerçevesini iptal et / görüntüleyiciden çık",
+    "join_pages": "Sayfaları birleştirme",
+    "join_pages_content": "Birden fazla ardışık sayfa seçin, sağ tıklayın → 'Seçili sayfaları birleştir' ile sayfaları yatay veya dikey olarak birleştirin. Üretilen görüntünün biçimi, hepsi aynıysa kaynak sayfaların biçimiyle eşleşir, aksi takdirde varsayılan olarak PNG.",
+    "split_pages": "Sayfaları bölme",
+    "split_pages_content": "Çift sayfaları otomatik olarak bölmek için:\n• Bölünecek sayfaları seçin\n• Sağ tıklayın → 'Seçili sayfaları böl'\n• Yönü seçin (dikey veya yatay)",
+    "crop": "Görüntüleyicide kırpma",
+    "crop_content": "Görüntüleyicide, bir kırpma alanı tanımlamak için görüntü üzerinde bir dikdörtgen çizin:\n• Fare ile dikdörtgeni çizin\n• Kenarları veya köşeleri sürükleyerek yeniden boyutlandırın\n• Uygulamak için 'Kırpmayı onayla' seçeneğine tıklayın\n• Kırpma mevcut görüntüye uygulanır\n• Esc tuşu: kırpma çerçevesini iptal et",
+    "shortcuts": "Klavye kısayolları",
+    "shortcuts_content": "• Ctrl+Z: Son işlemi geri al\n• Ctrl+Y: Geri alınan işlemi yinele\n• Ctrl+A: Tüm sayfaları seç\n• Ctrl+I: Seçimi ters çevir\n• Ctrl+C: Seçili sayfaları kopyala\n• Ctrl+X: Seçili sayfaları kes\n• Ctrl+V: Sayfaları yapıştır\n• Delete: Seçili sayfaları sil\n• F5: Mozaik görünümünü güncelle\n• F11: Tam ekranı aç/kapat (F11 veya ESC ile çık)",
+    "dark_mode": "Koyu mod",
+    "dark_mode_content": "Açık ve koyu tema arasında geçiş yapmak için güneş/ay düğmesine tıklayın.",
+    "sort": "Sayfaları sıralama",
+    "sort_content": "Sayfaları otomatik olarak yeniden düzenlemek için 'Sırala' düğmesini kullanın:\n• İsim, Tür, Boyut, Genişlik, Yükseklik, Çözünürlük veya DPI'ye göre",
+    "save": "Kaydetme",
+    "save_content": "• 'Kaydet': değişiklikleri orijinal dosyaya kaydeder\n• 'Farklı kaydet': yeni bir arşiv oluşturur\n• 'CBZ oluştur': yalnızca görüntü modunda kullanılabilir (arşiv olmadan)",
+    "other": "Diğer işlevler",
+    "other_content": "• Döndürme: bir veya daha fazla sayfayı döndürün\n• Dönüştürme: görüntüleri farklı formatlara dönüştürün (PNG, JPEG, WEBP, BMP, TIFF, GIF). Not: CMYK modundaki görüntüler otomatik olarak RGB'ye dönüştürülür (PNG, JPEG, WEBP, BMP, TIFF, GIF). Not: CMYK modundaki görüntüler otomatik olarak RGB'ye dönüştürülür\n• Yazdırma: seçili sayfaları veya tüm sayfaları yazdırın\n• Çıkarma: belirli sayfaları çıkarın\n• Meta veriler sekmesi: ComicInfo.xml dosyasının bilgilerini görüntüler (arşivde mevcutsa). Meta veri içeren bir çizgi romandan bir sayfa ekler veya silerseniz, uygulama orada belirtilen sayfa sayısını değiştirmeyi önerecektir. Diğer meta veriler değiştirilemez. Bu sınırlama kasıtlıdır ve bir tasarım seçiminin sonucudur.",
+    "config_files": "Yapılandırma dosyaları ve geçici dosyalar",
+    "config_files_content": "MosaicView, .mosaicview_config.json adlı bir dosya oluşturur. Bu dosya, sıfırlama düğmesinin düzgün çalışması için gerekli bazı parametreleri ve son açılan dosyaları görüntülemek için açıkça gerekli olan son açılan çizgi romanların listesini içerir. MosaicView ayrıca çeşitli görüntü işleme işlemleri için gerekli olan geçici dosyaları da kaydeder.\nTüm bu dosyalar {temp_dir} dizininde bulunur.\nGeçici dosyalar, uygulama her kapatıldığında silinir, ancak .mosaicview_config.json dosyası, doğası gereği saklanmak üzere tasarlanmıştır.\nAncak, {temp_dir} dizinine giderek veya aşağıdaki düğmelere tıklayarak bu dosyaları el ile silebilirsiniz. .mosaicview_config.json dosyası, uygulama her açıldığında yeniden oluşturulacak ve geçici dosyalar gerektiğinde yeniden oluşturulacaktır.",
+    "config_clear_temp": "Geçici dosyaları sil",
+    "config_clear_recent": "Son dosyaları temizle",
+    "config_clear_config": "Yapılandırma dosyasını sil",
+    "config_temp_cleared": "Geçici dosyalar başarıyla silindi.",
+    "config_config_cleared": "Yapılandırma dosyası başarıyla silindi.\nBir sonraki uygulama başlatmada yeniden oluşturulacak.",
+    "language": "Dil seçimi",
+    "language_content": "MosaicView birden fazla dilde mevcuttur.\nVarsayılan olarak, uygulama otomatik olarak işletim sisteminizin dilini algılar ve destekleniyorsa o dilde görüntülenir. Sisteminiz desteklenmeyen bir dil kullanıyorsa, arayüz İngilizce olarak görüntülenir.\nMinyatür boyutu kaydırıcısının altında, düğme sütununun altında bulunan açılır menüyü kullanarak dili istediğiniz zaman manuel olarak değiştirebilirsiniz. Seçiminiz kaydedilecek ve uygulamayı bir sonraki başlatışınızda uygulanacaktır.\nMEVCUT DILLER: Almanca, Arapça, Arnavutça, Bulgarca, Çekçe, Çince (Basitleştirilmiş), Çince (Geleneksel), Danca, Estonca, Fince, Fransızca, Hırvatça, Hintçe, Hollandaca, Endonezce, İngilizce, İrlandaca, İspanyolca, İsveççe, İtalyanca, İzlandaca, Japonca, Korece, Letonca, Litvanca, Macarca, Malayca, Maltaca, Norveççe, Lehçe, Portekizce, Romence, Slovakça, Slovence, Tamilce, Tayca, Türkçe, Ukraynaca, Vietnamca, Yunanca, Ermenice.\nMEVCUT KURGUSAL DILLER: klingon (Latin alfabesi ve pIqaD alfabesi sürümleri), sindarin (Latin alfabesi ve tengwar alfabesi sürümleri), quenya (Latin alfabesi ve tengwar alfabesi sürümleri).\n\nBu araç, pIqaD (Klingon dili) ve tengwar (Elf dilleri: sindarin ve quenya) yazı tipleri dışında Windows yazı tiplerini kullanır. Bu yazı tipleri ücretsizdir ve şu sitelerden gelmektedir:\n- pIqaD için (Klingon alfabesi): {url_piqad}\n- tengwar için (Elf alfabesi, sindarin ve quenya için): {url_tengwar}\nBu siteler artık aktif değilse, aşağıdaki düğmelere tıklayarak pIqaD ve tengwar yazı tiplerini alabilirsiniz:\n\nBu yazılım Fransızca olarak geliştirilmiştir. Diğer dillere çeviriler yapay zeka, özellikle Claude kullanılarak yapılmıştır. Yaklaşık kırk dili desteklemeye karar verdim. Ancak açıkçası, bu dillerin hepsini konuşmuyorum. Bu nedenle, 40 farklı çevirmen tutmak ve ödeme yapmak düşünülen olasılıklar arasında olmadığı için yapay zeka kullanmaktan başka seçeneğim yoktu. Bu çevirilerin otomatik doğası nedeniyle hatalar mevcut olabilir. Bunun için özür dilerim.",
+    "credits": "Vibe Coding, aşkım",
+    "credits_content": "Programlama hakkında hiçbir şey bilmiyorum. Kesinlikle hiçbir şey. Sonuç olarak, bu yazılımı Anthropic'in yapay zekası Claude sayesinde, daha spesifik olarak Claude Code ile geliştirdim. Claude Code'u şiddetle tavsiye ederim, bu uygulama harika!",
+    "resize_pages": "Sayfa boyutunu değiştir",
+    "resize_pages_content": "Sayfalarınızı küçültmek veya büyütmek için:\n• Bir veya daha fazla sayfa seçin\n• Sağ tıklayın → 'Boyutlandır'\n• Üç seçenek mevcuttur:\n  - Özel boyutlar: istenen genişliği veya yüksekliği girin (en-boy oranı otomatik olarak korunur).\n  - Yüzde küçültme: %10 ile %90 arasında bir yüzde seçin\n  - Yüzde büyütme: %10 ile %100 arasında bir yüzde seçin\n• Uygulama, değişiklikten sonra görsellerinizin tahmini boyutunu görüntüler\n• Değişiklik, seçilen tüm sayfalara hemen uygulanır",
+    "language_export_piqad": "pIqaD Yazı Tipi",
+    "language_export_tengwar": "Tengwar Yazı Tipleri",
+    "language_export_piqad_success": "Yazı tipi dışa aktarıldı: {filename}\nKonumu:",
+    "language_export_tengwar_success": "{count} yazı tipi dışa aktarıldı\nKonumu:",
+    "icons": "Simgeler",
+    "icons_content": "Bu yardımcı programda kullanılan ikonların çoğu bu siteden alınmıştır ve ticari olmayan amaçlarla ücretsiz kullanılabilir: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nBazıları tarafımdan değiştirilmiştir.\nYalnızca bir simge, Windows yürütülebilir simgesi, tarafımdan oluşturuldu (ancak yapay zeka ile, çünkü çok, çok, çok kötü bir grafik tasarımcısıyım). Kaynağınızı belirttiğiniz sürece bu simgeyi istediğiniz gibi kullanma izniniz var.",
+    "icons_view_button": "Simgeleri görüntüle",
+    "icons_window_title": "MosaicView Simgeleri",
+    "icons_save_all": "Simgeleri kaydet",
+    "icons_saved_success": "{count} simge kaydedildi:",
+    "icons_save_failed": "Simgeler kaydedilemedi: {error}",
+    "split_ui": "İki panelli arayüz",
+    "split_ui_content": "MosaicView, iki arşivi aynı anda yan yana görüntülemenize olanak tanır.\n\nİkinci paneli açmak için Böl simgesine tıklayın. Her panel bağımsızdır: bir arşivi ayrı ayrı açabilir, düzenleyebilir ve kaydedebilirsiniz. Aktif panel mavi bir kenarlıkla gösterilir.\n\nSayfaları bir panelden diğerine taşımak için doğrudan sürükleyin. Birden fazla sayfa seçiliyse, hepsi birlikte taşınır. Sayfalar kırmızı çubuk tarafından gösterilen konuma eklenir.\n\nTek panel moduna dönmek için İkinci paneli kapat simgesine tıklayın.",
+    "license_gpl": "GPL v3 Lisansı",
+    "license_unrar": "UnRAR Lisansı",
+    "config_clear_clipboard": "Pano dosyalarını temizle",
+    "config_clipboard_note": "İstisna: Windows panosu tarafından kullanılan geçici dosyalar (clipboard_XXXXX dosyaları), uygulamayı kapattıktan sonra bile yapıştırabilmeniz için kopyalamadan sonra 12 saat boyunca saklanır. 12 saatten sonra otomatik olarak silinirler.",
+    "config_log_note": "Toplu donusturmeler (PDF'den CBZ'ye ve CBR'den CBZ'ye) hata olustugunda bir gunluk dosyasi olusturur. Bu dosyalar (Log_pdftocbz_.txt ve Log_cbrtocbz_.txt) uygulama kapatildiktan sonra bile saklanir, boylece daha sonra incelenebilir. Yalnizca yukaridaki \"Gecici dosyalari sil\" dugmesiyle silinirler.",
+    "config_clipboard_cleared": "Pano dosyaları başarıyla temizlendi.",
+    "adjust_images": "Görüntü ayarlama",
+    "adjust_images_content": "Bu işlev, görüntülerinizi doğrudan MosaicView'de rötuşlamanıza olanak tanır. Parlaklık, kontrast, keskinlik, düzeyler, doygunluğu değiştirebilir, efektler uygulayabilir (siyah-beyaz, sepya, renk ters çevirme), sıkıştırma kalitesini ayarlayabilir, renkleri kaldırabilir, şeffaflık uygulayabilir veya farklı renk derinliklerine dönüştürebilirsiniz. Bazı ayarlar, uygulamadan önce tam çözünürlükte sonucu görmenizi sağlayan özel bir görüntüleyiciye sahiptir. Ana pencerede küçük resim önizlemesi sonucu gerçek zamanlı olarak gösterir.",
+    "create_icon": "Simge oluştur",
+    "create_icon_content": "MosaicView, mozaikteki herhangi bir görüntüden simge dosyaları (.ico) oluşturmanıza olanak tanır.\n• Bir görüntüye sağ tıklayın → 'Simge oluştur'\n• Görüntüleyicide istediğiniz alanı çerçeveleyin (simge zorunlu olarak kare olacaktır)\n• Gerekirse şeffaflığı ayarlayın\n• Onaylayın: .ico dosyası doğrudan mozaiğe eklenir\n• .ico dosyaları, tüm standart çözünürlükleri (16×16'dan 256×256'ya kadar) otomatik olarak içerir\n• Mozaikte bir .ico dosyası olduğu sürece, ICO formatı bu arşivler tarafından desteklenmediğinden CBZ arşivine kaydetme engellenir. .ico dosyasını ayrıca dışa aktarın (Ctrl+C ardından bir Windows klasörüne yapıştırın), ardından kaydetmeden önce mozaikten silin.",
+    "batch_convert": "Toplu dönüştürme",
+    "batch_convert_content": "MosaicView, mozaik boşken kullanılabilen üç toplu dönüştürme işlevi sunar. Her biri için ilke aynıdır : bir dizin seçin, onaylayın, ilerlemeyi gerçek zamanlı takip edin, nihai özeti inceleyin. Bir seçenek, orijinal dosyaları geri dönüşüm kutusuna göndermek yerine kalıcı olarak silmenize izin verir.\n• CBR → CBZ : bir dizindeki ve alt dizinlerindeki tüm CBR (RAR) dosyalarını dönüştürür. Bir CBR aslında ZIP ise, dönüştürme olmadan yalnızca yeniden adlandırılır.\n• PDF → CBZ : bir dizindeki ve alt dizinlerindeki tüm PDF dosyalarını dönüştürür. Görüntüler yeniden sıkıştırma yapılmadan çıkarılır.\n• YALITILMIŞ GÖRÜNTÜLER → CBZ : dizin ve alt dizinlerinde bulunan her görüntü dosyası için bireysel bir CBZ oluşturur. Geçersiz, bozuk, çok sayfalı (TIFF) veya animasyonlu (GIF) görüntüler yoksayılır ve bir günlüğe kaydedilir.",
+    "config_open_temp_folder": "Geçici klasörü aç",
+    "icon_toolbar": "Simge araç çubuğu",
+    "icon_toolbar_content": "Simge araç çubuğu, uygulamanın temel işlevlerine hızlı erişim sağlar. Simgeleri doğrudan çubuğa sürükleyerek istediğiniz gibi yeniden düzenleyebilirsiniz. Hangi simgelerin görüntüleneceğini veya gizleneceğini seçmek için çubuğun alt kısmındaki dişli çark düğmesine tıklayın: simgeleri etkin çubuk ile rezerv arasında taşıyabileceğiniz bir yapılandırma penceresi açılır. Simge boyutunu ayarlamak için « + » ve « − » düğmelerini kullanın. Yapılandırma otomatik olarak kaydedilir.",
+    "license_7zip": "7-Zip Lisansı"
+  },
+  "misc": {
+    "file_word": "dosya",
+    "files_word": "dosya",
+    "corrupted": "bozuk",
+    "yes": "Evet",
+    "no": "Hayır",
+    "cancel": "İptal",
+    "selection_suffix": "secim-kopya"
+  },
+  "metadata": {
+    "title": "Başlık",
+    "series": "Seri",
+    "number": "Numara",
+    "volume": "Cilt",
+    "summary": "Özet",
+    "writer": "Senaryo yazarı",
+    "penciller": "Çizer",
+    "inker": "Mürekkepçi",
+    "colorist": "Renklendirici",
+    "letterer": "Harfçi",
+    "cover_artist": "Kapak sanatçısı",
+    "editor": "Editör (kişi)",
+    "publisher": "Yayıncı (şirket)",
+    "imprint": "Koleksiyon",
+    "genre": "Tür",
+    "web": "Web sitesi",
+    "page_count": "Sayfa sayısı",
+    "language_iso": "Dil",
+    "format": "Format",
+    "black_and_white": "Siyah beyaz",
+    "manga": "Manga",
+    "year": "Yıl",
+    "month": "Ay",
+    "day": "Gün",
+    "notes": "Notlar",
+    "characters": "Karakterler",
+    "locations": "Yerler",
+    "teams": "Takımlar",
+    "story_arc": "Hikaye yayı",
+    "story_arc_number": "Yay numarası",
+    "series_group": "Seri grubu",
+    "count": "Sayı sayısı",
+    "alternate_series": "Alternatif seri",
+    "alternate_number": "Alternatif numara",
+    "alternate_count": "Alternatif sayı",
+    "age_rating": "Yaş sınıflandırması",
+    "series_complete": "Seri tamamlandı",
+    "translator": "Çevirmen",
+    "tags": "Etiketler",
+    "scan_information": "Tarama bilgisi",
+    "community_rating": "Topluluk değerlendirmesi",
+    "review": "İnceleme",
+    "gtin": "GTIN",
+    "pages": "Sayfalar",
+    "pages_col_image": "Görüntü",
+    "pages_col_type": "Tür",
+    "pages_col_width": "Genişlik",
+    "pages_col_height": "Yükseklik",
+    "pages_col_size": "Boyut (B)"
+  },
+  "web": {
+    "web_download_progress": "İndiriliyor: {downloaded}/{total} resim...",
+    "web_download_cancel": "İptal",
+    "web_no_images": "Resim yok",
+    "web_no_images_found": "Bu sayfada resim bulunamadı.",
+    "web_imported": "Web sayfasından {count} resim içe aktarıldı",
+    "web_drag_drop_title": "Web resmini sürükle ve bırak",
+    "web_copy_paste_message": "Web tarayıcısından doğrudan sürükle ve bırak desteklenmiyor.\n\nAlternatif çözüm (daha basit):\n\n1. Tarayıcınızda resme sağ tıklayın\n2. 'Resmi kopyala'yı seçin\n3. MosaicView'de 'Yapıştır' düğmesini veya Ctrl+V'yi kullanın\n\nBu yöntem tüm web resimleriyle çalışır!",
+    "import_web_button": "Web içe aktar",
+    "import_web_tooltip": "Sayfadaki tüm resimleri almak için internet adresini yapıştırın",
+    "import_web_menu": "Web içe aktar...",
+    "import_web_dialog_title": "Web sayfasından resim içe aktar",
+    "import_web_url_label": "Web sayfası adresi:",
+    "import_web_ok_button": "Tamam",
+    "import_web_cancel_button": "İptal",
+    "import_web_invalid_url": "Geçersiz URL. Lütfen geçerli bir web adresi girin."
+  },
+  "donation": {
+    "menu_label": "Yazara bağış yapın",
+    "title": "Bağış yapın",
+    "message": "Bu küçük aracı beğeniyorsunuz ve düzenli olarak kullanıyorsunuz. Ona birkaç yüz saat yatırım yaptım. Bağış yaparak bana teşekkür etmeyi düşünür müsünüz? Lütfen nazik olun, havuzumu şampanya ile doldurmak için gerçekten paraya ihtiyacım var.\n\nİster birkaç sent ister birkaç milyar euro göndermek isteyin, tüm miktarları kabul ediyorum. Bu bağışı paypal üzerinden yapabilirsiniz"
+  },
+  "mail": {
+    "tooltip": "Bu düğme, bir e-posta göndermek için Windows'ta varsayılan e-posta yazılımınızı açar. Hiçbir yazılım yapılandırılmamışsa (örneğin yalnızca webmail kullanıyorsanız), simgeye sağ tıklayarak MosaicView adresini panoya kopyalayabilirsiniz.",
+    "copy_address": "MosaicView e-posta adresini kopyala",
+    "menu_label": "MosaicView'a e-posta gönderin",
+    "icon_label": "E-posta gönder"
+  },
+  "menu": {
+    "file": "Dosya",
+    "file_open": "Dosya aç",
+    "file_close": "Dosyayı kapat",
+    "batch_convert": "Dosyaları toplu dönüştür",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Ayrı görseller → CBZ",
+    "edit": "Düzenle",
+    "undo": "Geri al",
+    "redo": "Yinele",
+    "paste": "Yapıştır",
+    "delete": "Sil",
+    "invert_selection": "Seçimi tersine çevir",
+    "select_all": "Tümünü seç",
+    "deselect": "Seçimi kaldır",
+    "refresh_mosaic": "Mozaiği yenile",
+    "images": "Görseller",
+    "rotation": "Döndürme",
+    "archives": "Arşivler",
+    "sort": "Sırala",
+    "system": "Sistem",
+    "decrease_font": "Yazı tipini küçült",
+    "increase_font": "Yazı tipini büyüt",
+    "language": "Diller",
+    "language_real": "Gerçek diller",
+    "language_fictional": "Kurgusal diller",
+    "about": "Hakkında",
+    "export_piqad_font": "pIqaD yazı tipini kaydet",
+    "export_tengwar_fonts": "Tengwar yazı tiplerini kaydet"
+  }
+}

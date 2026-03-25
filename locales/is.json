@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Fjölhæfur áhaldi fyrir safnara stafrænna myndasagna",
+  "buttons": {
+    "open_file": "Opna CBZ/CBR/CB7/PDF",
+    "close_file": "Loka skrá",
+    "create_cbz": "Búa til CBZ safnskrá",
+    "flatten_dirs": "Færa allar skrár\ní rótina og eyða\nundirmöppum",
+    "renumber": "Endurnúmera\nsíður",
+    "undo": "⤺ Afturkalla",
+    "redo": "Endurtaka ⤻",
+    "copy": "Afrita",
+    "cut": "Klippa",
+    "paste": "Líma",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Umbreyta í annað\nmyndasnið",
+    "join_pages": "Sameina síður",
+    "split_page": "Skipta síðu",
+    "save_as": "Vista sem\n(búa til nýja CBZ skrá)",
+    "save_selection": "Vista valið\nsem CBZ",
+    "print_selection": "Prenta valið",
+    "print_all": "Prenta allan stripann",
+    "sort": "Raða",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Umbreyta",
+    "cancel": "Hætta við",
+    "split_button": "Skipta",
+    "join_button": "Hefja",
+    "validate_crop": "Staðfesta skurð",
+    "ok": "Í lagi",
+    "close": "Loka",
+    "apply_and_save": "Virkja breytingar og vista skrá",
+    "apply_and_create": "Virkja breytingar og búa til CBZ skrá",
+    "close_and_lose": "Loka skrá og missa breytingar",
+    "cancel_return": "Hætta við og fara aftur í mósaík",
+    "update_page_count": "Uppfæra blaðsíðufjölda\ní lýsigögnum",
+    "invert_selection": "Snúa við vali",
+    "reduce_size": "Breyta síðustærð",
+    "mirror_vertical": "⇅",
+    "create_gif": "Búa til GIF",
+    "edit_gif": "Breyta hreyfimynd GIF",
+    "save_to_folder": "Flytja út valdar\nsíður",
+    "continue": "Halda áfram",
+    "reset": "↻",
+    "yes": "Já",
+    "no": "Nei",
+    "renumber_recommended": "Endurnúmera (ráðlagt)",
+    "ignore_and_save": "Hunsa og vista",
+    "rename_to_cbz": "Endurnefna í .cbz",
+    "open_without_rename": "Opna án endurnefningar",
+    "rename_to_cbr": "Endurnefna í .cbr",
+    "adjustments": "Birtustig,\nandstæða o.fl.",
+    "batch_cbr_to_cbz": "Runuumbreytingar\n á CBR-skrám í CBZ",
+    "batch_pdf_to_cbz": "Fjöldabreyting\n á PDF skrám í CBZ",
+    "batch_img_to_cbz": "Lotubrengling\n stakinna mynda yfir í CBZ",
+    "icon_toolbar_reset": "Endurstilla",
+    "delete_selected": "Eyða",
+    "save": "Vista",
+    "rename_to_cb7": "Endurnefna í .cb7",
+    "split_ui": "Skipta viðmóti í tvo hluta",
+    "unsplit_ui": "Loka öðrum hlutanum"
+  },
+  "tabs": {
+    "mosaic": "Mósaík",
+    "metadata": "Lýsigögn"
+  },
+  "viewer": {
+    "title": "Skoðari",
+    "mode_single": "Stök síða  [D]",
+    "mode_double": "Tvöföld síða  [D]",
+    "mode_continuous": "Samfelldur hamur  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Fyrri síða (←)",
+      "next_page": "Næsta síða (→)",
+      "zoom_in": "Auka aðdrátt (Ctrl+Plus)",
+      "zoom_out": "Minnka aðdrátt (Ctrl+Mínus)",
+      "zoom_reset": "Endurstilla aðdrátt (Ctrl+0)",
+      "reading_mode_double": "Breyta lestrarham (D) → Tvöfaldar síður",
+      "reading_mode_continuous": "Breyta lestrarham (D) → Samfelldar tvöfaldar síður",
+      "reading_mode_single": "Breyta lestrarham (D) → Stök síða",
+      "fullscreen_exit": "Hætta í heilskjá (F11)",
+      "fullscreen": "Heilskjár (F11)",
+      "close_viewer": "Loka skoðara (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Skemmd mynd - Skipta út",
+      "corrupted_delete": "⚠️ Eyða þessari mynd",
+      "copy": "Afrita (Ctrl+C)",
+      "cut": "Klippa (Ctrl+X)",
+      "paste": "Líma (Ctrl+V)",
+      "paste_clipboard": "Líma úr klemmuspjaldi (Ctrl+V)",
+      "delete": "Eyða (Delete)",
+      "deselect": "Afvelja (ESC)",
+      "rotate_right": "↻ Snúa til hægri",
+      "rotate_left": "↺ Snúa til vinstri",
+      "mirror": "⇄ Lárétt speglun",
+      "crop": "Skera af",
+      "convert": "Umbreyta í annað snið...",
+      "join": "Sameina valdar síður",
+      "split": "Skipta valdri síðu",
+      "save_selection": "Vista valið sem CBZ",
+      "print_selection": "Prenta valið",
+      "copy_archive": "Afrita alla safnskrá",
+      "undo": "Afturkalla (Ctrl+Z)",
+      "redo": "Endurtaka (Ctrl+Y)",
+      "renumber_auto": "Endurnúmera síður (sjálfvirk skynjun á fjölsíðum)",
+      "renumber_simple": "Endurnúmera síður (einföld tölun)",
+      "sort_submenu": "Raða síðum",
+      "sort_name": "Eftir nafni",
+      "sort_type": "Eftir tegund",
+      "sort_size": "Eftir stærð",
+      "sort_width": "Eftir breidd",
+      "sort_height": "Eftir hæð",
+      "sort_resolution": "Eftir upplausn",
+      "sort_dpi": "Eftir DPI",
+      "create_cbz": "Búa til CBZ safnskrá",
+      "save_as": "Vista sem...",
+      "close_file": "Loka skrá",
+      "help": "Notkunarleiðbeiningar",
+      "update_page_count": "Uppfæra blaðsíðufjölda í lýsigögnum",
+      "invert_selection": "Snúa við vali (Ctrl+I)",
+      "reduce_size": "Breyta síðustærð",
+      "mirror_vertical": "⇅ Lóðréttur spegill",
+      "edit_animated_gif": "Breyta hreyfimynd GIF...",
+      "save_to_folder": "Flytja út valdar síður",
+      "adjustments": "Birtustig, andstæða, litir...",
+      "refresh_mosaic": "Endurglæða mósaík (F5)",
+      "create_ico": "Búa til .ico skrá"
+    },
+    "canvas_no_file": {
+      "open": "Opna CBZ/CBR/CB7/PDF",
+      "recent_files": "Nýlegar skrár",
+      "clear_history": "Hreinsa feril"
+    },
+    "canvas_with_file": {
+      "close": "Loka skrá",
+      "paste": "Líma (Ctrl+V)",
+      "paste_clipboard": "Líma úr klemmuspjaldi (Ctrl+V)",
+      "select_all": "Velja allt (Ctrl+A)",
+      "deselect": "Afvelja (ESC)",
+      "copy_archive": "Afrita alla safnskrá",
+      "print_all": "Prenta allan stripann",
+      "renumber_auto": "Endurnúmera síður (sjálfvirk skynjun á fjölsíðum)",
+      "renumber_simple": "Endurnúmera síður (einföld tölun)",
+      "flatten": "Fletja möppur",
+      "save_selection": "Vista valið sem CBZ",
+      "hide_sidebar": "« Fela hnappasúlu",
+      "show_sidebar": "» Sýna hnappasúlu",
+      "decrease_thumbs": "Minnka smámyndastærð",
+      "increase_thumbs": "Auka smámyndastærð",
+      "theme_dark": "Skipta yfir í dökkt þema",
+      "theme_light": "Skipta yfir í ljóst þema",
+      "sort_submenu": "Raða síðum",
+      "undo": "Afturkalla (Ctrl+Z)",
+      "redo": "Endurtaka (Ctrl+Y)",
+      "create_cbz": "Búa til CBZ safnskrá",
+      "save_as": "Vista sem...",
+      "help": "Notkunarleiðbeiningar",
+      "update_page_count": "Uppfæra blaðsíðufjölda í lýsigögnum",
+      "invert_selection": "Snúa við vali (Ctrl+I)",
+      "fullscreen": "Allur skjárinn (F11)",
+      "fullscreen_exit": "Hætta í öllum skjánum (F11 eða ESC)",
+      "quit": "Loka forriti"
+    },
+    "canvas": {
+      "quit": "Loka forriti",
+      "reset": "Endurstilling forritsins:\n• stærð og staðsetning glugga\n• dökkt þema → ljóst\n• stærð smámynda → venjuleg\n• hliðarslá → sýnileg / 220 px\n• tungumál → sjálfvirk greining\n• leturstærð → sjálfgefin",
+      "reset_label": "Endurstilla forritið"
+    },
+    "font_size": {
+      "decrease": "Minnka leturstærð",
+      "increase": "Auka leturstærð"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Raða eftir nafni",
+    "sort_type": "Raða eftir tegund",
+    "sort_size": "Raða eftir stærð",
+    "sort_width": "Raða eftir breidd",
+    "sort_height": "Raða eftir hæð",
+    "sort_resolution": "Raða eftir upplausn",
+    "sort_dpi": "Raða eftir DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Tóm safnskrá",
+        "message": "CBZ safnskráin inniheldur engar skrár."
+      },
+      "empty_cbr": {
+        "title": "Tóm safnskrá",
+        "message": "CBR safnskráin inniheldur engar skrár."
+      },
+      "files_ignored": {
+        "title": "Skrám hunsuð"
+      },
+      "no_selection_crop": {
+        "title": "Ekkert valið",
+        "message": "Vinsamlegast veldu mynd til að skera af."
+      },
+      "multi_selection_crop": {
+        "title": "Margfalt val",
+        "message": "Þú getur aðeins skorið af einni mynd í einu.\nVinsamlegast veldu aðeins eina mynd."
+      },
+      "invalid_selection_crop": {
+        "title": "Ógilt val",
+        "message": "Aðeins er hægt að skera af myndir."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Aðgerð ekki tiltæk",
+        "message": "Flutningur síðna er ekki tiltækur í undirmöppum.\nVinsamlegast flettu möppurnar eða farðu aftur í rótina."
+      },
+      "no_selection_convert": {
+        "title": "Ekkert valið",
+        "message": "Vinsamlegast veldu að minnsta kosti eina mynd til að umbreyta."
+      },
+      "invalid_selection_convert": {
+        "title": "Ógilt val",
+        "message": "Aðeins er hægt að umbreyta myndum."
+      },
+      "no_selection_split": {
+        "title": "Ekkert valið",
+        "message": "Vinsamlegast veldu mynd til að skipta."
+      },
+      "multi_selection_split": {
+        "title": "Margfalt val",
+        "message": "Þú getur aðeins skipt einni mynd í einu.\nVinsamlegast veldu aðeins eina mynd."
+      },
+      "invalid_selection_split": {
+        "title": "Ógilt val",
+        "message": "Aðeins er hægt að skipta myndum."
+      },
+      "invalid_number_split": {
+        "title": "Ógild tala",
+        "message": "Fjöldi síðna verður að vera á milli 2 og 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Ófullnægjandi val",
+        "message": "Vinsamlegast veldu að minnsta kosti 2 myndir til að sameina."
+      },
+      "invalid_selection_join": {
+        "title": "Ógilt val",
+        "message": "Aðeins er hægt að sameina myndir."
+      },
+      "pil_not_available": {
+        "title": "PIL ekki tiltækt",
+        "message": "PIL einingin er ekki tiltæk til að líma úr kerfisklemmuspjaldi."
+      },
+      "format_not_supported": {
+        "title": "Snið ekki stutt",
+        "message": "Myndasnið ekki stutt eða skrá skemmd.\nStudd snið: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Ekkert val",
+        "message": "Vinsamlegast teiknaðu skurðramma fyrst."
+      },
+      "cannot_open_file": {
+        "title": "Ekki hægt að opna skrá",
+        "message": "Ekki er hægt að hlaða skránni."
+      },
+      "corrupted_images": {
+        "title": "Skemmdar myndir",
+        "summary": "{count} skemmd(ar) mynd(ir) fundist af {total}.",
+        "hint": "Þær eru sýndar með sérstakri táknmynd.\nHægrismelltu á skemmda mynd til að skipta um hana eða eyða henni.",
+        "more": "... og {count} til viðbótar"
+      },
+      "no_image_print": {
+        "title": "Engin mynd",
+        "message": "Engin mynd til að prenta."
+      },
+      "no_valid_image_print": {
+        "title": "Engin mynd",
+        "message": "Engin gild mynd til að prenta."
+      },
+      "no_selection_print": {
+        "title": "Ekkert valið",
+        "message": "Vinsamlegast veldu að minnsta kosti eina mynd."
+      },
+      "no_valid_selection_print": {
+        "title": "Engin mynd",
+        "message": "Engin gild mynd í valinu."
+      },
+      "save_cancelled": {
+        "title": "Vistun hætt við",
+        "message": "Vinsamlegast leiðréttu skráarnöfn handvirkt áður en þú vistar."
+      },
+      "empty_pdf": {
+        "title": "Tómt PDF",
+        "message": "PDF skráin inniheldur engar síður."
+      },
+      "no_selection_save": {
+        "title": "Viðvörun",
+        "message": "Vinsamlegast veldu að minnsta kosti eina síðu til að vista."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Flutningur óvirkur",
+        "message": "Flutningur síðna með dragi-og-sleppi er aðeins tiltækur í rót stripsins.\n\nTil að flytja síður:\n1. Farðu aftur í rót með því að smella á upp-táknið\n2. Eða flettu stripinn til að fjarlægja undirmöppur"
+      },
+      "no_selection_reduce": {
+        "title": "Ekkert val",
+        "message": "Vinsamlegast veldu að minnsta kosti eina síðu til að minnka."
+      },
+      "invalid_selection_reduce": {
+        "title": "Ógilt val",
+        "message": "Aðeins er hægt að minnka myndir."
+      },
+      "invalid_dimensions": {
+        "title": "Ógildar stærðir",
+        "message": "Vinsamlegast sláðu inn gildar stærðir (jákvæðar heilar tölur)."
+      },
+      "no_images_for_gif": {
+        "title": "Engar myndir",
+        "message": "Að minnsta kosti ein mynd er nauðsynleg til að búa til hreyfimynd GIF."
+      },
+      "no_valid_images": {
+        "title": "Engar gildar myndir",
+        "message": "Engar gildar myndir fundust til að búa til GIF."
+      },
+      "animated_gif_in_comic": {
+        "title": "Hreyfimynd GIF greind",
+        "message": "Viðvörun: Þessi myndasaga inniheldur eina eða fleiri hreyfimyndir GIF.\\n\\nMyndasögulæsarar (CDisplayEx, YACReader, o.s.frv.) munu aðeins sýna fyrstu ramma hverrar GIF sem kyrrstæða síðu.\\n\\nTil að skoða hreyfimyndina GIF rétt verður þú að vista hana sérstaklega utan myndasögunnar með því að nota hnappinn \"Flytja út valdar síður\" eða \"Breyta hreyfimynd GIF\".\\n\\nViltu halda áfram að vista myndasöguna samt?"
+      },
+      "no_selection_adjust": {
+        "title": "Ekkert val",
+        "message": "Veldu að minnsta kosti eina mynd til að beita aðlögunum."
+      },
+      "invalid_selection_adjust": {
+        "title": "Ógilt val",
+        "message": "Aðlaganir er aðeins hægt að beita á myndir."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Eiginleiki ekki tiltækur",
+        "message": "Endurnúmerun er ekki tiltæk fyrr en möppurnar hafa verið jafnaðar.\nJafnaðu möppurnar áður en þú endurnúmerir."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP villa",
+        "message": "'{file}': Skráin er ekki gild ZIP safnskrá eða er skemmd."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP villa",
+        "message": "Ekki hægt að opna CBZ skrá: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR villa",
+        "message": "'{file}': Skráin er ekki gild RAR safnskrá eða er skemmd."
+      },
+      "rar_cannot_open": {
+        "title": "RAR villa",
+        "message": "Ekki hægt að opna CBR safnskrá: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Villa",
+        "message": "Óvænt villa við opnun CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Villa",
+        "message": "Ekki hægt að sameina myndir."
+      },
+      "paste_failed": {
+        "title": "Villa",
+        "message": "Villa við að líma: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Villa",
+        "message": "Ekki hægt að afrita safnskrá: {error}"
+      },
+      "crop_invalid": {
+        "title": "Villa",
+        "message": "Skurðsvæðið er ógilt."
+      },
+      "crop_failed": {
+        "title": "Villa",
+        "message": "Ekki hægt að skera af mynd: {error}"
+      },
+      "load_image_failed": {
+        "title": "Villa",
+        "message": "Ekki hægt að hlaða inn mynd:\n{error}"
+      },
+      "print_error": {
+        "title": "Prentvilla",
+        "message": "Villa við prentun:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Prentun ekki tiltæk",
+        "message": "win32print einingin er ekki uppsett.\nSettu hana upp með: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Skrá fannst ekki",
+        "message": "Skráin er ekki lengur til:\n{path}"
+      },
+      "import_failed": {
+        "title": "Innflutningsvilla",
+        "message": "Ekki hægt að flytja inn skrá: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF ekki uppsett",
+        "message": "PyMuPDF (fitz) safnið er ekki uppsett.\nSettu það upp með: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Villa",
+        "message": "Villa við innflutning PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF villa",
+        "message": "Ekki hægt að hlaða inn PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Tvítekin skráarnöfn",
+        "intro": "{count} tvítekin skráarheiti greind:\n\n",
+        "item": "  • {name} ({times} sinnum)\n",
+        "more": "  ... og {more} fleiri\n",
+        "footer": "\nZIP-skjalasöfn samþykkja ekki tvítekin nöfn.\nEndurnefndu þessar skrár áður en þú vistar."
+      },
+      "save_failed": {
+        "title": "Villa",
+        "message": "Ekki hægt að vista skrá: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Villa",
+        "message": "Ekki hægt að búa til safnskrá: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Villa",
+        "message": "Ekki hægt að vista val: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "Villa við að búa til GIF",
+        "message": "Ekki tókst að búa til hreyfimynd GIF:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Villa við vistun",
+        "message": "Villa við vistun skráa:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Villa við endurnefningu",
+        "message": "Get ekki endurnefnt skrána: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF skeytt lykilorði",
+        "message": "Þessi PDF skrá er dulkóðuð og vernduð með lykilorði.\nHana er ekki hægt að opna án lykilorðsins."
+      },
+      "pdf_unlock_failed": {
+        "title": "Villa",
+        "message": "Tókst ekki að vista opnaða PDF skrána:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: dulkóðuð PDF-skrá (lykilorð krafist), sleppt",
+      "file_too_large": {
+        "title": "Skráin er of stór",
+        "message": "Skráin {filename} er {size} og fer yfir hámarksstærð sem leyfð er (500 MB) fyrir mynd."
+      },
+      "license_file_not_found": {
+        "message": "Leyfissskrá finnst ekki: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Ekki er hægt að lesa leyfissskrána: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z villa",
+        "message": "Skráin '{file}' er ekki gilt 7Z safn eða er skemmd."
+      },
+      "delete_error": "Villa við eyðingu: {error}",
+      "export_error": "Villa við útflutning: {error}",
+      "font_source_not_found": "Upprunaleg leturgerðaskrá finnst ekki: {path}",
+      "no_tengwar_font": "Engin Tengwar leturgerð fannst.",
+      "no_icons_found": "Engar táknamyndir fundust.",
+      "unsupported_files": {
+        "title": "Óstudd skrár",
+        "message": "Eftirfarandi skrár eru ekki studdar og voru hunsaðar:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF búið til",
+        "message": "Hreyfimyndin '{name}' hefur verið búin til og bætt við mósaíkið."
+      },
+      "pywin32_required": {
+        "title": "Aðgerð ekki tiltæk",
+        "message": "pywin32 einingin er nauðsynleg til að líma úr kerfisklemmuspjaldi.\nSettu hana upp með: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Myndir fluttar inn",
+        "message": "{count} mynd(ir) flutt(ar) inn"
+      },
+      "archive_copied": {
+        "title": "Safnskrá afrituð",
+        "message": "Skjalasafnið hefur verið afritað á klippiborðið."
+      },
+      "function_not_available": {
+        "title": "Aðgerð ekki tiltæk",
+        "message": "Þessi aðgerð er ekki tiltæk sem stendur."
+      },
+      "duplicate_detected": {
+        "title": "Tvítekningin greind",
+        "message": "Skrá bar þegar þetta nafn.\n\nSkráin hefur verið endurnefnd í:\n{name}"
+      },
+      "replace_success": {
+        "title": "Tókst",
+        "message": "Myndinni '{name}' hefur verið skipt út."
+      },
+      "history_cleared": {
+        "title": "Ferill hreinsaður",
+        "message": "Listi yfir nýlegar skrár hefur verið hreinsaður."
+      },
+      "files_copied_clipboard": {
+        "title": "Skrár afritaðar í klemmuspjald",
+        "message": "Dragi-og-sleppi út úr forritinu er ekki tiltækt af tæknilegum ástæðum.\n\n✓ {count} {word} afritað í klemmuspjald\n\nÞú getur nú límt hvar sem er:\n  • Hægrismelltu → Líma\n  • Eða Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Leiðrétting lokið",
+        "message": "{count} skráarnafn leiðrétt."
+      },
+      "import_success": {
+        "title": "Innflutningur tókst",
+        "message": "{count} síða/síður flutt(ar) inn úr {file}"
+      },
+      "pdf_import_success": {
+        "title": "Innflutningur tókst",
+        "message": "{count} PDF síða/síður flutt(ar) inn úr {file}\nGæði: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Tókst",
+        "message": "PDF umbreytt!\n{count} síður hlaðnar við {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Tókst",
+        "message": "CBZ skrá vistuð:"
+      },
+      "cbz_converted": {
+        "title": "Tókst",
+        "message": "Skrá umbreytt í CBZ:",
+        "question": "Viltu eyða upprunalegu CBR skránni?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Tókst",
+        "message": "Skrá umbreytt í CBZ:",
+        "question": "Viltu eyða upprunalegu PDF skránni?"
+      },
+      "cbz_save_as": {
+        "title": "Tókst",
+        "message": "Ný CBZ skrá vistuð: {path}"
+      },
+      "cbz_created": {
+        "title": "Tókst",
+        "message": "CBZ safnskrá búin til:"
+      },
+      "selection_saved": {
+        "title": "Tókst",
+        "message": "Val vistað:"
+      },
+      "flatten_done": {
+        "title": "Fletjun lokið",
+        "message": "{files} skrá(r) færð(ar) úr {dirs} undirmöpp(um)."
+      },
+      "language_changed": {
+        "title": "Tungumáli breytt",
+        "message": "Tungumáli viðmótsins hefur verið breytt."
+      },
+      "new_cbz_saved": {
+        "title": "Skrá Vistuð",
+        "message": "Nýja CBZ skráin hefur verið vistuð:",
+        "question": "Viltu eyða upprunalegu skránni?"
+      },
+      "page_count_updated": {
+        "title": "Blaðsíðufjöldi uppfærður",
+        "message": "Blaðsíðufjöldi í lýsigögnum hefur verið uppfærður í {count} blaðsíður."
+      },
+      "files_saved": {
+        "title": "Vistað",
+        "message": "{count} skrár vistaðar í:\n{folder}",
+        "open_folder": "Viltu opna möppuna?"
+      },
+      "adjustments_applied": {
+        "title": "Aðlaganir beittar",
+        "message": "Aðlaganirnar hafa verið beittar með góðum árangri."
+      },
+      "pdf_unlocked": {
+        "title": "PDF opnað",
+        "message": "Opnaða PDF skráin var vistuð:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Stór safnskrá",
+        "message": "Þessi safnskrá er {size} MB þegar hún er afþjöppuð.\nInnhleðslan gæti notað mikið minni (RAM).\n\nViltu halda áfram?"
+      },
+      "confirm_delete": {
+        "title": "Staðfesting",
+        "message": "Viltu virkilega eyða {count} skrá(m) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Eyða upprunaskrám?",
+        "message": "Viltu eyða myndunum sem voru sameinaðar?\n\nJá = Eyða upprunaskrám\nNei = Halda upprunaskrám\nHætta við = Hætta við aðgerðina"
+      },
+      "invalid_filenames": {
+        "title": "Ógild skráarnöfn",
+        "intro": "{count} skrá(r) innihalda bönnuð staf:",
+        "item": "  • {name}",
+        "more": "  ... og {more} til viðbótar",
+        "forbidden_chars": "Bönnuð stafir: {chars}",
+        "fix_question": "Viltu leiðrétta þessi nöfn sjálfkrafa?\n(Bönnuðum stöfum verður skipt út fyrir '_')"
+      },
+      "close_without_save": {
+        "title": "Vista áður en lokað er?",
+        "message": "Myndum hefur verið bætt við. Viltu búa til CBZ safnskrá áður en þú lokar?"
+      },
+      "flatten_folders": {
+        "title": "Fletja möppur",
+        "subdirs_detected": "Undirmöppur greindar:",
+        "files_to_move": "{count} skrá(r) verða færð(ar) í rót.",
+        "folders_to_delete": "{count} undirmöpp(um) verður eytt.",
+        "continue_question": "Viltu halda áfram?"
+      },
+      "update_page_count": {
+        "title": "Uppfæra blaðsíðufjölda",
+        "message": "Fjöldi blaðsíðna í myndasögunni hefur breyst.\n\nBlaðsíðufjöldi tilgreindur í lýsigögnum: {original}\nNúverandi blaðsíðufjöldi: {current}\n\nViltu uppfæra blaðsíðufjölda í lýsigögnum?"
+      },
+      "conversion_complete": {
+        "title": "Umbreyting lokið",
+        "message": "Umbreyting lokið!\n\n{count} mynd(ir) breytt í {format} snið hefur verið bætt við á eftir vali þínu.\n\nEyða upprunalegu myndunum?",
+        "delete_originals": "Eyða frumritum\n{count} skrá(r) - {size}",
+        "keep_all": "Geyma allt\n{count} skrá(r) - {size}",
+        "cancel_conversion": "Hætta við umbreytingu\n{count} skrá(r) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Röng skráarending fannst: þessi '{filename}' skrá er CBZ, ekki CBR. Endurnefna?",
+      "title": "Rangt skráarendingur"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Rangt viðskeyti fundið: þessi '{filename}' skrá er CBR, ekki CBZ. Endurnefna?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Röng skráarending greind: skráin '{filename}' er CB7, ekki CBZ/CBR. Endurnefna?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Smámyndastærð",
+    "loading": "Vinsamlegast bíddu, innhleðsla í gangi...\n{percent}%",
+    "resizing": "Vinsamlegast bíðið, stærðarbreyting í gangi...\n{percent}%",
+    "converting": "Vinsamlegast bíðið, umbreyting í gangi...\n{percent}%",
+    "loading_lazy": "Vinsamlegast bíðið, hleður...\n{percent}%\n\nVegna stærðar þessarar skrár ({size} MB) verða síður hlaðnar smám saman. Síður sem eru sýnilegar á skjánum eru hlaðnar strax, aðrar verða hlaðnar sjálfkrafa við skrun.",
+    "apply_save_cbz": "Virkja breytingar\nog vista CBZ skrá",
+    "apply_create_cbz": "Virkja breytingar\nog búa til CBZ skrá",
+    "import_progress": "Innflutningur í gangi...\n{percent}%",
+    "pdf_import_progress": "PDF innflutningur í gangi...\n{percent}%",
+    "pdf_opening": "Opna PDF skrá...",
+    "pdf_page": "Síða {current} / {total}",
+    "warning_close": "Viðvörun! Breytingar hafa ekki verið vistaðar og munu tapast!",
+    "language_label": "Tungumál:",
+    "directory_tooltip": "Mappa: {name}\n{count} skrá(r)\nHeildarstærð: {size} MB",
+    "folder_up_tooltip": "Tvísmelltu til að fara upp\num eitt stig í möppustrúktúr",
+    "status_bar": "{dirs} mappa/möppur  |  {files} skrá(r) ({total_size})  |  {selected} valið ({selected_size})",
+    "pdf_converting": "Umbreyti {total} síðum í myndir við {dpi} DPI...",
+    "pdf_converting_no_change": "Útdráttur {total} síðna án breytinga...",
+    "print_progress": "Undirbý fyrir prentun...\n{percent}%",
+    "print_preparing": "Vinsamlegast bíðið, undirbýr prentun...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nSamantekt á GNU General Public License v3\n\nVEITTAR FRELSAR\nÞú mátt nota, afrita, breyta og dreifa\nMosaicView, jafnvel í viðskiptalegum tilgangi.\n\nSKYLDUR\nSérhver dreifing (upprunaleg eða breytt) verður að :\n– viðhalda GPL v3 leyfinu\n– innihalda frumkóðann eða gefa til kynna hvar hann fæst\n– ekki setja á frekari takmarkanir\n\nÁBYRGÐ\nÞessi hugbúnaður er dreifður ÁN NOKKURRAR ÁBYRGÐAR.\nHöfundur hans ber ekki ábyrgð á tjóni sem hlýst af notkun hans.\n\nÞú ættir að hafa fengið eintak af GNU General Public License með þessum hugbúnaði. Ef ekki, sjá <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Skoða fullt leyfi",
+    "license_unrar_text": "CBZ skrár eru byggðar á ZIP sniðinu, sem er frjálst og opið snið. CBR skrár, hins vegar, eru byggðar á RAR sniðinu, sem er eignarsnið.\n\nMosaicView getur opnað CBR skrár þökk sé UnRAR, tóli þróað af RARlab og frjálst dreifanlegt.\n\nOpinber vefsíða: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Skoða UnRAR leyfi",
+    "saving_cbz": "Vista í gangi... {percent}%",
+    "empty_canvas_line1": "Slepptu herna einni eda fleiri CBZ/CBR/CB7/PDF skram eda myndunum thinum",
+    "empty_canvas_line2": "Thegar skra er opnud geturdu haldid adur ad sleppa odrum",
+    "empty_canvas_line3": "Slepptu einni eða fleiri möppum til að hefja lotuvinnslu",
+    "icon_toolbar_config_title": "Stilling táknborða",
+    "icon_toolbar_active": "Tákn í borðanum",
+    "icon_toolbar_hidden": "Tákn í varabirgðum",
+    "license_gpl_full": "GNU GPL v3 leyfi",
+    "license_unrar_full": "UnRAR leyfi",
+    "licenses_button": "Leyfi",
+    "view_full_gpl_license": "Skoða fullt GNU GPL v3 leyfi",
+    "license_7zip_text": "CB7-skrár byggjast á 7z-sniði, þróað af Igor Pavlov og dreift undir GNU LGPL-leyfinu.\n\nMosaicView getur opnað CB7-skrár með 7-Zip — ókeypis og opinn hugbúnaður.\n\nOpinber vefsíða : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Skoða 7-Zip leyfi",
+    "license_7zip_full": "7-Zip leyfi",
+    "icon_toolbar_show_thumb_slider": "Sýna stærðarskroll fyrir smámyndir",
+    "icon_toolbar_show_lang_combo": "Sýna tungumálaval",
+    "adjusting": "Vinsamlegast bíddu, stillingar í gangi...\n{current} / {total}",
+    "license_piqad_full": "Leyfissamningur leturgerðar pIqaD qolqoS",
+    "license_tengwar_full": "Leyfis leturgerðarinnar Alcarin Tengwar",
+    "view_full_piqad_license": "Skoða fullan leyfissamning pIqaD qolqoS"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Myndaumbreytingar",
+      "title": "Umbreyta {count} {word}",
+      "word_image": "mynd",
+      "word_images": "myndir",
+      "info": "Veldu marksniðið:",
+      "format_png": "PNG (taplaust)",
+      "format_jpg": "JPEG (með þjöppun)",
+      "format_webp": "WEBP (nútímalegt)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (há gæði)",
+      "format_gif": "GIF (hreyfimynd)",
+      "quality_label": "Gæði fyrir JPG/WEBP:",
+      "quality_maximum": "Hámark — gæði 95/100",
+      "quality_high": "Há — gæði 85/100",
+      "quality_medium": "Miðlungs — gæði 75/100",
+      "quality_low": "Lág — gæði 60/100",
+      "quality_custom_option": "Sérsniðin",
+      "quality_custom": "Gæði sérsniðin : {value}/100",
+      "quality_note": "(Þessi stilling hefur aðeins áhrif á JPG og WEBP snið)",
+      "quality_window_title": "Val á gæðum",
+      "format_gif_static": "Kyrrstæð GIF",
+      "format_gif_animated": "Hreyfimynd GIF (veldu margar myndir)"
+    },
+    "split": {
+      "window_title": "Skipta síðu",
+      "title": "Skipta síðu",
+      "pages_label": "Fjöldi síðna:",
+      "direction_label": "Skiptingarátt:",
+      "horizontal": "Lárétt (vinstri → hægri)",
+      "vertical": "Lóðrétt (efst → neðst)",
+      "warning": "⚠ Þar sem skiptingin er reiknuð sjálfvirkt,\ngæti handvirk aðlögun verið nauðsynleg.",
+      "button_split": "Skipta",
+      "button_cancel": "Hætta við"
+    },
+    "join": {
+      "window_title": "Sameina síður - Endurraðaðu röðinni",
+      "instructions": "Skipuleggðu myndirnar:\n• Lóðrétt (efst/neðst) fyrir lóðrétta sameiningu\n• Lárétt (vinstri/hægri) fyrir lárétta sameiningu",
+      "merged_filename_prefix": "Sameining",
+      "heights_label": "Hæðir",
+      "widths_label": "Breiddir",
+      "size_adjustment_title": "Stærðaraðlögun",
+      "size_adjustment_warning": "⚠️ Valdar myndir hafa mismunandi stærðir.\nVeldu hvernig á að stilla stærðir þeirra fyrir sameiningu.\nMyndhlutfall hverrar myndar verður alltaf varðveitt.",
+      "keep_original": "Halda upphaflegum stærðum",
+      "keep_original_desc": "(bætir við svörtum stikum til að fylla)",
+      "enlarge_small": "Stækka litlar myndir",
+      "enlarge_small_desc": "(jafna við hámarksstærð)",
+      "reduce_large": "Minnka stórar myndir",
+      "reduce_large_desc": "(jafna við lágmarksstærð)",
+      "back_to_arrangement": "Til baka"
+    },
+    "pdf": {
+      "quality_merge": "Veldu sameinunargæði:",
+      "quality_export": "Veldu útflutningsgæði:",
+      "merge_quality_title": "PDF sameiningargæði",
+      "export_quality_title": "PDF útflutningsgæði",
+      "loading_title": "Hleður PDF...",
+      "dpi_90": "90 DPI - Vefútgáfa",
+      "dpi_150": "150 DPI - Góð gæði (mælt með til birtingar)",
+      "dpi_200": "200 DPI - Mjög góð gæði",
+      "dpi_300": "300 DPI - Frábær gæði (staðall myndasagna)",
+      "dpi_600": "600 DPI - Hámarksgæði (stórar skrár)",
+      "dpi_original": "Engin myndbreyting",
+      "dpi_original_tooltip": "Greind greining á hverri PDF-síðu:\n• Síður með aðeins myndum: varðveitir upprunalega DPI\n• Síður með aðeins texta: 300 DPI\n• Blandaðar síður (texti + myndir): mynda-DPI ef >= 300, annars 300 DPI\nHámark: 2400 DPI til að takmarka skráarstærð"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF nauðsynlegt",
+      "pymupdf_required_message": "PyMuPDF (fitz) er ekki uppsett. Ekki er hægt að umbreyta PDF-skrám.",
+      "select_directory_title": "Veldu möppuna sem inniheldur PDF-skrárnar",
+      "no_pdf_title": "Engar PDF-skrár",
+      "no_pdf_message": "Engar PDF-skrár fundust í möppunni:\n{directory}",
+      "confirm_title": "Hópumbreytinig á PDF í CBZ",
+      "confirm_message": "{count} PDF-skrár til umbreytingar í {directory} (undirmöppur innifaldar).",
+      "checkbox_permanent_delete": "Eyða upprunalegu PDF-skránum án þess\nað nota ruslafötuna (EKKI HÆGT AÐ AFTURKALLA)",
+      "start_button": "Byrja",
+      "converting_title": "Umbreyting í gangi...",
+      "converting_progress": "Umbreyting skráar {current} af {total}",
+      "page_progress": "Síða {current} / {total}",
+      "complete_title": "Umbreytingu lokið",
+      "complete_message": "{count} PDF-skrám umbreytt í möppunni:",
+      "complete_message_errors": "{count} af {total} PDF-skrám umbreytt í möppunni:",
+      "errors_count": "{count} villa(ur) fundust."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Veldu möppuna sem inniheldur CBR-skrár",
+      "no_cbr_title": "Engar CBR-skrár",
+      "no_cbr_message": "Engar CBR-skrár fundust í möppunni:\\n{directory}",
+      "confirm_title": "Runuumbreytingar CBR í CBZ",
+      "confirm_message": "{count} CBR-skrár til umbreytingar í {directory} (undirmöppur innifaldar).",
+      "checkbox_permanent_delete": "Eyða upprunalegu CBR-skránum án\nruslafotsins (EKKI HÆGT AÐ AFTURKALLA)",
+      "start_button": "Byrja",
+      "converting_title": "Umbreyting...",
+      "converting_progress": "Umbreyting skráar {current} af {total}",
+      "page_progress": "Síða {current} / {total}",
+      "complete_title": "Umbreytingu lokið",
+      "complete_message": "{count} CBR-skrár umbreyttar í möppunni:",
+      "complete_message_errors": "{count} CBR-skrár umbreyttar af {total} í möppunni:",
+      "errors_count": "{count} villa(ur) fundin(nar).",
+      "renamed_count": "{count} skrá(r) endurnefnd(ar) í CBZ",
+      "rarfile_unavailable": "rarfile einingin er ekki tiltæk. Ekki er hægt að umbreyta CBR skrám."
+    },
+    "close_warning": {
+      "title": "Viðvörun!",
+      "message": "Breytingar hafa ekki verið vistaðar og munu tapast!",
+      "btn_close_lose": "Loka skrá og missa breytingar",
+      "btn_save_cbz": "Virkja breytingar og vista skrá",
+      "btn_create_cbz": "Virkja breytingar og búa til CBZ skrá",
+      "btn_cancel": "Hætta við og fara aftur í mósaík"
+    },
+    "replace_image": {
+      "title": "Skipta út skemmdri mynd"
+    },
+    "reduce_size": {
+      "window_title": "Mynda stærðarbreyting",
+      "title": "Breyti stærð {count} {word}",
+      "word_image": "mynd",
+      "word_images": "myndir",
+      "current_size": "Núverandi stærð: {size} MB",
+      "current_dimensions": "Núverandi stærðir: {width} × {height} px",
+      "choose_method": "Veldu stærðarbreytingaraðferð:",
+      "custom_dimensions": "Sérsniðnar stærðir",
+      "width_label": "Breidd:",
+      "height_label": "Hæð:",
+      "use_custom_dimensions": "Nota þessar stærðir",
+      "different_dimensions_warning": "Valdar síður hafa mismunandi stærðir. Sérsniðnar stærðir munu þvinga allar síður í sömu stærð. Gakktu úr skugga um að þú skiljir afleiðingarnar áður en þú heldur áfram.",
+      "estimated_size": "Áætluð stærð: {size} MB",
+      "percentage_reduction": "Prósentuminnkun",
+      "percentage_enlargement": "Prósentustækkun",
+      "reduce_0": "0% (engin breyting)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (engin breyting)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Algengustu síðubreiddir eru 1024, 1280, 1600, 1920 og 2000 mynddílar, en önnur gildi henta einnig.",
+      "multi_page_width": "Greina og breyta stærð margra síðna sjálfkrafa (breidd/hæð)",
+      "multi_page_width_tooltip": "Gerir kleift sjálfvirka greiningu margra síðna: tvöföld síða, þreföld síða o.s.frv. Margföldunarfastinn er sjálfkrafa reiknaður út frá hlutfalli hverrar síðu, hvort sem það er í breidd (síður hlið við hlið) eða hæð (staflaðar síður)"
+    },
+    "gif_animated": {
+      "window_title": "Búa til hreyfimynd GIF",
+      "images_title": "Hreyfimyndamyndir",
+      "params_title": "GIF breytur",
+      "frame_delay_label": "Töf milli mynda:",
+      "fps_normal": "{fps} rammar/sekúndu",
+      "fps_slow": "1 rammi á {seconds} sekúndum",
+      "loop_label": "Fjöldi endurtekninga:",
+      "loop_info": "(0 = endalaus lykkja)",
+      "disposal_label": "Myndafyrirkomulag:",
+      "disposal_0": "Ekki tilgreint",
+      "disposal_1": "Halda fyrri mynd",
+      "disposal_2": "Endurheimta í bakgrunnslit",
+      "disposal_3": "Endurheimta í fyrri ástand",
+      "optimize": "Fínstilla skrá (vista aðeins mismun)",
+      "metadata_title": "GIF lýsigögn",
+      "metadata_dimensions": "Stærðir: {width} × {height} px",
+      "metadata_frames": "Fjöldi ramma: {count}",
+      "metadata_duration": "Heildartími: {duration} s",
+      "metadata_fps": "Tíðni: {fps} fps",
+      "metadata_palette": "Litaspjald: allt að 256 litir",
+      "metadata_size": "Áætluð stærð: {size} KB",
+      "comment_label": "Athugasemd (valfrjálst):",
+      "no_images": "Engar myndir valdar",
+      "creating_progress": "Hleður myndum... ({current}/{total})",
+      "creating_normalizing": "Normaliseringar mynda... ({current}/{total})",
+      "creating_quantizing": "Magngreinir liti... ({current}/{total})",
+      "creating_saving": "GIF vistað..."
+    },
+    "save_to_folder": {
+      "title": "Veldu áfangamöppu"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Tvítekin skráarnöfn",
+      "message": "Eins skráarnöfn hafa verið greind. Þó að vistun sé tæknilega möguleg,\ngetur þetta valdið lesvandamálum í sumum myndasögulestrarforritum\n(ófullkomin birting, vantar síður o.s.frv.).\n\nMælt er með að endurnúmera síður áður en þú vistar."
+    },
+    "adjustments": {
+      "window_title": "Myndaaðlaganir",
+      "title": "Aðlaganir fyrir {count} {word}",
+      "word_image": "mynd",
+      "word_images": "myndir",
+      "apply_button": "Beita",
+      "color_depth_section": "Litadýpt",
+      "brightness_contrast_section": "Birtustig og birtuskil",
+      "compression_section": "Þjöppun",
+      "effects_section": "Áhrif",
+      "sharpness_section": "Skarpheiti",
+      "levels_section": "Svart/hvítt stig",
+      "depth_unchanged": "Ekki breyta",
+      "depth_32bit": "32 bitar (RGBA - litir + gegnsæi)",
+      "depth_24bit": "24 bitar (RGB - litir)",
+      "depth_8bit": "8 bitar (PNG litaspjald / JPEG graskali)",
+      "depth_1bit": "1 biti (svart og hvítt)",
+      "brightness_label": "Birtustig: {value}",
+      "contrast_label": "Birtuskil: {value}",
+      "compression_enable": "Virkja endurþjöppun",
+      "compression_quality_label": "Gæði : {value}/100",
+      "sharpness_label": "Skarpheiti: {value}",
+      "effect_none": "Engin áhrif",
+      "effect_grayscale": "Grátónar",
+      "effect_sepia": "Sepia",
+      "levels_none": "Engin aðlögun",
+      "levels_threshold": "Þröskuldur (hreint svart eða hvítt)",
+      "levels_advanced": "Ítarleg stig (skuggar/miðtónar/ljós)",
+      "threshold_label": "Þröskuldur: {value}",
+      "black_point_label": "Svartur punktur: {value}",
+      "gamma_label": "Gamma (miðtónar): {value}",
+      "white_point_label": "Hvítur punktur: {value}",
+      "auto_levels_button": "Sjálfvirk stilling",
+      "open_viewer_button": "Stilla með skoðaranum (ráðlagt)",
+      "compression_info": "Þjöppun á aðeins við um JPG og WebP myndir",
+      "open_viewer_button_simple": "Stilla með skoðara",
+      "reset_button": "Endurstilla",
+      "preview_section": "Forskoðun",
+      "effect_invert": "Litaviðsnúningur",
+      "preview_warning": "Forskoðun getur verið frábrugðin lokaútkomunni",
+      "effect_remove_colors": "Fjarlæging lita",
+      "remove_colors_intensity_label": "Styrkur : {value}",
+      "image_mode_section": "Myndastilling",
+      "image_mode_rgb": "RGB (litir)",
+      "image_mode_rgba": "RGBA (litir + gagnsæi)",
+      "image_mode_l": "L (grátónar)",
+      "image_mode_la": "LA (grátónar + gagnsæi)",
+      "image_mode_cmyk": "CMYK (prentun)",
+      "image_mode_1": "1 (hreint svarthvítt)",
+      "image_mode_p": "P (256 lita litaspjald)",
+      "saturation_section": "Mettun",
+      "saturation_label": "Mettun : {value}",
+      "saturation_viewer_title": "Stillingar á mettun",
+      "transparency_section": "Gegnsæi",
+      "transparency_info": "Gegnsæi á aðeins við PNG, WebP og ICO myndir",
+      "transparency_type_label": "Tegund :",
+      "transparency_type_flood": "Svæði",
+      "transparency_type_global": "Altækt",
+      "transparency_tolerance_label": "Þol : {value}",
+      "transparency_viewer_title": "Stilling gegnsæis",
+      "transparency_click_instruction": "Smelltu á litinn sem á að gera gegnsæjan",
+      "transparency_undo": "Afturkalla síðasta smell",
+      "transparency_redo": "Endurtaka",
+      "transparency_type_flood_tooltip": "Flood fill : gerir svæðið með einlitum lit kringum smellta pixelinn gegnsætt",
+      "transparency_type_global_tooltip": "Altækt gegnsæi : hefur áhrif á alla pixla myndarinnar sem hafa lit líkan þeim smellta",
+      "transparency_apply": "Nota",
+      "transparency_skipped_warning": "{count} mynd(ir) sleppt — snið er ekki samhæft við gegnsæi. Til að hafa þær með skaltu umbreyta þeim í PNG fyrst.",
+      "unsharp_section": "Aðlæg skýrleiki",
+      "unsharp_radius_label": "Radíus: {value}",
+      "unsharp_percent_label": "Styrkur: {value} %",
+      "unsharp_threshold_label": "Þröskuldur: {value}",
+      "unsharp_viewer_title": "Aðlæg skýrleiki",
+      "auto_levels_tooltip": "Greinir hverja síðu og stillir sjálfkrafa svart- og hvítgildistig til að hámarka skerpu.\nTil að velja síðu fyrir síðu skaltu nota skoðarann."
+    },
+    "levels_viewer": {
+      "title": "Stillingar a stigum med dropatoli",
+      "apply_current": "Beita a þessa sidu",
+      "apply_all": "Nota á allar valdar síður",
+      "black_pipette": "Svart punkts dropi",
+      "white_pipette": "Hvit punkts dropi",
+      "black_pipette_tooltip": "Smelltu á pixla sem ætti að vera alveg svartur. Aðvörun: það er auðvelt að fara of langt!",
+      "white_pipette_tooltip": "Smelltu á pixla sem ætti að vera alveg hvítur. Aðvörun: það er auðvelt að fara of langt!"
+    },
+    "sharpness_viewer": {
+      "title": "Skerpustilling"
+    },
+    "brightness_viewer": {
+      "title": "Birtustilling og skerpu"
+    },
+    "compression_viewer": {
+      "title": "Þjöppunarstilling"
+    },
+    "outliers": {
+      "title": "Síður með óvenjulegum stærðum",
+      "message": "Eftirfarandi síður hafa stærðir sem eru mjög frábrugðnar öðrum. Vinsamlegast veldu hvernig á að meðhöndla þær:",
+      "width": "Breidd",
+      "height": "Hæð",
+      "unusual": "óvenjulegt",
+      "skip": "Ekki breyta stærð",
+      "keep": "halda"
+    },
+    "first_page_multi": {
+      "title": "Fyrsta síða er fjölsíða",
+      "message": "Fyrsta síðan var greind sem fjölsíða. Hvernig viltu númeraðu hana?",
+      "option_auto_desc": "Venjuleg endurnúmerering með sjálfvirkri greiningu.",
+      "option_joint_desc": "Tenging fyrstu og síðustu síðu myndasagunnar.",
+      "option_exclude_label": "Ekki taka með í endurnúmerering",
+      "option_exclude_desc": "Síðan heldur núverandi nafni sínu og er áfram í fyrsta sæti. Þú getur endurnefnt hana handvirkt síðar."
+    },
+    "batch_img": {
+      "select_directory_title": "Veldu möppuna sem inniheldur myndirnar",
+      "no_img_title": "Engar myndaskrár fundust",
+      "no_img_message": "Engar staknar myndaskrár fundust í möppunni :\n{directory}",
+      "confirm_title": "Lotubrengling stakinna mynda yfir í CBZ",
+      "confirm_message": "{count} myndaskrá(r) til breytingar í {directory} (undirmöppur innifaldar).",
+      "checkbox_permanent_delete": "Eyða upprunalegu myndaskrám varanlega\nán þess að senda þær í ruslið (EKKI HÆGT AÐ AFTURKALLA)",
+      "start_button": "Byrja",
+      "converting_title": "Umbreyting í gangi...",
+      "converting_progress": "Breyti skrá {current} af {total} samtals",
+      "complete_title": "Umbreyting lokið",
+      "complete_message": "{count} myndaskrá(r) umbreytt í möppunni :",
+      "complete_message_errors": "{count} af {total} myndaskrám umbreytt í möppunni :",
+      "errors_count": "{count} villa(r) komu upp.",
+      "converted_by_ext": "{ext} : {count} skrá(r)",
+      "mode_title": "Umbreyta myndum í CBZ",
+      "mode_intro": "Hvernig viltu flokka myndirnar?",
+      "mode_one_per_image": "Umbreyta hverri mynd í aðskildar CBZ skrár",
+      "mode_one_per_image_sub": "(Hver mynd verður að aðskilinni CBZ skrá)",
+      "mode_all_in_one": "Flokka allar myndir í eina CBZ skrá",
+      "mode_all_in_one_sub": "(Allar myndir í möppunni eru flokkaðar í eina CBZ skrá)"
+    },
+    "batch_drop": {
+      "window_title": "Lotuvinnsla mappa",
+      "intro_single": "1 mappa var sleppt. Hvaða vinnslu viltu beita?",
+      "intro_multiple": "{count} möppur voru slepptar. Hvaða vinnslu viltu beita?",
+      "recursive_note": "Undirmöppur verða einnig skannaðar.",
+      "mixed_drop_title": "Sleppning ekki studd",
+      "mixed_drop_message": "Þú sleppir bæði skrám og möppum samtímis. Vinsamlegast slepptu aðeins skrám eða aðeins möppum."
+    },
+    "pdf_unlock": {
+      "title": "PDF vernduð gegn breytingum",
+      "message": "Síðurnar voru fluttar inn eðlilega.\n\nÞessi PDF skrá er vernduð gegn breytingum (lykilorð eiganda).\n\nViltu vista afrit af PDF skránni án þessarar verndar?",
+      "yes": "Já, vista opið afrit",
+      "no": "Nei, halda áfram án opnunar"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF-skrár verndaðar gegn breytingum",
+      "message_single": "1 PDF-skrá vernduð gegn breytingum fannst. Hún var umbreytt í CBZ á venjulegan hátt.\n\nViltu vista aflæsta eintak í upprunalegu möppuna?",
+      "message_plural": "{count} PDF-skrár verndaðar gegn breytingum fundust. Þær voru umbreyttar í CBZ á venjulegan hátt.\n\nViltu vista aflæst eintak af hverri í upprunalegu möppuna?",
+      "yes": "Já, vista aflæstu eintökin",
+      "no": "Nei, halda áfram án þess að aflæsa"
+    },
+    "ico_creator": {
+      "title": "Búa til .ico tákn",
+      "info_message": "Myndin verður breytt í margar upplausnanir (16, 32, 48, 64, 128, 256 px).\nNúverandi stærð ramma: {w} × {h} px",
+      "btn_validate_crop": "Staðfesta skeringu",
+      "btn_validate_no_crop": "Staðfesta án skerings",
+      "btn_cancel": "Hætta við",
+      "btn_transparency": "Stilla gagnsæi",
+      "btn_validate_final": "Staðfesta",
+      "tolerance_label": "Þol:",
+      "success_title": ".ico skrá búin til",
+      "success_message": "Skráin {filename} var búin til.",
+      "overwrite_title": "Skrá er þegar til",
+      "overwrite_message": "Skráin {filename} er þegar til. Skrifa yfir?",
+      "save_blocked_title": "Get ekki vistað",
+      "save_blocked_message": "Þetta safn inniheldur eina eða fleiri .ico skrár sem eru ekki myndir úr myndasögum. Vistun er óvirk meðan þessar skrár eru í mósaík.\nTil að virkja vistun aftur skaltu eyða þeim úr mósaík (Del lykill) eða klippa þær (Ctrl+X) til að líma annars staðar.",
+      "btn_back_to_crop": "Aftur í skeringu"
+    },
+    "video_save_blocked": {
+      "title": "Get ekki vistað",
+      "message": "Þetta safn inniheldur eina eða fleiri myndskráar. Vistun er óvirk á meðan þessar skrár eru til staðar í mósaíkinu.\nTil að virkja vistun aftur skaltu eyða þeim úr mósaíkinu (Del lykill) eða klippa þær (Ctrl+X) til að líma þær annars staðar."
+    },
+    "open_file": {
+      "title": "Opna skjalasafn",
+      "filter_archives": "Skjalasöfn (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Allar skrár (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Leyfi"
+    },
+    "replace_corrupted_image": {
+      "title": "Skipta út skemmdu mynd",
+      "filter_images": "Myndir (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Allar skrár (*)"
+    },
+    "see_log": "SKOÐA LOG"
+  },
+  "tooltip": {
+    "source_archive": "Upprunaskrá: {name}",
+    "file": "Skrá: {name}",
+    "reason": "Ástæða: {reason}",
+    "size_kb": "Stærð: {size} KB",
+    "size_mb": "Stærð: {size} MB",
+    "file_size": "Stærð: {size}",
+    "dimensions": "Víddir: {width} × {height} px",
+    "resolution": "Upplausn: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: óskilgreint",
+    "cbr_info": "CBR skrár nota RAR sniðið, sem er séreignar og einkaleyfisverndað;\nþær er ekki hægt að breyta, breytingar eru vistaðar í nýja CBZ skrá.",
+    "rotate_left": "90 gráðu snúningur til vinstri",
+    "rotate_right": "90 gráðu snúningur til hægri",
+    "mirror_horizontal": "Lárétt speglun",
+    "mirror_vertical": "Lóðrétt speglun",
+    "fullscreen": "Allur skjárinn",
+    "help_button": "Notendahandbók",
+    "theme_button": "Skipta á milli ljóss og dökks þema",
+    "font_decrease_button": "Minnka leturstærð",
+    "font_increase_button": "Auka leturstærð",
+    "color_depth": "Litir: {bits} bitar ({mode})",
+    "batch_pdf_to_cbz": "Breytir öllum PDF skrám í möppu og\nundirmöppum hennar í CBZ. Myndir eru\nútdregnar og geymdar óbreyttar, án nokkurrar\nendurþjöppunar.",
+    "batch_pdf_permanent_delete": "VIÐVÖRUN: ef þessi valkostur er merktur,\nverða upprunalegu PDF-skrárnar varanlega\neyddar eftir umbreytingu, án möguleika\ná endurheimt. Gakktu úr skugga um\nað þú hafir öryggisafrit ef þörf krefur.",
+    "batch_cbr_to_cbz": "Umbreytir í CBZ allar CBR-skrár\ní möppu og undirmöppum hennar.",
+    "batch_cbr_permanent_delete": "VIÐVÖRUN: ef þessi valkostur er merktur,\nverða upprunalegu CBR-skrárnar varanlega\neyddar eftir umbreytingu, án möguleika\ná endurheimt. Gakktu úr skugga um\nað þú hafir öryggisafrit ef þörf krefur.",
+    "renumber_btn_1": "Sjálfvirk skynjun á fjölsíðum\nHægrismelltu til að skipta um stillingu",
+    "renumber_btn_2": "Einföld tölunarstilling\nHægrismelltu til að skipta um stillingu",
+    "corrupted_header": "Skemmd mynd",
+    "right_click_instruction1": "Hægrismelltu til að skipta um eða eyða",
+    "right_click_instruction2": "þessari mynd.",
+    "unknown_error": "Óþekkt villa",
+    "batch_img_to_cbz": "Breytir öllum myndaskrám sem finnast í möppu\nog undirmöppum hennar yfir í CBZ,\nog býr til eina CBZ-skrá fyrir hverja mynd.",
+    "batch_img_permanent_delete": "VIÐVÖRUN : ef þessi valkostur er valinn,\nverða upprunalegar myndaskrár eytt varanlega\neftir umbreytingu, án möguleika\nendurheimtu. Gakktu úr skugga um að\\þú hafir öryggisafrit ef þörf krefur.",
+    "too_large_header": "Myndin er of stór til að hlaða",
+    "too_large_pixels": "Stærðir: {pixels}",
+    "icon_toolbar_config_button": "Stilling tákna",
+    "icon_toolbar_size_decrease": "Minnka stærð tákna",
+    "icon_toolbar_size_increase": "Stækka stærð tákna",
+    "source_loose": "Lausmynd",
+    "source_web": "Vefmynd"
+  },
+  "help": {
+    "title": "MosaicView - Notkunarleiðbeiningar",
+    "intro": "MosaicView gerir þér kleift að vinna með og breyta teiknimyndabókum (stafrænum stripum) án þess að þurfa að afpakka þeim úr safnskrám. Forritið styður CBZ (ZIP), CBR (RAR) og PDF snið. Forritid er einungis samhæft 64 bita stýrikerfi.",
+    "open_files": "Opna skrár",
+    "open_files_content": "• Smelltu á 'Opna CBZ/CBR/CB7/PDF' hnappinn\n• Eða dragðu og slepptu skrá beint í gluggann\n• Studd snið: CBZ, CBR, CB7, PDF, myndir (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Einnig er haegt ad opna EPUB skrar, en aedins verda myndir thyggdar ut (texti er hundsad).\n• Dulkóðuð PDF (lykilorð þarf til að opna): ekki er hægt að flytja inn skrána, villuboð birtast.\n• PDF vernduð gegn breytingum (owner password): síðurnar eru fluttar inn eðlilega. MosaicView býður upp á að vista opið afrit af skránni í sömu möppu.",
+    "mosaic": "Mósaíkið",
+    "mosaic_content": "Mósaíkið sýnir allar síður myndasögunnar þinnar sem smámyndir. Þú getur:\n• Endurraðað síðum með því að draga og sleppa (síðunúmerun verður sjálfvirk og fer eftir virku endurnúmerunarstillingu)\n• Valið margar síður (Ctrl+smella eða Shift+smella)\n• Stillt smámyndastærð með rennisleðanum\n• Endurnefnt skrár handvirkt með því að smella á nafn þeirra\n• Dregið og sleppt myndasagaskrám (CBZ/CBR/PDF) úr Windows Explorer beint inn í aðra opna myndasögu til að sameina efni þeirra",
+    "manipulation": "Vinnsla síðna",
+    "manipulation_content": "• Dragðu og slepptu síðum til að endurraða þeim\n• Dragðu heila myndasögu inn í aðra til að sameina þær\n• Hægrismelltu á síðu til að nálgast valkosti (snúningur, eyðing o.fl.)\n• Tvísmelltu á síðu til að opna skoðarann\n• Flyttu út einstakar síður með því að draga þær í Windows-möppu eða með Ctrl+C / Ctrl+V",
+    "renumber": "Endurnúmera síður",
+    "renumber_content": "MosaicView býður upp á tvo síðunúmera stillingar, aðgengilegar með endurnúmera hnappinum, samhengisvalmyndinni (hægri smella) eða sjálfkrafa við draga og sleppa:\n\n• Sjálfvirk greining margra síðna stilling (sjálfgefið stilling): forrit greinir breidd hverrar síðu til að greina tvöfaldar, þrífaldar síður o.s.frv. Margar síður eru endurnúmeraðar í samræmi (t.d.: tvöföld síða fær heitið 003-004, þríföld 005-006-007). Yfir 4 síður eru aðeins sýnd fyrsta og síðasta númerið (t.d.: 010---025).\n\n• Einföld númera stilling: hver síða fær einstökt raðnúmer (001, 002, 003...), án tillsögnar til breiddar síðna.\n\nTil að skipta milli stillinganna tveggja, hægrismelltu á endurnúmera hnappinn. Verkfæraleiðbeining sýnir virka stillinguna. Valin stilling gildir einnig um sjálfvirka endurnúmeringu við draga og sleppa.",
+    "flatten": "Fletja möppur",
+    "flatten_content": "Ef safnskráin þín inniheldur undirmöppur skaltu nota 'Fletja möppur' til að færa allar myndir á sama stig.",
+    "viewer": "Skoðarinn",
+    "viewer_content": "Tvísmelltu á síðu til að opna skoðarann:\n• Lyklar ← → : flakk milli síðna\n• Lykill D : skipta á milli 3 lestrarhamna\n  - Stök síða: ein síða í einu\n  - Tvöfaldar síður: síða 1 ein, síðan 2-3, 4-5, o.s.frv.\n  - Samfelldar tvöfaldar síður: síða 1 ein, síðan 2-3, 3-4, 4-5, o.s.frv.\n• Músarhjól: hraður flakk\n• Ctrl+Hjól eða Ctrl+Plús/Mínus: aðdráttur\n• Ctrl+0: endurstilla aðdrátt\n• Lykill F11: heilskjár\n• Tvísmella: skipta um heilskjá\n• ESC lykill: hætta við skurðaramma / loka skoðara",
+    "join_pages": "Sameina síður",
+    "join_pages_content": "Veldu margar samfelldar síður, hægrismelltu → 'Sameina valdar síður' til að sameina síður lárétt eða lóðrétt. Snið myndarinnar sem búin er til samsvarar sniði upprunasíðnanna ef þær eru allar eins, annars PNG sjálfgefið.",
+    "split_pages": "Skipta síðum",
+    "split_pages_content": "Til að skipta tvöföldum síðum sjálfvirkt:\n• Veldu síðurnar til að skipta\n• Hægrismelltu → 'Skipta völdum síðum'\n• Veldu áttina (lóðrétt eða lárétt)",
+    "crop": "Skurður í skoðaranum",
+    "crop_content": "Í skoðaranum teiknarðu rétthyrning á myndina til að skilgreina skurðsvæði:\n• Teiknaðu rétthyrninginn með músinni\n• Breyttu stærð hans með því að draga í brúnir eða horn\n• Smelltu á 'Staðfesta skurð' til að virkja\n• Skurðurinn er virkjaður á núverandi mynd\n• ESC lykill: hætta við skurðaramma",
+    "shortcuts": "Flýtilyklar",
+    "shortcuts_content": "• Ctrl+Z: Afturkalla síðustu aðgerð\n• Ctrl+Y: Endurtaka afturkallaða aðgerð\n• Ctrl+A: Velja allar síður\n• Ctrl+I: Snúa við vali\n• Ctrl+C: Afrita valdar síður\n• Ctrl+X: Klippa valdar síður\n• Ctrl+V: Líma síður\n• Delete: Eyða völdum síðum\n• F5: Uppfæra mósaíkskjáinn\n• F11: Skipta um allan skjáinn (hætta með F11 eða ESC)",
+    "dark_mode": "Dökkt þema",
+    "dark_mode_content": "Smelltu á sól/tungl-hnappinn til að skipta á milli ljóss og dökks þema.",
+    "sort": "Raða síðum",
+    "sort_content": "Notaðu 'Raða' hnappinn til að endurraða síðum sjálfvirkt eftir:\n• Nafni, Tegund, Stærð, Breidd, Hæð, Upplausn eða DPI",
+    "save": "Vista",
+    "save_content": "• 'Vista': vistar breytingar í upprunalega skránni\n• 'Vista sem': býr til nýja safnskrá\n• 'Búa til CBZ': tiltækt í mynda-eingöngu ham (án safnskrár)",
+    "other": "Aðrar aðgerðir",
+    "other_content": "• Snúningur: snúðu einni eða fleiri síðum\n• Umbreyting: umbreyttu myndum í mismunandi snið (PNG, JPEG, WEBP, BMP, TIFF, GIF). Athugið: CMYK-myndum er sjálfkrafa breytt í RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Athugið: CMYK-myndum er sjálfkrafa breytt í RGB\n• Prentun: prentaðu valdar síður eða allar síður\n• Útdráttur: dragðu út tilteknar síður\n• Lýsigögn flipi: sýnir upplýsingar úr ComicInfo.xml skránni (ef til staðar í safnskránni). Ef þú bætir við eða fjarlægir síðu úr myndasögu sem inniheldur lýsigögn mun forritið bjóðast til að breyta fjölda síðna sem tilgreindur er í henni. Önnur lýsigögn er ekki hægt að breyta. Þessi takmörkun er viljandi og stafar af hönnunarval.",
+    "config_files": "Stillingar og tímabundnar skrár",
+    "config_files_content": "MosaicView býr til skrá sem heitir .mosaicview_config.json. Þessi skrá inniheldur nokkrar breytur sem eru nauðsynlegar fyrir að endurstillingarhnappurinn virki rétt, auk lista yfir nýlega opnaðar myndasögur sem er augljóslega nauðsynlegur til að sýna nýlega opnaðar skrár. MosaicView vistar einnig tímabundnar skrár, sem eru nauðsynlegar fyrir ýmsar myndvinnsluaðgerðir.\nAllar þessar skrár eru staðsettar í möppunni {temp_dir}.\nTímabundnar skrár eru eyddar í hvert skipti sem forritið er lokað, en skráin .mosaicview_config.json er eftir eðli sínu ætlað að varðveita.\nÞú getur hins vegar eytt þessum skrám handvirkt með því að fara í möppuna {temp_dir} eða með því að smella á hnappana hér að neðan. Skráin .mosaicview_config.json verður endurstofnuð í hvert skipti sem forritið er opnað og tímabundnar skrár verða endurstofnaðar eftir þörfum.",
+    "config_clear_temp": "Eyða tímabundnum skrám",
+    "config_clear_recent": "Hreinsa nýlegar skrár",
+    "config_clear_config": "Eyða stillingaskrá",
+    "config_temp_cleared": "Tímabundnum skrám hefur verið eytt.",
+    "config_config_cleared": "Stillingaskrá hefur verið eytt.\nHún verður endurstofnuð við næsta ræsingu forritsins.",
+    "language": "Val á tungumáli",
+    "language_content": "MosaicView er fáanlegt á mörgum tungumálum.\nAð sjálfgefnu greinir forritið sjálfkrafa tungumál stýrikerfisins þíns og birtist á því tungumáli ef það er stutt. Ef kerfið þitt notar óstutt tungumál birtist viðmótið á ensku.\nÞú getur breytt tungumálinu handvirkt hvenær sem er með því að nota fellivalmyndina sem er staðsett neðst í hnappasúlunni, fyrir neðan rennislána fyrir stærð smámynda. Val þitt verður vistað og notað næst þegar þú ræsir forritið.\nTILTÆK TUNGUMÁL: arabíska, armenska, búlgarska, danska, enska, eistneska, finnska, franska, gríska, hindí, hollenska, indónesíska, írlenska, íslenska, ítalska, japanska, kínverska (einfölduð), kínverska (hefðbundin), króatíska, kóreska, lettneska, litháíska, malasíska, maltneska, norska, pólska, portúgalska, rúmenska, slóvakíska, slóvenska, spænska, sænska, taílenska, tamílska, tékkneska, tyrkneska, þýska, úkraínska, ungverska, víetnamska.\nTILTÆK SKÁLDSKAPUR TUNGUMÁL: klingonska (latneska stafrófið og pIqaD stafrófið útgáfur), sindarin (latneska stafrófið og tengwar stafrófið útgáfur), quenya (latneska stafrófið og tengwar stafrófið útgáfur).\n\nÞetta tól notar Windows leturgerðir, nema fyrir pIqaD (Klingon mál) og tengwar (álfa mál: Sindarin og Quenya) leturgerðir. Þessar leturgerðir eru ókeypis og koma frá þessum vefsíðum:\n- fyrir pIqaD (Klingon stafróf): {url_piqad}\n- fyrir tengwar (álfa stafróf, fyrir Sindarin og Quenya): {url_tengwar}\nEf þessar vefsíður eru ekki lengur virkar geturðu sótt pIqaD og tengwar leturgerðir með því að smella á hnappana hér að neðan:\n\nÞessi hugbúnaður var þróaður á frönsku. Þýðingar á önnur tungumál voru gerðar með gervigreind, nánar tiltekið Claude. Ég ákvað að styðja um fjörutíu tungumál. En augljóslega tala ég ekki öll þessi tungumál. Því hafði ég engan annan kost en að nota gervigreind, þar sem það að ráða og borga 40 mismunandi þýðendur var ekki meðal þeirra möguleika sem skoðaðir voru. Vegna sjálfvirkrar eðlis þessara þýðinga geta verið villur til staðar. Ég biðst afsökunar á þessu.",
+    "credits": "Vibe Coding, ástin mín",
+    "credits_content": "Ég kann ekkert um forritun. Alls ekkert. Þess vegna þróaði ég þetta hugbúnað með hjálp Claude, gervigreindar Anthropic, og nánar tiltekið með Claude Code. Ég get ekki mælt nægilega með Claude Code, þetta forrit er frábært!",
+    "resize_pages": "Breyta stærð síðna",
+    "resize_pages_content": "Til að minnka eða stækka síðurnar þínar:\n• Veldu eina eða fleiri síður\n• Hægrismelltu → 'Breyta stærð'\n• Þrír valkostir eru í boði:\n  - Sérsniðnar víddir: sláðu inn æskilega breidd eða hæð (hlutföll eru sjálfkrafa varðveitt).\n  - Prósentuminnkun: veldu prósentu frá 10% til 90%\n  - Prósentustækkun: veldu prósentu frá 10% til 100%\n• Forritið sýnir áætlaða stærð myndanna þinna eftir breytingu\n• Breytingin á við strax um allar valdar síður",
+    "language_export_piqad": "pIqaD leturgerð",
+    "language_export_tengwar": "Tengwar leturgerðir",
+    "language_export_piqad_success": "Leturgerð flutt út: {filename}\nTiltæk í:",
+    "language_export_tengwar_success": "{count} leturgerðir fluttar út\nTiltækar í:",
+    "icons": "Táknmyndir",
+    "icons_content": "Flest táknin sem notuð eru í þessu tóli koma af þessari síðu og eru ókeypis til nota í óviðskiptalegum tilgangi: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nSumar hef ég breytt.\nAðeins ein táknmynd, Windows keyranlega táknmyndin, var búin til af mér (en með gervigreind, því ég er mjög, mjög, mjög slæmur grafískur hönnuður). Þú hefur mitt leyfi til að nota þessa táknmynd eins og þú vilt svo framarlega sem þú vísar í heimild þína.",
+    "icons_view_button": "Skoða táknmyndir",
+    "icons_window_title": "MosaicView Táknmyndir",
+    "icons_save_all": "Vista táknmyndir",
+    "icons_saved_success": "{count} táknmynd(ir) vistaðar í:",
+    "icons_save_failed": "Get ekki vistað táknmyndir: {error}",
+    "split_ui": "Tveggja spjaldagluggaviðmót",
+    "split_ui_content": "MosaicView gerir kleift að sýna tvær skjalasafnar samtímis, hlið við hlið.\n\nSmelltu á Skipta táknið til að opna annað spjaldaglugga. Hvert spjaldaglugga er sjálfstætt: þú getur opnað, breytt og vistað skjalasafn sérstaklega. Virka spjaldagluggan er gefið til kynna með bláum ramma.\n\nTil að færa síður frá einu spjaldaglugga til annars skaltu draga þær beint. Ef margar síður eru valdar færast þær allar saman. Síðurnar eru settar inn á þeirri stöðu sem rauða stikan gefur til kynna.\n\nSmelltu á Loka öðru spjaldaglugga táknið til að fara aftur í eins spjaldaglugga ham.",
+    "license_gpl": "GPL v3 leyfi",
+    "license_unrar": "UnRAR leyfi",
+    "config_clear_clipboard": "Hreinsa klippiborðsskrár",
+    "config_clipboard_note": "Undantekning: Tímabundnar skrár sem klippiborð Windows notar (clipboard_XXXXX skrár) eru geymdar í 12 klukkustundir eftir afritun, svo þú getir límt þær jafnvel eftir að hafa lokað forritinu. Eftir 12 klukkustundir eru þær sjálfkrafa eyddar.",
+    "config_log_note": "Lotvidskipti (PDF i CBZ og CBR i CBZ) bua til atviksskra vidh villum. Thessar skrar (Log_pdftocbz_.txt og Log_cbrtocbz_.txt) eru geymdar jafnvel eftir lokun forritsins, svo haegt se ad skodha thaer sidhar. Thaer eru eingongu eyddar medh hnappnum \"Eydha timabundnum skram\" her ad ofan.",
+    "config_clipboard_cleared": "Klippiborðsskrár hafa verið hreinsaðar.",
+    "adjust_images": "Myndaaðlögun",
+    "adjust_images_content": "Þessi aðgerð gerir þér kleift að fara yfir myndir þínar beint í MosaicView. Þú getur breytt birtustig, birtumun, skarpni, þrepa, mettun, beitt áhrifum (svart-hvítt, sepia, litasnúningur), stillt gæði þjöppunar, fjarlægt liti, beitt gegnsæi eða umskráð í mismunandi litadýpi. Sumar stillingar hafa sérsniðinn skoðara sem gerir þér kleift að sjá niðurstöðuna í fullri upplausn áður en þú notar hana. Smælingur sýnir niðurstöðuna í rauntíma í aðalglugga.",
+    "create_icon": "Búa til tákn",
+    "create_icon_content": "MosaicView gerir þér kleift að búa til táknmyndaskrár (.ico) úr hvaða mynd sem er í mósaíkinu.\n• Hægrismelltu á mynd → 'Búa til tákn'\n• Rammadu inn svæðið sem þú vilt í skoðaranum (táknið verður nauðsynlega ferningslaga)\n• Stilltu gegnsæi ef þörf krefur\n• Staðfestu: .ico skráin er bætt beint við mósaíkið\n• .ico skrár innihalda sjálfkrafa allar staðlaðar upplausnanir (frá 16×16 til 256×256)\n• Svo lengi sem .ico skrá er í mósaíkinu er vistun í CBZ safn læst, þar sem ICO snið er ekki stutt af þessum söfnum. Flyttu .ico skrána út sérstaklega (Ctrl+C og límdu í Windows möppu), eyðtu henni síðan úr mósaíkinu áður en þú vistar.",
+    "batch_convert": "Hópumbreyting",
+    "batch_convert_content": "MosaicView býður upp á þrjár runuumbreytingaraðgerðir, aðeins tiltækar þegar mósaík er tóm. Fyrir hverja þeirra er meginreglan sú sama : veldu möppu, staðfestu, fylgstu með framvindu í rauntíma, skoðaðu lokaryðið. Valkostur gerir kleift að eyða upprunalegum skrám varanlega í stað þess að senda þær í ruslið.\n• CBR → CBZ : umbreytir öllum CBR (RAR) skrám í möppu og undirmöppum hennar. Ef CBR er í raun ZIP, er það einfaldlega endurnefnt án umbreytingar.\n• PDF → CBZ : umbreytir öllum PDF skrám í möppu og undirmöppum hennar. Myndir eru dregnar út án endurþjöppunar.\n• EINANGRAÐAR MYNDIR → CBZ : býr til einstaka CBZ fyrir hverja myndaskrá sem finnst í möppu og undirmöppum hennar. Ógildar, skemmdar, fjölblaðar (TIFF) eða hreyfimyndar (GIF) myndir eru hunsaðar og skráðar í kladda.",
+    "config_open_temp_folder": "Opna tímabundna möppu",
+    "icon_toolbar": "Táknaslá",
+    "icon_toolbar_content": "Táknslátturinn veitir skjótan aðgang að aðalaðgerðum forritsins. Þú getur endurraðað táknunum að eigin vild með því að draga þau beint í slátturinn. Til að velja hvaða tákn á að sýna eða fela, smelltu á gírtakkann neðst í slátturnum: stillingagluggi opnast þar sem þú getur fært tákn milli virka sláttursins og varabirgðanna. Notaðu « + » og « − » takka til að stilla stærð táknanna. Stillingarnar eru vistaðar sjálfkrafa.",
+    "license_7zip": "7-Zip leyfi"
+  },
+  "misc": {
+    "file_word": "skrá",
+    "files_word": "skrár",
+    "corrupted": "skemmd",
+    "yes": "Já",
+    "no": "Nei",
+    "cancel": "Hætta við",
+    "selection_suffix": "afrit-val"
+  },
+  "metadata": {
+    "title": "Titill",
+    "series": "Röð",
+    "number": "Númer",
+    "volume": "Bindi",
+    "summary": "Samantekt",
+    "writer": "Rithöfundur",
+    "penciller": "Teiknarí",
+    "inker": "Blekhofi",
+    "colorist": "Litari",
+    "letterer": "Letrari",
+    "cover_artist": "Kápumyndlistarmaður",
+    "editor": "Ritstjóri (einstaklingur)",
+    "publisher": "Útgefandi (fyrirtæki)",
+    "imprint": "Útgáfumerki",
+    "genre": "Tegund",
+    "web": "Vefsíða",
+    "page_count": "Síðufjöldi",
+    "language_iso": "Tungumál",
+    "format": "Snið",
+    "black_and_white": "Svart-hvítt",
+    "manga": "Manga",
+    "year": "Ár",
+    "month": "Mánuður",
+    "day": "Dagur",
+    "notes": "Athugasemdir",
+    "characters": "Persónur",
+    "locations": "Staðir",
+    "teams": "Lið",
+    "story_arc": "Söguþráður",
+    "story_arc_number": "Bogafjöldi",
+    "series_group": "Þáttahópur",
+    "count": "Fjöldi tölublaða",
+    "alternate_series": "Önnur þáttaröð",
+    "alternate_number": "Annað númer",
+    "alternate_count": "Annað upplag",
+    "age_rating": "Aldurstakmörk",
+    "series_complete": "Þáttaröð lokið",
+    "translator": "Þýðandi",
+    "tags": "Merki",
+    "scan_information": "Skannupplýsingar",
+    "community_rating": "Samfélagsmat",
+    "review": "Gagnrýni",
+    "gtin": "GTIN",
+    "pages": "Síður",
+    "pages_col_image": "Mynd",
+    "pages_col_type": "Tegund",
+    "pages_col_width": "Breidd",
+    "pages_col_height": "Hæð",
+    "pages_col_size": "Stærð (B)"
+  },
+  "web": {
+    "web_download_progress": "Niðurhal: {downloaded}/{total} myndir...",
+    "web_download_cancel": "Hætta við",
+    "web_no_images": "Engar myndir",
+    "web_no_images_found": "Engar myndir fundust á þessari síðu.",
+    "web_imported": "{count} mynd(ir) fluttar inn frá vefsíðu",
+    "web_drag_drop_title": "Draga og sleppa vefmynd",
+    "web_copy_paste_message": "Bein drag og sleppið úr vafra er ekki stutt.\n\nAnnar valkostur (einfaldari):\n\n1. Hægrismelltu á myndina í vafranum\n2. Veldu 'Afrita mynd'\n3. Í MosaicView notaðu 'Líma' hnappinn eða Ctrl+V\n\nÞessi aðferð virkar með allar vefmyndir!",
+    "import_web_button": "Vefinnflutningur",
+    "import_web_tooltip": "Límdu netfang til að sækja allar myndir af síðunni",
+    "import_web_menu": "Vefinnflutningur...",
+    "import_web_dialog_title": "Flytja inn myndir af vefsíðu",
+    "import_web_url_label": "Vefslóð:",
+    "import_web_ok_button": "Í lagi",
+    "import_web_cancel_button": "Hætta við",
+    "import_web_invalid_url": "Ógild vefslóð. Vinsamlegast sláðu inn gilda vefslóð."
+  },
+  "donation": {
+    "menu_label": "Gefðu höfundi",
+    "title": "Gefa",
+    "message": "Þér líkar við þetta litla tól og notar það reglulega.\n\nÉg hef fjárfest í því nokkur hundruð klukkustundir. Myndir þú íhuga að þakka mér með því að gefa? Vertu vinsamlegur, ég þarf virkilega peninga til að fylla sundlaugina mína með kampavíni. Hvort sem þú vilt senda mér nokkra aura eða nokkra milljarða evra, tek ég við öllum upphæðum. Þú getur gefið þessa gjöf í gegnum paypal"
+  },
+  "mail": {
+    "tooltip": "Þessi hnappur opnar sjálfgefna tölvupóstforritið þitt í Windows til að senda tölvupóst. Ef ekkert forrit er stillt (til dæmis ef þú notar eingöngu vefpóst), geturðu afritað MosaicView-heimilisfangið á klemmuspjaldið með því að hægrismella á táknið.",
+    "copy_address": "Afrita netfang MosaicView",
+    "menu_label": "Senda tölvupóst til MosaicView",
+    "icon_label": "Senda tölvupóst"
+  },
+  "menu": {
+    "file": "Skrá",
+    "file_open": "Opna skrá",
+    "file_close": "Loka skrá",
+    "batch_convert": "Runuumbreytingar á skrám",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Stök myndir → CBZ",
+    "edit": "Breyta",
+    "undo": "Afturkalla",
+    "redo": "Endurtaka",
+    "paste": "Líma",
+    "delete": "Eyða",
+    "invert_selection": "Snúa við vali",
+    "select_all": "Velja allt",
+    "deselect": "Afvelja",
+    "refresh_mosaic": "Uppfæra mósaík",
+    "images": "Myndir",
+    "rotation": "Snúningur",
+    "archives": "Skjalasöfn",
+    "sort": "Röðun",
+    "system": "Kerfi",
+    "decrease_font": "Minnka leturgerð",
+    "increase_font": "Stækka leturgerð",
+    "language": "Tungumál",
+    "language_real": "Raunveruleg tungumál",
+    "language_fictional": "Skáldleg tungumál",
+    "about": "Um",
+    "export_piqad_font": "Vista pIqaD leturgerð",
+    "export_tengwar_fonts": "Vista tengwar leturgerðir"
+  }
+}

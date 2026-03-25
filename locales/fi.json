@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Digitaalisten sarjakuvien keräilijän linkkuveitsi",
+  "buttons": {
+    "open_file": "Avaa CBZ/CBR/CB7/PDF",
+    "close_file": "Sulje tiedosto",
+    "create_cbz": "Luo CBZ-arkisto",
+    "flatten_dirs": "Siirrä kaikki tiedostot\njuureen ja poista\nalikohteet",
+    "renumber": "Sivujen\nnumeRointi",
+    "undo": "⤺ Kumoa",
+    "redo": "Tee uudelleen ⤻",
+    "copy": "Kopioi",
+    "cut": "Leikkaa",
+    "paste": "Liitä",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Muuntaminen toiseen\nkuvamuotoon",
+    "join_pages": "Yhdistä sivut",
+    "split_page": "Jaa sivu",
+    "save_as": "Tallenna nimellä\n(luo uusi CBZ)",
+    "save_selection": "Tallenna valinta\nCBZ-tiedostona",
+    "print_selection": "Tulosta valinta",
+    "print_all": "Tulosta koko sarjakuva",
+    "sort": "Järjestä",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Muunna",
+    "cancel": "Peruuta",
+    "split_button": "Jaa",
+    "join_button": "Aloita",
+    "validate_crop": "Vahvista rajaus",
+    "ok": "OK",
+    "close": "Sulje",
+    "apply_and_save": "Käytä muutoksia ja tallenna tiedosto",
+    "apply_and_create": "Käytä muutoksia ja luo CBZ-tiedosto",
+    "close_and_lose": "Sulje tiedosto ja menetä muutokset",
+    "cancel_return": "Peruuta ja palaa mosaiikkiin",
+    "update_page_count": "Päivitä sivumäärä\nmetatiedoissa",
+    "invert_selection": "Käännä valinta",
+    "reduce_size": "Muuta sivun kokoa",
+    "mirror_vertical": "⇅",
+    "create_gif": "Luo GIF",
+    "edit_gif": "Muokkaa animoitua GIF:iä",
+    "save_to_folder": "Vie valitut\nsivut",
+    "continue": "Jatka",
+    "reset": "↻",
+    "yes": "Kyllä",
+    "no": "Ei",
+    "renumber_recommended": "Numeroi uudelleen (suositeltu)",
+    "ignore_and_save": "Ohita ja tallenna",
+    "rename_to_cbz": "Nimeä uudelleen .cbz:ksi",
+    "open_without_rename": "Avaa ilman uudelleennimeämistä",
+    "rename_to_cbr": "Nimeä uudelleen .cbr",
+    "adjustments": "Kirkkaus,\nkontrasti jne.",
+    "batch_cbr_to_cbz": "CBR-tiedostojen\n erämuunnos CBZ-muotoon",
+    "batch_pdf_to_cbz": "PDF-tiedostojen\n erämuunnos CBZ-muotoon",
+    "batch_img_to_cbz": "Yksittäisten kuvien\n erämuunnos CBZ:ksi",
+    "icon_toolbar_reset": "Palauta oletukset",
+    "delete_selected": "Poista",
+    "save": "Tallenna",
+    "rename_to_cb7": "Nimeä uudelleen .cb7:ksi",
+    "split_ui": "Jaa käyttöliittymä kahteen paneeliin",
+    "unsplit_ui": "Sulje toinen paneeli"
+  },
+  "tabs": {
+    "mosaic": "Mosaïque",
+    "metadata": "Metatiedot"
+  },
+  "viewer": {
+    "title": "Katselin",
+    "mode_single": "Yksittäinen sivu  [D]",
+    "mode_double": "Kaksoissivu  [D]",
+    "mode_continuous": "Jatkuva tila  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Edellinen sivu (←)",
+      "next_page": "Seuraava sivu (→)",
+      "zoom_in": "Lähennä (Ctrl+Plus)",
+      "zoom_out": "Loitonna (Ctrl+Miinus)",
+      "zoom_reset": "Nollaa zoomaus (Ctrl+0)",
+      "reading_mode_double": "Vaihda lukutilaa (D) → Kaksisivuinen",
+      "reading_mode_continuous": "Vaihda lukutilaa (D) → Jatkuva kaksisivuinen",
+      "reading_mode_single": "Vaihda lukutilaa (D) → Yksittäinen sivu",
+      "fullscreen_exit": "Poistu koko näytöstä (F11)",
+      "fullscreen": "Koko näyttö (F11)",
+      "close_viewer": "Sulje katselin (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Vioittunut kuva - Korvaa",
+      "corrupted_delete": "⚠️ Poista tämä kuva",
+      "copy": "Kopioi (Ctrl+C)",
+      "cut": "Leikkaa (Ctrl+X)",
+      "paste": "Liitä (Ctrl+V)",
+      "paste_clipboard": "Liitä leikepöydältä (Ctrl+V)",
+      "delete": "Poista (Delete)",
+      "deselect": "Poista valinta (ESC)",
+      "rotate_right": "↻ Kierrä oikealle",
+      "rotate_left": "↺ Kierrä vasemmalle",
+      "mirror": "⇄ Peilaa vaakasuunnassa",
+      "crop": "Rajaa",
+      "convert": "Muunna toiseen muotoon...",
+      "join": "Yhdistä valitut sivut",
+      "split": "Jaa valittu sivu",
+      "save_selection": "Tallenna valinta CBZ-tiedostona",
+      "print_selection": "Tulosta valinta",
+      "copy_archive": "Kopioi koko arkisto",
+      "undo": "Kumoa (Ctrl+Z)",
+      "redo": "Tee uudelleen (Ctrl+Y)",
+      "renumber_auto": "Sivujen uudelleennumerointi (monisivujen automaattinen tunnistus)",
+      "renumber_simple": "Sivujen uudelleennumerointi (yksinkertainen numerointi)",
+      "sort_submenu": "Järjestä sivut",
+      "sort_name": "Nimen mukaan",
+      "sort_type": "Tyypin mukaan",
+      "sort_size": "Koon mukaan",
+      "sort_width": "Leveyden mukaan",
+      "sort_height": "Korkeuden mukaan",
+      "sort_resolution": "Resoluution mukaan",
+      "sort_dpi": "DPI:n mukaan",
+      "create_cbz": "Luo CBZ-arkisto",
+      "save_as": "Tallenna nimellä...",
+      "close_file": "Sulje tiedosto",
+      "help": "Käyttöohje",
+      "update_page_count": "Päivitä sivumäärä metatiedoissa",
+      "invert_selection": "Käännä valinta (Ctrl+I)",
+      "reduce_size": "Muuta sivun kokoa",
+      "mirror_vertical": "⇅ Pystysuora peili",
+      "edit_animated_gif": "Muokkaa animoitua GIF:iä...",
+      "save_to_folder": "Vie valitut sivut",
+      "adjustments": "Kirkkaus, kontrasti, värit...",
+      "refresh_mosaic": "Päivitä mosaiikki (F5)",
+      "create_ico": "Luo .ico-tiedosto"
+    },
+    "canvas_no_file": {
+      "open": "Avaa CBZ/CBR/CB7/PDF",
+      "recent_files": "Viimeisimmät tiedostot",
+      "clear_history": "Tyhjennä historia"
+    },
+    "canvas_with_file": {
+      "close": "Sulje tiedosto",
+      "paste": "Liitä (Ctrl+V)",
+      "paste_clipboard": "Liitä leikepöydältä (Ctrl+V)",
+      "select_all": "Valitse kaikki (Ctrl+A)",
+      "deselect": "Poista valinta (ESC)",
+      "copy_archive": "Kopioi koko arkisto",
+      "print_all": "Tulosta koko sarjakuva",
+      "renumber_auto": "Sivujen uudelleennumerointi (monisivujen automaattinen tunnistus)",
+      "renumber_simple": "Sivujen uudelleennumerointi (yksinkertainen numerointi)",
+      "flatten": "Tasoita kansiot",
+      "save_selection": "Tallenna valinta CBZ-tiedostona",
+      "hide_sidebar": "« Piilota painikesarake",
+      "show_sidebar": "» Näytä painikesarake",
+      "decrease_thumbs": "Pienennä pikkukuvien kokoa",
+      "increase_thumbs": "Suurenna pikkukuvien kokoa",
+      "theme_dark": "Vaihda tummaan teemaan",
+      "theme_light": "Vaihda vaaleaan teemaan",
+      "sort_submenu": "Järjestä sivut",
+      "undo": "Kumoa (Ctrl+Z)",
+      "redo": "Tee uudelleen (Ctrl+Y)",
+      "create_cbz": "Luo CBZ-arkisto",
+      "save_as": "Tallenna nimellä...",
+      "help": "Käyttöohje",
+      "update_page_count": "Päivitä sivumäärä metatiedoissa",
+      "invert_selection": "Käännä valinta (Ctrl+I)",
+      "fullscreen": "Koko näyttö (F11)",
+      "fullscreen_exit": "Poistu koko näytöstä (F11 tai ESC)",
+      "quit": "Sulje sovellus"
+    },
+    "canvas": {
+      "quit": "Sulje sovellus",
+      "reset": "Palauta sovellus:\n• ikkunan koko ja sijainti\n• tumma tila → vaalea\n• pikkukuvakoko → normaali\n• sivupalkki → näkyvissä / 220 px\n• kieli → automaattinen tunnistus\n• fonttikoko → oletus",
+      "reset_label": "Palauta sovellus"
+    },
+    "font_size": {
+      "decrease": "Pienennä fonttikokoa",
+      "increase": "Suurenna fonttikokoa"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Järjestä nimen mukaan",
+    "sort_type": "Järjestä tyypin mukaan",
+    "sort_size": "Järjestä koon mukaan",
+    "sort_width": "Järjestä leveyden mukaan",
+    "sort_height": "Järjestä korkeuden mukaan",
+    "sort_resolution": "Järjestä resoluution mukaan",
+    "sort_dpi": "Järjestä DPI:n mukaan"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Tyhjä arkisto",
+        "message": "CBZ-arkisto ei sisällä yhtään tiedostoa."
+      },
+      "empty_cbr": {
+        "title": "Tyhjä arkisto",
+        "message": "CBR-arkisto ei sisällä yhtään tiedostoa."
+      },
+      "files_ignored": {
+        "title": "Tiedostot ohitettu"
+      },
+      "no_selection_crop": {
+        "title": "Ei valintaa",
+        "message": "Valitse rajattava kuva."
+      },
+      "multi_selection_crop": {
+        "title": "Useita valittuja",
+        "message": "Voit rajata vain yhden kuvan kerrallaan.\nValitse vain yksi kuva."
+      },
+      "invalid_selection_crop": {
+        "title": "Virheellinen valinta",
+        "message": "Vain kuvia voidaan rajata."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Toiminto ei käytettävissä",
+        "message": "Sivujen siirtäminen ei ole käytettävissä alikansioissa.\nTasoita kansiot tai palaa juureen."
+      },
+      "no_selection_convert": {
+        "title": "Ei valintaa",
+        "message": "Valitse vähintään yksi muunnettava kuva."
+      },
+      "invalid_selection_convert": {
+        "title": "Virheellinen valinta",
+        "message": "Vain kuvia voidaan muuntaa."
+      },
+      "no_selection_split": {
+        "title": "Ei valintaa",
+        "message": "Valitse jaettava kuva."
+      },
+      "multi_selection_split": {
+        "title": "Useita valittuja",
+        "message": "Voit jakaa vain yhden kuvan kerrallaan.\nValitse vain yksi kuva."
+      },
+      "invalid_selection_split": {
+        "title": "Virheellinen valinta",
+        "message": "Vain kuvia voidaan jakaa."
+      },
+      "invalid_number_split": {
+        "title": "Virheellinen numero",
+        "message": "Sivujen määrän on oltava 2-10 välillä."
+      },
+      "insufficient_selection_join": {
+        "title": "Riittämätön valinta",
+        "message": "Valitse vähintään 2 yhdistettävää kuvaa."
+      },
+      "invalid_selection_join": {
+        "title": "Virheellinen valinta",
+        "message": "Vain kuvia voidaan yhdistää."
+      },
+      "pil_not_available": {
+        "title": "PIL ei käytettävissä",
+        "message": "PIL-moduuli ei ole käytettävissä järjestelmän leikepöydältä liittämistä varten."
+      },
+      "format_not_supported": {
+        "title": "Muotoa ei tueta",
+        "message": "Kuvamuotoa ei tueta tai tiedosto on vioittunut.\nTuetut muodot: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Ei valintaa",
+        "message": "Piirrä ensin rajaussuorakulmio."
+      },
+      "cannot_open_file": {
+        "title": "Tiedostoa ei voi avata",
+        "message": "Tiedostoa ei voida ladata."
+      },
+      "corrupted_images": {
+        "title": "Vioittuneita kuvia",
+        "summary": "{count} vioittunut kuva(a) havaittu {total}:sta.",
+        "hint": "Ne näytetään erikoiskuvakkeella.\nNapsauta vioittunutta kuvaa hiiren kakkospainikkeella korvataksesi tai poistaaksesi sen.",
+        "more": "... ja {count} muuta"
+      },
+      "no_image_print": {
+        "title": "Ei kuvia",
+        "message": "Ei tulostettavia kuvia."
+      },
+      "no_valid_image_print": {
+        "title": "Ei kuvia",
+        "message": "Ei kelvollisia tulostettavia kuvia."
+      },
+      "no_selection_print": {
+        "title": "Ei valintaa",
+        "message": "Valitse vähintään yksi kuva."
+      },
+      "no_valid_selection_print": {
+        "title": "Ei kuvia",
+        "message": "Valinnassa ei ole kelvollisia kuvia."
+      },
+      "save_cancelled": {
+        "title": "Tallennus peruutettu",
+        "message": "Korjaa tiedostonimet manuaalisesti ennen tallennusta."
+      },
+      "empty_pdf": {
+        "title": "Tyhjä PDF",
+        "message": "PDF-tiedosto ei sisällä yhtään sivua."
+      },
+      "no_selection_save": {
+        "title": "Varoitus",
+        "message": "Valitse vähintään yksi tallennettava sivu."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Siirtäminen poistettu käytöstä",
+        "message": "Sivujen siirtäminen vetämällä on käytettävissä vain sarjakuvan juuressa.\n\nSivujen siirtämiseksi:\n1. Palaa juureen napsauttamalla ylösnousu-kuvaketta\n2. Tai tasoita sarjakuva poistaaksesi alikansiot"
+      },
+      "no_selection_reduce": {
+        "title": "Ei valintaa",
+        "message": "Valitse vähintään yksi pienennettävä sivu."
+      },
+      "invalid_selection_reduce": {
+        "title": "Virheellinen valinta",
+        "message": "Vain kuvia voidaan pienentää."
+      },
+      "invalid_dimensions": {
+        "title": "Virheelliset mitat",
+        "message": "Anna kelvolliset mitat (positiiviset kokonaisluvut)."
+      },
+      "no_images_for_gif": {
+        "title": "Ei kuvia",
+        "message": "Animoidun GIF:n luomiseen tarvitaan vähintään yksi kuva."
+      },
+      "no_valid_images": {
+        "title": "Ei kelvollisia kuvia",
+        "message": "GIF:n luomiseen ei löytynyt kelvollisia kuvia."
+      },
+      "animated_gif_in_comic": {
+        "title": "Animoitu GIF havaittu",
+        "message": "Varoitus: Tämä sarjakuva sisältää yhden tai useamman animoidun GIF:n.\\n\\nSarjakuvalukijat (CDisplayEx, YACReader, jne.) näyttävät vain ensimmäisen kehyksen jokaisesta GIF:stä staattisena sivuna.\\n\\nNähdäksesi animoidun GIF:n oikein, sinun on tallennettava se erikseen sarjakuvan ulkopuolelle käyttämällä \"Vie valitut sivut\" tai \"Muokkaa animoitua GIF:ä\" -painiketta.\\n\\nHaluatko jatkaa sarjakuvan tallentamista joka tapauksessa?"
+      },
+      "no_selection_adjust": {
+        "title": "Ei valintaa",
+        "message": "Valitse vahintaan yksi kuva kayttaaksesi saatoja."
+      },
+      "invalid_selection_adjust": {
+        "title": "Virheellinen valinta",
+        "message": "Saatoja voidaan kayttaa vain kuviin."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Toiminto ei ole käytettävissä",
+        "message": "Uudelleennumerointi ei ole käytettävissä, ennen kuin kansiot on tasoitettu.\nTasoita kansiot ennen uudelleennumerointia."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP-virhe",
+        "message": "'{file}': Tiedosto ei ole kelvollinen ZIP-arkisto tai se on vioittunut."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP-virhe",
+        "message": "CBZ-tiedostoa ei voi avata: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR-virhe",
+        "message": "'{file}': Tiedosto ei ole kelvollinen RAR-arkisto tai se on vioittunut."
+      },
+      "rar_cannot_open": {
+        "title": "RAR-virhe",
+        "message": "CBR-arkistoa ei voi avata: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Virhe",
+        "message": "Odottamaton virhe avattaessa CBR:ää: {error}"
+      },
+      "join_failed": {
+        "title": "Virhe",
+        "message": "Kuvien yhdistäminen epäonnistui."
+      },
+      "paste_failed": {
+        "title": "Virhe",
+        "message": "Virhe liitettäessä: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Virhe",
+        "message": "Arkiston kopiointi epäonnistui: {error}"
+      },
+      "crop_invalid": {
+        "title": "Virhe",
+        "message": "Rajausalue on virheellinen."
+      },
+      "crop_failed": {
+        "title": "Virhe",
+        "message": "Kuvan rajaus epäonnistui: {error}"
+      },
+      "load_image_failed": {
+        "title": "Virhe",
+        "message": "Kuvan lataaminen epäonnistui:\n{error}"
+      },
+      "print_error": {
+        "title": "Tulostusvirhe",
+        "message": "Virhe tulostuksessa:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Tulostus ei käytettävissä",
+        "message": "Win32print-moduulia ei ole asennettu.\nAsenna se komennolla: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Tiedostoa ei löydy",
+        "message": "Tiedostoa ei ole enää olemassa:\n{path}"
+      },
+      "import_failed": {
+        "title": "Tuontivirhe",
+        "message": "Tiedoston tuonti epäonnistui: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF ei asennettu",
+        "message": "PyMuPDF (fitz) -kirjastoa ei ole asennettu.\nAsenna se komennolla: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Virhe",
+        "message": "Virhe PDF:n tuonnissa: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF-virhe",
+        "message": "PDF:n lataaminen epäonnistui:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Tiedostonimien kaksoiskappaleet",
+        "intro": "{count} päällekkäinen tiedostonimi havaittu:\n\n",
+        "item": "  • {name} ({times} kertaa)\n",
+        "more": "  ... ja {more} muuta\n",
+        "footer": "\nZIP-arkistot eivät hyväksy päällekkäisiä nimiä.\nNimeä nämä tiedostot uudelleen ennen tallentamista."
+      },
+      "save_failed": {
+        "title": "Virhe",
+        "message": "Tiedoston tallennus epäonnistui: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Virhe",
+        "message": "Arkiston luominen epäonnistui: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Virhe",
+        "message": "Valinnan tallennus epäonnistui: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF:n luontivirhe",
+        "message": "Animoidun GIF:n luominen epäonnistui:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Tallennusvirhe",
+        "message": "Virhe tallennettaessa tiedostoja:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Uudelleennimeämisvirhe",
+        "message": "Tiedostoa ei voi nimetä uudelleen: {error}"
+      },
+      "pdf_password_required": {
+        "title": "Salasanalla suojattu PDF",
+        "message": "Tämä PDF-tiedosto on salattu ja salasanalla suojattu.\nSitä ei voi avata ilman salasanaa."
+      },
+      "pdf_unlock_failed": {
+        "title": "Virhe",
+        "message": "Avatun PDF-tiedoston tallentaminen epäonnistui:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: salattu PDF-tiedosto (salasana vaaditaan), ohitettu",
+      "file_too_large": {
+        "title": "Tiedosto on liian suuri",
+        "message": "Tiedosto {filename} on kooltaan {size} ja ylittää kuvalle sallitun enimmäiskoon (500 Mt)."
+      },
+      "license_file_not_found": {
+        "message": "Lisenssiä ei löydy: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Lisenssitiedostoa ei voida lukea: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z-virhe",
+        "message": "Tiedosto '{file}' ei ole kelvollinen 7Z-arkisto tai se on vioittunut."
+      },
+      "delete_error": "Virhe poistettaessa: {error}",
+      "export_error": "Virhe vietäessä: {error}",
+      "font_source_not_found": "Fontin lähdetiedostoa ei löydy: {path}",
+      "no_tengwar_font": "Tengwar-fonttia ei löydy.",
+      "no_icons_found": "Kuvakkeita ei löydy.",
+      "unsupported_files": {
+        "title": "Ei-tuetut tiedostot",
+        "message": "Seuraavia tiedostoja ei tueta ja ne ohitettiin:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF luotu onnistuneesti",
+        "message": "Animoitu GIF '{name}' on luotu ja lisätty mosaiikkiin."
+      },
+      "pywin32_required": {
+        "title": "Toiminto ei käytettävissä",
+        "message": "Pywin32-moduuli vaaditaan järjestelmän leikepöydältä liittämiseen.\nAsenna se komennolla: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Kuvat tuotu",
+        "message": "{count} kuva(a) tuotu"
+      },
+      "archive_copied": {
+        "title": "Arkisto kopioitu",
+        "message": "Arkisto on kopioitu leikepöydälle."
+      },
+      "function_not_available": {
+        "title": "Toiminto ei käytettävissä",
+        "message": "Tämä toiminto ei ole tällä hetkellä käytettävissä."
+      },
+      "duplicate_detected": {
+        "title": "Kaksoiskappaleet havaittu",
+        "message": "Tiedosto tällä nimellä on jo olemassa.\n\nTiedosto on nimetty uudelleen:\n{name}"
+      },
+      "replace_success": {
+        "title": "Onnistui",
+        "message": "Kuva '{name}' on korvattu onnistuneesti."
+      },
+      "history_cleared": {
+        "title": "Historia tyhjennetty",
+        "message": "Viimeisimpien tiedostojen lista on tyhjennetty."
+      },
+      "files_copied_clipboard": {
+        "title": "Tiedostot kopioitu leikepöydälle",
+        "message": "Ulos vetäminen ei ole käytettävissä teknisistä syistä.\n\n✓ {count} {word} kopioitu leikepöydälle\n\nVoit nyt liittää minne haluat:\n  • Napsauta hiiren oikealla painikkeella → Liitä\n  • Tai Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Korjaus suoritettu",
+        "message": "{count} tiedostonimi(ä) korjattu."
+      },
+      "import_success": {
+        "title": "Tuonti onnistui",
+        "message": "{count} sivu(a) tuotu tiedostosta {file}"
+      },
+      "pdf_import_success": {
+        "title": "Tuonti onnistui",
+        "message": "{count} PDF-sivu(a) tuotu tiedostosta {file}\nLaatu: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Onnistui",
+        "message": "PDF muunnettu onnistuneesti!\n{count} sivua ladattu {dpi} DPI:llä."
+      },
+      "cbz_saved": {
+        "title": "Onnistui",
+        "message": "CBZ-tiedosto tallennettu:"
+      },
+      "cbz_converted": {
+        "title": "Onnistui",
+        "message": "Tiedosto muunnettu CBZ-muotoon:",
+        "question": "Haluatko poistaa alkuperäisen CBR-tiedoston?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Onnistui",
+        "message": "Tiedosto muunnettu CBZ-muotoon:",
+        "question": "Haluatko poistaa alkuperäisen PDF-tiedoston?"
+      },
+      "cbz_save_as": {
+        "title": "Onnistui",
+        "message": "Uusi CBZ-tiedosto tallennettu: {path}"
+      },
+      "cbz_created": {
+        "title": "Onnistui",
+        "message": "CBZ-arkisto luotu:"
+      },
+      "selection_saved": {
+        "title": "Onnistui",
+        "message": "Valinta tallennettu:"
+      },
+      "flatten_done": {
+        "title": "Tasoitus valmis",
+        "message": "{files} tiedosto(a) siirretty {dirs} alikansio(i)sta."
+      },
+      "language_changed": {
+        "title": "Kieli vaihdettu",
+        "message": "Käyttöliittymän kieli on vaihdettu onnistuneesti."
+      },
+      "new_cbz_saved": {
+        "title": "Tiedosto Tallennettu",
+        "message": "Uusi CBZ-tiedosto on tallennettu onnistuneesti:",
+        "question": "Haluatko poistaa alkuperäisen tiedoston?"
+      },
+      "page_count_updated": {
+        "title": "Sivumäärä päivitetty",
+        "message": "Metatietojen sivumäärä on päivitetty {count} sivuksi."
+      },
+      "files_saved": {
+        "title": "Tallennettu onnistuneesti",
+        "message": "{count} tiedostoa tallennettiin kohteeseen:\n{folder}",
+        "open_folder": "Haluatko avata kansion?"
+      },
+      "adjustments_applied": {
+        "title": "Saadot kaytetty",
+        "message": "Saadot on kaytetty onnistuneesti."
+      },
+      "pdf_unlocked": {
+        "title": "PDF avattu",
+        "message": "Avattu PDF-tiedosto on tallennettu:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Suuri arkisto",
+        "message": "Tämä arkisto on {size} Mt purettuna.\nLataaminen voi kuluttaa paljon muistia (RAM).\n\nHaluatko jatkaa?"
+      },
+      "confirm_delete": {
+        "title": "Vahvistus",
+        "message": "Haluatko todella poistaa {count} tiedosto(a) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Poistetaanko lähdetiedostot?",
+        "message": "Haluatko poistaa kuvat, jotka yhdistettiin?\n\nKyllä = Poista lähdetiedostot\nEi = Säilytä lähdetiedostot\nPeruuta = Peruuta toiminto"
+      },
+      "invalid_filenames": {
+        "title": "Virheelliset tiedostonimet",
+        "intro": "{count} tiedosto(a) sisältää kiellettyjä merkkejä:",
+        "item": "  • {name}",
+        "more": "  ... ja {more} muuta",
+        "forbidden_chars": "Kielletyt merkit: {chars}",
+        "fix_question": "Haluatko korjata nämä nimet automaattisesti?\n(Kielletyt merkit korvataan '_'-merkillä)"
+      },
+      "close_without_save": {
+        "title": "Tallenna ennen sulkemista?",
+        "message": "Kuvia on lisätty. Haluatko luoda CBZ-arkiston ennen sulkemista?"
+      },
+      "flatten_folders": {
+        "title": "Tasoita kansiot",
+        "subdirs_detected": "Alikansiot havaittu:",
+        "files_to_move": "{count} tiedosto(a) siirretään juureen.",
+        "folders_to_delete": "{count} alikansio(a) poistetaan.",
+        "continue_question": "Haluatko jatkaa?"
+      },
+      "update_page_count": {
+        "title": "Päivitä sivumäärä",
+        "message": "Sarjakuvan sivumäärä on muuttunut.\n\nMetatiedoissa ilmoitettu sivumäärä: {original}\nNykyinen sivumäärä: {current}\n\nHaluatko päivittää sivumäärän metatiedoissa?"
+      },
+      "conversion_complete": {
+        "title": "Muuntaminen valmis",
+        "message": "Muuntaminen valmis!\n\n{count} kuvaa muunnettu {format}-muotoon on lisätty valintasi jälkeen.\n\nPoista alkuperäiset kuvat?",
+        "delete_originals": "Poista alkuperäiset\n{count} tiedosto(a) - {size}",
+        "keep_all": "Säilytä kaikki\n{count} tiedosto(a) - {size}",
+        "cancel_conversion": "Peruuta muunto\n{count} tiedosto(a) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Virheellinen tiedostopääte havaittu: tämä '{filename}' tiedosto on CBZ, ei CBR. Nimetä uudelleen?",
+      "title": "Väärä tiedostopääte"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Väärä tiedostopääte havaittu: tämä '{filename}' tiedosto on CBR, ei CBZ. Nimetä uudelleen?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Väärä tiedostopääte havaittu: tiedosto '{filename}' on CB7, ei CBZ/CBR. Nimetäänkö uudelleen?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Pikkukuvien koko",
+    "loading": "Odota, lataus käynnissä...\n{percent}%",
+    "resizing": "Odota, koon muuttaminen käynnissä...\n{percent}%",
+    "converting": "Odota, muuntaminen käynnissä...\n{percent}%",
+    "loading_lazy": "Odota, lataa...\n{percent}%\n\nTämän tiedoston suuren koon vuoksi ({size} MB) sivut ladataan vähitellen. Näytöllä näkyvät sivut ladataan välittömästi, muut ladataan automaattisesti vierityksen aikana.",
+    "apply_save_cbz": "Käytä muutoksia\nja tallenna CBZ-tiedosto",
+    "apply_create_cbz": "Käytä muutoksia\nja luo CBZ-tiedosto",
+    "import_progress": "Tuonti käynnissä...\n{percent}%",
+    "pdf_import_progress": "PDF-tuonti käynnissä...\n{percent}%",
+    "pdf_opening": "Avataan PDF-tiedostoa...",
+    "pdf_page": "Sivu {current} / {total}",
+    "warning_close": "Varoitus! Muutoksia ei ole tallennettu ja ne menetetään!",
+    "language_label": "Kieli:",
+    "directory_tooltip": "Kansio: {name}\n{count} tiedosto(a)\nKokonaiskoko: {size} Mt",
+    "folder_up_tooltip": "Kaksoisnapsauta noustaksesi\ntasoa ylöspäin kansiorakenteessa",
+    "status_bar": "{dirs} kansio(ta)  |  {files} tiedosto(a) ({total_size})  |  {selected} valittu(a) ({selected_size})",
+    "pdf_converting": "Muunnetaan {total} sivua kuviksi {dpi} DPI:llä...",
+    "pdf_converting_no_change": "Puretaan {total} sivua muuttamatta...",
+    "print_progress": "Valmistellaan tulostusta...\n{percent}%",
+    "print_preparing": "Odota, valmistellaan tulostusta...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU General Public License v3 -yhteenveto\n\nMYÖNNETYT VAPAUDET\nVoit käyttää, kopioida, muokata ja jakaa\nMosaicView'ia, myös kaupallisiin tarkoituksiin.\n\nVELVOLLISUUDET\nJokaisen jakelun (alkuperäisen tai muokatun) on :\n– säilytettävä GPL v3 -lisenssi\n– sisällyttävä lähdekoodi tai ilmoitettava, mistä sen saa\n– ei saa asettaa lisärajoituksia\n\nTAKUUT\nTätä ohjelmistoa jaetaan ILMAN MINKÄÄNLAISTA TAKUUTA.\nSen tekijä ei vastaa käytöstä aiheutuvista vahingoista.\n\nSinun olisi pitänyt saada kopio GNU General Public Licensestä tämän ohjelman mukana. Jos ei, katso <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Näytä koko lisenssi",
+    "license_unrar_text": "CBZ-tiedostot perustuvat ZIP-muotoon, joka on vapaa ja avoin formaatti. CBR-tiedostot puolestaan perustuvat RAR-muotoon, joka on omistusoikeudellinen.\n\nMosaicView voi avata CBR-tiedostoja UnRAR:n ansiosta, RARlabin kehittämän ja vapaasti jaettavan apuohjelman avulla.\n\nVirallinen verkkosivusto: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Näytä UnRAR-lisenssi",
+    "saving_cbz": "Tallentaminen käynnissä... {percent}%",
+    "empty_canvas_line1": "Pudota tahan yksi tai useampi CBZ/CBR/CB7/PDF-tiedosto tai kuvasi",
+    "empty_canvas_line2": "Kun tiedosto on avattu, voit jatkaa muiden pudottamista",
+    "empty_canvas_line3": "Pudota yksi tai useampi kansio aloittaaksesi eräkäsittelyn",
+    "icon_toolbar_config_title": "Kuvakepalkin määritys",
+    "icon_toolbar_active": "Kuvakkeet palkissa",
+    "icon_toolbar_hidden": "Kuvakkeet varastossa",
+    "license_gpl_full": "GNU GPL v3 -lisenssi",
+    "license_unrar_full": "UnRAR-lisenssi",
+    "licenses_button": "Lisenssit",
+    "view_full_gpl_license": "Näytä täydellinen GNU GPL v3 -lisenssi",
+    "license_7zip_text": "CB7-tiedostot perustuvat 7z-muotoon, jonka on kehittänyt Igor Pavlov ja jota jaetaan GNU LGPL -lisenssillä.\n\nMosaicView voi avata CB7-tiedostoja 7-Zipin avulla — ilmainen avoimen lähdekoodin ohjelma.\n\nVirallinen verkkosivusto : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Näytä 7-Zip-lisenssi",
+    "license_7zip_full": "7-Zip-lisenssi",
+    "icon_toolbar_show_thumb_slider": "Näytä pikkukuvan kokoscroller",
+    "icon_toolbar_show_lang_combo": "Näytä kielivalitsin",
+    "adjusting": "Odota, säätöjä käynnissä...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS -fontin lisenssi",
+    "license_tengwar_full": "Alcarin Tengwar -fontin lisenssi",
+    "view_full_piqad_license": "Näytä pIqaD qolqoS -lisenssi kokonaan"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Kuvien muuntaminen",
+      "title": "{count} {word} muuntaminen",
+      "word_image": "kuva",
+      "word_images": "kuvaa",
+      "info": "Valitse kohdemuoto:",
+      "format_png": "PNG (häviötön)",
+      "format_jpg": "JPEG (pakkauksella)",
+      "format_webp": "WEBP (moderni)",
+      "format_bmp": "BMP (bittikartta)",
+      "format_tiff": "TIFF (korkea laatu)",
+      "format_gif": "GIF (animaatio)",
+      "quality_label": "Laatu JPG/WEBP:lle:",
+      "quality_maximum": "Maksimi — laatu 95/100",
+      "quality_high": "Korkea — laatu 85/100",
+      "quality_medium": "Keskitaso — laatu 75/100",
+      "quality_low": "Matala — laatu 60/100",
+      "quality_custom_option": "Mukautettu",
+      "quality_custom": "Laatu mukautettu : {value}/100",
+      "quality_note": "(Tämä asetus vaikuttaa vain JPG- ja WEBP-muotoihin)",
+      "quality_window_title": "Laadun valinta",
+      "format_gif_static": "Staattinen GIF",
+      "format_gif_animated": "Animoitu GIF (valitse useita kuvia)"
+    },
+    "split": {
+      "window_title": "Jaa sivu",
+      "title": "Jaa sivu",
+      "pages_label": "Sivujen määrä:",
+      "direction_label": "Jaon suunta:",
+      "horizontal": "Vaakasuuntainen (vasen → oikea)",
+      "vertical": "Pystysuuntainen (ylhäältä → alas)",
+      "warning": "⚠ Koska jako lasketaan automaattisesti,\nmanuaalinen säätö voi olla tarpeen.",
+      "button_split": "Jaa",
+      "button_cancel": "Peruuta"
+    },
+    "join": {
+      "window_title": "Yhdistä sivut - Järjestä järjestys",
+      "instructions": "Järjestä kuvat:\n• Pystysuunnassa (ylös/alas) pystysuuntaista yhdistämistä varten\n• Vaakasuunnassa (vasen/oikea) vaakasuuntaista yhdistämistä varten",
+      "merged_filename_prefix": "Yhdistetty",
+      "heights_label": "Korkeudet",
+      "widths_label": "Leveydet",
+      "size_adjustment_title": "Kokojen säätö",
+      "size_adjustment_warning": "⚠️ Valituilla kuvilla on erilaiset mitat.\nValitse, miten niiden kokoja säädetään yhdistämistä varten.\nKunkin kuvan kuvasuhde säilytetään aina.",
+      "keep_original": "Säilytä alkuperäiset koot",
+      "keep_original_desc": "(lisää mustat palkit täyttämiseen)",
+      "enlarge_small": "Suurenna pienet kuvat",
+      "enlarge_small_desc": "(tasaa maksimimittaan)",
+      "reduce_large": "Pienennä suuret kuvat",
+      "reduce_large_desc": "(tasaa minimimittaan)",
+      "back_to_arrangement": "Takaisin"
+    },
+    "pdf": {
+      "quality_merge": "Valitse yhdistämisen laatu:",
+      "quality_export": "Valitse viennin laatu:",
+      "merge_quality_title": "PDF-yhdistämislaatu",
+      "export_quality_title": "PDF-vientilaatu",
+      "loading_title": "Ladataan PDF:ää...",
+      "dpi_90": "90 DPI - Verkkojulkaisu",
+      "dpi_150": "150 DPI - Hyvä laatu (suositeltu näyttöön)",
+      "dpi_200": "200 DPI - Erittäin hyvä laatu",
+      "dpi_300": "300 DPI - Erinomainen laatu (sarjakuvastandardi)",
+      "dpi_600": "600 DPI - Maksimilaatu (suuret tiedostot)",
+      "dpi_original": "Ei kuvan muokkausta",
+      "dpi_original_tooltip": "Älykäs analyysi jokaisesta PDF-sivusta:\n• Vain kuvia sisältävät sivut: säilyttää alkuperäisen DPI:n\n• Vain tekstiä sisältävät sivut: 300 DPI\n• Sekoitetut sivut (teksti + kuvat): kuvien DPI jos >= 300, muuten 300 DPI\nMaksimi: 2400 DPI tiedostokoon rajoittamiseksi"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF vaaditaan",
+      "pymupdf_required_message": "PyMuPDF (fitz) ei ole asennettu. PDF-tiedostoja ei voi muuntaa.",
+      "select_directory_title": "Valitse PDF-tiedostot sisältävä hakemisto",
+      "no_pdf_title": "Ei PDF-tiedostoja",
+      "no_pdf_message": "Hakemistosta ei löytynyt PDF-tiedostoja:\n{directory}",
+      "confirm_title": "PDF-tiedostojen erämuunnos CBZ-muotoon",
+      "confirm_message": "{count} PDF-tiedostoa muunnettavana kohteessa {directory} (alihakemistot mukaan lukien).",
+      "checkbox_permanent_delete": "Poista alkuperäiset PDF-tiedostot ilman\nroskakorin käyttöä (EI VOI PERUA)",
+      "start_button": "Aloita",
+      "converting_title": "Muunnos käynnissä...",
+      "converting_progress": "Muunnetaan tiedostoa {current} / {total}",
+      "page_progress": "Sivu {current} / {total}",
+      "complete_title": "Muunnos valmis",
+      "complete_message": "{count} PDF-tiedostoa muunnettu hakemistossa:",
+      "complete_message_errors": "{count} / {total} PDF-tiedostoa muunnettu hakemistossa:",
+      "errors_count": "{count} virhe(ttä) havaittu."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Valitse CBR-tiedostoja sisältävä hakemisto",
+      "no_cbr_title": "Ei CBR-tiedostoja",
+      "no_cbr_message": "Hakemistosta ei löytynyt CBR-tiedostoja:\\n{directory}",
+      "confirm_title": "CBR-tiedostojen erämuunnos CBZ-muotoon",
+      "confirm_message": "{count} CBR-tiedostoa muunnettavaksi hakemistossa {directory} (alihakemistot mukaan lukien).",
+      "checkbox_permanent_delete": "Poista alkuperäiset CBR-tiedostot ilman\nroskakorin käyttöä (EI VOI KUMOTA)",
+      "start_button": "Aloita",
+      "converting_title": "Muunnetaan...",
+      "converting_progress": "Muunnetaan tiedostoa {current} / {total}",
+      "page_progress": "Sivu {current} / {total}",
+      "complete_title": "Muunnos valmis",
+      "complete_message": "{count} CBR-tiedostoa muunnettu hakemistossa:",
+      "complete_message_errors": "{count} CBR-tiedostoa muunnettu {total}:sta hakemistossa:",
+      "errors_count": "{count} virhe(ttä) havaittu.",
+      "renamed_count": "{count} tiedosto(a) nimetty uudelleen CBZ:ksi",
+      "rarfile_unavailable": "rarfile-moduuli ei ole käytettävissä. CBR-tiedostoja ei voi muuntaa."
+    },
+    "close_warning": {
+      "title": "Varoitus!",
+      "message": "Muutoksia ei ole tallennettu ja ne menetetään!",
+      "btn_close_lose": "Sulje tiedosto ja menetä muutokset",
+      "btn_save_cbz": "Käytä muutoksia ja tallenna tiedosto",
+      "btn_create_cbz": "Käytä muutoksia ja luo CBZ-tiedosto",
+      "btn_cancel": "Peruuta ja palaa mosaiikkiin"
+    },
+    "replace_image": {
+      "title": "Korvaa vioittunut kuva"
+    },
+    "reduce_size": {
+      "window_title": "Kuvan koon muutos",
+      "title": "Muutetaan {count} {word}",
+      "word_image": "kuva",
+      "word_images": "kuvat",
+      "current_size": "Nykyinen koko: {size} MB",
+      "current_dimensions": "Nykyiset mitat: {width} × {height} px",
+      "choose_method": "Valitse koon muutostapa:",
+      "custom_dimensions": "Mukautetut mitat",
+      "width_label": "Leveys:",
+      "height_label": "Korkeus:",
+      "use_custom_dimensions": "Käytä näitä mittoja",
+      "different_dimensions_warning": "Valituilla sivuilla on erilaiset mitat. Mukautetut mitat pakottavat kaikki sivut samaan kokoon. Varmista, että ymmärrät seuraukset ennen jatkamista.",
+      "estimated_size": "Arvioitu koko: {size} MB",
+      "percentage_reduction": "Prosentuaalinen pienennys",
+      "percentage_enlargement": "Prosentuaalinen suurennus",
+      "reduce_0": "0% (ei muutosta)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (ei muutosta)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Yleisimmät sivun leveydet ovat 1024, 1280, 1600, 1920 ja 2000 pikseliä, mutta myös muut arvot sopivat.",
+      "multi_page_width": "Tunnista ja muuta useiden sivujen kokoa automaattisesti (leveys/korkeus)",
+      "multi_page_width_tooltip": "Ottaa käyttöön useiden sivujen automaattisen tunnistuksen: kaksoissivu, kolmoissivu jne. Kertokerroin lasketaan automaattisesti kunkin sivun suhteen perusteella, olipa kyse leveydestä (vierekkäiset sivut) tai korkeudesta (päällekkäiset sivut)"
+    },
+    "gif_animated": {
+      "window_title": "Animoidun GIF:n luominen",
+      "images_title": "Animaatiokuvat",
+      "params_title": "GIF-parametrit",
+      "frame_delay_label": "Viive kuvien välillä:",
+      "fps_normal": "{fps} kuvaa/sekunti",
+      "fps_slow": "1 kuva {seconds} sekunnin välein",
+      "loop_label": "Toistojen määrä:",
+      "loop_info": "(0 = ääretön silmukka)",
+      "disposal_label": "Kuvien järjestely:",
+      "disposal_0": "Ei määritetty",
+      "disposal_1": "Säilytä edellinen kuva",
+      "disposal_2": "Palauta taustaväriin",
+      "disposal_3": "Palauta edelliseen tilaan",
+      "optimize": "Optimoi tiedosto (tallenna vain erot)",
+      "metadata_title": "GIF-metatiedot",
+      "metadata_dimensions": "Mitat: {width} × {height} px",
+      "metadata_frames": "Kuvien määrä: {count}",
+      "metadata_duration": "Kokonaiskesto: {duration} s",
+      "metadata_fps": "Taajuus: {fps} fps",
+      "metadata_palette": "Paletti: enintään 256 väriä",
+      "metadata_size": "Arvioitu koko: {size} KB",
+      "comment_label": "Kommentti (valinnainen):",
+      "no_images": "Ei kuvia valittu",
+      "creating_progress": "Ladataan kuvia... ({current}/{total})",
+      "creating_normalizing": "Normalisoidaan kuvia... ({current}/{total})",
+      "creating_quantizing": "Kvantisoidaan värejä... ({current}/{total})",
+      "creating_saving": "Tallennetaan GIF..."
+    },
+    "save_to_folder": {
+      "title": "Valitse kohdekansio"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Kaksoistiedostonimet",
+      "message": "Identtisiä tiedostonimiä on havaittu. Vaikka tallentaminen on teknisesti\nmahdollista, tämä saattaa aiheuttaa lukuongelmia joissakin sarjakuva-\nlukijasovelluksissa (epätäydellinen näyttö, puuttuvat sivut jne).\n\nOn suositeltavaa numeroida sivut uudelleen ennen tallentamista."
+    },
+    "adjustments": {
+      "window_title": "Kuvan saadot",
+      "title": "Saadot {count} {word}",
+      "word_image": "kuva",
+      "word_images": "kuvaa",
+      "apply_button": "Kayta",
+      "color_depth_section": "Varisyvyys",
+      "brightness_contrast_section": "Kirkkaus ja kontrasti",
+      "compression_section": "Pakkaus",
+      "effects_section": "Tehosteet",
+      "sharpness_section": "Terävyys",
+      "levels_section": "Musta/valkoinen tasot",
+      "depth_unchanged": "Ala muuta",
+      "depth_32bit": "32 bittia (RGBA - varit + lapinakyvyys)",
+      "depth_24bit": "24 bittia (RGB - varit)",
+      "depth_8bit": "8 bittia (PNG-paletti / JPEG-harmaasavyt)",
+      "depth_1bit": "1 bitti (mustavalkoinen)",
+      "brightness_label": "Kirkkaus: {value}",
+      "contrast_label": "Kontrasti: {value}",
+      "compression_enable": "Ota kayttoon uudelleenpakkaus",
+      "compression_quality_label": "Laatu : {value}/100",
+      "sharpness_label": "Teravyys: {value}",
+      "effect_none": "Ei tehostetta",
+      "effect_grayscale": "Harmaasavyt",
+      "effect_sepia": "Seepia",
+      "levels_none": "Ei saatoa",
+      "levels_threshold": "Kynnysarvo (puhdas musta tai valkoinen)",
+      "levels_advanced": "Edistyneet tasot (varjot/keskisavyt/valot)",
+      "threshold_label": "Kynnysarvo: {value}",
+      "black_point_label": "Musta piste: {value}",
+      "gamma_label": "Gamma (keskisavyt): {value}",
+      "white_point_label": "Valkoinen piste: {value}",
+      "auto_levels_button": "Automaattinen säätö",
+      "open_viewer_button": "Säädä katseluohjelmalla (suositeltu)",
+      "compression_info": "Pakkaus koskee vain JPG- ja WebP-kuvia",
+      "open_viewer_button_simple": "Säädä katseluohjelmalla",
+      "reset_button": "Nollaa",
+      "preview_section": "Esikatselu",
+      "effect_invert": "Värien kääntö",
+      "preview_warning": "Esikatselu voi poiketa lopullisesta tuloksesta",
+      "effect_remove_colors": "Värien poisto",
+      "remove_colors_intensity_label": "Intensiteetti : {value}",
+      "image_mode_section": "Kuvatila",
+      "image_mode_rgb": "RGB (värit)",
+      "image_mode_rgba": "RGBA (värit + läpinäkyvyys)",
+      "image_mode_l": "L (harmaasävyt)",
+      "image_mode_la": "LA (harmaasävyt + läpinäkyvyys)",
+      "image_mode_cmyk": "CMYK (tulostus)",
+      "image_mode_1": "1 (puhdas mustavalkoinen)",
+      "image_mode_p": "P (256 värin paletti)",
+      "saturation_section": "Värikylläisyys",
+      "saturation_label": "Värikylläisyys : {value}",
+      "saturation_viewer_title": "Värikylläisyyden säätö",
+      "transparency_section": "Läpinäkyvyys",
+      "transparency_info": "Läpinäkyvyys koskee vain PNG-, WebP- ja ICO-kuvia",
+      "transparency_type_label": "Tyyppi :",
+      "transparency_type_flood": "Alue",
+      "transparency_type_global": "Yleinen",
+      "transparency_tolerance_label": "Toleranssi : {value}",
+      "transparency_viewer_title": "Läpinäkyvyyden säätö",
+      "transparency_click_instruction": "Napsauta väriä, jonka haluat tehdä läpinäkyväksi",
+      "transparency_undo": "Kumoa viimeisin napsautus",
+      "transparency_redo": "Tee uudelleen",
+      "transparency_type_flood_tooltip": "Flood fill : tekee napsautetun pikselin ympärillä olevan yhtenäisen värialueen läpinäkyväksi",
+      "transparency_type_global_tooltip": "Yleinen läpinäkyvyys : vaikuttaa kaikkiin kuvan pikseleihin, joiden väri on lähellä napsautettua",
+      "transparency_apply": "Käytä",
+      "transparency_skipped_warning": "{count} kuva(a) ohitettu — muoto ei ole yhteensopiva läpinäkyvyyden kanssa. Sisällyttääksesi ne, muunna ne ensin PNG-muotoon.",
+      "unsharp_section": "Adaptiivinen terävyys",
+      "unsharp_radius_label": "Säde: {value}",
+      "unsharp_percent_label": "Voimakkuus: {value} %",
+      "unsharp_threshold_label": "Kynnys: {value}",
+      "unsharp_viewer_title": "Adaptiivinen terävyys",
+      "auto_levels_tooltip": "Analysoi jokaisen sivun ja säätää automaattisesti mustan ja valkoisen tasot kontrastin maksimoimiseksi.\nValitaksesi sivu sivulta käytä katseluohjelmaa."
+    },
+    "levels_viewer": {
+      "title": "Tasosaato tiputintyokalulla",
+      "apply_current": "Kayta talle sivulle",
+      "apply_all": "Käytä kaikkiin valittuihin sivuihin",
+      "black_pipette": "Mustan pisteen tippa",
+      "white_pipette": "Valkoisen pisteen tippa",
+      "black_pipette_tooltip": "Napsauta pikseliä, jonka pitäisi olla täysin musta. Varoitus: on helppo liioitella!",
+      "white_pipette_tooltip": "Napsauta pikseliä, jonka pitäisi olla täysin valkoinen. Varoitus: on helppo liioitella!"
+    },
+    "sharpness_viewer": {
+      "title": "Terävyyden säätö"
+    },
+    "brightness_viewer": {
+      "title": "Kirkkauden ja kontrastin säätö"
+    },
+    "compression_viewer": {
+      "title": "Pakkauksen säätö"
+    },
+    "outliers": {
+      "title": "Sivut epätavallisilla mitoilla",
+      "message": "Seuraavilla sivuilla on mittoja, jotka poikkeavat merkittävästi muista. Valitse, miten niitä käsitellään:",
+      "width": "Leveys",
+      "height": "Korkeus",
+      "unusual": "epätavallinen",
+      "skip": "Älä muuta kokoa",
+      "keep": "säilytä"
+    },
+    "first_page_multi": {
+      "title": "Ensimmäinen sivu on monisivu",
+      "message": "Ensimmäinen sivu on tunnistettu monisivuksi. Miten haluat numeroida sen?",
+      "option_auto_desc": "Normaali uudelleennumerointi automaattisella tunnistuksella.",
+      "option_joint_desc": "Sarjakuvan ensimmäisen ja viimeisen sivun liitos.",
+      "option_exclude_label": "Älä sisällytä uudelleennumerointiin",
+      "option_exclude_desc": "Sivu säilyttää nykyisen nimensä ja pysyy ensimmäisellä sijalla. Voit nimetä sen uudelleen myöhemmin manuaalisesti."
+    },
+    "batch_img": {
+      "select_directory_title": "Valitse kuvia sisältävä kansio",
+      "no_img_title": "Kuvatiedostoja ei löydy",
+      "no_img_message": "Kansiosta ei löydetty yksittäisiä kuvatiedostoja :\n{directory}",
+      "confirm_title": "Yksittäisten kuvien erämuunnos CBZ:ksi",
+      "confirm_message": "{count} kuvatiedosto(a) muunnettavaksi kansiossa {directory} (alikansiot mukaan lukien).",
+      "checkbox_permanent_delete": "Poista alkuperäiset kuvatiedostot pysyvästi\nlähettämättä niitä roskakoriin (EI VOI PERUUTTAA)",
+      "start_button": "Aloita",
+      "converting_title": "Muunnos käynnissä...",
+      "converting_progress": "Muunnetaan tiedosto {current} yhteensä {total}:sta",
+      "complete_title": "Muunnos valmis",
+      "complete_message": "{count} kuvatiedosto(a) muunnettu kansiossa :",
+      "complete_message_errors": "{count} / {total} kuvatiedosto(a) muunnettu kansiossa :",
+      "errors_count": "{count} virhe(ttä) havaittu.",
+      "converted_by_ext": "{ext} : {count} tiedosto(a)",
+      "mode_title": "Muunna kuvat CBZ-muotoon",
+      "mode_intro": "Miten haluat ryhmitellä kuvat?",
+      "mode_one_per_image": "Muunna jokainen kuva erillisiksi CBZ-tiedostoiksi",
+      "mode_one_per_image_sub": "(Jokaisesta kuvasta tulee erillinen CBZ-tiedosto)",
+      "mode_all_in_one": "Ryhmittele kaikki kuvat yhdeksi CBZ-tiedostoksi",
+      "mode_all_in_one_sub": "(Kaikki hakemiston kuvat ryhmitellään yhdeksi CBZ-tiedostoksi)"
+    },
+    "batch_drop": {
+      "window_title": "Kansioiden eräkäsittely",
+      "intro_single": "1 kansio pudotettiin. Mitä käsittelyä haluat soveltaa?",
+      "intro_multiple": "{count} kansiota pudotettiin. Mitä käsittelyä haluat soveltaa?",
+      "recursive_note": "Alikansiot käydään myös läpi.",
+      "mixed_drop_title": "Pudotus ei tue",
+      "mixed_drop_message": "Pudotit sekä tiedostoja että kansioita samaan aikaan. Pudota vain tiedostoja tai vain kansioita."
+    },
+    "pdf_unlock": {
+      "title": "PDF suojattu muokkauksilta",
+      "message": "Sivut tuotiin normaalisti.\n\nTämä PDF-tiedosto on suojattu muokkauksilta (omistajan salasana).\n\nHaluatko tallentaa kopion PDF-tiedostosta ilman tätä suojausta?",
+      "yes": "Kyllä, tallenna avattu kopio",
+      "no": "Ei, jatka avaamatta"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF-tiedostot suojattu muutoksia vastaan",
+      "message_single": "Havaittiin 1 muutoksia vastaan suojattu PDF-tiedosto. Se muunnettiin CBZ-muotoon normaalisti.\n\nHaluatko tallentaa lukitsemattoman kopion sen alkuperäiseen hakemistoon?",
+      "message_plural": "Havaittiin {count} muutoksia vastaan suojattua PDF-tiedostoa. Ne muunnettiin CBZ-muotoon normaalisti.\n\nHaluatko tallentaa lukitsemattoman kopion kustakin sen alkuperäiseen hakemistoon?",
+      "yes": "Kyllä, tallenna lukitsemattomat kopiot",
+      "no": "Ei, jatka lukitsematta"
+    },
+    "ico_creator": {
+      "title": "Luo .ico-kuvake",
+      "info_message": "Kuva muutetaan useampaan resoluutioon (16, 32, 48, 64, 128, 256 px).\nNykyinen kehyksen koko: {w} × {h} px",
+      "btn_validate_crop": "Vahvista rajaus",
+      "btn_validate_no_crop": "Vahvista ilman rajausta",
+      "btn_cancel": "Peruuta",
+      "btn_transparency": "Aseta läpinäkyvyys",
+      "btn_validate_final": "Vahvista",
+      "tolerance_label": "Toleranssi:",
+      "success_title": ".ico-tiedosto luotu",
+      "success_message": "Tiedosto {filename} luotiin onnistuneesti.",
+      "overwrite_title": "Tiedosto on jo olemassa",
+      "overwrite_message": "Tiedosto {filename} on jo olemassa. Ylikirjoitetaanko?",
+      "save_blocked_title": "Tallennus ei onnistu",
+      "save_blocked_message": "Tämä arkisto sisältää yhden tai useamman .ico-tiedoston, jotka eivät ole sarjakuvakuvia. Tallennus on poistettu käytöstä, kunnes nämä tiedostot poistetaan mosaiikista.\nOta tallennus uudelleen käyttöön poistamalla ne mosaiikista (Del-näppäin) tai leikkaamalla (Ctrl+X) ja liittämällä muualle.",
+      "btn_back_to_crop": "Takaisin rajaukseen"
+    },
+    "video_save_blocked": {
+      "title": "Tallennus ei onnistu",
+      "message": "Tämä arkisto sisältää yhden tai useamman videotiedoston. Tallennus on poistettu käytöstä, kunnes nämä tiedostot poistetaan mosaiikista.\nOta tallennus uudelleen käyttöön poistamalla ne mosaiikista (Del-näppäin) tai leikkaamalla ne (Ctrl+X) liittääksesi ne muualle."
+    },
+    "open_file": {
+      "title": "Avaa arkisto",
+      "filter_archives": "Arkistot (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Kaikki tiedostot (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Lisenssi"
+    },
+    "replace_corrupted_image": {
+      "title": "Korvaa vioittunut kuva",
+      "filter_images": "Kuvat (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Kaikki tiedostot (*)"
+    },
+    "see_log": "KATSO LOKI"
+  },
+  "tooltip": {
+    "source_archive": "Lähdetiedosto: {name}",
+    "file": "Tiedosto: {name}",
+    "reason": "Syy: {reason}",
+    "size_kb": "Koko: {size} Kt",
+    "size_mb": "Koko: {size} Mt",
+    "file_size": "Koko: {size} Mt",
+    "dimensions": "Mitat: {width} × {height} px",
+    "resolution": "Resoluutio: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: määrittelemätön",
+    "cbr_info": "CBR-tiedostot käyttävät RAR-muotoa, joka on omistusoikeus ja patentoitu;\nniitä ei voi muokata, muutokset tallennetaan uuteen CBZ-tiedostoon.",
+    "rotate_left": "90 asteen kierto vasemmalle",
+    "rotate_right": "90 asteen kierto oikealle",
+    "mirror_horizontal": "Vaakasuuntainen peilaus",
+    "mirror_vertical": "Pystysuora peilaus",
+    "fullscreen": "Koko näyttö",
+    "help_button": "Käyttöopas",
+    "theme_button": "Vaihda vaalean ja tumman teeman välillä",
+    "font_decrease_button": "Pienennä fonttikokoa",
+    "font_increase_button": "Suurenna fonttikokoa",
+    "color_depth": "Värit: {bits} bittiä ({mode})",
+    "batch_pdf_to_cbz": "Muuntaa CBZ-muotoon kaikki hakemiston ja sen\nalihakemistojen PDF-tiedostot. Kuvat puretaan\nja arkistoidaan sellaisinaan ilman\nuudelleenpakkausta.",
+    "batch_pdf_permanent_delete": "VAROITUS: jos tämä vaihtoehto on valittuna,\nalkuperäiset PDF-tiedostot poistetaan\npysyvästi muuntamisen jälkeen, eikä niitä\nvoi palauttaa. Varmista, että sinulla on\nvarmuuskopio tarvittaessa.",
+    "batch_cbr_to_cbz": "Muuntaa CBZ-muotoon kaikki CBR-tiedostot,\njotka sijaitsevat hakemistossa\nja sen alihakemistoissa.",
+    "batch_cbr_permanent_delete": "VAROITUS: jos tämä vaihtoehto on valittuna,\nalkuperäiset CBR-tiedostot poistetaan\npysyvästi muuntamisen jälkeen, eikä niitä\nvoi palauttaa. Varmista, että sinulla on\nvarmuuskopio tarvittaessa.",
+    "renumber_btn_1": "Monisivujen automaattisen tunnistuksen tila\nNapsauta hiiren oikeaa painiketta vaihtaaksesi tilaa",
+    "renumber_btn_2": "Yksinkertaisen numeroinnin tila\nNapsauta hiiren oikeaa painiketta vaihtaaksesi tilaa",
+    "corrupted_header": "Vioittunut kuva",
+    "right_click_instruction1": "Napsauta hiiren oikealla painikkeella",
+    "right_click_instruction2": "korvataksesi tai poistaaksesi kuvan.",
+    "unknown_error": "Tuntematon virhe",
+    "batch_img_to_cbz": "Muuntaa kaikki kansiosta ja sen alikansioista\nlöydetyt kuvatiedostot CBZ-muotoon,\nluomalla yhden CBZ-tiedoston kuvaa kohti.",
+    "batch_img_permanent_delete": "VAROITUS : jos tämä vaihtoehto on valittu,\nalkuperäiset kuvatiedostot poistetaan pysyvästi\nmuunnoksen jälkeen ilman palautusmahdollisuutta.\nVarmista, että sinulla on varmuuskopio\ntarvittaessa.",
+    "too_large_header": "Kuva on liian suuri ladattavaksi",
+    "too_large_pixels": "Mitat: {pixels}",
+    "icon_toolbar_config_button": "Kuvakkeiden määritys",
+    "icon_toolbar_size_decrease": "Pienennä kuvakkeiden kokoa",
+    "icon_toolbar_size_increase": "Suurenna kuvakkeiden kokoa",
+    "source_loose": "Irrallinen kuva",
+    "source_web": "Verkkokuva"
+  },
+  "help": {
+    "title": "MosaicView - Käyttöohje",
+    "intro": "MosaicView mahdollistaa sarjakuvien (digitaalisten sarjakuvien) käsittelyn ja muokkaamisen ilman, että niitä tarvitsee purkaa arkistoista. Sovellus tukee CBZ (ZIP), CBR (RAR) ja PDF-muotoja. Sovellus on yhteensopiva vain 64-bittisten järjestelmien kanssa.",
+    "open_files": "Tiedostojen avaaminen",
+    "open_files_content": "• Napsauta 'Avaa CBZ/CBR/CB7/PDF' -painiketta\n• Tai vedä ja pudota tiedosto suoraan ikkunaan\n• Tuetut muodot: CBZ, CBR, CB7, PDF, kuvat (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-tiedostot voidaan myos avata, mutta vain niiden kuvat poimitaan (teksti jatetaan huomiotta).\n• Salattu PDF (salasana vaaditaan avattaessa): tiedostoa ei voi tuoda, näytetään virheilmoitus.\n• PDF suojattu muokkauksilta (owner password): sivut tuodaan normaalisti. MosaicView tarjoaa avatun kopion tallentamista samaan kansioon.",
+    "mosaic": "Mosaïque",
+    "mosaic_content": "Mosaiikki näyttää kaikki sarjakuvasi sivut pienoiskuvina. Voit:\n• Järjestää sivuja uudelleen vetämällä ja pudottamalla (sivunumerointi on automaattista ja tapahtuu aktiivisen uudelleennumeroinnin tilan mukaisesti)\n• Valita useita sivuja (Ctrl+napsautus tai Vaihto+napsautus)\n• Säätää pienoiskuvien kokoa liukusäätimellä\n• Nimetä tiedostoja uudelleen manuaalisesti napsauttamalla niiden nimeä\n• Vetää ja pudottaa sarjakuvatiedostoja (CBZ/CBR/PDF) Windowsin Resurssienhallinnasta suoraan toiseen avoinna olevaan sarjakuvaan yhdistääksesi niiden sisällön",
+    "manipulation": "Sivujen käsittely",
+    "manipulation_content": "• Vedä ja pudota sivuja järjestääksesi ne uudelleen\n• Vedä koko sarjakuva toiseen yhdistääksesi ne\n• Napsauta sivua hiiren oikealla painikkeella vaihtoehtojen käyttämiseksi (kierto, poisto jne.)\n• Kaksoisnapsauta sivua avataksesi katseluohjelman\n• Vie yksittäisiä sivuja vetämällä ne Windows-kansioon tai Ctrl+C / Ctrl+V:n kautta",
+    "renumber": "Sivujen uudelleennumerointi",
+    "renumber_content": "MosaicView tarjoaa kaksi sivujen uudelleennumerointitilaa, jotka ovat käytettävissä uudelleennumerointipainikkeen, kontekstivalikon (hiiren oikea painike) tai automaattisesti vedä ja pudota -toiminnon kautta:\n\n• Monisivujen automaattinen tunnistustila (oletustila): sovellus analysoi jokaisen sivun leveyden tunnistaakseen kaksois-, kolmois- jne. sivut. Monisivut numeroidaan vastaavasti uudelleen (esim.: kaksoissivu nimetään 003-004, kolmoissivu 005-006-007). Yli 4 sivun tapauksessa näytetään vain ensimmäinen ja viimeinen numero (esim.: 010---025).\n\n• Yksinkertainen numerointitila: jokainen sivu saa yksilöllisen järjestysnumeron (001, 002, 003...) sivujen leveydestä riippumatta.\n\nVaihtaaksesi kahden tilan välillä, napsauta hiiren oikealla painikkeella uudelleennumerointipainiketta. Työkaluvihje näyttää aktiivisen tilan. Valittu tila koskee myös automaattista uudelleennumerointia vedä ja pudota -toiminnon aikana.",
+    "flatten": "Hakemistojen tasoitus",
+    "flatten_content": "Jos arkistosi sisältää alikansioita, käytä 'Tasoita hakemistot' tuodaksesi kaikki kuvat samalle tasolle.",
+    "viewer": "Katselin",
+    "viewer_content": "Kaksoisnapsauta sivua avataksesi katselimen:\n• Nuolinäppäimet ← → : navigointi sivujen välillä\n• D-näppäin : vaihda 3 lukutilan välillä\n  - Yksittäinen sivu: yksi sivu kerrallaan\n  - Kaksisivuinen: sivu 1 yksin, sitten 2-3, 4-5, jne.\n  - Jatkuva kaksisivuinen: sivu 1 yksin, sitten 2-3, 3-4, 4-5, jne.\n• Hiiren rulla: nopea navigointi\n• Ctrl+Rulla tai Ctrl+Plus/Miinus: zoomaus\n• Ctrl+0: nollaa zoomaus\n• F- tai F11-näppäin: koko näyttö\n• Kaksoisnapsautus: vaihda koko näyttöön\n• Esc-näppäin: peruuta rajausruutu / poistu katselimesta",
+    "join_pages": "Sivujen yhdistäminen",
+    "join_pages_content": "Valitse useita peräkkäisiä sivuja, napsauta hiiren kakkospainikkeella → 'Yhdistä valitut sivut' yhdistääksesi sivut vaakasuunnassa tai pystysuunnassa. Tuotetun kuvan muoto vastaa lähdesivujen muotoa, jos ne ovat kaikki samanlaisia, muuten oletuksena PNG.",
+    "split_pages": "Sivujen jakaminen",
+    "split_pages_content": "Jakaaksesi automaattisesti kaksisivuja:\n• Valitse jaettavat sivut\n• Napsauta hiiren oikealla painikkeella → 'Jaa valitut sivut'\n• Valitse suunta (pysty- tai vaakasuuntainen)",
+    "crop": "Rajaus katselimessa",
+    "crop_content": "Katselimessa piirrä suorakulmio kuvan päälle määritelläksesi rajausalueen:\n• Piirrä suorakulmio hiirellä\n• Muuta kokoa vetämällä reunoista tai kulmista\n• Napsauta 'Vahvista rajaus' käyttääksesi\n• Rajaus kohdistetaan nykyiseen kuvaan\n• Esc-näppäin: peruuta rajausruutu",
+    "shortcuts": "Pikanäppäimet",
+    "shortcuts_content": "• Ctrl+Z: Kumoa viimeisin toiminto\n• Ctrl+Y: Tee uudelleen kumottu toiminto\n• Ctrl+A: Valitse kaikki sivut\n• Ctrl+I: Käännä valinta\n• Ctrl+C: Kopioi valitut sivut\n• Ctrl+X: Leikkaa valitut sivut\n• Ctrl+V: Liitä sivut\n• Delete: Poista valitut sivut\n• F5: Päivitä mosaiikkinäkymä\n• F11: Vaihda koko näyttöä (poistu F11:llä tai ESC:llä)",
+    "dark_mode": "Tumma tila",
+    "dark_mode_content": "Napsauta aurinko/kuu-painiketta vaihtaaksesi vaalean ja tumman teeman välillä.",
+    "sort": "Sivujen järjestäminen",
+    "sort_content": "Käytä 'Järjestä'-painiketta järjestääksesi sivut automaattisesti:\n• Nimen, Tyypin, Koon, Leveyden, Korkeuden, Resoluution tai DPI:n mukaan",
+    "save": "Tallentaminen",
+    "save_content": "• 'Tallenna': tallentaa muutokset alkuperäiseen tiedostoon\n• 'Tallenna nimellä': luo uuden arkiston\n• 'Luo CBZ': käytettävissä vain kuvatilassa (ilman arkistoa)",
+    "other": "Muut toiminnot",
+    "other_content": "• Kierto: kierrä yhtä tai useampaa sivua\n• Muuntaminen: muunna kuvia eri muotoihin (PNG, JPEG, WEBP, BMP, TIFF, GIF). Huomautus: CMYK-tilassa olevat kuvat muunnetaan automaattisesti RGB-muotoon (PNG, JPEG, WEBP, BMP, TIFF, GIF). Huomautus: CMYK-tilassa olevat kuvat muunnetaan automaattisesti RGB-muotoon\n• Tulostus: tulosta valitut sivut tai kaikki sivut\n• Purku: pura tiettyjä sivuja\n• Metatiedot-välilehti: näyttää ComicInfo.xml-tiedoston tiedot (jos arkistossa). Jos lisäät tai poistat sivun sarjakuvasta, joka sisältää metatietoja, sovellus tarjoaa päivittää siinä mainitun sivumäärän. Muita metatietoja ei voi muokata. Tämä rajoitus on tarkoituksellinen ja johtuu suunnitteluvalinnasta.",
+    "config_files": "Asetukset ja väliaikaiset tiedostot",
+    "config_files_content": "MosaicView luo tiedoston nimeltä .mosaicview_config.json. Tämä tiedosto sisältää joitakin parametreja, jotka ovat tarpeen nollauspainikkeen asianmukaiselle toiminnalle, sekä luettelon äskettäin avatuista sarjakuvista, joka on ilmeisen välttämätön äskettäin avattujen tiedostojen näyttämiseksi. MosaicView tallentaa myös väliaikaisia tiedostoja, jotka ovat tarpeen eri kuvankäsittelytoiminnoille.\nKaikki nämä tiedostot sijaitsevat hakemistossa {temp_dir}.\nVäliaikaiset tiedostot poistetaan joka kerta, kun sovellus suljetaan, mutta tiedosto .mosaicview_config.json on luonteeltaan tarkoitettu säilytettäväksi.\nVoit kuitenkin poistaa nämä tiedostot manuaalisesti siirtymällä hakemistoon {temp_dir} tai napsauttamalla alla olevia painikkeita. Tiedosto .mosaicview_config.json luodaan uudelleen joka kerta, kun sovellus avataan, ja väliaikaiset tiedostot luodaan uudelleen tarpeen mukaan.",
+    "config_clear_temp": "Poista väliaikaiset tiedostot",
+    "config_clear_recent": "Tyhjennä viimeisimmät",
+    "config_clear_config": "Poista asetustiedosto",
+    "config_temp_cleared": "Väliaikaiset tiedostot on poistettu onnistuneesti.",
+    "config_config_cleared": "Asetustiedosto on poistettu onnistuneesti.\nSe luodaan uudelleen seuraavalla sovelluksen käynnistyksellä.",
+    "language": "Kielen valinta",
+    "language_content": "MosaicView on saatavilla useilla kielillä.\nOletusarvoisesti sovellus tunnistaa automaattisesti käyttöjärjestelmäsi kielen ja näyttää sen kielellä, jos sitä tuetaan. Jos järjestelmäsi käyttää tukematonta kieltä, käyttöliittymä näkyy englanniksi.\nVoit vaihtaa kieltä milloin tahansa käyttämällä alasvetovalikkoa painikesarakkeen alareunassa, pikkukuvien koon liukusäätimen alapuolella. Valintasi tallennetaan ja otetaan käyttöön sovelluksen seuraavalla käynnistyskerralla.\nSAATAVILLA OLEVAT KIELET: arabia, armenia, bulgaria, englanti, espanja, haijilainen (malaysia), hollanti, iiri, islanti, italia, japani, kiina (perinteinen), kiina (yksinkertaistettu), korea, kreikka, kroaatia, latvia, liettua, malta, norja, portugali, puola, ranska, ruotsi, saksa, slovakki, slovenia, suomi, tamili, tanska, tsekki, turkki, ukraina, unkari, viro, vietnam.\nSAATAVILLA OLEVAT KUVITTEELLISET KIELET: klingon (latinalainen aakkoset ja pIqaD-aakkoset versiot), sindarin (latinalainen aakkoset ja tengwar-aakkoset versiot), quenya (latinalainen aakkoset ja tengwar-aakkoset versiot).\n\nTämä työkalu käyttää Windows-fontteja, paitsi pIqaD (klingonin kieli) ja tengwar (haltioiden kielet: sindarin ja quenya) fontteja. Nämä fontit ovat vapaasti käytettävissä ja tulevat näiltä sivustoilta:\n- pIqaD (klingonin aakkosto): {url_piqad}\n- tengwar (haltioiden aakkosto, sindarinille ja quenyalle): {url_tengwar}\nJos nämä sivustot eivät ole enää aktiivisia, voit hakea pIqaD- ja tengwar-fontit napsauttamalla alla olevia painikkeita:\n\nTämä ohjelmisto kehitettiin ranskaksi. Käännökset muille kielille tehtiin tekoälyn, erityisesti Clauden, avulla. Päätin tukea noin neljäkymmentä kieltä. Mutta ilmeisesti en puhu kaikkia näitä kieliä. Siksi minulla ei ollut muuta vaihtoehtoa kuin käyttää tekoälyä, koska 40 eri kääntäjän palkkaaminen ja heille maksaminen eivät kuuluneet harkittuihin vaihtoehtoihin. Näiden käännösten automaattisen luonteen vuoksi virheitä saattaa esiintyä. Pahoittelen tätä.",
+    "credits": "Vibe Coding, rakkaani",
+    "credits_content": "En tiedä mitään ohjelmoinnista. Ei mitään. Siksi kehitin tämän ohjelmiston Clauden, Anthropicin tekoälyn, ja tarkemmin sanottuna Claude Coden avulla. En voi suositella Claude Codea tarpeeksi, tämä sovellus on upea!",
+    "resize_pages": "Muuta sivujen kokoa",
+    "resize_pages_content": "Pienennä tai suurenna sivujasi:\n• Valitse yksi tai useampi sivu\n• Napsauta hiiren kakkospainikkeella → 'Muuta kokoa'\n• Kolme vaihtoehtoa on käytettävissä:\n  - Mukautetut mitat: anna haluttu leveys tai korkeus (kuvasuhde säilytetään automaattisesti).\n  - Prosentuaalinen pienennys: valitse prosenttiosuus 10%:sta 90%:iin\n  - Prosentuaalinen suurennus: valitse prosenttiosuus 10%:sta 100%:iin\n• Sovellus näyttää kuviesi arvioidun koon muokkauksen jälkeen\n• Muokkaus koskee välittömästi kaikkia valittuja sivuja",
+    "language_export_piqad": "pIqaD-fontti",
+    "language_export_tengwar": "Tengwar-fontit",
+    "language_export_piqad_success": "Fontti viety: {filename}\nSaatavilla:",
+    "language_export_tengwar_success": "{count} fonttia viety\nSaatavilla:",
+    "icons": "Kuvakkeet",
+    "icons_content": "Suurin osa tässä apuohjelmassa käytetyistä kuvakkeista on peräisin tältä sivustolta ja ne ovat vapaasti käytettävissä ei-kaupallisiin tarkoituksiin: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nJoitakin olen muokannut itse.\nVain yksi kuvake, Windows-suoritettava kuvake, on minun luomani (mutta tekoälyn avulla, koska olen erittäin, erittäin, erittäin huono graafinen suunnittelija). Sinulla on lupa käyttää tätä kuvaketta haluamallasi tavalla, kunhan mainitse lähteesi.",
+    "icons_view_button": "Näytä kuvakkeet",
+    "icons_window_title": "MosaicView Kuvakkeet",
+    "icons_save_all": "Tallenna kuvakkeet",
+    "icons_saved_success": "{count} kuvake(tta) tallennettu:",
+    "icons_save_failed": "Kuvakkeita ei voi tallentaa: {error}",
+    "split_ui": "Kaksi-paneeli käyttöliittymä",
+    "split_ui_content": "MosaicView mahdollistaa kahden arkiston näyttämisen samanaikaisesti vierekkäin.\n\nNapsauta Jaa-kuvaketta avataksesi toisen paneelin. Kukin paneeli on itsenäinen: voit avata, muokata ja tallentaa arkiston erikseen. Aktiivinen paneeli on merkitty sinisellä reunuksella.\n\nSiirtääksesi sivuja paneelista toiseen, vedä ne suoraan. Jos useita sivuja on valittu, ne siirtyvät kaikki yhdessä. Sivut lisätään punaisella palkilla osoitettuun kohtaan.\n\nNapsauta Sulje toinen paneeli -kuvaketta palataksesi yhden paneelin tilaan.",
+    "license_gpl": "GPL v3 -lisenssi",
+    "license_unrar": "UnRAR-lisenssi",
+    "config_clear_clipboard": "Tyhjenna leikepoydan tiedostot",
+    "config_clipboard_note": "Poikkeus: Windows-leikepoydan kaytt amat valikaikaiset tiedostot (clipboard_XXXXX-tiedostot) sailytetaan 12 tuntia kopioinnin jalkeen, jotta voit liittaa ne myos sovelluksen sulkemisen jalkeen. 12 tunnin jalkeen ne poistetaan automaattisesti.",
+    "config_log_note": "Erakonversiot (PDF CBZ:ksi ja CBR CBZ:ksi) luovat lokitiedoston virheiden ilmetessa. Nama tiedostot (Log_pdftocbz_.txt ja Log_cbrtocbz_.txt) sailytetaan myos sovelluksen sulkemisen jalkeen, jotta ne voidaan tarkistaa myohemmin. Ne poistetaan ainoastaan yllaolevan \"Poista valikaikaiset tiedostot\" -painikkeen avulla.",
+    "config_clipboard_cleared": "Leikepoydan tiedostot on tyhjennetty onnistuneesti.",
+    "adjust_images": "Kuvien säätö",
+    "adjust_images_content": "Tämän toiminnon avulla voit muokata kuvia suoraan MosaicView'ssa. Voit säätää kirkkautta, kontrastia, terävyyttä, tasoja ja kylläisyyttä, soveltaa tehosteita (mustavalkoinen, seepia, värien kääntäminen), säätää pakkauslaatua, poistaa värejä, soveltaa läpinäkyvyyttä tai muuntaa eri värisyvyyksiin. Joillakin asetuksilla on oma katselin, jolla voit nähdä tuloksen täydessä resoluutiossa ennen käyttöä. Pienoiskuvan esikatselu näyttää tuloksen reaaliajassa pääikkunassa.",
+    "create_icon": "Luo kuvake",
+    "create_icon_content": "MosaicView mahdollistaa kuvacketiedostojen (.ico) luomisen mistä tahansa mosaiikissa olevasta kuvasta.\n• Napsauta kuvaa hiiren oikealla painikkeella → 'Luo kuvake'\n• Rajaa haluamasi alue katseluohjelmassa (kuvake on pakollisesti neliön muotoinen)\n• Säädä läpinäkyvyyttä tarvittaessa\n• Vahvista: .ico-tiedosto lisätään suoraan mosaiikkiin\n• .ico-tiedostot sisältävät automaattisesti kaikki standardiresoluutiot (16×16–256×256)\n• Niin kauan kuin mosaiikissa on .ico-tiedosto, tallennus CBZ-arkistoon on estetty, koska ICO-muotoa ei tueta näissä arkistoissa. Vie .ico-tiedosto erikseen (Ctrl+C ja liitä Windows-kansioon), poista se sitten mosaiikista ennen tallentamista.",
+    "batch_convert": "Erämuunnos",
+    "batch_convert_content": "MosaicView tarjoaa kolme eräkonvertointitoimintoa, jotka ovat käytettävissä vain kun mosaiikki on tyhjä. Jokaisessa periaate on sama : valitse hakemisto, vahvista, seuraa edistymistä reaaliajassa, tarkastele lopullista yhteenvetoa. Vaihtoehto mahdollistaa alkuperäisten tiedostojen pysyvän poistamisen sen sijaan, että ne lähetetään roskakoriin.\n• CBR → CBZ : muuntaa kaikki CBR (RAR) -tiedostot hakemistosta ja sen alihakemistoista. Jos CBR on todellisuudessa ZIP, se yksinkertaisesti nimetään uudelleen ilman muunnosta.\n• PDF → CBZ : muuntaa kaikki PDF-tiedostot hakemistosta ja sen alihakemistoista. Kuvat puretaan ilman uudelleenpakkausta.\n• YKSITTÄISET KUVAT → CBZ : luo yksilöllisen CBZ:n jokaiselle hakemistosta ja sen alihakemistoista löydetylle kuvatiedostolle. Virheelliset, vioittuneet, monisivuiset (TIFF) tai animoidut (GIF) kuvat ohitetaan ja kirjataan lokiin.",
+    "config_open_temp_folder": "Avaa väliaikainen kansio",
+    "icon_toolbar": "Kuvakepalkki",
+    "icon_toolbar_content": "Kuvakepalkki tarjoaa nopean pääsyn sovelluksen päätoimintoihin. Voit järjestää kuvakkeet haluamallasi tavalla vetämällä niitä suoraan palkkiin. Valitaksesi, mitkä kuvakkeet näytetään tai piilotetaan, napsauta palkin alaosassa olevaa hammasrataspainiketta: avautuu asetusikkuna, jossa voit siirtää kuvakkeita aktiivisen palkin ja varannon välillä. Käytä « + »- ja « − »-painikkeita kuvakkeiden koon säätämiseen. Asetukset tallennetaan automaattisesti.",
+    "license_7zip": "7-Zip-lisenssi"
+  },
+  "misc": {
+    "file_word": "tiedosto",
+    "files_word": "tiedostoa",
+    "corrupted": "vioittunut",
+    "yes": "Kyllä",
+    "no": "Ei",
+    "cancel": "Peruuta",
+    "selection_suffix": "kopio-valinta"
+  },
+  "metadata": {
+    "title": "Otsikko",
+    "series": "Sarja",
+    "number": "Numero",
+    "volume": "Osa",
+    "summary": "Yhteenveto",
+    "writer": "Käsikirjoittaja",
+    "penciller": "Piirtäjä",
+    "inker": "Musteuttaja",
+    "colorist": "Värittäjä",
+    "letterer": "Tekstittäjä",
+    "cover_artist": "Kansitaiteilija",
+    "editor": "Toimittaja (henkilö)",
+    "publisher": "Kustantaja (talo)",
+    "imprint": "Kustannussarja",
+    "genre": "Genre",
+    "web": "Verkkosivusto",
+    "page_count": "Sivumäärä",
+    "language_iso": "Kieli",
+    "format": "Muoto",
+    "black_and_white": "Mustavalkoinen",
+    "manga": "Manga",
+    "year": "Vuosi",
+    "month": "Kuukausi",
+    "day": "Päivä",
+    "notes": "Muistiinpanot",
+    "characters": "Hahmot",
+    "locations": "Paikat",
+    "teams": "Tiimit",
+    "story_arc": "Tarinakaari",
+    "story_arc_number": "Kaaren numero",
+    "series_group": "Sarjaryhmä",
+    "count": "Numeroiden määrä",
+    "alternate_series": "Vaihtoehtoinen sarja",
+    "alternate_number": "Vaihtoehtoinen numero",
+    "alternate_count": "Vaihtoehtoinen määrä",
+    "age_rating": "Ikäluokitus",
+    "series_complete": "Sarja valmis",
+    "translator": "Kääntäjä",
+    "tags": "Tunnisteet",
+    "scan_information": "Skannaustieto",
+    "community_rating": "Yhteisöarvio",
+    "review": "Arvostelu",
+    "gtin": "GTIN",
+    "pages": "Sivut",
+    "pages_col_image": "Kuva",
+    "pages_col_type": "Tyyppi",
+    "pages_col_width": "Leveys",
+    "pages_col_height": "Korkeus",
+    "pages_col_size": "Koko (t)"
+  },
+  "web": {
+    "web_download_progress": "Lataus: {downloaded}/{total} kuvaa...",
+    "web_download_cancel": "Peruuta",
+    "web_no_images": "Ei kuvia",
+    "web_no_images_found": "Tältä sivulta ei löytynyt kuvia.",
+    "web_imported": "{count} kuva(a) tuotu verkkosivulta",
+    "web_drag_drop_title": "Verkkokuvan vedä ja pudota",
+    "web_copy_paste_message": "Suora vedä ja pudota -toiminto selaimesta ei ole tuettu.\n\nVaihtoehtoinen ratkaisu (yksinkertaisempi):\n\n1. Napsauta hiiren kakkospainikkeella kuvaa selaimessa\n2. Valitse 'Kopioi kuva'\n3. MosaicView'ssä käytä 'Liitä'-painiketta tai Ctrl+V\n\nTämä menetelmä toimii kaikkien verkkokuvien kanssa!",
+    "import_web_button": "Verkkotuonti",
+    "import_web_tooltip": "Liitä internet-osoite noutaaksesi kaikki kuvat sivulta",
+    "import_web_menu": "Verkkotuonti...",
+    "import_web_dialog_title": "Tuo kuvia verkkosivulta",
+    "import_web_url_label": "Verkkosivun osoite:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Peruuta",
+    "import_web_invalid_url": "Virheellinen URL-osoite. Anna kelvollinen verkko-osoite."
+  },
+  "donation": {
+    "menu_label": "Lahjoita tekijälle",
+    "title": "Tee lahjoitus",
+    "message": "Pidät tästä pienestä työkalusta ja käytät sitä säännöllisesti.\n\nOlen investoinut siihen useita satoja tunteja. Harkitsisitko kiittämistäni tekemällä lahjoituksen? Ole kiltti, tarvitsen todella rahaa täyttääkseni uima-altaani samppanjalla. Halusitpa lähettää minulle muutaman sentin tai useita miljardeja euroja, hyväksyn kaikki summat. Voit tehdä tämän lahjoituksen paypalin kautta"
+  },
+  "mail": {
+    "tooltip": "Tämä painike avaa oletussähköpostiohjelmiston Windowsissa sähköpostin lähettämistä varten. Jos mitään ohjelmistoa ei ole määritetty (esimerkiksi jos käytät vain webmailia), voit kopioida MosaicView-osoitteen leikepöydälle napsauttamalla kuvaketta hiiren oikealla painikkeella.",
+    "copy_address": "Kopioi MosaicView'n sähköpostiosoite",
+    "menu_label": "Lähetä sähköpostia MosaicView'lle",
+    "icon_label": "Lähetä sähköposti"
+  },
+  "menu": {
+    "file": "Tiedosto",
+    "file_open": "Avaa tiedosto",
+    "file_close": "Sulje tiedosto",
+    "batch_convert": "Tiedostojen erämuunnos",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Yksittäiset kuvat → CBZ",
+    "edit": "Muokkaa",
+    "undo": "Kumoa",
+    "redo": "Tee uudelleen",
+    "paste": "Liitä",
+    "delete": "Poista",
+    "invert_selection": "Käännä valinta",
+    "select_all": "Valitse kaikki",
+    "deselect": "Poista valinta",
+    "refresh_mosaic": "Päivitä mosaiikki",
+    "images": "Kuvat",
+    "rotation": "Kierto",
+    "archives": "Arkistot",
+    "sort": "Lajittelu",
+    "system": "Järjestelmä",
+    "decrease_font": "Pienennä fonttia",
+    "increase_font": "Suurenna fonttia",
+    "language": "Kielet",
+    "language_real": "Oikeat kielet",
+    "language_fictional": "Fiktiiviset kielet",
+    "about": "Tietoja",
+    "export_piqad_font": "Tallenna pIqaD-fontti",
+    "export_tengwar_fonts": "Tallenna tengwar-fontit"
+  }
+}

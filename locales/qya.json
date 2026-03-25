@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "I macil Helcaraxëo i hentanor carinwa parmalingweo",
+  "buttons": {
+    "open_file": "Panya CBZ/CBR/CB7/PDF",
+    "close_file": "Hanta i parma",
+    "create_cbz": "Cára raincelma CBZ",
+    "flatten_dirs": "Horya illi parmi\nat rómenna ar nauta\ni aldassë",
+    "renumber": "Rimbë nótië\ni parmalion",
+    "undo": "⤺ Nurta",
+    "redo": "Ata-carë ⤻",
+    "copy": "Samna",
+    "cut": "Cesta",
+    "paste": "Pata",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Návië mi yana\nquenta i fáno",
+    "join_pages": "Oacë i parmar",
+    "split_page": "Rahta i parma",
+    "save_as": "Tecë enda\n(carnë noa CBZ)",
+    "save_selection": "Tecë i cilmë\nmi CBZ",
+    "print_selection": "Téca i cilmë",
+    "print_all": "Téca ilya coentë",
+    "sort": "Núta",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Návë",
+    "cancel": "Avahaila",
+    "split_button": "Rahta",
+    "join_button": "Yesta",
+    "validate_crop": "Manta i píta",
+    "ok": "Nai",
+    "close": "Hanta",
+    "apply_and_save": "Tér i návier ar tecë i parma",
+    "apply_and_create": "Tér i návier ar cára parma CBZ",
+    "close_and_lose": "Hanta i parma ar vanwa i návier",
+    "cancel_return": "Avahaila ar nanë i mossaicannar",
+    "update_page_count": "Atalta lesta rimbe\nparmalesseo",
+    "invert_selection": "Hwinya i orthelë",
+    "reduce_size": "Vanya i anda parmalion",
+    "mirror_vertical": "⇅",
+    "create_gif": "GIF cára",
+    "edit_gif": "GIF coiva ná-menta",
+    "save_to_folder": "Estalë i massë\nnahtaina",
+    "continue": "Á tulya",
+    "reset": "↻",
+    "yes": "Nai",
+    "no": "Lá",
+    "renumber_recommended": "Alasse sina kirya (marta)",
+    "ignore_and_save": "Númen na kirya na marta",
+    "rename_to_cbz": "Essecenta .cbz-nna",
+    "open_without_rename": "Panya sí essecenta",
+    "rename_to_cbr": "Essecenda .cbr-s",
+    "adjustments": "Calima,\ncontrasta sív.",
+    "batch_cbr_to_cbz": "Rimba yuldar\n CBR tengwi CBZ-nna",
+    "batch_pdf_to_cbz": "Yalumea PDF\n parmar CBZ-nna",
+    "batch_img_to_cbz": "Rimbe quanta\n lómë i cilvë tengwi CBZ-nna",
+    "icon_toolbar_reset": "Cuilina",
+    "delete_selected": "Hauta",
+    "save": "Harya",
+    "rename_to_cb7": "Esselye .cb7 senna",
+    "split_ui": "Quantë parma omentiennar",
+    "unsplit_ui": "Telpë ve parma"
+  },
+  "tabs": {
+    "mosaic": "Mossaica",
+    "metadata": "Encartar"
+  },
+  "viewer": {
+    "title": "Centuva",
+    "mode_single": "Minya lambë  [D]",
+    "mode_double": "Yúyo lambë  [D]",
+    "mode_continuous": "Lúmequenta lambë  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Yára parma (←)",
+      "next_page": "Arimelda parma (→)",
+      "zoom_in": "Tyalië + (Ctrl+Plus)",
+      "zoom_out": "Tyalië - (Ctrl+Moins)",
+      "zoom_reset": "Rinyë tyalië (Ctrl+0)",
+      "reading_mode_double": "Návë nottië (D) → Attëa parmar",
+      "reading_mode_continuous": "Návë nottië (D) → Attëa parmar vórimar",
+      "reading_mode_single": "Návë nottië (D) → Parma erya",
+      "fullscreen_exit": "Elda larca cénë (F11)",
+      "fullscreen": "Larca cénë (F11)",
+      "close_viewer": "Hanta i centuva (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Fána russë - Envinyata",
+      "corrupted_delete": "⚠️ Nauta sí fána",
+      "copy": "Samna (Ctrl+C)",
+      "cut": "Cesta (Ctrl+X)",
+      "paste": "Pata (Ctrl+V)",
+      "paste_clipboard": "Pata ambarto (Ctrl+V)",
+      "delete": "Nauta (Suppr)",
+      "deselect": "Avalcilmë (ESC)",
+      "rotate_right": "↻ Winë formenna",
+      "rotate_left": "↺ Winë hyarmenna",
+      "mirror": "⇄ Hyelma tennoio",
+      "crop": "Píta",
+      "convert": "Návë mi yana quenta...",
+      "join": "Oacë i parmar cilyar",
+      "split": "Rahta i parma cilyar",
+      "save_selection": "Tecë i cilmë mi CBZ",
+      "print_selection": "Téca i cilmë",
+      "copy_archive": "Samna i raincelma ilya",
+      "undo": "Nurta (Ctrl+Z)",
+      "redo": "Ata-carë (Ctrl+Y)",
+      "renumber_auto": "Enquetie notesseron (auto-hirie notessi linie)",
+      "renumber_simple": "Enquetie notesseron (sinome notiqualme)",
+      "sort_submenu": "Núta i parmar",
+      "sort_name": "As essë",
+      "sort_type": "As quenta",
+      "sort_size": "As tungë",
+      "sort_width": "As palla",
+      "sort_height": "As tarma",
+      "sort_resolution": "As laicálë",
+      "sort_dpi": "As DPI",
+      "create_cbz": "Cára raincelma CBZ",
+      "save_as": "Tecë enda...",
+      "close_file": "Hanta i parma",
+      "help": "Nottië návaren",
+      "update_page_count": "Atalta lesta rimbe parmalesseo",
+      "invert_selection": "Hwinya i orthelë (Ctrl+I)",
+      "reduce_size": "Vanya i anda parmalion",
+      "mirror_vertical": "⇅ Hyelma anduinë",
+      "edit_animated_gif": "GIF coiva ná-menta...",
+      "save_to_folder": "Estalë i massë nahtaina",
+      "adjustments": "Calima, contrasta, culini...",
+      "refresh_mosaic": "Envinyata i mosaic (F5)",
+      "create_ico": "Carë .ico quetta"
+    },
+    "canvas_no_file": {
+      "open": "Panya CBZ/CBR/CB7/PDF",
+      "recent_files": "Parmar yéni",
+      "clear_history": "Pusta i lúmënyassë"
+    },
+    "canvas_with_file": {
+      "close": "Hanta i parma",
+      "paste": "Pata (Ctrl+V)",
+      "paste_clipboard": "Pata ambarto (Ctrl+V)",
+      "select_all": "Cilmë ilya (Ctrl+A)",
+      "deselect": "Avalcilmë (ESC)",
+      "copy_archive": "Samna i raincelma ilya",
+      "print_all": "Téca ilya coentë",
+      "renumber_auto": "Enquetie notesseron (auto-hirie notessi linie)",
+      "renumber_simple": "Enquetie notesseron (sinome notiqualme)",
+      "flatten": "Lanya i aldasseli",
+      "save_selection": "Tecë i cilmë mi CBZ",
+      "hide_sidebar": "« Núta i tyellë macilion",
+      "show_sidebar": "» Cenda i tyellë macilion",
+      "decrease_thumbs": "Úma i anwa pitcaron",
+      "increase_thumbs": "Envinyata i anwa pitcaron",
+      "theme_dark": "Návë i morna calima",
+      "theme_light": "Návë i cálë calima",
+      "sort_submenu": "Núta i parmar",
+      "undo": "Nurta (Ctrl+Z)",
+      "redo": "Ata-carë (Ctrl+Y)",
+      "create_cbz": "Cára raincelma CBZ",
+      "save_as": "Tecë enda...",
+      "help": "Nottië návaren",
+      "update_page_count": "Atalta lesta rimbe parmalesseo",
+      "invert_selection": "Hwinya i orthelë (Ctrl+I)",
+      "fullscreen": "Írima lanwa (F11)",
+      "fullscreen_exit": "Auta írima lanwa (F11 mal ESC)",
+      "quit": "apa falasse"
+    },
+    "canvas": {
+      "quit": "apa falasse",
+      "reset": "Penia i application:\n• quantesse ar telpë i coivierwa\n• morna forma → calima\n• quantesse i parmalar → normal\n• telwa tanna → cenuva / 220 px\n• lambë → hlaruva autómatica\n• quantesse i fëa → default",
+      "reset_label": "Restanya i sambë"
+    },
+    "font_size": {
+      "decrease": "Apica i sérë tengwesto",
+      "increase": "Alta i sérë tengwesto"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Núta as essë",
+    "sort_type": "Núta as quenta",
+    "sort_size": "Núta as tungë",
+    "sort_width": "Núta as palla",
+    "sort_height": "Núta as tarma",
+    "sort_resolution": "Núta as laicálë",
+    "sort_dpi": "Núta as DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Raincelma coima",
+        "message": "I raincelma CBZ ú-harya ai parma."
+      },
+      "empty_cbr": {
+        "title": "Raincelma coima",
+        "message": "I raincelma CBR ú-harya ai parma."
+      },
+      "files_ignored": {
+        "title": "Parmar avanyar"
+      },
+      "no_selection_crop": {
+        "title": "Úma cilmë",
+        "message": "Cilë erya fána an píta."
+      },
+      "multi_selection_crop": {
+        "title": "Cilmë rimba",
+        "message": "Lá mauya píta rimbeli fánali.\nCilë erya fána tambë."
+      },
+      "invalid_selection_crop": {
+        "title": "Cilmë úvëa",
+        "message": "Tambë fánar mai pítastar."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Návë úvëa",
+        "message": "I hormë parmalion úmëa mi aldasseli.\nLanya i aldasseli maldë návë at rómenna."
+      },
+      "no_selection_convert": {
+        "title": "Úma cilmë",
+        "message": "Cilë minnë erya fána an návië."
+      },
+      "invalid_selection_convert": {
+        "title": "Cilmë úvëa",
+        "message": "Tambë fánar mai návëastar."
+      },
+      "no_selection_split": {
+        "title": "Úma cilmë",
+        "message": "Cilë erya fána an rahta."
+      },
+      "multi_selection_split": {
+        "title": "Cilmë rimba",
+        "message": "Lá mauya rahta rimbeli fánali.\nCilë erya fána tambë."
+      },
+      "invalid_selection_split": {
+        "title": "Cilmë úvëa",
+        "message": "Tambë fánar mai rahtastar."
+      },
+      "invalid_number_split": {
+        "title": "Nótë úvëa",
+        "message": "I nótë parmalion ná enda 2 ar 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Cilmë úfárëa",
+        "message": "Cilë minnë attëa fánar an oacë."
+      },
+      "invalid_selection_join": {
+        "title": "Cilmë úvëa",
+        "message": "Tambë fánar mai oacëastar."
+      },
+      "pil_not_available": {
+        "title": "PIL úvëa",
+        "message": "I módulo PIL úmëa an pata ambartello."
+      },
+      "format_not_supported": {
+        "title": "Quenta úcenduva",
+        "message": "Quenta fáno úcenduva maldë parma russë.\nQuentar cenduvar: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Úma cilmë",
+        "message": "Tirë cantalë pítalë yesta."
+      },
+      "cannot_open_file": {
+        "title": "Úma panya i parma",
+        "message": "Unable to load the file."
+      },
+      "corrupted_images": {
+        "title": "Fánar russer",
+        "summary": "{count} corrupted image(s) detected out of {total}.",
+        "hint": "They are displayed with a special icon.\nRight-click a corrupted image to replace or delete it.",
+        "more": "... and {count} more"
+      },
+      "no_image_print": {
+        "title": "Úma fána",
+        "message": "Úma fána an téca."
+      },
+      "no_valid_image_print": {
+        "title": "Úma fána",
+        "message": "Úma fána vëa an téca."
+      },
+      "no_selection_print": {
+        "title": "Úma cilmë",
+        "message": "Cilë minnë erya fána."
+      },
+      "no_valid_selection_print": {
+        "title": "Úma fána",
+        "message": "Úma fána vëa mi cilmë."
+      },
+      "save_cancelled": {
+        "title": "Tecnë avanyaina",
+        "message": "Envinyata máriessë i esser parmalion yesta tecnë."
+      },
+      "empty_pdf": {
+        "title": "PDF coima",
+        "message": "I parma PDF ú-harya ai parma."
+      },
+      "no_selection_save": {
+        "title": "Etelë",
+        "message": "Cilë minnë erya parma an tecë."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Hormë nautyaina",
+        "message": "I hormë parmalion as raica-pata úmëa tambë as rómë i coentëo.\n\nAn horya parmar:\n1. Návë at rómenna as naucë i símë envinyato\n2. Maldë lanya i coentë an nauta i aldasseli"
+      },
+      "no_selection_reduce": {
+        "title": "Ú hanya",
+        "message": "Áva hanya atta parma apsenë."
+      },
+      "invalid_selection_reduce": {
+        "title": "Ú vanya hanya",
+        "message": "Er lómër nauvar apsenë."
+      },
+      "invalid_dimensions": {
+        "title": "Ú vanyar tixelyar",
+        "message": "Áva tecë vanyar tixelyar (alcar notessi)."
+      },
+      "no_images_for_gif": {
+        "title": "Ú lómër",
+        "message": "Atta lóme anwa ná tuluva corima lóme."
+      },
+      "no_valid_images": {
+        "title": "Ú vanyar lómër",
+        "message": "Ú vanyar lómër návë tuluvar corima lóme."
+      },
+      "animated_gif_in_comic": {
+        "title": "GIF vanimë istaina",
+        "message": "Ténalma: Si parma ná i massë GIF coiva ta má.\\n\\nI massëlindali (CDisplayEx, YACReader, ar.) caruvar enta i menë leryassë GIF ilya coita masta parma.\\n\\nNa cén i GIF coiva malta, estalë sa eressë tallumë i parmava as i nauca \"Estalë i massë nahtaina\" mai \"Ná-menta GIF coiva\".\\n\\nMerë cená i parma estalë ilyë ho?"
+      },
+      "no_selection_adjust": {
+        "title": "Ua seldo",
+        "message": "Heca minin ere ceulin ontarea caraina."
+      },
+      "invalid_selection_adjust": {
+        "title": "Uvanima seldo",
+        "message": "Ontarear mauya nauva caraina ceulinen te."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Valar morna lá carë",
+        "message": "Nótimë nólë um caritas ter i parmë an i tarmar úvanë hlaputanë.\nHlaput i tarmar sí ter i nótimë."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "Russë ZIP",
+        "message": "'{file}': I parma lá ná raincelma ZIP vëa maldë russëa."
+      },
+      "zip_cannot_open": {
+        "title": "Russë ZIP",
+        "message": "Úma panya i parma CBZ: {error}"
+      },
+      "rar_invalid": {
+        "title": "Russë RAR",
+        "message": "'{file}': I parma lá ná raincelma RAR vëa maldë russëa."
+      },
+      "rar_cannot_open": {
+        "title": "Russë RAR",
+        "message": "Úma panya i raincelma CBR: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Russë",
+        "message": "Russë ácenduva mi panyassë i CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Russë",
+        "message": "Úma oacë i fánar."
+      },
+      "paste_failed": {
+        "title": "Russë",
+        "message": "Russë mi patassë: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Russë",
+        "message": "Úma samna i raincelma: {error}"
+      },
+      "crop_invalid": {
+        "title": "Russë",
+        "message": "I nómë pítaiva úvëa."
+      },
+      "crop_failed": {
+        "title": "Russë",
+        "message": "Úma píta i fána: {error}"
+      },
+      "load_image_failed": {
+        "title": "Russë",
+        "message": "Úma coita i fána:\n{error}"
+      },
+      "print_error": {
+        "title": "Russë técaiva",
+        "message": "Russë mi técassë:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Técë úvëa",
+        "message": "I módulo win32print úlancëa.\nLancë as: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Parma úhíriéva",
+        "message": "I parma lá ëa tanna:\n{path}"
+      },
+      "import_failed": {
+        "title": "Russë tentëaiva",
+        "message": "Úma tentë i parma: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF úlancëa",
+        "message": "I módulo PyMuPDF (fitz) úlancëa.\nLancë as: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Russë",
+        "message": "Russë mi tentëassë i PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "Russë PDF",
+        "message": "Úma coita i PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Esser parmalion attëar",
+        "intro": "{count} esselwa esse(r) sinen(i) hirna(r):\n\n",
+        "item": "  • {name} ({times} lúmessen)\n",
+        "more": "  ... ar {more} aiquer\n",
+        "footer": "\nI ZIP-parmar umir mapa esselwa essi.\nÁ essetar i sini matimber antien."
+      },
+      "save_failed": {
+        "title": "Russë",
+        "message": "Úma tecë i parma: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Russë",
+        "message": "Úma cára i raincelma: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Russë",
+        "message": "Úma tecë i cilmë: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "Lóme corima úcarë",
+        "message": "Lá nauva carë corima lóme:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Úra tehta",
+        "message": "Úra tehtaë tengwi:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Úcarë Essecenta",
+        "message": "Lá polë essecenta i parma: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF palantírenen nahtana",
+        "message": "I parma PDF sina naitaina ar palantírenen nahtana.\nUme pole apanta ilye palantírë."
+      },
+      "pdf_unlock_failed": {
+        "title": "Raxë",
+        "message": "Umë polë harya i PDF parma hapaniéva:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: PDF lúmenna (parma saila néna), lómëa",
+      "file_too_large": {
+        "title": "I nómë úva polë",
+        "message": "I nómë {filename} ná {size} ar lá polë i quanta nómë (500 MB) i tec."
+      },
+      "license_file_not_found": {
+        "message": "License file not found: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Unable to read license file: {error}"
+      },
+      "7z_invalid": {
+        "title": "Raxë 7Z",
+        "message": "I quetta '{file}' ná úvana 7Z-mahtar eä raxë."
+      },
+      "delete_error": "Nyarna i raxë: {error}",
+      "export_error": "Nyarna i raxë an etelehta: {error}",
+      "font_source_not_found": "I tengwa-quingalë ua hirna: {path}",
+      "no_tengwar_font": "Ua hirna tengwa Tengwar.",
+      "no_icons_found": "Ua hirna óre.",
+      "unsupported_files": {
+        "title": "Mathornor uvanimë",
+        "message": "I mathornor hildë uvanë ú-carir sí ar né hlaraina:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "Lóme corima carinë alassëa",
+        "message": "I corima lóme '{name}' náne carinë ar ontanë mozaico."
+      },
+      "pywin32_required": {
+        "title": "Návë úvëa",
+        "message": "I módulo pywin32 nauva an pata ambartello.\nLancë as: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Fánar tentëar",
+        "message": "{count} fána(r) tentëa(r)"
+      },
+      "archive_copied": {
+        "title": "Raincelma samnaina",
+        "message": "I parma né carnë mir i caimassë."
+      },
+      "function_not_available": {
+        "title": "Návë úvëa",
+        "message": "Sina návë úmëa sí lúmessë."
+      },
+      "duplicate_detected": {
+        "title": "Attëa híraina",
+        "message": "Parma cainyëa sina essë yára.\n\nI parma envinyatainë mi:\n{name}"
+      },
+      "replace_success": {
+        "title": "Alya",
+        "message": "I fána '{name}' envinyatainëa as alya."
+      },
+      "history_cleared": {
+        "title": "Lúmënya pustaina",
+        "message": "I lissë parmalion yéni pustainëa."
+      },
+      "files_copied_clipboard": {
+        "title": "Parmar samnainar ambartello",
+        "message": "I raica-pata extara úmëa an quettar técnicar.\n\n✓ {count} {word} samnaina(r) mi ambartello\n\nLyë mauya pata silyanna mannar:\n  • Naucë formenna → Pata\n  • Maldë Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Envinyatië carnaina",
+        "message": "{count} essë(r) parmaiva envinyataina(r)."
+      },
+      "import_success": {
+        "title": "Tentë alya",
+        "message": "{count} parma(r) tentëa(r) amba {file}"
+      },
+      "pdf_import_success": {
+        "title": "Tentë alya",
+        "message": "{count} parma(r) PDF tentëa(r) amba {file}\nAlcárë: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Alya",
+        "message": "PDF návaina as alya!\n{count} parmar coitar as {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Alya",
+        "message": "Parma CBZ tecnaina as alya:"
+      },
+      "cbz_converted": {
+        "title": "Alya",
+        "message": "Parma návaina mi CBZ as alya:",
+        "question": "Lyë mauya nauta i parma CBR yára?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Alya",
+        "message": "Parma návaina mi CBZ as alya:",
+        "question": "Lyë mauya nauta i parma PDF yára?"
+      },
+      "cbz_save_as": {
+        "title": "Alya",
+        "message": "Noa parma CBZ tecnaina: {path}"
+      },
+      "cbz_created": {
+        "title": "Alya",
+        "message": "Raincelma CBZ carinë as alya:"
+      },
+      "selection_saved": {
+        "title": "Alya",
+        "message": "Cilmë tecnaina as alya:"
+      },
+      "flatten_done": {
+        "title": "Lanyë carnaina",
+        "message": "{files} parma(r) hormaina(r) amba {dirs} aldassë(li)."
+      },
+      "language_changed": {
+        "title": "Lambë návaina",
+        "message": "I lambë i cenduvalë návainëa as alya."
+      },
+      "new_cbz_saved": {
+        "title": "Parma Carita",
+        "message": "I sinyë CBZ parma carita ve:",
+        "question": "Merin ú-nahta i erinqua parma?"
+      },
+      "page_count_updated": {
+        "title": "Lesta rimbe atulatanë",
+        "message": "I lesta rimbe parmalesseo atulatanë {count} parmar."
+      },
+      "files_saved": {
+        "title": "Tehtaina mára",
+        "message": "{count} tengwi tehtaina mi:\n{folder}",
+        "open_folder": "Mára tárma pan?"
+      },
+      "adjustments_applied": {
+        "title": "Ontarear caraina",
+        "message": "Ontarear mauya caraina anda."
+      },
+      "pdf_unlocked": {
+        "title": "PDF apantaina",
+        "message": "I PDF parma apantaina haranë:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Raincelma tulca",
+        "message": "Sina raincelma ná {size} Mo únainaina.\nI coitië nauva tulya rimba márië (RAM).\n\nLyë mauya terya?"
+      },
+      "confirm_delete": {
+        "title": "Mantië",
+        "message": "Ma anwa merë tyav {count} parma ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Nauta i parmar culdalion?",
+        "message": "Lyë mauya nauta i fánar i oacendar?\n\nNai = Nauta i parmar culdalion\nLá = Harya i parmar culdalion\nAvahaila = Avahaila i návë"
+      },
+      "invalid_filenames": {
+        "title": "Esser parmalion úvear",
+        "intro": "{count} file(r) mapa tengwi aqua:",
+        "item": "  • {name}",
+        "more": "  ... ar {more} ailë",
+        "forbidden_chars": "Tengwi aqua: {chars}",
+        "fix_question": "Merin alcarinquë apanaina i esseli?\n(I tengwi aqua nauvar hostainë '_'-nën)"
+      },
+      "close_without_save": {
+        "title": "Harna i·quenta ve·tyulë?",
+        "message": "Fánar ontainar. Lyë mauya cára raincelma CBZ yesta hantien?"
+      },
+      "flatten_folders": {
+        "title": "Lanya i aldasseli",
+        "subdirs_detected": "Aldasseli híriévar:",
+        "files_to_move": "{count} parma(r) hormatuvar at rómenna.",
+        "folders_to_delete": "{count} aldassë(li) nautuvar.",
+        "continue_question": "Lyë mauya terya?"
+      },
+      "update_page_count": {
+        "title": "Atalta lesta rimbe",
+        "message": "I not parmar i cordalesse lambëo mernë.\n\nLesta rimbe parmalesseo: {original}\nLesta rimbe sí: {current}\n\nMeruval atalta lesta rimbe parmalesseo?"
+      },
+      "conversion_complete": {
+        "title": "Maquëa caita",
+        "message": "Maquëa caita!\n\n{count} parma/parmar maquier {format} rimbessë ar ner tollë tar i hyarya.\n\nAusta i yesta parmar?",
+        "delete_originals": "Lahta i yuldar\n{count} parma - {size}",
+        "keep_all": "Harya ilyë\n{count} parma - {size}",
+        "cancel_conversion": "Apsene i turindë\n{count} parma - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Úcara panya hiryaina: sina '{filename}' parma ná CBZ, lá CBR. Essecenta?",
+      "title": "Incorrect extension"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Lauva tecma tecina: sina '{filename}' parma na CBR, la CBZ. Essecenda?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Quetta cotumo úsie: i quetta '{filename}' ná CB7, lá CBZ/CBR. Esselye?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Anwa pitcaron",
+    "loading": "Catë, coitië oiála...\n{percent}%",
+    "resizing": "Á haryalye, atasë menessë...\n{percent}%",
+    "converting": "Áva, maquëa...\n{percent}%",
+    "loading_lazy": "Áva, alassëa ëa...\n{percent}%\n\nAr i analta lusta sina ({size} MB), i parmar ëar alassëa hyalë. I parmar i cenë mir i hyaþa ëar alassëa thand, i ambë ëar alassëa illomëa yú rollëa.",
+    "apply_save_cbz": "Tér i návier\nar tecë i parma CBZ",
+    "apply_create_cbz": "Tér i návier\nar cára parma CBZ",
+    "import_progress": "Tentë oiála...\n{percent}%",
+    "pdf_import_progress": "Tentë PDF oiála...\n{percent}%",
+    "pdf_opening": "Panyassë i parma PDF...",
+    "pdf_page": "Parma {current} / {total}",
+    "warning_close": "Etelë! I návier útecentar ar vantuvar!",
+    "language_label": "Lambë:",
+    "directory_tooltip": "Aldassë: {name}\n{count} parma(r)\nAnwa ilya: {size} Mo",
+    "folder_up_tooltip": "Attëa-naucë an navë\nerya tár mi tarassë",
+    "status_bar": "{dirs} sambë  |  {files} parma ({total_size})  |  {selected} harna ({selected_size})",
+    "pdf_converting": "{total} parma nauva {dpi} DPI cemende...",
+    "pdf_converting_no_change": "{total} parma lesta moita ala...",
+    "print_progress": "Ataquenta tecë...\n{percent}%",
+    "print_preparing": "Á etelya, ataquenta tecë...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nNótië i GNU Mirilya Palantírëa Lícensë v3\n\nLELYAR ANTAR\nPolyal usë, kopiër, qualintë ar apanótë\nMosaicView, yando ve tercáneva mardenna.\n\nMAUYA\nIlya apanótë (quetima hya qualintë) mauya :\n– harya i GPL v3 lícensë\n– hostë i yuldar quetima hya entë manna haryal\n– lá apanta quantë raxë\n\nVORONWË\nI súrë sinë apanótëa ÚAR VORONWË.\nI tyaro umir massë i raxor i usëllo tuler.\n\nEce le cöa i GNU Mirilya Palantírëa Lícensë i programmanen. Lá cenë, mahtë <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Cita i hára parmácië",
+    "license_unrar_text": "CBZ parmar nar coitaner ZIP coimas, i coimas lerta ar panta. CBR parmar, ananta, nar coitaner RAR coimas, i coimas i seldo.\n\nMosaicView pol apantie CBR parmar han UnRAR, i tanwe cenwa RARlab ar lerta coitaner.\n\nMbar auta: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Cen UnRAR Tërvantë",
+    "saving_cbz": "Tecina... {percent}%",
+    "empty_canvas_line1": "Apa sina min po lamna parmar CBZ/CBR/CB7/PDF po i tier",
+    "empty_canvas_line2": "Ye parma panar, nalyuvar apa ette parmar",
+    "empty_canvas_line3": "Lanta er hya nandi maitale ohtatë aistanë",
+    "icon_toolbar_config_title": "Tengwa tirno palantíreva",
+    "icon_toolbar_active": "Tengwar mi palantír",
+    "icon_toolbar_hidden": "Témar i sambë",
+    "license_gpl_full": "GNU GPL v3 termar",
+    "license_unrar_full": "UnRAR termar",
+    "licenses_button": "Termari",
+    "view_full_gpl_license": "Cen i quanta GNU GPL v3 termar",
+    "license_7zip_text": "CB7 parmar nér nornë 7z coassë, i Igor Pavlov carnë ar i GNU LGPL raitalessë apantaina.\n\nMosaicView pole CB7 parmar panë 7-Zip turindanen — lá cantë ar apanta-turindë.\n\nOficial coivë : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Cen 7-Zip raitalë",
+    "license_7zip_full": "7-Zip Raitalë",
+    "icon_toolbar_show_thumb_slider": "Cenda i quebar i tyeller i telpinnar",
+    "icon_toolbar_show_lang_combo": "Cenda i quebar i lambë",
+    "adjusting": "Apsenë, cemë carë olë...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS tengwesta lícuma",
+    "license_tengwar_full": "Alcarin Tengwar sarmion tecilwë",
+    "view_full_piqad_license": "Cen i quanda lícuma pIqaD qolqoS"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Návië fánalion",
+      "title": "Návië {count} {word}",
+      "word_image": "fána",
+      "word_images": "fánar",
+      "info": "Cilë i quenta cennalion:",
+      "format_png": "PNG (ú-vanwa)",
+      "format_jpg": "JPEG (as píticë)",
+      "format_webp": "WEBP (sinyarima)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (alcárë arca)",
+      "format_gif": "GIF (mirilya)",
+      "quality_label": "Alcárë an JPG/WEBP:",
+      "quality_maximum": "Mára — qualitë 95/100",
+      "quality_high": "Faila — qualitë 85/100",
+      "quality_medium": "Mára — qualitë 75/100",
+      "quality_low": "Pitya — qualitë 60/100",
+      "quality_custom_option": "Máriessëa",
+      "quality_custom": "Qualitë cuivëa : {value}/100",
+      "quality_note": "(Sina hecë turca tambë i quentar JPG ar WEBP)",
+      "quality_window_title": "Valanya mahtië",
+      "format_gif_static": "GIFesta",
+      "format_gif_animated": "GIF coiva (hesta yali parma)"
+    },
+    "split": {
+      "window_title": "Rahta i parma",
+      "title": "Rahta i parma",
+      "pages_label": "Nótë parmalion:",
+      "direction_label": "Tárië i rahtaivë:",
+      "horizontal": "Tennë (hyarya → formenya)",
+      "vertical": "Tárima (amba → undu)",
+      "warning": "⚠ I rahtië ná notaina carcarwassëa,\nerya envinyatië máriessëa nauva mára.",
+      "button_split": "Rahta",
+      "button_cancel": "Avahaila"
+    },
+    "join": {
+      "window_title": "Oacë i parmar - Envinyatë i nótië",
+      "instructions": "Núta i fánar:\n• Tárimassë (amba/undu) an oacë tárima\n• Tennessë (hyarya/formenya) an oacë tennë",
+      "merged_filename_prefix": "Oacëa",
+      "heights_label": "tára",
+      "widths_label": "landa",
+      "size_adjustment_title": "Lesta anastarië",
+      "size_adjustment_warning": "⚠️ I lesteli carmir lertar coanya.\nCuva masse lertar anaste.\nI menta carne ná lye coivie.",
+      "keep_original": "Coiva i yesta lertar",
+      "keep_original_desc": "(nauta morna línear)",
+      "enlarge_small": "Altie i pitsi carmir",
+      "enlarge_small_desc": "(tene i alta lesta)",
+      "reduce_large": "Pitya i altë carmir",
+      "reduce_large_desc": "(tene i pitya lesta)",
+      "back_to_arrangement": "Apsë"
+    },
+    "pdf": {
+      "quality_merge": "Cilë i alcárë oacëaivë:",
+      "quality_export": "Cilë i alcárë extyaivë:",
+      "merge_quality_title": "PDF nauva tyustë",
+      "export_quality_title": "PDF lesta tyustë",
+      "loading_title": "PDF nauva...",
+      "dpi_90": "90 DPI - Rambë parma",
+      "dpi_150": "150 DPI - Mára tyustë (asya cenda)",
+      "dpi_200": "200 DPI - Ananta mára tyustë",
+      "dpi_300": "300 DPI - Alya tyustë (sanwë parma)",
+      "dpi_600": "600 DPI - Úrima tyustë (alta parmar)",
+      "dpi_original": "Úva parma moita",
+      "dpi_original_tooltip": "Hantale ilya PDF pano:\n• Melyar-eressea panar: hanya DPI yesta\n• Tengwar-eressea panar: nelqëa-nelde DPI\n• Etya panar (tengwar ar melyar): melyar DPI alye nelqëa-nelde alta, ala nelqëa-nelde DPI\nVanya: atalta-atta-paxa-nelde DPI turca tier anwa"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF nauva merena",
+      "pymupdf_required_message": "PyMuPDF (fitz) lá ná tancaina. Lá polë ahyanë PDF parmar.",
+      "select_directory_title": "Cilë i mendo ya haryala PDF parmar",
+      "no_pdf_title": "Lá PDF parmar",
+      "no_pdf_message": "Lá PDF parmar né hirna i mendossë:\n{directory}",
+      "confirm_title": "Ohta rimba PDF na CBZ",
+      "confirm_message": "{count} PDF parmar ohtuvalë {directory}-ssë (nu-menor natinë).",
+      "checkbox_permanent_delete": "Hostë i yesta PDF parmar ú i ruxalë\nsanomë (LÁ POLË ENVINYATA)",
+      "start_button": "Yestë",
+      "converting_title": "Ohtala...",
+      "converting_progress": "Parma {current} ohtala {total} illion",
+      "page_progress": "Parmasta {current} / {total}",
+      "complete_title": "Ohtië telda",
+      "complete_message": "{count} PDF parmar ohtalë i mendossë:",
+      "complete_message_errors": "{count} {total} illon PDF parmar ohtalë i mendossë:",
+      "errors_count": "{count} apsa(r) hirnë."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Cil i enyalie ya CBR tengwi",
+      "no_cbr_title": "Lau CBR tengwi",
+      "no_cbr_message": "Lau CBR tengwi hirner i enyalies:\\n{directory}",
+      "confirm_title": "Rimba navie CBR na CBZ",
+      "confirm_message": "{count} CBR tengwi navinë {directory}-ssë (hya-enyalier nánë).",
+      "checkbox_permanent_delete": "Nurta i yesta CBR tengwi ulo\ni ruxale (ULO ENQUETIE NANWEN)",
+      "start_button": "Yesta",
+      "converting_title": "Navien...",
+      "converting_progress": "Navie tengwe {current} / {total}",
+      "page_progress": "Parca {current} / {total}",
+      "complete_title": "Navie telda",
+      "complete_message": "{count} CBR tengwi navinnë i enyalies:",
+      "complete_message_errors": "{count} CBR tengwi navinnë {total}-llo i enyalies:",
+      "errors_count": "{count} apsa(r) hirnë.",
+      "renamed_count": "{count} tengwe(r) estainessë CBZ-nna",
+      "rarfile_unavailable": "I module rarfile ua lala. Uin pol quenta i CBR file."
+    },
+    "close_warning": {
+      "title": "Etelë!",
+      "message": "I návier útecentar ar vantuvar!",
+      "btn_close_lose": "Hanta i parma ar vanwa i návier",
+      "btn_save_cbz": "Tér i návier ar tecë i parma",
+      "btn_create_cbz": "Tér i návier ar cára parma CBZ",
+      "btn_cancel": "Avahaila ar nanë i mossaicannar"
+    },
+    "replace_image": {
+      "title": "Envinyata i fána russëa"
+    },
+    "reduce_size": {
+      "window_title": "Vanya anda i parmar",
+      "title": "Vanya anda {count} {word}",
+      "word_image": "parma",
+      "word_images": "parmar",
+      "current_size": "Sinyë sí: {size} MB",
+      "current_dimensions": "Parmar sí: {width} × {height} px",
+      "choose_method": "Masta i nanwa vanya:",
+      "custom_dimensions": "Verya parmar",
+      "width_label": "Landa:",
+      "height_label": "Anda:",
+      "use_custom_dimensions": "Áva carë siner tixelyar",
+      "different_dimensions_warning": "I hanyalir parmar haryar tixelyar tyá. Hantalir tixelyar ortaryar ilyë parmar as í méra tixë. Tecë ista tana istanyë i tentaner antë cendëa.",
+      "estimated_size": "Sinyë notë: {size} MB",
+      "percentage_reduction": "Lesta puqua",
+      "percentage_enlargement": "Lesta alta",
+      "reduce_0": "0% (lá vanya)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (lá vanya)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Liruvar panya i hataleryar 1024, 1280, 1600, 1920 ar 2000 pixel, mal etta lúmë marir.",
+      "multi_page_width": "Hir ar ata tir parmasse in atya (panya/anda)",
+      "multi_page_width_tooltip": "Nerta na hir parmasse in atya: atta parma, nelde parma ar in. I notina aryande in dato parma nehta, pe panya (parmasse ara a ara) po anda (parmasse panya ara panya)"
+    },
+    "gif_animated": {
+      "window_title": "GIF coiva cára",
+      "images_title": "Parma coiva",
+      "params_title": "GIF ortheri",
+      "frame_delay_label": "Lúmë enta parma:",
+      "fps_normal": "{fps} parma/lúmesse",
+      "fps_slow": "Minë parma quén {seconds} lúmesse",
+      "loop_label": "Yalië quantenna:",
+      "loop_info": "(0 = yalië úquétima)",
+      "disposal_label": "Cára parma:",
+      "disposal_0": "Lá orthanna",
+      "disposal_1": "Hara parma yéva",
+      "disposal_2": "Envinyata mi telta",
+      "disposal_3": "Envinyata mi stat yéva",
+      "optimize": "Terya (harna telta)",
+      "metadata_title": "GIF metadata",
+      "metadata_dimensions": "Lasta: {width} × {height} px",
+      "metadata_frames": "Yalië parma: {count}",
+      "metadata_duration": "Andavë ilya: {duration} lúmesse",
+      "metadata_fps": "Farya: {fps} fps",
+      "metadata_palette": "Maltalë: mi 256 telti",
+      "metadata_size": "Lasta orthanna: {size} KB",
+      "comment_label": "Quenya (facëa):",
+      "no_images": "Parma lá hestaina",
+      "creating_progress": "Mahtar quantien... ({current}/{total})",
+      "creating_normalizing": "Mahtar equenitiénen... ({current}/{total})",
+      "creating_quantizing": "Qualmëa essenen... ({current}/{total})",
+      "creating_saving": "GIF haituvainen..."
+    },
+    "save_to_folder": {
+      "title": "Mára tárma"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Atwa esseli i parmar",
+      "message": "Atwa esseli i parmar ve nahtaina. Nai na kirya ar alasse\nve marta, sina kirya ar alasse ve kirya na ambar\nparmar (kirya ve númen, parmar ve nahtaina).\n\nNa kirya ve alasse sina na marta kirya."
+    },
+    "adjustments": {
+      "window_title": "Culini ontarear",
+      "title": "Ontarear {count} {word}",
+      "word_image": "ceulin",
+      "word_images": "ceulin",
+      "apply_button": "Cara",
+      "color_depth_section": "Culuva nu",
+      "brightness_contrast_section": "Cala ar racca",
+      "compression_section": "Pucta",
+      "effects_section": "Carmar",
+      "sharpness_section": "Laica",
+      "levels_section": "Morna ar lossea teltanne",
+      "depth_unchanged": "La ontarea",
+      "depth_32bit": "32 quetta (RGBA - culini ar faica)",
+      "depth_24bit": "24 quetta (RGB - culini)",
+      "depth_8bit": "8 quetta (PNG palma / JPEG mista harma)",
+      "depth_1bit": "1 quetta (morna ar lossea)",
+      "brightness_label": "Cala: {value}",
+      "contrast_label": "Racca: {value}",
+      "compression_enable": "Polda atapucta",
+      "compression_quality_label": "Qualitë : {value}/100",
+      "sharpness_label": "Laica: {value}",
+      "effect_none": "Ua carma",
+      "effect_grayscale": "Mista",
+      "effect_sepia": "Varne",
+      "levels_none": "Ua ontarea",
+      "levels_threshold": "Telume (morna po lossea aina)",
+      "levels_advanced": "Anda teltanne (lumbi/menel/calma)",
+      "threshold_label": "Telume: {value}",
+      "black_point_label": "Morna punta: {value}",
+      "gamma_label": "Sundo (menel): {value}",
+      "white_point_label": "Lossea punta: {value}",
+      "auto_levels_button": "Automatic adjustment",
+      "open_viewer_button": "Atarta lë tirmo (verca)",
+      "compression_info": "I nihta ná ten YÚYO ar WEBE coivierya",
+      "open_viewer_button_simple": "Atalta as i tíralyanen",
+      "reset_button": "Envinyata",
+      "preview_section": "Tíralya",
+      "effect_invert": "Culuina vilya",
+      "preview_warning": "I nurtaina polë virya i yesta tyara",
+      "effect_remove_colors": "Culienen faireva",
+      "remove_colors_intensity_label": "Alcar : {value}",
+      "image_mode_section": "Canta i ondonya",
+      "image_mode_rgb": "RGB (quessir)",
+      "image_mode_rgba": "RGBA (quessir + tercenya)",
+      "image_mode_l": "L (sindarë)",
+      "image_mode_la": "LA (sindarë + tercenya)",
+      "image_mode_cmyk": "CMYK (tecil)",
+      "image_mode_1": "1 (mori ar losse aica)",
+      "image_mode_p": "P (256 quessir palan)",
+      "saturation_section": "Cuivëa",
+      "saturation_label": "Cuivëa : {value}",
+      "saturation_viewer_title": "Cuivëa canwa",
+      "transparency_section": "Calima",
+      "transparency_info": "Calima ná apsenë PNG, WebP ar ICO i caimë",
+      "transparency_type_label": "Quetta :",
+      "transparency_type_flood": "Nórë",
+      "transparency_type_global": "Ilúvë",
+      "transparency_tolerance_label": "Apsenna : {value}",
+      "transparency_viewer_title": "Calima cantaina",
+      "transparency_click_instruction": "Tecë i quessë i carir calima",
+      "transparency_undo": "Ava tecë vinya",
+      "transparency_redo": "Ómë",
+      "transparency_type_flood_tooltip": "Flood fill : carir calima i nórë i quessessë i tecaina",
+      "transparency_type_global_tooltip": "Calima ilúvëa : apsenë ilya quesseli i caimessë ya quessë nó i tecaina",
+      "transparency_apply": "Carë",
+      "transparency_skipped_warning": "{count} i-picture(i) passenwa — i-format umir coivie alasse. Nan tulien, esta converte nan PNG.",
+      "unsharp_section": "Adaptative telpina",
+      "unsharp_radius_label": "Rauta: {value}",
+      "unsharp_percent_label": "Moia: {value} %",
+      "unsharp_threshold_label": "Telpe: {value}",
+      "unsharp_viewer_title": "Adaptative telpina",
+      "auto_levels_tooltip": "Cenin quanta parma ar autómatavë cemë morë ar ninquë rambor an úmea canwa.\nCen parma mi parma, anta vistar."
+    },
+    "levels_viewer": {
+      "title": "Atalta lestaron cene ihtesse",
+      "apply_current": "Care sina parma",
+      "apply_all": "Apsea nár i quenti telir telir",
+      "black_pipette": "Morne pica stillor",
+      "white_pipette": "Ninque pica stillor",
+      "black_pipette_tooltip": "Apsa i pixel minya ná ná morë ramba. Etelehta: naiquë ná malya hácina!",
+      "white_pipette_tooltip": "Apsa i pixel minya ná ná ninquë ramba. Etelehta: naiquë ná malya hácina!"
+    },
+    "sharpness_viewer": {
+      "title": "Tereva nasta"
+    },
+    "brightness_viewer": {
+      "title": "Kála ar tinco nasta"
+    },
+    "compression_viewer": {
+      "title": "Rimba nasta"
+    },
+    "outliers": {
+      "title": "Parmar ve unustal leryar",
+      "message": "I teluvar parmar harya leryar ya nave raxea vanwa allar. Á hanya coita mapa te:",
+      "width": "Panya",
+      "height": "Tara",
+      "unusual": "unustal",
+      "skip": "Á mapa leryar",
+      "keep": "harya"
+    },
+    "first_page_multi": {
+      "title": "Minya parma lehta",
+      "message": "Minya parma lehta hirna na. Manen merityel notien?",
+      "option_auto_desc": "Norma notien auta hantan.",
+      "option_joint_desc": "Minya ar telda parma i lumbuleva hyano.",
+      "option_exclude_label": "La hastaina notienesse",
+      "option_exclude_desc": "Parma tana esse haita ar minya maresse na. Ta pol esta esse cenima."
+    },
+    "batch_img": {
+      "select_directory_title": "Sece i tarca i harya i cilvë",
+      "no_img_title": "Lá cilvë tengwi hirner",
+      "no_img_message": "Lá quanta cilvë tengwi hirner i tarcase :\n{directory}",
+      "confirm_title": "Rimbe quanta lómë i cilvë tengwi CBZ-nna",
+      "confirm_message": "{count} cilvë tengwi quantaina i {directory} (yé i tarcallon).",
+      "checkbox_permanent_delete": "Hauta i oira cilvë tengwi íre\nlá senda corbóta (ÚNAVAITË)",
+      "start_button": "Álë",
+      "converting_title": "Quantaina umbar...",
+      "converting_progress": "Quantaina {current} tengwë {total}-llo",
+      "complete_title": "Quantaina avanwa",
+      "complete_message": "{count} cilvë tengwi quantaina i tarcase :",
+      "complete_message_errors": "{count} {total}-llo cilvë tengwi quantaina i tarcase :",
+      "errors_count": "{count} raxë(li) hirner.",
+      "converted_by_ext": "{ext} : {count} tengwë(li)",
+      "mode_title": "Merya lómelindë i CBZ",
+      "mode_intro": "Manen merin i lómelindi nótë?",
+      "mode_one_per_image": "Merya quanta lómelindë i CBZ lië",
+      "mode_one_per_image_sub": "(Quanta lómelindë nótëa i CBZ lië)",
+      "mode_all_in_one": "Nótë ilyë lómelindi minë CBZ",
+      "mode_all_in_one_sub": "(Ilyë lómelindi i ostossë nótëar minë CBZ)"
+    },
+    "batch_drop": {
+      "window_title": "Maitale oiale i nandessë",
+      "intro_single": "Er nandë lantanë. Mana maitale merityë carë?",
+      "intro_multiple": "{count} nandi lantaner. Mana maitale merityë carë?",
+      "recursive_note": "Nandi pitya úvanë nán maitanyë.",
+      "mixed_drop_title": "Lantë úsahtina",
+      "mixed_drop_message": "Lantanëlyë matheli ar nandi rá minya lúmë. Áva lanta nányë matheli hya nányë nandi."
+    },
+    "pdf_unlock": {
+      "title": "PDF nahtana enqualuvassë",
+      "message": "I quettar lantanë mardenna normályë.\n\nI parma PDF sina nahtana enqualuvassë (hesto palantírë).\n\nMerin-a harya copia i PDF parmava ilye nahtaneva?",
+      "yes": "Ná, harya copia apantaina",
+      "no": "Lá, auta ilyë apantanielë"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF parmar colla quettalëo",
+      "message_single": "Er PDF parma colla quettalëo hirna né. Sí maquenta CBZ lumbarelvë.\n\nMerin save mirilya coiva parma marderyassë?",
+      "message_plural": "{count} PDF parmar colla quettalëo hirni nér. Sí maquenti CBZ lumbarelvë.\n\nMerin save mirilya coiva parma arnóressë?",
+      "yes": "Ná, save mirilya coivë parmar",
+      "no": "Lá, mána coivëa"
+    },
+    "ico_creator": {
+      "title": "Carë .ico telpë",
+      "info_message": "I picture nauva rasta-tecina polë (16, 32, 48, 64, 128, 256 px).\nI sí rasta-polë: {w} × {h} px",
+      "btn_validate_crop": "Vanta i nótë",
+      "btn_validate_no_crop": "Vanta ilya nótë",
+      "btn_cancel": "Avatyara",
+      "btn_transparency": "Sí cenda",
+      "btn_validate_final": "Vanta",
+      "tolerance_label": "Nótë:",
+      "success_title": ".ico quetta carinë",
+      "success_message": "I quetta {filename} carinë.",
+      "overwrite_title": "I quetta ná",
+      "overwrite_message": "I quetta {filename} ná sí. Cahta?",
+      "save_blocked_title": "Lá polë halya",
+      "save_blocked_message": "Sí rambë ná .ico quettar i lá comi pictures nar. I halya lá polë apa i quettar nar i mosieken.\nPan polë halya, mapa tai i mosiekello (Del) apa sahta (Ctrl+X) pan teca alassëa.",
+      "btn_back_to_crop": "Ana yesta nótë"
+    },
+    "video_save_blocked": {
+      "title": "Lá polë hauta",
+      "message": "Sina nómë centë er lá quanta i vinyar. Hauta nán quétina tenn' i nómë nar i mossë.\nAn pole hauta, ruc' tier (Del) hya rac' (Ctrl+X) pan' engë."
+    },
+    "open_file": {
+      "title": "Open an archive",
+      "filter_archives": "Archives (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "All files (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - License"
+    },
+    "replace_corrupted_image": {
+      "title": "Ahya quenta corupta",
+      "filter_images": "Images (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "All files (*)"
+    },
+    "see_log": "CENA LOG"
+  },
+  "tooltip": {
+    "source_archive": "Quetta mahta: {name}",
+    "file": "Parma: {name}",
+    "reason": "Quetta: {reason}",
+    "size_kb": "Tungë: {size} Ko",
+    "size_mb": "Tungë: {size} Mo",
+    "file_size": "Tungë: {size}",
+    "dimensions": "Anwar: {width} × {height} px",
+    "resolution": "Laicálë: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: úhíraina",
+    "cbr_info": "CBR i-tecir nárar RAR samna, ya ná milya ar patenta;\núlar lá cenda, i caitar sanyantar tecil CBZ yára.",
+    "rotate_left": "Rondole 90 menelde hyarma",
+    "rotate_right": "Rondole 90 menelde forma",
+    "mirror_horizontal": "Helda thala",
+    "mirror_vertical": "Helda anduine",
+    "fullscreen": "Írima lanwa",
+    "help_button": "Parma Tecildo",
+    "theme_button": "Ranya calaina ar morna tecmo",
+    "font_decrease_button": "Apica i sérë tengwesto",
+    "font_increase_button": "Alta i sérë tengwesto",
+    "color_depth": "Culini: {bits} bits ({mode})",
+    "batch_pdf_to_cbz": "Queta CBZ-nna ilya PDF parmar i menelya\nar i unu-meneldi. I cantar nar tultaina\nar panyaina ve nar, lau ata-sanga.",
+    "batch_pdf_permanent_delete": "TIRA: qui sina terce ná carina,\ni parmar PDF yessë nauvar\nmetimavë nancarina apa i ahyanië,\nlá ea cólë entulessë. Á rere sana\nharyanyelyë cópia arwa qui mára.",
+    "batch_cbr_to_cbz": "Navie i CBZ ilye CBR tengwi\nya tuv'er enyalie ar\nso hya-enyalier.",
+    "batch_cbr_permanent_delete": "TIRA: qui sina tëca ná círie,\ni yesta CBR tengwi nauvar\nvanwie apa i navie, ulo estel\nataquetien. Áva polda i harya\nnolwe-tengwi qui mauya.",
+    "renumber_btn_1": "Oiale auto-hirie notessi linie\nForma hya tyalie quetie",
+    "renumber_btn_2": "Oiale sinome notiqualme\nForma hya tyalie quetie",
+    "corrupted_header": "Hasta canta",
+    "right_click_instruction1": "Netyara i hyapa formen",
+    "right_click_instruction2": "avatyara hequa i canta.",
+    "unknown_error": "Úmië ista",
+    "batch_img_to_cbz": "Quantaina ilye cilvë tengwi hirnë i tarcase\nar i tarcassillon CBZ-nna,\ncarnë er CBZ tengwë er cilvëna.",
+    "batch_img_permanent_delete": "VORO : ce sina maquetta tancaina,\ni oira cilvë tengwi nauvar hauta\nhúmë quantaina lá polië\nenvinyatar. Cen ma haryal entulessë\nce maure.",
+    "too_large_header": "I nире anaie lanta ve quantien",
+    "too_large_pixels": "Tannar: {pixels}",
+    "icon_toolbar_config_button": "Quettar parmar",
+    "icon_toolbar_size_decrease": "Minya icon formar",
+    "icon_toolbar_size_increase": "Alta icon formar",
+    "source_loose": "Cálë verya",
+    "source_web": "Cálë verë"
+  },
+  "help": {
+    "title": "MosaicView - Nottië návaren",
+    "intro": "MosaicView túra lyë an carë ar návië coentëar (parmar parmalion coentuvar) ú-mauya extya lar raincelmalion. I návë turca i quentar CBZ (ZIP), CBR (RAR) ar PDF. I apsa ná mo mahtë te i 64 bittaron héreli.",
+    "open_files": "Panya parmar",
+    "open_files_content": "• Naucë i macil 'Panya CBZ/CBR/CB7/PDF'\n• Maldë raica-pata erya parma mi findessë\n• Quentar turcuvar: CBZ, CBR, CB7, PDF, fánar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB tecir mauva esselyar, mal eresse i carinyar tenner nahtanyar (quetie la care).\n• PDF naitaina (palantírë nahtana apantassë): i parma umë pole tentë, raxë quetina.\n• PDF nahtana enqualuvassë (owner password): i quettar lantanë mardenna normályë. MosaicView merin harya copia apantaina i same parmassë.",
+    "mosaic": "I mossaica",
+    "mosaic_content": "I quetta calya mi parmar coar neldesse mi lierya ar tixesse. Elyesse:\n• Atarasse parmar yo tulca ar nasta (parma nome sauresse autalle, ar hilyuva i cuina ennome-ohtar)\n• Calya atta parmar (Ctrl+pitya mal Shift+pitya)\n• Utulesse tixe ange yo calqua\n• Esse coasse arca parma yo pitya quentanya\n• Tulca ar nasta lierya essessen (CBZ/CBR/PDF) Windows Explorer vo atta calqua lierya yo onta mavoitya",
+    "manipulation": "Návië i parmalion",
+    "manipulation_content": "• Lerta i parmar ter i carda na rehtar\n• Lerta quenta ilya ter anda na harya\n• Forma hyapat quetta parma na marta\n• Atta hyapat parma na apanta\n• Lerta i parmar ter Windows mapa, hya Ctrl+C / Ctrl+V",
+    "renumber": "Notessi ataquetien",
+    "renumber_content": "MosaicView anta atta tier notessi ataquetien, tuluva ter i notessi canwa, i heru menu (hyapat turca) hya autosse ter raita ar lepta:\n\n• Autosse hirion atta notessiva tier (mulda tier): i program cenda i paluresse ilya notesso ter hirion attalotesse, neldelotesse ar ente. Atta notessi nai ataquetier tenna amba (anat.: attalotesse nauva estaina 003-004, neldelotesse 005-006-007). Amba canta notessi, er i minya ar i telda nosse nai tanaina (anat.: 010---025).\n\n• Sinda notessi tier: ilya notesso caita er erinqua nosse (001, 002, 003...), la tirien i paluresse notessiva.\n\nTer quetien atta tier imbi, hyapat turca i notessi canwa. Er luhta tana i cuina tier. I cirinqua tier na ten autosse notessi ataquetien ter raita ar lepta.",
+    "flatten": "Lanya i aldasseli",
+    "flatten_content": "Ai raincelma lyéva harya aldasseli, nota 'Lanya i aldasseli' an horya illi fánar at anwa erë.",
+    "viewer": "Centuva",
+    "viewer_content": "Attëa-naucë parma an panya i centuva:\n• Macar ← → : návië enda i parmar\n• Macil D : návë enda neldë nottier\n  - Parma erya: parma erya tambë\n  - Parmar attëar: parma 1 erë, san 2-3, 4-5, etc.\n  - Parmar attëar vórimar: parma 1 erë, san 2-3, 3-4, 4-5, etc.\n• Corma númenno: návië árië\n• Ctrl+Corma maldë Ctrl+Plus/Moins: tyalië\n• Ctrl+0: rinyë tyalië\n• Macil F11: larca cénë\n• Attëa-naucë: návë larca cénë\n• Macil Échap: avatyaro i napanorwa / elda i centuva",
+    "join_pages": "Oacë parmar",
+    "join_pages_content": "Calya atya parmar consecutive, haira-pitya → 'parmar calqua onta' parmar horizontal mal vertical onta. I nasta en i quetta ondova mapa na nasta en i parmar yesta, qui enta PNG túrima.",
+    "split_pages": "Rahta parmar",
+    "split_pages_content": "An rahta carcarwassëa parmar attëar:\n• Cilë i parmar an rahta\n• Naucë formenya → 'Rahta i parmar cilyar'\n• Cilë i tárië (tárima maldë tennë)",
+    "crop": "Píta mi centuva",
+    "crop_content": "Mi centuva, tirë cantalë i fánassë an hacë nómë pítaivë:\n• Tirë i cantalë as númenno\n• Renvinyata anwa as horya i cantar maldë corniéli\n• Naucë 'Manta i píta' an tér\n• I píta tërcëa at fána anwa\n• Macil Échap: avatyaro i napanorwa",
+    "shortcuts": "Tengwi árië",
+    "shortcuts_content": "• Ctrl+Z: Nurta i návë yára\n• Ctrl+Y: Ata-carë i návë nurtaina\n• Ctrl+A: Cilë illi i parmar\n• Ctrl+I: Hwinya i orthelë\n• Ctrl+C: Samna i parmar cilyar\n• Ctrl+X: Cesta i parmar cilyar\n• Ctrl+V: Pata i parmar\n• Suppr: Nauta i parmar cilyar\n• F5: Envinyata i cenda en mosaic\n• F11: Hahta írima lanwa (auta F11 mal ESC)",
+    "dark_mode": "Nottië morna",
+    "dark_mode_content": "Pitya i anar/isil qanta yo vanya atta morna ar lusta temen.",
+    "sort": "Núta i parmar",
+    "sort_content": "Nota i macil 'Núta' an renvinyata carcarwassëa i parmar as:\n• Essë, Quenta, Tungë, Palla, Tarma, Laicálë maldë DPI",
+    "save": "Tecë",
+    "save_content": "• 'Tecë': tecë i návier mi parma anwaina\n• 'Tecë enda': cára noa raincelma\n• 'Cára CBZ': úmëa mi nottië fánar erëar (ú-raincelma)",
+    "other": "Yanëar návëar",
+    "other_content": "• Winië: winë parma erë maldë rimbëa\n• Návië: návië i fánar mi quentar yaner (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nosta: i fánar CMYK aqua nahtanë na RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nosta: i fánar CMYK aqua nahtanë na RGB\n• Técië: téca i parmar cilyar maldë illi i parmar\n• Extyië: extya parmar arantar\n• Síma Encartalion: cenda i encar i parmaiva ComicInfo.xml (ai ëa mi raincelma). Ai ortië maldë estyë parma cormarillon tyë encartalion, i návë tercëa návië i nótë parmaion cendëa tanomë. I yaner encartalion ú-návëar. Sina berë ná mernëa ar nauva cilmëo palantírëo.",
+    "config_files": "Parmar teHmeH ar parmar raxëar",
+    "config_files_content": "MosaicView cára .mosaicview_config.json estel. Tengwë sina harya illi nauva tecili i chu'moH pano nan faila mára, ar i sírima pantaina parmar tólima lista, mí nauva i sírima pantaina parmar na cenë. MosaicView harya raxëar parmar, mí i yára fána tecmë aldar i nauva.\nParmar sina ilyë oa i {temp_dir} mallë.\nRaxëar parmar vanwa ilya sírë mí i návëa fanya, nan .mosaicview_config.json tengwë, inya, técina na harya.\nNan, parmar sina lerta ú-faila linyë fíriëo i {temp_dir} mallë edro, mal i panor yassë na nutta. .mosaicview_config.json tengwë recára ilya sírë mí i návëa panta, ar raxëar parmar recára ilya sírë mí nauva.",
+    "config_clear_temp": "Vanya raxëar parmar",
+    "config_clear_recent": "Vanya yéni parmar",
+    "config_clear_config": "Vanya teHmeH parma",
+    "config_temp_cleared": "Raxëar parmar vánëa mára.",
+    "config_config_cleared": "TeHmeH parma vánëa mára.\nRecára mí i tuluva návëa táriëo.",
+    "language": "Cilië i lambëo",
+    "language_content": "MosaicView úmëa mi rimbëar lamber.\nAs anwië, i návë hírë carcarwassëa i lambë osto-carno lyéva ar cendë sina lambë ai turcëa. Ai osto-carna lyéva nota lambë útircuva, i cenduva cendëa mi quetta angoliva.\nLyë mauya návië máriessëa i lambë ilya lúmessë as nota i tengwë panta símassë i tyellëo macilion, mi undu i nútië anwa pitcaron. Cilmë lyéva acarnuva ar tërcëa at anwa yestassë i návëo.\nLAMBER ÚMËAR: lambë alamanyaina, lambë angolëa, lambë arapëa, lambë armenyaina, lambë bulgarëa, lambë sindaina (pitya), lambë sindaina (anwaina), lambë corëaina, lambë croatëa, lambë danëa, lambë ispanotëa, lambë estonëa, lambë finnëa, lambë parmanótëa, lambë hellenëa, lambë hindëa, lambë hungarëa, lambë indonësëa, lambë irlandëa, lambë iscelandëa, lambë italëa, lambë nihonëa, lambë lettonëa, lambë lithuanëa, lambë malayëa, lambë maltëa, lambë néerlandëa, lambë norvegëa, lambë polonëa, lambë portuguëa, lambë romanëa, lambë slovaquëa, lambë slovenëa, lambë suédëa, lambë tamilëa, lambë tchequëa, lambë thaïlandëa, lambë turcëa, lambë ukrainëa, lambë vietnamëa.\nLAMBER INYAR ÚMËAR: tlhIngan (tengwë latin ar tengwë pIqaD), Sindarin (tengwë latin ar tengwë tengwar), Quenya (tengwë latin ar tengwë tengwar).\n\nSina návëa úsa tengwi Windows, er pIqaD (lambë Klingon) ar tengwar (lamber Eldarin: Sindarin ar Quenya) tengwi. Tengwi sí nar ú-milmë ar tulir arnalion sinë:\n- pIqaD an (tengwë lambëo Klingon): {url_piqad}\n- tengwar an (tengwë Elda, Sindarin ar Quenya an): {url_tengwar}\nAi arnali sí lá nar vórië, lyë mauya amaurë tengwi pIqaD ar tengwar as naucië i macili mi undu:\n\nSina návë carnainëa mi lambë parmanótëa. I návier mi lamber yaner carnaindar as IA, ariéva as Claude. Inë mernë tulca rimba lambeli. Mal vórima, inë lá quetë illi sinar lamber. Inë úcainë yana cilmë cë napië IA, an tentë ar verya neldë-cainen anwerion návëar úcainë nómë i cilmëlion cendëannar. As esselë carcarwa návior siner, úmëa ullë russer oiar. Inë áva-manta tenna sina.",
+    "credits": "Vibe Coding, melmenya",
+    "credits_content": "Inë lá ista ai quetta parmagolëo. Úquetta umbar. As sina, inë carnë sina návë as Claude, i IA Anthropic, ariéva as Claude Code. Inë lá mauya vórima tercië i alya Claude Code, sina návë ná alcarinqua!",
+    "resize_pages": "Tirë i parmar",
+    "resize_pages_content": "Parmar reduction mal enlargement:\n• Mina mal atta parmar calya\n• Haira-pitya → 'resize'\n• Nelle options available:\n  - custom dimensionesse: desired width mal height enter (aspect ratio automatically preserved).\n  - percentage reduction: 10% vo 90% percentage calya\n  - percentage enlargement: 10% vo 100% percentage calya\n• Application lierya estimated ange modification qaSpu cha\n• Modification selected parmar ilya applies",
+    "language_export_piqad": "pIqaD Font",
+    "language_export_tengwar": "Tengwar Fonts",
+    "language_export_piqad_success": "Tengwë hannaina: {filename}\nVá:",
+    "language_export_tengwar_success": "{count} tengwer hannainer\nVá:",
+    "icons": "Nossëo",
+    "icons_content": "Quenta i·caimalar pantanier mi sina sanwesta túlar ló sina caimë ar lé mára quettar ú·nórë mótien: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nQueni carner i hrávë coimar.\nEr nossë enta, i nossë i Windows tyelcëa, carnen ninye (mal as AI, an ninye naye ulca, ulca, ulca tecildo). Haryal ninye vátura á úsea sina nossë ve meryuval tenna haryal chanvo' ten tercëaval.",
+    "icons_view_button": "Cena nossëo",
+    "icons_window_title": "Nossëo MosaicView",
+    "icons_save_all": "Colya nossëo",
+    "icons_saved_success": "{count} nossë/nossëo colyaina mi:",
+    "icons_save_failed": "Lá lerta colya nossëo: {error}",
+    "split_ui": "Parma yúyo ataltaina",
+    "split_ui_content": "MosaicView lerta parmali yúyo ataltaina, telpë telpë.\n\nTece i forme Nótima i parma ataltaina pantie. Ilya parma lerta: poles pahta, carë ar tiuva i parma eressëa. I parma cuivëa istuva laurëa pahta.\n\nNan pahta i quettar parmallo parmanna, rac tenna. Qui nótima quettar pantanë, ilye telpë rac. I quettar tiuvar i nótimë i rocco carnë.\n\nTece i forme Panya i parma atalta i pahtanna eressëan.",
+    "license_gpl": "GPL v3 Parmácië",
+    "license_unrar": "UnRAR Tërvantë",
+    "config_clear_clipboard": "Pusta i parmar ar lindello",
+    "config_clipboard_note": "Auressea: I parmar linyar nauva lindello Windows (parmar clipboard_XXXXX) caitar 12 lúmesse epë i hosta, tana lye nauva pasta te ya epë i cëlentahtie. Epë 12 lúmesse, te vanwava lerta.",
+    "config_log_note": "I hostale mahtar (PDF CBZ-nna ar CBR CBZ-nna) onta quettar tece tasse úcare tuler. Sine quettar (Log_pdftocbz_.txt ar Log_cbrtocbz_.txt) caitar epë i celentahtie, an cenir te myalume. Te vanwar er i makil \"Hostale parmar vanya\" or or.",
+    "config_clipboard_cleared": "I parmar ar lindello pustaner alassëa.",
+    "adjust_images": "Maitale i lireo",
+    "adjust_images_content": "Sina carë nás ananta vilyar lúmessë MosaicView. Polin muta calina, morenna, raika, sanga, sarda, carë raxa (morwa, sipya, quessë telpë), muta qualindë, ahosta quesseli, care calima ar muta quessë fanyassë. I nórë sanga ná i vilyëa lúmessë i caimë.",
+    "create_icon": "Carë i coimas",
+    "create_icon_content": "MosaicView lelyar tye care coimas-mapar (.ico) ilya tancavë mosaicossë.\n• Forya tanwi i tancavë → 'Carë i coimas'\n• Tangwë i merima nórë i ceniryssë (i coimas nauva tarincë)\n• Cenë i nixë mauya\n• Varyë: i .ico mapa addë coimas mossë\n• I .ico mapar automarë sarnë ilyë commë vanwi (16×16 ter 256×256)\n• Tennoio i .ico mapa ná mosaicossë, i tancë CBZ tancalanna ná harna, an i ICO commë ú-sarnë tancalnar. Ela i .ico mapa enquerissë (Ctrl+C ar pasta Windowsë), sí antar co ohtë mosaicossë anta varyiëllo.",
+    "batch_convert": "Rimba sahta",
+    "batch_convert_content": "MosaicView antava nelde hrestale reconvertiennar, euva er mossenna lá quanta. Ilye quenen same laituva: tire parmasta, noque, panta raima tengwi, quanta centa tir. Minu lave quetie yuldar yassen auta lende cormar.\n• CBR → CBZ: ahosta ilye CBR (RAR) parmar mardesse ar undu martasser. Qui CBR ná ZIP, panya anwa ara ahosta.\n• PDF → CBZ: ahosta ilye PDF parmar mardesse ar undu martasser. Tyeller tulinta ara nauta-hostaine.\n• TYELLER ERINIE → CBZ: carne er CBZ ilye tyelle-parma euriene mardesse ar undu martasser. Auta, nauta, leuca (TIFF), ve luine (GIF) tyeller raina ve arca.",
+    "config_open_temp_folder": "Panya i sanga mahta",
+    "icon_toolbar": "Tehtar tanwar",
+    "icon_toolbar_content": "I turco i tíron carda poldorëa na eär lúmëo maitar. Polë rehtar i tíroni ar merin sí terë i carda. Á cirya i tíroni i cenuvar ar i moruvár, á tece i rincë rocco andessë i cardava: parë ohta apantëa, sí polë lerta i tíroni ter i carda minya ar i carda lúva. Á yur i parmar « + » ar « − » na marta i coardalë i tírono. I parë inventahtëa ananta.",
+    "license_7zip": "7-Zip Raitalë"
+  },
+  "misc": {
+    "file_word": "parma",
+    "files_word": "parmar",
+    "corrupted": "russë",
+    "yes": "Nai",
+    "no": "Lá",
+    "cancel": "Avahaila",
+    "selection_suffix": "samna-cilmë"
+  },
+  "metadata": {
+    "title": "Essë",
+    "series": "Lírëa",
+    "number": "Nótë",
+    "volume": "Anwa",
+    "summary": "Cénessë",
+    "writer": "Quetandil",
+    "penciller": "Tincandil",
+    "inker": "Miscandil",
+    "colorist": "Culucandil",
+    "letterer": "Tengwandil",
+    "cover_artist": "Témenquestil",
+    "editor": "Envinyatar (nér)",
+    "publisher": "Envinyatar (cöa)",
+    "imprint": "Pancírë",
+    "genre": "Nossë",
+    "web": "Telemátima",
+    "page_count": "Nótë parmalion",
+    "language_iso": "Lambë",
+    "format": "Quenta",
+    "black_and_white": "Morna ar ninquë",
+    "manga": "Manga",
+    "year": "Yén",
+    "month": "Asta",
+    "day": "Aurë",
+    "notes": "Nótier",
+    "characters": "Quetar",
+    "locations": "Nómar",
+    "teams": "Nossë",
+    "story_arc": "Quenta lúmë",
+    "story_arc_number": "Nómë lúmëo",
+    "series_group": "Nossë quentiron",
+    "count": "Notë",
+    "alternate_series": "Enta quenta",
+    "alternate_number": "Enta nómë",
+    "alternate_count": "Enta notë",
+    "age_rating": "Yén nótë",
+    "series_complete": "Quenta vanwa",
+    "translator": "Quettiron",
+    "tags": "Témar",
+    "scan_information": "Tiritar notë",
+    "community_rating": "Nossë nótë",
+    "review": "Nottë",
+    "gtin": "GTIN",
+    "pages": "Parmë",
+    "pages_col_image": "Cuilë",
+    "pages_col_type": "Nossë",
+    "pages_col_width": "Palda",
+    "pages_col_height": "Halda",
+    "pages_col_size": "Quantë (B)"
+  },
+  "web": {
+    "web_download_progress": "Tecë: {downloaded}/{total} parmë...",
+    "web_download_cancel": "Avaquet",
+    "web_no_images": "Úparmë",
+    "web_no_images_found": "Úparmë hirnë sina termarë.",
+    "web_imported": "{count} parmë tultanë termarillo",
+    "web_drag_drop_title": "Terma-parma síta ar tulya",
+    "web_copy_paste_message": "Síta ar tulya sílima termarillo úpa.\n\nAr epë (pityalë):\n\n1. Forya-mapta parmë termarissë\n2. Quet 'Tehtë parmë'\n3. MosaicView-ssë, car 'Tulya' wamba mal Ctrl+V\n\nSin lúmë hya ilya terma-parmain!",
+    "import_web_button": "Wilwarin halyaressë",
+    "import_web_tooltip": "Pasta ambartanen rimba mai antië ilya cormar wilwarinallo",
+    "import_web_menu": "Wilwarin halyaressë...",
+    "import_web_dialog_title": "Halyalë cormar wilwarin parmanallo",
+    "import_web_url_label": "Wilwarin parma rimba:",
+    "import_web_ok_button": "Oia",
+    "import_web_cancel_button": "Ava",
+    "import_web_invalid_url": "Ú-mára rimba. Queta rimba anwa mára."
+  },
+  "donation": {
+    "menu_label": "Anta i tarcë",
+    "title": "Anta",
+    "message": "Mela tyë i loicë pilin ar lendëa hya hostalyello. Inquë inyë antanë rimbë loar i pilin. Apa cenuvalyë anta nin hantië antanen? Á mára, inyë mauya cén anta ho linnon i nén-rim ninwa champagne.\n\nApa muinuvalyë anta nin sanwë cenimë malo notië cén o million cén euro, inyë lauva notië i lúmë. I antië sí apë antanen tëa paypal"
+  },
+  "mail": {
+    "tooltip": "Sina macil panta i máca yulda morniequenta i Windows tecë i lirë i lírë. Avo morniequenta ter pantaina (ter mehta, avo ce morniequenta web nai), nai esë quetin i túrë MosaicView i tec-parmë ve formenten i macil i menelya macil.",
+    "copy_address": "Aldarya nyarma i laita sambeo MosaicView",
+    "menu_label": "Menta i quenta na MosaicView",
+    "icon_label": "Mapa quettar"
+  },
+  "menu": {
+    "file": "Mathon",
+    "file_open": "Panya mathon",
+    "file_close": "Holta mathon",
+    "batch_convert": "Turmen mathonion envinyanta",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Tyeller erya → CBZ",
+    "edit": "Centa",
+    "undo": "Etelehta",
+    "redo": "Anta",
+    "paste": "Tatya",
+    "delete": "Heca",
+    "invert_selection": "Apsa i·cantar",
+    "select_all": "Canta ilye",
+    "deselect": "Ú·canta",
+    "refresh_mosaic": "Cuivina i·cemen",
+    "images": "Tyeller",
+    "rotation": "Rimbë",
+    "archives": "Parmavardi",
+    "sort": "Rimbë",
+    "system": "Cemen",
+    "decrease_font": "Pitya tengwa",
+    "increase_font": "Alta tengwa",
+    "language": "Lambor",
+    "language_real": "Lambor annar",
+    "language_fictional": "Lambor olcar",
+    "about": "Quenta",
+    "export_piqad_font": "Harya i téma pIqaD",
+    "export_tengwar_fonts": "Harya i témar tengwar"
+  }
+}

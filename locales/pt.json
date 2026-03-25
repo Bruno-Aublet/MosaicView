@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "O canivete suíço para colecionadores de quadrinhos digitais",
+  "buttons": {
+    "open_file": "Abrir CBZ/CBR/CB7/PDF",
+    "close_file": "Fechar ficheiro",
+    "create_cbz": "Criar arquivo CBZ",
+    "flatten_dirs": "Mover todos os ficheiros\npara a raiz e eliminar\na subpasta",
+    "renumber": "Renumeração\nde páginas",
+    "undo": "⤺ Desfazer",
+    "redo": "Refazer ⤻",
+    "copy": "Copiar",
+    "cut": "Cortar",
+    "paste": "Colar",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Converter para outro\nformato de imagem",
+    "join_pages": "Unir páginas",
+    "split_page": "Dividir página",
+    "save_as": "Guardar como\n(criar novo CBZ)",
+    "save_selection": "Guardar seleção\nem CBZ",
+    "print_selection": "Imprimir seleção",
+    "print_all": "Imprimir toda a banda desenhada",
+    "sort": "Ordenar",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Converter",
+    "cancel": "Cancelar",
+    "split_button": "Dividir",
+    "join_button": "Começar",
+    "validate_crop": "Validar corte",
+    "ok": "OK",
+    "close": "Fechar",
+    "apply_and_save": "Aplicar alterações e guardar o ficheiro",
+    "apply_and_create": "Aplicar alterações e criar ficheiro CBZ",
+    "close_and_lose": "Fechar o ficheiro e perder as alterações",
+    "cancel_return": "Cancelar e voltar ao mosaico",
+    "update_page_count": "Atualizar contagem de\npáginas nos metadados",
+    "invert_selection": "Inverter seleção",
+    "reduce_size": "Redimensionar páginas",
+    "mirror_vertical": "⇅",
+    "create_gif": "Criar GIF",
+    "edit_gif": "Editar GIF animado",
+    "save_to_folder": "Exportar páginas\nselecionadas",
+    "continue": "Continuar",
+    "reset": "↻",
+    "yes": "Sim",
+    "no": "Não",
+    "renumber_recommended": "Renumerar (recomendado)",
+    "ignore_and_save": "Ignorar e salvar",
+    "rename_to_cbz": "Renomear para .cbz",
+    "open_without_rename": "Abrir sem renomear",
+    "rename_to_cbr": "Renomear para .cbr",
+    "adjustments": "Brilho,\ncontraste, etc.",
+    "batch_cbr_to_cbz": "Conversão em lote\n de ficheiros CBR para CBZ",
+    "batch_pdf_to_cbz": "Conversão em lote\n de ficheiros PDF para CBZ",
+    "batch_img_to_cbz": "Conversão em lote\n de imagens isoladas para CBZ",
+    "icon_toolbar_reset": "Redefinir",
+    "delete_selected": "Excluir",
+    "save": "Guardar",
+    "rename_to_cb7": "Renomear para .cb7",
+    "split_ui": "Dividir a interface em dois painéis",
+    "unsplit_ui": "Fechar o segundo painel"
+  },
+  "tabs": {
+    "mosaic": "Mosaico",
+    "metadata": "Metadados"
+  },
+  "viewer": {
+    "title": "Visualizador",
+    "mode_single": "Página simples  [D]",
+    "mode_double": "Página dupla  [D]",
+    "mode_continuous": "Modo contínuo  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Página anterior (←)",
+      "next_page": "Página seguinte (→)",
+      "zoom_in": "Zoom + (Ctrl+Mais)",
+      "zoom_out": "Zoom - (Ctrl+Menos)",
+      "zoom_reset": "Reiniciar zoom (Ctrl+0)",
+      "reading_mode_double": "Mudar modo de leitura (D) → Páginas duplas",
+      "reading_mode_continuous": "Mudar modo de leitura (D) → Páginas duplas contínuas",
+      "reading_mode_single": "Mudar modo de leitura (D) → Página única",
+      "fullscreen_exit": "Sair do ecrã inteiro (F11)",
+      "fullscreen": "Ecrã inteiro (F11)",
+      "close_viewer": "Fechar visualizador (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Imagem corrompida - Substituir",
+      "corrupted_delete": "⚠️ Eliminar esta imagem",
+      "copy": "Copiar (Ctrl+C)",
+      "cut": "Cortar (Ctrl+X)",
+      "paste": "Colar (Ctrl+V)",
+      "paste_clipboard": "Colar da área de transferência (Ctrl+V)",
+      "delete": "Eliminar (Del)",
+      "deselect": "Desselecionar (ESC)",
+      "rotate_right": "↻ Rotação direita",
+      "rotate_left": "↺ Rotação esquerda",
+      "mirror": "⇄ Espelho horizontal",
+      "crop": "Cortar",
+      "convert": "Converter para outro formato...",
+      "join": "Unir páginas selecionadas",
+      "split": "Dividir página selecionada",
+      "save_selection": "Guardar seleção em CBZ",
+      "print_selection": "Imprimir seleção",
+      "copy_archive": "Copiar arquivo completo",
+      "undo": "Desfazer (Ctrl+Z)",
+      "redo": "Refazer (Ctrl+Y)",
+      "renumber_auto": "Renumerar páginas (deteção automática de páginas múltiplas)",
+      "renumber_simple": "Renumerar páginas (numeração simples)",
+      "sort_submenu": "Ordenar páginas",
+      "sort_name": "Por nome",
+      "sort_type": "Por tipo",
+      "sort_size": "Por tamanho",
+      "sort_width": "Por largura",
+      "sort_height": "Por altura",
+      "sort_resolution": "Por resolução",
+      "sort_dpi": "Por DPI",
+      "create_cbz": "Criar arquivo CBZ",
+      "save_as": "Guardar como...",
+      "close_file": "Fechar ficheiro",
+      "help": "Manual do utilizador",
+      "update_page_count": "Atualizar contagem de páginas nos metadados",
+      "invert_selection": "Inverter seleção (Ctrl+I)",
+      "reduce_size": "Redimensionar páginas",
+      "mirror_vertical": "⇅ Espelho vertical",
+      "edit_animated_gif": "Editar GIF animado...",
+      "save_to_folder": "Exportar páginas selecionadas",
+      "adjustments": "Brilho, contraste, cores...",
+      "refresh_mosaic": "Atualizar o mosaico (F5)",
+      "create_ico": "Criar arquivo .ico"
+    },
+    "canvas_no_file": {
+      "open": "Abrir CBZ/CBR/CB7/PDF",
+      "recent_files": "Ficheiros recentes",
+      "clear_history": "Limpar histórico"
+    },
+    "canvas_with_file": {
+      "close": "Fechar ficheiro",
+      "paste": "Colar (Ctrl+V)",
+      "paste_clipboard": "Colar da área de transferência (Ctrl+V)",
+      "select_all": "Selecionar tudo (Ctrl+A)",
+      "deselect": "Desselecionar (ESC)",
+      "copy_archive": "Copiar arquivo completo",
+      "print_all": "Imprimir toda a banda desenhada",
+      "renumber_auto": "Renumerar páginas (deteção automática de páginas múltiplas)",
+      "renumber_simple": "Renumerar páginas (numeração simples)",
+      "flatten": "Nivelar pastas",
+      "save_selection": "Guardar seleção em CBZ",
+      "hide_sidebar": "« Ocultar coluna de botões",
+      "show_sidebar": "» Mostrar coluna de botões",
+      "decrease_thumbs": "Diminuir tamanho das miniaturas",
+      "increase_thumbs": "Aumentar tamanho das miniaturas",
+      "theme_dark": "Mudar para tema escuro",
+      "theme_light": "Mudar para tema claro",
+      "sort_submenu": "Ordenar páginas",
+      "undo": "Desfazer (Ctrl+Z)",
+      "redo": "Refazer (Ctrl+Y)",
+      "create_cbz": "Criar arquivo CBZ",
+      "save_as": "Guardar como...",
+      "help": "Manual do utilizador",
+      "update_page_count": "Atualizar contagem de páginas nos metadados",
+      "invert_selection": "Inverter seleção (Ctrl+I)",
+      "fullscreen": "Tela cheia (F11)",
+      "fullscreen_exit": "Sair da tela cheia (F11 ou ESC)",
+      "quit": "Fechar aplicação"
+    },
+    "canvas": {
+      "quit": "Fechar aplicação",
+      "reset": "Redefinir a aplicação:\n• tamanho e posição da janela\n• modo escuro → claro\n• tamanho das miniaturas → normal\n• barra lateral → visível / 220 px\n• idioma → deteção automática\n• tamanho da fonte → padrão",
+      "reset_label": "Redefinir a aplicação"
+    },
+    "font_size": {
+      "decrease": "Diminuir o tamanho da fonte",
+      "increase": "Aumentar o tamanho da fonte"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Ordenar por nome",
+    "sort_type": "Ordenar por tipo",
+    "sort_size": "Ordenar por tamanho",
+    "sort_width": "Ordenar por largura",
+    "sort_height": "Ordenar por altura",
+    "sort_resolution": "Ordenar por resolução",
+    "sort_dpi": "Ordenar por DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Arquivo vazio",
+        "message": "O arquivo CBZ não contém ficheiros."
+      },
+      "empty_cbr": {
+        "title": "Arquivo vazio",
+        "message": "O arquivo CBR não contém ficheiros."
+      },
+      "files_ignored": {
+        "title": "Ficheiros ignorados"
+      },
+      "no_selection_crop": {
+        "title": "Nenhuma seleção",
+        "message": "Selecione uma imagem para cortar."
+      },
+      "multi_selection_crop": {
+        "title": "Seleção múltipla",
+        "message": "Só pode cortar uma imagem de cada vez.\nSelecione apenas uma imagem."
+      },
+      "invalid_selection_crop": {
+        "title": "Seleção inválida",
+        "message": "Apenas imagens podem ser cortadas."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Função não disponível",
+        "message": "A reorganização de páginas não está disponível em subpastas.\nNivele as pastas ou volte à raiz."
+      },
+      "no_selection_convert": {
+        "title": "Nenhuma seleção",
+        "message": "Selecione pelo menos uma imagem para converter."
+      },
+      "invalid_selection_convert": {
+        "title": "Seleção inválida",
+        "message": "Apenas imagens podem ser convertidas."
+      },
+      "no_selection_split": {
+        "title": "Nenhuma seleção",
+        "message": "Selecione uma imagem para dividir."
+      },
+      "multi_selection_split": {
+        "title": "Seleção múltipla",
+        "message": "Só pode dividir uma imagem de cada vez.\nSelecione apenas uma imagem."
+      },
+      "invalid_selection_split": {
+        "title": "Seleção inválida",
+        "message": "Apenas imagens podem ser divididas."
+      },
+      "invalid_number_split": {
+        "title": "Número inválido",
+        "message": "O número de páginas deve estar entre 2 e 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Seleção insuficiente",
+        "message": "Selecione pelo menos 2 imagens para unir."
+      },
+      "invalid_selection_join": {
+        "title": "Seleção inválida",
+        "message": "Apenas imagens podem ser unidas."
+      },
+      "pil_not_available": {
+        "title": "PIL não disponível",
+        "message": "O módulo PIL não está disponível para colar da área de transferência do sistema."
+      },
+      "format_not_supported": {
+        "title": "Formato não suportado",
+        "message": "Formato de imagem não suportado ou ficheiro corrompido.\nFormatos suportados: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Sem seleção",
+        "message": "Desenhe primeiro um retângulo de corte."
+      },
+      "cannot_open_file": {
+        "title": "Impossível abrir o ficheiro",
+        "message": "Não foi possível carregar o arquivo."
+      },
+      "corrupted_images": {
+        "title": "Imagens corrompidas",
+        "summary": "{count} imagem(ns) corrompida(s) detectada(s) de {total}.",
+        "hint": "Elas são exibidas com um ícone especial.\nClique com o botão direito em uma imagem corrompida para substituí-la ou excluí-la.",
+        "more": "... e {count} mais"
+      },
+      "no_image_print": {
+        "title": "Nenhuma imagem",
+        "message": "Nenhuma imagem para imprimir."
+      },
+      "no_valid_image_print": {
+        "title": "Nenhuma imagem",
+        "message": "Nenhuma imagem válida para imprimir."
+      },
+      "no_selection_print": {
+        "title": "Nenhuma seleção",
+        "message": "Selecione pelo menos uma imagem."
+      },
+      "no_valid_selection_print": {
+        "title": "Nenhuma imagem",
+        "message": "Nenhuma imagem válida na seleção."
+      },
+      "save_cancelled": {
+        "title": "Gravação cancelada",
+        "message": "Corrija manualmente os nomes dos ficheiros antes de guardar."
+      },
+      "empty_pdf": {
+        "title": "PDF vazio",
+        "message": "O ficheiro PDF não contém páginas."
+      },
+      "no_selection_save": {
+        "title": "Atenção",
+        "message": "Selecione pelo menos uma página para guardar."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Arrastar desativado",
+        "message": "Arrastar e largar páginas só está disponível na raiz da banda desenhada.\n\nPara mover páginas:\n1. Volte à raiz clicando no ícone de pasta superior\n2. Ou nivele a banda desenhada para remover as subpastas"
+      },
+      "no_selection_reduce": {
+        "title": "Sem seleção",
+        "message": "Por favor, selecione pelo menos uma página para reduzir."
+      },
+      "invalid_selection_reduce": {
+        "title": "Seleção inválida",
+        "message": "Apenas imagens podem ser reduzidas."
+      },
+      "invalid_dimensions": {
+        "title": "Dimensões inválidas",
+        "message": "Por favor, insira dimensões válidas (números inteiros positivos)."
+      },
+      "no_images_for_gif": {
+        "title": "Sem imagens",
+        "message": "Pelo menos uma imagem é necessária para criar um GIF animado."
+      },
+      "no_valid_images": {
+        "title": "Sem imagens válidas",
+        "message": "Nenhuma imagem válida foi encontrada para criar o GIF."
+      },
+      "animated_gif_in_comic": {
+        "title": "GIF animado detectado",
+        "message": "Aviso: Esta banda desenhada contém um ou mais GIFs animados.\\n\\nOs leitores de banda desenhada (CDisplayEx, YACReader, etc.) exibem apenas o primeiro quadro de cada GIF como uma página estática.\\n\\nPara visualizar o GIF animado corretamente, deve guardá-lo separadamente fora da banda desenhada usando o botão \"Exportar páginas selecionadas\" ou \"Editar GIF animado\".\\n\\nDeseja continuar a guardar a banda desenhada mesmo assim?"
+      },
+      "no_selection_adjust": {
+        "title": "Nenhuma selecao",
+        "message": "Selecione pelo menos uma imagem para aplicar ajustes."
+      },
+      "invalid_selection_adjust": {
+        "title": "Selecao invalida",
+        "message": "Os ajustes so podem ser aplicados a imagens."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Função não disponível",
+        "message": "A renumeração não está disponível enquanto as pastas não forem achatadas.\nAchate as pastas antes de renumerar."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "Erro ZIP",
+        "message": "'{file}': O ficheiro não é um arquivo ZIP válido ou está corrompido."
+      },
+      "zip_cannot_open": {
+        "title": "Erro ZIP",
+        "message": "Impossível abrir o ficheiro CBZ: {error}"
+      },
+      "rar_invalid": {
+        "title": "Erro RAR",
+        "message": "'{file}': O ficheiro não é um arquivo RAR válido ou está corrompido."
+      },
+      "rar_cannot_open": {
+        "title": "Erro RAR",
+        "message": "Impossível abrir o arquivo CBR: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Erro",
+        "message": "Erro inesperado ao abrir o CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Erro",
+        "message": "Impossível unir as imagens."
+      },
+      "paste_failed": {
+        "title": "Erro",
+        "message": "Erro ao colar: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Erro",
+        "message": "Impossível copiar o arquivo: {error}"
+      },
+      "crop_invalid": {
+        "title": "Erro",
+        "message": "A área de corte é inválida."
+      },
+      "crop_failed": {
+        "title": "Erro",
+        "message": "Impossível cortar a imagem: {error}"
+      },
+      "load_image_failed": {
+        "title": "Erro",
+        "message": "Impossível carregar a imagem:\n{error}"
+      },
+      "print_error": {
+        "title": "Erro de impressão",
+        "message": "Erro ao imprimir:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Impressão não disponível",
+        "message": "O módulo win32print não está instalado.\nInstale-o com: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Ficheiro não encontrado",
+        "message": "O ficheiro já não existe:\n{path}"
+      },
+      "import_failed": {
+        "title": "Erro de importação",
+        "message": "Impossível importar o ficheiro: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF não instalado",
+        "message": "A biblioteca PyMuPDF (fitz) não está instalada.\nInstale-a com: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Erro",
+        "message": "Erro ao importar o PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "Erro PDF",
+        "message": "Impossível carregar o PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Nomes de ficheiros duplicados",
+        "intro": "{count} nome(s) de ficheiro duplicado(s) detetado(s):\n\n",
+        "item": "  • {name} ({times} vezes)\n",
+        "more": "  ... e {more} outro(s)\n",
+        "footer": "\nOs arquivos ZIP não aceitam nomes duplicados.\nPor favor, renomeie estes ficheiros antes de guardar."
+      },
+      "save_failed": {
+        "title": "Erro",
+        "message": "Impossível guardar o ficheiro: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Erro",
+        "message": "Impossível criar o arquivo: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Erro",
+        "message": "Impossível guardar a seleção: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "Erro ao criar GIF",
+        "message": "Não foi possível criar GIF animado:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Falha ao salvar",
+        "message": "Não foi possível salvar os arquivos: {error}"
+      },
+      "rename_failed": {
+        "title": "Erro de Renomeação",
+        "message": "Não foi possível renomear o arquivo: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF protegido por senha",
+        "message": "Este arquivo PDF está criptografado e protegido por uma senha.\nNão pode ser aberto sem a senha."
+      },
+      "pdf_unlock_failed": {
+        "title": "Erro",
+        "message": "Não foi possível salvar o arquivo PDF desbloqueado:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: PDF encriptado (palavra-passe necessária), ignorado",
+      "file_too_large": {
+        "title": "Ficheiro demasiado grande",
+        "message": "O ficheiro {filename} tem {size} e excede o tamanho máximo permitido (500 MB) para uma imagem."
+      },
+      "license_file_not_found": {
+        "message": "Arquivo de licença não encontrado: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Não foi possível ler o arquivo de licença: {error}"
+      },
+      "7z_invalid": {
+        "title": "Erro 7Z",
+        "message": "O ficheiro '{file}' não é um arquivo 7Z válido ou está corrompido."
+      },
+      "delete_error": "Erro ao eliminar: {error}",
+      "export_error": "Erro ao exportar: {error}",
+      "font_source_not_found": "Ficheiro de origem da fonte não encontrado: {path}",
+      "no_tengwar_font": "Nenhuma fonte Tengwar encontrada.",
+      "no_icons_found": "Nenhum ícone encontrado.",
+      "unsupported_files": {
+        "title": "Ficheiros não suportados",
+        "message": "Os seguintes ficheiros não são suportados e foram ignorados:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF criado com sucesso",
+        "message": "O GIF animado '{name}' foi criado e adicionado ao mosaico."
+      },
+      "pywin32_required": {
+        "title": "Função não disponível",
+        "message": "O módulo pywin32 é necessário para colar da área de transferência do sistema.\nInstale-o com: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Imagens importadas",
+        "message": "{count} imagem(ns) importada(s)"
+      },
+      "archive_copied": {
+        "title": "Arquivo copiado",
+        "message": "O arquivo foi copiado para a área de transferência."
+      },
+      "function_not_available": {
+        "title": "Função não disponível",
+        "message": "Esta função não está disponível de momento."
+      },
+      "duplicate_detected": {
+        "title": "Duplicado detetado",
+        "message": "Já existia um ficheiro com este nome.\n\nO ficheiro foi renomeado para:\n{name}"
+      },
+      "replace_success": {
+        "title": "Sucesso",
+        "message": "A imagem '{name}' foi substituída com sucesso."
+      },
+      "history_cleared": {
+        "title": "Histórico limpo",
+        "message": "A lista de ficheiros recentes foi limpa."
+      },
+      "files_copied_clipboard": {
+        "title": "Ficheiros copiados para a área de transferência",
+        "message": "Arrastar para fora da aplicação não está disponível por motivos técnicos.\n\n✓ {count} {word} copiado(s) para a área de transferência\n\nPode agora colar onde quiser:\n  • Clique direito → Colar\n  • Ou Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Correção efetuada",
+        "message": "{count} nome(s) de ficheiro corrigido(s)."
+      },
+      "import_success": {
+        "title": "Importação bem-sucedida",
+        "message": "{count} página(s) importada(s) de {file}"
+      },
+      "pdf_import_success": {
+        "title": "Importação bem-sucedida",
+        "message": "{count} página(s) PDF importada(s) de {file}\nQualidade: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Sucesso",
+        "message": "PDF convertido com sucesso!\n{count} páginas carregadas a {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Sucesso",
+        "message": "Arquivo CBZ salvo com sucesso:"
+      },
+      "cbz_converted": {
+        "title": "Sucesso",
+        "message": "Arquivo convertido para CBZ com sucesso:",
+        "question": "Deseja excluir o arquivo CBR original?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Sucesso",
+        "message": "Arquivo convertido para CBZ com sucesso:",
+        "question": "Deseja excluir o arquivo PDF original?"
+      },
+      "cbz_save_as": {
+        "title": "Sucesso",
+        "message": "Novo ficheiro CBZ guardado: {path}"
+      },
+      "cbz_created": {
+        "title": "Sucesso",
+        "message": "Arquivo CBZ criado com sucesso:"
+      },
+      "selection_saved": {
+        "title": "Sucesso",
+        "message": "Seleção salva com sucesso:"
+      },
+      "flatten_done": {
+        "title": "Nivelamento concluído",
+        "message": "{files} ficheiro(s) movido(s) de {dirs} subpasta(s)."
+      },
+      "language_changed": {
+        "title": "Idioma alterado",
+        "message": "O idioma da interface foi alterado com sucesso."
+      },
+      "new_cbz_saved": {
+        "title": "Arquivo Salvo",
+        "message": "O novo arquivo CBZ foi salvo com sucesso:",
+        "question": "Deseja excluir o arquivo original?"
+      },
+      "page_count_updated": {
+        "title": "Contagem de páginas atualizada",
+        "message": "A contagem de páginas nos metadados foi atualizada para {count} páginas."
+      },
+      "files_saved": {
+        "title": "Arquivos salvos",
+        "message": "{count} arquivo(s) salvo(s) em {folder}",
+        "open_folder": "Deseja abrir a pasta?"
+      },
+      "adjustments_applied": {
+        "title": "Ajustes aplicados",
+        "message": "Os ajustes foram aplicados com sucesso."
+      },
+      "pdf_unlocked": {
+        "title": "PDF desbloqueado",
+        "message": "O arquivo PDF desbloqueado foi salvo:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Arquivo volumoso",
+        "message": "Este arquivo tem {size} MB descomprimidos.\nO carregamento poderá consumir muita memória (RAM).\n\nDeseja continuar?"
+      },
+      "confirm_delete": {
+        "title": "Confirmação",
+        "message": "Deseja realmente excluir {count} arquivo(s) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Eliminar ficheiros de origem?",
+        "message": "Deseja eliminar as imagens que foram unidas?\n\nSim = Eliminar ficheiros de origem\nNão = Manter ficheiros de origem\nCancelar = Cancelar operação"
+      },
+      "invalid_filenames": {
+        "title": "Nomes de ficheiros inválidos",
+        "intro": "{count} ficheiro(s) contêm caracteres proibidos:",
+        "item": "  • {name}",
+        "more": "  ... e mais {more}",
+        "forbidden_chars": "Caracteres proibidos: {chars}",
+        "fix_question": "Deseja corrigir automaticamente estes nomes?\n(Os caracteres proibidos serão substituídos por '_')"
+      },
+      "close_without_save": {
+        "title": "Guardar antes de fechar?",
+        "message": "Foram adicionadas imagens. Deseja criar um arquivo CBZ antes de fechar?"
+      },
+      "flatten_folders": {
+        "title": "Nivelar pastas",
+        "subdirs_detected": "Subpastas detetadas:",
+        "files_to_move": "{count} ficheiro(s) serão movidos para a raiz.",
+        "folders_to_delete": "{count} subpasta(s) serão eliminadas.",
+        "continue_question": "Deseja continuar?"
+      },
+      "update_page_count": {
+        "title": "Atualizar contagem de páginas",
+        "message": "O número de páginas na história em quadrinhos mudou.\n\nContagem de páginas indicada nos metadados: {original}\nContagem de páginas atual: {current}\n\nDeseja atualizar a contagem de páginas nos metadados?"
+      },
+      "conversion_complete": {
+        "title": "Conversão concluída",
+        "message": "Conversão concluída!\n\n{count} imagem(ns) convertida(s) para formato {format} foi(ram) adicionada(s) após sua seleção.\n\nExcluir as imagens originais?",
+        "delete_originals": "Eliminar os originais\n{count} ficheiro(s) - {size}",
+        "keep_all": "Manter tudo\n{count} ficheiro(s) - {size}",
+        "cancel_conversion": "Cancelar a conversão\n{count} ficheiro(s) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Extensão incorreta detectada: o arquivo '{filename}' é um CBZ, não um CBR. Renomear?",
+      "title": "Extensão incorreta"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Extensão incorreta detectada: o arquivo '{filename}' é um CBR, não um CBZ. Renomear?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Extensão incorreta detetada: o ficheiro '{filename}' é um CB7, não um CBZ/CBR. Renomear?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Tamanho miniaturas",
+    "loading": "Aguarde, carregamento em curso...\n{percent}%",
+    "resizing": "Aguarde, redimensionamento em curso...\n{percent}%",
+    "converting": "Aguarde, convertendo...\n{percent}%",
+    "loading_lazy": "Aguarde, carregamento em curso...\n{percent}%\n\nDevido ao tamanho grande deste ficheiro ({size} MB), as páginas serão carregadas progressivamente. As páginas visíveis no ecrã são carregadas imediatamente, as outras serão carregadas automaticamente durante a rolagem.",
+    "apply_save_cbz": "Aplicar alterações\ne guardar ficheiro CBZ",
+    "apply_create_cbz": "Aplicar alterações\ne criar ficheiro CBZ",
+    "import_progress": "Importação em curso...\n{percent}%",
+    "pdf_import_progress": "Importação PDF em curso...\n{percent}%",
+    "pdf_opening": "A abrir ficheiro PDF...",
+    "pdf_page": "Página {current} / {total}",
+    "warning_close": "Atenção! As alterações não foram guardadas e serão perdidas!",
+    "language_label": "Idioma:",
+    "directory_tooltip": "Pasta: {name}\n{count} ficheiro(s)\nTamanho total: {size} MB",
+    "folder_up_tooltip": "Duplo clique para subir\num nível na árvore de pastas",
+    "status_bar": "{dirs} pasta(s)  |  {files} ficheiro(s) ({total_size})  |  {selected} selecionado(s) ({selected_size})",
+    "pdf_converting": "Convertendo {total} páginas em imagens a {dpi} DPI...",
+    "pdf_converting_no_change": "Extraindo {total} páginas sem modificação...",
+    "print_progress": "Preparando impressão...\n{percent}%",
+    "print_preparing": "Por favor aguarde, preparando impressão...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nResumo da Licença Pública Geral GNU v3\n\nLIBERDADES CONCEDIDAS\nPode usar, copiar, modificar e redistribuir\no MosaicView, mesmo para fins comerciais.\n\nOBRIGAÇÕES\nQualquer redistribuição (original ou modificada) deve :\n– manter a licença GPL v3\n– incluir o código-fonte ou indicar onde obtê-lo\n– não impor restrições adicionais\n\nGARANTIAS\nEste software é distribuído SEM QUALQUER GARANTIA.\nO seu autor não pode ser responsabilizado por danos resultantes da sua utilização.\n\nDeverá ter recebido uma cópia da Licença Pública Geral GNU com este programa. Caso contrário, consulte <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Ver licença completa",
+    "license_unrar_text": "Os ficheiros CBZ são baseados no formato ZIP, um formato livre e aberto. Os ficheiros CBR, por sua vez, são baseados no formato RAR, um formato proprietário.\n\nO MosaicView pode abrir ficheiros CBR graças ao UnRAR, um utilitário desenvolvido pela RARlab e redistribuível gratuitamente.\n\nSite oficial: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Ver licença UnRAR",
+    "saving_cbz": "Salvando... {percent}%",
+    "empty_canvas_line1": "Solte aqui um ou mais arquivos CBZ/CBR/CB7/PDF ou suas imagens",
+    "empty_canvas_line2": "Depois de abrir um arquivo, voce pode continuar a soltar outros",
+    "empty_canvas_line3": "Solte uma ou mais pastas para iniciar um processamento em lote",
+    "icon_toolbar_config_title": "Configuração da barra de ícones",
+    "icon_toolbar_active": "Ícones na barra",
+    "icon_toolbar_hidden": "Ícones em reserva",
+    "license_gpl_full": "Licença GNU GPL v3",
+    "license_unrar_full": "Licença UnRAR",
+    "licenses_button": "Licenças",
+    "view_full_gpl_license": "Ver a licença GNU GPL v3 completa",
+    "license_7zip_text": "Os ficheiros CB7 são baseados no formato 7z, desenvolvido por Igor Pavlov e distribuído sob a licença GNU LGPL.\n\nO MosaicView pode abrir ficheiros CB7 graças ao 7-Zip — um utilitário gratuito e de código aberto.\n\nSite oficial : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Ver licença 7-Zip",
+    "license_7zip_full": "Licença 7-Zip",
+    "icon_toolbar_show_thumb_slider": "Mostrar controle deslizante de tamanho de miniaturas",
+    "icon_toolbar_show_lang_combo": "Mostrar seletor de idioma",
+    "adjusting": "Aguarde por favor, ajustes em curso...\n{current} / {total}",
+    "license_piqad_full": "Licença da fonte pIqaD qolqoS",
+    "license_tengwar_full": "Licença da fonte Alcarin Tengwar",
+    "view_full_piqad_license": "Ver licença completa pIqaD qolqoS"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Conversão de imagens",
+      "title": "Conversão de {count} {word}",
+      "word_image": "imagem",
+      "word_images": "imagens",
+      "info": "Escolha o formato de destino:",
+      "format_png": "PNG (sem perda)",
+      "format_jpg": "JPEG (com compressão)",
+      "format_webp": "WEBP (moderno)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (alta qualidade)",
+      "format_gif": "GIF (animação)",
+      "quality_label": "Qualidade para JPG/WEBP:",
+      "quality_maximum": "Máxima — qualidade 95/100",
+      "quality_high": "Alta — qualidade 85/100",
+      "quality_medium": "Média — qualidade 75/100",
+      "quality_low": "Baixa — qualidade 60/100",
+      "quality_custom_option": "Personalizada",
+      "quality_custom": "Qualidade personalizada : {value}/100",
+      "quality_note": "(Este parâmetro afeta apenas os formatos JPG e WEBP)",
+      "quality_window_title": "Seleção de qualidade",
+      "format_gif_static": "GIF estático",
+      "format_gif_animated": "GIF animado (selecionar várias imagens)"
+    },
+    "split": {
+      "window_title": "Dividir página",
+      "title": "Dividir página",
+      "pages_label": "Número de páginas:",
+      "direction_label": "Direção do corte:",
+      "horizontal": "Horizontal (esquerda → direita)",
+      "vertical": "Vertical (cima → baixo)",
+      "warning": "⚠ Como o corte é calculado automaticamente,\npoderá ser necessário um ajuste manual.",
+      "button_split": "Dividir",
+      "button_cancel": "Cancelar"
+    },
+    "join": {
+      "window_title": "Unir páginas - Reorganize a ordem",
+      "instructions": "Organize as imagens:\n• Verticalmente (cima/baixo) para colagem vertical\n• Horizontalmente (esquerda/direita) para colagem horizontal",
+      "merged_filename_prefix": "União",
+      "heights_label": "Alturas",
+      "widths_label": "Larguras",
+      "size_adjustment_title": "Ajuste de dimensões",
+      "size_adjustment_warning": "⚠️ As imagens selecionadas têm dimensões diferentes.\nEscolha como ajustar seus tamanhos para juntá-las.\nA proporção de cada imagem sempre será preservada.",
+      "keep_original": "Manter tamanhos originais",
+      "keep_original_desc": "(adiciona barras pretas para preencher)",
+      "enlarge_small": "Ampliar imagens pequenas",
+      "enlarge_small_desc": "(alinhar à dimensão máxima)",
+      "reduce_large": "Reduzir imagens grandes",
+      "reduce_large_desc": "(alinhar à dimensão mínima)",
+      "back_to_arrangement": "Voltar"
+    },
+    "pdf": {
+      "quality_merge": "Selecione a qualidade de união:",
+      "quality_export": "Selecione a qualidade de exportação:",
+      "merge_quality_title": "Qualidade de fusão PDF",
+      "export_quality_title": "Qualidade de exportação PDF",
+      "loading_title": "Carregando PDF...",
+      "dpi_90": "90 DPI - Publicação web",
+      "dpi_150": "150 DPI - Boa qualidade (recomendado para exibição)",
+      "dpi_200": "200 DPI - Muito boa qualidade",
+      "dpi_300": "300 DPI - Excelente qualidade (padrão de quadrinhos)",
+      "dpi_600": "600 DPI - Qualidade máxima (arquivos grandes)",
+      "dpi_original": "Sem modificação de imagens",
+      "dpi_original_tooltip": "Análise inteligente de cada página do PDF:\n• Páginas somente com imagens: preserva o DPI original\n• Páginas somente com texto: 300 DPI\n• Páginas mistas (texto + imagens): DPI das imagens se >= 300, caso contrário 300 DPI\nMáximo: 2400 DPI para limitar o tamanho do arquivo"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF necessário",
+      "pymupdf_required_message": "PyMuPDF (fitz) não está instalado. Não é possível converter os ficheiros PDF.",
+      "select_directory_title": "Selecionar o diretório que contém os ficheiros PDF",
+      "no_pdf_title": "Nenhum ficheiro PDF",
+      "no_pdf_message": "Nenhum ficheiro PDF foi encontrado no diretório:\n{directory}",
+      "confirm_title": "Conversão em lote de PDF para CBZ",
+      "confirm_message": "{count} ficheiros PDF a converter em {directory} (subdiretórios incluídos).",
+      "checkbox_permanent_delete": "Eliminar os ficheiros PDF originais sem passar\npela reciclagem (SEM POSSIBILIDADE DE ANULAR)",
+      "start_button": "Iniciar",
+      "converting_title": "Conversão em curso...",
+      "converting_progress": "Conversão do ficheiro {current} num total de {total}",
+      "page_progress": "Página {current} / {total}",
+      "complete_title": "Conversão concluída",
+      "complete_message": "{count} ficheiros PDF convertidos no diretório:",
+      "complete_message_errors": "{count} ficheiros PDF convertidos de {total} no diretório:",
+      "errors_count": "{count} erro(s) encontrado(s)."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Selecionar o diretório com os ficheiros CBR",
+      "no_cbr_title": "Nenhum ficheiro CBR",
+      "no_cbr_message": "Não foram encontrados ficheiros CBR no diretório:\\n{directory}",
+      "confirm_title": "Conversão em lote de CBR para CBZ",
+      "confirm_message": "{count} ficheiros CBR a converter em {directory} (subdiretórios incluídos).",
+      "checkbox_permanent_delete": "Eliminar os ficheiros CBR originais sem usar\na reciclagem (SEM POSSIBILIDADE DE RETORNO)",
+      "start_button": "Começar",
+      "converting_title": "Conversão em curso...",
+      "converting_progress": "Conversão do ficheiro {current} de um total de {total}",
+      "page_progress": "Página {current} / {total}",
+      "complete_title": "Conversão concluída",
+      "complete_message": "{count} ficheiros CBR convertidos no diretório:",
+      "complete_message_errors": "{count} ficheiros CBR convertidos de {total} no diretório:",
+      "errors_count": "{count} erro(s) encontrado(s).",
+      "renamed_count": "{count} ficheiro(s) renomeado(s) para CBZ",
+      "rarfile_unavailable": "O módulo rarfile não está disponível. Não é possível converter ficheiros CBR."
+    },
+    "close_warning": {
+      "title": "Atenção!",
+      "message": "As alterações não foram guardadas e serão perdidas!",
+      "btn_close_lose": "Fechar o ficheiro e perder as alterações",
+      "btn_save_cbz": "Aplicar alterações e guardar o ficheiro",
+      "btn_create_cbz": "Aplicar alterações e criar ficheiro CBZ",
+      "btn_cancel": "Cancelar e voltar ao mosaico"
+    },
+    "replace_image": {
+      "title": "Substituir imagem corrompida"
+    },
+    "reduce_size": {
+      "window_title": "Redimensionamento de imagens",
+      "title": "Redimensionamento de {count} {word}",
+      "word_image": "imagem",
+      "word_images": "imagens",
+      "current_size": "Tamanho atual: {size} MB",
+      "current_dimensions": "Dimensões atuais: {width} × {height} px",
+      "choose_method": "Escolha o método de redimensionamento:",
+      "custom_dimensions": "Dimensões personalizadas",
+      "width_label": "Largura:",
+      "height_label": "Altura:",
+      "use_custom_dimensions": "Usar estas dimensões",
+      "different_dimensions_warning": "As páginas selecionadas têm dimensões diferentes. Dimensões personalizadas forçarão todas as páginas ao mesmo tamanho. Certifique-se de compreender as implicações antes de continuar.",
+      "estimated_size": "Tamanho estimado: {size} MB",
+      "percentage_reduction": "Redução percentual",
+      "percentage_enlargement": "Ampliação percentual",
+      "reduce_0": "0% (sem alteração)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (sem alteração)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "As larguras de página mais comuns são 1024, 1280, 1600, 1920 e 2000 pixels, mas outros valores também são adequados.",
+      "multi_page_width": "Detectar e redimensionar automaticamente as páginas múltiplas (largura/altura)",
+      "multi_page_width_tooltip": "Ativa a detecção automática de páginas múltiplas: página dupla, página tripla, etc. O coeficiente multiplicador é calculado automaticamente com base na proporção de cada página, seja em largura (páginas lado a lado) ou em altura (páginas empilhadas)"
+    },
+    "gif_animated": {
+      "window_title": "Criação de um GIF animado",
+      "images_title": "Imagens da animação",
+      "params_title": "Parâmetros do GIF",
+      "frame_delay_label": "Atraso entre imagens:",
+      "fps_normal": "{fps} quadros/segundo",
+      "fps_slow": "1 quadro a cada {seconds} segundos",
+      "loop_label": "Número de repetições:",
+      "loop_info": "(0 = loop infinito)",
+      "disposal_label": "Disposição de imagens:",
+      "disposal_0": "Não especificado",
+      "disposal_1": "Manter imagem anterior",
+      "disposal_2": "Restaurar para cor de fundo",
+      "disposal_3": "Restaurar para estado anterior",
+      "optimize": "Otimizar arquivo (salvar apenas diferenças)",
+      "metadata_title": "Metadados do GIF",
+      "metadata_dimensions": "Dimensões: {width} × {height} px",
+      "metadata_frames": "Número de quadros: {count}",
+      "metadata_duration": "Duração total: {duration} s",
+      "metadata_fps": "Frequência: {fps} fps",
+      "metadata_palette": "Paleta: até 256 cores",
+      "metadata_size": "Tamanho estimado: {size} KB",
+      "comment_label": "Comentário (opcional):",
+      "no_images": "Nenhuma imagem selecionada",
+      "creating_progress": "Carregando imagens... ({current}/{total})",
+      "creating_normalizing": "Normalizando imagens... ({current}/{total})",
+      "creating_quantizing": "Quantizando cores... ({current}/{total})",
+      "creating_saving": "Salvando GIF..."
+    },
+    "save_to_folder": {
+      "title": "Selecionar pasta de destino"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Nomes de arquivo duplicados",
+      "message": "Nomes de arquivo idênticos foram detectados. Embora salvar seja\ntecnicamente possível, isso pode causar problemas de leitura em alguns\naplicativos de leitura de quadrinhos (exibição incompleta, páginas\nausentes, etc.).\n\nÉ recomendável renumerar as páginas antes de salvar."
+    },
+    "adjustments": {
+      "window_title": "Ajustes de imagem",
+      "title": "Ajustes de {count} {word}",
+      "word_image": "imagem",
+      "word_images": "imagens",
+      "apply_button": "Aplicar",
+      "color_depth_section": "Profundidade de cor",
+      "brightness_contrast_section": "Brilho e contraste",
+      "compression_section": "Compressao",
+      "effects_section": "Efeitos",
+      "sharpness_section": "Nitidez",
+      "levels_section": "Niveis preto/branco",
+      "depth_unchanged": "Nao modificar",
+      "depth_32bit": "32 bits (RGBA - cores + transparencia)",
+      "depth_24bit": "24 bits (RGB - cores)",
+      "depth_8bit": "8 bits (paleta PNG / escala de cinza JPEG)",
+      "depth_1bit": "1 bit (preto e branco)",
+      "brightness_label": "Brilho: {value}",
+      "contrast_label": "Contraste: {value}",
+      "compression_enable": "Ativar recompressao",
+      "compression_quality_label": "Qualidade : {value}/100",
+      "sharpness_label": "Nitidez: {value}",
+      "effect_none": "Sem efeito",
+      "effect_grayscale": "Tons de cinza",
+      "effect_sepia": "Sepia",
+      "levels_none": "Sem ajuste",
+      "levels_threshold": "Limiar (preto ou branco puro)",
+      "levels_advanced": "Niveis avancados (sombras/tons medios/luzes)",
+      "threshold_label": "Limiar: {value}",
+      "black_point_label": "Ponto preto: {value}",
+      "gamma_label": "Gamma (tons medios): {value}",
+      "white_point_label": "Ponto branco: {value}",
+      "auto_levels_button": "Ajuste automático",
+      "open_viewer_button": "Ajustar com o visualizador (recomendado)",
+      "compression_info": "A compressão aplica-se apenas a imagens JPG e WebP",
+      "open_viewer_button_simple": "Ajustar com o visualizador",
+      "reset_button": "Redefinir",
+      "preview_section": "Pré-visualização",
+      "effect_invert": "Inversão de cores",
+      "preview_warning": "A visualização pode diferir do resultado final",
+      "effect_remove_colors": "Remoção de cores",
+      "remove_colors_intensity_label": "Intensidade : {value}",
+      "image_mode_section": "Modo de imagem",
+      "image_mode_rgb": "RGB (cores)",
+      "image_mode_rgba": "RGBA (cores + transparência)",
+      "image_mode_l": "L (escala de cinza)",
+      "image_mode_la": "LA (escala de cinza + transparência)",
+      "image_mode_cmyk": "CMYK (impressão)",
+      "image_mode_1": "1 (preto e branco puro)",
+      "image_mode_p": "P (paleta de 256 cores)",
+      "saturation_section": "Saturação",
+      "saturation_label": "Saturação : {value}",
+      "saturation_viewer_title": "Ajuste de saturação",
+      "transparency_section": "Transparência",
+      "transparency_info": "A transparência aplica-se apenas a imagens PNG, WebP e ICO",
+      "transparency_type_label": "Tipo :",
+      "transparency_type_flood": "Zona",
+      "transparency_type_global": "Global",
+      "transparency_tolerance_label": "Tolerância : {value}",
+      "transparency_viewer_title": "Ajuste de transparência",
+      "transparency_click_instruction": "Clique na cor que deseja tornar transparente",
+      "transparency_undo": "Desfazer último clique",
+      "transparency_redo": "Refazer",
+      "transparency_type_flood_tooltip": "Flood fill : torna transparente a área de cor uniforme em torno do pixel clicado",
+      "transparency_type_global_tooltip": "Transparência global : afeta todos os pixels da imagem cuja cor está próxima da clicada",
+      "transparency_apply": "Aplicar",
+      "transparency_skipped_warning": "{count} imagem(ns) ignorada(s) — formato incompatível com a transparência. Para incluí-las, converta-as primeiro para PNG.",
+      "unsharp_section": "Nitidez adaptativa",
+      "unsharp_radius_label": "Raio: {value}",
+      "unsharp_percent_label": "Intensidade: {value} %",
+      "unsharp_threshold_label": "Limiar: {value}",
+      "unsharp_viewer_title": "Nitidez adaptativa",
+      "auto_levels_tooltip": "Analisa cada página e ajusta automaticamente os níveis de preto e branco para maximizar o contraste.\nPara escolher página por página, utilize o visualizador."
+    },
+    "levels_viewer": {
+      "title": "Ajuste de niveis com conta-gotas",
+      "apply_current": "Aplicar a esta pagina",
+      "apply_all": "Aplicar a todas as páginas selecionadas",
+      "black_pipette": "Conta-gotas de ponto preto",
+      "white_pipette": "Conta-gotas de ponto branco",
+      "black_pipette_tooltip": "Clique em um pixel que deveria ser totalmente preto. Cuidado: é fácil exagerar!",
+      "white_pipette_tooltip": "Clique em um pixel que deveria ser totalmente branco. Cuidado: é fácil exagerar!"
+    },
+    "sharpness_viewer": {
+      "title": "Ajuste de nitidez"
+    },
+    "brightness_viewer": {
+      "title": "Ajuste de brilho e contraste"
+    },
+    "compression_viewer": {
+      "title": "Ajuste de compressão"
+    },
+    "outliers": {
+      "title": "Páginas com dimensões incomuns",
+      "message": "As seguintes páginas têm dimensões que diferem significativamente das outras. Por favor, escolha como tratá-las:",
+      "width": "Largura",
+      "height": "Altura",
+      "unusual": "incomum",
+      "skip": "Não redimensionar",
+      "keep": "manter"
+    },
+    "first_page_multi": {
+      "title": "A primeira página é múltipla",
+      "message": "A primeira página foi detetada como múltipla. Como deseja numerá-la?",
+      "option_auto_desc": "Renumeração normal com deteção automática.",
+      "option_joint_desc": "Junção da primeira e da última página da BD.",
+      "option_exclude_label": "Não incluir na renumeração",
+      "option_exclude_desc": "A página mantém o seu nome atual e fica na primeira posição. Pode renomeá-la manualmente mais tarde."
+    },
+    "batch_img": {
+      "select_directory_title": "Selecionar a pasta que contém as imagens",
+      "no_img_title": "Nenhum ficheiro de imagem encontrado",
+      "no_img_message": "Nenhum ficheiro de imagem isolado foi encontrado na pasta :\n{directory}",
+      "confirm_title": "Conversão em lote de imagens isoladas para CBZ",
+      "confirm_message": "{count} ficheiro(s) de imagem para converter em {directory} (subpastas incluídas).",
+      "checkbox_permanent_delete": "Eliminar permanentemente os ficheiros de imagem originais\nsem os enviar para o caixote do lixo (NÃO PODE SER REVERTIDO)",
+      "start_button": "Iniciar",
+      "converting_title": "Conversão em curso...",
+      "converting_progress": "A converter o ficheiro {current} de um total de {total}",
+      "complete_title": "Conversão concluída",
+      "complete_message": "{count} ficheiro(s) de imagem convertido(s) na pasta :",
+      "complete_message_errors": "{count} de {total} ficheiro(s) de imagem convertido(s) na pasta :",
+      "errors_count": "{count} erro(s) encontrado(s).",
+      "converted_by_ext": "{ext} : {count} ficheiro(s)",
+      "mode_title": "Converter imagens para CBZ",
+      "mode_intro": "Como deseja agrupar as imagens?",
+      "mode_one_per_image": "Converter cada imagem em ficheiros CBZ separados",
+      "mode_one_per_image_sub": "(Cada imagem torna-se um ficheiro CBZ separado)",
+      "mode_all_in_one": "Agrupar todas as imagens num único ficheiro CBZ",
+      "mode_all_in_one_sub": "(Todas as imagens do diretório são agrupadas num único ficheiro CBZ)"
+    },
+    "batch_drop": {
+      "window_title": "Processamento em lote de pastas",
+      "intro_single": "1 pasta foi solta. Qual processamento deseja aplicar?",
+      "intro_multiple": "{count} pastas foram soltas. Qual processamento deseja aplicar?",
+      "recursive_note": "As subpastas também serão verificadas.",
+      "mixed_drop_title": "Soltar não suportado",
+      "mixed_drop_message": "Você soltou arquivos e pastas ao mesmo tempo. Por favor, solte apenas arquivos ou apenas pastas."
+    },
+    "pdf_unlock": {
+      "title": "PDF protegido contra modificações",
+      "message": "As páginas foram importadas normalmente.\n\nEste arquivo PDF está protegido contra modificações (senha do proprietário).\n\nDeseja salvar uma cópia do arquivo PDF sem esta proteção?",
+      "yes": "Sim, salvar uma cópia desbloqueada",
+      "no": "Não, continuar sem desbloquear"
+    },
+    "batch_pdf_unlock": {
+      "title": "Ficheiros PDF protegidos contra modificações",
+      "message_single": "Foi detetado 1 ficheiro PDF protegido contra modificações. Foi convertido normalmente para CBZ.\n\nDeseja guardar uma cópia desbloqueada no seu diretório original?",
+      "message_plural": "Foram detetados {count} ficheiros PDF protegidos contra modificações. Foram convertidos normalmente para CBZ.\n\nDeseja guardar uma cópia desbloqueada de cada um no seu diretório original?",
+      "yes": "Sim, guardar as cópias desbloqueadas",
+      "no": "Não, continuar sem desbloquear"
+    },
+    "ico_creator": {
+      "title": "Criar ícone .ico",
+      "info_message": "A imagem será redimensionada para várias resoluções (16, 32, 48, 64, 128, 256 px).\nTamanho atual do quadro: {w} × {h} px",
+      "btn_validate_crop": "Confirmar recorte",
+      "btn_validate_no_crop": "Confirmar sem recorte",
+      "btn_cancel": "Cancelar",
+      "btn_transparency": "Definir transparência",
+      "btn_validate_final": "Confirmar",
+      "tolerance_label": "Tolerância:",
+      "success_title": "Arquivo .ico criado",
+      "success_message": "O arquivo {filename} foi criado com sucesso.",
+      "overwrite_title": "Arquivo já existe",
+      "overwrite_message": "O arquivo {filename} já existe. Sobrescrever?",
+      "save_blocked_title": "Não é possível salvar",
+      "save_blocked_message": "Este arquivo contém um ou mais arquivos .ico que não são imagens de quadrinhos. O salvamento está desativado enquanto esses arquivos estiverem presentes no mosaico.\nPara reativar o salvamento, exclua-os do mosaico (tecla Del) ou corte-os (Ctrl+X) para colá-los em outro lugar.",
+      "btn_back_to_crop": "Voltar ao recorte"
+    },
+    "video_save_blocked": {
+      "title": "Não é possível guardar",
+      "message": "Este arquivo contém um ou mais ficheiros de vídeo. O guardado está desactivado enquanto estes ficheiros estiverem presentes no mosaico.\nPara reactivar o guardado, elimine-os do mosaico (tecla Del) ou corte-os (Ctrl+X) para colá-los noutro local."
+    },
+    "open_file": {
+      "title": "Abrir um arquivo",
+      "filter_archives": "Arquivos (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Todos os arquivos (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Licença"
+    },
+    "replace_corrupted_image": {
+      "title": "Substituir imagem corrompida",
+      "filter_images": "Imagens (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Todos os ficheiros (*)"
+    },
+    "see_log": "VER LOG"
+  },
+  "tooltip": {
+    "source_archive": "Ficheiro de origem: {name}",
+    "file": "Ficheiro: {name}",
+    "reason": "Motivo: {reason}",
+    "size_kb": "Tamanho: {size} KB",
+    "size_mb": "Tamanho: {size} MB",
+    "file_size": "Tamanho: {size}",
+    "dimensions": "Dimensões: {width} × {height} px",
+    "resolution": "Resolução: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: indefinido",
+    "cbr_info": "Os arquivos CBR usam o formato RAR, que é proprietário e patenteado;\neles não podem ser modificados, as alterações são salvas em um novo arquivo CBZ.",
+    "rotate_left": "Rotação de 90 graus para a esquerda",
+    "rotate_right": "Rotação de 90 graus para a direita",
+    "mirror_horizontal": "Inversão horizontal",
+    "mirror_vertical": "Inversão vertical",
+    "fullscreen": "Tela cheia",
+    "help_button": "Manual do usuário",
+    "theme_button": "Alternar entre tema claro e escuro",
+    "font_decrease_button": "Diminuir o tamanho da fonte",
+    "font_increase_button": "Aumentar o tamanho da fonte",
+    "color_depth": "Cores: {bits} bits ({mode})",
+    "batch_pdf_to_cbz": "Converte em CBZ todos os ficheiros PDF contidos\nnuma pasta e nas suas subpastas. As imagens são\nextraídas e arquivadas tal como estão, sem qualquer\nrecompressão.",
+    "batch_pdf_permanent_delete": "ATENÇÃO: se esta opção estiver marcada,\nos ficheiros PDF originais serão eliminados\npermanentemente após a conversão,\nsem possibilidade de recuperação.\nCertifique-se de que possui uma cópia\nde segurança, se necessário.",
+    "batch_cbr_to_cbz": "Converte para CBZ todos os ficheiros CBR\ncontidos num diretório\ne nos seus subdiretórios.",
+    "batch_cbr_permanent_delete": "ATENÇÃO: se esta opção estiver marcada,\nos ficheiros CBR originais serão eliminados\ndefinitivamente após a conversão,\nsem possibilidade de recuperação.\nCertifique-se de que dispõe de uma cópia\nde segurança se necessário.",
+    "renumber_btn_1": "Modo de deteção automática de páginas múltiplas\nClique com o botão direito para mudar o modo",
+    "renumber_btn_2": "Modo de numeração simples\nClique com o botão direito para mudar o modo",
+    "corrupted_header": "Imagem corrompida",
+    "right_click_instruction1": "Clique com o botão direito para substituir",
+    "right_click_instruction2": "ou excluir esta imagem.",
+    "unknown_error": "Erro desconhecido",
+    "batch_img_to_cbz": "Converte todos os ficheiros de imagem encontrados numa pasta\ne nas suas subpastas para CBZ,\ncriando um ficheiro CBZ por imagem.",
+    "batch_img_permanent_delete": "ATENÇÃO : se esta opção estiver marcada,\nos ficheiros de imagem originais serão eliminados\npermanentemente após a conversão, sem possibilidade\nde recuperação. Certifique-se de ter uma cópia\nde segurança, se necessário.",
+    "too_large_header": "Imagem demasiado grande para carregar",
+    "too_large_pixels": "Dimensões: {pixels}",
+    "icon_toolbar_config_button": "Configuração de ícones",
+    "icon_toolbar_size_decrease": "Diminuir tamanho dos ícones",
+    "icon_toolbar_size_increase": "Aumentar tamanho dos ícones",
+    "source_loose": "Imagem solta",
+    "source_web": "Imagem web"
+  },
+  "help": {
+    "title": "MosaicView - Manual do utilizador",
+    "intro": "O MosaicView permite-lhe manipular e modificar banda desenhada (BD digitais) sem ter de as extrair dos seus arquivos. A aplicação suporta os formatos CBZ (ZIP), CBR (RAR) e PDF. A aplicação é compatível apenas com sistemas de 64 bits.",
+    "open_files": "Abrir ficheiros",
+    "open_files_content": "• Clique no botão 'Abrir CBZ/CBR/CB7/PDF'\n• Ou arraste e largue diretamente um ficheiro na janela\n• Formatos suportados: CBZ, CBR, CB7, PDF, imagens (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Os arquivos EPUB tambem podem ser abertos, mas apenas suas imagens serao extraidas (o texto e ignorado).\n• PDF criptografado (senha necessária para abrir): o arquivo não pode ser importado, uma mensagem de erro é exibida.\n• PDF protegido contra modificações (owner password): as páginas são importadas normalmente. MosaicView propõe salvar uma cópia desbloqueada do arquivo na mesma pasta.",
+    "mosaic": "O mosaico",
+    "mosaic_content": "O mosaico exibe todas as páginas da sua banda desenhada como miniaturas. Você pode:\n• Reorganizar as páginas arrastando e soltando (a renumeração de páginas será automática e seguirá o modo de renumeração ativo)\n• Selecionar várias páginas (Ctrl+clique ou Shift+clique)\n• Ajustar o tamanho das miniaturas com o controle deslizante\n• Renomear arquivos manualmente clicando em seu nome\n• Arrastar e soltar arquivos de BD (CBZ/CBR/PDF) do Explorador do Windows diretamente em outra BD aberta para mesclar seu conteúdo",
+    "manipulation": "Manipulação das páginas",
+    "manipulation_content": "• Arraste e solte páginas para as reorganizar\n• Arraste uma BD completa para outra para as fundir\n• Clique com o botão direito numa página para aceder às opções (rotação, eliminação, etc.)\n• Duplo clique numa página para abrir o visualizador\n• Exporte páginas individuais arrastando-as para uma pasta do Windows ou via Ctrl+C / Ctrl+V",
+    "renumber": "Renumeração de páginas",
+    "renumber_content": "O MosaicView oferece dois modos de renumeração de páginas, acessíveis através do botão de renumeração, do menu de contexto (clique direito) ou automaticamente ao arrastar e soltar:\n\n• Modo de deteção automática de páginas múltiplas (modo padrão): a aplicação analisa a largura de cada página para detetar páginas duplas, triplas, etc. As páginas múltiplas são renumeradas em conformidade (ex.: uma página dupla será nomeada 003-004, uma tripla 005-006-007). Acima de 4 páginas, apenas o primeiro e o último número são exibidos (ex.: 010---025).\n\n• Modo de enumeração simples: cada página recebe um número sequencial único (001, 002, 003...), independentemente da largura das páginas.\n\nPara alternar entre os dois modos, clique com o botão direito no botão de renumeração. Uma dica indica o modo ativo. O modo selecionado aplica-se também à renumeração automática ao arrastar e soltar.",
+    "flatten": "Nivelar as pastas",
+    "flatten_content": "Se o seu arquivo contém subpastas, use 'Nivelar pastas' para trazer todas as imagens ao mesmo nível.",
+    "viewer": "Visualizador",
+    "viewer_content": "Faça duplo clique numa página para abrir o visualizador:\n• Teclas ← →: navegação entre páginas\n• Tecla D: alternar entre 3 modos de leitura\n  - Página única: uma página de cada vez\n  - Páginas duplas: página 1 sozinha, depois 2-3, 4-5, etc.\n  - Páginas duplas contínuas: página 1 sozinha, depois 2-3, 3-4, 4-5, etc.\n• Roda do rato: navegação rápida\n• Ctrl+Roda ou Ctrl+Mais/Menos: zoom\n• Ctrl+0: reiniciar zoom\n• Tecla F11: ecrã inteiro\n• Duplo clique: alternar ecrã inteiro\n• Tecla Esc: cancelar o quadro de recorte / sair do visualizador",
+    "join_pages": "Unir páginas",
+    "join_pages_content": "Selecione várias páginas consecutivas, clique com o botão direito → 'Juntar páginas selecionadas' para unir páginas horizontal ou verticalmente. O formato da imagem produzida corresponde ao das páginas de origem se forem todas idênticas, caso contrário PNG por padrão.",
+    "split_pages": "Dividir páginas",
+    "split_pages_content": "Para dividir automaticamente páginas duplas:\n• Selecione as páginas a dividir\n• Clique direito → 'Dividir páginas selecionadas'\n• Escolha a direção (vertical ou horizontal)",
+    "crop": "Corte no visualizador",
+    "crop_content": "No visualizador, trace um retângulo na imagem para definir uma área de corte:\n• Trace o retângulo com o rato\n• Redimensione-o puxando as margens ou cantos\n• Clique em 'Validar corte' para aplicar\n• O corte é aplicado à imagem atual\n• Tecla Esc: cancelar o quadro de recorte",
+    "shortcuts": "Atalhos de teclado",
+    "shortcuts_content": "• Ctrl+Z: Desfazer última ação\n• Ctrl+Y: Refazer ação desfeita\n• Ctrl+A: Selecionar todas as páginas\n• Ctrl+I: Inverter seleção\n• Ctrl+C: Copiar páginas selecionadas\n• Ctrl+X: Cortar páginas selecionadas\n• Ctrl+V: Colar páginas\n• Del: Eliminar páginas selecionadas\n• F5: Atualizar a exibição do mosaico\n• F11: Alternar tela cheia (sair com F11 ou ESC)",
+    "dark_mode": "Modo escuro",
+    "dark_mode_content": "Clique no botão sol/lua para alternar entre temas claro e escuro.",
+    "sort": "Ordenar as páginas",
+    "sort_content": "Use o botão 'Ordenar' para reorganizar automaticamente as páginas por:\n• Nome, Tipo, Tamanho, Largura, Altura, Resolução ou DPI",
+    "save": "Guardar",
+    "save_content": "• 'Guardar': guarda as alterações no ficheiro original\n• 'Guardar como': cria um novo arquivo\n• 'Criar CBZ': disponível em modo apenas imagens (sem arquivo)",
+    "other": "Outras funções",
+    "other_content": "• Rotação: rode uma ou mais páginas\n• Conversão: converta as imagens em diferentes formatos (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nota: as imagens em modo CMYK são automaticamente convertidas para RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nota: as imagens em modo CMYK são automaticamente convertidas para RGB\n• Impressão: imprima as páginas selecionadas ou todas as páginas\n• Extração: extraia páginas específicas\n• Separador Metadados: apresenta as informações do ficheiro ComicInfo.xml (se presente no arquivo). Se adicionar ou remover uma página de uma banda desenhada contendo metadados, a aplicação proporá modificar o número de páginas indicado. Os outros metadados não podem ser modificados. Esta limitação é intencional e resulta de uma escolha de conceção.",
+    "config_files": "Arquivos de configuração e arquivos temporários",
+    "config_files_content": "O MosaicView cria um arquivo chamado .mosaicview_config.json. Este arquivo contém alguns parâmetros necessários para o funcionamento adequado do botão de redefinição, bem como a lista de quadrinhos abertos recentemente, que obviamente é necessária para exibir arquivos abertos recentemente. O MosaicView também salva arquivos temporários, necessários para várias operações de processamento de imagem.\nTodos esses arquivos estão localizados no diretório {temp_dir}.\nOs arquivos temporários são excluídos cada vez que o aplicativo é fechado, mas o arquivo .mosaicview_config.json, por sua natureza, deve ser mantido.\nNo entanto, você pode excluir manualmente esses arquivos indo ao diretório {temp_dir} ou clicando nos botões abaixo. O arquivo .mosaicview_config.json será recriado cada vez que o aplicativo for aberto e os arquivos temporários serão recriados conforme necessário.",
+    "config_clear_temp": "Excluir arquivos temporários",
+    "config_clear_recent": "Limpar arquivos recentes",
+    "config_clear_config": "Excluir arquivo de configuração",
+    "config_temp_cleared": "Os arquivos temporários foram excluídos com sucesso.",
+    "config_config_cleared": "O arquivo de configuração foi excluído com sucesso.\nEle será recriado na próxima inicialização do aplicativo.",
+    "language": "Seleção do idioma",
+    "language_content": "O MosaicView está disponível em vários idiomas.\nPor predefinição, a aplicação deteta automaticamente o idioma do seu sistema operativo e apresenta-se nesse idioma se for suportado. Se o seu sistema utilizar um idioma não suportado, a interface apresenta-se em inglês.\nPode alterar manualmente o idioma em qualquer altura utilizando o menu suspenso situado no fundo da coluna de botões, abaixo do cursor de tamanho das miniaturas. A sua escolha será memorizada e aplicada no próximo arranque da aplicação.\nIDIOMAS DISPONÍVEIS: alemão, árabe, arménio, búlgaro, chinês (simplificado), chinês (tradicional), coreano, croata, checo, dinamarquês, eslovaco, esloveno, espanhol, estoniano, finlandês, francês, grego, hindi, holandês, húngaro, indonésio, inglês, irlandês, islandês, italiano, japonês, letão, lituano, malaio, maltês, norueguês, polaco, português, romeno, sueco, tâmil, tailandês, turco, ucraniano, vietnamita.\nIDIOMAS FICTÍCIOS DISPONÍVEIS: klingon (versão alfabeto latino e alfabeto pIqaD), sindarin (versão alfabeto latino e alfabeto tengwar), quenya (versão alfabeto latino e alfabeto tengwar).\n\nEste utilitário usa fontes do Windows, exceto para as fontes pIqaD (idioma klingon) e tengwar (idiomas élficos: sindarin e quenya). Essas fontes são livres de direitos e vêm destes sites:\n- para pIqaD (alfabeto da língua klingon): {url_piqad}\n- para tengwar (alfabeto élfico, para sindarin e quenya): {url_tengwar}\nCaso esses sites não estejam mais ativos, você pode recuperar as fontes pIqaD e tengwar clicando nos botões abaixo:\n\nEste software foi desenvolvido em francês. As traduções noutros idiomas foram efetuadas através de IA, mais especificamente pelo Claude. Decidi, de facto, suportar cerca de quarenta línguas. Mas obviamente, não falo todos estes idiomas. Não tive, portanto, outra escolha senão recorrer à IA, pois contratar e remunerar 40 tradutores diferentes não fez parte das possibilidades consideradas. Devido à natureza automática destas traduções, é possível que existam erros. Peço desculpa por isso.",
+    "credits": "Vibe Coding, meu amor",
+    "credits_content": "Não sei nada de programação. Absolutamente nada. Consequentemente, desenvolvi este software graças ao Claude, a IA da Anthropic, e mais precisamente com o Claude Code. Só posso recomendar vivamente o Claude Code, esta aplicação é fabulosa!",
+    "resize_pages": "Modificar o tamanho das páginas",
+    "resize_pages_content": "Para reduzir ou aumentar suas páginas:\n• Selecione uma ou mais páginas\n• Clique com o botão direito → 'Redimensionar'\n• Três opções estão disponíveis:\n  - Dimensões personalizadas: insira a largura ou altura desejada (a proporção é preservada automaticamente).\n  - Redução percentual: escolha uma porcentagem de 10% a 90%\n  - Aumento percentual: escolha uma porcentagem de 10% a 100%\n• A aplicação exibe o tamanho estimado de suas imagens após a modificação\n• A modificação é aplicada imediatamente a todas as páginas selecionadas",
+    "language_export_piqad": "Fonte pIqaD",
+    "language_export_tengwar": "Fontes tengwar",
+    "language_export_piqad_success": "Fonte exportada: {filename}\nDisponível em:",
+    "language_export_tengwar_success": "{count} fontes exportadas\nDisponíveis em:",
+    "icons": "Ícones",
+    "icons_content": "A maioria dos ícones usados neste utilitário vem deste site e são de uso gratuito para fins não comerciais: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nAlguns foram modificados por mim.\nApenas um ícone, o do executável do Windows, foi criado por mim (mas com IA, porque sou um péssimo, péssimo, péssimo designer gráfico). Você tem minha permissão para usar este ícone como desejar, desde que cite sua fonte.",
+    "icons_view_button": "Ver ícones",
+    "icons_window_title": "Ícones do MosaicView",
+    "icons_save_all": "Salvar ícones",
+    "icons_saved_success": "{count} ícone(s) salvo(s) em:",
+    "icons_save_failed": "Não foi possível salvar os ícones: {error}",
+    "split_ui": "Interface de dois painéis",
+    "split_ui_content": "O MosaicView permite exibir dois arquivos simultaneamente, lado a lado.\n\nClique no ícone Dividir para abrir um segundo painel. Cada painel é independente: você pode abrir, editar e salvar um arquivo separadamente. O painel ativo é indicado por uma borda azul.\n\nPara mover páginas de um painel para o outro, arraste-as diretamente. Se várias páginas estiverem selecionadas, todas se movem juntas. As páginas são inseridas na posição indicada pela barra vermelha.\n\nClique no ícone Fechar segundo painel para voltar ao modo de painel único.",
+    "license_gpl": "Licença GPL v3",
+    "license_unrar": "Licença UnRAR",
+    "config_clear_clipboard": "Limpar arquivos da área de transferência",
+    "config_clipboard_note": "Exceção: Os arquivos temporários usados pela área de transferência do Windows (arquivos clipboard_XXXXX) são mantidos por 12 horas após a cópia, para que você possa colá-los mesmo depois de fechar o aplicativo. Após 12 horas, eles são excluídos automaticamente.",
+    "config_log_note": "As conversoes em lote (PDF para CBZ e CBR para CBZ) criam um arquivo de registro em caso de erro. Esses arquivos (Log_pdftocbz_.txt e Log_cbrtocbz_.txt) sao mantidos mesmo apos o fechamento do aplicativo, para que possam ser consultados posteriormente. Eles so sao excluidos pelo botao \"Excluir arquivos temporarios\" acima.",
+    "config_clipboard_cleared": "Os arquivos da área de transferência foram limpos com sucesso.",
+    "adjust_images": "Ajuste de imagens",
+    "adjust_images_content": "Esta função permite-lhe retocar as suas imagens diretamente no MosaicView. Pode modificar o brilho, o contraste, a nitidez, os níveis, a saturação, aplicar efeitos (preto e branco, sépia, inversão de cores), ajustar a qualidade de compressão, remover cores, aplicar transparência ou converter para diferentes profundidades de cor. Algumas definições dispõem de um visualizador dedicado que permite ver o resultado em resolução completa antes de aplicar. Uma miniatura mostra o resultado em tempo real na janela principal.",
+    "create_icon": "Criar um ícone",
+    "create_icon_content": "O MosaicView permite criar ficheiros de ícone (.ico) a partir de qualquer imagem do mosaico.\n• Clique com o botão direito numa imagem → 'Criar um ícone'\n• Enquadre a área desejada no visualizador (o ícone será obrigatoriamente quadrado)\n• Ajuste a transparência se necessário\n• Confirme: o ficheiro .ico é adicionado diretamente ao mosaico\n• Os ficheiros .ico contêm automaticamente todas as resoluções padrão (de 16×16 a 256×256)\n• Enquanto houver um ficheiro .ico no mosaico, o guardamento num arquivo CBZ está bloqueado, pois o formato ICO não é suportado por esses arquivos. Exporte o ficheiro .ico separadamente (Ctrl+C e cole numa pasta do Windows), depois elimine-o do mosaico antes de guardar.",
+    "batch_convert": "Conversão em lote",
+    "batch_convert_content": "O MosaicView oferece três funções de conversão em lote, disponíveis apenas quando o mosaico está vazio. Para cada uma delas, o princípio é o mesmo : selecione um diretório, confirme, acompanhe o progresso em tempo real, revise o resumo final. Uma opção permite excluir permanentemente os arquivos originais em vez de enviá-los para a lixeira.\n• CBR → CBZ : converte todos os arquivos CBR (RAR) em um diretório e seus subdiretórios. Se um CBR for realmente um ZIP, ele é simplesmente renomeado sem conversão.\n• PDF → CBZ : converte todos os arquivos PDF em um diretório e seus subdiretórios. As imagens são extraídas sem recompressão.\n• IMAGENS ISOLADAS → CBZ : cria um CBZ individual para cada arquivo de imagem encontrado no diretório e seus subdiretórios. Imagens inválidas, corrompidas, de múltiplas páginas (TIFF) ou animadas (GIF) são ignoradas e registradas em um log.",
+    "config_open_temp_folder": "Abrir pasta temporária",
+    "icon_toolbar": "Barra de ícones",
+    "icon_toolbar_content": "A barra de ícones permite aceder rapidamente às principais funções da aplicação. Pode reorganizar os ícones como desejar arrastando-os diretamente na barra. Para escolher quais ícones exibir ou ocultar, clique no botão de engrenagem na parte inferior da barra: abre-se uma janela de configuração onde pode mover os ícones entre a barra ativa e a reserva. Use os botões « + » e « − » para ajustar o tamanho dos ícones. A configuração é guardada automaticamente.",
+    "license_7zip": "Licença 7-Zip"
+  },
+  "misc": {
+    "file_word": "ficheiro",
+    "files_word": "ficheiros",
+    "corrupted": "corrompido",
+    "yes": "Sim",
+    "no": "Não",
+    "cancel": "Cancelar",
+    "selection_suffix": "copia-selecao"
+  },
+  "metadata": {
+    "title": "Título",
+    "series": "Série",
+    "number": "Número",
+    "volume": "Volume",
+    "summary": "Resumo",
+    "writer": "Argumentista",
+    "penciller": "Desenhador",
+    "inker": "Tinteiro",
+    "colorist": "Colorista",
+    "letterer": "Letrista",
+    "cover_artist": "Artista de capa",
+    "editor": "Editor (pessoa)",
+    "publisher": "Editor (editora)",
+    "imprint": "Coleção",
+    "genre": "Género",
+    "web": "Website",
+    "page_count": "Número de páginas",
+    "language_iso": "Idioma",
+    "format": "Formato",
+    "black_and_white": "Preto e branco",
+    "manga": "Manga",
+    "year": "Ano",
+    "month": "Mês",
+    "day": "Dia",
+    "notes": "Notas",
+    "characters": "Personagens",
+    "locations": "Locais",
+    "teams": "Equipas",
+    "story_arc": "Arco narrativo",
+    "story_arc_number": "Número do arco",
+    "series_group": "Grupo de séries",
+    "count": "Total de números",
+    "alternate_series": "Série alternativa",
+    "alternate_number": "Número alternativo",
+    "alternate_count": "Contagem alternativa",
+    "age_rating": "Classificação etária",
+    "series_complete": "Série completa",
+    "translator": "Tradutor",
+    "tags": "Etiquetas",
+    "scan_information": "Informação de digitalização",
+    "community_rating": "Avaliação da comunidade",
+    "review": "Crítica",
+    "gtin": "GTIN",
+    "pages": "Páginas",
+    "pages_col_image": "Imagem",
+    "pages_col_type": "Tipo",
+    "pages_col_width": "Largura",
+    "pages_col_height": "Altura",
+    "pages_col_size": "Tamanho (B)"
+  },
+  "web": {
+    "web_download_progress": "Baixando: {downloaded}/{total} imagens...",
+    "web_download_cancel": "Cancelar",
+    "web_no_images": "Sem imagens",
+    "web_no_images_found": "Nenhuma imagem foi encontrada nesta página.",
+    "web_imported": "{count} imagem(ns) importada(s) da página web",
+    "web_drag_drop_title": "Arrastar e soltar imagem da web",
+    "web_copy_paste_message": "Arrastar e soltar direto do navegador web não é suportado.\n\nSolução alternativa (mais simples):\n\n1. Clique com o botão direito na imagem no seu navegador\n2. Escolha 'Copiar imagem'\n3. No MosaicView, use o botão 'Colar' ou Ctrl+V\n\nEste método funciona com todas as imagens da web!",
+    "import_web_button": "Importar web",
+    "import_web_tooltip": "Cole um endereço de internet para recuperar todas as imagens da página",
+    "import_web_menu": "Importar web...",
+    "import_web_dialog_title": "Importar imagens de uma página web",
+    "import_web_url_label": "Endereço da página web:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Cancelar",
+    "import_web_invalid_url": "URL inválido. Por favor, insira um endereço web válido."
+  },
+  "donation": {
+    "menu_label": "Doar ao autor",
+    "title": "Fazer uma doação",
+    "message": "Você gosta deste pequeno utilitário e o usa regularmente.\n\nInvesti várias centenas de horas nele. Você consideraria me agradecer fazendo uma doação? Seja legal, eu realmente preciso de dinheiro para encher minha piscina com champanhe. Quer você queira me enviar alguns centavos ou vários bilhões de euros, aceito todas as quantias. Você pode fazer esta doação através do paypal"
+  },
+  "mail": {
+    "tooltip": "Este botão abre o software de e-mail padrão no Windows para enviar um e-mail. Se nenhum software estiver configurado (por exemplo, se você usa exclusivamente webmail), você pode copiar o endereço do MosaicView para a área de transferência clicando com o botão direito no ícone.",
+    "copy_address": "Copiar endereço de e-mail do MosaicView",
+    "menu_label": "Enviar um e-mail para MosaicView",
+    "icon_label": "Enviar um e-mail"
+  },
+  "menu": {
+    "file": "Ficheiro",
+    "file_open": "Abrir ficheiro",
+    "file_close": "Fechar ficheiro",
+    "batch_convert": "Conversão de ficheiros em lote",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Imagens isoladas → CBZ",
+    "edit": "Editar",
+    "undo": "Desfazer",
+    "redo": "Refazer",
+    "paste": "Colar",
+    "delete": "Eliminar",
+    "invert_selection": "Inverter seleção",
+    "select_all": "Selecionar tudo",
+    "deselect": "Desselecionar",
+    "refresh_mosaic": "Atualizar mosaico",
+    "images": "Imagens",
+    "rotation": "Rotação",
+    "archives": "Arquivos",
+    "sort": "Ordenar",
+    "system": "Sistema",
+    "decrease_font": "Diminuir fonte",
+    "increase_font": "Aumentar fonte",
+    "language": "Idiomas",
+    "language_real": "Idiomas reais",
+    "language_fictional": "Idiomas fictícios",
+    "about": "Sobre",
+    "export_piqad_font": "Guardar fonte pIqaD",
+    "export_tengwar_fonts": "Guardar fontes tengwar"
+  }
+}

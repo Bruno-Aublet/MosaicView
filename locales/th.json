@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "เครื่องมือเอนกประสงค์สำหรับนักสะสมการ์ตูนดิจิทัล",
+  "buttons": {
+    "open_file": "เปิด CBZ/CBR/CB7/PDF",
+    "close_file": "ปิดไฟล์",
+    "create_cbz": "สร้างไฟล์ CBZ",
+    "flatten_dirs": "ย้ายไฟล์ทั้งหมด\nไปยังรูทและลบ\nไดเรกทอรีย่อย",
+    "renumber": "กำหนดเลข\nหน้าใหม่",
+    "undo": "⤺ เลิกทำ",
+    "redo": "ทำซ้ำ ⤻",
+    "copy": "คัดลอก",
+    "cut": "ตัด",
+    "paste": "วาง",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "แปลงเป็นรูปแบบ\nภาพอื่น",
+    "join_pages": "รวมหน้า",
+    "split_page": "แยกหน้า",
+    "save_as": "บันทึกเป็น\n(สร้าง CBZ ใหม่)",
+    "save_selection": "บันทึกส่วนที่เลือก\nเป็น CBZ",
+    "print_selection": "พิมพ์ส่วนที่เลือก",
+    "print_all": "พิมพ์การ์ตูนทั้งหมด",
+    "sort": "เรียงลำดับ",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "แปลง",
+    "cancel": "ยกเลิก",
+    "split_button": "แยก",
+    "join_button": "เริ่ม",
+    "validate_crop": "ยืนยันการครอป",
+    "ok": "ตกลง",
+    "close": "ปิด",
+    "apply_and_save": "ใช้การเปลี่ยนแปลงและบันทึกไฟล์",
+    "apply_and_create": "ใช้การเปลี่ยนแปลงและสร้างไฟล์ CBZ",
+    "close_and_lose": "ปิดไฟล์และละทิ้งการเปลี่ยนแปลง",
+    "cancel_return": "ยกเลิกและกลับไปยังโมเสก",
+    "update_page_count": "อัปเดตจำนวนหน้า\nในเมตาดาต้า",
+    "invert_selection": "กลับด้านการเลือก",
+    "reduce_size": "ปรับขนาดหน้า",
+    "mirror_vertical": "⇅",
+    "create_gif": "สร้าง GIF",
+    "edit_gif": "แก้ไข GIF แบบเคลื่อนไหว",
+    "save_to_folder": "ส่งออกหน้า\nที่เลือก",
+    "continue": "ดำเนินการต่อ",
+    "reset": "↻",
+    "yes": "ใช่",
+    "no": "ไม่",
+    "renumber_recommended": "เรียงลำดับใหม่ (แนะนำ)",
+    "ignore_and_save": "เพิกเฉยและบันทึก",
+    "rename_to_cbz": "เปลี่ยนชื่อเป็น .cbz",
+    "open_without_rename": "เปิดโดยไม่เปลี่ยนชื่อ",
+    "rename_to_cbr": "เปลี่ยนชื่อเป็น .cbr",
+    "adjustments": "ความสว่าง\nคอนทราสต์ ฯลฯ",
+    "batch_cbr_to_cbz": "แปลงเป็นชุด\n ไฟล์ CBR เป็น CBZ",
+    "batch_pdf_to_cbz": "แปลงไฟล์ PDF\n เป็น CBZ เป็นชุด",
+    "batch_img_to_cbz": "แปลงภาพแยกเดี่ยว\n เป็น CBZ แบบเป็นชุด",
+    "icon_toolbar_reset": "รีเซ็ต",
+    "delete_selected": "ลบ",
+    "save": "บันทึก",
+    "rename_to_cb7": "เปลี่ยนชื่อเป็น .cb7",
+    "split_ui": "แบ่งอินเทอร์เฟซเป็นสองแผง",
+    "unsplit_ui": "ปิดแผงที่สอง"
+  },
+  "tabs": {
+    "mosaic": "โมเสก",
+    "metadata": "เมตาดาต้า"
+  },
+  "viewer": {
+    "title": "โปรแกรมดู",
+    "mode_single": "หน้าเดียว  [D]",
+    "mode_double": "หน้าคู่  [D]",
+    "mode_continuous": "โหมดต่อเนื่อง  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "หน้าก่อนหน้า (←)",
+      "next_page": "หน้าถัดไป (→)",
+      "zoom_in": "ซูมเข้า (Ctrl+Plus)",
+      "zoom_out": "ซูมออก (Ctrl+Minus)",
+      "zoom_reset": "รีเซ็ตซูม (Ctrl+0)",
+      "reading_mode_double": "เปลี่ยนโหมดการอ่าน (D) → สองหน้า",
+      "reading_mode_continuous": "เปลี่ยนโหมดการอ่าน (D) → สองหน้าต่อเนื่อง",
+      "reading_mode_single": "เปลี่ยนโหมดการอ่าน (D) → หน้าเดียว",
+      "fullscreen_exit": "ออกจากเต็มหน้าจอ (F11)",
+      "fullscreen": "เต็มหน้าจอ (F11)",
+      "close_viewer": "ปิดโปรแกรมดู (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ ภาพเสียหาย - แทนที่",
+      "corrupted_delete": "⚠️ ลบภาพนี้",
+      "copy": "คัดลอก (Ctrl+C)",
+      "cut": "ตัด (Ctrl+X)",
+      "paste": "วาง (Ctrl+V)",
+      "paste_clipboard": "วางจากคลิปบอร์ด (Ctrl+V)",
+      "delete": "ลบ (Delete)",
+      "deselect": "ยกเลิกการเลือก (ESC)",
+      "rotate_right": "↻ หมุนขวา",
+      "rotate_left": "↺ หมุนซ้าย",
+      "mirror": "⇄ สะท้อนแนวนอน",
+      "crop": "ครอป",
+      "convert": "แปลงเป็นรูปแบบอื่น...",
+      "join": "รวมหน้าที่เลือก",
+      "split": "แยกหน้าที่เลือก",
+      "save_selection": "บันทึกส่วนที่เลือกเป็น CBZ",
+      "print_selection": "พิมพ์ส่วนที่เลือก",
+      "copy_archive": "คัดลอกไฟล์ทั้งหมด",
+      "undo": "เลิกทำ (Ctrl+Z)",
+      "redo": "ทำซ้ำ (Ctrl+Y)",
+      "renumber_auto": "กำหนดหมายเลขหน้าใหม่ (ตรวจหาหน้าหลายหน้าอัตโนมัติ)",
+      "renumber_simple": "กำหนดหมายเลขหน้าใหม่ (กำหนดหมายเลขแบบง่าย)",
+      "sort_submenu": "เรียงลำดับหน้า",
+      "sort_name": "ตามชื่อ",
+      "sort_type": "ตามประเภท",
+      "sort_size": "ตามขนาด",
+      "sort_width": "ตามความกว้าง",
+      "sort_height": "ตามความสูง",
+      "sort_resolution": "ตามความละเอียด",
+      "sort_dpi": "ตาม DPI",
+      "create_cbz": "สร้างไฟล์ CBZ",
+      "save_as": "บันทึกเป็น...",
+      "close_file": "ปิดไฟล์",
+      "help": "คู่มือการใช้งาน",
+      "update_page_count": "อัปเดตจำนวนหน้าในเมตาดาต้า",
+      "invert_selection": "กลับด้านการเลือก (Ctrl+I)",
+      "reduce_size": "ปรับขนาดหน้า",
+      "mirror_vertical": "⇅ สะท้อนแนวตั้ง",
+      "edit_animated_gif": "แก้ไข GIF แบบเคลื่อนไหว...",
+      "save_to_folder": "ส่งออกหน้าที่เลือก",
+      "adjustments": "ความสว่าง คอนทราสต์ สี...",
+      "refresh_mosaic": "รีเฟรชโมเสก (F5)",
+      "create_ico": "สร้างไฟล์ .ico"
+    },
+    "canvas_no_file": {
+      "open": "เปิด CBZ/CBR/CB7/PDF",
+      "recent_files": "ไฟล์ล่าสุด",
+      "clear_history": "ล้างประวัติ"
+    },
+    "canvas_with_file": {
+      "close": "ปิดไฟล์",
+      "paste": "วาง (Ctrl+V)",
+      "paste_clipboard": "วางจากคลิปบอร์ด (Ctrl+V)",
+      "select_all": "เลือกทั้งหมด (Ctrl+A)",
+      "deselect": "ยกเลิกการเลือก (ESC)",
+      "copy_archive": "คัดลอกไฟล์ทั้งหมด",
+      "print_all": "พิมพ์การ์ตูนทั้งหมด",
+      "renumber_auto": "กำหนดหมายเลขหน้าใหม่ (ตรวจหาหน้าหลายหน้าอัตโนมัติ)",
+      "renumber_simple": "กำหนดหมายเลขหน้าใหม่ (กำหนดหมายเลขแบบง่าย)",
+      "flatten": "ทำให้โฟลเดอร์แบนราบ",
+      "save_selection": "บันทึกส่วนที่เลือกเป็น CBZ",
+      "hide_sidebar": "« ซ่อนคอลัมน์ปุ่ม",
+      "show_sidebar": "» แสดงคอลัมน์ปุ่ม",
+      "decrease_thumbs": "ลดขนาดภาพย่อ",
+      "increase_thumbs": "เพิ่มขนาดภาพย่อ",
+      "theme_dark": "เปลี่ยนเป็นธีมมืด",
+      "theme_light": "เปลี่ยนเป็นธีมสว่าง",
+      "sort_submenu": "เรียงลำดับหน้า",
+      "undo": "เลิกทำ (Ctrl+Z)",
+      "redo": "ทำซ้ำ (Ctrl+Y)",
+      "create_cbz": "สร้างไฟล์ CBZ",
+      "save_as": "บันทึกเป็น...",
+      "help": "คู่มือการใช้งาน",
+      "update_page_count": "อัปเดตจำนวนหน้าในเมตาดาต้า",
+      "invert_selection": "กลับด้านการเลือก (Ctrl+I)",
+      "fullscreen": "เต็มหน้าจอ (F11)",
+      "fullscreen_exit": "ออกจากเต็มหน้าจอ (F11 หรือ ESC)",
+      "quit": "ปิดแอปพลิเคชัน"
+    },
+    "canvas": {
+      "quit": "ปิดแอปพลิเคชัน",
+      "reset": "รีเซ็ตแอปพลิเคชัน:\n• ขนาดและตำแหน่งหน้าต่าง\n• โหมดมืด → สว่าง\n• ขนาดภาพขนาดย่อ → ปกติ\n• แถบด้านข้าง → มองเห็น / 220 px\n• ภาษา → ตรวจจับอัตโนมัติ\n• ขนาดตัวอักษร → ค่าเริ่มต้น",
+      "reset_label": "รีเซ็ตแอปพลิเคชัน"
+    },
+    "font_size": {
+      "decrease": "ลดขนาดตัวอักษร",
+      "increase": "เพิ่มขนาดตัวอักษร"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "เรียงลำดับตามชื่อ",
+    "sort_type": "เรียงลำดับตามประเภท",
+    "sort_size": "เรียงลำดับตามขนาด",
+    "sort_width": "เรียงลำดับตามความกว้าง",
+    "sort_height": "เรียงลำดับตามความสูง",
+    "sort_resolution": "เรียงลำดับตามความละเอียด",
+    "sort_dpi": "เรียงลำดับตาม DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "ไฟล์ว่างเปล่า",
+        "message": "ไฟล์ CBZ ไม่มีไฟล์ใดๆ"
+      },
+      "empty_cbr": {
+        "title": "ไฟล์ว่างเปล่า",
+        "message": "ไฟล์ CBR ไม่มีไฟล์ใดๆ"
+      },
+      "files_ignored": {
+        "title": "ไฟล์ที่ถูกละเว้น"
+      },
+      "no_selection_crop": {
+        "title": "ไม่มีการเลือก",
+        "message": "กรุณาเลือกภาพที่ต้องการครอป"
+      },
+      "multi_selection_crop": {
+        "title": "เลือกหลายรายการ",
+        "message": "คุณสามารถครอปได้ทีละภาพเท่านั้น\nกรุณาเลือกภาพเดียว"
+      },
+      "invalid_selection_crop": {
+        "title": "การเลือกไม่ถูกต้อง",
+        "message": "สามารถครอปได้เฉพาะภาพเท่านั้น"
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "ฟีเจอร์ไม่พร้อมใช้งาน",
+        "message": "การย้ายหน้าไม่พร้อมใช้งานในไดเรกทอรีย่อย\nกรุณาทำให้โฟลเดอร์แบนราบหรือกลับไปที่รูท"
+      },
+      "no_selection_convert": {
+        "title": "ไม่มีการเลือก",
+        "message": "กรุณาเลือกภาพอย่างน้อยหนึ่งภาพเพื่อแปลง"
+      },
+      "invalid_selection_convert": {
+        "title": "การเลือกไม่ถูกต้อง",
+        "message": "สามารถแปลงได้เฉพาะภาพเท่านั้น"
+      },
+      "no_selection_split": {
+        "title": "ไม่มีการเลือก",
+        "message": "กรุณาเลือกภาพที่ต้องการแยก"
+      },
+      "multi_selection_split": {
+        "title": "เลือกหลายรายการ",
+        "message": "คุณสามารถแยกได้ทีละภาพเท่านั้น\nกรุณาเลือกภาพเดียว"
+      },
+      "invalid_selection_split": {
+        "title": "การเลือกไม่ถูกต้อง",
+        "message": "สามารถแยกได้เฉพาะภาพเท่านั้น"
+      },
+      "invalid_number_split": {
+        "title": "ตัวเลขไม่ถูกต้อง",
+        "message": "จำนวนหน้าต้องอยู่ระหว่าง 2 ถึง 10"
+      },
+      "insufficient_selection_join": {
+        "title": "การเลือกไม่เพียงพอ",
+        "message": "กรุณาเลือกภาพอย่างน้อย 2 ภาพเพื่อรวม"
+      },
+      "invalid_selection_join": {
+        "title": "การเลือกไม่ถูกต้อง",
+        "message": "สามารถรวมได้เฉพาะภาพเท่านั้น"
+      },
+      "pil_not_available": {
+        "title": "PIL ไม่พร้อมใช้งาน",
+        "message": "ต้องการโมดูล PIL สำหรับการวางจากคลิปบอร์ดระบบ"
+      },
+      "format_not_supported": {
+        "title": "รูปแบบไม่รองรับ",
+        "message": "รูปแบบภาพไม่รองรับหรือไฟล์เสียหาย\nรูปแบบที่รองรับ: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "ไม่มีการเลือก",
+        "message": "กรุณาวาดพื้นที่ครอปก่อน"
+      },
+      "cannot_open_file": {
+        "title": "ไม่สามารถเปิดไฟล์",
+        "message": "ไม่สามารถโหลดไฟล์ได้"
+      },
+      "corrupted_images": {
+        "title": "ภาพเสียหาย",
+        "summary": "พบภาพที่เสียหาย {count} รูปจากทั้งหมด {total} รูป",
+        "hint": "จะแสดงด้วยไอคอนพิเศษ\nคลิกขวาที่ภาพที่เสียหายเพื่อแทนที่หรือลบออก",
+        "more": "... และอีก {count} รูป"
+      },
+      "no_image_print": {
+        "title": "ไม่มีภาพ",
+        "message": "ไม่มีภาพให้พิมพ์"
+      },
+      "no_valid_image_print": {
+        "title": "ไม่มีภาพ",
+        "message": "ไม่มีภาพที่ถูกต้องให้พิมพ์"
+      },
+      "no_selection_print": {
+        "title": "ไม่มีการเลือก",
+        "message": "กรุณาเลือกภาพอย่างน้อยหนึ่งภาพ"
+      },
+      "no_valid_selection_print": {
+        "title": "ไม่มีภาพ",
+        "message": "ไม่มีภาพที่ถูกต้องในส่วนที่เลือก"
+      },
+      "save_cancelled": {
+        "title": "ยกเลิกการบันทึก",
+        "message": "กรุณาแก้ไขชื่อไฟล์ด้วยตนเองก่อนบันทึก"
+      },
+      "empty_pdf": {
+        "title": "PDF ว่างเปล่า",
+        "message": "ไฟล์ PDF ไม่มีหน้าใดๆ"
+      },
+      "no_selection_save": {
+        "title": "คำเตือน",
+        "message": "กรุณาเลือกหน้าอย่างน้อยหนึ่งหน้าเพื่อบันทึก"
+      },
+      "drag_disabled_subdirectory": {
+        "title": "การลากปิดใช้งาน",
+        "message": "การย้ายหน้าด้วยการลากและวางใช้ได้เฉพาะที่รูทของการ์ตูนเท่านั้น\n\nเพื่อย้ายหน้า:\n1. กลับไปที่รูทโดยคลิกไอคอนขึ้นไป\n2. หรือทำให้การ์ตูนแบนราบเพื่อลบไดเรกทอรีย่อย"
+      },
+      "no_selection_reduce": {
+        "title": "ไม่มีการเลือก",
+        "message": "กรุณาเลือกอย่างน้อยหนึ่งหน้าเพื่อลดขนาด"
+      },
+      "invalid_selection_reduce": {
+        "title": "การเลือกไม่ถูกต้อง",
+        "message": "สามารถลดขนาดได้เฉพาะรูปภาพเท่านั้น"
+      },
+      "invalid_dimensions": {
+        "title": "ขนาดไม่ถูกต้อง",
+        "message": "กรุณาป้อนขนาดที่ถูกต้อง (จำนวนเต็มบวก)"
+      },
+      "no_images_for_gif": {
+        "title": "ไม่มีรูปภาพ",
+        "message": "ต้องการอย่างน้อยหนึ่งรูปภาพเพื่อสร้าง GIF เคลื่อนไหว"
+      },
+      "no_valid_images": {
+        "title": "ไม่มีรูปภาพที่ถูกต้อง",
+        "message": "ไม่พบรูปภาพที่ถูกต้องเพื่อสร้าง GIF"
+      },
+      "animated_gif_in_comic": {
+        "title": "ตรวจพบ GIF แอนิเมชัน",
+        "message": "คำเตือน: การ์ตูนนี้มี GIF เคลื่อนไหวอย่างน้อยหนึ่งรายการ\\n\\nโปรแกรมอ่านการ์ตูน (CDisplayEx, YACReader ฯลฯ) จะแสดงเฉพาะเฟรมแรกของแต่ละ GIF เป็นหน้าคงที่\\n\\nเพื่อดู GIF เคลื่อนไหวอย่างถูกต้อง คุณต้องบันทึกแยกต่างหากนอกการ์ตูนโดยใช้ปุ่ม \"ส่งออกหน้าที่เลือก\" หรือ \"แก้ไข GIF เคลื่อนไหว\"\\n\\nคุณต้องการบันทึกการ์ตูนต่อไปหรือไม่?"
+      },
+      "no_selection_adjust": {
+        "title": "ไม่มีการเลือก",
+        "message": "กรุณาเลือกภาพอย่างน้อยหนึ่งภาพเพื่อใช้การปรับ"
+      },
+      "invalid_selection_adjust": {
+        "title": "การเลือกไม่ถูกต้อง",
+        "message": "การปรับสามารถใช้ได้กับภาพเท่านั้น"
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "ฟีเจอร์ไม่พร้อมใช้งาน",
+        "message": "การกำหนดหมายเลขใหม่ไม่พร้อมใช้งานจนกว่าโฟลเดอร์จะถูกทำให้แบน\nทำให้โฟลเดอร์แบนก่อนกำหนดหมายเลขใหม่"
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ข้อผิดพลาด ZIP",
+        "message": "'{file}': ไม่ใช่ไฟล์ ZIP ที่ถูกต้องหรือเสียหาย"
+      },
+      "zip_cannot_open": {
+        "title": "ข้อผิดพลาด ZIP",
+        "message": "ไม่สามารถเปิดไฟล์ CBZ: {error}"
+      },
+      "rar_invalid": {
+        "title": "ข้อผิดพลาด RAR",
+        "message": "'{file}': ไม่ใช่ไฟล์ RAR ที่ถูกต้องหรือเสียหาย"
+      },
+      "rar_cannot_open": {
+        "title": "ข้อผิดพลาด RAR",
+        "message": "ไม่สามารถเปิดไฟล์ CBR: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "ข้อผิดพลาด",
+        "message": "เกิดข้อผิดพลาดไม่คาดคิดขึ้นขณะเปิด CBR: {error}"
+      },
+      "join_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถรวมภาพ"
+      },
+      "paste_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "เกิดข้อผิดพลาดขณะวาง: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถคัดลอกไฟล์: {error}"
+      },
+      "crop_invalid": {
+        "title": "ข้อผิดพลาด",
+        "message": "พื้นที่ครอปไม่ถูกต้อง"
+      },
+      "crop_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถครอปภาพ: {error}"
+      },
+      "load_image_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถโหลดภาพ:\n{error}"
+      },
+      "print_error": {
+        "title": "ข้อผิดพลาดการพิมพ์",
+        "message": "เกิดข้อผิดพลาดขณะพิมพ์:\n{error}"
+      },
+      "print_not_available": {
+        "title": "การพิมพ์ไม่พร้อมใช้งาน",
+        "message": "โมดูล win32print ยังไม่ได้ติดตั้ง\nติดตั้งด้วย: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "ไม่พบไฟล์",
+        "message": "ไฟล์ไม่มีอยู่อีกต่อไป:\n{path}"
+      },
+      "import_failed": {
+        "title": "ข้อผิดพลาดการนำเข้า",
+        "message": "ไม่สามารถนำเข้าไฟล์: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF ยังไม่ได้ติดตั้ง",
+        "message": "ไลบรารี PyMuPDF (fitz) ยังไม่ได้ติดตั้ง\nติดตั้งด้วย: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "เกิดข้อผิดพลาดขณะนำเข้า PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "ข้อผิดพลาด PDF",
+        "message": "ไม่สามารถโหลด PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "ชื่อไฟล์ซ้ำกัน",
+        "intro": "{count} ชื่อไฟล์ที่ซ้ำกันถูกตรวจพบ:\n\n",
+        "item": "  • {name} ({times} ครั้ง)\n",
+        "more": "  ... และอีก {more} รายการ\n",
+        "footer": "\nไฟล์ ZIP ไม่รองรับชื่อที่ซ้ำกัน\nโปรดเปลี่ยนชื่อไฟล์เหล่านี้ก่อนบันทึก"
+      },
+      "save_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถบันทึกไฟล์: {error}"
+      },
+      "create_archive_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถสร้างไฟล์: {error}"
+      },
+      "save_selection_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถบันทึกส่วนที่เลือก: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "ข้อผิดพลาดในการสร้าง GIF",
+        "message": "ไม่สามารถสร้าง GIF เคลื่อนไหว:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "ข้อผิดพลาดในการบันทึก",
+        "message": "เกิดข้อผิดพลาดขณะบันทึกไฟล์:\n{error}"
+      },
+      "rename_failed": {
+        "title": "ข้อผิดพลาดในการเปลี่ยนชื่อ",
+        "message": "ไม่สามารถเปลี่ยนชื่อไฟล์: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF ที่ป้องกันด้วยรหัสผ่าน",
+        "message": "ไฟล์ PDF นี้ถูกเข้ารหัสและป้องกันด้วยรหัสผ่าน\nไม่สามารถเปิดได้โดยไม่มีรหัสผ่าน"
+      },
+      "pdf_unlock_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถบันทึกไฟล์ PDF ที่ปลดล็อกแล้ว:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: PDF ที่เข้ารหัส (ต้องใช้รหัสผ่าน) ถูกข้ามไป",
+      "file_too_large": {
+        "title": "ไฟล์ใหญ่เกินไป",
+        "message": "ไฟล์ {filename} มีขนาด {size} และเกินขนาดสูงสุดที่อนุญาต (500 MB) สำหรับรูปภาพ"
+      },
+      "license_file_not_found": {
+        "message": "ไม่พบไฟล์ใบอนุญาต: {path}"
+      },
+      "license_file_read_error": {
+        "message": "ไม่สามารถอ่านไฟล์ใบอนุญาตได้: {error}"
+      },
+      "7z_invalid": {
+        "title": "ข้อผิดพลาด 7Z",
+        "message": "ไฟล์ '{file}' ไม่ใช่ไฟล์เก็บถาวร 7Z ที่ถูกต้องหรือเสียหาย"
+      },
+      "delete_error": "เกิดข้อผิดพลาดระหว่างการลบ: {error}",
+      "export_error": "เกิดข้อผิดพลาดระหว่างการส่งออก: {error}",
+      "font_source_not_found": "ไม่พบไฟล์ต้นฉบับของฟอนต์: {path}",
+      "no_tengwar_font": "ไม่พบฟอนต์ Tengwar",
+      "no_icons_found": "ไม่พบไอคอน",
+      "unsupported_files": {
+        "title": "ไฟล์ที่ไม่รองรับ",
+        "message": "ไฟล์ต่อไปนี้ไม่ได้รับการรองรับและถูกละเว้น:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "สร้าง GIF สำเร็จ",
+        "message": "GIF เคลื่อนไหว '{name}' ถูกสร้างและเพิ่มลงในโมเสก"
+      },
+      "pywin32_required": {
+        "title": "ฟีเจอร์ไม่พร้อมใช้งาน",
+        "message": "ต้องการโมดูล pywin32 สำหรับการวางจากคลิปบอร์ดระบบ\nติดตั้งด้วย: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "นำเข้าภาพแล้ว",
+        "message": "นำเข้า {count} ภาพแล้ว"
+      },
+      "archive_copied": {
+        "title": "คัดลอกไฟล์แล้ว",
+        "message": "คัดลอกที่เก็บถาวรไปยังคลิปบอร์ดแล้ว"
+      },
+      "function_not_available": {
+        "title": "ฟีเจอร์ไม่พร้อมใช้งาน",
+        "message": "ฟีเจอร์นี้ไม่พร้อมใช้งานในขณะนี้"
+      },
+      "duplicate_detected": {
+        "title": "ตรวจพบไฟล์ซ้ำ",
+        "message": "มีไฟล์ชื่อนี้อยู่แล้ว\n\nเปลี่ยนชื่อไฟล์เป็น:\n{name}"
+      },
+      "replace_success": {
+        "title": "สำเร็จ",
+        "message": "แทนที่ภาพ '{name}' สำเร็จแล้ว"
+      },
+      "history_cleared": {
+        "title": "ล้างประวัติแล้ว",
+        "message": "ล้างรายการไฟล์ล่าสุดแล้ว"
+      },
+      "files_copied_clipboard": {
+        "title": "คัดลอกไปยังคลิปบอร์ดแล้ว",
+        "message": "การลากและวางออกจากแอปไม่พร้อมใช้งานด้วยเหตุผลทางเทคนิค\n\n✓ คัดลอก {count} {word} ไปยังคลิปบอร์ดแล้ว\n\nตอนนี้คุณสามารถวางได้ทุกที่:\n  • คลิกขวา → วาง\n  • หรือ Ctrl+V"
+      },
+      "correction_done": {
+        "title": "แก้ไขแล้ว",
+        "message": "แก้ไขชื่อไฟล์ {count} ชื่อแล้ว"
+      },
+      "import_success": {
+        "title": "นำเข้าสำเร็จ",
+        "message": "นำเข้า {count} หน้าจาก {file}"
+      },
+      "pdf_import_success": {
+        "title": "นำเข้าสำเร็จ",
+        "message": "นำเข้า {count} หน้า PDF จาก {file}\nคุณภาพ: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "สำเร็จ",
+        "message": "แปลง PDF สำเร็จ!\nโหลด {count} หน้าที่ {dpi} DPI"
+      },
+      "cbz_saved": {
+        "title": "สำเร็จ",
+        "message": "บันทึกไฟล์ CBZ สำเร็จ:"
+      },
+      "cbz_converted": {
+        "title": "สำเร็จ",
+        "message": "แปลงไฟล์เป็น CBZ สำเร็จ:",
+        "question": "คุณต้องการลบไฟล์ CBR ต้นฉบับหรือไม่?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "สำเร็จ",
+        "message": "แปลงไฟล์เป็น CBZ สำเร็จ:",
+        "question": "คุณต้องการลบไฟล์ PDF ต้นฉบับหรือไม่?"
+      },
+      "cbz_save_as": {
+        "title": "สำเร็จ",
+        "message": "บันทึกไฟล์ CBZ ใหม่แล้ว: {path}"
+      },
+      "cbz_created": {
+        "title": "สำเร็จ",
+        "message": "สร้างไฟล์ CBZ สำเร็จ:"
+      },
+      "selection_saved": {
+        "title": "สำเร็จ",
+        "message": "บันทึกการเลือกสำเร็จ:"
+      },
+      "flatten_done": {
+        "title": "ทำให้แบนราบเสร็จสิ้น",
+        "message": "ย้าย {files} ไฟล์จาก {dirs} โฟลเดอร์ย่อย"
+      },
+      "language_changed": {
+        "title": "เปลี่ยนภาษาแล้ว",
+        "message": "เปลี่ยนภาษาอินเทอร์เฟซสำเร็จแล้ว"
+      },
+      "new_cbz_saved": {
+        "title": "บันทึกไฟล์แล้ว",
+        "message": "บันทึกไฟล์ CBZ ใหม่เรียบร้อยแล้ว:",
+        "question": "คุณต้องการลบไฟล์ต้นฉบับหรือไม่?"
+      },
+      "page_count_updated": {
+        "title": "อัปเดตจำนวนหน้าแล้ว",
+        "message": "จำนวนหน้าในเมตาดาต้าได้รับการอัปเดตเป็น {count} หน้า"
+      },
+      "files_saved": {
+        "title": "บันทึกสำเร็จ",
+        "message": "บันทึก {count} ไฟล์ไปยัง:\n{folder}",
+        "open_folder": "คุณต้องการเปิดโฟลเดอร์หรือไม่?"
+      },
+      "adjustments_applied": {
+        "title": "ใช้การปรับแล้ว",
+        "message": "การปรับถูกใช้เรียบร้อยแล้ว"
+      },
+      "pdf_unlocked": {
+        "title": "ปลดล็อก PDF แล้ว",
+        "message": "ไฟล์ PDF ที่ปลดล็อกแล้วถูกบันทึก:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "ไฟล์ขนาดใหญ่",
+        "message": "ไฟล์นี้มีขนาด {size} MB เมื่อแตกไฟล์\nการโหลดอาจใช้หน่วยความจำ (RAM) มาก\n\nคุณต้องการดำเนินการต่อหรือไม่?"
+      },
+      "confirm_delete": {
+        "title": "ยืนยัน",
+        "message": "คุณต้องการลบ {count} ไฟล์ ({size}) จริงหรือ?"
+      },
+      "delete_source_files": {
+        "title": "ลบไฟล์ต้นฉบับหรือไม่?",
+        "message": "คุณต้องการลบภาพที่ถูกรวมหรือไม่?\n\nใช่ = ลบไฟล์ต้นฉบับ\nไม่ = เก็บไฟล์ต้นฉบับ\nยกเลิก = ยกเลิกการดำเนินการ"
+      },
+      "invalid_filenames": {
+        "title": "ชื่อไฟล์ไม่ถูกต้อง",
+        "intro": "{count} ไฟล์มีอักขระต้องห้าม:",
+        "item": "  • {name}",
+        "more": "  ... และอีก {more} รายการ",
+        "forbidden_chars": "อักขระต้องห้าม: {chars}",
+        "fix_question": "คุณต้องการแก้ไขชื่อเหล่านี้โดยอัตโนมัติหรือไม่?\n(อักขระต้องห้ามจะถูกแทนที่ด้วย '_')"
+      },
+      "close_without_save": {
+        "title": "บันทึกก่อนปิด?",
+        "message": "มีภาพที่ถูกเพิ่มเข้ามา คุณต้องการสร้างไฟล์ CBZ ก่อนปิดหรือไม่?"
+      },
+      "flatten_folders": {
+        "title": "ทำให้โฟลเดอร์แบนราบ",
+        "subdirs_detected": "ตรวจพบโฟลเดอร์ย่อย:",
+        "files_to_move": "จะย้าย {count} ไฟล์ไปยังรูท",
+        "folders_to_delete": "จะลบ {count} โฟลเดอร์ย่อย",
+        "continue_question": "คุณต้องการดำเนินการต่อหรือไม่?"
+      },
+      "update_page_count": {
+        "title": "อัปเดตจำนวนหน้า",
+        "message": "จำนวนหน้าในการ์ตูนมีการเปลี่ยนแปลง\n\nจำนวนหน้าที่ระบุในเมตาดาต้า: {original}\nจำนวนหน้าปัจจุบัน: {current}\n\nคุณต้องการอัปเดตจำนวนหน้าในเมตาดาต้าหรือไม่?"
+      },
+      "conversion_complete": {
+        "title": "การแปลงเสร็จสิ้น",
+        "message": "การแปลงเสร็จสิ้น!\n\n{count} รูปภาพถูกแปลงเป็นรูปแบบ {format} และถูกเพิ่มหลังจากการเลือกของคุณ\n\nลบรูปภาพต้นฉบับหรือไม่?",
+        "delete_originals": "ลบไฟล์ต้นฉบับ\n{count} ไฟล์ - {size}",
+        "keep_all": "เก็บทั้งหมด\n{count} ไฟล์ - {size}",
+        "cancel_conversion": "ยกเลิกการแปลง\n{count} ไฟล์ - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "ตรวจพบนามสกุลไฟล์ไม่ถูกต้อง: ไฟล์นี้เป็น '{filename}' CBZ ไม่ใช่ CBR เปลี่ยนชื่อหรือไม่?",
+      "title": "นามสกุลไม่ถูกต้อง"
+    },
+    "extension_mismatch_cbr": {
+      "message": "ตรวจพบนามสกุลไฟล์ที่ไม่ถูกต้อง: ไฟล์นี้เป็น '{filename}' CBR ไม่ใช่ CBZ เปลี่ยนชื่อหรือไม่?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "ตรวจพบนามสกุลไฟล์ที่ไม่ถูกต้อง: ไฟล์ '{filename}' เป็น CB7 ไม่ใช่ CBZ/CBR เปลี่ยนชื่อ?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "ขนาดภาพย่อ",
+    "loading": "กรุณารอสักครู่ กำลังโหลด...\n{percent}%",
+    "resizing": "โปรดรอสักครู่ กำลังปรับขนาด...\n{percent}%",
+    "converting": "กรุณารอสักครู่ กำลังแปลง...\n{percent}%",
+    "loading_lazy": "กรุณารอสักครู่ กำลังโหลด...\n{percent}%\n\nเนื่องจากไฟล์นี้มีขนาดใหญ่ ({size} MB) หน้าจะถูกโหลดทีละน้อย หน้าที่มองเห็นบนหน้าจอจะถูกโหลดทันที ส่วนหน้าอื่นๆ จะถูกโหลดโดยอัตโนมัติเมื่อเลื่อนดู",
+    "apply_save_cbz": "ใช้การเปลี่ยนแปลง\nและบันทึกไฟล์ CBZ",
+    "apply_create_cbz": "ใช้การเปลี่ยนแปลง\nและสร้างไฟล์ CBZ",
+    "import_progress": "กำลังนำเข้า...\n{percent}%",
+    "pdf_import_progress": "กำลังนำเข้า PDF...\n{percent}%",
+    "pdf_opening": "กำลังเปิดไฟล์ PDF...",
+    "pdf_page": "หน้า {current} / {total}",
+    "warning_close": "คำเตือน! การเปลี่ยนแปลงยังไม่ได้บันทึกและจะสูญหาย!",
+    "language_label": "ภาษา:",
+    "directory_tooltip": "โฟลเดอร์: {name}\n{count} ไฟล์\nขนาดรวม: {size} MB",
+    "folder_up_tooltip": "ดับเบิลคลิกเพื่อขึ้นไป\nระดับที่สูงขึ้น",
+    "status_bar": "{dirs} โฟลเดอร์  |  {files} ไฟล์ ({total_size})  |  {selected} เลือกแล้ว ({selected_size})",
+    "pdf_converting": "กำลังแปลง {total} หน้าเป็นรูปภาพที่ {dpi} DPI...",
+    "pdf_converting_no_change": "กำลังแยก {total} หน้าโดยไม่แก้ไข...",
+    "print_progress": "กำลังเตรียมการพิมพ์...\n{percent}%",
+    "print_preparing": "กรุณารอสักครู่ กำลังเตรียมการพิมพ์...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nสรุป GNU General Public License v3\n\nเสรีภาพที่ได้รับ\nคุณสามารถใช้งาน คัดลอก แก้ไข และเผยแพร่\nMosaicView แม้เพื่อวัตถุประสงค์ทางการค้า\n\nข้อผูกพัน\nการเผยแพร่ทุกครั้ง (ต้นฉบับหรือที่แก้ไขแล้ว) ต้อง :\n– คงไว้ซึ่งสัญญาอนุญาต GPL v3\n– รวมซอร์สโค้ดหรือระบุที่มาของซอร์สโค้ด\n– ไม่กำหนดข้อจำกัดเพิ่มเติม\n\nการรับประกัน\nซอฟต์แวร์นี้เผยแพร่โดยไม่มีการรับประกันใดๆ\nผู้เขียนไม่รับผิดชอบต่อความเสียหายที่เกิดจากการใช้งาน\n\nคุณควรได้รับสำเนา GNU General Public License พร้อมกับโปรแกรมนี้ หากไม่ได้รับ โปรดดูที่ <https://www.gnu.org/licenses/>.",
+    "view_full_license": "ดูใบอนุญาตฉบับเต็ม",
+    "license_unrar_text": "ไฟล์ CBZ อยู่บนพื้นฐานของรูปแบบ ZIP ซึ่งเป็นรูปแบบที่เสรีและเปิดกว้าง ในทางตรงกันข้าม ไฟล์ CBR อยู่บนพื้นฐานของรูปแบบ RAR ซึ่งเป็นรูปแบบที่เป็นกรรมสิทธิ์\n\nMosaicView สามารถเปิดไฟล์ CBR ได้ด้วย UnRAR ซึ่งเป็นยูทิลิตี้ที่พัฒนาโดย RARlab และสามารถแจกจ่ายซ้ำได้อย่างอิสระ\n\nเว็บไซต์อย่างเป็นทางการ: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "ดูสิทธิ์การใช้งาน UnRAR",
+    "saving_cbz": "กำลังบันทึก... {percent}%",
+    "empty_canvas_line1": "วางในนี้หนึ่งหรือมากกว่านั้นไฟล์ CBZ/CBR/CB7/PDF หรือรูปของคุณ",
+    "empty_canvas_line2": "เมื่อเปิดไฟล์แล้ว คุณสามารถที่จะวางไฟล์อื่นต่อได้",
+    "empty_canvas_line3": "วางโฟลเดอร์หนึ่งโฟลเดอร์ขึ้นไปเพื่อเริ่มการประมวลผลแบบกลุ่ม",
+    "icon_toolbar_config_title": "การตั้งค่าแถบไอคอน",
+    "icon_toolbar_active": "ไอคอนในแถบ",
+    "icon_toolbar_hidden": "ไอคอนสำรอง",
+    "license_gpl_full": "สัญญาอนุญาต GNU GPL v3",
+    "license_unrar_full": "สัญญาอนุญาต UnRAR",
+    "licenses_button": "สัญญาอนุญาต",
+    "view_full_gpl_license": "ดูสัญญาอนุญาต GNU GPL v3 ฉบับเต็ม",
+    "license_7zip_text": "ไฟล์ CB7 อยู่บนพื้นฐานของรูปแบบ 7z ที่พัฒนาโดย Igor Pavlov และเผยแพร่ภายใต้สัญญาอนุญาต GNU LGPL\n\nMosaicView สามารถเปิดไฟล์ CB7 ได้ด้วย 7-Zip — โปรแกรมฟรีและโอเพนซอร์ส\n\nเว็บไซต์ทางการ : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "ดูสัญญาอนุญาต 7-Zip",
+    "license_7zip_full": "สัญญาอนุญาต 7-Zip",
+    "icon_toolbar_show_thumb_slider": "แสดงตัวเลื่อนขนาดภาพขนาดย่อ",
+    "icon_toolbar_show_lang_combo": "แสดงตัวเลือกภาษา",
+    "adjusting": "กรุณารอสักครู่ กำลังปรับแต่ง...\n{current} / {total}",
+    "license_piqad_full": "ใบอนุญาตฟอนต์ pIqaD qolqoS",
+    "license_tengwar_full": "ใบอนุญาตฟอนต์ Alcarin Tengwar",
+    "view_full_piqad_license": "ดูใบอนุญาต pIqaD qolqoS ฉบับเต็ม"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "การแปลงภาพ",
+      "title": "การแปลง {count} {word}",
+      "word_image": "ภาพ",
+      "word_images": "ภาพ",
+      "info": "เลือกรูปแบบปลายทาง:",
+      "format_png": "PNG (ไม่สูญเสีย)",
+      "format_jpg": "JPEG (มีการบีบอัด)",
+      "format_webp": "WEBP (ทันสมัย)",
+      "format_bmp": "BMP (บิตแมป)",
+      "format_tiff": "TIFF (คุณภาพสูง)",
+      "format_gif": "GIF (แอนิเมชัน)",
+      "quality_label": "คุณภาพสำหรับ JPG/WEBP:",
+      "quality_maximum": "สูงสุด — คุณภาพ 95/100",
+      "quality_high": "สูง — คุณภาพ 85/100",
+      "quality_medium": "ปานกลาง — คุณภาพ 75/100",
+      "quality_low": "ต่ำ — คุณภาพ 60/100",
+      "quality_custom_option": "กำหนดเอง",
+      "quality_custom": "คุณภาพ กำหนดเอง : {value}/100",
+      "quality_note": "(พารามิเตอร์นี้มีผลต่อรูปแบบ JPG และ WEBP เท่านั้น)",
+      "quality_window_title": "Quality Selection",
+      "format_gif_static": "GIF คงที่",
+      "format_gif_animated": "GIF เคลื่อนไหว (เลือกหลายภาพ)"
+    },
+    "split": {
+      "window_title": "แยกหน้า",
+      "title": "แยกหน้า",
+      "pages_label": "จำนวนหน้า:",
+      "direction_label": "ทิศทางการแยก:",
+      "horizontal": "แนวนอน (ซ้าย → ขวา)",
+      "vertical": "แนวตั้ง (บน → ล่าง)",
+      "warning": "⚠ การแยกคำนวณโดยอัตโนมัติ\nอาจต้องปรับแต่งด้วยตนเอง",
+      "button_split": "แยก",
+      "button_cancel": "ยกเลิก"
+    },
+    "join": {
+      "window_title": "รวมหน้า - จัดเรียงลำดับใหม่",
+      "instructions": "จัดเรียงภาพ:\n• แนวตั้ง (บน/ล่าง) สำหรับการรวมแนวตั้ง\n• แนวนอน (ซ้าย/ขวา) สำหรับการรวมแนวนอน",
+      "merged_filename_prefix": "รวม",
+      "heights_label": "ความสูง",
+      "widths_label": "ความกว้าง",
+      "size_adjustment_title": "การปรับขนาด",
+      "size_adjustment_warning": "⚠️ รูปภาพที่เลือกมีขนาดต่างกัน\nโปรดเลือกวิธีปรับขนาดเพื่อรวมกัน\nอัตราส่วนภาพของแต่ละภาพจะถูกรักษาไว้เสมอ",
+      "keep_original": "เก็บขนาดเดิม",
+      "keep_original_desc": "(เพิ่มแถบสีดำเพื่อเติม)",
+      "enlarge_small": "ขยายรูปภาพเล็ก",
+      "enlarge_small_desc": "(จัดตำแหน่งตามขนาดสูงสุด)",
+      "reduce_large": "ลดรูปภาพใหญ่",
+      "reduce_large_desc": "(จัดตำแหน่งตามขนาดต่ำสุด)",
+      "back_to_arrangement": "กลับ"
+    },
+    "pdf": {
+      "quality_merge": "เลือกคุณภาพการรวม:",
+      "quality_export": "เลือกคุณภาพการส่งออก:",
+      "merge_quality_title": "คุณภาพการรวม PDF",
+      "export_quality_title": "คุณภาพการส่งออก PDF",
+      "loading_title": "กำลังโหลด PDF...",
+      "dpi_90": "90 DPI - การเผยแพร่เว็บ",
+      "dpi_150": "150 DPI - คุณภาพดี (แนะนำสำหรับการแสดงผล)",
+      "dpi_200": "200 DPI - คุณภาพดีมาก",
+      "dpi_300": "300 DPI - คุณภาพยอดเยี่ยม (มาตรฐานการ์ตูน)",
+      "dpi_600": "600 DPI - คุณภาพสูงสุด (ไฟล์ขนาดใหญ่)",
+      "dpi_original": "ไม่มีการแก้ไขรูปภาพ",
+      "dpi_original_tooltip": "การวิเคราะห์อัจฉริยะของแต่ละหน้า PDF:\n• หน้าที่มีเฉพาะรูปภาพ: รักษา DPI เดิม\n• หน้าที่มีเฉพาะข้อความ: 300 DPI\n• หน้าผสม (ข้อความ + รูปภาพ): DPI ของรูปภาพถ้า >= 300 มิฉะนั้น 300 DPI\nสูงสุด: 2400 DPI เพื่อจำกัดขนาดไฟล์"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "ต้องการ PyMuPDF",
+      "pymupdf_required_message": "ไม่ได้ติดตั้ง PyMuPDF (fitz) ไม่สามารถแปลงไฟล์ PDF ได้",
+      "select_directory_title": "เลือกไดเรกทอรีที่มีไฟล์ PDF",
+      "no_pdf_title": "ไม่พบไฟล์ PDF",
+      "no_pdf_message": "ไม่พบไฟล์ PDF ในไดเรกทอรี:\n{directory}",
+      "confirm_title": "แปลงไฟล์ PDF เป็น CBZ เป็นชุด",
+      "confirm_message": "{count} ไฟล์ PDF ที่จะแปลงใน {directory} (รวมไดเรกทอรีย่อย)",
+      "checkbox_permanent_delete": "ลบไฟล์ PDF ต้นฉบับโดยไม่ผ่าน\nถังขยะ (ไม่สามารถยกเลิกได้)",
+      "start_button": "เริ่ม",
+      "converting_title": "กำลังแปลง...",
+      "converting_progress": "กำลังแปลงไฟล์ {current} จากทั้งหมด {total}",
+      "page_progress": "หน้า {current} / {total}",
+      "complete_title": "การแปลงเสร็จสมบูรณ์",
+      "complete_message": "แปลงไฟล์ PDF {count} ไฟล์ในไดเรกทอรี:",
+      "complete_message_errors": "แปลงไฟล์ PDF {count} จาก {total} ไฟล์ในไดเรกทอรี:",
+      "errors_count": "พบ {count} ข้อผิดพลาด"
+    },
+    "batch_cbr": {
+      "select_directory_title": "เลือกไดเรกทอรีที่มีไฟล์ CBR",
+      "no_cbr_title": "ไม่พบไฟล์ CBR",
+      "no_cbr_message": "ไม่พบไฟล์ CBR ในไดเรกทอรี:\\n{directory}",
+      "confirm_title": "แปลงเป็นชุด CBR เป็น CBZ",
+      "confirm_message": "{count} ไฟล์ CBR ที่จะแปลงใน {directory} (รวมไดเรกทอรีย่อย).",
+      "checkbox_permanent_delete": "ลบไฟล์ CBR ต้นฉบับโดยไม่ผ่าน\nถังขยะ (ไม่สามารถย้อนกลับได้)",
+      "start_button": "เริ่ม",
+      "converting_title": "กำลังแปลง...",
+      "converting_progress": "แปลงไฟล์ {current} จาก {total}",
+      "page_progress": "หน้า {current} / {total}",
+      "complete_title": "แปลงเสร็จสิ้น",
+      "complete_message": "แปลงไฟล์ CBR {count} ไฟล์ในไดเรกทอรี:",
+      "complete_message_errors": "แปลงไฟล์ CBR {count} จาก {total} ในไดเรกทอรี:",
+      "errors_count": "พบ {count} ข้อผิดพลาด",
+      "renamed_count": "{count} ไฟล์เปลี่ยนชื่อเป็น CBZ",
+      "rarfile_unavailable": "โมดูล rarfile ไม่พร้อมใช้งาน ไม่สามารถแปลงไฟล์ CBR ได้"
+    },
+    "close_warning": {
+      "title": "คำเตือน!",
+      "message": "การเปลี่ยนแปลงยังไม่ได้บันทึกและจะสูญหาย!",
+      "btn_close_lose": "ปิดไฟล์และละทิ้งการเปลี่ยนแปลง",
+      "btn_save_cbz": "ใช้การเปลี่ยนแปลงและบันทึกไฟล์",
+      "btn_create_cbz": "ใช้การเปลี่ยนแปลงและสร้างไฟล์ CBZ",
+      "btn_cancel": "ยกเลิกและกลับไปยังโมเสก"
+    },
+    "replace_image": {
+      "title": "แทนที่ภาพที่เสียหาย"
+    },
+    "reduce_size": {
+      "window_title": "การปรับขนาดภาพ",
+      "title": "กำลังปรับขนาด {count} {word}",
+      "word_image": "ภาพ",
+      "word_images": "ภาพ",
+      "current_size": "ขนาดปัจจุบัน: {size} MB",
+      "current_dimensions": "ขนาดปัจจุบัน: {width} × {height} px",
+      "choose_method": "เลือกวิธีการปรับขนาด:",
+      "custom_dimensions": "ขนาดที่กำหนดเอง",
+      "width_label": "ความกว้าง:",
+      "height_label": "ความสูง:",
+      "use_custom_dimensions": "ใช้ขนาดเหล่านี้",
+      "different_dimensions_warning": "หน้าที่เลือกมีขนาดที่แตกต่างกัน ขนาดที่กำหนดเองจะบังคับให้หน้าทั้งหมดมีขนาดเท่ากัน ตรวจสอบให้แน่ใจว่าคุณเข้าใจผลกระทบก่อนดำเนินการต่อ",
+      "estimated_size": "ขนาดโดยประมาณ: {size} MB",
+      "percentage_reduction": "การลดเปอร์เซ็นต์",
+      "percentage_enlargement": "การขยายเปอร์เซ็นต์",
+      "reduce_0": "0% (ไม่มีการเปลี่ยนแปลง)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (ไม่มีการเปลี่ยนแปลง)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "ความกว้างของหน้าที่พบบ่อยที่สุดคือ 1024, 1280, 1600, 1920 และ 2000 พิกเซล แต่ค่าอื่น ๆ ก็เหมาะสมเช่นกัน",
+      "multi_page_width": "ตรวจจับและปรับขนาดหลายหน้าโดยอัตโนมัติ (ความกว้าง/ความสูง)",
+      "multi_page_width_tooltip": "เปิดใช้งานการตรวจจับหลายหน้าอัตโนมัติ: หน้าคู่ หน้าสาม ฯลฯ ค่าสัมประสิทธิ์ตัวคูณจะคำนวณโดยอัตโนมัติตามอัตราส่วนของแต่ละหน้า ไม่ว่าจะเป็นความกว้าง (หน้าเรียงข้างกัน) หรือความสูง (หน้าซ้อนกัน)"
+    },
+    "gif_animated": {
+      "window_title": "สร้าง GIF เคลื่อนไหว",
+      "images_title": "ภาพเคลื่อนไหว",
+      "params_title": "พารามิเตอร์ GIF",
+      "frame_delay_label": "ความล่าช้าระหว่างภาพ:",
+      "fps_normal": "{fps} เฟรม/วินาที",
+      "fps_slow": "1 เฟรมทุก {seconds} วินาที",
+      "loop_label": "จำนวนรอบซ้ำ:",
+      "loop_info": "(0 = วนซ้ำไม่สิ้นสุด)",
+      "disposal_label": "การจัดเรียงภาพ:",
+      "disposal_0": "ไม่ระบุ",
+      "disposal_1": "เก็บภาพก่อนหน้า",
+      "disposal_2": "กู้คืนเป็นสีพื้นหลัง",
+      "disposal_3": "กู้คืนสถานะก่อนหน้า",
+      "optimize": "เพิ่มประสิทธิภาพไฟล์ (บันทึกเฉพาะความแตกต่าง)",
+      "metadata_title": "ข้อมูลเมตา GIF",
+      "metadata_dimensions": "ขนาด: {width} × {height} พิกเซล",
+      "metadata_frames": "จำนวนเฟรม: {count}",
+      "metadata_duration": "ระยะเวลารวม: {duration} วินาที",
+      "metadata_fps": "ความถี่: {fps} fps",
+      "metadata_palette": "จานสี: สูงสุด 256 สี",
+      "metadata_size": "ขนาดโดยประมาณ: {size} KB",
+      "comment_label": "ความคิดเห็น (ไม่บังคับ):",
+      "no_images": "ไม่ได้เลือกภาพ",
+      "creating_progress": "กำลังโหลดภาพ... ({current}/{total})",
+      "creating_normalizing": "กำลังปรับภาพ... ({current}/{total})",
+      "creating_quantizing": "กำลังลดสี... ({current}/{total})",
+      "creating_saving": "กำลังบันทึก GIF..."
+    },
+    "save_to_folder": {
+      "title": "เลือกโฟลเดอร์ปลายทาง"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ ชื่อไฟล์ซ้ำกัน",
+      "message": "ตรวจพบชื่อไฟล์ที่เหมือนกัน แม้ว่าการบันทึกจะเป็นไปได้ทางเทคนิค แต่อาจ\nทำให้เกิดปัญหาในการอ่านในแอปพลิเคชันอ่านการ์ตูนบางตัว (การแสดงผลไม่\nสมบูรณ์, หน้าหายไป ฯลฯ)\n\nแนะนำให้เรียงลำดับหน้าใหม่ก่อนบันทึก"
+    },
+    "adjustments": {
+      "window_title": "การปรับภาพ",
+      "title": "การปรับสำหรับ {count} {word}",
+      "word_image": "ภาพ",
+      "word_images": "ภาพ",
+      "apply_button": "นำไปใช้",
+      "color_depth_section": "ความลึกของสี",
+      "brightness_contrast_section": "ความสว่างและความคมชัด",
+      "compression_section": "การบีบอัด",
+      "effects_section": "เอฟเฟกต์",
+      "sharpness_section": "ความคมชัด",
+      "levels_section": "ระดับสีดำ/ขาว",
+      "depth_unchanged": "ไม่เปลี่ยนแปลง",
+      "depth_32bit": "32 บิต (RGBA - สี + ความโปร่งใส)",
+      "depth_24bit": "24 บิต (RGB - สี)",
+      "depth_8bit": "8 bit (paleteu PNG / radab sii thaw JPEG)",
+      "depth_1bit": "1 บิต (ขาวดำ)",
+      "brightness_label": "ความสว่าง: {value}",
+      "contrast_label": "ความคมชัด: {value}",
+      "compression_enable": "เปิดใช้งานการบีบอัดใหม่",
+      "compression_quality_label": "คุณภาพ : {value}/100",
+      "sharpness_label": "ความคมชัด: {value}",
+      "effect_none": "ไม่มีเอฟเฟกต์",
+      "effect_grayscale": "ระดับสีเทา",
+      "effect_sepia": "สีซีเปีย",
+      "levels_none": "ไม่มีการปรับ",
+      "levels_threshold": "เกณฑ์ (ดำหรือขาวล้วน)",
+      "levels_advanced": "ระดับขั้นสูง (เงา/โทนกลาง/ไฮไลท์)",
+      "threshold_label": "เกณฑ์: {value}",
+      "black_point_label": "จุดดำ: {value}",
+      "gamma_label": "แกมมา (โทนกลาง): {value}",
+      "white_point_label": "จุดขาว: {value}",
+      "auto_levels_button": "การปรับอัตโนมัติ",
+      "open_viewer_button": "ปรับด้วยตัวแสดง (แนะนำ)",
+      "compression_info": "การบีบอัดใช้ได้เฉพาะกับภาพ JPG และ WebP เท่านั้น",
+      "open_viewer_button_simple": "ปรับด้วยโปรแกรมดู",
+      "reset_button": "รีเซ็ต",
+      "preview_section": "แสดงตัวอย่าง",
+      "effect_invert": "การกลับสี",
+      "preview_warning": "การแสดงตัวอย่างอาจแตกต่างจากผลลัพธ์สุดท้าย",
+      "effect_remove_colors": "การลบสี",
+      "remove_colors_intensity_label": "ความเข้ม : {value}",
+      "image_mode_section": "โหมดภาพ",
+      "image_mode_rgb": "RGB (สี)",
+      "image_mode_rgba": "RGBA (สี + ความโปร่งใส)",
+      "image_mode_l": "L (ระดับเทา)",
+      "image_mode_la": "LA (ระดับเทา + ความโปร่งใส)",
+      "image_mode_cmyk": "CMYK (พิมพ์)",
+      "image_mode_1": "1 (ขาวดำบริสุทธิ์)",
+      "image_mode_p": "P (พาล็ต 256 สี)",
+      "saturation_section": "ความอิ่มตัว",
+      "saturation_label": "ความอิ่มตัว : {value}",
+      "saturation_viewer_title": "การปรับความอิ่มตัว",
+      "transparency_section": "ความโปร่งใส",
+      "transparency_info": "ความโปร่งใสใช้ได้เฉพาะกับภาพ PNG, WebP และ ICO เท่านั้น",
+      "transparency_type_label": "ประเภท :",
+      "transparency_type_flood": "โซน",
+      "transparency_type_global": "ทั่วทั้งภาพ",
+      "transparency_tolerance_label": "ค่าความคลาดเคลื่อน : {value}",
+      "transparency_viewer_title": "ปรับความโปร่งใส",
+      "transparency_click_instruction": "คลิกที่สีที่ต้องการทำให้โปร่งใส",
+      "transparency_undo": "เลิกทำการคลิกล่าสุด",
+      "transparency_redo": "ทำซ้ำ",
+      "transparency_type_flood_tooltip": "Flood fill : ทำให้บริเวณสีสม่ำเสมอรอบพิกเซลที่คลิกโปร่งใส",
+      "transparency_type_global_tooltip": "ความโปร่งใสทั่วทั้งภาพ : ส่งผลต่อพิกเซลทั้งหมดในภาพที่มีสีใกล้เคียงกับที่คลิก",
+      "transparency_apply": "ใช้งาน",
+      "transparency_skipped_warning": "{count} ภาพถูกข้าม — รูปแบบไม่รองรับความโปร่งใส หากต้องการรวมไว้ ให้แปลงเป็น PNG ก่อน",
+      "unsharp_section": "ความคมชัดแบบปรับตัว",
+      "unsharp_radius_label": "รัศมี: {value}",
+      "unsharp_percent_label": "ความเข้ม: {value} %",
+      "unsharp_threshold_label": "ค่าขีดแบ่ง: {value}",
+      "unsharp_viewer_title": "ความคมชัดแบบปรับตัว",
+      "auto_levels_tooltip": "วิเคราะห์แต่ละหน้าและปรับระดับสีดำและสีขาวโดยอัตโนมัติเพื่อเพิ่มความคมชัดสูงสุด\nหากต้องการเลือกทีละหน้า ให้ใช้ตัวแสดง"
+    },
+    "levels_viewer": {
+      "title": "ปรับระดับด้วยหลอดดูดสี",
+      "apply_current": "ใช้กับหน้านี้",
+      "apply_all": "ใช้กับทุกหน้าที่เลือก",
+      "black_pipette": "หลอดดูดจุดดำ",
+      "white_pipette": "หลอดดูดจุดขาว",
+      "black_pipette_tooltip": "คลิกที่พิกเซลที่ควรจะเป็นสีดำสนิท ระวัง: ทำมากเกินไปได้ง่าย!",
+      "white_pipette_tooltip": "คลิกที่พิกเซลที่ควรจะเป็นสีขาวสนิท ระวัง: ทำมากเกินไปได้ง่าย!"
+    },
+    "sharpness_viewer": {
+      "title": "การปรับความคมชัด"
+    },
+    "brightness_viewer": {
+      "title": "การปรับความสว่างและความคมชัด"
+    },
+    "compression_viewer": {
+      "title": "การปรับการบีบอัด"
+    },
+    "outliers": {
+      "title": "หน้าที่มีขนาดผิดปกติ",
+      "message": "หน้าต่อไปนี้มีขนาดที่แตกต่างจากหน้าอื่นอย่างมาก กรุณาเลือกวิธีจัดการ:",
+      "width": "ความกว้าง",
+      "height": "ความสูง",
+      "unusual": "ผิดปกติ",
+      "skip": "ไม่ปรับขนาด",
+      "keep": "เก็บไว้"
+    },
+    "first_page_multi": {
+      "title": "หน้าแรกเป็นหน้าหลายหน้า",
+      "message": "หน้าแรกถูกตรวจพบว่าเป็นหน้าหลายหน้า ต้องการกำหนดเลขอย่างไร?",
+      "option_auto_desc": "การกำหนดเลขใหม่ปกติพร้อมการตรวจจับอัตโนมัติ",
+      "option_joint_desc": "การเชื่อมต่อหน้าแรกและหน้าสุดท้ายของการ์ตูน",
+      "option_exclude_label": "ไม่รวมในการกำหนดเลขใหม่",
+      "option_exclude_desc": "หน้าคงชื่อปัจจุบันไว้และอยู่ในตำแหน่งแรก คุณสามารถเปลี่ยนชื่อได้ด้วยตนเองในภายหลัง"
+    },
+    "batch_img": {
+      "select_directory_title": "เลือกโฟลเดอร์ที่มีรูปภาพ",
+      "no_img_title": "ไม่พบไฟล์รูปภาพ",
+      "no_img_message": "ไม่พบไฟล์รูปภาพแยกเดี่ยวในโฟลเดอร์ :\n{directory}",
+      "confirm_title": "แปลงภาพแยกเดี่ยวเป็น CBZ แบบเป็นชุด",
+      "confirm_message": "ไฟล์รูปภาพ {count} ไฟล์ที่จะแปลงใน {directory} (รวมโฟลเดอร์ย่อย)",
+      "checkbox_permanent_delete": "ลบไฟล์รูปภาพต้นฉบับอย่างถาวร\nโดยไม่ส่งไปยังถังรีไซเคิล (ไม่สามารถย้อนกลับได้)",
+      "start_button": "เริ่ม",
+      "converting_title": "กำลังแปลง...",
+      "converting_progress": "กำลังแปลงไฟล์ที่ {current} จากทั้งหมด {total}",
+      "complete_title": "การแปลงเสร็จสมบูรณ์",
+      "complete_message": "แปลงไฟล์รูปภาพ {count} ไฟล์ในโฟลเดอร์ :",
+      "complete_message_errors": "แปลงไฟล์รูปภาพ {count} จาก {total} ไฟล์ในโฟลเดอร์ :",
+      "errors_count": "พบ {count} ข้อผิดพลาด",
+      "converted_by_ext": "{ext} : {count} ไฟล์",
+      "mode_title": "แปลงรูปภาพเป็น CBZ",
+      "mode_intro": "คุณต้องการจัดกลุ่มรูปภาพอย่างไร?",
+      "mode_one_per_image": "แปลงแต่ละรูปภาพเป็นไฟล์ CBZ แยกกัน",
+      "mode_one_per_image_sub": "(แต่ละรูปภาพจะกลายเป็นไฟล์ CBZ แยกกัน)",
+      "mode_all_in_one": "รวมรูปภาพทั้งหมดไว้ในไฟล์ CBZ เดียว",
+      "mode_all_in_one_sub": "(รูปภาพทั้งหมดในโฟลเดอร์จะถูกรวมไว้ในไฟล์ CBZ เดียว)"
+    },
+    "batch_drop": {
+      "window_title": "การประมวลผลแบบกลุ่มของโฟลเดอร์",
+      "intro_single": "วางโฟลเดอร์ 1 โฟลเดอร์แล้ว คุณต้องการใช้การประมวลผลใด?",
+      "intro_multiple": "วาง {count} โฟลเดอร์แล้ว คุณต้องการใช้การประมวลผลใด?",
+      "recursive_note": "โฟลเดอร์ย่อยจะถูกสแกนด้วยเช่นกัน",
+      "mixed_drop_title": "ไม่รองรับการวาง",
+      "mixed_drop_message": "คุณได้วางทั้งไฟล์และโฟลเดอร์พร้อมกัน โปรดวางเฉพาะไฟล์หรือเฉพาะโฟลเดอร์"
+    },
+    "pdf_unlock": {
+      "title": "PDF ได้รับการป้องกันจากการแก้ไข",
+      "message": "หน้าต่างๆ ถูกนำเข้าตามปกติ\n\nไฟล์ PDF นี้ได้รับการป้องกันจากการแก้ไข (รหัสผ่านเจ้าของ)\n\nคุณต้องการบันทึกสำเนาไฟล์ PDF โดยไม่มีการป้องกันนี้หรือไม่?",
+      "yes": "ใช่ บันทึกสำเนาที่ปลดล็อกแล้ว",
+      "no": "ไม่ ดำเนินการต่อโดยไม่ปลดล็อก"
+    },
+    "batch_pdf_unlock": {
+      "title": "ไฟล์ PDF ที่ป้องกันการแก้ไข",
+      "message_single": "พบไฟล์ PDF 1 ไฟล์ที่ป้องกันการแก้ไข ได้ถูกแปลงเป็น CBZ ตามปกติ\n\nต้องการบันทึกสำเนาที่ไม่ได้ล็อกไว้ในไดเรกทอรีเดิมหรือไม่?",
+      "message_plural": "พบไฟล์ PDF {count} ไฟล์ที่ป้องกันการแก้ไข ได้ถูกแปลงเป็น CBZ ตามปกติ\n\nต้องการบันทึกสำเนาที่ไม่ได้ล็อกไว้ในไดเรกทอรีเดิมของแต่ละไฟล์หรือไม่?",
+      "yes": "ใช่ บันทึกสำเนาที่ไม่ได้ล็อก",
+      "no": "ไม่ ดำเนินการต่อโดยไม่ปลดล็อก"
+    },
+    "ico_creator": {
+      "title": "สร้างไอคอน .ico",
+      "info_message": "ภาพจะถูกปรับขนาดเป็นหลายความละเอียด (16, 32, 48, 64, 128, 256 px)\nขนาดกรอบปัจจุบัน: {w} × {h} px",
+      "btn_validate_crop": "ยืนยันการครอบ",
+      "btn_validate_no_crop": "ยืนยันโดยไม่ครอบ",
+      "btn_cancel": "ยกเลิก",
+      "btn_transparency": "ตั้งค่าความโปร่งใส",
+      "btn_validate_final": "ยืนยัน",
+      "tolerance_label": "ความคลาดเคลื่อน:",
+      "success_title": "สร้างไฟล์ .ico แล้ว",
+      "success_message": "สร้างไฟล์ {filename} สำเร็จแล้ว",
+      "overwrite_title": "ไฟล์มีอยู่แล้ว",
+      "overwrite_message": "ไฟล์ {filename} มีอยู่แล้ว ต้องการเขียนทับหรือไม่?",
+      "save_blocked_title": "ไม่สามารถบันทึกได้",
+      "save_blocked_message": "ไฟล์เก็บถาวรนี้มีไฟล์ .ico หนึ่งไฟล์หรือมากกว่าซึ่งไม่ใช่ภาพหนังสือการ์ตูน การบันทึกถูกปิดใช้งานตราบใดที่ไฟล์เหล่านี้อยู่ในโมเสก\nเพื่อเปิดใช้งานการบันทึกอีกครั้ง ให้ลบออกจากโมเสก (ปุ่ม Del) หรือตัด (Ctrl+X) เพื่อวางที่อื่น",
+      "btn_back_to_crop": "กลับไปที่การครอบ"
+    },
+    "video_save_blocked": {
+      "title": "ไม่สามารถบันทึกได้",
+      "message": "อาร์ไคฟ์นี้มีไฟล์วิดีโอหนึ่งไฟล์หรือมากกว่า การบันทึกถูกปิดใช้งานตราบเท่าที่ไฟล์เหล่านี้อยู่ในโมเสก\nหากต้องการเปิดใช้งานการบันทึกอีกครั้ง ให้ลบออกจากโมเสก (ปุ่ม Del) หรือตัด (Ctrl+X) เพื่อวางที่อื่น"
+    },
+    "open_file": {
+      "title": "เปิดไฟล์เก็บถาวร",
+      "filter_archives": "ไฟล์เก็บถาวร (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "ไฟล์ทั้งหมด (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - ใบอนุญาต"
+    },
+    "replace_corrupted_image": {
+      "title": "แทนที่รูปภาพที่เสียหาย",
+      "filter_images": "รูปภาพ (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "ไฟล์ทั้งหมด (*)"
+    },
+    "see_log": "ดูบันทึก"
+  },
+  "tooltip": {
+    "source_archive": "ไฟล์ต้นฉบับ: {name}",
+    "file": "ไฟล์: {name}",
+    "reason": "เหตุผล: {reason}",
+    "size_kb": "ขนาด: {size} KB",
+    "size_mb": "ขนาด: {size} MB",
+    "file_size": "ขนาด: {size}",
+    "dimensions": "ขนาด: {width} × {height} px",
+    "resolution": "ความละเอียด: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: ไม่ได้กำหนด",
+    "cbr_info": "ไฟล์ CBR ใช้รูปแบบ RAR ซึ่งเป็นกรรมสิทธิ์และจดสิทธิบัตร;\nไม่สามารถแก้ไขได้ การเปลี่ยนแปลงจะถูกบันทึกในไฟล์ CBZ ใหม่",
+    "rotate_left": "หมุน 90 องศาไปทางซ้าย",
+    "rotate_right": "หมุน 90 องศาไปทางขวา",
+    "mirror_horizontal": "พลิกแนวนอน",
+    "mirror_vertical": "พลิกแนวตั้ง",
+    "fullscreen": "เต็มหน้าจอ",
+    "help_button": "คู่มือผู้ใช้",
+    "theme_button": "สลับระหว่างธีมสว่างและธีมมืด",
+    "font_decrease_button": "ลดขนาดตัวอักษร",
+    "font_increase_button": "เพิ่มขนาดตัวอักษร",
+    "color_depth": "สี: {bits} บิต ({mode})",
+    "batch_pdf_to_cbz": "แปลงไฟล์ PDF ทั้งหมดในไดเรกทอรีและ\nไดเรกทอรีย่อยเป็น CBZ รูปภาพถูก\nแตกไฟล์และเก็บบันทึกตามสภาพเดิม\nโดยไม่มีการบีบอัดซ้ำ",
+    "batch_pdf_permanent_delete": "คำเตือน: หากเลือกตัวเลือกนี้\nไฟล์ PDF ต้นฉบับจะถูกลบอย่างถาวร\nหลังการแปลง โดยไม่สามารถกู้คืนได้\nโปรดตรวจสอบให้แน่ใจว่าคุณมี\nข้อมูลสำรองหากจำเป็น",
+    "batch_cbr_to_cbz": "แปลงไฟล์ CBR ทั้งหมดในไดเรกทอรี\nและไดเรกทอรีย่อยเป็น CBZ",
+    "batch_cbr_permanent_delete": "คำเตือน: หากเลือกตัวเลือกนี้\nไฟล์ CBR ต้นฉบับจะถูกลบ\nอย่างถาวรหลังการแปลง\nโดยไม่สามารถกู้คืนได้\nโปรดตรวจสอบว่าคุณมี\nข้อมูลสำรองหากจำเป็น",
+    "renumber_btn_1": "โหมดตรวจหาหน้าหลายหน้าอัตโนมัติ\nคลิกขวาเพื่อเปลี่ยนโหมด",
+    "renumber_btn_2": "โหมดกำหนดหมายเลขแบบง่าย\nคลิกขวาเพื่อเปลี่ยนโหมด",
+    "corrupted_header": "ไฟล์ภาพเสียหาย",
+    "right_click_instruction1": "คลิกขวาเพื่อแทนที่หรือลบ",
+    "right_click_instruction2": "ภาพนี้",
+    "unknown_error": "ข้อผิดพลาดที่ไม่ทราบสาเหตุ",
+    "batch_img_to_cbz": "แปลงไฟล์รูปภาพทั้งหมดที่พบในโฟลเดอร์\nและโฟลเดอร์ย่อยเป็น CBZ\nโดยสร้างไฟล์ CBZ หนึ่งไฟล์ต่อรูปภาพหนึ่งรูป",
+    "batch_img_permanent_delete": "คำเตือน : หากเลือกตัวเลือกนี้\nไฟล์รูปภาพต้นฉบับจะถูกลบอย่างถาวร\nหลังการแปลง โดยไม่สามารถกู้คืนได้\nโปรดตรวจสอบให้แน่ใจว่ามีข้อมูลสำรอง\nหากจำเป็น",
+    "too_large_header": "รูปภาพใหญ่เกินไปที่จะโหลด",
+    "too_large_pixels": "ขนาด: {pixels}",
+    "icon_toolbar_config_button": "การตั้งค่าไอคอน",
+    "icon_toolbar_size_decrease": "ลดขนาดไอคอน",
+    "icon_toolbar_size_increase": "เพิ่มขนาดไอคอน",
+    "source_loose": "ภาพอิสระ",
+    "source_web": "ภาพเว็บ"
+  },
+  "help": {
+    "title": "MosaicView - คู่มือการใช้งาน",
+    "intro": "MosaicView ช่วยให้คุณจัดการและแก้ไขการ์ตูน (หนังสือการ์ตูนดิจิทัล) โดยไม่ต้องแตกไฟล์ออกจากไฟล์บีบอัด แอปพลิเคชันรองรับรูปแบบ CBZ (ZIP), CBR (RAR) และ PDF แอปพลิเคชันรองรับเฉพาะระบบ 64 บิตเท่านั้น",
+    "open_files": "การเปิดไฟล์",
+    "open_files_content": "• คลิกปุ่ม 'เปิด CBZ/CBR/CB7/PDF'\n• หรือลากและวางไฟล์ลงในหน้าต่างโดยตรง\n• รูปแบบที่รองรับ: CBZ, CBR, CB7, PDF, ภาพ (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). ไฟล EPUB ก็สามารถเปดได แตจะสกัดเฉพาะรูปภาพเทานั้น (ขอความจะถูกละเวน)\n• PDF ที่เข้ารหัส (ต้องใช้รหัสผ่านเพื่อเปิด): ไม่สามารถนำเข้าไฟล์ได้ จะแสดงข้อความแสดงข้อผิดพลาด\n• PDF ที่ป้องกันจากการแก้ไข (owner password): นำเข้าหน้าต่างๆ ตามปกติ MosaicView เสนอให้บันทึกสำเนาที่ปลดล็อกแล้วในโฟลเดอร์เดียวกัน",
+    "mosaic": "โมเสก",
+    "mosaic_content": "โมเสกแสดงหน้าทั้งหมดของหนังสือการ์ตูนของคุณเป็นภาพขนาดย่อ คุณสามารถ:\n• จัดเรียงหน้าใหม่โดยการลากและวาง (การเรียงลำดับหน้าจะเป็นอัตโนมัติ และจะเป็นไปตามโหมดการเรียงลำดับใหม่ที่ใช้งานอยู่)\n• เลือกหลายหน้า (Ctrl+คลิกหรือ Shift+คลิก)\n• ปรับขนาดภาพขนาดย่อด้วยแถบเลื่อน\n• เปลี่ยนชื่อไฟล์ด้วยตนเองโดยคลิกที่ชื่อ\n• ลากและวางไฟล์หนังสือการ์ตูน (CBZ/CBR/PDF) จาก Windows Explorer โดยตรงไปยังหนังสือการ์ตูนที่เปิดอยู่อื่นเพื่อรวมเนื้อหา",
+    "manipulation": "การจัดการหน้า",
+    "manipulation_content": "• ลากและวางหน้าเพื่อจัดระเบียบใหม่\n• ลากการ์ตูนทั้งเล่มไปยังอีกเล่มเพื่อรวมเข้าด้วยกัน\n• คลิกขวาที่หน้าเพื่อเข้าถึงตัวเลือก (หมุน, ลบ ฯลฯ)\n• ดับเบิลคลิกที่หน้าเพื่อเปิดตัวดู\n• ส่งออกหน้าแต่ละหน้าโดยลากไปยังโฟลเดอร์ Windows หรือผ่าน Ctrl+C / Ctrl+V",
+    "renumber": "การกำหนดหมายเลขหน้าใหม่",
+    "renumber_content": "MosaicView มีสองโหมดการกำหนดหมายเลขหน้าใหม่ เข้าถึงได้ผ่านปุ่มกำหนดหมายเลขใหม่ เมนูคลิกขวา (คลิกขวา) หรืออัตโนมัติเมื่อลากและวาง:\n\n• โหมดตรวจจับหน้าหลายหน้าอัตโนมัติ (โหมดเริ่มต้น): แอปพลิเคชันวิเคราะห์ความกว้างของแต่ละหน้าเพื่อตรวจจับหน้าคู่ หน้าสาม เป็นต้น หน้าหลายหน้าจะถูกกำหนดหมายเลขใหม่ตามนั้น (เช่น: หน้าคู่จะตั้งชื่อเป็น 003-004 หน้าสามเป็น 005-006-007) หากเกิน 4 หน้า จะแสดงเฉพาะหมายเลขแรกและสุดท้ายเท่านั้น (เช่น: 010---025)\n\n• โหมดกำหนดหมายเลขแบบง่าย: แต่ละหน้าจะได้รับหมายเลขลำดับที่ไม่ซ้ำกัน (001, 002, 003...) โดยไม่คำนึงถึงความกว้างของหน้า\n\nหากต้องการสลับระหว่างสองโหมด ให้คลิกขวาที่ปุ่มกำหนดหมายเลขใหม่ คำแนะนำเครื่องมือจะแสดงโหมดที่ใช้งานอยู่ โหมดที่เลือกจะใช้กับการกำหนดหมายเลขอัตโนมัติเมื่อลากและวางด้วย",
+    "flatten": "ทำให้ไดเรกทอรีแบนราบ",
+    "flatten_content": "หากไฟล์บีบอัดของคุณมีโฟลเดอร์ย่อย ใช้ 'ทำให้ไดเรกทอรีแบนราบ' เพื่อนำภาพทั้งหมดมาอยู่ในระดับเดียวกัน",
+    "viewer": "โปรแกรมดู",
+    "viewer_content": "ดับเบิลคลิกที่หน้าเพื่อเปิดโปรแกรมดู:\n• ปุ่ม ← →: นำทางระหว่างหน้า\n• ปุ่ม D: สลับระหว่าง 3 โหมดการอ่าน\n  - หน้าเดียว: ทีละหนึ่งหน้า\n  - สองหน้า: หน้า 1 เดี่ยว จากนั้น 2-3, 4-5 ฯลฯ\n  - สองหน้าต่อเนื่อง: หน้า 1 เดี่ยว จากนั้น 2-3, 3-4, 4-5 ฯลฯ\n• ล้อเมาส์: นำทางอย่างรวดเร็ว\n• Ctrl+ล้อ หรือ Ctrl+Plus/Minus: ซูม\n• Ctrl+0: รีเซ็ตซูม\n• ปุ่ม F11: เต็มหน้าจอ\n• ดับเบิลคลิก: สลับเต็มหน้าจอ\n• ปุ่ม Esc: ยกเลิกกรอบครอป / ปิดโปรแกรมดู",
+    "join_pages": "รวมหน้า",
+    "join_pages_content": "เลือกหลายหน้าติดต่อกัน คลิกขวา → 'รวมหน้าที่เลือก' เพื่อรวมหน้าแนวนอนหรือแนวตั้ง รูปแบบของภาพที่สร้างขึ้นจะตรงกับรูปแบบของหน้าต้นทางหากเหมือนกันทั้งหมด มิฉะนั้นเป็น PNG ตามค่าเริ่มต้น",
+    "split_pages": "แยกหน้า",
+    "split_pages_content": "เพื่อแบ่งหน้าสองหน้าโดยอัตโนมัติ:\n• เลือกหน้าที่จะแยก\n• คลิกขวา → 'แยกหน้าที่เลือก'\n• เลือกทิศทาง (แนวตั้งหรือแนวนอน)",
+    "crop": "การครอปในโปรแกรมดู",
+    "crop_content": "ในโปรแกรมดู วาดสี่เหลี่ยมบนภาพเพื่อกำหนดพื้นที่ครอป:\n• วาดสี่เหลี่ยมด้วยเมาส์\n• ปรับขนาดโดยลากขอบหรือมุม\n• คลิก 'ยืนยันการครอป' เพื่อใช้\n• การครอปจะใช้กับภาพปัจจุบัน\n• ปุ่ม Esc: ยกเลิกกรอบครอป",
+    "shortcuts": "ทางลัดแป้นพิมพ์",
+    "shortcuts_content": "• Ctrl+Z: เลิกทำการกระทำล่าสุด\n• Ctrl+Y: ทำซ้ำการกระทำที่เลิกทำ\n• Ctrl+A: เลือกหน้าทั้งหมด\n• Ctrl+I: กลับด้านการเลือก\n• Ctrl+C: คัดลอกหน้าที่เลือก\n• Ctrl+X: ตัดหน้าที่เลือก\n• Ctrl+V: วางหน้า\n• Delete: ลบหน้าที่เลือก\n• F5: อัปเดตการแสดงผลโมเสก\n• F11: สลับเต็มหน้าจอ (ออกด้วย F11 หรือ ESC)",
+    "dark_mode": "โหมดมืด",
+    "dark_mode_content": "คลิกปุ่มดวงอาทิตย์/ดวงจันทร์เพื่อสลับระหว่างธีมสว่างและมืด",
+    "sort": "เรียงลำดับหน้า",
+    "sort_content": "ใช้ปุ่ม 'เรียงลำดับ' เพื่อจัดเรียงหน้าโดยอัตโนมัติตาม:\n• ชื่อ, ประเภท, ขนาด, ความกว้าง, ความสูง, ความละเอียด หรือ DPI",
+    "save": "บันทึก",
+    "save_content": "• 'บันทึก': บันทึกการเปลี่ยนแปลงไปยังไฟล์ต้นฉบับ\n• 'บันทึกเป็น': สร้างไฟล์บีบอัดใหม่\n• 'สร้าง CBZ': ใช้ได้ในโหมดภาพเท่านั้น (ไม่มีไฟล์บีบอัด)",
+    "other": "ฟังก์ชันอื่นๆ",
+    "other_content": "• การหมุน: หมุนหนึ่งหน้าหรือหลายหน้า\n• การแปลง: แปลงภาพเป็นรูปแบบต่างๆ (PNG, JPEG, WEBP, BMP, TIFF, GIF) หมายเหตุ: ภาพในโหมด CMYK จะถูกแปลงเป็น RGB โดยอัตโนมัติ (PNG, JPEG, WEBP, BMP, TIFF, GIF) หมายเหตุ: ภาพในโหมด CMYK จะถูกแปลงเป็น RGB โดยอัตโนมัติ\n• การพิมพ์: พิมพ์หน้าที่เลือกหรือทุกหน้า\n• การแยก: แยกหน้าเฉพาะ\n• แท็บเมตาดาต้า: แสดงข้อมูลไฟล์ ComicInfo.xml (หากมีในไฟล์บีบอัด). หากคุณเพิ่มหรือลบหน้าจากการ์ตูนที่มีเมตาดาต้า แอปพลิเคชันจะเสนอให้แก้ไขจำนวนหน้าที่ระบุไว้ที่นั่น เมตาดาต้าอื่นๆ ไม่สามารถแก้ไขได้ ข้อจำกัดนี้เป็นเจตนาและเป็นผลมาจากการเลือกการออกแบบ",
+    "config_files": "ไฟล์กำหนดค่าและไฟล์ชั่วคราว",
+    "config_files_content": "MosaicView สร้างไฟล์ชื่อ .mosaicview_config.json ไฟล์นี้มีพารามิเตอร์บางอย่างที่จำเป็นสำหรับการทำงานที่ถูกต้องของปุ่มรีเซ็ต รวมถึงรายการการ์ตูนที่เปิดล่าสุดซึ่งจำเป็นอย่างชัดเจนสำหรับการแสดงไฟล์ที่เปิดล่าสุด MosaicView ยังบันทึกไฟล์ชั่วคราวซึ่งจำเป็นสำหรับการดำเนินการประมวลผลภาพต่างๆ\nไฟล์เหล่านี้ทั้งหมดอยู่ในไดเรกทอรี {temp_dir}\nไฟล์ชั่วคราวจะถูกลบทุกครั้งที่ปิดแอปพลิเคชัน แต่ไฟล์ .mosaicview_config.json ตามธรรมชาติแล้วได้รับการออกแบบมาเพื่อเก็บรักษาไว้\nอย่างไรก็ตาม คุณสามารถลบไฟล์เหล่านี้ด้วยตนเองโดยไปที่ไดเรกทอรี {temp_dir} หรือคลิกปุ่มด้านล่าง ไฟล์ .mosaicview_config.json จะถูกสร้างใหม่ทุกครั้งที่เปิดแอปพลิเคชัน และไฟล์ชั่วคราวจะถูกสร้างใหม่ตามความจำเป็น",
+    "config_clear_temp": "ลบไฟล์ชั่วคราว",
+    "config_clear_recent": "ล้างไฟล์ล่าสุด",
+    "config_clear_config": "ลบไฟล์กำหนดค่า",
+    "config_temp_cleared": "ลบไฟล์ชั่วคราวสำเร็จแล้ว",
+    "config_config_cleared": "ลบไฟล์กำหนดค่าสำเร็จแล้ว\nจะถูกสร้างใหม่ในการเริ่มต้นแอปพลิเคชันครั้งถัดไป",
+    "language": "การเลือกภาษา",
+    "language_content": "MosaicView มีให้บริการในหลายภาษา\nโดยค่าเริ่มต้น แอปพลิเคชันจะตรวจจับภาษาของระบบปฏิบัติการของคุณโดยอัตโนมัติและแสดงในภาษานั้นหากได้รับการสนับสนุน หากระบบของคุณใช้ภาษาที่ไม่ได้รับการสนับสนุน อินเทอร์เฟซจะแสดงเป็นภาษาอังกฤษ\nคุณสามารถเปลี่ยนภาษาด้วยตนเองได้ตลอดเวลาโดยใช้เมนูแบบเลื่อนลงที่อยู่ด้านล่างของคอลัมน์ปุ่ม ใต้แถบเลื่อนขนาดภาพขนาดย่อ ตัวเลือกของคุณจะถูกบันทึกและใช้ในครั้งถัดไปที่คุณเริ่มแอปพลิเคชัน\nภาษาที่มีให้บริการ: จีน (ตัวย่อ), จีน (ตัวเต็ม), ญี่ปุ่น, ดัตช์, ตุรกี, ไทย, นอร์เวย์, บัลแกเรีย, ฝรั่งเศส, ฟินแลนด์, ฟิลิปปินส์, มอลตา, มาเลเซีย, ยูเครน, รัสเซีย, โรมาเนีย, ลัตเวีย, ลิทัวเนีย, สเปน, สวีเดน, สโลวัก, สโลวีเนีย, อังกฤษ, อาหรับ, อาร์เมเนีย, อินโดนีเซีย, อิตาลี, อิสราเอล, อีสโตเนีย, อไอซ์แลนด์, อไอร์แลนด์, เกาหลี, เครอเอเชีย, เช็ก, เดนมาร์ก, เยอรมัน, เวียดนาม, แอฟริกาใต้, โปรตุเกส, โปแลนด์, ไอริช, ฮังการี, ฮินดี。\nภาษาแฟนตาซีที่มีให้บริการ: คลิงออน (เวอร์ชันตัวอักษรละตินและตัวอักษร pIqaD), ซินดาริน (เวอร์ชันตัวอักษรละตินและตัวอักษร tengwar), เควนยา (เวอร์ชันตัวอักษรละตินและตัวอักษร tengwar).\n\nเครื่องมือนี้ใช้ฟอนต์ Windows ยกเว้นฟอนต์ pIqaD (ภาษาคลิงออน) และ tengwar (ภาษาเอลฟ์: ซินดาริน และ เควนยา) ฟอนต์เหล่านี้เป็นฟรีแวร์และมาจากเว็บไซต์เหล่านี้:\n- สำหรับ pIqaD (อักษรคลิงออน): {url_piqad}\n- สำหรับ tengwar (อักษรเอลฟ์ สำหรับซินดารินและเควนยา): {url_tengwar}\nหากเว็บไซต์เหล่านี้ไม่ทำงานอีกต่อไป คุณสามารถดาวน์โหลดฟอนต์ pIqaD และ tengwar ได้โดยคลิกที่ปุ่มด้านล่าง:\n\nซอฟต์แวร์นี้พัฒนาในภาษาฝรั่งเศส การแปลเป็นภาษาอื่นทำโดยใช้ปัญญาประดิษฐ์ โดยเฉพาะ Claude ฉันตัดสินใจสนับสนุนประมาณสี่สิบภาษา แต่เห็นได้ชัดว่าฉันไม่ได้พูดทุกภาษาเหล่านี้ ดังนั้นฉันจึงไม่มีทางเลือกอื่นนอกจากใช้ปัญญาประดิษฐ์ เนื่องจากการจ้างและจ่ายเงินให้นักแปล 40 คนไม่ได้อยู่ในความเป็นไปได้ที่พิจารณา เนื่องจากลักษณะอัตโนมัติของการแปลเหล่านี้ อาจมีข้อผิดพลาด ฉันขอโทษสำหรับสิ่งนี้。",
+    "credits": "Vibe Coding, ความรักของฉัน",
+    "credits_content": "ฉันไม่รู้อะไรเลยเกี่ยวกับการเขียนโปรแกรม ไม่รู้จริงๆ ด้วยเหตุนี้ ฉันจึงพัฒนาซอฟต์แวร์นี้ด้วย Claude ซึ่งเป็น AI จาก Anthropic และโดยเฉพาะกับ Claude Code ฉันขอแนะนำ Claude Code อย่างยิ่ง แอปพลิเคชันนี้ยอดเยี่ยมมาก!",
+    "resize_pages": "เปลี่ยนขนาดหน้า",
+    "resize_pages_content": "เพื่อลดหรือขยายหน้าของคุณ:\n• เลือกหนึ่งหน้าหรือมากกว่า\n• คลิกขวา → 'ปรับขนาด'\n• มีตัวเลือกสามตัว:\n  - ขนาดที่กำหนดเอง: ป้อนความกว้างหรือความสูงที่ต้องการ (อัตราส่วนจะถูกรักษาไว้โดยอัตโนมัติ)\n  - การลดเปอร์เซ็นต์: เลือกเปอร์เซ็นต์ตั้งแต่ 10% ถึง 90%\n  - การขยายเปอร์เซ็นต์: เลือกเปอร์เซ็นต์ตั้งแต่ 10% ถึง 100%\n• แอปพลิเคชันแสดงขนาดโดยประมาณของภาพของคุณหลังการปรับเปลี่ยน\n• การปรับเปลี่ยนนำไปใช้ทันทีกับหน้าที่เลือกทั้งหมด",
+    "language_export_piqad": "ฟอนต์ pIqaD",
+    "language_export_tengwar": "ฟอนต์ tengwar",
+    "language_export_piqad_success": "ส่งออกแบบอักษรแล้ว: {filename}\nพร้อมใช้งานใน:",
+    "language_export_tengwar_success": "ส่งออก {count} แบบอักษรแล้ว\nพร้อมใช้งานใน:",
+    "icons": "ไอคอน",
+    "icons_content": "ไอคอนส่วนใหญ่ที่ใช้ในยูทิลิตีนี้มาจากเว็บไซต์นี้และสามารถใช้งานได้ฟรีเพื่อวัตถุประสงค์ที่ไม่ใช่เชิงพาณิชย์: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nบางส่วนได้รับการแก้ไขโดยฉัน\nมีเพียงไอคอนเดียวคือไอคอนไฟล์ปฏิบัติการของ Windows ที่สร้างโดยฉัน (แต่ใช้ AI เพราะฉันเป็นนักออกแบบกราฟิกที่แย่มาก มาก มาก) คุณได้รับอนุญาตจากฉันให้ใช้ไอคอนนี้ตามที่คุณต้องการ ตราบใดที่คุณอ้างอิงแหล่งที่มา",
+    "icons_view_button": "ดูไอคอน",
+    "icons_window_title": "ไอคอน MosaicView",
+    "icons_save_all": "บันทึกไอคอน",
+    "icons_saved_success": "บันทึก {count} ไอคอนใน:",
+    "icons_save_failed": "ไม่สามารถบันทึกไอคอนได้: {error}",
+    "split_ui": "อินเทอร์เฟซสองแผง",
+    "split_ui_content": "MosaicView ช่วยให้สามารถแสดงไฟล์เก็บถาวรสองรายการพร้อมกันแบบเคียงข้างกันได้\n\nคลิกไอคอน แบ่ง เพื่อเปิดแผงที่สอง แต่ละแผงเป็นอิสระ: คุณสามารถเปิด แก้ไข และบันทึกไฟล์เก็บถาวรแยกกันได้ แผงที่ใช้งานอยู่จะระบุด้วยเส้นขอบสีน้ำเงิน\n\nในการย้ายหน้าจากแผงหนึ่งไปอีกแผงหนึ่ง ให้ลากโดยตรง หากเลือกหลายหน้า ทั้งหมดจะเคลื่อนที่พร้อมกัน หน้าจะถูกแทรกที่ตำแหน่งที่ระบุโดยแถบสีแดง\n\nคลิกไอคอน ปิดแผงที่สอง เพื่อกลับสู่โหมดแผงเดียว",
+    "license_gpl": "ใบอนุญาต GPL v3",
+    "license_unrar": "สิทธิ์การใช้งาน UnRAR",
+    "config_clear_clipboard": "ล้างไฟล์คลิปบอร์ด",
+    "config_clipboard_note": "ข้อยกเว้น: ไฟล์ชั่วคราวที่ใช้โดยคลิปบอร์ด Windows (ไฟล์ clipboard_XXXXX) จะถูกเก็บไว้เป็นเวลา 12 ชั่วโมงหลังจากการคัดลอก เพื่อให้คุณสามารถวางได้แม้หลังจากปิดแอปพลิเคชัน หลังจาก 12 ชั่วโมง ไฟล์เหล่านี้จะถูกลบโดยอัตโนมัติ",
+    "config_log_note": "การแปลงแบบกลุ่ม (PDF เป็น CBZ และ CBR เป็น CBZ) จะสร้างไฟล์บันทึกเมื่อเกิดข้อผิดพลาด ไฟล์เหล่านี้ (Log_pdftocbz_.txt และ Log_cbrtocbz_.txt) จะถูกเก็บรักษาไว้แม้หลังจากปิดแอปพลิเคชันแล้ว เพื่อให้สามารถตรวจสอบได้ในภายหลัง ไฟล์เหล่านี้จะถูกลบเฉพาะผ่านปุ่ม \"ลบไฟล์ชั่วคราว\" ด้านบนเท่านั้น",
+    "config_clipboard_cleared": "ล้างไฟล์คลิปบอร์ดเรียบร้อยแล้ว",
+    "adjust_images": "การปรับภาพ",
+    "adjust_images_content": "ฟังก์ชันนี้ช่วยให้คุณแต่งภาพได้โดยตรงใน MosaicView คุณสามารถปรับความสว่าง ความคมชัด ความคมของภาพ ระดับ ความอิ่มตัว ใช้เอฟเฟกต์ (ขาวดำ เซเปีย กลับสี) ปรับคุณภาพการบีบอัด ลบสี ใช้ความโปร่งใส หรือแปลงเป็นความลึกสีต่างๆ การตั้งค่าบางอย่างมีตัวดูเฉพาะที่ช่วยให้เห็นผลลัพธ์ในความละเอียดสูงสุดก่อนนำไปใช้ ภาพย่อแสดงผลลัพธ์แบบเรียลไทม์ในหน้าต่างหลัก",
+    "create_icon": "สร้างไอคอน",
+    "create_icon_content": "MosaicView ช่วยให้คุณสร้างไฟล์ไอคอน (.ico) จากภาพใดก็ได้ในโมเสก\n• คลิกขวาที่ภาพ → 'สร้างไอคอน'\n• กำหนดกรอบบริเวณที่ต้องการในโปรแกรมดู (ไอคอนจะเป็นรูปสี่เหลี่ยมจัตุรัสเสมอ)\n• ปรับความโปร่งใสหากจำเป็น\n• ยืนยัน: ไฟล์ .ico จะถูกเพิ่มลงในโมเสกโดยตรง\n• ไฟล์ .ico มีความละเอียดมาตรฐานทั้งหมดโดยอัตโนมัติ (ตั้งแต่ 16×16 ถึง 256×256)\n• ตราบใดที่มีไฟล์ .ico อยู่ในโมเสก การบันทึกลงในไฟล์ CBZ จะถูกบล็อก เนื่องจากรูปแบบ ICO ไม่รองรับในไฟล์เก็บถาวรเหล่านี้ ส่งออกไฟล์ .ico แยกต่างหาก (Ctrl+C แล้ววางในโฟลเดอร์ Windows) จากนั้นลบออกจากโมเสกก่อนบันทึก",
+    "batch_convert": "แปลงเป็นชุด",
+    "batch_convert_content": "MosaicView นำเสนอฟังก์ชันการแปลงแบบกลุ่มสามฟังก์ชัน ซึ่งใช้งานได้เฉพาะเมื่อโมเสคว่างเปล่า สำหรับแต่ละฟังก์ชัน หลักการเหมือนกัน : เลือกไดเร็กทอรี ยืนยัน ติดตามความคืบหน้าแบบเรียลไทม์ ตรวจสอบสรุปขั้นสุดท้าย ตัวเลือกหนึ่งช่วยให้ลบไฟล์ต้นฉบับอย่างถาวรแทนที่จะส่งไปยังถังรีไซเคิล\n• CBR → CBZ : แปลงไฟล์ CBR (RAR) ทั้งหมดในไดเร็กทอรีและไดเร็กทอรีย่อย หาก CBR เป็น ZIP จริงๆ จะถูกเปลี่ยนชื่อโดยไม่มีการแปลง\n• PDF → CBZ : แปลงไฟล์ PDF ทั้งหมดในไดเร็กทอรีและไดเร็กทอรีย่อย ดึงรูปภาพออกมาโดยไม่มีการบีบอัดซ้ำ\n• ภาพแยกเดี่ยว → CBZ : สร้าง CBZ แต่ละรายการสำหรับไฟล์รูปภาพแต่ละไฟล์ที่พบ ในไดเร็กทอรีและไดเร็กทอรีย่อย รูปภาพที่ไม่ถูกต้อง เสียหาย หลายหน้า (TIFF) หรือภาพเคลื่อนไหว (GIF) จะถูกละเว้นและบันทึกในบันทึก",
+    "config_open_temp_folder": "เปิดโฟลเดอร์ชั่วคราว",
+    "icon_toolbar": "แถบไอคอน",
+    "icon_toolbar_content": "แถบไอคอนช่วยให้เข้าถึงฟังก์ชันหลักของแอปพลิเคชันได้อย่างรวดเร็ว คุณสามารถจัดเรียงไอคอนตามต้องการโดยลากตรงไปยังแถบได้ หากต้องการเลือกว่าจะแสดงหรือซ่อนไอคอนใด ให้คลิกปุ่มรูปเฟืองที่ด้านล่างของแถบ: หน้าต่างการกำหนดค่าจะเปิดขึ้น ซึ่งคุณสามารถย้ายไอคอนระหว่างแถบที่ใช้งานอยู่และพื้นที่สำรองได้ ใช้ปุ่ม « + » และ « − » เพื่อปรับขนาดไอคอน การกำหนดค่าจะถูกบันทึกโดยอัตโนมัติ",
+    "license_7zip": "สัญญาอนุญาต 7-Zip"
+  },
+  "misc": {
+    "file_word": "ไฟล์",
+    "files_word": "ไฟล์",
+    "corrupted": "เสียหาย",
+    "yes": "ใช่",
+    "no": "ไม่",
+    "cancel": "ยกเลิก",
+    "selection_suffix": "สำเนา-ส่วนที่เลือก"
+  },
+  "metadata": {
+    "title": "ชื่อเรื่อง",
+    "series": "ซีรีส์",
+    "number": "หมายเลข",
+    "volume": "เล่ม",
+    "summary": "สรุป",
+    "writer": "นักเขียน",
+    "penciller": "นักวาด",
+    "inker": "นักเส้น",
+    "colorist": "นักระบายสี",
+    "letterer": "นักตัวอักษร",
+    "cover_artist": "ศิลปินปก",
+    "editor": "บรรณาธิการ",
+    "publisher": "สำนักพิมพ์",
+    "imprint": "สิ่งพิมพ์",
+    "genre": "ประเภท",
+    "web": "เว็บไซต์",
+    "page_count": "จำนวนหน้า",
+    "language_iso": "ภาษา",
+    "format": "รูปแบบ",
+    "black_and_white": "ขาวดำ",
+    "manga": "มังงะ",
+    "year": "ปี",
+    "month": "เดือน",
+    "day": "วัน",
+    "notes": "หมายเหตุ",
+    "characters": "ตัวละคร",
+    "locations": "สถานที่",
+    "teams": "ทีม",
+    "story_arc": "ส่วนโค้งของเรื่อง",
+    "story_arc_number": "หมายเลขส่วนโค้ง",
+    "series_group": "กลุ่มซีรีส์",
+    "count": "จำนวนฉบับ",
+    "alternate_series": "ซีรีส์ทางเลือก",
+    "alternate_number": "หมายเลขทางเลือก",
+    "alternate_count": "จำนวนทางเลือก",
+    "age_rating": "การจัดระดับอายุ",
+    "series_complete": "ซีรีส์สมบูรณ์",
+    "translator": "ผู้แปล",
+    "tags": "แท็ก",
+    "scan_information": "ข้อมูลการสแกน",
+    "community_rating": "คะแนนชุมชน",
+    "review": "บทวิจารณ์",
+    "gtin": "GTIN",
+    "pages": "หน้า",
+    "pages_col_image": "ภาพ",
+    "pages_col_type": "ประเภท",
+    "pages_col_width": "ความกว้าง",
+    "pages_col_height": "ความสูง",
+    "pages_col_size": "ขนาด (B)"
+  },
+  "web": {
+    "web_download_progress": "กำลังดาวน์โหลด: {downloaded}/{total} รูปภาพ...",
+    "web_download_cancel": "ยกเลิก",
+    "web_no_images": "ไม่มีรูปภาพ",
+    "web_no_images_found": "ไม่พบรูปภาพในหน้านี้",
+    "web_imported": "นำเข้า {count} รูปภาพจากหน้าเว็บ",
+    "web_drag_drop_title": "ลากและวางรูปภาพเว็บ",
+    "web_copy_paste_message": "การลากและวางโดยตรงจากเว็บเบราว์เซอร์ไม่ได้รับการสนับสนุน\n\nทางเลือกอื่น (ง่ายกว่า):\n\n1. คลิกขวาที่รูปภาพในเบราว์เซอร์\n2. เลือก 'คัดลอกรูปภาพ'\n3. ใน MosaicView ใช้ปุ่ม 'วาง' หรือ Ctrl+V\n\nวิธีนี้ใช้ได้กับรูปภาพเว็บทั้งหมด!",
+    "import_web_button": "นำเข้าจากเว็บ",
+    "import_web_tooltip": "วางที่อยู่อินเทอร์เน็ตเพื่อดึงภาพทั้งหมดจากหน้า",
+    "import_web_menu": "นำเข้าจากเว็บ...",
+    "import_web_dialog_title": "นำเข้าภาพจากหน้าเว็บ",
+    "import_web_url_label": "ที่อยู่หน้าเว็บ:",
+    "import_web_ok_button": "ตกลง",
+    "import_web_cancel_button": "ยกเลิก",
+    "import_web_invalid_url": "URL ไม่ถูกต้อง โปรดป้อนที่อยู่เว็บที่ถูกต้อง"
+  },
+  "donation": {
+    "menu_label": "บริจาคให้ผู้สร้าง",
+    "title": "ทำการบริจาค",
+    "message": "คุณชอบยูทิลิตี้เล็กๆ นี้และใช้มันเป็นประจำ ฉันลงทุนไปหลายร้อยชั่วโมงกับมัน คุณจะพิจารณาขอบคุณฉันด้วยการบริจาคไหม? กรุณาใจดีหน่อย ฉันต้องการเงินจริงๆ เพื่อเติมสระว่ายน้ำของฉันด้วยแชมเปญ\n\nไม่ว่าคุณจะต้องการส่งเงินให้ฉันสองสามเซ็นต์หรือหลายพันล้านยูโร ฉันรับทุกจำนวน คุณสามารถบริจาคผ่าน paypal"
+  },
+  "mail": {
+    "tooltip": "ปุ่มนี้เปิดซอฟต์แวร์อีเมลเริ่มต้นของคุณใน Windows เพื่อส่งอีเมล หากไม่มีการกำหนดค่าซอฟต์แวร์ (เช่น หากคุณใช้เว็บเมลเท่านั้น) คุณสามารถคัดลอกที่อยู่ MosaicView ไปยังคลิปบอร์ดได้โดยคลิกขวาที่ไอคอน",
+    "copy_address": "คัดลอกที่อยู่อีเมล MosaicView",
+    "menu_label": "ส่งอีเมลถึง MosaicView",
+    "icon_label": "ส่งอีเมล"
+  },
+  "menu": {
+    "file": "ไฟล์",
+    "file_open": "เปิดไฟล์",
+    "file_close": "ปิดไฟล์",
+    "batch_convert": "แปลงไฟล์เป็นชุด",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "ภาพแยกเดี่ยว → CBZ",
+    "edit": "แก้ไข",
+    "undo": "เลิกทำ",
+    "redo": "ทำซ้ำ",
+    "paste": "วาง",
+    "delete": "ลบ",
+    "invert_selection": "กลับการเลือก",
+    "select_all": "เลือกทั้งหมด",
+    "deselect": "ยกเลิกการเลือก",
+    "refresh_mosaic": "รีเฟรชโมเสก",
+    "images": "รูปภาพ",
+    "rotation": "การหมุน",
+    "archives": "คลังเก็บ",
+    "sort": "เรียงลำดับ",
+    "system": "ระบบ",
+    "decrease_font": "ลดขนาดตัวอักษร",
+    "increase_font": "เพิ่มขนาดตัวอักษร",
+    "language": "ภาษา",
+    "language_real": "ภาษาจริง",
+    "language_fictional": "ภาษาสมมติ",
+    "about": "เกี่ยวกับ",
+    "export_piqad_font": "บันทึกฟอนต์ pIqaD",
+    "export_tengwar_fonts": "บันทึกฟอนต์ tengwar"
+  }
+}

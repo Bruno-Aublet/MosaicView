@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Alat serbaguna untuk kolektor komik digital",
+  "buttons": {
+    "open_file": "Buka CBZ/CBR/CB7/PDF",
+    "close_file": "Tutup file",
+    "create_cbz": "Buat arsip CBZ",
+    "flatten_dirs": "Pindahkan semua file\nke root dan hapus\nsub-direktori",
+    "renumber": "Penomoran ulang\nhalaman",
+    "undo": "⤺ Batalkan",
+    "redo": "Ulangi ⤻",
+    "copy": "Salin",
+    "cut": "Potong",
+    "paste": "Tempel",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Konversi ke format\ngambar lain",
+    "join_pages": "Gabungkan halaman",
+    "split_page": "Pisahkan halaman",
+    "save_as": "Simpan sebagai\n(buat CBZ baru)",
+    "save_selection": "Simpan pilihan\nke CBZ",
+    "print_selection": "Cetak pilihan",
+    "print_all": "Cetak semua komik",
+    "sort": "Urutkan",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Konversi",
+    "cancel": "Batal",
+    "split_button": "Pisahkan",
+    "join_button": "Mulai",
+    "validate_crop": "Konfirmasi pemotongan",
+    "ok": "OK",
+    "close": "Tutup",
+    "apply_and_save": "Terapkan perubahan dan simpan file",
+    "apply_and_create": "Terapkan perubahan dan buat file CBZ",
+    "close_and_lose": "Tutup file dan buang perubahan",
+    "cancel_return": "Batal dan kembali ke mosaik",
+    "update_page_count": "Perbarui jumlah halaman\ndalam metadata",
+    "invert_selection": "Balik pilihan",
+    "reduce_size": "Ubah ukuran halaman",
+    "mirror_vertical": "⇅",
+    "create_gif": "Buat GIF",
+    "edit_gif": "Edit GIF animasi",
+    "save_to_folder": "Ekspor halaman\nterpilih",
+    "continue": "Lanjutkan",
+    "reset": "↻",
+    "yes": "Ya",
+    "no": "Tidak",
+    "renumber_recommended": "Nomori ulang (disarankan)",
+    "ignore_and_save": "Abaikan dan simpan",
+    "rename_to_cbz": "Ubah nama menjadi .cbz",
+    "open_without_rename": "Buka tanpa mengubah nama",
+    "rename_to_cbr": "Ubah nama menjadi .cbr",
+    "adjustments": "Kecerahan,\nkontras, dll.",
+    "batch_cbr_to_cbz": "Konversi massal\n file CBR ke CBZ",
+    "batch_pdf_to_cbz": "Konversi massal\n file PDF ke CBZ",
+    "batch_img_to_cbz": "Konversi massal\n gambar mandiri ke CBZ",
+    "icon_toolbar_reset": "Atur ulang",
+    "delete_selected": "Hapus",
+    "save": "Simpan",
+    "rename_to_cb7": "Ganti nama menjadi .cb7",
+    "split_ui": "Bagi antarmuka menjadi dua panel",
+    "unsplit_ui": "Tutup panel kedua"
+  },
+  "tabs": {
+    "mosaic": "Mosaik",
+    "metadata": "Metadata"
+  },
+  "viewer": {
+    "title": "Penampil",
+    "mode_single": "Halaman tunggal  [D]",
+    "mode_double": "Halaman ganda  [D]",
+    "mode_continuous": "Mode berkelanjutan  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Halaman sebelumnya (←)",
+      "next_page": "Halaman berikutnya (→)",
+      "zoom_in": "Perbesar (Ctrl+Plus)",
+      "zoom_out": "Perkecil (Ctrl+Minus)",
+      "zoom_reset": "Reset zoom (Ctrl+0)",
+      "reading_mode_double": "Ubah mode baca (D) → Halaman ganda",
+      "reading_mode_continuous": "Ubah mode baca (D) → Halaman ganda berkelanjutan",
+      "reading_mode_single": "Ubah mode baca (D) → Halaman tunggal",
+      "fullscreen_exit": "Keluar layar penuh (F11)",
+      "fullscreen": "Layar penuh (F11)",
+      "close_viewer": "Tutup penampil (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Gambar rusak - Ganti",
+      "corrupted_delete": "⚠️ Hapus gambar ini",
+      "copy": "Salin (Ctrl+C)",
+      "cut": "Potong (Ctrl+X)",
+      "paste": "Tempel (Ctrl+V)",
+      "paste_clipboard": "Tempel dari clipboard (Ctrl+V)",
+      "delete": "Hapus (Delete)",
+      "deselect": "Batalkan pilihan (ESC)",
+      "rotate_right": "↻ Putar kanan",
+      "rotate_left": "↺ Putar kiri",
+      "mirror": "⇄ Cermin horizontal",
+      "crop": "Potong",
+      "convert": "Konversi ke format lain...",
+      "join": "Gabungkan halaman yang dipilih",
+      "split": "Pisahkan halaman yang dipilih",
+      "save_selection": "Simpan pilihan ke CBZ",
+      "print_selection": "Cetak pilihan",
+      "copy_archive": "Salin seluruh arsip",
+      "undo": "Batalkan (Ctrl+Z)",
+      "redo": "Ulangi (Ctrl+Y)",
+      "renumber_auto": "Penomoran ulang halaman (deteksi otomatis halaman ganda)",
+      "renumber_simple": "Penomoran ulang halaman (penomoran sederhana)",
+      "sort_submenu": "Urutkan halaman",
+      "sort_name": "Berdasarkan nama",
+      "sort_type": "Berdasarkan tipe",
+      "sort_size": "Berdasarkan ukuran",
+      "sort_width": "Berdasarkan lebar",
+      "sort_height": "Berdasarkan tinggi",
+      "sort_resolution": "Berdasarkan resolusi",
+      "sort_dpi": "Berdasarkan DPI",
+      "create_cbz": "Buat arsip CBZ",
+      "save_as": "Simpan sebagai...",
+      "close_file": "Tutup file",
+      "help": "Panduan penggunaan",
+      "update_page_count": "Perbarui jumlah halaman dalam metadata",
+      "invert_selection": "Balik pilihan (Ctrl+I)",
+      "reduce_size": "Ubah ukuran halaman",
+      "mirror_vertical": "⇅ Cermin vertikal",
+      "edit_animated_gif": "Edit GIF animasi...",
+      "save_to_folder": "Ekspor halaman terpilih",
+      "adjustments": "Kecerahan, kontras, warna...",
+      "refresh_mosaic": "Segarkan mosaik (F5)",
+      "create_ico": "Buat file .ico"
+    },
+    "canvas_no_file": {
+      "open": "Buka CBZ/CBR/CB7/PDF",
+      "recent_files": "File terbaru",
+      "clear_history": "Hapus riwayat"
+    },
+    "canvas_with_file": {
+      "close": "Tutup file",
+      "paste": "Tempel (Ctrl+V)",
+      "paste_clipboard": "Tempel dari clipboard (Ctrl+V)",
+      "select_all": "Pilih semua (Ctrl+A)",
+      "deselect": "Batalkan pilihan (ESC)",
+      "copy_archive": "Salin seluruh arsip",
+      "print_all": "Cetak semua komik",
+      "renumber_auto": "Penomoran ulang halaman (deteksi otomatis halaman ganda)",
+      "renumber_simple": "Penomoran ulang halaman (penomoran sederhana)",
+      "flatten": "Ratakan folder",
+      "save_selection": "Simpan pilihan ke CBZ",
+      "hide_sidebar": "« Sembunyikan kolom tombol",
+      "show_sidebar": "» Tampilkan kolom tombol",
+      "decrease_thumbs": "Kurangi ukuran thumbnail",
+      "increase_thumbs": "Perbesar ukuran thumbnail",
+      "theme_dark": "Beralih ke tema gelap",
+      "theme_light": "Beralih ke tema terang",
+      "sort_submenu": "Urutkan halaman",
+      "undo": "Batalkan (Ctrl+Z)",
+      "redo": "Ulangi (Ctrl+Y)",
+      "create_cbz": "Buat arsip CBZ",
+      "save_as": "Simpan sebagai...",
+      "help": "Panduan penggunaan",
+      "update_page_count": "Perbarui jumlah halaman dalam metadata",
+      "invert_selection": "Balik pilihan (Ctrl+I)",
+      "fullscreen": "Layar penuh (F11)",
+      "fullscreen_exit": "Keluar dari layar penuh (F11 atau ESC)",
+      "quit": "Tutup aplikasi"
+    },
+    "canvas": {
+      "quit": "Tutup aplikasi",
+      "reset": "Reset aplikasi:\n• ukuran dan posisi jendela\n• mode gelap → terang\n• ukuran thumbnail → normal\n• bilah samping → terlihat / 220 px\n• bahasa → deteksi otomatis\n• ukuran font → default",
+      "reset_label": "Reset aplikasi"
+    },
+    "font_size": {
+      "decrease": "Kurangi ukuran font",
+      "increase": "Perbesar ukuran font"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Urutkan berdasarkan nama",
+    "sort_type": "Urutkan berdasarkan tipe",
+    "sort_size": "Urutkan berdasarkan ukuran",
+    "sort_width": "Urutkan berdasarkan lebar",
+    "sort_height": "Urutkan berdasarkan tinggi",
+    "sort_resolution": "Urutkan berdasarkan resolusi",
+    "sort_dpi": "Urutkan berdasarkan DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Arsip kosong",
+        "message": "Arsip CBZ tidak berisi file apapun."
+      },
+      "empty_cbr": {
+        "title": "Arsip kosong",
+        "message": "Arsip CBR tidak berisi file apapun."
+      },
+      "files_ignored": {
+        "title": "File diabaikan"
+      },
+      "no_selection_crop": {
+        "title": "Tidak ada pilihan",
+        "message": "Silakan pilih gambar untuk dipotong."
+      },
+      "multi_selection_crop": {
+        "title": "Pilihan ganda",
+        "message": "Anda hanya bisa memotong satu gambar sekaligus.\nSilakan pilih satu gambar."
+      },
+      "invalid_selection_crop": {
+        "title": "Pilihan tidak valid",
+        "message": "Hanya gambar yang bisa dipotong."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Fitur tidak tersedia",
+        "message": "Pemindahan halaman tidak tersedia di sub-direktori.\nSilakan ratakan folder atau kembali ke root."
+      },
+      "no_selection_convert": {
+        "title": "Tidak ada pilihan",
+        "message": "Silakan pilih setidaknya satu gambar untuk dikonversi."
+      },
+      "invalid_selection_convert": {
+        "title": "Pilihan tidak valid",
+        "message": "Hanya gambar yang bisa dikonversi."
+      },
+      "no_selection_split": {
+        "title": "Tidak ada pilihan",
+        "message": "Silakan pilih gambar untuk dipisahkan."
+      },
+      "multi_selection_split": {
+        "title": "Pilihan ganda",
+        "message": "Anda hanya bisa memisahkan satu gambar sekaligus.\nSilakan pilih satu gambar."
+      },
+      "invalid_selection_split": {
+        "title": "Pilihan tidak valid",
+        "message": "Hanya gambar yang bisa dipisahkan."
+      },
+      "invalid_number_split": {
+        "title": "Nomor tidak valid",
+        "message": "Jumlah halaman harus antara 2 dan 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Pilihan tidak cukup",
+        "message": "Silakan pilih setidaknya 2 gambar untuk digabungkan."
+      },
+      "invalid_selection_join": {
+        "title": "Pilihan tidak valid",
+        "message": "Hanya gambar yang bisa digabungkan."
+      },
+      "pil_not_available": {
+        "title": "PIL tidak tersedia",
+        "message": "Modul PIL diperlukan untuk menempel dari clipboard sistem."
+      },
+      "format_not_supported": {
+        "title": "Format tidak didukung",
+        "message": "Format gambar tidak didukung atau file rusak.\nFormat yang didukung: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Tidak ada pilihan",
+        "message": "Silakan gambar area pemotongan terlebih dahulu."
+      },
+      "cannot_open_file": {
+        "title": "Tidak dapat membuka file",
+        "message": "File tidak dapat dimuat."
+      },
+      "corrupted_images": {
+        "title": "Gambar rusak",
+        "summary": "{count} gambar rusak terdeteksi dari {total}.",
+        "hint": "Mereka ditampilkan dengan ikon khusus.\nKlik kanan pada gambar rusak untuk menggantinya atau menghapusnya.",
+        "more": "... dan {count} lainnya"
+      },
+      "no_image_print": {
+        "title": "Tidak ada gambar",
+        "message": "Tidak ada gambar untuk dicetak."
+      },
+      "no_valid_image_print": {
+        "title": "Tidak ada gambar",
+        "message": "Tidak ada gambar valid untuk dicetak."
+      },
+      "no_selection_print": {
+        "title": "Tidak ada pilihan",
+        "message": "Silakan pilih setidaknya satu gambar."
+      },
+      "no_valid_selection_print": {
+        "title": "Tidak ada gambar",
+        "message": "Tidak ada gambar valid dalam pilihan."
+      },
+      "save_cancelled": {
+        "title": "Penyimpanan dibatalkan",
+        "message": "Silakan perbaiki nama file secara manual sebelum menyimpan."
+      },
+      "empty_pdf": {
+        "title": "PDF kosong",
+        "message": "File PDF tidak berisi halaman apapun."
+      },
+      "no_selection_save": {
+        "title": "Peringatan",
+        "message": "Silakan pilih setidaknya satu halaman untuk disimpan."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Drag dinonaktifkan",
+        "message": "Pemindahan halaman dengan drag and drop hanya tersedia di root komik.\n\nUntuk memindahkan halaman:\n1. Kembali ke root dengan mengklik ikon naik\n2. Atau ratakan komik untuk menghapus sub-direktori"
+      },
+      "no_selection_reduce": {
+        "title": "Tidak ada pilihan",
+        "message": "Harap pilih setidaknya satu halaman untuk dikurangi."
+      },
+      "invalid_selection_reduce": {
+        "title": "Pilihan tidak valid",
+        "message": "Hanya gambar yang dapat dikurangi."
+      },
+      "invalid_dimensions": {
+        "title": "Dimensi tidak valid",
+        "message": "Harap masukkan dimensi yang valid (bilangan bulat positif)."
+      },
+      "no_images_for_gif": {
+        "title": "Tidak ada gambar",
+        "message": "Setidaknya satu gambar diperlukan untuk membuat GIF animasi."
+      },
+      "no_valid_images": {
+        "title": "Tidak ada gambar valid",
+        "message": "Tidak ditemukan gambar valid untuk membuat GIF."
+      },
+      "animated_gif_in_comic": {
+        "title": "GIF animasi terdeteksi",
+        "message": "Peringatan: Komik ini berisi satu atau lebih GIF animasi.\\n\\nPembaca komik (CDisplayEx, YACReader, dll.) hanya akan menampilkan frame pertama dari setiap GIF sebagai halaman statis.\\n\\nUntuk melihat GIF animasi dengan benar, Anda harus menyimpannya secara terpisah di luar komik menggunakan tombol \"Ekspor halaman terpilih\" atau \"Edit GIF animasi\".\\n\\nApakah Anda ingin melanjutkan menyimpan komik?"
+      },
+      "no_selection_adjust": {
+        "title": "Tidak ada pilihan",
+        "message": "Silakan pilih setidaknya satu gambar untuk menerapkan penyesuaian."
+      },
+      "invalid_selection_adjust": {
+        "title": "Pilihan tidak valid",
+        "message": "Penyesuaian hanya dapat diterapkan pada gambar."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Fitur tidak tersedia",
+        "message": "Penomoran ulang tidak tersedia sampai folder diratakan.\nRatakan folder sebelum menomori ulang."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "Kesalahan ZIP",
+        "message": "'{file}': Bukan arsip ZIP yang valid atau rusak."
+      },
+      "zip_cannot_open": {
+        "title": "Kesalahan ZIP",
+        "message": "Tidak dapat membuka file CBZ: {error}"
+      },
+      "rar_invalid": {
+        "title": "Kesalahan RAR",
+        "message": "'{file}': Bukan arsip RAR yang valid atau rusak."
+      },
+      "rar_cannot_open": {
+        "title": "Kesalahan RAR",
+        "message": "Tidak dapat membuka arsip CBR: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Kesalahan",
+        "message": "Kesalahan tak terduga saat membuka CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menggabungkan gambar."
+      },
+      "paste_failed": {
+        "title": "Kesalahan",
+        "message": "Kesalahan saat menempel: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menyalin arsip: {error}"
+      },
+      "crop_invalid": {
+        "title": "Kesalahan",
+        "message": "Area pemotongan tidak valid."
+      },
+      "crop_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat memotong gambar: {error}"
+      },
+      "load_image_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat memuat gambar:\n{error}"
+      },
+      "print_error": {
+        "title": "Kesalahan pencetakan",
+        "message": "Kesalahan saat mencetak:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Pencetakan tidak tersedia",
+        "message": "Modul win32print tidak terinstal.\nInstal dengan: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "File tidak ditemukan",
+        "message": "File tidak ada lagi:\n{path}"
+      },
+      "import_failed": {
+        "title": "Kesalahan impor",
+        "message": "Tidak dapat mengimpor file: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF tidak terinstal",
+        "message": "Library PyMuPDF (fitz) tidak terinstal.\nInstal dengan: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Kesalahan",
+        "message": "Kesalahan saat mengimpor PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "Kesalahan PDF",
+        "message": "Tidak dapat memuat PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Nama file duplikat",
+        "intro": "{count} nama file duplikat terdeteksi:\n\n",
+        "item": "  • {name} ({times} kali)\n",
+        "more": "  ... dan {more} lainnya\n",
+        "footer": "\nArsip ZIP tidak menerima nama duplikat.\nHarap ganti nama file ini sebelum menyimpan."
+      },
+      "save_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menyimpan file: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat membuat arsip: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menyimpan pilihan: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "Kesalahan pembuatan GIF",
+        "message": "Tidak dapat membuat GIF animasi:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Kesalahan penyimpanan",
+        "message": "Kesalahan saat menyimpan file:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Kesalahan Mengubah Nama",
+        "message": "Tidak dapat mengubah nama file: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF dilindungi kata sandi",
+        "message": "File PDF ini dienkripsi dan dilindungi kata sandi.\nTidak dapat dibuka tanpa kata sandi."
+      },
+      "pdf_unlock_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menyimpan file PDF yang tidak terkunci:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: PDF terenkripsi (kata sandi diperlukan), dilewati",
+      "file_too_large": {
+        "title": "File terlalu besar",
+        "message": "File {filename} berukuran {size} dan melebihi ukuran maksimum yang diizinkan (500 MB) untuk sebuah gambar."
+      },
+      "license_file_not_found": {
+        "message": "File lisensi tidak ditemukan: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Tidak dapat membaca file lisensi: {error}"
+      },
+      "7z_invalid": {
+        "title": "Kesalahan 7Z",
+        "message": "File '{file}' bukan arsip 7Z yang valid atau rusak."
+      },
+      "delete_error": "Kesalahan saat menghapus: {error}",
+      "export_error": "Kesalahan saat mengekspor: {error}",
+      "font_source_not_found": "File sumber font tidak ditemukan: {path}",
+      "no_tengwar_font": "Tidak ada font Tengwar yang ditemukan.",
+      "no_icons_found": "Tidak ada ikon yang ditemukan.",
+      "unsupported_files": {
+        "title": "File tidak didukung",
+        "message": "File-file berikut tidak didukung dan diabaikan:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF berhasil dibuat",
+        "message": "GIF animasi '{name}' telah dibuat dan ditambahkan ke mosaik."
+      },
+      "pywin32_required": {
+        "title": "Fitur tidak tersedia",
+        "message": "Modul pywin32 diperlukan untuk menempel dari clipboard sistem.\nInstal dengan: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Gambar diimpor",
+        "message": "{count} gambar diimpor"
+      },
+      "archive_copied": {
+        "title": "Arsip disalin",
+        "message": "Arsip telah disalin ke clipboard."
+      },
+      "function_not_available": {
+        "title": "Fitur tidak tersedia",
+        "message": "Fitur ini saat ini tidak tersedia."
+      },
+      "duplicate_detected": {
+        "title": "Duplikat terdeteksi",
+        "message": "File dengan nama ini sudah ada.\n\nFile telah diganti namanya menjadi:\n{name}"
+      },
+      "replace_success": {
+        "title": "Berhasil",
+        "message": "Gambar '{name}' berhasil diganti."
+      },
+      "history_cleared": {
+        "title": "Riwayat dihapus",
+        "message": "Daftar file terbaru telah dihapus."
+      },
+      "files_copied_clipboard": {
+        "title": "Disalin ke clipboard",
+        "message": "Drag and drop keluar dari aplikasi tidak tersedia karena alasan teknis.\n\n✓ {count} {word} disalin ke clipboard\n\nAnda sekarang bisa menempel di mana saja:\n  • Klik kanan → Tempel\n  • Atau Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Koreksi selesai",
+        "message": "{count} nama file diperbaiki."
+      },
+      "import_success": {
+        "title": "Impor berhasil",
+        "message": "{count} halaman diimpor dari {file}"
+      },
+      "pdf_import_success": {
+        "title": "Impor berhasil",
+        "message": "{count} halaman PDF diimpor dari {file}\nKualitas: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Berhasil",
+        "message": "PDF berhasil dikonversi!\n{count} halaman dimuat pada {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Berhasil",
+        "message": "File CBZ berhasil disimpan:"
+      },
+      "cbz_converted": {
+        "title": "Berhasil",
+        "message": "File berhasil dikonversi ke CBZ:",
+        "question": "Apakah Anda ingin menghapus file CBR asli?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Berhasil",
+        "message": "File berhasil dikonversi ke CBZ:",
+        "question": "Apakah Anda ingin menghapus file PDF asli?"
+      },
+      "cbz_save_as": {
+        "title": "Berhasil",
+        "message": "File CBZ baru disimpan: {path}"
+      },
+      "cbz_created": {
+        "title": "Berhasil",
+        "message": "Arsip CBZ berhasil dibuat:"
+      },
+      "selection_saved": {
+        "title": "Berhasil",
+        "message": "Pilihan berhasil disimpan:"
+      },
+      "flatten_done": {
+        "title": "Perataan selesai",
+        "message": "{files} file dipindahkan dari {dirs} sub-folder."
+      },
+      "language_changed": {
+        "title": "Bahasa diubah",
+        "message": "Bahasa antarmuka berhasil diubah."
+      },
+      "new_cbz_saved": {
+        "title": "File Tersimpan",
+        "message": "File CBZ baru berhasil disimpan:",
+        "question": "Apakah Anda ingin menghapus file asli?"
+      },
+      "page_count_updated": {
+        "title": "Jumlah halaman diperbarui",
+        "message": "Jumlah halaman dalam metadata telah diperbarui menjadi {count} halaman."
+      },
+      "files_saved": {
+        "title": "Berhasil disimpan",
+        "message": "{count} file disimpan di:\n{folder}",
+        "open_folder": "Apakah Anda ingin membuka folder?"
+      },
+      "adjustments_applied": {
+        "title": "Penyesuaian diterapkan",
+        "message": "Penyesuaian telah berhasil diterapkan."
+      },
+      "pdf_unlocked": {
+        "title": "PDF tidak terkunci",
+        "message": "File PDF yang tidak terkunci telah disimpan:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Arsip besar",
+        "message": "Arsip ini berukuran {size} MB saat diekstrak.\nPemuatan dapat menggunakan banyak memori (RAM).\n\nApakah Anda ingin melanjutkan?"
+      },
+      "confirm_delete": {
+        "title": "Konfirmasi",
+        "message": "Apakah Anda benar-benar ingin menghapus {count} file ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Hapus file sumber?",
+        "message": "Apakah Anda ingin menghapus gambar yang telah digabungkan?\n\nYa = Hapus file sumber\nTidak = Simpan file sumber\nBatal = Batalkan operasi"
+      },
+      "invalid_filenames": {
+        "title": "Nama file tidak valid",
+        "intro": "{count} file mengandung karakter yang dilarang:",
+        "item": "  • {name}",
+        "more": "  ... dan {more} lainnya",
+        "forbidden_chars": "Karakter yang dilarang: {chars}",
+        "fix_question": "Apakah Anda ingin memperbaiki nama-nama ini secara otomatis?\n(Karakter yang dilarang akan diganti dengan '_')"
+      },
+      "close_without_save": {
+        "title": "Simpan sebelum menutup?",
+        "message": "Gambar telah ditambahkan. Apakah Anda ingin membuat arsip CBZ sebelum menutup?"
+      },
+      "flatten_folders": {
+        "title": "Ratakan folder",
+        "subdirs_detected": "Sub-folder terdeteksi:",
+        "files_to_move": "{count} file akan dipindahkan ke root.",
+        "folders_to_delete": "{count} sub-folder akan dihapus.",
+        "continue_question": "Apakah Anda ingin melanjutkan?"
+      },
+      "update_page_count": {
+        "title": "Perbarui jumlah halaman",
+        "message": "Jumlah halaman dalam komik telah berubah.\n\nJumlah halaman yang ditunjukkan dalam metadata: {original}\nJumlah halaman saat ini: {current}\n\nApakah Anda ingin memperbarui jumlah halaman dalam metadata?"
+      },
+      "conversion_complete": {
+        "title": "Konversi selesai",
+        "message": "Konversi selesai!\n\n{count} gambar dikonversi ke format {format} telah ditambahkan setelah pilihan Anda.\n\nHapus gambar asli?",
+        "delete_originals": "Hapus file asli\n{count} file - {size}",
+        "keep_all": "Simpan semuanya\n{count} file - {size}",
+        "cancel_conversion": "Batalkan konversi\n{count} file - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Ekstensi yang salah terdeteksi: file '{filename}' ini adalah CBZ, bukan CBR. Ubah nama?",
+      "title": "Ekstensi salah"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Ekstensi salah terdeteksi: file '{filename}' ini adalah CBR, bukan CBZ. Ubah nama?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Ekstensi salah terdeteksi: file '{filename}' adalah CB7, bukan CBZ/CBR. Ganti nama?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Ukuran thumbnail",
+    "loading": "Mohon tunggu, sedang memuat...\n{percent}%",
+    "resizing": "Harap tunggu, mengubah ukuran...\n{percent}%",
+    "converting": "Harap tunggu, mengonversi...\n{percent}%",
+    "loading_lazy": "Harap tunggu, sedang memuat...\n{percent}%\n\nKarena ukuran file ini besar ({size} MB), halaman akan dimuat secara bertahap. Halaman yang terlihat di layar dimuat segera, halaman lainnya akan dimuat secara otomatis saat menggulir.",
+    "apply_save_cbz": "Terapkan perubahan\ndan simpan file CBZ",
+    "apply_create_cbz": "Terapkan perubahan\ndan buat file CBZ",
+    "import_progress": "Mengimpor...\n{percent}%",
+    "pdf_import_progress": "Mengimpor PDF...\n{percent}%",
+    "pdf_opening": "Membuka file PDF...",
+    "pdf_page": "Halaman {current} / {total}",
+    "warning_close": "Peringatan! Perubahan belum disimpan dan akan hilang!",
+    "language_label": "Bahasa:",
+    "directory_tooltip": "Folder: {name}\n{count} file\nUkuran total: {size} MB",
+    "folder_up_tooltip": "Klik dua kali untuk naik\nke tingkat yang lebih tinggi",
+    "status_bar": "{dirs} folder  |  {files} file ({total_size})  |  {selected} dipilih ({selected_size})",
+    "pdf_converting": "Mengonversi {total} halaman ke gambar pada {dpi} DPI...",
+    "pdf_converting_no_change": "Mengekstrak {total} halaman tanpa modifikasi...",
+    "print_progress": "Mempersiapkan pencetakan...\n{percent}%",
+    "print_preparing": "Mohon tunggu, mempersiapkan pencetakan...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nRingkasan GNU General Public License v3\n\nKEBEBASAN YANG DIBERIKAN\nAnda dapat menggunakan, menyalin, memodifikasi, dan mendistribusikan\nMosaicView, bahkan untuk tujuan komersial.\n\nKEWAJIBAN\nSetiap distribusi (asli atau dimodifikasi) harus :\n– mempertahankan lisensi GPL v3\n– menyertakan kode sumber atau menunjukkan cara mendapatkannya\n– tidak menambahkan pembatasan tambahan\n\nGARANSI\nPerangkat lunak ini didistribusikan TANPA GARANSI APA PUN.\nPenulisnya tidak bertanggung jawab atas kerusakan akibat penggunaannya.\n\nAnda seharusnya telah menerima salinan GNU General Public License bersama program ini. Jika tidak, lihat <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Lihat lisensi lengkap",
+    "license_unrar_text": "File CBZ berbasis format ZIP, format yang bebas dan terbuka. File CBR, sebaliknya, berbasis format RAR, format yang bersifat proprietary.\n\nMosaicView dapat membuka file CBR berkat UnRAR, utilitas yang dikembangkan oleh RARlab dan dapat didistribusikan ulang secara gratis.\n\nSitus resmi: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Lihat Lisensi UnRAR",
+    "saving_cbz": "Menyimpan... {percent}%",
+    "empty_canvas_line1": "Lepaskan di sini satu atau beberapa file CBZ/CBR/CB7/PDF atau gambar Anda",
+    "empty_canvas_line2": "Setelah file dibuka, Anda dapat melanjutkan melepaskan yang lain",
+    "empty_canvas_line3": "Jatuhkan satu atau beberapa folder untuk memulai pemrosesan batch",
+    "icon_toolbar_config_title": "Konfigurasi bilah ikon",
+    "icon_toolbar_active": "Ikon di bilah",
+    "icon_toolbar_hidden": "Ikon dalam cadangan",
+    "license_gpl_full": "Lisensi GNU GPL v3",
+    "license_unrar_full": "Lisensi UnRAR",
+    "licenses_button": "Lisensi",
+    "view_full_gpl_license": "Lihat lisensi GNU GPL v3 lengkap",
+    "license_7zip_text": "File CB7 berbasis format 7z, yang dikembangkan oleh Igor Pavlov dan didistribusikan di bawah lisensi GNU LGPL.\n\nMosaicView dapat membuka file CB7 berkat 7-Zip — utilitas gratis dan sumber terbuka.\n\nSitus resmi : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Lihat lisensi 7-Zip",
+    "license_7zip_full": "Lisensi 7-Zip",
+    "icon_toolbar_show_thumb_slider": "Tampilkan penggeser ukuran gambar kecil",
+    "icon_toolbar_show_lang_combo": "Tampilkan pemilih bahasa",
+    "adjusting": "Harap tunggu, penyesuaian sedang berlangsung...\n{current} / {total}",
+    "license_piqad_full": "Lisensi font pIqaD qolqoS",
+    "license_tengwar_full": "Lisensi font Alcarin Tengwar",
+    "view_full_piqad_license": "Lihat lisensi pIqaD qolqoS lengkap"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Konversi gambar",
+      "title": "Konversi {count} {word}",
+      "word_image": "gambar",
+      "word_images": "gambar",
+      "info": "Pilih format tujuan:",
+      "format_png": "PNG (tanpa kehilangan)",
+      "format_jpg": "JPEG (dengan kompresi)",
+      "format_webp": "WEBP (modern)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (kualitas tinggi)",
+      "format_gif": "GIF (animasi)",
+      "quality_label": "Kualitas untuk JPG/WEBP:",
+      "quality_maximum": "Maksimum — kualitas 95/100",
+      "quality_high": "Tinggi — kualitas 85/100",
+      "quality_medium": "Sedang — kualitas 75/100",
+      "quality_low": "Rendah — kualitas 60/100",
+      "quality_custom_option": "Kustom",
+      "quality_custom": "Kualitas khusus : {value}/100",
+      "quality_note": "(Parameter ini hanya mempengaruhi format JPG dan WEBP)",
+      "quality_window_title": "Quality Selection",
+      "format_gif_static": "GIF statis",
+      "format_gif_animated": "GIF animasi (pilih beberapa gambar)"
+    },
+    "split": {
+      "window_title": "Pisahkan halaman",
+      "title": "Pisahkan halaman",
+      "pages_label": "Jumlah halaman:",
+      "direction_label": "Arah pemisahan:",
+      "horizontal": "Horizontal (kiri → kanan)",
+      "vertical": "Vertikal (atas → bawah)",
+      "warning": "⚠ Pemisahan dihitung secara otomatis,\npenyesuaian manual mungkin diperlukan.",
+      "button_split": "Pisahkan",
+      "button_cancel": "Batal"
+    },
+    "join": {
+      "window_title": "Gabungkan halaman - Atur ulang urutan",
+      "instructions": "Atur gambar:\n• Vertikal (atas/bawah) untuk penggabungan vertikal\n• Horizontal (kiri/kanan) untuk penggabungan horizontal",
+      "merged_filename_prefix": "Gabungan",
+      "heights_label": "Tinggi",
+      "widths_label": "Lebar",
+      "size_adjustment_title": "Penyesuaian ukuran",
+      "size_adjustment_warning": "⚠️ Gambar yang dipilih memiliki dimensi berbeda.\nSilakan pilih cara menyesuaikan ukurannya untuk penggabungan.\nRasio aspek setiap gambar akan selalu dipertahankan.",
+      "keep_original": "Pertahankan ukuran asli",
+      "keep_original_desc": "(menambahkan bilah hitam untuk mengisi)",
+      "enlarge_small": "Perbesar gambar kecil",
+      "enlarge_small_desc": "(sejajarkan ke dimensi maksimum)",
+      "reduce_large": "Perkecil gambar besar",
+      "reduce_large_desc": "(sejajarkan ke dimensi minimum)",
+      "back_to_arrangement": "Kembali"
+    },
+    "pdf": {
+      "quality_merge": "Pilih kualitas penggabungan:",
+      "quality_export": "Pilih kualitas ekspor:",
+      "merge_quality_title": "Kualitas penggabungan PDF",
+      "export_quality_title": "Kualitas ekspor PDF",
+      "loading_title": "Memuat PDF...",
+      "dpi_90": "90 DPI - Publikasi web",
+      "dpi_150": "150 DPI - Kualitas baik (direkomendasikan untuk tampilan)",
+      "dpi_200": "200 DPI - Kualitas sangat baik",
+      "dpi_300": "300 DPI - Kualitas sangat baik (standar komik)",
+      "dpi_600": "600 DPI - Kualitas maksimum (file besar)",
+      "dpi_original": "Tanpa modifikasi gambar",
+      "dpi_original_tooltip": "Analisis cerdas setiap halaman PDF:\n• Halaman hanya gambar: mempertahankan DPI asli\n• Halaman hanya teks: 300 DPI\n• Halaman campuran (teks + gambar): DPI gambar jika >= 300, jika tidak 300 DPI\nMaksimum: 2400 DPI untuk membatasi ukuran file"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF diperlukan",
+      "pymupdf_required_message": "PyMuPDF (fitz) belum terpasang. Tidak dapat mengonversi berkas PDF.",
+      "select_directory_title": "Pilih direktori yang berisi berkas PDF",
+      "no_pdf_title": "Tidak ada berkas PDF",
+      "no_pdf_message": "Tidak ditemukan berkas PDF di direktori:\n{directory}",
+      "confirm_title": "Konversi massal PDF ke CBZ",
+      "confirm_message": "{count} berkas PDF untuk dikonversi di {directory} (subdirektori termasuk).",
+      "checkbox_permanent_delete": "Hapus berkas PDF asli tanpa menggunakan\ntempat sampah (TIDAK DAPAT DIBATALKAN)",
+      "start_button": "Mulai",
+      "converting_title": "Konversi sedang berlangsung...",
+      "converting_progress": "Mengonversi berkas {current} dari total {total}",
+      "page_progress": "Halaman {current} / {total}",
+      "complete_title": "Konversi selesai",
+      "complete_message": "{count} berkas PDF dikonversi di direktori:",
+      "complete_message_errors": "{count} dari {total} berkas PDF dikonversi di direktori:",
+      "errors_count": "{count} kesalahan ditemukan."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Pilih direktori yang berisi file CBR",
+      "no_cbr_title": "Tidak ada file CBR",
+      "no_cbr_message": "Tidak ditemukan file CBR di direktori:\\n{directory}",
+      "confirm_title": "Konversi massal CBR ke CBZ",
+      "confirm_message": "{count} file CBR untuk dikonversi di {directory} (subdirektori termasuk).",
+      "checkbox_permanent_delete": "Hapus file CBR asli tanpa menggunakan\ntempat sampah (TIDAK BISA DIBATALKAN)",
+      "start_button": "Mulai",
+      "converting_title": "Mengonversi...",
+      "converting_progress": "Mengonversi file {current} dari {total}",
+      "page_progress": "Halaman {current} / {total}",
+      "complete_title": "Konversi selesai",
+      "complete_message": "{count} file CBR dikonversi di direktori:",
+      "complete_message_errors": "{count} file CBR dikonversi dari {total} di direktori:",
+      "errors_count": "{count} kesalahan ditemukan.",
+      "renamed_count": "{count} file diganti namanya menjadi CBZ",
+      "rarfile_unavailable": "Modul rarfile tidak tersedia. Tidak dapat mengonversi file CBR."
+    },
+    "close_warning": {
+      "title": "Peringatan!",
+      "message": "Perubahan belum disimpan dan akan hilang!",
+      "btn_close_lose": "Tutup file dan buang perubahan",
+      "btn_save_cbz": "Terapkan perubahan dan simpan file",
+      "btn_create_cbz": "Terapkan perubahan dan buat file CBZ",
+      "btn_cancel": "Batal dan kembali ke mosaik"
+    },
+    "replace_image": {
+      "title": "Ganti gambar yang rusak"
+    },
+    "reduce_size": {
+      "window_title": "Mengubah ukuran gambar",
+      "title": "Mengubah ukuran {count} {word}",
+      "word_image": "gambar",
+      "word_images": "gambar",
+      "current_size": "Ukuran saat ini: {size} MB",
+      "current_dimensions": "Dimensi saat ini: {width} × {height} px",
+      "choose_method": "Pilih metode pengubahan ukuran:",
+      "custom_dimensions": "Dimensi kustom",
+      "width_label": "Lebar:",
+      "height_label": "Tinggi:",
+      "use_custom_dimensions": "Gunakan dimensi ini",
+      "different_dimensions_warning": "Halaman yang dipilih memiliki dimensi berbeda. Dimensi khusus akan memaksa semua halaman ke ukuran yang sama. Pastikan Anda memahami implikasinya sebelum melanjutkan.",
+      "estimated_size": "Ukuran perkiraan: {size} MB",
+      "percentage_reduction": "Pengurangan persentase",
+      "percentage_enlargement": "Pembesaran persentase",
+      "reduce_0": "0% (tidak ada perubahan)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (tidak ada perubahan)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Lebar halaman yang paling umum adalah 1024, 1280, 1600, 1920, dan 2000 piksel, tetapi nilai lain juga cocok.",
+      "multi_page_width": "Deteksi dan ubah ukuran beberapa halaman secara otomatis (lebar/tinggi)",
+      "multi_page_width_tooltip": "Mengaktifkan deteksi otomatis beberapa halaman: halaman ganda, halaman tiga kali lipat dll. Koefisien pengali dihitung secara otomatis berdasarkan rasio setiap halaman, baik dalam lebar (halaman berdampingan) atau tinggi (halaman bertumpuk)"
+    },
+    "gif_animated": {
+      "window_title": "Membuat GIF animasi",
+      "images_title": "Gambar animasi",
+      "params_title": "Parameter GIF",
+      "frame_delay_label": "Penundaan antar gambar:",
+      "fps_normal": "{fps} frame/detik",
+      "fps_slow": "1 frame setiap {seconds} detik",
+      "loop_label": "Jumlah pengulangan:",
+      "loop_info": "(0 = loop tak terbatas)",
+      "disposal_label": "Pengaturan gambar:",
+      "disposal_0": "Tidak ditentukan",
+      "disposal_1": "Pertahankan gambar sebelumnya",
+      "disposal_2": "Kembalikan ke warna latar belakang",
+      "disposal_3": "Kembalikan ke keadaan sebelumnya",
+      "optimize": "Optimalkan file (simpan hanya perbedaan)",
+      "metadata_title": "Metadata GIF",
+      "metadata_dimensions": "Dimensi: {width} × {height} px",
+      "metadata_frames": "Jumlah frame: {count}",
+      "metadata_duration": "Durasi total: {duration} dtk",
+      "metadata_fps": "Frekuensi: {fps} fps",
+      "metadata_palette": "Palet: hingga 256 warna",
+      "metadata_size": "Ukuran perkiraan: {size} KB",
+      "comment_label": "Komentar (opsional):",
+      "no_images": "Tidak ada gambar yang dipilih",
+      "creating_progress": "Memuat gambar... ({current}/{total})",
+      "creating_normalizing": "Menormalkan gambar... ({current}/{total})",
+      "creating_quantizing": "Mengkuantisasi warna... ({current}/{total})",
+      "creating_saving": "Menyimpan GIF..."
+    },
+    "save_to_folder": {
+      "title": "Pilih folder tujuan"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Nama file duplikat",
+      "message": "Nama file yang identik telah terdeteksi. Meskipun penyimpanan secara\nteknis dimungkinkan, ini dapat menyebabkan masalah pembacaan di beberapa\naplikasi pembaca komik (tampilan tidak lengkap, halaman hilang, dll.).\n\nDisarankan untuk menomori ulang halaman sebelum menyimpan."
+    },
+    "adjustments": {
+      "window_title": "Penyesuaian gambar",
+      "title": "Penyesuaian untuk {count} {word}",
+      "word_image": "gambar",
+      "word_images": "gambar",
+      "apply_button": "Terapkan",
+      "color_depth_section": "Kedalaman warna",
+      "brightness_contrast_section": "Kecerahan dan kontras",
+      "compression_section": "Kompresi",
+      "effects_section": "Efek",
+      "sharpness_section": "Ketajaman",
+      "levels_section": "Tingkat hitam/putih",
+      "depth_unchanged": "Jangan ubah",
+      "depth_32bit": "32 bit (RGBA - warna + transparansi)",
+      "depth_24bit": "24 bit (RGB - warna)",
+      "depth_8bit": "8 bit (palet PNG / skala abu-abu JPEG)",
+      "depth_1bit": "1 bit (hitam putih)",
+      "brightness_label": "Kecerahan: {value}",
+      "contrast_label": "Kontras: {value}",
+      "compression_enable": "Aktifkan kompresi ulang",
+      "compression_quality_label": "Kualitas : {value}/100",
+      "sharpness_label": "Ketajaman: {value}",
+      "effect_none": "Tanpa efek",
+      "effect_grayscale": "Skala abu-abu",
+      "effect_sepia": "Sepia",
+      "levels_none": "Tanpa penyesuaian",
+      "levels_threshold": "Ambang batas (hitam atau putih murni)",
+      "levels_advanced": "Tingkat lanjutan (bayangan/nada menengah/sorotan)",
+      "threshold_label": "Ambang batas: {value}",
+      "black_point_label": "Titik hitam: {value}",
+      "gamma_label": "Gamma (nada menengah): {value}",
+      "white_point_label": "Titik putih: {value}",
+      "auto_levels_button": "Penyesuaian otomatis",
+      "open_viewer_button": "Sesuaikan dengan penampil (disarankan)",
+      "compression_info": "Kompresi hanya berlaku untuk gambar JPG dan WebP",
+      "open_viewer_button_simple": "Sesuaikan dengan penampil",
+      "reset_button": "Atur ulang",
+      "preview_section": "Pratinjau",
+      "effect_invert": "Inversi warna",
+      "preview_warning": "Pratinjau dapat berbeda dari hasil akhir",
+      "effect_remove_colors": "Penghapusan warna",
+      "remove_colors_intensity_label": "Intensitas : {value}",
+      "image_mode_section": "Mode gambar",
+      "image_mode_rgb": "RGB (warna)",
+      "image_mode_rgba": "RGBA (warna + transparansi)",
+      "image_mode_l": "L (skala abu-abu)",
+      "image_mode_la": "LA (skala abu-abu + transparansi)",
+      "image_mode_cmyk": "CMYK (cetak)",
+      "image_mode_1": "1 (hitam-putih murni)",
+      "image_mode_p": "P (palet 256 warna)",
+      "saturation_section": "Saturasi",
+      "saturation_label": "Saturasi : {value}",
+      "saturation_viewer_title": "Penyesuaian saturasi",
+      "transparency_section": "Transparansi",
+      "transparency_info": "Transparansi hanya berlaku untuk gambar PNG, WebP, dan ICO",
+      "transparency_type_label": "Jenis :",
+      "transparency_type_flood": "Zona",
+      "transparency_type_global": "Global",
+      "transparency_tolerance_label": "Toleransi : {value}",
+      "transparency_viewer_title": "Penyesuaian transparansi",
+      "transparency_click_instruction": "Klik pada warna yang ingin dijadikan transparan",
+      "transparency_undo": "Batalkan klik terakhir",
+      "transparency_redo": "Ulangi",
+      "transparency_type_flood_tooltip": "Flood fill : membuat area warna seragam di sekitar piksel yang diklik menjadi transparan",
+      "transparency_type_global_tooltip": "Transparansi global : memengaruhi semua piksel gambar yang warnanya mendekati warna yang diklik",
+      "transparency_apply": "Terapkan",
+      "transparency_skipped_warning": "{count} gambar dilewati — format tidak kompatibel dengan transparansi. Untuk menyertakannya, konversi terlebih dahulu ke PNG.",
+      "unsharp_section": "Ketajaman adaptif",
+      "unsharp_radius_label": "Radius: {value}",
+      "unsharp_percent_label": "Intensitas: {value} %",
+      "unsharp_threshold_label": "Ambang batas: {value}",
+      "unsharp_viewer_title": "Ketajaman adaptif",
+      "auto_levels_tooltip": "Menganalisis setiap halaman dan secara otomatis menyesuaikan tingkat hitam dan putih untuk memaksimalkan kontras.\nUntuk memilih halaman per halaman, gunakan penampil."
+    },
+    "levels_viewer": {
+      "title": "Penyesuaian level dengan pipet",
+      "apply_current": "Terapkan ke halaman ini",
+      "apply_all": "Terapkan ke semua halaman yang dipilih",
+      "black_pipette": "Penetes titik hitam",
+      "white_pipette": "Penetes titik putih",
+      "black_pipette_tooltip": "Klik pada piksel yang seharusnya benar-benar hitam. Perhatian: mudah berlebihan!",
+      "white_pipette_tooltip": "Klik pada piksel yang seharusnya benar-benar putih. Perhatian: mudah berlebihan!"
+    },
+    "sharpness_viewer": {
+      "title": "Penyesuaian Ketajaman"
+    },
+    "brightness_viewer": {
+      "title": "Penyesuaian Kecerahan dan Kontras"
+    },
+    "compression_viewer": {
+      "title": "Penyesuaian Kompresi"
+    },
+    "outliers": {
+      "title": "Halaman dengan dimensi tidak biasa",
+      "message": "Halaman berikut memiliki dimensi yang sangat berbeda dari yang lain. Silakan pilih cara menanganinya:",
+      "width": "Lebar",
+      "height": "Tinggi",
+      "unusual": "tidak biasa",
+      "skip": "Jangan ubah ukuran",
+      "keep": "pertahankan"
+    },
+    "first_page_multi": {
+      "title": "Halaman pertama adalah multi-halaman",
+      "message": "Halaman pertama terdeteksi sebagai multi-halaman. Bagaimana Anda ingin menomorinya?",
+      "option_auto_desc": "Penomoran ulang normal dengan deteksi otomatis.",
+      "option_joint_desc": "Gabungan halaman pertama dan terakhir komik.",
+      "option_exclude_label": "Jangan sertakan dalam penomoran ulang",
+      "option_exclude_desc": "Halaman mempertahankan namanya saat ini dan tetap di posisi pertama. Anda dapat mengubah namanya secara manual nanti."
+    },
+    "batch_img": {
+      "select_directory_title": "Pilih folder yang berisi gambar",
+      "no_img_title": "Tidak ada file gambar ditemukan",
+      "no_img_message": "Tidak ada file gambar mandiri yang ditemukan di folder :\n{directory}",
+      "confirm_title": "Konversi massal gambar mandiri ke CBZ",
+      "confirm_message": "{count} file gambar untuk dikonversi di {directory} (termasuk subfolder).",
+      "checkbox_permanent_delete": "Hapus file gambar asli secara permanen\ntanpa mengirimnya ke tempat sampah (TIDAK DAPAT DIBATALKAN)",
+      "start_button": "Mulai",
+      "converting_title": "Konversi sedang berlangsung...",
+      "converting_progress": "Mengonversi file {current} dari total {total}",
+      "complete_title": "Konversi selesai",
+      "complete_message": "{count} file gambar dikonversi di folder :",
+      "complete_message_errors": "{count} dari {total} file gambar dikonversi di folder :",
+      "errors_count": "{count} kesalahan ditemukan.",
+      "converted_by_ext": "{ext} : {count} file",
+      "mode_title": "Konversi gambar ke CBZ",
+      "mode_intro": "Bagaimana Anda ingin mengelompokkan gambar?",
+      "mode_one_per_image": "Konversi setiap gambar menjadi file CBZ terpisah",
+      "mode_one_per_image_sub": "(Setiap gambar menjadi file CBZ terpisah)",
+      "mode_all_in_one": "Kelompokkan semua gambar menjadi satu file CBZ",
+      "mode_all_in_one_sub": "(Semua gambar dalam direktori dikelompokkan menjadi satu file CBZ)"
+    },
+    "batch_drop": {
+      "window_title": "Pemrosesan batch folder",
+      "intro_single": "1 folder dijatuhkan. Pemrosesan apa yang ingin Anda terapkan?",
+      "intro_multiple": "{count} folder dijatuhkan. Pemrosesan apa yang ingin Anda terapkan?",
+      "recursive_note": "Sub-folder juga akan dipindai.",
+      "mixed_drop_title": "Penjatuhan tidak didukung",
+      "mixed_drop_message": "Anda menjatuhkan file dan folder sekaligus. Harap jatuhkan hanya file atau hanya folder."
+    },
+    "pdf_unlock": {
+      "title": "PDF dilindungi dari perubahan",
+      "message": "Halaman telah diimpor secara normal.\n\nFile PDF ini dilindungi dari perubahan (kata sandi pemilik).\n\nApakah Anda ingin menyimpan salinan file PDF tanpa perlindungan ini?",
+      "yes": "Ya, simpan salinan yang tidak terkunci",
+      "no": "Tidak, lanjutkan tanpa membuka kunci"
+    },
+    "batch_pdf_unlock": {
+      "title": "File PDF dilindungi dari modifikasi",
+      "message_single": "1 file PDF yang dilindungi dari modifikasi terdeteksi. File tersebut telah dikonversi ke CBZ secara normal.\n\nApakah Anda ingin menyimpan salinan yang tidak terkunci di direktori aslinya?",
+      "message_plural": "{count} file PDF yang dilindungi dari modifikasi terdeteksi. File-file tersebut telah dikonversi ke CBZ secara normal.\n\nApakah Anda ingin menyimpan salinan yang tidak terkunci dari masing-masing di direktori aslinya?",
+      "yes": "Ya, simpan salinan yang tidak terkunci",
+      "no": "Tidak, lanjutkan tanpa membuka kunci"
+    },
+    "ico_creator": {
+      "title": "Buat ikon .ico",
+      "info_message": "Gambar akan diubah ukurannya menjadi beberapa resolusi (16, 32, 48, 64, 128, 256 px).\nUkuran bingkai saat ini: {w} × {h} px",
+      "btn_validate_crop": "Konfirmasi pemotongan",
+      "btn_validate_no_crop": "Konfirmasi tanpa pemotongan",
+      "btn_cancel": "Batal",
+      "btn_transparency": "Atur transparansi",
+      "btn_validate_final": "Konfirmasi",
+      "tolerance_label": "Toleransi:",
+      "success_title": "File .ico dibuat",
+      "success_message": "File {filename} berhasil dibuat.",
+      "overwrite_title": "File sudah ada",
+      "overwrite_message": "File {filename} sudah ada. Timpa?",
+      "save_blocked_title": "Tidak dapat menyimpan",
+      "save_blocked_message": "Arsip ini berisi satu atau lebih file .ico yang bukan gambar komik. Penyimpanan dinonaktifkan selama file-file ini ada di mosaik.\nUntuk mengaktifkan kembali penyimpanan, hapus dari mosaik (tombol Del) atau potong (Ctrl+X) untuk ditempel di tempat lain.",
+      "btn_back_to_crop": "Kembali ke pemotongan"
+    },
+    "video_save_blocked": {
+      "title": "Tidak dapat menyimpan",
+      "message": "Arsip ini berisi satu atau lebih file video. Penyimpanan dinonaktifkan selama file-file ini ada di mosaik.\nUntuk mengaktifkan kembali penyimpanan, hapus dari mosaik (tombol Del) atau potong (Ctrl+X) untuk ditempel di tempat lain."
+    },
+    "open_file": {
+      "title": "Buka arsip",
+      "filter_archives": "Arsip (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Semua file (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Lisensi"
+    },
+    "replace_corrupted_image": {
+      "title": "Ganti gambar yang rusak",
+      "filter_images": "Gambar (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Semua file (*)"
+    },
+    "see_log": "LIHAT LOG"
+  },
+  "tooltip": {
+    "source_archive": "File sumber: {name}",
+    "file": "File: {name}",
+    "reason": "Alasan: {reason}",
+    "size_kb": "Ukuran: {size} KB",
+    "size_mb": "Ukuran: {size} MB",
+    "file_size": "Ukuran: {size}",
+    "dimensions": "Dimensi: {width} × {height} px",
+    "resolution": "Resolusi: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: tidak terdefinisi",
+    "cbr_info": "File CBR menggunakan format RAR, yang bersifat proprietary dan dipatenkan;\nmereka tidak dapat dimodifikasi, perubahan disimpan ke file CBZ baru.",
+    "rotate_left": "Rotasi 90 derajat ke kiri",
+    "rotate_right": "Rotasi 90 derajat ke kanan",
+    "mirror_horizontal": "Balik horizontal",
+    "mirror_vertical": "Balik vertikal",
+    "fullscreen": "Layar penuh",
+    "help_button": "Panduan pengguna",
+    "theme_button": "Beralih antara tema terang dan gelap",
+    "font_decrease_button": "Kurangi ukuran font",
+    "font_increase_button": "Perbesar ukuran font",
+    "color_depth": "Warna: {bits} bit ({mode})",
+    "batch_pdf_to_cbz": "Mengonversi ke CBZ semua file PDF dalam\ndirektori dan subdirektorinya. Gambar diekstrak\ndan diarsipkan apa adanya, tanpa kompresi\nulang.",
+    "batch_pdf_permanent_delete": "PERINGATAN: jika opsi ini dicentang,\nfile PDF asli akan dihapus secara permanen\nsetelah konversi, tanpa kemungkinan\npemulihan. Pastikan Anda memiliki\ncadangan jika diperlukan.",
+    "batch_cbr_to_cbz": "Mengonversi ke CBZ semua file CBR\nyang terdapat dalam direktori\ndan subdirektorinya.",
+    "batch_cbr_permanent_delete": "PERINGATAN: jika opsi ini dicentang,\nfile CBR asli akan dihapus secara permanen\nsetelah konversi, tanpa kemungkinan\npemulihan. Pastikan Anda memiliki\ncadangan jika diperlukan.",
+    "renumber_btn_1": "Mode deteksi otomatis halaman ganda\nKlik kanan untuk mengganti mode",
+    "renumber_btn_2": "Mode penomoran sederhana\nKlik kanan untuk mengganti mode",
+    "corrupted_header": "Gambar rusak",
+    "right_click_instruction1": "Klik kanan untuk mengganti atau menghapus",
+    "right_click_instruction2": "gambar ini.",
+    "unknown_error": "Kesalahan tidak diketahui",
+    "batch_img_to_cbz": "Mengonversi semua file gambar yang ditemukan di folder\ndan subfoldernya ke CBZ,\nmembuat satu file CBZ per gambar.",
+    "batch_img_permanent_delete": "PERINGATAN : jika opsi ini dicentang,\nfile gambar asli akan dihapus secara permanen\nsetelah konversi, tanpa kemungkinan\npemulihan. Pastikan Anda memiliki cadangan\njika diperlukan.",
+    "too_large_header": "Gambar terlalu besar untuk dimuat",
+    "too_large_pixels": "Dimensi: {pixels}",
+    "icon_toolbar_config_button": "Konfigurasi ikon",
+    "icon_toolbar_size_decrease": "Perkecil ukuran ikon",
+    "icon_toolbar_size_increase": "Perbesar ukuran ikon",
+    "source_loose": "Gambar lepas",
+    "source_web": "Gambar web"
+  },
+  "help": {
+    "title": "MosaicView - Panduan Penggunaan",
+    "intro": "MosaicView memungkinkan Anda memanipulasi dan mengedit komik (buku komik digital) tanpa perlu mengekstraknya dari arsip. Aplikasi mendukung format CBZ (ZIP), CBR (RAR) dan PDF. Aplikasi ini hanya kompatibel dengan sistem 64-bit.",
+    "open_files": "Membuka file",
+    "open_files_content": "• Klik tombol 'Buka CBZ/CBR/CB7/PDF'\n• Atau drag and drop file langsung ke jendela\n• Format yang didukung: CBZ, CBR, CB7, PDF, gambar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). File EPUB juga dapat dibuka, tetapi hanya gambar mereka yang akan diekstraksi (teks diabaikan).\n• PDF terenkripsi (kata sandi diperlukan untuk membuka): file tidak dapat diimpor, pesan kesalahan ditampilkan.\n• PDF dilindungi dari perubahan (owner password): halaman diimpor secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak terkunci di folder yang sama.",
+    "mosaic": "Mosaik",
+    "mosaic_content": "Mosaik menampilkan semua halaman buku komik Anda sebagai gambar mini. Anda dapat:\n• Menyusun ulang halaman dengan menyeret dan melepas (penomoran halaman akan otomatis, dan akan mengikuti mode penomoran ulang yang aktif)\n• Memilih beberapa halaman (Ctrl+klik atau Shift+klik)\n• Menyesuaikan ukuran gambar mini dengan penggeser\n• Mengganti nama file secara manual dengan mengklik namanya\n• Menyeret dan melepas file buku komik (CBZ/CBR/PDF) dari Windows Explorer langsung ke buku komik terbuka lainnya untuk menggabungkan kontennya",
+    "manipulation": "Manipulasi halaman",
+    "manipulation_content": "• Seret dan lepaskan halaman untuk mengatur ulang\n• Seret seluruh komik ke komik lain untuk menggabungkannya\n• Klik kanan pada halaman untuk mengakses opsi (rotasi, penghapusan, dll.)\n• Klik dua kali pada halaman untuk membuka penampil\n• Ekspor halaman individual dengan menyeretnya ke folder Windows, atau melalui Ctrl+C / Ctrl+V",
+    "renumber": "Penomoran ulang halaman",
+    "renumber_content": "MosaicView menawarkan dua mode penomoran ulang halaman, dapat diakses melalui tombol penomoran ulang, menu konteks (klik kanan), atau secara otomatis saat seret dan lepas:\n\n• Mode deteksi otomatis halaman ganda (mode default): aplikasi menganalisis lebar setiap halaman untuk mendeteksi halaman ganda, tiga kali lipat, dll. Halaman ganda dinomori ulang sesuai (contoh: halaman ganda akan diberi nama 003-004, tiga kali lipat 005-006-007). Lebih dari 4 halaman, hanya nomor pertama dan terakhir yang ditampilkan (contoh: 010---025).\n\n• Mode penomoran sederhana: setiap halaman menerima nomor urut unik (001, 002, 003...), tanpa memperhatikan lebar halaman.\n\nUntuk beralih antara kedua mode, klik kanan pada tombol penomoran ulang. Tooltip menunjukkan mode yang aktif. Mode yang dipilih juga berlaku untuk penomoran ulang otomatis saat seret dan lepas.",
+    "flatten": "Ratakan direktori",
+    "flatten_content": "Jika arsip Anda berisi sub-folder, gunakan 'Ratakan direktori' untuk membawa semua gambar ke tingkat yang sama.",
+    "viewer": "Penampil",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka penampil:\n• Tombol ← →: navigasi antar halaman\n• Tombol D: beralih antara 3 mode baca\n  - Halaman tunggal: satu halaman sekaligus\n  - Halaman ganda: halaman 1 sendiri, lalu 2-3, 4-5, dll.\n  - Halaman ganda berkelanjutan: halaman 1 sendiri, lalu 2-3, 3-4, 4-5, dll.\n• Roda mouse: navigasi cepat\n• Ctrl+Roda atau Ctrl+Plus/Minus: zoom\n• Ctrl+0: reset zoom\n• Tombol F11: layar penuh\n• Klik dua kali: toggle layar penuh\n• Tombol Esc: batalkan bingkai pangkas / tutup penampil",
+    "join_pages": "Gabungkan halaman",
+    "join_pages_content": "Pilih beberapa halaman berurutan, klik kanan → 'Gabungkan halaman yang dipilih' untuk menggabungkan halaman secara horizontal atau vertikal. Format gambar yang dihasilkan sesuai dengan format halaman sumber jika semuanya identik, jika tidak maka PNG secara default.",
+    "split_pages": "Pisahkan halaman",
+    "split_pages_content": "Untuk membagi halaman ganda secara otomatis:\n• Pilih halaman yang akan dipisahkan\n• Klik kanan → 'Pisahkan halaman yang dipilih'\n• Pilih arah (vertikal atau horizontal)",
+    "crop": "Pemotongan di penampil",
+    "crop_content": "Di penampil, gambar persegi panjang pada gambar untuk mendefinisikan area pemotongan:\n• Gambar persegi panjang dengan mouse\n• Ubah ukurannya dengan menarik tepi atau sudut\n• Klik 'Konfirmasi pemotongan' untuk menerapkan\n• Pemotongan diterapkan pada gambar saat ini\n• Tombol Esc: batalkan bingkai pangkas",
+    "shortcuts": "Pintasan keyboard",
+    "shortcuts_content": "• Ctrl+Z: Batalkan tindakan terakhir\n• Ctrl+Y: Ulangi tindakan yang dibatalkan\n• Ctrl+A: Pilih semua halaman\n• Ctrl+I: Balik pilihan\n• Ctrl+C: Salin halaman yang dipilih\n• Ctrl+X: Potong halaman yang dipilih\n• Ctrl+V: Tempel halaman\n• Delete: Hapus halaman yang dipilih\n• F5: Perbarui tampilan mosaik\n• F11: Beralih layar penuh (keluar dengan F11 atau ESC)",
+    "dark_mode": "Mode gelap",
+    "dark_mode_content": "Klik tombol matahari/bulan untuk beralih antara tema terang dan gelap.",
+    "sort": "Urutkan halaman",
+    "sort_content": "Gunakan tombol 'Urutkan' untuk mengatur ulang halaman secara otomatis berdasarkan:\n• Nama, Tipe, Ukuran, Lebar, Tinggi, Resolusi atau DPI",
+    "save": "Simpan",
+    "save_content": "• 'Simpan': simpan perubahan ke file asli\n• 'Simpan sebagai': buat arsip baru\n• 'Buat CBZ': tersedia dalam mode gambar saja (tanpa arsip)",
+    "other": "Fungsi lainnya",
+    "other_content": "• Rotasi: putar satu atau beberapa halaman\n• Konversi: konversi gambar ke format berbeda (PNG, JPEG, WEBP, BMP, TIFF, GIF). Catatan: gambar dalam mode CMYK secara otomatis dikonversi ke RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Catatan: gambar dalam mode CMYK secara otomatis dikonversi ke RGB\n• Pencetakan: cetak halaman yang dipilih atau semua halaman\n• Ekstraksi: ekstrak halaman tertentu\n• Tab Metadata: menampilkan informasi file ComicInfo.xml (jika ada dalam arsip). Jika Anda menambah atau menghapus halaman dari komik yang berisi metadata, aplikasi akan menyarankan untuk mengubah jumlah halaman yang tercantum di sana. Metadata lainnya tidak dapat dimodifikasi. Batasan ini disengaja dan merupakan hasil dari pilihan desain.",
+    "config_files": "File konfigurasi dan file sementara",
+    "config_files_content": "MosaicView membuat file bernama .mosaicview_config.json. File ini berisi beberapa parameter yang diperlukan agar tombol reset berfungsi dengan baik, serta daftar komik yang baru dibuka yang jelas diperlukan untuk menampilkan file yang baru dibuka. MosaicView juga menyimpan file sementara, yang diperlukan untuk berbagai operasi pemrosesan gambar.\nSemua file ini terletak di direktori {temp_dir}.\nFile sementara dihapus setiap kali aplikasi ditutup, tetapi file .mosaicview_config.json, menurut sifatnya, dirancang untuk disimpan.\nNamun, Anda dapat menghapus file ini secara manual dengan masuk ke direktori {temp_dir} atau dengan mengklik tombol di bawah ini. File .mosaicview_config.json akan dibuat ulang setiap kali aplikasi dibuka, dan file sementara akan dibuat ulang sesuai kebutuhan.",
+    "config_clear_temp": "Hapus file sementara",
+    "config_clear_recent": "Hapus file terbaru",
+    "config_clear_config": "Hapus file konfigurasi",
+    "config_temp_cleared": "File sementara berhasil dihapus.",
+    "config_config_cleared": "File konfigurasi berhasil dihapus.\nIni akan dibuat ulang pada startup aplikasi berikutnya.",
+    "language": "Pemilihan bahasa",
+    "language_content": "MosaicView tersedia dalam berbagai bahasa.\nSecara default, aplikasi secara otomatis mendeteksi bahasa sistem operasi Anda dan ditampilkan dalam bahasa tersebut jika didukung. Jika sistem Anda menggunakan bahasa yang tidak didukung, antarmuka ditampilkan dalam bahasa Inggris.\nAnda dapat mengubah bahasa secara manual kapan saja menggunakan menu dropdown yang terletak di bagian bawah kolom tombol, di bawah penggeser ukuran thumbnail. Pilihan Anda akan disimpan dan diterapkan saat Anda memulai aplikasi berikutnya.\nBAHASA YANG TERSEDIA: Arab, Armenia, Bulgaria, Ceska, Denmark, Estonia, Filipina, Finlandia, Hongaria, Hindi, Indonesia, Inggris, Irlandia, Islandia, Italia, Jepang, Jerman, Korea, Kroasia, Latvia, Lituania, Melayu, Malta, Norwegia, Perancis, Polandia, Portugis, Rumania, Spanyol, Slowakia, Slovenia, Swedia, Tamil, Thai, Tionghoa (Disederhanakan), Tionghoa (Tradisional), Turki, Ukraina, Vietnam, Yunani, Belanda.\nBAHASA FIKSI YANG TERSEDIA: klingon (versi alfabet Latin dan alfabet pIqaD), sindarin (versi alfabet Latin dan alfabet tengwar), quenya (versi alfabet Latin dan alfabet tengwar).\n\nUtilitas ini menggunakan font Windows, kecuali untuk font pIqaD (bahasa Klingon) dan tengwar (bahasa Elf: Sindarin dan Quenya). Font-font ini bebas hak cipta dan berasal dari situs-situs berikut:\n- untuk pIqaD (alfabet bahasa Klingon): {url_piqad}\n- untuk tengwar (alfabet Elf, untuk Sindarin dan Quenya): {url_tengwar}\nJika situs-situs ini tidak lagi aktif, Anda dapat mengunduh font pIqaD dan tengwar dengan mengklik tombol di bawah ini:\n\nPerangkat lunak ini dikembangkan dalam bahasa Prancis. Terjemahan ke bahasa lain dilakukan menggunakan AI, khususnya Claude. Saya memutuskan untuk mendukung sekitar empat puluh bahasa. Tetapi tentu saja, saya tidak berbicara semua bahasa ini. Oleh karena itu, saya tidak punya pilihan lain selain menggunakan AI, karena mempekerjakan dan membayar 40 penerjemah yang berbeda bukan di antara kemungkinan yang dipertimbangkan. Karena sifat otomatis dari terjemahan ini, mungkin ada kesalahan. Saya meminta maaf atas hal ini.",
+    "credits": "Vibe Coding, cintaku",
+    "credits_content": "Saya tidak tahu apa-apa tentang pemrograman. Sama sekali tidak. Akibatnya, saya mengembangkan perangkat lunak ini dengan bantuan Claude, AI dari Anthropic, dan lebih khusus lagi dengan Claude Code. Saya sangat merekomendasikan Claude Code, aplikasi ini luar biasa!",
+    "resize_pages": "Ubah ukuran halaman",
+    "resize_pages_content": "Untuk mengurangi atau memperbesar halaman Anda:\n• Pilih satu atau lebih halaman\n• Klik kanan → 'Ubah ukuran'\n• Tiga opsi tersedia:\n  - Dimensi khusus: masukkan lebar atau tinggi yang diinginkan (rasio aspek dipertahankan secara otomatis).\n  - Pengurangan persentase: pilih persentase dari 10% hingga 90%\n  - Pembesaran persentase: pilih persentase dari 10% hingga 100%\n• Aplikasi menampilkan ukuran perkiraan gambar Anda setelah modifikasi\n• Modifikasi diterapkan segera ke semua halaman yang dipilih",
+    "language_export_piqad": "Font pIqaD",
+    "language_export_tengwar": "Font tengwar",
+    "language_export_piqad_success": "Font diekspor: {filename}\nTersedia di:",
+    "language_export_tengwar_success": "{count} font diekspor\nTersedia di:",
+    "icons": "Ikon",
+    "icons_content": "Sebagian besar ikon yang digunakan dalam utilitas ini berasal dari situs ini dan bebas digunakan untuk keperluan non-komersial: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nBeberapa telah dimodifikasi oleh saya.\nHanya satu ikon, ikon file yang dapat dieksekusi Windows, dibuat oleh saya (tetapi dengan AI, karena saya adalah desainer grafis yang sangat, sangat, sangat buruk). Anda memiliki izin saya untuk menggunakan ikon ini sesuka Anda selama Anda mengutip sumber Anda.",
+    "icons_view_button": "Lihat ikon",
+    "icons_window_title": "Ikon MosaicView",
+    "icons_save_all": "Simpan ikon",
+    "icons_saved_success": "{count} ikon disimpan di:",
+    "icons_save_failed": "Tidak dapat menyimpan ikon: {error}",
+    "split_ui": "Antarmuka dua panel",
+    "split_ui_content": "MosaicView memungkinkan tampilan dua arsip secara bersamaan, berdampingan.\n\nKlik ikon Pisah untuk membuka panel kedua. Setiap panel bersifat independen: Anda dapat membuka, mengedit, dan menyimpan arsip secara terpisah. Panel aktif ditandai dengan bingkai biru.\n\nUntuk memindahkan halaman dari satu panel ke panel lain, seret langsung. Jika beberapa halaman dipilih, semuanya berpindah bersama. Halaman disisipkan pada posisi yang ditunjukkan oleh bilah merah.\n\nKlik ikon Tutup panel kedua untuk kembali ke mode panel tunggal.",
+    "license_gpl": "Lisensi GPL v3",
+    "license_unrar": "Lisensi UnRAR",
+    "config_clear_clipboard": "Hapus file clipboard",
+    "config_clipboard_note": "Pengecualian: File sementara yang digunakan oleh clipboard Windows (file clipboard_XXXXX) disimpan selama 12 jam setelah menyalin, sehingga Anda dapat menempelkannya bahkan setelah menutup aplikasi. Setelah 12 jam, file tersebut akan dihapus secara otomatis.",
+    "config_log_note": "Konversi batch (PDF ke CBZ dan CBR ke CBZ) membuat file log saat terjadi kesalahan. File-file ini (Log_pdftocbz_.txt dan Log_cbrtocbz_.txt) disimpan bahkan setelah menutup aplikasi, sehingga dapat ditinjau kemudian. File tersebut hanya dihapus melalui tombol \"Hapus file sementara\" di atas.",
+    "config_clipboard_cleared": "File clipboard telah berhasil dihapus.",
+    "adjust_images": "Penyesuaian gambar",
+    "adjust_images_content": "Fungsi ini memungkinkan Anda menyentuh ulang gambar langsung di MosaicView. Anda dapat mengubah kecerahan, kontras, ketajaman, level, saturasi, menerapkan efek (hitam putih, sepia, inversi warna), menyesuaikan kualitas kompresi, menghapus warna, menerapkan transparansi, atau mengonversi ke kedalaman warna yang berbeda. Beberapa pengaturan memiliki penampil khusus yang memungkinkan Anda melihat hasilnya dalam resolusi penuh sebelum diterapkan. Pratinjau miniatur menampilkan hasilnya secara real time di jendela utama.",
+    "create_icon": "Buat ikon",
+    "create_icon_content": "MosaicView memungkinkan Anda membuat file ikon (.ico) dari gambar mana pun di mosaik.\n• Klik kanan pada gambar → 'Buat ikon'\n• Bingkai area yang diinginkan di penampil (ikon akan berbentuk persegi)\n• Sesuaikan transparansi jika diperlukan\n• Konfirmasi: file .ico ditambahkan langsung ke mosaik\n• File .ico secara otomatis berisi semua resolusi standar (dari 16×16 hingga 256×256)\n• Selama ada file .ico di mosaik, penyimpanan ke arsip CBZ diblokir karena format ICO tidak didukung oleh arsip tersebut. Ekspor file .ico secara terpisah (Ctrl+C lalu tempel ke folder Windows), kemudian hapus dari mosaik sebelum menyimpan.",
+    "batch_convert": "Konversi massal",
+    "batch_convert_content": "MosaicView menawarkan tiga fungsi konversi batch, tersedia hanya ketika mosaik kosong. Untuk masing-masing, prinsipnya sama : pilih direktori, konfirmasi, ikuti kemajuan secara real time, tinjau ringkasan akhir. Sebuah opsi memungkinkan penghapusan permanen file asli alih-alih mengirimnya ke tempat sampah.\n• CBR → CBZ : mengonversi semua file CBR (RAR) dalam direktori dan subdirektorinya. Jika CBR sebenarnya adalah ZIP, file tersebut cukup diubah namanya tanpa konversi.\n• PDF → CBZ : mengonversi semua file PDF dalam direktori dan subdirektorinya. Gambar diekstraksi tanpa kompresi ulang.\n• GAMBAR TERPISAH → CBZ : membuat CBZ individual untuk setiap file gambar yang ditemukan di direktori dan subdirektorinya. Gambar yang tidak valid, rusak, multi-halaman (TIFF) atau animasi (GIF) diabaikan dan dicatat dalam log.",
+    "config_open_temp_folder": "Buka folder sementara",
+    "icon_toolbar": "Bilah ikon",
+    "icon_toolbar_content": "Bilah ikon memberikan akses cepat ke fungsi utama aplikasi. Anda dapat mengatur ulang ikon sesuai keinginan dengan menyeretnya langsung ke bilah. Untuk memilih ikon mana yang ditampilkan atau disembunyikan, klik tombol roda gigi di bagian bawah bilah: jendela konfigurasi akan terbuka tempat Anda dapat memindahkan ikon antara bilah aktif dan cadangan. Gunakan tombol « + » dan « − » untuk menyesuaikan ukuran ikon. Konfigurasi disimpan secara otomatis.",
+    "license_7zip": "Lisensi 7-Zip"
+  },
+  "misc": {
+    "file_word": "file",
+    "files_word": "file",
+    "corrupted": "rusak",
+    "yes": "Ya",
+    "no": "Tidak",
+    "cancel": "Batal",
+    "selection_suffix": "pilihan-salinan"
+  },
+  "metadata": {
+    "title": "Judul",
+    "series": "Seri",
+    "number": "Nomor",
+    "volume": "Volume",
+    "summary": "Ringkasan",
+    "writer": "Penulis",
+    "penciller": "Penggambar",
+    "inker": "Peninta",
+    "colorist": "Pewarna",
+    "letterer": "Penulisan huruf",
+    "cover_artist": "Artis sampul",
+    "editor": "Editor",
+    "publisher": "Penerbit",
+    "imprint": "Jejak",
+    "genre": "Genre",
+    "web": "Situs web",
+    "page_count": "Jumlah halaman",
+    "language_iso": "Bahasa",
+    "format": "Format",
+    "black_and_white": "Hitam dan putih",
+    "manga": "Manga",
+    "year": "Tahun",
+    "month": "Bulan",
+    "day": "Hari",
+    "notes": "Catatan",
+    "characters": "Karakter",
+    "locations": "Lokasi",
+    "teams": "Tim",
+    "story_arc": "Busur cerita",
+    "story_arc_number": "Nomor busur",
+    "series_group": "Grup seri",
+    "count": "Jumlah edisi",
+    "alternate_series": "Seri alternatif",
+    "alternate_number": "Nomor alternatif",
+    "alternate_count": "Jumlah alternatif",
+    "age_rating": "Peringkat usia",
+    "series_complete": "Seri lengkap",
+    "translator": "Penerjemah",
+    "tags": "Tag",
+    "scan_information": "Informasi pemindaian",
+    "community_rating": "Penilaian komunitas",
+    "review": "Ulasan",
+    "gtin": "GTIN",
+    "pages": "Halaman",
+    "pages_col_image": "Gambar",
+    "pages_col_type": "Jenis",
+    "pages_col_width": "Lebar",
+    "pages_col_height": "Tinggi",
+    "pages_col_size": "Ukuran (B)"
+  },
+  "web": {
+    "web_download_progress": "Mengunduh: {downloaded}/{total} gambar...",
+    "web_download_cancel": "Batal",
+    "web_no_images": "Tidak ada gambar",
+    "web_no_images_found": "Tidak ada gambar yang ditemukan di halaman ini.",
+    "web_imported": "{count} gambar diimpor dari halaman web",
+    "web_drag_drop_title": "Seret dan lepas gambar web",
+    "web_copy_paste_message": "Seret dan lepas langsung dari browser web tidak didukung.\n\nSolusi alternatif (lebih sederhana):\n\n1. Klik kanan pada gambar di browser Anda\n2. Pilih 'Salin gambar'\n3. Di MosaicView, gunakan tombol 'Tempel' atau Ctrl+V\n\nMetode ini berfungsi dengan semua gambar web!",
+    "import_web_button": "Impor web",
+    "import_web_tooltip": "Tempelkan alamat internet untuk mengambil semua gambar dari halaman",
+    "import_web_menu": "Impor web...",
+    "import_web_dialog_title": "Impor gambar dari halaman web",
+    "import_web_url_label": "Alamat halaman web:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Batal",
+    "import_web_invalid_url": "URL tidak valid. Harap masukkan alamat web yang valid."
+  },
+  "donation": {
+    "menu_label": "Donasi kepada penulis",
+    "title": "Buat donasi",
+    "message": "Anda menyukai utilitas kecil ini dan menggunakannya secara teratur.\n\nSaya telah menginvestasikan beberapa ratus jam di dalamnya. Apakah Anda akan mempertimbangkan untuk berterima kasih kepada saya dengan membuat donasi? Tolong baik, saya benar-benar membutuhkan uang untuk mengisi kolam renang saya dengan sampanye. Apakah Anda ingin mengirim saya beberapa sen atau beberapa miliar euro, saya menerima semua jumlah. Anda dapat membuat donasi ini melalui paypal"
+  },
+  "mail": {
+    "tooltip": "Tombol ini membuka perangkat lunak email default Anda di Windows untuk mengirim email. Jika tidak ada perangkat lunak yang dikonfigurasi (misalnya jika Anda hanya menggunakan webmail), Anda dapat menyalin alamat MosaicView ke clipboard dengan mengklik kanan pada ikon.",
+    "copy_address": "Salin alamat email MosaicView",
+    "menu_label": "Kirim email ke MosaicView",
+    "icon_label": "Kirim email"
+  },
+  "menu": {
+    "file": "Berkas",
+    "file_open": "Buka berkas",
+    "file_close": "Tutup berkas",
+    "batch_convert": "Konversi file secara massal",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Gambar terpisah → CBZ",
+    "edit": "Sunting",
+    "undo": "Batalkan",
+    "redo": "Ulangi",
+    "paste": "Tempel",
+    "delete": "Hapus",
+    "invert_selection": "Balik pilihan",
+    "select_all": "Pilih semua",
+    "deselect": "Batalkan pilihan",
+    "refresh_mosaic": "Segarkan mosaik",
+    "images": "Gambar",
+    "rotation": "Rotasi",
+    "archives": "Arsip",
+    "sort": "Urutkan",
+    "system": "Sistem",
+    "decrease_font": "Kecilkan font",
+    "increase_font": "Perbesar font",
+    "language": "Bahasa",
+    "language_real": "Bahasa nyata",
+    "language_fictional": "Bahasa fiktif",
+    "about": "Tentang",
+    "export_piqad_font": "Simpan font pIqaD",
+    "export_tengwar_fonts": "Simpan font tengwar"
+  }
+}

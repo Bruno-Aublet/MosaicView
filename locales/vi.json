@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Công cụ đa năng cho người sưu tập truyện tranh số",
+  "buttons": {
+    "open_file": "Mở CBZ/CBR/CB7/PDF",
+    "close_file": "Đóng tệp",
+    "create_cbz": "Tạo kho lưu trữ CBZ",
+    "flatten_dirs": "Di chuyển tất cả tệp\nvề thư mục gốc và xóa\nthư mục con",
+    "renumber": "Đánh số\ntrang lại",
+    "undo": "⤺ Hoàn tác",
+    "redo": "Làm lại ⤻",
+    "copy": "Sao chép",
+    "cut": "Cắt",
+    "paste": "Dán",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Chuyển đổi sang\nđịnh dạng ảnh khác",
+    "join_pages": "Ghép trang",
+    "split_page": "Tách trang",
+    "save_as": "Lưu dưới dạng\n(tạo CBZ mới)",
+    "save_selection": "Lưu phần chọn\nthành CBZ",
+    "print_selection": "In phần chọn",
+    "print_all": "In toàn bộ truyện",
+    "sort": "Sắp xếp",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Chuyển đổi",
+    "cancel": "Hủy",
+    "split_button": "Tách",
+    "join_button": "Bắt đầu",
+    "validate_crop": "Xác nhận cắt",
+    "ok": "OK",
+    "close": "Đóng",
+    "apply_and_save": "Áp dụng thay đổi và lưu tệp",
+    "apply_and_create": "Áp dụng thay đổi và tạo tệp CBZ",
+    "close_and_lose": "Đóng tệp và hủy thay đổi",
+    "cancel_return": "Hủy và quay lại mosaic",
+    "update_page_count": "Cập nhật số trang\ntrong metadata",
+    "invert_selection": "Đảo ngược lựa chọn",
+    "reduce_size": "Thay đổi kích thước trang",
+    "mirror_vertical": "⇅",
+    "create_gif": "Tạo GIF",
+    "edit_gif": "Chỉnh sửa GIF động",
+    "save_to_folder": "Xuất các trang\nđã chọn",
+    "continue": "Tiếp tục",
+    "reset": "↻",
+    "yes": "Có",
+    "no": "Không",
+    "renumber_recommended": "Đánh số lại (được khuyến nghị)",
+    "ignore_and_save": "Bỏ qua và lưu",
+    "rename_to_cbz": "Đổi tên thành .cbz",
+    "open_without_rename": "Mở mà không đổi tên",
+    "rename_to_cbr": "Đổi tên thành .cbr",
+    "adjustments": "Độ sáng,\nđộ tương phản...",
+    "batch_cbr_to_cbz": "Chuyển đổi hàng loạt\n tập CBR sang CBZ",
+    "batch_pdf_to_cbz": "Chuyển đổi hàng loạt\n tệp PDF sang CBZ",
+    "batch_img_to_cbz": "Chuyển đổi hàng loạt\n ảnh độc lập sang CBZ",
+    "icon_toolbar_reset": "Đặt lại",
+    "delete_selected": "Xóa",
+    "save": "Lưu",
+    "rename_to_cb7": "Đổi tên thành .cb7",
+    "split_ui": "Chia giao diện thành hai bảng",
+    "unsplit_ui": "Đóng bảng thứ hai"
+  },
+  "tabs": {
+    "mosaic": "Mosaic",
+    "metadata": "Siêu dữ liệu"
+  },
+  "viewer": {
+    "title": "Trình xem",
+    "mode_single": "Trang đơn  [D]",
+    "mode_double": "Trang đôi  [D]",
+    "mode_continuous": "Chế độ liên tục  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Trang trước (←)",
+      "next_page": "Trang sau (→)",
+      "zoom_in": "Phóng to (Ctrl+Plus)",
+      "zoom_out": "Thu nhỏ (Ctrl+Minus)",
+      "zoom_reset": "Đặt lại zoom (Ctrl+0)",
+      "reading_mode_double": "Đổi chế độ đọc (D) → Hai trang",
+      "reading_mode_continuous": "Đổi chế độ đọc (D) → Hai trang liên tục",
+      "reading_mode_single": "Đổi chế độ đọc (D) → Một trang",
+      "fullscreen_exit": "Thoát toàn màn hình (F11)",
+      "fullscreen": "Toàn màn hình (F11)",
+      "close_viewer": "Đóng trình xem (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Ảnh hỏng - Thay thế",
+      "corrupted_delete": "⚠️ Xóa ảnh này",
+      "copy": "Sao chép (Ctrl+C)",
+      "cut": "Cắt (Ctrl+X)",
+      "paste": "Dán (Ctrl+V)",
+      "paste_clipboard": "Dán từ clipboard (Ctrl+V)",
+      "delete": "Xóa (Delete)",
+      "deselect": "Bỏ chọn (ESC)",
+      "rotate_right": "↻ Xoay phải",
+      "rotate_left": "↺ Xoay trái",
+      "mirror": "⇄ Phản chiếu ngang",
+      "crop": "Cắt",
+      "convert": "Chuyển đổi sang định dạng khác...",
+      "join": "Ghép các trang đã chọn",
+      "split": "Tách trang đã chọn",
+      "save_selection": "Lưu phần chọn thành CBZ",
+      "print_selection": "In phần chọn",
+      "copy_archive": "Sao chép toàn bộ kho lưu trữ",
+      "undo": "Hoàn tác (Ctrl+Z)",
+      "redo": "Làm lại (Ctrl+Y)",
+      "renumber_auto": "Đánh số lại trang (tự động phát hiện trang nhiều phần)",
+      "renumber_simple": "Đánh số lại trang (đánh số đơn giản)",
+      "sort_submenu": "Sắp xếp trang",
+      "sort_name": "Theo tên",
+      "sort_type": "Theo loại",
+      "sort_size": "Theo kích thước",
+      "sort_width": "Theo chiều rộng",
+      "sort_height": "Theo chiều cao",
+      "sort_resolution": "Theo độ phân giải",
+      "sort_dpi": "Theo DPI",
+      "create_cbz": "Tạo kho lưu trữ CBZ",
+      "save_as": "Lưu dưới dạng...",
+      "close_file": "Đóng tệp",
+      "help": "Hướng dẫn sử dụng",
+      "update_page_count": "Cập nhật số trang trong metadata",
+      "invert_selection": "Đảo ngược lựa chọn (Ctrl+I)",
+      "reduce_size": "Thay đổi kích thước trang",
+      "mirror_vertical": "⇅ Gương dọc",
+      "edit_animated_gif": "Chỉnh sửa GIF động...",
+      "save_to_folder": "Xuất các trang đã chọn",
+      "adjustments": "Độ sáng, độ tương phản, màu sắc...",
+      "refresh_mosaic": "Làm mới bảng ghép (F5)",
+      "create_ico": "Tạo tệp .ico"
+    },
+    "canvas_no_file": {
+      "open": "Mở CBZ/CBR/CB7/PDF",
+      "recent_files": "Tệp gần đây",
+      "clear_history": "Xóa lịch sử"
+    },
+    "canvas_with_file": {
+      "close": "Đóng tệp",
+      "paste": "Dán (Ctrl+V)",
+      "paste_clipboard": "Dán từ clipboard (Ctrl+V)",
+      "select_all": "Chọn tất cả (Ctrl+A)",
+      "deselect": "Bỏ chọn (ESC)",
+      "copy_archive": "Sao chép toàn bộ kho lưu trữ",
+      "print_all": "In toàn bộ truyện",
+      "renumber_auto": "Đánh số lại trang (tự động phát hiện trang nhiều phần)",
+      "renumber_simple": "Đánh số lại trang (đánh số đơn giản)",
+      "flatten": "Làm phẳng thư mục",
+      "save_selection": "Lưu phần chọn thành CBZ",
+      "hide_sidebar": "« Ẩn cột nút",
+      "show_sidebar": "» Hiện cột nút",
+      "decrease_thumbs": "Giảm kích thước hình thu nhỏ",
+      "increase_thumbs": "Tăng kích thước hình thu nhỏ",
+      "theme_dark": "Chuyển sang chủ đề tối",
+      "theme_light": "Chuyển sang chủ đề sáng",
+      "sort_submenu": "Sắp xếp trang",
+      "undo": "Hoàn tác (Ctrl+Z)",
+      "redo": "Làm lại (Ctrl+Y)",
+      "create_cbz": "Tạo kho lưu trữ CBZ",
+      "save_as": "Lưu dưới dạng...",
+      "help": "Hướng dẫn sử dụng",
+      "update_page_count": "Cập nhật số trang trong metadata",
+      "invert_selection": "Đảo ngược lựa chọn (Ctrl+I)",
+      "fullscreen": "Toàn màn hình (F11)",
+      "fullscreen_exit": "Thoát toàn màn hình (F11 hoặc ESC)",
+      "quit": "Đóng ứng dụng"
+    },
+    "canvas": {
+      "quit": "Đóng ứng dụng",
+      "reset": "Đặt lại ứng dụng:\n• kích thước và vị trí cửa sổ\n• chế độ tối → sáng\n• kích thước hình thu nhỏ → bình thường\n• thanh bên → hiển thị / 220 px\n• ngôn ngữ → tự động phát hiện\n• cỡ chữ → mặc định",
+      "reset_label": "Đặt lại ứng dụng"
+    },
+    "font_size": {
+      "decrease": "Giảm kích thước phông chữ",
+      "increase": "Tăng kích thước phông chữ"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Sắp xếp theo tên",
+    "sort_type": "Sắp xếp theo loại",
+    "sort_size": "Sắp xếp theo kích thước",
+    "sort_width": "Sắp xếp theo chiều rộng",
+    "sort_height": "Sắp xếp theo chiều cao",
+    "sort_resolution": "Sắp xếp theo độ phân giải",
+    "sort_dpi": "Sắp xếp theo DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Kho lưu trữ trống",
+        "message": "Kho lưu trữ CBZ không chứa tệp nào."
+      },
+      "empty_cbr": {
+        "title": "Kho lưu trữ trống",
+        "message": "Kho lưu trữ CBR không chứa tệp nào."
+      },
+      "files_ignored": {
+        "title": "Tệp bị bỏ qua"
+      },
+      "no_selection_crop": {
+        "title": "Không có lựa chọn",
+        "message": "Vui lòng chọn một ảnh để cắt."
+      },
+      "multi_selection_crop": {
+        "title": "Chọn nhiều",
+        "message": "Bạn chỉ có thể cắt một ảnh tại một thời điểm.\nVui lòng chọn một ảnh."
+      },
+      "invalid_selection_crop": {
+        "title": "Lựa chọn không hợp lệ",
+        "message": "Chỉ có thể cắt ảnh."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Tính năng không khả dụng",
+        "message": "Di chuyển trang không khả dụng trong thư mục con.\nVui lòng làm phẳng thư mục hoặc quay lại thư mục gốc."
+      },
+      "no_selection_convert": {
+        "title": "Không có lựa chọn",
+        "message": "Vui lòng chọn ít nhất một ảnh để chuyển đổi."
+      },
+      "invalid_selection_convert": {
+        "title": "Lựa chọn không hợp lệ",
+        "message": "Chỉ có thể chuyển đổi ảnh."
+      },
+      "no_selection_split": {
+        "title": "Không có lựa chọn",
+        "message": "Vui lòng chọn một ảnh để tách."
+      },
+      "multi_selection_split": {
+        "title": "Chọn nhiều",
+        "message": "Bạn chỉ có thể tách một ảnh tại một thời điểm.\nVui lòng chọn một ảnh."
+      },
+      "invalid_selection_split": {
+        "title": "Lựa chọn không hợp lệ",
+        "message": "Chỉ có thể tách ảnh."
+      },
+      "invalid_number_split": {
+        "title": "Số không hợp lệ",
+        "message": "Số trang phải từ 2 đến 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Lựa chọn không đủ",
+        "message": "Vui lòng chọn ít nhất 2 ảnh để ghép."
+      },
+      "invalid_selection_join": {
+        "title": "Lựa chọn không hợp lệ",
+        "message": "Chỉ có thể ghép ảnh."
+      },
+      "pil_not_available": {
+        "title": "PIL không khả dụng",
+        "message": "Cần module PIL để dán từ clipboard hệ thống."
+      },
+      "format_not_supported": {
+        "title": "Định dạng không được hỗ trợ",
+        "message": "Định dạng ảnh không được hỗ trợ hoặc tệp bị hỏng.\nĐịnh dạng được hỗ trợ: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Không có lựa chọn",
+        "message": "Vui lòng vẽ vùng cắt trước."
+      },
+      "cannot_open_file": {
+        "title": "Không thể mở tệp",
+        "message": "Không thể tải tệp."
+      },
+      "corrupted_images": {
+        "title": "Ảnh bị hỏng",
+        "summary": "Phát hiện {count} hình ảnh bị hỏng trong số {total}.",
+        "hint": "Chúng được hiển thị với biểu tượng đặc biệt.\nNhấp chuột phải vào hình ảnh bị hỏng để thay thế hoặc xóa.",
+        "more": "... và {count} hình khác"
+      },
+      "no_image_print": {
+        "title": "Không có ảnh",
+        "message": "Không có ảnh để in."
+      },
+      "no_valid_image_print": {
+        "title": "Không có ảnh",
+        "message": "Không có ảnh hợp lệ để in."
+      },
+      "no_selection_print": {
+        "title": "Không có lựa chọn",
+        "message": "Vui lòng chọn ít nhất một ảnh."
+      },
+      "no_valid_selection_print": {
+        "title": "Không có ảnh",
+        "message": "Không có ảnh hợp lệ trong phần chọn."
+      },
+      "save_cancelled": {
+        "title": "Đã hủy lưu",
+        "message": "Vui lòng sửa tên tệp thủ công trước khi lưu."
+      },
+      "empty_pdf": {
+        "title": "PDF trống",
+        "message": "Tệp PDF không chứa trang nào."
+      },
+      "no_selection_save": {
+        "title": "Cảnh báo",
+        "message": "Vui lòng chọn ít nhất một trang để lưu."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Kéo bị vô hiệu hóa",
+        "message": "Di chuyển trang bằng kéo và thả chỉ khả dụng ở thư mục gốc của truyện.\n\nĐể di chuyển trang:\n1. Quay lại thư mục gốc bằng cách nhấp vào biểu tượng lên\n2. Hoặc làm phẳng truyện để xóa thư mục con"
+      },
+      "no_selection_reduce": {
+        "title": "Không có lựa chọn",
+        "message": "Vui lòng chọn ít nhất một trang để giảm kích thước."
+      },
+      "invalid_selection_reduce": {
+        "title": "Lựa chọn không hợp lệ",
+        "message": "Chỉ có thể giảm kích thước hình ảnh."
+      },
+      "invalid_dimensions": {
+        "title": "Kích thước không hợp lệ",
+        "message": "Vui lòng nhập kích thước hợp lệ (số nguyên dương)."
+      },
+      "no_images_for_gif": {
+        "title": "Không có hình ảnh",
+        "message": "Cần ít nhất một hình ảnh để tạo GIF động."
+      },
+      "no_valid_images": {
+        "title": "Không có hình ảnh hợp lệ",
+        "message": "Không tìm thấy hình ảnh hợp lệ để tạo GIF."
+      },
+      "animated_gif_in_comic": {
+        "title": "Phát hiện GIF động",
+        "message": "Cảnh báo: Truyện tranh này chứa một hoặc nhiều GIF động.\\n\\nTrình đọc truyện tranh (CDisplayEx, YACReader, v.v.) sẽ chỉ hiển thị khung hình đầu tiên của mỗi GIF dưới dạng trang tĩnh.\\n\\nĐể xem GIF động đúng cách, bạn phải lưu nó riêng bên ngoài truyện tranh bằng cách sử dụng nút \"Xuất các trang đã chọn\" hoặc \"Chỉnh sửa GIF động\".\\n\\nBạn có muốn tiếp tục lưu truyện tranh không?"
+      },
+      "no_selection_adjust": {
+        "title": "Không có lựa chọn",
+        "message": "Vui lòng chọn ít nhất một hình ảnh để áp dụng điều chỉnh."
+      },
+      "invalid_selection_adjust": {
+        "title": "Lựa chọn không hợp lệ",
+        "message": "Điều chỉnh chỉ có thể áp dụng cho hình ảnh."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Tính năng không khả dụng",
+        "message": "Đánh số lại không khả dụng cho đến khi các thư mục được làm phẳng.\nHãy làm phẳng các thư mục trước khi đánh số lại."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "Lỗi ZIP",
+        "message": "'{file}': Không phải là kho lưu trữ ZIP hợp lệ hoặc bị hỏng."
+      },
+      "zip_cannot_open": {
+        "title": "Lỗi ZIP",
+        "message": "Không thể mở tệp CBZ: {error}"
+      },
+      "rar_invalid": {
+        "title": "Lỗi RAR",
+        "message": "'{file}': Không phải là kho lưu trữ RAR hợp lệ hoặc bị hỏng."
+      },
+      "rar_cannot_open": {
+        "title": "Lỗi RAR",
+        "message": "Không thể mở kho lưu trữ CBR: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Lỗi",
+        "message": "Lỗi không mong đợi khi mở CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Lỗi",
+        "message": "Không thể ghép ảnh."
+      },
+      "paste_failed": {
+        "title": "Lỗi",
+        "message": "Lỗi khi dán: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Lỗi",
+        "message": "Không thể sao chép kho lưu trữ: {error}"
+      },
+      "crop_invalid": {
+        "title": "Lỗi",
+        "message": "Vùng cắt không hợp lệ."
+      },
+      "crop_failed": {
+        "title": "Lỗi",
+        "message": "Không thể cắt ảnh: {error}"
+      },
+      "load_image_failed": {
+        "title": "Lỗi",
+        "message": "Không thể tải ảnh:\n{error}"
+      },
+      "print_error": {
+        "title": "Lỗi in",
+        "message": "Lỗi khi in:\n{error}"
+      },
+      "print_not_available": {
+        "title": "In không khả dụng",
+        "message": "Module win32print chưa được cài đặt.\nCài đặt bằng: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Không tìm thấy tệp",
+        "message": "Tệp không còn tồn tại:\n{path}"
+      },
+      "import_failed": {
+        "title": "Lỗi nhập",
+        "message": "Không thể nhập tệp: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF chưa được cài đặt",
+        "message": "Thư viện PyMuPDF (fitz) chưa được cài đặt.\nCài đặt bằng: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Lỗi",
+        "message": "Lỗi khi nhập PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "Lỗi PDF",
+        "message": "Không thể tải PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Tên tệp trùng lặp",
+        "intro": "{count} tên tệp trùng lặp được phát hiện:\n\n",
+        "item": "  • {name} ({times} lần)\n",
+        "more": "  ... và {more} tên khác\n",
+        "footer": "\nKho lưu trữ ZIP không chấp nhận tên trùng lặp.\nVui lòng đổi tên các tệp này trước khi lưu."
+      },
+      "save_failed": {
+        "title": "Lỗi",
+        "message": "Không thể lưu tệp: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Lỗi",
+        "message": "Không thể tạo kho lưu trữ: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Lỗi",
+        "message": "Không thể lưu phần chọn: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "Lỗi tạo GIF",
+        "message": "Không thể tạo GIF động:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Lỗi lưu",
+        "message": "Lỗi khi lưu tệp:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Lỗi Đổi Tên",
+        "message": "Không thể đổi tên tệp: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF được bảo vệ bằng mật khẩu",
+        "message": "Tệp PDF này được mã hóa và bảo vệ bằng mật khẩu.\nKhông thể mở mà không có mật khẩu."
+      },
+      "pdf_unlock_failed": {
+        "title": "Lỗi",
+        "message": "Không thể lưu tệp PDF đã mở khóa:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: PDF được mã hóa (cần mật khẩu), đã bỏ qua",
+      "file_too_large": {
+        "title": "Tệp quá lớn",
+        "message": "Tệp {filename} có kích thước {size} và vượt quá kích thước tối đa cho phép (500 MB) đối với một hình ảnh."
+      },
+      "license_file_not_found": {
+        "message": "Không tìm thấy tệp giấy phép: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Không thể đọc tệp giấy phép: {error}"
+      },
+      "7z_invalid": {
+        "title": "Lỗi 7Z",
+        "message": "Tệp '{file}' không phải là kho lưu trữ 7Z hợp lệ hoặc bị hỏng."
+      },
+      "delete_error": "Lỗi khi xóa: {error}",
+      "export_error": "Lỗi khi xuất: {error}",
+      "font_source_not_found": "Không tìm thấy tệp nguồn phông chữ: {path}",
+      "no_tengwar_font": "Không tìm thấy phông chữ Tengwar.",
+      "no_icons_found": "Không tìm thấy biểu tượng.",
+      "unsupported_files": {
+        "title": "Tệp không được hỗ trợ",
+        "message": "Các tệp sau không được hỗ trợ và đã bị bỏ qua:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "Đã tạo GIF thành công",
+        "message": "GIF động '{name}' đã được tạo và thêm vào khảm."
+      },
+      "pywin32_required": {
+        "title": "Tính năng không khả dụng",
+        "message": "Cần module pywin32 để dán từ clipboard hệ thống.\nCài đặt bằng: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Đã nhập ảnh",
+        "message": "Đã nhập {count} ảnh"
+      },
+      "archive_copied": {
+        "title": "Đã sao chép kho lưu trữ",
+        "message": "Tệp lưu trữ đã được sao chép vào clipboard."
+      },
+      "function_not_available": {
+        "title": "Tính năng không khả dụng",
+        "message": "Tính năng này hiện không khả dụng."
+      },
+      "duplicate_detected": {
+        "title": "Phát hiện trùng lặp",
+        "message": "Đã có tệp với tên này.\n\nTệp đã được đổi tên thành:\n{name}"
+      },
+      "replace_success": {
+        "title": "Thành công",
+        "message": "Đã thay thế ảnh '{name}' thành công."
+      },
+      "history_cleared": {
+        "title": "Đã xóa lịch sử",
+        "message": "Danh sách tệp gần đây đã được xóa."
+      },
+      "files_copied_clipboard": {
+        "title": "Đã sao chép vào clipboard",
+        "message": "Kéo và thả ra khỏi ứng dụng không khả dụng vì lý do kỹ thuật.\n\n✓ Đã sao chép {count} {word} vào clipboard\n\nBây giờ bạn có thể dán ở bất cứ đâu:\n  • Nhấp chuột phải → Dán\n  • Hoặc Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Đã hoàn tất sửa",
+        "message": "Đã sửa {count} tên tệp."
+      },
+      "import_success": {
+        "title": "Nhập thành công",
+        "message": "Đã nhập {count} trang từ {file}"
+      },
+      "pdf_import_success": {
+        "title": "Nhập thành công",
+        "message": "Đã nhập {count} trang PDF từ {file}\nChất lượng: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Thành công",
+        "message": "Đã chuyển đổi PDF thành công!\nĐã tải {count} trang ở {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Thành công",
+        "message": "Tệp CBZ đã được lưu thành công:"
+      },
+      "cbz_converted": {
+        "title": "Thành công",
+        "message": "Tệp đã được chuyển đổi thành CBZ thành công:",
+        "question": "Bạn có muốn xóa tệp CBR gốc không?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Thành công",
+        "message": "Tệp đã được chuyển đổi thành CBZ thành công:",
+        "question": "Bạn có muốn xóa tệp PDF gốc không?"
+      },
+      "cbz_save_as": {
+        "title": "Thành công",
+        "message": "Đã lưu tệp CBZ mới: {path}"
+      },
+      "cbz_created": {
+        "title": "Thành công",
+        "message": "Lưu trữ CBZ đã được tạo thành công:"
+      },
+      "selection_saved": {
+        "title": "Thành công",
+        "message": "Lựa chọn đã được lưu thành công:"
+      },
+      "flatten_done": {
+        "title": "Hoàn tất làm phẳng",
+        "message": "Đã di chuyển {files} tệp từ {dirs} thư mục con."
+      },
+      "language_changed": {
+        "title": "Đã đổi ngôn ngữ",
+        "message": "Đã đổi ngôn ngữ giao diện thành công."
+      },
+      "new_cbz_saved": {
+        "title": "Tệp Đã Lưu",
+        "message": "Tệp CBZ mới đã được lưu thành công:",
+        "question": "Bạn có muốn xóa tệp gốc không?"
+      },
+      "page_count_updated": {
+        "title": "Đã cập nhật số trang",
+        "message": "Số trang trong metadata đã được cập nhật thành {count} trang."
+      },
+      "files_saved": {
+        "title": "Đã lưu thành công",
+        "message": "{count} tệp đã được lưu vào:\n{folder}",
+        "open_folder": "Bạn có muốn mở thư mục không?"
+      },
+      "adjustments_applied": {
+        "title": "Đã áp dụng điều chỉnh",
+        "message": "Điều chỉnh đã được áp dụng thành công."
+      },
+      "pdf_unlocked": {
+        "title": "PDF đã được mở khóa",
+        "message": "Tệp PDF đã mở khóa đã được lưu:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Kho lưu trữ lớn",
+        "message": "Kho lưu trữ này có kích thước {size} MB khi giải nén.\nViệc tải có thể tiêu thụ nhiều bộ nhớ (RAM).\n\nBạn có muốn tiếp tục không?"
+      },
+      "confirm_delete": {
+        "title": "Xác nhận",
+        "message": "Bạn có thật sự muốn xóa {count} tệp ({size}) không?"
+      },
+      "delete_source_files": {
+        "title": "Xóa tệp nguồn?",
+        "message": "Bạn có muốn xóa các ảnh đã được ghép không?\n\nCó = Xóa tệp nguồn\nKhông = Giữ tệp nguồn\nHủy = Hủy thao tác"
+      },
+      "invalid_filenames": {
+        "title": "Tên tệp không hợp lệ",
+        "intro": "{count} tệp chứa ký tự bị cấm:",
+        "item": "  • {name}",
+        "more": "  ... và {more} nữa",
+        "forbidden_chars": "Ký tự bị cấm: {chars}",
+        "fix_question": "Bạn có muốn tự động sửa các tên này không?\n(Các ký tự bị cấm sẽ được thay thế bằng '_')"
+      },
+      "close_without_save": {
+        "title": "Lưu trước khi đóng?",
+        "message": "Đã thêm ảnh. Bạn có muốn tạo kho lưu trữ CBZ trước khi đóng không?"
+      },
+      "flatten_folders": {
+        "title": "Làm phẳng thư mục",
+        "subdirs_detected": "Đã phát hiện thư mục con:",
+        "files_to_move": "{count} tệp sẽ được di chuyển về thư mục gốc.",
+        "folders_to_delete": "{count} thư mục con sẽ bị xóa.",
+        "continue_question": "Bạn có muốn tiếp tục không?"
+      },
+      "update_page_count": {
+        "title": "Cập nhật số trang",
+        "message": "Số trang trong truyện tranh đã thay đổi.\n\nSố trang được chỉ định trong metadata: {original}\nSố trang hiện tại: {current}\n\nBạn có muốn cập nhật số trang trong metadata không?"
+      },
+      "conversion_complete": {
+        "title": "Chuyển đổi hoàn tất",
+        "message": "Chuyển đổi hoàn tất!\n\n{count} hình ảnh đã được chuyển đổi sang định dạng {format} và thêm vào sau lựa chọn của bạn.\n\nXóa hình ảnh gốc?",
+        "delete_originals": "Xóa bản gốc\n{count} tệp - {size}",
+        "keep_all": "Giữ tất cả\n{count} tệp - {size}",
+        "cancel_conversion": "Hủy chuyển đổi\n{count} tệp - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Phát hiện phần mở rộng không chính xác: tệp '{filename}' này là CBZ, không phải CBR. Đổi tên?",
+      "title": "Phần mở rộng không đúng"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Phát hiện phần mở rộng không chính xác: tệp '{filename}' này là CBR, không phải CBZ. Đổi tên?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Phát hiện phần mở rộng sai: tệp '{filename}' là CB7, không phải CBZ/CBR. Đổi tên?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Kích thước hình thu nhỏ",
+    "loading": "Vui lòng đợi, đang tải...\n{percent}%",
+    "resizing": "Vui lòng đợi, đang thay đổi kích thước...\n{percent}%",
+    "converting": "Vui lòng đợi, đang chuyển đổi...\n{percent}%",
+    "loading_lazy": "Vui lòng đợi, đang tải...\n{percent}%\n\nDo kích thước lớn của tệp này ({size} MB), các trang sẽ được tải dần dần. Các trang hiển thị trên màn hình được tải ngay lập tức, các trang khác sẽ được tải tự động khi cuộn.",
+    "apply_save_cbz": "Áp dụng thay đổi\nvà lưu tệp CBZ",
+    "apply_create_cbz": "Áp dụng thay đổi\nvà tạo tệp CBZ",
+    "import_progress": "Đang nhập...\n{percent}%",
+    "pdf_import_progress": "Đang nhập PDF...\n{percent}%",
+    "pdf_opening": "Đang mở tệp PDF...",
+    "pdf_page": "Trang {current} / {total}",
+    "warning_close": "Cảnh báo! Các thay đổi chưa được lưu và sẽ bị mất!",
+    "language_label": "Ngôn ngữ:",
+    "directory_tooltip": "Thư mục: {name}\n{count} tệp\nKích thước tổng: {size} MB",
+    "folder_up_tooltip": "Nhấp đúp để đi lên\nmột cấp",
+    "status_bar": "{dirs} thư mục  |  {files} tệp ({total_size})  |  {selected} đã chọn ({selected_size})",
+    "pdf_converting": "Đang chuyển đổi {total} trang thành hình ảnh ở {dpi} DPI...",
+    "pdf_converting_no_change": "Đang trích xuất {total} trang mà không sửa đổi...",
+    "print_progress": "Đang chuẩn bị in...\n{percent}%",
+    "print_preparing": "Vui lòng đợi, đang chuẩn bị in...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nTóm tắt Giấy phép Công cộng GNU v3\n\nCÁC QUYỀN TỰ DO ĐƯỢC TRAO\nBạn có thể sử dụng, sao chép, chỉnh sửa và phân phối\nMosaicView, kể cả cho mục đích thương mại.\n\nNGHĨA VỤ\nMọi phân phối (bản gốc hoặc đã sửa đổi) phải :\n– giữ nguyên giấy phép GPL v3\n– bao gồm mã nguồn hoặc chỉ ra nơi để lấy\n– không áp đặt các hạn chế bổ sung\n\nBẢO HÀNH\nPhần mềm này được phân phối KHÔNG CÓ BẤT KỲ BẢO HÀNH NÀO.\nTác giả không chịu trách nhiệm về các thiệt hại phát sinh từ việc sử dụng nó.\n\nBạn nên đã nhận được một bản sao Giấy phép Công cộng GNU cùng với chương trình này. Nếu không, hãy xem <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Xem giấy phép đầy đủ",
+    "license_unrar_text": "Các tệp CBZ dựa trên định dạng ZIP, một định dạng tự do và mở. Các tệp CBR, ngược lại, dựa trên định dạng RAR, một định dạng độc quyền.\n\nMosaicView có thể mở các tệp CBR nhờ UnRAR, một tiện ích được phát triển bởi RARlab và có thể phân phối lại miễn phí.\n\nTrang web chính thức: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Xem giấy phép UnRAR",
+    "saving_cbz": "Đang lưu... {percent}%",
+    "empty_canvas_line1": "Tha vao day mot hoac nhieu tap tin CBZ/CBR/CB7/PDF hoac hinh anh cua ban",
+    "empty_canvas_line2": "Sau khi mo mot tap tin, ban co the tiep tuc tha cac tap tin khac",
+    "empty_canvas_line3": "Thả một hoặc nhiều thư mục để bắt đầu xử lý hàng loạt",
+    "icon_toolbar_config_title": "Cấu hình thanh công cụ biểu tượng",
+    "icon_toolbar_active": "Biểu tượng trong thanh",
+    "icon_toolbar_hidden": "Biểu tượng dự phòng",
+    "license_gpl_full": "Giấy phép GNU GPL v3",
+    "license_unrar_full": "Giấy phép UnRAR",
+    "licenses_button": "Giấy phép",
+    "view_full_gpl_license": "Xem toàn bộ giấy phép GNU GPL v3",
+    "license_7zip_text": "Các tệp CB7 dựa trên định dạng 7z, được phát triển bởi Igor Pavlov và phân phối theo giấy phép GNU LGPL.\n\nMosaicView có thể mở tệp CB7 nhờ 7-Zip — một tiện ích miễn phí và mã nguồn mở.\n\nTrang web chính thức : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Xem giấy phép 7-Zip",
+    "license_7zip_full": "Giấy phép 7-Zip",
+    "icon_toolbar_show_thumb_slider": "Hiển thị thanh trượt kích thước hình thu nhỏ",
+    "icon_toolbar_show_lang_combo": "Hiển thị bộ chọn ngôn ngữ",
+    "adjusting": "Vui lòng chờ, đang điều chỉnh...\n{current} / {total}",
+    "license_piqad_full": "Giấy phép phông chữ pIqaD qolqoS",
+    "license_tengwar_full": "Giấy phép phông chữ Alcarin Tengwar",
+    "view_full_piqad_license": "Xem giấy phép đầy đủ pIqaD qolqoS"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Chuyển đổi ảnh",
+      "title": "Chuyển đổi {count} {word}",
+      "word_image": "ảnh",
+      "word_images": "ảnh",
+      "info": "Chọn định dạng đích:",
+      "format_png": "PNG (không mất dữ liệu)",
+      "format_jpg": "JPEG (có nén)",
+      "format_webp": "WEBP (hiện đại)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (chất lượng cao)",
+      "format_gif": "GIF (hoạt ảnh)",
+      "quality_label": "Chất lượng cho JPG/WEBP:",
+      "quality_maximum": "Tối đa — chất lượng 95/100",
+      "quality_high": "Cao — chất lượng 85/100",
+      "quality_medium": "Trung bình — chất lượng 75/100",
+      "quality_low": "Thấp — chất lượng 60/100",
+      "quality_custom_option": "Tùy chỉnh",
+      "quality_custom": "Chất lượng tùy chỉnh : {value}/100",
+      "quality_note": "(Tham số này chỉ ảnh hưởng đến định dạng JPG và WEBP)",
+      "quality_window_title": "Quality Selection",
+      "format_gif_static": "GIF tĩnh",
+      "format_gif_animated": "GIF động (chọn nhiều hình ảnh)"
+    },
+    "split": {
+      "window_title": "Tách trang",
+      "title": "Tách trang",
+      "pages_label": "Số trang:",
+      "direction_label": "Hướng tách:",
+      "horizontal": "Ngang (trái → phải)",
+      "vertical": "Dọc (trên → dưới)",
+      "warning": "⚠ Việc tách được tính toán tự động,\ncó thể cần điều chỉnh thủ công.",
+      "button_split": "Tách",
+      "button_cancel": "Hủy"
+    },
+    "join": {
+      "window_title": "Ghép trang - Sắp xếp lại thứ tự",
+      "instructions": "Sắp xếp ảnh:\n• Dọc (trên/dưới) cho ghép dọc\n• Ngang (trái/phải) cho ghép ngang",
+      "merged_filename_prefix": "Ghép",
+      "heights_label": "Chiều cao",
+      "widths_label": "Chiều rộng",
+      "size_adjustment_title": "Điều chỉnh kích thước",
+      "size_adjustment_warning": "⚠️ Các hình ảnh đã chọn có kích thước khác nhau.\nVui lòng chọn cách điều chỉnh kích thước của chúng để ghép.\nTỷ lệ khung hình của mỗi hình ảnh sẽ luôn được giữ nguyên.",
+      "keep_original": "Giữ kích thước gốc",
+      "keep_original_desc": "(thêm thanh đen để lấp đầy)",
+      "enlarge_small": "Phóng to hình ảnh nhỏ",
+      "enlarge_small_desc": "(căn chỉnh theo kích thước tối đa)",
+      "reduce_large": "Thu nhỏ hình ảnh lớn",
+      "reduce_large_desc": "(căn chỉnh theo kích thước tối thiểu)",
+      "back_to_arrangement": "Quay lại"
+    },
+    "pdf": {
+      "quality_merge": "Chọn chất lượng ghép:",
+      "quality_export": "Chọn chất lượng xuất:",
+      "merge_quality_title": "Chất lượng hợp nhất PDF",
+      "export_quality_title": "Chất lượng xuất PDF",
+      "loading_title": "Đang tải PDF...",
+      "dpi_90": "90 DPI - Xuất bản web",
+      "dpi_150": "150 DPI - Chất lượng tốt (được khuyến nghị để hiển thị)",
+      "dpi_200": "200 DPI - Chất lượng rất tốt",
+      "dpi_300": "300 DPI - Chất lượng xuất sắc (tiêu chuẩn truyện tranh)",
+      "dpi_600": "600 DPI - Chất lượng tối đa (tệp lớn)",
+      "dpi_original": "Không sửa đổi hình ảnh",
+      "dpi_original_tooltip": "Phân tích thông minh từng trang PDF:\n• Trang chỉ có hình ảnh: giữ nguyên DPI gốc\n• Trang chỉ có văn bản: 300 DPI\n• Trang hỗn hợp (văn bản + hình ảnh): DPI của hình ảnh nếu >= 300, nếu không thì 300 DPI\nTối đa: 2400 DPI để giới hạn kích thước tệp"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "Cần PyMuPDF",
+      "pymupdf_required_message": "PyMuPDF (fitz) chưa được cài đặt. Không thể chuyển đổi các tệp PDF.",
+      "select_directory_title": "Chọn thư mục chứa các tệp PDF",
+      "no_pdf_title": "Không có tệp PDF",
+      "no_pdf_message": "Không tìm thấy tệp PDF nào trong thư mục:\n{directory}",
+      "confirm_title": "Chuyển đổi hàng loạt PDF sang CBZ",
+      "confirm_message": "{count} tệp PDF cần chuyển đổi trong {directory} (bao gồm thư mục con).",
+      "checkbox_permanent_delete": "Xóa các tệp PDF gốc mà không đưa vào\nthùng rác (KHÔNG THỂ HOÀN TÁC)",
+      "start_button": "Bắt đầu",
+      "converting_title": "Đang chuyển đổi...",
+      "converting_progress": "Chuyển đổi tệp {current} trên tổng số {total}",
+      "page_progress": "Trang {current} / {total}",
+      "complete_title": "Chuyển đổi hoàn tất",
+      "complete_message": "{count} tệp PDF đã được chuyển đổi trong thư mục:",
+      "complete_message_errors": "{count} trên {total} tệp PDF đã được chuyển đổi trong thư mục:",
+      "errors_count": "{count} lỗi gặp phải."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Chọn thư mục chứa các tập CBR",
+      "no_cbr_title": "Không có tập CBR",
+      "no_cbr_message": "Không tìm thấy tập CBR trong thư mục:\\n{directory}",
+      "confirm_title": "Chuyển đổi hàng loạt CBR sang CBZ",
+      "confirm_message": "{count} tập CBR cần chuyển đổi trong {directory} (bao gồm thư mục con).",
+      "checkbox_permanent_delete": "Xóa các tập CBR gốc mà không dùng\nthùng rác (KHÔNG THỂ HOÀN TÁC)",
+      "start_button": "Bắt đầu",
+      "converting_title": "Đang chuyển đổi...",
+      "converting_progress": "Chuyển đổi tập {current} / {total}",
+      "page_progress": "Trang {current} / {total}",
+      "complete_title": "Chuyển đổi hoàn tất",
+      "complete_message": "{count} tập CBR đã chuyển đổi trong thư mục:",
+      "complete_message_errors": "{count} tập CBR đã chuyển đổi trên {total} trong thư mục:",
+      "errors_count": "{count} lỗi gặp phải.",
+      "renamed_count": "{count} tập được đổi tên thành CBZ",
+      "rarfile_unavailable": "Mô-đun rarfile không khả dụng. Không thể chuyển đổi tệp CBR."
+    },
+    "close_warning": {
+      "title": "Cảnh báo!",
+      "message": "Các thay đổi chưa được lưu và sẽ bị mất!",
+      "btn_close_lose": "Đóng tệp và hủy thay đổi",
+      "btn_save_cbz": "Áp dụng thay đổi và lưu tệp",
+      "btn_create_cbz": "Áp dụng thay đổi và tạo tệp CBZ",
+      "btn_cancel": "Hủy và quay lại mosaic"
+    },
+    "replace_image": {
+      "title": "Thay thế ảnh bị hỏng"
+    },
+    "reduce_size": {
+      "window_title": "Thay đổi kích thước hình ảnh",
+      "title": "Thay đổi kích thước {count} {word}",
+      "word_image": "hình ảnh",
+      "word_images": "hình ảnh",
+      "current_size": "Kích thước hiện tại: {size} MB",
+      "current_dimensions": "Kích thước hiện tại: {width} × {height} px",
+      "choose_method": "Chọn phương pháp thay đổi kích thước:",
+      "custom_dimensions": "Kích thước tùy chỉnh",
+      "width_label": "Chiều rộng:",
+      "height_label": "Chiều cao:",
+      "use_custom_dimensions": "Sử dụng kích thước này",
+      "different_dimensions_warning": "Các trang đã chọn có kích thước khác nhau. Kích thước tùy chỉnh sẽ buộc tất cả các trang có cùng kích thước. Hãy đảm bảo bạn hiểu các tác động trước khi tiếp tục.",
+      "estimated_size": "Kích thước ước tính: {size} MB",
+      "percentage_reduction": "Giảm theo phần trăm",
+      "percentage_enlargement": "Tăng theo phần trăm",
+      "reduce_0": "0% (không thay đổi)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (không thay đổi)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Chiều rộng trang phổ biến nhất là 1024, 1280, 1600, 1920 và 2000 pixel, nhưng các giá trị khác cũng phù hợp.",
+      "multi_page_width": "Tự động phát hiện và thay đổi kích thước nhiều trang (chiều rộng/chiều cao)",
+      "multi_page_width_tooltip": "Kích hoạt phát hiện tự động nhiều trang: trang kép, trang gấp ba v.v. Hệ số nhân được tính toán tự động dựa trên tỷ lệ của từng trang, dù là chiều rộng (các trang cạnh nhau) hay chiều cao (các trang chồng lên nhau)"
+    },
+    "gif_animated": {
+      "window_title": "Tạo GIF động",
+      "images_title": "Hình ảnh hoạt hình",
+      "params_title": "Tham số GIF",
+      "frame_delay_label": "Độ trễ giữa các hình:",
+      "fps_normal": "{fps} khung hình/giây",
+      "fps_slow": "1 khung hình mỗi {seconds} giây",
+      "loop_label": "Số lần lặp lại:",
+      "loop_info": "(0 = vòng lặp vô hạn)",
+      "disposal_label": "Bố trí hình ảnh:",
+      "disposal_0": "Không xác định",
+      "disposal_1": "Giữ hình ảnh trước",
+      "disposal_2": "Khôi phục về màu nền",
+      "disposal_3": "Khôi phục về trạng thái trước",
+      "optimize": "Tối ưu hóa tệp (chỉ lưu sự khác biệt)",
+      "metadata_title": "Siêu dữ liệu GIF",
+      "metadata_dimensions": "Kích thước: {width} × {height} px",
+      "metadata_frames": "Số khung hình: {count}",
+      "metadata_duration": "Tổng thời lượng: {duration} giây",
+      "metadata_fps": "Tần số: {fps} fps",
+      "metadata_palette": "Bảng màu: tối đa 256 màu",
+      "metadata_size": "Kích thước ước tính: {size} KB",
+      "comment_label": "Nhận xét (tùy chọn):",
+      "no_images": "Không có hình ảnh nào được chọn",
+      "creating_progress": "Đang tải ảnh... ({current}/{total})",
+      "creating_normalizing": "Đang chuẩn hóa ảnh... ({current}/{total})",
+      "creating_quantizing": "Đang lượng tử hóa màu... ({current}/{total})",
+      "creating_saving": "Đang lưu GIF..."
+    },
+    "save_to_folder": {
+      "title": "Chọn thư mục đích"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Tên tệp trùng lặp",
+      "message": "Đã phát hiện tên tệp giống hệt nhau. Mặc dù lưu về mặt kỹ thuật là có\nthể, điều này có thể gây ra sự cố đọc trong một số ứng dụng đọc truyện\ntranh (hiển thị không đầy đủ, trang bị thiếu, v.v.).\n\nBạn nên đánh số lại các trang trước khi lưu."
+    },
+    "adjustments": {
+      "window_title": "Điều chỉnh hình ảnh",
+      "title": "Điều chỉnh cho {count} {word}",
+      "word_image": "hình ảnh",
+      "word_images": "hình ảnh",
+      "apply_button": "Áp dụng",
+      "color_depth_section": "Độ sâu màu",
+      "brightness_contrast_section": "Độ sáng và độ tương phản",
+      "compression_section": "Nén",
+      "effects_section": "Hiệu ứng",
+      "sharpness_section": "Độ sắc nét",
+      "levels_section": "Mức độ đen/trắng",
+      "depth_unchanged": "Không thay đổi",
+      "depth_32bit": "32 bit (RGBA - màu + độ trong suốt)",
+      "depth_24bit": "24 bit (RGB - màu)",
+      "depth_8bit": "8 bit (bang mau PNG / thang mau xam JPEG)",
+      "depth_1bit": "1 bit (đen trắng)",
+      "brightness_label": "Độ sáng: {value}",
+      "contrast_label": "Độ tương phản: {value}",
+      "compression_enable": "Bật nén lại",
+      "compression_quality_label": "Chất lượng : {value}/100",
+      "sharpness_label": "Độ sắc nét: {value}",
+      "effect_none": "Không hiệu ứng",
+      "effect_grayscale": "Thang độ xám",
+      "effect_sepia": "Màu nâu cổ điển",
+      "levels_none": "Không điều chỉnh",
+      "levels_threshold": "Ngưỡng (đen hoặc trắng thuần khiết)",
+      "levels_advanced": "Mức độ nâng cao (bóng/tông giữa/sáng)",
+      "threshold_label": "Ngưỡng: {value}",
+      "black_point_label": "Điểm đen: {value}",
+      "gamma_label": "Gamma (tông giữa): {value}",
+      "white_point_label": "Điểm trắng: {value}",
+      "auto_levels_button": "Điều chỉnh tự động",
+      "open_viewer_button": "Điều chỉnh bằng trình xem (được đề xuất)",
+      "compression_info": "Nén chỉ áp dụng cho hình ảnh JPG và WebP",
+      "open_viewer_button_simple": "Điều chỉnh bằng trình xem",
+      "reset_button": "Đặt lại",
+      "preview_section": "Xem trước",
+      "effect_invert": "Đảo ngược màu",
+      "preview_warning": "Bản xem trước có thể khác với kết quả cuối cùng",
+      "effect_remove_colors": "Loại bỏ màu sắc",
+      "remove_colors_intensity_label": "Cường độ : {value}",
+      "image_mode_section": "Chế độ ảnh",
+      "image_mode_rgb": "RGB (màu sắc)",
+      "image_mode_rgba": "RGBA (màu sắc + trong suốt)",
+      "image_mode_l": "L (thang xám)",
+      "image_mode_la": "LA (thang xám + trong suốt)",
+      "image_mode_cmyk": "CMYK (in ấn)",
+      "image_mode_1": "1 (đen trắng thuần)",
+      "image_mode_p": "P (bảng 256 màu)",
+      "saturation_section": "Độ bão hòa",
+      "saturation_label": "Độ bão hòa : {value}",
+      "saturation_viewer_title": "Điều chỉnh độ bão hòa",
+      "transparency_section": "Độ trong suốt",
+      "transparency_info": "Độ trong suốt chỉ áp dụng cho ảnh PNG, WebP và ICO",
+      "transparency_type_label": "Loại :",
+      "transparency_type_flood": "Vùng",
+      "transparency_type_global": "Toàn cục",
+      "transparency_tolerance_label": "Dung sai : {value}",
+      "transparency_viewer_title": "Điều chỉnh độ trong suốt",
+      "transparency_click_instruction": "Nhấp vào màu cần làm trong suốt",
+      "transparency_undo": "Hoàn tác lần nhấp cuối",
+      "transparency_redo": "Làm lại",
+      "transparency_type_flood_tooltip": "Flood fill : làm trong suốt vùng màu đồng nhất xung quanh pixel được nhấp",
+      "transparency_type_global_tooltip": "Độ trong suốt toàn cục : ảnh hưởng đến tất cả pixel trong ảnh có màu gần với màu được nhấp",
+      "transparency_apply": "Áp dụng",
+      "transparency_skipped_warning": "{count} hình ảnh bị bỏ qua — định dạng không tương thích với độ trong suốt. Để đưa vào, hãy chuyển đổi sang PNG trước.",
+      "unsharp_section": "Độ sắc nét thích ứng",
+      "unsharp_radius_label": "Bán kính: {value}",
+      "unsharp_percent_label": "Cường độ: {value} %",
+      "unsharp_threshold_label": "Ngưỡng: {value}",
+      "unsharp_viewer_title": "Độ sắc nét thích ứng",
+      "auto_levels_tooltip": "Phân tích từng trang và tự động điều chỉnh mức độ đen trắng để tối đa hóa độ tương phản.\nĐể chọn từng trang, hãy sử dụng trình xem."
+    },
+    "levels_viewer": {
+      "title": "Dieu chinh muc bang cong cu hut mau",
+      "apply_current": "Ap dung cho trang nay",
+      "apply_all": "Áp dụng cho tất cả các trang đã chọn",
+      "black_pipette": "Ong hut diem den",
+      "white_pipette": "Ong hut diem trang",
+      "black_pipette_tooltip": "Nhấp vào một pixel phải hoàn toàn đen. Cảnh báo: dễ làm quá đà!",
+      "white_pipette_tooltip": "Nhấp vào một pixel phải hoàn toàn trắng. Cảnh báo: dễ làm quá đà!"
+    },
+    "sharpness_viewer": {
+      "title": "Điều chỉnh độ sắc nét"
+    },
+    "brightness_viewer": {
+      "title": "Điều chỉnh độ sáng và độ tương phản"
+    },
+    "compression_viewer": {
+      "title": "Điều chỉnh nén"
+    },
+    "outliers": {
+      "title": "Trang có kích thước bất thường",
+      "message": "Các trang sau có kích thước khác biệt đáng kể so với các trang khác. Vui lòng chọn cách xử lý chúng:",
+      "width": "Chiều rộng",
+      "height": "Chiều cao",
+      "unusual": "bất thường",
+      "skip": "Không thay đổi kích thước",
+      "keep": "giữ"
+    },
+    "first_page_multi": {
+      "title": "Trang đầu là trang nhiều trang",
+      "message": "Trang đầu tiên được phát hiện là trang nhiều trang. Bạn muốn đánh số nó như thế nào?",
+      "option_auto_desc": "Đánh số lại bình thường với tự động phát hiện.",
+      "option_joint_desc": "Kết hợp trang đầu và trang cuối của truyện tranh.",
+      "option_exclude_label": "Không đưa vào đánh số lại",
+      "option_exclude_desc": "Trang giữ nguyên tên hiện tại và ở vị trí đầu tiên. Bạn có thể đổi tên thủ công sau."
+    },
+    "batch_img": {
+      "select_directory_title": "Chọn thư mục chứa các hình ảnh",
+      "no_img_title": "Không tìm thấy tệp hình ảnh",
+      "no_img_message": "Không tìm thấy tệp hình ảnh độc lập nào trong thư mục :\n{directory}",
+      "confirm_title": "Chuyển đổi hàng loạt ảnh độc lập sang CBZ",
+      "confirm_message": "{count} tệp hình ảnh cần chuyển đổi trong {directory} (bao gồm các thư mục con).",
+      "checkbox_permanent_delete": "Xóa vĩnh viễn các tệp hình ảnh gốc\nmà không gửi vào thùng rác (KHÔNG THỂ HOÀN TÁC)",
+      "start_button": "Bắt đầu",
+      "converting_title": "Đang chuyển đổi...",
+      "converting_progress": "Đang chuyển đổi tệp {current} trên tổng số {total}",
+      "complete_title": "Chuyển đổi hoàn tất",
+      "complete_message": "{count} tệp hình ảnh đã được chuyển đổi trong thư mục :",
+      "complete_message_errors": "{count} trong số {total} tệp hình ảnh đã được chuyển đổi trong thư mục :",
+      "errors_count": "Đã gặp {count} lỗi.",
+      "converted_by_ext": "{ext} : {count} tệp",
+      "mode_title": "Chuyển đổi hình ảnh sang CBZ",
+      "mode_intro": "Bạn muốn nhóm các hình ảnh như thế nào?",
+      "mode_one_per_image": "Chuyển đổi mỗi hình ảnh thành các tệp CBZ riêng biệt",
+      "mode_one_per_image_sub": "(Mỗi hình ảnh trở thành một tệp CBZ riêng biệt)",
+      "mode_all_in_one": "Nhóm tất cả hình ảnh vào một tệp CBZ duy nhất",
+      "mode_all_in_one_sub": "(Tất cả hình ảnh trong thư mục được nhóm vào một tệp CBZ duy nhất)"
+    },
+    "batch_drop": {
+      "window_title": "Xử lý hàng loạt thư mục",
+      "intro_single": "Đã thả 1 thư mục. Bạn muốn áp dụng xử lý nào?",
+      "intro_multiple": "Đã thả {count} thư mục. Bạn muốn áp dụng xử lý nào?",
+      "recursive_note": "Các thư mục con cũng sẽ được quét.",
+      "mixed_drop_title": "Thả không được hỗ trợ",
+      "mixed_drop_message": "Bạn đã thả cả tệp và thư mục cùng lúc. Vui lòng chỉ thả tệp hoặc chỉ thả thư mục."
+    },
+    "pdf_unlock": {
+      "title": "PDF được bảo vệ chống sửa đổi",
+      "message": "Các trang đã được nhập bình thường.\n\nTệp PDF này được bảo vệ chống sửa đổi (mật khẩu chủ sở hữu).\n\nBạn có muốn lưu bản sao tệp PDF mà không có bảo vệ này không?",
+      "yes": "Có, lưu bản sao đã mở khóa",
+      "no": "Không, tiếp tục mà không mở khóa"
+    },
+    "batch_pdf_unlock": {
+      "title": "Các tệp PDF được bảo vệ chống sửa đổi",
+      "message_single": "Đã phát hiện 1 tệp PDF được bảo vệ chống sửa đổi. Đã chuyển đổi bình thường sang CBZ.\n\nBạn có muốn lưu bản sao đã mở khóa vào thư mục gốc của nó không?",
+      "message_plural": "Đã phát hiện {count} tệp PDF được bảo vệ chống sửa đổi. Đã chuyển đổi bình thường sang CBZ.\n\nBạn có muốn lưu bản sao đã mở khóa của từng tệp vào thư mục gốc của nó không?",
+      "yes": "Có, lưu các bản sao đã mở khóa",
+      "no": "Không, tiếp tục mà không mở khóa"
+    },
+    "ico_creator": {
+      "title": "Tạo biểu tượng .ico",
+      "info_message": "Hình ảnh sẽ được thay đổi kích thước thành nhiều độ phân giải (16, 32, 48, 64, 128, 256 px).\nKích thước khung hiện tại: {w} × {h} px",
+      "btn_validate_crop": "Xác nhận cắt xén",
+      "btn_validate_no_crop": "Xác nhận không cắt xén",
+      "btn_cancel": "Hủy",
+      "btn_transparency": "Đặt độ trong suốt",
+      "btn_validate_final": "Xác nhận",
+      "tolerance_label": "Dung sai:",
+      "success_title": "Tệp .ico đã được tạo",
+      "success_message": "Tệp {filename} đã được tạo thành công.",
+      "overwrite_title": "Tệp đã tồn tại",
+      "overwrite_message": "Tệp {filename} đã tồn tại. Ghi đè?",
+      "save_blocked_title": "Không thể lưu",
+      "save_blocked_message": "Kho lưu trữ này chứa một hoặc nhiều tệp .ico không phải là hình ảnh truyện tranh. Lưu bị tắt khi các tệp này có trong mảnh ghép.\nĐể kích hoạt lại lưu, hãy xóa chúng khỏi mảnh ghép (phím Del) hoặc cắt (Ctrl+X) để dán ở nơi khác.",
+      "btn_back_to_crop": "Quay lại cắt xén"
+    },
+    "video_save_blocked": {
+      "title": "Không thể lưu",
+      "message": "Kho lưu trữ này chứa một hoặc nhiều tệp video. Tính năng lưu bị tắt khi các tệp này có trong mảnh ghép.\nĐể bật lại tính năng lưu, hãy xóa chúng khỏi mảnh ghép (phím Del) hoặc cắt chúng (Ctrl+X) để dán vào nơi khác."
+    },
+    "open_file": {
+      "title": "Mở kho lưu trữ",
+      "filter_archives": "Kho lưu trữ (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Tất cả các tệp (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Giấy phép"
+    },
+    "replace_corrupted_image": {
+      "title": "Thay thế hình ảnh bị hỏng",
+      "filter_images": "Hình ảnh (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Tất cả các tệp (*)"
+    },
+    "see_log": "XEM LOG"
+  },
+  "tooltip": {
+    "source_archive": "Tệp nguồn: {name}",
+    "file": "Tệp: {name}",
+    "reason": "Lý do: {reason}",
+    "size_kb": "Kích thước: {size} KB",
+    "size_mb": "Kích thước: {size} MB",
+    "file_size": "Kích thước: {size}",
+    "dimensions": "Kích thước: {width} × {height} px",
+    "resolution": "Độ phân giải: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: không xác định",
+    "cbr_info": "Tệp CBR sử dụng định dạng RAR, là độc quyền và được cấp bằng sáng chế;\nchúng không thể được sửa đổi, các thay đổi được lưu vào tệp CBZ mới.",
+    "rotate_left": "Xoay 90 độ sang trái",
+    "rotate_right": "Xoay 90 độ sang phải",
+    "mirror_horizontal": "Lật ngang",
+    "mirror_vertical": "Lật dọc",
+    "fullscreen": "Toàn màn hình",
+    "help_button": "Hướng dẫn sử dụng",
+    "theme_button": "Chuyển đổi giữa chủ đề sáng và tối",
+    "font_decrease_button": "Giảm kích thước phông chữ",
+    "font_increase_button": "Tăng kích thước phông chữ",
+    "color_depth": "Màu sắc: {bits} bit ({mode})",
+    "batch_pdf_to_cbz": "Chuyển đổi sang CBZ tất cả các tệp PDF trong\nthư mục và các thư mục con của nó. Hình ảnh\nđược trích xuất và lưu trữ nguyên vẹn,\nkhông nén lại.",
+    "batch_pdf_permanent_delete": "CẢNH BÁO: nếu tùy chọn này được chọn,\ncác tệp PDF gốc sẽ bị xóa vĩnh viễn\nsau khi chuyển đổi, không có khả năng\nkhôi phục. Hãy đảm bảo rằng bạn có\nbản sao lưu nếu cần thiết.",
+    "batch_cbr_to_cbz": "Chuyển đổi sang CBZ tất cả các tập CBR\ntrong thư mục và các thư mục con của nó.",
+    "batch_cbr_permanent_delete": "CẢNH BÁO: nếu tùy chọn này được chọn,\ncác tập CBR gốc sẽ bị xóa vĩnh viễn\nsau khi chuyển đổi, không có khả năng\nkhôi phục. Hãy đảm bảo bạn có\nbản sao lưu nếu cần thiết.",
+    "renumber_btn_1": "Chế độ tự động phát hiện trang nhiều phần\nNhấp chuột phải để đổi chế độ",
+    "renumber_btn_2": "Chế độ đánh số đơn giản\nNhấp chuột phải để đổi chế độ",
+    "corrupted_header": "Hình ảnh bị hỏng",
+    "right_click_instruction1": "Nhấn chuột phải để thay thế hoặc xóa",
+    "right_click_instruction2": "hình ảnh này.",
+    "unknown_error": "Lỗi không xác định",
+    "batch_img_to_cbz": "Chuyển đổi tất cả các tệp hình ảnh tìm thấy trong thư mục\nvà các thư mục con của nó sang CBZ,\ntạo một tệp CBZ cho mỗi hình ảnh.",
+    "batch_img_permanent_delete": "CẢNH BÁO : nếu tùy chọn này được chọn,\ncác tệp hình ảnh gốc sẽ bị xóa vĩnh viễn\nsau khi chuyển đổi, không có khả năng\nkhôi phục. Hãy đảm bảo bạn có bản sao\nlưu nếu cần thiết.",
+    "too_large_header": "Hình ảnh quá lớn để tải",
+    "too_large_pixels": "Kích thước: {pixels}",
+    "icon_toolbar_config_button": "Cấu hình biểu tượng",
+    "icon_toolbar_size_decrease": "Giảm kích thước biểu tượng",
+    "icon_toolbar_size_increase": "Tăng kích thước biểu tượng",
+    "source_loose": "Ảnh rời",
+    "source_web": "Ảnh web"
+  },
+  "help": {
+    "title": "MosaicView - Hướng dẫn sử dụng",
+    "intro": "MosaicView cho phép bạn thao tác và chỉnh sửa truyện tranh (sách truyện tranh kỹ thuật số) mà không cần giải nén chúng khỏi kho lưu trữ. Ứng dụng hỗ trợ định dạng CBZ (ZIP), CBR (RAR) và PDF. Ứng dụng chỉ tương thích với hệ thống 64-bit.",
+    "open_files": "Mở tệp",
+    "open_files_content": "• Nhấp vào nút 'Mở CBZ/CBR/CB7/PDF'\n• Hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, PDF, ảnh (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Cac tep EPUB cung co the duoc mo, nhung chi cac hinh anh cua chung se duoc trich xuat (van ban bi bo qua).\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục.",
+    "mosaic": "Mosaic",
+    "mosaic_content": "Khung hiển thị tất cả các trang của truyện tranh dưới dạng hình thu nhỏ. Bạn có thể:\n• Sắp xếp lại các trang bằng cách kéo và thả (đánh số trang sẽ tự động và sẽ theo chế độ đánh số lại đang hoạt động)\n• Chọn nhiều trang (Ctrl+nhấp hoặc Shift+nhấp)\n• Điều chỉnh kích thước hình thu nhỏ bằng thanh trượt\n• Đổi tên tệp thủ công bằng cách nhấp vào tên của chúng\n• Kéo và thả tệp truyện tranh (CBZ/CBR/PDF) từ Windows Explorer trực tiếp vào truyện tranh đang mở khác để hợp nhất nội dung của chúng",
+    "manipulation": "Thao tác trang",
+    "manipulation_content": "• Kéo và thả các trang để sắp xếp lại\n• Kéo toàn bộ truyện tranh vào một cuốn khác để gộp chúng\n• Nhấp chuột phải vào trang để truy cập các tùy chọn (xoay, xóa, v.v.)\n• Nhấp đúp vào trang để mở trình xem\n• Xuất các trang riêng lẻ bằng cách kéo vào thư mục Windows hoặc qua Ctrl+C / Ctrl+V",
+    "renumber": "Đánh số lại trang",
+    "renumber_content": "MosaicView cung cấp hai chế độ đánh số lại trang, có thể truy cập qua nút đánh số lại, menu ngữ cảnh (nhấp chuột phải) hoặc tự động khi kéo thả:\n\n• Chế độ tự động phát hiện trang nhiều trang (chế độ mặc định): ứng dụng phân tích chiều rộng của mỗi trang để phát hiện trang đôi, trang ba, v.v. Các trang nhiều trang được đánh số lại tương ứng (ví dụ: trang đôi sẽ được đặt tên 003-004, trang ba 005-006-007). Trên 4 trang, chỉ hiển thị số đầu tiên và cuối cùng (ví dụ: 010---025).\n\n• Chế độ đánh số đơn giản: mỗi trang nhận một số thứ tự duy nhất (001, 002, 003...), không phụ thuộc vào chiều rộng trang.\n\nĐể chuyển đổi giữa hai chế độ, nhấp chuột phải vào nút đánh số lại. Chú thích công cụ hiển thị chế độ đang hoạt động. Chế độ được chọn cũng áp dụng cho việc đánh số lại tự động khi kéo thả.",
+    "flatten": "Làm phẳng thư mục",
+    "flatten_content": "Nếu kho lưu trữ của bạn chứa thư mục con, hãy sử dụng 'Làm phẳng thư mục' để đưa tất cả ảnh về cùng một cấp.",
+    "viewer": "Trình xem",
+    "viewer_content": "Nhấp đúp vào trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 3 chế độ đọc\n  - Một trang: một trang tại một thời điểm\n  - Hai trang: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Hai trang liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n• Con lăn chuột: điều hướng nhanh\n• Ctrl+Con lăn hoặc Ctrl+Plus/Minus: zoom\n• Ctrl+0: đặt lại zoom\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy khung cắt / đóng trình xem",
+    "join_pages": "Ghép trang",
+    "join_pages_content": "Chọn nhiều trang liên tiếp, nhấp chuột phải → 'Ghép các trang đã chọn' để ghép trang theo chiều ngang hoặc chiều dọc. Định dạng của ảnh tạo ra tương ứng với định dạng của các trang nguồn nếu chúng đều giống nhau, nếu không thì mặc định là PNG.",
+    "split_pages": "Tách trang",
+    "split_pages_content": "Để tự động chia trang đôi:\n• Chọn các trang cần tách\n• Nhấp chuột phải → 'Tách trang đã chọn'\n• Chọn hướng (dọc hoặc ngang)",
+    "crop": "Cắt trong trình xem",
+    "crop_content": "Trong trình xem, vẽ hình chữ nhật trên ảnh để xác định vùng cắt:\n• Vẽ hình chữ nhật bằng chuột\n• Thay đổi kích thước bằng cách kéo cạnh hoặc góc\n• Nhấp 'Xác nhận cắt' để áp dụng\n• Cắt được áp dụng cho ảnh hiện tại\n• Phím Esc: hủy khung cắt",
+    "shortcuts": "Phím tắt",
+    "shortcuts_content": "• Ctrl+Z: Hoàn tác thao tác cuối cùng\n• Ctrl+Y: Làm lại thao tác đã hoàn tác\n• Ctrl+A: Chọn tất cả trang\n• Ctrl+I: Đảo ngược lựa chọn\n• Ctrl+C: Sao chép trang đã chọn\n• Ctrl+X: Cắt trang đã chọn\n• Ctrl+V: Dán trang\n• Delete: Xóa trang đã chọn\n• F5: Cập nhật hiển thị khảm\n• F11: Chuyển đổi toàn màn hình (thoát bằng F11 hoặc ESC)",
+    "dark_mode": "Chế độ tối",
+    "dark_mode_content": "Nhấp vào nút mặt trời/mặt trăng để chuyển đổi giữa chủ đề sáng và tối.",
+    "sort": "Sắp xếp trang",
+    "sort_content": "Sử dụng nút 'Sắp xếp' để tự động sắp xếp lại trang theo:\n• Tên, Loại, Kích thước, Chiều rộng, Chiều cao, Độ phân giải hoặc DPI",
+    "save": "Lưu",
+    "save_content": "• 'Lưu': lưu thay đổi vào tệp gốc\n• 'Lưu dưới dạng': tạo kho lưu trữ mới\n• 'Tạo CBZ': khả dụng ở chế độ chỉ ảnh (không có kho lưu trữ)",
+    "other": "Chức năng khác",
+    "other_content": "• Xoay: xoay một hoặc nhiều trang\n• Chuyển đổi: chuyển đổi ảnh sang các định dạng khác nhau (PNG, JPEG, WEBP, BMP, TIFF, GIF). Lưu ý: ảnh ở chế độ CMYK được tự động chuyển đổi sang RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Lưu ý: ảnh ở chế độ CMYK được tự động chuyển đổi sang RGB\n• In: in trang đã chọn hoặc tất cả trang\n• Trích xuất: trích xuất các trang cụ thể\n• Tab Siêu dữ liệu: hiển thị thông tin tệp ComicInfo.xml (nếu có trong kho lưu trữ). Nếu bạn thêm hoặc xóa trang khỏi truyện tranh có chứa siêu dữ liệu, ứng dụng sẽ đề xuất sửa đổi số lượng trang được chỉ định ở đó. Các siêu dữ liệu khác không thể được sửa đổi. Hạn chế này là có chủ ý và là kết quả của lựa chọn thiết kế.",
+    "config_files": "Tệp cấu hình và tệp tạm thời",
+    "config_files_content": "MosaicView tạo một tệp có tên .mosaicview_config.json. Tệp này chứa một số tham số cần thiết để nút đặt lại hoạt động đúng cách, cũng như danh sách các truyện tranh đã mở gần đây rõ ràng là cần thiết để hiển thị các tệp đã mở gần đây. MosaicView cũng lưu các tệp tạm thời, cần thiết cho các hoạt động xử lý hình ảnh khác nhau.\nTất cả các tệp này đều nằm trong thư mục {temp_dir}.\nCác tệp tạm thời bị xóa mỗi khi ứng dụng được đóng, nhưng tệp .mosaicview_config.json, theo bản chất của nó, được thiết kế để giữ lại.\nTuy nhiên, bạn có thể xóa các tệp này theo cách thủ công bằng cách đi tới thư mục {temp_dir} hoặc nhấp vào các nút bên dưới. Tệp .mosaicview_config.json sẽ được tạo lại mỗi khi ứng dụng được mở và các tệp tạm thời sẽ được tạo lại khi cần.",
+    "config_clear_temp": "Xóa tệp tạm thời",
+    "config_clear_recent": "Xóa tệp gần đây",
+    "config_clear_config": "Xóa tệp cấu hình",
+    "config_temp_cleared": "Đã xóa thành công các tệp tạm thời.",
+    "config_config_cleared": "Đã xóa thành công tệp cấu hình.\nNó sẽ được tạo lại khi khởi động ứng dụng lần tới.",
+    "language": "Chọn ngôn ngữ",
+    "language_content": "MosaicView có sẵn bằng nhiều ngôn ngữ.\nTheo mặc định, ứng dụng tự động phát hiện ngôn ngữ của hệ điều hành của bạn và hiển thị bằng ngôn ngữ đó nếu được hỗ trợ. Nếu hệ thống của bạn sử dụng ngôn ngữ không được hỗ trợ, giao diện sẽ hiển thị bằng tiếng Anh.\nBạn có thể thay đổi ngôn ngữ theo cách thủ công bất cứ lúc nào bằng cách sử dụng menu thả xuống nằm ở cuối cột nút, bên dưới thanh trượt kích thước hình thu nhỏ. Lựa chọn của bạn sẽ được lưu và áp dụng vào lần khởi động ứng dụng tiếp theo.\nCác NGÔN NGỮ CÓ SẴN: Anh, Ả Rập, Áo, Bồ Đào Nha, Ba Lan, Bun-ga-ri, Séc, Trung Quốc (Giản thể), Trung Quốc (Phồn thể), Croatia, Đan Mạch, Hà Lan, Estonia, Phần Lan, Pháp, Đức, Hy Lạp, Hindi, Hungary, Iceland, Indonesia, Ai-len, Ý, Nhật Bản, Hàn Quốc, Latvia, Lithuania, Malaysia, Malta, Na Uy, Ba Lan, Bồ Đào Nha, Romania, Slovakia, Slovenia, Tây Ban Nha, Thụy Điển, Tamil, Thái, Thổ Nhĩ Kỳ, Ukraina, Việt Nam, Ác-mê-ni.\nCác NGÔN NGỮ HƯ CẤU CÓ SẴN: tiếng Klingon (phiên bản chữ cái La-tinh và chữ cái pIqaD), tiếng Sindarin (phiên bản chữ cái La-tinh và chữ cái tengwar), tiếng Quenya (phiên bản chữ cái La-tinh và chữ cái tengwar).\n\nTiện ích này sử dụng phông chữ Windows, ngoại trừ phông chữ pIqaD (ngôn ngữ Klingon) và tengwar (ngôn ngữ Elf: Sindarin và Quenya). Các phông chữ này là miễn phí và đến từ các trang web sau:\n- cho pIqaD (bảng chữ cái Klingon): {url_piqad}\n- cho tengwar (bảng chữ cái Elf, cho Sindarin và Quenya): {url_tengwar}\nTrong trường hợp các trang web này không còn hoạt động, bạn có thể tải xuống phông chữ pIqaD và tengwar bằng cách nhấp vào các nút bên dưới:\n\nPhần mềm này được phát triển bằng tiếng Pháp. Các bản dịch sang ngôn ngữ khác được thực hiện bằng cách sử dụng trí tuệ nhân tạo, cụ thể là Claude. Tôi đã quyết định hỗ trợ khoảng bốn mươi ngôn ngữ. Nhưng rõ ràng, tôi không nói được tất cả các ngôn ngữ này. Do đó, tôi không có lựa chọn nào khác ngoài việc sử dụng trí tuệ nhân tạo, vì việc thuê và trả tiền cho 40 biên dịch viên khác nhau không nằm trong các khả năng được xem xét. Do tính chất tự động của các bản dịch này, có thể có lỗi. Tôi xin lỗi về điều này.",
+    "credits": "Vibe Coding, tình yêu của tôi",
+    "credits_content": "Tôi không biết gì về lập trình. Hoàn toàn không biết. Do đó, tôi đã phát triển phần mềm này với sự trợ giúp của Claude, AI từ Anthropic, và cụ thể hơn là với Claude Code. Tôi thực sự khuyên bạn nên dùng Claude Code, ứng dụng này thật tuyệt vời!",
+    "resize_pages": "Thay đổi kích thước trang",
+    "resize_pages_content": "Để giảm hoặc phóng to các trang của bạn:\n• Chọn một hoặc nhiều trang\n• Nhấp chuột phải → 'Thay đổi kích thước'\n• Ba tùy chọn có sẵn:\n  - Kích thước tùy chỉnh: nhập chiều rộng hoặc chiều cao mong muốn (tỷ lệ khung hình được giữ nguyên tự động).\n  - Giảm theo phần trăm: chọn phần trăm từ 10% đến 90%\n  - Phóng to theo phần trăm: chọn phần trăm từ 10% đến 100%\n• Ứng dụng hiển thị kích thước ước tính của hình ảnh sau khi sửa đổi\n• Sửa đổi được áp dụng ngay lập tức cho tất cả các trang đã chọn",
+    "language_export_piqad": "Phông chữ pIqaD",
+    "language_export_tengwar": "Phông chữ tengwar",
+    "language_export_piqad_success": "Phông chữ đã xuất: {filename}\nCó sẵn trong:",
+    "language_export_tengwar_success": "{count} phông chữ đã xuất\nCó sẵn trong:",
+    "icons": "Biểu tượng",
+    "icons_content": "Hầu hết các biểu tượng được sử dụng trong tiện ích này đến từ trang web này và được miễn phí để sử dụng cho mục đích phi thương mại: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nMột số đã được tôi chỉnh sửa.\nChỉ có một biểu tượng, biểu tượng tệp thực thi Windows, được tạo bởi tôi (nhưng bằng AI, vì tôi là một nhà thiết kế đồ họa rất, rất, rất tệ). Bạn có sự cho phép của tôi để sử dụng biểu tượng này như bạn muốn miễn là bạn trích dẫn nguồn của mình.",
+    "icons_view_button": "Xem biểu tượng",
+    "icons_window_title": "Biểu tượng MosaicView",
+    "icons_save_all": "Lưu biểu tượng",
+    "icons_saved_success": "{count} biểu tượng đã lưu trong:",
+    "icons_save_failed": "Không thể lưu biểu tượng: {error}",
+    "split_ui": "Giao diện hai bảng",
+    "split_ui_content": "MosaicView cho phép hiển thị hai kho lưu trữ đồng thời, cạnh nhau.\n\nNhấp vào biểu tượng Tách để mở bảng thứ hai. Mỗi bảng độc lập: bạn có thể mở, chỉnh sửa và lưu một kho lưu trữ riêng biệt. Bảng đang hoạt động được chỉ báo bằng viền màu xanh.\n\nĐể di chuyển các trang từ bảng này sang bảng khác, hãy kéo trực tiếp. Nếu nhiều trang được chọn, tất cả chúng di chuyển cùng nhau. Các trang được chèn vào vị trí được chỉ báo bởi thanh màu đỏ.\n\nNhấp vào biểu tượng Đóng bảng thứ hai để quay lại chế độ một bảng.",
+    "license_gpl": "Giấy phép GPL v3",
+    "license_unrar": "Giấy phép UnRAR",
+    "config_clear_clipboard": "Xóa các tệp clipboard",
+    "config_clipboard_note": "Ngoại lệ: Các tệp tạm thời được sử dụng bởi clipboard Windows (tệp clipboard_XXXXX) được giữ trong 12 giờ sau khi sao chép, để bạn có thể dán chúng ngay cả sau khi đóng ứng dụng. Sau 12 giờ, chúng sẽ tự động bị xóa.",
+    "config_log_note": "Cac chuyen doi hang loat (PDF sang CBZ va CBR sang CBZ) tao mot tap tin nhat ky khi xay ra loi. Cac tap tin nay (Log_pdftocbz_.txt va Log_cbrtocbz_.txt) duoc giu lai ngay ca sau khi dong ung dung, de co the xem lai sau. Chung chi bi xoa bang nut \"Xoa cac tap tin tam thoi\" o phia tren.",
+    "config_clipboard_cleared": "Các tệp clipboard đã được xóa thành công.",
+    "adjust_images": "Điều chỉnh hình ảnh",
+    "adjust_images_content": "Chức năng này cho phép bạn chỉnh sửa hình ảnh trực tiếp trong MosaicView. Bạn có thể điều chỉnh độ sáng, độ tương phản, độ sắc nét, mức độ, độ bão hòa, áp dụng hiệu ứng (đen trắng, sepia, đảo màu), điều chỉnh chất lượng nén, xóa màu, áp dụng độ trong suốt hoặc chuyển đổi sang các độ sâu màu khác nhau. Một số cài đặt có trình xem chuyên dụng cho phép xem kết quả ở độ phân giải đầy đủ trước khi áp dụng. Bản xem trước thu nhỏ hiển thị kết quả theo thời gian thực trong cửa sổ chính.",
+    "create_icon": "Tạo biểu tượng",
+    "create_icon_content": "MosaicView cho phép bạn tạo các tệp biểu tượng (.ico) từ bất kỳ hình ảnh nào trong bảng ghép.\n• Nhấp chuột phải vào hình ảnh → 'Tạo biểu tượng'\n• Đóng khung vùng mong muốn trong trình xem (biểu tượng bắt buộc phải là hình vuông)\n• Điều chỉnh độ trong suốt nếu cần\n• Xác nhận: tệp .ico được thêm trực tiếp vào bảng ghép\n• Các tệp .ico tự động chứa tất cả các độ phân giải tiêu chuẩn (từ 16×16 đến 256×256)\n• Miễn là có tệp .ico trong bảng ghép, việc lưu vào kho lưu trữ CBZ bị chặn vì định dạng ICO không được các kho lưu trữ này hỗ trợ. Xuất tệp .ico riêng biệt (Ctrl+C rồi dán vào thư mục Windows), sau đó xóa nó khỏi bảng ghép trước khi lưu.",
+    "batch_convert": "Chuyển đổi hàng loạt",
+    "batch_convert_content": "MosaicView cung cấp ba chức năng chuyển đổi hàng loạt, chỉ khả dụng khi mosaic trống. Đối với mỗi chức năng, nguyên tắc đều như nhau : chọn thư mục, xác nhận, theo dõi tiến trình theo thời gian thực, xem xét tóm tắt cuối cùng. Một tùy chọn cho phép xóa vĩnh viễn các tệp gốc thay vì gửi chúng vào thùng rác.\n• CBR → CBZ : chuyển đổi tất cả các tệp CBR (RAR) trong một thư mục và các thư mục con. Nếu CBR thực chất là ZIP, nó chỉ được đổi tên mà không cần chuyển đổi.\n• PDF → CBZ : chuyển đổi tất cả các tệp PDF trong một thư mục và các thư mục con. Hình ảnh được trích xuất mà không cần nén lại.\n• HÌNH ẢNH ĐƠN LẺ → CBZ : tạo CBZ riêng lẻ cho mỗi tệp hình ảnh được tìm thấy trong thư mục và các thư mục con. Hình ảnh không hợp lệ, bị hỏng, nhiều trang (TIFF) hoặc hoạt ảnh (GIF) bị bỏ qua và ghi vào nhật ký.",
+    "config_open_temp_folder": "Mở thư mục tạm thời",
+    "icon_toolbar": "Thanh biểu tượng",
+    "icon_toolbar_content": "Thanh công cụ biểu tượng cung cấp quyền truy cập nhanh vào các chức năng chính của ứng dụng. Bạn có thể sắp xếp lại các biểu tượng theo ý muốn bằng cách kéo trực tiếp vào thanh. Để chọn biểu tượng nào hiển thị hoặc ẩn, hãy nhấp vào nút bánh răng ở cuối thanh: một cửa sổ cấu hình mở ra, nơi bạn có thể di chuyển biểu tượng giữa thanh đang hoạt động và kho dự phòng. Dùng nút « + » và « − » để điều chỉnh kích thước biểu tượng. Cấu hình được lưu tự động.",
+    "license_7zip": "Giấy phép 7-Zip"
+  },
+  "misc": {
+    "file_word": "tệp",
+    "files_word": "tệp",
+    "corrupted": "bị hỏng",
+    "yes": "Có",
+    "no": "Không",
+    "cancel": "Hủy",
+    "selection_suffix": "bản-sao-chọn"
+  },
+  "metadata": {
+    "title": "Tiêu đề",
+    "series": "Bộ truyện",
+    "number": "Số",
+    "volume": "Tập",
+    "summary": "Tóm tắt",
+    "writer": "Tác giả",
+    "penciller": "Họa sĩ",
+    "inker": "Người vẽ nét",
+    "colorist": "Người tô màu",
+    "letterer": "Người viết chữ",
+    "cover_artist": "Họa sĩ bìa",
+    "editor": "Biên tập viên",
+    "publisher": "Nhà xuất bản",
+    "imprint": "Ấn bản",
+    "genre": "Thể loại",
+    "web": "Trang web",
+    "page_count": "Số trang",
+    "language_iso": "Ngôn ngữ",
+    "format": "Định dạng",
+    "black_and_white": "Đen trắng",
+    "manga": "Manga",
+    "year": "Năm",
+    "month": "Tháng",
+    "day": "Ngày",
+    "notes": "Ghi chú",
+    "characters": "Nhân vật",
+    "locations": "Địa điểm",
+    "teams": "Đội",
+    "story_arc": "Cung truyện",
+    "story_arc_number": "Số cung",
+    "series_group": "Nhóm bộ truyện",
+    "count": "Số lượng số",
+    "alternate_series": "Bộ truyện thay thế",
+    "alternate_number": "Số thay thế",
+    "alternate_count": "Số đếm thay thế",
+    "age_rating": "Xếp hạng độ tuổi",
+    "series_complete": "Bộ truyện hoàn chỉnh",
+    "translator": "Dịch giả",
+    "tags": "Thẻ",
+    "scan_information": "Thông tin quét",
+    "community_rating": "Đánh giá cộng đồng",
+    "review": "Đánh giá",
+    "gtin": "GTIN",
+    "pages": "Trang",
+    "pages_col_image": "Hình ảnh",
+    "pages_col_type": "Loại",
+    "pages_col_width": "Chiều rộng",
+    "pages_col_height": "Chiều cao",
+    "pages_col_size": "Kích thước (B)"
+  },
+  "web": {
+    "web_download_progress": "Đang tải: {downloaded}/{total} hình ảnh...",
+    "web_download_cancel": "Hủy",
+    "web_no_images": "Không có hình ảnh",
+    "web_no_images_found": "Không tìm thấy hình ảnh nào trên trang này.",
+    "web_imported": "{count} hình ảnh được nhập từ trang web",
+    "web_drag_drop_title": "Kéo và thả hình ảnh web",
+    "web_copy_paste_message": "Kéo và thả trực tiếp từ trình duyệt web không được hỗ trợ.\n\nGiải pháp thay thế (đơn giản hơn):\n\n1. Nhấp chuột phải vào hình ảnh trong trình duyệt của bạn\n2. Chọn 'Sao chép hình ảnh'\n3. Trong MosaicView, sử dụng nút 'Dán' hoặc Ctrl+V\n\nPhương pháp này hoạt động với tất cả hình ảnh web!",
+    "import_web_button": "Nhập web",
+    "import_web_tooltip": "Dán địa chỉ internet để lấy tất cả hình ảnh từ trang",
+    "import_web_menu": "Nhập web...",
+    "import_web_dialog_title": "Nhập hình ảnh từ trang web",
+    "import_web_url_label": "Địa chỉ trang web:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Hủy",
+    "import_web_invalid_url": "URL không hợp lệ. Vui lòng nhập địa chỉ web hợp lệ."
+  },
+  "donation": {
+    "menu_label": "Quyên góp cho tác giả",
+    "title": "Thực hiện quyên góp",
+    "message": "Bạn thích tiện ích nhỏ này và sử dụng nó thường xuyên. Tôi đã đầu tư vào nó vài trăm giờ. Bạn có xem xét cảm ơn tôi bằng cách quyên góp không? Hãy tử tế, tôi thực sự cần tiền để lấp đầy hồ bơi của tôi bằng rượu sâm panh.\n\nDù bạn muốn gửi cho tôi vài xu hay vài tỷ euro, tôi chấp nhận mọi số tiền. Bạn có thể quyên góp thông qua paypal"
+  },
+  "mail": {
+    "tooltip": "Nút này mở phần mềm email mặc định của bạn trong Windows để gửi email. Nếu không có phần mềm nào được cấu hình (ví dụ: nếu bạn chỉ sử dụng webmail), bạn có thể sao chép địa chỉ MosaicView vào clipboard bằng cách nhấp chuột phải vào biểu tượng.",
+    "copy_address": "Sao chép địa chỉ email của MosaicView",
+    "menu_label": "Gửi email đến MosaicView",
+    "icon_label": "Gửi email"
+  },
+  "menu": {
+    "file": "Tệp",
+    "file_open": "Mở tệp",
+    "file_close": "Đóng tệp",
+    "batch_convert": "Chuyển đổi tệp hàng loạt",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Hình ảnh đơn lẻ → CBZ",
+    "edit": "Chỉnh sửa",
+    "undo": "Hoàn tác",
+    "redo": "Làm lại",
+    "paste": "Dán",
+    "delete": "Xóa",
+    "invert_selection": "Đảo ngược lựa chọn",
+    "select_all": "Chọn tất cả",
+    "deselect": "Bỏ chọn",
+    "refresh_mosaic": "Làm mới mảnh ghép",
+    "images": "Hình ảnh",
+    "rotation": "Xoay",
+    "archives": "Kho lưu trữ",
+    "sort": "Sắp xếp",
+    "system": "Hệ thống",
+    "decrease_font": "Giảm cỡ chữ",
+    "increase_font": "Tăng cỡ chữ",
+    "language": "Ngôn ngữ",
+    "language_real": "Ngôn ngữ thực",
+    "language_fictional": "Ngôn ngữ hư cấu",
+    "about": "Giới thiệu",
+    "export_piqad_font": "Lưu phông chữ pIqaD",
+    "export_tengwar_fonts": "Lưu phông chữ tengwar"
+  }
+}

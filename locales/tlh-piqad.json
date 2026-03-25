@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "De'wI' Soj 'oH digital comics chenmoHwI'pu' ghap",
+  "buttons": {
+    "open_file": "CBZ/CBR/CB7/PF ",
+    "close_file": " ",
+    "create_cbz": "CBZ  ",
+    "flatten_dirs": "  \n  \n ",
+    "renumber": "\n",
+    "undo": "⤺ ",
+    "redo": " ⤻",
+    "copy": "",
+    "cut": "",
+    "paste": "",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": " \n ",
+    "join_pages": " ",
+    "split_page": " ",
+    "save_as": " \n( CBZ )",
+    "save_selection": "\nCBZ ",
+    "print_selection": " ",
+    "print_all": "  cics ",
+    "sort": "",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "",
+    "cancel": "",
+    "split_button": "",
+    "join_button": "",
+    "validate_crop": " ",
+    "ok": "",
+    "close": "",
+    "apply_and_save": "    ",
+    "apply_and_create": "   CBZ  ",
+    "close_and_lose": "    ",
+    "cancel_return": "   ",
+    "update_page_count": "  \ni d",
+    "invert_selection": " ",
+    "reduce_size": "  ",
+    "mirror_vertical": "⇅",
+    "create_gif": "GF ",
+    "edit_gif": "GF  ",
+    "save_to_folder": "\n",
+    "continue": "",
+    "reset": "↻",
+    "yes": "",
+    "no": "",
+    "renumber_recommended": "  (s)",
+    "ignore_and_save": "sh  h",
+    "rename_to_cbz": ".cz  ",
+    "open_without_rename": "  ",
+    "rename_to_cbr": ".c  h",
+    "adjustments": ",\n ",
+    "batch_cbr_to_cbz": " CBR  CBZ\n  ",
+    "batch_pdf_to_cbz": "PF \n CBZ  ",
+    "batch_img_to_cbz": " \n   CBZ",
+    "icon_toolbar_reset": "",
+    "delete_selected": "",
+    "save": "",
+    "rename_to_cb7": ".c7  ",
+    "split_ui": "   ",
+    "unsplit_ui": "  "
+  },
+  "tabs": {
+    "mosaic": "",
+    "metadata": ""
+  },
+  "viewer": {
+    "title": "",
+    "mode_single": "   []",
+    "mode_double": "   []",
+    "mode_continuous": "   []"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "  (←)",
+      "next_page": "  (→)",
+      "zoom_in": "  + (C+Ps)",
+      "zoom_out": "  - (C+Mis)",
+      "zoom_reset": "   (C+0)",
+      "reading_mode_double": "   () →  ",
+      "reading_mode_continuous": "   () →   ",
+      "reading_mode_single": "   () →  ",
+      "fullscreen_exit": "   (F11)",
+      "fullscreen": "  (F11)",
+      "close_viewer": "  (EC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️   -   ",
+      "corrupted_delete": "⚠️  ",
+      "copy": " (C+C)",
+      "cut": " (C+X)",
+      "paste": " (C+V)",
+      "paste_clipboard": "    (C+V)",
+      "delete": " ()",
+      "deselect": " (EC)",
+      "rotate_right": "↻  ",
+      "rotate_left": "↺  ",
+      "mirror": "⇄ - ",
+      "crop": "",
+      "convert": "   ...",
+      "join": "  ",
+      "split": "  ",
+      "save_selection": " CBZ ",
+      "print_selection": " ",
+      "copy_archive": "  ",
+      "undo": " (C+Z)",
+      "redo": " (C+Y)",
+      "renumber_auto": "   (  )",
+      "renumber_simple": "   ( )",
+      "sort_submenu": " ",
+      "sort_name": " ",
+      "sort_type": " ",
+      "sort_size": " ",
+      "sort_width": " ",
+      "sort_height": " ",
+      "sort_resolution": " ",
+      "sort_dpi": "P ",
+      "create_cbz": "CBZ  ",
+      "save_as": " ...",
+      "close_file": " ",
+      "help": " ",
+      "update_page_count": "   d",
+      "invert_selection": "  (C+)",
+      "reduce_size": "  ",
+      "mirror_vertical": "⇅  ",
+      "edit_animated_gif": "GF  ...",
+      "save_to_folder": " ",
+      "adjustments": ", , ...",
+      "refresh_mosaic": " sic (F5)",
+      "create_ico": " .ic "
+    },
+    "canvas_no_file": {
+      "open": "CBZ/CBR/CB7/PF ",
+      "recent_files": " ",
+      "clear_history": " "
+    },
+    "canvas_with_file": {
+      "close": " ",
+      "paste": " (C+V)",
+      "paste_clipboard": "    (C+V)",
+      "select_all": "  (C+A)",
+      "deselect": " (EC)",
+      "copy_archive": "  ",
+      "print_all": " cics ",
+      "renumber_auto": "   (  )",
+      "renumber_simple": "   ( )",
+      "flatten": " ",
+      "save_selection": " CBZ ",
+      "hide_sidebar": "«   ",
+      "show_sidebar": "»   ",
+      "decrease_thumbs": "  h ",
+      "increase_thumbs": "  h ",
+      "theme_dark": "  ",
+      "theme_light": "  ",
+      "sort_submenu": " ",
+      "undo": " (C+Z)",
+      "redo": " (C+Y)",
+      "create_cbz": "CBZ  ",
+      "save_as": " ...",
+      "help": " ",
+      "update_page_count": "   d",
+      "invert_selection": "  (C+)",
+      "fullscreen": "  (F11)",
+      "fullscreen_exit": "   (F11  EC)",
+      "quit": " "
+    },
+    "canvas": {
+      "quit": " ",
+      "reset": "  :\n•    \n•   → \n•    → \n•   →  / 220 x\n•  →  \n•   → ",
+      "reset_label": " "
+    },
+    "font_size": {
+      "decrease": "    ",
+      "increase": "    "
+    }
+  },
+  "sort_menu": {
+    "sort_name": "  ",
+    "sort_type": "  ",
+    "sort_size": "  ",
+    "sort_width": "  ",
+    "sort_height": "  ",
+    "sort_resolution": "  ",
+    "sort_dpi": "P  "
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": " ",
+        "message": "CBZ   ."
+      },
+      "empty_cbr": {
+        "title": " ",
+        "message": "CBR   ."
+      },
+      "files_ignored": {
+        "title": " "
+      },
+      "no_selection_crop": {
+        "title": " ",
+        "message": "  ."
+      },
+      "multi_selection_crop": {
+        "title": " ",
+        "message": "   .\n   ."
+      },
+      "invalid_selection_crop": {
+        "title": " ",
+        "message": "  ."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": " ",
+        "message": "      .\n     ."
+      },
+      "no_selection_convert": {
+        "title": " ",
+        "message": "   ."
+      },
+      "invalid_selection_convert": {
+        "title": " ",
+        "message": "  ."
+      },
+      "no_selection_split": {
+        "title": " ",
+        "message": "  ."
+      },
+      "multi_selection_split": {
+        "title": " ",
+        "message": "   .\n   ."
+      },
+      "invalid_selection_split": {
+        "title": " ",
+        "message": "  ."
+      },
+      "invalid_number_split": {
+        "title": " ",
+        "message": "      ."
+      },
+      "insufficient_selection_join": {
+        "title": " ",
+        "message": "   ."
+      },
+      "invalid_selection_join": {
+        "title": " ",
+        "message": "  ."
+      },
+      "pil_not_available": {
+        "title": "PL ",
+        "message": "PL       ."
+      },
+      "format_not_supported": {
+        "title": " ",
+        "message": "     .\n : JPG, PNG, WEBP, BMP, TFF, GF, CO"
+      },
+      "no_crop_selection": {
+        "title": " ",
+        "message": "    ."
+      },
+      "cannot_open_file": {
+        "title": " ",
+        "message": "U  d h fi."
+      },
+      "corrupted_images": {
+        "title": " ",
+        "summary": "{count} cd ig(s) dcd  f {total}.",
+        "hint": "Th  disd ih  sci ic.\nRi-cick  cd ig  c  d i.",
+        "more": "... d {count} "
+      },
+      "no_image_print": {
+        "title": " ",
+        "message": "  ."
+      },
+      "no_valid_image_print": {
+        "title": " ",
+        "message": "   ."
+      },
+      "no_selection_print": {
+        "title": " ",
+        "message": "  ."
+      },
+      "no_valid_selection_print": {
+        "title": " ",
+        "message": "    ."
+      },
+      "save_cancelled": {
+        "title": " ",
+        "message": "     ."
+      },
+      "empty_pdf": {
+        "title": "PF ",
+        "message": "PF   ."
+      },
+      "no_selection_save": {
+        "title": "",
+        "message": "   ."
+      },
+      "drag_disabled_subdirectory": {
+        "title": " ",
+        "message": "   cics    .\n\n :\n1.        \n2.  cics     "
+      },
+      "no_selection_reduce": {
+        "title": " ",
+        "message": "   ."
+      },
+      "invalid_selection_reduce": {
+        "title": " ",
+        "message": "   ."
+      },
+      "invalid_dimensions": {
+        "title": " ",
+        "message": "   ( )."
+      },
+      "no_images_for_gif": {
+        "title": " ",
+        "message": "   ci GF ."
+      },
+      "no_valid_images": {
+        "title": "  ",
+        "message": "   GF ."
+      },
+      "animated_gif_in_comic": {
+        "title": "GF  ",
+        "message": ": cic  GF    .\\\\cic  (CisEx, YACRd,  )     GF .\\\\GF     , cic    \" \"  \"GF  \"   .\\\\cic  ?"
+      },
+      "no_selection_adjust": {
+        "title": " ",
+        "message": "       ."
+      },
+      "invalid_selection_adjust": {
+        "title": " ",
+        "message": "    ."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": " ",
+        "message": "        .\n   ."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZP ",
+        "message": "{file}:  ZP     ."
+      },
+      "zip_cannot_open": {
+        "title": "ZP ",
+        "message": "CBZ  : {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR ",
+        "message": "{file}:  RAR     ."
+      },
+      "rar_cannot_open": {
+        "title": "RAR ",
+        "message": "CBR  : {error}"
+      },
+      "cbr_unexpected": {
+        "title": "",
+        "message": "CBR    : {error}"
+      },
+      "join_failed": {
+        "title": "",
+        "message": " ."
+      },
+      "paste_failed": {
+        "title": "",
+        "message": " : {error}"
+      },
+      "copy_archive_failed": {
+        "title": "",
+        "message": " : {error}"
+      },
+      "crop_invalid": {
+        "title": "",
+        "message": "  ."
+      },
+      "crop_failed": {
+        "title": "",
+        "message": " : {error}"
+      },
+      "load_image_failed": {
+        "title": "",
+        "message": " :\n{error}"
+      },
+      "print_error": {
+        "title": " ",
+        "message": " :\n{error}"
+      },
+      "print_not_available": {
+        "title": " ",
+        "message": "i32i  .\n: i is i32"
+      },
+      "file_not_found": {
+        "title": " ",
+        "message": "  :\n{path}"
+      },
+      "import_failed": {
+        "title": " ",
+        "message": " : {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PMPF ",
+        "message": "PMPF (fiz)  .\n: i is PMPF"
+      },
+      "pdf_import_failed": {
+        "title": "",
+        "message": "PF  : {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PF ",
+        "message": "PF :\n{error}"
+      },
+      "duplicate_names": {
+        "title": "  ",
+        "intro": "{count}   () :\n\n",
+        "item": "  • {name} ({times} )\n",
+        "more": "  ... {more}  \n",
+        "footer": "\nZP      .\n  ."
+      },
+      "save_failed": {
+        "title": "",
+        "message": " : {error}"
+      },
+      "create_archive_failed": {
+        "title": "",
+        "message": " : {error}"
+      },
+      "save_selection_failed": {
+        "title": "",
+        "message": " : {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GF  ",
+        "message": "ci GF :\n{error}"
+      },
+      "save_files_failed": {
+        "title": " ",
+        "message": "  : {error}"
+      },
+      "rename_failed": {
+        "title": "  ",
+        "message": "   : {error}"
+      },
+      "pdf_password_required": {
+        "title": "PF   ",
+        "message": "PF      .\n  ."
+      },
+      "pdf_unlock_failed": {
+        "title": "",
+        "message": "PF   :\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: PF  ( ), ",
+      "file_too_large": {
+        "title": "  ",
+        "message": " {filename}  {size}   500 MB  ."
+      },
+      "license_file_not_found": {
+        "message": "Lics fi  fd: {path}"
+      },
+      "license_file_read_error": {
+        "message": "U  d ics fi: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z ",
+        "message": "{file}  7Z     ."
+      },
+      "delete_error": " : {error}",
+      "export_error": "  : {error}",
+      "font_source_not_found": "  : {path}",
+      "no_tengwar_font": "  .",
+      "no_icons_found": "iih .",
+      "unsupported_files": {
+        "title": "  ",
+        "message": "   ,  :\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GF  ",
+        "message": "ci GF {name}   zik ."
+      },
+      "pywin32_required": {
+        "title": " ",
+        "message": "i32       .\n: i is i32"
+      },
+      "images_imported": {
+        "title": " ",
+        "message": "{count} () "
+      },
+      "archive_copied": {
+        "title": " ",
+        "message": "   cid."
+      },
+      "function_not_available": {
+        "title": " ",
+        "message": "  ."
+      },
+      "duplicate_detected": {
+        "title": " ",
+        "message": "   .\n\n   :\n{name}"
+      },
+      "replace_success": {
+        "title": "",
+        "message": " {name}    ."
+      },
+      "history_cleared": {
+        "title": " ",
+        "message": "   ."
+      },
+      "files_copied_clipboard": {
+        "title": "    ",
+        "message": "      ic .\n\n✓ {count} {word}    \n\n   :\n  •   → \n  •  C+V"
+      },
+      "correction_done": {
+        "title": " ",
+        "message": "{count}  ()  ."
+      },
+      "import_success": {
+        "title": " ",
+        "message": "{count} () {file}  "
+      },
+      "pdf_import_success": {
+        "title": " ",
+        "message": "{count} PF () {file}  \n: {dpi} P"
+      },
+      "pdf_convert_success": {
+        "title": "",
+        "message": "PF  !\n{count}  {dpi} P  ."
+      },
+      "cbz_saved": {
+        "title": "",
+        "message": "CBZ   :"
+      },
+      "cbz_converted": {
+        "title": "",
+        "message": " CBZ   :",
+        "question": "CBR   ?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "",
+        "message": " CBZ   :",
+        "question": "PF   ?"
+      },
+      "cbz_save_as": {
+        "title": "",
+        "message": " CBZ  : {path}"
+      },
+      "cbz_created": {
+        "title": "",
+        "message": "CBZ   :"
+      },
+      "selection_saved": {
+        "title": "",
+        "message": "  :"
+      },
+      "flatten_done": {
+        "title": " ",
+        "message": "{files} () {dirs}  ()  ."
+      },
+      "language_changed": {
+        "title": " ",
+        "message": "  ."
+      },
+      "new_cbz_saved": {
+        "title": " ",
+        "message": "CBZ    :",
+        "question": "  ?"
+      },
+      "page_count_updated": {
+        "title": "  ",
+        "message": "d    {count} ."
+      },
+      "files_saved": {
+        "title": " ",
+        "message": "{count}   {folder}",
+        "open_folder": "  ?"
+      },
+      "adjustments_applied": {
+        "title": " ",
+        "message": "  ."
+      },
+      "pdf_unlocked": {
+        "title": "PF ",
+        "message": "PF   :\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": " ",
+        "message": " {size} M .\n    (RAM).\n\n?"
+      },
+      "confirm_delete": {
+        "title": "",
+        "message": " {count} ({size})  ?"
+      },
+      "delete_source_files": {
+        "title": "  ?",
+        "message": "  ?\n\n =   \n =   \n =  "
+      },
+      "invalid_filenames": {
+        "title": "  ",
+        "intro": "{count} ()   :",
+        "item": "  • {name}",
+        "more": "  ... {more} ",
+        "forbidden_chars": " : {chars}",
+        "fix_question": "   ?\n(  _ )"
+      },
+      "close_without_save": {
+        "title": "  ?",
+        "message": " .   CBZ  ?"
+      },
+      "flatten_folders": {
+        "title": " ",
+        "subdirs_detected": "  :",
+        "files_to_move": "{count} ()   .",
+        "folders_to_delete": "{count}  () .",
+        "continue_question": "?"
+      },
+      "update_page_count": {
+        "title": "  ",
+        "message": "cic   .\n\nd  : {original}\n  : {current}\n\nd    ?"
+      },
+      "conversion_complete": {
+        "title": " ",
+        "message": " !\n\n{count}  {format}    .\n\n  ?",
+        "delete_originals": "  \n{count}  - {size}",
+        "keep_all": " \n{count}  - {size}",
+        "cancel_conversion": "  \n{count}  - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "   :  {filename} CBZ , CBR .  ?",
+      "title": "cc xsi"
+    },
+    "extension_mismatch_cbr": {
+      "message": "  :  {filename} CBR , CBZ . ?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "  : {filename}  CB7 , CBZ/CBR .  ?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 B A\nGNU GPL 3",
+    "thumb_size": "  h",
+    "loading": ",  ...\n{percent}%",
+    "resizing": ", ...\n{percent}%",
+    "converting": ", ...\n{percent}%",
+    "loading_lazy": ",  ...\n{percent}%\n\n {size} M  ,   .      ,     .",
+    "apply_save_cbz": " \n CBZ  ",
+    "apply_create_cbz": " \n CBZ  ",
+    "import_progress": " ...\n{percent}%",
+    "pdf_import_progress": "PF  ...\n{percent}%",
+    "pdf_opening": "PF  ...",
+    "pdf_page": " {current} / {total}",
+    "warning_close": "!    g!",
+    "language_label": ":",
+    "directory_tooltip": ": {name}\n{count} ()\nh : {size} M",
+    "folder_up_tooltip": "  \n   ",
+    "status_bar": "{dirs}   |  {files}  ({total_size})  |  {selected}  ({selected_size})",
+    "pdf_converting": "{total}  {dpi} P  ...",
+    "pdf_converting_no_change": "{total}   ...",
+    "print_progress": "  ...\n{percent}%",
+    "print_preparing": ",   ...",
+    "license_text": "Ci © 2025-2026 B A\n\nGNU   3 \n\nTVA RGT\n, ,   \nMsicVi,    .\n\nNAP AME\n  (  )  :\n– GPL 3  i\n–     ,   \n–    i\n\nVOMO\n  VOMOBE.\nP     .\n\nGNU    .  ,  <hs://.g.g/icss/>.",
+    "view_full_license": "  ",
+    "license_unrar_text": "CBZ  ZP  ,    . CBR , , RAR  ,  .\n\nMsicVi CBR   URAR , RAR     .\n\nWsi: <hs://..c/_dd.h>",
+    "view_full_unrar_license": "URAR  ",
+    "saving_cbz": "... {percent}%",
+    "empty_canvas_line1": "  CBZ/CBR/CB7/PF       ",
+    "empty_canvas_line2": "         ",
+    "empty_canvas_line3": "       ",
+    "icon_toolbar_config_title": "ic  cfigi",
+    "icon_toolbar_active": "ic ",
+    "icon_toolbar_hidden": "  ",
+    "license_gpl_full": "GNU GPL 3 ",
+    "license_unrar_full": "URAR ",
+    "licenses_button": "",
+    "view_full_gpl_license": "GNU GPL 3   ",
+    "license_7zip_text": "CB7  7z  , g P   GNU LGPL  .\n\nMsicVi CB7   7-Zi  —     sc.\n\n: <hs://.7-zi.g/>",
+    "view_full_7zip_license": "7-Zi  ",
+    "license_7zip_full": "7-Zi ",
+    "icon_toolbar_show_thumb_slider": " hi  ",
+    "icon_toolbar_show_lang_combo": "  ",
+    "adjusting": ",  ...\n{current} / {total}",
+    "license_piqad_full": "   ",
+    "license_tengwar_full": "Aci T  ",
+    "view_full_piqad_license": "    "
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "cha'nobmey choHmeH",
+      "title": "{count} {word} ",
+      "word_image": "",
+      "word_images": "",
+      "info": "  :",
+      "format_png": "PNG (g )",
+      "format_jpg": "JPEG ( )",
+      "format_webp": "WEBP ()",
+      "format_bmp": "BMP (i)",
+      "format_tiff": "TFF ( )",
+      "format_gif": "GF ()",
+      "quality_label": "JPG/WEBP :",
+      "quality_maximum": " —  95/100",
+      "quality_high": " —  85/100",
+      "quality_medium": " —  75/100",
+      "quality_low": " —  60/100",
+      "quality_custom_option": "",
+      "quality_custom": "  : {value}/100",
+      "quality_note": "( JPG  WEBP   )",
+      "quality_window_title": "nup wIvmeH",
+      "format_gif_static": "GF ",
+      "format_gif_animated": "GF  (  )"
+    },
+    "split": {
+      "window_title": "ghItlh mobmoH",
+      "title": " ",
+      "pages_label": " :",
+      "direction_label": " :",
+      "horizontal": "- ( → )",
+      "vertical": "- ( → )",
+      "warning": "⚠   ,\n  .",
+      "button_split": "",
+      "button_cancel": ""
+    },
+    "join": {
+      "window_title": "ghItlhmey qIpmoH - tlhegh chu'moH",
+      "instructions": " :\n• - (/)  - \n• - (/)  - ",
+      "merged_filename_prefix": "",
+      "heights_label": "",
+      "widths_label": "",
+      "size_adjustment_title": " ",
+      "size_adjustment_warning": "⚠️    .\n    .\n    .",
+      "keep_original": "  ",
+      "keep_original_desc": "(   )",
+      "enlarge_small": "   ",
+      "enlarge_small_desc": "(   )",
+      "reduce_large": "   ",
+      "reduce_large_desc": "(   )",
+      "back_to_arrangement": ""
+    },
+    "pdf": {
+      "quality_merge": "  :",
+      "quality_export": "  :",
+      "merge_quality_title": "PF  ",
+      "export_quality_title": "PF  ",
+      "loading_title": "PF ...",
+      "dpi_90": "90 P -  ",
+      "dpi_150": "150 P -   ( )",
+      "dpi_200": "200 P -   ",
+      "dpi_300": "300 P -  (cics )",
+      "dpi_600": "600 P -   ( )",
+      "dpi_original": "  ",
+      "dpi_original_tooltip": " PF  :\n•  :  P \n•  :  P\n•   :  P   ,   P\n:   P   "
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PMPF ",
+      "pymupdf_required_message": "PMPF (fiz) . PF  .",
+      "select_directory_title": "PF    ",
+      "no_pdf_title": "PF  ",
+      "no_pdf_message": " PF  :\n{directory}",
+      "confirm_title": "PF CBZ  ",
+      "confirm_message": "{count} PF   {directory}- ( ).",
+      "checkbox_permanent_delete": "PF  ,  \n(POLLUBE!)",
+      "start_button": "",
+      "converting_title": "...",
+      "converting_progress": " {current}  {total}",
+      "page_progress": " {current} / {total}",
+      "complete_title": " ",
+      "complete_message": "{count} PF   :",
+      "complete_message_errors": "{total}  {count} PF   :",
+      "errors_count": "{count}  ."
+    },
+    "batch_cbr": {
+      "select_directory_title": "CBR    s ",
+      "no_cbr_title": "CBR   ",
+      "no_cbr_message": "s- CBR   :\\{directory}",
+      "confirm_title": "CBR  CBZ  ",
+      "confirm_message": "{count} CBR    {directory}- (s  ).",
+      "checkbox_permanent_delete": "CBR   , \n(CEGLABBE)",
+      "start_button": "",
+      "converting_title": "...",
+      "converting_progress": "  {current}  {total}-",
+      "page_progress": " {current} / {total}",
+      "complete_title": " ",
+      "complete_message": "s- CBR   {count} :",
+      "complete_message_errors": "s- CBR   {count}  {total}-:",
+      "errors_count": "{count} () .",
+      "renamed_count": "{count}  ()  CBZ",
+      "rarfile_unavailable": "fi d . c fi ."
+    },
+    "close_warning": {
+      "title": "!",
+      "message": "   g!",
+      "btn_close_lose": "    g",
+      "btn_save_cbz": "    ",
+      "btn_create_cbz": "   CBZ  ",
+      "btn_cancel": "    "
+    },
+    "replace_image": {
+      "title": "  "
+    },
+    "reduce_size": {
+      "window_title": "nagh luq choH",
+      "title": "{count} {word}  ",
+      "word_image": "",
+      "word_images": "",
+      "current_size": " : {size} MB",
+      "current_dimensions": " : {width} × {height} x",
+      "choose_method": "   :",
+      "custom_dimensions": " ",
+      "width_label": ":",
+      "height_label": ":",
+      "use_custom_dimensions": " ",
+      "different_dimensions_warning": "   . cs      .    .",
+      "estimated_size": " : {size} MB",
+      "percentage_reduction": " ",
+      "percentage_enlargement": " ",
+      "reduce_0": "0% ( )",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% ( )",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "   1024, 1280, 1600, 1920, 2000  ,     .",
+      "multi_page_width": "       (/)",
+      "multi_page_width_tooltip": "    :  ,   .         ,  ( )   ( ) "
+    },
+    "gif_animated": {
+      "window_title": "GIF QummeH chenmoH",
+      "images_title": " ",
+      "params_title": "GF ",
+      "frame_delay_label": "  :",
+      "fps_normal": "{fps} /",
+      "fps_slow": "   {seconds} ",
+      "loop_label": " :",
+      "loop_info": "(0 =  )",
+      "disposal_label": " :",
+      "disposal_0": " ",
+      "disposal_1": " ",
+      "disposal_2": "  ",
+      "disposal_3": "  ",
+      "optimize": "  (  )",
+      "metadata_title": "GF  ",
+      "metadata_dimensions": ": {width} × {height} x",
+      "metadata_frames": " : {count}",
+      "metadata_duration": " : {duration} ",
+      "metadata_fps": ": {fps} fs",
+      "metadata_palette": ": 256 ",
+      "metadata_size": " : {size} KB",
+      "comment_label": " ():",
+      "no_images": " ",
+      "creating_progress": "   ({current}/{total})",
+      "creating_normalizing": "   ({current}/{total})",
+      "creating_quantizing": "  ({current}/{total})",
+      "creating_saving": "GF ..."
+    },
+    "save_to_folder": {
+      "title": " "
+    },
+    "duplicate_filenames": {
+      "title": "⚠️   ",
+      "message": "  .     .    \n   ( ,  ).\n\n     ."
+    },
+    "adjustments": {
+      "window_title": "ngo'wI' choH",
+      "title": "{count} {word} ",
+      "word_image": "",
+      "word_images": "",
+      "apply_button": "",
+      "color_depth_section": " ",
+      "brightness_contrast_section": "  ",
+      "compression_section": "",
+      "effects_section": "",
+      "sharpness_section": "",
+      "levels_section": "/ ",
+      "depth_unchanged": "",
+      "depth_32bit": "32 i (RGBA -   )",
+      "depth_24bit": "24 i (RGB - )",
+      "depth_8bit": "8 i (PNG   / JPEG  )",
+      "depth_1bit": "1 i (  )",
+      "brightness_label": ": {value}",
+      "contrast_label": ": {value}",
+      "compression_enable": "  ",
+      "compression_quality_label": " : {value}/100",
+      "sharpness_label": ": {value}",
+      "effect_none": " ",
+      "effect_grayscale": "",
+      "effect_sepia": "",
+      "levels_none": " ",
+      "levels_threshold": " (   )",
+      "levels_advanced": "  (//)",
+      "threshold_label": ": {value}",
+      "black_point_label": " : {value}",
+      "gamma_label": "g (): {value}",
+      "white_point_label": " : {value}",
+      "auto_levels_button": "Aic ds",
+      "open_viewer_button": "   ()",
+      "compression_info": "YÚYO WEBE    cssi",
+      "open_viewer_button_simple": "Vi  ",
+      "reset_button": "",
+      "preview_section": "",
+      "effect_invert": "Ng ",
+      "preview_warning": "     ",
+      "effect_remove_colors": " ",
+      "remove_colors_intensity_label": " : {value}",
+      "image_mode_section": " ",
+      "image_mode_rgb": "RGB ()",
+      "image_mode_rgba": "RGBA ( + )",
+      "image_mode_l": "L (  )",
+      "image_mode_la": "LA (   + )",
+      "image_mode_cmyk": "CMYK ()",
+      "image_mode_1": "1 (  )",
+      "image_mode_p": "P (256  )",
+      "saturation_section": "",
+      "saturation_label": " : {value}",
+      "saturation_viewer_title": " ",
+      "transparency_section": "",
+      "transparency_info": "   PNG, WP  CO ",
+      "transparency_type_label": " :",
+      "transparency_type_flood": "",
+      "transparency_type_global": "",
+      "transparency_tolerance_label": " : {value}",
+      "transparency_viewer_title": " ",
+      "transparency_click_instruction": "  ",
+      "transparency_undo": "  ",
+      "transparency_redo": "",
+      "transparency_type_flood_tooltip": "Fd fi :      ",
+      "transparency_type_global_tooltip": "  :  ix     ",
+      "transparency_apply": "",
+      "transparency_skipped_warning": "{count}  ()  —   .  , PNG- .",
+      "unsharp_section": "  ",
+      "unsharp_radius_label": ": {value}",
+      "unsharp_percent_label": ": {value} %",
+      "unsharp_threshold_label": ": {value}",
+      "unsharp_viewer_title": "  ",
+      "auto_levels_tooltip": "          .\n     , i ."
+    },
+    "levels_viewer": {
+      "title": " h i ",
+      "apply_current": "  ",
+      "apply_all": "   ",
+      "black_pipette": "   ",
+      "white_pipette": "   ",
+      "black_pipette_tooltip": "    . :  !",
+      "white_pipette_tooltip": "    . :  !"
+    },
+    "sharpness_viewer": {
+      "title": " "
+    },
+    "brightness_viewer": {
+      "title": " "
+    },
+    "compression_viewer": {
+      "title": " "
+    },
+    "outliers": {
+      "title": "  ",
+      "message": "      .   :",
+      "width": " ",
+      "height": " ",
+      "unusual": "",
+      "skip": " ",
+      "keep": ""
+    },
+    "first_page_multi": {
+      "title": "   ",
+      "message": "    .   ?",
+      "option_auto_desc": "  .",
+      "option_joint_desc": "      .",
+      "option_exclude_label": " ",
+      "option_exclude_desc": "  .   .      ."
+    },
+    "batch_img": {
+      "select_directory_title": "      ",
+      "no_img_title": "  ",
+      "no_img_message": "     :\n{directory}",
+      "confirm_title": "    CBZ",
+      "confirm_message": "{count}    {directory} (  ).",
+      "checkbox_permanent_delete": "   \n  ()",
+      "start_button": "",
+      "converting_title": "...",
+      "converting_progress": "{current}   {total}  h",
+      "complete_title": " ",
+      "complete_message": "{count}      :",
+      "complete_message_errors": "{count} {total}      :",
+      "errors_count": "{count} () .",
+      "converted_by_ext": "{ext} : {count} ",
+      "mode_title": " cz",
+      "mode_intro": "  ?",
+      "mode_one_per_image": "  cz ",
+      "mode_one_per_image_sub": "(  cz  )",
+      "mode_all_in_one": "   cz",
+      "mode_all_in_one_sub": "(    cz)"
+    },
+    "batch_drop": {
+      "window_title": "ngan batch mI' qawHaq",
+      "intro_single": "  .   ?",
+      "intro_multiple": "{count}  .   ?",
+      "recursive_note": "  .",
+      "mixed_drop_title": " ",
+      "mixed_drop_message": "   .      ."
+    },
+    "pdf_unlock": {
+      "title": "PF   ",
+      "message": "  .\n\nPF      ( ).\n\nPF     ?",
+      "yes": ",  ",
+      "no": ",  "
+    },
+    "batch_pdf_unlock": {
+      "title": "PF  ",
+      "message_single": " PF   . CBZ  .\n\n    ?",
+      "message_plural": "{count} PF   . CBZ  .\n\n    ?",
+      "yes": ",   ",
+      "no": ",  "
+    },
+    "ico_creator": {
+      "title": " .ic ",
+      "info_message": "     (16, 32, 48, 64, 128, 256 x).\n : {w} × {h} x",
+      "btn_validate_crop": " ",
+      "btn_validate_no_crop": "  ",
+      "btn_cancel": "",
+      "btn_transparency": " ",
+      "btn_validate_final": "",
+      "tolerance_label": ":",
+      "success_title": ".ic  ",
+      "success_message": " {filename} .",
+      "overwrite_title": " ",
+      "overwrite_message": " {filename}  . ?",
+      "save_blocked_title": " ",
+      "save_blocked_message": " .ic   .     sik .\n ,   ()   (C+X)  .",
+      "btn_back_to_crop": "  "
+    },
+    "video_save_blocked": {
+      "title": " ",
+      "message": "  id    .      sic .\n ,  ()   (C+X)   ."
+    },
+    "open_file": {
+      "title": "O  i",
+      "filter_archives": "Ais (*.cz *.c *.c7 *. *.df)",
+      "filter_all": "A fis (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - License"
+    },
+    "replace_corrupted_image": {
+      "title": "Rc cd ",
+      "filter_images": "gs (*. *.g *.g *.gif *. *. *.iff *.if *.ic *.fif *.g *.)",
+      "filter_all": "A fis (*)"
+    },
+    "see_log": " g"
+  },
+  "tooltip": {
+    "source_archive": " : {name}",
+    "file": ": {name}",
+    "reason": ": {reason}",
+    "size_kb": ": {size} K",
+    "size_mb": ": {size} M",
+    "file_size": ": {size}",
+    "dimensions": "h: {width} × {height} x",
+    "resolution": ": {mp} MP",
+    "dpi_single": "P: {dpi}",
+    "dpi_double": "P: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "P: ",
+    "cbr_info": "CBR  RAR  ,      ;\n,   CBZ   .",
+    "rotate_left": "90   ",
+    "rotate_right": "90   ",
+    "mirror_horizontal": " ",
+    "mirror_vertical": " ",
+    "fullscreen": " ",
+    "help_button": "L ",
+    "theme_button": "   h ",
+    "font_decrease_button": "    ",
+    "font_increase_button": "    ",
+    "color_depth": ": {bits} is ({mode})",
+    "batch_pdf_to_cbz": "PF      \nCBZ .    ,\n   .",
+    "batch_pdf_permanent_delete": ":  ,\nPF   \n , .\n    \n .",
+    "batch_cbr_to_cbz": " CBR   CBZ\ns  s .",
+    "batch_cbr_permanent_delete": ":  ,\nCBR    \n , .\n  \n.",
+    "renumber_btn_1": "   \n   ",
+    "renumber_btn_2": "  \n   ",
+    "corrupted_header": " ",
+    "right_click_instruction1": "   ",
+    "right_click_instruction2": "  .",
+    "unknown_error": " ",
+    "batch_img_to_cbz": "    \nCBZ  ,\n CBZ    .",
+    "batch_img_permanent_delete": " :   ,\n   \n \n.  \n .",
+    "too_large_header": "N    ",
+    "too_large_pixels": "isis: {pixels}",
+    "icon_toolbar_config_button": " ",
+    "icon_toolbar_size_decrease": "ic  ",
+    "icon_toolbar_size_increase": "ic  ",
+    "source_loose": " ",
+    "source_web": " "
+  },
+  "help": {
+    "title": "MsicVi -  ",
+    "intro": "MsicVi cics (B )        .  CBZ (ZP), CBR (RAR)  PF .  64 i   .",
+    "open_files": " ",
+    "open_files_content": "• CBZ/CBR/CB7/PF   \n•   id  \n•  : CBZ, CBR, CB7, PF,  (JPG, PNG, WEBP, BMP, TFF, GF, CO). EPUB    ,     ( ).\n• PF  (   ):  ,  .\n• PF    ( ssd):   . MsicVi  PF    .",
+    "mosaic": "",
+    "mosaic_content": "zk      hi . :\n•   dg-d  (   ic,       )\n•    (C+cick  hif+cick)\n• hi   sid \n•      cick\n•   (CBZ/CBR/PF) Wids Ex  dg-d     c ",
+    "manipulation": " ",
+    "manipulation_content": "•  gs d  dg-d-d\n•  cic  g  dg\n• i-cick g is  (i, di, c.)\n• d-cick g i \n• gs idiid x ids fd dg,  c+c / c+",
+    "renumber": "  ",
+    "renumber_content": "MsicVi     ,   ,   ( )   :\n\n•     ( ):       ,    .     (:    003-004,  005-006-007).    ,       (: 010---025).\n\n•   :        (001, 002, 003...),   .\n\n  ,     .     .  ,       .",
+    "flatten": " ",
+    "flatten_content": "   ,          .",
+    "viewer": "",
+    "viewer_content": "     :\n•  ← → :  \n•   :     \n  -  :   \n  -  :   ,  -, -, \n  -   :   , -, -, -, \n•  :  \n• C+  C+Ps/Mis:  \n• C+0:   \n•  F11:  \n•  :   \n•  É:    /  ",
+    "join_pages": " ",
+    "join_pages_content": "   csci, -cick →  scd   hiz  ic .     sc  f    ,  PNG .",
+    "split_pages": " ",
+    "split_pages_content": "   :\n•   \n•   →  \n•   (-  -)",
+    "crop": "  ",
+    "crop_content": "          :\n•     \n• h      \n•     \n•    \n•  É:   ",
+    "shortcuts": " ",
+    "shortcuts_content": "• C+Z:   \n• C+Y:   \n• C+A:   \n• C+:  \n• C+C:   \n• C+X:   \n• C+V:  \n• :   \n• F5:   \n• F11:    (F11  EC  )",
+    "dark_mode": " ",
+    "dark_mode_content": "/  cick    h .",
+    "sort": " ",
+    "sort_content": "Ti      :\n• , , , , ,   P",
+    "save": "",
+    "save_content": "• :     \n•  :   \n• CBZ  :    ( ) ",
+    "other": " ",
+    "other_content": "• :     \n• :     (PNG, JPEG, WEBP, BMP, TFF, GF). : CMYK  ic RGB  (PNG, JPEG, WEBP, BMP, TFF, GF). : CMYK  ic RGB \n• :     \n• :   \n•  : Cicf.x    (  ).   cics      , g    .   .    dsig  .",
+    "config_files": "      ",
+    "config_files_content": "MsicVi  .sici_cfig.s .          ,         ,        . MsicVi     ,      .\n{temp_dir} -   .\n      ,  .sici_cfig.s -  ,   .\n, {temp_dir} -        .    .sici_cfig.s  ,      .",
+    "config_clear_temp": "   ",
+    "config_clear_recent": "  ",
+    "config_clear_config": "  ",
+    "config_temp_cleared": "   .",
+    "config_config_cleared": "  .\n   .",
+    "language": " ",
+    "language_content": "MsicVi    .\n,          .   , Eish  .\n   ,      ,   h  .       .\nOL LA: Aic, Ai, Bgi, Chis (iifid), Chis (Tdii), Ci, Cz, ish, , Eish, Esi, Fiish, F, G, Gk, idi, i, cdic, dsi, ish, i, Js, K, Li, Lihi, M, Ms, Ngi, Pish, Pgs, Ri, k, i, ish, dish, Ti, Thi, Tkish, Ukii, Vis.\n OL LA:  ( i   ), dh  idi ( i   ), dh   ( i   ).\n\n  Wids  ,  ( )   ( : idi  )  .        :\n-   (  ): {url_piqad}\n-   ( , idi   ): {url_tengwar}\n   ,      ,   :\n\nf   .    A , Cd .    .     .  A   ,         .    ,   .  .",
+    "credits": "Vi Cdi, ",
+    "credits_content": " .  .   Cd , Ahic A, Cd Cd . Cd Cd ,  !",
+    "resize_pages": " ",
+    "resize_pages_content": " dci  g:\n•     \n• -cick → siz\n•  is i:\n  - cs disis: dsid idh  hi  (sc i ic sd).\n  - cg dci: 10%  90% cg \n  - cg g: 10%  100% cg \n• ici  sid siz difici  \n• difici  scd   is",
+    "language_export_piqad": " F",
+    "language_export_tengwar": "T Fs",
+    "language_export_piqad_success": " xd: {filename}\n :",
+    "language_export_tengwar_success": "{count}  xd\n :",
+    "icons": "",
+    "icons_content": "          : hs://.fik.c/h/ic-fish/ics/ic-fish-sk_908#f_=sc_di\n  .\n  , Wids   ,   ( A ,      ḥf, ḥf, ḥf).     ,   .",
+    "icons_view_button": " ",
+    "icons_window_title": "MosaicView Del",
+    "icons_save_all": " ",
+    "icons_saved_success": "{count}   :",
+    "icons_save_failed": "  : {error}",
+    "split_ui": "   ",
+    "split_ui_content": "MsicVi    , .\n\n  i     .    :  ,  ,   .      .\n\n  , .     .     .\n\n  Cs     .",
+    "license_gpl": "GPL 3 ",
+    "license_unrar": "URAR ",
+    "config_clear_clipboard": "   ",
+    "config_clipboard_note": ": Wids       (cid_XXXXX  ) 12  ,      g  . 12  ,   .",
+    "config_log_note": "  (PF  CBZ CBR  CBZ )     .   (Lg_dfcz_.x Lg_ccz_.x )   g . \"  \"    .",
+    "config_clipboard_cleared": "   .",
+    "adjust_images": "Ng ",
+    "adjust_images_content": "    MsicVi. , , , , ,  (-, s,  ), cssi ,  , ,   .  Vi     .   .",
+    "create_icon": "c ",
+    "create_icon_content": "MsicVi  ic fi (.ic)  sic  .\n• -cick  → c \n• i-   (ic )\n• sc  \n• : .ic fi sic- \n• .ic fis  sdd si (16×16 256×256 ) d \n• .ic fi sic- , CBZ i-  ckd, CO f i  . .ic fi  x (C+C Wids fd- ),  sic-  .",
+    "batch_convert": " ",
+    "batch_convert_content": "MsicVi     ,     sik  .  ,    :   , ,     ,     .    igi       .\n• CBR → CBZ :  CBR (RAR)      . CBR ZP ,   ,  .\n• PF → CBZ :  PF      .     .\n• MLLOG MOBW → CBZ :          CBZ .   , , TFF , GF   g .",
+    "config_open_temp_folder": "  ",
+    "icon_toolbar": "  ",
+    "icon_toolbar_content": "c -       .  ic-  -   . ic-       , g  -   : cfigi id ,  ic-      . « + » « − »  -  ic-  . cfigi ic .",
+    "license_7zip": "7-Zi "
+  },
+  "misc": {
+    "file_word": "",
+    "files_word": "",
+    "corrupted": "",
+    "yes": "",
+    "no": "",
+    "cancel": "",
+    "selection_suffix": "-"
+  },
+  "metadata": {
+    "title": "",
+    "series": "",
+    "number": "",
+    "volume": "",
+    "summary": "",
+    "writer": "",
+    "penciller": " ",
+    "inker": "",
+    "colorist": " ",
+    "letterer": "",
+    "cover_artist": "  ",
+    "editor": " ()",
+    "publisher": " ()",
+    "imprint": "",
+    "genre": "",
+    "web": " ",
+    "page_count": " ",
+    "language_iso": "",
+    "format": "",
+    "black_and_white": "  ",
+    "manga": "M",
+    "year": "",
+    "month": "",
+    "day": "",
+    "notes": "",
+    "characters": "",
+    "locations": "",
+    "teams": "",
+    "story_arc": "",
+    "story_arc_number": "",
+    "series_group": " ",
+    "count": " ",
+    "alternate_series": " ",
+    "alternate_number": " ",
+    "alternate_count": "  ",
+    "age_rating": " ",
+    "series_complete": " ",
+    "translator": " ",
+    "tags": "",
+    "scan_information": " ",
+    "community_rating": " ",
+    "review": " ",
+    "gtin": "GTN",
+    "pages": "",
+    "pages_col_image": " ",
+    "pages_col_type": "",
+    "pages_col_width": "",
+    "pages_col_height": "",
+    "pages_col_size": " (B)"
+  },
+  "web": {
+    "web_download_progress": ": {downloaded}/{total} ...",
+    "web_download_cancel": "",
+    "web_no_images": " ",
+    "web_no_images_found": "  .",
+    "web_imported": "{count}    ",
+    "web_drag_drop_title": "    ",
+    "web_copy_paste_message": "     .\n\n  ( ):\n\n1.     \n2.   \n3. MsicVi-,    C+V \n\n    !",
+    "import_web_button": " ",
+    "import_web_tooltip": "     i  ",
+    "import_web_menu": " ...",
+    "import_web_dialog_title": "   ",
+    "import_web_url_label": "  :",
+    "import_web_ok_button": "",
+    "import_web_cancel_button": "",
+    "import_web_invalid_url": "URL .    ."
+  },
+  "donation": {
+    "menu_label": " ",
+    "title": "",
+    "message": "  ,   .     .  ? ,    g .\n\ncs       ,   .  "
+  },
+  "mail": {
+    "tooltip": "      Wids-  .     (    , ),   MsicVi    .",
+    "copy_address": "MsicVi    ",
+    "menu_label": "MsicVi   ",
+    "icon_label": " "
+  },
+  "menu": {
+    "file": "",
+    "file_open": " ",
+    "file_close": " ",
+    "batch_convert": "  ",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PF → CBZ",
+    "batch_img_to_cbz": "  → CBZ",
+    "edit": "",
+    "undo": "",
+    "redo": "",
+    "paste": "",
+    "delete": "",
+    "invert_selection": " ",
+    "select_all": " ",
+    "deselect": " ",
+    "refresh_mosaic": " ",
+    "images": "",
+    "rotation": "",
+    "archives": " ",
+    "sort": "",
+    "system": "",
+    "decrease_font": " ",
+    "increase_font": " ",
+    "language": "",
+    "language_real": " ",
+    "language_fictional": " ",
+    "about": "",
+    "export_piqad_font": " ",
+    "export_tengwar_fonts": " "
+  }
+}

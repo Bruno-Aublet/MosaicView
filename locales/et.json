@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Digitaalsete koomiksite kogujate Šveitsi nuga",
+  "buttons": {
+    "open_file": "Ava CBZ/CBR/CB7/PDF",
+    "close_file": "Sulge fail",
+    "create_cbz": "Loo CBZ arhiiv",
+    "flatten_dirs": "Liiguta kõik failid\njuurkausta ja kustuta\nalamkataloog",
+    "renumber": "Lehekülgede\nümbernummerdamine",
+    "undo": "⤺ Võta tagasi",
+    "redo": "Tee uuesti ⤻",
+    "copy": "Kopeeri",
+    "cut": "Lõika",
+    "paste": "Kleebi",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Teisenda teise\npildiformaati",
+    "join_pages": "Ühenda leheküljed",
+    "split_page": "Tükelda lehekülg",
+    "save_as": "Salvesta kui\n(loo uus CBZ)",
+    "save_selection": "Salvesta valik\nCBZ failina",
+    "print_selection": "Prindi valik",
+    "print_all": "Prindi kogu koomiks",
+    "sort": "Sorteeri",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Teisenda",
+    "cancel": "Tühista",
+    "split_button": "Tükelda",
+    "join_button": "Alusta",
+    "validate_crop": "Kinnita kärpimine",
+    "ok": "OK",
+    "close": "Sulge",
+    "apply_and_save": "Rakenda muudatused ja salvesta fail",
+    "apply_and_create": "Rakenda muudatused ja loo CBZ fail",
+    "close_and_lose": "Sulge fail ja kaota muudatused",
+    "cancel_return": "Tühista ja naase mosaiigi juurde",
+    "update_page_count": "Värskenda lehekülgede\narvu metaandmetes",
+    "invert_selection": "Pööra valik ümber",
+    "reduce_size": "Muuda lehtede suurust",
+    "mirror_vertical": "⇅",
+    "create_gif": "Loo GIF",
+    "edit_gif": "Muuda animeeritud GIF-i",
+    "save_to_folder": "Ekspordi valitud\nleheküljed",
+    "continue": "Jätka",
+    "reset": "↻",
+    "yes": "Jah",
+    "no": "Ei",
+    "renumber_recommended": "Nummerda ümber (soovitatav)",
+    "ignore_and_save": "Ignoreeri ja salvesta",
+    "rename_to_cbz": "Nimeta ümber .cbz-iks",
+    "open_without_rename": "Ava ilma ümbernimetamiseta",
+    "rename_to_cbr": "Nimeta ümber .cbr",
+    "adjustments": "Heledus,\nkontrast jne.",
+    "batch_cbr_to_cbz": "CBR-failide\n pakktteisendamine CBZ-ks",
+    "batch_pdf_to_cbz": "PDF-failide pakkteisendumine\n CBZ-vormingusse",
+    "batch_img_to_cbz": "Pildifailide\n pakettkonverteerimine CBZ-iks",
+    "icon_toolbar_reset": "Lähtesta",
+    "delete_selected": "Kustuta",
+    "save": "Salvesta",
+    "rename_to_cb7": "Nimeta ümber .cb7-ks",
+    "split_ui": "Jaga liides kaheks paneeliks",
+    "unsplit_ui": "Sulge teine paneel"
+  },
+  "tabs": {
+    "mosaic": "Mosaiik",
+    "metadata": "Metaandmed"
+  },
+  "viewer": {
+    "title": "Vaatur",
+    "mode_single": "Üksik leht  [D]",
+    "mode_double": "Kahekordne leht  [D]",
+    "mode_continuous": "Pidev režiim  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Eelmine lehekülg (←)",
+      "next_page": "Järgmine lehekülg (→)",
+      "zoom_in": "Suurenda + (Ctrl+Plus)",
+      "zoom_out": "Vähenda - (Ctrl+Miinus)",
+      "zoom_reset": "Lähtesta suum (Ctrl+0)",
+      "reading_mode_double": "Muuda lugemisrežiimi (D) → Kahekordsed leheküljed",
+      "reading_mode_continuous": "Muuda lugemisrežiimi (D) → Pidevad kahekordsed leheküljed",
+      "reading_mode_single": "Muuda lugemisrežiimi (D) → Üksik lehekülg",
+      "fullscreen_exit": "Välju täisekraanist (F11)",
+      "fullscreen": "Täisekraan (F11)",
+      "close_viewer": "Sulge vaatur (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Rikutud pilt - Asenda",
+      "corrupted_delete": "⚠️ Kustuta see pilt",
+      "copy": "Kopeeri (Ctrl+C)",
+      "cut": "Lõika (Ctrl+X)",
+      "paste": "Kleebi (Ctrl+V)",
+      "paste_clipboard": "Kleebi lõikelaualst (Ctrl+V)",
+      "delete": "Kustuta (Delete)",
+      "deselect": "Tühista valik (ESC)",
+      "rotate_right": "↻ Pööra paremale",
+      "rotate_left": "↺ Pööra vasakule",
+      "mirror": "⇄ Horisontaalne peegel",
+      "crop": "Kärbi",
+      "convert": "Teisenda teise formaati...",
+      "join": "Ühenda valitud leheküljed",
+      "split": "Tükelda valitud lehekülg",
+      "save_selection": "Salvesta valik CBZ failina",
+      "print_selection": "Prindi valik",
+      "copy_archive": "Kopeeri terve arhiiv",
+      "undo": "Võta tagasi (Ctrl+Z)",
+      "redo": "Tee uuesti (Ctrl+Y)",
+      "renumber_auto": "Lehekülgede ümbernummerdamine (mitmik-lehekülgede automaattuvastus)",
+      "renumber_simple": "Lehekülgede ümbernummerdamine (lihtne nummerdamine)",
+      "sort_submenu": "Sorteeri leheküljed",
+      "sort_name": "Nime järgi",
+      "sort_type": "Tüübi järgi",
+      "sort_size": "Suuruse järgi",
+      "sort_width": "Laiuse järgi",
+      "sort_height": "Kõrguse järgi",
+      "sort_resolution": "Eraldusvõime järgi",
+      "sort_dpi": "DPI järgi",
+      "create_cbz": "Loo CBZ arhiiv",
+      "save_as": "Salvesta kui...",
+      "close_file": "Sulge fail",
+      "help": "Kasutusjuhend",
+      "update_page_count": "Värskenda lehekülgede arvu metaandmetes",
+      "invert_selection": "Pööra valik ümber (Ctrl+I)",
+      "reduce_size": "Muuda lehtede suurust",
+      "mirror_vertical": "⇅ Vertikaalne peegel",
+      "edit_animated_gif": "Muuda animeeritud GIF-i...",
+      "save_to_folder": "Ekspordi valitud leheküljed",
+      "adjustments": "Heledus, kontrast, värvid...",
+      "refresh_mosaic": "Värskenda mosaiiki (F5)",
+      "create_ico": "Loo .ico fail"
+    },
+    "canvas_no_file": {
+      "open": "Ava CBZ/CBR/CB7/PDF",
+      "recent_files": "Hiljutised failid",
+      "clear_history": "Kustuta ajalugu"
+    },
+    "canvas_with_file": {
+      "close": "Sulge fail",
+      "paste": "Kleebi (Ctrl+V)",
+      "paste_clipboard": "Kleebi lõikelaualst (Ctrl+V)",
+      "select_all": "Vali kõik (Ctrl+A)",
+      "deselect": "Tühista valik (ESC)",
+      "copy_archive": "Kopeeri terve arhiiv",
+      "print_all": "Prindi kogu koomiks",
+      "renumber_auto": "Lehekülgede ümbernummerdamine (mitmik-lehekülgede automaattuvastus)",
+      "renumber_simple": "Lehekülgede ümbernummerdamine (lihtne nummerdamine)",
+      "flatten": "Lamesta kaustad",
+      "save_selection": "Salvesta valik CBZ failina",
+      "hide_sidebar": "« Peida nupuveerg",
+      "show_sidebar": "» Näita nupuveeru",
+      "decrease_thumbs": "Vähenda pisipiltide suurust",
+      "increase_thumbs": "Suurenda pisipiltide suurust",
+      "theme_dark": "Lülitu tumedale teemale",
+      "theme_light": "Lülitu heledale teemale",
+      "sort_submenu": "Sorteeri leheküljed",
+      "undo": "Võta tagasi (Ctrl+Z)",
+      "redo": "Tee uuesti (Ctrl+Y)",
+      "create_cbz": "Loo CBZ arhiiv",
+      "save_as": "Salvesta kui...",
+      "help": "Kasutusjuhend",
+      "update_page_count": "Värskenda lehekülgede arvu metaandmetes",
+      "invert_selection": "Pööra valik ümber (Ctrl+I)",
+      "fullscreen": "Täisekraan (F11)",
+      "fullscreen_exit": "Välju täisekraanist (F11 või ESC)",
+      "quit": "Sulge rakendus"
+    },
+    "canvas": {
+      "quit": "Sulge rakendus",
+      "reset": "Rakenduse lähtestamine:\n• akna suurus ja asukoht\n• tume režiim → hele\n• pisipiltide suurus → tavaline\n• külgriba → nähtav / 220 px\n• keel → automaatne tuvastamine\n• kirja suurus → vaikimisi",
+      "reset_label": "Lähtesta rakendus"
+    },
+    "font_size": {
+      "decrease": "Vähenda fondi suurust",
+      "increase": "Suurenda fondi suurust"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Sorteeri nime järgi",
+    "sort_type": "Sorteeri tüübi järgi",
+    "sort_size": "Sorteeri suuruse järgi",
+    "sort_width": "Sorteeri laiuse järgi",
+    "sort_height": "Sorteeri kõrguse järgi",
+    "sort_resolution": "Sorteeri eraldusvõime järgi",
+    "sort_dpi": "Sorteeri DPI järgi"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Tühi arhiiv",
+        "message": "CBZ arhiiv ei sisalda ühtegi faili."
+      },
+      "empty_cbr": {
+        "title": "Tühi arhiiv",
+        "message": "CBR arhiiv ei sisalda ühtegi faili."
+      },
+      "files_ignored": {
+        "title": "Failid ignoreeritud"
+      },
+      "no_selection_crop": {
+        "title": "Valik puudub",
+        "message": "Palun valige kärbitav pilt."
+      },
+      "multi_selection_crop": {
+        "title": "Mitu valikut",
+        "message": "Saate korraga kärpida ainult ühte pilti.\nPalun valige üks pilt."
+      },
+      "invalid_selection_crop": {
+        "title": "Kehtetu valik",
+        "message": "Kärpida saab ainult pilte."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Funktsioon pole saadaval",
+        "message": "Lehekülgede teisaldamine pole alamkataloogides saadaval.\nPalun lamestage kaustad või naasege juurkausta."
+      },
+      "no_selection_convert": {
+        "title": "Valik puudub",
+        "message": "Palun valige vähemalt üks teisendatav pilt."
+      },
+      "invalid_selection_convert": {
+        "title": "Kehtetu valik",
+        "message": "Teisendada saab ainult pilte."
+      },
+      "no_selection_split": {
+        "title": "Valik puudub",
+        "message": "Palun valige tükeldatav pilt."
+      },
+      "multi_selection_split": {
+        "title": "Mitu valikut",
+        "message": "Saate korraga tükeldada ainult ühte pilti.\nPalun valige üks pilt."
+      },
+      "invalid_selection_split": {
+        "title": "Kehtetu valik",
+        "message": "Tükeldada saab ainult pilte."
+      },
+      "invalid_number_split": {
+        "title": "Kehtetu number",
+        "message": "Lehekülgede arv peab olema vahemikus 2 kuni 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Ebapiisav valik",
+        "message": "Palun valige vähemalt 2 ühendatavat pilti."
+      },
+      "invalid_selection_join": {
+        "title": "Kehtetu valik",
+        "message": "Ühendada saab ainult pilte."
+      },
+      "pil_not_available": {
+        "title": "PIL pole saadaval",
+        "message": "PIL moodul pole süsteemse lõikelaua kleepimiseks saadaval."
+      },
+      "format_not_supported": {
+        "title": "Vorming pole toetatud",
+        "message": "Pildiformaat pole toetatud või fail on rikutud.\nToetatud vormingud: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Valik puudub",
+        "message": "Palun joonistage esmalt kärbimise ristkülik."
+      },
+      "cannot_open_file": {
+        "title": "Faili avamine ebaõnnestus",
+        "message": "Faili ei saa laadida."
+      },
+      "corrupted_images": {
+        "title": "Rikutud pildid",
+        "summary": "{count} rikutud pilt(i) tuvastatud {total}-st.",
+        "hint": "Neid kuvatakse erilise ikooniga.\nParemklõpsake rikutud pildil, et see asendada või kustutada.",
+        "more": "... ja {count} muud"
+      },
+      "no_image_print": {
+        "title": "Pilt puudub",
+        "message": "Pole ühtegi pilti printimiseks."
+      },
+      "no_valid_image_print": {
+        "title": "Pilt puudub",
+        "message": "Pole ühtegi kehtivat pilti printimiseks."
+      },
+      "no_selection_print": {
+        "title": "Valik puudub",
+        "message": "Palun valige vähemalt üks pilt."
+      },
+      "no_valid_selection_print": {
+        "title": "Pilt puudub",
+        "message": "Valikus pole ühtegi kehtivat pilti."
+      },
+      "save_cancelled": {
+        "title": "Salvestamine tühistatud",
+        "message": "Palun parandage failinimed käsitsi enne salvestamist."
+      },
+      "empty_pdf": {
+        "title": "Tühi PDF",
+        "message": "PDF fail ei sisalda ühtegi lehekülge."
+      },
+      "no_selection_save": {
+        "title": "Hoiatus",
+        "message": "Palun valige vähemalt üks salvestatav lehekülg."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Lohistamine keelatud",
+        "message": "Lehekülgede lohistamine on saadaval ainult koomiksi juurkaustas.\n\nLehekülgede teisaldamiseks:\n1. Naasege juurkausta, klõpsates üles liikumise ikoonil\n2. Või lamestage koomiks alamkataloogide eemaldamiseks"
+      },
+      "no_selection_reduce": {
+        "title": "Valik puudub",
+        "message": "Palun valige vähemalt üks vähendatav lehekülg."
+      },
+      "invalid_selection_reduce": {
+        "title": "Kehtetu valik",
+        "message": "Vähendada saab ainult pilte."
+      },
+      "invalid_dimensions": {
+        "title": "Kehtetud mõõtmed",
+        "message": "Palun sisestage kehtivad mõõtmed (positiivsed täisarvud)."
+      },
+      "no_images_for_gif": {
+        "title": "Pilte pole",
+        "message": "Animeeritud GIF-i loomiseks on vaja vähemalt ühte pilti."
+      },
+      "no_valid_images": {
+        "title": "Kehtivaid pilte pole",
+        "message": "GIF-i loomiseks ei leitud ühtegi kehtivat pilti."
+      },
+      "animated_gif_in_comic": {
+        "title": "Animeeritud GIF tuvastatud",
+        "message": "Hoiatus: See koomiks sisaldab ühte või mitut animeeritud GIF-i.\\n\\nKoomiksite lugejad (CDisplayEx, YACReader, jne) kuvavad ainult iga GIF-i esimese kaadri staatilise lehena.\\n\\nAnimeeritud GIF-i õigesti vaatamiseks peate selle salvestama eraldi väljaspool koomiksi, kasutades nuppu \"Ekspordi valitud leheküljed\" või \"Muuda animeeritud GIF-i\".\\n\\nKas soovite koomiksi salvestamist siiski jätkata?"
+      },
+      "no_selection_adjust": {
+        "title": "Valik puudub",
+        "message": "Valige vahemalt uks pilt kohanduste rakendamiseks."
+      },
+      "invalid_selection_adjust": {
+        "title": "Kehtetu valik",
+        "message": "Kohandusi saab rakendada ainult piltidele."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Funktsioon pole saadaval",
+        "message": "Ümber nummerdamine ei ole saadaval, kuni kaustad pole tasandatud.\nTasandage kaustad enne ümber nummerdamist."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP viga",
+        "message": "'{file}': Fail pole kehtiv ZIP arhiiv või on rikutud."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP viga",
+        "message": "CBZ faili avamine ebaõnnestus: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR viga",
+        "message": "'{file}': Fail pole kehtiv RAR arhiiv või on rikutud."
+      },
+      "rar_cannot_open": {
+        "title": "RAR viga",
+        "message": "CBR arhiivi avamine ebaõnnestus: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Viga",
+        "message": "Ootamatu viga CBR avamisel: {error}"
+      },
+      "join_failed": {
+        "title": "Viga",
+        "message": "Piltide ühendamine ebaõnnestus."
+      },
+      "paste_failed": {
+        "title": "Viga",
+        "message": "Viga kleepmisel: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Viga",
+        "message": "Arhiivi kopeerimine ebaõnnestus: {error}"
+      },
+      "crop_invalid": {
+        "title": "Viga",
+        "message": "Kärbimisala on kehtetu."
+      },
+      "crop_failed": {
+        "title": "Viga",
+        "message": "Pildi kärpimine ebaõnnestus: {error}"
+      },
+      "load_image_failed": {
+        "title": "Viga",
+        "message": "Pildi laadimine ebaõnnestus:\n{error}"
+      },
+      "print_error": {
+        "title": "Printimise viga",
+        "message": "Viga printimisel:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Printimine pole saadaval",
+        "message": "win32print moodul pole installitud.\nInstallige see: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Faili ei leitud",
+        "message": "Fail enam ei eksisteeri:\n{path}"
+      },
+      "import_failed": {
+        "title": "Importimise viga",
+        "message": "Faili importimine ebaõnnestus: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF pole installitud",
+        "message": "PyMuPDF (fitz) teek pole installitud.\nInstallige see: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Viga",
+        "message": "Viga PDF importimisel: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF viga",
+        "message": "PDF-i laadimine ebaõnnestus:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Dubleeritud failinimed",
+        "intro": "{count} dubleeritud failinimi(med) tuvastatud:\n\n",
+        "item": "  • {name} ({times} korda)\n",
+        "more": "  ... ja {more} muud\n",
+        "footer": "\nZIP-arhiivid ei aktsepteeri dubleeritud nimesid.\nNimetage need failid ümber enne salvestamist."
+      },
+      "save_failed": {
+        "title": "Viga",
+        "message": "Faili salvestamine ebaõnnestus: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Viga",
+        "message": "Arhiivi loomine ebaõnnestus: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Viga",
+        "message": "Valiku salvestamine ebaõnnestus: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF-i loomise viga",
+        "message": "Animeeritud GIF-i ei õnnestunud luua:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Salvestamise viga",
+        "message": "Viga failide salvestamisel:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Ümbernimetamise viga",
+        "message": "Faili ümbernimetamine ebaõnnestus: {error}"
+      },
+      "pdf_password_required": {
+        "title": "Parooliga kaitstud PDF",
+        "message": "See PDF-fail on krüpteeritud ja parooliga kaitstud.\nSeda ei saa avada ilma paroolita."
+      },
+      "pdf_unlock_failed": {
+        "title": "Viga",
+        "message": "Avatud PDF-faili ei õnnestunud salvestada:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: krüpteeritud PDF-fail (parool on nõutav), vahele jäetud",
+      "file_too_large": {
+        "title": "Fail on liiga suur",
+        "message": "Fail {filename} on {size} ja ületab pildi jaoks lubatud maksimaalse suuruse (500 MB)."
+      },
+      "license_file_not_found": {
+        "message": "Litsentsifaili ei leitud: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Litsentsifaili lugemine ebaõnnestus: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z viga",
+        "message": "Fail '{file}' ei ole kehtiv 7Z-arhiiv või on rikutud."
+      },
+      "delete_error": "Viga kustutamisel: {error}",
+      "export_error": "Viga eksportimisel: {error}",
+      "font_source_not_found": "Fondi lähtefaili ei leitud: {path}",
+      "no_tengwar_font": "Tengwari fonti ei leitud.",
+      "no_icons_found": "Ikoone ei leitud.",
+      "unsupported_files": {
+        "title": "Toetamata failid",
+        "message": "Järgmised failid ei ole toetatud ja jäeti vahele:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF edukalt loodud",
+        "message": "Animeeritud GIF '{name}' on loodud ja mosaiigile lisatud."
+      },
+      "pywin32_required": {
+        "title": "Funktsioon pole saadaval",
+        "message": "pywin32 moodul on vajalik süsteemse lõikelaua kleepimiseks.\nInstallige see: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Pildid imporditud",
+        "message": "{count} pilt(i) imporditud"
+      },
+      "archive_copied": {
+        "title": "Arhiiv kopeeritud",
+        "message": "Arhiiv on kopeeritud lõikelauale."
+      },
+      "function_not_available": {
+        "title": "Funktsioon pole saadaval",
+        "message": "See funktsioon pole praegu saadaval."
+      },
+      "duplicate_detected": {
+        "title": "Duplikaat tuvastatud",
+        "message": "Selle nimega fail juba eksisteeris.\n\nFail nimetati ümber:\n{name}"
+      },
+      "replace_success": {
+        "title": "Õnnestus",
+        "message": "Pilt '{name}' asendati edukalt."
+      },
+      "history_cleared": {
+        "title": "Ajalugu kustutatud",
+        "message": "Hiljutiste failide nimekiri on kustutatud."
+      },
+      "files_copied_clipboard": {
+        "title": "Failid kopeeritud lõikelauale",
+        "message": "Väljalohistamine pole tehniliselt võimalik.\n\n✓ {count} {word} kopeeritud lõikelauale\n\nSaate nüüd kleepida kuhu soovite:\n  • Paremklikk → Kleebi\n  • Või Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Parandus tehtud",
+        "message": "{count} failinimi(e) parandatud."
+      },
+      "import_success": {
+        "title": "Import õnnestus",
+        "message": "{count} lehekülge imporditud failist {file}"
+      },
+      "pdf_import_success": {
+        "title": "Import õnnestus",
+        "message": "{count} PDF lehekülge imporditud failist {file}\nKvaliteet: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Õnnestus",
+        "message": "PDF edukalt teisendatud!\n{count} lehekülge laaditud {dpi} DPI-ga."
+      },
+      "cbz_saved": {
+        "title": "Õnnestus",
+        "message": "CBZ-fail salvestatud:"
+      },
+      "cbz_converted": {
+        "title": "Õnnestus",
+        "message": "Fail teisendatud CBZ-iks:",
+        "question": "Kas soovite kustutada algse CBR-faili?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Õnnestus",
+        "message": "Fail teisendatud CBZ-iks:",
+        "question": "Kas soovite kustutada algse PDF-faili?"
+      },
+      "cbz_save_as": {
+        "title": "Õnnestus",
+        "message": "Uus CBZ fail salvestatud: {path}"
+      },
+      "cbz_created": {
+        "title": "Õnnestus",
+        "message": "CBZ-arhiiv loodud:"
+      },
+      "selection_saved": {
+        "title": "Õnnestus",
+        "message": "Valik salvestatud:"
+      },
+      "flatten_done": {
+        "title": "Lamestamine lõpetatud",
+        "message": "{files} faili liigutatud {dirs} alamkaustast."
+      },
+      "language_changed": {
+        "title": "Keel muudetud",
+        "message": "Liidese keel on edukalt muudetud."
+      },
+      "new_cbz_saved": {
+        "title": "Fail Salvestatud",
+        "message": "Uus CBZ-fail on edukalt salvestatud:",
+        "question": "Kas soovite kustutada algse faili?"
+      },
+      "page_count_updated": {
+        "title": "Lehekülgede arv värskendatud",
+        "message": "Lehekülgede arv metaandmetes on värskendatud {count} leheküljele."
+      },
+      "files_saved": {
+        "title": "Edukalt salvestatud",
+        "message": "{count} faili salvestati asukohta:\n{folder}",
+        "open_folder": "Kas soovite kausta avada?"
+      },
+      "adjustments_applied": {
+        "title": "Kohandused rakendatud",
+        "message": "Kohandused on edukalt rakendatud."
+      },
+      "pdf_unlocked": {
+        "title": "PDF avatud",
+        "message": "Avatud PDF-fail on salvestatud:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Suur arhiiv",
+        "message": "See arhiiv on lahti pakitult {size} MB.\nLaadimine võib tarbida palju mälu (RAM).\n\nKas soovite jätkata?"
+      },
+      "confirm_delete": {
+        "title": "Kinnitus",
+        "message": "Kas soovite tõesti kustutada {count} fail(i) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Kustuta lähtefailid?",
+        "message": "Kas soovite kustutada pildid, mis ühendati?\n\nJah = Kustuta lähtefailid\nEi = Säilita lähtefailid\nTühista = Tühista toiming"
+      },
+      "invalid_filenames": {
+        "title": "Kehtetud failinimed",
+        "intro": "{count} fail(i) sisaldab keelatud märke:",
+        "item": "  • {name}",
+        "more": "  ... ja veel {more}",
+        "forbidden_chars": "Keelatud märgid: {chars}",
+        "fix_question": "Kas soovite need nimed automaatselt parandada?\n(Keelatud märgid asendatakse '_'-ga)"
+      },
+      "close_without_save": {
+        "title": "Salvesta enne sulgemist?",
+        "message": "Pilte on lisatud. Kas soovite luua CBZ arhiivi enne sulgemist?"
+      },
+      "flatten_folders": {
+        "title": "Lamesta kaustad",
+        "subdirs_detected": "Tuvastatud alamkaustad:",
+        "files_to_move": "{count} faili liigutatakse juurkausta.",
+        "folders_to_delete": "{count} alamkausta kustutatakse.",
+        "continue_question": "Kas soovite jätkata?"
+      },
+      "update_page_count": {
+        "title": "Värskenda lehekülgede arvu",
+        "message": "Koomiksi lehekülgede arv on muutunud.\n\nMetaandmetes märgitud lehekülgede arv: {original}\nPraegune lehekülgede arv: {current}\n\nKas soovite värskendada lehekülgede arvu metaandmetes?"
+      },
+      "conversion_complete": {
+        "title": "Teisendamine lõpetatud",
+        "message": "Teisendamine lõpetatud!\n\n{count} pilti teisendatud {format} vormingusse on lisatud teie valiku järele.\n\nKustutada originaalpildid?",
+        "delete_originals": "Kustuta originaalid\n{count} fail(i) - {size}",
+        "keep_all": "Säilita kõik\n{count} fail(i) - {size}",
+        "cancel_conversion": "Tühista teisendamine\n{count} fail(i) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Tuvastati vale laiend: see '{filename}' fail on CBZ, mitte CBR. Kas nimetada ümber?",
+      "title": "Vale laiend"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Tuvastati vale laiend: see '{filename}' fail on CBR, mitte CBZ. Nimeta ümber?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Tuvastati vale laiend: fail '{filename}' on CB7, mitte CBZ/CBR. Nimeta ümber?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Pisipiltide suurus",
+    "loading": "Palun oodake, laadimine käib...\n{percent}%",
+    "resizing": "Palun oodake, suuruse muutmine...\n{percent}%",
+    "converting": "Palun oodake, teisendamine...\n{percent}%",
+    "loading_lazy": "Palun oodake, laadimine käib...\n{percent}%\n\nSelle faili suure suuruse tõttu ({size} MB) laetakse leheküljed järk-järgult. Ekraanil nähtavad leheküljed laetakse kohe, teised laetakse kerimise ajal automaatselt.",
+    "apply_save_cbz": "Rakenda muudatused\nja salvesta CBZ fail",
+    "apply_create_cbz": "Rakenda muudatused\nja loo CBZ fail",
+    "import_progress": "Import käib...\n{percent}%",
+    "pdf_import_progress": "PDF import käib...\n{percent}%",
+    "pdf_opening": "PDF faili avamine...",
+    "pdf_page": "Lehekülg {current} / {total}",
+    "warning_close": "Hoiatus! Muudatusi pole salvestatud ja need lähevad kaotsi!",
+    "language_label": "Keel:",
+    "directory_tooltip": "Kaust: {name}\n{count} fail(i)\nKogumaht: {size} MB",
+    "folder_up_tooltip": "Topeltklõps, et liikuda\nüks tase ülespoole puustruktuuris",
+    "status_bar": "{dirs} kaust(a)  |  {files} fail(i) ({total_size})  |  {selected} valitud ({selected_size})",
+    "pdf_converting": "{total} lehekülge konverteeritakse piltideks {dpi} DPI-ga...",
+    "pdf_converting_no_change": "{total} lehekülge ekstraktitakse muutmata...",
+    "print_progress": "Printimise ettevalmistamine...\n{percent}%",
+    "print_preparing": "Palun oodake, printimise ettevalmistamine...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU üldise avaliku litsentsi v3 kokkuvõte\n\nANTUD VABADUSED\nVõite MosaicView'i kasutada, kopeerida, muuta ja levitada,\nsealhulgas ärilistel eesmärkidel.\n\nKOHUSTUSED\nIga levitamine (originaal või muudetud) peab :\n– säilitama GPL v3 litsentsi\n– sisaldama lähtekoodi või näitama, kust seda saada\n– mitte kehtestama lisapiiranguid\n\nGARANTIID\nSeda tarkvara levitatakse ILMA IGASUGUSE GARANTIITA.\nSelle autor ei vastuta kasutamisest tulenevate kahjude eest.\n\nPeaksite olema saanud koopia GNU üldisest avalikust litsentsist koos selle programmiga. Kui ei, vaadake <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Vaata täielikku litsentsi",
+    "license_unrar_text": "CBZ-failid põhinevad ZIP-vormingul, mis on vaba ja avatud formaat. CBR-failid seevastu põhinevad RAR-vormingul, mis on patenteeritud.\n\nMosaicView saab CBR-faile avada tänu UnRAR-ile, RARlabi väljatöötatud ja vabalt levitatavale utiliidile.\n\nAmetlik veebisait: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Vaata UnRAR litsentsi",
+    "saving_cbz": "Salvestamine käib... {percent}%",
+    "empty_canvas_line1": "Lohistage siia uks voi mitu CBZ/CBR/CB7/PDF faili voi oma pildid",
+    "empty_canvas_line2": "Kui fail on avatud, voite jatkata teiste lohistamist",
+    "empty_canvas_line3": "Lohistage üks või mitu kausta pakktöötluse käivitamiseks",
+    "icon_toolbar_config_title": "Ikooniriba seadistamine",
+    "icon_toolbar_active": "Ribas olevad ikoonid",
+    "icon_toolbar_hidden": "Ikoonid reservis",
+    "license_gpl_full": "GNU GPL v3 litsents",
+    "license_unrar_full": "UnRAR litsents",
+    "licenses_button": "Litsentsid",
+    "view_full_gpl_license": "Vaata täielikku GNU GPL v3 litsentsi",
+    "license_7zip_text": "CB7-failid põhinevad 7z-vormingul, mille töötas välja Igor Pavlov ja mida levitatakse GNU LGPL-litsentsi alusel.\n\nMosaicView saab CB7-faile avada tänu 7-Zip-ile — tasuta avatud lähtekoodiga programmile.\n\nAmetlik veebisait : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Vaata 7-Zip litsentsi",
+    "license_7zip_full": "7-Zip litsents",
+    "icon_toolbar_show_thumb_slider": "Kuva pisipildi suuruse liugur",
+    "icon_toolbar_show_lang_combo": "Kuva keelevalija",
+    "adjusting": "Palun oodake, kohandused on pooleli...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS fondi litsents",
+    "license_tengwar_full": "Alcarin Tengwar fondi litsents",
+    "view_full_piqad_license": "Vaata pIqaD qolqoS täislitsentsi"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Piltide teisendamine",
+      "title": "{count} {word} teisendamine",
+      "word_image": "pilt",
+      "word_images": "pilti",
+      "info": "Valige sihtvorming:",
+      "format_png": "PNG (kaotuseta)",
+      "format_jpg": "JPEG (tihendusega)",
+      "format_webp": "WEBP (kaasaegne)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (kõrge kvaliteet)",
+      "format_gif": "GIF (animatsioon)",
+      "quality_label": "Kvaliteet JPG/WEBP jaoks:",
+      "quality_maximum": "Maksimaalne — kvaliteet 95/100",
+      "quality_high": "Kõrge — kvaliteet 85/100",
+      "quality_medium": "Keskmine — kvaliteet 75/100",
+      "quality_low": "Madal — kvaliteet 60/100",
+      "quality_custom_option": "Kohandatud",
+      "quality_custom": "Kvaliteet kohandatud : {value}/100",
+      "quality_note": "(See parameeter mõjutab ainult JPG ja WEBP vorminguid)",
+      "quality_window_title": "Kvaliteedi valik",
+      "format_gif_static": "Staatiline GIF",
+      "format_gif_animated": "Animeeritud GIF (vali mitu pilti)"
+    },
+    "split": {
+      "window_title": "Tükelda lehekülg",
+      "title": "Tükelda lehekülg",
+      "pages_label": "Lehekülgede arv:",
+      "direction_label": "Tükeldamise suund:",
+      "horizontal": "Horisontaalne (vasak → parem)",
+      "vertical": "Vertikaalne (ülalt → alla)",
+      "warning": "⚠ Kuna tükeldamine arvutatakse automaatselt,\nvõib olla vajalik käsitsi korrigeerimine.",
+      "button_split": "Tükelda",
+      "button_cancel": "Tühista"
+    },
+    "join": {
+      "window_title": "Ühenda leheküljed - Korraldage järjekord",
+      "instructions": "Korraldage pildid:\n• Vertikaalselt (üles/alla) vertikaalse liitmise jaoks\n• Horisontaalselt (vasak/parem) horisontaalse liitmise jaoks",
+      "merged_filename_prefix": "Liitmine",
+      "heights_label": "Kõrgused",
+      "widths_label": "Laiused",
+      "size_adjustment_title": "Suuruse reguleerimine",
+      "size_adjustment_warning": "⚠️ Valitud piltidel on erinevad mõõtmed.\nValige, kuidas nende suurusi ühendamiseks reguleerida.\nIga pildi kuvasuhe säilitatakse alati.",
+      "keep_original": "Säilita algse suurused",
+      "keep_original_desc": "(lisab mustad ribad täitmiseks)",
+      "enlarge_small": "Suurenda väikesed pildid",
+      "enlarge_small_desc": "(joonda maksimummõõtmele)",
+      "reduce_large": "Vähenda suured pildid",
+      "reduce_large_desc": "(joonda minimummõõtmele)",
+      "back_to_arrangement": "Tagasi"
+    },
+    "pdf": {
+      "quality_merge": "Valige ühendamise kvaliteet:",
+      "quality_export": "Valige eksportimise kvaliteet:",
+      "merge_quality_title": "PDF ühendamise kvaliteet",
+      "export_quality_title": "PDF eksportimise kvaliteet",
+      "loading_title": "PDF laadimine...",
+      "dpi_90": "90 DPI - Veebipublikatsioon",
+      "dpi_150": "150 DPI - Hea kvaliteet (soovitatav kuvamiseks)",
+      "dpi_200": "200 DPI - Väga hea kvaliteet",
+      "dpi_300": "300 DPI - Suurepärane kvaliteet (koomiksite standard)",
+      "dpi_600": "600 DPI - Maksimaalne kvaliteet (suured failid)",
+      "dpi_original": "Pildi muutmiseta",
+      "dpi_original_tooltip": "Iga PDF-lehe intelligentne analüüs:\n• Ainult piltidega lehed: säilitab algse DPI\n• Ainult tekstiga lehed: 300 DPI\n• Segatud lehed (tekst + pildid): piltide DPI kui >= 300, muidu 300 DPI\nMaksimum: 2400 DPI faili suuruse piiramise jaoks"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF on vajalik",
+      "pymupdf_required_message": "PyMuPDF (fitz) ei ole paigaldatud. PDF-faile ei saa teisendada.",
+      "select_directory_title": "Valige PDF-faile sisaldav kataloog",
+      "no_pdf_title": "PDF-faile ei leitud",
+      "no_pdf_message": "Kataloogist ei leitud ühtegi PDF-faili:\n{directory}",
+      "confirm_title": "PDF-failide pakkteisendumine CBZ-ks",
+      "confirm_message": "{count} PDF-faili teisendamiseks kataloogis {directory} (alamkataloogid kaasa arvatud).",
+      "checkbox_permanent_delete": "Kustuta algupärased PDF-failid ilma\nprügikasti kasutamata (TAGASIVÕTMINE EI OLE VÕIMALIK)",
+      "start_button": "Alusta",
+      "converting_title": "Teisendamine käib...",
+      "converting_progress": "Faili teisendamine {current} / {total}",
+      "page_progress": "Lehekülg {current} / {total}",
+      "complete_title": "Teisendamine lõpetatud",
+      "complete_message": "{count} PDF-faili teisendatud kataloogis:",
+      "complete_message_errors": "{count} / {total} PDF-faili teisendatud kataloogis:",
+      "errors_count": "{count} viga(vead) leitud."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Valige CBR-faile sisaldav kataloog",
+      "no_cbr_title": "CBR-faile ei leitud",
+      "no_cbr_message": "Kataloogist ei leitud CBR-faile:\\n{directory}",
+      "confirm_title": "CBR-failide pakktteisendamine CBZ-ks",
+      "confirm_message": "{count} CBR-faili teisendamiseks kataloogis {directory} (alamkataloogid kaasa arvatud).",
+      "checkbox_permanent_delete": "Kustuta algsed CBR-failid ilma prügikasti\nkasutamata (TAGASIVÕTMINE POLE VÕIMALIK)",
+      "start_button": "Alusta",
+      "converting_title": "Teisendamine...",
+      "converting_progress": "Teisendatakse faili {current} / {total}",
+      "page_progress": "Lehekülg {current} / {total}",
+      "complete_title": "Teisendamine lõpetatud",
+      "complete_message": "{count} CBR-faili teisendatud kataloogis:",
+      "complete_message_errors": "{count} CBR-faili teisendatud {total}-st kataloogis:",
+      "errors_count": "{count} viga leitud.",
+      "renamed_count": "{count} fail(i) ümber nimetatud CBZ-ks",
+      "rarfile_unavailable": "Moodul rarfile ei ole saadaval. CBR-faile ei saa teisendada."
+    },
+    "close_warning": {
+      "title": "Hoiatus!",
+      "message": "Muudatusi pole salvestatud ja need lähevad kaotsi!",
+      "btn_close_lose": "Sulge fail ja kaota muudatused",
+      "btn_save_cbz": "Rakenda muudatused ja salvesta fail",
+      "btn_create_cbz": "Rakenda muudatused ja loo CBZ fail",
+      "btn_cancel": "Tühista ja naase mosaiigi juurde"
+    },
+    "replace_image": {
+      "title": "Asenda rikutud pilt"
+    },
+    "reduce_size": {
+      "window_title": "Pildi suuruse muutmine",
+      "title": "{count} {word} suuruse muutmine",
+      "word_image": "pilt",
+      "word_images": "pildid",
+      "current_size": "Praegune suurus: {size} MB",
+      "current_dimensions": "Praegused mõõtmed: {width} × {height} px",
+      "choose_method": "Valige suuruse muutmise meetod:",
+      "custom_dimensions": "Kohandatud mõõtmed",
+      "width_label": "Laius:",
+      "height_label": "Kõrgus:",
+      "use_custom_dimensions": "Kasuta neid mõõtmeid",
+      "different_dimensions_warning": "Valitud lehekülgedel on erinevad mõõtmed. Kohandatud mõõtmed sunniksid kõik leheküljed samale suurusele. Veenduge, et mõistate tagajärgi enne jätkamist.",
+      "estimated_size": "Eeldatav suurus: {size} MB",
+      "percentage_reduction": "Protsentuaalne vähendamine",
+      "percentage_enlargement": "Protsentuaalne suurendamine",
+      "reduce_0": "0% (muutuseta)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (muutuseta)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Kõige levinumad lehekülje laiused on 1024, 1280, 1600, 1920 ja 2000 pikslit, kuid sobivad ka teised väärtused.",
+      "multi_page_width": "Mitme lehekülje automaatne tuvastamine ja suuruse muutmine (laius/kõrgus)",
+      "multi_page_width_tooltip": "Võimaldab automaatset mitme lehekülje tuvastamist: topeltleheküljed, kolmekordne leheküljed jne. Kordistamiskoefitsient arvutatakse automaatselt iga lehekülje suhte põhjal, olgu see siis laiuses (kõrvuti asuvad leheküljed) või kõrguses (üksteise peale kuhjatud leheküljed)"
+    },
+    "gif_animated": {
+      "window_title": "Animeeritud GIF-i loomine",
+      "images_title": "Animatsioonipildid",
+      "params_title": "GIF-i parameetrid",
+      "frame_delay_label": "Viivitus piltide vahel:",
+      "fps_normal": "{fps} kaadrit/sekundis",
+      "fps_slow": "1 kaader iga {seconds} sekundi järel",
+      "loop_label": "Korduste arv:",
+      "loop_info": "(0 = lõpmatu tsükkel)",
+      "disposal_label": "Piltide paigutus:",
+      "disposal_0": "Määramata",
+      "disposal_1": "Säilita eelmine pilt",
+      "disposal_2": "Taasta taustavärvi",
+      "disposal_3": "Taasta eelmisesse olekusse",
+      "optimize": "Optimeeri fail (salvesta ainult erinevused)",
+      "metadata_title": "GIF-i metaandmed",
+      "metadata_dimensions": "Mõõtmed: {width} × {height} px",
+      "metadata_frames": "Kaadrite arv: {count}",
+      "metadata_duration": "Kogukestus: {duration} s",
+      "metadata_fps": "Sagedus: {fps} fps",
+      "metadata_palette": "Palett: kuni 256 värvi",
+      "metadata_size": "Hinnanguline suurus: {size} KB",
+      "comment_label": "Kommentaar (valikuline):",
+      "no_images": "Ühtegi pilti pole valitud",
+      "creating_progress": "Piltide laadimine... ({current}/{total})",
+      "creating_normalizing": "Piltide normaliseerimine... ({current}/{total})",
+      "creating_quantizing": "Värvide kvantiseerimine... ({current}/{total})",
+      "creating_saving": "GIF-i salvestamine..."
+    },
+    "save_to_folder": {
+      "title": "Valige sihtkaust"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Duplikaatfailinimed",
+      "message": "Tuvastati identsed failinimed. Kuigi salvestamine on tehniliselt\nvõimalik, võib see põhjustada lugemisprobleeme mõnes koomiksi-\nlugejarakenduses (mittetäielik kuvamine, puuduvad leheküljed jne).\n\nSoovitatav on lehekülgi enne salvestamist ümber nummerdada."
+    },
+    "adjustments": {
+      "window_title": "Pildi kohandused",
+      "title": "Kohandused {count} {word} jaoks",
+      "word_image": "pilt",
+      "word_images": "pilti",
+      "apply_button": "Rakenda",
+      "color_depth_section": "Varvisugavus",
+      "brightness_contrast_section": "Heledus ja kontrast",
+      "compression_section": "Tihendamine",
+      "effects_section": "Efektid",
+      "sharpness_section": "Teravus",
+      "levels_section": "Must/valge tasemed",
+      "depth_unchanged": "Ara muuda",
+      "depth_32bit": "32 bitti (RGBA - varvid + labi paistvus)",
+      "depth_24bit": "24 bitti (RGB - varvid)",
+      "depth_8bit": "8 bitti (PNG-palett / JPEG hallitoonid)",
+      "depth_1bit": "1 bitt (must-valge)",
+      "brightness_label": "Heledus: {value}",
+      "contrast_label": "Kontrast: {value}",
+      "compression_enable": "Luba uuesti tihendamine",
+      "compression_quality_label": "Kvaliteet : {value}/100",
+      "sharpness_label": "Teravus: {value}",
+      "effect_none": "Efekt puudub",
+      "effect_grayscale": "Halltoonid",
+      "effect_sepia": "Seepia",
+      "levels_none": "Kohandus puudub",
+      "levels_threshold": "Lavi (puhtalt must voi valge)",
+      "levels_advanced": "Taius tasemed (varjud/keskmised toonid/valgus)",
+      "threshold_label": "Lavi: {value}",
+      "black_point_label": "Must punkt: {value}",
+      "gamma_label": "Gamma (keskmised toonid): {value}",
+      "white_point_label": "Valge punkt: {value}",
+      "auto_levels_button": "Automaatne reguleerimine",
+      "open_viewer_button": "Kohanda vaatajaga (soovitatav)",
+      "compression_info": "Tihendamine kehtib ainult JPG ja WebP piltidele",
+      "open_viewer_button_simple": "Kohanda vaatajaga",
+      "reset_button": "Lähtesta",
+      "preview_section": "Eelvaade",
+      "effect_invert": "Värvide inversioon",
+      "preview_warning": "Eelvaade võib erineda lõpptulemusest",
+      "effect_remove_colors": "Värvide eemaldamine",
+      "remove_colors_intensity_label": "Intensiivsus : {value}",
+      "image_mode_section": "Pildirežiim",
+      "image_mode_rgb": "RGB (värvid)",
+      "image_mode_rgba": "RGBA (värvid + läbipaistvus)",
+      "image_mode_l": "L (halltoonid)",
+      "image_mode_la": "LA (halltoonid + läbipaistvus)",
+      "image_mode_cmyk": "CMYK (trükk)",
+      "image_mode_1": "1 (puhas mustvalge)",
+      "image_mode_p": "P (256 värvi palett)",
+      "saturation_section": "Küllastus",
+      "saturation_label": "Küllastus : {value}",
+      "saturation_viewer_title": "Küllastuse reguleerimine",
+      "transparency_section": "Läbipaistvus",
+      "transparency_info": "Läbipaistvus kehtib ainult PNG, WebP ja ICO piltidele",
+      "transparency_type_label": "Tüüp :",
+      "transparency_type_flood": "Tsoon",
+      "transparency_type_global": "Globaalne",
+      "transparency_tolerance_label": "Tolerants : {value}",
+      "transparency_viewer_title": "Läbipaistvuse reguleerimine",
+      "transparency_click_instruction": "Klõpsake värvil, mida soovite läbipaistvaks muuta",
+      "transparency_undo": "Tühista viimane klõps",
+      "transparency_redo": "Tee uuesti",
+      "transparency_type_flood_tooltip": "Flood fill : muudab klikitud piksli ümber ühtlase värviga ala läbipaistvaks",
+      "transparency_type_global_tooltip": "Globaalne läbipaistvus : mõjutab kõiki pildi piksleid, mille värv on klikitud värvile lähedane",
+      "transparency_apply": "Rakenda",
+      "transparency_skipped_warning": "{count} pilt(i) vahele jäetud — formaat ei ühildu läbipaistvusega. Nende kaasamiseks teisendage need esmalt PNG-sse.",
+      "unsharp_section": "Adaptiivne teravus",
+      "unsharp_radius_label": "Raadius: {value}",
+      "unsharp_percent_label": "Intensiivsus: {value} %",
+      "unsharp_threshold_label": "Lävi: {value}",
+      "unsharp_viewer_title": "Adaptiivne teravus",
+      "auto_levels_tooltip": "Analüüsib iga lehekülge ja reguleerib automaatselt musta ja valge tasemeid, et maksimeerida kontrasti.\nLehe kaupa valimiseks kasutage vaaturit."
+    },
+    "levels_viewer": {
+      "title": "Tasemete kohandamine tilgutiga",
+      "apply_current": "Rakenda sellele lehele",
+      "apply_all": "Rakenda kõigile valitud lehekülgedele",
+      "black_pipette": "Musta punkti pipett",
+      "white_pipette": "Valge punkti pipett",
+      "black_pipette_tooltip": "Klõpsake pikslil, mis peaks olema täiesti must. Ettevaatust: on lihtne liialdada!",
+      "white_pipette_tooltip": "Klõpsake pikslil, mis peaks olema täiesti valge. Ettevaatust: on lihtne liialdada!"
+    },
+    "sharpness_viewer": {
+      "title": "Teravuse reguleerimine"
+    },
+    "brightness_viewer": {
+      "title": "Heleduse ja kontrasti reguleerimine"
+    },
+    "compression_viewer": {
+      "title": "Tihenduse reguleerimine"
+    },
+    "outliers": {
+      "title": "Lehed ebatavaliste mõõtmetega",
+      "message": "Järgmistel lehekülgedel on mõõtmed, mis erinevad teistest oluliselt. Palun valige, kuidas neid käsitleda:",
+      "width": "Laius",
+      "height": "Kõrgus",
+      "unusual": "ebatavaline",
+      "skip": "Ära muuda suurust",
+      "keep": "säilita"
+    },
+    "first_page_multi": {
+      "title": "Esimene lehekülg on mitmikulehekülg",
+      "message": "Esimene lehekülg tuvastati mitmikuleheкüljena. Kuidas soovite seda nummerdada?",
+      "option_auto_desc": "Tavaline ümber nummerdamine koos automaatse tuvastamisega.",
+      "option_joint_desc": "Esimese ja viimase leheкülje ühendus koomiksiraamatus.",
+      "option_exclude_label": "Ära kaasa ümber nummerdamisse",
+      "option_exclude_desc": "Lehekülg säilitab oma praeguse nime ja jääb esimesele kohale. Saate selle hiljem käsitsi ümber nimetada."
+    },
+    "batch_img": {
+      "select_directory_title": "Valige pildifaile sisaldav kaust",
+      "no_img_title": "Pildifaile ei leitud",
+      "no_img_message": "Kaustast ei leitud üksikuid pildifaile :\n{directory}",
+      "confirm_title": "Üksikute pildifailide pakettkonverteerimine CBZ-iks",
+      "confirm_message": "{count} pildifail(i) teisendamiseks kaustas {directory} (alamkaustad kaasa arvatud).",
+      "checkbox_permanent_delete": "Kustuta originaalpildifailid jäädavalt\nilma prügikasti saatmata (EI SAA TAGASI VÕTTA)",
+      "start_button": "Alusta",
+      "converting_title": "Konverteerimine käib...",
+      "converting_progress": "Konverteerimine: fail {current} kokku {total} failist",
+      "complete_title": "Konverteerimine lõpetatud",
+      "complete_message": "{count} pildifail(i) konverteeritud kaustas :",
+      "complete_message_errors": "{count} faili {total}-st konverteeritud kaustas :",
+      "errors_count": "{count} viga ilmnes.",
+      "converted_by_ext": "{ext} : {count} fail(i)",
+      "mode_title": "Teisenda pildid CBZ-iks",
+      "mode_intro": "Kuidas soovite pilte rühmitada?",
+      "mode_one_per_image": "Teisenda iga pilt eraldi CBZ-failideks",
+      "mode_one_per_image_sub": "(Iga pilt saab eraldi CBZ-failiks)",
+      "mode_all_in_one": "Rühmita kõik pildid ühte CBZ-faili",
+      "mode_all_in_one_sub": "(Kõik kausta pildid rühmitatakse ühte CBZ-faili)"
+    },
+    "batch_drop": {
+      "window_title": "Kaustade pakktöötlus",
+      "intro_single": "1 kaust lohistati. Millist töötlust soovite rakendada?",
+      "intro_multiple": "{count} kausta lohistati. Millist töötlust soovite rakendada?",
+      "recursive_note": "Alamkaustad vaadatakse samuti läbi.",
+      "mixed_drop_title": "Lohistamine ei ole toetatud",
+      "mixed_drop_message": "Lohistasite korraga faile ja kaustu. Palun lohistage ainult faile või ainult kaustu."
+    },
+    "pdf_unlock": {
+      "title": "PDF on kaitstud muudatuste eest",
+      "message": "Lehed imporditi tavapäraselt.\n\nSee PDF-fail on kaitstud muudatuste eest (omaniku parool).\n\nKas soovite salvestada PDF-faili koopia ilma selle kaitseta?",
+      "yes": "Jah, salvesta avatud koopia",
+      "no": "Ei, jätka avamata"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF-failid kaitstud muutmise vastu",
+      "message_single": "Leiti 1 muutmise vastu kaitstud PDF-fail. See teisendati CBZ-iks normaalselt.\n\nKas soovite salvestada lukustamata koopia selle algkausta?",
+      "message_plural": "Leiti {count} muutmise vastu kaitstud PDF-faili. Need teisendati CBZ-iks normaalselt.\n\nKas soovite salvestada igaühe lukustamata koopia selle algkausta?",
+      "yes": "Jah, salvesta lukustamata koopiad",
+      "no": "Ei, jätka lukustamata"
+    },
+    "ico_creator": {
+      "title": "Loo .ico ikoon",
+      "info_message": "Pilti muudetakse mitmes resolutsioonis (16, 32, 48, 64, 128, 256 px).\nPraegune raami suurus: {w} × {h} px",
+      "btn_validate_crop": "Kinnita kärpimine",
+      "btn_validate_no_crop": "Kinnita ilma kärpimiseta",
+      "btn_cancel": "Tühista",
+      "btn_transparency": "Määra läbipaistvus",
+      "btn_validate_final": "Kinnita",
+      "tolerance_label": "Tolerants:",
+      "success_title": ".ico fail loodud",
+      "success_message": "Fail {filename} loodi edukalt.",
+      "overwrite_title": "Fail on juba olemas",
+      "overwrite_message": "Fail {filename} on juba olemas. Kirjuta üle?",
+      "save_blocked_title": "Salvestamine pole võimalik",
+      "save_blocked_message": "See arhiiv sisaldab üht või mitut .ico faili, mis ei ole koomiksipildid. Salvestamine on keelatud, kuni need failid on mosaiigis.\nSalvestamise taasaktiveerimiseks kustutage need mosaiigist (Del klahv) või lõigake need (Ctrl+X), et kleepida mujale.",
+      "btn_back_to_crop": "Tagasi kärpimise juurde"
+    },
+    "video_save_blocked": {
+      "title": "Salvestamine pole võimalik",
+      "message": "See arhiiv sisaldab üht või mitut videofaili. Salvestamine on keelatud, kuni need failid on mosaiigis olemas.\nSalvestamise uuesti lubamiseks kustutage need mosaiigist (Del-klahv) või lõigake need välja (Ctrl+X), et kleepida mujale."
+    },
+    "open_file": {
+      "title": "Ava arhiiv",
+      "filter_archives": "Arhiivid (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Kõik failid (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Litsents"
+    },
+    "replace_corrupted_image": {
+      "title": "Asenda rikutud pilt",
+      "filter_images": "Pildid (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Kõik failid (*)"
+    },
+    "see_log": "VAATA LOGI"
+  },
+  "tooltip": {
+    "source_archive": "Lähtefail: {name}",
+    "file": "Fail: {name}",
+    "reason": "Põhjus: {reason}",
+    "size_kb": "Suurus: {size} KB",
+    "size_mb": "Suurus: {size} MB",
+    "file_size": "Suurus: {size}",
+    "dimensions": "Mõõtmed: {width} × {height} px",
+    "resolution": "Eraldusvõime: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: määratlemata",
+    "cbr_info": "CBR-failid kasutavad RAR-vormingut, mis on omandiline ja patenteeritud;\nneid ei saa muuta, muudatused salvestatakse uude CBZ-faili.",
+    "rotate_left": "90-kraadine pööramine vasakule",
+    "rotate_right": "90-kraadine pööramine paremale",
+    "mirror_horizontal": "Horisontaalne peegeldus",
+    "mirror_vertical": "Vertikaalne peegeldus",
+    "fullscreen": "Täisekraan",
+    "help_button": "Kasutusjuhend",
+    "theme_button": "Vaheta heleda ja tumeda teema vahel",
+    "font_decrease_button": "Vähenda fondi suurust",
+    "font_increase_button": "Suurenda fondi suurust",
+    "color_depth": "Värvid: {bits} bitti ({mode})",
+    "batch_pdf_to_cbz": "Teisendab CBZ-ks kõik kataloogis ja selle\nalamkataloogides olevad PDF-failid. Pildid\nekstraktitakse ja arhiveeritakse muutmata kujul,\nilma igasuguse ümberpakkimiseta.",
+    "batch_pdf_permanent_delete": "HOIATUS: kui see valik on märgitud,\nkustutatakse algsed PDF-failid pärast\nteisendamist jäädavalt, ilma võimaluseta\nneid taastada. Veenduge, et teil on\nvarukoopia, kui see on vajalik.",
+    "batch_cbr_to_cbz": "Teisendab CBZ-ks kõik CBR-failid,\nmis asuvad kataloogis\nja selle alamkataloogides.",
+    "batch_cbr_permanent_delete": "HOIATUS: kui see valik on märgitud,\nkustutatakse algsed CBR-failid pärast\nteisendamist jäädavalt, ilma võimaluseta\nneid taastada. Veenduge, et teil on\nvarukoopia, kui see on vajalik.",
+    "renumber_btn_1": "Mitmik-lehekülgede automaattuvastuse režiim\nParem­klõps režiimi vahetamiseks",
+    "renumber_btn_2": "Lihtsa nummerdamise režiim\nParem­klõps režiimi vahetamiseks",
+    "corrupted_header": "Rikutud pilt",
+    "right_click_instruction1": "Paremklõps asendamiseks või",
+    "right_click_instruction2": "kustutamiseks.",
+    "unknown_error": "Tundmatu viga",
+    "batch_img_to_cbz": "Konverteerib kõik kaustas ja selle alamkaustades\nleitud pildifailid CBZ-iks,\nluues ühe CBZ-faili iga pildi kohta.",
+    "batch_img_permanent_delete": "HOIATUS : kui see valik on märgitud,\nkustutatakse originaalpildifailid pärast\nkonverteerimist jäädavalt ilma taastamise\nvõimaluseta. Veenduge, et teil on\nvarukoopia, kui see on vajalik.",
+    "too_large_header": "Pilt on laadimiseks liiga suur",
+    "too_large_pixels": "Mõõtmed: {pixels}",
+    "icon_toolbar_config_button": "Ikoonide seadistus",
+    "icon_toolbar_size_decrease": "Vähenda ikoonide suurust",
+    "icon_toolbar_size_increase": "Suurenda ikoonide suurust",
+    "source_loose": "Vaba pilt",
+    "source_web": "Veebipilt"
+  },
+  "help": {
+    "title": "MosaicView - Kasutusjuhend",
+    "intro": "MosaicView võimaldab teil koomiksi (digitaalseid koomiksi) manipuleerida ja muuta ilma neid arhiividest välja pakkimata. Rakendus toetab CBZ (ZIP), CBR (RAR) ja PDF vorminguid. Rakendus ühildub ainult 64-bitiste süsteemidega.",
+    "open_files": "Failide avamine",
+    "open_files_content": "• Klõpsake nupul 'Ava CBZ/CBR/CB7/PDF'\n• Või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, PDF, pildid (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jaetakse tahelepanuta).\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): lehed imporditakse tavapäraselt. MosaicView pakub avatud koopia salvestamist samasse kausta.",
+    "mosaic": "Mosaiik",
+    "mosaic_content": "Mosaiik kuvab kõiki teie koomiksi lehti pisipiltidena. Saate:\n• Ümber korraldada lehti lohistamise ja kukutamisega (lehekülgede nummerdamine on automaatne ja toimub vastavalt aktiivsele ümbernummerdamise režiimile)\n• Valida mitu lehekülge (Ctrl+klõps või Shift+klõps)\n• Reguleerida pisipiltide suurust liuguriga\n• Käsitsi ümber nimetada faile, klõpsates nende nimel\n• Lohistada ja kukutada koomiksi faile (CBZ/CBR/PDF) Windows Explorerist otse teise avatud koomikusse nende sisu ühendamiseks",
+    "manipulation": "Lehekülgede manipuleerimine",
+    "manipulation_content": "• Lohista lehekülgi nende ümberkorraldamiseks\n• Lohista terve koomiksiraamat teise sisse nende ühendamiseks\n• Paremklikk leheküljel valikute kuvamiseks (pööramine, kustutamine jne)\n• Topeltklõps leheküljel vaataja avamiseks\n• Ekspordi üksikud leheküljed, lohistades neid Windowsi kausta, või Ctrl+C / Ctrl+V kaudu",
+    "renumber": "Lehekülgede ümbernummerdamine",
+    "renumber_content": "MosaicView pakub kahte lehekülgede ümbernummerdamise režiimi, mis on kättesaadavad ümbernummerdamise nupu, kontekstimenüü (paremklõps) või automaatselt lohistamisel:\n\n• Mitmiklehtede automaatse tuvastamise režiim (vaikerežiim): rakendus analüüsib iga lehe laiust, et tuvastada topelt-, kolmik- jne lehti. Mitmiklehed nummerdatakse vastavalt ümber (nt: topeltleht saab nimeks 003-004, kolmikleht 005-006-007). Rohkem kui 4 lehe puhul kuvatakse ainult esimene ja viimane number (nt: 010---025).\n\n• Lihtsa nummerdamise režiim: iga leht saab kordumatu järjekorranumbri (001, 002, 003...), arvestamata lehtede laiust.\n\nKahe režiimi vahel vahetamiseks tehke ümbernummerdamise nupul paremklõps. Tööriistavihje näitab aktiivset režiimi. Valitud režiim kehtib ka automaatse ümbernummerdamise puhul lohistamisel.",
+    "flatten": "Kataloogide lamestamine",
+    "flatten_content": "Kui teie arhiiv sisaldab alamkaustu, kasutage 'Lamesta kataloogid', et tuua kõik pildid samale tasandile.",
+    "viewer": "Vaatur",
+    "viewer_content": "Topeltklõpsake leheküljel, et avada vaatur:\n• Nooled ← → : navigeerimine lehekülgede vahel\n• Klahv D: vahelduvad 3 lugemisrežiimi\n  - Üksik lehekülg: üks lehekülg korraga\n  - Kahekordsed leheküljed: lehekülg 1 üksinda, seejärel 2-3, 4-5 jne\n  - Pidevad kahekordsed leheküljed: lehekülg 1 üksinda, seejärel 2-3, 3-4, 4-5 jne\n• Hiireratas: kiire navigeerimine\n• Ctrl+Ratas või Ctrl+Pluss/Miinus: suum\n• Ctrl+0: lähtesta suum\n• Klahv F11: täisekraan\n• Topeltklõps: lülitu täisekraani\n• Klahv Esc: tühista kärpimisraam / sulge vaatur",
+    "join_pages": "Lehekülgede ühendamine",
+    "join_pages_content": "Valige mitu järjestikust lehekülge, paremklõps → 'Ühenda valitud leheküljed' lehekülgede horisontaalseks või vertikaalseks ühendamiseks. Loodud pildi vorming vastab lähtelehekülgede vormingule, kui need on kõik identsed, vastasel juhul vaikimisi PNG.",
+    "split_pages": "Lehekülgede tükeldamine",
+    "split_pages_content": "Kahelehekülgede automaatseks jagamiseks:\n• Valige tükeldatavad leheküljed\n• Paremklõps → 'Tükelda valitud leheküljed'\n• Valige suund (vertikaalne või horisontaalne)",
+    "crop": "Kärpimine vaaturis",
+    "crop_content": "Vaaturis joonistage pildile ristkülik, et määrata kärbimisala:\n• Joonistage ristkülik hiirega\n• Muutke selle suurust, tõmmates servi või nurki\n• Klõpsake 'Kinnita kärpimine', et rakendada\n• Kärpimine rakendatakse praegusele pildile\n• Klahv Esc: tühista kärpimisraam",
+    "shortcuts": "Kiirklahvid",
+    "shortcuts_content": "• Ctrl+Z: Võta tagasi viimane tegevus\n• Ctrl+Y: Tee uuesti tühistatud tegevus\n• Ctrl+A: Vali kõik leheküljed\n• Ctrl+I: Pööra valik ümber\n• Ctrl+C: Kopeeri valitud leheküljed\n• Ctrl+X: Lõika valitud leheküljed\n• Ctrl+V: Kleebi leheküljed\n• Delete: Kustuta valitud leheküljed\n• F5: Värskenda mosaiigi kuvamist\n• F11: Lülita täisekraanile (välju F11 või ESC-ga)",
+    "dark_mode": "Tume režiim",
+    "dark_mode_content": "Klõpsake päikese/kuu nupul, et lülituda heleda ja tumeda teema vahel.",
+    "sort": "Lehekülgede sorteerimine",
+    "sort_content": "Kasutage nuppu 'Sorteeri', et automaatselt korraldada leheküljed:\n• Nime, tüübi, suuruse, laiuse, kõrguse, eraldusvõime või DPI järgi",
+    "save": "Salvestamine",
+    "save_content": "• 'Salvesta': salvestab muudatused originaalfaili\n• 'Salvesta kui': loob uue arhiivi\n• 'Loo CBZ': saadaval ainult piltide režiimis (ilma arhiivita)",
+    "other": "Muud funktsioonid",
+    "other_content": "• Pööramine: pööra üht või mitut lehekülge\n• Teisendamine: teisendage pildid erinevatesse vormingutesse (PNG, JPEG, WEBP, BMP, TIFF, GIF). Märkus: CMYK-režiimis pildid teisendatakse automaatselt RGB-ks (PNG, JPEG, WEBP, BMP, TIFF, GIF). Märkus: CMYK-režiimis pildid teisendatakse automaatselt RGB-ks\n• Printimine: printida valitud leheküljed või kõik leheküljed\n• Ekstraheerimine: ekstraheerige konkreetsed leheküljed\n• Metaandmete vahekaart: kuvab ComicInfo.xml faili teavet (kui see on arhiivis olemas). Kui lisate või eemaldate lehekülje koomiksi, mis sisaldab metaandmeid, pakub rakendus muuta seal märgitud lehekülgede arvu. Teisi metaandmeid ei saa muuta. See piirang on tahtlik ja tuleneb disainivalikust.",
+    "config_files": "Konfiguratsioonifailid ja ajutised failid",
+    "config_files_content": "MosaicView loob faili nimega .mosaicview_config.json. See fail sisaldab mõningaid parameetreid, mis on vajalikud lähtestamisnupu õigeks toimimiseks, samuti hiljuti avatud koomiksite loetelu, mis on ilmselgelt vajalik hiljuti avatud failide kuvamiseks. MosaicView salvestab ka ajutisi faile, mis on vajalikud erinevate pildite töötlemise toimingute jaoks.\nKõik need failid asuvad kataloogis {temp_dir}.\nAjutised failid kustutatakse iga kord, kui rakendus suletakse, kuid fail .mosaicview_config.json on oma olemuselt mõeldud säilitamiseks.\nSiiski saate need failid käsitsi kustutada, minnes kataloogi {temp_dir} või klõpsates allpool olevaid nuppe. Fail .mosaicview_config.json luuakse iga kord uuesti, kui rakendus avatakse, ja ajutised failid luuakse vajadusel uuesti.",
+    "config_clear_temp": "Kustuta ajutised failid",
+    "config_clear_recent": "Kustuta hiljutised failid",
+    "config_clear_config": "Kustuta konfiguratsioonifail",
+    "config_temp_cleared": "Ajutised failid on edukalt kustutatud.",
+    "config_config_cleared": "Konfiguratsioonifail on edukalt kustutatud.\nSee luuakse uuesti järgmisel rakenduse käivitamisel.",
+    "language": "Keele valik",
+    "language_content": "MosaicView on saadaval mitmes keeles.\nVaikimisi tuvastab rakendus automaatselt teie operatsioonisüsteemi keele ja kuvab seda keelt, kui see on toetatud. Kui teie süsteem kasutab toetamata keelt, kuvatakse liides inglise keeles.\nSaate keelt igal ajal käsitsi muuta, kasutades rippmenüüd nupuveeru allosas, pisipiltide suuruse liuguri all. Teie valik salvestatakse ja rakendatakse rakenduse järgmisel käivitamisel.\nSAADAOLEVAD KEELED: araabia, armeenia, bulgaaria, eesti, hiina (lihtsustatud), hiina (traditsiooniline), hispaania, hollandi, horvaadi, india, indoneesia, inglise, iirimaa, islandi, itaalia, jaapani, korea, kreeka, läti, leedu, malaisia, malta, norra, poola, portugali, prantsuse, rootsi, rumeenia, saksa, slovaki, sloveeni, soome, tamili, tai, taani, tšehhi, türgi, ukraina, ungari, vietnami.\nSAADAOLEVAD VÄLJAMÕELDUD KEELED: klingoni keel (ladina tähestiku ja pIqaD tähestiku versioonid), sindarin (ladina tähestiku ja tengwar tähestiku versioonid), quenya (ladina tähestiku ja tengwar tähestiku versioonid).\n\nSee utiliit kasutab Windowsi fonte, välja arvatud pIqaD (klingoni keel) ja tengwar (haldjakeeled: sindarin ja quenya) fondid. Need fondid on vabalt kasutatavad ja pärinevad nendelt saitidelt:\n- pIqaD jaoks (klingoni tähestik): {url_piqad}\n- tengwar jaoks (haldja tähestik, sindarini ja quenya jaoks): {url_tengwar}\nJuhul kui need saidid ei ole enam aktiivsed, saate pIqaD ja tengwar fondid alla laadida, klõpsates allpool olevatel nuppudel:\n\nSee tarkvara loodi prantsuse keeles. Tõlked teistesse keeltesse tehti tehisintellekti, täpsemalt Claude'i abil. Otsustasin toetada umbes nelikümmend keelt. Kuid ilmselt ma ei räägi kõiki neid keeli. Seetõttu ei olnud mul muud valikut kui kasutada tehisintellekti, kuna 40 erineva tõlkija palkamine ja tasumine ei kuulunud kaalutud võimaluste hulka. Nende tõlgete automaatse olemuse tõttu võib esineda vigu. Palun vabandust selle eest.",
+    "credits": "Vibe Coding, mu armastus",
+    "credits_content": "Ma ei tea programmeerimisest mitte midagi. Absoluutselt mitte midagi. Seetõttu arendasin selle tarkvara Claude'i, Anthropicu tehisintellekti ja täpsemalt Claude Code'i abil. Ma ei saa piisavalt soovitada Claude Code'i, see rakendus on fantastiline!",
+    "resize_pages": "Lehtede suuruse muutmine",
+    "resize_pages_content": "Lehekülgede vähendamiseks või suurendamiseks:\n• Valige üks või mitu lehekülge\n• Paremklõps → 'Muuda suurust'\n• Saadaval on kolm võimalust:\n  - Kohandatud mõõtmed: sisestage soovitud laius või kõrgus (kuvasuhe säilitatakse automaatselt).\n  - Protsentuaalne vähendamine: valige protsent 10% kuni 90%\n  - Protsentuaalne suurendamine: valige protsent 10% kuni 100%\n• Rakendus kuvab piltide hinnangulise suuruse pärast muutmist\n• Muudatus rakendatakse kohe kõigile valitud lehekülgedele",
+    "language_export_piqad": "pIqaD font",
+    "language_export_tengwar": "Tengwar fondid",
+    "language_export_piqad_success": "Font eksporditud: {filename}\nSaadaval:",
+    "language_export_tengwar_success": "{count} fonti eksporditud\nSaadaval:",
+    "icons": "Ikoonid",
+    "icons_content": "Enamik selles utiliidis kasutatud ikoonidest pärineb sellelt saidilt ja on vabalt kasutatavad mitteärilistel eesmärkidel: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nMõnda neist olen muutnud.\nAinult üks ikoon, Windowsi käivitatav ikoon, on loodud minu poolt (kuid tehisintellekti abil, sest ma olen väga, väga, väga halb graafiline disainer). Teil on minu luba kasutada seda ikooni nii, nagu soovite, kui viitate oma allikale.",
+    "icons_view_button": "Vaata ikoone",
+    "icons_window_title": "MosaicView Ikoonid",
+    "icons_save_all": "Salvesta ikoonid",
+    "icons_saved_success": "{count} ikoon(i) salvestatud:",
+    "icons_save_failed": "Ikoone ei saa salvestada: {error}",
+    "split_ui": "Kahe paneelne liides",
+    "split_ui_content": "MosaicView võimaldab kuvada kahte arhiivi samaaegselt kõrvuti.\n\nKlõpsake ikoonil Tükelda, et avada teine paneel. Iga paneel on iseseisev: saate arhiivi eraldi avada, muuta ja salvestada. Aktiivne paneel on tähistatud sinise äärisega.\n\nLehekülgede teisaldamiseks ühest paneelist teise lohistage neid otse. Kui valitud on mitu lehekülge, liiguvad need kõik koos. Leheküljed sisestatakse punase riba näidatud kohale.\n\nKlõpsake ikoonil Sulge teine paneel, et naasta ühepaneelilisse režiimi.",
+    "license_gpl": "GPL v3 litsents",
+    "license_unrar": "UnRAR litsents",
+    "config_clear_clipboard": "Kustuta loikelaua failid",
+    "config_clipboard_note": "Erand: Windows loikelaua kasutatavad ajutised failid (clipboard_XXXXX failid) sailivad 12 tundi parast kopeerimist, nii et saate neid kleepida isegi parast rakenduse sulgemist. Parast 12 tundi need kustutatakse automaatselt.",
+    "config_log_note": "Pakettkonversioonid (PDF CBZ-ks ja CBR CBZ-ks) loovad vea korral logifaili. Need failid (Log_pdftocbz_.txt ja Log_cbrtocbz_.txt) sailivad ka parast rakenduse sulgemist, et neid saaks hiljem ule vaadata. Need kustutatakse ainult ulaloleva nupu \"Kustuta ajutised failid\" abil.",
+    "config_clipboard_cleared": "Loikelaua failid on edukalt kustutatud.",
+    "adjust_images": "Piltide reguleerimine",
+    "adjust_images_content": "See funktsioon võimaldab teil oma pilte otse MosaicView'is retušeerida. Saate muuta heledust, kontrasti, teravust, tasemeid, küllastust, rakendada efekte (must-valge, seepia, värvide ümberpööramine), reguleerida tihenduskvaliteeti, eemaldada värve, rakendada läbipaistvust või teisendada erinevatesse värvisügavustesse. Mõnel seadistusel on eraldi vaatur, mis võimaldab näha tulemust täielikus eraldusvõimes enne rakendamist. Pisipildi eelvaade näitab tulemust reaalajas põhiaknas.",
+    "create_icon": "Loo ikoon",
+    "create_icon_content": "MosaicView võimaldab teil luua ikoonifaile (.ico) mis tahes mosaiigis olevast pildist.\n• Paremklõps pildil → 'Loo ikoon'\n• Piirake soovitud ala vaaturis (ikoon on kohustuslikult ruudukujuline)\n• Reguleerige läbipaistvust vajadusel\n• Kinnitage: .ico-fail lisatakse otse mosaiiki\n• .ico-failid sisaldavad automaatselt kõiki standardlahutusi (16×16 kuni 256×256)\n• Niikaua kui mosaiigis on .ico-fail, on CBZ-arhiivi salvestamine blokeeritud, kuna ICO-formaat ei ole nende arhiivide poolt toetatud. Eksportige .ico-fail eraldi (Ctrl+C ja kleepige Windowsi kausta), seejärel kustutage see enne salvestamist mosaiigist.",
+    "batch_convert": "Pakettteisendus",
+    "batch_convert_content": "MosaicView pakub kolme pakettkonverteerimise funktsiooni, mis on saadaval ainult siis, kui mosaiik on tühi. Igaühe puhul on põhimõte sama : valige kataloog, kinnitage, jälgige edenemist reaalajas, vaadake lõplikku kokkuvõtet. Valik võimaldab algsed failid jäädavalt kustutada, selle asemel et neid prügikasti saata.\n• CBR → CBZ : teisendab kõik CBR (RAR) failid kataloogis ja selle alamkataloogides. Kui CBR on tegelikult ZIP, nimetatakse see lihtsalt ümber ilma teisenduseta.\n• PDF → CBZ : teisendab kõik PDF failid kataloogis ja selle alamkataloogides. Pildid ekstraheeritakse ilma taaspakkimiseta.\n• ERALDISEISVAD PILDID → CBZ : loob individuaalse CBZ iga kataloogist ja selle alamkataloogidest leitud pildifaili jaoks. Kehtetud, rikutud, mitmelehelised (TIFF) või animeeritud (GIF) pildid eiratakse ja logitakse.",
+    "config_open_temp_folder": "Ava ajutine kaust",
+    "icon_toolbar": "Ikooniriba",
+    "icon_toolbar_content": "Ikooniriba pakub kiiret juurdepääsu rakenduse põhifunktsioonidele. Saate ikoone oma soovi järgi ümber korraldada, lohistades neid otse ribale. Et valida, milliseid ikoone kuvada või peita, klõpsake riba allosas asuvat hammasratta nuppu: avaneb seadistusaken, kus saate ikoone liigutada aktiivse riba ja reservi vahel. Kasutage ikooni suuruse reguleerimiseks nuppe « + » ja « − ». Seadistus salvestatakse automaatselt.",
+    "license_7zip": "7-Zip litsents"
+  },
+  "misc": {
+    "file_word": "fail",
+    "files_word": "faili",
+    "corrupted": "rikutud",
+    "yes": "Jah",
+    "no": "Ei",
+    "cancel": "Tühista",
+    "selection_suffix": "koopia-valik"
+  },
+  "metadata": {
+    "title": "Pealkiri",
+    "series": "Seeria",
+    "number": "Number",
+    "volume": "Köide",
+    "summary": "Kokkuvõte",
+    "writer": "Stsenarist",
+    "penciller": "Joonistaja",
+    "inker": "Tindija",
+    "colorist": "Värviline",
+    "letterer": "Kirjastaja",
+    "cover_artist": "Kaane kunstnik",
+    "editor": "Toimetaja (isik)",
+    "publisher": "Kirjastaja (majutus)",
+    "imprint": "Kollektsioon",
+    "genre": "Žanr",
+    "web": "Veebisait",
+    "page_count": "Lehekülgede arv",
+    "language_iso": "Keel",
+    "format": "Vorming",
+    "black_and_white": "Must-valge",
+    "manga": "Manga",
+    "year": "Aasta",
+    "month": "Kuu",
+    "day": "Päev",
+    "notes": "Märkmed",
+    "characters": "Tegelased",
+    "locations": "Asukohad",
+    "teams": "Meeskonnad",
+    "story_arc": "Lootöö",
+    "story_arc_number": "Kaare number",
+    "series_group": "Seeriagrupp",
+    "count": "Numbrite arv",
+    "alternate_series": "Alternatiivne seeria",
+    "alternate_number": "Alternatiivne number",
+    "alternate_count": "Alternatiivne arv",
+    "age_rating": "Vanusepiirang",
+    "series_complete": "Seeria lõpetatud",
+    "translator": "Tõlkija",
+    "tags": "Sildid",
+    "scan_information": "Skannimisinfo",
+    "community_rating": "Kogukonna hinnang",
+    "review": "Arvustus",
+    "gtin": "GTIN",
+    "pages": "Lehed",
+    "pages_col_image": "Pilt",
+    "pages_col_type": "Tüüp",
+    "pages_col_width": "Laius",
+    "pages_col_height": "Kõrgus",
+    "pages_col_size": "Suurus (B)"
+  },
+  "web": {
+    "web_download_progress": "Allalaadimine: {downloaded}/{total} pilti...",
+    "web_download_cancel": "Tühista",
+    "web_no_images": "Pole pilte",
+    "web_no_images_found": "Sellelt lehelt ei leitud ühtegi pilti.",
+    "web_imported": "{count} pilt(i) imporditud veebilehelt",
+    "web_drag_drop_title": "Veebipildi lohistamine",
+    "web_copy_paste_message": "Otsene lohistamine veebibrauserist ei ole toetatud.\n\nAlternatiivne lahendus (lihtsam):\n\n1. Paremklõpsake brauseris pildil\n2. Valige 'Kopeeri pilt'\n3. MosaicView'is kasutage nuppu 'Kleebi' või Ctrl+V\n\nSee meetod töötab kõigi veebipiltidega!",
+    "import_web_button": "Veebist import",
+    "import_web_tooltip": "Kleebi internetiaadress, et hankida kõik pildid lehelt",
+    "import_web_menu": "Veebist import...",
+    "import_web_dialog_title": "Impordi pildid veebilehelt",
+    "import_web_url_label": "Veebilehe aadress:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Tühista",
+    "import_web_invalid_url": "Kehtetu URL. Palun sisesta kehtiv veebiaadress."
+  },
+  "donation": {
+    "menu_label": "Anneta autorile",
+    "title": "Tee annetus",
+    "message": "Teile meeldib see väike utiliit ja kasutate seda regulaarselt.\n\nOlen investeerinud sellesse mitu sada tundi. Kas kaaluksite mulle tänuavaldamist annetuse tegemisega? Palun olge lahked, mul on tõesti vaja raha, et täita oma bassein šampanjaga. Olenemata sellest, kas soovite mulle saata mõned sendid või mitu miljardit eurot, võtan vastu kõik summad. Saate seda annetust teha paypal kaudu"
+  },
+  "mail": {
+    "tooltip": "See nupp avab teie vaikimisi e-posti tarkvara Windowsis e-kirja saatmiseks. Kui ühtegi tarkvara ei ole konfigureeritud (näiteks kui kasutate ainult veebimaili), saate MosaicView aadressi lõikelauale kopeerida, tehes ikoonil paremklõpsu.",
+    "copy_address": "Kopeeri MosaicView'i e-posti aadress",
+    "menu_label": "Saatke e-kiri MosaicView'le",
+    "icon_label": "Saada e-kiri"
+  },
+  "menu": {
+    "file": "Fail",
+    "file_open": "Ava fail",
+    "file_close": "Sulge fail",
+    "batch_convert": "Failide pakettkonverteerimine",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Üksikud pildid → CBZ",
+    "edit": "Muuda",
+    "undo": "Võta tagasi",
+    "redo": "Tee uuesti",
+    "paste": "Kleebi",
+    "delete": "Kustuta",
+    "invert_selection": "Pööra valik ümber",
+    "select_all": "Vali kõik",
+    "deselect": "Tühista valik",
+    "refresh_mosaic": "Värskenda mosaiiki",
+    "images": "Pildid",
+    "rotation": "Pööramine",
+    "archives": "Arhiivid",
+    "sort": "Sortimine",
+    "system": "Süsteem",
+    "decrease_font": "Vähenda fonti",
+    "increase_font": "Suurenda fonti",
+    "language": "Keeled",
+    "language_real": "Päriskeeled",
+    "language_fictional": "Väljamõeldud keeled",
+    "about": "Teave",
+    "export_piqad_font": "Salvesta pIqaD font",
+    "export_tengwar_fonts": "Salvesta tengwar fondid"
+  }
+}

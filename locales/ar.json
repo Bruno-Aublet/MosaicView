@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "الأداة الشاملة لهواة جمع القصص المصورة الرقمية",
+  "buttons": {
+    "open_file": "فتح CBZ/CBR/CB7/PDF",
+    "close_file": "إغلاق الملف",
+    "create_cbz": "إنشاء أرشيف CBZ",
+    "flatten_dirs": "نقل جميع الملفات\nإلى الجذر وحذف\nالدليل الفرعي",
+    "renumber": "إعادة ترقيم\nالصفحات",
+    "undo": "⤺ تراجع",
+    "redo": "إعادة ⤻",
+    "copy": "نسخ",
+    "cut": "قص",
+    "paste": "لصق",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "التحويل إلى\nتنسيق صورة آخر",
+    "join_pages": "دمج الصفحات",
+    "split_page": "تقسيم الصفحة",
+    "save_as": "حفظ باسم\n(إنشاء CBZ جديد)",
+    "save_selection": "حفظ التحديد\nكملف CBZ",
+    "print_selection": "طباعة التحديد",
+    "print_all": "طباعة القصة المصورة كاملة",
+    "sort": "ترتيب",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "تحويل",
+    "cancel": "إلغاء",
+    "split_button": "تقسيم",
+    "join_button": "ابدأ",
+    "validate_crop": "تأكيد القص",
+    "ok": "موافق",
+    "close": "إغلاق",
+    "apply_and_save": "تطبيق التغييرات وحفظ الملف",
+    "apply_and_create": "تطبيق التغييرات وإنشاء ملف CBZ",
+    "close_and_lose": "إغلاق الملف وفقدان التغييرات",
+    "cancel_return": "إلغاء والعودة إلى الفسيفساء",
+    "update_page_count": "تحديث عدد الصفحات\nفي البيانات الوصفية",
+    "invert_selection": "عكس التحديد",
+    "reduce_size": "تغيير حجم الصفحات",
+    "mirror_vertical": "⇅",
+    "create_gif": "إنشاء GIF",
+    "edit_gif": "تعديل GIF المتحركة",
+    "save_to_folder": "تصدير الصفحات\nالمحددة",
+    "continue": "متابعة",
+    "reset": "↻",
+    "yes": "نعم",
+    "no": "لا",
+    "renumber_recommended": "إعادة الترقيم (موصى به)",
+    "ignore_and_save": "تجاهل والحفظ",
+    "rename_to_cbz": "إعادة التسمية إلى .cbz",
+    "open_without_rename": "فتح بدون إعادة التسمية",
+    "rename_to_cbr": "إعادة التسمية إلى .cbr",
+    "adjustments": "السطوع والتباين\nوالألوان",
+    "batch_cbr_to_cbz": "تحويل دفعة واحدة\n لملفات CBR إلى CBZ",
+    "batch_pdf_to_cbz": "تحويل دفعي\n لملفات PDF إلى CBZ",
+    "batch_img_to_cbz": "تحويل دفعي\n للصور المنفردة إلى CBZ",
+    "icon_toolbar_reset": "إعادة تعيين",
+    "delete_selected": "حذف",
+    "save": "حفظ",
+    "rename_to_cb7": "إعادة تسمية إلى .cb7",
+    "split_ui": "تقسيم الواجهة إلى لوحتين",
+    "unsplit_ui": "إغلاق اللوحة الثانية"
+  },
+  "tabs": {
+    "mosaic": "الفسيفساء",
+    "metadata": "البيانات الوصفية"
+  },
+  "viewer": {
+    "title": "العارض",
+    "mode_single": "صفحة واحدة  [D]",
+    "mode_double": "صفحة مزدوجة  [D]",
+    "mode_continuous": "وضع مستمر  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "الصفحة السابقة (←)",
+      "next_page": "الصفحة التالية (→)",
+      "zoom_in": "تكبير (Ctrl+Plus)",
+      "zoom_out": "تصغير (Ctrl+Minus)",
+      "zoom_reset": "إعادة تعيين التكبير (Ctrl+0)",
+      "reading_mode_double": "تغيير وضع القراءة (D) ← صفحات مزدوجة",
+      "reading_mode_continuous": "تغيير وضع القراءة (D) ← صفحات مزدوجة مستمرة",
+      "reading_mode_single": "تغيير وضع القراءة (D) ← صفحة واحدة",
+      "fullscreen_exit": "الخروج من ملء الشاشة (F11)",
+      "fullscreen": "ملء الشاشة (F11)",
+      "close_viewer": "إغلاق العارض (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ صورة تالفة - استبدال",
+      "corrupted_delete": "⚠️ حذف هذه الصورة",
+      "copy": "نسخ (Ctrl+C)",
+      "cut": "قص (Ctrl+X)",
+      "paste": "لصق (Ctrl+V)",
+      "paste_clipboard": "لصق من الحافظة (Ctrl+V)",
+      "delete": "حذف (Del)",
+      "deselect": "إلغاء التحديد (ESC)",
+      "rotate_right": "↻ تدوير لليمين",
+      "rotate_left": "↺ تدوير لليسار",
+      "mirror": "⇄ مرآة أفقية",
+      "crop": "قص",
+      "convert": "التحويل إلى تنسيق آخر...",
+      "join": "دمج الصفحات المحددة",
+      "split": "تقسيم الصفحة المحددة",
+      "save_selection": "حفظ التحديد كملف CBZ",
+      "print_selection": "طباعة التحديد",
+      "copy_archive": "نسخ الأرشيف الكامل",
+      "undo": "تراجع (Ctrl+Z)",
+      "redo": "إعادة (Ctrl+Y)",
+      "renumber_auto": "إعادة ترقيم الصفحات (الكشف التلقائي عن الصفحات المتعددة)",
+      "renumber_simple": "إعادة ترقيم الصفحات (ترقيم بسيط)",
+      "sort_submenu": "ترتيب الصفحات",
+      "sort_name": "حسب الاسم",
+      "sort_type": "حسب النوع",
+      "sort_size": "حسب الحجم",
+      "sort_width": "حسب العرض",
+      "sort_height": "حسب الارتفاع",
+      "sort_resolution": "حسب الدقة",
+      "sort_dpi": "حسب DPI",
+      "create_cbz": "إنشاء أرشيف CBZ",
+      "save_as": "حفظ باسم...",
+      "close_file": "إغلاق الملف",
+      "help": "دليل الاستخدام",
+      "update_page_count": "تحديث عدد الصفحات في البيانات الوصفية",
+      "invert_selection": "عكس التحديد (Ctrl+I)",
+      "reduce_size": "تغيير حجم الصفحات",
+      "mirror_vertical": "⇅ انعكاس رأسي",
+      "edit_animated_gif": "تعديل GIF المتحركة...",
+      "save_to_folder": "تصدير الصفحات المحددة",
+      "adjustments": "السطوع والتباين والألوان...",
+      "refresh_mosaic": "تحديث الفسيفساء (F5)",
+      "create_ico": "إنشاء ملف .ico"
+    },
+    "canvas_no_file": {
+      "open": "فتح CBZ/CBR/CB7/PDF",
+      "recent_files": "الملفات الأخيرة",
+      "clear_history": "مسح السجل"
+    },
+    "canvas_with_file": {
+      "close": "إغلاق الملف",
+      "paste": "لصق (Ctrl+V)",
+      "paste_clipboard": "لصق من الحافظة (Ctrl+V)",
+      "select_all": "تحديد الكل (Ctrl+A)",
+      "deselect": "إلغاء التحديد (ESC)",
+      "copy_archive": "نسخ الأرشيف الكامل",
+      "print_all": "طباعة القصة المصورة كاملة",
+      "renumber_auto": "إعادة ترقيم الصفحات (الكشف التلقائي عن الصفحات المتعددة)",
+      "renumber_simple": "إعادة ترقيم الصفحات (ترقيم بسيط)",
+      "flatten": "تسطيح المجلدات",
+      "save_selection": "حفظ التحديد كملف CBZ",
+      "hide_sidebar": "« إخفاء عمود الأزرار",
+      "show_sidebar": "» إظهار عمود الأزرار",
+      "decrease_thumbs": "تصغير حجم الصور المصغرة",
+      "increase_thumbs": "تكبير حجم الصور المصغرة",
+      "theme_dark": "التبديل إلى المظهر الداكن",
+      "theme_light": "التبديل إلى المظهر الفاتح",
+      "sort_submenu": "ترتيب الصفحات",
+      "undo": "تراجع (Ctrl+Z)",
+      "redo": "إعادة (Ctrl+Y)",
+      "create_cbz": "إنشاء أرشيف CBZ",
+      "save_as": "حفظ باسم...",
+      "help": "دليل الاستخدام",
+      "update_page_count": "تحديث عدد الصفحات في البيانات الوصفية",
+      "invert_selection": "عكس التحديد (Ctrl+I)",
+      "fullscreen": "ملء الشاشة (F11)",
+      "fullscreen_exit": "الخروج من ملء الشاشة (F11 أو ESC)",
+      "quit": "إغلاق التطبيق"
+    },
+    "canvas": {
+      "quit": "إغلاق التطبيق",
+      "reset": "إعادة تعيين التطبيق:\n• حجم النافذة وموضعها\n• الوضع المظلم → فاتح\n• حجم الصور المصغرة → عادي\n• الشريط الجانبي → مرئي / 220 px\n• اللغة → الكشف التلقائي\n• حجم الخط → افتراضي",
+      "reset_label": "إعادة تعيين التطبيق"
+    },
+    "font_size": {
+      "decrease": "تقليل حجم الخط",
+      "increase": "زيادة حجم الخط"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "ترتيب حسب الاسم",
+    "sort_type": "ترتيب حسب النوع",
+    "sort_size": "ترتيب حسب الحجم",
+    "sort_width": "ترتيب حسب العرض",
+    "sort_height": "ترتيب حسب الارتفاع",
+    "sort_resolution": "ترتيب حسب الدقة",
+    "sort_dpi": "ترتيب حسب DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "أرشيف فارغ",
+        "message": "أرشيف CBZ لا يحتوي على أي ملفات."
+      },
+      "empty_cbr": {
+        "title": "أرشيف فارغ",
+        "message": "أرشيف CBR لا يحتوي على أي ملفات."
+      },
+      "files_ignored": {
+        "title": "ملفات تم تجاهلها"
+      },
+      "no_selection_crop": {
+        "title": "لا يوجد تحديد",
+        "message": "يرجى تحديد صورة للقص."
+      },
+      "multi_selection_crop": {
+        "title": "تحديد متعدد",
+        "message": "يمكنك قص صورة واحدة فقط في كل مرة.\nيرجى تحديد صورة واحدة."
+      },
+      "invalid_selection_crop": {
+        "title": "تحديد غير صالح",
+        "message": "يمكن قص الصور فقط."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "الوظيفة غير متاحة",
+        "message": "نقل الصفحات غير متاح في الأدلة الفرعية.\nيرجى تسطيح المجلدات أو العودة إلى الجذر."
+      },
+      "no_selection_convert": {
+        "title": "لا يوجد تحديد",
+        "message": "يرجى تحديد صورة واحدة على الأقل للتحويل."
+      },
+      "invalid_selection_convert": {
+        "title": "تحديد غير صالح",
+        "message": "يمكن تحويل الصور فقط."
+      },
+      "no_selection_split": {
+        "title": "لا يوجد تحديد",
+        "message": "يرجى تحديد صورة للتقسيم."
+      },
+      "multi_selection_split": {
+        "title": "تحديد متعدد",
+        "message": "يمكنك تقسيم صورة واحدة فقط في كل مرة.\nيرجى تحديد صورة واحدة."
+      },
+      "invalid_selection_split": {
+        "title": "تحديد غير صالح",
+        "message": "يمكن تقسيم الصور فقط."
+      },
+      "invalid_number_split": {
+        "title": "رقم غير صالح",
+        "message": "يجب أن يكون عدد الصفحات بين 2 و 10."
+      },
+      "insufficient_selection_join": {
+        "title": "تحديد غير كافٍ",
+        "message": "يرجى تحديد صورتين على الأقل للدمج."
+      },
+      "invalid_selection_join": {
+        "title": "تحديد غير صالح",
+        "message": "يمكن دمج الصور فقط."
+      },
+      "pil_not_available": {
+        "title": "PIL غير متاح",
+        "message": "وحدة PIL غير متاحة للصق من حافظة النظام."
+      },
+      "format_not_supported": {
+        "title": "تنسيق غير مدعوم",
+        "message": "تنسيق صورة غير مدعوم أو ملف تالف.\nالتنسيقات المدعومة: JPG، PNG، WEBP، BMP، TIFF، GIF، ICO"
+      },
+      "no_crop_selection": {
+        "title": "لا يوجد تحديد",
+        "message": "يرجى رسم مستطيل القص أولاً."
+      },
+      "cannot_open_file": {
+        "title": "تعذر فتح الملف",
+        "message": "تعذّر تحميل الملف."
+      },
+      "corrupted_images": {
+        "title": "صور تالفة",
+        "summary": "تم اكتشاف {count} صورة(صور) تالفة من أصل {total}.",
+        "hint": "يتم عرضها بأيقونة خاصة.\nانقر بزر الماوس الأيمن على صورة تالفة لاستبدالها أو حذفها.",
+        "more": "... و{count} أخرى"
+      },
+      "no_image_print": {
+        "title": "لا توجد صورة",
+        "message": "لا توجد صورة للطباعة."
+      },
+      "no_valid_image_print": {
+        "title": "لا توجد صورة",
+        "message": "لا توجد صورة صالحة للطباعة."
+      },
+      "no_selection_print": {
+        "title": "لا يوجد تحديد",
+        "message": "يرجى تحديد صورة واحدة على الأقل."
+      },
+      "no_valid_selection_print": {
+        "title": "لا توجد صورة",
+        "message": "لا توجد صورة صالحة في التحديد."
+      },
+      "save_cancelled": {
+        "title": "تم إلغاء الحفظ",
+        "message": "يرجى تصحيح أسماء الملفات يدوياً قبل الحفظ."
+      },
+      "empty_pdf": {
+        "title": "PDF فارغ",
+        "message": "ملف PDF لا يحتوي على أي صفحات."
+      },
+      "no_selection_save": {
+        "title": "تنبيه",
+        "message": "يرجى تحديد صفحة واحدة على الأقل للحفظ."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "السحب معطل",
+        "message": "نقل الصفحات بالسحب متاح فقط في جذر القصة المصورة.\n\nلنقل الصفحات:\n1. ارجع إلى الجذر بالنقر على أيقونة الصعود\n2. أو قم بتسطيح القصة المصورة لإزالة الأدلة الفرعية"
+      },
+      "no_selection_reduce": {
+        "title": "لا يوجد تحديد",
+        "message": "يرجى تحديد صفحة واحدة على الأقل للتصغير."
+      },
+      "invalid_selection_reduce": {
+        "title": "تحديد غير صالح",
+        "message": "يمكن تصغير الصور فقط."
+      },
+      "invalid_dimensions": {
+        "title": "أبعاد غير صالحة",
+        "message": "يرجى إدخال أبعاد صالحة (أعداد صحيحة موجبة)."
+      },
+      "no_images_for_gif": {
+        "title": "لا توجد صور",
+        "message": "يلزم صورة واحدة على الأقل لإنشاء GIF متحرك."
+      },
+      "no_valid_images": {
+        "title": "لا توجد صور صالحة",
+        "message": "لم يتم العثور على صور صالحة لإنشاء GIF."
+      },
+      "animated_gif_in_comic": {
+        "title": "تم اكتشاف GIF متحرك",
+        "message": "تحذير: تحتوي هذه القصة المصورة على صورة GIF متحركة واحدة أو أكثر.\\n\\nقراء القصص المصورة (CDisplayEx، YACReader، إلخ) سيعرضون فقط الإطار الأول من كل GIF كصفحة ثابتة.\\n\\nلعرض صورة GIF المتحركة بشكل صحيح، يجب عليك حفظها بشكل منفصل خارج القصة المصورة باستخدام زر \"تصدير الصفحات المحددة\" أو \"تعديل GIF المتحركة\".\\n\\nهل تريد الاستمرار في حفظ القصة المصورة على أي حال؟"
+      },
+      "no_selection_adjust": {
+        "title": "لا يوجد تحديد",
+        "message": "يرجى تحديد صورة واحدة على الأقل لتطبيق التعديلات."
+      },
+      "invalid_selection_adjust": {
+        "title": "تحديد غير صالح",
+        "message": "لا يمكن تطبيق التعديلات إلا على الصور."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "الوظيفة غير متاحة",
+        "message": "إعادة الترقيم غير متاحة ما لم يتم تسوية المجلدات.\nيرجى تسوية المجلدات قبل إعادة الترقيم."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "خطأ ZIP",
+        "message": "'{file}': الملف ليس أرشيف ZIP صالح أو تالف."
+      },
+      "zip_cannot_open": {
+        "title": "خطأ ZIP",
+        "message": "تعذر فتح ملف CBZ: {error}"
+      },
+      "rar_invalid": {
+        "title": "خطأ RAR",
+        "message": "'{file}': الملف ليس أرشيف RAR صالح أو تالف."
+      },
+      "rar_cannot_open": {
+        "title": "خطأ RAR",
+        "message": "تعذر فتح أرشيف CBR: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "خطأ",
+        "message": "خطأ غير متوقع أثناء فتح CBR: {error}"
+      },
+      "join_failed": {
+        "title": "خطأ",
+        "message": "تعذر دمج الصور."
+      },
+      "paste_failed": {
+        "title": "خطأ",
+        "message": "خطأ أثناء اللصق: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "خطأ",
+        "message": "تعذر نسخ الأرشيف: {error}"
+      },
+      "crop_invalid": {
+        "title": "خطأ",
+        "message": "منطقة القص غير صالحة."
+      },
+      "crop_failed": {
+        "title": "خطأ",
+        "message": "تعذر قص الصورة: {error}"
+      },
+      "load_image_failed": {
+        "title": "خطأ",
+        "message": "تعذر تحميل الصورة:\n{error}"
+      },
+      "print_error": {
+        "title": "خطأ في الطباعة",
+        "message": "خطأ أثناء الطباعة:\n{error}"
+      },
+      "print_not_available": {
+        "title": "الطباعة غير متاحة",
+        "message": "وحدة win32print غير مثبتة.\nقم بالتثبيت باستخدام: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "الملف غير موجود",
+        "message": "الملف لم يعد موجوداً:\n{path}"
+      },
+      "import_failed": {
+        "title": "خطأ في الاستيراد",
+        "message": "تعذر استيراد الملف: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF غير مثبت",
+        "message": "مكتبة PyMuPDF (fitz) غير مثبتة.\nقم بالتثبيت باستخدام: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "خطأ",
+        "message": "خطأ أثناء استيراد PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "خطأ PDF",
+        "message": "تعذر تحميل PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "أسماء ملفات مكررة",
+        "intro": "{count} اسم(أسماء) ملف مكرر(ة) تم اكتشافها:\n\n",
+        "item": "  • {name} ({times} مرات)\n",
+        "more": "  ... و{more} أخرى\n",
+        "footer": "\nلا تقبل أرشيفات ZIP أسماء مكررة.\nيرجى إعادة تسمية هذه الملفات قبل الحفظ."
+      },
+      "save_failed": {
+        "title": "خطأ",
+        "message": "تعذر حفظ الملف: {error}"
+      },
+      "create_archive_failed": {
+        "title": "خطأ",
+        "message": "تعذر إنشاء الأرشيف: {error}"
+      },
+      "save_selection_failed": {
+        "title": "خطأ",
+        "message": "تعذر حفظ التحديد: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "خطأ في إنشاء GIF",
+        "message": "تعذر إنشاء GIF متحرك:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "خطأ في الحفظ",
+        "message": "خطأ أثناء حفظ الملفات:\n{error}"
+      },
+      "rename_failed": {
+        "title": "خطأ في إعادة التسمية",
+        "message": "تعذرت إعادة تسمية الملف: {error}"
+      },
+      "pdf_password_required": {
+        "title": "ملف PDF محمي بكلمة مرور",
+        "message": "هذا الملف PDF مشفر ومحمي بكلمة مرور.\nلا يمكن فتحه بدون كلمة المرور."
+      },
+      "pdf_unlock_failed": {
+        "title": "خطأ",
+        "message": "تعذر حفظ ملف PDF غير المقفل:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: ملف PDF مشفر (كلمة مرور مطلوبة)، تم تخطيه",
+      "file_too_large": {
+        "title": "الملف كبير جداً",
+        "message": "الملف {filename} حجمه {size} ويتجاوز الحجم الأقصى المسموح به (500 ميغابايت) لصورة."
+      },
+      "license_file_not_found": {
+        "message": "ملف الترخيص غير موجود: {path}"
+      },
+      "license_file_read_error": {
+        "message": "تعذّر قراءة ملف الترخيص: {error}"
+      },
+      "7z_invalid": {
+        "title": "خطأ 7Z",
+        "message": "الملف '{file}' ليس أرشيف 7Z صالحاً أو تالف."
+      },
+      "delete_error": "خطأ أثناء الحذف: {error}",
+      "export_error": "خطأ أثناء التصدير: {error}",
+      "font_source_not_found": "ملف الخط المصدر غير موجود: {path}",
+      "no_tengwar_font": "لم يتم العثور على خط Tengwar.",
+      "no_icons_found": "لم يتم العثور على أيقونات.",
+      "unsupported_files": {
+        "title": "ملفات غير مدعومة",
+        "message": "الملفات التالية غير مدعومة وتم تجاهلها:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "تم إنشاء GIF بنجاح",
+        "message": "تم إنشاء GIF المتحرك '{name}' وإضافته إلى الفسيفساء."
+      },
+      "pywin32_required": {
+        "title": "الوظيفة غير متاحة",
+        "message": "وحدة pywin32 مطلوبة للصق من حافظة النظام.\nقم بالتثبيت باستخدام: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "تم استيراد الصور",
+        "message": "تم استيراد {count} صورة/صور"
+      },
+      "archive_copied": {
+        "title": "تم نسخ الأرشيف",
+        "message": "تم نسخ الأرشيف إلى الحافظة."
+      },
+      "function_not_available": {
+        "title": "الوظيفة غير متاحة",
+        "message": "هذه الوظيفة غير متاحة حالياً."
+      },
+      "duplicate_detected": {
+        "title": "تم اكتشاف تكرار",
+        "message": "ملف بهذا الاسم موجود بالفعل.\n\nتمت إعادة تسمية الملف إلى:\n{name}"
+      },
+      "replace_success": {
+        "title": "نجح",
+        "message": "تم استبدال الصورة '{name}' بنجاح."
+      },
+      "history_cleared": {
+        "title": "تم مسح السجل",
+        "message": "تم مسح قائمة الملفات الأخيرة."
+      },
+      "files_copied_clipboard": {
+        "title": "تم نسخ الملفات إلى الحافظة",
+        "message": "السحب خارج التطبيق غير متاح لأسباب تقنية.\n\n✓ تم نسخ {count} {word} إلى الحافظة\n\nيمكنك الآن اللصق في أي مكان:\n  • انقر بزر الماوس الأيمن ← لصق\n  • أو Ctrl+V"
+      },
+      "correction_done": {
+        "title": "تم التصحيح",
+        "message": "تم تصحيح {count} اسم ملف."
+      },
+      "import_success": {
+        "title": "نجح الاستيراد",
+        "message": "تم استيراد {count} صفحة من {file}"
+      },
+      "pdf_import_success": {
+        "title": "نجح الاستيراد",
+        "message": "تم استيراد {count} صفحة PDF من {file}\nالجودة: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "نجح",
+        "message": "تم تحويل PDF بنجاح!\nتم تحميل {count} صفحة بجودة {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "نجح",
+        "message": "تم حفظ ملف CBZ بنجاح:"
+      },
+      "cbz_converted": {
+        "title": "نجح",
+        "message": "تم تحويل الملف إلى CBZ بنجاح:",
+        "question": "هل تريد حذف ملف CBR الأصلي?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "نجح",
+        "message": "تم تحويل الملف إلى CBZ بنجاح:",
+        "question": "هل تريد حذف ملف PDF الأصلي?"
+      },
+      "cbz_save_as": {
+        "title": "نجح",
+        "message": "تم حفظ ملف CBZ جديد: {path}"
+      },
+      "cbz_created": {
+        "title": "نجح",
+        "message": "تم إنشاء أرشيف CBZ بنجاح:"
+      },
+      "selection_saved": {
+        "title": "نجح",
+        "message": "تم حفظ التحديد بنجاح:"
+      },
+      "flatten_done": {
+        "title": "اكتمل التسطيح",
+        "message": "تم نقل {files} ملف من {dirs} مجلد فرعي."
+      },
+      "language_changed": {
+        "title": "تم تغيير اللغة",
+        "message": "تم تغيير لغة الواجهة بنجاح."
+      },
+      "new_cbz_saved": {
+        "title": "تم حفظ الملف",
+        "message": "تم حفظ ملف CBZ الجديد بنجاح:",
+        "question": "هل تريد حذف الملف الأصلي؟"
+      },
+      "page_count_updated": {
+        "title": "تم تحديث عدد الصفحات",
+        "message": "تم تحديث عدد الصفحات في البيانات الوصفية إلى {count} صفحة."
+      },
+      "files_saved": {
+        "title": "تم الحفظ بنجاح",
+        "message": "تم حفظ {count} ملف في:\n{folder}",
+        "open_folder": "هل تريد فتح المجلد؟"
+      },
+      "adjustments_applied": {
+        "title": "تم تطبيق التعديلات",
+        "message": "تم تطبيق التعديلات بنجاح."
+      },
+      "pdf_unlocked": {
+        "title": "تم إلغاء قفل PDF",
+        "message": "تم حفظ ملف PDF غير المقفل:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "أرشيف كبير",
+        "message": "هذا الأرشيف بحجم {size} ميغابايت غير مضغوط.\nقد يستهلك التحميل الكثير من الذاكرة (RAM).\n\nهل تريد المتابعة؟"
+      },
+      "confirm_delete": {
+        "title": "تأكيد",
+        "message": "هل تريد حقاً حذف {count} ملف(ات) ({size})؟"
+      },
+      "delete_source_files": {
+        "title": "حذف الملفات المصدر؟",
+        "message": "هل تريد حذف الصور التي تم دمجها؟\n\nنعم = حذف الملفات المصدر\nلا = الاحتفاظ بالملفات المصدر\nإلغاء = إلغاء العملية"
+      },
+      "invalid_filenames": {
+        "title": "أسماء ملفات غير صالحة",
+        "intro": "{count} ملف(ات) تحتوي على أحرف محظورة:",
+        "item": "  • {name}",
+        "more": "  ... و{more} آخر(ين)",
+        "forbidden_chars": "الأحرف المحظورة: {chars}",
+        "fix_question": "هل تريد تصحيح هذه الأسماء تلقائياً؟\n(سيتم استبدال الأحرف المحظورة بـ '_')"
+      },
+      "close_without_save": {
+        "title": "حفظ قبل الإغلاق؟",
+        "message": "تمت إضافة صور. هل تريد إنشاء أرشيف CBZ قبل الإغلاق؟"
+      },
+      "flatten_folders": {
+        "title": "تسطيح المجلدات",
+        "subdirs_detected": "تم اكتشاف أدلة فرعية:",
+        "files_to_move": "سيتم نقل {count} ملف إلى الجذر.",
+        "folders_to_delete": "سيتم حذف {count} مجلد فرعي.",
+        "continue_question": "هل تريد المتابعة؟"
+      },
+      "update_page_count": {
+        "title": "تحديث عدد الصفحات",
+        "message": "تغير عدد صفحات القصة المصورة.\n\nعدد الصفحات المشار إليه في البيانات الوصفية: {original}\nعدد الصفحات الحالي: {current}\n\nهل تريد تحديث عدد الصفحات في البيانات الوصفية؟"
+      },
+      "conversion_complete": {
+        "title": "اكتمل التحويل",
+        "message": "اكتمل التحويل!\n\n{count} صورة تم تحويلها إلى تنسيق {format} وأضيفت بعد اختيارك.\n\nحذف الصور الأصلية؟",
+        "delete_originals": "حذف الأصليات\n{count} ملف - {size}",
+        "keep_all": "الاحتفاظ بالكل\n{count} ملف - {size}",
+        "cancel_conversion": "إلغاء التحويل\n{count} ملف - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "امتداد غير صحيح تم اكتشافه: الملف '{filename}' هو CBZ، وليس CBR. إعادة التسمية؟",
+      "title": "امتداد غير صحيح"
+    },
+    "extension_mismatch_cbr": {
+      "message": "تم اكتشاف امتداد غير صحيح: الملف '{filename}' هو CBR، وليس CBZ. إعادة التسمية؟"
+    },
+    "extension_mismatch_cb7": {
+      "message": "تم اكتشاف امتداد غير صحيح: الملف '{filename}' هو CB7، وليس CBZ/CBR. إعادة تسمية؟"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "حجم الصور المصغرة",
+    "loading": "يرجى الانتظار، جارٍ التحميل...\n{percent}%",
+    "resizing": "يرجى الانتظار، جارٍ تغيير الحجم...\n{percent}%",
+    "converting": "يرجى الانتظار، جارٍ التحويل...\n{percent}%",
+    "loading_lazy": "يرجى الانتظار، جارٍ التحميل...\n{percent}%\n\nنظرًا لحجم هذا الملف الكبير ({size} ميجابايت)، سيتم تحميل الصفحات تدريجيًا. يتم تحميل الصفحات المرئية على الشاشة فورًا، وسيتم تحميل الصفحات الأخرى تلقائيًا أثناء التمرير.",
+    "apply_save_cbz": "تطبيق التغييرات\nوحفظ ملف CBZ",
+    "apply_create_cbz": "تطبيق التغييرات\nوإنشاء ملف CBZ",
+    "import_progress": "جارٍ الاستيراد...\n{percent}%",
+    "pdf_import_progress": "جارٍ استيراد PDF...\n{percent}%",
+    "pdf_opening": "جارٍ فتح ملف PDF...",
+    "pdf_page": "الصفحة {current} / {total}",
+    "warning_close": "تنبيه! التغييرات لم يتم حفظها وسيتم فقدانها!",
+    "language_label": "اللغة:",
+    "directory_tooltip": "مجلد: {name}\n{count} ملف\nالحجم الإجمالي: {size} ميغابايت",
+    "folder_up_tooltip": "انقر مرتين للصعود\nمستوى واحد في التسلسل الهرمي",
+    "status_bar": "{dirs} مجلد(ات)   |   {files} ملف(ات)  ({total_size})  |   {selected} محدد(ة) ({selected_size})",
+    "pdf_converting": "تحويل {total} صفحة إلى صور بدقة {dpi} نقطة في البوصة...",
+    "pdf_converting_no_change": "استخراج {total} صفحة بدون تعديل...",
+    "print_progress": "جارٍ التحضير للطباعة...\n{percent}%",
+    "print_preparing": "يرجى الانتظار، جارٍ التحضير للطباعة...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nملخص رخصة GNU العمومية الإصدار 3\n\nالحريات الممنوحة\nيمكنك استخدام MosaicView ونسخه وتعديله وإعادة توزيعه،\nبما في ذلك للأغراض التجارية.\n\nالالتزامات\nيجب أن يستوفي كل توزيع (أصلي أو معدل) الشروط التالية :\n– الإبقاء على رخصة GPL v3\n– تضمين الكود المصدري أو الإشارة إلى مكان الحصول عليه\n– عدم فرض قيود إضافية\n\nالضمانات\nيُوزَّع هذا البرنامج دون أي ضمان.\nلا يتحمل مؤلفه أي مسؤولية عن الأضرار الناجمة عن استخدامه.\n\nيجب أن تكون قد تلقيت نسخة من رخصة GNU العمومية مع هذا البرنامج. إن لم يكن الأمر كذلك، راجع <https://www.gnu.org/licenses/>.",
+    "view_full_license": "عرض الرخصة الكاملة",
+    "license_unrar_text": "ملفات CBZ مبنية على تنسيق ZIP، وهو تنسيق مفتوح وحر. أما ملفات CBR فمبنية على تنسيق RAR، وهو تنسيق خاص.\n\nيستطيع MosaicView فتح ملفات CBR بفضل UnRAR، أداة طورتها RARlab ويُسمح بإعادة توزيعها مجانًا.\n\nالموقع الرسمي: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "عرض ترخيص UnRAR",
+    "saving_cbz": "جاري الحفظ... {percent}%",
+    "empty_canvas_line1": "اسحب هنا ملف أو عدة ملفات CBZ/CBR/CB7/PDF أو صورك",
+    "empty_canvas_line2": "بمجرد فتح ملف، يمكنك الاستمرار في إسقاط ملفات أخرى",
+    "empty_canvas_line3": "أسقط مجلداً أو أكثر لبدء معالجة دفعية",
+    "icon_toolbar_config_title": "تكوين شريط الأيقونات",
+    "icon_toolbar_active": "الأيقونات في الشريط",
+    "icon_toolbar_hidden": "أيقونات في الاحتياط",
+    "license_gpl_full": "رخصة GNU GPL الإصدار 3",
+    "license_unrar_full": "رخصة UnRAR",
+    "licenses_button": "التراخيص",
+    "view_full_gpl_license": "عرض رخصة GNU GPL الكاملة الإصدار 3",
+    "license_7zip_text": "ملفات CB7 مبنية على تنسيق 7z، الذي طوّره إيغور بافلوف وموزَّع تحت رخصة GNU LGPL.\n\nيستطيع MosaicView فتح ملفات CB7 بفضل 7-Zip، وهو برنامج مجاني ومفتوح المصدر.\n\nالموقع الرسمي : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "عرض ترخيص 7-Zip",
+    "license_7zip_full": "ترخيص 7-Zip",
+    "icon_toolbar_show_thumb_slider": "عرض شريط تمرير حجم المصغرات",
+    "icon_toolbar_show_lang_combo": "عرض منتقي اللغة",
+    "adjusting": "يُرجى الانتظار، جارٍ التعديل...\n{current} / {total}",
+    "license_piqad_full": "ترخيص خط pIqaD qolqoS",
+    "license_tengwar_full": "ترخيص خط Alcarin Tengwar",
+    "view_full_piqad_license": "عرض ترخيص pIqaD qolqoS كاملاً"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "تحويل الصور",
+      "title": "تحويل {count} {word}",
+      "word_image": "صورة",
+      "word_images": "صور",
+      "info": "اختر تنسيق الوجهة:",
+      "format_png": "PNG (بدون فقدان)",
+      "format_jpg": "JPEG (مع ضغط)",
+      "format_webp": "WEBP (حديث)",
+      "format_bmp": "BMP (صورة نقطية)",
+      "format_tiff": "TIFF (جودة عالية)",
+      "format_gif": "GIF (رسوم متحركة)",
+      "quality_label": "جودة JPG/WEBP:",
+      "quality_maximum": "الأقصى — جودة 95/100",
+      "quality_high": "عالية — جودة 85/100",
+      "quality_medium": "متوسطة — جودة 75/100",
+      "quality_low": "منخفضة — جودة 60/100",
+      "quality_custom_option": "مخصص",
+      "quality_custom": "جودة مخصصة: {value}/100",
+      "quality_note": "(هذا الإعداد يؤثر فقط على تنسيقات JPG و WEBP)",
+      "quality_window_title": "اختيار الجودة",
+      "format_gif_static": "GIF ثابت",
+      "format_gif_animated": "GIF متحرك (حدد صورًا متعددة)"
+    },
+    "split": {
+      "window_title": "تقسيم الصفحة",
+      "title": "تقسيم الصفحة",
+      "pages_label": "عدد الصفحات:",
+      "direction_label": "اتجاه التقسيم:",
+      "horizontal": "أفقي (يسار ← يمين)",
+      "vertical": "عمودي (أعلى ← أسفل)",
+      "warning": "⚠ نظراً لأن التقسيم يتم حسابه تلقائياً،\nقد يلزم إجراء تعديل يدوي.",
+      "button_split": "تقسيم",
+      "button_cancel": "إلغاء"
+    },
+    "join": {
+      "window_title": "دمج الصفحات - إعادة ترتيب الترتيب",
+      "instructions": "ترتيب الصور:\n• عمودياً (أعلى/أسفل) للصق عمودي\n• أفقياً (يسار/يمين) للصق أفقي",
+      "merged_filename_prefix": "دمج",
+      "heights_label": "الارتفاعات",
+      "widths_label": "العروض",
+      "size_adjustment_title": "تعديل الحجم",
+      "size_adjustment_warning": "⚠️ الصور المحددة لها أبعاد مختلفة.\nالرجاء اختيار كيفية ضبط أحجامها للدمج.\nسيتم الحفاظ على نسبة العرض إلى الارتفاع لكل صورة دائمًا.",
+      "keep_original": "الاحتفاظ بالأحجام الأصلية",
+      "keep_original_desc": "(يضيف أشرطة سوداء للملء)",
+      "enlarge_small": "تكبير الصور الصغيرة",
+      "enlarge_small_desc": "(محاذاة للبعد الأقصى)",
+      "reduce_large": "تصغير الصور الكبيرة",
+      "reduce_large_desc": "(محاذاة للبعد الأدنى)",
+      "back_to_arrangement": "رجوع"
+    },
+    "pdf": {
+      "quality_merge": "اختر جودة الدمج:",
+      "quality_export": "اختر جودة التصدير:",
+      "merge_quality_title": "جودة دمج PDF",
+      "export_quality_title": "جودة تصدير PDF",
+      "loading_title": "جاري تحميل PDF...",
+      "dpi_90": "90 نقطة في البوصة - نشر ويب",
+      "dpi_150": "150 نقطة في البوصة - جودة جيدة (موصى به للعرض)",
+      "dpi_200": "200 نقطة في البوصة - جودة جيدة جدًا",
+      "dpi_300": "300 نقطة في البوصة - جودة ممتازة (معيار القصص المصورة)",
+      "dpi_600": "600 نقطة في البوصة - أقصى جودة (ملفات كبيرة)",
+      "dpi_original": "بدون تعديل الصور",
+      "dpi_original_tooltip": "تحليل ذكي لكل صفحة PDF:\n• صفحات الصور فقط: يحافظ على DPI الأصلي\n• صفحات النص فقط: 300 DPI\n• صفحات مختلطة (نص + صور): DPI الصور إذا >= 300، وإلا 300 DPI\nالحد الأقصى: 2400 DPI للحد من حجم الملف"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "مطلوب PyMuPDF",
+      "pymupdf_required_message": "PyMuPDF (fitz) غير مثبت. لا يمكن تحويل ملفات PDF.",
+      "select_directory_title": "حدد المجلد الذي يحتوي على ملفات PDF",
+      "no_pdf_title": "لا توجد ملفات PDF",
+      "no_pdf_message": "لم يتم العثور على ملفات PDF في المجلد:\n{directory}",
+      "confirm_title": "تحويل مجموعي لملفات PDF إلى CBZ",
+      "confirm_message": "{count} ملفات PDF للتحويل في {directory} (المجلدات الفرعية مشمولة).",
+      "checkbox_permanent_delete": "حذف ملفات PDF الأصلية بدون المرور\nبسلة المحذوفات (لا يمكن التراجع)",
+      "start_button": "ابدأ",
+      "converting_title": "جارٍ التحويل...",
+      "converting_progress": "تحويل الملف {current} من أصل {total}",
+      "page_progress": "صفحة {current} / {total}",
+      "complete_title": "اكتمل التحويل",
+      "complete_message": "تم تحويل {count} ملفات PDF في المجلد:",
+      "complete_message_errors": "تم تحويل {count} من أصل {total} ملفات PDF في المجلد:",
+      "errors_count": "تم العثور على {count} خطأ (أخطاء)."
+    },
+    "batch_cbr": {
+      "select_directory_title": "اختيار المجلد الذي يحتوي على ملفات CBR",
+      "no_cbr_title": "لا توجد ملفات CBR",
+      "no_cbr_message": "لم يتم العثور على ملفات CBR في المجلد:\\n{directory}",
+      "confirm_title": "تحويل دفعة واحدة من CBR إلى CBZ",
+      "confirm_message": "{count} ملفات CBR للتحويل في {directory} (المجلدات الفرعية مشمولة).",
+      "checkbox_permanent_delete": "حذف ملفات CBR الأصلية دون استخدام\nسلة المهملات (لا يمكن التراجع)",
+      "start_button": "بدء",
+      "converting_title": "جاري التحويل...",
+      "converting_progress": "تحويل الملف {current} من إجمالي {total}",
+      "page_progress": "Page {current} / {total}",
+      "complete_title": "اكتمل التحويل",
+      "complete_message": "{count} ملفات CBR تم تحويلها في المجلد:",
+      "complete_message_errors": "{count} ملفات CBR تم تحويلها من أصل {total} في المجلد:",
+      "errors_count": "{count} خطأ(أخطاء) تمت مصادفتها.",
+      "renamed_count": "{count} ملف(ات) أعيد تسميتها إلى CBZ",
+      "rarfile_unavailable": "وحدة rarfile غير متوفرة. يتعذر تحويل ملفات CBR."
+    },
+    "close_warning": {
+      "title": "تنبيه!",
+      "message": "التغييرات لم يتم حفظها وسيتم فقدانها!",
+      "btn_close_lose": "إغلاق الملف وفقدان التغييرات",
+      "btn_save_cbz": "تطبيق التغييرات وحفظ الملف",
+      "btn_create_cbz": "تطبيق التغييرات وإنشاء ملف CBZ",
+      "btn_cancel": "إلغاء والعودة إلى الفسيفساء"
+    },
+    "replace_image": {
+      "title": "استبدال الصورة التالفة"
+    },
+    "reduce_size": {
+      "window_title": "تغيير حجم الصورة",
+      "title": "تغيير حجم {count} {word}",
+      "word_image": "صورة",
+      "word_images": "صور",
+      "current_size": "الحجم الحالي: {size} ميغابايت",
+      "current_dimensions": "الأبعاد الحالية: {width} × {height} بكسل",
+      "choose_method": "اختر طريقة تغيير الحجم：",
+      "custom_dimensions": "أبعاد مخصصة",
+      "width_label": "العرض:",
+      "height_label": "الارتفاع:",
+      "use_custom_dimensions": "استخدام هذه الأبعاد",
+      "different_dimensions_warning": "الصفحات المحددة لها أبعاد مختلفة. ستفرض الأبعاد المخصصة نفس الحجم على جميع الصفحات. تأكد من فهمك للآثار المترتبة قبل المتابعة.",
+      "estimated_size": "الحجم المقدر: {size} ميغابايت",
+      "percentage_reduction": "التخفيض بالنسبة المئوية",
+      "percentage_enlargement": "التكبير بالنسبة المئوية",
+      "reduce_0": "0% (بدون تغيير)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (بدون تغيير)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "عروض الصفحات الأكثر شيوعًا هي 1024 و 1280 و 1600 و 1920 و 2000 بكسل، ولكن القيم الأخرى مناسبة أيضًا.",
+      "multi_page_width": "اكتشاف وتغيير حجم صفحات متعددة تلقائيًا (العرض/الارتفاع)",
+      "multi_page_width_tooltip": "يتيح الكشف التلقائي عن الصفحات المتعددة: صفحة مزدوجة، صفحة ثلاثية، إلخ. يتم حساب معامل الضرب تلقائيًا بناءً على نسبة كل صفحة، سواء كان ذلك في العرض (الصفحات جنبًا إلى جنب) أو الارتفاع (الصفحات المكدسة)"
+    },
+    "gif_animated": {
+      "window_title": "إنشاء GIF متحرك",
+      "images_title": "صور الرسوم المتحركة",
+      "params_title": "معاملات GIF",
+      "frame_delay_label": "التأخير بين الصور:",
+      "fps_normal": "{fps} إطار/ثانية",
+      "fps_slow": "إطار واحد كل {seconds} ثانية",
+      "loop_label": "عدد التكرارات:",
+      "loop_info": "(0 = حلقة لا نهائية)",
+      "disposal_label": "ترتيب الصور:",
+      "disposal_0": "غير محدد",
+      "disposal_1": "الاحتفاظ بالصورة السابقة",
+      "disposal_2": "الاستعادة إلى لون الخلفية",
+      "disposal_3": "الاستعادة إلى الحالة السابقة",
+      "optimize": "تحسين الملف (حفظ الاختلافات فقط)",
+      "metadata_title": "بيانات GIF الوصفية",
+      "metadata_dimensions": "الأبعاد: {width} × {height} بكسل",
+      "metadata_frames": "عدد الإطارات: {count}",
+      "metadata_duration": "المدة الإجمالية: {duration} ث",
+      "metadata_fps": "التردد: {fps} fps",
+      "metadata_palette": "اللوحة: حتى 256 لونًا",
+      "metadata_size": "الحجم المقدر: {size} كيلوبايت",
+      "comment_label": "تعليق (اختياري):",
+      "no_images": "لم يتم تحديد صور",
+      "creating_progress": "جارٍ تحميل الصور... ({current}/{total})",
+      "creating_normalizing": "جارٍ تطبيع الصور... ({current}/{total})",
+      "creating_quantizing": "جارٍ تحديد الألوان... ({current}/{total})",
+      "creating_saving": "جارٍ حفظ ملف GIF..."
+    },
+    "save_to_folder": {
+      "title": "اختر المجلد الوجهة"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ أسماء ملفات مكررة",
+      "message": "تم اكتشاف أسماء ملفات متطابقة. على الرغم من أن الحفظ ممكن\nتقنياً، إلا أن هذا قد يسبب مشاكل في القراءة في بعض تطبيقات\nقراءة القصص المصورة (عرض غير مكتمل، صفحات مفقودة، إلخ).\n\nيُنصح بإعادة ترقيم الصفحات قبل الحفظ."
+    },
+    "adjustments": {
+      "window_title": "تعديلات الصورة",
+      "title": "تعديلات لـ {count} {word}",
+      "word_image": "صورة",
+      "word_images": "صور",
+      "apply_button": "تطبيق",
+      "color_depth_section": "عمق اللون",
+      "brightness_contrast_section": "السطوع والتباين",
+      "compression_section": "الضغط",
+      "effects_section": "التأثيرات",
+      "sharpness_section": "الحدة",
+      "levels_section": "مستويات الأسود/الأبيض",
+      "depth_unchanged": "لا تغيير",
+      "depth_32bit": "32 بت (RGBA - ألوان + شفافية)",
+      "depth_24bit": "24 بت (RGB - ألوان)",
+      "depth_8bit": "8 bit (luhat PNG / tadaris ramadi JPEG)",
+      "depth_1bit": "1 بت (أبيض وأسود)",
+      "brightness_label": "السطوع: {value}",
+      "contrast_label": "التباين: {value}",
+      "compression_enable": "تمكين إعادة الضغط",
+      "compression_quality_label": "جودة: {value}/100",
+      "sharpness_label": "الحدة: {value}",
+      "effect_none": "بدون تأثير",
+      "effect_grayscale": "تدرج رمادي",
+      "effect_sepia": "بني داكن",
+      "levels_none": "بدون تعديل",
+      "levels_threshold": "العتبة (أسود أو أبيض نقي)",
+      "levels_advanced": "مستويات متقدمة (ظلال/نغمات متوسطة/إبرازات)",
+      "threshold_label": "العتبة: {value}",
+      "black_point_label": "نقطة السواد: {value}",
+      "gamma_label": "جاما (نغمات متوسطة): {value}",
+      "white_point_label": "نقطة البياض: {value}",
+      "auto_levels_button": "ضبط تلقائي",
+      "open_viewer_button": "ضبط باستخدام العارض (موصى به)",
+      "compression_info": "يتم تطبيق الضغط على صور JPG وWebP فقط",
+      "open_viewer_button_simple": "ضبط باستخدام العارض",
+      "reset_button": "إعادة تعيين",
+      "preview_section": "معاينة",
+      "effect_invert": "عكس الألوان",
+      "preview_warning": "قد تختلف المعاينة عن النتيجة النهائية",
+      "effect_remove_colors": "إزالة الألوان",
+      "remove_colors_intensity_label": "الكثافة : {value}",
+      "image_mode_section": "وضع الصورة",
+      "image_mode_rgb": "RGB (ألوان)",
+      "image_mode_rgba": "RGBA (ألوان + شفافية)",
+      "image_mode_l": "L (تدرجات الرمادي)",
+      "image_mode_la": "LA (تدرجات الرمادي + شفافية)",
+      "image_mode_cmyk": "CMYK (طباعة)",
+      "image_mode_1": "1 (أسود وأبيض نقي)",
+      "image_mode_p": "P (لوحة 256 لون)",
+      "saturation_section": "التشبع",
+      "saturation_label": "التشبع : {value}",
+      "saturation_viewer_title": "ضبط التشبع",
+      "transparency_section": "الشفافية",
+      "transparency_info": "الشفافية تنطبق فقط على صور PNG وWebP وICO",
+      "transparency_type_label": "النوع :",
+      "transparency_type_flood": "منطقة",
+      "transparency_type_global": "شامل",
+      "transparency_tolerance_label": "التسامح : {value}",
+      "transparency_viewer_title": "ضبط الشفافية",
+      "transparency_click_instruction": "انقر على اللون لجعله شفافاً",
+      "transparency_undo": "تراجع عن آخر نقرة",
+      "transparency_redo": "إعادة",
+      "transparency_type_flood_tooltip": "Flood fill : يجعل منطقة اللون المتجانس حول البكسل المنقور شفافة",
+      "transparency_type_global_tooltip": "شفافية شاملة : تؤثر على جميع بكسلات الصورة ذات اللون القريب من المنقور",
+      "transparency_apply": "تطبيق",
+      "transparency_skipped_warning": "{count} صورة (صور) متجاهلة — الصيغة غير متوافقة مع الشفافية. لتضمينها، حوّلها أولاً إلى PNG.",
+      "unsharp_section": "الحدة التكيفية",
+      "unsharp_radius_label": "نصف القطر: {value}",
+      "unsharp_percent_label": "الشدة: {value} %",
+      "unsharp_threshold_label": "العتبة: {value}",
+      "unsharp_viewer_title": "الحدة التكيفية",
+      "auto_levels_tooltip": "يحلل كل صفحة ويضبط مستويات السواد والبياض تلقائيًا لتعظيم التباين.\nللاختيار صفحة بصفحة، استخدم العارض."
+    },
+    "levels_viewer": {
+      "title": "ضبط المستويات باستخدام القطارة",
+      "apply_current": "تطبيق على هذه الصفحة",
+      "apply_all": "تطبيق على جميع الصفحات المحددة",
+      "black_pipette": "قطارة النقطة السوداء",
+      "white_pipette": "قطارة النقطة البيضاء",
+      "black_pipette_tooltip": "انقر على بكسل يجب أن يكون أسود تماماً. تحذير: من السهل المبالغة!",
+      "white_pipette_tooltip": "انقر على بكسل يجب أن يكون أبيض تماماً. تحذير: من السهل المبالغة!"
+    },
+    "sharpness_viewer": {
+      "title": "ضبط الحدة"
+    },
+    "brightness_viewer": {
+      "title": "ضبط السطوع والتباين"
+    },
+    "compression_viewer": {
+      "title": "ضبط الضغط"
+    },
+    "outliers": {
+      "title": "صفحات ذات أبعاد غير عادية",
+      "message": "الصفحات التالية لها أبعاد مختلفة جدا عن الصفحات الأخرى. يرجى اختيار كيفية التعامل معها:",
+      "width": "العرض",
+      "height": "الارتفاع",
+      "unusual": "غير عادي",
+      "skip": "عدم تغيير الحجم",
+      "keep": "الاحتفاظ بـ"
+    },
+    "first_page_multi": {
+      "title": "الصفحة الأولى متعددة",
+      "message": "تم اكتشاف الصفحة الأولى كصفحة متعددة. كيف تريد ترقيمها؟",
+      "option_auto_desc": "إعادة ترقيم عادية مع الكشف التلقائي.",
+      "option_joint_desc": "وصلة بين الصفحة الأولى والصفحة الأخيرة من الكوميك.",
+      "option_exclude_label": "عدم التضمين في إعادة الترقيم",
+      "option_exclude_desc": "تحتفظ الصفحة باسمها الحالي وتبقى في المركز الأول. يمكنك إعادة تسميتها يدوياً لاحقاً."
+    },
+    "batch_img": {
+      "select_directory_title": "اختر المجلد الذي يحتوي على الصور",
+      "no_img_title": "لا توجد صور",
+      "no_img_message": "لم يتم العثور على أي ملف صورة منفرد في المجلد :\n{directory}",
+      "confirm_title": "تحويل دفعي للصور المنفردة إلى CBZ",
+      "confirm_message": "{count} ملف(ات) صورة للتحويل في {directory} (تشمل المجلدات الفرعية).",
+      "checkbox_permanent_delete": "حذف ملفات الصور الأصلية دون إرسالها إلى سلة المحذوفات\n(لا يمكن التراجع عن هذا الإجراء)",
+      "start_button": "ابدأ",
+      "converting_title": "جارٍ التحويل...",
+      "converting_progress": "تحويل الملف {current} من إجمالي {total}",
+      "complete_title": "اكتمل التحويل",
+      "complete_message": "تم تحويل {count} ملف(ات) صورة في المجلد :",
+      "complete_message_errors": "تم تحويل {count} من أصل {total} ملف(ات) صورة في المجلد :",
+      "errors_count": "{count} خطأ(أخطاء) تمت مواجهتها.",
+      "converted_by_ext": "{ext} : {count} ملف(ات)",
+      "mode_title": "تحويل الصور إلى CBZ",
+      "mode_intro": "كيف تريد تجميع الصور؟",
+      "mode_one_per_image": "تحويل كل صورة إلى ملفات CBZ منفصلة",
+      "mode_one_per_image_sub": "(تصبح كل صورة ملف CBZ منفصلاً)",
+      "mode_all_in_one": "تجميع كل الصور في ملف CBZ واحد",
+      "mode_all_in_one_sub": "(يتم تجميع كل صور المجلد في ملف CBZ واحد)"
+    },
+    "batch_drop": {
+      "window_title": "معالجة الدفعات للمجلدات",
+      "intro_single": "تم إسقاط مجلد واحد. ما المعالجة التي تريد تطبيقها؟",
+      "intro_multiple": "تم إسقاط {count} مجلدات. ما المعالجة التي تريد تطبيقها؟",
+      "recursive_note": "سيتم أيضاً تصفح المجلدات الفرعية.",
+      "mixed_drop_title": "الإسقاط غير مدعوم",
+      "mixed_drop_message": "لقد أسقطت ملفات ومجلدات في آنٍ واحد. يرجى إسقاط الملفات فقط أو المجلدات فقط."
+    },
+    "pdf_unlock": {
+      "title": "PDF محمي من التعديل",
+      "message": "تم استيراد الصفحات بشكل طبيعي.\n\nهذا الملف PDF محمي من التعديل (كلمة مرور المالك).\n\nهل تريد حفظ نسخة من ملف PDF بدون هذه الحماية؟",
+      "yes": "نعم، حفظ نسخة غير مقفلة",
+      "no": "لا، المتابعة بدون إلغاء القفل"
+    },
+    "batch_pdf_unlock": {
+      "title": "ملفات PDF محمية ضد التعديل",
+      "message_single": "تم اكتشاف ملف PDF واحد محمي ضد التعديل. تم تحويله إلى CBZ بشكل طبيعي.\n\nهل تريد حفظ نسخة غير محمية في مجلده الأصلي؟",
+      "message_plural": "تم اكتشاف {count} ملف PDF محمي ضد التعديل. تم تحويلها إلى CBZ بشكل طبيعي.\n\nهل تريد حفظ نسخة غير محمية لكل منها في مجلده الأصلي؟",
+      "yes": "نعم، حفظ النسخ غير المحمية",
+      "no": "لا، المتابعة دون إلغاء الحماية"
+    },
+    "ico_creator": {
+      "title": "إنشاء أيقونة .ico",
+      "info_message": "سيتم تغيير حجم الصورة إلى دقات متعددة (16، 32، 48، 64، 128، 256 بكسل).\nحجم الإطار الحالي: {w} × {h} بكسل",
+      "btn_validate_crop": "تأكيد القص",
+      "btn_validate_no_crop": "تأكيد بدون قص",
+      "btn_cancel": "إلغاء",
+      "btn_transparency": "تحديد الشفافية",
+      "btn_validate_final": "تأكيد",
+      "tolerance_label": "التسامح:",
+      "success_title": "تم إنشاء ملف .ico",
+      "success_message": "تم إنشاء الملف {filename} بنجاح.",
+      "overwrite_title": "الملف موجود",
+      "overwrite_message": "الملف {filename} موجود بالفعل. هل تريد استبداله؟",
+      "save_blocked_title": "تعذر الحفظ",
+      "save_blocked_message": "تحتوي هذه الأرشيف على ملف .ico واحد أو أكثر وهي ليست صور كتب مصورة. يتم تعطيل الحفظ طالما هذه الملفات موجودة في الفسيفساء.\nلإعادة تفعيل الحفظ، احذفها من الفسيفساء (مفتاح Del) أو اقطعها (Ctrl+X) للصقها في مكان آخر.",
+      "btn_back_to_crop": "العودة إلى القص"
+    },
+    "video_save_blocked": {
+      "title": "تعذّر الحفظ",
+      "message": "تحتوي هذه الأرشيف على ملف فيديو واحد أو أكثر. الحفظ معطّل طالما توجد هذه الملفات في الموزاييك.\nلإعادة تفعيل الحفظ، احذفها من الموزاييك (مفتاح Del) أو قصّها (Ctrl+X) للصقها في مكان آخر."
+    },
+    "open_file": {
+      "title": "فتح أرشيف",
+      "filter_archives": "الأرشيفات (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "جميع الملفات (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - الترخيص"
+    },
+    "replace_corrupted_image": {
+      "title": "استبدال الصورة التالفة",
+      "filter_images": "صور (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "جميع الملفات (*)"
+    },
+    "see_log": "انظر السجل"
+  },
+  "tooltip": {
+    "source_archive": "الملف الأصلي: {name}",
+    "file": "ملف: {name}",
+    "reason": "السبب: {reason}",
+    "size_kb": "الحجم: {size} كيلوبايت",
+    "size_mb": "الحجم: {size} ميغابايت",
+    "file_size": "الحجم: {size} ميغابايت",
+    "dimensions": "الأبعاد: {width} × {height} بكسل",
+    "resolution": "الدقة: {mp} ميغابكسل",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: غير محدد",
+    "cbr_info": "ملفات CBR تستخدم تنسيق RAR المملوك والمحمي ببراءة اختراع؛\nلا يمكن تعديلها، يتم حفظ التغييرات في ملف CBZ جديد.",
+    "rotate_left": "دوران 90 درجة إلى اليسار",
+    "rotate_right": "دوران 90 درجة إلى اليمين",
+    "mirror_horizontal": "انعكاس أفقي",
+    "mirror_vertical": "انعكاس رأسي",
+    "fullscreen": "ملء الشاشة",
+    "help_button": "دليل المستخدم",
+    "theme_button": "التبديل بين الوضع الفاتح والداكن",
+    "font_decrease_button": "تقليل حجم الخط",
+    "font_increase_button": "زيادة حجم الخط",
+    "color_depth": "الألوان: {bits} بت ({mode})",
+    "batch_pdf_to_cbz": "يحوّل إلى CBZ جميع ملفات PDF الموجودة\nفي مجلد ومجلداته الفرعية. يتم\nاستخراج الصور وأرشفتها كما هي،\nدون أي إعادة ضغط.",
+    "batch_pdf_permanent_delete": "تحذير: إذا تم تفعيل هذا الخيار،\nسيتم حذف ملفات PDF الأصلية نهائيًا\nبعد تحويلها، دون إمكانية استعادتها.\nتأكد من وجود نسخة احتياطية\nإذا لزم الأمر.",
+    "batch_cbr_to_cbz": "يحول جميع ملفات CBR الموجودة\nفي مجلد ومجلداته الفرعية إلى CBZ.",
+    "batch_cbr_permanent_delete": "تحذير: إذا تم تفعيل هذا الخيار،\nسيتم حذف ملفات CBR الأصلية نهائيًا\nبعد تحويلها، دون إمكانية استعادتها.\nتأكد من وجود نسخة احتياطية\nإذا لزم الأمر.",
+    "renumber_btn_1": "وضع الكشف التلقائي عن الصفحات المتعددة\nانقر بزر الفأرة الأيمن لتغيير الوضع",
+    "renumber_btn_2": "وضع الترقيم البسيط\nانقر بزر الفأرة الأيمن لتغيير الوضع",
+    "corrupted_header": "صورة تالفة",
+    "right_click_instruction1": "انقر بزر الماوس الأيمن للاستبدال",
+    "right_click_instruction2": "أو حذف هذه الصورة.",
+    "unknown_error": "خطأ غير معروف",
+    "batch_img_to_cbz": "يحوّل جميع ملفات الصور الموجودة في مجلد\nومجلداته الفرعية إلى CBZ،\nبإنشاء ملف CBZ لكل صورة.",
+    "batch_img_permanent_delete": "تحذير : إذا تم تحديد هذا الخيار،\nسيتم حذف ملفات الصور الأصلية نهائياً\nبعد تحويلها، دون إمكانية الاسترداد.\nتأكد من وجود نسخة احتياطية إذا لزم الأمر.",
+    "too_large_header": "الصورة كبيرة جداً للتحميل",
+    "too_large_pixels": "الأبعاد: {pixels}",
+    "icon_toolbar_config_button": "تكوين الأيقونات",
+    "icon_toolbar_size_decrease": "تصغير حجم الأيقونات",
+    "icon_toolbar_size_increase": "تكبير حجم الأيقونات",
+    "source_loose": "صورة مستقلة",
+    "source_web": "صورة من الويب"
+  },
+  "help": {
+    "title": "MosaicView - دليل الاستخدام",
+    "intro": "يتيح لك MosaicView التلاعب بالقصص المصورة (الكتب المصورة الرقمية) وتحريرها دون الحاجة إلى استخراجها من أرشيفاتها. يدعم التطبيق تنسيقات CBZ (ZIP) و CBR (RAR) و PDF. التطبيق متوافق فقط مع أنظمة 64 بت.",
+    "open_files": "فتح الملفات",
+    "open_files_content": "• انقر على زر 'فتح CBZ/CBR/CB7/PDF'\n• أو اسحب وأفلت ملفاً مباشرة في النافذة\n• التنسيقات المدعومة: CBZ، CBR، PDF، صور (JPG، PNG، WEBP، BMP، TIFF، GIF، ICO). ملفات EPUB يمكن فتحها ايضا، لكن سيتم استخراج الصور فقط منها (النص يتم تجاهله).\n• PDF مشفر (كلمة مرور مطلوبة عند الفتح): لا يمكن استيراد الملف، تظهر رسالة خطأ.\n• PDF محمي من التعديل (owner password): يتم استيراد الصفحات بشكل طبيعي. يقترح MosaicView حفظ نسخة غير مقفلة من الملف في نفس المجلد.",
+    "mosaic": "الفسيفساء",
+    "mosaic_content": "تعرض الفسيفساء جميع صفحات كتابك المصور كصور مصغرة. يمكنك:\n• إعادة ترتيب الصفحات بالسحب والإفلات (سيكون ترقيم الصفحات تلقائيًا، وسيتم وفقًا لوضع إعادة الترقيم النشط)\n• تحديد صفحات متعددة (Ctrl+نقر أو Shift+نقر)\n• ضبط حجم الصور المصغرة بشريط التمرير\n• إعادة تسمية الملفات يدويًا بالنقر على أسمائها\n• سحب وإفلات ملفات الكتب المصورة (CBZ/CBR/PDF) من مستكشف Windows مباشرة إلى كتاب مصور مفتوح آخر لدمج محتواها",
+    "manipulation": "التعامل مع الصفحات",
+    "manipulation_content": "• اسحب الصفحات وأفلتها لإعادة ترتيبها\n• اسحب قصة مصورة كاملة وأفلتها في أخرى للدمج\n• انقر بزر الماوس الأيمن على صفحة للوصول إلى الخيارات (تدوير، حذف، إلخ.)\n• انقر نقرًا مزدوجًا على صفحة لفتح العارض\n• صدِّر الصفحات الفردية بسحبها إلى مجلد Windows، أو عبر Ctrl+C / Ctrl+V",
+    "renumber": "إعادة ترقيم الصفحات",
+    "renumber_content": "يوفر MosaicView وضعين لإعادة ترقيم الصفحات، يمكن الوصول إليهما عبر زر إعادة الترقيم أو القائمة السياقية (النقر بالزر الأيمن) أو تلقائياً عند السحب والإفلات:\n\n• وضع الكشف التلقائي عن الصفحات المتعددة (الوضع الافتراضي): يحلل التطبيق عرض كل صفحة للكشف عن الصفحات المزدوجة والثلاثية وغيرها. يتم إعادة ترقيم الصفحات المتعددة وفقاً لذلك (مثال: صفحة مزدوجة ستسمى 003-004، وثلاثية 005-006-007). إذا تجاوز العدد 4 صفحات، يتم عرض الرقم الأول والأخير فقط (مثال: 010---025).\n\n• وضع الترقيم البسيط: تحصل كل صفحة على رقم تسلسلي فريد (001، 002، 003...)، دون مراعاة عرض الصفحات.\n\nللتبديل بين الوضعين، انقر بالزر الأيمن على زر إعادة الترقيم. تشير رسالة منبثقة إلى الوضع النشط. ينطبق الوضع المختار أيضاً على إعادة الترقيم التلقائية عند السحب والإفلات.",
+    "flatten": "تسطيح الأدلة",
+    "flatten_content": "إذا كان أرشيفك يحتوي على مجلدات فرعية، استخدم 'تسطيح الأدلة' لجلب جميع الصور إلى نفس المستوى.",
+    "viewer": "العارض",
+    "viewer_content": "انقر مرتين على صفحة لفتح العارض:\n• أزرار ← →: التنقل بين الصفحات\n• زر D: التبديل بين 3 أوضاع قراءة\n  - صفحة واحدة: صفحة واحدة في كل مرة\n  - صفحات مزدوجة: الصفحة 1 وحدها، ثم 2-3، 4-5، إلخ.\n  - صفحات مزدوجة مستمرة: الصفحة 1 وحدها، ثم 2-3، 3-4، 4-5، إلخ.\n• عجلة الماوس: التنقل السريع\n• Ctrl+عجلة أو Ctrl+زائد/ناقص: التكبير\n• Ctrl+0: إعادة تعيين التكبير\n• زر F11: ملء الشاشة\n• نقرة مزدوجة: تبديل ملء الشاشة\n• زر Esc: إلغاء إطار الاقتصاص / الخروج من العارض",
+    "join_pages": "دمج الصفحات",
+    "join_pages_content": "حدد عدة صفحات متتالية، انقر بزر الماوس الأيمن → 'دمج الصفحات المحددة' لدمج الصفحات أفقيًا أو عموديًا. يتوافق تنسيق الصورة الناتجة مع تنسيق الصفحات المصدر إذا كانت جميعها متطابقة، وإلا PNG افتراضيًا.",
+    "split_pages": "تقسيم الصفحات",
+    "split_pages_content": "لتقسيم الصفحات المزدوجة تلقائياً:\n• حدد الصفحات المراد تقسيمها\n• انقر بزر الماوس الأيمن ← 'تقسيم الصفحات المحددة'\n• اختر الاتجاه (عمودي أو أفقي)",
+    "crop": "القص في العارض",
+    "crop_content": "في العارض، ارسم مستطيلاً على الصورة لتحديد منطقة القص:\n• ارسم المستطيل بالماوس\n• غير حجمه بسحب الحواف أو الزوايا\n• انقر على 'تأكيد القص' للتطبيق\n• يتم تطبيق القص على الصورة الحالية\n• زر Esc: إلغاء إطار الاقتصاص",
+    "shortcuts": "اختصارات لوحة المفاتيح",
+    "shortcuts_content": "• Ctrl+Z: التراجع عن آخر إجراء\n• Ctrl+Y: إعادة الإجراء الملغي\n• Ctrl+A: تحديد جميع الصفحات\n• Ctrl+I: عكس التحديد\n• Ctrl+I: عكس التحديد\n• Ctrl+C: نسخ الصفحات المحددة\n• Ctrl+X: قص الصفحات المحددة\n• Ctrl+V: لصق الصفحات\n• Del: حذف الصفحات المحددة\n• F5: تحديث عرض الفسيفساء\n• F11: تبديل ملء الشاشة (للخروج اضغط F11 أو ESC)",
+    "dark_mode": "الوضع الداكن",
+    "dark_mode_content": "انقر فوق زر الشمس/القمر للتبديل بين السمة الفاتحة والداكنة.",
+    "sort": "ترتيب الصفحات",
+    "sort_content": "استخدم زر 'ترتيب' لإعادة ترتيب الصفحات تلقائياً حسب:\n• الاسم، النوع، الحجم، العرض، الارتفاع، الدقة أو DPI",
+    "save": "الحفظ",
+    "save_content": "• 'حفظ': حفظ التغييرات في الملف الأصلي\n• 'حفظ باسم': إنشاء أرشيف جديد\n• 'إنشاء CBZ': متاح في وضع الصور فقط (بدون أرشيف)",
+    "other": "وظائف أخرى",
+    "other_content": "• التدوير: تدوير صفحة أو عدة صفحات\n• التحويل: تحويل الصور إلى تنسيقات مختلفة (PNG, JPEG, WEBP, BMP, TIFF, GIF). ملاحظة: يتم تحويل صور CMYK تلقائيًا إلى RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). ملاحظة: يتم تحويل صور CMYK تلقائيًا إلى RGB\n• الطباعة: طباعة الصفحات المحددة أو جميع الصفحات\n• الاستخراج: استخراج صفحات محددة\n• علامة تبويب البيانات الوصفية: عرض معلومات ملف ComicInfo.xml (إذا كان موجوداً في الأرشيف). إذا أضفت أو حذفت صفحة من قصة مصورة تحتوي على بيانات وصفية، سيقترح التطبيق تعديل عدد الصفحات المشار إليه هناك. لا يمكن تعديل البيانات الوصفية الأخرى. هذا القيد مقصود وهو نتيجة اختيار تصميمي.",
+    "config_files": "ملفات التكوين والملفات المؤقتة",
+    "config_files_content": "ينشئ MosaicView ملفاً يسمى .mosaicview_config.json. يحتوي هذا الملف على بعض الإعدادات اللازمة للتشغيل السليم لزر إعادة التعيين، بالإضافة إلى قائمة القصص المصورة المفتوحة مؤخراً والتي هي ضرورية بالطبع لعرض الملفات المفتوحة مؤخراً. يحفظ MosaicView أيضاً ملفات مؤقتة، وهي ضرورية لمعالجات الصور المختلفة.\nتوجد جميع هذه الملفات في الدليل {temp_dir}.\nيتم حذف الملفات المؤقتة عند كل إغلاق للتطبيق، لكن ملف .mosaicview_config.json، بحكم طبيعته، مصمم للاحتفاظ به.\nومع ذلك، يمكنك حذف هذه الملفات يدوياً بالانتقال إلى الدليل {temp_dir}، أو بالنقر على الأزرار أدناه. سيتم إعادة إنشاء ملف .mosaicview_config.json عند كل فتح للتطبيق، وسيتم إعادة إنشاء الملفات المؤقتة حسب الحاجة.",
+    "config_clear_temp": "حذف الملفات المؤقتة",
+    "config_clear_recent": "مسح الملفات الأخيرة",
+    "config_clear_config": "حذف ملف التكوين",
+    "config_temp_cleared": "تم حذف الملفات المؤقتة بنجاح.",
+    "config_config_cleared": "تم حذف ملف التكوين بنجاح.\nسيتم إعادة إنشائه عند بدء التشغيل التالي للتطبيق.",
+    "language": "اختيار اللغة",
+    "language_content": "MosaicView متاح بعدة لغات.\nافتراضياً، يكتشف التطبيق تلقائياً لغة نظام التشغيل الخاص بك ويعرض بتلك اللغة إذا كانت مدعومة. إذا كان نظامك يستخدم لغة غير مدعومة، تظهر الواجهة باللغة الإنجليزية.\nيمكنك تغيير اللغة يدوياً في أي وقت باستخدام القائمة المنسدلة الموجودة أسفل عمود الأزرار، أسفل منزلق حجم الصور المصغرة. سيتم حفظ اختيارك وتطبيقه عند بدء التشغيل التالي للتطبيق.\nاللغات المتاحة: الألمانية، الأرمينية، الأوكرانية، الأيرلندية، الأيسلندية، الإستونية، الإسبانية، الإنجليزية، الإندونيسية، الإيطالية، البرتغالية، البلغارية، البولندية، التايلاندية، التاميلية، التركية، التشيكية، الدنماركية، الرومانية، السلوفاكية، السلوفينية، السويدية، الصينية (المبسطة)، الصينية (التقليدية)، العربية، الفرنسية، الفنلندية، الكورية، الكرواتية، اللاتفية، الليتوانية، المالطية، الماليزية، المجرية، النرويجية، الهندية، الهولندية، اليابانية، اليونانية.\n\nتستخدم هذه الأداة خطوط Windows، باستثناء خطوط pIqaD (لغة الكلينجون) وtengwar (اللغات الإلفية: السينداري والكوينيا). هذه الخطوط مجانية وتأتي من هذه المواقع:\n- لـ pIqaD (أبجدية الكلينجون): {url_piqad}\n- لـ tengwar (الأبجدية الإلفية، للسينداري والكوينيا): {url_tengwar}\nفي حالة عدم نشاط هذه المواقع، يمكنك الحصول على خطوط pIqaD وtengwar بالنقر على الأزرار أدناه:\n\nتم تطوير هذا البرنامج بالفرنسية. تمت الترجمات إلى لغات أخرى عن طريق الذكاء الاصطناعي، وتحديداً بواسطة Claude. لقد قررت دعم حوالي أربعين لغة. لكن من الواضح أنني لا أتحدث كل هذه اللغات. لذلك لم يكن لدي خيار سوى اللجوء إلى الذكاء الاصطناعي، لأن توظيف ودفع 40 مترجماً مختلفاً لم يكن ضمن الإمكانيات المدروسة. نظراً للطبيعة التلقائية لهذه الترجمات، قد توجد أخطاء. أعتذر عن ذلك.\nاللغات الخيالية المتاحة: كلينغون (نسخة الأبجدية اللاتينية وأبجدية pIqaD)، سيندارين (نسخة الأبجدية اللاتينية وأبجدية tengwar)، كوينيا (نسخة الأبجدية اللاتينية وأبجدية tengwar).",
+    "credits": "Vibe Coding، حبي",
+    "credits_content": "لا أعرف شيئاً عن البرمجة. لا شيء على الإطلاق. نتيجة لذلك، قمت بتطوير هذا البرنامج باستخدام Claude، الذكاء الاصطناعي من Anthropic، وعلى وجه التحديد مع Claude Code. أوصي بشدة بـ Claude Code، هذا التطبيق رائع!",
+    "resize_pages": "تعديل حجم الصفحات",
+    "resize_pages_content": "لتقليل أو تكبير صفحاتك:\n• حدد صفحة واحدة أو أكثر\n• انقر بزر الماوس الأيمن ← 'تغيير الحجم'\n• ثلاثة خيارات متاحة:\n  - أبعاد مخصصة: أدخل العرض أو الارتفاع المطلوب (يتم الحفاظ على نسبة العرض إلى الارتفاع تلقائيًا).\n  - تقليل النسبة المئوية: اختر نسبة من 10% إلى 90%\n  - تكبير النسبة المئوية: اختر نسبة من 10% إلى 100%\n• يعرض التطبيق الحجم المقدر لصورك بعد التعديل\n• يتم تطبيق التعديل فورًا على جميع الصفحات المحددة",
+    "language_export_piqad": "خط pIqaD",
+    "language_export_tengwar": "خطوط tengwar",
+    "language_export_piqad_success": "تم تصدير الخط: {filename}\nمتاح في:",
+    "language_export_tengwar_success": "تم تصدير {count} خطوط\nمتاحة في:",
+    "icons": "الأيقونات",
+    "icons_content": "معظم الأيقونات المستخدمة في هذه الأداة مأخوذة من هذا الموقع ومجانية الاستخدام للأغراض غير التجارية: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nبعضها تم تعديله من قِبَلي.\nأيقونة واحدة فقط، أيقونة ملف Windows القابل للتنفيذ، تم إنشاؤها بواسطتي (ولكن باستخدام الذكاء الاصطناعي، لأنني مصمم جرافيك سيئ جداً، جداً، جداً). لديك إذني لاستخدام هذه الأيقونة كما تشاء طالما أنك تذكر مصدرك.",
+    "icons_view_button": "عرض الأيقونات",
+    "icons_window_title": "أيقونات MosaicView",
+    "icons_save_all": "حفظ الأيقونات",
+    "icons_saved_success": "تم حفظ {count} أيقونة في:",
+    "icons_save_failed": "تعذر حفظ الأيقونات: {error}",
+    "split_ui": "واجهة اللوحتين",
+    "split_ui_content": "يتيح MosaicView عرض أرشيفين في آنٍ واحد، جنبًا إلى جنب.\n\nانقر على أيقونة التقسيم لفتح لوحة ثانية. كل لوحة مستقلة: يمكنك فتح أرشيف وتعديله وحفظه بصورة منفصلة. اللوحة النشطة محددة بإطار أزرق.\n\nلنقل الصفحات من لوحة إلى أخرى، اسحبها مباشرة. إذا كانت صفحات متعددة محددة، فستنتقل جميعها معًا. تُدرج الصفحات في الموضع الذي تشير إليه الشريط الأحمر.\n\nانقر على أيقونة إغلاق اللوحة الثانية للعودة إلى وضع اللوحة الواحدة.",
+    "license_gpl": "ترخيص GPL v3",
+    "license_unrar": "ترخيص UnRAR",
+    "config_clear_clipboard": "مسح ملفات الحافظة",
+    "config_clipboard_note": "استثناء: يتم الاحتفاظ بالملفات المؤقتة المستخدمة من قبل حافظة Windows (ملفات clipboard_XXXXX) لمدة 12 ساعة بعد النسخ، بحيث يمكنك لصقها حتى بعد إغلاق التطبيق. بعد 12 ساعة، يتم حذفها تلقائيا.",
+    "config_log_note": "تقوم التحويلات المجمعة (PDF الى CBZ و CBR الى CBZ) بانشاء ملف سجل في حالة حدوث اخطاء. يتم الاحتفاظ بهذه الملفات (Log_pdftocbz_.txt و Log_cbrtocbz_.txt) حتى بعد اغلاق التطبيق، بحيث يمكن مراجعتها لاحقا. يتم حذفها فقط بواسطة زر \"حذف الملفات المؤقتة\" اعلاه.",
+    "config_clipboard_cleared": "تم مسح ملفات الحافظة بنجاح.",
+    "adjust_images": "ضبط الصور",
+    "adjust_images_content": "تتيح لك هذه الوظيفة تعديل صورك مباشرةً في MosaicView. يمكنك تعديل السطوع والتباين والحدة ومستويات الألوان والتشبع، وتطبيق تأثيرات (أبيض وأسود، سيبيا، عكس الألوان)، وضبط جودة الضغط، وإزالة الألوان، وتطبيق الشفافية، أو التحويل إلى أعماق ألوان مختلفة. تتوفر لبعض الإعدادات عارضة مخصصة تتيح رؤية النتيجة بالدقة الكاملة قبل التطبيق. تعرض نافذة المعاينة المصغرة النتيجة في الوقت الفعلي.",
+    "create_icon": "إنشاء أيقونة",
+    "create_icon_content": "يتيح لك MosaicView إنشاء ملفات أيقونة (.ico) من أي صورة في الموزاييك.\n• انقر بزر الماوس الأيمن على صورة ← 'إنشاء أيقونة'\n• حدد المنطقة المطلوبة في العارض (ستكون الأيقونة مربعة إلزامياً)\n• اضبط الشفافية إذا لزم الأمر\n• التحقق: يُضاف ملف .ico مباشرةً إلى الموزاييك\n• تحتوي ملفات .ico تلقائياً على جميع الدقات القياسية (من 16×16 إلى 256×256)\n• ما دام هناك ملف .ico في الموزاييك، يُحظر الحفظ في أرشيف CBZ لأن تنسيق ICO غير مدعوم في هذه الأرشيفات. قم بتصدير ملف .ico بشكل منفصل (Ctrl+C ثم لصق في مجلد Windows)، ثم احذفه من الموزاييك قبل الحفظ.",
+    "batch_convert": "تحويل دفعي",
+    "batch_convert_content": "يقدّم MosaicView ثلاث وظائف للتحويل الدُّفعي، متاحةً فقط عندما تكون الفسيفساء فارغة. لكلٍّ منها المبدأ ذاته : اختر مجلدًا، أكّد الاختيار، تابع التقدّم في الوقت الفعلي، واطّلع على الملخص النهائي. يتيح خيار حذف الملفات الأصلية نهائيًا بدلًا من إرسالها إلى سلة المحذوفات.\n• CBR ← CBZ : يحوّل جميع ملفات CBR (RAR) الموجودة في مجلد ومجلداته الفرعية. إذا كان ملف CBR في الواقع ملف ZIP، فإنه يُعاد تسميته دون تحويل.\n• PDF ← CBZ : يحوّل جميع ملفات PDF الموجودة في مجلد ومجلداته الفرعية. يتم استخراج الصور دون إعادة ضغط.\n• صور منفردة ← CBZ : ينشئ ملف CBZ فرديًا لكل ملف صورة موجود في المجلد ومجلداته الفرعية. يتم تجاهل الصور غير الصالحة أو التالفة أو متعددة الصفحات (TIFF) أو المتحركة (GIF) وتسجيلها في سجل.",
+    "config_open_temp_folder": "فتح المجلد المؤقت",
+    "icon_toolbar": "شريط الأدوات",
+    "icon_toolbar_content": "يتيح شريط الأيقونات الوصول السريع إلى الوظائف الرئيسية للتطبيق. يمكنك إعادة ترتيب الأيقونات حسب رغبتك بسحبها مباشرةً في الشريط. لاختيار الأيقونات التي تريد إظهارها أو إخفاءها، انقر على زر الترس الموجود أسفل الشريط: تفتح نافذة إعداد تتيح لك نقل الأيقونات بين الشريط النشط والاحتياطي. استخدم زرَّي « + » و« − » لضبط حجم الأيقونات. يُحفظ الإعداد تلقائيًا.",
+    "license_7zip": "ترخيص 7-Zip"
+  },
+  "misc": {
+    "file_word": "ملف",
+    "files_word": "ملفات",
+    "corrupted": "تالف",
+    "yes": "نعم",
+    "no": "لا",
+    "cancel": "إلغاء",
+    "selection_suffix": "نسخة-تحديد"
+  },
+  "metadata": {
+    "title": "العنوان",
+    "series": "السلسلة",
+    "number": "الرقم",
+    "volume": "المجلد",
+    "summary": "الملخص",
+    "writer": "الكاتب",
+    "penciller": "رسام القلم الرصاص",
+    "inker": "رسام الحبر",
+    "colorist": "ملون",
+    "letterer": "كاتب النصوص",
+    "cover_artist": "فنان الغلاف",
+    "editor": "المحرر (شخص)",
+    "publisher": "الناشر (شركة)",
+    "imprint": "المجموعة",
+    "genre": "النوع",
+    "web": "الموقع الإلكتروني",
+    "page_count": "عدد الصفحات",
+    "language_iso": "اللغة",
+    "format": "التنسيق",
+    "black_and_white": "أبيض وأسود",
+    "manga": "مانجا",
+    "year": "السنة",
+    "month": "الشهر",
+    "day": "اليوم",
+    "notes": "ملاحظات",
+    "characters": "الشخصيات",
+    "locations": "الأماكن",
+    "teams": "الفرق",
+    "story_arc": "قوس القصة",
+    "story_arc_number": "رقم القوس",
+    "series_group": "مجموعة السلسلة",
+    "count": "عدد الأعداد",
+    "alternate_series": "سلسلة بديلة",
+    "alternate_number": "رقم بديل",
+    "alternate_count": "عدد بديل",
+    "age_rating": "تصنيف العمر",
+    "series_complete": "السلسلة مكتملة",
+    "translator": "المترجم",
+    "tags": "الوسوم",
+    "scan_information": "معلومات المسح",
+    "community_rating": "تقييم المجتمع",
+    "review": "المراجعة",
+    "gtin": "GTIN",
+    "pages": "الصفحات",
+    "pages_col_image": "صورة",
+    "pages_col_type": "النوع",
+    "pages_col_width": "العرض",
+    "pages_col_height": "الارتفاع",
+    "pages_col_size": "الحجم (ب)"
+  },
+  "web": {
+    "web_download_progress": "تحميل: {downloaded}/{total} صورة...",
+    "web_download_cancel": "إلغاء",
+    "web_no_images": "لا توجد صور",
+    "web_no_images_found": "لم يتم العثور على أي صور في هذه الصفحة.",
+    "web_imported": "{count} صورة تم استيرادها من صفحة الويب",
+    "web_drag_drop_title": "سحب وإفلات الصور من الويب",
+    "web_copy_paste_message": "السحب والإفلات المباشر من متصفح الويب غير مدعوم.\n\nالحل البديل (أبسط):\n\n1. انقر بزر الماوس الأيمن على الصورة في المتصفح\n2. اختر 'نسخ الصورة'\n3. في MosaicView، استخدم زر 'لصق' أو Ctrl+V\n\nهذه الطريقة تعمل مع جميع صور الويب!",
+    "import_web_button": "استيراد الويب",
+    "import_web_tooltip": "لصق عنوان إنترنت لاسترداد جميع الصور من الصفحة",
+    "import_web_menu": "استيراد الويب...",
+    "import_web_dialog_title": "استيراد الصور من صفحة ويب",
+    "import_web_url_label": "عنوان صفحة الويب:",
+    "import_web_ok_button": "موافق",
+    "import_web_cancel_button": "إلغاء",
+    "import_web_invalid_url": "عنوان URL غير صالح. يرجى إدخال عنوان ويب صالح."
+  },
+  "donation": {
+    "menu_label": "التبرع للمؤلف",
+    "title": "قم بالتبرع",
+    "message": "أنت تحب هذه الأداة الصغيرة وتستخدمها بانتظام. لقد استثمرت فيها عدة مئات من الساعات. هل ستفكر في شكري من خلال التبرع؟ كن لطيفًا، أحتاج حقًا إلى المال لملء حمام السباحة الخاص بي بالشمبانيا.\n\nسواء كنت ترغب في إرسال بضعة سنتات أو عدة مليارات من اليورو، أقبل جميع المبالغ. يمكنك التبرع من خلال paypal"
+  },
+  "mail": {
+    "tooltip": "يفتح هذا الزر برنامج البريد الإلكتروني الافتراضي في Windows لإرسال بريد إلكتروني. إذا لم يتم تكوين أي برنامج (على سبيل المثال إذا كنت تستخدم البريد الإلكتروني عبر الويب فقط)، يمكنك نسخ عنوان MosaicView إلى الحافظة بالنقر بزر الماوس الأيمن على الأيقونة.",
+    "copy_address": "نسخ عنوان البريد الإلكتروني لـ MosaicView",
+    "menu_label": "إرسال بريد إلكتروني إلى MosaicView",
+    "icon_label": "إرسال بريد إلكتروني"
+  },
+  "menu": {
+    "file": "ملف",
+    "file_open": "فتح ملف",
+    "file_close": "إغلاق الملف",
+    "batch_convert": "تحويل الملفات دفعة واحدة",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "صور منفردة → CBZ",
+    "edit": "تحرير",
+    "undo": "تراجع",
+    "redo": "إعادة",
+    "paste": "لصق",
+    "delete": "حذف",
+    "invert_selection": "عكس التحديد",
+    "select_all": "تحديد الكل",
+    "deselect": "إلغاء التحديد",
+    "refresh_mosaic": "تحديث الموزاييك",
+    "images": "الصور",
+    "rotation": "تدوير",
+    "archives": "الأرشيف",
+    "sort": "ترتيب",
+    "system": "النظام",
+    "decrease_font": "تصغير الخط",
+    "increase_font": "تكبير الخط",
+    "language": "اللغات",
+    "language_real": "اللغات الحقيقية",
+    "language_fictional": "اللغات الخيالية",
+    "about": "حول",
+    "export_piqad_font": "حفظ خط pIqaD",
+    "export_tengwar_fonts": "حفظ خطوط tengwar"
+  }
+}

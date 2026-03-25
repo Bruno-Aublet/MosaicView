@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "I macil Helcaraxëo i hentanor carinwa parmalingweo",
+  "buttons": {
+    "open_file": " CBZ/CBR/CB7/PDF",
+    "close_file": "  ",
+    "create_cbz": "  CBZ",
+    "flatten_dirs": "  \n   \n ",
+    "renumber": " \n ",
+    "undo": "⤺ ",
+    "redo": "- ⤻",
+    "copy": "",
+    "cut": "",
+    "paste": "",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "  \n  ",
+    "join_pages": "  ",
+    "split_page": "  ",
+    "save_as": " \n(  CBZ)",
+    "save_selection": "  \n CBZ",
+    "print_selection": "  ",
+    "print_all": "  ",
+    "sort": "",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "",
+    "cancel": "",
+    "split_button": "",
+    "join_button": "",
+    "validate_crop": "  ",
+    "ok": "",
+    "close": "",
+    "apply_and_save": "      ",
+    "apply_and_create": "      CBZ",
+    "close_and_lose": "      ",
+    "cancel_return": "    ",
+    "update_page_count": "  \n",
+    "invert_selection": "  ",
+    "reduce_size": "   ",
+    "mirror_vertical": "⇅",
+    "create_gif": "GIF ",
+    "edit_gif": "GIF  -",
+    "save_to_folder": "  \n",
+    "continue": " ",
+    "reset": "↻",
+    "yes": "",
+    "no": "",
+    "renumber_recommended": "   ()",
+    "ignore_and_save": "    ",
+    "rename_to_cbz": " .-",
+    "open_without_rename": "  ",
+    "rename_to_cbr": " .-",
+    "adjustments": ",\n .",
+    "batch_cbr_to_cbz": " \n CBR  CBZ-",
+    "batch_pdf_to_cbz": " PDF\n  CBZ-",
+    "batch_img_to_cbz": " \n     CBZ-",
+    "icon_toolbar_reset": "",
+    "delete_selected": "",
+    "save": "",
+    "rename_to_cb7": " .7 ",
+    "split_ui": "  ",
+    "unsplit_ui": "  "
+  },
+  "tabs": {
+    "mosaic": "",
+    "metadata": ""
+  },
+  "viewer": {
+    "title": "",
+    "mode_single": "   []",
+    "mode_double": "   []",
+    "mode_continuous": "   []"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "  (☠)",
+      "next_page": "  (☠)",
+      "zoom_in": " + (+)",
+      "zoom_out": " - (+)",
+      "zoom_reset": "  (+0)",
+      "reading_mode_double": "  () ☠  ",
+      "reading_mode_continuous": "  () ☠   ",
+      "reading_mode_single": "  () ☠  ",
+      "fullscreen_exit": "   (11)",
+      "fullscreen": "  (11)",
+      "close_viewer": "   ()"
+    },
+    "image": {
+      "corrupted_replace": "☠☠   - ",
+      "corrupted_delete": "☠☠   ",
+      "copy": " (+)",
+      "cut": " (+)",
+      "paste": " (+)",
+      "paste_clipboard": "  (+)",
+      "delete": " ()",
+      "deselect": " ()",
+      "rotate_right": "↻  ",
+      "rotate_left": "☠  ",
+      "mirror": "⇄  ",
+      "crop": "",
+      "convert": "   ...",
+      "join": "   ",
+      "split": "   ",
+      "save_selection": "    CBZ",
+      "print_selection": "  ",
+      "copy_archive": "   ",
+      "undo": " (+)",
+      "redo": "- (+)",
+      "renumber_auto": "  (-  )",
+      "renumber_simple": "  ( )",
+      "sort_submenu": "  ",
+      "sort_name": " ",
+      "sort_type": " ",
+      "sort_size": " ",
+      "sort_width": " ",
+      "sort_height": " ",
+      "sort_resolution": " ",
+      "sort_dpi": " DPI",
+      "create_cbz": "  CBZ",
+      "save_as": " ...",
+      "close_file": "  ",
+      "help": " ",
+      "update_page_count": "   ",
+      "invert_selection": "   (+)",
+      "reduce_size": "   ",
+      "mirror_vertical": "⇅  ",
+      "edit_animated_gif": "GIF  -...",
+      "save_to_folder": "   ",
+      "adjustments": ", , ...",
+      "refresh_mosaic": "   (5)",
+      "create_ico": " . "
+    },
+    "canvas_no_file": {
+      "open": " CBZ/CBR/CB7/PDF",
+      "recent_files": " ",
+      "clear_history": "  "
+    },
+    "canvas_with_file": {
+      "close": "  ",
+      "paste": " (+)",
+      "paste_clipboard": "  (+)",
+      "select_all": "  (+)",
+      "deselect": " ()",
+      "copy_archive": "   ",
+      "print_all": "  ",
+      "renumber_auto": "  (-  )",
+      "renumber_simple": "  ( )",
+      "flatten": "  ",
+      "save_selection": "    CBZ",
+      "hide_sidebar": "«    ",
+      "show_sidebar": "»    ",
+      "decrease_thumbs": "   ",
+      "increase_thumbs": "   ",
+      "theme_dark": "   ",
+      "theme_light": "   ",
+      "sort_submenu": "  ",
+      "undo": " (+)",
+      "redo": "- (+)",
+      "create_cbz": "  CBZ",
+      "save_as": " ...",
+      "help": " ",
+      "update_page_count": "   ",
+      "invert_selection": "   (+)",
+      "fullscreen": "  (11)",
+      "fullscreen_exit": "   (11  )",
+      "quit": " "
+    },
+    "canvas": {
+      "quit": " ",
+      "reset": "  :\n☠     \n☠   ☠ \n☠    ☠ \n☠   ☠  / 220 \n☠  ☠  \n☠    ☠ ",
+      "reset_label": "  "
+    },
+    "font_size": {
+      "decrease": "   ",
+      "increase": "   "
+    }
+  },
+  "sort_menu": {
+    "sort_name": "  ",
+    "sort_type": "  ",
+    "sort_size": "  ",
+    "sort_width": "  ",
+    "sort_height": "  ",
+    "sort_resolution": "  ",
+    "sort_dpi": "  DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": " ",
+        "message": "  CBZ -  ."
+      },
+      "empty_cbr": {
+        "title": " ",
+        "message": "  CBR -  ."
+      },
+      "files_ignored": {
+        "title": " "
+      },
+      "no_selection_crop": {
+        "title": " ",
+        "message": "    ."
+      },
+      "multi_selection_crop": {
+        "title": " ",
+        "message": "    .\n   ."
+      },
+      "invalid_selection_crop": {
+        "title": " ",
+        "message": "   ."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": " ",
+        "message": "     .\n      ."
+      },
+      "no_selection_convert": {
+        "title": " ",
+        "message": "     ."
+      },
+      "invalid_selection_convert": {
+        "title": " ",
+        "message": "   ."
+      },
+      "no_selection_split": {
+        "title": " ",
+        "message": "    ."
+      },
+      "multi_selection_split": {
+        "title": " ",
+        "message": "    .\n   ."
+      },
+      "invalid_selection_split": {
+        "title": " ",
+        "message": "   ."
+      },
+      "invalid_number_split": {
+        "title": " ",
+        "message": "     2  10."
+      },
+      "insufficient_selection_join": {
+        "title": " ",
+        "message": "     ."
+      },
+      "invalid_selection_join": {
+        "title": " ",
+        "message": "   ."
+      },
+      "pil_not_available": {
+        "title": " ",
+        "message": "      ."
+      },
+      "format_not_supported": {
+        "title": " ",
+        "message": "     .\n : ☠, , , MP, , GIF, "
+      },
+      "no_crop_selection": {
+        "title": " ",
+        "message": "   ."
+      },
+      "cannot_open_file": {
+        "title": "   ",
+        "message": "    ."
+      },
+      "corrupted_images": {
+        "title": " ",
+        "summary": "{count}  ()    {total}.",
+        "hint": "      .\n-        .",
+        "more": "...  {count} "
+      },
+      "no_image_print": {
+        "title": " ",
+        "message": "   ."
+      },
+      "no_valid_image_print": {
+        "title": " ",
+        "message": "    ."
+      },
+      "no_selection_print": {
+        "title": " ",
+        "message": "   ."
+      },
+      "no_valid_selection_print": {
+        "title": " ",
+        "message": "    ."
+      },
+      "save_cancelled": {
+        "title": " ",
+        "message": "      ."
+      },
+      "empty_pdf": {
+        "title": "PDF ",
+        "message": "  PDF -  ."
+      },
+      "no_selection_save": {
+        "title": "",
+        "message": "     ."
+      },
+      "drag_disabled_subdirectory": {
+        "title": " ",
+        "message": "    -      .\n\n  :\n1.        \n2.        "
+      },
+      "no_selection_reduce": {
+        "title": " ",
+        "message": "    ."
+      },
+      "invalid_selection_reduce": {
+        "title": "  ",
+        "message": "   ."
+      },
+      "invalid_dimensions": {
+        "title": "  ",
+        "message": "    ( )."
+      },
+      "no_images_for_gif": {
+        "title": " ",
+        "message": "      ."
+      },
+      "no_valid_images": {
+        "title": "  ",
+        "message": "      ."
+      },
+      "animated_gif_in_comic": {
+        "title": "GIF  ",
+        "message": ":      GIF   .\\\\  (, , .)      GIF    .\\\\   GIF  ,          ☠   ☠  ☠- GIF ☠.\\\\      ?"
+      },
+      "no_selection_adjust": {
+        "title": " ",
+        "message": "     ."
+      },
+      "invalid_selection_adjust": {
+        "title": " ",
+        "message": "     ."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "   ",
+        "message": "           .\n      ."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": " ",
+        "message": "{file}:         ."
+      },
+      "zip_cannot_open": {
+        "title": " ",
+        "message": "    CBZ: {error}"
+      },
+      "rar_invalid": {
+        "title": " ",
+        "message": "{file}:         ."
+      },
+      "rar_cannot_open": {
+        "title": " ",
+        "message": "    CBR: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "",
+        "message": "     CBR: {error}"
+      },
+      "join_failed": {
+        "title": "",
+        "message": "   ."
+      },
+      "paste_failed": {
+        "title": "",
+        "message": "  : {error}"
+      },
+      "copy_archive_failed": {
+        "title": "",
+        "message": "   : {error}"
+      },
+      "crop_invalid": {
+        "title": "",
+        "message": "   ."
+      },
+      "crop_failed": {
+        "title": "",
+        "message": "   : {error}"
+      },
+      "load_image_failed": {
+        "title": "",
+        "message": "   :\n{error}"
+      },
+      "print_error": {
+        "title": " ",
+        "message": "  :\n{error}"
+      },
+      "print_not_available": {
+        "title": " ",
+        "message": "  32 .\n :   32"
+      },
+      "file_not_found": {
+        "title": " ",
+        "message": "    :\n{path}"
+      },
+      "import_failed": {
+        "title": " ",
+        "message": "   : {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PDF ",
+        "message": "  PDF () .\n :   PDF"
+      },
+      "pdf_import_failed": {
+        "title": "",
+        "message": "    PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": " PDF",
+        "message": "   PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "  ",
+        "intro": "{count}  () () ():\n\n",
+        "item": "  ☠ {name} ({times} )\n",
+        "more": "  ...  {more} \n",
+        "footer": "\n -    .\n     ."
+      },
+      "save_failed": {
+        "title": "",
+        "message": "   : {error}"
+      },
+      "create_archive_failed": {
+        "title": "",
+        "message": "   : {error}"
+      },
+      "save_selection_failed": {
+        "title": "",
+        "message": "   : {error}"
+      },
+      "gif_creation_failed": {
+        "title": "  ",
+        "message": "    :\n{error}"
+      },
+      "save_files_failed": {
+        "title": " ",
+        "message": "  :\n{error}"
+      },
+      "rename_failed": {
+        "title": " ",
+        "message": "    : {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF  ",
+        "message": "  PDF     .\n    ."
+      },
+      "pdf_unlock_failed": {
+        "title": "",
+        "message": "    PDF  :\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: PDF  (  ), ",
+      "file_too_large": {
+        "title": "   ",
+        "message": "  {filename}  {size}       (500 )  ."
+      },
+      "license_file_not_found": {
+        "message": "   : {path}"
+      },
+      "license_file_read_error": {
+        "message": "    : {error}"
+      },
+      "7z_invalid": {
+        "title": " 7",
+        "message": "  {file}   7-  ."
+      },
+      "delete_error": "  : {error}",
+      "export_error": "    : {error}",
+      "font_source_not_found": " -  : {path}",
+      "no_tengwar_font": "   .",
+      "no_icons_found": "  .",
+      "unsupported_files": {
+        "title": " ",
+        "message": "    -    :\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "   ",
+        "message": "   {name}     ."
+      },
+      "pywin32_required": {
+        "title": " ",
+        "message": "  32    .\n :   32"
+      },
+      "images_imported": {
+        "title": " ",
+        "message": "{count} () ()"
+      },
+      "archive_copied": {
+        "title": " ",
+        "message": "      ."
+      },
+      "function_not_available": {
+        "title": " ",
+        "message": "    ."
+      },
+      "duplicate_detected": {
+        "title": " ",
+        "message": "    .\n\n   :\n{name}"
+      },
+      "replace_success": {
+        "title": "",
+        "message": "  {name}   ."
+      },
+      "history_cleared": {
+        "title": " ",
+        "message": "    ."
+      },
+      "files_copied_clipboard": {
+        "title": "  ",
+        "message": " -     .\n\n☠ {count} {word} ()  \n\n    :\n  ☠   ☠ \n  ☠  +"
+      },
+      "correction_done": {
+        "title": " ",
+        "message": "{count} ()  ()."
+      },
+      "import_success": {
+        "title": " ",
+        "message": "{count} () ()  {file}"
+      },
+      "pdf_import_success": {
+        "title": " ",
+        "message": "{count} () PDF ()  {file}\n: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "",
+        "message": "PDF   !\n{count}    {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "",
+        "message": " CBZ   :"
+      },
+      "cbz_converted": {
+        "title": "",
+        "message": "   CBZ  :",
+        "question": "     CBR ?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "",
+        "message": "   CBZ  :",
+        "question": "     PDF ?"
+      },
+      "cbz_save_as": {
+        "title": "",
+        "message": "  CBZ : {path}"
+      },
+      "cbz_created": {
+        "title": "",
+        "message": " CBZ   :"
+      },
+      "selection_saved": {
+        "title": "",
+        "message": "   :"
+      },
+      "flatten_done": {
+        "title": " ",
+        "message": "{files} () ()  {dirs} ()."
+      },
+      "language_changed": {
+        "title": " ",
+        "message": "      ."
+      },
+      "new_cbz_saved": {
+        "title": " ",
+        "message": "  CBZ   :",
+        "question": " -   ?"
+      },
+      "page_count_updated": {
+        "title": "  ",
+        "message": "     {count} ."
+      },
+      "files_saved": {
+        "title": " ",
+        "message": "{count}   :\n{folder}",
+        "open_folder": "  ?"
+      },
+      "adjustments_applied": {
+        "title": " ",
+        "message": "   ."
+      },
+      "pdf_unlocked": {
+        "title": "PDF ",
+        "message": " PDF   :\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": " ",
+        "message": "   {size}  .\n      ().\n\n  ?"
+      },
+      "confirm_delete": {
+        "title": "",
+        "message": "    {count}  ({size})?"
+      },
+      "delete_source_files": {
+        "title": "   ?",
+        "message": "      ?\n\n =    \n =    \n =   "
+      },
+      "invalid_filenames": {
+        "title": "  ",
+        "intro": "{count} ()   :",
+        "item": "  ☠ {name}",
+        "more": "  ...  {more} ",
+        "forbidden_chars": " : {chars}",
+        "fix_question": "    ?\n(     _-)"
+      },
+      "close_without_save": {
+        "title": " ⸱ ⸱?",
+        "message": " .     CBZ  ?"
+      },
+      "flatten_folders": {
+        "title": "  ",
+        "subdirs_detected": " :",
+        "files_to_move": "{count} ()   .",
+        "folders_to_delete": "{count} () .",
+        "continue_question": "  ?"
+      },
+      "update_page_count": {
+        "title": "  ",
+        "message": "      .\n\n  : {original}\n  : {current}\n\n    ?"
+      },
+      "conversion_complete": {
+        "title": " ",
+        "message": " !\n\n{count} /  {format}       .\n\n   ?",
+        "delete_originals": "  \n{count}  - {size}",
+        "keep_all": " \n{count}  - {size}",
+        "cancel_conversion": "  \n{count}  - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "  :  {filename}   CBZ,  CBR. ?",
+      "title": " "
+    },
+    "extension_mismatch_cbr": {
+      "message": "  :  {filename}   CBR,  CBZ. ?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "  :   {filename}  CB7,  CBZ/CBR. ?"
+    }
+  },
+  "labels": {
+    "copyright": "☠ 2025-2026  \n  3",
+    "thumb_size": " ",
+    "loading": ",  ...\n{percent}%",
+    "resizing": " ,  ...\n{percent}%",
+    "converting": ", ...\n{percent}%",
+    "loading_lazy": ",  ...\n{percent}%\n\n     ({size} ),     .          ,       .",
+    "apply_save_cbz": "  \n    CBZ",
+    "apply_create_cbz": "  \n   CBZ",
+    "import_progress": " ...\n{percent}%",
+    "pdf_import_progress": " PDF ...\n{percent}%",
+    "pdf_opening": "   PDF...",
+    "pdf_page": " {current} / {total}",
+    "warning_close": "!     !",
+    "language_label": ":",
+    "directory_tooltip": ": {name}\n{count} ()\n : {size} ",
+    "folder_up_tooltip": "-  \n   ",
+    "status_bar": "{dirs}   |  {files}  ({total_size})  |  {selected}  ({selected_size})",
+    "pdf_converting": "{total}   {dpi} DPI ...",
+    "pdf_converting_no_change": "{total}    ...",
+    "print_progress": " ...\n{percent}%",
+    "print_preparing": " ,  ...",
+    "license_text": " ☠ 2025-2026  \n\n      3\n\n \n , ,   \nMosaicView,    .\n\n\n  (  )  :\n    3 \n        \n    \n\n\n     .\n        .\n\n         .  ,  <://..//>.",
+    "view_full_license": "   ",
+    "license_unrar_text": "CBZ     ,     . CBR , ,    ,    .\n\nMosaicView   CBR   ,       .\n\n : <://../_.>",
+    "view_full_unrar_license": "  ",
+    "saving_cbz": "... {percent}%",
+    "empty_canvas_line1": "      CBZ/CBR/CB7/PDF   ",
+    "empty_canvas_line2": "  ,    ",
+    "empty_canvas_line3": "      ",
+    "icon_toolbar_config_title": "  ",
+    "icon_toolbar_active": "  ",
+    "icon_toolbar_hidden": "  ",
+    "license_gpl_full": "  3 ",
+    "license_unrar_full": " ",
+    "licenses_button": "",
+    "view_full_gpl_license": "     3 ",
+    "license_7zip_text": "CB7    7 ,          .\n\nMosaicView  CB7   7-      -.\n\n  : <://.7-./>",
+    "view_full_7zip_license": " 7- ",
+    "license_7zip_full": "7- ",
+    "icon_toolbar_show_thumb_slider": "      ",
+    "icon_toolbar_show_lang_combo": "    ",
+    "adjusting": ",   ...\n{current} / {total}",
+    "license_piqad_full": "   ",
+    "license_tengwar_full": "   ",
+    "view_full_piqad_license": "     "
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Návië fánalion",
+      "title": " {count} {word}",
+      "word_image": "",
+      "word_images": "",
+      "info": "   :",
+      "format_png": " (-)",
+      "format_jpg": "☠ ( )",
+      "format_webp": " ()",
+      "format_bmp": "MP ()",
+      "format_tiff": " ( )",
+      "format_gif": "GIF ()",
+      "quality_label": "  ☠/:",
+      "quality_maximum": "   95/100",
+      "quality_high": "   85/100",
+      "quality_medium": "   75/100",
+      "quality_low": "   60/100",
+      "quality_custom_option": "",
+      "quality_custom": "  : {value}/100",
+      "quality_note": "(      ☠  )",
+      "quality_window_title": "Valanya mahtië",
+      "format_gif_static": "GIF",
+      "format_gif_animated": "GIF  (  )"
+    },
+    "split": {
+      "window_title": "Rahta i parma",
+      "title": "  ",
+      "pages_label": " :",
+      "direction_label": "  :",
+      "horizontal": " ( ☠ )",
+      "vertical": " ( ☠ )",
+      "warning": "☠     ,\n    .",
+      "button_split": "",
+      "button_cancel": ""
+    },
+    "join": {
+      "window_title": "Oacë i parmar - Envinyatë i nótië",
+      "instructions": "  :\n☠  (/)   \n☠  (/)   ",
+      "merged_filename_prefix": "",
+      "heights_label": "",
+      "widths_label": "",
+      "size_adjustment_title": " ",
+      "size_adjustment_warning": "☠☠     .\n   .\n     .",
+      "keep_original": "   ",
+      "keep_original_desc": "(  )",
+      "enlarge_small": "   ",
+      "enlarge_small_desc": "(   )",
+      "reduce_large": "   ",
+      "reduce_large_desc": "(   )",
+      "back_to_arrangement": ""
+    },
+    "pdf": {
+      "quality_merge": "   :",
+      "quality_export": "   :",
+      "merge_quality_title": "PDF  ",
+      "export_quality_title": "PDF  ",
+      "loading_title": "PDF ...",
+      "dpi_90": "90 DPI -  ",
+      "dpi_150": "150 DPI -   ( )",
+      "dpi_200": "200 DPI -   ",
+      "dpi_300": "300 DPI -   ( )",
+      "dpi_600": "600 DPI -   ( )",
+      "dpi_original": "  ",
+      "dpi_original_tooltip": "  PDF :\n☠ - :  DPI \n☠ - : - DPI\n☠   (  ):  DPI  - ,  - DPI\n: --- DPI   "
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PDF  ",
+      "pymupdf_required_message": "PDF ()   .    PDF .",
+      "select_directory_title": "     PDF ",
+      "no_pdf_title": " PDF ",
+      "no_pdf_message": " PDF     :\n{directory}",
+      "confirm_title": "  PDF  CBZ",
+      "confirm_message": "{count} PDF   {directory}- (- ).",
+      "checkbox_permanent_delete": "   PDF    \n (  )",
+      "start_button": "",
+      "converting_title": "...",
+      "converting_progress": " {current}  {total} ",
+      "page_progress": " {current} / {total}",
+      "complete_title": " ",
+      "complete_message": "{count} PDF    :",
+      "complete_message_errors": "{count} {total}  PDF    :",
+      "errors_count": "{count} () ."
+    },
+    "batch_cbr": {
+      "select_directory_title": "    CBR ",
+      "no_cbr_title": " CBR ",
+      "no_cbr_message": " CBR    :\\{directory}",
+      "confirm_title": "  CBR  CBZ",
+      "confirm_message": "{count} CBR   {directory}- (- ).",
+      "checkbox_permanent_delete": "   CBR  \n  (  )",
+      "start_button": "",
+      "converting_title": "...",
+      "converting_progress": "  {current} / {total}",
+      "page_progress": " {current} / {total}",
+      "complete_title": " ",
+      "complete_message": "{count} CBR    :",
+      "complete_message_errors": "{count} CBR   {total}-  :",
+      "errors_count": "{count} () .",
+      "renamed_count": "{count} ()  CBZ-",
+      "rarfile_unavailable": "    .     CBR ."
+    },
+    "close_warning": {
+      "title": "!",
+      "message": "    !",
+      "btn_close_lose": "      ",
+      "btn_save_cbz": "      ",
+      "btn_create_cbz": "      CBZ",
+      "btn_cancel": "    "
+    },
+    "replace_image": {
+      "title": "   "
+    },
+    "reduce_size": {
+      "window_title": "Vanya anda i parmar",
+      "title": "  {count} {word}",
+      "word_image": "",
+      "word_images": "",
+      "current_size": " : {size} ",
+      "current_dimensions": " : {width} ☠ {height} ",
+      "choose_method": "   :",
+      "custom_dimensions": " ",
+      "width_label": ":",
+      "height_label": ":",
+      "use_custom_dimensions": "   ",
+      "different_dimensions_warning": "     .         .        .",
+      "estimated_size": " : {size} ",
+      "percentage_reduction": " ",
+      "percentage_enlargement": " ",
+      "reduce_0": "0% ( )",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% ( )",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "    1024, 1280, 1600, 1920  2000 ,    .",
+      "multi_page_width": "       (/)",
+      "multi_page_width_tooltip": "     :  ,    .       ,   (   )   (   )"
+    },
+    "gif_animated": {
+      "window_title": "GIF coiva cára",
+      "images_title": " ",
+      "params_title": "GIF ",
+      "frame_delay_label": "  :",
+      "fps_normal": "{fps} /",
+      "fps_slow": "   {seconds} ",
+      "loop_label": " :",
+      "loop_info": "(0 =  )",
+      "disposal_label": " :",
+      "disposal_0": " ",
+      "disposal_1": "  ",
+      "disposal_2": "  ",
+      "disposal_3": "   ",
+      "optimize": " ( )",
+      "metadata_title": "GIF ",
+      "metadata_dimensions": ": {width} ☠ {height} ",
+      "metadata_frames": " : {count}",
+      "metadata_duration": " : {duration} ",
+      "metadata_fps": ": {fps} ",
+      "metadata_palette": ":  256 ",
+      "metadata_size": " : {size} ",
+      "comment_label": " ():",
+      "no_images": "  ",
+      "creating_progress": " ... ({current}/{total})",
+      "creating_normalizing": " ... ({current}/{total})",
+      "creating_quantizing": " ... ({current}/{total})",
+      "creating_saving": "GIF ..."
+    },
+    "save_to_folder": {
+      "title": " "
+    },
+    "duplicate_filenames": {
+      "title": "☠☠    ",
+      "message": "     .     \n ,        \n (  ,   ).\n\n       ."
+    },
+    "adjustments": {
+      "window_title": "Culini ontarear",
+      "title": " {count} {word}",
+      "word_image": "",
+      "word_images": "",
+      "apply_button": "",
+      "color_depth_section": " ",
+      "brightness_contrast_section": "  ",
+      "compression_section": "",
+      "effects_section": "",
+      "sharpness_section": "",
+      "levels_section": "   ",
+      "depth_unchanged": " ",
+      "depth_32bit": "32  ( -   )",
+      "depth_24bit": "24  ( - )",
+      "depth_8bit": "8  (  / ☠  )",
+      "depth_1bit": "1  (  )",
+      "brightness_label": ": {value}",
+      "contrast_label": ": {value}",
+      "compression_enable": " ",
+      "compression_quality_label": " : {value}/100",
+      "sharpness_label": ": {value}",
+      "effect_none": " ",
+      "effect_grayscale": "",
+      "effect_sepia": "",
+      "levels_none": " ",
+      "levels_threshold": " (   )",
+      "levels_advanced": "  (//)",
+      "threshold_label": ": {value}",
+      "black_point_label": " : {value}",
+      "gamma_label": " (): {value}",
+      "white_point_label": " : {value}",
+      "auto_levels_button": " ☠",
+      "open_viewer_button": "   ()",
+      "compression_info": "       ",
+      "open_viewer_button_simple": "   ",
+      "reset_button": "",
+      "preview_section": "",
+      "effect_invert": " ",
+      "preview_warning": "      ",
+      "effect_remove_colors": " ",
+      "remove_colors_intensity_label": " : {value}",
+      "image_mode_section": "  ",
+      "image_mode_rgb": " ()",
+      "image_mode_rgba": " ( + )",
+      "image_mode_l": " ()",
+      "image_mode_la": " ( + )",
+      "image_mode_cmyk": " ()",
+      "image_mode_1": "1 (   )",
+      "image_mode_p": " (256  )",
+      "saturation_section": "",
+      "saturation_label": " : {value}",
+      "saturation_viewer_title": " ",
+      "transparency_section": "",
+      "transparency_info": "   ,     ",
+      "transparency_type_label": " :",
+      "transparency_type_flood": "",
+      "transparency_type_global": "",
+      "transparency_tolerance_label": " : {value}",
+      "transparency_viewer_title": " ",
+      "transparency_click_instruction": "     ",
+      "transparency_undo": "  ",
+      "transparency_redo": "",
+      "transparency_type_flood_tooltip": "  :        ",
+      "transparency_type_global_tooltip": "  :          ",
+      "transparency_apply": "",
+      "transparency_skipped_warning": "{count} -()   -   .  ,    .",
+      "unsharp_section": " ",
+      "unsharp_radius_label": ": {value}",
+      "unsharp_percent_label": ": {value} %",
+      "unsharp_threshold_label": ": {value}",
+      "unsharp_viewer_title": " ",
+      "auto_levels_tooltip": "            .\n   ,  ."
+    },
+    "levels_viewer": {
+      "title": "   ",
+      "apply_current": "  ",
+      "apply_all": "     ",
+      "black_pipette": "  ",
+      "white_pipette": "  ",
+      "black_pipette_tooltip": "       . :    !",
+      "white_pipette_tooltip": "       . :    !"
+    },
+    "sharpness_viewer": {
+      "title": " "
+    },
+    "brightness_viewer": {
+      "title": "   "
+    },
+    "compression_viewer": {
+      "title": " "
+    },
+    "outliers": {
+      "title": "   ",
+      "message": "         .     :",
+      "width": "",
+      "height": "",
+      "unusual": "",
+      "skip": "  ",
+      "keep": ""
+    },
+    "first_page_multi": {
+      "title": "  ",
+      "message": "    .   ?",
+      "option_auto_desc": "   .",
+      "option_joint_desc": "      .",
+      "option_exclude_label": "  ",
+      "option_exclude_desc": "       .     ."
+    },
+    "batch_img": {
+      "select_directory_title": "      ",
+      "no_img_title": "   ",
+      "no_img_message": "       :\n{directory}",
+      "confirm_title": "      CBZ-",
+      "confirm_message": "{count}     {directory} (  ).",
+      "checkbox_permanent_delete": "     \n   ()",
+      "start_button": "",
+      "converting_title": " ...",
+      "converting_progress": " {current}  {total}-",
+      "complete_title": " ",
+      "complete_message": "{count}      :",
+      "complete_message_errors": "{count} {total}-      :",
+      "errors_count": "{count} () .",
+      "converted_by_ext": "{ext} : {count} ()",
+      "mode_title": "   CBZ",
+      "mode_intro": "    ?",
+      "mode_one_per_image": "    CBZ ",
+      "mode_one_per_image_sub": "(    CBZ )",
+      "mode_all_in_one": "    CBZ",
+      "mode_all_in_one_sub": "(      CBZ)"
+    },
+    "batch_drop": {
+      "window_title": "Maitale oiale i nandessë",
+      "intro_single": "  .    ?",
+      "intro_multiple": "{count}  .    ?",
+      "recursive_note": "    .",
+      "mixed_drop_title": " ",
+      "mixed_drop_message": "      .       ."
+    },
+    "pdf_unlock": {
+      "title": "PDF  ",
+      "message": "    .\n\n  PDF    ( ).\n\n-    PDF   ?",
+      "yes": ",   ",
+      "no": ",   "
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF   ",
+      "message_single": " PDF     .   CBZ .\n\n     ?",
+      "message_plural": "{count} PDF     .   CBZ .\n\n     ?",
+      "yes": ",    ",
+      "no": ",  "
+    },
+    "ico_creator": {
+      "title": " . ",
+      "info_message": "   -  (16, 32, 48, 64, 128, 256 ).\n  -: {w} ☠ {h} ",
+      "btn_validate_crop": "  ",
+      "btn_validate_no_crop": "  ",
+      "btn_cancel": "",
+      "btn_transparency": " ",
+      "btn_validate_final": "",
+      "tolerance_label": ":",
+      "success_title": ".  ",
+      "success_message": "  {filename} .",
+      "overwrite_title": "  ",
+      "overwrite_message": "  {filename}  . ?",
+      "save_blocked_title": "  ",
+      "save_blocked_message": "   .      .          .\n  ,     ()   (+)   .",
+      "btn_back_to_crop": "  "
+    },
+    "video_save_blocked": {
+      "title": "  ",
+      "message": "       .         .\n  ,   ()   (+)  ."
+    },
+    "open_file": {
+      "title": "  ",
+      "filter_archives": " (*. *. *.7 *. *.)",
+      "filter_all": "  (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - License"
+    },
+    "replace_corrupted_image": {
+      "title": "  ",
+      "filter_images": " (*. *.☠ *.☠ *. *. *. *. *. *. *.☠ *.☠ *.☠)",
+      "filter_all": "  (*)"
+    },
+    "see_log": " "
+  },
+  "tooltip": {
+    "source_archive": " : {name}",
+    "file": ": {name}",
+    "reason": ": {reason}",
+    "size_kb": ": {size} ",
+    "size_mb": ": {size} ",
+    "file_size": ": {size}",
+    "dimensions": ": {width} ☠ {height} ",
+    "resolution": ": {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} ☠ {dpi_y}",
+    "dpi_undefined": "DPI: ",
+    "cbr_info": "CBR -   ,     ;\n  ,     CBZ .",
+    "rotate_left": " 90  ",
+    "rotate_right": " 90  ",
+    "mirror_horizontal": " ",
+    "mirror_vertical": " ",
+    "fullscreen": " ",
+    "help_button": " ",
+    "theme_button": "    ",
+    "font_decrease_button": "   ",
+    "font_increase_button": "   ",
+    "color_depth": ": {bits}  ({mode})",
+    "batch_pdf_to_cbz": " CBZ-  PDF   \n  -.    \n   ,  -.",
+    "batch_pdf_permanent_delete": ":     ,\n  PDF  \n    ,\n   .   \n    .",
+    "batch_cbr_to_cbz": "  CBZ  CBR \n   \n -.",
+    "batch_cbr_permanent_delete": ":     ,\n  CBR  \n   ,  \n.    \n-  .",
+    "renumber_btn_1": " -  \n   ",
+    "renumber_btn_2": "  \n   ",
+    "corrupted_header": " ",
+    "right_click_instruction1": "   ",
+    "right_click_instruction2": "   .",
+    "unknown_error": " ",
+    "batch_img_to_cbz": "      \n   CBZ-,\n  CBZ   .",
+    "batch_img_permanent_delete": " :    ,\n     \n   \n.    \n .",
+    "too_large_header": " ☠☠☠    ",
+    "too_large_pixels": ": {pixels}",
+    "icon_toolbar_config_button": " ",
+    "icon_toolbar_size_decrease": "  ",
+    "icon_toolbar_size_increase": "  ",
+    "source_loose": " ",
+    "source_web": " "
+  },
+  "help": {
+    "title": "MosaicView -  ",
+    "intro": "MosaicView        (  ) -   .      CBZ (), CBR ()  PDF.        64  .",
+    "open_files": " ",
+    "open_files_content": "☠     CBZ/CBR/CB7/PDF\n☠  -    \n☠  : CBZ, CBR, CB7, PDF,  (☠, , , MP, , GIF, ).    ,       (  ).\n☠ PDF  (  ):     ,  .\n☠ PDF   ( ):     . MosaicView       .",
+    "mosaic": " ",
+    "mosaic_content": "          . :\n☠       (   ,     -)\n☠    (+  +)\n☠     \n☠       \n☠      (CBZ/CBR/PDF)         ",
+    "manipulation": "  ",
+    "manipulation_content": "☠        \n☠       \n☠      \n☠     \n☠      ,  + / +",
+    "renumber": " ",
+    "renumber_content": "MosaicView     ,     ,    ( )      :\n\n☠      ( ):          ,   .       (.:    003-004,  005-006-007).   ,          (.: 010---025).\n\n☠   :       (001, 002, 003...),     .\n\n    ,     .      .            .",
+    "flatten": "  ",
+    "flatten_content": "    ,           .",
+    "viewer": "",
+    "viewer_content": "-     :\n☠  ☠ ☠ :    \n☠   :    \n  -  :   \n  -  :  1 ,  2-3, 4-5, .\n  -   :  1 ,  2-3, 3-4, 4-5, .\n☠  :  \n☠ +  +/: \n☠ +0:  \n☠  11:  \n☠ -:   \n☠  :    /   ",
+    "join_pages": " ",
+    "join_pages_content": "   , - ☠        .             ,    .",
+    "split_pages": " ",
+    "split_pages_content": "    :\n☠     \n☠   ☠    \n☠    (  )",
+    "crop": "  ",
+    "crop_content": " ,        :\n☠     \n☠        \n☠      \n☠      \n☠  :   ",
+    "shortcuts": " ",
+    "shortcuts_content": "☠ +:    \n☠ +: -   \n☠ +:    \n☠ +:   \n☠ +:    \n☠ +:    \n☠ +:   \n☠ :    \n☠ 5:     \n☠ 11:    ( 11  )",
+    "dark_mode": " ",
+    "dark_mode_content": "  /        .",
+    "sort": "  ",
+    "sort_content": "         :\n☠ , , , , ,   DPI",
+    "save": "",
+    "save_content": "☠ :      \n☠  :   \n☠  CBZ:      (-)",
+    "other": " ",
+    "other_content": "☠ :     \n☠ :       (, ☠, , MP, , GIF). :        (, ☠, , MP, , GIF). :       \n☠ :        \n☠ :   \n☠  :      . (   ).        ,         .    -.        .",
+    "config_files": "    ",
+    "config_files_content": "MosaicView  ._.☠ .            ,       ,        . MosaicView   ,        .\n     {temp_dir} .\n        ,  ._.☠ , ,   .\n,    -    {temp_dir}  ,      . ._.☠        ,        .",
+    "config_clear_temp": "  ",
+    "config_clear_recent": "  ",
+    "config_clear_config": "  ",
+    "config_temp_cleared": "   .",
+    "config_config_cleared": "   .\n     .",
+    "language": "  ",
+    "language_content": "MosaicView    .\n ,       -       .  -    ,      .\n                ,      .          .\n :  ,  ,  ,  ,  ,   (),   (),  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  ,  .\n  :  (    ),  (    ),  (    ).\n\n    ,   ( )   ( :   ) .    -    :\n-   (  ): {url_piqad}\n-   ( ,    ): {url_tengwar}\n     ,             :\n\n     .        ,   .     .  ,      .       ,     -       .     ,    .  -  .",
+    "credits": " , ",
+    "credits_content": "     .  .  ,      ,   ,    .         ,    !",
+    "resize_pages": "  ",
+    "resize_pages_content": "   :\n☠     \n☠ - ☠ \n☠   :\n  -  :      (   ).\n  -  : 10%  90%  \n  -  : 10%  100%  \n☠       \n☠     ",
+    "language_export_piqad": " ",
+    "language_export_tengwar": " ",
+    "language_export_piqad_success": " : {filename}\n:",
+    "language_export_tengwar_success": "{count}  \n:",
+    "icons": "",
+    "icons_content": " ⸱             ⸱ : ://..//☠-//☠--_908#_=_\n    .\n  ,     ,   (  ,    , ,  ).              .",
+    "icons_view_button": " ",
+    "icons_window_title": "Nossëo MosaicView",
+    "icons_save_all": " ",
+    "icons_saved_success": "{count} /  :",
+    "icons_save_failed": "   : {error}",
+    "split_ui": "  ",
+    "split_ui_content": "MosaicView    ,  .\n\n       .   :  ,      .      .\n\n     ,  .    ,   .        .\n\n         .",
+    "license_gpl": " 3 ",
+    "license_unrar": " ",
+    "config_clear_clipboard": "    ",
+    "config_clipboard_note": ":       ( _)  12    ,         .  12 ,   .",
+    "config_log_note": "   (PDF CBZ-  CBR CBZ-)      .   (__.  __.)    ,    .      ☠  ☠  .",
+    "config_clipboard_cleared": "     .",
+    "adjust_images": "  ",
+    "adjust_images_content": "      MosaicView.   , , , , ,   (, ,  ),  ,  ,      .         .",
+    "create_icon": "  ",
+    "create_icon_content": "MosaicView    - (.)   .\n☠     ☠   \n☠       (   )\n☠    \n☠ :  .    \n☠  .       (16☠16  256☠256)\n☠   .   ,   CBZ   ,     - .   .   (+   ),       .",
+    "batch_convert": " ",
+    "batch_convert_content": "MosaicView    ,     .    :  , ,   ,   .        .\n☠ CBR ☠ CBZ:   CBR ()     .  CBR  ,    .\n☠ PDF ☠ CBZ:   PDF     .    -.\n☠   ☠ CBZ:   CBZ  -     . , ,  (),   (GIF)    .",
+    "config_open_temp_folder": "   ",
+    "icon_toolbar": " ",
+    "icon_toolbar_content": "         .          .         ,        :   ,             .     « + »  « ☠ »      .    .",
+    "license_7zip": "7- "
+  },
+  "misc": {
+    "file_word": "",
+    "files_word": "",
+    "corrupted": "",
+    "yes": "",
+    "no": "",
+    "cancel": "",
+    "selection_suffix": "-"
+  },
+  "metadata": {
+    "title": "",
+    "series": "",
+    "number": "",
+    "volume": "",
+    "summary": "",
+    "writer": "",
+    "penciller": "",
+    "inker": "",
+    "colorist": "",
+    "letterer": "",
+    "cover_artist": "",
+    "editor": " ()",
+    "publisher": " ()",
+    "imprint": "",
+    "genre": "",
+    "web": "",
+    "page_count": " ",
+    "language_iso": "",
+    "format": "",
+    "black_and_white": "  ",
+    "manga": "",
+    "year": "",
+    "month": "",
+    "day": "",
+    "notes": "",
+    "characters": "",
+    "locations": "",
+    "teams": "",
+    "story_arc": " ",
+    "story_arc_number": " ",
+    "series_group": " ",
+    "count": "",
+    "alternate_series": " ",
+    "alternate_number": " ",
+    "alternate_count": " ",
+    "age_rating": " ",
+    "series_complete": " ",
+    "translator": "",
+    "tags": "",
+    "scan_information": " ",
+    "community_rating": " ",
+    "review": "",
+    "gtin": "",
+    "pages": "",
+    "pages_col_image": "",
+    "pages_col_type": "",
+    "pages_col_width": "",
+    "pages_col_height": "",
+    "pages_col_size": " ()"
+  },
+  "web": {
+    "web_download_progress": ": {downloaded}/{total} ...",
+    "web_download_cancel": "",
+    "web_no_images": "",
+    "web_no_images_found": "   .",
+    "web_imported": "{count}   ",
+    "web_drag_drop_title": "-   ",
+    "web_copy_paste_message": "     .\n\n  ():\n\n1. -  \n2.   \n3. MosaicView-,     +\n\n    -!",
+    "import_web_button": " ",
+    "import_web_tooltip": "       ",
+    "import_web_menu": " ...",
+    "import_web_dialog_title": "   ",
+    "import_web_url_label": "  :",
+    "import_web_ok_button": "",
+    "import_web_cancel_button": "",
+    "import_web_invalid_url": "- .    ."
+  },
+  "donation": {
+    "menu_label": "  ",
+    "title": "",
+    "message": "        .       .      ?  ,        -  .\n\n            ,     .       "
+  },
+  "mail": {
+    "tooltip": "             .     ( ,     ),      MosaicView  -       .",
+    "copy_address": "     MosaicView",
+    "menu_label": "    MosaicView",
+    "icon_label": " "
+  },
+  "menu": {
+    "file": "",
+    "file_open": " ",
+    "file_close": " ",
+    "batch_convert": "  ",
+    "batch_cbr_to_cbz": "CBR ☠ CBZ",
+    "batch_pdf_to_cbz": "PDF ☠ CBZ",
+    "batch_img_to_cbz": "  ☠ CBZ",
+    "edit": "",
+    "undo": "",
+    "redo": "",
+    "paste": "",
+    "delete": "",
+    "invert_selection": " ⸱",
+    "select_all": " ",
+    "deselect": "⸱",
+    "refresh_mosaic": " ⸱",
+    "images": "",
+    "rotation": "",
+    "archives": "",
+    "sort": "",
+    "system": "",
+    "decrease_font": " ",
+    "increase_font": " ",
+    "language": "",
+    "language_real": " ",
+    "language_fictional": " ",
+    "about": "",
+    "export_piqad_font": "   ",
+    "export_tengwar_fonts": "   "
+  }
+}

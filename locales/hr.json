@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Švicarski nož za kolekcionare digitalnih stripova",
+  "buttons": {
+    "open_file": "Otvori CBZ/CBR/CB7/PDF",
+    "close_file": "Zatvori datoteku",
+    "create_cbz": "Stvori CBZ arhivu",
+    "flatten_dirs": "Premjesti sve datoteke\nu korijen i izbriši\npodmape",
+    "renumber": "Preimenuj\nstranice",
+    "undo": "⤺ Poništi",
+    "redo": "Ponovi ⤻",
+    "copy": "Kopiraj",
+    "cut": "Izreži",
+    "paste": "Zalijepi",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Pretvori u drugi\nformat slike",
+    "join_pages": "Spoji stranice",
+    "split_page": "Podijeli stranicu",
+    "save_as": "Spremi kao\n(stvori novi CBZ)",
+    "save_selection": "Spremi odabir\nu CBZ",
+    "print_selection": "Ispiši odabir",
+    "print_all": "Ispiši cijeli strip",
+    "sort": "Sortiraj",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Pretvori",
+    "cancel": "Odustani",
+    "split_button": "Podijeli",
+    "join_button": "Pokreni",
+    "validate_crop": "Potvrdi izrez",
+    "ok": "U redu",
+    "close": "Zatvori",
+    "apply_and_save": "Primijeni promjene i spremi datoteku",
+    "apply_and_create": "Primijeni promjene i stvori CBZ datoteku",
+    "close_and_lose": "Zatvori datoteku i izgubi promjene",
+    "cancel_return": "Odustani i vrati se na mozaik",
+    "update_page_count": "Ažuriraj broj stranica\nu metapodacima",
+    "invert_selection": "Invertiraj odabir",
+    "reduce_size": "Promijeni veličinu stranica",
+    "mirror_vertical": "⇅",
+    "create_gif": "Kreiraj GIF",
+    "edit_gif": "Uredi animirani GIF",
+    "save_to_folder": "Izvezi odabrane\nstranice",
+    "continue": "Nastavi",
+    "reset": "↻",
+    "yes": "Da",
+    "no": "Ne",
+    "renumber_recommended": "Promijeniti brojeve (preporučeno)",
+    "ignore_and_save": "Ignoriraj i spremi",
+    "rename_to_cbz": "Preimenuj u .cbz",
+    "open_without_rename": "Otvori bez preimenovanja",
+    "rename_to_cbr": "Preimenuj u .cbr",
+    "adjustments": "Svjetlina,\nkontrast itd.",
+    "batch_cbr_to_cbz": "Skupna pretvorba\n CBR datoteka u CBZ",
+    "batch_pdf_to_cbz": "Skupna pretvorba\n PDF datoteka u CBZ",
+    "batch_img_to_cbz": "Skupna konverzija\n pojedinih slika u CBZ",
+    "icon_toolbar_reset": "Vrati zadano",
+    "delete_selected": "Izbriši",
+    "save": "Spremi",
+    "rename_to_cb7": "Preimenuj u .cb7",
+    "split_ui": "Podijeli sučelje na dvije ploče",
+    "unsplit_ui": "Zatvori drugu ploču"
+  },
+  "tabs": {
+    "mosaic": "Mozaik",
+    "metadata": "Metapodaci"
+  },
+  "viewer": {
+    "title": "Preglednik",
+    "mode_single": "Jedna stranica  [D]",
+    "mode_double": "Dvostruka stranica  [D]",
+    "mode_continuous": "Kontinuirani način  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Prethodna stranica (←)",
+      "next_page": "Sljedeća stranica (→)",
+      "zoom_in": "Povećaj + (Ctrl+Plus)",
+      "zoom_out": "Smanji - (Ctrl+Minus)",
+      "zoom_reset": "Resetiraj povećanje (Ctrl+0)",
+      "reading_mode_double": "Promijeni način čitanja (D) → Dvostruke stranice",
+      "reading_mode_continuous": "Promijeni način čitanja (D) → Kontinuirane dvostruke stranice",
+      "reading_mode_single": "Promijeni način čitanja (D) → Jednostruka stranica",
+      "fullscreen_exit": "Izađi iz cijelog zaslona (F11)",
+      "fullscreen": "Cijeli zaslon (F11)",
+      "close_viewer": "Zatvori preglednik (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Oštećena slika - Zamijeni",
+      "corrupted_delete": "⚠️ Izbriši ovu sliku",
+      "copy": "Kopiraj (Ctrl+C)",
+      "cut": "Izreži (Ctrl+X)",
+      "paste": "Zalijepi (Ctrl+V)",
+      "paste_clipboard": "Zalijepi iz međuspremnika (Ctrl+V)",
+      "delete": "Izbriši (Delete)",
+      "deselect": "Poništi odabir (ESC)",
+      "rotate_right": "↻ Rotiraj desno",
+      "rotate_left": "↺ Rotiraj lijevo",
+      "mirror": "⇄ Vodoravno zrcaljenje",
+      "crop": "Izreži",
+      "convert": "Pretvori u drugi format...",
+      "join": "Spoji odabrane stranice",
+      "split": "Podijeli odabranu stranicu",
+      "save_selection": "Spremi odabir u CBZ",
+      "print_selection": "Ispiši odabir",
+      "copy_archive": "Kopiraj cijelu arhivu",
+      "undo": "Poništi (Ctrl+Z)",
+      "redo": "Ponovi (Ctrl+Y)",
+      "renumber_auto": "Preimenuj stranice (automatsko prepoznavanje višestrukih stranica)",
+      "renumber_simple": "Preimenuj stranice (jednostavno numeriranje)",
+      "sort_submenu": "Sortiraj stranice",
+      "sort_name": "Po imenu",
+      "sort_type": "Po vrsti",
+      "sort_size": "Po veličini",
+      "sort_width": "Po širini",
+      "sort_height": "Po visini",
+      "sort_resolution": "Po rezoluciji",
+      "sort_dpi": "Po DPI",
+      "create_cbz": "Stvori CBZ arhivu",
+      "save_as": "Spremi kao...",
+      "close_file": "Zatvori datoteku",
+      "help": "Upute za korištenje",
+      "update_page_count": "Ažuriraj broj stranica u metapodacima",
+      "invert_selection": "Invertiraj odabir (Ctrl+I)",
+      "reduce_size": "Promijeni veličinu stranica",
+      "mirror_vertical": "⇅ Vertikalno ogledalo",
+      "edit_animated_gif": "Uredi animirani GIF...",
+      "save_to_folder": "Izvezi odabrane stranice",
+      "adjustments": "Svjetlina, kontrast, boje...",
+      "refresh_mosaic": "Osvježi mozaik (F5)",
+      "create_ico": "Stvori .ico datoteku"
+    },
+    "canvas_no_file": {
+      "open": "Otvori CBZ/CBR/CB7/PDF",
+      "recent_files": "Nedavne datoteke",
+      "clear_history": "Obriši povijest"
+    },
+    "canvas_with_file": {
+      "close": "Zatvori datoteku",
+      "paste": "Zalijepi (Ctrl+V)",
+      "paste_clipboard": "Zalijepi iz međuspremnika (Ctrl+V)",
+      "select_all": "Odaberi sve (Ctrl+A)",
+      "deselect": "Poništi odabir (ESC)",
+      "copy_archive": "Kopiraj cijelu arhivu",
+      "print_all": "Ispiši cijeli strip",
+      "renumber_auto": "Preimenuj stranice (automatsko prepoznavanje višestrukih stranica)",
+      "renumber_simple": "Preimenuj stranice (jednostavno numeriranje)",
+      "flatten": "Ravnaj mape",
+      "save_selection": "Spremi odabir u CBZ",
+      "hide_sidebar": "« Sakrij stupac s gumbima",
+      "show_sidebar": "» Prikaži stupac s gumbima",
+      "decrease_thumbs": "Smanji veličinu sličica",
+      "increase_thumbs": "Povećaj veličinu sličica",
+      "theme_dark": "Prebaci na tamnu temu",
+      "theme_light": "Prebaci na svijetlu temu",
+      "sort_submenu": "Sortiraj stranice",
+      "undo": "Poništi (Ctrl+Z)",
+      "redo": "Ponovi (Ctrl+Y)",
+      "create_cbz": "Stvori CBZ arhivu",
+      "save_as": "Spremi kao...",
+      "help": "Upute za korištenje",
+      "update_page_count": "Ažuriraj broj stranica u metapodacima",
+      "invert_selection": "Invertiraj odabir (Ctrl+I)",
+      "fullscreen": "Cijeli zaslon (F11)",
+      "fullscreen_exit": "Izlaz iz cijelog zaslona (F11 ili ESC)",
+      "quit": "Zatvori aplikaciju"
+    },
+    "canvas": {
+      "quit": "Zatvori aplikaciju",
+      "reset": "Resetiranje aplikacije:\n• veličina i položaj prozora\n• tamni način → svijetli\n• veličina sličica → normalna\n• bočna traka → vidljiva / 220 px\n• jezik → automatsko otkrivanje\n• veličina fonta → zadana",
+      "reset_label": "Resetiraj aplikaciju"
+    },
+    "font_size": {
+      "decrease": "Smanji veličinu fonta",
+      "increase": "Povećaj veličinu fonta"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Sortiraj po imenu",
+    "sort_type": "Sortiraj po vrsti",
+    "sort_size": "Sortiraj po veličini",
+    "sort_width": "Sortiraj po širini",
+    "sort_height": "Sortiraj po visini",
+    "sort_resolution": "Sortiraj po rezoluciji",
+    "sort_dpi": "Sortiraj po DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Prazna arhiva",
+        "message": "CBZ arhiva ne sadrži nijednu datoteku."
+      },
+      "empty_cbr": {
+        "title": "Prazna arhiva",
+        "message": "CBR arhiva ne sadrži nijednu datoteku."
+      },
+      "files_ignored": {
+        "title": "Datoteke zanemarene"
+      },
+      "no_selection_crop": {
+        "title": "Nema odabira",
+        "message": "Molimo odaberite sliku za izrezivanje."
+      },
+      "multi_selection_crop": {
+        "title": "Višestruki odabir",
+        "message": "Možete izrezati samo jednu sliku istovremeno.\nMolimo odaberite samo jednu sliku."
+      },
+      "invalid_selection_crop": {
+        "title": "Nevažeći odabir",
+        "message": "Mogu se izrezati samo slike."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Funkcija nije dostupna",
+        "message": "Premještanje stranica nije dostupno u podmapama.\nMolimo ravnajte mape ili se vratite u korijen."
+      },
+      "no_selection_convert": {
+        "title": "Nema odabira",
+        "message": "Molimo odaberite barem jednu sliku za pretvorbu."
+      },
+      "invalid_selection_convert": {
+        "title": "Nevažeći odabir",
+        "message": "Mogu se pretvoriti samo slike."
+      },
+      "no_selection_split": {
+        "title": "Nema odabira",
+        "message": "Molimo odaberite sliku za dijeljenje."
+      },
+      "multi_selection_split": {
+        "title": "Višestruki odabir",
+        "message": "Možete podijeliti samo jednu sliku istovremeno.\nMolimo odaberite samo jednu sliku."
+      },
+      "invalid_selection_split": {
+        "title": "Nevažeći odabir",
+        "message": "Mogu se dijeliti samo slike."
+      },
+      "invalid_number_split": {
+        "title": "Nevažeći broj",
+        "message": "Broj stranica mora biti između 2 i 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Nedovoljan odabir",
+        "message": "Molimo odaberite barem 2 slike za spajanje."
+      },
+      "invalid_selection_join": {
+        "title": "Nevažeći odabir",
+        "message": "Mogu se spajati samo slike."
+      },
+      "pil_not_available": {
+        "title": "PIL nije dostupan",
+        "message": "PIL modul nije dostupan za lijepljenje iz sistemskog međuspremnika."
+      },
+      "format_not_supported": {
+        "title": "Format nije podržan",
+        "message": "Format slike nije podržan ili je datoteka oštećena.\nPodržani formati: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Nema odabira",
+        "message": "Molimo prvo nacrtajte pravokutnik za izrezivanje."
+      },
+      "cannot_open_file": {
+        "title": "Nije moguće otvoriti datoteku",
+        "message": "Datoteka se ne može učitati."
+      },
+      "corrupted_images": {
+        "title": "Oštećene slike",
+        "summary": "{count} oštećena(ih) slika(e) otkrivena(ih) od {total}.",
+        "hint": "Prikazuju se s posebnom ikonom.\nDesnom tipkom miša kliknite na oštećenu sliku da biste je zamijenili ili izbrisali.",
+        "more": "... i {count} još"
+      },
+      "no_image_print": {
+        "title": "Nema slika",
+        "message": "Nema slika za ispis."
+      },
+      "no_valid_image_print": {
+        "title": "Nema slika",
+        "message": "Nema važećih slika za ispis."
+      },
+      "no_selection_print": {
+        "title": "Nema odabira",
+        "message": "Molimo odaberite barem jednu sliku."
+      },
+      "no_valid_selection_print": {
+        "title": "Nema slika",
+        "message": "Nema važećih slika u odabiru."
+      },
+      "save_cancelled": {
+        "title": "Spremanje otkazano",
+        "message": "Molimo ručno ispravite nazive datoteka prije spremanja."
+      },
+      "empty_pdf": {
+        "title": "Prazan PDF",
+        "message": "PDF datoteka ne sadrži nijednu stranicu."
+      },
+      "no_selection_save": {
+        "title": "Upozorenje",
+        "message": "Molimo odaberite barem jednu stranicu za spremanje."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Premještanje onemogućeno",
+        "message": "Premještanje stranica povlačenjem i ispuštanjem dostupno je samo u korijenu stripa.\n\nZa premještanje stranica:\n1. Vratite se u korijen klikom na ikonu za povratak\n2. Ili ravnajte strip kako biste uklonili podmape"
+      },
+      "no_selection_reduce": {
+        "title": "Nema odabira",
+        "message": "Molimo odaberite barem jednu stranicu za smanjenje."
+      },
+      "invalid_selection_reduce": {
+        "title": "Nevažeći odabir",
+        "message": "Samo se slike mogu smanjiti."
+      },
+      "invalid_dimensions": {
+        "title": "Nevažeće dimenzije",
+        "message": "Molimo unesite valjane dimenzije (pozitivni cijeli brojevi)."
+      },
+      "no_images_for_gif": {
+        "title": "Nema slika",
+        "message": "Potrebna je barem jedna slika za stvaranje animiranog GIF-a."
+      },
+      "no_valid_images": {
+        "title": "Nema valjanih slika",
+        "message": "Nisu pronađene valjane slike za stvaranje GIF-a."
+      },
+      "animated_gif_in_comic": {
+        "title": "Otkriven animirani GIF",
+        "message": "Upozorenje: Ovaj strip sadrži jedan ili više animiranih GIF-ova.\\n\\nČitači stripova (CDisplayEx, YACReader, itd.) prikazat će samo prvi okvir svakog GIF-a kao statičnu stranicu.\\n\\nDa biste pravilno vidjeli animirani GIF, morate ga spremiti odvojeno izvan stripa pomoću gumba \"Izvezi odabrane stranice\" ili \"Uredi animirani GIF\".\\n\\nŽelite li ipak nastaviti sa spremanjem stripa?"
+      },
+      "no_selection_adjust": {
+        "title": "Nema odabira",
+        "message": "Odaberite barem jednu sliku za primjenu prilagodbi."
+      },
+      "invalid_selection_adjust": {
+        "title": "Nevazeci odabir",
+        "message": "Prilagodbe se mogu primijeniti samo na slike."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Funkcija nije dostupna",
+        "message": "Prebroj nije dostupan dok se mape ne izravnaju.\nIzravnajte mape prije prebrojanja."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP greška",
+        "message": "'{file}': Datoteka nije važeća ZIP arhiva ili je oštećena."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP greška",
+        "message": "Nije moguće otvoriti CBZ datoteku: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR greška",
+        "message": "'{file}': Datoteka nije važeća RAR arhiva ili je oštećena."
+      },
+      "rar_cannot_open": {
+        "title": "RAR greška",
+        "message": "Nije moguće otvoriti CBR arhivu: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Greška",
+        "message": "Neočekivana greška prilikom otvaranja CBR-a: {error}"
+      },
+      "join_failed": {
+        "title": "Greška",
+        "message": "Nije moguće spojiti slike."
+      },
+      "paste_failed": {
+        "title": "Greška",
+        "message": "Greška prilikom lijepljenja: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Greška",
+        "message": "Nije moguće kopirati arhivu: {error}"
+      },
+      "crop_invalid": {
+        "title": "Greška",
+        "message": "Područje izrezivanja je nevažeće."
+      },
+      "crop_failed": {
+        "title": "Greška",
+        "message": "Nije moguće izrezati sliku: {error}"
+      },
+      "load_image_failed": {
+        "title": "Greška",
+        "message": "Nije moguće učitati sliku:\n{error}"
+      },
+      "print_error": {
+        "title": "Greška ispisa",
+        "message": "Greška prilikom ispisa:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Ispis nije dostupan",
+        "message": "Modul win32print nije instaliran.\nInstalirajte ga pomoću: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Datoteka nije pronađena",
+        "message": "Datoteka više ne postoji:\n{path}"
+      },
+      "import_failed": {
+        "title": "Greška uvoza",
+        "message": "Nije moguće uvesti datoteku: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF nije instaliran",
+        "message": "Biblioteka PyMuPDF (fitz) nije instalirana.\nInstalirajte je pomoću: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Greška",
+        "message": "Greška prilikom uvoza PDF-a: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF greška",
+        "message": "Nije moguće učitati PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Duplirani nazivi datoteka",
+        "intro": "{count} duplikat(a) naziva datoteke otkriveno:\n\n",
+        "item": "  • {name} ({times} puta)\n",
+        "more": "  ... i {more} drugih\n",
+        "footer": "\nZIP arhive ne prihvaćaju duplikate naziva.\nPreименujte ove datoteke prije spremanja."
+      },
+      "save_failed": {
+        "title": "Greška",
+        "message": "Nije moguće spremiti datoteku: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Greška",
+        "message": "Nije moguće stvoriti arhivu: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Greška",
+        "message": "Nije moguće spremiti odabir: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "Greška pri stvaranju GIF-a",
+        "message": "Nije moguće stvoriti animirani GIF:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Greška pri spremanju",
+        "message": "Greška pri spremanju datoteka:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Pogreška preimenovanja",
+        "message": "Nije moguće preimenovati datoteku: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF zaštićen lozinkom",
+        "message": "Ova PDF datoteka je šifrirana i zaštićena lozinkom.\nNe može se otvoriti bez lozinke."
+      },
+      "pdf_unlock_failed": {
+        "title": "Pogreška",
+        "message": "Nije moguće spremiti otključanu PDF datoteku:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: šifrirani PDF (potrebna je lozinka), preskočen",
+      "file_too_large": {
+        "title": "Datoteka je prevelika",
+        "message": "Datoteka {filename} ima veličinu {size} i premašuje maksimalno dopuštenu veličinu (500 MB) za sliku."
+      },
+      "license_file_not_found": {
+        "message": "Datoteka licence nije pronađena: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Nije moguće pročitati datoteku licence: {error}"
+      },
+      "7z_invalid": {
+        "title": "Greška 7Z",
+        "message": "Datoteka '{file}' nije valjani 7Z arhiv ili je oštećena."
+      },
+      "delete_error": "Greška pri brisanju: {error}",
+      "export_error": "Greška pri izvozu: {error}",
+      "font_source_not_found": "Izvorna datoteka fonta nije pronađena: {path}",
+      "no_tengwar_font": "Nije pronađen Tengwar font.",
+      "no_icons_found": "Nisu pronađene ikone.",
+      "unsupported_files": {
+        "title": "Nepodržane datoteke",
+        "message": "Sljedeće datoteke nisu podržane i bile su zanemarene:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF uspješno stvoren",
+        "message": "Animirani GIF '{name}' je stvoren i dodan u mozaik."
+      },
+      "pywin32_required": {
+        "title": "Funkcija nije dostupna",
+        "message": "Modul pywin32 je potreban za lijepljenje iz sistemskog međuspremnika.\nInstalirajte ga pomoću: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Slike uvezene",
+        "message": "{count} slika uvezeno"
+      },
+      "archive_copied": {
+        "title": "Arhiva kopirana",
+        "message": "Arhiva je kopirana u međuspremnik."
+      },
+      "function_not_available": {
+        "title": "Funkcija nije dostupna",
+        "message": "Ova funkcija trenutno nije dostupna."
+      },
+      "duplicate_detected": {
+        "title": "Otkriven duplikat",
+        "message": "Datoteka s tim nazivom već postoji.\n\nDatoteka je preimenovana u:\n{name}"
+      },
+      "replace_success": {
+        "title": "Uspjeh",
+        "message": "Slika '{name}' uspješno je zamijenjena."
+      },
+      "history_cleared": {
+        "title": "Povijest obrisana",
+        "message": "Popis nedavnih datoteka je obrisan."
+      },
+      "files_copied_clipboard": {
+        "title": "Datoteke kopirane u međuspremnik",
+        "message": "Povlačenje i ispuštanje izvan aplikacije nije dostupno iz tehničkih razloga.\n\n✓ {count} {word} kopirano u međuspremnik\n\nSada možete zalijepiti gdje god želite:\n  • Desni klik → Zalijepi\n  • Ili Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Ispravak dovršen",
+        "message": "{count} naziva datoteka ispravljeno."
+      },
+      "import_success": {
+        "title": "Uvoz uspješan",
+        "message": "{count} stranica uvezeno iz {file}"
+      },
+      "pdf_import_success": {
+        "title": "Uvoz uspješan",
+        "message": "{count} PDF stranica uvezeno iz {file}\nKvaliteta: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Uspjeh",
+        "message": "PDF uspješno pretvoren!\n{count} stranica učitano pri {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Uspjeh",
+        "message": "CBZ datoteka uspješno spremljena:"
+      },
+      "cbz_converted": {
+        "title": "Uspjeh",
+        "message": "Datoteka uspješno pretvorena u CBZ:",
+        "question": "Želite li izbrisati izvornu CBR datoteku?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Uspjeh",
+        "message": "Datoteka uspješno pretvorena u CBZ:",
+        "question": "Želite li izbrisati izvornu PDF datoteku?"
+      },
+      "cbz_save_as": {
+        "title": "Uspjeh",
+        "message": "Nova CBZ datoteka spremljena: {path}"
+      },
+      "cbz_created": {
+        "title": "Uspjeh",
+        "message": "CBZ arhiva uspješno stvorena:"
+      },
+      "selection_saved": {
+        "title": "Uspjeh",
+        "message": "Odabir uspješno spremljen:"
+      },
+      "flatten_done": {
+        "title": "Ravnanje dovršeno",
+        "message": "{files} datoteka premješteno iz {dirs} podmapa."
+      },
+      "language_changed": {
+        "title": "Jezik promijenjen",
+        "message": "Jezik sučelja uspješno je promijenjen."
+      },
+      "new_cbz_saved": {
+        "title": "Datoteka Spremljena",
+        "message": "Nova CBZ datoteka uspješno je spremljena:",
+        "question": "Želite li izbrisati izvornu datoteku?"
+      },
+      "page_count_updated": {
+        "title": "Broj stranica ažuriran",
+        "message": "Broj stranica u metapodacima ažuriran je na {count} stranica."
+      },
+      "files_saved": {
+        "title": "Uspješno spremljeno",
+        "message": "{count} datoteka spremljeno u:\n{folder}",
+        "open_folder": "Želite li otvoriti mapu?"
+      },
+      "adjustments_applied": {
+        "title": "Prilagodbe primijenjene",
+        "message": "Prilagodbe su uspjesno primijenjene."
+      },
+      "pdf_unlocked": {
+        "title": "PDF otključan",
+        "message": "Otključana PDF datoteka je spremljena:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Velika arhiva",
+        "message": "Ova arhiva ima {size} MB dekompresirana.\nUčitavanje može potrošiti puno memorije (RAM).\n\nŽelite li nastaviti?"
+      },
+      "confirm_delete": {
+        "title": "Potvrda",
+        "message": "Jeste li sigurni da želite obrisati {count} datoteka ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Izbrisati izvorne datoteke?",
+        "message": "Želite li izbrisati slike koje su spojene?\n\nDa = Izbriši izvorne datoteke\nNe = Zadrži izvorne datoteke\nOdustani = Otkaži operaciju"
+      },
+      "invalid_filenames": {
+        "title": "Nevažeći nazivi datoteka",
+        "intro": "{count} datoteka(e) sadrže zabranjene znakove:",
+        "item": "  • {name}",
+        "more": "  ... i još {more}",
+        "forbidden_chars": "Zabranjeni znakovi: {chars}",
+        "fix_question": "Želite li automatski ispraviti ova imena?\n(Zabranjeni znakovi bit će zamijenjeni s '_')"
+      },
+      "close_without_save": {
+        "title": "Spremi prije zatvaranja?",
+        "message": "Slike su dodane. Želite li stvoriti CBZ arhivu prije zatvaranja?"
+      },
+      "flatten_folders": {
+        "title": "Ravnaj mape",
+        "subdirs_detected": "Otkrivene podmape:",
+        "files_to_move": "{count} datoteka bit će premješteno u korijen.",
+        "folders_to_delete": "{count} podmapa bit će izbrisano.",
+        "continue_question": "Želite li nastaviti?"
+      },
+      "update_page_count": {
+        "title": "Ažuriraj broj stranica",
+        "message": "Broj stranica u stripu se promijenio.\n\nBroj stranica naveden u metapodacima: {original}\nTrenutni broj stranica: {current}\n\nŽelite li ažurirati broj stranica u metapodacima?"
+      },
+      "conversion_complete": {
+        "title": "Pretvorba dovršena",
+        "message": "Pretvorba dovršena!\n\n{count} slika pretvorenih u {format} format dodano je nakon vašeg odabira.\n\nObrisati izvorne slike?",
+        "delete_originals": "Izbriši originale\n{count} datoteka - {size}",
+        "keep_all": "Zadrži sve\n{count} datoteka - {size}",
+        "cancel_conversion": "Poništi pretvorbu\n{count} datoteka - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Otkrivena je neispravna ekstenzija: ova '{filename}' datoteka je CBZ, a ne CBR. Preimenovati?",
+      "title": "Pogrešna ekstenzija"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Otkrivena netočna ekstenzija: ova '{filename}' datoteka je CBR, a ne CBZ. Preimenovati?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Otkrivena je pogrešna ekstenzija: datoteka '{filename}' je CB7, a ne CBZ/CBR. Preimenuj?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Veličina sličica",
+    "loading": "Molimo pričekajte, učitavanje u tijeku...\n{percent}%",
+    "resizing": "Molimo pričekajte, promjena veličine u tijeku...\n{percent}%",
+    "converting": "Molimo pričekajte, pretvaranje u tijeku...\n{percent}%",
+    "loading_lazy": "Molimo pričekajte, učitavanje u tijeku...\n{percent}%\n\nZbog velike veličine ove datoteke ({size} MB) stranice će se učitavati postupno. Stranice vidljive na ekranu učitavaju se odmah, ostale će se učitavati automatski tijekom pomicanja.",
+    "apply_save_cbz": "Primijeni promjene\ni spremi CBZ datoteku",
+    "apply_create_cbz": "Primijeni promjene\ni stvori CBZ datoteku",
+    "import_progress": "Uvoz u tijeku...\n{percent}%",
+    "pdf_import_progress": "Uvoz PDF-a u tijeku...\n{percent}%",
+    "pdf_opening": "Otvaranje PDF datoteke...",
+    "pdf_page": "Stranica {current} / {total}",
+    "warning_close": "Upozorenje! Promjene nisu spremljene i bit će izgubljene!",
+    "language_label": "Jezik:",
+    "directory_tooltip": "Mapa: {name}\n{count} datoteka\nUkupna veličina: {size} MB",
+    "folder_up_tooltip": "Dvaput kliknite za povratak\nna prethodnu razinu",
+    "status_bar": "{dirs} mapa(e)  |  {files} datoteka(e) ({total_size})  |  {selected} odabrano ({selected_size})",
+    "pdf_converting": "Pretvaranje {total} stranica u slike pri {dpi} DPI...",
+    "pdf_converting_no_change": "Izvlačenje {total} stranica bez izmjene...",
+    "print_progress": "Priprema za ispis...\n{percent}%",
+    "print_preparing": "Molimo pričekajte, priprema za ispis...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nSažetak GNU Opće javne licence v3\n\nDODIJELJENE SLOBODE\nMožete koristiti, kopirati, mijenjati i redistribuirati\nMosaicView, čak i u komercijalne svrhe.\n\nOBVEZE\nSvaka redistribucija (izvorna ili izmijenjena) mora :\n– zadržati licencu GPL v3\n– uključiti izvorni kod ili navesti gdje ga dobiti\n– ne nametati dodatna ograničenja\n\nJAMSTVA\nOvaj softver distribuira se BEZ IKAKVIH JAMSTAVA.\nNjegov autor nije odgovoran za štete nastale njegovim korištenjem.\n\nTrebali biste primiti primjerak GNU Opće javne licence zajedno s ovim programom. Ako nije tako, pogledajte <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Prikaži potpunu licencu",
+    "license_unrar_text": "CBZ datoteke temelje se na ZIP formatu, slobodnom i otvorenom formatu. CBR datoteke, s druge strane, temelje se na RAR formatu, vlasničkom formatu.\n\nMosaicView može otvarati CBR datoteke zahvaljujući UnRAR-u, alatu koji je razvio RARlab i koji se može slobodno redistribuirati.\n\nSlužbena web stranica: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Prikaži UnRAR licencu",
+    "saving_cbz": "Spremanje u tijeku... {percent}%",
+    "empty_canvas_line1": "Ovdje ispustite jednu ili vise CBZ/CBR/CB7/PDF datoteka ili svoje slike",
+    "empty_canvas_line2": "Nakon otvaranja datoteke, mozete nastaviti ispustati druge",
+    "empty_canvas_line3": "Ispustite jednu ili više mapa za pokretanje skupne obrade",
+    "icon_toolbar_config_title": "Konfiguracija alatne trake ikona",
+    "icon_toolbar_active": "Ikone u traci",
+    "icon_toolbar_hidden": "Ikone u rezervi",
+    "license_gpl_full": "Licenca GNU GPL v3",
+    "license_unrar_full": "Licenca UnRAR",
+    "licenses_button": "Licence",
+    "view_full_gpl_license": "Pogledajte potpunu licencu GNU GPL v3",
+    "license_7zip_text": "CB7 datoteke temelje se na formatu 7z, koji je razvio Igor Pavlov i koji se distribuira pod licencijom GNU LGPL.\n\nMosaicView može otvarati CB7 datoteke zahvaljujući 7-Zip — besplatnom programu otvorenog koda.\n\nSlužbena web-stranica : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Prikaži licenciju 7-Zip",
+    "license_7zip_full": "Licencija 7-Zip",
+    "icon_toolbar_show_thumb_slider": "Prikaži klizač veličine sličica",
+    "icon_toolbar_show_lang_combo": "Prikaži birač jezika",
+    "adjusting": "Molimo pričekajte, prilagodbe su u tijeku...\n{current} / {total}",
+    "license_piqad_full": "Licenca fonta pIqaD qolqoS",
+    "license_tengwar_full": "Licenca fonta Alcarin Tengwar",
+    "view_full_piqad_license": "Pogledaj punu licencu pIqaD qolqoS"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Pretvorba slika",
+      "title": "Pretvorba {count} {word}",
+      "word_image": "slike",
+      "word_images": "slika",
+      "info": "Odaberite odredišni format:",
+      "format_png": "PNG (bez gubitka)",
+      "format_jpg": "JPEG (s kompresijom)",
+      "format_webp": "WEBP (moderan)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (visoka kvaliteta)",
+      "format_gif": "GIF (animacija)",
+      "quality_label": "Kvaliteta za JPG/WEBP:",
+      "quality_maximum": "Maksimalna — kvaliteta 95/100",
+      "quality_high": "Visoka — kvaliteta 85/100",
+      "quality_medium": "Srednja — kvaliteta 75/100",
+      "quality_low": "Niska — kvaliteta 60/100",
+      "quality_custom_option": "Prilagođena",
+      "quality_custom": "Kvaliteta prilagođena : {value}/100",
+      "quality_note": "(Ova postavka utječe samo na JPG i WEBP formate)",
+      "quality_window_title": "Odabir kvalitete",
+      "format_gif_static": "Statična GIF",
+      "format_gif_animated": "Animirana GIF (odaberite više slika)"
+    },
+    "split": {
+      "window_title": "Podijeli stranicu",
+      "title": "Podijeli stranicu",
+      "pages_label": "Broj stranica:",
+      "direction_label": "Smjer dijeljenja:",
+      "horizontal": "Vodoravno (lijevo → desno)",
+      "vertical": "Okomito (gore → dolje)",
+      "warning": "⚠ Budući da se izrezivanje izračunava automatski,\nmoguće je da će biti potrebna ručna prilagodba.",
+      "button_split": "Podijeli",
+      "button_cancel": "Odustani"
+    },
+    "join": {
+      "window_title": "Spoji stranice - Promijenite redoslijed",
+      "instructions": "Organizirajte slike:\n• Okomito (gore/dolje) za okomito spajanje\n• Vodoravno (lijevo/desno) za vodoravno spajanje",
+      "merged_filename_prefix": "Spojeno",
+      "heights_label": "Visine",
+      "widths_label": "Širine",
+      "size_adjustment_title": "Prilagodba veličine",
+      "size_adjustment_warning": "⚠️ Odabrane slike imaju različite dimenzije.\nOdaberite kako prilagoditi njihove veličine za spajanje.\nOmjer slike svake slike uvijek će biti očuvan.",
+      "keep_original": "Zadrži izvorne veličine",
+      "keep_original_desc": "(dodaje crne trake za popunjavanje)",
+      "enlarge_small": "Povećaj male slike",
+      "enlarge_small_desc": "(poravnaj na maksimalnu dimenziju)",
+      "reduce_large": "Smanji velike slike",
+      "reduce_large_desc": "(poravnaj na minimalnu dimenziju)",
+      "back_to_arrangement": "Natrag"
+    },
+    "pdf": {
+      "quality_merge": "Odaberite kvalitetu spajanja:",
+      "quality_export": "Odaberite kvalitetu izvoza:",
+      "merge_quality_title": "Kvaliteta spajanja PDF-a",
+      "export_quality_title": "Kvaliteta izvoza PDF-a",
+      "loading_title": "Učitavanje PDF-a...",
+      "dpi_90": "90 DPI - Web objava",
+      "dpi_150": "150 DPI - Dobra kvaliteta (preporučeno za prikaz)",
+      "dpi_200": "200 DPI - Vrlo dobra kvaliteta",
+      "dpi_300": "300 DPI - Izvrsna kvaliteta (standard stripova)",
+      "dpi_600": "600 DPI - Maksimalna kvaliteta (velike datoteke)",
+      "dpi_original": "Bez izmjene slike",
+      "dpi_original_tooltip": "Inteligentna analiza svake stranice PDF-a:\n• Stranice samo sa slikama: zadržava izvorni DPI\n• Stranice samo s tekstom: 300 DPI\n• Mješovite stranice (tekst + slike): DPI slika ako >= 300, inače 300 DPI\nMaksimum: 2400 DPI za ograničenje veličine datoteke"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "Potreban PyMuPDF",
+      "pymupdf_required_message": "PyMuPDF (fitz) nije instaliran. Nije moguće pretvoriti PDF datoteke.",
+      "select_directory_title": "Odaberite direktorij koji sadrži PDF datoteke",
+      "no_pdf_title": "Nema PDF datoteka",
+      "no_pdf_message": "U direktoriju nisu pronađene PDF datoteke:\n{directory}",
+      "confirm_title": "Skupna pretvorba PDF u CBZ",
+      "confirm_message": "{count} PDF datoteka za pretvorbu u {directory} (poddirektoriji uključeni).",
+      "checkbox_permanent_delete": "Brisanje izvornih PDF datoteka bez korištenja\nkoša za smeće (BEZ MOGUĆNOSTI PONIŠTAVANJA)",
+      "start_button": "Započni",
+      "converting_title": "Pretvorba u tijeku...",
+      "converting_progress": "Pretvorba datoteke {current} od ukupno {total}",
+      "page_progress": "Stranica {current} / {total}",
+      "complete_title": "Pretvorba dovršena",
+      "complete_message": "{count} PDF datoteka pretvoreno u direktoriju:",
+      "complete_message_errors": "{count} od {total} PDF datoteka pretvoreno u direktoriju:",
+      "errors_count": "{count} pogreška(e) pronađena(e)."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Odaberite direktorij koji sadrži CBR datoteke",
+      "no_cbr_title": "Nema CBR datoteka",
+      "no_cbr_message": "U direktoriju nisu pronađene CBR datoteke:\\n{directory}",
+      "confirm_title": "Skupna pretvorba CBR u CBZ",
+      "confirm_message": "{count} CBR datoteka za pretvorbu u {directory} (poddirektoriji uključeni).",
+      "checkbox_permanent_delete": "Obriši izvorne CBR datoteke bez korištenja\nkoša za smeće (NEMA POVRATKA)",
+      "start_button": "Započni",
+      "converting_title": "Pretvorba u tijeku...",
+      "converting_progress": "Pretvorba datoteke {current} od {total}",
+      "page_progress": "Stranica {current} / {total}",
+      "complete_title": "Pretvorba završena",
+      "complete_message": "{count} CBR datoteka pretvoreno u direktoriju:",
+      "complete_message_errors": "{count} CBR datoteka pretvoreno od {total} u direktoriju:",
+      "errors_count": "{count} pogrešaka pronađeno.",
+      "renamed_count": "{count} datoteka preimenovano u CBZ",
+      "rarfile_unavailable": "Modul rarfile nije dostupan. Nije moguće konvertirati CBR datoteke."
+    },
+    "close_warning": {
+      "title": "Upozorenje!",
+      "message": "Promjene nisu spremljene i bit će izgubljene!",
+      "btn_close_lose": "Zatvori datoteku i izgubi promjene",
+      "btn_save_cbz": "Primijeni promjene i spremi datoteku",
+      "btn_create_cbz": "Primijeni promjene i stvori CBZ datoteku",
+      "btn_cancel": "Odustani i vrati se na mozaik"
+    },
+    "replace_image": {
+      "title": "Zamijeni oštećenu sliku"
+    },
+    "reduce_size": {
+      "window_title": "Promjena veličine slike",
+      "title": "Promjena veličine {count} {word}",
+      "word_image": "slika",
+      "word_images": "slike",
+      "current_size": "Trenutna veličina: {size} MB",
+      "current_dimensions": "Trenutne dimenzije: {width} × {height} px",
+      "choose_method": "Odaberite metodu promjene veličine:",
+      "custom_dimensions": "Prilagođene dimenzije",
+      "width_label": "Širina:",
+      "height_label": "Visina:",
+      "use_custom_dimensions": "Koristi ove dimenzije",
+      "different_dimensions_warning": "Odabrane stranice imaju različite dimenzije. Prilagođene dimenzije će prisiliti sve stranice na istu veličinu. Provjerite razumijete li posljedice prije nastavka.",
+      "estimated_size": "Procijenjena veličina: {size} MB",
+      "percentage_reduction": "Postotno smanjenje",
+      "percentage_enlargement": "Postotno povećanje",
+      "reduce_0": "0% (bez promjene)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (bez promjene)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Najčešće širine stranica su 1024, 1280, 1600, 1920 i 2000 piksela, ali su prikladne i druge vrijednosti.",
+      "multi_page_width": "Automatski otkrivaj i mijenjaj veličinu više stranica (širina/visina)",
+      "multi_page_width_tooltip": "Omogućava automatsko otkrivanje više stranica: dvostruka stranica, trostruka stranica itd. Množitelj se automatski izračunava na temelju omjera svake stranice, bilo da je u širini (stranice jedna uz drugu) ili visini (stranice složene jedna na drugu)"
+    },
+    "gif_animated": {
+      "window_title": "Stvaranje animiranog GIF-a",
+      "images_title": "Slike animacije",
+      "params_title": "GIF parametri",
+      "frame_delay_label": "Kašnjenje između slika:",
+      "fps_normal": "{fps} sličica/sekundi",
+      "fps_slow": "1 sličica svakih {seconds} sekundi",
+      "loop_label": "Broj ponavljanja:",
+      "loop_info": "(0 = beskonačna petlja)",
+      "disposal_label": "Raspored slika:",
+      "disposal_0": "Nije specificirano",
+      "disposal_1": "Zadrži prethodnu sliku",
+      "disposal_2": "Vrati na boju pozadine",
+      "disposal_3": "Vrati na prethodno stanje",
+      "optimize": "Optimiziraj datoteku (spremi samo razlike)",
+      "metadata_title": "GIF metapodaci",
+      "metadata_dimensions": "Dimenzije: {width} × {height} px",
+      "metadata_frames": "Broj sličica: {count}",
+      "metadata_duration": "Ukupno trajanje: {duration} s",
+      "metadata_fps": "Frekvencija: {fps} fps",
+      "metadata_palette": "Paleta: do 256 boja",
+      "metadata_size": "Procijenjena veličina: {size} KB",
+      "comment_label": "Komentar (neobavezno):",
+      "no_images": "Nije odabrana nijedna slika",
+      "creating_progress": "Učitavanje slika... ({current}/{total})",
+      "creating_normalizing": "Normalizacija slika... ({current}/{total})",
+      "creating_quantizing": "Kvantizacija boja... ({current}/{total})",
+      "creating_saving": "Spremanje GIF-a..."
+    },
+    "save_to_folder": {
+      "title": "Odaberite odredišnu mapu"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Duplicirana imena datoteka",
+      "message": "Otkrivena su identična imena datoteka. Iako je spremanje tehnički\nmoguće, to može uzrokovati probleme s čitanjem u nekim aplikacijama\nza čitanje stripova (nepotpun prikaz, nedostajuće stranice itd.).\n\nPreporučuje se promijeniti brojeve stranica prije spremanja."
+    },
+    "adjustments": {
+      "window_title": "Prilagodbe slike",
+      "title": "Prilagodbe za {count} {word}",
+      "word_image": "slika",
+      "word_images": "slike",
+      "apply_button": "Primijeni",
+      "color_depth_section": "Dubina boje",
+      "brightness_contrast_section": "Svjetlina i kontrast",
+      "compression_section": "Kompresija",
+      "effects_section": "Efekti",
+      "sharpness_section": "Ostrina",
+      "levels_section": "Razine crno/bijelo",
+      "depth_unchanged": "Ne mijenjaj",
+      "depth_32bit": "32 bita (RGBA - boje + prozirnost)",
+      "depth_24bit": "24 bita (RGB - boje)",
+      "depth_8bit": "8 bita (paleta PNG / sive nijanse JPEG)",
+      "depth_1bit": "1 bit (crno-bijelo)",
+      "brightness_label": "Svjetlina: {value}",
+      "contrast_label": "Kontrast: {value}",
+      "compression_enable": "Omoguci ponovnu kompresiju",
+      "compression_quality_label": "Kvaliteta : {value}/100",
+      "sharpness_label": "Ostrina: {value}",
+      "effect_none": "Bez efekta",
+      "effect_grayscale": "Nijanse sive",
+      "effect_sepia": "Sepija",
+      "levels_none": "Bez prilagodbe",
+      "levels_threshold": "Prag (cista crna ili bijela)",
+      "levels_advanced": "Napredne razine (sjenke/srednji tonovi/svjetlina)",
+      "threshold_label": "Prag: {value}",
+      "black_point_label": "Crna tocka: {value}",
+      "gamma_label": "Gama (srednji tonovi): {value}",
+      "white_point_label": "Bijela tocka: {value}",
+      "auto_levels_button": "Automatsko podešavanje",
+      "open_viewer_button": "Prilagodi s preglednikom (preporučeno)",
+      "compression_info": "Kompresija se primjenjuje samo na JPG i WebP slike",
+      "open_viewer_button_simple": "Prilagodi s preglednikom",
+      "reset_button": "Resetiraj",
+      "preview_section": "Pregled",
+      "effect_invert": "Inverzija boja",
+      "preview_warning": "Pretpregled se može razlikovati od konačnog rezultata",
+      "effect_remove_colors": "Uklanjanje boja",
+      "remove_colors_intensity_label": "Intenzitet : {value}",
+      "image_mode_section": "Način slike",
+      "image_mode_rgb": "RGB (boje)",
+      "image_mode_rgba": "RGBA (boje + prozirnost)",
+      "image_mode_l": "L (nijanse sive)",
+      "image_mode_la": "LA (nijanse sive + prozirnost)",
+      "image_mode_cmyk": "CMYK (tisak)",
+      "image_mode_1": "1 (čisti crno-bijeli)",
+      "image_mode_p": "P (paleta od 256 boja)",
+      "saturation_section": "Zasićenost",
+      "saturation_label": "Zasićenost : {value}",
+      "saturation_viewer_title": "Prilagodba zasićenosti",
+      "transparency_section": "Prozirnost",
+      "transparency_info": "Prozirnost se primjenjuje samo na PNG, WebP i ICO slike",
+      "transparency_type_label": "Vrsta :",
+      "transparency_type_flood": "Zona",
+      "transparency_type_global": "Globalno",
+      "transparency_tolerance_label": "Tolerancija : {value}",
+      "transparency_viewer_title": "Podešavanje prozirnosti",
+      "transparency_click_instruction": "Kliknite na boju koju želite učiniti prozirnom",
+      "transparency_undo": "Poništi posljednji klik",
+      "transparency_redo": "Ponovi",
+      "transparency_type_flood_tooltip": "Flood fill : čini prozirnim područje s jednolikim bojom oko kliknutog piksela",
+      "transparency_type_global_tooltip": "Globalna prozirnost : utječe na sve piksele slike čija je boja bliska klikanoj",
+      "transparency_apply": "Primijeni",
+      "transparency_skipped_warning": "{count} slika(e) preskočena(e) — format nije kompatibilan s prozirnosti. Da biste ih uključili, prvo ih pretvorite u PNG.",
+      "unsharp_section": "Adaptivna oštrina",
+      "unsharp_radius_label": "Polumjer: {value}",
+      "unsharp_percent_label": "Intenzitet: {value} %",
+      "unsharp_threshold_label": "Prag: {value}",
+      "unsharp_viewer_title": "Adaptivna oštrina",
+      "auto_levels_tooltip": "Analizira svaku stranicu i automatski prilagođava razine crne i bijele radi maksimalnog kontrasta.\nZa odabir stranice po stranicu koristite preglednik."
+    },
+    "levels_viewer": {
+      "title": "Prilagodba razina s kapaljicom",
+      "apply_current": "Primijeni na ovu stranicu",
+      "apply_all": "Primijeni na sve odabrane stranice",
+      "black_pipette": "Pipeta crne tocke",
+      "white_pipette": "Pipeta bijele tocke",
+      "black_pipette_tooltip": "Kliknite na piksel koji bi trebao biti potpuno crn. Oprez: lako je pretjerati!",
+      "white_pipette_tooltip": "Kliknite na piksel koji bi trebao biti potpuno bijel. Oprez: lako je pretjerati!"
+    },
+    "sharpness_viewer": {
+      "title": "Podešavanje oštrine"
+    },
+    "brightness_viewer": {
+      "title": "Podešavanje svjetline i kontrasta"
+    },
+    "compression_viewer": {
+      "title": "Podešavanje kompresije"
+    },
+    "outliers": {
+      "title": "Stranice s neobičnim dimenzijama",
+      "message": "Sljedeće stranice imaju dimenzije koje se značajno razlikuju od ostalih. Molimo odaberite kako ih obraditi:",
+      "width": "Širina",
+      "height": "Visina",
+      "unusual": "neobičan",
+      "skip": "Ne mijenjaj veličinu",
+      "keep": "zadrži"
+    },
+    "first_page_multi": {
+      "title": "Prva stranica je višestruka",
+      "message": "Prva stranica je prepoznata kao višestruka. Kako je želite numerirati?",
+      "option_auto_desc": "Obično prenumeriranje s automatskim prepoznavanjem.",
+      "option_joint_desc": "Spoj prve i posljednje stranice stripa.",
+      "option_exclude_label": "Ne uključuj u prenumeriranje",
+      "option_exclude_desc": "Stranica zadržava trenutni naziv i ostaje na prvom mjestu. Možete je ručno preimenovati kasnije."
+    },
+    "batch_img": {
+      "select_directory_title": "Odaberite mapu koja sadrži slike",
+      "no_img_title": "Nema pronađenih slikovnih datoteka",
+      "no_img_message": "U mapi nisu pronađene pojedinačne slikovne datoteke :\n{directory}",
+      "confirm_title": "Skupna konverzija pojedinih slika u CBZ",
+      "confirm_message": "{count} slikovna datoteka(e) za konverziju u {directory} (uključeni podmape).",
+      "checkbox_permanent_delete": "Trajno obriši originalne slikovne datoteke\nbez slanja u koš za smeće (NE MOŽE SE PONIŠTITI)",
+      "start_button": "Pokreni",
+      "converting_title": "Konverzija u tijeku...",
+      "converting_progress": "Konverzija datoteke {current} od ukupno {total}",
+      "complete_title": "Konverzija dovršena",
+      "complete_message": "{count} slikovna datoteka(e) konvertirana(e) u mapi :",
+      "complete_message_errors": "{count} od {total} slikovnih datoteka konvertirano u mapi :",
+      "errors_count": "Pronađena(e) {count} greška(e).",
+      "converted_by_ext": "{ext} : {count} datoteka(e)",
+      "mode_title": "Pretvori slike u CBZ",
+      "mode_intro": "Kako želite grupirati slike?",
+      "mode_one_per_image": "Pretvorite svaku sliku u zasebne CBZ datoteke",
+      "mode_one_per_image_sub": "(Svaka slika postaje zasebna CBZ datoteka)",
+      "mode_all_in_one": "Grupirajte sve slike u jednu CBZ datoteku",
+      "mode_all_in_one_sub": "(Sve slike u direktoriju grupiraju se u jednu CBZ datoteku)"
+    },
+    "batch_drop": {
+      "window_title": "Skupna obrada mapa",
+      "intro_single": "Ispuštena je 1 mapa. Koju obradu želite primijeniti?",
+      "intro_multiple": "Ispuštene su {count} mape. Koju obradu želite primijeniti?",
+      "recursive_note": "Podmape će također biti pretražene.",
+      "mixed_drop_title": "Ispuštanje nije podržano",
+      "mixed_drop_message": "Istovremeno ste ispustili datoteke i mape. Ispustite samo datoteke ili samo mape."
+    },
+    "pdf_unlock": {
+      "title": "PDF zaštićen od izmjena",
+      "message": "Stranice su uvezene normalno.\n\nOva PDF datoteka je zaštićena od izmjena (lozinka vlasnika).\n\nŽelite li spremiti kopiju PDF datoteke bez ove zaštite?",
+      "yes": "Da, spremi otključanu kopiju",
+      "no": "Ne, nastavi bez otključavanja"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF datoteke zaštićene od izmjena",
+      "message_single": "Otkrivena je 1 PDF datoteka zaštićena od izmjena. Pretvorena je u CBZ normalno.\n\nŽelite li spremiti otključanu kopiju u njezin izvorni direktorij?",
+      "message_plural": "Otkrivene su {count} PDF datoteke zaštićene od izmjena. Pretvorene su u CBZ normalno.\n\nŽelite li spremiti otključanu kopiju svake u njezin izvorni direktorij?",
+      "yes": "Da, spremi otključane kopije",
+      "no": "Ne, nastavi bez otključavanja"
+    },
+    "ico_creator": {
+      "title": "Stvori .ico ikonu",
+      "info_message": "Slika će biti promijenjena u više razlučivosti (16, 32, 48, 64, 128, 256 px).\nTrenutna veličina okvira: {w} × {h} px",
+      "btn_validate_crop": "Potvrdi izrezivanje",
+      "btn_validate_no_crop": "Potvrdi bez izrezivanja",
+      "btn_cancel": "Odustani",
+      "btn_transparency": "Postavi prozirnost",
+      "btn_validate_final": "Potvrdi",
+      "tolerance_label": "Tolerancija:",
+      "success_title": ".ico datoteka stvorena",
+      "success_message": "Datoteka {filename} uspješno je stvorena.",
+      "overwrite_title": "Datoteka postoji",
+      "overwrite_message": "Datoteka {filename} već postoji. Prepiši je?",
+      "save_blocked_title": "Pohrana nije moguća",
+      "save_blocked_message": "Ova arhiva sadrži jednu ili više .ico datoteka koje nisu slike stripova. Pohrana je onemogućena dok su te datoteke prisutne u mozaiku.\nZa ponovnu aktivaciju pohrane, izbrišite ih iz mozaika (tipka Del) ili ih izrežite (Ctrl+X) da ih zalijepite drugdje.",
+      "btn_back_to_crop": "Natrag na izrezivanje"
+    },
+    "video_save_blocked": {
+      "title": "Spremanje nije moguće",
+      "message": "Ova arhiva sadrži jednu ili više video datoteka. Spremanje je onemogućeno dok su ove datoteke prisutne u mozaiku.\nDa biste ponovno omogućili spremanje, izbrišite ih iz mozaika (tipka Del) ili ih izrežite (Ctrl+X) da biste ih zalijepili drugdje."
+    },
+    "open_file": {
+      "title": "Otvori arhivu",
+      "filter_archives": "Arhive (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Sve datoteke (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Licenca"
+    },
+    "replace_corrupted_image": {
+      "title": "Zamijeni oštećenu sliku",
+      "filter_images": "Slike (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Sve datoteke (*)"
+    },
+    "see_log": "POGLEDAJ LOG"
+  },
+  "tooltip": {
+    "source_archive": "Izvorna datoteka: {name}",
+    "file": "Datoteka: {name}",
+    "reason": "Razlog: {reason}",
+    "size_kb": "Veličina: {size} KB",
+    "size_mb": "Veličina: {size} MB",
+    "file_size": "Veličina: {size}",
+    "dimensions": "Dimenzije: {width} × {height} px",
+    "resolution": "Rezolucija: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: nedefinirano",
+    "cbr_info": "CBR datoteke koriste RAR format, vlasnički i patentiran;\nne mogu se mijenjati, promjene se spremaju u novu CBZ datoteku.",
+    "rotate_left": "Rotacija za 90 stupnjeva ulijevo",
+    "rotate_right": "Rotacija za 90 stupnjeva udesno",
+    "mirror_horizontal": "Horizontalno zrcaljenje",
+    "mirror_vertical": "Vertikalno zrcaljenje",
+    "fullscreen": "Cijeli zaslon",
+    "help_button": "Korisnički priručnik",
+    "theme_button": "Prebaci između svijetle i tamne teme",
+    "font_decrease_button": "Smanji veličinu fonta",
+    "font_increase_button": "Povećaj veličinu fonta",
+    "color_depth": "Boje: {bits} bita ({mode})",
+    "batch_pdf_to_cbz": "Pretvara u CBZ sve PDF datoteke u direktoriju\ni njegovim poddirektorijima. Slike se izdvajaju\ni arhiviraju bez ikakve rekompresije.",
+    "batch_pdf_permanent_delete": "UPOZORENJE: ako je ova opcija označena,\nizvorne PDF datoteke bit će trajno\nobrisane nakon pretvorbe, bez mogućnosti\noporavka. Provjerite imate li sigurnosnu\nkopiju ako je potrebno.",
+    "batch_cbr_to_cbz": "Pretvara u CBZ sve CBR datoteke\nkoje se nalaze u direktoriju\ni njegovim poddirektorijima.",
+    "batch_cbr_permanent_delete": "UPOZORENJE: ako je ova opcija označena,\nizvorne CBR datoteke bit će trajno\nobrisane nakon pretvorbe, bez mogućnosti\noporavka. Provjerite imate li sigurnosnu\nkopiju ako je potrebno.",
+    "renumber_btn_1": "Način automatskog prepoznavanja višestrukih stranica\nDesni klik za promjenu načina",
+    "renumber_btn_2": "Način jednostavnog numeriranja\nDesni klik za promjenu načina",
+    "corrupted_header": "Oštećena slika",
+    "right_click_instruction1": "Desni klik za zamjenu ili brisanje",
+    "right_click_instruction2": "ove slike.",
+    "unknown_error": "Nepoznata greška",
+    "batch_img_to_cbz": "Konvertira sve slikovne datoteke pronađene u mapi\ni njezinim podmapama u CBZ,\nstvarajući jednu CBZ datoteku po slici.",
+    "batch_img_permanent_delete": "UPOZORENJE : ako je ova opcija označena,\noriginalne slikovne datoteke bit će trajno\nobrisane nakon konverzije bez mogućnosti\nopoziva. Provjerite imate li sigurnosnu kopiju\nako je potrebno.",
+    "too_large_header": "Slika je prevelika za učitavanje",
+    "too_large_pixels": "Dimenzije: {pixels}",
+    "icon_toolbar_config_button": "Konfiguracija ikona",
+    "icon_toolbar_size_decrease": "Smanji veličinu ikona",
+    "icon_toolbar_size_increase": "Povećaj veličinu ikona",
+    "source_loose": "Slobodna slika",
+    "source_web": "Web slika"
+  },
+  "help": {
+    "title": "MosaicView - Upute za korištenje",
+    "intro": "MosaicView vam omogućuje manipulaciju i uređivanje stripova (digitalnih knjiga stripova) bez potrebe za izvlačenjem iz arhiva. Aplikacija podržava CBZ (ZIP), CBR (RAR) i PDF formate. Aplikacija je kompatibilna isključivo sa 64-bitnim sustavima.",
+    "open_files": "Otvaranje datoteka",
+    "open_files_content": "• Kliknite na gumb 'Otvori CBZ/CBR/CB7/PDF'\n• Ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, PDF, slike (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB datoteke se takoder mogu otvoriti, ali ce biti izvucene samo njihove slike (tekst se ignorira).\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u isti mapu.",
+    "mosaic": "Mozaik",
+    "mosaic_content": "Mozaik prikazuje sve stranice vašeg stripa kao sličice. Možete:\n• Promijeniti raspored stranica povlačenjem i ispuštanjem (numeriranje stranica bit će automatsko i provest će se prema aktivnom načinu prenumeriranja)\n• Odabrati više stranica (Ctrl+klik ili Shift+klik)\n• Prilagoditi veličinu sličica klizačem\n• Ručno preimenovati datoteke klikom na njihovo ime\n• Povući i ispustiti datoteke stripova (CBZ/CBR/PDF) iz Windows Explorera izravno u drugi otvoreni strip za spajanje njihovog sadržaja",
+    "manipulation": "Manipulacija stranicama",
+    "manipulation_content": "• Povucite i ispustite stranice kako biste ih reorganizirali\n• Povucite cijeli strip u drugi kako biste ih spojili\n• Desni klik na stranicu za pristup opcijama (rotacija, brisanje itd.)\n• Dvostruki klik na stranicu za otvaranje preglednika\n• Izvezite pojedinačne stranice povlačenjem u Windows mapu ili putem Ctrl+C / Ctrl+V",
+    "renumber": "Prenumeriranje stranica",
+    "renumber_content": "MosaicView nudi dva načina prenumeriranja stranica, dostupna putem gumba za prenumeriranje, kontekstnog izbornika (desni klik) ili automatski prilikom povlačenja i ispuštanja:\n\n• Način automatskog otkrivanja višestrukih stranica (zadani način): aplikacija analizira širinu svake stranice kako bi otkrila dvostruke, trostruke stranice itd. Višestruke stranice se prenumeriraju u skladu s tim (npr.: dvostruka stranica će se nazvati 003-004, trostruka 005-006-007). Iznad 4 stranice prikazuju se samo prvi i zadnji broj (npr.: 010---025).\n\n• Način jednostavnog numeriranja: svaka stranica dobiva jedinstven redni broj (001, 002, 003...), bez obzira na širinu stranica.\n\nZa prebacivanje između dva načina, desnom tipkom kliknite na gumb za prenumeriranje. Opis alata prikazuje aktivni način. Odabrani način također se primjenjuje na automatsko prenumeriranje prilikom povlačenja i ispuštanja.",
+    "flatten": "Ravnanje mapa",
+    "flatten_content": "Ako vaša arhiva sadrži podmape, koristite 'Ravnaj mape' za premještanje svih slika na istu razinu.",
+    "viewer": "Preglednik",
+    "viewer_content": "Dvaput kliknite na stranicu za otvaranje preglednika:\n• Tipke ← → : navigacija između stranica\n• Tipka D : prebacivanje između 3 načina čitanja\n  - Jednostruka stranica: po jedna stranica\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5, itd.\n  - Kontinuirane dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5, itd.\n• Kotačić miša: brza navigacija\n• Ctrl+kotačić ili Ctrl+Plus/Minus: povećanje\n• Ctrl+0: resetiranje povećanja\n• Tipka F11: cijeli zaslon\n• Dvostruki klik: prebacivanje cijelog zaslona\n• Tipka Escape: otkaz okvira za obrezivanje / izlaz iz preglednika",
+    "join_pages": "Spajanje stranica",
+    "join_pages_content": "Odaberite više uzastopnih stranica, desni klik → 'Spoji odabrane stranice' za spajanje stranica vodoravno ili okomito. Format stvorene slike odgovara formatu izvornih stranica ako su sve identične, inače je prema zadanim postavkama PNG.",
+    "split_pages": "Dijeljenje stranica",
+    "split_pages_content": "Za automatsko dijeljenje dvostrukih stranica:\n• Odaberite stranice za dijeljenje\n• Desni klik → 'Podijeli odabrane stranice'\n• Odaberite smjer (okomito ili vodoravno)",
+    "crop": "Izrezivanje u pregledniku",
+    "crop_content": "U pregledniku, nacrtajte pravokutnik na slici za definiranje područja izrezivanja:\n• Nacrtajte pravokutnik mišem\n• Promijenite veličinu povlačenjem rubova ili kutova\n• Kliknite 'Potvrdi izrez' za primjenu\n• Izrezivanje se primjenjuje na trenutnu sliku\n• Tipka Escape: otkaz okvira za obrezivanje",
+    "shortcuts": "Prečaci tipkovnice",
+    "shortcuts_content": "• Ctrl+Z: Poništi posljednju radnju\n• Ctrl+Y: Ponovi poništenu radnju\n• Ctrl+A: Odaberi sve stranice\n• Ctrl+I: Invertiraj odabir\n• Ctrl+C: Kopiraj odabrane stranice\n• Ctrl+X: Izreži odabrane stranice\n• Ctrl+V: Zalijepi stranice\n• Delete: Izbriši odabrane stranice\n• F5: Ažuriraj prikaz mozaika\n• F11: Prebacivanje cijelog zaslona (izlaz s F11 ili ESC)",
+    "dark_mode": "Tamni način",
+    "dark_mode_content": "Kliknite gumb sunce/mjesec za prebacivanje između svijetle i tamne teme.",
+    "sort": "Sortiranje stranica",
+    "sort_content": "Koristite gumb 'Sortiraj' za automatsku reorganizaciju stranica po:\n• Imenu, Vrsti, Veličini, Širini, Visini, Rezoluciji ili DPI",
+    "save": "Spremanje",
+    "save_content": "• 'Spremi': sprema promjene u originalnu datoteku\n• 'Spremi kao': stvara novu arhivu\n• 'Stvori CBZ': dostupno u načinu samo slika (bez arhive)",
+    "other": "Ostale funkcije",
+    "other_content": "• Rotacija: rotirajte jednu ili više stranica\n• Pretvorba: pretvorite slike u različite formate (PNG, JPEG, WEBP, BMP, TIFF, GIF). Napomena: slike u CMYK načinu automatski se pretvaraju u RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Napomena: slike u CMYK načinu automatski se pretvaraju u RGB\n• Ispis: ispišite odabrane stranice ili sve stranice\n• Izvlačenje: izvucite određene stranice\n• Kartica Metapodaci: prikazuje informacije iz ComicInfo.xml datoteke (ako postoji u arhivi). Ako dodate ili uklonite stranicu iz stripa koji sadrži metapodatke, aplikacija će predložiti promjenu broja stranica koji je tamo naveden. Ostali metapodaci se ne mogu mijenjati. Ovo ograničenje je namjerno i rezultat je izbora dizajna.",
+    "config_files": "Konfiguracijske i privremene datoteke",
+    "config_files_content": "MosaicView stvara datoteku pod nazivom .mosaicview_config.json. Ova datoteka sadrži neke parametre potrebne za pravilno funkcioniranje gumba za resetiranje, kao i popis nedavno otvorenih stripova koji je očito potreban za prikazivanje nedavno otvorenih datoteka. MosaicView također sprema privremene datoteke, koje su potrebne za razne operacije obrade slika.\nSve te datoteke nalaze se u direktoriju {temp_dir}.\nPrivremene datoteke brišu se svaki put kad se aplikacija zatvori, ali datoteka .mosaicview_config.json, po svojoj prirodi, namijenjena je čuvanju.\nMožete, međutim, ručno izbrisati te datoteke tako da odete u direktorij {temp_dir} ili kliknete gumbe u nastavku. Datoteka .mosaicview_config.json bit će ponovno stvorena svaki put kad se aplikacija otvori, a privremene datoteke bit će ponovno stvorene prema potrebi.",
+    "config_clear_temp": "Izbriši privremene datoteke",
+    "config_clear_recent": "Obriši nedavne datoteke",
+    "config_clear_config": "Izbriši konfiguracijsku datoteku",
+    "config_temp_cleared": "Privremene datoteke uspješno su izbrisane.",
+    "config_config_cleared": "Konfiguracijska datoteka uspješno je izbrisana.\nBit će ponovno stvorena pri sljedećem pokretanju aplikacije.",
+    "language": "Odabir jezika",
+    "language_content": "MosaicView je dostupan na više jezika.\nPo zadanim postavkama, aplikacija automatski otkriva jezik vašeg operativnog sustava i prikazuje se na tom jeziku ako je podržan. Ako vaš sustav koristi nepodržani jezik, sučelje se prikazuje na engleskom.\nMožete ručno promijeniti jezik u bilo kojem trenutku pomoću padajućeg izbornika smještenog na dnu stupca gumba, ispod klizača veličine minijatura. Vaš odabir bit će spremljen i primijenjen pri sljedećem pokretanju aplikacije.\nDOSTUPNI JEZICI: arapski, armenski, bugarski, češki, danski, engleski, estonski, filipinski, finski, francuski, grčki, hindi, hrvatski, indonezijski, irski, islandski, talijanski, japanski, kineski (pojednostavljeni), kineski (tradicionalni), korejski, latvijski, litavski, mađarski, malajski, malteški, nizozemski, njemački, norveški, poljski, portugalski, rumunjski, slovački, slovenski, španjolski, švedski, tajlandski, tamilski, turski, ukrajinski, vijetnamski.\nDOSTUPNI IZMIŠLJENI JEZICI: klingonski (verzija latiničnog alfabeta i pIqaD alfabeta), sindarin (verzija latiničnog alfabeta i tengwar alfabeta), quenya (verzija latiničnog alfabeta i tengwar alfabeta).\n\nOvaj alat koristi Windows fontove, osim za pIqaD (klingonski jezik) i tengwar (vilinskim jezici: sindarin i quenya) fontove. Ovi fontovi su slobodni za korištenje i dolaze s ovih web stranica:\n- za pIqaD (klingonsku abecedu): {url_piqad}\n- za tengwar (vilinsku abecedu, za sindarin i quenya): {url_tengwar}\nU slučaju da ove web stranice više nisu aktivne, možete preuzeti pIqaD i tengwar fontove klikom na gumbe ispod:\n\nOvaj softver razvijen je na francuskom. Prijevodi na druge jezike napravljeni su pomoću umjetne inteligencije, posebno Claudea. Odlučio sam podržati oko četrdeset jezika. Ali očito, ne govorim sve te jezike. Stoga nisam imao drugog izbora nego koristiti umjetnu inteligenciju, jer zapošljavanje i plaćanje 40 različitih prevoditelja nije bilo među razmatranim mogućnostima. Zbog automatske prirode ovih prijevoda, mogu postojati greške. Ispričavam se za to.",
+    "credits": "Vibe Coding, ljubavi moja",
+    "credits_content": "Ne znam ništa o programiranju. Apsolutno ništa. Stoga sam razvio ovaj softver zahvaljujući Claude, AI tvrtke Anthropic, i preciznije s Claude Code. Ne mogu dovoljno preporučiti Claude Code, ova aplikacija je fantastična!",
+    "resize_pages": "Promjena veličine stranica",
+    "resize_pages_content": "Za smanjivanje ili povećavanje stranica:\n• Odaberite jednu ili više stranica\n• Desni klik → 'Promijeni veličinu'\n• Dostupne su tri opcije:\n  - Prilagođene dimenzije: unesite željenu širinu ili visinu (omjer se automatski čuva).\n  - Postotno smanjenje: odaberite postotak od 10% do 90%\n  - Postotno povećanje: odaberite postotak od 10% do 100%\n• Aplikacija prikazuje procijenjenu veličinu slika nakon izmjene\n• Izmjena se odmah primjenjuje na sve odabrane stranice",
+    "language_export_piqad": "pIqaD font",
+    "language_export_tengwar": "Tengwar fontovi",
+    "language_export_piqad_success": "Font izvezen: {filename}\nDostupan u:",
+    "language_export_tengwar_success": "{count} fontova izvezeno\nDostupni u:",
+    "icons": "Ikone",
+    "icons_content": "Većina ikona korištenih u ovom alatu dolazi s ove stranice i slobodne su za nekomercijalnu upotrebu: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nNeke sam osobno modificirao.\nSamo jedna ikona, ikona izvršne datoteke sustava Windows, stvorena je od strane mene (ali s umjetnom inteligencijom, jer sam vrlo, vrlo, vrlo loš grafički dizajner). Imate moje dopuštenje da koristite ovu ikonu kako želite, sve dok navedete svoj izvor.",
+    "icons_view_button": "Prikaži ikone",
+    "icons_window_title": "MosaicView Ikone",
+    "icons_save_all": "Spremi ikone",
+    "icons_saved_success": "{count} ikona/ikone spremljeno/spremljene u:",
+    "icons_save_failed": "Nije moguće spremiti ikone: {error}",
+    "split_ui": "Sučelje s dva panela",
+    "split_ui_content": "MosaicView omogućuje istovremeni prikaz dva arhiva jednog pored drugog.\n\nKliknite na ikonu Podijeli da biste otvorili drugi panel. Svaki panel je neovisan: možete zasebno otvarati, uređivati i spremati arhiv. Aktivni panel označen je plavim okvirom.\n\nZa premještanje stranica iz jednog panela u drugi, povucite ih izravno. Ako je odabrano više stranica, sve se premještaju zajedno. Stranice se umeću na položaj koji označava crvena traka.\n\nKliknite na ikonu Zatvori drugi panel za povratak na način rada s jednim panelom.",
+    "license_gpl": "GPL v3 licenca",
+    "license_unrar": "UnRAR licenca",
+    "config_clear_clipboard": "Obriši datoteke meduspravilišta",
+    "config_clipboard_note": "Iznimka: Privremene datoteke koje koristi Windows meduspravljište (datoteke clipboard_XXXXX) čuvaju se 12 sati nakon kopiranja, kako biste ih mogli zalijepiti čak i nakon zatvaranja aplikacije. Nakon 12 sati automatski se brišu.",
+    "config_log_note": "Skupne pretvorbe (PDF u CBZ i CBR u CBZ) stvaraju datoteku dnevnika u slucaju pogreske. Te datoteke (Log_pdftocbz_.txt i Log_cbrtocbz_.txt) se cuvaju cak i nakon zatvaranja aplikacije, kako bi se mogle pregledati kasnije. Brisu se iskljucivo gumbom \"Izbrisi privremene datoteke\" iznad.",
+    "config_clipboard_cleared": "Datoteke meduspravilišta uspješno su obrisane.",
+    "adjust_images": "Prilagodba slika",
+    "adjust_images_content": "Ova funkcija omogućuje vam retuširanje slika izravno u MosaicView. Možete mijenjati svjetlinu, kontrast, oštrinu, razine, zasićenost, primjenjivati efekte (crno-bijelo, sepija, inverzija boja), podešavati kvalitetu kompresije, uklanjati boje, primjenjivati prozirnost ili pretvarati u različite dubine boja. Neke postavke imaju namjenski preglednik koji omogućuje pregled rezultata u punoj razlučivosti prije primjene. Sličica prikazuje rezultat u stvarnom vremenu u glavnom prozoru.",
+    "create_icon": "Stvori ikonu",
+    "create_icon_content": "MosaicView vam omogućuje stvaranje datoteka ikona (.ico) iz bilo koje slike u mozaiku.\n• Desni klik na sliku → 'Stvori ikonu'\n• Uokvirite željeno područje u pregledniku (ikona će obavezno biti kvadratna)\n• Po potrebi podesite prozirnost\n• Potvrdite: datoteka .ico dodaje se izravno u mozaik\n• Datoteke .ico automatski sadrže sve standardne rezolucije (od 16×16 do 256×256)\n• Dok god je u mozaiku prisutna datoteka .ico, spremanje u CBZ arhivu je blokirano jer format ICO nije podržan u tim arhivama. Izvezite datoteku .ico zasebno (Ctrl+C pa zalijepite u Windows mapu), zatim je izbrišite iz mozaika prije spremanja.",
+    "batch_convert": "Skupna pretvorba",
+    "batch_convert_content": "MosaicView nudi tri funkcije grupnog konvertiranja, dostupne samo kada je mozaik prazan. Za svaku od njih, načelo je isto : odaberite direktorij, potvrdite, pratite napredak u stvarnom vremenu, pregledajte konačni sažetak. Opcija omogućuje trajno brisanje izvornih datoteka umjesto slanja u smeće.\n• CBR → CBZ : konvertira sve CBR (RAR) datoteke u direktoriju i njegovim poddirektorijima. Ako je CBR zapravo ZIP, jednostavno se preimenuje bez konverzije.\n• PDF → CBZ : konvertira sve PDF datoteke u direktoriju i njegovim poddirektorijima. Slike se izdvajaju bez ponovne kompresije.\n• IZOLIRANE SLIKE → CBZ : stvara pojedinačni CBZ za svaku datoteku slike pronađenu u direktoriju i njegovim poddirektorijima. Nevažeće, oštećene, višestranične (TIFF) ili animirane (GIF) slike se zanemaruju i bilježe u log.",
+    "config_open_temp_folder": "Otvori privremenu mapu",
+    "icon_toolbar": "Alatna traka ikona",
+    "icon_toolbar_content": "Alatna traka s ikonama omogućuje brz pristup glavnim funkcijama aplikacije. Ikone možete rasporediti po svojoj volji povlačenjem izravno u traku. Za odabir koje ikone prikazati ili sakriti, kliknite na gumb zupčanika na dnu trake: otvori se prozor za konfiguraciju u kojemu možete premještati ikone između aktivne trake i rezerve. Koristite gumbe « + » i « − » za podešavanje veličine ikona. Konfiguracija se sprema automatski.",
+    "license_7zip": "Licencija 7-Zip"
+  },
+  "misc": {
+    "file_word": "datoteka",
+    "files_word": "datoteke",
+    "corrupted": "oštećeno",
+    "yes": "Da",
+    "no": "Ne",
+    "cancel": "Odustani",
+    "selection_suffix": "kopija-odabir"
+  },
+  "metadata": {
+    "title": "Naslov",
+    "series": "Serija",
+    "number": "Broj",
+    "volume": "Svezak",
+    "summary": "Sažetak",
+    "writer": "Scenarist",
+    "penciller": "Crtač",
+    "inker": "Tušer",
+    "colorist": "Kolorist",
+    "letterer": "Slovoslagač",
+    "cover_artist": "Umjetnik naslovnice",
+    "editor": "Urednik (osoba)",
+    "publisher": "Izdavač (kuća)",
+    "imprint": "Zbirka",
+    "genre": "Žanr",
+    "web": "Web stranica",
+    "page_count": "Broj stranica",
+    "language_iso": "Jezik",
+    "format": "Format",
+    "black_and_white": "Crno-bijelo",
+    "manga": "Manga",
+    "year": "Godina",
+    "month": "Mjesec",
+    "day": "Dan",
+    "notes": "Bilješke",
+    "characters": "Likovi",
+    "locations": "Lokacije",
+    "teams": "Timovi",
+    "story_arc": "Priča arc",
+    "story_arc_number": "Broj arca",
+    "series_group": "Grupa serija",
+    "count": "Broj izdanja",
+    "alternate_series": "Alternativna serija",
+    "alternate_number": "Alternativni broj",
+    "alternate_count": "Alternativni broj",
+    "age_rating": "Dobna granica",
+    "series_complete": "Serija kompletna",
+    "translator": "Prevoditelj",
+    "tags": "Oznake",
+    "scan_information": "Informacije o skeniranju",
+    "community_rating": "Ocjena zajednice",
+    "review": "Recenzija",
+    "gtin": "GTIN",
+    "pages": "Stranice",
+    "pages_col_image": "Slika",
+    "pages_col_type": "Vrsta",
+    "pages_col_width": "Širina",
+    "pages_col_height": "Visina",
+    "pages_col_size": "Veličina (B)"
+  },
+  "web": {
+    "web_download_progress": "Preuzimanje: {downloaded}/{total} slika...",
+    "web_download_cancel": "Odustani",
+    "web_no_images": "Nema slika",
+    "web_no_images_found": "Na ovoj stranici nisu pronađene slike.",
+    "web_imported": "{count} slika uvezeno sa web stranice",
+    "web_drag_drop_title": "Povuci i ispusti web sliku",
+    "web_copy_paste_message": "Izravno povlačenje i ispuštanje iz web preglednika nije podržano.\n\nAlternativno rješenje (jednostavnije):\n\n1. Desnim klikom na sliku u pregledniku\n2. Odaberite 'Kopiraj sliku'\n3. U MosaicView-u koristite gumb 'Zalijepi' ili Ctrl+V\n\nOva metoda funkcionira sa svim web slikama!",
+    "import_web_button": "Web uvoz",
+    "import_web_tooltip": "Zalijepite internetsku adresu za preuzimanje svih slika sa stranice",
+    "import_web_menu": "Web uvoz...",
+    "import_web_dialog_title": "Uvezi slike s web stranice",
+    "import_web_url_label": "Adresa web stranice:",
+    "import_web_ok_button": "U redu",
+    "import_web_cancel_button": "Odustani",
+    "import_web_invalid_url": "Nevažeći URL. Unesite valjanu web adresu."
+  },
+  "donation": {
+    "menu_label": "Donirajte autoru",
+    "title": "Napravite donaciju",
+    "message": "Volite ovaj mali alat i redovito ga koristite. Uložio sam u njega nekoliko stotina sati. Biste li razmislili da mi zahvalite donacijom? Molim vas budite ljubazni, zaista mi treba novac da napunim svoj bazen šampanjcem.\n\nBilo da mi želite poslati nekoliko centi ili nekoliko milijardi eura, prihvaćam sve iznose. Ovu donaciju možete izvršiti putem paypal"
+  },
+  "mail": {
+    "tooltip": "Ovaj gumb otvara vaš zadani softver za e-poštu u Windowsima za slanje e-pošte. Ako nijedan softver nije konfiguriran (na primjer, ako koristite isključivo webmail), možete kopirati MosaicView adresu u međuspremnik desnim klikom na ikonu.",
+    "copy_address": "Kopiraj email adresu MosaicView",
+    "menu_label": "Pošaljite e-mail na MosaicView",
+    "icon_label": "Pošalji e-poštu"
+  },
+  "menu": {
+    "file": "Datoteka",
+    "file_open": "Otvori datoteku",
+    "file_close": "Zatvori datoteku",
+    "batch_convert": "Skupna pretvorba datoteka",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Pojedinačne slike → CBZ",
+    "edit": "Uredi",
+    "undo": "Poništi",
+    "redo": "Ponovi",
+    "paste": "Zalijepi",
+    "delete": "Izbriši",
+    "invert_selection": "Obrni odabir",
+    "select_all": "Odaberi sve",
+    "deselect": "Poništi odabir",
+    "refresh_mosaic": "Osvježi mozaik",
+    "images": "Slike",
+    "rotation": "Rotacija",
+    "archives": "Arhivi",
+    "sort": "Sortiranje",
+    "system": "Sustav",
+    "decrease_font": "Smanji font",
+    "increase_font": "Povećaj font",
+    "language": "Jezici",
+    "language_real": "Pravi jezici",
+    "language_fictional": "Izmišljeni jezici",
+    "about": "O programu",
+    "export_piqad_font": "Spremi font pIqaD",
+    "export_tengwar_fonts": "Spremi fontove tengwar"
+  }
+}

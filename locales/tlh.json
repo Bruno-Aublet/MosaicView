@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "De'wI' Soj 'oH digital comics chenmoHwI'pu' ghap",
+  "buttons": {
+    "open_file": "CBZ/CBR/CB7/PDF poSmoH",
+    "close_file": "De' SoQmoH",
+    "create_cbz": "CBZ per chenmoH",
+    "flatten_dirs": "Hoch De'mey Hoch\njer jevmoH 'ej\nvo'mey tlhejmoH",
+    "renumber": "ghItlh\ntoghlu'pu'",
+    "undo": "⤺ qIl",
+    "redo": "vI'ang ⤻",
+    "copy": "lulegh",
+    "cut": "pe'",
+    "paste": "lan",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "latlh cham\njoq choHmoH",
+    "join_pages": "ghItlhmey qIpmoH",
+    "split_page": "ghItlh mobmoH",
+    "save_as": "ngaS qaSpa'\n(chu' CBZ chenmoH)",
+    "save_selection": "wIv\nCBZ ngaS",
+    "print_selection": "wIv nger",
+    "print_all": "Hoch qonlu'bogh comics nger",
+    "sort": "qIp",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "choHmoH",
+    "cancel": "qIl",
+    "split_button": "mobmoH",
+    "join_button": "taH",
+    "validate_crop": "pe'meH lo'laH",
+    "ok": "lu'",
+    "close": "SoQmoH",
+    "apply_and_save": "choHmey lo' 'ej De' ngaS",
+    "apply_and_create": "choHmey lo' 'ej CBZ De' chenmoH",
+    "close_and_lose": "De' SoQmoH 'ej choHmey qIlmoH",
+    "cancel_return": "qIl 'ej Hur'Daq chegh",
+    "update_page_count": "yut chut mI'\ni metadata",
+    "invert_selection": "wIvghach tam",
+    "reduce_size": "ghItlhwI' wey choH",
+    "mirror_vertical": "⇅",
+    "create_gif": "GIF chenmoH",
+    "edit_gif": "GIF QummeH choH",
+    "save_to_folder": "ghItlhwI'mey\nwIvlu'bogh",
+    "continue": "taH",
+    "reset": "↻",
+    "yes": "HIja'",
+    "no": "ghobe'",
+    "renumber_recommended": "cha' ghegh (qaspa')",
+    "ignore_and_save": "busha' 'ej choh",
+    "rename_to_cbz": ".cbz pong choH",
+    "open_without_rename": "pong choHbe'bogh poSmoH",
+    "rename_to_cbr": ".cbr pong choh",
+    "adjustments": "wov'a',\nmI' joq",
+    "batch_cbr_to_cbz": "ngoq CBR moj CBZ\n che' DIvI'",
+    "batch_pdf_to_cbz": "PDF De'mey\n CBZ chen law'",
+    "batch_img_to_cbz": "mI' choHmoHmeH\n wej nav CBZ",
+    "icon_toolbar_reset": "chu'",
+    "delete_selected": "teq",
+    "save": "choq",
+    "rename_to_cb7": ".cb7 pong tIS",
+    "split_ui": "chu' ghoj cha' Hol",
+    "unsplit_ui": "legh wa' Hol"
+  },
+  "tabs": {
+    "mosaic": "Hur'",
+    "metadata": "De'mey"
+  },
+  "viewer": {
+    "title": "leghwI'",
+    "mode_single": "wa' nugh  [D]",
+    "mode_double": "cha' nugh  [D]",
+    "mode_continuous": "tlhIngan mIw  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "ghItlh bov (←)",
+      "next_page": "ghItlh veb (→)",
+      "zoom_in": "tIn ngo' + (Ctrl+Plus)",
+      "zoom_out": "tIn puS - (Ctrl+Minus)",
+      "zoom_reset": "tIn ngo' chu'moH (Ctrl+0)",
+      "reading_mode_double": "laD cham choHmoH (D) → cha' ghItlhmey",
+      "reading_mode_continuous": "laD cham choHmoH (D) → cha' ghItlhmey taH",
+      "reading_mode_single": "laD cham choHmoH (D) → ghItlh wa'",
+      "fullscreen_exit": "Hoch SIrgh mej (F11)",
+      "fullscreen": "Hoch SIrgh (F11)",
+      "close_viewer": "leghwI' SoQmoH (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ cha'nob Qaw'lu' - latlh cha'nob lo'",
+      "corrupted_delete": "⚠️ cha'nob vIHoHmoH",
+      "copy": "lulegh (Ctrl+C)",
+      "cut": "pe' (Ctrl+X)",
+      "paste": "lan (Ctrl+V)",
+      "paste_clipboard": "De'wI' bInpu'bogh vo' lan (Ctrl+V)",
+      "delete": "HoHmoH (Delete)",
+      "deselect": "wIvHa' (ESC)",
+      "rotate_right": "↻ nIH SIch",
+      "rotate_left": "↺ poS SIch",
+      "mirror": "⇄ nIH-poS nuHHom",
+      "crop": "pe'meH",
+      "convert": "latlh cham joq choHmoH...",
+      "join": "wIvlu'pu'bogh ghItlhmey qIpmoH",
+      "split": "wIvlu'bogh ghItlh mobmoH",
+      "save_selection": "wIv CBZ ngaS",
+      "print_selection": "wIv nger",
+      "copy_archive": "per naQ lulegh",
+      "undo": "qIl (Ctrl+Z)",
+      "redo": "vI'ang (Ctrl+Y)",
+      "renumber_auto": "paq mI'mey chu' (nIb paq'mey Sam'meH)",
+      "renumber_simple": "paq mI'mey chu' (nap mI'meH)",
+      "sort_submenu": "ghItlhmey qIp",
+      "sort_name": "pong lo'lu'bogh",
+      "sort_type": "Segh lo'lu'bogh",
+      "sort_size": "'ugh lo'lu'bogh",
+      "sort_width": "tIq lo'lu'bogh",
+      "sort_height": "jen lo'lu'bogh",
+      "sort_resolution": "nup lo'lu'bogh",
+      "sort_dpi": "DPI lo'lu'bogh",
+      "create_cbz": "CBZ per chenmoH",
+      "save_as": "ngaS qaSpa'...",
+      "close_file": "De' SoQmoH",
+      "help": "lo'laHghach QIjmeH",
+      "update_page_count": "yut chut mI' metadata",
+      "invert_selection": "wIvghach tam (Ctrl+I)",
+      "reduce_size": "ghItlhwI' wey choH",
+      "mirror_vertical": "⇅ rIl 'eb",
+      "edit_animated_gif": "GIF QummeH choH...",
+      "save_to_folder": "ghItlhwI'mey wIvlu'bogh",
+      "adjustments": "wov'a', mI', nguv...",
+      "refresh_mosaic": "chu'Ha' mosaic (F5)",
+      "create_ico": "chenmoH .ico nav"
+    },
+    "canvas_no_file": {
+      "open": "CBZ/CBR/CB7/PDF poSmoH",
+      "recent_files": "De'mey ngoQ",
+      "clear_history": "qun chImmoH"
+    },
+    "canvas_with_file": {
+      "close": "De' SoQmoH",
+      "paste": "lan (Ctrl+V)",
+      "paste_clipboard": "De'wI' bInpu'bogh vo' lan (Ctrl+V)",
+      "select_all": "Hoch wIv (Ctrl+A)",
+      "deselect": "wIvHa' (ESC)",
+      "copy_archive": "per naQ lulegh",
+      "print_all": "Hoch comics nger",
+      "renumber_auto": "paq mI'mey chu' (nIb paq'mey Sam'meH)",
+      "renumber_simple": "paq mI'mey chu' (nap mI'meH)",
+      "flatten": "vo'mey chuHmoH",
+      "save_selection": "wIv CBZ ngaS",
+      "hide_sidebar": "« qItmey tlhegh So'",
+      "show_sidebar": "» qItmey tlhegh 'ang",
+      "decrease_thumbs": "mach cha'nob tInghach puSmoH",
+      "increase_thumbs": "mach cha'nob tInghach tInmoH",
+      "theme_dark": "Hurgh chu'wI' lo'",
+      "theme_light": "wovqu' chu'wI' lo'",
+      "sort_submenu": "ghItlhmey qIp",
+      "undo": "qIl (Ctrl+Z)",
+      "redo": "vI'ang (Ctrl+Y)",
+      "create_cbz": "CBZ per chenmoH",
+      "save_as": "ngaS qaSpa'...",
+      "help": "lo'laHghach QIjmeH",
+      "update_page_count": "yut chut mI' metadata",
+      "invert_selection": "wIvghach tam (Ctrl+I)",
+      "fullscreen": "Hoch beQ (F11)",
+      "fullscreen_exit": "Hoch beQ mej (F11 pagh ESC)",
+      "quit": "qawHaq mevmoH"
+    },
+    "canvas": {
+      "quit": "qawHaq mevmoH",
+      "reset": "chu' qa' paq:\n• wanlIj HoS je 'otlh\n• Hurgh mIw → wov\n• mach mIl'oD HoS → motlh\n• DoQ tIq → leghlaH / 220 px\n• Hol → chu'moH SeH\n• HoS mu' → motlh",
+      "reset_label": "chu' qawHaq"
+    },
+    "font_size": {
+      "decrease": "mach chenmoH tlhIngan Hol nobwI'",
+      "increase": "tIn chenmoH tlhIngan Hol nobwI'"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "pong lo'lu'bogh qIp",
+    "sort_type": "Segh lo'lu'bogh qIp",
+    "sort_size": "'ugh lo'lu'bogh qIp",
+    "sort_width": "tIq lo'lu'bogh qIp",
+    "sort_height": "jen lo'lu'bogh qIp",
+    "sort_resolution": "nup lo'lu'bogh qIp",
+    "sort_dpi": "DPI lo'lu'bogh qIp"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "per chIm",
+        "message": "CBZ per De'mey tu'be'lu'."
+      },
+      "empty_cbr": {
+        "title": "per chIm",
+        "message": "CBR per De'mey tu'be'lu'."
+      },
+      "files_ignored": {
+        "title": "De'mey poQbe'lu'"
+      },
+      "no_selection_crop": {
+        "title": "pagh wIv",
+        "message": "cha'nob pe'meH DawIvnIS."
+      },
+      "multi_selection_crop": {
+        "title": "law' wIv",
+        "message": "cha'nob wa' neH DapelaH.\ncha'nob wa' neH yIwIv."
+      },
+      "invalid_selection_crop": {
+        "title": "wIv lugh'be'",
+        "message": "cha'nobmey neH pe'lu'laH."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "lo'laHghach tu'be'lu'",
+        "message": "ghItlhmey vIH lo'laHghach vo' puSmey Daq tu'be'lu'.\nvo'mey chuHmoH pagh jer Daq yIchegh."
+      },
+      "no_selection_convert": {
+        "title": "pagh wIv",
+        "message": "cha'nob wa' choHmeH DawIvnIS."
+      },
+      "invalid_selection_convert": {
+        "title": "wIv lugh'be'",
+        "message": "cha'nobmey neH choHlu'laH."
+      },
+      "no_selection_split": {
+        "title": "pagh wIv",
+        "message": "cha'nob mobmeH DawIvnIS."
+      },
+      "multi_selection_split": {
+        "title": "law' wIv",
+        "message": "cha'nob wa' neH DamoblaH.\ncha'nob wa' neH yIwIv."
+      },
+      "invalid_selection_split": {
+        "title": "wIv lugh'be'",
+        "message": "cha'nobmey neH moblu'laH."
+      },
+      "invalid_number_split": {
+        "title": "mI' lugh'be'",
+        "message": "ghItlhmey mI' cha' joq wa'maH Daq ghoS."
+      },
+      "insufficient_selection_join": {
+        "title": "wIv bIQ",
+        "message": "cha'nobmey cha' qIpmeH DawIvnIS."
+      },
+      "invalid_selection_join": {
+        "title": "wIv lugh'be'",
+        "message": "cha'nobmey neH qIplu'laH."
+      },
+      "pil_not_available": {
+        "title": "PIL tu'be'lu'",
+        "message": "PIL De'wI'Hom De'wI' bInpu'bogh vo' lan lo'laHghach tu'be'lu'."
+      },
+      "format_not_supported": {
+        "title": "cham Qorlu'be'",
+        "message": "cha'nob cham Qorlu'be' pagh De' Qaw'lu'.\ncham Qorlu'bogh: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "wIv tu'be'lu'",
+        "message": "pe'meH latlhmey yor wa'DIch yIchenmoH."
+      },
+      "cannot_open_file": {
+        "title": "De' poSlaHbe'",
+        "message": "Unable to load the file."
+      },
+      "corrupted_images": {
+        "title": "cha'nobmey Qaw'lu'",
+        "summary": "{count} corrupted image(s) detected out of {total}.",
+        "hint": "They are displayed with a special icon.\nRight-click a corrupted image to replace or delete it.",
+        "more": "... and {count} more"
+      },
+      "no_image_print": {
+        "title": "cha'nob tu'be'lu'",
+        "message": "cha'nob nger tu'be'lu'."
+      },
+      "no_valid_image_print": {
+        "title": "cha'nob tu'be'lu'",
+        "message": "cha'nob lugh nger tu'be'lu'."
+      },
+      "no_selection_print": {
+        "title": "pagh wIv",
+        "message": "cha'nob wa' DawIvnIS."
+      },
+      "no_valid_selection_print": {
+        "title": "cha'nob tu'be'lu'",
+        "message": "wIv Daq cha'nob lugh tu'be'lu'."
+      },
+      "save_cancelled": {
+        "title": "ngaS qIllu'",
+        "message": "ngaS qaSpa' De'mey ponglIj ghopDu'wIjmo' yISuq."
+      },
+      "empty_pdf": {
+        "title": "PDF chIm",
+        "message": "PDF De' ghItlhmey tu'be'lu'."
+      },
+      "no_selection_save": {
+        "title": "ghuH",
+        "message": "ghItlh wa' ngaSmeH DawIvnIS."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "vIH Qotlu'",
+        "message": "ghItlhmey vIHmeH lo'laHghach comics jer neH Daq tu'lu'.\n\nghItlhmey vIHmeH:\n1. jer Daq yIchegh 'ej chen chuS qIt yIbuS\n2. pagh comics yIchuHmoH 'ej vo' puSmey yItlhejmoH"
+      },
+      "no_selection_reduce": {
+        "title": "pagh wIv",
+        "message": "wa' paq poD yInIDqa'."
+      },
+      "invalid_selection_reduce": {
+        "title": "lugh wIv",
+        "message": "ngu' neH poD lu'."
+      },
+      "invalid_dimensions": {
+        "title": "lugh tIn'an",
+        "message": "lugh tIn'an yI'el (QaQ mI'mey)."
+      },
+      "no_images_for_gif": {
+        "title": "pagh ngu'",
+        "message": "wa' ngu' poQ corima GIF chenmoH."
+      },
+      "no_valid_images": {
+        "title": "pagh lugh ngu'",
+        "message": "lugh ngu' tu'be'lu' GIF chenmoH."
+      },
+      "animated_gif_in_comic": {
+        "title": "GIF jor'e' tu'lu'",
+        "message": "ghuH: comic vIqIp GIF yInroH wa' pagh law'.\\n\\ncomic laDwI'mey (CDisplayEx, YACReader, latlh je) naQ'e' wa'DIch neH 'angchu' GIF Hoch.\\n\\nGIF yInroH legh 'e' neH DaneHchugh, comic vengHomvo' cha' pol \"ghItlhwI'mey wIvlu'bogh\" pagh \"GIF yInroH choH\" wIH lo' DaneH.\\n\\ncomic pol DaneH'a'?"
+      },
+      "no_selection_adjust": {
+        "title": "pagh wIv",
+        "message": "wa' ngo' maHvaD wIv 'e' yImev choH lo'meH."
+      },
+      "invalid_selection_adjust": {
+        "title": "Qagh wIv",
+        "message": "ngo'mey neH choH lo' DachoH."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "mIw lulo'laHbe'",
+        "message": "mIw lulo'laHbe' bIghHa'mey vo' SoH Hergh 'e' neH tlhIngan.\ntlhIngan Hergh tI'ang bIghHa'mey."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP Qagh",
+        "message": "'{file}': De' ZIP per lugh ghobe' pagh Qaw'lu'."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP Qagh",
+        "message": "CBZ De' poSlaHbe': {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR Qagh",
+        "message": "'{file}': De' RAR per lugh ghobe' pagh Qaw'lu'."
+      },
+      "rar_cannot_open": {
+        "title": "RAR Qagh",
+        "message": "CBR per poSlaHbe': {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Qagh",
+        "message": "CBR poSmeH Qagh motlh tu'be'lu': {error}"
+      },
+      "join_failed": {
+        "title": "Qagh",
+        "message": "cha'nobmey qIplaHbe'."
+      },
+      "paste_failed": {
+        "title": "Qagh",
+        "message": "lan Qagh: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Qagh",
+        "message": "per luleghlaHbe': {error}"
+      },
+      "crop_invalid": {
+        "title": "Qagh",
+        "message": "pe'meH Daq lugh'be'."
+      },
+      "crop_failed": {
+        "title": "Qagh",
+        "message": "cha'nob pelaHbe': {error}"
+      },
+      "load_image_failed": {
+        "title": "Qagh",
+        "message": "cha'nob poSlaHbe':\n{error}"
+      },
+      "print_error": {
+        "title": "nger Qagh",
+        "message": "ngermeH Qagh:\n{error}"
+      },
+      "print_not_available": {
+        "title": "nger tu'be'lu'",
+        "message": "win32print De'wI'Hom choHlu'be'.\nchel: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "De' tu'be'lu'",
+        "message": "De' taH ghobe':\n{path}"
+      },
+      "import_failed": {
+        "title": "lel Qagh",
+        "message": "De' lellaHbe': {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF choHlu'be'",
+        "message": "PyMuPDF (fitz) paq choHlu'be'.\nchel: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Qagh",
+        "message": "PDF lel Qagh: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF Qagh",
+        "message": "PDF poSlaHbe':\n{error}"
+      },
+      "duplicate_names": {
+        "title": "De'mey pongmey cha'logh",
+        "intro": "{count} pong mI' mIv(mey) tu'lu':\n\n",
+        "item": "  • {name} ({times} ret)\n",
+        "more": "  ... {more} latlh je\n",
+        "footer": "\nZIP vIHtaHbogh Dochvetlh pong mI' mIv lulo'laHbe'.\nDaghItlhpa' pongnIjmey tISopQo'."
+      },
+      "save_failed": {
+        "title": "Qagh",
+        "message": "De' ngaSlaHbe': {error}"
+      },
+      "create_archive_failed": {
+        "title": "Qagh",
+        "message": "per chenmoHlaHbe': {error}"
+      },
+      "save_selection_failed": {
+        "title": "Qagh",
+        "message": "wIv ngaSlaHbe': {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF chenmoH Qagh",
+        "message": "corima GIF chenmoHlaHbe':\n{error}"
+      },
+      "save_files_failed": {
+        "title": "pol Qagh",
+        "message": "De' pol Qagh: {error}"
+      },
+      "rename_failed": {
+        "title": "pong choH Qagh",
+        "message": "De' pong choH Qay': {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF tIqmoH mIw luSovlu'",
+        "message": "PDF QaH Dochvam SIch'eghlu' 'ej mIw luSovlu'.\nDapoSlaHbe' mIw luSovbe'chugh."
+      },
+      "pdf_unlock_failed": {
+        "title": "Qagh",
+        "message": "PDF QaH poSmoHlu' ngeHlaHbe':\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: PDF lIngwI' (mI' poQ), chunDab",
+      "file_too_large": {
+        "title": "De'wI' tIn law'",
+        "message": "De'wI' {filename} 'oH {size} 'ej law' 500 MB nIS tIch."
+      },
+      "license_file_not_found": {
+        "message": "License file not found: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Unable to read license file: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z Qagh",
+        "message": "'{file}' De' 7Z 'ay' QaQ 'oHbe' pagh nIH."
+      },
+      "delete_error": "qa'vam lujpu': {error}",
+      "export_error": "Hutlh 'elbogh rIn: {error}",
+      "font_source_not_found": "HutlhwI' tengwa tu'lu'be': {path}",
+      "no_tengwar_font": "tengwa tengwar tu'lu'be'.",
+      "no_icons_found": "tirith tu'lu'be'.",
+      "unsupported_files": {
+        "title": "De' lI'be' ngevwI'",
+        "message": "De' lI'be' ngevwI'mey bIH, 'ej lujatlhpu':\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF chenmoHpu' Qapla'",
+        "message": "corima GIF '{name}' chenmoHpu' 'ej mozaik chel."
+      },
+      "pywin32_required": {
+        "title": "lo'laHghach tu'be'lu'",
+        "message": "pywin32 De'wI'Hom De'wI' bInpu'bogh vo' lan lo'laHghach poQ.\nchel: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "cha'nobmey lellu'",
+        "message": "{count} cha'nob(mey) lellu'"
+      },
+      "archive_copied": {
+        "title": "per luleghlu'",
+        "message": "ngeD De' tIQ clipboard."
+      },
+      "function_not_available": {
+        "title": "lo'laHghach tu'be'lu'",
+        "message": "lo'laHghach DaH tu'be'lu'."
+      },
+      "duplicate_detected": {
+        "title": "cha'logh tu'lu'",
+        "message": "De' pong rap tu'lu'pu'.\n\nDe' pong chu' chenmoHlu':\n{name}"
+      },
+      "replace_success": {
+        "title": "Qapla'",
+        "message": "cha'nob '{name}' latlh cha'nob chu'lu' Qapla'."
+      },
+      "history_cleared": {
+        "title": "qun chImlu'",
+        "message": "De'mey ngoQ tetlh chImlu'."
+      },
+      "files_copied_clipboard": {
+        "title": "De'mey De'wI' bInpu'bogh Daq luleghlu'",
+        "message": "vIH 'ej Daq cha'DIch lan tu'be'lu' technical qeqmey.\n\n✓ {count} {word} De'wI' bInpu'bogh Daq luleghlu'\n\nDaH Daq nID DalanlaH:\n  • nIH qIt → lan\n  • pagh Ctrl+V"
+      },
+      "correction_done": {
+        "title": "lugh chenmoHlu'",
+        "message": "{count} De' pong(mey) lugh chenmoHlu'."
+      },
+      "import_success": {
+        "title": "lel Qapla'",
+        "message": "{count} ghItlh(mey) {file} vo' lellu'"
+      },
+      "pdf_import_success": {
+        "title": "lel Qapla'",
+        "message": "{count} PDF ghItlh(mey) {file} vo' lellu'\nnup: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Qapla'",
+        "message": "PDF choHmoHlu' Qapla'!\n{count} ghItlhmey {dpi} DPI Daq poSlu'."
+      },
+      "cbz_saved": {
+        "title": "Qapla'",
+        "message": "CBZ De' ngaSlu' Qapla':"
+      },
+      "cbz_converted": {
+        "title": "Qapla'",
+        "message": "De' CBZ Daq choHmoHlu' Qapla':",
+        "question": "CBR De' moH DaneHbogh'a'?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Qapla'",
+        "message": "De' CBZ Daq choHmoHlu' Qapla':",
+        "question": "PDF De' moH DaneHbogh'a'?"
+      },
+      "cbz_save_as": {
+        "title": "Qapla'",
+        "message": "chu' CBZ De' ngaSlu': {path}"
+      },
+      "cbz_created": {
+        "title": "Qapla'",
+        "message": "CBZ per chenmoHlu' Qapla':"
+      },
+      "selection_saved": {
+        "title": "Qapla'",
+        "message": "wIv ngaSlu' Qapla':"
+      },
+      "flatten_done": {
+        "title": "chuHmeH van",
+        "message": "{files} De'(mey) {dirs} vo' puS(mey) vo' vIHlu'."
+      },
+      "language_changed": {
+        "title": "Hol choHlu'",
+        "message": "Qapla'ghach Hol choHlu'."
+      },
+      "new_cbz_saved": {
+        "title": "De' choHta'",
+        "message": "CBZ De' chu' lulo' choHta':",
+        "question": "De' vorgh DaqIHmoHnIS'a'?"
+      },
+      "page_count_updated": {
+        "title": "yut chut mI'",
+        "message": "metadata yut chut mI' {count} paq."
+      },
+      "files_saved": {
+        "title": "De' pollu'pu'",
+        "message": "{count} De' pollu'pu' {folder}Daq",
+        "open_folder": "natlh poSmoH DaneH'a'?"
+      },
+      "adjustments_applied": {
+        "title": "choH lo'pu'",
+        "message": "choH Qapchu' lo'pu'."
+      },
+      "pdf_unlocked": {
+        "title": "PDF poSmoHlu'",
+        "message": "PDF QaH poSmoHlu' ngeHlu':\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "per tIn",
+        "message": "per {size} Mo tIHlu'be'bogh.\npoS De'wI'ghach law' lo'laH (RAM).\n\nDataHjaj'a'?"
+      },
+      "confirm_delete": {
+        "title": "lo'laH",
+        "message": "teH {count} De'({size}) DacheghmeH DaneH'a'?"
+      },
+      "delete_source_files": {
+        "title": "De'mey chen HoHmoH'a'?",
+        "message": "cha'nobmey qIplu'bogh DaHoHmoHjaj'a'?\n\nHISlaH = De'mey chen HoHmoH\nghobe' = De'mey chen pol\nqIl = vang qIl"
+      },
+      "invalid_filenames": {
+        "title": "De'mey pongmey lugh'be'",
+        "intro": "{count} paq(mey) ghItlhwI' quvHa' lucher:",
+        "item": "  • {name}",
+        "more": "  ... {more} latlh",
+        "forbidden_chars": "ghItlhwI' quvHa': {chars}",
+        "fix_question": "paqmey pong tI'ang vIneH'a'?\n(ghItlhwI' quvHa' '_' chenmoH)"
+      },
+      "close_without_save": {
+        "title": "toDuj Qav'ap yIHoH?",
+        "message": "cha'nobmey lanlu'. SoQmoH qaSpa' CBZ per DachenmoHjaj'a'?"
+      },
+      "flatten_folders": {
+        "title": "vo'mey chuHmoH",
+        "subdirs_detected": "vo' puSmey tu'lu':",
+        "files_to_move": "{count} De'(mey) jer Daq vIHlu'.",
+        "folders_to_delete": "{count} vo' puS(mey) HoHmoHlu'.",
+        "continue_question": "DataHjaj'a'?"
+      },
+      "update_page_count": {
+        "title": "yut chut mI'",
+        "message": "comic paq mI' choH.\n\nmetadata paq mI': {original}\nDaH paq mI': {current}\n\nmetadata yut chut mI' Data'?"
+      },
+      "conversion_complete": {
+        "title": "choH rIntaH",
+        "message": "choH rIntaH!\n\n{count} nagh {format} choHta' 'ej DuchchoHghach qaSpu'.\n\nwa'DIch nagh HoH'a'?",
+        "delete_originals": "chu' De'mey lel\n{count} De'Hom - {size}",
+        "keep_all": "Hoch qeng\n{count} De'Hom - {size}",
+        "cancel_conversion": "mI'mey choH yImev\n{count} De'Hom - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "pong nachHom luj tu'lu': De'vam '{filename}' CBZ 'oH, CBR 'oHbe'. pong choH'a'?",
+      "title": "Incorrect extension"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Qotlh mI' tu'lu': De'vam '{filename}' CBR 'oH, CBZ 'oHbe'. pong'a'?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "poQbe'bogh 'ay' tu'lu': '{filename}' De' CB7 'oH, CBZ/CBR 'oHbe'. pong tIS?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "mach cha'nob tInghach",
+    "loading": "yIloS, poS DaH...\n{percent}%",
+    "resizing": "yIloS, chu'lu'taH...\n{percent}%",
+    "converting": "yIloS, choH...\n{percent}%",
+    "loading_lazy": "yIloS, poS DaH...\n{percent}%\n\nDe' {size} Mo tIn ghaj, ghItlhmey nI'moH poSlu'. SIrgh Daq leghlu'bogh ghItlhmey nom poSlu', latlh ghItlhmey vI'angDI' motlh poSlu'.",
+    "apply_save_cbz": "choHmey lo'\n'ej CBZ De' ngaS",
+    "apply_create_cbz": "choHmey lo'\n'ej CBZ De' chenmoH",
+    "import_progress": "lel DaH...\n{percent}%",
+    "pdf_import_progress": "PDF lel DaH...\n{percent}%",
+    "pdf_opening": "PDF De' poS...",
+    "pdf_page": "ghItlh {current} / {total}",
+    "warning_close": "yIghuH! choHmey ngaSlu'be' 'ej geQ!",
+    "language_label": "Hol:",
+    "directory_tooltip": "vo': {name}\n{count} De'(mey)\ntInghach naQ: {size} Mo",
+    "folder_up_tooltip": "cha'logh yIbuS 'ej\nwa' chen Daq yIchegh",
+    "status_bar": "{dirs} De'wI'  |  {files} De' ({total_size})  |  {selected} wIvlu'pu' ({selected_size})",
+    "pdf_converting": "{total} 'echlet {dpi} DPI nIvbogh mIw...",
+    "pdf_converting_no_change": "{total} 'echlet choH pagh...",
+    "print_progress": "Qonlu' chuqmeH ghuH...\n{percent}%",
+    "print_preparing": "yIloS, qonlu' chuqmeH ghuH...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU potlh nap v3 lunar\n\nTIVQA' RIGHTS\nDalaDlaH, DanuplaHbogh, Dalargh je Daghajtaugh\nMosaicView, Hem DIvI' Dun neH.\n\nNAP QA'MEH\nHoch Daghajtaugh (wa'DIch pagh Dalargh) nap :\n– GPL v3 potlh tiv\n– pagh mu' ghom potlh chel, ghap nuq Daghaj\n– potlh nap latlh tiv\n\nVOQMOH\nHoch nap VOQMOHHBE'.\nPagh loD Hoch mIwmey nap loQ.\n\nGNU potlh nap DaSuqlaH DIvI'vetlh. chIch pagh, legh <https://www.gnu.org/licenses/>.",
+    "view_full_license": "chut naQ yIlegh",
+    "license_unrar_text": "CBZ De'mey ZIP ngoqDe' lo', ngoqDe' notlh 'ej poSmoHlu'. CBR De'mey, wa'DIch, RAR ngoqDe' lo', ngoqDe' potlh.\n\nMosaicView CBR De'mey poSmoHlaH UnRAR lo'taHvIS, RARlab chenmoHta' 'ej Dachaw'meH latlh chenmoHlu'laH.\n\nWebsite: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "UnRAR Segh legh",
+    "saving_cbz": "choHmoH... {percent}%",
+    "empty_canvas_line1": "naDev wa CBZ/CBR/CB7/PDF De pagh law De pagh puS yIngeH",
+    "empty_canvas_line2": "De poSmoHlu pagh De law De pagh puS DangeH tlhoy",
+    "empty_canvas_line3": "wa' qawHaq pagh law' yIpolHa' batch mI' yImev",
+    "icon_toolbar_config_title": "icon toolbar configuration",
+    "icon_toolbar_active": "iconmey toolbar",
+    "icon_toolbar_hidden": "nIteb Qapla' chenmoHlu'bogh",
+    "license_gpl_full": "GNU GPL v3 naw'",
+    "license_unrar_full": "UnRAR naw'",
+    "licenses_button": "naw'mey",
+    "view_full_gpl_license": "GNU GPL v3 naw' Sar legh",
+    "license_7zip_text": "CB7 SeHlaw 7z mIw luteq, Igor Pavlov chenmoHpu' 'ej GNU LGPL chut Dalo'.\n\nMosaicView CB7 SeHlaw poSmoH 7-Zip lo'taHvIS — Daqmey Hutlh je open source.\n\nwebDaq: <https://www.7-zip.org/>",
+    "view_full_7zip_license": "7-Zip chut legh",
+    "license_7zip_full": "7-Zip chut",
+    "icon_toolbar_show_thumb_slider": "'ang thumbnail'a' ghurmoH mI'",
+    "icon_toolbar_show_lang_combo": "'ang Hol wIv",
+    "adjusting": "yIloS, ngovwI' chenmoHlu'taH...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS ghItlhwI' chut",
+    "license_tengwar_full": "Alcarin Tengwar ghItlh chaw'",
+    "view_full_piqad_license": "pIqaD qolqoS chut naQ legh"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "cha'nobmey choHmeH",
+      "title": "{count} {word} choHmeH",
+      "word_image": "cha'nob",
+      "word_images": "cha'nobmey",
+      "info": "cham Daq yIwIv:",
+      "format_png": "PNG (geQ tu'be'lu')",
+      "format_jpg": "JPEG (puS chenmoHlu')",
+      "format_webp": "WEBP (chu')",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (nup 'ey)",
+      "format_gif": "GIF (QujmeH)",
+      "quality_label": "JPG/WEBP nup:",
+      "quality_maximum": "Dun — tej 95/100",
+      "quality_high": "QaQ — tej 85/100",
+      "quality_medium": "motlh — tej 75/100",
+      "quality_low": "Qob — tej 60/100",
+      "quality_custom_option": "DIchoH",
+      "quality_custom": "tej wIvlu'ta' : {value}/100",
+      "quality_note": "(cham JPG joq WEBP neH lo' De'vam)",
+      "quality_window_title": "nup wIvmeH",
+      "format_gif_static": "GIF motlh",
+      "format_gif_animated": "GIF QummeH (law' mIllogh DuD)"
+    },
+    "split": {
+      "window_title": "ghItlh mobmoH",
+      "title": "ghItlh mobmoH",
+      "pages_label": "ghItlhmey mI':",
+      "direction_label": "mobmeH He:",
+      "horizontal": "nIH-poS (poS → nIH)",
+      "vertical": "Dung-bIng (Dung → bIng)",
+      "warning": "⚠ mobmeH De'wI' wIchen,\nghopDu'wIjmo' Suq poQ.",
+      "button_split": "mobmoH",
+      "button_cancel": "qIl"
+    },
+    "join": {
+      "window_title": "ghItlhmey qIpmoH - tlhegh chu'moH",
+      "instructions": "cha'nobmey chu'moH:\n• Dung-bIng (Dung/bIng) Daq Dung-bIng qIpmeH\n• nIH-poS (poS/nIH) Daq nIH-poS qIpmeH",
+      "merged_filename_prefix": "qIp",
+      "heights_label": "jen",
+      "widths_label": "tIq",
+      "size_adjustment_title": "loj chu'moH",
+      "size_adjustment_warning": "⚠️ cha'nobmey wIvlu'bogh loj law'be'.\nyIwIv 'e' loj chu'moH qIp.\ncha'nob Hoch patlh reH yIngu'.",
+      "keep_original": "loj Qav yIHo'",
+      "keep_original_desc": "(qIj tlhegh chel lI')",
+      "enlarge_small": "cha'nob mach tIn chu'moH",
+      "enlarge_small_desc": "(loj tIn tlhegh chu'moH)",
+      "reduce_large": "cha'nob tIn mach chu'moH",
+      "reduce_large_desc": "(loj mach tlhegh chu'moH)",
+      "back_to_arrangement": "chegh"
+    },
+    "pdf": {
+      "quality_merge": "qIpmeH nup yIwIv:",
+      "quality_export": "cha'meH nup yIwIv:",
+      "merge_quality_title": "PDF 'IDnargh pItlh",
+      "export_quality_title": "PDF cha'pIj pItlh",
+      "loading_title": "PDF lI'...",
+      "dpi_90": "90 DPI - QumwI' nagh",
+      "dpi_150": "150 DPI - QaQ pItlh (cha' yIngu')",
+      "dpi_200": "200 DPI - pItlh QaQ law'",
+      "dpi_300": "300 DPI - pItlh'a' (comics motlh)",
+      "dpi_600": "600 DPI - pItlh'a' law' (teywI' tIn)",
+      "dpi_original": "mIw choH pagh",
+      "dpi_original_tooltip": "QeH PDF ghap yInSIp:\n• mIw neH: motlh DPI pol\n• mu' neH: wejvatlh DPI\n• mIw mu' je: mIw DPI wejvatlh 'ej poQ, ghobe' wejvatlh DPI\npI': cha'SanID loS DPI teywI' tIq ngaS"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF poQlu'",
+      "pymupdf_required_message": "PyMuPDF (fitz) qaSpu'be'. PDF tep choHlaHbe'.",
+      "select_directory_title": "PDF tep ngaSbogh De' yIwIv",
+      "no_pdf_title": "PDF tep tu'be'lu'",
+      "no_pdf_message": "De'Daq PDF tep tu'be'lu':\n{directory}",
+      "confirm_title": "PDF CBZ choH ngoQ",
+      "confirm_message": "{count} PDF tep choHlu' {directory}-Daq (De'Hom ngaS).",
+      "checkbox_permanent_delete": "PDF tep teq, not chIllu'\n(POLLU'BE'!)",
+      "start_button": "taH",
+      "converting_title": "choHtaH...",
+      "converting_progress": "tep {current} choHlu' {total}vo'",
+      "page_progress": "nav {current} / {total}",
+      "complete_title": "choH rIn",
+      "complete_message": "{count} PDF tep choHta' De'Daq:",
+      "complete_message_errors": "{total} vo' {count} PDF tep choHta' De'Daq:",
+      "errors_count": "{count} Qagh tu'lu'."
+    },
+    "batch_cbr": {
+      "select_directory_title": "CBR ngoq naghmey ghaj seHlaw yIwIv",
+      "no_cbr_title": "CBR ngoq naghmey tu'be'lu'",
+      "no_cbr_message": "seHlaw-Daq CBR ngoq naghmey tu'be'lu':\\n{directory}",
+      "confirm_title": "CBR moj CBZ che' DIvI'",
+      "confirm_message": "{count} CBR ngoq naghmey choH {directory}-Daq (seHlaw bIngDaq je).",
+      "checkbox_permanent_delete": "CBR ngoq naghmey teq, bachHa'laHbe'\n(CHEGHLABBE')",
+      "start_button": "yImev",
+      "converting_title": "choHlu'...",
+      "converting_progress": "ngoq nagh {current} choHlu' {total}-vo'",
+      "page_progress": "nav {current} / {total}",
+      "complete_title": "choH pItlh",
+      "complete_message": "seHlaw-Daq CBR ngoq naghmey {count} choHlu'pu':",
+      "complete_message_errors": "seHlaw-Daq CBR ngoq naghmey {count} choHlu'pu' {total}-vo':",
+      "errors_count": "{count} Qagh(mey) tu'lu'.",
+      "renamed_count": "{count} ngoq nagh(mey) ponglu'qa' CBZ",
+      "rarfile_unavailable": "rarfile module tu'lu'be'. cbr file tI'ang'eghlaH."
+    },
+    "close_warning": {
+      "title": "yIghuH!",
+      "message": "choHmey ngaSlu'be' 'ej geQ!",
+      "btn_close_lose": "De' SoQmoH 'ej choHmey geQ",
+      "btn_save_cbz": "choHmey lo' 'ej De' ngaS",
+      "btn_create_cbz": "choHmey lo' 'ej CBZ De' chenmoH",
+      "btn_cancel": "qIl 'ej Hur' Daq chegh"
+    },
+    "replace_image": {
+      "title": "cha'nob Qaw'lu'bogh chu'"
+    },
+    "reduce_size": {
+      "window_title": "nagh luq choH",
+      "title": "{count} {word} luq choH",
+      "word_image": "nagh",
+      "word_images": "naghmey",
+      "current_size": "DaH tIq: {size} MB",
+      "current_dimensions": "DaH 'ab: {width} × {height} px",
+      "choose_method": "luq choH mIw wIv:",
+      "custom_dimensions": "toH 'ab",
+      "width_label": "tIq:",
+      "height_label": "'ab:",
+      "use_custom_dimensions": "tIn'an lo'",
+      "different_dimensions_warning": "wIv paqmey laH tIn'an. custom tIn'an Hoch paqmey rap tIn chenmoH. bIyajbej qaSpu'meH vaj bIQaptaHvIS.",
+      "estimated_size": "tIq ghaj: {size} MB",
+      "percentage_reduction": "vatlhvI' puS",
+      "percentage_enlargement": "vatlhvI' tIq",
+      "reduce_0": "0% (choH pagh)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (choH pagh)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "ghItlhmey rutlh motlh 1024, 1280, 1600, 1920, 2000 pIqSel chaH, 'ach latlh mI'mey QaQ je.",
+      "multi_page_width": "qa'mey law' tu' 'ej choH nID motlh (tIq/jen)",
+      "multi_page_width_tooltip": "qa'mey law' tu'lu'meH motlh chu': cha' qa', wej qa' joq. boqHa'ghach mI' naQ tu'lu' qa' Hoch chen nID'e' rur, tIq (qa'mey tIqDaq) joq jen (qa'mey tIn) je"
+    },
+    "gif_animated": {
+      "window_title": "GIF QummeH chenmoH",
+      "images_title": "QummeH mIllogh",
+      "params_title": "GIF wIvmey",
+      "frame_delay_label": "mIllogh joj poH:",
+      "fps_normal": "{fps} mIllogh/lup",
+      "fps_slow": "wa' mIllogh Hoch {seconds} lup",
+      "loop_label": "qaSDI' mI':",
+      "loop_info": "(0 = reH qaS)",
+      "disposal_label": "mIllogh cher:",
+      "disposal_0": "per ghobe'",
+      "disposal_1": "mIllogh retDaq",
+      "disposal_2": "nguv 'e' chel",
+      "disposal_3": "Dotlh ret chel",
+      "optimize": "De' QaQ (pIm neH pol)",
+      "metadata_title": "GIF De'wI' talvI'",
+      "metadata_dimensions": "tIq: {width} × {height} px",
+      "metadata_frames": "mIllogh mI': {count}",
+      "metadata_duration": "poH naQ: {duration} lup",
+      "metadata_fps": "DIS: {fps} fps",
+      "metadata_palette": "nguv: 256 jen",
+      "metadata_size": "tIq per: {size} KB",
+      "comment_label": "QIH (DuH):",
+      "no_images": "mIllogh wIvlu'be'",
+      "creating_progress": "nagh mIr ngoqDe' ({current}/{total})",
+      "creating_normalizing": "nagh mIr tIq ({current}/{total})",
+      "creating_quantizing": "rItlh DoS ({current}/{total})",
+      "creating_saving": "GIF tamey..."
+    },
+    "save_to_folder": {
+      "title": "QuS'a' wIv"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ De' wejDIch pong",
+      "message": "De' rap chenmoH. 'ach choH laH 'e' DuH. 'op tera' jIH qach\ntu'lu'be' Hoch De' (Hoch choHbe', De' tu'lu'be').\n\ncha' ghegh De' qaSpa' chon nugh."
+    },
+    "adjustments": {
+      "window_title": "ngo'wI' choH",
+      "title": "{count} {word} choH",
+      "word_image": "ngo'",
+      "word_images": "ngo'mey",
+      "apply_button": "lo'",
+      "color_depth_section": "nguv teblu'bogh",
+      "brightness_contrast_section": "wov'a' je mI'",
+      "compression_section": "tamchu'",
+      "effects_section": "qaSmoHwI'",
+      "sharpness_section": "pe'vIl",
+      "levels_section": "qIj/chIS teblaw'",
+      "depth_unchanged": "choHbe'",
+      "depth_32bit": "32 bit (RGBA - nguv je bey)",
+      "depth_24bit": "24 bit (RGB - nguv)",
+      "depth_8bit": "8 bit (PNG nguv patlh / JPEG ghIr'a' qoja')",
+      "depth_1bit": "1 bit (qIj chIS je)",
+      "brightness_label": "wov'a': {value}",
+      "contrast_label": "mI': {value}",
+      "compression_enable": "tamchu' chu' lIng",
+      "compression_quality_label": "tej : {value}/100",
+      "sharpness_label": "pe'vIl: {value}",
+      "effect_none": "pagh qaSmoHwI'",
+      "effect_grayscale": "ghIr'a'",
+      "effect_sepia": "Doqqu'",
+      "levels_none": "pagh choH",
+      "levels_threshold": "mI'law' (qIj qoj chIS nap)",
+      "levels_advanced": "De'wI' teblaw' (QIb/botlh/wov)",
+      "threshold_label": "mI'law': {value}",
+      "black_point_label": "qIj Daq: {value}",
+      "gamma_label": "gamma (botlh): {value}",
+      "white_point_label": "chIS Daq: {value}",
+      "auto_levels_button": "Automatic adjustment",
+      "open_viewer_button": "leghwI' lo'taHvIS choH (chID)",
+      "compression_info": "YÚYO WEBE beQmey neH lo'lu' compression",
+      "open_viewer_button_simple": "Viewer lo'taHvIS choH",
+      "reset_button": "choHmoH",
+      "preview_section": "legh",
+      "effect_invert": "Nguv jat",
+      "preview_warning": "cha' ghaH ngogh 'ej vIH qaStaHvIS",
+      "effect_remove_colors": "nguv teqHa'",
+      "remove_colors_intensity_label": "HoS : {value}",
+      "image_mode_section": "mIllogh moj",
+      "image_mode_rgb": "RGB (rItlh)",
+      "image_mode_rgba": "RGBA (rItlh + Such)",
+      "image_mode_l": "L (chIS HIq bIQ)",
+      "image_mode_la": "LA (chIS HIq bIQ + Such)",
+      "image_mode_cmyk": "CMYK (ghItlh)",
+      "image_mode_1": "1 (qIj chIS nIt)",
+      "image_mode_p": "P (256 rItlh naQ)",
+      "saturation_section": "ngaSpu'",
+      "saturation_label": "ngaSpu' : {value}",
+      "saturation_viewer_title": "ngaSpu' nIHwI'",
+      "transparency_section": "wovmoH",
+      "transparency_info": "wovmoH neH lo'lu' PNG, WebP je ICO mIllogh",
+      "transparency_type_label": "moj :",
+      "transparency_type_flood": "Sep",
+      "transparency_type_global": "Hoch",
+      "transparency_tolerance_label": "chebmey : {value}",
+      "transparency_viewer_title": "wovmoH tI'",
+      "transparency_click_instruction": "ratlh wovmoHpu'bogh rIt",
+      "transparency_undo": "lIj qeq qaSpa'",
+      "transparency_redo": "lIjqa'",
+      "transparency_type_flood_tooltip": "Flood fill : wovmoH Sep wovbe'bogh qaSpa' rIt qan",
+      "transparency_type_global_tooltip": "Hoch wovmoH : Hoch pixelpu' mIllogh DIch wovbe' rIt qanlu'bogh",
+      "transparency_apply": "lo'",
+      "transparency_skipped_warning": "{count} nagh beq(mey) lIngta' — ghantoH mI'mey qob. chel DaneHchugh, PNG-Daq tI'ol.",
+      "unsharp_section": "HurDagh 'ugh mI'",
+      "unsharp_radius_label": "ro'mey: {value}",
+      "unsharp_percent_label": "HurDagh: {value} %",
+      "unsharp_threshold_label": "mI'moH: {value}",
+      "unsharp_viewer_title": "HurDagh 'ugh mI'",
+      "auto_levels_tooltip": "Soj Hoch nav je chenmoH qaStaHvIS SuD wov rap je qIb.\nnav je nav wIv DaneH chugh, viewer yIlo'."
+    },
+    "levels_viewer": {
+      "title": "chapwI ngah qibmey choH",
+      "apply_current": "naDev ghItlh lo",
+      "apply_all": "Hoch Dujmey wIvlu'bogh lo'",
+      "black_pipette": "Qar'a' DochwIj wIv jan",
+      "white_pipette": "chIS DochwIj wIv jan",
+      "black_pipette_tooltip": "qIbDaq yIQIch 'e' chIm qaq. yIghuS: law' qaD!",
+      "white_pipette_tooltip": "cheng'eghDaq yIQIch 'e' chIm qaq. yIghuS: law' qaD!"
+    },
+    "sharpness_viewer": {
+      "title": "nguv choH"
+    },
+    "brightness_viewer": {
+      "title": "wovmoHwI' choH"
+    },
+    "compression_viewer": {
+      "title": "nargh choH"
+    },
+    "outliers": {
+      "title": "Dop'a' nov yIghaj",
+      "message": "Dop bIH Dop law' latlh Dop puS. nuqDaq DaneH yIwIv:",
+      "width": "Dop yIghaj",
+      "height": "Dung yIghaj",
+      "unusual": "nov",
+      "skip": "DuH choH",
+      "keep": "pol"
+    },
+    "first_page_multi": {
+      "title": "wa'DIch nagh ghogh law'",
+      "message": "wa'DIch nagh ghogh law' tu'lu'. chay' DaneH moj?",
+      "option_auto_desc": "motlh moj ngaq'egh.",
+      "option_joint_desc": "wa'DIch nagh ghogh law' Daq pa' tu'lu'.",
+      "option_exclude_label": "moj Hutlh",
+      "option_exclude_desc": "nagh pong tIQoy. wa'DIch Daq tu'taH. qaStaHvIS poH vItlhutlh DaneH pongmey tIchellaH."
+    },
+    "batch_img": {
+      "select_directory_title": "wej nav tIn yIwIv mI' nav ghaj",
+      "no_img_title": "mI' nav tu'lu'be'",
+      "no_img_message": "mI' nav tu'lu'be' nav tInDaq :\n{directory}",
+      "confirm_title": "mI' choHmoHmeH wej nav CBZ",
+      "confirm_message": "{count} mI' nav choHmoHlu' {directory} (nav'a' tIn je).",
+      "checkbox_permanent_delete": "mI' nav poQ mej\nwej choH (choHlaHbe')",
+      "start_button": "taH",
+      "converting_title": "choHmoHlu'taH...",
+      "converting_progress": "{current} nav choHmoHlu' {total} nav hoch",
+      "complete_title": "choHmoHlu' van",
+      "complete_message": "{count} mI' nav choHmoHlu' nav tInDaq :",
+      "complete_message_errors": "{count} {total} mI' nav choHmoHlu' nav tInDaq :",
+      "errors_count": "{count} Qagh(mey) tu'lu'.",
+      "converted_by_ext": "{ext} : {count} nav",
+      "mode_title": "mIr'moH cbz",
+      "mode_intro": "chay' DaneH mIrmeH?",
+      "mode_one_per_image": "Hoch mIr cbz SeH",
+      "mode_one_per_image_sub": "(Hoch mIr cbz SeH nIS)",
+      "mode_all_in_one": "Hoch mIr wa' cbz",
+      "mode_all_in_one_sub": "(Hoch mIr tera' wa' cbz)"
+    },
+    "batch_drop": {
+      "window_title": "ngan batch mI' qawHaq",
+      "intro_single": "wa' qawHaq polHa'lu'. nuq mI' DaneH?",
+      "intro_multiple": "{count} qawHaqmey polHa'lu'. nuq mI' DaneH?",
+      "recursive_note": "qawHaq'a'mey je ngo'Ha'lu'.",
+      "mixed_drop_title": "polHa' pIm",
+      "mixed_drop_message": "De'mey qawHaqmey je polHa'lu'. De'mey neH pagh qawHaqmey neH yIpolHa'."
+    },
+    "pdf_unlock": {
+      "title": "PDF tIqmoH mach luSovlu'",
+      "message": "ghItlhmey ngeHlu' motlh.\n\nPDF QaH Dochvam tIqmoH mach luSovlu' (chav mIw).\n\nPDF QaH ngeH mIw luSovbe'bogh DaneH'a'?",
+      "yes": "HISlaH, ngeH poSmoHlu'",
+      "no": "ghobe', yIghoS poSmoHbe'"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF QInmey tISuqmeH",
+      "message_single": "wa' PDF QIn tISuqmeH tu'lu'. CBZ moj motlh.\n\nDa'elbogh'a' QIn lIngwI'be' luHar Dejpu'bogh?",
+      "message_plural": "{count} PDF QInmey tISuqmeH tu'lu'. CBZ moj motlh.\n\nDa'elbogh'a' QIn lIngwI'be' luHar Dejpu'bogh?",
+      "yes": "HISlaH, QInmey lIngwI'be' Daw'",
+      "no": "ghobe', tI' HeSbe'"
+    },
+    "ico_creator": {
+      "title": "chenmoH .ico mIl'oD",
+      "info_message": "nagh beQ chenmoH law' Dol (16, 32, 48, 64, 128, 256 px).\nDaH Dol: {w} × {h} px",
+      "btn_validate_crop": "vIt nagh",
+      "btn_validate_no_crop": "vIt pagh nagh",
+      "btn_cancel": "Qaw'",
+      "btn_transparency": "Soj legh",
+      "btn_validate_final": "vIt",
+      "tolerance_label": "tIv:",
+      "success_title": ".ico nav chenmoHlu'",
+      "success_message": "nav {filename} chenmoHlu'.",
+      "overwrite_title": "nav tu'lu'",
+      "overwrite_message": "nav {filename} tu'lu' DaH. yIchoH?",
+      "save_blocked_title": "polmeH Qaw'",
+      "save_blocked_message": "tlhIngan .ico navmey tu'lu' Dochvam. polmeH Qaw' 'ej navmey mosaikDaq tu'lu'.\npolmeH chu', navmey Qaw' (Del) pagh Qaw' (Ctrl+X) latlh Daq.",
+      "btn_back_to_crop": "nagh ghItlhpu'DI' chegh"
+    },
+    "video_save_blocked": {
+      "title": "qawHaq choHlaHbe'",
+      "message": "qawHaq 'oH video De'wI' wa' joq law'. qawHaq ngaQHa' 'e' tIn De'wI'vam mosaic lutu'taHvIS.\nqawHaq choHmeH, mev (Del) joq tey (Ctrl+X) latlh Daq bIngDaq."
+    },
+    "open_file": {
+      "title": "Open an archive",
+      "filter_archives": "Archives (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "All files (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - License"
+    },
+    "replace_corrupted_image": {
+      "title": "Replace corrupted mIl",
+      "filter_images": "Images (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "All files (*)"
+    },
+    "see_log": "legh log"
+  },
+  "tooltip": {
+    "source_archive": "paq ghItlh: {name}",
+    "file": "De': {name}",
+    "reason": "qel: {reason}",
+    "size_kb": "'ugh: {size} Ko",
+    "size_mb": "'ugh: {size} Mo",
+    "file_size": "'ugh: {size}",
+    "dimensions": "tInghach: {width} × {height} px",
+    "resolution": "nup: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: choHlu'be'",
+    "cbr_info": "CBR De'mey RAR cham lo', 'ej cham ghaj 'ej bey'a' tlha';\nchoHlu'laHbe', choHmey chu' CBZ De' Daq ngaSlu'.",
+    "rotate_left": "90 lat pItlh poS",
+    "rotate_right": "90 lat pItlh nIH",
+    "mirror_horizontal": "nIvnav choS",
+    "mirror_vertical": "'eb choS",
+    "fullscreen": "Hoch beQ",
+    "help_button": "Lo'wI' paq",
+    "theme_button": "wovmoH pagh Hurgh theme choH",
+    "font_decrease_button": "mach chenmoH tlhIngan Hol nobwI'",
+    "font_increase_button": "tIn chenmoH tlhIngan Hol nobwI'",
+    "color_depth": "nguv: {bits} bits ({mode})",
+    "batch_pdf_to_cbz": "PDF De'mey Hoch qawHaq je qawHaq bIngDaq\nCBZ chen. mIllogh lughajlu' 'e' natlhbe',\npagh mI' chu' chen.",
+    "batch_pdf_permanent_delete": "yIqIm: DuHvam wIvlu'chugh,\nPDF De'mey ngoD lujomlu'be'choHmoH\nmaq jatlhlu'ta'DI', cheghlaHbe'.\nngoD ghItlh DaghajtaH 'e' yIqoj\n'ut chugh.",
+    "batch_cbr_to_cbz": "ngoq CBR Hoch moj CBZ\nseHlaw je seHlaw bIngDaq.",
+    "batch_cbr_permanent_delete": "yIqIm: DuHvam wIvlu'chugh,\nCBR ngoq naghmey teq lu'lu'\nchoHpu' pIq, cheghlaHbe'.\nngoq naghmey pollu'ta'chugh\nyIqaw.",
+    "renumber_btn_1": "nIb paq'mey Sam'meH mIw\nnIH Qap mIw choHmeH",
+    "renumber_btn_2": "nap mI'meH mIw\nnIH Qap mIw choHmeH",
+    "corrupted_header": "mIllogh Qaw'pu'",
+    "right_click_instruction1": "nIH QIch yIper choHmeH",
+    "right_click_instruction2": "pagh teqmeH mIllogh.",
+    "unknown_error": "Qagh Sovbe'lu'",
+    "batch_img_to_cbz": "nav tInDaq mI' nav choHmoH\nCBZ nav je,\ner CBZ nav er mI' nav.",
+    "batch_img_permanent_delete": "yIqIm : DaH ghap wIv,\nmI' nav poQ mej\nchoHmoHlu'DI' choHlaHbe'\ntaHbe'. HIv Datu'meH\nbom DaghajtaH.",
+    "too_large_header": "Nagh wej lo' muj nIteb",
+    "too_large_pixels": "Dimensions: {pixels}",
+    "icon_toolbar_config_button": "mI' SeHlaw",
+    "icon_toolbar_size_decrease": "icon mach nap",
+    "icon_toolbar_size_increase": "icon tIn nap",
+    "source_loose": "mIllogh motlh",
+    "source_web": "mIllogh Internet"
+  },
+  "help": {
+    "title": "MosaicView - lo'laHghach QIjmeH",
+    "intro": "MosaicView comics (BD De'mey) per vo' nobmeH poQ tu'be'lu' choHmeH lo'laHghach nob. cham CBZ (ZIP), CBR (RAR) joq PDF Qor. ngoqDe' 64 bit patmey neH tu'lu'.",
+    "open_files": "De'mey poSmoH",
+    "open_files_content": "• 'CBZ/CBR/CB7/PDF poSmoH' qIt yIbuS\n• pagh De' window Daq yIvIH\n• cham Qorlu'bogh: CBZ, CBR, CB7, PDF, cha'nobmey (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB De'mey poSmoH je laH, 'ach ngogh neH chenmoHlu' (mu'mey lughbe').\n• PDF SIch'eghlu' (mIw luSov DaneH poSmeH): QaH ngeHlaHbe', Qagh quetlu'.\n• PDF tIqmoH mach luSovlu' (owner password): ghItlhmey ngeHlu' motlh. MosaicView rar PDF QaH poSmoHlu' ngeH je'.",
+    "mosaic": "Hur'",
+    "mosaic_content": "mozayIk QIn qaStaHvIS Hoch qonmey qIn thumbnail jangwI'. DaneH:\n• qonmey choHmoH drag-drop lo' (qon mI' DIch automatic, 'ej mIw qon mI' chu' lo'lu'bogh lupoQ)\n• law' qonmey DawIv (Ctrl+click pagh Shift+click)\n• thumbnail ngaS choH slider lo'\n• De'wI'mey pong choH manual pong click\n• QIn De'wI'mey (CBZ/CBR/PDF) Windows Explorer vo' drag-drop laH latlh poSmoH QIn content ghom",
+    "manipulation": "ghItlhmey vangmeH",
+    "manipulation_content": "• maqlegh pages reorder chaH drag-and-drop\n• Hoch comic vay' merge chaH drag\n• right-click page options lulegh (rotation, deletion, etc.)\n• double-click page viewer poSmoH\n• pages individual export windows folder drag, pagh ctrl+c / ctrl+v",
+    "renumber": "tetlh mI' choHqa'moH",
+    "renumber_content": "MosaicView cha' mI' choHqa'moH mIw noblu', mI' choHqa'moH QIp, ngo' menu (nIH QIp) ghap paQDI'norgh lupoQ:\n\n• law' tetlh Sam'egh mIw (motlh mIw): ngoqDe' tetlh qoch'a' 'ay' jonlu' 'ej cha'logh, wejlogh tetlh je Sam. law' tetlh mI' choHqa'lu' (chay': cha'logh tetlh ponglu' 003-004, wejlogh 005-006-007). loSlogh tetlh law' law', wa'DIch pagh Qav mI' neH 'anglu' (chay': 010---025).\n\n• nap mI' mIw: Hoch tetlh patlh mI' Hut je Suq (001, 002, 003...), tetlh qoch'a' buSbe'lu'.\n\ncha' mIw choH, mI' choHqa'moH QIp nIH QIplu'. QIp leQ mIw lo'lu'bogh 'ang. mIw wIvlu'bogh, raD 'ej mejmoH mI' choHqa'lu' je lo'lu'.",
+    "flatten": "vo'mey chuHmoH",
+    "flatten_content": "per vo' puSmey tu'lu'chugh, 'vo'mey chuHmoH' lo' 'ej Hoch cha'nobmey wa' chen Daq yIvIH.",
+    "viewer": "leghwI'",
+    "viewer_content": "ghItlh cha'logh yIbuS 'ej leghwI' yIpoS:\n• qItmey ← → : ghItlhmey jotmeH\n• qIt D : wej laD chamey cha'DIch choH\n  - ghItlh wa': ghItlh wa' neH\n  - cha' ghItlhmey: ghItlh wa' neH, ghItlhmey cha'-wej, loS-vagh, latlh\n  - cha' ghItlhmey taH: ghItlh wa' neH, cha'-wej, wej-loS, loS-vagh, latlh\n• ghom jojmey: jotmeH nom\n• Ctrl+ghom pagh Ctrl+Plus/Minus: tIn ngo'\n• Ctrl+0: tIn ngo' chu'moH\n• qIt F11: Hoch SIrgh\n• cha'logh buS: Hoch SIrgh choH\n• qIt Échap: pe'meH mIvvo' bIHarghaH / leghwI' mej",
+    "join_pages": "ghItlhmey qIpmoH",
+    "join_pages_content": "law' qonmey DawIv consecutive, nIH-click → 'qonmey selected ghom' qonmey horizontal pagh vertical ghom. nagh'Ij mIllogh chenmoHlu'bogh qonmey source mIllogh format rap 'e' luDelchugh Hoch, pagh PNG motlh.",
+    "split_pages": "ghItlhmey mobmoH",
+    "split_pages_content": "cha' ghItlhmey motlh mobmeH:\n• ghItlhmey moblu'bogh yIwIv\n• nIH qIt → 'ghItlh mobmoH'\n• He yIwIv (Dung-bIng pagh nIH-poS)",
+    "crop": "leghwI' Daq pe'meH",
+    "crop_content": "leghwI' Daq cha'nob Dung latlhmey yor yIchenmoH 'ej pe'meH Daq yIchoH:\n• latlhmey yor ghom lo' yIchenmoH\n• tInghach choH 'ej tIHmey pagh vI'mey yIvIH\n• 'pe'meH lo'laH' yIbuS 'ej lo'\n• pe'meH cha'nob DaH lo'lu'\n• qIt Échap: pe'meH mIvvo' bIHarghaH",
+    "shortcuts": "qItmey nom",
+    "shortcuts_content": "• Ctrl+Z: vang bov qIl\n• Ctrl+Y: vang qIllu'bogh vI'ang\n• Ctrl+A: ghItlhmey Hoch wIv\n• Ctrl+I: wIvghach tam\n• Ctrl+C: ghItlhmey wIvlu'bogh lulegh\n• Ctrl+X: ghItlhmey wIvlu'bogh pe'\n• Ctrl+V: ghItlhmey lan\n• Suppr: ghItlhmey wIvlu'bogh HoHmoH\n• F5: chu'qa' mIllogh HaSta\n• F11: Hoch beQ choH (F11 pagh ESC lo' mej)",
+    "dark_mode": "Hurgh cham",
+    "dark_mode_content": "pemjep/maS qawHaq click wov 'ej Qub theme jIH.",
+    "sort": "ghItlhmey qIp",
+    "sort_content": "'Trier' qIt lo' 'ej ghItlhmey motlh chu'moH:\n• pong, Segh, 'ugh, tIq, jen, nup pagh DPI",
+    "save": "ngaS",
+    "save_content": "• 'ngaS': choHmey De' wa'DIch Daq ngaS\n• 'ngaS qaSpa'': per chu' chenmoH\n• 'CBZ per chenmoH': cha'nobmey neH cham (per tu'be'lu') lo'lu'chugh",
+    "other": "latlh lo'laHghachmey",
+    "other_content": "• SIch: ghItlh wa' pagh law' SIch\n• choHmeH: cha'nobmey latlh cham choH (PNG, JPEG, WEBP, BMP, TIFF, GIF). ghItlh: CMYK mIllogh automatically RGB choH (PNG, JPEG, WEBP, BMP, TIFF, GIF). ghItlh: CMYK mIllogh automatically RGB choH\n• nger: ghItlhmey wIvlu'bogh pagh Hoch nger\n• nobmoH: ghItlhmey nID nobmoH\n• De'mey tab: ComicInfo.xml De' De'mey 'ang (per Daq tu'lu'chugh). De'mey ghaj comics Daq ghItlh chel pagh teq DaneHchugh, program ghItlhmey mI' choH qeS. latlh De'mey choHlaHbe'. ghu' ngoQ 'ej design wIv qep.",
+    "config_files": "teHmeH De'mey je poH Daq De'mey je",
+    "config_files_content": "MosaicView chenmoH .mosaicview_config.json pong. wIvmey law' vaj chu'moH tab po'lu'meH poQ 'e' ghaj pongvam, 'ej ngo'Daq poSmoHlu'pu'bogh qonmey tetlh 'e' ghaj 'e' ghaj, vaj ngo'Daq poSmoHlu'pu'bogh De'mey cha'meH poQ 'e' tu'lu'. MosaicView poH Daq De'mey je choq, vaj cha'nob vangmeH pat'a' poQmeH tu'lu'.\n{temp_dir} QuS'a'-Daq tu'lu' De'mey Hoch.\nqawHaq SoQmoH rej poH Daq De'mey lan, 'ach .mosaicview_config.json De'-Daq tu'lu'meH chenmoHta'pu', pagh Dotlh ghaj.\ntoH, {temp_dir} QuS'a'-Daq ghoS pagh tabmey bIngDaq DuQmeH De'mey Hoch chImpu'lu'laH. qawHaq poSmey rej .mosaicview_config.json De' chu'ta'lu'laH, 'ej poQmeH poH Daq De'mey chu'ta'lu'laH.",
+    "config_clear_temp": "poH Daq De'mey chImchu'",
+    "config_clear_recent": "ngo' De'mey HoHmoH",
+    "config_clear_config": "teHmeH De' chImchu'",
+    "config_temp_cleared": "poH Daq De'mey chImta'pu'.",
+    "config_config_cleared": "teHmeH De' chImta'pu'.\nqawHaq chu' poSmeH chu'ta'lu'laH.",
+    "language": "Hol wIv",
+    "language_content": "MosaicView pat Hol law' tu'lu'.\nHoS'a'Daq, qawHaq vItlhutlh pat mIw Hol 'ej Hol Dol ghaj chaq. Hol lo'laHbe'chugh mIw, English lo' Hal.\npItlh ghopDu'wIjmo' Hol choHlaH, tabmey tlhegh bIngDaq pup tetlh lo', mach cha'nob tInghach lIqtabHom bIngDaq. DuH Dagh'eghlu'pu' 'ej lo'lu' vaj qawHaq qal.\nHOL LAH: Arabic, Armenian, Bulgarian, Chinese (Simplified), Chinese (Traditional), Croatian, Czech, Danish, Dutch, English, Estonian, Finnish, French, German, Greek, Hindi, Hungarian, Icelandic, Indonesian, Irish, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Maltese, Norwegian, Polish, Portuguese, Romanian, Slovak, Slovenian, Spanish, Swedish, Tamil, Thai, Turkish, Ukrainian, Vietnamese.\nQI'yaH HOL LAH: tlhIngan (ghItlh latin ghItlh pIqaD joq), edhel Hol Sindarin (ghItlh latin ghItlh tengwar joq), edhel Hol Quenya (ghItlh latin ghItlh tengwar joq).\n\nDe'wI'Hom vaj Windows Qolqo'mey lo', pIqaD (tlhIngan Hol) joq tengwar (Ho'elI' Hol: Sindarin joq Quenya) Qolqo'mey neH. Qolqo'mey vaj tu'be' chutmey 'ej Daq vaj vo':\n- pIqaD vaD (tlhIngan Hol ghItlh): {url_piqad}\n- tengwar vaD (Ho'elI' ghItlh, Sindarin joq Quenya vaD): {url_tengwar}\nQo'mey vaj taH ghobe'chugh, pIqaD joq tengwar Qolqo'mey Suq DaneH, bIngDaq tab yIbuS:\n\nfrench Hol ghItlhwI' qawHaq. Hol law' mughlu'pu' AI lo', Claude pong. Hol loSmaH lo' vIHar. 'ach Hol Hoch jatlhbe' jIH. vaj AI lo' DuH tu'be'lu', mughwI'pu' loSmaH vatlh ghel je qonta'lu' potlhghach 'e' tu'be'lu'be'mo'. motlh mughmeH Dotlh mo', Qagh tu'lu' chaq. vaj jIQeQ.",
+    "credits": "Vibe Coding, bangwI",
+    "credits_content": "De'wI'Hommey vIjatlhbe'. pagh vIjatlh. Qel vIchenmoHpu' Claude lo', Anthropic AI, Claude Code pong. Claude Code yISuq, Qel wov!",
+    "resize_pages": "ghItlh chenmoH",
+    "resize_pages_content": "qonmey reduction pagh enlargement:\n• wa' pagh law' qonmey DawIv\n• nIH-click → 'resize'\n• wej options available:\n  - custom dimensions: desired width pagh height enter (aspect ratio automatically preserved).\n  - percentage reduction: 10% vo' 90% percentage DawIv\n  - percentage enlargement: 10% vo' 100% percentage DawIv\n• application ngogh estimated size modification qaSpu' cha'\n• modification law'taHghach selected qonmey Hoch applies",
+    "language_export_piqad": "pIqaD Font",
+    "language_export_tengwar": "Tengwar Fonts",
+    "language_export_piqad_success": "Qolqo' exported: {filename}\ntI'wI'Daq tu'lu':",
+    "language_export_tengwar_success": "{count} qolqo'mey exported\ntI'wI'Daq tu'lu':",
+    "icons": "Del",
+    "icons_content": "Hoch mIqta'mey lo'lu'bogh qach QaD Dochvam DaH 'ej Dalo'laH wa' QaD: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nvagh mIwmey vIchenmoHta'.\nwav Del neH, Windows chavmoH De' Del, chenmoHpu' jIH ('ach AI lo', jIH cha'nob chenmoHwI' vaj Qugh ḥafna, ḥafna, ḥafna). Del vaj lo' chut qaH, chanvo' DaqeS bIneH.",
+    "icons_view_button": "Del legh",
+    "icons_window_title": "MosaicView Del",
+    "icons_save_all": "Del choq",
+    "icons_saved_success": "{count} Del choqta'pu' tI'wI'Daq:",
+    "icons_save_failed": "Del choq Qagh: {error}",
+    "split_ui": "cha' ghomDu' De'wI' jIH",
+    "split_ui_content": "MosaicView chaw' cha' ghomDu' leghlaHmeH, chuqDaq.\n\nSep nIS Split nap reH cha' ghom wIv. ghom'e' wa' ghom reH: ghom wIv, ghom choH, ghom mev je. ghom HoS nap SuD nap wIv.\n\nghom ghomDu' chenmoH, baH'egh. Hoch ghomDu' wIv chaw' reH. ghomDu' vItu' Duj DoS Doq.\n\nSep nIS Close cha' ghom nap wa' ghom.",
+    "license_gpl": "GPL v3 chut",
+    "license_unrar": "UnRAR Segh",
+    "config_clear_clipboard": "ghItlhmeH De tetlh teq",
+    "config_clipboard_note": "pagh: Windows ghItlhmeH De tetlh lo'lu'bogh poH De (clipboard_XXXXX De tetlh) 12 rep chen, vaj De tetlh lInglaH DaneH'a' programa' Dachavta'DI' je. 12 rep pagh, De tetlh teq.",
+    "config_log_note": "ngoq choH (PDF choH CBZ CBR choH CBZ je) Qagh lutu'chugh Qagh ghItlh chen. ghItlh De (Log_pdftocbz_.txt Log_cbrtocbz_.txt je) taH qaSpa' programa' SoQmoH. \"poH De teq\" laDmeH patlh neH luteqlu'.",
+    "config_clipboard_cleared": "ghItlhmeH De tetlh teqlu'ta'.",
+    "adjust_images": "Ngogh chut",
+    "adjust_images_content": "Hoch mIllogh tI'laH DIvI' MosaicView. wov, Hurgh, tIn, gham, poch, SuqlaH (qIj-chIS, sepya, rIt je), compression tI', rIt teq, wovmoH, pagh rar yIqaD. vaj Viewer tu'lu' 'ej rar qabDaq legh. mIlloghHom leghlaH reH.",
+    "create_icon": "Icon chenmoH",
+    "create_icon_content": "MosaicView vItlhutlh icon file (.ico) chenmoH mosaic Hoch mIllogh.\n• nIH-click mIllogh → 'Icon chenmoH'\n• viewer-Daq Dap DaHev (icon tetraghtaH)\n• transparency DapoQchugh yInab\n• yIchel: .ico file mosaic-Daq baHta'\n• .ico files Hoch standard resolution (16×16 256×256 vItlhutlh) automated chenmoH\n• .ico file mosaic-Daq poQ, CBZ archive-Daq ngeH blocked, ICO format archive Hoch Subbe'. .ico file chu' export (Ctrl+C Windows folder-Daq yIchu'), vaj mosaic-Daq yImev ngeH.",
+    "batch_convert": "ngoq choH",
+    "batch_convert_content": "MosaicView legh wej batch choHmeH mIwmey, 'ach neH chaq lo'laH mosaik bIH chu'lu'DI'. Hoch mIwvaD, rIl rap ghaH : Dor waw' wIv, ngor, poH Qav nargh'a' 'eb jatlh, De' mung Daj Qav leghlaH. wa' DoQ ngaSmoHlaH original De' Sop'IrmoHlaH HoSghaj ruv bIH'a' ngeHHa' joq.\n• CBR → CBZ : Hoch CBR (RAR) De'mey choHmeH waw' Dor latlh je. CBR ZIP ghaHchugh, pong Daj yIchoH, choH pagh.\n• PDF → CBZ : Hoch PDF De'mey choHmeH waw' Dor latlh je. mIllogh beH law' woD pagh.\n• MILLOGH MOBWI' → CBZ : Hoch mIllogh De' tu'lu'pu'bogh waw' Dor latlh je choH CBZ wa'. mIllogh Daj pagh, Qagh, TIFF HoSghaj, GIF joq lIHHa' log je.",
+    "config_open_temp_folder": "poSmoH HoS Daq",
+    "icon_toolbar": "nugh mI' SeHlaw",
+    "icon_toolbar_content": "Icon toolbar-Daq tIn Qu' De' lI' qach latlh jatlh. bIje'laH icon-mey reH toolbar-Daq 'ach SoH neH. icon-mey Dalegh pagh Dabel 'e' DamaS net chaw'meH, gear button toolbar-Daq bIH 'ej SoH: configuration window poSmoH, Daj icon-mey toolbar lIH je puS buS mej. « + » « − » je button-mey lo' icon-mey'e' nI' je. configuration automatically choHlu'.",
+    "license_7zip": "7-Zip chut"
+  },
+  "misc": {
+    "file_word": "De'",
+    "files_word": "De'mey",
+    "corrupted": "Qaw'lu'",
+    "yes": "HIja'",
+    "no": "ghobe'",
+    "cancel": "qIl",
+    "selection_suffix": "lulegh-wIv"
+  },
+  "metadata": {
+    "title": "pong",
+    "series": "tetlh",
+    "number": "mI'",
+    "volume": "paq",
+    "summary": "ngopmey",
+    "writer": "qonwI'",
+    "penciller": "cha'nob chenmoHwI'",
+    "inker": "pe'wI'",
+    "colorist": "nguv chenmoHwI'",
+    "letterer": "mI'wI'",
+    "cover_artist": "beQmey cha'nob chenmoHwI'",
+    "editor": "choHwI' (nuv)",
+    "publisher": "choHwI' (juH)",
+    "imprint": "tetlh",
+    "genre": "Segh",
+    "web": "web Daq",
+    "page_count": "ghItlhmey mI'",
+    "language_iso": "Hol",
+    "format": "cham",
+    "black_and_white": "qIj 'ej chIS",
+    "manga": "Manga",
+    "year": "DIS",
+    "month": "jar",
+    "day": "jaj",
+    "notes": "qonmey",
+    "characters": "nuvpu'",
+    "locations": "Daqmey",
+    "teams": "ghom",
+    "story_arc": "nob",
+    "story_arc_number": "mI'",
+    "series_group": "ghom lutmey",
+    "count": "mI' De'",
+    "alternate_series": "latlh lutmey",
+    "alternate_number": "latlh mI'",
+    "alternate_count": "latlh mI' HochHom",
+    "age_rating": "DIS SoHvaD",
+    "series_complete": "lutmey naQ",
+    "translator": "mu'mey choH",
+    "tags": "ghItlh",
+    "scan_information": "De' nIHwI'",
+    "community_rating": "DIvI' matlhHa'ghach",
+    "review": "paq mughwI'",
+    "gtin": "GTIN",
+    "pages": "maq",
+    "pages_col_image": "nagh beQ",
+    "pages_col_type": "DIch",
+    "pages_col_width": "juch",
+    "pages_col_height": "DoQ",
+    "pages_col_size": "HoS (B)"
+  },
+  "web": {
+    "web_download_progress": "law': {downloaded}/{total} mIllogh...",
+    "web_download_cancel": "qIl",
+    "web_no_images": "mIllogh pagh",
+    "web_no_images_found": "mIllogh tu'be'lu' DaqvamDaq.",
+    "web_imported": "{count} mIllogh chaw'lu' web ghItlhvo'",
+    "web_drag_drop_title": "web mIllogh woH 'ej poS",
+    "web_copy_paste_message": "web mIlloghvo' woH 'ej poS taHbe'lu'.\n\nnID qeq (nap law'):\n\n1. web mIllogh DapoS 'e' yInID\n2. 'mIllogh yIqIp' DawIv\n3. MosaicView-Daq, 'poS' wuq ghap Ctrl+V yIlo'\n\nmIllogh Hoch web mIllogh chenmoH!",
+    "import_web_button": "web ngeH",
+    "import_web_tooltip": "web parma mIllogh naQ ngeHmeH internet Se' yIqIp",
+    "import_web_menu": "web ngeH...",
+    "import_web_dialog_title": "web parmamvo' mIllogh ngeH",
+    "import_web_url_label": "web parma Se':",
+    "import_web_ok_button": "luq",
+    "import_web_cancel_button": "qIl",
+    "import_web_invalid_url": "URL pIm. web Se' pong yIghItlh."
+  },
+  "donation": {
+    "menu_label": "ghItlhwI'vaD nobmeH",
+    "title": "nob",
+    "message": "De'wI' mach DaparHa', 'ej reH Dalo'. jIHvaD rep vatlh law' vIje'. nobmeH jISov'a'? yItlhutlh, bIQ tI' vIje' champagne je.\n\ncents puS ghap 'ej euro tera'ngan law' qaDaH, Hoch 'ay' vIlaj. paypal lo'laH"
+  },
+  "mail": {
+    "tooltip": "wa' leQ 'el motlh QIn mangghom Windows-Daq QIn ngeH. mangghom toghta' ghobe' chugh (net webQIn neH lo' chugh, pIv), nab nIHje' MosaicView chan SIq'a' 'ab DuSaQlaH.",
+    "copy_address": "MosaicView QIn chan lI'laH Daq",
+    "menu_label": "MosaicView ghot QIn ngeH",
+    "icon_label": "QIn ngeH"
+  },
+  "menu": {
+    "file": "ngan",
+    "file_open": "poSmoH ngan",
+    "file_close": "SoQmoH ngan",
+    "batch_convert": "ngan mI' chel",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "cha' motlh → CBZ",
+    "edit": "choHmoH",
+    "undo": "chegh",
+    "redo": "lop",
+    "paste": "tlhegh",
+    "delete": "teq",
+    "invert_selection": "wIv mIr",
+    "select_all": "Hoch wIv",
+    "deselect": "wIv teq",
+    "refresh_mosaic": "chu' chem",
+    "images": "nab",
+    "rotation": "jIr",
+    "archives": "ngan mI'",
+    "sort": "tlhoch",
+    "system": "pat",
+    "decrease_font": "nap ghItlh",
+    "increase_font": "ghom ghItlh",
+    "language": "Hol",
+    "language_real": "Hol teH",
+    "language_fictional": "Hol lojmIt",
+    "about": "tlhob",
+    "export_piqad_font": "nIqaD HutlhmoH",
+    "export_tengwar_fonts": "tengwar HutlhmoH"
+  }
+}

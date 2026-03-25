@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Skaitmeninių komiksų kolekcininkų Šveicarijos peilis",
+  "buttons": {
+    "open_file": "Atidaryti CBZ/CBR/CB7/PDF",
+    "close_file": "Uždaryti failą",
+    "create_cbz": "Sukurti CBZ archyvą",
+    "flatten_dirs": "Perkelti visus failus\nį šakninį katalogą ir ištrinti\npoaplankius",
+    "renumber": "Puslapių\npernumeravimas",
+    "undo": "⤺ Atšaukti",
+    "redo": "Grąžinti ⤻",
+    "copy": "Kopijuoti",
+    "cut": "Iškirpti",
+    "paste": "Įkliuoti",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Konvertuoti į kitą\nvaizdo formatą",
+    "join_pages": "Sujungti puslapius",
+    "split_page": "Padalinti puslapį",
+    "save_as": "Išsaugoti kaip\n(sukurti naują CBZ)",
+    "save_selection": "Išsaugoti pasirinkimą\nkaip CBZ",
+    "print_selection": "Spausdinti pasirinkimą",
+    "print_all": "Spausdinti visą komiksą",
+    "sort": "Rūšiuoti",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Konvertuoti",
+    "cancel": "Atšaukti",
+    "split_button": "Padalinti",
+    "join_button": "Pradėti",
+    "validate_crop": "Patvirtinti apkarpymą",
+    "ok": "Gerai",
+    "close": "Uždaryti",
+    "apply_and_save": "Pritaikyti pakeitimus ir išsaugoti failą",
+    "apply_and_create": "Pritaikyti pakeitimus ir sukurti CBZ failą",
+    "close_and_lose": "Uždaryti failą ir prarasti pakeitimus",
+    "cancel_return": "Atšaukti ir grįžti į mozaiką",
+    "update_page_count": "Atnaujinti puslapių skaičių\nmetaduomenyse",
+    "invert_selection": "Apversti pasirinkimą",
+    "reduce_size": "Keisti puslapių dydį",
+    "mirror_vertical": "⇅",
+    "create_gif": "Sukurti GIF",
+    "edit_gif": "Redaguoti animuotą GIF",
+    "save_to_folder": "Eksportuoti pasirinktus\npuslapius",
+    "continue": "Tęsti",
+    "reset": "↻",
+    "yes": "Taip",
+    "no": "Ne",
+    "renumber_recommended": "Pernumeruoti (rekomenduojama)",
+    "ignore_and_save": "Ignoruoti ir išsaugoti",
+    "rename_to_cbz": "Pervadinti į .cbz",
+    "open_without_rename": "Atidaryti be pervadinimo",
+    "rename_to_cbr": "Pervadinti į .cbr",
+    "adjustments": "Ryškumas,\nkontrastas ir kt.",
+    "batch_cbr_to_cbz": "Paketinis CBR failų\n konvertavimas į CBZ",
+    "batch_pdf_to_cbz": "Paketinis PDF failų\n konvertavimas į CBZ",
+    "batch_img_to_cbz": "Atskirų vaizdų\n paketo konvertavimas į CBZ",
+    "icon_toolbar_reset": "Atstatyti",
+    "delete_selected": "Ištrinti",
+    "save": "Išsaugoti",
+    "rename_to_cb7": "Pervadinti į .cb7",
+    "split_ui": "Padalinti sąsają į du skydelius",
+    "unsplit_ui": "Uždaryti antrą skydelį"
+  },
+  "tabs": {
+    "mosaic": "Mozaika",
+    "metadata": "Metaduomenys"
+  },
+  "viewer": {
+    "title": "Žiūryklė",
+    "mode_single": "Vienas puslapis  [D]",
+    "mode_double": "Dvigubas puslapis  [D]",
+    "mode_continuous": "Nepertraukiamas režimas  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Ankstesnis puslapis (←)",
+      "next_page": "Kitas puslapis (→)",
+      "zoom_in": "Priartinti (Ctrl+Plius)",
+      "zoom_out": "Nutolinti (Ctrl+Minus)",
+      "zoom_reset": "Atstatyti mastelį (Ctrl+0)",
+      "reading_mode_double": "Keisti skaitymo režimą (D) → Dvigubi puslapiai",
+      "reading_mode_continuous": "Keisti skaitymo režimą (D) → Dvigubi puslapiai nuosekliai",
+      "reading_mode_single": "Keisti skaitymo režimą (D) → Vienas puslapis",
+      "fullscreen_exit": "Išeiti iš viso ekrano (F11)",
+      "fullscreen": "Visas ekranas (F11)",
+      "close_viewer": "Uždaryti žiūryklę (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Sugadintas vaizdas - Pakeisti",
+      "corrupted_delete": "⚠️ Ištrinti šį vaizdą",
+      "copy": "Kopijuoti (Ctrl+C)",
+      "cut": "Iškirpti (Ctrl+X)",
+      "paste": "Įkliuoti (Ctrl+V)",
+      "paste_clipboard": "Įkliuoti iš iškarpinės (Ctrl+V)",
+      "delete": "Ištrinti (Delete)",
+      "deselect": "Atžymėti (ESC)",
+      "rotate_right": "↻ Pasukti dešinėn",
+      "rotate_left": "↺ Pasukti kairėn",
+      "mirror": "⇄ Horizontalus veidrodis",
+      "crop": "Apkarpyti",
+      "convert": "Konvertuoti į kitą formatą...",
+      "join": "Sujungti pasirinktus puslapius",
+      "split": "Padalinti pasirinktą puslapį",
+      "save_selection": "Išsaugoti pasirinkimą kaip CBZ",
+      "print_selection": "Spausdinti pasirinkimą",
+      "copy_archive": "Kopijuoti visą archyvą",
+      "undo": "Atšaukti (Ctrl+Z)",
+      "redo": "Grąžinti (Ctrl+Y)",
+      "renumber_auto": "Puslapių pernumeravimas (automatinė daugybių puslapių aptiktis)",
+      "renumber_simple": "Puslapių pernumeravimas (paprastas numeravimas)",
+      "sort_submenu": "Rūšiuoti puslapius",
+      "sort_name": "Pagal pavadinimą",
+      "sort_type": "Pagal tipą",
+      "sort_size": "Pagal dydį",
+      "sort_width": "Pagal plotį",
+      "sort_height": "Pagal aukštį",
+      "sort_resolution": "Pagal raišką",
+      "sort_dpi": "Pagal DPI",
+      "create_cbz": "Sukurti CBZ archyvą",
+      "save_as": "Išsaugoti kaip...",
+      "close_file": "Uždaryti failą",
+      "help": "Naudojimo instrukcija",
+      "update_page_count": "Atnaujinti puslapių skaičių metaduomenyse",
+      "invert_selection": "Apversti pasirinkimą (Ctrl+I)",
+      "reduce_size": "Keisti puslapių dydį",
+      "mirror_vertical": "⇅ Vertikalus veidrodis",
+      "edit_animated_gif": "Redaguoti animuotą GIF...",
+      "save_to_folder": "Eksportuoti pasirinktus puslapius",
+      "adjustments": "Ryškumas, kontrastas, spalvos...",
+      "refresh_mosaic": "Atnaujinti mozaiką (F5)",
+      "create_ico": "Sukurti .ico failą"
+    },
+    "canvas_no_file": {
+      "open": "Atidaryti CBZ/CBR/CB7/PDF",
+      "recent_files": "Paskutiniai failai",
+      "clear_history": "Išvalyti istoriją"
+    },
+    "canvas_with_file": {
+      "close": "Uždaryti failą",
+      "paste": "Įkliuoti (Ctrl+V)",
+      "paste_clipboard": "Įkliuoti iš iškarpinės (Ctrl+V)",
+      "select_all": "Pažymėti viską (Ctrl+A)",
+      "deselect": "Atžymėti (ESC)",
+      "copy_archive": "Kopijuoti visą archyvą",
+      "print_all": "Spausdinti visą komiksą",
+      "renumber_auto": "Puslapių pernumeravimas (automatinė daugybių puslapių aptiktis)",
+      "renumber_simple": "Puslapių pernumeravimas (paprastas numeravimas)",
+      "flatten": "Išlyginti aplankus",
+      "save_selection": "Išsaugoti pasirinkimą kaip CBZ",
+      "hide_sidebar": "« Paslėpti mygtukų juostą",
+      "show_sidebar": "» Rodyti mygtukų juostą",
+      "decrease_thumbs": "Sumažinti miniatiūrų dydį",
+      "increase_thumbs": "Padidinti miniatiūrų dydį",
+      "theme_dark": "Perjungti į tamsią temą",
+      "theme_light": "Perjungti į šviesią temą",
+      "sort_submenu": "Rūšiuoti puslapius",
+      "undo": "Atšaukti (Ctrl+Z)",
+      "redo": "Grąžinti (Ctrl+Y)",
+      "create_cbz": "Sukurti CBZ archyvą",
+      "save_as": "Išsaugoti kaip...",
+      "help": "Naudojimo instrukcija",
+      "update_page_count": "Atnaujinti puslapių skaičių metaduomenyse",
+      "invert_selection": "Apversti pasirinkimą (Ctrl+I)",
+      "fullscreen": "Viso ekrano režimas (F11)",
+      "fullscreen_exit": "Išeiti iš viso ekrano režimo (F11 arba ESC)",
+      "quit": "Uždaryti programą"
+    },
+    "canvas": {
+      "quit": "Uždaryti programą",
+      "reset": "Programos atstatymas:\n• lango dydis ir padėtis\n• tamsus režimas → šviesus\n• miniatiūrų dydis → normalus\n• šoninis skydelis → matomas / 220 px\n• kalba → automatinis aptikimas\n• šrifto dydis → numatytasis",
+      "reset_label": "Iš naujo nustatyti programą"
+    },
+    "font_size": {
+      "decrease": "Sumažinti šrifto dydį",
+      "increase": "Padidinti šrifto dydį"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Rūšiuoti pagal pavadinimą",
+    "sort_type": "Rūšiuoti pagal tipą",
+    "sort_size": "Rūšiuoti pagal dydį",
+    "sort_width": "Rūšiuoti pagal plotį",
+    "sort_height": "Rūšiuoti pagal aukštį",
+    "sort_resolution": "Rūšiuoti pagal raišką",
+    "sort_dpi": "Rūšiuoti pagal DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Tuščias archyvas",
+        "message": "CBZ archyvas neturi jokių failų."
+      },
+      "empty_cbr": {
+        "title": "Tuščias archyvas",
+        "message": "CBR archyvas neturi jokių failų."
+      },
+      "files_ignored": {
+        "title": "Failai ignoruoti"
+      },
+      "no_selection_crop": {
+        "title": "Nieko nepasirinkta",
+        "message": "Pasirinkite vaizdą apkarpymui."
+      },
+      "multi_selection_crop": {
+        "title": "Pasirinkta keletas",
+        "message": "Vienu metu galite apkarpyti tik vieną vaizdą.\nPasirinkite tik vieną vaizdą."
+      },
+      "invalid_selection_crop": {
+        "title": "Netinkamas pasirinkimas",
+        "message": "Apkarpyti galima tik vaizdus."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Funkcija nepasiekiama",
+        "message": "Puslapių perkėlimas negalimas poaplankiuose.\nIšlyginkite aplankus arba grįžkite į šakninį katalogą."
+      },
+      "no_selection_convert": {
+        "title": "Nieko nepasirinkta",
+        "message": "Pasirinkite bent vieną vaizdą konvertavimui."
+      },
+      "invalid_selection_convert": {
+        "title": "Netinkamas pasirinkimas",
+        "message": "Konvertuoti galima tik vaizdus."
+      },
+      "no_selection_split": {
+        "title": "Nieko nepasirinkta",
+        "message": "Pasirinkite vaizdą padalinimui."
+      },
+      "multi_selection_split": {
+        "title": "Pasirinkta keletas",
+        "message": "Vienu metu galite padalinti tik vieną vaizdą.\nPasirinkite tik vieną vaizdą."
+      },
+      "invalid_selection_split": {
+        "title": "Netinkamas pasirinkimas",
+        "message": "Padalinti galima tik vaizdus."
+      },
+      "invalid_number_split": {
+        "title": "Netinkamas skaičius",
+        "message": "Puslapių skaičius turi būti nuo 2 iki 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Nepakanka pasirinkimo",
+        "message": "Pasirinkite bent 2 vaizdus sujungimui."
+      },
+      "invalid_selection_join": {
+        "title": "Netinkamas pasirinkimas",
+        "message": "Sujungti galima tik vaizdus."
+      },
+      "pil_not_available": {
+        "title": "PIL nepasiekiamas",
+        "message": "PIL modulis nepasiekiamas įklijavimui iš sisteminės iškarpinės."
+      },
+      "format_not_supported": {
+        "title": "Formatas nepalaikomas",
+        "message": "Vaizdo formatas nepalaikomas arba failas sugadintas.\nPalaikomi formatai: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Nėra pasirinkimo",
+        "message": "Pirmiausia nubrėžkite apkarpymo stačiakampį."
+      },
+      "cannot_open_file": {
+        "title": "Nepavyko atidaryti failo",
+        "message": "Nepavyko įkelti failo."
+      },
+      "corrupted_images": {
+        "title": "Sugadinti vaizdai",
+        "summary": "Rasta {count} sugadintas(-i) vaizdas(-ai) iš {total}.",
+        "hint": "Jie rodomi su specialia piktograma.\nDešiniuoju pelės mygtuku spustelėkite sugadintą vaizdą, kad jį pakeistumėte arba ištrintumėte.",
+        "more": "... ir {count} kitas(-i)"
+      },
+      "no_image_print": {
+        "title": "Nėra vaizdo",
+        "message": "Nėra vaizdo spausdinimui."
+      },
+      "no_valid_image_print": {
+        "title": "Nėra vaizdo",
+        "message": "Nėra tinkamo vaizdo spausdinimui."
+      },
+      "no_selection_print": {
+        "title": "Nieko nepasirinkta",
+        "message": "Pasirinkite bent vieną vaizdą."
+      },
+      "no_valid_selection_print": {
+        "title": "Nėra vaizdo",
+        "message": "Pasirinkime nėra tinkamo vaizdo."
+      },
+      "save_cancelled": {
+        "title": "Išsaugojimas atšauktas",
+        "message": "Rankiniu būdu ištaisykite failų pavadinimus prieš išsaugodami."
+      },
+      "empty_pdf": {
+        "title": "Tuščias PDF",
+        "message": "PDF failas neturi jokių puslapių."
+      },
+      "no_selection_save": {
+        "title": "Dėmesio",
+        "message": "Pasirinkite bent vieną puslapį išsaugojimui."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Tempimas išjungtas",
+        "message": "Puslapių perkėlimas tempiant galimas tik komikso šakniniame kataloge.\n\nNorint perkelti puslapius:\n1. Grįžkite į šakninį katalogą spustelėję kilimo piktogramą\n2. Arba išlyginkite komiksą, kad pašalintumėte poaplankius"
+      },
+      "no_selection_reduce": {
+        "title": "Nieko nepasirinkta",
+        "message": "Pasirinkite bent vieną puslapį sumažinimui."
+      },
+      "invalid_selection_reduce": {
+        "title": "Netinkamas pasirinkimas",
+        "message": "Galima sumažinti tik vaizdus."
+      },
+      "invalid_dimensions": {
+        "title": "Netinkami matmenys",
+        "message": "Įveskite tinkamus matmenis (teigiamus sveikuosius skaičius)."
+      },
+      "no_images_for_gif": {
+        "title": "Nėra vaizdų",
+        "message": "Animuotam GIF sukurti reikalingas bent vienas vaizdas."
+      },
+      "no_valid_images": {
+        "title": "Nėra tinkamų vaizdų",
+        "message": "Nerasta tinkamų vaizdų GIF sukurti."
+      },
+      "animated_gif_in_comic": {
+        "title": "Aptiktas animuotas GIF",
+        "message": "Įspėjimas: Šis komiksas turi vieną ar daugiau animuotų GIF failų.\\n\\nKomiksų skaityklės (CDisplayEx, YACReader ir kt.) rodys tik pirmąjį kiekvieno GIF kadrą kaip statinį puslapį.\\n\\nNorėdami tinkamai peržiūrėti animuotą GIF, turite jį išsaugoti atskirai už komikso ribų naudodami mygtuką \"Eksportuoti pasirinktus puslapius\" arba \"Redaguoti animuotą GIF\".\\n\\nAr norite tęsti komikso išsaugojimą vis tiek?"
+      },
+      "no_selection_adjust": {
+        "title": "Nera pasirinkimo",
+        "message": "Pasirinkite bent viena vaizda koregavimams taikyti."
+      },
+      "invalid_selection_adjust": {
+        "title": "Netinkamas pasirinkimas",
+        "message": "Koregavimai gali buti taikomi tik vaizdams."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Funkcija nepasiekiama",
+        "message": "Pernumeravimas nepasiekiamas, kol aplankai nesuplokštinti.\nSuplokštinkite aplankus prieš pernumeruodami."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP klaida",
+        "message": "'{file}': Failas nėra tinkamas ZIP archyvas arba yra sugadintas."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP klaida",
+        "message": "Nepavyko atidaryti CBZ failo: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR klaida",
+        "message": "'{file}': Failas nėra tinkamas RAR archyvas arba yra sugadintas."
+      },
+      "rar_cannot_open": {
+        "title": "RAR klaida",
+        "message": "Nepavyko atidaryti CBR archyvo: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Klaida",
+        "message": "Netikėta klaida atidarant CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko sujungti vaizdų."
+      },
+      "paste_failed": {
+        "title": "Klaida",
+        "message": "Klaida įklijuojant: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko nukopijuoti archyvo: {error}"
+      },
+      "crop_invalid": {
+        "title": "Klaida",
+        "message": "Apkarpymo zona netinkama."
+      },
+      "crop_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko apkarpyti vaizdo: {error}"
+      },
+      "load_image_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko įkelti vaizdo:\n{error}"
+      },
+      "print_error": {
+        "title": "Spausdinimo klaida",
+        "message": "Klaida spausdinant:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Spausdinimas nepasiekiamas",
+        "message": "win32print modulis neįdiegtas.\nĮdiekite jį komanda: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Failas nerastas",
+        "message": "Failas nebėra:\n{path}"
+      },
+      "import_failed": {
+        "title": "Importavimo klaida",
+        "message": "Nepavyko importuoti failo: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF neįdiegtas",
+        "message": "PyMuPDF (fitz) biblioteka neįdiegta.\nĮdiekite ją komanda: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Klaida",
+        "message": "Klaida importuojant PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF klaida",
+        "message": "Nepavyko įkelti PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Pasikartojantys failų pavadinimai",
+        "intro": "{count} pasikartojantis(-ys) failo pavadinimas(-ai) aptiktas(-i):\n\n",
+        "item": "  • {name} ({times} kartus)\n",
+        "more": "  ... ir {more} kitas(-i)\n",
+        "footer": "\nZIP archyvai nepriima pasikartojančių pavadinimų.\nPrieš įrašant pervardykite šiuos failus."
+      },
+      "save_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko išsaugoti failo: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko sukurti archyvo: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko išsaugoti pasirinkimo: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF kūrimo klaida",
+        "message": "Nepavyko sukurti animuoto GIF:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Išsaugojimo klaida",
+        "message": "Klaida išsaugant failus:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Pervadinimo klaida",
+        "message": "Nepavyko pervadinti failo: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF apsaugotas slaptažodžiu",
+        "message": "Šis PDF failas yra užšifruotas ir apsaugotas slaptažodžiu.\nJo negalima atidaryti be slaptažodžio."
+      },
+      "pdf_unlock_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko įrašyti atrakinto PDF failo:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: užšifruotas PDF (reikalingas slaptažodis), praleistas",
+      "file_too_large": {
+        "title": "Failas per didelis",
+        "message": "Failas {filename} yra {size} dydžio ir viršija didžiausią leistiną vaizdo dydį (500 MB)."
+      },
+      "license_file_not_found": {
+        "message": "Licencijos failas nerastas: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Nepavyko perskaityti licencijos failo: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z klaida",
+        "message": "Failas '{file}' nėra tinkamas 7Z archyvas arba yra sugadintas."
+      },
+      "delete_error": "Klaida trinant: {error}",
+      "export_error": "Klaida eksportuojant: {error}",
+      "font_source_not_found": "Šrifto šaltinio failas nerastas: {path}",
+      "no_tengwar_font": "Tengwar šriftas nerastas.",
+      "no_icons_found": "Piktogramų nerasta.",
+      "unsupported_files": {
+        "title": "Nepalaikomi failai",
+        "message": "Šie failai nėra palaikomi ir buvo ignoruoti:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF sėkmingai sukurtas",
+        "message": "Animuotas GIF '{name}' buvo sukurtas ir pridėtas prie mozaikos."
+      },
+      "pywin32_required": {
+        "title": "Funkcija nepasiekiama",
+        "message": "pywin32 modulis reikalingas įklijavimui iš sisteminės iškarpinės.\nĮdiekite jį komanda: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Vaizdai importuoti",
+        "message": "{count} vaizdas(-ai) importuotas(-i)"
+      },
+      "archive_copied": {
+        "title": "Archyvas nukopijuotas",
+        "message": "Archyvas nukopijuotas į iškarpinę."
+      },
+      "function_not_available": {
+        "title": "Funkcija nepasiekiama",
+        "message": "Ši funkcija šiuo metu nepasiekiama."
+      },
+      "duplicate_detected": {
+        "title": "Aptiktas dublikatas",
+        "message": "Failas su šiuo pavadinimu jau egzistavo.\n\nFailas pervardytas į:\n{name}"
+      },
+      "replace_success": {
+        "title": "Sėkmingai",
+        "message": "Vaizdas '{name}' sėkmingai pakeistas."
+      },
+      "history_cleared": {
+        "title": "Istorija išvalyta",
+        "message": "Paskutinių failų sąrašas išvalytas."
+      },
+      "files_copied_clipboard": {
+        "title": "Failai nukopijuoti į iškarpinę",
+        "message": "Tempimas iš programos nepasiekiamas dėl techninių priežasčių.\n\n✓ {count} {word} nukopijuotas(-i) į iškarpinę\n\nDabar galite įkliuoti bet kur:\n  • Dešinis pelės mygtukas → Įkliuoti\n  • Arba Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Taisymas atliktas",
+        "message": "{count} failo(-ų) pavadinimas(-ai) ištaisytas(-i)."
+      },
+      "import_success": {
+        "title": "Importavimas sėkmingas",
+        "message": "{count} puslapis(-iai) importuotas(-i) iš {file}"
+      },
+      "pdf_import_success": {
+        "title": "Importavimas sėkmingas",
+        "message": "{count} PDF puslapis(-iai) importuotas(-i) iš {file}\nKokybė: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Sėkmingai",
+        "message": "PDF konvertuotas sėkmingai!\n{count} puslapių įkelta {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Sėkmingai",
+        "message": "CBZ failas išsaugotas:"
+      },
+      "cbz_converted": {
+        "title": "Sėkmingai",
+        "message": "Failas konvertuotas į CBZ:",
+        "question": "Ar norite ištrinti pradinį CBR failą?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Sėkmingai",
+        "message": "Failas konvertuotas į CBZ:",
+        "question": "Ar norite ištrinti pradinį PDF failą?"
+      },
+      "cbz_save_as": {
+        "title": "Sėkmingai",
+        "message": "Naujas CBZ failas išsaugotas: {path}"
+      },
+      "cbz_created": {
+        "title": "Sėkmingai",
+        "message": "CBZ archyvas sukurtas:"
+      },
+      "selection_saved": {
+        "title": "Sėkmingai",
+        "message": "Pasirinkimas išsaugotas:"
+      },
+      "flatten_done": {
+        "title": "Išlyginimas baigtas",
+        "message": "{files} failas(-ai) perkeltas(-i) iš {dirs} poaplankio(-ių)."
+      },
+      "language_changed": {
+        "title": "Kalba pakeista",
+        "message": "Sąsajos kalba sėkmingai pakeista."
+      },
+      "new_cbz_saved": {
+        "title": "Failas Išsaugotas",
+        "message": "Naujas CBZ failas sėkmingai išsaugotas:",
+        "question": "Ar norite ištrinti originalų failą?"
+      },
+      "page_count_updated": {
+        "title": "Puslapių skaičius atnaujintas",
+        "message": "Puslapių skaičius metaduomenyse buvo atnaujintas į {count} puslapių."
+      },
+      "files_saved": {
+        "title": "Sėkmingai išsaugota",
+        "message": "{count} failai išsaugoti į:\n{folder}",
+        "open_folder": "Ar norite atidaryti aplanką?"
+      },
+      "adjustments_applied": {
+        "title": "Koregavimai pritaikyti",
+        "message": "Koregavimai buvo sekmingai pritaikyti."
+      },
+      "pdf_unlocked": {
+        "title": "PDF atrakintas",
+        "message": "Atrakintas PDF failas buvo įrašytas:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Didelis archyvas",
+        "message": "Šis archyvas išpakuotas užima {size} MB.\nĮkėlimas gali sunaudoti daug atminties (RAM).\n\nAr norite tęsti?"
+      },
+      "confirm_delete": {
+        "title": "Patvirtinimas",
+        "message": "Ar tikrai norite ištrinti {count} failą(-us) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Ištrinti šaltinio failus?",
+        "message": "Ar norite ištrinti vaizdus, kurie buvo sujungti?\n\nTaip = Ištrinti šaltinio failus\nNe = Išsaugoti šaltinio failus\nAtšaukti = Atšaukti operaciją"
+      },
+      "invalid_filenames": {
+        "title": "Netinkami failų pavadinimai",
+        "intro": "{count} failas(-ai) turi draudžiamų simbolių:",
+        "item": "  • {name}",
+        "more": "  ... ir dar {more}",
+        "forbidden_chars": "Draudžiami simboliai: {chars}",
+        "fix_question": "Ar norite automatiškai pataisyti šiuos pavadinimus?\n(Draudžiami simboliai bus pakeisti '_')"
+      },
+      "close_without_save": {
+        "title": "Išsaugoti prieš uždarant?",
+        "message": "Vaizdai buvo pridėti. Ar norite sukurti CBZ archyvą prieš uždarant?"
+      },
+      "flatten_folders": {
+        "title": "Išlyginti aplankus",
+        "subdirs_detected": "Aptikti poaplankai:",
+        "files_to_move": "{count} failas(-ai) bus perkeltas(-i) į šakninį katalogą.",
+        "folders_to_delete": "{count} poaplankis(-iai) bus ištrintas(-i).",
+        "continue_question": "Ar norite tęsti?"
+      },
+      "update_page_count": {
+        "title": "Atnaujinti puslapių skaičių",
+        "message": "Komiksų puslapių skaičius pasikeitė.\n\nPuslapių skaičius, nurodytas metaduomenyse: {original}\nDabartinis puslapių skaičius: {current}\n\nAr norite atnaujinti puslapių skaičių metaduomenyse?"
+      },
+      "conversion_complete": {
+        "title": "Konvertavimas baigtas",
+        "message": "Konvertavimas baigtas!\n\n{count} paveikslėlis(-ai) konvertuotas į {format} formatą pridėtas po jūsų pasirinkimo.\n\nIštrinti pradinius paveikslėlius?",
+        "delete_originals": "Ištrinti originalus\n{count} failas(-ų) - {size}",
+        "keep_all": "Palikti viską\n{count} failas(-ų) - {size}",
+        "cancel_conversion": "Atšaukti konvertavimą\n{count} failas(-ų) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Aptiktas neteisingas plėtinys: šis '{filename}' failas yra CBZ, o ne CBR. Pervadinti?",
+      "title": "Neteisinga plėtinys"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Aptiktas neteisingas plėtinys: šis '{filename}' failas yra CBR, o ne CBZ. Pervadinti?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Aptiktas neteisingas plėtinys: failas '{filename}' yra CB7, o ne CBZ/CBR. Pervadinti?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Miniatiūrų dydis",
+    "loading": "Prašome palaukti, vyksta įkėlimas...\n{percent}%",
+    "resizing": "Prašome palaukti, keičiamas dydis...\n{percent}%",
+    "converting": "Prašome palaukti, konvertuojama...\n{percent}%",
+    "loading_lazy": "Prašome palaukti, vyksta įkėlimas...\n{percent}%\n\nDėl didelio šio failo dydžio ({size} MB) puslapiai bus įkeliami palaipsniui. Ekrane matomi puslapiai įkeliami iš karto, kiti bus įkeliami automatiškai slenkant.",
+    "apply_save_cbz": "Pritaikyti pakeitimus\nir išsaugoti CBZ failą",
+    "apply_create_cbz": "Pritaikyti pakeitimus\nir sukurti CBZ failą",
+    "import_progress": "Vyksta importavimas...\n{percent}%",
+    "pdf_import_progress": "Vyksta PDF importavimas...\n{percent}%",
+    "pdf_opening": "Atidaromas PDF failas...",
+    "pdf_page": "Puslapis {current} / {total}",
+    "warning_close": "Dėmesio! Pakeitimai neišsaugoti ir bus prarasti!",
+    "language_label": "Kalba:",
+    "directory_tooltip": "Aplankas: {name}\n{count} failas(-ai)\nBendra dydis: {size} MB",
+    "folder_up_tooltip": "Dukart spustelėkite, kad\ngrįžtumėte aukštyn katalogo medyje",
+    "status_bar": "{dirs} aplankas/ai  |  {files} failas/ai ({total_size})  |  {selected} pasirinkta ({selected_size})",
+    "pdf_converting": "Konvertuojami {total} puslapiai į vaizdus {dpi} DPI...",
+    "pdf_converting_no_change": "Ekstraktuojami {total} puslapiai be keitimo...",
+    "print_progress": "Pasiruošimas spausdinimui...\n{percent}%",
+    "print_preparing": "Prašome palaukti, pasiruošimas spausdinimui...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU Bendrosios viešosios licencijos v3 santrauka\n\nSUTEIKTOS LAISVĖS\nGalite naudoti, kopijuoti, keisti ir platinti\nMosaicView, net komerciniais tikslais.\n\nĮSIPAREIGOJIMAI\nKiekvienas platinimas (originalus ar pakeistas) turi :\n– išlaikyti GPL v3 licenciją\n– įtraukti šaltinio kodą arba nurodyti, kur jį gauti\n– nenustatyti papildomų apribojimų\n\nGARANTIJOS\nŠi programinė įranga platinama BE JOKIŲ GARANTIJŲ.\nJos autorius neatsako už žalą, atsiradusią dėl jos naudojimo.\n\nTurėjote gauti GNU Bendrosios viešosios licencijos kopiją kartu su šia programa. Jei ne, žr. <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Peržiūrėti visą licenciją",
+    "license_unrar_text": "CBZ failai yra pagrįsti ZIP formatu, kuris yra laisvas ir atviras formatas. CBR failai, priešingai, yra pagrįsti RAR formatu, kuris yra patentuotas.\n\nMosaicView gali atidaryti CBR failus dėka UnRAR, RARlab sukurtos ir laisvai platinamos priemonės.\n\nOficiali svetainė: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Žiūrėti UnRAR licenciją",
+    "saving_cbz": "Išsaugoma... {percent}%",
+    "empty_canvas_line1": "Cia numeskite viena ar daugiau CBZ/CBR/CB7/PDF failu arba savo paveikslus",
+    "empty_canvas_line2": "Kai failas atidarytas, galite toliau mesti kitus",
+    "empty_canvas_line3": "Numeskite vieną ar kelis aplankus, kad pradėtumėte paketinį apdorojimą",
+    "icon_toolbar_config_title": "Piktogramų įrankių juostos konfigūracija",
+    "icon_toolbar_active": "Piktogramos juostoje",
+    "icon_toolbar_hidden": "Piktogramos rezerve",
+    "license_gpl_full": "GNU GPL v3 licencija",
+    "license_unrar_full": "UnRAR licencija",
+    "licenses_button": "Licencijos",
+    "view_full_gpl_license": "Peržiūrėti visą GNU GPL v3 licenciją",
+    "license_7zip_text": "CB7 failai pagrįsti 7z formatu, kurį sukūrė Igor Pavlov ir kuris platinamas pagal GNU LGPL licenciją.\n\nMosaicView gali atidaryti CB7 failus naudodama 7-Zip — nemokamą atvirojo kodo įrankį.\n\nOficiali svetainė : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Peržiūrėti 7-Zip licenciją",
+    "license_7zip_full": "7-Zip licencija",
+    "icon_toolbar_show_thumb_slider": "Rodyti miniatiūrų dydžio slankiklį",
+    "icon_toolbar_show_lang_combo": "Rodyti kalbos pasirinkiklį",
+    "adjusting": "Prašome palaukti, vykdomos korekcijos...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS šrifto licencija",
+    "license_tengwar_full": "Alcarin Tengwar šrifto licencija",
+    "view_full_piqad_license": "Peržiūrėti visą pIqaD qolqoS licenciją"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Vaizdų konvertavimas",
+      "title": "{count} {word} konvertavimas",
+      "word_image": "vaizdas",
+      "word_images": "vaizdai",
+      "info": "Pasirinkite paskirties formatą:",
+      "format_png": "PNG (be nuostolių)",
+      "format_jpg": "JPEG (su glaudinimu)",
+      "format_webp": "WEBP (šiuolaikinis)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (aukšta kokybė)",
+      "format_gif": "GIF (animacija)",
+      "quality_label": "Kokybė JPG/WEBP:",
+      "quality_maximum": "Maksimali — kokybė 95/100",
+      "quality_high": "Aukšta — kokybė 85/100",
+      "quality_medium": "Vidutinė — kokybė 75/100",
+      "quality_low": "Žema — kokybė 60/100",
+      "quality_custom_option": "Pasirinktinė",
+      "quality_custom": "Kokybė tinkinta : {value}/100",
+      "quality_note": "(Šis nustatymas veikia tik JPG ir WEBP formatus)",
+      "quality_window_title": "Kokybės pasirinkimas",
+      "format_gif_static": "Statinis GIF",
+      "format_gif_animated": "Animuotas GIF (pasirinkite kelis vaizdus)"
+    },
+    "split": {
+      "window_title": "Padalinti puslapį",
+      "title": "Padalinti puslapį",
+      "pages_label": "Puslapių skaičius:",
+      "direction_label": "Padalinimo kryptis:",
+      "horizontal": "Horizontali (kairė → dešinė)",
+      "vertical": "Vertikali (viršus → apačia)",
+      "warning": "⚠ Kadangi padalinimas apskaičiuojamas automatiškai,\ngali prireikti rankinio koregavimo.",
+      "button_split": "Padalinti",
+      "button_cancel": "Atšaukti"
+    },
+    "join": {
+      "window_title": "Sujungti puslapius - Pertvarkyti tvarką",
+      "instructions": "Išdėstykite vaizdus:\n• Vertikaliai (viršus/apačia) vertikaliam sujungimui\n• Horizontaliai (kairė/dešinė) horizontaliam sujungimui",
+      "merged_filename_prefix": "Sujungimas",
+      "heights_label": "Aukščiai",
+      "widths_label": "Pločiai",
+      "size_adjustment_title": "Dydžio derinimas",
+      "size_adjustment_warning": "⚠️ Pasirinkti vaizdai turi skirtingus matmenis.\nPasirinkite, kaip derinti jų dydžius sujungimui.\nKiekvieno vaizdo kraštinių santykis visada bus išsaugotas.",
+      "keep_original": "Išsaugoti pradinius dydžius",
+      "keep_original_desc": "(prideda juodas juostas užpildymui)",
+      "enlarge_small": "Padidinti mažus vaizdus",
+      "enlarge_small_desc": "(suderinti su maksimaliu matmeniu)",
+      "reduce_large": "Sumažinti didelius vaizdus",
+      "reduce_large_desc": "(suderinti su minimaliu matmeniu)",
+      "back_to_arrangement": "Atgal"
+    },
+    "pdf": {
+      "quality_merge": "Pasirinkite sujungimo kokybę:",
+      "quality_export": "Pasirinkite eksportavimo kokybę:",
+      "merge_quality_title": "PDF sujungimo kokybė",
+      "export_quality_title": "PDF eksportavimo kokybė",
+      "loading_title": "Įkeliamas PDF...",
+      "dpi_90": "90 DPI - Internetinė publikacija",
+      "dpi_150": "150 DPI - Gera kokybė (rekomenduojama rodymui)",
+      "dpi_200": "200 DPI - Labai gera kokybė",
+      "dpi_300": "300 DPI - Puiki kokybė (komiksų standartas)",
+      "dpi_600": "600 DPI - Maksimali kokybė (dideli failai)",
+      "dpi_original": "Be vaizdo keitimo",
+      "dpi_original_tooltip": "Išmanus kiekvieno PDF puslapio analizavimas:\n• Puslapiai tik su vaizdais: išsaugo originalų DPI\n• Puslapiai tik su tekstu: 300 DPI\n• Mišrūs puslapiai (tekstas + vaizdai): vaizdų DPI jei >= 300, kitu atveju 300 DPI\nMaksimumas: 2400 DPI failo dydžiui apriboti"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "Reikalingas PyMuPDF",
+      "pymupdf_required_message": "PyMuPDF (fitz) neįdiegtas. Negalima konvertuoti PDF failų.",
+      "select_directory_title": "Pasirinkite katalogą su PDF failais",
+      "no_pdf_title": "Nėra PDF failų",
+      "no_pdf_message": "Kataloge nerasta jokių PDF failų:\n{directory}",
+      "confirm_title": "Paketinis PDF konvertavimas į CBZ",
+      "confirm_message": "{count} PDF failų konvertavimui kataloge {directory} (įskaitant pakatalogius).",
+      "checkbox_permanent_delete": "Ištrinti originalius PDF failus neperkeliant\nį šiukšlinę (NEGALIMA ANULIUOTI)",
+      "start_button": "Pradėti",
+      "converting_title": "Konvertavimas vyksta...",
+      "converting_progress": "Konvertuojamas failas {current} iš {total}",
+      "page_progress": "Puslapis {current} / {total}",
+      "complete_title": "Konvertavimas baigtas",
+      "complete_message": "{count} PDF failų konvertuota kataloge:",
+      "complete_message_errors": "{count} iš {total} PDF failų konvertuota kataloge:",
+      "errors_count": "{count} klaida(-ų) aptikta."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Pasirinkite katalogą su CBR failais",
+      "no_cbr_title": "Nėra CBR failų",
+      "no_cbr_message": "Kataloge nerasta CBR failų:\\n{directory}",
+      "confirm_title": "Paketinis CBR konvertavimas į CBZ",
+      "confirm_message": "{count} CBR failų konvertavimui kataloge {directory} (pakatalogių įskaitant).",
+      "checkbox_permanent_delete": "Ištrinti originalius CBR failus nenaudojant\nšiukšliadėžės (NEGALIMA ATŠAUKTI)",
+      "start_button": "Pradėti",
+      "converting_title": "Konvertuojama...",
+      "converting_progress": "Konvertuojamas failas {current} iš {total}",
+      "page_progress": "Puslapis {current} / {total}",
+      "complete_title": "Konvertavimas baigtas",
+      "complete_message": "{count} CBR failų konvertuota kataloge:",
+      "complete_message_errors": "{count} CBR failų konvertuota iš {total} kataloge:",
+      "errors_count": "{count} klaida(ų) aptikta.",
+      "renamed_count": "{count} failas(ų) pervadintas(ų) į CBZ",
+      "rarfile_unavailable": "Modulis rarfile nepasiekiamas. Nepavyksta konvertuoti CBR failų."
+    },
+    "close_warning": {
+      "title": "Dėmesio!",
+      "message": "Pakeitimai neišsaugoti ir bus prarasti!",
+      "btn_close_lose": "Uždaryti failą ir prarasti pakeitimus",
+      "btn_save_cbz": "Pritaikyti pakeitimus ir išsaugoti failą",
+      "btn_create_cbz": "Pritaikyti pakeitimus ir sukurti CBZ failą",
+      "btn_cancel": "Atšaukti ir grįžti į mozaiką"
+    },
+    "replace_image": {
+      "title": "Pakeisti sugadintą vaizdą"
+    },
+    "reduce_size": {
+      "window_title": "Vaizdo dydžio keitimas",
+      "title": "{count} {word} dydžio keitimas",
+      "word_image": "vaizdas",
+      "word_images": "vaizdai",
+      "current_size": "Dabartinis dydis: {size} MB",
+      "current_dimensions": "Dabartiniai matmenys: {width} × {height} px",
+      "choose_method": "Pasirinkite dydžio keitimo metodą:",
+      "custom_dimensions": "Pritaikyti matmenys",
+      "width_label": "Plotis:",
+      "height_label": "Aukštis:",
+      "use_custom_dimensions": "Naudoti šiuos matmenis",
+      "different_dimensions_warning": "Pasirinkti puslapiai turi skirtingus matmenis. Pasirinktiniai matmenys privers visus puslapius turėti tą patį dydį. Įsitikinkite, kad suprantate pasekmes prieš tęsdami.",
+      "estimated_size": "Numatomas dydis: {size} MB",
+      "percentage_reduction": "Procentinis sumažinimas",
+      "percentage_enlargement": "Procentinis padidinimas",
+      "reduce_0": "0% (be pakeitimų)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (be pakeitimų)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Dažniausiai naudojami puslapių pločiai yra 1024, 1280, 1600, 1920 ir 2000 pikselių, bet tinka ir kitos reikšmės.",
+      "multi_page_width": "Automatiškai aptikti ir keisti kelių puslapių dydį (plotis/aukštis)",
+      "multi_page_width_tooltip": "Įjungia automatinį kelių puslapių aptikimą: dvigubas puslapis, trigubas puslapis ir t.t. Dauginimo koeficientas automatiškai apskaičiuojamas pagal kiekvieno puslapio santykį, nesvarbu, ar tai plotis (greta esantys puslapiai), ar aukštis (sukrauti puslapiai)"
+    },
+    "gif_animated": {
+      "window_title": "Animuoto GIF kūrimas",
+      "images_title": "Animacijos vaizdai",
+      "params_title": "GIF parametrai",
+      "frame_delay_label": "Vėlavimas tarp vaizdų:",
+      "fps_normal": "{fps} kadrai/sekundę",
+      "fps_slow": "1 kadras kas {seconds} sekundes",
+      "loop_label": "Pakartojimų skaičius:",
+      "loop_info": "(0 = begalinė kilpa)",
+      "disposal_label": "Vaizdų išdėstymas:",
+      "disposal_0": "Nenurodyta",
+      "disposal_1": "Išsaugoti ankstesnį vaizdą",
+      "disposal_2": "Atkurti į fono spalvą",
+      "disposal_3": "Atkurti į ankstesnę būseną",
+      "optimize": "Optimizuoti failą (išsaugoti tik skirtumus)",
+      "metadata_title": "GIF metaduomenys",
+      "metadata_dimensions": "Matmenys: {width} × {height} px",
+      "metadata_frames": "Kadrų skaičius: {count}",
+      "metadata_duration": "Bendra trukmė: {duration} s",
+      "metadata_fps": "Dažnis: {fps} fps",
+      "metadata_palette": "Paletė: iki 256 spalvų",
+      "metadata_size": "Numatomas dydis: {size} KB",
+      "comment_label": "Komentaras (neprivaloma):",
+      "no_images": "Nepasirinkta vaizdų",
+      "creating_progress": "Įkeliami vaizdai... ({current}/{total})",
+      "creating_normalizing": "Normalizuojami vaizdai... ({current}/{total})",
+      "creating_quantizing": "Kvantizuojamos spalvos... ({current}/{total})",
+      "creating_saving": "Išsaugomas GIF..."
+    },
+    "save_to_folder": {
+      "title": "Pasirinkite paskirties aplanką"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Dubliuoti failų pavadinimai",
+      "message": "Aptikti identiški failų pavadinimai. Nors išsaugoti techniškai įmanoma,\ntai gali sukelti skaitymo problemų kai kuriose komiksų skaitymo programose\n(nevisiškas vaizdavimas, trūkstami puslapiai ir kt.).\n\nRekomenduojama pernumeruoti puslapius prieš išsaugant."
+    },
+    "adjustments": {
+      "window_title": "Vaizdo koregavimai",
+      "title": "Koregavimai {count} {word}",
+      "word_image": "vaizdas",
+      "word_images": "vaizdu",
+      "apply_button": "Taikyti",
+      "color_depth_section": "Spalvu gyl is",
+      "brightness_contrast_section": "Skaistis ir kontrastas",
+      "compression_section": "Glaudinimas",
+      "effects_section": "Efektai",
+      "sharpness_section": "Astrumas",
+      "levels_section": "Juodos/baltos lygiai",
+      "depth_unchanged": "Nekeisti",
+      "depth_32bit": "32 bitai (RGBA - spalvos + permatomumas)",
+      "depth_24bit": "24 bitai (RGB - spalvos)",
+      "depth_8bit": "8 bitai (PNG palete / JPEG pilkos spalvos)",
+      "depth_1bit": "1 bitas (juoda-balta)",
+      "brightness_label": "Skaistis: {value}",
+      "contrast_label": "Kontrastas: {value}",
+      "compression_enable": "Ijungti pakartotini glaudinima",
+      "compression_quality_label": "Kokybė : {value}/100",
+      "sharpness_label": "Astrumas: {value}",
+      "effect_none": "Be efekto",
+      "effect_grayscale": "Pilku atspalviai",
+      "effect_sepia": "Sepija",
+      "levels_none": "Be koregavimo",
+      "levels_threshold": "Slenkstis (gryna juoda arba balta)",
+      "levels_advanced": "Išplestiniai lygiai (seneliai/vidutiniai tonai/sviesuma)",
+      "threshold_label": "Slenkstis: {value}",
+      "black_point_label": "Juodas taskas: {value}",
+      "gamma_label": "Gama (vidutiniai tonai): {value}",
+      "white_point_label": "Baltas taskas: {value}",
+      "auto_levels_button": "Automatinis reguliavimas",
+      "open_viewer_button": "Reguliuoti su žiūrykle (rekomenduojama)",
+      "compression_info": "Glaudinimas taikomas tik JPG ir WebP vaizdams",
+      "open_viewer_button_simple": "Reguliuoti su žiūrykle",
+      "reset_button": "Atstatyti",
+      "preview_section": "Peržiūra",
+      "effect_invert": "Spalvų inversija",
+      "preview_warning": "Peržiūra gali skirtis nuo galutinio rezultato",
+      "effect_remove_colors": "Spalvų pašalinimas",
+      "remove_colors_intensity_label": "Intensyvumas : {value}",
+      "image_mode_section": "Vaizdo režimas",
+      "image_mode_rgb": "RGB (spalvos)",
+      "image_mode_rgba": "RGBA (spalvos + skaidrumas)",
+      "image_mode_l": "L (pilki tonai)",
+      "image_mode_la": "LA (pilki tonai + skaidrumas)",
+      "image_mode_cmyk": "CMYK (spausdinimas)",
+      "image_mode_1": "1 (gryna juodai balta)",
+      "image_mode_p": "P (256 spalvų paletė)",
+      "saturation_section": "Sodrumas",
+      "saturation_label": "Sodrumas : {value}",
+      "saturation_viewer_title": "Sodrumo reguliavimas",
+      "transparency_section": "Skaidrumas",
+      "transparency_info": "Skaidrumas taikomas tik PNG, WebP ir ICO vaizdams",
+      "transparency_type_label": "Tipas :",
+      "transparency_type_flood": "Zona",
+      "transparency_type_global": "Globalus",
+      "transparency_tolerance_label": "Tolerancija : {value}",
+      "transparency_viewer_title": "Skaidrumo reguliavimas",
+      "transparency_click_instruction": "Spustelėkite spalvą, kurią norite padaryti skaidrią",
+      "transparency_undo": "Atšaukti paskutinį paspaudimą",
+      "transparency_redo": "Perdaryti",
+      "transparency_type_flood_tooltip": "Flood fill : daro skaidrią tolygios spalvos sritį aplink spustelėtą pikselį",
+      "transparency_type_global_tooltip": "Globalus skaidrumas : veikia visus vaizdo pikselius, kurių spalva artima spustelėtai",
+      "transparency_apply": "Taikyti",
+      "transparency_skipped_warning": "{count} vaizdas(-ai) praleista(-i) — formatas nesuderinamas su skaidrumu. Norėdami juos įtraukti, pirmiausia konvertuokite į PNG.",
+      "unsharp_section": "Adaptyvus ryškumas",
+      "unsharp_radius_label": "Spindulys: {value}",
+      "unsharp_percent_label": "Intensyvumas: {value} %",
+      "unsharp_threshold_label": "Slenkstis: {value}",
+      "unsharp_viewer_title": "Adaptyvus ryškumas",
+      "auto_levels_tooltip": "Analizuoja kiekvieną puslapį ir automatiškai reguliuoja juodos ir baltos spalvos lygius, kad maksimaliai padidintų kontrastą.\nNorėdami pasirinkti puslapį po puslapio, naudokite peržiūros priemonę."
+    },
+    "levels_viewer": {
+      "title": "Lygio reguliavimas lašintuku",
+      "apply_current": "Taikyti šiam puslapiui",
+      "apply_all": "Taikyti visoms pasirinktoms puslapiams",
+      "black_pipette": "Juodo tasko lašintuvas",
+      "white_pipette": "Balto taško lašintuvas",
+      "black_pipette_tooltip": "Spustelėkite pikselį, kuris turėtų būti visiškai juodas. Dėmesio: lengva persistengti!",
+      "white_pipette_tooltip": "Spustelėkite pikselį, kuris turėtų būti visiškai baltas. Dėmesio: lengva persistengti!"
+    },
+    "sharpness_viewer": {
+      "title": "Aštumo reguliavimas"
+    },
+    "brightness_viewer": {
+      "title": "Ryškumo ir kontrasto reguliavimas"
+    },
+    "compression_viewer": {
+      "title": "Glaudinimo reguliavimas"
+    },
+    "outliers": {
+      "title": "Puslapiai su neįprastais matmenimis",
+      "message": "Šie puslapiai turi matmenis, kurie labai skiriasi nuo kitų. Pasirinkite, kaip juos apdoroti:",
+      "width": "Plotis",
+      "height": "Aukštis",
+      "unusual": "neįprastas",
+      "skip": "Nekeisti dydžio",
+      "keep": "išlaikyti"
+    },
+    "first_page_multi": {
+      "title": "Pirmasis puslapis yra daugiapuslapis",
+      "message": "Pirmasis puslapis aptiktas kaip daugiapuslapis. Kaip norite jį sunumeruoti?",
+      "option_auto_desc": "Įprastas pernumeravimas su automatiniu aptikimu.",
+      "option_joint_desc": "Pirmojo ir paskutiniojo komiksų puslapio sujungimas.",
+      "option_exclude_label": "Neįtraukti į pernumeravimą",
+      "option_exclude_desc": "Puslapis išlaiko esamą pavadinimą ir lieka pirmoje vietoje. Vėliau galite jį pervardyti rankiniu būdu."
+    },
+    "batch_img": {
+      "select_directory_title": "Pasirinkite aplanką su vaizdais",
+      "no_img_title": "Vaizdo failų nerasta",
+      "no_img_message": "Aplanke nerasta atskirų vaizdo failų :\n{directory}",
+      "confirm_title": "Atskirų vaizdų paketo konvertavimas į CBZ",
+      "confirm_message": "{count} vaizdo failas(-ai) konvertuoti aplanke {directory} (įskaitant poaplankius).",
+      "checkbox_permanent_delete": "Visam laikui ištrinti originalius vaizdo failus\nbez siuntimo į šiukšlinę (NEGALIMA ATŠAUKTI)",
+      "start_button": "Pradėti",
+      "converting_title": "Konvertuojama...",
+      "converting_progress": "Konvertuojamas {current} failas iš {total}",
+      "complete_title": "Konvertavimas baigtas",
+      "complete_message": "{count} vaizdo failas(-ai) konvertuotas(-i) aplanke :",
+      "complete_message_errors": "{count} iš {total} vaizdo failų konvertuota aplanke :",
+      "errors_count": "Aptikta {count} klaida(-ų).",
+      "converted_by_ext": "{ext} : {count} failas(-ai)",
+      "mode_title": "Konvertuoti vaizdus į CBZ",
+      "mode_intro": "Kaip norite grupuoti vaizdus?",
+      "mode_one_per_image": "Konvertuoti kiekvieną vaizdą į atskirus CBZ failus",
+      "mode_one_per_image_sub": "(Kiekvienas vaizdas tampa atskiru CBZ failu)",
+      "mode_all_in_one": "Sugrupuoti visus vaizdus į vieną CBZ failą",
+      "mode_all_in_one_sub": "(Visi aplanko vaizdai sugrupuojami į vieną CBZ failą)"
+    },
+    "batch_drop": {
+      "window_title": "Aplankų paketinis apdorojimas",
+      "intro_single": "Numestas 1 aplankas. Kokį apdorojimą norite taikyti?",
+      "intro_multiple": "Numesta {count} aplankų. Kokį apdorojimą norite taikyti?",
+      "recursive_note": "Bus peržvelgti ir poaplankiai.",
+      "mixed_drop_title": "Metimas nepalaikomas",
+      "mixed_drop_message": "Vienu metu numetėte failus ir aplankus. Meskite tik failus arba tik aplankus."
+    },
+    "pdf_unlock": {
+      "title": "PDF apsaugotas nuo pakeitimų",
+      "message": "Puslapiai buvo importuoti įprastai.\n\nŠis PDF failas apsaugotas nuo pakeitimų (savininko slaptažodis).\n\nAr norite įrašyti PDF failo kopiją be šios apsaugos?",
+      "yes": "Taip, įrašyti atrakintą kopiją",
+      "no": "Ne, tęsti neatrakinant"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF failai apsaugoti nuo pakeitimų",
+      "message_single": "Aptiktas 1 PDF failas, apsaugotas nuo pakeitimų. Jis buvo normaliai konvertuotas į CBZ.\n\nAr norite išsaugoti atrakintą kopiją jo pradinėje direktorijoje?",
+      "message_plural": "Aptikti {count} PDF failai, apsaugoti nuo pakeitimų. Jie buvo normaliai konvertuoti į CBZ.\n\nAr norite išsaugoti atrakintą kiekvieno kopiją jo pradinėje direktorijoje?",
+      "yes": "Taip, išsaugoti atrakintas kopijas",
+      "no": "Ne, tęsti neatrakinant"
+    },
+    "ico_creator": {
+      "title": "Sukurti .ico piktogramą",
+      "info_message": "Vaizdas bus pakeistas į kelias rezoliucijas (16, 32, 48, 64, 128, 256 px).\nDabartinis rėmelio dydis: {w} × {h} px",
+      "btn_validate_crop": "Patvirtinti apkarpymą",
+      "btn_validate_no_crop": "Patvirtinti be apkarpymo",
+      "btn_cancel": "Atšaukti",
+      "btn_transparency": "Nustatyti skaidrumą",
+      "btn_validate_final": "Patvirtinti",
+      "tolerance_label": "Tolerancija:",
+      "success_title": ".ico failas sukurtas",
+      "success_message": "Failas {filename} sėkmingai sukurtas.",
+      "overwrite_title": "Failas jau egzistuoja",
+      "overwrite_message": "Failas {filename} jau egzistuoja. Perrašyti?",
+      "save_blocked_title": "Išsaugoti negalima",
+      "save_blocked_message": "Šiame archyve yra vienas ar daugiau .ico failų, kurie nėra komiksų vaizdai. Išsaugojimas išjungtas, kol šie failai yra mozaikoje.\nNorėdami vėl įjungti išsaugojimą, ištrinkite juos iš mozaikos (Del klavišas) arba iškirpkite (Ctrl+X) ir įklijuokite kitur.",
+      "btn_back_to_crop": "Grįžti į apkarpymą"
+    },
+    "video_save_blocked": {
+      "title": "Negalima išsaugoti",
+      "message": "Šiame archyve yra vienas ar daugiau vaizdo failų. Išsaugojimas išjungtas, kol šie failai yra mozaikoje.\nNorėdami vėl įjungti išsaugojimą, ištrinkite juos iš mozaikos (Del klavišas) arba iškirpkite (Ctrl+X), kad įklijuotumėte kitur."
+    },
+    "open_file": {
+      "title": "Atidaryti archyvą",
+      "filter_archives": "Archyvai (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Visi failai (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Licencija"
+    },
+    "replace_corrupted_image": {
+      "title": "Pakeisti sugadintą vaizdą",
+      "filter_images": "Vaizdai (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Visi failai (*)"
+    },
+    "see_log": "ŽIŪRĖTI ŽURNALĄ"
+  },
+  "tooltip": {
+    "source_archive": "Šaltinio failas: {name}",
+    "file": "Failas: {name}",
+    "reason": "Priežastis: {reason}",
+    "size_kb": "Dydis: {size} KB",
+    "size_mb": "Dydis: {size} MB",
+    "file_size": "Dydis: {size}",
+    "dimensions": "Matmenys: {width} × {height} px",
+    "resolution": "Raiška: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: neapibrėžta",
+    "cbr_info": "CBR failai naudoja RAR formatą, kuris yra nuosavybės ir patentuotas;\njų negalima modifikuoti, pakeitimai išsaugomi naujame CBZ faile.",
+    "rotate_left": "90 laipsnių pasukimas į kairę",
+    "rotate_right": "90 laipsnių pasukimas į dešinę",
+    "mirror_horizontal": "Horizontalus veidrodis",
+    "mirror_vertical": "Vertikalus veidrodis",
+    "fullscreen": "Viso ekrano režimas",
+    "help_button": "Vartotojo vadovas",
+    "theme_button": "Perjungti tarp šviesios ir tamsios temos",
+    "font_decrease_button": "Sumažinti šrifto dydį",
+    "font_increase_button": "Padidinti šrifto dydį",
+    "color_depth": "Spalvos: {bits} bitai ({mode})",
+    "batch_pdf_to_cbz": "Konvertuoja į CBZ visus PDF failus kataloge ir\njo pakatalogiuose. Vaizdai išgaunami ir\narchyvuojami tokie, kokie yra, be jokio\npakartotinio glaudinimo.",
+    "batch_pdf_permanent_delete": "DĖMESIO: jei ši parinktis pažymėta,\noriginalūs PDF failai bus visam laikui\ništrinti po konvertavimo, be galimybės\njuos atkurti. Įsitikinkite, kad turite\natsarginę kopiją, jei reikia.",
+    "batch_cbr_to_cbz": "Konvertuoja į CBZ visus CBR failus,\nesančius kataloge\nir jo pakatalogiuose.",
+    "batch_cbr_permanent_delete": "DĖMESIO: jei ši parinktis pažymėta,\noriginalūs CBR failai bus visam laikui\ništrinti po konvertavimo, be galimybės\njuos atkurti. Įsitikinkite, kad turite\natsarginę kopiją, jei reikia.",
+    "renumber_btn_1": "Automatinio daugybių puslapių aptikties režimas\nSpustelėkite dešinėje, kad pakeistumėte režimą",
+    "renumber_btn_2": "Paprasto numeravimo režimas\nSpustelėkite dešinėje, kad pakeistumėte režimą",
+    "corrupted_header": "Pažeistas vaizdas",
+    "right_click_instruction1": "Dešiniuoju pelės mygtuku spustelėkite,",
+    "right_click_instruction2": "kad pakeistumėte arba ištrintumėte.",
+    "unknown_error": "Nežinoma klaida",
+    "batch_img_to_cbz": "Konvertuoja visus vaizdo failus, rastus aplanke\nir jo poaplankiuose, į CBZ,\nkuriant vieną CBZ failą kiekvienam vaizdui.",
+    "batch_img_permanent_delete": "ĮSPĖJIMAS : jei ši parinktis pažymėta,\noriginalūs vaizdo failai bus visam laikui\ništrinti po konvertavimo, be atkūrimo\ngalimybės. Įsitikinkite, kad turite atsarginę\nkopiją, jei reikia.",
+    "too_large_header": "Vaizdas per didelis įkėlimui",
+    "too_large_pixels": "Matmenys: {pixels}",
+    "icon_toolbar_config_button": "Piktogramų konfigūracija",
+    "icon_toolbar_size_decrease": "Sumažinti piktogramų dydį",
+    "icon_toolbar_size_increase": "Padidinti piktogramų dydį",
+    "source_loose": "Laisvas vaizdas",
+    "source_web": "Žiniatinklio vaizdas"
+  },
+  "help": {
+    "title": "MosaicView - Naudojimo instrukcija",
+    "intro": "MosaicView leidžia manipuliuoti ir redaguoti komiksus (skaitmeninius komiksus) nereikalaujant jų išpakuoti iš archyvų. Programa palaiko CBZ (ZIP), CBR (RAR) ir PDF formatus. Programėlė suderinama tik su 64 bitų sistemomis.",
+    "open_files": "Failų atidarymas",
+    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti CBZ/CBR/CB7/PDF'\n• Arba tiesiog nutempkite failą į langą\n• Palaikomi formatai: CBZ, CBR, CB7, PDF, vaizdai (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus iskeltos tik ju nuotraukos (tekstas ignoruojamas).\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo įrašyti atrakintą failo kopiją į tą patį aplanką.",
+    "mosaic": "Mozaika",
+    "mosaic_content": "Mozaika rodo visus jūsų komikso puslapius kaip miniatiūras. Galite:\n• Pertvarkyti puslapius vilkdami ir numesdami (puslapių numeravimas bus automatinis ir vyks pagal aktyvų pernumeravimo režimą)\n• Pasirinkti kelis puslapius (Ctrl+spustelėjimas arba Shift+spustelėjimas)\n• Reguliuoti miniatiūrų dydį slankikliu\n• Rankiniu būdu pervardyti failus spustelėdami jų pavadinimą\n• Vilkti ir numesti komiksų failus (CBZ/CBR/PDF) iš Windows Explorer tiesiai į kitą atidarytą komiksą, kad sujungtumėte jų turinį",
+    "manipulation": "Puslapių manipuliavimas",
+    "manipulation_content": "• Vilkite ir meskite puslapius jiems pertvarkyti\n• Vilkite visą komiksą į kitą, kad juos sujungtumėte\n• Dešiniuoju pelės mygtuku spustelėkite puslapį, kad pasiektumėte parinktis (sukimas, šalinimas ir kt.)\n• Dukart spustelėkite puslapį, kad atidarytumėte žiūroklį\n• Eksportuokite atskirus puslapius vilkdami juos į Windows aplanką arba naudodami Ctrl+C / Ctrl+V",
+    "renumber": "Puslapių pernumeravimas",
+    "renumber_content": "MosaicView siūlo du puslapių pernumeravimo režimus, pasiekiamus per pernumeravimo mygtuką, kontekstinį meniu (dešinys pelytės mygtukas) arba automatiškai tempiant ir paleidžiant:\n\n• Automatinės daugybių puslapių aptikimo režimas (numatytasis režimas): programa analizuoja kiekvieno puslapio plotį, kad aptiktų dvigubus, trigubus ir kt. puslapius. Daugybiniai puslapiai pernumeruojami atitinkamai (pvz.: dvigubas puslapis bus pavadintas 003-004, trigubas 005-006-007). Daugiau nei 4 puslapių atveju rodomi tik pirmas ir paskutinis numeris (pvz.: 010---025).\n\n• Paprasto numeravimo režimas: kiekvienas puslapis gauna unikalų eilės numerį (001, 002, 003...), nepriklausomai nuo puslapių pločio.\n\nNorėdami perjungti tarp dviejų režimų, spustelėkite dešiniu pelytės mygtuku ant pernumeravimo mygtuko. Patarimas rodo aktyvų režimą. Pasirinktas režimas taip pat taikomas automatiniam pernumeravimui tempiant ir paleidžiant.",
+    "flatten": "Aplankų išlyginimas",
+    "flatten_content": "Jei jūsų archyve yra poaplankai, naudokite 'Išlyginti aplankus', kad visus vaizdus perkeltumėte į tą patį lygį.",
+    "viewer": "Žiūryklė",
+    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte žiūryklę:\n• Klavišai ← → : naršymas tarp puslapių\n• Klavišas D : perjungti tarp 3 skaitymo režimų\n  - Vienas puslapis: po vieną puslapį\n  - Dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 4-5 ir t.t.\n  - Dvigubi puslapiai nuosekliai: 1 puslapis vienas, tada 2-3, 3-4, 4-5 ir t.t.\n• Pelės ratukas: greitas naršymas\n• Ctrl+Ratukas arba Ctrl+Plius/Minus: mastelis\n• Ctrl+0 : atstatyti mastelį\n• Klavišas F11 : visas ekranas\n• Dukart spustelėti: perjungti visą ekraną\n• Klavišas Esc : atšaukti apkarpymo rėmelį / uždaryti žiūryklę",
+    "join_pages": "Puslapių sujungimas",
+    "join_pages_content": "Pasirinkite kelis iš eilės einančius puslapius, dešiniuoju spustelėjimu → 'Sujungti pasirinktus puslapius', kad sujungtumėte puslapius horizontaliai arba vertikaliai. Sukurto vaizdo formatas atitinka šaltinio puslapių formatą, jei jie visi vienodi, kitu atveju pagal numatytuosius nustatymus PNG.",
+    "split_pages": "Puslapių padalinimas",
+    "split_pages_content": "Automatiškai padalinti dvigubus puslapius:\n• Pasirinkite puslapius padalinimui\n• Dešinis pelės mygtukas → 'Padalinti pasirinktus puslapius'\n• Pasirinkite kryptį (vertikali arba horizontali)",
+    "crop": "Apkarpymas žiūryklėje",
+    "crop_content": "Žiūryklėje nubrėžkite stačiakampį ant vaizdo, kad apibrėžtumėte apkarpymo zoną:\n• Nubrėžkite stačiakampį pele\n• Keiskite jo dydį traukdami kraštus ar kampus\n• Spustelėkite 'Patvirtinti apkarpymą', kad pritaikytumėte\n• Apkarpymas pritaikomas dabartiniam vaizdui\n• Klavišas Esc : atšaukti apkarpymo rėmelį",
+    "shortcuts": "Klaviatūros spartieji klavišai",
+    "shortcuts_content": "• Ctrl+Z : Atšaukti paskutinį veiksmą\n• Ctrl+Y : Grąžinti atšauktą veiksmą\n• Ctrl+A : Pažymėti visus puslapius\n• Ctrl+I: Apversti pasirinkimą\n• Ctrl+C : Kopijuoti pasirinktus puslapius\n• Ctrl+X : Iškirpti pasirinktus puslapius\n• Ctrl+V : Įkliuoti puslapius\n• Delete : Ištrinti pasirinktus puslapius\n• F5: Atnaujinti mozaikos vaizdą\n• F11: Perjungti viso ekrano režimą (išeiti su F11 arba ESC)",
+    "dark_mode": "Tamsi tema",
+    "dark_mode_content": "Spustelėkite saulės/mėnulio mygtuką, kad perjungtumėte tarp šviesios ir tamsios temos.",
+    "sort": "Puslapių rūšiavimas",
+    "sort_content": "Naudokite mygtuką 'Rūšiuoti', kad automatiškai pertvarkyti puslapius pagal:\n• Pavadinimą, Tipą, Dydį, Plotį, Aukštį, Raišką arba DPI",
+    "save": "Išsaugojimas",
+    "save_content": "• 'Išsaugoti' : išsaugo pakeitimus originaliame faile\n• 'Išsaugoti kaip' : sukuria naują archyvą\n• 'Sukurti CBZ' : pasiekiama tik vaizdų režime (be archyvo)",
+    "other": "Kitos funkcijos",
+    "other_content": "• Pasukimas: pasukti vieną ar kelis puslapius\n• Konvertavimas: konvertuoti vaizdus į skirtingus formatus (PNG, JPEG, WEBP, BMP, TIFF, GIF). Pastaba: CMYK režimo vaizdai automatiškai konvertuojami į RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Pastaba: CMYK režimo vaizdai automatiškai konvertuojami į RGB\n• Spausdinimas: spausdinti pasirinktus puslapius arba visus puslapius\n• Išgavimas: išgauti konkrečius puslapius\n• Metaduomenų kortelė: rodo ComicInfo.xml failo informaciją (jei yra archyve). Jei pridėsite arba pašalinsite puslapį iš komiksų, turinčių metaduomenis, programa pasiūlys pakeisti ten nurodytą puslapių skaičių. Kitų metaduomenų negalima keisti. Šis apribojimas yra tyčinis ir yra projektavimo sprendimo rezultatas.",
+    "config_files": "Konfigūracijos ir laikini failai",
+    "config_files_content": "MosaicView sukuria failą pavadinimu .mosaicview_config.json. Šiame faile yra keletas parametrų, reikalingų atstatymo mygtuko tinkamam veikimui, taip pat neseniai atidarytu komiksų sąrašas, kuris akivaizdžiai reikalingas neseniai atidarytų failų rodymui. MosaicView taip pat išsaugo laikinus failus, kurie reikalingi įvairioms vaizdų apdorojimo operacijoms.\nVisi šie failai yra kataloge {temp_dir}.\nLaikini failai ištrinami kiekvieną kartą, kai uždaroma programa, bet failas .mosaicview_config.json pagal savo pobūdį skirtas saugoti.\nTačiau šiuos failus galite ištrinti rankiniu būdu, nueję į katalogą {temp_dir} arba spustelėję žemiau esančius mygtukus. Failas .mosaicview_config.json bus atkurtas kiekvieną kartą, kai atidaroma programa, o laikini failai bus atkurti pagal poreikį.",
+    "config_clear_temp": "Ištrinti laikinus failus",
+    "config_clear_recent": "Išvalyti naujausius",
+    "config_clear_config": "Ištrinti konfigūracijos failą",
+    "config_temp_cleared": "Laikini failai sėkmingai ištrinti.",
+    "config_config_cleared": "Konfigūracijos failas sėkmingai ištrintas.\nJis bus atkurtas kito programos paleidimo metu.",
+    "language": "Kalbos pasirinkimas",
+    "language_content": "MosaicView yra prieinamas keliomis kalbomis.\nPagal nutylėjimą programa automatiškai aptinka jūsų operacinės sistemos kalbą ir rodoma ta kalba, jei ji palaikoma. Jei jūsų sistema naudoja nepalaikomą kalbą, sąsaja rodoma anglų kalba.\nGalite bet kada rankiniu būdu pakeisti kalbą naudodami išskleidžiamąjį meniu, esantį mygtukų stulpelio apačioje, po miniatiūrų dydžio slankiklio. Jūsų pasirinkimas bus išsaugotas ir pritaikytas kitą kartą paleidus programą.\nPRIEINAMOS KALBOS: airių, anglų, arabų, armėnų, bulgarų, čekų, danų, estų, graikų, hindi, indų, islandų, ispanų, italų, japonų, kinų (supaprastinta), kinų (tradicinė), korėjiečių, kroatų, latvių, lenkų, lietuvių, malajiečių, maltiečių, norvegų, olandų, portugalų, rumunų, slovakų, slovėnų, suomių, švedų, tamilų, tajų, turkų, ukrainiečių, vengrų, vokiečių, vietnamiečių, prancūzų.\nPRIEINAMOS IŠGALVOTOS KALBOS: klingonų (lotyniškos abėcėlės ir pIqaD abėcėlės versijos), sindarinas (lotyniškos abėcėlės ir tengwar abėcėlės versijos), quenya (lotyniškos abėcėlės ir tengwar abėcėlės versijos).\n\nŠi priemonė naudoja Windows šriftus, išskyrus pIqaD (klingonų kalba) ir tengwar (elfų kalbos: sindarinas ir quenya) šriftus. Šie šriftai yra laisvai naudojami ir kilę iš šių svetainių:\n- pIqaD (klingonų abėcėlė): {url_piqad}\n- tengwar (elfų abėcėlė, sindarinui ir quenya): {url_tengwar}\nJei šios svetainės nebėra aktyvios, galite gauti pIqaD ir tengwar šriftus spustelėdami žemiau esančius mygtukus:\n\nŠi programinė įranga buvo sukurta prancūzų kalba. Vertimai į kitas kalbas buvo atlikti naudojant dirbtinį intelektą, konkrečiai Claude. Nusprendžiau palaikyti apie keturiasdešimt kalbų. Tačiau akivaizdu, kad nekalbu visomis šiomis kalbomis. Todėl neturėjau kito pasirinkimo, kaip tik naudoti dirbtinį intelektą, nes 40 skirtingų vertėjų samdymas ir mokėjimas nebuvo tarp svarstomų galimybių. Dėl šių vertimų automatinio pobūdžio gali būti klaidų. Atsiprašau už tai.",
+    "credits": "Vibe Coding, mano meile",
+    "credits_content": "Aš nieko nežinau apie programavimą. Absoliučiai nieko. Todėl šią programinę įrangą sukūriau su Claude, Anthropic dirbtinio intelekto pagalba, tiksliau su Claude Code. Negaliu pakankamai rekomenduoti Claude Code, ši programa yra nuostabi!",
+    "resize_pages": "Keisti puslapių dydį",
+    "resize_pages_content": "Norėdami sumažinti arba padidinti puslapius:\n• Pasirinkite vieną ar daugiau puslapių\n• Dešinysis spustelėjimas → 'Pakeisti dydį'\n• Galimos trys parinktys:\n  - Pritaikyti matmenis: įveskite norimą plotį arba aukštį (proporcijos išsaugomos automatiškai).\n  - Procentinis sumažinimas: pasirinkite procentą nuo 10% iki 90%\n  - Procentinis padidinimas: pasirinkite procentą nuo 10% iki 100%\n• Programa rodo apytikrį vaizdų dydį po pakeitimo\n• Pakeitimas iš karto taikomas visiems pasirinktiems puslapiams",
+    "language_export_piqad": "pIqaD šriftas",
+    "language_export_tengwar": "Tengwar šriftai",
+    "language_export_piqad_success": "Šriftas eksportuotas: {filename}\nPrieinamas:",
+    "language_export_tengwar_success": "{count} šriftai eksportuoti\nPrieinami:",
+    "icons": "Piktogramos",
+    "icons_content": "Dauguma šioje programoje naudojamų piktogramų yra iš šios svetainės ir laisvai naudojamos nekomerciniais tikslais: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nKai kurias aš modifikavau.\nTik viena piktograma, Windows vykdomojo failo piktograma, buvo sukurta manęs (bet su dirbtinio intelekto pagalba, nes esu labai, labai, labai blogas grafikos dizaineris). Turite mano leidimą naudoti šią piktogramą, kaip norite, jei nurodote šaltinį.",
+    "icons_view_button": "Peržiūrėti piktogramas",
+    "icons_window_title": "MosaicView Piktogramos",
+    "icons_save_all": "Išsaugoti piktogramas",
+    "icons_saved_success": "{count} piktograma/piktogramos išsaugota/išsaugotos:",
+    "icons_save_failed": "Nepavyko išsaugoti piktogramų: {error}",
+    "split_ui": "Dviejų skydelių sąsaja",
+    "split_ui_content": "MosaicView leidžia vienu metu rodyti du archyvus vienas šalia kito.\n\nSpustelėkite piktogramą Padalinti, kad atidarytumėte antrą skydelį. Kiekvienas skydelis yra nepriklausomas: galite atskirai atidaryti, redaguoti ir išsaugoti archyvą. Aktyvus skydelis pažymėtas mėlynu rėmeliu.\n\nNorėdami perkelti puslapius iš vieno skydelio į kitą, vilkite juos tiesiogiai. Jei pasirinkti keli puslapiai, jie visi juda kartu. Puslapiai įterpiami ten, kur nurodo raudona juosta.\n\nSpustelėkite piktogramą Uždaryti antrą skydelį, kad grįžtumėte į vieno skydelio režimą.",
+    "license_gpl": "GPL v3 licencija",
+    "license_unrar": "UnRAR licencija",
+    "config_clear_clipboard": "Išvalyti iškarpinės failus",
+    "config_clipboard_note": "Išimtis: Laikini failai, kuriuos naudoja Windows iškarpinė (clipboard_XXXXX failai), saugomi 12 valandų po kopijavimo, kad galėtumėte juos įklijuoti net uždarius programą. Po 12 valandų jie automatiškai ištrinami.",
+    "config_log_note": "Paketinis konvertavimas (PDF i CBZ ir CBR i CBZ) sukuria registracijos faila ivykus klaidoms. Sie failai (Log_pdftocbz_.txt ir Log_cbrtocbz_.txt) issaugomi net uzdarius programa, kad juos butu galima peržiureti veliau. Jie istrinami tik auksciau esanciu mygtuku \"Istrinti laikinus failus\".",
+    "config_clipboard_cleared": "Iškarpinės failai sėkmingai išvalyti.",
+    "adjust_images": "Vaizdų koregavimas",
+    "adjust_images_content": "Ši funkcija leidžia retušuoti vaizdus tiesiogiai MosaicView. Galite keisti ryškumą, kontrastą, ryškumą, lygius, sodrumą, taikyti efektus (juodai baltas, sepija, spalvų inversija), reguliuoti glaudinimo kokybę, šalinti spalvas, taikyti skaidrumą arba konvertuoti į skirtingas spalvų gylius. Kai kuriems nustatymams yra skirtas peržiūros įrankis, leidžiantis pamatyti rezultatą visu skiriamumu prieš taikymą. Miniatiūros peržiūra rodo rezultatą realiuoju laiku pagrindiniame lange.",
+    "create_icon": "Sukurti piktogramą",
+    "create_icon_content": "MosaicView leidžia kurti piktogramų failus (.ico) iš bet kurio mozaikos vaizdo.\n• Dešiniuoju pelės mygtuku spustelėkite vaizdą → 'Sukurti piktogramą'\n• Apibukite norimo vaizdo sritį peržiūros programoje (piktograma būtinai bus kvadratinė)\n• Prireikus sureguliuokite skaidrumą\n• Patvirtinkite: .ico failas pridedamas tiesiogiai į mozaiką\n• .ico failuose automatiškai yra visos standartinės skiriamosios gebos (nuo 16×16 iki 256×256)\n• Kol mozaikoje yra .ico failas, išsaugojimas CBZ archyve yra užblokuotas, nes ICO formatas nepalaikomas šiuose archyvuose. Eksportuokite .ico failą atskirai (Ctrl+C ir įklijuokite į Windows aplanką), tada prieš išsaugodami ištrinkite jį iš mozaikos.",
+    "batch_convert": "Paketinis konvertavimas",
+    "batch_convert_content": "MosaicView siūlo tris paketinio konvertavimo funkcijas, prieinamas tik tada, kai mozaika tuščia. Kiekvienai iš jų principas vienodas : pasirinkite katalogą, patvirtinkite, stebėkite pažangą realiuoju laiku, peržiūrėkite galutinę santrauką. Parinktis leidžia visam laikui ištrinti originalius failus, o ne siųsti juos į šiukšliadėžę.\n• CBR → CBZ : konvertuoja visus CBR (RAR) failus kataloge ir jo aplankuose. Jei CBR iš tikrųjų yra ZIP, jis tiesiog pervadinamas be konvertavimo.\n• PDF → CBZ : konvertuoja visus PDF failus kataloge ir jo aplankuose. Vaizdai ištraukiami be pakartotinio suspaudimo.\n• ATSKIRI VAIZDAI → CBZ : sukuria individualų CBZ kiekvienam kataloge ir jo aplankuose rastam vaizdo failui. Netinkami, sugadinti, kelių puslapių (TIFF) ar animuoti (GIF) vaizdai ignoruojami ir registruojami žurnale.",
+    "config_open_temp_folder": "Atidaryti laikiną aplanką",
+    "icon_toolbar": "Piktogramų juosta",
+    "icon_toolbar_content": "Piktogramų juosta suteikia greitą prieigą prie pagrindinių programos funkcijų. Piktogramas galite išdėstyti pagal savo pageidavimą jas vilkdami tiesiogiai į juostą. Norėdami pasirinkti, kurias piktogramas rodyti ar slėpti, spustelėkite krumpliaračio mygtuką juostos apačioje: atsidaro konfigūracijos langas, kuriame galite perkelti piktogramas tarp aktyviosios juostos ir atsargų. Naudokite mygtukus « + » ir « − » piktogramų dydžiui reguliuoti. Konfigūracija išsaugoma automatiškai.",
+    "license_7zip": "7-Zip licencija"
+  },
+  "misc": {
+    "file_word": "failas",
+    "files_word": "failai",
+    "corrupted": "sugadintas",
+    "yes": "Taip",
+    "no": "Ne",
+    "cancel": "Atšaukti",
+    "selection_suffix": "pasirinkimo-kopija"
+  },
+  "metadata": {
+    "title": "Pavadinimas",
+    "series": "Serija",
+    "number": "Numeris",
+    "volume": "Tomas",
+    "summary": "Santrauka",
+    "writer": "Scenarijaus autorius",
+    "penciller": "Piešėjas",
+    "inker": "Kontūrų dailininkas",
+    "colorist": "Koloristas",
+    "letterer": "Tekstų dizaineris",
+    "cover_artist": "Viršelio dailininkas",
+    "editor": "Redaktorius (asmuo)",
+    "publisher": "Leidėjas (leidykla)",
+    "imprint": "Kolekcija",
+    "genre": "Žanras",
+    "web": "Svetainė",
+    "page_count": "Puslapių skaičius",
+    "language_iso": "Kalba",
+    "format": "Formatas",
+    "black_and_white": "Nespalvotas",
+    "manga": "Manga",
+    "year": "Metai",
+    "month": "Mėnuo",
+    "day": "Diena",
+    "notes": "Pastabos",
+    "characters": "Veikėjai",
+    "locations": "Vietos",
+    "teams": "Komandos",
+    "story_arc": "Siužeto lankas",
+    "story_arc_number": "Lanko numeris",
+    "series_group": "Serialų grupė",
+    "count": "Numerių skaičius",
+    "alternate_series": "Alternatyvi serija",
+    "alternate_number": "Alternatyvus numeris",
+    "alternate_count": "Alternatyvus skaičius",
+    "age_rating": "Amžiaus įvertinimas",
+    "series_complete": "Serija baigta",
+    "translator": "Vertėjas",
+    "tags": "Žymos",
+    "scan_information": "Nuskaitymo informacija",
+    "community_rating": "Bendruomenės įvertinimas",
+    "review": "Apžvalga",
+    "gtin": "GTIN",
+    "pages": "Puslapiai",
+    "pages_col_image": "Vaizdas",
+    "pages_col_type": "Tipas",
+    "pages_col_width": "Plotis",
+    "pages_col_height": "Aukštis",
+    "pages_col_size": "Dydis (B)"
+  },
+  "web": {
+    "web_download_progress": "Atsisiunčiama: {downloaded}/{total} paveikslėliai...",
+    "web_download_cancel": "Atšaukti",
+    "web_no_images": "Nėra paveikslėlių",
+    "web_no_images_found": "Šiame puslapyje nerasta paveikslėlių.",
+    "web_imported": "{count} paveikslėlis(-iai) importuotas iš tinklalapio",
+    "web_drag_drop_title": "Vilkti ir mesti žiniatinklio vaizdą",
+    "web_copy_paste_message": "Tiesioginis vilkimas iš žiniatinklio naršyklės nepalaikomas.\n\nAlternatyva (paprasčiau):\n\n1. Dešiniuoju pelės mygtuku spustelėkite paveikslėlį naršyklėje\n2. Pasirinkite 'Kopijuoti paveikslėlį'\n3. MosaicView naudokite mygtuką 'Įklijuoti' arba Ctrl+V\n\nŠis metodas veikia su visais žiniatinklio paveikslėliais!",
+    "import_web_button": "Žiniatinklio importas",
+    "import_web_tooltip": "Įklijuokite interneto adresą, kad gautumėte visus puslapio paveikslėlius",
+    "import_web_menu": "Žiniatinklio importas...",
+    "import_web_dialog_title": "Importuoti vaizdus iš tinklalapio",
+    "import_web_url_label": "Tinklalapio adresas:",
+    "import_web_ok_button": "Gerai",
+    "import_web_cancel_button": "Atšaukti",
+    "import_web_invalid_url": "Netinkamas URL. Įveskite tinkamą žiniatinklio adresą."
+  },
+  "donation": {
+    "menu_label": "Paaukoti autoriui",
+    "title": "Atlikti auką",
+    "message": "Jums patinka ši maža priemonė ir reguliariai ja naudojatės.\n\nInvestavau į ją kelias šimtus valandų. Ar apsvarstytumėte padėką man atlikdami auką? Prašau būti malonūs, man tikrai reikia pinigų, kad užpildyčiau savo baseiną šampanu. Ar norite man atsiųsti kelis centus ar kelis milijardus eurų, priiimu visas sumas. Galite atlikti šią auką per paypal"
+  },
+  "mail": {
+    "tooltip": "Šis mygtukas atidaro numatytąją el. pašto programinę įrangą Windows, kad išsiųstumėte el. laišką. Jei nesukonfigūruota jokia programinė įranga (pavyzdžiui, jei naudojate tik tinklo paštą), galite nukopijuoti MosaicView adresą į iškarpinę spustelėdami dešiniuoju pelės mygtuku ant piktogramos.",
+    "copy_address": "Kopijuoti MosaicView el. pašto adresą",
+    "menu_label": "Siųsti el. laišką į MosaicView",
+    "icon_label": "Siųsti el. laišką"
+  },
+  "menu": {
+    "file": "Failas",
+    "file_open": "Atidaryti failą",
+    "file_close": "Uždaryti failą",
+    "batch_convert": "Masinis failų konvertavimas",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Atskiri vaizdai → CBZ",
+    "edit": "Redaguoti",
+    "undo": "Atšaukti",
+    "redo": "Perdaryti",
+    "paste": "Įklijuoti",
+    "delete": "Ištrinti",
+    "invert_selection": "Apversti pasirinkimą",
+    "select_all": "Pasirinkti viską",
+    "deselect": "Atšaukti pasirinkimą",
+    "refresh_mosaic": "Atnaujinti mozaiką",
+    "images": "Vaizdai",
+    "rotation": "Sukimas",
+    "archives": "Archyvai",
+    "sort": "Rūšiavimas",
+    "system": "Sistema",
+    "decrease_font": "Sumažinti šriftą",
+    "increase_font": "Padidinti šriftą",
+    "language": "Kalbos",
+    "language_real": "Tikros kalbos",
+    "language_fictional": "Išgalvotos kalbos",
+    "about": "Apie",
+    "export_piqad_font": "Išsaugoti pIqaD šriftą",
+    "export_tengwar_fonts": "Išsaugoti tengwar šriftus"
+  }
+}

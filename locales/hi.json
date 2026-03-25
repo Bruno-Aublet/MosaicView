@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "डिजिटल कॉमिक संग्रहकर्ताओं के लिए बहुउपयोगी उपकरण",
+  "buttons": {
+    "open_file": "CBZ/CBR/CB7/PDF खोलें",
+    "close_file": "फ़ाइल बंद करें",
+    "create_cbz": "CBZ आर्काइव बनाएं",
+    "flatten_dirs": "सभी फ़ाइलों को रूट में\nले जाएं और उप-निर्देशिका\nहटाएं",
+    "renumber": "पृष्ठ क्रमांक\nफिर से लगाएं",
+    "undo": "⤺ पूर्ववत करें",
+    "redo": "फिर से करें ⤻",
+    "copy": "कॉपी करें",
+    "cut": "कट करें",
+    "paste": "पेस्ट करें",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "अन्य छवि प्रारूप\nमें बदलें",
+    "join_pages": "पृष्ठ जोड़ें",
+    "split_page": "पृष्ठ विभाजित करें",
+    "save_as": "इस रूप में सहेजें\n(नया CBZ बनाएं)",
+    "save_selection": "चयन को CBZ में\nसहेजें",
+    "print_selection": "चयन प्रिंट करें",
+    "print_all": "पूरी कॉमिक प्रिंट करें",
+    "sort": "क्रमबद्ध करें",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "बदलें",
+    "cancel": "रद्द करें",
+    "split_button": "विभाजित करें",
+    "join_button": "प्रारंभ करें",
+    "validate_crop": "क्रॉपिंग पुष्टि करें",
+    "ok": "ठीक है",
+    "close": "बंद करें",
+    "apply_and_save": "परिवर्तन लागू करें और फ़ाइल सहेजें",
+    "apply_and_create": "परिवर्तन लागू करें और CBZ फ़ाइल बनाएं",
+    "close_and_lose": "फ़ाइल बंद करें और परिवर्तन त्यागें",
+    "cancel_return": "रद्द करें और मोज़ेक पर वापस जाएं",
+    "update_page_count": "मेटाडेटा में पृष्ठ\nसंख्या अपडेट करें",
+    "invert_selection": "चयन उलटें",
+    "reduce_size": "पृष्ठों का आकार बदलें",
+    "mirror_vertical": "⇅",
+    "create_gif": "GIF बनाएं",
+    "edit_gif": "एनिमेटेड GIF संपादित करें",
+    "save_to_folder": "चयनित पृष्ठ\nनिर्यात करें",
+    "continue": "जारी रखें",
+    "reset": "↻",
+    "yes": "हां",
+    "no": "नहीं",
+    "renumber_recommended": "पुनः क्रमांकित करें (अनुशंसित)",
+    "ignore_and_save": "अनदेखा करें और सहेजें",
+    "rename_to_cbz": ".cbz में नाम बदलें",
+    "open_without_rename": "नाम बदले बिना खोलें",
+    "rename_to_cbr": ".cbr में नाम बदलें",
+    "adjustments": "चमक,\nकंट्रास्ट आदि",
+    "batch_cbr_to_cbz": "बैच रूपांतरण\n CBR फ़ाइलें CBZ में",
+    "batch_pdf_to_cbz": "PDF फ़ाइलों का बैच\n रूपांतरण CBZ में",
+    "batch_img_to_cbz": "अकेली छवियों का\n बैच रूपांतरण CBZ में",
+    "icon_toolbar_reset": "रीसेट करें",
+    "delete_selected": "हटाएं",
+    "save": "सहेजें",
+    "rename_to_cb7": ".cb7 में बदलें",
+    "split_ui": "इंटरफ़ेस को दो पैनलों में विभाजित करें",
+    "unsplit_ui": "दूसरा पैनल बंद करें"
+  },
+  "tabs": {
+    "mosaic": "मोज़ेक",
+    "metadata": "मेटाडेटा"
+  },
+  "viewer": {
+    "title": "व्यूअर",
+    "mode_single": "एकल पृष्ठ  [D]",
+    "mode_double": "दोहरा पृष्ठ  [D]",
+    "mode_continuous": "निरंतर मोड  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "पिछला पृष्ठ (←)",
+      "next_page": "अगला पृष्ठ (→)",
+      "zoom_in": "ज़ूम इन (Ctrl+Plus)",
+      "zoom_out": "ज़ूम आउट (Ctrl+Minus)",
+      "zoom_reset": "ज़ूम रीसेट करें (Ctrl+0)",
+      "reading_mode_double": "पठन मोड बदलें (D) → दोहरे पृष्ठ",
+      "reading_mode_continuous": "पठन मोड बदलें (D) → निरंतर दोहरे पृष्ठ",
+      "reading_mode_single": "पठन मोड बदलें (D) → एकल पृष्ठ",
+      "fullscreen_exit": "पूर्ण स्क्रीन से बाहर निकलें (F11)",
+      "fullscreen": "पूर्ण स्क्रीन (F11)",
+      "close_viewer": "व्यूअर बंद करें (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ दूषित छवि - बदलें",
+      "corrupted_delete": "⚠️ इस छवि को हटाएं",
+      "copy": "कॉपी करें (Ctrl+C)",
+      "cut": "कट करें (Ctrl+X)",
+      "paste": "पेस्ट करें (Ctrl+V)",
+      "paste_clipboard": "क्लिपबोर्ड से पेस्ट करें (Ctrl+V)",
+      "delete": "हटाएं (Delete)",
+      "deselect": "चयन हटाएं (ESC)",
+      "rotate_right": "↻ दाएं घुमाएं",
+      "rotate_left": "↺ बाएं घुमाएं",
+      "mirror": "⇄ क्षैतिज दर्पण",
+      "crop": "क्रॉप करें",
+      "convert": "अन्य प्रारूप में बदलें...",
+      "join": "चयनित पृष्ठ जोड़ें",
+      "split": "चयनित पृष्ठ विभाजित करें",
+      "save_selection": "चयन को CBZ में सहेजें",
+      "print_selection": "चयन प्रिंट करें",
+      "copy_archive": "पूर्ण आर्काइव कॉपी करें",
+      "undo": "पूर्ववत करें (Ctrl+Z)",
+      "redo": "फिर से करें (Ctrl+Y)",
+      "renumber_auto": "पृष्ठों की पुनः संख्या (अनेक पृष्ठों की स्वतः पहचान)",
+      "renumber_simple": "पृष्ठों की पुनः संख्या (साधारण गणना)",
+      "sort_submenu": "पृष्ठ क्रमबद्ध करें",
+      "sort_name": "नाम से",
+      "sort_type": "प्रकार से",
+      "sort_size": "आकार से",
+      "sort_width": "चौड़ाई से",
+      "sort_height": "ऊंचाई से",
+      "sort_resolution": "रिज़ॉल्यूशन से",
+      "sort_dpi": "DPI से",
+      "create_cbz": "CBZ आर्काइव बनाएं",
+      "save_as": "इस रूप में सहेजें...",
+      "close_file": "फ़ाइल बंद करें",
+      "help": "उपयोग निर्देश",
+      "update_page_count": "मेटाडेटा में पृष्ठ संख्या अपडेट करें",
+      "invert_selection": "चयन उलटें (Ctrl+I)",
+      "reduce_size": "पृष्ठों का आकार बदलें",
+      "mirror_vertical": "⇅ लंबवत मिरर",
+      "edit_animated_gif": "एनिमेटेड GIF संपादित करें...",
+      "save_to_folder": "चयनित पृष्ठ निर्यात करें",
+      "adjustments": "चमक, कंट्रास्ट, रंग...",
+      "refresh_mosaic": "मोज़ेक ताज़ा करें (F5)",
+      "create_ico": ".ico फ़ाइल बनाएं"
+    },
+    "canvas_no_file": {
+      "open": "CBZ/CBR/CB7/PDF खोलें",
+      "recent_files": "हाल की फ़ाइलें",
+      "clear_history": "इतिहास साफ़ करें"
+    },
+    "canvas_with_file": {
+      "close": "फ़ाइल बंद करें",
+      "paste": "पेस्ट करें (Ctrl+V)",
+      "paste_clipboard": "क्लिपबोर्ड से पेस्ट करें (Ctrl+V)",
+      "select_all": "सभी का चयन करें (Ctrl+A)",
+      "deselect": "चयन हटाएं (ESC)",
+      "copy_archive": "पूर्ण आर्काइव कॉपी करें",
+      "print_all": "पूरी कॉमिक प्रिंट करें",
+      "renumber_auto": "पृष्ठों की पुनः संख्या (अनेक पृष्ठों की स्वतः पहचान)",
+      "renumber_simple": "पृष्ठों की पुनः संख्या (साधारण गणना)",
+      "flatten": "फ़ोल्डर समतल करें",
+      "save_selection": "चयन को CBZ में सहेजें",
+      "hide_sidebar": "« बटन कॉलम छिपाएं",
+      "show_sidebar": "» बटन कॉलम दिखाएं",
+      "decrease_thumbs": "थंबनेल का आकार घटाएं",
+      "increase_thumbs": "थंबनेल का आकार बढ़ाएं",
+      "theme_dark": "डार्क थीम में बदलें",
+      "theme_light": "लाइट थीम में बदलें",
+      "sort_submenu": "पृष्ठ क्रमबद्ध करें",
+      "undo": "पूर्ववत करें (Ctrl+Z)",
+      "redo": "फिर से करें (Ctrl+Y)",
+      "create_cbz": "CBZ आर्काइव बनाएं",
+      "save_as": "इस रूप में सहेजें...",
+      "help": "उपयोग निर्देश",
+      "update_page_count": "मेटाडेटा में पृष्ठ संख्या अपडेट करें",
+      "invert_selection": "चयन उलटें (Ctrl+I)",
+      "fullscreen": "पूर्ण स्क्रीन (F11)",
+      "fullscreen_exit": "पूर्ण स्क्रीन से बाहर निकलें (F11 या ESC)",
+      "quit": "एप्लिकेशन बंद करें"
+    },
+    "canvas": {
+      "quit": "एप्लिकेशन बंद करें",
+      "reset": "ऐप रीसेट करें:\n• विंडो का आकार और स्थिति\n• डार्क मोड → लाइट\n• थंबनेल आकार → सामान्य\n• साइडबार → दृश्यमान / 220 px\n• भाषा → स्वचालित पहचान\n• फ़ॉन्ट आकार → डिफ़ॉल्ट",
+      "reset_label": "एप्लिकेशन रीसेट करें"
+    },
+    "font_size": {
+      "decrease": "फ़ॉन्ट आकार घटाएँ",
+      "increase": "फ़ॉन्ट आकार बढ़ाएँ"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "नाम से क्रमबद्ध करें",
+    "sort_type": "प्रकार से क्रमबद्ध करें",
+    "sort_size": "आकार से क्रमबद्ध करें",
+    "sort_width": "चौड़ाई से क्रमबद्ध करें",
+    "sort_height": "ऊंचाई से क्रमबद्ध करें",
+    "sort_resolution": "रिज़ॉल्यूशन से क्रमबद्ध करें",
+    "sort_dpi": "DPI से क्रमबद्ध करें"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "खाली आर्काइव",
+        "message": "CBZ आर्काइव में कोई फ़ाइल नहीं है।"
+      },
+      "empty_cbr": {
+        "title": "खाली आर्काइव",
+        "message": "CBR आर्काइव में कोई फ़ाइल नहीं है।"
+      },
+      "files_ignored": {
+        "title": "अनदेखी की गई फ़ाइलें"
+      },
+      "no_selection_crop": {
+        "title": "कोई चयन नहीं",
+        "message": "कृपया क्रॉप करने के लिए एक छवि चुनें।"
+      },
+      "multi_selection_crop": {
+        "title": "एकाधिक चयन",
+        "message": "आप एक समय में केवल एक छवि क्रॉप कर सकते हैं।\nकृपया एक छवि चुनें।"
+      },
+      "invalid_selection_crop": {
+        "title": "अमान्य चयन",
+        "message": "केवल छवियां क्रॉप की जा सकती हैं।"
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "सुविधा उपलब्ध नहीं है",
+        "message": "उप-निर्देशिकाओं में पृष्ठ स्थानांतरण उपलब्ध नहीं है।\nकृपया फ़ोल्डर समतल करें या रूट पर वापस जाएं।"
+      },
+      "no_selection_convert": {
+        "title": "कोई चयन नहीं",
+        "message": "कृपया बदलने के लिए कम से कम एक छवि चुनें।"
+      },
+      "invalid_selection_convert": {
+        "title": "अमान्य चयन",
+        "message": "केवल छवियां बदली जा सकती हैं।"
+      },
+      "no_selection_split": {
+        "title": "कोई चयन नहीं",
+        "message": "कृपया विभाजित करने के लिए एक छवि चुनें।"
+      },
+      "multi_selection_split": {
+        "title": "एकाधिक चयन",
+        "message": "आप एक समय में केवल एक छवि विभाजित कर सकते हैं।\nकृपया एक छवि चुनें।"
+      },
+      "invalid_selection_split": {
+        "title": "अमान्य चयन",
+        "message": "केवल छवियां विभाजित की जा सकती हैं।"
+      },
+      "invalid_number_split": {
+        "title": "अमान्य संख्या",
+        "message": "पृष्ठों की संख्या 2 से 10 के बीच होनी चाहिए।"
+      },
+      "insufficient_selection_join": {
+        "title": "अपर्याप्त चयन",
+        "message": "कृपया जोड़ने के लिए कम से कम 2 छवियां चुनें।"
+      },
+      "invalid_selection_join": {
+        "title": "अमान्य चयन",
+        "message": "केवल छवियां जोड़ी जा सकती हैं।"
+      },
+      "pil_not_available": {
+        "title": "PIL उपलब्ध नहीं है",
+        "message": "सिस्टम क्लिपबोर्ड से पेस्ट करने के लिए PIL मॉड्यूल की आवश्यकता है।"
+      },
+      "format_not_supported": {
+        "title": "असमर्थित प्रारूप",
+        "message": "असमर्थित छवि प्रारूप या दूषित फ़ाइल।\nसमर्थित प्रारूप: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "कोई चयन नहीं",
+        "message": "कृपया पहले एक क्रॉप क्षेत्र बनाएं।"
+      },
+      "cannot_open_file": {
+        "title": "फ़ाइल नहीं खोल सकते",
+        "message": "फ़ाइल लोड नहीं हो सकी।"
+      },
+      "corrupted_images": {
+        "title": "दूषित छवियां",
+        "summary": "{total} में से {count} दूषित छवि(याँ) मिली(ं)।",
+        "hint": "वे एक विशेष आइकन के साथ प्रदर्शित होती हैं।\nदूषित छवि पर राइट-क्लिक करके उसे बदलें या हटाएं।",
+        "more": "... और {count} अन्य"
+      },
+      "no_image_print": {
+        "title": "कोई छवि नहीं",
+        "message": "प्रिंट करने के लिए कोई छवि नहीं।"
+      },
+      "no_valid_image_print": {
+        "title": "कोई छवि नहीं",
+        "message": "प्रिंट करने के लिए कोई मान्य छवि नहीं।"
+      },
+      "no_selection_print": {
+        "title": "कोई चयन नहीं",
+        "message": "कृपया कम से कम एक छवि चुनें।"
+      },
+      "no_valid_selection_print": {
+        "title": "कोई छवि नहीं",
+        "message": "चयन में कोई मान्य छवि नहीं।"
+      },
+      "save_cancelled": {
+        "title": "सहेजना रद्द किया गया",
+        "message": "कृपया सहेजने से पहले फ़ाइल के नाम मैन्युअल रूप से ठीक करें।"
+      },
+      "empty_pdf": {
+        "title": "खाली PDF",
+        "message": "PDF फ़ाइल में कोई पृष्ठ नहीं है।"
+      },
+      "no_selection_save": {
+        "title": "चेतावनी",
+        "message": "कृपया सहेजने के लिए कम से कम एक पृष्ठ चुनें।"
+      },
+      "drag_disabled_subdirectory": {
+        "title": "ड्रैग अक्षम",
+        "message": "ड्रैग और ड्रॉप द्वारा पृष्ठ स्थानांतरण केवल कॉमिक के रूट में उपलब्ध है।\n\nपृष्ठ स्थानांतरित करने के लिए:\n1. ऊपर जाने के आइकन पर क्लिक करके रूट पर वापस जाएं\n2. या कॉमिक को समतल करें ताकि उप-निर्देशिकाएं हटाई जाएं"
+      },
+      "no_selection_reduce": {
+        "title": "कोई चयन नहीं",
+        "message": "कृपया कम करने के लिए कम से कम एक पृष्ठ चुनें।"
+      },
+      "invalid_selection_reduce": {
+        "title": "अमान्य चयन",
+        "message": "केवल छवियों को कम किया जा सकता है।"
+      },
+      "invalid_dimensions": {
+        "title": "अमान्य आयाम",
+        "message": "कृपया मान्य आयाम दर्ज करें (सकारात्मक पूर्णांक)।"
+      },
+      "no_images_for_gif": {
+        "title": "कोई छवि नहीं",
+        "message": "एनिमेटेड GIF बनाने के लिए कम से कम एक छवि आवश्यक है।"
+      },
+      "no_valid_images": {
+        "title": "कोई मान्य छवि नहीं",
+        "message": "GIF बनाने के लिए कोई मान्य छवि नहीं मिली।"
+      },
+      "animated_gif_in_comic": {
+        "title": "एनिमेटेड GIF का पता चला",
+        "message": "चेतावनी: इस कॉमिक में एक या अधिक एनिमेटेड GIF हैं।\\n\\nकॉमिक रीडर (CDisplayEx, YACReader, आदि) प्रत्येक GIF के केवल पहले फ्रेम को स्थिर पृष्ठ के रूप में प्रदर्शित करेंगे।\\n\\nएनिमेटेड GIF को सही तरीके से देखने के लिए, आपको इसे \"चयनित पृष्ठ निर्यात करें\" या \"एनिमेटेड GIF संपादित करें\" बटन का उपयोग करके कॉमिक के बाहर अलग से सहेजना होगा।\\n\\nक्या आप फिर भी कॉमिक को सहेजना जारी रखना चाहते हैं?"
+      },
+      "no_selection_adjust": {
+        "title": "कोई चयन नहीं",
+        "message": "समायोजन लागू करने के लिए कम से कम एक छवि चुनें।"
+      },
+      "invalid_selection_adjust": {
+        "title": "अमान्य चयन",
+        "message": "समायोजन केवल छवियों पर लागू किए जा सकते हैं।"
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "सुविधा उपलब्ध नहीं है",
+        "message": "जब तक फ़ोल्डर्स को समतल नहीं किया जाता, तब तक पुनः क्रमांकन उपलब्ध नहीं है।\nपुनः क्रमांकन से पहले फ़ोल्डर्स को समतल करें।"
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP त्रुटि",
+        "message": "'{file}': मान्य ZIP आर्काइव नहीं है या दूषित है।"
+      },
+      "zip_cannot_open": {
+        "title": "ZIP त्रुटि",
+        "message": "CBZ फ़ाइल नहीं खोल सकते: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR त्रुटि",
+        "message": "'{file}': मान्य RAR आर्काइव नहीं है या दूषित है।"
+      },
+      "rar_cannot_open": {
+        "title": "RAR त्रुटि",
+        "message": "CBR आर्काइव नहीं खोल सकते: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "त्रुटि",
+        "message": "CBR खोलते समय अप्रत्याशित त्रुटि: {error}"
+      },
+      "join_failed": {
+        "title": "त्रुटि",
+        "message": "छवियां जोड़ नहीं सकते।"
+      },
+      "paste_failed": {
+        "title": "त्रुटि",
+        "message": "पेस्ट करते समय त्रुटि: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "त्रुटि",
+        "message": "आर्काइव कॉपी नहीं कर सकते: {error}"
+      },
+      "crop_invalid": {
+        "title": "त्रुटि",
+        "message": "क्रॉप क्षेत्र अमान्य है।"
+      },
+      "crop_failed": {
+        "title": "त्रुटि",
+        "message": "छवि क्रॉप नहीं कर सकते: {error}"
+      },
+      "load_image_failed": {
+        "title": "त्रुटि",
+        "message": "छवि लोड नहीं कर सकते:\n{error}"
+      },
+      "print_error": {
+        "title": "प्रिंट त्रुटि",
+        "message": "प्रिंट करते समय त्रुटि:\n{error}"
+      },
+      "print_not_available": {
+        "title": "प्रिंट उपलब्ध नहीं है",
+        "message": "win32print मॉड्यूल इंस्टॉल नहीं है।\nइंस्टॉल करें: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "फ़ाइल नहीं मिली",
+        "message": "फ़ाइल अब मौजूद नहीं है:\n{path}"
+      },
+      "import_failed": {
+        "title": "आयात त्रुटि",
+        "message": "फ़ाइल आयात नहीं कर सकते: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF इंस्टॉल नहीं है",
+        "message": "PyMuPDF (fitz) लाइब्रेरी इंस्टॉल नहीं है।\nइंस्टॉल करें: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "त्रुटि",
+        "message": "PDF आयात करते समय त्रुटि: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF त्रुटि",
+        "message": "PDF लोड नहीं कर सकते:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "डुप्लिकेट फ़ाइल नाम",
+        "intro": "{count} डुप्लिकेट फ़ाइल नाम पाए गए:\n\n",
+        "item": "  • {name} ({times} बार)\n",
+        "more": "  ... और {more} अन्य\n",
+        "footer": "\nZIP संग्रह डुप्लिकेट नामों को स्वीकार नहीं करते।\nकृपया सहेजने से पहले इन फ़ाइलों का नाम बदलें।"
+      },
+      "save_failed": {
+        "title": "त्रुटि",
+        "message": "फ़ाइल सहेज नहीं सकते: {error}"
+      },
+      "create_archive_failed": {
+        "title": "त्रुटि",
+        "message": "आर्काइव बना नहीं सकते: {error}"
+      },
+      "save_selection_failed": {
+        "title": "त्रुटि",
+        "message": "चयन सहेज नहीं सकते: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF निर्माण त्रुटि",
+        "message": "एनिमेटेड GIF बनाने में असमर्थ:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "सहेजने में त्रुटि",
+        "message": "फ़ाइलें सहेजने में त्रुटि:\n{error}"
+      },
+      "rename_failed": {
+        "title": "नाम बदलने की त्रुटि",
+        "message": "फ़ाइल का नाम बदलने में असमर्थ: {error}"
+      },
+      "pdf_password_required": {
+        "title": "पासवर्ड से सुरक्षित PDF",
+        "message": "यह PDF फ़ाइल एन्क्रिप्टेड और पासवर्ड से सुरक्षित है।\nइसे पासवर्ड के बिना नहीं खोला जा सकता।"
+      },
+      "pdf_unlock_failed": {
+        "title": "त्रुटि",
+        "message": "अनलॉक की गई PDF फ़ाइल सहेजी नहीं जा सकी:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: एन्क्रिप्टेड PDF (पासवर्ड आवश्यक), छोड़ा गया",
+      "file_too_large": {
+        "title": "फ़ाइल बहुत बड़ी है",
+        "message": "फ़ाइल {filename} का आकार {size} है और यह किसी छवि के लिए अधिकतम अनुमत आकार (500 MB) से अधिक है।"
+      },
+      "license_file_not_found": {
+        "message": "लाइसेंस फ़ाइल नहीं मिली: {path}"
+      },
+      "license_file_read_error": {
+        "message": "लाइसेंस फ़ाइल पढ़ने में असमर्थ: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z त्रुटि",
+        "message": "फ़ाइल '{file}' एक वैध 7Z संग्रह नहीं है या दूषित है।"
+      },
+      "delete_error": "हटाने के दौरान त्रुटि: {error}",
+      "export_error": "निर्यात के दौरान त्रुटि: {error}",
+      "font_source_not_found": "फ़ॉन्ट स्रोत फ़ाइल नहीं मिली: {path}",
+      "no_tengwar_font": "कोई Tengwar फ़ॉन्ट नहीं मिला।",
+      "no_icons_found": "कोई आइकन नहीं मिला।",
+      "unsupported_files": {
+        "title": "असमर्थित फ़ाइलें",
+        "message": "निम्नलिखित फ़ाइलें समर्थित नहीं हैं और उन्हें अनदेखा किया गया:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF सफलतापूर्वक बनाया गया",
+        "message": "एनिमेटेड GIF '{name}' बनाया गया है और मोज़ेक में जोड़ा गया है।"
+      },
+      "pywin32_required": {
+        "title": "सुविधा उपलब्ध नहीं है",
+        "message": "सिस्टम क्लिपबोर्ड से पेस्ट करने के लिए pywin32 मॉड्यूल की आवश्यकता है।\nइंस्टॉल करें: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "छवियां आयात की गईं",
+        "message": "{count} छवि(यां) आयात की गईं"
+      },
+      "archive_copied": {
+        "title": "आर्काइव कॉपी किया गया",
+        "message": "संग्रह क्लिपबोर्ड पर कॉपी कर दिया गया है।"
+      },
+      "function_not_available": {
+        "title": "सुविधा उपलब्ध नहीं है",
+        "message": "यह सुविधा वर्तमान में उपलब्ध नहीं है।"
+      },
+      "duplicate_detected": {
+        "title": "डुप्लिकेट पाया गया",
+        "message": "इस नाम की फ़ाइल पहले से मौजूद है।\n\nफ़ाइल का नाम बदला गया:\n{name}"
+      },
+      "replace_success": {
+        "title": "सफलता",
+        "message": "छवि '{name}' सफलतापूर्वक बदली गई।"
+      },
+      "history_cleared": {
+        "title": "इतिहास साफ़ किया गया",
+        "message": "हाल की फ़ाइलों की सूची साफ़ कर दी गई।"
+      },
+      "files_copied_clipboard": {
+        "title": "क्लिपबोर्ड में कॉपी किया गया",
+        "message": "तकनीकी कारणों से ऐप से ड्रैग और ड्रॉप उपलब्ध नहीं है।\n\n✓ {count} {word} क्लिपबोर्ड में कॉपी किए गए\n\nअब आप जहां चाहें पेस्ट कर सकते हैं:\n  • राइट क्लिक → पेस्ट करें\n  • या Ctrl+V"
+      },
+      "correction_done": {
+        "title": "सुधार किया गया",
+        "message": "{count} फ़ाइल नाम ठीक किए गए।"
+      },
+      "import_success": {
+        "title": "आयात सफल",
+        "message": "{file} से {count} पृष्ठ आयात किए गए"
+      },
+      "pdf_import_success": {
+        "title": "आयात सफल",
+        "message": "{file} से {count} PDF पृष्ठ आयात किए गए\nगुणवत्ता: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "सफलता",
+        "message": "PDF सफलतापूर्वक बदला गया!\n{count} पृष्ठ {dpi} DPI पर लोड किए गए।"
+      },
+      "cbz_saved": {
+        "title": "सफलता",
+        "message": "CBZ फ़ाइल सफलतापूर्वक सहेजी गई:"
+      },
+      "cbz_converted": {
+        "title": "सफलता",
+        "message": "फ़ाइल सफलतापूर्वक CBZ में परिवर्तित हुई:",
+        "question": "क्या आप मूल CBR फ़ाइल को हटाना चाहते हैं?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "सफलता",
+        "message": "फ़ाइल सफलतापूर्वक CBZ में परिवर्तित हुई:",
+        "question": "क्या आप मूल PDF फ़ाइल को हटाना चाहते हैं?"
+      },
+      "cbz_save_as": {
+        "title": "सफलता",
+        "message": "नई CBZ फ़ाइल सहेजी गई: {path}"
+      },
+      "cbz_created": {
+        "title": "सफलता",
+        "message": "CBZ संग्रह सफलतापूर्वक बनाया गया:"
+      },
+      "selection_saved": {
+        "title": "सफलता",
+        "message": "चयन सफलतापूर्वक सहेजा गया:"
+      },
+      "flatten_done": {
+        "title": "समतलीकरण पूर्ण",
+        "message": "{dirs} उप-फ़ोल्डर(रों) से {files} फ़ाइल(ें) स्थानांतरित की गईं।"
+      },
+      "language_changed": {
+        "title": "भाषा बदली गई",
+        "message": "इंटरफ़ेस की भाषा सफलतापूर्वक बदली गई।"
+      },
+      "new_cbz_saved": {
+        "title": "फ़ाइल सहेजी गई",
+        "message": "नई CBZ फ़ाइल सफलतापूर्वक सहेजी गई:",
+        "question": "क्या आप मूल फ़ाइल को हटाना चाहते हैं?"
+      },
+      "page_count_updated": {
+        "title": "पृष्ठ संख्या अपडेट की गई",
+        "message": "मेटाडेटा में पृष्ठ संख्या {count} पृष्ठों में अपडेट की गई है।"
+      },
+      "files_saved": {
+        "title": "सफलतापूर्वक सहेजा गया",
+        "message": "{count} फ़ाइलें यहां सहेजी गईं:\n{folder}",
+        "open_folder": "क्या आप फ़ोल्डर खोलना चाहते हैं?"
+      },
+      "adjustments_applied": {
+        "title": "समायोजन लागू किए गए",
+        "message": "समायोजन सफलतापूर्वक लागू किए गए हैं।"
+      },
+      "pdf_unlocked": {
+        "title": "PDF अनलॉक हो गई",
+        "message": "अनलॉक की गई PDF फ़ाइल सहेजी गई:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "बड़ा आर्काइव",
+        "message": "यह आर्काइव विस्तारित करने पर {size} MB है।\nलोडिंग बहुत अधिक मेमोरी (RAM) का उपयोग कर सकती है।\n\nक्या आप जारी रखना चाहते हैं?"
+      },
+      "confirm_delete": {
+        "title": "पुष्टि",
+        "message": "क्या आप वाकई में {count} फ़ाइल({size}) हटाना चाहते हैं?"
+      },
+      "delete_source_files": {
+        "title": "स्रोत फ़ाइलें हटाएं?",
+        "message": "क्या आप जोड़ी गई छवियां हटाना चाहते हैं?\n\nहां = स्रोत फ़ाइलें हटाएं\nनहीं = स्रोत फ़ाइलें रखें\nरद्द करें = ऑपरेशन रद्द करें"
+      },
+      "invalid_filenames": {
+        "title": "अमान्य फ़ाइल नाम",
+        "intro": "{count} फ़ाइल(ें) में निषिद्ध वर्ण हैं:",
+        "item": "  • {name}",
+        "more": "  ... और {more} और",
+        "forbidden_chars": "निषिद्ध वर्ण: {chars}",
+        "fix_question": "क्या आप इन नामों को स्वचालित रूप से ठीक करना चाहते हैं?\n(निषिद्ध वर्णों को '_' से बदला जाएगा)"
+      },
+      "close_without_save": {
+        "title": "बंद करने से पहले सहेजें?",
+        "message": "छवियां जोड़ी गई हैं। क्या आप बंद करने से पहले CBZ आर्काइव बनाना चाहते हैं?"
+      },
+      "flatten_folders": {
+        "title": "फ़ोल्डर समतल करें",
+        "subdirs_detected": "उप-फ़ोल्डर पाए गए:",
+        "files_to_move": "{count} फ़ाइल(ें) रूट में स्थानांतरित की जाएंगी।",
+        "folders_to_delete": "{count} उप-फ़ोल्डर(रों) को हटाया जाएगा।",
+        "continue_question": "क्या आप जारी रखना चाहते हैं?"
+      },
+      "update_page_count": {
+        "title": "पृष्ठ संख्या अपडेट करें",
+        "message": "कॉमिक में पृष्ठों की संख्या बदल गई है।\n\nमेटाडेटा में दर्शाई गई पृष्ठ संख्या: {original}\nवर्तमान पृष्ठ संख्या: {current}\n\nक्या आप मेटाडेटा में पृष्ठ संख्या अपडेट करना चाहते हैं?"
+      },
+      "conversion_complete": {
+        "title": "रूपांतरण पूर्ण",
+        "message": "रूपांतरण पूर्ण!\n\n{count} छवि(याँ) {format} प्रारूप में परिवर्तित की गईं और आपके चयन के बाद जोड़ी गईं।\n\nमूल छवियाँ हटाएँ?",
+        "delete_originals": "मूल फ़ाइलें हटाएं\n{count} फ़ाइल - {size}",
+        "keep_all": "सब कुछ रखें\n{count} फ़ाइल - {size}",
+        "cancel_conversion": "रूपांतरण रद्द करें\n{count} फ़ाइल - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "गलत एक्सटेंशन का पता चला: यह '{filename}' फ़ाइल CBZ है, CBR नहीं। नाम बदलें?",
+      "title": "गलत एक्सटेंशन"
+    },
+    "extension_mismatch_cbr": {
+      "message": "गलत एक्सटेंशन का पता चला: यह '{filename}' फ़ाइल CBR है, CBZ नहीं। नाम बदलें?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "गलत एक्सटेंशन मिला: फ़ाइल '{filename}' CB7 है, CBZ/CBR नहीं। नाम बदलें?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "थंबनेल आकार",
+    "loading": "कृपया प्रतीक्षा करें, लोड हो रहा है...\n{percent}%",
+    "resizing": "कृपया प्रतीक्षा करें, आकार बदल रहा है...\n{percent}%",
+    "converting": "कृपया प्रतीक्षा करें, रूपांतरण हो रहा है...\n{percent}%",
+    "loading_lazy": "कृपया प्रतीक्षा करें, लोड हो रहा है...\n{percent}%\n\nइस फ़ाइल के बड़े आकार ({size} MB) के कारण, पृष्ठ क्रमिक रूप से लोड होंगे। स्क्रीन पर दिखाई देने वाले पृष्ठ तुरंत लोड हो जाते हैं, अन्य स्क्रॉल करते समय स्वचालित रूप से लोड हो जाएंगे।",
+    "apply_save_cbz": "परिवर्तन लागू करें\nऔर CBZ फ़ाइल सहेजें",
+    "apply_create_cbz": "परिवर्तन लागू करें\nऔर CBZ फ़ाइल बनाएं",
+    "import_progress": "आयात हो रहा है...\n{percent}%",
+    "pdf_import_progress": "PDF आयात हो रहा है...\n{percent}%",
+    "pdf_opening": "PDF फ़ाइल खोली जा रही है...",
+    "pdf_page": "पृष्ठ {current} / {total}",
+    "warning_close": "चेतावनी! परिवर्तन सहेजे नहीं गए हैं और खो जाएंगे!",
+    "language_label": "भाषा:",
+    "directory_tooltip": "फ़ोल्डर: {name}\n{count} फ़ाइल(ें)\nकुल आकार: {size} MB",
+    "folder_up_tooltip": "ऊपरी स्तर पर जाने के लिए\nडबल-क्लिक करें",
+    "status_bar": "{dirs} फ़ोल्डर  |  {files} फ़ाइल(ें) ({total_size})  |  {selected} चयनित ({selected_size})",
+    "pdf_converting": "{total} पृष्ठों को {dpi} DPI पर छवियों में परिवर्तित किया जा रहा है...",
+    "pdf_converting_no_change": "{total} पृष्ठों को बिना संशोधन के निकाला जा रहा है...",
+    "print_progress": "प्रिंटिंग की तैयारी हो रही है...\n{percent}%",
+    "print_preparing": "कृपया प्रतीक्षा करें, प्रिंटिंग की तैयारी हो रही है...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU सामान्य सार्वजनिक लाइसेंस v3 का सारांश\n\nप्रदत्त स्वतंत्रताएं\nआप MosaicView का उपयोग, प्रतिलिपि, संशोधन और पुनर्वितरण\nकर सकते हैं, यहां तक कि व्यावसायिक उद्देश्यों के लिए भी।\n\nदायित्व\nकिसी भी पुनर्वितरण (मूल या संशोधित) के लिए आवश्यक है कि :\n– GPL v3 लाइसेंस बनाए रखा जाए\n– स्रोत कोड शामिल किया जाए या यह बताया जाए कि इसे कहां से प्राप्त करें\n– कोई अतिरिक्त प्रतिबंध न लगाए जाएं\n\nवारंटी\nयह सॉफ़्टवेयर बिना किसी वारंटी के वितरित किया जाता है।\nइसके लेखक इसके उपयोग से होने वाली किसी भी क्षति के लिए उत्तरदायी नहीं हैं।\n\nआपको इस प्रोग्राम के साथ GNU सामान्य सार्वजनिक लाइसेंस की एक प्रति मिलनी चाहिए थी। यदि नहीं, तो देखें <https://www.gnu.org/licenses/>.",
+    "view_full_license": "पूर्ण लाइसेंस देखें",
+    "license_unrar_text": "CBZ फ़ाइलें ZIP प्रारूप पर आधारित हैं, जो एक मुक्त और खुला प्रारूप है। CBR फ़ाइलें, इसके विपरीत, RAR प्रारूप पर आधारित हैं, जो एक मालिकाना प्रारूप है।\n\nMosaicView UnRAR की बदौलत CBR फ़ाइलें खोल सकता है, जो RARlab द्वारा विकसित और मुफ़्त में पुनर्वितरण योग्य उपयोगिता है।\n\nआधिकारिक वेबसाइट: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "UnRAR लाइसेंस देखें",
+    "saving_cbz": "सहेजा जा रहा है... {percent}%",
+    "empty_canvas_line1": "यहाँ एक या अधिक CBZ/CBR/CB7/PDF फाइलें या अपनी छवियाँ डालें",
+    "empty_canvas_line2": "एक बार फाइल खुलने के बाद, आप और फाइलें डालना जारी रख सकते हैं",
+    "empty_canvas_line3": "बैच प्रोसेसिंग शुरू करने के लिए एक या अधिक फ़ोल्डर छोड़ें",
+    "icon_toolbar_config_title": "आइकन टूलबार कॉन्फ़िगरेशन",
+    "icon_toolbar_active": "टूलबार में आइकन",
+    "icon_toolbar_hidden": "आइकन रिज़र्व में",
+    "license_gpl_full": "GNU GPL v3 लाइसेंस",
+    "license_unrar_full": "UnRAR लाइसेंस",
+    "licenses_button": "लाइसेंस",
+    "view_full_gpl_license": "पूर्ण GNU GPL v3 लाइसेंस देखें",
+    "license_7zip_text": "CB7 फ़ाइलें 7z प्रारूप पर आधारित हैं, जिसे Igor Pavlov ने विकसित किया है और GNU LGPL लाइसेंस के तहत वितरित किया जाता है।\n\nMosaicView 7-Zip की सहायता से CB7 फ़ाइलें खोल सकता है — एक मुफ़्त और ओपन-सोर्स उपयोगिता।\n\nआधिकारिक वेबसाइट : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "7-Zip लाइसेंस देखें",
+    "license_7zip_full": "7-Zip लाइसेंस",
+    "icon_toolbar_show_thumb_slider": "थंबनेल आकार स्लाइडर दिखाएं",
+    "icon_toolbar_show_lang_combo": "भाषा चयनकर्ता दिखाएं",
+    "adjusting": "कृपया प्रतीक्षा करें, समायोजन जारी है...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS फ़ॉन्ट लाइसेंस",
+    "license_tengwar_full": "Alcarin Tengwar फ़ॉन्ट लाइसेंस",
+    "view_full_piqad_license": "पूर्ण pIqaD qolqoS लाइसेंस देखें"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "छवि रूपांतरण",
+      "title": "{count} {word} का रूपांतरण",
+      "word_image": "छवि",
+      "word_images": "छवियां",
+      "info": "गंतव्य प्रारूप चुनें:",
+      "format_png": "PNG (दोषरहित)",
+      "format_jpg": "JPEG (संपीड़न के साथ)",
+      "format_webp": "WEBP (आधुनिक)",
+      "format_bmp": "BMP (बिटमैप)",
+      "format_tiff": "TIFF (उच्च गुणवत्ता)",
+      "format_gif": "GIF (एनिमेशन)",
+      "quality_label": "JPG/WEBP के लिए गुणवत्ता:",
+      "quality_maximum": "अधिकतम — गुणवत्ता 95/100",
+      "quality_high": "उच्च — गुणवत्ता 85/100",
+      "quality_medium": "मध्यम — गुणवत्ता 75/100",
+      "quality_low": "निम्न — गुणवत्ता 60/100",
+      "quality_custom_option": "कस्टम",
+      "quality_custom": "गुणवत्ता कस्टम : {value}/100",
+      "quality_note": "(यह पैरामीटर केवल JPG और WEBP प्रारूपों को प्रभावित करता है)",
+      "quality_window_title": "Quality Selection",
+      "format_gif_static": "स्थिर GIF",
+      "format_gif_animated": "एनिमेटेड GIF (एकाधिक छवियां चुनें)"
+    },
+    "split": {
+      "window_title": "पृष्ठ विभाजित करें",
+      "title": "पृष्ठ विभाजित करें",
+      "pages_label": "पृष्ठों की संख्या:",
+      "direction_label": "विभाजन दिशा:",
+      "horizontal": "क्षैतिज (बाएं → दाएं)",
+      "vertical": "लंबवत (ऊपर → नीचे)",
+      "warning": "⚠ विभाजन स्वचालित रूप से गणना किया जाता है,\nमैन्युअल समायोजन आवश्यक हो सकता है।",
+      "button_split": "विभाजित करें",
+      "button_cancel": "रद्द करें"
+    },
+    "join": {
+      "window_title": "पृष्ठ जोड़ें - क्रम पुनर्व्यवस्थित करें",
+      "instructions": "छवियां व्यवस्थित करें:\n• लंबवत (ऊपर/नीचे) लंबवत जोड़ने के लिए\n• क्षैतिज (बाएं/दाएं) क्षैतिज जोड़ने के लिए",
+      "merged_filename_prefix": "जुड़ाव",
+      "heights_label": "ऊंचाइयां",
+      "widths_label": "चौड़ाइयां",
+      "size_adjustment_title": "आकार समायोजन",
+      "size_adjustment_warning": "⚠️ चयनित छवियों के आयाम भिन्न हैं।\nकृपया चुनें कि उन्हें जोड़ने के लिए उनके आकार को कैसे समायोजित करें।\nप्रत्येक छवि का पहलू अनुपात हमेशा संरक्षित रहेगा।",
+      "keep_original": "मूल आकार रखें",
+      "keep_original_desc": "(भरने के लिए काली पट्टियाँ जोड़ता है)",
+      "enlarge_small": "छोटी छवियों को बड़ा करें",
+      "enlarge_small_desc": "(अधिकतम आयाम में संरेखित करें)",
+      "reduce_large": "बड़ी छवियों को छोटा करें",
+      "reduce_large_desc": "(न्यूनतम आयाम में संरेखित करें)",
+      "back_to_arrangement": "वापस"
+    },
+    "pdf": {
+      "quality_merge": "मर्ज गुणवत्ता चुनें:",
+      "quality_export": "निर्यात गुणवत्ता चुनें:",
+      "merge_quality_title": "PDF मर्ज गुणवत्ता",
+      "export_quality_title": "PDF निर्यात गुणवत्ता",
+      "loading_title": "PDF लोड हो रहा है...",
+      "dpi_90": "90 DPI - वेब प्रकाशन",
+      "dpi_150": "150 DPI - अच्छी गुणवत्ता (प्रदर्शन के लिए अनुशंसित)",
+      "dpi_200": "200 DPI - बहुत अच्छी गुणवत्ता",
+      "dpi_300": "300 DPI - उत्कृष्ट गुणवत्ता (कॉमिक्स मानक)",
+      "dpi_600": "600 DPI - अधिकतम गुणवत्ता (बड़ी फ़ाइलें)",
+      "dpi_original": "कोई छवि संशोधन नहीं",
+      "dpi_original_tooltip": "प्रत्येक PDF पृष्ठ का बुद्धिमान विश्लेषण:\n• केवल छवि वाले पृष्ठ: मूल DPI बनाए रखता है\n• केवल पाठ वाले पृष्ठ: 300 DPI\n• मिश्रित पृष्ठ (पाठ + छवियाँ): छवि DPI यदि >= 300, अन्यथा 300 DPI\nअधिकतम: फ़ाइल आकार सीमित करने के लिए 2400 DPI"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF आवश्यक है",
+      "pymupdf_required_message": "PyMuPDF (fitz) स्थापित नहीं है। PDF फ़ाइलें परिवर्तित नहीं की जा सकतीं।",
+      "select_directory_title": "PDF फ़ाइलों वाली निर्देशिका चुनें",
+      "no_pdf_title": "कोई PDF फ़ाइल नहीं",
+      "no_pdf_message": "निर्देशिका में कोई PDF फ़ाइल नहीं मिली:\n{directory}",
+      "confirm_title": "PDF से CBZ में बैच रूपांतरण",
+      "confirm_message": "{directory} में {count} PDF फ़ाइलें रूपांतरित करने हेतु (उपनिर्देशिकाएं शामिल)।",
+      "checkbox_permanent_delete": "मूल PDF फ़ाइलों को रीसायकल बिन का उपयोग किए\nबिना हटाएं (पूर्ववत करना संभव नहीं)",
+      "start_button": "शुरू करें",
+      "converting_title": "रूपांतरण जारी...",
+      "converting_progress": "फ़ाइल {current} का रूपांतरण कुल {total} में से",
+      "page_progress": "पृष्ठ {current} / {total}",
+      "complete_title": "रूपांतरण पूर्ण",
+      "complete_message": "{count} PDF फ़ाइलें निर्देशिका में रूपांतरित हुईं:",
+      "complete_message_errors": "{total} में से {count} PDF फ़ाइलें निर्देशिका में रूपांतरित हुईं:",
+      "errors_count": "{count} त्रुटि(यां) पाई गईं।"
+    },
+    "batch_cbr": {
+      "select_directory_title": "CBR फ़ाइलों वाली निर्देशिका चुनें",
+      "no_cbr_title": "कोई CBR फ़ाइल नहीं",
+      "no_cbr_message": "निर्देशिका में कोई CBR फ़ाइल नहीं मिली:\\n{directory}",
+      "confirm_title": "CBR से CBZ में बैच रूपांतरण",
+      "confirm_message": "{count} CBR फ़ाइलें {directory} में रूपांतरित करने के लिए (उप-निर्देशिकाएं शामिल).",
+      "checkbox_permanent_delete": "मूल CBR फ़ाइलों को रीसाइकल बिन के बिना\nहटाएं (वापस नहीं लाया जा सकता)",
+      "start_button": "शुरू करें",
+      "converting_title": "रूपांतरण जारी...",
+      "converting_progress": "फ़ाइल {current} / {total} का रूपांतरण",
+      "page_progress": "पृष्ठ {current} / {total}",
+      "complete_title": "रूपांतरण पूर्ण",
+      "complete_message": "निर्देशिका में {count} CBR फ़ाइलें रूपांतरित:",
+      "complete_message_errors": "निर्देशिका में {total} में से {count} CBR फ़ाइलें रूपांतरित:",
+      "errors_count": "{count} त्रुटि(याँ) पाई गईं।",
+      "renamed_count": "{count} फ़ाइल(ें) CBZ में पुनर्नामित",
+      "rarfile_unavailable": "rarfile मॉड्यूल उपलब्ध नहीं है। CBR फ़ाइलें परिवर्तित नहीं की जा सकतीं।"
+    },
+    "close_warning": {
+      "title": "चेतावनी!",
+      "message": "परिवर्तन सहेजे नहीं गए हैं और खो जाएंगे!",
+      "btn_close_lose": "फ़ाइल बंद करें और परिवर्तन त्यागें",
+      "btn_save_cbz": "परिवर्तन लागू करें और फ़ाइल सहेजें",
+      "btn_create_cbz": "परिवर्तन लागू करें और CBZ फ़ाइल बनाएं",
+      "btn_cancel": "रद्द करें और मोज़ेक पर वापस जाएं"
+    },
+    "replace_image": {
+      "title": "दूषित छवि बदलें"
+    },
+    "reduce_size": {
+      "window_title": "छवि का आकार बदलना",
+      "title": "{count} {word} का आकार बदलना",
+      "word_image": "छवि",
+      "word_images": "छवियाँ",
+      "current_size": "वर्तमान आकार: {size} MB",
+      "current_dimensions": "वर्तमान आयाम: {width} × {height} px",
+      "choose_method": "आकार बदलने की विधि चुनें:",
+      "custom_dimensions": "कस्टम आयाम",
+      "width_label": "चौड़ाई:",
+      "height_label": "ऊंचाई:",
+      "use_custom_dimensions": "इन आयामों का उपयोग करें",
+      "different_dimensions_warning": "चयनित पृष्ठों के आयाम भिन्न हैं। कस्टम आयाम सभी पृष्ठों को एक ही आकार में मजबूर करेंगे। जारी रखने से पहले सुनिश्चित करें कि आप निहितार्थ को समझते हैं।",
+      "estimated_size": "अनुमानित आकार: {size} MB",
+      "percentage_reduction": "प्रतिशत कमी",
+      "percentage_enlargement": "प्रतिशत वृद्धि",
+      "reduce_0": "0% (कोई परिवर्तन नहीं)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (कोई परिवर्तन नहीं)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "सबसे आम पृष्ठ चौड़ाई 1024, 1280, 1600, 1920 और 2000 पिक्सेल हैं, लेकिन अन्य मान भी उपयुक्त हैं।",
+      "multi_page_width": "एकाधिक पृष्ठों का स्वचालित रूप से पता लगाएं और आकार बदलें (चौड़ाई/ऊंचाई)",
+      "multi_page_width_tooltip": "एकाधिक पृष्ठों का स्वचालित पता लगाना सक्षम करता है: दोहरा पृष्ठ, तिगुना पृष्ठ आदि। गुणक गुणांक प्रत्येक पृष्ठ के अनुपात के आधार पर स्वचालित रूप से गणना की जाती है, चाहे वह चौड़ाई में हो (बगल में पृष्ठ) या ऊंचाई में (ढेर किए गए पृष्ठ)"
+    },
+    "gif_animated": {
+      "window_title": "एनिमेटेड GIF बनाना",
+      "images_title": "एनिमेशन छवियाँ",
+      "params_title": "GIF पैरामीटर",
+      "frame_delay_label": "छवियों के बीच देरी:",
+      "fps_normal": "{fps} फ्रेम/सेकंड",
+      "fps_slow": "हर {seconds} सेकंड में 1 फ्रेम",
+      "loop_label": "दोहराव की संख्या:",
+      "loop_info": "(0 = अनंत लूप)",
+      "disposal_label": "छवि व्यवस्था:",
+      "disposal_0": "निर्दिष्ट नहीं",
+      "disposal_1": "पिछली छवि रखें",
+      "disposal_2": "पृष्ठभूमि रंग में पुनर्स्थापित करें",
+      "disposal_3": "पिछली स्थिति में पुनर्स्थापित करें",
+      "optimize": "फ़ाइल अनुकूलित करें (केवल अंतर सहेजें)",
+      "metadata_title": "GIF मेटाडेटा",
+      "metadata_dimensions": "आयाम: {width} × {height} पिक्सेल",
+      "metadata_frames": "फ्रेम की संख्या: {count}",
+      "metadata_duration": "कुल अवधि: {duration} सेकंड",
+      "metadata_fps": "आवृत्ति: {fps} fps",
+      "metadata_palette": "पैलेट: 256 रंगों तक",
+      "metadata_size": "अनुमानित आकार: {size} KB",
+      "comment_label": "टिप्पणी (वैकल्पिक):",
+      "no_images": "कोई छवि चयनित नहीं",
+      "creating_progress": "चित्र लोड हो रहे हैं... ({current}/{total})",
+      "creating_normalizing": "चित्र सामान्य किए जा रहे हैं... ({current}/{total})",
+      "creating_quantizing": "रंग परिमाणित किए जा रहे हैं... ({current}/{total})",
+      "creating_saving": "GIF सहेजी जा रही है..."
+    },
+    "save_to_folder": {
+      "title": "गंतव्य फ़ोल्डर चुनें"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ डुप्लिकेट फ़ाइल नाम",
+      "message": "समान फ़ाइल नाम का पता चला है। यद्यपि सहेजना तकनीकी रूप से संभव है,\nयह कुछ कॉमिक बुक रीडर एप्लिकेशन में पढ़ने की समस्याएँ पैदा कर सकता\nहै (अधूरा प्रदर्शन, लापता पृष्ठ, आदि)।\n\nसहेजने से पहले पृष्ठों को पुनः क्रमांकित करने की अनुशंसा की जाती है।"
+    },
+    "adjustments": {
+      "window_title": "छवि समायोजन",
+      "title": "{count} {word} के लिए समायोजन",
+      "word_image": "छवि",
+      "word_images": "छवियाँ",
+      "apply_button": "लागू करें",
+      "color_depth_section": "रंग गहराई",
+      "brightness_contrast_section": "चमक और कंट्रास्ट",
+      "compression_section": "संपीड़न",
+      "effects_section": "प्रभाव",
+      "sharpness_section": "तीक्ष्णता",
+      "levels_section": "काला/सफेद स्तर",
+      "depth_unchanged": "परिवर्तन न करें",
+      "depth_32bit": "32 बिट (RGBA - रंग + पारदर्शिता)",
+      "depth_24bit": "24 बिट (RGB - रंग)",
+      "depth_8bit": "8 bit (PNG paleteu / JPEG gre-skelu)",
+      "depth_1bit": "1 बिट (काला और सफेद)",
+      "brightness_label": "चमक: {value}",
+      "contrast_label": "कंट्रास्ट: {value}",
+      "compression_enable": "पुनः संपीड़न सक्षम करें",
+      "compression_quality_label": "गुणवत्ता : {value}/100",
+      "sharpness_label": "तीक्ष्णता: {value}",
+      "effect_none": "कोई प्रभाव नहीं",
+      "effect_grayscale": "ग्रेस्केल",
+      "effect_sepia": "सेपिया",
+      "levels_none": "कोई समायोजन नहीं",
+      "levels_threshold": "सीमा (शुद्ध काला या सफेद)",
+      "levels_advanced": "उन्नत स्तर (छाया/मध्य टोन/हाइलाइट)",
+      "threshold_label": "सीमा: {value}",
+      "black_point_label": "काला बिंदु: {value}",
+      "gamma_label": "गामा (मध्य टोन): {value}",
+      "white_point_label": "सफेद बिंदु: {value}",
+      "auto_levels_button": "स्वचालित समायोजन",
+      "open_viewer_button": "व्यूअर के साथ समायोजित करें (अनुशंसित)",
+      "compression_info": "संपीड़न केवल JPG और WebP छवियों पर लागू होता है",
+      "open_viewer_button_simple": "व्यूअर के साथ समायोजित करें",
+      "reset_button": "रीसेट करें",
+      "preview_section": "पूर्वावलोकन",
+      "effect_invert": "रंग उलटाव",
+      "preview_warning": "पूर्वावलोकन अंतिम परिणाम से भिन्न हो सकता है",
+      "effect_remove_colors": "रंग हटाना",
+      "remove_colors_intensity_label": "तीव्रता : {value}",
+      "image_mode_section": "चित्र मोड",
+      "image_mode_rgb": "RGB (रंग)",
+      "image_mode_rgba": "RGBA (रंग + पारदर्शिता)",
+      "image_mode_l": "L (धूसर छायाएँ)",
+      "image_mode_la": "LA (धूसर छायाएँ + पारदर्शिता)",
+      "image_mode_cmyk": "CMYK (मुद्रण)",
+      "image_mode_1": "1 (शुद्ध काला-सेफ़ेद)",
+      "image_mode_p": "P (256 रंगों का पैलेट)",
+      "saturation_section": "संतृप्ति",
+      "saturation_label": "संतृप्ति : {value}",
+      "saturation_viewer_title": "संतृप्ति समायोजन",
+      "transparency_section": "पारदर्शिता",
+      "transparency_info": "पारदर्शिता केवल PNG, WebP और ICO छवियों पर लागू होती है",
+      "transparency_type_label": "प्रकार :",
+      "transparency_type_flood": "क्षेत्र",
+      "transparency_type_global": "वैश्विक",
+      "transparency_tolerance_label": "सहनशीलता : {value}",
+      "transparency_viewer_title": "पारदर्शिता समायोजन",
+      "transparency_click_instruction": "उस रंग पर क्लिक करें जिसे पारदर्शी बनाना है",
+      "transparency_undo": "अंतिम क्लिक पूर्ववत करें",
+      "transparency_redo": "फिर से करें",
+      "transparency_type_flood_tooltip": "Flood fill : क्लिक किए गए पिक्सेल के आसपास के एकरंगी क्षेत्र को पारदर्शी बनाता है",
+      "transparency_type_global_tooltip": "वैश्विक पारदर्शिता : छवि के सभी पिक्सेल जिनका रंग क्लिक किए गए रंग के समान है उन्हें प्रभावित करता है",
+      "transparency_apply": "लागू करें",
+      "transparency_skipped_warning": "{count} छवि(यां) छोड़ी गई — प्रारूप पारदर्शिता के साथ असंगत है। उन्हें शामिल करने के लिए पहले PNG में बदलें।",
+      "unsharp_section": "अनुकूली तीक्ष्णता",
+      "unsharp_radius_label": "त्रिज्या: {value}",
+      "unsharp_percent_label": "तीव्रता: {value} %",
+      "unsharp_threshold_label": "सीमा: {value}",
+      "unsharp_viewer_title": "अनुकूली तीक्ष्णता",
+      "auto_levels_tooltip": "प्रत्येक पृष्ठ का विश्लेषण करता है और कंट्रास्ट को अधिकतम करने के लिए काले और सफ़ेद स्तरों को स्वचालित रूप से समायोजित करता है।\nपृष्ठ दर पृष्ठ चुनने के लिए, व्यूअर का उपयोग करें।"
+    },
+    "levels_viewer": {
+      "title": "आईड्रॉपर के साथ स्तर समायोजन",
+      "apply_current": "इस पृष्ठ पर लागू करें",
+      "apply_all": "सभी चयनित पृष्ठों पर लागू करें",
+      "black_pipette": "काला बिंदु आईड्रॉपर",
+      "white_pipette": "सफेद बिंदु आईड्रॉपर",
+      "black_pipette_tooltip": "एक पिक्सेल पर क्लिक करें जो पूरी तरह से काला होना चाहिए। सावधान: इसे ज़्यादा करना आसान है!",
+      "white_pipette_tooltip": "एक पिक्सेल पर क्लिक करें जो पूरी तरह से सफेद होना चाहिए। सावधान: इसे ज़्यादा करना आसान है!"
+    },
+    "sharpness_viewer": {
+      "title": "तीक्ष्णता समायोजन"
+    },
+    "brightness_viewer": {
+      "title": "चमक और कंट्रास्ट समायोजन"
+    },
+    "compression_viewer": {
+      "title": "संपीड़न समायोजन"
+    },
+    "outliers": {
+      "title": "असामान्य आयामों वाले पृष्ठ",
+      "message": "निम्नलिखित पृष्ठों के आयाम दूसरों से काफी अलग हैं। कृपया चुनें कि उन्हें कैसे संभालना है:",
+      "width": "चौड़ाई",
+      "height": "ऊंचाई",
+      "unusual": "असामान्य",
+      "skip": "आकार न बदलें",
+      "keep": "रखें"
+    },
+    "first_page_multi": {
+      "title": "पहला पृष्ठ बहुपृष्ठ है",
+      "message": "पहले पृष्ठ को बहुपृष्ठ के रूप में पहचाना गया है। आप इसे कैसे नंबर देना चाहते हैं?",
+      "option_auto_desc": "स्वचालित पहचान के साथ सामान्य पुनर्नंबरन.",
+      "option_joint_desc": "कॉमिक्स के पहले और अंतिम पृष्ठ का जोड़ाव.",
+      "option_exclude_label": "पुनर्नंबरन में शामिल न करें",
+      "option_exclude_desc": "पृष्ठ अपना वर्तमान नाम रखता है और पहली स्थिति में रहता है। आप बाद में इसे मैन्युअली नाम बदल सकते हैं।"
+    },
+    "batch_img": {
+      "select_directory_title": "छवियाँ वाला फ़ोल्डर चुनें",
+      "no_img_title": "कोई छवि फ़ाइल नहीं मिली",
+      "no_img_message": "फ़ोल्डर में कोई अकेली छवि फ़ाइल नहीं मिली :\n{directory}",
+      "confirm_title": "अकेली छवियों का बैच रूपांतरण CBZ में",
+      "confirm_message": "{directory} में {count} छवि फ़ाइल(ें) रूपांतरित करने के लिए (उपफ़ोल्डर सहित)।",
+      "checkbox_permanent_delete": "मूल छवि फ़ाइलें स्थायी रूप से हटाएं\nरीसायकल बिन में भेजे बिना (पूर्ववत नहीं किया जा सकता)",
+      "start_button": "शुरू करें",
+      "converting_title": "रूपांतरण जारी है...",
+      "converting_progress": "कुल {total} में से फ़ाइल {current} रूपांतरित हो रही है",
+      "complete_title": "रूपांतरण पूर्ण",
+      "complete_message": "फ़ोल्डर में {count} छवि फ़ाइल(ें) रूपांतरित :",
+      "complete_message_errors": "फ़ोल्डर में {total} में से {count} छवि फ़ाइल(ें) रूपांतरित :",
+      "errors_count": "{count} त्रुटि(याँ) मिलीं।",
+      "converted_by_ext": "{ext} : {count} फ़ाइल(ें)",
+      "mode_title": "छवियों को CBZ में बदलें",
+      "mode_intro": "आप छवियों को कैसे समूहित करना चाहते हैं?",
+      "mode_one_per_image": "प्रत्येक छवि को अलग CBZ फ़ाइलों में बदलें",
+      "mode_one_per_image_sub": "(प्रत्येक छवि एक अलग CBZ फ़ाइल बन जाती है)",
+      "mode_all_in_one": "सभी छवियों को एक ही CBZ फ़ाइल में समूहित करें",
+      "mode_all_in_one_sub": "(निर्देशिका की सभी छवियाँ एक ही CBZ फ़ाइल में समूहित होती हैं)"
+    },
+    "batch_drop": {
+      "window_title": "फ़ोल्डरों का बैच प्रोसेसिंग",
+      "intro_single": "1 फ़ोल्डर छोड़ा गया। आप कौन सी प्रक्रिया लागू करना चाहते हैं?",
+      "intro_multiple": "{count} फ़ोल्डर छोड़े गए। आप कौन सी प्रक्रिया लागू करना चाहते हैं?",
+      "recursive_note": "उपफ़ोल्डरों को भी स्कैन किया जाएगा।",
+      "mixed_drop_title": "ड्रॉप समर्थित नहीं",
+      "mixed_drop_message": "आपने एक साथ फ़ाइलें और फ़ोल्डर दोनों छोड़े। कृपया केवल फ़ाइलें या केवल फ़ोल्डर छोड़ें।"
+    },
+    "pdf_unlock": {
+      "title": "PDF परिवर्तनों से सुरक्षित है",
+      "message": "पृष्ठ सामान्य रूप से आयात किए गए।\n\nयह PDF फ़ाइल परिवर्तनों से सुरक्षित है (मालिक पासवर्ड)।\n\nक्या आप इस सुरक्षा के बिना PDF फ़ाइल की एक प्रति सहेजना चाहते हैं?",
+      "yes": "हाँ, अनलॉक की गई प्रति सहेजें",
+      "no": "नहीं, अनलॉक किए बिना जारी रखें"
+    },
+    "batch_pdf_unlock": {
+      "title": "परिवर्तनों से सुरक्षित PDF फ़ाइलें",
+      "message_single": "परिवर्तनों से सुरक्षित 1 PDF फ़ाइल मिली। इसे सामान्य रूप से CBZ में परिवर्तित किया गया।\n\nक्या आप इसके मूल निर्देशिका में अनलॉक की गई प्रति सहेजना चाहते हैं?",
+      "message_plural": "परिवर्तनों से सुरक्षित {count} PDF फ़ाइलें मिलीं। उन्हें सामान्य रूप से CBZ में परिवर्तित किया गया।\n\nक्या आप प्रत्येक की अनलॉक प्रति उसकी मूल निर्देशिका में सहेजना चाहते हैं?",
+      "yes": "हाँ, अनलॉक की गई प्रतियाँ सहेजें",
+      "no": "नहीं, अनलॉक किए बिना जारी रखें"
+    },
+    "ico_creator": {
+      "title": ".ico आइकन बनाएं",
+      "info_message": "छवि को कई रिज़ॉल्यूशन में बदला जाएगा (16, 32, 48, 64, 128, 256 px)।\nवर्तमान फ्रेम आकार: {w} × {h} px",
+      "btn_validate_crop": "क्रॉप की पुष्टि करें",
+      "btn_validate_no_crop": "बिना क्रॉप के पुष्टि करें",
+      "btn_cancel": "रद्द करें",
+      "btn_transparency": "पारदर्शिता सेट करें",
+      "btn_validate_final": "पुष्टि करें",
+      "tolerance_label": "सहनशीलता:",
+      "success_title": ".ico फ़ाइल बनाई गई",
+      "success_message": "फ़ाइल {filename} सफलतापूर्वक बनाई गई।",
+      "overwrite_title": "फ़ाइल पहले से मौजूद है",
+      "overwrite_message": "फ़ाइल {filename} पहले से मौजूद है। इसे ओवरराइट करें?",
+      "save_blocked_title": "सहेजना संभव नहीं",
+      "save_blocked_message": "इस आर्काइव में एक या अधिक .ico फ़ाइलें हैं जो कॉमिक बुक छवियां नहीं हैं। जब तक ये फ़ाइलें मोज़ेक में मौजूद हैं, सहेजना अक्षम है।\nसहेजना पुनः सक्षम करने के लिए, उन्हें मोज़ेक से हटाएं (Del कुंजी) या काटें (Ctrl+X) और कहीं और पेस्ट करें।",
+      "btn_back_to_crop": "क्रॉप पर वापस जाएं"
+    },
+    "video_save_blocked": {
+      "title": "सहेजना संभव नहीं",
+      "message": "इस संग्रह में एक या अधिक वीडियो फ़ाइलें हैं। जब तक ये फ़ाइलें मोज़ेक में मौजूद हैं तब तक सहेजना अक्षम है।\nसहेजना पुनः सक्षम करने के लिए, इन्हें मोज़ेक से हटाएं (Del कुंजी) या काटें (Ctrl+X) और कहीं और चिपकाएं।"
+    },
+    "open_file": {
+      "title": "संग्रह खोलें",
+      "filter_archives": "संग्रह (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "सभी फ़ाइलें (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - लाइसेंस"
+    },
+    "replace_corrupted_image": {
+      "title": "दूषित छवि बदलें",
+      "filter_images": "चित्र (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "सभी फ़ाइलें (*)"
+    },
+    "see_log": "लॉग देखें"
+  },
+  "tooltip": {
+    "source_archive": "मूल फ़ाइल: {name}",
+    "file": "फ़ाइल: {name}",
+    "reason": "कारण: {reason}",
+    "size_kb": "आकार: {size} KB",
+    "size_mb": "आकार: {size} MB",
+    "file_size": "आकार: {size}",
+    "dimensions": "आयाम: {width} × {height} px",
+    "resolution": "रिज़ॉल्यूशन: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: अपरिभाषित",
+    "cbr_info": "CBR फ़ाइलें RAR प्रारूप का उपयोग करती हैं, जो मालिकाना और पेटेंट है;\nउन्हें संशोधित नहीं किया जा सकता, परिवर्तनों को नई CBZ फ़ाइल में सहेजा जाता है.",
+    "rotate_left": "बाईं ओर 90 डिग्री घुमाएं",
+    "rotate_right": "दाईं ओर 90 डिग्री घुमाएं",
+    "mirror_horizontal": "क्षैतिज प्रतिबिंब",
+    "mirror_vertical": "लंबवत प्रतिबिंब",
+    "fullscreen": "पूर्ण स्क्रीन",
+    "help_button": "उपयोगकर्ता मैनुअल",
+    "theme_button": "हल्की और गहरी थीम के बीच स्विच करें",
+    "font_decrease_button": "फ़ॉन्ट आकार घटाएँ",
+    "font_increase_button": "फ़ॉन्ट आकार बढ़ाएँ",
+    "color_depth": "रंग: {bits} बिट्स ({mode})",
+    "batch_pdf_to_cbz": "एक निर्देशिका और उसकी उपनिर्देशिकाओं में\nसभी PDF फ़ाइलों को CBZ में बदलता है।\nछवियाँ यथावत निकाली और संग्रहीत की\nजाती हैं, बिना किसी पुनःसंपीड़न के।",
+    "batch_pdf_permanent_delete": "चेतावनी: यदि यह विकल्प चुना गया है,\nतो मूल PDF फ़ाइलें रूपांतरण के बाद\nस्थायी रूप से हटा दी जाएंगी,\nबिना पुनर्प्राप्ति की संभावना के।\nसुनिश्चित करें कि आपके पास\nबैकअप उपलब्ध है यदि आवश्यक हो।",
+    "batch_cbr_to_cbz": "एक निर्देशिका और उसकी उप-निर्देशिकाओं\nमें मौजूद सभी CBR फ़ाइलों को\n CBZ में रूपांतरित करता है।",
+    "batch_cbr_permanent_delete": "चेतावनी: यदि यह विकल्प चुना गया है,\nतो मूल CBR फ़ाइलें रूपांतरण के बाद\nस्थायी रूप से हटा दी जाएंगी,\nबिना पुनर्प्राप्ति की संभावना के।\nसुनिश्चित करें कि आपके पास\nबैकअप उपलब्ध है यदि आवश्यक हो।",
+    "renumber_btn_1": "अनेक पृष्ठों की स्वतः पहचान मोड\nमोड बदलने के लिए दायाँ क्लिक करें",
+    "renumber_btn_2": "साधारण गणना मोड\nमोड बदलने के लिए दायाँ क्लिक करें",
+    "corrupted_header": "दूषित छवि",
+    "right_click_instruction1": "इस छवि को बदलने या हटाने के लिए",
+    "right_click_instruction2": "राइट-क्लिक करें।",
+    "unknown_error": "अज्ञात त्रुटि",
+    "batch_img_to_cbz": "किसी फ़ोल्डर और उसके उपफ़ोल्डरों में मिली सभी\nछवि फ़ाइलों को CBZ में बदलता है,\nप्रत्येक छवि के लिए एक CBZ फ़ाइल बनाता है।",
+    "batch_img_permanent_delete": "चेतावनी : यदि यह विकल्प चुना गया है,\nतो रूपांतरण के बाद मूल छवि फ़ाइलें\nस्थायी रूप से हटा दी जाएंगी, बिना\nपुनर्प्राप्ति की संभावना के। यदि आवश्यक हो\nतो सुनिश्चित करें कि आपके पास बैकअप है।",
+    "too_large_header": "छवि लोड करने के लिए बहुत बड़ी है",
+    "too_large_pixels": "आयाम: {pixels}",
+    "icon_toolbar_config_button": "आइकन कॉन्फ़िगरेशन",
+    "icon_toolbar_size_decrease": "आइकन का आकार घटाएं",
+    "icon_toolbar_size_increase": "आइकन का आकार बढ़ाएं",
+    "source_loose": "मुक्त छवि",
+    "source_web": "वेब छवि"
+  },
+  "help": {
+    "title": "MosaicView - उपयोग निर्देश",
+    "intro": "MosaicView आपको कॉमिक्स (डिजिटल कॉमिक बुक्स) को उनके आर्काइव से निकाले बिना संपादित करने की अनुमति देता है। एप्लिकेशन CBZ (ZIP), CBR (RAR) और PDF प्रारूपों का समर्थन करता है। यह अनुप्रयोग केवल 64-बिट सिस्टम के सاथ संगत है।",
+    "open_files": "फ़ाइलें खोलें",
+    "open_files_content": "• 'CBZ/CBR/CB7/PDF खोलें' बटन पर क्लिक करें\n• या फ़ाइल को सीधे विंडो में ड्रैग और ड्रॉप करें\n• समर्थित प्रारूप: CBZ, CBR, CB7, PDF, छवियां (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB फाइलें भी खोली जा सकती हैं, लेकिन केवल उनकी छवियां निकाली जाएंगी (पाठ को नजरअंदाज कर दिया जाता है)।\n• एन्क्रिप्टेड PDF (खोलने के लिए पासवर्ड आवश्यक): फ़ाइल आयात नहीं की जा सकती, एक त्रुटि संदेश प्रदर्शित होता है।\n• PDF परिवर्तनों से सुरक्षित (owner password): पृष्ठ सामान्य रूप से आयात किए जाते हैं। MosaicView उसी फ़ोल्डर में फ़ाइल की अनलॉक प्रति सहेजने का प्रस्ताव करता है।",
+    "mosaic": "मोज़ेक",
+    "mosaic_content": "मोज़ेक आपकी कॉमिक बुक के सभी पृष्ठों को थंबनेल के रूप में प्रदर्शित करता है। आप:\n• ड्रैग-एंड-ड्रॉप करके पृष्ठों को पुनर्व्यवस्थित कर सकते हैं (पृष्ठ क्रमांकन स्वचालित होगा, और सक्रिय पुनर्क्रमांकन मोड के अनुसार होगा)\n• एकाधिक पृष्ठ चुन सकते हैं (Ctrl+क्लिक या Shift+क्लिक)\n• स्लाइडर से थंबनेल का आकार समायोजित कर सकते हैं\n• फ़ाइलों के नाम पर क्लिक करके मैन्युअल रूप से नाम बदल सकते हैं\n• Windows Explorer से कॉमिक बुक फ़ाइलें (CBZ/CBR/PDF) सीधे किसी अन्य खुली कॉमिक में ड्रैग-एंड-ड्रॉप करके उनकी सामग्री मर्ज कर सकते हैं",
+    "manipulation": "पृष्ठ हेरफेर",
+    "manipulation_content": "• पृष्ठों को पुनर्व्यवस्थित करने के लिए खींचें और छोड़ें\n• दो कॉमिक्स को मर्ज करने के लिए एक को दूसरे में खींचें\n• विकल्पों तक पहुँचने के लिए पृष्ठ पर राइट-क्लिक करें (घुमाना, हटाना आदि)\n• व्यूअर खोलने के लिए पृष्ठ पर डबल-क्लिक करें\n• अलग-अलग पृष्ठों को Windows फ़ोल्डर में खींचकर निर्यात करें, या Ctrl+C / Ctrl+V के ज़रिए",
+    "renumber": "पृष्ठ पुनर्क्रमांकन",
+    "renumber_content": "MosaicView पृष्ठ पुनर्क्रमांकन के दो मोड प्रदान करता है, जो पुनर्क्रमांकन बटन, संदर्भ मेनू (दायां क्लिक) या ड्रैग और ड्रॉप के दौरान स्वचालित रूप से उपलब्ध हैं:\n\n• कई पृष्ठों की स्वचालित पहचान मोड (डिफ़ॉल्ट मोड): ऐप्लिकेशन डबल, ट्रिपल आदि पृष्ठों का पता लगाने के लिए प्रत्येक पृष्ठ की चौड़ाई का विश्लेषण करता है। कई पृष्ठों को तदनुसार पुनर्क्रमांकित किया जाता है (उदा.: डबल पृष्ठ का नाम 003-004, ट्रिपल 005-006-007 होगा)। 4 पृष्ठों से अधिक होने पर, केवल पहला और अंतिम नंबर दिखाया जाता है (उदा.: 010---025)।\n\n• सरल क्रमांकन मोड: प्रत्येक पृष्ठ को एक अद्वितीय क्रमिक संख्या मिलती है (001, 002, 003...), पृष्ठों की चौड़ाई की परवाह किए बिना।\n\nदोनों मोड के बीच स्विच करने के लिए, पुनर्क्रमांकन बटन पर दायां क्लिक करें। एक टूलटिप सक्रिय मोड दर्शाता है। चयनित मोड ड्रैग और ड्रॉप के दौरान स्वचालित पुनर्क्रमांकन पर भी लागू होता है।",
+    "flatten": "निर्देशिकाएं समतल करें",
+    "flatten_content": "यदि आपके आर्काइव में उप-फ़ोल्डर हैं, तो सभी छवियों को समान स्तर पर लाने के लिए 'निर्देशिकाएं समतल करें' का उपयोग करें।",
+    "viewer": "व्यूअर",
+    "viewer_content": "व्यूअर खोलने के लिए पृष्ठ पर डबल-क्लिक करें:\n• ← → कुंजियां: पृष्ठों के बीच नेविगेट करें\n• D कुंजी: 3 पठन मोड के बीच टॉगल करें\n  - एकल पृष्ठ: एक बार में एक पृष्ठ\n  - दोहरे पृष्ठ: पृष्ठ 1 अकेला, फिर 2-3, 4-5, आदि।\n  - निरंतर दोहरे पृष्ठ: पृष्ठ 1 अकेला, फिर 2-3, 3-4, 4-5, आदि।\n• माउस व्हील: तेज़ नेविगेशन\n• Ctrl+व्हील या Ctrl+Plus/Minus: ज़ूम\n• Ctrl+0: ज़ूम रीसेट करें\n• F कुंजी या F11: पूर्ण स्क्रीन\n• डबल-क्लिक: पूर्ण स्क्रीन टॉगल करें\n• Esc कुंजी: क्रॉप फ्रेम रद्द करें / व्यूअर बंद करें",
+    "join_pages": "पृष्ठ जोड़ें",
+    "join_pages_content": "कई क्रमिक पृष्ठ चुनें, दायाँ-क्लिक करें → 'चयनित पृष्ठों को जोड़ें' पृष्ठों को क्षैतिज या लंबवत जोड़ने के लिए। उत्पन्न छवि का प्रारूप स्रोत पृष्ठों के प्रारूप से मेल खाता है यदि वे सभी एक समान हैं, अन्यथा डिफ़ॉल्ट रूप से PNG।",
+    "split_pages": "पृष्ठ विभाजित करें",
+    "split_pages_content": "डबल पृष्ठों को स्वचालित रूप से विभाजित करने के लिए:\n• विभाजित करने के लिए पृष्ठ चुनें\n• राइट क्लिक → 'चयनित पृष्ठ विभाजित करें'\n• दिशा चुनें (लंबवत या क्षैतिज)",
+    "crop": "व्यूअर में क्रॉपिंग",
+    "crop_content": "व्यूअर में, क्रॉप क्षेत्र को परिभाषित करने के लिए छवि पर एक आयत बनाएं:\n• माउस से आयत बनाएं\n• किनारों या कोनों को खींचकर आकार बदलें\n• लागू करने के लिए 'क्रॉपिंग पुष्टि करें' पर क्लिक करें\n• क्रॉपिंग वर्तमान छवि पर लागू होती है\n• Esc कुंजी: क्रॉप फ्रेम रद्द करें",
+    "shortcuts": "कीबोर्ड शॉर्टकट",
+    "shortcuts_content": "• Ctrl+Z: अंतिम क्रिया पूर्ववत करें\n• Ctrl+Y: पूर्ववत की गई क्रिया फिर से करें\n• Ctrl+A: सभी पृष्ठ चुनें\n• Ctrl+I: चयन उलटें\n• Ctrl+C: चयनित पृष्ठ कॉपी करें\n• Ctrl+X: चयनित पृष्ठ कट करें\n• Ctrl+V: पृष्ठ पेस्ट करें\n• Delete: चयनित पृष्ठ हटाएं\n• F5: मोज़ेक प्रदर्शन को अपडेट करें\n• F11: पूर्ण स्क्रीन टॉगल करें (F11 या ESC से बाहर निकलें)",
+    "dark_mode": "डार्क मोड",
+    "dark_mode_content": "हल्के और गहरे थीम के बीच स्विच करने के लिए सूर्य/चंद्रमा बटन पर क्लिक करें।",
+    "sort": "पृष्ठ क्रमबद्ध करें",
+    "sort_content": "पृष्ठों को स्वचालित रूप से पुनर्व्यवस्थित करने के लिए 'क्रमबद्ध करें' बटन का उपयोग करें:\n• नाम, प्रकार, आकार, चौड़ाई, ऊंचाई, रिज़ॉल्यूशन या DPI द्वारा",
+    "save": "सहेजें",
+    "save_content": "• 'सहेजें': मूल फ़ाइल में परिवर्तन सहेजें\n• 'इस रूप में सहेजें': नया आर्काइव बनाएं\n• 'CBZ बनाएं': केवल छवियों के मोड में उपलब्ध (बिना आर्काइव)",
+    "other": "अन्य फ़ंक्शन",
+    "other_content": "• घुमाना: एक या एकाधिक पृष्ठ घुमाएं\n• रूपांतरण: छवियों को विभिन्न प्रारूपों में बदलें (PNG, JPEG, WEBP, BMP, TIFF, GIF). नोट: CMYK मोड की छवियाँ स्वचालित रूप से RGB में परिवर्तित हो जाती हैं (PNG, JPEG, WEBP, BMP, TIFF, GIF). नोट: CMYK मोड की छवियाँ स्वचालित रूप से RGB में परिवर्तित हो जाती हैं\n• प्रिंटिंग: चयनित पृष्ठों या सभी पृष्ठों को प्रिंट करें\n• निष्कर्षण: विशिष्ट पृष्ठ निकालें\n• मेटाडेटा टैब: ComicInfo.xml फ़ाइल की जानकारी प्रदर्शित करता है (यदि आर्काइव में मौजूद है)। यदि आप मेटाडेटा युक्त कॉमिक से एक पृष्ठ जोड़ते या हटाते हैं, तो एप्लिकेशन वहां दर्शाई गई पृष्ठ संख्या को संशोधित करने का सुझाव देगा। अन्य मेटाडेटा को संशोधित नहीं किया जा सकता। यह सीमा जानबूझकर है और डिज़ाइन विकल्प का परिणाम है।",
+    "config_files": "कॉन्फ़िगरेशन और अस्थायी फ़ाइलें",
+    "config_files_content": "MosaicView .mosaicview_config.json नामक एक फ़ाइल बनाता है। इस फ़ाइल में रीसेट बटन के सही ढंग से काम करने के लिए आवश्यक कुछ पैरामीटर होते हैं, साथ ही हाल ही में खोली गई कॉमिक्स की सूची भी होती है जो स्पष्ट रूप से हाल ही में खोली गई फ़ाइलों को प्रदर्शित करने के लिए आवश्यक है। MosaicView अस्थायी फ़ाइलें भी सहेजता है, जो विभिन्न छवि प्रसंस्करण संचालन के लिए आवश्यक हैं।\nये सभी फ़ाइलें {temp_dir} निर्देशिका में स्थित हैं।\nअस्थायी फ़ाइलें हर बार एप्लिकेशन बंद होने पर हटा दी जाती हैं, लेकिन .mosaicview_config.json फ़ाइल अपनी प्रकृति से रखने के लिए बनाई गई है।\nहालाँकि, आप {temp_dir} निर्देशिका में जाकर या नीचे दिए गए बटनों पर क्लिक करके इन फ़ाइलों को मैन्युअल रूप से हटा सकते हैं। .mosaicview_config.json फ़ाइल हर बार एप्लिकेशन खोलने पर फिर से बनाई जाएगी और अस्थायी फ़ाइलें आवश्यकतानुसार फिर से बनाई जाएंगी।",
+    "config_clear_temp": "अस्थायी फ़ाइलें हटाएं",
+    "config_clear_recent": "हाल की फ़ाइलें साफ़ करें",
+    "config_clear_config": "कॉन्फ़िगरेशन फ़ाइल हटाएं",
+    "config_temp_cleared": "अस्थायी फ़ाइलें सफलतापूर्वक हटा दी गई हैं।",
+    "config_config_cleared": "कॉन्फ़िगरेशन फ़ाइल सफलतापूर्वक हटा दी गई है।\nयह अगले एप्लिकेशन स्टार्टअप पर फिर से बनाई जाएगी।",
+    "language": "भाषा चयन",
+    "language_content": "MosaicView कई भाषाओं में उपलब्ध है।\nडिफ़ॉल्ट रूप से, एप्लिकेशन स्वचालित रूप से आपके ऑपरेटिंग सिस्टम की भाषा का पता लगाता है और उस भाषा में प्रदर्शित होता है यदि वह समर्थित है। यदि आपका सिस्टम एक असमर्थित भाषा का उपयोग करता है, तो इंटरफ़ेस अंग्रेजी में प्रदर्शित होता है।\nआप थंबनेल आकार स्लाइडर के नीचे, बटन कॉलम के नीचे स्थित ड्रॉपडाउन मेनू का उपयोग करके किसी भी समय मैन्युअल रूप से भाषा बदल सकते हैं। आपकी पसंद सहेजी जाएगी और अगली बार जब आप एप्लिकेशन शुरू करेंगे तो लागू की जाएगी।\nउपलब्ध भाषाएँ: अंग्रेजी, अरबी, अर्मेनियाई, आइसलैंडिक, आयरिश, इंडोनेशियाई, इतालवी, एस्टोनियाई, कोरियाई, क्रोएशियाई, ग्रीक, चेक, चीनी (सरलीकृत), चीनी (पारंपरिक), जर्मन, जापानी, डच, डेनिश, तमिल, तुर्की, थाई, नॉर्वेजियन, पुर्तगाली, पोलिश, फिनिश, फ्रेंच, बल्गेरियाई, माल्टीज़, मलय, यूक्रेनी, रोमानियाई, लातवियाई, लिथुआनियाई, वियतनामी, स्पेनिश, स्लोवाक, स्लोवेनियाई, स्वीडिश, हंगेरियन, हिंदी।\nउपलब्ध काल्पनिक भाषाएँ: क्लिंगन (लैटिन वर्णमाला और pIqaD वर्णमाला संस्करण), सिंडारिन (लैटिन वर्णमाला और टेंग्वार वर्णमाला संस्करण), क्वेन्या (लैटिन वर्णमाला और टेंग्वार वर्णमाला संस्करण).\n\nयह उपयोगिता Windows फ़ॉन्ट का उपयोग करती है, pIqaD (क्लिंगन भाषा) और tengwar (एल्फ़ भाषाएँ: सिंडारिन और क्वेन्या) फ़ॉन्ट को छोड़कर। ये फ़ॉन्ट निःशुल्क हैं और इन साइटों से आते हैं:\n- pIqaD के लिए (क्लिंगन वर्णमाला): {url_piqad}\n- tengwar के लिए (एल्फ़ वर्णमाला, सिंडारिन और क्वेन्या के लिए): {url_tengwar}\nयदि ये साइटें अब सक्रिय नहीं हैं, तो आप नीचे दिए गए बटनों पर क्लिक करके pIqaD और tengwar फ़ॉन्ट प्राप्त कर सकते हैं:\n\nयह सॉफ़्टवेयर फ्रेंच में विकसित किया गया था। अन्य भाषाओं में अनुवाद AI का उपयोग करके किए गए थे, विशेष रूप से Claude। मैंने लगभग चालीस भाषाओं का समर्थन करने का निर्णय लिया। लेकिन स्पष्ट रूप से, मैं इन सभी भाषाओं को नहीं बोलता। इसलिए, मेरे पास AI का उपयोग करने के अलावा कोई विकल्प नहीं था, क्योंकि 40 विभिन्न अनुवादकों को काम पर रखना और भुगतान करना विचार किए गए विकल्पों में नहीं था। इन अनुवादों की स्वचालित प्रकृति के कारण, त्रुटियां हो सकती हैं। मैं इसके लिए माफी मांगता हूं।",
+    "credits": "Vibe Coding, मेरे प्यार",
+    "credits_content": "मुझे प्रोग्रामिंग के बारे में कुछ भी नहीं पता। बिल्कुल भी नहीं। परिणामस्वरूप, मैंने Anthropic के AI Claude, और अधिक विशेष रूप से Claude Code का उपयोग करके इस सॉफ़्टवेयर को विकसित किया। मैं Claude Code की अत्यधिक अनुशंसा करता हूं, यह एप्लिकेशन शानदार है!",
+    "resize_pages": "पृष्ठों का आकार बदलें",
+    "resize_pages_content": "अपने पृष्ठों को छोटा या बड़ा करने के लिए:\n• एक या अधिक पृष्ठ चुनें\n• दायाँ-क्लिक करें → 'आकार बदलें'\n• तीन विकल्प उपलब्ध हैं:\n  - कस्टम आयाम: वांछित चौड़ाई या ऊंचाई दर्ज करें (पहलू अनुपात स्वचालित रूप से संरक्षित है)।\n  - प्रतिशत में कमी: 10% से 90% तक का प्रतिशत चुनें\n  - प्रतिशत में वृद्धि: 10% से 100% तक का प्रतिशत चुनें\n• एप्लिकेशन संशोधन के बाद आपकी छवियों का अनुमानित आकार प्रदर्शित करता है\n• संशोधन तुरंत सभी चयनित पृष्ठों पर लागू होता है",
+    "language_export_piqad": "pIqaD फ़ॉन्ट",
+    "language_export_tengwar": "Tengwar फ़ॉन्ट",
+    "language_export_piqad_success": "फ़ॉन्ट निर्यात किया गया: {filename}\nउपलब्ध:",
+    "language_export_tengwar_success": "{count} फ़ॉन्ट निर्यात किए गए\nउपलब्ध:",
+    "icons": "आइकन",
+    "icons_content": "इस उपयोगिता में उपयोग किए गए अधिकांश आइकन इस साइट से लिए गए हैं और गैर-व्यावसायिक उपयोग के लिए निःशुल्क हैं: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nकुछ को मेरे द्वारा संशोधित किया गया है।\nकेवल एक आइकन, Windows निष्पादन योग्य आइकन, मेरे द्वारा बनाया गया था (लेकिन AI के साथ, क्योंकि मैं बहुत, बहुत, बहुत खराब ग्राफिक डिज़ाइनर हूं)। जब तक आप अपने स्रोत का हवाला देते हैं, आपको इस आइकन का उपयोग करने की मेरी अनुमति है।",
+    "icons_view_button": "आइकन देखें",
+    "icons_window_title": "MosaicView आइकन",
+    "icons_save_all": "आइकन सहेजें",
+    "icons_saved_success": "{count} आइकन सहेजा गया:",
+    "icons_save_failed": "आइकन सहेजने में असमर्थ: {error}",
+    "split_ui": "दो-पैनल इंटरफ़ेस",
+    "split_ui_content": "MosaicView एक साथ दो अभिलेखागारों को साथ-साथ प्रदर्शित करने की अनुमति देता है।\n\nदूसरा पैनल खोलने के लिए विभाजन आइकन पर क्लिक करें। प्रत्येक पैनल स्वतंत्र है: आप किसी अभिलेखागार को अलग से खोल, संपादित और सहेज सकते हैं। सक्रिय पैनल नीली सीमा से इंगित होता है।\n\nएक पैनल से दूसरे में पृष्ठ स्थानांतरित करने के लिए, उन्हें सीधे खींचें। यदि एकाधिक पृष्ठ चुने गए हैं, तो वे सभी एक साथ चलते हैं। पृष्ठ लाल बार द्वारा इंगित स्थान पर सम्मिलित होते हैं।\n\nएकल-पैनल मोड पर वापस जाने के लिए दूसरा पैनल बंद करें आइकन पर क्लिक करें।",
+    "license_gpl": "GPL v3 लाइसेंस",
+    "license_unrar": "UnRAR लाइसेंस",
+    "config_clear_clipboard": "क्लिपबोर्ड फ़ाइलें साफ़ करें",
+    "config_clipboard_note": "अपवाद: Windows क्लिपबोर्ड द्वारा उपयोग की जाने वाली अस्थायी फ़ाइलें (clipboard_XXXXX फ़ाइलें) कॉपी करने के 12 घंटे बाद तक रखी जाती हैं, ताकि आप एप्लिकेशन बंद करने के बाद भी उन्हें पेस्ट कर सकें। 12 घंटे के बाद, वे स्वचालित रूप से हटा दी जाती हैं।",
+    "config_log_note": "बैच रूपांतरण (PDF से CBZ और CBR से CBZ) त्रुटियों की स्थिति में एक लॉग फाइल बनाते हैं। ये फाइलें (Log_pdftocbz_.txt और Log_cbrtocbz_.txt) एप्लिकेशन बंद करने के बाद भी संरक्षित रहती हैं, ताकि बाद में उनकी समीक्षा की जा सके। वे केवल ऊपर दिए गए \"अस्थायी फाइलें हटाएं\" बटन द्वारा हटाई जाती हैं।",
+    "config_clipboard_cleared": "क्लिपबोर्ड फ़ाइलें सफलतापूर्वक साफ़ कर दी गई हैं।",
+    "adjust_images": "छवि समायोजन",
+    "adjust_images_content": "यह फ़ंक्शन आपको MosaicView में सीधे अपनी छवियों को रीटच करने की सुविधा देता है। आप चमक, कंट्रास्ट, तीक्ष्णता, स्तर, संतृप्ति को संशोधित कर सकते हैं, प्रभाव लागू कर सकते हैं (श्वेत-श्याम, सेपिया, रंग उलटाव), संपीड़न गुणवत्ता समायोजित कर सकते हैं, रंग हटा सकते हैं, पारदर्शिता लागू कर सकते हैं या विभिन्न रंग गहराइयों में परिवर्तित कर सकते हैं। कुछ सेटिंग्स में एक समर्पित व्यूअर होता है जो लागू करने से पहले पूर्ण रिज़ॉल्यूशन में परिणाम देखने की अनुमति देता है। मुख्य विंडो में एक थंबनेल पूर्वावलोकन वास्तविक समय में परिणाम दिखाता है।",
+    "create_icon": "आइकन बनाएं",
+    "create_icon_content": "MosaicView आपको मोज़ेक में किसी भी छवि से आइकन फ़ाइलें (.ico) बनाने की अनुमति देता है।\n• किसी छवि पर राइट-क्लिक करें → 'आइकन बनाएं'\n• व्यूअर में वांछित क्षेत्र को फ्रेम करें (आइकन अनिवार्य रूप से वर्गाकार होगा)\n• यदि आवश्यक हो तो पारदर्शिता समायोजित करें\n• पुष्टि करें: .ico फ़ाइल सीधे मोज़ेक में जोड़ी जाती है\n• .ico फ़ाइलों में स्वचालित रूप से सभी मानक रिज़ॉल्यूशन (16×16 से 256×256 तक) होते हैं\n• जब तक मोज़ेक में कोई .ico फ़ाइल है, CBZ संग्रह में सहेजना अवरुद्ध है, क्योंकि ICO प्रारूप इन संग्रहों द्वारा समर्थित नहीं है। .ico फ़ाइल को अलग से निर्यात करें (Ctrl+C फिर Windows फ़ोल्डर में पेस्ट करें), फिर सहेजने से पहले इसे मोज़ेक से हटा दें।",
+    "batch_convert": "बैच रूपांतरण",
+    "batch_convert_content": "MosaicView तीन बैच रूपांतरण कार्य प्रदान करता है, जो केवल तभी उपलब्ध होते हैं जब मोज़ेक खाली हो। प्रत्येक के लिए, सिद्धांत समान है : एक निर्देशिका चुनें, पुष्टि करें, वास्तविक समय में प्रगति का पालन करें, अंतिम सारांश देखें। एक विकल्प मूल फ़ाइलों को रीसायकल बिन में भेजने के बजाय उन्हें स्थायी रूप से हटाने की अनुमति देता है।\n• CBR → CBZ : किसी निर्देशिका और उसकी उपनिर्देशिकाओं में सभी CBR (RAR) फ़ाइलों को रूपांतरित करता है। यदि कोई CBR वास्तव में एक ZIP है, तो उसे बिना रूपांतरण के केवल नाम बदल दिया जाता है।\n• PDF → CBZ : किसी निर्देशिका और उसकी उपनिर्देशिकाओं में सभी PDF फ़ाइलों को रूपांतरित करता है। छवियों को पुनः संपीड़न के बिना निकाला जाता है।\n• एकल छवियां → CBZ : निर्देशिका और उसकी उपनिर्देशिकाओं में पाई गई प्रत्येक छवि फ़ाइल के लिए एक व्यक्तिगत CBZ बनाता है। अमान्य, दूषित, बहु-पृष्ठ (TIFF) या एनिमेटेड (GIF) छवियों को अनदेखा किया जाता है और लॉग में दर्ज किया जाता है।",
+    "config_open_temp_folder": "अस्थायी फ़ोल्डर खोलें",
+    "icon_toolbar": "आइकन टूलबार",
+    "icon_toolbar_content": "आइकन टूलबार एप्लिकेशन के मुख्य कार्यों तक त्वरित पहुँच प्रदान करता है। आप आइकन को सीधे बार में खींचकर अपनी सुविधा अनुसार पुनर्व्यवस्थित कर सकते हैं। कौन से आइकन दिखाने या छिपाने हैं यह चुनने के लिए, बार के निचले भाग में स्थित गियर बटन पर क्लिक करें: एक कॉन्फ़िगरेशन विंडो खुलती है जहाँ आप आइकन को सक्रिय बार और रिज़र्व के बीच स्थानांतरित कर सकते हैं। आइकन का आकार समायोजित करने के लिए « + » और « − » बटन का उपयोग करें। कॉन्फ़िगरेशन स्वचालित रूप से सहेजी जाती है।",
+    "license_7zip": "7-Zip लाइसेंस"
+  },
+  "misc": {
+    "file_word": "फ़ाइल",
+    "files_word": "फ़ाइलें",
+    "corrupted": "दूषित",
+    "yes": "हां",
+    "no": "नहीं",
+    "cancel": "रद्द करें",
+    "selection_suffix": "चयन-प्रति"
+  },
+  "metadata": {
+    "title": "शीर्षक",
+    "series": "श्रृंखला",
+    "number": "संख्या",
+    "volume": "खंड",
+    "summary": "सारांश",
+    "writer": "लेखक",
+    "penciller": "चित्रकार",
+    "inker": "स्याही कलाकार",
+    "colorist": "रंगकार",
+    "letterer": "लेटरर",
+    "cover_artist": "कवर कलाकार",
+    "editor": "संपादक",
+    "publisher": "प्रकाशक",
+    "imprint": "छाप",
+    "genre": "शैली",
+    "web": "वेबसाइट",
+    "page_count": "पृष्ठ संख्या",
+    "language_iso": "भाषा",
+    "format": "प्रारूप",
+    "black_and_white": "श्वेत और श्याम",
+    "manga": "मांगा",
+    "year": "वर्ष",
+    "month": "महीना",
+    "day": "दिन",
+    "notes": "नोट्स",
+    "characters": "पात्र",
+    "locations": "स्थान",
+    "teams": "टीमें",
+    "story_arc": "कहानी का चाप",
+    "story_arc_number": "चाप संख्या",
+    "series_group": "श्रृंखला समूह",
+    "count": "अंकों की संख्या",
+    "alternate_series": "वैकल्पिक श्रृंखला",
+    "alternate_number": "वैकल्पिक संख्या",
+    "alternate_count": "वैकल्पिक गिनती",
+    "age_rating": "आयु रेटिंग",
+    "series_complete": "श्रृंखला पूर्ण",
+    "translator": "अनुवादक",
+    "tags": "टैग",
+    "scan_information": "स्कैन जानकारी",
+    "community_rating": "समुदाय रेटिंग",
+    "review": "समीक्षा",
+    "gtin": "GTIN",
+    "pages": "पृष्ठ",
+    "pages_col_image": "छवि",
+    "pages_col_type": "प्रकार",
+    "pages_col_width": "चौड़ाई",
+    "pages_col_height": "ऊंचाई",
+    "pages_col_size": "आकार (बा.)"
+  },
+  "web": {
+    "web_download_progress": "डाउनलोड हो रहा है: {downloaded}/{total} छवियाँ...",
+    "web_download_cancel": "रद्द करें",
+    "web_no_images": "कोई छवि नहीं",
+    "web_no_images_found": "इस पृष्ठ पर कोई छवि नहीं मिली।",
+    "web_imported": "वेब पेज से {count} छवि(यां) आयातित",
+    "web_drag_drop_title": "वेब छवि ड्रैग और ड्रॉप",
+    "web_copy_paste_message": "वेब ब्राउज़र से सीधे ड्रैग और ड्रॉप समर्थित नहीं है।\n\nवैकल्पिक समाधान (सरल):\n\n1. अपने ब्राउज़र में छवि पर राइट-क्लिक करें\n2. 'छवि कॉपी करें' चुनें\n3. MosaicView में, 'पेस्ट' बटन या Ctrl+V का उपयोग करें\n\nयह विधि सभी वेब छवियों के साथ काम करती है!",
+    "import_web_button": "वेब आयात",
+    "import_web_tooltip": "पृष्ठ से सभी छवियों को पुनर्प्राप्त करने के लिए इंटरनेट पता चिपकाएं",
+    "import_web_menu": "वेब आयात...",
+    "import_web_dialog_title": "वेब पेज से छवियां आयात करें",
+    "import_web_url_label": "वेब पेज का पता:",
+    "import_web_ok_button": "ठीक है",
+    "import_web_cancel_button": "रद्द करें",
+    "import_web_invalid_url": "अमान्य URL। कृपया एक मान्य वेब पता दर्ज करें।"
+  },
+  "donation": {
+    "menu_label": "लेखक को दान करें",
+    "title": "दान करें",
+    "message": "आपको यह छोटी उपयोगिता पसंद है, और आप इसे नियमित रूप से उपयोग करते हैं। मैंने इसमें कई सौ घंटे लगाए हैं। क्या आप दान करके मुझे धन्यवाद देने पर विचार करेंगे? कृपया अच्छे बनें, मुझे वास्तव में अपने स्विमिंग पूल को शैम्पेन से भरने के लिए पैसे की जरूरत है।\n\nचाहे आप मुझे कुछ सेंट भेजना चाहें या कई अरब यूरो, मैं सभी राशियों को स्वीकार करता हूं। आप paypal के माध्यम से यह दान कर सकते हैं"
+  },
+  "mail": {
+    "tooltip": "यह बटन ईमेल भेजने के लिए Windows में आपके डिफ़ॉल्ट ईमेल सॉफ़्टवेयर को खोलता है। यदि कोई सॉफ़्टवेयर कॉन्फ़िगर नहीं है (उदाहरण के लिए यदि आप केवल वेबमेल का उपयोग करते हैं), तो आप आइकन पर राइट-क्लिक करके MosaicView पता क्लिपबोर्ड पर कॉपी कर सकते हैं।",
+    "copy_address": "MosaicView ईमेल पता कॉपी करें",
+    "menu_label": "MosaicView को ईमेल भेजें",
+    "icon_label": "ईमेल भेजें"
+  },
+  "menu": {
+    "file": "फ़ाइल",
+    "file_open": "फ़ाइल खोलें",
+    "file_close": "फ़ाइल बंद करें",
+    "batch_convert": "फ़ाइलों का बैच रूपांतरण",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "अलग-अलग छवियाँ → CBZ",
+    "edit": "संपादन",
+    "undo": "पूर्ववत करें",
+    "redo": "फिर से करें",
+    "paste": "चिपकाएं",
+    "delete": "हटाएं",
+    "invert_selection": "चयन पलटें",
+    "select_all": "सभी चुनें",
+    "deselect": "चयन हटाएं",
+    "refresh_mosaic": "मोज़ेक ताज़ा करें",
+    "images": "चित्र",
+    "rotation": "घुमाव",
+    "archives": "संग्रह",
+    "sort": "क्रमबद्ध",
+    "system": "सिस्टम",
+    "decrease_font": "फ़ॉन्ट घटाएं",
+    "increase_font": "फ़ॉन्ट बढ़ाएं",
+    "language": "भाषाएँ",
+    "language_real": "वास्तविक भाषाएँ",
+    "language_fictional": "काल्पनिक भाषाएँ",
+    "about": "के बारे में",
+    "export_piqad_font": "pIqaD फ़ॉन्ट सहेजें",
+    "export_tengwar_fonts": "tengwar फ़ॉन्ट सहेजें"
+  }
+}

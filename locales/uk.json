@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Швейцарський ніж для колекціонерів цифрових коміксів",
+  "buttons": {
+    "open_file": "Відкрити CBZ/CBR/CB7/PDF",
+    "close_file": "Закрити файл",
+    "create_cbz": "Створити архів CBZ",
+    "flatten_dirs": "Перемістити всі файли\nв корінь та видалити\nпідкаталоги",
+    "renumber": "Перенумерувати\nсторінки",
+    "undo": "⤺ Скасувати",
+    "redo": "Повторити ⤻",
+    "copy": "Копіювати",
+    "cut": "Вирізати",
+    "paste": "Вставити",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Конвертувати в інший\nформат зображення",
+    "join_pages": "Об'єднати сторінки",
+    "split_page": "Розділити сторінку",
+    "save_as": "Зберегти як\n(створити новий CBZ)",
+    "save_selection": "Зберегти виділене\nв CBZ",
+    "print_selection": "Надрукувати виділене",
+    "print_all": "Надрукувати весь комікс",
+    "sort": "Сортувати",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Конвертувати",
+    "cancel": "Скасувати",
+    "split_button": "Розділити",
+    "join_button": "Почати",
+    "validate_crop": "Підтвердити обрізку",
+    "ok": "OK",
+    "close": "Закрити",
+    "apply_and_save": "Застосувати зміни та зберегти файл",
+    "apply_and_create": "Застосувати зміни та створити файл CBZ",
+    "close_and_lose": "Закрити файл і втратити зміни",
+    "cancel_return": "Скасувати і повернутися до мозаїки",
+    "update_page_count": "Оновити кількість\nсторінок у метаданих",
+    "invert_selection": "Інвертувати виділення",
+    "reduce_size": "Змінити розмір сторінок",
+    "mirror_vertical": "⇅",
+    "create_gif": "Створити GIF",
+    "edit_gif": "Редагувати анімований GIF",
+    "save_to_folder": "Експортувати вибрані\nсторінки",
+    "continue": "Продовжити",
+    "reset": "↻",
+    "yes": "Так",
+    "no": "Ні",
+    "renumber_recommended": "Перенумерувати (рекомендовано)",
+    "ignore_and_save": "Ігнорувати та зберегти",
+    "rename_to_cbz": "Перейменувати на .cbz",
+    "open_without_rename": "Відкрити без перейменування",
+    "rename_to_cbr": "Перейменувати на .cbr",
+    "adjustments": "Яскравість,\nконтраст тощо",
+    "batch_cbr_to_cbz": "Пакетне конвертування\n файлів CBR у CBZ",
+    "batch_pdf_to_cbz": "Пакетне конвертування\n файлів PDF у CBZ",
+    "batch_img_to_cbz": "Пакетне перетворення\n окремих зображень на CBZ",
+    "icon_toolbar_reset": "Скинути",
+    "delete_selected": "Видалити",
+    "save": "Зберегти",
+    "rename_to_cb7": "Перейменувати на .cb7",
+    "split_ui": "Розділити інтерфейс на дві панелі",
+    "unsplit_ui": "Закрити другу панель"
+  },
+  "tabs": {
+    "mosaic": "Мозаїка",
+    "metadata": "Метадані"
+  },
+  "viewer": {
+    "title": "Переглядач",
+    "mode_single": "Одна сторінка  [D]",
+    "mode_double": "Подвійна сторінка  [D]",
+    "mode_continuous": "Безперервний режим  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Попередня сторінка (←)",
+      "next_page": "Наступна сторінка (→)",
+      "zoom_in": "Збільшити + (Ctrl+Plus)",
+      "zoom_out": "Зменшити - (Ctrl+Minus)",
+      "zoom_reset": "Скинути масштаб (Ctrl+0)",
+      "reading_mode_double": "Змінити режим читання (D) → Подвійні сторінки",
+      "reading_mode_continuous": "Змінити режим читання (D) → Подвійні сторінки безперервно",
+      "reading_mode_single": "Змінити режим читання (D) → Одна сторінка",
+      "fullscreen_exit": "Вийти з повноекранного режиму (F11)",
+      "fullscreen": "Повноекранний режим (F11)",
+      "close_viewer": "Закрити переглядач (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Пошкоджене зображення - Замінити",
+      "corrupted_delete": "⚠️ Видалити це зображення",
+      "copy": "Копіювати (Ctrl+C)",
+      "cut": "Вирізати (Ctrl+X)",
+      "paste": "Вставити (Ctrl+V)",
+      "paste_clipboard": "Вставити з буфера обміну (Ctrl+V)",
+      "delete": "Видалити (Delete)",
+      "deselect": "Скасувати виділення (ESC)",
+      "rotate_right": "↻ Повернути праворуч",
+      "rotate_left": "↺ Повернути ліворуч",
+      "mirror": "⇄ Дзеркало горизонтальне",
+      "crop": "Обрізати",
+      "convert": "Конвертувати в інший формат...",
+      "join": "Об'єднати виділені сторінки",
+      "split": "Розділити виділену сторінку",
+      "save_selection": "Зберегти виділене в CBZ",
+      "print_selection": "Надрукувати виділене",
+      "copy_archive": "Копіювати весь архів",
+      "undo": "Скасувати (Ctrl+Z)",
+      "redo": "Повторити (Ctrl+Y)",
+      "renumber_auto": "Перенумерувати сторінки (автовизначення багатосторінкових сторінок)",
+      "renumber_simple": "Перенумерувати сторінки (проста нумерація)",
+      "sort_submenu": "Сортувати сторінки",
+      "sort_name": "За назвою",
+      "sort_type": "За типом",
+      "sort_size": "За розміром",
+      "sort_width": "За шириною",
+      "sort_height": "За висотою",
+      "sort_resolution": "За роздільністю",
+      "sort_dpi": "За DPI",
+      "create_cbz": "Створити архів CBZ",
+      "save_as": "Зберегти як...",
+      "close_file": "Закрити файл",
+      "help": "Інструкція",
+      "update_page_count": "Оновити кількість сторінок у метаданих",
+      "invert_selection": "Інвертувати виділення (Ctrl+I)",
+      "reduce_size": "Змінити розмір сторінок",
+      "mirror_vertical": "⇅ Вертикальне дзеркало",
+      "edit_animated_gif": "Редагувати анімований GIF...",
+      "save_to_folder": "Експортувати вибрані сторінки",
+      "adjustments": "Яскравість, контраст, кольори...",
+      "refresh_mosaic": "Оновити мозаїку (F5)",
+      "create_ico": "Створити файл .ico"
+    },
+    "canvas_no_file": {
+      "open": "Відкрити CBZ/CBR/CB7/PDF",
+      "recent_files": "Останні файли",
+      "clear_history": "Очистити історію"
+    },
+    "canvas_with_file": {
+      "close": "Закрити файл",
+      "paste": "Вставити (Ctrl+V)",
+      "paste_clipboard": "Вставити з буфера обміну (Ctrl+V)",
+      "select_all": "Виділити все (Ctrl+A)",
+      "deselect": "Скасувати виділення (ESC)",
+      "copy_archive": "Копіювати весь архів",
+      "print_all": "Надрукувати весь комікс",
+      "renumber_auto": "Перенумерувати сторінки (автовизначення багатосторінкових сторінок)",
+      "renumber_simple": "Перенумерувати сторінки (проста нумерація)",
+      "flatten": "Вирівняти папки",
+      "save_selection": "Зберегти виділене в CBZ",
+      "hide_sidebar": "« Сховати панель кнопок",
+      "show_sidebar": "» Показати панель кнопок",
+      "decrease_thumbs": "Зменшити розмір мініатюр",
+      "increase_thumbs": "Збільшити розмір мініатюр",
+      "theme_dark": "Перейти на темну тему",
+      "theme_light": "Перейти на світлу тему",
+      "sort_submenu": "Сортувати сторінки",
+      "undo": "Скасувати (Ctrl+Z)",
+      "redo": "Повторити (Ctrl+Y)",
+      "create_cbz": "Створити архів CBZ",
+      "save_as": "Зберегти як...",
+      "help": "Інструкція",
+      "update_page_count": "Оновити кількість сторінок у метаданих",
+      "invert_selection": "Інвертувати виділення (Ctrl+I)",
+      "fullscreen": "Повноекранний режим (F11)",
+      "fullscreen_exit": "Вийти з повноекранного режиму (F11 або ESC)",
+      "quit": "Закрити програму"
+    },
+    "canvas": {
+      "quit": "Закрити програму",
+      "reset": "Скинути програму:\n• розмір і положення вікна\n• темний режим → світлий\n• розмір мініатюр → нормальний\n• бічна панель → видима / 220 px\n• мова → автоматичне визначення\n• розмір шрифту → за замовчуванням",
+      "reset_label": "Скинути програму"
+    },
+    "font_size": {
+      "decrease": "Зменшити розмір шрифту",
+      "increase": "Збільшити розмір шрифту"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Сортувати за назвою",
+    "sort_type": "Сортувати за типом",
+    "sort_size": "Сортувати за розміром",
+    "sort_width": "Сортувати за шириною",
+    "sort_height": "Сортувати за висотою",
+    "sort_resolution": "Сортувати за роздільністю",
+    "sort_dpi": "Сортувати за DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Порожній архів",
+        "message": "Архів CBZ не містить жодного файлу."
+      },
+      "empty_cbr": {
+        "title": "Порожній архів",
+        "message": "Архів CBR не містить жодного файлу."
+      },
+      "files_ignored": {
+        "title": "Файли проігноровано"
+      },
+      "no_selection_crop": {
+        "title": "Нічого не виділено",
+        "message": "Будь ласка, виділіть зображення для обрізки."
+      },
+      "multi_selection_crop": {
+        "title": "Виділено кілька файлів",
+        "message": "Ви можете обрізати лише одне зображення за раз.\nБудь ласка, виділіть лише одне зображення."
+      },
+      "invalid_selection_crop": {
+        "title": "Неправильне виділення",
+        "message": "Обрізати можна лише зображення."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Функція недоступна",
+        "message": "Переміщення сторінок недоступне в підкаталогах.\nБудь ласка, вирівняйте папки або поверніться в корінь."
+      },
+      "no_selection_convert": {
+        "title": "Нічого не виділено",
+        "message": "Будь ласка, виділіть хоча б одне зображення для конвертації."
+      },
+      "invalid_selection_convert": {
+        "title": "Неправильне виділення",
+        "message": "Конвертувати можна лише зображення."
+      },
+      "no_selection_split": {
+        "title": "Нічого не виділено",
+        "message": "Будь ласка, виділіть зображення для розділення."
+      },
+      "multi_selection_split": {
+        "title": "Виділено кілька файлів",
+        "message": "Ви можете розділити лише одне зображення за раз.\nБудь ласка, виділіть лише одне зображення."
+      },
+      "invalid_selection_split": {
+        "title": "Неправильне виділення",
+        "message": "Розділити можна лише зображення."
+      },
+      "invalid_number_split": {
+        "title": "Неправильне число",
+        "message": "Кількість сторінок має бути від 2 до 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Недостатньо виділено",
+        "message": "Будь ласка, виділіть принаймні 2 зображення для об'єднання."
+      },
+      "invalid_selection_join": {
+        "title": "Неправильне виділення",
+        "message": "Об'єднувати можна лише зображення."
+      },
+      "pil_not_available": {
+        "title": "PIL недоступний",
+        "message": "Модуль PIL недоступний для вставки з системного буфера обміну."
+      },
+      "format_not_supported": {
+        "title": "Формат не підтримується",
+        "message": "Формат зображення не підтримується або файл пошкоджений.\nПідтримувані формати: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Нічого не виділено",
+        "message": "Спочатку намалюйте прямокутник для обрізки."
+      },
+      "cannot_open_file": {
+        "title": "Неможливо відкрити файл",
+        "message": "Не вдалося завантажити файл."
+      },
+      "corrupted_images": {
+        "title": "Пошкоджені зображення",
+        "summary": "Виявлено {count} пошкоджене(их) зображення(нь) з {total}.",
+        "hint": "Вони відображаються зі спеціальною піктограмою.\nНатисніть правою кнопкою миші на пошкоджене зображення, щоб замінити або видалити його.",
+        "more": "... і {count} інших"
+      },
+      "no_image_print": {
+        "title": "Немає зображень",
+        "message": "Немає зображень для друку."
+      },
+      "no_valid_image_print": {
+        "title": "Немає зображень",
+        "message": "Немає придатних зображень для друку."
+      },
+      "no_selection_print": {
+        "title": "Нічого не виділено",
+        "message": "Будь ласка, виділіть хоча б одне зображення."
+      },
+      "no_valid_selection_print": {
+        "title": "Немає зображень",
+        "message": "Немає придатних зображень у виділенні."
+      },
+      "save_cancelled": {
+        "title": "Збереження скасовано",
+        "message": "Будь ласка, виправте імена файлів вручну перед збереженням."
+      },
+      "empty_pdf": {
+        "title": "Порожній PDF",
+        "message": "Файл PDF не містить жодної сторінки."
+      },
+      "no_selection_save": {
+        "title": "Увага",
+        "message": "Будь ласка, виділіть хоча б одну сторінку для збереження."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Переміщення вимкнено",
+        "message": "Переміщення сторінок перетягуванням доступне лише в кореневій папці коміксу.\n\nЩоб перемістити сторінки:\n1. Поверніться в корінь, клацнувши на іконку підйому вгору\n2. Або вирівняйте комікс, щоб видалити підкаталоги"
+      },
+      "no_selection_reduce": {
+        "title": "Немає вибору",
+        "message": "Будь ласка, виберіть принаймні одну сторінку для зменшення."
+      },
+      "invalid_selection_reduce": {
+        "title": "Недійсний вибір",
+        "message": "Можна зменшувати лише зображення."
+      },
+      "invalid_dimensions": {
+        "title": "Недійсні розміри",
+        "message": "Будь ласка, введіть дійсні розміри (додатні цілі числа)."
+      },
+      "no_images_for_gif": {
+        "title": "Немає зображень",
+        "message": "Для створення анімованого GIF потрібне принаймні одне зображення."
+      },
+      "no_valid_images": {
+        "title": "Немає дійсних зображень",
+        "message": "Не знайдено дійсних зображень для створення GIF."
+      },
+      "animated_gif_in_comic": {
+        "title": "Виявлено анімований GIF",
+        "message": "Увага: Цей комікс містить один або більше анімованих GIF.\n\nЧитачі коміксів (CDisplayEx, YACReader тощо) відображатимуть лише перший кадр кожного GIF як статичну сторінку.\n\nЩоб правильно переглянути анімований GIF, ви повинні зберегти його окремо поза коміксом, використовуючи кнопку \"Зберегти в папку\" або \"Редагувати анімований GIF\".\n\nВи хочете продовжити збереження коміксу в будь-якому випадку?"
+      },
+      "no_selection_adjust": {
+        "title": "Nemaie vyboru",
+        "message": "Viberit shchonaymenshe odne zobrazhennya dlya zastosuvannya nalashtuvan."
+      },
+      "invalid_selection_adjust": {
+        "title": "Nevyrnyi vybir",
+        "message": "Nalashtuvannya mozhut buty zastosovani lishe do zobrazhen."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Функція недоступна",
+        "message": "Перенумерація недоступна, доки папки не розгорнуто.\nРозгорніть папки перед перенумерацією."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "Помилка ZIP",
+        "message": "Файл '{file}' не є дійсним архівом ZIP або пошкоджений."
+      },
+      "zip_cannot_open": {
+        "title": "Помилка ZIP",
+        "message": "Неможливо відкрити файл CBZ: {error}"
+      },
+      "rar_invalid": {
+        "title": "Помилка RAR",
+        "message": "Файл '{file}' не є дійсним архівом RAR або пошкоджений."
+      },
+      "rar_cannot_open": {
+        "title": "Помилка RAR",
+        "message": "Неможливо відкрити архів CBR: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Помилка",
+        "message": "Неочікувана помилка при відкритті CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Помилка",
+        "message": "Неможливо об'єднати зображення."
+      },
+      "paste_failed": {
+        "title": "Помилка",
+        "message": "Помилка при вставці: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Помилка",
+        "message": "Неможливо скопіювати архів: {error}"
+      },
+      "crop_invalid": {
+        "title": "Помилка",
+        "message": "Область обрізки неправильна."
+      },
+      "crop_failed": {
+        "title": "Помилка",
+        "message": "Неможливо обрізати зображення: {error}"
+      },
+      "load_image_failed": {
+        "title": "Помилка",
+        "message": "Неможливо завантажити зображення:\n{error}"
+      },
+      "print_error": {
+        "title": "Помилка друку",
+        "message": "Помилка при друці:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Друк недоступний",
+        "message": "Модуль win32print не встановлено.\nВстановіть його командою: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Файл не знайдено",
+        "message": "Файл більше не існує:\n{path}"
+      },
+      "import_failed": {
+        "title": "Помилка імпорту",
+        "message": "Неможливо імпортувати файл: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF не встановлено",
+        "message": "Бібліотека PyMuPDF (fitz) не встановлена.\nВстановіть її командою: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Помилка",
+        "message": "Помилка при імпорті PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "Помилка PDF",
+        "message": "Неможливо завантажити PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Дублікати імен файлів",
+        "intro": "{count} дублікат(и) назви файлу виявлено:\n\n",
+        "item": "  • {name} ({times} разів)\n",
+        "more": "  ... і ще {more}\n",
+        "footer": "\nZIP-архіви не приймають дублікати назв.\nБудь ласка, перейменуйте ці файли перед збереженням."
+      },
+      "save_failed": {
+        "title": "Помилка",
+        "message": "Неможливо зберегти файл: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Помилка",
+        "message": "Неможливо створити архів: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Помилка",
+        "message": "Неможливо зберегти виділене: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "Помилка створення GIF",
+        "message": "Неможливо створити анімований GIF:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Помилка збереження",
+        "message": "Помилка при збереженні файлів:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Помилка перейменування",
+        "message": "Неможливо перейменувати файл: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF захищений паролем",
+        "message": "Цей файл PDF зашифровано та захищено паролем.\nЙого неможливо відкрити без пароля."
+      },
+      "pdf_unlock_failed": {
+        "title": "Помилка",
+        "message": "Не вдалося зберегти розблокований файл PDF:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: зашифрований PDF (потрібен пароль), пропущено",
+      "file_too_large": {
+        "title": "Файл занадто великий",
+        "message": "Файл {filename} має розмір {size} і перевищує максимально допустимий розмір (500 МБ) для зображення."
+      },
+      "license_file_not_found": {
+        "message": "Файл ліцензії не знайдено: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Не вдалося прочитати файл ліцензії: {error}"
+      },
+      "7z_invalid": {
+        "title": "Помилка 7Z",
+        "message": "Файл '{file}' не є дійсним архівом 7Z або пошкоджений."
+      },
+      "delete_error": "Помилка під час видалення: {error}",
+      "export_error": "Помилка під час експорту: {error}",
+      "font_source_not_found": "Вихідний файл шрифту не знайдено: {path}",
+      "no_tengwar_font": "Шрифт Tengwar не знайдено.",
+      "no_icons_found": "Іконки не знайдено.",
+      "unsupported_files": {
+        "title": "Непідтримувані файли",
+        "message": "Наступні файли не підтримуються і були проігноровані:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF успішно створено",
+        "message": "Анімований GIF '{name}' створено та додано до мозаїки."
+      },
+      "pywin32_required": {
+        "title": "Функція недоступна",
+        "message": "Модуль pywin32 необхідний для вставки з системного буфера обміну.\nВстановіть його командою: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Зображення імпортовано",
+        "message": "Імпортовано зображень: {count}"
+      },
+      "archive_copied": {
+        "title": "Архів скопійовано",
+        "message": "Архів скопійовано до буфера обміну."
+      },
+      "function_not_available": {
+        "title": "Функція недоступна",
+        "message": "Ця функція наразі недоступна."
+      },
+      "duplicate_detected": {
+        "title": "Виявлено дублікат",
+        "message": "Файл з такою назвою вже існував.\n\nФайл перейменовано в:\n{name}"
+      },
+      "replace_success": {
+        "title": "Успіх",
+        "message": "Зображення '{name}' успішно замінено."
+      },
+      "history_cleared": {
+        "title": "Історію очищено",
+        "message": "Список останніх файлів очищено."
+      },
+      "files_copied_clipboard": {
+        "title": "Файли скопійовано в буфер обміну",
+        "message": "Перетягування з програми недоступне з технічних причин.\n\n✓ {count} {word} скопійовано в буфер обміну\n\nТепер ви можете вставити куди завгодно:\n  • Правою кнопкою → Вставити\n  • Або Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Виправлення виконано",
+        "message": "Виправлено імен файлів: {count}."
+      },
+      "import_success": {
+        "title": "Імпорт успішний",
+        "message": "Імпортовано сторінок {count} з {file}"
+      },
+      "pdf_import_success": {
+        "title": "Імпорт успішний",
+        "message": "Імпортовано сторінок PDF {count} з {file}\nЯкість: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Успіх",
+        "message": "PDF успішно конвертовано!\nЗавантажено {count} сторінок з якістю {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Успіх",
+        "message": "Файл CBZ успішно збережено:"
+      },
+      "cbz_converted": {
+        "title": "Успіх",
+        "message": "Файл успішно конвертовано в CBZ:",
+        "question": "Ви хочете видалити оригінальний файл CBR?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Успіх",
+        "message": "Файл успішно конвертовано в CBZ:",
+        "question": "Ви хочете видалити оригінальний файл PDF?"
+      },
+      "cbz_save_as": {
+        "title": "Успіх",
+        "message": "Новий файл CBZ збережено: {path}"
+      },
+      "cbz_created": {
+        "title": "Успіх",
+        "message": "Архів CBZ успішно створено:"
+      },
+      "selection_saved": {
+        "title": "Успіх",
+        "message": "Вибір успішно збережено:"
+      },
+      "flatten_done": {
+        "title": "Вирівнювання завершено",
+        "message": "Переміщено файлів {files} з {dirs} підпапок."
+      },
+      "language_changed": {
+        "title": "Мову змінено",
+        "message": "Мову інтерфейсу успішно змінено."
+      },
+      "new_cbz_saved": {
+        "title": "Файл Збережено",
+        "message": "Новий файл CBZ успішно збережено:",
+        "question": "Бажаєте видалити оригінальний файл?"
+      },
+      "page_count_updated": {
+        "title": "Кількість сторінок оновлено",
+        "message": "Кількість сторінок у метаданих оновлено до {count} сторінок."
+      },
+      "files_saved": {
+        "title": "Успішно збережено",
+        "message": "{count} файлів збережено в:\n{folder}",
+        "open_folder": "Бажаєте відкрити папку?"
+      },
+      "adjustments_applied": {
+        "title": "Nalashtuvannya zastosovano",
+        "message": "Nalashtuvannya buly uspishno zastosovani."
+      },
+      "pdf_unlocked": {
+        "title": "PDF розблоковано",
+        "message": "Розблокований файл PDF збережено:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Великий архів",
+        "message": "Розпакований розмір цього архіву становить {size} МБ.\nЗавантаження може споживати багато пам'яті (RAM).\n\nПродовжити?"
+      },
+      "confirm_delete": {
+        "title": "Підтвердження",
+        "message": "Ви дійсно бажаєте видалити {count} файл(ів) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Видалити вихідні файли?",
+        "message": "Ви хочете видалити зображення, які було об'єднано?\n\nТак = Видалити вихідні файли\nНі = Зберегти вихідні файли\nСкасувати = Скасувати операцію"
+      },
+      "invalid_filenames": {
+        "title": "Неправильні імена файлів",
+        "intro": "{count} файл(ів) містять заборонені символи:",
+        "item": "  • {name}",
+        "more": "  ... та ще {more}",
+        "forbidden_chars": "Заборонені символи: {chars}",
+        "fix_question": "Бажаєте автоматично виправити ці назви?\n(Заборонені символи будуть замінені на '_')"
+      },
+      "close_without_save": {
+        "title": "Зберегти перед закриттям?",
+        "message": "Зображення було додано. Ви хочете створити архів CBZ перед закриттям?"
+      },
+      "flatten_folders": {
+        "title": "Вирівняти папки",
+        "subdirs_detected": "Виявлено підпапки:",
+        "files_to_move": "Файлів буде переміщено в корінь: {count}.",
+        "folders_to_delete": "Підпапок буде видалено: {count}.",
+        "continue_question": "Продовжити?"
+      },
+      "update_page_count": {
+        "title": "Оновити кількість сторінок",
+        "message": "Кількість сторінок у коміксі змінилася.\n\nКількість сторінок, вказана в метаданих: {original}\nПоточна кількість сторінок: {current}\n\nБажаєте оновити кількість сторінок у метаданих?"
+      },
+      "conversion_complete": {
+        "title": "Конвертацію завершено",
+        "message": "Конвертацію завершено!\n\n{count} зображення конвертовано у формат {format} і додано після вашого вибору.\n\nВидалити оригінальні зображення?",
+        "delete_originals": "Видалити оригінали\n{count} файл(ів) - {size}",
+        "keep_all": "Зберегти все\n{count} файл(ів) - {size}",
+        "cancel_conversion": "Скасувати перетворення\n{count} файл(ів) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Виявлено неправильне розширення: цей '{filename}' файл є CBZ, а не CBR. Перейменувати?",
+      "title": "Неправильне розширення"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Виявлено неправильне розширення: цей '{filename}' файл є CBR, а не CBZ. Перейменувати?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Виявлено неправильне розширення: файл '{filename}' є CB7, а не CBZ/CBR. Перейменувати?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Розмір мініатюр",
+    "loading": "Будь ласка, зачекайте, завантаження...\n{percent}%",
+    "resizing": "Будь ласка, зачекайте, зміна розміру...\n{percent}%",
+    "converting": "Будь ласка, зачекайте, конвертація...\n{percent}%",
+    "loading_lazy": "Будь ласка, зачекайте, завантаження...\n{percent}%\n\nЧерез великий розмір цього файлу ({size} МБ) сторінки завантажуватимуться поступово. Сторінки, видимі на екрані, завантажуються негайно, інші завантажуватимуться автоматично під час прокручування.",
+    "apply_save_cbz": "Застосувати зміни\nта зберегти файл CBZ",
+    "apply_create_cbz": "Застосувати зміни\nта створити файл CBZ",
+    "import_progress": "Імпортування...\n{percent}%",
+    "pdf_import_progress": "Імпорт PDF...\n{percent}%",
+    "pdf_opening": "Відкриття файлу PDF...",
+    "pdf_page": "Сторінка {current} / {total}",
+    "warning_close": "Увага! Зміни не збережено і будуть втрачені!",
+    "language_label": "Мова:",
+    "directory_tooltip": "Папка: {name}\nФайлів: {count}\nЗагальний розмір: {size} МБ",
+    "folder_up_tooltip": "Подвійний клік для переходу\nна рівень вище в ієрархії",
+    "status_bar": "{dirs} тека(и)  |  {files} файл(ів) ({total_size})  |  {selected} вибрано ({selected_size})",
+    "pdf_converting": "Конвертація {total} сторінок у зображення з {dpi} DPI...",
+    "pdf_converting_no_change": "Витягування {total} сторінок без змін...",
+    "print_progress": "Підготовка до друку...\n{percent}%",
+    "print_preparing": "Будь ласка, зачекайте, підготовка до друку...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nРезюме GNU General Public License v3\n\nНАДАНІ СВОБОДИ\nВи можете використовувати, копіювати, змінювати та поширювати\nMosaicView, навіть у комерційних цілях.\n\nЗОБОВ'ЯЗАННЯ\nБудь-яке поширення (оригінальне або змінене) повинно :\n– зберігати ліцензію GPL v3\n– включати вихідний код або вказувати, де його отримати\n– не накладати додаткових обмежень\n\nГАРАНТІЇ\nЦе програмне забезпечення поширюється БЕЗ БУДЬ-ЯКИХ ГАРАНТІЙ.\nЙого автор не несе відповідальності за збитки від його використання.\n\nВи мали отримати копію GNU General Public License разом із цією програмою. Якщо ні, дивіться <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Переглянути повну ліцензію",
+    "license_unrar_text": "Файли CBZ базуються на форматі ZIP, який є вільним і відкритим форматом. Файли CBR, навпаки, базуються на форматі RAR, який є пропрієтарним.\n\nMosaicView може відкривати файли CBR завдяки UnRAR, утиліті, розробленій RARlab і вільно розповсюджуваній.\n\nОфіційний сайт: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Переглянути ліцензію UnRAR",
+    "saving_cbz": "Збереження... {percent}%",
+    "empty_canvas_line1": "Перетягніть сюди один або кілька файлів CBZ/CBR/CB7/PDF або ваші зображення",
+    "empty_canvas_line2": "Після відкриття файлу ви можете продовжувати перетягувати інші",
+    "empty_canvas_line3": "Скиньте одну або кілька папок, щоб розпочати пакетну обробку",
+    "icon_toolbar_config_title": "Налаштування панелі значків",
+    "icon_toolbar_active": "Значки на панелі",
+    "icon_toolbar_hidden": "Іконки в резерві",
+    "license_gpl_full": "Ліцензія GNU GPL v3",
+    "license_unrar_full": "Ліцензія UnRAR",
+    "licenses_button": "Ліцензії",
+    "view_full_gpl_license": "Переглянути повну ліцензію GNU GPL v3",
+    "license_7zip_text": "Файли CB7 засновані на форматі 7z, розробленому Ігорем Павловим і поширюваному за ліцензією GNU LGPL.\n\nMosaicView може відкривати файли CB7 завдяки 7-Zip — безкоштовній програмі з відкритим вихідним кодом.\n\nОфіційний сайт : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Переглянути ліцензію 7-Zip",
+    "license_7zip_full": "Ліцензія 7-Zip",
+    "icon_toolbar_show_thumb_slider": "Показати повзунок розміру мініатюр",
+    "icon_toolbar_show_lang_combo": "Показати вибір мови",
+    "adjusting": "Будь ласка, зачекайте, виконуються корекції...\n{current} / {total}",
+    "license_piqad_full": "Ліцензія шрифту pIqaD qolqoS",
+    "license_tengwar_full": "Ліцензія шрифту Alcarin Tengwar",
+    "view_full_piqad_license": "Переглянути повну ліцензію pIqaD qolqoS"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Конвертація зображень",
+      "title": "Конвертація {count} {word}",
+      "word_image": "зображення",
+      "word_images": "зображень",
+      "info": "Виберіть формат призначення:",
+      "format_png": "PNG (без втрат)",
+      "format_jpg": "JPEG (зі стисненням)",
+      "format_webp": "WEBP (сучасний)",
+      "format_bmp": "BMP (растровий)",
+      "format_tiff": "TIFF (висока якість)",
+      "format_gif": "GIF (анімація)",
+      "quality_label": "Якість для JPG/WEBP:",
+      "quality_maximum": "Максимальна — якість 95/100",
+      "quality_high": "Висока — якість 85/100",
+      "quality_medium": "Середня — якість 75/100",
+      "quality_low": "Низька — якість 60/100",
+      "quality_custom_option": "Користувацька",
+      "quality_custom": "Якість власна : {value}/100",
+      "quality_note": "(Цей параметр впливає лише на формати JPG та WEBP)",
+      "quality_window_title": "Вибір якості",
+      "format_gif_static": "Статичний GIF",
+      "format_gif_animated": "Анімований GIF (виберіть кілька зображень)"
+    },
+    "split": {
+      "window_title": "Розділити сторінку",
+      "title": "Розділити сторінку",
+      "pages_label": "Кількість сторінок:",
+      "direction_label": "Напрямок розділення:",
+      "horizontal": "Горизонтальний (ліворуч → праворуч)",
+      "vertical": "Вертикальний (зверху → вниз)",
+      "warning": "⚠ Оскільки розділення розраховується автоматично,\nможе знадобитися ручне коригування.",
+      "button_split": "Розділити",
+      "button_cancel": "Скасувати"
+    },
+    "join": {
+      "window_title": "Об'єднати сторінки - Змініть порядок",
+      "instructions": "Організуйте зображення:\n• Вертикально (зверху/знизу) для вертикального склеювання\n• Горизонтально (ліворуч/праворуч) для горизонтального склеювання",
+      "merged_filename_prefix": "Склеювання",
+      "heights_label": "Висоти",
+      "widths_label": "Ширини",
+      "size_adjustment_title": "Налаштування розміру",
+      "size_adjustment_warning": "⚠️ Вибрані зображення мають різні розміри.\nВиберіть, як налаштувати їх розміри для об'єднання.\nСпіввідношення сторін кожного зображення завжди буде збережено.",
+      "keep_original": "Зберегти оригінальні розміри",
+      "keep_original_desc": "(додає чорні смуги для заповнення)",
+      "enlarge_small": "Збільшити малі зображення",
+      "enlarge_small_desc": "(вирівняти до максимального розміру)",
+      "reduce_large": "Зменшити великі зображення",
+      "reduce_large_desc": "(вирівняти до мінімального розміру)",
+      "back_to_arrangement": "Назад"
+    },
+    "pdf": {
+      "quality_merge": "Виберіть якість об'єднання:",
+      "quality_export": "Виберіть якість експорту:",
+      "merge_quality_title": "Якість об'єднання PDF",
+      "export_quality_title": "Якість експорту PDF",
+      "loading_title": "Завантаження PDF...",
+      "dpi_90": "90 DPI - Веб-публікація",
+      "dpi_150": "150 DPI - Хороша якість (рекомендовано для відображення)",
+      "dpi_200": "200 DPI - Дуже хороша якість",
+      "dpi_300": "300 DPI - Відмінна якість (стандарт коміксів)",
+      "dpi_600": "600 DPI - Максимальна якість (великі файли)",
+      "dpi_original": "Без зміни зображень",
+      "dpi_original_tooltip": "Інтелектуальний аналіз кожної сторінки PDF:\n• Сторінки лише зі зображеннями: зберігає оригінальний DPI\n• Сторінки лише з текстом: 300 DPI\n• Змішані сторінки (текст + зображення): DPI зображень якщо >= 300, інакше 300 DPI\nМаксимум: 2400 DPI для обмеження розміру файлу"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "Потрібен PyMuPDF",
+      "pymupdf_required_message": "PyMuPDF (fitz) не встановлено. Неможливо конвертувати файли PDF.",
+      "select_directory_title": "Виберіть каталог, що містить файли PDF",
+      "no_pdf_title": "Файли PDF не знайдено",
+      "no_pdf_message": "У каталозі не знайдено файлів PDF:\n{directory}",
+      "confirm_title": "Пакетне конвертування PDF у CBZ",
+      "confirm_message": "{count} файлів PDF для конвертування в {directory} (підкаталоги включено).",
+      "checkbox_permanent_delete": "Видалити оригінальні файли PDF без переміщення\nдо кошика (БЕЗ МОЖЛИВОСТІ СКАСУВАННЯ)",
+      "start_button": "Почати",
+      "converting_title": "Конвертування в процесі...",
+      "converting_progress": "Конвертування файлу {current} із загальних {total}",
+      "page_progress": "Сторінка {current} / {total}",
+      "complete_title": "Конвертування завершено",
+      "complete_message": "{count} файлів PDF конвертовано в каталозі:",
+      "complete_message_errors": "{count} із {total} файлів PDF конвертовано в каталозі:",
+      "errors_count": "{count} помилка(ок) виявлено."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Виберіть каталог з файлами CBR",
+      "no_cbr_title": "Файлів CBR не знайдено",
+      "no_cbr_message": "У каталозі не знайдено файлів CBR:\\n{directory}",
+      "confirm_title": "Пакетне конвертування CBR у CBZ",
+      "confirm_message": "{count} файлів CBR для конвертації в {directory} (підкаталоги включено).",
+      "checkbox_permanent_delete": "Видалити оригінальні файли CBR без\nкошика (БЕЗ МОЖЛИВОСТІ ПОВЕРНЕННЯ)",
+      "start_button": "Почати",
+      "converting_title": "Конвертація...",
+      "converting_progress": "Конвертація файлу {current} з {total}",
+      "page_progress": "Сторінка {current} / {total}",
+      "complete_title": "Конвертацію завершено",
+      "complete_message": "{count} файлів CBR конвертовано в каталозі:",
+      "complete_message_errors": "{count} файлів CBR конвертовано з {total} в каталозі:",
+      "errors_count": "{count} помилка(ок) виявлено.",
+      "renamed_count": "{count} файл(ів) перейменовано в CBZ",
+      "rarfile_unavailable": "Модуль rarfile недоступний. Неможливо конвертувати файли CBR."
+    },
+    "close_warning": {
+      "title": "Увага!",
+      "message": "Зміни не збережено і будуть втрачені!",
+      "btn_close_lose": "Закрити файл і втратити зміни",
+      "btn_save_cbz": "Застосувати зміни та зберегти файл",
+      "btn_create_cbz": "Застосувати зміни та створити файл CBZ",
+      "btn_cancel": "Скасувати і повернутися до мозаїки"
+    },
+    "replace_image": {
+      "title": "Замінити пошкоджене зображення"
+    },
+    "reduce_size": {
+      "window_title": "Зміна розміру зображення",
+      "title": "Зміна розміру {count} {word}",
+      "word_image": "зображення",
+      "word_images": "зображення",
+      "current_size": "Поточний розмір: {size} МБ",
+      "current_dimensions": "Поточні розміри: {width} × {height} px",
+      "choose_method": "Виберіть метод зміни розміру:",
+      "custom_dimensions": "Настроювані розміри",
+      "width_label": "Ширина:",
+      "height_label": "Висота:",
+      "use_custom_dimensions": "Використати ці розміри",
+      "different_dimensions_warning": "Вибрані сторінки мають різні розміри. Власні розміри примусять усі сторінки до однакового розміру. Переконайтеся, що ви розумієте наслідки, перш ніж продовжити.",
+      "estimated_size": "Очікуваний розмір: {size} МБ",
+      "percentage_reduction": "Відсоткове зменшення",
+      "percentage_enlargement": "Відсоткове збільшення",
+      "reduce_0": "0% (без змін)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (без змін)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Найпоширеніші ширини сторінок: 1024, 1280, 1600, 1920 і 2000 пікселів, але інші значення також підходять.",
+      "multi_page_width": "Автоматично виявляти та змінювати розмір кількох сторінок (ширина/висота)",
+      "multi_page_width_tooltip": "Вмикає автоматичне виявлення кількох сторінок: подвійна сторінка, потрійна сторінка тощо. Коефіцієнт множення обчислюється автоматично на основі співвідношення кожної сторінки, незалежно від того, чи це ширина (сторінки поруч) чи висота (сторінки одна на одній)"
+    },
+    "gif_animated": {
+      "window_title": "Створення анімованого GIF",
+      "images_title": "Зображення анімації",
+      "params_title": "Параметри GIF",
+      "frame_delay_label": "Затримка між зображеннями:",
+      "fps_normal": "{fps} кадрів/секунду",
+      "fps_slow": "1 кадр кожні {seconds} секунд",
+      "loop_label": "Кількість повторень:",
+      "loop_info": "(0 = нескінченний цикл)",
+      "disposal_label": "Розташування зображень:",
+      "disposal_0": "Не вказано",
+      "disposal_1": "Зберегти попереднє зображення",
+      "disposal_2": "Відновити до кольору фону",
+      "disposal_3": "Відновити до попереднього стану",
+      "optimize": "Оптимізувати файл (зберегти лише відмінності)",
+      "metadata_title": "Метадані GIF",
+      "metadata_dimensions": "Розміри: {width} × {height} пікс",
+      "metadata_frames": "Кількість кадрів: {count}",
+      "metadata_duration": "Загальна тривалість: {duration} с",
+      "metadata_fps": "Частота: {fps} fps",
+      "metadata_palette": "Палітра: до 256 кольорів",
+      "metadata_size": "Приблизний розмір: {size} КБ",
+      "comment_label": "Коментар (необов'язково):",
+      "no_images": "Зображення не вибрані",
+      "creating_progress": "Завантаження зображень... ({current}/{total})",
+      "creating_normalizing": "Нормалізація зображень... ({current}/{total})",
+      "creating_quantizing": "Квантизація кольорів... ({current}/{total})",
+      "creating_saving": "Збереження GIF..."
+    },
+    "save_to_folder": {
+      "title": "Виберіть папку призначення"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Дубльовані назви файлів",
+      "message": "Виявлено ідентичні назви файлів. Хоча збереження технічно можливе, це\nможе спричинити проблеми з читанням у деяких програмах для читання коміксів\n(неповне відображення, відсутні сторінки тощо).\n\nРекомендується перенумерувати сторінки перед збереженням."
+    },
+    "adjustments": {
+      "window_title": "Nalashtuvannya zobrazhennya",
+      "title": "Nalashtuvannya dlya {count} {word}",
+      "word_image": "zobrazhennya",
+      "word_images": "zobrazhen",
+      "apply_button": "Zastosuvaty",
+      "color_depth_section": "Hlybyna koloru",
+      "brightness_contrast_section": "Yaskravist ta kontrast",
+      "compression_section": "Stysnennya",
+      "effects_section": "Efekty",
+      "sharpness_section": "Chitkist",
+      "levels_section": "Rivni chornoho/biloho",
+      "depth_unchanged": "Ne zminyuvaty",
+      "depth_32bit": "32 bity (RGBA - kolory + prozhorist)",
+      "depth_24bit": "24 bity (RGB - kolory)",
+      "depth_8bit": "8 bitiv (palitra PNG / vidtinky siroho JPEG)",
+      "depth_1bit": "1 bit (chorno-bilyi)",
+      "brightness_label": "Yaskravist: {value}",
+      "contrast_label": "Kontrast: {value}",
+      "compression_enable": "Uvimknuty povtorne stysnennya",
+      "compression_quality_label": "Якість : {value}/100",
+      "sharpness_label": "Chitkist: {value}",
+      "effect_none": "Bez efektu",
+      "effect_grayscale": "Vidtinky siroho",
+      "effect_sepia": "Sepiya",
+      "levels_none": "Bez nalashtuvannya",
+      "levels_threshold": "Porih (chistyi chornyi abo bilyi)",
+      "levels_advanced": "Rozshyreni rivni (tini/seredni tona/svitlo)",
+      "threshold_label": "Porih: {value}",
+      "black_point_label": "Chorna tochka: {value}",
+      "gamma_label": "Gamma (seredni tona): {value}",
+      "white_point_label": "Bila tochka: {value}",
+      "auto_levels_button": "Автоматичне налаштування",
+      "open_viewer_button": "Налаштувати за допомогою переглядача (рекомендовано)",
+      "compression_info": "Стиснення застосовується лише до зображень JPG і WebP",
+      "open_viewer_button_simple": "Налаштувати за допомогою переглядача",
+      "reset_button": "Скинути",
+      "preview_section": "Попередній перегляд",
+      "effect_invert": "Інверсія кольорів",
+      "preview_warning": "Попередній перегляд може відрізнятися від кінцевого результату",
+      "effect_remove_colors": "Видалення кольорів",
+      "remove_colors_intensity_label": "Інтенсивність : {value}",
+      "image_mode_section": "Режим зображення",
+      "image_mode_rgb": "RGB (кольори)",
+      "image_mode_rgba": "RGBA (кольори + прозорість)",
+      "image_mode_l": "L (відтінки сірого)",
+      "image_mode_la": "LA (відтінки сірого + прозорість)",
+      "image_mode_cmyk": "CMYK (друк)",
+      "image_mode_1": "1 (чисто чорно-білий)",
+      "image_mode_p": "P (палітра 256 кольорів)",
+      "saturation_section": "Насиченість",
+      "saturation_label": "Насиченість : {value}",
+      "saturation_viewer_title": "Налаштування насиченості",
+      "transparency_section": "Прозорість",
+      "transparency_info": "Прозорість застосовується лише до зображень PNG, WebP та ICO",
+      "transparency_type_label": "Тип :",
+      "transparency_type_flood": "Зона",
+      "transparency_type_global": "Глобальний",
+      "transparency_tolerance_label": "Допуск : {value}",
+      "transparency_viewer_title": "Налаштування прозорості",
+      "transparency_click_instruction": "Натисніть на колір, який потрібно зробити прозорим",
+      "transparency_undo": "Скасувати останнє натискання",
+      "transparency_redo": "Повторити",
+      "transparency_type_flood_tooltip": "Flood fill : робить прозорою рівномірну кольорову зону навколо натиснутого пікселя",
+      "transparency_type_global_tooltip": "Глобальна прозорість : впливає на всі пікселі зображення, колір яких близький до натиснутого",
+      "transparency_apply": "Застосувати",
+      "transparency_skipped_warning": "{count} зображення(нь) пропущено — формат несумісний із прозорістю. Щоб включити їх, спочатку конвертуйте у PNG.",
+      "unsharp_section": "Адаптивна різкість",
+      "unsharp_radius_label": "Радіус: {value}",
+      "unsharp_percent_label": "Інтенсивність: {value} %",
+      "unsharp_threshold_label": "Поріг: {value}",
+      "unsharp_viewer_title": "Адаптивна різкість",
+      "auto_levels_tooltip": "Аналізує кожну сторінку та автоматично регулює рівні чорного та білого для максимального контрасту.\nЩоб вибирати сторінку за сторінкою, використовуйте переглядач."
+    },
+    "levels_viewer": {
+      "title": "Налаштування рівнів за допомогою піпетки",
+      "apply_current": "Застосувати до цієї сторінки",
+      "apply_all": "Застосувати до всіх вибраних сторінок",
+      "black_pipette": "Піпетка чорної точки",
+      "white_pipette": "Піпетка білої точки",
+      "black_pipette_tooltip": "Клацніть на піксель, який має бути повністю чорним. Увага: легко перестаратися!",
+      "white_pipette_tooltip": "Клацніть на піксель, який має бути повністю білим. Увага: легко перестаратися!"
+    },
+    "sharpness_viewer": {
+      "title": "Налаштування чіткості"
+    },
+    "brightness_viewer": {
+      "title": "Налаштування яскравості та контрасту"
+    },
+    "compression_viewer": {
+      "title": "Налаштування стиснення"
+    },
+    "outliers": {
+      "title": "Сторінки з незвичайними розмірами",
+      "message": "Наступні сторінки мають розміри, які значно відрізняються від інших. Будь ласка, виберіть, як їх обробити:",
+      "width": "Ширина",
+      "height": "Висота",
+      "unusual": "незвичайний",
+      "skip": "Не змінювати розмір",
+      "keep": "зберегти"
+    },
+    "first_page_multi": {
+      "title": "Перша сторінка багатосторінкова",
+      "message": "Перша сторінка була визначена як багатосторінкова. Як ви хочете її пронумерувати?",
+      "option_auto_desc": "Звичайна перенумерація з автоматичним розпізнаванням.",
+      "option_joint_desc": "З'єднання першої та останньої сторінок коміксу.",
+      "option_exclude_label": "Не включати до перенумерації",
+      "option_exclude_desc": "Сторінка зберігає поточну назву і залишається на першій позиції. Пізніше ви можете перейменувати її вручну."
+    },
+    "batch_img": {
+      "select_directory_title": "Виберіть папку із зображеннями",
+      "no_img_title": "Файли зображень не знайдено",
+      "no_img_message": "У папці не знайдено окремих файлів зображень :\n{directory}",
+      "confirm_title": "Пакетне перетворення окремих зображень на CBZ",
+      "confirm_message": "{count} файл(ів) зображень для перетворення у {directory} (включно з підпапками).",
+      "checkbox_permanent_delete": "Остаточно видалити оригінальні файли зображень\nбез відправки до кошика (СКАСУВАТИ НЕМОЖЛИВО)",
+      "start_button": "Почати",
+      "converting_title": "Перетворення виконується...",
+      "converting_progress": "Перетворення файлу {current} із {total}",
+      "complete_title": "Перетворення завершено",
+      "complete_message": "{count} файл(ів) зображень перетворено в папці :",
+      "complete_message_errors": "{count} із {total} файл(ів) зображень перетворено в папці :",
+      "errors_count": "Виявлено {count} помилку(и).",
+      "converted_by_ext": "{ext} : {count} файл(ів)",
+      "mode_title": "Конвертувати зображення в CBZ",
+      "mode_intro": "Як ви хочете згрупувати зображення?",
+      "mode_one_per_image": "Конвертувати кожне зображення в окремі файли CBZ",
+      "mode_one_per_image_sub": "(Кожне зображення стає окремим файлом CBZ)",
+      "mode_all_in_one": "Згрупувати всі зображення в один файл CBZ",
+      "mode_all_in_one_sub": "(Усі зображення в директорії групуються в один файл CBZ)"
+    },
+    "batch_drop": {
+      "window_title": "Пакетна обробка папок",
+      "intro_single": "Скинуто 1 папку. Яку обробку ви хочете застосувати?",
+      "intro_multiple": "Скинуто {count} папок. Яку обробку ви хочете застосувати?",
+      "recursive_note": "Підпапки також будуть переглянуті.",
+      "mixed_drop_title": "Скидання не підтримується",
+      "mixed_drop_message": "Ви одночасно скинули файли та папки. Будь ласка, скидайте лише файли або лише папки."
+    },
+    "pdf_unlock": {
+      "title": "PDF захищений від змін",
+      "message": "Сторінки було імпортовано в звичайному режимі.\n\nЦей файл PDF захищений від змін (пароль власника).\n\nБажаєте зберегти копію файлу PDF без цього захисту?",
+      "yes": "Так, зберегти розблоковану копію",
+      "no": "Ні, продовжити без розблокування"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF-файли, захищені від змін",
+      "message_single": "Виявлено 1 PDF-файл, захищений від змін. Його нормально конвертовано у CBZ.\n\nБажаєте зберегти розблоковану копію в його оригінальному каталозі?",
+      "message_plural": "Виявлено {count} PDF-файлів, захищених від змін. Їх нормально конвертовано у CBZ.\n\nБажаєте зберегти розблоковану копію кожного в його оригінальному каталозі?",
+      "yes": "Так, зберегти розблоковані копії",
+      "no": "Ні, продовжити без розблокування"
+    },
+    "ico_creator": {
+      "title": "Створити значок .ico",
+      "info_message": "Зображення буде змінено на кілька роздільних здатностей (16, 32, 48, 64, 128, 256 px).\nПоточний розмір рамки: {w} × {h} px",
+      "btn_validate_crop": "Підтвердити обрізання",
+      "btn_validate_no_crop": "Підтвердити без обрізання",
+      "btn_cancel": "Скасувати",
+      "btn_transparency": "Встановити прозорість",
+      "btn_validate_final": "Підтвердити",
+      "tolerance_label": "Допуск:",
+      "success_title": "Файл .ico створено",
+      "success_message": "Файл {filename} успішно створено.",
+      "overwrite_title": "Файл вже існує",
+      "overwrite_message": "Файл {filename} вже існує. Перезаписати?",
+      "save_blocked_title": "Збереження неможливе",
+      "save_blocked_message": "Цей архів містить один або кілька файлів .ico, які не є зображеннями коміксів. Збереження вимкнено, поки ці файли присутні в мозаїці.\nЩоб знову активувати збереження, видаліть їх з мозаїки (клавіша Del) або виріжте (Ctrl+X), щоб вставити в інше місце.",
+      "btn_back_to_crop": "Повернутися до обрізання"
+    },
+    "video_save_blocked": {
+      "title": "Збереження неможливе",
+      "message": "Цей архів містить один або кілька відеофайлів. Збереження вимкнено, поки ці файли присутні в мозаїці.\nЩоб знову увімкнути збереження, видаліть їх із мозаїки (клавіша Del) або виріжте (Ctrl+X) і вставте в інше місце."
+    },
+    "open_file": {
+      "title": "Відкрити архів",
+      "filter_archives": "Архіви (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Усі файли (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Ліцензія"
+    },
+    "replace_corrupted_image": {
+      "title": "Замінити пошкоджене зображення",
+      "filter_images": "Зображення (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Всі файли (*)"
+    },
+    "see_log": "ДИВИТИСЯ ЛОГ"
+  },
+  "tooltip": {
+    "source_archive": "Вихідний файл: {name}",
+    "file": "Файл: {name}",
+    "reason": "Причина: {reason}",
+    "size_kb": "Розмір: {size} КБ",
+    "size_mb": "Розмір: {size} МБ",
+    "file_size": "Розмір: {size} МБ",
+    "dimensions": "Розміри: {width} × {height} пікс",
+    "resolution": "Роздільність: {mp} МП",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: не визначено",
+    "cbr_info": "Файли CBR використовують формат RAR, який є власницьким і запатентованим;\nїх не можна змінити, зміни зберігаються в новому файлі CBZ.",
+    "rotate_left": "Поворот на 90 градусів ліворуч",
+    "rotate_right": "Поворот на 90 градусів праворуч",
+    "mirror_horizontal": "Горизонтальне віддзеркалення",
+    "mirror_vertical": "Вертикальне віддзеркалення",
+    "fullscreen": "Повноекранний режим",
+    "help_button": "Посібник користувача",
+    "theme_button": "Перемикання між світлою та темною темою",
+    "font_decrease_button": "Зменшити розмір шрифту",
+    "font_increase_button": "Збільшити розмір шрифту",
+    "color_depth": "Кольори: {bits} біт ({mode})",
+    "batch_pdf_to_cbz": "Конвертує у CBZ усі файли PDF у каталозі\nта його підкаталогах. Зображення\nвитягуються та архівуються без жодної\nповторної компресії.",
+    "batch_pdf_permanent_delete": "УВАГА: якщо цей параметр позначено,\nоригінальні файли PDF будуть остаточно\nвидалені після конвертації, без можливості\nвідновлення. Переконайтеся, що у вас є\nрезервна копія, якщо це необхідно.",
+    "batch_cbr_to_cbz": "Конвертує у CBZ усі файли CBR,\nщо містяться в каталозі\nта його підкаталогах.",
+    "batch_cbr_permanent_delete": "УВАГА: якщо цю опцію позначено,\nоригінальні файли CBR будуть\nназавжди видалені після конвертації,\nбез можливості відновлення.\nПереконайтеся, що у вас є\nрезервна копія, якщо потрібно.",
+    "renumber_btn_1": "Режим автовизначення багатосторінкових сторінок\nКлік правою кнопкою для зміни режиму",
+    "renumber_btn_2": "Режим простої нумерації\nКлік правою кнопкою для зміни режиму",
+    "corrupted_header": "Пошкоджене зображення",
+    "right_click_instruction1": "Клацніть правою кнопкою миші, щоб замінити",
+    "right_click_instruction2": "або видалити це зображення.",
+    "unknown_error": "Невідома помилка",
+    "batch_img_to_cbz": "Перетворює всі файли зображень, знайдені в папці\nта її підпапках, на CBZ,\nстворюючи один файл CBZ на кожне зображення.",
+    "batch_img_permanent_delete": "УВАГА : якщо цей параметр увімкнено,\nоригінальні файли зображень будуть\nостаточно видалені після перетворення\nбез можливості відновлення. Переконайтеся,\nщо у вас є резервна копія, якщо потрібно.",
+    "too_large_header": "Зображення завелике для завантаження",
+    "too_large_pixels": "Розміри: {pixels}",
+    "icon_toolbar_config_button": "Налаштування значків",
+    "icon_toolbar_size_decrease": "Зменшити розмір піктограм",
+    "icon_toolbar_size_increase": "Збільшити розмір піктограм",
+    "source_loose": "Вільне зображення",
+    "source_web": "Вебзображення"
+  },
+  "help": {
+    "title": "MosaicView - Інструкція",
+    "intro": "MosaicView дозволяє маніпулювати та редагувати комікси (цифрові комікси) без необхідності розпаковувати їх з архівів. Програма підтримує формати CBZ (ZIP), CBR (RAR) та PDF. Застосунок сумісний лише з 64-бітними системами.",
+    "open_files": "Відкриття файлів",
+    "open_files_content": "• Натисніть кнопку 'Відкрити CBZ/CBR/CB7/PDF'\n• Або перетягніть файл безпосередньо у вікно\n• Підтримувані формати: CBZ, CBR, CB7, PDF, зображення (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Файли EPUB також можна відкривати, але будуть видобуті лише їхні зображення (текст ігнорується).\n• Зашифрований PDF (для відкриття потрібен пароль): файл не може бути імпортований, відображається повідомлення про помилку.\n• PDF захищений від змін (owner password): сторінки імпортуються в звичайному режимі. MosaicView пропонує зберегти розблоковану копію файлу в тій самій папці.",
+    "mosaic": "Мозаїка",
+    "mosaic_content": "Мозаїка відображає всі сторінки вашого коміксу у вигляді мініатюр. Ви можете:\n• Переупорядкувати сторінки перетягуванням (нумерація сторінок буде автоматичною і виконуватиметься відповідно до активного режиму перенумерації)\n• Вибрати кілька сторінок (Ctrl+клік або Shift+клік)\n• Налаштувати розмір мініатюр повзунком\n• Вручну перейменувати файли, клацнувши на їхню назву\n• Перетягувати файли коміксів (CBZ/CBR/PDF) з Провідника Windows безпосередньо в інший відкритий комікс для об'єднання їхнього вмісту",
+    "manipulation": "Маніпулювання сторінками",
+    "manipulation_content": "• Перетягуйте сторінки для їх впорядкування\n• Перетягніть цілий комікс в інший, щоб об'єднати їх\n• Клацніть правою кнопкою миші на сторінці для доступу до параметрів (обертання, видалення тощо)\n• Подвійне клацання на сторінці для відкриття переглядача\n• Експортуйте окремі сторінки, перетягнувши їх до папки Windows, або через Ctrl+C / Ctrl+V",
+    "renumber": "Перенумерація сторінок",
+    "renumber_content": "MosaicView пропонує два режими перенумерації сторінок, доступні через кнопку перенумерації, контекстне меню (права кнопка миші) або автоматично при перетягуванні:\n\n• Режим автоматичного виявлення багатосторінкових сторінок (режим за замовчуванням): програма аналізує ширину кожної сторінки для виявлення подвійних, потрійних сторінок тощо. Багатосторінкові сторінки перенумеровуються відповідно (напр.: подвійна сторінка отримає назву 003-004, потрійна 005-006-007). При більше ніж 4 сторінках відображаються лише перший і останній номер (напр.: 010---025).\n\n• Режим простої нумерації: кожна сторінка отримує унікальний порядковий номер (001, 002, 003...) незалежно від ширини сторінок.\n\nЩоб перемикатися між двома режимами, клацніть правою кнопкою миші на кнопці перенумерації. Підказка показує активний режим. Обраний режим також застосовується при автоматичній перенумерації при перетягуванні.",
+    "flatten": "Вирівнювання каталогів",
+    "flatten_content": "Якщо ваш архів містить підпапки, використовуйте 'Вирівняти каталоги', щоб перемістити всі зображення на один рівень.",
+    "viewer": "Переглядач",
+    "viewer_content": "Подвійний клік на сторінці відкриває переглядач:\n• Клавіші ← → : навігація між сторінками\n• Клавіша D : перемикання між 3 режимами читання\n  - Одна сторінка: по одній сторінці\n  - Подвійні сторінки: сторінка 1 окремо, потім 2-3, 4-5 тощо\n  - Подвійні сторінки безперервно: сторінка 1 окремо, потім 2-3, 3-4, 4-5 тощо\n• Колесо миші: швидка навігація\n• Ctrl+Колесо або Ctrl+Плюс/Мінус: масштабування\n• Ctrl+0: скинути масштаб\n• Клавіша F11: повноекранний режим\n• Подвійний клік: перемкнути повноекранний режим\n• Клавіша Escape: скасувати рамку обрізання / вийти з переглядача",
+    "join_pages": "Об'єднання сторінок",
+    "join_pages_content": "Виберіть кілька послідовних сторінок, правий клік → 'Об’єднати вибрані сторінки' для об’єднання сторінок горизонтально або вертикально. Формат створеного зображення відповідає формату вихідних сторінок, якщо вони всі однакові, інакше PNG за замовчуванням.",
+    "split_pages": "Розділення сторінок",
+    "split_pages_content": "Для автоматичного розділення розворотів:\n• Виділіть сторінки для розділення\n• Права кнопка → 'Розділити виділені сторінки'\n• Виберіть напрямок (вертикальний або горизонтальний)",
+    "crop": "Обрізка в переглядачі",
+    "crop_content": "В переглядачі намалюйте прямокутник на зображенні для визначення області обрізки:\n• Намалюйте прямокутник мишею\n• Змініть його розмір, потягнувши за краї або кути\n• Натисніть 'Підтвердити обрізку' для застосування\n• Обрізка застосовується до поточного зображення\n• Клавіша Escape: скасувати рамку обрізання",
+    "shortcuts": "Гарячі клавіші",
+    "shortcuts_content": "• Ctrl+Z: Скасувати останню дію\n• Ctrl+Y: Повторити скасовану дію\n• Ctrl+A: Виділити всі сторінки\n• Ctrl+I: Інвертувати виділення\n• Ctrl+C: Копіювати виділені сторінки\n• Ctrl+X: Вирізати виділені сторінки\n• Ctrl+V: Вставити сторінки\n• Delete: Видалити виділені сторінки\n• F5: Оновити відображення мозаїки\n• F11: Перемкнути повноекранний режим (вихід - F11 або ESC)",
+    "dark_mode": "Темний режим",
+    "dark_mode_content": "Натисніть кнопку сонце/місяць, щоб перемкнутися між світлою та темною темами.",
+    "sort": "Сортування сторінок",
+    "sort_content": "Використовуйте кнопку 'Сортувати' для автоматичного впорядкування сторінок за:\n• Назвою, Типом, Розміром, Шириною, Висотою, Роздільністю або DPI",
+    "save": "Збереження",
+    "save_content": "• 'Зберегти': зберігає зміни в оригінальний файл\n• 'Зберегти як': створює новий архів\n• 'Створити CBZ': доступно в режимі лише зображень (без архіву)",
+    "other": "Інші функції",
+    "other_content": "• Поворот: повертайте одну або кілька сторінок\n• Конвертація: конвертуйте зображення в різні формати (PNG, JPEG, WEBP, BMP, TIFF, GIF). Примітка: зображення в режимі CMYK автоматично конвертуються в RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Примітка: зображення в режимі CMYK автоматично конвертуються в RGB\n• Друк: друкуйте виділені або всі сторінки\n• Вилучення: вилучайте конкретні сторінки\n• Вкладка Метадані: відображає інформацію з файлу ComicInfo.xml (якщо присутній в архіві). Якщо ви додасте або видалите сторінку з коміксу, що містить метадані, програма запропонує змінити кількість сторінок, вказану там. Інші метадані не можуть бути змінені. Це обмеження є навмисним і є результатом вибору дизайну.",
+    "config_files": "Файли конфігурації та тимчасові файли",
+    "config_files_content": "MosaicView створює файл з іменем .mosaicview_config.json. Цей файл містить деякі параметри, необхідні для правильної роботи кнопки скидання, а також список нещодавно відкритих коміксів, який, очевидно, необхідний для відображення нещодавно відкритих файлів. MosaicView також зберігає тимчасові файли, які необхідні для різних операцій обробки зображень.\nУсі ці файли знаходяться в каталозі {temp_dir}.\nТимчасові файли видаляються кожного разу, коли програма закривається, але файл .mosaicview_config.json за своєю природою призначений для збереження.\nОднак ви можете вручну видалити ці файли, перейшовши в каталог {temp_dir} або натиснувши кнопки нижче. Файл .mosaicview_config.json буде відтворений кожного разу, коли програма відкривається, а тимчасові файли будуть відтворені за потреби.",
+    "config_clear_temp": "Видалити тимчасові файли",
+    "config_clear_recent": "Очистити останні файли",
+    "config_clear_config": "Видалити файл конфігурації",
+    "config_temp_cleared": "Тимчасові файли успішно видалено.",
+    "config_config_cleared": "Файл конфігурації успішно видалено.\nВін буде відтворений при наступному запуску програми.",
+    "language": "Вибір мови",
+    "language_content": "MosaicView доступний багатьма мовами.\nЗа замовчуванням додаток автоматично визначає мову вашої операційної системи і відображається цією мовою, якщо вона підтримується. Якщо ваша система використовує непідтримувану мову, інтерфейс відображається англійською.\nВи можете вручну змінити мову в будь-який час, використовуючи спадне меню, розташоване внизу колонки кнопок, під повзунком розміру мініатюр. Ваш вибір буде збережено і застосовано при наступному запуску програми.\nДОСТУПНІ МОВИ: англійська, арабська, вірменська, болгарська, в'єтнамська, грецька, данська, естонська, індонезійська, ірландська, ісландська, іспанська, італійська, китайська (спрощена), китайська (традиційна), корейська, латиська, литовська, малайська, мальтійська, німецька, нідерландська, норвезька, польська, португальська, румунська, словацька, словенська, тайська, тамільська, турецька, українська, угорська, фінська, французька, хінді, хорватська, чеська, шведська, японська.\nДОСТУПНІ ВИГАДАНІ МОВИ: клінгонська, сіндарін, квенья.\n\nЦя утиліта використовує шрифти Windows, за винятком шрифтів pIqaD (клінгонська мова) та tengwar (ельфійські мови: сіндарин та квенья). Ці шрифти є вільними для використання і походять з цих сайтів:\n- для pIqaD (клінгонський алфавіт): {url_piqad}\n- для tengwar (ельфійський алфавіт, для сіндарину та квенья): {url_tengwar}\nЯкщо ці сайти більше не активні, ви можете отримати шрифти pIqaD та tengwar, натиснувши на кнопки нижче:\n\nЦе програмне забезпечення було розроблено французькою мовою. Переклади іншими мовами були зроблені за допомогою штучного інтелекту, зокрема Claude. Я вирішив підтримувати близько сорока мов. Але, очевидно, я не розмовляю всіма цими мовами. Тому в мене не було іншого вибору, окрім як використовувати штучний інтелект, оскільки найм і оплата 40 різних перекладачів не входили до розглянутих можливостей. Через автоматичний характер цих перекладів можуть бути присутні помилки. Вибачте за це.",
+    "credits": "Vibe Coding, кохання моє",
+    "credits_content": "Я нічого не знаю про програмування. Зовсім нічого. Тому я розробив це програмне забезпечення завдяки Claude, ШІ від Anthropic, а точніше за допомогою Claude Code. Не можу не рекомендувати Claude Code, ця програма чудова!",
+    "resize_pages": "Зміна розміру сторінок",
+    "resize_pages_content": "Для зменшення або збільшення сторінок:\n• Виберіть одну або кілька сторінок\n• Правий клік → 'Змінити розмір'\n• Доступні три варіанти:\n  - Користувацькі розміри: введіть бажану ширину або висоту (пропорції зберігаються автоматично).\n  - Процентне зменшення: виберіть відсоток від 10% до 90%\n  - Процентне збільшення: виберіть відсоток від 10% до 100%\n• Програма відображає приблизний розмір зображень після зміни\n• Зміна застосовується негайно до всіх вибраних сторінок",
+    "language_export_piqad": "Шрифт pIqaD",
+    "language_export_tengwar": "Шрифти tengwar",
+    "language_export_piqad_success": "Шрифт експортовано: {filename}\nДоступний у:",
+    "language_export_tengwar_success": "{count} шрифтів експортовано\nДоступні у:",
+    "icons": "Значки",
+    "icons_content": "Більшість піктограм, використаних у цій утиліті, взяті з цього сайту та є вільними для некомерційного використання: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nДеякі з них були змінені мною.\nЛише один значок, значок виконуваного файлу Windows, був створений мною (але з використанням штучного інтелекту, тому що я дуже, дуже, дуже поганий графічний дизайнер). У вас є мій дозвіл використовувати цей значок на свій розсуд, якщо ви вказуєте джерело.",
+    "icons_view_button": "Переглянути значки",
+    "icons_window_title": "Значки MosaicView",
+    "icons_save_all": "Зберегти значки",
+    "icons_saved_success": "{count} значок(ів) збережено в:",
+    "icons_save_failed": "Не вдалося зберегти значки: {error}",
+    "split_ui": "Інтерфейс з двома панелями",
+    "split_ui_content": "MosaicView дозволяє відображати два архіви одночасно, поруч.\n\nНатисніть піктограму Розділити, щоб відкрити другу панель. Кожна панель незалежна: можна окремо відкривати, редагувати та зберігати архів. Активна панель позначена синьою рамкою.\n\nЩоб перемістити сторінки з однієї панелі в іншу, перетягніть їх безпосередньо. Якщо вибрано кілька сторінок, вони всі переміщуються разом. Сторінки вставляються на позицію, вказану червоною смугою.\n\nНатисніть піктограму Закрити другу панель, щоб повернутися до режиму одної панелі.",
+    "license_gpl": "Ліцензія GPL v3",
+    "license_unrar": "Ліцензія UnRAR",
+    "config_clear_clipboard": "Очистити файли буфера обміну",
+    "config_clipboard_note": "Виняток: Тимчасові файли, що використовуються буфером обміну Windows (файли clipboard_XXXXX), зберігаються протягом 12 годин після копіювання, щоб ви могли вставити їх навіть після закриття програми. Через 12 годин вони автоматично видаляються.",
+    "config_log_note": "Пакетні конвертації (PDF у CBZ та CBR у CBZ) створюють файл журналу у разі помилок. Ці файли (Log_pdftocbz_.txt та Log_cbrtocbz_.txt) зберігаються навіть після закриття програми, щоб їх можна було переглянути пізніше. Вони видаляються лише кнопкою \"Видалити тимчасові файли\" вище.",
+    "config_clipboard_cleared": "Файли буфера обміну успішно очищено.",
+    "adjust_images": "Налаштування зображень",
+    "adjust_images_content": "Ця функція дозволяє ретушувати зображення безпосередньо в MosaicView. Ви можете змінювати яскравість, контраст, різкість, рівні, насиченість, застосовувати ефекти (чорно-біле, сепія, інверсія кольорів), регулювати якість стиснення, видаляти кольори, застосовувати прозорість або конвертувати в різні колірні глибини. Деякі налаштування мають спеціальний переглядач, що дозволяє бачити результат у повній роздільній здатності перед застосуванням. Мініатюрний попередній перегляд показує результат у реальному часі в головному вікні.",
+    "create_icon": "Створити піктограму",
+    "create_icon_content": "MosaicView дозволяє створювати файли піктограм (.ico) з будь-якого зображення в мозаїці.\n• Клацніть правою кнопкою миші на зображення → 'Створити піктограму'\n• Оконтуріть бажану область у переглядачі (піктограма буде обов'язково квадратною)\n• Відрегулюйте прозорість за потреби\n• Підтвердіть: файл .ico додається безпосередньо до мозаїки\n• Файли .ico автоматично містять всі стандартні роздільні здатності (від 16×16 до 256×256)\n• Поки в мозаїці є файл .ico, збереження в архів CBZ заблоковано, оскільки формат ICO не підтримується цими архівами. Експортуйте файл .ico окремо (Ctrl+C, потім вставте в папку Windows), а потім видаліть його з мозаїки перед збереженням.",
+    "batch_convert": "Пакетне конвертування",
+    "batch_convert_content": "MosaicView пропонує три функції пакетного перетворення, доступні лише коли мозаїка порожня. Для кожної з них принцип однаковий : виберіть директорію, підтвердьте, стежте за прогресом в режимі реального часу, перегляньте підсумковий звіт. Опція дозволяє остаточно видалити оригінальні файли замість того, щоб відправляти їх до кошика.\n• CBR → CBZ : перетворює всі файли CBR (RAR) у директорії та її піддиректоріях. Якщо CBR насправді є ZIP, його просто перейменовують без перетворення.\n• PDF → CBZ : перетворює всі файли PDF у директорії та її піддиректоріях. Зображення витягуються без повторного стиснення.\n• ОКРЕМІ ЗОБРАЖЕННЯ → CBZ : створює окремий CBZ для кожного файлу зображення, знайденого у директорії та її піддиректоріях. Недійсні, пошкоджені, багатосторінкові (TIFF) або анімовані (GIF) зображення ігноруються та записуються до журналу.",
+    "config_open_temp_folder": "Відкрити тимчасову папку",
+    "icon_toolbar": "Панель значків",
+    "icon_toolbar_content": "Панель піктограм забезпечує швидкий доступ до основних функцій програми. Ви можете перекомпонувати піктограми на свій розсуд, перетягуючи їх безпосередньо на панель. Щоб вибрати, які піктограми відображати або приховувати, натисніть кнопку шестерні внизу панелі: відкриється вікно налаштування, де можна переміщати піктограми між активною панеллю та резервом. Використовуйте кнопки « + » і « − » для регулювання розміру піктограм. Конфігурація зберігається автоматично.",
+    "license_7zip": "Ліцензія 7-Zip"
+  },
+  "misc": {
+    "file_word": "файл",
+    "files_word": "файлів",
+    "corrupted": "пошкоджений",
+    "yes": "Так",
+    "no": "Ні",
+    "cancel": "Скасувати",
+    "selection_suffix": "копія-виділення"
+  },
+  "metadata": {
+    "title": "Назва",
+    "series": "Серія",
+    "number": "Номер",
+    "volume": "Том",
+    "summary": "Опис",
+    "writer": "Сценарист",
+    "penciller": "Художник",
+    "inker": "Обвідка",
+    "colorist": "Колорист",
+    "letterer": "Леттерер",
+    "cover_artist": "Художник обкладинки",
+    "editor": "Редактор (особа)",
+    "publisher": "Видавець (компанія)",
+    "imprint": "Колекція",
+    "genre": "Жанр",
+    "web": "Веб-сайт",
+    "page_count": "Кількість сторінок",
+    "language_iso": "Мова",
+    "format": "Формат",
+    "black_and_white": "Чорно-білий",
+    "manga": "Манга",
+    "year": "Рік",
+    "month": "Місяць",
+    "day": "День",
+    "notes": "Примітки",
+    "characters": "Персонажі",
+    "locations": "Місця",
+    "teams": "Команди",
+    "story_arc": "Сюжетна дуга",
+    "story_arc_number": "Номер дуги",
+    "series_group": "Група серій",
+    "count": "Кількість номерів",
+    "alternate_series": "Альтернативна серія",
+    "alternate_number": "Альтернативний номер",
+    "alternate_count": "Альтернативна кількість",
+    "age_rating": "Вікова оцінка",
+    "series_complete": "Серія завершена",
+    "translator": "Перекладач",
+    "tags": "Теги",
+    "scan_information": "Інформація про сканування",
+    "community_rating": "Оцінка спільноти",
+    "review": "Рецензія",
+    "gtin": "GTIN",
+    "pages": "Сторінки",
+    "pages_col_image": "Зображення",
+    "pages_col_type": "Тип",
+    "pages_col_width": "Ширина",
+    "pages_col_height": "Висота",
+    "pages_col_size": "Розмір (Б)"
+  },
+  "web": {
+    "web_download_progress": "Завантаження: {downloaded}/{total} зображень...",
+    "web_download_cancel": "Скасувати",
+    "web_no_images": "Немає зображень",
+    "web_no_images_found": "На цій сторінці не знайдено зображень.",
+    "web_imported": "{count} зображення імпортовано з веб-сторінки",
+    "web_drag_drop_title": "Перетягнути веб-зображення",
+    "web_copy_paste_message": "Пряме перетягування з веб-браузера не підтримується.\n\nАльтернативне рішення (простіше):\n\n1. Клацніть правою кнопкою миші на зображенні у браузері\n2. Виберіть 'Копіювати зображення'\n3. У MosaicView використовуйте кнопку 'Вставити' або Ctrl+V\n\nЦей метод працює з усіма веб-зображеннями!",
+    "import_web_button": "Імпорт з інтернету",
+    "import_web_tooltip": "Вставте інтернет-адресу, щоб отримати всі зображення зі сторінки",
+    "import_web_menu": "Імпорт з інтернету...",
+    "import_web_dialog_title": "Імпортувати зображення з веб-сторінки",
+    "import_web_url_label": "Адреса веб-сторінки:",
+    "import_web_ok_button": "Гаразд",
+    "import_web_cancel_button": "Скасувати",
+    "import_web_invalid_url": "Недійсна URL-адреса. Введіть дійсну веб-адресу."
+  },
+  "donation": {
+    "menu_label": "Пожертвувати автору",
+    "title": "Зробити пожертву",
+    "message": "Вам подобається ця маленька утиліта, і ви регулярно нею користуєтесь.\n\nЯ вклав у неї кілька сотень годин. Чи не могли б ви подякувати мені, зробивши пожертву? Будь ласка, будьте добрі, мені справді потрібні гроші, щоб заповнити мій басейн шампанським. Чи хочете ви надіслати мені кілька центів чи кілька мільярдів євро, я приймаю всі суми. Ви можете зробити цю пожертву через paypal"
+  },
+  "mail": {
+    "tooltip": "Ця кнопка відкриває вашу електронну пошту за замовчуванням у Windows для надсилання електронного листа. Якщо не налаштовано жодної програми (наприклад, якщо ви використовуєте виключно веб-пошту), ви можете скопіювати адресу MosaicView у буфер обміну, клацнувши правою кнопкою миші на значку.",
+    "copy_address": "Скопіювати адресу електронної пошти MosaicView",
+    "menu_label": "Надіслати електронний лист на MosaicView",
+    "icon_label": "Надіслати електронний лист"
+  },
+  "menu": {
+    "file": "Файл",
+    "file_open": "Відкрити файл",
+    "file_close": "Закрити файл",
+    "batch_convert": "Пакетне перетворення файлів",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Окремі зображення → CBZ",
+    "edit": "Редагування",
+    "undo": "Скасувати",
+    "redo": "Повторити",
+    "paste": "Вставити",
+    "delete": "Видалити",
+    "invert_selection": "Інвертувати вибір",
+    "select_all": "Вибрати все",
+    "deselect": "Скасувати вибір",
+    "refresh_mosaic": "Оновити мозаїку",
+    "images": "Зображення",
+    "rotation": "Поворот",
+    "archives": "Архіви",
+    "sort": "Сортування",
+    "system": "Система",
+    "decrease_font": "Зменшити шрифт",
+    "increase_font": "Збільшити шрифт",
+    "language": "Мови",
+    "language_real": "Справжні мови",
+    "language_fictional": "Вигадані мови",
+    "about": "Про програму",
+    "export_piqad_font": "Зберегти шрифт pIqaD",
+    "export_tengwar_fonts": "Зберегти шрифти tengwar"
+  }
+}

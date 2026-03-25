@@ -1,0 +1,42 @@
+# Config utilisateur (devrait être dans %APPDATA%, pas dans le projet)
+.mosaicview_config.json
+
+# Ancienne application tkinter
+MosaicView_OLD.py
+
+# Anciens modules tkinter (ne plus modifier)
+Modules_OLD/
+
+# Backup de l'ancien script principal
+BACKUP SCRIPT PRINCIPAL (old)/
+
+# Environnement virtuel Python
+venv/
+.venv/
+
+# Notes de l'assistant Claude (spécifiques à cette machine)
+.claude/
+idees_ajustements.txt
+
+# Fichiers compilés Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Dossiers de compilation PyInstaller
+build/
+dist/
+
+# Fichiers temporaires Windows
+Thumbs.db
+desktop.ini
+
+# Fichiers de l'éditeur
+.vscode/
+*.swp
+
+# Outils de développement internes
+conversion_tools/
+glaemscribe_js/
+commande de compil.txt

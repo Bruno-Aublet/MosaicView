@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "A digitális képregénygyűjtők svájci bicskája",
+  "buttons": {
+    "open_file": "CBZ/CBR/CB7/PDF megnyitása",
+    "close_file": "Fájl bezárása",
+    "create_cbz": "CBZ archívum létrehozása",
+    "flatten_dirs": "Minden fájl áthelyezése\na gyökérbe és az alkönyvtár\ntörlése",
+    "renumber": "Oldalak\nújraszámozása",
+    "undo": "⤺ Visszavonás",
+    "redo": "Újra ⤻",
+    "copy": "Másolás",
+    "cut": "Kivágás",
+    "paste": "Beillesztés",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Konvertálás másik\nképformátumba",
+    "join_pages": "Oldalak egyesítése",
+    "split_page": "Oldal felosztása",
+    "save_as": "Mentés másként\n(új CBZ létrehozása)",
+    "save_selection": "Kijelölés mentése\nCBZ-ként",
+    "print_selection": "Kijelölés nyomtatása",
+    "print_all": "Teljes képregény nyomtatása",
+    "sort": "Rendezés",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Konvertálás",
+    "cancel": "Mégse",
+    "split_button": "Felosztás",
+    "join_button": "Kezdés",
+    "validate_crop": "Vágás jóváhagyása",
+    "ok": "OK",
+    "close": "Bezárás",
+    "apply_and_save": "Módosítások alkalmazása és fájl mentése",
+    "apply_and_create": "Módosítások alkalmazása és CBZ fájl létrehozása",
+    "close_and_lose": "Fájl bezárása és módosítások elvetése",
+    "cancel_return": "Mégse és visszatérés a mozaikhoz",
+    "update_page_count": "Oldalszám frissítése\na metaadatokban",
+    "invert_selection": "Kijelölés megfordítása",
+    "reduce_size": "Oldalméret módosítása",
+    "mirror_vertical": "⇅",
+    "create_gif": "GIF létrehozása",
+    "edit_gif": "Animált GIF szerkesztése",
+    "save_to_folder": "Kiválasztott oldalak\nexportálása",
+    "continue": "Folytatás",
+    "reset": "↻",
+    "yes": "Igen",
+    "no": "Nem",
+    "renumber_recommended": "Újraszámozás (ajánlott)",
+    "ignore_and_save": "Figyelmen kívül hagy és ment",
+    "rename_to_cbz": "Átnevezés .cbz-re",
+    "open_without_rename": "Megnyitás átnevezés nélkül",
+    "rename_to_cbr": "Átnevezés .cbr-re",
+    "adjustments": "Fényerő,\nkontraszt stb.",
+    "batch_cbr_to_cbz": "CBR fájlok kötegelt\n konvertálása CBZ-be",
+    "batch_pdf_to_cbz": "PDF fájlok kötegelt\n konvertálása CBZ-be",
+    "batch_img_to_cbz": "Önálló képek\n kötegelt konvertálása CBZ-be",
+    "icon_toolbar_reset": "Visszaállítás",
+    "delete_selected": "Törlés",
+    "save": "Mentés",
+    "rename_to_cb7": "Átnevezés .cb7-re",
+    "split_ui": "Felület felosztása két panelre",
+    "unsplit_ui": "A második panel bezárása"
+  },
+  "tabs": {
+    "mosaic": "Mozaik",
+    "metadata": "Metaadatok"
+  },
+  "viewer": {
+    "title": "Néző",
+    "mode_single": "Egy oldal  [D]",
+    "mode_double": "Dupla oldal  [D]",
+    "mode_continuous": "Folyamatos mód  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Előző oldal (←)",
+      "next_page": "Következő oldal (→)",
+      "zoom_in": "Nagyítás (Ctrl+Plus)",
+      "zoom_out": "Kicsinyítés (Ctrl+Mínusz)",
+      "zoom_reset": "Nagyítás visszaállítása (Ctrl+0)",
+      "reading_mode_double": "Olvasási mód váltása (D) → Dupla oldal",
+      "reading_mode_continuous": "Olvasási mód váltása (D) → Folyamatos dupla oldal",
+      "reading_mode_single": "Olvasási mód váltása (D) → Egyszerű oldal",
+      "fullscreen_exit": "Kilépés a teljes képernyőből (F11)",
+      "fullscreen": "Teljes képernyő (F11)",
+      "close_viewer": "Néző bezárása (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Sérült kép - Csere",
+      "corrupted_delete": "⚠️ Kép törlése",
+      "copy": "Másolás (Ctrl+C)",
+      "cut": "Kivágás (Ctrl+X)",
+      "paste": "Beillesztés (Ctrl+V)",
+      "paste_clipboard": "Beillesztés vágólapról (Ctrl+V)",
+      "delete": "Törlés (Del)",
+      "deselect": "Kijelölés megszüntetése (ESC)",
+      "rotate_right": "↻ Forgatás jobbra",
+      "rotate_left": "↺ Forgatás balra",
+      "mirror": "⇄ Vízszintes tükrözés",
+      "crop": "Vágás",
+      "convert": "Konvertálás másik formátumba...",
+      "join": "Kijelölt oldalak egyesítése",
+      "split": "Kijelölt oldal felosztása",
+      "save_selection": "Kijelölés mentése CBZ-ként",
+      "print_selection": "Kijelölés nyomtatása",
+      "copy_archive": "Teljes archívum másolása",
+      "undo": "Visszavonás (Ctrl+Z)",
+      "redo": "Újra (Ctrl+Y)",
+      "renumber_auto": "Oldalak átszámozása (többoldal automatikus felismerése)",
+      "renumber_simple": "Oldalak átszámozása (egyszerű számozás)",
+      "sort_submenu": "Oldalak rendezése",
+      "sort_name": "Név szerint",
+      "sort_type": "Típus szerint",
+      "sort_size": "Méret szerint",
+      "sort_width": "Szélesség szerint",
+      "sort_height": "Magasság szerint",
+      "sort_resolution": "Felbontás szerint",
+      "sort_dpi": "DPI szerint",
+      "create_cbz": "CBZ archívum létrehozása",
+      "save_as": "Mentés másként...",
+      "close_file": "Fájl bezárása",
+      "help": "Útmutató",
+      "update_page_count": "Oldalszám frissítése a metaadatokban",
+      "invert_selection": "Kijelölés megfordítása (Ctrl+I)",
+      "reduce_size": "Oldalméret módosítása",
+      "mirror_vertical": "⇅ Függőleges tükör",
+      "edit_animated_gif": "Animált GIF szerkesztése...",
+      "save_to_folder": "Kiválasztott oldalak exportálása",
+      "adjustments": "Fényerő, kontraszt, színek...",
+      "refresh_mosaic": "Mozaik frissítése (F5)",
+      "create_ico": ".ico fájl létrehozása"
+    },
+    "canvas_no_file": {
+      "open": "CBZ/CBR/CB7/PDF megnyitása",
+      "recent_files": "Legutóbbi fájlok",
+      "clear_history": "Előzmények törlése"
+    },
+    "canvas_with_file": {
+      "close": "Fájl bezárása",
+      "paste": "Beillesztés (Ctrl+V)",
+      "paste_clipboard": "Beillesztés vágólapról (Ctrl+V)",
+      "select_all": "Összes kijelölése (Ctrl+A)",
+      "deselect": "Kijelölés megszüntetése (ESC)",
+      "copy_archive": "Teljes archívum másolása",
+      "print_all": "Teljes képregény nyomtatása",
+      "renumber_auto": "Oldalak átszámozása (többoldal automatikus felismerése)",
+      "renumber_simple": "Oldalak átszámozása (egyszerű számozás)",
+      "flatten": "Mappák egyengetése",
+      "save_selection": "Kijelölés mentése CBZ-ként",
+      "hide_sidebar": "« Gomboszlop elrejtése",
+      "show_sidebar": "» Gomboszlop megjelenítése",
+      "decrease_thumbs": "Bélyegképek méretének csökkentése",
+      "increase_thumbs": "Bélyegképek méretének növelése",
+      "theme_dark": "Váltás sötét témára",
+      "theme_light": "Váltás világos témára",
+      "sort_submenu": "Oldalak rendezése",
+      "undo": "Visszavonás (Ctrl+Z)",
+      "redo": "Újra (Ctrl+Y)",
+      "create_cbz": "CBZ archívum létrehozása",
+      "save_as": "Mentés másként...",
+      "help": "Útmutató",
+      "update_page_count": "Oldalszám frissítése a metaadatokban",
+      "invert_selection": "Kijelölés megfordítása (Ctrl+I)",
+      "fullscreen": "Teljes képernyő (F11)",
+      "fullscreen_exit": "Kilépés a teljes képernyőből (F11 vagy ESC)",
+      "quit": "Alkalmazás bezárása"
+    },
+    "canvas": {
+      "quit": "Alkalmazás bezárása",
+      "reset": "Az alkalmazás visszaállítása:\n• ablakméret és -pozíció\n• sötét mód → világos\n• bélyegképméret → normál\n• oldalsáv → látható / 220 px\n• nyelv → automatikus felismerés\n• betűméret → alapértelmezett",
+      "reset_label": "Alkalmazás alaphelyzetbe állítása"
+    },
+    "font_size": {
+      "decrease": "Betűméret csökkentése",
+      "increase": "Betűméret növelése"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Rendezés név szerint",
+    "sort_type": "Rendezés típus szerint",
+    "sort_size": "Rendezés méret szerint",
+    "sort_width": "Rendezés szélesség szerint",
+    "sort_height": "Rendezés magasság szerint",
+    "sort_resolution": "Rendezés felbontás szerint",
+    "sort_dpi": "Rendezés DPI szerint"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Üres archívum",
+        "message": "A CBZ archívum nem tartalmaz fájlokat."
+      },
+      "empty_cbr": {
+        "title": "Üres archívum",
+        "message": "A CBR archívum nem tartalmaz fájlokat."
+      },
+      "files_ignored": {
+        "title": "Figyelmen kívül hagyott fájlok"
+      },
+      "no_selection_crop": {
+        "title": "Nincs kijelölés",
+        "message": "Kérjük, jelöljön ki egy képet a vágáshoz."
+      },
+      "multi_selection_crop": {
+        "title": "Többszörös kijelölés",
+        "message": "Egyszerre csak egy képet vághat.\nKérjük, jelöljön ki csak egy képet."
+      },
+      "invalid_selection_crop": {
+        "title": "Érvénytelen kijelölés",
+        "message": "Csak képeket lehet vágni."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Funkció nem elérhető",
+        "message": "Az oldalak áthelyezése nem érhető el az alkönyvtárakban.\nKérjük, egyengesse ki a mappákat vagy térjen vissza a gyökérbe."
+      },
+      "no_selection_convert": {
+        "title": "Nincs kijelölés",
+        "message": "Kérjük, jelöljön ki legalább egy képet a konvertáláshoz."
+      },
+      "invalid_selection_convert": {
+        "title": "Érvénytelen kijelölés",
+        "message": "Csak képeket lehet konvertálni."
+      },
+      "no_selection_split": {
+        "title": "Nincs kijelölés",
+        "message": "Kérjük, jelöljön ki egy képet a felosztáshoz."
+      },
+      "multi_selection_split": {
+        "title": "Többszörös kijelölés",
+        "message": "Egyszerre csak egy képet oszthat fel.\nKérjük, jelöljön ki csak egy képet."
+      },
+      "invalid_selection_split": {
+        "title": "Érvénytelen kijelölés",
+        "message": "Csak képeket lehet felosztani."
+      },
+      "invalid_number_split": {
+        "title": "Érvénytelen szám",
+        "message": "Az oldalak számának 2 és 10 között kell lennie."
+      },
+      "insufficient_selection_join": {
+        "title": "Elégtelen kijelölés",
+        "message": "Kérjük, jelöljön ki legalább 2 képet az egyesítéshez."
+      },
+      "invalid_selection_join": {
+        "title": "Érvénytelen kijelölés",
+        "message": "Csak képeket lehet egyesíteni."
+      },
+      "pil_not_available": {
+        "title": "PIL nem elérhető",
+        "message": "A PIL modul nem elérhető a rendszer vágólapjáról történő beillesztéshez."
+      },
+      "format_not_supported": {
+        "title": "Nem támogatott formátum",
+        "message": "Nem támogatott képformátum vagy sérült fájl.\nTámogatott formátumok: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Nincs kijelölés",
+        "message": "Kérjük, először rajzoljon egy vágási téglalapot."
+      },
+      "cannot_open_file": {
+        "title": "Nem lehet megnyitni a fájlt",
+        "message": "A fájl nem tölthető be."
+      },
+      "corrupted_images": {
+        "title": "Sérült képek",
+        "summary": "{count} sérült kép(ek) észlelve {total}-ből.",
+        "hint": "Különleges ikonnal jelennek meg.\nJobb gombbal kattintson egy sérült képre a csere vagy törlés érdekében.",
+        "more": "... és {count} további"
+      },
+      "no_image_print": {
+        "title": "Nincs kép",
+        "message": "Nincs nyomtatható kép."
+      },
+      "no_valid_image_print": {
+        "title": "Nincs kép",
+        "message": "Nincs érvényes nyomtatható kép."
+      },
+      "no_selection_print": {
+        "title": "Nincs kijelölés",
+        "message": "Kérjük, jelöljön ki legalább egy képet."
+      },
+      "no_valid_selection_print": {
+        "title": "Nincs kép",
+        "message": "Nincs érvényes kép a kijelölésben."
+      },
+      "save_cancelled": {
+        "title": "Mentés megszakítva",
+        "message": "Kérjük, javítsa ki manuálisan a fájlneveket a mentés előtt."
+      },
+      "empty_pdf": {
+        "title": "Üres PDF",
+        "message": "A PDF fájl nem tartalmaz oldalakat."
+      },
+      "no_selection_save": {
+        "title": "Figyelem",
+        "message": "Kérjük, jelöljön ki legalább egy oldalt a mentéshez."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Áthelyezés letiltva",
+        "message": "Az oldalak húzással való áthelyezése csak a képregény gyökerében érhető el.\n\nOldalak áthelyezéséhez:\n1. Térjen vissza a gyökérbe a fel ikonra kattintva\n2. Vagy egyengesse ki a képregényt az alkönyvtárak eltávolításához"
+      },
+      "no_selection_reduce": {
+        "title": "Nincs kijelölés",
+        "message": "Kérjük, válasszon ki legalább egy csökkentendő oldalt."
+      },
+      "invalid_selection_reduce": {
+        "title": "Érvénytelen kijelölés",
+        "message": "Csak képek csökkenthetők."
+      },
+      "invalid_dimensions": {
+        "title": "Érvénytelen méretek",
+        "message": "Kérjük, adjon meg érvényes méreteket (pozitív egész számok)."
+      },
+      "no_images_for_gif": {
+        "title": "Nincsenek képek",
+        "message": "Animált GIF létrehozásához legalább egy kép szükséges."
+      },
+      "no_valid_images": {
+        "title": "Nincsenek érvényes képek",
+        "message": "Nem találhatók érvényes képek a GIF létrehozásához."
+      },
+      "animated_gif_in_comic": {
+        "title": "Animált GIF észlelve",
+        "message": "Figyelmeztetés: Ez a képregény egy vagy több animált GIF-et tartalmaz.\\n\\nA képregényolvasók (CDisplayEx, YACReader, stb.) csak minden GIF első képkockáját jelenítik meg statikus oldalként.\\n\\nAz animált GIF helyes megtekintéséhez külön kell mentenie a képregényen kívül a \"Kiválasztott oldalak exportálása\" vagy az \"Animált GIF szerkesztése\" gomb használatával.\\n\\nMindenképpen folytatni szeretné a képregény mentését?"
+      },
+      "no_selection_adjust": {
+        "title": "Nincs kivalasztas",
+        "message": "Valasszon ki legalabb egy kepet a beallitasok alkalmazasahoz."
+      },
+      "invalid_selection_adjust": {
+        "title": "Ervenytelen kivalasztas",
+        "message": "A beallitasok csak kepekre alkalmazhatok."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "A funkció nem elérhető",
+        "message": "Az átszámozás nem érhető el, amíg a mappák nem lettek kisimítva.\nSimítsa ki a mappákat az átszámozás előtt."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP hiba",
+        "message": "A fájl '{file}' nem érvényes ZIP archívum vagy sérült."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP hiba",
+        "message": "Nem lehet megnyitni a CBZ fájlt: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR hiba",
+        "message": "A fájl '{file}' nem érvényes RAR archívum vagy sérült."
+      },
+      "rar_cannot_open": {
+        "title": "RAR hiba",
+        "message": "Nem lehet megnyitni a CBR archívumot: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Hiba",
+        "message": "Váratlan hiba a CBR megnyitásakor: {error}"
+      },
+      "join_failed": {
+        "title": "Hiba",
+        "message": "Nem lehet egyesíteni a képeket."
+      },
+      "paste_failed": {
+        "title": "Hiba",
+        "message": "Hiba a beillesztés során: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Hiba",
+        "message": "Nem lehet másolni az archívumot: {error}"
+      },
+      "crop_invalid": {
+        "title": "Hiba",
+        "message": "A vágási terület érvénytelen."
+      },
+      "crop_failed": {
+        "title": "Hiba",
+        "message": "Nem lehet vágni a képet: {error}"
+      },
+      "load_image_failed": {
+        "title": "Hiba",
+        "message": "Nem lehet betölteni a képet:\n{error}"
+      },
+      "print_error": {
+        "title": "Nyomtatási hiba",
+        "message": "Hiba a nyomtatás során:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Nyomtatás nem elérhető",
+        "message": "A win32print modul nincs telepítve.\nTelepítse a következővel: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Fájl nem található",
+        "message": "A fájl már nem létezik:\n{path}"
+      },
+      "import_failed": {
+        "title": "Importálási hiba",
+        "message": "Nem lehet importálni a fájlt: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF nincs telepítve",
+        "message": "A PyMuPDF (fitz) könyvtár nincs telepítve.\nTelepítse a következővel: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Hiba",
+        "message": "Hiba a PDF importálása során: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF hiba",
+        "message": "Nem lehet betölteni a PDF-et:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Duplikált fájlnevek",
+        "intro": "{count} duplikált fájlnév észlelve:\n\n",
+        "item": "  • {name} ({times} alkalommal)\n",
+        "more": "  ... és {more} további\n",
+        "footer": "\nA ZIP archívumok nem fogadnak el duplikált neveket.\nKérjük, nevezze át ezeket a fájlokat mentés előtt."
+      },
+      "save_failed": {
+        "title": "Hiba",
+        "message": "Nem lehet menteni a fájlt: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Hiba",
+        "message": "Nem lehet létrehozni az archívumot: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Hiba",
+        "message": "Nem lehet menteni a kijelölést: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF létrehozási hiba",
+        "message": "Nem sikerült animált GIF-et létrehozni:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Mentési hiba",
+        "message": "Hiba a fájlok mentése közben:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Átnevezési hiba",
+        "message": "Nem sikerült átnevezni a fájlt: {error}"
+      },
+      "pdf_password_required": {
+        "title": "Jelszóval védett PDF",
+        "message": "Ez a PDF-fájl titkosított és jelszóval védett.\nJelszó nélkül nem nyitható meg."
+      },
+      "pdf_unlock_failed": {
+        "title": "Hiba",
+        "message": "Nem sikerült menteni a feloldott PDF-fájlt:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: titkosított PDF-fájl (jelszó szükséges), kihagyva",
+      "file_too_large": {
+        "title": "A fájl túl nagy",
+        "message": "A(z) {filename} fájl mérete {size}, ami meghaladja a képekre vonatkozó maximálisan engedélyezett méretet (500 MB)."
+      },
+      "license_file_not_found": {
+        "message": "A licencfájl nem található: {path}"
+      },
+      "license_file_read_error": {
+        "message": "A licencfájl nem olvasható: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z-hiba",
+        "message": "A(z) '{file}' fájl nem érvényes 7Z-archívum, vagy sérült."
+      },
+      "delete_error": "Hiba törlés közben: {error}",
+      "export_error": "Hiba exportálás közben: {error}",
+      "font_source_not_found": "A betűtípus forrásfájlja nem található: {path}",
+      "no_tengwar_font": "Nem található Tengwar betűtípus.",
+      "no_icons_found": "Nem találhatók ikonok.",
+      "unsupported_files": {
+        "title": "Nem támogatott fájlok",
+        "message": "A következő fájlok nem támogatottak és figyelmen kívül lettek hagyva:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF sikeresen létrehozva",
+        "message": "Az animált GIF '{name}' létrehozva és hozzáadva a mozaikhoz."
+      },
+      "pywin32_required": {
+        "title": "Funkció nem elérhető",
+        "message": "A pywin32 modul szükséges a rendszer vágólapjáról történő beillesztéshez.\nTelepítse a következővel: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Képek importálva",
+        "message": "{count} kép importálva"
+      },
+      "archive_copied": {
+        "title": "Archívum másolva",
+        "message": "Az archívum másolva lett a vágólapra."
+      },
+      "function_not_available": {
+        "title": "Funkció nem elérhető",
+        "message": "Ez a funkció jelenleg nem elérhető."
+      },
+      "duplicate_detected": {
+        "title": "Duplikátum észlelve",
+        "message": "Egy fájl már ezzel a névvel létezett.\n\nA fájl át lett nevezve:\n{name}"
+      },
+      "replace_success": {
+        "title": "Sikeres",
+        "message": "A(z) '{name}' kép sikeresen cserélve."
+      },
+      "history_cleared": {
+        "title": "Előzmények törölve",
+        "message": "A legutóbbi fájlok listája törölve lett."
+      },
+      "files_copied_clipboard": {
+        "title": "Fájlok vágólapra másolva",
+        "message": "A kifelé húzás technikai okokból nem elérhető.\n\n✓ {count} {word} vágólapra másolva\n\nMost beillesztheti bárhová:\n  • Jobb klikk → Beillesztés\n  • Vagy Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Javítás elvégezve",
+        "message": "{count} fájlnév javítva."
+      },
+      "import_success": {
+        "title": "Sikeres importálás",
+        "message": "{count} oldal importálva innen: {file}"
+      },
+      "pdf_import_success": {
+        "title": "Sikeres importálás",
+        "message": "{count} PDF oldal importálva innen: {file}\nMinőség: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Sikeres",
+        "message": "PDF sikeresen konvertálva!\n{count} oldal betöltve {dpi} DPI-vel."
+      },
+      "cbz_saved": {
+        "title": "Sikeres",
+        "message": "CBZ fájl sikeresen mentve:"
+      },
+      "cbz_converted": {
+        "title": "Sikeres",
+        "message": "Fájl sikeresen konvertálva CBZ-re:",
+        "question": "Törölni szeretné az eredeti CBR fájlt?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Sikeres",
+        "message": "Fájl sikeresen konvertálva CBZ-re:",
+        "question": "Törölni szeretné az eredeti PDF fájlt?"
+      },
+      "cbz_save_as": {
+        "title": "Sikeres",
+        "message": "Új CBZ fájl mentve: {path}"
+      },
+      "cbz_created": {
+        "title": "Sikeres",
+        "message": "CBZ archívum sikeresen létrehozva:"
+      },
+      "selection_saved": {
+        "title": "Sikeres",
+        "message": "Kiválasztás sikeresen mentve:"
+      },
+      "flatten_done": {
+        "title": "Egyengetés befejezve",
+        "message": "{files} fájl áthelyezve {dirs} almappából."
+      },
+      "language_changed": {
+        "title": "Nyelv módosítva",
+        "message": "A felület nyelve sikeresen megváltozott."
+      },
+      "new_cbz_saved": {
+        "title": "Fájl Mentve",
+        "message": "Az új CBZ fájl sikeresen mentve:",
+        "question": "Szeretné törölni az eredeti fájlt?"
+      },
+      "page_count_updated": {
+        "title": "Oldalszám frissítve",
+        "message": "A metaadatokban lévő oldalszám frissítve lett {count} oldalra."
+      },
+      "files_saved": {
+        "title": "Sikeresen mentve",
+        "message": "{count} fájl mentve ide:\n{folder}",
+        "open_folder": "Szeretné megnyitni a mappát?"
+      },
+      "adjustments_applied": {
+        "title": "Beallitasok alkalmazva",
+        "message": "A beallitasok sikeresen alkalmazva lettek."
+      },
+      "pdf_unlocked": {
+        "title": "PDF feloldva",
+        "message": "A feloldott PDF-fájl mentve lett:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Nagy archívum",
+        "message": "Ez az archívum {size} MB kibontva.\nA betöltés sok memóriát (RAM) használhat.\n\nFolytatja?"
+      },
+      "confirm_delete": {
+        "title": "Megerősítés",
+        "message": "Biztosan törölni szeretné a(z) {count} fájl(oka)t ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Törli a forrásfájlokat?",
+        "message": "Törölni szeretné az egyesített képeket?\n\nIgen = Forrásfájlok törlése\nNem = Forrásfájlok megtartása\nMégse = Művelet megszakítása"
+      },
+      "invalid_filenames": {
+        "title": "Érvénytelen fájlnevek",
+        "intro": "{count} fájl tiltott karaktereket tartalmaz:",
+        "item": "  • {name}",
+        "more": "  ... és még {more}",
+        "forbidden_chars": "Tiltott karakterek: {chars}",
+        "fix_question": "Szeretné automatikusan javítani ezeket a neveket?\n(A tiltott karaktereket '_' váltja fel)"
+      },
+      "close_without_save": {
+        "title": "Mentés bezárás előtt?",
+        "message": "Képek lettek hozzáadva. Szeretne CBZ archívumot létrehozni bezárás előtt?"
+      },
+      "flatten_folders": {
+        "title": "Mappák egyengetése",
+        "subdirs_detected": "Almappák észlelve:",
+        "files_to_move": "{count} fájl kerül áthelyezésre a gyökérbe.",
+        "folders_to_delete": "{count} almappa törlésre kerül.",
+        "continue_question": "Folytatja?"
+      },
+      "update_page_count": {
+        "title": "Oldalszám frissítése",
+        "message": "A képregény oldalainak száma megváltozott.\n\nMetaadatokban jelzett oldalszám: {original}\nJelenlegi oldalszám: {current}\n\nFrissíteni szeretné az oldalszámot a metaadatokban?"
+      },
+      "conversion_complete": {
+        "title": "Konverzió befejezve",
+        "message": "Konverzió befejezve!\n\n{count} kép {format} formátumba konvertálva hozzáadva a kijelölés után.\n\nTörölni az eredeti képeket?",
+        "delete_originals": "Eredetiek törlése\n{count} fájl - {size}",
+        "keep_all": "Minden megtartása\n{count} fájl - {size}",
+        "cancel_conversion": "Konvertálás megszakítása\n{count} fájl - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Helytelen kiterjesztés észlelve: ez '{filename}' a fájl CBZ, nem CBR. Átnevezi?",
+      "title": "Helytelen kiterjesztés"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Helytelen kiterjesztés észlelve: ez '{filename}' a fájl CBR, nem CBZ. Átnevezés?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Helytelen kiterjesztés észlelve: a(z) '{filename}' fájl CB7, nem CBZ/CBR. Átnevezés?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Bélyegkép mérete",
+    "loading": "Kérem várjon, betöltés...\n{percent}%",
+    "resizing": "Kérem várjon, átméretezés folyamatban...\n{percent}%",
+    "converting": "Kérem várjon, konvertálás folyamatban...\n{percent}%",
+    "loading_lazy": "Kérem várjon, betöltés folyamatban...\n{percent}%\n\nEz a fájl nagy mérete miatt ({size} MB) az oldalak fokozatosan töltődnek be. A képernyőn látható oldalak azonnal betöltődnek, a többiek automatikusan betöltődnek görgetés közben.",
+    "apply_save_cbz": "Módosítások alkalmazása\nés CBZ fájl mentése",
+    "apply_create_cbz": "Módosítások alkalmazása\nés CBZ fájl létrehozása",
+    "import_progress": "Importálás folyamatban...\n{percent}%",
+    "pdf_import_progress": "PDF importálás folyamatban...\n{percent}%",
+    "pdf_opening": "PDF fájl megnyitása...",
+    "pdf_page": "Oldal {current} / {total}",
+    "warning_close": "Figyelem! A módosítások nem lettek mentve és elvesznek!",
+    "language_label": "Nyelv:",
+    "directory_tooltip": "Mappa: {name}\n{count} fájl\nTeljes méret: {size} MB",
+    "folder_up_tooltip": "Dupla kattintással felfelé léphet\na könyvtárszerkezetben",
+    "status_bar": "{dirs} mappa  |  {files} fájl ({total_size})  |  {selected} kiválasztva ({selected_size})",
+    "pdf_converting": "{total} oldal konvertálása képekké {dpi} DPI-n...",
+    "pdf_converting_no_change": "{total} oldal kinyerése módosítás nélkül...",
+    "print_progress": "Nyomtatás előkészítése...\n{percent}%",
+    "print_preparing": "Kérem várjon, nyomtatás előkészítése...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nA GNU General Public License v3 összefoglalója\n\nBIZTOSÍTOTT SZABADSÁGOK\nSzabadon használhatja, másolhatja, módosíthatja és terjesztheti\na MosaicView-t, akár kereskedelmi célokra is.\n\nKÖTELEZETTSÉGEK\nMinden terjesztésnek (eredeti vagy módosított) meg kell felelnie :\n– a GPL v3 licenc megtartása\n– a forráskód csatolása vagy annak megjelölése, hol szerezhető be\n– nem lehet további korlátozásokat bevezetni\n\nGARANCIÁK\nEz a szoftver SEMMILYEN GARANCIÁVAL nem kerül terjesztésre.\nA szerzője nem vállal felelősséget a használatból eredő károkért.\n\nA programmal együtt meg kellett kapnia a GNU General Public License egy példányát. Ha nem, lásd: <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Teljes licenc megtekintése",
+    "license_unrar_text": "A CBZ fájlok a ZIP formátumon alapulnak, amely egy szabad és nyílt formátum. A CBR fájlok ezzel szemben a RAR formátumon alapulnak, amely egy szabadalmaztatott formátum.\n\nA MosaicView az UnRAR segítségével tudja megnyitni a CBR fájlokat, ez egy RARlab által fejlesztett és szabadon terjeszthető segédprogram.\n\nHivatalos weboldal: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "UnRAR licenc megtekintése",
+    "saving_cbz": "Mentés folyamatban... {percent}%",
+    "empty_canvas_line1": "Dobjon ide egy vagy tobb CBZ/CBR/CB7/PDF fajlt vagy a kepeit",
+    "empty_canvas_line2": "Miutan egy fajl meg van nyitva, folytathatja mas fajlok elhelyezeset",
+    "empty_canvas_line3": "Ejtsen egy vagy több mappát a kötegelt feldolgozás indításához",
+    "icon_toolbar_config_title": "Ikonsor konfigurálása",
+    "icon_toolbar_active": "Ikonok az eszköztárban",
+    "icon_toolbar_hidden": "Ikonok tartalékban",
+    "license_gpl_full": "GNU GPL v3 licenc",
+    "license_unrar_full": "UnRAR licenc",
+    "licenses_button": "Licencek",
+    "view_full_gpl_license": "A teljes GNU GPL v3 licenc megtekintése",
+    "license_7zip_text": "A CB7 fájlok a 7z formátumon alapulnak, amelyet Igor Pavlov fejlesztett ki, és GNU LGPL licenc alatt terjesztenek.\n\nA MosaicView a 7-Zip segítségével képes megnyitni a CB7 fájlokat — egy ingyenes, nyílt forráskódú segédprogrammal.\n\nHivatalos webhely : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "7-Zip licenc megtekintése",
+    "license_7zip_full": "7-Zip licenc",
+    "icon_toolbar_show_thumb_slider": "Bélyegkép méretcsúszka megjelenítése",
+    "icon_toolbar_show_lang_combo": "Nyelvválasztó megjelenítése",
+    "adjusting": "Kérjük, várjon, a beállítások folyamatban vannak...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS betűkészlet licence",
+    "license_tengwar_full": "Alcarin Tengwar betűtípus licence",
+    "view_full_piqad_license": "Teljes pIqaD qolqoS licenc megtekintése"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Képkonvertálás",
+      "title": "{count} {word} konvertálása",
+      "word_image": "kép",
+      "word_images": "kép",
+      "info": "Válassza ki a cél formátumot:",
+      "format_png": "PNG (veszteségmentes)",
+      "format_jpg": "JPEG (tömörítéssel)",
+      "format_webp": "WEBP (modern)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (kiváló minőség)",
+      "format_gif": "GIF (animáció)",
+      "quality_label": "Minőség JPG/WEBP-hez:",
+      "quality_maximum": "Maximális — minőség 95/100",
+      "quality_high": "Magas — minőség 85/100",
+      "quality_medium": "Közepes — minőség 75/100",
+      "quality_low": "Alacsony — minőség 60/100",
+      "quality_custom_option": "Egyéni",
+      "quality_custom": "Minőség egyéni : {value}/100",
+      "quality_note": "(Ez a beállítás csak a JPG és WEBP formátumokat érinti)",
+      "quality_window_title": "Minőségválasztás",
+      "format_gif_static": "Statikus GIF",
+      "format_gif_animated": "Animált GIF (válasszon több képet)"
+    },
+    "split": {
+      "window_title": "Oldal felosztása",
+      "title": "Oldal felosztása",
+      "pages_label": "Oldalak száma:",
+      "direction_label": "Vágás iránya:",
+      "horizontal": "Vízszintes (bal → jobb)",
+      "vertical": "Függőleges (fent → lent)",
+      "warning": "⚠ Mivel a vágás automatikusan számított,\nkézi beállításra lehet szükség.",
+      "button_split": "Felosztás",
+      "button_cancel": "Mégse"
+    },
+    "join": {
+      "window_title": "Oldalak egyesítése - Rendezze át a sorrendet",
+      "instructions": "Képek szervezése:\n• Függőlegesen (fel/le) függőleges összefűzéshez\n• Vízszintesen (bal/jobb) vízszintes összefűzéshez",
+      "merged_filename_prefix": "Egyesítés",
+      "heights_label": "Magasságok",
+      "widths_label": "Szélességek",
+      "size_adjustment_title": "Méretbeállítás",
+      "size_adjustment_warning": "⚠️ A kiválasztott képek eltérő méretűek.\nVálassza ki, hogyan igazítsa a méretüket az egyesítéshez.\nMinden kép méretaránya mindig megmarad.",
+      "keep_original": "Eredeti méretek megtartása",
+      "keep_original_desc": "(fekete sávokat ad a kitöltéshez)",
+      "enlarge_small": "Kis képek nagyítása",
+      "enlarge_small_desc": "(igazítás a maximális méretre)",
+      "reduce_large": "Nagy képek kicsinyítése",
+      "reduce_large_desc": "(igazítás a minimális méretre)",
+      "back_to_arrangement": "Vissza"
+    },
+    "pdf": {
+      "quality_merge": "Válassza ki az egyesítési minőséget:",
+      "quality_export": "Válassza ki az exportálási minőséget:",
+      "merge_quality_title": "PDF egyesítési minőség",
+      "export_quality_title": "PDF exportálási minőség",
+      "loading_title": "PDF betöltése...",
+      "dpi_90": "90 DPI - Webes publikáció",
+      "dpi_150": "150 DPI - Jó minőség (ajánlott megjelenítéshez)",
+      "dpi_200": "200 DPI - Nagyon jó minőség",
+      "dpi_300": "300 DPI - Kiváló minőség (képregény szabvány)",
+      "dpi_600": "600 DPI - Maximális minőség (nagy fájlok)",
+      "dpi_original": "Nincs képmódosítás",
+      "dpi_original_tooltip": "Minden PDF oldal intelligens elemzése:\n• Csak képeket tartalmazó oldalak: megőrzi az eredeti DPI-t\n• Csak szöveget tartalmazó oldalak: 300 DPI\n• Vegyes oldalak (szöveg + képek): képek DPI-je ha >= 300, egyébként 300 DPI\nMaximum: 2400 DPI a fájlméret korlátozásához"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF szükséges",
+      "pymupdf_required_message": "A PyMuPDF (fitz) nincs telepítve. Nem lehet konvertálni a PDF fájlokat.",
+      "select_directory_title": "Válassza ki a PDF fájlokat tartalmazó könyvtárat",
+      "no_pdf_title": "Nincs PDF fájl",
+      "no_pdf_message": "Nem található PDF fájl a könyvtárban:\n{directory}",
+      "confirm_title": "PDF fájlok kötegelt konvertálása CBZ formátumba",
+      "confirm_message": "{count} PDF fájl konvertálásra vár itt: {directory} (alkönyvtárakkal együtt).",
+      "checkbox_permanent_delete": "Az eredeti PDF fájlok törlése a lomtár\nmegkerülésével (VISSZAVONÁS NEM LEHETSÉGES)",
+      "start_button": "Indítás",
+      "converting_title": "Konvertálás folyamatban...",
+      "converting_progress": "Fájl konvertálása: {current} / {total}",
+      "page_progress": "Oldal {current} / {total}",
+      "complete_title": "Konvertálás befejezve",
+      "complete_message": "{count} PDF fájl konvertálva a könyvtárban:",
+      "complete_message_errors": "{count} PDF fájl konvertálva a(z) {total} fájlból a könyvtárban:",
+      "errors_count": "{count} hiba történt."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Válassza ki a CBR fájlokat tartalmazó könyvtárat",
+      "no_cbr_title": "Nincsenek CBR fájlok",
+      "no_cbr_message": "Nem találhatók CBR fájlok a könyvtárban:\\n{directory}",
+      "confirm_title": "CBR fájlok kötegelt konvertálása CBZ-be",
+      "confirm_message": "{count} CBR fájl konvertálásra a(z) {directory} könyvtárban (alkönyvtárakkal együtt).",
+      "checkbox_permanent_delete": "Eredeti CBR fájlok törlése a Lomtár\nhasználata nélkül (NEM VISSZAVONHATÓ)",
+      "start_button": "Indítás",
+      "converting_title": "Átalakítás...",
+      "converting_progress": "Fájl átalakítása: {current} / {total}",
+      "page_progress": "Oldal {current} / {total}",
+      "complete_title": "Átalakítás befejezve",
+      "complete_message": "{count} CBR fájl átalakítva a könyvtárban:",
+      "complete_message_errors": "{count} CBR fájl átalakítva a(z) {total}-ból a könyvtárban:",
+      "errors_count": "{count} hiba találva.",
+      "renamed_count": "{count} fájl átnevezve CBZ-re",
+      "rarfile_unavailable": "A rarfile modul nem érhető el. A CBR fájlok nem konvertálhatók."
+    },
+    "close_warning": {
+      "title": "Figyelem!",
+      "message": "A módosítások nem lettek mentve és elvesznek!",
+      "btn_close_lose": "Fájl bezárása és módosítások elvetése",
+      "btn_save_cbz": "Módosítások alkalmazása és fájl mentése",
+      "btn_create_cbz": "Módosítások alkalmazása és CBZ fájl létrehozása",
+      "btn_cancel": "Mégse és visszatérés a mozaikhoz"
+    },
+    "replace_image": {
+      "title": "Sérült kép cseréje"
+    },
+    "reduce_size": {
+      "window_title": "Kép átméretezése",
+      "title": "{count} {word} átméretezése",
+      "word_image": "kép",
+      "word_images": "képek",
+      "current_size": "Jelenlegi méret: {size} MB",
+      "current_dimensions": "Jelenlegi méretek: {width} × {height} px",
+      "choose_method": "Válassza ki az átméretezési módszert:",
+      "custom_dimensions": "Egyéni méretek",
+      "width_label": "Szélesség:",
+      "height_label": "Magasság:",
+      "use_custom_dimensions": "Ezen méretek használata",
+      "different_dimensions_warning": "A kijelölt oldalak különböző méretűek. Az egyéni méretek az összes oldalt ugyanarra a méretre kényszerítik. Győződjön meg róla, hogy megérti a következményeket, mielőtt folytatná.",
+      "estimated_size": "Becsült méret: {size} MB",
+      "percentage_reduction": "Százalékos csökkentés",
+      "percentage_enlargement": "Százalékos növelés",
+      "reduce_0": "0% (nincs változás)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (nincs változás)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "A leggyakoribb oldalszélességek az 1024, 1280, 1600, 1920 és 2000 pixel, de más értékek is megfelelőek.",
+      "multi_page_width": "Több oldal automatikus észlelése és átméretezése (szélesség/magasság)",
+      "multi_page_width_tooltip": "Engedélyezi a több oldal automatikus észlelését: dupla oldal, tripla oldal stb. A szorzótényező automatikusan kiszámításra kerül az egyes oldalak arányai alapján, akár szélességben (egymás melletti oldalak), akár magasságban (egymásra rakott oldalak)"
+    },
+    "gif_animated": {
+      "window_title": "Animált GIF létrehozása",
+      "images_title": "Animációs képek",
+      "params_title": "GIF paraméterek",
+      "frame_delay_label": "Késleltetés képek között:",
+      "fps_normal": "{fps} kép/másodperc",
+      "fps_slow": "1 kép minden {seconds} másodpercben",
+      "loop_label": "Ismétlések száma:",
+      "loop_info": "(0 = végtelen hurok)",
+      "disposal_label": "Képek elrendezése:",
+      "disposal_0": "Nincs megadva",
+      "disposal_1": "Előző kép megtartása",
+      "disposal_2": "Visszaállítás háttérszínre",
+      "disposal_3": "Visszaállítás előző állapotra",
+      "optimize": "Fájl optimalizálása (csak különbségek mentése)",
+      "metadata_title": "GIF metaadatok",
+      "metadata_dimensions": "Méretek: {width} × {height} px",
+      "metadata_frames": "Képek száma: {count}",
+      "metadata_duration": "Teljes időtartam: {duration} mp",
+      "metadata_fps": "Frekvencia: {fps} fps",
+      "metadata_palette": "Paletta: legfeljebb 256 szín",
+      "metadata_size": "Becsült méret: {size} KB",
+      "comment_label": "Megjegyzés (opcionális):",
+      "no_images": "Nincsenek kiválasztott képek",
+      "creating_progress": "Képek betöltése... ({current}/{total})",
+      "creating_normalizing": "Képek normalizálása... ({current}/{total})",
+      "creating_quantizing": "Színek kvantálása... ({current}/{total})",
+      "creating_saving": "GIF mentése..."
+    },
+    "save_to_folder": {
+      "title": "Válasszon célmappát"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Duplikált fájlnevek",
+      "message": "Azonos fájlneveket észleltünk. Bár a mentés technikailag lehetséges,\nez olvasási problémákat okozhat egyes képregényolvasó alkalmazásokban\n(hiányos megjelenítés, hiányzó oldalak stb.).\n\nJavasoljuk az oldalak újraszámozását mentés előtt."
+    },
+    "adjustments": {
+      "window_title": "Kep beallitasok",
+      "title": "{count} {word} beallitasai",
+      "word_image": "kep",
+      "word_images": "kepek",
+      "apply_button": "Alkalmazas",
+      "color_depth_section": "Szinmelyseg",
+      "brightness_contrast_section": "Fenyfokozat es kontraszt",
+      "compression_section": "Tomorities",
+      "effects_section": "Effektusok",
+      "sharpness_section": "Elesseg",
+      "levels_section": "Fekete/feher szintek",
+      "depth_unchanged": "Ne modositsa",
+      "depth_32bit": "32 bit (RGBA - szinek + atlatszoossag)",
+      "depth_24bit": "24 bit (RGB - szinek)",
+      "depth_8bit": "8 bit (PNG paletta / JPEG szurkearnyalatok)",
+      "depth_1bit": "1 bit (fekete-feher)",
+      "brightness_label": "Fenyfokozat: {value}",
+      "contrast_label": "Kontraszt: {value}",
+      "compression_enable": "Ujratomorites engedlyezese",
+      "compression_quality_label": "Minőség : {value}/100",
+      "sharpness_label": "Elesseg: {value}",
+      "effect_none": "Nincs effektus",
+      "effect_grayscale": "Szurkearnyalat",
+      "effect_sepia": "Szepia",
+      "levels_none": "Nincs beallitas",
+      "levels_threshold": "Kuszoberttek (tiszta fekete vagy feher)",
+      "levels_advanced": "Halado szintek (arnyek/kozeptonusok/fenyfokek)",
+      "threshold_label": "Kuszoberttek: {value}",
+      "black_point_label": "Fekete pont: {value}",
+      "gamma_label": "Gamma (kozeptonusok): {value}",
+      "white_point_label": "Feher pont: {value}",
+      "auto_levels_button": "Automatikus beállítás",
+      "open_viewer_button": "Beállítás a megjelenítővel (ajánlott)",
+      "compression_info": "A tömörítés csak JPG és WebP képekre vonatkozik",
+      "open_viewer_button_simple": "Beállítás nézegetővel",
+      "reset_button": "Visszaállítás",
+      "preview_section": "Előnézet",
+      "effect_invert": "Színinverzió",
+      "preview_warning": "Az előnézet eltérhet a végleges eredménytől",
+      "effect_remove_colors": "Színek eltávolítása",
+      "remove_colors_intensity_label": "Intenzitás : {value}",
+      "image_mode_section": "Képmód",
+      "image_mode_rgb": "RGB (színek)",
+      "image_mode_rgba": "RGBA (színek + átlátszóság)",
+      "image_mode_l": "L (szürkeárnyalatok)",
+      "image_mode_la": "LA (szürkeárnyalatok + átlátszóság)",
+      "image_mode_cmyk": "CMYK (nyomtatás)",
+      "image_mode_1": "1 (tiszta fekete-fehér)",
+      "image_mode_p": "P (256 színű paletta)",
+      "saturation_section": "Telítettség",
+      "saturation_label": "Telítettség : {value}",
+      "saturation_viewer_title": "Telítettség beállítása",
+      "transparency_section": "Átlátszóság",
+      "transparency_info": "Az átlátszóság csak PNG, WebP és ICO képekre vonatkozik",
+      "transparency_type_label": "Típus :",
+      "transparency_type_flood": "Zóna",
+      "transparency_type_global": "Globális",
+      "transparency_tolerance_label": "Tűrés : {value}",
+      "transparency_viewer_title": "Átlátszóság beállítása",
+      "transparency_click_instruction": "Kattintson arra a színre, amelyet átlátszóvá szeretne tenni",
+      "transparency_undo": "Utolsó kattintás visszavonása",
+      "transparency_redo": "Újra",
+      "transparency_type_flood_tooltip": "Flood fill : az egyenletes színű területet az átkattintott pixel körül átlátszóvá teszi",
+      "transparency_type_global_tooltip": "Globális átlátszóság : a kép összes pixelét érinti, amelynek színe közel van a kattintott színhez",
+      "transparency_apply": "Alkalmaz",
+      "transparency_skipped_warning": "{count} kép(ek) kihagyva — formátum nem kompatibilis az átlátszósággal. A bevonáshoz először konvertálja PNG formátumba.",
+      "unsharp_section": "Adaptív élesség",
+      "unsharp_radius_label": "Sugár: {value}",
+      "unsharp_percent_label": "Erősség: {value} %",
+      "unsharp_threshold_label": "Küszöb: {value}",
+      "unsharp_viewer_title": "Adaptív élesség",
+      "auto_levels_tooltip": "Elemzi az egyes oldalakat, és automatikusan beállítja a fekete és fehér szinteket a kontraszt maximalizálása érdekében.\nOldalankénti választáshoz használja a megjelenítőt."
+    },
+    "levels_viewer": {
+      "title": "Szintbeallitas cseppentővel",
+      "apply_current": "Alkalmazas erre az oldalra",
+      "apply_all": "Alkalmaz az összes kiválasztott oldalra",
+      "black_pipette": "Fekete pont pipetta",
+      "white_pipette": "Feher pont pipetta",
+      "black_pipette_tooltip": "Kattintson egy pixelre, amelynek teljesen feketének kellene lennie. Figyelem: könnyű túllőni a célon!",
+      "white_pipette_tooltip": "Kattintson egy pixelre, amelynek teljesen fehérnek kellene lennie. Figyelem: könnyű túllőni a célon!"
+    },
+    "sharpness_viewer": {
+      "title": "Élesség beállítása"
+    },
+    "brightness_viewer": {
+      "title": "Fényerő és kontraszt beállítása"
+    },
+    "compression_viewer": {
+      "title": "Tömörítés beállítása"
+    },
+    "outliers": {
+      "title": "Szokatlan méretű oldalak",
+      "message": "Az alábbi oldalak méretei jelentősen eltérnek a többitől. Kérjük, válassza ki, hogyan kezelje őket:",
+      "width": "Szélesség",
+      "height": "Magasság",
+      "unusual": "szokatlan",
+      "skip": "Ne méretezhető át",
+      "keep": "megtartás"
+    },
+    "first_page_multi": {
+      "title": "Az első oldal többoldala",
+      "message": "Az első oldalt többoldalasnak észékelték. Hogyan szeretné számozni?",
+      "option_auto_desc": "Normál újraszámozás automatikus felismeréssel.",
+      "option_joint_desc": "Az első és az utolsó oldal összekapcsolása a képregényben.",
+      "option_exclude_label": "Ne kerülön bele az újraszámozásba",
+      "option_exclude_desc": "Az oldal megtartja jelenlegi nevét és az első helyen marad. Később manuálisan átnevezheti."
+    },
+    "batch_img": {
+      "select_directory_title": "Válassza ki a képeket tartalmazó mappát",
+      "no_img_title": "Nem találhatók képfájlok",
+      "no_img_message": "Nem találhatók önálló képfájlok a mappában :\n{directory}",
+      "confirm_title": "Önálló képek kötegelt konvertálása CBZ-be",
+      "confirm_message": "{count} képfájl konvertálandó a(z) {directory} mappában (almappák is beleértve).",
+      "checkbox_permanent_delete": "Az eredeti képfájlok végleges törlése\na lomtárba küldés nélkül (NEM VONHATÓ VISSZA)",
+      "start_button": "Indítás",
+      "converting_title": "Konvertálás folyamatban...",
+      "converting_progress": "{current}. fájl konvertálása összesen {total}-ból",
+      "complete_title": "Konvertálás befejezve",
+      "complete_message": "{count} képfájl konvertálva a mappában :",
+      "complete_message_errors": "{count} képfájl konvertálva {total}-ból a mappában :",
+      "errors_count": "{count} hiba fordult elő.",
+      "converted_by_ext": "{ext} : {count} fájl",
+      "mode_title": "Képek konvertálása CBZ formátumba",
+      "mode_intro": "Hogyan szeretné csoportosítani a képeket?",
+      "mode_one_per_image": "Minden kép konvertálása külön CBZ fájlokba",
+      "mode_one_per_image_sub": "(Minden kép külön CBZ fájllá válik)",
+      "mode_all_in_one": "Az összes kép csoportosítása egyetlen CBZ fájlba",
+      "mode_all_in_one_sub": "(A könyvtár összes képe egyetlen CBZ fájlba kerül)"
+    },
+    "batch_drop": {
+      "window_title": "Mappák kötegelt feldolgozása",
+      "intro_single": "1 mappa lett ejtve. Milyen feldolgozást szeretne alkalmazni?",
+      "intro_multiple": "{count} mappa lett ejtve. Milyen feldolgozást szeretne alkalmazni?",
+      "recursive_note": "Az almappák szintén átvizsgálásra kerülnek.",
+      "mixed_drop_title": "Az ejtés nem támogatott",
+      "mixed_drop_message": "Egyszerre ejtett fájlokat és mappákat. Kérjük, csak fájlokat vagy csak mappákat ejtsen."
+    },
+    "pdf_unlock": {
+      "title": "PDF módosítás ellen védett",
+      "message": "Az oldalak normálisan importálva lettek.\n\nEz a PDF-fájl módosítás ellen védett (tulajdonosi jelszó).\n\nSzeretnéd menteni a PDF-fájl egy másolatát ezen védelem nélkül?",
+      "yes": "Igen, feloldott másolat mentése",
+      "no": "Nem, folytatás feloldás nélkül"
+    },
+    "batch_pdf_unlock": {
+      "title": "Módosítások ellen védett PDF-fájlok",
+      "message_single": "1 módosítások ellen védett PDF-fájl észlelve. Normálisan CBZ formátumra konvertálva.\n\nSzeretnéd elmenteni a feloldott másolatot az eredeti könyvtárába?",
+      "message_plural": "{count} módosítások ellen védett PDF-fájl észlelve. Normálisan CBZ formátumra konvertálva.\n\nSzeretnéd mindegyikről elmenteni a feloldott másolatot az eredeti könyvtárába?",
+      "yes": "Igen, feloldott másolatok mentése",
+      "no": "Nem, folytatás feloldás nélkül"
+    },
+    "ico_creator": {
+      "title": ".ico ikon létrehozása",
+      "info_message": "A kép több felbontásban lesz átméretezve (16, 32, 48, 64, 128, 256 px).\nJelenlegi keret mérete: {w} × {h} px",
+      "btn_validate_crop": "Vágás megerősítése",
+      "btn_validate_no_crop": "Megerősítés vágás nélkül",
+      "btn_cancel": "Mégse",
+      "btn_transparency": "Átlátszóság beállítása",
+      "btn_validate_final": "Megerősítés",
+      "tolerance_label": "Tolerancia:",
+      "success_title": ".ico fájl létrehozva",
+      "success_message": "A(z) {filename} fájl sikeresen létrehozva.",
+      "overwrite_title": "A fájl már létezik",
+      "overwrite_message": "A(z) {filename} fájl már létezik. Felülírja?",
+      "save_blocked_title": "Mentés nem lehetséges",
+      "save_blocked_message": "Ez az archív egy vagy több .ico fájlt tartalmaz, amelyek nem képregény képek. A mentés le van tiltva, amíg ezek a fájlok jelen vannak a mozaikban.\nA mentés újraengedélyezéséhez törölje őket a mozaikból (Del billentyű) vagy vágja ki (Ctrl+X), hogy máshova illessze be.",
+      "btn_back_to_crop": "Vissza a vágáshoz"
+    },
+    "video_save_blocked": {
+      "title": "Mentés nem lehetséges",
+      "message": "Ez az archívum egy vagy több videofájlt tartalmaz. A mentés le van tiltva, amíg ezek a fájlok jelen vannak a mozaikban.\nA mentés újraengedélyezéséhez törölje őket a mozaikból (Del billentyű), vagy vágja ki őket (Ctrl+X), hogy máshová illessze be."
+    },
+    "open_file": {
+      "title": "Archívum megnyitása",
+      "filter_archives": "Archívumok (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Minden fájl (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Licenc"
+    },
+    "replace_corrupted_image": {
+      "title": "Sérült kép cseréje",
+      "filter_images": "Képek (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Minden fájl (*)"
+    },
+    "see_log": "LOG MEGTEKINTÉSE"
+  },
+  "tooltip": {
+    "source_archive": "Forrásfájl: {name}",
+    "file": "Fájl: {name}",
+    "reason": "Ok: {reason}",
+    "size_kb": "Méret: {size} KB",
+    "size_mb": "Méret: {size} MB",
+    "file_size": "Méret: {size}",
+    "dimensions": "Méretek: {width} × {height} px",
+    "resolution": "Felbontás: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: meghatározatlan",
+    "cbr_info": "A CBR fájlok a RAR formátumot használják, amely szabadalmaztatott és tulajdonosi;\nnem módosíthatók, a módosítások új CBZ fájlba kerülnek mentésre.",
+    "rotate_left": "90 fokos forgatás balra",
+    "rotate_right": "90 fokos forgatás jobbra",
+    "mirror_horizontal": "Vízszintes tükrözés",
+    "mirror_vertical": "Függőleges tükrözés",
+    "fullscreen": "Teljes képernyő",
+    "help_button": "Használati útmutató",
+    "theme_button": "Váltás világos és sötét téma között",
+    "font_decrease_button": "Betűméret csökkentése",
+    "font_increase_button": "Betűméret növelése",
+    "color_depth": "Színek: {bits} bit ({mode})",
+    "batch_pdf_to_cbz": "Az összes PDF fájlt CBZ formátumba konvertálja\negy könyvtárban és alkönyvtáraiban. A képek\nváltoztatás nélkül kerülnek kicsomagolásra\nés archiválásra, újratömörítés nélkül.",
+    "batch_pdf_permanent_delete": "FIGYELEM: ha ez a lehetőség be van jelölve,\naz eredeti PDF fájlok véglegesen törlődnek\naz átalakítás után, visszaállítás lehetősége\nnélkül. Győződjön meg arról, hogy rendelkezik\nbiztonsági másolattal, ha szükséges.",
+    "batch_cbr_to_cbz": "CBZ-be konvertálja az összes CBR fájlt,\namelyek egy könyvtárban\nés alkönyvtáraiban találhatók.",
+    "batch_cbr_permanent_delete": "FIGYELEM: ha ez a lehetőség be van jelölve,\naz eredeti CBR fájlok véglegesen törlődnek\naz átalakítás után, visszaállítás lehetősége\nnélkül. Győződjön meg arról, hogy rendelkezik\nbiztonsági másolattal, ha szükséges.",
+    "renumber_btn_1": "Többoldal automatikus felismerés mód\nJobb kattintás a mód váltásához",
+    "renumber_btn_2": "Egyszerű számozás mód\nJobb kattintás a mód váltásához",
+    "corrupted_header": "Sérült kép",
+    "right_click_instruction1": "Jobb kattintás a kép cseréjéhez",
+    "right_click_instruction2": "vagy törléséhez.",
+    "unknown_error": "Ismeretlen hiba",
+    "batch_img_to_cbz": "Egy mappában és almappáiban található összes képfájlt\nCBZ formátumba konvertálja,\nképenként egy CBZ fájlt hozva létre.",
+    "batch_img_permanent_delete": "FIGYELMEZTETÉS : ha ez a lehetőség be van jelölve,\naz eredeti képfájlok véglegesen törlődnek\na konvertálás után, visszaállítás lehetősége\nnélkül. Győződjön meg arról, hogy rendelkezik\nbiztonsági másolattal, ha szükséges.",
+    "too_large_header": "A kép túl nagy a betöltéshez",
+    "too_large_pixels": "Méretek: {pixels}",
+    "icon_toolbar_config_button": "Ikonkonfiguráció",
+    "icon_toolbar_size_decrease": "Ikonméret csökkentése",
+    "icon_toolbar_size_increase": "Ikonméret növelése",
+    "source_loose": "Szabad kép",
+    "source_web": "Webes kép"
+  },
+  "help": {
+    "title": "MosaicView - Útmutató",
+    "intro": "A MosaicView lehetővé teszi képregények (digitális képregények) kezelését és módosítását anélkül, hogy ki kellene őket bontani az archívumból. Az alkalmazás támogatja a CBZ (ZIP), CBR (RAR) és PDF formátumokat. Az alkalmazás kizárólag 64 bites rendszerekkel kompatibilis.",
+    "open_files": "Fájlok megnyitása",
+    "open_files_content": "• Kattintson a 'CBZ/CBR/CB7/PDF megnyitása' gombra\n• Vagy húzzon be közvetlenül egy fájlt az ablakba\n• Támogatott formátumok: CBZ, CBR, CB7, PDF, képek (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Az EPUB fajlok is megnyithatok, de csak a kepek lesznek kinyerve (a szoveg figyelmen kivul marad).\n• Titkosított PDF (jelszó szükséges a megnyitáshoz): a fájl nem importálható, hibaüzenet jelenik meg.\n• PDF módosítás ellen védett (owner password): az oldalak normálisan importálódnak. A MosaicView felajánlja a feloldott másolat mentését ugyanabba a mappába.",
+    "mosaic": "A mozaik",
+    "mosaic_content": "A mozaik miniatűrként jeleníti meg a képregény összes oldalát. Lehetőségei:\n• Átrendezheti az oldalakat húzással (az oldalak számozása automatikus lesz, és az aktív átszámozási mód szerint történik)\n• Több oldalt is kijelölhet (Ctrl+kattintás vagy Shift+kattintás)\n• Beállíthatja a miniatűrök méretét a csúszkával\n• Manuálisan átnevezheti a fájlokat a nevükre kattintva\n• Húzhat és ejthet képregényfájlokat (CBZ/CBR/PDF) a Windows Intézőből közvetlenül egy másik nyitott képregénybe a tartalmuk egyesítéséhez",
+    "manipulation": "Oldalak kezelése",
+    "manipulation_content": "• Húzza és ejtse az oldalakat az átrendezéshez\n• Húzzon egy teljes képregényt egy másikba az összevonáshoz\n• Jobb kattintás az oldalra a beállítások eléréséhez (forgatás, törlés stb.)\n• Dupla kattintás az oldalra a megjelenítő megnyitásához\n• Egyes oldalak exportálása Windows-mappába húzással vagy Ctrl+C / Ctrl+V segítségével",
+    "renumber": "Oldalak újraszámozása",
+    "renumber_content": "A MosaicView két oldalszámozási módot kínál, amelyek elérhetők az újraszámozás gombbal, a helyi menüből (jobb kattintás) vagy automatikusan húzás és ejtés során:\n\n• Többszörös oldalak automatikus felismerése mód (alapértelmezett mód): az alkalmazás elemzi az egyes oldalak szélességét a dupla, tripla stb. oldalak felismeréséhez. A többszörös oldalak ennek megfelelően kerülnek újraszámozásra (pl.: egy dupla oldal neve 003-004 lesz, egy tripla 005-006-007). 4 oldalnál több esetén csak az első és az utolsó szám jelenik meg (pl.: 010---025).\n\n• Egyszerű számozási mód: minden oldal egyedi sorszámot kap (001, 002, 003...), az oldalak szélességétől függetlenül.\n\nA két mód közötti váltáshoz kattintson jobb gombbal az újraszámozás gombra. Egy eszköztipp jelzi az aktív módot. A kiválasztott mód a húzás és ejtés során történő automatikus újraszámozásra is vonatkozik.",
+    "flatten": "Könyvtárak egyengetése",
+    "flatten_content": "Ha az archívum almappákat tartalmaz, használja a 'Mappák egyengetése' funkciót az összes kép ugyanarra a szintre hozásához.",
+    "viewer": "Néző",
+    "viewer_content": "Dupla kattintással nyissa meg a nézőt:\n• ← → billentyűk: navigáció az oldalak között\n• D billentyű: váltás 3 olvasási mód között\n  - Egyszerű oldal: egyszerre egy oldal\n  - Dupla oldal: 1. oldal egyedül, majd 2-3, 4-5, stb.\n  - Folyamatos dupla oldal: 1. oldal egyedül, majd 2-3, 3-4, 4-5, stb.\n• Egérgörgő: gyors navigáció\n• Ctrl+Görgő vagy Ctrl+Plus/Mínusz: nagyítás\n• Ctrl+0: nagyítás visszaállítása\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: vágási keret megszakítása / kilépés a nézőből",
+    "join_pages": "Oldalak egyesítése",
+    "join_pages_content": "Válasszon ki több egymást követő oldalt, jobb klikk → 'Kiválasztott oldalak egyesítése' az oldalak vízszintes vagy függőleges egyesítéséhez. A létrehozott kép formátuma megegyezik a forrásoldalak formátumával, ha azok mind azonosak, egyébként alapértelmezetten PNG.",
+    "split_pages": "Oldalak felosztása",
+    "split_pages_content": "Dupla oldalak automatikus felosztásához:\n• Jelölje ki a felosztandó oldalakat\n• Jobb klikk → 'Kijelölt oldalak felosztása'\n• Válassza ki az irányt (függőleges vagy vízszintes)",
+    "crop": "Vágás a nézőben",
+    "crop_content": "A nézőben rajzoljon egy téglalapot a képre a vágási terület meghatározásához:\n• Rajzolja meg a téglalapot az egérrel\n• Méretezze át a szélek vagy sarkok húzásával\n• Kattintson a 'Vágás jóváhagyása' gombra az alkalmazáshoz\n• A vágás az aktuális képre lesz alkalmazva\n• Esc billentyű: vágási keret megszakítása",
+    "shortcuts": "Billentyűparancsok",
+    "shortcuts_content": "• Ctrl+Z: Utolsó művelet visszavonása\n• Ctrl+Y: Visszavont művelet újra\n• Ctrl+A: Összes oldal kijelölése\n• Ctrl+I: Kijelölés megfordítása\n• Ctrl+C: Kijelölt oldalak másolása\n• Ctrl+X: Kijelölt oldalak kivágása\n• Ctrl+V: Oldalak beillesztése\n• Del: Kijelölt oldalak törlése\n• F5: Mozaik megjelenítésének frissítése\n• F11: Teljes képernyő váltása (kilépés F11-gyel vagy ESC-vel)",
+    "dark_mode": "Sötét mód",
+    "dark_mode_content": "Kattintson a nap/hold gombra a világos és sötét téma közötti váltáshoz.",
+    "sort": "Oldalak rendezése",
+    "sort_content": "Használja a 'Rendezés' gombot az oldalak automatikus átrendezéséhez:\n• Név, Típus, Méret, Szélesség, Magasság, Felbontás vagy DPI szerint",
+    "save": "Mentés",
+    "save_content": "• 'Mentés': módosítások mentése az eredeti fájlba\n• 'Mentés másként': új archívum létrehozása\n• 'CBZ létrehozása': elérhető csak képek módban (archívum nélkül)",
+    "other": "Egyéb funkciók",
+    "other_content": "• Forgatás: forgasson el egy vagy több oldalt\n• Konvertálás: konvertáljon képeket különböző formátumokba (PNG, JPEG, WEBP, BMP, TIFF, GIF). Megjegyzés: a CMYK módú képek automatikusan RGB-re konvertálódnak (PNG, JPEG, WEBP, BMP, TIFF, GIF). Megjegyzés: a CMYK módú képek automatikusan RGB-re konvertálódnak\n• Nyomtatás: nyomtasson ki kijelölt vagy összes oldalt\n• Kinyerés: konkrét oldalak kinyerése\n• Metaadatok fül: a ComicInfo.xml fájl információinak megjelenítése (ha van az archívumban). Ha hozzáad vagy eltávolít egy oldalt egy metaadatokat tartalmazó képregényből, az alkalmazás felajánlja a benne jelzett oldalszám módosítását. Más metaadatokat nem lehet módosítani. Ez a korlátozás szándékos, és egy tervezési döntés eredménye.",
+    "config_files": "Konfigurációs és ideiglenes fájlok",
+    "config_files_content": "A MosaicView létrehoz egy .mosaicview_config.json nevű fájlt. Ez a fájl néhány paramétert tartalmaz, amelyek szükségesek a visszaállítás gomb megfelelő működéséhez, valamint a nemrég megnyitott képregények listáját, amely nyilvánvalóan szükséges a nemrég megnyitott fájlok megjelenítéséhez. A MosaicView ideiglenes fájlokat is ment, amelyek szükségesek a különböző képfeldolgozási műveletekhez.\nMindezek a fájlok a {temp_dir} könyvtárban találhatók.\nAz ideiglenes fájlok törlődnek minden alkalommal, amikor az alkalmazást bezárják, de a .mosaicview_config.json fájl természeténél fogva megőrzésre van szánva.\nEzeket a fájlokat azonban manuálisan is törölheti, ha a {temp_dir} könyvtárba lép, vagy az alábbi gombokra kattint. A .mosaicview_config.json fájl minden alkalommal újra létrejön, amikor az alkalmazást megnyitják, és az ideiglenes fájlok szükség szerint újra létrejönnek.",
+    "config_clear_temp": "Ideiglenes fájlok törlése",
+    "config_clear_recent": "Legutóbbiak törlése",
+    "config_clear_config": "Konfigurációs fájl törlése",
+    "config_temp_cleared": "Az ideiglenes fájlok sikeresen törölve lettek.",
+    "config_config_cleared": "A konfigurációs fájl sikeresen törölve lett.\nA következő alkalmazásindításkor újra létrejön.",
+    "language": "Nyelvválasztás",
+    "language_content": "A MosaicView több nyelven elérhető.\nAlapértelmezés szerint az alkalmazás automatikusan felismeri az operációs rendszer nyelvét, és ezen a nyelven jelenik meg, ha támogatott. Ha a rendszer nem támogatott nyelvet használ, a felület angolul jelenik meg.\nBármikor manuálisan módosíthatja a nyelvet a gombok oszlopának alján, a miniatűrök méretének csúszkája alatt található legördülő menü segítségével. A választás mentésre kerül, és a következő indításkor alkalmazásra kerül.\nELÉRHETŐ NYELVEK: angol, arab, bolgár, cseh, dán, észt, finn, francia, görög, hindi, holland, horvát, indonéz, ír, izlandi, japán, kínai (egyszerűsített), kínai (hagyományos), koreai, lett, litván, magyar, maláj, máltai, német, norvég, olasz, lengyel, portugál, román, spanyol, svéd, szlovák, szlovén, tamil, thai, török, ukrán, vietnami, örmény.\nELÉRHETŐ KITALÁLT NYELVEK: klingon (latin ábécé és pIqaD ábécé verziók), szindarin (latin ábécé és tengwar ábécé verziók), quenya (latin ábécé és tengwar ábécé verziók).\n\nEz a segédprogram Windows betűtípusokat használ, kivéve a pIqaD (klingon nyelv) és tengwar (tünde nyelvek: szindarin és quenya) betűtípusokat. Ezek a betűtípusok szabadon használhatók és ezekről az oldalakról származnak:\n- pIqaD (klingon ábécé): {url_piqad}\n- tengwar (tünde ábécé, szindarin és quenya nyelvekhez): {url_tengwar}\nHa ezek az oldalak már nem aktívak, letöltheti a pIqaD és tengwar betűtípusokat az alábbi gombokra kattintva:\n\nEzt a szoftvert franciául fejlesztették. A többi nyelvre való fordítások mesterséges intelligencia, konkrétan Claude segítségével készültek. Úgy döntöttem, hogy körülbelül negyven nyelvet támogatok. De nyilvánvalóan nem beszélek mindegyik nyelven. Ezért nem volt más választásom, mint mesterséges intelligenciát használni, mivel 40 különböző fordító alkalmazása és fizetése nem szerepelt a mérlegelt lehetőségek között. A fordítások automatikus jellege miatt hibák lehetnek jelen. Elnézést kérek ezért.",
+    "credits": "Vibe Coding, szerelmem",
+    "credits_content": "Nem értek a programozáshoz. Egyáltalán nem. Ennek következtében ezt a szoftvert Claude-dal, az Anthropic mesterséges intelligenciájával fejlesztettem, pontosabban Claude Code-dal. Csak ajánlani tudom a Claude Code-ot, ez az alkalmazás csodálatos!",
+    "resize_pages": "Oldalméret módosítása",
+    "resize_pages_content": "Oldalak kicsinyítéséhez vagy nagyításához:\n• Válasszon ki egy vagy több oldalt\n• Jobb klikk → 'Átméretezés'\n• Három lehetőség áll rendelkezésre:\n  - Egyéni méretek: adja meg a kívánt szélességet vagy magasságot (az arány automatikusan megmarad).\n  - Százalékos kicsinyítés: válasszon 10% és 90% közötti százalékot\n  - Százalékos nagyítás: válasszon 10% és 100% közötti százalékot\n• Az alkalmazás megjeleníti a képek becsült méretét a módosítás után\n• A módosítás azonnal érvényes az összes kiválasztott oldalra",
+    "language_export_piqad": "pIqaD betűtípus",
+    "language_export_tengwar": "Tengwar betűtípusok",
+    "language_export_piqad_success": "Betűtípus exportálva: {filename}\nElérhető:",
+    "language_export_tengwar_success": "{count} betűtípus exportálva\nElérhetők:",
+    "icons": "Ikonok",
+    "icons_content": "Az ebben a segédprogramban használt ikonok többsége erről a webhelyről származik, és nem kereskedelmi célú felhasználásra ingyenesen elérhető: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nNéhányat én módosítottam.\nCsak egy ikon, a Windows végrehajtható ikon, én készítettem (de mesterséges intelligenciával, mert nagyon, nagyon, nagyon rossz grafikus vagyok). Engedélyem van arra, hogy ezt az ikont úgy használja, ahogy akarja, amennyiben megnevezi a forrást.",
+    "icons_view_button": "Ikonok megtekintése",
+    "icons_window_title": "MosaicView Ikonok",
+    "icons_save_all": "Ikonok mentése",
+    "icons_saved_success": "{count} ikon mentve:",
+    "icons_save_failed": "Nem lehet menteni az ikonokat: {error}",
+    "split_ui": "Kétpaneles felület",
+    "split_ui_content": "A MosaicView lehetővé teszi két archívum egyidejű, egymás melletti megjelenítését.\n\nKattintson a Felosztás ikonra a második panel megnyitásához. Minden panel független: külön nyithat meg, szerkeszthet és menthet archívumot. Az aktív panelt kék keret jelzi.\n\nAz oldalak egyik panelből a másikba való áthelyezéséhez húzza őket közvetlenül. Ha több oldal van kijelölve, mind együtt mozog. Az oldalak a piros sáv által jelzett pozícióba kerülnek.\n\nKattintson a Második panel bezárása ikonra az egypaneles módhoz való visszatéréshez.",
+    "license_gpl": "GPL v3 licenc",
+    "license_unrar": "UnRAR licenc",
+    "config_clear_clipboard": "Vágólap fájlok törlése",
+    "config_clipboard_note": "Kivétel: A Windows vágólap által használt ideiglenes fájlok (clipboard_XXXXX fájlok) a másolás után 12 órán át megmaradnak, így akkor is beilleszthetők, ha bezárta az alkalmazást. 12 óra után automatikusan törlődnek.",
+    "config_log_note": "A kötegelt konverziók (PDF CBZ-vé és CBR CBZ-vé) hibanapló fájlt hoznak létre hiba esetén. Ezek a fájlok (Log_pdftocbz_.txt és Log_cbrtocbz_.txt) az alkalmazás bezárása után is megmaradnak, hogy később áttekinthetők legyenek. Csak a fenti \"Ideiglenes fájlok törlése\" gombbal törölhetők.",
+    "config_clipboard_cleared": "A vágólap fájlok sikeresen törölve lettek.",
+    "adjust_images": "Képbeállítás",
+    "adjust_images_content": "Ez a funkció lehetővé teszi a képek közvetlen retusálását a MosaicView-ban. Módosíthatja a fényerőt, a kontrasztot, az élességet, a szinteket, a telítettséget, effektusokat alkalmazhat (fekete-fehér, szépia, színinverzió), beállíthatja a tömörítés minőségét, eltávolíthatja a színeket, alkalmazhat átlátszóságot vagy különböző színmélységekre konvertálhat. Egyes beállításokhoz dedikált megjelenítő tartozik, amely lehetővé teszi az eredmény megtekintését teljes felbontásban az alkalmazás előtt. Egy bélyegkép valós időben mutatja az eredményt a főablakban.",
+    "create_icon": "Ikon létrehozása",
+    "create_icon_content": "A MosaicView lehetővé teszi ikonfile-ok (.ico) létrehozását a mozaik bármely képéből.\n• Jobb kattintás egy képre → 'Ikon létrehozása'\n• Keretezze be a kívánt területet a megjelenítőben (az ikon kötelezően négyzetes lesz)\n• Szükség esetén állítsa be az átlátszóságot\n• Erősítse meg: a .ico fájl közvetlenül a mozaikhoz adódik\n• A .ico fájlok automatikusan tartalmazzák az összes szabványos felbontást (16×16-tól 256×256-ig)\n• Amíg .ico fájl van a mozaikban, a CBZ archívumba való mentés le van tiltva, mivel az ICO formátumot ezek az archívumok nem támogatják. Exportálja a .ico fájlt külön (Ctrl+C, majd illessze be egy Windows mappába), majd törölje a mozaikból mentés előtt.",
+    "batch_convert": "Kötegelt átalakítás",
+    "batch_convert_content": "A MosaicView három köteges konverziós funkciót kínál, amelyek csak akkor érhetők el, ha a mozaik üres. Mindegyiknél ugyanaz az elv : válasszon egy könyvtárat, erősítse meg, kövesse nyomon a folyamatot valós időben, tekintse át a végső összefoglalót. Egy beállítás lehetővé teszi az eredeti fájlok végleges törlését ahelyett, hogy a lomtárba küldené őket.\n• CBR → CBZ : egy könyvtárban és alkönyvtáraiban lévő összes CBR (RAR) fájlt konvertálja. Ha egy CBR valójában ZIP, egyszerűen átnevezik konverzió nélkül.\n• PDF → CBZ : egy könyvtárban és alkönyvtáraiban lévő összes PDF fájlt konvertálja. A képek újratömörítés nélkül kerülnek kinyerésre.\n• ÖNÁLLÓ KÉPEK → CBZ : egyedi CBZ-t hoz létre a könyvtárban és alkönyvtáraiban talált minden egyes képfájlhoz. Érvénytelen, sérült, többoldalas (TIFF) vagy animált (GIF) képeket a rendszer figyelmen kívül hagyja és naplózza.",
+    "config_open_temp_folder": "Ideiglenes mappa megnyitása",
+    "icon_toolbar": "Ikonsáv",
+    "icon_toolbar_content": "Az ikonsor gyors hozzáférést biztosít az alkalmazás főbb funkcióihoz. Az ikonokat kedve szerint rendezheti át, közvetlenül a sorba húzva őket. A megjelenítendő vagy elrejtendő ikonok kiválasztásához kattintson a sor alján lévő fogaskerék gombra: megnyílik egy beállítási ablak, amelyben az ikonokat mozgathatja az aktív sor és a tartalék között. A « + » és « − » gombok segítségével módosíthatja az ikonok méretét. A konfiguráció automatikusan mentésre kerül.",
+    "license_7zip": "7-Zip licenc"
+  },
+  "misc": {
+    "file_word": "fájl",
+    "files_word": "fájl",
+    "corrupted": "sérült",
+    "yes": "Igen",
+    "no": "Nem",
+    "cancel": "Mégse",
+    "selection_suffix": "másolat-kijelölés"
+  },
+  "metadata": {
+    "title": "Cím",
+    "series": "Sorozat",
+    "number": "Szám",
+    "volume": "Kötet",
+    "summary": "Összefoglaló",
+    "writer": "Író",
+    "penciller": "Rajzoló",
+    "inker": "Tus",
+    "colorist": "Színező",
+    "letterer": "Betűző",
+    "cover_artist": "Borítóművész",
+    "editor": "Szerkesztő (személy)",
+    "publisher": "Kiadó (vállalat)",
+    "imprint": "Sorozat",
+    "genre": "Műfaj",
+    "web": "Weboldal",
+    "page_count": "Oldalszám",
+    "language_iso": "Nyelv",
+    "format": "Formátum",
+    "black_and_white": "Fekete-fehér",
+    "manga": "Manga",
+    "year": "Év",
+    "month": "Hónap",
+    "day": "Nap",
+    "notes": "Jegyzetek",
+    "characters": "Karakterek",
+    "locations": "Helyszínek",
+    "teams": "Csapatok",
+    "story_arc": "Történeti ív",
+    "story_arc_number": "Ívszám",
+    "series_group": "Sorozatcsoport",
+    "count": "Kiadások száma",
+    "alternate_series": "Alternatív sorozat",
+    "alternate_number": "Alternatív szám",
+    "alternate_count": "Alternatív szám",
+    "age_rating": "Korhatár",
+    "series_complete": "Sorozat befejezett",
+    "translator": "Fordító",
+    "tags": "Címkék",
+    "scan_information": "Szkennelési információ",
+    "community_rating": "Közösségi értékelés",
+    "review": "Értékelés",
+    "gtin": "GTIN",
+    "pages": "Oldalak",
+    "pages_col_image": "Kép",
+    "pages_col_type": "Típus",
+    "pages_col_width": "Szélesség",
+    "pages_col_height": "Magasság",
+    "pages_col_size": "Méret (B)"
+  },
+  "web": {
+    "web_download_progress": "Letöltés: {downloaded}/{total} kép...",
+    "web_download_cancel": "Mégsem",
+    "web_no_images": "Nincsenek képek",
+    "web_no_images_found": "Ezen az oldalon nem találhatók képek.",
+    "web_imported": "{count} kép importálva a weboldalról",
+    "web_drag_drop_title": "Webkép húzása és ejtése",
+    "web_copy_paste_message": "A közvetlen húzás és ejtés webböngészőből nem támogatott.\n\nAlternatív megoldás (egyszerűbb):\n\n1. Jobb kattintás a képre a böngészőben\n2. Válassza a 'Kép másolása' lehetőséget\n3. A MosaicView-ban használja a 'Beillesztés' gombot vagy a Ctrl+V-t\n\nEz a módszer minden webképpel működik!",
+    "import_web_button": "Web importálás",
+    "import_web_tooltip": "Illesszen be egy internetcímet az oldalról származó összes kép lekéréséhez",
+    "import_web_menu": "Web importálás...",
+    "import_web_dialog_title": "Képek importálása weboldalról",
+    "import_web_url_label": "Weboldal címe:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Mégse",
+    "import_web_invalid_url": "Érvénytelen URL. Kérjük, adjon meg egy érvényes webcímet."
+  },
+  "donation": {
+    "menu_label": "Adományozzon a szerzőnek",
+    "title": "Adományozás",
+    "message": "Tetszik ez a kis segédprogram, és rendszeresen használja.\n\nTöbb száz órát fektetettem bele. Fontolóra venné, hogy megköszönje nekem adományozással? Legyen kedves, tényleg pénzre van szükségem ahhoz, hogy megtöltsem a medencémet pezsgővel. Akár néhány centet, akár több milliárd eurót szeretne küldeni, minden összeget elfogadok. Ezt az adományt a paypalon keresztül teheti meg"
+  },
+  "mail": {
+    "tooltip": "Ez a gomb megnyitja az alapértelmezett e-mail szoftvert a Windowsban, hogy e-mailt küldjön. Ha nincs konfigurálva szoftver (például ha kizárólag webmailt használ), jobb kattintással az ikonra a vágólapra másolhatja a MosaicView címét.",
+    "copy_address": "MosaicView email címének másolása",
+    "menu_label": "E-mail küldése a MosaicView-nak",
+    "icon_label": "E-mail küldése"
+  },
+  "menu": {
+    "file": "Fájl",
+    "file_open": "Fájl megnyitása",
+    "file_close": "Fájl bezárása",
+    "batch_convert": "Fájlok kötegelt konvertálása",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Egyedi képek → CBZ",
+    "edit": "Szerkesztés",
+    "undo": "Visszavonás",
+    "redo": "Újra",
+    "paste": "Beillesztés",
+    "delete": "Törlés",
+    "invert_selection": "Kijelölés megfordítása",
+    "select_all": "Összes kijelölése",
+    "deselect": "Kijelölés törlése",
+    "refresh_mosaic": "Mozaik frissítése",
+    "images": "Képek",
+    "rotation": "Forgatás",
+    "archives": "Archívumok",
+    "sort": "Rendezés",
+    "system": "Rendszer",
+    "decrease_font": "Betűméret csökkentése",
+    "increase_font": "Betűméret növelése",
+    "language": "Nyelvek",
+    "language_real": "Valódi nyelvek",
+    "language_fictional": "Kitalált nyelvek",
+    "about": "Névjegy",
+    "export_piqad_font": "pIqaD betűtípus mentése",
+    "export_tengwar_fonts": "Tengwar betűtípusok mentése"
+  }
+}

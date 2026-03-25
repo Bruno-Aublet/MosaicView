@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "デジタルコミックコレクターのための万能ツール",
+  "buttons": {
+    "open_file": "CBZ/CBR/CB7/PDFを開く",
+    "close_file": "ファイルを閉じる",
+    "create_cbz": "CBZアーカイブを作成",
+    "flatten_dirs": "すべてのファイルをルートに\n移動してサブディレクトリ\nを削除",
+    "renumber": "ページ番号の\n振り直し",
+    "undo": "⤺ 元に戻す",
+    "redo": "やり直す ⤻",
+    "copy": "コピー",
+    "cut": "切り取り",
+    "paste": "貼り付け",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "別の画像形式に\n変換",
+    "join_pages": "ページを結合",
+    "split_page": "ページを分割",
+    "save_as": "名前を付けて保存\n(新しいCBZを作成)",
+    "save_selection": "選択範囲をCBZで\n保存",
+    "print_selection": "選択範囲を印刷",
+    "print_all": "コミック全体を印刷",
+    "sort": "並び替え",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "変換",
+    "cancel": "キャンセル",
+    "split_button": "分割",
+    "join_button": "開始",
+    "validate_crop": "トリミングを確定",
+    "ok": "OK",
+    "close": "閉じる",
+    "apply_and_save": "変更を適用してファイルを保存",
+    "apply_and_create": "変更を適用してCBZファイルを作成",
+    "close_and_lose": "ファイルを閉じて変更を破棄",
+    "cancel_return": "キャンセルしてモザイクに戻る",
+    "update_page_count": "メタデータのページ数を\n更新",
+    "invert_selection": "選択を反転",
+    "reduce_size": "ページのサイズ変更",
+    "mirror_vertical": "⇅",
+    "create_gif": "GIF作成",
+    "edit_gif": "アニメーションGIFを編集",
+    "save_to_folder": "選択したページを\nエクスポート",
+    "continue": "続行",
+    "reset": "↻",
+    "yes": "はい",
+    "no": "いいえ",
+    "renumber_recommended": "番号を振り直す（推奨）",
+    "ignore_and_save": "無視して保存",
+    "rename_to_cbz": ".cbzに名前を変更",
+    "open_without_rename": "名前を変更せずに開く",
+    "rename_to_cbr": ".cbrに名前を変更",
+    "adjustments": "明るさ、\nコントラスト等",
+    "batch_cbr_to_cbz": "一括変換\n CBRファイルをCBZに",
+    "batch_pdf_to_cbz": "PDFファイルの\n 一括CBZ変換",
+    "batch_img_to_cbz": "単独画像の一括変換\n CBZ形式へ",
+    "icon_toolbar_reset": "リセット",
+    "delete_selected": "削除",
+    "save": "保存",
+    "rename_to_cb7": ".cb7 に名前を変更",
+    "split_ui": "インターフェースを2つのパネルに分割",
+    "unsplit_ui": "2つ目のパネルを閉じる"
+  },
+  "tabs": {
+    "mosaic": "モザイク",
+    "metadata": "メタデータ"
+  },
+  "viewer": {
+    "title": "ビューア",
+    "mode_single": "シングルページ  [D]",
+    "mode_double": "ダブルページ  [D]",
+    "mode_continuous": "連続モード  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "前のページ (←)",
+      "next_page": "次のページ (→)",
+      "zoom_in": "ズームイン (Ctrl+Plus)",
+      "zoom_out": "ズームアウト (Ctrl+Minus)",
+      "zoom_reset": "ズームリセット (Ctrl+0)",
+      "reading_mode_double": "読書モードを変更 (D) → 見開き",
+      "reading_mode_continuous": "読書モードを変更 (D) → 連続見開き",
+      "reading_mode_single": "読書モードを変更 (D) → 単ページ",
+      "fullscreen_exit": "フルスクリーン終了 (F11)",
+      "fullscreen": "フルスクリーン (F11)",
+      "close_viewer": "ビューアを閉じる (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ 破損画像 - 置換",
+      "corrupted_delete": "⚠️ この画像を削除",
+      "copy": "コピー (Ctrl+C)",
+      "cut": "切り取り (Ctrl+X)",
+      "paste": "貼り付け (Ctrl+V)",
+      "paste_clipboard": "クリップボードから貼り付け (Ctrl+V)",
+      "delete": "削除 (Delete)",
+      "deselect": "選択解除 (ESC)",
+      "rotate_right": "↻ 右回転",
+      "rotate_left": "↺ 左回転",
+      "mirror": "⇄ 水平反転",
+      "crop": "トリミング",
+      "convert": "別の形式に変換...",
+      "join": "選択ページを結合",
+      "split": "選択ページを分割",
+      "save_selection": "選択範囲をCBZで保存",
+      "print_selection": "選択範囲を印刷",
+      "copy_archive": "アーカイブ全体をコピー",
+      "undo": "元に戻す (Ctrl+Z)",
+      "redo": "やり直す (Ctrl+Y)",
+      "renumber_auto": "ページ番号の振り直し（複数ページの自動検出）",
+      "renumber_simple": "ページ番号の振り直し（単純な番号付け）",
+      "sort_submenu": "ページを並び替え",
+      "sort_name": "名前順",
+      "sort_type": "種類順",
+      "sort_size": "サイズ順",
+      "sort_width": "幅順",
+      "sort_height": "高さ順",
+      "sort_resolution": "解像度順",
+      "sort_dpi": "DPI順",
+      "create_cbz": "CBZアーカイブを作成",
+      "save_as": "名前を付けて保存...",
+      "close_file": "ファイルを閉じる",
+      "help": "使用方法",
+      "update_page_count": "メタデータのページ数を更新",
+      "invert_selection": "選択を反転 (Ctrl+I)",
+      "reduce_size": "ページのサイズ変更",
+      "mirror_vertical": "⇅ 垂直ミラー",
+      "edit_animated_gif": "アニメーションGIFを編集...",
+      "save_to_folder": "選択したページをエクスポート",
+      "adjustments": "明るさ、コントラスト、色...",
+      "refresh_mosaic": "モザイクを更新 (F5)",
+      "create_ico": ".icoファイルを作成"
+    },
+    "canvas_no_file": {
+      "open": "CBZ/CBR/CB7/PDFを開く",
+      "recent_files": "最近使ったファイル",
+      "clear_history": "履歴をクリア"
+    },
+    "canvas_with_file": {
+      "close": "ファイルを閉じる",
+      "paste": "貼り付け (Ctrl+V)",
+      "paste_clipboard": "クリップボードから貼り付け (Ctrl+V)",
+      "select_all": "すべて選択 (Ctrl+A)",
+      "deselect": "選択解除 (ESC)",
+      "copy_archive": "アーカイブ全体をコピー",
+      "print_all": "コミック全体を印刷",
+      "renumber_auto": "ページ番号の振り直し（複数ページの自動検出）",
+      "renumber_simple": "ページ番号の振り直し（単純な番号付け）",
+      "flatten": "フォルダを平坦化",
+      "save_selection": "選択範囲をCBZで保存",
+      "hide_sidebar": "« ボタン列を非表示",
+      "show_sidebar": "» ボタン列を表示",
+      "decrease_thumbs": "サムネイルサイズを縮小",
+      "increase_thumbs": "サムネイルサイズを拡大",
+      "theme_dark": "ダークテーマに切替",
+      "theme_light": "ライトテーマに切替",
+      "sort_submenu": "ページを並び替え",
+      "undo": "元に戻す (Ctrl+Z)",
+      "redo": "やり直す (Ctrl+Y)",
+      "create_cbz": "CBZアーカイブを作成",
+      "save_as": "名前を付けて保存...",
+      "help": "使用方法",
+      "update_page_count": "メタデータのページ数を更新",
+      "invert_selection": "選択を反転 (Ctrl+I)",
+      "fullscreen": "フルスクリーン (F11)",
+      "fullscreen_exit": "フルスクリーンを終了 (F11またはESC)",
+      "quit": "アプリケーションを終了"
+    },
+    "canvas": {
+      "quit": "アプリケーションを終了",
+      "reset": "アプリをリセット:\n• ウィンドウのサイズと位置\n• ダークモード → ライト\n• サムネイルサイズ → 標準\n• サイドバー → 表示 / 220 px\n• 言語 → 自動検出\n• フォントサイズ → デフォルト",
+      "reset_label": "アプリをリセット"
+    },
+    "font_size": {
+      "decrease": "フォントサイズを小さくする",
+      "increase": "フォントサイズを大きくする"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "名前で並び替え",
+    "sort_type": "種類で並び替え",
+    "sort_size": "サイズで並び替え",
+    "sort_width": "幅で並び替え",
+    "sort_height": "高さで並び替え",
+    "sort_resolution": "解像度で並び替え",
+    "sort_dpi": "DPIで並び替え"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "空のアーカイブ",
+        "message": "CBZアーカイブにファイルが含まれていません。"
+      },
+      "empty_cbr": {
+        "title": "空のアーカイブ",
+        "message": "CBRアーカイブにファイルが含まれていません。"
+      },
+      "files_ignored": {
+        "title": "無視されたファイル"
+      },
+      "no_selection_crop": {
+        "title": "選択なし",
+        "message": "トリミングする画像を選択してください。"
+      },
+      "multi_selection_crop": {
+        "title": "複数選択",
+        "message": "一度に1つの画像のみトリミングできます。\n1つの画像を選択してください。"
+      },
+      "invalid_selection_crop": {
+        "title": "無効な選択",
+        "message": "画像のみトリミングできます。"
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "機能が利用できません",
+        "message": "サブディレクトリではページの移動ができません。\nフォルダを平坦化するか、ルートに戻ってください。"
+      },
+      "no_selection_convert": {
+        "title": "選択なし",
+        "message": "変換する画像を少なくとも1つ選択してください。"
+      },
+      "invalid_selection_convert": {
+        "title": "無効な選択",
+        "message": "画像のみ変換できます。"
+      },
+      "no_selection_split": {
+        "title": "選択なし",
+        "message": "分割する画像を選択してください。"
+      },
+      "multi_selection_split": {
+        "title": "複数選択",
+        "message": "一度に1つの画像のみ分割できます。\n1つの画像を選択してください。"
+      },
+      "invalid_selection_split": {
+        "title": "無効な選択",
+        "message": "画像のみ分割できます。"
+      },
+      "invalid_number_split": {
+        "title": "無効な数値",
+        "message": "ページ数は2から10の間でなければなりません。"
+      },
+      "insufficient_selection_join": {
+        "title": "選択不足",
+        "message": "結合するには少なくとも2つの画像を選択してください。"
+      },
+      "invalid_selection_join": {
+        "title": "無効な選択",
+        "message": "画像のみ結合できます。"
+      },
+      "pil_not_available": {
+        "title": "PILが利用できません",
+        "message": "システムクリップボードからの貼り付けにPILモジュールが必要です。"
+      },
+      "format_not_supported": {
+        "title": "サポートされていない形式",
+        "message": "サポートされていない画像形式または破損ファイル。\nサポート形式：JPG、PNG、WEBP、BMP、TIFF、GIF、ICO"
+      },
+      "no_crop_selection": {
+        "title": "選択なし",
+        "message": "最初にトリミング範囲を描いてください。"
+      },
+      "cannot_open_file": {
+        "title": "ファイルを開けません",
+        "message": "ファイルを読み込めません。"
+      },
+      "corrupted_images": {
+        "title": "破損画像",
+        "summary": "{total} 枚中 {count} 枚の破損した画像が検出されました。",
+        "hint": "特別なアイコンで表示されます。\n破損した画像を右クリックして、置き換えるか削除してください。",
+        "more": "... さらに {count} 枚"
+      },
+      "no_image_print": {
+        "title": "画像なし",
+        "message": "印刷する画像がありません。"
+      },
+      "no_valid_image_print": {
+        "title": "画像なし",
+        "message": "印刷できる有効な画像がありません。"
+      },
+      "no_selection_print": {
+        "title": "選択なし",
+        "message": "少なくとも1つの画像を選択してください。"
+      },
+      "no_valid_selection_print": {
+        "title": "画像なし",
+        "message": "選択範囲に有効な画像がありません。"
+      },
+      "save_cancelled": {
+        "title": "保存キャンセル",
+        "message": "保存前にファイル名を手動で修正してください。"
+      },
+      "empty_pdf": {
+        "title": "空のPDF",
+        "message": "PDFファイルにページが含まれていません。"
+      },
+      "no_selection_save": {
+        "title": "警告",
+        "message": "保存するページを少なくとも1つ選択してください。"
+      },
+      "drag_disabled_subdirectory": {
+        "title": "ドラッグ無効",
+        "message": "ドラッグ&ドロップによるページ移動はコミックのルートでのみ利用できます。\n\nページを移動するには：\n1. 上矢印アイコンをクリックしてルートに戻る\n2. またはコミックを平坦化してサブディレクトリを削除"
+      },
+      "no_selection_reduce": {
+        "title": "選択なし",
+        "message": "縮小するページを少なくとも1つ選択してください。"
+      },
+      "invalid_selection_reduce": {
+        "title": "無効な選択",
+        "message": "画像のみ縮小できます。"
+      },
+      "invalid_dimensions": {
+        "title": "無効な寸法",
+        "message": "有効な寸法（正の整数）を入力してください。"
+      },
+      "no_images_for_gif": {
+        "title": "画像なし",
+        "message": "アニメーションGIFを作成するには、少なくとも1つの画像が必要です。"
+      },
+      "no_valid_images": {
+        "title": "有効な画像なし",
+        "message": "GIFを作成するための有効な画像が見つかりませんでした。"
+      },
+      "animated_gif_in_comic": {
+        "title": "アニメーションGIF検出",
+        "message": "警告: このコミックには1つ以上のアニメーションGIFが含まれています。\\n\\nコミックリーダー（CDisplayEx、YACReaderなど）は、各GIFの最初のフレームのみを静的ページとして表示します。\\n\\nアニメーションGIFを正しく表示するには、「選択したページをエクスポート」または「アニメーションGIFを編集」ボタンを使用して、コミックの外に個別に保存する必要があります。\\n\\nそれでもコミックの保存を続けますか？"
+      },
+      "no_selection_adjust": {
+        "title": "選択なし",
+        "message": "調整を適用するには、少なくとも1枚の画像を選択してください。"
+      },
+      "invalid_selection_adjust": {
+        "title": "無効な選択",
+        "message": "調整は画像にのみ適用できます。"
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "機能が利用できません",
+        "message": "フォルダーが平坦化されるまで、ページ番号の付け直しは利用できません。\n付け直す前にフォルダーを平坦化してください。"
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIPエラー",
+        "message": "'{file}': 有効なZIPアーカイブではないか、破損しています。"
+      },
+      "zip_cannot_open": {
+        "title": "ZIPエラー",
+        "message": "CBZファイルを開けません：{error}"
+      },
+      "rar_invalid": {
+        "title": "RARエラー",
+        "message": "'{file}': 有効なRARアーカイブではないか、破損しています。"
+      },
+      "rar_cannot_open": {
+        "title": "RARエラー",
+        "message": "CBRアーカイブを開けません：{error}"
+      },
+      "cbr_unexpected": {
+        "title": "エラー",
+        "message": "CBRを開く際に予期しないエラーが発生しました：{error}"
+      },
+      "join_failed": {
+        "title": "エラー",
+        "message": "画像を結合できません。"
+      },
+      "paste_failed": {
+        "title": "エラー",
+        "message": "貼り付け中にエラーが発生しました：{error}"
+      },
+      "copy_archive_failed": {
+        "title": "エラー",
+        "message": "アーカイブをコピーできません：{error}"
+      },
+      "crop_invalid": {
+        "title": "エラー",
+        "message": "トリミング範囲が無効です。"
+      },
+      "crop_failed": {
+        "title": "エラー",
+        "message": "画像をトリミングできません：{error}"
+      },
+      "load_image_failed": {
+        "title": "エラー",
+        "message": "画像を読み込めません：\n{error}"
+      },
+      "print_error": {
+        "title": "印刷エラー",
+        "message": "印刷中にエラーが発生しました：\n{error}"
+      },
+      "print_not_available": {
+        "title": "印刷が利用できません",
+        "message": "win32printモジュールがインストールされていません。\nインストール：pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "ファイルが見つかりません",
+        "message": "ファイルが存在しません：\n{path}"
+      },
+      "import_failed": {
+        "title": "インポートエラー",
+        "message": "ファイルをインポートできません：{error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDFが未インストール",
+        "message": "PyMuPDF (fitz) ライブラリがインストールされていません。\nインストール：pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "エラー",
+        "message": "PDFのインポート中にエラーが発生しました：{error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDFエラー",
+        "message": "PDFを読み込めません：\n{error}"
+      },
+      "duplicate_names": {
+        "title": "重複ファイル名",
+        "intro": "{count} 件の重複ファイル名が検出されました:\n\n",
+        "item": "  • {name} ({times} 回)\n",
+        "more": "  ... さらに {more} 件\n",
+        "footer": "\nZIPアーカイブは重複した名前を受け付けません。\n保存する前にこれらのファイルの名前を変更してください。"
+      },
+      "save_failed": {
+        "title": "エラー",
+        "message": "ファイルを保存できません：{error}"
+      },
+      "create_archive_failed": {
+        "title": "エラー",
+        "message": "アーカイブを作成できません：{error}"
+      },
+      "save_selection_failed": {
+        "title": "エラー",
+        "message": "選択範囲を保存できません：{error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF作成エラー",
+        "message": "アニメーションGIFを作成できません:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "保存失敗",
+        "message": "ファイルの保存に失敗しました：{error}"
+      },
+      "rename_failed": {
+        "title": "名前変更エラー",
+        "message": "ファイルの名前を変更できません：{error}"
+      },
+      "pdf_password_required": {
+        "title": "パスワードで保護されたPDF",
+        "message": "このPDFファイルは暗号化されており、パスワードで保護されています。\nパスワードなしでは開くことができません。"
+      },
+      "pdf_unlock_failed": {
+        "title": "エラー",
+        "message": "ロック解除されたPDFファイルを保存できませんでした:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: 暗号化されたPDF（パスワードが必要）、スキップされました",
+      "file_too_large": {
+        "title": "ファイルが大きすぎます",
+        "message": "ファイル {filename} のサイズは {size} で、画像に許可された最大サイズ（500 MB）を超えています。"
+      },
+      "license_file_not_found": {
+        "message": "ライセンスファイルが見つかりません: {path}"
+      },
+      "license_file_read_error": {
+        "message": "ライセンスファイルを読み込めません: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z エラー",
+        "message": "ファイル '{file}' は有効な 7Z アーカイブではないか、破損しています。"
+      },
+      "delete_error": "削除中にエラーが発生しました: {error}",
+      "export_error": "エクスポート中にエラーが発生しました: {error}",
+      "font_source_not_found": "フォントのソースファイルが見つかりません: {path}",
+      "no_tengwar_font": "Tengwarフォントが見つかりません。",
+      "no_icons_found": "アイコンが見つかりません。",
+      "unsupported_files": {
+        "title": "サポートされていないファイル",
+        "message": "次のファイルはサポートされておらず、無視されました:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF作成成功",
+        "message": "アニメーションGIF '{name}' が作成され、モザイクに追加されました。"
+      },
+      "pywin32_required": {
+        "title": "機能が利用できません",
+        "message": "システムクリップボードからの貼り付けにpywin32モジュールが必要です。\nインストール：pip install pywin32"
+      },
+      "images_imported": {
+        "title": "画像インポート完了",
+        "message": "{count}枚の画像をインポートしました"
+      },
+      "archive_copied": {
+        "title": "アーカイブコピー完了",
+        "message": "アーカイブがクリップボードにコピーされました。"
+      },
+      "function_not_available": {
+        "title": "機能が利用できません",
+        "message": "この機能は現在利用できません。"
+      },
+      "duplicate_detected": {
+        "title": "重複検出",
+        "message": "同じ名前のファイルが既に存在します。\n\nファイル名を変更しました：\n{name}"
+      },
+      "replace_success": {
+        "title": "成功",
+        "message": "画像'{name}'を正常に置換しました。"
+      },
+      "history_cleared": {
+        "title": "履歴クリア完了",
+        "message": "最近使ったファイルのリストをクリアしました。"
+      },
+      "files_copied_clipboard": {
+        "title": "クリップボードにコピー完了",
+        "message": "技術的な理由により、アプリからのドラッグ&ドロップは利用できません。\n\n✓ {count}{word}をクリップボードにコピーしました\n\n任意の場所に貼り付けできます：\n  • 右クリック → 貼り付け\n  • またはCtrl+V"
+      },
+      "correction_done": {
+        "title": "修正完了",
+        "message": "{count}個のファイル名を修正しました。"
+      },
+      "import_success": {
+        "title": "インポート成功",
+        "message": "{file}から{count}ページをインポートしました"
+      },
+      "pdf_import_success": {
+        "title": "インポート成功",
+        "message": "{file}から{count}ページのPDFをインポートしました\n品質：{dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "成功",
+        "message": "PDFの変換に成功しました！\n{count}ページを{dpi} DPIで読み込みました。"
+      },
+      "cbz_saved": {
+        "title": "成功",
+        "message": "CBZファイルが正常に保存されました:"
+      },
+      "cbz_converted": {
+        "title": "成功",
+        "message": "ファイルが正常にCBZに変換されました:",
+        "question": "元のCBRファイルを削除しますか?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "成功",
+        "message": "ファイルが正常にCBZに変換されました:",
+        "question": "元のPDFファイルを削除しますか?"
+      },
+      "cbz_save_as": {
+        "title": "成功",
+        "message": "新しいCBZファイルを保存しました：{path}"
+      },
+      "cbz_created": {
+        "title": "成功",
+        "message": "CBZアーカイブが正常に作成されました:"
+      },
+      "selection_saved": {
+        "title": "成功",
+        "message": "選択が正常に保存されました:"
+      },
+      "flatten_done": {
+        "title": "平坦化完了",
+        "message": "{dirs}個のサブフォルダから{files}個のファイルを移動しました。"
+      },
+      "language_changed": {
+        "title": "言語変更完了",
+        "message": "インターフェイスの言語を正常に変更しました。"
+      },
+      "new_cbz_saved": {
+        "title": "ファイル保存完了",
+        "message": "新しいCBZファイルが正常に保存されました：",
+        "question": "元のファイルを削除しますか？"
+      },
+      "page_count_updated": {
+        "title": "ページ数を更新しました",
+        "message": "メタデータのページ数が {count} ページに更新されました。"
+      },
+      "files_saved": {
+        "title": "ファイルを保存しました",
+        "message": "{count}個のファイルを{folder}に保存しました",
+        "open_folder": "フォルダを開きますか？"
+      },
+      "adjustments_applied": {
+        "title": "調整が適用されました",
+        "message": "調整が正常に適用されました。"
+      },
+      "pdf_unlocked": {
+        "title": "PDFのロックが解除されました",
+        "message": "ロック解除されたPDFファイルが保存されました:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "大容量アーカイブ",
+        "message": "このアーカイブの展開後のサイズは{size} MBです。\n読み込みには大量のメモリ (RAM) を消費する可能性があります。\n\n続行しますか？"
+      },
+      "confirm_delete": {
+        "title": "確認",
+        "message": "本当に {count} 個のファイル ({size}) を削除しますか?"
+      },
+      "delete_source_files": {
+        "title": "ソースファイルを削除しますか？",
+        "message": "結合された画像を削除しますか？\n\nはい = ソースファイルを削除\nいいえ = ソースファイルを保持\nキャンセル = 操作を中止"
+      },
+      "invalid_filenames": {
+        "title": "無効なファイル名",
+        "intro": "{count}個のファイルに禁止文字が含まれています:",
+        "item": "  • {name}",
+        "more": "  ... さらに{more}件",
+        "forbidden_chars": "禁止文字: {chars}",
+        "fix_question": "これらのファイル名を自動的に修正しますか？\n(禁止文字は'_'に置き換えられます)"
+      },
+      "close_without_save": {
+        "title": "閉じる前に保存しますか？",
+        "message": "画像が追加されています。閉じる前にCBZアーカイブを作成しますか？"
+      },
+      "flatten_folders": {
+        "title": "フォルダを平坦化",
+        "subdirs_detected": "サブフォルダが検出されました：",
+        "files_to_move": "{count}個のファイルがルートに移動されます。",
+        "folders_to_delete": "{count}個のサブフォルダが削除されます。",
+        "continue_question": "続行しますか？"
+      },
+      "update_page_count": {
+        "title": "ページ数を更新",
+        "message": "コミックのページ数が変更されました。\n\nメタデータに記載されているページ数: {original}\n現在のページ数: {current}\n\nメタデータのページ数を更新しますか？"
+      },
+      "conversion_complete": {
+        "title": "変換完了",
+        "message": "変換完了！\n\n{count}枚の画像が{format}形式に変換され、選択範囲の後に追加されました。\n\n元の画像を削除しますか？",
+        "delete_originals": "元ファイルを削除\n{count} ファイル - {size}",
+        "keep_all": "すべて保持\n{count} ファイル - {size}",
+        "cancel_conversion": "変換をキャンセル\n{count} ファイル - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "不正な拡張子が検出されました：このファイルはCBRではなくCBZです。名前を変更しますか？",
+      "title": "拡張子が間違っています"
+    },
+    "extension_mismatch_cbr": {
+      "message": "誤った拡張子が検出されました：このファイルはCBRであり、CBZではありません。名前を変更しますか？"
+    },
+    "extension_mismatch_cb7": {
+      "message": "拡張子の誤りを検出しました: ファイル '{filename}' は CB7 であり、CBZ/CBR ではありません。名前を変更しますか?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "サムネイルサイズ",
+    "loading": "読み込み中...\n{percent}%",
+    "resizing": "サイズ変更中...\n{percent}%",
+    "converting": "お待ちください、変換中...\n{percent}%",
+    "loading_lazy": "お待ちください、読み込み中...\n{percent}%\n\nこのファイルのサイズが大きいため（{size} MB）、ページは段階的に読み込まれます。画面に表示されているページはすぐに読み込まれ、他のページはスクロール時に自動的に読み込まれます。",
+    "apply_save_cbz": "変更を適用して\nCBZファイルを保存",
+    "apply_create_cbz": "変更を適用して\nCBZファイルを作成",
+    "import_progress": "インポート中...\n{percent}%",
+    "pdf_import_progress": "PDFインポート中...\n{percent}%",
+    "pdf_opening": "PDFファイルを開いています...",
+    "pdf_page": "ページ {current} / {total}",
+    "warning_close": "警告！変更が保存されておらず、失われます！",
+    "language_label": "言語：",
+    "directory_tooltip": "フォルダ：{name}\n{count}個のファイル\n合計サイズ：{size} MB",
+    "folder_up_tooltip": "ダブルクリックで\n上の階層に移動",
+    "status_bar": "{dirs} フォルダ  |  {files} ファイル ({total_size})  |  {selected} 選択中 ({selected_size})",
+    "pdf_converting": "{total}ページを{dpi} DPIの画像に変換しています...",
+    "pdf_converting_no_change": "{total}ページを変更せずに抽出しています...",
+    "print_progress": "印刷の準備中...\n{percent}%",
+    "print_preparing": "お待ちください、印刷の準備中...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU 一般公衆ライセンス v3 の概要\n\n付与される自由\nMosaicView を使用、複製、改変、再頒布することができます。\n商業目的での使用も含みます。\n\n義務\n再頒布（オリジナルまたは改変版）には以下が必要です :\n– GPL v3 ライセンスを維持すること\n– ソースコードを含めるか、入手先を示すこと\n– 追加の制限を課さないこと\n\n保証\nこのソフトウェアは一切の保証なしに頒布されます。\n作者はその使用によって生じた損害に対して一切の責任を負いません。\n\nこのプログラムとともに GNU 一般公衆ライセンスのコピーを受け取っているはずです。 受け取っていない場合は <https://www.gnu.org/licenses/> を参照してください。",
+    "view_full_license": "完全なライセンスを表示",
+    "license_unrar_text": "CBZファイルはZIP形式に基づいており、自由でオープンな形式です。一方、CBRファイルはRAR形式に基づいており、プロプライエタリな形式です。\n\nMosaicViewはUnRARのおかげでCBRファイルを開くことができます。UnRARはRARlabが開発した自由に再配布可能なユーティリティです。\n\n公式サイト: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "UnRAR ライセンスを表示",
+    "saving_cbz": "保存中... {percent}%",
+    "empty_canvas_line1": "ここに1つまたは複数のCBZ/CBR/CB7/PDFファイルまたは画像をドロップしてください",
+    "empty_canvas_line2": "ファイルが開かれた後も、他のファイルをドロップし続けることができます",
+    "empty_canvas_line3": "バッチ処理を開始するには、1つ以上のフォルダをドロップしてください",
+    "icon_toolbar_config_title": "アイコンツールバーの設定",
+    "icon_toolbar_active": "ツールバーのアイコン",
+    "icon_toolbar_hidden": "予備のアイコン",
+    "license_gpl_full": "GNU GPL v3 ライセンス",
+    "license_unrar_full": "UnRAR ライセンス",
+    "licenses_button": "ライセンス",
+    "view_full_gpl_license": "GNU GPL v3 ライセンス全文を表示",
+    "license_7zip_text": "CB7 ファイルは、Igor Pavlov が開発し GNU LGPL ライセンスの下で配布されている 7z 形式に基づいています。\n\nMosaicView は 7-Zip を利用して CB7 ファイルを開くことができます — 無料のオープンソースユーティリティです。\n\n公式サイト : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "7-Zip ライセンスを表示",
+    "license_7zip_full": "7-Zip ライセンス",
+    "icon_toolbar_show_thumb_slider": "サムネイルサイズスライダーを表示",
+    "icon_toolbar_show_lang_combo": "言語セレクターを表示",
+    "adjusting": "しばらくお待ちください、調整中...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS フォントライセンス",
+    "license_tengwar_full": "Alcarin Tengwarフォントのライセンス",
+    "view_full_piqad_license": "pIqaD qolqoS ライセンス全文を表示"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "画像変換",
+      "title": "{count}{word}の変換",
+      "word_image": "枚の画像",
+      "word_images": "枚の画像",
+      "info": "変換先の形式を選択：",
+      "format_png": "PNG (可逆圧縮)",
+      "format_jpg": "JPEG (非可逆圧縮)",
+      "format_webp": "WEBP (最新形式)",
+      "format_bmp": "BMP (ビットマップ)",
+      "format_tiff": "TIFF (高品質)",
+      "format_gif": "GIF (アニメーション)",
+      "quality_label": "JPG/WEBPの品質：",
+      "quality_maximum": "最高 — 品質 95/100",
+      "quality_high": "高 — 品質 85/100",
+      "quality_medium": "中 — 品質 75/100",
+      "quality_low": "低 — 品質 60/100",
+      "quality_custom_option": "カスタム",
+      "quality_custom": "品質 カスタム : {value}/100",
+      "quality_note": "(このパラメータはJPGとWEBP形式のみに影響します)",
+      "quality_window_title": "品質の選択",
+      "format_gif_static": "静止GIF",
+      "format_gif_animated": "アニメーションGIF（複数の画像を選択）"
+    },
+    "split": {
+      "window_title": "ページ分割",
+      "title": "ページ分割",
+      "pages_label": "ページ数：",
+      "direction_label": "分割方向：",
+      "horizontal": "横 (左 → 右)",
+      "vertical": "縦 (上 → 下)",
+      "warning": "⚠ 分割は自動計算されるため、\n手動調整が必要な場合があります。",
+      "button_split": "分割",
+      "button_cancel": "キャンセル"
+    },
+    "join": {
+      "window_title": "ページ結合 - 順序を並べ替え",
+      "instructions": "画像を配置：\n• 縦 (上/下) で縦結合\n• 横 (左/右) で横結合",
+      "merged_filename_prefix": "結合",
+      "heights_label": "高さ",
+      "widths_label": "幅",
+      "size_adjustment_title": "サイズ調整",
+      "size_adjustment_warning": "⚠️ 選択された画像のサイズが異なります。\n結合のためにサイズを調整する方法を選択してください。\n各画像のアスペクト比は常に保持されます。",
+      "keep_original": "元のサイズを保持",
+      "keep_original_desc": "(埋めるために黒いバーを追加)",
+      "enlarge_small": "小さい画像を拡大",
+      "enlarge_small_desc": "(最大寸法に揃える)",
+      "reduce_large": "大きい画像を縮小",
+      "reduce_large_desc": "(最小寸法に揃える)",
+      "back_to_arrangement": "戻る"
+    },
+    "pdf": {
+      "quality_merge": "結合品質を選択：",
+      "quality_export": "エクスポート品質を選択：",
+      "merge_quality_title": "PDF結合品質",
+      "export_quality_title": "PDFエクスポート品質",
+      "loading_title": "PDFを読み込んでいます...",
+      "dpi_90": "90 DPI - Web公開",
+      "dpi_150": "150 DPI - 良好な品質（表示に推奨）",
+      "dpi_200": "200 DPI - 非常に良好な品質",
+      "dpi_300": "300 DPI - 優れた品質（コミック標準）",
+      "dpi_600": "600 DPI - 最高品質（大きなファイル）",
+      "dpi_original": "画像変更なし",
+      "dpi_original_tooltip": "各PDFページのインテリジェント分析：\n• 画像のみのページ：元のDPIを保持\n• テキストのみのページ：300 DPI\n• 混合ページ（テキスト+画像）：画像DPIが>= 300の場合は画像DPI、それ以外は300 DPI\n最大：ファイルサイズを制限するため2400 DPI"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDFが必要です",
+      "pymupdf_required_message": "PyMuPDF (fitz) がインストールされていません。PDFファイルを変換できません。",
+      "select_directory_title": "PDFファイルが含まれるフォルダを選択してください",
+      "no_pdf_title": "PDFファイルなし",
+      "no_pdf_message": "フォルダにPDFファイルが見つかりませんでした：\n{directory}",
+      "confirm_title": "PDFからCBZへの一括変換",
+      "confirm_message": "{directory} 内の {count} 個のPDFファイルを変換します（サブフォルダを含む）。",
+      "checkbox_permanent_delete": "元のPDFファイルをごみ箱を経由せずに\n削除する（元に戻すことはできません）",
+      "start_button": "開始",
+      "converting_title": "変換中...",
+      "converting_progress": "ファイル {current} / {total} を変換中",
+      "page_progress": "ページ {current} / {total}",
+      "complete_title": "変換完了",
+      "complete_message": "{count} 個のPDFファイルがフォルダ内で変換されました：",
+      "complete_message_errors": "{total} 個中 {count} 個のPDFファイルがフォルダ内で変換されました：",
+      "errors_count": "{count} 件のエラーが発生しました。"
+    },
+    "batch_cbr": {
+      "select_directory_title": "CBRファイルを含むディレクトリを選択",
+      "no_cbr_title": "CBRファイルがありません",
+      "no_cbr_message": "ディレクトリにCBRファイルが見つかりませんでした:\\n{directory}",
+      "confirm_title": "CBRからCBZへの一括変換",
+      "confirm_message": "{directory}内の{count}個のCBRファイルを変換します（サブディレクトリ含む）。",
+      "checkbox_permanent_delete": "元のCBRファイルをゴミ箱を使わずに\n削除する（元に戻せません）",
+      "start_button": "開始",
+      "converting_title": "変換中...",
+      "converting_progress": "ファイル {current} / {total} を変換中",
+      "page_progress": "ページ {current} / {total}",
+      "complete_title": "変換完了",
+      "complete_message": "ディレクトリ内の{count}個のCBRファイルを変換しました:",
+      "complete_message_errors": "ディレクトリ内の{total}個中{count}個のCBRファイルを変換しました:",
+      "errors_count": "{count}件のエラーが発生しました。",
+      "renamed_count": "{count}ファイルをCBZに名前変更",
+      "rarfile_unavailable": "rarfileモジュールが利用できません。CBRファイルを変換できません。"
+    },
+    "close_warning": {
+      "title": "警告！",
+      "message": "変更が保存されておらず、失われます！",
+      "btn_close_lose": "ファイルを閉じて変更を破棄",
+      "btn_save_cbz": "変更を適用してファイルを保存",
+      "btn_create_cbz": "変更を適用してCBZファイルを作成",
+      "btn_cancel": "キャンセルしてモザイクに戻る"
+    },
+    "replace_image": {
+      "title": "破損画像を置換"
+    },
+    "reduce_size": {
+      "window_title": "画像のサイズ変更",
+      "title": "{count}{word}のサイズ変更",
+      "word_image": "画像",
+      "word_images": "画像",
+      "current_size": "現在のサイズ：{size} MB",
+      "current_dimensions": "現在の寸法：{width} × {height} px",
+      "choose_method": "サイズ変更方法を選択：",
+      "custom_dimensions": "カスタムサイズ",
+      "width_label": "幅：",
+      "height_label": "高さ：",
+      "use_custom_dimensions": "これらの寸法を使用",
+      "different_dimensions_warning": "選択したページは異なる寸法を持っています。カスタム寸法はすべてのページを同じサイズに強制します。続行する前に影響を理解していることを確認してください。",
+      "estimated_size": "推定サイズ：{size} MB",
+      "percentage_reduction": "パーセント削減",
+      "percentage_enlargement": "パーセント拡大",
+      "reduce_0": "0%（変更なし）",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0%（変更なし）",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "最も一般的なページ幅は1024、1280、1600、1920、2000ピクセルですが、他の値も適しています。",
+      "multi_page_width": "複数ページを自動的に検出してサイズ変更（幅/高さ）",
+      "multi_page_width_tooltip": "複数ページの自動検出を有効にします：見開きページ、3ページ見開きなど。乗数係数は、幅（横に並んだページ）でも高さ（縦に重ねたページ）でも、各ページの比率に基づいて自動的に計算されます"
+    },
+    "gif_animated": {
+      "window_title": "アニメーションGIFの作成",
+      "images_title": "アニメーション画像",
+      "params_title": "GIFパラメータ",
+      "frame_delay_label": "画像間の遅延：",
+      "fps_normal": "{fps} フレーム/秒",
+      "fps_slow": "{seconds} 秒ごとに1フレーム",
+      "loop_label": "繰り返し回数：",
+      "loop_info": "（0 = 無限ループ）",
+      "disposal_label": "画像の配置：",
+      "disposal_0": "指定なし",
+      "disposal_1": "前の画像を保持",
+      "disposal_2": "背景色に復元",
+      "disposal_3": "前の状態に復元",
+      "optimize": "ファイルを最適化（差分のみ保存）",
+      "metadata_title": "GIFメタデータ",
+      "metadata_dimensions": "寸法：{width} × {height} px",
+      "metadata_frames": "フレーム数：{count}",
+      "metadata_duration": "合計時間：{duration} 秒",
+      "metadata_fps": "周波数：{fps} fps",
+      "metadata_palette": "パレット：最大256色",
+      "metadata_size": "推定サイズ：{size} KB",
+      "comment_label": "コメント（任意）：",
+      "no_images": "画像が選択されていません",
+      "creating_progress": "画像を読み込み中... ({current}/{total})",
+      "creating_normalizing": "画像を正規化中... ({current}/{total})",
+      "creating_quantizing": "色を量子化中... ({current}/{total})",
+      "creating_saving": "GIFを保存中..."
+    },
+    "save_to_folder": {
+      "title": "保存先フォルダを選択"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ 重複したファイル名",
+      "message": "同一のファイル名が検出されました。保存は技術的に可能ですが、一部の\nコミックリーダーアプリケーションで読み取りの問題が発生する可能性が\nあります（不完全な表示、ページの欠落など）。\n\n保存する前にページ番号を振り直すことをお勧めします。"
+    },
+    "adjustments": {
+      "window_title": "画像調整",
+      "title": "{count}{word}の調整",
+      "word_image": "枚の画像",
+      "word_images": "枚の画像",
+      "apply_button": "適用",
+      "color_depth_section": "色深度",
+      "brightness_contrast_section": "明るさとコントラスト",
+      "compression_section": "圧縮",
+      "effects_section": "エフェクト",
+      "sharpness_section": "シャープネス",
+      "levels_section": "黒/白レベル",
+      "depth_unchanged": "変更しない",
+      "depth_32bit": "32ビット（RGBA - 色+透明度）",
+      "depth_24bit": "24ビット（RGB - 色）",
+      "depth_8bit": "8 bitto (PNG pareto / JPEG gureisukeru)",
+      "depth_1bit": "1ビット（白黒）",
+      "brightness_label": "明るさ: {value}",
+      "contrast_label": "コントラスト: {value}",
+      "compression_enable": "再圧縮を有効にする",
+      "compression_quality_label": "品質 : {value}/100",
+      "sharpness_label": "シャープネス: {value}",
+      "effect_none": "エフェクトなし",
+      "effect_grayscale": "グレースケール",
+      "effect_sepia": "セピア",
+      "levels_none": "調整なし",
+      "levels_threshold": "しきい値（純粋な黒または白）",
+      "levels_advanced": "高度なレベル（シャドウ/中間調/ハイライト）",
+      "threshold_label": "しきい値: {value}",
+      "black_point_label": "黒点: {value}",
+      "gamma_label": "ガンマ（中間調）: {value}",
+      "white_point_label": "白点: {value}",
+      "auto_levels_button": "自動調整",
+      "open_viewer_button": "ビューアで調整 (推奨)",
+      "compression_info": "圧縮はJPGおよびWebP画像にのみ適用されます",
+      "open_viewer_button_simple": "ビューアで調整",
+      "reset_button": "リセット",
+      "preview_section": "プレビュー",
+      "effect_invert": "色反転",
+      "preview_warning": "プレビューは最終結果と異なる場合があります",
+      "effect_remove_colors": "色の除去",
+      "remove_colors_intensity_label": "強度 : {value}",
+      "image_mode_section": "画像モード",
+      "image_mode_rgb": "RGB (カラー)",
+      "image_mode_rgba": "RGBA (カラー + 透明度)",
+      "image_mode_l": "L (グレースケール)",
+      "image_mode_la": "LA (グレースケール + 透明度)",
+      "image_mode_cmyk": "CMYK (印刷)",
+      "image_mode_1": "1 (純粋な白黒)",
+      "image_mode_p": "P (256色パレット)",
+      "saturation_section": "彩度",
+      "saturation_label": "彩度 : {value}",
+      "saturation_viewer_title": "彩度の調整",
+      "transparency_section": "透明度",
+      "transparency_info": "透明度はPNG、WebP、ICO画像にのみ適用されます",
+      "transparency_type_label": "種類 :",
+      "transparency_type_flood": "領域",
+      "transparency_type_global": "全体",
+      "transparency_tolerance_label": "許容値 : {value}",
+      "transparency_viewer_title": "透明度の調整",
+      "transparency_click_instruction": "透明にする色をクリックしてください",
+      "transparency_undo": "最後のクリックを元に戻す",
+      "transparency_redo": "やり直し",
+      "transparency_type_flood_tooltip": "フラッドフィル : クリックしたピクセル周辺の均一な色の領域を透明にします",
+      "transparency_type_global_tooltip": "グローバル透明度 : クリックした色に近い色を持つ画像内のすべてのピクセルに影響します",
+      "transparency_apply": "適用",
+      "transparency_skipped_warning": "{count} 枚の画像がスキップされました — 形式が透明度に対応していません。含めるには、まず PNG に変換してください。",
+      "unsharp_section": "アダプティブシャープネス",
+      "unsharp_radius_label": "ラジウス: {value}",
+      "unsharp_percent_label": "強度: {value} %",
+      "unsharp_threshold_label": "しきい値: {value}",
+      "unsharp_viewer_title": "アダプティブシャープネス",
+      "auto_levels_tooltip": "各ページを分析し、コントラストを最大化するために黒と白のレベルを自動的に調整します。\nページごとに選択するには、ビューアを使用してください。"
+    },
+    "levels_viewer": {
+      "title": "スポイトでレベル調整",
+      "apply_current": "このページに適用",
+      "apply_all": "選択したすべてのページに適用",
+      "black_pipette": "黒点スポイト",
+      "white_pipette": "白点スポイト",
+      "black_pipette_tooltip": "完全に黒であるべきピクセルをクリックしてください。注意：やりすぎやすいです！",
+      "white_pipette_tooltip": "完全に白であるべきピクセルをクリックしてください。注意：やりすぎやすいです！"
+    },
+    "sharpness_viewer": {
+      "title": "シャープネス調整"
+    },
+    "brightness_viewer": {
+      "title": "明るさとコントラストの調整"
+    },
+    "compression_viewer": {
+      "title": "圧縮調整"
+    },
+    "outliers": {
+      "title": "異常なサイズのページ",
+      "message": "次のページは他のページと大きく異なるサイズです。処理方法を選択してください:",
+      "width": "幅",
+      "height": "高さ",
+      "unusual": "異常",
+      "skip": "サイズ変更しない",
+      "keep": "保持"
+    },
+    "first_page_multi": {
+      "title": "最初のページは複数ページです",
+      "message": "最初のページが複数ページとして検出されました。どのように番号を付けますか？",
+      "option_auto_desc": "自動検出による通常の再番号付け。",
+      "option_joint_desc": "コミックの最初と最後のページの結合。",
+      "option_exclude_label": "再番号付けに含めない",
+      "option_exclude_desc": "ページは現在の名前を保持し、最初の位置に留まります。後で手動で名前を変更できます。"
+    },
+    "batch_img": {
+      "select_directory_title": "画像を含むフォルダーを選択してください",
+      "no_img_title": "画像ファイルが見つかりません",
+      "no_img_message": "フォルダーに単独の画像ファイルが見つかりませんでした :\n{directory}",
+      "confirm_title": "単独画像の一括変換（CBZ形式へ）",
+      "confirm_message": "{directory} 内の {count} 個の画像ファイルを変換します（サブフォルダーを含む）。",
+      "checkbox_permanent_delete": "元の画像ファイルをゴミ箱に送らずに\n完全に削除する（元に戻せません）",
+      "start_button": "開始",
+      "converting_title": "変換中...",
+      "converting_progress": "{total} 個中 {current} 個目のファイルを変換中",
+      "complete_title": "変換完了",
+      "complete_message": "フォルダー内の {count} 個の画像ファイルを変換しました :",
+      "complete_message_errors": "フォルダー内の {total} 個中 {count} 個の画像ファイルを変換しました :",
+      "errors_count": "{count} 個のエラーが発生しました。",
+      "converted_by_ext": "{ext} : {count} ファイル",
+      "mode_title": "画像をCBZに変換",
+      "mode_intro": "画像をどのようにまとめますか？",
+      "mode_one_per_image": "各画像を個別のCBZファイルに変換する",
+      "mode_one_per_image_sub": "(各画像が個別のCBZファイルになります)",
+      "mode_all_in_one": "すべての画像を1つのCBZファイルにまとめる",
+      "mode_all_in_one_sub": "(フォルダ内のすべての画像が1つのCBZファイルにまとめられます)"
+    },
+    "batch_drop": {
+      "window_title": "フォルダのバッチ処理",
+      "intro_single": "1つのフォルダがドロップされました。どの処理を適用しますか？",
+      "intro_multiple": "{count}つのフォルダがドロップされました。どの処理を適用しますか？",
+      "recursive_note": "サブフォルダも検索されます。",
+      "mixed_drop_title": "ドロップはサポートされていません",
+      "mixed_drop_message": "ファイルとフォルダを同時にドロップしました。ファイルのみまたはフォルダのみをドロップしてください。"
+    },
+    "pdf_unlock": {
+      "title": "PDFが変更から保護されています",
+      "message": "ページは正常にインポートされました。\n\nこのPDFファイルは変更から保護されています（オーナーパスワード）。\n\nこの保護なしでPDFファイルのコピーを保存しますか？",
+      "yes": "はい、ロック解除されたコピーを保存する",
+      "no": "いいえ、ロック解除せずに続ける"
+    },
+    "batch_pdf_unlock": {
+      "title": "変更から保護されたPDFファイル",
+      "message_single": "変更から保護された1つのPDFファイルが検出されました。通常通りCBZに変換されました。\n\n元のディレクトリにロック解除されたコピーを保存しますか？",
+      "message_plural": "変更から保護された{count}つのPDFファイルが検出されました。通常通りCBZに変換されました。\n\nそれぞれの元のディレクトリにロック解除されたコピーを保存しますか？",
+      "yes": "はい、ロック解除されたコピーを保存",
+      "no": "いいえ、ロック解除せずに続行"
+    },
+    "ico_creator": {
+      "title": ".icoアイコンを作成",
+      "info_message": "画像は複数の解像度にリサイズされます (16, 32, 48, 64, 128, 256 px)。\n現在のフレームサイズ: {w} × {h} px",
+      "btn_validate_crop": "トリミングを確定",
+      "btn_validate_no_crop": "トリミングなしで確定",
+      "btn_cancel": "キャンセル",
+      "btn_transparency": "透明度を設定",
+      "btn_validate_final": "確定",
+      "tolerance_label": "許容値:",
+      "success_title": ".icoファイルを作成しました",
+      "success_message": "ファイル {filename} が正常に作成されました。",
+      "overwrite_title": "ファイルが既に存在します",
+      "overwrite_message": "ファイル {filename} は既に存在します。上書きしますか?",
+      "save_blocked_title": "保存できません",
+      "save_blocked_message": "このアーカイブにはコミック画像ではない .ico ファイルが含まれています。これらのファイルがモザイクに存在する間は保存が無効です。\n保存を再有効化するには、モザイクから削除 (Delキー) するか、切り取り (Ctrl+X) して別の場所に貼り付けてください。",
+      "btn_back_to_crop": "トリミングに戻る"
+    },
+    "video_save_blocked": {
+      "title": "保存できません",
+      "message": "このアーカイブには1つ以上の動画ファイルが含まれています。これらのファイルがモザイクに存在する間、保存は無効です。\n保存を再度有効にするには、モザイクから削除（Delキー）するか、切り取り（Ctrl+X）して別の場所に貼り付けてください。"
+    },
+    "open_file": {
+      "title": "アーカイブを開く",
+      "filter_archives": "アーカイブ (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "すべてのファイル (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - ライセンス"
+    },
+    "replace_corrupted_image": {
+      "title": "破損した画像を置き換える",
+      "filter_images": "画像 (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "すべてのファイル (*)"
+    },
+    "see_log": "ログを見る"
+  },
+  "tooltip": {
+    "source_archive": "元ファイル: {name}",
+    "file": "ファイル：{name}",
+    "reason": "理由：{reason}",
+    "size_kb": "サイズ：{size} KB",
+    "size_mb": "サイズ：{size} MB",
+    "file_size": "サイズ：{size}",
+    "dimensions": "サイズ：{width} × {height} px",
+    "resolution": "解像度：{mp} MP",
+    "dpi_single": "DPI：{dpi}",
+    "dpi_double": "DPI：{dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: 未定義",
+    "cbr_info": "CBRファイルはRAR形式を使用しており、これは独占的で特許取得済みです；\n編集できないため、変更は新しいCBZファイルに保存されます。",
+    "rotate_left": "左に90度回転",
+    "rotate_right": "右に90度回転",
+    "mirror_horizontal": "水平反転",
+    "mirror_vertical": "垂直反転",
+    "fullscreen": "フルスクリーン",
+    "help_button": "ユーザーマニュアル",
+    "theme_button": "ライトテーマとダークテーマを切り替える",
+    "font_decrease_button": "フォントサイズを小さくする",
+    "font_increase_button": "フォントサイズを大きくする",
+    "color_depth": "色: {bits} ビット ({mode})",
+    "batch_pdf_to_cbz": "ディレクトリとそのサブディレクトリ内の\nすべてのPDFファイルをCBZに変換します。\n画像はそのまま抽出・アーカイブされ、\n再圧縮は行われません。",
+    "batch_pdf_permanent_delete": "警告：このオプションがチェックされている場合、\n元のPDFファイルは変換後に完全に\n削除され、復元することはできません。\n必要に応じてバックアップがあることを\n確認してください。",
+    "batch_cbr_to_cbz": "ディレクトリとそのサブディレクトリ内の\nすべてのCBRファイルをCBZに変換します。",
+    "batch_cbr_permanent_delete": "警告：このオプションがチェックされている場合、\n元のCBRファイルは変換後に完全に\n削除され、復元することはできません。\n必要に応じてバックアップがあることを\n確認してください。",
+    "renumber_btn_1": "複数ページ自動検出モード\n右クリックでモードを切り替え",
+    "renumber_btn_2": "単純な番号付けモード\n右クリックでモードを切り替え",
+    "corrupted_header": "破損した画像",
+    "right_click_instruction1": "右クリックでこの画像を置換",
+    "right_click_instruction2": "または削除できます。",
+    "unknown_error": "不明なエラー",
+    "batch_img_to_cbz": "フォルダーとそのサブフォルダー内のすべての\n画像ファイルをCBZに変換し、\n画像ごとに1つのCBZファイルを作成します。",
+    "batch_img_permanent_delete": "警告 : このオプションを選択すると、\n元の画像ファイルは変換後に完全に削除され、\n復元できません。必要に応じて\nバックアップがあることを確認してください。",
+    "too_large_header": "画像が大きすぎて読み込めません",
+    "too_large_pixels": "サイズ: {pixels}",
+    "icon_toolbar_config_button": "アイコン設定",
+    "icon_toolbar_size_decrease": "アイコンサイズを縮小",
+    "icon_toolbar_size_increase": "アイコンサイズを拡大",
+    "source_loose": "単独画像",
+    "source_web": "Web画像"
+  },
+  "help": {
+    "title": "MosaicView - 使用方法",
+    "intro": "MosaicViewは、コミック(デジタルマンガ)をアーカイブから展開せずに操作・編集できます。CBZ (ZIP)、CBR (RAR)、PDF形式に対応しています。 本アプリケーションは64ビットシステム専用です。",
+    "open_files": "ファイルを開く",
+    "open_files_content": "• 'CBZ/CBR/CB7/PDFを開く'ボタンをクリック\n• またはファイルをウィンドウに直接ドラッグ&ドロップ\n• 対応形式：CBZ、CBR、PDF、画像 (JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). EPUBファイルも開くことができますが、画像のみが抽出されます（テキストは無視されます）。\n• 暗号化されたPDF（開くのにパスワードが必要）：ファイルはインポートできません。エラーメッセージが表示されます。\n• 変更から保護されたPDF（オーナーパスワード）：ページは正常にインポートされます。MosaicViewは同じフォルダにロック解除されたコピーを保存することを提案します。",
+    "mosaic": "モザイク",
+    "mosaic_content": "モザイクは、コミックのすべてのページをサムネイルとして表示します。次のことができます：\n• ドラッグアンドドロップでページを並べ替える（ページ番号は自動的に振り直され、アクティブな番号付けモードに従います）\n• 複数のページを選択する（Ctrl+クリックまたはShift+クリック）\n• スライダーでサムネイルのサイズを調整する\n• ファイル名をクリックして手動で名前を変更する\n• Windowsエクスプローラーからコミックファイル（CBZ/CBR/PDF）を別の開いているコミックに直接ドラッグアンドドロップしてコンテンツを結合する",
+    "manipulation": "ページ操作",
+    "manipulation_content": "• ページをドラッグ＆ドロップして並べ替える\n• コミック全体を別のコミックにドラッグして結合する\n• ページを右クリックしてオプションにアクセスする（回転、削除など）\n• ページをダブルクリックしてビューアーを開く\n• 個々のページをWindowsフォルダーにドラッグしてエクスポート、またはCtrl+C / Ctrl+Vで",
+    "renumber": "ページ番号の振り直し",
+    "renumber_content": "MosaicViewは2つのページ番号振り直しモードを提供します。番号振り直しボタン、コンテキストメニュー（右クリック）、またはドラッグ＆ドロップ時に自動的にアクセスできます:\n\n• 複数ページ自動検出モード（デフォルトモード）: アプリケーションが各ページの幅を分析し、見開きページ、3ページ続きなどを検出します。複数ページはそれに応じて番号が振り直されます（例: 見開きページは003-004、3ページ続きは005-006-007と命名）。4ページを超える場合、最初と最後の番号のみ表示されます（例: 010---025）。\n\n• 単純番号付けモード: 各ページにページ幅に関係なく、一意の連番が付けられます（001, 002, 003...）。\n\n2つのモードを切り替えるには、番号振り直しボタンを右クリックしてください。ツールチップにアクティブなモードが表示されます。選択したモードはドラッグ＆ドロップ時の自動番号振り直しにも適用されます。",
+    "flatten": "ディレクトリを平坦化",
+    "flatten_content": "アーカイブにサブフォルダが含まれている場合、'ディレクトリを平坦化'を使用してすべての画像を同じレベルに移動します。",
+    "viewer": "ビューア",
+    "viewer_content": "ページをダブルクリックしてビューアを開く：\n• ← → キー：ページ間を移動\n• Dキー：3つの読書モードを切り替え\n  - 単ページ：一度に1ページ\n  - 見開き：1ページ目は単独、その後2-3、4-5など\n  - 連続見開き：1ページ目は単独、その後2-3、3-4、4-5など\n• マウスホイール：素早く移動\n• Ctrl+ホイールまたはCtrl+Plus/Minus：ズーム\n• Ctrl+0：ズームリセット\n• FキーまたはF11：フルスクリーン\n• ダブルクリック：フルスクリーン切替\n• Escキー：切り抜き枠をキャンセル / ビューアを閉じる",
+    "join_pages": "ページを結合",
+    "join_pages_content": "連続する複数のページを選択し、右クリック→「選択したページを結合」でページを水平または垂直に結合します。生成される画像の形式は、元のページがすべて同じ形式の場合はその形式に対応し、それ以外はデフォルトでPNGです。",
+    "split_pages": "ページを分割",
+    "split_pages_content": "見開きページを自動分割：\n• 分割するページを選択\n• 右クリック → '選択ページを分割'\n• 方向を選択 (縦または横)",
+    "crop": "ビューアでトリミング",
+    "crop_content": "ビューアで画像上に四角形を描いてトリミング範囲を定義：\n• マウスで四角形を描く\n• 辺または角をドラッグしてサイズ変更\n• 'トリミングを確定'をクリックして適用\n• トリミングは現在の画像に適用されます\n• Escキー：切り抜き枠をキャンセル",
+    "shortcuts": "キーボードショートカット",
+    "shortcuts_content": "• Ctrl+Z：最後の操作を元に戻す\n• Ctrl+Y：元に戻した操作をやり直す\n• Ctrl+A：すべてのページを選択\n• Ctrl+I：選択を反転\n• Ctrl+C：選択ページをコピー\n• Ctrl+X：選択ページを切り取り\n• Ctrl+V：ページを貼り付け\n• Delete：選択ページを削除\n• F5：モザイク表示を更新する\n• F11: フルスクリーンの切り替え（F11またはESCで終了）",
+    "dark_mode": "ダークモード",
+    "dark_mode_content": "太陽/月ボタンをクリックして、明るいテーマと暗いテーマを切り替えます。",
+    "sort": "ページを並び替え",
+    "sort_content": "'並び替え'ボタンを使用してページを自動的に並べ替え：\n• 名前、種類、サイズ、幅、高さ、解像度、DPI順",
+    "save": "保存",
+    "save_content": "• '保存'：変更を元のファイルに保存\n• '名前を付けて保存'：新しいアーカイブを作成\n• 'CBZ作成'：画像のみモード (アーカイブなし) で利用可能",
+    "other": "その他の機能",
+    "other_content": "• 回転：1つまたは複数のページを回転\n• 変換：画像を異なる形式に変換（PNG、JPEG、WEBP、BMP、TIFF、GIF）。注：CMYKモードの画像は自動的にRGBに変換されます（PNG、JPEG、WEBP、BMP、TIFF、GIF）。注：CMYKモードの画像は自動的にRGBに変換されます\n• 印刷：選択ページまたはすべてのページを印刷\n• 抽出：特定のページを抽出\n• メタデータタブ：ComicInfo.xmlファイルの情報を表示 (アーカイブ内に存在する場合)。メタデータを含むコミックからページを追加または削除すると、アプリケーションはそこに示されているページ数を変更することを提案します。他のメタデータは変更できません。この制限は意図的なものであり、設計上の選択の結果です。",
+    "config_files": "設定ファイルと一時ファイル",
+    "config_files_content": "MosaicViewは.mosaicview_config.jsonという名前のファイルを作成します。このファイルには、リセットボタンが正しく機能するために必要ないくつかのパラメータと、最近開いたファイルを表示するために明らかに必要な最近開いたコミックのリストが含まれています。MosaicViewは、さまざまな画像処理操作に必要な一時ファイルも保存します。\nこれらのファイルはすべて{temp_dir}ディレクトリにあります。\n一時ファイルはアプリケーションを閉じるたびに削除されますが、.mosaicview_config.jsonファイルはその性質上、保持されるように設計されています。\nただし、{temp_dir}ディレクトリに移動するか、下のボタンをクリックすることで、これらのファイルを手動で削除できます。.mosaicview_config.jsonファイルはアプリケーションを開くたびに再作成され、一時ファイルは必要に応じて再作成されます。",
+    "config_clear_temp": "一時ファイルを削除",
+    "config_clear_recent": "最近のファイルを消去",
+    "config_clear_config": "設定ファイルを削除",
+    "config_temp_cleared": "一時ファイルが正常に削除されました。",
+    "config_config_cleared": "設定ファイルが正常に削除されました。\n次回のアプリケーション起動時に再作成されます。",
+    "language": "言語選択",
+    "language_content": "MosaicViewは複数の言語で利用できます。\nデフォルトでは、アプリケーションはオペレーティングシステムの言語を自動的に検出し、サポートされている場合はその言語で表示されます。システムがサポートされていない言語を使用している場合、インターフェースは英語で表示されます。\nサムネイルサイズスライダーの下、ボタン列の下部にあるドロップダウンメニューを使用して、いつでも言語を手動で変更できます。選択内容は保存され、次回アプリケーションを起動したときに適用されます。\n利用可能な言語：アイスランド語, アイルランド語, アラビア語, アルメニア語, イタリア語, インドネシア語, ウクライナ語, 英語, エストニア語, オランダ語, 韓国語, ギリシャ語, クロアチア語, スウェーデン語, スペイン語, スロバキア語, スロベニア語, タイ語, タミル語, チェコ語, 中国語（簡体字）, 中国語（繁体字）, デンマーク語, ドイツ語, トルコ語, 日本語, ノルウェー語, ハンガリー語, ヒンディー語, フィンランド語, フランス語, ブルガリア語, ベトナム語, ポーランド語, ポルトガル語, マルタ語, マレー語, ラトビア語, リトアニア語, ルーマニア語。\nクリンゴン語（ラテン文字とpIqaD文字版）、シンダール語（ラテン文字とtengwar文字版）、クウェンヤ語（ラテン文字とtengwar文字版）.\n\nこのユーティリティは、pIqaD（クリンゴン語）とtengwar（エルフ語：シンダール語とクウェンヤ）のフォントを除き、Windowsフォントを使用しています。これらのフォントは無料で、以下のサイトから入手できます:\n- pIqaD（クリンゴン文字）の場合: {url_piqad}\n- tengwar（エルフ文字、シンダール語とクウェンヤ用）の場合: {url_tengwar}\nこれらのサイトがアクティブでなくなった場合は、以下のボタンをクリックしてpIqaDとtengwarのフォントを取得できます:\n\nこのソフトウェアはフランス語で開発されました。他の言語への翻訳は、特にClaudeという人工知能を使用して行われました。約40の言語をサポートすることに決めました。しかし、明らかに私はこれらすべての言語を話しません。したがって、40人の異なる翻訳者を雇って支払うことは検討された可能性の中にはなかったため、人工知能を使用する以外に選択肢がありませんでした。これらの翻訳の自動的な性質により、エラーが存在する可能性があります。申し訳ございません。",
+    "credits": "Vibe Coding、愛しい人",
+    "credits_content": "私はプログラミングについて何も知りません。全く何も。そのため、AnthropicのAIであるClaude、より具体的にはClaude Codeを使用してこのソフトウェアを開発しました。Claude Codeを強くお勧めします。このアプリケーションは素晴らしいです！",
+    "resize_pages": "ページサイズの変更",
+    "resize_pages_content": "ページを縮小または拡大するには：\n• 1つ以上のページを選択\n• 右クリック→「サイズ変更」\n• 3つのオプションが利用可能：\n  - カスタム寸法：希望の幅または高さを入力（アスペクト比は自動的に保持されます）。\n  - パーセンテージ縮小：10%から90%の範囲でパーセンテージを選択\n  - パーセンテージ拡大：10%から100%の範囲でパーセンテージを選択\n• アプリケーションは変更後の画像の推定サイズを表示します\n• 変更は選択したすべてのページに即座に適用されます",
+    "language_export_piqad": "pIqaDフォント",
+    "language_export_tengwar": "Tengwarフォント",
+    "language_export_piqad_success": "フォントをエクスポートしました: {filename}\n保存先:",
+    "language_export_tengwar_success": "{count}個のフォントをエクスポートしました\n保存先:",
+    "icons": "アイコン",
+    "icons_content": "このユーティリティで使用されているアイコンのほとんどはこのサイトから取得されており、非商業目的での使用は無料です: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\n一部は私が修正しました。\n1つのアイコンのみ、Windows実行可能ファイルのアイコンは私が作成しました（ただしAIを使用しています。私は非常に、非常に、非常に下手なグラフィックデザイナーだからです）。出典を明記する限り、このアイコンを自由に使用する許可を与えます。",
+    "icons_view_button": "アイコンを表示",
+    "icons_window_title": "MosaicViewアイコン",
+    "icons_save_all": "アイコンを保存",
+    "icons_saved_success": "{count}個のアイコンが保存されました：",
+    "icons_save_failed": "アイコンを保存できません：{error}",
+    "split_ui": "2パネルインターフェース",
+    "split_ui_content": "MosaicViewでは、2つのアーカイブを並べて同時に表示できます。\n\n分割アイコンをクリックして2つ目のパネルを開きます。各パネルは独立しており、アーカイブを別々に開いて編集・保存できます。アクティブなパネルは青いボーダーで示されます。\n\nパネル間でページを移動するには、直接ドラッグしてください。複数のページが選択されている場合、すべて一緒に移動します。ページは赤いバーで示された位置に挿入されます。\n\n2つ目のパネルを閉じるアイコンをクリックすると、シングルパネルモードに戻ります。",
+    "license_gpl": "GPL v3 ライセンス",
+    "license_unrar": "UnRAR ライセンス",
+    "config_clear_clipboard": "クリップボードファイルを消去",
+    "config_clipboard_note": "例外：Windowsクリップボードで使用される一時ファイル（clipboard_XXXXXファイル）は、コピー後12時間保持されるため、アプリケーションを閉じた後でも貼り付けることができます。12時間後、自動的に削除されます。",
+    "config_log_note": "一括変換（PDFからCBZ、CBRからCBZ）では、エラーが発生した場合にログファイルが作成されます。これらのファイル（Log_pdftocbz_.txtおよびLog_cbrtocbz_.txt）はアプリケーションを閉じた後も保持され、後で確認できます。上の「一時ファイルを削除」ボタンでのみ削除されます。",
+    "config_clipboard_cleared": "クリップボードファイルが正常に消去されました。",
+    "adjust_images": "画像調整",
+    "adjust_images_content": "この機能により、MosaicView内で直接画像をレタッチできます。明度、コントラスト、シャープネス、レベル、彩度を調整したり、エフェクト（白黒、セピア、色反転）を適用したり、圧縮品質を調整したり、色を除去したり、透明度を適用したり、異なる色深度に変換したりできます。一部の設定には専用のビューアがあり、適用前にフル解像度で結果を確認できます。メインウィンドウのサムネイルプレビューでリアルタイムに結果を確認できます。",
+    "create_icon": "アイコンを作成",
+    "create_icon_content": "MosaicViewでは、モザイク内の任意の画像からアイコンファイル（.ico）を作成できます。\n• 画像を右クリック → 「アイコンを作成」\n• ビューアで目的の領域をフレーミングする（アイコンは必ず正方形になります）\n• 必要に応じて透明度を調整する\n• 確定：.icoファイルがモザイクに直接追加されます\n• .icoファイルには、すべての標準解像度（16×16から256×256まで）が自動的に含まれます\n• モザイクに.icoファイルが存在する限り、ICO形式はこれらのアーカイブでサポートされていないため、CBZアーカイブへの保存はブロックされます。.icoファイルを別途エクスポートし（Ctrl+CでWindowsフォルダに貼り付け）、保存前にモザイクから削除してください。",
+    "batch_convert": "一括変換",
+    "batch_convert_content": "MosaicViewはモザイクが空のときのみ利用できる3つのバッチ変換機能を提供します。それぞれの原則は同じです：ディレクトリを選択し、確認し、リアルタイムで進捗を追跡し、最終サマリーを確認します。元のファイルをゴミ箱に送る代わりに完全に削除するオプションもあります。\n• CBR → CBZ：ディレクトリとそのサブディレクトリ内のすべてのCBR (RAR) ファイルを変換します。CBRが実際にはZIPの場合、変換なしで単純にリネームされます。\n• PDF → CBZ：ディレクトリとそのサブディレクトリ内のすべてのPDFファイルを変換します。画像は再圧縮なしで抽出されます。\n• 単独画像 → CBZ：ディレクトリとそのサブディレクトリで見つかった各画像ファイルに対して個別のCBZを作成します。無効、破損、複数ページ (TIFF)、またはアニメーション (GIF) の画像は無視され、ログに記録されます。",
+    "config_open_temp_folder": "一時フォルダを開く",
+    "icon_toolbar": "アイコンツールバー",
+    "icon_toolbar_content": "アイコンツールバーからアプリケーションの主要な機能にすばやくアクセスできます。アイコンをバー内で直接ドラッグして自由に並べ替えることができます。表示または非表示にするアイコンを選択するには、バー下部の歯車ボタンをクリックします。設定ウィンドウが開き、アクティブバーと予備の間でアイコンを移動できます。「+」と「−」ボタンを使用してアイコンのサイズを調整します。設定は自動的に保存されます。",
+    "license_7zip": "7-Zip ライセンス"
+  },
+  "misc": {
+    "file_word": "個のファイル",
+    "files_word": "個のファイル",
+    "corrupted": "破損",
+    "yes": "はい",
+    "no": "いいえ",
+    "cancel": "キャンセル",
+    "selection_suffix": "選択範囲-コピー"
+  },
+  "metadata": {
+    "title": "タイトル",
+    "series": "シリーズ",
+    "number": "巻数",
+    "volume": "巻",
+    "summary": "概要",
+    "writer": "原作",
+    "penciller": "作画",
+    "inker": "ペン入れ",
+    "colorist": "彩色",
+    "letterer": "レタリング",
+    "cover_artist": "表紙アーティスト",
+    "editor": "編集者",
+    "publisher": "出版社",
+    "imprint": "レーベル",
+    "genre": "ジャンル",
+    "web": "ウェブサイト",
+    "page_count": "ページ数",
+    "language_iso": "言語",
+    "format": "形式",
+    "black_and_white": "白黒",
+    "manga": "マンガ",
+    "year": "年",
+    "month": "月",
+    "day": "日",
+    "notes": "備考",
+    "characters": "登場人物",
+    "locations": "場所",
+    "teams": "チーム",
+    "story_arc": "ストーリーアーク",
+    "story_arc_number": "アーク番号",
+    "series_group": "シリーズグループ",
+    "count": "号数",
+    "alternate_series": "代替シリーズ",
+    "alternate_number": "代替番号",
+    "alternate_count": "代替カウント",
+    "age_rating": "年齢制限",
+    "series_complete": "シリーズ完結",
+    "translator": "翻訳者",
+    "tags": "タグ",
+    "scan_information": "スキャン情報",
+    "community_rating": "コミュニティ評価",
+    "review": "レビュー",
+    "gtin": "GTIN",
+    "pages": "ページ",
+    "pages_col_image": "画像",
+    "pages_col_type": "種類",
+    "pages_col_width": "幅",
+    "pages_col_height": "高さ",
+    "pages_col_size": "サイズ (B)"
+  },
+  "web": {
+    "web_download_progress": "ダウンロード中: {downloaded}/{total} 画像...",
+    "web_download_cancel": "キャンセル",
+    "web_no_images": "画像なし",
+    "web_no_images_found": "このページに画像が見つかりませんでした。",
+    "web_imported": "ウェブページから{count}枚の画像をインポートしました",
+    "web_drag_drop_title": "ウェブ画像のドラッグ＆ドロップ",
+    "web_copy_paste_message": "Webブラウザからの直接ドラッグ＆ドロップはサポートされていません。\n\n代替ソリューション（より簡単）：\n\n1. ブラウザで画像を右クリック\n2. 「画像をコピー」を選択\n3. MosaicViewで「貼り付け」ボタンまたはCtrl+Vを使用\n\nこの方法はすべてのWeb画像で機能します！",
+    "import_web_button": "Webインポート",
+    "import_web_tooltip": "ページからすべての画像を取得するには、インターネットアドレスを貼り付けてください",
+    "import_web_menu": "Webインポート...",
+    "import_web_dialog_title": "Webページから画像をインポート",
+    "import_web_url_label": "Webページのアドレス:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "キャンセル",
+    "import_web_invalid_url": "無効なURL。有効なWebアドレスを入力してください。"
+  },
+  "donation": {
+    "menu_label": "作者に寄付する",
+    "title": "寄付をする",
+    "message": "この小さなユーティリティを気に入って、定期的に使用していますね。私は何百時間も費やしました。寄付をして感謝の気持ちを示していただけませんか？優しくしてください。プールをシャンパンで満たすためのお金が本当に必要なんです。\n\n数セントでも数十億ユーロでも、すべての金額を受け付けます。この寄付はpaypalを通じて行うことができます"
+  },
+  "mail": {
+    "tooltip": "このボタンは、Windowsでデフォルトのメールソフトウェアを開いてメールを送信します。ソフトウェアが設定されていない場合（たとえば、Webメールのみを使用している場合）、アイコンを右クリックしてMosaicViewアドレスをクリップボードにコピーできます。",
+    "copy_address": "MosaicViewのメールアドレスをコピー",
+    "menu_label": "MosaicViewにメールを送信",
+    "icon_label": "メールを送る"
+  },
+  "menu": {
+    "file": "ファイル",
+    "file_open": "ファイルを開く",
+    "file_close": "ファイルを閉じる",
+    "batch_convert": "ファイルの一括変換",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "単独画像 → CBZ",
+    "edit": "編集",
+    "undo": "元に戻す",
+    "redo": "やり直す",
+    "paste": "貼り付け",
+    "delete": "削除",
+    "invert_selection": "選択を反転",
+    "select_all": "すべて選択",
+    "deselect": "選択解除",
+    "refresh_mosaic": "モザイクを更新",
+    "images": "画像",
+    "rotation": "回転",
+    "archives": "アーカイブ",
+    "sort": "並び替え",
+    "system": "システム",
+    "decrease_font": "フォントを縮小",
+    "increase_font": "フォントを拡大",
+    "language": "言語",
+    "language_real": "実在の言語",
+    "language_fictional": "架空の言語",
+    "about": "バージョン情報",
+    "export_piqad_font": "pIqaDフォントを保存",
+    "export_tengwar_fonts": "tengwarフォントを保存"
+  }
+}

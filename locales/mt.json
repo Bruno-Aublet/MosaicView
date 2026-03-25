@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "L-għodda universali għall-kolletturi ta' comics diġitali",
+  "buttons": {
+    "open_file": "Iftaħ CBZ/CBR/CB7/PDF",
+    "close_file": "Agħlaq il-fajl",
+    "create_cbz": "Oħloq arkivju CBZ",
+    "flatten_dirs": "Mexxi l-fajls kollha\ngħall-għeruq u ħassar\nis-sottodirektorji",
+    "renumber": "Innumerar mill-ġdid\nil-paġni",
+    "undo": "⤺ Annulla",
+    "redo": "Erġa' agħmel ⤻",
+    "copy": "Kopja",
+    "cut": "Aqta'",
+    "paste": "Waħħal",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Ikkonverti f'format\nta' immaġni ieħor",
+    "join_pages": "Waħħad il-paġni",
+    "split_page": "Aqsam il-paġna",
+    "save_as": "Issejvja bħala\n(oħloq CBZ ġdid)",
+    "save_selection": "Issejvja s-selezzjoni\nf'CBZ",
+    "print_selection": "Istampa s-selezzjoni",
+    "print_all": "Istampa l-fumett kollu",
+    "sort": "Issortja",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Ikkonverti",
+    "cancel": "Ikkanċella",
+    "split_button": "Aqsam",
+    "join_button": "Ibda",
+    "validate_crop": "Ikkonferma l-qtugħ",
+    "ok": "OK",
+    "close": "Agħlaq",
+    "apply_and_save": "Applika l-bidliet u ssejvja l-fajl",
+    "apply_and_create": "Applika l-bidliet u oħloq fajl CBZ",
+    "close_and_lose": "Agħlaq il-fajl u titlef il-bidliet",
+    "cancel_return": "Ikkanċella u erġa' lura għall-mużajk",
+    "update_page_count": "Aġġorna l-għadd ta'\npaġni fil-metadata",
+    "invert_selection": "Inverti l-għażla",
+    "reduce_size": "Ibdel id-daqs tal-paġni",
+    "mirror_vertical": "⇅",
+    "create_gif": "Oħloq GIF",
+    "edit_gif": "Editja GIF animat",
+    "save_to_folder": "Esporta paġni\nmagħżula",
+    "continue": "Kompli",
+    "reset": "↻",
+    "yes": "Iva",
+    "no": "Le",
+    "renumber_recommended": "Erġa' nnumera (rakkomandat)",
+    "ignore_and_save": "Injora u salva",
+    "rename_to_cbz": "Semmi mill-ġdid għal .cbz",
+    "open_without_rename": "Iftaħ mingħajr ma tissemma mill-ġdid",
+    "rename_to_cbr": "Semmi mill-ġdid għal .cbr",
+    "adjustments": "Luminożità,\nkontrast eċċ.",
+    "batch_cbr_to_cbz": "Konverżjoni f'lott\n ta' fajls CBR għal CBZ",
+    "batch_pdf_to_cbz": "Konverżjoni f’lottijiet\n ta’ fajls PDF għal CBZ",
+    "batch_img_to_cbz": "Konverżjoni bil-lott\n ta' immagini individwali għal CBZ",
+    "icon_toolbar_reset": "Irrestawra",
+    "delete_selected": "Ħassar",
+    "save": "Issejvja",
+    "rename_to_cb7": "Ibdel l-isem għal .cb7",
+    "split_ui": "Aqsam l-interface f'żewġ panels",
+    "unsplit_ui": "Agħlaq it-tieni panel"
+  },
+  "tabs": {
+    "mosaic": "Mużajk",
+    "metadata": "Metadata"
+  },
+  "viewer": {
+    "title": "Visualizzatur",
+    "mode_single": "Paġna waħda  [D]",
+    "mode_double": "Paġna doppja  [D]",
+    "mode_continuous": "Mod kontinwu  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Paġna ta' qabel (←)",
+      "next_page": "Paġna li jmiss (→)",
+      "zoom_in": "Zoom + (Ctrl+Plus)",
+      "zoom_out": "Zoom - (Ctrl+Minus)",
+      "zoom_reset": "Irrisettja l-zoom (Ctrl+0)",
+      "reading_mode_double": "Ibdel il-modalità tal-qari (D) → Paġni doppji",
+      "reading_mode_continuous": "Ibdel il-modalità tal-qari (D) → Paġni doppji kontinwi",
+      "reading_mode_single": "Ibdel il-modalità tal-qari (D) → Paġna waħda",
+      "fullscreen_exit": "Oħroġ mill-iskrin sħiħ (F11)",
+      "fullscreen": "Iskrin sħiħ (F11)",
+      "close_viewer": "Agħlaq il-visualizzatur (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Immaġni korrotta - Ibdel",
+      "corrupted_delete": "⚠️ Ħassar din l-immaġni",
+      "copy": "Kopja (Ctrl+C)",
+      "cut": "Aqta' (Ctrl+X)",
+      "paste": "Waħħal (Ctrl+V)",
+      "paste_clipboard": "Waħħal mill-clipboard (Ctrl+V)",
+      "delete": "Ħassar (Del)",
+      "deselect": "Neħħi s-selezzjoni (ESC)",
+      "rotate_right": "↻ Dawra l-lemin",
+      "rotate_left": "↺ Dawra x-xellug",
+      "mirror": "⇄ Mera orizzontali",
+      "crop": "Aqta'",
+      "convert": "Ikkonverti f'format ieħor...",
+      "join": "Waħħad il-paġni magħżula",
+      "split": "Aqsam il-paġna magħżula",
+      "save_selection": "Issejvja s-selezzjoni f'CBZ",
+      "print_selection": "Istampa s-selezzjoni",
+      "copy_archive": "Kopja l-arkivju kollu",
+      "undo": "Annulla (Ctrl+Z)",
+      "redo": "Erġa' agħmel (Ctrl+Y)",
+      "renumber_auto": "Innumerar mill-ġdid il-paġni (detezzjoni awtomatika ta' paġni multipli)",
+      "renumber_simple": "Innumerar mill-ġdid il-paġni (numerazzjoni sempliċi)",
+      "sort_submenu": "Issortja l-paġni",
+      "sort_name": "Skont l-isem",
+      "sort_type": "Skont it-tip",
+      "sort_size": "Skont id-daqs",
+      "sort_width": "Skont il-wisa'",
+      "sort_height": "Skont l-għoli",
+      "sort_resolution": "Skont ir-riżoluzzjoni",
+      "sort_dpi": "Skont id-DPI",
+      "create_cbz": "Oħloq arkivju CBZ",
+      "save_as": "Issejvja bħala...",
+      "close_file": "Agħlaq il-fajl",
+      "help": "Manwal tal-utent",
+      "update_page_count": "Aġġorna l-għadd ta' paġni fil-metadata",
+      "invert_selection": "Inverti l-għażla (Ctrl+I)",
+      "reduce_size": "Ibdel id-daqs tal-paġni",
+      "mirror_vertical": "⇅ Mera vertikali",
+      "edit_animated_gif": "Editja GIF animat...",
+      "save_to_folder": "Esporta paġni magħżula",
+      "adjustments": "Luminożità, kontrast, kuluri...",
+      "refresh_mosaic": "Aġġorna l-mużajk (F5)",
+      "create_ico": "Oħloq fajl .ico"
+    },
+    "canvas_no_file": {
+      "open": "Iftaħ CBZ/CBR/CB7/PDF",
+      "recent_files": "Fajls reċenti",
+      "clear_history": "Ħassar l-istorja"
+    },
+    "canvas_with_file": {
+      "close": "Agħlaq il-fajl",
+      "paste": "Waħħal (Ctrl+V)",
+      "paste_clipboard": "Waħħal mill-clipboard (Ctrl+V)",
+      "select_all": "Agħżel kollox (Ctrl+A)",
+      "deselect": "Neħħi s-selezzjoni (ESC)",
+      "copy_archive": "Kopja l-arkivju kollu",
+      "print_all": "Istampa l-fumett kollu",
+      "renumber_auto": "Innumerar mill-ġdid il-paġni (detezzjoni awtomatika ta' paġni multipli)",
+      "renumber_simple": "Innumerar mill-ġdid il-paġni (numerazzjoni sempliċi)",
+      "flatten": "Saħħan id-direttorji",
+      "save_selection": "Issejvja s-selezzjoni f'CBZ",
+      "hide_sidebar": "« Aħbi l-kolonna tal-buttuni",
+      "show_sidebar": "» Uri l-kolonna tal-buttuni",
+      "decrease_thumbs": "Naqqas id-daqs tal-miniatures",
+      "increase_thumbs": "Żid id-daqs tal-miniatures",
+      "theme_dark": "Ibdel għat-tema skura",
+      "theme_light": "Ibdel għat-tema ċara",
+      "sort_submenu": "Issortja l-paġni",
+      "undo": "Annulla (Ctrl+Z)",
+      "redo": "Erġa' agħmel (Ctrl+Y)",
+      "create_cbz": "Oħloq arkivju CBZ",
+      "save_as": "Issejvja bħala...",
+      "help": "Manwal tal-utent",
+      "update_page_count": "Aġġorna l-għadd ta' paġni fil-metadata",
+      "invert_selection": "Inverti l-għażla (Ctrl+I)",
+      "fullscreen": "Skrin sħiħa (F11)",
+      "fullscreen_exit": "Oħroġ minn skrin sħiħa (F11 jew ESC)",
+      "quit": "Agħlaq l-applikazzjoni"
+    },
+    "canvas": {
+      "quit": "Agħlaq l-applikazzjoni",
+      "reset": "Irresettar l-applikazzjoni:\n• daqs u pożizzjoni tat-tieqa\n• modalità skura → ċara\n• daqs tal-minjaturi → normali\n• barra laterali → viżibbli / 220 px\n• lingwa → detezzjoni awtomatika\n• daqs tal-font → default",
+      "reset_label": "Irrisettja l-applikazzjoni"
+    },
+    "font_size": {
+      "decrease": "Naqqas id-daqs tal-font",
+      "increase": "Żid id-daqs tal-font"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Issortja skont l-isem",
+    "sort_type": "Issortja skont it-tip",
+    "sort_size": "Issortja skont id-daqs",
+    "sort_width": "Issortja skont il-wisa'",
+    "sort_height": "Issortja skont l-għoli",
+    "sort_resolution": "Issortja skont ir-riżoluzzjoni",
+    "sort_dpi": "Issortja skont id-DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Arkivju vojt",
+        "message": "L-arkivju CBZ m'għandux fajls."
+      },
+      "empty_cbr": {
+        "title": "Arkivju vojt",
+        "message": "L-arkivju CBR m'għandux fajls."
+      },
+      "files_ignored": {
+        "title": "Fajls injorati"
+      },
+      "no_selection_crop": {
+        "title": "Ebda selezzjoni",
+        "message": "Jekk jogħġbok agħżel immaġni biex taqtagħha."
+      },
+      "multi_selection_crop": {
+        "title": "Selezzjoni multipla",
+        "message": "Tista' taqta' immaġni waħda biss kull darba.\nJekk jogħġbok agħżel immaġni waħda."
+      },
+      "invalid_selection_crop": {
+        "title": "Selezzjoni invalida",
+        "message": "L-immaġini biss jistgħu jitqatgħu."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Funzjoni mhux disponibbli",
+        "message": "Ir-riorganizzazzjoni tal-paġni mhix disponibbli fis-sottodirektorji.\nSaħħan id-direttorji jew erġa' lura għall-għeruq."
+      },
+      "no_selection_convert": {
+        "title": "Ebda selezzjoni",
+        "message": "Jekk jogħġbok agħżel mill-inqas immaġni waħda biex tikkonverti."
+      },
+      "invalid_selection_convert": {
+        "title": "Selezzjoni invalida",
+        "message": "L-immaġini biss jistgħu jiġu konvertiti."
+      },
+      "no_selection_split": {
+        "title": "Ebda selezzjoni",
+        "message": "Jekk jogħġbok agħżel immaġni biex taqsam."
+      },
+      "multi_selection_split": {
+        "title": "Selezzjoni multipla",
+        "message": "Tista' taqsam immaġni waħda biss kull darba.\nJekk jogħġbok agħżel immaġni waħda."
+      },
+      "invalid_selection_split": {
+        "title": "Selezzjoni invalida",
+        "message": "L-immaġini biss jistgħu jinqasmu."
+      },
+      "invalid_number_split": {
+        "title": "Numru invalidu",
+        "message": "In-numru ta' paġni għandu jkun bejn 2 u 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Selezzjoni insuffiċjenti",
+        "message": "Jekk jogħġbok agħżel mill-inqas 2 immaġini biex twaħħad."
+      },
+      "invalid_selection_join": {
+        "title": "Selezzjoni invalida",
+        "message": "L-immaġini biss jistgħu jiġu mwaħħda."
+      },
+      "pil_not_available": {
+        "title": "PIL mhux disponibbli",
+        "message": "Il-modulu PIL mhux disponibbli għall-waħħal mill-clipboard tas-sistema."
+      },
+      "format_not_supported": {
+        "title": "Format mhux appoġġjat",
+        "message": "Format ta' immaġni mhux appoġġjat jew fajl korrott.\nFormati appoġġjati: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Ebda selezzjoni",
+        "message": "Jekk jogħġbok iddisinja rettangolu tal-qtugħ l-ewwel."
+      },
+      "cannot_open_file": {
+        "title": "Ma jistax jiftaħ il-fajl",
+        "message": "Ma jistax jintgħabar il-fajl."
+      },
+      "corrupted_images": {
+        "title": "Immaġini korrotti",
+        "summary": "{count} immaġni korrotta/i skoperti/a minn {total}.",
+        "hint": "Huma murija b'ikona speċjali.\nIkklikkja bil-lemin fuq immaġni korrotta biex tissostitwiha jew tħassarha.",
+        "more": "... u {count} oħra"
+      },
+      "no_image_print": {
+        "title": "Ebda immaġni",
+        "message": "Ebda immaġni biex tistampa."
+      },
+      "no_valid_image_print": {
+        "title": "Ebda immaġni",
+        "message": "Ebda immaġni valida biex tistampa."
+      },
+      "no_selection_print": {
+        "title": "Ebda selezzjoni",
+        "message": "Jekk jogħġbok agħżel mill-inqas immaġni waħda."
+      },
+      "no_valid_selection_print": {
+        "title": "Ebda immaġni",
+        "message": "Ebda immaġni valida fis-selezzjoni."
+      },
+      "save_cancelled": {
+        "title": "Salvataġġ ikkanċellat",
+        "message": "Jekk jogħġbok ikkoreġi l-ismijiet tal-fajls manwalment qabel ma ssejvja."
+      },
+      "empty_pdf": {
+        "title": "PDF vojt",
+        "message": "Il-fajl PDF m'għandux paġni."
+      },
+      "no_selection_save": {
+        "title": "Attenzjoni",
+        "message": "Jekk jogħġbok agħżel mill-inqas paġna waħda biex tissejvja."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Ġibed diżattivat",
+        "message": "Il-ġbid tal-paġni huwa disponibbli biss fl-għeruq tal-fumett.\n\nBiex tmexxi l-paġni:\n1. Erġa' lura għall-għeruq billi tikklikkja fuq l-ikona tal-folder ta' fuq\n2. Jew saħħan il-fumett biex tneħħi s-sottodirektorji"
+      },
+      "no_selection_reduce": {
+        "title": "Ebda għażla",
+        "message": "Jekk jogħġbok agħżel mill-inqas paġna waħda biex tnaqqas."
+      },
+      "invalid_selection_reduce": {
+        "title": "Għażla invalida",
+        "message": "Jistgħu jitnaqqsu biss l-immaġini."
+      },
+      "invalid_dimensions": {
+        "title": "Dimensjonijiet invalidi",
+        "message": "Jekk jogħġbok daħħal dimensjonijiet validi (numri sħaħ pożittivi)."
+      },
+      "no_images_for_gif": {
+        "title": "Ebda immaġini",
+        "message": "Huwa meħtieġ mill-inqas immaġni waħda biex toħloq GIF animat."
+      },
+      "no_valid_images": {
+        "title": "Ebda immaġini valida",
+        "message": "Ma nstabet ebda immaġni valida biex jinħoloq il-GIF."
+      },
+      "animated_gif_in_comic": {
+        "title": "GIF animat skopert",
+        "message": "Twissija: Dan il-fumett fih GIF animat wieħed jew aktar.\\n\\nIl-qarrejja tal-fumetti (CDisplayEx, YACReader, eċċ.) juru biss l-ewwel frame ta' kull GIF bħala paġna statika.\\n\\nBiex tara l-GIF animat sew, trid issalvah separatament barra mill-fumett billi tuża l-buttuna \"Esporta paġni magħżula\" jew \"Editja GIF animat\".\\n\\nTrid tkompli ssalva l-fumett xorta?"
+      },
+      "no_selection_adjust": {
+        "title": "L-ebda għażla",
+        "message": "Jekk jogħġbok agħżel mill-inqas immaġini waħda biex tapplika l-aġġustamenti."
+      },
+      "invalid_selection_adjust": {
+        "title": "Għażla mhux valida",
+        "message": "L-aġġustamenti jistgħu jiġu applikati biss fuq immaġinijiet."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Il-funzjoni mhix disponibbli",
+        "message": "L-innumerar mill-ġdid mhuwiex disponibbli sakemm il-kartelli ma jiġux livellati.\nIvvella l-kartelli qabel ma tinnumera mill-ġdid."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "Żball ZIP",
+        "message": "'{file}': Il-fajl mhuwiex arkivju ZIP validu jew huwa korrott."
+      },
+      "zip_cannot_open": {
+        "title": "Żball ZIP",
+        "message": "Ma jistax jiftaħ il-fajl CBZ: {error}"
+      },
+      "rar_invalid": {
+        "title": "Żball RAR",
+        "message": "'{file}': Il-fajl mhuwiex arkivju RAR validu jew huwa korrott."
+      },
+      "rar_cannot_open": {
+        "title": "Żball RAR",
+        "message": "Ma jistax jiftaħ l-arkivju CBR: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Żball",
+        "message": "Żball mhux mistenni waqt li jiftaħ il-CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Żball",
+        "message": "Ma jistax jwaħħad l-immaġini."
+      },
+      "paste_failed": {
+        "title": "Żball",
+        "message": "Żball waqt il-waħħal: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Żball",
+        "message": "Ma jistax jikkopja l-arkivju: {error}"
+      },
+      "crop_invalid": {
+        "title": "Żball",
+        "message": "Iż-żona tal-qtugħ hija invalida."
+      },
+      "crop_failed": {
+        "title": "Żball",
+        "message": "Ma jistax jaqta' l-immaġni: {error}"
+      },
+      "load_image_failed": {
+        "title": "Żball",
+        "message": "Ma jistax jillowdja l-immaġni:\n{error}"
+      },
+      "print_error": {
+        "title": "Żball tal-istampar",
+        "message": "Żball waqt l-istampar:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Istampar mhux disponibbli",
+        "message": "Il-modulu win32print mhuwiex installat.\nInstallah b': pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Fajl ma nstabx",
+        "message": "Il-fajl m'għadux jeżisti:\n{path}"
+      },
+      "import_failed": {
+        "title": "Żball tal-importazzjoni",
+        "message": "Ma jistax jimporta l-fajl: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF mhux installat",
+        "message": "Il-librerija PyMuPDF (fitz) mhix installata.\nInstallaha b': pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Żball",
+        "message": "Żball waqt l-importazzjoni tal-PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "Żball PDF",
+        "message": "Ma jistax jillowdja l-PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Ismijiet ta' fajls duplikati",
+        "intro": "{count} isem/ismijiet tal-fajl duplikat(i) instab(u):\n\n",
+        "item": "  • {name} ({times} drabi)\n",
+        "more": "  ... u {more} oħrajn\n",
+        "footer": "\nL-arkivji ZIP ma jaċċettawx ismijiet duplikati.\nEkk jogħġbok saħħaħ dawn il-fajls qabel issalva."
+      },
+      "save_failed": {
+        "title": "Żball",
+        "message": "Ma jistax jissejvja l-fajl: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Żball",
+        "message": "Ma jistax joħloq l-arkivju: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Żball",
+        "message": "Ma jistax jissejvja s-selezzjoni: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "Żball fil-Ħolqien tal-GIF",
+        "message": "Ma jistax jinħoloq GIF animat:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Żball fis-salvataġġ",
+        "message": "Żball waqt is-salvataġġ tal-fajls:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Żball fit-Tixrija mill-ġdid",
+        "message": "Ma setax jissemma mill-ġdid il-fajl: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF protett b'password",
+        "message": "Dan il-fajl PDF huwa kriptat u protett b'password.\nMa jistax jinfetaħ mingħajr il-password."
+      },
+      "pdf_unlock_failed": {
+        "title": "Żball",
+        "message": "Ma setax jissejvja l-fajl PDF miftuħ:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: PDF encrypted (password meħtieġa), miżmum",
+      "file_too_large": {
+        "title": "Il-fajl huwa kbir wisq",
+        "message": "Il-fajl {filename} huwa {size} u jaqbeż id-daqs massimu permess (500 MB) għal immaġni."
+      },
+      "license_file_not_found": {
+        "message": "Fajl tal-liċenza ma nstabx: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Ma jistax jinqara l-fajl tal-liċenza: {error}"
+      },
+      "7z_invalid": {
+        "title": "Żball 7Z",
+        "message": "Il-fajl '{file}' mhuwiex arkivju 7Z validu jew huwa korrott."
+      },
+      "delete_error": "Żball waqt it-tħassir: {error}",
+      "export_error": "Żball waqt l-esportazzjoni: {error}",
+      "font_source_not_found": "Il-fajl tas-sors tal-font ma nstabx: {path}",
+      "no_tengwar_font": "L-ebda font Tengwar ma nstab.",
+      "no_icons_found": "L-ebda ikona ma nstabet.",
+      "unsupported_files": {
+        "title": "Fajls mhux appoġġjati",
+        "message": "Il-fajls li ġejjin mhumiex appoġġjati u ġew injorati:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF Maħluq b'Suċċess",
+        "message": "Il-GIF animat '{name}' ġie maħluq u miżjud mal-mużajk."
+      },
+      "pywin32_required": {
+        "title": "Funzjoni mhux disponibbli",
+        "message": "Il-modulu pywin32 huwa meħtieġ għall-waħħal mill-clipboard tas-sistema.\nInstallah b': pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Immaġini importati",
+        "message": "{count} immaġni/immaġini importata/importati"
+      },
+      "archive_copied": {
+        "title": "Arkivju kkupjat",
+        "message": "L-arkivju ġie kkupjat fil-clipboard."
+      },
+      "function_not_available": {
+        "title": "Funzjoni mhux disponibbli",
+        "message": "Din il-funzjoni mhix disponibbli bħalissa."
+      },
+      "duplicate_detected": {
+        "title": "Duplikat skoprit",
+        "message": "Kien diġà hemm fajl b'dan l-isem.\n\nIl-fajl ġie msemmi mill-ġdid:\n{name}"
+      },
+      "replace_success": {
+        "title": "Suċċess",
+        "message": "L-immaġni '{name}' ġiet sostitwita b'suċċess."
+      },
+      "history_cleared": {
+        "title": "Istorja mħassra",
+        "message": "Il-lista tal-fajls reċenti ġiet imħassra."
+      },
+      "files_copied_clipboard": {
+        "title": "Fajls ikkupjati fil-clipboard",
+        "message": "Il-ġbid 'il barra mill-applikazzjoni mhuwiex disponibbli għal raġunijiet tekniċi.\n\n✓ {count} {word} ikkupjat(i) fil-clipboard\n\nTista' issa twaħħal fejn trid:\n  • Ikklikkja bil-lemin → Waħħal\n  • Jew Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Korrezzjoni effettwata",
+        "message": "{count} isem/ismijiet ta' fajl ikkoreġut(i)."
+      },
+      "import_success": {
+        "title": "Importazzjoni b'suċċess",
+        "message": "{count} paġna/paġni importata/importati minn {file}"
+      },
+      "pdf_import_success": {
+        "title": "Importazzjoni b'suċċess",
+        "message": "{count} paġna/paġni PDF importata/importati minn {file}\nKwalità: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Suċċess",
+        "message": "PDF ikkonvertit b'suċċess!\n{count} paġni llowdjati f'{dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Suċċess",
+        "message": "Fajl CBZ salvat:"
+      },
+      "cbz_converted": {
+        "title": "Suċċess",
+        "message": "Fajl konvertit għal CBZ:",
+        "question": "Trid tħassar il-fajl CBR oriġinali?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Suċċess",
+        "message": "Fajl konvertit għal CBZ:",
+        "question": "Trid tħassar il-fajl PDF oriġinali?"
+      },
+      "cbz_save_as": {
+        "title": "Suċċess",
+        "message": "Fajl CBZ ġdid issejvjat: {path}"
+      },
+      "cbz_created": {
+        "title": "Suċċess",
+        "message": "Arkivju CBZ maħluq:"
+      },
+      "selection_saved": {
+        "title": "Suċċess",
+        "message": "Għażla salvata:"
+      },
+      "flatten_done": {
+        "title": "Saħħan komplet",
+        "message": "{files} fajl/fajls mexxi(ja) minn {dirs} sottofolder/sottofolder."
+      },
+      "language_changed": {
+        "title": "Lingwa mibdula",
+        "message": "Il-lingwa tal-interface ġiet mibdula b'suċċess."
+      },
+      "new_cbz_saved": {
+        "title": "Fajl Salvat",
+        "message": "Il-fajl CBZ il-ġdid ġie salvat b'suċċess:",
+        "question": "Trid tħassar il-fajl oriġinali?"
+      },
+      "page_count_updated": {
+        "title": "Għadd ta' paġni aġġornat",
+        "message": "L-għadd ta' paġni fil-metadata ġie aġġornat għal {count} paġni."
+      },
+      "files_saved": {
+        "title": "Salvat b'suċċess",
+        "message": "{count} fajls salvaw f':\n{folder}",
+        "open_folder": "Trid tiftaħ il-folder?"
+      },
+      "adjustments_applied": {
+        "title": "Aġġustamenti applikati",
+        "message": "L-aġġustamenti ġew applikati b'suċċess."
+      },
+      "pdf_unlocked": {
+        "title": "PDF miftuħ",
+        "message": "Il-fajl PDF miftuħ ġie ssejvjat:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Arkivju voluminuż",
+        "message": "Dan l-arkivju għandu {size} MB dekompressat.\nIt-tgħabija tista' tikkonsum ħafna memorja (RAM).\n\nTrid tkompli?"
+      },
+      "confirm_delete": {
+        "title": "Konferma",
+        "message": "Trid tassew tneħħi {count} fajl(s) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Ħassar il-fajls sors?",
+        "message": "Trid tħassar l-immaġini li ġew imwaħħda?\n\nIva = Ħassar il-fajls sors\nLe = Żomm il-fajls sors\nIkkanċella = Ikkanċella l-operazzjoni"
+      },
+      "invalid_filenames": {
+        "title": "Ismijiet ta' fajls invalidi",
+        "intro": "{count} fajl(s) fihom karattri pprojbiti:",
+        "item": "  • {name}",
+        "more": "  ... u {more} oħra",
+        "forbidden_chars": "Karattri pprojbiti: {chars}",
+        "fix_question": "Trid tikkoreġi dawn l-ismijiet awtomatikament?\n(Il-karattri pprojbiti se jiġu sostitwiti b''_')"
+      },
+      "close_without_save": {
+        "title": "Issejvja qabel tagħlaq?",
+        "message": "Immaġini ġew miżjuda. Trid toħloq arkivju CBZ qabel ma tagħlaq?"
+      },
+      "flatten_folders": {
+        "title": "Saħħan id-direttorji",
+        "subdirs_detected": "Sottodirektorji skoperti:",
+        "files_to_move": "{count} fajl/fajls se jitmexxew għall-għeruq.",
+        "folders_to_delete": "{count} sottofolder/sottofolder se jitħassru.",
+        "continue_question": "Trid tkompli?"
+      },
+      "update_page_count": {
+        "title": "Aġġorna l-għadd ta' paġni",
+        "message": "L-għadd ta' paġni fil-komiks inbidel.\n\nGħadd ta' paġni indikati fil-metadata: {original}\nGħadd ta' paġni attwali: {current}\n\nTrid taġġorna l-għadd ta' paġni fil-metadata?"
+      },
+      "conversion_complete": {
+        "title": "Konverżjoni kompluta",
+        "message": "Konverżjoni kompluta!\n\n{count} immaġni/immaġnijiet konvertiti għall-format {format} ġew miżjuda wara l-għażla tiegħek.\n\nĦassar l-immaġnijiet oriġinali?",
+        "delete_originals": "Ħassar l-oriġinali\n{count} fajl - {size}",
+        "keep_all": "Żomm kollox\n{count} fajl - {size}",
+        "cancel_conversion": "Ikkanċella l-konverżjoni\n{count} fajl - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Estensjoni żbaljata skoperta: dan '{filename}' il-fajl huwa CBZ, mhux CBR. Semmi mill-ġdid?",
+      "title": "Estensjoni żbaljata"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Estensjoni żbaljata skoperta: dan '{filename}' il-fajl huwa CBR, mhux CBZ. Semmi mill-ġdid?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Estensjoni żbaljata nstabet: il-fajl '{filename}' huwa CB7, mhux CBZ/CBR. Ibdel l-isem?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Daqs tal-miniatures",
+    "loading": "Jekk jogħġbok stenna, qed jillowdja...\n{percent}%",
+    "resizing": "Jekk jogħġbok stenna, qed jinbidel id-daqs...\n{percent}%",
+    "converting": "Jekk jogħġbok stenna, konverżjoni...\n{percent}%",
+    "loading_lazy": "Jekk jogħġbok stenna, qed jitgħabba...\n{percent}%\n\nMinħabba d-daqs kbir ta' dan il-fajl ({size} MB), il-paġni se jitgħabbew progressivament. Il-paġni viżibbli fuq l-iskrin jitgħabbew immedjatament, l-oħrajn se jitgħabbew awtomatikament waqt li timxi.",
+    "apply_save_cbz": "Applika l-bidliet\nu ssejvja l-fajl CBZ",
+    "apply_create_cbz": "Applika l-bidliet\nu oħloq fajl CBZ",
+    "import_progress": "Importazzjoni in progress...\n{percent}%",
+    "pdf_import_progress": "Importazzjoni PDF in progress...\n{percent}%",
+    "pdf_opening": "Qed jiftaħ il-fajl PDF...",
+    "pdf_page": "Paġna {current} / {total}",
+    "warning_close": "Attenzjoni! Il-bidliet ma ġewx issejvjati u se jintilfu!",
+    "language_label": "Lingwa:",
+    "directory_tooltip": "Folder: {name}\n{count} fajl/fajls\nDaqs totali: {size} MB",
+    "folder_up_tooltip": "Ikklikkja darbtejn biex telgħa\nlivell wieħed fl-alberu tad-direttorji",
+    "status_bar": "{dirs} folder(s)  |  {files} fajl(s) ({total_size})  |  {selected} magħżul(a) ({selected_size})",
+    "pdf_converting": "Qed jikkonverti {total} paġni f'immaġini b'{dpi} DPI...",
+    "pdf_converting_no_change": "Qed jestrai {total} paġni mingħajr modifika...",
+    "print_progress": "Tħejjija għall-istampar...\n{percent}%",
+    "print_preparing": "Jekk jogħġbok stenna, tħejjija għall-istampar...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nSommarju tal-Liċenza Pubblika Ġenerali GNU v3\n\nLIBERTAJIET MOGĦTIJA\nTista' tuża, tikkopja, timmodifika u terġa' tqassam\nMosaicView, anke għal skopijiet kummerċjali.\n\nOBBLIGI\nKull qsim mill-ġdid (oriġinali jew modifikat) irid :\n– iżomm il-liċenza GPL v3\n– jinkludi l-kodiċi sors jew jindika minn fejn jinkiseb\n– ma jimponiex restrizzjonijiet addizzjonali\n\nGARANZIJI\nDan is-software jitqassam MINGĦAJR EBDA GARANZIJA.\nL-awtur tiegħu ma jistax jinżamm responsabbli għal danni li jirriżultaw mill-użu tiegħu.\n\nKellek tirċievi kopja tal-Liċenza Pubblika Ġenerali GNU ma' dan il-programm. Jekk le, ara <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Ara l-liċenzja sħiħa",
+    "license_unrar_text": "Il-fajls CBZ huma bbażati fuq il-format ZIP, format ħieles u miftuħ. Il-fajls CBR, min-naħa l-oħra, huma bbażati fuq il-format RAR, format proprjetarju.\n\nMosaicView jista' jiftaħ fajls CBR grazzi għal UnRAR, utilità żviluppata minn RARlab u redistribuibbli b'xejn.\n\nSit uffiċjali: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Ara l-Liċenza UnRAR",
+    "saving_cbz": "Qed jissejvja... {percent}%",
+    "empty_canvas_line1": "Itfa hawn fajl wiehed jew iktar CBZ/CBR/CB7/PDF jew il-fajls tieghek",
+    "empty_canvas_line2": "Ladarba fajl ikun miftuah, tista tkompli titfa ohrajn",
+    "empty_canvas_line3": "Waqqagħ folder wieħed jew aktar biex tibda pproċessar batch",
+    "icon_toolbar_config_title": "Konfigurazzjoni tal-barra tal-ikoni",
+    "icon_toolbar_active": "Ikoni fil-barra",
+    "icon_toolbar_hidden": "Ikoni fir-riżerva",
+    "license_gpl_full": "Liċenzja GNU GPL v3",
+    "license_unrar_full": "Liċenzja UnRAR",
+    "licenses_button": "Liċenzji",
+    "view_full_gpl_license": "Ara l-liċenzja sħiħa GNU GPL v3",
+    "license_7zip_text": "Il-fajls CB7 huma bbażati fuq il-format 7z, żviluppat minn Igor Pavlov u distribwit taħt il-liċenzja GNU LGPL.\n\nMosaicView jista' jiftaħ fajls CB7 grazzi għal 7-Zip — utilità b'xejn u open source.\n\nSit uffiċjali : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Ara l-liċenzja 7-Zip",
+    "license_7zip_full": "Liċenzja 7-Zip",
+    "icon_toolbar_show_thumb_slider": "Uri l-iskorja tad-daqs tal-miniatura",
+    "icon_toolbar_show_lang_combo": "Uri l-għażla tal-lingwa",
+    "adjusting": "Jekk jogħġbok stenna, l-aġġustamenti qegħdin isiru...\n{current} / {total}",
+    "license_piqad_full": "Liċenzja tal-font pIqaD qolqoS",
+    "license_tengwar_full": "Liċenza tal-font Alcarin Tengwar",
+    "view_full_piqad_license": "Ara l-liċenzja sħiħa ta' pIqaD qolqoS"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Konverżjoni ta' immaġini",
+      "title": "Konverżjoni ta' {count} {word}",
+      "word_image": "immaġni",
+      "word_images": "immaġini",
+      "info": "Agħżel il-format tad-destinazzjoni:",
+      "format_png": "PNG (mingħajr telf)",
+      "format_jpg": "JPEG (b'kompressjoni)",
+      "format_webp": "WEBP (modern)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (kwalità għolja)",
+      "format_gif": "GIF (animazzjoni)",
+      "quality_label": "Kwalità għal JPG/WEBP:",
+      "quality_maximum": "Massima — kwalità 95/100",
+      "quality_high": "Għolja — kwalità 85/100",
+      "quality_medium": "Medja — kwalità 75/100",
+      "quality_low": "Baxxa — kwalità 60/100",
+      "quality_custom_option": "Personalizzata",
+      "quality_custom": "Kwalità personalizzata : {value}/100",
+      "quality_note": "(Dan il-parametru jaffettwa biss il-formati JPG u WEBP)",
+      "quality_window_title": "Għażla tal-kwalità",
+      "format_gif_static": "GIF statiku",
+      "format_gif_animated": "GIF animat (agħżel diversi stampi)"
+    },
+    "split": {
+      "window_title": "Aqsam il-paġna",
+      "title": "Aqsam il-paġna",
+      "pages_label": "Numru ta' paġni:",
+      "direction_label": "Direzzjoni tal-qtugħ:",
+      "horizontal": "Orizzontali (xellug → lemin)",
+      "vertical": "Vertikali (fuq → isfel)",
+      "warning": "⚠ Peress li l-qtugħ huwa kkalkulat awtomatikament,\njista' jkun meħtieġ aġġustament manwali.",
+      "button_split": "Aqsam",
+      "button_cancel": "Ikkanċella"
+    },
+    "join": {
+      "window_title": "Waħħad il-paġni - Organizza mill-ġdid l-ordni",
+      "instructions": "Organizza l-immaġini:\n• Vertikalment (fuq/isfel) għal waħħal vertikali\n• Orizzontalment (xellug/lemin) għal waħħal orizzontali",
+      "merged_filename_prefix": "Magħqud",
+      "heights_label": "Għoli",
+      "widths_label": "Wisa'",
+      "size_adjustment_title": "Aġġustament tad-daqs",
+      "size_adjustment_warning": "⚠️ L-immaġini magħżula għandhom dimensjonijiet differenti.\nAgħżel kif għandek taġġusta d-daqsijiet tagħhom għall-unjoni.\nIl-proporzjon ta' kull immaġni se jiġi ppreservat dejjem.",
+      "keep_original": "Żomm daqsijiet oriġinali",
+      "keep_original_desc": "(iżid bars iswed għall-mili)",
+      "enlarge_small": "Ikabbar immaġini żgħar",
+      "enlarge_small_desc": "(allinja mad-dimensjoni massima)",
+      "reduce_large": "Naqqas immaġini kbar",
+      "reduce_large_desc": "(allinja mad-dimensjoni minima)",
+      "back_to_arrangement": "Lura"
+    },
+    "pdf": {
+      "quality_merge": "Agħżel il-kwalità tal-waħda:",
+      "quality_export": "Agħżel il-kwalità tal-esportazzjoni:",
+      "merge_quality_title": "Kwalità tal-ħidma tal-PDF",
+      "export_quality_title": "Kwalità tal-esportazzjoni tal-PDF",
+      "loading_title": "Qed jittella' PDF...",
+      "dpi_90": "90 DPI - Pubblikazzjoni web",
+      "dpi_150": "150 DPI - Kwalità tajba (rakkomandat għall-wiri)",
+      "dpi_200": "200 DPI - Kwalità tajba ħafna",
+      "dpi_300": "300 DPI - Kwalità eċċellenti (standard tal-komiks)",
+      "dpi_600": "600 DPI - Kwalità massima (fajls kbar)",
+      "dpi_original": "Ebda modifika tal-immaġini",
+      "dpi_original_tooltip": "Analiżi intelliġenti ta' kull paġna PDF:\n• Paġni bl-istampi biss: iżomm id-DPI oriġinali\n• Paġni bit-test biss: 300 DPI\n• Paġni mħallta (test + stampi): DPI tal-istampi jekk >= 300, inkella 300 DPI\nMassimu: 2400 DPI biex jillimita d-daqs tal-fajl"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF meħtieġ",
+      "pymupdf_required_message": "PyMuPDF (fitz) mhuwiex installat. Ma jistax jikkonverti fajls PDF.",
+      "select_directory_title": "Agħżel id-direttorju li fiha l-fajls PDF",
+      "no_pdf_title": "L-ebda fajl PDF",
+      "no_pdf_message": "Ma nstabu l-ebda fajls PDF fid-direttorju:\n{directory}",
+      "confirm_title": "Konverżjoni bil-lott ta' PDF għal CBZ",
+      "confirm_message": "{count} fajls PDF biex jiġu kkonvertiti f'{directory} (sottodirektorji inklużi).",
+      "checkbox_permanent_delete": "Ħassar il-fajls PDF oriġinali mingħajr ma\ntgħaddi mill-litter (MA TISTAX TĦASSAR)",
+      "start_button": "Ibda",
+      "converting_title": "Il-konverżjoni għaddejja...",
+      "converting_progress": "Qed jiġi kkonvertit il-fajl {current} minn total ta' {total}",
+      "page_progress": "Paġna {current} / {total}",
+      "complete_title": "Il-konverżjoni lesta",
+      "complete_message": "{count} fajls PDF ġew ikkonvertiti fid-direttorju:",
+      "complete_message_errors": "{count} minn {total} fajls PDF ġew ikkonvertiti fid-direttorju:",
+      "errors_count": "{count} żball(i) misjuba."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Agħżel id-direttorju li fih il-fajls CBR",
+      "no_cbr_title": "L-ebda fajl CBR",
+      "no_cbr_message": "Ma nstab l-ebda fajl CBR fid-direttorju:\\n{directory}",
+      "confirm_title": "Konverżjoni f'lott minn CBR għal CBZ",
+      "confirm_message": "{count} fajl(s) CBR għall-konverżjoni f'{directory} (sottodirrettorji inklużi).",
+      "checkbox_permanent_delete": "Ħassar il-fajls CBR oriġinali mingħajr\nil-litter bin (IMPOSSIBBLI TIRRITORNA)",
+      "start_button": "Ibda",
+      "converting_title": "Qed jikkonverti...",
+      "converting_progress": "Qed jikkonverti l-fajl {current} minn {total}",
+      "page_progress": "Paġna {current} / {total}",
+      "complete_title": "Konverżjoni lesta",
+      "complete_message": "{count} fajl(s) CBR ikkonvertit(i) fid-direttorju:",
+      "complete_message_errors": "{count} fajl(s) CBR ikkonvertit(i) minn {total} fid-direttorju:",
+      "errors_count": "{count} żball(i) instab(u).",
+      "renamed_count": "{count} fajl(s) msemmi(ja) mill-ġdid għal CBZ",
+      "rarfile_unavailable": "Il-modulu rarfile mhux disponibbli. Ma jistax jikkonverti fajls CBR."
+    },
+    "close_warning": {
+      "title": "Attenzjoni!",
+      "message": "Il-bidliet ma ġewx issejvjati u se jintilfu!",
+      "btn_close_lose": "Agħlaq il-fajl u titlef il-bidliet",
+      "btn_save_cbz": "Applika l-bidliet u ssejvja l-fajl",
+      "btn_create_cbz": "Applika l-bidliet u oħloq fajl CBZ",
+      "btn_cancel": "Ikkanċella u erġa' lura għall-mużajk"
+    },
+    "replace_image": {
+      "title": "Ibdel l-immaġni korrotta"
+    },
+    "reduce_size": {
+      "window_title": "Tibdil tad-daqs tal-immaġni",
+      "title": "Tibdil tad-daqs ta' {count} {word}",
+      "word_image": "immaġni",
+      "word_images": "immaġnijiet",
+      "current_size": "Daqs attwali: {size} MB",
+      "current_dimensions": "Dimensjonijiet attwali: {width} × {height} px",
+      "choose_method": "Agħżel metodu ta' tibdil tad-daqs:",
+      "custom_dimensions": "Dimensjonijiet personalizzati",
+      "width_label": "Wisa':",
+      "height_label": "Għoli:",
+      "use_custom_dimensions": "Uża dawn id-dimensjonijiet",
+      "different_dimensions_warning": "Il-paġni magħżula għandhom dimensjonijiet differenti. Dimensjonijiet personalizzati se jġiegħlu l-paġni kollha għall-istess daqs. Kun żgur li tifhem l-implikazzjonijiet qabel tkompli.",
+      "estimated_size": "Daqs stmat: {size} MB",
+      "percentage_reduction": "Tnaqqis perċentwali",
+      "percentage_enlargement": "Tkabbir perċentwali",
+      "reduce_0": "0% (ebda tibdil)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (ebda tibdil)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "L-aktar wisa' tal-paġna komuni huma 1024, 1280, 1600, 1920 u 2000 pixel, iżda valuri oħra huma wkoll xierqa.",
+      "multi_page_width": "Identifika u tibdil id-daqs ta' paġni multipli awtomatikament (wisa'/għoli)",
+      "multi_page_width_tooltip": "Jippermetti identifikazzjoni awtomatika ta' paġni multipli: paġna doppja, paġna tripla eċċ. Il-koeffiċjent multiplikatur jiġi kkalkulat awtomatikament abbażi tar-rata ta' kull paġna, kemm jekk tkun fil-wisa' (paġni ħdejn xulxin) jew fl-għoli (paġni mifruxin)"
+    },
+    "gif_animated": {
+      "window_title": "Ħolqien ta' GIF animat",
+      "images_title": "Stampi tal-animazzjoni",
+      "params_title": "Parametri GIF",
+      "frame_delay_label": "Dewmien bejn stampi:",
+      "fps_normal": "{fps} frejms/sekonda",
+      "fps_slow": "1 frejm kull {seconds} sekondi",
+      "loop_label": "Numru ta' ripetizzjonijiet:",
+      "loop_info": "(0 = loop infinit)",
+      "disposal_label": "Tqassim tal-istampi:",
+      "disposal_0": "Mhux speċifikat",
+      "disposal_1": "Żomm l-istampa preċedenti",
+      "disposal_2": "Irrestawra għall-kulur tal-isfond",
+      "disposal_3": "Irrestawra għall-istat preċedenti",
+      "optimize": "Ottimizza l-fajl (iffranka biss id-differenzi)",
+      "metadata_title": "Metadata GIF",
+      "metadata_dimensions": "Dimensjonijiet: {width} × {height} px",
+      "metadata_frames": "Numru ta' frejms: {count}",
+      "metadata_duration": "Tul totali: {duration} s",
+      "metadata_fps": "Frekwenza: {fps} fps",
+      "metadata_palette": "Paletta: sa 256 kulur",
+      "metadata_size": "Daqs stmat: {size} KB",
+      "comment_label": "Kumment (fakultattiv):",
+      "no_images": "L-ebda stampa magħżula",
+      "creating_progress": "Qed jitgħabbew l-immagini... ({current}/{total})",
+      "creating_normalizing": "Qed jitnormalizzaw l-immagini... ({current}/{total})",
+      "creating_quantizing": "Qed jiġu kkwantizzati l-kuluri... ({current}/{total})",
+      "creating_saving": "Qed jissejvja l-GIF..."
+    },
+    "save_to_folder": {
+      "title": "Agħżel folder tad-destinazzjoni"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Ismijiet ta' fajls duplikati",
+      "message": "Instabu ismijiet ta' fajls identiċi. Għalkemm is-salvataġġ huwa\nteknikament possibbli, dan jista' jikkawża problemi ta' qari f'xi\napplikazzjonijiet tal-qari ta' fumetti (wiri inkomplet, paġni nieqsa,\neċċ.).\n\nHuwa rakkomandat li jerġgħu jiġu nnumerati l-paġni qabel is-salvataġġ."
+    },
+    "adjustments": {
+      "window_title": "Aġġustamenti tal-immaġini",
+      "title": "Aġġustamenti għal {count} {word}",
+      "word_image": "immaġini",
+      "word_images": "immaġinijiet",
+      "apply_button": "Applika",
+      "color_depth_section": "Fond tal-kulur",
+      "brightness_contrast_section": "Luminożità u kuntrast",
+      "compression_section": "Kompressjoni",
+      "effects_section": "Effetti",
+      "sharpness_section": "Nitidezza",
+      "levels_section": "Livelli iswed/abjad",
+      "depth_unchanged": "Tibdilx",
+      "depth_32bit": "32 bits (RGBA - kuluri + trasparenza)",
+      "depth_24bit": "24 bits (RGB - kuluri)",
+      "depth_8bit": "8 bits (paletta PNG / skala griża JPEG)",
+      "depth_1bit": "1 bit (iswed u abjad)",
+      "brightness_label": "Luminożità: {value}",
+      "contrast_label": "Kuntrast: {value}",
+      "compression_enable": "Attiva kompressjoni mill-ġdid",
+      "compression_quality_label": "Kwalità : {value}/100",
+      "sharpness_label": "Nitidezza: {value}",
+      "effect_none": "L-ebda effett",
+      "effect_grayscale": "Tonalitajiet griż",
+      "effect_sepia": "Sepja",
+      "levels_none": "L-ebda aġġustament",
+      "levels_threshold": "Limitu (iswed jew abjad pur)",
+      "levels_advanced": "Livelli avvanzati (dellijiet/tonijiet medji/dwal)",
+      "threshold_label": "Limitu: {value}",
+      "black_point_label": "Punt iswed: {value}",
+      "gamma_label": "Gamma (tonijiet medji): {value}",
+      "white_point_label": "Punt abjad: {value}",
+      "auto_levels_button": "Aġġustament awtomatiku",
+      "open_viewer_button": "Aġġusta bil-viewer (rakkomandat)",
+      "compression_info": "Il-kompressjoni tapplika biss għal immaġini JPG u WebP",
+      "open_viewer_button_simple": "Aġġusta bil-viewer",
+      "reset_button": "Irrisettja",
+      "preview_section": "Dehra minn qabel",
+      "effect_invert": "Inverżjoni tal-kulur",
+      "preview_warning": "Il-previżjoni tista' tkun differenti mir-riżultat finali",
+      "effect_remove_colors": "Neħħija tal-kuluri",
+      "remove_colors_intensity_label": "Intensità : {value}",
+      "image_mode_section": "Modalità tal-immaġni",
+      "image_mode_rgb": "RGB (kuluri)",
+      "image_mode_rgba": "RGBA (kuluri + trasparenza)",
+      "image_mode_l": "L (skala ta’ griż)",
+      "image_mode_la": "LA (skala ta’ griż + trasparenza)",
+      "image_mode_cmyk": "CMYK (stampar)",
+      "image_mode_1": "1 (iswed u abjad pur)",
+      "image_mode_p": "P (paletta ta’ 256 kulur)",
+      "saturation_section": "Saturazzjoni",
+      "saturation_label": "Saturazzjoni : {value}",
+      "saturation_viewer_title": "Aġġustament tas-saturazzjoni",
+      "transparency_section": "Trasparenza",
+      "transparency_info": "It-trasparenza tapplika biss għal immaġnijiet PNG, WebP u ICO",
+      "transparency_type_label": "Tip :",
+      "transparency_type_flood": "Żona",
+      "transparency_type_global": "Globali",
+      "transparency_tolerance_label": "Tolleranza : {value}",
+      "transparency_viewer_title": "Aġġustament tat-trasparenza",
+      "transparency_click_instruction": "Ikklikkja fuq il-kulur biex tagħmlu trasparenti",
+      "transparency_undo": "Agħmel lura l-aħħar klikk",
+      "transparency_redo": "Erġa' agħmel",
+      "transparency_type_flood_tooltip": "Flood fill : jagħmel trasparenti ż-żona tal-kulur uniformi madwar il-pixel li kklikkjajt",
+      "transparency_type_global_tooltip": "Trasparenza globali : taffettwa l-pixils kollha tal-immaġni li l-kulur tagħhom huwa simili għal dak ikklikkjat",
+      "transparency_apply": "Applika",
+      "transparency_skipped_warning": "{count} immaġni(jiet) mqabeż — il-format mhux kompatibbli mat-trasparenza. Biex tinkludi hom, ikkonverthom f'PNG l-ewwel.",
+      "unsharp_section": "Tidqiq adattiv",
+      "unsharp_radius_label": "Raġġ: {value}",
+      "unsharp_percent_label": "Intensità: {value} %",
+      "unsharp_threshold_label": "Limitu: {value}",
+      "unsharp_viewer_title": "Tidqiq adattiv",
+      "auto_levels_tooltip": "Janalizza kull paġna u jaġġusta awtomatikament il-livelli tal-iswed u l-abjad biex jimmassimizza l-kuntrast.\nBiex tagħżel paġna b'paġna, uża l-viewer."
+    },
+    "levels_viewer": {
+      "title": "Aġġustament tal-livelli bil-qattara",
+      "apply_current": "Applika ghal din il-pagna",
+      "apply_all": "Applika għall-paġni kollha magħżula",
+      "black_pipette": "Qattara tal-punt iswed",
+      "white_pipette": "Qattara tal-punt abjad",
+      "black_pipette_tooltip": "Ikklikkja fuq pixel li għandu jkun kompletament iswed. Attenzjoni: huwa faċli li tesaġera!",
+      "white_pipette_tooltip": "Ikklikkja fuq pixel li għandu jkun kompletament abjad. Attenzjoni: huwa faċli li tesaġera!"
+    },
+    "sharpness_viewer": {
+      "title": "Aġġustament tal-Ħeddieda"
+    },
+    "brightness_viewer": {
+      "title": "Aġġustament tad-Dawl u l-Kuntrast"
+    },
+    "compression_viewer": {
+      "title": "Aġġustament tal-Kompressjoni"
+    },
+    "outliers": {
+      "title": "Paġni b'dimensjonijiet mhux tas-soltu",
+      "message": "Il-paġni li ġejjin għandhom dimensjonijiet li jvarjaw ħafna minn oħrajn. Jekk jogħġbok agħżel kif għandhom jiġu ttrattati:",
+      "width": "Wisa'",
+      "height": "Għoli",
+      "unusual": "mhux tas-soltu",
+      "skip": "Tiskaljax id-daqs",
+      "keep": "żomm"
+    },
+    "first_page_multi": {
+      "title": "L-ewwel paġna hija paġna multipla",
+      "message": "L-ewwel paġna nstabet bħala paġna multipla. Kif tixtieq in-numeraha?",
+      "option_auto_desc": "Rinumerazzjoni normali b’riċnoxximent awtomatiku.",
+      "option_joint_desc": "Ġunzjon tal-ewwel u l-aħħar paġna tal-ċumik.",
+      "option_exclude_label": "Tinkludix fil-rinumerazzjoni",
+      "option_exclude_desc": "Il-paġna żžomm l-isem attwali tagħha u tibqa’ fl-ewwel pożizzjoni. Tista’ tagħtiha isem ġdid manwalment aktar tard."
+    },
+    "batch_img": {
+      "select_directory_title": "Agħżel il-folder li fih l-immagini",
+      "no_img_title": "Ebda fajl tal-immagini ma nstab",
+      "no_img_message": "Ebda fajl tal-immagini individwali ma nstab fil-folder :\n{directory}",
+      "confirm_title": "Konverżjoni bil-lott ta' immagini individwali għal CBZ",
+      "confirm_message": "{count} fajl(s) tal-immagini biex jiġi konvertit f'{directory} (sottofolder inkluż).",
+      "checkbox_permanent_delete": "Ħassar il-fajls tal-immagini oriġinali b'mod permanenti\nminġajr ma tibgħathom fil-basket (MA TISTAX TIBDEL LURA)",
+      "start_button": "Ibda",
+      "converting_title": "Il-konverżjoni qed isseħħ...",
+      "converting_progress": "Qed jiġi konvertit fajl {current} minn total ta' {total}",
+      "complete_title": "Il-konverżjoni tlestiet",
+      "complete_message": "{count} fajl(s) tal-immagini konvertiti fil-folder :",
+      "complete_message_errors": "{count} minn {total} fajl(s) tal-immagini konvertiti fil-folder :",
+      "errors_count": "{count} żball(i) instab(u).",
+      "converted_by_ext": "{ext} : {count} fajl(s)",
+      "mode_title": "Ikkonverti immaġini għal CBZ",
+      "mode_intro": "Kif trid tgħaqqa' l-immaġini?",
+      "mode_one_per_image": "Ikkonverti kull immaġni f'fajls CBZ separati",
+      "mode_one_per_image_sub": "(Kull immaġni ssir fajl CBZ separat)",
+      "mode_all_in_one": "Aggruppa l-immaġini kollha f'fajl CBZ wieħed",
+      "mode_all_in_one_sub": "(L-immaġini kollha fid-direttorju huma aggregati f'fajl CBZ wieħed)"
+    },
+    "batch_drop": {
+      "window_title": "Ipproċessar batch tal-foldarini",
+      "intro_single": "Waqa' 1 folder. X'ipproċessar trid tapplika?",
+      "intro_multiple": "Waqgħu {count} foldarini. X'ipproċessar trid tapplika?",
+      "recursive_note": "Il-foldarini sekondarji se jiġu skennjati wkoll.",
+      "mixed_drop_title": "Il-waqgħa mhix appoġġjata",
+      "mixed_drop_message": "Waqqa' fajls u foldarini fl-istess ħin. Jekk jogħġbok waqqagħ biss fajls jew biss foldarini."
+    },
+    "pdf_unlock": {
+      "title": "PDF protett kontra modifiki",
+      "message": "Il-paġni ġew importati normalment.\n\nDan il-fajl PDF huwa protett kontra modifiki (password tal-proprjetarju).\n\nTrid tissejvja kopja tal-fajl PDF mingħajr din il-protezzjoni?",
+      "yes": "Iva, issejvja kopja miftuħa",
+      "no": "Le, kompli mingħajr ma tiftaħ"
+    },
+    "batch_pdf_unlock": {
+      "title": "Fajls PDF protetti kontra modifiki",
+      "message_single": "Ġie skopert 1 fajl PDF protett kontra modifiki. Ġie konvertit normalment għal CBZ.\n\nTrid tħares kopja mhux imblukkata fid-direttorju oriġinali tiegħu?",
+      "message_plural": "Ġew skoperti {count} fajls PDF protetti kontra modifiki. Ġew konvertiti normalment għal CBZ.\n\nTrid tħares kopja mhux imblukkata ta' kull wieħed fid-direttorju oriġinali tiegħu?",
+      "yes": "Iva, ħares il-kopji mhux imblukkati",
+      "no": "Le, kompli mingħajr ma tiftaħ"
+    },
+    "ico_creator": {
+      "title": "Oħloq ikona .ico",
+      "info_message": "L-immaġni se tkun irranġata f'riżoluzzjonijiet multipli (16, 32, 48, 64, 128, 256 px).\nDaqs tal-qafas attwali: {w} × {h} px",
+      "btn_validate_crop": "Ikkonferma t-tqaxxir",
+      "btn_validate_no_crop": "Ikkonferma mingħajr tqaxxir",
+      "btn_cancel": "Ikkanċella",
+      "btn_transparency": "Issettja t-trasparenza",
+      "btn_validate_final": "Ikkonferma",
+      "tolerance_label": "Tolleranza:",
+      "success_title": "Fajl .ico maħluq",
+      "success_message": "Il-fajl {filename} inħoloq b'suċċess.",
+      "overwrite_title": "Il-fajl diġà jeżisti",
+      "overwrite_message": "Il-fajl {filename} diġà jeżisti. Issostitwixxih?",
+      "save_blocked_title": "Ma jistax isalva",
+      "save_blocked_message": "Dan l-arkivju fih fajl .ico wieħed jew aktar li mhumiex immaġnijiet tal-ktieb tal-kartuni. Il-ħżin huwa diżattivat sakemm dawn il-fajls jkunu preżenti fil-mużajk.\nBiex terġa' tattiva l-ħżin, ħassarhom mill-mużajk (tasti Del) jew qatagħhom (Ctrl+X) biex twaħħalhom x'imkien ieħor.",
+      "btn_back_to_crop": "Lura għat-tqaxxir"
+    },
+    "video_save_blocked": {
+      "title": "Ma tistax issalva",
+      "message": "Dan l-arkivju fih fajl video wieħed jew aktar. Is-salvataġġ huwa diżattivat sakemm dawn il-fajls ikunu preżenti fil-mużajk.\nBiex terġa' tattiva s-salvataġġ, ħassarhom mill-mużajk (il-buttuna Del) jew aqtahom (Ctrl+X) biex twaħħalhom band'oħra."
+    },
+    "open_file": {
+      "title": "Iftaħ arkivju",
+      "filter_archives": "Arkivji (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Il-fajls kollha (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Liċenza"
+    },
+    "replace_corrupted_image": {
+      "title": "Ibdel l-immaġni korrotta",
+      "filter_images": "Immaġini (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Il-fajls kollha (*)"
+    },
+    "see_log": "ARA L-LOG"
+  },
+  "tooltip": {
+    "source_archive": "Fajl tas-sors: {name}",
+    "file": "Fajl: {name}",
+    "reason": "Raġuni: {reason}",
+    "size_kb": "Daqs: {size} KB",
+    "size_mb": "Daqs: {size} MB",
+    "file_size": "Daqs: {size}",
+    "dimensions": "Dimensjonijiet: {width} × {height} px",
+    "resolution": "Riżoluzzjoni: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: mhux definit",
+    "cbr_info": "Fajls CBR jużaw il-format RAR, li huwa proprjetarju u patented;\nma jistgħux jiġu modifikati, il-bidliet jiġu salvati f'fajl CBZ ġdid.",
+    "rotate_left": "Rotazzjoni ta' 90 grad lejn ix-xellug",
+    "rotate_right": "Rotazzjoni ta' 90 grad lejn il-lemin",
+    "mirror_horizontal": "Riflessjoni orizzontali",
+    "mirror_vertical": "Riflessjoni vertikali",
+    "fullscreen": "Skrin sħiħa",
+    "help_button": "Manwal tal-utent",
+    "theme_button": "Ibdel bejn tema ċara u skura",
+    "font_decrease_button": "Naqqas id-daqs tal-font",
+    "font_increase_button": "Żid id-daqs tal-font",
+    "color_depth": "Kuluri: {bits} bits ({mode})",
+    "batch_pdf_to_cbz": "Jikkonverti f'CBZ il-fajls PDF kollha\nf'direttorju u fis-sottodiretti tiegħu.\nL-immaġini jiġu estratti u arkivjati kif\ninhuma, mingħajr l-ebda rikompressjoni.",
+    "batch_pdf_permanent_delete": "TWISSIJA: jekk din l-għażla hija magħżula,\nil-fajls PDF oriġinali se jitħassru b'mod\npermanenti wara l-konverżjoni, mingħajr\npossibbiltà ta' rkupru. Kun ċert li\ngħandek kopja tas-sigurtà jekk meħtieġ.",
+    "batch_cbr_to_cbz": "Jikkonverti għal CBZ il-fajls CBR kollha\nli jinsabu f'direttorju\nu fis-sottodirrettorji tiegħu.",
+    "batch_cbr_permanent_delete": "TWISSIJA: jekk din l-għażla hija magħżula,\nil-fajls CBR oriġinali se jiġu mħassra\nb'mod permanenti wara l-konverżjoni,\nmingħajr possibiltà ta' rkupru.\nKun ċert li għandek kopja ta' sigurtà\njekk meħtieġ.",
+    "renumber_btn_1": "Modalità ta' detezzjoni awtomatika ta' paġni multipli\nIkklikkja l-lemin biex tibdel il-modalità",
+    "renumber_btn_2": "Modalità ta' numerazzjoni sempliċi\nIkklikkja l-lemin biex tibdel il-modalità",
+    "corrupted_header": "Stampa korrotta",
+    "right_click_instruction1": "Ikklikkja l-lemin biex tibdel jew tħassar",
+    "right_click_instruction2": "din l-istampa.",
+    "unknown_error": "Żball mhux magħruf",
+    "batch_img_to_cbz": "Tikkonverti l-fajls tal-immagini kollha misjuba f'folder\nu s-sottofolder tiegħu għal CBZ,\nbilli toħloq fajl CBZ wieħed għal kull immaġni.",
+    "batch_img_permanent_delete": "TWISSIJA : jekk din l-għażla tkun immarkata,\nil-fajls tal-immagini oriġinali jitħassru b'mod permanenti\nwara l-konverżjoni, mingħajr possibilità\nta' rkupru. Kun żgur li għandek backup\njekk meħtieġ.",
+    "too_large_header": "L-immaġni hija kbira wisq biex tittella'",
+    "too_large_pixels": "Dimensjonijiet: {pixels}",
+    "icon_toolbar_config_button": "Konfigurazzjoni tal-ikoni",
+    "icon_toolbar_size_decrease": "Naqqas id-daqs tal-ikoni",
+    "icon_toolbar_size_increase": "Żid id-daqs tal-ikoni",
+    "source_loose": "Immaġni ħielsa",
+    "source_web": "Immaġni web"
+  },
+  "help": {
+    "title": "MosaicView - Manwal tal-utent",
+    "intro": "MosaicView jippermettik timmanipolja u timmodifika fumetti (BD diġitali) mingħajr ma jkollok testraġihom mill-arkivji tagħhom. L-applikazzjoni tappoġġja l-formati CBZ (ZIP), CBR (RAR) u PDF. L-applikazzjoni hija kompatibbli biss ma' sistemi ta' 64 bit.",
+    "open_files": "Iftaħ il-fajls",
+    "open_files_content": "• Ikklikkja fuq il-buttuna 'Iftaħ CBZ/CBR/CB7/PDF'\n• Jew iġbed u waħħal direttament fajl fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, PDF, immaġini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fajls EPUB jistghu jinfethu wkoll, izda biss l-istampi taghhom se jkunu estratti (it-test jigie injorat).\n• PDF kriptat (password meħtieġa biex tiftaħ): il-fajl ma jistax jiġi importat, tiġi murija messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jsejvja kopja miftuħa tal-fajl fl-istess folder.",
+    "mosaic": "Il-mużajk",
+    "mosaic_content": "Il-mużajk juri l-paġni kollha tal-fumett tiegħek bħala minjaturi. Tista':\n• Irranġa mill-ġdid il-paġni billi tiġbed u twaqqagħhom (in-numrazzjoni tal-paġni tkun awtomatika, u ssir skont il-mod ta' numrazzjoni mill-ġdid attiv)\n• Agħżel diversi paġni (Ctrl+ikklikkja jew Shift+ikklikkja)\n• Aġġusta d-daqs tal-minjaturi bil-vagun\n• Semmi mill-ġdid manwalment il-fajls billi tikklikkja fuq isimhom\n• Iġbed u waqqagħ fajls ta' fumetti (CBZ/CBR/PDF) minn Windows Explorer direttament fi fumett ieħor miftuħ biex tgħaqqad il-kontenut tagħhom",
+    "manipulation": "Manipulazzjoni tal-paġni",
+    "manipulation_content": "• Ġib u erħi l-paġni biex torganizzahom mill-ġdid\n• Ġib fumett sħiħ f'ieħor biex tgħaqqadhom\n• Ikklikkja bil-lemin fuq paġna biex taċċessa l-għażliet (rotazzjoni, tħassir, eċċ.)\n• Ikklikkja darbtejn fuq paġna biex tiftaħ il-viewer\n• Esporta paġni individwali billi tiġbidhom lejn folder tal-Windows, jew permezz ta' Ctrl+C / Ctrl+V",
+    "renumber": "Numerazzjoni mill-ġdid tal-paġni",
+    "renumber_content": "MosaicView joffri żewġ modi ta' numerazzjoni mill-ġdid tal-paġni, aċċessabbli permezz tal-buttuna tan-numerazzjoni mill-ġdid, il-menu tal-kuntest (ikklikkja l-lemin) jew awtomatikament waqt li tiġbed u twaqqaf:\n\n• Mod ta' sejba awtomatika ta' paġni multipli (mod pre-stabbilit): l-applikazzjoni tanalizza l-wisa' ta' kull paġna biex tiskopri paġni doppji, tripli, eċċ. Il-paġni multipli jiġu nnumerati mill-ġdid skont dan (eż.: paġna doppja tissejjaħ 003-004, tripla 005-006-007). Lil hinn minn 4 paġni, jintwerew biss l-ewwel u l-aħħar numru (eż.: 010---025).\n\n• Mod ta' numerazzjoni sempliċi: kull paġna tirċievi numru sekwenzjali uniku (001, 002, 003...), mingħajr ma tqis il-wisa' tal-paġni.\n\nBiex taqleb bejn iż-żewġ modi, ikklikkja l-lemin fuq il-buttuna tan-numerazzjoni mill-ġdid. Tooltip tindika l-mod attiv. Il-mod magħżul japplika wkoll għan-numerazzjoni mill-ġdid awtomatika waqt li tiġbed u twaqqaf.",
+    "flatten": "Saħħan id-direttorji",
+    "flatten_content": "Jekk l-arkivju tiegħek fih sottofolders, uża 'Saħħan id-direttorji' biex tġib l-immaġini kollha fl-istess livell.",
+    "viewer": "Visualizzatur",
+    "viewer_content": "Ikklikkja darbtejn fuq paġna biex tiftaħ il-visualizzatur:\n• Buttuni ← →: navigazzjoni bejn il-paġni\n• Buttuna D: ibdel bejn 3 modalitajiet ta' qari\n  - Paġna waħda: paġna waħda kull darba\n  - Paġni doppji: paġna 1 waħedha, imbagħad 2-3, 4-5, eċċ.\n  - Paġni doppji kontinwi: paġna 1 waħedha, imbagħad 2-3, 3-4, 4-5, eċċ.\n• Rota tal-maws: navigazzjoni veloċi\n• Ctrl+Rota jew Ctrl+Plus/Minus: zoom\n• Ctrl+0: irrisettja l-zoom\n• Buttuna F11: iskrin sħiħ\n• Ikklikkja darbtejn: ibdel l-iskrin sħiħ\n• Buttuna Esc: ikkanċella l-kwadru tal-qtugħ / oħroġ mill-visualizzatur",
+    "join_pages": "Waħħad il-paġni",
+    "join_pages_content": "Agħżel diversi paġni konsekuttivi, ikklikkja leminija → 'Għaqqad il-paġni magħżula' biex tgħaqqad il-paġni orizzontalment jew vertikalment. Il-format tal-immaġni prodotta jikkorrispondi għal dak tal-paġni sors jekk kollha identiċi, inkella PNG bħala standard.",
+    "split_pages": "Aqsam il-paġni",
+    "split_pages_content": "Biex taqsam awtomatikament paġni doppji:\n• Agħżel il-paġni li trid taqsam\n• Ikklikkja bil-lemin → 'Aqsam il-paġni magħżula'\n• Agħżel id-direzzjoni (vertikali jew orizzontali)",
+    "crop": "Qtugħ fil-visualizzatur",
+    "crop_content": "Fil-visualizzatur, iddisinja rettangolu fuq l-immaġni biex tiddefinixxi żona ta' qtugħ:\n• Iddisinja r-rettangolu bil-maws\n• Ibdel id-daqs tiegħu billi tiġbed it-truf jew l-angoli\n• Ikklikkja fuq 'Ikkonferma l-qtugħ' biex tapplika\n• Il-qtugħ jiġi applikat għall-immaġni kurrenti\n• Buttuna Esc: ikkanċella l-kwadru tal-qtugħ",
+    "shortcuts": "Skurtajjiet tat-tastiera",
+    "shortcuts_content": "• Ctrl+Z: Annulla l-aħħar azzjoni\n• Ctrl+Y: Erġa' agħmel l-azzjoni annullata\n• Ctrl+A: Agħżel il-paġni kollha\n• Ctrl+I: Inverti l-għażla\n• Ctrl+C: Kopja l-paġni magħżula\n• Ctrl+X: Aqta' l-paġni magħżula\n• Ctrl+V: Waħħal il-paġni\n• Del: Ħassar il-paġni magħżula\n• F5: Aġġorna l-wiri tal-mużajk\n• F11: Ibdel skrin sħiħa (oħroġ b'F11 jew ESC)",
+    "dark_mode": "Modalità skura",
+    "dark_mode_content": "Ikklikkja fuq il-buttuna tax-xemx/qamar biex tibdel bejn tema ċara u mudlama.",
+    "sort": "Issortja l-paġni",
+    "sort_content": "Uża l-buttuna 'Issortja' biex torganizza mill-ġdid awtomatikament il-paġni skont:\n• Isem, Tip, Daqs, Wisa', Għoli, Riżoluzzjoni jew DPI",
+    "save": "Issejvja",
+    "save_content": "• 'Issejvja': issejvja l-bidliet fil-fajl oriġinali\n• 'Issejvja bħala': toħloq arkivju ġdid\n• 'Oħloq CBZ': disponibbli f'modalità immaġini biss (mingħajr arkivju)",
+    "other": "Funzjonijiet oħra",
+    "other_content": "• Dawra: dawwar paġna waħda jew aktar\n• Konverżjoni: ikkonverti l-immaġini f'formati differenti (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nota: l-immaġini fil-modalità CMYK jiġu kkonvertiti awtomatikament għal RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nota: l-immaġini fil-modalità CMYK jiġu kkonvertiti awtomatikament għal RGB\n• Istampar: istampa l-paġni magħżula jew il-paġni kollha\n• Estrazzjoni: estratta paġni speċifiċi\n• Tab tal-Metadata: juri l-informazzjoni mill-fajl ComicInfo.xml (jekk preżenti fl-arkivju). Jekk iżżid jew tneħħi paġna minn fumett li fih metadata, l-applikazzjoni toffri li tbiddel in-numru ta' paġni indikat fih. Metadata oħra ma tistax tiġi modifikata. Din il-limitazzjoni hija intenzjonali u tirriżulta minn għażla tad-disinn.",
+    "config_files": "Fajls tal-konfigurazzjoni u fajls temporanji",
+    "config_files_content": "MosaicView joħloq fajl imsejjaħ .mosaicview_config.json. Dan il-fajl fih xi parametri meħtieġa sabiex il-buttuna tar-reset taħdem kif suppost, kif ukoll il-lista tal-comics miftuħa reċentament li ovvjament hija meħtieġa biex turi l-fajls miftuħa reċentament. MosaicView jisselva wkoll fajls temporanji, li huma meħtieġa għal diversi operazzjonijiet tal-ipproċessar tal-immaġini.\nDawn il-fajls kollha jinsabu fid-direttorju {temp_dir}.\nIl-fajls temporanji jitħassru kull darba li l-applikazzjoni tingħalaq, iżda l-fajl .mosaicview_config.json, min-natura tiegħu, huwa maħsub biex jinżamm.\nMadankollu, tista' tħassar dawn il-fajls manwalment billi tmur fid-direttorju {temp_dir} jew billi tikklikkja fuq il-buttuni hawn taħt. Il-fajl .mosaicview_config.json jerġa' jinħoloq kull darba li l-applikazzjoni tinfetaħ, u l-fajls temporanji jerġgħu jinħolqu skont il-bżonn.",
+    "config_clear_temp": "Ħassar fajls temporanji",
+    "config_clear_recent": "Ħassar fajls reċenti",
+    "config_clear_config": "Ħassar fajl tal-konfigurazzjoni",
+    "config_temp_cleared": "Il-fajls temporanji tħassru b'suċċess.",
+    "config_config_cleared": "Il-fajl tal-konfigurazzjoni tħassar b'suċċess.\nSe jerġa' jinħoloq fit-tħaddim li jmiss tal-applikazzjoni.",
+    "language": "Għażla tal-lingwa",
+    "language_content": "MosaicView huwa disponibbli f'diversi lingwi.\nB'mod awtomatiku, l-applikazzjoni tiskopri l-lingwa tas-sistema operattiva tiegħek u turi ruħha f'dik il-lingwa jekk tkun appoġġjata. Jekk is-sistema tiegħek tuża lingwa mhux appoġġjata, l-interface turi ruħha bl-Ingliż.\nTista' tbiddel il-lingwa manwalment fi kwalunkwe ħin billi tuża l-menu dropdown li jinsab fil-qiegħ tal-kolonna tal-buttuni, taħt il-kursor tad-daqs tal-miniatures. L-għażla tiegħek se tinżamm u tiġi applikata l-ħin li jmiss li tibda l-applikazzjoni.\nLINGWI DISPONIBBLI: Għarbi, Armen, Bulgaru, Ċiniż (simplifikat), Ċiniż (tradizzjonali), Korejan, Kroat, Ċek, Daniż, Estonjan, Finlandiż, Franċiż, Ġermaniż, Grieg, Hindi, Indoneżjan, Ingliż, Ilandiż, Iżlandiż, Taljan, Ġappuniż, Latvjan, Litwan, Malajan, Malti, Norveġiż, Olandiż, Pollakk, Portugiż, Rumen, Slovakk, Sloven, Spanjol, Svediż, Tamil, Tajlandiż, Tork, Ukren, Ungeriż, Vjetnamiż.\nLINGWI FITTIZJI DISPONIBBLI: Klingon (verżjonijiet tal-alfabett Latin u tal-alfabett pIqaD), Sindarin (verżjonijiet tal-alfabett Latin u tal-alfabett tengwar), Quenya (verżjonijiet tal-alfabett Latin u tal-alfabett tengwar).\n\nDan l-utilità tuża fonts ta' Windows, ħlief għall-fonts pIqaD (lingwa Klingon) u tengwar (lingwi Elf: Sindarin u Quenya). Dawn il-fonts huma ħielsa u ġejjin minn dawn is-siti:\n- għal pIqaD (alfabett Klingon): {url_piqad}\n- għal tengwar (alfabett Elf, għal Sindarin u Quenya): {url_tengwar}\nF'każ li dawn is-siti m'għadhomx attivi, tista' tikseb il-fonts pIqaD u tengwar billi tikklikkja l-buttuni hawn taħt:\n\nDan is-software ġie żviluppat bil-Franċiż. It-traduzzjonijiet f'lingwi oħra saru permezz ta' AI, aktar speċifikament minn Claude. Deċidejt li nappoġġja madwar erbgħin lingwa. Iżda ovvjament, ma nitkellimx dawn il-lingwi kollha. Ma kelli ebda għażla oħra ħlief li nuża l-AI, peress li l-impjieg u l-ħlas ta' 40 traduttur differenti ma kienx fost il-possibilitajiet ikkunsidrati. Minħabba n-natura awtomatika ta' dawn it-traduzzjonijiet, jista' jkun hemm żbalji. Nitlob skuża għal dan.",
+    "credits": "Vibe Coding, imħabbti",
+    "credits_content": "Ma naf xejn dwar il-programmazzjoni. Assolutament xejn. Konsegwentement, żviluppajt dan is-software grazzi għal Claude, l-AI ta' Anthropic, u aktar speċifikament b'Claude Code. Ma nistax nirrakkomanda biżżejjed Claude Code, din l-applikazzjoni hija favoluża!",
+    "resize_pages": "Ibdel id-daqs tal-paġni",
+    "resize_pages_content": "Biex tnaqqas jew tikber il-paġni tiegħek:\n• Agħżel paġna waħda jew aktar\n• Ikklikkja leminija → 'Ibdel id-daqs'\n• Huma disponibbli tliet għażliet:\n  - Dimensjonijiet personalizzati: daħħal il-wisa' jew il-għoli mixtieq (il-proporzjon jinżamm awtomatikament).\n  - Tnaqqis perċentwali: agħżel perċentwal minn 10% sa 90%\n  - Tikbir perċentwali: agħżel perċentwal minn 10% sa 100%\n• L-applikazzjoni turi d-daqs stmat tal-immaġini tiegħek wara l-modifika\n• Il-modifika tapplika minnufih għall-paġni magħżula kollha",
+    "language_export_piqad": "Font pIqaD",
+    "language_export_tengwar": "Fonts tengwar",
+    "language_export_piqad_success": "Font esportat: {filename}\nDisponibli f':",
+    "language_export_tengwar_success": "{count} fonts esportati\nDisponibli f':",
+    "icons": "Ikoni",
+    "icons_content": "Il-biċċa l-kbira tal-ikoni użati f'dan l-utilità ġejjin minn dan is-sit u huma liberi għall-użu mhux kummerċjali: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nXi wħud ġew modifikati minni.\nIkona waħda biss, l-ikona tal-fajl eżegwibbli ta' Windows, ġiet maħluqa minni (iżda bl-AI, għax jiena designer grafiku ħażin ħafna, ħafna, ħafna). Għandek il-permess tiegħi li tuża din l-ikona kif trid sakemm issemmi s-sors tiegħek.",
+    "icons_view_button": "Ara l-ikoni",
+    "icons_window_title": "Ikoni ta' MosaicView",
+    "icons_save_all": "Issejvja l-ikoni",
+    "icons_saved_success": "{count} ikona/ikoni ssejvjat/issejvjati f':",
+    "icons_save_failed": "Ma jistax jissejvja l-ikoni: {error}",
+    "split_ui": "Interfaċċa b'żewġ panelli",
+    "split_ui_content": "MosaicView jippermetti li juri żewġ arkivji simultanjament, ħdejn xulxin.\n\nIkklikkja fuq l-ikona Aqsam biex tiftaħ panel ieħor. Kull panel huwa indipendenti: tista' tiftaħ, teditja u issalva arkivju separatament. Il-panel attiv hu indikat b'bordura blu.\n\nBiex tħarrek paġni minn panel għall-ieħor, iġbed direttament. Jekk ikunu magħżula paġni multipli, dawn jimxu kollha flimkien. Il-paġni jiġu mdaħħla fil-pożizzjoni indikata mill-barra ħamra.\n\nIkklikkja fuq l-ikona Agħlaq it-tieni panel biex terġa' lura għall-modalità ta' panel wieħed.",
+    "license_gpl": "Liċenzja GPL v3",
+    "license_unrar": "Liċenza UnRAR",
+    "config_clear_clipboard": "Neħħi fajls tal-clipboard",
+    "config_clipboard_note": "Eċċezzjoni: Il-fajls temporanji użati mill-clipboard ta' Windows (fajls clipboard_XXXXX) jinżammu għal 12-il siegħa wara li jkunu kkupjati, biex tkun tista' twaħħalhom anke wara li tagħlaq l-applikazzjoni. Wara 12-il siegħa, jitħassru awtomatikament.",
+    "config_log_note": "Il-konverzjonijiet bl-ingross (PDF ghal CBZ u CBR ghal CBZ) johloqu fajl ta' log meta jsehhu erruri. Dawn il-fajls (Log_pdftocbz_.txt u Log_cbrtocbz_.txt) jinzammu anke wara li taghlaq l-applikazzjoni, biex ikunu jistghu jigi konsultati aktar tard. Jithassru biss bil-buttuna \"Hassar il-fajls temporanji\" hawn fuq.",
+    "config_clipboard_cleared": "Il-fajls tal-clipboard tneħħew b'suċċess.",
+    "adjust_images": "Aġġustament tal-immaġini",
+    "adjust_images_content": "Din il-funzjoni tippermettik li tirritokka l-immaġnijiet tiegħek direttament f'MosaicView. Tista' timmodifika d-dawl, il-kuntrast, l-isħuħija, il-livelli, is-saturation, tapplika effetti (iswed u abjad, sepja, inversjoni tal-kuluri), taġġusta l-kwalità tal-kompressjoni, tneħħi l-kuluri, tapplika trasparenza jew tikkonverti f'depthjiet tal-kulur differenti. Xi settings għandhom viewer dedikat li jippermettilek tara r-riżultat f'riżoluzzjoni sħiħa qabel ma tapplika. Anteprima ta' miniatura turi r-riżultat f'ħin reali fit-tieqa prinċipali.",
+    "create_icon": "Oħloq ikona",
+    "create_icon_content": "MosaicView jippermettilek toħloq fajls ta' ikoni (.ico) minn kwalunkwe immaġni fil-mużajk.\n• Ikklikkja bil-lemin fuq immaġni → 'Oħloq ikona'\n• Inkwadra ż-żona mixtieqa fil-viewer (l-ikona tkun obbligatorjament kwadra)\n• Aġġusta t-trasparenza jekk meħtieġ\n• Ikkonferma: il-fajl .ico jiżdied direttament mal-mużajk\n• Il-fajls .ico fihom awtomatikament ir-riżoluzzjonijiet standard kollha (minn 16×16 sa 256×256)\n• Sakemm ikun hemm fajl .ico fil-mużajk, is-salvar f'arkivju CBZ ikun imblukkat, peress li l-format ICO mhux appoġġat minn dawn l-arkivji. Esporta l-fajl .ico separatament (Ctrl+C u pejst f'folder Windows), imbagħad ħassar mill-mużajk qabel ma tissejvja.",
+    "batch_convert": "Konverżjoni f'lottijiet",
+    "batch_convert_content": "MosaicView joffri tliet funzjonijiet ta' konverżjoni bil-lott, disponibbli biss meta l-mużajk ikun vojt. Għal kull waħda minnhom, il-prinċipju huwa l-istess : agħżel direttorju, ikkonferma, segwi l-progress f'ħin reali, irrevedi r-reżultati finali. Għażla tippermetti t-tħassir permanenti tal-fajls oriġinali minflok ma tibgħathom fil-basket.\n• CBR → CBZ : tikkonverti l-fajls kollha CBR (RAR) f'direttorju u s-sottodirektorji tiegħu. Jekk CBR huwa fil-fatt ZIP, jiġi sempliċement imsemmi mill-ġdid mingħajr konverżjoni.\n• PDF → CBZ : tikkonverti l-fajls kollha PDF f'direttorju u s-sottodirektorji tiegħu. L-immaġini jiġu estratti mingħajr kompressjoni mill-ġdid.\n• IMMAĠINI IŻOLATI → CBZ : toħloq CBZ individwali għal kull fajl immaġni li jinstab fid-direttorju u s-sottodirektorji tiegħu. Immaġini invalidi, korrotti, b'ħafna paġni (TIFF) jew animati (GIF) jiġu injorati u reġistrati f'log.",
+    "config_open_temp_folder": "Iftaħ il-folder temporanju",
+    "icon_toolbar": "Barra tal-ikoni",
+    "icon_toolbar_content": "Il-bar tal-ikoni jipprovdi aċċess rapidu għall-funzjonijiet ewlenin tal-applikazzjoni. Tista' terġa' tarranġa l-ikoni kif tixtieq billi tiġbidhoм direttament fil-bar. Biex tagħżel liema ikoni turi jew taħbi, ikklikkja l-buttuna tal-ġir fil-qiegħ tal-bar: tinfetaħ tieqa ta' konfigurazzjoni fejn tista' tċaqlaq l-ikoni bejn il-bar attiv u r-riserva. Uża l-buttuni « + » u « − » biex taġġusta d-daqs tal-ikoni. Il-konfigurazzjoni tinħażen awtomatikament.",
+    "license_7zip": "Liċenzja 7-Zip"
+  },
+  "misc": {
+    "file_word": "fajl",
+    "files_word": "fajls",
+    "corrupted": "korrott",
+    "yes": "Iva",
+    "no": "Le",
+    "cancel": "Ikkanċella",
+    "selection_suffix": "kopja-selezzjoni"
+  },
+  "metadata": {
+    "title": "Titlu",
+    "series": "Serje",
+    "number": "Numru",
+    "volume": "Volum",
+    "summary": "Sommarju",
+    "writer": "Kittieb",
+    "penciller": "Diżinjatur",
+    "inker": "Inker",
+    "colorist": "Kolorist",
+    "letterer": "Letterer",
+    "cover_artist": "Artist tal-qoxra",
+    "editor": "Editur (persuna)",
+    "publisher": "Editur (dar)",
+    "imprint": "Kollezzjoni",
+    "genre": "Ġeneru",
+    "web": "Websajt",
+    "page_count": "Numru ta' paġni",
+    "language_iso": "Lingwa",
+    "format": "Format",
+    "black_and_white": "Abjad u iswed",
+    "manga": "Manga",
+    "year": "Sena",
+    "month": "Xahar",
+    "day": "Jum",
+    "notes": "Noti",
+    "characters": "Karattri",
+    "locations": "Postijiet",
+    "teams": "Timijiet",
+    "story_arc": "Arku tal-istorja",
+    "story_arc_number": "Numru tal-arku",
+    "series_group": "Grupp ta' serje",
+    "count": "Għadd ta' numri",
+    "alternate_series": "Serje alternattiva",
+    "alternate_number": "Numru alternattiv",
+    "alternate_count": "Għadd alternattiv",
+    "age_rating": "Klassifikazzjoni ta' età",
+    "series_complete": "Serje kompluta",
+    "translator": "Traduttur",
+    "tags": "Tikketti",
+    "scan_information": "Informazzjoni tal-iskaner",
+    "community_rating": "Klassifikazzjoni tal-komunità",
+    "review": "Reviżjoni",
+    "gtin": "GTIN",
+    "pages": "Paġni",
+    "pages_col_image": "Immaġni",
+    "pages_col_type": "Tip",
+    "pages_col_width": "Wisa'",
+    "pages_col_height": "Għoli",
+    "pages_col_size": "Daqs (B)"
+  },
+  "web": {
+    "web_download_progress": "Tniżżil: {downloaded}/{total} stampi...",
+    "web_download_cancel": "Ikkanċella",
+    "web_no_images": "L-ebda stampa",
+    "web_no_images_found": "L-ebda stampa ma nstabet f'din il-paġna.",
+    "web_imported": "{count} stampa/i importata/i mill-paġna web",
+    "web_drag_drop_title": "Ġibed u waqqa' stampa web",
+    "web_copy_paste_message": "Il-ġbid u waqgħa diretta minn browser tal-web mhux appoġġjata.\n\nSoluzzjoni alternattiva (aktar sempliċi):\n\n1. Ikklikkja bil-lemin fuq l-istampa fil-browser tiegħek\n2. Agħżel 'Ikkopja l-istampa'\n3. F'MosaicView, uża l-buttuna 'Waħħal' jew Ctrl+V\n\nDan il-metodu jaħdem mal-istampi kollha tal-web!",
+    "import_web_button": "Importazzjoni web",
+    "import_web_tooltip": "Waħħal indirizz tal-internet biex tiġbor l-istampi kollha mil-paġna",
+    "import_web_menu": "Importazzjoni web...",
+    "import_web_dialog_title": "Importa stampi minn paġna web",
+    "import_web_url_label": "Indirizz tal-paġna web:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Ikkanċella",
+    "import_web_invalid_url": "URL invalidu. Jekk jogħġbok daħħal indirizz web validu."
+  },
+  "donation": {
+    "menu_label": "Agħti donazzjoni lill-awtur",
+    "title": "Agħmel donazzjoni",
+    "message": "Jogħġbok dan l-utilità żgħira u tuża regolarment.\n\nInvestejt fih diversi mitt siegħa. Tikkunsidra li tirringrazzjani billi tagħmel donazzjoni? Jekk jogħġbok kun ġentili, għandi bżonn ta' flus biex nimla l-pixxina tiegħi b'xampanja. Jekk trid tibgħatli ftit ċenteżmi jew diversi biljun ta' ewro, naċċetta l-ammonti kollha. Tista' tagħmel din id-donazzjoni permezz ta' paypal"
+  },
+  "mail": {
+    "tooltip": "Din il-buttuna tiftaħ is-software tal-email awtomatiku tiegħek f'Windows biex tibgħat email. Jekk m'hemm l-ebda software kkonfigurat (pereżempju jekk tuża biss webmail), tista' tikkopja l-indirizz ta' MosaicView fil-clipboard billi tagħmel klikk bil-lemin fuq l-ikona.",
+    "copy_address": "Ikkopja l-indirizz elettroniku ta' MosaicView",
+    "menu_label": "Ibgħat email lil MosaicView",
+    "icon_label": "Ibgħat email"
+  },
+  "menu": {
+    "file": "Fajl",
+    "file_open": "Iftaħ fajl",
+    "file_close": "Agħlaq fajl",
+    "batch_convert": "Konverżjoni tal-fajls bil-lott",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Immaġni separati → CBZ",
+    "edit": "Editja",
+    "undo": "Aħżen lura",
+    "redo": "Erġa' agħmel",
+    "paste": "Daħħal",
+    "delete": "Ħassar",
+    "invert_selection": "Invertixxi l-għażla",
+    "select_all": "Agħżel kollox",
+    "deselect": "Neħħi l-għażla",
+    "refresh_mosaic": "Aġġorna l-mużajk",
+    "images": "Immaġni",
+    "rotation": "Rotazzjoni",
+    "archives": "Arkivji",
+    "sort": "Tifrix",
+    "system": "Sistema",
+    "decrease_font": "Naqqas il-font",
+    "increase_font": "Żid il-font",
+    "language": "Lingwi",
+    "language_real": "Lingwi reali",
+    "language_fictional": "Lingwi fittizji",
+    "about": "Dwar",
+    "export_piqad_font": "Issejvja l-font pIqaD",
+    "export_tengwar_fonts": "Issejvja l-fonts tengwar"
+  }
+}

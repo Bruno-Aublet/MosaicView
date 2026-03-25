@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Sveitsisk lommekniv for digitale tegneseriesamlere",
+  "buttons": {
+    "open_file": "Åpne CBZ/CBR/CB7/PDF",
+    "close_file": "Lukk filen",
+    "create_cbz": "Opprett et CBZ-arkiv",
+    "flatten_dirs": "Flytt alle filer\ntil rotkatalogen og slett\nundermapper",
+    "renumber": "Omnummerering\nav sider",
+    "undo": "⤺ Angre",
+    "redo": "Gjør om ⤻",
+    "copy": "Kopier",
+    "cut": "Klipp ut",
+    "paste": "Lim inn",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Konverter til et annet\nbildeformat",
+    "join_pages": "Slå sammen sider",
+    "split_page": "Del en side",
+    "save_as": "Lagre som\n(opprett en ny CBZ)",
+    "save_selection": "Lagre utvalget\nsom CBZ",
+    "print_selection": "Skriv ut utvalget",
+    "print_all": "Skriv ut hele tegneserien",
+    "sort": "Sorter",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Konverter",
+    "cancel": "Avbryt",
+    "split_button": "Del",
+    "join_button": "Start",
+    "validate_crop": "Bekreft beskjæring",
+    "ok": "OK",
+    "close": "Lukk",
+    "apply_and_save": "Bruk endringene og lagre filen",
+    "apply_and_create": "Bruk endringene og opprett en CBZ-fil",
+    "close_and_lose": "Lukk filen og mist endringene",
+    "cancel_return": "Avbryt og returner til mosaikken",
+    "update_page_count": "Oppdater sidetall\ni metadata",
+    "invert_selection": "Inverter markering",
+    "reduce_size": "Endre sidestørrelse",
+    "mirror_vertical": "⇅",
+    "create_gif": "Opprett GIF",
+    "edit_gif": "Rediger animert GIF",
+    "save_to_folder": "Eksporter valgte\nsider",
+    "continue": "Fortsett",
+    "reset": "↻",
+    "yes": "Ja",
+    "no": "Nei",
+    "renumber_recommended": "Nummerer på nytt (anbefalt)",
+    "ignore_and_save": "Ignorer og lagre",
+    "rename_to_cbz": "Gi nytt navn til .cbz",
+    "open_without_rename": "Åpne uten å gi nytt navn",
+    "rename_to_cbr": "Gi nytt navn til .cbr",
+    "adjustments": "Lysstyrke,\nkontrast osv.",
+    "batch_cbr_to_cbz": "Batchkonvertering\n av CBR-filer til CBZ",
+    "batch_pdf_to_cbz": "Batchkonvertering\n av PDF-filer til CBZ",
+    "batch_img_to_cbz": "Massekonvertering\n av enkeltbilder til CBZ",
+    "icon_toolbar_reset": "Tilbakestill",
+    "delete_selected": "Slett",
+    "save": "Lagre",
+    "rename_to_cb7": "Gi nytt navn til .cb7",
+    "split_ui": "Del grensesnittet i to paneler",
+    "unsplit_ui": "Lukk det andre panelet"
+  },
+  "tabs": {
+    "mosaic": "Mosaikk",
+    "metadata": "Metadata"
+  },
+  "viewer": {
+    "title": "Fremviser",
+    "mode_single": "Enkeltside  [D]",
+    "mode_double": "Dobbeltside  [D]",
+    "mode_continuous": "Kontinuerlig modus  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Forrige side (←)",
+      "next_page": "Neste side (→)",
+      "zoom_in": "Zoom + (Ctrl+Plus)",
+      "zoom_out": "Zoom - (Ctrl+Minus)",
+      "zoom_reset": "Tilbakestill zoom (Ctrl+0)",
+      "reading_mode_double": "Bytt lesemodus (D) → Doble sider",
+      "reading_mode_continuous": "Bytt lesemodus (D) → Kontinuerlige doble sider",
+      "reading_mode_single": "Bytt lesemodus (D) → Enkeltside",
+      "fullscreen_exit": "Avslutt fullskjerm (F11)",
+      "fullscreen": "Fullskjerm (F11)",
+      "close_viewer": "Lukk fremviseren (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Korrupt bilde - Erstatt",
+      "corrupted_delete": "⚠️ Slett dette bildet",
+      "copy": "Kopier (Ctrl+C)",
+      "cut": "Klipp ut (Ctrl+X)",
+      "paste": "Lim inn (Ctrl+V)",
+      "paste_clipboard": "Lim inn fra utklippstavlen (Ctrl+V)",
+      "delete": "Slett (Del)",
+      "deselect": "Avmerk (ESC)",
+      "rotate_right": "↻ Roter høyre",
+      "rotate_left": "↺ Roter venstre",
+      "mirror": "⇄ Speilvend horisontalt",
+      "crop": "Beskjær",
+      "convert": "Konverter til et annet format...",
+      "join": "Slå sammen valgte sider",
+      "split": "Del valgt side",
+      "save_selection": "Lagre utvalget som CBZ",
+      "print_selection": "Skriv ut utvalget",
+      "copy_archive": "Kopier hele arkivet",
+      "undo": "Angre (Ctrl+Z)",
+      "redo": "Gjør om (Ctrl+Y)",
+      "renumber_auto": "Omnummerer sider (automatisk gjenkjenning av flere sider)",
+      "renumber_simple": "Omnummerer sider (enkel nummerering)",
+      "sort_submenu": "Sorter sidene",
+      "sort_name": "Etter navn",
+      "sort_type": "Etter type",
+      "sort_size": "Etter størrelse",
+      "sort_width": "Etter bredde",
+      "sort_height": "Etter høyde",
+      "sort_resolution": "Etter oppløsning",
+      "sort_dpi": "Etter DPI",
+      "create_cbz": "Opprett et CBZ-arkiv",
+      "save_as": "Lagre som...",
+      "close_file": "Lukk filen",
+      "help": "Bruksanvisning",
+      "update_page_count": "Oppdater sidetall i metadata",
+      "invert_selection": "Inverter markering (Ctrl+I)",
+      "reduce_size": "Endre sidestørrelse",
+      "mirror_vertical": "⇅ Vertikalt speil",
+      "edit_animated_gif": "Rediger animert GIF...",
+      "save_to_folder": "Eksporter valgte sider",
+      "adjustments": "Lysstyrke, kontrast, farger...",
+      "refresh_mosaic": "Oppdater mosaikken (F5)",
+      "create_ico": "Opprett .ico-fil"
+    },
+    "canvas_no_file": {
+      "open": "Åpne CBZ/CBR/CB7/PDF",
+      "recent_files": "Nylige filer",
+      "clear_history": "Tøm historikken"
+    },
+    "canvas_with_file": {
+      "close": "Lukk filen",
+      "paste": "Lim inn (Ctrl+V)",
+      "paste_clipboard": "Lim inn fra utklippstavlen (Ctrl+V)",
+      "select_all": "Velg alle (Ctrl+A)",
+      "deselect": "Avmerk (ESC)",
+      "copy_archive": "Kopier hele arkivet",
+      "print_all": "Skriv ut hele tegneserien",
+      "renumber_auto": "Omnummerer sider (automatisk gjenkjenning av flere sider)",
+      "renumber_simple": "Omnummerer sider (enkel nummerering)",
+      "flatten": "Flat ut mapper",
+      "save_selection": "Lagre utvalget som CBZ",
+      "hide_sidebar": "« Skjul knappepanelet",
+      "show_sidebar": "» Vis knappepanelet",
+      "decrease_thumbs": "Reduser miniatyrbildestørrelsen",
+      "increase_thumbs": "Øk miniatyrbildestørrelsen",
+      "theme_dark": "Bytt til mørkt tema",
+      "theme_light": "Bytt til lyst tema",
+      "sort_submenu": "Sorter sidene",
+      "undo": "Angre (Ctrl+Z)",
+      "redo": "Gjør om (Ctrl+Y)",
+      "create_cbz": "Opprett et CBZ-arkiv",
+      "save_as": "Lagre som...",
+      "help": "Bruksanvisning",
+      "update_page_count": "Oppdater sidetall i metadata",
+      "invert_selection": "Inverter markering (Ctrl+I)",
+      "fullscreen": "Fullskjerm (F11)",
+      "fullscreen_exit": "Avslutt fullskjerm (F11 eller ESC)",
+      "quit": "Lukk programmet"
+    },
+    "canvas": {
+      "quit": "Lukk programmet",
+      "reset": "Tilbakestill programmet:\n• vinduestørrelse og -posisjon\n• mørk modus → lys\n• miniatyrbildestørrelse → normal\n• sidepanel → synlig / 220 px\n• språk → automatisk gjenkjenning\n• skriftstørrelse → standard",
+      "reset_label": "Tilbakestill programmet"
+    },
+    "font_size": {
+      "decrease": "Reduser skriftstørrelse",
+      "increase": "Øk skriftstørrelse"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Sorter etter navn",
+    "sort_type": "Sorter etter type",
+    "sort_size": "Sorter etter størrelse",
+    "sort_width": "Sorter etter bredde",
+    "sort_height": "Sorter etter høyde",
+    "sort_resolution": "Sorter etter oppløsning",
+    "sort_dpi": "Sorter etter DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Tomt arkiv",
+        "message": "CBZ-arkivet inneholder ingen filer."
+      },
+      "empty_cbr": {
+        "title": "Tomt arkiv",
+        "message": "CBR-arkivet inneholder ingen filer."
+      },
+      "files_ignored": {
+        "title": "Filer ignorert"
+      },
+      "no_selection_crop": {
+        "title": "Ingen valg",
+        "message": "Vennligst velg et bilde som skal beskjæres."
+      },
+      "multi_selection_crop": {
+        "title": "Flere valgte",
+        "message": "Du kan bare beskjære ett bilde om gangen.\nVennligst velg kun ett bilde."
+      },
+      "invalid_selection_crop": {
+        "title": "Ugyldig valg",
+        "message": "Bare bilder kan beskjæres."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Funksjon ikke tilgjengelig",
+        "message": "Flytting av sider er ikke tilgjengelig i undermapper.\nVennligst flat ut mappene eller gå tilbake til rotkatalogen."
+      },
+      "no_selection_convert": {
+        "title": "Ingen valg",
+        "message": "Vennligst velg minst ett bilde som skal konverteres."
+      },
+      "invalid_selection_convert": {
+        "title": "Ugyldig valg",
+        "message": "Bare bilder kan konverteres."
+      },
+      "no_selection_split": {
+        "title": "Ingen valg",
+        "message": "Vennligst velg et bilde som skal deles."
+      },
+      "multi_selection_split": {
+        "title": "Flere valgte",
+        "message": "Du kan bare dele ett bilde om gangen.\nVennligst velg kun ett bilde."
+      },
+      "invalid_selection_split": {
+        "title": "Ugyldig valg",
+        "message": "Bare bilder kan deles."
+      },
+      "invalid_number_split": {
+        "title": "Ugyldig tall",
+        "message": "Antall sider må være mellom 2 og 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Utilstrekkelig valg",
+        "message": "Vennligst velg minst 2 bilder som skal slås sammen."
+      },
+      "invalid_selection_join": {
+        "title": "Ugyldig valg",
+        "message": "Bare bilder kan slås sammen."
+      },
+      "pil_not_available": {
+        "title": "PIL ikke tilgjengelig",
+        "message": "PIL-modulen er ikke tilgjengelig for innliming fra systemets utklippstavle."
+      },
+      "format_not_supported": {
+        "title": "Format ikke støttet",
+        "message": "Bildeformat ikke støttet eller korrupt fil.\nStøttede formater: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Ingen valg",
+        "message": "Vennligst tegn et beskjæringsrektangel først."
+      },
+      "cannot_open_file": {
+        "title": "Kan ikke åpne filen",
+        "message": "Filen kan ikke lastes inn."
+      },
+      "corrupted_images": {
+        "title": "Korrupte bilder",
+        "summary": "{count} skadet(e) bilde(r) funnet av {total}.",
+        "hint": "De vises med et spesielt ikon.\nHøyreklikk på et skadet bilde for å erstatte eller slette det.",
+        "more": "... og {count} til"
+      },
+      "no_image_print": {
+        "title": "Ingen bilder",
+        "message": "Ingen bilder å skrive ut."
+      },
+      "no_valid_image_print": {
+        "title": "Ingen bilder",
+        "message": "Ingen gyldige bilder å skrive ut."
+      },
+      "no_selection_print": {
+        "title": "Ingen valg",
+        "message": "Vennligst velg minst ett bilde."
+      },
+      "no_valid_selection_print": {
+        "title": "Ingen bilder",
+        "message": "Ingen gyldige bilder i utvalget."
+      },
+      "save_cancelled": {
+        "title": "Lagring avbrutt",
+        "message": "Vennligst korriger filnavnene manuelt før lagring."
+      },
+      "empty_pdf": {
+        "title": "Tom PDF",
+        "message": "PDF-filen inneholder ingen sider."
+      },
+      "no_selection_save": {
+        "title": "Advarsel",
+        "message": "Vennligst velg minst én side å lagre."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Flytting deaktivert",
+        "message": "Flytting av sider ved dra-og-slipp er kun tilgjengelig i rotkatalogen til tegneserien.\n\nFor å flytte sider:\n1. Gå tilbake til rotkatalogen ved å klikke på opp-ikonet\n2. Eller flat ut tegneserien for å fjerne undermapper"
+      },
+      "no_selection_reduce": {
+        "title": "Ingen valg",
+        "message": "Vennligst velg minst én side å redusere."
+      },
+      "invalid_selection_reduce": {
+        "title": "Ugyldig valg",
+        "message": "Bare bilder kan reduseres."
+      },
+      "invalid_dimensions": {
+        "title": "Ugyldige dimensjoner",
+        "message": "Vennligst oppgi gyldige dimensjoner (positive heltall)."
+      },
+      "no_images_for_gif": {
+        "title": "Ingen bilder",
+        "message": "Minst ett bilde er nødvendig for å lage en animert GIF."
+      },
+      "no_valid_images": {
+        "title": "Ingen gyldige bilder",
+        "message": "Ingen gyldige bilder ble funnet for å lage GIF-en."
+      },
+      "animated_gif_in_comic": {
+        "title": "Animert GIF oppdaget",
+        "message": "Advarsel: Denne tegneserien inneholder en eller flere animerte GIF-er.\\n\\nTegneserielesere (CDisplayEx, YACReader, osv.) vil kun vise den første rammen av hver GIF som en statisk side.\\n\\nFor å se den animerte GIF-en riktig, må du lagre den separat utenfor tegneserien ved å bruke knappen \"Eksporter valgte sider\" eller \"Rediger animert GIF\".\\n\\nVil du fortsette å lagre tegneserien likevel?"
+      },
+      "no_selection_adjust": {
+        "title": "Ingen valg",
+        "message": "Velg minst ett bilde for aa anvende justeringer."
+      },
+      "invalid_selection_adjust": {
+        "title": "Ugyldig valg",
+        "message": "Justeringer kan bare anvendes paa bilder."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Funksjonen er ikke tilgjengelig",
+        "message": "Omnummerering er ikke tilgjengelig før mappene er flatet ut.\nFlatten mappene før omnummerering."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP-feil",
+        "message": "Filen '{file}' er ikke et gyldig ZIP-arkiv eller er korrupt."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP-feil",
+        "message": "Kan ikke åpne CBZ-filen: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR-feil",
+        "message": "Filen '{file}' er ikke et gyldig RAR-arkiv eller er korrupt."
+      },
+      "rar_cannot_open": {
+        "title": "RAR-feil",
+        "message": "Kan ikke åpne CBR-arkivet: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Feil",
+        "message": "Uventet feil ved åpning av CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Feil",
+        "message": "Kan ikke slå sammen bildene."
+      },
+      "paste_failed": {
+        "title": "Feil",
+        "message": "Feil ved innliming: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Feil",
+        "message": "Kan ikke kopiere arkivet: {error}"
+      },
+      "crop_invalid": {
+        "title": "Feil",
+        "message": "Beskjæringsområdet er ugyldig."
+      },
+      "crop_failed": {
+        "title": "Feil",
+        "message": "Kan ikke beskjære bildet: {error}"
+      },
+      "load_image_failed": {
+        "title": "Feil",
+        "message": "Kan ikke laste bildet:\n{error}"
+      },
+      "print_error": {
+        "title": "Utskriftsfeil",
+        "message": "Feil ved utskrift:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Utskrift ikke tilgjengelig",
+        "message": "win32print-modulen er ikke installert.\nInstaller den med: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Fil ikke funnet",
+        "message": "Filen finnes ikke lenger:\n{path}"
+      },
+      "import_failed": {
+        "title": "Importfeil",
+        "message": "Kan ikke importere filen: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF ikke installert",
+        "message": "PyMuPDF-biblioteket (fitz) er ikke installert.\nInstaller det med: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Feil",
+        "message": "Feil ved import av PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF-feil",
+        "message": "Kan ikke laste PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Dupliserte filnavn",
+        "intro": "{count} duplikat(e) filnavn funnet:\n\n",
+        "item": "  • {name} ({times} ganger)\n",
+        "more": "  ... og {more} til\n",
+        "footer": "\nZIP-arkiver godtar ikke dupliserte navn.\nGi nytt navn til disse filene før lagring."
+      },
+      "save_failed": {
+        "title": "Feil",
+        "message": "Kan ikke lagre filen: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Feil",
+        "message": "Kan ikke opprette arkivet: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Feil",
+        "message": "Kan ikke lagre utvalget: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF-opprettelsesfeil",
+        "message": "Kan ikke opprette animert GIF:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Lagringsfeil",
+        "message": "Feil ved lagring av filer:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Feil ved å gi nytt navn",
+        "message": "Kan ikke gi filen nytt navn: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF beskyttet med passord",
+        "message": "Denne PDF-filen er kryptert og beskyttet med et passord.\nDen kan ikke åpnes uten passordet."
+      },
+      "pdf_unlock_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke lagre den opplåste PDF-filen:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: kryptert PDF-fil (passord kreves), hoppet over",
+      "file_too_large": {
+        "title": "Filen er for stor",
+        "message": "Filen {filename} er {size} og overstiger maksimalt tillatt størrelse (500 MB) for et bilde."
+      },
+      "license_file_not_found": {
+        "message": "Lisensfil ikke funnet: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Kan ikke lese lisensfilen: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z-feil",
+        "message": "Filen '{file}' er ikke et gyldig 7Z-arkiv eller er skadet."
+      },
+      "delete_error": "Feil ved sletting: {error}",
+      "export_error": "Feil ved eksport: {error}",
+      "font_source_not_found": "Kildefilen for skrifttypen ble ikke funnet: {path}",
+      "no_tengwar_font": "Ingen Tengwar-skrifttype funnet.",
+      "no_icons_found": "Ingen ikoner funnet.",
+      "unsupported_files": {
+        "title": "Filer som ikke støttes",
+        "message": "Følgende filer støttes ikke og ble ignorert:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF opprettet",
+        "message": "Den animerte GIF-en '{name}' har blitt opprettet og lagt til mosaikken."
+      },
+      "pywin32_required": {
+        "title": "Funksjon ikke tilgjengelig",
+        "message": "pywin32-modulen kreves for å lime inn fra systemets utklippstavle.\nInstaller den med: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Bilder importert",
+        "message": "{count} bilde(r) importert"
+      },
+      "archive_copied": {
+        "title": "Arkiv kopiert",
+        "message": "Arkivet er kopiert til utklippstavlen."
+      },
+      "function_not_available": {
+        "title": "Funksjon ikke tilgjengelig",
+        "message": "Denne funksjonen er ikke tilgjengelig for øyeblikket."
+      },
+      "duplicate_detected": {
+        "title": "Duplikat oppdaget",
+        "message": "En fil hadde allerede dette navnet.\n\nFilen har blitt omdøpt til:\n{name}"
+      },
+      "replace_success": {
+        "title": "Vellykket",
+        "message": "Bildet '{name}' har blitt vellykket erstattet."
+      },
+      "history_cleared": {
+        "title": "Historikk tømt",
+        "message": "Listen over nylige filer har blitt tømt."
+      },
+      "files_copied_clipboard": {
+        "title": "Filer kopiert til utklippstavlen",
+        "message": "Dra-og-slipp ut av programmet er ikke tilgjengelig av tekniske årsaker.\n\n✓ {count} {word} kopiert til utklippstavlen\n\nDu kan nå lime inn hvor du vil:\n  • Høyreklikk → Lim inn\n  • Eller Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Korrigering fullført",
+        "message": "{count} filnavn korrigert."
+      },
+      "import_success": {
+        "title": "Vellykket import",
+        "message": "{count} side(r) importert fra {file}"
+      },
+      "pdf_import_success": {
+        "title": "Vellykket import",
+        "message": "{count} PDF-side(r) importert fra {file}\nKvalitet: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Vellykket",
+        "message": "PDF vellykket konvertert!\n{count} sider lastet ved {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Vellykket",
+        "message": "CBZ-fil lagret:"
+      },
+      "cbz_converted": {
+        "title": "Vellykket",
+        "message": "Fil konvertert til CBZ:",
+        "question": "Vil du slette den opprinnelige CBR-filen?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Vellykket",
+        "message": "Fil konvertert til CBZ:",
+        "question": "Vil du slette den opprinnelige PDF-filen?"
+      },
+      "cbz_save_as": {
+        "title": "Vellykket",
+        "message": "Ny CBZ-fil lagret: {path}"
+      },
+      "cbz_created": {
+        "title": "Vellykket",
+        "message": "CBZ-arkiv opprettet:"
+      },
+      "selection_saved": {
+        "title": "Vellykket",
+        "message": "Utvalg lagret:"
+      },
+      "flatten_done": {
+        "title": "Utflating fullført",
+        "message": "{files} fil(er) flyttet fra {dirs} undermappe(r)."
+      },
+      "language_changed": {
+        "title": "Språk endret",
+        "message": "Grensesnittspråket har blitt vellykket endret."
+      },
+      "new_cbz_saved": {
+        "title": "Fil Lagret",
+        "message": "Den nye CBZ-filen er lagret:",
+        "question": "Vil du slette originalfilen?"
+      },
+      "page_count_updated": {
+        "title": "Sidetall oppdatert",
+        "message": "Sidetallet i metadata har blitt oppdatert til {count} sider."
+      },
+      "files_saved": {
+        "title": "Lagret",
+        "message": "{count} filer lagret i:\n{folder}",
+        "open_folder": "Vil du åpne mappen?"
+      },
+      "adjustments_applied": {
+        "title": "Justeringer anvendt",
+        "message": "Justeringene er blitt anvendt med suksess."
+      },
+      "pdf_unlocked": {
+        "title": "PDF opplåst",
+        "message": "Den opplåste PDF-filen ble lagret:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Stort arkiv",
+        "message": "Dette arkivet er {size} MB ukomprimert.\nLasting kan forbruke mye minne (RAM).\n\nVil du fortsette?"
+      },
+      "confirm_delete": {
+        "title": "Bekreftelse",
+        "message": "Vil du virkelig slette {count} fil(er) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Slett kildefiler?",
+        "message": "Vil du slette bildene som har blitt slått sammen?\n\nJa = Slett kildefilene\nNei = Behold kildefilene\nAvbryt = Avbryt operasjonen"
+      },
+      "invalid_filenames": {
+        "title": "Ugyldige filnavn",
+        "intro": "{count} fil(er) inneholder forbudte tegn:",
+        "item": "  • {name}",
+        "more": "  ... og {more} til",
+        "forbidden_chars": "Forbudte tegn: {chars}",
+        "fix_question": "Vil du rette disse navnene automatisk?\n(Forbudte tegn erstattes med '_')"
+      },
+      "close_without_save": {
+        "title": "Lagre før lukking?",
+        "message": "Bilder har blitt lagt til. Vil du opprette et CBZ-arkiv før lukking?"
+      },
+      "flatten_folders": {
+        "title": "Flat ut mapper",
+        "subdirs_detected": "Undermapper oppdaget:",
+        "files_to_move": "{count} fil(er) vil bli flyttet til rotkatalogen.",
+        "folders_to_delete": "{count} undermappe(r) vil bli slettet.",
+        "continue_question": "Vil du fortsette?"
+      },
+      "update_page_count": {
+        "title": "Oppdater sidetall",
+        "message": "Antall sider i tegneserien har endret seg.\n\nSidetall angitt i metadata: {original}\nNåværende sidetall: {current}\n\nVil du oppdatere sidetallet i metadata?"
+      },
+      "conversion_complete": {
+        "title": "Konvertering fullført",
+        "message": "Konvertering fullført!\n\n{count} bilde(r) konvertert til {format}-format er lagt til etter ditt valg.\n\nSlette de originale bildene?",
+        "delete_originals": "Slett originalene\n{count} fil(er) - {size}",
+        "keep_all": "Behold alt\n{count} fil(er) - {size}",
+        "cancel_conversion": "Avbryt konverteringen\n{count} fil(er) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Feil filtype oppdaget: denne '{filename}' filen er en CBZ, ikke en CBR. Gi nytt navn?",
+      "title": "Feil filendelse"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Feil filtype oppdaget: denne '{filename}' filen er en CBR, ikke en CBZ. Gi nytt navn?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Feil filendelse oppdaget: filen '{filename}' er en CB7, ikke en CBZ/CBR. Gi nytt navn?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Miniatyrbildestørrelse",
+    "loading": "Vennligst vent, laster...\n{percent}%",
+    "resizing": "Vennligst vent, endrer størrelse...\n{percent}%",
+    "converting": "Vennligst vent, konverterer...\n{percent}%",
+    "loading_lazy": "Vennligst vent, laster...\n{percent}%\n\nPå grunn av den store størrelsen på denne filen ({size} MB) vil sider lastes progressivt. Sider som er synlige på skjermen lastes umiddelbart, andre vil lastes automatisk ved rulling.",
+    "apply_save_cbz": "Bruk endringene\nog lagre CBZ-filen",
+    "apply_create_cbz": "Bruk endringene\nog opprett en CBZ-fil",
+    "import_progress": "Importerer...\n{percent}%",
+    "pdf_import_progress": "Importerer PDF...\n{percent}%",
+    "pdf_opening": "Åpner PDF-filen...",
+    "pdf_page": "Side {current} / {total}",
+    "warning_close": "Advarsel! Endringer har ikke blitt lagret og vil gå tapt!",
+    "language_label": "Språk:",
+    "directory_tooltip": "Mappe: {name}\n{count} fil(er)\nTotal størrelse: {size} MB",
+    "folder_up_tooltip": "Dobbeltklikk for å gå opp\nett nivå i mappestrukturen",
+    "status_bar": "{dirs} mappe(r)  |  {files} fil(er) ({total_size})  |  {selected} valgt(e) ({selected_size})",
+    "pdf_converting": "Konverterer {total} sider til bilder ved {dpi} DPI...",
+    "pdf_converting_no_change": "Trekker ut {total} sider uten endring...",
+    "print_progress": "Forbereder utskrift...\n{percent}%",
+    "print_preparing": "Vennligst vent, forbereder utskrift...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nSammendrag av GNU General Public License v3\n\nTILDELTE FRIHETER\nDu kan bruke, kopiere, endre og videredistribuere\nMosaicView, også for kommersielle formål.\n\nFORPLIKTELSER\nEnhver videredistribusjon (original eller endret) må :\n– beholde GPL v3-lisensen\n– inkludere kildekoden eller angi hvor den kan hentes\n– ikke pålegge ytterligere begrensninger\n\nGARANTIER\nDenne programvaren distribueres UTEN NOEN GARANTI.\nForfatteren er ikke ansvarlig for skader som følge av bruken.\n\nDu bør ha mottatt en kopi av GNU General Public License sammen med dette programmet. Hvis ikke, se <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Vis full lisens",
+    "license_unrar_text": "CBZ-filer er basert på ZIP-formatet, et fritt og åpent format. CBR-filer er derimot basert på RAR-formatet, et proprietært format.\n\nMosaicView kan åpne CBR-filer takket være UnRAR, et verktøy utviklet av RARlab og fritt redistribuerbart.\n\nOffisielt nettsted: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Se UnRAR-lisensen",
+    "saving_cbz": "Lagrer... {percent}%",
+    "empty_canvas_line1": "Slipp en eller flere CBZ/CBR/CB7/PDF-filer eller bildene dine her",
+    "empty_canvas_line2": "Nar en fil er apnet, kan du fortsette a slippe andre",
+    "empty_canvas_line3": "Slipp en eller flere mapper for å starte satsvis behandling",
+    "icon_toolbar_config_title": "Konfigurasjon av ikonlinje",
+    "icon_toolbar_active": "Ikoner i linjen",
+    "icon_toolbar_hidden": "Ikoner i reserve",
+    "license_gpl_full": "GNU GPL v3-lisens",
+    "license_unrar_full": "UnRAR-lisens",
+    "licenses_button": "Lisenser",
+    "view_full_gpl_license": "Se den fullstendige GNU GPL v3-lisensen",
+    "license_7zip_text": "CB7-filer er basert på 7z-formatet, utviklet av Igor Pavlov og distribuert under GNU LGPL-lisensen.\n\nMosaicView kan åpne CB7-filer takket være 7-Zip — et gratis program med åpen kildekode.\n\nOffisiell nettside : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Se 7-Zip-lisensen",
+    "license_7zip_full": "7-Zip-lisens",
+    "icon_toolbar_show_thumb_slider": "Vis størrelsesglidebryter for miniatyrbilder",
+    "icon_toolbar_show_lang_combo": "Vis språkvelger",
+    "adjusting": "Vennligst vent, justeringer pågår...\n{current} / {total}",
+    "license_piqad_full": "Lisens for pIqaD qolqoS-skrift",
+    "license_tengwar_full": "Lisens for skrifttypen Alcarin Tengwar",
+    "view_full_piqad_license": "Vis fullstendig pIqaD qolqoS-lisens"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Bildekonvertering",
+      "title": "Konvertering av {count} {word}",
+      "word_image": "bilde",
+      "word_images": "bilder",
+      "info": "Velg målformat:",
+      "format_png": "PNG (tapsfri)",
+      "format_jpg": "JPEG (med komprimering)",
+      "format_webp": "WEBP (moderne)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (høy kvalitet)",
+      "format_gif": "GIF (animasjon)",
+      "quality_label": "Kvalitet for JPG/WEBP:",
+      "quality_maximum": "Maksimal — kvalitet 95/100",
+      "quality_high": "Høy — kvalitet 85/100",
+      "quality_medium": "Middels — kvalitet 75/100",
+      "quality_low": "Lav — kvalitet 60/100",
+      "quality_custom_option": "Tilpasset",
+      "quality_custom": "Kvalitet tilpasset : {value}/100",
+      "quality_note": "(Denne innstillingen påvirker kun JPG- og WEBP-formatene)",
+      "quality_window_title": "Kvalitetsvalg",
+      "format_gif_static": "Statisk GIF",
+      "format_gif_animated": "Animert GIF (velg flere bilder)"
+    },
+    "split": {
+      "window_title": "Del siden",
+      "title": "Del siden",
+      "pages_label": "Antall sider:",
+      "direction_label": "Delingsretning:",
+      "horizontal": "Horisontal (venstre → høyre)",
+      "vertical": "Vertikal (topp → bunn)",
+      "warning": "⚠ Siden delingen beregnes automatisk,\nkan manuell justering være nødvendig.",
+      "button_split": "Del",
+      "button_cancel": "Avbryt"
+    },
+    "join": {
+      "window_title": "Slå sammen sider - Endre rekkefølge",
+      "instructions": "Organiser bildene:\n• Vertikalt (opp/ned) for vertikal sammenslåing\n• Horisontalt (venstre/høyre) for horisontal sammenslåing",
+      "merged_filename_prefix": "Sammenslåing",
+      "heights_label": "Høyder",
+      "widths_label": "Bredder",
+      "size_adjustment_title": "Størrelsesjustering",
+      "size_adjustment_warning": "⚠️ De valgte bildene har forskjellige dimensjoner.\nVelg hvordan størrelsene skal justeres for sammenføyning.\nBildeforholdet for hvert bilde vil alltid bli bevart.",
+      "keep_original": "Behold originale størrelser",
+      "keep_original_desc": "(legger til sorte barer for utfylling)",
+      "enlarge_small": "Forstørr små bilder",
+      "enlarge_small_desc": "(juster til maksimal dimensjon)",
+      "reduce_large": "Reduser store bilder",
+      "reduce_large_desc": "(juster til minimal dimensjon)",
+      "back_to_arrangement": "Tilbake"
+    },
+    "pdf": {
+      "quality_merge": "Velg sammenslåingskvalitet:",
+      "quality_export": "Velg eksportkvalitet:",
+      "merge_quality_title": "PDF-sammenslåingskvalitet",
+      "export_quality_title": "PDF-eksportkvalitet",
+      "loading_title": "Laster PDF...",
+      "dpi_90": "90 DPI - Nettpublisering",
+      "dpi_150": "150 DPI - God kvalitet (anbefalt for visning)",
+      "dpi_200": "200 DPI - Veldig god kvalitet",
+      "dpi_300": "300 DPI - Utmerket kvalitet (tegneserie standard)",
+      "dpi_600": "600 DPI - Maksimal kvalitet (store filer)",
+      "dpi_original": "Ingen bildeendring",
+      "dpi_original_tooltip": "Intelligent analyse av hver PDF-side:\n• Sider med kun bilder: beholder original DPI\n• Sider med kun tekst: 300 DPI\n• Blandede sider (tekst + bilder): bilde-DPI hvis >= 300, ellers 300 DPI\nMaksimum: 2400 DPI for å begrense filstørrelse"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF kreves",
+      "pymupdf_required_message": "PyMuPDF (fitz) er ikke installert. Kan ikke konvertere PDF-filer.",
+      "select_directory_title": "Velg katalogen som inneholder PDF-filene",
+      "no_pdf_title": "Ingen PDF-filer",
+      "no_pdf_message": "Ingen PDF-filer ble funnet i katalogen:\n{directory}",
+      "confirm_title": "Batchkonvertering av PDF til CBZ",
+      "confirm_message": "{count} PDF-filer å konvertere i {directory} (underkataloger inkludert).",
+      "checkbox_permanent_delete": "Slett de originale PDF-filene uten å bruke\npapirkurven (KAN IKKE ANGRES)",
+      "start_button": "Start",
+      "converting_title": "Konvertering pågår...",
+      "converting_progress": "Konverterer fil {current} av totalt {total}",
+      "page_progress": "Side {current} / {total}",
+      "complete_title": "Konvertering fullført",
+      "complete_message": "{count} PDF-filer konvertert i katalogen:",
+      "complete_message_errors": "{count} av {total} PDF-filer konvertert i katalogen:",
+      "errors_count": "{count} feil funnet."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Velg mappen som inneholder CBR-filer",
+      "no_cbr_title": "Ingen CBR-filer",
+      "no_cbr_message": "Ingen CBR-filer ble funnet i mappen:\\n{directory}",
+      "confirm_title": "Batchkonvertering av CBR til CBZ",
+      "confirm_message": "{count} CBR-filer å konvertere i {directory} (undermapper inkludert).",
+      "checkbox_permanent_delete": "Slett de opprinnelige CBR-filene uten å bruke\npapirkurven (KAN IKKE ANGRES)",
+      "start_button": "Start",
+      "converting_title": "Konverterer...",
+      "converting_progress": "Konverterer fil {current} av {total}",
+      "page_progress": "Side {current} / {total}",
+      "complete_title": "Konvertering fullført",
+      "complete_message": "{count} CBR-filer konvertert i mappen:",
+      "complete_message_errors": "{count} CBR-filer konvertert av {total} i mappen:",
+      "errors_count": "{count} feil funnet.",
+      "renamed_count": "{count} fil(er) omdøpt til CBZ",
+      "rarfile_unavailable": "Modulen rarfile er ikke tilgjengelig. Kan ikke konvertere CBR-filer."
+    },
+    "close_warning": {
+      "title": "Advarsel!",
+      "message": "Endringer har ikke blitt lagret og vil gå tapt!",
+      "btn_close_lose": "Lukk filen og mist endringene",
+      "btn_save_cbz": "Bruk endringene og lagre filen",
+      "btn_create_cbz": "Bruk endringene og opprett en CBZ-fil",
+      "btn_cancel": "Avbryt og returner til mosaikken"
+    },
+    "replace_image": {
+      "title": "Erstatt det korrupte bildet"
+    },
+    "reduce_size": {
+      "window_title": "Endre bildestørrelse",
+      "title": "Endring av {count} {word}",
+      "word_image": "bilde",
+      "word_images": "bilder",
+      "current_size": "Nåværende størrelse: {size} MB",
+      "current_dimensions": "Nåværende dimensjoner: {width} × {height} px",
+      "choose_method": "Velg størrelsesændringsmetode:",
+      "custom_dimensions": "Tilpassede dimensjoner",
+      "width_label": "Bredde:",
+      "height_label": "Høyde:",
+      "use_custom_dimensions": "Bruk disse dimensjonene",
+      "different_dimensions_warning": "Valgte sider har forskjellige dimensjoner. Tilpassede dimensjoner vil tvinge alle sider til samme størrelse. Forsikre deg om at du forstår konsekvensene før du fortsetter.",
+      "estimated_size": "Anslått størrelse: {size} MB",
+      "percentage_reduction": "Prosentvis reduksjon",
+      "percentage_enlargement": "Prosentvis forstørrelse",
+      "reduce_0": "0% (ingen endring)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (ingen endring)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "De vanligste sidebreddene er 1024, 1280, 1600, 1920 og 2000 piksler, men andre verdier er også egnet.",
+      "multi_page_width": "Automatisk gjenkjenning og endring av størrelse på flere sider (bredde/høyde)",
+      "multi_page_width_tooltip": "Aktiverer automatisk gjenkjenning av flere sider: dobbeltside, trippelside osv. Multiplikasjonskoeffisienten beregnes automatisk basert på forholdet til hver side, enten i bredde (sider ved siden av hverandre) eller høyde (stablete sider)"
+    },
+    "gif_animated": {
+      "window_title": "Opprette animert GIF",
+      "images_title": "Animasjonsbilder",
+      "params_title": "GIF-parametere",
+      "frame_delay_label": "Forsinkelse mellom bilder:",
+      "fps_normal": "{fps} bilder/sekund",
+      "fps_slow": "1 bilde hver {seconds}. sekund",
+      "loop_label": "Antall repetisjoner:",
+      "loop_info": "(0 = uendelig løkke)",
+      "disposal_label": "Bildeplassering:",
+      "disposal_0": "Ikke spesifisert",
+      "disposal_1": "Behold forrige bilde",
+      "disposal_2": "Gjenopprett til bakgrunnsfarge",
+      "disposal_3": "Gjenopprett til forrige tilstand",
+      "optimize": "Optimaliser fil (lagre kun forskjeller)",
+      "metadata_title": "GIF-metadata",
+      "metadata_dimensions": "Dimensjoner: {width} × {height} px",
+      "metadata_frames": "Antall bilder: {count}",
+      "metadata_duration": "Total varighet: {duration} s",
+      "metadata_fps": "Frekvens: {fps} fps",
+      "metadata_palette": "Palett: opptil 256 farger",
+      "metadata_size": "Estimert størrelse: {size} KB",
+      "comment_label": "Kommentar (valgfritt):",
+      "no_images": "Ingen bilder valgt",
+      "creating_progress": "Laster inn bilder... ({current}/{total})",
+      "creating_normalizing": "Normaliserer bilder... ({current}/{total})",
+      "creating_quantizing": "Kvantiserer farger... ({current}/{total})",
+      "creating_saving": "Lagrer GIF..."
+    },
+    "save_to_folder": {
+      "title": "Velg destinasjonsmappe"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Dupliserte filnavn",
+      "message": "Identiske filnavn har blitt oppdaget. Selv om lagring er teknisk mulig,\nkan dette forårsake leseproblemer i noen tegneserieleserprogrammer\n(ufullstendig visning, manglende sider, osv.).\n\nDet anbefales å nummerere sidene på nytt før lagring."
+    },
+    "adjustments": {
+      "window_title": "Bildejusteringer",
+      "title": "Justeringer for {count} {word}",
+      "word_image": "bilde",
+      "word_images": "bilder",
+      "apply_button": "Bruk",
+      "color_depth_section": "Fargedybde",
+      "brightness_contrast_section": "Lysstyrke og kontrast",
+      "compression_section": "Komprimering",
+      "effects_section": "Effekter",
+      "sharpness_section": "Skarphet",
+      "levels_section": "Sort/hvit-nivaer",
+      "depth_unchanged": "Ikke endre",
+      "depth_32bit": "32 bits (RGBA - farger + gjennomsiktighet)",
+      "depth_24bit": "24 bits (RGB - farger)",
+      "depth_8bit": "8 bit (PNG-palett / JPEG-gratoneskala)",
+      "depth_1bit": "1 bit (sort og hvit)",
+      "brightness_label": "Lysstyrke: {value}",
+      "contrast_label": "Kontrast: {value}",
+      "compression_enable": "Aktiver rekomprimering",
+      "compression_quality_label": "Kvalitet : {value}/100",
+      "sharpness_label": "Skarphet: {value}",
+      "effect_none": "Ingen effekt",
+      "effect_grayscale": "Graatoner",
+      "effect_sepia": "Sepia",
+      "levels_none": "Ingen justering",
+      "levels_threshold": "Terskel (ren sort eller hvit)",
+      "levels_advanced": "Avanserte nivaer (skygger/mellomtoner/lys)",
+      "threshold_label": "Terskel: {value}",
+      "black_point_label": "Sortpunkt: {value}",
+      "gamma_label": "Gamma (mellomtoner): {value}",
+      "white_point_label": "Hvitpunkt: {value}",
+      "auto_levels_button": "Automatisk justering",
+      "open_viewer_button": "Juster med visningsprogrammet (anbefalt)",
+      "compression_info": "Komprimering gjelder bare for JPG- og WebP-bilder",
+      "open_viewer_button_simple": "Juster med visningsprogram",
+      "reset_button": "Tilbakestill",
+      "preview_section": "Forhåndsvisning",
+      "effect_invert": "Fargeinversjon",
+      "preview_warning": "Forhåndsvisning kan avvike fra sluttresultatet",
+      "effect_remove_colors": "Fjerning av farger",
+      "remove_colors_intensity_label": "Intensitet : {value}",
+      "image_mode_section": "Bildemodus",
+      "image_mode_rgb": "RGB (farger)",
+      "image_mode_rgba": "RGBA (farger + gjennomsiktighet)",
+      "image_mode_l": "L (gråtoner)",
+      "image_mode_la": "LA (gråtoner + gjennomsiktighet)",
+      "image_mode_cmyk": "CMYK (trykk)",
+      "image_mode_1": "1 (rent svart-hvitt)",
+      "image_mode_p": "P (256-fargepalett)",
+      "saturation_section": "Metning",
+      "saturation_label": "Metning : {value}",
+      "saturation_viewer_title": "Justering av metning",
+      "transparency_section": "Gjennomsiktighet",
+      "transparency_info": "Gjennomsiktighet gjelder bare for PNG-, WebP- og ICO-bilder",
+      "transparency_type_label": "Type :",
+      "transparency_type_flood": "Område",
+      "transparency_type_global": "Global",
+      "transparency_tolerance_label": "Toleranse : {value}",
+      "transparency_viewer_title": "Justering av gjennomsiktighet",
+      "transparency_click_instruction": "Klikk på fargen som skal gjøres gjennomsiktig",
+      "transparency_undo": "Angre siste klikk",
+      "transparency_redo": "Gjenta",
+      "transparency_type_flood_tooltip": "Flood fill : gjør det ensartede fargeområdet rundt det klikkede pixelet gjennomsiktig",
+      "transparency_type_global_tooltip": "Global gjennomsiktighet : påvirker alle piksler i bildet hvis farge ligner den klikkede",
+      "transparency_apply": "Bruk",
+      "transparency_skipped_warning": "{count} bilde(r) hoppet over — formatet er ikke kompatibelt med gjennomsiktighet. For å inkludere dem, konverter dem til PNG først.",
+      "unsharp_section": "Adaptiv skarphet",
+      "unsharp_radius_label": "Radius: {value}",
+      "unsharp_percent_label": "Intensitet: {value} %",
+      "unsharp_threshold_label": "Terskel: {value}",
+      "unsharp_viewer_title": "Adaptiv skarphet",
+      "auto_levels_tooltip": "Analyserer hver side og justerer automatisk svart- og hvitnivåene for å maksimere kontrasten.\nBruk visningsprogrammet for å velge side for side."
+    },
+    "levels_viewer": {
+      "title": "Nivajustering med pipette",
+      "apply_current": "Bruk pa denne siden",
+      "apply_all": "Bruk på alle valgte sider",
+      "black_pipette": "Svart punkt pipette",
+      "white_pipette": "Hvit punkt pipette",
+      "black_pipette_tooltip": "Klikk på en piksel som burde være helt svart. Advarsel: det er lett å overdrive!",
+      "white_pipette_tooltip": "Klikk på en piksel som burde være helt hvit. Advarsel: det er lett å overdrive!"
+    },
+    "sharpness_viewer": {
+      "title": "Skarphetsjustering"
+    },
+    "brightness_viewer": {
+      "title": "Lysstyrkejustering og kontrastjustering"
+    },
+    "compression_viewer": {
+      "title": "Komprimeringsjustering"
+    },
+    "outliers": {
+      "title": "Sider med uvanlige dimensjoner",
+      "message": "Følgende sider har dimensjoner som avviker betydelig fra de andre. Vennligst velg hvordan de skal håndteres:",
+      "width": "Bredde",
+      "height": "Høyde",
+      "unusual": "uvanlig",
+      "skip": "Ikke endre størrelse",
+      "keep": "behold"
+    },
+    "first_page_multi": {
+      "title": "Første side er en flerside",
+      "message": "Første side ble oppdaget som en flerside. Hvordan vil du nummerere den?",
+      "option_auto_desc": "Normal omnummerering med automatisk gjenkjenning.",
+      "option_joint_desc": "Sammenkobling av første og siste side i tegneserien.",
+      "option_exclude_label": "Ikke inkluder i omnummerering",
+      "option_exclude_desc": "Siden beholder sitt nåværende navn og forblir på første plass. Du kan gi den nytt navn manuelt senere."
+    },
+    "batch_img": {
+      "select_directory_title": "Velg mappen som inneholder bildene",
+      "no_img_title": "Ingen bildefiler funnet",
+      "no_img_message": "Ingen enkle bildefiler ble funnet i mappen :\n{directory}",
+      "confirm_title": "Massekonvertering av enkeltbilder til CBZ",
+      "confirm_message": "{count} bildefil(er) som skal konverteres i {directory} (undermapper inkludert).",
+      "checkbox_permanent_delete": "Slett originale bildefiler permanent uten\nå sende dem til papirkurven (KAN IKKE ANGRES)",
+      "start_button": "Start",
+      "converting_title": "Konvertering pågår...",
+      "converting_progress": "Konverterer fil {current} av totalt {total}",
+      "complete_title": "Konvertering fullført",
+      "complete_message": "{count} bildefil(er) konvertert i mappen :",
+      "complete_message_errors": "{count} av {total} bildefiler konvertert i mappen :",
+      "errors_count": "{count} feil oppstått.",
+      "converted_by_ext": "{ext} : {count} fil(er)",
+      "mode_title": "Konverter bilder til CBZ",
+      "mode_intro": "Hvordan vil du gruppere bildene?",
+      "mode_one_per_image": "Konverter hvert bilde til separate CBZ-filer",
+      "mode_one_per_image_sub": "(Hvert bilde blir en separat CBZ-fil)",
+      "mode_all_in_one": "Grupper alle bilder i én enkelt CBZ-fil",
+      "mode_all_in_one_sub": "(Alle bilder i mappen grupperes i én enkelt CBZ-fil)"
+    },
+    "batch_drop": {
+      "window_title": "Satsvis behandling av mapper",
+      "intro_single": "1 mappe ble sluppet. Hvilken behandling vil du bruke?",
+      "intro_multiple": "{count} mapper ble sluppet. Hvilken behandling vil du bruke?",
+      "recursive_note": "Undermapper vil også bli gjennomgått.",
+      "mixed_drop_title": "Slipp ikke støttet",
+      "mixed_drop_message": "Du slapp filer og mapper samtidig. Slipp bare filer eller bare mapper."
+    },
+    "pdf_unlock": {
+      "title": "PDF beskyttet mot endringer",
+      "message": "Sidene ble importert normalt.\n\nDenne PDF-filen er beskyttet mot endringer (eierpassord).\n\nVil du lagre en kopi av PDF-filen uten denne beskyttelsen?",
+      "yes": "Ja, lagre en opplåst kopi",
+      "no": "Nei, fortsett uten å låse opp"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF-filer beskyttet mot endringer",
+      "message_single": "Det ble funnet 1 PDF-fil beskyttet mot endringer. Den ble normalt konvertert til CBZ.\n\nVil du lagre en ulåst kopi i dens opprinnelige mappe?",
+      "message_plural": "Det ble funnet {count} PDF-filer beskyttet mot endringer. De ble normalt konvertert til CBZ.\n\nVil du lagre en ulåst kopi av hver i dens opprinnelige mappe?",
+      "yes": "Ja, lagre de ulåste kopiene",
+      "no": "Nei, fortsett uten å låse opp"
+    },
+    "ico_creator": {
+      "title": "Opprett .ico-ikon",
+      "info_message": "Bildet vil bli endret til flere oppløsninger (16, 32, 48, 64, 128, 256 px).\nNåværende rammestørrelse: {w} × {h} px",
+      "btn_validate_crop": "Bekreft beskjæring",
+      "btn_validate_no_crop": "Bekreft uten beskjæring",
+      "btn_cancel": "Avbryt",
+      "btn_transparency": "Angi gjennomsiktighet",
+      "btn_validate_final": "Bekreft",
+      "tolerance_label": "Toleranse:",
+      "success_title": ".ico-fil opprettet",
+      "success_message": "Filen {filename} ble opprettet.",
+      "overwrite_title": "Fil eksisterer allerede",
+      "overwrite_message": "Filen {filename} eksisterer allerede. Overskriv den?",
+      "save_blocked_title": "Kan ikke lagre",
+      "save_blocked_message": "Dette arkivet inneholder en eller flere .ico-filer som ikke er tegneseriebilder. Lagring er deaktivert så lenge disse filene er til stede i mosaikken.\nFor å aktivere lagring igjen, slett dem fra mosaikken (Del-tasten) eller klipp dem ut (Ctrl+X) for å lime inn et annet sted.",
+      "btn_back_to_crop": "Tilbake til beskjæring"
+    },
+    "video_save_blocked": {
+      "title": "Kan ikke lagre",
+      "message": "Dette arkivet inneholder én eller flere videofiler. Lagring er deaktivert så lenge disse filene er til stede i mosaikken.\nFor å aktivere lagring på nytt, slett dem fra mosaikken (Del-tasten) eller klipp dem ut (Ctrl+X) for å lime dem inn et annet sted."
+    },
+    "open_file": {
+      "title": "Åpne arkiv",
+      "filter_archives": "Arkiver (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Alle filer (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Lisens"
+    },
+    "replace_corrupted_image": {
+      "title": "Erstatt skadet bilde",
+      "filter_images": "Bilder (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Alle filer (*)"
+    },
+    "see_log": "SE LOG"
+  },
+  "tooltip": {
+    "source_archive": "Kildefil: {name}",
+    "file": "Fil: {name}",
+    "reason": "Årsak: {reason}",
+    "size_kb": "Størrelse: {size} KB",
+    "size_mb": "Størrelse: {size} MB",
+    "file_size": "Størrelse: {size}",
+    "dimensions": "Dimensjoner: {width} × {height} px",
+    "resolution": "Oppløsning: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: udefinert",
+    "cbr_info": "CBR-filer bruker RAR-format, som er proprietært og patentert;\nde kan ikke endres, endringer lagres i en ny CBZ-fil.",
+    "rotate_left": "90 graders rotasjon til venstre",
+    "rotate_right": "90 graders rotasjon til høyre",
+    "mirror_horizontal": "Horisontal speiling",
+    "mirror_vertical": "Vertikal speiling",
+    "fullscreen": "Fullskjerm",
+    "help_button": "Brukerhåndbok",
+    "theme_button": "Bytt mellom lyst og mørkt tema",
+    "font_decrease_button": "Reduser skriftstørrelse",
+    "font_increase_button": "Øk skriftstørrelse",
+    "color_depth": "Farger: {bits} bits ({mode})",
+    "batch_pdf_to_cbz": "Konverterer alle PDF-filer i en katalog og dens\nunderkataloger til CBZ. Bildene pakkes ut og\narkiveres som de er, uten noen rekomprimering.",
+    "batch_pdf_permanent_delete": "ADVARSEL: hvis dette alternativet er avkrysset,\nvil de originale PDF-filene bli permanent\nslettet etter konvertering, uten mulighet\nfor gjenoppretting. Sørg for at du har\nen sikkerhetskopi om nødvendig.",
+    "batch_cbr_to_cbz": "Konverterer til CBZ alle CBR-filer\ni en mappe og dens undermapper.",
+    "batch_cbr_permanent_delete": "ADVARSEL: hvis dette alternativet er valgt,\nvil de opprinnelige CBR-filene bli permanent\nslettet etter konvertering, uten mulighet\nfor gjenoppretting. Sørg for at du har\nen sikkerhetskopi hvis nødvendig.",
+    "renumber_btn_1": "Automatisk gjenkjenning av flere sider\nHøyreklikk for å bytte modus",
+    "renumber_btn_2": "Enkel nummereringsmodus\nHøyreklikk for å bytte modus",
+    "corrupted_header": "Skadet bilde",
+    "right_click_instruction1": "Høyreklikk for å erstatte eller slette",
+    "right_click_instruction2": "dette bildet.",
+    "unknown_error": "Ukjent feil",
+    "batch_img_to_cbz": "Konverterer alle bildefiler funnet i en mappe\nog dens undermapper til CBZ,\nved å opprette én CBZ-fil per bilde.",
+    "batch_img_permanent_delete": "ADVARSEL : hvis dette alternativet er merket,\nslettes de originale bildefilene permanent\netter konvertering uten mulighet for\ngjenoppretting. Sørg for å ha en sikkerhetskopi\nhvis nødvendig.",
+    "too_large_header": "Bildet er for stort til å laste",
+    "too_large_pixels": "Dimensjoner: {pixels}",
+    "icon_toolbar_config_button": "Ikonkonfigurasjon",
+    "icon_toolbar_size_decrease": "Reduser ikonstørrelse",
+    "icon_toolbar_size_increase": "Øk ikonstørrelse",
+    "source_loose": "Løst bilde",
+    "source_web": "Webbilde"
+  },
+  "help": {
+    "title": "MosaicView - Bruksanvisning",
+    "intro": "MosaicView lar deg manipulere og redigere tegneserier (digitale comics) uten å måtte pakke dem ut fra arkivene. Applikasjonen støtter formatene CBZ (ZIP), CBR (RAR) og PDF. Applikasjonen er kun kompatibel med 64-bits systemer.",
+    "open_files": "Åpne filer",
+    "open_files_content": "• Klikk på knappen 'Åpne CBZ/CBR/CB7/PDF'\n• Eller dra og slipp en fil direkte i vinduet\n• Støttede formater: CBZ, CBR, CB7, PDF, bilder (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-filer kan ogsa apnes, men bare bildene deres vil bli ekstrahert (teksten ignoreres).\n• Kryptert PDF (passord kreves for å åpne): filen kan ikke importeres, det vises en feilmelding.\n• PDF beskyttet mot endringer (owner password): sidene importeres normalt. MosaicView tilbyr å lagre en opplåst kopi av filen i samme mappe.",
+    "mosaic": "Mosaikken",
+    "mosaic_content": "Mosaikken viser alle sidene i tegneserien din som miniatyrbilder. Du kan:\n• Reorganisere sider ved å dra og slippe (sidenummerering vil være automatisk og vil følge den aktive omnummereringsmodusen)\n• Velge flere sider (Ctrl+klikk eller Skift+klikk)\n• Justere miniatyrstørrelse med glideren\n• Gi nytt navn til filer manuelt ved å klikke på navnet deres\n• Dra og slipp tegneseriefiler (CBZ/CBR/PDF) fra Windows Utforsker direkte inn i en annen åpen tegneserie for å slå sammen innholdet",
+    "manipulation": "Manipulering av sider",
+    "manipulation_content": "• Dra og slipp sider for å omorganisere dem\n• Dra et helt tegneseriealbum inn i et annet for å slå dem sammen\n• Høyreklikk på en side for å få tilgang til alternativer (rotasjon, sletting osv.)\n• Dobbeltklikk på en side for å åpne visningsprogrammet\n• Eksporter enkelt sider ved å dra dem til en Windows-mappe eller via Ctrl+C / Ctrl+V",
+    "renumber": "Omnummerering av sider",
+    "renumber_content": "MosaicView tilbyr to moduser for omnummerering av sider, tilgjengelige via omnummereringsknappen, kontekstmenyen (høyreklikk) eller automatisk ved dra og slipp:\n\n• Automatisk gjenkjenning av flersidige oppslag (standardmodus): programmet analyserer bredden på hver side for å oppdage doble, tredoble sider osv. Flersidige oppslag omnummereres tilsvarende (f.eks.: en dobbeltside vil hete 003-004, en tredobbel 005-006-007). Over 4 sider vises kun første og siste nummer (f.eks.: 010---025).\n\n• Enkel nummereringsmodus: hver side får et unikt løpenummer (001, 002, 003...) uavhengig av sidebredden.\n\nFor å bytte mellom de to modusene, høyreklikk på omnummereringsknappen. Et verktøytips viser den aktive modusen. Den valgte modusen gjelder også for automatisk omnummerering ved dra og slipp.",
+    "flatten": "Flat ut mapper",
+    "flatten_content": "Hvis arkivet ditt inneholder undermapper, bruk 'Flat ut mapper' for å bringe alle bildene til samme nivå.",
+    "viewer": "Fremviser",
+    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← → : navigering mellom sider\n• Tast D : bytt mellom 3 lesemodi\n  - Enkeltside: én side om gangen\n  - Doble sider: side 1 alene, deretter 2-3, 4-5, osv.\n  - Kontinuerlige doble sider: side 1 alene, deretter 2-3, 3-4, 4-5, osv.\n• Musehjul: rask navigering\n• Ctrl+Musehjul eller Ctrl+Plus/Minus: zoom\n• Ctrl+0: tilbakestill zoom\n• Tast F11: fullskjerm\n• Dobbeltklikk: bytt fullskjerm\n• Tast Esc: avbryt beskjæringsramme / avslutt fremviseren",
+    "join_pages": "Slå sammen sider",
+    "join_pages_content": "Velg flere påfølgende sider, høyreklikk → 'Slå sammen valgte sider' for å slå sammen sider horisontalt eller vertikalt. Formatet på det produserte bildet tilsvarer kildesidenes format hvis de alle er identiske, ellers PNG som standard.",
+    "split_pages": "Del sider",
+    "split_pages_content": "For å automatisk dele dobbeltsider:\n• Velg sidene som skal deles\n• Høyreklikk → 'Del valgte sider'\n• Velg retning (vertikal eller horisontal)",
+    "crop": "Beskjæring i fremviseren",
+    "crop_content": "I fremviseren, tegn et rektangel på bildet for å definere et beskjæringsområde:\n• Tegn rektangelet med musen\n• Endre størrelse ved å dra i kantene eller hjørnene\n• Klikk på 'Bekreft beskjæring' for å bruke\n• Beskjæringen brukes på det gjeldende bildet\n• Tast Esc: avbryt beskjæringsramme",
+    "shortcuts": "Tastatursnarveier",
+    "shortcuts_content": "• Ctrl+Z: Angre siste handling\n• Ctrl+Y: Gjør om angret handling\n• Ctrl+A: Velg alle sider\n• Ctrl+I: Inverter markering\n• Ctrl+C: Kopier valgte sider\n• Ctrl+X: Klipp ut valgte sider\n• Ctrl+V: Lim inn sider\n• Del: Slett valgte sider\n• F5: Oppdater mosaikvisningen\n• F11: Bytt fullskjerm (avslutt med F11 eller ESC)",
+    "dark_mode": "Mørkt tema",
+    "dark_mode_content": "Klikk på sol/måne-knappen for å bytte mellom lyst og mørkt tema.",
+    "sort": "Sorter sider",
+    "sort_content": "Bruk 'Sorter'-knappen for å automatisk omorganisere sidene etter:\n• Navn, Type, Størrelse, Bredde, Høyde, Oppløsning eller DPI",
+    "save": "Lagre",
+    "save_content": "• 'Lagre': lagrer endringene i originalfilen\n• 'Lagre som': oppretter et nytt arkiv\n• 'Opprett CBZ': tilgjengelig i modus kun for bilder (uten arkiv)",
+    "other": "Andre funksjoner",
+    "other_content": "• Rotering: roter én eller flere sider\n• Konvertering: konverter bilder til forskjellige formater (PNG, JPEG, WEBP, BMP, TIFF, GIF). Merk: CMYK-bilder konverteres automatisk til RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Merk: CMYK-bilder konverteres automatisk til RGB\n• Utskrift: skriv ut valgte sider eller alle sider\n• Utpakking: pakk ut spesifikke sider\n• Metadata-fane: viser informasjon fra ComicInfo.xml-filen (hvis tilstede i arkivet). Hvis du legger til eller fjerner en side fra en tegneserie som inneholder metadata, vil applikasjonen foreslå å endre sidetallet som er angitt der. Andre metadata kan ikke endres. Denne begrensningen er tilsiktet og er et resultat av et designvalg.",
+    "config_files": "Konfigurasjon og midlertidige filer",
+    "config_files_content": "MosaicView oppretter en fil kalt .mosaicview_config.json. Denne filen inneholder noen parametere som er nødvendige for at tilbakestillingsknappen skal fungere riktig, samt listen over nylig åpnede tegneserier som åpenbart er nødvendig for å vise nylig åpnede filer. MosaicView lagrer også midlertidige filer, som er nødvendige for forskjellige bildebehandlingsoperasjoner.\nAlle disse filene er plassert i mappen {temp_dir}.\nMidlertidige filer slettes hver gang programmet lukkes, men filen .mosaicview_config.json er av sin natur ment å beholdes.\nDu kan imidlertid slette disse filene manuelt ved å gå til mappen {temp_dir} eller klikke på knappene nedenfor. Filen .mosaicview_config.json vil bli gjenskapt hver gang programmet åpnes, og midlertidige filer vil bli gjenskapt etter behov.",
+    "config_clear_temp": "Slett midlertidige filer",
+    "config_clear_recent": "Tøm nylige filer",
+    "config_clear_config": "Slett konfigurasjonsfil",
+    "config_temp_cleared": "Midlertidige filer er blitt slettet.",
+    "config_config_cleared": "Konfigurasjonsfilen er blitt slettet.\nDen vil bli gjenskapt ved neste programstart.",
+    "language": "Språkvalg",
+    "language_content": "MosaicView er tilgjengelig på flere språk.\nSom standard oppdager applikasjonen automatisk språket til operativsystemet ditt og vises på dette språket hvis det støttes. Hvis systemet ditt bruker et ikke-støttet språk, vises grensesnittet på engelsk.\nDu kan manuelt endre språket når som helst ved å bruke rullegardinmenyen som ligger nederst i knappkolonnen, under skyvekontrollen for miniatyrstørrelse. Valget ditt vil bli lagret og brukt neste gang du starter applikasjonen.\nTILGJENGELIGE SPRÅK: arabisk, armensk, bulgarsk, dansk, engelsk, estisk, finsk, fransk, gresk, hindi, indonesisk, irsk, islandsk, italiensk, japansk, kinesisk (forenklet), kinesisk (tradisjonell), koreansk, kroatisk, latvisk, litauisk, malayisk, maltesisk, nederlandsk, norsk, polsk, portugisisk, rumensk, slovakisk, slovensk, spansk, svensk, tamil, thai, tsjekkisk, tyrkisk, tysk, ukrainsk, ungarsk, vietnamesisk.\nTILGJENGELIGE FIKTIVE SPRÅK: klingon (latinsk alfabet og pIqaD-alfabet versjoner), sindarin (latinsk alfabet og tengwar-alfabet versjoner), quenya (latinsk alfabet og tengwar-alfabet versjoner).\n\nDette verktøyet bruker Windows-fonter, bortsett fra for pIqaD (klingonsk språk) og tengwar (alviske språk: sindarin og quenya) fonter. Disse fontene er frie å bruke og kommer fra disse nettstedene:\n- for pIqaD (klingonsk alfabet): {url_piqad}\n- for tengwar (alvisk alfabet, for sindarin og quenya): {url_tengwar}\nHvis disse nettstedene ikke lenger er aktive, kan du hente pIqaD- og tengwar-fontene ved å klikke på knappene nedenfor:\n\nDenne programvaren ble utviklet på fransk. Oversettelser til andre språk ble gjort ved hjelp av kunstig intelligens, spesifikt Claude. Jeg bestemte meg for å støtte omtrent førti språk. Men selvfølgelig snakker jeg ikke alle disse språkene. Derfor hadde jeg ikke annet valg enn å bruke kunstig intelligens, da ansettelse og betaling av 40 forskjellige oversettere ikke var blant de vurderte mulighetene. På grunn av den automatiske naturen til disse oversettelsene, kan det være feil til stede. Jeg beklager dette.",
+    "credits": "Vibe Coding, min kjære",
+    "credits_content": "Jeg kan ingenting om programmering. Absolutt ingenting. Som et resultat utviklet jeg denne programvaren ved hjelp av Claude, AI-en fra Anthropic, og mer spesifikt med Claude Code. Jeg kan ikke anbefale Claude Code nok, denne applikasjonen er fantastisk!",
+    "resize_pages": "Endre sidestørrelse",
+    "resize_pages_content": "For å redusere eller forstørre sidene dine:\n• Velg en eller flere sider\n• Høyreklikk → 'Endre størrelse'\n• Tre alternativer er tilgjengelige:\n  - Egendefinerte dimensjoner: skriv inn ønsket bredde eller høyde (sideforholdet bevares automatisk).\n  - Prosentvis reduksjon: velg en prosentandel fra 10% til 90%\n  - Prosentvis forstørrelse: velg en prosentandel fra 10% til 100%\n• Programmet viser den estimerte størrelsen på bildene dine etter endring\n• Endringen brukes umiddelbart på alle valgte sider",
+    "language_export_piqad": "pIqaD-font",
+    "language_export_tengwar": "Tengwar-fonter",
+    "language_export_piqad_success": "Skrifttype eksportert: {filename}\nTilgjengelig i:",
+    "language_export_tengwar_success": "{count} skrifttyper eksportert\nTilgjengelige i:",
+    "icons": "Ikoner",
+    "icons_content": "De fleste ikonene som brukes i dette verktøyet kommer fra dette nettstedet og er gratis til ikke-kommersiell bruk: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nNoen er blitt endret av meg.\nBare ett ikon, Windows-kjørbart ikon, ble laget av meg (men med AI, fordi jeg er en veldig, veldig, veldig dårlig grafisk designer). Du har min tillatelse til å bruke dette ikonet som du vil, så lenge du siterer kilden din.",
+    "icons_view_button": "Vis ikoner",
+    "icons_window_title": "MosaicView Ikoner",
+    "icons_save_all": "Lagre ikoner",
+    "icons_saved_success": "{count} ikon(er) lagret i:",
+    "icons_save_failed": "Kan ikke lagre ikoner: {error}",
+    "split_ui": "To-panel grensesnitt",
+    "split_ui_content": "MosaicView gjør det mulig å vise to arkiver samtidig, side om side.\n\nKlikk på Del-ikonet for å åpne et andre panel. Hvert panel er uavhengig: du kan åpne, redigere og lagre et arkiv separat. Det aktive panelet er angitt med en blå ramme.\n\nFor å flytte sider fra ett panel til det andre, dra dem direkte. Hvis flere sider er valgt, flyttes de alle sammen. Sidene settes inn på posisjonen som er angitt av den røde linjen.\n\nKlikk på Lukk andre panel-ikonet for å gå tilbake til enkeltpanelmodus.",
+    "license_gpl": "GPL v3-lisens",
+    "license_unrar": "UnRAR-lisens",
+    "config_clear_clipboard": "Slett utklippstavle-filer",
+    "config_clipboard_note": "Unntak: Midlertidige filer brukt av Windows utklippstavle (clipboard_XXXXX-filer) beholdes i 12 timer etter kopiering, slik at du kan lime dem inn selv etter å ha lukket programmet. Etter 12 timer slettes de automatisk.",
+    "config_log_note": "Batchkonverteringer (PDF til CBZ og CBR til CBZ) oppretter en loggfil ved feil. Disse filene (Log_pdftocbz_.txt og Log_cbrtocbz_.txt) beholdes selv etter at programmet er lukket, slik at de kan gjennomgas senere. De slettes kun med knappen \"Slett midlertidige filer\" ovenfor.",
+    "config_clipboard_cleared": "Utklippstavle-filer er slettet.",
+    "adjust_images": "Bildejustering",
+    "adjust_images_content": "Denne funksjonen lar deg retusje bildene dine direkte i MosaicView. Du kan justere lysstyrke, kontrast, skarphet, nivåer, metning, bruke effekter (svart-hvitt, sepia, fargeomvendt), justere komprimeringskvalitet, fjerne farger, bruke gjennomsiktighet eller konvertere til ulike fargedybder. Noen innstillinger har en dedikert visning som lar deg se resultatet i full oppløsning før du bruker det. En miniatyrforhåndsvisning viser resultatet i sanntid i hovedvinduet.",
+    "create_icon": "Lag et ikon",
+    "create_icon_content": "MosaicView lar deg lage ikonfiler (.ico) fra et hvilket som helst bilde i mosaikken.\n• Høyreklikk på et bilde → 'Lag et ikon'\n• Avgrens ønsket område i visningsprogrammet (ikonet vil obligatorisk være kvadratisk)\n• Juster gjennomsiktighet om nødvendig\n• Bekreft: .ico-filen legges direkte til mosaikken\n• .ico-filer inneholder automatisk alle standardoppløsninger (fra 16×16 til 256×256)\n• Så lenge det er en .ico-fil i mosaikken, er lagring i et CBZ-arkiv blokkert, da ICO-formatet ikke støttes av disse arkivene. Eksporter .ico-filen separat (Ctrl+C og lim inn i en Windows-mappe), slett den deretter fra mosaikken før du lagrer.",
+    "batch_convert": "Batchkonvertering",
+    "batch_convert_content": "MosaicView tilbyr tre funksjoner for massebatchkonvertering, bare tilgjengelig når mosaikkene er tomme. For hver av dem er prinsippet det samme : velg en mappe, bekreft, følg fremdriften i sanntid, gå gjennom det endelige sammendraget. Et alternativ gjør det mulig å slette de originale filene permanent i stedet for å sende dem til papirkurven.\n• CBR → CBZ : konverterer alle CBR (RAR)-filer i en mappe og dens undermapper. Hvis en CBR faktisk er en ZIP, gis den bare nytt navn uten konvertering.\n• PDF → CBZ : konverterer alle PDF-filer i en mappe og dens undermapper. Bilder trekkes ut uten rekomprimering.\n• ISOLERTE BILDER → CBZ : oppretter en individuell CBZ for hver bildefil som finnes i mappen og dens undermapper. Ugyldige, ødelagte, flersidede (TIFF) eller animerte (GIF) bilder ignoreres og logges.",
+    "config_open_temp_folder": "Åpne midlertidig mappe",
+    "icon_toolbar": "Ikonlinje",
+    "icon_toolbar_content": "Ikonlinjen gir rask tilgang til programmets hovedfunksjoner. Du kan omorganisere ikonene etter eget ønske ved å dra dem direkte i linjen. For å velge hvilke ikoner som skal vises eller skjules, klikk på tannhjulknappen nederst i linjen: et konfigurasjonsvindu åpnes der du kan flytte ikoner mellom den aktive linjen og reserven. Bruk knappene « + » og « − » for å justere størrelsen på ikonene. Konfigurasjonen lagres automatisk.",
+    "license_7zip": "7-Zip-lisens"
+  },
+  "misc": {
+    "file_word": "fil",
+    "files_word": "filer",
+    "corrupted": "korrupt",
+    "yes": "Ja",
+    "no": "Nei",
+    "cancel": "Avbryt",
+    "selection_suffix": "kopi-utvalg"
+  },
+  "metadata": {
+    "title": "Tittel",
+    "series": "Serie",
+    "number": "Nummer",
+    "volume": "Volum",
+    "summary": "Sammendrag",
+    "writer": "Forfatter",
+    "penciller": "Tegner",
+    "inker": "Tusjer",
+    "colorist": "Kolorist",
+    "letterer": "Tekstforfatter",
+    "cover_artist": "Omslagskunstner",
+    "editor": "Redaktør (person)",
+    "publisher": "Utgiver (forlag)",
+    "imprint": "Samling",
+    "genre": "Sjanger",
+    "web": "Nettside",
+    "page_count": "Antall sider",
+    "language_iso": "Språk",
+    "format": "Format",
+    "black_and_white": "Svart-hvitt",
+    "manga": "Manga",
+    "year": "År",
+    "month": "Måned",
+    "day": "Dag",
+    "notes": "Notater",
+    "characters": "Karakterer",
+    "locations": "Steder",
+    "teams": "Lag",
+    "story_arc": "Historieforløp",
+    "story_arc_number": "Buenummer",
+    "series_group": "Seriegruppe",
+    "count": "Antall numre",
+    "alternate_series": "Alternativ serie",
+    "alternate_number": "Alternativt nummer",
+    "alternate_count": "Alternativt antall",
+    "age_rating": "Aldersgrense",
+    "series_complete": "Serie fullstendig",
+    "translator": "Oversetter",
+    "tags": "Tags",
+    "scan_information": "Skanningsinformasjon",
+    "community_rating": "Fellesskapsvurdering",
+    "review": "Anmeldelse",
+    "gtin": "GTIN",
+    "pages": "Sider",
+    "pages_col_image": "Bilde",
+    "pages_col_type": "Type",
+    "pages_col_width": "Bredde",
+    "pages_col_height": "Høyde",
+    "pages_col_size": "Størrelse (B)"
+  },
+  "web": {
+    "web_download_progress": "Laster ned: {downloaded}/{total} bilder...",
+    "web_download_cancel": "Avbryt",
+    "web_no_images": "Ingen bilder",
+    "web_no_images_found": "Ingen bilder ble funnet på denne siden.",
+    "web_imported": "{count} bilde(r) importert fra webside",
+    "web_drag_drop_title": "Dra og slipp webbilde",
+    "web_copy_paste_message": "Direkte dra og slipp fra nettleser støttes ikke.\n\nAlternativ løsning (enklere):\n\n1. Høyreklikk på bildet i nettleseren\n2. Velg 'Kopier bilde'\n3. I MosaicView, bruk 'Lim inn'-knappen eller Ctrl+V\n\nDenne metoden fungerer med alle webbilder!",
+    "import_web_button": "Webimport",
+    "import_web_tooltip": "Lim inn en internettadresse for å hente alle bilder fra siden",
+    "import_web_menu": "Webimport...",
+    "import_web_dialog_title": "Importer bilder fra en webside",
+    "import_web_url_label": "Websideadresse:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Avbryt",
+    "import_web_invalid_url": "Ugyldig URL. Vennligst oppgi en gyldig webadresse."
+  },
+  "donation": {
+    "menu_label": "Doner til forfatteren",
+    "title": "Gi en donasjon",
+    "message": "Du liker dette lille verktøyet og bruker det regelmessig. Jeg har investert flere hundre timer i det. Ville du vurdere å takke meg ved å gi en donasjon? Vær snill, jeg trenger virkelig penger til å fylle bassenget mitt med champagne.\n\nEnten du vil sende meg noen cent eller flere milliarder euro, godtar jeg alle beløp. Du kan gi denne donasjonen gjennom paypal"
+  },
+  "mail": {
+    "tooltip": "Denne knappen åpner standard e-postprogramvare i Windows for å sende en e-post. Hvis ingen programvare er konfigurert (for eksempel hvis du kun bruker webmail), kan du kopiere MosaicView-adressen til utklippstavlen ved å høyreklikke på ikonet.",
+    "copy_address": "Kopier MosaicView e-postadresse",
+    "menu_label": "Send en e-post til MosaicView",
+    "icon_label": "Send en e-post"
+  },
+  "menu": {
+    "file": "Fil",
+    "file_open": "Åpne fil",
+    "file_close": "Lukk fil",
+    "batch_convert": "Batchkonvertering av filer",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Enkeltstående bilder → CBZ",
+    "edit": "Rediger",
+    "undo": "Angre",
+    "redo": "Gjør om",
+    "paste": "Lim inn",
+    "delete": "Slett",
+    "invert_selection": "Inverter utvalg",
+    "select_all": "Velg alle",
+    "deselect": "Fjern utvalg",
+    "refresh_mosaic": "Oppdater mosaikk",
+    "images": "Bilder",
+    "rotation": "Rotasjon",
+    "archives": "Arkiver",
+    "sort": "Sortering",
+    "system": "System",
+    "decrease_font": "Mink skrifttype",
+    "increase_font": "Forstørr skrifttype",
+    "language": "Språk",
+    "language_real": "Ekte språk",
+    "language_fictional": "Fiktive språk",
+    "about": "Om",
+    "export_piqad_font": "Lagre pIqaD-skrifttype",
+    "export_tengwar_fonts": "Lagre tengwar-skrifttyper"
+  }
+}

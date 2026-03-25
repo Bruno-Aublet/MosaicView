@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Cuțitul elvețian pentru colecționarii de benzi desenate digitale",
+  "buttons": {
+    "open_file": "Deschide CBZ/CBR/CB7/PDF",
+    "close_file": "Închide fișierul",
+    "create_cbz": "Creează arhivă CBZ",
+    "flatten_dirs": "Mută toate fișierele\nla rădăcină și șterge\nsubdirectoarele",
+    "renumber": "Renumerotare\npagini",
+    "undo": "⤺ Anulează",
+    "redo": "Refă ⤻",
+    "copy": "Copiază",
+    "cut": "Taie",
+    "paste": "Lipește",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Convertește într-un alt\nformat de imagine",
+    "join_pages": "Unește paginile",
+    "split_page": "Împarte pagina",
+    "save_as": "Salvează ca\n(creează CBZ nou)",
+    "save_selection": "Salvează selecția\nîn CBZ",
+    "print_selection": "Tipărește selecția",
+    "print_all": "Tipărește tot benzi desenate",
+    "sort": "Sortează",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Convertește",
+    "cancel": "Anulează",
+    "split_button": "Împarte",
+    "join_button": "Începe",
+    "validate_crop": "Validează decuparea",
+    "ok": "OK",
+    "close": "Închide",
+    "apply_and_save": "Aplică modificările și salvează fișierul",
+    "apply_and_create": "Aplică modificările și creează fișier CBZ",
+    "close_and_lose": "Închide fișierul și pierde modificările",
+    "cancel_return": "Anulează și revino la mozaic",
+    "update_page_count": "Actualizează numărul\nde pagini în metadata",
+    "invert_selection": "Inversează selecția",
+    "reduce_size": "Redimensionare pagini",
+    "mirror_vertical": "⇅",
+    "create_gif": "Creează GIF",
+    "edit_gif": "Editează GIF animat",
+    "save_to_folder": "Exportă paginile\nselectate",
+    "continue": "Continuă",
+    "reset": "↻",
+    "yes": "Da",
+    "no": "Nu",
+    "renumber_recommended": "Renumerotează (recomandat)",
+    "ignore_and_save": "Ignoră și salvează",
+    "rename_to_cbz": "Redenumește în .cbz",
+    "open_without_rename": "Deschide fără redenumire",
+    "rename_to_cbr": "Redenumește în .cbr",
+    "adjustments": "Luminozitate,\ncontrast etc.",
+    "batch_cbr_to_cbz": "Conversie în bloc\n a fișierelor CBR în CBZ",
+    "batch_pdf_to_cbz": "Conversie în lot\n a fișierelor PDF în CBZ",
+    "batch_img_to_cbz": "Conversie în lot\n a imaginilor izolate în CBZ",
+    "icon_toolbar_reset": "Resetare",
+    "delete_selected": "Șterge",
+    "save": "Salvează",
+    "rename_to_cb7": "Redenumește în .cb7",
+    "split_ui": "Împarte interfața în două panouri",
+    "unsplit_ui": "Închide al doilea panou"
+  },
+  "tabs": {
+    "mosaic": "Mozaic",
+    "metadata": "Metadate"
+  },
+  "viewer": {
+    "title": "Vizualizator",
+    "mode_single": "Pagină simplă  [D]",
+    "mode_double": "Pagină dublă  [D]",
+    "mode_continuous": "Mod continuu  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Pagina anterioară (←)",
+      "next_page": "Pagina următoare (→)",
+      "zoom_in": "Zoom + (Ctrl+Plus)",
+      "zoom_out": "Zoom - (Ctrl+Minus)",
+      "zoom_reset": "Resetează zoom (Ctrl+0)",
+      "reading_mode_double": "Schimbă modul de citire (D) → Pagini duble",
+      "reading_mode_continuous": "Schimbă modul de citire (D) → Pagini duble continue",
+      "reading_mode_single": "Schimbă modul de citire (D) → Pagină simplă",
+      "fullscreen_exit": "Ieși din ecran complet (F11)",
+      "fullscreen": "Ecran complet (F11)",
+      "close_viewer": "Închide vizualizatorul (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Imagine coruptă - Înlocuiește",
+      "corrupted_delete": "⚠️ Șterge această imagine",
+      "copy": "Copiază (Ctrl+C)",
+      "cut": "Taie (Ctrl+X)",
+      "paste": "Lipește (Ctrl+V)",
+      "paste_clipboard": "Lipește din clipboard (Ctrl+V)",
+      "delete": "Șterge (Del)",
+      "deselect": "Deselectează (ESC)",
+      "rotate_right": "↻ Rotație dreapta",
+      "rotate_left": "↺ Rotație stânga",
+      "mirror": "⇄ Oglindă orizontală",
+      "crop": "Decupează",
+      "convert": "Convertește în alt format...",
+      "join": "Unește paginile selectate",
+      "split": "Împarte pagina selectată",
+      "save_selection": "Salvează selecția în CBZ",
+      "print_selection": "Tipărește selecția",
+      "copy_archive": "Copiază arhiva completă",
+      "undo": "Anulează (Ctrl+Z)",
+      "redo": "Refă (Ctrl+Y)",
+      "renumber_auto": "Renumerotare pagini (detectare automată a paginilor multiple)",
+      "renumber_simple": "Renumerotare pagini (numerotare simplă)",
+      "sort_submenu": "Sortează paginile",
+      "sort_name": "După nume",
+      "sort_type": "După tip",
+      "sort_size": "După dimensiune",
+      "sort_width": "După lățime",
+      "sort_height": "După înălțime",
+      "sort_resolution": "După rezoluție",
+      "sort_dpi": "După DPI",
+      "create_cbz": "Creează arhivă CBZ",
+      "save_as": "Salvează ca...",
+      "close_file": "Închide fișierul",
+      "help": "Manual utilizator",
+      "update_page_count": "Actualizează numărul de pagini în metadata",
+      "invert_selection": "Inversează selecția (Ctrl+I)",
+      "reduce_size": "Redimensionare pagini",
+      "mirror_vertical": "⇅ Oglindă verticală",
+      "edit_animated_gif": "Editează GIF animat...",
+      "save_to_folder": "Exportă paginile selectate",
+      "adjustments": "Luminozitate, contrast, culori...",
+      "refresh_mosaic": "Reîmprospătează mozaicul (F5)",
+      "create_ico": "Creează fișier .ico"
+    },
+    "canvas_no_file": {
+      "open": "Deschide CBZ/CBR/CB7/PDF",
+      "recent_files": "Fișiere recente",
+      "clear_history": "Șterge istoricul"
+    },
+    "canvas_with_file": {
+      "close": "Închide fișierul",
+      "paste": "Lipește (Ctrl+V)",
+      "paste_clipboard": "Lipește din clipboard (Ctrl+V)",
+      "select_all": "Selectează tot (Ctrl+A)",
+      "deselect": "Deselectează (ESC)",
+      "copy_archive": "Copiază arhiva completă",
+      "print_all": "Tipărește tot benzi desenate",
+      "renumber_auto": "Renumerotare pagini (detectare automată a paginilor multiple)",
+      "renumber_simple": "Renumerotare pagini (numerotare simplă)",
+      "flatten": "Aplatizează dosarele",
+      "save_selection": "Salvează selecția în CBZ",
+      "hide_sidebar": "« Ascunde coloana de butoane",
+      "show_sidebar": "» Arată coloana de butoane",
+      "decrease_thumbs": "Micșorează miniaturile",
+      "increase_thumbs": "Mărește miniaturile",
+      "theme_dark": "Schimbă la temă întunecată",
+      "theme_light": "Schimbă la temă luminoasă",
+      "sort_submenu": "Sortează paginile",
+      "undo": "Anulează (Ctrl+Z)",
+      "redo": "Refă (Ctrl+Y)",
+      "create_cbz": "Creează arhivă CBZ",
+      "save_as": "Salvează ca...",
+      "help": "Manual utilizator",
+      "update_page_count": "Actualizează numărul de pagini în metadata",
+      "invert_selection": "Inversează selecția (Ctrl+I)",
+      "fullscreen": "Ecran complet (F11)",
+      "fullscreen_exit": "Ieșire din ecran complet (F11 sau ESC)",
+      "quit": "Închide aplicația"
+    },
+    "canvas": {
+      "quit": "Închide aplicația",
+      "reset": "Resetați aplicația:\n• dimensiunea și poziția ferestrei\n• mod întunecat → luminos\n• dimensiunea miniaturilor → normală\n• bara laterală → vizibilă / 220 px\n• limbă → detectare automată\n• dimensiunea fontului → implicită",
+      "reset_label": "Resetează aplicația"
+    },
+    "font_size": {
+      "decrease": "Micșorează dimensiunea fontului",
+      "increase": "Mărește dimensiunea fontului"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Sortează după nume",
+    "sort_type": "Sortează după tip",
+    "sort_size": "Sortează după dimensiune",
+    "sort_width": "Sortează după lățime",
+    "sort_height": "Sortează după înălțime",
+    "sort_resolution": "Sortează după rezoluție",
+    "sort_dpi": "Sortează după DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Arhivă goală",
+        "message": "Arhiva CBZ nu conține fișiere."
+      },
+      "empty_cbr": {
+        "title": "Arhivă goală",
+        "message": "Arhiva CBR nu conține fișiere."
+      },
+      "files_ignored": {
+        "title": "Fișiere ignorate"
+      },
+      "no_selection_crop": {
+        "title": "Nicio selecție",
+        "message": "Selectați o imagine de decupat."
+      },
+      "multi_selection_crop": {
+        "title": "Selecție multiplă",
+        "message": "Puteți decupa doar o singură imagine odată.\nSelectați o singură imagine."
+      },
+      "invalid_selection_crop": {
+        "title": "Selecție invalidă",
+        "message": "Doar imaginile pot fi decupate."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Funcție nedisponibilă",
+        "message": "Reordonarea paginilor nu este disponibilă în subdirectoare.\nAplatizați dosarele sau reveniți la rădăcină."
+      },
+      "no_selection_convert": {
+        "title": "Nicio selecție",
+        "message": "Selectați cel puțin o imagine de convertit."
+      },
+      "invalid_selection_convert": {
+        "title": "Selecție invalidă",
+        "message": "Doar imaginile pot fi convertite."
+      },
+      "no_selection_split": {
+        "title": "Nicio selecție",
+        "message": "Selectați o imagine de împărțit."
+      },
+      "multi_selection_split": {
+        "title": "Selecție multiplă",
+        "message": "Puteți împărți doar o singură imagine odată.\nSelectați o singură imagine."
+      },
+      "invalid_selection_split": {
+        "title": "Selecție invalidă",
+        "message": "Doar imaginile pot fi împărțite."
+      },
+      "invalid_number_split": {
+        "title": "Număr invalid",
+        "message": "Numărul de pagini trebuie să fie între 2 și 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Selecție insuficientă",
+        "message": "Selectați cel puțin 2 imagini de unit."
+      },
+      "invalid_selection_join": {
+        "title": "Selecție invalidă",
+        "message": "Doar imaginile pot fi unite."
+      },
+      "pil_not_available": {
+        "title": "PIL nedisponibil",
+        "message": "Modulul PIL nu este disponibil pentru lipirea din clipboard-ul sistemului."
+      },
+      "format_not_supported": {
+        "title": "Format nesuportat",
+        "message": "Format de imagine nesuportat sau fișier corupt.\nFormate suportate: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Nicio selecție",
+        "message": "Desenați mai întâi un dreptunghi de decupare."
+      },
+      "cannot_open_file": {
+        "title": "Imposibil de deschis fișierul",
+        "message": "Fișierul nu poate fi încărcat."
+      },
+      "corrupted_images": {
+        "title": "Imagini corupte",
+        "summary": "{count} imagine(i) coruptă(e) detectată(e) din {total}.",
+        "hint": "Sunt afișate cu o pictogramă specială.\nFaceți clic dreapta pe o imagine coruptă pentru a o înlocui sau șterge.",
+        "more": "... și {count} alte"
+      },
+      "no_image_print": {
+        "title": "Nicio imagine",
+        "message": "Nicio imagine de tipărit."
+      },
+      "no_valid_image_print": {
+        "title": "Nicio imagine",
+        "message": "Nicio imagine validă de tipărit."
+      },
+      "no_selection_print": {
+        "title": "Nicio selecție",
+        "message": "Selectați cel puțin o imagine."
+      },
+      "no_valid_selection_print": {
+        "title": "Nicio imagine",
+        "message": "Nicio imagine validă în selecție."
+      },
+      "save_cancelled": {
+        "title": "Salvare anulată",
+        "message": "Corectați manual numele fișierelor înainte de a salva."
+      },
+      "empty_pdf": {
+        "title": "PDF gol",
+        "message": "Fișierul PDF nu conține pagini."
+      },
+      "no_selection_save": {
+        "title": "Atenție",
+        "message": "Selectați cel puțin o pagină de salvat."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Tragere dezactivată",
+        "message": "Tragerea paginilor este disponibilă doar la rădăcina benzi desenate.\n\nPentru a muta paginile:\n1. Reveniți la rădăcină făcând clic pe iconița dosar superior\n2. Sau aplatizați benzi desenate pentru a elimina subdirectoarele"
+      },
+      "no_selection_reduce": {
+        "title": "Nicio selecție",
+        "message": "Vă rugăm să selectați cel puțin o pagină pentru reducere."
+      },
+      "invalid_selection_reduce": {
+        "title": "Selecție invalidă",
+        "message": "Doar imaginile pot fi reduse."
+      },
+      "invalid_dimensions": {
+        "title": "Dimensiuni invalide",
+        "message": "Vă rugăm să introduceți dimensiuni valide (numere întregi pozitive)."
+      },
+      "no_images_for_gif": {
+        "title": "Nicio imagine",
+        "message": "Este necesară cel puțin o imagine pentru a crea un GIF animat."
+      },
+      "no_valid_images": {
+        "title": "Nicio imagine validă",
+        "message": "Nu au fost găsite imagini valide pentru a crea GIF-ul."
+      },
+      "animated_gif_in_comic": {
+        "title": "GIF animat detectat",
+        "message": "Avertisment: Acest comic conține unul sau mai multe GIF-uri animate.\\n\\nCititoarele de benzi desenate (CDisplayEx, YACReader, etc.) vor afișa doar primul cadru al fiecărui GIF ca pagină statică.\\n\\nPentru a vizualiza GIF-ul animat corect, trebuie să îl salvați separat în afara benzii desenate folosind butonul \"Exportă paginile selectate\" sau \"Editează GIF animat\".\\n\\nDoriți să continuați salvarea benzii desenate oricum?"
+      },
+      "no_selection_adjust": {
+        "title": "Nicio selectie",
+        "message": "Selectati cel putin o imagine pentru a aplica ajustari."
+      },
+      "invalid_selection_adjust": {
+        "title": "Selectie invalida",
+        "message": "Ajustarile pot fi aplicate doar imaginilor."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Funcție indisponibilă",
+        "message": "Renumerotarea nu este disponibilă până când folderele nu sunt aplatizate.\nAplatizați folderele înainte de a renumerota."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "Eroare ZIP",
+        "message": "'{file}': Fișierul nu este o arhivă ZIP validă sau este corupt."
+      },
+      "zip_cannot_open": {
+        "title": "Eroare ZIP",
+        "message": "Imposibil de deschis fișierul CBZ: {error}"
+      },
+      "rar_invalid": {
+        "title": "Eroare RAR",
+        "message": "'{file}': Fișierul nu este o arhivă RAR validă sau este corupt."
+      },
+      "rar_cannot_open": {
+        "title": "Eroare RAR",
+        "message": "Imposibil de deschis arhiva CBR: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Eroare",
+        "message": "Eroare neașteptată la deschiderea CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Eroare",
+        "message": "Imposibil de unit imaginile."
+      },
+      "paste_failed": {
+        "title": "Eroare",
+        "message": "Eroare la lipire: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Eroare",
+        "message": "Imposibil de copiat arhiva: {error}"
+      },
+      "crop_invalid": {
+        "title": "Eroare",
+        "message": "Zona de decupare este invalidă."
+      },
+      "crop_failed": {
+        "title": "Eroare",
+        "message": "Imposibil de decupat imaginea: {error}"
+      },
+      "load_image_failed": {
+        "title": "Eroare",
+        "message": "Imposibil de încărcat imaginea:\n{error}"
+      },
+      "print_error": {
+        "title": "Eroare de tipărire",
+        "message": "Eroare la tipărire:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Tipărire nedisponibilă",
+        "message": "Modulul win32print nu este instalat.\nInstalați-l cu: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Fișier negăsit",
+        "message": "Fișierul nu mai există:\n{path}"
+      },
+      "import_failed": {
+        "title": "Eroare de import",
+        "message": "Imposibil de importat fișierul: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF neinstalat",
+        "message": "Biblioteca PyMuPDF (fitz) nu este instalată.\nInstalați-o cu: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Eroare",
+        "message": "Eroare la importul PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "Eroare PDF",
+        "message": "Imposibil de încărcat PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Nume de fișiere duplicate",
+        "intro": "{count} nume(le) de fișier duplicate detectate:\n\n",
+        "item": "  • {name} ({times} ori)\n",
+        "more": "  ... și {more} altele\n",
+        "footer": "\nArhivele ZIP nu acceptă nume duplicate.\nVă rugăm să redenumiți aceste fișiere înainte de salvare."
+      },
+      "save_failed": {
+        "title": "Eroare",
+        "message": "Imposibil de salvat fișierul: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Eroare",
+        "message": "Imposibil de creat arhiva: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Eroare",
+        "message": "Imposibil de salvat selecția: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "Eroare la crearea GIF",
+        "message": "Nu se poate crea GIF animat:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Eroare la salvare",
+        "message": "Eroare la salvarea fișierelor:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Eroare de redenumire",
+        "message": "Nu se poate redenumi fișierul: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF protejat prin parolă",
+        "message": "Acest fișier PDF este criptat și protejat prin parolă.\nNu poate fi deschis fără parolă."
+      },
+      "pdf_unlock_failed": {
+        "title": "Eroare",
+        "message": "Nu s-a putut salva fișierul PDF deblocat:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: fișier PDF criptat (parolă necesară), omis",
+      "file_too_large": {
+        "title": "Fișierul este prea mare",
+        "message": "Fișierul {filename} are {size} și depășește dimensiunea maximă permisă (500 MB) pentru o imagine."
+      },
+      "license_file_not_found": {
+        "message": "Fișierul de licență nu a fost găsit: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Nu se poate citi fișierul de licență: {error}"
+      },
+      "7z_invalid": {
+        "title": "Eroare 7Z",
+        "message": "Fișierul '{file}' nu este o arhivă 7Z validă sau este corupt."
+      },
+      "delete_error": "Eroare la ștergere: {error}",
+      "export_error": "Eroare la export: {error}",
+      "font_source_not_found": "Fișierul sursă al fontului nu a fost găsit: {path}",
+      "no_tengwar_font": "Niciun font Tengwar găsit.",
+      "no_icons_found": "Nicio pictogramă găsită.",
+      "unsupported_files": {
+        "title": "Fișiere neacceptate",
+        "message": "Următoarele fișiere nu sunt acceptate și au fost ignorate:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF creat cu succes",
+        "message": "GIF-ul animat '{name}' a fost creat și adăugat la mozaic."
+      },
+      "pywin32_required": {
+        "title": "Funcție nedisponibilă",
+        "message": "Modulul pywin32 este necesar pentru lipirea din clipboard-ul sistemului.\nInstalați-l cu: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Imagini importate",
+        "message": "{count} imagine/imagini importată/importate"
+      },
+      "archive_copied": {
+        "title": "Arhivă copiată",
+        "message": "Arhiva a fost copiată în clipboard."
+      },
+      "function_not_available": {
+        "title": "Funcție nedisponibilă",
+        "message": "Această funcție nu este disponibilă momentan."
+      },
+      "duplicate_detected": {
+        "title": "Duplicat detectat",
+        "message": "Un fișier avea deja acest nume.\n\nFișierul a fost redenumit în:\n{name}"
+      },
+      "replace_success": {
+        "title": "Succes",
+        "message": "Imaginea '{name}' a fost înlocuită cu succes."
+      },
+      "history_cleared": {
+        "title": "Istoric șters",
+        "message": "Lista fișierelor recente a fost ștearsă."
+      },
+      "files_copied_clipboard": {
+        "title": "Fișiere copiate în clipboard",
+        "message": "Tragerea în afara aplicației nu este disponibilă din motive tehnice.\n\n✓ {count} {word} copiat(e) în clipboard\n\nPuteți acum lipi unde doriți:\n  • Clic dreapta → Lipește\n  • Sau Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Corecție efectuată",
+        "message": "{count} nume de fișier/fișiere corectat(e)."
+      },
+      "import_success": {
+        "title": "Import reușit",
+        "message": "{count} pagină/pagini importată/importate din {file}"
+      },
+      "pdf_import_success": {
+        "title": "Import reușit",
+        "message": "{count} pagină/pagini PDF importată/importate din {file}\nCalitate: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Succes",
+        "message": "PDF convertit cu succes!\n{count} pagini încărcate la {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Succes",
+        "message": "Fișier CBZ salvat cu succes:"
+      },
+      "cbz_converted": {
+        "title": "Succes",
+        "message": "Fișier convertit cu succes în CBZ:",
+        "question": "Doriți să ștergeți fișierul CBR original?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Succes",
+        "message": "Fișier convertit cu succes în CBZ:",
+        "question": "Doriți să ștergeți fișierul PDF original?"
+      },
+      "cbz_save_as": {
+        "title": "Succes",
+        "message": "Fișier CBZ nou salvat: {path}"
+      },
+      "cbz_created": {
+        "title": "Succes",
+        "message": "Arhivă CBZ creată cu succes:"
+      },
+      "selection_saved": {
+        "title": "Succes",
+        "message": "Selecție salvată cu succes:"
+      },
+      "flatten_done": {
+        "title": "Aplatizare finalizată",
+        "message": "{files} fișier/fișiere mutat(e) din {dirs} subdosar/subdosare."
+      },
+      "language_changed": {
+        "title": "Limbă modificată",
+        "message": "Limba interfeței a fost schimbată cu succes."
+      },
+      "new_cbz_saved": {
+        "title": "Fișier Salvat",
+        "message": "Noul fișier CBZ a fost salvat cu succes:",
+        "question": "Doriți să ștergeți fișierul original?"
+      },
+      "page_count_updated": {
+        "title": "Număr de pagini actualizat",
+        "message": "Numărul de pagini din metadata a fost actualizat la {count} pagini."
+      },
+      "files_saved": {
+        "title": "Salvat cu succes",
+        "message": "{count} fișiere salvate în:\n{folder}",
+        "open_folder": "Doriți să deschideți folderul?"
+      },
+      "adjustments_applied": {
+        "title": "Ajustari aplicate",
+        "message": "Ajustarile au fost aplicate cu succes."
+      },
+      "pdf_unlocked": {
+        "title": "PDF deblocat",
+        "message": "Fișierul PDF deblocat a fost salvat:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Arhivă voluminoasă",
+        "message": "Această arhivă are {size} MB decompresate.\nÎncărcarea ar putea consuma multă memorie (RAM).\n\nDoriți să continuați?"
+      },
+      "confirm_delete": {
+        "title": "Confirmare",
+        "message": "Sigur doriți să ștergeți {count} fișier(e) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Ștergeți fișierele sursă?",
+        "message": "Doriți să ștergeți imaginile care au fost unite?\n\nDa = Șterge fișierele sursă\nNu = Păstrează fișierele sursă\nAnulează = Anulează operațiunea"
+      },
+      "invalid_filenames": {
+        "title": "Nume de fișiere invalide",
+        "intro": "{count} fișier(e) conțin caractere interzise:",
+        "item": "  • {name}",
+        "more": "  ... și încă {more}",
+        "forbidden_chars": "Caractere interzise: {chars}",
+        "fix_question": "Doriți să corectați automat aceste nume?\n(Caracterele interzise vor fi înlocuite cu '_')"
+      },
+      "close_without_save": {
+        "title": "Salvați înainte de închidere?",
+        "message": "Au fost adăugate imagini. Doriți să creați o arhivă CBZ înainte de a închide?"
+      },
+      "flatten_folders": {
+        "title": "Aplatizează dosarele",
+        "subdirs_detected": "Subdirectoare detectate:",
+        "files_to_move": "{count} fișier/fișiere vor fi mutate la rădăcină.",
+        "folders_to_delete": "{count} subdosar/subdosare vor fi șterse.",
+        "continue_question": "Doriți să continuați?"
+      },
+      "update_page_count": {
+        "title": "Actualizează numărul de pagini",
+        "message": "Numărul de pagini din comic s-a modificat.\n\nNumăr de pagini indicat în metadata: {original}\nNumăr de pagini curent: {current}\n\nDoriți să actualizați numărul de pagini în metadata?"
+      },
+      "conversion_complete": {
+        "title": "Conversie finalizată",
+        "message": "Conversie finalizată!\n\n{count} imagine(i) convertită(e) în format {format} au fost adăugate după selecția dvs.\n\nȘtergeți imaginile originale?",
+        "delete_originals": "Șterge originalele\n{count} fișier(e) - {size}",
+        "keep_all": "Păstrează tot\n{count} fișier(e) - {size}",
+        "cancel_conversion": "Anulează conversia\n{count} fișier(e) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Extensie incorectă detectată: acest '{filename}' fișier este un CBZ, nu un CBR. Redenumește?",
+      "title": "Extensie incorectă"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Extensie incorectă detectată: acest '{filename}' fișier este CBR, nu CBZ. Redenumire?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Extensie incorectă detectată: fișierul '{filename}' este un CB7, nu un CBZ/CBR. Redenumire?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Dimensiune miniaturi",
+    "loading": "Așteptați, încărcare în curs...\n{percent}%",
+    "resizing": "Vă rugăm așteptați, redimensionare în curs...\n{percent}%",
+    "converting": "Vă rugăm așteptați, conversie în curs...\n{percent}%",
+    "loading_lazy": "Vă rugăm așteptați, încărcare în curs...\n{percent}%\n\nDatorită dimensiunii mari a acestui fișier ({size} MB), paginile vor fi încărcate progresiv. Paginile vizibile pe ecran sunt încărcate imediat, celelalte vor fi încărcate automat în timpul derulării.",
+    "apply_save_cbz": "Aplică modificările\nși salvează fișierul CBZ",
+    "apply_create_cbz": "Aplică modificările\nși creează fișier CBZ",
+    "import_progress": "Import în curs...\n{percent}%",
+    "pdf_import_progress": "Import PDF în curs...\n{percent}%",
+    "pdf_opening": "Deschidere fișier PDF...",
+    "pdf_page": "Pagina {current} / {total}",
+    "warning_close": "Atenție! Modificările nu au fost salvate și vor fi pierdute!",
+    "language_label": "Limbă:",
+    "directory_tooltip": "Dosar: {name}\n{count} fișier/fișiere\nDimensiune totală: {size} MB",
+    "folder_up_tooltip": "Dublu clic pentru a urca\nun nivel în arborele de dosare",
+    "status_bar": "{dirs} dosar(e)  |  {files} fișier(e) ({total_size})  |  {selected} selectat(e) ({selected_size})",
+    "pdf_converting": "Conversie {total} pagini în imagini la {dpi} DPI...",
+    "pdf_converting_no_change": "Extragere {total} pagini fără modificare...",
+    "print_progress": "Pregătire pentru imprimare...\n{percent}%",
+    "print_preparing": "Vă rugăm așteptați, pregătire pentru imprimare...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nRezumatul Licenței Publice Generale GNU v3\n\nLIBERTĂȚI ACORDATE\nPuteți utiliza, copia, modifica și redistribui\nMosaicView, inclusiv în scopuri comerciale.\n\nOBLIGAȚII\nOrice redistribuire (originală sau modificată) trebuie să :\n– păstreze licența GPL v3\n– includă codul sursă sau să indice de unde poate fi obținut\n– nu impună restricții suplimentare\n\nGARANȚII\nAcest software este distribuit FĂRĂ NICIO GARANȚIE.\nAutorul său nu poate fi tras la răspundere pentru daunele rezultate din utilizarea sa.\n\nAr fi trebuit să primiți o copie a Licenței Publice Generale GNU împreună cu acest program. Dacă nu, consultați <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Vizualizare licență completă",
+    "license_unrar_text": "Fișierele CBZ se bazează pe formatul ZIP, un format liber și deschis. Fișierele CBR, în schimb, se bazează pe formatul RAR, un format proprietar.\n\nMosaicView poate deschide fișiere CBR datorită UnRAR, un utilitar dezvoltat de RARlab și redistribuibil gratuit.\n\nSite oficial: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Vizualizați licența UnRAR",
+    "saving_cbz": "Salvare în curs... {percent}%",
+    "empty_canvas_line1": "Plasati aici unul sau mai multe fisiere CBZ/CBR/CB7/PDF sau imaginile dvs",
+    "empty_canvas_line2": "Odata ce un fisier este deschis, puteti continua sa plasati altele",
+    "empty_canvas_line3": "Aruncați unul sau mai multe foldere pentru a începe procesarea în lot",
+    "icon_toolbar_config_title": "Configurare bară de pictograme",
+    "icon_toolbar_active": "Pictograme în bară",
+    "icon_toolbar_hidden": "Pictograme în rezervă",
+    "license_gpl_full": "Licență GNU GPL v3",
+    "license_unrar_full": "Licență UnRAR",
+    "licenses_button": "Licențe",
+    "view_full_gpl_license": "Vizualizați licența completă GNU GPL v3",
+    "license_7zip_text": "Fișierele CB7 sunt bazate pe formatul 7z, dezvoltat de Igor Pavlov și distribuit sub licența GNU LGPL.\n\nMosaicView poate deschide fișiere CB7 datorită 7-Zip — un utilitar gratuit și open source.\n\nSite oficial : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Vizualizați licența 7-Zip",
+    "license_7zip_full": "Licență 7-Zip",
+    "icon_toolbar_show_thumb_slider": "Afișați glisorul pentru dimensiunea miniaturilor",
+    "icon_toolbar_show_lang_combo": "Afișați selectorul de limbă",
+    "adjusting": "Vă rugăm așteptați, ajustările sunt în curs...\n{current} / {total}",
+    "license_piqad_full": "Licența fontului pIqaD qolqoS",
+    "license_tengwar_full": "Licența fontului Alcarin Tengwar",
+    "view_full_piqad_license": "Vizualizați licența completă pIqaD qolqoS"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Conversie imagini",
+      "title": "Conversie a {count} {word}",
+      "word_image": "imagine",
+      "word_images": "imagini",
+      "info": "Alegeți formatul destinație:",
+      "format_png": "PNG (fără pierderi)",
+      "format_jpg": "JPEG (cu compresie)",
+      "format_webp": "WEBP (modern)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (calitate înaltă)",
+      "format_gif": "GIF (animație)",
+      "quality_label": "Calitate pentru JPG/WEBP:",
+      "quality_maximum": "Maximă — calitate 95/100",
+      "quality_high": "Înaltă — calitate 85/100",
+      "quality_medium": "Medie — calitate 75/100",
+      "quality_low": "Scăzută — calitate 60/100",
+      "quality_custom_option": "Personalizată",
+      "quality_custom": "Calitate personalizată : {value}/100",
+      "quality_note": "(Acest parametru afectează doar formatele JPG și WEBP)",
+      "quality_window_title": "Selecția calității",
+      "format_gif_static": "GIF static",
+      "format_gif_animated": "GIF animat (selectați mai multe imagini)"
+    },
+    "split": {
+      "window_title": "Împarte pagina",
+      "title": "Împarte pagina",
+      "pages_label": "Număr de pagini:",
+      "direction_label": "Direcția tăieturii:",
+      "horizontal": "Orizontală (stânga → dreapta)",
+      "vertical": "Verticală (sus → jos)",
+      "warning": "⚠ Deoarece tăietura este calculată automat,\npoate fi necesară o ajustare manuală.",
+      "button_split": "Împarte",
+      "button_cancel": "Anulează"
+    },
+    "join": {
+      "window_title": "Unește paginile - Reorganizează ordinea",
+      "instructions": "Organizați imaginile:\n• Vertical (sus/jos) pentru lipire verticală\n• Orizontal (stânga/dreapta) pentru lipire orizontală",
+      "merged_filename_prefix": "Unire",
+      "heights_label": "Înălțimi",
+      "widths_label": "Lățimi",
+      "size_adjustment_title": "Ajustare dimensiuni",
+      "size_adjustment_warning": "⚠️ Imaginile selectate au dimensiuni diferite.\nAlegeți cum să ajustați dimensiunile lor pentru îmbinare.\nRaportul de aspect al fiecărei imagini va fi întotdeauna păstrat.",
+      "keep_original": "Păstrați dimensiunile originale",
+      "keep_original_desc": "(adaugă bare negre pentru umplere)",
+      "enlarge_small": "Măriți imaginile mici",
+      "enlarge_small_desc": "(aliniați la dimensiunea maximă)",
+      "reduce_large": "Reduceți imaginile mari",
+      "reduce_large_desc": "(aliniați la dimensiunea minimă)",
+      "back_to_arrangement": "Înapoi"
+    },
+    "pdf": {
+      "quality_merge": "Selectați calitatea de unire:",
+      "quality_export": "Selectați calitatea de export:",
+      "merge_quality_title": "Calitate îmbinare PDF",
+      "export_quality_title": "Calitate export PDF",
+      "loading_title": "Se încarcă PDF...",
+      "dpi_90": "90 DPI - Publicare web",
+      "dpi_150": "150 DPI - Calitate bună (recomandat pentru afișare)",
+      "dpi_200": "200 DPI - Calitate foarte bună",
+      "dpi_300": "300 DPI - Calitate excelentă (standard benzi desenate)",
+      "dpi_600": "600 DPI - Calitate maximă (fișiere mari)",
+      "dpi_original": "Fără modificarea imaginilor",
+      "dpi_original_tooltip": "Analiză inteligentă a fiecărei pagini PDF:\n• Pagini doar cu imagini: păstrează DPI-ul original\n• Pagini doar cu text: 300 DPI\n• Pagini mixte (text + imagini): DPI-ul imaginilor dacă >= 300, altfel 300 DPI\nMaxim: 2400 DPI pentru limitarea dimensiunii fișierului"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF necesar",
+      "pymupdf_required_message": "PyMuPDF (fitz) nu este instalat. Nu se pot converti fișierele PDF.",
+      "select_directory_title": "Selectați directorul care conține fișierele PDF",
+      "no_pdf_title": "Niciun fișier PDF",
+      "no_pdf_message": "Nu au fost găsite fișiere PDF în directorul:\n{directory}",
+      "confirm_title": "Conversie în lot a fișierelor PDF în CBZ",
+      "confirm_message": "{count} fișiere PDF de convertit în {directory} (subdirectoare incluse).",
+      "checkbox_permanent_delete": "Ștergeți fișierele PDF originale fără a le muta\nîn coșul de reciclare (FĂRĂ POSIBILITATE DE ANULARE)",
+      "start_button": "Începe",
+      "converting_title": "Conversie în curs...",
+      "converting_progress": "Conversie fișier {current} din totalul de {total}",
+      "page_progress": "Pagina {current} / {total}",
+      "complete_title": "Conversie finalizată",
+      "complete_message": "{count} fișiere PDF convertite în directorul:",
+      "complete_message_errors": "{count} fișiere PDF convertite din {total} în directorul:",
+      "errors_count": "{count} eroare(i) întâlnită(e)."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Selectați directorul care conține fișierele CBR",
+      "no_cbr_title": "Niciun fișier CBR",
+      "no_cbr_message": "Nu au fost găsite fișiere CBR în director:\\n{directory}",
+      "confirm_title": "Conversie în bloc de CBR în CBZ",
+      "confirm_message": "{count} fișiere CBR de convertit în {directory} (subdirectoare incluse).",
+      "checkbox_permanent_delete": "Ștergerea fișierelor CBR originale fără a folosi\ncoșul de gunoi (FĂRĂ POSIBILITATE DE REVENIRE)",
+      "start_button": "Începe",
+      "converting_title": "Conversie în curs...",
+      "converting_progress": "Conversie fișier {current} din {total}",
+      "page_progress": "Pagină {current} / {total}",
+      "complete_title": "Conversie finalizată",
+      "complete_message": "{count} fișiere CBR convertite în directorul:",
+      "complete_message_errors": "{count} fișiere CBR convertite din {total} în directorul:",
+      "errors_count": "{count} eroare (erori) întâlnită (întâlnite).",
+      "renamed_count": "{count} fișier(e) redenumit(e) în CBZ",
+      "rarfile_unavailable": "Modulul rarfile nu este disponibil. Nu se pot converti fișierele CBR."
+    },
+    "close_warning": {
+      "title": "Atenție!",
+      "message": "Modificările nu au fost salvate și vor fi pierdute!",
+      "btn_close_lose": "Închide fișierul și pierde modificările",
+      "btn_save_cbz": "Aplică modificările și salvează fișierul",
+      "btn_create_cbz": "Aplică modificările și creează fișier CBZ",
+      "btn_cancel": "Anulează și revino la mozaic"
+    },
+    "replace_image": {
+      "title": "Înlocuiește imaginea coruptă"
+    },
+    "reduce_size": {
+      "window_title": "Redimensionarea imaginilor",
+      "title": "Redimensionarea a {count} {word}",
+      "word_image": "imagine",
+      "word_images": "imagini",
+      "current_size": "Dimensiune actuală: {size} MB",
+      "current_dimensions": "Dimensiuni actuale: {width} × {height} px",
+      "choose_method": "Alegeți metoda de redimensionare:",
+      "custom_dimensions": "Dimensiuni personalizate",
+      "width_label": "Lățime:",
+      "height_label": "Înălțime:",
+      "use_custom_dimensions": "Folosește aceste dimensiuni",
+      "different_dimensions_warning": "Paginile selectate au dimensiuni diferite. Dimensiunile personalizate vor forța toate paginile la aceeași dimensiune. Asigurați-vă că înțelegeți implicațiile înainte de a continua.",
+      "estimated_size": "Dimensiune estimată: {size} MB",
+      "percentage_reduction": "Reducere procentuală",
+      "percentage_enlargement": "Mărire procentuală",
+      "reduce_0": "0% (fără modificare)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (fără modificare)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Cele mai comune lățimi de pagină sunt 1024, 1280, 1600, 1920 și 2000 de pixeli, dar și alte valori sunt potrivite.",
+      "multi_page_width": "Detectați și redimensionați automat paginile multiple (lățime/înălțime)",
+      "multi_page_width_tooltip": "Activează detectarea automată a paginilor multiple: pagină dublă, pagină triplă etc. Coeficientul multiplicator este calculat automat pe baza raportului fiecărei pagini, fie în lățime (pagini alăturate), fie în înălțime (pagini stivuite)"
+    },
+    "gif_animated": {
+      "window_title": "Crearea unui GIF animat",
+      "images_title": "Imagini ale animației",
+      "params_title": "Parametri GIF",
+      "frame_delay_label": "Întârziere între imagini:",
+      "fps_normal": "{fps} cadre/secundă",
+      "fps_slow": "1 cadru la fiecare {seconds} secunde",
+      "loop_label": "Număr de repetări:",
+      "loop_info": "(0 = buclă infinită)",
+      "disposal_label": "Dispunerea imaginilor:",
+      "disposal_0": "Nespecificat",
+      "disposal_1": "Păstrează imaginea anterioară",
+      "disposal_2": "Restabilește la culoarea de fundal",
+      "disposal_3": "Restabilește la starea anterioară",
+      "optimize": "Optimizează fișierul (salvează doar diferențele)",
+      "metadata_title": "Metadate GIF",
+      "metadata_dimensions": "Dimensiuni: {width} × {height} px",
+      "metadata_frames": "Număr de cadre: {count}",
+      "metadata_duration": "Durată totală: {duration} s",
+      "metadata_fps": "Frecvență: {fps} fps",
+      "metadata_palette": "Paletă: până la 256 culori",
+      "metadata_size": "Dimensiune estimată: {size} KB",
+      "comment_label": "Comentariu (opțional):",
+      "no_images": "Nicio imagine selectată",
+      "creating_progress": "Se încarcă imaginile... ({current}/{total})",
+      "creating_normalizing": "Se normalizează imaginile... ({current}/{total})",
+      "creating_quantizing": "Se cuantizează culorile... ({current}/{total})",
+      "creating_saving": "Se salvează GIF..."
+    },
+    "save_to_folder": {
+      "title": "Selectați folderul destinație"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Nume de fișiere duplicate",
+      "message": "Au fost detectate nume de fișiere identice. Deși salvarea este posibilă\ndin punct de vedere tehnic, acest lucru poate cauza probleme de citire în\nunele aplicații de citit benzi desenate (afișare incompletă, pagini\nlipsă etc.).\n\nSe recomandă renumerotarea paginilor înainte de salvare."
+    },
+    "adjustments": {
+      "window_title": "Ajustari imagine",
+      "title": "Ajustari pentru {count} {word}",
+      "word_image": "imagine",
+      "word_images": "imagini",
+      "apply_button": "Aplica",
+      "color_depth_section": "Adancime culoare",
+      "brightness_contrast_section": "Luminozitate si contrast",
+      "compression_section": "Compresie",
+      "effects_section": "Efecte",
+      "sharpness_section": "Claritate",
+      "levels_section": "Niveluri negru/alb",
+      "depth_unchanged": "Nu modifica",
+      "depth_32bit": "32 biti (RGBA - culori + transparenta)",
+      "depth_24bit": "24 biti (RGB - culori)",
+      "depth_8bit": "8 biti (paleta PNG / tonuri de gri JPEG)",
+      "depth_1bit": "1 bit (alb-negru)",
+      "brightness_label": "Luminozitate: {value}",
+      "contrast_label": "Contrast: {value}",
+      "compression_enable": "Activeaza recompresie",
+      "compression_quality_label": "Calitate : {value}/100",
+      "sharpness_label": "Claritate: {value}",
+      "effect_none": "Fara efect",
+      "effect_grayscale": "Tonuri de gri",
+      "effect_sepia": "Sepia",
+      "levels_none": "Fara ajustare",
+      "levels_threshold": "Prag (negru sau alb pur)",
+      "levels_advanced": "Niveluri avansate (umbre/tonuri medii/lumini)",
+      "threshold_label": "Prag: {value}",
+      "black_point_label": "Punct negru: {value}",
+      "gamma_label": "Gamma (tonuri medii): {value}",
+      "white_point_label": "Punct alb: {value}",
+      "auto_levels_button": "Ajustare automată",
+      "open_viewer_button": "Ajustează cu vizualizatorul (recomandat)",
+      "compression_info": "Compresia se aplică doar imaginilor JPG și WebP",
+      "open_viewer_button_simple": "Ajustați cu vizualizatorul",
+      "reset_button": "Resetare",
+      "preview_section": "Previzualizare",
+      "effect_invert": "Inversarea culorilor",
+      "preview_warning": "Previzualizarea poate diferi de rezultatul final",
+      "effect_remove_colors": "Eliminarea culorilor",
+      "remove_colors_intensity_label": "Intensitate : {value}",
+      "image_mode_section": "Mod imagine",
+      "image_mode_rgb": "RGB (culori)",
+      "image_mode_rgba": "RGBA (culori + transparență)",
+      "image_mode_l": "L (tonuri de gri)",
+      "image_mode_la": "LA (tonuri de gri + transparență)",
+      "image_mode_cmyk": "CMYK (tipărire)",
+      "image_mode_1": "1 (alb-negru pur)",
+      "image_mode_p": "P (paletă de 256 culori)",
+      "saturation_section": "Saturație",
+      "saturation_label": "Saturație : {value}",
+      "saturation_viewer_title": "Ajustarea saturației",
+      "transparency_section": "Transparență",
+      "transparency_info": "Transparența se aplică doar imaginilor PNG, WebP și ICO",
+      "transparency_type_label": "Tip :",
+      "transparency_type_flood": "Zonă",
+      "transparency_type_global": "Global",
+      "transparency_tolerance_label": "Toleranță : {value}",
+      "transparency_viewer_title": "Ajustarea transparenței",
+      "transparency_click_instruction": "Faceți clic pe culoarea pe care doriți să o faceți transparentă",
+      "transparency_undo": "Anulați ultimul clic",
+      "transparency_redo": "Refaceți",
+      "transparency_type_flood_tooltip": "Flood fill : face transparentă zona de culoare uniformă din jurul pixelului apăsat",
+      "transparency_type_global_tooltip": "Transparență globală : afectează toți pixelii din imagine a căror culoare este apropiată de cea apăsată",
+      "transparency_apply": "Aplică",
+      "transparency_skipped_warning": "{count} imagine(i) ignorată(e) — format incompatibil cu transparența. Pentru a le include, convertiți-le mai întâi în PNG.",
+      "unsharp_section": "Claritate adaptivă",
+      "unsharp_radius_label": "Rază: {value}",
+      "unsharp_percent_label": "Intensitate: {value} %",
+      "unsharp_threshold_label": "Prag: {value}",
+      "unsharp_viewer_title": "Claritate adaptivă",
+      "auto_levels_tooltip": "Analizează fiecare pagină și reglează automat nivelurile de negru și alb pentru a maximiza contrastul.\nPentru a alege pagină cu pagină, utilizați vizualizatorul."
+    },
+    "levels_viewer": {
+      "title": "Ajustarea nivelurilor cu picurator",
+      "apply_current": "Aplica la aceasta pagina",
+      "apply_all": "Aplicați la toate paginile selectate",
+      "black_pipette": "Pipeta punct negru",
+      "white_pipette": "Pipeta punct alb",
+      "black_pipette_tooltip": "Faceți clic pe un pixel care ar trebui să fie complet negru. Atenție: este ușor să exagerați!",
+      "white_pipette_tooltip": "Faceți clic pe un pixel care ar trebui să fie complet alb. Atenție: este ușor să exagerați!"
+    },
+    "sharpness_viewer": {
+      "title": "Reglarea clarității"
+    },
+    "brightness_viewer": {
+      "title": "Reglarea luminozității și contrastului"
+    },
+    "compression_viewer": {
+      "title": "Reglarea compresiei"
+    },
+    "outliers": {
+      "title": "Pagini cu dimensiuni neobișnuite",
+      "message": "Următoarele pagini au dimensiuni care diferă semnificativ de altele. Vă rugăm să alegeți cum să le gestionați:",
+      "width": "Lățime",
+      "height": "Înălțime",
+      "unusual": "neobișnuit",
+      "skip": "Nu redimensiona",
+      "keep": "păstrează"
+    },
+    "first_page_multi": {
+      "title": "Prima pagină este multiplă",
+      "message": "Prima pagină a fost detectată ca multiplă. Cum doriți să o numerotați?",
+      "option_auto_desc": "Renumerotare normală cu detectare automată.",
+      "option_joint_desc": "Îmbinarea primei şi ultimei pagini a benzii desenate.",
+      "option_exclude_label": "Nu includeți în renumerotare",
+      "option_exclude_desc": "Pagina păstrează numele actual şi rămâne pe prima poziție. O puteți redenumi manual mai târziu."
+    },
+    "batch_img": {
+      "select_directory_title": "Selectați folderul care conține imaginile",
+      "no_img_title": "Nu s-au găsit fișiere de imagini",
+      "no_img_message": "Nu s-au găsit fișiere de imagini izolate în folder :\n{directory}",
+      "confirm_title": "Conversie în lot a imaginilor izolate în CBZ",
+      "confirm_message": "{count} fișier(e) de imagini de convertit în {directory} (incluzând subdosarele).",
+      "checkbox_permanent_delete": "Ștergeți definitiv fișierele de imagini originale\nfără a le trimite la Coșul de gunoi (NU POATE FI ANULAT)",
+      "start_button": "Pornire",
+      "converting_title": "Conversie în curs...",
+      "converting_progress": "Se convertește fișierul {current} din totalul de {total}",
+      "complete_title": "Conversie finalizată",
+      "complete_message": "{count} fișier(e) de imagini convertit(e) în folder :",
+      "complete_message_errors": "{count} din {total} fișiere de imagini convertite în folder :",
+      "errors_count": "S-au întâmpinat {count} eroare(ri).",
+      "converted_by_ext": "{ext} : {count} fișier(e)",
+      "mode_title": "Convertiți imaginile în CBZ",
+      "mode_intro": "Cum doriți să grupați imaginile?",
+      "mode_one_per_image": "Convertiți fiecare imagine în fișiere CBZ separate",
+      "mode_one_per_image_sub": "(Fiecare imagine devine un fișier CBZ separat)",
+      "mode_all_in_one": "Grupați toate imaginile într-un singur fișier CBZ",
+      "mode_all_in_one_sub": "(Toate imaginile din director sunt grupate într-un singur fișier CBZ)"
+    },
+    "batch_drop": {
+      "window_title": "Procesare în lot a folderelor",
+      "intro_single": "A fost aruncat 1 folder. Ce procesare doriți să aplicați?",
+      "intro_multiple": "Au fost aruncate {count} foldere. Ce procesare doriți să aplicați?",
+      "recursive_note": "Subdosarele vor fi de asemenea scanate.",
+      "mixed_drop_title": "Aruncare neacceptată",
+      "mixed_drop_message": "Ați aruncat simultan fișiere și foldere. Vă rugăm să aruncați doar fișiere sau doar foldere."
+    },
+    "pdf_unlock": {
+      "title": "PDF protejat împotriva modificărilor",
+      "message": "Paginile au fost importate normal.\n\nAcest fișier PDF este protejat împotriva modificărilor (parola proprietarului).\n\nDoriți să salvați o copie a fișierului PDF fără această protecție?",
+      "yes": "Da, salvează o copie deblocată",
+      "no": "Nu, continuă fără deblocare"
+    },
+    "batch_pdf_unlock": {
+      "title": "Fișiere PDF protejate împotriva modificărilor",
+      "message_single": "A fost detectat 1 fișier PDF protejat împotriva modificărilor. A fost convertit normal în CBZ.\n\nDoriți să salvați o copie deblocată în directorul său original?",
+      "message_plural": "Au fost detectate {count} fișiere PDF protejate împotriva modificărilor. Au fost convertite normal în CBZ.\n\nDoriți să salvați o copie deblocată a fiecăruia în directorul său original?",
+      "yes": "Da, salvează copiile deblocate",
+      "no": "Nu, continuă fără deblocare"
+    },
+    "ico_creator": {
+      "title": "Creează pictogramă .ico",
+      "info_message": "Imaginea va fi redimensionată la mai multe rezoluții (16, 32, 48, 64, 128, 256 px).\nDimensiunea curentă a cadrului: {w} × {h} px",
+      "btn_validate_crop": "Confirmați decuparea",
+      "btn_validate_no_crop": "Confirmați fără decupare",
+      "btn_cancel": "Anulare",
+      "btn_transparency": "Setați transparența",
+      "btn_validate_final": "Confirmați",
+      "tolerance_label": "Toleranță:",
+      "success_title": "Fișier .ico creat",
+      "success_message": "Fișierul {filename} a fost creat cu succes.",
+      "overwrite_title": "Fișierul există deja",
+      "overwrite_message": "Fișierul {filename} există deja. Suprascrieți?",
+      "save_blocked_title": "Salvarea este imposibilă",
+      "save_blocked_message": "Această arhivă conține unul sau mai multe fișiere .ico care nu sunt imagini de benzi desenate. Salvarea este dezactivată atâta timp cât aceste fișiere sunt prezente în mozaic.\nPentru a reactiva salvarea, ștergeți-le din mozaic (tasta Del) sau tăiați-le (Ctrl+X) pentru a le lipi în altă parte.",
+      "btn_back_to_crop": "Înapoi la decupare"
+    },
+    "video_save_blocked": {
+      "title": "Salvarea este imposibilă",
+      "message": "Această arhivă conține unul sau mai multe fișiere video. Salvarea este dezactivată atât timp cât aceste fișiere sunt prezente în mozaic.\nPentru a reactiva salvarea, ștergeți-le din mozaic (tasta Del) sau tăiați-le (Ctrl+X) pentru a le lipi în altă parte."
+    },
+    "open_file": {
+      "title": "Deschide o arhivă",
+      "filter_archives": "Arhive (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Toate fișierele (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Licență"
+    },
+    "replace_corrupted_image": {
+      "title": "Înlocuiți imaginea coruptă",
+      "filter_images": "Imagini (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Toate fișierele (*)"
+    },
+    "see_log": "VEZI LOG"
+  },
+  "tooltip": {
+    "source_archive": "Fișier sursă: {name}",
+    "file": "Fișier: {name}",
+    "reason": "Motiv: {reason}",
+    "size_kb": "Dimensiune: {size} KB",
+    "size_mb": "Dimensiune: {size} MB",
+    "file_size": "Dimensiune: {size}",
+    "dimensions": "Dimensiuni: {width} × {height} px",
+    "resolution": "Rezoluție: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: nedefinit",
+    "cbr_info": "Fișierele CBR utilizează formatul RAR, care este proprietar și brevetat;\nnu pot fi modificate, modificările sunt salvate într-un fișier CBZ nou.",
+    "rotate_left": "Rotire cu 90 de grade la stânga",
+    "rotate_right": "Rotire cu 90 de grade la dreapta",
+    "mirror_horizontal": "Oglindire orizontală",
+    "mirror_vertical": "Oglindire verticală",
+    "fullscreen": "Ecran complet",
+    "help_button": "Manual de utilizare",
+    "theme_button": "Comută între tema deschisă și închisă",
+    "font_decrease_button": "Micșorează dimensiunea fontului",
+    "font_increase_button": "Mărește dimensiunea fontului",
+    "color_depth": "Culori: {bits} biți ({mode})",
+    "batch_pdf_to_cbz": "Convertește în CBZ toate fișierele PDF dintr-un\ndirector și subdirectoarele sale. Imaginile sunt\nextrase și arhivate ca atare, fără nicio\nrecompresie.",
+    "batch_pdf_permanent_delete": "ATENȚIE: dacă această opțiune este bifată,\nfișierele PDF originale vor fi șterse\npermanent după conversie, fără posibilitate\nde recuperare. Asigurați-vă că aveți\no copie de rezervă dacă este necesar.",
+    "batch_cbr_to_cbz": "Convertește în CBZ toate fișierele CBR\ndin directorul selectat\nși subdirectoarele sale.",
+    "batch_cbr_permanent_delete": "ATENȚIE: dacă această opțiune este bifată,\nfișierele CBR originale vor fi șterse\ndefinitiv după conversie,\nfără posibilitate de recuperare.\nAsigurați-vă că dispuneți de o copie\nde siguranță dacă este necesar.",
+    "renumber_btn_1": "Mod detectare automată a paginilor multiple\nClic dreapta pentru a schimba modul",
+    "renumber_btn_2": "Mod numerotare simplă\nClic dreapta pentru a schimba modul",
+    "corrupted_header": "Imagine coruptă",
+    "right_click_instruction1": "Clic dreapta pentru a înlocui sau șterge",
+    "right_click_instruction2": "această imagine.",
+    "unknown_error": "Eroare necunoscută",
+    "batch_img_to_cbz": "Convertește toate fișierele de imagini găsite într-un folder\nși subdosarele sale în CBZ,\ncreând câte un fișier CBZ pentru fiecare imagine.",
+    "batch_img_permanent_delete": "ATENȚIE : dacă această opțiune este bifată,\nfișierele de imagini originale vor fi șterse\npermanent după conversie, fără posibilitate\nde recuperare. Asigurați-vă că aveți o copie\nde rezervă, dacă este necesar.",
+    "too_large_header": "Imaginea este prea mare pentru a fi încărcată",
+    "too_large_pixels": "Dimensiuni: {pixels}",
+    "icon_toolbar_config_button": "Configurare pictograme",
+    "icon_toolbar_size_decrease": "Micșorați dimensiunea pictogramelor",
+    "icon_toolbar_size_increase": "Măriți dimensiunea pictogramelor",
+    "source_loose": "Imagine liberă",
+    "source_web": "Imagine web"
+  },
+  "help": {
+    "title": "MosaicView - Manual utilizator",
+    "intro": "MosaicView vă permite să manipulați și să modificați benzi desenate (BD digitale) fără a fi nevoie să le extrageți din arhive. Aplicația suportă formatele CBZ (ZIP), CBR (RAR) și PDF. Aplicația este compatibilă doar cu sistemele pe 64 de biți.",
+    "open_files": "Deschiderea fișierelor",
+    "open_files_content": "• Faceți clic pe butonul 'Deschide CBZ/CBR/CB7/PDF'\n• Sau trageți și plasați direct un fișier în fereastră\n• Formate suportate: CBZ, CBR, CB7, PDF, imagini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fisierele EPUB pot fi deschise si ele, dar doar imaginile lor vor fi extrase (textul este ignorat).\n• PDF criptat (parolă necesară pentru deschidere): fișierul nu poate fi importat, se afișează un mesaj de eroare.\n• PDF protejat împotriva modificărilor (owner password): paginile sunt importate normal. MosaicView propune salvarea unei copii deblocate a fișierului în același folder.",
+    "mosaic": "Mozaicul",
+    "mosaic_content": "Mozaicul afișează toate paginile benzii tale desenate ca miniaturi. Puteți:\n• Rearanja paginile prin glisare și plasare (renumerotarea paginilor va fi automată și se va face conform modului de renumerotare activ)\n• Selecta mai multe pagini (Ctrl+clic sau Shift+clic)\n• Ajusta dimensiunea miniaturilor cu cursorul\n• Redenumi manual fișierele făcând clic pe numele lor\n• Glisa și plasa fișiere de benzi desenate (CBZ/CBR/PDF) din Windows Explorer direct într-o altă bandă desenată deschisă pentru a le îmbina conținutul",
+    "manipulation": "Manipularea paginilor",
+    "manipulation_content": "• Trageți și plasați pagini pentru a le reorganiza\n• Trageți o bandă desenată întreagă în alta pentru a le îmbina\n• Clic dreapta pe o pagină pentru a accesa opțiunile (rotație, ștergere etc.)\n• Dublu clic pe o pagină pentru a deschide vizualizatorul\n• Exportați pagini individuale trăgându-le într-un folder Windows sau prin Ctrl+C / Ctrl+V",
+    "renumber": "Renumerotarea paginilor",
+    "renumber_content": "MosaicView oferă două moduri de renumerotare a paginilor, accesibile prin butonul de renumerotare, meniul contextual (clic dreapta) sau automat la tragere și plasare:\n\n• Modul de detectare automată a paginilor multiple (mod implicit): aplicația analizează lățimea fiecărei pagini pentru a detecta paginile duble, triple etc. Paginile multiple sunt renumerotate în consecință (ex.: o pagină dublă va fi numită 003-004, una triplă 005-006-007). Peste 4 pagini, sunt afișate doar primul și ultimul număr (ex.: 010---025).\n\n• Modul de numerotare simplă: fiecare pagină primește un număr secvențial unic (001, 002, 003...), fără a ține cont de lățimea paginilor.\n\nPentru a comuta între cele două moduri, faceți clic dreapta pe butonul de renumerotare. Un indiciu indică modul activ. Modul selectat se aplică și la renumerotarea automată la tragere și plasare.",
+    "flatten": "Aplatizarea directoarelor",
+    "flatten_content": "Dacă arhiva conține subdosare, folosiți 'Aplatizează dosarele' pentru a aduce toate imaginile la același nivel.",
+    "viewer": "Vizualizator",
+    "viewer_content": "Faceți dublu clic pe o pagină pentru a deschide vizualizatorul:\n• Taste ← →: navigare între pagini\n• Tasta D: comutare între 3 moduri de citire\n  - Pagină simplă: o pagină odată\n  - Pagini duble: pagina 1 singură, apoi 2-3, 4-5, etc.\n  - Pagini duble continue: pagina 1 singură, apoi 2-3, 3-4, 4-5, etc.\n• Rotița mouse-ului: navigare rapidă\n• Ctrl+Rotița sau Ctrl+Plus/Minus: zoom\n• Ctrl+0: resetează zoom\n• Tasta F11: ecran complet\n• Dublu clic: comutare ecran complet\n• Tasta Esc: anulați cadrul de decupare / ieșire din vizualizator",
+    "join_pages": "Unirea paginilor",
+    "join_pages_content": "Selectați mai multe pagini consecutive, clic dreapta → 'Îmbină paginile selectate' pentru a îmbina paginile orizontal sau vertical. Formatul imaginii produse corespunde celui al paginilor sursă dacă sunt toate identice, altfel PNG implicit.",
+    "split_pages": "Împărțirea paginilor",
+    "split_pages_content": "Pentru a împărți automat paginile duble:\n• Selectați paginile de împărțit\n• Clic dreapta → 'Împarte paginile selectate'\n• Alegeți direcția (verticală sau orizontală)",
+    "crop": "Decuparea în vizualizator",
+    "crop_content": "În vizualizator, desenați un dreptunghi pe imagine pentru a defini o zonă de decupare:\n• Desenați dreptunghiul cu mouse-ul\n• Redimensionați-l trăgând marginile sau colțurile\n• Faceți clic pe 'Validează decuparea' pentru a aplica\n• Decuparea este aplicată imaginii curente\n• Tasta Esc: anulați cadrul de decupare",
+    "shortcuts": "Comenzi rapide tastatură",
+    "shortcuts_content": "• Ctrl+Z: Anulează ultima acțiune\n• Ctrl+Y: Refă acțiunea anulată\n• Ctrl+A: Selectează toate paginile\n• Ctrl+I: Inversează selecția\n• Ctrl+C: Copiază paginile selectate\n• Ctrl+X: Taie paginile selectate\n• Ctrl+V: Lipește paginile\n• Del: Șterge paginile selectate\n• F5: Actualizați afișajul mozaicului\n• F11: Comutați ecranul complet (ieșire cu F11 sau ESC)",
+    "dark_mode": "Mod întunecat",
+    "dark_mode_content": "Faceți clic pe butonul soare/lună pentru a comuta între temele deschisă și închisă.",
+    "sort": "Sortarea paginilor",
+    "sort_content": "Folosiți butonul 'Sortează' pentru a reorganiza automat paginile după:\n• Nume, Tip, Dimensiune, Lățime, Înălțime, Rezoluție sau DPI",
+    "save": "Salvare",
+    "save_content": "• 'Salvează': salvează modificările în fișierul original\n• 'Salvează ca': creează o arhivă nouă\n• 'Creează CBZ': disponibil în modul doar imagini (fără arhivă)",
+    "other": "Alte funcții",
+    "other_content": "• Rotație: rotiți una sau mai multe pagini\n• Conversie: convertiți imaginile în diferite formate (PNG, JPEG, WEBP, BMP, TIFF, GIF). Notă: imaginile în modul CMYK sunt convertite automat în RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Notă: imaginile în modul CMYK sunt convertite automat în RGB\n• Tipărire: tipăriți paginile selectate sau toate paginile\n• Extracție: extrageți pagini specifice\n• Fila Metadate: afișează informațiile din fișierul ComicInfo.xml (dacă este prezent în arhivă). Dacă adăugați sau ștergeți o pagină dintr-un comic care conține metadate, aplicația va propune modificarea numărului de pagini indicat. Celelalte metadate nu pot fi modificate. Această limitare este intenționată și rezultă dintr-o alegere de design.",
+    "config_files": "Fișiere de configurare și fișiere temporare",
+    "config_files_content": "MosaicView creează un fișier numit .mosaicview_config.json. Acest fișier conține câțiva parametri necesari pentru ca butonul de resetare să funcționeze corect, precum și lista benzilor desenate deschise recent, care este evident necesară pentru afișarea fișierelor deschise recent. MosaicView salvează și fișiere temporare, care sunt necesare pentru diverse operațiuni de procesare a imaginilor.\nToate aceste fișiere sunt situate în directorul {temp_dir}.\nFișierele temporare sunt șterse de fiecare dată când aplicația este închisă, dar fișierul .mosaicview_config.json, prin natura sa, este destinat să fie păstrat.\nCu toate acestea, puteți șterge manual aceste fișiere accesând directorul {temp_dir} sau făcând clic pe butoanele de mai jos. Fișierul .mosaicview_config.json va fi recreat de fiecare dată când aplicația este deschisă, iar fișierele temporare vor fi recreate după caz.",
+    "config_clear_temp": "Șterge fișierele temporare",
+    "config_clear_recent": "Șterge fișiere recente",
+    "config_clear_config": "Șterge fișierul de configurare",
+    "config_temp_cleared": "Fișierele temporare au fost șterse cu succes.",
+    "config_config_cleared": "Fișierul de configurare a fost șters cu succes.\nVa fi recreat la următoarea pornire a aplicației.",
+    "language": "Selectarea limbii",
+    "language_content": "MosaicView este disponibil în mai multe limbi.\nÎn mod implicit, aplicația detectează automat limba sistemului de operare și se afișează în acea limbă dacă este suportată. Dacă sistemul folosește o limbă nesuportată, interfața se afișează în engleză.\nPuteți schimba manual limba oricând folosind meniul derulant situat în partea de jos a coloanei de butoane, sub cursorul de dimensiune a miniaturilor. Alegerea va fi memorată și aplicată la următoarea pornire a aplicației.\nLIMBI DISPONIBILE: arabă, armeană, bulgară, chineză (simplificată), chineză (tradițională), coreană, croată, cehă, daneză, slovacă, slovenă, spaniolă, estoniană, finlandeză, franceză, germană, greacă, hindi, engleză, irlandeză, maghiară, indoneziană, islandeză, italiană, japoneză, letonă, lituaniană, malaieză, malteză, olandeză, norvegiană, polonă, portugheză, română, suedeză, tamilă, thailandeză, turcă, ucraineană, vietnameză.\nLIMBI FICTIVE DISPONIBILE: klingoniană (versiune alfabet latin și alfabet pIqaD), sindarin (versiune alfabet latin și alfabet tengwar), quenya (versiune alfabet latin și alfabet tengwar).\n\nAcest utilitar folosește fonturi Windows, cu excepția fonturilor pIqaD (limba klingoniană) și tengwar (limbi elfice: sindarin și quenya). Aceste fonturi sunt libere de drepturi și provin de pe aceste site-uri:\n- pentru pIqaD (alfabetul limbii klingoniene): {url_piqad}\n- pentru tengwar (alfabetul elfic, pentru sindarin și quenya): {url_tengwar}\nÎn cazul în care aceste site-uri nu mai sunt active, puteți recupera fonturile pIqaD și tengwar făcând clic pe butoanele de mai jos:\n\nAcest software a fost dezvoltat în franceză. Traducerile în alte limbi au fost efectuate prin intermediul IA, mai precis de Claude. Am decis să suport aproximativ patruzeci de limbi. Dar evident, nu vorbesc toate aceste limbi. N-am avut deci altă alegere decât să apelez la IA, deoarece angajarea și remunerarea a 40 de traducători diferiți nu a făcut parte din posibilitățile luate în considerare. Datorită naturii automate a acestor traduceri, este posibil să existe erori. Îmi cer scuze pentru aceasta.",
+    "credits": "Vibe Coding, iubirea mea",
+    "credits_content": "Nu știu nimic despre programare. Absolut nimic. Drept urmare, am dezvoltat acest software mulțumită lui Claude, IA-ul de la Anthropic, și mai precis cu Claude Code. Nu pot recomanda suficient Claude Code, această aplicație este fabuloasă!",
+    "resize_pages": "Modificarea dimensiunii paginilor",
+    "resize_pages_content": "Pentru a reduce sau mări paginile:\n• Selectați una sau mai multe pagini\n• Clic dreapta → 'Redimensionează'\n• Trei opțiuni sunt disponibile:\n  - Dimensiuni personalizate: introduceți lățimea sau înălțimea dorită (raportul de aspect este păstrat automat).\n  - Reducere procentuală: alegeți un procent de la 10% la 90%\n  - Mărire procentuală: alegeți un procent de la 10% la 100%\n• Aplicația afișează dimensiunea estimată a imaginilor după modificare\n• Modificarea se aplică imediat tuturor paginilor selectate",
+    "language_export_piqad": "Font pIqaD",
+    "language_export_tengwar": "Fonturi tengwar",
+    "language_export_piqad_success": "Font exportat: {filename}\nDisponibil în:",
+    "language_export_tengwar_success": "{count} fonturi exportate\nDisponibile în:",
+    "icons": "Pictograme",
+    "icons_content": "Majoritatea pictogramelor folosite în acest utilitar provin de pe acest site și sunt libere pentru utilizare necomercială: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nUnele au fost modificate de mine.\nDoar o pictogramă, pictograma fișierului executabil Windows, a fost creată de mine (dar cu AI, deoarece sunt un designer grafic foarte, foarte, foarte prost). Aveți permisiunea mea de a utiliza această pictogramă cum doriți, atâta timp cât vă citați sursa.",
+    "icons_view_button": "Vizualizați pictogramele",
+    "icons_window_title": "Pictograme MosaicView",
+    "icons_save_all": "Salvați pictogramele",
+    "icons_saved_success": "{count} pictogramă/pictograme salvată/salvate în:",
+    "icons_save_failed": "Nu se pot salva pictogramele: {error}",
+    "split_ui": "Interfață cu două panouri",
+    "split_ui_content": "MosaicView permite afișarea simultană a două arhive, una lângă alta.\n\nFaceți clic pe pictograma Împarte pentru a deschide un al doilea panou. Fiecare panou este independent: puteți deschide, edita și salva o arhivă separat. Panoul activ este indicat printr-un chenar albastru.\n\nPentru a muta pagini dintr-un panou în altul, trageți-le direct. Dacă sunt selectate mai multe pagini, toate se mută împreună. Paginile sunt inserate la poziția indicată de bara roșie.\n\nFaceți clic pe pictograma Închide al doilea panou pentru a reveni la modul cu un singur panou.",
+    "license_gpl": "Licență GPL v3",
+    "license_unrar": "Licența UnRAR",
+    "config_clear_clipboard": "Șterge fișierele din clipboard",
+    "config_clipboard_note": "Excepție: Fișierele temporare utilizate de clipboard-ul Windows (fișiere clipboard_XXXXX) sunt păstrate 12 ore după copiere, astfel încât să le puteți lipi chiar și după închiderea aplicației. După 12 ore, acestea sunt șterse automat.",
+    "config_log_note": "Conversiile in lot (PDF in CBZ si CBR in CBZ) creeaza un fisier jurnal in caz de eroare. Aceste fisiere (Log_pdftocbz_.txt si Log_cbrtocbz_.txt) sunt pastrate chiar si dupa inchiderea aplicatiei, pentru a putea fi consultate ulterior. Ele sunt sterse doar prin butonul \"Sterge fisierele temporare\" de mai sus.",
+    "config_clipboard_cleared": "Fișierele din clipboard au fost șterse cu succes.",
+    "adjust_images": "Ajustarea imaginilor",
+    "adjust_images_content": "Această funcție vă permite să retușați imaginile direct în MosaicView. Puteți modifica luminozitatea, contrastul, claritatea, nivelurile, saturația, să aplicați efecte (alb-negru, sepia, inversarea culorilor), să ajustați calitatea compresiei, să eliminați culori, să aplicați transparență sau să convertiți la diferite adâncimi de culoare. Unele setări dispun de un vizualizator dedicat care vă permite să vedeți rezultatul la rezoluție completă înainte de aplicare. O previzualizare miniaturală arată rezultatul în timp real în fereastra principală.",
+    "create_icon": "Creați o pictogramă",
+    "create_icon_content": "MosaicView vă permite să creați fișiere pictogramă (.ico) din orice imagine din mozaic.\n• Clic dreapta pe o imagine → 'Creați o pictogramă'\n• Încadrați zona dorită în vizualizator (pictograma va fi obligatoriu pătrată)\n• Ajustați transparența dacă este necesar\n• Validați: fișierul .ico este adăugat direct în mozaic\n• Fișierele .ico conțin automat toate rezoluțiile standard (de la 16×16 la 256×256)\n• Cât timp există un fișier .ico în mozaic, salvarea într-o arhivă CBZ este blocată, deoarece formatul ICO nu este suportat de aceste arhive. Exportați fișierul .ico separat (Ctrl+C apoi lipiți într-un folder Windows), apoi ștergeți-l din mozaic înainte de a salva.",
+    "batch_convert": "Conversie în lot",
+    "batch_convert_content": "MosaicView oferă trei funcții de conversie în lot, disponibile numai când mozaicul este gol. Pentru fiecare dintre ele, principiul este același : selectați un director, confirmați, urmăriți progresul în timp real, consultați rezumatul final. O opțiune permite ștergerea permanentă a fișierelor originale în loc să le trimiteți la coș.\n• CBR → CBZ : convertește toate fișierele CBR (RAR) dintr-un director și subdirectoarele sale. Dacă un CBR este de fapt un ZIP, este pur și simplu redenumit fără conversie.\n• PDF → CBZ : convertește toate fișierele PDF dintr-un director și subdirectoarele sale. Imaginile sunt extrase fără recompresie.\n• IMAGINI IZOLATE → CBZ : creează un CBZ individual pentru fiecare fișier imagine găsit în director și subdirectoarele sale. Imaginile invalide, corupte, de mai multe pagini (TIFF) sau animate (GIF) sunt ignorate și înregistrate într-un jurnal.",
+    "config_open_temp_folder": "Deschide folderul temporar",
+    "icon_toolbar": "Bara de pictograme",
+    "icon_toolbar_content": "Bara de pictograme oferă acces rapid la funcțiile principale ale aplicației. Puteți rearanja pictogramele după cum doriți trăgându-le direct în bară. Pentru a alege ce pictograme să fie afișate sau ascunse, faceți clic pe butonul roată dințată aflat în partea de jos a barei: se deschide o fereastră de configurare unde puteți muta pictogramele între bara activă și rezervă. Folosiți butoanele « + » și « − » pentru a ajusta dimensiunea pictogramelor. Configurația este salvată automat.",
+    "license_7zip": "Licență 7-Zip"
+  },
+  "misc": {
+    "file_word": "fișier",
+    "files_word": "fișiere",
+    "corrupted": "corupt",
+    "yes": "Da",
+    "no": "Nu",
+    "cancel": "Anulează",
+    "selection_suffix": "copie-selectie"
+  },
+  "metadata": {
+    "title": "Titlu",
+    "series": "Serie",
+    "number": "Număr",
+    "volume": "Volum",
+    "summary": "Rezumat",
+    "writer": "Scenarist",
+    "penciller": "Desenator",
+    "inker": "Conturare",
+    "colorist": "Colorist",
+    "letterer": "Literare",
+    "cover_artist": "Artist copertă",
+    "editor": "Editor (persoană)",
+    "publisher": "Editor (casă)",
+    "imprint": "Colecție",
+    "genre": "Gen",
+    "web": "Site web",
+    "page_count": "Număr de pagini",
+    "language_iso": "Limbă",
+    "format": "Format",
+    "black_and_white": "Alb-negru",
+    "manga": "Manga",
+    "year": "An",
+    "month": "Lună",
+    "day": "Zi",
+    "notes": "Note",
+    "characters": "Personaje",
+    "locations": "Locații",
+    "teams": "Echipe",
+    "story_arc": "Arc narativ",
+    "story_arc_number": "Numărul arcului",
+    "series_group": "Grup de serii",
+    "count": "Număr de ediții",
+    "alternate_series": "Serie alternativă",
+    "alternate_number": "Număr alternativ",
+    "alternate_count": "Număr alternativ",
+    "age_rating": "Clasificare pe vârstă",
+    "series_complete": "Serie completă",
+    "translator": "Traducător",
+    "tags": "Etichete",
+    "scan_information": "Informații scanare",
+    "community_rating": "Rating comunitate",
+    "review": "Recenzie",
+    "gtin": "GTIN",
+    "pages": "Pagini",
+    "pages_col_image": "Imagine",
+    "pages_col_type": "Tip",
+    "pages_col_width": "Lățime",
+    "pages_col_height": "Înălțime",
+    "pages_col_size": "Dimensiune (B)"
+  },
+  "web": {
+    "web_download_progress": "Descărcare: {downloaded}/{total} imagini...",
+    "web_download_cancel": "Anulare",
+    "web_no_images": "Fără imagini",
+    "web_no_images_found": "Nu au fost găsite imagini pe această pagină.",
+    "web_imported": "{count} imagine(i) importată(e) de pe pagina web",
+    "web_drag_drop_title": "Trage și plasează imagine web",
+    "web_copy_paste_message": "Tragerea și plasarea directă din browserul web nu este suportată.\n\nSoluție alternativă (mai simplă):\n\n1. Faceți clic dreapta pe imagine în browser\n2. Alegeți 'Copiază imagine'\n3. În MosaicView, folosiți butonul 'Lipește' sau Ctrl+V\n\nAceastă metodă funcționează cu toate imaginile web!",
+    "import_web_button": "Import web",
+    "import_web_tooltip": "Lipiți o adresă de internet pentru a recupera toate imaginile de pe pagină",
+    "import_web_menu": "Import web...",
+    "import_web_dialog_title": "Importați imagini dintr-o pagină web",
+    "import_web_url_label": "Adresa paginii web:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Anulare",
+    "import_web_invalid_url": "URL invalid. Vă rugăm să introduceți o adresă web validă."
+  },
+  "donation": {
+    "menu_label": "Donează autorului",
+    "title": "Fă o donație",
+    "message": "Îți place acest mic utilitar și îl folosești în mod regulat.\n\nAm investit în el câteva sute de ore. Ai lua în considerare să îmi mulțumești făcând o donație? Te rog, fii amabil, am cu adevărat nevoie de bani pentru a-mi umple piscina cu șampanie. Fie că vrei să îmi trimiți câțiva cenți sau câteva miliarde de euro, accept toate sumele. Poți face această donație prin paypal"
+  },
+  "mail": {
+    "tooltip": "Acest buton deschide software-ul implicit de e-mail în Windows pentru a trimite un e-mail. Dacă nu este configurat niciun software (de exemplu, dacă utilizați exclusiv webmail), puteți copia adresa MosaicView în clipboard făcând clic dreapta pe pictogramă.",
+    "copy_address": "Copiază adresa de email MosaicView",
+    "menu_label": "Trimiteți un e-mail către MosaicView",
+    "icon_label": "Trimite un email"
+  },
+  "menu": {
+    "file": "Fișier",
+    "file_open": "Deschide fișier",
+    "file_close": "Închide fișier",
+    "batch_convert": "Conversie în lot a fișierelor",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Imagini separate → CBZ",
+    "edit": "Editare",
+    "undo": "Anulare",
+    "redo": "Refacere",
+    "paste": "Lipire",
+    "delete": "Ștergere",
+    "invert_selection": "Inversare selecție",
+    "select_all": "Selectează tot",
+    "deselect": "Deselectează",
+    "refresh_mosaic": "Reîmprospătare mozaic",
+    "images": "Imagini",
+    "rotation": "Rotație",
+    "archives": "Arhive",
+    "sort": "Sortare",
+    "system": "Sistem",
+    "decrease_font": "Micșorare font",
+    "increase_font": "Mărire font",
+    "language": "Limbi",
+    "language_real": "Limbi reale",
+    "language_fictional": "Limbi fictive",
+    "about": "Despre",
+    "export_piqad_font": "Salvează fontul pIqaD",
+    "export_tengwar_fonts": "Salvează fonturile tengwar"
+  }
+}

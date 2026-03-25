@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Het Zwitsers zakmes voor verzamelaars van digitale strips",
+  "buttons": {
+    "open_file": "CBZ/CBR/CB7/PDF openen",
+    "close_file": "Bestand sluiten",
+    "create_cbz": "CBZ-archief maken",
+    "flatten_dirs": "Alle bestanden naar\nde hoofdmap verplaatsen\nen submappen verwijderen",
+    "renumber": "Pagina's\nhernummeren",
+    "undo": "⤺ Ongedaan maken",
+    "redo": "Opnieuw ⤻",
+    "copy": "Kopiëren",
+    "cut": "Knippen",
+    "paste": "Plakken",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Converteren naar\nander afbeeldingsformaat",
+    "join_pages": "Pagina's samenvoegen",
+    "split_page": "Pagina splitsen",
+    "save_as": "Opslaan als\n(nieuw CBZ maken)",
+    "save_selection": "Selectie opslaan\nals CBZ",
+    "print_selection": "Selectie afdrukken",
+    "print_all": "Hele strip afdrukken",
+    "sort": "Sorteren",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Converteren",
+    "cancel": "Annuleren",
+    "split_button": "Splitsen",
+    "join_button": "Starten",
+    "validate_crop": "Bijsnijden valideren",
+    "ok": "OK",
+    "close": "Sluiten",
+    "apply_and_save": "Wijzigingen toepassen en bestand opslaan",
+    "apply_and_create": "Wijzigingen toepassen en CBZ-bestand maken",
+    "close_and_lose": "Bestand sluiten en wijzigingen verliezen",
+    "cancel_return": "Annuleren en terug naar mozaïek",
+    "update_page_count": "Paginaaantal bijwerken\nin metadata",
+    "invert_selection": "Selectie omkeren",
+    "reduce_size": "Paginaformaat wijzigen",
+    "mirror_vertical": "⇅",
+    "create_gif": "GIF maken",
+    "edit_gif": "Geanimeerde GIF bewerken",
+    "save_to_folder": "Geselecteerde pagina's\nexporteren",
+    "continue": "Doorgaan",
+    "reset": "↻",
+    "yes": "Ja",
+    "no": "Nee",
+    "renumber_recommended": "Opnieuw nummeren (aanbevolen)",
+    "ignore_and_save": "Negeren en opslaan",
+    "rename_to_cbz": "Hernoemen naar .cbz",
+    "open_without_rename": "Openen zonder hernoemen",
+    "rename_to_cbr": "Hernoemen naar .cbr",
+    "adjustments": "Helderheid,\ncontrast, enz.",
+    "batch_cbr_to_cbz": "Batchconversie\n van CBR-bestanden naar CBZ",
+    "batch_pdf_to_cbz": "Batchconversie\n van PDF-bestanden naar CBZ",
+    "batch_img_to_cbz": "Batchconversie\n van losse afbeeldingen naar CBZ",
+    "icon_toolbar_reset": "Standaard herstellen",
+    "delete_selected": "Verwijderen",
+    "save": "Opslaan",
+    "rename_to_cb7": "Hernoem naar .cb7",
+    "split_ui": "Interface in twee panelen splitsen",
+    "unsplit_ui": "Tweede paneel sluiten"
+  },
+  "tabs": {
+    "mosaic": "Mozaïek",
+    "metadata": "Metadata"
+  },
+  "viewer": {
+    "title": "Viewer",
+    "mode_single": "Enkele pagina  [D]",
+    "mode_double": "Dubbele pagina  [D]",
+    "mode_continuous": "Continue modus  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Vorige pagina (←)",
+      "next_page": "Volgende pagina (→)",
+      "zoom_in": "Inzoomen (Ctrl+Plus)",
+      "zoom_out": "Uitzoomen (Ctrl+Min)",
+      "zoom_reset": "Zoom resetten (Ctrl+0)",
+      "reading_mode_double": "Leesmodus wijzigen (D) → Dubbele pagina's",
+      "reading_mode_continuous": "Leesmodus wijzigen (D) → Continue dubbele pagina's",
+      "reading_mode_single": "Leesmodus wijzigen (D) → Enkele pagina",
+      "fullscreen_exit": "Volledig scherm verlaten (F11)",
+      "fullscreen": "Volledig scherm (F11)",
+      "close_viewer": "Viewer sluiten (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Beschadigde afbeelding - Vervangen",
+      "corrupted_delete": "⚠️ Deze afbeelding verwijderen",
+      "copy": "Kopiëren (Ctrl+C)",
+      "cut": "Knippen (Ctrl+X)",
+      "paste": "Plakken (Ctrl+V)",
+      "paste_clipboard": "Plakken vanaf klembord (Ctrl+V)",
+      "delete": "Verwijderen (Del)",
+      "deselect": "Deselecteren (ESC)",
+      "rotate_right": "↻ Rechtsom draaien",
+      "rotate_left": "↺ Linksom draaien",
+      "mirror": "⇄ Horizontaal spiegelen",
+      "crop": "Bijsnijden",
+      "convert": "Converteren naar ander formaat...",
+      "join": "Geselecteerde pagina's samenvoegen",
+      "split": "Geselecteerde pagina splitsen",
+      "save_selection": "Selectie opslaan als CBZ",
+      "print_selection": "Selectie afdrukken",
+      "copy_archive": "Volledig archief kopiëren",
+      "undo": "Ongedaan maken (Ctrl+Z)",
+      "redo": "Opnieuw (Ctrl+Y)",
+      "renumber_auto": "Pagina's hernummeren (automatische detectie van meervoudige pagina's)",
+      "renumber_simple": "Pagina's hernummeren (eenvoudige nummering)",
+      "sort_submenu": "Pagina's sorteren",
+      "sort_name": "Op naam",
+      "sort_type": "Op type",
+      "sort_size": "Op grootte",
+      "sort_width": "Op breedte",
+      "sort_height": "Op hoogte",
+      "sort_resolution": "Op resolutie",
+      "sort_dpi": "Op DPI",
+      "create_cbz": "CBZ-archief maken",
+      "save_as": "Opslaan als...",
+      "close_file": "Bestand sluiten",
+      "help": "Gebruiksaanwijzing",
+      "update_page_count": "Paginaaantal bijwerken in metadata",
+      "invert_selection": "Selectie omkeren (Ctrl+I)",
+      "reduce_size": "Paginaformaat wijzigen",
+      "mirror_vertical": "⇅ Verticale spiegel",
+      "edit_animated_gif": "Geanimeerde GIF bewerken...",
+      "save_to_folder": "Geselecteerde pagina's exporteren",
+      "adjustments": "Helderheid, contrast, kleuren...",
+      "refresh_mosaic": "Mozaïek vernieuwen (F5)",
+      "create_ico": ".ico-bestand aanmaken"
+    },
+    "canvas_no_file": {
+      "open": "CBZ/CBR/CB7/PDF openen",
+      "recent_files": "Recente bestanden",
+      "clear_history": "Geschiedenis wissen"
+    },
+    "canvas_with_file": {
+      "close": "Bestand sluiten",
+      "paste": "Plakken (Ctrl+V)",
+      "paste_clipboard": "Plakken vanaf klembord (Ctrl+V)",
+      "select_all": "Alles selecteren (Ctrl+A)",
+      "deselect": "Deselecteren (ESC)",
+      "copy_archive": "Volledig archief kopiëren",
+      "print_all": "Hele strip afdrukken",
+      "renumber_auto": "Pagina's hernummeren (automatische detectie van meervoudige pagina's)",
+      "renumber_simple": "Pagina's hernummeren (eenvoudige nummering)",
+      "flatten": "Mappen afvlakken",
+      "save_selection": "Selectie opslaan als CBZ",
+      "hide_sidebar": "« Knoppen verbergen",
+      "show_sidebar": "» Knoppen tonen",
+      "decrease_thumbs": "Miniaturen verkleinen",
+      "increase_thumbs": "Miniaturen vergroten",
+      "theme_dark": "Overschakelen naar donker thema",
+      "theme_light": "Overschakelen naar licht thema",
+      "sort_submenu": "Pagina's sorteren",
+      "undo": "Ongedaan maken (Ctrl+Z)",
+      "redo": "Opnieuw (Ctrl+Y)",
+      "create_cbz": "CBZ-archief maken",
+      "save_as": "Opslaan als...",
+      "help": "Gebruiksaanwijzing",
+      "update_page_count": "Paginaaantal bijwerken in metadata",
+      "invert_selection": "Selectie omkeren (Ctrl+I)",
+      "fullscreen": "Volledig scherm (F11)",
+      "fullscreen_exit": "Volledig scherm verlaten (F11 of ESC)",
+      "quit": "Applicatie sluiten"
+    },
+    "canvas": {
+      "quit": "Applicatie sluiten",
+      "reset": "Toepassing opnieuw instellen:\n• venstergrootte en -positie\n• donkere modus → licht\n• miniatuurgrootte → normaal\n• zijbalk → zichtbaar / 220 px\n• taal → automatische detectie\n• lettergrootte → standaard",
+      "reset_label": "Toepassing resetten"
+    },
+    "font_size": {
+      "decrease": "Lettergrootte verkleinen",
+      "increase": "Lettergrootte vergroten"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Sorteren op naam",
+    "sort_type": "Sorteren op type",
+    "sort_size": "Sorteren op grootte",
+    "sort_width": "Sorteren op breedte",
+    "sort_height": "Sorteren op hoogte",
+    "sort_resolution": "Sorteren op resolutie",
+    "sort_dpi": "Sorteren op DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Leeg archief",
+        "message": "Het CBZ-archief bevat geen bestanden."
+      },
+      "empty_cbr": {
+        "title": "Leeg archief",
+        "message": "Het CBR-archief bevat geen bestanden."
+      },
+      "files_ignored": {
+        "title": "Genegeerde bestanden"
+      },
+      "no_selection_crop": {
+        "title": "Geen selectie",
+        "message": "Selecteer een afbeelding om bij te snijden."
+      },
+      "multi_selection_crop": {
+        "title": "Meerdere selecties",
+        "message": "U kunt slechts één afbeelding tegelijk bijsnijden.\nSelecteer één enkele afbeelding."
+      },
+      "invalid_selection_crop": {
+        "title": "Ongeldige selectie",
+        "message": "Alleen afbeeldingen kunnen worden bijgesneden."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Functie niet beschikbaar",
+        "message": "Het verplaatsen van pagina's is niet beschikbaar in submappen.\nVlak de mappen af of keer terug naar de hoofdmap."
+      },
+      "no_selection_convert": {
+        "title": "Geen selectie",
+        "message": "Selecteer ten minste één afbeelding om te converteren."
+      },
+      "invalid_selection_convert": {
+        "title": "Ongeldige selectie",
+        "message": "Alleen afbeeldingen kunnen worden geconverteerd."
+      },
+      "no_selection_split": {
+        "title": "Geen selectie",
+        "message": "Selecteer een afbeelding om te splitsen."
+      },
+      "multi_selection_split": {
+        "title": "Meerdere selecties",
+        "message": "U kunt slechts één afbeelding tegelijk splitsen.\nSelecteer één enkele afbeelding."
+      },
+      "invalid_selection_split": {
+        "title": "Ongeldige selectie",
+        "message": "Alleen afbeeldingen kunnen worden gesplitst."
+      },
+      "invalid_number_split": {
+        "title": "Ongeldig nummer",
+        "message": "Het aantal pagina's moet tussen 2 en 10 liggen."
+      },
+      "insufficient_selection_join": {
+        "title": "Onvoldoende selectie",
+        "message": "Selecteer ten minste 2 afbeeldingen om samen te voegen."
+      },
+      "invalid_selection_join": {
+        "title": "Ongeldige selectie",
+        "message": "Alleen afbeeldingen kunnen worden samengevoegd."
+      },
+      "pil_not_available": {
+        "title": "PIL niet beschikbaar",
+        "message": "De PIL-module is niet beschikbaar voor plakken vanaf het systeemklembord."
+      },
+      "format_not_supported": {
+        "title": "Formaat niet ondersteund",
+        "message": "Afbeeldingsformaat niet ondersteund of bestand beschadigd.\nOndersteunde formaten: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Geen selectie",
+        "message": "Teken eerst een bijsnijdrechthoek."
+      },
+      "cannot_open_file": {
+        "title": "Kan bestand niet openen",
+        "message": "Het bestand kan niet worden geladen."
+      },
+      "corrupted_images": {
+        "title": "Beschadigde afbeeldingen",
+        "summary": "{count} beschadigd(e) afbeelding(en) gevonden van {total}.",
+        "hint": "Ze worden weergegeven met een speciaal pictogram.\nKlik met de rechtermuisknop op een beschadigde afbeelding om deze te vervangen of te verwijderen.",
+        "more": "... en {count} meer"
+      },
+      "no_image_print": {
+        "title": "Geen afbeelding",
+        "message": "Geen afbeelding om af te drukken."
+      },
+      "no_valid_image_print": {
+        "title": "Geen afbeelding",
+        "message": "Geen geldige afbeelding om af te drukken."
+      },
+      "no_selection_print": {
+        "title": "Geen selectie",
+        "message": "Selecteer ten minste één afbeelding."
+      },
+      "no_valid_selection_print": {
+        "title": "Geen afbeelding",
+        "message": "Geen geldige afbeelding in de selectie."
+      },
+      "save_cancelled": {
+        "title": "Opslaan geannuleerd",
+        "message": "Corrigeer de bestandsnamen handmatig voordat u opslaat."
+      },
+      "empty_pdf": {
+        "title": "Lege PDF",
+        "message": "Het PDF-bestand bevat geen pagina's."
+      },
+      "no_selection_save": {
+        "title": "Waarschuwing",
+        "message": "Selecteer ten minste één pagina om op te slaan."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Verplaatsen uitgeschakeld",
+        "message": "Het verplaatsen van pagina's via slepen-en-neerzetten is alleen beschikbaar in de hoofdmap van de strip.\n\nOm pagina's te verplaatsen:\n1. Keer terug naar de hoofdmap door op het omhoog-pictogram te klikken\n2. Of vlak de strip af om submappen te verwijderen"
+      },
+      "no_selection_reduce": {
+        "title": "Geen selectie",
+        "message": "Selecteer ten minste één pagina om te verkleinen."
+      },
+      "invalid_selection_reduce": {
+        "title": "Ongeldige selectie",
+        "message": "Alleen afbeeldingen kunnen worden verkleind."
+      },
+      "invalid_dimensions": {
+        "title": "Ongeldige afmetingen",
+        "message": "Voer geldige afmetingen in (positieve gehele getallen)."
+      },
+      "no_images_for_gif": {
+        "title": "Geen afbeeldingen",
+        "message": "Er is minimaal één afbeelding nodig om een geanimeerde GIF te maken."
+      },
+      "no_valid_images": {
+        "title": "Geen geldige afbeeldingen",
+        "message": "Er zijn geen geldige afbeeldingen gevonden om de GIF te maken."
+      },
+      "animated_gif_in_comic": {
+        "title": "Geanimeerde GIF gedetecteerd",
+        "message": "Waarschuwing: Deze strip bevat een of meer geanimeerde GIF's.\\n\\nStriplezers (CDisplayEx, YACReader, enz.) tonen alleen het eerste frame van elke GIF als een statische pagina.\\n\\nOm de geanimeerde GIF correct te bekijken, moet u deze apart buiten de strip opslaan met de knop \"Geselecteerde pagina's exporteren\" of \"Geanimeerde GIF bewerken\".\\n\\nWilt u de strip toch opslaan?"
+      },
+      "no_selection_adjust": {
+        "title": "Geen selectie",
+        "message": "Selecteer ten minste een afbeelding om aanpassingen toe te passen."
+      },
+      "invalid_selection_adjust": {
+        "title": "Ongeldige selectie",
+        "message": "Aanpassingen kunnen alleen worden toegepast op afbeeldingen."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Functie niet beschikbaar",
+        "message": "Hernummering is niet beschikbaar totdat de mappen zijn samengevoegd.\nSamenvoeging van mappen vóór hernummering."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP-fout",
+        "message": "'{file}': Het bestand is geen geldig ZIP-archief of is beschadigd."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP-fout",
+        "message": "Kan het CBZ-bestand niet openen: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR-fout",
+        "message": "'{file}': Het bestand is geen geldig RAR-archief of is beschadigd."
+      },
+      "rar_cannot_open": {
+        "title": "RAR-fout",
+        "message": "Kan het CBR-archief niet openen: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Fout",
+        "message": "Onverwachte fout bij het openen van CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Fout",
+        "message": "Kan afbeeldingen niet samenvoegen."
+      },
+      "paste_failed": {
+        "title": "Fout",
+        "message": "Fout bij plakken: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Fout",
+        "message": "Kan archief niet kopiëren: {error}"
+      },
+      "crop_invalid": {
+        "title": "Fout",
+        "message": "Het bijsnijdgebied is ongeldig."
+      },
+      "crop_failed": {
+        "title": "Fout",
+        "message": "Kan afbeelding niet bijsnijden: {error}"
+      },
+      "load_image_failed": {
+        "title": "Fout",
+        "message": "Kan afbeelding niet laden:\n{error}"
+      },
+      "print_error": {
+        "title": "Afdrukfout",
+        "message": "Fout bij afdrukken:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Afdrukken niet beschikbaar",
+        "message": "De win32print-module is niet geïnstalleerd.\nInstalleer met: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Bestand niet gevonden",
+        "message": "Het bestand bestaat niet meer:\n{path}"
+      },
+      "import_failed": {
+        "title": "Importfout",
+        "message": "Kan bestand niet importeren: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF niet geïnstalleerd",
+        "message": "De PyMuPDF-bibliotheek (fitz) is niet geïnstalleerd.\nInstalleer met: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Fout",
+        "message": "Fout bij importeren van PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF-fout",
+        "message": "Kan PDF niet laden:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Dubbele bestandsnamen",
+        "intro": "{count} dubbele bestandsnaam/namen gevonden:\n\n",
+        "item": "  • {name} ({times} keer)\n",
+        "more": "  ... en {more} andere(n)\n",
+        "footer": "\nZIP-archieven accepteren geen dubbele namen.\nHernoem deze bestanden voor het opslaan."
+      },
+      "save_failed": {
+        "title": "Fout",
+        "message": "Kan bestand niet opslaan: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Fout",
+        "message": "Kan archief niet maken: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Fout",
+        "message": "Kan selectie niet opslaan: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF-aanmaakfout",
+        "message": "Kan geanimeerde GIF niet maken:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Fout bij opslaan",
+        "message": "Fout bij het opslaan van bestanden:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Hernoemingsfout",
+        "message": "Kan bestand niet hernoemen: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF beveiligd met wachtwoord",
+        "message": "Dit PDF-bestand is versleuteld en beveiligd met een wachtwoord.\nHet kan niet worden geopend zonder het wachtwoord."
+      },
+      "pdf_unlock_failed": {
+        "title": "Fout",
+        "message": "Kan het ontgrendelde PDF-bestand niet opslaan:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: versleuteld PDF-bestand (wachtwoord vereist), overgeslagen",
+      "file_too_large": {
+        "title": "Bestand te groot",
+        "message": "Het bestand {filename} is {size} groot en overschrijdt de maximaal toegestane grootte (500 MB) voor een afbeelding."
+      },
+      "license_file_not_found": {
+        "message": "Licentiebestand niet gevonden: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Licentiebestand kan niet worden gelezen: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z-fout",
+        "message": "Het bestand '{file}' is geen geldig 7Z-archief of is beschadigd."
+      },
+      "delete_error": "Fout tijdens verwijderen: {error}",
+      "export_error": "Fout tijdens exporteren: {error}",
+      "font_source_not_found": "Bronbestand van lettertype niet gevonden: {path}",
+      "no_tengwar_font": "Geen Tengwar-lettertype gevonden.",
+      "no_icons_found": "Geen pictogrammen gevonden.",
+      "unsupported_files": {
+        "title": "Niet-ondersteunde bestanden",
+        "message": "De volgende bestanden worden niet ondersteund en zijn genegeerd:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF succesvol gemaakt",
+        "message": "De geanimeerde GIF '{name}' is gemaakt en toegevoegd aan het mozaïek."
+      },
+      "pywin32_required": {
+        "title": "Functie niet beschikbaar",
+        "message": "De pywin32-module is vereist om vanaf het systeemklembord te plakken.\nInstalleer met: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Afbeeldingen geïmporteerd",
+        "message": "{count} afbeelding(en) geïmporteerd"
+      },
+      "archive_copied": {
+        "title": "Archief gekopieerd",
+        "message": "Het archief is naar het klembord gekopieerd."
+      },
+      "function_not_available": {
+        "title": "Functie niet beschikbaar",
+        "message": "Deze functie is momenteel niet beschikbaar."
+      },
+      "duplicate_detected": {
+        "title": "Duplicaat gedetecteerd",
+        "message": "Er bestond al een bestand met deze naam.\n\nHet bestand is hernoemd naar:\n{name}"
+      },
+      "replace_success": {
+        "title": "Succes",
+        "message": "De afbeelding '{name}' is succesvol vervangen."
+      },
+      "history_cleared": {
+        "title": "Geschiedenis gewist",
+        "message": "De lijst met recente bestanden is gewist."
+      },
+      "files_copied_clipboard": {
+        "title": "Bestanden gekopieerd naar klembord",
+        "message": "Uitgaand slepen-en-neerzetten is om technische redenen niet beschikbaar.\n\n✓ {count} {word} gekopieerd naar klembord\n\nU kunt nu plakken waar u wilt:\n  • Rechtermuisklik → Plakken\n  • Of Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Correctie uitgevoerd",
+        "message": "{count} bestandsna(a)m(en) gecorrigeerd."
+      },
+      "import_success": {
+        "title": "Import geslaagd",
+        "message": "{count} pagina('s) geïmporteerd uit {file}"
+      },
+      "pdf_import_success": {
+        "title": "Import geslaagd",
+        "message": "{count} PDF-pagina('s) geïmporteerd uit {file}\nKwaliteit: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Succes",
+        "message": "PDF succesvol geconverteerd!\n{count} pagina's geladen op {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Succes",
+        "message": "CBZ-bestand succesvol opgeslagen:"
+      },
+      "cbz_converted": {
+        "title": "Succes",
+        "message": "Bestand succesvol geconverteerd naar CBZ:",
+        "question": "Wilt u het originele CBR-bestand verwijderen?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Succes",
+        "message": "Bestand succesvol geconverteerd naar CBZ:",
+        "question": "Wilt u het originele PDF-bestand verwijderen?"
+      },
+      "cbz_save_as": {
+        "title": "Succes",
+        "message": "Nieuw CBZ-bestand opgeslagen: {path}"
+      },
+      "cbz_created": {
+        "title": "Succes",
+        "message": "CBZ-archief succesvol aangemaakt:"
+      },
+      "selection_saved": {
+        "title": "Succes",
+        "message": "Selectie succesvol opgeslagen:"
+      },
+      "flatten_done": {
+        "title": "Afvlakken voltooid",
+        "message": "{files} bestand(en) verplaatst uit {dirs} submap(pen)."
+      },
+      "language_changed": {
+        "title": "Taal gewijzigd",
+        "message": "De interfacetaal is succesvol gewijzigd."
+      },
+      "new_cbz_saved": {
+        "title": "Bestand Opgeslagen",
+        "message": "Het nieuwe CBZ-bestand is succesvol opgeslagen:",
+        "question": "Wilt u het originele bestand verwijderen?"
+      },
+      "page_count_updated": {
+        "title": "Paginaaantal bijgewerkt",
+        "message": "Het paginaaantal in de metadata is bijgewerkt naar {count} pagina's."
+      },
+      "files_saved": {
+        "title": "Succesvol opgeslagen",
+        "message": "{count} bestanden opgeslagen in:\n{folder}",
+        "open_folder": "Wilt u de map openen?"
+      },
+      "adjustments_applied": {
+        "title": "Aanpassingen toegepast",
+        "message": "De aanpassingen zijn succesvol toegepast."
+      },
+      "pdf_unlocked": {
+        "title": "PDF ontgrendeld",
+        "message": "Het ontgrendelde PDF-bestand is opgeslagen:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Groot archief",
+        "message": "Dit archief is {size} MB uitgepakt.\nHet laden kan veel geheugen (RAM) verbruiken.\n\nWilt u doorgaan?"
+      },
+      "confirm_delete": {
+        "title": "Bevestiging",
+        "message": "Wilt u echt {count} bestand(en) ({size}) verwijderen?"
+      },
+      "delete_source_files": {
+        "title": "Bronbestanden verwijderen?",
+        "message": "Wilt u de afbeeldingen verwijderen die zijn samengevoegd?\n\nJa = Bronbestanden verwijderen\nNee = Bronbestanden behouden\nAnnuleren = Bewerking annuleren"
+      },
+      "invalid_filenames": {
+        "title": "Ongeldige bestandsnamen",
+        "intro": "{count} bestand(en) bevatten verboden tekens:",
+        "item": "  • {name}",
+        "more": "  ... en nog {more}",
+        "forbidden_chars": "Verboden tekens: {chars}",
+        "fix_question": "Wilt u deze namen automatisch corrigeren?\n(Verboden tekens worden vervangen door '_')"
+      },
+      "close_without_save": {
+        "title": "Opslaan voor het sluiten?",
+        "message": "Er zijn afbeeldingen toegevoegd. Wilt u een CBZ-archief maken voordat u sluit?"
+      },
+      "flatten_folders": {
+        "title": "Mappen afvlakken",
+        "subdirs_detected": "Submappen gedetecteerd:",
+        "files_to_move": "{count} bestand(en) worden naar de hoofdmap verplaatst.",
+        "folders_to_delete": "{count} submap(pen) worden verwijderd.",
+        "continue_question": "Wilt u doorgaan?"
+      },
+      "update_page_count": {
+        "title": "Paginaaantal bijwerken",
+        "message": "Het aantal pagina's in de strip is gewijzigd.\n\nPaginaaantal aangegeven in metadata: {original}\nHuidig paginaaantal: {current}\n\nWilt u het paginaaantal in de metadata bijwerken?"
+      },
+      "conversion_complete": {
+        "title": "Conversie voltooid",
+        "message": "Conversie voltooid!\n\n{count} afbeelding(en) geconverteerd naar {format}-formaat zijn toegevoegd na uw selectie.\n\nOriginele afbeeldingen verwijderen?",
+        "delete_originals": "Originelen verwijderen\n{count} bestand(en) - {size}",
+        "keep_all": "Alles bewaren\n{count} bestand(en) - {size}",
+        "cancel_conversion": "Conversie annuleren\n{count} bestand(en) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Onjuiste extensie gedetecteerd: dit bestand is een CBZ, geen CBR. Hernoemen?",
+      "title": "Onjuiste extensie"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Onjuiste extensie gedetecteerd: het bestand '{filename}' is een CBR, geen CBZ. Hernoemen?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Onjuiste extensie gedetecteerd: het bestand '{filename}' is een CB7, geen CBZ/CBR. Hernoemen?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Miniatuurgrootte",
+    "loading": "Even geduld, bezig met laden...\n{percent}%",
+    "resizing": "Even geduld, bezig met formaat wijzigen...\n{percent}%",
+    "converting": "Een moment geduld, conversie bezig...\n{percent}%",
+    "loading_lazy": "Even geduld, laden bezig...\n{percent}%\n\nVanwege de grote omvang van dit bestand ({size} MB) worden pagina's geleidelijk geladen. Pagina's die zichtbaar zijn op het scherm worden onmiddellijk geladen, andere worden automatisch geladen tijdens het scrollen.",
+    "apply_save_cbz": "Wijzigingen toepassen\nen CBZ-bestand opslaan",
+    "apply_create_cbz": "Wijzigingen toepassen\nen CBZ-bestand maken",
+    "import_progress": "Importeren...\n{percent}%",
+    "pdf_import_progress": "PDF importeren...\n{percent}%",
+    "pdf_opening": "PDF-bestand openen...",
+    "pdf_page": "Pagina {current} / {total}",
+    "warning_close": "Waarschuwing! De wijzigingen zijn niet opgeslagen en gaan verloren!",
+    "language_label": "Taal:",
+    "directory_tooltip": "Map: {name}\n{count} bestand(en)\nTotale grootte: {size} MB",
+    "folder_up_tooltip": "Dubbelklik om een niveau\nomhoog te gaan in de mappenstructuur",
+    "status_bar": "{dirs} map(pen)  |  {files} bestand(en) ({total_size})  |  {selected} geselecteerd ({selected_size})",
+    "pdf_converting": "{total} pagina's converteren naar afbeeldingen op {dpi} DPI...",
+    "pdf_converting_no_change": "{total} pagina's extraheren zonder wijziging...",
+    "print_progress": "Voorbereiden voor afdrukken...\n{percent}%",
+    "print_preparing": "Even geduld, voorbereiden voor afdrukken...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nSamenvatting van de GNU General Public License v3\n\nVERLEENDE VRIJHEDEN\nU mag MosaicView gebruiken, kopiëren, wijzigen en verspreiden,\nook voor commerciële doeleinden.\n\nVERPLICHTINGEN\nElke verspreiding (origineel of gewijzigd) moet :\n– de GPL v3-licentie behouden\n– de broncode bevatten of aangeven waar deze te verkrijgen is\n– geen aanvullende beperkingen opleggen\n\nGARANTIES\nDeze software wordt gedistribueerd ZONDER ENIGE GARANTIE.\nDe auteur is niet aansprakelijk voor schade als gevolg van het gebruik ervan.\n\nU had een kopie van de GNU General Public License moeten ontvangen bij dit programma. Als dat niet het geval is, zie <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Volledige licentie bekijken",
+    "license_unrar_text": "CBZ-bestanden zijn gebaseerd op het ZIP-formaat, een vrij en open formaat. CBR-bestanden zijn daarentegen gebaseerd op het RAR-formaat, een proprietair formaat.\n\nMosaicView kan CBR-bestanden openen dankzij UnRAR, een hulpprogramma ontwikkeld door RARlab en vrij te herverdelen.\n\nOfficiële website: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "UnRAR-licentie bekijken",
+    "saving_cbz": "Opslaan bezig... {percent}%",
+    "empty_canvas_line1": "Zet hier een of meer CBZ/CBR/CB7/PDF-bestanden of uw afbeeldingen neer",
+    "empty_canvas_line2": "Zodra een bestand is geopend, kunt u andere blijven neerzetten",
+    "empty_canvas_line3": "Leg een of meer mappen neer om een batchverwerking te starten",
+    "icon_toolbar_config_title": "Configuratie van de pictogrambalk",
+    "icon_toolbar_active": "Pictogrammen in de balk",
+    "icon_toolbar_hidden": "Pictogrammen in reserve",
+    "license_gpl_full": "GNU GPL v3-licentie",
+    "license_unrar_full": "UnRAR-licentie",
+    "licenses_button": "Licenties",
+    "view_full_gpl_license": "Volledige GNU GPL v3-licentie bekijken",
+    "license_7zip_text": "CB7-bestanden zijn gebaseerd op het 7z-formaat, ontwikkeld door Igor Pavlov en gedistribueerd onder de GNU LGPL-licentie.\n\nMosaicView kan CB7-bestanden openen dankzij 7-Zip — een gratis open-sourceprogramma.\n\nOfficiële website : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "7-Zip-licentie bekijken",
+    "license_7zip_full": "7-Zip-licentie",
+    "icon_toolbar_show_thumb_slider": "Schuifregelaar voor miniatuurgrootte weergeven",
+    "icon_toolbar_show_lang_combo": "Taalkiezer weergeven",
+    "adjusting": "Even geduld, aanpassingen worden uitgevoerd...\n{current} / {total}",
+    "license_piqad_full": "Licentie lettertype pIqaD qolqoS",
+    "license_tengwar_full": "Licentie lettertype Alcarin Tengwar",
+    "view_full_piqad_license": "Volledige pIqaD qolqoS-licentie bekijken"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Afbeeldingen converteren",
+      "title": "Converteren van {count} {word}",
+      "word_image": "afbeelding",
+      "word_images": "afbeeldingen",
+      "info": "Kies het doelformaat:",
+      "format_png": "PNG (verliesvrij)",
+      "format_jpg": "JPEG (met compressie)",
+      "format_webp": "WEBP (modern)",
+      "format_bmp": "BMP (bitmap)",
+      "format_tiff": "TIFF (hoge kwaliteit)",
+      "format_gif": "GIF (animatie)",
+      "quality_label": "Kwaliteit voor JPG/WEBP:",
+      "quality_maximum": "Maximaal — kwaliteit 95/100",
+      "quality_high": "Hoog — kwaliteit 85/100",
+      "quality_medium": "Gemiddeld — kwaliteit 75/100",
+      "quality_low": "Laag — kwaliteit 60/100",
+      "quality_custom_option": "Aangepast",
+      "quality_custom": "Kwaliteit aangepast : {value}/100",
+      "quality_note": "(Deze parameter beïnvloedt alleen JPG- en WEBP-formaten)",
+      "quality_window_title": "Kwaliteitsselectie",
+      "format_gif_static": "Statische GIF",
+      "format_gif_animated": "Geanimeerde GIF (selecteer meerdere afbeeldingen)"
+    },
+    "split": {
+      "window_title": "Pagina splitsen",
+      "title": "Pagina splitsen",
+      "pages_label": "Aantal pagina's:",
+      "direction_label": "Richting van splitsen:",
+      "horizontal": "Horizontaal (links → rechts)",
+      "vertical": "Verticaal (boven → onder)",
+      "warning": "⚠ Omdat het splitsen automatisch wordt berekend,\nkan handmatige aanpassing nodig zijn.",
+      "button_split": "Splitsen",
+      "button_cancel": "Annuleren"
+    },
+    "join": {
+      "window_title": "Pagina's samenvoegen - Volgorde wijzigen",
+      "instructions": "Rangschik de afbeeldingen:\n• Verticaal (boven/onder) voor verticaal samenvoegen\n• Horizontaal (links/rechts) voor horizontaal samenvoegen",
+      "merged_filename_prefix": "Samenvoeging",
+      "heights_label": "Hoogtes",
+      "widths_label": "Breedtes",
+      "size_adjustment_title": "Grootte aanpassing",
+      "size_adjustment_warning": "⚠️ De geselecteerde afbeeldingen hebben verschillende afmetingen.\nKies hoe hun groottes moeten worden aangepast voor samenvoeging.\nDe beeldverhouding van elke afbeelding blijft altijd behouden.",
+      "keep_original": "Oorspronkelijke groottes behouden",
+      "keep_original_desc": "(voegt zwarte balken toe om te vullen)",
+      "enlarge_small": "Kleine afbeeldingen vergroten",
+      "enlarge_small_desc": "(uitlijnen op maximale afmeting)",
+      "reduce_large": "Grote afbeeldingen verkleinen",
+      "reduce_large_desc": "(uitlijnen op minimale afmeting)",
+      "back_to_arrangement": "Terug"
+    },
+    "pdf": {
+      "quality_merge": "Selecteer de samenvoegkwaliteit:",
+      "quality_export": "Selecteer de exportkwaliteit:",
+      "merge_quality_title": "PDF-samenvoegkwaliteit",
+      "export_quality_title": "PDF-exportkwaliteit",
+      "loading_title": "PDF laden...",
+      "dpi_90": "90 DPI - Webpublicatie",
+      "dpi_150": "150 DPI - Goede kwaliteit (aanbevolen voor weergave)",
+      "dpi_200": "200 DPI - Zeer goede kwaliteit",
+      "dpi_300": "300 DPI - Uitstekende kwaliteit (stripstandaard)",
+      "dpi_600": "600 DPI - Maximale kwaliteit (grote bestanden)",
+      "dpi_original": "Geen beeldwijziging",
+      "dpi_original_tooltip": "Intelligente analyse van elke PDF-pagina:\n• Pagina's met alleen afbeeldingen: behoudt originele DPI\n• Pagina's met alleen tekst: 300 DPI\n• Gemengde pagina's (tekst + afbeeldingen): afbeeldings-DPI als >= 300, anders 300 DPI\nMaximum: 2400 DPI om bestandsgrootte te beperken"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "PyMuPDF vereist",
+      "pymupdf_required_message": "PyMuPDF (fitz) is niet geïnstalleerd. Kan de PDF-bestanden niet converteren.",
+      "select_directory_title": "Selecteer de map met de PDF-bestanden",
+      "no_pdf_title": "Geen PDF-bestanden",
+      "no_pdf_message": "Er zijn geen PDF-bestanden gevonden in de map:\n{directory}",
+      "confirm_title": "Batchconversie van PDF naar CBZ",
+      "confirm_message": "{count} PDF-bestanden te converteren in {directory} (submappen inbegrepen).",
+      "checkbox_permanent_delete": "Originele PDF-bestanden verwijderen zonder\nde prullenbak te gebruiken (GEEN ONGEDAAN MAKEN MOGELIJK)",
+      "start_button": "Starten",
+      "converting_title": "Conversie bezig...",
+      "converting_progress": "Conversie van bestand {current} van in totaal {total}",
+      "page_progress": "Pagina {current} / {total}",
+      "complete_title": "Conversie voltooid",
+      "complete_message": "{count} PDF-bestanden geconverteerd in de map:",
+      "complete_message_errors": "{count} van {total} PDF-bestanden geconverteerd in de map:",
+      "errors_count": "{count} fout(en) aangetroffen."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Selecteer de map met CBR-bestanden",
+      "no_cbr_title": "Geen CBR-bestanden",
+      "no_cbr_message": "Er zijn geen CBR-bestanden gevonden in de map:\\n{directory}",
+      "confirm_title": "Batchconversie van CBR naar CBZ",
+      "confirm_message": "{count} CBR-bestanden om te converteren in {directory} (submappen inbegrepen).",
+      "checkbox_permanent_delete": "Originele CBR-bestanden verwijderen zonder\nde prullenbak (ONGEDAAN MAKEN NIET MOGELIJK)",
+      "start_button": "Starten",
+      "converting_title": "Converteren...",
+      "converting_progress": "Converteren van bestand {current} van {total}",
+      "page_progress": "Pagina {current} / {total}",
+      "complete_title": "Conversie voltooid",
+      "complete_message": "{count} CBR-bestanden geconverteerd in de map:",
+      "complete_message_errors": "{count} CBR-bestanden geconverteerd van {total} in de map:",
+      "errors_count": "{count} fout(en) aangetroffen.",
+      "renamed_count": "{count} bestand(en) hernoemd naar CBZ",
+      "rarfile_unavailable": "De module rarfile is niet beschikbaar. CBR-bestanden kunnen niet worden geconverteerd."
+    },
+    "close_warning": {
+      "title": "Waarschuwing!",
+      "message": "De wijzigingen zijn niet opgeslagen en gaan verloren!",
+      "btn_close_lose": "Bestand sluiten en wijzigingen verliezen",
+      "btn_save_cbz": "Wijzigingen toepassen en bestand opslaan",
+      "btn_create_cbz": "Wijzigingen toepassen en CBZ-bestand maken",
+      "btn_cancel": "Annuleren en terug naar mozaïek"
+    },
+    "replace_image": {
+      "title": "Beschadigde afbeelding vervangen"
+    },
+    "reduce_size": {
+      "window_title": "Afbeeldingsformaat wijzigen",
+      "title": "Formaat wijzigen van {count} {word}",
+      "word_image": "afbeelding",
+      "word_images": "afbeeldingen",
+      "current_size": "Huidige grootte: {size} MB",
+      "current_dimensions": "Huidige afmetingen: {width} × {height} px",
+      "choose_method": "Kies de methode voor formaatwijziging:",
+      "custom_dimensions": "Aangepaste afmetingen",
+      "width_label": "Breedte:",
+      "height_label": "Hoogte:",
+      "use_custom_dimensions": "Gebruik deze afmetingen",
+      "different_dimensions_warning": "Geselecteerde pagina's hebben verschillende afmetingen. Aangepaste afmetingen zullen alle pagina's op dezelfde grootte dwingen. Zorg ervoor dat u de gevolgen begrijpt voordat u doorgaat.",
+      "estimated_size": "Geschatte grootte: {size} MB",
+      "percentage_reduction": "Procentuele reductie",
+      "percentage_enlargement": "Procentuele vergroting",
+      "reduce_0": "0% (geen wijziging)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (geen wijziging)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "De meest voorkomende paginabreedtes zijn 1024, 1280, 1600, 1920 en 2000 pixels, maar andere waarden zijn ook geschikt.",
+      "multi_page_width": "Meerdere pagina's automatisch detecteren en schalen (breedte/hoogte)",
+      "multi_page_width_tooltip": "Schakelt automatische detectie van meerdere pagina's in: dubbele pagina, drievoudige pagina, enz. De vermenigvuldigingscoëfficiënt wordt automatisch berekend op basis van de verhouding van elke pagina, of het nu in de breedte (naast elkaar liggende pagina's) of in de hoogte (gestapelde pagina's) is"
+    },
+    "gif_animated": {
+      "window_title": "Een geanimeerde GIF maken",
+      "images_title": "Animatie-afbeeldingen",
+      "params_title": "GIF-parameters",
+      "frame_delay_label": "Vertraging tussen afbeeldingen:",
+      "fps_normal": "{fps} frames/seconde",
+      "fps_slow": "1 frame elke {seconds} seconden",
+      "loop_label": "Aantal herhalingen:",
+      "loop_info": "(0 = oneindige lus)",
+      "disposal_label": "Afbeeldingsverwijdering:",
+      "disposal_0": "Niet gespecificeerd",
+      "disposal_1": "Vorige afbeelding behouden",
+      "disposal_2": "Herstellen naar achtergrondkleur",
+      "disposal_3": "Herstellen naar vorige staat",
+      "optimize": "Bestand optimaliseren (alleen verschillen opslaan)",
+      "metadata_title": "GIF-metadata",
+      "metadata_dimensions": "Afmetingen: {width} × {height} px",
+      "metadata_frames": "Aantal frames: {count}",
+      "metadata_duration": "Totale duur: {duration} s",
+      "metadata_fps": "Frequentie: {fps} fps",
+      "metadata_palette": "Palet: tot 256 kleuren",
+      "metadata_size": "Geschatte grootte: {size} KB",
+      "comment_label": "Opmerking (optioneel):",
+      "no_images": "Geen afbeeldingen geselecteerd",
+      "creating_progress": "Afbeeldingen laden... ({current}/{total})",
+      "creating_normalizing": "Afbeeldingen normaliseren... ({current}/{total})",
+      "creating_quantizing": "Kleuren kwantiseren... ({current}/{total})",
+      "creating_saving": "GIF opslaan..."
+    },
+    "save_to_folder": {
+      "title": "Selecteer doelmap"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Dubbele bestandsnamen",
+      "message": "Identieke bestandsnamen zijn gedetecteerd. Hoewel opslaan technisch\nmogelijk is, kan dit leesproblemen veroorzaken in sommige stripboek-\nlezertoepassingen (onvolledige weergave, ontbrekende pagina's, enz.).\n\nHet wordt aanbevolen om de pagina's opnieuw te nummeren voor het opslaan."
+    },
+    "adjustments": {
+      "window_title": "Afbeeldingsaanpassingen",
+      "title": "Aanpassingen voor {count} {word}",
+      "word_image": "afbeelding",
+      "word_images": "afbeeldingen",
+      "apply_button": "Toepassen",
+      "color_depth_section": "Kleurdiepte",
+      "brightness_contrast_section": "Helderheid en contrast",
+      "compression_section": "Compressie",
+      "effects_section": "Effecten",
+      "sharpness_section": "Scherpte",
+      "levels_section": "Zwart/wit-niveaus",
+      "depth_unchanged": "Niet wijzigen",
+      "depth_32bit": "32 bits (RGBA - kleuren + transparantie)",
+      "depth_24bit": "24 bits (RGB - kleuren)",
+      "depth_8bit": "8 bits (PNG-palet / JPEG-grijswaarden)",
+      "depth_1bit": "1 bit (zwart en wit)",
+      "brightness_label": "Helderheid: {value}",
+      "contrast_label": "Contrast: {value}",
+      "compression_enable": "Hercompressie inschakelen",
+      "compression_quality_label": "Kwaliteit : {value}/100",
+      "sharpness_label": "Scherpte: {value}",
+      "effect_none": "Geen effect",
+      "effect_grayscale": "Grijstinten",
+      "effect_sepia": "Sepia",
+      "levels_none": "Geen aanpassing",
+      "levels_threshold": "Drempel (zuiver zwart of wit)",
+      "levels_advanced": "Geavanceerde niveaus (schaduwen/middentonen/hooglichten)",
+      "threshold_label": "Drempel: {value}",
+      "black_point_label": "Zwartpunt: {value}",
+      "gamma_label": "Gamma (middentonen): {value}",
+      "white_point_label": "Witpunt: {value}",
+      "auto_levels_button": "Automatische aanpassing",
+      "open_viewer_button": "Aanpassen met de viewer (aanbevolen)",
+      "compression_info": "Compressie is alleen van toepassing op JPG- en WebP-afbeeldingen",
+      "open_viewer_button_simple": "Aanpassen met viewer",
+      "reset_button": "Resetten",
+      "preview_section": "Voorbeeld",
+      "effect_invert": "Kleurinversie",
+      "preview_warning": "Voorbeeld kan afwijken van het eindresultaat",
+      "effect_remove_colors": "Kleurverwijdering",
+      "remove_colors_intensity_label": "Intensiteit : {value}",
+      "image_mode_section": "Beeldmodus",
+      "image_mode_rgb": "RGB (kleuren)",
+      "image_mode_rgba": "RGBA (kleuren + transparantie)",
+      "image_mode_l": "L (grijstinten)",
+      "image_mode_la": "LA (grijstinten + transparantie)",
+      "image_mode_cmyk": "CMYK (drukwerk)",
+      "image_mode_1": "1 (puur zwart-wit)",
+      "image_mode_p": "P (256-kleurenpalet)",
+      "saturation_section": "Verzadiging",
+      "saturation_label": "Verzadiging : {value}",
+      "saturation_viewer_title": "Verzadigingsaanpassing",
+      "transparency_section": "Transparantie",
+      "transparency_info": "Transparantie is alleen van toepassing op PNG-, WebP- en ICO-afbeeldingen",
+      "transparency_type_label": "Type :",
+      "transparency_type_flood": "Zone",
+      "transparency_type_global": "Globaal",
+      "transparency_tolerance_label": "Tolerantie : {value}",
+      "transparency_viewer_title": "Transparantie aanpassen",
+      "transparency_click_instruction": "Klik op de kleur die transparant moet worden",
+      "transparency_undo": "Laatste klik ongedaan maken",
+      "transparency_redo": "Opnieuw",
+      "transparency_type_flood_tooltip": "Flood fill : maakt het eenkleurige gebied rond het aangeklikte pixel transparant",
+      "transparency_type_global_tooltip": "Globale transparantie : beïnvloedt alle pixels in de afbeelding waarvan de kleur lijkt op de aangeklikte",
+      "transparency_apply": "Toepassen",
+      "transparency_skipped_warning": "{count} afbeelding(en) overgeslagen — formaat niet compatibel met transparantie. Converteer ze eerst naar PNG om ze op te nemen.",
+      "unsharp_section": "Adaptieve scherpte",
+      "unsharp_radius_label": "Straal: {value}",
+      "unsharp_percent_label": "Intensiteit: {value} %",
+      "unsharp_threshold_label": "Drempelwaarde: {value}",
+      "unsharp_viewer_title": "Adaptieve scherpte",
+      "auto_levels_tooltip": "Analyseert elke pagina en past automatisch de zwart- en witniveaus aan om het contrast te maximaliseren.\nGebruik de viewer om pagina voor pagina te kiezen."
+    },
+    "levels_viewer": {
+      "title": "Niveaus aanpassen met pipetten",
+      "apply_current": "Toepassen op deze pagina",
+      "apply_all": "Toepassen op alle geselecteerde pagina's",
+      "black_pipette": "Zwartpunt pipet",
+      "white_pipette": "Witpunt pipet",
+      "black_pipette_tooltip": "Klik op een pixel die volledig zwart zou moeten zijn. Let op: het is gemakkelijk om te ver te gaan!",
+      "white_pipette_tooltip": "Klik op een pixel die volledig wit zou moeten zijn. Let op: het is gemakkelijk om te ver te gaan!"
+    },
+    "sharpness_viewer": {
+      "title": "Scherpte-aanpassing"
+    },
+    "brightness_viewer": {
+      "title": "Helderheid- en contrastaanpassing"
+    },
+    "compression_viewer": {
+      "title": "Compressieaanpassing"
+    },
+    "outliers": {
+      "title": "Pagina's met ongebruikelijke afmetingen",
+      "message": "De volgende pagina's hebben afmetingen die sterk afwijken van de andere. Kies hoe u ze wilt behandelen:",
+      "width": "Breedte",
+      "height": "Hoogte",
+      "unusual": "ongebruikelijk",
+      "skip": "Niet schalen",
+      "keep": "behouden"
+    },
+    "first_page_multi": {
+      "title": "Eerste pagina is een meervoudige pagina",
+      "message": "De eerste pagina is gedetecteerd als meervoudig. Hoe wilt u deze nummeren?",
+      "option_auto_desc": "Normale hernummering met automatische detectie.",
+      "option_joint_desc": "Verbinding tussen de eerste en laatste pagina van de strip.",
+      "option_exclude_label": "Niet opnemen in hernummering",
+      "option_exclude_desc": "De pagina behoudt zijn huidige naam en blijft op de eerste positie. U kunt de naam later handmatig wijzigen."
+    },
+    "batch_img": {
+      "select_directory_title": "Selecteer de map met de afbeeldingen",
+      "no_img_title": "Geen afbeeldingsbestanden gevonden",
+      "no_img_message": "Er zijn geen losse afbeeldingsbestanden gevonden in de map :\n{directory}",
+      "confirm_title": "Batchconversie van losse afbeeldingen naar CBZ",
+      "confirm_message": "{count} afbeeldingsbestand(en) te converteren in {directory} (submappen inbegrepen).",
+      "checkbox_permanent_delete": "Originele afbeeldingsbestanden definitief verwijderen\nzonder ze naar de prullenbak te sturen (KAN NIET ONGEDAAN WORDEN GEMAAKT)",
+      "start_button": "Starten",
+      "converting_title": "Conversie bezig...",
+      "converting_progress": "Bestand {current} van {total} wordt geconverteerd",
+      "complete_title": "Conversie voltooid",
+      "complete_message": "{count} afbeeldingsbestand(en) geconverteerd in de map :",
+      "complete_message_errors": "{count} van {total} afbeeldingsbestand(en) geconverteerd in de map :",
+      "errors_count": "{count} fout(en) opgetreden.",
+      "converted_by_ext": "{ext} : {count} bestand(en)",
+      "mode_title": "Afbeeldingen converteren naar CBZ",
+      "mode_intro": "Hoe wilt u de afbeeldingen groeperen?",
+      "mode_one_per_image": "Elke afbeelding converteren naar afzonderlijke CBZ-bestanden",
+      "mode_one_per_image_sub": "(Elke afbeelding wordt een afzonderlijk CBZ-bestand)",
+      "mode_all_in_one": "Alle afbeeldingen samenvoegen in één CBZ-bestand",
+      "mode_all_in_one_sub": "(Alle afbeeldingen in de map worden samengevoegd in één CBZ-bestand)"
+    },
+    "batch_drop": {
+      "window_title": "Batchverwerking van mappen",
+      "intro_single": "1 map is neergelegd. Welke verwerking wilt u toepassen?",
+      "intro_multiple": "{count} mappen zijn neergelegd. Welke verwerking wilt u toepassen?",
+      "recursive_note": "Submappen worden ook doorzocht.",
+      "mixed_drop_title": "Neerleggen niet ondersteund",
+      "mixed_drop_message": "U heeft tegelijkertijd bestanden en mappen neergelegd. Leg alleen bestanden of alleen mappen neer."
+    },
+    "pdf_unlock": {
+      "title": "PDF beveiligd tegen wijzigingen",
+      "message": "De pagina's zijn normaal geïmporteerd.\n\nDit PDF-bestand is beveiligd tegen wijzigingen (eigenaarswachtwoord).\n\nWilt u een kopie van het PDF-bestand opslaan zonder deze beveiliging?",
+      "yes": "Ja, sla een ontgrendelde kopie op",
+      "no": "Nee, doorgaan zonder ontgrendelen"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF-bestanden beschermd tegen wijzigingen",
+      "message_single": "Er is 1 PDF-bestand gevonden dat beschermd is tegen wijzigingen. Het is normaal geconverteerd naar CBZ.\n\nWilt u een ontgrendelde kopie opslaan in de oorspronkelijke map?",
+      "message_plural": "Er zijn {count} PDF-bestanden gevonden die beschermd zijn tegen wijzigingen. Ze zijn normaal geconverteerd naar CBZ.\n\nWilt u van elk een ontgrendelde kopie opslaan in de oorspronkelijke map?",
+      "yes": "Ja, ontgrendelde kopieën opslaan",
+      "no": "Nee, doorgaan zonder ontgrendelen"
+    },
+    "ico_creator": {
+      "title": ".ico-pictogram aanmaken",
+      "info_message": "De afbeelding wordt aangepast naar meerdere resoluties (16, 32, 48, 64, 128, 256 px).\nHuidige kadergrootte: {w} × {h} px",
+      "btn_validate_crop": "Bijsnijden bevestigen",
+      "btn_validate_no_crop": "Bevestigen zonder bijsnijden",
+      "btn_cancel": "Annuleren",
+      "btn_transparency": "Transparantie instellen",
+      "btn_validate_final": "Bevestigen",
+      "tolerance_label": "Tolerantie:",
+      "success_title": ".ico-bestand aangemaakt",
+      "success_message": "Het bestand {filename} is succesvol aangemaakt.",
+      "overwrite_title": "Bestand bestaat al",
+      "overwrite_message": "Het bestand {filename} bestaat al. Overschrijven?",
+      "save_blocked_title": "Opslaan niet mogelijk",
+      "save_blocked_message": "Dit archief bevat een of meer .ico-bestanden die geen stripafbeeldingen zijn. Opslaan is uitgeschakeld zolang deze bestanden aanwezig zijn in het mozaïek.\nOm opslaan weer in te schakelen, verwijder ze uit het mozaïek (Del-toets) of knip ze (Ctrl+X) om ze elders te plakken.",
+      "btn_back_to_crop": "Terug naar bijsnijden"
+    },
+    "video_save_blocked": {
+      "title": "Kan niet opslaan",
+      "message": "Dit archief bevat een of meer videobestanden. Opslaan is uitgeschakeld zolang deze bestanden in het mozaïek aanwezig zijn.\nOm opslaan opnieuw in te schakelen, verwijdert u ze uit het mozaïek (Del-toets) of knipt u ze (Ctrl+X) om ze elders te plakken."
+    },
+    "open_file": {
+      "title": "Archief openen",
+      "filter_archives": "Archieven (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Alle bestanden (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Licentie"
+    },
+    "replace_corrupted_image": {
+      "title": "Beschadigde afbeelding vervangen",
+      "filter_images": "Afbeeldingen (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Alle bestanden (*)"
+    },
+    "see_log": "LOG BEKIJKEN"
+  },
+  "tooltip": {
+    "source_archive": "Bronbestand: {name}",
+    "file": "Bestand: {name}",
+    "reason": "Reden: {reason}",
+    "size_kb": "Grootte: {size} KB",
+    "size_mb": "Grootte: {size} MB",
+    "file_size": "Grootte: {size}",
+    "dimensions": "Afmetingen: {width} × {height} px",
+    "resolution": "Resolutie: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: ongedefinieerd",
+    "cbr_info": "CBR-bestanden gebruiken het RAR-formaat, dat eigendom is en gepatenteerd;\nze kunnen niet worden gewijzigd, wijzigingen worden opgeslagen in een nieuw CBZ-bestand.",
+    "rotate_left": "90 graden rotatie naar links",
+    "rotate_right": "90 graden rotatie naar rechts",
+    "mirror_horizontal": "Horizontale spiegeling",
+    "mirror_vertical": "Verticale spiegeling",
+    "fullscreen": "Volledig scherm",
+    "help_button": "Gebruikershandleiding",
+    "theme_button": "Schakel tussen licht en donker thema",
+    "font_decrease_button": "Lettergrootte verkleinen",
+    "font_increase_button": "Lettergrootte vergroten",
+    "color_depth": "Kleuren: {bits} bits ({mode})",
+    "batch_pdf_to_cbz": "Converteert alle PDF-bestanden in een map en\nsubmappen naar CBZ. Afbeeldingen worden\ngeëxtraheerd en gearchiveerd zonder\nhercompressie.",
+    "batch_pdf_permanent_delete": "WAARSCHUWING: als deze optie is aangevinkt,\nworden de originele PDF-bestanden na\nde conversie permanent verwijderd,\nzonder mogelijkheid tot herstel.\nZorg ervoor dat u een back-up heeft\nindien nodig.",
+    "batch_cbr_to_cbz": "Converteert naar CBZ alle CBR-bestanden\nin een map en de bijbehorende submappen.",
+    "batch_cbr_permanent_delete": "WAARSCHUWING: als deze optie is aangevinkt,\nworden de originele CBR-bestanden permanent\nverwijderd na de conversie, zonder mogelijkheid\ntot herstel. Zorg ervoor dat u een\nback-up heeft indien nodig.",
+    "renumber_btn_1": "Automatische detectie van meervoudige pagina's\nRechtsklik om van modus te wisselen",
+    "renumber_btn_2": "Eenvoudige nummeringsmodus\nRechtsklik om van modus te wisselen",
+    "corrupted_header": "Beschadigd bestand",
+    "right_click_instruction1": "Klik met de rechtermuisknop om te vervangen",
+    "right_click_instruction2": "of te verwijderen.",
+    "unknown_error": "Onbekende fout",
+    "batch_img_to_cbz": "Converteert alle afbeeldingsbestanden in een map\nen de submappen ervan naar CBZ,\nen maakt per afbeelding één CBZ-bestand aan.",
+    "batch_img_permanent_delete": "WAARSCHUWING : als deze optie is aangevinkt,\nworden de originele afbeeldingsbestanden na de\nconversie permanent verwijderd, zonder de mogelijkheid\nvan herstel. Zorg voor een back-up\nals dat nodig is.",
+    "too_large_header": "Afbeelding te groot om te laden",
+    "too_large_pixels": "Afmetingen: {pixels}",
+    "icon_toolbar_config_button": "Pictogramconfiguratie",
+    "icon_toolbar_size_decrease": "Pictogramgrootte verkleinen",
+    "icon_toolbar_size_increase": "Pictogramgrootte vergroten",
+    "source_loose": "Los beeld",
+    "source_web": "Webafbeelding"
+  },
+  "help": {
+    "title": "MosaicView - Gebruiksaanwijzing",
+    "intro": "MosaicView stelt u in staat om strips (digitale comics) te manipuleren en bewerken zonder ze uit hun archieven te hoeven extraheren. De applicatie ondersteunt de formaten CBZ (ZIP), CBR (RAR) en PDF. De applicatie is alleen compatibel met 64-bitsystemen.",
+    "open_files": "Bestanden openen",
+    "open_files_content": "• Klik op de knop 'CBZ/CBR/CB7/PDF openen'\n• Of sleep een bestand rechtstreeks in het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, PDF, afbeeldingen (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geextraheerd (tekst wordt genegeerd).\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan.",
+    "mosaic": "Het mozaïek",
+    "mosaic_content": "Het mozaïek toont alle pagina's van je strip als miniaturen. Je kunt:\n• Pagina's herschikken door slepen en neerzetten (paginanummering wordt automatisch en volgt de actieve hernummeringsmodus)\n• Meerdere pagina's selecteren (Ctrl+klik of Shift+klik)\n• Miniatuurgrootte aanpassen met de schuifregelaar\n• Bestanden handmatig hernoemen door op hun naam te klikken\n• Stripbestanden (CBZ/CBR/PDF) vanuit Windows Verkenner direct naar een andere geopende strip slepen om hun inhoud samen te voegen",
+    "manipulation": "Paginamanipulatie",
+    "manipulation_content": "• Versleep pagina's om ze te herordenen\n• Sleep een volledig stripboek in een ander om ze samen te voegen\n• Rechtsklik op een pagina voor opties (roteren, verwijderen, enz.)\n• Dubbelklik op een pagina om de viewer te openen\n• Exporteer afzonderlijke pagina's door ze naar een Windows-map te slepen of via Ctrl+C / Ctrl+V",
+    "renumber": "Hernummering van pagina's",
+    "renumber_content": "MosaicView biedt twee modi voor het hernummeren van pagina's, toegankelijk via de hernummeringsknop, het contextmenu (rechtsklik) of automatisch bij slepen en neerzetten:\n\n• Automatische detectie van meervoudige pagina's (standaardmodus): de applicatie analyseert de breedte van elke pagina om dubbele, drievoudige pagina's enz. te detecteren. Meervoudige pagina's worden dienovereenkomstig hernummerd (bijv.: een dubbele pagina wordt 003-004 genoemd, een drievoudige 005-006-007). Bij meer dan 4 pagina's worden alleen het eerste en laatste nummer getoond (bijv.: 010---025).\n\n• Eenvoudige nummeringsmodus: elke pagina krijgt een uniek volgnummer (001, 002, 003...), ongeacht de breedte van de pagina's.\n\nOm tussen de twee modi te wisselen, klikt u met de rechtermuisknop op de hernummeringsknop. Een tooltip geeft de actieve modus aan. De geselecteerde modus geldt ook voor de automatische hernummering bij slepen en neerzetten.",
+    "flatten": "Mappen afvlakken",
+    "flatten_content": "Als uw archief submappen bevat, gebruik dan 'Mappen afvlakken' om alle afbeeldingen naar hetzelfde niveau te brengen.",
+    "viewer": "Viewer",
+    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Pijltoetsen ← → : navigatie tussen pagina's\n• Toets D: schakelen tussen 3 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, daarna 2-3, 4-5, etc.\n  - Continue dubbele pagina's: pagina 1 alleen, daarna 2-3, 3-4, 4-5, etc.\n• Muiswiel: snelle navigatie\n• Ctrl+Wiel of Ctrl+Plus/Min: zoomen\n• Ctrl+0: zoom resetten\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm in-/uitschakelen\n• Esc-toets: bijsnijkader annuleren / viewer sluiten",
+    "join_pages": "Pagina's samenvoegen",
+    "join_pages_content": "Selecteer meerdere opeenvolgende pagina's, rechtsklik → 'Geselecteerde pagina's samenvoegen' om pagina's horizontaal of verticaal samen te voegen. Het formaat van de geproduceerde afbeelding komt overeen met dat van de bronpagina's als ze allemaal identiek zijn, anders standaard PNG.",
+    "split_pages": "Pagina's splitsen",
+    "split_pages_content": "Om dubbele pagina's automatisch te splitsen:\n• Selecteer de te splitsen pagina's\n• Rechtsklik → 'Geselecteerde pagina's splitsen'\n• Kies de richting (verticaal of horizontaal)",
+    "crop": "Bijsnijden in de viewer",
+    "crop_content": "Teken in de viewer een rechthoek op de afbeelding om een bijsnijdgebied te definiëren:\n• Teken de rechthoek met de muis\n• Pas de grootte aan door aan de randen of hoeken te trekken\n• Klik op 'Bijsnijden valideren' om toe te passen\n• Het bijsnijden wordt toegepast op de huidige afbeelding\n• Esc-toets: bijsnijkader annuleren",
+    "shortcuts": "Sneltoetsen",
+    "shortcuts_content": "• Ctrl+Z: Laatste actie ongedaan maken\n• Ctrl+Y: Ongedaan gemaakte actie opnieuw uitvoeren\n• Ctrl+A: Alle pagina's selecteren\n• Ctrl+I: Selectie omkeren\n• Ctrl+C: Geselecteerde pagina's kopiëren\n• Ctrl+X: Geselecteerde pagina's knippen\n• Ctrl+V: Pagina's plakken\n• Del: Geselecteerde pagina's verwijderen\n• F5: Mozaïekweergave bijwerken\n• F11: Volledig scherm in-/uitschakelen (afsluiten met F11 of ESC)",
+    "dark_mode": "Donkere modus",
+    "dark_mode_content": "Klik op de zon/maan-knop om te schakelen tussen licht en donker thema.",
+    "sort": "Pagina's sorteren",
+    "sort_content": "Gebruik de knop 'Sorteren' om pagina's automatisch te ordenen op:\n• Naam, Type, Grootte, Breedte, Hoogte, Resolutie of DPI",
+    "save": "Opslaan",
+    "save_content": "• 'Opslaan': slaat wijzigingen op in het originele bestand\n• 'Opslaan als': maakt een nieuw archief\n• 'CBZ maken': beschikbaar in alleen-afbeeldingen-modus (zonder archief)",
+    "other": "Overige functies",
+    "other_content": "• Roteren: draai één of meerdere pagina's\n• Converteren: converteer afbeeldingen naar verschillende formaten (PNG, JPEG, WEBP, BMP, TIFF, GIF). Opmerking: CMYK-afbeeldingen worden automatisch geconverteerd naar RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Opmerking: CMYK-afbeeldingen worden automatisch geconverteerd naar RGB\n• Afdrukken: druk geselecteerde pagina's of alle pagina's af\n• Extractie: extraheer specifieke pagina's\n• Metadata-tabblad: toont informatie uit het ComicInfo.xml-bestand (indien aanwezig in het archief). Als u een pagina toevoegt of verwijdert uit een strip met metadata, zal de applicatie voorstellen om het aangegeven aantal pagina's te wijzigen. Andere metadata kunnen niet worden gewijzigd. Deze beperking is opzettelijk en het gevolg van een ontwerpkeuze.",
+    "config_files": "Configuratie- en tijdelijke bestanden",
+    "config_files_content": "MosaicView maakt een bestand aan met de naam .mosaicview_config.json. Dit bestand bevat enkele parameters die nodig zijn voor het correct functioneren van de reset-knop, evenals de lijst met recent geopende strips, die uiteraard nodig is voor het weergeven van recent geopende bestanden. MosaicView slaat ook tijdelijke bestanden op, die nodig zijn voor verschillende beeldverwerkingsbewerkingen.\nAl deze bestanden bevinden zich in de map {temp_dir}.\nTijdelijke bestanden worden elke keer dat de applicatie wordt gesloten verwijderd, maar het bestand .mosaicview_config.json is door zijn aard bedoeld om te worden bewaard.\nU kunt deze bestanden echter handmatig verwijderen door naar de map {temp_dir} te gaan of op de onderstaande knoppen te klikken. Het bestand .mosaicview_config.json wordt elke keer dat de applicatie wordt geopend opnieuw aangemaakt en tijdelijke bestanden worden indien nodig opnieuw aangemaakt.",
+    "config_clear_temp": "Tijdelijke bestanden verwijderen",
+    "config_clear_recent": "Recente bestanden wissen",
+    "config_clear_config": "Configuratiebestand verwijderen",
+    "config_temp_cleared": "Tijdelijke bestanden zijn succesvol verwijderd.",
+    "config_config_cleared": "Configuratiebestand is succesvol verwijderd.\nHet wordt opnieuw aangemaakt bij de volgende start van de applicatie.",
+    "language": "Taalselectie",
+    "language_content": "MosaicView is beschikbaar in meerdere talen.\nStandaard detecteert de applicatie automatisch de taal van uw besturingssysteem en wordt deze taal weergegeven als deze wordt ondersteund. Als uw systeem een niet-ondersteunde taal gebruikt, wordt de interface in het Engels weergegeven.\nU kunt de taal op elk moment handmatig wijzigen via het dropdown-menu onderaan de knoppenkolom, onder de schuifregelaar voor de miniatuurgrootte. Uw keuze wordt opgeslagen en toegepast bij de volgende start van de applicatie.\nBESCHIKBARE TALEN: Arabisch, Armeens, Bulgaars, Chinees (vereenvoudigd), Chinees (traditioneel), Deens, Duits, Engels, Ests, Fins, Frans, Grieks, Hindi, Hongaars, Iers, IJslands, Indonesisch, Italiaans, Japans, Koreaans, Kroatisch, Lets, Litouws, Maleis, Maltees, Nederlands, Noors, Oekraïens, Pools, Portugees, Roemeens, Slowaaks, Sloveens, Spaans, Tamil, Thais, Tsjechisch, Turks, Vietnamees, Zweeds.\nFICTIEVE TALEN BESCHIKBAAR: Klingon (Latijns alfabet en pIqaD-alfabet versies), Sindarin (Latijns alfabet en Tengwar-alfabet versies), Quenya (Latijns alfabet en Tengwar-alfabet versies).\n\nDeze utility gebruikt Windows-lettertypen, behalve voor pIqaD (Klingon-taal) en tengwar (Elvische talen: Sindarin en Quenya) lettertypen. Deze lettertypen zijn vrij van rechten en komen van deze sites:\n- voor pIqaD (Klingon-taal alfabet): {url_piqad}\n- voor tengwar (Elvisch alfabet, voor Sindarin en Quenya): {url_tengwar}\nAls deze sites niet meer actief zijn, kunt u de pIqaD- en tengwar-lettertypen ophalen door op de onderstaande knoppen te klikken:\n\nDeze software werd ontwikkeld in het Frans. Vertalingen naar andere talen werden gedaan met behulp van AI, specifiek Claude. Ik besloot ongeveer veertig talen te ondersteunen. Maar uiteraard spreek ik niet al deze talen. Daarom had ik geen andere keuze dan AI te gebruiken, aangezien het inhuren en betalen van 40 verschillende vertalers niet behoorde tot de overwogen mogelijkheden. Vanwege de automatische aard van deze vertalingen kunnen er fouten voorkomen. Mijn excuses daarvoor.",
+    "credits": "Vibe Coding, mijn liefde",
+    "credits_content": "Ik heb geen enkele kennis van programmeren. Helemaal niets. Bijgevolg heb ik deze software ontwikkeld met behulp van Claude, de AI van Anthropic, en meer specifiek met Claude Code. Ik kan Claude Code niet genoeg aanbevelen, deze applicatie is fantastisch!",
+    "resize_pages": "Paginagrootte wijzigen",
+    "resize_pages_content": "Om je pagina's te verkleinen of vergroten:\n• Selecteer een of meer pagina's\n• Rechtsklik → 'Formaat wijzigen'\n• Drie opties zijn beschikbaar:\n  - Aangepaste afmetingen: voer de gewenste breedte of hoogte in (de beeldverhouding wordt automatisch behouden).\n  - Procentuele verkleining: kies een percentage van 10% tot 90%\n  - Procentuele vergroting: kies een percentage van 10% tot 100%\n• De applicatie toont de geschatte grootte van je afbeeldingen na wijziging\n• De wijziging wordt onmiddellijk toegepast op alle geselecteerde pagina's",
+    "language_export_piqad": "pIqaD-lettertype",
+    "language_export_tengwar": "Tengwar-lettertypen",
+    "language_export_piqad_success": "Lettertype geëxporteerd: {filename}\nBeschikbaar in:",
+    "language_export_tengwar_success": "{count} lettertypen geëxporteerd\nBeschikbaar in:",
+    "icons": "Pictogrammen",
+    "icons_content": "De meeste iconen die in dit hulpprogramma worden gebruikt, zijn afkomstig van deze site en zijn vrij te gebruiken voor niet-commerciële doeleinden: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nSommige zijn door mij aangepast.\nSlechts één pictogram, het Windows-uitvoerbare bestand pictogram, is door mij gemaakt (maar met AI, omdat ik een heel, heel, heel slechte grafisch ontwerper ben). U hebt mijn toestemming om dit pictogram te gebruiken zoals u wilt, zolang u uw bron vermeldt.",
+    "icons_view_button": "Pictogrammen bekijken",
+    "icons_window_title": "MosaicView Pictogrammen",
+    "icons_save_all": "Pictogrammen opslaan",
+    "icons_saved_success": "{count} pictogram(men) opgeslagen in:",
+    "icons_save_failed": "Kan pictogrammen niet opslaan: {error}",
+    "split_ui": "Interface met twee panelen",
+    "split_ui_content": "MosaicView maakt het mogelijk twee archieven tegelijkertijd naast elkaar te tonen.\n\nKlik op het pictogram Splitsen om een tweede paneel te openen. Elk paneel is onafhankelijk: u kunt een archief afzonderlijk openen, bewerken en opslaan. Het actieve paneel wordt aangegeven met een blauwe rand.\n\nSleep pagina's direct om ze van het ene paneel naar het andere te verplaatsen. Als meerdere pagina's zijn geselecteerd, worden ze allemaal tegelijk verplaatst. Pagina's worden ingevoegd op de positie die door de rode balk wordt aangegeven.\n\nKlik op het pictogram Tweede paneel sluiten om terug te keren naar de modus met één paneel.",
+    "license_gpl": "GPL v3-licentie",
+    "license_unrar": "UnRAR-licentie",
+    "config_clear_clipboard": "Klembordbestanden wissen",
+    "config_clipboard_note": "Uitzondering: Tijdelijke bestanden die door het Windows-klembord worden gebruikt (clipboard_XXXXX-bestanden) worden 12 uur na het kopiëren bewaard, zodat u ze kunt plakken, zelfs nadat u de toepassing hebt gesloten. Na 12 uur worden ze automatisch verwijderd.",
+    "config_log_note": "De batchconversies (PDF naar CBZ en CBR naar CBZ) maken een logbestand aan bij fouten. Deze bestanden (Log_pdftocbz_.txt en Log_cbrtocbz_.txt) worden bewaard, zelfs na het sluiten van de toepassing, zodat ze later geraadpleegd kunnen worden. Ze worden alleen verwijderd via de knop \"Tijdelijke bestanden verwijderen\" hierboven.",
+    "config_clipboard_cleared": "Klembordbestanden zijn met succes gewist.",
+    "adjust_images": "Afbeeldingsaanpassing",
+    "adjust_images_content": "Met deze functie kunt u uw afbeeldingen rechtstreeks in MosaicView retoucheren. U kunt helderheid, contrast, scherpte, niveaus en verzadiging aanpassen, effecten toepassen (zwart-wit, sepia, kleurinversie), de compressiekwaliteit instellen, kleuren verwijderen, transparantie toepassen of naar verschillende kleurdiepten converteren. Sommige instellingen hebben een speciale viewer waarmee u het resultaat in volledige resolutie kunt bekijken vóór toepassing. Een miniatuurweergave toont het resultaat in realtime in het hoofdvenster.",
+    "create_icon": "Pictogram maken",
+    "create_icon_content": "MosaicView stelt u in staat pictogrambestanden (.ico) te maken van elke afbeelding in het mozaïek.\n• Rechtsklik op een afbeelding → 'Pictogram maken'\n• Kader het gewenste gebied in de viewer in (het pictogram zal verplicht vierkant zijn)\n• Pas de transparantie aan indien nodig\n• Bevestig: het .ico-bestand wordt direct aan het mozaïek toegevoegd\n• .ico-bestanden bevatten automatisch alle standaardresoluties (van 16×16 tot 256×256)\n• Zolang er een .ico-bestand in het mozaïek aanwezig is, is opslaan in een CBZ-archief geblokkeerd, omdat het ICO-formaat niet wordt ondersteund door deze archieven. Exporteer het .ico-bestand afzonderlijk (Ctrl+C en plakken in een Windows-map), verwijder het daarna uit het mozaïek vóór het opslaan.",
+    "batch_convert": "Batchconversie",
+    "batch_convert_content": "MosaicView biedt drie batchconversiefuncties, alleen beschikbaar wanneer het mozaïek leeg is. Voor elk van hen is het principe hetzelfde : selecteer een map, bevestig, volg de voortgang in realtime, bekijk de eindresultaten. Een optie maakt het mogelijk de originele bestanden permanent te verwijderen in plaats van ze naar de prullenbak te sturen.\n• CBR → CBZ : converteert alle CBR (RAR)-bestanden in een map en zijn submappen. Als een CBR eigenlijk een ZIP is, wordt het eenvoudig hernoemd zonder conversie.\n• PDF → CBZ : converteert alle PDF-bestanden in een map en zijn submappen. Afbeeldingen worden geëxtraheerd zonder hercompressie.\n• GEÏSOLEERDE AFBEELDINGEN → CBZ : maakt een individuele CBZ voor elk afbeeldingsbestand dat gevonden wordt in de map en zijn submappen. Ongeldige, beschadigde, meerdere pagina's (TIFF) of geanimeerde (GIF) afbeeldingen worden genegeerd en gelogd.",
+    "config_open_temp_folder": "Tijdelijke map openen",
+    "icon_toolbar": "Pictogrambalk",
+    "icon_toolbar_content": "De werkbalk met pictogrammen biedt snelle toegang tot de belangrijkste functies van de toepassing. U kunt de pictogrammen naar wens herschikken door ze direct in de werkbalk te slepen. Om te kiezen welke pictogrammen worden weergegeven of verborgen, klikt u op de tandwielknop onderaan de werkbalk: er opent een configuratievenster waarin u pictogrammen kunt verplaatsen tussen de actieve werkbalk en de reserve. Gebruik de knoppen « + » en « − » om de grootte van de pictogrammen aan te passen. De configuratie wordt automatisch opgeslagen.",
+    "license_7zip": "7-Zip-licentie"
+  },
+  "misc": {
+    "file_word": "bestand",
+    "files_word": "bestanden",
+    "corrupted": "beschadigd",
+    "yes": "Ja",
+    "no": "Nee",
+    "cancel": "Annuleren",
+    "selection_suffix": "kopie-selectie"
+  },
+  "metadata": {
+    "title": "Titel",
+    "series": "Reeks",
+    "number": "Nummer",
+    "volume": "Volume",
+    "summary": "Samenvatting",
+    "writer": "Schrijver",
+    "penciller": "Tekenaar",
+    "inker": "Inkter",
+    "colorist": "Colorist",
+    "letterer": "Letteraar",
+    "cover_artist": "Omslagartiest",
+    "editor": "Redacteur (persoon)",
+    "publisher": "Uitgever (bedrijf)",
+    "imprint": "Reeks",
+    "genre": "Genre",
+    "web": "Website",
+    "page_count": "Aantal pagina's",
+    "language_iso": "Taal",
+    "format": "Formaat",
+    "black_and_white": "Zwart-wit",
+    "manga": "Manga",
+    "year": "Jaar",
+    "month": "Maand",
+    "day": "Dag",
+    "notes": "Notities",
+    "characters": "Personages",
+    "locations": "Locaties",
+    "teams": "Teams",
+    "story_arc": "Verhaallijn",
+    "story_arc_number": "Boogummer",
+    "series_group": "Seriegroep",
+    "count": "Aantal nummers",
+    "alternate_series": "Alternatieve serie",
+    "alternate_number": "Alternatief nummer",
+    "alternate_count": "Alternatief aantal",
+    "age_rating": "Leeftijdsclassificatie",
+    "series_complete": "Serie compleet",
+    "translator": "Vertaler",
+    "tags": "Tags",
+    "scan_information": "Scaninformatie",
+    "community_rating": "Gemeenschapswaardering",
+    "review": "Recensie",
+    "gtin": "GTIN",
+    "pages": "Pagina's",
+    "pages_col_image": "Afbeelding",
+    "pages_col_type": "Type",
+    "pages_col_width": "Breedte",
+    "pages_col_height": "Hoogte",
+    "pages_col_size": "Grootte (B)"
+  },
+  "web": {
+    "web_download_progress": "Downloaden: {downloaded}/{total} afbeeldingen...",
+    "web_download_cancel": "Annuleren",
+    "web_no_images": "Geen afbeeldingen",
+    "web_no_images_found": "Er werden geen afbeeldingen gevonden op deze pagina.",
+    "web_imported": "{count} afbeelding(en) geïmporteerd van webpagina",
+    "web_drag_drop_title": "Webafbeelding slepen en neerzetten",
+    "web_copy_paste_message": "Direct slepen en neerzetten vanuit webbrowser wordt niet ondersteund.\n\nAlternatieve oplossing (eenvoudiger):\n\n1. Klik met de rechtermuisknop op de afbeelding in uw browser\n2. Kies 'Afbeelding kopiëren'\n3. Gebruik in MosaicView de knop 'Plakken' of Ctrl+V\n\nDeze methode werkt met alle webafbeeldingen!",
+    "import_web_button": "Webimport",
+    "import_web_tooltip": "Plak een internetadres om alle afbeeldingen van de pagina op te halen",
+    "import_web_menu": "Webimport...",
+    "import_web_dialog_title": "Afbeeldingen importeren van een webpagina",
+    "import_web_url_label": "Webpagina-adres:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Annuleren",
+    "import_web_invalid_url": "Ongeldige URL. Voer een geldig webadres in."
+  },
+  "donation": {
+    "menu_label": "Doneer aan de auteur",
+    "title": "Doe een donatie",
+    "message": "U vindt dit kleine hulpprogramma leuk en gebruikt het regelmatig.\n\nIk heb er enkele honderden uren in geïnvesteerd. Zou u overwegen me te bedanken door een donatie te doen? Wees alsjeblieft aardig, ik heb echt geld nodig om mijn zwembad met champagne te vullen. Of u me nu een paar cent of meerdere miljarden euro wilt sturen, ik accepteer alle bedragen. U kunt deze donatie doen via paypal"
+  },
+  "mail": {
+    "tooltip": "Deze knop opent uw standaard e-mailsoftware in Windows om een e-mail te verzenden. Als er geen software is geconfigureerd (bijvoorbeeld als u uitsluitend webmail gebruikt), kunt u het MosaicView-adres naar het klembord kopiëren door met de rechtermuisknop op het pictogram te klikken.",
+    "copy_address": "E-mailadres van MosaicView kopiëren",
+    "menu_label": "Stuur een e-mail naar MosaicView",
+    "icon_label": "E-mail sturen"
+  },
+  "menu": {
+    "file": "Bestand",
+    "file_open": "Bestand openen",
+    "file_close": "Bestand sluiten",
+    "batch_convert": "Bestanden batchgewijs converteren",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Losse afbeeldingen → CBZ",
+    "edit": "Bewerken",
+    "undo": "Ongedaan maken",
+    "redo": "Opnieuw",
+    "paste": "Plakken",
+    "delete": "Verwijderen",
+    "invert_selection": "Selectie omkeren",
+    "select_all": "Alles selecteren",
+    "deselect": "Selectie opheffen",
+    "refresh_mosaic": "Mozaïek vernieuwen",
+    "images": "Afbeeldingen",
+    "rotation": "Rotatie",
+    "archives": "Archieven",
+    "sort": "Sorteren",
+    "system": "Systeem",
+    "decrease_font": "Lettertype verkleinen",
+    "increase_font": "Lettertype vergroten",
+    "language": "Talen",
+    "language_real": "Echte talen",
+    "language_fictional": "Fictieve talen",
+    "about": "Over",
+    "export_piqad_font": "pIqaD-lettertype opslaan",
+    "export_tengwar_fonts": "Tengwar-lettertypen opslaan"
+  }
+}

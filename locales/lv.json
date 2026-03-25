@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Šveices nazis digitālo komiksu kolekcionāriem",
+  "buttons": {
+    "open_file": "Atvērt CBZ/CBR/CB7/PDF",
+    "close_file": "Aizvērt failu",
+    "create_cbz": "Izveidot CBZ arhīvu",
+    "flatten_dirs": "Pārvietot visus failus\nuz saknes direktoriju un dzēst\napakšdirektorijus",
+    "renumber": "Lappušu\npārnumurēšana",
+    "undo": "⤺ Atsaukt",
+    "redo": "Atcelt atsaukšanu ⤻",
+    "copy": "Kopēt",
+    "cut": "Izgriezt",
+    "paste": "Ielīmēt",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Konvertēt uz citu\nattēla formātu",
+    "join_pages": "Savienot lappuses",
+    "split_page": "Sadalīt lappusi",
+    "save_as": "Saglabāt kā\n(izveidot jaunu CBZ)",
+    "save_selection": "Saglabāt atlasi\nkā CBZ",
+    "print_selection": "Drukāt atlasi",
+    "print_all": "Drukāt visu komiksu",
+    "sort": "Kārtot",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Konvertēt",
+    "cancel": "Atcelt",
+    "split_button": "Sadalīt",
+    "join_button": "Sākt",
+    "validate_crop": "Apstiprināt apgriešanu",
+    "ok": "Labi",
+    "close": "Aizvērt",
+    "apply_and_save": "Lietot izmaiņas un saglabāt failu",
+    "apply_and_create": "Lietot izmaiņas un izveidot CBZ failu",
+    "close_and_lose": "Aizvērt failu un zaudēt izmaiņas",
+    "cancel_return": "Atcelt un atgriezties pie mozaīkas",
+    "update_page_count": "Atjaunināt lappušu skaitu\nmetadatos",
+    "invert_selection": "Apgriezt izvēli",
+    "reduce_size": "Mainīt lappušu izmēru",
+    "mirror_vertical": "⇅",
+    "create_gif": "Izveidot GIF",
+    "edit_gif": "Rediģēt animētu GIF",
+    "save_to_folder": "Eksportēt atlasītās\nlappuses",
+    "continue": "Turpināt",
+    "reset": "↻",
+    "yes": "Jā",
+    "no": "Nē",
+    "renumber_recommended": "Pārnumurēt (ieteicams)",
+    "ignore_and_save": "Ignorēt un saglabāt",
+    "rename_to_cbz": "Pārdēvēt uz .cbz",
+    "open_without_rename": "Atvērt bez pārdēvēšanas",
+    "rename_to_cbr": "Pārdēvēt uz .cbr",
+    "adjustments": "Spilgtums,\nkontrasts u.c.",
+    "batch_cbr_to_cbz": "CBR failu paketes\n konvertēšana uz CBZ",
+    "batch_pdf_to_cbz": "PDF failu pakešu\n konvertēšana uz CBZ",
+    "batch_img_to_cbz": "Atsevišķu attēlu\n pakešu konvertēšana uz CBZ",
+    "icon_toolbar_reset": "Atiestatīt",
+    "delete_selected": "Dzēst",
+    "save": "Saglabāt",
+    "rename_to_cb7": "Pārdēvēt par .cb7",
+    "split_ui": "Sadalīt saskarni divās panelēs",
+    "unsplit_ui": "Aizvērt otro paneli"
+  },
+  "tabs": {
+    "mosaic": "Mozaīka",
+    "metadata": "Metadati"
+  },
+  "viewer": {
+    "title": "Skatītājs",
+    "mode_single": "Viena lapa  [D]",
+    "mode_double": "Dubultā lapa  [D]",
+    "mode_continuous": "Nepārtrauktais režīms  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Iepriekšējā lappuse (←)",
+      "next_page": "Nākamā lappuse (→)",
+      "zoom_in": "Tuvināt (Ctrl+Plus)",
+      "zoom_out": "Tālināt (Ctrl+Mīnuss)",
+      "zoom_reset": "Atiestatīt tuvināšanu (Ctrl+0)",
+      "reading_mode_double": "Mainīt lasīšanas režīmu (D) → Dubultlappuses",
+      "reading_mode_continuous": "Mainīt lasīšanas režīmu (D) → Nepārtrauktas dubultlappuses",
+      "reading_mode_single": "Mainīt lasīšanas režīmu (D) → Viena lappuse",
+      "fullscreen_exit": "Iziet no pilnekrāna (F11)",
+      "fullscreen": "Pilnekrāns (F11)",
+      "close_viewer": "Aizvērt skatītāju (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Bojāts attēls - Aizstāt",
+      "corrupted_delete": "⚠️ Dzēst šo attēlu",
+      "copy": "Kopēt (Ctrl+C)",
+      "cut": "Izgriezt (Ctrl+X)",
+      "paste": "Ielīmēt (Ctrl+V)",
+      "paste_clipboard": "Ielīmēt no starpliktuves (Ctrl+V)",
+      "delete": "Dzēst (Delete)",
+      "deselect": "Noņemt atlasi (ESC)",
+      "rotate_right": "↻ Pagriezt pa labi",
+      "rotate_left": "↺ Pagriezt pa kreisi",
+      "mirror": "⇄ Horizontāls spogulis",
+      "crop": "Apgriezt",
+      "convert": "Konvertēt uz citu formātu...",
+      "join": "Savienot atlasītās lappuses",
+      "split": "Sadalīt atlasīto lappusi",
+      "save_selection": "Saglabāt atlasi kā CBZ",
+      "print_selection": "Drukāt atlasi",
+      "copy_archive": "Kopēt visu arhīvu",
+      "undo": "Atsaukt (Ctrl+Z)",
+      "redo": "Atcelt atsaukšanu (Ctrl+Y)",
+      "renumber_auto": "Lappu pārnumerēšana (automātiska vairāku lapu noteikšana)",
+      "renumber_simple": "Lappu pārnumerēšana (vienklārša numerācija)",
+      "sort_submenu": "Kārtot lappuses",
+      "sort_name": "Pēc nosaukuma",
+      "sort_type": "Pēc tipa",
+      "sort_size": "Pēc izmēra",
+      "sort_width": "Pēc platuma",
+      "sort_height": "Pēc augstuma",
+      "sort_resolution": "Pēc izšķirtspējas",
+      "sort_dpi": "Pēc DPI",
+      "create_cbz": "Izveidot CBZ arhīvu",
+      "save_as": "Saglabāt kā...",
+      "close_file": "Aizvērt failu",
+      "help": "Lietošanas instrukcija",
+      "update_page_count": "Atjaunināt lappušu skaitu metadatos",
+      "invert_selection": "Apgriezt izvēli (Ctrl+I)",
+      "reduce_size": "Mainīt lappušu izmēru",
+      "mirror_vertical": "⇅ Vertikāls spogulis",
+      "edit_animated_gif": "Rediģēt animētu GIF...",
+      "save_to_folder": "Eksportēt atlasītās lappuses",
+      "adjustments": "Spilgtums, kontrasts, krāsas...",
+      "refresh_mosaic": "Atsvaidzināt mozaīku (F5)",
+      "create_ico": "Izveidot .ico failu"
+    },
+    "canvas_no_file": {
+      "open": "Atvērt CBZ/CBR/CB7/PDF",
+      "recent_files": "Nesenākie faili",
+      "clear_history": "Notīrīt vēsturi"
+    },
+    "canvas_with_file": {
+      "close": "Aizvērt failu",
+      "paste": "Ielīmēt (Ctrl+V)",
+      "paste_clipboard": "Ielīmēt no starpliktuves (Ctrl+V)",
+      "select_all": "Atlasīt visu (Ctrl+A)",
+      "deselect": "Noņemt atlasi (ESC)",
+      "copy_archive": "Kopēt visu arhīvu",
+      "print_all": "Drukāt visu komiksu",
+      "renumber_auto": "Lappu pārnumerēšana (automātiska vairāku lapu noteikšana)",
+      "renumber_simple": "Lappu pārnumerēšana (vienklārša numerācija)",
+      "flatten": "Izlīdzināt mapes",
+      "save_selection": "Saglabāt atlasi kā CBZ",
+      "hide_sidebar": "« Paslēpt pogu joslu",
+      "show_sidebar": "» Rādīt pogu joslu",
+      "decrease_thumbs": "Samazināt sīktēlu izmēru",
+      "increase_thumbs": "Palielināt sīktēlu izmēru",
+      "theme_dark": "Pārslēgties uz tumšo tēmu",
+      "theme_light": "Pārslēgties uz gaišo tēmu",
+      "sort_submenu": "Kārtot lappuses",
+      "undo": "Atsaukt (Ctrl+Z)",
+      "redo": "Atcelt atsaukšanu (Ctrl+Y)",
+      "create_cbz": "Izveidot CBZ arhīvu",
+      "save_as": "Saglabāt kā...",
+      "help": "Lietošanas instrukcija",
+      "update_page_count": "Atjaunināt lappušu skaitu metadatos",
+      "invert_selection": "Apgriezt izvēli (Ctrl+I)",
+      "fullscreen": "Pilnekrāna režīms (F11)",
+      "fullscreen_exit": "Iziet no pilnekrāna režīma (F11 vai ESC)",
+      "quit": "Aizvērt lietojumprogrammu"
+    },
+    "canvas": {
+      "quit": "Aizvērt lietojumprogrammu",
+      "reset": "Lietotnes atiestatīšana:\n• loga izmērs un pozīcija\n• tumšais režīms → gaišs\n• sīkattēlu izmērs → normāls\n• sānjosla → redzama / 220 px\n• valoda → automātiskā noteikšana\n• fonta izmērs → noklusējuma",
+      "reset_label": "Atiestatīt lietotni"
+    },
+    "font_size": {
+      "decrease": "Samazināt fonta izmēru",
+      "increase": "Palielināt fonta izmēru"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Kārtot pēc nosaukuma",
+    "sort_type": "Kārtot pēc tipa",
+    "sort_size": "Kārtot pēc izmēra",
+    "sort_width": "Kārtot pēc platuma",
+    "sort_height": "Kārtot pēc augstuma",
+    "sort_resolution": "Kārtot pēc izšķirtspējas",
+    "sort_dpi": "Kārtot pēc DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Tukšs arhīvs",
+        "message": "CBZ arhīvs nesatur nevienu failu."
+      },
+      "empty_cbr": {
+        "title": "Tukšs arhīvs",
+        "message": "CBR arhīvs nesatur nevienu failu."
+      },
+      "files_ignored": {
+        "title": "Faili ignorēti"
+      },
+      "no_selection_crop": {
+        "title": "Nav atlases",
+        "message": "Lūdzu, atlasiet attēlu, ko apgriezt."
+      },
+      "multi_selection_crop": {
+        "title": "Vairāku vienumu atlase",
+        "message": "Vienlaikus var apgriezt tikai vienu attēlu.\nLūdzu, atlasiet tikai vienu attēlu."
+      },
+      "invalid_selection_crop": {
+        "title": "Nederīga atlase",
+        "message": "Var apgriezt tikai attēlus."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Funkcija nav pieejama",
+        "message": "Lappušu pārvietošana nav pieejama apakšdirektorijās.\nLūdzu, izlīdziniet mapes vai atgriezieties pie saknes."
+      },
+      "no_selection_convert": {
+        "title": "Nav atlases",
+        "message": "Lūdzu, atlasiet vismaz vienu attēlu konvertēšanai."
+      },
+      "invalid_selection_convert": {
+        "title": "Nederīga atlase",
+        "message": "Var konvertēt tikai attēlus."
+      },
+      "no_selection_split": {
+        "title": "Nav atlases",
+        "message": "Lūdzu, atlasiet attēlu, ko sadalīt."
+      },
+      "multi_selection_split": {
+        "title": "Vairāku vienumu atlase",
+        "message": "Vienlaikus var sadalīt tikai vienu attēlu.\nLūdzu, atlasiet tikai vienu attēlu."
+      },
+      "invalid_selection_split": {
+        "title": "Nederīga atlase",
+        "message": "Var sadalīt tikai attēlus."
+      },
+      "invalid_number_split": {
+        "title": "Nederīgs skaitlis",
+        "message": "Lappušu skaitam jābūt no 2 līdz 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Nepietiekama atlase",
+        "message": "Lūdzu, atlasiet vismaz 2 attēlus savienošanai."
+      },
+      "invalid_selection_join": {
+        "title": "Nederīga atlase",
+        "message": "Var savienot tikai attēlus."
+      },
+      "pil_not_available": {
+        "title": "PIL nav pieejams",
+        "message": "PIL modulis nav pieejams ielīmēšanai no sistēmas starpliktuves."
+      },
+      "format_not_supported": {
+        "title": "Formāts netiek atbalstīts",
+        "message": "Attēla formāts netiek atbalstīts vai fails ir bojāts.\nAtbalstītie formāti: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Nav atlases",
+        "message": "Lūdzu, vispirms uzzīmējiet apgriešanas taisnstūri."
+      },
+      "cannot_open_file": {
+        "title": "Nevar atvērt failu",
+        "message": "Nevar ielādēt failu."
+      },
+      "corrupted_images": {
+        "title": "Bojāti attēli",
+        "summary": "Atrasts(-i) {count} bojāts(-i) attēls(-i) no {total}.",
+        "hint": "Tie tiek parādīti ar īpašu ikonu.\nNoklikšķiniet ar peles labo pogu uz bojāta attēla, lai to aizstātu vai dzēstu.",
+        "more": "... un {count} cits(-i)"
+      },
+      "no_image_print": {
+        "title": "Nav attēlu",
+        "message": "Nav attēlu, ko drukāt."
+      },
+      "no_valid_image_print": {
+        "title": "Nav attēlu",
+        "message": "Nav derīgu attēlu drukāšanai."
+      },
+      "no_selection_print": {
+        "title": "Nav atlases",
+        "message": "Lūdzu, atlasiet vismaz vienu attēlu."
+      },
+      "no_valid_selection_print": {
+        "title": "Nav attēlu",
+        "message": "Atlasē nav derīgu attēlu."
+      },
+      "save_cancelled": {
+        "title": "Saglabāšana atcelta",
+        "message": "Lūdzu, manuāli labojiet failu nosaukumus pirms saglabāšanas."
+      },
+      "empty_pdf": {
+        "title": "Tukšs PDF",
+        "message": "PDF fails nesatur nevienu lappusi."
+      },
+      "no_selection_save": {
+        "title": "Brīdinājums",
+        "message": "Lūdzu, atlasiet vismaz vienu lappusi saglabāšanai."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Pārvietošana atspējota",
+        "message": "Lappušu pārvietošana ar vilkšanu un nomešanu ir pieejama tikai komiksa saknes direktorijā.\n\nLappušu pārvietošanai:\n1. Atgriezieties pie saknes, noklikšķinot uz augšupvērstās ikonas\n2. Vai izlīdziniet komiksu, lai noņemtu apakšdirektorijas"
+      },
+      "no_selection_reduce": {
+        "title": "Nav atlases",
+        "message": "Lūdzu, atlasiet vismaz vienu lappusi samazināšanai."
+      },
+      "invalid_selection_reduce": {
+        "title": "Nederīga atlase",
+        "message": "Var samazināt tikai attēlus."
+      },
+      "invalid_dimensions": {
+        "title": "Nederīgi izmēri",
+        "message": "Lūdzu, ievadiet derīgus izmērus (pozitīvus veselos skaitļus)."
+      },
+      "no_images_for_gif": {
+        "title": "Nav attēlu",
+        "message": "Lai izveidotu animētu GIF, nepieciešams vismaz viens attēls."
+      },
+      "no_valid_images": {
+        "title": "Nav derīgu attēlu",
+        "message": "Nav atrasti derīgi attēli GIF izveidei."
+      },
+      "animated_gif_in_comic": {
+        "title": "Konstatēts animēts GIF",
+        "message": "Brīdinājums: Šajā komiksā ir viens vai vairāki animēti GIF faili.\\n\\nKomiksu lasītāji (CDisplayEx, YACReader u.c.) rādīs tikai pirmo kadru no katra GIF kā statisku lappusi.\\n\\nLai pareizi skatītu animēto GIF, tas jāsaglabā atsevišķi ārpus komiksa, izmantojot pogu \"Eksportēt atlasītās lappuses\" vai \"Rediģēt animēto GIF\".\\n\\nVai vēlaties turpināt komiksa saglabāšanu tik un tā?"
+      },
+      "no_selection_adjust": {
+        "title": "Nav izlases",
+        "message": "Ludzu, izveleties vismaz vienu attelu, lai lietotu pielaguojumus."
+      },
+      "invalid_selection_adjust": {
+        "title": "Nederiga izlase",
+        "message": "Pielaguojumus var lietot tikai atteliem."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Funkcija nav pieejama",
+        "message": "Pārnumurēšana nav pieejama, kamēr mapes nav izlīdzinātas.\nIzlīdziniet mapes pirms pārnumurēšanas."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP kļūda",
+        "message": "'{file}': Fails nav derīgs ZIP arhīvs vai ir bojāts."
+      },
+      "zip_cannot_open": {
+        "title": "ZIP kļūda",
+        "message": "Nevar atvērt CBZ failu: {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR kļūda",
+        "message": "'{file}': Fails nav derīgs RAR arhīvs vai ir bojāts."
+      },
+      "rar_cannot_open": {
+        "title": "RAR kļūda",
+        "message": "Nevar atvērt CBR arhīvu: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Kļūda",
+        "message": "Negaidīta kļūda, atverot CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Kļūda",
+        "message": "Nevar apvienot attēlus."
+      },
+      "paste_failed": {
+        "title": "Kļūda",
+        "message": "Kļūda ielīmēšanas laikā: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Kļūda",
+        "message": "Nevar kopēt arhīvu: {error}"
+      },
+      "crop_invalid": {
+        "title": "Kļūda",
+        "message": "Apgriešanas apgabals ir nederīgs."
+      },
+      "crop_failed": {
+        "title": "Kļūda",
+        "message": "Nevar apgriezt attēlu: {error}"
+      },
+      "load_image_failed": {
+        "title": "Kļūda",
+        "message": "Nevar ielādēt attēlu:\n{error}"
+      },
+      "print_error": {
+        "title": "Drukas kļūda",
+        "message": "Kļūda drukāšanas laikā:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Drukāšana nav pieejama",
+        "message": "Modulis win32print nav instalēts.\nInstalējiet to ar: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Fails nav atrasts",
+        "message": "Fails vairs neeksistē:\n{path}"
+      },
+      "import_failed": {
+        "title": "Importēšanas kļūda",
+        "message": "Nevar importēt failu: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF nav instalēts",
+        "message": "PyMuPDF (fitz) bibliotēka nav instalēta.\nInstalējiet to ar: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Kļūda",
+        "message": "Kļūda PDF importēšanas laikā: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF kļūda",
+        "message": "Nevar ielādēt PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Dublikāti failu nosaukumi",
+        "intro": "{count} dublēts(-i) faila nosaukums(-i) atrasts(-i):\n\n",
+        "item": "  • {name} ({times} reizes)\n",
+        "more": "  ... un {more} citi\n",
+        "footer": "\nZIP arhīvi nepieņem dublētus nosaukumus.\nLūdzu, pārdēvējiet šos failus pirms saglabāšanas."
+      },
+      "save_failed": {
+        "title": "Kļūda",
+        "message": "Nevar saglabāt failu: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Kļūda",
+        "message": "Nevar izveidot arhīvu: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Kļūda",
+        "message": "Nevar saglabāt atlasi: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF izveides kļūda",
+        "message": "Nevar izveidot animētu GIF:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Saglabāšanas kļūda",
+        "message": "Kļūda saglabājot failus:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Pārdēvēšanas kļūda",
+        "message": "Nevar pārdēvēt failu: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF aizsargāts ar paroli",
+        "message": "Šis PDF fails ir šifrēts un aizsargāts ar paroli.\nTo nevar atvērt bez paroles."
+      },
+      "pdf_unlock_failed": {
+        "title": "Kļūda",
+        "message": "Nevarēja saglabāt atbloķēto PDF failu:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: šifrēts PDF (nepieciešama parole), izlaists",
+      "file_too_large": {
+        "title": "Fails ir pārāk liels",
+        "message": "Fails {filename} ir {size} liels un pārsniedz attēlam atļauto maksimālo izmēru (500 MB)."
+      },
+      "license_file_not_found": {
+        "message": "Licences fails nav atrasts: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Nevar nolasīt licences failu: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z kļūda",
+        "message": "Fails '{file}' nav derīgs 7Z arhīvs vai ir bojāts."
+      },
+      "delete_error": "Kļūda dzēšanas laikā: {error}",
+      "export_error": "Kļūda eksportēšanas laikā: {error}",
+      "font_source_not_found": "Fonta avota fails nav atrasts: {path}",
+      "no_tengwar_font": "Tengwar fonts nav atrasts.",
+      "no_icons_found": "Ikonas nav atrastas.",
+      "unsupported_files": {
+        "title": "Neatbalstīti faili",
+        "message": "Šie faili netiek atbalstīti un tika ignorēti:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF veiksmīgi izveidots",
+        "message": "Animētais GIF '{name}' ir izveidots un pievienots mozaīkai."
+      },
+      "pywin32_required": {
+        "title": "Funkcija nav pieejama",
+        "message": "Modulis pywin32 ir nepieciešams ielīmēšanai no sistēmas starpliktuves.\nInstalējiet to ar: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Attēli importēti",
+        "message": "{count} attēls(-i) importēts(-i)"
+      },
+      "archive_copied": {
+        "title": "Arhīvs kopēts",
+        "message": "Arhīvs ir nokopēts starpliktuvē."
+      },
+      "function_not_available": {
+        "title": "Funkcija nav pieejama",
+        "message": "Šī funkcija pašlaik nav pieejama."
+      },
+      "duplicate_detected": {
+        "title": "Atklāts dublikāts",
+        "message": "Fails ar šādu nosaukumu jau eksistēja.\n\nFails ir pārdēvēts uz:\n{name}"
+      },
+      "replace_success": {
+        "title": "Veiksmīgi",
+        "message": "Attēls '{name}' veiksmīgi aizstāts."
+      },
+      "history_cleared": {
+        "title": "Vēsture notīrīta",
+        "message": "Nesenāko failu saraksts ir notīrīts."
+      },
+      "files_copied_clipboard": {
+        "title": "Faili nokopēti starpliktuvē",
+        "message": "Izejošā vilkšana un nomešana nav pieejama tehnisko iemeslu dēļ.\n\n✓ {count} {word} nokopēts(-i) starpliktuvē\n\nTagad varat ielīmēt jebkur:\n  • Ar peles labo pogu → Ielīmēt\n  • Vai Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Labojums veikts",
+        "message": "{count} faila(-u) nosaukums(-i) labots(-i)."
+      },
+      "import_success": {
+        "title": "Importēšana veiksmīga",
+        "message": "{count} lappuse(-es) importēta(-as) no {file}"
+      },
+      "pdf_import_success": {
+        "title": "Importēšana veiksmīga",
+        "message": "{count} PDF lappuse(-es) importēta(-as) no {file}\nKvalitāte: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Veiksmīgi",
+        "message": "PDF veiksmīgi konvertēts!\n{count} lappuses ielādētas ar {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Veiksmīgi",
+        "message": "CBZ fails saglabāts:"
+      },
+      "cbz_converted": {
+        "title": "Veiksmīgi",
+        "message": "Fails pārveidots par CBZ:",
+        "question": "Vai vēlaties dzēst oriģinālo CBR failu?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Veiksmīgi",
+        "message": "Fails pārveidots par CBZ:",
+        "question": "Vai vēlaties dzēst oriģinālo PDF failu?"
+      },
+      "cbz_save_as": {
+        "title": "Veiksmīgi",
+        "message": "Jauns CBZ fails saglabāts: {path}"
+      },
+      "cbz_created": {
+        "title": "Veiksmīgi",
+        "message": "CBZ arhīvs izveidots:"
+      },
+      "selection_saved": {
+        "title": "Veiksmīgi",
+        "message": "Atlase saglabāta:"
+      },
+      "flatten_done": {
+        "title": "Izlīdzināšana pabeigta",
+        "message": "{files} fails(-i) pārvietots(-i) no {dirs} apakšmapes(-ēm)."
+      },
+      "language_changed": {
+        "title": "Valoda mainīta",
+        "message": "Lietotāja saskarne veiksmīgi pārslēgta uz citu valodu."
+      },
+      "new_cbz_saved": {
+        "title": "Fails Saglabāts",
+        "message": "Jaunais CBZ fails ir veiksmīgi saglabāts:",
+        "question": "Vai vēlaties dzēst oriģinālo failu?"
+      },
+      "page_count_updated": {
+        "title": "Lappušu skaits atjaunināts",
+        "message": "Lappušu skaits metadatos ir atjaunināts uz {count} lappusēm."
+      },
+      "files_saved": {
+        "title": "Veiksmīgi saglabāts",
+        "message": "{count} faili saglabāti:\n{folder}",
+        "open_folder": "Vai vēlaties atvērt mapi?"
+      },
+      "adjustments_applied": {
+        "title": "Pielaguojumi lietoti",
+        "message": "Pielaguojumi ir veiksmigi lietoti."
+      },
+      "pdf_unlocked": {
+        "title": "PDF atbloķēts",
+        "message": "Atbloķētais PDF fails tika saglabāts:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Liels arhīvs",
+        "message": "Šis arhīvs ir {size} MB (izpakots).\nIelāde var patērēt daudz atmiņas (RAM).\n\nVai vēlaties turpināt?"
+      },
+      "confirm_delete": {
+        "title": "Apstiprinājums",
+        "message": "Vai tiešām vēlaties dzēst {count} failu(s) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Dzēst avota failus?",
+        "message": "Vai vēlaties dzēst attēlus, kas tika savienoti?\n\nJā = Dzēst avota failus\nNē = Saglabāt avota failus\nAtcelt = Atcelt darbību"
+      },
+      "invalid_filenames": {
+        "title": "Nederīgi failu nosaukumi",
+        "intro": "{count} fails(-i) satur aizliegtus rakstzīmes:",
+        "item": "  • {name}",
+        "more": "  ... un vēl {more}",
+        "forbidden_chars": "Aizliegtās rakstzīmes: {chars}",
+        "fix_question": "Vai vēlaties automātiski labot šos nosaukumus?\n(Aizliegtās rakstzīmes tiks aizstātas ar '_')"
+      },
+      "close_without_save": {
+        "title": "Saglabāt pirms aizvēršanas?",
+        "message": "Attēli ir pievienoti. Vai vēlaties izveidot CBZ arhīvu pirms aizvēršanas?"
+      },
+      "flatten_folders": {
+        "title": "Izlīdzināt mapes",
+        "subdirs_detected": "Atklātas apakšmapes:",
+        "files_to_move": "{count} fails(-i) tiks pārvietots(-i) uz saknes direktoriju.",
+        "folders_to_delete": "{count} apakšmape(-es) tiks dzēsta(-as).",
+        "continue_question": "Vai vēlaties turpināt?"
+      },
+      "update_page_count": {
+        "title": "Atjaunināt lappušu skaitu",
+        "message": "Komiksu lappušu skaits ir mainījies.\n\nMetadatos norādītais lappušu skaits: {original}\nPašreizējais lappušu skaits: {current}\n\nVai vēlaties atjaunināt lappušu skaitu metadatos?"
+      },
+      "conversion_complete": {
+        "title": "Konvertēšana pabeigta",
+        "message": "Konvertēšana pabeigta!\n\n{count} attēls(-i) konvertēts {format} formātā ir pievienots pēc jūsu izvēles.\n\nDzēst sākotnējos attēlus?",
+        "delete_originals": "Dzēst oriģinālus\n{count} fails(-i) - {size}",
+        "keep_all": "Paturēt visu\n{count} fails(-i) - {size}",
+        "cancel_conversion": "Atcelt konvertēšanu\n{count} fails(-i) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Konstatēts nepareizs paplašinājums: šis '{filename}' fails ir CBZ, nevis CBR. Pārdēvēt?",
+      "title": "Nepareizs paplašinājums"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Konstatēts nepareizs paplašinājums: šis '{filename}' fails ir CBR, nevis CBZ. Pārdēvēt?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Konstatēts nepareizs paplašinājums: fails '{filename}' ir CB7, nevis CBZ/CBR. Pārdēvēt?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Sīktēlu izmērs",
+    "loading": "Lūdzu, uzgaidiet, notiek ielāde...\n{percent}%",
+    "resizing": "Lūdzu, uzgaidiet, notiek izmēra maiņa...\n{percent}%",
+    "converting": "Lūdzu uzgaidiet, konvertēšana...\n{percent}%",
+    "loading_lazy": "Lūdzu uzgaidiet, notiek ielāde...\n{percent}%\n\nŠī faila lielā izmēra dēļ ({size} MB) lappuses tiks ielādētas pakāpeniski. Ekrānā redzamās lappuses tiek ielādētas uzreiz, pārējās tiks ielādētas automātiski ritināšanas laikā.",
+    "apply_save_cbz": "Lietot izmaiņas\nun saglabāt CBZ failu",
+    "apply_create_cbz": "Lietot izmaiņas\nun izveidot CBZ failu",
+    "import_progress": "Notiek importēšana...\n{percent}%",
+    "pdf_import_progress": "Notiek PDF importēšana...\n{percent}%",
+    "pdf_opening": "Notiek PDF faila atvēršana...",
+    "pdf_page": "Lappuse {current} / {total}",
+    "warning_close": "Uzmanību! Izmaiņas nav saglabātas un tiks zaudētas!",
+    "language_label": "Valoda:",
+    "directory_tooltip": "Mape: {name}\n{count} fails(-i)\nKopējais izmērs: {size} MB",
+    "folder_up_tooltip": "Veiciet dubultklikšķi, lai\npārietu vienu līmeni augstāk",
+    "status_bar": "{dirs} mape(s)  |  {files} fails(i) ({total_size})  |  {selected} atlasīts(i) ({selected_size})",
+    "pdf_converting": "Konvertē {total} lappuses uz attēliem pie {dpi} DPI...",
+    "pdf_converting_no_change": "Ekstraktē {total} lappuses bez modificēšanas...",
+    "print_progress": "Sagatavošanās drukāšanai...\n{percent}%",
+    "print_preparing": "Lūdzu, uzgaidiet, sagatavošanās drukāšanai...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU Vispārējās publiskās licences v3 kopsavilkums\n\nPIEŠĶIRTĀS BRĪVĪBAS\nJūs varat izmantot, kopēt, modificēt un izplatīt\nMosaicView, pat komerciāliem mērķiem.\n\nPIENĀKUMI\nJebkurai izplatīšanai (oriģinālajai vai modificētajai) jāatbilst :\n– jāsaglabā GPL v3 licence\n– jāiekļauj pirmkods vai jānorāda, kur to iegūt\n– nedrīkst uzlikt papildu ierobežojumus\n\nGARANTIJAS\nŠī programmatūra tiek izplatīta BEZ JEBKĀDAS GARANTIJAS.\nTās autors nav atbildīgs par kaitējumu, kas rodas tās lietošanas rezultātā.\n\nJums vajadzēja saņemt GNU Vispārējās publiskās licences kopiju kopā ar šo programmu. Ja nē, skatiet <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Skatīt pilnu licenci",
+    "license_unrar_text": "CBZ faili ir balstīti uz ZIP formātu, kas ir brīvs un atvērts formāts. CBR faili, savukārt, ir balstīti uz RAR formātu, kas ir patentēts.\n\nMosaicView var atvērt CBR failus, pateicoties UnRAR, RARlab izstrādātam un brīvi izplatāmam rīkam.\n\nOficiālā vietne: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Skatīt UnRAR licenci",
+    "saving_cbz": "Saglabāšana notiek... {percent}%",
+    "empty_canvas_line1": "Nometiet seit vienu vai vairakas CBZ/CBR/CB7/PDF datnes vai savus attelos",
+    "empty_canvas_line2": "Kad datne ir atverta, jus varat turpinat nomest citas",
+    "empty_canvas_line3": "Nometiet vienu vai vairākas mapes, lai sāktu pakešapstrādi",
+    "icon_toolbar_config_title": "Ikonu rīkjoslas konfigurācija",
+    "icon_toolbar_active": "Ikoni rīkjoslā",
+    "icon_toolbar_hidden": "Ikonas rezervē",
+    "license_gpl_full": "GNU GPL v3 licence",
+    "license_unrar_full": "UnRAR licence",
+    "licenses_button": "Licences",
+    "view_full_gpl_license": "Skatīt pilnu GNU GPL v3 licenci",
+    "license_7zip_text": "CB7 faili ir balstīti uz 7z formātu, kuru izstrādāja Igor Pavlov un kurš tiek izplatīts saskaņā ar GNU LGPL licenci.\n\nMosaicView var atvērt CB7 failus, pateicoties 7-Zip — bezmaksas atvērtā pirmkoda rīkam.\n\nOficiālā vietne : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Skatīt 7-Zip licenci",
+    "license_7zip_full": "7-Zip licence",
+    "icon_toolbar_show_thumb_slider": "Rādīt sīkattēlu izmēra slīdni",
+    "icon_toolbar_show_lang_combo": "Rādīt valodas atlasītāju",
+    "adjusting": "Lūdzu, uzgaidiet, pielāgojumi notiek...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS fonta licence",
+    "license_tengwar_full": "Alcarin Tengwar fonta licence",
+    "view_full_piqad_license": "Skatīt pilnu pIqaD qolqoS licenci"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Attēlu konvertēšana",
+      "title": "{count} {word} konvertēšana",
+      "word_image": "attēls",
+      "word_images": "attēli",
+      "info": "Izvēlieties mērķa formātu:",
+      "format_png": "PNG (bez zudumiem)",
+      "format_jpg": "JPEG (ar saspiešanu)",
+      "format_webp": "WEBP (mūsdienīgs)",
+      "format_bmp": "BMP (rastra attēls)",
+      "format_tiff": "TIFF (augsta kvalitāte)",
+      "format_gif": "GIF (animācija)",
+      "quality_label": "Kvalitāte JPG/WEBP:",
+      "quality_maximum": "Maksimāla — kvalitāte 95/100",
+      "quality_high": "Augsta — kvalitāte 85/100",
+      "quality_medium": "Vidēja — kvalitāte 75/100",
+      "quality_low": "Zema — kvalitāte 60/100",
+      "quality_custom_option": "Pielāgota",
+      "quality_custom": "Kvalitāte pielāgota : {value}/100",
+      "quality_note": "(Šis iestatījums ietekmē tikai JPG un WEBP formātus)",
+      "quality_window_title": "Kvalitātes izvēle",
+      "format_gif_static": "Statisks GIF",
+      "format_gif_animated": "Animēts GIF (atlasiet vairākus attēlus)"
+    },
+    "split": {
+      "window_title": "Sadalīt lappusi",
+      "title": "Sadalīt lappusi",
+      "pages_label": "Lappušu skaits:",
+      "direction_label": "Dalīšanas virziens:",
+      "horizontal": "Horizontāls (no kreisās uz labo)",
+      "vertical": "Vertikāls (no augšas uz leju)",
+      "warning": "⚠ Tā kā dalīšana tiek aprēķināta automātiski,\nvar būt nepieciešami manuāli labojumi.",
+      "button_split": "Sadalīt",
+      "button_cancel": "Atcelt"
+    },
+    "join": {
+      "window_title": "Savienot lappuses - Pārkārtojiet secību",
+      "instructions": "Sakārtojiet attēlus:\n• Vertikāli (augšā/apakšā) vertikālai savienošanai\n• Horizontāli (pa kreisi/pa labi) horizontālai savienošanai",
+      "merged_filename_prefix": "Savienotais",
+      "heights_label": "Augstumi",
+      "widths_label": "Platumi",
+      "size_adjustment_title": "Izmēra pielāgošana",
+      "size_adjustment_warning": "⚠️ Izvēlētajiem attēliem ir atšķirīgi izmēri.\nIzvēlieties, kā pielāgot to izmērus apvienošanai.\nKatra attēla malu attiecība vienmēr tiks saglabāta.",
+      "keep_original": "Saglabāt oriģinālos izmērus",
+      "keep_original_desc": "(pievieno melnas joslas aizpildīšanai)",
+      "enlarge_small": "Palielināt mazos attēlus",
+      "enlarge_small_desc": "(līdzināt maksimālajam izmēram)",
+      "reduce_large": "Samazināt lielos attēlus",
+      "reduce_large_desc": "(līdzināt minimālajam izmēram)",
+      "back_to_arrangement": "Atpakaļ"
+    },
+    "pdf": {
+      "quality_merge": "Izvēlieties apvienošanas kvalitāti:",
+      "quality_export": "Izvēlieties eksportēšanas kvalitāti:",
+      "merge_quality_title": "PDF apvienošanas kvalitāte",
+      "export_quality_title": "PDF eksportēšanas kvalitāte",
+      "loading_title": "Ielādē PDF...",
+      "dpi_90": "90 DPI - Tīmekļa publikācija",
+      "dpi_150": "150 DPI - Laba kvalitāte (ieteicams attēlošanai)",
+      "dpi_200": "200 DPI - Ļoti laba kvalitāte",
+      "dpi_300": "300 DPI - Izcila kvalitāte (komiksu standarts)",
+      "dpi_600": "600 DPI - Maksimālā kvalitāte (lieli faili)",
+      "dpi_original": "Bez attēla modificēšanas",
+      "dpi_original_tooltip": "Inteliģenta katra PDF lappuses analīze:\n• Lappuses tikai ar attēliem: saglabā oriģinālo DPI\n• Lappuses tikai ar tekstu: 300 DPI\n• Jauktas lappuses (teksts + attēli): attēlu DPI ja >= 300, pretējā gadījumā 300 DPI\nMaksimums: 2400 DPI lai ierobežotu faila lielumu"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "Nepieciešams PyMuPDF",
+      "pymupdf_required_message": "PyMuPDF (fitz) nav instalēts. Nevar konvertēt PDF failus.",
+      "select_directory_title": "Atlasiet direktoriju, kurā atrodas PDF faili",
+      "no_pdf_title": "Nav PDF failu",
+      "no_pdf_message": "Direktorijā netika atrasti PDF faili:\n{directory}",
+      "confirm_title": "PDF failu pakeškonvertēšana uz CBZ",
+      "confirm_message": "{count} PDF faili konvertēšanai mapē {directory} (apakšmapes iekļautas).",
+      "checkbox_permanent_delete": "Dzēst oriģinālos PDF failus, neizmantojot\natkritni (NAV IESPĒJAMS ATSAUKT)",
+      "start_button": "Sākt",
+      "converting_title": "Notiek konvertēšana...",
+      "converting_progress": "Faila konvertēšana {current} no kopā {total}",
+      "page_progress": "Lapa {current} / {total}",
+      "complete_title": "Konvertēšana pabeigta",
+      "complete_message": "{count} PDF faili konvertēti direktorijā:",
+      "complete_message_errors": "{count} no {total} PDF failiem konvertēti direktorijā:",
+      "errors_count": "{count} kļūda(-as) konstatēta(-as)."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Atlasiet mapi ar CBR failiem",
+      "no_cbr_title": "Nav CBR failu",
+      "no_cbr_message": "Mapē netika atrasti CBR faili:\\n{directory}",
+      "confirm_title": "CBR failu paketes konvertēšana uz CBZ",
+      "confirm_message": "{count} CBR faili konvertēšanai mapē {directory} (apakšmapes iekļautas).",
+      "checkbox_permanent_delete": "Dzēst oriģinālos CBR failus neizmantojot\natkritni (NAV IESPĒJAMS ATSAUKT)",
+      "start_button": "Sākt",
+      "converting_title": "Konvertēšana...",
+      "converting_progress": "Konvertē failu {current} no {total}",
+      "page_progress": "Lapa {current} / {total}",
+      "complete_title": "Konvertēšana pabeigta",
+      "complete_message": "{count} CBR faili konvertēti mapē:",
+      "complete_message_errors": "{count} CBR faili konvertēti no {total} mapē:",
+      "errors_count": "{count} kļūda(s) konstatēta(s).",
+      "renamed_count": "{count} fails(-i) pārsaukts(-i) uz CBZ",
+      "rarfile_unavailable": "Modulis rarfile nav pieejams. Nevar konvertēt CBR failus."
+    },
+    "close_warning": {
+      "title": "Uzmanību!",
+      "message": "Izmaiņas nav saglabātas un tiks zaudētas!",
+      "btn_close_lose": "Aizvērt failu un zaudēt izmaiņas",
+      "btn_save_cbz": "Lietot izmaiņas un saglabāt failu",
+      "btn_create_cbz": "Lietot izmaiņas un izveidot CBZ failu",
+      "btn_cancel": "Atcelt un atgriezties pie mozaīkas"
+    },
+    "replace_image": {
+      "title": "Aizstāt bojāto attēlu"
+    },
+    "reduce_size": {
+      "window_title": "Attēla izmēra maiņa",
+      "title": "{count} {word} izmēra maiņa",
+      "word_image": "attēls",
+      "word_images": "attēli",
+      "current_size": "Pašreizējais izmērs: {size} MB",
+      "current_dimensions": "Pašreizējie izmēri: {width} × {height} px",
+      "choose_method": "Izvēlieties izmēra maiņas metodi:",
+      "custom_dimensions": "Pielāgoti izmēri",
+      "width_label": "Platums:",
+      "height_label": "Augstums:",
+      "use_custom_dimensions": "Izmantot šos izmērus",
+      "different_dimensions_warning": "Atlasītajām lappusēm ir atšķirīgi izmēri. Pielāgoti izmēri piespiedīs visas lappuses uz vienādu izmēru. Pārliecinieties, ka saprotat sekas pirms turpināšanas.",
+      "estimated_size": "Paredzamais izmērs: {size} MB",
+      "percentage_reduction": "Procentuāls samazinājums",
+      "percentage_enlargement": "Procentuāls palielinājums",
+      "reduce_0": "0% (bez izmaiņām)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (bez izmaiņām)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Visizplatītākās lappuses platumi ir 1024, 1280, 1600, 1920 un 2000 pikseļi, bet der arī citas vērtības.",
+      "multi_page_width": "Automātiski noteikt un mainīt vairāku lappušu izmēru (platums/augstums)",
+      "multi_page_width_tooltip": "Iespējo automātisku vairāku lappušu noteikšanu: dubultlappuse, trīskāršā lappuse utt. Reizināšanas koeficients tiek aprēķināts automātiski, pamatojoties uz katras lappuses attiecību, neatkarīgi no tā, vai tas ir platumā (blakus esošas lappuses) vai augstumā (sakrautas lappuses)"
+    },
+    "gif_animated": {
+      "window_title": "Animēta GIF izveide",
+      "images_title": "Animācijas attēli",
+      "params_title": "GIF parametri",
+      "frame_delay_label": "Aizture starp attēliem:",
+      "fps_normal": "{fps} kadri/sekundē",
+      "fps_slow": "1 kadrs ik pēc {seconds} sekundēm",
+      "loop_label": "Atkārtojumu skaits:",
+      "loop_info": "(0 = bezgalīga cilpa)",
+      "disposal_label": "Attēlu izvietojums:",
+      "disposal_0": "Nav norādīts",
+      "disposal_1": "Saglabāt iepriekšējo attēlu",
+      "disposal_2": "Atjaunot uz fona krāsu",
+      "disposal_3": "Atjaunot uz iepriekšējo stāvokli",
+      "optimize": "Optimizēt failu (saglabāt tikai atšķirības)",
+      "metadata_title": "GIF metadati",
+      "metadata_dimensions": "Izmēri: {width} × {height} px",
+      "metadata_frames": "Kadru skaits: {count}",
+      "metadata_duration": "Kopējais ilgums: {duration} s",
+      "metadata_fps": "Frekvence: {fps} fps",
+      "metadata_palette": "Palete: līdz 256 krāsām",
+      "metadata_size": "Paredzamais izmērs: {size} KB",
+      "comment_label": "Komentārs (neobligāti):",
+      "no_images": "Nav atlasīti attēli",
+      "creating_progress": "Attēlu ielāde... ({current}/{total})",
+      "creating_normalizing": "Attēlu normalizācija... ({current}/{total})",
+      "creating_quantizing": "Krāsu kvantizācija... ({current}/{total})",
+      "creating_saving": "GIF saglabāšana..."
+    },
+    "save_to_folder": {
+      "title": "Izvēlieties mērķa mapi"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Dublēti failu nosaukumi",
+      "message": "Ir atklāti identiski failu nosaukumi. Lai gan saglabāšana ir tehniski\niespējama, tas var izraisīt lasīšanas problēmas dažās komiksu lasīšanas\nlietotnēs (nepilnīgs attēlojums, trūkstošas lappuses u.c.).\n\nIeteicams pārnumurēt lappuses pirms saglabāšanas."
+    },
+    "adjustments": {
+      "window_title": "Attela pielaguojumi",
+      "title": "Pielaguojumi {count} {word}",
+      "word_image": "attels",
+      "word_images": "atteli",
+      "apply_button": "Lietot",
+      "color_depth_section": "Krasu dziļums",
+      "brightness_contrast_section": "Gaisma un kontrasts",
+      "compression_section": "Saspiesana",
+      "effects_section": "Efekti",
+      "sharpness_section": "Asums",
+      "levels_section": "Melns/balts limeni",
+      "depth_unchanged": "Nemainit",
+      "depth_32bit": "32 biti (RGBA - krasas + caurspidugums)",
+      "depth_24bit": "24 biti (RGB - krasas)",
+      "depth_8bit": "8 biti (PNG palete / JPEG peleko toņi)",
+      "depth_1bit": "1 bits (melnbalts)",
+      "brightness_label": "Gaisma: {value}",
+      "contrast_label": "Kontrasts: {value}",
+      "compression_enable": "Iespejot atkartotu saspiesanu",
+      "compression_quality_label": "Kvalitāte : {value}/100",
+      "sharpness_label": "Asums: {value}",
+      "effect_none": "Nav efekta",
+      "effect_grayscale": "Peleku tonusi",
+      "effect_sepia": "Sepija",
+      "levels_none": "Nav pielaguojuma",
+      "levels_threshold": "Slieksnis (tirs melns vai balts)",
+      "levels_advanced": "Papildu limeni (enas/videjie toni/gaisma)",
+      "threshold_label": "Slieksnis: {value}",
+      "black_point_label": "Melns punkts: {value}",
+      "gamma_label": "Gamma (videjie toni): {value}",
+      "white_point_label": "Balts punkts: {value}",
+      "auto_levels_button": "Automātiska pielāgošana",
+      "open_viewer_button": "Pielāgot ar skatītāju (ieteicams)",
+      "compression_info": "Saspiešana attiecas tikai uz JPG un WebP attēliem",
+      "open_viewer_button_simple": "Pielāgot ar skatītāju",
+      "reset_button": "Atiestatīt",
+      "preview_section": "Priekšskatījums",
+      "effect_invert": "Krāsu inversija",
+      "preview_warning": "Priekšskatījums var atšķirties no galīgā rezultāta",
+      "effect_remove_colors": "Krāsu noņemšana",
+      "remove_colors_intensity_label": "Intensitāte : {value}",
+      "image_mode_section": "Attēla režīms",
+      "image_mode_rgb": "RGB (krāsas)",
+      "image_mode_rgba": "RGBA (krāsas + caurspīdīgums)",
+      "image_mode_l": "L (pelēkā gamma)",
+      "image_mode_la": "LA (pelēkā gamma + caurspīdīgums)",
+      "image_mode_cmyk": "CMYK (druka)",
+      "image_mode_1": "1 (tīri melnbalts)",
+      "image_mode_p": "P (256 krāsu palete)",
+      "saturation_section": "Piesātinājums",
+      "saturation_label": "Piesātinājums : {value}",
+      "saturation_viewer_title": "Piesātinājuma pielāgošana",
+      "transparency_section": "Caurspīdīgums",
+      "transparency_info": "Caurspīdīgums attiecas tikai uz PNG, WebP un ICO attēliem",
+      "transparency_type_label": "Veids :",
+      "transparency_type_flood": "Zona",
+      "transparency_type_global": "Globāls",
+      "transparency_tolerance_label": "Tolerance : {value}",
+      "transparency_viewer_title": "Caurspīdīguma regulēšana",
+      "transparency_click_instruction": "Noklikšķiniet uz krāsas, kuru vēlaties padarīt caurspīdīgu",
+      "transparency_undo": "Atsaukt pēdējo klikšķi",
+      "transparency_redo": "Atkārtot",
+      "transparency_type_flood_tooltip": "Flood fill : padara caurspīdīgu vienkrāsaino laukumu ap noklikšķināto pikseļu",
+      "transparency_type_global_tooltip": "Globāls caurspīdīgums : ietekmē visus attēla pikseļus, kuru krāsa ir tuva noklikšķinātajai",
+      "transparency_apply": "Lietot",
+      "transparency_skipped_warning": "{count} attēls(-i) izlaists(-i) — formāts nav saderīgs ar caurspīdīgumu. Lai tos iekļautu, vispirms pārveidojiet PNG formātā.",
+      "unsharp_section": "Adaptīvais asums",
+      "unsharp_radius_label": "Rādiuss: {value}",
+      "unsharp_percent_label": "Intensitāte: {value} %",
+      "unsharp_threshold_label": "Slieksnis: {value}",
+      "unsharp_viewer_title": "Adaptīvais asums",
+      "auto_levels_tooltip": "Analizē katru lapu un automātiski pielāgo melnā un baltā līmeņus, lai maksimizētu kontrastu.\nLai izvēlētos lapu pēc lapas, izmantojiet skatītāju."
+    },
+    "levels_viewer": {
+      "title": "Līmeņu pielāgošana ar pipeti",
+      "apply_current": "Lietot šai lapai",
+      "apply_all": "Lietot visām atlasītajām lapām",
+      "black_pipette": "Melna punkta pipete",
+      "white_pipette": "Balta punkta pipete",
+      "black_pipette_tooltip": "Noklikšķiniet uz pikseļa, kam vajadzētu būt pilnīgi melnam. Uzmanību: ir viegli pārspīlēt!",
+      "white_pipette_tooltip": "Noklikšķiniet uz pikseļa, kam vajadzētu būt pilnīgi baltam. Uzmanību: ir viegli pārspīlēt!"
+    },
+    "sharpness_viewer": {
+      "title": "Asuma pielāgošana"
+    },
+    "brightness_viewer": {
+      "title": "Spilgtuma un kontrasta pielāgošana"
+    },
+    "compression_viewer": {
+      "title": "Saspiešanas pielāgošana"
+    },
+    "outliers": {
+      "title": "Lapas ar neparastiem izmēriem",
+      "message": "Šīm lapām ir izmēri, kas ievērojami atšķiras no citām. Lūdzu, izvēlieties, kā tās apstrādāt:",
+      "width": "Platums",
+      "height": "Augstums",
+      "unusual": "neparasts",
+      "skip": "Nemainīt izmēru",
+      "keep": "saglabāt"
+    },
+    "first_page_multi": {
+      "title": "Pirmā lapa ir vairāku lapu",
+      "message": "Pirmā lapa tika atpazīta kā vairāku lapu. Kā vēlaties to numurēt?",
+      "option_auto_desc": "Parasta atkārtota numerēšana ar automātisku atpazīšanu.",
+      "option_joint_desc": "Komiksa pirmās un pēdējās lapas savienojums.",
+      "option_exclude_label": "Neiekļaut atkārtotā numerēšanā",
+      "option_exclude_desc": "Lapa saglabā savu pašreizējo nosaukumu un paliek pirmajā vietā. Vēlāk varat to pārdēvēt manuāli."
+    },
+    "batch_img": {
+      "select_directory_title": "Atlasiet mapi ar attēliem",
+      "no_img_title": "Attēlu faili nav atrasti",
+      "no_img_message": "Mapē netika atrasti atsevišķi attēlu faili :\n{directory}",
+      "confirm_title": "Atsevišķu attēlu pakešu konvertēšana uz CBZ",
+      "confirm_message": "{count} attēlu fails(-i) konvertēšanai mapē {directory} (ietverot apakšmapes).",
+      "checkbox_permanent_delete": "Dzēst oriģinālos attēlu failus neatgriezeniski\nbez nosūtīšanas miskastē (NEVAR ATCELT)",
+      "start_button": "Sākt",
+      "converting_title": "Notiek konvertēšana...",
+      "converting_progress": "Tiek konvertēts fails {current} no {total}",
+      "complete_title": "Konvertēšana pabeigta",
+      "complete_message": "{count} attēlu fails(-i) konvertēts(-i) mapē :",
+      "complete_message_errors": "{count} no {total} attēlu failiem konvertēti mapē :",
+      "errors_count": "Konstatēta(-s) {count} kļūda(-s).",
+      "converted_by_ext": "{ext} : {count} fails(-i)",
+      "mode_title": "Konvertēt attēlus uz CBZ",
+      "mode_intro": "Kā vēlaties grupēt attēlus?",
+      "mode_one_per_image": "Konvertēt katru attēlu atsevišķos CBZ failos",
+      "mode_one_per_image_sub": "(Katrs attēls kļūst par atsevišķu CBZ failu)",
+      "mode_all_in_one": "Grupēt visus attēlus vienā CBZ failā",
+      "mode_all_in_one_sub": "(Visi mapes attēli tiek grupēti vienā CBZ failā)"
+    },
+    "batch_drop": {
+      "window_title": "Mapju pakešapstrāde",
+      "intro_single": "Nomesta 1 mape. Kādu apstrādi vēlaties pielietot?",
+      "intro_multiple": "Nomestas {count} mapes. Kādu apstrādi vēlaties pielietot?",
+      "recursive_note": "Apakšmapes tiks arī pārskatītas.",
+      "mixed_drop_title": "Nomešana netiek atbalstīta",
+      "mixed_drop_message": "Jūs vienlaikus nometāt failus un mapes. Lūdzu, nometiet tikai failus vai tikai mapes."
+    },
+    "pdf_unlock": {
+      "title": "PDF aizsargāts pret izmaiņām",
+      "message": "Lapas tika importētas normāli.\n\nŠis PDF fails ir aizsargāts pret izmaiņām (īpašnieka parole).\n\nVai vēlaties saglabāt PDF faila kopiju bez šīs aizsardzības?",
+      "yes": "Jā, saglabāt atbloķētu kopiju",
+      "no": "Nē, turpināt neatbloķējot"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF faili, kas aizsargāti pret izmaiņām",
+      "message_single": "Tika atklāts 1 PDF fails, kas aizsargāts pret izmaiņām. Tas tika normāli pārveidots CBZ formātā.\n\nVai vēlaties saglabāt atbloķētu kopiju tā sākotnējā direktorijā?",
+      "message_plural": "Tika atklāti {count} PDF faili, kas aizsargāti pret izmaiņām. Tie tika normāli pārveidoti CBZ formātā.\n\nVai vēlaties saglabāt atbloķētu kopiju katram tā sākotnējā direktorijā?",
+      "yes": "Jā, saglabāt atbloķētās kopijas",
+      "no": "Nē, turpināt bez atbloķēšanas"
+    },
+    "ico_creator": {
+      "title": "Izveidot .ico ikonu",
+      "info_message": "Attēls tiks mainīts uz vairākām izšķirtspējām (16, 32, 48, 64, 128, 256 px).\nPašreizējais rāmja izmērs: {w} × {h} px",
+      "btn_validate_crop": "Apstiprināt apgriešanu",
+      "btn_validate_no_crop": "Apstiprināt bez apgriešanas",
+      "btn_cancel": "Atcelt",
+      "btn_transparency": "Iestatīt caurspīdīgumu",
+      "btn_validate_final": "Apstiprināt",
+      "tolerance_label": "Tolerance:",
+      "success_title": ".ico fails izveidots",
+      "success_message": "Fails {filename} veiksmīgi izveidots.",
+      "overwrite_title": "Fails jau eksistē",
+      "overwrite_message": "Fails {filename} jau eksistē. Pārrakstīt?",
+      "save_blocked_title": "Saglabāšana nav iespējama",
+      "save_blocked_message": "Šajā arhīvā ir viens vai vairāki .ico faili, kas nav komiksu attēli. Saglabāšana ir atspējota, kamēr šie faili atrodas mozaīkā.\nLai atkārtoti iespējotu saglabāšanu, dzēsiet tos no mozaīkas (Del taustiņš) vai izgrieziet (Ctrl+X), lai ielīmētu citur.",
+      "btn_back_to_crop": "Atgriezties pie apgriešanas"
+    },
+    "video_save_blocked": {
+      "title": "Nevar saglabāt",
+      "message": "Šajā arhīvā ir viens vai vairāki video faili. Saglabāšana ir atspējota, kamēr šie faili atrodas mozaīkā.\nLai atkārtoti iespējotu saglabāšanu, izdzēsiet tos no mozaīkas (Del taustiņš) vai izgrieziet (Ctrl+X), lai ielīmētu citur."
+    },
+    "open_file": {
+      "title": "Atvērt arhīvu",
+      "filter_archives": "Arhīvi (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Visi faili (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Licence"
+    },
+    "replace_corrupted_image": {
+      "title": "Aizstāt bojāto attēlu",
+      "filter_images": "Attēli (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Visi faili (*)"
+    },
+    "see_log": "SKATĪT ŽURNĀLU"
+  },
+  "tooltip": {
+    "source_archive": "Avota fails: {name}",
+    "file": "Fails: {name}",
+    "reason": "Iemesls: {reason}",
+    "size_kb": "Izmērs: {size} KB",
+    "size_mb": "Izmērs: {size} MB",
+    "file_size": "Izmērs: {size}",
+    "dimensions": "Izmēri: {width} × {height} px",
+    "resolution": "Izšķirtspēja: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: nav definēts",
+    "cbr_info": "CBR faili izmanto RAR formātu, kas ir īpašumā un patentēts;\ntos nevar modificēt, izmaiņas tiek saglabātas jaunā CBZ failā.",
+    "rotate_left": "90 grādu pagriešana pa kreisi",
+    "rotate_right": "90 grādu pagriešana pa labi",
+    "mirror_horizontal": "Horizontāla spoguļošana",
+    "mirror_vertical": "Vertikāla spoguļošana",
+    "fullscreen": "Pilnekrāna režīms",
+    "help_button": "Lietotāja rokasgrāmata",
+    "theme_button": "Pārslēgt starp gaišo un tumšo tēmu",
+    "font_decrease_button": "Samazināt fonta izmēru",
+    "font_increase_button": "Palielināt fonta izmēru",
+    "color_depth": "Krāsas: {bits} biti ({mode})",
+    "batch_pdf_to_cbz": "Konvertē uz CBZ visus PDF failus mapē un tās\napakšmapēs. Attēli tiek izvilkti un arhivēti\ntādi, kādi ir, bez jebkādas atkārtotas\nsaspiešanas.",
+    "batch_pdf_permanent_delete": "BRĪDINĀJUMS: ja šī opcija ir atzīmēta,\nsākotnējie PDF faili tiks neatgriezeniski\ndzēsti pēc konvertēšanas, bez iespējas\ntos atjaunot. Pārliecinieties, ka jums ir\nrezerves kopija, ja nepieciešams.",
+    "batch_cbr_to_cbz": "Pārveido uz CBZ visus CBR failus,\nkas atrodas mapē\nun tās apakšmapēs.",
+    "batch_cbr_permanent_delete": "BRĪDINĀJUMS: ja šī opcija ir atzīmēta,\nsākotnējie CBR faili tiks neatgriezeniski\ndzēsti pēc konvertēšanas, bez iespējas\ntos atjaunot. Pārliecinieties, ka jums ir\nrezerves kopija, ja nepieciešams.",
+    "renumber_btn_1": "Automātiskas vairāku lapu noteikšanas režīms\nAr labo peles pogu, lai mainītu režīmu",
+    "renumber_btn_2": "Vienklāršas numerācijas režīms\nAr labo peles pogu, lai mainītu režīmu",
+    "corrupted_header": "Bojāts attēls",
+    "right_click_instruction1": "Ar labo peles pogu noklikšķiniet,",
+    "right_click_instruction2": "lai aizstātu vai dzēstu šo attēlu.",
+    "unknown_error": "Nezināma kļūda",
+    "batch_img_to_cbz": "Konvertē visus attēlu failus, kas atrasti mapē\nun tās apakšmapēs, uz CBZ,\nkatram attēlam izveidojot vienu CBZ failu.",
+    "batch_img_permanent_delete": "BRĪDINĀJUMS : ja šī opcija ir atzīmēta,\noriģinālie attēlu faili tiks neatgriezeniski\ndzēsti pēc konvertēšanas, bez atjaunošanas\niespējas. Pārliecinieties, ka jums ir\ndublikāts, ja nepieciešams.",
+    "too_large_header": "Attēls ir pārāk liels ielādēšanai",
+    "too_large_pixels": "Izmēri: {pixels}",
+    "icon_toolbar_config_button": "Ikonu konfigurācija",
+    "icon_toolbar_size_decrease": "Samazināt ikonu izmēru",
+    "icon_toolbar_size_increase": "Palielināt ikonu izmēru",
+    "source_loose": "Brīvs attēls",
+    "source_web": "Tīmekļa attēls"
+  },
+  "help": {
+    "title": "MosaicView - Lietošanas instrukcija",
+    "intro": "MosaicView ļauj manipulēt un rediģēt komiksu failus, neizvelkot tos no arhīviem. Lietojumprogramma atbalsta CBZ (ZIP), CBR (RAR) un PDF formātus. Lietojumprogramma ir saderīga tikai ar 64 bitu sistēmām.",
+    "open_files": "Failu atvēršana",
+    "open_files_content": "• Noklikšķiniet uz pogas 'Atvērt CBZ/CBR/CB7/PDF'\n• Vai tieši ievelciet failu logā\n• Atbalstītie formāti: CBZ, CBR, CB7, PDF, attēli (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus var ari atvert, bet tiks izvilkti tikai to atteli (teksts tiek ignorets).\n• Šifrēts PDF (lai atvērtu, nepieciešama parole): failu nevar importēt, tiek parādīts kļūdas ziņojums.\n• PDF aizsargāts pret izmaiņām (owner password): lapas tiek importētas normāli. MosaicView piedāvā saglabāt atbloķētu faila kopiju tajā pašā mapē.",
+    "mosaic": "Mozaīka",
+    "mosaic_content": "Mozaīka attēlo visas jūsu komiksa lappuses kā sīktēlus. Jūs varat:\n• Pārkārtot lappuses, velkot un nometot (lappušu numerācija būs automātiska un tiks veikta atbilstoši aktīvajam pārnumerācijas režīmam)\n• Atlasīt vairākas lappuses (Ctrl+noklikšķināt vai Shift+noklikšķināt)\n• Pielāgot sīktēlu izmēru ar slīdni\n• Manuāli pārdēvēt failus, noklikšķinot uz to nosaukuma\n• Vilkt un nomest komiksu failus (CBZ/CBR/PDF) no Windows Explorer tieši citā atvērtā komiksā, lai apvienotu to saturu",
+    "manipulation": "Lappušu manipulācija",
+    "manipulation_content": "• Velciet un nometiet lapas, lai tās pārkārtotu\n• Velciet veselu komiksu citā, lai tos apvienotu\n• Ar peles labo pogu noklikšķiniet uz lapas, lai piekļūtu opcijām (pagriešana, dzēšana u.c.)\n• Veiciet dubultklikšķi uz lapas, lai atvērtu skatītāju\n• Eksportējiet atsevišķas lapas, velkot tās uz Windows mapi, vai izmantojot Ctrl+C / Ctrl+V",
+    "renumber": "Lappusēm pārnumerēšana",
+    "renumber_content": "MosaicView piedāvā divus lappusēm pārnumerēšanas režīmus, pieejamus caur pārnumerēšanas pogu, konteksta izvēlni (labais klikšķis) vai automātiski vilkšanas un nomešanas laikā:\n\n• Automātiskas vairāku lappusēm noteikšanas režīms (noklusējuma režīms): lietojumprogramma analizē katras lappuses platumu, lai noteiktu dubultās, tripletas utt. Vairāku lappusēm tiek pārnumerētas atbilstoši (piem.: dubultā lappuse tiks nosaukta 003-004, tripletā 005-006-007). Vairāk nekā 4 lappusēm gadījumā tiek rādīti tikai pirmais un pēdējais numurs (piem.: 010---025).\n\n• Vienkāršas numerācijas režīms: katra lappuse saņem unikālu kārtas numuru (001, 002, 003...), neatkarīgi no lappusēm platuma.\n\nLai pārslēgtos starp diviem režīmiem, ar labo peles pogu noklikšķiniet uz pārnumerēšanas pogas. Rīka padoms rāda aktīvo režīmu. Izvēlētais režīms attiecas arī uz automātisko pārnumerēšanu vilkšanas un nomešanas laikā.",
+    "flatten": "Mapju izlīdzināšana",
+    "flatten_content": "Ja jūsu arhīvs satur apakšmapes, izmantojiet 'Izlīdzināt mapes', lai pārvietotu visus attēlus uz vienu līmeni.",
+    "viewer": "Skatītājs",
+    "viewer_content": "Veiciet dubultklikšķi uz lappuses, lai atvērtu skatītāju:\n• Taustiņi ← → : navigācija starp lappusēm\n• Taustiņš D: pārslēgties starp 3 lasīšanas režīmiem\n  - Viena lappuse: pa vienai lappusei\n  - Dubultlappuses: 1. lappuse viena, pēc tam 2-3, 4-5 utt.\n  - Nepārtrauktas dubultlappuses: 1. lappuse viena, pēc tam 2-3, 3-4, 4-5 utt.\n• Peles ritenītis: ātra navigācija\n• Ctrl+ritenītis vai Ctrl+Plus/Mīnuss: tuvināšana\n• Ctrl+0: atiestatīt tuvināšanu\n• Taustiņš F11: pilnekrāna režīms\n• Dubultklikšķis: pārslēgt pilnekrāna režīmu\n• Taustiņš Escape: atcelt apgriešanas rāmi / iziet no skatītāja",
+    "join_pages": "Lappušu savienošana",
+    "join_pages_content": "Atlasiet vairākas secīgas lappuses, labā pele → 'Apvienot atlasītās lappuses', lai apvienotu lappuses horizontāli vai vertikāli. Izveidotā attēla formāts atbilst avota lappušu formātam, ja tās visas ir vienādas, pretējā gadījumā pēc noklusējuma PNG.",
+    "split_pages": "Lappušu sadalīšana",
+    "split_pages_content": "Lai automātiski sadalītu dubultlappuses:\n• Atlasiet lappuses, kas jāsadala\n• Ar peles labo pogu → 'Sadalīt atlasītās lappuses'\n• Izvēlieties virzienu (vertikāls vai horizontāls)",
+    "crop": "Apgriešana skatītājā",
+    "crop_content": "Skatītājā uzzīmējiet taisnstūri uz attēla, lai definētu apgriešanas zonu:\n• Uzzīmējiet taisnstūri ar peli\n• Mainiet tā izmēru, velkot malas vai stūrus\n• Noklikšķiniet uz 'Apstiprināt apgriešanu', lai lietotu\n• Apgriešana tiek lietota pašreizējam attēlam\n• Taustiņš Escape: atcelt apgriešanas rāmi",
+    "shortcuts": "Īsinājumtaustiņi",
+    "shortcuts_content": "• Ctrl+Z: Atsaukt pēdējo darbību\n• Ctrl+Y: Atcelt atsaukšanu\n• Ctrl+A: Atlasīt visas lappuses\n• Ctrl+I: Apgriezt izvēli\n• Ctrl+C: Kopēt atlasītās lappuses\n• Ctrl+X: Izgriezt atlasītās lappuses\n• Ctrl+V: Ielīmēt lappuses\n• Delete: Dzēst atlasītās lappuses\n• F5: Atjaunināt mozāīkas attēlojumu\n• F11: Pārslēgt pilnekrāna režīmu (iziet ar F11 vai ESC)",
+    "dark_mode": "Tumšais režīms",
+    "dark_mode_content": "Noklikšķiniet uz saules/mēness pogas, lai pārslēgtos starp gaišo un tumšo motīvu.",
+    "sort": "Lappušu kārtošana",
+    "sort_content": "Izmantojiet pogu 'Kārtot', lai automātiski pārkārtotu lappuses pēc:\n• Nosaukuma, Tipa, Izmēra, Platuma, Augstuma, Izšķirtspējas vai DPI",
+    "save": "Saglabāšana",
+    "save_content": "• 'Saglabāt': saglabā izmaiņas oriģinālajā failā\n• 'Saglabāt kā': izveido jaunu arhīvu\n• 'Izveidot CBZ': pieejams tikai attēlu režīmā (bez arhīva)",
+    "other": "Citas funkcijas",
+    "other_content": "• Pagriešana: pagrieziet vienu vai vairākas lappuses\n• Konvertēšana: konvertējiet attēlus dažādos formātos (PNG, JPEG, WEBP, BMP, TIFF, GIF). Piezīme: CMYK režīma attēli tiek automātiski konvertēti uz RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Piezīme: CMYK režīma attēli tiek automātiski konvertēti uz RGB\n• Drukāšana: drukājiet atlasītās vai visas lappuses\n• Izvilkšana: izvelciet konkrētas lappuses\n• Cilne Metadati: parāda informāciju no ComicInfo.xml faila (ja atrodas arhīvā). Ja pievienojat vai noņemat lappusi no komiksa, kas satur metadatus, lietojumprogramma piedāvās modificēt tajā norādīto lappušu skaitu. Citus metadatus nevar modificēt. Šis ierobežojums ir tīšs un izriet no dizaina izvēles.",
+    "config_files": "Konfigurācijas un pagaidu faili",
+    "config_files_content": "MosaicView izveido failu ar nosaukumu .mosaicview_config.json. Šis fails satur dažus parametrus, kas nepieciešami atiestatīšanas pogas pareizai darbībai, kā arī nesen atvērto komiksu sarakstu, kas acīmredzami ir nepieciešams nesen atvērto failu attēlošanai. MosaicView arī saglabā pagaidu failus, kas nepieciešami dažādām attēlu apstrādes operācijām.\nVisi šie faili atrodas mapē {temp_dir}.\nPagaidu faili tiek dzēsti katru reizi, kad lietojumprogramma tiek aizvērta, bet fails .mosaicview_config.json pēc savas būtības ir paredzēts saglabāšanai.\nTomēr šos failus varat dzēst manuāli, dodoties uz mapi {temp_dir} vai noklikšķinot uz tālāk esošajām pogām. Fails .mosaicview_config.json tiks atkārtoti izveidots katru reizi, kad tiks atvērta lietojumprogramma, un pagaidu faili tiks atkārtoti izveidoti pēc vajadzības.",
+    "config_clear_temp": "Dzēst pagaidu failus",
+    "config_clear_recent": "Notīrīt nesenos failus",
+    "config_clear_config": "Dzēst konfigurācijas failu",
+    "config_temp_cleared": "Pagaidu faili ir veiksmīgi izdzēsti.",
+    "config_config_cleared": "Konfigurācijas fails ir veiksmīgi izdzēsts.\nTas tiks atkārtoti izveidots nākamajā lietojumprogrammas palaišanā.",
+    "language": "Valodas izvēle",
+    "language_content": "MosaicView ir pieejams vairākās valodās.\nPēc noklusējuma lietojumprogramma automātiski nosaka jūsu operētājsistēmas valodu un tiek parādīta šajā valodā, ja tā tiek atbalstīta. Ja jūsu sistēma izmanto neatbalstītu valodu, interfeiss tiek parādīts angļu valodā.\nJūs varat jebkurā laikā manuāli mainīt valodu, izmantojot nolaižamo izvēlni, kas atrodas pogu kolonnas apakšā, zem sīktēlu izmēra slīdņa. Jūsu izvēle tiks saglabāta un piemērota, kad nākamreiz palaidīsit lietojumprogrammu.\nPIEEJAMĀS VALODAS: angļu, arābu, armēņu, bulgāru, čehu, dāņu, grieķu, hindi, horvātu, holandiešu, igauņu, indonēziešu, īru, islandiešu, itāļu, japāņu, ķīniešu (vienkāršotā), ķīniešu (tradicionālā), korejiešu, latviešu, lietuviešu, malajiešu, maltiešu, norvēģu, poļu, portugāļu, rumāņu, slovāku, slovēņu, somu, spāņu, zviedru, tamilu, taju, turku, ukraiņu, ungāru, vācu, vjetnamiešu, franču.\nPIEEJAMĀS IZDOMĀTĀS VALODAS: klingonu (latīņu alfabēta un pIqaD alfabēta versijas), sindarīns (latīņu alfabēta un tengwar alfabēta versijas), quenya (latīņu alfabēta un tengwar alfabēta versijas).\n\nŠis rīks izmanto Windows fontus, izņemot pIqaD (klingonu valoda) un tengwar (elfu valodas: sindarīns un quenya) fontus. Šie fonti ir brīvi lietojami un nāk no šīm vietnēm:\n- pIqaD (klingonu alfabēts): {url_piqad}\n- tengwar (elfu alfabēts, sindarīnam un quenyai): {url_tengwar}\nGadījumā, ja šīs vietnes vairs nav aktīvas, varat iegūt pIqaD un tengwar fontus, noklikšķinot uz tālāk redzamajām pogām:\n\nŠī programmatūra tika izstrādāta franču valodā. Tulkojumi citās valodās tika veikti, izmantojot mākslīgo intelektu, konkrēti Claude. Es nolēmu atbalstīt aptuveni četrdesmit valodas. Bet, protams, es nerunāju visās šajās valodās. Tāpēc man nebija citas izvēles, kā vien izmantot mākslīgo intelektu, jo 40 dažādu tulkotāju pieņemšana darbā un samaksa nebija starp apsvērtajām iespējām. Šo tulkojumu automātiskā rakstura dēļ var būt kļūdas. Es par to atvainojos.",
+    "credits": "Vibe Coding, mana mīlestība",
+    "credits_content": "Es neko nezinu par programmēšanu. Pilnīgi neko. Tāpēc es izveidoju šo programmatūru ar Claude, Anthropic mākslīgo intelektu, konkrēti ar Claude Code. Es ļoti iesaku Claude Code - šī lietojumprogramma ir brīnišķīga!",
+    "resize_pages": "Mainīt lappušu izmēru",
+    "resize_pages_content": "Lai samazinātu vai palielinātu lappuses:\n• Atlasiet vienu vai vairākas lappuses\n• Labā pele → 'Mainīt izmēru'\n• Pieejamas trīs opcijas:\n  - Pielāgoti izmēri: ievadiet vēlamo platumu vai augstumu (proporcijas tiek saglabātas automātiski).\n  - Procentuāls samazinājums: izvēlieties procentu no 10% līdz 90%\n  - Procentuāls palielinājums: izvēlieties procentu no 10% līdz 100%\n• Lietotne parāda aptuveno attēlu izmēru pēc izmaiņām\n• Izmaiņas tiek nekavējoties piemērotas visām atlasītajām lappusēm",
+    "language_export_piqad": "pIqaD fonts",
+    "language_export_tengwar": "Tengwar fonti",
+    "language_export_piqad_success": "Fonts eksportēts: {filename}\nPieejams:",
+    "language_export_tengwar_success": "{count} fonti eksportēti\nPieejami:",
+    "icons": "Ikonas",
+    "icons_content": "Lielākā daļa šajā utilītā izmantoto ikonu ir no šīs vietnes un ir brīvi pieejamas nekomerciālai lietošanai: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nDažas esmu modificējis pats.\nTikai viena ikona, Windows izpildāmā ikona, tika izveidota no manis (bet ar mākslīgo intelektu, jo es esmu ļoti, ļoti, ļoti slikts grafiskais dizainers). Jums ir mana atļauja izmantot šo ikonu, kā vēlaties, kamēr norādāt savu avotu.",
+    "icons_view_button": "Skatīt ikonas",
+    "icons_window_title": "MosaicView Ikonas",
+    "icons_save_all": "Saglabāt ikonas",
+    "icons_saved_success": "{count} ikona/ikonas saglabāta/saglabātas:",
+    "icons_save_failed": "Nevar saglabāt ikonas: {error}",
+    "split_ui": "Divu paneļu saskarne",
+    "split_ui_content": "MosaicView ļauj vienlaicīgi parādīt divus arhīvus blakus.\n\nNoklikšķiniet uz ikonas Sadalīt, lai atvērtu otro paneli. Katrs panelis ir neatkarīgs: varat atsevišķi atvērt, rediģēt un saglabāt arhīvu. Aktīvais panelis ir norādīts ar zilu apmali.\n\nLai pārvietotu lapas no viena paneļa uz otru, velciet tās tieši. Ja ir atlasītas vairākas lapas, tās visas pārvietojas kopā. Lapas tiek ievietotas pozīcijā, ko norāda sarkanā josla.\n\nNoklikšķiniet uz ikonas Aizvērt otro paneli, lai atgrieztos viena paneļa režīmā.",
+    "license_gpl": "GPL v3 licence",
+    "license_unrar": "UnRAR licence",
+    "config_clear_clipboard": "Notīrīt starpliktuvē saglabātos failus",
+    "config_clipboard_note": "Izņēmums: Pagaidu faili, ko izmanto Windows starliktuves (clipboard_XXXXX faili), tiek saglabāti 12 stundas pēc kopēšanas, lai jūs varētu tos ielīmēt pat pēc lietojumprogrammas aizvēršanas. Pēc 12 stundām tie tiek automātiski dzēsti.",
+    "config_log_note": "Pakešu konvertešana (PDF uz CBZ un CBR uz CBZ) izveido žurnala failu, ja rodas kludas. Šie faili (Log_pdftocbz_.txt un Log_cbrtocbz_.txt) tiek saglabati ari pec lietojumprogrammas aizvešanas, lai tos varetu parskaitit velak. Tie tiek dzesti tikai ar augstakesoša poga \"Dzest pagaidu failus\".",
+    "config_clipboard_cleared": "Starpliktuvē saglabātie faili ir veiksmīgi notīrīti.",
+    "adjust_images": "Attēlu pielāgošana",
+    "adjust_images_content": "Šī funkcija ļauj retušēt attēlus tieši MosaicView. Varat mainīt spilgtumu, kontrastu, asumu, līmeņus, piesātinājumu, pielietot efektus (melnbalts, sepija, krāsu inversija), regulēt saspiešanas kvalitāti, noņemt krāsas, pielietot caurspīdīgumu vai konvertēt dažādos krāsu dziļumos. Dažiem iestatījumiem ir īpašs skatītājs, kas ļauj redzēt rezultātu pilnā izšķirtspējā pirms pielietošanas. Miniatūras priekšskatījums rāda rezultātu reāllaikā galvenajā logā.",
+    "create_icon": "Izveidot ikonu",
+    "create_icon_content": "MosaicView ļauj izveidot ikonas failus (.ico) no jebkura mozaīkas attēla.\n• Ar peles labo pogu noklikšķiniet uz attēla → 'Izveidot ikonu'\n• Skatītājā ierāmējiet vēlamo apgabalu (ikona obligāti būs kvadrātveida)\n• Ja nepieciešams, pielāgojiet caurspīdīgumu\n• Apstipriniet: .ico fails tiek pievienots tieši mozaīkai\n• .ico failos automātiski ir ietvertas visas standarta izšķirtspējas (no 16×16 līdz 256×256)\n• Kamēr mozaīkā atrodas .ico fails, saglabāšana CBZ arhīvā ir bloķēta, jo ICO formāts netiek atbalstīts šajos arhīvos. Eksportējiet .ico failu atsevišķi (Ctrl+C un ielīmējiet Windows mapē), pēc tam pirms saglabāšanas izdzēsiet to no mozaīkas.",
+    "batch_convert": "Pakeškonvertēšana",
+    "batch_convert_content": "MosaicView piedāvā trīs pakešu konvertācijas funkcijas, kas pieejamas tikai tad, kad mozaīka ir tukša. Katrai no tām princips ir vienāds : atlasiet direktoriju, apstipriniet, sekojiet progresam reālajā laikā, pārskatiet galīgo kopsavilkumu. Opcija ļauj neatgriezeniski dzēst sākotnējos failus, nevis nosūtīt tos uz atkritni.\n• CBR → CBZ : konvertē visus CBR (RAR) failus direktorijā un tās apakšdirektorijās. Ja CBR faktiski ir ZIP, tas vienkārši tiek pārdēvēts bez konvertācijas.\n• PDF → CBZ : konvertē visus PDF failus direktorijā un tās apakšdirektorijās. Attēli tiek iegūti bez atkārtotas saspiešanas.\n• ATSEVIŠĶI ATTĒLI → CBZ : izveido individuālu CBZ katram attēla failam, kas atrasts direktorijā un tās apakšdirektorijās. Nederīgi, bojāti, vairāku lapu (TIFF) vai animēti (GIF) attēli tiek ignorēti un reģistrēti žurnālā.",
+    "config_open_temp_folder": "Atvērt pagaidu mapi",
+    "icon_toolbar": "Ikonu josla",
+    "icon_toolbar_content": "Ikonu rīkjosla nodrošina ātru piekļuvi lietojumprogrammas galvenajām funkcijām. Ikonas var pārkārtot pēc saviem ieskatiem, velkot tās tieši joslā. Lai izvēlētos, kuras ikonas rādīt vai slēpt, noklikšķiniet uz zobrata pogas joslas apakšdaļā: atveras konfigurācijas logs, kurā var pārvietot ikonas starp aktīvo joslu un rezervi. Izmantojiet pogas « + » un « − », lai pielāgotu ikonu izmēru. Konfigurācija tiek saglabāta automātiski.",
+    "license_7zip": "7-Zip licence"
+  },
+  "misc": {
+    "file_word": "fails",
+    "files_word": "faili",
+    "corrupted": "bojāts",
+    "yes": "Jā",
+    "no": "Nē",
+    "cancel": "Atcelt",
+    "selection_suffix": "atlase-kopija"
+  },
+  "metadata": {
+    "title": "Nosaukums",
+    "series": "Sērija",
+    "number": "Numurs",
+    "volume": "Sējums",
+    "summary": "Kopsavilkums",
+    "writer": "Scenārists",
+    "penciller": "Zīmētājs",
+    "inker": "Tušētājs",
+    "colorist": "Krāsotājs",
+    "letterer": "Burtu mākslinieks",
+    "cover_artist": "Vāka mākslinieks",
+    "editor": "Redaktors (persona)",
+    "publisher": "Izdevējs (izdevniecība)",
+    "imprint": "Sērijas nosaukums",
+    "genre": "Žanrs",
+    "web": "Tīmekļa vietne",
+    "page_count": "Lappušu skaits",
+    "language_iso": "Valoda",
+    "format": "Formāts",
+    "black_and_white": "Melnbalts",
+    "manga": "Manga",
+    "year": "Gads",
+    "month": "Mēnesis",
+    "day": "Diena",
+    "notes": "Piezīmes",
+    "characters": "Raksturi",
+    "locations": "Vietas",
+    "teams": "Komandas",
+    "story_arc": "Stāsta arks",
+    "story_arc_number": "Arka numurs",
+    "series_group": "Sēriju grupa",
+    "count": "Numuru skaits",
+    "alternate_series": "Alternatīva sērija",
+    "alternate_number": "Alternatīvs numurs",
+    "alternate_count": "Alternatīvs skaits",
+    "age_rating": "Vecuma vērtējums",
+    "series_complete": "Sērija pabeigta",
+    "translator": "Tulkotājs",
+    "tags": "Tagi",
+    "scan_information": "Skenēšanas informācija",
+    "community_rating": "Kopienas vērtējums",
+    "review": "Atsauksme",
+    "gtin": "GTIN",
+    "pages": "Lapas",
+    "pages_col_image": "Attēls",
+    "pages_col_type": "Tips",
+    "pages_col_width": "Platums",
+    "pages_col_height": "Augstums",
+    "pages_col_size": "Izmērs (B)"
+  },
+  "web": {
+    "web_download_progress": "Lejupielāde: {downloaded}/{total} attēli...",
+    "web_download_cancel": "Atcelt",
+    "web_no_images": "Nav attēlu",
+    "web_no_images_found": "Šajā lapā netika atrasti attēli.",
+    "web_imported": "{count} attēls(-i) importēts no tīmekļa lapas",
+    "web_drag_drop_title": "Tīmekļa attēla vilkšana un nomešana",
+    "web_copy_paste_message": "Tieša vilkšana no tīmekļa pārlūkprogrammas netiek atbalstīta.\n\nAlternatīvs risinājums (vienkāršāks):\n\n1. Noklikšķiniet ar peles labo pogu uz attēla pārlūkprogrammā\n2. Izvēlieties 'Kopēt attēlu'\n3. MosaicView izmantojiet pogu 'Ielīmēt' vai Ctrl+V\n\nŠī metode darbojas ar visiem tīmekļa attēliem!",
+    "import_web_button": "Tīmekļa imports",
+    "import_web_tooltip": "Ielīmējiet interneta adresi, lai iegūtu visus attēlus no lapas",
+    "import_web_menu": "Tīmekļa imports...",
+    "import_web_dialog_title": "Importēt attēlus no tīmekļa lapas",
+    "import_web_url_label": "Tīmekļa lapas adrese:",
+    "import_web_ok_button": "Labi",
+    "import_web_cancel_button": "Atcelt",
+    "import_web_invalid_url": "Nederīgs URL. Lūdzu, ievadiet derīgu tīmekļa adresi."
+  },
+  "donation": {
+    "menu_label": "Ziedot autoram",
+    "title": "Veikt ziedojumu",
+    "message": "Jums patīk šis mazais rīks un jūs to regulāri izmantojat.\n\nEsmu ieguldījis tajā vairākus simtus stundu. Vai jūs apsvērtu pateikties man, veicot ziedojumu? Lūdzu, esiet laipni, man patiešām ir vajadzīgi nauda, lai piepildītu savu baseinu ar šampanieti. Vai jūs vēlaties man nosūtīt dažus centus vai vairākus miljardus eiro, es pieņemu visas summas. Jūs varat veikt šo ziedojumu caur paypal"
+  },
+  "mail": {
+    "tooltip": "Šī poga atver jūsu noklusējuma e-pasta programmatūru Windows, lai nosūtītu e-pastu. Ja nav konfigurēta nekāda programmatūra (piemēram, ja izmantojat tikai tīmekļa pastu), varat kopēt MosaicView adresi starpliktuvē, ar peles labo pogu noklikšķinot uz ikonas.",
+    "copy_address": "Kopēt MosaicView e-pasta adresi",
+    "menu_label": "Sūtīt e-pastu uz MosaicView",
+    "icon_label": "Sūtīt e-pastu"
+  },
+  "menu": {
+    "file": "Fails",
+    "file_open": "Atvērt failu",
+    "file_close": "Aizvērt failu",
+    "batch_convert": "Failu pakeškonvertēšana",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Atsevišķi attēli → CBZ",
+    "edit": "Rediģēt",
+    "undo": "Atsaukt",
+    "redo": "Atkārtot",
+    "paste": "Ielīmēt",
+    "delete": "Dzēst",
+    "invert_selection": "Invertēt atlasi",
+    "select_all": "Atlasīt visu",
+    "deselect": "Noņemt atlasi",
+    "refresh_mosaic": "Atjaunināt mozaīku",
+    "images": "Attēli",
+    "rotation": "Rotācija",
+    "archives": "Arhīvi",
+    "sort": "Kārtošana",
+    "system": "Sistēma",
+    "decrease_font": "Samazināt fontu",
+    "increase_font": "Palielināt fontu",
+    "language": "Valodas",
+    "language_real": "Īstās valodas",
+    "language_fictional": "Izdomātās valodas",
+    "about": "Par",
+    "export_piqad_font": "Saglabāt pIqaD fontu",
+    "export_tengwar_fonts": "Saglabāt tengwar fontus"
+  }
+}

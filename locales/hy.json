@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Թվային կոմիքսների հավաքարարների համար բազմաֆունկցիոնալ գործիք",
+  "buttons": {
+    "open_file": "Բացել CBZ/CBR/CB7/PDF",
+    "close_file": "Փակել ֆայլը",
+    "create_cbz": "Ստեղծել CBZ արխիվ",
+    "flatten_dirs": "Տեղափոխել բոլոր ֆայլերը\nարմատային թղթապանակ և\nջնջել ենթաթղթապանակները",
+    "renumber": "Էջերի\nվերահամարակալում",
+    "undo": "⤺ Հետարկել",
+    "redo": "Կրկնել ⤻",
+    "copy": "Պատճենել",
+    "cut": "Կտրել",
+    "paste": "Տեղադրել",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Փոխարկել այլ\nպատկերի ձևաչափի",
+    "join_pages": "Միացնել էջերը",
+    "split_page": "Բաժանել էջը",
+    "save_as": "Պահպանել որպես\n(ստեղծել նոր CBZ)",
+    "save_selection": "Պահպանել ընտրվածը\nCBZ ֆայլում",
+    "print_selection": "Տպել ընտրվածը",
+    "print_all": "Տպել ամբողջ կոմիքսը",
+    "sort": "Դասավորել",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Փոխարկել",
+    "cancel": "Չեղարկել",
+    "split_button": "Բաժանել",
+    "join_button": "Սկսել",
+    "validate_crop": "Հաստատել կտրատումը",
+    "ok": "Լավ",
+    "close": "Փակել",
+    "apply_and_save": "Կիրառել փոփոխությունները և պահպանել ֆայլը",
+    "apply_and_create": "Կիրառել փոփոխությունները և ստեղծել CBZ ֆայլ",
+    "close_and_lose": "Փակել ֆայլը և կորցնել փոփոխությունները",
+    "cancel_return": "Չեղարկել և վերադառնալ մոզաիկա",
+    "update_page_count": "Թարմացնել էջերի\nթիվը մետատվյալներում",
+    "invert_selection": "Շրջել ընտրությունը",
+    "reduce_size": "Փոխել էջերի չափը",
+    "mirror_vertical": "⇅",
+    "create_gif": "Ստեղծել GIF",
+    "edit_gif": "Խմբագրել անիմացիոն GIF",
+    "save_to_folder": "Արտահանել ընտրված\nէջերը",
+    "continue": "Շարունակել",
+    "reset": "↻",
+    "yes": "Այո",
+    "no": "Ոչ",
+    "renumber_recommended": "Վերահամարակալել (խորհուրդ է տրվում)",
+    "ignore_and_save": "Անտեսել և պահպանել",
+    "rename_to_cbz": "Վերանվանել .cbz-ի",
+    "open_without_rename": "Բացել առանց վերանվանման",
+    "rename_to_cbr": "Վերանվանել .cbr",
+    "adjustments": "Parevorutyun,\nkontrast ev ayl",
+    "batch_cbr_to_cbz": "Փոխակերպել խմբաքով\n CBR ֆայլերը CBZ-ի",
+    "batch_pdf_to_cbz": "PDF ֆայլերի խմբային\n փոխարկում CBZ-ի",
+    "batch_img_to_cbz": "Առանձին պատկերների\n խմբաքանակային փոխակերպում CBZ-ի",
+    "icon_toolbar_reset": "Վերականգնել",
+    "delete_selected": "Ջնջել",
+    "save": "Պահպանել",
+    "rename_to_cb7": "Վերանվանել .cb7",
+    "split_ui": "Բաժանել ինտերֆեյսը երկու վահանակի",
+    "unsplit_ui": "Փակել երկրորդ վահանակը"
+  },
+  "tabs": {
+    "mosaic": "Մոզաիկա",
+    "metadata": "Մետատվյալներ"
+  },
+  "viewer": {
+    "title": "Դիտարկիչ",
+    "mode_single": "Մեկ էջ  [D]",
+    "mode_double": "Կրկնակի էջ  [D]",
+    "mode_continuous": "Շարունակական ռեժիմ  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Նախորդ էջ (←)",
+      "next_page": "Հաջորդ էջ (→)",
+      "zoom_in": "Խոշորացնել (Ctrl+Plus)",
+      "zoom_out": "Փոքրացնել (Ctrl+Minus)",
+      "zoom_reset": "Վերականգնել մասշտաբը (Ctrl+0)",
+      "reading_mode_double": "Փոխել ընթերցման ռեժիմը (D) → Կրկնակի էջեր",
+      "reading_mode_continuous": "Փոխել ընթերցման ռեժիմը (D) → Շարունակական կրկնակի էջեր",
+      "reading_mode_single": "Փոխել ընթերցման ռեժիմը (D) → Մեկ էջ",
+      "fullscreen_exit": "Ելք լիաէկրան ռեժիմից (F11)",
+      "fullscreen": "Լիաէկրան ռեժիմ (F11)",
+      "close_viewer": "Փակել դիտարկիչը (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Վնասված պատկեր - Փոխարինել",
+      "corrupted_delete": "⚠️ Ջնջել այս պատկերը",
+      "copy": "Պատճենել (Ctrl+C)",
+      "cut": "Կտրել (Ctrl+X)",
+      "paste": "Տեղադրել (Ctrl+V)",
+      "paste_clipboard": "Տեղադրել սեղմատախտակից (Ctrl+V)",
+      "delete": "Ջնջել (Delete)",
+      "deselect": "Ապաընտրել (ESC)",
+      "rotate_right": "↻ Պտտել աջ",
+      "rotate_left": "↺ Պտտել ձախ",
+      "mirror": "⇄ Հորիզոնական հայելային",
+      "crop": "Կտրատել",
+      "convert": "Փոխարկել այլ ձևաչափի...",
+      "join": "Միացնել ընտրված էջերը",
+      "split": "Բաժանել ընտրված էջը",
+      "save_selection": "Պահպանել ընտրվածը CBZ ֆայլում",
+      "print_selection": "Տպել ընտրվածը",
+      "copy_archive": "Պատճենել ամբողջ արխիվը",
+      "undo": "Հետարկել (Ctrl+Z)",
+      "redo": "Կրկնել (Ctrl+Y)",
+      "renumber_auto": "Էջերի վերահամարակում (բազմաթիվ էջերի ինքնահայտնաբերում)",
+      "renumber_simple": "Էջերի վերահամարակում (պարզ համարակում)",
+      "sort_submenu": "Դասավորել էջերը",
+      "sort_name": "Ըստ անվան",
+      "sort_type": "Ըստ տեսակի",
+      "sort_size": "Ըստ չափի",
+      "sort_width": "Ըստ լայնության",
+      "sort_height": "Ըստ բարձրության",
+      "sort_resolution": "Ըստ լուծաչափի",
+      "sort_dpi": "Ըստ DPI",
+      "create_cbz": "Ստեղծել CBZ արխիվ",
+      "save_as": "Պահպանել որպես...",
+      "close_file": "Փակել ֆայլը",
+      "help": "Օգտագործման ուղեցույց",
+      "update_page_count": "Թարմացնել էջերի թիվը մետատվյալներում",
+      "invert_selection": "Շրջել ընտրությունը (Ctrl+I)",
+      "reduce_size": "Փոխել էջերի չափը",
+      "mirror_vertical": "⇅ Ուղղաձիգ հայելի",
+      "edit_animated_gif": "Խմբագրել անիմացիոն GIF...",
+      "save_to_folder": "Արտահանել ընտրված էջերը",
+      "adjustments": "Parevorutyun, kontrast, guynery...",
+      "refresh_mosaic": "Թարմացնել խճանկարը (F5)",
+      "create_ico": "Ստեղծել .ico ֆայլ"
+    },
+    "canvas_no_file": {
+      "open": "Բացել CBZ/CBR/CB7/PDF",
+      "recent_files": "Վերջին ֆայլեր",
+      "clear_history": "Մաքրել պատմությունը"
+    },
+    "canvas_with_file": {
+      "close": "Փակել ֆայլը",
+      "paste": "Տեղադրել (Ctrl+V)",
+      "paste_clipboard": "Տեղադրել սեղմատախտակից (Ctrl+V)",
+      "select_all": "Ընտրել բոլորը (Ctrl+A)",
+      "deselect": "Ապաընտրել (ESC)",
+      "copy_archive": "Պատճենել ամբողջ արխիվը",
+      "print_all": "Տպել ամբողջ կոմիքսը",
+      "renumber_auto": "Էջերի վերահամարակում (բազմաթիվ էջերի ինքնահայտնաբերում)",
+      "renumber_simple": "Էջերի վերահամարակում (պարզ համարակում)",
+      "flatten": "Հարթեցնել թղթապանակները",
+      "save_selection": "Պահպանել ընտրվածը CBZ ֆայլում",
+      "hide_sidebar": "« Թաքցնել կոճակների սյունակը",
+      "show_sidebar": "» Ցուցադրել կոճակների սյունակը",
+      "decrease_thumbs": "Փոքրացնել մանրապատկերները",
+      "increase_thumbs": "Մեծացնել մանրապատկերները",
+      "theme_dark": "Անցնել մութ թեմային",
+      "theme_light": "Անցնել լուսավոր թեմային",
+      "sort_submenu": "Դասավորել էջերը",
+      "undo": "Հետարկել (Ctrl+Z)",
+      "redo": "Կրկնել (Ctrl+Y)",
+      "create_cbz": "Ստեղծել CBZ արխիվ",
+      "save_as": "Պահպանել որպես...",
+      "help": "Օգտագործման ուղեցույց",
+      "update_page_count": "Թարմացնել էջերի թիվը մետատվյալներում",
+      "invert_selection": "Շրջել ընտրությունը (Ctrl+I)",
+      "fullscreen": "Լիէկրան ռեժիմ (F11)",
+      "fullscreen_exit": "Ելք լիէկրան ռեժիմից (F11 կամ ESC)",
+      "quit": "Փակել հավելվածը"
+    },
+    "canvas": {
+      "quit": "Փակել հավելվածը",
+      "reset": "Վերականգնել հավելվածը.\n• պատուհանի չափն ու դիրքը\n• մուգ ռեժիմ → բաց\n• մանրապատկերների չափ → նորմալ\n• կողային սանդղակ → տեսանելի / 220 px\n• լեզու → ավտոմատ հայտնաբերում\n• տառատեսակի չափ → լռելյայն",
+      "reset_label": "Վերականգնել ծրագիրը"
+    },
+    "font_size": {
+      "decrease": "Նվազեցնել տառաչափի չափը",
+      "increase": "Մեծացնել տառաչափի չափը"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Դասավորել ըստ անվան",
+    "sort_type": "Դասավորել ըստ տեսակի",
+    "sort_size": "Դասավորել ըստ չափի",
+    "sort_width": "Դասավորել ըստ լայնության",
+    "sort_height": "Դասավորել ըստ բարձրության",
+    "sort_resolution": "Դասավորել ըստ լուծաչափի",
+    "sort_dpi": "Դասավորել ըստ DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Դատարկ արխիվ",
+        "message": "CBZ արխիվը ֆայլեր չի պարունակում։"
+      },
+      "empty_cbr": {
+        "title": "Դատարկ արխիվ",
+        "message": "CBR արխիվը ֆայլեր չի պարունակում։"
+      },
+      "files_ignored": {
+        "title": "Ֆայլերը անտեսված են"
+      },
+      "no_selection_crop": {
+        "title": "Ընտրություն չկա",
+        "message": "Խնդրում ենք ընտրել պատկեր կտրատման համար։"
+      },
+      "multi_selection_crop": {
+        "title": "Բազմակի ընտրություն",
+        "message": "Կարող եք կտրատել միայն մեկ պատկեր միանգամից։\nԽնդրում ենք ընտրել միայն մեկ պատկեր։"
+      },
+      "invalid_selection_crop": {
+        "title": "Անվավեր ընտրություն",
+        "message": "Կտրատել կարելի է միայն պատկերները։"
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Գործառույթը հասանելի չէ",
+        "message": "Էջերի տեղափոխումը հասանելի չէ ենթաթղթապանակներում։\nԽնդրում ենք հարթեցնել թղթապանակները կամ վերադառնալ արմատային թղթապանակ։"
+      },
+      "no_selection_convert": {
+        "title": "Ընտրություն չկա",
+        "message": "Խնդրում ենք ընտրել առնվազն մեկ պատկեր փոխարկելու համար։"
+      },
+      "invalid_selection_convert": {
+        "title": "Անվավեր ընտրություն",
+        "message": "Փոխարկել կարելի է միայն պատկերները։"
+      },
+      "no_selection_split": {
+        "title": "Ընտրություն չկա",
+        "message": "Խնդրում ենք ընտրել պատկեր բաժանելու համար։"
+      },
+      "multi_selection_split": {
+        "title": "Բազմակի ընտրություն",
+        "message": "Կարող եք բաժանել միայն մեկ պատկեր միանգամից։\nԽնդրում ենք ընտրել միայն մեկ պատկեր։"
+      },
+      "invalid_selection_split": {
+        "title": "Անվավեր ընտրություն",
+        "message": "Բաժանել կարելի է միայն պատկերները։"
+      },
+      "invalid_number_split": {
+        "title": "Անվավեր թիվ",
+        "message": "Էջերի քանակը պետք է լինի 2-ից 10-ի միջև։"
+      },
+      "insufficient_selection_join": {
+        "title": "Անբավարար ընտրություն",
+        "message": "Խնդրում ենք ընտրել առնվազն 2 պատկեր միացնելու համար։"
+      },
+      "invalid_selection_join": {
+        "title": "Անվավեր ընտրություն",
+        "message": "Միացնել կարելի է միայն պատկերները։"
+      },
+      "pil_not_available": {
+        "title": "PIL հասանելի չէ",
+        "message": "PIL մոդուլը հասանելի չէ համակարգի սեղմատախտակից տեղադրման համար։"
+      },
+      "format_not_supported": {
+        "title": "Ձևաչափը չի աջակցվում",
+        "message": "Պատկերի ձևաչափը չի աջակցվում կամ ֆայլը վնասված է։\nԱջակցվող ձևաչափեր՝ JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Ընտրություն չկա",
+        "message": "Խնդրում ենք նախ նկարել կտրատման ուղղանկյուն։"
+      },
+      "cannot_open_file": {
+        "title": "Հնարավոր չէ բացել ֆայլը",
+        "message": "Ֆայլը հնարավոր չէ բեռնել։"
+      },
+      "corrupted_images": {
+        "title": "Վնասված պատկերներ",
+        "summary": "{total}-ից հայտնաբերվել է {count} վնասված պատկեր(ներ)։",
+        "hint": "Դրանք ցուցադրվում են հատուկ պատկերակով։\nՎնasված պատկերի վրա աջ սեղմեք՝ այն փոխարինելու կամ ջնջելու համար։",
+        "more": "... և {count} այլ"
+      },
+      "no_image_print": {
+        "title": "Պատկեր չկա",
+        "message": "Տպելու համար պատկեր չկա։"
+      },
+      "no_valid_image_print": {
+        "title": "Պատկեր չկա",
+        "message": "Տպելու համար վավեր պատկեր չկա։"
+      },
+      "no_selection_print": {
+        "title": "Ընտրություն չկա",
+        "message": "Խնդրում ենք ընտրել առնվազն մեկ պատկեր։"
+      },
+      "no_valid_selection_print": {
+        "title": "Պատկեր չկա",
+        "message": "Ընտրության մեջ վավեր պատկեր չկա։"
+      },
+      "save_cancelled": {
+        "title": "Պահպանումը չեղարկված է",
+        "message": "Խնդրում ենք ձեռքով ճշտել ֆայլերի անունները մինչև պահպանելը։"
+      },
+      "empty_pdf": {
+        "title": "Դատարկ PDF",
+        "message": "PDF ֆայլը էջեր չի պարունակում։"
+      },
+      "no_selection_save": {
+        "title": "Ուշադրություն",
+        "message": "Խնդրում ենք ընտրել առնվազն մեկ էջ պահպանելու համար։"
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Տեղափոխումն անջատված է",
+        "message": "Էջերի քաշ-ու-գցել տեղափոխումը հասանելի է միայն կոմիքսի արմատային թղթապանակում։\n\nԷջերը տեղափոխելու համար՝\n1. Վերադառնալ արմատային թղթապանակ՝ սեղմելով վերադարձի պատկերակը\n2. Կամ հարթեցնել կոմիքսը՝ ջնջելու համար ենթաթղթապանակները"
+      },
+      "no_selection_reduce": {
+        "title": "Ընտրություն չկա",
+        "message": "Խնդրում ենք ընտրել առնվազն մեկ էջ նվազեցնելու համար։"
+      },
+      "invalid_selection_reduce": {
+        "title": "Անվավեր ընտրություն",
+        "message": "Միայն պատկերները կարող են նվազեցվել։"
+      },
+      "invalid_dimensions": {
+        "title": "Անվավեր չափեր",
+        "message": "Խնդրում ենք մուտքագրել վավեր չափեր (դրական ամբողջ թվեր)։"
+      },
+      "no_images_for_gif": {
+        "title": "Պատկերներ չկան",
+        "message": "Անիմացված GIF ստեղծելու համար անհրաժեշտ է առնվազն մեկ պատկեր։"
+      },
+      "no_valid_images": {
+        "title": "Վավեր պատկերներ չկան",
+        "message": "GIF ստեղծելու համար վավեր պատկերներ չեն գտնվել։"
+      },
+      "animated_gif_in_comic": {
+        "title": "Անիմացիոն GIF հայտնաբերված է",
+        "message": "Զգուշացում: Այս կոմիքսը պարունակում է մեկ կամ ավելի անիմացված GIF ֆայլեր։\\n\\nԿոմիքսների ընթերցիչները (CDisplayEx, YACReader և այլն) կցուցադրեն միայն յուրաքանչյուր GIF-ի առաջին կադրը որպես ստատիկ էջ։\\n\\nԱնիմացված GIF-ը ճիշտ դիտելու համար դուք պետք է այն առանձին պահպանեք կոմիքսից դուրս՝ օգտագործելով \"Արտահանել ընտրված էջերը\" կամ \"Խմբագրել անիմացված GIF\" կոճակը։\\n\\nՈւզո՞ւմ եք շարունակել կոմիքսի պահպանումը այնուամենայնիվ։"
+      },
+      "no_selection_adjust": {
+        "title": "Yntrutyan ch'ka",
+        "message": "Khndrum enq: vntrel voch'p'ok'r me patker karegavorumner kirarkvelu hamar."
+      },
+      "invalid_selection_adjust": {
+        "title": "Anteghankal yntrutyan",
+        "message": "Karegavorumner kartogvum yen mijajn patkereri vra."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Հնարավորությունն անհասանելի է",
+        "message": "Վերամասնակցումը հասանելի չէ, քանի դեռ թղթապանակները հարթ չեն:\nՀարթեք թղթապանակները մինչ վերամասնակցումը:"
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP սխալ",
+        "message": "'{file}': Ֆայլը վավեր ZIP արխիվ չէ կամ վնասված է։"
+      },
+      "zip_cannot_open": {
+        "title": "ZIP սխալ",
+        "message": "Հնարավոր չէ բացել CBZ ֆայլը՝ {error}"
+      },
+      "rar_invalid": {
+        "title": "RAR սխալ",
+        "message": "'{file}': Ֆայլը վավեր RAR արխիվ չէ կամ վնասված է։"
+      },
+      "rar_cannot_open": {
+        "title": "RAR սխալ",
+        "message": "Հնարավոր չէ բացել CBR արխիվը՝ {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Սխալ",
+        "message": "Անսպասելի սխալ CBR-ը բացելիս՝ {error}"
+      },
+      "join_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ միաձուլել պատկերները։"
+      },
+      "paste_failed": {
+        "title": "Սխալ",
+        "message": "Սխալ տեղադրելիս՝ {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ պատճենել արխիվը՝ {error}"
+      },
+      "crop_invalid": {
+        "title": "Սխալ",
+        "message": "Կտրատման տարածքն անվավեր է։"
+      },
+      "crop_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ կտրատել պատկերը՝ {error}"
+      },
+      "load_image_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ բեռնել պատկերը՝\n{error}"
+      },
+      "print_error": {
+        "title": "Տպելու սխալ",
+        "message": "Սխալ տպելիս՝\n{error}"
+      },
+      "print_not_available": {
+        "title": "Տպելը հասանելի չէ",
+        "message": "win32print մոդուլը տեղադրված չէ։\nՏեղադրեք այն՝ pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Ֆայլը չի գտնվել",
+        "message": "Ֆայլն այլևս գոյություն չունի՝\n{path}"
+      },
+      "import_failed": {
+        "title": "Ներմուծման սխալ",
+        "message": "Հնարավոր չէ ներմուծել ֆայլը՝ {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF տեղադրված չէ",
+        "message": "PyMuPDF (fitz) գրադարանը տեղադրված չէ։\nՏեղադրեք այն՝ pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Սխալ",
+        "message": "Սխալ PDF-ը ներմուծելիս՝ {error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF սխալ",
+        "message": "Հնարավոր չէ բեռնել PDF-ը՝\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Կրկնօրինակ ֆայլերի անուններ",
+        "intro": "{count} կրկնօրինակ ֆայլի անուն(ներ) հայտնաբերված.\n\n",
+        "item": "  • {name} ({times} անգամ)\n",
+        "more": "  ... և {more} այլ\n",
+        "footer": "\nZIP արխիվները չեն ընդունում կրկնօրինակ անուններ:\nԽնդրում ենք վերանվանել այս ֆայլերը պահելուց առաջ:"
+      },
+      "save_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ պահպանել ֆայլը՝ {error}"
+      },
+      "create_archive_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ ստեղծել արխիվը՝ {error}"
+      },
+      "save_selection_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ պահպանել ընտրվածը՝ {error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF ստեղծման սխալ",
+        "message": "Հնարավոր չէ ստեղծել անիմացված GIF:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Պահման սխալ",
+        "message": "Սխալ ֆայլերի պահման ժամանակ:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Վերանվանման սխալ",
+        "message": "Հնարավոր չէ վերանվանել ֆայլը՝ {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF-ը պաշտպանված է գաղտնաբառով",
+        "message": "Այս PDF ֆայլը գաղտնագրված է և պաշտպանված գաղտնաբառով:\nԱյն հնարավոր չէ բացել առանց գաղտնաբառի:"
+      },
+      "pdf_unlock_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չեղավ պահպանել ապակողպված PDF ֆայլը:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: գաղտնագրված PDF (գաղտնաբառ պահանջվում է), բաց է թողնված",
+      "file_too_large": {
+        "title": "Ֆայլը չափազանց մեծ է",
+        "message": "Ֆայլը {filename} կազմում է {size} և գերազանցում է պատկերի համար առավելագույն թույլատրելի չափը (500 ՄԲ):"
+      },
+      "license_file_not_found": {
+        "message": "Լիցենզիայի ֆայլը չի գտնվել՝ {path}"
+      },
+      "license_file_read_error": {
+        "message": "Հնարավոր չէ կարդալ լիցենզիայի ֆայլը՝ {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z սխալ",
+        "message": "'{file}' ֆայլը վավեր 7Z արխիվ չէ կամ վնասված է:"
+      },
+      "delete_error": "Սխալ ջնջման ժամանակ. {error}",
+      "export_error": "Սխալ արտահանման ժամանակ. {error}",
+      "font_source_not_found": "Տառատեսակի աղբյուրի ֆայլը չի գտնվել. {path}",
+      "no_tengwar_font": "Tengwar տառատեսակ չի գտնվել:",
+      "no_icons_found": "Պատկերակներ չեն գտնվել:",
+      "unsupported_files": {
+        "title": "Չաջակցվող ֆայլեր",
+        "message": "Հետևյալ ֆայլերը չեն աջակցվում և անտեսվել են:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF-ը հաջողությամբ ստեղծվեց",
+        "message": "Անիմացված GIF '{name}'-ը ստեղծվել և ավելացվել է մոզաիկին։"
+      },
+      "pywin32_required": {
+        "title": "Գործառույթը հասանելի չէ",
+        "message": "pywin32 մոդուլն անհրաժեշտ է համակարգի սեղմատախտակից տեղադրելու համար։\nՏեղադրեք այն՝ pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Պատկերները ներմուծված են",
+        "message": "{count} պատկեր(ներ) ներմուծված է"
+      },
+      "archive_copied": {
+        "title": "Արխիվը պատճենված է",
+        "message": "Արխիվը պատճենվել է սեղմատախտակին։"
+      },
+      "function_not_available": {
+        "title": "Գործառույթը հասանելի չէ",
+        "message": "Այս գործառույթը ներկայումս հասանելի չէ։"
+      },
+      "duplicate_detected": {
+        "title": "Կրկնօրինակ հայտնաբերված է",
+        "message": "Ֆայլ այս անունով արդեն գոյություն ուներ։\n\nՖայլը վերանվանվել է՝\n{name}"
+      },
+      "replace_success": {
+        "title": "Հաջողություն",
+        "message": "«{name}» պատկերը հաջողությամբ փոխարինվել է։"
+      },
+      "history_cleared": {
+        "title": "Պատմությունը մաքրված է",
+        "message": "Վերջին ֆայլերի ցանկը մաքրվել է։"
+      },
+      "files_copied_clipboard": {
+        "title": "Ֆայլերը պատճենված են սեղմատախտակ",
+        "message": "Դուրս քաշ-ու-գցելը հասանելի չէ տեխնիկական պատճառներով։\n\n✓ {count} {word} պատճենված է սեղմատախտակ\n\nԱյժմ կարող եք տեղադրել ցանկացած տեղ՝\n  • Աջ սեղմելով → Տեղադրել\n  • Կամ Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Ուղղումը կատարված է",
+        "message": "{count} ֆայլ(երի) անուն(ներ) ուղղվել է։"
+      },
+      "import_success": {
+        "title": "Ներմուծումը հաջողվեց",
+        "message": "{count} էջ(եր) ներմուծվել է {file}-ից"
+      },
+      "pdf_import_success": {
+        "title": "Ներմուծումը հաջողվեց",
+        "message": "{count} PDF էջ(եր) ներմուծվել է {file}-ից\nՈրակ՝ {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Հաջողություն",
+        "message": "PDF-ը հաջողությամբ փոխարկվեց։\n{count} էջեր բեռնվել են {dpi} DPI-ով։"
+      },
+      "cbz_saved": {
+        "title": "Հաջողություն",
+        "message": "CBZ ֆայլը հաջողությամբ պահպանվել է:"
+      },
+      "cbz_converted": {
+        "title": "Հաջողություն",
+        "message": "Ֆայլը հաջողությամբ փոխակերպվել է CBZ-ի:",
+        "question": "Ուզո՞ւմ եք ջնջել սկզբնական CBR ֆայլը:"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Հաջողություն",
+        "message": "Ֆայլը հաջողությամբ փոխակերպվել է CBZ-ի:",
+        "question": "Ուզո՞ւմ եք ջնջել սկզբնական PDF ֆայլը:"
+      },
+      "cbz_save_as": {
+        "title": "Հաջողություն",
+        "message": "Նոր CBZ ֆայլը պահպանված է՝ {path}"
+      },
+      "cbz_created": {
+        "title": "Հաջողություն",
+        "message": "CBZ արխիվը հաջողությամբ ստեղծվել է:"
+      },
+      "selection_saved": {
+        "title": "Հաջողություն",
+        "message": "Ընտրությունը հաջողությամբ պահպանվել է:"
+      },
+      "flatten_done": {
+        "title": "Հարթեցումը ավարտված է",
+        "message": "{files} ֆայլ(եր) տեղափոխվել է {dirs} ենթաթղթապանակ(ներ)ից։"
+      },
+      "language_changed": {
+        "title": "Լեզուն փոխված է",
+        "message": "Ինտերֆեյսի լեզուն հաջողությամբ փոխվել է։"
+      },
+      "new_cbz_saved": {
+        "title": "Ֆայլը Պահպանված է",
+        "message": "Նոր CBZ ֆայլը հաջողությամբ պահպանվել է:",
+        "question": "Ուզու՞մ եք ջնջել բնօրինակ ֆայլը:"
+      },
+      "page_count_updated": {
+        "title": "Էջերի թիվը թարմացվել է",
+        "message": "Մետատվյալներում էջերի թիվը թարմացվել է {count} էջի։"
+      },
+      "files_saved": {
+        "title": "Հաջողությամբ պահվեց",
+        "message": "{count} ֆայլ պահվեց այստեղ:\n{folder}",
+        "open_folder": "Ցանկանու՞մ եք բացել թղթապանակը:"
+      },
+      "adjustments_applied": {
+        "title": "Karegavorumner kirarvel yen",
+        "message": "Karegavorumner hadjox kirarvel yen."
+      },
+      "pdf_unlocked": {
+        "title": "PDF-ն ապակողպված է",
+        "message": "Ապակողպված PDF ֆայլը պահպանվեց:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Մեծ արխիվ",
+        "message": "Այս արխիվը {size} ՄԲ է ապաարխիվացված վիճակում։\nԲեռնումը կարող է շատ հիշողություն (RAM) սպառել։\n\nՇարունակե՞լ։"
+      },
+      "confirm_delete": {
+        "title": "Հաստատում",
+        "message": "Իսկապես ցանկանում եք ջնջել {count} ֆայլ(եր) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Ջնջե՞լ սկզբնական ֆայլերը",
+        "message": "Ուզում եք ջնջե՞լ միաձուլված պատկերները։\n\nԱյո = Ջնջել սկզբնական ֆայլերը\nՈչ = Պահպանել սկզբնական ֆայլերը\nՉեղարկել = Չեղարկել գործողությունը"
+      },
+      "invalid_filenames": {
+        "title": "Անվավեր ֆայլերի անուններ",
+        "intro": "{count} ֆայլ(եր) պարունակում են արգելված նիշեր.",
+        "item": "  • {name}",
+        "more": "  ... և ևս {more}",
+        "forbidden_chars": "Արգելված նիշեր. {chars}",
+        "fix_question": "Ցանկանու՞մ եք ավտոմատ կերպով ուղղել այս անունները:\n(Արգելված նիշերը կփոխարինվեն '_'-ով)"
+      },
+      "close_without_save": {
+        "title": "Պահե՞լ փակելուց առաջ:",
+        "message": "Պատկերներ են ավելացվել։ Ուզում եք ստեղծել CBZ արխիվ նախքան փակելը։"
+      },
+      "flatten_folders": {
+        "title": "Հարթեցնել թղթապանակները",
+        "subdirs_detected": "Հայտնաբերված ենթաթղթապանակներ՝",
+        "files_to_move": "{count} ֆայլ(եր) կտեղափոխվեն արմատային թղթապանակ։",
+        "folders_to_delete": "{count} ենթաթղթապանակ(ներ) կջնջվեն։",
+        "continue_question": "Շարունակե՞լ։"
+      },
+      "update_page_count": {
+        "title": "Թարմացնել էջերի թիվը",
+        "message": "Կոմիքսում էջերի թիվը փոխվել է։\n\nՄետատվյալներում նշված էջերի թիվը՝ {original}\nԸնթացիկ էջերի թիվը՝ {current}\n\nՑանկանու՞մ եք թարմացնել էջերի թիվը մետատվյալներում։"
+      },
+      "conversion_complete": {
+        "title": "Փոխակերպումն ավարտված է",
+        "message": "Փոխակերպումն ավարտված է!\n\n{count} նկար փոխակերպված {format} ձևաչափի ավելացվել է ձեր ընտրությունից հետո։\n\nՋնջել բնօրինակ նկարները՞",
+        "delete_originals": "Ջնջել բնօրինակները\n{count} ֆայл - {size}",
+        "keep_all": "Պահպանել ամեն ինչ\n{count} ֆայլ - {size}",
+        "cancel_conversion": "Չեղարկել փոխարկումը\n{count} ֆայլ - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Հայտնաբերվել է սխալ ընդլայնում՝ այս ֆայլը CBZ է, ոչ CBR։ Վերանվանե՞լ։",
+      "title": "Սխալ ընդլայնում"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Հայտնաբերվել է սխալ ընդլայնում․ այս ֆայլը CBR է, ոչ թե CBZ։ Վերանվանե՞լ։"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Հայտնաբերվել է սխալ ընդլայնում. '{filename}' ֆայլը CB7 է, ոչ թե CBZ/CBR: Վերանվանե՞լ:"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Մանրապատկերների չափ",
+    "loading": "Խնդրում ենք սպասել, բեռնվում է...\n{percent}%",
+    "resizing": "Խնդրում ենք սպասել, չափի փոփոխում...\n{percent}%",
+    "converting": "Խնդրում ենք սպասել, փոխակերպում...\n{percent}%",
+    "loading_lazy": "Խնդրում ենք սպասել, բեռնվում է...\n{percent}%\n\nՍույն ֆայլի մեծ չափի պատճառով ({size} ՄԲ) էջերը կբեռնվեն աստիճանաբար։ Էկրանին տեսանելի էջերը բեռնվում են անմիջապես, մյուսները կբեռնվեն ավտոմատ կերպով ոլորելիս։",
+    "apply_save_cbz": "Կիրառել փոփոխությունները\nև պահպանել CBZ ֆայլը",
+    "apply_create_cbz": "Կիրառել փոփոխությունները\nև ստեղծել CBZ ֆայլ",
+    "import_progress": "Ներմուծվում է...\n{percent}%",
+    "pdf_import_progress": "PDF ներմուծվում է...\n{percent}%",
+    "pdf_opening": "PDF ֆայլը բացվում է...",
+    "pdf_page": "Էջ {current} / {total}",
+    "warning_close": "Ուշադրություն։ Փոփոխությունները չեն պահպանվել և կկորչեն։",
+    "language_label": "Լեզու՝",
+    "directory_tooltip": "Թղթապանակ՝ {name}\n{count} ֆայլ(եր)\nՁնդհանուր չափ՝ {size} ՄԲ",
+    "folder_up_tooltip": "Կրկնակի սեղմեք վերադառնալու\nմեկ մակարդակ վերև",
+    "status_bar": "{dirs} պանակ(ներ)  |  {files} ֆայլ(եր) ({total_size})  |  {selected} ընտրված ({selected_size})",
+    "pdf_converting": "{total} էջերի փոխակերպում պատկերների {dpi} DPI-ով...",
+    "pdf_converting_no_change": "{total} էջերի արտահանում առանց փոփոխության...",
+    "print_progress": "Տպագրության նախապատրաստում...\n{percent}%",
+    "print_preparing": "Խնդրում ենք սպասել, տպագրության նախապատրաստում...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU Հանրային լիցենզիայի v3 ամփոփում\n\nՏՐԱՄԱԴՐՎԱԾ ԱԶԱՏՈՒԹՅՈՒՆՆԵՐ\nԴուք կարող եք օգտագործել, պատճենել, փոփոխել և վերաբաշխել\nMosaicView-ը, այդ թվում՝ առևտրային նպատակներով։\n\nՊԱՐՏԱՎՈՐՈՒԹՅՈՒՆՆԵՐ\nՑանկացած վերաբաշխում (բնօրինակ կամ փոփոխված) պետք է :\n– պահպանի GPL v3 լիցենզիան\n– ներառի սկզբնական կոդը կամ նշի, թե որտեղ կարելի է այն ձեռք բերել\n– չսահմանի լրացուցիչ սահմանափակումներ\n\nԵՐԱՇԽԻՔՆԵՐ\nԱյս ծրագիրը տարածվում է ԱՌԱՆՑ ՈՐԵՒԷ ԵՐԱՇԽԻՔԻ։\nՀեղինակը պատասխանատվություն չի կրում դրա օգտագործումից առաջացած վնասների համար։\n\nԴուք պետք է ստացած լինեիք GNU Հանրային լիցենզիայի օրինակ այս ծրագրի հետ։ Եթե ոչ, տե՛ս <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Տեսնել ամբողջական լիցենզիան",
+    "license_unrar_text": "CBZ ֆայլերը հիմնված են ZIP ձևաչափի վրա, որը ազատ և բաց ձևաչափ է: CBR ֆայլերը, ընդհակառակը, հիմնված են RAR ձևաչափի վրա, որը սեփականատիրական ձևաչափ է:\n\nMosaicView-ը կարող է բացել CBR ֆայլերը UnRAR-ի շնորհիվ, RARlab-ի կողմից մշակված և ազատ վերաբաշխվող ծրագրի:\n\nՊաշտոնական կայք՝ <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Դիտել UnRAR արտոնագիրը",
+    "saving_cbz": "Պահպանում է... {percent}%",
+    "empty_canvas_line1": "Այստեղ նետեք մեկ կամ մի քանի CBZ/CBR/CB7/PDF ֆայլեր կամ ձեր նկարներ",
+    "empty_canvas_line2": "Երբ ֆայլ բացվում է, կարող եք շարունակել ուրիշ ֆայլի նետել",
+    "empty_canvas_line3": "Թողարկեք մեկ կամ մի քանի թղթապանակ՝ խմբային մշակում սկսելու համար",
+    "icon_toolbar_config_title": "Պատկերակների վահանակի կարգավորում",
+    "icon_toolbar_active": "Վահանակի պատկերակներ",
+    "icon_toolbar_hidden": "Պատկերակները պահուստում",
+    "license_gpl_full": "GNU GPL v3 արտոնագիր",
+    "license_unrar_full": "UnRAR արտոնագիր",
+    "licenses_button": "Արտոնագրեր",
+    "view_full_gpl_license": "Տեսնել GNU GPL v3 արտոնագիրը",
+    "license_7zip_text": "CB7 ֆայլերը հիմնված են 7z ձևաչափի վրա, որը մշակվել է Իգոր Պավլովի կողմից և տարածվում է GNU LGPL լիցենզիայի ներքո։\n\nMosaicView-ը կարող է բացել CB7 ֆայլեր 7-Zip-ի շնորհիվ՝ անվճար բաց կոդով ծրագիր։\n\nՊաշտոնական կայք : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Դիտել 7-Zip լիցենզիան",
+    "license_7zip_full": "7-Zip լիցենզիա",
+    "icon_toolbar_show_thumb_slider": "Ցուցադրել մանրապատկերի չափի սահիչը",
+    "icon_toolbar_show_lang_combo": "Ցուցադրել լեզվի ընտրիչը",
+    "adjusting": "Խնդրում ենք սպասել, կարգաբերումներն ընթացքի մեջ են...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS տառատեսակի լիցենզիա",
+    "license_tengwar_full": "Alcarin Tengwar տառատեսակի արտոնագիր",
+    "view_full_piqad_license": "Տեսնել pIqaD qolqoS-ի ամբողջական լիցենզիան"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Պատկերների փոխարկում",
+      "title": "{count} {word}-ի փոխարկում",
+      "word_image": "պատկեր",
+      "word_images": "պատկերներ",
+      "info": "Ընտրեք նպատակային ձևաչափը՝",
+      "format_png": "PNG (առանց կորստի)",
+      "format_jpg": "JPEG (սեղմմամբ)",
+      "format_webp": "WEBP (ժամանակակից)",
+      "format_bmp": "BMP (բիթքարտեզ)",
+      "format_tiff": "TIFF (բարձր որակ)",
+      "format_gif": "GIF (անիմացիա)",
+      "quality_label": "Որակ JPG/WEBP-ի համար՝",
+      "quality_maximum": "Առավելագույն — որակ 95/100",
+      "quality_high": "Բարձր — որակ 85/100",
+      "quality_medium": "Միջին — որակ 75/100",
+      "quality_low": "Ցածր — որակ 60/100",
+      "quality_custom_option": "Անհատական",
+      "quality_custom": "Որակ հատուկ : {value}/100",
+      "quality_note": "(Այս պարամետրը ազդում է միայն JPG և WEBP ձևաչափերի վրա)",
+      "quality_window_title": "Որակի ընտրություն",
+      "format_gif_static": "Ստատիկ GIF",
+      "format_gif_animated": "Անիմացված GIF (ընտրեք մի քանի նկար)"
+    },
+    "split": {
+      "window_title": "Բաժանել էջը",
+      "title": "Բաժանել էջը",
+      "pages_label": "Էջերի քանակ՝",
+      "direction_label": "Կտրատման ուղղություն՝",
+      "horizontal": "Հորիզոնական (ձախից → աջ)",
+      "vertical": "Ուղղահայաց (վերևից → ներքև)",
+      "warning": "⚠ Քանի որ կտրատումը հաշվարկվում է ավտոմատ,\nձեռքով ճշգրտում կարող է անհրաժեշտ լինել։",
+      "button_split": "Բաժանել",
+      "button_cancel": "Չեղարկել"
+    },
+    "join": {
+      "window_title": "Միացնել էջերը - Վերակազմակերպեք հերթականությունը",
+      "instructions": "Կազմակերպեք պատկերները՝\n• Ուղղահայաց (վերև/ներքև) ուղղահայաց միաձուլման համար\n• Հորիզոնական (ձախ/աջ) հորիզոնական միաձուլման համար",
+      "merged_filename_prefix": "Միաձուլում",
+      "heights_label": "Բարձրություններ",
+      "widths_label": "Լայնություններ",
+      "size_adjustment_title": "Չափի կարգավորում",
+      "size_adjustment_warning": "⚠️ Ընտրված պատկերները ունեն տարբեր չափեր:\nԸնտրեք, թե ինչպես կարգավորել դրանց չափերը միացման համար:\nԱմեն պատկերի հարաբերակցությունը միշտ կպահպանվի:",
+      "keep_original": "Պահպանել սկզբնական չափերը",
+      "keep_original_desc": "(ավելացնում է սև շերտեր լրացման համար)",
+      "enlarge_small": "Մեծացնել փոքր պատկերները",
+      "enlarge_small_desc": "(համապատասխանեցնել առավելագույն չափին)",
+      "reduce_large": "Փոքրացնել մեծ պատկերները",
+      "reduce_large_desc": "(համապատասխանեցնել նվազագույն չափին)",
+      "back_to_arrangement": "Հետ"
+    },
+    "pdf": {
+      "quality_merge": "Ընտրեք միաձուլման որակը՝",
+      "quality_export": "Ընտրեք արտահանման որակը՝",
+      "merge_quality_title": "PDF միաձուլման որակ",
+      "export_quality_title": "PDF արտահանման որակ",
+      "loading_title": "PDF-ը բեռնվում է...",
+      "dpi_90": "90 DPI - Վեբ հրապարակում",
+      "dpi_150": "150 DPI - Լավ որակ (խորհուրդ է տրվում ցուցադրման համար)",
+      "dpi_200": "200 DPI - Շատ լավ որակ",
+      "dpi_300": "300 DPI - Գերազանց որակ (կոմիքսների ստանդարտ)",
+      "dpi_600": "600 DPI - Առավելագույն որակ (մեծ ֆայլեր)",
+      "dpi_original": "Պատկերի փոփոխություն չկա",
+      "dpi_original_tooltip": "Յուրաքանչյուր PDF էջի խելացի վերլուծություն:\n• Միայն պատկերներով էջեր: պահպանում է բնօրինակ DPI-ն\n• Միայն տեքստով էջեր: 300 DPI\n• Խառը էջեր (տեքստ + պատկերներ): պատկերների DPI եթե >= 300, հակառակ դեպքում 300 DPI\nԱռավելագույն: 2400 DPI ֆայլի չափը սահմանափակելու համար"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "Պահանջվում է PyMuPDF",
+      "pymupdf_required_message": "PyMuPDF (fitz) տեղադրված չէ։ Հնարավոր չէ փոխարկել PDF ֆայլերը։",
+      "select_directory_title": "Ընտրեք PDF ֆայլեր պարունակող թղթապանակը",
+      "no_pdf_title": "PDF ֆայլեր չկան",
+      "no_pdf_message": "Թղթापանակում PDF ֆայլեր չեն գտնվdelays։\n{directory}",
+      "confirm_title": "PDF-ի CBZ խմբակային փոխարկում",
+      "confirm_message": "{count} PDF ֆայլեր փոխարկման համար {directory}-ում (ենթաթղթապանակները ներառյալ)։",
+      "checkbox_permanent_delete": "Ջնջել բնօրինալ PDF ֆայլերը առանց աղբարկղի\nօգտագործելու (ՀԵՏ ՎԵՐԱԴԱՐՁ ՀՆԱՌԱՎՈՌ ՉԸ)",
+      "start_button": "Սկսել",
+      "converting_title": "Փոխարկումը ընթացում է...",
+      "converting_progress": "Ֆայլի փոխարկում {current} ընդհանուր {total}-ից",
+      "page_progress": "Էջ {current} / {total}",
+      "complete_title": "Փոխարկումը ավարտվեց",
+      "complete_message": "{count} PDF ֆայլեր փոխարկվեցին թղթապանակում։",
+      "complete_message_errors": "{count} {total}-ից PDF ֆայլեր փոխարկվեցին թղթապանակում։",
+      "errors_count": "{count} սխալ(ներ) հայտնաբերվեց։"
+    },
+    "batch_cbr": {
+      "select_directory_title": "Ընտրեք CBR ֆայլեր պարունակող թղթապանակը",
+      "no_cbr_title": "CBR ֆայլեր չկան",
+      "no_cbr_message": "Թղթապանակում CBR ֆայլեր չեն գտնվել:\\n{directory}",
+      "confirm_title": "CBR-ի CBZ խմբային փոխակերպում",
+      "confirm_message": "{count} CBR ֆայլ փոխակերպման համար {directory}-ում (ենթաթղթապանակները ներառյալ).",
+      "checkbox_permanent_delete": "Ջնջել սկզբնական CBR ֆայլերը առանց\nաղբաման (ՀԵՏ ՎԵՐԱԴԱՐՁ ՀՆԱՐԱՎՈՐ ՉԷ)",
+      "start_button": "Սկսել",
+      "converting_title": "Փոխակերպում...",
+      "converting_progress": "Ֆայլի փոխակերպում {current} / {total}",
+      "page_progress": "Էջ {current} / {total}",
+      "complete_title": "Փոխակերպումը ավարտվեց",
+      "complete_message": "{count} CBR ֆայլ փոխակերպվեց թղթապանակում:",
+      "complete_message_errors": "{count} CBR ֆայլ փոխակերպվեց {total}-ից թղթապանակում:",
+      "errors_count": "{count} սխալ(ներ) հայտնաբերվեց:",
+      "renamed_count": "{count} ֆայլ(եր) վերանվանվեց CBZ-ի",
+      "rarfile_unavailable": "rarfile մոդուլը հասանելի չէ: CBR ֆայլերը հնարավոր չէ փոխակերպել:"
+    },
+    "close_warning": {
+      "title": "Ուշադրություն։",
+      "message": "Փոփոխությունները չեն պահպանվել և կկորչեն։",
+      "btn_close_lose": "Փակել ֆայլը և կորցնել փոփոխությունները",
+      "btn_save_cbz": "Կիրառել փոփոխությունները և պահպանել ֆայլը",
+      "btn_create_cbz": "Կիրառել փոփոխությունները և ստեղծել CBZ ֆայլ",
+      "btn_cancel": "Չեղարկել և վերադառնալ մոզաիկա"
+    },
+    "replace_image": {
+      "title": "Փոխարինել վնասված պատկերը"
+    },
+    "reduce_size": {
+      "window_title": "Պատկերի չափի փոփոխում",
+      "title": "{count} {word} չափի փոփոխում",
+      "word_image": "պատկեր",
+      "word_images": "պատկերներ",
+      "current_size": "Ընթացիկ չափը: {size} ՄԲ",
+      "current_dimensions": "Ընթացիկ չափերը: {width} × {height} px",
+      "choose_method": "Ընտրեք չափի փոփոխման եղանակը:",
+      "custom_dimensions": "Հարմարեցված չափեր",
+      "width_label": "Լայնություն:",
+      "height_label": "Բարձրություն:",
+      "use_custom_dimensions": "Օգտագործել այս չափերը",
+      "different_dimensions_warning": "Ընտրված էջերը տարբեր չափեր ունեն։ Հարմարեցված չափերը կստիպեն բոլոր էջերը ունենալ նույն չափը։ Համոզվեք, որ հասկանում եք հետևանքները նախքան շարունակելը։",
+      "estimated_size": "Գնահատված չափը: {size} ՄԲ",
+      "percentage_reduction": "Տոկոսային նվազեցում",
+      "percentage_enlargement": "Տոկոսային մեծացում",
+      "reduce_0": "0% (առանց փոփոխության)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (առանց փոփոխության)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Էջի ամենատարածված լայնությունները 1024, 1280, 1600, 1920 և 2000 պիքսել են, բայց հարմար են նաև այլ արժեքներ։",
+      "multi_page_width": "Ինքնաշխատ հայտնաբերել և փոխել բազմաթիվ էջերի չափը (լայնություն/բարձրություն)",
+      "multi_page_width_tooltip": "Միացնում է բազմաթիվ էջերի ինքնաշխատ հայտնաբերումը՝ կրկնակի էջ, եռակի էջ և այլն: Բազմապատկման գործակիցը ինքնաշխատ հաշվարկվում է յուրաքանչյուր էջի հարաբերակցության հիման վրա՝ լինի դա լայնությամբ (կողք կողքի էջեր) թե բարձրությամբ (դրված էջեր)"
+    },
+    "gif_animated": {
+      "window_title": "Անիմացված GIF ստեղծում",
+      "images_title": "Անիմացիայի պատկերներ",
+      "params_title": "GIF պարամետրեր",
+      "frame_delay_label": "Պատկերների միջև ուշացում:",
+      "fps_normal": "{fps} կադր/վայրկյան",
+      "fps_slow": "1 կադր յուրաքանչյուր {seconds} վայրկյանը",
+      "loop_label": "Կրկնությունների քանակ:",
+      "loop_info": "(0 = անսահման հանգույց)",
+      "disposal_label": "Պատկերների դասավորություն:",
+      "disposal_0": "Չի նշված",
+      "disposal_1": "Պահպանել նախորդ պատկերը",
+      "disposal_2": "Վերականգնել ֆոնի գույնին",
+      "disposal_3": "Վերականգնել նախորդ վիճակին",
+      "optimize": "Օպտիմալացնել ֆայլը (պահպանել միայն տարբերությունները)",
+      "metadata_title": "GIF մետատվյալներ",
+      "metadata_dimensions": "Չափսեր: {width} × {height} պիքսել",
+      "metadata_frames": "Կադրերի քանակ: {count}",
+      "metadata_duration": "Ընդհանուր տևողություն: {duration} վ",
+      "metadata_fps": "Հաճախականություն: {fps} fps",
+      "metadata_palette": "Գունապնակ: մինչև 256 գույն",
+      "metadata_size": "Գնահատված չափ: {size} ԿԲ",
+      "comment_label": "Մեկնաբանություն (ոչ պարտադիր):",
+      "no_images": "Պատկեր չի ընտրված",
+      "creating_progress": "Պատկերների բեռնում... ({current}/{total})",
+      "creating_normalizing": "Պատկերների նորմալացում... ({current}/{total})",
+      "creating_quantizing": "Գույների քվանտացում... ({current}/{total})",
+      "creating_saving": "GIF-ի պահպանում..."
+    },
+    "save_to_folder": {
+      "title": "Ընտրեք նշանակման թղթապանակ"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Կրկնօրինակված ֆայլերի անուններ",
+      "message": "Հայտնաբերվել են նույնական ֆայլերի անուններ։ Թեև պահպանումը տեխնիկապես\nհնարավոր է, սա կարող է ընթերցման խնդիրներ առաջացնել որոշ կոմիքսների\nընթերցման ծրագրերում (անամբողջական ցուցադրում, բացակայող էջեր և այլն)։\n\nԽորհուրդ է տրվում վերահամարակալել էջերը պահպանումից առաջ։"
+    },
+    "adjustments": {
+      "window_title": "Patker@ karegavorel",
+      "title": "Karegavorumnere {count} {word}",
+      "word_image": "patker",
+      "word_images": "patkerner",
+      "apply_button": "Kirarkel",
+      "color_depth_section": "Guyneri khorut'yun",
+      "brightness_contrast_section": "Lusavorut'yun yev hanrangnerkut'yun",
+      "compression_section": "S'mp'vac'um",
+      "effects_section": "Azdecut'yunner",
+      "sharpness_section": "Surut'yun",
+      "levels_section": "Sev/spitake mijavayr",
+      "depth_unchanged": "Ch'p'oxel",
+      "depth_32bit": "32 bit (RGBA - guynere + t'ap'anc'ik)",
+      "depth_24bit": "24 bit (RGB - guynere)",
+      "depth_8bit": "8 bit (PNG palitra / JPEG gris mijavayr)",
+      "depth_1bit": "1 bit (sev u spitak)",
+      "brightness_label": "Lusavorut'yun: {value}",
+      "contrast_label": "Hanrangnerkut'yun: {value}",
+      "compression_enable": "Miacnel vkrayakan s'mp'vac'um",
+      "compression_quality_label": "Որակ : {value}/100",
+      "sharpness_label": "Surut'yun: {value}",
+      "effect_none": "Azdecut'yun ch'ka",
+      "effect_grayscale": "Gris mijavayr",
+      "effect_sepia": "Sepiya",
+      "levels_none": "Karegavorume ch'ka",
+      "levels_threshold": "Sezmane mijere (sur sev kam spitak)",
+      "levels_advanced": "Zarganeal mijavayr (stavernere/mijaki ton/lusadrutnyun)",
+      "threshold_label": "Sezmane mijere: {value}",
+      "black_point_label": "Sev ket: {value}",
+      "gamma_label": "Gamma (mijaki ton): {value}",
+      "white_point_label": "Spitak ket: {value}",
+      "auto_levels_button": "Ավտոմատ կարգավորում",
+      "open_viewer_button": "Կարգավորել դիտիչով (խորհուրդ է տրվում)",
+      "compression_info": "Սեղմումը վերաբերում է միայն JPG և WebP պատկերներին",
+      "open_viewer_button_simple": "Կարգավորել դիտիչով",
+      "reset_button": "Վերականգնել",
+      "preview_section": "Նախադիտում",
+      "effect_invert": "Գույների շրջում",
+      "preview_warning": "Նախադիտումը կարող է տարբերվել վերջնական արդյունքից",
+      "effect_remove_colors": "Գույների հեռացում",
+      "remove_colors_intensity_label": "Ինտենսիվություն : {value}",
+      "image_mode_section": "Պատկերի ռեժիմ",
+      "image_mode_rgb": "RGB (գույներ)",
+      "image_mode_rgba": "RGBA (գույներ + թափանցիկություն)",
+      "image_mode_l": "L (մոխագույնի երանգներ)",
+      "image_mode_la": "LA (մոխագույնի երանգներ + թափանցիկություն)",
+      "image_mode_cmyk": "CMYK (տպագրություն)",
+      "image_mode_1": "1 (մաքուր սև-սպիտակ)",
+      "image_mode_p": "P (256 գույնի ներկապալիտա)",
+      "saturation_section": "Հագեցվածություն",
+      "saturation_label": "Հագեցվածություն : {value}",
+      "saturation_viewer_title": "Հագեցվածության կարգավորում",
+      "transparency_section": "Թափանցիկություն",
+      "transparency_info": "Թափանցիկությունը կիրառվում է միայն PNG, WebP և ICO պատկերների վրա",
+      "transparency_type_label": "Տեսակ :",
+      "transparency_type_flood": "Գոտի",
+      "transparency_type_global": "Գլոբալ",
+      "transparency_tolerance_label": "Հանդուրժողականություն : {value}",
+      "transparency_viewer_title": "Թափանցիկության կարգավորում",
+      "transparency_click_instruction": "Սեղմեք այն գույնի վրա, որը ցանկանում եք թափանցիկ դարձնել",
+      "transparency_undo": "Չեղարկել վերջին սեղմումը",
+      "transparency_redo": "Կրկնել",
+      "transparency_type_flood_tooltip": "Flood fill : կտտացված պիքսելի շուրջ միատեսակ գույնի տարածքը դարձնում է թափանցիկ",
+      "transparency_type_global_tooltip": "Գլոբալ թափանցիկություն . ազդում է պատկերի բոլոր պիքսելների վրա, որոնց գույնը մոտ է կտտացված գույնին",
+      "transparency_apply": "Կիրառել",
+      "transparency_skipped_warning": "{count} պատկեր(ներ) բաց թողնված — ձևաչափը անհամատեղելի է թափանցիկության հետ: Ընդգրկելու համար նախ փոխարկեք PNG-ի:",
+      "unsharp_section": "Հարմարվողական սրություն",
+      "unsharp_radius_label": "Շառավիղ: {value}",
+      "unsharp_percent_label": "Ինտենսիվություն: {value} %",
+      "unsharp_threshold_label": "Շեմ: {value}",
+      "unsharp_viewer_title": "Հարմարվողական սրություն",
+      "auto_levels_tooltip": "Վերլուծում է յուրաքանչյուր էջ և ավտոմատ կերպով կարգաբերում է սևի ու սպիտակի մակարդակները՝ կոնտրաստը առավելագույնի հասցնելու համար։\nԷջ առ էջ ընտրելու համար օգտագործեք դիտիչը։"
+    },
+    "levels_viewer": {
+      "title": "Մակարդակների կարգավորում կաթիլներով",
+      "apply_current": "Կիրառել այս էջի վրա",
+      "apply_all": "Կիրառել բոլոր ընտրված էջերին",
+      "black_pipette": "Սև կետի կաթիլաչափ",
+      "white_pipette": "Սպիտակ կետի կաթիլաչափ",
+      "black_pipette_tooltip": "Սեղմեք պիքսելի վրա, որը պետք է լինի լիովին սև: Զգուշություն՝ հեշտ է չափազանցնել:",
+      "white_pipette_tooltip": "Սեղմեք պիքսելի վրա, որը պետք է լինի լիովին սպիտակ: Զգուշություն՝ հեշտ է չափազանցնել:"
+    },
+    "sharpness_viewer": {
+      "title": "Սրության կարգավորում"
+    },
+    "brightness_viewer": {
+      "title": "Պայծառության և հակադրության կարգավորում"
+    },
+    "compression_viewer": {
+      "title": "Սեղմման կարգավորում"
+    },
+    "outliers": {
+      "title": "Անսովոր չափերով էջեր",
+      "message": "Հետևյալ էջերը ունեն չափեր, որոնք զգալիորեն տարբերվում են մյուսներից: Խնդրում ենք ընտրել, թե ինչպես դրանք մշակել:",
+      "width": "Լայնություն",
+      "height": "Բարձրություն",
+      "unusual": "անսովոր",
+      "skip": "Չփոխել չափը",
+      "keep": "պահպանել"
+    },
+    "first_page_multi": {
+      "title": "Առաջին ևջը բազմակի և",
+      "message": "Առաջին ևջը հայտնաբերվել և որպևս բազմակի: Անվանելու կերպը նշանակել.",
+      "option_auto_desc": "Սովորական կրկին նորոգրություն ավտոմատ հայտնաբերումբ:",
+      "option_joint_desc": "Կոմիքսի առաջին և վևլջին երևկների լլլ:",
+      "option_exclude_label": "Չխել չերկայլ կրկիննում",
+      "option_exclude_desc": "Երևկը հանում և լինի անունն և մնում առաջին դիրքում: Անկալ կարող կարելինաբար կարող կարակել ևք այն:"
+    },
+    "batch_img": {
+      "select_directory_title": "Ընտրեք պատկերներ պարունակող թղթապանակը",
+      "no_img_title": "Պատկերի ֆայլեր չեն գտնվել",
+      "no_img_message": "Թղթապանակում առանձին պատկերի ֆայլեր չեն գտնվել :\n{directory}",
+      "confirm_title": "Առանձին պատկերների խմբաքանակային փոխակերպում CBZ-ի",
+      "confirm_message": "{directory}-ում {count} պատկերի ֆայլ(եր) փոխակերպելու համար (ենթաթղթապանակները ներառված).",
+      "checkbox_permanent_delete": "Ջնջել բնօրինակ պատկերի ֆայլերը մշտապես\nառանց դրանք Աղբարկղ ուղարկելու (ՀՆԱՐԱՎՈՐ ՉԷ ՀԵՏ ԲԵՐԵԼ)",
+      "start_button": "Սկսել",
+      "converting_title": "Փոխակերպումն ընթացքի մեջ է...",
+      "converting_progress": "Փոխակերպվում է {current}-ը ֆայլը {total}-ից",
+      "complete_title": "Փոխակերպումն ավարտված է",
+      "complete_message": "Թղթապանակում փոխակերպված է {count} պատկերի ֆայլ(եր) :",
+      "complete_message_errors": "Թղթապանակում {total}-ից {count} պատկերի ֆայլ(եր) է փոխակերպված :",
+      "errors_count": "Հայտնաբերվել է {count} սխալ(ներ).",
+      "converted_by_ext": "{ext} : {count} ֆայլ(եր)",
+      "mode_title": "Պատկերների փոխարկում CBZ-ի",
+      "mode_intro": "Ինչպե՞ս եք ուզում խմբավորել պատկերները:",
+      "mode_one_per_image": "Փոխարկել յուրաքանչյուր պատկեր առանձին CBZ ֆայլերի",
+      "mode_one_per_image_sub": "(Յուրաքանչյուր պատկեր դառնում է առանձին CBZ ֆայլ)",
+      "mode_all_in_one": "Խմբավորել բոլոր պատկերները մեկ CBZ ֆայլում",
+      "mode_all_in_one_sub": "(Թղթապանակի բոլոր պատկերները խմբավորվում են մեկ CBZ ֆայլում)"
+    },
+    "batch_drop": {
+      "window_title": "Թղթապանակների խմբային մշակում",
+      "intro_single": "Թողարկվել է 1 թղթապանակ։ Ի՞նչ մշակում եք ցանկանում կիրառել։",
+      "intro_multiple": "Թողարկվել է {count} թղթապանակ։ Ի՞նչ մշակում եք ցանկանում կիրառել։",
+      "recursive_note": "Ենթաթղթապանակները նույնպես կսկանավորվեն։",
+      "mixed_drop_title": "Թողարկումն աջակցված չէ",
+      "mixed_drop_message": "Դուք միաժամանակ թողարկել եք ֆայլեր և թղթապանակներ։ Խնդրում ենք թողարկել միայն ֆայլեր կամ միայն թղթապանակներ։"
+    },
+    "pdf_unlock": {
+      "title": "PDF-ը պաշտպանված է փոփոխություններից",
+      "message": "Էջերը ներմուծվեցին սովորական կերպով:\n\nԱյս PDF ֆայլը պաշտպանված է փոփոխություններից (սեփականատիրոջ գաղտնաբառ):\n\nՑանկանու՞մ եք պահպանել PDF ֆայլի պատճեն առանց այս պաշտպանության:",
+      "yes": "Այո, պահպանել ապակողպված պատճեն",
+      "no": "Ոչ, շարունակել առանց ապակողպման"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF ֆայլեր, պաշտպանված փոփոխություններից",
+      "message_single": "Հայտնաբերվել է 1 PDF ֆայл, պաշտպանված փոփոխություններից: Այն սովորականորեն փոխարկվել է CBZ-ի:\n\nՑանկանու՞մ եք պահպանել ապաблокировված պատճենը նրա սկզբնական թղթապանակում:",
+      "message_plural": "Հայտնաբերվել է {count} PDF ֆայл, պաշտպանված փոփոխություններից: Դրանք սովորականորեն փոխարկվել են CBZ-ի:\n\nՑանկանու՞մ եք պահպանել ապաблокировված պատճեն յուրաքանչյուրի սկզբնական թղթապանակում:",
+      "yes": "Այո, պահպանել ապаблокировված պատճենները",
+      "no": "Ոչ, շարունակել առանց ապаблокировкայի"
+    },
+    "ico_creator": {
+      "title": "Ստեղծել .ico պատկերանիշ",
+      "info_message": "Պատկերը կփոխվի բազմաթիվ լուծաչափերի (16, 32, 48, 64, 128, 256 px):\nՇրջանակի ներկայիս չափը` {w} × {h} px",
+      "btn_validate_crop": "Հաստատել կտրումը",
+      "btn_validate_no_crop": "Հաստատել առանց կտրման",
+      "btn_cancel": "Չեղարկել",
+      "btn_transparency": "Սահմանել թափանցիկություն",
+      "btn_validate_final": "Հաստատել",
+      "tolerance_label": "Հանդուրժողականություն`",
+      "success_title": ".ico ֆայլը ստեղծված է",
+      "success_message": "{filename} ֆայլը հաջողությամբ ստեղծվել է:",
+      "overwrite_title": "Ֆայլն արդեն գոյություն ունի",
+      "overwrite_message": "{filename} ֆայլն արդեն գոյություն ունի: Վերագրե՞լ:",
+      "save_blocked_title": "Պահպանումն անհնար է",
+      "save_blocked_message": "Այս արխիվը պարունակում է մեկ կամ ավելի .ico ֆայլեր, որոնք կոմիքսի պատկերներ չեն: Պահպանումն անջատված է, քանի դեռ այդ ֆայլերը գտնվում են խճանկարում:\nՊահպանումը նորից ակտիվացնելու համար ջնջեք դրանք խճանկարից (Del ստեղն) կամ կտրեք (Ctrl+X) ուրիշ տեղ կպցնելու համար:",
+      "btn_back_to_crop": "Վերադառնալ կտրմանը"
+    },
+    "video_save_blocked": {
+      "title": "Պահպանումն անհնար է",
+      "message": "Այս արխիվը պարունակում է մեկ կամ մի քանի տեսանյութ: Պահպանումն անջատված է, քանի դեռ այդ ֆայլերը ներկա են խճանկարում:\nՊահպանումը նորից ակտիվացնելու համար ջնջեք դրանք խճանկարից (Del ստեղն) կամ կտրեք (Ctrl+X)՝ այլ տեղ տեղադրելու համար:"
+    },
+    "open_file": {
+      "title": "Բացել արխիվ",
+      "filter_archives": "Արխիվներ (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Բոլոր ֆայլերը (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Լիցենզիա"
+    },
+    "replace_corrupted_image": {
+      "title": "Փոխարինել վնասված պատկերը",
+      "filter_images": "Պատկերներ (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Բոլոր ֆայլերը (*)"
+    },
+    "see_log": "ՏԵՍՆԵԼ ԼՈԳԸ"
+  },
+  "tooltip": {
+    "source_archive": "Սկզբնաղբյուր ֆայլ՝ {name}",
+    "file": "Ֆայլ՝ {name}",
+    "reason": "Պատճառ՝ {reason}",
+    "size_kb": "Չափ՝ {size} ԿԲ",
+    "size_mb": "Չափ՝ {size} ՄԲ",
+    "file_size": "Չափ՝ {size} ՄԲ",
+    "dimensions": "Չափեր՝ {width} × {height} px",
+    "resolution": "Լուծաչափ՝ {mp} MP",
+    "dpi_single": "DPI՝ {dpi}",
+    "dpi_double": "DPI՝ {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: չսահմանված",
+    "cbr_info": "CBR ֆայլերը օգտագործում են RAR ֆորմատը, որը սեփականության և արտոնագրված է;\nդրանք չեն կարող փոփոխվել, փոփոխությունները պահվում են նոր CBZ ֆայլում:",
+    "rotate_left": "90 աստիճան պտույտ ձախ",
+    "rotate_right": "90 աստիճան պտույտ աջ",
+    "mirror_horizontal": "Հորիզոնական հայելի",
+    "mirror_vertical": "Ուղղաձիգ հայելի",
+    "fullscreen": "Լիէկրան ռեժիմ",
+    "help_button": "Օգտագործողի ձեռնարկ",
+    "theme_button": "Փոխել բաց և մուգ թեմայի միջև",
+    "font_decrease_button": "Նվազեցնել տառաչափի չափը",
+    "font_increase_button": "Մեծացնել տառաչափի չափը",
+    "color_depth": "Գույներ: {bits} բիթ ({mode})",
+    "batch_pdf_to_cbz": "Փոխակերպում է CBZ-ի բоլоր PDF ֆայլերը\nթղթապանակում և նրա\nենթաթղթապանակներում։\nՊատկերները հանման են առանց\nփոփոխության և արխիվացվում،\nառանց վերասեղման։",
+    "batch_pdf_permanent_delete": "ԶԳՈՒՇԱՑՈՒՄ: եթե այս ընտրանքը նշված է,\nսկզբնական PDF ֆայլերը փոխակերպման\nհետո ընդմիշտ կջնջվեն,\nառանց վերականգնման հնարավորության:\nՀամոզվեք, որ հասանելի եք\nպահուստային պատճեն, եթե անհրաժեշտ է:",
+    "batch_cbr_to_cbz": "Փոխակերպում է CBZ-ի բոլոր CBR ֆայլերը,\nորոնք գտնվում են թղթապանակում\nև դրա ենթաթղթապանակներում:",
+    "batch_cbr_permanent_delete": "ԶԳՈՒՇԱՑՈՒՄ: եթե այս ընտրանքը նշված է,\nսկզբնական CBR ֆայլերը փոխակերպման\nհետո ընդմիշտ կջնջվեն,\nառանց վերականգնման հնարավորության:\nՀամոզվեք, որ հասանելի եք\nպահուստային պատճեն, եթե անհրաժեշտ է:",
+    "renumber_btn_1": "Բազմաթիվ էջերի ինքնահայտնաբերման ռեժիմ\nՍեղմեք աջ կոճակով ռեժիմը փոխելու համար",
+    "renumber_btn_2": "Պարզ համարակման ռեժիմ\nՍեղմեք աջ կոճակով ռեժիմը փոխելու համար",
+    "corrupted_header": "Վթառված պատկեր",
+    "right_click_instruction1": "Սեղմեք աջ կոճակով՝ փոխարինելու",
+    "right_click_instruction2": "կամ ջնջելու այս պատկերը։",
+    "unknown_error": "Անհայտ սխալ",
+    "batch_img_to_cbz": "Թղթապանակում և դրա ենթաթղթապանակներում\nգտնված բոլոր պատկերի ֆայլերը\nփոխակերպում է CBZ-ի՝ ստեղծելով\nմեկ CBZ ֆայլ յուրաքանչյուր պատկերի համար.",
+    "batch_img_permanent_delete": "ՈՒՇԱԴՐՈՒԹՅՈՒՆ. եթե այս ընտրությունը նշված է,\nբնօրինակ պատկերի ֆայլերը կջնջվեն\nմշտապես փոխակերպումից հետո՝ առանց\nվերականգնման հնարավորության: Համոզվեք,\nոր ունեք կրկնօրինակ, եթե անհրաժեշտ է:",
+    "too_large_header": "Պատկերը չափազանց մեծ է բեռնելու համար",
+    "too_large_pixels": "Չափեր՝ {pixels}",
+    "icon_toolbar_config_button": "Պատկերակների կազմաձևում",
+    "icon_toolbar_size_decrease": "Նվազեցնել պատկերակների չափը",
+    "icon_toolbar_size_increase": "Մեծացնել պատկերակների չափը",
+    "source_loose": "Ազատ պատկեր",
+    "source_web": "Վեբ պատկեր"
+  },
+  "help": {
+    "title": "MosaicView - Օգտագործման ուղեցույց",
+    "intro": "MosaicView-ն թույլ է տալիս մշակել և փոփոխել կոմիքսներ (թվային կոմիքս գրքեր)՝ առանց դրանք իրենց արխիվներից դուրս բերելու։ Հավելվածը աջակցում է CBZ (ZIP), CBR (RAR) և PDF ձևաչափերին։ Հավելվածը համատեղ է միայն 64-բիթանիոց համակարգերի հետ։",
+    "open_files": "Ֆայլերի բացում",
+    "open_files_content": "• Սեղմեք «Բացել CBZ/CBR/CB7/PDF» կոճակը\n• Կամ ուղղակի քաշ-ու-գցեք ֆայլը պատուհանում\n• Աջակցվող ձևաչափեր՝ CBZ, CBR, CB7, PDF, պատկերներ (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB ֆայլերը նաև կարող են բացվել, բայց միայն նկարները կարտահանվեն (տեքստը անտեսվում է)։\n• Գաղտնագրված PDF (բացման համար պահանջվում է գաղտնաբառ). ֆայլը հնարավոր չէ ներմուծել, ցուցադրվում է սխալի հաղորդագրություն:\n• PDF-ը պաշտպանված է փոփոխություններից (owner password). էջերը ներմուծվում են սովորական կերպով: MosaicView-ն առաջարկում է նույն թղթապանակում պահպանել ֆայլի ապակողպված պատճեն:",
+    "mosaic": "Մոզաիկա",
+    "mosaic_content": "Մոզաիկան ցուցադրում է ձեր կոմիքսի բոլոր էջերը որպես մանրապատկերներ։ Դուք կարող եք՝\n• Վերակարգավորել էջերը քաշելով և թողնելով (էջերի համարակալումը ավտոմատ կլինի, և կկատարվի ակտիվ վերահամարակման ռեժիմին)\n• Ընտրել մի քանի էջ (Ctrl+սեղմում կամ Shift+սեղմում)\n• Կարգավորել մանրապատկերների չափը սահիկով\n• Ձեռքով վերանվանել ֆայլերը՝ սեղմելով դրանց անվան վրա\n• Քաշել և թողնել կոմիքսի ֆայլերը (CBZ/CBR/PDF) Windows Explorer-ից ուղղակիորեն մեկ այլ բաց կոմիքս՝ դրանց բովանդակությունը միաձուլելու համար",
+    "manipulation": "Էջերի մշակում",
+    "manipulation_content": "• Քաշեք և թողեք էջերը դրանք վերադասավորելու համար\n• Ամբողջ կոմիքսը քաշեք մյուսի մեջ դրանք միաձուլելու համար\n• Աջ սեղմեք էջի վրա՝ ընտրանքներին հասնելու համար (պտտում, ջնջում և այլն)\n• Կրկնակի սեղմեք էջի վրա՝ դիտողը բացելու համար\n• Արտահանեք առանձին էջեր՝ դրանք Windows թղթապանակ քաշելով, կամ Ctrl+C / Ctrl+V-ի միջոցով",
+    "renumber": "Էջերի վերահամարակում",
+    "renumber_content": "MosaicView-ը առաջարկում է էջերի վերահամարակման երկու եղանակ, հասանելի վերահամարակման կոճակի, համատեքստային մենյուի (աջ սեղմում) կամ ինքնաբերաբար քաշել-բացելի ժամանակ:\n\n• Բազմակի էջերի ինքնաբերական հայտնաբերման եղանակ (լռելյաին եղանակ). ծրագիրը վերլուծում է յուրաքանչյուր էջի լայնությունը՝ հայտնաբերելու կրկնակի, եռակի և այլ էջեր: Բազմակի էջերը վերահամարակվում են համապատասխանաբար (օր.: կրկնակի էջը կկոչվի 003-004, եռակիը 005-006-007): 4 էջից ավելիի դեպքում ցուցադրվում են միայն առաջին և վերջին համարները (օր.: 010---025):\n\n• Պարզ համարակման եղանակ. յուրաքանչյուր էջ ստանում է յուրահատուկ հաջորդական համար (001, 002, 003...), անկախ էջերի լայնությունից:\n\nԵրկու եղանակների միջև անցում կատարելու համար սեղմեք աջ կոճակին վերահամարակման կոճակի վրա: Գործիքի հուշումը ցույց է տալիս ակտիվ եղանակը: Ընտրված եղանակը կիրառվում է նաև քաշել-բացելի ժամանակ ինքնաբերաբար վերահամարակման համար:",
+    "flatten": "Հարթեցնել թղթապանակները",
+    "flatten_content": "Եթե ձեր արխիվը պարունակում է ենթաթղթապանակներ, օգտագործեք «Հարթեցնել թղթապանակները»՝ բոլոր պատկերները նույն մակարդակ բերելու համար։",
+    "viewer": "Դիտարկիչ",
+    "viewer_content": "Կրկնակի սեղմեք էջի վրա՝ դիտարկիչը բացելու համար՝\n• ← → սեղմակներ՝ էջերի միջև շարժվելու համար\n• D սեղմակ՝ փոխարկել 3 ընթերցման ռեժիմների միջև\n  - Մեկ էջ՝ մեկ անգամ մեկ էջ\n  - Կրկնակի էջեր՝ էջ 1 առանձին, ապա 2-3, 4-5 և այլն\n  - Շարունակական կրկնակի էջեր՝ էջ 1 առանձին, ապա 2-3, 3-4, 4-5 և այլն\n• Մկնիկի անիվ՝ արագ նավիգացիա\n• Ctrl+Անիվ կամ Ctrl+Plus/Minus՝ մասշտաբավորում\n• Ctrl+0՝ վերականգնել մասշտաբը\n• F11 սեղմակ՝ լիաէկրան ռեժիմ\n• Կրկնակի սեղմում՝ փոխարկել լիաէկրան ռեժիմ\n• Esc սեղմակ՝ չեղարկել կտրման շրջանակը / փակել դիտարկիչը",
+    "join_pages": "Միացնել էջերը",
+    "join_pages_content": "Ընտրել մի քանի հաջորդական էջեր, աջ սեղմում → 'Միացնել ընտրված էջերը' էջերը հորիզոնական կամ ուղղահայաց միացնելու համար։ Ստեղծված պատկերի ձևաչափը համապատասխանում է աղբյուր էջերի ձևաչափին՝ եթե դրանք բոլորը նույնն են, հակառակ դեպքում PNG լռելյալով։",
+    "split_pages": "Բաժանել էջերը",
+    "split_pages_content": "Ավտոմատ բաժանելու կրկնակի էջերը՝\n• Ընտրեք բաժանվելիք էջերը\n• Աջ սեղմեք → «Բաժանել ընտրված էջերը»\n• Ընտրեք ուղղությունը (ուղղահայաց կամ հորիզոնական)",
+    "crop": "Կտրատում դիտարկիչում",
+    "crop_content": "Դիտարկիչում նկարեք ուղղանկյուն պատկերի վրա՝ կտրատման տարածք սահմանելու համար՝\n• Նկարեք ուղղանկյունը մկնիկով\n• Փոխեք չափը՝ քաշելով եզրերը կամ անկյուններից\n• Սեղմեք «Հաստատել կտրատումը»՝ կիրառելու համար\n• Կտրատումը կիրառվում է ընթացիկ պատկերի վրա\n• Esc սեղմակ՝ չեղարկել կտրման շրջանակը",
+    "shortcuts": "Ստեղնաշարի կարճատներ",
+    "shortcuts_content": "• Ctrl+Z՝ Հետարկել վերջին գործողությունը\n• Ctrl+Y՝ Կրկնել հետարկված գործողությունը\n• Ctrl+A՝ Ընտրել բոլոր էջերը\n• Ctrl+I: Շրջել ընտրությունը\n• Ctrl+C՝ Պատճենել ընտրված էջերը\n• Ctrl+X՝ Կտրել ընտրված էջերը\n• Ctrl+V՝ Տեղադրել էջերը\n• Delete՝ Ջնջել ընտրված էջերը\n• F5՝ Թարմացնել խճանկարի ցուցադրումը\n• F11: Փոխել լիէկրան ռեժիմը (ելք՝ F11 կամ ESC)",
+    "dark_mode": "Մութ ռեժիմ",
+    "dark_mode_content": "Սեղմեք արև/լուսին կոճակը՝ բաց և մուգ թեմաների միջև անցնելու համար։",
+    "sort": "Դասավորել էջերը",
+    "sort_content": "Օգտագործեք «Դասավորել» կոճակը՝ ավտոմատ վերակազմակերպելու էջերը՝\n• Անվամբ, Տեսակով, Չափով, Լայնությամբ, Բարձրությամբ, Լուծաչափով կամ DPI-ով",
+    "save": "Պահպանել",
+    "save_content": "• «Պահպանել»՝ պահպանել փոփոխությունները սկզբնական ֆայլում\n• «Պահպանել որպես»՝ ստեղծել նոր արխիվ\n• «Ստեղծել CBZ»՝ հասանելի միայն պատկերների ռեժիմում (առանց արխիվի)",
+    "other": "Այլ գործառույթներ",
+    "other_content": "• Պտտում՝ պտտել մեկ կամ մի քանի էջեր\n• Փողարկում։ փողարկել պատկերները տարբեր ձևաչափերի (PNG, JPEG, WEBP, BMP, TIFF, GIF). Ծանոթություն: CMYK ռեժիմի պատկերները ինքնաբերաբար փողարկվում են RGB-ի\n• Տպում՝ տպել ընտրված էջերը կամ բոլոր էջերը\n• Արտահանում՝ արտահանել որոշակի էջեր\n• Մետատվյալներ ներդիր՝ ցուցադրում է ComicInfo.xml ֆայլի տեղեկությունները (եթե առկա է արխիվում)։ Եթե դուք ավելացնում կամ հեռացնում եք էջ մետատվյալներ պարունակող կոմիքսից, հավելվածը կառաջարկի փոփոխել էջերի քանակը, որը նշված է այնտեղ։ Մյուս մետատվյալները չեն կարող փոփոխվել։ Այս սահմանափակումը միտումնավոր է և հանդիսանում է ծրագրային ընտրության արդյունք։",
+    "config_files": "Կարգավորումների և ժամանակավոր ֆայլեր",
+    "config_files_content": "MosaicView-ը ստեղծում է .mosaicview_config.json անունով ֆայլ: Այս ֆայլը պարունակում է մի քանի պարամետրեր, որոնք անհրաժեշտ են վերականգնման կոճակի ճիշտ աշխատանքի համար, ինչպես նաև վերջերս բացված կոմիքսների ցանկը, որը ակնհայտորեն անհրաժեշտ է վերջերս բացված ֆայլերը ցուցադրելու համար: MosaicView-ը նաև պահպանում է ժամանակավոր ֆայլեր, որոնք անհրաժեշտ են տարբեր պատկերների մշակման գործողությունների համար:\nԱյս բոլոր ֆայլերը գտնվում են {temp_dir} գրացուցակում:\nԺամանակավոր ֆայլերը ջնջվում են ամեն անգամ, երբ ծրագիրը փակվում է, բայց .mosaicview_config.json ֆայլը, իր բնույթով, նախատեսված է պահպանելու համար:\nԱյնուամենայնիվ, դուք կարող եք ձեռքով ջնջել այս ֆայլերը՝ անցնելով {temp_dir} գրացուցակ կամ սեղմելով ստորև գտնվող կոճակները: .mosaicview_config.json ֆայլը կվերաստեղծվի ամեն անգամ, երբ ծրագիրը բացվում է, և ժամանակավոր ֆայլերը կվերաստեղծվեն ըստ անհրաժեշտության:",
+    "config_clear_temp": "Ջնջել ժամանակավոր ֆայլերը",
+    "config_clear_recent": "Ջնջել վերջին ֆայլերը",
+    "config_clear_config": "Ջնջել կարգավորումների ֆայլը",
+    "config_temp_cleared": "Ժամանակավոր ֆայլերը հաջողությամբ ջնջվել են:",
+    "config_config_cleared": "Կարգավորումների ֆայլը հաջողությամբ ջնջվել է:\nԱյն կվերաստեղծվի ծրագրի հաջորդ գործարկման ժամանակ:",
+    "language": "Լեզվի ընտրություն",
+    "language_content": "MosaicView հասանելի է բազմաթիվ լեզուներով:\nԱռաջնագծով, հավելվածը ինքնաշխատորեն հայտնաբերում է ձեր օպերացիոն համակարգի լեզուն և ցուցադրվում է այդ լեզվով, եթե աջակցվում է: Եթե ձեր համակարգը օգտագործում է չաջակցվող լեզու, ինտերֆեյսը ցուցադրվում է անգլերեն:\nԴուք կարող եք ցանկացած ժամանակ ձեռքով փոխել լեզուն՝ օգտագործելով բացվող ընտրացանկը, որը գտնվում է կոճակների սյունակի ներքևում, մանրապատկերների չափի սահիկի տակ: Ձեր ընտրությունը կպահպանվի և կկիրառվի հաջորդ անգամ հավելվածը գործարկելիս:\nՀԱՍԱՆԵԼԻ ԼԵԶՈՒՆԵՐ՝ անգլերեն, արաբերեն, բուլղարերեն, գերմաներեն, դանիերեն, էստոներեն, թայերեն, թուրքերեն, ինդոնեզերեն, իռլանդերեն, իսլանդերեն, իսպաներեն, իտալերեն, հայերեն, հինդի, հոլանդերեն, հունարեն, հունգարերեն, ճապոներեն, լատվիերեն, լեհերեն, լիտվերեն, խորվաթերեն, կորեերեն, չեխերեն, չինարեն (պարզեցված), չինարեն (ավանդական), մալայերեն, մալթայերեն, նորվեգերեն, պորտուգալերեն, ռումիներեն, սլովակերեն, սլովեներեն, շվեդերեն, ֆինարեն, ֆրանսերեն, տամիլերեն, ուկրաիներեն, վիետնամերեն:\nՀԱՍԱՆԵԼԻ ՀՈՐԻՆՎԱԾ ԼԵԶՈՒՆԵՐ՝ կլինգոն, սինդարին, քվենյա:\nկլինգոն (լատինական այբուբենի և pIqaD այբուբենի տարբերակներ), սինդարին (լատինական այբուբենի և tengwar այբուբենի տարբերակներ), քվենյա (լատինական այբուբենի և tengwar այբուբենի տարբերակներ).\n\nԱյս օգտագործողական ծրագիրը օգտագործում է Windows-ի տառատեսակներ, բացառությամբ pIqaD (Կլինգոն լեզու) և tengwar (Էլֆական լեզուներ: սինդարին և քվենյա) տառատեսակների: Այս տառատեսակները անվճար են և գալիս են հետևյալ կայքերից:\n- pIqaD-ի համար (Կլինգոն այբուբեն): {url_piqad}\n- tengwar-ի համար (Էլֆական այբուբեն, սինդարինի և քվենյայի համար): {url_tengwar}\nԵթե այս կայքերը այլևս ակտիվ չեն, դուք կարող եք ստանալ pIqaD և tengwar տառատեսակները՝ սեղմելով ստորև գտնվող կոճակները:\n\nԱյս ծրագրաշարը մշակվել է ֆրանսերենով: Թարգմանությունները այլ լեզուներով կատարվել են արհեստական բանականության, մասնավորապես Claude-ի միջոցով: Ես որոշեցի աջակցել մոտ քառասուն լեզուների: Բայց ակնհայտ է, որ ես չեմ խոսում այս բոլոր լեզուներով: Հետևաբար, ես այլ ընտրություն չունեի, քան օգտագործել արհեստական բանականություն, քանի որ 40 տարբեր թարգմանիչների վարձելը և վճարումը չէր մտնում քննարկվող հնարավորությունների թվում: Այս թարգմանությունների ավտոմատ բնույթի պատճառով կարող են լինել սխալներ: Ներողություն եմ խնդրում դրա համար:",
+    "credits": "Vibe Coding, իմ սերս",
+    "credits_content": "Ես ծրագրավորման մասին ոչինչ չգիտեմ։ Բացարձակապես ոչինչ։ Հետևաբար, այս ծրագիրը մշակել եմ Anthropic-ի արհեստական բանականության՝ Claude-ի, և մասնավորապես Claude Code-ի միջոցով։ Չեմ կարող բավականաչափ խորհուրդ տալ Claude Code-ը, այս հավելվածը հիանալի է։",
+    "resize_pages": "Փոխել էջերի չափը",
+    "resize_pages_content": "Էջերը փոքրացնելու կամ խոշորացնելու համար՝\n• Ընտրեք մեկ կամ մի քանի էջ\n• Աջ սեղմում → 'Փոխել չափը'\n• Հասանելի են երեք տարբերակներ՝\n  - Հատուկ չափեր՝ մուտքագրեք ցանկալի լայնությունը կամ բարձրությունը (հարաբերակցությունը ավտոմատ պահպանվում է)։\n  - Տոկոսային նվազեցում՝ ընտրեք տոկոս 10%-ից 90%\n  - Տոկոսային ավելացում՝ ընտրեք տոկոս 10%-ից 100%\n• Հավելվածը ցուցադրում է ձեր պատկերների մոտավոր չափը փոփոխությունից հետո\n• Փոփոխությունը անմիջապես կիրառվում է բոլոր ընտրված էջերի վրա",
+    "language_export_piqad": "pIqaD տառատեսակ",
+    "language_export_tengwar": "Tengwar տառատեսակներ",
+    "language_export_piqad_success": "Տառատեսակը արտահանվեց: {filename}\nՀասանելի է:",
+    "language_export_tengwar_success": "{count} տառատեսակ արտահանվեց\nՀասանելի են:",
+    "icons": "Պատկերանիշներ",
+    "icons_content": "Այս ծրագրում օգտագործված պատկերակների մեծ մասը վերցված է այս կայքից և անվճար է ոչ առևտրային օգտագործման համար: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nԴրանցից մի քանիսը ես փոփոխել եմ։\nՄիայն մեկ պատկերանիշ, Windows-ի կատարվող ֆայլի պատկերանիշը, ստեղծվել է իմ կողմից (բայց արհեստական բանականությամբ, քանի որ ես շատ, շատ, շատ վատ գրաֆիկական դիզայներ եմ): Դուք ունեք իմ թույլտվությունը օգտագործել այս պատկերանիշը ձեր հայեցողությամբ, քանի դեռ դուք մեջբերում եք ձեր աղբյուրը:",
+    "icons_view_button": "Դիտել պատկերանիշները",
+    "icons_window_title": "MosaicView պատկերանիշներ",
+    "icons_save_all": "Պահպանել պատկերանիշները",
+    "icons_saved_success": "{count} պատկերանիշ(ներ) պահպանվել են՝",
+    "icons_save_failed": "Հնարավոր չէ պահպանել պատկերանիշները՝ {error}",
+    "split_ui": "Երկու վահանակի ինտերֆեյս",
+    "split_ui_content": "MosaicView-ն թույլ է տալիս միաժամանակ ցուցադրել երկու արխիվ՝ կողք կողքի։\n\nՍեղմեք Բաժանել պատկերակին՝ երկրորդ վահանակ բացելու համար։ Յուրաքանչյուր վահանակ անկախ է՝ կարող եք արխիվ բացել, խմբագրել և պահպանել առանձին։ Ակտիվ վահանակը նշված է կապույտ եզրագծով։\n\nՎահանակից վահանակ էջեր տեղափոխելու համար ուղղակի քաշեք դրանք։ Եթե ընտրված են մի քանի էջ, դրանք բոլորն էլ տեղափոխվում են միասին։ Էջերը տեղադրվում են կարմիր շերտով նշված դիրքում։\n\nՍեղմեք Փակել երկրորդ վահանակը պատկերակին՝ մեկ վահանակի ռեժիմ վերադառնալու համար։",
+    "license_gpl": "GPL v3 լիցենզիա",
+    "license_unrar": "UnRAR արտոնագիր",
+    "config_clear_clipboard": "Ջնջել սեղմատախտակի ֆայլերը",
+    "config_clipboard_note": "Բացառություն: Windows սեղմատախտակի կողմից օգտագործվող ժամանակավոր ֆայլերը (clipboard_XXXXX ֆայլեր) պահպանվում են 12 ժամ պատճենելուց հետո, որպեսզի կարողանաք դրանք տեղադրել նույնիսկ ծրագիրը փակելուց հետո: 12 ժամից հետո դրանք ավտոմատ ջնջվում են:",
+    "config_log_note": "Խմբային փոխակերպումները (PDF-ից CBZ և CBR-ից CBZ) սխալների դեպքում ստեղծում են մատյանի ֆայլ: Այս ֆայլերը (Log_pdftocbz_.txt և Log_cbrtocbz_.txt) պահպանվում են նույնիսկ ծրագիրը փակելուց հետո, որպեսզի հնարավոր լինի դրանք հետագայում ստուգել: Դրանք ջնջվում են միայն վերևում գտնվող \"Պահպանման ժամանակավոր ֆայլերի ջնջում\" կոճակով:",
+    "config_clipboard_cleared": "Սեղմատախտակի ֆայլերը հաջողությամբ ջնջվել են:",
+    "adjust_images": "Պատկերների կարգավորում",
+    "adjust_images_content": "Այս ֆունկցիան թույլ է տալիս ձեր պատկերները ռեթուշ անել անմիջապես MosaicView-ում։ Կարող եք փոփոխել պայծառությունը, կոնտրաստը, սրությունը, մակարդակները, հագեցվածությունը, կիրառել էֆեկտներ (սև-սպիտակ, սեպիա, գույների շրջում), կարգավորել սեղմման որակը, հեռացնել գույներ, կիրառել թափանցիկություն կամ փոխարկել տարբեր գույնի խորություններ։ Որոշ կարգավորումներ ունեն հատուկ դիտիչ, որը թույլ է տալիս արդյունքը տեսնել ամբողջ լուծաչափով կիրառելուց առաջ։ Կրճատ դիտումը ցուցադրում է արդյունքը իրական ժամանակում հիմնական պատուհանում։",
+    "create_icon": "Ստեղծել պատկերակ",
+    "create_icon_content": "MosaicView-ը թույլ է տալիս ստեղծել պատկերակի ֆայլեր (.ico)՝ մոզաիկի ցանկացած պատկերից։\n• Աջ սեղմեք պատկերի վրա → «Ստեղծել պատկերակ»\n• Շրջանակեք ցանկալի տարածքը դիտողականում (պատկերակը պարտադիր կլինի քառակուսի)\n• Անհրաժեշտության դեպքում կարգավորեք թափանցիկությունը\n• Հաստատեք՝ .ico ֆայլն ավելացվում է անմիջապես մոզաիկին\n• .ico ֆայլերը ավտոմատ կերպով պարունակում են բոլոր ստանդարտ լուծաչափերը (16×16-ից մինչև 256×256)\n• Քանի դեռ մոզաիկում կա .ico ֆայլ, CBZ արխիվում պահպանումը արգելված է, քանի որ ICO ձևաչափը չի աջակցվում այդ արխիվների կողմից։ Արտահանեք .ico ֆայլը առանձին (Ctrl+C, ապա կպցրեք Windows-ի թղթապանակում), ապա ջնջեք այն մոզաիկից մինչև պահպանելը։",
+    "batch_convert": "Ճանդակային փոխակերպում",
+    "batch_convert_content": "MosaicView-ն առաջարկում է խմբաքանակային փոխարկման երեք գործառույթ, որոնք հասանելի են միայն այն դեպքում, երբ մոզայիկը դատարկ է։ Յուրաքանչյուրի համար սկզբունքը նույնն է. ընտրեք գրացուցակ, հաստատեք, հետևեք առաջընթացին իրական ժամանակում, ծանոթացեք վերջնական ամփոփումին։ Ընտրանք հնարավորություն է տալիս ընդմիշտ ջնջել բնօրինակ ֆայլերը դրանք աղբարկղ ուղարկելու փոխարեն։\n• CBR → CBZ. փոխարկում է գրացուցակում և դրա ենթագրացուցակներում գտնվող բոլոր CBR (RAR) ֆայլերը։ Եթե CBR-ն իրականում ZIP է, ապա այն պարզապես վերանվանվում է առանց փոխարկման։\n• PDF → CBZ. փոխարկում է գրացուցակում և դրա ենթագրացուցակներում գտնվող բոլոր PDF ֆայլերը։ Պատկերները արտածվում են առանց վերասեղմման։\n• ՄԵԿՈՒՍԱՑՎԱԾ ՊԱՏԿԵՐՆԵՐ → CBZ. ստեղծում է առանձին CBZ գրացուցակում և դրա ենթագրացուցակներում հայտնաբերված յուրաքանչյուր պատկերային ֆայլի համար։ Անվավեր, վնասված, բազմաէջ (TIFF) կամ անիմացիոն (GIF) պատկերները անտեսվում են և գրանցվում մատյանում։",
+    "config_open_temp_folder": "Բացել ժամանակավոր թղթապանակը",
+    "icon_toolbar": "Պատկերակների գոտի",
+    "icon_toolbar_content": "Պատկերակների վահանակը հնարավորություն է տալիս արագ մուտք ունենալ հավելվածի հիմնական գործառույթներին։ Կարող եք վերադասավորել պատկերակները ձեր ցանկության համաձայն՝ դրանք ուղղակիորեն վահանակում քաշելով։ Ընտրելու համար, թե որ պատկերակները ցուցադրել կամ թաքցնել, սեղմեք վահանակի ներքևի հատվածում գտնվող ատամնանիվ կոճակը. կբացվի կազմաձևման պատուհան, որտեղ կարող եք պատկերակներ տեղափոխել ակտիվ վահանակի և պաշարի միջև։ Օգտագործեք « + » և « − » կոճակները՝ պատկերակների չափը կարգավորելու համար։ Կազմաձևումը պահվում է ինքնաբերաբար։",
+    "license_7zip": "7-Zip լիցենզիա"
+  },
+  "misc": {
+    "file_word": "ֆայլ",
+    "files_word": "ֆայլեր",
+    "corrupted": "վնասված",
+    "yes": "Այո",
+    "no": "Ոչ",
+    "cancel": "Չեղարկել",
+    "selection_suffix": "պատճեն-ընտրություն"
+  },
+  "metadata": {
+    "title": "Վերնագիր",
+    "series": "Շարք",
+    "number": "Համար",
+    "volume": "Հատոր",
+    "summary": "Ամփոփում",
+    "writer": "Սցենարիստ",
+    "penciller": "Նկարիչ",
+    "inker": "Մրուցարար",
+    "colorist": "Գունապատում",
+    "letterer": "Տառատես",
+    "cover_artist": "Կազմի նկարիչ",
+    "editor": "Խմբագիր (անձ)",
+    "publisher": "Հրատարակիչ (տուն)",
+    "imprint": "Հավաքածու",
+    "genre": "Ժանր",
+    "web": "Կայք",
+    "page_count": "Էջերի քանակ",
+    "language_iso": "Լեզու",
+    "format": "Ձևաչափ",
+    "black_and_white": "Սև ու սպիտակ",
+    "manga": "Մանգա",
+    "year": "Տարի",
+    "month": "Ամիս",
+    "day": "Օր",
+    "notes": "Նշումներ",
+    "characters": "Կերպարներ",
+    "locations": "Վայրեր",
+    "teams": "Թիմեր",
+    "story_arc": "Պատմության աղեղ",
+    "story_arc_number": "Աղեղի համար",
+    "series_group": "Սերիաների խումբ",
+    "count": "Համարների քանակ",
+    "alternate_series": "Այլընտրանքային շարք",
+    "alternate_number": "Այլընտրանքային համար",
+    "alternate_count": "Այլընտրանքային հաշվարկ",
+    "age_rating": "Տարիքային գնահատական",
+    "series_complete": "Շարքն ավարտված է",
+    "translator": "Թարգմանիչ",
+    "tags": "Պիտակներ",
+    "scan_information": "Սկանավորման տեղեկատվություն",
+    "community_rating": "Համայնքի գնահատական",
+    "review": "Ակնարկ",
+    "gtin": "GTIN",
+    "pages": "Էջեր",
+    "pages_col_image": "Պատկեր",
+    "pages_col_type": "Տեսակ",
+    "pages_col_width": "Լայնություն",
+    "pages_col_height": "Բարձրություն",
+    "pages_col_size": "Չափ (բ)"
+  },
+  "web": {
+    "web_download_progress": "Ներբեռնում՝ {downloaded}/{total} պատկեր...",
+    "web_download_cancel": "Չեղարկել",
+    "web_no_images": "Պատկերներ չկան",
+    "web_no_images_found": "Այս էջում պատկերներ չեն գտնվել։",
+    "web_imported": "{count} պատկեր(ներ) ներմուծված վեբ էջից",
+    "web_drag_drop_title": "Վեբ պատկերի տեղափոխում",
+    "web_copy_paste_message": "Ուղղակի քաշելը և բաց թողնելը վեբ բրաուզերից չի աջակցվում։\n\nԱլտերնատիվ լուծում (ավելի պարզ)։\n\n1. Աջ սեղմեք բրաուզերում պատկերի վրա\n2. Ընտրեք 'Պատճենել պատկերը'\n3. MosaicView-ում օգտագործեք 'Տեղադրել' կոճակը կամ Ctrl+V\n\nԱյս մեթոդը աշխատում է բոլոր վեբ պատկերների հետ։",
+    "import_web_button": "Ներմուծում վեբից",
+    "import_web_tooltip": "Տեղադրեք ինտերնետ հասցե՝ էջից բոլոր պատկերները վերականգնելու համար",
+    "import_web_menu": "Ներմուծում վեբից...",
+    "import_web_dialog_title": "Ներմուծել պատկերներ վեբ էջից",
+    "import_web_url_label": "Վեբ էջի հասցե:",
+    "import_web_ok_button": "Լավ",
+    "import_web_cancel_button": "Չեղարկել",
+    "import_web_invalid_url": "Անվավեր URL։ Խնդրում ենք մուտքագրել վավեր վեբ հասցե։"
+  },
+  "donation": {
+    "menu_label": "Նվիրաբերել հեղինակին",
+    "title": "Կատարել նվիրաբերություն",
+    "message": "Ձեզ դուր է գալիս այս փոքրիկ ծրագիրը և կանոնավոր օգտագործում եք այն: Ես ներդրել եմ դրանում մի քանի հարյուր ժամ: Կմտածեի՞ք շնորհակալություն հայտնել ինձ նվիրաբերություն կատարելով: Խնդրում եմ, եղեք բարի, ինձ իսկապես պետք է գումար՝ իմ լողավազանը շամպայնով լցնելու համար:\n\nԱնկախ նրանից, թե ցանկանում եք ինձ ուղարկել մի քանի ցենտ, թե մի քանի միլիարդ եվրո, ես ընդունում եմ բոլոր գումարները: Կարող եք այս նվիրաբերությունը կատարել paypal-ի միջոցով"
+  },
+  "mail": {
+    "tooltip": "Այս կոճակը բացում է Windows-ում ձեր լռելյայն էլփոստի ծրագիրը՝ էլփոստ ուղարկելու համար: Եթե ծրագիր կազմաձևված չէ (օրինակ, եթե դուք օգտագործում եք միայն վեբ փոստ), դուք կարող եք պատճենել MosaicView հասցեն սեղմատախտակում՝ աջ սեղմելով պատկերակի վրա:",
+    "copy_address": "Պատճենել MosaicView-ի էլփոստի հասցեն",
+    "menu_label": "Ուղարկել նամակ MosaicView-ին",
+    "icon_label": "Ուղարկել էլ. նամակ"
+  },
+  "menu": {
+    "file": "Ֆայл",
+    "file_open": "Բացել ֆայլ",
+    "file_close": "Փակել ֆայլը",
+    "batch_convert": "Ֆայլերի խմբային փոխակերպում",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Առանձին պատկերներ → CBZ",
+    "edit": "Խմբագրել",
+    "undo": "Հետարկել",
+    "redo": "Կրկնել",
+    "paste": "Տեղադրել",
+    "delete": "Ջնջել",
+    "invert_selection": "Շրջել ընտրությունը",
+    "select_all": "Ընտրել բոլորը",
+    "deselect": "Հանել ընտրությունը",
+    "refresh_mosaic": "Թարմացնել խճանկարը",
+    "images": "Պատկերներ",
+    "rotation": "Պտտում",
+    "archives": "Արխիվներ",
+    "sort": "Տեսակավորում",
+    "system": "Համակարգ",
+    "decrease_font": "Փոքրացնել տառատեսակը",
+    "increase_font": "Մեծացնել տառատեսակը",
+    "language": "Լեզուներ",
+    "language_real": "Իրական լեզուներ",
+    "language_fictional": "Հորինված լեզուներ",
+    "about": "Մասին",
+    "export_piqad_font": "Պահպանել pIqaD տառատեսակը",
+    "export_tengwar_fonts": "Պահպանել tengwar տառատեսակները"
+  }
+}

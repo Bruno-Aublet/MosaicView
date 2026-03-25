@@ -1,0 +1,1299 @@
+{
+  "app_title": "MosaicView",
+  "app_baseline": "Švajčiarsky nôž pre zberateľov digitálnych komiksov",
+  "buttons": {
+    "open_file": "Otvoriť CBZ/CBR/CB7/PDF",
+    "close_file": "Zatvoriť súbor",
+    "create_cbz": "Vytvoriť CBZ archív",
+    "flatten_dirs": "Presunúť všetky súbory\ndo koreňa a odstrániť\npodadresáre",
+    "renumber": "Prečíslovanie\nstrán",
+    "undo": "⤺ Späť",
+    "redo": "Znova ⤻",
+    "copy": "Kopírovať",
+    "cut": "Vystrihnúť",
+    "paste": "Prilepiť",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "Konverzia do iného\nformátu obrázka",
+    "join_pages": "Spojiť strany",
+    "split_page": "Rozdeliť stranu",
+    "save_as": "Uložiť ako\n(vytvorenie nového CBZ)",
+    "save_selection": "Uložiť výber\nako CBZ",
+    "print_selection": "Tlačiť výber",
+    "print_all": "Tlačiť celý komiks",
+    "sort": "Triediť",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "Konvertovať",
+    "cancel": "Zrušiť",
+    "split_button": "Rozdeliť",
+    "join_button": "Začať",
+    "validate_crop": "Potvrdiť orezanie",
+    "ok": "OK",
+    "close": "Zatvoriť",
+    "apply_and_save": "Použiť zmeny a uložiť súbor",
+    "apply_and_create": "Použiť zmeny a vytvoriť CBZ súbor",
+    "close_and_lose": "Zatvoriť súbor a zahodiť zmeny",
+    "cancel_return": "Zrušiť a vrátiť sa na mozaiku",
+    "update_page_count": "Aktualizovať počet\nstrán v metaúdajoch",
+    "invert_selection": "Invertovať výber",
+    "reduce_size": "Zmeniť veľkosť strán",
+    "mirror_vertical": "⇅",
+    "create_gif": "Vytvoriť GIF",
+    "edit_gif": "Upraviť animovaný GIF",
+    "save_to_folder": "Exportovať vybraté\nstránky",
+    "continue": "Pokračovať",
+    "reset": "↻",
+    "yes": "Áno",
+    "no": "Nie",
+    "renumber_recommended": "Prečíslovať (odporúčané)",
+    "ignore_and_save": "Ignorovať a uložiť",
+    "rename_to_cbz": "Premenovať na .cbz",
+    "open_without_rename": "Otvoriť bez premenovania",
+    "rename_to_cbr": "Premenovať na .cbr",
+    "adjustments": "Jas,\nkontrast atď.",
+    "batch_cbr_to_cbz": "Hromadná konverzia\n súborov CBR na CBZ",
+    "batch_pdf_to_cbz": "Hromadný prevod\n súborov PDF do CBZ",
+    "batch_img_to_cbz": "Dávková konverzia\n samostatných obrázkov do CBZ",
+    "icon_toolbar_reset": "Obnoviť predvolené",
+    "delete_selected": "Vymazať",
+    "save": "Uložiť",
+    "rename_to_cb7": "Premenovať na .cb7",
+    "split_ui": "Rozdeliť rozhranie na dva panely",
+    "unsplit_ui": "Zavrieť druhý panel"
+  },
+  "tabs": {
+    "mosaic": "Mozaika",
+    "metadata": "Metadáta"
+  },
+  "viewer": {
+    "title": "Prehliadač",
+    "mode_single": "Jedna stránka  [D]",
+    "mode_double": "Dvojitá stránka  [D]",
+    "mode_continuous": "Plynulý režim  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "Predchádzajúca strana (←)",
+      "next_page": "Nasledujúca strana (→)",
+      "zoom_in": "Priblížiť + (Ctrl+Plus)",
+      "zoom_out": "Vzdialiť - (Ctrl+Mínus)",
+      "zoom_reset": "Obnoviť priblíženie (Ctrl+0)",
+      "reading_mode_double": "Zmeniť režim čítania (D) → Dvojstrany",
+      "reading_mode_continuous": "Zmeniť režim čítania (D) → Spojité dvojstrany",
+      "reading_mode_single": "Zmeniť režim čítania (D) → Jedna strana",
+      "fullscreen_exit": "Ukončiť celú obrazovku (F11)",
+      "fullscreen": "Celá obrazovka (F11)",
+      "close_viewer": "Zatvoriť prehliadač (ESC)"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ Poškodený obrázok - Nahradiť",
+      "corrupted_delete": "⚠️ Odstrániť tento obrázok",
+      "copy": "Kopírovať (Ctrl+C)",
+      "cut": "Vystrihnúť (Ctrl+X)",
+      "paste": "Prilepiť (Ctrl+V)",
+      "paste_clipboard": "Prilepiť zo schránky (Ctrl+V)",
+      "delete": "Odstrániť (Delete)",
+      "deselect": "Zrušiť výber (ESC)",
+      "rotate_right": "↻ Otočiť doprava",
+      "rotate_left": "↺ Otočiť doľava",
+      "mirror": "⇄ Zrkadliť horizontálne",
+      "crop": "Orezať",
+      "convert": "Konvertovať do iného formátu...",
+      "join": "Spojiť vybrané strany",
+      "split": "Rozdeliť vybranú stranu",
+      "save_selection": "Uložiť výber ako CBZ",
+      "print_selection": "Tlačiť výber",
+      "copy_archive": "Kopírovať celý archív",
+      "undo": "Späť (Ctrl+Z)",
+      "redo": "Znova (Ctrl+Y)",
+      "renumber_auto": "Prečíslovanie stránok (automatická detekcia viacnásobných stránok)",
+      "renumber_simple": "Prečíslovanie stránok (jednoduché číslovanie)",
+      "sort_submenu": "Triediť strany",
+      "sort_name": "Podľa názvu",
+      "sort_type": "Podľa typu",
+      "sort_size": "Podľa veľkosti",
+      "sort_width": "Podľa šírky",
+      "sort_height": "Podľa výšky",
+      "sort_resolution": "Podľa rozlíšenia",
+      "sort_dpi": "Podľa DPI",
+      "create_cbz": "Vytvoriť CBZ archív",
+      "save_as": "Uložiť ako...",
+      "close_file": "Zatvoriť súbor",
+      "help": "Návod na používanie",
+      "update_page_count": "Aktualizovať počet strán v metaúdajoch",
+      "invert_selection": "Invertovať výber (Ctrl+I)",
+      "reduce_size": "Zmeniť veľkosť strán",
+      "mirror_vertical": "⇅ Vertikálne zrkadlo",
+      "edit_animated_gif": "Upraviť animovaný GIF...",
+      "save_to_folder": "Exportovať vybraté stránky",
+      "adjustments": "Jas, kontrast, farby...",
+      "refresh_mosaic": "Obnoviť mozaiku (F5)",
+      "create_ico": "Vytvoriť súbor .ico"
+    },
+    "canvas_no_file": {
+      "open": "Otvoriť CBZ/CBR/CB7/PDF",
+      "recent_files": "Nedávne súbory",
+      "clear_history": "Vymazať históriu"
+    },
+    "canvas_with_file": {
+      "close": "Zatvoriť súbor",
+      "paste": "Prilepiť (Ctrl+V)",
+      "paste_clipboard": "Prilepiť zo schránky (Ctrl+V)",
+      "select_all": "Vybrať všetko (Ctrl+A)",
+      "deselect": "Zrušiť výber (ESC)",
+      "copy_archive": "Kopírovať celý archív",
+      "print_all": "Tlačiť celý komiks",
+      "renumber_auto": "Prečíslovanie stránok (automatická detekcia viacnásobných stránok)",
+      "renumber_simple": "Prečíslovanie stránok (jednoduché číslovanie)",
+      "flatten": "Zrovnať priečinky",
+      "save_selection": "Uložiť výber ako CBZ",
+      "hide_sidebar": "« Skryť panel tlačidiel",
+      "show_sidebar": "» Zobraziť panel tlačidiel",
+      "decrease_thumbs": "Zmenšiť miniatúry",
+      "increase_thumbs": "Zväčšiť miniatúry",
+      "theme_dark": "Prepnúť na tmavý režim",
+      "theme_light": "Prepnúť na svetlý režim",
+      "sort_submenu": "Triediť strany",
+      "undo": "Späť (Ctrl+Z)",
+      "redo": "Znova (Ctrl+Y)",
+      "create_cbz": "Vytvoriť CBZ archív",
+      "save_as": "Uložiť ako...",
+      "help": "Návod na používanie",
+      "update_page_count": "Aktualizovať počet strán v metaúdajoch",
+      "invert_selection": "Invertovať výber (Ctrl+I)",
+      "fullscreen": "Celá obrazovka (F11)",
+      "fullscreen_exit": "Ukončiť celú obrazovku (F11 alebo ESC)",
+      "quit": "Zavrieť aplikáciu"
+    },
+    "canvas": {
+      "quit": "Zavrieť aplikáciu",
+      "reset": "Resetovať aplikáciu:\n• veľkosť a poloha okna\n• tmavý režim → svetlý\n• veľkosť miniatúr → normálna\n• bočný panel → viditeľný / 220 px\n• jazyk → automatická detekcia\n• veľkosť písma → predvolená",
+      "reset_label": "Resetovať aplikáciu"
+    },
+    "font_size": {
+      "decrease": "Zmenšiť veľkosť písma",
+      "increase": "Zväčšiť veľkosť písma"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "Triediť podľa názvu",
+    "sort_type": "Triediť podľa typu",
+    "sort_size": "Triediť podľa veľkosti",
+    "sort_width": "Triediť podľa šírky",
+    "sort_height": "Triediť podľa výšky",
+    "sort_resolution": "Triediť podľa rozlíšenia",
+    "sort_dpi": "Triediť podľa DPI"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "Prázdny archív",
+        "message": "CBZ archív neobsahuje žiadne súbory."
+      },
+      "empty_cbr": {
+        "title": "Prázdny archív",
+        "message": "CBR archív neobsahuje žiadne súbory."
+      },
+      "files_ignored": {
+        "title": "Súbory ignorované"
+      },
+      "no_selection_crop": {
+        "title": "Žiadny výber",
+        "message": "Prosím, vyberte obrázok na orezanie."
+      },
+      "multi_selection_crop": {
+        "title": "Viacnásobný výber",
+        "message": "Môžete orezať iba jeden obrázok naraz.\nProsím, vyberte iba jeden obrázok."
+      },
+      "invalid_selection_crop": {
+        "title": "Neplatný výber",
+        "message": "Orezať je možné iba obrázky."
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "Funkcia nedostupná",
+        "message": "Presúvanie strán nie je dostupné v podadresároch.\nProsím, zrovnajte priečinky alebo sa vráťte do koreňa."
+      },
+      "no_selection_convert": {
+        "title": "Žiadny výber",
+        "message": "Prosím, vyberte aspoň jeden obrázok na konverziu."
+      },
+      "invalid_selection_convert": {
+        "title": "Neplatný výber",
+        "message": "Konvertovať je možné iba obrázky."
+      },
+      "no_selection_split": {
+        "title": "Žiadny výber",
+        "message": "Prosím, vyberte obrázok na rozdelenie."
+      },
+      "multi_selection_split": {
+        "title": "Viacnásobný výber",
+        "message": "Môžete rozdeliť iba jeden obrázok naraz.\nProsím, vyberte iba jeden obrázok."
+      },
+      "invalid_selection_split": {
+        "title": "Neplatný výber",
+        "message": "Rozdeliť je možné iba obrázky."
+      },
+      "invalid_number_split": {
+        "title": "Neplatné číslo",
+        "message": "Počet strán musí byť medzi 2 a 10."
+      },
+      "insufficient_selection_join": {
+        "title": "Nedostatočný výber",
+        "message": "Prosím, vyberte aspoň 2 obrázky na spojenie."
+      },
+      "invalid_selection_join": {
+        "title": "Neplatný výber",
+        "message": "Spojiť je možné iba obrázky."
+      },
+      "pil_not_available": {
+        "title": "PIL nie je dostupný",
+        "message": "Modul PIL nie je dostupný pre prilepenie zo systémovej schránky."
+      },
+      "format_not_supported": {
+        "title": "Nepodporovaný formát",
+        "message": "Nepodporovaný formát obrázka alebo poškodený súbor.\nPodporované formáty: JPG, PNG, WEBP, BMP, TIFF, GIF, ICO"
+      },
+      "no_crop_selection": {
+        "title": "Žiadny výber",
+        "message": "Najprv nakreslite obdĺžnik na orezanie."
+      },
+      "cannot_open_file": {
+        "title": "Nemožno otvoriť súbor",
+        "message": "Súbor sa nedá načítať."
+      },
+      "corrupted_images": {
+        "title": "Poškodené obrázky",
+        "summary": "{count} poškodený(é) obrázok(ky) nájdený(é) z {total}.",
+        "hint": "Sú zobrazené so špeciálnou ikonou.\nKliknite pravým tlačidlom myši na poškodený obrázok, aby ste ho nahradili alebo odstránili.",
+        "more": "... a {count} ďalší(ch)"
+      },
+      "no_image_print": {
+        "title": "Žiadny obrázok",
+        "message": "Žiadny obrázok na tlač."
+      },
+      "no_valid_image_print": {
+        "title": "Žiadny obrázok",
+        "message": "Žiadny platný obrázok na tlač."
+      },
+      "no_selection_print": {
+        "title": "Žiadny výber",
+        "message": "Prosím, vyberte aspoň jeden obrázok."
+      },
+      "no_valid_selection_print": {
+        "title": "Žiadny obrázok",
+        "message": "Žiadny platný obrázok vo výbere."
+      },
+      "save_cancelled": {
+        "title": "Ukladanie zrušené",
+        "message": "Prosím, manuálne opravte názvy súborov pred uložením."
+      },
+      "empty_pdf": {
+        "title": "Prázdny PDF",
+        "message": "PDF súbor neobsahuje žiadne strany."
+      },
+      "no_selection_save": {
+        "title": "Upozornenie",
+        "message": "Prosím, vyberte aspoň jednu stranu na uloženie."
+      },
+      "drag_disabled_subdirectory": {
+        "title": "Presúvanie zakázané",
+        "message": "Presúvanie strán pomocou ťahania a pustenia je dostupné iba v koreňovom adresári komiksu.\n\nPre presúvanie strán:\n1. Vráťte sa do koreňa kliknutím na ikonu návratu\n2. Alebo zrovnajte komiks pre odstránenie podadresárov"
+      },
+      "no_selection_reduce": {
+        "title": "Žiadny výber",
+        "message": "Prosím, vyberte aspoň jednu stranu na zmenšenie."
+      },
+      "invalid_selection_reduce": {
+        "title": "Neplatný výber",
+        "message": "Zmenšiť je možné iba obrázky."
+      },
+      "invalid_dimensions": {
+        "title": "Neplatné rozmery",
+        "message": "Prosím, zadajte platné rozmery (kladné celé čísla)."
+      },
+      "no_images_for_gif": {
+        "title": "Žiadne obrázky",
+        "message": "Na vytvorenie animovaného GIF je potrebný aspoň jeden obrázok."
+      },
+      "no_valid_images": {
+        "title": "Žiadne platné obrázky",
+        "message": "Nenašli sa žiadne platné obrázky na vytvorenie GIF."
+      },
+      "animated_gif_in_comic": {
+        "title": "Zistený animovaný GIF",
+        "message": "Varovanie: Tento komiks obsahuje jeden alebo viac animovaných GIFov.\\n\\nČítačky komiksov (CDisplayEx, YACReader, atď.) zobrazia iba prvý snímok každého GIFu ako statickú stránku.\\n\\nAby ste zobrazili animovaný GIF správne, musíte ho uložiť samostatne mimo komiks pomocou tlačidla \"Exportovať vybraté stránky\" alebo \"Upraviť animovaný GIF\".\\n\\nChcete aj napriek tomu pokračovať v ukladaní komiksu?"
+      },
+      "no_selection_adjust": {
+        "title": "Ziadny vyber",
+        "message": "Vyberte aspon jeden obraz na pouzitie uprav."
+      },
+      "invalid_selection_adjust": {
+        "title": "Neplatny vyber",
+        "message": "Upravy mozno pouzit iba na obrazy."
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "Funkcia nie je dostupná",
+        "message": "Prečíslovanie nie je dostupné, kým priečinky nie sú zlúčené.\nZlúčte priečinky pred prečíslovaním."
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "Chyba ZIP",
+        "message": "'{file}': Súbor nie je platný ZIP archív alebo je poškodený."
+      },
+      "zip_cannot_open": {
+        "title": "Chyba ZIP",
+        "message": "Nemožno otvoriť CBZ súbor: {error}"
+      },
+      "rar_invalid": {
+        "title": "Chyba RAR",
+        "message": "'{file}': Súbor nie je platný RAR archív alebo je poškodený."
+      },
+      "rar_cannot_open": {
+        "title": "Chyba RAR",
+        "message": "Nemožno otvoriť CBR archív: {error}"
+      },
+      "cbr_unexpected": {
+        "title": "Chyba",
+        "message": "Neočakávaná chyba pri otváraní CBR: {error}"
+      },
+      "join_failed": {
+        "title": "Chyba",
+        "message": "Nemožno spojiť obrázky."
+      },
+      "paste_failed": {
+        "title": "Chyba",
+        "message": "Chyba pri prilepení: {error}"
+      },
+      "copy_archive_failed": {
+        "title": "Chyba",
+        "message": "Nemožno kopírovať archív: {error}"
+      },
+      "crop_invalid": {
+        "title": "Chyba",
+        "message": "Oblasť orezania je neplatná."
+      },
+      "crop_failed": {
+        "title": "Chyba",
+        "message": "Nemožno orezať obrázok: {error}"
+      },
+      "load_image_failed": {
+        "title": "Chyba",
+        "message": "Nemožno načítať obrázok:\n{error}"
+      },
+      "print_error": {
+        "title": "Chyba tlače",
+        "message": "Chyba pri tlači:\n{error}"
+      },
+      "print_not_available": {
+        "title": "Tlač nie je dostupná",
+        "message": "Modul win32print nie je nainštalovaný.\nNainštalujte ho pomocou: pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "Súbor nenájdený",
+        "message": "Súbor už neexistuje:\n{path}"
+      },
+      "import_failed": {
+        "title": "Chyba importu",
+        "message": "Nemožno importovať súbor: {error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF nie je nainštalovaný",
+        "message": "Knižnica PyMuPDF (fitz) nie je nainštalovaná.\nNainštalujte ju pomocou: pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "Chyba",
+        "message": "Chyba pri importe PDF: {error}"
+      },
+      "pdf_load_failed": {
+        "title": "Chyba PDF",
+        "message": "Nemožno načítať PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "Duplicitné názvy súborov",
+        "intro": "{count} duplicitný(-é) názov(-vy) súboru zistený(-é):\n\n",
+        "item": "  • {name} ({times}×)\n",
+        "more": "  ... a {more} ďalší(-ch)\n",
+        "footer": "\nZIP archívy neprijímajú duplicitné názvy.\nPred uložením premenujte tieto súbory."
+      },
+      "save_failed": {
+        "title": "Chyba",
+        "message": "Nemožno uložiť súbor: {error}"
+      },
+      "create_archive_failed": {
+        "title": "Chyba",
+        "message": "Nemožno vytvoriť archív: {error}"
+      },
+      "save_selection_failed": {
+        "title": "Chyba",
+        "message": "Nemožno uložiť výber: {error}"
+      },
+      "gif_creation_failed": {
+        "title": "Chyba vytvorenia GIF",
+        "message": "Nie je možné vytvoriť animovaný GIF:\n{error}"
+      },
+      "save_files_failed": {
+        "title": "Chyba pri ukladaní",
+        "message": "Chyba pri ukladaní súborov:\n{error}"
+      },
+      "rename_failed": {
+        "title": "Chyba premenovania",
+        "message": "Nie je možné premenovať súbor: {error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF chránené heslom",
+        "message": "Tento súbor PDF je zašifrovaný a chránený heslom.\nNemožno ho otvoriť bez hesla."
+      },
+      "pdf_unlock_failed": {
+        "title": "Chyba",
+        "message": "Nepodarilo sa uložiť odomknutý súbor PDF:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: šifrovaný PDF súbor (vyžaduje sa heslo), preskočený",
+      "file_too_large": {
+        "title": "Súbor je príliš veľký",
+        "message": "Súbor {filename} má veľkosť {size} a prekračuje maximálnu povolenú veľkosť (500 MB) pre obrázok."
+      },
+      "license_file_not_found": {
+        "message": "Licenčný súbor nebol nájdený: {path}"
+      },
+      "license_file_read_error": {
+        "message": "Licenčný súbor sa nedá prečítať: {error}"
+      },
+      "7z_invalid": {
+        "title": "Chyba 7Z",
+        "message": "Súbor '{file}' nie je platný archív 7Z alebo je poškodený."
+      },
+      "delete_error": "Chyba pri mazaní: {error}",
+      "export_error": "Chyba pri exporte: {error}",
+      "font_source_not_found": "Zdrojový súbor písma nebol nájdený: {path}",
+      "no_tengwar_font": "Nebol nájdený žiadny font Tengwar.",
+      "no_icons_found": "Neboli nájdené žiadne ikony.",
+      "unsupported_files": {
+        "title": "Nepodporované súbory",
+        "message": "Nasledujúce súbory nie sú podporované a boli ignorované:\n\n{files}"
+      }
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF úspešne vytvorený",
+        "message": "Animovaný GIF '{name}' bol vytvorený a pridaný do mozaiky."
+      },
+      "pywin32_required": {
+        "title": "Funkcia nedostupná",
+        "message": "Modul pywin32 je potrebný pre prilepenie zo systémovej schránky.\nNainštalujte ho pomocou: pip install pywin32"
+      },
+      "images_imported": {
+        "title": "Obrázky importované",
+        "message": "{count} obrázok/-y/-ov importovaný/-é"
+      },
+      "archive_copied": {
+        "title": "Archív skopírovaný",
+        "message": "Archív bol skopírovaný do schránky."
+      },
+      "function_not_available": {
+        "title": "Funkcia nedostupná",
+        "message": "Táto funkcia momentálne nie je dostupná."
+      },
+      "duplicate_detected": {
+        "title": "Duplikát zistený",
+        "message": "Súbor s týmto názvom už existoval.\n\nSúbor bol premenovaný na:\n{name}"
+      },
+      "replace_success": {
+        "title": "Úspech",
+        "message": "Obrázok '{name}' bol úspešne nahradený."
+      },
+      "history_cleared": {
+        "title": "História vymazaná",
+        "message": "Zoznam nedávnych súborov bol vymazaný."
+      },
+      "files_copied_clipboard": {
+        "title": "Súbory skopírované do schránky",
+        "message": "Ťahanie a pustenie von z aplikácie nie je dostupné z technických dôvodov.\n\n✓ {count} {word} skopírovaný/-é do schránky\n\nMôžete teraz prilepiť kamkoľvek chcete:\n  • Pravý klik → Prilepiť\n  • Alebo Ctrl+V"
+      },
+      "correction_done": {
+        "title": "Oprava dokončená",
+        "message": "{count} názov/-y/-ov súboru opravený/-é."
+      },
+      "import_success": {
+        "title": "Import úspešný",
+        "message": "{count} strana/-y/-n importovaná/-é z {file}"
+      },
+      "pdf_import_success": {
+        "title": "Import úspešný",
+        "message": "{count} PDF strana/-y/-n importovaná/-é z {file}\nKvalita: {dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "Úspech",
+        "message": "PDF úspešne konvertovaný!\n{count} strán načítaných pri {dpi} DPI."
+      },
+      "cbz_saved": {
+        "title": "Úspech",
+        "message": "Súbor CBZ úspešne uložený:"
+      },
+      "cbz_converted": {
+        "title": "Úspech",
+        "message": "Súbor úspešne prevedený na CBZ:",
+        "question": "Chcete odstrániť pôvodný súbor CBR?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "Úspech",
+        "message": "Súbor úspešne prevedený na CBZ:",
+        "question": "Chcete odstrániť pôvodný súbor PDF?"
+      },
+      "cbz_save_as": {
+        "title": "Úspech",
+        "message": "Nový CBZ súbor uložený: {path}"
+      },
+      "cbz_created": {
+        "title": "Úspech",
+        "message": "Archív CBZ úspešne vytvorený:"
+      },
+      "selection_saved": {
+        "title": "Úspech",
+        "message": "Výber úspešne uložený:"
+      },
+      "flatten_done": {
+        "title": "Zrovnanie dokončené",
+        "message": "{files} súbor/-y/-ov presunutý/-é z {dirs} podpriečinka/-ov."
+      },
+      "language_changed": {
+        "title": "Jazyk zmenený",
+        "message": "Jazyk rozhrania bol úspešne zmenený."
+      },
+      "new_cbz_saved": {
+        "title": "Súbor Uložený",
+        "message": "Nový súbor CBZ bol úspešne uložený:",
+        "question": "Chcete odstrániť pôvodný súbor?"
+      },
+      "page_count_updated": {
+        "title": "Počet strán aktualizovaný",
+        "message": "Počet strán v metaúdajoch bol aktualizovaný na {count} strán."
+      },
+      "files_saved": {
+        "title": "Úspešne uložené",
+        "message": "{count} súborov bolo uložených do:\n{folder}",
+        "open_folder": "Chcete otvoriť priečinok?"
+      },
+      "adjustments_applied": {
+        "title": "Upravy pouzite",
+        "message": "Upravy boli uspesne pouzite."
+      },
+      "pdf_unlocked": {
+        "title": "PDF odomknuté",
+        "message": "Odomknutý súbor PDF bol uložený:\n{path}"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "Veľký archív",
+        "message": "Tento archív má po rozbalení {size} MB.\nNačítanie môže spotrebovať veľa pamäte (RAM).\n\nChcete pokračovať?"
+      },
+      "confirm_delete": {
+        "title": "Potvrdenie",
+        "message": "Naozaj chcete vymazať {count} súbor(y) ({size})?"
+      },
+      "delete_source_files": {
+        "title": "Odstrániť zdrojové súbory?",
+        "message": "Chcete odstrániť obrázky, ktoré boli spojené?\n\nÁno = Odstrániť zdrojové súbory\nNie = Ponechať zdrojové súbory\nZrušiť = Zrušiť operáciu"
+      },
+      "invalid_filenames": {
+        "title": "Neplatné názvy súborov",
+        "intro": "{count} súbor(ov) obsahuje zakázané znaky:",
+        "item": "  • {name}",
+        "more": "  ... a ďalších {more}",
+        "forbidden_chars": "Zakázané znaky: {chars}",
+        "fix_question": "Chcete tieto názvy automaticky opraviť?\n(Zakázané znaky budú nahradené '_')"
+      },
+      "close_without_save": {
+        "title": "Uložiť pred zatvorením?",
+        "message": "Obrázky boli pridané. Chcete pred zatvorením vytvoriť CBZ archív?"
+      },
+      "flatten_folders": {
+        "title": "Zrovnať priečinky",
+        "subdirs_detected": "Zistené podpriečinky:",
+        "files_to_move": "{count} súbor/-y/-ov bude presunutý/-é do koreňa.",
+        "folders_to_delete": "{count} podpriečinok/-ov bude odstránený/-é.",
+        "continue_question": "Chcete pokračovať?"
+      },
+      "update_page_count": {
+        "title": "Aktualizovať počet strán",
+        "message": "Počet strán v komikse sa zmenil.\n\nPočet strán uvedený v metaúdajoch: {original}\nAktuálny počet strán: {current}\n\nChcete aktualizovať počet strán v metaúdajoch?"
+      },
+      "conversion_complete": {
+        "title": "Konverzia dokončená",
+        "message": "Konverzia dokončená!\n\n{count} obrázok/obrázkov konvertovaných do formátu {format} bolo pridaných za váš výber.\n\nOdstrániť pôvodné obrázky?",
+        "delete_originals": "Vymazať originály\n{count} súbor(ov) - {size}",
+        "keep_all": "Zachovať všetko\n{count} súbor(ov) - {size}",
+        "cancel_conversion": "Zrušiť konverziu\n{count} súbor(ov) - {size}"
+      }
+    },
+    "extension_mismatch": {
+      "message": "Zistená nesprávna prípona: tento '{filename}' súbor je CBZ, nie CBR. Premenovať?",
+      "title": "Nesprávna prípona"
+    },
+    "extension_mismatch_cbr": {
+      "message": "Zistená nesprávna prípona: tento '{filename}' súbor je CBR, nie CBZ. Premenovať?"
+    },
+    "extension_mismatch_cb7": {
+      "message": "Zistená nesprávna prípona: súbor '{filename}' je CB7, nie CBZ/CBR. Premenovať?"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "Veľkosť miniatúr",
+    "loading": "Prosím čakajte, prebieha načítavanie...\n{percent}%",
+    "resizing": "Prosím čakajte, prebieha zmena veľkosti...\n{percent}%",
+    "converting": "Prosím čakajte, konverzia...\n{percent}%",
+    "loading_lazy": "Prosím čakajte, prebieha načítavanie...\n{percent}%\n\nKvôli veľkej veľkosti tohto súboru ({size} MB) sa stránky budú načítavať postupne. Stránky viditeľné na obrazovke sa načítajú okamžite, ostatné sa načítajú automaticky počas posúvania.",
+    "apply_save_cbz": "Použiť zmeny\na uložiť CBZ súbor",
+    "apply_create_cbz": "Použiť zmeny\na vytvoriť CBZ súbor",
+    "import_progress": "Prebieha import...\n{percent}%",
+    "pdf_import_progress": "Prebieha import PDF...\n{percent}%",
+    "pdf_opening": "Otváranie PDF súboru...",
+    "pdf_page": "Strana {current} / {total}",
+    "warning_close": "Upozornenie! Zmeny neboli uložené a budú stratené!",
+    "language_label": "Jazyk:",
+    "directory_tooltip": "Priečinok: {name}\n{count} súbor/-y/-ov\nCelková veľkosť: {size} MB",
+    "folder_up_tooltip": "Dvojité kliknutie pre návrat\no úroveň vyššie v štruktúre",
+    "status_bar": "{dirs} priečinok(ov)  |  {files} súbor(ov) ({total_size})  |  {selected} vybraných ({selected_size})",
+    "pdf_converting": "Konverzia {total} strán na obrázky pri {dpi} DPI...",
+    "pdf_converting_no_change": "Extrakcia {total} strán bez úprav...",
+    "print_progress": "Príprava tlače...\n{percent}%",
+    "print_preparing": "Prosím čakajte, príprava tlače...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nZhrnutie GNU General Public License v3\n\nUDELENÉ SLOBODY\nMôžete používať, kopírovať, upravovať a redistribuovať\nMosaicView, aj na komerčné účely.\n\nPOVINNOSTI\nKaždá redistribúcia (pôvodná alebo upravená) musí :\n– zachovať licenciu GPL v3\n– obsahovať zdrojový kód alebo uviesť, kde ho získať\n– neukladať žiadne ďalšie obmedzenia\n\nZÁRUKY\nTento softvér je distribuovaný BEZ AKEJKOĽVEK ZÁRUKY.\nJeho autor nenesie zodpovednosť za škody vzniknuté jeho používaním.\n\nMali by ste dostať kópiu GNU General Public License spolu s týmto programom. Ak nie, pozrite <https://www.gnu.org/licenses/>.",
+    "view_full_license": "Zobraziť úplnú licenciu",
+    "license_unrar_text": "Súbory CBZ sú založené na formáte ZIP, ktorý je slobodný a otvorený formát. Súbory CBR sú naopak založené na formáte RAR, ktorý je proprietárny.\n\nMosaicView môže otvárať súbory CBR vďaka UnRAR, nástroju vyvinutému spoločnosťou RARlab a voľne šíriteľnému.\n\nOficiálna webová stránka: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "Zobraziť licenciu UnRAR",
+    "saving_cbz": "Prebieha ukladanie... {percent}%",
+    "empty_canvas_line1": "Sem presunte jeden alebo viac suborov CBZ/CBR/CB7/PDF alebo vase obrazky",
+    "empty_canvas_line2": "Ked je subor otvoreny, mozete pokracovat v presune dalsich",
+    "empty_canvas_line3": "Presuňte jeden alebo viac priečinkov na spustenie dávkového spracovania",
+    "icon_toolbar_config_title": "Konfigurácia lišty ikon",
+    "icon_toolbar_active": "Ikony na lište",
+    "icon_toolbar_hidden": "Ikony v zálohe",
+    "license_gpl_full": "Licencia GNU GPL v3",
+    "license_unrar_full": "Licencia UnRAR",
+    "licenses_button": "Licencie",
+    "view_full_gpl_license": "Zobraziť úplnú licenciu GNU GPL v3",
+    "license_7zip_text": "Súbory CB7 sú založené na formáte 7z, ktorý vyvinul Igor Pavlov a ktorý je distribuovaný pod licenciou GNU LGPL.\n\nMosaicView môže otvárať súbory CB7 vďaka programu 7-Zip — bezplatnému programu s otvoreným zdrojovým kódom.\n\nOficiálna stránka : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "Zobraziť licenciu 7-Zip",
+    "license_7zip_full": "Licencia 7-Zip",
+    "icon_toolbar_show_thumb_slider": "Zobraziť posúvač veľkosti miniatúr",
+    "icon_toolbar_show_lang_combo": "Zobraziť výber jazyka",
+    "adjusting": "Čakajte prosím, prebieha úprava...\n{current} / {total}",
+    "license_piqad_full": "Licencia písma pIqaD qolqoS",
+    "license_tengwar_full": "Licencia písma Alcarin Tengwar",
+    "view_full_piqad_license": "Zobraziť celú licenciu pIqaD qolqoS"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "Konverzia obrázkov",
+      "title": "Konverzia {count} {word}",
+      "word_image": "obrázka",
+      "word_images": "obrázkov",
+      "info": "Vyberte cieľový formát:",
+      "format_png": "PNG (bezstratový)",
+      "format_jpg": "JPEG (s kompresiou)",
+      "format_webp": "WEBP (moderný)",
+      "format_bmp": "BMP (bitmapa)",
+      "format_tiff": "TIFF (vysoká kvalita)",
+      "format_gif": "GIF (animácia)",
+      "quality_label": "Kvalita pre JPG/WEBP:",
+      "quality_maximum": "Maximálna — kvalita 95/100",
+      "quality_high": "Vysoká — kvalita 85/100",
+      "quality_medium": "Stredná — kvalita 75/100",
+      "quality_low": "Nízka — kvalita 60/100",
+      "quality_custom_option": "Vlastná",
+      "quality_custom": "Kvalita vlastná : {value}/100",
+      "quality_note": "(Tento parameter ovplyvňuje iba formáty JPG a WEBP)",
+      "quality_window_title": "Výber kvality",
+      "format_gif_static": "Statický GIF",
+      "format_gif_animated": "Animovaný GIF (vyberte viac obrázkov)"
+    },
+    "split": {
+      "window_title": "Rozdeliť stranu",
+      "title": "Rozdeliť stranu",
+      "pages_label": "Počet strán:",
+      "direction_label": "Smer rozdelenia:",
+      "horizontal": "Horizontálny (zľava → doprava)",
+      "vertical": "Vertikálny (zhora → dole)",
+      "warning": "⚠ Keďže rozdelenie je vypočítané automaticky,\nmôže byť potrebné manuálne upravenie.",
+      "button_split": "Rozdeliť",
+      "button_cancel": "Zrušiť"
+    },
+    "join": {
+      "window_title": "Spojiť strany - Zmeňte poradie",
+      "instructions": "Usporiadajte obrázky:\n• Vertikálne (hore/dole) pre vertikálne spojenie\n• Horizontálne (vľavo/vpravo) pre horizontálne spojenie",
+      "merged_filename_prefix": "Spojenie",
+      "heights_label": "Výšky",
+      "widths_label": "Šírky",
+      "size_adjustment_title": "Úprava veľkosti",
+      "size_adjustment_warning": "⚠️ Vybrané obrázky majú rôzne rozmery.\nVyberte, ako upraviť ich veľkosti na spojenie.\nPomer strán každého obrázku bude vždy zachovaný.",
+      "keep_original": "Zachovať pôvodné veľkosti",
+      "keep_original_desc": "(pridá čierne pruhy na vyplnenie)",
+      "enlarge_small": "Zväčšiť malé obrázky",
+      "enlarge_small_desc": "(zarovnať na maximálny rozmer)",
+      "reduce_large": "Zmenšiť veľké obrázky",
+      "reduce_large_desc": "(zarovnať na minimálny rozmer)",
+      "back_to_arrangement": "Späť"
+    },
+    "pdf": {
+      "quality_merge": "Vyberte kvalitu zlúčenia:",
+      "quality_export": "Vyberte kvalitu exportu:",
+      "merge_quality_title": "Kvalita zlúčenia PDF",
+      "export_quality_title": "Kvalita exportu PDF",
+      "loading_title": "Načítava sa PDF...",
+      "dpi_90": "90 DPI - Webová publikácia",
+      "dpi_150": "150 DPI - Dobrá kvalita (odporúčané pre zobrazenie)",
+      "dpi_200": "200 DPI - Veľmi dobrá kvalita",
+      "dpi_300": "300 DPI - Výborná kvalita (štandard komiksov)",
+      "dpi_600": "600 DPI - Maximálna kvalita (veľké súbory)",
+      "dpi_original": "Bez úpravy obrázka",
+      "dpi_original_tooltip": "Inteligentná analýza každej stránky PDF:\n• Stránky iba s obrázkami: zachováva pôvodné DPI\n• Stránky iba s textom: 300 DPI\n• Zmiešané stránky (text + obrázky): DPI obrázkov ak >= 300, inak 300 DPI\nMaximum: 2400 DPI na obmedzenie veľkosti súboru"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "Vyžadovaný PyMuPDF",
+      "pymupdf_required_message": "PyMuPDF (fitz) nie je nainštalovaný. Nie je možné konvertovať súbory PDF.",
+      "select_directory_title": "Vyberte adresár obsahujúci súbory PDF",
+      "no_pdf_title": "Žiadne súbory PDF",
+      "no_pdf_message": "V adresári sa nenašli žiadne súbory PDF:\n{directory}",
+      "confirm_title": "Dávková konverzia PDF do CBZ",
+      "confirm_message": "{count} súborov PDF na konverziu v {directory} (vrátane podadresárov).",
+      "checkbox_permanent_delete": "Odstrániť pôvodné súbory PDF bez presunutia\ndo koša (BEZ MOŽNOSTI VRÁTENIA)",
+      "start_button": "Začať",
+      "converting_title": "Prebieha konverzia...",
+      "converting_progress": "Konverzia súboru {current} z celkových {total}",
+      "page_progress": "Stránka {current} / {total}",
+      "complete_title": "Konverzia dokončená",
+      "complete_message": "{count} súborov PDF skonvertovaných v adresári:",
+      "complete_message_errors": "{count} z {total} súborov PDF skonvertovaných v adresári:",
+      "errors_count": "{count} chýb(a) zistená(ých)."
+    },
+    "batch_cbr": {
+      "select_directory_title": "Vyberte adresár obsahujúci súbory CBR",
+      "no_cbr_title": "Žiadne súbory CBR",
+      "no_cbr_message": "V adresári sa nenašli žiadne súbory CBR:\\n{directory}",
+      "confirm_title": "Hromadná konverzia CBR na CBZ",
+      "confirm_message": "{count} súborov CBR na konverziu v {directory} (podadresáre zahrnuté).",
+      "checkbox_permanent_delete": "Odstrániť pôvodné súbory CBR bez použitia\nkoša (NIE JE MOŽNÉ VRÁTIŤ)",
+      "start_button": "Začať",
+      "converting_title": "Konverzia...",
+      "converting_progress": "Konverzia súboru {current} z {total}",
+      "page_progress": "Strana {current} / {total}",
+      "complete_title": "Konverzia dokončená",
+      "complete_message": "{count} súborov CBR skonvertovaných v adresári:",
+      "complete_message_errors": "{count} súborov CBR skonvertovaných z {total} v adresári:",
+      "errors_count": "{count} chýb(a/y) zistená(-é).",
+      "renamed_count": "{count} súbor(ov) premenovaný(-é) na CBZ",
+      "rarfile_unavailable": "Modul rarfile nie je dostupný. Nie je možné konvertovať súbory CBR."
+    },
+    "close_warning": {
+      "title": "Upozornenie!",
+      "message": "Zmeny neboli uložené a budú stratené!",
+      "btn_close_lose": "Zatvoriť súbor a zahodiť zmeny",
+      "btn_save_cbz": "Použiť zmeny a uložiť súbor",
+      "btn_create_cbz": "Použiť zmeny a vytvoriť CBZ súbor",
+      "btn_cancel": "Zrušiť a vrátiť sa na mozaiku"
+    },
+    "replace_image": {
+      "title": "Nahradiť poškodený obrázok"
+    },
+    "reduce_size": {
+      "window_title": "Zmena veľkosti obrázkov",
+      "title": "Zmena veľkosti {count} {word}",
+      "word_image": "obrázok",
+      "word_images": "obrázky",
+      "current_size": "Aktuálna veľkosť: {size} MB",
+      "current_dimensions": "Aktuálne rozmery: {width} × {height} px",
+      "choose_method": "Vyberte metódu zmeny veľkosti:",
+      "custom_dimensions": "Vlastné rozmery",
+      "width_label": "Šírka:",
+      "height_label": "Výška:",
+      "use_custom_dimensions": "Použiť tieto rozmery",
+      "different_dimensions_warning": "Vybrané strany majú rôzne rozmery. Vlastné rozmery vynútia rovnakú veľkosť pre všetky strany. Uistite sa, že rozumiete dôsledkom predtým, ako budete pokračovať.",
+      "estimated_size": "Odhadovaná veľkosť: {size} MB",
+      "percentage_reduction": "Percentuálna redukcia",
+      "percentage_enlargement": "Percentuálne zväčšenie",
+      "reduce_0": "0% (bez zmeny)",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0% (bez zmeny)",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "Najbežnejšie šírky strán sú 1024, 1280, 1600, 1920 a 2000 pixelov, ale aj iné hodnoty sú vhodné.",
+      "multi_page_width": "Automaticky rozpoznať a zmeniť veľkosť viacerých strán (šírka/výška)",
+      "multi_page_width_tooltip": "Aktivuje automatické rozpoznávanie viacerých strán: dvojstrana, trojstrana atd. Násobný koeficient sa automaticky vypočíta podľa pomeru každej strany, či už v šírke (strany vedľa seba) alebo vo výške (strany naukladané na seba)"
+    },
+    "gif_animated": {
+      "window_title": "Vytvorenie animovaného GIF",
+      "images_title": "Obrázky animácie",
+      "params_title": "Parametre GIF",
+      "frame_delay_label": "Oneskorenie medzi obrázkami:",
+      "fps_normal": "{fps} snímok/sekundu",
+      "fps_slow": "1 snímka každých {seconds} sekúnd",
+      "loop_label": "Počet opakovaní:",
+      "loop_info": "(0 = nekonečná slučka)",
+      "disposal_label": "Usporiadanie obrázkov:",
+      "disposal_0": "Nešpecifikované",
+      "disposal_1": "Zachovať predchádzajúci obrázok",
+      "disposal_2": "Obnoviť na farbu pozadia",
+      "disposal_3": "Obnoviť na predchádzajúci stav",
+      "optimize": "Optimalizovať súbor (uložiť len rozdiely)",
+      "metadata_title": "Metadáta GIF",
+      "metadata_dimensions": "Rozmery: {width} × {height} px",
+      "metadata_frames": "Počet snímok: {count}",
+      "metadata_duration": "Celková dĺžka: {duration} s",
+      "metadata_fps": "Frekvencia: {fps} fps",
+      "metadata_palette": "Paleta: až 256 farieb",
+      "metadata_size": "Odhadovaná veľkosť: {size} KB",
+      "comment_label": "Komentár (voliteľný):",
+      "no_images": "Nie sú vybrané žiadne obrázky",
+      "creating_progress": "Načítavanie obrázkov... ({current}/{total})",
+      "creating_normalizing": "Normalizácia obrázkov... ({current}/{total})",
+      "creating_quantizing": "Kvantizácia farieb... ({current}/{total})",
+      "creating_saving": "Ukladanie GIF..."
+    },
+    "save_to_folder": {
+      "title": "Vyberte cieľový priečinok"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ Duplicitné názvy súborov",
+      "message": "Boli zistené identické názvy súborov. Hoci je uloženie technicky možné,\nmôže to spôsobiť problémy pri čítaní v niektorých aplikáciách na čítanie\nkomiksov (neúplné zobrazenie, chýbajúce strany atď.).\n\nOdporúča sa prečíslovať strany pred uložením."
+    },
+    "adjustments": {
+      "window_title": "Upravy obrazu",
+      "title": "Upravy pre {count} {word}",
+      "word_image": "obraz",
+      "word_images": "obrazy",
+      "apply_button": "Pouzit",
+      "color_depth_section": "Farebna hlbka",
+      "brightness_contrast_section": "Jas a kontrast",
+      "compression_section": "Kompresia",
+      "effects_section": "Efekty",
+      "sharpness_section": "Ostrost",
+      "levels_section": "Urovne cierna/biela",
+      "depth_unchanged": "Nezmenit",
+      "depth_32bit": "32 bitov (RGBA - farby + priehladnost)",
+      "depth_24bit": "24 bitov (RGB - farby)",
+      "depth_8bit": "8 bitov (paleta PNG / stupne sedej JPEG)",
+      "depth_1bit": "1 bit (ciernobiely)",
+      "brightness_label": "Jas: {value}",
+      "contrast_label": "Kontrast: {value}",
+      "compression_enable": "Povolit opetovnu kompresiu",
+      "compression_quality_label": "Kvalita : {value}/100",
+      "sharpness_label": "Ostrost: {value}",
+      "effect_none": "Ziadny efekt",
+      "effect_grayscale": "Odtiene sedej",
+      "effect_sepia": "Sepia",
+      "levels_none": "Bez upravy",
+      "levels_threshold": "Prah (cista cierna alebo biela)",
+      "levels_advanced": "Pokrocile urovne (tiene/stredne tony/svetla)",
+      "threshold_label": "Prah: {value}",
+      "black_point_label": "Cierny bod: {value}",
+      "gamma_label": "Gama (stredne tony): {value}",
+      "white_point_label": "Biely bod: {value}",
+      "auto_levels_button": "Automatické nastavenie",
+      "open_viewer_button": "Upraviť s prehliadačom (odporúčané)",
+      "compression_info": "Kompresia sa vzťahuje len na obrázky JPG a WebP",
+      "open_viewer_button_simple": "Upraviť pomocou prehliadača",
+      "reset_button": "Resetovať",
+      "preview_section": "Náhľad",
+      "effect_invert": "Inverzia farieb",
+      "preview_warning": "Ukážka sa môže líšiť od konečného výsledku",
+      "effect_remove_colors": "Odstránenie farieb",
+      "remove_colors_intensity_label": "Intenzita : {value}",
+      "image_mode_section": "Režim obrazu",
+      "image_mode_rgb": "RGB (farby)",
+      "image_mode_rgba": "RGBA (farby + priehľadnosť)",
+      "image_mode_l": "L (odtiene sivej)",
+      "image_mode_la": "LA (odtiene sivej + priehľadnosť)",
+      "image_mode_cmyk": "CMYK (tlač)",
+      "image_mode_1": "1 (čisto čiernobiely)",
+      "image_mode_p": "P (paleta 256 farieb)",
+      "saturation_section": "Sýtosť",
+      "saturation_label": "Sýtosť : {value}",
+      "saturation_viewer_title": "Nastavenie sýtosti",
+      "transparency_section": "Priehľadnosť",
+      "transparency_info": "Priehľadnosť sa vzťahuje iba na obrázky PNG, WebP a ICO",
+      "transparency_type_label": "Typ :",
+      "transparency_type_flood": "Oblasť",
+      "transparency_type_global": "Globálny",
+      "transparency_tolerance_label": "Tolerancia : {value}",
+      "transparency_viewer_title": "Úprava priehľadnosti",
+      "transparency_click_instruction": "Kliknite na farbu, ktorú chcete zpriesvitniť",
+      "transparency_undo": "Vrátiť posledné kliknutie",
+      "transparency_redo": "Opakovať",
+      "transparency_type_flood_tooltip": "Flood fill : zpriesvitní oblasť s rovnomernou farbou okolo kliknutého pixelu",
+      "transparency_type_global_tooltip": "Globálna priehľadnosť : ovplyvňuje všetky pixely v obrázku, ktorých farba sa blíži kliknutej",
+      "transparency_apply": "Použiť",
+      "transparency_skipped_warning": "{count} obrázok/ov preskočený(ch) — formát nie je kompatibilný s priehľadnosťou. Ak ich chcete zahrnúť, najprv ich konvertujte do PNG.",
+      "unsharp_section": "Adaptívna ostrosť",
+      "unsharp_radius_label": "Polomer: {value}",
+      "unsharp_percent_label": "Intenzita: {value} %",
+      "unsharp_threshold_label": "Prah: {value}",
+      "unsharp_viewer_title": "Adaptívna ostrosť",
+      "auto_levels_tooltip": "Analyzuje každú stránku a automaticky upraví úrovne čiernej a bielej pre maximálny kontrast.\nPre výber stránku po stránke použite prehliadač."
+    },
+    "levels_viewer": {
+      "title": "Uprava urovni pomocou kvapkadla",
+      "apply_current": "Pouzit na tuto stranku",
+      "apply_all": "Použiť na všetky vybrané stránky",
+      "black_pipette": "Pipeta cierneho bodu",
+      "white_pipette": "Pipeta bieleho bodu",
+      "black_pipette_tooltip": "Kliknite na pixel, ktorý by mal byť úplne čierny. Pozor: je ľahké to prehnať!",
+      "white_pipette_tooltip": "Kliknite na pixel, ktorý by mal byť úplne biely. Pozor: je ľahké to prehnať!"
+    },
+    "sharpness_viewer": {
+      "title": "Úprava ostrosti"
+    },
+    "brightness_viewer": {
+      "title": "Úprava jasu a kontrastu"
+    },
+    "compression_viewer": {
+      "title": "Úprava kompresie"
+    },
+    "outliers": {
+      "title": "Stránky s neobvyklými rozmermi",
+      "message": "Nasledujúce stránky majú rozmery, ktoré sa výrazne líšia od ostatných. Prosím vyberte, ako ich spracovať:",
+      "width": "Šírka",
+      "height": "Výška",
+      "unusual": "neobvyklý",
+      "skip": "Nemeniť veľkosť",
+      "keep": "zachovať"
+    },
+    "first_page_multi": {
+      "title": "Prvá stránka je viacnásobná",
+      "message": "Prvá stránka bola rozpoznaná ako viacnásobná. Ako ju chcete očíslovať?",
+      "option_auto_desc": "Bežné prečíslovanie s automatickým rozpoznávaním.",
+      "option_joint_desc": "Prepojenie prvej a poslednej stránky komiksu.",
+      "option_exclude_label": "Nezahrnúť do prečíslovania",
+      "option_exclude_desc": "Stránka si ponechá aktuálny názov a zostane na prvej pozícii. Neskôr ju môžete ručne premenovať."
+    },
+    "batch_img": {
+      "select_directory_title": "Vyberte priečinok obsahujúci obrázky",
+      "no_img_title": "Žiadne súbory obrázkov sa nenašli",
+      "no_img_message": "V priečinku sa nenašli žiadne samostatné súbory obrázkov :\n{directory}",
+      "confirm_title": "Dávková konverzia samostatných obrázkov do CBZ",
+      "confirm_message": "{count} súbor(ov) obrázkov na konverziu v {directory} (vrátane podpriečinkov).",
+      "checkbox_permanent_delete": "Natrvalo odstrániť pôvodné súbory obrázkov\nbez odoslania do koša (NEDÁ SA VRÁTIŤ SPÄŤ)",
+      "start_button": "Spustiť",
+      "converting_title": "Prebieha konverzia...",
+      "converting_progress": "Konvertuje sa súbor {current} z celkového počtu {total}",
+      "complete_title": "Konverzia dokončená",
+      "complete_message": "{count} súbor(ov) obrázkov skonvertovaných v priečinku :",
+      "complete_message_errors": "{count} z {total} súborov obrázkov skonvertovaných v priečinku :",
+      "errors_count": "Zaznamenané {count} chyba(y).",
+      "converted_by_ext": "{ext} : {count} súbor(ov)",
+      "mode_title": "Konvertovať obrázky na CBZ",
+      "mode_intro": "Ako chcete zoskupiť obrázky?",
+      "mode_one_per_image": "Konvertovať každý obrázok do samostatných súborov CBZ",
+      "mode_one_per_image_sub": "(Každý obrázok sa stane samostatným súborom CBZ)",
+      "mode_all_in_one": "Zoskupiť všetky obrázky do jedného súboru CBZ",
+      "mode_all_in_one_sub": "(Všetky obrázky v priečinku sú zoskupené do jedného súboru CBZ)"
+    },
+    "batch_drop": {
+      "window_title": "Dávkové spracovanie priečinkov",
+      "intro_single": "Bol presunutý 1 priečinok. Aké spracovanie chcete použiť?",
+      "intro_multiple": "Bolo presunutých {count} priečinkov. Aké spracovanie chcete použiť?",
+      "recursive_note": "Podpriečinky budú tiež prehľadané.",
+      "mixed_drop_title": "Presunutie nie je podporované",
+      "mixed_drop_message": "Presunuté boli súčasne súbory aj priečinky. Presuňte prosím iba súbory alebo iba priečinky."
+    },
+    "pdf_unlock": {
+      "title": "PDF chránené pred úpravami",
+      "message": "Stránky boli importované normálne.\n\nTento súbor PDF je chránený pred úpravami (heslo vlastníka).\n\nChcete uložiť kópiu súboru PDF bez tejto ochrany?",
+      "yes": "Áno, uložiť odomknutú kópiu",
+      "no": "Nie, pokračovať bez odomknutia"
+    },
+    "batch_pdf_unlock": {
+      "title": "PDF súbory chránené pred úpravami",
+      "message_single": "Bol nájdený 1 PDF súbor chránený pred úpravami. Bol normálne skonvertovaný do CBZ.\n\nChcete uložiť odomknutú kópiu do jeho pôvodného adresára?",
+      "message_plural": "Bolo nájdených {count} PDF súborov chránených pred úpravami. Boli normálne skonvertované do CBZ.\n\nChcete uložiť odomknutú kópiu každého z nich do jeho pôvodného adresára?",
+      "yes": "Áno, uložiť odomknuté kópie",
+      "no": "Nie, pokračovať bez odomknutia"
+    },
+    "ico_creator": {
+      "title": "Vytvoriť ikonu .ico",
+      "info_message": "Obrázok bude zmenený na viacero rozlíšení (16, 32, 48, 64, 128, 256 px).\nAktuálna veľkosť rámca: {w} × {h} px",
+      "btn_validate_crop": "Potvrdiť orezanie",
+      "btn_validate_no_crop": "Potvrdiť bez orezania",
+      "btn_cancel": "Zrušiť",
+      "btn_transparency": "Nastaviť priehľadnosť",
+      "btn_validate_final": "Potvrdiť",
+      "tolerance_label": "Tolerancia:",
+      "success_title": "Súbor .ico vytvorený",
+      "success_message": "Súbor {filename} bol úspešne vytvorený.",
+      "overwrite_title": "Súbor už existuje",
+      "overwrite_message": "Súbor {filename} už existuje. Prepísať ho?",
+      "save_blocked_title": "Uloženie nie je možné",
+      "save_blocked_message": "Tento archív obsahuje jeden alebo viac súborov .ico, ktoré nie sú obrázkami komiksov. Ukladanie je zakázané, kým sú tieto súbory prítomné v mozaike.\nAk chcete znova aktivovať ukladanie, odstráňte ich z mozaiky (kláves Del) alebo ich vystrihnite (Ctrl+X) a vložte inde.",
+      "btn_back_to_crop": "Späť na orezanie"
+    },
+    "video_save_blocked": {
+      "title": "Uloženie nie je možné",
+      "message": "Tento archív obsahuje jeden alebo viac video súborov. Ukladanie je deaktivované, kým sú tieto súbory prítomné v mozaike.\nAk chcete ukladanie znova aktivovať, odstráňte ich z mozaiky (kláves Del) alebo ich vystrihnite (Ctrl+X) a vložte inde."
+    },
+    "open_file": {
+      "title": "Otvoriť archív",
+      "filter_archives": "Archívy (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_all": "Všetky súbory (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - Licencia"
+    },
+    "replace_corrupted_image": {
+      "title": "Nahradiť poškodený obrázok",
+      "filter_images": "Obrázky (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Všetky súbory (*)"
+    },
+    "see_log": "ZOBRAZIŤ LOG"
+  },
+  "tooltip": {
+    "source_archive": "Zdrojový súbor: {name}",
+    "file": "Súbor: {name}",
+    "reason": "Dôvod: {reason}",
+    "size_kb": "Veľkosť: {size} KB",
+    "size_mb": "Veľkosť: {size} MB",
+    "file_size": "Veľkosť: {size}",
+    "dimensions": "Rozmery: {width} × {height} px",
+    "resolution": "Rozlíšenie: {mp} MP",
+    "dpi_single": "DPI: {dpi}",
+    "dpi_double": "DPI: {dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI: nedefinované",
+    "cbr_info": "Súbory CBR používajú formát RAR, ktorý je proprietárny a patentovaný;\nnemožno ich upravovať, zmeny sa uložia do nového súboru CBZ.",
+    "rotate_left": "Otočenie o 90 stupňov doľava",
+    "rotate_right": "Otočenie o 90 stupňov doprava",
+    "mirror_horizontal": "Horizontálne zrkadlenie",
+    "mirror_vertical": "Vertikálne zrkadlenie",
+    "fullscreen": "Celá obrazovka",
+    "help_button": "Používateľská príručka",
+    "theme_button": "Prepnúť medzi svetlou a tmavou témou",
+    "font_decrease_button": "Zmenšiť veľkosť písma",
+    "font_increase_button": "Zväčšiť veľkosť písma",
+    "color_depth": "Farby: {bits} bitov ({mode})",
+    "batch_pdf_to_cbz": "Prevedie do CBZ všetky súbory PDF v adresári\na jeho podadresároch. Obrázky sa extrahujú\na archivujú bez akejkoľvek rekompresie.",
+    "batch_pdf_permanent_delete": "POZOR: ak je táto možnosť zaškrtnutá,\npôvodné súbory PDF budú po konverzii\ntrvalo vymazané bez možnosti obnovenia.\nUistite sa, že máte zálohu,\nak je to potrebné.",
+    "batch_cbr_to_cbz": "Skonvertuje na CBZ všetky súbory CBR\nnachádzajúce sa v adresári\na jeho podadresároch.",
+    "batch_cbr_permanent_delete": "POZOR: ak je táto možnosť začiarknutá,\npôvodné súbory CBR budú po konverzii\ntrvalo vymazané bez možnosti obnovenia.\nUistite sa, že máte zálohu,\nak je to potrebné.",
+    "renumber_btn_1": "Režim automatickej detekcie viacnásobných stránok\nKliknite pravým tlačidlom na zmenu režimu",
+    "renumber_btn_2": "Režim jednoduchého číslovania\nKliknite pravým tlačidlom na zmenu režimu",
+    "corrupted_header": "Poškodený obrázok",
+    "right_click_instruction1": "Kliknite pravým tlačidlom na nahradenie",
+    "right_click_instruction2": "alebo odstránenie tohto obrázka.",
+    "unknown_error": "Neznáma chyba",
+    "batch_img_to_cbz": "Konvertuje všetky súbory obrázkov nájdené v priečinku\na jeho podpriečinkoch do CBZ,\nvytváraním jedného CBZ súboru pre každý obrázok.",
+    "batch_img_permanent_delete": "VAROVANIE : ak je táto možnosť zaškrtnutá,\npôvodné súbory obrázkov budú natrvalo\nodstránené po konverzii bez možnosti\nobnovenia. Uistite sa, že máte zálohu,\nak je to potrebné.",
+    "too_large_header": "Obrázok je príliš veľký na načítanie",
+    "too_large_pixels": "Rozmery: {pixels}",
+    "icon_toolbar_config_button": "Konfigurácia ikon",
+    "icon_toolbar_size_decrease": "Zmenšiť veľkosť ikon",
+    "icon_toolbar_size_increase": "Zväčšiť veľkosť ikon",
+    "source_loose": "Voľný obrázok",
+    "source_web": "Webový obrázok"
+  },
+  "help": {
+    "title": "MosaicView - Návod na používanie",
+    "intro": "MosaicView vám umožňuje manipulovať a upravovať komiksy (digitálne komiksy) bez potreby ich rozbaľovať z archívov. Aplikácia podporuje formáty CBZ (ZIP), CBR (RAR) a PDF. Aplikácia je kompatibilná iba so 64-bitovými systémami.",
+    "open_files": "Otvorenie súborov",
+    "open_files_content": "• Kliknite na tlačidlo 'Otvoriť CBZ/CBR/CB7/PDF'\n• Alebo priamo potiahните a pustite súbor do okna\n• Podporované formáty: CBZ, CBR, CB7, PDF, obrázky (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Subory EPUB mozno tiez otvorit, ale budu extrahovane len ich obrazky (text sa ignoruje).\n• Šifrovaný PDF (pri otváraní je potrebné heslo): súbor sa nedá importovať, zobrazí sa chybové hlásenie.\n• PDF chránené pred úpravami (owner password): stránky sa importujú normálne. MosaicView ponúka uloženie odomknutej kópie súboru do rovnakého priečinka.",
+    "mosaic": "Mozaika",
+    "mosaic_content": "Mozaika zobrazuje všetky strany vášho komiksu ako miniatúry. Môžete:\n• Preusporiadať strany presunutím (číslovanie strán bude automatické a vykoná sa podľa aktívneho režimu prečíslovania)\n• Vybrať viac strán (Ctrl+klik alebo Shift+klik)\n• Upraviť veľkosť miniatúr posuvníkom\n• Ručne premenovať súbory kliknutím na ich názov\n• Presunúť súbory komiksov (CBZ/CBR/PDF) z Prieskumníka Windows priamo do iného otvoreného komiksu pre zlúčenie ich obsahu",
+    "manipulation": "Manipulácia so stranami",
+    "manipulation_content": "• Presuňte stránky pretiahnutím a pustenímpre ich reorganizáciu\n• Presuňte celý komiks do iného, aby ste ich zlúčili\n• Pravý klik na stránku pre prístup k možnostiam (otočenie, vymazanie atď.)\n• Dvojitý klik na stránku pre otvorenie prehliadača\n• Exportujte jednotlivé stránky pretiahnutím do priečinka Windows alebo pomocou Ctrl+C / Ctrl+V",
+    "renumber": "Prečíslovanie stránok",
+    "renumber_content": "MosaicView ponúka dva režimy prečíslovania stránok, prístupné cez tlačidlo prečíslovania, kontextové menu (pravé tlačidlo) alebo automaticky pri ťahaní a púšťaní:\n\n• Režim automatickej detekcie viacnásobných stránok (predvolený režim): aplikácia analyzuje šírku každej stránky na detekciu dvojstránok, trojstránok atď. Viacnásobné stránky sú prečíslované zodpovedajúcim spôsobom (napr.: dvojstránka bude pomenovaná 003-004, trojstránka 005-006-007). Pri viac ako 4 stránkach sa zobrazí iba prvé a posledné číslo (napr.: 010---025).\n\n• Režim jednoduchého číslovania: každá stránka dostáva jedinečné poradové číslo (001, 002, 003...) bez ohľadu na šírku stránok.\n\nPre prepnutie medzi dvoma režimami kliknite pravým tlačidlom na tlačidlo prečíslovania. Popis zobrazuje aktívny režim. Zvolený režim sa uplatňuje aj pri automatickom prečíslovaní pri ťahaní a púšťaní.",
+    "flatten": "Zrovnanie adresárov",
+    "flatten_content": "Ak váš archív obsahuje podpriečinky, použite 'Zrovnať adresáre' pre presunutie všetkých obrázkov na rovnakú úroveň.",
+    "viewer": "Prehliadač",
+    "viewer_content": "Dvojitým kliknutím na stranu otvorte prehliadač:\n• Klávesy ← → : navigácia medzi stranami\n• Kláves D : prepínanie medzi 3 režimami čítania\n  - Jedna strana: jedna strana naraz\n  - Dvojstrany: strana 1 sama, potom 2-3, 4-5, atď.\n  - Spojité dvojstrany: strana 1 sama, potom 2-3, 3-4, 4-5, atď.\n• Koliesko myši: rýchla navigácia\n• Ctrl+Koliesko alebo Ctrl+Plus/Mínus: priblíženie\n• Ctrl+0: obnoviť priblíženie\n• Kláves F11: celá obrazovka\n• Dvojité kliknutie: prepnúť celú obrazovku\n• Kláves Esc: zrušiť rámček výrezu / ukončiť prehliadač",
+    "join_pages": "Spojenie strán",
+    "join_pages_content": "Vyberte niekoľko po sebe nasledujúcich strán, kliknite pravým tlačidlom → 'Spojiť vybrané strany' pre spojenie strán vodorovne alebo zvisle. Formát vytvoreného obrázku zodpovedá formátu zdrojových strán, ak sú všetky identické, inak štandardne PNG.",
+    "split_pages": "Rozdelenie strán",
+    "split_pages_content": "Pre automatické rozdelenie dvojstrán:\n• Vyberte strany na rozdelenie\n• Pravé kliknutie → 'Rozdeliť vybrané strany'\n• Vyberte smer (vertikálny alebo horizontálny)",
+    "crop": "Orezávanie v prehliadači",
+    "crop_content": "V prehliadači nakreslite obdĺžnik na obrázku pre definovanie oblasti orezania:\n• Nakreslite obdĺžnik pomocou myši\n• Zmeňte jeho veľkosť ťahaním okrajov alebo rohov\n• Kliknite na 'Potvrdiť orezanie' pre aplikovanie\n• Orezanie sa aplikuje na aktuálny obrázok\n• Kláves Esc: zrušiť rámček výrezu",
+    "shortcuts": "Klávesové skratky",
+    "shortcuts_content": "• Ctrl+Z: Vrátiť poslednú akciu\n• Ctrl+Y: Znova vykonať vrátenú akciu\n• Ctrl+A: Vybrať všetky strany\n• Ctrl+I: Invertovať výber\n• Ctrl+C: Kopírovať vybrané strany\n• Ctrl+X: Vystrihnúť vybrané strany\n• Ctrl+V: Prilepiť strany\n• Delete: Odstrániť vybrané strany\n• F5: Aktualizovať zobrazenie mozaiky\n• F11: Prepnúť celú obrazovku (ukončiť pomocou F11 alebo ESC)",
+    "dark_mode": "Tmavý režim",
+    "dark_mode_content": "Kliknite na tlačidlo slnko/mesiac pre prepínanie medzi svetlým a tmavým motívom.",
+    "sort": "Triedenie strán",
+    "sort_content": "Použite tlačidlo 'Triediť' pre automatické preusporiadanie strán podľa:\n• Názvu, Typu, Veľkosti, Šírky, Výšky, Rozlíšenia alebo DPI",
+    "save": "Uloženie",
+    "save_content": "• 'Uložiť': uloží zmeny do pôvodného súboru\n• 'Uložiť ako': vytvorí nový archív\n• 'Vytvoriť CBZ': dostupné v režime iba obrázkov (bez archívu)",
+    "other": "Ďalšie funkcie",
+    "other_content": "• Otáčanie: otočte jednu alebo viacero strán\n• Konverzia: konvertujte obrázky do rôznych formátov (PNG, JPEG, WEBP, BMP, TIFF, GIF). Poznámka: obrázky v režime CMYK sa automaticky konvertujú do RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Poznámka: obrázky v režime CMYK sa automaticky konvertujú do RGB\n• Tlač: tlačte vybrané strany alebo všetky strany\n• Extrakcia: extrahujte konkrétne strany\n• Záložka Metadáta: zobrazuje informácie zo súboru ComicInfo.xml (ak je prítomný v archíve). Ak pridáte alebo odstránite stránku z komiksu obsahujúceho metadáta, aplikácia navrhne úpravu počtu strán, ktorý je tam uvedený. Ostatné metadáta nemožno upravovať. Toto omezenie je zámerné a je výsledkom rozhodnutia o dizajne.",
+    "config_files": "Konfiguračné a dočasné súbory",
+    "config_files_content": "MosaicView vytvorí súbor s názvom .mosaicview_config.json. Tento súbor obsahuje niektoré parametre potrebné pre správne fungovanie tlačidla reset a tiež zoznam nedávno otvorených komiksov, ktorý je zjavne nevyhnutný na zobrazenie nedávno otvorených súborov. MosaicView tiež ukladá dočasné súbory, ktoré sú nevyhnutné pre rôzne operácie spracovania obrazu.\nVšetky tieto súbory sa nachádzajú v adresári {temp_dir}.\nDočasné súbory sa odstránia zakaždým, keď sa aplikácia zavrie, ale súbor .mosaicview_config.json je svojou povahou určený na zachovanie.\nTieto súbory však môžete odstrániť ručne prechodom do adresára {temp_dir} alebo kliknutím na tlačidlá nižšie. Súbor .mosaicview_config.json sa znova vytvorí pri každom otvorení aplikácie a dočasné súbory sa znova vytvoria podľa potreby.",
+    "config_clear_temp": "Odstrániť dočasné súbory",
+    "config_clear_recent": "Vymazať nedávne súbory",
+    "config_clear_config": "Odstrániť konfiguračný súbor",
+    "config_temp_cleared": "Dočasné súbory boli úspešne odstránené.",
+    "config_config_cleared": "Konfiguračný súbor bol úspešne odstránený.\nBude znova vytvorený pri ďalšom spustení aplikácie.",
+    "language": "Výber jazyka",
+    "language_content": "MosaicView je k dispozícii vo viacerých jazykoch.\nPredvolene aplikácia automaticky rozpozná jazyk vášho operačného systému a zobrazí sa v tomto jazyku, ak je podporovaný. Ak váš systém používa nepodporovaný jazyk, rozhranie sa zobrazí v angličtine.\nJazyk môžete kedykoľvek ručne zmeniť pomocou rozbaľovacej ponuky umiestnenej v dolnej časti stĺpca tlačidiel, pod posúvačom veľkosti miniatúr. Vaša voľba bude uložená a aplikovaná pri ďalšom spustení aplikácie.\nDOSTUPNÉ JAZYKY: angličtina, arabčina, arménčina, bulharčina, čeština, čínština (zjednodušená), čínština (tradičná), dánčina, estónčina, fínčina, francúzština, gréčtina, hindčina, holandčina, chorvátčina, indonézština, írčina, islandčina, japončina, kórejčina, litovčina, lotyština, maďarčina, malajčina, maltčina, nemčina, nórčina, poľština, portugalčina, rumunčina, slovenčina, slovinčina, španielčina, švédčina, tamilčina, thajčina, turečtina, ukrajinčina, vietnamčina, taliančina.\nDOSTUPNÉ FIKTÍVNE JAZYKY: klingónčina, sindarin, quenya.\n\nTento nástroj používa písma Windows, okrem písiem pIqaD (klingónsky jazyk) a tengwar (elfské jazyky: sindarin a quenya). Tieto písma sú voľne použiteľné a pochádzajú z týchto stránok:\n- pre pIqaD (klingónska abeceda): {url_piqad}\n- pre tengwar (elfská abeceda, pre sindarin a quenya): {url_tengwar}\nV prípade, že tieto stránky už nie sú aktívne, môžete získať písma pIqaD a tengwar kliknutím na tlačidlá nižšie:\n\nTento softvér bol vyvinutý vo francúzštine. Preklady do iných jazykov boli vykonané pomocou umelej inteligencie, konkrétne Claude. Rozhodol som sa podporovať približne štyridsať jazykov. Ale samozrejme nehovorím všetkými týmito jazykmi. Preto som nemal inú možnosť ako použiť umelú inteligenciu, pretože najímanie a platenie 40 rôznych prekladateľov nebolo medzi zvažovanými možnosťami. Vzhľadom na automatickú povahu týchto prekladov môžu byť prítomné chyby. Ospravedlňujem sa za to.",
+    "credits": "Vibe Coding, moja láska",
+    "credits_content": "O programovaní neviem nič. Absolútne nič. V dôsledku toho som tento softvér vyvinul vďaka Claude, AI od Anthropic, a konkrétnejšie pomocou Claude Code. Nemôžem vám dosť odporučiť Claude Code, táto aplikácia je úžasná!",
+    "resize_pages": "Zmena veľkosti strán",
+    "resize_pages_content": "Na zmenšenie alebo zväčšenie strán:\n• Vyberte jednu alebo viac strán\n• Kliknite pravým tlačidlom → 'Zmeniť veľkosť'\n• K dispozícii jsou tri možnosti:\n  - Vlastné rozmery: zadajte požadovanú šírku alebo výšku (pomer strán je automaticky zachovaný).\n  - Percentuálne zmenšenie: vyberte percento od 10% do 90%\n  - Percentuálne zväčšenie: vyberte percento od 10% do 100%\n• Aplikácia zobrazuje odhadovanú veľkosť obrázkov po úprave\n• Úprava sa okamžite použije na všetky vybrané strany",
+    "language_export_piqad": "Písmo pIqaD",
+    "language_export_tengwar": "Písma tengwar",
+    "language_export_piqad_success": "Písmo exportované: {filename}\nDostupné v:",
+    "language_export_tengwar_success": "{count} písiem exportovaných\nDostupné v:",
+    "icons": "Ikony",
+    "icons_content": "Väčšina ikon použitých v tomto nástroji pochádza z tejto stránky a sú voľne dostupné na nekomerčné použitie: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nNiektoré som upravil sám.\nLen jedna ikona, ikona spustiteľného súboru Windows, bola vytvorená mnou (ale s AI, pretože som veľmi, veľmi, veľmi zlý grafický dizajnér). Máte moje povolenie používať túto ikonu, ako chcete, pokiaľ uvediete zdroj.",
+    "icons_view_button": "Zobraziť ikony",
+    "icons_window_title": "Ikony MosaicView",
+    "icons_save_all": "Uložiť ikony",
+    "icons_saved_success": "{count} ikona/ikony uložená/uložené v:",
+    "icons_save_failed": "Nie je možné uložiť ikony: {error}",
+    "split_ui": "Rozhranie s dvoma panelmi",
+    "split_ui_content": "MosaicView umožňuje súčasné zobrazenie dvoch archívov vedľa seba.\n\nKliknite na ikonu Rozdeliť a otvorte druhý panel. Každý panel je nezávislý: môžete samostatne otvárať, upravovať a ukladať archív. Aktívny panel je označený modrým rámčekom.\n\nNa presunutie strán z jedného panela do druhého ich priamo pretiahnite. Ak je vybratých viacero strán, všetky sa presunú spolu. Stránky sa vložia na pozíciu označenú červenou lištou.\n\nKliknite na ikonu Zavrieť druhý panel a vráťte sa do režimu jedného panela.",
+    "license_gpl": "Licencia GPL v3",
+    "license_unrar": "Licencia UnRAR",
+    "config_clear_clipboard": "Vymazať súbory schránky",
+    "config_clipboard_note": "Výnimka: Dočasné súbory používané schránkou Windows (súbory clipboard_XXXXX) sa uchovávajú 12 hodín po kopírovaní, takže ich môžete prilepiť aj po zatvorení aplikácie. Po 12 hodinách sa automaticky odstránia.",
+    "config_log_note": "Davkove konverzie (PDF do CBZ a CBR do CBZ) vytvoria subor protokolu v pripade chyby. Tieto subory (Log_pdftocbz_.txt a Log_cbrtocbz_.txt) su zachovane aj po zatvoreni aplikacie, aby ich bolo mozne neskor prezriet. Su vymazane iba tlacidlom \"Vymazat docasne subory\" vyssie.",
+    "config_clipboard_cleared": "Súbory schránky boli úspešne vymazané.",
+    "adjust_images": "Úprava obrázkov",
+    "adjust_images_content": "Táto funkcia vám umožňuje retuš obrázkov priamo v MosaicView. Môžete upravovať jas, kontrast, ostrosť, úrovne, sýtosť, aplikovať efekty (čiernobiely, sépia, inverzia farieb), nastaviť kvalitu kompresie, odstrániť farby, aplikovať priehľadnosť alebo konvertovať do rôznych farebných hĺbok. Niektoré nastavenia majú vyhradený prehliadač umožňujúci vidieť výsledok v plnom rozlíšení pred použitím. Miniatúrny náhľad zobrazuje výsledok v reálnom čase v hlavnom okne.",
+    "create_icon": "Vytvoriť ikonu",
+    "create_icon_content": "MosaicView umožňuje vytvárať súbory ikon (.ico) z ľubovoľného obrázka v mozaike.\n• Kliknite pravým tlačidlom myši na obrázok → 'Vytvoriť ikonu'\n• Ohraničte požadovanú oblasť v prehliadači (ikona bude povinne štvorcová)\n• V prípade potreby upravte priehľadnosť\n• Potvrďte: súbor .ico sa pridá priamo do mozaiky\n• Súbory .ico automaticky obsahujú všetky štandardné rozlíšenia (od 16×16 do 256×256)\n• Pokiaľ je v mozaike prítomný súbor .ico, ukladanie do archívu CBZ je zablokované, pretože formát ICO nie je týmito archívmi podporovaný. Exportujte súbor .ico samostatne (Ctrl+C a vložte do priečinka Windows), potom ho pred uložením z mozaiky odstráňte.",
+    "batch_convert": "Dávková konverzia",
+    "batch_convert_content": "MosaicView ponúka tri funkcie dávkovej konverzie, dostupné iba vtedy, keď je mozaika prázdna. Pre každú z nich je princíp rovnaký : vyberte priečinok, potvrďte, sledujte priebeh v reálnom čase, prezrite si záverečný prehľad. Možnosť umožňuje trvalé vymazanie pôvodných súborov namiesto ich odosielania do koša.\n• CBR → CBZ : konvertuje všetky súbory CBR (RAR) v priečinku a jeho podpriečinkoch. Ak je CBR v skutočnosti ZIP, jednoducho sa premenuje bez konverzie.\n• PDF → CBZ : konvertuje všetky súbory PDF v priečinku a jeho podpriečinkoch. Obrázky sa extrahujú bez opätovnej kompresie.\n• IZOLOVANÉ OBRÁZKY → CBZ : vytvorí individuálny CBZ pre každý súbor obrázka nájdený v priečinku a jeho podpriečinkoch. Neplatné, poškodené, viacstranové (TIFF) alebo animované (GIF) obrázky sa ignorujú a zaznamenajú do protokolu.",
+    "config_open_temp_folder": "Otvoriť dočasný priečinok",
+    "icon_toolbar": "Panel ikon",
+    "icon_toolbar_content": "Panel ikon umožňuje rýchly prístup k hlavným funkciám aplikácie. Ikony môžete preskupovať podľa vlastných predstáv ich priamym presunom na panel. Ak chcete vybrať, ktoré ikony sa majú zobrazovať alebo skryť, kliknite na tlačidlo ozubeného kolieska v dolnej časti panela: otvorí sa okno konfigurácie, v ktorom môžete presúvať ikony medzi aktívnym panelom a zásobníkom. Tlačidlami « + » a « − » upravíte veľkosť ikon. Konfigurácia sa ukladá automaticky.",
+    "license_7zip": "Licencia 7-Zip"
+  },
+  "misc": {
+    "file_word": "súbor",
+    "files_word": "súbory",
+    "corrupted": "poškodený",
+    "yes": "Áno",
+    "no": "Nie",
+    "cancel": "Zrušiť",
+    "selection_suffix": "kopia-vyber"
+  },
+  "metadata": {
+    "title": "Názov",
+    "series": "Séria",
+    "number": "Číslo",
+    "volume": "Zväzok",
+    "summary": "Zhrnutie",
+    "writer": "Scenárista",
+    "penciller": "Kresliar",
+    "inker": "Tuševač",
+    "colorist": "Kolorista",
+    "letterer": "Písmomaliar",
+    "cover_artist": "Výtvarník obálky",
+    "editor": "Editor (osoba)",
+    "publisher": "Vydavateľ (spoločnosť)",
+    "imprint": "Edícia",
+    "genre": "Žáner",
+    "web": "Webová stránka",
+    "page_count": "Počet strán",
+    "language_iso": "Jazyk",
+    "format": "Formát",
+    "black_and_white": "Čiernobiely",
+    "manga": "Manga",
+    "year": "Rok",
+    "month": "Mesiac",
+    "day": "Deň",
+    "notes": "Poznámky",
+    "characters": "Postavy",
+    "locations": "Miesta",
+    "teams": "Tímy",
+    "story_arc": "Príbehový oblúk",
+    "story_arc_number": "Číslo oblúka",
+    "series_group": "Skupina sérií",
+    "count": "Počet čísel",
+    "alternate_series": "Alternatívna séria",
+    "alternate_number": "Alternatívne číslo",
+    "alternate_count": "Alternatívny počet",
+    "age_rating": "Veková klasifikácia",
+    "series_complete": "Séria dokončená",
+    "translator": "Prekladateľ",
+    "tags": "Tagy",
+    "scan_information": "Informácie o skenovaní",
+    "community_rating": "Komunitné hodnotenie",
+    "review": "Recenzia",
+    "gtin": "GTIN",
+    "pages": "Stránky",
+    "pages_col_image": "Obrázok",
+    "pages_col_type": "Typ",
+    "pages_col_width": "Šírka",
+    "pages_col_height": "Výška",
+    "pages_col_size": "Veľkosť (B)"
+  },
+  "web": {
+    "web_download_progress": "Sťahovanie: {downloaded}/{total} obrázkov...",
+    "web_download_cancel": "Zrušiť",
+    "web_no_images": "Žiadne obrázky",
+    "web_no_images_found": "Na tejto stránke sa nenašli žiadne obrázky.",
+    "web_imported": "{count} obrázok(-ov) importovaných z webovej stránky",
+    "web_drag_drop_title": "Presunutie webového obrázka",
+    "web_copy_paste_message": "Priame presunutie z webového prehliadača nie je podporované.\n\nAlternatívne riešenie (jednoduchšie):\n\n1. Kliknite pravým tlačidlom na obrázok v prehliadači\n2. Vyberte 'Kopírovať obrázok'\n3. V MosaicView použite tlačidlo 'Prilepiť' alebo Ctrl+V\n\nTáto metóda funguje so všetkými webovými obrázkami!",
+    "import_web_button": "Import z webu",
+    "import_web_tooltip": "Prilepte internetovú adresu na získanie všetkých obrázkov zo stránky",
+    "import_web_menu": "Import z webu...",
+    "import_web_dialog_title": "Import obrázkov z webovej stránky",
+    "import_web_url_label": "Adresa webovej stránky:",
+    "import_web_ok_button": "OK",
+    "import_web_cancel_button": "Zrušiť",
+    "import_web_invalid_url": "Neplatná URL adresa. Zadajte platnú webovú adresu."
+  },
+  "donation": {
+    "menu_label": "Darovať autorovi",
+    "title": "Uskutočniť dar",
+    "message": "Páči sa vám tento malý nástroj a pravidelne ho používate. Investoval som do neho niekoľko sto hodín. Uvažovali by ste o tom, že mi poďakujete tým, že uskutočníte dar? Buďte prosím dobrí, naozaj potrebujem peniaze na naplnenie môjho bazéna šampanským.\n\nČi už mi chcete poslať pár centov alebo niekoľko miliárd eur, prijímam všetky sumy. Tento dar môžete uskutočniť prostredníctvom paypal"
+  },
+  "mail": {
+    "tooltip": "Toto tlačidlo otvorí predvolený e-mailový softvér vo Windows na odoslanie e-mailu. Ak nie je nakonfigurovaný žiadny softvér (napríklad ak používate výlučne webmail), môžete adresu MosaicView skopírovať do schránky kliknutím pravým tlačidlom myši na ikonu.",
+    "copy_address": "Skopírovať e-mailovú adresu MosaicView",
+    "menu_label": "Poslať e-mail do MosaicView",
+    "icon_label": "Odoslať e-mail"
+  },
+  "menu": {
+    "file": "Súbor",
+    "file_open": "Otvoriť súbor",
+    "file_close": "Zavrieť súbor",
+    "batch_convert": "Dávková konverzia súborov",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "Jednotlivé obrázky → CBZ",
+    "edit": "Upraviť",
+    "undo": "Späť",
+    "redo": "Znovu",
+    "paste": "Vložiť",
+    "delete": "Vymazať",
+    "invert_selection": "Invertovať výber",
+    "select_all": "Vybrať všetko",
+    "deselect": "Zrušiť výber",
+    "refresh_mosaic": "Obnoviť mozaiku",
+    "images": "Obrázky",
+    "rotation": "Rotácia",
+    "archives": "Archívy",
+    "sort": "Triedenie",
+    "system": "Systém",
+    "decrease_font": "Zmenšiť písmo",
+    "increase_font": "Zväčšiť písmo",
+    "language": "Jazyky",
+    "language_real": "Skutočné jazyky",
+    "language_fictional": "Fiktívne jazyky",
+    "about": "O programe",
+    "export_piqad_font": "Uložiť písmo pIqaD",
+    "export_tengwar_fonts": "Uložiť písma tengwar"
+  }
+}
