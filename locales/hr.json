@@ -1294,6 +1294,18 @@
     "language_fictional": "Izmišljeni jezici",
     "about": "O programu",
     "export_piqad_font": "Spremi font pIqaD",
-    "export_tengwar_fonts": "Spremi fontove tengwar"
+    "export_tengwar_fonts": "Spremi fontove tengwar",
+    "view_on_github": "Izvorni kod na GitHubu",
+    "check_for_updates": "Provjeri ažuriranja"
+  },
+  "updates": {
+    "dialog_title": "Ažuriranja",
+    "up_to_date": "Koristite najnoviju verziju MosaicView ({version}).",
+    "update_available": "Dostupna je nova verzija: {latest}\nTrenutno koristite verziju {current}.",
+    "error": "Nije moguće provjeriti ažuriranja.\nProvjerite internetsku vezu.",
+    "download": "Preuzmi",
+    "checking": "Provjera...",
+    "banner_message": "Dostupna je nova verzija: {latest}",
+    "menu_update_available": "Dostupno ažuriranje ({latest})"
   }
 }

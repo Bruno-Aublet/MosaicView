@@ -1294,6 +1294,18 @@
     "language_fictional": "Kitalált nyelvek",
     "about": "Névjegy",
     "export_piqad_font": "pIqaD betűtípus mentése",
-    "export_tengwar_fonts": "Tengwar betűtípusok mentése"
+    "export_tengwar_fonts": "Tengwar betűtípusok mentése",
+    "view_on_github": "Forráskód a GitHubon",
+    "check_for_updates": "Frissítések keresése"
+  },
+  "updates": {
+    "dialog_title": "Frissítések",
+    "up_to_date": "A MosaicView legújabb verzióját használja ({version}).",
+    "update_available": "Új verzió érhető el: {latest}\nJelenleg a {current} verziót használja.",
+    "error": "Nem sikerült ellenőrizni a frissítéseket.\nEllenőrizze az internetkapcsolatát.",
+    "download": "Letöltés",
+    "checking": "Ellenőrzés...",
+    "banner_message": "Új verzió érhető el: {latest}",
+    "menu_update_available": "Frissítés elérhető ({latest})"
   }
 }

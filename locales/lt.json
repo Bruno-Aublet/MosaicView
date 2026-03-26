@@ -1294,6 +1294,18 @@
     "language_fictional": "Išgalvotos kalbos",
     "about": "Apie",
     "export_piqad_font": "Išsaugoti pIqaD šriftą",
-    "export_tengwar_fonts": "Išsaugoti tengwar šriftus"
+    "export_tengwar_fonts": "Išsaugoti tengwar šriftus",
+    "view_on_github": "Šaltinio kodas GitHub",
+    "check_for_updates": "Tikrinti atnaujinimus"
+  },
+  "updates": {
+    "dialog_title": "Atnaujinimai",
+    "up_to_date": "Naudojate naujausią MosaicView versiją ({version}).",
+    "update_available": "Prieinama nauja versija: {latest}\nŠiuo metu naudojate versiją {current}.",
+    "error": "Nepavyko patikrinti atnaujinimų.\nPatikrinkite interneto ryšį.",
+    "download": "Atsisiųsti",
+    "checking": "Tikrinama...",
+    "banner_message": "Prieinama nauja versija: {latest}",
+    "menu_update_available": "Atnaujinimas prieinamas ({latest})"
   }
 }

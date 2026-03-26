@@ -1294,6 +1294,18 @@
     "language_fictional": "Limbi fictive",
     "about": "Despre",
     "export_piqad_font": "Salvează fontul pIqaD",
-    "export_tengwar_fonts": "Salvează fonturile tengwar"
+    "export_tengwar_fonts": "Salvează fonturile tengwar",
+    "view_on_github": "Cod sursă pe GitHub",
+    "check_for_updates": "Verifică actualizări"
+  },
+  "updates": {
+    "dialog_title": "Actualizări",
+    "up_to_date": "Utilizați cea mai recentă versiune a MosaicView ({version}).",
+    "update_available": "O nouă versiune este disponibilă: {latest}\nUtilizați în prezent versiunea {current}.",
+    "error": "Imposibil de verificat actualizările.\nVerificați conexiunea la internet.",
+    "download": "Descarcă",
+    "checking": "Se verifică...",
+    "banner_message": "Versiune nouă disponibilă: {latest}",
+    "menu_update_available": "Actualizare disponibilă ({latest})"
   }
 }

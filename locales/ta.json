@@ -1294,6 +1294,18 @@
     "language_fictional": "கற்பனை மொழிகள்",
     "about": "பற்றி",
     "export_piqad_font": "pIqaD எழுத்துருவை சேமிக்கவும்",
-    "export_tengwar_fonts": "tengwar எழுத்துருக்களை சேமிக்கவும்"
+    "export_tengwar_fonts": "tengwar எழுத்துருக்களை சேமிக்கவும்",
+    "view_on_github": "GitHub-இல் மூலக் குறியீடு",
+    "check_for_updates": "புதுப்பிப்புகளை சரிபார்க்கவும்"
+  },
+  "updates": {
+    "dialog_title": "புதுப்பிப்புகள்",
+    "up_to_date": "நீங்கள் MosaicView இன் சமீபத்திய பதிப்பை ({version}) பயன்படுத்துகிறீர்கள்.",
+    "update_available": "புதிய பதிப்பு கிடைக்கிறது: {latest}\nதற்போது நீங்கள் பதிப்பு {current} பயன்படுத்துகிறீர்கள்.",
+    "error": "புதுப்பிப்புகளை சரிபார்க்க முடியவில்லை.\nஉங்கள் இணைய இணைப்பை சரிபார்க்கவும்.",
+    "download": "பதிவிறக்கம்",
+    "checking": "சரிபார்க்கிறது...",
+    "banner_message": "புதிய பதிப்பு கிடைக்கிறது: {latest}",
+    "menu_update_available": "புதுப்பிப்பு கிடைக்கிறது ({latest})"
   }
 }

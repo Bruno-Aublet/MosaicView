@@ -1294,6 +1294,18 @@
     "language_fictional": "Fictieve talen",
     "about": "Over",
     "export_piqad_font": "pIqaD-lettertype opslaan",
-    "export_tengwar_fonts": "Tengwar-lettertypen opslaan"
+    "export_tengwar_fonts": "Tengwar-lettertypen opslaan",
+    "view_on_github": "Broncode op GitHub",
+    "check_for_updates": "Controleer op updates"
+  },
+  "updates": {
+    "dialog_title": "Updates",
+    "up_to_date": "U gebruikt de nieuwste versie van MosaicView ({version}).",
+    "update_available": "Er is een nieuwe versie beschikbaar: {latest}\nU gebruikt momenteel versie {current}.",
+    "error": "Kan niet controleren op updates.\nControleer uw internetverbinding.",
+    "download": "Downloaden",
+    "checking": "Controleren...",
+    "banner_message": "Nieuwe versie beschikbaar: {latest}",
+    "menu_update_available": "Update beschikbaar ({latest})"
   }
 }

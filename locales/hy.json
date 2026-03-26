@@ -1294,6 +1294,18 @@
     "language_fictional": "Հորինված լեզուներ",
     "about": "Մասին",
     "export_piqad_font": "Պահպանել pIqaD տառատեսակը",
-    "export_tengwar_fonts": "Պահպանել tengwar տառատեսակները"
+    "export_tengwar_fonts": "Պահպանել tengwar տառատեսակները",
+    "view_on_github": "Սկզբնաղբյուրը GitHub-ում",
+    "check_for_updates": "Ստուգել թարմացումները"
+  },
+  "updates": {
+    "dialog_title": "Թարմացումներ",
+    "up_to_date": "Դուք օգտագործում եք MosaicView-ի վերջին տարբերակը ({version})։",
+    "update_available": "Հասանելի է նոր տարբերակ՝ {latest}\nԴուք ներկայումս օգտագործում եք {current} տարբերակը։",
+    "error": "Թարմացումների ստուգումը ձախողվեց։\nՍтուգեք ձեր ինտերնետ կապը։",
+    "download": "Ներբեռնել",
+    "checking": "Ստուգվում է...",
+    "banner_message": "Հասանելի է նոր տարբերակ՝ {latest}",
+    "menu_update_available": "Թարմացում հասանելի է ({latest})"
   }
 }

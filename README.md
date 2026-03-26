@@ -8,7 +8,7 @@ Designed for comic, manga and BD readers who want to organize, clean up and prep
 
 This is my first application, and I hope you’ll like it. I don’t have any programming knowledge; I built it with the help of ClaudeCode. Feel free to hate me if it makes you feel better.
 
-> ⚠️ **Active development** — features are being added regularly. Feedback and bug reports are welcome.
+> ⚠️ **Active development** — features are being added regularly. Feedback and bug reports are welcome via [GitHub Issues](https://github.com/Bruno-Aublet/MosaicView/issues).
 
 ---
 
@@ -124,6 +124,10 @@ PySide6, Pillow, numpy, rarfile, PyMuPDF
   → Download from [7-zip.org](https://www.7-zip.org/)
 
 ---
+
+## Download
+
+Pre-built executables for Windows are available on the [Releases page](https://github.com/Bruno-Aublet/MosaicView/releases/latest).
 
 ## Installation
 

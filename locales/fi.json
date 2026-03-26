@@ -1294,6 +1294,18 @@
     "language_fictional": "Fiktiiviset kielet",
     "about": "Tietoja",
     "export_piqad_font": "Tallenna pIqaD-fontti",
-    "export_tengwar_fonts": "Tallenna tengwar-fontit"
+    "export_tengwar_fonts": "Tallenna tengwar-fontit",
+    "view_on_github": "Lähdekoodi GitHubissa",
+    "check_for_updates": "Tarkista päivitykset"
+  },
+  "updates": {
+    "dialog_title": "Päivitykset",
+    "up_to_date": "Käytät MosaicView'n uusinta versiota ({version}).",
+    "update_available": "Uusi versio on saatavilla: {latest}\nKäytät tällä hetkellä versiota {current}.",
+    "error": "Päivitysten tarkistaminen epäonnistui.\nTarkista internet-yhteys.",
+    "download": "Lataa",
+    "checking": "Tarkistetaan...",
+    "banner_message": "Uusi versio saatavilla: {latest}",
+    "menu_update_available": "Päivitys saatavilla ({latest})"
   }
 }

@@ -1294,6 +1294,18 @@
     "language_fictional": "Idiomas fictícios",
     "about": "Sobre",
     "export_piqad_font": "Guardar fonte pIqaD",
-    "export_tengwar_fonts": "Guardar fontes tengwar"
+    "export_tengwar_fonts": "Guardar fontes tengwar",
+    "view_on_github": "Código-fonte no GitHub",
+    "check_for_updates": "Verificar atualizações"
+  },
+  "updates": {
+    "dialog_title": "Atualizações",
+    "up_to_date": "Você está usando a versão mais recente do MosaicView ({version}).",
+    "update_available": "Uma nova versão está disponível: {latest}\nVocê está usando atualmente a versão {current}.",
+    "error": "Não foi possível verificar atualizações.\nVerifique sua conexão com a internet.",
+    "download": "Baixar",
+    "checking": "Verificando...",
+    "banner_message": "Nova versão disponível: {latest}",
+    "menu_update_available": "Atualização disponível ({latest})"
   }
 }

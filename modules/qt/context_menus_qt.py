@@ -508,6 +508,19 @@ def _build_about_submenu(parent, callbacks: dict) -> QMenu:
     submenu = _make_menu(parent)
     submenu.setTitle(_("menu.about"))
 
+    submenu.addAction(_("menu.view_on_github"),       callbacks.get("open_github"))
+
+    latest = callbacks.get("_update_latest")
+    if latest:
+        from modules.qt.font_manager_qt import get_current_font as _gcf
+        label = _("updates.menu_update_available").replace("{latest}", latest)
+        action = submenu.addAction(label, callbacks.get("check_for_updates"))
+        if action:
+            font = _gcf(9, bold=True)
+            action.setFont(font)
+    else:
+        submenu.addAction(_("menu.check_for_updates"), callbacks.get("check_for_updates"))
+    submenu.addSeparator()
     submenu.addAction(_("donation.menu_label"),   callbacks.get("show_donation_dialog"))
     submenu.addAction(_("mail.menu_label"),        callbacks.get("open_mail"))
     submenu.addAction(_("mail.copy_address"),      callbacks.get("copy_mail_address"))

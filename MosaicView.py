@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 import sys
 import os
@@ -27,7 +27,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import QTimer, Qt, QObject, QEvent
 from PySide6.QtGui import QIcon, QKeySequence, QShortcut
 
-# ── Modules logique métier (inchangés) ────────────────────────────────────────
+# ── Modules logique métier ────────────────────────────────────────────────────
 import zipfile, rarfile, io
 import threading, time, json
 
@@ -70,7 +70,8 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setVisible(False)
 
-        self._app_ref = None  # assigné par main() après construction
+        self._app_ref       = None   # assigné par main() après construction
+        self._update_latest = None   # version disponible si mise à jour détectée
 
         # ── Config & localisation ─────────────────────────────────────────────
         init_config_manager()
@@ -300,6 +301,9 @@ class MainWindow(QMainWindow):
             apply_theme(self._app_ref, p._canvas, p._left_panel, p._tab_bar)
             p._metadata_tab.apply_theme()
         _state_module.state = self._active_panel._state
+        # Met à jour le bandeau de mise à jour si affiché
+        for p in self._all_panels():
+            p._retranslate_banner()
         # Met à jour la couleur de bordure après changement de thème
         if self._split_active:
             self._set_frame_active(self._frame1, self._active_panel is self._panel)
@@ -327,6 +331,7 @@ class MainWindow(QMainWindow):
         cfg.set_font_size_offset(current - 1)
         for p in self._all_panels():
             p._reload_ui_fonts()
+            p._retranslate_banner()
 
     def _increase_font_size(self):
         from modules.qt.state import MAX_FONT_SIZE_OFFSET
@@ -337,6 +342,7 @@ class MainWindow(QMainWindow):
         cfg.set_font_size_offset(current + 1)
         for p in self._all_panels():
             p._reload_ui_fonts()
+            p._retranslate_banner()
 
     def _update_splitter_constraints(self, size_index: int):
         for p in self._all_panels():
@@ -518,6 +524,25 @@ class MainWindow(QMainWindow):
     def _show_license_dialog(self):
         from modules.qt.license_dialog_qt import show_license_dialog_qt
         show_license_dialog_qt(self)
+
+    def show_update_banner(self, latest: str) -> None:
+        """Affiche le bandeau de mise à jour sur tous les panneaux actifs."""
+        self._update_latest = latest
+        for p in self._all_panels():
+            p.show_update_banner(latest)
+
+    def set_update_available_in_menu(self, latest: str) -> None:
+        """Stocke la version disponible et reconstruit la menubar."""
+        self._update_latest = latest
+        from modules.qt.menubar_qt import build_menubar
+        for p in self._all_panels():
+            build_menubar(p, p._build_menubar_callbacks(), p._menubar)
+
+    def _all_panels(self):
+        panels = [self._panel]
+        if self._panel2 is not None:
+            panels.append(self._panel2)
+        return panels
 
     def _show_donation_dialog(self):
         from modules.qt.donation_dialog_qt import show_donation_dialog_qt
@@ -748,6 +773,10 @@ def main():
 
     if _splash is not None:
         _splash.finish(win)
+
+    # Vérification des mises à jour en arrière-plan
+    from modules.qt.update_checker_qt import check_for_updates_on_startup
+    check_for_updates_on_startup(win)
 
     # Préchauffage du process fitz en arrière-plan — élimine le délai au 1er PDF
     from modules.qt.pdf_loading_qt import warmup_pdf_process, shutdown_pdf_process

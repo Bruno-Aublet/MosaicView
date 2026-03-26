@@ -312,6 +312,10 @@ class PanelWidget(QWidget):
         self._tab_bar.tab_changed.connect(self._on_tab_changed)
         layout.addWidget(self._tab_bar)
 
+        # Bandeau mise à jour (caché par défaut, inséré ici quand nécessaire)
+        self._update_banner = None
+        self._center_layout = layout  # référence pour insérer le bandeau
+
         self._content_stack = QStackedWidget()
 
         self._canvas = MosaicCanvas(self._state)
@@ -329,6 +333,110 @@ class PanelWidget(QWidget):
         layout.addWidget(self._status_bar)
 
         return panel
+
+    def show_update_banner(self, latest: str) -> None:
+        """Affiche le bandeau 'nouvelle version disponible' sous la tab bar."""
+        if self._update_banner is not None:
+            return  # déjà affiché
+
+        from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QPushButton
+        import webbrowser
+        from modules.qt.localization import _
+        from modules.qt.state import get_current_theme
+        from modules.qt.font_manager_qt import get_current_font as _gcf
+
+        self._update_banner_latest = latest
+
+        banner = QWidget()
+        banner.setFixedHeight(36)
+        row = QHBoxLayout(banner)
+        row.setContentsMargins(12, 0, 8, 0)
+        row.setSpacing(8)
+
+        lbl = QLabel()
+        row.addWidget(lbl)
+        row.addStretch()
+
+        dl_btn = QPushButton()
+        dl_btn.setCursor(Qt.PointingHandCursor)
+        dl_btn.clicked.connect(
+            lambda: webbrowser.open("https://github.com/Bruno-Aublet/MosaicView/releases/latest")
+        )
+        row.addWidget(dl_btn)
+
+        close_btn = QPushButton("✕")
+        close_btn.setFixedSize(24, 24)
+        close_btn.setCursor(Qt.PointingHandCursor)
+        close_btn.clicked.connect(self._close_update_banner)
+        row.addWidget(close_btn)
+
+        self._update_banner         = banner
+        self._banner_lbl            = lbl
+        self._banner_dl_btn         = dl_btn
+        self._banner_close_btn      = close_btn
+
+        # Insérer après la tab_bar (index 2 dans le layout)
+        self._center_layout.insertWidget(2, banner)
+
+        # Appliquer thème + police + langue
+        self._retranslate_banner()
+
+        # Langue à la volée
+        from modules.qt.language_signal import language_signal
+        self._banner_lang_handler = lambda _: self._retranslate_banner()
+        language_signal.changed.connect(self._banner_lang_handler)
+
+    def _retranslate_banner(self) -> None:
+        """Met à jour thème, police et textes du bandeau."""
+        if self._update_banner is None:
+            return
+        from modules.qt.localization import _
+        from modules.qt.state import get_current_theme
+        from modules.qt.font_manager_qt import get_current_font as _gcf
+
+        theme  = get_current_theme()
+        font   = _gcf(10)
+        latest = self._update_banner_latest
+
+        # Couleurs : vert foncé en mode clair, vert plus doux en mode sombre
+        dark = getattr(self._state, "dark_mode", False)
+        bg_color  = "#1a5c1a" if dark else "#2a7a2a"
+        txt_color = "#ffffff"
+        btn_bg    = "#ffffff" if not dark else "#e0ffe0"
+        btn_fg    = "#1a5c1a" if dark else "#2a7a2a"
+        btn_hover = "#ccffcc"
+
+        self._update_banner.setStyleSheet(
+            f"QWidget {{ background: {bg_color}; }}"
+        )
+        self._banner_lbl.setFont(font)
+        self._banner_lbl.setStyleSheet(f"color: {txt_color}; background: transparent;")
+        self._banner_lbl.setText(_("updates.banner_message").replace("{latest}", latest))
+
+        self._banner_dl_btn.setFont(font)
+        self._banner_dl_btn.setText(_("updates.download"))
+        self._banner_dl_btn.setStyleSheet(
+            f"QPushButton {{ background: {btn_bg}; color: {btn_fg}; border: none; "
+            f"padding: 3px 12px; border-radius: 3px; }}"
+            f"QPushButton:hover {{ background: {btn_hover}; }}"
+        )
+
+        self._banner_close_btn.setFont(font)
+        self._banner_close_btn.setStyleSheet(
+            f"QPushButton {{ background: transparent; color: {txt_color}; border: none; }}"
+            f"QPushButton:hover {{ background: rgba(255,255,255,40); border-radius: 3px; }}"
+        )
+
+    def _close_update_banner(self) -> None:
+        if self._update_banner is None:
+            return
+        from modules.qt.language_signal import language_signal
+        try:
+            language_signal.changed.disconnect(self._banner_lang_handler)
+        except (RuntimeError, AttributeError):
+            pass
+        self._update_banner.deleteLater()
+        self._update_banner = None
 
     # ──────────────────────────────────────────────────────────────────────────
     # Méthodes déléguées à MainWindow (globales)
@@ -364,7 +472,12 @@ class PanelWidget(QWidget):
                 finally:
                     _state_module.state = _prev
             return _wrapped
-        return {k: (_wrap(v) if callable(v) else v) for k, v in raw.items()}
+        wrapped = {k: (_wrap(v) if callable(v) else v) for k, v in raw.items()}
+        # Injecte la version disponible si une mise à jour a été détectée
+        latest = getattr(self._main_window, "_update_latest", None)
+        if latest:
+            wrapped["_update_latest"] = latest
+        return wrapped
 
     # ──────────────────────────────────────────────────────────────────────────
     # Opérations fichier

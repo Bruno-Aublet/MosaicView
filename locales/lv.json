@@ -1294,6 +1294,18 @@
     "language_fictional": "Izdomātās valodas",
     "about": "Par",
     "export_piqad_font": "Saglabāt pIqaD fontu",
-    "export_tengwar_fonts": "Saglabāt tengwar fontus"
+    "export_tengwar_fonts": "Saglabāt tengwar fontus",
+    "view_on_github": "Pirmkods GitHub",
+    "check_for_updates": "Pārbaudīt atjauninājumus"
+  },
+  "updates": {
+    "dialog_title": "Atjauninājumi",
+    "up_to_date": "Jūs izmantojat jaunāko MosaicView versiju ({version}).",
+    "update_available": "Pieejama jauna versija: {latest}\nPašlaik izmantojat versiju {current}.",
+    "error": "Neizdevās pārbaudīt atjauninājumus.\nPārbaudiet interneta savienojumu.",
+    "download": "Lejupielādēt",
+    "checking": "Pārbauda...",
+    "banner_message": "Pieejama jauna versija: {latest}",
+    "menu_update_available": "Atjauninājums pieejams ({latest})"
   }
 }

@@ -1294,6 +1294,18 @@
     "language_fictional": "Kurgusal diller",
     "about": "Hakkında",
     "export_piqad_font": "pIqaD yazı tipini kaydet",
-    "export_tengwar_fonts": "Tengwar yazı tiplerini kaydet"
+    "export_tengwar_fonts": "Tengwar yazı tiplerini kaydet",
+    "view_on_github": "GitHub'da kaynak kodu",
+    "check_for_updates": "Güncellemeleri kontrol et"
+  },
+  "updates": {
+    "dialog_title": "Güncellemeler",
+    "up_to_date": "MosaicView'in en son sürümünü ({version}) kullanıyorsunuz.",
+    "update_available": "Yeni bir sürüm mevcut: {latest}\nŞu an {current} sürümünü kullanıyorsunuz.",
+    "error": "Güncellemeler kontrol edilemedi.\nİnternet bağlantınızı kontrol edin.",
+    "download": "İndir",
+    "checking": "Kontrol ediliyor...",
+    "banner_message": "Yeni sürüm mevcut: {latest}",
+    "menu_update_available": "Güncelleme mevcut ({latest})"
   }
 }

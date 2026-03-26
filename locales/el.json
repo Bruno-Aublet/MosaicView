@@ -1294,6 +1294,18 @@
     "language_fictional": "Φανταστικές γλώσσες",
     "about": "Σχετικά",
     "export_piqad_font": "Αποθήκευση γραμματοσειράς pIqaD",
-    "export_tengwar_fonts": "Αποθήκευση γραμματοσειρών tengwar"
+    "export_tengwar_fonts": "Αποθήκευση γραμματοσειρών tengwar",
+    "view_on_github": "Πηγαίος κώδικας στο GitHub",
+    "check_for_updates": "Έλεγχος για ενημερώσεις"
+  },
+  "updates": {
+    "dialog_title": "Ενημερώσεις",
+    "up_to_date": "Χρησιμοποιείτε την τελευταία έκδοση του MosaicView ({version}).",
+    "update_available": "Διατίθεται νέα έκδοση: {latest}\nΧρησιμοποιείτε αυτήν τη στιγμή την έκδοση {current}.",
+    "error": "Δεν ήταν δυνατός ο έλεγχος για ενημερώσεις.\nΕλέγξτε τη σύνδεσή σας στο διαδίκτυο.",
+    "download": "Λήψη",
+    "checking": "Έλεγχος...",
+    "banner_message": "Νέα έκδοση διαθέσιμη: {latest}",
+    "menu_update_available": "Διαθέσιμη ενημέρωση ({latest})"
   }
 }

@@ -1294,6 +1294,18 @@
     "language_fictional": "Hol lojmIt",
     "about": "tlhob",
     "export_piqad_font": "nIqaD HutlhmoH",
-    "export_tengwar_fonts": "tengwar HutlhmoH"
+    "export_tengwar_fonts": "tengwar HutlhmoH",
+    "view_on_github": "paq'yav' GitHub",
+    "check_for_updates": "chu' Datu'"
+  },
+  "updates": {
+    "dialog_title": "chu' De'",
+    "up_to_date": "MosaicView chu'bogh ({version}) Dalo'.",
+    "update_available": "chu' paq'yav' tu'lu': {latest}\nghaH {current} Dalo' DaH.",
+    "error": "chu' De' tu'laHbe'.\nnet Da'el.",
+    "download": "tagh",
+    "checking": "nej...",
+    "banner_message": "chu' paq'yav' tu'lu': {latest}",
+    "menu_update_available": "chu' De' ({latest})"
   }
 }

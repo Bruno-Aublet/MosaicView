@@ -1294,6 +1294,18 @@
     "language_fictional": "Fiktive Sprachen",
     "about": "Über",
     "export_piqad_font": "pIqaD-Schriftart speichern",
-    "export_tengwar_fonts": "Tengwar-Schriftarten speichern"
+    "export_tengwar_fonts": "Tengwar-Schriftarten speichern",
+    "view_on_github": "Quellcode auf GitHub",
+    "check_for_updates": "Nach Updates suchen"
+  },
+  "updates": {
+    "dialog_title": "Updates",
+    "up_to_date": "Sie verwenden die neueste Version von MosaicView ({version}).",
+    "update_available": "Eine neue Version ist verfügbar: {latest}\nSie verwenden derzeit Version {current}.",
+    "error": "Updates konnten nicht geprüft werden.\nBitte überprüfen Sie Ihre Internetverbindung.",
+    "download": "Herunterladen",
+    "checking": "Wird geprüft...",
+    "banner_message": "Neue Version verfügbar: {latest}",
+    "menu_update_available": "Update verfügbar ({latest})"
   }
 }

@@ -1294,6 +1294,18 @@
     "language_fictional": "Вигадані мови",
     "about": "Про програму",
     "export_piqad_font": "Зберегти шрифт pIqaD",
-    "export_tengwar_fonts": "Зберегти шрифти tengwar"
+    "export_tengwar_fonts": "Зберегти шрифти tengwar",
+    "view_on_github": "Вихідний код на GitHub",
+    "check_for_updates": "Перевірити наявність оновлень"
+  },
+  "updates": {
+    "dialog_title": "Оновлення",
+    "up_to_date": "Ви використовуєте останню версію MosaicView ({version}).",
+    "update_available": "Доступна нова версія: {latest}\nВи зараз використовуєте версію {current}.",
+    "error": "Не вдалося перевірити наявність оновлень.\nПеревірте підключення до інтернету.",
+    "download": "Завантажити",
+    "checking": "Перевірка...",
+    "banner_message": "Доступна нова версія: {latest}",
+    "menu_update_available": "Доступне оновлення ({latest})"
   }
 }

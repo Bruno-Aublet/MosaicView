@@ -1294,6 +1294,18 @@
     "language_fictional": "Fiktivní jazyky",
     "about": "O aplikaci",
     "export_piqad_font": "Uložit písmo pIqaD",
-    "export_tengwar_fonts": "Uložit písma tengwar"
+    "export_tengwar_fonts": "Uložit písma tengwar",
+    "view_on_github": "Zdrojový kód na GitHubu",
+    "check_for_updates": "Zkontrolovat aktualizace"
+  },
+  "updates": {
+    "dialog_title": "Aktualizace",
+    "up_to_date": "Používáte nejnovější verzi MosaicView ({version}).",
+    "update_available": "Je dostupná nová verze: {latest}\nAktuálně používáte verzi {current}.",
+    "error": "Nepodařilo se zkontrolovat aktualizace.\nZkontrolujte připojení k internetu.",
+    "download": "Stáhnout",
+    "checking": "Kontroluji...",
+    "banner_message": "Je dostupná nová verze: {latest}",
+    "menu_update_available": "Dostupná aktualizace ({latest})"
   }
 }

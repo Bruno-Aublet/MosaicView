@@ -1294,6 +1294,18 @@
     "language_fictional": "اللغات الخيالية",
     "about": "حول",
     "export_piqad_font": "حفظ خط pIqaD",
-    "export_tengwar_fonts": "حفظ خطوط tengwar"
+    "export_tengwar_fonts": "حفظ خطوط tengwar",
+    "view_on_github": "الكود المصدري على GitHub",
+    "check_for_updates": "التحقق من التحديثات"
+  },
+  "updates": {
+    "dialog_title": "التحديثات",
+    "up_to_date": "أنت تستخدم أحدث إصدار من MosaicView ({version}).",
+    "update_available": "يتوفر إصدار جديد: {latest}\nأنت تستخدم حاليًا الإصدار {current}.",
+    "error": "تعذّر التحقق من التحديثات.\nتحقق من اتصالك بالإنترنت.",
+    "download": "تنزيل",
+    "checking": "جارٍ التحقق...",
+    "banner_message": "إصدار جديد متاح: {latest}",
+    "menu_update_available": "تحديث متاح ({latest})"
   }
 }

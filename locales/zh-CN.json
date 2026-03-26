@@ -1294,6 +1294,18 @@
     "language_fictional": "虚构语言",
     "about": "关于",
     "export_piqad_font": "保存 pIqaD 字体",
-    "export_tengwar_fonts": "保存 tengwar 字体"
+    "export_tengwar_fonts": "保存 tengwar 字体",
+    "view_on_github": "在 GitHub 上查看源码",
+    "check_for_updates": "检查更新"
+  },
+  "updates": {
+    "dialog_title": "更新",
+    "up_to_date": "您正在使用最新版本的 MosaicView ({version})。",
+    "update_available": "有新版本可用: {latest}\n您当前使用的是版本 {current}。",
+    "error": "无法检查更新。\n请检查您的网络连接。",
+    "download": "下载",
+    "checking": "正在检查...",
+    "banner_message": "有新版本: {latest}",
+    "menu_update_available": "有更新 ({latest})"
   }
 }

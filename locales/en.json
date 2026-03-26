@@ -1294,6 +1294,18 @@
     "language_fictional": "Fictional languages",
     "about": "About",
     "export_piqad_font": "Save pIqaD font",
-    "export_tengwar_fonts": "Save tengwar fonts"
+    "export_tengwar_fonts": "Save tengwar fonts",
+    "view_on_github": "Source code on GitHub",
+    "check_for_updates": "Check for updates"
+  },
+  "updates": {
+    "dialog_title": "Updates",
+    "up_to_date": "You are using the latest version of MosaicView ({version}).",
+    "update_available": "A new version is available: {latest}\nYou are currently using version {current}.",
+    "error": "Unable to check for updates.\nPlease check your internet connection.",
+    "download": "Download",
+    "checking": "Checking...",
+    "banner_message": "New version available: {latest}",
+    "menu_update_available": "Update available ({latest})"
   }
 }

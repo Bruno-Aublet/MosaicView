@@ -1294,6 +1294,18 @@
     "language_fictional": "Ngôn ngữ hư cấu",
     "about": "Giới thiệu",
     "export_piqad_font": "Lưu phông chữ pIqaD",
-    "export_tengwar_fonts": "Lưu phông chữ tengwar"
+    "export_tengwar_fonts": "Lưu phông chữ tengwar",
+    "view_on_github": "Mã nguồn trên GitHub",
+    "check_for_updates": "Kiểm tra cập nhật"
+  },
+  "updates": {
+    "dialog_title": "Cập nhật",
+    "up_to_date": "Bạn đang sử dụng phiên bản mới nhất của MosaicView ({version}).",
+    "update_available": "Có phiên bản mới: {latest}\nBạn đang dùng phiên bản {current}.",
+    "error": "Không thể kiểm tra cập nhật.\nVui lòng kiểm tra kết nối internet.",
+    "download": "Tải xuống",
+    "checking": "Đang kiểm tra...",
+    "banner_message": "Phiên bản mới có sẵn: {latest}",
+    "menu_update_available": "Có bản cập nhật ({latest})"
   }
 }

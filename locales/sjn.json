@@ -1294,6 +1294,18 @@
     "language_fictional": "Lam fein",
     "about": "Im",
     "export_piqad_font": "Tangado i têw pIqaD",
-    "export_tengwar_fonts": "Tangado i têw tengwar"
+    "export_tengwar_fonts": "Tangado i têw tengwar",
+    "view_on_github": "Cabed pân i GitHub",
+    "check_for_updates": "Gwelo i 'wanath"
+  },
+  "updates": {
+    "dialog_title": "Gwanath newydd",
+    "up_to_date": "Anog i {version} o MosaicView iest.",
+    "update_available": "Gwanath newydd: {latest}\nAnog i {current} iest in.",
+    "error": "Ú-govaded pân i gwanath.\nPen i raew.",
+    "download": "Esgar",
+    "checking": "Gwelo...",
+    "banner_message": "Gwanath newydd: {latest}",
+    "menu_update_available": "Gwanath newydd ({latest})"
   }
 }

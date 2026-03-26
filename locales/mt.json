@@ -1294,6 +1294,18 @@
     "language_fictional": "Lingwi fittizji",
     "about": "Dwar",
     "export_piqad_font": "Issejvja l-font pIqaD",
-    "export_tengwar_fonts": "Issejvja l-fonts tengwar"
+    "export_tengwar_fonts": "Issejvja l-fonts tengwar",
+    "view_on_github": "Kodiċi sors fuq GitHub",
+    "check_for_updates": "Iċċekkja għall-aġġornamenti"
+  },
+  "updates": {
+    "dialog_title": "Aġġornamenti",
+    "up_to_date": "Qed tuża l-aħħar verżjoni ta' MosaicView ({version}).",
+    "update_available": "Verżjoni ġdida disponibbli: {latest}\nBħalissa qed tuża l-verżjoni {current}.",
+    "error": "Ma setax jiġi kkontrollat għal aġġornamenti.\nIċċekkja l-konnessjoni tal-internet tiegħek.",
+    "download": "Niżżel",
+    "checking": "Qed jiċċekkja...",
+    "banner_message": "Verżjoni ġdida disponibbli: {latest}",
+    "menu_update_available": "Aġġornament disponibbli ({latest})"
   }
 }

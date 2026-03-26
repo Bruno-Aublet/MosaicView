@@ -1294,6 +1294,18 @@
     "language_fictional": "काल्पनिक भाषाएँ",
     "about": "के बारे में",
     "export_piqad_font": "pIqaD फ़ॉन्ट सहेजें",
-    "export_tengwar_fonts": "tengwar फ़ॉन्ट सहेजें"
+    "export_tengwar_fonts": "tengwar फ़ॉन्ट सहेजें",
+    "view_on_github": "GitHub पर स्रोत कोड",
+    "check_for_updates": "अपडेट की जांच करें"
+  },
+  "updates": {
+    "dialog_title": "अपडेट",
+    "up_to_date": "आप MosaicView का नवीनतम संस्करण ({version}) उपयोग कर रहे हैं।",
+    "update_available": "एक नया संस्करण उपलब्ध है: {latest}\nआप वर्तमान में संस्करण {current} उपयोग कर रहे हैं।",
+    "error": "अपडेट की जांच करना संभव नहीं हो सका।\nअपना इंटरनेट कनेक्शन जांचें।",
+    "download": "डाउनलोड करें",
+    "checking": "जांच हो रही है...",
+    "banner_message": "नया संस्करण उपलब्ध: {latest}",
+    "menu_update_available": "अपडेट उपलब्ध ({latest})"
   }
 }

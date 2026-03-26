@@ -1294,6 +1294,18 @@
     "language_fictional": "Fiktive språk",
     "about": "Om",
     "export_piqad_font": "Lagre pIqaD-skrifttype",
-    "export_tengwar_fonts": "Lagre tengwar-skrifttyper"
+    "export_tengwar_fonts": "Lagre tengwar-skrifttyper",
+    "view_on_github": "Kildekode på GitHub",
+    "check_for_updates": "Se etter oppdateringer"
+  },
+  "updates": {
+    "dialog_title": "Oppdateringer",
+    "up_to_date": "Du bruker den nyeste versjonen av MosaicView ({version}).",
+    "update_available": "En ny versjon er tilgjengelig: {latest}\nDu bruker for øyeblikket versjon {current}.",
+    "error": "Kunne ikke se etter oppdateringer.\nSjekk internettforbindelsen din.",
+    "download": "Last ned",
+    "checking": "Sjekker...",
+    "banner_message": "Ny versjon tilgjengelig: {latest}",
+    "menu_update_available": "Oppdatering tilgjengelig ({latest})"
   }
 }

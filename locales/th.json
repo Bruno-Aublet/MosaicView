@@ -1294,6 +1294,18 @@
     "language_fictional": "ภาษาสมมติ",
     "about": "เกี่ยวกับ",
     "export_piqad_font": "บันทึกฟอนต์ pIqaD",
-    "export_tengwar_fonts": "บันทึกฟอนต์ tengwar"
+    "export_tengwar_fonts": "บันทึกฟอนต์ tengwar",
+    "view_on_github": "ซอร์สโค้ดบน GitHub",
+    "check_for_updates": "ตรวจสอบการอัปเดต"
+  },
+  "updates": {
+    "dialog_title": "อัปเดต",
+    "up_to_date": "คุณใช้ MosaicView เวอร์ชันล่าสุด ({version}) อยู่แล้ว",
+    "update_available": "มีเวอร์ชันใหม่: {latest}\nคุณกำลังใช้เวอร์ชัน {current}",
+    "error": "ไม่สามารถตรวจสอบการอัปเดตได้\nโปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต",
+    "download": "ดาวน์โหลด",
+    "checking": "กำลังตรวจสอบ...",
+    "banner_message": "มีเวอร์ชันใหม่: {latest}",
+    "menu_update_available": "มีอัปเดต ({latest})"
   }
 }

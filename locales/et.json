@@ -1294,6 +1294,18 @@
     "language_fictional": "Väljamõeldud keeled",
     "about": "Teave",
     "export_piqad_font": "Salvesta pIqaD font",
-    "export_tengwar_fonts": "Salvesta tengwar fondid"
+    "export_tengwar_fonts": "Salvesta tengwar fondid",
+    "view_on_github": "Lähtekood GitHubis",
+    "check_for_updates": "Otsi uuendusi"
+  },
+  "updates": {
+    "dialog_title": "Uuendused",
+    "up_to_date": "Kasutate MosaicView uusimat versiooni ({version}).",
+    "update_available": "Saadaval on uus versioon: {latest}\nPraegu kasutate versiooni {current}.",
+    "error": "Uuenduste kontrollimine ebaõnnestus.\nKontrollige internetiühendust.",
+    "download": "Laadi alla",
+    "checking": "Kontrollin...",
+    "banner_message": "Uus versioon saadaval: {latest}",
+    "menu_update_available": "Uuendus saadaval ({latest})"
   }
 }

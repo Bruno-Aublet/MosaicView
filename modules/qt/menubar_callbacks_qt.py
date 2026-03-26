@@ -7,6 +7,8 @@ Usage :
     cb = build_menubar_callbacks(self)   # self = instance MainWindow
 """
 
+import webbrowser as _webbrowser
+from modules.qt.update_checker_qt import check_for_updates_qt as _check_for_updates_qt
 from modules.qt.recent_files import get_recent_files as _get_recent_files
 from modules.qt.undo_redo import can_undo, can_redo
 from modules.qt.image_transforms_qt import (
@@ -129,6 +131,8 @@ def build_menubar_callbacks(mw) -> dict:
         "clear_config_file":        mw._clear_config_file,
         "clear_clipboard_files":    mw._clear_clipboard_files,
         "open_temp_folder":         mw._open_temp_folder,
+        "open_github":              lambda: _webbrowser.open("https://github.com/Bruno-Aublet/MosaicView"),
+        "check_for_updates":        lambda: _check_for_updates_qt(mw),
         "show_donation_dialog":      mw._show_donation_dialog,
         "copy_mail_address":        mw._copy_mail_address,
         "show_license_dialog":      mw._show_license_dialog,

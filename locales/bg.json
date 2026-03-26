@@ -1294,6 +1294,18 @@
     "language_fictional": "Измислени езици",
     "about": "Относно",
     "export_piqad_font": "Запази шрифта pIqaD",
-    "export_tengwar_fonts": "Запази шрифтовете tengwar"
+    "export_tengwar_fonts": "Запази шрифтовете tengwar",
+    "view_on_github": "Изходен код в GitHub",
+    "check_for_updates": "Проверка за актуализации"
+  },
+  "updates": {
+    "dialog_title": "Актуализации",
+    "up_to_date": "Използвате най-новата версия на MosaicView ({version}).",
+    "update_available": "Налична е нова версия: {latest}\nВие използвате версия {current}.",
+    "error": "Неуспешна проверка за актуализации.\nПроверете интернет връзката си.",
+    "download": "Изтегляне",
+    "checking": "Проверка...",
+    "banner_message": "Налична е нова версия: {latest}",
+    "menu_update_available": "Налична актуализация ({latest})"
   }
 }

@@ -1294,6 +1294,18 @@
     "language_fictional": "Teangacha ficseanúla",
     "about": "Maidir le",
     "export_piqad_font": "Sábháil cló pIqaD",
-    "export_tengwar_fonts": "Sábháil clónna tengwar"
+    "export_tengwar_fonts": "Sábháil clónna tengwar",
+    "view_on_github": "Cód foinse ar GitHub",
+    "check_for_updates": "Seiceáil le haghaidh nuashonruithe"
+  },
+  "updates": {
+    "dialog_title": "Nuashonruithe",
+    "up_to_date": "Tá an leagan is déanaí de MosaicView á úsáid agat ({version}).",
+    "update_available": "Tá leagan nua ar fáil: {latest}\nTá leagan {current} á úsáid agat faoi láthair.",
+    "error": "Níorbh fhéidir nuashonruithe a sheiceáil.\nSeiceáil do nasc idirlín.",
+    "download": "Íosluchtaigh",
+    "checking": "Ag seiceáil...",
+    "banner_message": "Leagan nua ar fáil: {latest}",
+    "menu_update_available": "Nuashonrú ar fáil ({latest})"
   }
 }

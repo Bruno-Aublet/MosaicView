@@ -1294,6 +1294,18 @@
     "language_fictional": "Bahasa fiktif",
     "about": "Tentang",
     "export_piqad_font": "Simpan font pIqaD",
-    "export_tengwar_fonts": "Simpan font tengwar"
+    "export_tengwar_fonts": "Simpan font tengwar",
+    "view_on_github": "Kode sumber di GitHub",
+    "check_for_updates": "Periksa pembaruan"
+  },
+  "updates": {
+    "dialog_title": "Pembaruan",
+    "up_to_date": "Anda menggunakan versi terbaru MosaicView ({version}).",
+    "update_available": "Versi baru tersedia: {latest}\nAnda saat ini menggunakan versi {current}.",
+    "error": "Tidak dapat memeriksa pembaruan.\nPeriksa koneksi internet Anda.",
+    "download": "Unduh",
+    "checking": "Memeriksa...",
+    "banner_message": "Versi baru tersedia: {latest}",
+    "menu_update_available": "Pembaruan tersedia ({latest})"
   }
 }

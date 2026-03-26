@@ -368,6 +368,19 @@ def _populate_system_menu(menu: QMenu, callbacks: dict):
 def _populate_about_menu(menu: QMenu, callbacks: dict):
     menu.clear()
 
+    _add_action(menu, _("menu.view_on_github"),       callbacks.get("open_github"))
+
+    latest = callbacks.get("_update_latest")
+    if latest:
+        label = _("updates.menu_update_available").replace("{latest}", latest)
+        action = _add_action(menu, label, callbacks.get("check_for_updates"))
+        if action:
+            font = _get_current_font(9, bold=True)
+            action.setFont(font)
+    else:
+        _add_action(menu, _("menu.check_for_updates"), callbacks.get("check_for_updates"))
+    menu.addSeparator()
+
     _add_action(menu, _("donation.menu_label"),    callbacks.get("show_donation_dialog"))
     _add_action(menu, _("mail.menu_label"),         callbacks.get("open_mail"))
     _add_action(menu, _("mail.copy_address"),       callbacks.get("copy_mail_address"))

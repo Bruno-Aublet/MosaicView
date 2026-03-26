@@ -1294,6 +1294,18 @@
     "language_fictional": "Skáldleg tungumál",
     "about": "Um",
     "export_piqad_font": "Vista pIqaD leturgerð",
-    "export_tengwar_fonts": "Vista tengwar leturgerðir"
+    "export_tengwar_fonts": "Vista tengwar leturgerðir",
+    "view_on_github": "Frumkóði á GitHub",
+    "check_for_updates": "Athugaðu uppfærslur"
+  },
+  "updates": {
+    "dialog_title": "Uppfærslur",
+    "up_to_date": "Þú ert að nota nýjustu útgáfu MosaicView ({version}).",
+    "update_available": "Ný útgáfa er í boði: {latest}\nÞú ert núna að nota útgáfu {current}.",
+    "error": "Ekki tókst að athuga uppfærslur.\nAthugaðu nettenginguna þína.",
+    "download": "Hlaða niður",
+    "checking": "Athugað...",
+    "banner_message": "Ný útgáfa í boði: {latest}",
+    "menu_update_available": "Uppfærsla í boði ({latest})"
   }
 }

@@ -1294,6 +1294,18 @@
     "language_fictional": "Lambor olcar",
     "about": "Quenta",
     "export_piqad_font": "Harya i téma pIqaD",
-    "export_tengwar_fonts": "Harya i témar tengwar"
+    "export_tengwar_fonts": "Harya i témar tengwar",
+    "view_on_github": "Quenta GitHub-sse",
+    "check_for_updates": "Cena i vinya"
+  },
+  "updates": {
+    "dialog_title": "Vinya quettar",
+    "up_to_date": "Pol MosaicView {version} halyalye.",
+    "update_available": "Vinya pol tulta: {latest}\nPol {current} halyalye sí.",
+    "error": "Lá pol vinya hiritalye.\nSanen raica i yuldar.",
+    "download": "Lahta",
+    "checking": "Cendela...",
+    "banner_message": "Vinya pol tulta: {latest}",
+    "menu_update_available": "Vinya pol ({latest})"
   }
 }
