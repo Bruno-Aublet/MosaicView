@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
 import sys
 import os
@@ -626,7 +626,10 @@ class MainWindow(QMainWindow):
         # Si panel2 est ouvert et a un fichier → le fermer en priorité
         if self._split_active and self._panel2 is not None:
             st2 = self._panel2._state
-            if st2.images_data or st2.modified:
+            # modified seul sans images ni archive = rien à sauvegarder (ex: toutes les
+            # images ont été draguées vers panel1) → on skip panel2 directement
+            _panel2_needs_close = bool(st2.images_data) or (st2.modified and st2.current_file)
+            if _panel2_needs_close:
                 _prev = _state_module.state
                 _state_module.state = st2
                 try:

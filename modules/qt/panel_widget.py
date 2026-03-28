@@ -1390,7 +1390,9 @@ class PanelWidget(QWidget):
         kept = [e for i, e in enumerate(src_st.images_data) if i not in set(dragged_reals)]
         src_st.images_data = kept
         src_st.selected_indices.clear()
-        src_st.modified = True
+        # Si le panneau source est maintenant vide et sans archive, pas besoin de
+        # le marquer modifié (évite de bloquer la fermeture de l'appli)
+        src_st.modified = True if (kept or src_st.current_file) else False
         from modules.qt.comic_info import sync_pages_in_xml_data
         sync_pages_in_xml_data(src_st, emit_signal=False)
         source_panel._renumber_no_save()
