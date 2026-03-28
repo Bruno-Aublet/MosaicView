@@ -206,6 +206,14 @@ class TabBar(QWidget):
             style = self._tab_style(self._current_tab == "mosaic")
             self._btn_mosaic._base_style = style
             self._btn_mosaic.setStyleSheet(style)
+            self._btn_mosaic.setMaximumWidth(200)
+            elided = self._btn_mosaic.fontMetrics().elidedText(
+                display_name, Qt.ElideRight,
+                self._btn_mosaic.maximumWidth() - 16,  # 16 = padding gauche+droite
+            )
+            if elided != display_name:
+                self._btn_mosaic.setText(elided)
+                self._btn_mosaic.setToolTip(display_name)
             self._layout.addWidget(self._btn_mosaic)
 
             # Bouton fermeture

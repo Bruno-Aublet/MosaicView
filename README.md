@@ -2,7 +2,7 @@
 
 ![Version](https://img.shields.io/github/v/tag/Bruno-Aublet/MosaicView?label=version) ![License](https://img.shields.io/badge/license-GPLv3-green) ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 
-**MosaicView** is a desktop application for managing digital comics collections — CBZ, CBR, CB7 and PDF — without ever having to open or extract them manually.
+**MosaicView** is a desktop application for editing digital comics files — CBZ, CBR, CB7 and PDF — without ever having to open or extract them manually.
 
 Designed for comic, manga and BD readers who want to organize, clean up and prepare their files quickly and intuitively.
 
@@ -87,6 +87,7 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 - **Flatten subdirectories** — some archives store pages in a subfolder structure; this flattens everything to the root level in one click, with automatic conflict resolution if two files share the same name
 - **Undo / Redo** — every operation is reversible
 - **Corrupted page detection** — unreadable or damaged pages are flagged visually in the mosaic
+- **Automatic update check** — on startup, MosaicView silently checks GitHub Releases in the background; if a newer version is available, a banner appears in the window and the menu is updated. No notification if already up to date or if there is no network. A manual check is also available from the menu.
 
 <p>
   <a href="Screenshots/006.png"><img src="Screenshots/006.png" width="32%"></a>

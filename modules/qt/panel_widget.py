@@ -1086,6 +1086,7 @@ class PanelWidget(QWidget):
 
     def _web_import_callbacks(self) -> dict:
         return {
+            "state":                    self._state,
             "save_state":               self.save_state,
             "render_mosaic":            self._render_mosaic,
             "update_button_text":       self._refresh_toolbar_states,

@@ -277,7 +277,7 @@ class WebDownloadController:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def _add_entries_to_mosaic(entries: list, callbacks: dict) -> None:
-    state = _state_module.state
+    state = callbacks.get('state') or _state_module.state
 
     save_state            = callbacks['save_state']
     render_mosaic         = callbacks['render_mosaic']

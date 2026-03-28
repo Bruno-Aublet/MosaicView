@@ -122,7 +122,7 @@ class InfoDialogClickablePath(QDialog):
 
         self._msg = QLabel()
         self._msg.setWordWrap(True)
-        self._msg.setAlignment(Qt.AlignLeft)
+        self._msg.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg)
 
         # Chemin cliquable (statique — pas de clé de traduction)
