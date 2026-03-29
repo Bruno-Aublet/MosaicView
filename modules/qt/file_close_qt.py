@@ -458,6 +458,10 @@ def on_window_close(main_window, canvas, create_cbz_cb, apply_new_names_cb,
             return False  # L'utilisateur a annulé → ne pas fermer l'appli
 
         # Après fermeture du comics : ne pas quitter l'appli, rester sur canvas vide
+        try:
+            cleanup_temp_cb()
+        except Exception as e:
+            print(f"Erreur nettoyage temp files : {e}")
         return False
 
     # Canvas vide → ferme l'application

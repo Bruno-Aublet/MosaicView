@@ -308,7 +308,7 @@ class PanelWidget(QWidget):
         self._menubar = QMenuBar(panel)
         layout.addWidget(self._menubar)
 
-        self._tab_bar = TabBar()
+        self._tab_bar = TabBar(tooltip_parent=panel)
         self._tab_bar.tab_changed.connect(self._on_tab_changed)
         layout.addWidget(self._tab_bar)
 
@@ -1395,7 +1395,9 @@ class PanelWidget(QWidget):
         src_st.modified = True if (kept or src_st.current_file) else False
         from modules.qt.comic_info import sync_pages_in_xml_data
         sync_pages_in_xml_data(src_st, emit_signal=False)
-        source_panel._renumber_no_save()
+        has_images = any(e.get("is_image") for e in dragged_entries)
+        if has_images:
+            source_panel._renumber_no_save()
         source_panel.save_state()
         source_panel._canvas.render_mosaic()
 
@@ -1407,7 +1409,8 @@ class PanelWidget(QWidget):
         sync_pages_in_xml_data(dst_st, emit_signal=False)
         new_reals = set(range(insert_real, insert_real + len(dragged_entries)))
         dst_st.selected_indices = new_reals
-        self._renumber_no_save()
+        if has_images:
+            self._renumber_no_save()
         self.save_state()
         self._canvas.render_mosaic()
 

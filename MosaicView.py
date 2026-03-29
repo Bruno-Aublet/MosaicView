@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 import sys
 import os
@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout, QSplitter, QFrame, QVBoxLayout,
 )
 from PySide6.QtCore import QTimer, Qt, QObject, QEvent
-from PySide6.QtGui import QIcon, QKeySequence, QShortcut
+from PySide6.QtGui import QIcon, QKeySequence, QShortcut, QPainter, QColor
 
 # ── Modules logique métier ────────────────────────────────────────────────────
 import zipfile, rarfile, io
@@ -63,6 +63,31 @@ from modules.qt.panel_widget import PanelWidget
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+class _PanelFrame(QFrame):
+    """QFrame avec bordure dessinée via paintEvent — sans setStyleSheet,
+    pour éviter la propagation coûteuse aux widgets enfants."""
+
+    def __init__(self):
+        super().__init__()
+        self.setFrameShape(QFrame.NoFrame)
+        self._active = False
+        self._color  = "#3a7bd5"
+
+    def set_active(self, active: bool, color: str):
+        self._active = active
+        self._color  = color
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        if self._active:
+            painter = QPainter(self)
+            painter.setPen(QColor(self._color))
+            # 3px solid : dessine 3 rectangles emboîtés
+            r = self.rect()
+            for i in range(3):
+                painter.drawRect(r.adjusted(i, i, -i - 1, -i - 1))
+
+
 # Fenêtre principale
 # ═══════════════════════════════════════════════════════════════════════════════
 class MainWindow(QMainWindow):
@@ -356,27 +381,21 @@ class MainWindow(QMainWindow):
     # Split de l'interface
     # ──────────────────────────────────────────────────────────────────────────
 
-    def _wrap_in_frame(self, panel: "PanelWidget") -> QFrame:
-        """Enroule un PanelWidget dans un QFrame pour gérer la bordure active."""
-        frame = QFrame()
-        frame.setObjectName("panelFrame")
-        frame.setFrameShape(QFrame.NoFrame)
-        # Bordure transparente permanente : le layout ne bougera jamais
-        frame.setStyleSheet("QFrame#panelFrame { border: 3px solid transparent; }")
+    def _wrap_in_frame(self, panel: "PanelWidget") -> "_PanelFrame":
+        """Enroule un PanelWidget dans un _PanelFrame pour gérer la bordure active."""
+        frame = _PanelFrame()
         layout = QVBoxLayout(frame)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(3, 3, 3, 3)
         layout.setSpacing(0)
         layout.addWidget(panel)
         return frame
 
-    def _set_frame_active(self, frame: QFrame, active: bool):
+    def _set_frame_active(self, frame: "_PanelFrame", active: bool):
         """Applique ou retire la bordure colorée sur le frame d'un panneau."""
         dark = getattr(self._active_panel._state, "dark_mode", False)
         color = "#5a9bf5" if dark else "#3a7bd5"
-        if active:
-            frame.setStyleSheet(f"QFrame#panelFrame {{ border: 3px solid {color}; }}")
-        else:
-            frame.setStyleSheet("QFrame#panelFrame { border: 3px solid transparent; }")
+        frame.set_active(active, color)
+        frame.update()
 
     def _toggle_split_ui(self):
         if self._split_active:
@@ -398,8 +417,8 @@ class MainWindow(QMainWindow):
         self._frame2 = self._wrap_in_frame(self._panel2)
         self._panels_splitter.addWidget(self._frame2)
 
-        # Synchronise dark_mode du nouveau panneau depuis le panneau existant
-        self._panel2._state.dark_mode = self._panel._state.dark_mode
+        # Synchronise dark_mode du nouveau panneau depuis la config (source de vérité au démarrage)
+        self._panel2._state.dark_mode = get_config_manager().get_dark_mode()
         from modules.qt.toggle_theme_qt import apply_theme
         from modules.qt import state as _state_module
         _state_module.state = self._panel2._state
@@ -815,4 +834,3 @@ if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()  # requis pour PyInstaller + spawn
     main()
- 

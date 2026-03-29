@@ -814,6 +814,7 @@ class MosaicCanvas(QGraphicsView):
         self._warn_flatten_callback = None            # () → None  (renumérotation)
         self._warn_flatten_dnd_callback = None        # () → None  (D&D inter-panneaux)
         self._inter_panel_warn_shown = False          # True si la cible a déjà affiché le warning
+        self._drop_was_internal      = False          # True si le drop a atterri dans MosaicView
         self._save_state_callback = None              # défini par MainWindow après création
         self._renumber_after_drop_callback = None     # () → None, défini par MainWindow après création
         self._delete_selected_callback = None         # () → None, défini par MainWindow après création
@@ -962,6 +963,7 @@ class MosaicCanvas(QGraphicsView):
             f"QScrollBar::handle:horizontal:hover {{ background: {handle}; }}"
             f"QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{ width: 0px; }}"
         )
+        self._overlay_tip._apply_style()
 
     def show_item_tooltip(self, html: str):
         """Affiche le tooltip overlay avec le contenu HTML donné."""
@@ -1410,9 +1412,9 @@ class MosaicCanvas(QGraphicsView):
         # Identifiant du canvas source — toujours présent pour permettre la détection
         # inter-panneaux même en cas de sous-dossiers (le warning y est affiché côté cible)
         mime.setData("application/x-mosaicview-panel", str(id(self)).encode())
-        if has_subdirs or has_non_image:
+        if has_subdirs:
             # Pas de mime indices → pas d'indicateur rouge, pas de réordonnancement
-            # Le warning est affiché à la fin si drop interne (cas has_subdirs uniquement)
+            # Le warning est affiché à la fin si drop interne
             pass
         else:
             indices_bytes = ",".join(str(i) for i in selected_reals).encode()
@@ -1494,12 +1496,15 @@ class MosaicCanvas(QGraphicsView):
                 self._warn_flatten_dnd_callback()
         self._inter_panel_warn_shown = False
 
-        # Nettoyage du dossier temporaire après le drop
-        if tmp_dir and os.path.isdir(tmp_dir):
+        # Drop interne (réordonnancement) → les fichiers temp ne sont pas utilisés, on nettoie.
+        # Drop externe (explorateur, navigateur…) → on laisse intact ; la cible lit le fichier
+        # après drag.exec(), et le dossier sera nettoyé au prochain démarrage.
+        if self._drop_was_internal and tmp_dir and os.path.isdir(tmp_dir):
             try:
                 shutil.rmtree(tmp_dir, ignore_errors=True)
             except Exception:
                 pass
+        self._drop_was_internal = False
 
         self._drag_start_pos        = None
         self._drag_candidate_visual = None
@@ -1675,9 +1680,18 @@ class MosaicCanvas(QGraphicsView):
                 self._inter_panel_drop_callback(
                     dragged_reals, insert_real, source_id
                 )
+                src_canvas = event.source()
+                if isinstance(src_canvas, MosaicCanvas):
+                    src_canvas._drop_was_internal = True
                 event.acceptProposedAction()
             else:
                 # ── Réordonnancement interne ──────────────────────────────────
+                # Les non-images ne participent pas au réordonnancement intra-panneau
+                dragged_reals = [i for i in dragged_reals
+                                 if i < len(st.images_data) and st.images_data[i].get("is_image")]
+                if not dragged_reals:
+                    event.ignore()
+                    return
                 # Convertit insert_visual en real_idx cible
                 insert_real = st.visual_to_real.get(insert_visual, len(st.images_data))
                 if insert_real is None:
@@ -1707,6 +1721,7 @@ class MosaicCanvas(QGraphicsView):
                 if self._save_state_callback:
                     self._save_state_callback()
                 self._reorder_items_after_drop()
+                self._drop_was_internal = True
                 event.acceptProposedAction()
 
         elif mime.hasUrls() and event.source() is not self:

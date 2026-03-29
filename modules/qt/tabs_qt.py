@@ -125,7 +125,7 @@ class TabBar(QWidget):
     """
     tab_changed = Signal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, tooltip_parent=None):
         super().__init__(parent)
         self.setFixedHeight(22)
         self._layout = QHBoxLayout(self)
@@ -139,6 +139,10 @@ class TabBar(QWidget):
 
         self._close_callback = None
         self._state = None  # state du panneau propriétaire (évite d'utiliser le singleton)
+
+        from modules.qt.overlay_tooltip_qt import OverlayTooltip
+        # tooltip_parent doit être un widget plus grand que TabBar (22px) pour que l'overlay soit visible
+        self._overlay_tip = OverlayTooltip(tooltip_parent if tooltip_parent is not None else self)
 
         # Stretcher pour pousser les boutons à gauche
         self._layout.addStretch(1)
@@ -177,6 +181,8 @@ class TabBar(QWidget):
     # ── Construction interne ──────────────────────────────────────────────────
     def _rebuild(self):
         # Supprime les anciens boutons
+        if self._btn_mosaic is not None:
+            self._overlay_tip.untrack(self._btn_mosaic)
         for btn in [self._btn_mosaic, self._btn_close, self._btn_metadata]:
             if btn is not None:
                 self._layout.removeWidget(btn)
@@ -209,11 +215,12 @@ class TabBar(QWidget):
             self._btn_mosaic.setMaximumWidth(200)
             elided = self._btn_mosaic.fontMetrics().elidedText(
                 display_name, Qt.ElideRight,
-                self._btn_mosaic.maximumWidth() - 16,  # 16 = padding gauche+droite
+                self._btn_mosaic.maximumWidth() - 32,  # 32 = padding stylesheet (8×2) + marges Qt internes
             )
             if elided != display_name:
                 self._btn_mosaic.setText(elided)
-                self._btn_mosaic.setToolTip(display_name)
+            self._btn_mosaic.setMouseTracking(True)
+            self._overlay_tip.track(self._btn_mosaic, display_name)
             self._layout.addWidget(self._btn_mosaic)
 
             # Bouton fermeture
@@ -257,6 +264,7 @@ class TabBar(QWidget):
 
     def apply_theme(self):
         """Met à jour les couleurs des onglets selon le thème courant."""
+        self._overlay_tip._apply_style()
         self._rebuild()
 
     def _tab_style(self, active: bool) -> str:

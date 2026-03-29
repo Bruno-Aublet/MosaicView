@@ -1291,6 +1291,8 @@ class IconToolbarQt(QWidget):
 
     def set_hover_color(self, color: str):
         IconToolbarQt._hover_color = color
+        if hasattr(self, "_overlay_tip"):
+            self._overlay_tip._apply_style()
 
     def set_slider_theme(self, theme: str):
         if hasattr(self, "_thumb_size_slider"):
