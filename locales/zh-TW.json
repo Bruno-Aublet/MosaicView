@@ -1107,7 +1107,7 @@
     "title": "MosaicView - 使用說明",
     "intro": "MosaicView 允許您操作和編輯漫畫(數位漫畫書),而無需將其從壓縮檔中提取。該應用程式支援 CBZ (ZIP)、CBR (RAR) 和 PDF 格式。 本應用程式僅相容64位元系統。",
     "open_files": "開啟檔案",
-    "open_files_content": "• 點擊「開啟 CBZ/CBR/CB7/PDF」按鈕\n• 或直接將檔案拖放到視窗中\n• 支援的格式:CBZ、CBR、PDF、圖像(JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). 也可以打開EPUB檔案，但只會提取其圖像（文字會被忽略）。\n• 已加密的PDF（開啟時需要密碼）:檔案無法匯入，將顯示錯誤訊息。\n• 受保護禁止修改的PDF（owner password）:頁面正常匯入。MosaicView建議在同一資料夾中儲存一份解鎖的副本。",
+    "open_files_content": "• 點擊「開啟 CBZ/CBR/CB7/PDF」按鈕\n• 或直接將檔案拖放到視窗中\n• 支援的格式:CBZ、CBR、PDF、圖像(JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). 也可以打開EPUB檔案，但只會提取其圖像（文字會被忽略）。 注意：以紅色顯示的副檔名（WEBP、TIFF、GIF、ICO…）表示可能與舊版 CBZ/CBR 閱讀器不相容的格式。不過，MosaicView 仍可正常處理這些檔案。\n• 已加密的PDF（開啟時需要密碼）:檔案無法匯入，將顯示錯誤訊息。\n• 受保護禁止修改的PDF（owner password）:頁面正常匯入。MosaicView建議在同一資料夾中儲存一份解鎖的副本。",
     "mosaic": "縮圖",
     "mosaic_content": "馬賽克以縮圖形式顯示您漫畫的所有頁面。您可以：\n• 透過拖放重新排列頁面（頁碼將自動更新，並會按照當前啟用的重新編號模式進行）\n• 選擇多個頁面（Ctrl+點擊或Shift+點擊）\n• 使用滑桿調整縮圖大小\n• 點擊檔案名稱手動重新命名檔案\n• 從Windows檔案總管直接拖放漫畫檔案（CBZ/CBR/PDF）到另一個開啟的漫畫中以合併其內容",
     "manipulation": "頁面操作",

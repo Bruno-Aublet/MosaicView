@@ -1279,7 +1279,7 @@ class _ResizeWorker(QThread):
                 from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
                 _pidx = get_page_image_index(state, entry)
                 if _pidx is not None:
-                    update_page_entries_in_xml_data(state, [(_pidx, entry)])
+                    update_page_entries_in_xml_data(state, [(_pidx, entry)], emit_signal=False)
 
                 img.close()
                 img_resized.close()
@@ -1288,14 +1288,14 @@ class _ResizeWorker(QThread):
                 if entry.get("large_thumb_pil") is not None:
                     entry["large_thumb_pil"].close()
                     entry["large_thumb_pil"] = None
-                entry.pop("qt_pixmap_large", None)
-                entry.pop("qt_qimage_large", None)
 
                 regenerate_thumbnail(entry)
                 free_image_memory(entry)
 
             except Exception as exc:
-                print(f"Erreur resize {entry.get('orig_name', '?')}: {exc}")
+                import traceback
+                print(f"[RESIZE DEBUG] idx={idx} EXCEPTION: {exc}")
+                traceback.print_exc()
 
             self.progress.emit(int((idx + 1) / total * 100))
 
@@ -1366,6 +1366,8 @@ def _start_resize_worker(canvas, selected_entries, state,
         worker_ref[0] = None
         _hide()
         state.modified = True
+        from modules.qt.metadata_signal import metadata_pages_signal
+        metadata_pages_signal.emit()
         render_mosaic_fn()
         update_button_text()
         save_state_fn()

@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 
 import sys
 import os
@@ -22,7 +22,7 @@ Image.MAX_IMAGE_PIXELS = 500_000_000
 # ── PySide6 ───────────────────────────────────────────────────────────────────
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget,
-    QHBoxLayout, QSplitter, QFrame, QVBoxLayout,
+    QHBoxLayout, QSplitter, QSplitterHandle, QFrame, QVBoxLayout,
 )
 from PySide6.QtCore import QTimer, Qt, QObject, QEvent
 from PySide6.QtGui import QIcon, QKeySequence, QShortcut, QPainter, QColor
@@ -60,6 +60,24 @@ from modules.qt.localization import init_localization, _
 from modules.qt.font_loader import resource_path
 from modules.qt.font_manager_qt import init_font_manager
 from modules.qt.panel_widget import PanelWidget
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+class _EqualSplitterHandle(QSplitterHandle):
+    """Double-clic sur le séparateur → remet les deux panneaux à 50/50."""
+    def mouseDoubleClickEvent(self, event):
+        splitter = self.splitter()
+        total = sum(splitter.sizes())
+        if total > 0:
+            half = total // 2
+            splitter.setSizes([half, total - half])
+            splitter.splitterMoved.emit(half, 1)
+        super().mouseDoubleClickEvent(event)
+
+
+class _EqualSplitter(QSplitter):
+    def createHandle(self):
+        return _EqualSplitterHandle(self.orientation(), self)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -146,7 +164,7 @@ class MainWindow(QMainWindow):
         self._main_layout.setSpacing(0)
 
         # ── QSplitter inter-panneaux ──────────────────────────────────────────
-        self._panels_splitter = QSplitter(Qt.Horizontal)
+        self._panels_splitter = _EqualSplitter(Qt.Horizontal)
         self._panels_splitter.setChildrenCollapsible(False)
         self._panels_splitter.setHandleWidth(8)
         self._panels_splitter.setStyleSheet("""
@@ -416,6 +434,8 @@ class MainWindow(QMainWindow):
         )
         self._frame2 = self._wrap_in_frame(self._panel2)
         self._panels_splitter.addWidget(self._frame2)
+        self._panels_splitter.setStretchFactor(0, 1)
+        self._panels_splitter.setStretchFactor(1, 1)
 
         # Synchronise dark_mode du nouveau panneau depuis la config (source de vérité au démarrage)
         self._panel2._state.dark_mode = get_config_manager().get_dark_mode()
@@ -788,6 +808,9 @@ def main():
             _splash = QSplashScreen(_splash_px, Qt.WindowStaysOnTopHint)
             _splash.show()
             app.processEvents()
+
+    from modules.qt.temp_files import cleanup_stale_mei_dirs
+    cleanup_stale_mei_dirs()
 
     win = MainWindow()
     win._app_ref        = app

@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.4] - 2026-03-31
+
+- Fixed a bug where resizing images in a CBZ containing a `ComicInfo.xml` with a `<Pages>` section would cause the application to become unresponsive for the entire duration of the operation. After each resized image, the XML metadata was updated and a signal was emitted from the worker thread, triggering a full rebuild of the metadata panel UI on each image. On a 110-page file this resulted in 110 queued UI rebuilds that could take over an hour to drain. The signal is now suppressed during the resize loop and emitted once when the operation completes.
+- Fixed a long freeze at the end of a resize operation. The worker was unnecessarily invalidating the cached thumbnail pixmap for each resized image, forcing `render_mosaic` to rebuild all thumbnails from scratch in the UI thread. Since resizing does not change the visual appearance of thumbnails, the cache is now preserved.
+- Fixed a long freeze after the mosaic was refreshed at the end of a resize operation. The metadata panel was doing a full rebuild of all its widgets (including all page rows) in response to the metadata signal. After a resize, only the `ImageWidth`, `ImageHeight`, and `ImageSize` values change — the panel now updates only those values in place.
+- Fixed a bug where dragging a WebP image from a web browser would incorrectly store it with a `.jpg` extension. Chrome silently transcodes images to WebP when dragging them, while keeping the original filename. The actual file format is now detected from the file content and the extension is corrected accordingly.
+- The file extension label in the mosaic now appears in red for image formats other than JPG, PNG, GIF, and BMP (e.g. WEBP, TIFF, ICO). This is a warning indicator: these formats may not be readable by older CBZ/CBR readers. MosaicView itself handles them normally. Non-image files (e.g. `.xml`, `.nfo`) are not affected.
+- Fixed the "Conversion complete" dialog where the three action buttons were too narrow to display their text correctly. The dialog width was increased from 540px to 620px.
+- On startup, stale `_MEI*` temporary directories left behind by PyInstaller after a crash are now silently deleted. Directories still locked by another active instance are left untouched. If a directory cannot be deleted after a crash, a Windows restart may be required to release the lock.
+- Fixed a bug where dropping multiple archives onto an empty canvas would not show the source archive name in the thumbnail tooltips. Only the merge path (dropping onto an already-open comic) correctly set the provenance. The initial multi-load path now sets it as well.
+- In split view, resizing the window now preserves the ratio between the two panels instead of forcing a 50/50 split. Double-clicking the separator resets it to 50/50.
+- Reorganized the right-click context menus. Commands that act on a selection (Save selection as CBZ, Export selected pages, Print selection, Copy, Cut, Delete, Deselect) have been moved from the canvas context menu to the thumbnail context menu. Commands that act on the archive as a whole (Renumber pages, Flatten directories) have been moved from the thumbnail context menu to the canvas context menu. The Show/Hide icon column command is now the first item in the canvas context menu.
+
 ## [1.0.3] - 2026-03-29
 
 - Fixed panel 2 always starting in light theme when the application was launched in dark mode with split view active.

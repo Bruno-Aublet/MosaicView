@@ -44,6 +44,15 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     canvas_empty  = not has_file and not has_images
     print_available = bool(callbacks.get('PRINT_AVAILABLE'))
 
+    # ── Afficher/masquer la colonne d'icônes ──────────────────────────────────
+
+    toolbar_visible = callbacks.get('get_toolbar_visible', lambda: True)()
+    sidebar_label = (_("context_menu.canvas_with_file.hide_sidebar") if toolbar_visible
+                     else _("context_menu.canvas_with_file.show_sidebar"))
+    menu.addAction(sidebar_label, callbacks['toggle_toolbar'])
+
+    menu.addSeparator()
+
     # ── Section FICHIER ───────────────────────────────────────────────────────
 
     menu.addAction(_("menu.file_open"), callbacks['open_file'])
@@ -95,16 +104,6 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     else:
         _add_disabled(menu, _("buttons.save_as"))
 
-    if has_images and has_selection:
-        menu.addAction(_("buttons.save_selection"), callbacks['save_selection_as_cbz'])
-    else:
-        _add_disabled(menu, _("buttons.save_selection"))
-
-    if has_images and has_selection:
-        menu.addAction(_("buttons.save_to_folder"), callbacks['save_selection_to_folder'])
-    else:
-        _add_disabled(menu, _("buttons.save_to_folder"))
-
     if not has_file and has_images:
         menu.addAction(_("buttons.create_cbz"), callbacks['create_cbz_from_images'])
     else:
@@ -126,22 +125,10 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
 
     menu.addSeparator()
 
-    toolbar_visible = callbacks.get('get_toolbar_visible', lambda: True)()
-    sidebar_label = (_("context_menu.canvas_with_file.hide_sidebar") if toolbar_visible
-                     else _("context_menu.canvas_with_file.show_sidebar"))
-    menu.addAction(sidebar_label, callbacks['toggle_toolbar'])
-
-    menu.addSeparator()
-
     if print_available and has_images:
         menu.addAction(_("buttons.print_all"), callbacks['print_all'])
     else:
         _add_disabled(menu, _("buttons.print_all"))
-
-    if print_available and has_selection:
-        menu.addAction(_("buttons.print_selection"), callbacks['print_selection'])
-    else:
-        _add_disabled(menu, _("buttons.print_selection"))
 
     menu.addSeparator()
 
@@ -174,24 +161,6 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
 
     menu.addSeparator()
 
-    if has_selection:
-        act = menu.addAction(_("buttons.copy"), callbacks['copy_selected'])
-        act.setShortcut("Ctrl+C")
-        act.setShortcutVisibleInContextMenu(True)
-    else:
-        act = _add_disabled(menu, _("buttons.copy"))
-        act.setShortcut("Ctrl+C")
-        act.setShortcutVisibleInContextMenu(True)
-
-    if has_selection:
-        act = menu.addAction(_("buttons.cut"), callbacks['cut_selected'])
-        act.setShortcut("Ctrl+X")
-        act.setShortcutVisibleInContextMenu(True)
-    else:
-        act = _add_disabled(menu, _("buttons.cut"))
-        act.setShortcut("Ctrl+X")
-        act.setShortcutVisibleInContextMenu(True)
-
     if has_file:
         menu.addAction(_("context_menu.canvas_with_file.copy_archive"), callbacks['copy_archive_to_clipboard'])
     else:
@@ -202,15 +171,6 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     act.setShortcutVisibleInContextMenu(True)
 
     menu.addSeparator()
-
-    if has_selection:
-        act = menu.addAction(_("menu.delete"), callbacks['delete_selected'])
-        act.setShortcut("Suppr")
-        act.setShortcutVisibleInContextMenu(True)
-    else:
-        act = _add_disabled(menu, _("menu.delete"))
-        act.setShortcut("Suppr")
-        act.setShortcutVisibleInContextMenu(True)
 
     if has_selection:
         act = menu.addAction(_("menu.invert_selection"), callbacks['invert_selection'])
@@ -228,15 +188,6 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     else:
         act = _add_disabled(menu, _("menu.select_all"))
         act.setShortcut("Ctrl+A")
-        act.setShortcutVisibleInContextMenu(True)
-
-    if has_selection:
-        act = menu.addAction(_("menu.deselect"), callbacks['clear_selection'])
-        act.setShortcut("Esc")
-        act.setShortcutVisibleInContextMenu(True)
-    else:
-        act = _add_disabled(menu, _("menu.deselect"))
-        act.setShortcut("Esc")
         act.setShortcutVisibleInContextMenu(True)
 
     menu.addSeparator()
@@ -265,6 +216,30 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     sort_act = menu.addMenu(sort_submenu)
     if not has_images:
         sort_act.setEnabled(False)
+
+    menu.addSeparator()
+
+    has_subdir = has_images and callbacks['has_subdirectory_structure']()
+    can_renumber = state.needs_renumbering and not has_subdir
+
+    if can_renumber:
+        menu.addAction(_("context_menu.image.renumber_auto"),   callbacks['renumber_pages_auto'])
+        menu.addAction(_("context_menu.image.renumber_simple"), callbacks['renumber_pages'])
+    else:
+        _add_disabled(menu, _("context_menu.image.renumber_auto"))
+        _add_disabled(menu, _("context_menu.image.renumber_simple"))
+
+    menu.addSeparator()
+
+    all_data = list(state.all_entries) if hasattr(state, 'all_entries') and state.all_entries else list(state.images_data)
+    can_flatten = (
+        any(e.get("is_dir") for e in all_data)
+        or any('/' in e.get("orig_name", "") and not e.get("is_dir") for e in all_data)
+    )
+    if can_flatten:
+        menu.addAction(_("context_menu.canvas_with_file.flatten"), callbacks['flatten_directories'])
+    else:
+        _add_disabled(menu, _("context_menu.canvas_with_file.flatten"))
 
     menu.addSeparator()
 
@@ -397,29 +372,67 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
     # ── Section ARCHIVES ──────────────────────────────────────────────────────
 
     has_images = bool(st.images_data)
-    has_subdir = has_images and callbacks['has_subdirectory_structure']()
-    can_renumber = st.needs_renumbering and not has_subdir
-
-    if can_renumber:
-        menu.addAction(_("context_menu.image.renumber_auto"),    callbacks['renumber_pages_auto'])
-        menu.addAction(_("context_menu.image.renumber_simple"),  callbacks['renumber_pages'])
-    else:
-        _add_disabled(menu, _("context_menu.image.renumber_auto"))
-        _add_disabled(menu, _("context_menu.image.renumber_simple"))
 
     menu.addSeparator()
 
+    # ── Section SÉLECTION ─────────────────────────────────────────────────────
+
+    has_selection = bool(st.selected_indices)
+    has_file = bool(st.current_file)
+    print_available = bool(callbacks.get('PRINT_AVAILABLE'))
+
+    if has_file and has_selection:
+        menu.addAction(_("buttons.save_selection"), callbacks['save_selection_as_cbz'])
+    else:
+        _add_disabled(menu, _("buttons.save_selection"))
+
+    if has_selection:
+        menu.addAction(_("buttons.save_to_folder"), callbacks['save_selection_to_folder'])
+    else:
+        _add_disabled(menu, _("buttons.save_to_folder"))
+
+    if print_available and has_selection:
+        menu.addAction(_("buttons.print_selection"), callbacks['print_selection'])
+    else:
+        _add_disabled(menu, _("buttons.print_selection"))
+
     menu.addSeparator()
 
-    all_data = list(st.all_entries) if hasattr(st, 'all_entries') and st.all_entries else list(st.images_data)
-    can_flatten = (
-        any(e.get("is_dir") for e in all_data)
-        or any('/' in e.get("orig_name", "") and not e.get("is_dir") for e in all_data)
-    )
-    if can_flatten:
-        menu.addAction(_("context_menu.canvas_with_file.flatten"), callbacks['flatten_directories'])
+    if has_selection:
+        act = menu.addAction(_("buttons.copy"), callbacks['copy_selected'])
+        act.setShortcut("Ctrl+C")
+        act.setShortcutVisibleInContextMenu(True)
     else:
-        _add_disabled(menu, _("context_menu.canvas_with_file.flatten"))
+        act = _add_disabled(menu, _("buttons.copy"))
+        act.setShortcut("Ctrl+C")
+        act.setShortcutVisibleInContextMenu(True)
+
+    if has_selection:
+        act = menu.addAction(_("buttons.cut"), callbacks['cut_selected'])
+        act.setShortcut("Ctrl+X")
+        act.setShortcutVisibleInContextMenu(True)
+    else:
+        act = _add_disabled(menu, _("buttons.cut"))
+        act.setShortcut("Ctrl+X")
+        act.setShortcutVisibleInContextMenu(True)
+
+    if has_selection:
+        act = menu.addAction(_("menu.delete"), callbacks['delete_selected'])
+        act.setShortcut("Suppr")
+        act.setShortcutVisibleInContextMenu(True)
+    else:
+        act = _add_disabled(menu, _("menu.delete"))
+        act.setShortcut("Suppr")
+        act.setShortcutVisibleInContextMenu(True)
+
+    if has_selection:
+        act = menu.addAction(_("menu.deselect"), callbacks['clear_selection'])
+        act.setShortcut("Esc")
+        act.setShortcutVisibleInContextMenu(True)
+    else:
+        act = _add_disabled(menu, _("menu.deselect"))
+        act.setShortcut("Esc")
+        act.setShortcutVisibleInContextMenu(True)
 
     menu.exec(global_pos)
 

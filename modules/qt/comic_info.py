@@ -359,7 +359,7 @@ def get_page_image_index(state, entry):
     return None
 
 
-def update_page_entries_in_xml_data(state, entries_with_idx):
+def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
     """
     Met à jour les attributs ImageSize, ImageWidth, ImageHeight des éléments <Page>
     dans ComicInfo.xml pour les entrées modifiées.
@@ -367,6 +367,7 @@ def update_page_entries_in_xml_data(state, entries_with_idx):
     entries_with_idx : liste de (page_image_index, entry)
         - page_image_index : int, valeur de l'attribut Image="N" dans <Page>
         - entry : dict images_data avec entry['bytes'] déjà mis à jour
+    emit_signal : si False, n'émet pas metadata_signal (utile depuis un thread worker)
 
     Guard : ne fait rien si :
     - pas de comic_metadata
@@ -436,8 +437,9 @@ def update_page_entries_in_xml_data(state, entries_with_idx):
             xml_string = _serialize_comic_xml(root, _original_xml_bytes)
             xml_entry['bytes'] = xml_string
             state.modified = True
-            from modules.qt.metadata_signal import metadata_signal
-            metadata_signal.emit()
+            if emit_signal:
+                from modules.qt.metadata_signal import metadata_signal
+                metadata_signal.emit()
 
     except Exception as e:
         print(f"[comic_info] update_page_entries_in_xml_data : {e}")

@@ -595,10 +595,13 @@ class ThumbnailItem(QGraphicsItem):
         self._name_x         = name_x
 
         # Extension — centrée verticalement sur la hauteur de la box
+        _CDISPLAY_FORMATS = {".jpg", ".jpeg", ".png", ".gif", ".bmp"}
+        is_image = self.entry.get("is_image", True)
+        ext_color = QColor(theme["text"]) if (not is_image or ext.lower() in _CDISPLAY_FORMATS) else QColor("#cc0000")
         ext_item = QGraphicsTextItem(self)
         ext_item.setPlainText(ext)
         ext_item.setFont(font8)
-        ext_item.setDefaultTextColor(QColor(theme["text"]))
+        ext_item.setDefaultTextColor(ext_color)
         ext_h    = ext_item.boundingRect().height()
         offset_y = (line_h - ext_h) / 2
         ext_item.setPos(name_x + name_w + 2, th + 4 + offset_y)
@@ -869,6 +872,12 @@ class MosaicCanvas(QGraphicsView):
                     _apply_name_item_font(item._name_text_item, font8, item._name_w, elided)
                 item._name_line_h = line_h
                 if item._ext_item is not None:
+                    _CDISPLAY_FORMATS = {".jpg", ".jpeg", ".png", ".gif", ".bmp"}
+                    ext = item.entry.get("extension", "")
+                    is_image = item.entry.get("is_image", True)
+                    theme = get_current_theme()
+                    ext_color = QColor(theme["text"]) if (not is_image or ext.lower() in _CDISPLAY_FORMATS) else QColor("#cc0000")
+                    item._ext_item.setDefaultTextColor(ext_color)
                     item._ext_item.setFont(font8)
                     ext_h = item._ext_item.boundingRect().height()
                     offset_y = (line_h - ext_h) / 2

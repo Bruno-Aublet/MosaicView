@@ -1002,6 +1002,7 @@ class LoadWorker(QThread):
                             entry = create_entry(file_name, data, IMAGE_EXTS)
                             if add_prefix:
                                 entry["orig_name"] = "NEW-" + entry["orig_name"]
+                                entry["source_archive"] = os.path.basename(filepath)
                             build_qimage_for_entry(entry)
                             all_data.append(entry)
                             processed_files += 1
@@ -1019,6 +1020,7 @@ class LoadWorker(QThread):
                     entry = create_entry(file, data, IMAGE_EXTS)
                     if add_prefix:
                         entry["orig_name"] = "NEW-" + entry["orig_name"]
+                        entry["source_archive"] = os.path.basename(filepath)
                     build_qimage_for_entry(entry)
                     all_data.append(entry)
                     processed_files += 1
@@ -1038,6 +1040,7 @@ class LoadWorker(QThread):
                             entry = create_entry(file, data, IMAGE_EXTS)
                             if add_prefix:
                                 entry["orig_name"] = "NEW-" + entry["orig_name"]
+                                entry["source_archive"] = os.path.basename(filepath)
                             build_qimage_for_entry(entry)
                             all_data.append(entry)
                             processed_files += 1

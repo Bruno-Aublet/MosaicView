@@ -106,7 +106,7 @@ class _ConversionCompleteDialog(QDialog):
         self.action = None  # None / "delete_orig" / "delete_conv"
 
         self.setModal(True)
-        self.setFixedWidth(540)
+        self.setFixedWidth(620)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 12)

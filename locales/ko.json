@@ -1107,7 +1107,7 @@
     "title": "MosaicView - 사용 방법",
     "intro": "MosaicView를 사용하면 만화(디지털 코믹북)를 아카이브에서 추출하지 않고도 조작하고 편집할 수 있습니다. CBZ (ZIP), CBR (RAR) 및 PDF 형식을 지원합니다. 이 애플리케이션은 64비트 시스템에서만 호환됩니다.",
     "open_files": "파일 열기",
-    "open_files_content": "• 'CBZ/CBR/CB7/PDF 열기' 버튼 클릭\n• 또는 파일을 창에 직접 드래그 앤 드롭\n• 지원 형식: CBZ, CBR, CB7, PDF, 이미지 (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB 파일도 열 수 있지만 이미지만 추출됩니다(텍스트는 무시됨).\n• 암호화된 PDF(열기에 비밀번호 필요): 파일을 가져올 수 없으며 오류 메시지가 표시됩니다.\n• 수정으로부터 보호된 PDF(owner password): 페이지가 정상적으로 가져와집니다. MosaicView는 같은 폴더에 잠금 해제된 복사본을 저장할 것을 제안합니다.",
+    "open_files_content": "• 'CBZ/CBR/CB7/PDF 열기' 버튼 클릭\n• 또는 파일을 창에 직접 드래그 앤 드롭\n• 지원 형식: CBZ, CBR, CB7, PDF, 이미지 (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB 파일도 열 수 있지만 이미지만 추출됩니다(텍스트는 무시됨).\n• 암호화된 PDF(열기에 비밀번호 필요): 파일을 가져올 수 없으며 오류 메시지가 표시됩니다.\n• 수정으로부터 보호된 PDF(owner password): 페이지가 정상적으로 가져와집니다. MosaicView는 같은 폴더에 잠금 해제된 복사본을 저장할 것을 제안합니다. 참고: 빨간색으로 표시된 확장자(WEBP, TIFF, GIF, ICO…)는 오래된 CBZ/CBR 리더와 호환되지 않을 수 있는 형식을 나타냅니다. 그러나 이 파일들은 MosaicView에서 정상적으로 처리됩니다.",
     "mosaic": "모자이크",
     "mosaic_content": "모자이크는 만화책의 모든 페이지를 썸네일로 표시합니다. 다음을 수행할 수 있습니다:\n• 드래그 앤 드롭으로 페이지 재정렬(페이지 번호는 자동으로 매겨지며, 활성 번호 매기기 모드에 따라 적용됩니다)\n• 여러 페이지 선택(Ctrl+클릭 또는 Shift+클릭)\n• 슬라이더로 썸네일 크기 조정\n• 파일 이름을 클릭하여 수동으로 이름 변경\n• Windows 탐색기에서 만화책 파일(CBZ/CBR/PDF)을 다른 열린 만화책으로 직접 드래그 앤 드롭하여 콘텐츠 병합",
     "manipulation": "페이지 조작",

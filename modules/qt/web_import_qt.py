@@ -176,6 +176,7 @@ class _DownloadWorker(QThread):
 
                 try:
                     img = Image.open(io.BytesIO(image_data))
+                    real_fmt = img.format
                     img.verify()
 
                     url_path     = img_url.split('?')[0]
@@ -183,6 +184,15 @@ class _DownloadWorker(QThread):
 
                     if not url_filename or '.' not in url_filename:
                         url_filename = f"{self._page_title}_{idx + 1:03d}.jpg"
+
+                    # Corriger l'extension si le format réel diffère (ex. WebP servi en .jpg par Chrome)
+                    if real_fmt:
+                        ext_map = {'JPEG': 'jpg'}
+                        real_ext = ext_map.get(real_fmt, real_fmt.lower())
+                        declared_ext = os.path.splitext(url_filename)[1].lstrip('.').lower()
+                        if declared_ext != real_ext:
+                            base = os.path.splitext(url_filename)[0]
+                            url_filename = f"{base}.{real_ext}"
 
                     needs_prefix   = has_comics_open or state.images_data or new_entries
                     final_filename = ("NEW-" + url_filename) if needs_prefix else url_filename

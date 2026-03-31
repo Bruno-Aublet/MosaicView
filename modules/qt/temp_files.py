@@ -1,11 +1,48 @@
 # temp_files.py — Gestion des fichiers temporaires (version Qt, sans tkinter)
 
 import os
+import sys
 import tempfile
 import time
 import shutil
 
 from modules.qt.localization import _
+
+
+def cleanup_stale_mei_dirs():
+    """
+    Supprime les dossiers _MEI* orphelins laissés par PyInstaller (mode --onefile)
+    après un plantage. Le dossier de l'instance courante (sys._MEIPASS) est exclu.
+    Les dossiers encore verrouillés par une autre instance active sont ignorés.
+    Sans effet hors PyInstaller.
+    """
+    current_meipass = getattr(sys, "_MEIPASS", None)
+    if current_meipass is None:
+        return  # pas en mode PyInstaller onefile
+
+    temp_base = tempfile.gettempdir()
+    try:
+        entries = os.listdir(temp_base)
+    except Exception:
+        return
+
+    for name in entries:
+        if not name.startswith("_MEI"):
+            continue
+        path = os.path.join(temp_base, name)
+        if not os.path.isdir(path):
+            continue
+        if os.path.normcase(os.path.realpath(path)) == os.path.normcase(os.path.realpath(current_meipass)):
+            continue  # dossier de l'instance courante
+        # Teste si le dossier est verrouillé par une autre instance active
+        try:
+            os.rename(path, path)
+        except (PermissionError, OSError):
+            continue  # verrouillé → autre instance active, on laisse
+        try:
+            shutil.rmtree(path, ignore_errors=True)
+        except Exception:
+            pass
 
 
 def get_mosaicview_temp_dir():

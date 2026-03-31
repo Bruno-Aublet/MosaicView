@@ -312,8 +312,9 @@ class MetadataTab(QScrollArea):
         self._page_rows         = []   # [QWidget, ...] une ligne par page
         self._pages_content_lay = None # QVBoxLayout du contenu pages (pour ajout/suppression)
 
-        from modules.qt.metadata_signal import metadata_signal
+        from modules.qt.metadata_signal import metadata_signal, metadata_pages_signal
         metadata_signal.changed.connect(self.refresh)
+        metadata_pages_signal.changed.connect(self.refresh_pages_only)
 
         from modules.qt.language_signal import language_signal
         self._on_language_changed_meta = lambda _: self._restyle()
@@ -321,10 +322,14 @@ class MetadataTab(QScrollArea):
 
     def cleanup(self):
         """Déconnecte les signaux globaux — à appeler avant destruction."""
-        from modules.qt.metadata_signal import metadata_signal
+        from modules.qt.metadata_signal import metadata_signal, metadata_pages_signal
         from modules.qt.language_signal import language_signal
         try:
             metadata_signal.changed.disconnect(self.refresh)
+        except RuntimeError:
+            pass
+        try:
+            metadata_pages_signal.changed.disconnect(self.refresh_pages_only)
         except RuntimeError:
             pass
         try:
@@ -402,6 +407,21 @@ class MetadataTab(QScrollArea):
 
         self._vlay.addStretch(1)
         self._restyle()
+
+    def refresh_pages_only(self):
+        """Mise à jour légère : remet à jour uniquement les valeurs des lignes Pages
+        sans reconstruire l'ensemble du panneau. Appelé après un resize."""
+        st = _state_module.state
+        if not st or not st.comic_metadata:
+            return
+        pages = st.comic_metadata.get('pages')
+        if not pages:
+            return
+        if self._pages_content_lay is None or self._toggle_btn is None:
+            # Section pas encore construite → refresh complet
+            self.refresh()
+            return
+        self.update_pages(pages)
 
     # ── Mise à jour légère (thème / langue / fonte) ───────────────────────────
     def _restyle(self):
