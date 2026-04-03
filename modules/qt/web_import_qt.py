@@ -12,12 +12,10 @@ from urllib.parse import urljoin, urlparse
 from PIL import Image
 
 from PySide6.QtCore import Qt, QThread, Signal
-from PySide6.QtGui import QColor, QTextBlockFormat, QTextCursor
+from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QGraphicsTextItem,
 )
-from shiboken6 import isValid
 
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
@@ -87,54 +85,34 @@ def extract_images_from_html(url: str, html_content: str) -> list[str]:
 # Item cliquable pour le bouton annuler (sous-classe QGraphicsTextItem)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class _CancelTextItem(QGraphicsTextItem):
-    """QGraphicsTextItem cliquable — déclenche un callback au clic gauche."""
-
-    def __init__(self, on_click):
-        super().__init__()
-        self._on_click = on_click
-        self.setAcceptedMouseButtons(Qt.LeftButton)
-        self.setCursor(Qt.PointingHandCursor)
-
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self._on_click()
-        event.accept()
-
-
 def _show_cancel_item(canvas, text: str, item_holder: list, on_click, offset_y: int = 40) -> None:
-    """Crée ou met à jour le _CancelTextItem sur le canvas, positionné offset_y px sous le centre."""
-    scene = canvas.scene()
+    """Crée ou met à jour le label Annuler cliquable sur le viewport, offset_y px sous le centre."""
+    viewport = canvas.viewport()
 
-    item = item_holder[0] if item_holder else None
-    if item is None or not isValid(item):
-        item = _CancelTextItem(on_click)
-        item.setDefaultTextColor(QColor(255, 102, 102))
-        item.setFont(_get_current_font(16, bold=True))
-        item.setZValue(1001)
-        scene.addItem(item)
+    lbl = item_holder[0] if item_holder else None
+    if lbl is None or not isinstance(lbl, QLabel):
+        lbl = QLabel(viewport)
+        lbl.setStyleSheet(
+            "color: rgb(255, 102, 102); background: transparent;"
+            "text-decoration: underline;"
+        )
+        lbl.setAlignment(Qt.AlignCenter)
+        lbl.setCursor(Qt.PointingHandCursor)
+        lbl.mousePressEvent = lambda e: on_click() if e.button() == Qt.LeftButton else None
+        lbl.raise_()
         if item_holder:
-            item_holder[0] = item
+            item_holder[0] = lbl
         else:
-            item_holder.append(item)
+            item_holder.append(lbl)
 
-    item.setPlainText(text)
+    lbl.setFont(_get_current_font(16, bold=True))
+    lbl.setText(text)
 
-    vr_width = canvas.viewport().rect().width()
-    item.setTextWidth(max(vr_width, item.boundingRect().width()))
-
-    doc    = item.document()
-    cursor = QTextCursor(doc)
-    cursor.select(QTextCursor.Document)
-    fmt = QTextBlockFormat()
-    fmt.setAlignment(Qt.AlignHCenter)
-    cursor.mergeBlockFormat(fmt)
-
-    vr           = canvas.viewport().rect()
-    br           = item.boundingRect()
-    center_scene = canvas.mapToScene(vr.center())
-    item.setPos(center_scene.x() - br.width() / 2,
-                center_scene.y() - br.height() / 2 + offset_y)
+    vr = viewport.rect()
+    lbl.setFixedWidth(vr.width())
+    lbl.adjustSize()
+    lbl.move(0, (vr.height() - lbl.height()) // 2 + offset_y)
+    lbl.show()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

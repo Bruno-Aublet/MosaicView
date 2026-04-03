@@ -71,10 +71,13 @@ def flatten_directories_qt(parent, render_mosaic, refresh_states, status_changed
     state.current_directory = ""
     state.modified = True
     from modules.qt.comic_info import sync_pages_in_xml_data
-    sync_pages_in_xml_data(state)
+    sync_pages_in_xml_data(state, emit_signal=False)
     # Sauvegarde l'état APRÈS l'aplatissement — identique à flatten_directories.py tkinter
     if save_state_func:
         save_state_func()
     render_mosaic()
     refresh_states()
     status_changed.emit()
+    from PySide6.QtCore import QTimer
+    from modules.qt.metadata_signal import metadata_signal
+    QTimer.singleShot(0, metadata_signal.emit)

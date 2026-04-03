@@ -475,8 +475,6 @@ class NameEdit(QTextEdit):
                 self.blockSignals(False)
                 self._entry["orig_name"] = self._original_name + self._entry.get("extension", "")
                 self._name_changed = False
-                if _state_module.state:
-                    _state_module.state.modified = False
                 if self._update:
                     self._update()
                 return
@@ -884,6 +882,18 @@ class MosaicCanvas(QGraphicsView):
                     item._ext_item.setPos(item._name_x + item._name_w + 2, th + 4 + offset_y)
             elif isinstance(item, DirItem):
                 item.update()  # DirItem appelle _get_current_font() dans paint()
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # Mise à jour ciblée d'une vignette (sans reconstruire la scène)
+    # ──────────────────────────────────────────────────────────────────────────
+    def refresh_thumbnail(self, real_idx: int):
+        """Met à jour uniquement le pixmap du ThumbnailItem correspondant à real_idx.
+        N'appelle pas render_mosaic — la scène reste intacte."""
+        for item in self._items:
+            if isinstance(item, ThumbnailItem) and item.real_idx == real_idx:
+                item._pixmap = item._build_pixmap(item.entry)
+                item.update()
+                return
 
     # ──────────────────────────────────────────────────────────────────────────
     # Rendu de la mosaïque (équivalent render_mosaic)

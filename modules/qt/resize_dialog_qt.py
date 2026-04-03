@@ -30,8 +30,8 @@ from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, 
 from modules.qt.entries import (
     detect_jpeg_quality,
     free_image_memory,
-    regenerate_thumbnail,
 )
+from modules.qt.mosaic_canvas import build_qimage_for_entry
 from modules.qt.dialogs_qt import MsgDialog
 
 
@@ -1289,7 +1289,9 @@ class _ResizeWorker(QThread):
                     entry["large_thumb_pil"].close()
                     entry["large_thumb_pil"] = None
 
-                regenerate_thumbnail(entry)
+                entry.pop("qt_pixmap_large", None)
+                entry.pop("qt_qimage_large", None)
+                build_qimage_for_entry(entry)   # pré-calcule la miniature dans le thread bg
                 free_image_memory(entry)
 
             except Exception as exc:
@@ -1347,7 +1349,6 @@ def _start_resize_worker(canvas, selected_entries, state,
                     entry["large_thumb_pil"] = None
                 entry.pop("qt_pixmap_large", None)
                 entry.pop("qt_qimage_large", None)
-                regenerate_thumbnail(entry)
                 free_image_memory(entry)
         # Dépile l'état undo poussé avant le lancement du worker
         from modules.qt.undo_redo import pop_last_state
@@ -1368,7 +1369,10 @@ def _start_resize_worker(canvas, selected_entries, state,
         state.modified = True
         from modules.qt.metadata_signal import metadata_pages_signal
         metadata_pages_signal.emit()
-        render_mosaic_fn()
+        for entry in selected_entries:
+            real_idx = entry.get("_real_idx")
+            if real_idx is not None:
+                canvas.refresh_thumbnail(real_idx)
         update_button_text()
         save_state_fn()
 
@@ -1428,9 +1432,9 @@ def reduce_selected_images_size_qt(parent, callbacks: dict):
     selected_entries = [
         state.images_data[idx]
         for idx in sorted(state.selected_indices)
-        if idx < len(state.images_data)
+        if idx < len(state.images_data) and state.images_data[idx].get("is_image")
     ]
-    if not all(e.get("is_image") for e in selected_entries):
+    if not selected_entries:
         dlg = _MsgDialog(
             parent,
             "messages.warnings.invalid_selection_reduce.title",

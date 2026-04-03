@@ -159,8 +159,9 @@ def convert_image_data(entry, target_format, quality):
             "is_image": True,
             "thumb": None,
             "img_id": None,
-            "tk_img": None,
             "dpi": source_dpi if source_dpi else None,
+            "img_width": converted_img.width,
+            "img_height": converted_img.height,
         }
 
         # Nettoyage mémoire

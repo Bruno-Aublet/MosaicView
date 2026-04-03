@@ -37,6 +37,7 @@ from PySide6.QtCore import QUrl
 
 from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
+from modules.qt.config_manager import get_config_manager
 from modules.qt.entries import save_image_to_bytes
 from modules.qt.dialogs_qt import (
     detect_duplicate_filenames_for_save,
@@ -736,6 +737,8 @@ def save_as_cbz(parent, canvas, callbacks: dict):
         return
 
     initial_dir = os.path.dirname(os.path.abspath(state.current_file))
+    if not initial_dir:
+        initial_dir = get_config_manager().get('last_open_dir', "")
     initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
     filepath, _filter = QFileDialog.getSaveFileName(
         parent,
@@ -745,6 +748,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
     )
     if not filepath:
         return
+    get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
     overlay = _SavingOverlay(canvas) if canvas else None
     try:
@@ -819,6 +823,8 @@ def save_selection_as_cbz(parent, callbacks: dict):
     else:
         initial_dir = getattr(state, "first_image_dir", None)
         initial_file = f"{_('misc.selection_suffix')}.cbz"
+    if not initial_dir:
+        initial_dir = get_config_manager().get('last_open_dir', "")
 
     start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
     filepath, _filter = QFileDialog.getSaveFileName(
@@ -829,6 +835,7 @@ def save_selection_as_cbz(parent, callbacks: dict):
     )
     if not filepath:
         return
+    get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
     try:
         with zipfile.ZipFile(filepath, "w") as zf:
@@ -871,6 +878,8 @@ def save_selection_to_folder(parent, callbacks: dict):
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
     elif getattr(state, "first_image_dir", None):
         initial_dir = state.first_image_dir
+    if not initial_dir:
+        initial_dir = get_config_manager().get('last_open_dir', "")
 
     try:
         saved_count = 0
@@ -892,6 +901,7 @@ def save_selection_to_folder(parent, callbacks: dict):
             )
             if not file_path:
                 return
+            get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(file_path)))
             if entry["bytes"] is not None and not entry.get("is_dir"):
                 file_dir = os.path.dirname(file_path)
                 if file_dir and not os.path.exists(file_dir):
@@ -908,6 +918,7 @@ def save_selection_to_folder(parent, callbacks: dict):
             )
             if not folder:
                 return
+            get_config_manager().set('last_open_dir', folder)
             for idx in sorted(state.selected_indices):
                 if idx < len(state.images_data):
                     entry = state.images_data[idx]
@@ -975,6 +986,8 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
     elif getattr(state, "first_image_dir", None):
         initial_dir = state.first_image_dir
+    if not initial_dir:
+        initial_dir = get_config_manager().get('last_open_dir', "")
 
     start = os.path.join(initial_dir, "nouveau_comics.cbz") if initial_dir else "nouveau_comics.cbz"
     filepath, _filter = QFileDialog.getSaveFileName(
@@ -985,6 +998,7 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
     )
     if not filepath:
         return
+    get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
     overlay = _SavingOverlay(canvas) if canvas else None
     try:
@@ -1104,6 +1118,8 @@ def apply_new_names(parent, canvas, callbacks: dict):
 
     elif ext in (".cbr", ".epub"):
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
+        if not initial_dir:
+            initial_dir = get_config_manager().get('last_open_dir', "")
         initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
         new_file, _filter = QFileDialog.getSaveFileName(
             parent,
@@ -1113,6 +1129,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
         )
         if not new_file:
             return
+        get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
         try:
             with zipfile.ZipFile(new_file, "w") as zf:
                 for entry in state.images_data:
@@ -1142,6 +1159,8 @@ def apply_new_names(parent, canvas, callbacks: dict):
 
     elif ext == ".pdf":
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
+        if not initial_dir:
+            initial_dir = get_config_manager().get('last_open_dir', "")
         initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
         new_file, _filter = QFileDialog.getSaveFileName(
             parent,
@@ -1151,6 +1170,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
         )
         if not new_file:
             return
+        get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
         try:
             with zipfile.ZipFile(new_file, "w") as zf:
                 for entry in state.images_data:

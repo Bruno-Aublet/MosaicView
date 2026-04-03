@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 
 import sys
 import os
@@ -630,10 +630,14 @@ class MainWindow(QMainWindow):
     # ──────────────────────────────────────────────────────────────────────────
 
     def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat("application/x-mosaicview-indices"):
+            return
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
 
     def dropEvent(self, event):
+        if event.mimeData().hasFormat("application/x-mosaicview-indices"):
+            return
         paths = [u.toLocalFile() for u in event.mimeData().urls()]
         if paths:
             self._active_panel._handle_dropped_paths(paths, from_drop=True)
@@ -695,6 +699,7 @@ class MainWindow(QMainWindow):
         if can_close:
             event.accept()
         else:
+            self._close_event_handled = False
             event.ignore()
 
     # ──────────────────────────────────────────────────────────────────────────

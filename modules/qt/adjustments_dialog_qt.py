@@ -1114,6 +1114,22 @@ class AdjustmentsDialog(QDialog):
             original_is_bw = self._original_preview_img.mode == '1'
             is_bw = (settings.get('color_depth') == '1' or settings.get('image_mode') == 'BW1'
                      or (settings.get('color_depth') == 'unchanged' and settings.get('image_mode') == 'unchanged' and original_is_bw))
+            original = self._original_preview_img
+            original_has_alpha = (original.mode in ('RGBA', 'LA') or
+                                  (original.mode == 'P' and 'transparency' in original.info))
+            if original_has_alpha:
+                from modules.qt.entries import _make_checkerboard_pil
+                # Resize d'abord, damier ensuite (tile fixe indépendant de la taille source)
+                resample = Image.Resampling.NEAREST if is_bw else Image.Resampling.LANCZOS
+                if result.mode != 'RGBA':
+                    alpha = original.convert('RGBA').split()[3]
+                    rgba = result.convert('RGB').convert('RGBA')
+                    rgba.putalpha(alpha)
+                    result = rgba
+                result.thumbnail((300, 300), resample)
+                bg = _make_checkerboard_pil(result.width, result.height, tile=10)
+                bg.paste(result, (0, 0), result)
+                result = bg
             pix = _pil_to_qpixmap(result, max_size=300, is_bw=is_bw)
             self._preview_pixmap_ref = pix
             self._preview_lbl.setPixmap(pix)
@@ -1244,7 +1260,6 @@ class AdjustmentsDialog(QDialog):
 
             if self._cancel_requested:
                 # Restaurer les bytes et thumbnails des images déjà modifiées
-                from modules.qt.entries import regenerate_thumbnail
                 for entry in processed:
                     eid = id(entry)
                     ob = orig_bytes.get(eid)
@@ -1252,7 +1267,6 @@ class AdjustmentsDialog(QDialog):
                         entry['bytes'] = ob
                     for k, v in orig_thumbs.get(eid, {}).items():
                         entry[k] = v
-                    regenerate_thumbnail(entry)
                 if render:
                     render()
                 self._progress_lbl.setVisible(False)
@@ -1366,10 +1380,10 @@ def show_image_adjustments_dialog(parent=None, callbacks=None):
     selected_entries = [
         state.images_data[i]
         for i in sorted(state.selected_indices)
-        if i < len(state.images_data)
+        if i < len(state.images_data) and state.images_data[i]["is_image"]
     ]
 
-    if not all(e["is_image"] for e in selected_entries):
+    if not selected_entries:
         MsgDialog(
             parent,
             "messages.warnings.invalid_selection_adjust.title",

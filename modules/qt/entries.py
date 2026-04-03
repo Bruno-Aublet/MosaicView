@@ -158,9 +158,7 @@ def create_entry(file, data, image_exts):
         "orig_name": file,
         "bytes": data,
         "extension": entry_ext,
-        "tk_img": None,
         "name_entry": None,
-        "name_var": None,
         "ext_label": None,
         "img_id": None,
         "text_id": None,
@@ -224,8 +222,7 @@ def create_entry(file, data, image_exts):
                 # LAZY LOADING : On ne stocke PAS l'image complète au chargement
                 entry["img"] = None
 
-            entry["large_thumb_pil"] = None  # non utilisé en Qt
-            entry["tk_img"] = None           # non utilisé en Qt
+            entry["large_thumb_pil"] = None
         except Image.DecompressionBombError:
             # Lire les dimensions sans déclencher à nouveau l'erreur
             _saved = Image.MAX_IMAGE_PIXELS
@@ -241,19 +238,16 @@ def create_entry(file, data, image_exts):
             entry["is_corrupted"] = True
             entry["is_too_large"] = True
             entry["corruption_reason"] = f"{w}x{h} ({w * h:,} pixels)" if w else ""
-            entry["tk_img"] = None  # Qt: pas de tkinter
             entry["is_animated_gif"] = False
         except Exception as e:
             entry["img"] = None
             entry["is_corrupted"] = True
             entry["is_too_large"] = False
             entry["corruption_reason"] = str(e)
-            entry["tk_img"] = None  # Qt: pas de tkinter
             # Garde is_image = True pour que le fichier soit reconnu comme image corrompue
             entry["is_animated_gif"] = False
     else:
         entry["img"] = None
-        entry["tk_img"] = None  # Qt: pas de tkinter
     return entry
 
 
@@ -483,6 +477,10 @@ def ensure_image_loaded(entry):
     if entry.get("img") is not None:
         return entry["img"]
 
+    # Image déjà marquée corrompue : pas la peine de retenter
+    if entry.get("is_corrupted"):
+        return None
+
     # Si on n'a pas de bytes ou que ce n'est pas une image, on ne peut rien faire
     if not entry.get("is_image") or entry.get("bytes") is None:
         return None
@@ -506,6 +504,7 @@ def ensure_image_loaded(entry):
     except Exception as e:
         print(f"Erreur lors du chargement lazy de l'image {entry.get('orig_name', 'inconnue')} : {e}")
         entry["img"] = None
+        entry["is_corrupted"] = True
         return None
 
 
@@ -725,45 +724,3 @@ def save_image_to_bytes(entry):
             entry["img"].save(img_bytes, format='PNG')
 
     return img_bytes.getvalue()
-
-
-def regenerate_thumbnail(entry):
-    """Régénère la miniature d'une entrée avec la taille actuelle"""
-    state = _state_module.state
-    if entry["is_image"]:
-        # Si la grande vignette existe déjà, redimensionne depuis celle-ci
-        if "large_thumb_pil" in entry and entry["large_thumb_pil"] is not None:
-            large_thumb = entry["large_thumb_pil"]
-            large_w, large_h = THUMB_SIZES[2]  # Grande taille
-
-            if state.thumb_w == large_w and state.thumb_h == large_h:
-                # Déjà à la bonne taille
-                entry["tk_img"] = None  # Qt: pas de tkinter
-            else:
-                # Redimensionne depuis la grande vignette
-                resized_thumb = large_thumb.resize((state.thumb_w, state.thumb_h), Image.Resampling.LANCZOS)
-                entry["tk_img"] = None  # Qt: pas de tkinter
-                resized_thumb.close()
-        else:
-            # Fallback : régénère depuis l'image complète (cas des anciennes entrées)
-            img = ensure_image_loaded(entry)
-            if img:
-                # Crée la grande vignette et la stocke
-                large_w, large_h = THUMB_SIZES[2]
-                old_large = entry.get("large_thumb_pil")
-                large_thumb = create_centered_thumbnail(img, large_w, large_h)
-                if old_large is not None:
-                    old_large.close()
-                entry["large_thumb_pil"] = large_thumb
-
-                # Redimensionne pour l'affichage
-                if state.thumb_w == large_w and state.thumb_h == large_h:
-                    entry["tk_img"] = None  # Qt: pas de tkinter
-                else:
-                    resized_thumb = large_thumb.resize((state.thumb_w, state.thumb_h), Image.Resampling.LANCZOS)
-                    entry["tk_img"] = None  # Qt: pas de tkinter
-                    resized_thumb.close()
-            else:
-                entry["tk_img"] = None  # Qt: pas de tkinter
-    else:
-        entry["tk_img"] = None  # Qt: pas de tkinter

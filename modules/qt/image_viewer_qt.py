@@ -1004,6 +1004,10 @@ class ImageViewer(QDialog):
         final_w = int(fw * ratio * self.zoom_level)
         final_h = int(fh * ratio * self.zoom_level)
         frame = frame.resize((final_w, final_h), Image.Resampling.LANCZOS)
+        frame_has_alpha = (frame.mode in ('RGBA', 'LA') or
+                           (frame.mode == 'P' and 'transparency' in frame.info))
+        if frame_has_alpha:
+            frame = _compose_on_checkerboard(frame)
         pixmap = _pil_to_qpixmap(frame)
         offset_x = (cw - final_w) // 2
         offset_y = (ch - final_h) // 2
@@ -1111,7 +1115,6 @@ class ImageViewer(QDialog):
         ratio = min(viewer_w / img_w, viewer_h / img_h)
         final_w = int(img_w * ratio * self.zoom_level)
         final_h = int(img_h * ratio * self.zoom_level)
-
         img = img.resize((final_w, final_h), Image.Resampling.LANCZOS)
         if has_alpha:
             img = _compose_on_checkerboard(img)
@@ -1187,15 +1190,27 @@ class ImageViewer(QDialog):
             rw = right_img.size[0]
 
         combined_w = lw + rw
-        combined   = Image.new('RGB', (combined_w, max_h), 'black')
-        combined.paste(left_img,  (0,  0))
-        combined.paste(right_img, (lw, 0))
+        left_has_alpha  = left_img.mode  in ('RGBA', 'LA') or (left_img.mode  == 'P' and 'transparency' in left_img.info)
+        right_has_alpha = right_img.mode in ('RGBA', 'LA') or (right_img.mode == 'P' and 'transparency' in right_img.info)
+        has_alpha = left_has_alpha or right_has_alpha
+        if has_alpha:
+            combined = Image.new('RGBA', (combined_w, max_h), (0, 0, 0, 0))
+            left_rgba  = left_img.convert('RGBA')
+            right_rgba = right_img.convert('RGBA')
+            combined.paste(left_rgba,  (0,  0), left_rgba)
+            combined.paste(right_rgba, (lw, 0), right_rgba)
+        else:
+            combined = Image.new('RGB', (combined_w, max_h), 'black')
+            combined.paste(left_img,  (0,  0))
+            combined.paste(right_img, (lw, 0))
 
         ratio   = min(viewer_w / combined_w, viewer_h / max_h)
         final_w = int(combined_w * ratio * self.zoom_level)
         final_h = int(max_h     * ratio * self.zoom_level)
 
         combined = combined.resize((final_w, final_h), Image.Resampling.LANCZOS)
+        if has_alpha:
+            combined = _compose_on_checkerboard(combined)
         pixmap = _pil_to_qpixmap(combined)
 
         cw = self._canvas.width()
@@ -1253,6 +1268,7 @@ class ImageViewer(QDialog):
         save_state      = self.callbacks.get("save_state")
         render_mosaic   = self.callbacks.get("render_mosaic")
         update_btn      = self.callbacks.get("update_button_text")
+        canvas          = self.callbacks.get("canvas")
 
         try:
             entry = state.images_data[self.current_idx]
@@ -1311,14 +1327,17 @@ class ImageViewer(QDialog):
             _pidx = get_page_image_index(state, entry)
             if _pidx is not None:
                 update_page_entries_in_xml_data(state, [(_pidx, entry)])
-
             if save_state:
                 save_state()
-            if render_mosaic:
+            real_idx = entry.get("_real_idx")
+            if canvas is not None and real_idx is not None:
+                from modules.qt.mosaic_canvas import build_qimage_for_entry
+                build_qimage_for_entry(entry)
+                canvas.refresh_thumbnail(real_idx)
+            elif render_mosaic:
                 render_mosaic()
             if update_btn:
                 update_btn()
-
             self._canvas.clear_crop()
             self.display_image()
 

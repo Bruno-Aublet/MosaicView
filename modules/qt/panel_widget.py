@@ -1110,6 +1110,7 @@ class PanelWidget(QWidget):
             "render_mosaic":      self._render_mosaic,
             "update_button_text": self._refresh_toolbar_states,
             "state":              self._state,
+            "canvas":             self._canvas,
         }
 
     def _open_image_viewer(self, idx: int):
@@ -1370,7 +1371,7 @@ class PanelWidget(QWidget):
         # Récupère les entrées depuis le panneau source et en fait des copies
         # indépendantes : chaque panneau possède ses propres données, la fermeture
         # du panneau source ne peut pas affecter les bytes du panneau destination.
-        _UI_KEYS = ("tk_img", "name_entry", "name_var", "ext_label",
+        _UI_KEYS = ("name_entry", "ext_label",
                     "img_id", "text_id", "qt_pixmap_large", "qt_qimage_large")
         def _copy_entry(e):
             c = dict(e)
@@ -1433,10 +1434,14 @@ class PanelWidget(QWidget):
     # ──────────────────────────────────────────────────────────────────────────
 
     def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat("application/x-mosaicview-indices"):
+            return
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
 
     def dropEvent(self, event):
+        if event.mimeData().hasFormat("application/x-mosaicview-indices"):
+            return
         paths = [u.toLocalFile() for u in event.mimeData().urls()]
         if paths:
             self._handle_dropped_paths(paths, from_drop=True)

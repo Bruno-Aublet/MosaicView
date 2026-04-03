@@ -178,8 +178,11 @@ def restore_state_qt(state,
                 if xml_content:
                     state.comic_metadata = parse_comic_info_xml(xml_content)
                     if state.comic_metadata:
-                        from modules.qt.comic_info import build_page_attrs_map
+                        from modules.qt.comic_info import build_page_attrs_map, sync_pages_in_xml_data
+                        from modules.qt.metadata_signal import metadata_signal
                         build_page_attrs_map(state)
+                        sync_pages_in_xml_data(state, emit_signal=False)
+                        metadata_signal.emit()
                     break
         update_tabs_cb()
     elif state.comic_metadata:

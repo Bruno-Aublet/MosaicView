@@ -338,7 +338,7 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
                 except Exception:
                     pass
                 entry[key] = None
-        for key in ("tk_img", "bytes", "img_id", "name_var", "qt_pixmap_large", "qt_qimage_large"):
+        for key in ("bytes", "img_id", "qt_pixmap_large", "qt_qimage_large"):
             if key in entry:
                 entry[key] = None
 

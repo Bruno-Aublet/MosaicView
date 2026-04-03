@@ -891,6 +891,17 @@ class AdjustmentViewerDialog(QDialog):
                 preview = _apply_adjustments(original.copy(), self._settings,
                                              for_preview=True)
 
+            original_has_alpha = (original.mode in ('RGBA', 'LA') or
+                                  (original.mode == 'P' and 'transparency' in original.info))
+            if self._mode != 'transparency' and original_has_alpha:
+                if preview.mode != 'RGBA':
+                    # Le traitement a perdu l'alpha — le récupérer depuis l'original
+                    alpha = original.convert('RGBA').split()[3]
+                    rgba = preview.convert('RGB').convert('RGBA')
+                    rgba.putalpha(alpha)
+                    preview = self._compose_checkerboard(rgba)
+                else:
+                    preview = self._compose_checkerboard(preview)
             pixmap = self._pil_to_pixmap(preview)
             self._img_widget.set_pixmap(pixmap, reset_offset=reset_offset)
 
@@ -1184,7 +1195,6 @@ class AdjustmentViewerDialog(QDialog):
         self._save_transp_state()
 
         from modules.qt import state as _state_module
-        from modules.qt.entries import regenerate_thumbnail
 
         state      = self._callbacks.get('state') or _state_module.state
         save_state = self._callbacks.get('save_state')
@@ -1217,7 +1227,6 @@ class AdjustmentViewerDialog(QDialog):
                 entry['large_thumb_pil'] = None
                 entry['qt_pixmap_large'] = None
                 entry['qt_qimage_large'] = None
-                regenerate_thumbnail(entry)
 
                 from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
                 _pidx = get_page_image_index(state, entry)

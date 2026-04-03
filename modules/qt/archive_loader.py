@@ -400,10 +400,6 @@ class LoadWorker(QThread):
         if ext in [".cbz", ".epub"]:
             try:
                 with zipfile.ZipFile(filepath, 'r') as archive:
-                    bad_file = archive.testzip()
-                    if bad_file:
-                        errors.append(_("errors.corrupted_archive_detected", file=bad_file))
-
                     files_list = sorted(archive.namelist(), key=_natural_sort_key)
                     if ext == ".epub":
                         files_list = [f for f in files_list if any(f.lower().endswith(e) for e in IMAGE_EXTS)]
@@ -524,6 +520,12 @@ class LoadWorker(QThread):
 
         elif ext == ".cb7":
             try:
+                with open(filepath, 'rb') as f:
+                    magic = f.read(8)
+                if magic[:4] == b'PK\x03\x04':
+                    raise zipfile.BadZipFile("is a zip")
+                if magic[:7] == b'Rar!\x1a\x07\x00' or magic[:8] == b'Rar!\x1a\x07\x01\x00':
+                    raise rarfile.NotRarFile("is a rar")
                 all_names = _list_7z_files(filepath)
                 files_list = sorted(
                     [f for f in all_names if not f.endswith('/')],
@@ -549,9 +551,6 @@ class LoadWorker(QThread):
                 zip_ok = False
                 try:
                     with zipfile.ZipFile(filepath, 'r') as archive:
-                        bad_file = archive.testzip()
-                        if bad_file:
-                            errors.append(_("errors.corrupted_archive_detected", file=bad_file))
                         files_list = sorted(archive.namelist(), key=_natural_sort_key)
                         total = len(files_list)
                     zip_ok = True
@@ -666,9 +665,6 @@ class LoadWorker(QThread):
                 zip_ok = False
                 try:
                     with zipfile.ZipFile(filepath, 'r') as archive:
-                        bad_file = archive.testzip()
-                        if bad_file:
-                            errors.append(_("errors.corrupted_archive_detected", file=bad_file))
                         files_list = sorted(archive.namelist(), key=_natural_sort_key)
                         total = len(files_list)
                     zip_ok = True
@@ -968,6 +964,7 @@ class LoadWorker(QThread):
                         errors.append(_("messages.errors.rename_failed.message", error=e))
                         continue
                 archive_namelists.append((current_filepath, "7z", files_list))
+
 
         if not archive_namelists:
             self.cancelled.emit()

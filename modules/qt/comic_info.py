@@ -283,6 +283,10 @@ def sync_pages_in_xml_data(state, emit_signal=True):
                     attrs['ImageSize'] = str(len(entry['bytes']))
                 except Exception:
                     pass
+            else:
+                # Complète ImageSize si absent du XML d'origine
+                if 'ImageSize' not in attrs and entry.get('bytes'):
+                    attrs['ImageSize'] = str(len(entry['bytes']))
             new_page = ET.SubElement(pages_elem, 'Page')
             new_page.set('Image', str(new_idx))
             for k, v in attrs.items():
@@ -438,8 +442,8 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
             xml_entry['bytes'] = xml_string
             state.modified = True
             if emit_signal:
-                from modules.qt.metadata_signal import metadata_signal
-                metadata_signal.emit()
+                from modules.qt.metadata_signal import metadata_pages_signal
+                metadata_pages_signal.emit()
 
     except Exception as e:
         print(f"[comic_info] update_page_entries_in_xml_data : {e}")

@@ -207,20 +207,12 @@ def show_conversion_complete_dialog(parent, converted, target_format,
             if idx < len(state.images_data):
                 state.images_data.pop(idx)
         state.selected_indices.clear()
-        from modules.qt.comic_info import sync_pages_in_xml_data
-        sync_pages_in_xml_data(state)
-        callbacks['render_mosaic']()
-        callbacks['update_button_text']()
-        callbacks['save_state']()
 
     elif dialog.action == "delete_conv":
         conv_ids = {id(e) for e in converted_entries}
         state.images_data[:] = [e for e in state.images_data if id(e) not in conv_ids]
-        from modules.qt.comic_info import sync_pages_in_xml_data
-        sync_pages_in_xml_data(state)
-        callbacks['render_mosaic']()
-        callbacks['update_button_text']()
-        callbacks['save_state']()
+
+    return dialog.action  # retourne l'action pour que perform_conversion gère la suite
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -572,9 +564,9 @@ def convert_selected_images(parent, callbacks):
     selected_entries = [
         state.images_data[idx]
         for idx in sorted(state.selected_indices)
-        if idx < len(state.images_data)
+        if idx < len(state.images_data) and state.images_data[idx]["is_image"]
     ]
-    if not all(e["is_image"] for e in selected_entries):
+    if not selected_entries:
         dlg = MsgDialog(
             parent,
             "messages.warnings.invalid_selection_convert.title",
@@ -631,7 +623,8 @@ class _ConversionWorker(QThread):
                 return
             new_entry, _err = convert_image_data(entry, self._target_format, self._quality)
             if new_entry:
-                new_entry["qt_pixmap_large"] = None
+                from modules.qt.mosaic_canvas import build_qimage_for_entry
+                build_qimage_for_entry(new_entry)
                 free_image_memory(new_entry)
                 insert_idx += 1
                 self._state.images_data.insert(insert_idx, new_entry)
@@ -697,22 +690,26 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
         state.converting = False
         state.converting_percent = 0
         state.modified = True
+
+        if converted == 0:
+            callbacks['render_mosaic']()
+            callbacks['update_button_text']()
+            callbacks['save_state']()
+            return
+
+        # Dialogue de choix (supprimer originaux / annuler / garder tout)
+        action = show_conversion_complete_dialog(
+            parent, converted, target_format, selected_entries, inserted_entries, {
+                "state": callbacks.get('state'),
+            }
+        )
+        if action in ("delete_orig", "delete_conv"):
+            callbacks['render_mosaic']()
+
         from modules.qt.comic_info import sync_pages_in_xml_data
         sync_pages_in_xml_data(state)
-        callbacks['save_state']()
-        callbacks['render_mosaic']()
         callbacks['update_button_text']()
-        if converted > 0:
-            # Utiliser inserted_entries (liste partagée directement, sans passer par le signal Qt)
-            # pour que les id() correspondent bien aux objets dans state.images_data
-            show_conversion_complete_dialog(
-                parent, converted, target_format, selected_entries, inserted_entries, {
-                    "render_mosaic":      callbacks['render_mosaic'],
-                    "update_button_text": callbacks['update_button_text'],
-                    "save_state":         callbacks['save_state'],
-                    "state":              callbacks.get('state'),
-                }
-            )
+        callbacks['save_state']()
 
     def on_cancelled():
         # Le nettoyage est déjà fait dans _cancel (appelé depuis le thread UI)

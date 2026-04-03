@@ -14,9 +14,10 @@ import os
 from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QPushButton, QScrollArea, QLabel,
     QFrame, QVBoxLayout, QSizePolicy, QStyle, QStyleOptionButton, QMenu,
+    QTableView, QHeaderView, QAbstractItemView,
 )
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QFont, QPainter, QColor, QPen, QGuiApplication
+from PySide6.QtCore import Qt, Signal, QTimer, QThread
+from PySide6.QtGui import QFont, QPainter, QColor, QPen, QGuiApplication, QStandardItemModel, QStandardItem
 
 from modules.qt import state as _state_module
 from modules.qt.state import get_current_theme
@@ -284,6 +285,50 @@ class TabBar(QWidget):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# Thread de construction du modèle Pages
+# ═══════════════════════════════════════════════════════════════════════════════
+class _PagesModelBuilder(QThread):
+    done = Signal(object)  # émet QStandardItemModel
+
+    def __init__(self, pages):
+        super().__init__()
+        self._pages     = pages
+        self._cancelled = False
+
+    def cancel(self):
+        self._cancelled = True
+
+    def run(self):
+        from modules.qt.utils import format_file_size
+        from PySide6.QtCore import Qt as _Qt
+        model = QStandardItemModel(len(self._pages), 5)
+        for row, page in enumerate(self._pages):
+            if self._cancelled:
+                return
+            size_raw = page.get('ImageSize', '')
+            try:
+                size_int = int(size_raw) if size_raw else None
+                size_str = format_file_size(size_int) if size_int is not None else ''
+            except (ValueError, TypeError):
+                size_int = None
+                size_str = size_raw
+
+            def _item(val, sort_val=None):
+                it = QStandardItem(str(val))
+                if sort_val is not None:
+                    it.setData(sort_val, _Qt.UserRole)
+                return it
+
+            model.setItem(row, 0, _item(page.get('Image', ''),    int(page.get('Image', 0) or 0)))
+            model.setItem(row, 1, _item(page.get('Type', '')))
+            model.setItem(row, 2, _item(page.get('ImageWidth', ''),  int(page.get('ImageWidth', 0) or 0)))
+            model.setItem(row, 3, _item(page.get('ImageHeight', ''), int(page.get('ImageHeight', 0) or 0)))
+            model.setItem(row, 4, _item(size_str, size_int if size_int is not None else 0))
+        if not self._cancelled:
+            self.done.emit(model)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # Onglet Métadonnées
 # ═══════════════════════════════════════════════════════════════════════════════
 class MetadataTab(QScrollArea):
@@ -305,12 +350,11 @@ class MetadataTab(QScrollArea):
         self._vlay.setSpacing(0)
 
         # Références conservées pour _restyle() — liste de (key, lbl_widget, txt_widget)
-        self._field_widgets     = []   # [(key, QLabel_titre, _SelectableLabel_valeur), ...]
-        self._toggle_btn        = None
-        self._header_labels     = []   # [QLabel, ...] en-têtes colonnes Pages
-        self._pages_count       = 0
-        self._page_rows         = []   # [QWidget, ...] une ligne par page
-        self._pages_content_lay = None # QVBoxLayout du contenu pages (pour ajout/suppression)
+        self._field_widgets  = []   # [(key, QLabel_titre, _SelectableLabel_valeur), ...]
+        self._toggle_btn     = None
+        self._pages_count    = 0
+        self._pages_table    = None  # QTableView
+        self._pages_builder  = None  # _PagesModelBuilder en cours
 
         from modules.qt.metadata_signal import metadata_signal, metadata_pages_signal
         metadata_signal.changed.connect(self.refresh)
@@ -342,6 +386,16 @@ class MetadataTab(QScrollArea):
         if st and st.comic_metadata:
             self.refresh()
 
+    def keyPressEvent(self, event):
+        key = event.key()
+        vbar = self.verticalScrollBar()
+        if key == Qt.Key_Home:
+            vbar.setValue(vbar.minimum())
+        elif key == Qt.Key_End:
+            vbar.setValue(vbar.maximum())
+        else:
+            super().keyPressEvent(event)
+
     def apply_theme(self):
         self._restyle()
 
@@ -350,8 +404,11 @@ class MetadataTab(QScrollArea):
         # Vide tout
         self._field_widgets = []
         self._toggle_btn    = None
-        self._header_labels = []
         self._pages_count   = 0
+        self._pages_table   = None
+        if self._pages_builder is not None:
+            self._pages_builder.cancel()
+            self._pages_builder = None
 
         while self._vlay.count():
             item = self._vlay.takeAt(0)
@@ -399,26 +456,23 @@ class MetadataTab(QScrollArea):
             sep.setFrameShape(QFrame.HLine)
             self._vlay.addWidget(sep)
 
-        # Section <Page> collapsable
         pages = st.comic_metadata.get('pages')
         if pages:
             self._pages_count = len(pages)
             self._build_pages_section(pages, bold_font)
-
-        self._vlay.addStretch(1)
-        self._restyle()
+        else:
+            self._vlay.addStretch(1)
+            self._restyle()
 
     def refresh_pages_only(self):
-        """Mise à jour légère : remet à jour uniquement les valeurs des lignes Pages
-        sans reconstruire l'ensemble du panneau. Appelé après un resize."""
+        """Mise à jour légère : remet à jour uniquement le tableau Pages sans reconstruire tout le panneau."""
         st = _state_module.state
         if not st or not st.comic_metadata:
             return
         pages = st.comic_metadata.get('pages')
         if not pages:
             return
-        if self._pages_content_lay is None or self._toggle_btn is None:
-            # Section pas encore construite → refresh complet
+        if self._toggle_btn is None:
             self.refresh()
             return
         self.update_pages(pages)
@@ -449,23 +503,33 @@ class MetadataTab(QScrollArea):
                 f"color: {text}; background: transparent; border: none; }}"
             )
 
-        font_small = _get_current_font(9)
-        font_small.setBold(True)
-        col_keys = [
-            "metadata.pages_col_image",
-            "metadata.pages_col_type",
-            "metadata.pages_col_width",
-            "metadata.pages_col_height",
-            "metadata.pages_col_size",
-        ]
-        for i, h in enumerate(self._header_labels):
-            h.setText(_(col_keys[i]))
-            h.setFont(font_small)
+        if self._pages_table is not None:
+            self._pages_table.setStyleSheet(
+                f"QTableView {{ background: {bg}; color: {text}; "
+                f"gridline-color: {theme.get('separator', '#cccccc')}; "
+                f"border: none; border-left: 1px solid {theme.get('separator', '#cccccc')}; }}"
+                f"QHeaderView::section {{ background: {theme.get('toolbar_bg', bg)}; "
+                f"color: {text}; border: none; "
+                f"border-top: 1px solid {theme.get('separator', '#cccccc')}; "
+                f"border-right: 1px solid {theme.get('separator', '#cccccc')}; "
+                f"border-bottom: 1px solid {theme.get('separator', '#cccccc')}; padding: 2px; }}"
+                f"QHeaderView::section:first {{ "
+                f"border-left: 1px solid {theme.get('separator', '#cccccc')}; }}"
+            )
+            col_keys = [
+                _("metadata.pages_col_image"),
+                _("metadata.pages_col_type"),
+                _("metadata.pages_col_width"),
+                _("metadata.pages_col_height"),
+                _("metadata.pages_col_size"),
+            ]
+            model = self._pages_table.model()
+            if model:
+                for i, label in enumerate(col_keys):
+                    model.setHorizontalHeaderItem(i, QStandardItem(label))
 
-    # ── Construction de la section Pages (appelée une seule fois) ────────────
+    # ── Construction de la section Pages avec QTableView ─────────────────────
     def _build_pages_section(self, pages, bold_font):
-        theme = get_current_theme()
-
         self._toggle_btn = QPushButton()
         self._toggle_btn.setFlat(True)
         self._toggle_btn.setFont(bold_font)
@@ -473,121 +537,75 @@ class MetadataTab(QScrollArea):
         self._toggle_btn.setChecked(False)
         self._toggle_btn.setCursor(Qt.PointingHandCursor)
 
-        content_widget = QWidget()
-        content_lay    = QVBoxLayout(content_widget)
-        content_lay.setContentsMargins(0, 0, 0, 0)
-        content_lay.setSpacing(0)
-        content_widget.setVisible(False)
-        self._pages_content_lay = content_lay
-        self._page_rows = []
-
-        # En-têtes
-        header_row = QWidget()
-        header_lay = QHBoxLayout(header_row)
-        header_lay.setContentsMargins(0, 2, 0, 2)
-        header_lay.setSpacing(4)
-        font_small = _get_current_font(9)
-        font_small.setBold(True)
-        self._header_labels = []
-        for col_w in [55, 120, 70, 70, 90]:
-            h = QLabel()
-            h.setFont(font_small)
-            h.setFixedWidth(col_w)
-            header_lay.addWidget(h)
-            self._header_labels.append(h)
-        header_lay.addStretch(1)
-        content_lay.addWidget(header_row)
-
-        sep0 = QFrame()
-        sep0.setFrameShape(QFrame.HLine)
-        content_lay.addWidget(sep0)
-
-        font_row = _get_current_font(9)
-        for page in pages:
-            p_row = self._build_page_row(page, font_row)
-            content_lay.addWidget(p_row)
-            self._page_rows.append(p_row)
+        table = QTableView()
+        table.setVisible(False)
+        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        table.setSelectionMode(QAbstractItemView.NoSelection)
+        table.verticalHeader().setVisible(False)
+        table.horizontalHeader().setStretchLastSection(True)
+        table.setShowGrid(True)
+        table.setFont(_get_current_font(9))
+        table.horizontalHeader().setFont(_get_current_font(9))
+        table.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        table.setSortingEnabled(True)
+        for i, w in enumerate([55, 120, 70, 70, 90]):
+            table.setColumnWidth(i, w)
+        self._pages_table = table
 
         toggle_btn = self._toggle_btn
 
         def _toggle(checked):
-            content_widget.setVisible(checked)
+            table.setVisible(checked)
             arrow = "▼" if checked else "▶"
             toggle_btn.setText(f"{arrow}  {_('metadata.pages')}  ({len(pages)})")
 
         self._toggle_btn.toggled.connect(_toggle)
 
         self._vlay.addWidget(self._toggle_btn)
-        self._vlay.addWidget(content_widget)
+        self._vlay.addWidget(table)
 
         sep_end = QFrame()
         sep_end.setFrameShape(QFrame.HLine)
         self._vlay.addWidget(sep_end)
 
-    def _build_page_row(self, page, font_row):
-        """Construit et retourne un QWidget représentant une ligne de page."""
-        p_row = QWidget()
-        p_lay = QHBoxLayout(p_row)
-        p_lay.setContentsMargins(0, 1, 0, 1)
-        p_lay.setSpacing(4)
-        for val, col_w in [
-            (page.get('Image', ''), 55),
-            (page.get('Type', ''), 120),
-            (page.get('ImageWidth', ''), 70),
-            (page.get('ImageHeight', ''), 70),
-            (page.get('ImageSize', ''), 90),
-        ]:
-            lbl = QLabel(str(val))
-            lbl.setFont(font_row)
-            lbl.setFixedWidth(col_w)
-            p_lay.addWidget(lbl)
-        p_lay.addStretch(1)
-        return p_row
+        # Construction du modèle dans un thread séparé
+        self._pages_builder = _PagesModelBuilder(pages)
+        self._pages_builder.done.connect(self._on_pages_model_ready)
+        self._pages_builder.start()
+
+    def _on_pages_model_ready(self, model):
+        """Reçu depuis le thread builder — assigne le modèle au tableau (thread UI)."""
+        if self._pages_table is not None:
+            col_keys = [
+                _("metadata.pages_col_image"),
+                _("metadata.pages_col_type"),
+                _("metadata.pages_col_width"),
+                _("metadata.pages_col_height"),
+                _("metadata.pages_col_size"),
+            ]
+            for i, label in enumerate(col_keys):
+                model.setHorizontalHeaderItem(i, QStandardItem(label))
+            model.setSortRole(Qt.UserRole)
+            self._pages_table.setModel(model)
+            # Ajuste la hauteur du tableau pour afficher toutes les lignes sans scrollbar
+            header_h = self._pages_table.horizontalHeader().height()
+            row_h    = self._pages_table.verticalHeader().defaultSectionSize()
+            self._pages_table.setFixedHeight(header_h + row_h * model.rowCount() + 2)
+        self._pages_builder = None
+        self._restyle()
 
     def update_pages(self, pages):
-        """Mise à jour incrémentale de la section Pages — ajoute/supprime des lignes
-        sans reconstruire l'ensemble. Appelé lors d'un D&D inter-panneaux."""
-        if self._pages_content_lay is None or self._toggle_btn is None:
-            # Section pas encore construite → refresh complet
+        """Mise à jour du tableau Pages — recharge le modèle via thread."""
+        if self._toggle_btn is None:
             self.refresh()
             return
-
-        font_row = _get_current_font(9)
-        new_count = len(pages)
-        old_count = len(self._page_rows)
-
-        if new_count > old_count:
-            # Ajouter les lignes manquantes à la fin
-            for i in range(old_count, new_count):
-                p_row = self._build_page_row(pages[i], font_row)
-                self._pages_content_lay.addWidget(p_row)
-                self._page_rows.append(p_row)
-        elif new_count < old_count:
-            # Supprimer les lignes en trop à la fin
-            for _i in range(old_count - new_count):
-                row = self._page_rows.pop()
-                self._pages_content_lay.removeWidget(row)
-                row.deleteLater()
-
-        # Mettre à jour les numéros Image dans les lignes existantes
-        for i, page in enumerate(pages):
-            row = self._page_rows[i]
-            labels = [row.layout().itemAt(j).widget() for j in range(5)]
-            for lbl, val in zip(labels, [
-                page.get('Image', ''), page.get('Type', ''),
-                page.get('ImageWidth', ''), page.get('ImageHeight', ''),
-                page.get('ImageSize', ''),
-            ]):
-                if lbl and isinstance(lbl, QLabel):
-                    lbl.setText(str(val))
-
-        # Mettre à jour le compteur dans le bouton toggle
-        self._pages_count = new_count
+        self._pages_count = len(pages)
         arrow = "▼" if self._toggle_btn.isChecked() else "▶"
-        self._toggle_btn.setText(f"{arrow}  {_('metadata.pages')}  ({new_count})")
-
-        # Mettre à jour le champ page_count dans _field_widgets
-        for key, lbl, txt in self._field_widgets:
-            if key == 'page_count':
-                txt.setText(str(new_count))
-                break
+        self._toggle_btn.setText(f"{arrow}  {_('metadata.pages')}  ({self._pages_count})")
+        if self._pages_builder is not None:
+            self._pages_builder.cancel()
+        self._pages_builder = _PagesModelBuilder(pages)
+        self._pages_builder.done.connect(self._on_pages_model_ready)
+        self._pages_builder.start()

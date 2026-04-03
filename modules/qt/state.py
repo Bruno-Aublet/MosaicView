@@ -92,8 +92,6 @@ class AppState:
         # Mise à jour à chaque render_mosaic. Clé absente = élément non visible.
         self.real_to_visual = {}   # real_idx → visual_idx
         self.visual_to_real = {}   # visual_idx → real_idx (None si répertoire virtuel)
-        # Liste des tk_img persistants pour les dossiers virtuels (anti-GC)
-        self._dir_tk_imgs = []
         # visual_idx du dossier virtuel actuellement "sélectionné" (cadre bleu), ou None
         self.selected_dir_visual_idx = None
         self.selected_dir_rect = None  # id du rectangle canvas

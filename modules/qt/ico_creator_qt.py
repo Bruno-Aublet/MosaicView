@@ -26,7 +26,7 @@ from modules.qt.utils import FocusSlider
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.entries import ensure_image_loaded, regenerate_thumbnail
+from modules.qt.entries import ensure_image_loaded
 from modules.qt.undo_redo_qt import save_state_qt
 
 
@@ -736,7 +736,12 @@ class IcoCreatorDialog(QDialog):
             off_x, off_y = self._pan_offset_a
 
         resized = self._original_img.resize((disp_w, disp_h), Image.LANCZOS)
-        pixmap = _pil_to_qpixmap(resized)
+        checker = _make_checkerboard_pixmap(disp_w, disp_h, tile=8)
+        img_px = _pil_to_qpixmap(resized)
+        painter = QPainter(checker)
+        painter.drawPixmap(0, 0, img_px)
+        painter.end()
+        pixmap = checker
 
         canvas.set_image(pixmap, img_w, img_h, off_x, off_y, disp_w, disp_h, init)
         self._update_info_label_a()
@@ -1113,7 +1118,6 @@ class IcoCreatorDialog(QDialog):
             "img_id":     None,
             "qt_pixmap_large": None,
         }
-        regenerate_thumbnail(new_entry)
 
         state = self._callbacks.get('state') or _state_module.state
         insert_pos = self._idx + 1
