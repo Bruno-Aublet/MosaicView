@@ -27,6 +27,8 @@ from modules.qt.state import get_current_theme
 from modules.qt.config_manager import get_config_manager
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.dialogs_qt import ErrorDialog, InfoDialog
+from modules.qt.archive_type_detector import detect_archive_type
+from modules.qt.archive_loader import _get_7z_exe, _to_short_path, _list_7z_files, _read_7z_file
 
 # Import conditionnel rarfile
 try:
@@ -335,17 +337,20 @@ class _CbrSummaryDialog(QDialog):
         _add_dir_links(top, data)
         layout.addLayout(top)
 
-        if data.get("renamed_count", 0) > 0:
-            self._renamed_lbl = QLabel()
-            self._renamed_lbl.setWordWrap(True)
-            self._renamed_lbl.setAlignment(Qt.AlignCenter)
-            layout.addWidget(self._renamed_lbl)
-        else:
-            self._renamed_lbl = None
+        self._renamed_cbz_lbl = None
+        self._renamed_cb7_lbl = None
+        self._renamed_cbt_lbl = None
+        for key in ("renamed_cbz", "renamed_cb7", "renamed_cbt"):
+            if data.get(key, 0) > 0:
+                lbl = QLabel()
+                lbl.setWordWrap(True)
+                lbl.setAlignment(Qt.AlignCenter)
+                layout.addWidget(lbl)
+                setattr(self, f"_{key}_lbl", lbl)
 
-        # Lien erreurs
+        # Lien log (erreurs ou renommages)
         self._error_lbl = None
-        if data.get("has_errors"):
+        if data.get("has_errors") or data.get("log_path"):
             log_path = data.get("log_path")
             if log_path:
                 self._error_lbl = QLabel()
@@ -388,7 +393,8 @@ class _CbrSummaryDialog(QDialog):
         )
         data = self._data
         self.setWindowTitle(_wt("dialogs.batch_cbr.complete_title"))
-        if data.get("has_errors") or data.get("renamed_count", 0) > 0:
+        has_renamed = any(data.get(k, 0) > 0 for k in ("renamed_cbz", "renamed_cb7", "renamed_cbt"))
+        if data.get("has_errors") or has_renamed:
             self._msg_lbl.setText(_("dialogs.batch_cbr.complete_message_errors").format(
                 count=data["converted_count"], total=data["total"]))
         else:
@@ -396,19 +402,28 @@ class _CbrSummaryDialog(QDialog):
                 count=data["converted_count"]))
         self._msg_lbl.setFont(font)
 
-        if self._renamed_lbl is not None:
-            self._renamed_lbl.setText(_("dialogs.batch_cbr.renamed_count").format(
-                count=data["renamed_count"]))
-            self._renamed_lbl.setFont(font)
+        for key, trad_key in (
+            ("renamed_cbz", "dialogs.batch_cbr.renamed_cbz_count"),
+            ("renamed_cb7", "dialogs.batch_cbr.renamed_cb7_count"),
+            ("renamed_cbt", "dialogs.batch_cbr.renamed_cbt_count"),
+        ):
+            lbl = getattr(self, f"_{key}_lbl")
+            if lbl is not None:
+                lbl.setText(_(trad_key).format(count=data[key]))
+                lbl.setFont(font)
 
         if self._error_lbl is not None:
             log_path = data.get("log_path")
-            error_text = _("dialogs.batch_cbr.errors_count").format(count=data["errors_count"])
-            if log_path:
-                see_log = _("dialogs.see_log")
-                self._error_lbl.setText(f'<a href="file:///{log_path}">{error_text} — {see_log}</a>')
+            see_log = _("dialogs.see_log")
+            if data.get("has_errors"):
+                error_text = _("dialogs.batch_cbr.errors_count").format(count=data["errors_count"])
+                if log_path:
+                    self._error_lbl.setText(f'<a href="file:///{log_path}">{error_text} — {see_log}</a>')
+                else:
+                    self._error_lbl.setText(error_text)
             else:
-                self._error_lbl.setText(error_text)
+                # Renommages uniquement — juste le lien log
+                self._error_lbl.setText(f'<a href="file:///{log_path}">{see_log}</a>')
             self._error_lbl.setFont(font)
 
         self._ok_btn.setText(_("buttons.ok"))
@@ -691,8 +706,11 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
 
     signals          = _ThreadSignals()
     conversion_errors = []
+    renamed_entries   = []
     converted_count  = [0]
-    renamed_count    = [0]
+    renamed_cbz      = [0]
+    renamed_cb7      = [0]
+    renamed_cbt      = [0]
 
     signals.update_filename.connect(prog.set_filename)
     signals.update_progress.connect(prog.set_progress)
@@ -708,7 +726,37 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
                 _("dialogs.batch_cbr.converting_progress").format(current=idx + 1, total=total))
             signals.update_page_bar.emit(0.0, "")
 
-            # Vignette
+            # Détection du format réel par magic bytes
+            real_type = detect_archive_type(cbr_path)
+
+            # Fichier mal nommé : ZIP, 7z ou TAR → simple renommage
+            if real_type in ("CBZ", "CB7", "CBT"):
+                ext_map     = {"CBZ": ".cbz", "CB7": ".cb7", "CBT": ".cbt"}
+                label_map   = {"CBZ": "ZIP → CBZ", "CB7": "7z → CB7", "CBT": "TAR → CBT"}
+                counter_map = {"CBZ": renamed_cbz, "CB7": renamed_cb7, "CBT": renamed_cbt}
+                new_ext = ext_map[real_type]
+                base_path, _ext = os.path.splitext(cbr_path)
+                new_path = base_path + new_ext
+                if os.path.exists(new_path):
+                    c = 1
+                    while os.path.exists(f"{base_path} ({c}){new_ext}"):
+                        c += 1
+                    new_path = f"{base_path} ({c}){new_ext}"
+                try:
+                    os.rename(cbr_path, new_path)
+                    signals.update_page_bar.emit(100.0, label_map[real_type])
+                    counter_map[real_type][0] += 1
+                    renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
+                except Exception as e:
+                    conversion_errors.append(f"{basename}: {e}")
+                continue
+
+            # Format inconnu
+            if real_type is None:
+                conversion_errors.append(f"{basename}: format inconnu")
+                continue
+
+            # Vignette (seulement si vrai RAR)
             try:
                 with rarfile.RarFile(cbr_path, 'r') as arc:
                     names = sorted(
@@ -785,26 +833,6 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
                     conversion_errors.append(f"{basename} (suppression): {del_err}")
                 converted_count[0] += 1
 
-            except (rarfile.BadRarFile, rarfile.NotRarFile):
-                try:
-                    with zipfile.ZipFile(cbr_path, 'r') as arc:
-                        if len([f for f in arc.namelist() if not f.endswith('/')]) == 0:
-                            conversion_errors.append(f"{basename}: archive vide")
-                            continue
-                    base_path, _ext = os.path.splitext(cbr_path)
-                    cbz_path = base_path + ".cbz"
-                    if os.path.exists(cbz_path):
-                        c = 1
-                        while os.path.exists(f"{base_path} ({c}).cbz"):
-                            c += 1
-                        cbz_path = f"{base_path} ({c}).cbz"
-                    os.rename(cbr_path, cbz_path)
-                    signals.update_page_bar.emit(100.0, "ZIP → CBZ")
-                    renamed_count[0] += 1
-                except zipfile.BadZipFile:
-                    conversion_errors.append(f"{basename}: ni RAR ni ZIP valide")
-                except Exception as e:
-                    conversion_errors.append(f"{basename}: {e}")
             except Exception as e:
                 conversion_errors.append(f"{basename}: {e}")
 
@@ -815,7 +843,7 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
         prog.accept()
 
         log_path = None
-        if conversion_errors:
+        if conversion_errors or renamed_entries:
             try:
                 from datetime import datetime
                 now = datetime.now()
@@ -828,13 +856,22 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
                     lf.write(f"Directory: {directory}\n")
                     lf.write(f"Total files: {len(cbr_files)}\n")
                     lf.write(f"Converted: {converted_count[0]}\n")
-                    lf.write(f"Renamed (ZIP→CBZ): {renamed_count[0]}\n")
+                    lf.write(f"Renamed (ZIP→CBZ): {renamed_cbz[0]}\n")
+                    lf.write(f"Renamed (7z→CB7): {renamed_cb7[0]}\n")
+                    lf.write(f"Renamed (TAR→CBT): {renamed_cbt[0]}\n")
                     lf.write(f"Errors: {len(conversion_errors)}\n")
-                    lf.write(f"\n{'='*60}\n")
-                    lf.write("Error details:\n")
-                    lf.write(f"{'='*60}\n\n")
-                    for err in conversion_errors:
-                        lf.write(f"  - {err}\n")
+                    if renamed_entries:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write("Renamed files:\n")
+                        lf.write(f"{'='*60}\n\n")
+                        for entry in renamed_entries:
+                            lf.write(f"  - {entry}\n")
+                    if conversion_errors:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write("Error details:\n")
+                        lf.write(f"{'='*60}\n\n")
+                        for err in conversion_errors:
+                            lf.write(f"  - {err}\n")
             except Exception as log_err:
                 print(f"Erreur log : {log_err}")
                 log_path = None
@@ -842,7 +879,9 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
         summary_data = {
             "converted_count": converted_count[0],
             "total":           len(cbr_files),
-            "renamed_count":   renamed_count[0],
+            "renamed_cbz":     renamed_cbz[0],
+            "renamed_cb7":     renamed_cb7[0],
+            "renamed_cbt":     renamed_cbt[0],
             "errors_count":    len(conversion_errors),
             "has_errors":      bool(conversion_errors),
             "directory":       directory,
@@ -859,6 +898,757 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
 
 def show_batch_cbr_summary(parent, data, callbacks):
     dlg = _CbrSummaryDialog(parent, data)
+    dlg.exec()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Dialog de résumé CB7
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class _Cb7SummaryDialog(QDialog):
+    def __init__(self, parent, data):
+        super().__init__(parent)
+        self._data = data
+        self.setModal(True)
+        self.setFixedWidth(480)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(8)
+
+        top = QVBoxLayout()
+        top.setSpacing(0)
+        top.setContentsMargins(0, 0, 0, 0)
+        self._msg_lbl = QLabel()
+        self._msg_lbl.setWordWrap(True)
+        self._msg_lbl.setAlignment(Qt.AlignCenter)
+        top.addWidget(self._msg_lbl)
+        _add_dir_links(top, data)
+        layout.addLayout(top)
+
+        self._renamed_cbz_lbl = None
+        self._renamed_cbr_lbl = None
+        self._renamed_cbt_lbl = None
+        for key in ("renamed_cbz", "renamed_cbr", "renamed_cbt"):
+            if data.get(key, 0) > 0:
+                lbl = QLabel()
+                lbl.setWordWrap(True)
+                lbl.setAlignment(Qt.AlignCenter)
+                layout.addWidget(lbl)
+                setattr(self, f"_{key}_lbl", lbl)
+
+        # Lien log (erreurs ou renommages)
+        self._error_lbl = None
+        log_path = data.get("log_path")
+        if data.get("has_errors") or log_path:
+            self._error_lbl = QLabel()
+            self._error_lbl.setWordWrap(True)
+            self._error_lbl.setAlignment(Qt.AlignCenter)
+            self._error_lbl.setStyleSheet("color: #4A9EFF;")
+            self._error_lbl.setCursor(QCursor(Qt.PointingHandCursor))
+            self._error_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            if log_path:
+                self._error_lbl.linkActivated.connect(lambda _, p=log_path: _open_path(p))
+            layout.addWidget(self._error_lbl)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self._ok_btn = QPushButton()
+        self._ok_btn.setFixedWidth(100)
+        self._ok_btn.setDefault(True)
+        self._ok_btn.clicked.connect(self.accept)
+        btn_row.addWidget(self._ok_btn)
+        btn_row.addStretch()
+        layout.addLayout(btn_row)
+
+        self._retranslate()
+        _connect_lang(self, lambda _: self._retranslate())
+        self._ok_btn.setFocus()
+
+    def _retranslate(self):
+        theme = get_current_theme()
+        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+        font = _get_current_font(10)
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        data = self._data
+        self.setWindowTitle(_wt("dialogs.batch_cb7.complete_title"))
+        has_renamed = any(data.get(k, 0) > 0 for k in ("renamed_cbz", "renamed_cbr", "renamed_cbt"))
+        if data.get("has_errors") or has_renamed:
+            self._msg_lbl.setText(_("dialogs.batch_cb7.complete_message_errors").format(
+                count=data["converted_count"], total=data["total"]))
+        else:
+            self._msg_lbl.setText(_("dialogs.batch_cb7.complete_message").format(
+                count=data["converted_count"]))
+        self._msg_lbl.setFont(font)
+
+        for key, trad_key in (
+            ("renamed_cbz", "dialogs.batch_cb7.renamed_cbz_count"),
+            ("renamed_cbr", "dialogs.batch_cb7.renamed_cbr_count"),
+            ("renamed_cbt", "dialogs.batch_cb7.renamed_cbt_count"),
+        ):
+            lbl = getattr(self, f"_{key}_lbl")
+            if lbl is not None:
+                lbl.setText(_(trad_key).format(count=data[key]))
+                lbl.setFont(font)
+
+        if self._error_lbl is not None:
+            log_path = data.get("log_path")
+            see_log = _("dialogs.see_log")
+            if data.get("has_errors"):
+                error_text = _("dialogs.batch_cb7.errors_count").format(count=data["errors_count"])
+                if log_path:
+                    self._error_lbl.setText(f'<a href="file:///{log_path}">{error_text} — {see_log}</a>')
+                else:
+                    self._error_lbl.setText(error_text)
+            else:
+                self._error_lbl.setText(f'<a href="file:///{log_path}">{see_log}</a>')
+            self._error_lbl.setFont(font)
+
+        self._ok_btn.setText(_("buttons.ok"))
+        self._ok_btn.setFont(font)
+        self._ok_btn.setStyleSheet(btn_style)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Fonctions publiques — CB7→CBZ
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def batch_convert_cb7_to_cbz(parent, callbacks, directory=None):
+    """Lance la conversion batch CB7→CBZ."""
+    if directory is None:
+        cfg = get_config_manager()
+        directory = QFileDialog.getExistingDirectory(
+            parent, _("dialogs.batch_cb7.select_directory_title"),
+            cfg.get('last_open_dir', ""))
+        if directory:
+            cfg.set('last_open_dir', directory)
+
+    if not directory:
+        return
+
+    cb7_files = []
+    for root, _subdirs, files in os.walk(directory):
+        for fname in files:
+            if fname.lower().endswith('.cb7'):
+                cb7_files.append(os.path.join(root, fname))
+    cb7_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
+
+    if not cb7_files:
+        InfoDialog(parent, _("dialogs.batch_cb7.no_cb7_title"),
+                   _("dialogs.batch_cb7.no_cb7_message").format(directory=directory)).exec()
+        return
+
+    batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks)
+
+
+def batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks, directories=None):
+    """Fenêtre de confirmation + progression + résumé CB7→CBZ."""
+    cb7_files = [os.path.normpath(f) for f in cb7_files]
+    directory = os.path.normpath(directory) if directory else directory
+    if directories:
+        directories = [os.path.normpath(d) for d in directories]
+
+    total_size = sum(os.path.getsize(f) for f in cb7_files if os.path.isfile(f))
+
+    dlg = _ConfirmDialog(
+        parent,
+        title_key    = "dialogs.batch_cb7.confirm_title",
+        msg_key      = "dialogs.batch_cb7.confirm_message",
+        count        = len(cb7_files),
+        directory    = directory,
+        total_size   = total_size,
+        checkbox_key = "dialogs.batch_cb7.checkbox_permanent_delete",
+        tooltip_key  = "tooltip.batch_cb7_permanent_delete",
+        start_key    = "dialogs.batch_cb7.start_button",
+        callbacks    = callbacks,
+    )
+    dlg.exec()
+
+    if not dlg.confirmed:
+        return
+
+    is_permanent = dlg.permanent_delete
+
+    prog = _ProgressDialog(parent, "dialogs.batch_cb7.converting_title", has_page_bar=True)
+    prog.show()
+    QApplication.processEvents()
+
+    signals           = _ThreadSignals()
+    conversion_errors = []
+    renamed_entries   = []
+    converted_count   = [0]
+    renamed_cbz       = [0]
+    renamed_cbr       = [0]
+    renamed_cbt       = [0]
+
+    image_exts = ('.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.tif', '.gif')
+
+    signals.update_filename.connect(prog.set_filename)
+    signals.update_progress.connect(prog.set_progress)
+    signals.update_page_bar.connect(lambda v, t: prog.set_page_progress(v, t))
+    signals.update_thumb.connect(prog.set_thumbnail)
+
+    def do_conversion():
+        total = len(cb7_files)
+        for idx, cb7_path in enumerate(cb7_files):
+            basename = os.path.basename(cb7_path)
+            signals.update_filename.emit(basename)
+            signals.update_progress.emit(
+                _("dialogs.batch_cb7.converting_progress").format(current=idx + 1, total=total))
+            signals.update_page_bar.emit(0.0, "")
+
+            # Détection du format réel par magic bytes
+            real_type = detect_archive_type(cb7_path)
+
+            # Fichier mal nommé : ZIP, RAR ou TAR → simple renommage
+            if real_type in ("CBZ", "CBR", "CBT"):
+                ext_map     = {"CBZ": ".cbz", "CBR": ".cbr", "CBT": ".cbt"}
+                label_map   = {"CBZ": "ZIP → CBZ", "CBR": "RAR → CBR", "CBT": "TAR → CBT"}
+                counter_map = {"CBZ": renamed_cbz, "CBR": renamed_cbr, "CBT": renamed_cbt}
+                new_ext = ext_map[real_type]
+                base_path, _ext = os.path.splitext(cb7_path)
+                new_path = base_path + new_ext
+                if os.path.exists(new_path):
+                    c = 1
+                    while os.path.exists(f"{base_path} ({c}){new_ext}"):
+                        c += 1
+                    new_path = f"{base_path} ({c}){new_ext}"
+                try:
+                    os.rename(cb7_path, new_path)
+                    signals.update_page_bar.emit(100.0, label_map[real_type])
+                    counter_map[real_type][0] += 1
+                    renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
+                except Exception as e:
+                    conversion_errors.append(f"{basename}: {e}")
+                continue
+
+            # Format inconnu
+            if real_type is None:
+                conversion_errors.append(f"{basename}: format inconnu")
+                continue
+
+            # Vignette
+            try:
+                all_names = _list_7z_files(cb7_path)
+                img_names = sorted(
+                    [f for f in all_names if f.lower().endswith(image_exts)],
+                    key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower())
+                )
+                if img_names:
+                    data = _read_7z_file(cb7_path, img_names[0])
+                    img  = Image.open(io.BytesIO(data))
+                    px   = _pil_to_qpixmap(img, 150, 210, callbacks)
+                    signals.update_thumb.emit(px)
+                    img = None
+            except Exception:
+                signals.update_thumb.emit(None)
+
+            try:
+                all_files = sorted(
+                    _list_7z_files(cb7_path),
+                    key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower())
+                )
+                total_pages = len(all_files)
+                if total_pages == 0:
+                    conversion_errors.append(f"{basename}: archive vide")
+                    continue
+
+                base_path, _ext = os.path.splitext(cb7_path)
+                cbz_path = base_path + ".cbz"
+                if os.path.exists(cbz_path):
+                    c = 1
+                    while os.path.exists(f"{base_path} ({c}).cbz"):
+                        c += 1
+                    cbz_path = f"{base_path} ({c}).cbz"
+
+                with zipfile.ZipFile(cbz_path, 'w') as cbz:
+                    for page_num, file_name in enumerate(all_files):
+                        try:
+                            raw = _read_7z_file(cb7_path, file_name)
+                            try:
+                                tmp = Image.open(io.BytesIO(raw))
+                                if tmp.mode in ("CMYK", "YCbCr", "I", "F"):
+                                    tmp = tmp.convert("RGB")
+                                    buf = io.BytesIO()
+                                    ext_l = os.path.splitext(file_name)[1].lower()
+                                    fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG",
+                                               ".webp": "WEBP", ".bmp": "BMP", ".tiff": "TIFF",
+                                               ".tif": "TIFF", ".gif": "GIF"}
+                                    out_fmt = fmt_map.get(ext_l, "JPEG")
+                                    tmp.save(buf, format=out_fmt,
+                                             **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))
+                                    raw = buf.getvalue()
+                                tmp = None
+                            except Exception:
+                                pass
+                            cbz.writestr(os.path.basename(file_name), raw)
+                            raw = None
+                            if (page_num + 1) % 20 == 0:
+                                gc.collect()
+                            pct = (page_num + 1) / total_pages * 100
+                            signals.update_page_bar.emit(
+                                pct,
+                                _("dialogs.batch_cb7.page_progress").format(
+                                    current=page_num + 1, total=total_pages))
+                        except Exception:
+                            continue
+
+                gc.collect()
+                try:
+                    if is_permanent:
+                        os.remove(cb7_path)
+                    else:
+                        callbacks['safe_delete_file'](cb7_path)
+                except Exception as del_err:
+                    conversion_errors.append(f"{basename} (suppression): {del_err}")
+                converted_count[0] += 1
+
+            except Exception as e:
+                conversion_errors.append(f"{basename}: {e}")
+
+        signals.conversion_done.emit()
+
+    def on_done():
+        prog.mark_done()
+        prog.accept()
+
+        log_path = None
+        if conversion_errors or renamed_entries:
+            try:
+                from datetime import datetime
+                now = datetime.now()
+                log_filename = f"Log_cb7tocbz_{now.strftime('%Y_%m_%d_%H_%M')}.txt"
+                mosaicview_temp = callbacks['get_mosaicview_temp_dir']()
+                log_path = os.path.join(mosaicview_temp, log_filename)
+                with open(log_path, 'w', encoding='utf-8') as lf:
+                    lf.write("MosaicView - CB7 to CBZ Batch Conversion Log\n")
+                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
+                    lf.write(f"Directory: {directory}\n")
+                    lf.write(f"Total files: {len(cb7_files)}\n")
+                    lf.write(f"Converted: {converted_count[0]}\n")
+                    lf.write(f"Renamed (ZIP→CBZ): {renamed_cbz[0]}\n")
+                    lf.write(f"Renamed (RAR→CBR): {renamed_cbr[0]}\n")
+                    lf.write(f"Renamed (TAR→CBT): {renamed_cbt[0]}\n")
+                    lf.write(f"Errors: {len(conversion_errors)}\n")
+                    if renamed_entries:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write("Renamed files:\n")
+                        lf.write(f"{'='*60}\n\n")
+                        for entry in renamed_entries:
+                            lf.write(f"  - {entry}\n")
+                    if conversion_errors:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write("Error details:\n")
+                        lf.write(f"{'='*60}\n\n")
+                        for err in conversion_errors:
+                            lf.write(f"  - {err}\n")
+            except Exception as log_err:
+                print(f"Erreur log : {log_err}")
+                log_path = None
+
+        summary_data = {
+            "converted_count": converted_count[0],
+            "total":           len(cb7_files),
+            "renamed_cbz":     renamed_cbz[0],
+            "renamed_cbr":     renamed_cbr[0],
+            "renamed_cbt":     renamed_cbt[0],
+            "errors_count":    len(conversion_errors),
+            "has_errors":      bool(conversion_errors),
+            "directory":       directory,
+            "directories":     directories,
+            "log_path":        log_path,
+        }
+        show_batch_cb7_summary(parent, summary_data, callbacks)
+
+    signals.conversion_done.connect(on_done)
+    thread = threading.Thread(target=do_conversion, daemon=True)
+    thread.start()
+    prog.exec()
+
+
+def show_batch_cb7_summary(parent, data, callbacks):
+    dlg = _Cb7SummaryDialog(parent, data)
+    dlg.exec()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Dialog de résumé CBT
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class _CbtSummaryDialog(QDialog):
+    def __init__(self, parent, data):
+        super().__init__(parent)
+        self._data = data
+        self.setModal(True)
+        self.setFixedWidth(480)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(8)
+
+        top = QVBoxLayout()
+        top.setSpacing(0)
+        top.setContentsMargins(0, 0, 0, 0)
+        self._msg_lbl = QLabel()
+        self._msg_lbl.setWordWrap(True)
+        self._msg_lbl.setAlignment(Qt.AlignCenter)
+        top.addWidget(self._msg_lbl)
+        _add_dir_links(top, data)
+        layout.addLayout(top)
+
+        self._renamed_cbz_lbl = None
+        self._renamed_cbr_lbl = None
+        self._renamed_cb7_lbl = None
+        for key in ("renamed_cbz", "renamed_cbr", "renamed_cb7"):
+            if data.get(key, 0) > 0:
+                lbl = QLabel()
+                lbl.setWordWrap(True)
+                lbl.setAlignment(Qt.AlignCenter)
+                layout.addWidget(lbl)
+                setattr(self, f"_{key}_lbl", lbl)
+
+        # Lien log (erreurs ou renommages)
+        self._error_lbl = None
+        log_path = data.get("log_path")
+        if data.get("has_errors") or log_path:
+            self._error_lbl = QLabel()
+            self._error_lbl.setWordWrap(True)
+            self._error_lbl.setAlignment(Qt.AlignCenter)
+            self._error_lbl.setStyleSheet("color: #4A9EFF;")
+            self._error_lbl.setCursor(QCursor(Qt.PointingHandCursor))
+            self._error_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            if log_path:
+                self._error_lbl.linkActivated.connect(lambda _, p=log_path: _open_path(p))
+            layout.addWidget(self._error_lbl)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self._ok_btn = QPushButton()
+        self._ok_btn.setFixedWidth(100)
+        self._ok_btn.setDefault(True)
+        self._ok_btn.clicked.connect(self.accept)
+        btn_row.addWidget(self._ok_btn)
+        btn_row.addStretch()
+        layout.addLayout(btn_row)
+
+        self._retranslate()
+        _connect_lang(self, lambda _: self._retranslate())
+        self._ok_btn.setFocus()
+
+    def _retranslate(self):
+        theme = get_current_theme()
+        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+        font = _get_current_font(10)
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        data = self._data
+        self.setWindowTitle(_wt("dialogs.batch_cbt.complete_title"))
+        has_renamed = any(data.get(k, 0) > 0 for k in ("renamed_cbz", "renamed_cbr", "renamed_cb7"))
+        if data.get("has_errors") or has_renamed:
+            self._msg_lbl.setText(_("dialogs.batch_cbt.complete_message_errors").format(
+                count=data["converted_count"], total=data["total"]))
+        else:
+            self._msg_lbl.setText(_("dialogs.batch_cbt.complete_message").format(
+                count=data["converted_count"]))
+        self._msg_lbl.setFont(font)
+
+        for key, trad_key in (
+            ("renamed_cbz", "dialogs.batch_cbt.renamed_cbz_count"),
+            ("renamed_cbr", "dialogs.batch_cbt.renamed_cbr_count"),
+            ("renamed_cb7", "dialogs.batch_cbt.renamed_cb7_count"),
+        ):
+            lbl = getattr(self, f"_{key}_lbl")
+            if lbl is not None:
+                lbl.setText(_(trad_key).format(count=data[key]))
+                lbl.setFont(font)
+
+        if self._error_lbl is not None:
+            log_path = data.get("log_path")
+            see_log = _("dialogs.see_log")
+            if data.get("has_errors"):
+                error_text = _("dialogs.batch_cbt.errors_count").format(count=data["errors_count"])
+                if log_path:
+                    self._error_lbl.setText(f'<a href="file:///{log_path}">{error_text} — {see_log}</a>')
+                else:
+                    self._error_lbl.setText(error_text)
+            else:
+                self._error_lbl.setText(f'<a href="file:///{log_path}">{see_log}</a>')
+            self._error_lbl.setFont(font)
+
+        self._ok_btn.setText(_("buttons.ok"))
+        self._ok_btn.setFont(font)
+        self._ok_btn.setStyleSheet(btn_style)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Fonctions publiques — CBT→CBZ
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
+    """Lance la conversion batch CBT→CBZ."""
+    if directory is None:
+        cfg = get_config_manager()
+        directory = QFileDialog.getExistingDirectory(
+            parent, _("dialogs.batch_cbt.select_directory_title"),
+            cfg.get('last_open_dir', ""))
+        if directory:
+            cfg.set('last_open_dir', directory)
+
+    if not directory:
+        return
+
+    cbt_files = []
+    for root, _subdirs, files in os.walk(directory):
+        for fname in files:
+            if fname.lower().endswith('.cbt'):
+                cbt_files.append(os.path.join(root, fname))
+    cbt_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
+
+    if not cbt_files:
+        InfoDialog(parent, _("dialogs.batch_cbt.no_cbt_title"),
+                   _("dialogs.batch_cbt.no_cbt_message").format(directory=directory)).exec()
+        return
+
+    batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks)
+
+
+def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, directories=None):
+    """Fenêtre de confirmation + progression + résumé CBT→CBZ."""
+    import tarfile as _tarfile
+    cbt_files = [os.path.normpath(f) for f in cbt_files]
+    directory = os.path.normpath(directory) if directory else directory
+    if directories:
+        directories = [os.path.normpath(d) for d in directories]
+
+    total_size = sum(os.path.getsize(f) for f in cbt_files if os.path.isfile(f))
+
+    dlg = _ConfirmDialog(
+        parent,
+        title_key    = "dialogs.batch_cbt.confirm_title",
+        msg_key      = "dialogs.batch_cbt.confirm_message",
+        count        = len(cbt_files),
+        directory    = directory,
+        total_size   = total_size,
+        checkbox_key = "dialogs.batch_cbt.checkbox_permanent_delete",
+        tooltip_key  = "tooltip.batch_cbt_permanent_delete",
+        start_key    = "dialogs.batch_cbt.start_button",
+        callbacks    = callbacks,
+    )
+    dlg.exec()
+
+    if not dlg.confirmed:
+        return
+
+    is_permanent = dlg.permanent_delete
+
+    prog = _ProgressDialog(parent, "dialogs.batch_cbt.converting_title", has_page_bar=True)
+    prog.show()
+    QApplication.processEvents()
+
+    signals           = _ThreadSignals()
+    conversion_errors = []
+    renamed_entries   = []
+    converted_count   = [0]
+    renamed_cbz       = [0]
+    renamed_cbr       = [0]
+    renamed_cb7       = [0]
+
+    image_exts = ('.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.tif', '.gif')
+
+    signals.update_filename.connect(prog.set_filename)
+    signals.update_progress.connect(prog.set_progress)
+    signals.update_page_bar.connect(lambda v, t: prog.set_page_progress(v, t))
+    signals.update_thumb.connect(prog.set_thumbnail)
+
+    def do_conversion():
+        total = len(cbt_files)
+        for idx, cbt_path in enumerate(cbt_files):
+            basename = os.path.basename(cbt_path)
+            signals.update_filename.emit(basename)
+            signals.update_progress.emit(
+                _("dialogs.batch_cbt.converting_progress").format(current=idx + 1, total=total))
+            signals.update_page_bar.emit(0.0, "")
+
+            # Détection du format réel par magic bytes
+            real_type = detect_archive_type(cbt_path)
+
+            # Fichier mal nommé : ZIP, RAR ou 7z → simple renommage
+            if real_type in ("CBZ", "CBR", "CB7"):
+                ext_map     = {"CBZ": ".cbz", "CBR": ".cbr", "CB7": ".cb7"}
+                label_map   = {"CBZ": "ZIP → CBZ", "CBR": "RAR → CBR", "CB7": "7z → CB7"}
+                counter_map = {"CBZ": renamed_cbz, "CBR": renamed_cbr, "CB7": renamed_cb7}
+                new_ext = ext_map[real_type]
+                base_path, _ext = os.path.splitext(cbt_path)
+                new_path = base_path + new_ext
+                if os.path.exists(new_path):
+                    c = 1
+                    while os.path.exists(f"{base_path} ({c}){new_ext}"):
+                        c += 1
+                    new_path = f"{base_path} ({c}){new_ext}"
+                try:
+                    os.rename(cbt_path, new_path)
+                    signals.update_page_bar.emit(100.0, label_map[real_type])
+                    counter_map[real_type][0] += 1
+                    renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
+                except Exception as e:
+                    conversion_errors.append(f"{basename}: {e}")
+                continue
+
+            # Format inconnu
+            if real_type is None:
+                conversion_errors.append(f"{basename}: format inconnu")
+                continue
+
+            # Vignette
+            try:
+                with _tarfile.open(cbt_path, 'r:*') as arc:
+                    img_members = sorted(
+                        [m for m in arc.getmembers()
+                         if m.isfile() and m.name.lower().endswith(image_exts)],
+                        key=lambda m: callbacks['natural_sort_key'](os.path.basename(m.name).lower())
+                    )
+                    if img_members:
+                        data = arc.extractfile(img_members[0]).read()
+                        img  = Image.open(io.BytesIO(data))
+                        px   = _pil_to_qpixmap(img, 150, 210, callbacks)
+                        signals.update_thumb.emit(px)
+                        img = None
+            except Exception:
+                signals.update_thumb.emit(None)
+
+            try:
+                with _tarfile.open(cbt_path, 'r:*') as archive:
+                    all_members = sorted(
+                        [m for m in archive.getmembers() if m.isfile()],
+                        key=lambda m: callbacks['natural_sort_key'](os.path.basename(m.name).lower())
+                    )
+                    total_pages = len(all_members)
+                    if total_pages == 0:
+                        conversion_errors.append(f"{basename}: archive vide")
+                        continue
+
+                    base_path, _ext = os.path.splitext(cbt_path)
+                    cbz_path = base_path + ".cbz"
+                    if os.path.exists(cbz_path):
+                        c = 1
+                        while os.path.exists(f"{base_path} ({c}).cbz"):
+                            c += 1
+                        cbz_path = f"{base_path} ({c}).cbz"
+
+                    with zipfile.ZipFile(cbz_path, 'w') as cbz:
+                        for page_num, member in enumerate(all_members):
+                            try:
+                                raw = archive.extractfile(member).read()
+                                try:
+                                    tmp = Image.open(io.BytesIO(raw))
+                                    if tmp.mode in ("CMYK", "YCbCr", "I", "F"):
+                                        tmp = tmp.convert("RGB")
+                                        buf = io.BytesIO()
+                                        ext_l = os.path.splitext(member.name)[1].lower()
+                                        fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG",
+                                                   ".webp": "WEBP", ".bmp": "BMP", ".tiff": "TIFF",
+                                                   ".tif": "TIFF", ".gif": "GIF"}
+                                        out_fmt = fmt_map.get(ext_l, "JPEG")
+                                        tmp.save(buf, format=out_fmt,
+                                                 **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))
+                                        raw = buf.getvalue()
+                                    tmp = None
+                                except Exception:
+                                    pass
+                                cbz.writestr(os.path.basename(member.name), raw)
+                                raw = None
+                                if (page_num + 1) % 20 == 0:
+                                    gc.collect()
+                                pct = (page_num + 1) / total_pages * 100
+                                signals.update_page_bar.emit(
+                                    pct,
+                                    _("dialogs.batch_cbt.page_progress").format(
+                                        current=page_num + 1, total=total_pages))
+                            except Exception:
+                                continue
+
+                gc.collect()
+                try:
+                    if is_permanent:
+                        os.remove(cbt_path)
+                    else:
+                        callbacks['safe_delete_file'](cbt_path)
+                except Exception as del_err:
+                    conversion_errors.append(f"{basename} (suppression): {del_err}")
+                converted_count[0] += 1
+
+            except Exception as e:
+                conversion_errors.append(f"{basename}: {e}")
+
+        signals.conversion_done.emit()
+
+    def on_done():
+        prog.mark_done()
+        prog.accept()
+
+        log_path = None
+        if conversion_errors or renamed_entries:
+            try:
+                from datetime import datetime
+                now = datetime.now()
+                log_filename = f"Log_cbttocbz_{now.strftime('%Y_%m_%d_%H_%M')}.txt"
+                mosaicview_temp = callbacks['get_mosaicview_temp_dir']()
+                log_path = os.path.join(mosaicview_temp, log_filename)
+                with open(log_path, 'w', encoding='utf-8') as lf:
+                    lf.write("MosaicView - CBT to CBZ Batch Conversion Log\n")
+                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
+                    lf.write(f"Directory: {directory}\n")
+                    lf.write(f"Total files: {len(cbt_files)}\n")
+                    lf.write(f"Converted: {converted_count[0]}\n")
+                    lf.write(f"Renamed (ZIP→CBZ): {renamed_cbz[0]}\n")
+                    lf.write(f"Renamed (RAR→CBR): {renamed_cbr[0]}\n")
+                    lf.write(f"Renamed (7z→CB7): {renamed_cb7[0]}\n")
+                    lf.write(f"Errors: {len(conversion_errors)}\n")
+                    if renamed_entries:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write("Renamed files:\n")
+                        lf.write(f"{'='*60}\n\n")
+                        for entry in renamed_entries:
+                            lf.write(f"  - {entry}\n")
+                    if conversion_errors:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write("Error details:\n")
+                        lf.write(f"{'='*60}\n\n")
+                        for err in conversion_errors:
+                            lf.write(f"  - {err}\n")
+            except Exception as log_err:
+                print(f"Erreur log : {log_err}")
+                log_path = None
+
+        summary_data = {
+            "converted_count": converted_count[0],
+            "total":           len(cbt_files),
+            "renamed_cbz":     renamed_cbz[0],
+            "renamed_cbr":     renamed_cbr[0],
+            "renamed_cb7":     renamed_cb7[0],
+            "errors_count":    len(conversion_errors),
+            "has_errors":      bool(conversion_errors),
+            "directory":       directory,
+            "directories":     directories,
+            "log_path":        log_path,
+        }
+        show_batch_cbt_summary(parent, summary_data, callbacks)
+
+    signals.conversion_done.connect(on_done)
+    thread = threading.Thread(target=do_conversion, daemon=True)
+    thread.start()
+    prog.exec()
+
+
+def show_batch_cbt_summary(parent, data, callbacks):
+    dlg = _CbtSummaryDialog(parent, data)
     dlg.exec()
 
 

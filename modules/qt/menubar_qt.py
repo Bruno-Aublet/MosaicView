@@ -92,6 +92,8 @@ def _populate_file_menu(menu: QMenu, callbacks: dict):
     canvas_empty = not st.current_file and not st.images_data
     batch_menu = _add_submenu(menu, _("menu.batch_convert"), enabled=canvas_empty)
     _add_action(batch_menu, _("menu.batch_cbr_to_cbz"), callbacks.get("batch_convert_cbr_to_cbz"))
+    _add_action(batch_menu, _("menu.batch_cb7_to_cbz"), callbacks.get("batch_convert_cb7_to_cbz"))
+    _add_action(batch_menu, _("menu.batch_cbt_to_cbz"), callbacks.get("batch_convert_cbt_to_cbz"))
     _add_action(batch_menu, _("menu.batch_pdf_to_cbz"), callbacks.get("batch_convert_pdf_to_cbz"))
     _add_action(batch_menu, _("menu.batch_img_to_cbz"), callbacks.get("batch_convert_img_to_cbz"))
     menu.addSeparator()
@@ -188,6 +190,12 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
                 enabled=has_img_sel)
     _add_action(menu, _("dialogs.adjustments.window_title"), callbacks.get("show_image_adjustments_dialog"),
                 enabled=has_img_sel)
+    _add_action(menu, _("context_menu.image.straighten"), callbacks.get("show_straighten_viewer"),
+                enabled=bool(st.images_data))
+    _add_action(menu, _("context_menu.image.clone_zone"), callbacks.get("show_clone_zone_viewer"),
+                enabled=bool(st.images_data))
+    _add_action(menu, _("context_menu.image.text"), callbacks.get("show_text_viewer"),
+                enabled=bool(st.images_data))
     menu.addSeparator()
 
     _add_action(menu, _("context_menu.image.convert"), callbacks.get("convert_selected_images"),

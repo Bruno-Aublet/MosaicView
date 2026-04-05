@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "De'wI' Soj 'oH digital comics chenmoHwI'pu' ghap",
   "buttons": {
-    "open_file": "CBZ/CBR/CB7/PDF poSmoH",
+    "open_file": "CBZ/CBR/CB7/CBT/PDF poSmoH",
     "close_file": "De' SoQmoH",
     "create_cbz": "CBZ per chenmoH",
     "flatten_dirs": "Hoch De'mey Hoch\njer jevmoH 'ej\nvo'mey tlhejmoH",
@@ -49,9 +49,7 @@
     "no": "ghobe'",
     "renumber_recommended": "cha' ghegh (qaspa')",
     "ignore_and_save": "busha' 'ej choh",
-    "rename_to_cbz": ".cbz pong choH",
     "open_without_rename": "pong choHbe'bogh poSmoH",
-    "rename_to_cbr": ".cbr pong choh",
     "adjustments": "wov'a',\nmI' joq",
     "batch_cbr_to_cbz": "ngoq CBR moj CBZ\n che' DIvI'",
     "batch_pdf_to_cbz": "PDF De'mey\n CBZ chen law'",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "chu'",
     "delete_selected": "teq",
     "save": "choq",
-    "rename_to_cb7": ".cb7 pong tIS",
     "split_ui": "chu' ghoj cha' Hol",
-    "unsplit_ui": "legh wa' Hol"
+    "unsplit_ui": "legh wa' Hol",
+    "rename_to_ext": "{ext} pong choH",
+    "batch_cb7_to_cbz": "CB7 De'wI'mey\n nav CBZ ngor tay'",
+    "batch_cbt_to_cbz": "CBT De'wI'mey\n nav CBZ ngor tay'"
   },
   "tabs": {
     "mosaic": "Hur'",
@@ -130,10 +130,12 @@
       "save_to_folder": "ghItlhwI'mey wIvlu'bogh",
       "adjustments": "wov'a', mI', nguv...",
       "refresh_mosaic": "chu'Ha' mosaic (F5)",
-      "create_ico": "chenmoH .ico nav"
+      "create_ico": "chenmoH .ico nav",
+      "straighten": "nIt chenmoH mIllogh...",
+      "clone_zone": "Daq tIng..."
     },
     "canvas_no_file": {
-      "open": "CBZ/CBR/CB7/PDF poSmoH",
+      "open": "CBZ/CBR/CB7/CBT/PDF poSmoH",
       "recent_files": "De'mey ngoQ",
       "clear_history": "qun chImmoH"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "De' lI'be' ngevwI'",
         "message": "De' lI'be' ngevwI'mey bIH, 'ej lujatlhpu':\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "'{file}' ngan ghe''or TAR potlh mIS."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "mI'mey choH yImev\n{count} De'Hom - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "pong nachHom luj tu'lu': De'vam '{filename}' CBZ 'oH, CBR 'oHbe'. pong choH'a'?",
+    "extension_mismatch_generic": {
+      "message": "ngan ghe''or ghaj be': '{filename}' {real} ghaH, {declared} ghaH be'. pong choH?",
       "title": "Incorrect extension"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Qotlh mI' tu'lu': De'vam '{filename}' CBR 'oH, CBZ 'oHbe'. pong'a'?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "poQbe'bogh 'ay' tu'lu': '{filename}' De' CB7 'oH, CBZ/CBR 'oHbe'. pong tIS?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ De'mey ZIP ngoqDe' lo', ngoqDe' notlh 'ej poSmoHlu'. CBR De'mey, wa'DIch, RAR ngoqDe' lo', ngoqDe' potlh.\n\nMosaicView CBR De'mey poSmoHlaH UnRAR lo'taHvIS, RARlab chenmoHta' 'ej Dachaw'meH latlh chenmoHlu'laH.\n\nWebsite: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "UnRAR Segh legh",
     "saving_cbz": "choHmoH... {percent}%",
-    "empty_canvas_line1": "naDev wa CBZ/CBR/CB7/PDF De pagh law De pagh puS yIngeH",
+    "empty_canvas_line1": "naDev wa CBZ/CBR/CB7/CBT/PDF De pagh law De pagh puS yIngeH",
     "empty_canvas_line2": "De poSmoHlu pagh De law De pagh puS DangeH tlhoy",
     "empty_canvas_line3": "wa' qawHaq pagh law' yIpolHa' batch mI' yImev",
     "icon_toolbar_config_title": "icon toolbar configuration",
@@ -786,8 +785,10 @@
       "complete_message": "seHlaw-Daq CBR ngoq naghmey {count} choHlu'pu':",
       "complete_message_errors": "seHlaw-Daq CBR ngoq naghmey {count} choHlu'pu' {total}-vo':",
       "errors_count": "{count} Qagh(mey) tu'lu'.",
-      "renamed_count": "{count} ngoq nagh(mey) ponglu'qa' CBZ",
-      "rarfile_unavailable": "rarfile module tu'lu'be'. cbr file tI'ang'eghlaH."
+      "rarfile_unavailable": "rarfile module tu'lu'be'. cbr file tI'ang'eghlaH.",
+      "renamed_cbz_count": "{count} De'wI' pong choH CBZ",
+      "renamed_cb7_count": "{count} De'wI' pong choH CB7",
+      "renamed_cbt_count": "{count} De'wI' pong choH CBT"
     },
     "close_warning": {
       "title": "yIghuH!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Open an archive",
-      "filter_archives": "Archives (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "ngan ghe''orDu' (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "All files (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Images (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "All files (*)"
     },
-    "see_log": "legh log"
+    "see_log": "legh log",
+    "straighten_viewer": {
+      "title": "nIt chenmoH",
+      "instruction": "nIt lut yIDan: yoHbogh Doch tIq Sov vIneH — tay'taH (pagh nIHta')"
+    },
+    "clone_zone_viewer": {
+      "title": "Daq tIngmeH Qu'",
+      "instruction": "Ctrl+HIj : pagh wab yIwIv  •  poS HIj : daq tInglu'bogh yIcha'",
+      "mode_label": "pagh wab :",
+      "mode_fixed": "pagh wab Sum",
+      "mode_relative": "pagh wab Huj",
+      "brush_size_label": "Huj :"
+    },
+    "text_viewer": {
+      "title": "nav mu'mey",
+      "instruction": "chev Daq Danej nav mu'mey  •  Ctrl+chev: nav mu'mey wa' pel'aD",
+      "size_label": "miH:",
+      "color_label": "rItlh:",
+      "bold_btn": "H",
+      "italic_btn": "S",
+      "underline_btn": "D",
+      "apply_btn": "lo' mu'mey",
+      "pick_color_title": "wIv mu'mey rItlh"
+    },
+    "batch_cb7": {
+      "select_directory_title": "CB7 De'wI'mey HevmeH Daqvo' yIwIv",
+      "no_cb7_title": "CB7 De'wI'mey tu'be'lu'",
+      "no_cb7_message": "CB7 De'wI'mey tu'be'lu' Daqvetlhvo' :\n{directory}",
+      "confirm_title": "CB7 nav CBZ ngor tay'",
+      "confirm_message": "{count} CB7 De'wI'mey ngor {directory} (pe'vIl DaqHommey je).",
+      "checkbox_permanent_delete": "CB7 De'wI'mey mejHa'meH qaw\nngor wej vaj ngor (lojmIt vIpoQ)",
+      "start_button": "taH",
+      "converting_title": "ngorlu'taH...",
+      "converting_progress": "{total} De'wI'meyvo' {current} vI ngorta'",
+      "page_progress": "DeghwI' {current} / {total}",
+      "complete_title": "ngor van",
+      "complete_message": "{count} CB7 De'wI'mey ngorlu' Daqvetlhvo' :",
+      "complete_message_errors": "{total} De'wI'meyvo' {count} CB7 ngorlu' Daqvetlhvo' :",
+      "errors_count": "{count} Qagh(mey) tu'lu'.",
+      "renamed_cbz_count": "{count} De'wI'(mey) pong choH CBZ",
+      "renamed_cbr_count": "{count} De'wI'(mey) pong choH CBR",
+      "renamed_cbt_count": "{count} De'wI'(mey) pong choH CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "CBT De'wI'mey HevmeH Daqvo' yIwIv",
+      "no_cbt_title": "CBT De'wI'mey tu'be'lu'",
+      "no_cbt_message": "CBT De'wI'mey tu'be'lu' Daqvetlhvo' :\n{directory}",
+      "confirm_title": "CBT nav CBZ ngor tay'",
+      "confirm_message": "{count} CBT De'wI'mey ngor {directory} (pe'vIl DaqHommey je).",
+      "checkbox_permanent_delete": "CBT De'wI'mey mejHa'meH qaw\nngor wej vaj ngor (lojmIt vIpoQ)",
+      "start_button": "taH",
+      "converting_title": "ngorlu'taH...",
+      "converting_progress": "{total} De'wI'meyvo' {current} vI ngorta'",
+      "page_progress": "DeghwI' {current} / {total}",
+      "complete_title": "ngor van",
+      "complete_message": "{count} CBT De'wI'mey ngorlu' Daqvetlhvo' :",
+      "complete_message_errors": "{total} De'wI'meyvo' {count} CBT ngorlu' Daqvetlhvo' :",
+      "errors_count": "{count} Qagh(mey) tu'lu'.",
+      "renamed_cbz_count": "{count} De'wI'(mey) pong choH CBZ",
+      "renamed_cbr_count": "{count} De'wI'(mey) pong choH CBR",
+      "renamed_cb7_count": "{count} De'wI'(mey) pong choH CB7"
+    }
   },
   "tooltip": {
     "source_archive": "paq ghItlh: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "icon mach nap",
     "icon_toolbar_size_increase": "icon tIn nap",
     "source_loose": "mIllogh motlh",
-    "source_web": "mIllogh Internet"
+    "source_web": "mIllogh Internet",
+    "straighten": "nIt chenmoH mIllogh",
+    "clone_zone": "Daq tIng",
+    "text": "ghItlh yIchel",
+    "batch_cb7_to_cbz": "Daqvo' CB7 De'wI'mey naQ ngorlu'\nnav CBZ je DaqHommey.",
+    "batch_cb7_permanent_delete": "yIQaH : De'wI'mey mejHa'meH qaw\nCB7 De'wI'mey ngor vanDI'\nvaj ngor lojmIt vIpoQ.",
+    "batch_cbt_to_cbz": "Daqvo' CBT De'wI'mey naQ ngorlu'\nnav CBZ je DaqHommey.",
+    "batch_cbt_permanent_delete": "yIQaH : De'wI'mey mejHa'meH qaw\nCBT De'wI'mey ngor vanDI'\nvaj ngor lojmIt vIpoQ."
   },
   "help": {
     "title": "MosaicView - lo'laHghach QIjmeH",
     "intro": "MosaicView comics (BD De'mey) per vo' nobmeH poQ tu'be'lu' choHmeH lo'laHghach nob. cham CBZ (ZIP), CBR (RAR) joq PDF Qor. ngoqDe' 64 bit patmey neH tu'lu'.",
     "open_files": "De'mey poSmoH",
-    "open_files_content": "• 'CBZ/CBR/CB7/PDF poSmoH' qIt yIbuS\n• pagh De' window Daq yIvIH\n• cham Qorlu'bogh: CBZ, CBR, CB7, PDF, cha'nobmey (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB De'mey poSmoH je laH, 'ach ngogh neH chenmoHlu' (mu'mey lughbe').\n• PDF SIch'eghlu' (mIw luSov DaneH poSmeH): QaH ngeHlaHbe', Qagh quetlu'.\n• PDF tIqmoH mach luSovlu' (owner password): ghItlhmey ngeHlu' motlh. MosaicView rar PDF QaH poSmoHlu' ngeH je'. pagh: Dochvam ghItlhbogh DoSmey Dub DaH (WEBP, TIFF, GIF, ICO…) QInmey CBZ/CBR ngo' DIvI' rurbe'bogh mI' lucher. 'ach MosaicView Dochmey pagh DaHjaj.",
+    "open_files_content": "• 'De' Hab' nob tIpSer ghap De' 'och chu'wI' tIqem\n• cham Qorlu'bogh: CBZ, CBR, CB7, CBT, PDF, cha'nobmey (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB De'mey poSmoH je laH, 'ach ngogh neH chenmoHlu' (mu'mey lughbe').\n• PDF SIch'eghlu' (mIw luSov DaneH poSmeH): QaH ngeHlaHbe', Qagh quetlu'.\n• PDF tIqmoH mach luSovlu' (owner password): ghItlhmey ngeHlu' motlh. MosaicView rar PDF QaH poSmoHlu' ngeH je'. pagh: Dochvam ghItlhbogh DoSmey Dub DaH (WEBP, TIFF, GIF, ICO…) QInmey CBZ/CBR ngo' DIvI' rurbe'bogh mI' lucher. 'ach MosaicView Dochmey pagh DaHjaj.",
     "mosaic": "Hur'",
     "mosaic_content": "mozayIk QIn qaStaHvIS Hoch qonmey qIn thumbnail jangwI'. DaneH:\n• qonmey choHmoH drag-drop lo' (qon mI' DIch automatic, 'ej mIw qon mI' chu' lo'lu'bogh lupoQ)\n• law' qonmey DawIv (Ctrl+click pagh Shift+click)\n• thumbnail ngaS choH slider lo'\n• De'wI'mey pong choH manual pong click\n• QIn De'wI'mey (CBZ/CBR/PDF) Windows Explorer vo' drag-drop laH latlh poSmoH QIn content ghom",
     "manipulation": "ghItlhmey vangmeH",
@@ -1171,7 +1240,7 @@
     "create_icon": "Icon chenmoH",
     "create_icon_content": "MosaicView vItlhutlh icon file (.ico) chenmoH mosaic Hoch mIllogh.\n• nIH-click mIllogh → 'Icon chenmoH'\n• viewer-Daq Dap DaHev (icon tetraghtaH)\n• transparency DapoQchugh yInab\n• yIchel: .ico file mosaic-Daq baHta'\n• .ico files Hoch standard resolution (16×16 256×256 vItlhutlh) automated chenmoH\n• .ico file mosaic-Daq poQ, CBZ archive-Daq ngeH blocked, ICO format archive Hoch Subbe'. .ico file chu' export (Ctrl+C Windows folder-Daq yIchu'), vaj mosaic-Daq yImev ngeH.",
     "batch_convert": "ngoq choH",
-    "batch_convert_content": "MosaicView legh wej batch choHmeH mIwmey, 'ach neH chaq lo'laH mosaik bIH chu'lu'DI'. Hoch mIwvaD, rIl rap ghaH : Dor waw' wIv, ngor, poH Qav nargh'a' 'eb jatlh, De' mung Daj Qav leghlaH. wa' DoQ ngaSmoHlaH original De' Sop'IrmoHlaH HoSghaj ruv bIH'a' ngeHHa' joq.\n• CBR → CBZ : Hoch CBR (RAR) De'mey choHmeH waw' Dor latlh je. CBR ZIP ghaHchugh, pong Daj yIchoH, choH pagh.\n• PDF → CBZ : Hoch PDF De'mey choHmeH waw' Dor latlh je. mIllogh beH law' woD pagh.\n• MILLOGH MOBWI' → CBZ : Hoch mIllogh De' tu'lu'pu'bogh waw' Dor latlh je choH CBZ wa'. mIllogh Daj pagh, Qagh, TIFF HoSghaj, GIF joq lIHHa' log je.",
+    "batch_convert_content": "MosaicView lIngwI' vagh batch mI' chenmoH, 'ej neH ngoq tIn Huj. wa' Hoch ghu': waw' wIv, chaw', qagh, qeq. ngoq permanent mej.\n• CBR → CBZ: Hoch CBR (RAR) ngoq waw' 'ej ngoq ghaj. CBR ZIP, 7z joq TAR 'e' neH, ngoq essë (.cbz, .cb7 joq .cbt) chaw' pagh. ngoq essë 'ej raxë nurner.\n• CB7 → CBZ: Hoch CB7 (7-Zip) ngoq waw' 'ej ngoq ghaj. CB7 ZIP, RAR joq TAR 'e' neH, ngoq essë (.cbz, .cbr joq .cbt) chaw' pagh. ngoq essë 'ej raxë nurner.\n• CBT → CBZ: Hoch CBT (TAR) ngoq waw' 'ej ngoq ghaj. CBT ZIP, RAR joq 7z 'e' neH, ngoq essë (.cbz, .cbr joq .cb7) chaw' pagh. ngoq essë 'ej raxë nurner.\n• PDF → CBZ: Hoch PDF ngoq waw' 'ej ngoq ghaj. ngoq mej pagh.\n• ngoq → CBZ: CBZ wa' Hoch ngoq waw' 'ej ngoq ghaj. ngoq Huj, raxë, parmë (TIFF) joq lúmë (GIF) nurner.",
     "config_open_temp_folder": "poSmoH HoS Daq",
     "icon_toolbar": "nugh mI' SeHlaw",
     "icon_toolbar_content": "Icon toolbar-Daq tIn Qu' De' lI' qach latlh jatlh. bIje'laH icon-mey reH toolbar-Daq 'ach SoH neH. icon-mey Dalegh pagh Dabel 'e' DamaS net chaw'meH, gear button toolbar-Daq bIH 'ej SoH: configuration window poSmoH, Daj icon-mey toolbar lIH je puS buS mej. « + » « − » je button-mey lo' icon-mey'e' nI' je. configuration automatically choHlu'.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "nIqaD HutlhmoH",
     "export_tengwar_fonts": "tengwar HutlhmoH",
     "view_on_github": "paq'yav' GitHub",
-    "check_for_updates": "chu' Datu'"
+    "check_for_updates": "chu' Datu'",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "chu' De'",

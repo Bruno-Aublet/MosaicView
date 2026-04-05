@@ -6,7 +6,7 @@
 
 Designed for comic, manga and BD readers who want to organize, clean up and prepare their files quickly and intuitively.
 
-This is my first application, and I hope you’ll like it. I don’t have any programming knowledge; I built it with the help of ClaudeCode. Feel free to hate me if it makes you feel better.
+This is my first application, and I hope you’ll like it. I have absolutely no programming knowledge. None, zero, nada. I built MosaicView with the help of Claude Code. Yes, I used an AI to write this program. You can hate me if it makes you feel better.
 
 > ⚠️ **Active development** — features are being added regularly. Feedback and bug reports are welcome via [GitHub Issues](https://github.com/Bruno-Aublet/MosaicView/issues).
 
@@ -37,9 +37,12 @@ All operations are performed **directly on the archive** — no manual extractio
 | CBZ (ZIP) | ✅ | ✅ |
 | CBR (RAR) | ✅ | — |
 | CB7 (7-Zip) | ✅ | — |
+| CBT (TAR) | ✅ | — |
 | PDF | ✅ | — |
 
-CBR, CB7 and PDF files are always exported as CBZ after editing. This is a deliberate choice: the ZIP engine is free and open, the RAR engine is proprietary, and 7-Zip is rarely used in practice for comics.
+CBR, CB7, CBT and PDF files are always exported as CBZ after editing. This is a deliberate choice: the ZIP engine is free and open, while RAR is proprietary, 7-Zip and TAR are rarely used in practice for comics.
+
+MosaicView also detects misnamed archives (e.g. a CBR file saved with a `.cbz` extension) and offers to rename them automatically.
 
 MosaicView also accepts loose image files (dragged individually or as a folder), in the following formats: JPG, PNG, GIF, WebP, BMP, TIFF, ICO, JFIF. 
 
@@ -74,12 +77,15 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 - **Resize pages** — batch-resize all pages of an archive to a target resolution
 - **Image adjustments** — brightness, contrast, gamma, sepia, black & white, and more, with a live preview
 - **Merge archives** — combine multiple CBZ/CBR/CB7/PDF files into one (especially useful for variant covers)
-- **Convert formats** — batch-convert CBR → CBZ, PDF → CBZ, or image folders → CBZ
+- **Convert formats** — batch-convert CBR → CBZ, CB7 → CBZ, CBT → CBZ, PDF → CBZ, or image folders → CBZ
 - **Renumber pages** — two modes: simple sequential renumbering (01, 02, 03…), or smart renumbering that detects double-page spreads by their aspect ratio and generates compound names (01-02, 03, 04-05…)
 - **Image viewer** — double-click any page to open a full viewer: navigate with arrow keys or mouse wheel, zoom with Ctrl+scroll, pan with right-click drag, toggle fullscreen with F11 or double-click. Three reading modes: single page, double-page spread, and continuous scroll. Animated GIFs are played back with a Play/Pause button. Cropping is also available directly from the viewer.
 - **Sort pages** — sort all pages by name, file type, file size, width, height, resolution, or DPI
 - **Rotate / flip** — rotate pages 90° left or right, or flip them horizontally or vertically
 - **Manual crop** — crop any page by drawing a selection directly on the image
+- **Straighten** — correct a slightly tilted scan by drawing a reference line on what should be horizontal or vertical; the exact correction angle is calculated automatically and applied to the image. The reference line has draggable endpoints for fine-tuning.
+- **Clone Zone** — paint over unwanted elements (logos, watermarks, stray marks) by cloning a nearby area of the image. Ctrl+click sets the source; left-click paints. Two modes: Fixed (each stroke restarts from the same source point) and Relative (the source advances with the brush). Adjustable brush size from 1 to 200 px.
+- **Text insertion** — add rich-text overlays directly onto a page. Multiple independent text blocks can be placed simultaneously by clicking on the image. Each block supports per-selection bold, italic, and underline formatting, a freely chosen font family and size, and a custom color with alpha channel. Blocks can be moved pixel-by-pixel with Ctrl+arrow keys or dragged freely. Applying flattens all blocks onto the image at once.
 - **Split** — cut a page into N equal parts, horizontally or vertically
 - **Join** — combine multiple selected pages into a single image by positioning them freely, with a live preview
 - **Animated GIF export** — generate an animated GIF from the pages of an archive
@@ -99,11 +105,15 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 
 ## Batch conversions
 
-Batch conversions can be launched from the menu, or by dropping a folder directly onto the window. All batch operations scan the folder recursively and show a confirmation dialog before starting, with a progress bar and a summary at the end.
+Batch conversions can be launched from the toolbar, the menu bar, the right-click context menu, or by dropping a folder directly onto the window. All batch operations scan the folder recursively and show a confirmation dialog before starting, with a progress bar and a summary at the end.
 
-- **CBR → CBZ** — converts all CBR files in a folder to CBZ
+- **CBR → CBZ** — converts all CBR files in a folder to CBZ. Misnamed CBR files that are actually ZIP, 7z, or TAR archives are automatically renamed to the correct extension (.cbz, .cb7, .cbt).
+- **CB7 → CBZ** — converts all CB7 files in a folder to CBZ. Misnamed CB7 files that are actually ZIP, RAR, or TAR archives are automatically renamed to the correct extension (.cbz, .cbr, .cbt).
+- **CBT → CBZ** — converts all CBT files in a folder to CBZ. Misnamed CBT files that are actually ZIP, RAR, or 7z archives are automatically renamed to the correct extension (.cbz, .cbr, .cb7).
 - **PDF → CBZ** — converts all PDF files in a folder to CBZ, extracting each page as an image
 - **Images → CBZ** — packages loose image files into CBZ archives, with two modes: one CBZ per image, or all images grouped into a single CBZ
+
+When renamed files or errors occur, a log file is created and a link to it is shown in the summary dialog.
 
 [![Batch conversions](Screenshots/009.png)](Screenshots/009.png)
 

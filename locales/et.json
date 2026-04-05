@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Digitaalsete koomiksite kogujate Šveitsi nuga",
   "buttons": {
-    "open_file": "Ava CBZ/CBR/CB7/PDF",
+    "open_file": "Ava CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Sulge fail",
     "create_cbz": "Loo CBZ arhiiv",
     "flatten_dirs": "Liiguta kõik failid\njuurkausta ja kustuta\nalamkataloog",
@@ -49,9 +49,7 @@
     "no": "Ei",
     "renumber_recommended": "Nummerda ümber (soovitatav)",
     "ignore_and_save": "Ignoreeri ja salvesta",
-    "rename_to_cbz": "Nimeta ümber .cbz-iks",
     "open_without_rename": "Ava ilma ümbernimetamiseta",
-    "rename_to_cbr": "Nimeta ümber .cbr",
     "adjustments": "Heledus,\nkontrast jne.",
     "batch_cbr_to_cbz": "CBR-failide\n pakktteisendamine CBZ-ks",
     "batch_pdf_to_cbz": "PDF-failide pakkteisendumine\n CBZ-vormingusse",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Lähtesta",
     "delete_selected": "Kustuta",
     "save": "Salvesta",
-    "rename_to_cb7": "Nimeta ümber .cb7-ks",
     "split_ui": "Jaga liides kaheks paneeliks",
-    "unsplit_ui": "Sulge teine paneel"
+    "unsplit_ui": "Sulge teine paneel",
+    "rename_to_ext": "Nimeta ümber {ext}-ks",
+    "batch_cb7_to_cbz": "CB7-failide\n pakett-teisendus CBZ-ks",
+    "batch_cbt_to_cbz": "CBT-failide\n pakett-teisendus CBZ-ks"
   },
   "tabs": {
     "mosaic": "Mosaiik",
@@ -130,10 +130,12 @@
       "save_to_folder": "Ekspordi valitud leheküljed",
       "adjustments": "Heledus, kontrast, värvid...",
       "refresh_mosaic": "Värskenda mosaiiki (F5)",
-      "create_ico": "Loo .ico fail"
+      "create_ico": "Loo .ico fail",
+      "straighten": "Sirgest pilt...",
+      "clone_zone": "Klooni tsoon..."
     },
     "canvas_no_file": {
-      "open": "Ava CBZ/CBR/CB7/PDF",
+      "open": "Ava CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Hiljutised failid",
       "clear_history": "Kustuta ajalugu"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Toetamata failid",
         "message": "Järgmised failid ei ole toetatud ja jäeti vahele:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Fail '{file}' ei ole kehtiv TAR-arhiiv või on rikutud."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Tühista teisendamine\n{count} fail(i) - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Tuvastati vale laiend: see '{filename}' fail on CBZ, mitte CBR. Kas nimetada ümber?",
+    "extension_mismatch_generic": {
+      "message": "Tuvastati vale laiend: fail '{filename}' on {real}, mitte {declared}. Nimeta ümber?",
       "title": "Vale laiend"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Tuvastati vale laiend: see '{filename}' fail on CBR, mitte CBZ. Nimeta ümber?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Tuvastati vale laiend: fail '{filename}' on CB7, mitte CBZ/CBR. Nimeta ümber?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ-failid põhinevad ZIP-vormingul, mis on vaba ja avatud formaat. CBR-failid seevastu põhinevad RAR-vormingul, mis on patenteeritud.\n\nMosaicView saab CBR-faile avada tänu UnRAR-ile, RARlabi väljatöötatud ja vabalt levitatavale utiliidile.\n\nAmetlik veebisait: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Vaata UnRAR litsentsi",
     "saving_cbz": "Salvestamine käib... {percent}%",
-    "empty_canvas_line1": "Lohistage siia uks voi mitu CBZ/CBR/CB7/PDF faili voi oma pildid",
+    "empty_canvas_line1": "Lohistage siia uks voi mitu CBZ/CBR/CB7/CBT/PDF faili voi oma pildid",
     "empty_canvas_line2": "Kui fail on avatud, voite jatkata teiste lohistamist",
     "empty_canvas_line3": "Lohistage üks või mitu kausta pakktöötluse käivitamiseks",
     "icon_toolbar_config_title": "Ikooniriba seadistamine",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR-faili teisendatud kataloogis:",
       "complete_message_errors": "{count} CBR-faili teisendatud {total}-st kataloogis:",
       "errors_count": "{count} viga leitud.",
-      "renamed_count": "{count} fail(i) ümber nimetatud CBZ-ks",
-      "rarfile_unavailable": "Moodul rarfile ei ole saadaval. CBR-faile ei saa teisendada."
+      "rarfile_unavailable": "Moodul rarfile ei ole saadaval. CBR-faile ei saa teisendada.",
+      "renamed_cbz_count": "{count} fail(i) nimetati ümber CBZ-ks",
+      "renamed_cb7_count": "{count} fail(i) nimetati ümber CB7-ks",
+      "renamed_cbt_count": "{count} fail(i) nimetati ümber CBT-ks"
     },
     "close_warning": {
       "title": "Hoiatus!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Ava arhiiv",
-      "filter_archives": "Arhiivid (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Arhiivid (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Kõik failid (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Pildid (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Kõik failid (*)"
     },
-    "see_log": "VAATA LOGI"
+    "see_log": "VAATA LOGI",
+    "straighten_viewer": {
+      "title": "Sirgestamine",
+      "instruction": "Joonistage sirge joon sellele, mis peaks pildil olema horisontaalne (või vertikaalne)"
+    },
+    "clone_zone_viewer": {
+      "title": "Tsooni kloonimine",
+      "instruction": "Ctrl+klõps : määra allikas  •  Vasak klõps : joonista kloonitud tsoon",
+      "mode_label": "Allikas :",
+      "mode_fixed": "Fikseeritud allikas",
+      "mode_relative": "Suhteline allikas",
+      "brush_size_label": "Suurus :"
+    },
+    "text_viewer": {
+      "title": "Lisa tekst",
+      "instruction": "Klõpsake, kuhu soovite teksti lisada  •  Ctrl+nooled: liiguta teksti pikseli kaupa",
+      "size_label": "Suurus:",
+      "color_label": "Värv:",
+      "bold_btn": "R",
+      "italic_btn": "K",
+      "underline_btn": "A",
+      "apply_btn": "Rakenda tekst",
+      "pick_color_title": "Valige teksti värv"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Valige CB7-faile sisaldav kaust",
+      "no_cb7_title": "CB7-faile pole",
+      "no_cb7_message": "Kaustas CB7-faile ei leitud :\n{directory}",
+      "confirm_title": "CB7 failide pakett-teisendus CBZ-ks",
+      "confirm_message": "{count} CB7-faili teisendamiseks kaustas {directory} (kaasa arvatud alamkaustad).",
+      "checkbox_permanent_delete": "Kustuta originaalsed CB7-failid jäädavalt\nilma prügikasti saatmata (PÖÖRDUMATU)",
+      "start_button": "Alusta",
+      "converting_title": "Teisendamine...",
+      "converting_progress": "Teisendatakse fail {current} / {total}",
+      "page_progress": "Lehekülg {current} / {total}",
+      "complete_title": "Teisendamine lõpetatud",
+      "complete_message": "{count} CB7-faili teisendatud kaustas :",
+      "complete_message_errors": "{count} CB7-faili teisendatud {total}-st kaustas :",
+      "errors_count": "{count} viga ilmnes.",
+      "renamed_cbz_count": "{count} fail(i) nimetati ümber CBZ-ks",
+      "renamed_cbr_count": "{count} fail(i) nimetati ümber CBR-ks",
+      "renamed_cbt_count": "{count} fail(i) nimetati ümber CBT-ks"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Valige CBT-faile sisaldav kaust",
+      "no_cbt_title": "CBT-faile pole",
+      "no_cbt_message": "Kaustas CBT-faile ei leitud :\n{directory}",
+      "confirm_title": "CBT failide pakett-teisendus CBZ-ks",
+      "confirm_message": "{count} CBT-faili teisendamiseks kaustas {directory} (kaasa arvatud alamkaustad).",
+      "checkbox_permanent_delete": "Kustuta originaalsed CBT-failid jäädavalt\nilma prügikasti saatmata (PÖÖRDUMATU)",
+      "start_button": "Alusta",
+      "converting_title": "Teisendamine...",
+      "converting_progress": "Teisendatakse fail {current} / {total}",
+      "page_progress": "Lehekülg {current} / {total}",
+      "complete_title": "Teisendamine lõpetatud",
+      "complete_message": "{count} CBT-faili teisendatud kaustas :",
+      "complete_message_errors": "{count} CBT-faili teisendatud {total}-st kaustas :",
+      "errors_count": "{count} viga ilmnes.",
+      "renamed_cbz_count": "{count} fail(i) nimetati ümber CBZ-ks",
+      "renamed_cbr_count": "{count} fail(i) nimetati ümber CBR-ks",
+      "renamed_cb7_count": "{count} fail(i) nimetati ümber CB7-ks"
+    }
   },
   "tooltip": {
     "source_archive": "Lähtefail: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Vähenda ikoonide suurust",
     "icon_toolbar_size_increase": "Suurenda ikoonide suurust",
     "source_loose": "Vaba pilt",
-    "source_web": "Veebipilt"
+    "source_web": "Veebipilt",
+    "straighten": "Sirgest pilt",
+    "clone_zone": "Klooni tsoon",
+    "text": "Lisa tekst",
+    "batch_cb7_to_cbz": "Teisendab kõik CB7-failid kaustas\nja selle alamkaustades CBZ-ks.",
+    "batch_cb7_permanent_delete": "HOIATUS : kui see valik on märgitud,\nkustutatakse originaalsed CB7-failid\npärast teisendamist jäädavalt ilma\ntaastamisvõimaluseta. Veenduge, et teil on varukoopia.",
+    "batch_cbt_to_cbz": "Teisendab kõik CBT-failid kaustas\nja selle alamkaustades CBZ-ks.",
+    "batch_cbt_permanent_delete": "HOIATUS : kui see valik on märgitud,\nkustutatakse originaalsed CBT-failid\npärast teisendamist jäädavalt ilma\ntaastamisvõimaluseta. Veenduge, et teil on varukoopia."
   },
   "help": {
     "title": "MosaicView - Kasutusjuhend",
     "intro": "MosaicView võimaldab teil koomiksi (digitaalseid koomiksi) manipuleerida ja muuta ilma neid arhiividest välja pakkimata. Rakendus toetab CBZ (ZIP), CBR (RAR) ja PDF vorminguid. Rakendus ühildub ainult 64-bitiste süsteemidega.",
     "open_files": "Failide avamine",
-    "open_files_content": "• Klõpsake nupul 'Ava CBZ/CBR/CB7/PDF'\n• Või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, PDF, pildid (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jaetakse tahelepanuta).\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): lehed imporditakse tavapäraselt. MosaicView pakub avatud koopia salvestamist samasse kausta. Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.",
+    "open_files_content": "• Klõpsake nupul 'Ava fail' või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, CBT, PDF, pildid (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jaetakse tahelepanuta).\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): lehed imporditakse tavapäraselt. MosaicView pakub avatud koopia salvestamist samasse kausta. Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.",
     "mosaic": "Mosaiik",
     "mosaic_content": "Mosaiik kuvab kõiki teie koomiksi lehti pisipiltidena. Saate:\n• Ümber korraldada lehti lohistamise ja kukutamisega (lehekülgede nummerdamine on automaatne ja toimub vastavalt aktiivsele ümbernummerdamise režiimile)\n• Valida mitu lehekülge (Ctrl+klõps või Shift+klõps)\n• Reguleerida pisipiltide suurust liuguriga\n• Käsitsi ümber nimetada faile, klõpsates nende nimel\n• Lohistada ja kukutada koomiksi faile (CBZ/CBR/PDF) Windows Explorerist otse teise avatud koomikusse nende sisu ühendamiseks",
     "manipulation": "Lehekülgede manipuleerimine",
@@ -1171,7 +1240,7 @@
     "create_icon": "Loo ikoon",
     "create_icon_content": "MosaicView võimaldab teil luua ikoonifaile (.ico) mis tahes mosaiigis olevast pildist.\n• Paremklõps pildil → 'Loo ikoon'\n• Piirake soovitud ala vaaturis (ikoon on kohustuslikult ruudukujuline)\n• Reguleerige läbipaistvust vajadusel\n• Kinnitage: .ico-fail lisatakse otse mosaiiki\n• .ico-failid sisaldavad automaatselt kõiki standardlahutusi (16×16 kuni 256×256)\n• Niikaua kui mosaiigis on .ico-fail, on CBZ-arhiivi salvestamine blokeeritud, kuna ICO-formaat ei ole nende arhiivide poolt toetatud. Eksportige .ico-fail eraldi (Ctrl+C ja kleepige Windowsi kausta), seejärel kustutage see enne salvestamist mosaiigist.",
     "batch_convert": "Pakettteisendus",
-    "batch_convert_content": "MosaicView pakub kolme pakettkonverteerimise funktsiooni, mis on saadaval ainult siis, kui mosaiik on tühi. Igaühe puhul on põhimõte sama : valige kataloog, kinnitage, jälgige edenemist reaalajas, vaadake lõplikku kokkuvõtet. Valik võimaldab algsed failid jäädavalt kustutada, selle asemel et neid prügikasti saata.\n• CBR → CBZ : teisendab kõik CBR (RAR) failid kataloogis ja selle alamkataloogides. Kui CBR on tegelikult ZIP, nimetatakse see lihtsalt ümber ilma teisenduseta.\n• PDF → CBZ : teisendab kõik PDF failid kataloogis ja selle alamkataloogides. Pildid ekstraheeritakse ilma taaspakkimiseta.\n• ERALDISEISVAD PILDID → CBZ : loob individuaalse CBZ iga kataloogist ja selle alamkataloogidest leitud pildifaili jaoks. Kehtetud, rikutud, mitmelehelised (TIFF) või animeeritud (GIF) pildid eiratakse ja logitakse.",
+    "batch_convert_content": "MosaicView pakub viit pakettkonverteerimisfunktsiooni, mis on saadaval ainult siis, kui mosaiik on tühi. Igaühe puhul on põhimõte sama: valige kataloog, kinnitage, jälgige edenemist reaalajas, vaadake lõplikku kokkuvõtet. Valik võimaldab originaalfailid jäädavalt kustutada, mitte prügikasti saata.\n• CBR → CBZ: teisendab kõik CBR (RAR) failid kataloogis ja selle alamkataloogides. Kui CBR on tegelikult ZIP, 7z või TAR, nimetatakse fail õige laiendiga (.cbz, .cb7 või .cbt) ümber ilma teisendamiseta. Ümbernimetatud failid ja vead logitakse.\n• CB7 → CBZ: teisendab kõik CB7 (7-Zip) failid kataloogis ja selle alamkataloogides. Kui CB7 on tegelikult ZIP, RAR või TAR, nimetatakse fail õige laiendiga (.cbz, .cbr või .cbt) ümber ilma teisendamiseta. Ümbernimetatud failid ja vead logitakse.\n• CBT → CBZ: teisendab kõik CBT (TAR) failid kataloogis ja selle alamkataloogides. Kui CBT on tegelikult ZIP, RAR või 7z, nimetatakse fail õige laiendiga (.cbz, .cbr või .cb7) ümber ilma teisendamiseta. Ümbernimetatud failid ja vead logitakse.\n• PDF → CBZ: teisendab kõik PDF-failid kataloogis ja selle alamkataloogides. Pildid ekstraheeritakse ilma ümbertihenemiseta.\n• ÜKSIKUD PILDID → CBZ: loob iga kataloogist ja selle alamkataloogidest leitud pildifaili jaoks eraldi CBZ. Kehtetud, rikutud, mitmeleheküljelised (TIFF) või animeeritud (GIF) pildid ignoreeritakse ja logitakse.",
     "config_open_temp_folder": "Ava ajutine kaust",
     "icon_toolbar": "Ikooniriba",
     "icon_toolbar_content": "Ikooniriba pakub kiiret juurdepääsu rakenduse põhifunktsioonidele. Saate ikoone oma soovi järgi ümber korraldada, lohistades neid otse ribale. Et valida, milliseid ikoone kuvada või peita, klõpsake riba allosas asuvat hammasratta nuppu: avaneb seadistusaken, kus saate ikoone liigutada aktiivse riba ja reservi vahel. Kasutage ikooni suuruse reguleerimiseks nuppe « + » ja « − ». Seadistus salvestatakse automaatselt.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Salvesta pIqaD font",
     "export_tengwar_fonts": "Salvesta tengwar fondid",
     "view_on_github": "Lähtekood GitHubis",
-    "check_for_updates": "Otsi uuendusi"
+    "check_for_updates": "Otsi uuendusi",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Uuendused",

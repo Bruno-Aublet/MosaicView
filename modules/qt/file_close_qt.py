@@ -449,6 +449,7 @@ def on_window_close(main_window, canvas, create_cbz_cb, apply_new_names_cb,
     state = _state_module.state
 
     if state.images_data or state.modified:
+        had_archive = bool(state.current_file)
         closed = close_file(
             main_window, canvas, create_cbz_cb, apply_new_names_cb,
             refresh_title, refresh_toolbar, refresh_tabs,
@@ -457,12 +458,21 @@ def on_window_close(main_window, canvas, create_cbz_cb, apply_new_names_cb,
         if not closed:
             return False  # L'utilisateur a annulé → ne pas fermer l'appli
 
-        # Après fermeture du comics : ne pas quitter l'appli, rester sur canvas vide
+        # Si on avait une archive et qu'on vient de la fermer → rester sur canvas vide
+        if had_archive:
+            try:
+                cleanup_temp_cb()
+            except Exception as e:
+                print(f"Erreur nettoyage temp files : {e}")
+            return False
+
+        # Pas d'archive (mode sans archive) : la fermeture vide le canvas → quitter l'appli
+        save_session_cb()
         try:
             cleanup_temp_cb()
         except Exception as e:
             print(f"Erreur nettoyage temp files : {e}")
-        return False
+        return True
 
     # Canvas vide → ferme l'application
     save_session_cb()

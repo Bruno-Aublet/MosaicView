@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Švajčiarsky nôž pre zberateľov digitálnych komiksov",
   "buttons": {
-    "open_file": "Otvoriť CBZ/CBR/CB7/PDF",
+    "open_file": "Otvoriť CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Zatvoriť súbor",
     "create_cbz": "Vytvoriť CBZ archív",
     "flatten_dirs": "Presunúť všetky súbory\ndo koreňa a odstrániť\npodadresáre",
@@ -49,9 +49,7 @@
     "no": "Nie",
     "renumber_recommended": "Prečíslovať (odporúčané)",
     "ignore_and_save": "Ignorovať a uložiť",
-    "rename_to_cbz": "Premenovať na .cbz",
     "open_without_rename": "Otvoriť bez premenovania",
-    "rename_to_cbr": "Premenovať na .cbr",
     "adjustments": "Jas,\nkontrast atď.",
     "batch_cbr_to_cbz": "Hromadná konverzia\n súborov CBR na CBZ",
     "batch_pdf_to_cbz": "Hromadný prevod\n súborov PDF do CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Obnoviť predvolené",
     "delete_selected": "Vymazať",
     "save": "Uložiť",
-    "rename_to_cb7": "Premenovať na .cb7",
     "split_ui": "Rozdeliť rozhranie na dva panely",
-    "unsplit_ui": "Zavrieť druhý panel"
+    "unsplit_ui": "Zavrieť druhý panel",
+    "rename_to_ext": "Premenovať na {ext}",
+    "batch_cb7_to_cbz": "Hromadná konverzia\n CB7 súborov na CBZ",
+    "batch_cbt_to_cbz": "Hromadná konverzia\n CBT súborov na CBZ"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -130,10 +130,12 @@
       "save_to_folder": "Exportovať vybraté stránky",
       "adjustments": "Jas, kontrast, farby...",
       "refresh_mosaic": "Obnoviť mozaiku (F5)",
-      "create_ico": "Vytvoriť súbor .ico"
+      "create_ico": "Vytvoriť súbor .ico",
+      "straighten": "Vyrovnať obrázok...",
+      "clone_zone": "Klonovanie oblasti..."
     },
     "canvas_no_file": {
-      "open": "Otvoriť CBZ/CBR/CB7/PDF",
+      "open": "Otvoriť CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Nedávne súbory",
       "clear_history": "Vymazať históriu"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Nepodporované súbory",
         "message": "Nasledujúce súbory nie sú podporované a boli ignorované:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Súbor '{file}' nie je platný archív TAR alebo je poškodený."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Zrušiť konverziu\n{count} súbor(ov) - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Zistená nesprávna prípona: tento '{filename}' súbor je CBZ, nie CBR. Premenovať?",
+    "extension_mismatch_generic": {
+      "message": "Zistená nesprávna prípona: súbor '{filename}' je {real}, nie {declared}. Premenovať?",
       "title": "Nesprávna prípona"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Zistená nesprávna prípona: tento '{filename}' súbor je CBR, nie CBZ. Premenovať?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Zistená nesprávna prípona: súbor '{filename}' je CB7, nie CBZ/CBR. Premenovať?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "Súbory CBZ sú založené na formáte ZIP, ktorý je slobodný a otvorený formát. Súbory CBR sú naopak založené na formáte RAR, ktorý je proprietárny.\n\nMosaicView môže otvárať súbory CBR vďaka UnRAR, nástroju vyvinutému spoločnosťou RARlab a voľne šíriteľnému.\n\nOficiálna webová stránka: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Zobraziť licenciu UnRAR",
     "saving_cbz": "Prebieha ukladanie... {percent}%",
-    "empty_canvas_line1": "Sem presunte jeden alebo viac suborov CBZ/CBR/CB7/PDF alebo vase obrazky",
+    "empty_canvas_line1": "Sem presunte jeden alebo viac suborov CBZ/CBR/CB7/CBT/PDF alebo vase obrazky",
     "empty_canvas_line2": "Ked je subor otvoreny, mozete pokracovat v presune dalsich",
     "empty_canvas_line3": "Presuňte jeden alebo viac priečinkov na spustenie dávkového spracovania",
     "icon_toolbar_config_title": "Konfigurácia lišty ikon",
@@ -786,8 +785,10 @@
       "complete_message": "{count} súborov CBR skonvertovaných v adresári:",
       "complete_message_errors": "{count} súborov CBR skonvertovaných z {total} v adresári:",
       "errors_count": "{count} chýb(a/y) zistená(-é).",
-      "renamed_count": "{count} súbor(ov) premenovaný(-é) na CBZ",
-      "rarfile_unavailable": "Modul rarfile nie je dostupný. Nie je možné konvertovať súbory CBR."
+      "rarfile_unavailable": "Modul rarfile nie je dostupný. Nie je možné konvertovať súbory CBR.",
+      "renamed_cbz_count": "{count} súbor(ov) premenovaných na CBZ",
+      "renamed_cb7_count": "{count} súbor(ov) premenovaných na CB7",
+      "renamed_cbt_count": "{count} súbor(ov) premenovaných na CBT"
     },
     "close_warning": {
       "title": "Upozornenie!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Otvoriť archív",
-      "filter_archives": "Archívy (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Archívy (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Všetky súbory (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Obrázky (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Všetky súbory (*)"
     },
-    "see_log": "ZOBRAZIŤ LOG"
+    "see_log": "ZOBRAZIŤ LOG",
+    "straighten_viewer": {
+      "title": "Vyrovnanie",
+      "instruction": "Nakreslite priamu čiaru na to, čo má byť na obrázku vodorovné (alebo zvislé)"
+    },
+    "clone_zone_viewer": {
+      "title": "Klonovanie oblasti",
+      "instruction": "Ctrl+klik : nastaviť zdroj  •  Ľavý klik : maľovať klonovanú oblasť",
+      "mode_label": "Zdroj :",
+      "mode_fixed": "Pevný zdroj",
+      "mode_relative": "Relatívny zdroj",
+      "brush_size_label": "Veľkosť :"
+    },
+    "text_viewer": {
+      "title": "Vloženie textu",
+      "instruction": "Kliknite tam, kde chcete vložiť text  •  Ctrl+šípky: presun textu o pixel",
+      "size_label": "Veľkosť:",
+      "color_label": "Farba:",
+      "bold_btn": "T",
+      "italic_btn": "K",
+      "underline_btn": "P",
+      "apply_btn": "Použiť text",
+      "pick_color_title": "Vyberte farbu textu"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Vyberte priečinok s CB7 súbormi",
+      "no_cb7_title": "Žiadne CB7 súbory",
+      "no_cb7_message": "V priečinku neboli nájdené žiadne CB7 súbory :\n{directory}",
+      "confirm_title": "Hromadná konverzia CB7 na CBZ",
+      "confirm_message": "{count} CB7 súborov na konverziu v {directory} (vrátane podpriečinkov).",
+      "checkbox_permanent_delete": "Trvalé odstránenie pôvodných CB7 súborov bez\npresunu do koša (NEZVRATNÉ)",
+      "start_button": "Spustiť",
+      "converting_title": "Prebieha konverzia...",
+      "converting_progress": "Konverzia súboru {current} z {total}",
+      "page_progress": "Strana {current} / {total}",
+      "complete_title": "Konverzia dokončená",
+      "complete_message": "{count} CB7 súborov konvertovaných v priečinku :",
+      "complete_message_errors": "{count} CB7 súborov konvertovaných z {total} v priečinku :",
+      "errors_count": "Vyskytlo sa {count} chyba(y).",
+      "renamed_cbz_count": "{count} súbor(ov) premenovaných na CBZ",
+      "renamed_cbr_count": "{count} súbor(ov) premenovaných na CBR",
+      "renamed_cbt_count": "{count} súbor(ov) premenovaných na CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Vyberte priečinok s CBT súbormi",
+      "no_cbt_title": "Žiadne CBT súbory",
+      "no_cbt_message": "V priečinku neboli nájdené žiadne CBT súbory :\n{directory}",
+      "confirm_title": "Hromadná konverzia CBT na CBZ",
+      "confirm_message": "{count} CBT súborov na konverziu v {directory} (vrátane podpriečinkov).",
+      "checkbox_permanent_delete": "Trvalé odstránenie pôvodných CBT súborov bez\npresunu do koša (NEZVRATNÉ)",
+      "start_button": "Spustiť",
+      "converting_title": "Prebieha konverzia...",
+      "converting_progress": "Konverzia súboru {current} z {total}",
+      "page_progress": "Strana {current} / {total}",
+      "complete_title": "Konverzia dokončená",
+      "complete_message": "{count} CBT súborov konvertovaných v priečinku :",
+      "complete_message_errors": "{count} CBT súborov konvertovaných z {total} v priečinku :",
+      "errors_count": "Vyskytlo sa {count} chyba(y).",
+      "renamed_cbz_count": "{count} súbor(ov) premenovaných na CBZ",
+      "renamed_cbr_count": "{count} súbor(ov) premenovaných na CBR",
+      "renamed_cb7_count": "{count} súbor(ov) premenovaných na CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Zdrojový súbor: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Zmenšiť veľkosť ikon",
     "icon_toolbar_size_increase": "Zväčšiť veľkosť ikon",
     "source_loose": "Voľný obrázok",
-    "source_web": "Webový obrázok"
+    "source_web": "Webový obrázok",
+    "straighten": "Vyrovnať obrázok",
+    "clone_zone": "Klonovanie oblasti",
+    "text": "Pridať text",
+    "batch_cb7_to_cbz": "Konvertuje všetky CB7 súbory v priečinku\na jeho podpriečinkoch na CBZ.",
+    "batch_cb7_permanent_delete": "UPOZORNENIE : ak je táto možnosť zaškrtnutá,\npôvodné CB7 súbory budú trvalo vymazané\npo konverzii bez možnosti obnovenia.\nUistite sa, že máte zálohu.",
+    "batch_cbt_to_cbz": "Konvertuje všetky CBT súbory v priečinku\na jeho podpriečinkoch na CBZ.",
+    "batch_cbt_permanent_delete": "UPOZORNENIE : ak je táto možnosť zaškrtnutá,\npôvodné CBT súbory budú trvalo vymazané\npo konverzii bez možnosti obnovenia.\nUistite sa, že máte zálohu."
   },
   "help": {
     "title": "MosaicView - Návod na používanie",
     "intro": "MosaicView vám umožňuje manipulovať a upravovať komiksy (digitálne komiksy) bez potreby ich rozbaľovať z archívov. Aplikácia podporuje formáty CBZ (ZIP), CBR (RAR) a PDF. Aplikácia je kompatibilná iba so 64-bitovými systémami.",
     "open_files": "Otvorenie súborov",
-    "open_files_content": "• Kliknite na tlačidlo 'Otvoriť CBZ/CBR/CB7/PDF'\n• Alebo priamo potiahните a pustite súbor do okna\n• Podporované formáty: CBZ, CBR, CB7, PDF, obrázky (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Subory EPUB mozno tiez otvorit, ale budu extrahovane len ich obrazky (text sa ignoruje). Poznámka: prípony zobrazené červenou farbou (WEBP, TIFF, GIF, ICO…) označujú formáty potenciálne nekompatibilné so staršími čítačkami CBZ/CBR. Tieto súbory sú napriek tomu spracované normálne programom MosaicView.\n• Šifrovaný PDF (pri otváraní je potrebné heslo): súbor sa nedá importovať, zobrazí sa chybové hlásenie.\n• PDF chránené pred úpravami (owner password): stránky sa importujú normálne. MosaicView ponúka uloženie odomknutej kópie súboru do rovnakého priečinka.",
+    "open_files_content": "• Kliknite na tlačidlo 'Otvoriť súbor' alebo presuňte súbor priamo do okna\n• Podporované formáty: CBZ, CBR, CB7, CBT, PDF, obrázky (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Subory EPUB mozno tiez otvorit, ale budu extrahovane len ich obrazky (text sa ignoruje). Poznámka: prípony zobrazené červenou farbou (WEBP, TIFF, GIF, ICO…) označujú formáty potenciálne nekompatibilné so staršími čítačkami CBZ/CBR. Tieto súbory sú napriek tomu spracované normálne programom MosaicView.\n• Šifrovaný PDF (pri otváraní je potrebné heslo): súbor sa nedá importovať, zobrazí sa chybové hlásenie.\n• PDF chránené pred úpravami (owner password): stránky sa importujú normálne. MosaicView ponúka uloženie odomknutej kópie súboru do rovnakého priečinka.",
     "mosaic": "Mozaika",
     "mosaic_content": "Mozaika zobrazuje všetky strany vášho komiksu ako miniatúry. Môžete:\n• Preusporiadať strany presunutím (číslovanie strán bude automatické a vykoná sa podľa aktívneho režimu prečíslovania)\n• Vybrať viac strán (Ctrl+klik alebo Shift+klik)\n• Upraviť veľkosť miniatúr posuvníkom\n• Ručne premenovať súbory kliknutím na ich názov\n• Presunúť súbory komiksov (CBZ/CBR/PDF) z Prieskumníka Windows priamo do iného otvoreného komiksu pre zlúčenie ich obsahu",
     "manipulation": "Manipulácia so stranami",
@@ -1171,7 +1240,7 @@
     "create_icon": "Vytvoriť ikonu",
     "create_icon_content": "MosaicView umožňuje vytvárať súbory ikon (.ico) z ľubovoľného obrázka v mozaike.\n• Kliknite pravým tlačidlom myši na obrázok → 'Vytvoriť ikonu'\n• Ohraničte požadovanú oblasť v prehliadači (ikona bude povinne štvorcová)\n• V prípade potreby upravte priehľadnosť\n• Potvrďte: súbor .ico sa pridá priamo do mozaiky\n• Súbory .ico automaticky obsahujú všetky štandardné rozlíšenia (od 16×16 do 256×256)\n• Pokiaľ je v mozaike prítomný súbor .ico, ukladanie do archívu CBZ je zablokované, pretože formát ICO nie je týmito archívmi podporovaný. Exportujte súbor .ico samostatne (Ctrl+C a vložte do priečinka Windows), potom ho pred uložením z mozaiky odstráňte.",
     "batch_convert": "Dávková konverzia",
-    "batch_convert_content": "MosaicView ponúka tri funkcie dávkovej konverzie, dostupné iba vtedy, keď je mozaika prázdna. Pre každú z nich je princíp rovnaký : vyberte priečinok, potvrďte, sledujte priebeh v reálnom čase, prezrite si záverečný prehľad. Možnosť umožňuje trvalé vymazanie pôvodných súborov namiesto ich odosielania do koša.\n• CBR → CBZ : konvertuje všetky súbory CBR (RAR) v priečinku a jeho podpriečinkoch. Ak je CBR v skutočnosti ZIP, jednoducho sa premenuje bez konverzie.\n• PDF → CBZ : konvertuje všetky súbory PDF v priečinku a jeho podpriečinkoch. Obrázky sa extrahujú bez opätovnej kompresie.\n• IZOLOVANÉ OBRÁZKY → CBZ : vytvorí individuálny CBZ pre každý súbor obrázka nájdený v priečinku a jeho podpriečinkoch. Neplatné, poškodené, viacstranové (TIFF) alebo animované (GIF) obrázky sa ignorujú a zaznamenajú do protokolu.",
+    "batch_convert_content": "MosaicView ponúka päť funkcií dávkového prevodu, dostupných iba vtedy, keď je mozaika prázdna. Pre každú z nich je princíp rovnaký: vyberte adresár, potvrďte, sledujte postup v reálnom čase, pozrite si záverečný súhrn. Možnosť umožňuje trvalé vymazanie pôvodných súborov namiesto ich odosielania do koša.\n• CBR → CBZ: konvertuje všetky súbory CBR (RAR) v adresári a jeho podadresároch. Ak je CBR v skutočnosti ZIP, 7z alebo TAR, súbor sa premenuje so správnou príponou (.cbz, .cb7 alebo .cbt) bez konverzie. Premenované súbory a chyby sa zaznamenajú do logu.\n• CB7 → CBZ: konvertuje všetky súbory CB7 (7-Zip) v adresári a jeho podadresároch. Ak je CB7 v skutočnosti ZIP, RAR alebo TAR, súbor sa premenuje so správnou príponou (.cbz, .cbr alebo .cbt) bez konverzie. Premenované súbory a chyby sa zaznamenajú do logu.\n• CBT → CBZ: konvertuje všetky súbory CBT (TAR) v adresári a jeho podadresároch. Ak je CBT v skutočnosti ZIP, RAR alebo 7z, súbor sa premenuje so správnou príponou (.cbz, .cbr alebo .cb7) bez konverzie. Premenované súbory a chyby sa zaznamenajú do logu.\n• PDF → CBZ: konvertuje všetky súbory PDF v adresári a jeho podadresároch. Obrázky sa extrahujú bez rekompresie.\n• SAMOSTATNÉ OBRÁZKY → CBZ: vytvorí individuálny CBZ pre každý súbor obrázka nájdený v adresári a jeho podadresároch. Neplatné, poškodené, viacstránkové (TIFF) alebo animované (GIF) obrázky sa ignorujú a zaznamenajú do logu.",
     "config_open_temp_folder": "Otvoriť dočasný priečinok",
     "icon_toolbar": "Panel ikon",
     "icon_toolbar_content": "Panel ikon umožňuje rýchly prístup k hlavným funkciám aplikácie. Ikony môžete preskupovať podľa vlastných predstáv ich priamym presunom na panel. Ak chcete vybrať, ktoré ikony sa majú zobrazovať alebo skryť, kliknite na tlačidlo ozubeného kolieska v dolnej časti panela: otvorí sa okno konfigurácie, v ktorom môžete presúvať ikony medzi aktívnym panelom a zásobníkom. Tlačidlami « + » a « − » upravíte veľkosť ikon. Konfigurácia sa ukladá automaticky.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Uložiť písmo pIqaD",
     "export_tengwar_fonts": "Uložiť písma tengwar",
     "view_on_github": "Zdrojový kód na GitHube",
-    "check_for_updates": "Skontrolovať aktualizácie"
+    "check_for_updates": "Skontrolovať aktualizácie",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Aktualizácie",

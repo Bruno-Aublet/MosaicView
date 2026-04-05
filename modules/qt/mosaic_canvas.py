@@ -911,6 +911,7 @@ class MosaicCanvas(QGraphicsView):
             if not self._loading:
                 self._show_empty_message()
             self._scene.setSceneRect(self.viewport().rect().toRectF())
+            self.status_changed.emit()
             return
 
         visible = get_visible_entries_qt(st)
@@ -918,6 +919,7 @@ class MosaicCanvas(QGraphicsView):
             if not self._loading:
                 self._show_empty_message()
             self._scene.setSceneRect(self.viewport().rect().toRectF())
+            self.status_changed.emit()
             return
 
         cols = self._cols()

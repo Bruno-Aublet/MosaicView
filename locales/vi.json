@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Công cụ đa năng cho người sưu tập truyện tranh số",
   "buttons": {
-    "open_file": "Mở CBZ/CBR/CB7/PDF",
+    "open_file": "Mở CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Đóng tệp",
     "create_cbz": "Tạo kho lưu trữ CBZ",
     "flatten_dirs": "Di chuyển tất cả tệp\nvề thư mục gốc và xóa\nthư mục con",
@@ -49,9 +49,7 @@
     "no": "Không",
     "renumber_recommended": "Đánh số lại (được khuyến nghị)",
     "ignore_and_save": "Bỏ qua và lưu",
-    "rename_to_cbz": "Đổi tên thành .cbz",
     "open_without_rename": "Mở mà không đổi tên",
-    "rename_to_cbr": "Đổi tên thành .cbr",
     "adjustments": "Độ sáng,\nđộ tương phản...",
     "batch_cbr_to_cbz": "Chuyển đổi hàng loạt\n tập CBR sang CBZ",
     "batch_pdf_to_cbz": "Chuyển đổi hàng loạt\n tệp PDF sang CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Đặt lại",
     "delete_selected": "Xóa",
     "save": "Lưu",
-    "rename_to_cb7": "Đổi tên thành .cb7",
     "split_ui": "Chia giao diện thành hai bảng",
-    "unsplit_ui": "Đóng bảng thứ hai"
+    "unsplit_ui": "Đóng bảng thứ hai",
+    "rename_to_ext": "Đổi tên thành {ext}",
+    "batch_cb7_to_cbz": "Chuyển đổi hàng loạt\n tệp CB7 sang CBZ",
+    "batch_cbt_to_cbz": "Chuyển đổi hàng loạt\n tệp CBT sang CBZ"
   },
   "tabs": {
     "mosaic": "Mosaic",
@@ -130,10 +130,12 @@
       "save_to_folder": "Xuất các trang đã chọn",
       "adjustments": "Độ sáng, độ tương phản, màu sắc...",
       "refresh_mosaic": "Làm mới bảng ghép (F5)",
-      "create_ico": "Tạo tệp .ico"
+      "create_ico": "Tạo tệp .ico",
+      "straighten": "Chỉnh thẳng ảnh...",
+      "clone_zone": "Nhân bản vùng..."
     },
     "canvas_no_file": {
-      "open": "Mở CBZ/CBR/CB7/PDF",
+      "open": "Mở CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Tệp gần đây",
       "clear_history": "Xóa lịch sử"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Tệp không được hỗ trợ",
         "message": "Các tệp sau không được hỗ trợ và đã bị bỏ qua:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Tệp '{file}' không phải là tệp lưu trữ TAR hợp lệ hoặc bị hỏng."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Hủy chuyển đổi\n{count} tệp - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Phát hiện phần mở rộng không chính xác: tệp '{filename}' này là CBZ, không phải CBR. Đổi tên?",
+    "extension_mismatch_generic": {
+      "message": "Phát hiện phần mở rộng không đúng: tệp '{filename}' là {real}, không phải {declared}. Đổi tên?",
       "title": "Phần mở rộng không đúng"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Phát hiện phần mở rộng không chính xác: tệp '{filename}' này là CBR, không phải CBZ. Đổi tên?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Phát hiện phần mở rộng sai: tệp '{filename}' là CB7, không phải CBZ/CBR. Đổi tên?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "Các tệp CBZ dựa trên định dạng ZIP, một định dạng tự do và mở. Các tệp CBR, ngược lại, dựa trên định dạng RAR, một định dạng độc quyền.\n\nMosaicView có thể mở các tệp CBR nhờ UnRAR, một tiện ích được phát triển bởi RARlab và có thể phân phối lại miễn phí.\n\nTrang web chính thức: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Xem giấy phép UnRAR",
     "saving_cbz": "Đang lưu... {percent}%",
-    "empty_canvas_line1": "Tha vao day mot hoac nhieu tap tin CBZ/CBR/CB7/PDF hoac hinh anh cua ban",
+    "empty_canvas_line1": "Tha vao day mot hoac nhieu tap tin CBZ/CBR/CB7/CBT/PDF hoac hinh anh cua ban",
     "empty_canvas_line2": "Sau khi mo mot tap tin, ban co the tiep tuc tha cac tap tin khac",
     "empty_canvas_line3": "Thả một hoặc nhiều thư mục để bắt đầu xử lý hàng loạt",
     "icon_toolbar_config_title": "Cấu hình thanh công cụ biểu tượng",
@@ -786,8 +785,10 @@
       "complete_message": "{count} tập CBR đã chuyển đổi trong thư mục:",
       "complete_message_errors": "{count} tập CBR đã chuyển đổi trên {total} trong thư mục:",
       "errors_count": "{count} lỗi gặp phải.",
-      "renamed_count": "{count} tập được đổi tên thành CBZ",
-      "rarfile_unavailable": "Mô-đun rarfile không khả dụng. Không thể chuyển đổi tệp CBR."
+      "rarfile_unavailable": "Mô-đun rarfile không khả dụng. Không thể chuyển đổi tệp CBR.",
+      "renamed_cbz_count": "{count} tệp được đổi tên thành CBZ",
+      "renamed_cb7_count": "{count} tệp được đổi tên thành CB7",
+      "renamed_cbt_count": "{count} tệp được đổi tên thành CBT"
     },
     "close_warning": {
       "title": "Cảnh báo!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Mở kho lưu trữ",
-      "filter_archives": "Kho lưu trữ (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Tệp lưu trữ (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Tất cả các tệp (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Hình ảnh (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Tất cả các tệp (*)"
     },
-    "see_log": "XEM LOG"
+    "see_log": "XEM LOG",
+    "straighten_viewer": {
+      "title": "Chỉnh thẳng",
+      "instruction": "Vẽ một đường thẳng lên phần phải nằm ngang (hoặc thẳng đứng) trong ảnh"
+    },
+    "clone_zone_viewer": {
+      "title": "Nhân bản vùng",
+      "instruction": "Ctrl+nhấp : đặt nguồn  •  Nhấp trái : vẽ vùng được nhân bản",
+      "mode_label": "Nguồn :",
+      "mode_fixed": "Nguồn cố định",
+      "mode_relative": "Nguồn tương đối",
+      "brush_size_label": "Kích thước :"
+    },
+    "text_viewer": {
+      "title": "Chèn văn bản",
+      "instruction": "Nhấp vào nơi bạn muốn chèn văn bản  •  Ctrl+mũi tên: di chuyển văn bản từng pixel",
+      "size_label": "Kích thước:",
+      "color_label": "Màu sắc:",
+      "bold_btn": "Đ",
+      "italic_btn": "N",
+      "underline_btn": "G",
+      "apply_btn": "Áp dụng văn bản",
+      "pick_color_title": "Chọn màu văn bản"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Chọn thư mục chứa tệp CB7",
+      "no_cb7_title": "Không có tệp CB7",
+      "no_cb7_message": "Không tìm thấy tệp CB7 trong thư mục :\n{directory}",
+      "confirm_title": "Chuyển đổi hàng loạt CB7 sang CBZ",
+      "confirm_message": "{count} tệp CB7 sẽ được chuyển đổi trong {directory} (bao gồm thư mục con).",
+      "checkbox_permanent_delete": "Xóa vĩnh viễn các tệp CB7 gốc mà không\nchuyển vào thùng rác (KHÔNG THỂ HOÀN TÁC)",
+      "start_button": "Bắt đầu",
+      "converting_title": "Đang chuyển đổi...",
+      "converting_progress": "Đang chuyển đổi tệp {current} / {total}",
+      "page_progress": "Trang {current} / {total}",
+      "complete_title": "Chuyển đổi hoàn tất",
+      "complete_message": "{count} tệp CB7 đã được chuyển đổi trong thư mục :",
+      "complete_message_errors": "{count} tệp CB7 đã được chuyển đổi trên {total} trong thư mục :",
+      "errors_count": "Gặp {count} lỗi.",
+      "renamed_cbz_count": "{count} tệp được đổi tên thành CBZ",
+      "renamed_cbr_count": "{count} tệp được đổi tên thành CBR",
+      "renamed_cbt_count": "{count} tệp được đổi tên thành CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Chọn thư mục chứa tệp CBT",
+      "no_cbt_title": "Không có tệp CBT",
+      "no_cbt_message": "Không tìm thấy tệp CBT trong thư mục :\n{directory}",
+      "confirm_title": "Chuyển đổi hàng loạt CBT sang CBZ",
+      "confirm_message": "{count} tệp CBT sẽ được chuyển đổi trong {directory} (bao gồm thư mục con).",
+      "checkbox_permanent_delete": "Xóa vĩnh viễn các tệp CBT gốc mà không\nchuyển vào thùng rác (KHÔNG THỂ HOÀN TÁC)",
+      "start_button": "Bắt đầu",
+      "converting_title": "Đang chuyển đổi...",
+      "converting_progress": "Đang chuyển đổi tệp {current} / {total}",
+      "page_progress": "Trang {current} / {total}",
+      "complete_title": "Chuyển đổi hoàn tất",
+      "complete_message": "{count} tệp CBT đã được chuyển đổi trong thư mục :",
+      "complete_message_errors": "{count} tệp CBT đã được chuyển đổi trên {total} trong thư mục :",
+      "errors_count": "Gặp {count} lỗi.",
+      "renamed_cbz_count": "{count} tệp được đổi tên thành CBZ",
+      "renamed_cbr_count": "{count} tệp được đổi tên thành CBR",
+      "renamed_cb7_count": "{count} tệp được đổi tên thành CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Tệp nguồn: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Giảm kích thước biểu tượng",
     "icon_toolbar_size_increase": "Tăng kích thước biểu tượng",
     "source_loose": "Ảnh rời",
-    "source_web": "Ảnh web"
+    "source_web": "Ảnh web",
+    "straighten": "Chỉnh thẳng ảnh",
+    "clone_zone": "Nhân bản vùng",
+    "text": "Thêm văn bản",
+    "batch_cb7_to_cbz": "Chuyển đổi tất cả tệp CB7 trong thư mục\nvà các thư mục con sang CBZ.",
+    "batch_cb7_permanent_delete": "CẢNH BÁO : nếu tùy chọn này được chọn,\ncác tệp CB7 gốc sẽ bị xóa vĩnh viễn\nsau khi chuyển đổi mà không thể khôi phục.\nHãy đảm bảo bạn có bản sao lưu.",
+    "batch_cbt_to_cbz": "Chuyển đổi tất cả tệp CBT trong thư mục\nvà các thư mục con sang CBZ.",
+    "batch_cbt_permanent_delete": "CẢNH BÁO : nếu tùy chọn này được chọn,\ncác tệp CBT gốc sẽ bị xóa vĩnh viễn\nsau khi chuyển đổi mà không thể khôi phục.\nHãy đảm bảo bạn có bản sao lưu."
   },
   "help": {
     "title": "MosaicView - Hướng dẫn sử dụng",
     "intro": "MosaicView cho phép bạn thao tác và chỉnh sửa truyện tranh (sách truyện tranh kỹ thuật số) mà không cần giải nén chúng khỏi kho lưu trữ. Ứng dụng hỗ trợ định dạng CBZ (ZIP), CBR (RAR) và PDF. Ứng dụng chỉ tương thích với hệ thống 64-bit.",
     "open_files": "Mở tệp",
-    "open_files_content": "• Nhấp vào nút 'Mở CBZ/CBR/CB7/PDF'\n• Hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, PDF, ảnh (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Cac tep EPUB cung co the duoc mo, nhung chi cac hinh anh cua chung se duoc trich xuat (van ban bi bo qua).\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục. Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.",
+    "open_files_content": "• Nhấp vào nút 'Mở tệp' hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, CBT, PDF, ảnh (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Cac tep EPUB cung co the duoc mo, nhung chi cac hinh anh cua chung se duoc trich xuat (van ban bi bo qua).\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục. Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.",
     "mosaic": "Mosaic",
     "mosaic_content": "Khung hiển thị tất cả các trang của truyện tranh dưới dạng hình thu nhỏ. Bạn có thể:\n• Sắp xếp lại các trang bằng cách kéo và thả (đánh số trang sẽ tự động và sẽ theo chế độ đánh số lại đang hoạt động)\n• Chọn nhiều trang (Ctrl+nhấp hoặc Shift+nhấp)\n• Điều chỉnh kích thước hình thu nhỏ bằng thanh trượt\n• Đổi tên tệp thủ công bằng cách nhấp vào tên của chúng\n• Kéo và thả tệp truyện tranh (CBZ/CBR/PDF) từ Windows Explorer trực tiếp vào truyện tranh đang mở khác để hợp nhất nội dung của chúng",
     "manipulation": "Thao tác trang",
@@ -1171,7 +1240,7 @@
     "create_icon": "Tạo biểu tượng",
     "create_icon_content": "MosaicView cho phép bạn tạo các tệp biểu tượng (.ico) từ bất kỳ hình ảnh nào trong bảng ghép.\n• Nhấp chuột phải vào hình ảnh → 'Tạo biểu tượng'\n• Đóng khung vùng mong muốn trong trình xem (biểu tượng bắt buộc phải là hình vuông)\n• Điều chỉnh độ trong suốt nếu cần\n• Xác nhận: tệp .ico được thêm trực tiếp vào bảng ghép\n• Các tệp .ico tự động chứa tất cả các độ phân giải tiêu chuẩn (từ 16×16 đến 256×256)\n• Miễn là có tệp .ico trong bảng ghép, việc lưu vào kho lưu trữ CBZ bị chặn vì định dạng ICO không được các kho lưu trữ này hỗ trợ. Xuất tệp .ico riêng biệt (Ctrl+C rồi dán vào thư mục Windows), sau đó xóa nó khỏi bảng ghép trước khi lưu.",
     "batch_convert": "Chuyển đổi hàng loạt",
-    "batch_convert_content": "MosaicView cung cấp ba chức năng chuyển đổi hàng loạt, chỉ khả dụng khi mosaic trống. Đối với mỗi chức năng, nguyên tắc đều như nhau : chọn thư mục, xác nhận, theo dõi tiến trình theo thời gian thực, xem xét tóm tắt cuối cùng. Một tùy chọn cho phép xóa vĩnh viễn các tệp gốc thay vì gửi chúng vào thùng rác.\n• CBR → CBZ : chuyển đổi tất cả các tệp CBR (RAR) trong một thư mục và các thư mục con. Nếu CBR thực chất là ZIP, nó chỉ được đổi tên mà không cần chuyển đổi.\n• PDF → CBZ : chuyển đổi tất cả các tệp PDF trong một thư mục và các thư mục con. Hình ảnh được trích xuất mà không cần nén lại.\n• HÌNH ẢNH ĐƠN LẺ → CBZ : tạo CBZ riêng lẻ cho mỗi tệp hình ảnh được tìm thấy trong thư mục và các thư mục con. Hình ảnh không hợp lệ, bị hỏng, nhiều trang (TIFF) hoặc hoạt ảnh (GIF) bị bỏ qua và ghi vào nhật ký.",
+    "batch_convert_content": "MosaicView cung cấp năm chức năng chuyển đổi hàng loạt, chỉ khả dụng khi mosaics trống. Với mỗi chức năng, nguyên tắc giống nhau: chọn thư mục, xác nhận, theo dõi tiến trình theo thời gian thực, xem xét tóm tắt cuối cùng. Một tùy chọn cho phép xóa vĩnh viễn các tệp gốc thay vì đưa chúng vào thùng rác.\n• CBR → CBZ: chuyển đổi tất cả tệp CBR (RAR) trong thư mục và các thư mục con của nó. Nếu CBR thực sự là ZIP, 7z hoặc TAR, tệp được đổi tên với phần mở rộng đúng (.cbz, .cb7 hoặc .cbt) mà không cần chuyển đổi. Các tệp được đổi tên và lỗi được ghi vào nhật ký.\n• CB7 → CBZ: chuyển đổi tất cả tệp CB7 (7-Zip) trong thư mục và các thư mục con của nó. Nếu CB7 thực sự là ZIP, RAR hoặc TAR, tệp được đổi tên với phần mở rộng đúng (.cbz, .cbr hoặc .cbt) mà không cần chuyển đổi. Các tệp được đổi tên và lỗi được ghi vào nhật ký.\n• CBT → CBZ: chuyển đổi tất cả tệp CBT (TAR) trong thư mục và các thư mục con của nó. Nếu CBT thực sự là ZIP, RAR hoặc 7z, tệp được đổi tên với phần mở rộng đúng (.cbz, .cbr hoặc .cb7) mà không cần chuyển đổi. Các tệp được đổi tên và lỗi được ghi vào nhật ký.\n• PDF → CBZ: chuyển đổi tất cả tệp PDF trong thư mục và các thư mục con của nó. Hình ảnh được trích xuất mà không nén lại.\n• HÌNH ẢNH ĐƠN LẺ → CBZ: tạo CBZ riêng lẻ cho mỗi tệp hình ảnh tìm thấy trong thư mục và các thư mục con. Hình ảnh không hợp lệ, hỏng, nhiều trang (TIFF) hoặc hoạt hình (GIF) bị bỏ qua và ghi vào nhật ký.",
     "config_open_temp_folder": "Mở thư mục tạm thời",
     "icon_toolbar": "Thanh biểu tượng",
     "icon_toolbar_content": "Thanh công cụ biểu tượng cung cấp quyền truy cập nhanh vào các chức năng chính của ứng dụng. Bạn có thể sắp xếp lại các biểu tượng theo ý muốn bằng cách kéo trực tiếp vào thanh. Để chọn biểu tượng nào hiển thị hoặc ẩn, hãy nhấp vào nút bánh răng ở cuối thanh: một cửa sổ cấu hình mở ra, nơi bạn có thể di chuyển biểu tượng giữa thanh đang hoạt động và kho dự phòng. Dùng nút « + » và « − » để điều chỉnh kích thước biểu tượng. Cấu hình được lưu tự động.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Lưu phông chữ pIqaD",
     "export_tengwar_fonts": "Lưu phông chữ tengwar",
     "view_on_github": "Mã nguồn trên GitHub",
-    "check_for_updates": "Kiểm tra cập nhật"
+    "check_for_updates": "Kiểm tra cập nhật",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Cập nhật",

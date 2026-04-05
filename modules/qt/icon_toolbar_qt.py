@@ -36,6 +36,8 @@ ICON_DEFINITIONS = [
     {"id": "close_file",          "tooltip_key": None,                            "png": "BTN_Close.png"},
     {"id": "apply_save",          "tooltip_key": None,                            "png": "BTN_Save_to_CBZ.png"},
     {"id": "batch_cbr_cbz",       "tooltip_key": "tooltip.batch_cbr_to_cbz",     "png": "BTN_Batch_CBR-CBZ.png"},
+    {"id": "batch_cb7_cbz",       "tooltip_key": "tooltip.batch_cb7_to_cbz",     "png": "BTN_Batch_CB7-CBZ.png"},
+    {"id": "batch_cbt_cbz",       "tooltip_key": "tooltip.batch_cbt_to_cbz",     "png": "BTN_Batch_CBT-CBZ.png"},
     {"id": "batch_pdf_cbz",       "tooltip_key": "tooltip.batch_pdf_to_cbz",     "png": "BTN_Batch-PDF-CBZ.png"},
     {"id": "batch_img_cbz",       "tooltip_key": "tooltip.batch_img_to_cbz",     "png": "BTN_Batch_IMAGES-CBZ.png"},
     # --- ÉDITION ---
@@ -58,6 +60,9 @@ ICON_DEFINITIONS = [
     {"id": "resize",              "tooltip_key": None,                            "png": "BTN_Resize.png"},
     {"id": "adjustments",         "tooltip_key": None,                            "png": "BTN_Adjustments.png"},
     {"id": "crop",                "tooltip_key": None,                            "png": "BTN_Crop.png"},
+    {"id": "straighten",          "tooltip_key": "tooltip.straighten",            "png": "BTN_Straighten.png"},
+    {"id": "clone_zone",          "tooltip_key": "tooltip.clone_zone",            "png": "BTN_Clone_Zone.png"},
+    {"id": "text",                "tooltip_key": "tooltip.text",                  "png": "BTN_Text.png"},
     {"id": "create_ico",          "tooltip_key": None,                            "png": "BTN_ICO.png"},
     # --- ASSEMBLAGE ---
     {"id": "join_pages",          "tooltip_key": None,                            "png": "BTN_Join.png"},
@@ -105,6 +110,8 @@ ICON_PAD = 6
 _ACTIVATION_RULES = {
     "open_file":           None,
     "batch_cbr_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
+    "batch_cb7_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
+    "batch_cbt_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "batch_pdf_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "batch_img_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "close_file":          lambda sg: sg["has_file"]() or sg["has_images"](),
@@ -124,6 +131,9 @@ _ACTIVATION_RULES = {
     "resize":              lambda sg: sg["has_selected_images"](),
     "adjustments":         lambda sg: sg["has_selected_images"](),
     "crop":                lambda sg: sg["single_image_selected"](),
+    "straighten":          lambda sg: sg["has_images"](),
+    "clone_zone":          lambda sg: sg["has_images"](),
+    "text":                lambda sg: sg["has_images"](),
     "create_ico":          lambda sg: sg["single_image_selected"](),
     "join_pages":          lambda sg: sg["has_selected_images"]() and sg["selection_count"]() >= 2,
     "split_page":          lambda sg: sg["has_selected_images"]() and sg["selection_count"]() == 1,
@@ -1549,6 +1559,8 @@ class IconToolbarQt(QWidget):
         "close_file":          "buttons.close_file",
         "apply_save":          "buttons.save",
         "batch_cbr_cbz":       "buttons.batch_cbr_to_cbz",
+        "batch_cb7_cbz":       "buttons.batch_cb7_to_cbz",
+        "batch_cbt_cbz":       "buttons.batch_cbt_to_cbz",
         "batch_pdf_cbz":       "buttons.batch_pdf_to_cbz",
         "batch_img_cbz":       "buttons.batch_img_to_cbz",
         "undo":                "buttons.undo",
@@ -1582,6 +1594,9 @@ class IconToolbarQt(QWidget):
         "decrease_font_size":  "tooltip.font_decrease_button",
         "increase_font_size":  "tooltip.font_increase_button",
         "reset_to_defaults":   "context_menu.canvas.reset_label",
+        "straighten":          "tooltip.straighten",
+        "clone_zone":          "tooltip.clone_zone",
+        "text":                "tooltip.text",
     }
 
     def _get_icon_label(self, icon_id: str) -> str:
@@ -1964,6 +1979,8 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
             None
         ),
         "batch_cbr_cbz":         cb["batch_convert_cbr_to_cbz"],
+        "batch_cb7_cbz":         cb["batch_convert_cb7_to_cbz"],
+        "batch_cbt_cbz":         cb["batch_convert_cbt_to_cbz"],
         "batch_pdf_cbz":         cb["batch_convert_pdf_to_cbz"],
         "batch_img_cbz":         cb["batch_convert_img_to_cbz"],
         "undo":                  cb["undo_action"],
@@ -1983,6 +2000,9 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "convert":               cb["convert_selected_images"],
         "resize":                cb["reduce_selected_images_size"],
         "adjustments":           cb["show_image_adjustments_dialog"],
+        "straighten":            cb["show_straighten_viewer"],
+        "clone_zone":            cb["show_clone_zone_viewer"],
+        "text":                  cb["show_text_viewer"],
         "crop":                  cb["crop_selected_image"],
         "create_ico":            cb["create_ico_from_selected"],
         "join_pages":            cb["open_merge_window"],

@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Dijital çizgi roman koleksiyoncuları için İsviçre çakısı",
   "buttons": {
-    "open_file": "CBZ/CBR/CB7/PDF Aç",
+    "open_file": "CBZ/CBR/CB7/CBT/PDF Aç",
     "close_file": "Dosyayı kapat",
     "create_cbz": "CBZ arşivi oluştur",
     "flatten_dirs": "Tüm dosyaları kök dizine taşı\nve alt dizini sil",
@@ -49,9 +49,7 @@
     "no": "Hayır",
     "renumber_recommended": "Yeniden numaralandır (önerilen)",
     "ignore_and_save": "Yoksay ve kaydet",
-    "rename_to_cbz": ".cbz olarak yeniden adlandır",
     "open_without_rename": "Yeniden adlandırmadan aç",
-    "rename_to_cbr": ".cbr olarak yeniden adlandır",
     "adjustments": "Parlaklık,\nkontrast vb.",
     "batch_cbr_to_cbz": "CBR dosyalarını\n topluca CBZ'ye dönüştür",
     "batch_pdf_to_cbz": "PDF dosyalarını toplu\n CBZ’ye dönüştürme",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Sıfırla",
     "delete_selected": "Sil",
     "save": "Kaydet",
-    "rename_to_cb7": ".cb7 olarak yeniden adlandır",
     "split_ui": "Arayüzü iki panele böl",
-    "unsplit_ui": "İkinci paneli kapat"
+    "unsplit_ui": "İkinci paneli kapat",
+    "rename_to_ext": "{ext} olarak yeniden adlandır",
+    "batch_cb7_to_cbz": "CB7 dosyalarının\n CBZ'ye toplu dönüştürülmesi",
+    "batch_cbt_to_cbz": "CBT dosyalarının\n CBZ'ye toplu dönüştürülmesi"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -130,10 +130,12 @@
       "save_to_folder": "Seçili sayfaları dışa aktar",
       "adjustments": "Parlaklık, kontrast, renkler...",
       "refresh_mosaic": "Mozaiği yenile (F5)",
-      "create_ico": ".ico dosyası oluştur"
+      "create_ico": ".ico dosyası oluştur",
+      "straighten": "Görüntüyü düzelt...",
+      "clone_zone": "Bölgeyi klonla..."
     },
     "canvas_no_file": {
-      "open": "CBZ/CBR/CB7/PDF Aç",
+      "open": "CBZ/CBR/CB7/CBT/PDF Aç",
       "recent_files": "Son dosyalar",
       "clear_history": "Geçmişi temizle"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Desteklenmeyen dosyalar",
         "message": "Aşağıdaki dosyalar desteklenmemektedir ve yok sayıldı:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "'{file}' dosyası geçerli bir TAR arşivi değil veya bozuk."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Dönüştürmeyi iptal et\n{count} dosya - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Yanlış uzantı algılandı: bu '{filename}' dosya CBZ, CBR değil. Yeniden adlandırılsın mı?",
+    "extension_mismatch_generic": {
+      "message": "Hatalı uzantı tespit edildi: '{filename}' dosyası {real}, {declared} değil. Yeniden adlandır?",
       "title": "Yanlış uzantı"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Yanlış uzantı algılandı: bu '{filename}' dosya CBZ değil CBR. Yeniden adlandırılsın mı?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Yanlış uzantı tespit edildi: '{filename}' dosyası CB7, CBZ/CBR değil. Yeniden adlandır?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ dosyaları, özgür ve açık bir format olan ZIP formatına dayanmaktadır. CBR dosyaları ise tescilli bir format olan RAR formatına dayanmaktadır.\n\nMosaicView, RARlab tarafından geliştirilen ve serbestçe dağıtılabilen bir yardımcı program olan UnRAR sayesinde CBR dosyalarını açabilmektedir.\n\nResmi web sitesi: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "UnRAR Lisansını Görüntüle",
     "saving_cbz": "Kaydediliyor... {percent}%",
-    "empty_canvas_line1": "Buraya bir veya daha fazla CBZ/CBR/CB7/PDF dosyasi veya resimlerinizi birakin",
+    "empty_canvas_line1": "Buraya bir veya daha fazla CBZ/CBR/CB7/CBT/PDF dosyasi veya resimlerinizi birakin",
     "empty_canvas_line2": "Bir dosya acildiktan sonra, baskalarini birakmayi surdurebilirsiniz",
     "empty_canvas_line3": "Toplu işlem başlatmak için bir veya daha fazla klasör bırakın",
     "icon_toolbar_config_title": "Simge araç çubuğu yapılandırması",
@@ -786,8 +785,10 @@
       "complete_message": "Dizinde {count} CBR dosyası dönüştürüldü:",
       "complete_message_errors": "Dizinde {total} dosyadan {count} CBR dosyası dönüştürüldü:",
       "errors_count": "{count} hata ile karşılaşıldı.",
-      "renamed_count": "{count} dosya CBZ olarak yeniden adlandırıldı",
-      "rarfile_unavailable": "rarfile modülü mevcut değil. CBR dosyaları dönüştürülemiyor."
+      "rarfile_unavailable": "rarfile modülü mevcut değil. CBR dosyaları dönüştürülemiyor.",
+      "renamed_cbz_count": "{count} dosya CBZ olarak yeniden adlandırıldı",
+      "renamed_cb7_count": "{count} dosya CB7 olarak yeniden adlandırıldı",
+      "renamed_cbt_count": "{count} dosya CBT olarak yeniden adlandırıldı"
     },
     "close_warning": {
       "title": "Dikkat!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Bir arşiv aç",
-      "filter_archives": "Arşivler (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Arşivler (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Tüm dosyalar (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Görüntüler (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Tüm dosyalar (*)"
     },
-    "see_log": "GÜNLÜĞÜ GÖR"
+    "see_log": "GÜNLÜĞÜ GÖR",
+    "straighten_viewer": {
+      "title": "Düzelt",
+      "instruction": "Görüntüde yatay (veya dikey) olması gereken şeyin üzerine düz bir çizgi çizin"
+    },
+    "clone_zone_viewer": {
+      "title": "Bölge klonlama",
+      "instruction": "Ctrl+tıklama : kaynağı belirle  •  Sol tıklama : klonlanan bölgeyi boyama",
+      "mode_label": "Kaynak :",
+      "mode_fixed": "Sabit kaynak",
+      "mode_relative": "Göreli kaynak",
+      "brush_size_label": "Boyut :"
+    },
+    "text_viewer": {
+      "title": "Metin Ekle",
+      "instruction": "Metin eklemek istediğiniz yere tıklayın  •  Ctrl+oklar: metni piksel piksel taşı",
+      "size_label": "Boyut:",
+      "color_label": "Renk:",
+      "bold_btn": "K",
+      "italic_btn": "İ",
+      "underline_btn": "A",
+      "apply_btn": "Metni Uygula",
+      "pick_color_title": "Metin rengini seçin"
+    },
+    "batch_cb7": {
+      "select_directory_title": "CB7 dosyalarını içeren klasörü seçin",
+      "no_cb7_title": "CB7 dosyası bulunamadı",
+      "no_cb7_message": "Klasörde CB7 dosyası bulunamadı :\n{directory}",
+      "confirm_title": "CB7'den CBZ'ye toplu dönüştürme",
+      "confirm_message": "{directory} içinde {count} CB7 dosyası dönüştürülecek (alt klasörler dahil).",
+      "checkbox_permanent_delete": "Orijinal CB7 dosyalarını geri dönüşüm kutusuna\ngöndermeden kalıcı olarak sil (GERİ ALINAMAZ)",
+      "start_button": "Başlat",
+      "converting_title": "Dönüştürülüyor...",
+      "converting_progress": "{total} dosyadan {current}. dosya dönüştürülüyor",
+      "page_progress": "Sayfa {current} / {total}",
+      "complete_title": "Dönüştürme tamamlandı",
+      "complete_message": "Klasörde {count} CB7 dosyası dönüştürüldü :",
+      "complete_message_errors": "Klasörde {total} dosyadan {count} CB7 dosyası dönüştürüldü :",
+      "errors_count": "{count} hata oluştu.",
+      "renamed_cbz_count": "{count} dosya CBZ olarak yeniden adlandırıldı",
+      "renamed_cbr_count": "{count} dosya CBR olarak yeniden adlandırıldı",
+      "renamed_cbt_count": "{count} dosya CBT olarak yeniden adlandırıldı"
+    },
+    "batch_cbt": {
+      "select_directory_title": "CBT dosyalarını içeren klasörü seçin",
+      "no_cbt_title": "CBT dosyası bulunamadı",
+      "no_cbt_message": "Klasörde CBT dosyası bulunamadı :\n{directory}",
+      "confirm_title": "CBT'den CBZ'ye toplu dönüştürme",
+      "confirm_message": "{directory} içinde {count} CBT dosyası dönüştürülecek (alt klasörler dahil).",
+      "checkbox_permanent_delete": "Orijinal CBT dosyalarını geri dönüşüm kutusuna\ngöndermeden kalıcı olarak sil (GERİ ALINAMAZ)",
+      "start_button": "Başlat",
+      "converting_title": "Dönüştürülüyor...",
+      "converting_progress": "{total} dosyadan {current}. dosya dönüştürülüyor",
+      "page_progress": "Sayfa {current} / {total}",
+      "complete_title": "Dönüştürme tamamlandı",
+      "complete_message": "Klasörde {count} CBT dosyası dönüştürüldü :",
+      "complete_message_errors": "Klasörde {total} dosyadan {count} CBT dosyası dönüştürüldü :",
+      "errors_count": "{count} hata oluştu.",
+      "renamed_cbz_count": "{count} dosya CBZ olarak yeniden adlandırıldı",
+      "renamed_cbr_count": "{count} dosya CBR olarak yeniden adlandırıldı",
+      "renamed_cb7_count": "{count} dosya CB7 olarak yeniden adlandırıldı"
+    }
   },
   "tooltip": {
     "source_archive": "Kaynak dosya: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Simge boyutunu küçült",
     "icon_toolbar_size_increase": "Simge boyutunu büyüt",
     "source_loose": "Bağımsız görsel",
-    "source_web": "Web görseli"
+    "source_web": "Web görseli",
+    "straighten": "Görüntüyü düzelt",
+    "clone_zone": "Bölgeyi klonla",
+    "text": "Metin ekle",
+    "batch_cb7_to_cbz": "Bir klasördeki ve alt klasörlerindeki\ntüm CB7 dosyalarını CBZ'ye dönüştürür.",
+    "batch_cb7_permanent_delete": "UYARI : bu seçenek işaretlenirse,\norijinal CB7 dosyaları dönüştürme sonrasında\ngeri alma imkânı olmaksızın kalıcı olarak silinir.\nYedek kopyanız olduğundan emin olun.",
+    "batch_cbt_to_cbz": "Bir klasördeki ve alt klasörlerindeki\ntüm CBT dosyalarını CBZ'ye dönüştürür.",
+    "batch_cbt_permanent_delete": "UYARI : bu seçenek işaretlenirse,\norijinal CBT dosyaları dönüştürme sonrasında\ngeri alma imkânı olmaksızın kalıcı olarak silinir.\nYedek kopyanız olduğundan emin olun."
   },
   "help": {
     "title": "MosaicView - Kullanım Kılavuzu",
     "intro": "MosaicView, arşivlerden çıkartmadan çizgi romanları (dijital çizgi romanlar) düzenlemenize ve değiştirmenize olanak tanır. Uygulama CBZ (ZIP), CBR (RAR) ve PDF formatlarını destekler. Uygulama yalnızca 64 bit sistemlerle uyumludur.",
     "open_files": "Dosya açma",
-    "open_files_content": "• 'CBZ/CBR/CB7/PDF Aç' düğmesine tıklayın\n• Veya doğrudan bir dosyayı pencereye sürükleyip bırakın\n• Desteklenen formatlar: CBZ, CBR, CB7, PDF, görüntüler (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB dosyalari da acilabilir, ancak yalnizca goruntuleri cikarilir (metin yok sayilir).\n• Şifreli PDF (açmak için parola gerekli): dosya içe aktarılamaz, bir hata mesajı görüntülenir.\n• Değişikliklere karşı korumalı PDF (owner password): sayfalar normal olarak içe aktarılır. MosaicView, aynı klasörde dosyanın kilit açılmış bir kopyasını kaydetmeyi teklif eder. Not: kırmızı renkte görüntülenen uzantılar (WEBP, TIFF, GIF, ICO…) eski CBZ/CBR okuyucularıyla uyumlu olmayabilecek biçimleri belirtir. Bu dosyalar MosaicView tarafından yine de normal şekilde işlenir.",
+    "open_files_content": "• 'Bir dosya aç' düğmesine tıklayın veya bir dosyayı doğrudan pencereye sürükleyip bırakın\n• Desteklenen formatlar: CBZ, CBR, CB7, CBT, PDF, görüntüler (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB dosyalari da acilabilir, ancak yalnizca goruntuleri cikarilir (metin yok sayilir).\n• Şifreli PDF (açmak için parola gerekli): dosya içe aktarılamaz, bir hata mesajı görüntülenir.\n• Değişikliklere karşı korumalı PDF (owner password): sayfalar normal olarak içe aktarılır. MosaicView, aynı klasörde dosyanın kilit açılmış bir kopyasını kaydetmeyi teklif eder. Not: kırmızı renkte görüntülenen uzantılar (WEBP, TIFF, GIF, ICO…) eski CBZ/CBR okuyucularıyla uyumlu olmayabilecek biçimleri belirtir. Bu dosyalar MosaicView tarafından yine de normal şekilde işlenir.",
     "mosaic": "Mozaik",
     "mosaic_content": "Mozaik, çizgi romanınızın tüm sayfalarını küçük resim olarak görüntüler. Şunları yapabilirsiniz:\n• Sürükle ve bırak ile sayfaları yeniden düzenleyin (sayfa numaralandırma otomatik olacak ve etkin yeniden numaralandırma moduna göre yapılacaktır)\n• Birden fazla sayfa seçin (Ctrl+tıklama veya Shift+tıklama)\n• Kaydırıcı ile küçük resim boyutunu ayarlayın\n• Dosyaları adlarına tıklayarak manuel olarak yeniden adlandırın\n• Windows Gezgini'nden çizgi roman dosyalarını (CBZ/CBR/PDF) içeriklerini birleştirmek için doğrudan başka bir açık çizgi romana sürükleyip bırakın",
     "manipulation": "Sayfa düzenleme",
@@ -1171,7 +1240,7 @@
     "create_icon": "Simge oluştur",
     "create_icon_content": "MosaicView, mozaikteki herhangi bir görüntüden simge dosyaları (.ico) oluşturmanıza olanak tanır.\n• Bir görüntüye sağ tıklayın → 'Simge oluştur'\n• Görüntüleyicide istediğiniz alanı çerçeveleyin (simge zorunlu olarak kare olacaktır)\n• Gerekirse şeffaflığı ayarlayın\n• Onaylayın: .ico dosyası doğrudan mozaiğe eklenir\n• .ico dosyaları, tüm standart çözünürlükleri (16×16'dan 256×256'ya kadar) otomatik olarak içerir\n• Mozaikte bir .ico dosyası olduğu sürece, ICO formatı bu arşivler tarafından desteklenmediğinden CBZ arşivine kaydetme engellenir. .ico dosyasını ayrıca dışa aktarın (Ctrl+C ardından bir Windows klasörüne yapıştırın), ardından kaydetmeden önce mozaikten silin.",
     "batch_convert": "Toplu dönüştürme",
-    "batch_convert_content": "MosaicView, mozaik boşken kullanılabilen üç toplu dönüştürme işlevi sunar. Her biri için ilke aynıdır : bir dizin seçin, onaylayın, ilerlemeyi gerçek zamanlı takip edin, nihai özeti inceleyin. Bir seçenek, orijinal dosyaları geri dönüşüm kutusuna göndermek yerine kalıcı olarak silmenize izin verir.\n• CBR → CBZ : bir dizindeki ve alt dizinlerindeki tüm CBR (RAR) dosyalarını dönüştürür. Bir CBR aslında ZIP ise, dönüştürme olmadan yalnızca yeniden adlandırılır.\n• PDF → CBZ : bir dizindeki ve alt dizinlerindeki tüm PDF dosyalarını dönüştürür. Görüntüler yeniden sıkıştırma yapılmadan çıkarılır.\n• YALITILMIŞ GÖRÜNTÜLER → CBZ : dizin ve alt dizinlerinde bulunan her görüntü dosyası için bireysel bir CBZ oluşturur. Geçersiz, bozuk, çok sayfalı (TIFF) veya animasyonlu (GIF) görüntüler yoksayılır ve bir günlüğe kaydedilir.",
+    "batch_convert_content": "MosaicView, yalnızca mozaik boşken kullanılabilen beş toplu dönüştürme işlevi sunar. Her biri için ilke aynıdır: bir dizin seçin, onaylayın, ilerlemeyi gerçek zamanlı olarak takip edin, son özeti inceleyin. Bir seçenek, orijinal dosyaları geri dönüşüm kutusuna göndermek yerine kalıcı olarak silmeye izin verir.\n• CBR → CBZ: bir dizin ve alt dizinlerindeki tüm CBR (RAR) dosyalarını dönüştürür. Bir CBR aslında ZIP, 7z veya TAR ise, dosya dönüştürme yapılmadan doğru uzantıyla (.cbz, .cb7 veya .cbt) yeniden adlandırılır. Yeniden adlandırılan dosyalar ve hatalar günlüğe kaydedilir.\n• CB7 → CBZ: bir dizin ve alt dizinlerindeki tüm CB7 (7-Zip) dosyalarını dönüştürür. Bir CB7 aslında ZIP, RAR veya TAR ise, dosya dönüştürme yapılmadan doğru uzantıyla (.cbz, .cbr veya .cbt) yeniden adlandırılır. Yeniden adlandırılan dosyalar ve hatalar günlüğe kaydedilir.\n• CBT → CBZ: bir dizin ve alt dizinlerindeki tüm CBT (TAR) dosyalarını dönüştürür. Bir CBT aslında ZIP, RAR veya 7z ise, dosya dönüştürme yapılmadan doğru uzantıyla (.cbz, .cbr veya .cb7) yeniden adlandırılır. Yeniden adlandırılan dosyalar ve hatalar günlüğe kaydedilir.\n• PDF → CBZ: bir dizin ve alt dizinlerindeki tüm PDF dosyalarını dönüştürür. Görüntüler yeniden sıkıştırma yapılmadan çıkarılır.\n• TEKİL GÖRÜNTÜLER → CBZ: dizin ve alt dizinlerinde bulunan her görüntü dosyası için ayrı bir CBZ oluşturur. Geçersiz, bozuk, çok sayfalı (TIFF) veya animasyonlu (GIF) görüntüler yoksayılır ve günlüğe kaydedilir.",
     "config_open_temp_folder": "Geçici klasörü aç",
     "icon_toolbar": "Simge araç çubuğu",
     "icon_toolbar_content": "Simge araç çubuğu, uygulamanın temel işlevlerine hızlı erişim sağlar. Simgeleri doğrudan çubuğa sürükleyerek istediğiniz gibi yeniden düzenleyebilirsiniz. Hangi simgelerin görüntüleneceğini veya gizleneceğini seçmek için çubuğun alt kısmındaki dişli çark düğmesine tıklayın: simgeleri etkin çubuk ile rezerv arasında taşıyabileceğiniz bir yapılandırma penceresi açılır. Simge boyutunu ayarlamak için « + » ve « − » düğmelerini kullanın. Yapılandırma otomatik olarak kaydedilir.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "pIqaD yazı tipini kaydet",
     "export_tengwar_fonts": "Tengwar yazı tiplerini kaydet",
     "view_on_github": "GitHub'da kaynak kodu",
-    "check_for_updates": "Güncellemeleri kontrol et"
+    "check_for_updates": "Güncellemeleri kontrol et",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Güncellemeler",

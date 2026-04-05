@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Digitaalisten sarjakuvien keräilijän linkkuveitsi",
   "buttons": {
-    "open_file": "Avaa CBZ/CBR/CB7/PDF",
+    "open_file": "Avaa CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Sulje tiedosto",
     "create_cbz": "Luo CBZ-arkisto",
     "flatten_dirs": "Siirrä kaikki tiedostot\njuureen ja poista\nalikohteet",
@@ -49,9 +49,7 @@
     "no": "Ei",
     "renumber_recommended": "Numeroi uudelleen (suositeltu)",
     "ignore_and_save": "Ohita ja tallenna",
-    "rename_to_cbz": "Nimeä uudelleen .cbz:ksi",
     "open_without_rename": "Avaa ilman uudelleennimeämistä",
-    "rename_to_cbr": "Nimeä uudelleen .cbr",
     "adjustments": "Kirkkaus,\nkontrasti jne.",
     "batch_cbr_to_cbz": "CBR-tiedostojen\n erämuunnos CBZ-muotoon",
     "batch_pdf_to_cbz": "PDF-tiedostojen\n erämuunnos CBZ-muotoon",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Palauta oletukset",
     "delete_selected": "Poista",
     "save": "Tallenna",
-    "rename_to_cb7": "Nimeä uudelleen .cb7:ksi",
     "split_ui": "Jaa käyttöliittymä kahteen paneeliin",
-    "unsplit_ui": "Sulje toinen paneeli"
+    "unsplit_ui": "Sulje toinen paneeli",
+    "rename_to_ext": "Nimeä uudelleen {ext}:ksi",
+    "batch_cb7_to_cbz": "CB7-tiedostojen\n erämuunnos CBZ:ksi",
+    "batch_cbt_to_cbz": "CBT-tiedostojen\n erämuunnos CBZ:ksi"
   },
   "tabs": {
     "mosaic": "Mosaïque",
@@ -130,10 +130,12 @@
       "save_to_folder": "Vie valitut sivut",
       "adjustments": "Kirkkaus, kontrasti, värit...",
       "refresh_mosaic": "Päivitä mosaiikki (F5)",
-      "create_ico": "Luo .ico-tiedosto"
+      "create_ico": "Luo .ico-tiedosto",
+      "straighten": "Oikaise kuva...",
+      "clone_zone": "Kloonaa alue..."
     },
     "canvas_no_file": {
-      "open": "Avaa CBZ/CBR/CB7/PDF",
+      "open": "Avaa CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Viimeisimmät tiedostot",
       "clear_history": "Tyhjennä historia"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Ei-tuetut tiedostot",
         "message": "Seuraavia tiedostoja ei tueta ja ne ohitettiin:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Tiedosto '{file}' ei ole kelvollinen TAR-arkisto tai se on vioittunut."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Peruuta muunto\n{count} tiedosto(a) - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Virheellinen tiedostopääte havaittu: tämä '{filename}' tiedosto on CBZ, ei CBR. Nimetä uudelleen?",
+    "extension_mismatch_generic": {
+      "message": "Virheellinen tiedostopääte havaittu: tiedosto '{filename}' on {real}, ei {declared}. Nimeä uudelleen?",
       "title": "Väärä tiedostopääte"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Väärä tiedostopääte havaittu: tämä '{filename}' tiedosto on CBR, ei CBZ. Nimetä uudelleen?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Väärä tiedostopääte havaittu: tiedosto '{filename}' on CB7, ei CBZ/CBR. Nimetäänkö uudelleen?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ-tiedostot perustuvat ZIP-muotoon, joka on vapaa ja avoin formaatti. CBR-tiedostot puolestaan perustuvat RAR-muotoon, joka on omistusoikeudellinen.\n\nMosaicView voi avata CBR-tiedostoja UnRAR:n ansiosta, RARlabin kehittämän ja vapaasti jaettavan apuohjelman avulla.\n\nVirallinen verkkosivusto: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Näytä UnRAR-lisenssi",
     "saving_cbz": "Tallentaminen käynnissä... {percent}%",
-    "empty_canvas_line1": "Pudota tahan yksi tai useampi CBZ/CBR/CB7/PDF-tiedosto tai kuvasi",
+    "empty_canvas_line1": "Pudota tahan yksi tai useampi CBZ/CBR/CB7/CBT/PDF-tiedosto tai kuvasi",
     "empty_canvas_line2": "Kun tiedosto on avattu, voit jatkaa muiden pudottamista",
     "empty_canvas_line3": "Pudota yksi tai useampi kansio aloittaaksesi eräkäsittelyn",
     "icon_toolbar_config_title": "Kuvakepalkin määritys",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR-tiedostoa muunnettu hakemistossa:",
       "complete_message_errors": "{count} CBR-tiedostoa muunnettu {total}:sta hakemistossa:",
       "errors_count": "{count} virhe(ttä) havaittu.",
-      "renamed_count": "{count} tiedosto(a) nimetty uudelleen CBZ:ksi",
-      "rarfile_unavailable": "rarfile-moduuli ei ole käytettävissä. CBR-tiedostoja ei voi muuntaa."
+      "rarfile_unavailable": "rarfile-moduuli ei ole käytettävissä. CBR-tiedostoja ei voi muuntaa.",
+      "renamed_cbz_count": "{count} tiedosto(a) nimetty uudelleen CBZ:ksi",
+      "renamed_cb7_count": "{count} tiedosto(a) nimetty uudelleen CB7:ksi",
+      "renamed_cbt_count": "{count} tiedosto(a) nimetty uudelleen CBT:ksi"
     },
     "close_warning": {
       "title": "Varoitus!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Avaa arkisto",
-      "filter_archives": "Arkistot (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Arkistot (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Kaikki tiedostot (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Kuvat (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Kaikki tiedostot (*)"
     },
-    "see_log": "KATSO LOKI"
+    "see_log": "KATSO LOKI",
+    "straighten_viewer": {
+      "title": "Oikaisu",
+      "instruction": "Piirrä suora viiva siihen, mikä kuvan pitäisi olla vaakasuora (tai pystysuora)"
+    },
+    "clone_zone_viewer": {
+      "title": "Alueen kloonaus",
+      "instruction": "Ctrl+napsautus : aseta lähde  •  Vasen napsautus : maalaa kloonattu alue",
+      "mode_label": "Lähde :",
+      "mode_fixed": "Kiinteä lähde",
+      "mode_relative": "Suhteellinen lähde",
+      "brush_size_label": "Koko :"
+    },
+    "text_viewer": {
+      "title": "Lisää teksti",
+      "instruction": "Napsauta kohtaa, johon haluat lisätä tekstin  •  Ctrl+nuolet: siirrä tekstiä piksel kerrallaan",
+      "size_label": "Koko:",
+      "color_label": "Väri:",
+      "bold_btn": "L",
+      "italic_btn": "K",
+      "underline_btn": "A",
+      "apply_btn": "Käytä teksti",
+      "pick_color_title": "Valitse tekstin väri"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Valitse CB7-tiedostoja sisältävä kansio",
+      "no_cb7_title": "Ei CB7-tiedostoja",
+      "no_cb7_message": "Kansiosta ei löydetty CB7-tiedostoja :\n{directory}",
+      "confirm_title": "CB7-tiedostojen erämuunnos CBZ:ksi",
+      "confirm_message": "{count} CB7-tiedostoa muunnettavana kansiossa {directory} (alikansiot mukaan lukien).",
+      "checkbox_permanent_delete": "Poista alkuperäiset CB7-tiedostot pysyvästi\nilman roskakoriin siirtämistä (PERUUTTAMATON)",
+      "start_button": "Aloita",
+      "converting_title": "Muunnetaan...",
+      "converting_progress": "Muunnetaan tiedosto {current} / {total}",
+      "page_progress": "Sivu {current} / {total}",
+      "complete_title": "Muunnos valmis",
+      "complete_message": "{count} CB7-tiedostoa muunnettu kansiossa :",
+      "complete_message_errors": "{count} CB7-tiedostoa muunnettu {total}:sta kansiossa :",
+      "errors_count": "{count} virhe(ttä) havaittu.",
+      "renamed_cbz_count": "{count} tiedosto(a) nimetty uudelleen CBZ:ksi",
+      "renamed_cbr_count": "{count} tiedosto(a) nimetty uudelleen CBR:ksi",
+      "renamed_cbt_count": "{count} tiedosto(a) nimetty uudelleen CBT:ksi"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Valitse CBT-tiedostoja sisältävä kansio",
+      "no_cbt_title": "Ei CBT-tiedostoja",
+      "no_cbt_message": "Kansiosta ei löydetty CBT-tiedostoja :\n{directory}",
+      "confirm_title": "CBT-tiedostojen erämuunnos CBZ:ksi",
+      "confirm_message": "{count} CBT-tiedostoa muunnettavana kansiossa {directory} (alikansiot mukaan lukien).",
+      "checkbox_permanent_delete": "Poista alkuperäiset CBT-tiedostot pysyvästi\nilman roskakoriin siirtämistä (PERUUTTAMATON)",
+      "start_button": "Aloita",
+      "converting_title": "Muunnetaan...",
+      "converting_progress": "Muunnetaan tiedosto {current} / {total}",
+      "page_progress": "Sivu {current} / {total}",
+      "complete_title": "Muunnos valmis",
+      "complete_message": "{count} CBT-tiedostoa muunnettu kansiossa :",
+      "complete_message_errors": "{count} CBT-tiedostoa muunnettu {total}:sta kansiossa :",
+      "errors_count": "{count} virhe(ttä) havaittu.",
+      "renamed_cbz_count": "{count} tiedosto(a) nimetty uudelleen CBZ:ksi",
+      "renamed_cbr_count": "{count} tiedosto(a) nimetty uudelleen CBR:ksi",
+      "renamed_cb7_count": "{count} tiedosto(a) nimetty uudelleen CB7:ksi"
+    }
   },
   "tooltip": {
     "source_archive": "Lähdetiedosto: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Pienennä kuvakkeiden kokoa",
     "icon_toolbar_size_increase": "Suurenna kuvakkeiden kokoa",
     "source_loose": "Irrallinen kuva",
-    "source_web": "Verkkokuva"
+    "source_web": "Verkkokuva",
+    "straighten": "Oikaise kuva",
+    "clone_zone": "Kloonaa alue",
+    "text": "Lisää tekstiä",
+    "batch_cb7_to_cbz": "Muuntaa kaikki CB7-tiedostot kansiossa\nja sen alikansioissa CBZ:ksi.",
+    "batch_cb7_permanent_delete": "VAROITUS : jos tämä asetus on valittu,\nalkuperäiset CB7-tiedostot poistetaan\npysyvästi muunnoksen jälkeen ilman\npalautusmahdollisuutta. Varmista, että sinulla on varmuuskopio.",
+    "batch_cbt_to_cbz": "Muuntaa kaikki CBT-tiedostot kansiossa\nja sen alikansioissa CBZ:ksi.",
+    "batch_cbt_permanent_delete": "VAROITUS : jos tämä asetus on valittu,\nalkuperäiset CBT-tiedostot poistetaan\npysyvästi muunnoksen jälkeen ilman\npalautusmahdollisuutta. Varmista, että sinulla on varmuuskopio."
   },
   "help": {
     "title": "MosaicView - Käyttöohje",
     "intro": "MosaicView mahdollistaa sarjakuvien (digitaalisten sarjakuvien) käsittelyn ja muokkaamisen ilman, että niitä tarvitsee purkaa arkistoista. Sovellus tukee CBZ (ZIP), CBR (RAR) ja PDF-muotoja. Sovellus on yhteensopiva vain 64-bittisten järjestelmien kanssa.",
     "open_files": "Tiedostojen avaaminen",
-    "open_files_content": "• Napsauta 'Avaa CBZ/CBR/CB7/PDF' -painiketta\n• Tai vedä ja pudota tiedosto suoraan ikkunaan\n• Tuetut muodot: CBZ, CBR, CB7, PDF, kuvat (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-tiedostot voidaan myos avata, mutta vain niiden kuvat poimitaan (teksti jatetaan huomiotta).\n• Salattu PDF (salasana vaaditaan avattaessa): tiedostoa ei voi tuoda, näytetään virheilmoitus.\n• PDF suojattu muokkauksilta (owner password): sivut tuodaan normaalisti. MosaicView tarjoaa avatun kopion tallentamista samaan kansioon. Huomio: punaisella näytettävät tiedostopäätteet (WEBP, TIFF, GIF, ICO…) merkitsevät muotoja, jotka saattavat olla yhteensopimattomia vanhojen CBZ/CBR-lukijoiden kanssa. MosaicView käsittelee nämä tiedostot kuitenkin normaalisti.",
+    "open_files_content": "• Napsauta 'Avaa tiedosto' -painiketta tai vedä ja pudota tiedosto suoraan ikkunaan\n• Tuetut muodot: CBZ, CBR, CB7, CBT, PDF, kuvat (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-tiedostot voidaan myos avata, mutta vain niiden kuvat poimitaan (teksti jatetaan huomiotta).\n• Salattu PDF (salasana vaaditaan avattaessa): tiedostoa ei voi tuoda, näytetään virheilmoitus.\n• PDF suojattu muokkauksilta (owner password): sivut tuodaan normaalisti. MosaicView tarjoaa avatun kopion tallentamista samaan kansioon. Huomio: punaisella näytettävät tiedostopäätteet (WEBP, TIFF, GIF, ICO…) merkitsevät muotoja, jotka saattavat olla yhteensopimattomia vanhojen CBZ/CBR-lukijoiden kanssa. MosaicView käsittelee nämä tiedostot kuitenkin normaalisti.",
     "mosaic": "Mosaïque",
     "mosaic_content": "Mosaiikki näyttää kaikki sarjakuvasi sivut pienoiskuvina. Voit:\n• Järjestää sivuja uudelleen vetämällä ja pudottamalla (sivunumerointi on automaattista ja tapahtuu aktiivisen uudelleennumeroinnin tilan mukaisesti)\n• Valita useita sivuja (Ctrl+napsautus tai Vaihto+napsautus)\n• Säätää pienoiskuvien kokoa liukusäätimellä\n• Nimetä tiedostoja uudelleen manuaalisesti napsauttamalla niiden nimeä\n• Vetää ja pudottaa sarjakuvatiedostoja (CBZ/CBR/PDF) Windowsin Resurssienhallinnasta suoraan toiseen avoinna olevaan sarjakuvaan yhdistääksesi niiden sisällön",
     "manipulation": "Sivujen käsittely",
@@ -1171,7 +1240,7 @@
     "create_icon": "Luo kuvake",
     "create_icon_content": "MosaicView mahdollistaa kuvacketiedostojen (.ico) luomisen mistä tahansa mosaiikissa olevasta kuvasta.\n• Napsauta kuvaa hiiren oikealla painikkeella → 'Luo kuvake'\n• Rajaa haluamasi alue katseluohjelmassa (kuvake on pakollisesti neliön muotoinen)\n• Säädä läpinäkyvyyttä tarvittaessa\n• Vahvista: .ico-tiedosto lisätään suoraan mosaiikkiin\n• .ico-tiedostot sisältävät automaattisesti kaikki standardiresoluutiot (16×16–256×256)\n• Niin kauan kuin mosaiikissa on .ico-tiedosto, tallennus CBZ-arkistoon on estetty, koska ICO-muotoa ei tueta näissä arkistoissa. Vie .ico-tiedosto erikseen (Ctrl+C ja liitä Windows-kansioon), poista se sitten mosaiikista ennen tallentamista.",
     "batch_convert": "Erämuunnos",
-    "batch_convert_content": "MosaicView tarjoaa kolme eräkonvertointitoimintoa, jotka ovat käytettävissä vain kun mosaiikki on tyhjä. Jokaisessa periaate on sama : valitse hakemisto, vahvista, seuraa edistymistä reaaliajassa, tarkastele lopullista yhteenvetoa. Vaihtoehto mahdollistaa alkuperäisten tiedostojen pysyvän poistamisen sen sijaan, että ne lähetetään roskakoriin.\n• CBR → CBZ : muuntaa kaikki CBR (RAR) -tiedostot hakemistosta ja sen alihakemistoista. Jos CBR on todellisuudessa ZIP, se yksinkertaisesti nimetään uudelleen ilman muunnosta.\n• PDF → CBZ : muuntaa kaikki PDF-tiedostot hakemistosta ja sen alihakemistoista. Kuvat puretaan ilman uudelleenpakkausta.\n• YKSITTÄISET KUVAT → CBZ : luo yksilöllisen CBZ:n jokaiselle hakemistosta ja sen alihakemistoista löydetylle kuvatiedostolle. Virheelliset, vioittuneet, monisivuiset (TIFF) tai animoidut (GIF) kuvat ohitetaan ja kirjataan lokiin.",
+    "batch_convert_content": "MosaicView tarjoaa viisi erämuunnostoimintoa, jotka ovat käytettävissä vain kun mosaiikki on tyhjä. Kunkin kohdalla periaate on sama: valitse hakemisto, vahvista, seuraa edistymistä reaaliajassa, tarkista loppuyhteenveto. Vaihtoehto mahdollistaa alkuperäisten tiedostojen pysyvän poistamisen roskakoriin lähettämisen sijaan.\n• CBR → CBZ: muuntaa kaikki CBR (RAR) -tiedostot hakemistossa ja sen alihakemistoissa. Jos CBR on oikeasti ZIP, 7z tai TAR, tiedosto nimetään uudelleen oikealla päätteellä (.cbz, .cb7 tai .cbt) ilman muuntamista. Uudelleennimetyt tiedostot ja virheet kirjataan lokiin.\n• CB7 → CBZ: muuntaa kaikki CB7 (7-Zip) -tiedostot hakemistossa ja sen alihakemistoissa. Jos CB7 on oikeasti ZIP, RAR tai TAR, tiedosto nimetään uudelleen oikealla päätteellä (.cbz, .cbr tai .cbt) ilman muuntamista. Uudelleennimetyt tiedostot ja virheet kirjataan lokiin.\n• CBT → CBZ: muuntaa kaikki CBT (TAR) -tiedostot hakemistossa ja sen alihakemistoissa. Jos CBT on oikeasti ZIP, RAR tai 7z, tiedosto nimetään uudelleen oikealla päätteellä (.cbz, .cbr tai .cb7) ilman muuntamista. Uudelleennimetyt tiedostot ja virheet kirjataan lokiin.\n• PDF → CBZ: muuntaa kaikki PDF-tiedostot hakemistossa ja sen alihakemistoissa. Kuvat puretaan ilman uudelleenpakkausta.\n• YKSITTÄISET KUVAT → CBZ: luo yksittäisen CBZ:n jokaiselle hakemistosta ja sen alihakemistoista löydetylle kuvatiedostolle. Virheelliset, vioittuneet, monisivuiset (TIFF) tai animoidut (GIF) kuvat ohitetaan ja kirjataan lokiin.",
     "config_open_temp_folder": "Avaa väliaikainen kansio",
     "icon_toolbar": "Kuvakepalkki",
     "icon_toolbar_content": "Kuvakepalkki tarjoaa nopean pääsyn sovelluksen päätoimintoihin. Voit järjestää kuvakkeet haluamallasi tavalla vetämällä niitä suoraan palkkiin. Valitaksesi, mitkä kuvakkeet näytetään tai piilotetaan, napsauta palkin alaosassa olevaa hammasrataspainiketta: avautuu asetusikkuna, jossa voit siirtää kuvakkeita aktiivisen palkin ja varannon välillä. Käytä « + »- ja « − »-painikkeita kuvakkeiden koon säätämiseen. Asetukset tallennetaan automaattisesti.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Tallenna pIqaD-fontti",
     "export_tengwar_fonts": "Tallenna tengwar-fontit",
     "view_on_github": "Lähdekoodi GitHubissa",
-    "check_for_updates": "Tarkista päivitykset"
+    "check_for_updates": "Tarkista päivitykset",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Päivitykset",

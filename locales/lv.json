@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Šveices nazis digitālo komiksu kolekcionāriem",
   "buttons": {
-    "open_file": "Atvērt CBZ/CBR/CB7/PDF",
+    "open_file": "Atvērt CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Aizvērt failu",
     "create_cbz": "Izveidot CBZ arhīvu",
     "flatten_dirs": "Pārvietot visus failus\nuz saknes direktoriju un dzēst\napakšdirektorijus",
@@ -49,9 +49,7 @@
     "no": "Nē",
     "renumber_recommended": "Pārnumurēt (ieteicams)",
     "ignore_and_save": "Ignorēt un saglabāt",
-    "rename_to_cbz": "Pārdēvēt uz .cbz",
     "open_without_rename": "Atvērt bez pārdēvēšanas",
-    "rename_to_cbr": "Pārdēvēt uz .cbr",
     "adjustments": "Spilgtums,\nkontrasts u.c.",
     "batch_cbr_to_cbz": "CBR failu paketes\n konvertēšana uz CBZ",
     "batch_pdf_to_cbz": "PDF failu pakešu\n konvertēšana uz CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Atiestatīt",
     "delete_selected": "Dzēst",
     "save": "Saglabāt",
-    "rename_to_cb7": "Pārdēvēt par .cb7",
     "split_ui": "Sadalīt saskarni divās panelēs",
-    "unsplit_ui": "Aizvērt otro paneli"
+    "unsplit_ui": "Aizvērt otro paneli",
+    "rename_to_ext": "Pārdēvēt par {ext}",
+    "batch_cb7_to_cbz": "CB7 failu pakešu\n konvertēšana uz CBZ",
+    "batch_cbt_to_cbz": "CBT failu pakešu\n konvertēšana uz CBZ"
   },
   "tabs": {
     "mosaic": "Mozaīka",
@@ -130,10 +130,12 @@
       "save_to_folder": "Eksportēt atlasītās lappuses",
       "adjustments": "Spilgtums, kontrasts, krāsas...",
       "refresh_mosaic": "Atsvaidzināt mozaīku (F5)",
-      "create_ico": "Izveidot .ico failu"
+      "create_ico": "Izveidot .ico failu",
+      "straighten": "Iztaisnot attēlu...",
+      "clone_zone": "Klonēt zonu..."
     },
     "canvas_no_file": {
-      "open": "Atvērt CBZ/CBR/CB7/PDF",
+      "open": "Atvērt CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Nesenākie faili",
       "clear_history": "Notīrīt vēsturi"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Neatbalstīti faili",
         "message": "Šie faili netiek atbalstīti un tika ignorēti:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Fails '{file}' nav derīgs TAR arhīvs vai ir bojāts."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Atcelt konvertēšanu\n{count} fails(-i) - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Konstatēts nepareizs paplašinājums: šis '{filename}' fails ir CBZ, nevis CBR. Pārdēvēt?",
+    "extension_mismatch_generic": {
+      "message": "Konstatēts nepareizs paplašinājums: fails '{filename}' ir {real}, nevis {declared}. Pārdēvēt?",
       "title": "Nepareizs paplašinājums"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Konstatēts nepareizs paplašinājums: šis '{filename}' fails ir CBR, nevis CBZ. Pārdēvēt?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Konstatēts nepareizs paplašinājums: fails '{filename}' ir CB7, nevis CBZ/CBR. Pārdēvēt?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ faili ir balstīti uz ZIP formātu, kas ir brīvs un atvērts formāts. CBR faili, savukārt, ir balstīti uz RAR formātu, kas ir patentēts.\n\nMosaicView var atvērt CBR failus, pateicoties UnRAR, RARlab izstrādātam un brīvi izplatāmam rīkam.\n\nOficiālā vietne: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Skatīt UnRAR licenci",
     "saving_cbz": "Saglabāšana notiek... {percent}%",
-    "empty_canvas_line1": "Nometiet seit vienu vai vairakas CBZ/CBR/CB7/PDF datnes vai savus attelos",
+    "empty_canvas_line1": "Nometiet seit vienu vai vairakas CBZ/CBR/CB7/CBT/PDF datnes vai savus attelos",
     "empty_canvas_line2": "Kad datne ir atverta, jus varat turpinat nomest citas",
     "empty_canvas_line3": "Nometiet vienu vai vairākas mapes, lai sāktu pakešapstrādi",
     "icon_toolbar_config_title": "Ikonu rīkjoslas konfigurācija",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR faili konvertēti mapē:",
       "complete_message_errors": "{count} CBR faili konvertēti no {total} mapē:",
       "errors_count": "{count} kļūda(s) konstatēta(s).",
-      "renamed_count": "{count} fails(-i) pārsaukts(-i) uz CBZ",
-      "rarfile_unavailable": "Modulis rarfile nav pieejams. Nevar konvertēt CBR failus."
+      "rarfile_unavailable": "Modulis rarfile nav pieejams. Nevar konvertēt CBR failus.",
+      "renamed_cbz_count": "{count} fails(-i) pārdēvēts(-i) uz CBZ",
+      "renamed_cb7_count": "{count} fails(-i) pārdēvēts(-i) uz CB7",
+      "renamed_cbt_count": "{count} fails(-i) pārdēvēts(-i) uz CBT"
     },
     "close_warning": {
       "title": "Uzmanību!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Atvērt arhīvu",
-      "filter_archives": "Arhīvi (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Arhīvi (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Visi faili (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Attēli (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Visi faili (*)"
     },
-    "see_log": "SKATĪT ŽURNĀLU"
+    "see_log": "SKATĪT ŽURNĀLU",
+    "straighten_viewer": {
+      "title": "Iztaisnošana",
+      "instruction": "Uzzīmējiet taisnu līniju uz tā, kam attēlā vajadzētu būt horizontālam (vai vertikālam)"
+    },
+    "clone_zone_viewer": {
+      "title": "Zonas klonēšana",
+      "instruction": "Ctrl+klikšķis : iestatīt avotu  •  Kreisais klikšķis : krāsot klonēto zonu",
+      "mode_label": "Avots :",
+      "mode_fixed": "Fiksēts avots",
+      "mode_relative": "Relatīvs avots",
+      "brush_size_label": "Izmērs :"
+    },
+    "text_viewer": {
+      "title": "Ievietot tekstu",
+      "instruction": "Noklikšķiniet tur, kur vēlaties ievietot tekstu  •  Ctrl+bultiņas: pārvietot tekstu pa pikselim",
+      "size_label": "Izmērs:",
+      "color_label": "Krāsa:",
+      "bold_btn": "T",
+      "italic_btn": "K",
+      "underline_btn": "P",
+      "apply_btn": "Lietot tekstu",
+      "pick_color_title": "Izvēlieties teksta krāsu"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Atlasiet mapi ar CB7 failiem",
+      "no_cb7_title": "Nav CB7 failu",
+      "no_cb7_message": "Mapē netika atrasti CB7 faili :\n{directory}",
+      "confirm_title": "CB7 failu pakešu konvertēšana uz CBZ",
+      "confirm_message": "{count} CB7 faili konvertēšanai mapē {directory} (ieskaitot apakšmapes).",
+      "checkbox_permanent_delete": "Neatgriezeniski dzēst sākotnējos CB7 failus\nbez nosūtīšanas atkritnē (NEATGRIEZENISKI)",
+      "start_button": "Sākt",
+      "converting_title": "Notiek konvertēšana...",
+      "converting_progress": "Konvertē failu {current} no {total}",
+      "page_progress": "Lappuse {current} / {total}",
+      "complete_title": "Konvertēšana pabeigta",
+      "complete_message": "{count} CB7 faili konvertēti mapē :",
+      "complete_message_errors": "{count} CB7 faili konvertēti no {total} mapē :",
+      "errors_count": "Radās {count} kļūda(s).",
+      "renamed_cbz_count": "{count} fails(-i) pārdēvēts(-i) uz CBZ",
+      "renamed_cbr_count": "{count} fails(-i) pārdēvēts(-i) uz CBR",
+      "renamed_cbt_count": "{count} fails(-i) pārdēvēts(-i) uz CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Atlasiet mapi ar CBT failiem",
+      "no_cbt_title": "Nav CBT failu",
+      "no_cbt_message": "Mapē netika atrasti CBT faili :\n{directory}",
+      "confirm_title": "CBT failu pakešu konvertēšana uz CBZ",
+      "confirm_message": "{count} CBT faili konvertēšanai mapē {directory} (ieskaitot apakšmapes).",
+      "checkbox_permanent_delete": "Neatgriezeniski dzēst sākotnējos CBT failus\nbez nosūtīšanas atkritnē (NEATGRIEZENISKI)",
+      "start_button": "Sākt",
+      "converting_title": "Notiek konvertēšana...",
+      "converting_progress": "Konvertē failu {current} no {total}",
+      "page_progress": "Lappuse {current} / {total}",
+      "complete_title": "Konvertēšana pabeigta",
+      "complete_message": "{count} CBT faili konvertēti mapē :",
+      "complete_message_errors": "{count} CBT faili konvertēti no {total} mapē :",
+      "errors_count": "Radās {count} kļūda(s).",
+      "renamed_cbz_count": "{count} fails(-i) pārdēvēts(-i) uz CBZ",
+      "renamed_cbr_count": "{count} fails(-i) pārdēvēts(-i) uz CBR",
+      "renamed_cb7_count": "{count} fails(-i) pārdēvēts(-i) uz CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Avota fails: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Samazināt ikonu izmēru",
     "icon_toolbar_size_increase": "Palielināt ikonu izmēru",
     "source_loose": "Brīvs attēls",
-    "source_web": "Tīmekļa attēls"
+    "source_web": "Tīmekļa attēls",
+    "straighten": "Iztaisnot attēlu",
+    "clone_zone": "Klonēt zonu",
+    "text": "Pievienot tekstu",
+    "batch_cb7_to_cbz": "Konvertē visus CB7 failus mapē\nun tās apakšmapēs uz CBZ.",
+    "batch_cb7_permanent_delete": "BRĪDINĀJUMS : ja šī opcija ir atzīmēta,\nsākotnējie CB7 faili tiks neatgriezeniski dzēsti\npēc konvertēšanas bez atkopšanas iespējas.\nPārliecinieties, ka jums ir dublējumkopija.",
+    "batch_cbt_to_cbz": "Konvertē visus CBT failus mapē\nun tās apakšmapēs uz CBZ.",
+    "batch_cbt_permanent_delete": "BRĪDINĀJUMS : ja šī opcija ir atzīmēta,\nsākotnējie CBT faili tiks neatgriezeniski dzēsti\npēc konvertēšanas bez atkopšanas iespējas.\nPārliecinieties, ka jums ir dublējumkopija."
   },
   "help": {
     "title": "MosaicView - Lietošanas instrukcija",
     "intro": "MosaicView ļauj manipulēt un rediģēt komiksu failus, neizvelkot tos no arhīviem. Lietojumprogramma atbalsta CBZ (ZIP), CBR (RAR) un PDF formātus. Lietojumprogramma ir saderīga tikai ar 64 bitu sistēmām.",
     "open_files": "Failu atvēršana",
-    "open_files_content": "• Noklikšķiniet uz pogas 'Atvērt CBZ/CBR/CB7/PDF'\n• Vai tieši ievelciet failu logā\n• Atbalstītie formāti: CBZ, CBR, CB7, PDF, attēli (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus var ari atvert, bet tiks izvilkti tikai to atteli (teksts tiek ignorets).\n• Šifrēts PDF (lai atvērtu, nepieciešama parole): failu nevar importēt, tiek parādīts kļūdas ziņojums.\n• PDF aizsargāts pret izmaiņām (owner password): lapas tiek importētas normāli. MosaicView piedāvā saglabāt atbloķētu faila kopiju tajā pašā mapē. Piezīme: sarkanā krāsā rādītie paplašinājumi (WEBP, TIFF, GIF, ICO…) norāda formātus, kas var nebūt saderīgi ar vecākiem CBZ/CBR lasītājiem. Tomēr MosaicView šos failus apstrādā normāli.",
+    "open_files_content": "• Noklikšķiniet uz pogas 'Atvērt failu' vai velciet un nometiet failu tieši logā\n• Atbalstītie formāti: CBZ, CBR, CB7, CBT, PDF, attēli (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus var ari atvert, bet tiks izvilkti tikai to atteli (teksts tiek ignorets).\n• Šifrēts PDF (lai atvērtu, nepieciešama parole): failu nevar importēt, tiek parādīts kļūdas ziņojums.\n• PDF aizsargāts pret izmaiņām (owner password): lapas tiek importētas normāli. MosaicView piedāvā saglabāt atbloķētu faila kopiju tajā pašā mapē. Piezīme: sarkanā krāsā rādītie paplašinājumi (WEBP, TIFF, GIF, ICO…) norāda formātus, kas var nebūt saderīgi ar vecākiem CBZ/CBR lasītājiem. Tomēr MosaicView šos failus apstrādā normāli.",
     "mosaic": "Mozaīka",
     "mosaic_content": "Mozaīka attēlo visas jūsu komiksa lappuses kā sīktēlus. Jūs varat:\n• Pārkārtot lappuses, velkot un nometot (lappušu numerācija būs automātiska un tiks veikta atbilstoši aktīvajam pārnumerācijas režīmam)\n• Atlasīt vairākas lappuses (Ctrl+noklikšķināt vai Shift+noklikšķināt)\n• Pielāgot sīktēlu izmēru ar slīdni\n• Manuāli pārdēvēt failus, noklikšķinot uz to nosaukuma\n• Vilkt un nomest komiksu failus (CBZ/CBR/PDF) no Windows Explorer tieši citā atvērtā komiksā, lai apvienotu to saturu",
     "manipulation": "Lappušu manipulācija",
@@ -1171,7 +1240,7 @@
     "create_icon": "Izveidot ikonu",
     "create_icon_content": "MosaicView ļauj izveidot ikonas failus (.ico) no jebkura mozaīkas attēla.\n• Ar peles labo pogu noklikšķiniet uz attēla → 'Izveidot ikonu'\n• Skatītājā ierāmējiet vēlamo apgabalu (ikona obligāti būs kvadrātveida)\n• Ja nepieciešams, pielāgojiet caurspīdīgumu\n• Apstipriniet: .ico fails tiek pievienots tieši mozaīkai\n• .ico failos automātiski ir ietvertas visas standarta izšķirtspējas (no 16×16 līdz 256×256)\n• Kamēr mozaīkā atrodas .ico fails, saglabāšana CBZ arhīvā ir bloķēta, jo ICO formāts netiek atbalstīts šajos arhīvos. Eksportējiet .ico failu atsevišķi (Ctrl+C un ielīmējiet Windows mapē), pēc tam pirms saglabāšanas izdzēsiet to no mozaīkas.",
     "batch_convert": "Pakeškonvertēšana",
-    "batch_convert_content": "MosaicView piedāvā trīs pakešu konvertācijas funkcijas, kas pieejamas tikai tad, kad mozaīka ir tukša. Katrai no tām princips ir vienāds : atlasiet direktoriju, apstipriniet, sekojiet progresam reālajā laikā, pārskatiet galīgo kopsavilkumu. Opcija ļauj neatgriezeniski dzēst sākotnējos failus, nevis nosūtīt tos uz atkritni.\n• CBR → CBZ : konvertē visus CBR (RAR) failus direktorijā un tās apakšdirektorijās. Ja CBR faktiski ir ZIP, tas vienkārši tiek pārdēvēts bez konvertācijas.\n• PDF → CBZ : konvertē visus PDF failus direktorijā un tās apakšdirektorijās. Attēli tiek iegūti bez atkārtotas saspiešanas.\n• ATSEVIŠĶI ATTĒLI → CBZ : izveido individuālu CBZ katram attēla failam, kas atrasts direktorijā un tās apakšdirektorijās. Nederīgi, bojāti, vairāku lapu (TIFF) vai animēti (GIF) attēli tiek ignorēti un reģistrēti žurnālā.",
+    "batch_convert_content": "MosaicView piedāvā piecas pakešu konvertēšanas funkcijas, kas pieejamas tikai tad, kad mozaīka ir tukša. Katrai no tām princips ir vienāds: atlasiet direktoriju, apstipriniet, sekojiet progresam reāllaikā, pārskatiet galīgo kopsavilkumu. Opcija ļauj neatgriezeniski dzēst oriģinālos failus, nevis nosūtīt tos atkritnē.\n• CBR → CBZ: konvertē visus CBR (RAR) failus direktorijā un tā apakšdirektorijās. Ja CBR patiesībā ir ZIP, 7z vai TAR, fails tiek pārdēvēts ar pareizo paplašinājumu (.cbz, .cb7 vai .cbt) bez konvertēšanas. Pārdēvētie faili un kļūdas tiek reģistrētas žurnālā.\n• CB7 → CBZ: konvertē visus CB7 (7-Zip) failus direktorijā un tā apakšdirektorijās. Ja CB7 patiesībā ir ZIP, RAR vai TAR, fails tiek pārdēvēts ar pareizo paplašinājumu (.cbz, .cbr vai .cbt) bez konvertēšanas. Pārdēvētie faili un kļūdas tiek reģistrētas žurnālā.\n• CBT → CBZ: konvertē visus CBT (TAR) failus direktorijā un tā apakšdirektorijās. Ja CBT patiesībā ir ZIP, RAR vai 7z, fails tiek pārdēvēts ar pareizo paplašinājumu (.cbz, .cbr vai .cb7) bez konvertēšanas. Pārdēvētie faili un kļūdas tiek reģistrētas žurnālā.\n• PDF → CBZ: konvertē visus PDF failus direktorijā un tā apakšdirektorijās. Attēli tiek iegūti bez atkārtotas saspiešanas.\n• ATSEVIŠĶI ATTĒLI → CBZ: izveido atsevišķu CBZ katram attēla failam direktorijā un tā apakšdirektorijās. Nederīgi, bojāti, vairāklapu (TIFF) vai animēti (GIF) attēli tiek ignorēti un reģistrēti žurnālā.",
     "config_open_temp_folder": "Atvērt pagaidu mapi",
     "icon_toolbar": "Ikonu josla",
     "icon_toolbar_content": "Ikonu rīkjosla nodrošina ātru piekļuvi lietojumprogrammas galvenajām funkcijām. Ikonas var pārkārtot pēc saviem ieskatiem, velkot tās tieši joslā. Lai izvēlētos, kuras ikonas rādīt vai slēpt, noklikšķiniet uz zobrata pogas joslas apakšdaļā: atveras konfigurācijas logs, kurā var pārvietot ikonas starp aktīvo joslu un rezervi. Izmantojiet pogas « + » un « − », lai pielāgotu ikonu izmēru. Konfigurācija tiek saglabāta automātiski.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Saglabāt pIqaD fontu",
     "export_tengwar_fonts": "Saglabāt tengwar fontus",
     "view_on_github": "Pirmkods GitHub",
-    "check_for_updates": "Pārbaudīt atjauninājumus"
+    "check_for_updates": "Pārbaudīt atjauninājumus",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Atjauninājumi",

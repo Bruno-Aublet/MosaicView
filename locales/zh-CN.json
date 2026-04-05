@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "数字漫画收藏家的瑞士军刀",
   "buttons": {
-    "open_file": "打开 CBZ/CBR/CB7/PDF",
+    "open_file": "打开 CBZ/CBR/CB7/CBT/PDF",
     "close_file": "关闭文件",
     "create_cbz": "创建 CBZ 压缩包",
     "flatten_dirs": "将所有文件移至\n根目录并删除\n子目录",
@@ -49,9 +49,7 @@
     "no": "否",
     "renumber_recommended": "重新编号（推荐）",
     "ignore_and_save": "忽略并保存",
-    "rename_to_cbz": "重命名为 .cbz",
     "open_without_rename": "打开而不重命名",
-    "rename_to_cbr": "重命名为 .cbr",
     "adjustments": "亮度、\n对比度等",
     "batch_cbr_to_cbz": "批量转换\n CBR文件为CBZ",
     "batch_pdf_to_cbz": "批量转换\n PDF文件为CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "重置",
     "delete_selected": "删除",
     "save": "保存",
-    "rename_to_cb7": "重命名为 .cb7",
     "split_ui": "将界面分割为两个面板",
-    "unsplit_ui": "关闭第二个面板"
+    "unsplit_ui": "关闭第二个面板",
+    "rename_to_ext": "重命名为 {ext}",
+    "batch_cb7_to_cbz": "批量将 CB7\n 文件转换为 CBZ",
+    "batch_cbt_to_cbz": "批量将 CBT\n 文件转换为 CBZ"
   },
   "tabs": {
     "mosaic": "缩略图",
@@ -130,10 +130,12 @@
       "save_to_folder": "导出所选页面",
       "adjustments": "亮度、对比度、颜色...",
       "refresh_mosaic": "刷新拼图 (F5)",
-      "create_ico": "创建 .ico 文件"
+      "create_ico": "创建 .ico 文件",
+      "straighten": "矫正图像...",
+      "clone_zone": "克隆区域..."
     },
     "canvas_no_file": {
-      "open": "打开 CBZ/CBR/CB7/PDF",
+      "open": "打开 CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "最近的文件",
       "clear_history": "清除历史记录"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "不支持的文件",
         "message": "以下文件不受支持，已被忽略:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "文件 '{file}' 不是有效的 TAR 归档文件或已损坏。"
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "取消转换\n{count} 个文件 - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "检测到不正确的扩展名：此文件是 CBZ，而不是 CBR。是否重命名？",
+    "extension_mismatch_generic": {
+      "message": "检测到扩展名不匹配: 文件 '{filename}' 是 {real}，而非 {declared}。是否重命名?",
       "title": "扩展名错误"
-    },
-    "extension_mismatch_cbr": {
-      "message": "检测到错误的扩展名：此文件是 CBR，而不是 CBZ。重命名？"
-    },
-    "extension_mismatch_cb7": {
-      "message": "检测到扩展名有误：文件“{filename}”是 CB7，而非 CBZ/CBR。是否重命名？"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ 文件基于 ZIP 格式，这是一种自由开放的格式。CBR 文件则基于 RAR 格式，这是一种专有格式。\n\nMosaicView 可以借助 UnRAR 打开 CBR 文件，UnRAR 是由 RARlab 开发的可自由再发行的实用程序。\n\n官方网站: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "查看 UnRAR 许可证",
     "saving_cbz": "正在保存... {percent}%",
-    "empty_canvas_line1": "将一个或多个CBZ/CBR/CB7/PDF文件或你的图片放置在这里",
+    "empty_canvas_line1": "将一个或多个CBZ/CBR/CB7/CBT/PDF文件或你的图片放置在这里",
     "empty_canvas_line2": "打开文件后，你可以继续放置其他文件",
     "empty_canvas_line3": "放入一个或多个文件夹以开始批量处理",
     "icon_toolbar_config_title": "图标工具栏配置",
@@ -786,8 +785,10 @@
       "complete_message": "目录中已转换{count}个CBR文件：",
       "complete_message_errors": "目录中已转换{total}个中的{count}个CBR文件：",
       "errors_count": "遇到{count}个错误。",
-      "renamed_count": "{count}个文件已重命名为CBZ",
-      "rarfile_unavailable": "rarfile模块不可用，无法转换CBR文件。"
+      "rarfile_unavailable": "rarfile模块不可用，无法转换CBR文件。",
+      "renamed_cbz_count": "已将 {count} 个文件重命名为 CBZ",
+      "renamed_cb7_count": "已将 {count} 个文件重命名为 CB7",
+      "renamed_cbt_count": "已将 {count} 个文件重命名为 CBT"
     },
     "close_warning": {
       "title": "注意!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "打开归档文件",
-      "filter_archives": "归档文件 (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "归档文件 (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "所有文件 (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "图片 (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "所有文件 (*)"
     },
-    "see_log": "查看日志"
+    "see_log": "查看日志",
+    "straighten_viewer": {
+      "title": "矫正",
+      "instruction": "在图像中应为水平（或垂直）的部分画一条直线"
+    },
+    "clone_zone_viewer": {
+      "title": "区域克隆",
+      "instruction": "Ctrl+单击 : 设置源区域  •  左键单击 : 绘制克隆区域",
+      "mode_label": "源 :",
+      "mode_fixed": "固定源",
+      "mode_relative": "相对源",
+      "brush_size_label": "大小 :"
+    },
+    "text_viewer": {
+      "title": "插入文字",
+      "instruction": "点击要插入文字的位置  •  Ctrl+方向键:逐像素移动文字",
+      "size_label": "大小:",
+      "color_label": "颜色:",
+      "bold_btn": "粗",
+      "italic_btn": "斜",
+      "underline_btn": "下",
+      "apply_btn": "应用文字",
+      "pick_color_title": "选择文字颜色"
+    },
+    "batch_cb7": {
+      "select_directory_title": "选择包含 CB7 文件的目录",
+      "no_cb7_title": "没有 CB7 文件",
+      "no_cb7_message": "在目录中未找到 CB7 文件 :\n{directory}",
+      "confirm_title": "批量将 CB7 转换为 CBZ",
+      "confirm_message": "将在 {directory} 中转换 {count} 个 CB7 文件（包含子目录）。",
+      "checkbox_permanent_delete": "永久删除原始 CB7 文件而不移至回收站\n（无法恢复）",
+      "start_button": "开始",
+      "converting_title": "转换中...",
+      "converting_progress": "正在转换第 {current} / {total} 个文件",
+      "page_progress": "第 {current} / {total} 页",
+      "complete_title": "转换完成",
+      "complete_message": "目录中已转换 {count} 个 CB7 文件 :",
+      "complete_message_errors": "目录中已转换 {total} 个中的 {count} 个 CB7 文件 :",
+      "errors_count": "遇到 {count} 个错误。",
+      "renamed_cbz_count": "已将 {count} 个文件重命名为 CBZ",
+      "renamed_cbr_count": "已将 {count} 个文件重命名为 CBR",
+      "renamed_cbt_count": "已将 {count} 个文件重命名为 CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "选择包含 CBT 文件的目录",
+      "no_cbt_title": "没有 CBT 文件",
+      "no_cbt_message": "在目录中未找到 CBT 文件 :\n{directory}",
+      "confirm_title": "批量将 CBT 转换为 CBZ",
+      "confirm_message": "将在 {directory} 中转换 {count} 个 CBT 文件（包含子目录）。",
+      "checkbox_permanent_delete": "永久删除原始 CBT 文件而不移至回收站\n（无法恢复）",
+      "start_button": "开始",
+      "converting_title": "转换中...",
+      "converting_progress": "正在转换第 {current} / {total} 个文件",
+      "page_progress": "第 {current} / {total} 页",
+      "complete_title": "转换完成",
+      "complete_message": "目录中已转换 {count} 个 CBT 文件 :",
+      "complete_message_errors": "目录中已转换 {total} 个中的 {count} 个 CBT 文件 :",
+      "errors_count": "遇到 {count} 个错误。",
+      "renamed_cbz_count": "已将 {count} 个文件重命名为 CBZ",
+      "renamed_cbr_count": "已将 {count} 个文件重命名为 CBR",
+      "renamed_cb7_count": "已将 {count} 个文件重命名为 CB7"
+    }
   },
   "tooltip": {
     "source_archive": "源文件: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "减小图标尺寸",
     "icon_toolbar_size_increase": "增大图标尺寸",
     "source_loose": "独立图片",
-    "source_web": "网络图片"
+    "source_web": "网络图片",
+    "straighten": "矫正图像",
+    "clone_zone": "克隆区域",
+    "text": "添加文字",
+    "batch_cb7_to_cbz": "将目录及其子目录中的所有\nCB7 文件转换为 CBZ。",
+    "batch_cb7_permanent_delete": "警告：如果勾选此选项，\n原始 CB7 文件将在转换后被永久删除，\n无法恢复。请确保已有备份。",
+    "batch_cbt_to_cbz": "将目录及其子目录中的所有\nCBT 文件转换为 CBZ。",
+    "batch_cbt_permanent_delete": "警告：如果勾选此选项，\n原始 CBT 文件将在转换后被永久删除，\n无法恢复。请确保已有备份。"
   },
   "help": {
     "title": "MosaicView - 使用说明",
     "intro": "MosaicView 允许您操作和编辑漫画(数字漫画书),而无需将其从压缩包中提取。该应用程序支持 CBZ (ZIP)、CBR (RAR) 和 PDF 格式。 本应用程序仅兼容64位系统。",
     "open_files": "打开文件",
-    "open_files_content": "• 点击\"打开 CBZ/CBR/CB7/PDF\"按钮\n• 或直接将文件拖放到窗口中\n• 支持的格式:CBZ、CBR、PDF、图像(JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). 也可以打开EPUB文件，但只会提取其图像（文本会被忽略）。 注意：以红色显示的扩展名（WEBP、TIFF、GIF、ICO…）表示可能与旧版 CBZ/CBR 阅读器不兼容的格式。不过，MosaicView 仍可正常处理这些文件。\n• 已加密的PDF（打开时需要密码）:文件无法导入，将显示错误信息。\n• 受保护禁止修改的PDF（owner password）:页面正常导入。MosaicView建议在同一文件夹中保存一份解锁的副本。",
+    "open_files_content": "• 单击'打开文件'按钮，或将文件直接拖放到窗口中\n• 支持的格式:CBZ、CBR、PDF、图像(JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). 也可以打开EPUB文件，但只会提取其图像（文本会被忽略）。 注意：以红色显示的扩展名（WEBP、TIFF、GIF、ICO…）表示可能与旧版 CBZ/CBR 阅读器不兼容的格式。不过，MosaicView 仍可正常处理这些文件。\n• 已加密的PDF（打开时需要密码）:文件无法导入，将显示错误信息。\n• 受保护禁止修改的PDF（owner password）:页面正常导入。MosaicView建议在同一文件夹中保存一份解锁的副本。",
     "mosaic": "缩略图",
     "mosaic_content": "马赛克以缩略图形式显示您漫画的所有页面。您可以：\n• 通过拖放重新排列页面（页码将自动更新，并按照当前活动的重新编号模式进行）\n• 选择多个页面（Ctrl+点击或Shift+点击）\n• 使用滑块调整缩略图大小\n• 点击文件名手动重命名文件\n• 从Windows资源管理器直接拖放漫画文件（CBZ/CBR/PDF）到另一个打开的漫画中以合并其内容",
     "manipulation": "页面操作",
@@ -1171,7 +1240,7 @@
     "create_icon": "创建图标",
     "create_icon_content": "MosaicView允许您从马赛克中的任何图像创建图标文件(.ico)。\n• 右键单击图像 → '创建图标'\n• 在查看器中框选所需区域（图标必须为正方形）\n• 如有需要，调整透明度\n• 确认：.ico文件直接添加到马赛克中\n• .ico文件自动包含所有标准分辨率（从16×16到256×256）\n• 只要马赛克中存在.ico文件，保存到CBZ压缩包就会被阻止，因为这些压缩包不支持ICO格式。单独导出.ico文件（Ctrl+C然后粘贴到Windows文件夹），然后在保存前从马赛克中删除它。",
     "batch_convert": "批量转换",
-    "batch_convert_content": "MosaicView提供三个批量转换功能，仅在马赛克为空时可用。每个功能的原则相同：选择目录，确认，实时跟踪进度，查看最终摘要。一个选项允许永久删除原始文件，而不是将其发送到回收站。\n• CBR → CBZ：转换目录及其子目录中的所有CBR (RAR) 文件。如果CBR实际上是ZIP，则仅重命名而不进行转换。\n• PDF → CBZ：转换目录及其子目录中的所有PDF文件。图像在不重新压缩的情况下提取。\n• 独立图像 → CBZ：为目录及其子目录中找到的每个图像文件创建单独的CBZ。无效、损坏、多页 (TIFF) 或动画 (GIF) 图像将被忽略并记录在日志中。",
+    "batch_convert_content": "MosaicView 提供五个批量转换功能，仅在马赛克为空时可用。每个功能的原则相同：选择目录、确认、实时跟踪进度、查看最终摘要。一个选项允许永久删除原始文件，而不是将其发送到回收站。\n• CBR → CBZ：转换目录及其子目录中的所有 CBR (RAR) 文件。如果 CBR 实际上是 ZIP、7z 或 TAR，则文件将重命名为正确的扩展名（.cbz、.cb7 或 .cbt），无需转换。重命名的文件和错误将记录在日志中。\n• CB7 → CBZ：转换目录及其子目录中的所有 CB7 (7-Zip) 文件。如果 CB7 实际上是 ZIP、RAR 或 TAR，则文件将重命名为正确的扩展名（.cbz、.cbr 或 .cbt），无需转换。重命名的文件和错误将记录在日志中。\n• CBT → CBZ：转换目录及其子目录中的所有 CBT (TAR) 文件。如果 CBT 实际上是 ZIP、RAR 或 7z，则文件将重命名为正确的扩展名（.cbz、.cbr 或 .cb7），无需转换。重命名的文件和错误将记录在日志中。\n• PDF → CBZ：转换目录及其子目录中的所有 PDF 文件。图像在不重新压缩的情况下提取。\n• 独立图像 → CBZ：为目录及其子目录中找到的每个图像文件创建单独的 CBZ。无效、损坏、多页（TIFF）或动画（GIF）图像将被忽略并记录在日志中。",
     "config_open_temp_folder": "打开临时文件夹",
     "icon_toolbar": "图标工具栏",
     "icon_toolbar_content": "图标工具栏可快速访问应用程序的主要功能。您可以通过直接在工具栏中拖动图标来随意重新排列。要选择显示或隐藏哪些图标，请单击工具栏底部的齿轮按钮:将打开一个配置窗口，您可以在活动工具栏和备用区之间移动图标。使用 « + » 和 « − » 按钮调整图标大小。配置将自动保存。",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "保存 pIqaD 字体",
     "export_tengwar_fonts": "保存 tengwar 字体",
     "view_on_github": "在 GitHub 上查看源码",
-    "check_for_updates": "检查更新"
+    "check_for_updates": "检查更新",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "更新",

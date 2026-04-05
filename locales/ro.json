@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Cuțitul elvețian pentru colecționarii de benzi desenate digitale",
   "buttons": {
-    "open_file": "Deschide CBZ/CBR/CB7/PDF",
+    "open_file": "Deschide CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Închide fișierul",
     "create_cbz": "Creează arhivă CBZ",
     "flatten_dirs": "Mută toate fișierele\nla rădăcină și șterge\nsubdirectoarele",
@@ -49,9 +49,7 @@
     "no": "Nu",
     "renumber_recommended": "Renumerotează (recomandat)",
     "ignore_and_save": "Ignoră și salvează",
-    "rename_to_cbz": "Redenumește în .cbz",
     "open_without_rename": "Deschide fără redenumire",
-    "rename_to_cbr": "Redenumește în .cbr",
     "adjustments": "Luminozitate,\ncontrast etc.",
     "batch_cbr_to_cbz": "Conversie în bloc\n a fișierelor CBR în CBZ",
     "batch_pdf_to_cbz": "Conversie în lot\n a fișierelor PDF în CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Resetare",
     "delete_selected": "Șterge",
     "save": "Salvează",
-    "rename_to_cb7": "Redenumește în .cb7",
     "split_ui": "Împarte interfața în două panouri",
-    "unsplit_ui": "Închide al doilea panou"
+    "unsplit_ui": "Închide al doilea panou",
+    "rename_to_ext": "Redenumește în {ext}",
+    "batch_cb7_to_cbz": "Conversie în lot\n a fișierelor CB7 la CBZ",
+    "batch_cbt_to_cbz": "Conversie în lot\n a fișierelor CBT la CBZ"
   },
   "tabs": {
     "mosaic": "Mozaic",
@@ -130,10 +130,12 @@
       "save_to_folder": "Exportă paginile selectate",
       "adjustments": "Luminozitate, contrast, culori...",
       "refresh_mosaic": "Reîmprospătează mozaicul (F5)",
-      "create_ico": "Creează fișier .ico"
+      "create_ico": "Creează fișier .ico",
+      "straighten": "Îndreptați imaginea...",
+      "clone_zone": "Clonare zonă..."
     },
     "canvas_no_file": {
-      "open": "Deschide CBZ/CBR/CB7/PDF",
+      "open": "Deschide CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Fișiere recente",
       "clear_history": "Șterge istoricul"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Fișiere neacceptate",
         "message": "Următoarele fișiere nu sunt acceptate și au fost ignorate:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Fișierul '{file}' nu este o arhivă TAR validă sau este corupt."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Anulează conversia\n{count} fișier(e) - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Extensie incorectă detectată: acest '{filename}' fișier este un CBZ, nu un CBR. Redenumește?",
+    "extension_mismatch_generic": {
+      "message": "Extensie incorectă detectată: fișierul '{filename}' este {real}, nu {declared}. Redenumire?",
       "title": "Extensie incorectă"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Extensie incorectă detectată: acest '{filename}' fișier este CBR, nu CBZ. Redenumire?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Extensie incorectă detectată: fișierul '{filename}' este un CB7, nu un CBZ/CBR. Redenumire?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "Fișierele CBZ se bazează pe formatul ZIP, un format liber și deschis. Fișierele CBR, în schimb, se bazează pe formatul RAR, un format proprietar.\n\nMosaicView poate deschide fișiere CBR datorită UnRAR, un utilitar dezvoltat de RARlab și redistribuibil gratuit.\n\nSite oficial: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Vizualizați licența UnRAR",
     "saving_cbz": "Salvare în curs... {percent}%",
-    "empty_canvas_line1": "Plasati aici unul sau mai multe fisiere CBZ/CBR/CB7/PDF sau imaginile dvs",
+    "empty_canvas_line1": "Plasati aici unul sau mai multe fisiere CBZ/CBR/CB7/CBT/PDF sau imaginile dvs",
     "empty_canvas_line2": "Odata ce un fisier este deschis, puteti continua sa plasati altele",
     "empty_canvas_line3": "Aruncați unul sau mai multe foldere pentru a începe procesarea în lot",
     "icon_toolbar_config_title": "Configurare bară de pictograme",
@@ -786,8 +785,10 @@
       "complete_message": "{count} fișiere CBR convertite în directorul:",
       "complete_message_errors": "{count} fișiere CBR convertite din {total} în directorul:",
       "errors_count": "{count} eroare (erori) întâlnită (întâlnite).",
-      "renamed_count": "{count} fișier(e) redenumit(e) în CBZ",
-      "rarfile_unavailable": "Modulul rarfile nu este disponibil. Nu se pot converti fișierele CBR."
+      "rarfile_unavailable": "Modulul rarfile nu este disponibil. Nu se pot converti fișierele CBR.",
+      "renamed_cbz_count": "{count} fișier(e) redenumit(e) în CBZ",
+      "renamed_cb7_count": "{count} fișier(e) redenumit(e) în CB7",
+      "renamed_cbt_count": "{count} fișier(e) redenumit(e) în CBT"
     },
     "close_warning": {
       "title": "Atenție!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Deschide o arhivă",
-      "filter_archives": "Arhive (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Arhive (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Toate fișierele (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Imagini (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Toate fișierele (*)"
     },
-    "see_log": "VEZI LOG"
+    "see_log": "VEZI LOG",
+    "straighten_viewer": {
+      "title": "Îndreptare",
+      "instruction": "Trasați o linie dreaptă pe ceea ce trebuie să fie orizontal (sau vertical) în imagine"
+    },
+    "clone_zone_viewer": {
+      "title": "Clonare zonă",
+      "instruction": "Ctrl+clic : definește sursa  •  Clic stânga : pictează zona clonată",
+      "mode_label": "Sursă :",
+      "mode_fixed": "Sursă fixă",
+      "mode_relative": "Sursă relativă",
+      "brush_size_label": "Dimensiune :"
+    },
+    "text_viewer": {
+      "title": "Inserare text",
+      "instruction": "Faceți clic unde doriți să inserați textul  •  Ctrl+săgeți: mutați textul cu un pixel",
+      "size_label": "Dimensiune:",
+      "color_label": "Culoare:",
+      "bold_btn": "î",
+      "italic_btn": "I",
+      "underline_btn": "S",
+      "apply_btn": "Aplică textul",
+      "pick_color_title": "Alegeți culoarea textului"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Selectați directorul cu fișiere CB7",
+      "no_cb7_title": "Niciun fișier CB7",
+      "no_cb7_message": "Nu s-au găsit fișiere CB7 în directorul :\n{directory}",
+      "confirm_title": "Conversie în lot CB7 la CBZ",
+      "confirm_message": "{count} fișiere CB7 de convertit în {directory} (subdirectoare incluse).",
+      "checkbox_permanent_delete": "Ștergere permanentă a fișierelor CB7 originale\nfără a le trimite în coșul de gunoi (IREVOCABIL)",
+      "start_button": "Pornire",
+      "converting_title": "Conversie în curs...",
+      "converting_progress": "Conversie fișier {current} din {total}",
+      "page_progress": "Pagina {current} / {total}",
+      "complete_title": "Conversie finalizată",
+      "complete_message": "{count} fișiere CB7 convertite în director :",
+      "complete_message_errors": "{count} fișiere CB7 convertite din {total} în director :",
+      "errors_count": "{count} eroare(i) întâlnite.",
+      "renamed_cbz_count": "{count} fișier(e) redenumit(e) în CBZ",
+      "renamed_cbr_count": "{count} fișier(e) redenumit(e) în CBR",
+      "renamed_cbt_count": "{count} fișier(e) redenumit(e) în CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Selectați directorul cu fișiere CBT",
+      "no_cbt_title": "Niciun fișier CBT",
+      "no_cbt_message": "Nu s-au găsit fișiere CBT în directorul :\n{directory}",
+      "confirm_title": "Conversie în lot CBT la CBZ",
+      "confirm_message": "{count} fișiere CBT de convertit în {directory} (subdirectoare incluse).",
+      "checkbox_permanent_delete": "Ștergere permanentă a fișierelor CBT originale\nfără a le trimite în coșul de gunoi (IREVOCABIL)",
+      "start_button": "Pornire",
+      "converting_title": "Conversie în curs...",
+      "converting_progress": "Conversie fișier {current} din {total}",
+      "page_progress": "Pagina {current} / {total}",
+      "complete_title": "Conversie finalizată",
+      "complete_message": "{count} fișiere CBT convertite în director :",
+      "complete_message_errors": "{count} fișiere CBT convertite din {total} în director :",
+      "errors_count": "{count} eroare(i) întâlnite.",
+      "renamed_cbz_count": "{count} fișier(e) redenumit(e) în CBZ",
+      "renamed_cbr_count": "{count} fișier(e) redenumit(e) în CBR",
+      "renamed_cb7_count": "{count} fișier(e) redenumit(e) în CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Fișier sursă: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Micșorați dimensiunea pictogramelor",
     "icon_toolbar_size_increase": "Măriți dimensiunea pictogramelor",
     "source_loose": "Imagine liberă",
-    "source_web": "Imagine web"
+    "source_web": "Imagine web",
+    "straighten": "Îndreptați imaginea",
+    "clone_zone": "Clonare zonă",
+    "text": "Adăugați text",
+    "batch_cb7_to_cbz": "Convertește toate fișierele CB7 dintr-un\ndirector și subdirectoarele sale la CBZ.",
+    "batch_cb7_permanent_delete": "ATENȚIE : dacă această opțiune este bifată,\nfișierele CB7 originale vor fi șterse permanent\ndupă conversie fără posibilitate de recuperare.\nAsigurați-vă că aveți o copie de rezervă.",
+    "batch_cbt_to_cbz": "Convertește toate fișierele CBT dintr-un\ndirector și subdirectoarele sale la CBZ.",
+    "batch_cbt_permanent_delete": "ATENȚIE : dacă această opțiune este bifată,\nfișierele CBT originale vor fi șterse permanent\ndupă conversie fără posibilitate de recuperare.\nAsigurați-vă că aveți o copie de rezervă."
   },
   "help": {
     "title": "MosaicView - Manual utilizator",
     "intro": "MosaicView vă permite să manipulați și să modificați benzi desenate (BD digitale) fără a fi nevoie să le extrageți din arhive. Aplicația suportă formatele CBZ (ZIP), CBR (RAR) și PDF. Aplicația este compatibilă doar cu sistemele pe 64 de biți.",
     "open_files": "Deschiderea fișierelor",
-    "open_files_content": "• Faceți clic pe butonul 'Deschide CBZ/CBR/CB7/PDF'\n• Sau trageți și plasați direct un fișier în fereastră\n• Formate suportate: CBZ, CBR, CB7, PDF, imagini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fisierele EPUB pot fi deschise si ele, dar doar imaginile lor vor fi extrase (textul este ignorat). Notă: extensiile afișate cu roșu (WEBP, TIFF, GIF, ICO…) indică formate potențial incompatibile cu cititoarele CBZ/CBR mai vechi. Aceste fișiere sunt totuși procesate normal de MosaicView.\n• PDF criptat (parolă necesară pentru deschidere): fișierul nu poate fi importat, se afișează un mesaj de eroare.\n• PDF protejat împotriva modificărilor (owner password): paginile sunt importate normal. MosaicView propune salvarea unei copii deblocate a fișierului în același folder.",
+    "open_files_content": "• Faceți clic pe butonul 'Deschide un fișier' sau trageți și plasați un fișier direct în fereastră\n• Formate suportate: CBZ, CBR, CB7, CBT, PDF, imagini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fisierele EPUB pot fi deschise si ele, dar doar imaginile lor vor fi extrase (textul este ignorat). Notă: extensiile afișate cu roșu (WEBP, TIFF, GIF, ICO…) indică formate potențial incompatibile cu cititoarele CBZ/CBR mai vechi. Aceste fișiere sunt totuși procesate normal de MosaicView.\n• PDF criptat (parolă necesară pentru deschidere): fișierul nu poate fi importat, se afișează un mesaj de eroare.\n• PDF protejat împotriva modificărilor (owner password): paginile sunt importate normal. MosaicView propune salvarea unei copii deblocate a fișierului în același folder.",
     "mosaic": "Mozaicul",
     "mosaic_content": "Mozaicul afișează toate paginile benzii tale desenate ca miniaturi. Puteți:\n• Rearanja paginile prin glisare și plasare (renumerotarea paginilor va fi automată și se va face conform modului de renumerotare activ)\n• Selecta mai multe pagini (Ctrl+clic sau Shift+clic)\n• Ajusta dimensiunea miniaturilor cu cursorul\n• Redenumi manual fișierele făcând clic pe numele lor\n• Glisa și plasa fișiere de benzi desenate (CBZ/CBR/PDF) din Windows Explorer direct într-o altă bandă desenată deschisă pentru a le îmbina conținutul",
     "manipulation": "Manipularea paginilor",
@@ -1171,7 +1240,7 @@
     "create_icon": "Creați o pictogramă",
     "create_icon_content": "MosaicView vă permite să creați fișiere pictogramă (.ico) din orice imagine din mozaic.\n• Clic dreapta pe o imagine → 'Creați o pictogramă'\n• Încadrați zona dorită în vizualizator (pictograma va fi obligatoriu pătrată)\n• Ajustați transparența dacă este necesar\n• Validați: fișierul .ico este adăugat direct în mozaic\n• Fișierele .ico conțin automat toate rezoluțiile standard (de la 16×16 la 256×256)\n• Cât timp există un fișier .ico în mozaic, salvarea într-o arhivă CBZ este blocată, deoarece formatul ICO nu este suportat de aceste arhive. Exportați fișierul .ico separat (Ctrl+C apoi lipiți într-un folder Windows), apoi ștergeți-l din mozaic înainte de a salva.",
     "batch_convert": "Conversie în lot",
-    "batch_convert_content": "MosaicView oferă trei funcții de conversie în lot, disponibile numai când mozaicul este gol. Pentru fiecare dintre ele, principiul este același : selectați un director, confirmați, urmăriți progresul în timp real, consultați rezumatul final. O opțiune permite ștergerea permanentă a fișierelor originale în loc să le trimiteți la coș.\n• CBR → CBZ : convertește toate fișierele CBR (RAR) dintr-un director și subdirectoarele sale. Dacă un CBR este de fapt un ZIP, este pur și simplu redenumit fără conversie.\n• PDF → CBZ : convertește toate fișierele PDF dintr-un director și subdirectoarele sale. Imaginile sunt extrase fără recompresie.\n• IMAGINI IZOLATE → CBZ : creează un CBZ individual pentru fiecare fișier imagine găsit în director și subdirectoarele sale. Imaginile invalide, corupte, de mai multe pagini (TIFF) sau animate (GIF) sunt ignorate și înregistrate într-un jurnal.",
+    "batch_convert_content": "MosaicView oferă cinci funcții de conversie în lot, disponibile numai când mozaicul este gol. Pentru fiecare, principiul este același: selectați un director, confirmați, urmăriți progresul în timp real, consultați rezumatul final. O opțiune permite ștergerea permanentă a fișierelor originale în loc de a le trimite în coș.\n• CBR → CBZ: convertește toate fișierele CBR (RAR) dintr-un director și subdirectoarele sale. Dacă un CBR este de fapt un ZIP, 7z sau TAR, fișierul este redenumit cu extensia corectă (.cbz, .cb7 sau .cbt) fără conversie. Fișierele redenumite și erorile sunt înregistrate în jurnal.\n• CB7 → CBZ: convertește toate fișierele CB7 (7-Zip) dintr-un director și subdirectoarele sale. Dacă un CB7 este de fapt un ZIP, RAR sau TAR, fișierul este redenumit cu extensia corectă (.cbz, .cbr sau .cbt) fără conversie. Fișierele redenumite și erorile sunt înregistrate în jurnal.\n• CBT → CBZ: convertește toate fișierele CBT (TAR) dintr-un director și subdirectoarele sale. Dacă un CBT este de fapt un ZIP, RAR sau 7z, fișierul este redenumit cu extensia corectă (.cbz, .cbr sau .cb7) fără conversie. Fișierele redenumite și erorile sunt înregistrate în jurnal.\n• PDF → CBZ: convertește toate fișierele PDF dintr-un director și subdirectoarele sale. Imaginile sunt extrase fără recompresie.\n• IMAGINI INDIVIDUALE → CBZ: creează un CBZ individual pentru fiecare fișier imagine găsit în director și subdirectoarele sale. Imaginile invalide, corupte, multipagină (TIFF) sau animate (GIF) sunt ignorate și înregistrate în jurnal.",
     "config_open_temp_folder": "Deschide folderul temporar",
     "icon_toolbar": "Bara de pictograme",
     "icon_toolbar_content": "Bara de pictograme oferă acces rapid la funcțiile principale ale aplicației. Puteți rearanja pictogramele după cum doriți trăgându-le direct în bară. Pentru a alege ce pictograme să fie afișate sau ascunse, faceți clic pe butonul roată dințată aflat în partea de jos a barei: se deschide o fereastră de configurare unde puteți muta pictogramele între bara activă și rezervă. Folosiți butoanele « + » și « − » pentru a ajusta dimensiunea pictogramelor. Configurația este salvată automat.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Salvează fontul pIqaD",
     "export_tengwar_fonts": "Salvează fonturile tengwar",
     "view_on_github": "Cod sursă pe GitHub",
-    "check_for_updates": "Verifică actualizări"
+    "check_for_updates": "Verifică actualizări",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Actualizări",

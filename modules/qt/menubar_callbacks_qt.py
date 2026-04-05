@@ -21,6 +21,9 @@ from modules.qt.resize_dialog_qt       import reduce_selected_images_size_qt as 
 from modules.qt.merge_dialog_qt        import open_merge_window as _open_merge_window_qt
 from modules.qt.ico_creator_qt         import create_ico_from_selected as _create_ico_qt
 from modules.qt.adjustments_dialog_qt  import show_image_adjustments_dialog as show_image_adjustments_dialog_qt
+from modules.qt.straighten_viewer_qt   import show_straighten_viewer as _show_straighten_viewer_qt
+from modules.qt.clone_zone_viewer_qt   import show_clone_zone_viewer as _show_clone_zone_viewer_qt
+from modules.qt.text_viewer_qt         import show_text_viewer as _show_text_viewer_qt
 from modules.qt.web_import_qt          import show_web_import_dialog as _show_web_import_dialog
 from modules.qt.printing_qt            import (
     PRINT_AVAILABLE,
@@ -45,6 +48,8 @@ def build_menubar_callbacks(mw) -> dict:
         "clear_recent_files":       mw._clear_recent_files,
         "show_web_import_dialog":   lambda: _show_web_import_dialog(mw, mw._canvas, mw._web_import_callbacks()),
         "batch_convert_cbr_to_cbz": mw._batch_convert_cbr_to_cbz,
+        "batch_convert_cb7_to_cbz": mw._batch_convert_cb7_to_cbz,
+        "batch_convert_cbt_to_cbz": mw._batch_convert_cbt_to_cbz,
         "batch_convert_pdf_to_cbz": mw._batch_convert_pdf_to_cbz,
         "batch_convert_img_to_cbz": mw._batch_convert_img_to_cbz,
         "save_as_cbz":              mw._save_as_cbz,
@@ -77,6 +82,12 @@ def build_menubar_callbacks(mw) -> dict:
         "flip_selected_vertical":   lambda: _flip_selected_qt('vertical',   mw._image_transforms_callbacks()),
         "reduce_selected_images_size":   lambda: _resize_qt(mw, mw._resize_callbacks()),
         "show_image_adjustments_dialog": lambda: show_image_adjustments_dialog_qt(mw, mw._adjustments_callbacks()),
+        "show_straighten_viewer":        lambda: _show_straighten_viewer_qt(mw, mw._straighten_callbacks()),
+        "straighten":                    lambda: _show_straighten_viewer_qt(mw, mw._straighten_callbacks()),
+        "show_clone_zone_viewer":        lambda: _show_clone_zone_viewer_qt(mw, mw._clone_zone_callbacks()),
+        "clone_zone":                    lambda: _show_clone_zone_viewer_qt(mw, mw._clone_zone_callbacks()),
+        "show_text_viewer":              lambda: _show_text_viewer_qt(mw, mw._text_viewer_callbacks()),
+        "text":                          lambda: _show_text_viewer_qt(mw, mw._text_viewer_callbacks()),
         "convert_selected_images":  lambda: _convert_selected_images_qt(mw, mw._conversion_callbacks()),
         "crop_selected_image":      mw._crop_selected_image,
         "open_merge_window":        lambda: _open_merge_window_qt(mw, mw._merge_callbacks()),

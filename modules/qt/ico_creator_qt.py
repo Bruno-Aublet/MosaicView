@@ -1100,6 +1100,9 @@ class IcoCreatorDialog(QDialog):
             sc.setEnabled(False)
         self._zoom_level_a = 1.0
         self._build_phase_a()
+        # showEvent ne se redéclenche pas (dialog déjà visible) → afficher l'image directement
+        self._first_show_a = False
+        self._display_image_a(init=True)
 
     # Validation finale
 

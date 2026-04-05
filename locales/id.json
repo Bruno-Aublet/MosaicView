@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Alat serbaguna untuk kolektor komik digital",
   "buttons": {
-    "open_file": "Buka CBZ/CBR/CB7/PDF",
+    "open_file": "Buka CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Tutup file",
     "create_cbz": "Buat arsip CBZ",
     "flatten_dirs": "Pindahkan semua file\nke root dan hapus\nsub-direktori",
@@ -49,9 +49,7 @@
     "no": "Tidak",
     "renumber_recommended": "Nomori ulang (disarankan)",
     "ignore_and_save": "Abaikan dan simpan",
-    "rename_to_cbz": "Ubah nama menjadi .cbz",
     "open_without_rename": "Buka tanpa mengubah nama",
-    "rename_to_cbr": "Ubah nama menjadi .cbr",
     "adjustments": "Kecerahan,\nkontras, dll.",
     "batch_cbr_to_cbz": "Konversi massal\n file CBR ke CBZ",
     "batch_pdf_to_cbz": "Konversi massal\n file PDF ke CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Atur ulang",
     "delete_selected": "Hapus",
     "save": "Simpan",
-    "rename_to_cb7": "Ganti nama menjadi .cb7",
     "split_ui": "Bagi antarmuka menjadi dua panel",
-    "unsplit_ui": "Tutup panel kedua"
+    "unsplit_ui": "Tutup panel kedua",
+    "rename_to_ext": "Ganti nama menjadi {ext}",
+    "batch_cb7_to_cbz": "Konversi massal\n file CB7 ke CBZ",
+    "batch_cbt_to_cbz": "Konversi massal\n file CBT ke CBZ"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -130,10 +130,12 @@
       "save_to_folder": "Ekspor halaman terpilih",
       "adjustments": "Kecerahan, kontras, warna...",
       "refresh_mosaic": "Segarkan mosaik (F5)",
-      "create_ico": "Buat file .ico"
+      "create_ico": "Buat file .ico",
+      "straighten": "Luruskan gambar...",
+      "clone_zone": "Klon zona..."
     },
     "canvas_no_file": {
-      "open": "Buka CBZ/CBR/CB7/PDF",
+      "open": "Buka CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "File terbaru",
       "clear_history": "Hapus riwayat"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "File tidak didukung",
         "message": "File-file berikut tidak didukung dan diabaikan:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "File '{file}' bukan arsip TAR yang valid atau rusak."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Batalkan konversi\n{count} file - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Ekstensi yang salah terdeteksi: file '{filename}' ini adalah CBZ, bukan CBR. Ubah nama?",
+    "extension_mismatch_generic": {
+      "message": "Ekstensi tidak sesuai terdeteksi: file '{filename}' adalah {real}, bukan {declared}. Ganti nama?",
       "title": "Ekstensi salah"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Ekstensi salah terdeteksi: file '{filename}' ini adalah CBR, bukan CBZ. Ubah nama?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Ekstensi salah terdeteksi: file '{filename}' adalah CB7, bukan CBZ/CBR. Ganti nama?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "File CBZ berbasis format ZIP, format yang bebas dan terbuka. File CBR, sebaliknya, berbasis format RAR, format yang bersifat proprietary.\n\nMosaicView dapat membuka file CBR berkat UnRAR, utilitas yang dikembangkan oleh RARlab dan dapat didistribusikan ulang secara gratis.\n\nSitus resmi: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Lihat Lisensi UnRAR",
     "saving_cbz": "Menyimpan... {percent}%",
-    "empty_canvas_line1": "Lepaskan di sini satu atau beberapa file CBZ/CBR/CB7/PDF atau gambar Anda",
+    "empty_canvas_line1": "Lepaskan di sini satu atau beberapa file CBZ/CBR/CB7/CBT/PDF atau gambar Anda",
     "empty_canvas_line2": "Setelah file dibuka, Anda dapat melanjutkan melepaskan yang lain",
     "empty_canvas_line3": "Jatuhkan satu atau beberapa folder untuk memulai pemrosesan batch",
     "icon_toolbar_config_title": "Konfigurasi bilah ikon",
@@ -786,8 +785,10 @@
       "complete_message": "{count} file CBR dikonversi di direktori:",
       "complete_message_errors": "{count} file CBR dikonversi dari {total} di direktori:",
       "errors_count": "{count} kesalahan ditemukan.",
-      "renamed_count": "{count} file diganti namanya menjadi CBZ",
-      "rarfile_unavailable": "Modul rarfile tidak tersedia. Tidak dapat mengonversi file CBR."
+      "rarfile_unavailable": "Modul rarfile tidak tersedia. Tidak dapat mengonversi file CBR.",
+      "renamed_cbz_count": "{count} berkas diubah namanya menjadi CBZ",
+      "renamed_cb7_count": "{count} berkas diubah namanya menjadi CB7",
+      "renamed_cbt_count": "{count} berkas diubah namanya menjadi CBT"
     },
     "close_warning": {
       "title": "Peringatan!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Buka arsip",
-      "filter_archives": "Arsip (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Arsip (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Semua file (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Gambar (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Semua file (*)"
     },
-    "see_log": "LIHAT LOG"
+    "see_log": "LIHAT LOG",
+    "straighten_viewer": {
+      "title": "Luruskan",
+      "instruction": "Gambar garis lurus pada apa yang harus horizontal (atau vertikal) dalam gambar"
+    },
+    "clone_zone_viewer": {
+      "title": "Kloning zona",
+      "instruction": "Ctrl+klik : atur sumber  •  Klik kiri : cat area yang dikloning",
+      "mode_label": "Sumber :",
+      "mode_fixed": "Sumber tetap",
+      "mode_relative": "Sumber relatif",
+      "brush_size_label": "Ukuran :"
+    },
+    "text_viewer": {
+      "title": "Sisipkan Teks",
+      "instruction": "Klik di tempat yang ingin Anda sisipkan teks  •  Ctrl+panah: gerakkan teks per piksel",
+      "size_label": "Ukuran:",
+      "color_label": "Warna:",
+      "bold_btn": "T",
+      "italic_btn": "M",
+      "underline_btn": "G",
+      "apply_btn": "Terapkan Teks",
+      "pick_color_title": "Pilih warna teks"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Pilih direktori yang berisi file CB7",
+      "no_cb7_title": "Tidak ada file CB7",
+      "no_cb7_message": "Tidak ditemukan file CB7 di direktori :\n{directory}",
+      "confirm_title": "Konversi massal CB7 ke CBZ",
+      "confirm_message": "{count} file CB7 akan dikonversi di {directory} (termasuk subdirektori).",
+      "checkbox_permanent_delete": "Hapus file CB7 asli secara permanen tanpa\nmengirim ke tempat sampah (TIDAK DAPAT DIBATALKAN)",
+      "start_button": "Mulai",
+      "converting_title": "Mengonversi...",
+      "converting_progress": "Mengonversi file {current} dari {total}",
+      "page_progress": "Halaman {current} / {total}",
+      "complete_title": "Konversi selesai",
+      "complete_message": "{count} file CB7 dikonversi di direktori :",
+      "complete_message_errors": "{count} file CB7 dikonversi dari {total} di direktori :",
+      "errors_count": "{count} kesalahan ditemukan.",
+      "renamed_cbz_count": "{count} berkas diubah namanya menjadi CBZ",
+      "renamed_cbr_count": "{count} berkas diubah namanya menjadi CBR",
+      "renamed_cbt_count": "{count} berkas diubah namanya menjadi CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Pilih direktori yang berisi file CBT",
+      "no_cbt_title": "Tidak ada file CBT",
+      "no_cbt_message": "Tidak ditemukan file CBT di direktori :\n{directory}",
+      "confirm_title": "Konversi massal CBT ke CBZ",
+      "confirm_message": "{count} file CBT akan dikonversi di {directory} (termasuk subdirektori).",
+      "checkbox_permanent_delete": "Hapus file CBT asli secara permanen tanpa\nmengirim ke tempat sampah (TIDAK DAPAT DIBATALKAN)",
+      "start_button": "Mulai",
+      "converting_title": "Mengonversi...",
+      "converting_progress": "Mengonversi file {current} dari {total}",
+      "page_progress": "Halaman {current} / {total}",
+      "complete_title": "Konversi selesai",
+      "complete_message": "{count} file CBT dikonversi di direktori :",
+      "complete_message_errors": "{count} file CBT dikonversi dari {total} di direktori :",
+      "errors_count": "{count} kesalahan ditemukan.",
+      "renamed_cbz_count": "{count} berkas diubah namanya menjadi CBZ",
+      "renamed_cbr_count": "{count} berkas diubah namanya menjadi CBR",
+      "renamed_cb7_count": "{count} berkas diubah namanya menjadi CB7"
+    }
   },
   "tooltip": {
     "source_archive": "File sumber: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Perkecil ukuran ikon",
     "icon_toolbar_size_increase": "Perbesar ukuran ikon",
     "source_loose": "Gambar lepas",
-    "source_web": "Gambar web"
+    "source_web": "Gambar web",
+    "straighten": "Luruskan gambar",
+    "clone_zone": "Klon zona",
+    "text": "Tambahkan teks",
+    "batch_cb7_to_cbz": "Mengonversi semua file CB7 di sebuah\ndirektori dan subdirektorinya ke CBZ.",
+    "batch_cb7_permanent_delete": "PERINGATAN : jika opsi ini dicentang,\nfile CB7 asli akan dihapus secara permanen\nsetelah konversi tanpa kemungkinan pemulihan.\nPastikan Anda memiliki cadangan.",
+    "batch_cbt_to_cbz": "Mengonversi semua file CBT di sebuah\ndirektori dan subdirektorinya ke CBZ.",
+    "batch_cbt_permanent_delete": "PERINGATAN : jika opsi ini dicentang,\nfile CBT asli akan dihapus secara permanen\nsetelah konversi tanpa kemungkinan pemulihan.\nPastikan Anda memiliki cadangan."
   },
   "help": {
     "title": "MosaicView - Panduan Penggunaan",
     "intro": "MosaicView memungkinkan Anda memanipulasi dan mengedit komik (buku komik digital) tanpa perlu mengekstraknya dari arsip. Aplikasi mendukung format CBZ (ZIP), CBR (RAR) dan PDF. Aplikasi ini hanya kompatibel dengan sistem 64-bit.",
     "open_files": "Membuka file",
-    "open_files_content": "• Klik tombol 'Buka CBZ/CBR/CB7/PDF'\n• Atau drag and drop file langsung ke jendela\n• Format yang didukung: CBZ, CBR, CB7, PDF, gambar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). File EPUB juga dapat dibuka, tetapi hanya gambar mereka yang akan diekstraksi (teks diabaikan). Catatan: ekstensi yang ditampilkan berwarna merah (WEBP, TIFF, GIF, ICO…) menandakan format yang berpotensi tidak kompatibel dengan pembaca CBZ/CBR lama. Namun, file-file ini tetap diproses secara normal oleh MosaicView.\n• PDF terenkripsi (kata sandi diperlukan untuk membuka): file tidak dapat diimpor, pesan kesalahan ditampilkan.\n• PDF dilindungi dari perubahan (owner password): halaman diimpor secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak terkunci di folder yang sama.",
+    "open_files_content": "• Klik tombol 'Buka file' atau seret dan lepas file langsung ke jendela\n• Format yang didukung: CBZ, CBR, CB7, CBT, PDF, gambar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). File EPUB juga dapat dibuka, tetapi hanya gambar mereka yang akan diekstraksi (teks diabaikan). Catatan: ekstensi yang ditampilkan berwarna merah (WEBP, TIFF, GIF, ICO…) menandakan format yang berpotensi tidak kompatibel dengan pembaca CBZ/CBR lama. Namun, file-file ini tetap diproses secara normal oleh MosaicView.\n• PDF terenkripsi (kata sandi diperlukan untuk membuka): file tidak dapat diimpor, pesan kesalahan ditampilkan.\n• PDF dilindungi dari perubahan (owner password): halaman diimpor secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak terkunci di folder yang sama.",
     "mosaic": "Mosaik",
     "mosaic_content": "Mosaik menampilkan semua halaman buku komik Anda sebagai gambar mini. Anda dapat:\n• Menyusun ulang halaman dengan menyeret dan melepas (penomoran halaman akan otomatis, dan akan mengikuti mode penomoran ulang yang aktif)\n• Memilih beberapa halaman (Ctrl+klik atau Shift+klik)\n• Menyesuaikan ukuran gambar mini dengan penggeser\n• Mengganti nama file secara manual dengan mengklik namanya\n• Menyeret dan melepas file buku komik (CBZ/CBR/PDF) dari Windows Explorer langsung ke buku komik terbuka lainnya untuk menggabungkan kontennya",
     "manipulation": "Manipulasi halaman",
@@ -1171,7 +1240,7 @@
     "create_icon": "Buat ikon",
     "create_icon_content": "MosaicView memungkinkan Anda membuat file ikon (.ico) dari gambar mana pun di mosaik.\n• Klik kanan pada gambar → 'Buat ikon'\n• Bingkai area yang diinginkan di penampil (ikon akan berbentuk persegi)\n• Sesuaikan transparansi jika diperlukan\n• Konfirmasi: file .ico ditambahkan langsung ke mosaik\n• File .ico secara otomatis berisi semua resolusi standar (dari 16×16 hingga 256×256)\n• Selama ada file .ico di mosaik, penyimpanan ke arsip CBZ diblokir karena format ICO tidak didukung oleh arsip tersebut. Ekspor file .ico secara terpisah (Ctrl+C lalu tempel ke folder Windows), kemudian hapus dari mosaik sebelum menyimpan.",
     "batch_convert": "Konversi massal",
-    "batch_convert_content": "MosaicView menawarkan tiga fungsi konversi batch, tersedia hanya ketika mosaik kosong. Untuk masing-masing, prinsipnya sama : pilih direktori, konfirmasi, ikuti kemajuan secara real time, tinjau ringkasan akhir. Sebuah opsi memungkinkan penghapusan permanen file asli alih-alih mengirimnya ke tempat sampah.\n• CBR → CBZ : mengonversi semua file CBR (RAR) dalam direktori dan subdirektorinya. Jika CBR sebenarnya adalah ZIP, file tersebut cukup diubah namanya tanpa konversi.\n• PDF → CBZ : mengonversi semua file PDF dalam direktori dan subdirektorinya. Gambar diekstraksi tanpa kompresi ulang.\n• GAMBAR TERPISAH → CBZ : membuat CBZ individual untuk setiap file gambar yang ditemukan di direktori dan subdirektorinya. Gambar yang tidak valid, rusak, multi-halaman (TIFF) atau animasi (GIF) diabaikan dan dicatat dalam log.",
+    "batch_convert_content": "MosaicView menawarkan lima fungsi konversi batch, yang hanya tersedia saat mosaik kosong. Untuk masing-masing, prinsipnya sama: pilih direktori, konfirmasi, ikuti progres secara real time, tinjau ringkasan akhir. Opsi memungkinkan penghapusan permanen file asli alih-alih mengirimnya ke tempat sampah.\n• CBR → CBZ: mengonversi semua file CBR (RAR) di direktori dan subdirektorinya. Jika CBR sebenarnya adalah ZIP, 7z, atau TAR, file diganti namanya dengan ekstensi yang benar (.cbz, .cb7, atau .cbt) tanpa konversi. File yang diganti namanya dan kesalahan dicatat dalam log.\n• CB7 → CBZ: mengonversi semua file CB7 (7-Zip) di direktori dan subdirektorinya. Jika CB7 sebenarnya adalah ZIP, RAR, atau TAR, file diganti namanya dengan ekstensi yang benar (.cbz, .cbr, atau .cbt) tanpa konversi. File yang diganti namanya dan kesalahan dicatat dalam log.\n• CBT → CBZ: mengonversi semua file CBT (TAR) di direktori dan subdirektorinya. Jika CBT sebenarnya adalah ZIP, RAR, atau 7z, file diganti namanya dengan ekstensi yang benar (.cbz, .cbr, atau .cb7) tanpa konversi. File yang diganti namanya dan kesalahan dicatat dalam log.\n• PDF → CBZ: mengonversi semua file PDF di direktori dan subdirektorinya. Gambar diekstrak tanpa kompresi ulang.\n• GAMBAR TERPISAH → CBZ: membuat CBZ individual untuk setiap file gambar yang ditemukan di direktori dan subdirektorinya. Gambar yang tidak valid, rusak, multi-halaman (TIFF), atau animasi (GIF) diabaikan dan dicatat dalam log.",
     "config_open_temp_folder": "Buka folder sementara",
     "icon_toolbar": "Bilah ikon",
     "icon_toolbar_content": "Bilah ikon memberikan akses cepat ke fungsi utama aplikasi. Anda dapat mengatur ulang ikon sesuai keinginan dengan menyeretnya langsung ke bilah. Untuk memilih ikon mana yang ditampilkan atau disembunyikan, klik tombol roda gigi di bagian bawah bilah: jendela konfigurasi akan terbuka tempat Anda dapat memindahkan ikon antara bilah aktif dan cadangan. Gunakan tombol « + » dan « − » untuk menyesuaikan ukuran ikon. Konfigurasi disimpan secara otomatis.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Simpan font pIqaD",
     "export_tengwar_fonts": "Simpan font tengwar",
     "view_on_github": "Kode sumber di GitHub",
-    "check_for_updates": "Periksa pembaruan"
+    "check_for_updates": "Periksa pembaruan",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Pembaruan",

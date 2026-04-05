@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "L-għodda universali għall-kolletturi ta' comics diġitali",
   "buttons": {
-    "open_file": "Iftaħ CBZ/CBR/CB7/PDF",
+    "open_file": "Iftaħ CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Agħlaq il-fajl",
     "create_cbz": "Oħloq arkivju CBZ",
     "flatten_dirs": "Mexxi l-fajls kollha\ngħall-għeruq u ħassar\nis-sottodirektorji",
@@ -49,9 +49,7 @@
     "no": "Le",
     "renumber_recommended": "Erġa' nnumera (rakkomandat)",
     "ignore_and_save": "Injora u salva",
-    "rename_to_cbz": "Semmi mill-ġdid għal .cbz",
     "open_without_rename": "Iftaħ mingħajr ma tissemma mill-ġdid",
-    "rename_to_cbr": "Semmi mill-ġdid għal .cbr",
     "adjustments": "Luminożità,\nkontrast eċċ.",
     "batch_cbr_to_cbz": "Konverżjoni f'lott\n ta' fajls CBR għal CBZ",
     "batch_pdf_to_cbz": "Konverżjoni f’lottijiet\n ta’ fajls PDF għal CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Irrestawra",
     "delete_selected": "Ħassar",
     "save": "Issejvja",
-    "rename_to_cb7": "Ibdel l-isem għal .cb7",
     "split_ui": "Aqsam l-interface f'żewġ panels",
-    "unsplit_ui": "Agħlaq it-tieni panel"
+    "unsplit_ui": "Agħlaq it-tieni panel",
+    "rename_to_ext": "Ibdel l-isem għal {ext}",
+    "batch_cb7_to_cbz": "Konverżjoni batch\n ta' fajls CB7 għal CBZ",
+    "batch_cbt_to_cbz": "Konverżjoni batch\n ta' fajls CBT għal CBZ"
   },
   "tabs": {
     "mosaic": "Mużajk",
@@ -130,10 +130,12 @@
       "save_to_folder": "Esporta paġni magħżula",
       "adjustments": "Luminożità, kontrast, kuluri...",
       "refresh_mosaic": "Aġġorna l-mużajk (F5)",
-      "create_ico": "Oħloq fajl .ico"
+      "create_ico": "Oħloq fajl .ico",
+      "straighten": "Sewwi l-immaġni...",
+      "clone_zone": "Ikklona żona..."
     },
     "canvas_no_file": {
-      "open": "Iftaħ CBZ/CBR/CB7/PDF",
+      "open": "Iftaħ CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Fajls reċenti",
       "clear_history": "Ħassar l-istorja"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Fajls mhux appoġġjati",
         "message": "Il-fajls li ġejjin mhumiex appoġġjati u ġew injorati:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Il-fajl '{file}' mhuwiex arkivju TAR validu jew huwa korrott."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Ikkanċella l-konverżjoni\n{count} fajl - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Estensjoni żbaljata skoperta: dan '{filename}' il-fajl huwa CBZ, mhux CBR. Semmi mill-ġdid?",
+    "extension_mismatch_generic": {
+      "message": "Estensjoni żbaljata nstabet: il-fajl '{filename}' huwa {real}, mhux {declared}. Ibdel l-isem?",
       "title": "Estensjoni żbaljata"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Estensjoni żbaljata skoperta: dan '{filename}' il-fajl huwa CBR, mhux CBZ. Semmi mill-ġdid?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Estensjoni żbaljata nstabet: il-fajl '{filename}' huwa CB7, mhux CBZ/CBR. Ibdel l-isem?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "Il-fajls CBZ huma bbażati fuq il-format ZIP, format ħieles u miftuħ. Il-fajls CBR, min-naħa l-oħra, huma bbażati fuq il-format RAR, format proprjetarju.\n\nMosaicView jista' jiftaħ fajls CBR grazzi għal UnRAR, utilità żviluppata minn RARlab u redistribuibbli b'xejn.\n\nSit uffiċjali: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Ara l-Liċenza UnRAR",
     "saving_cbz": "Qed jissejvja... {percent}%",
-    "empty_canvas_line1": "Itfa hawn fajl wiehed jew iktar CBZ/CBR/CB7/PDF jew il-fajls tieghek",
+    "empty_canvas_line1": "Itfa hawn fajl wiehed jew iktar CBZ/CBR/CB7/CBT/PDF jew il-fajls tieghek",
     "empty_canvas_line2": "Ladarba fajl ikun miftuah, tista tkompli titfa ohrajn",
     "empty_canvas_line3": "Waqqagħ folder wieħed jew aktar biex tibda pproċessar batch",
     "icon_toolbar_config_title": "Konfigurazzjoni tal-barra tal-ikoni",
@@ -786,8 +785,10 @@
       "complete_message": "{count} fajl(s) CBR ikkonvertit(i) fid-direttorju:",
       "complete_message_errors": "{count} fajl(s) CBR ikkonvertit(i) minn {total} fid-direttorju:",
       "errors_count": "{count} żball(i) instab(u).",
-      "renamed_count": "{count} fajl(s) msemmi(ja) mill-ġdid għal CBZ",
-      "rarfile_unavailable": "Il-modulu rarfile mhux disponibbli. Ma jistax jikkonverti fajls CBR."
+      "rarfile_unavailable": "Il-modulu rarfile mhux disponibbli. Ma jistax jikkonverti fajls CBR.",
+      "renamed_cbz_count": "{count} fajl(s) isem inbidel għal CBZ",
+      "renamed_cb7_count": "{count} fajl(s) isem inbidel għal CB7",
+      "renamed_cbt_count": "{count} fajl(s) isem inbidel għal CBT"
     },
     "close_warning": {
       "title": "Attenzjoni!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Iftaħ arkivju",
-      "filter_archives": "Arkivji (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Arkivji (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Il-fajls kollha (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Immaġini (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Il-fajls kollha (*)"
     },
-    "see_log": "ARA L-LOG"
+    "see_log": "ARA L-LOG",
+    "straighten_viewer": {
+      "title": "Sewwi",
+      "instruction": "Itfa' linja dritta fuq dak li għandu jkun orizzontali (jew vertikali) fl-immaġni"
+    },
+    "clone_zone_viewer": {
+      "title": "Klonazzjoni ta' żona",
+      "instruction": "Ctrl+klikk : issettja s-sors  •  Klikk tax-xellug : ipinġi ż-żona kklonjata",
+      "mode_label": "Sors :",
+      "mode_fixed": "Sors fiss",
+      "mode_relative": "Sors relattiv",
+      "brush_size_label": "Daqs :"
+    },
+    "text_viewer": {
+      "title": "Daħħal Test",
+      "instruction": "Ikklikkja fejn trid tiddaħħal it-test  •  Ctrl+vleġeġ: mexxi t-test pixel b'pixel",
+      "size_label": "Daqs:",
+      "color_label": "Kulur:",
+      "bold_btn": "G",
+      "italic_btn": "I",
+      "underline_btn": "S",
+      "apply_btn": "Applika t-test",
+      "pick_color_title": "Agħżel il-kulur tat-test"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Agħżel id-direttorju li fih fajls CB7",
+      "no_cb7_title": "L-ebda fajls CB7",
+      "no_cb7_message": "Ma nstbu l-ebda fajls CB7 fid-direttorju :\n{directory}",
+      "confirm_title": "Konverżjoni batch CB7 għal CBZ",
+      "confirm_message": "{count} fajls CB7 biex jiġu kkonvertiti f'{directory} (sottodirektorji inkluzi).",
+      "checkbox_permanent_delete": "Ħassar il-fajls CB7 oriġinali b'mod permanenti\nminghajr ma tibgħathom fil-litter bin (MHUX RIVERSIBBLI)",
+      "start_button": "Ibda",
+      "converting_title": "Qed tikkonverti...",
+      "converting_progress": "Tikkonverti fajl {current} minn {total}",
+      "page_progress": "Paġna {current} / {total}",
+      "complete_title": "Il-konverżjoni tlestiet",
+      "complete_message": "{count} fajls CB7 ġew ikkonvertiti fid-direttorju :",
+      "complete_message_errors": "{count} fajls CB7 ġew ikkonvertiti minn {total} fid-direttorju :",
+      "errors_count": "Instab(u) {count} żball(ijiet).",
+      "renamed_cbz_count": "{count} fajl(s) isem inbidel għal CBZ",
+      "renamed_cbr_count": "{count} fajl(s) isem inbidel għal CBR",
+      "renamed_cbt_count": "{count} fajl(s) isem inbidel għal CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Agħżel id-direttorju li fih fajls CBT",
+      "no_cbt_title": "L-ebda fajls CBT",
+      "no_cbt_message": "Ma nstbu l-ebda fajls CBT fid-direttorju :\n{directory}",
+      "confirm_title": "Konverżjoni batch CBT għal CBZ",
+      "confirm_message": "{count} fajls CBT biex jiġu kkonvertiti f'{directory} (sottodirektorji inkluzi).",
+      "checkbox_permanent_delete": "Ħassar il-fajls CBT oriġinali b'mod permanenti\nminghajr ma tibgħathom fil-litter bin (MHUX RIVERSIBBLI)",
+      "start_button": "Ibda",
+      "converting_title": "Qed tikkonverti...",
+      "converting_progress": "Tikkonverti fajl {current} minn {total}",
+      "page_progress": "Paġna {current} / {total}",
+      "complete_title": "Il-konverżjoni tlestiet",
+      "complete_message": "{count} fajls CBT ġew ikkonvertiti fid-direttorju :",
+      "complete_message_errors": "{count} fajls CBT ġew ikkonvertiti minn {total} fid-direttorju :",
+      "errors_count": "Instab(u) {count} żball(ijiet).",
+      "renamed_cbz_count": "{count} fajl(s) isem inbidel għal CBZ",
+      "renamed_cbr_count": "{count} fajl(s) isem inbidel għal CBR",
+      "renamed_cb7_count": "{count} fajl(s) isem inbidel għal CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Fajl tas-sors: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Naqqas id-daqs tal-ikoni",
     "icon_toolbar_size_increase": "Żid id-daqs tal-ikoni",
     "source_loose": "Immaġni ħielsa",
-    "source_web": "Immaġni web"
+    "source_web": "Immaġni web",
+    "straighten": "Sewwi l-immaġni",
+    "clone_zone": "Ikklona żona",
+    "text": "Żid test",
+    "batch_cb7_to_cbz": "Tikkonverti l-fajls CB7 kollha f'direttorju\nu s-sottodirektorji tiegħu għal CBZ.",
+    "batch_cb7_permanent_delete": "TWISSIJA : jekk din l-għażla hija mmarkata,\nil-fajls CB7 oriġinali jitħassru b'mod permanenti\nwara l-konverżjoni mingħajr possibilità ta' rkupru.\nIkkonferma li għandek backup.",
+    "batch_cbt_to_cbz": "Tikkonverti l-fajls CBT kollha f'direttorju\nu s-sottodirektorji tiegħu għal CBZ.",
+    "batch_cbt_permanent_delete": "TWISSIJA : jekk din l-għażla hija mmarkata,\nil-fajls CBT oriġinali jitħassru b'mod permanenti\nwara l-konverżjoni mingħajr possibilità ta' rkupru.\nIkkonferma li għandek backup."
   },
   "help": {
     "title": "MosaicView - Manwal tal-utent",
     "intro": "MosaicView jippermettik timmanipolja u timmodifika fumetti (BD diġitali) mingħajr ma jkollok testraġihom mill-arkivji tagħhom. L-applikazzjoni tappoġġja l-formati CBZ (ZIP), CBR (RAR) u PDF. L-applikazzjoni hija kompatibbli biss ma' sistemi ta' 64 bit.",
     "open_files": "Iftaħ il-fajls",
-    "open_files_content": "• Ikklikkja fuq il-buttuna 'Iftaħ CBZ/CBR/CB7/PDF'\n• Jew iġbed u waħħal direttament fajl fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, PDF, immaġini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fajls EPUB jistghu jinfethu wkoll, izda biss l-istampi taghhom se jkunu estratti (it-test jigie injorat).\n• PDF kriptat (password meħtieġa biex tiftaħ): il-fajl ma jistax jiġi importat, tiġi murija messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jsejvja kopja miftuħa tal-fajl fl-istess folder. Nota: l-estensjonijiet murija bil-aħmar (WEBP, TIFF, GIF, ICO…) jindikaw formati potenzjalment inkompatibbli ma' qarrejja CBZ/CBR aktar antiki. Madankollu, dawn il-fajls jiġu pproċessati normalment minn MosaicView.",
+    "open_files_content": "• Ikklikkja l-buttuna 'Iftaħ fajl' jew drag and drop fajl direttament fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, CBT, PDF, immaġini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fajls EPUB jistghu jinfethu wkoll, izda biss l-istampi taghhom se jkunu estratti (it-test jigie injorat).\n• PDF kriptat (password meħtieġa biex tiftaħ): il-fajl ma jistax jiġi importat, tiġi murija messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jsejvja kopja miftuħa tal-fajl fl-istess folder. Nota: l-estensjonijiet murija bil-aħmar (WEBP, TIFF, GIF, ICO…) jindikaw formati potenzjalment inkompatibbli ma' qarrejja CBZ/CBR aktar antiki. Madankollu, dawn il-fajls jiġu pproċessati normalment minn MosaicView.",
     "mosaic": "Il-mużajk",
     "mosaic_content": "Il-mużajk juri l-paġni kollha tal-fumett tiegħek bħala minjaturi. Tista':\n• Irranġa mill-ġdid il-paġni billi tiġbed u twaqqagħhom (in-numrazzjoni tal-paġni tkun awtomatika, u ssir skont il-mod ta' numrazzjoni mill-ġdid attiv)\n• Agħżel diversi paġni (Ctrl+ikklikkja jew Shift+ikklikkja)\n• Aġġusta d-daqs tal-minjaturi bil-vagun\n• Semmi mill-ġdid manwalment il-fajls billi tikklikkja fuq isimhom\n• Iġbed u waqqagħ fajls ta' fumetti (CBZ/CBR/PDF) minn Windows Explorer direttament fi fumett ieħor miftuħ biex tgħaqqad il-kontenut tagħhom",
     "manipulation": "Manipulazzjoni tal-paġni",
@@ -1171,7 +1240,7 @@
     "create_icon": "Oħloq ikona",
     "create_icon_content": "MosaicView jippermettilek toħloq fajls ta' ikoni (.ico) minn kwalunkwe immaġni fil-mużajk.\n• Ikklikkja bil-lemin fuq immaġni → 'Oħloq ikona'\n• Inkwadra ż-żona mixtieqa fil-viewer (l-ikona tkun obbligatorjament kwadra)\n• Aġġusta t-trasparenza jekk meħtieġ\n• Ikkonferma: il-fajl .ico jiżdied direttament mal-mużajk\n• Il-fajls .ico fihom awtomatikament ir-riżoluzzjonijiet standard kollha (minn 16×16 sa 256×256)\n• Sakemm ikun hemm fajl .ico fil-mużajk, is-salvar f'arkivju CBZ ikun imblukkat, peress li l-format ICO mhux appoġġat minn dawn l-arkivji. Esporta l-fajl .ico separatament (Ctrl+C u pejst f'folder Windows), imbagħad ħassar mill-mużajk qabel ma tissejvja.",
     "batch_convert": "Konverżjoni f'lottijiet",
-    "batch_convert_content": "MosaicView joffri tliet funzjonijiet ta' konverżjoni bil-lott, disponibbli biss meta l-mużajk ikun vojt. Għal kull waħda minnhom, il-prinċipju huwa l-istess : agħżel direttorju, ikkonferma, segwi l-progress f'ħin reali, irrevedi r-reżultati finali. Għażla tippermetti t-tħassir permanenti tal-fajls oriġinali minflok ma tibgħathom fil-basket.\n• CBR → CBZ : tikkonverti l-fajls kollha CBR (RAR) f'direttorju u s-sottodirektorji tiegħu. Jekk CBR huwa fil-fatt ZIP, jiġi sempliċement imsemmi mill-ġdid mingħajr konverżjoni.\n• PDF → CBZ : tikkonverti l-fajls kollha PDF f'direttorju u s-sottodirektorji tiegħu. L-immaġini jiġu estratti mingħajr kompressjoni mill-ġdid.\n• IMMAĠINI IŻOLATI → CBZ : toħloq CBZ individwali għal kull fajl immaġni li jinstab fid-direttorju u s-sottodirektorji tiegħu. Immaġini invalidi, korrotti, b'ħafna paġni (TIFF) jew animati (GIF) jiġu injorati u reġistrati f'log.",
+    "batch_convert_content": "MosaicView joffri ħames funzjonijiet ta' konverżjoni bil-lott, disponibbli biss meta l-mużajk ikun vojt. Għal kull waħda minnhom, il-prinċipju huwa l-istess: agħżel direttorju, ikkonferma, segwi l-progress f'ħin reali, irrevedi l-sommarju finali. Għażla tippermetti t-tħassir permanenti tal-fajls oriġinali minflok ma tibgħathom fil-basket tal-iskart.\n• CBR → CBZ: tikkonverti l-fajls CBR (RAR) kollha f'direttorju u s-sottodirektorji tiegħu. Jekk CBR huwa fil-fatt ZIP, 7z jew TAR, il-fajl jiġi rinominat bl-estensjoni korretta (.cbz, .cb7 jew .cbt) mingħajr konverżjoni. Il-fajls rinominati u l-iżbalji jiġu rreġistrati f'log.\n• CB7 → CBZ: tikkonverti l-fajls CB7 (7-Zip) kollha f'direttorju u s-sottodirektorji tiegħu. Jekk CB7 huwa fil-fatt ZIP, RAR jew TAR, il-fajl jiġi rinominat bl-estensjoni korretta (.cbz, .cbr jew .cbt) mingħajr konverżjoni. Il-fajls rinominati u l-iżbalji jiġu rreġistrati f'log.\n• CBT → CBZ: tikkonverti l-fajls CBT (TAR) kollha f'direttorju u s-sottodirektorji tiegħu. Jekk CBT huwa fil-fatt ZIP, RAR jew 7z, il-fajl jiġi rinominat bl-estensjoni korretta (.cbz, .cbr jew .cb7) mingħajr konverżjoni. Il-fajls rinominati u l-iżbalji jiġu rreġistrati f'log.\n• PDF → CBZ: tikkonverti l-fajls PDF kollha f'direttorju u s-sottodirektorji tiegħu. L-immaġini jiġu estratti mingħajr kompressjoni mill-ġdid.\n• IMMAĠINI WAĦEDHOM → CBZ: toħloq CBZ individwali għal kull fajl tal-immaġini misjub fid-direttorju u s-sottodirektorji tiegħu. Immaġini mhux validi, korrotti, multipаġna (TIFF) jew animati (GIF) jiġu injorati u rreġistrati f'log.",
     "config_open_temp_folder": "Iftaħ il-folder temporanju",
     "icon_toolbar": "Barra tal-ikoni",
     "icon_toolbar_content": "Il-bar tal-ikoni jipprovdi aċċess rapidu għall-funzjonijiet ewlenin tal-applikazzjoni. Tista' terġa' tarranġa l-ikoni kif tixtieq billi tiġbidhoм direttament fil-bar. Biex tagħżel liema ikoni turi jew taħbi, ikklikkja l-buttuna tal-ġir fil-qiegħ tal-bar: tinfetaħ tieqa ta' konfigurazzjoni fejn tista' tċaqlaq l-ikoni bejn il-bar attiv u r-riserva. Uża l-buttuni « + » u « − » biex taġġusta d-daqs tal-ikoni. Il-konfigurazzjoni tinħażen awtomatikament.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Issejvja l-font pIqaD",
     "export_tengwar_fonts": "Issejvja l-fonts tengwar",
     "view_on_github": "Kodiċi sors fuq GitHub",
-    "check_for_updates": "Iċċekkja għall-aġġornamenti"
+    "check_for_updates": "Iċċekkja għall-aġġornamenti",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Aġġornamenti",

@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Schweizisk armékniv för digitala seriesamlare",
   "buttons": {
-    "open_file": "Öppna CBZ/CBR/CB7/PDF",
+    "open_file": "Öppna CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Stäng filen",
     "create_cbz": "Skapa CBZ-arkiv",
     "flatten_dirs": "Flytta alla filer\ntill roten och radera\nundermapparna",
@@ -49,9 +49,7 @@
     "no": "Nej",
     "renumber_recommended": "Numrera om (rekommenderas)",
     "ignore_and_save": "Ignorera och spara",
-    "rename_to_cbz": "Byt namn till .cbz",
     "open_without_rename": "Öppna utan att byta namn",
-    "rename_to_cbr": "Byt namn till .cbr",
     "adjustments": "Ljusstyrka,\nkontrast osv.",
     "batch_cbr_to_cbz": "Batchkonvertering\n av CBR-filer till CBZ",
     "batch_pdf_to_cbz": "Batchkonvertering\n av PDF-filer till CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Återställ",
     "delete_selected": "Ta bort",
     "save": "Spara",
-    "rename_to_cb7": "Byt namn till .cb7",
     "split_ui": "Dela gränssnittet i två paneler",
-    "unsplit_ui": "Stäng det andra panelet"
+    "unsplit_ui": "Stäng det andra panelet",
+    "rename_to_ext": "Byt namn till {ext}",
+    "batch_cb7_to_cbz": "Batchkonvertering\n av CB7-filer till CBZ",
+    "batch_cbt_to_cbz": "Batchkonvertering\n av CBT-filer till CBZ"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -130,10 +130,12 @@
       "save_to_folder": "Exportera valda sidor",
       "adjustments": "Ljusstyrka, kontrast, färger...",
       "refresh_mosaic": "Uppdatera mosaiken (F5)",
-      "create_ico": "Skapa .ico-fil"
+      "create_ico": "Skapa .ico-fil",
+      "straighten": "Räta upp bild...",
+      "clone_zone": "Klona zon..."
     },
     "canvas_no_file": {
-      "open": "Öppna CBZ/CBR/CB7/PDF",
+      "open": "Öppna CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Senaste filer",
       "clear_history": "Rensa historik"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Filer som inte stöds",
         "message": "Följande filer stöds inte och ignorerades:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Filen '{file}' är inte ett giltigt TAR-arkiv eller är skadat."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Avbryt konverteringen\n{count} fil(er) - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Felaktig filändelse upptäckt: filen '{filename}' är en CBZ, inte en CBR. Byta namn?",
+    "extension_mismatch_generic": {
+      "message": "Felaktig filändelse upptäckt: filen '{filename}' är {real}, inte {declared}. Byt namn?",
       "title": "Fel filnamnstillägg"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Felaktig filändelse upptäckt: filen '{filename}' är en CBR, inte en CBZ. Byta namn?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Fel filändelse upptäckt: filen '{filename}' är en CB7, inte en CBZ/CBR. Byt namn?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ-filer är baserade på ZIP-formatet, ett fritt och öppet format. CBR-filer är däremot baserade på RAR-formatet, ett proprietärt format.\n\nMosaicView kan öppna CBR-filer tack vare UnRAR, ett verktyg utvecklat av RARlab och fritt redistribuerbart.\n\nOfficiell webbplats: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Visa UnRAR-licensen",
     "saving_cbz": "Sparar... {percent}%",
-    "empty_canvas_line1": "Slapp har en eller flera CBZ/CBR/CB7/PDF-filer eller dina bilder",
+    "empty_canvas_line1": "Slapp har en eller flera CBZ/CBR/CB7/CBT/PDF-filer eller dina bilder",
     "empty_canvas_line2": "Nar en fil ar oppnad kan du fortsatta slappa andra",
     "empty_canvas_line3": "Släpp en eller flera mappar för att starta en batchbehandling",
     "icon_toolbar_config_title": "Konfiguration av ikonfält",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR-filer konverterade i mappen:",
       "complete_message_errors": "{count} CBR-filer konverterade av {total} i mappen:",
       "errors_count": "{count} fel påträffade.",
-      "renamed_count": "{count} fil(er) omdöpta till CBZ",
-      "rarfile_unavailable": "Modulen rarfile är inte tillgänglig. Det går inte att konvertera CBR-filer."
+      "rarfile_unavailable": "Modulen rarfile är inte tillgänglig. Det går inte att konvertera CBR-filer.",
+      "renamed_cbz_count": "{count} fil(er) omdöpt till CBZ",
+      "renamed_cb7_count": "{count} fil(er) omdöpt till CB7",
+      "renamed_cbt_count": "{count} fil(er) omdöpt till CBT"
     },
     "close_warning": {
       "title": "Varning!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Öppna arkiv",
-      "filter_archives": "Arkiv (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Arkiv (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Alla filer (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Bilder (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Alla filer (*)"
     },
-    "see_log": "SE LOG"
+    "see_log": "SE LOG",
+    "straighten_viewer": {
+      "title": "Räta upp",
+      "instruction": "Rita en rak linje på det som ska vara horisontellt (eller vertikalt) i bilden"
+    },
+    "clone_zone_viewer": {
+      "title": "Kloning av zon",
+      "instruction": "Ctrl+klick : ange källa  •  Vänsterklick : måla klonad zon",
+      "mode_label": "Källa :",
+      "mode_fixed": "Fast källa",
+      "mode_relative": "Relativ källa",
+      "brush_size_label": "Storlek :"
+    },
+    "text_viewer": {
+      "title": "Infoga text",
+      "instruction": "Klicka där du vill infoga text  •  Ctrl+pilar: flytta text pixelexakt",
+      "size_label": "Storlek:",
+      "color_label": "Färg:",
+      "bold_btn": "F",
+      "italic_btn": "K",
+      "underline_btn": "U",
+      "apply_btn": "Tillämpa text",
+      "pick_color_title": "Välj textfärg"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Välj mapp med CB7-filer",
+      "no_cb7_title": "Inga CB7-filer",
+      "no_cb7_message": "Inga CB7-filer hittades i mappen :\n{directory}",
+      "confirm_title": "Batchkonvertering av CB7 till CBZ",
+      "confirm_message": "{count} CB7-filer att konvertera i {directory} (inklusive undermappar).",
+      "checkbox_permanent_delete": "Ta bort originala CB7-filer permanent utan\natt flytta till papperskorgen (KAN INTE ÅNGRAS)",
+      "start_button": "Starta",
+      "converting_title": "Konverterar...",
+      "converting_progress": "Konverterar fil {current} av {total}",
+      "page_progress": "Sida {current} / {total}",
+      "complete_title": "Konvertering klar",
+      "complete_message": "{count} CB7-filer konverterade i mappen :",
+      "complete_message_errors": "{count} CB7-filer konverterade av {total} i mappen :",
+      "errors_count": "{count} fel uppstod.",
+      "renamed_cbz_count": "{count} fil(er) omdöpt till CBZ",
+      "renamed_cbr_count": "{count} fil(er) omdöpt till CBR",
+      "renamed_cbt_count": "{count} fil(er) omdöpt till CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Välj mapp med CBT-filer",
+      "no_cbt_title": "Inga CBT-filer",
+      "no_cbt_message": "Inga CBT-filer hittades i mappen :\n{directory}",
+      "confirm_title": "Batchkonvertering av CBT till CBZ",
+      "confirm_message": "{count} CBT-filer att konvertera i {directory} (inklusive undermappar).",
+      "checkbox_permanent_delete": "Ta bort originala CBT-filer permanent utan\natt flytta till papperskorgen (KAN INTE ÅNGRAS)",
+      "start_button": "Starta",
+      "converting_title": "Konverterar...",
+      "converting_progress": "Konverterar fil {current} av {total}",
+      "page_progress": "Sida {current} / {total}",
+      "complete_title": "Konvertering klar",
+      "complete_message": "{count} CBT-filer konverterade i mappen :",
+      "complete_message_errors": "{count} CBT-filer konverterade av {total} i mappen :",
+      "errors_count": "{count} fel uppstod.",
+      "renamed_cbz_count": "{count} fil(er) omdöpt till CBZ",
+      "renamed_cbr_count": "{count} fil(er) omdöpt till CBR",
+      "renamed_cb7_count": "{count} fil(er) omdöpt till CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Källfil: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Minska ikonstorlek",
     "icon_toolbar_size_increase": "Öka ikonstorlek",
     "source_loose": "Lösbild",
-    "source_web": "Webbbild"
+    "source_web": "Webbbild",
+    "straighten": "Räta upp bild",
+    "clone_zone": "Klona zon",
+    "text": "Lägg till text",
+    "batch_cb7_to_cbz": "Konverterar alla CB7-filer i en mapp\noch dess undermappar till CBZ.",
+    "batch_cb7_permanent_delete": "VARNING : om detta alternativ är markerat\nkommer de ursprungliga CB7-filerna att\nraderas permanent efter konverteringen utan\nmöjlighet till återställning.\nKontrollera att du har en säkerhetskopia.",
+    "batch_cbt_to_cbz": "Konverterar alla CBT-filer i en mapp\noch dess undermappar till CBZ.",
+    "batch_cbt_permanent_delete": "VARNING : om detta alternativ är markerat\nkommer de ursprungliga CBT-filerna att\nraderas permanent efter konverteringen utan\nmöjlighet till återställning.\nKontrollera att du har en säkerhetskopia."
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
     "intro": "MosaicView låter dig hantera och redigera serier (digitala serietidningar) utan att behöva extrahera dem från deras arkiv. Applikationen stöder CBZ (ZIP), CBR (RAR) och PDF-format. Applikationen är endast kompatibel med 64-bitarssystem.",
     "open_files": "Öppna filer",
-    "open_files_content": "• Klicka på knappen 'Öppna CBZ/CBR/CB7/PDF'\n• Eller dra och släpp en fil direkt i fönstret\n• Format som stöds: CBZ, CBR, CB7, PDF, bilder (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-filer kan ocksa oppnas, men endast deras bilder kommer att extraheras (texten ignoreras). Obs: ändelser visade i rött (WEBP, TIFF, GIF, ICO…) indikerar format som kan vara inkompatibla med äldre CBZ/CBR-läsare. Dessa filer behandlas ändå normalt av MosaicView.\n• Krypterad PDF (lösenord krävs för att öppna): filen kan inte importeras, ett felmeddelande visas.\n• PDF skyddad mot ändringar (owner password): sidorna importeras normalt. MosaicView erbjuder att spara en upplåst kopia av filen i samma mapp.",
+    "open_files_content": "• Klicka på knappen 'Öppna en fil' eller dra och släpp en fil direkt i fönstret\n• Format som stöds: CBZ, CBR, CB7, CBT, PDF, bilder (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-filer kan ocksa oppnas, men endast deras bilder kommer att extraheras (texten ignoreras). Obs: ändelser visade i rött (WEBP, TIFF, GIF, ICO…) indikerar format som kan vara inkompatibla med äldre CBZ/CBR-läsare. Dessa filer behandlas ändå normalt av MosaicView.\n• Krypterad PDF (lösenord krävs för att öppna): filen kan inte importeras, ett felmeddelande visas.\n• PDF skyddad mot ändringar (owner password): sidorna importeras normalt. MosaicView erbjuder att spara en upplåst kopia av filen i samma mapp.",
     "mosaic": "Mosaiken",
     "mosaic_content": "Mosaiken visar alla sidor i din serie som miniatyrer. Du kan:\n• Omorganisera sidor genom att dra och släppa (sidnumrering kommer att vara automatisk och följer det aktiva omnumreringsalternativet)\n• Välja flera sidor (Ctrl+klick eller Skift+klick)\n• Justera miniatyrstorlek med skjutreglaget\n• Byta namn på filer manuellt genom att klicka på deras namn\n• Dra och släppa seriefiler (CBZ/CBR/PDF) från Windows Utforskaren direkt till en annan öppen serie för att slå samman deras innehåll",
     "manipulation": "Hantering av sidor",
@@ -1171,7 +1240,7 @@
     "create_icon": "Skapa en ikon",
     "create_icon_content": "MosaicView låter dig skapa ikonfiler (.ico) från vilken bild som helst i mosaiken.\n• Högerklicka på en bild → 'Skapa en ikon'\n• Ram in önskat område i visningsprogrammet (ikonen kommer obligatoriskt att vara kvadratisk)\n• Justera transparensen om det behövs\n• Bekräfta: .ico-filen läggs till direkt i mosaiken\n• .ico-filer innehåller automatiskt alla standardupplösningar (från 16×16 till 256×256)\n• Så länge det finns en .ico-fil i mosaiken är sparande till ett CBZ-arkiv blockerat, eftersom ICO-formatet inte stöds av dessa arkiv. Exportera .ico-filen separat (Ctrl+C och klistra in i en Windows-mapp), ta sedan bort den från mosaiken innan du sparar.",
     "batch_convert": "Batchkonvertering",
-    "batch_convert_content": "MosaicView erbjuder tre batchkonverteringsfunktioner, tillgängliga endast när mosaiken är tom. För var och en av dem är principen densamma : välj en mapp, bekräfta, följ förloppet i realtid, granska den slutliga sammanfattningen. Ett alternativ gör det möjligt att permanent radera originalfilerna istället för att skicka dem till papperskorgen.\n• CBR → CBZ : konverterar alla CBR (RAR)-filer i en mapp och dess undermappar. Om en CBR faktiskt är en ZIP, byter den helt enkelt namn utan konvertering.\n• PDF → CBZ : konverterar alla PDF-filer i en mapp och dess undermappar. Bilder extraheras utan omkomprimering.\n• ISOLERADE BILDER → CBZ : skapar en individuell CBZ för varje bildfil som hittas i mappen och dess undermappar. Ogiltiga, skadade, flersidiga (TIFF) eller animerade (GIF) bilder ignoreras och loggas.",
+    "batch_convert_content": "MosaicView erbjuder fem batchkonverteringsfunktioner, som bara är tillgängliga när mosaiken är tom. För var och en av dem är principen densamma: välj en mapp, bekräfta, följ framstegen i realtid, granska den slutliga sammanfattningen. Ett alternativ tillåter permanent radering av originalfilerna istället för att skicka dem till papperskorgen.\n• CBR → CBZ: konverterar alla CBR (RAR)-filer i en mapp och dess undermappar. Om en CBR faktiskt är en ZIP, 7z eller TAR döps filen om till rätt tillägg (.cbz, .cb7 eller .cbt) utan konvertering. Omdöpta filer och fel loggas.\n• CB7 → CBZ: konverterar alla CB7 (7-Zip)-filer i en mapp och dess undermappar. Om en CB7 faktiskt är en ZIP, RAR eller TAR döps filen om till rätt tillägg (.cbz, .cbr eller .cbt) utan konvertering. Omdöpta filer och fel loggas.\n• CBT → CBZ: konverterar alla CBT (TAR)-filer i en mapp och dess undermappar. Om en CBT faktiskt är en ZIP, RAR eller 7z döps filen om till rätt tillägg (.cbz, .cbr eller .cb7) utan konvertering. Omdöpta filer och fel loggas.\n• PDF → CBZ: konverterar alla PDF-filer i en mapp och dess undermappar. Bilder extraheras utan omkomprimering.\n• ENSTAKA BILDER → CBZ: skapar en individuell CBZ för varje bildfil i mappen och dess undermappar. Ogiltiga, skadade, flersidiga (TIFF) eller animerade (GIF) bilder ignoreras och loggas.",
     "config_open_temp_folder": "Öppna temporär mapp",
     "icon_toolbar": "Ikonlist",
     "icon_toolbar_content": "Ikonfältet ger snabb åtkomst till programmets huvudfunktioner. Du kan ordna om ikonerna efter eget tycke genom att dra dem direkt i fältet. För att välja vilka ikoner som ska visas eller döljas, klicka på kugghjulsknappen längst ned i fältet: ett konfigurationsfönster öppnas där du kan flytta ikoner mellan det aktiva fältet och reserven. Använd knapparna « + » och « − » för att justera storleken på ikonerna. Konfigurationen sparas automatiskt.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Spara pIqaD-teckensnitt",
     "export_tengwar_fonts": "Spara tengwar-teckensnitt",
     "view_on_github": "Källkod på GitHub",
-    "check_for_updates": "Sök efter uppdateringar"
+    "check_for_updates": "Sök efter uppdateringar",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Uppdateringar",

@@ -4,6 +4,7 @@ Fusion d'une archive CBZ/CBR dans le comics courant — version PySide6.
 Reproduit à l'identique import_merge.py (import_and_merge_archive).
 """
 
+import tarfile
 import zipfile
 import rarfile
 import os
@@ -114,6 +115,27 @@ class ImportMergeWorker(QThread):
                 self.progress.emit(int(count / total * 100) if total else 0)
             return True
 
+        def _load_tar(archive_path):
+            with tarfile.open(archive_path, 'r:*') as archive:
+                files_list = sorted(
+                    [m.name for m in archive.getmembers() if m.isfile()
+                     and any(m.name.lower().endswith(e) for e in IMAGE_EXTS)],
+                    key=_natural_sort_key
+                )
+                total = len(files_list)
+                for count, file in enumerate(files_list, start=1):
+                    if self._cancelled.is_set():
+                        return False
+                    try:
+                        data = archive.extractfile(archive.getmember(file)).read()
+                    except Exception:
+                        data = None
+                    entry = create_entry(os.path.basename(file), data, IMAGE_EXTS)
+                    _add_prefix(entry)
+                    new_entries.append(entry)
+                    self.progress.emit(int(count / total * 100) if total else 0)
+            return True
+
         try:
             ok = True
             if ext in (".cbz", ".epub"):
@@ -130,6 +152,8 @@ class ImportMergeWorker(QThread):
                 except (rarfile.NotRarFile, rarfile.BadRarFile):
                     self.bad_rar_file.emit()
                     return
+            elif ext == ".cbt":
+                ok = _load_tar(filepath)
 
             if not ok:
                 self.cancelled.emit()

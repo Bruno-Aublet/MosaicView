@@ -18,6 +18,7 @@ import os
 import re
 import sys
 import time
+import tarfile
 import zipfile
 import rarfile
 import subprocess
@@ -105,12 +106,21 @@ from modules.qt.localization import _, _wt
 from modules.qt.comic_info import read_comic_info
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.mosaic_canvas import build_qimage_for_entry
+from modules.qt.archive_type_detector import detect_archive_type
 
 
 IMAGE_EXTS = (
     '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
     '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp',
 )
+
+_TYPE_TO_EXT = {
+    "CBZ":  ".cbz",
+    "EPUB": ".epub",
+    "CBR":  ".cbr",
+    "CB7":  ".cb7",
+    "CBT":  ".cbt",
+}
 
 
 def _natural_sort_key(text):
@@ -271,9 +281,7 @@ class ExtensionCorrectionDialog(QDialog):
         self._filepath = filepath
         self._detected = detected
         self._declared = declared
-        # clé bouton rename selon le format détecté
-        _rename_keys = {"CBZ": "buttons.rename_to_cbz", "CBR": "buttons.rename_to_cbr", "CB7": "buttons.rename_to_cb7"}
-        self._rename_key = _rename_keys.get(detected.upper(), "buttons.rename_to_cbr")
+        self._rename_ext = _TYPE_TO_EXT.get(detected.upper(), "." + detected.lower())
         self.setModal(True)
 
         layout = QVBoxLayout(self)
@@ -314,21 +322,20 @@ class ExtensionCorrectionDialog(QDialog):
             f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-        self.setWindowTitle(_wt("messages.extension_mismatch.title"))
+        self.setWindowTitle(_wt("messages.extension_mismatch_generic.title"))
         filename = os.path.basename(self._filepath)
-        _msg_keys = {
-            "CBZ": "messages.extension_mismatch.message",
-            "CBR": "messages.extension_mismatch_cbr.message",
-            "CB7": "messages.extension_mismatch_cb7.message",
-        }
-        msg_key = _msg_keys.get(self._detected.upper(), "messages.extension_mismatch_cbr.message")
-        self._lbl.setText(_(msg_key, filename=filename))
+        self._lbl.setText(_(
+            "messages.extension_mismatch_generic.message",
+            filename=filename,
+            real=self._detected.upper(),
+            declared=self._declared.upper(),
+        ))
         self._lbl.setFont(font)
         self._lbl.setStyleSheet(f"color: {theme['text']};")
         for btn in (self._btn_rename, self._btn_keep, self._btn_cancel):
             btn.setFont(font)
             btn.setStyleSheet(btn_style)
-        self._btn_rename.setText(_(self._rename_key))
+        self._btn_rename.setText(_("buttons.rename_to_ext", ext=self._rename_ext))
         self._btn_keep.setText(_("buttons.open_without_rename"))
         self._btn_cancel.setText(_("buttons.cancel"))
 
@@ -391,23 +398,172 @@ class LoadWorker(QThread):
         self._ext_event.wait()
         return self._ext_result
 
-    # ── load_archive (single fichier) — reproduit à l'identique l'original tk ──
-    def load_archive(self, filepath, all_data, errors, actual_first_fp=None):
-        """Charge un seul fichier CBZ/CBR/EPUB. Retourne False si annulé/erreur."""
-        ext = os.path.splitext(filepath)[1].lower()
-        files_list = []
+    # ── helpers détection / namelist ───────────────────────────────────────────
 
-        if ext in [".cbz", ".epub"]:
+    _EXT_TO_TYPE = {
+        ".cbz":  "CBZ",
+        ".epub": "EPUB",
+        ".cbr":  "CBR",
+        ".cb7":  "CB7",
+        ".cbt":  "CBT",
+    }
+    _ERROR_KEYS = {
+        "CBZ":  "messages.errors.zip_invalid.message",
+        "EPUB": "messages.errors.zip_invalid.message",
+        "CBR":  "messages.errors.rar_invalid.message",
+        "CB7":  "messages.errors.7z_invalid.message",
+        "CBT":  "messages.errors.cbt_invalid.message",
+    }
+
+    def _get_namelist(self, filepath, real_type):
+        """Retourne (files_list, error_str). error_str est None si succès."""
+        try:
+            if real_type in ("CBZ", "EPUB"):
+                with zipfile.ZipFile(filepath, 'r') as archive:
+                    nl = sorted(archive.namelist(), key=_natural_sort_key)
+                if real_type == "EPUB":
+                    nl = [f for f in nl if any(f.lower().endswith(e) for e in IMAGE_EXTS)]
+                return nl, None
+            elif real_type == "CBR":
+                with rarfile.RarFile(filepath, 'r') as archive:
+                    return sorted(archive.namelist(), key=_natural_sort_key), None
+            elif real_type == "CB7":
+                all_names = _list_7z_files(filepath)
+                return sorted([f for f in all_names if not f.endswith('/')], key=_natural_sort_key), None
+            elif real_type == "CBT":
+                with tarfile.open(filepath, 'r:*') as archive:
+                    return sorted(
+                        [m.name for m in archive.getmembers() if m.isfile()
+                         and any(m.name.lower().endswith(e) for e in IMAGE_EXTS)],
+                        key=_natural_sort_key
+                    ), None
+        except Exception as e:
+            return [], str(e)[:200]
+        return [], "unknown format"
+
+    def _resolve_filepath(self, filepath, declared_ext, real_type, actual_first_fp, is_multi_error_list=None):
+        """
+        Si real_type != declared type, demande renommage et renomme si besoin.
+        Retourne le filepath final, ou None si annulé.
+        is_multi_error_list : si non-None, les erreurs de renommage sont ajoutées à cette liste
+                              plutôt qu'émises via self.error.
+        """
+        declared_type = self._EXT_TO_TYPE.get("." + declared_ext.lstrip("."))
+        if real_type == declared_type:
+            return filepath  # rien à faire
+
+        choice = self._ask_ext(filepath, real_type, declared_ext.lstrip('.'))
+        if choice is None:
+            return None
+
+        if choice == 'rename':
+            new_ext = _TYPE_TO_EXT.get(real_type, declared_ext)
+            new_filepath = os.path.splitext(filepath)[0] + new_ext
+            try:
+                os.rename(filepath, new_filepath)
+                filepath = new_filepath
+                if actual_first_fp is not None:
+                    actual_first_fp[0] = filepath
+            except Exception as e:
+                msg = _("messages.errors.rename_failed.message", error=e)
+                if is_multi_error_list is not None:
+                    is_multi_error_list.append(msg)
+                else:
+                    self.error.emit(msg)
+                return None
+
+        return filepath
+
+    def _read_entries(self, filepath, real_type, files_list, errors, add_prefix=False):
+        """Lit les entrées d'une archive déjà ouverte et les ajoute à une liste retournée."""
+        result = []
+        ext = os.path.splitext(filepath)[1].lower()
+        try:
+            if real_type in ("CBZ", "EPUB"):
+                with zipfile.ZipFile(filepath, 'r') as archive:
+                    for file in files_list:
+                        if self._cancelled.is_set():
+                            return None
+                        if file.endswith('/'):
+                            continue
+                        try:
+                            data = archive.read(file)
+                        except Exception as e:
+                            data = None
+                            errors.append(f"{file}: {str(e)[:50]}")
+                        file_name = os.path.basename(file) if real_type == "EPUB" else file
+                        entry = create_entry(file_name, data, IMAGE_EXTS)
+                        if add_prefix:
+                            entry["orig_name"] = "NEW-" + entry["orig_name"]
+                            entry["source_archive"] = os.path.basename(filepath)
+                        build_qimage_for_entry(entry)
+                        result.append(entry)
+            elif real_type == "CBR":
+                with rarfile.RarFile(filepath, 'r') as archive:
+                    for file in files_list:
+                        if self._cancelled.is_set():
+                            return None
+                        if file.endswith('/'):
+                            continue
+                        try:
+                            data = archive.read(file)
+                        except Exception as e:
+                            data = None
+                            errors.append(f"{file}: {str(e)[:50]}")
+                        entry = create_entry(file, data, IMAGE_EXTS)
+                        if add_prefix:
+                            entry["orig_name"] = "NEW-" + entry["orig_name"]
+                            entry["source_archive"] = os.path.basename(filepath)
+                        build_qimage_for_entry(entry)
+                        result.append(entry)
+            elif real_type == "CB7":
+                for file in files_list:
+                    if self._cancelled.is_set():
+                        return None
+                    try:
+                        data = _read_7z_file(filepath, file)
+                    except Exception as e:
+                        data = None
+                        errors.append(f"{file}: {str(e)[:50]}")
+                    entry = create_entry(file, data, IMAGE_EXTS)
+                    if add_prefix:
+                        entry["orig_name"] = "NEW-" + entry["orig_name"]
+                        entry["source_archive"] = os.path.basename(filepath)
+                    build_qimage_for_entry(entry)
+                    result.append(entry)
+        except Exception as e:
+            errors.append(str(e)[:200])
+        return result
+
+    # ── load_archive (single fichier) ──────────────────────────────────────────
+    def load_archive(self, filepath, all_data, errors, actual_first_fp=None):
+        """Charge un seul fichier CBZ/CBR/EPUB/CB7. Retourne False si annulé/erreur."""
+        ext = os.path.splitext(filepath)[1].lower()
+
+        real_type = detect_archive_type(filepath)
+        if real_type is None:
+            error_key = self._ERROR_KEYS.get(self._EXT_TO_TYPE.get(ext, "CBZ"), "messages.errors.zip_invalid.message")
+            self.error.emit(_(error_key, file=os.path.basename(filepath)))
+            return False
+
+        filepath = self._resolve_filepath(filepath, ext, real_type, actual_first_fp)
+        if filepath is None:
+            self.cancelled.emit()
+            return False
+
+        files_list, err = self._get_namelist(filepath, real_type)
+        if err:
+            error_key = self._ERROR_KEYS.get(real_type, "messages.errors.zip_invalid.message")
+            self.error.emit(_(error_key, file=os.path.basename(filepath)))
+            return False
+        if not files_list:
+            return True
+
+        total = len(files_list)
+        entries = []
+        if real_type in ("CBZ", "EPUB"):
             try:
                 with zipfile.ZipFile(filepath, 'r') as archive:
-                    files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                    if ext == ".epub":
-                        files_list = [f for f in files_list if any(f.lower().endswith(e) for e in IMAGE_EXTS)]
-
-                    total = len(files_list)
-                    if total == 0:
-                        return True
-
                     for idx, file in enumerate(files_list, start=1):
                         if self._cancelled.is_set():
                             return False
@@ -418,209 +574,16 @@ class LoadWorker(QThread):
                         except Exception as e:
                             data = None
                             errors.append(f"{file}: {str(e)[:50]}")
-                        file_name = os.path.basename(file) if ext == ".epub" else file
+                        file_name = os.path.basename(file) if real_type == "EPUB" else file
                         entry = create_entry(file_name, data, IMAGE_EXTS)
                         build_qimage_for_entry(entry)
                         all_data.append(entry)
                         self.progress.emit(int(idx / total * 100))
-
-            except zipfile.BadZipFile:
-                # Pas un ZIP — essaie RAR
-                rar_ok = False
-                try:
-                    with rarfile.RarFile(filepath, 'r') as archive:
-                        files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                        total = len(files_list)
-                    rar_ok = True
-                except (rarfile.BadRarFile, rarfile.NotRarFile):
-                    pass
-
-                if rar_ok:
-                    if total == 0:
-                        return True
-                    choice = self._ask_ext(filepath, 'CBR', ext.lstrip('.'))
-                    if choice is None:
-                        self.cancelled.emit()
-                        return False
-                    if choice == 'rename':
-                        new_filepath = os.path.splitext(filepath)[0] + '.cbr'
-                        try:
-                            os.rename(filepath, new_filepath)
-                            filepath = new_filepath
-                            if actual_first_fp is not None:
-                                actual_first_fp[0] = filepath
-                        except Exception as e:
-                            self.error.emit(_("messages.errors.rename_failed.message", error=e))
-                            return False
-                    with rarfile.RarFile(filepath, 'r') as archive:
-                        for idx, file in enumerate(files_list, start=1):
-                            if self._cancelled.is_set():
-                                return False
-                            if file.endswith('/'):
-                                continue
-                            try:
-                                data = archive.read(file)
-                            except Exception as e:
-                                data = None
-                                errors.append(f"{file}: {str(e)[:50]}")
-                            entry = create_entry(file, data, IMAGE_EXTS)
-                            build_qimage_for_entry(entry)
-                            all_data.append(entry)
-                            self.progress.emit(int(idx / total * 100))
-                    return True
-
-                # Pas un RAR non plus — essaie 7z
-                try:
-                    all_names = _list_7z_files(filepath)
-                    files_list = sorted(
-                        [f for f in all_names if not f.endswith('/')],
-                        key=_natural_sort_key
-                    )
-                    total = len(files_list)
-                except Exception:
-                    self.error.emit(_("messages.errors.zip_invalid.message", file=os.path.basename(filepath)))
-                    return False
-
-                if not files_list:
-                    self.error.emit(_("messages.errors.zip_invalid.message", file=os.path.basename(filepath)))
-                    return False
-
-                if total == 0:
-                    return True
-                choice = self._ask_ext(filepath, 'CB7', ext.lstrip('.'))
-                if choice is None:
-                    self.cancelled.emit()
-                    return False
-                if choice == 'rename':
-                    new_filepath = os.path.splitext(filepath)[0] + '.cb7'
-                    try:
-                        os.rename(filepath, new_filepath)
-                        filepath = new_filepath
-                        if actual_first_fp is not None:
-                            actual_first_fp[0] = filepath
-                    except Exception as e:
-                        self.error.emit(_("messages.errors.rename_failed.message", error=e))
-                        return False
-                for idx, file in enumerate(files_list, start=1):
-                    if self._cancelled.is_set():
-                        return False
-                    try:
-                        data = _read_7z_file(filepath, file)
-                    except Exception as e:
-                        data = None
-                        errors.append(f"{file}: {str(e)[:50]}")
-                    entry = create_entry(file, data, IMAGE_EXTS)
-                    build_qimage_for_entry(entry)
-                    all_data.append(entry)
-                    self.progress.emit(int(idx / total * 100))
-
             except Exception as e:
                 self.error.emit(str(e)[:200])
                 return False
-
-        elif ext == ".cb7":
+        elif real_type == "CBR":
             try:
-                with open(filepath, 'rb') as f:
-                    magic = f.read(8)
-                if magic[:4] == b'PK\x03\x04':
-                    raise zipfile.BadZipFile("is a zip")
-                if magic[:7] == b'Rar!\x1a\x07\x00' or magic[:8] == b'Rar!\x1a\x07\x01\x00':
-                    raise rarfile.NotRarFile("is a rar")
-                all_names = _list_7z_files(filepath)
-                files_list = sorted(
-                    [f for f in all_names if not f.endswith('/')],
-                    key=_natural_sort_key
-                )
-                total = len(files_list)
-                if total == 0:
-                    return True
-                for idx, file in enumerate(files_list, start=1):
-                    if self._cancelled.is_set():
-                        return False
-                    try:
-                        data = _read_7z_file(filepath, file)
-                    except Exception as e:
-                        data = None
-                        errors.append(f"{file}: {str(e)[:50]}")
-                    entry = create_entry(file, data, IMAGE_EXTS)
-                    build_qimage_for_entry(entry)
-                    all_data.append(entry)
-                    self.progress.emit(int(idx / total * 100))
-            except Exception:
-                # Pas un 7z — essaie ZIP
-                zip_ok = False
-                try:
-                    with zipfile.ZipFile(filepath, 'r') as archive:
-                        files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                        total = len(files_list)
-                    zip_ok = True
-                except zipfile.BadZipFile:
-                    pass
-
-                if zip_ok:
-                    if total == 0:
-                        return True
-                    choice = self._ask_ext(filepath, 'CBZ', ext.lstrip('.'))
-                    if choice is None:
-                        self.cancelled.emit()
-                        return False
-                    if choice == 'rename':
-                        new_filepath = os.path.splitext(filepath)[0] + '.cbz'
-                        try:
-                            os.rename(filepath, new_filepath)
-                            filepath = new_filepath
-                            if actual_first_fp is not None:
-                                actual_first_fp[0] = filepath
-                        except Exception as e:
-                            self.error.emit(_("messages.errors.rename_failed.message", error=e))
-                            return False
-                    with zipfile.ZipFile(filepath, 'r') as archive:
-                        for idx, file in enumerate(files_list, start=1):
-                            if self._cancelled.is_set():
-                                return False
-                            if file.endswith('/'):
-                                continue
-                            try:
-                                data = archive.read(file)
-                            except Exception as e:
-                                data = None
-                                errors.append(f"{file}: {str(e)[:50]}")
-                            entry = create_entry(file, data, IMAGE_EXTS)
-                            build_qimage_for_entry(entry)
-                            all_data.append(entry)
-                            self.progress.emit(int(idx / total * 100))
-                    return True
-
-                # Pas un ZIP non plus — essaie RAR
-                rar_ok = False
-                try:
-                    with rarfile.RarFile(filepath, 'r') as archive:
-                        files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                        total = len(files_list)
-                    rar_ok = True
-                except (rarfile.BadRarFile, rarfile.NotRarFile):
-                    pass
-
-                if not rar_ok:
-                    self.error.emit(_("messages.errors.7z_invalid.message", file=os.path.basename(filepath)))
-                    return False
-
-                if total == 0:
-                    return True
-                choice = self._ask_ext(filepath, 'CBR', ext.lstrip('.'))
-                if choice is None:
-                    self.cancelled.emit()
-                    return False
-                if choice == 'rename':
-                    new_filepath = os.path.splitext(filepath)[0] + '.cbr'
-                    try:
-                        os.rename(filepath, new_filepath)
-                        filepath = new_filepath
-                        if actual_first_fp is not None:
-                            actual_first_fp[0] = filepath
-                    except Exception as e:
-                        self.error.emit(_("messages.errors.rename_failed.message", error=e))
-                        return False
                 with rarfile.RarFile(filepath, 'r') as archive:
                     for idx, file in enumerate(files_list, start=1):
                         if self._cancelled.is_set():
@@ -636,335 +599,76 @@ class LoadWorker(QThread):
                         build_qimage_for_entry(entry)
                         all_data.append(entry)
                         self.progress.emit(int(idx / total * 100))
-
-        elif ext == ".cbr":
-            try:
-                with rarfile.RarFile(filepath, 'r') as archive:
-                    files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                    total = len(files_list)
-                    if total == 0:
-                        return True
-
-                    for idx, file in enumerate(files_list, start=1):
-                        if self._cancelled.is_set():
-                            return False
-                        if file.endswith('/'):
-                            continue
-                        try:
-                            data = archive.read(file)
-                        except Exception as e:
-                            data = None
-                            errors.append(f"{file}: {str(e)[:50]}")
-                        entry = create_entry(file, data, IMAGE_EXTS)
-                        build_qimage_for_entry(entry)
-                        all_data.append(entry)
-                        self.progress.emit(int(idx / total * 100))
-
-            except (rarfile.BadRarFile, rarfile.NotRarFile):
-                # Pas un RAR — essaie ZIP
-                zip_ok = False
-                try:
-                    with zipfile.ZipFile(filepath, 'r') as archive:
-                        files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                        total = len(files_list)
-                    zip_ok = True
-                except zipfile.BadZipFile:
-                    pass
-
-                if zip_ok:
-                    if total == 0:
-                        return True
-                    choice = self._ask_ext(filepath, 'CBZ', ext.lstrip('.'))
-                    if choice is None:
-                        self.cancelled.emit()
-                        return False
-                    if choice == 'rename':
-                        new_filepath = os.path.splitext(filepath)[0] + '.cbz'
-                        try:
-                            os.rename(filepath, new_filepath)
-                            filepath = new_filepath
-                            if actual_first_fp is not None:
-                                actual_first_fp[0] = filepath
-                        except Exception as e:
-                            self.error.emit(_("messages.errors.rename_failed.message", error=e))
-                            return False
-                    with zipfile.ZipFile(filepath, 'r') as archive:
-                        for idx, file in enumerate(files_list, start=1):
-                            if self._cancelled.is_set():
-                                return False
-                            if file.endswith('/'):
-                                continue
-                            try:
-                                data = archive.read(file)
-                            except Exception as e:
-                                data = None
-                                errors.append(f"{file}: {str(e)[:50]}")
-                            file_name = os.path.basename(file)
-                            entry = create_entry(file_name, data, IMAGE_EXTS)
-                            build_qimage_for_entry(entry)
-                            all_data.append(entry)
-                            self.progress.emit(int(idx / total * 100))
-                    return True
-
-                # Pas un ZIP non plus — essaie 7z
-                try:
-                    all_names = _list_7z_files(filepath)
-                    files_list = sorted(
-                        [f for f in all_names if not f.endswith('/')],
-                        key=_natural_sort_key
-                    )
-                    total = len(files_list)
-                except Exception:
-                    self.error.emit(_("messages.errors.rar_invalid.message", file=os.path.basename(filepath)))
-                    return False
-
-                if not files_list:
-                    self.error.emit(_("messages.errors.rar_invalid.message", file=os.path.basename(filepath)))
-                    return False
-
-                if total == 0:
-                    return True
-                choice = self._ask_ext(filepath, 'CB7', ext.lstrip('.'))
-                if choice is None:
-                    self.cancelled.emit()
-                    return False
-                if choice == 'rename':
-                    new_filepath = os.path.splitext(filepath)[0] + '.cb7'
-                    try:
-                        os.rename(filepath, new_filepath)
-                        filepath = new_filepath
-                        if actual_first_fp is not None:
-                            actual_first_fp[0] = filepath
-                    except Exception as e:
-                        self.error.emit(_("messages.errors.rename_failed.message", error=e))
-                        return False
-                for idx, file in enumerate(files_list, start=1):
-                    if self._cancelled.is_set():
-                        return False
-                    try:
-                        data = _read_7z_file(filepath, file)
-                    except Exception as e:
-                        data = None
-                        errors.append(f"{file}: {str(e)[:50]}")
-                    entry = create_entry(file, data, IMAGE_EXTS)
-                    build_qimage_for_entry(entry)
-                    all_data.append(entry)
-                    self.progress.emit(int(idx / total * 100))
-
-            except rarfile.Error as e:
+            except Exception as e:
                 self.error.emit(str(e)[:200])
                 return False
+        elif real_type == "CB7":
+            for idx, file in enumerate(files_list, start=1):
+                if self._cancelled.is_set():
+                    return False
+                try:
+                    data = _read_7z_file(filepath, file)
+                except Exception as e:
+                    data = None
+                    errors.append(f"{file}: {str(e)[:50]}")
+                entry = create_entry(file, data, IMAGE_EXTS)
+                build_qimage_for_entry(entry)
+                all_data.append(entry)
+                self.progress.emit(int(idx / total * 100))
+        elif real_type == "CBT":
+            try:
+                with tarfile.open(filepath, 'r:*') as archive:
+                    for idx, file in enumerate(files_list, start=1):
+                        if self._cancelled.is_set():
+                            return False
+                        try:
+                            member = archive.getmember(file)
+                            data = archive.extractfile(member).read()
+                        except Exception as e:
+                            data = None
+                            errors.append(f"{file}: {str(e)[:50]}")
+                        entry = create_entry(os.path.basename(file), data, IMAGE_EXTS)
+                        build_qimage_for_entry(entry)
+                        all_data.append(entry)
+                        self.progress.emit(int(idx / total * 100))
             except Exception as e:
                 self.error.emit(str(e)[:200])
                 return False
 
         return True
 
-    # ── load_multiple_archives — reproduit à l'identique l'original tk ─────────
+    # ── load_multiple_archives ─────────────────────────────────────────────────
     def load_multiple_archives(self, filepaths, all_data, errors, actual_first_fp=None):
         """Charge plusieurs fichiers. Retourne False si annulé/erreur fatale."""
-        # Phase 1 : pré-lecture namelists + dialogues extension
+        _TYPE_TO_FORMAT = {"CBZ": "zip", "EPUB": "zip", "CBR": "rar", "CB7": "7z", "CBT": "tar"}
+
+        # Phase 1 : détection + dialogues extension + namelists
         archive_namelists = []
         for orig_filepath in filepaths:
             ext = os.path.splitext(orig_filepath)[1].lower()
             current_filepath = orig_filepath
 
-            if ext in [".cbz", ".epub"]:
-                try:
-                    with zipfile.ZipFile(current_filepath, 'r') as archive:
-                        files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                        if ext == ".epub":
-                            files_list = [f for f in files_list if any(f.lower().endswith(e) for e in IMAGE_EXTS)]
-                    archive_namelists.append((current_filepath, "zip", files_list))
-                    continue
-                except zipfile.BadZipFile:
-                    pass
-                except Exception:
-                    continue
+            real_type = detect_archive_type(current_filepath)
+            if real_type is None:
+                error_key = self._ERROR_KEYS.get(self._EXT_TO_TYPE.get(ext, "CBZ"), "messages.errors.zip_invalid.message")
+                errors.append(_(error_key, file=os.path.basename(current_filepath)))
+                continue
 
-                # Pas un ZIP — essaie RAR
-                rar_ok = False
-                try:
-                    with rarfile.RarFile(current_filepath, 'r') as archive:
-                        files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                    rar_ok = True
-                except (rarfile.BadRarFile, rarfile.NotRarFile):
-                    pass
-                except Exception:
-                    continue
+            current_filepath = self._resolve_filepath(
+                current_filepath, ext, real_type, actual_first_fp,
+                is_multi_error_list=errors
+            )
+            if current_filepath is None:
+                continue
 
-                if rar_ok:
-                    choice = self._ask_ext(current_filepath, 'CBR', ext.lstrip('.'))
-                    if choice is None:
-                        continue
-                    if choice == 'rename':
-                        new_filepath = os.path.splitext(current_filepath)[0] + '.cbr'
-                        try:
-                            os.rename(current_filepath, new_filepath)
-                            current_filepath = new_filepath
-                        except Exception as e:
-                            errors.append(_("messages.errors.rename_failed.message", error=e))
-                            continue
-                    archive_namelists.append((current_filepath, "rar", files_list))
-                    continue
+            files_list, err = self._get_namelist(current_filepath, real_type)
+            if err or not files_list:
+                if err:
+                    error_key = self._ERROR_KEYS.get(real_type, "messages.errors.zip_invalid.message")
+                    errors.append(_(error_key, file=os.path.basename(current_filepath)))
+                continue
 
-                # Pas un RAR non plus — essaie 7z
-                try:
-                    all_names = _list_7z_files(current_filepath)
-                    files_list = sorted(
-                        [f for f in all_names if not f.endswith('/')],
-                        key=_natural_sort_key
-                    )
-                    if not files_list:
-                        self.error.emit(_("messages.errors.zip_invalid.message", file=os.path.basename(current_filepath)))
-                        continue
-                except Exception:
-                    self.error.emit(_("messages.errors.zip_invalid.message", file=os.path.basename(current_filepath)))
-                    continue
-
-                choice = self._ask_ext(current_filepath, 'CB7', ext.lstrip('.'))
-                if choice is None:
-                    continue
-                if choice == 'rename':
-                    new_filepath = os.path.splitext(current_filepath)[0] + '.cb7'
-                    try:
-                        os.rename(current_filepath, new_filepath)
-                        current_filepath = new_filepath
-                    except Exception as e:
-                        errors.append(_("messages.errors.rename_failed.message", error=e))
-                        continue
-                archive_namelists.append((current_filepath, "7z", files_list))
-
-            elif ext == ".cb7":
-                try:
-                    all_names = _list_7z_files(current_filepath)
-                    files_list = sorted(
-                        [f for f in all_names if not f.endswith('/')],
-                        key=_natural_sort_key
-                    )
-                    archive_namelists.append((current_filepath, "7z", files_list))
-                    continue
-                except Exception:
-                    pass
-
-                # Pas un 7z — essaie ZIP
-                zip_ok = False
-                try:
-                    with zipfile.ZipFile(current_filepath, 'r') as archive:
-                        files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                    zip_ok = True
-                except zipfile.BadZipFile:
-                    pass
-                except Exception:
-                    continue
-
-                if zip_ok:
-                    choice = self._ask_ext(current_filepath, 'CBZ', ext.lstrip('.'))
-                    if choice is None:
-                        continue
-                    if choice == 'rename':
-                        new_filepath = os.path.splitext(current_filepath)[0] + '.cbz'
-                        try:
-                            os.rename(current_filepath, new_filepath)
-                            current_filepath = new_filepath
-                        except Exception as e:
-                            errors.append(_("messages.errors.rename_failed.message", error=e))
-                            continue
-                    archive_namelists.append((current_filepath, "zip", files_list))
-                    continue
-
-                # Pas un ZIP non plus — essaie RAR
-                rar_ok = False
-                try:
-                    with rarfile.RarFile(current_filepath, 'r') as archive:
-                        files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                    rar_ok = True
-                except (rarfile.BadRarFile, rarfile.NotRarFile):
-                    pass
-                except Exception:
-                    continue
-
-                if not rar_ok:
-                    self.error.emit(_("messages.errors.7z_invalid.message", file=os.path.basename(current_filepath)))
-                    continue
-
-                choice = self._ask_ext(current_filepath, 'CBR', ext.lstrip('.'))
-                if choice is None:
-                    continue
-                if choice == 'rename':
-                    new_filepath = os.path.splitext(current_filepath)[0] + '.cbr'
-                    try:
-                        os.rename(current_filepath, new_filepath)
-                        current_filepath = new_filepath
-                    except Exception as e:
-                        errors.append(_("messages.errors.rename_failed.message", error=e))
-                        continue
-                archive_namelists.append((current_filepath, "rar", files_list))
-
-            elif ext == ".cbr":
-                try:
-                    with rarfile.RarFile(current_filepath, 'r') as archive:
-                        files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                    archive_namelists.append((current_filepath, "rar", files_list))
-                    continue
-                except (rarfile.BadRarFile, rarfile.NotRarFile):
-                    pass
-                except Exception:
-                    continue
-
-                # Pas un RAR — essaie ZIP
-                zip_ok = False
-                try:
-                    with zipfile.ZipFile(current_filepath, 'r') as archive:
-                        files_list = sorted(archive.namelist(), key=_natural_sort_key)
-                    zip_ok = True
-                except zipfile.BadZipFile:
-                    pass
-                except Exception:
-                    continue
-
-                if zip_ok:
-                    choice = self._ask_ext(current_filepath, 'CBZ', ext.lstrip('.'))
-                    if choice is None:
-                        continue
-                    if choice == 'rename':
-                        new_filepath = os.path.splitext(current_filepath)[0] + '.cbz'
-                        try:
-                            os.rename(current_filepath, new_filepath)
-                            current_filepath = new_filepath
-                        except Exception as e:
-                            errors.append(_("messages.errors.rename_failed.message", error=e))
-                            continue
-                    archive_namelists.append((current_filepath, "zip", files_list))
-                    continue
-
-                # Pas un ZIP non plus — essaie 7z
-                try:
-                    all_names = _list_7z_files(current_filepath)
-                    files_list = sorted(
-                        [f for f in all_names if not f.endswith('/')],
-                        key=_natural_sort_key
-                    )
-                    if not files_list:
-                        self.error.emit(_("messages.errors.rar_invalid.message", file=os.path.basename(current_filepath)))
-                        continue
-                except Exception:
-                    self.error.emit(_("messages.errors.rar_invalid.message", file=os.path.basename(current_filepath)))
-                    continue
-
-                choice = self._ask_ext(current_filepath, 'CB7', ext.lstrip('.'))
-                if choice is None:
-                    continue
-                if choice == 'rename':
-                    new_filepath = os.path.splitext(current_filepath)[0] + '.cb7'
-                    try:
-                        os.rename(current_filepath, new_filepath)
-                        current_filepath = new_filepath
-                    except Exception as e:
-                        errors.append(_("messages.errors.rename_failed.message", error=e))
-                        continue
-                archive_namelists.append((current_filepath, "7z", files_list))
-
+            archive_namelists.append((current_filepath, _TYPE_TO_FORMAT[real_type], real_type, files_list))
 
         if not archive_namelists:
             self.cancelled.emit()
@@ -976,15 +680,14 @@ class LoadWorker(QThread):
         # Phase 2 : vraie lecture avec progression
         total_files = sum(
             len([f for f in files_list if not f.endswith("/")])
-            for _, _, files_list in archive_namelists
+            for _, _, _, files_list in archive_namelists
         )
         processed_files = 0
 
-        for archive_idx, (filepath, actual_format, files_list) in enumerate(archive_namelists):
+        for archive_idx, (filepath, actual_format, real_type, files_list) in enumerate(archive_namelists):
             add_prefix = archive_idx > 0
 
             if actual_format == "zip":
-                ext = os.path.splitext(filepath)[1].lower()
                 try:
                     with zipfile.ZipFile(filepath, 'r') as archive:
                         for file in files_list:
@@ -995,7 +698,7 @@ class LoadWorker(QThread):
                             except Exception as e:
                                 errors.append(f"{file}: {str(e)[:50]}")
                                 data = None
-                            file_name = os.path.basename(file) if ext == ".epub" else file
+                            file_name = os.path.basename(file) if real_type == "EPUB" else file
                             entry = create_entry(file_name, data, IMAGE_EXTS)
                             if add_prefix:
                                 entry["orig_name"] = "NEW-" + entry["orig_name"]
@@ -1035,6 +738,27 @@ class LoadWorker(QThread):
                                 errors.append(f"{file}: {str(e)[:50]}")
                                 data = None
                             entry = create_entry(file, data, IMAGE_EXTS)
+                            if add_prefix:
+                                entry["orig_name"] = "NEW-" + entry["orig_name"]
+                                entry["source_archive"] = os.path.basename(filepath)
+                            build_qimage_for_entry(entry)
+                            all_data.append(entry)
+                            processed_files += 1
+                            self.progress.emit(int(processed_files / total_files * 100) if total_files > 0 else 0)
+                except Exception as e:
+                    errors.append(str(e)[:100])
+
+            elif actual_format == "tar":
+                try:
+                    with tarfile.open(filepath, 'r:*') as archive:
+                        for file in files_list:
+                            try:
+                                member = archive.getmember(file)
+                                data = archive.extractfile(member).read()
+                            except Exception as e:
+                                errors.append(f"{file}: {str(e)[:50]}")
+                                data = None
+                            entry = create_entry(os.path.basename(file), data, IMAGE_EXTS)
                             if add_prefix:
                                 entry["orig_name"] = "NEW-" + entry["orig_name"]
                                 entry["source_archive"] = os.path.basename(filepath)

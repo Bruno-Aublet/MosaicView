@@ -235,6 +235,7 @@ class TabBar(QWidget):
         # ── Onglet Métadonnées ──
         if st.comic_metadata:
             self._btn_metadata = _TabButton(_("tabs.metadata"))
+            self._btn_metadata.setFont(_get_current_font(10))
             self._btn_metadata.setFlat(True)
             self._btn_metadata.setCursor(Qt.PointingHandCursor)
             self._btn_metadata.setCheckable(True)

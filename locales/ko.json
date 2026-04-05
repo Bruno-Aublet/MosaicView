@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "디지털 만화 수집가를 위한 만능 도구",
   "buttons": {
-    "open_file": "CBZ/CBR/CB7/PDF 열기",
+    "open_file": "CBZ/CBR/CB7/CBT/PDF 열기",
     "close_file": "파일 닫기",
     "create_cbz": "CBZ 아카이브 생성",
     "flatten_dirs": "모든 파일을 루트로\n이동하고 하위 디렉터리\n삭제",
@@ -49,9 +49,7 @@
     "no": "아니오",
     "renumber_recommended": "번호 다시 매기기 (권장)",
     "ignore_and_save": "무시하고 저장",
-    "rename_to_cbz": ".cbz로 이름 변경",
     "open_without_rename": "이름 변경 없이 열기",
-    "rename_to_cbr": ".cbr로 이름 변경",
     "adjustments": "밝기,\n대비 등",
     "batch_cbr_to_cbz": "일괄 변환\n CBR 파일을 CBZ로",
     "batch_pdf_to_cbz": "PDF 파일\n 일괄 CBZ 변환",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "초기화",
     "delete_selected": "삭제",
     "save": "저장",
-    "rename_to_cb7": ".cb7로 이름 변경",
     "split_ui": "인터페이스를 두 패널로 분할",
-    "unsplit_ui": "두 번째 패널 닫기"
+    "unsplit_ui": "두 번째 패널 닫기",
+    "rename_to_ext": "{ext}로 이름 변경",
+    "batch_cb7_to_cbz": "CB7 파일\n CBZ로 일괄 변환",
+    "batch_cbt_to_cbz": "CBT 파일\n CBZ로 일괄 변환"
   },
   "tabs": {
     "mosaic": "모자이크",
@@ -130,10 +130,12 @@
       "save_to_folder": "선택한 페이지 내보내기",
       "adjustments": "밝기, 대비, 색상...",
       "refresh_mosaic": "모자이크 새로고침 (F5)",
-      "create_ico": ".ico 파일 만들기"
+      "create_ico": ".ico 파일 만들기",
+      "straighten": "이미지 기울기 보정...",
+      "clone_zone": "영역 복제..."
     },
     "canvas_no_file": {
-      "open": "CBZ/CBR/CB7/PDF 열기",
+      "open": "CBZ/CBR/CB7/CBT/PDF 열기",
       "recent_files": "최근 파일",
       "clear_history": "기록 지우기"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "지원되지 않는 파일",
         "message": "다음 파일들은 지원되지 않아 무시되었습니다:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "'{file}' 파일은 유효한 TAR 아카이브가 아니거나 손상되었습니다."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "변환 취소\n{count}개 파일 - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "잘못된 확장자가 감지되었습니다: 이 '{filename}' 파일은 CBR이 아닌 CBZ입니다. 이름을 변경하시겠습니까?",
+    "extension_mismatch_generic": {
+      "message": "잘못된 확장자 감지됨: '{filename}' 파일은 {declared}이 아닌 {real}입니다. 이름을 변경하시겠습니까?",
       "title": "잘못된 확장자"
-    },
-    "extension_mismatch_cbr": {
-      "message": "잘못된 확장자가 감지되었습니다: 이 '{filename}' 파일은 CBZ가 아닌 CBR입니다. 이름을 변경하시겠습니까?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "잘못된 확장자 감지됨: '{filename}' 파일은 CBZ/CBR이 아닌 CB7입니다. 이름을 바꾸겠습니까?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ 파일은 자유롭고 개방된 형식인 ZIP 형식을 기반으로 합니다. 반면 CBR 파일은 독점 형식인 RAR 형식을 기반으로 합니다.\n\nMosaicView는 RARlab이 개발하고 자유롭게 재배포 가능한 유틸리티인 UnRAR 덕분에 CBR 파일을 열 수 있습니다.\n\n공식 웹사이트: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "UnRAR 라이선스 보기",
     "saving_cbz": "저장 중... {percent}%",
-    "empty_canvas_line1": "여기에 CBZ/CBR/CB7/PDF 파일을 하나 이상 또는 당신의 이미지를 놓으세요",
+    "empty_canvas_line1": "여기에 CBZ/CBR/CB7/CBT/PDF 파일을 하나 이상 또는 당신의 이미지를 놓으세요",
     "empty_canvas_line2": "파일이 열리면 계속 다른 파일을 놓을 수 있습니다",
     "empty_canvas_line3": "일괄 처리를 시작하려면 폴더를 하나 이상 드롭하세요",
     "icon_toolbar_config_title": "아이콘 도구 모음 구성",
@@ -786,8 +785,10 @@
       "complete_message": "디렉토리에서 {count}개의 CBR 파일이 변환됨:",
       "complete_message_errors": "디렉토리에서 {total}개 중 {count}개의 CBR 파일이 변환됨:",
       "errors_count": "{count}건의 오류 발생.",
-      "renamed_count": "{count}개 파일이 CBZ로 이름 변경됨",
-      "rarfile_unavailable": "rarfile 모듈을 사용할 수 없습니다. CBR 파일을 변환할 수 없습니다."
+      "rarfile_unavailable": "rarfile 모듈을 사용할 수 없습니다. CBR 파일을 변환할 수 없습니다.",
+      "renamed_cbz_count": "{count}개 파일이 CBZ로 이름 변경됨",
+      "renamed_cb7_count": "{count}개 파일이 CB7로 이름 변경됨",
+      "renamed_cbt_count": "{count}개 파일이 CBT로 이름 변경됨"
     },
     "close_warning": {
       "title": "경고!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "아카이브 열기",
-      "filter_archives": "아카이브 (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "아카이브 (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "모든 파일 (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "이미지 (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "모든 파일 (*)"
     },
-    "see_log": "로그 보기"
+    "see_log": "로그 보기",
+    "straighten_viewer": {
+      "title": "기울기 보정",
+      "instruction": "이미지에서 수평(또는 수직)이어야 하는 부분에 직선을 그으세요"
+    },
+    "clone_zone_viewer": {
+      "title": "영역 복제",
+      "instruction": "Ctrl+클릭 : 소스 설정  •  왼쪽 클릭 : 복제된 영역 그리기",
+      "mode_label": "소스 :",
+      "mode_fixed": "고정 소스",
+      "mode_relative": "상대 소스",
+      "brush_size_label": "크기 :"
+    },
+    "text_viewer": {
+      "title": "텍스트 삽입",
+      "instruction": "텍스트를 삽입할 위치를 클릭하세요  •  Ctrl+화살표: 픽셀 단위로 텍스트 이동",
+      "size_label": "크기:",
+      "color_label": "색상:",
+      "bold_btn": "굵",
+      "italic_btn": "기",
+      "underline_btn": "밑",
+      "apply_btn": "텍스트 적용",
+      "pick_color_title": "텍스트 색상 선택"
+    },
+    "batch_cb7": {
+      "select_directory_title": "CB7 파일이 있는 폴더 선택",
+      "no_cb7_title": "CB7 파일 없음",
+      "no_cb7_message": "폴더에서 CB7 파일을 찾을 수 없습니다 :\n{directory}",
+      "confirm_title": "CB7을 CBZ로 일괄 변환",
+      "confirm_message": "{directory}에서 {count}개의 CB7 파일 변환 (하위 폴더 포함).",
+      "checkbox_permanent_delete": "원본 CB7 파일을 휴지통 없이\n영구 삭제 (복구 불가)",
+      "start_button": "시작",
+      "converting_title": "변환 중...",
+      "converting_progress": "{total}개 중 {current}번째 파일 변환 중",
+      "page_progress": "페이지 {current} / {total}",
+      "complete_title": "변환 완료",
+      "complete_message": "폴더에서 {count}개의 CB7 파일이 변환되었습니다 :",
+      "complete_message_errors": "폴더에서 {total}개 중 {count}개의 CB7 파일이 변환되었습니다 :",
+      "errors_count": "{count}개의 오류가 발생했습니다.",
+      "renamed_cbz_count": "{count}개 파일이 CBZ로 이름 변경됨",
+      "renamed_cbr_count": "{count}개 파일이 CBR로 이름 변경됨",
+      "renamed_cbt_count": "{count}개 파일이 CBT로 이름 변경됨"
+    },
+    "batch_cbt": {
+      "select_directory_title": "CBT 파일이 있는 폴더 선택",
+      "no_cbt_title": "CBT 파일 없음",
+      "no_cbt_message": "폴더에서 CBT 파일을 찾을 수 없습니다 :\n{directory}",
+      "confirm_title": "CBT을 CBZ로 일괄 변환",
+      "confirm_message": "{directory}에서 {count}개의 CBT 파일 변환 (하위 폴더 포함).",
+      "checkbox_permanent_delete": "원본 CBT 파일을 휴지통 없이\n영구 삭제 (복구 불가)",
+      "start_button": "시작",
+      "converting_title": "변환 중...",
+      "converting_progress": "{total}개 중 {current}번째 파일 변환 중",
+      "page_progress": "페이지 {current} / {total}",
+      "complete_title": "변환 완료",
+      "complete_message": "폴더에서 {count}개의 CBT 파일이 변환되었습니다 :",
+      "complete_message_errors": "폴더에서 {total}개 중 {count}개의 CBT 파일이 변환되었습니다 :",
+      "errors_count": "{count}개의 오류가 발생했습니다.",
+      "renamed_cbz_count": "{count}개 파일이 CBZ로 이름 변경됨",
+      "renamed_cbr_count": "{count}개 파일이 CBR로 이름 변경됨",
+      "renamed_cb7_count": "{count}개 파일이 CB7로 이름 변경됨"
+    }
   },
   "tooltip": {
     "source_archive": "원본 파일: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "아이콘 크기 줄이기",
     "icon_toolbar_size_increase": "아이콘 크기 늘리기",
     "source_loose": "단독 이미지",
-    "source_web": "웹 이미지"
+    "source_web": "웹 이미지",
+    "straighten": "이미지 기울기 보정",
+    "clone_zone": "영역 복제",
+    "text": "텍스트 추가",
+    "batch_cb7_to_cbz": "폴더와 하위 폴더의 모든 CB7 파일을\nCBZ로 변환합니다.",
+    "batch_cb7_permanent_delete": "경고 : 이 옵션을 선택하면 변환 후\n원본 CB7 파일이 영구적으로 삭제되며\n복구할 수 없습니다.\n백업이 있는지 확인하세요.",
+    "batch_cbt_to_cbz": "폴더와 하위 폴더의 모든 CBT 파일을\nCBZ로 변환합니다.",
+    "batch_cbt_permanent_delete": "경고 : 이 옵션을 선택하면 변환 후\n원본 CBT 파일이 영구적으로 삭제되며\n복구할 수 없습니다.\n백업이 있는지 확인하세요."
   },
   "help": {
     "title": "MosaicView - 사용 방법",
     "intro": "MosaicView를 사용하면 만화(디지털 코믹북)를 아카이브에서 추출하지 않고도 조작하고 편집할 수 있습니다. CBZ (ZIP), CBR (RAR) 및 PDF 형식을 지원합니다. 이 애플리케이션은 64비트 시스템에서만 호환됩니다.",
     "open_files": "파일 열기",
-    "open_files_content": "• 'CBZ/CBR/CB7/PDF 열기' 버튼 클릭\n• 또는 파일을 창에 직접 드래그 앤 드롭\n• 지원 형식: CBZ, CBR, CB7, PDF, 이미지 (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB 파일도 열 수 있지만 이미지만 추출됩니다(텍스트는 무시됨).\n• 암호화된 PDF(열기에 비밀번호 필요): 파일을 가져올 수 없으며 오류 메시지가 표시됩니다.\n• 수정으로부터 보호된 PDF(owner password): 페이지가 정상적으로 가져와집니다. MosaicView는 같은 폴더에 잠금 해제된 복사본을 저장할 것을 제안합니다. 참고: 빨간색으로 표시된 확장자(WEBP, TIFF, GIF, ICO…)는 오래된 CBZ/CBR 리더와 호환되지 않을 수 있는 형식을 나타냅니다. 그러나 이 파일들은 MosaicView에서 정상적으로 처리됩니다.",
+    "open_files_content": "• '파일 열기' 버튼을 클릭하거나 파일을 창으로 직접 드래그 앤 드롭하세요\n• 지원 형식: CBZ, CBR, CB7, CBT, PDF, 이미지 (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB 파일도 열 수 있지만 이미지만 추출됩니다(텍스트는 무시됨).\n• 암호화된 PDF(열기에 비밀번호 필요): 파일을 가져올 수 없으며 오류 메시지가 표시됩니다.\n• 수정으로부터 보호된 PDF(owner password): 페이지가 정상적으로 가져와집니다. MosaicView는 같은 폴더에 잠금 해제된 복사본을 저장할 것을 제안합니다. 참고: 빨간색으로 표시된 확장자(WEBP, TIFF, GIF, ICO…)는 오래된 CBZ/CBR 리더와 호환되지 않을 수 있는 형식을 나타냅니다. 그러나 이 파일들은 MosaicView에서 정상적으로 처리됩니다.",
     "mosaic": "모자이크",
     "mosaic_content": "모자이크는 만화책의 모든 페이지를 썸네일로 표시합니다. 다음을 수행할 수 있습니다:\n• 드래그 앤 드롭으로 페이지 재정렬(페이지 번호는 자동으로 매겨지며, 활성 번호 매기기 모드에 따라 적용됩니다)\n• 여러 페이지 선택(Ctrl+클릭 또는 Shift+클릭)\n• 슬라이더로 썸네일 크기 조정\n• 파일 이름을 클릭하여 수동으로 이름 변경\n• Windows 탐색기에서 만화책 파일(CBZ/CBR/PDF)을 다른 열린 만화책으로 직접 드래그 앤 드롭하여 콘텐츠 병합",
     "manipulation": "페이지 조작",
@@ -1171,7 +1240,7 @@
     "create_icon": "아이콘 만들기",
     "create_icon_content": "MosaicView를 사용하면 모자이크의 모든 이미지에서 아이콘 파일(.ico)을 만들 수 있습니다.\n• 이미지를 오른쪽 클릭 → '아이콘 만들기'\n• 뷰어에서 원하는 영역을 프레임합니다(아이콘은 반드시 정사각형이 됩니다)\n• 필요한 경우 투명도를 조정합니다\n• 확인: .ico 파일이 모자이크에 직접 추가됩니다\n• .ico 파일에는 모든 표준 해상도(16×16에서 256×256까지)가 자동으로 포함됩니다\n• 모자이크에 .ico 파일이 있는 한 ICO 형식이 이러한 아카이브에서 지원되지 않으므로 CBZ 아카이브에 저장이 차단됩니다. .ico 파일을 별도로 내보내고(Ctrl+C 후 Windows 폴더에 붙여넣기), 저장하기 전에 모자이크에서 삭제하세요.",
     "batch_convert": "일괄 변환",
-    "batch_convert_content": "MosaicView는 모자이크가 비어 있을 때만 사용할 수 있는 세 가지 일괄 변환 기능을 제공합니다. 각각의 원칙은 동일합니다 : 디렉터리를 선택하고, 확인하고, 실시간으로 진행 상황을 추적하고, 최종 요약을 검토합니다. 원본 파일을 휴지통으로 보내는 대신 영구적으로 삭제하는 옵션이 있습니다.\n• CBR → CBZ : 디렉터리와 하위 디렉터리의 모든 CBR (RAR) 파일을 변환합니다. CBR이 실제로 ZIP인 경우 변환 없이 단순히 이름이 변경됩니다.\n• PDF → CBZ : 디렉터리와 하위 디렉터리의 모든 PDF 파일을 변환합니다. 이미지는 재압축 없이 추출됩니다.\n• 단독 이미지 → CBZ : 디렉터리와 하위 디렉터리에서 발견된 각 이미지 파일에 대해 개별 CBZ를 생성합니다. 잘못되었거나 손상되었거나 여러 페이지 (TIFF) 또는 애니메이션 (GIF) 이미지는 무시되고 로그에 기록됩니다.",
+    "batch_convert_content": "MosaicView는 모자이크가 비어 있을 때만 사용할 수 있는 다섯 가지 일괄 변환 기능을 제공합니다. 각각의 원칙은 동일합니다: 디렉터리를 선택하고, 확인하고, 실시간으로 진행 상황을 확인하고, 최종 요약을 검토합니다. 원본 파일을 휴지통에 보내는 대신 영구적으로 삭제하는 옵션이 있습니다.\n• CBR → CBZ: 디렉터리와 하위 디렉터리의 모든 CBR (RAR) 파일을 변환합니다. CBR이 실제로 ZIP, 7z 또는 TAR인 경우 변환 없이 올바른 확장자 (.cbz, .cb7 또는 .cbt)로 이름이 변경됩니다. 이름 변경된 파일과 오류가 로그에 기록됩니다.\n• CB7 → CBZ: 디렉터리와 하위 디렉터리의 모든 CB7 (7-Zip) 파일을 변환합니다. CB7이 실제로 ZIP, RAR 또는 TAR인 경우 변환 없이 올바른 확장자 (.cbz, .cbr 또는 .cbt)로 이름이 변경됩니다. 이름 변경된 파일과 오류가 로그에 기록됩니다.\n• CBT → CBZ: 디렉터리와 하위 디렉터리의 모든 CBT (TAR) 파일을 변환합니다. CBT가 실제로 ZIP, RAR 또는 7z인 경우 변환 없이 올바른 확장자 (.cbz, .cbr 또는 .cb7)로 이름이 변경됩니다. 이름 변경된 파일과 오류가 로그에 기록됩니다.\n• PDF → CBZ: 디렉터리와 하위 디렉터리의 모든 PDF 파일을 변환합니다. 이미지는 재압축 없이 추출됩니다.\n• 단독 이미지 → CBZ: 디렉터리와 하위 디렉터리에서 찾은 각 이미지 파일에 대해 개별 CBZ를 만듭니다. 유효하지 않거나, 손상되거나, 다중 페이지(TIFF)이거나 애니메이션(GIF) 이미지는 무시되고 로그에 기록됩니다.",
     "config_open_temp_folder": "임시 폴더 열기",
     "icon_toolbar": "아이콘 도구 모음",
     "icon_toolbar_content": "아이콘 도구 모음은 응용 프로그램의 주요 기능에 빠르게 접근할 수 있게 해줍니다. 아이콘을 도구 모음 안에서 직접 끌어다 놓아 원하는 대로 재정렬할 수 있습니다. 표시하거나 숨길 아이콘을 선택하려면 도구 모음 하단의 톱니바퀴 버튼을 클릭하세요: 구성 창이 열리며 활성 도구 모음과 예비 공간 사이에서 아이콘을 이동할 수 있습니다. « + » 및 « − » 버튼을 사용하여 아이콘 크기를 조정하세요. 구성은 자동으로 저장됩니다.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "pIqaD 글꼴 저장",
     "export_tengwar_fonts": "tengwar 글꼴 저장",
     "view_on_github": "GitHub에서 소스 코드 보기",
-    "check_for_updates": "업데이트 확인"
+    "check_for_updates": "업데이트 확인",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "업데이트",

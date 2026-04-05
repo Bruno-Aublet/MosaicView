@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "I macil Helcaraxëo i hentanor carinwa parmalingweo",
   "buttons": {
-    "open_file": "Panya CBZ/CBR/CB7/PDF",
+    "open_file": "Panya CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Hanta i parma",
     "create_cbz": "Cára raincelma CBZ",
     "flatten_dirs": "Horya illi parmi\nat rómenna ar nauta\ni aldassë",
@@ -49,9 +49,7 @@
     "no": "Lá",
     "renumber_recommended": "Alasse sina kirya (marta)",
     "ignore_and_save": "Númen na kirya na marta",
-    "rename_to_cbz": "Essecenta .cbz-nna",
     "open_without_rename": "Panya sí essecenta",
-    "rename_to_cbr": "Essecenda .cbr-s",
     "adjustments": "Calima,\ncontrasta sív.",
     "batch_cbr_to_cbz": "Rimba yuldar\n CBR tengwi CBZ-nna",
     "batch_pdf_to_cbz": "Yalumea PDF\n parmar CBZ-nna",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Cuilina",
     "delete_selected": "Hauta",
     "save": "Harya",
-    "rename_to_cb7": "Esselye .cb7 senna",
     "split_ui": "Quantë parma omentiennar",
-    "unsplit_ui": "Telpë ve parma"
+    "unsplit_ui": "Telpë ve parma",
+    "rename_to_ext": "Esselenta {ext}-nna",
+    "batch_cb7_to_cbz": "Lotë canta CB7\n fílion na CBZ",
+    "batch_cbt_to_cbz": "Lotë canta CBT\n fílion na CBZ"
   },
   "tabs": {
     "mosaic": "Mossaica",
@@ -130,10 +130,12 @@
       "save_to_folder": "Estalë i massë nahtaina",
       "adjustments": "Calima, contrasta, culini...",
       "refresh_mosaic": "Envinyata i mosaic (F5)",
-      "create_ico": "Carë .ico quetta"
+      "create_ico": "Carë .ico quetta",
+      "straighten": "Lempina lómë...",
+      "clone_zone": "Óre fëa lúmequenta..."
     },
     "canvas_no_file": {
-      "open": "Panya CBZ/CBR/CB7/PDF",
+      "open": "Panya CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Parmar yéni",
       "clear_history": "Pusta i lúmënyassë"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Mathornor uvanimë",
         "message": "I mathornor hildë uvanë ú-carir sí ar né hlaraina:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "I parma '{file}' ua formë coimas TA-quanta ú-lómë."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Apsene i turindë\n{count} parma - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Úcara panya hiryaina: sina '{filename}' parma ná CBZ, lá CBR. Essecenta?",
+    "extension_mismatch_generic": {
+      "message": "Formë coimas essa ú-marta: i parma '{filename}' {real} ná, ú {declared}. Esselenta?",
       "title": "Incorrect extension"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Lauva tecma tecina: sina '{filename}' parma na CBR, la CBZ. Essecenda?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Quetta cotumo úsie: i quetta '{filename}' ná CB7, lá CBZ/CBR. Esselye?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ parmar nar coitaner ZIP coimas, i coimas lerta ar panta. CBR parmar, ananta, nar coitaner RAR coimas, i coimas i seldo.\n\nMosaicView pol apantie CBR parmar han UnRAR, i tanwe cenwa RARlab ar lerta coitaner.\n\nMbar auta: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Cen UnRAR Tërvantë",
     "saving_cbz": "Tecina... {percent}%",
-    "empty_canvas_line1": "Apa sina min po lamna parmar CBZ/CBR/CB7/PDF po i tier",
+    "empty_canvas_line1": "Apa sina min po lamna parmar CBZ/CBR/CB7/CBT/PDF po i tier",
     "empty_canvas_line2": "Ye parma panar, nalyuvar apa ette parmar",
     "empty_canvas_line3": "Lanta er hya nandi maitale ohtatë aistanë",
     "icon_toolbar_config_title": "Tengwa tirno palantíreva",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR tengwi navinnë i enyalies:",
       "complete_message_errors": "{count} CBR tengwi navinnë {total}-llo i enyalies:",
       "errors_count": "{count} apsa(r) hirnë.",
-      "renamed_count": "{count} tengwe(r) estainessë CBZ-nna",
-      "rarfile_unavailable": "I module rarfile ua lala. Uin pol quenta i CBR file."
+      "rarfile_unavailable": "I module rarfile ua lala. Uin pol quenta i CBR file.",
+      "renamed_cbz_count": "{count} file(r) essë cantanë CBZ",
+      "renamed_cb7_count": "{count} file(r) essë cantanë CB7",
+      "renamed_cbt_count": "{count} file(r) essë cantanë CBT"
     },
     "close_warning": {
       "title": "Etelë!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Open an archive",
-      "filter_archives": "Archives (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Quantar (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "All files (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Images (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "All files (*)"
     },
-    "see_log": "CENA LOG"
+    "see_log": "CENA LOG",
+    "straighten_viewer": {
+      "title": "Lempina",
+      "instruction": "Tanwa lempina te i má naa ea lemba (hya ortanna) i lómë"
+    },
+    "clone_zone_viewer": {
+      "title": "Óre fëa lúmequenta",
+      "instruction": "Ctrl+tec : anta estel  •  Hyarya tec : carë i lúmequentaina órë",
+      "mode_label": "Estel :",
+      "mode_fixed": "Estel harwa",
+      "mode_relative": "Estel celwa",
+      "brush_size_label": "Quantë :"
+    },
+    "text_viewer": {
+      "title": "Tengwesta Quenta",
+      "instruction": "Teca i nómë ya merил quenta  •  Ctrl+rambor: morna quenta",
+      "size_label": "Rimbe:",
+      "color_label": "Falma:",
+      "bold_btn": "T",
+      "italic_btn": "C",
+      "underline_btn": "U",
+      "apply_btn": "Carë quenta",
+      "pick_color_title": "Sece falma quento"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Centa tehta i mápë CB7 fílenna",
+      "no_cb7_title": "Lá CB7 fíli",
+      "no_cb7_message": "Lá CB7 fíli cennë i mápessë :\n{directory}",
+      "confirm_title": "Lotë canta CB7 na CBZ",
+      "confirm_message": "{count} CB7 fíli cantanë i mápessë {directory} (nu-mápi mitta).",
+      "checkbox_permanent_delete": "Hehta i CB7 fíli yesta tennoio\nan lá senna i rúcinassë (LAUMË NÓTË)",
+      "start_button": "Canta",
+      "converting_title": "Cantala...",
+      "converting_progress": "Cantëa fílë {current} of {total}",
+      "page_progress": "Lépë {current} / {total}",
+      "complete_title": "Canta vanwa",
+      "complete_message": "{count} CB7 fíli cantanë i mápessë :",
+      "complete_message_errors": "{count} CB7 fíli cantanë {total} of i mápessë :",
+      "errors_count": "{count} raxë(li) nótanë.",
+      "renamed_cbz_count": "{count} fílë(li) essetanë na CBZ",
+      "renamed_cbr_count": "{count} fílë(li) essetanë na CBR",
+      "renamed_cbt_count": "{count} fílë(li) essetanë na CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Centa tehta i mápë CBT fílenna",
+      "no_cbt_title": "Lá CBT fíli",
+      "no_cbt_message": "Lá CBT fíli cennë i mápessë :\n{directory}",
+      "confirm_title": "Lotë canta CBT na CBZ",
+      "confirm_message": "{count} CBT fíli cantanë i mápessë {directory} (nu-mápi mitta).",
+      "checkbox_permanent_delete": "Hehta i CBT fíli yesta tennoio\nan lá senna i rúcinassë (LAUMË NÓTË)",
+      "start_button": "Canta",
+      "converting_title": "Cantala...",
+      "converting_progress": "Cantëa fílë {current} of {total}",
+      "page_progress": "Lépë {current} / {total}",
+      "complete_title": "Canta vanwa",
+      "complete_message": "{count} CBT fíli cantanë i mápessë :",
+      "complete_message_errors": "{count} CBT fíli cantanë {total} of i mápessë :",
+      "errors_count": "{count} raxë(li) nótanë.",
+      "renamed_cbz_count": "{count} fílë(li) essetanë na CBZ",
+      "renamed_cbr_count": "{count} fílë(li) essetanë na CBR",
+      "renamed_cb7_count": "{count} fílë(li) essetanë na CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Quetta mahta: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Minya icon formar",
     "icon_toolbar_size_increase": "Alta icon formar",
     "source_loose": "Cálë verya",
-    "source_web": "Cálë verë"
+    "source_web": "Cálë verë",
+    "straighten": "Lempina lómë",
+    "clone_zone": "Óre fëa lúmequenta",
+    "text": "Forma quetta",
+    "batch_cb7_to_cbz": "Canta ilyë CB7 fíli i mápessë\nar nu-mápissen na CBZ.",
+    "batch_cb7_permanent_delete": "VÁQUETË : cé sina tant' is i CB7 fíli\nhehtuvanë tennoio ar cantuvaina\nan lá nótë or rucë.",
+    "batch_cbt_to_cbz": "Canta ilyë CBT fíli i mápessë\nar nu-mápissen na CBZ.",
+    "batch_cbt_permanent_delete": "VÁQUETË : cé sina tant' is i CBT fíli\nhehtuvanë tennoio ar cantuvaina\nan lá nótë or rucë."
   },
   "help": {
     "title": "MosaicView - Nottië návaren",
     "intro": "MosaicView túra lyë an carë ar návië coentëar (parmar parmalion coentuvar) ú-mauya extya lar raincelmalion. I návë turca i quentar CBZ (ZIP), CBR (RAR) ar PDF. I apsa ná mo mahtë te i 64 bittaron héreli.",
     "open_files": "Panya parmar",
-    "open_files_content": "• Naucë i macil 'Panya CBZ/CBR/CB7/PDF'\n• Maldë raica-pata erya parma mi findessë\n• Quentar turcuvar: CBZ, CBR, CB7, PDF, fánar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB tecir mauva esselyar, mal eresse i carinyar tenner nahtanyar (quetie la care).\n• PDF naitaina (palantírë nahtana apantassë): i parma umë pole tentë, raxë quetina.\n• PDF nahtana enqualuvassë (owner password): i quettar lantanë mardenna normályë. MosaicView merin harya copia apantaina i same parmassë. Sí: i quettar carir rossë (WEBP, TIFF, GIF, ICO…) cenitar i formë i umir nainë ná carnë CBZ/CBR i sanda. Nan i parmar sí carë mauya MosaicView.",
+    "open_files_content": "• Tece i tombo 'Panta quanta' hya tanwe quanta mir i ohtar\n• Quentar turcuvar: CBZ, CBR, CB7, CBT, PDF, fánar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB tecir mauva esselyar, mal eresse i carinyar tenner nahtanyar (quetie la care).\n• PDF naitaina (palantírë nahtana apantassë): i parma umë pole tentë, raxë quetina.\n• PDF nahtana enqualuvassë (owner password): i quettar lantanë mardenna normályë. MosaicView merin harya copia apantaina i same parmassë. Sí: i quettar carir rossë (WEBP, TIFF, GIF, ICO…) cenitar i formë i umir nainë ná carnë CBZ/CBR i sanda. Nan i parmar sí carë mauya MosaicView.",
     "mosaic": "I mossaica",
     "mosaic_content": "I quetta calya mi parmar coar neldesse mi lierya ar tixesse. Elyesse:\n• Atarasse parmar yo tulca ar nasta (parma nome sauresse autalle, ar hilyuva i cuina ennome-ohtar)\n• Calya atta parmar (Ctrl+pitya mal Shift+pitya)\n• Utulesse tixe ange yo calqua\n• Esse coasse arca parma yo pitya quentanya\n• Tulca ar nasta lierya essessen (CBZ/CBR/PDF) Windows Explorer vo atta calqua lierya yo onta mavoitya",
     "manipulation": "Návië i parmalion",
@@ -1171,7 +1240,7 @@
     "create_icon": "Carë i coimas",
     "create_icon_content": "MosaicView lelyar tye care coimas-mapar (.ico) ilya tancavë mosaicossë.\n• Forya tanwi i tancavë → 'Carë i coimas'\n• Tangwë i merima nórë i ceniryssë (i coimas nauva tarincë)\n• Cenë i nixë mauya\n• Varyë: i .ico mapa addë coimas mossë\n• I .ico mapar automarë sarnë ilyë commë vanwi (16×16 ter 256×256)\n• Tennoio i .ico mapa ná mosaicossë, i tancë CBZ tancalanna ná harna, an i ICO commë ú-sarnë tancalnar. Ela i .ico mapa enquerissë (Ctrl+C ar pasta Windowsë), sí antar co ohtë mosaicossë anta varyiëllo.",
     "batch_convert": "Rimba sahta",
-    "batch_convert_content": "MosaicView antava nelde hrestale reconvertiennar, euva er mossenna lá quanta. Ilye quenen same laituva: tire parmasta, noque, panta raima tengwi, quanta centa tir. Minu lave quetie yuldar yassen auta lende cormar.\n• CBR → CBZ: ahosta ilye CBR (RAR) parmar mardesse ar undu martasser. Qui CBR ná ZIP, panya anwa ara ahosta.\n• PDF → CBZ: ahosta ilye PDF parmar mardesse ar undu martasser. Tyeller tulinta ara nauta-hostaine.\n• TYELLER ERINIE → CBZ: carne er CBZ ilye tyelle-parma euriene mardesse ar undu martasser. Auta, nauta, leuca (TIFF), ve luine (GIF) tyeller raina ve arca.",
+    "batch_convert_content": "MosaicView antea lembar quenta coivie, i nányë hostaina sí ar engwa i cuina mósaico. Ilya minya, i sáma ná sama: lerta i osto, auta, i sáma ná ringa, i yesta i pangwa. Lembar antëa i nórë i calma i calma i calma.\n• CBR → CBZ: i nórë i calma CBR (RAR) minna osto ar i neldë. Cé CBR ná ZIP, 7z hya TAR, i calma essë (.cbz, .cb7 hya .cbt) úmë. I essenótë calmar ar i raxë nurner.\n• CB7 → CBZ: i nórë i calma CB7 (7-Zip) minna osto ar i neldë. Cé CB7 ná ZIP, RAR hya TAR, i calma essë (.cbz, .cbr hya .cbt) úmë. I essenótë calmar ar i raxë nurner.\n• CBT → CBZ: i nórë i calma CBT (TAR) minna osto ar i neldë. Cé CBT ná ZIP, RAR hya 7z, i calma essë (.cbz, .cbr hya .cb7) úmë. I essenótë calmar ar i raxë nurner.\n• PDF → CBZ: i nórë i calma PDF minna osto ar i neldë. I calmar nurner úmë.\n• CALMAR → CBZ: antëa CBZ ilya calma minna osto ar i neldë. I calmar úmë, i raxë, i parmë (TIFF) hya i lúmë (GIF) nurner.",
     "config_open_temp_folder": "Panya i sanga mahta",
     "icon_toolbar": "Tehtar tanwar",
     "icon_toolbar_content": "I turco i tíron carda poldorëa na eär lúmëo maitar. Polë rehtar i tíroni ar merin sí terë i carda. Á cirya i tíroni i cenuvar ar i moruvár, á tece i rincë rocco andessë i cardava: parë ohta apantëa, sí polë lerta i tíroni ter i carda minya ar i carda lúva. Á yur i parmar « + » ar « − » na marta i coardalë i tírono. I parë inventahtëa ananta.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Harya i téma pIqaD",
     "export_tengwar_fonts": "Harya i témar tengwar",
     "view_on_github": "Quenta GitHub-sse",
-    "check_for_updates": "Cena i vinya"
+    "check_for_updates": "Cena i vinya",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Vinya quettar",

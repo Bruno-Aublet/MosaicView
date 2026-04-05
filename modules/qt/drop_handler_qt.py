@@ -54,6 +54,8 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
 
     from modules.qt.batch_dialogs_qt import (
         batch_convert_cbr_to_cbz_confirm,
+        batch_convert_cb7_to_cbz_confirm,
+        batch_convert_cbt_to_cbz_confirm,
         batch_convert_pdf_to_cbz_confirm,
         batch_convert_img_to_cbz_confirm,
         batch_convert_imgs_to_single_cbz,
@@ -79,6 +81,38 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
             mb.exec()
             return
         batch_convert_cbr_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
+
+    def _make_batch_cb7():
+        files = []
+        for d in dirs:
+            for dirpath, _subdirs, filenames in os.walk(d):
+                for fn in filenames:
+                    if fn.lower().endswith('.cb7'):
+                        files.append(os.path.join(dirpath, fn))
+        files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
+        if not files:
+            mb = QMessageBox(parent)
+            mb.setWindowTitle(_wt("dialogs.batch_cb7.no_cb7_title"))
+            mb.setText(_("dialogs.batch_cb7.no_cb7_message").format(directory=", ".join(dirs)))
+            mb.exec()
+            return
+        batch_convert_cb7_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
+
+    def _make_batch_cbt():
+        files = []
+        for d in dirs:
+            for dirpath, _subdirs, filenames in os.walk(d):
+                for fn in filenames:
+                    if fn.lower().endswith('.cbt'):
+                        files.append(os.path.join(dirpath, fn))
+        files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
+        if not files:
+            mb = QMessageBox(parent)
+            mb.setWindowTitle(_wt("dialogs.batch_cbt.no_cbt_title"))
+            mb.setText(_("dialogs.batch_cbt.no_cbt_message").format(directory=", ".join(dirs)))
+            mb.exec()
+            return
+        batch_convert_cbt_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
 
     def _make_batch_pdf():
         if not PDF_AVAILABLE:
@@ -128,6 +162,8 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
 
     callbacks = {
         'batch_cbr': _make_batch_cbr,
+        'batch_cb7': _make_batch_cb7,
+        'batch_cbt': _make_batch_cbt,
         'batch_pdf': _make_batch_pdf,
         'batch_img': _make_batch_img,
     }

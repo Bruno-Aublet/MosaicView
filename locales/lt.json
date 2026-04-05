@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Skaitmeninių komiksų kolekcininkų Šveicarijos peilis",
   "buttons": {
-    "open_file": "Atidaryti CBZ/CBR/CB7/PDF",
+    "open_file": "Atidaryti CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Uždaryti failą",
     "create_cbz": "Sukurti CBZ archyvą",
     "flatten_dirs": "Perkelti visus failus\nį šakninį katalogą ir ištrinti\npoaplankius",
@@ -49,9 +49,7 @@
     "no": "Ne",
     "renumber_recommended": "Pernumeruoti (rekomenduojama)",
     "ignore_and_save": "Ignoruoti ir išsaugoti",
-    "rename_to_cbz": "Pervadinti į .cbz",
     "open_without_rename": "Atidaryti be pervadinimo",
-    "rename_to_cbr": "Pervadinti į .cbr",
     "adjustments": "Ryškumas,\nkontrastas ir kt.",
     "batch_cbr_to_cbz": "Paketinis CBR failų\n konvertavimas į CBZ",
     "batch_pdf_to_cbz": "Paketinis PDF failų\n konvertavimas į CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Atstatyti",
     "delete_selected": "Ištrinti",
     "save": "Išsaugoti",
-    "rename_to_cb7": "Pervadinti į .cb7",
     "split_ui": "Padalinti sąsają į du skydelius",
-    "unsplit_ui": "Uždaryti antrą skydelį"
+    "unsplit_ui": "Uždaryti antrą skydelį",
+    "rename_to_ext": "Pervardyti į {ext}",
+    "batch_cb7_to_cbz": "Masinis CB7 failų\n konvertavimas į CBZ",
+    "batch_cbt_to_cbz": "Masinis CBT failų\n konvertavimas į CBZ"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -130,10 +130,12 @@
       "save_to_folder": "Eksportuoti pasirinktus puslapius",
       "adjustments": "Ryškumas, kontrastas, spalvos...",
       "refresh_mosaic": "Atnaujinti mozaiką (F5)",
-      "create_ico": "Sukurti .ico failą"
+      "create_ico": "Sukurti .ico failą",
+      "straighten": "Ištiesinti vaizdą...",
+      "clone_zone": "Klonuoti zoną..."
     },
     "canvas_no_file": {
-      "open": "Atidaryti CBZ/CBR/CB7/PDF",
+      "open": "Atidaryti CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Paskutiniai failai",
       "clear_history": "Išvalyti istoriją"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Nepalaikomi failai",
         "message": "Šie failai nėra palaikomi ir buvo ignoruoti:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Failas '{file}' nėra galiojantis TAR archyvas arba yra sugadintas."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Atšaukti konvertavimą\n{count} failas(-ų) - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Aptiktas neteisingas plėtinys: šis '{filename}' failas yra CBZ, o ne CBR. Pervadinti?",
+    "extension_mismatch_generic": {
+      "message": "Aptiktas neteisingas plėtinys: failas '{filename}' yra {real}, o ne {declared}. Pervardyti?",
       "title": "Neteisinga plėtinys"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Aptiktas neteisingas plėtinys: šis '{filename}' failas yra CBR, o ne CBZ. Pervadinti?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Aptiktas neteisingas plėtinys: failas '{filename}' yra CB7, o ne CBZ/CBR. Pervadinti?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ failai yra pagrįsti ZIP formatu, kuris yra laisvas ir atviras formatas. CBR failai, priešingai, yra pagrįsti RAR formatu, kuris yra patentuotas.\n\nMosaicView gali atidaryti CBR failus dėka UnRAR, RARlab sukurtos ir laisvai platinamos priemonės.\n\nOficiali svetainė: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Žiūrėti UnRAR licenciją",
     "saving_cbz": "Išsaugoma... {percent}%",
-    "empty_canvas_line1": "Cia numeskite viena ar daugiau CBZ/CBR/CB7/PDF failu arba savo paveikslus",
+    "empty_canvas_line1": "Cia numeskite viena ar daugiau CBZ/CBR/CB7/CBT/PDF failu arba savo paveikslus",
     "empty_canvas_line2": "Kai failas atidarytas, galite toliau mesti kitus",
     "empty_canvas_line3": "Numeskite vieną ar kelis aplankus, kad pradėtumėte paketinį apdorojimą",
     "icon_toolbar_config_title": "Piktogramų įrankių juostos konfigūracija",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR failų konvertuota kataloge:",
       "complete_message_errors": "{count} CBR failų konvertuota iš {total} kataloge:",
       "errors_count": "{count} klaida(ų) aptikta.",
-      "renamed_count": "{count} failas(ų) pervadintas(ų) į CBZ",
-      "rarfile_unavailable": "Modulis rarfile nepasiekiamas. Nepavyksta konvertuoti CBR failų."
+      "rarfile_unavailable": "Modulis rarfile nepasiekiamas. Nepavyksta konvertuoti CBR failų.",
+      "renamed_cbz_count": "{count} failas(-ai) pervardintas(-i) į CBZ",
+      "renamed_cb7_count": "{count} failas(-ai) pervardintas(-i) į CB7",
+      "renamed_cbt_count": "{count} failas(-ai) pervardintas(-i) į CBT"
     },
     "close_warning": {
       "title": "Dėmesio!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Atidaryti archyvą",
-      "filter_archives": "Archyvai (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Archyvai (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Visi failai (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Vaizdai (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Visi failai (*)"
     },
-    "see_log": "ŽIŪRĖTI ŽURNALĄ"
+    "see_log": "ŽIŪRĖTI ŽURNALĄ",
+    "straighten_viewer": {
+      "title": "Ištiesinimas",
+      "instruction": "Nubrėžkite tiesią liniją ant to, kas turėtų būti horizontalu (arba vertikalu) paveikslėlyje"
+    },
+    "clone_zone_viewer": {
+      "title": "Zonos klonavimas",
+      "instruction": "Ctrl+paspaudimas : nustatyti šaltinį  •  Kairysis paspaudimas : dažyti klonuotą zoną",
+      "mode_label": "Šaltinis :",
+      "mode_fixed": "Fiksuotas šaltinis",
+      "mode_relative": "Santykinis šaltinis",
+      "brush_size_label": "Dydis :"
+    },
+    "text_viewer": {
+      "title": "Įterpti tekstą",
+      "instruction": "Spustelėkite, kur norite įterpti tekstą  •  Ctrl+rodyklės: perkelti tekstą pikseliu",
+      "size_label": "Dydis:",
+      "color_label": "Spalva:",
+      "bold_btn": "P",
+      "italic_btn": "K",
+      "underline_btn": "U",
+      "apply_btn": "Taikyti tekstą",
+      "pick_color_title": "Pasirinkite teksto spalvą"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Pasirinkite katalogą su CB7 failais",
+      "no_cb7_title": "Nėra CB7 failų",
+      "no_cb7_message": "Kataloge nerasta CB7 failų :\n{directory}",
+      "confirm_title": "Masinis CB7 konvertavimas į CBZ",
+      "confirm_message": "{count} CB7 failai konvertuojami kataloge {directory} (įskaitant pakatalogius).",
+      "checkbox_permanent_delete": "Ištrinti originalius CB7 failus visam laikui\nneperkeliant į šiukšliadėžę (NEATŠAUKIAMA)",
+      "start_button": "Pradėti",
+      "converting_title": "Konvertuojama...",
+      "converting_progress": "Konvertuojamas failas {current} iš {total}",
+      "page_progress": "Puslapis {current} / {total}",
+      "complete_title": "Konvertavimas baigtas",
+      "complete_message": "{count} CB7 failai konvertuoti kataloge :",
+      "complete_message_errors": "{count} CB7 failai konvertuoti iš {total} kataloge :",
+      "errors_count": "Įvyko {count} klaida(os).",
+      "renamed_cbz_count": "{count} failas(-ai) pervardintas(-i) į CBZ",
+      "renamed_cbr_count": "{count} failas(-ai) pervardintas(-i) į CBR",
+      "renamed_cbt_count": "{count} failas(-ai) pervardintas(-i) į CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Pasirinkite katalogą su CBT failais",
+      "no_cbt_title": "Nėra CBT failų",
+      "no_cbt_message": "Kataloge nerasta CBT failų :\n{directory}",
+      "confirm_title": "Masinis CBT konvertavimas į CBZ",
+      "confirm_message": "{count} CBT failai konvertuojami kataloge {directory} (įskaitant pakatalogius).",
+      "checkbox_permanent_delete": "Ištrinti originalius CBT failus visam laikui\nneperkeliant į šiukšliadėžę (NEATŠAUKIAMA)",
+      "start_button": "Pradėti",
+      "converting_title": "Konvertuojama...",
+      "converting_progress": "Konvertuojamas failas {current} iš {total}",
+      "page_progress": "Puslapis {current} / {total}",
+      "complete_title": "Konvertavimas baigtas",
+      "complete_message": "{count} CBT failai konvertuoti kataloge :",
+      "complete_message_errors": "{count} CBT failai konvertuoti iš {total} kataloge :",
+      "errors_count": "Įvyko {count} klaida(os).",
+      "renamed_cbz_count": "{count} failas(-ai) pervardintas(-i) į CBZ",
+      "renamed_cbr_count": "{count} failas(-ai) pervardintas(-i) į CBR",
+      "renamed_cb7_count": "{count} failas(-ai) pervardintas(-i) į CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Šaltinio failas: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Sumažinti piktogramų dydį",
     "icon_toolbar_size_increase": "Padidinti piktogramų dydį",
     "source_loose": "Laisvas vaizdas",
-    "source_web": "Žiniatinklio vaizdas"
+    "source_web": "Žiniatinklio vaizdas",
+    "straighten": "Ištiesinti vaizdą",
+    "clone_zone": "Klonuoti zoną",
+    "text": "Pridėti tekstą",
+    "batch_cb7_to_cbz": "Konvertuoja visus CB7 failus kataloge\nir jo pakatalogiuose į CBZ.",
+    "batch_cb7_permanent_delete": "DĖMESIO : jei ši parinktis pažymėta,\noriginalūs CB7 failai bus visam laikui ištrinti\npo konvertavimo be galimybės atkurti.\nĮsitikinkite, kad turite atsarginę kopiją.",
+    "batch_cbt_to_cbz": "Konvertuoja visus CBT failus kataloge\nir jo pakatalogiuose į CBZ.",
+    "batch_cbt_permanent_delete": "DĖMESIO : jei ši parinktis pažymėta,\noriginalūs CBT failai bus visam laikui ištrinti\npo konvertavimo be galimybės atkurti.\nĮsitikinkite, kad turite atsarginę kopiją."
   },
   "help": {
     "title": "MosaicView - Naudojimo instrukcija",
     "intro": "MosaicView leidžia manipuliuoti ir redaguoti komiksus (skaitmeninius komiksus) nereikalaujant jų išpakuoti iš archyvų. Programa palaiko CBZ (ZIP), CBR (RAR) ir PDF formatus. Programėlė suderinama tik su 64 bitų sistemomis.",
     "open_files": "Failų atidarymas",
-    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti CBZ/CBR/CB7/PDF'\n• Arba tiesiog nutempkite failą į langą\n• Palaikomi formatai: CBZ, CBR, CB7, PDF, vaizdai (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus iskeltos tik ju nuotraukos (tekstas ignoruojamas). Pastaba: raudonai rodomos plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo įrašyti atrakintą failo kopiją į tą patį aplanką.",
+    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti failą' arba vilkite failą tiesiai į langą\n• Palaikomi formatai: CBZ, CBR, CB7, CBT, PDF, vaizdai (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus iskeltos tik ju nuotraukos (tekstas ignoruojamas). Pastaba: raudonai rodomos plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo įrašyti atrakintą failo kopiją į tą patį aplanką.",
     "mosaic": "Mozaika",
     "mosaic_content": "Mozaika rodo visus jūsų komikso puslapius kaip miniatiūras. Galite:\n• Pertvarkyti puslapius vilkdami ir numesdami (puslapių numeravimas bus automatinis ir vyks pagal aktyvų pernumeravimo režimą)\n• Pasirinkti kelis puslapius (Ctrl+spustelėjimas arba Shift+spustelėjimas)\n• Reguliuoti miniatiūrų dydį slankikliu\n• Rankiniu būdu pervardyti failus spustelėdami jų pavadinimą\n• Vilkti ir numesti komiksų failus (CBZ/CBR/PDF) iš Windows Explorer tiesiai į kitą atidarytą komiksą, kad sujungtumėte jų turinį",
     "manipulation": "Puslapių manipuliavimas",
@@ -1171,7 +1240,7 @@
     "create_icon": "Sukurti piktogramą",
     "create_icon_content": "MosaicView leidžia kurti piktogramų failus (.ico) iš bet kurio mozaikos vaizdo.\n• Dešiniuoju pelės mygtuku spustelėkite vaizdą → 'Sukurti piktogramą'\n• Apibukite norimo vaizdo sritį peržiūros programoje (piktograma būtinai bus kvadratinė)\n• Prireikus sureguliuokite skaidrumą\n• Patvirtinkite: .ico failas pridedamas tiesiogiai į mozaiką\n• .ico failuose automatiškai yra visos standartinės skiriamosios gebos (nuo 16×16 iki 256×256)\n• Kol mozaikoje yra .ico failas, išsaugojimas CBZ archyve yra užblokuotas, nes ICO formatas nepalaikomas šiuose archyvuose. Eksportuokite .ico failą atskirai (Ctrl+C ir įklijuokite į Windows aplanką), tada prieš išsaugodami ištrinkite jį iš mozaikos.",
     "batch_convert": "Paketinis konvertavimas",
-    "batch_convert_content": "MosaicView siūlo tris paketinio konvertavimo funkcijas, prieinamas tik tada, kai mozaika tuščia. Kiekvienai iš jų principas vienodas : pasirinkite katalogą, patvirtinkite, stebėkite pažangą realiuoju laiku, peržiūrėkite galutinę santrauką. Parinktis leidžia visam laikui ištrinti originalius failus, o ne siųsti juos į šiukšliadėžę.\n• CBR → CBZ : konvertuoja visus CBR (RAR) failus kataloge ir jo aplankuose. Jei CBR iš tikrųjų yra ZIP, jis tiesiog pervadinamas be konvertavimo.\n• PDF → CBZ : konvertuoja visus PDF failus kataloge ir jo aplankuose. Vaizdai ištraukiami be pakartotinio suspaudimo.\n• ATSKIRI VAIZDAI → CBZ : sukuria individualų CBZ kiekvienam kataloge ir jo aplankuose rastam vaizdo failui. Netinkami, sugadinti, kelių puslapių (TIFF) ar animuoti (GIF) vaizdai ignoruojami ir registruojami žurnale.",
+    "batch_convert_content": "MosaicView siūlo penkias paketinio konvertavimo funkcijas, kurios pasiekiamos tik tada, kai mozaika tuščia. Kiekvienai iš jų principas yra tas pats: pasirinkite katalogą, patvirtinkite, stebėkite eigą realiuoju laiku, peržiūrėkite galutinę santrauką. Parinktis leidžia visam laikui ištrinti originalius failus, o ne siųsti juos į šiukšlinę.\n• CBR → CBZ: konvertuoja visus CBR (RAR) failus kataloge ir jo pakatalogiuose. Jei CBR iš tikrųjų yra ZIP, 7z ar TAR, failas pervardijamas tinkamu plėtiniu (.cbz, .cb7 ar .cbt) be konvertavimo. Pervardyti failai ir klaidos įrašomos į žurnalą.\n• CB7 → CBZ: konvertuoja visus CB7 (7-Zip) failus kataloge ir jo pakatalogiuose. Jei CB7 iš tikrųjų yra ZIP, RAR ar TAR, failas pervardijamas tinkamu plėtiniu (.cbz, .cbr ar .cbt) be konvertavimo. Pervardyti failai ir klaidos įrašomos į žurnalą.\n• CBT → CBZ: konvertuoja visus CBT (TAR) failus kataloge ir jo pakatalogiuose. Jei CBT iš tikrųjų yra ZIP, RAR ar 7z, failas pervardijamas tinkamu plėtiniu (.cbz, .cbr ar .cb7) be konvertavimo. Pervardyti failai ir klaidos įrašomos į žurnalą.\n• PDF → CBZ: konvertuoja visus PDF failus kataloge ir jo pakatalogiuose. Vaizdai išskiriami be perkompresavimo.\n• ATSKIRI VAIZDAI → CBZ: sukuria atskirą CBZ kiekvienam kataloge ir jo pakatalogiuose rastam vaizdo failui. Netinkami, sugadinti, kelių puslapių (TIFF) ar animuoti (GIF) vaizdai ignoruojami ir įrašomi į žurnalą.",
     "config_open_temp_folder": "Atidaryti laikiną aplanką",
     "icon_toolbar": "Piktogramų juosta",
     "icon_toolbar_content": "Piktogramų juosta suteikia greitą prieigą prie pagrindinių programos funkcijų. Piktogramas galite išdėstyti pagal savo pageidavimą jas vilkdami tiesiogiai į juostą. Norėdami pasirinkti, kurias piktogramas rodyti ar slėpti, spustelėkite krumpliaračio mygtuką juostos apačioje: atsidaro konfigūracijos langas, kuriame galite perkelti piktogramas tarp aktyviosios juostos ir atsargų. Naudokite mygtukus « + » ir « − » piktogramų dydžiui reguliuoti. Konfigūracija išsaugoma automatiškai.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Išsaugoti pIqaD šriftą",
     "export_tengwar_fonts": "Išsaugoti tengwar šriftus",
     "view_on_github": "Šaltinio kodas GitHub",
-    "check_for_updates": "Tikrinti atnaujinimus"
+    "check_for_updates": "Tikrinti atnaujinimus",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Atnaujinimai",

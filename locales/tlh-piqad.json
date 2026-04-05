@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "De'wI' Soj 'oH digital comics chenmoHwI'pu' ghap",
   "buttons": {
-    "open_file": "CBZ/CBR/CB7/PF ",
+    "open_file": "CBZ/CBR/CB7/CBT/PF ",
     "close_file": " ",
     "create_cbz": "CBZ  ",
     "flatten_dirs": "  \n  \n ",
@@ -49,9 +49,7 @@
     "no": "",
     "renumber_recommended": "  (s)",
     "ignore_and_save": "sh  h",
-    "rename_to_cbz": ".cz  ",
     "open_without_rename": "  ",
-    "rename_to_cbr": ".c  h",
     "adjustments": ",\n ",
     "batch_cbr_to_cbz": " CBR  CBZ\n  ",
     "batch_pdf_to_cbz": "PF \n CBZ  ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "",
     "delete_selected": "",
     "save": "",
-    "rename_to_cb7": ".c7  ",
     "split_ui": "   ",
-    "unsplit_ui": "  "
+    "unsplit_ui": "  ",
+    "rename_to_ext": "{ext}  ",
+    "batch_cb7_to_cbz": "CB7 \n  CBZ  ",
+    "batch_cbt_to_cbz": "CBT \n  CBZ  "
   },
   "tabs": {
     "mosaic": "",
@@ -130,10 +130,12 @@
       "save_to_folder": " ",
       "adjustments": ", , ...",
       "refresh_mosaic": " sic (F5)",
-      "create_ico": " .ic "
+      "create_ico": " .ic ",
+      "straighten": "  ...",
+      "clone_zone": " ..."
     },
     "canvas_no_file": {
-      "open": "CBZ/CBR/CB7/PF ",
+      "open": "CBZ/CBR/CB7/CBT/PF ",
       "recent_files": " ",
       "clear_history": " "
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "  ",
         "message": "   ,  :\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "{file}   TAR  ."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "  \n{count}  - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "   :  {filename} CBZ , CBR .  ?",
+    "extension_mismatch_generic": {
+      "message": "   : {filename} {real} , {declared}  .  ?",
       "title": "cc xsi"
-    },
-    "extension_mismatch_cbr": {
-      "message": "  :  {filename} CBR , CBZ . ?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "  : {filename}  CB7 , CBZ/CBR .  ?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ  ZP  ,    . CBR , , RAR  ,  .\n\nMsicVi CBR   URAR , RAR     .\n\nWsi: <hs://..c/_dd.h>",
     "view_full_unrar_license": "URAR  ",
     "saving_cbz": "... {percent}%",
-    "empty_canvas_line1": "  CBZ/CBR/CB7/PF       ",
+    "empty_canvas_line1": "  CBZ/CBR/CB7/CBT/PF       ",
     "empty_canvas_line2": "         ",
     "empty_canvas_line3": "       ",
     "icon_toolbar_config_title": "ic  cfigi",
@@ -786,8 +785,10 @@
       "complete_message": "s- CBR   {count} :",
       "complete_message_errors": "s- CBR   {count}  {total}-:",
       "errors_count": "{count} () .",
-      "renamed_count": "{count}  ()  CBZ",
-      "rarfile_unavailable": "fi d . c fi ."
+      "rarfile_unavailable": "fi d . c fi .",
+      "renamed_cbz_count": "{count}    CBZ",
+      "renamed_cb7_count": "{count}    CB7",
+      "renamed_cbt_count": "{count}    CBT"
     },
     "close_warning": {
       "title": "!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "O  i",
-      "filter_archives": "Ais (*.cz *.c *.c7 *. *.df)",
+      "filter_archives": "  (*.cz *.c *.c7 *.c *. *.df)",
       "filter_all": "A fis (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "gs (*. *.g *.g *.gif *. *. *.iff *.if *.ic *.fif *.g *.)",
       "filter_all": "A fis (*)"
     },
-    "see_log": " g"
+    "see_log": " g",
+    "straighten_viewer": {
+      "title": " ",
+      "instruction": "  :      —  ( )"
+    },
+    "clone_zone_viewer": {
+      "title": "  ",
+      "instruction": "C+ :     •    : d  ",
+      "mode_label": "  :",
+      "mode_fixed": "  ",
+      "mode_relative": "  ",
+      "brush_size_label": " :"
+    },
+    "text_viewer": {
+      "title": " ",
+      "instruction": "      •  C+:    ",
+      "size_label": "i:",
+      "color_label": ":",
+      "bold_btn": "",
+      "italic_btn": "",
+      "underline_btn": "",
+      "apply_btn": " ",
+      "pick_color_title": "  "
+    },
+    "batch_cb7": {
+      "select_directory_title": "CB7    ",
+      "no_cb7_title": "CB7  ",
+      "no_cb7_message": "CB7    :\n{directory}",
+      "confirm_title": "CB7  CBZ  ",
+      "confirm_message": "{count} CB7   {directory} (  ).",
+      "checkbox_permanent_delete": "CB7   \n    ( )",
+      "start_button": "",
+      "converting_title": "...",
+      "converting_progress": "{total}  {current}  ",
+      "page_progress": " {current} / {total}",
+      "complete_title": " ",
+      "complete_message": "{count} CB7    :",
+      "complete_message_errors": "{total}  {count} CB7   :",
+      "errors_count": "{count} () .",
+      "renamed_cbz_count": "{count} ()   CBZ",
+      "renamed_cbr_count": "{count} ()   CBR",
+      "renamed_cbt_count": "{count} ()   CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "CBT    ",
+      "no_cbt_title": "CBT  ",
+      "no_cbt_message": "CBT    :\n{directory}",
+      "confirm_title": "CBT  CBZ  ",
+      "confirm_message": "{count} CBT   {directory} (  ).",
+      "checkbox_permanent_delete": "CBT   \n    ( )",
+      "start_button": "",
+      "converting_title": "...",
+      "converting_progress": "{total}  {current}  ",
+      "page_progress": " {current} / {total}",
+      "complete_title": " ",
+      "complete_message": "{count} CBT    :",
+      "complete_message_errors": "{total}  {count} CBT   :",
+      "errors_count": "{count} () .",
+      "renamed_cbz_count": "{count} ()   CBZ",
+      "renamed_cbr_count": "{count} ()   CBR",
+      "renamed_cb7_count": "{count} ()   CB7"
+    }
   },
   "tooltip": {
     "source_archive": " : {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "ic  ",
     "icon_toolbar_size_increase": "ic  ",
     "source_loose": " ",
-    "source_web": " "
+    "source_web": " ",
+    "straighten": "  ",
+    "clone_zone": " ",
+    "text": " ",
+    "batch_cb7_to_cbz": " CB7   \n CBZ  .",
+    "batch_cb7_permanent_delete": " :   \nCB7   \n   .",
+    "batch_cbt_to_cbz": " CBT   \n CBZ  .",
+    "batch_cbt_permanent_delete": " :   \nCBT   \n   ."
   },
   "help": {
     "title": "MsicVi -  ",
     "intro": "MsicVi cics (B )        .  CBZ (ZP), CBR (RAR)  PF .  64 i   .",
     "open_files": " ",
-    "open_files_content": "• CBZ/CBR/CB7/PF   \n•   id  \n•  : CBZ, CBR, CB7, PF,  (JPG, PNG, WEBP, BMP, TFF, GF, CO). EPUB    ,     ( ).\n• PF  (   ):  ,  .\n• PF    ( ssd):   . MsicVi  PF    . :      (WEBP, TFF, GF, CO…)  CBZ/CBR     .  MsicVi   .",
+    "open_files_content": "•         \n•  : CBZ, CBR, CB7, CBT, PF,  (JPG, PNG, WEBP, BMP, TFF, GF, CO). EPUB    ,     ( ).\n• PF  (   ):  ,  .\n• PF    ( ssd):   . MsicVi  PF    . :      (WEBP, TFF, GF, CO…)  CBZ/CBR     .  MsicVi   .",
     "mosaic": "",
     "mosaic_content": "zk      hi . :\n•   dg-d  (   ic,       )\n•    (C+cick  hif+cick)\n• hi   sid \n•      cick\n•   (CBZ/CBR/PF) Wids Ex  dg-d     c ",
     "manipulation": " ",
@@ -1171,7 +1240,7 @@
     "create_icon": "c ",
     "create_icon_content": "MsicVi  ic fi (.ic)  sic  .\n• -cick  → c \n• i-   (ic )\n• sc  \n• : .ic fi sic- \n• .ic fis  sdd si (16×16 256×256 ) d \n• .ic fi sic- , CBZ i-  ckd, CO f i  . .ic fi  x (C+C Wids fd- ),  sic-  .",
     "batch_convert": " ",
-    "batch_convert_content": "MsicVi     ,     sik  .  ,    :   , ,     ,     .    igi       .\n• CBR → CBZ :  CBR (RAR)      . CBR ZP ,   ,  .\n• PF → CBZ :  PF      .     .\n• MLLOG MOBW → CBZ :          CBZ .   , , TFF , GF   g .",
+    "batch_convert_content": "MsicVi     ,     .   :  , , , .   .\n• CBR → CBZ:  CBR (RAR)     . CBR ZP, 7z  TAR  ,  ssë (.cz, .c7  .c)  .  ssë  xë .\n• CB7 → CBZ:  CB7 (7-Zi)     . CB7 ZP, RAR  TAR  ,  ssë (.cz, .c  .c)  .  ssë  xë .\n• CBT → CBZ:  CBT (TAR)     . CBT ZP, RAR  7z  ,  ssë (.cz, .c  .c7)  .  ssë  xë .\n• PF → CBZ:  PF     .   .\n•  → CBZ: CBZ       .  , xë, ë (TFF)  úë (GF) .",
     "config_open_temp_folder": "  ",
     "icon_toolbar": "  ",
     "icon_toolbar_content": "c -       .  ic-  -   . ic-       , g  -   : cfigi id ,  ic-      . « + » « − »  -  ic-  . cfigi ic .",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": " ",
     "export_tengwar_fonts": " ",
     "view_on_github": " Gi",
-    "check_for_updates": " "
+    "check_for_updates": " ",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": " ",

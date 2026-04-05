@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "A digitális képregénygyűjtők svájci bicskája",
   "buttons": {
-    "open_file": "CBZ/CBR/CB7/PDF megnyitása",
+    "open_file": "CBZ/CBR/CB7/CBT/PDF megnyitása",
     "close_file": "Fájl bezárása",
     "create_cbz": "CBZ archívum létrehozása",
     "flatten_dirs": "Minden fájl áthelyezése\na gyökérbe és az alkönyvtár\ntörlése",
@@ -49,9 +49,7 @@
     "no": "Nem",
     "renumber_recommended": "Újraszámozás (ajánlott)",
     "ignore_and_save": "Figyelmen kívül hagy és ment",
-    "rename_to_cbz": "Átnevezés .cbz-re",
     "open_without_rename": "Megnyitás átnevezés nélkül",
-    "rename_to_cbr": "Átnevezés .cbr-re",
     "adjustments": "Fényerő,\nkontraszt stb.",
     "batch_cbr_to_cbz": "CBR fájlok kötegelt\n konvertálása CBZ-be",
     "batch_pdf_to_cbz": "PDF fájlok kötegelt\n konvertálása CBZ-be",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Visszaállítás",
     "delete_selected": "Törlés",
     "save": "Mentés",
-    "rename_to_cb7": "Átnevezés .cb7-re",
     "split_ui": "Felület felosztása két panelre",
-    "unsplit_ui": "A második panel bezárása"
+    "unsplit_ui": "A második panel bezárása",
+    "rename_to_ext": "Átnevezés {ext}-re",
+    "batch_cb7_to_cbz": "CB7 fájlok kötegelt\n konvertálása CBZ-vé",
+    "batch_cbt_to_cbz": "CBT fájlok kötegelt\n konvertálása CBZ-vé"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -130,10 +130,12 @@
       "save_to_folder": "Kiválasztott oldalak exportálása",
       "adjustments": "Fényerő, kontraszt, színek...",
       "refresh_mosaic": "Mozaik frissítése (F5)",
-      "create_ico": ".ico fájl létrehozása"
+      "create_ico": ".ico fájl létrehozása",
+      "straighten": "Kép egyenesítése...",
+      "clone_zone": "Zóna klónozása..."
     },
     "canvas_no_file": {
-      "open": "CBZ/CBR/CB7/PDF megnyitása",
+      "open": "CBZ/CBR/CB7/CBT/PDF megnyitása",
       "recent_files": "Legutóbbi fájlok",
       "clear_history": "Előzmények törlése"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Nem támogatott fájlok",
         "message": "A következő fájlok nem támogatottak és figyelmen kívül lettek hagyva:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "A '{file}' fájl nem érvényes TAR archívum, vagy sérült."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Konvertálás megszakítása\n{count} fájl - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Helytelen kiterjesztés észlelve: ez '{filename}' a fájl CBZ, nem CBR. Átnevezi?",
+    "extension_mismatch_generic": {
+      "message": "Helytelen kiterjesztés észlelve: a '{filename}' fájl {real}, nem {declared}. Átnevezés?",
       "title": "Helytelen kiterjesztés"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Helytelen kiterjesztés észlelve: ez '{filename}' a fájl CBR, nem CBZ. Átnevezés?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Helytelen kiterjesztés észlelve: a(z) '{filename}' fájl CB7, nem CBZ/CBR. Átnevezés?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "A CBZ fájlok a ZIP formátumon alapulnak, amely egy szabad és nyílt formátum. A CBR fájlok ezzel szemben a RAR formátumon alapulnak, amely egy szabadalmaztatott formátum.\n\nA MosaicView az UnRAR segítségével tudja megnyitni a CBR fájlokat, ez egy RARlab által fejlesztett és szabadon terjeszthető segédprogram.\n\nHivatalos weboldal: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "UnRAR licenc megtekintése",
     "saving_cbz": "Mentés folyamatban... {percent}%",
-    "empty_canvas_line1": "Dobjon ide egy vagy tobb CBZ/CBR/CB7/PDF fajlt vagy a kepeit",
+    "empty_canvas_line1": "Dobjon ide egy vagy tobb CBZ/CBR/CB7/CBT/PDF fajlt vagy a kepeit",
     "empty_canvas_line2": "Miutan egy fajl meg van nyitva, folytathatja mas fajlok elhelyezeset",
     "empty_canvas_line3": "Ejtsen egy vagy több mappát a kötegelt feldolgozás indításához",
     "icon_toolbar_config_title": "Ikonsor konfigurálása",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR fájl átalakítva a könyvtárban:",
       "complete_message_errors": "{count} CBR fájl átalakítva a(z) {total}-ból a könyvtárban:",
       "errors_count": "{count} hiba találva.",
-      "renamed_count": "{count} fájl átnevezve CBZ-re",
-      "rarfile_unavailable": "A rarfile modul nem érhető el. A CBR fájlok nem konvertálhatók."
+      "rarfile_unavailable": "A rarfile modul nem érhető el. A CBR fájlok nem konvertálhatók.",
+      "renamed_cbz_count": "{count} fájl átnevezve CBZ-re",
+      "renamed_cb7_count": "{count} fájl átnevezve CB7-re",
+      "renamed_cbt_count": "{count} fájl átnevezve CBT-re"
     },
     "close_warning": {
       "title": "Figyelem!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Archívum megnyitása",
-      "filter_archives": "Archívumok (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Archívumok (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Minden fájl (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Képek (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Minden fájl (*)"
     },
-    "see_log": "LOG MEGTEKINTÉSE"
+    "see_log": "LOG MEGTEKINTÉSE",
+    "straighten_viewer": {
+      "title": "Egyenesítés",
+      "instruction": "Rajzoljon egy egyenes vonalat arra, aminek a képen vízszintesnek (vagy függőlegesnek) kell lennie"
+    },
+    "clone_zone_viewer": {
+      "title": "Zóna klónozása",
+      "instruction": "Ctrl+kattintás : forrás megadása  •  Bal kattintás : klónozott zóna festése",
+      "mode_label": "Forrás :",
+      "mode_fixed": "Rögzített forrás",
+      "mode_relative": "Relatív forrás",
+      "brush_size_label": "Méret :"
+    },
+    "text_viewer": {
+      "title": "Szöveg beszúrása",
+      "instruction": "Kattintson oda, ahova szöveget szeretne beilleszteni  •  Ctrl+nyilak: szöveg mozgatása pixelenként",
+      "size_label": "Méret:",
+      "color_label": "Szín:",
+      "bold_btn": "F",
+      "italic_btn": "D",
+      "underline_btn": "A",
+      "apply_btn": "Szöveg alkalmazása",
+      "pick_color_title": "Válasszon szövegszínt"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Válassza ki a CB7 fájlokat tartalmazó mappát",
+      "no_cb7_title": "Nincsenek CB7 fájlok",
+      "no_cb7_message": "Nem találhatók CB7 fájlok a mappában :\n{directory}",
+      "confirm_title": "CB7 fájlok kötegelt konvertálása CBZ-vé",
+      "confirm_message": "{count} CB7 fájl konvertálása a(z) {directory} mappában (almappákat is beleértve).",
+      "checkbox_permanent_delete": "Az eredeti CB7 fájlok végleges törlése\na lomtár megkerülésével (VISSZAVONHATATLAN)",
+      "start_button": "Indítás",
+      "converting_title": "Konvertálás folyamatban...",
+      "converting_progress": "{current}. fájl konvertálása {total}-ból",
+      "page_progress": "{current}. oldal / {total}",
+      "complete_title": "Konvertálás kész",
+      "complete_message": "{count} CB7 fájl konvertálva a mappában :",
+      "complete_message_errors": "{count} CB7 fájl konvertálva {total}-ból a mappában :",
+      "errors_count": "{count} hiba fordult elő.",
+      "renamed_cbz_count": "{count} fájl átnevezve CBZ-re",
+      "renamed_cbr_count": "{count} fájl átnevezve CBR-re",
+      "renamed_cbt_count": "{count} fájl átnevezve CBT-re"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Válassza ki a CBT fájlokat tartalmazó mappát",
+      "no_cbt_title": "Nincsenek CBT fájlok",
+      "no_cbt_message": "Nem találhatók CBT fájlok a mappában :\n{directory}",
+      "confirm_title": "CBT fájlok kötegelt konvertálása CBZ-vé",
+      "confirm_message": "{count} CBT fájl konvertálása a(z) {directory} mappában (almappákat is beleértve).",
+      "checkbox_permanent_delete": "Az eredeti CBT fájlok végleges törlése\na lomtár megkerülésével (VISSZAVONHATATLAN)",
+      "start_button": "Indítás",
+      "converting_title": "Konvertálás folyamatban...",
+      "converting_progress": "{current}. fájl konvertálása {total}-ból",
+      "page_progress": "{current}. oldal / {total}",
+      "complete_title": "Konvertálás kész",
+      "complete_message": "{count} CBT fájl konvertálva a mappában :",
+      "complete_message_errors": "{count} CBT fájl konvertálva {total}-ból a mappában :",
+      "errors_count": "{count} hiba fordult elő.",
+      "renamed_cbz_count": "{count} fájl átnevezve CBZ-re",
+      "renamed_cbr_count": "{count} fájl átnevezve CBR-re",
+      "renamed_cb7_count": "{count} fájl átnevezve CB7-re"
+    }
   },
   "tooltip": {
     "source_archive": "Forrásfájl: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Ikonméret csökkentése",
     "icon_toolbar_size_increase": "Ikonméret növelése",
     "source_loose": "Szabad kép",
-    "source_web": "Webes kép"
+    "source_web": "Webes kép",
+    "straighten": "Kép egyenesítése",
+    "clone_zone": "Zóna klónozása",
+    "text": "Szöveg hozzáadása",
+    "batch_cb7_to_cbz": "A mappában és almappáiban lévő összes\nCB7 fájlt CBZ formátumba konvertálja.",
+    "batch_cb7_permanent_delete": "FIGYELEM : ha ez a beállítás be van jelölve,\naz eredeti CB7 fájlok véglegesen törlésre kerülnek\na konvertálás után visszaállítás lehetősége nélkül.\nGyőződjön meg arról, hogy van biztonsági másolata.",
+    "batch_cbt_to_cbz": "A mappában és almappáiban lévő összes\nCBT fájlt CBZ formátumba konvertálja.",
+    "batch_cbt_permanent_delete": "FIGYELEM : ha ez a beállítás be van jelölve,\naz eredeti CBT fájlok véglegesen törlésre kerülnek\na konvertálás után visszaállítás lehetősége nélkül.\nGyőződjön meg arról, hogy van biztonsági másolata."
   },
   "help": {
     "title": "MosaicView - Útmutató",
     "intro": "A MosaicView lehetővé teszi képregények (digitális képregények) kezelését és módosítását anélkül, hogy ki kellene őket bontani az archívumból. Az alkalmazás támogatja a CBZ (ZIP), CBR (RAR) és PDF formátumokat. Az alkalmazás kizárólag 64 bites rendszerekkel kompatibilis.",
     "open_files": "Fájlok megnyitása",
-    "open_files_content": "• Kattintson a 'CBZ/CBR/CB7/PDF megnyitása' gombra\n• Vagy húzzon be közvetlenül egy fájlt az ablakba\n• Támogatott formátumok: CBZ, CBR, CB7, PDF, képek (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Az EPUB fajlok is megnyithatok, de csak a kepek lesznek kinyerve (a szoveg figyelmen kivul marad).\n• Titkosított PDF (jelszó szükséges a megnyitáshoz): a fájl nem importálható, hibaüzenet jelenik meg.\n• PDF módosítás ellen védett (owner password): az oldalak normálisan importálódnak. A MosaicView felajánlja a feloldott másolat mentését ugyanabba a mappába. Megjegyzés: a piros színnel megjelenített kiterjesztések (WEBP, TIFF, GIF, ICO…) olyan formátumokat jelölnek, amelyek régebbi CBZ/CBR-olvasókkal esetleg nem kompatibilisek. Ezeket a fájlokat azonban a MosaicView normálisan dolgozza fel.",
+    "open_files_content": "• Kattintson a 'Fájl megnyitása' gombra, vagy húzzon egy fájlt közvetlenül az ablakba\n• Támogatott formátumok: CBZ, CBR, CB7, CBT, PDF, képek (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Az EPUB fajlok is megnyithatok, de csak a kepek lesznek kinyerve (a szoveg figyelmen kivul marad).\n• Titkosított PDF (jelszó szükséges a megnyitáshoz): a fájl nem importálható, hibaüzenet jelenik meg.\n• PDF módosítás ellen védett (owner password): az oldalak normálisan importálódnak. A MosaicView felajánlja a feloldott másolat mentését ugyanabba a mappába. Megjegyzés: a piros színnel megjelenített kiterjesztések (WEBP, TIFF, GIF, ICO…) olyan formátumokat jelölnek, amelyek régebbi CBZ/CBR-olvasókkal esetleg nem kompatibilisek. Ezeket a fájlokat azonban a MosaicView normálisan dolgozza fel.",
     "mosaic": "A mozaik",
     "mosaic_content": "A mozaik miniatűrként jeleníti meg a képregény összes oldalát. Lehetőségei:\n• Átrendezheti az oldalakat húzással (az oldalak számozása automatikus lesz, és az aktív átszámozási mód szerint történik)\n• Több oldalt is kijelölhet (Ctrl+kattintás vagy Shift+kattintás)\n• Beállíthatja a miniatűrök méretét a csúszkával\n• Manuálisan átnevezheti a fájlokat a nevükre kattintva\n• Húzhat és ejthet képregényfájlokat (CBZ/CBR/PDF) a Windows Intézőből közvetlenül egy másik nyitott képregénybe a tartalmuk egyesítéséhez",
     "manipulation": "Oldalak kezelése",
@@ -1171,7 +1240,7 @@
     "create_icon": "Ikon létrehozása",
     "create_icon_content": "A MosaicView lehetővé teszi ikonfile-ok (.ico) létrehozását a mozaik bármely képéből.\n• Jobb kattintás egy képre → 'Ikon létrehozása'\n• Keretezze be a kívánt területet a megjelenítőben (az ikon kötelezően négyzetes lesz)\n• Szükség esetén állítsa be az átlátszóságot\n• Erősítse meg: a .ico fájl közvetlenül a mozaikhoz adódik\n• A .ico fájlok automatikusan tartalmazzák az összes szabványos felbontást (16×16-tól 256×256-ig)\n• Amíg .ico fájl van a mozaikban, a CBZ archívumba való mentés le van tiltva, mivel az ICO formátumot ezek az archívumok nem támogatják. Exportálja a .ico fájlt külön (Ctrl+C, majd illessze be egy Windows mappába), majd törölje a mozaikból mentés előtt.",
     "batch_convert": "Kötegelt átalakítás",
-    "batch_convert_content": "A MosaicView három köteges konverziós funkciót kínál, amelyek csak akkor érhetők el, ha a mozaik üres. Mindegyiknél ugyanaz az elv : válasszon egy könyvtárat, erősítse meg, kövesse nyomon a folyamatot valós időben, tekintse át a végső összefoglalót. Egy beállítás lehetővé teszi az eredeti fájlok végleges törlését ahelyett, hogy a lomtárba küldené őket.\n• CBR → CBZ : egy könyvtárban és alkönyvtáraiban lévő összes CBR (RAR) fájlt konvertálja. Ha egy CBR valójában ZIP, egyszerűen átnevezik konverzió nélkül.\n• PDF → CBZ : egy könyvtárban és alkönyvtáraiban lévő összes PDF fájlt konvertálja. A képek újratömörítés nélkül kerülnek kinyerésre.\n• ÖNÁLLÓ KÉPEK → CBZ : egyedi CBZ-t hoz létre a könyvtárban és alkönyvtáraiban talált minden egyes képfájlhoz. Érvénytelen, sérült, többoldalas (TIFF) vagy animált (GIF) képeket a rendszer figyelmen kívül hagyja és naplózza.",
+    "batch_convert_content": "A MosaicView öt kötegelt konvertálási funkciót kínál, amelyek csak akkor érhetők el, ha a mozaik üres. Mindegyiknél ugyanaz az elv: válasszon mappát, erősítse meg, kövesse nyomon a folyamatot valós időben, tekintse át az összefoglalót. Egy lehetőség lehetővé teszi az eredeti fájlok végleges törlését a kukába küldés helyett.\n• CBR → CBZ: az összes CBR (RAR) fájlt konvertálja egy mappában és almappáiban. Ha egy CBR valójában ZIP, 7z vagy TAR, a fájl konvertálás nélkül átnevezésre kerül a helyes kiterjesztéssel (.cbz, .cb7 vagy .cbt). Az átnevezett fájlok és hibák naplózásra kerülnek.\n• CB7 → CBZ: az összes CB7 (7-Zip) fájlt konvertálja egy mappában és almappáiban. Ha egy CB7 valójában ZIP, RAR vagy TAR, a fájl konvertálás nélkül átnevezésre kerül a helyes kiterjesztéssel (.cbz, .cbr vagy .cbt). Az átnevezett fájlok és hibák naplózásra kerülnek.\n• CBT → CBZ: az összes CBT (TAR) fájlt konvertálja egy mappában és almappáiban. Ha egy CBT valójában ZIP, RAR vagy 7z, a fájl konvertálás nélkül átnevezésre kerül a helyes kiterjesztéssel (.cbz, .cbr vagy .cb7). Az átnevezett fájlok és hibák naplózásra kerülnek.\n• PDF → CBZ: az összes PDF fájlt konvertálja egy mappában és almappáiban. A képek újratömörítés nélkül kerülnek kicsomagolásra.\n• ÖNÁLLÓ KÉPEK → CBZ: egyéni CBZ-t hoz létre a mappában és almappáiban talált minden képfájlhoz. Az érvénytelen, sérült, többoldalas (TIFF) vagy animált (GIF) képek figyelmen kívül maradnak és naplózásra kerülnek.",
     "config_open_temp_folder": "Ideiglenes mappa megnyitása",
     "icon_toolbar": "Ikonsáv",
     "icon_toolbar_content": "Az ikonsor gyors hozzáférést biztosít az alkalmazás főbb funkcióihoz. Az ikonokat kedve szerint rendezheti át, közvetlenül a sorba húzva őket. A megjelenítendő vagy elrejtendő ikonok kiválasztásához kattintson a sor alján lévő fogaskerék gombra: megnyílik egy beállítási ablak, amelyben az ikonokat mozgathatja az aktív sor és a tartalék között. A « + » és « − » gombok segítségével módosíthatja az ikonok méretét. A konfiguráció automatikusan mentésre kerül.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "pIqaD betűtípus mentése",
     "export_tengwar_fonts": "Tengwar betűtípusok mentése",
     "view_on_github": "Forráskód a GitHubon",
-    "check_for_updates": "Frissítések keresése"
+    "check_for_updates": "Frissítések keresése",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Frissítések",

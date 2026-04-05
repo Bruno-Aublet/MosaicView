@@ -1116,7 +1116,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
                         _("messages.errors.save_failed.message", error=e)).exec()
             return
 
-    elif ext in (".cbr", ".epub"):
+    elif ext in (".cbr", ".cbt", ".epub"):
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
         if not initial_dir:
             initial_dir = get_config_manager().get('last_open_dir', "")

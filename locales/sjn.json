@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "In iau Suiss in chennedir i govannas dithal",
   "buttons": {
-    "open_file": "Edro CBZ/CBR/CB7/PDF",
+    "open_file": "Edro CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Tegi i bâr",
     "create_cbz": "Caro târ CBZ",
     "flatten_dirs": "Prestegi hain i beirain\nna i rhaud a deleb\ni and-garador",
@@ -49,9 +49,7 @@
     "no": "Ú",
     "renumber_recommended": "Alpharen sui estar (mellon)",
     "ignore_and_save": "Númen na estar na gwaith",
-    "rename_to_cbz": "Esselient i .cbz",
     "open_without_rename": "Paned nu esselient",
-    "rename_to_cbr": "Edhrevia vi .cbr",
     "adjustments": "Galad,\ngwahan etc.",
     "batch_cbr_to_cbz": "Govad-dregiad\n CBR teith na CBZ",
     "batch_pdf_to_cbz": "Govad prestannen\n PDF parth na CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Cuilina",
     "delete_selected": "Hauta",
     "save": "Tirith",
-    "rename_to_cb7": "Esselye .cb7 senna",
     "split_ui": "Narthron i pennas an dú fain",
-    "unsplit_ui": "Dago i fain neledh"
+    "unsplit_ui": "Dago i fain neledh",
+    "rename_to_ext": "Enethol {ext}-na",
+    "batch_cb7_to_cbz": "Lotë cant CB7\n faifin na CBZ",
+    "batch_cbt_to_cbz": "Lotë cant CBT\n faifin na CBZ"
   },
   "tabs": {
     "mosaic": "Mosaig",
@@ -130,10 +130,12 @@
       "save_to_folder": "Orthad in thîl ennorath",
       "adjustments": "Galad, gwahan, cuil...",
       "refresh_mosaic": "Edro i mosaic (F5)",
-      "create_ico": "Bâd .ico parf"
+      "create_ico": "Bâd .ico parf",
+      "straighten": "Trenarna tâl...",
+      "clone_zone": "Glawar i·dôl..."
     },
     "canvas_no_file": {
-      "open": "Edro CBZ/CBR/CB7/PDF",
+      "open": "Edro CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Beirain nui",
       "clear_history": "Mistro i gerth"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Naur i-'wannathon",
         "message": "I naur i-'wannathon hin ú-'wannar, a boe i-'wannathon:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "I pheth '{file}' u dhîn TAR i vaer nâ."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Dago i thrî\n{count} mablung - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Úgor tailad tirnanen: in '{filename}' barth hen na CBZ, ú-CBR. Esselient?",
+    "extension_mismatch_generic": {
+      "message": "Cened 'lass dithen vorn: i pheth '{filename}' {real} bâd, {declared} ú-bâd. Enethol?",
       "title": "Incorrect extension"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Prestanneth gwanneth: in '{filename}' barad hen i CBR, ned i CBZ. Edhrevia?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Quetta cotumo úsie: i quetta '{filename}' ná CB7, lá CBZ/CBR. Esselye?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "I phith CBZ erin ennas ZIP, ennas bain a galadh. I phith CBR, bo dann, erin ennas RAR, ennas herdir.\n\nMosaicView gell egored phith CBR trwy UnRAR, offeryn gwnaed gan RARlab a ellir ei rannu.\n\nGwefan swyddogol: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Gweler Taflen UnRAR",
     "saving_cbz": "Gostana... {percent}%",
-    "empty_canvas_line1": "Tiro nin er min CBZ/CBR/CB7/PDF parf ed i nedh nyn",
+    "empty_canvas_line1": "Tiro nin er min CBZ/CBR/CB7/CBT/PDF parf ed i nedh nyn",
     "empty_canvas_line2": "Pan parf panthir, gerin dago panna edhil",
     "empty_canvas_line3": "Gollyngwch un rest neu fwy i gychwyn gwaith dosrannu",
     "icon_toolbar_config_title": "Tengwa tirno palantíreva",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR teith dregianner vi i thamas:",
       "complete_message_errors": "{count} CBR teith dregianner {total}-o vi i thamas:",
       "errors_count": "{count} rach hirner.",
-      "renamed_count": "{count} teith estainesser na CBZ",
-      "rarfile_unavailable": "I bân rarfile ú-aníra. Ú-chelir i phain CBR."
+      "rarfile_unavailable": "I bân rarfile ú-aníra. Ú-chelir i phain CBR.",
+      "renamed_cbz_count": "{count} faif(in) estent egor CBZ",
+      "renamed_cb7_count": "{count} faif(in) estent egor CB7",
+      "renamed_cbt_count": "{count} faif(in) estent egor CBT"
     },
     "close_warning": {
       "title": "Edregol!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Open an archive",
-      "filter_archives": "Archives (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Phethi (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "All files (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Images (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "All files (*)"
     },
-    "see_log": "GWELAD LOG"
+    "see_log": "GWELAD LOG",
+    "straighten_viewer": {
+      "title": "Trenarn",
+      "instruction": "Tolo trenarn vi i phith i pedim ortheri (egor pendrad) in tâl"
+    },
+    "clone_zone_viewer": {
+      "title": "Glawar i·dôl",
+      "instruction": "Ctrl+tach : gwesto i·chîr  •  Tach hair : gwanna i·dôl glawariel",
+      "mode_label": "Chîr :",
+      "mode_fixed": "Chîr tithren",
+      "mode_relative": "Chîr pendrad",
+      "brush_size_label": "Daur :"
+    },
+    "text_viewer": {
+      "title": "Pedo Parth",
+      "instruction": "Tiro na thar i parth  •  Ctrl+hair: muda parth pixel an pixel",
+      "size_label": "Egor:",
+      "color_label": "Calen:",
+      "bold_btn": "T",
+      "italic_btn": "I",
+      "underline_btn": "U",
+      "apply_btn": "Bâd parth",
+      "pick_color_title": "Egor calen i parth"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Egor i randir o CB7 faif",
+      "no_cb7_title": "No CB7 faif",
+      "no_cb7_message": "No CB7 faif egor i randir :\n{directory}",
+      "confirm_title": "Lotë cant CB7 na CBZ",
+      "confirm_message": "{count} CB7 faif cant i randir {directory} (nu-randir mitta).",
+      "checkbox_permanent_delete": "Hehta i CB7 faif yesta\nan lá senna i rúcin (LAUMË NÓTA)",
+      "start_button": "Canta",
+      "converting_title": "Cantala...",
+      "converting_progress": "Cantëa faif {current} of {total}",
+      "page_progress": "Lépë {current} / {total}",
+      "complete_title": "Canta vanwa",
+      "complete_message": "{count} CB7 faif cantanë i randir :",
+      "complete_message_errors": "{count} CB7 faif cantanë {total} of i randir :",
+      "errors_count": "{count} raxë(li) nótanë.",
+      "renamed_cbz_count": "{count} faif(in) estent egor CBZ",
+      "renamed_cbr_count": "{count} faif(in) estent egor CBR",
+      "renamed_cbt_count": "{count} faif(in) estent egor CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Egor i randir o CBT faif",
+      "no_cbt_title": "No CBT faif",
+      "no_cbt_message": "No CBT faif egor i randir :\n{directory}",
+      "confirm_title": "Lotë cant CBT na CBZ",
+      "confirm_message": "{count} CBT faif cant i randir {directory} (nu-randir mitta).",
+      "checkbox_permanent_delete": "Hehta i CBT faif yesta\nan lá senna i rúcin (LAUMË NÓTA)",
+      "start_button": "Canta",
+      "converting_title": "Cantala...",
+      "converting_progress": "Cantëa faif {current} of {total}",
+      "page_progress": "Lépë {current} / {total}",
+      "complete_title": "Canta vanwa",
+      "complete_message": "{count} CBT faif cantanë i randir :",
+      "complete_message_errors": "{count} CBT faif cantanë {total} of i randir :",
+      "errors_count": "{count} raxë(li) nótanë.",
+      "renamed_cbz_count": "{count} faif(in) estent egor CBZ",
+      "renamed_cbr_count": "{count} faif(in) estent egor CBR",
+      "renamed_cb7_count": "{count} faif(in) estent egor CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Pedhraven: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Diminua gwened icon",
     "icon_toolbar_size_increase": "Cressa gwened icon",
     "source_loose": "Cân forn",
-    "source_web": "Cân gwael"
+    "source_web": "Cân gwael",
+    "straighten": "Trenarna tâl",
+    "clone_zone": "Glawar i·dôl",
+    "text": "Boe peth",
+    "batch_cb7_to_cbz": "Cant ilyë CB7 faif i randir\nar nu-randirissen na CBZ.",
+    "batch_cb7_permanent_delete": "VÁQUETË : cé sina tant' is i CB7 faif\nhehtuvanë tennoio ar cantuvaina\nan lá nóta or rucë.",
+    "batch_cbt_to_cbz": "Cant ilyë CBT faif i randir\nar nu-randirissen na CBZ.",
+    "batch_cbt_permanent_delete": "VÁQUETË : cé sina tant' is i CBT faif\nhehtuvanë tennoio ar cantuvaina\nan lá nóta or rucë."
   },
   "help": {
     "title": "MosaicView - Bâd thuriol",
     "intro": "MosaicView ertha achen na orthad a gohedo gonedir (gondirin golwen) ú-bui na esgeli hain o theirair. I harfuil orthal i thîr CBZ (ZIP), CBR (RAR) a PDF. I thangail nâ celeg na i chin 64 bit er-orath.",
     "open_files": "Edro beirain",
-    "open_files_content": "• Gano ben i vuid 'Edro CBZ/CBR/CB7/PDF'\n• Pedo tíro-pado bâr thennas na harannon\n• Thîr orthol: CBZ, CBR, CB7, PDF, rendir (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB fajli a chui onodded hefyd, ond dim ond eu delweddau a gaiff eu hechdynnu (anwybyddir y testun).\n• PDF naitaina (auth gwend nauthol i agor): ú-'wann i prenn, raeg quetina.\n• PDF nauthol na thírad (owner password): i lef lanthannen thent. MosaicView prestanta i PDF prenn dúlennol i dôl ben. Nod: i pent erui cuinar coll (WEBP, TIFF, GIF, ICO…) prestannen i formath ned-govannen or CBZ/CBR vorn. Nan i phain sain berian e-MosaicView.",
+    "open_files_content": "• Tolo i daur 'Eglo pheth' egor trasto pheth bar i fennas\n• Thîr orthol: CBZ, CBR, CB7, CBT, PDF, rendir (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB fajli a chui onodded hefyd, ond dim ond eu delweddau a gaiff eu hechdynnu (anwybyddir y testun).\n• PDF naitaina (auth gwend nauthol i agor): ú-'wann i prenn, raeg quetina.\n• PDF nauthol na thírad (owner password): i lef lanthannen thent. MosaicView prestanta i PDF prenn dúlennol i dôl ben. Nod: i pent erui cuinar coll (WEBP, TIFF, GIF, ICO…) prestannen i formath ned-govannen or CBZ/CBR vorn. Nan i phain sain berian e-MosaicView.",
     "mosaic": "I mosaig",
     "mosaic_content": "I mosaig gweda hain parth o aen bereth vi thiliol. Ci chem:\n• Athra i parth trî thelia a degir (partha-rem ben automagol, a aphada i cuia enedh-rem maenas)\n• Ethro mî parth (Ctrl+pitha or Shift+pitha)\n• Adloda thilia-sad am i calbar\n• Ailoda eneth i feil trî pitha ha eneth\n• Thelia a degir bereth-feil (CBZ/CBR/PDF) hen Windows Explorer thennas o aen bereth egor ned hadra ha gost",
     "manipulation": "Orthad telleir",
@@ -1171,7 +1240,7 @@
     "create_icon": "Caro i veth tîw",
     "create_icon_content": "MosaicView leithia le caro i veth tîw (.ico) o any picture in i veth mosaig.\n• Nauth mîn i picture → 'Caro i veth tîw'\n• Tangado i mîn i cenirth (i veth tîw nauva côr)\n• Cenno i nixë mauya\n• Varyë: i .ico veth addë coimas mossë\n• I .ico vethi automarë sarnë ilyë commë vanwi (16×16 ter 256×256)\n• Tennoio i .ico veth ná mosaigossë, i tancë CBZ tancalanna ná harna, an i ICO commë ú-sarnë tancalnar. Ela i .ico veth enquerissë (Ctrl+C ar pasta Windowsë), sí antar co ohtë mosaigossë anta varyiëllo.",
     "batch_convert": "Prestanneth rimma",
-    "batch_convert_content": "MosaicView pedra i driau i berthi trosi, gonid ne dim yn y damlun. Ar gyfer pob un, yr egwyddor yw yr un fath: dewis cyfeiriadur, cadarnhau, dilyn y cynnydd mewn amser real, adolygu'r crynodeb terfynol. Mae opsiwn yn caniatáu dileu'r ffeiliau gwreiddiol yn barhaol yn hytrach na'u hanfon i'r bin.\n• CBR → CBZ: yn trosi holl ffeiliau CBR (RAR) mewn cyfeiriadur a'i is-gyfeiriaduron. Os yw CBR mewn gwirionedd yn ZIP, fe'i hailenwir yn syml heb drosi.\n• PDF → CBZ: yn trosi holl ffeiliau PDF mewn cyfeiriadur a'i is-gyfeiriaduron. Mae delweddau yn cael eu tynnu heb ailgywasgu.\n• DELWEDDAU UNIGOL → CBZ: yn creu CBZ unigol ar gyfer pob ffeil ddelwedd a geir yn y cyfeiriadur a'i is-gyfeiriaduron. Mae delweddau annilys, llwgr, aml-dudalen (TIFF) neu animeiddiedig (GIF) yn cael eu hanwybyddu a'u cofnodi mewn log.",
+    "batch_convert_content": "MosaicView pân cîn gwaith hothail, nef i waith annog i thûl. Boe pediad: gwaith estolad, echui, gwestiad dan amser gîn, gwaith pelldad. Pân cîn i nef gwaith hothail.\n• CBR → CBZ: gwaith CBR (RAR) estolad ar i gwaith. Ce CBR ná ZIP, 7z ho TAR, gwaith essë (.cbz, .cb7 ho .cbt) úmë. I gwaith essenótë ar i raxë nurner.\n• CB7 → CBZ: gwaith CB7 (7-Zip) estolad ar i gwaith. Ce CB7 ná ZIP, RAR ho TAR, gwaith essë (.cbz, .cbr ho .cbt) úmë. I gwaith essenótë ar i raxë nurner.\n• CBT → CBZ: gwaith CBT (TAR) estolad ar i gwaith. Ce CBT ná ZIP, RAR ho 7z, gwaith essë (.cbz, .cbr ho .cb7) úmë. I gwaith essenótë ar i raxë nurner.\n• PDF → CBZ: gwaith PDF estolad ar i gwaith. I calmar nurner úmë.\n• CALMAR → CBZ: gwaith CBZ ilya calma estolad ar i gwaith. I calmar úmë, i raxë, i parmë (TIFF) ho i lúmë (GIF) nurner.",
     "config_open_temp_folder": "Edro i sant anann",
     "icon_toolbar": "Bar in glyphi",
     "icon_toolbar_content": "I lŷr ervyr a rydd mynediad cyflym i brif swyddogaethau'r rhaglen. Gallwch aildrefnu'r eiconau yn ôl eich dymuniad drwy eu llusgo'n uniongyrchol i'r lŷr. I ddewis pa eiconau i'w dangos neu eu cuddio, cliciwch ar y botwm olwyn ddanheddog ar waelod y lŷr: agorir ffenestr ffurfweddu lle gallwch symud eiconau rhwng y lŷr weithredol a'r cronfa. Defnyddiwch y botymau « + » a « − » i addasu maint yr eiconau. Cedwir y ffurfweddiad yn awtomatig.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Tangado i têw pIqaD",
     "export_tengwar_fonts": "Tangado i têw tengwar",
     "view_on_github": "Cabed pân i GitHub",
-    "check_for_updates": "Gwelo i 'wanath"
+    "check_for_updates": "Gwelo i 'wanath",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Gwanath newydd",

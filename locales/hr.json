@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Švicarski nož za kolekcionare digitalnih stripova",
   "buttons": {
-    "open_file": "Otvori CBZ/CBR/CB7/PDF",
+    "open_file": "Otvori CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Zatvori datoteku",
     "create_cbz": "Stvori CBZ arhivu",
     "flatten_dirs": "Premjesti sve datoteke\nu korijen i izbriši\npodmape",
@@ -49,9 +49,7 @@
     "no": "Ne",
     "renumber_recommended": "Promijeniti brojeve (preporučeno)",
     "ignore_and_save": "Ignoriraj i spremi",
-    "rename_to_cbz": "Preimenuj u .cbz",
     "open_without_rename": "Otvori bez preimenovanja",
-    "rename_to_cbr": "Preimenuj u .cbr",
     "adjustments": "Svjetlina,\nkontrast itd.",
     "batch_cbr_to_cbz": "Skupna pretvorba\n CBR datoteka u CBZ",
     "batch_pdf_to_cbz": "Skupna pretvorba\n PDF datoteka u CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Vrati zadano",
     "delete_selected": "Izbriši",
     "save": "Spremi",
-    "rename_to_cb7": "Preimenuj u .cb7",
     "split_ui": "Podijeli sučelje na dvije ploče",
-    "unsplit_ui": "Zatvori drugu ploču"
+    "unsplit_ui": "Zatvori drugu ploču",
+    "rename_to_ext": "Preimenuj u {ext}",
+    "batch_cb7_to_cbz": "Skupna konverzija\n CB7 datoteka u CBZ",
+    "batch_cbt_to_cbz": "Skupna konverzija\n CBT datoteka u CBZ"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -130,10 +130,12 @@
       "save_to_folder": "Izvezi odabrane stranice",
       "adjustments": "Svjetlina, kontrast, boje...",
       "refresh_mosaic": "Osvježi mozaik (F5)",
-      "create_ico": "Stvori .ico datoteku"
+      "create_ico": "Stvori .ico datoteku",
+      "straighten": "Ispravi sliku...",
+      "clone_zone": "Kloniranje zone..."
     },
     "canvas_no_file": {
-      "open": "Otvori CBZ/CBR/CB7/PDF",
+      "open": "Otvori CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Nedavne datoteke",
       "clear_history": "Obriši povijest"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Nepodržane datoteke",
         "message": "Sljedeće datoteke nisu podržane i bile su zanemarene:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Datoteka '{file}' nije valjani TAR arhiv ili je oštećena."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Poništi pretvorbu\n{count} datoteka - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Otkrivena je neispravna ekstenzija: ova '{filename}' datoteka je CBZ, a ne CBR. Preimenovati?",
+    "extension_mismatch_generic": {
+      "message": "Otkrivena pogrešna ekstenzija: datoteka '{filename}' je {real}, nije {declared}. Preimenovati?",
       "title": "Pogrešna ekstenzija"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Otkrivena netočna ekstenzija: ova '{filename}' datoteka je CBR, a ne CBZ. Preimenovati?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Otkrivena je pogrešna ekstenzija: datoteka '{filename}' je CB7, a ne CBZ/CBR. Preimenuj?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ datoteke temelje se na ZIP formatu, slobodnom i otvorenom formatu. CBR datoteke, s druge strane, temelje se na RAR formatu, vlasničkom formatu.\n\nMosaicView može otvarati CBR datoteke zahvaljujući UnRAR-u, alatu koji je razvio RARlab i koji se može slobodno redistribuirati.\n\nSlužbena web stranica: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Prikaži UnRAR licencu",
     "saving_cbz": "Spremanje u tijeku... {percent}%",
-    "empty_canvas_line1": "Ovdje ispustite jednu ili vise CBZ/CBR/CB7/PDF datoteka ili svoje slike",
+    "empty_canvas_line1": "Ovdje ispustite jednu ili vise CBZ/CBR/CB7/CBT/PDF datoteka ili svoje slike",
     "empty_canvas_line2": "Nakon otvaranja datoteke, mozete nastaviti ispustati druge",
     "empty_canvas_line3": "Ispustite jednu ili više mapa za pokretanje skupne obrade",
     "icon_toolbar_config_title": "Konfiguracija alatne trake ikona",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR datoteka pretvoreno u direktoriju:",
       "complete_message_errors": "{count} CBR datoteka pretvoreno od {total} u direktoriju:",
       "errors_count": "{count} pogrešaka pronađeno.",
-      "renamed_count": "{count} datoteka preimenovano u CBZ",
-      "rarfile_unavailable": "Modul rarfile nije dostupan. Nije moguće konvertirati CBR datoteke."
+      "rarfile_unavailable": "Modul rarfile nije dostupan. Nije moguće konvertirati CBR datoteke.",
+      "renamed_cbz_count": "{count} datoteka(e) preimenovana(e) u CBZ",
+      "renamed_cb7_count": "{count} datoteka(e) preimenovana(e) u CB7",
+      "renamed_cbt_count": "{count} datoteka(e) preimenovana(e) u CBT"
     },
     "close_warning": {
       "title": "Upozorenje!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Otvori arhivu",
-      "filter_archives": "Arhive (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Arhivi (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Sve datoteke (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Slike (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Sve datoteke (*)"
     },
-    "see_log": "POGLEDAJ LOG"
+    "see_log": "POGLEDAJ LOG",
+    "straighten_viewer": {
+      "title": "Ispravljanje",
+      "instruction": "Nacrtajte ravnu liniju na onome što treba biti vodoravno (ili okomito) na slici"
+    },
+    "clone_zone_viewer": {
+      "title": "Kloniranje zone",
+      "instruction": "Ctrl+klik : postavi izvor  •  Lijevi klik : bojaj kloniranu zonu",
+      "mode_label": "Izvor :",
+      "mode_fixed": "Fiksni izvor",
+      "mode_relative": "Relativni izvor",
+      "brush_size_label": "Veličina :"
+    },
+    "text_viewer": {
+      "title": "Umetanje teksta",
+      "instruction": "Kliknite gdje želite umetnuti tekst  •  Ctrl+strelice: pomicanje teksta za piksel",
+      "size_label": "Veličina:",
+      "color_label": "Boja:",
+      "bold_btn": "M",
+      "italic_btn": "K",
+      "underline_btn": "P",
+      "apply_btn": "Primijeni tekst",
+      "pick_color_title": "Odaberite boju teksta"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Odaberite mapu s CB7 datotekama",
+      "no_cb7_title": "Nema CB7 datoteka",
+      "no_cb7_message": "U mapi nisu pronađene CB7 datoteke :\n{directory}",
+      "confirm_title": "Skupna konverzija CB7 u CBZ",
+      "confirm_message": "{count} CB7 datoteka za konverziju u {directory} (uključujući podmape).",
+      "checkbox_permanent_delete": "Trajno brisanje originalnih CB7 datoteka bez\npremještanja u koš (NEMA POVRATA)",
+      "start_button": "Pokreni",
+      "converting_title": "Konverzija u tijeku...",
+      "converting_progress": "Konverzija datoteke {current} od {total}",
+      "page_progress": "Stranica {current} / {total}",
+      "complete_title": "Konverzija dovršena",
+      "complete_message": "{count} CB7 datoteka konvertirano u mapi :",
+      "complete_message_errors": "{count} CB7 datoteka konvertirano od {total} u mapi :",
+      "errors_count": "Pronađeno {count} greška(e).",
+      "renamed_cbz_count": "{count} datoteka(e) preimenovana(e) u CBZ",
+      "renamed_cbr_count": "{count} datoteka(e) preimenovana(e) u CBR",
+      "renamed_cbt_count": "{count} datoteka(e) preimenovana(e) u CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Odaberite mapu s CBT datotekama",
+      "no_cbt_title": "Nema CBT datoteka",
+      "no_cbt_message": "U mapi nisu pronađene CBT datoteke :\n{directory}",
+      "confirm_title": "Skupna konverzija CBT u CBZ",
+      "confirm_message": "{count} CBT datoteka za konverziju u {directory} (uključujući podmape).",
+      "checkbox_permanent_delete": "Trajno brisanje originalnih CBT datoteka bez\npremještanja u koš (NEMA POVRATA)",
+      "start_button": "Pokreni",
+      "converting_title": "Konverzija u tijeku...",
+      "converting_progress": "Konverzija datoteke {current} od {total}",
+      "page_progress": "Stranica {current} / {total}",
+      "complete_title": "Konverzija dovršena",
+      "complete_message": "{count} CBT datoteka konvertirano u mapi :",
+      "complete_message_errors": "{count} CBT datoteka konvertirano od {total} u mapi :",
+      "errors_count": "Pronađeno {count} greška(e).",
+      "renamed_cbz_count": "{count} datoteka(e) preimenovana(e) u CBZ",
+      "renamed_cbr_count": "{count} datoteka(e) preimenovana(e) u CBR",
+      "renamed_cb7_count": "{count} datoteka(e) preimenovana(e) u CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Izvorna datoteka: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Smanji veličinu ikona",
     "icon_toolbar_size_increase": "Povećaj veličinu ikona",
     "source_loose": "Slobodna slika",
-    "source_web": "Web slika"
+    "source_web": "Web slika",
+    "straighten": "Ispravi sliku",
+    "clone_zone": "Kloniranje zone",
+    "text": "Dodaj tekst",
+    "batch_cb7_to_cbz": "Konvertira sve CB7 datoteke u mapi\ni njezinim podmapama u CBZ.",
+    "batch_cb7_permanent_delete": "UPOZORENJE : ako je ova opcija označena,\noriginalne CB7 datoteke bit će trajno obrisane\nnakon konverzije bez mogućnosti oporavka.\nUvjerite se da imate sigurnosnu kopiju.",
+    "batch_cbt_to_cbz": "Konvertira sve CBT datoteke u mapi\ni njezinim podmapama u CBZ.",
+    "batch_cbt_permanent_delete": "UPOZORENJE : ako je ova opcija označena,\noriginalne CBT datoteke bit će trajno obrisane\nnakon konverzije bez mogućnosti oporavka.\nUvjerite se da imate sigurnosnu kopiju."
   },
   "help": {
     "title": "MosaicView - Upute za korištenje",
     "intro": "MosaicView vam omogućuje manipulaciju i uređivanje stripova (digitalnih knjiga stripova) bez potrebe za izvlačenjem iz arhiva. Aplikacija podržava CBZ (ZIP), CBR (RAR) i PDF formate. Aplikacija je kompatibilna isključivo sa 64-bitnim sustavima.",
     "open_files": "Otvaranje datoteka",
-    "open_files_content": "• Kliknite na gumb 'Otvori CBZ/CBR/CB7/PDF'\n• Ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, PDF, slike (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB datoteke se takoder mogu otvoriti, ali ce biti izvucene samo njihove slike (tekst se ignorira).\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u isti mapu. Napomena: ekstenzije prikazane crvenom bojom (WEBP, TIFF, GIF, ICO…) označavaju formate koji su potencijalno nekompatibilni sa starijim čitačima CBZ/CBR. MosaicView ipak obrađuje ove datoteke normalno.",
+    "open_files_content": "• Kliknite gumb 'Otvori datoteku' ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB datoteke se takoder mogu otvoriti, ali ce biti izvucene samo njihove slike (tekst se ignorira).\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u isti mapu. Napomena: ekstenzije prikazane crvenom bojom (WEBP, TIFF, GIF, ICO…) označavaju formate koji su potencijalno nekompatibilni sa starijim čitačima CBZ/CBR. MosaicView ipak obrađuje ove datoteke normalno.",
     "mosaic": "Mozaik",
     "mosaic_content": "Mozaik prikazuje sve stranice vašeg stripa kao sličice. Možete:\n• Promijeniti raspored stranica povlačenjem i ispuštanjem (numeriranje stranica bit će automatsko i provest će se prema aktivnom načinu prenumeriranja)\n• Odabrati više stranica (Ctrl+klik ili Shift+klik)\n• Prilagoditi veličinu sličica klizačem\n• Ručno preimenovati datoteke klikom na njihovo ime\n• Povući i ispustiti datoteke stripova (CBZ/CBR/PDF) iz Windows Explorera izravno u drugi otvoreni strip za spajanje njihovog sadržaja",
     "manipulation": "Manipulacija stranicama",
@@ -1171,7 +1240,7 @@
     "create_icon": "Stvori ikonu",
     "create_icon_content": "MosaicView vam omogućuje stvaranje datoteka ikona (.ico) iz bilo koje slike u mozaiku.\n• Desni klik na sliku → 'Stvori ikonu'\n• Uokvirite željeno područje u pregledniku (ikona će obavezno biti kvadratna)\n• Po potrebi podesite prozirnost\n• Potvrdite: datoteka .ico dodaje se izravno u mozaik\n• Datoteke .ico automatski sadrže sve standardne rezolucije (od 16×16 do 256×256)\n• Dok god je u mozaiku prisutna datoteka .ico, spremanje u CBZ arhivu je blokirano jer format ICO nije podržan u tim arhivama. Izvezite datoteku .ico zasebno (Ctrl+C pa zalijepite u Windows mapu), zatim je izbrišite iz mozaika prije spremanja.",
     "batch_convert": "Skupna pretvorba",
-    "batch_convert_content": "MosaicView nudi tri funkcije grupnog konvertiranja, dostupne samo kada je mozaik prazan. Za svaku od njih, načelo je isto : odaberite direktorij, potvrdite, pratite napredak u stvarnom vremenu, pregledajte konačni sažetak. Opcija omogućuje trajno brisanje izvornih datoteka umjesto slanja u smeće.\n• CBR → CBZ : konvertira sve CBR (RAR) datoteke u direktoriju i njegovim poddirektorijima. Ako je CBR zapravo ZIP, jednostavno se preimenuje bez konverzije.\n• PDF → CBZ : konvertira sve PDF datoteke u direktoriju i njegovim poddirektorijima. Slike se izdvajaju bez ponovne kompresije.\n• IZOLIRANE SLIKE → CBZ : stvara pojedinačni CBZ za svaku datoteku slike pronađenu u direktoriju i njegovim poddirektorijima. Nevažeće, oštećene, višestranične (TIFF) ili animirane (GIF) slike se zanemaruju i bilježe u log.",
+    "batch_convert_content": "MosaicView nudi pet funkcija skupne konverzije, dostupnih samo kada je mozaik prazan. Za svaku od njih princip je isti: odaberite direktorij, potvrdite, pratite napredak u stvarnom vremenu, pregledajte konačni sažetak. Opcija omogućuje trajno brisanje izvornih datoteka umjesto slanja u koš za smeće.\n• CBR → CBZ: pretvara sve CBR (RAR) datoteke u direktoriju i njegovim poddirektorijima. Ako je CBR zapravo ZIP, 7z ili TAR, datoteka se preimenuje s ispravnom ekstenzijom (.cbz, .cb7 ili .cbt) bez pretvorbe. Preimenovane datoteke i pogreške bilježe se u zapisnik.\n• CB7 → CBZ: pretvara sve CB7 (7-Zip) datoteke u direktoriju i njegovim poddirektorijima. Ako je CB7 zapravo ZIP, RAR ili TAR, datoteka se preimenuje s ispravnom ekstenzijom (.cbz, .cbr ili .cbt) bez pretvorbe. Preimenovane datoteke i pogreške bilježe se u zapisnik.\n• CBT → CBZ: pretvara sve CBT (TAR) datoteke u direktoriju i njegovim poddirektorijima. Ako je CBT zapravo ZIP, RAR ili 7z, datoteka se preimenuje s ispravnom ekstenzijom (.cbz, .cbr ili .cb7) bez pretvorbe. Preimenovane datoteke i pogreške bilježe se u zapisnik.\n• PDF → CBZ: pretvara sve PDF datoteke u direktoriju i njegovim poddirektorijima. Slike se izvlače bez ponovne kompresije.\n• POJEDINAČNE SLIKE → CBZ: stvara individualni CBZ za svaku slikovnu datoteku pronađenu u direktoriju i njegovim poddirektorijima. Nevažeće, oštećene, višestranične (TIFF) ili animirane (GIF) slike ignoriraju se i bilježe u zapisnik.",
     "config_open_temp_folder": "Otvori privremenu mapu",
     "icon_toolbar": "Alatna traka ikona",
     "icon_toolbar_content": "Alatna traka s ikonama omogućuje brz pristup glavnim funkcijama aplikacije. Ikone možete rasporediti po svojoj volji povlačenjem izravno u traku. Za odabir koje ikone prikazati ili sakriti, kliknite na gumb zupčanika na dnu trake: otvori se prozor za konfiguraciju u kojemu možete premještati ikone između aktivne trake i rezerve. Koristite gumbe « + » i « − » za podešavanje veličine ikona. Konfiguracija se sprema automatski.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Spremi font pIqaD",
     "export_tengwar_fonts": "Spremi fontove tengwar",
     "view_on_github": "Izvorni kod na GitHubu",
-    "check_for_updates": "Provjeri ažuriranja"
+    "check_for_updates": "Provjeri ažuriranja",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Ažuriranja",

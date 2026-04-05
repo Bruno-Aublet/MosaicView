@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "An scian Eilvéiseach do bhailitheoir grianghraf digiteach",
   "buttons": {
-    "open_file": "Oscail CBZ/CBR/CB7/PDF",
+    "open_file": "Oscail CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Dún an comhad",
     "create_cbz": "Cruthaigh cartlann CBZ",
     "flatten_dirs": "Bog gach comhad\nchuig an bhfréamh agus scrios\nan fhochomhadlann",
@@ -49,9 +49,7 @@
     "no": "Níl",
     "renumber_recommended": "Athuimhrigh (molta)",
     "ignore_and_save": "Déan neamhaird agus sábháil",
-    "rename_to_cbz": "Athainmnigh go .cbz",
     "open_without_rename": "Oscail gan athainmniú",
-    "rename_to_cbr": "Athainmnigh go .cbr",
     "adjustments": "Gile,\ncodarsnacht srl.",
     "batch_cbr_to_cbz": "Tiontú baisce\n comhad CBR go CBZ",
     "batch_pdf_to_cbz": "Tiontú baiscíoch\n comhad PDF go CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Athshocraigh",
     "delete_selected": "Scrios",
     "save": "Sábháil",
-    "rename_to_cb7": "Athainmnigh go .cb7",
     "split_ui": "Roinn an comhéadan ina dhá phainéal",
-    "unsplit_ui": "Dún an dara painéal"
+    "unsplit_ui": "Dún an dara painéal",
+    "rename_to_ext": "Athainmnigh go {ext}",
+    "batch_cb7_to_cbz": "Tiontú baisc\n comhaid CB7 go CBZ",
+    "batch_cbt_to_cbz": "Tiontú baisc\n comhaid CBT go CBZ"
   },
   "tabs": {
     "mosaic": "Mósáic",
@@ -130,10 +130,12 @@
       "save_to_folder": "Easpórtáil leathanaigh roghnaithe",
       "adjustments": "Gile, codarsnacht, dathanna...",
       "refresh_mosaic": "Athnuaigh an mósáic (F5)",
-      "create_ico": "Cruthaigh comhad .ico"
+      "create_ico": "Cruthaigh comhad .ico",
+      "straighten": "Díriú íomhá...",
+      "clone_zone": "Crios a chlónáil..."
     },
     "canvas_no_file": {
-      "open": "Oscail CBZ/CBR/CB7/PDF",
+      "open": "Oscail CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Comhaid le déanaí",
       "clear_history": "Glan an stair"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Comhaid gan tacaíocht",
         "message": "Níl tacaíocht ag na comhaid seo a leanas agus rinneadh iad a fhágáil ar lár:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Níl '{file}' ina chartlann TAR bailí nó tá sé truaillithe."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Cealaigh an tiontú\n{count} comhad - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Iarmhír mhícheart braite: is '{filename}' CBZ é an comhad seo, ní CBR. Athainmnigh?",
+    "extension_mismatch_generic": {
+      "message": "Síneadh mícheart aitheanta: is {real} é '{filename}', ní {declared}. Athainmnigh?",
       "title": "Iarmhír mhícheart"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Síneadh mícheart braite: is '{filename}' CBR é an comhad seo, ní CBZ. Athainmnigh?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Iarmhír mhícheart aimsíodh: is CB7 an comhad '{filename}', ní CBZ/CBR. Athainmnigh?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "Tá comhaid CBZ bunaithe ar fhormáid ZIP, formáid shaor agus oscailte. Tá comhaid CBR, áfach, bunaithe ar fhormáid RAR, formáid dhílseánaigh.\n\nIs féidir le MosaicView comhaid CBR a oscailt le cabhair UnRAR, fóntais arna fhorbairt ag RARlab agus is féidir é a athdháileadh go saor.\n\nSuíomh oifigiúil: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Féach ar Cheadúnas UnRAR",
     "saving_cbz": "Sábháil ar siúl... {percent}%",
-    "empty_canvas_line1": "Cuir anseo comhad amhain no nios mo CBZ/CBR/CB7/PDF no do chuid iomhanna",
+    "empty_canvas_line1": "Cuir anseo comhad amhain no nios mo CBZ/CBR/CB7/CBT/PDF no do chuid iomhanna",
     "empty_canvas_line2": "Nuair a bheidh comhad oscailte, is feidir leat leanunt ar aghaidh ag cur ceann eile",
     "empty_canvas_line3": "Caith fillteán amháin nó níos mó chun próiseáil bhaisc a thosú",
     "icon_toolbar_config_title": "Cumraíocht barra deilbhíní",
@@ -786,8 +785,10 @@
       "complete_message": "{count} comhad CBR tiontaithe sa chomhadlann:",
       "complete_message_errors": "{count} comhad CBR tiontaithe as {total} sa chomhadlann:",
       "errors_count": "{count} earráid(í) aimsithe.",
-      "renamed_count": "{count} comhad athainmnithe go CBZ",
-      "rarfile_unavailable": "Níl an modúl rarfile ar fáil. Ní féidir comhaid CBR a thiontú."
+      "rarfile_unavailable": "Níl an modúl rarfile ar fáil. Ní féidir comhaid CBR a thiontú.",
+      "renamed_cbz_count": "{count} comhad(comhaid) athainmnithe go CBZ",
+      "renamed_cb7_count": "{count} comhad(comhaid) athainmnithe go CB7",
+      "renamed_cbt_count": "{count} comhad(comhaid) athainmnithe go CBT"
     },
     "close_warning": {
       "title": "Rabhadh!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Oscail cartlann",
-      "filter_archives": "Cartlanna (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Cartlanna (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Gach comhad (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Íomhánna (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Gach comhad (*)"
     },
-    "see_log": "FÉACH AR AN LOG"
+    "see_log": "FÉACH AR AN LOG",
+    "straighten_viewer": {
+      "title": "Díriú",
+      "instruction": "Tarraing líne dhíreach ar a bhfuil le bheith cothrománach (nó ingearach) san íomhá"
+    },
+    "clone_zone_viewer": {
+      "title": "Clónáil Criosanna",
+      "instruction": "Ctrl+cliceáil : socraigh foinse  •  Clé-chliceáil : péinteáil an crios clónáilte",
+      "mode_label": "Foinse :",
+      "mode_fixed": "Foinse sheasta",
+      "mode_relative": "Foinse choibhneasta",
+      "brush_size_label": "Méid :"
+    },
+    "text_viewer": {
+      "title": "Cuir téacs isteach",
+      "instruction": "Cliceáil áit ar mhaith leat an téacs a chur  •  Ctrl+saigheada: bog téacs pixel ar phixel",
+      "size_label": "Méid:",
+      "color_label": "Dath:",
+      "bold_btn": "T",
+      "italic_btn": "I",
+      "underline_btn": "F",
+      "apply_btn": "Cuir an téacs i bhfeidhm",
+      "pick_color_title": "Roghnaigh dath an téacs"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Roghnaigh an eolaire ina bhfuil comhaid CB7",
+      "no_cb7_title": "Níl aon chomhaid CB7",
+      "no_cb7_message": "Níor aimsíodh aon chomhaid CB7 san eolaire :\n{directory}",
+      "confirm_title": "Tiontú baisc CB7 go CBZ",
+      "confirm_message": "{count} comhaid CB7 le tiontú in {directory} (fo-eolairí san áireamh).",
+      "checkbox_permanent_delete": "Scrios na comhaid CB7 bunaidh go buan gan\niad a chur sa bhosca bruscair (NÍ FÉIDIR CUR INA CHOINNE)",
+      "start_button": "Tosaigh",
+      "converting_title": "Ag tiontú...",
+      "converting_progress": "Ag tiontú comhad {current} as {total}",
+      "page_progress": "Leathanach {current} / {total}",
+      "complete_title": "Tiontú críochnaithe",
+      "complete_message": "{count} comhaid CB7 tiontaithe san eolaire :",
+      "complete_message_errors": "{count} comhaid CB7 tiontaithe as {total} san eolaire :",
+      "errors_count": "Tharla {count} earráid(í).",
+      "renamed_cbz_count": "Athainmníodh {count} comhad(comhaid) go CBZ",
+      "renamed_cbr_count": "Athainmníodh {count} comhad(comhaid) go CBR",
+      "renamed_cbt_count": "Athainmníodh {count} comhad(comhaid) go CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Roghnaigh an eolaire ina bhfuil comhaid CBT",
+      "no_cbt_title": "Níl aon chomhaid CBT",
+      "no_cbt_message": "Níor aimsíodh aon chomhaid CBT san eolaire :\n{directory}",
+      "confirm_title": "Tiontú baisc CBT go CBZ",
+      "confirm_message": "{count} comhaid CBT le tiontú in {directory} (fo-eolairí san áireamh).",
+      "checkbox_permanent_delete": "Scrios na comhaid CBT bunaidh go buan gan\niad a chur sa bhosca bruscair (NÍ FÉIDIR CUR INA CHOINNE)",
+      "start_button": "Tosaigh",
+      "converting_title": "Ag tiontú...",
+      "converting_progress": "Ag tiontú comhad {current} as {total}",
+      "page_progress": "Leathanach {current} / {total}",
+      "complete_title": "Tiontú críochnaithe",
+      "complete_message": "{count} comhaid CBT tiontaithe san eolaire :",
+      "complete_message_errors": "{count} comhaid CBT tiontaithe as {total} san eolaire :",
+      "errors_count": "Tharla {count} earráid(í).",
+      "renamed_cbz_count": "Athainmníodh {count} comhad(comhaid) go CBZ",
+      "renamed_cbr_count": "Athainmníodh {count} comhad(comhaid) go CBR",
+      "renamed_cb7_count": "Athainmníodh {count} comhad(comhaid) go CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Comhad foinse: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Laghdaigh méid na ndeilbhíní",
     "icon_toolbar_size_increase": "Méadaigh méid na ndeilbhíní",
     "source_loose": "Íomhá scaoilte",
-    "source_web": "Íomhá gréasáin"
+    "source_web": "Íomhá gréasáin",
+    "straighten": "Díriú íomhá",
+    "clone_zone": "Crios a chlónáil",
+    "text": "Cuir téacs leis",
+    "batch_cb7_to_cbz": "Tiontaíonn sé gach comhad CB7 in eolaire\nagus a fho-eolairí go CBZ.",
+    "batch_cb7_permanent_delete": "RABHADH : má roghnaítear an rogha seo,\nscriosfar na comhaid CB7 bunaidh go buan\ntar éis an tiontaithe gan féidearthacht aisghabhála.\nCinntigh go bhfuil cúltaca agat.",
+    "batch_cbt_to_cbz": "Tiontaíonn sé gach comhad CBT in eolaire\nagus a fho-eolairí go CBZ.",
+    "batch_cbt_permanent_delete": "RABHADH : má roghnaítear an rogha seo,\nscriosfar na comhaid CBT bunaidh go buan\ntar éis an tiontaithe gan féidearthacht aisghabhála.\nCinntigh go bhfuil cúltaca agat."
   },
   "help": {
     "title": "MosaicView - Treoir",
     "intro": "Ligeann MosaicView duit greannáin (greannáin dhigiteacha) a láimhseáil agus a mhodhnú gan iad a bhaint as a gcartlanna. Tacaíonn an feidhmchlár le formáidí CBZ (ZIP), CBR (RAR) agus PDF. Níl an feidhmchlár comhoiriúnach ach le córais 64 giotán.",
     "open_files": "Comhaid a oscailt",
-    "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail CBZ/CBR/CB7/PDF'\n• Nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, PDF, íomhánna (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Is feidir comhaid EPUB a oscailt freisin, ach ni bheidh ach a n-iomhanna a bhaint amach (deantar neamhaird ar an tecs).\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san fhillteán céanna. Nóta: léiríonn iarmhíreanna i gclódeirge (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamh-chomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, déanann MosaicView na comhaid seo a phróiseáil go gnáth.",
+    "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail comhad' nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, CBT, PDF, íomhánna (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Is feidir comhaid EPUB a oscailt freisin, ach ni bheidh ach a n-iomhanna a bhaint amach (deantar neamhaird ar an tecs).\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san fhillteán céanna. Nóta: léiríonn iarmhíreanna i gclódeirge (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamh-chomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, déanann MosaicView na comhaid seo a phróiseáil go gnáth.",
     "mosaic": "An mhósáic",
     "mosaic_content": "Taispeánann an mhósáic gach leathanach de do ghreannán mar mhionsamhlacha. Is féidir leat:\n• Athshocraigh leathanaigh trí tharraingt agus scaoileadh (beidh uimhriú leathanaigh uathoibríoch, agus leanúidh sé an mód ath-uimhrithe gníomhach)\n• Roghnaigh leathanaigh iolracha (Ctrl+cliceáil nó Shift+cliceáil)\n• Coigeartaigh méid na mionsamhlacha leis an sleamhnán\n• Athainmnigh comhaid de láimh trí chliceáil ar a n-ainm\n• Tarraing agus scaoil comhaid ghreannáin (CBZ/CBR/PDF) ó Windows Explorer go díreach isteach i ngreannán eile atá oscailte chun a n-ábhar a chumasc",
     "manipulation": "Láimhseáil leathanach",
@@ -1171,7 +1240,7 @@
     "create_icon": "Cruthaigh deilbhín",
     "create_icon_content": "Ligeann MosaicView duit comhaid deilbhín (.ico) a chruthú ó aon íomhá sa mhósáic.\n• Cliceáil ar dheis ar íomhá → 'Cruthaigh deilbhín'\n• Cuir imlíne timpeall ar an limistéar atá uait sa luchtaire (beidh an deilbhín cearnach go héigeantach)\n• Coigeartaigh trédhearcacht más gá\n• Deimhnigh: cuirtear an comhad .ico leis an mósáic go díreach\n• Tá gach taifeach caighdeánach (ó 16×16 go 256×256) sna comhaid .ico go huathoibríoch\n• Fad is atá comhad .ico sa mhósáic, tá sábháil i gcartlann CBZ curtha ar ceal, ós rud é nach dtacaítear le formáid ICO sna cartlanna sin. Easpórtáil an comhad .ico ar leithligh (Ctrl+C ansin greamaigh i bhfillteán Windows), ansin scrios é ón mósáic roimh shábháil.",
     "batch_convert": "Tiontú baisc",
-    "batch_convert_content": "Cuireann MosaicView trí fheidhm chomhshóite sraithe ar fáil, atá ar fáil amháin nuair atá an mósáic folamh. I gcás gach ceann díobh, is é an prionsabal céanna é : roghnaigh comhadlann, deimhnigh, lean an dul chun cinn i bhfíor-am, féach ar an achoimre deiridh. Ligeann rogha duit na comhaid bhunaidh a scriosadh go buan in ionad iad a sheoladh chuig an mbosca bruscair.\n• CBR → CBZ : tiontaíonn gach comhad CBR (RAR) i gcomhadlann agus a fho-chomhadlanna. Má tá CBR i ndáiríre ina ZIP, athainmnítear é gan tiontú.\n• PDF → CBZ : tiontaíonn gach comhad PDF i gcomhadlann agus a fho-chomhadlanna. Baintear amach íomhánna gan athchomhbhrú.\n• ÍOMHÁNNA AONAIR → CBZ : cruthaíonn CBZ aonair do gach comhad íomhá a aimsítear sa chomhadlann agus a fho-chomhadlanna. Déantar neamhaird de íomhánna neamhbhailí, truaillithe, il-leathanaigh (TIFF) nó beochana (GIF) agus logáiltear iad.",
+    "batch_convert_content": "Cuireann MosaicView cúig fheidhm chomhshó baisc ar fáil, nach bhfuil ar fáil ach nuair atá an mósáic folamh. Don gach ceann acu, is é an prionsabal céanna: roghnaigh eolaire, deimhnigh, lean an dul chun cinn i bhfíor-am, athbhreithnigh an achoimre deiridh. Ligeann rogha do na comhaid bhunaidh a scriosadh go buan in ionad iad a chur sa bhosca bruscair.\n• CBR → CBZ: tiontaíonn gach comhad CBR (RAR) in eolaire agus a fho-eolairí. Má tá CBR ina ZIP, 7z nó TAR i ndáiríre, athainmnítear an comhad leis an síneadh ceart (.cbz, .cb7 nó .cbt) gan tiontú. Déantar na comhaid athainmnithe agus na hearráidí a logáil.\n• CB7 → CBZ: tiontaíonn gach comhad CB7 (7-Zip) in eolaire agus a fho-eolairí. Má tá CB7 ina ZIP, RAR nó TAR i ndáiríre, athainmnítear an comhad leis an síneadh ceart (.cbz, .cbr nó .cbt) gan tiontú. Déantar na comhaid athainmnithe agus na hearráidí a logáil.\n• CBT → CBZ: tiontaíonn gach comhad CBT (TAR) in eolaire agus a fho-eolairí. Má tá CBT ina ZIP, RAR nó 7z i ndáiríre, athainmnítear an comhad leis an síneadh ceart (.cbz, .cbr nó .cb7) gan tiontú. Déantar na comhaid athainmnithe agus na hearráidí a logáil.\n• PDF → CBZ: tiontaíonn gach comhad PDF in eolaire agus a fho-eolairí. Déantar íomhánna a bhaint gan athchomhbhrú.\n• ÍOMHÁNNA AONAIR → CBZ: cruthaíonn CBZ aonair do gach comhad íomhá san eolaire agus ina fho-eolairí. Déantar íomhánna neamhbhailí, truaillithe, illeathanaigh (TIFF) nó beoite (GIF) a neamhaird agus a logáil.",
     "config_open_temp_folder": "Oscail fillteán sealadach",
     "icon_toolbar": "Barra deilbhíní",
     "icon_toolbar_content": "Tugann an barra deilbhíní rochtain thapa ar phríomhfheidhmeanna an fheidhmchláir. Is féidir leat na deilbhíní a atheagrú de réir mar is mian leat trína dtarraingt díreach sa bharra. Chun a roghnú cé na deilbhíní le taispeáint nó a cheilt, cliceáil ar an gcnaipe roth fiacla ag bun an bharra: osclóidh fuinneog chumraíochta inar féidir leat deilbhíní a bhogadh idir an barra gníomhach agus an cúltaca. Úsáid na cnaipí « + » agus « − » chun méid na ndeilbhíní a choigeartú. Sábháiltear an chumraíocht go huathoibríoch.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Sábháil cló pIqaD",
     "export_tengwar_fonts": "Sábháil clónna tengwar",
     "view_on_github": "Cód foinse ar GitHub",
-    "check_for_updates": "Seiceáil le haghaidh nuashonruithe"
+    "check_for_updates": "Seiceáil le haghaidh nuashonruithe",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Nuashonruithe",

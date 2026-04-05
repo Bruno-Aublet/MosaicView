@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Het Zwitsers zakmes voor verzamelaars van digitale strips",
   "buttons": {
-    "open_file": "CBZ/CBR/CB7/PDF openen",
+    "open_file": "CBZ/CBR/CB7/CBT/PDF openen",
     "close_file": "Bestand sluiten",
     "create_cbz": "CBZ-archief maken",
     "flatten_dirs": "Alle bestanden naar\nde hoofdmap verplaatsen\nen submappen verwijderen",
@@ -49,9 +49,7 @@
     "no": "Nee",
     "renumber_recommended": "Opnieuw nummeren (aanbevolen)",
     "ignore_and_save": "Negeren en opslaan",
-    "rename_to_cbz": "Hernoemen naar .cbz",
     "open_without_rename": "Openen zonder hernoemen",
-    "rename_to_cbr": "Hernoemen naar .cbr",
     "adjustments": "Helderheid,\ncontrast, enz.",
     "batch_cbr_to_cbz": "Batchconversie\n van CBR-bestanden naar CBZ",
     "batch_pdf_to_cbz": "Batchconversie\n van PDF-bestanden naar CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Standaard herstellen",
     "delete_selected": "Verwijderen",
     "save": "Opslaan",
-    "rename_to_cb7": "Hernoem naar .cb7",
     "split_ui": "Interface in twee panelen splitsen",
-    "unsplit_ui": "Tweede paneel sluiten"
+    "unsplit_ui": "Tweede paneel sluiten",
+    "rename_to_ext": "Hernoemen naar {ext}",
+    "batch_cb7_to_cbz": "Batchconversie van\n CB7-bestanden naar CBZ",
+    "batch_cbt_to_cbz": "Batchconversie van\n CBT-bestanden naar CBZ"
   },
   "tabs": {
     "mosaic": "Mozaïek",
@@ -130,10 +130,12 @@
       "save_to_folder": "Geselecteerde pagina's exporteren",
       "adjustments": "Helderheid, contrast, kleuren...",
       "refresh_mosaic": "Mozaïek vernieuwen (F5)",
-      "create_ico": ".ico-bestand aanmaken"
+      "create_ico": ".ico-bestand aanmaken",
+      "straighten": "Afbeelding rechtzetten...",
+      "clone_zone": "Zone klonen..."
     },
     "canvas_no_file": {
-      "open": "CBZ/CBR/CB7/PDF openen",
+      "open": "CBZ/CBR/CB7/CBT/PDF openen",
       "recent_files": "Recente bestanden",
       "clear_history": "Geschiedenis wissen"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Niet-ondersteunde bestanden",
         "message": "De volgende bestanden worden niet ondersteund en zijn genegeerd:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Het bestand '{file}' is geen geldig TAR-archief of is beschadigd."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Conversie annuleren\n{count} bestand(en) - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Onjuiste extensie gedetecteerd: dit bestand is een CBZ, geen CBR. Hernoemen?",
+    "extension_mismatch_generic": {
+      "message": "Onjuiste extensie gedetecteerd: het bestand '{filename}' is een {real}, geen {declared}. Hernoemen?",
       "title": "Onjuiste extensie"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Onjuiste extensie gedetecteerd: het bestand '{filename}' is een CBR, geen CBZ. Hernoemen?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Onjuiste extensie gedetecteerd: het bestand '{filename}' is een CB7, geen CBZ/CBR. Hernoemen?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ-bestanden zijn gebaseerd op het ZIP-formaat, een vrij en open formaat. CBR-bestanden zijn daarentegen gebaseerd op het RAR-formaat, een proprietair formaat.\n\nMosaicView kan CBR-bestanden openen dankzij UnRAR, een hulpprogramma ontwikkeld door RARlab en vrij te herverdelen.\n\nOfficiële website: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "UnRAR-licentie bekijken",
     "saving_cbz": "Opslaan bezig... {percent}%",
-    "empty_canvas_line1": "Zet hier een of meer CBZ/CBR/CB7/PDF-bestanden of uw afbeeldingen neer",
+    "empty_canvas_line1": "Zet hier een of meer CBZ/CBR/CB7/CBT/PDF-bestanden of uw afbeeldingen neer",
     "empty_canvas_line2": "Zodra een bestand is geopend, kunt u andere blijven neerzetten",
     "empty_canvas_line3": "Leg een of meer mappen neer om een batchverwerking te starten",
     "icon_toolbar_config_title": "Configuratie van de pictogrambalk",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR-bestanden geconverteerd in de map:",
       "complete_message_errors": "{count} CBR-bestanden geconverteerd van {total} in de map:",
       "errors_count": "{count} fout(en) aangetroffen.",
-      "renamed_count": "{count} bestand(en) hernoemd naar CBZ",
-      "rarfile_unavailable": "De module rarfile is niet beschikbaar. CBR-bestanden kunnen niet worden geconverteerd."
+      "rarfile_unavailable": "De module rarfile is niet beschikbaar. CBR-bestanden kunnen niet worden geconverteerd.",
+      "renamed_cbz_count": "{count} bestand(en) hernoemd naar CBZ",
+      "renamed_cb7_count": "{count} bestand(en) hernoemd naar CB7",
+      "renamed_cbt_count": "{count} bestand(en) hernoemd naar CBT"
     },
     "close_warning": {
       "title": "Waarschuwing!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Archief openen",
-      "filter_archives": "Archieven (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Archieven (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Alle bestanden (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Afbeeldingen (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Alle bestanden (*)"
     },
-    "see_log": "LOG BEKIJKEN"
+    "see_log": "LOG BEKIJKEN",
+    "straighten_viewer": {
+      "title": "Rechtzetten",
+      "instruction": "Teken een rechte lijn op wat horizontaal (of verticaal) moet zijn in de afbeelding"
+    },
+    "clone_zone_viewer": {
+      "title": "Zone klonen",
+      "instruction": "Ctrl+klik : bron instellen  •  Linker klik : gekloneerde zone schilderen",
+      "mode_label": "Bron :",
+      "mode_fixed": "Vaste bron",
+      "mode_relative": "Relatieve bron",
+      "brush_size_label": "Grootte :"
+    },
+    "text_viewer": {
+      "title": "Tekst invoegen",
+      "instruction": "Klik waar u tekst wilt invoegen  •  Ctrl+pijlen: tekst pixelnauwkeurig verplaatsen",
+      "size_label": "Grootte:",
+      "color_label": "Kleur:",
+      "bold_btn": "V",
+      "italic_btn": "C",
+      "underline_btn": "O",
+      "apply_btn": "Tekst toepassen",
+      "pick_color_title": "Kies tekstkleur"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Selecteer de map met CB7-bestanden",
+      "no_cb7_title": "Geen CB7-bestanden",
+      "no_cb7_message": "Er zijn geen CB7-bestanden gevonden in de map :\n{directory}",
+      "confirm_title": "Batchconversie CB7 naar CBZ",
+      "confirm_message": "{count} CB7-bestanden om te converteren in {directory} (inclusief submappen).",
+      "checkbox_permanent_delete": "Originele CB7-bestanden permanent verwijderen\nzonder naar prullenbak te sturen (NIET ONGEDAAN TE MAKEN)",
+      "start_button": "Starten",
+      "converting_title": "Converteren...",
+      "converting_progress": "Bestand {current} van {total} converteren",
+      "page_progress": "Pagina {current} / {total}",
+      "complete_title": "Conversie voltooid",
+      "complete_message": "{count} CB7-bestanden geconverteerd in de map :",
+      "complete_message_errors": "{count} CB7-bestanden geconverteerd van {total} in de map :",
+      "errors_count": "{count} fout(en) opgetreden.",
+      "renamed_cbz_count": "{count} bestand(en) hernoemd naar CBZ",
+      "renamed_cbr_count": "{count} bestand(en) hernoemd naar CBR",
+      "renamed_cbt_count": "{count} bestand(en) hernoemd naar CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Selecteer de map met CBT-bestanden",
+      "no_cbt_title": "Geen CBT-bestanden",
+      "no_cbt_message": "Er zijn geen CBT-bestanden gevonden in de map :\n{directory}",
+      "confirm_title": "Batchconversie CBT naar CBZ",
+      "confirm_message": "{count} CBT-bestanden om te converteren in {directory} (inclusief submappen).",
+      "checkbox_permanent_delete": "Originele CBT-bestanden permanent verwijderen\nzonder naar prullenbak te sturen (NIET ONGEDAAN TE MAKEN)",
+      "start_button": "Starten",
+      "converting_title": "Converteren...",
+      "converting_progress": "Bestand {current} van {total} converteren",
+      "page_progress": "Pagina {current} / {total}",
+      "complete_title": "Conversie voltooid",
+      "complete_message": "{count} CBT-bestanden geconverteerd in de map :",
+      "complete_message_errors": "{count} CBT-bestanden geconverteerd van {total} in de map :",
+      "errors_count": "{count} fout(en) opgetreden.",
+      "renamed_cbz_count": "{count} bestand(en) hernoemd naar CBZ",
+      "renamed_cbr_count": "{count} bestand(en) hernoemd naar CBR",
+      "renamed_cb7_count": "{count} bestand(en) hernoemd naar CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Bronbestand: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Pictogramgrootte verkleinen",
     "icon_toolbar_size_increase": "Pictogramgrootte vergroten",
     "source_loose": "Los beeld",
-    "source_web": "Webafbeelding"
+    "source_web": "Webafbeelding",
+    "straighten": "Afbeelding rechtzetten",
+    "clone_zone": "Zone klonen",
+    "text": "Tekst toevoegen",
+    "batch_cb7_to_cbz": "Converteert alle CB7-bestanden in een map\nen de submappen ervan naar CBZ.",
+    "batch_cb7_permanent_delete": "WAARSCHUWING : als deze optie is aangevinkt,\nworden de originele CB7-bestanden na de\nconversie permanent verwijderd zonder\nmogelijkheid tot herstel.\nZorg dat u een back-up heeft.",
+    "batch_cbt_to_cbz": "Converteert alle CBT-bestanden in een map\nen de submappen ervan naar CBZ.",
+    "batch_cbt_permanent_delete": "WAARSCHUWING : als deze optie is aangevinkt,\nworden de originele CBT-bestanden na de\nconversie permanent verwijderd zonder\nmogelijkheid tot herstel.\nZorg dat u een back-up heeft."
   },
   "help": {
     "title": "MosaicView - Gebruiksaanwijzing",
     "intro": "MosaicView stelt u in staat om strips (digitale comics) te manipuleren en bewerken zonder ze uit hun archieven te hoeven extraheren. De applicatie ondersteunt de formaten CBZ (ZIP), CBR (RAR) en PDF. De applicatie is alleen compatibel met 64-bitsystemen.",
     "open_files": "Bestanden openen",
-    "open_files_content": "• Klik op de knop 'CBZ/CBR/CB7/PDF openen'\n• Of sleep een bestand rechtstreeks in het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, PDF, afbeeldingen (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geextraheerd (tekst wordt genegeerd).\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan. Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.",
+    "open_files_content": "• Klik op de knop 'Een bestand openen' of sleep een bestand rechtstreeks naar het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, CBT, PDF, afbeeldingen (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geextraheerd (tekst wordt genegeerd).\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan. Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.",
     "mosaic": "Het mozaïek",
     "mosaic_content": "Het mozaïek toont alle pagina's van je strip als miniaturen. Je kunt:\n• Pagina's herschikken door slepen en neerzetten (paginanummering wordt automatisch en volgt de actieve hernummeringsmodus)\n• Meerdere pagina's selecteren (Ctrl+klik of Shift+klik)\n• Miniatuurgrootte aanpassen met de schuifregelaar\n• Bestanden handmatig hernoemen door op hun naam te klikken\n• Stripbestanden (CBZ/CBR/PDF) vanuit Windows Verkenner direct naar een andere geopende strip slepen om hun inhoud samen te voegen",
     "manipulation": "Paginamanipulatie",
@@ -1171,7 +1240,7 @@
     "create_icon": "Pictogram maken",
     "create_icon_content": "MosaicView stelt u in staat pictogrambestanden (.ico) te maken van elke afbeelding in het mozaïek.\n• Rechtsklik op een afbeelding → 'Pictogram maken'\n• Kader het gewenste gebied in de viewer in (het pictogram zal verplicht vierkant zijn)\n• Pas de transparantie aan indien nodig\n• Bevestig: het .ico-bestand wordt direct aan het mozaïek toegevoegd\n• .ico-bestanden bevatten automatisch alle standaardresoluties (van 16×16 tot 256×256)\n• Zolang er een .ico-bestand in het mozaïek aanwezig is, is opslaan in een CBZ-archief geblokkeerd, omdat het ICO-formaat niet wordt ondersteund door deze archieven. Exporteer het .ico-bestand afzonderlijk (Ctrl+C en plakken in een Windows-map), verwijder het daarna uit het mozaïek vóór het opslaan.",
     "batch_convert": "Batchconversie",
-    "batch_convert_content": "MosaicView biedt drie batchconversiefuncties, alleen beschikbaar wanneer het mozaïek leeg is. Voor elk van hen is het principe hetzelfde : selecteer een map, bevestig, volg de voortgang in realtime, bekijk de eindresultaten. Een optie maakt het mogelijk de originele bestanden permanent te verwijderen in plaats van ze naar de prullenbak te sturen.\n• CBR → CBZ : converteert alle CBR (RAR)-bestanden in een map en zijn submappen. Als een CBR eigenlijk een ZIP is, wordt het eenvoudig hernoemd zonder conversie.\n• PDF → CBZ : converteert alle PDF-bestanden in een map en zijn submappen. Afbeeldingen worden geëxtraheerd zonder hercompressie.\n• GEÏSOLEERDE AFBEELDINGEN → CBZ : maakt een individuele CBZ voor elk afbeeldingsbestand dat gevonden wordt in de map en zijn submappen. Ongeldige, beschadigde, meerdere pagina's (TIFF) of geanimeerde (GIF) afbeeldingen worden genegeerd en gelogd.",
+    "batch_convert_content": "MosaicView biedt vijf batchconversiefuncties, die alleen beschikbaar zijn wanneer het mozaïek leeg is. Voor elk ervan is het principe hetzelfde: selecteer een map, bevestig, volg de voortgang in realtime, bekijk de eindtoelichting. Een optie maakt het mogelijk de originele bestanden definitief te verwijderen in plaats van naar de prullenbak te sturen.\n• CBR → CBZ: converteert alle CBR (RAR)-bestanden in een map en zijn submappen. Als een CBR eigenlijk een ZIP, 7z of TAR is, wordt het bestand zonder conversie hernoemd naar de juiste extensie (.cbz, .cb7 of .cbt). Hernoemde bestanden en fouten worden gelogd.\n• CB7 → CBZ: converteert alle CB7 (7-Zip)-bestanden in een map en zijn submappen. Als een CB7 eigenlijk een ZIP, RAR of TAR is, wordt het bestand zonder conversie hernoemd naar de juiste extensie (.cbz, .cbr of .cbt). Hernoemde bestanden en fouten worden gelogd.\n• CBT → CBZ: converteert alle CBT (TAR)-bestanden in een map en zijn submappen. Als een CBT eigenlijk een ZIP, RAR of 7z is, wordt het bestand zonder conversie hernoemd naar de juiste extensie (.cbz, .cbr of .cb7). Hernoemde bestanden en fouten worden gelogd.\n• PDF → CBZ: converteert alle PDF-bestanden in een map en zijn submappen. Afbeeldingen worden geëxtraheerd zonder hercompressie.\n• LOSSE AFBEELDINGEN → CBZ: maakt een individuele CBZ voor elk afbeeldingsbestand in de map en zijn submappen. Ongeldige, beschadigde, meerdere pagina's (TIFF) of geanimeerde (GIF) afbeeldingen worden genegeerd en gelogd.",
     "config_open_temp_folder": "Tijdelijke map openen",
     "icon_toolbar": "Pictogrambalk",
     "icon_toolbar_content": "De werkbalk met pictogrammen biedt snelle toegang tot de belangrijkste functies van de toepassing. U kunt de pictogrammen naar wens herschikken door ze direct in de werkbalk te slepen. Om te kiezen welke pictogrammen worden weergegeven of verborgen, klikt u op de tandwielknop onderaan de werkbalk: er opent een configuratievenster waarin u pictogrammen kunt verplaatsen tussen de actieve werkbalk en de reserve. Gebruik de knoppen « + » en « − » om de grootte van de pictogrammen aan te passen. De configuratie wordt automatisch opgeslagen.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "pIqaD-lettertype opslaan",
     "export_tengwar_fonts": "Tengwar-lettertypen opslaan",
     "view_on_github": "Broncode op GitHub",
-    "check_for_updates": "Controleer op updates"
+    "check_for_updates": "Controleer op updates",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Updates",

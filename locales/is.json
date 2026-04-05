@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Fjölhæfur áhaldi fyrir safnara stafrænna myndasagna",
   "buttons": {
-    "open_file": "Opna CBZ/CBR/CB7/PDF",
+    "open_file": "Opna CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Loka skrá",
     "create_cbz": "Búa til CBZ safnskrá",
     "flatten_dirs": "Færa allar skrár\ní rótina og eyða\nundirmöppum",
@@ -49,9 +49,7 @@
     "no": "Nei",
     "renumber_recommended": "Endurnúmera (ráðlagt)",
     "ignore_and_save": "Hunsa og vista",
-    "rename_to_cbz": "Endurnefna í .cbz",
     "open_without_rename": "Opna án endurnefningar",
-    "rename_to_cbr": "Endurnefna í .cbr",
     "adjustments": "Birtustig,\nandstæða o.fl.",
     "batch_cbr_to_cbz": "Runuumbreytingar\n á CBR-skrám í CBZ",
     "batch_pdf_to_cbz": "Fjöldabreyting\n á PDF skrám í CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Endurstilla",
     "delete_selected": "Eyða",
     "save": "Vista",
-    "rename_to_cb7": "Endurnefna í .cb7",
     "split_ui": "Skipta viðmóti í tvo hluta",
-    "unsplit_ui": "Loka öðrum hlutanum"
+    "unsplit_ui": "Loka öðrum hlutanum",
+    "rename_to_ext": "Endurnefna í {ext}",
+    "batch_cb7_to_cbz": "Lotuvinna CB7-skráa\n í CBZ",
+    "batch_cbt_to_cbz": "Lotuvinna CBT-skráa\n í CBZ"
   },
   "tabs": {
     "mosaic": "Mósaík",
@@ -130,10 +130,12 @@
       "save_to_folder": "Flytja út valdar síður",
       "adjustments": "Birtustig, andstæða, litir...",
       "refresh_mosaic": "Endurglæða mósaík (F5)",
-      "create_ico": "Búa til .ico skrá"
+      "create_ico": "Búa til .ico skrá",
+      "straighten": "Rétta mynd...",
+      "clone_zone": "Klóna svæði..."
     },
     "canvas_no_file": {
-      "open": "Opna CBZ/CBR/CB7/PDF",
+      "open": "Opna CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "Nýlegar skrár",
       "clear_history": "Hreinsa feril"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "Óstudd skrár",
         "message": "Eftirfarandi skrár eru ekki studdar og voru hunsaðar:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Skráin '{file}' er ekki gilt TAR-safn eða er skemmd."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Hætta við umbreytingu\n{count} skrá(r) - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Röng skráarending fannst: þessi '{filename}' skrá er CBZ, ekki CBR. Endurnefna?",
+    "extension_mismatch_generic": {
+      "message": "Rangt skráarending fannst: skráin '{filename}' er {real}, ekki {declared}. Endurnefna?",
       "title": "Rangt skráarendingur"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Rangt viðskeyti fundið: þessi '{filename}' skrá er CBR, ekki CBZ. Endurnefna?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Röng skráarending greind: skráin '{filename}' er CB7, ekki CBZ/CBR. Endurnefna?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "CBZ skrár eru byggðar á ZIP sniðinu, sem er frjálst og opið snið. CBR skrár, hins vegar, eru byggðar á RAR sniðinu, sem er eignarsnið.\n\nMosaicView getur opnað CBR skrár þökk sé UnRAR, tóli þróað af RARlab og frjálst dreifanlegt.\n\nOpinber vefsíða: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Skoða UnRAR leyfi",
     "saving_cbz": "Vista í gangi... {percent}%",
-    "empty_canvas_line1": "Slepptu herna einni eda fleiri CBZ/CBR/CB7/PDF skram eda myndunum thinum",
+    "empty_canvas_line1": "Slepptu herna einni eda fleiri CBZ/CBR/CB7/CBT/PDF skram eda myndunum thinum",
     "empty_canvas_line2": "Thegar skra er opnud geturdu haldid adur ad sleppa odrum",
     "empty_canvas_line3": "Slepptu einni eða fleiri möppum til að hefja lotuvinnslu",
     "icon_toolbar_config_title": "Stilling táknborða",
@@ -786,8 +785,10 @@
       "complete_message": "{count} CBR-skrár umbreyttar í möppunni:",
       "complete_message_errors": "{count} CBR-skrár umbreyttar af {total} í möppunni:",
       "errors_count": "{count} villa(ur) fundin(nar).",
-      "renamed_count": "{count} skrá(r) endurnefnd(ar) í CBZ",
-      "rarfile_unavailable": "rarfile einingin er ekki tiltæk. Ekki er hægt að umbreyta CBR skrám."
+      "rarfile_unavailable": "rarfile einingin er ekki tiltæk. Ekki er hægt að umbreyta CBR skrám.",
+      "renamed_cbz_count": "{count} skrá(r) endurnefnd(ar) í CBZ",
+      "renamed_cb7_count": "{count} skrá(r) endurnefnd(ar) í CB7",
+      "renamed_cbt_count": "{count} skrá(r) endurnefnd(ar) í CBT"
     },
     "close_warning": {
       "title": "Viðvörun!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Opna skjalasafn",
-      "filter_archives": "Skjalasöfn (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Safnar (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Allar skrár (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Myndir (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Allar skrár (*)"
     },
-    "see_log": "SKOÐA LOG"
+    "see_log": "SKOÐA LOG",
+    "straighten_viewer": {
+      "title": "Rétta",
+      "instruction": "Teiknaðu beinan línu á það sem á að vera lárétt (eða lóðrétt) á myndinni"
+    },
+    "clone_zone_viewer": {
+      "title": "Klónun svæðis",
+      "instruction": "Ctrl+smellur : setja upp uppruna  •  Vinstri smellur : mála klónað svæði",
+      "mode_label": "Uppruni :",
+      "mode_fixed": "Fastur uppruni",
+      "mode_relative": "Afstæður uppruni",
+      "brush_size_label": "Stærð :"
+    },
+    "text_viewer": {
+      "title": "Setja inn texta",
+      "instruction": "Smelltu þar sem þú vilt setja inn texta  •  Ctrl+örvar: færa texta píxel fyrir píxel",
+      "size_label": "Stærð:",
+      "color_label": "Litur:",
+      "bold_btn": "F",
+      "italic_btn": "Sk",
+      "underline_btn": "U",
+      "apply_btn": "Nota texta",
+      "pick_color_title": "Veldu textalitur"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Veldu möppu með CB7-skrám",
+      "no_cb7_title": "Engar CB7-skrár",
+      "no_cb7_message": "Engar CB7-skrár fundust í möppunni :\n{directory}",
+      "confirm_title": "Lotuvinna CB7 í CBZ",
+      "confirm_message": "{count} CB7-skrár til umbreytingar í {directory} (undirmöppur innifaldar).",
+      "checkbox_permanent_delete": "Eyða upprunalegum CB7-skrám varanlega án þess\nað senda í ruslafötuna (EKKI AFTURKRÆFT)",
+      "start_button": "Hefja",
+      "converting_title": "Umbreytir...",
+      "converting_progress": "Umbreytir skrá {current} af {total}",
+      "page_progress": "Síða {current} / {total}",
+      "complete_title": "Umbreytingu lokið",
+      "complete_message": "{count} CB7-skrár umbreyttar í möppunni :",
+      "complete_message_errors": "{count} CB7-skrár umbreyttar af {total} í möppunni :",
+      "errors_count": "{count} villa(r) kom upp.",
+      "renamed_cbz_count": "{count} skrá(r) endurnefnd(ar) í CBZ",
+      "renamed_cbr_count": "{count} skrá(r) endurnefnd(ar) í CBR",
+      "renamed_cbt_count": "{count} skrá(r) endurnefnd(ar) í CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Veldu möppu með CBT-skrám",
+      "no_cbt_title": "Engar CBT-skrár",
+      "no_cbt_message": "Engar CBT-skrár fundust í möppunni :\n{directory}",
+      "confirm_title": "Lotuvinna CBT í CBZ",
+      "confirm_message": "{count} CBT-skrár til umbreytingar í {directory} (undirmöppur innifaldar).",
+      "checkbox_permanent_delete": "Eyða upprunalegum CBT-skrám varanlega án þess\nað senda í ruslafötuna (EKKI AFTURKRÆFT)",
+      "start_button": "Hefja",
+      "converting_title": "Umbreytir...",
+      "converting_progress": "Umbreytir skrá {current} af {total}",
+      "page_progress": "Síða {current} / {total}",
+      "complete_title": "Umbreytingu lokið",
+      "complete_message": "{count} CBT-skrár umbreyttar í möppunni :",
+      "complete_message_errors": "{count} CBT-skrár umbreyttar af {total} í möppunni :",
+      "errors_count": "{count} villa(r) kom upp.",
+      "renamed_cbz_count": "{count} skrá(r) endurnefnd(ar) í CBZ",
+      "renamed_cbr_count": "{count} skrá(r) endurnefnd(ar) í CBR",
+      "renamed_cb7_count": "{count} skrá(r) endurnefnd(ar) í CB7"
+    }
   },
   "tooltip": {
     "source_archive": "Upprunaskrá: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Minnka stærð tákna",
     "icon_toolbar_size_increase": "Stækka stærð tákna",
     "source_loose": "Lausmynd",
-    "source_web": "Vefmynd"
+    "source_web": "Vefmynd",
+    "straighten": "Rétta mynd",
+    "clone_zone": "Klóna svæði",
+    "text": "Bæta við texta",
+    "batch_cb7_to_cbz": "Umbreytir öllum CB7-skrám í möppu\nog undirmöppum hennar í CBZ.",
+    "batch_cb7_permanent_delete": "VIÐVÖRUN : ef þessi valkostur er valinn,\nverða upprunalegar CB7-skrár eytt varanlega\neftir umbreytingu án endurheimtumöguleika.\nGakktu úr skugga um að þú hafir öryggisafrit.",
+    "batch_cbt_to_cbz": "Umbreytir öllum CBT-skrám í möppu\nog undirmöppum hennar í CBZ.",
+    "batch_cbt_permanent_delete": "VIÐVÖRUN : ef þessi valkostur er valinn,\nverða upprunalegar CBT-skrár eytt varanlega\neftir umbreytingu án endurheimtumöguleika.\nGakktu úr skugga um að þú hafir öryggisafrit."
   },
   "help": {
     "title": "MosaicView - Notkunarleiðbeiningar",
     "intro": "MosaicView gerir þér kleift að vinna með og breyta teiknimyndabókum (stafrænum stripum) án þess að þurfa að afpakka þeim úr safnskrám. Forritið styður CBZ (ZIP), CBR (RAR) og PDF snið. Forritid er einungis samhæft 64 bita stýrikerfi.",
     "open_files": "Opna skrár",
-    "open_files_content": "• Smelltu á 'Opna CBZ/CBR/CB7/PDF' hnappinn\n• Eða dragðu og slepptu skrá beint í gluggann\n• Studd snið: CBZ, CBR, CB7, PDF, myndir (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Einnig er haegt ad opna EPUB skrar, en aedins verda myndir thyggdar ut (texti er hundsad).\n• Dulkóðuð PDF (lykilorð þarf til að opna): ekki er hægt að flytja inn skrána, villuboð birtast.\n• PDF vernduð gegn breytingum (owner password): síðurnar eru fluttar inn eðlilega. MosaicView býður upp á að vista opið afrit af skránni í sömu möppu. Athugasemd: skráarviðskeyti sýnd með rauðum lit (WEBP, TIFF, GIF, ICO…) gefa til kynna snið sem gætu verið ósamhæf við eldri CBZ/CBR-lesara. Þessar skrár eru þó unnar eðlilega af MosaicView.",
+    "open_files_content": "• Smelltu á hnappinn 'Opna skrá' eða dragðu og slepptu skrá beint í gluggann\n• Studd snið: CBZ, CBR, CB7, CBT, PDF, myndir (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Einnig er haegt ad opna EPUB skrar, en aedins verda myndir thyggdar ut (texti er hundsad).\n• Dulkóðuð PDF (lykilorð þarf til að opna): ekki er hægt að flytja inn skrána, villuboð birtast.\n• PDF vernduð gegn breytingum (owner password): síðurnar eru fluttar inn eðlilega. MosaicView býður upp á að vista opið afrit af skránni í sömu möppu. Athugasemd: skráarviðskeyti sýnd með rauðum lit (WEBP, TIFF, GIF, ICO…) gefa til kynna snið sem gætu verið ósamhæf við eldri CBZ/CBR-lesara. Þessar skrár eru þó unnar eðlilega af MosaicView.",
     "mosaic": "Mósaíkið",
     "mosaic_content": "Mósaíkið sýnir allar síður myndasögunnar þinnar sem smámyndir. Þú getur:\n• Endurraðað síðum með því að draga og sleppa (síðunúmerun verður sjálfvirk og fer eftir virku endurnúmerunarstillingu)\n• Valið margar síður (Ctrl+smella eða Shift+smella)\n• Stillt smámyndastærð með rennisleðanum\n• Endurnefnt skrár handvirkt með því að smella á nafn þeirra\n• Dregið og sleppt myndasagaskrám (CBZ/CBR/PDF) úr Windows Explorer beint inn í aðra opna myndasögu til að sameina efni þeirra",
     "manipulation": "Vinnsla síðna",
@@ -1171,7 +1240,7 @@
     "create_icon": "Búa til tákn",
     "create_icon_content": "MosaicView gerir þér kleift að búa til táknmyndaskrár (.ico) úr hvaða mynd sem er í mósaíkinu.\n• Hægrismelltu á mynd → 'Búa til tákn'\n• Rammadu inn svæðið sem þú vilt í skoðaranum (táknið verður nauðsynlega ferningslaga)\n• Stilltu gegnsæi ef þörf krefur\n• Staðfestu: .ico skráin er bætt beint við mósaíkið\n• .ico skrár innihalda sjálfkrafa allar staðlaðar upplausnanir (frá 16×16 til 256×256)\n• Svo lengi sem .ico skrá er í mósaíkinu er vistun í CBZ safn læst, þar sem ICO snið er ekki stutt af þessum söfnum. Flyttu .ico skrána út sérstaklega (Ctrl+C og límdu í Windows möppu), eyðtu henni síðan úr mósaíkinu áður en þú vistar.",
     "batch_convert": "Hópumbreyting",
-    "batch_convert_content": "MosaicView býður upp á þrjár runuumbreytingaraðgerðir, aðeins tiltækar þegar mósaík er tóm. Fyrir hverja þeirra er meginreglan sú sama : veldu möppu, staðfestu, fylgstu með framvindu í rauntíma, skoðaðu lokaryðið. Valkostur gerir kleift að eyða upprunalegum skrám varanlega í stað þess að senda þær í ruslið.\n• CBR → CBZ : umbreytir öllum CBR (RAR) skrám í möppu og undirmöppum hennar. Ef CBR er í raun ZIP, er það einfaldlega endurnefnt án umbreytingar.\n• PDF → CBZ : umbreytir öllum PDF skrám í möppu og undirmöppum hennar. Myndir eru dregnar út án endurþjöppunar.\n• EINANGRAÐAR MYNDIR → CBZ : býr til einstaka CBZ fyrir hverja myndaskrá sem finnst í möppu og undirmöppum hennar. Ógildar, skemmdar, fjölblaðar (TIFF) eða hreyfimyndar (GIF) myndir eru hunsaðar og skráðar í kladda.",
+    "batch_convert_content": "MosaicView býður upp á fimm runuumreikningsvirkni, sem eru aðeins tiltækar þegar mósaíkið er tómt. Fyrir hvern þeirra er meginreglan sú sama: veldu skrásafn, staðfestu, fylgstu með framvindu í rauntíma, skoðaðu lokasamantektina. Valkostur leyfir varanlega eyðingu upprunalegu skrána í stað þess að senda þær í ruslið.\n• CBR → CBZ: breytir öllum CBR (RAR) skrám í skrásafni og undirskrásöfnum þess. Ef CBR er í raun ZIP, 7z eða TAR er skráin endurnefnd með réttu viðskeytinu (.cbz, .cb7 eða .cbt) án umbreytingar. Endurnefndar skrár og villur eru skráðar.\n• CB7 → CBZ: breytir öllum CB7 (7-Zip) skrám í skrásafni og undirskrásöfnum þess. Ef CB7 er í raun ZIP, RAR eða TAR er skráin endurnefnd með réttu viðskeytinu (.cbz, .cbr eða .cbt) án umbreytingar. Endurnefndar skrár og villur eru skráðar.\n• CBT → CBZ: breytir öllum CBT (TAR) skrám í skrásafni og undirskrásöfnum þess. Ef CBT er í raun ZIP, RAR eða 7z er skráin endurnefnd með réttu viðskeytinu (.cbz, .cbr eða .cb7) án umbreytingar. Endurnefndar skrár og villur eru skráðar.\n• PDF → CBZ: breytir öllum PDF skrám í skrásafni og undirskrásöfnum þess. Myndir eru dregnar út án endurþjöppunar.\n• STAKA MYNDIR → CBZ: býr til einstaka CBZ fyrir hverja myndaskrá í skrásafninu og undirskrásöfnum þess. Ógildar, skemmdar, fjölsíðunar (TIFF) eða hreyfimyndir (GIF) eru hunsaðar og skráðar.",
     "config_open_temp_folder": "Opna tímabundna möppu",
     "icon_toolbar": "Táknaslá",
     "icon_toolbar_content": "Táknslátturinn veitir skjótan aðgang að aðalaðgerðum forritsins. Þú getur endurraðað táknunum að eigin vild með því að draga þau beint í slátturinn. Til að velja hvaða tákn á að sýna eða fela, smelltu á gírtakkann neðst í slátturnum: stillingagluggi opnast þar sem þú getur fært tákn milli virka sláttursins og varabirgðanna. Notaðu « + » og « − » takka til að stilla stærð táknanna. Stillingarnar eru vistaðar sjálfkrafa.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Vista pIqaD leturgerð",
     "export_tengwar_fonts": "Vista tengwar leturgerðir",
     "view_on_github": "Frumkóði á GitHub",
-    "check_for_updates": "Athugaðu uppfærslur"
+    "check_for_updates": "Athugaðu uppfærslur",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Uppfærslur",

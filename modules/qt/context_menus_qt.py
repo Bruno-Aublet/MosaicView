@@ -91,6 +91,8 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     batch_submenu = _make_menu(menu)
     batch_submenu.setTitle(_("menu.batch_convert"))
     batch_submenu.addAction(_("menu.batch_cbr_to_cbz"), callbacks['batch_convert_cbr_to_cbz'])
+    batch_submenu.addAction(_("menu.batch_cb7_to_cbz"), callbacks['batch_convert_cb7_to_cbz'])
+    batch_submenu.addAction(_("menu.batch_cbt_to_cbz"), callbacks['batch_convert_cbt_to_cbz'])
     batch_submenu.addAction(_("menu.batch_pdf_to_cbz"), callbacks['batch_convert_pdf_to_cbz'])
     batch_submenu.addAction(_("menu.batch_img_to_cbz"), callbacks['batch_convert_img_to_cbz'])
     batch_act = menu.addMenu(batch_submenu)
@@ -316,6 +318,21 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
         menu.addAction(_("dialogs.adjustments.window_title"), callbacks['show_image_adjustments_dialog'])
     else:
         _add_disabled(menu, _("dialogs.adjustments.window_title"))
+
+    if bool(st.images_data):
+        menu.addAction(_("context_menu.image.straighten"), callbacks['show_straighten_viewer'])
+    else:
+        _add_disabled(menu, _("context_menu.image.straighten"))
+
+    if bool(st.images_data):
+        menu.addAction(_("context_menu.image.clone_zone"), callbacks['show_clone_zone_viewer'])
+    else:
+        _add_disabled(menu, _("context_menu.image.clone_zone"))
+
+    if bool(st.images_data):
+        menu.addAction(_("context_menu.image.text"), callbacks['show_text_viewer'])
+    else:
+        _add_disabled(menu, _("context_menu.image.text"))
 
     menu.addSeparator()
 

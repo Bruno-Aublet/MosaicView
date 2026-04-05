@@ -2,7 +2,7 @@
   "app_title": "MosaicView",
   "app_baseline": "Il coltellino svizzero per collezionisti di fumetti digitali",
   "buttons": {
-    "open_file": "Apri CBZ/CBR/CB7/PDF",
+    "open_file": "Apri CBZ/CBR/CB7/CBT/PDF",
     "close_file": "Chiudi file",
     "create_cbz": "Crea archivio CBZ",
     "flatten_dirs": "Sposta tutti i file\nalla radice ed elimina\nle sottocartelle",
@@ -49,9 +49,7 @@
     "no": "No",
     "renumber_recommended": "Rinumera (consigliato)",
     "ignore_and_save": "Ignora e salva",
-    "rename_to_cbz": "Rinomina in .cbz",
     "open_without_rename": "Apri senza rinominare",
-    "rename_to_cbr": "Rinomina in .cbr",
     "adjustments": "Luminosità,\ncontrasto, ecc.",
     "batch_cbr_to_cbz": "Conversione in blocco\n di file CBR in CBZ",
     "batch_pdf_to_cbz": "Conversione in blocco\n di file PDF in CBZ",
@@ -59,9 +57,11 @@
     "icon_toolbar_reset": "Ripristina",
     "delete_selected": "Elimina",
     "save": "Salva",
-    "rename_to_cb7": "Rinomina in .cb7",
     "split_ui": "Dividi l'interfaccia in due pannelli",
-    "unsplit_ui": "Chiudi il secondo pannello"
+    "unsplit_ui": "Chiudi il secondo pannello",
+    "rename_to_ext": "Rinomina in {ext}",
+    "batch_cb7_to_cbz": "Conversione batch\n di file CB7 in CBZ",
+    "batch_cbt_to_cbz": "Conversione batch\n di file CBT in CBZ"
   },
   "tabs": {
     "mosaic": "Mosaico",
@@ -130,10 +130,12 @@
       "save_to_folder": "Esporta pagine selezionate",
       "adjustments": "Luminosità, contrasto, colori...",
       "refresh_mosaic": "Aggiorna il mosaico (F5)",
-      "create_ico": "Crea file .ico"
+      "create_ico": "Crea file .ico",
+      "straighten": "Raddrizza immagine...",
+      "clone_zone": "Clona zona..."
     },
     "canvas_no_file": {
-      "open": "Apri CBZ/CBR/CB7/PDF",
+      "open": "Apri CBZ/CBR/CB7/CBT/PDF",
       "recent_files": "File recenti",
       "clear_history": "Cancella cronologia"
     },
@@ -473,6 +475,9 @@
       "unsupported_files": {
         "title": "File non supportati",
         "message": "I seguenti file non sono supportati e sono stati ignorati:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "Il file '{file}' non è un archivio TAR valido o è danneggiato."
       }
     },
     "info": {
@@ -629,15 +634,9 @@
         "cancel_conversion": "Annulla la conversione\n{count} file - {size}"
       }
     },
-    "extension_mismatch": {
-      "message": "Rilevata estensione errata: il file '{filename}' è un CBZ, non un CBR. Rinominare?",
+    "extension_mismatch_generic": {
+      "message": "Estensione errata rilevata: il file '{filename}' è un {real}, non un {declared}. Rinominare?",
       "title": "Estensione errata"
-    },
-    "extension_mismatch_cbr": {
-      "message": "Estensione errata rilevata: il file '{filename}' è un CBR, non un CBZ. Rinominare?"
-    },
-    "extension_mismatch_cb7": {
-      "message": "Estensione errata rilevata: il file '{filename}' è un CB7, non un CBZ/CBR. Rinominare?"
     }
   },
   "labels": {
@@ -667,7 +666,7 @@
     "license_unrar_text": "I file CBZ sono basati sul formato ZIP, un formato libero e aperto. I file CBR, invece, sono basati sul formato RAR, un formato proprietario.\n\nMosaicView può aprire i file CBR grazie a UnRAR, un'utilità sviluppata da RARlab e liberamente ridistribuibile.\n\nSito ufficiale: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Visualizza la licenza UnRAR",
     "saving_cbz": "Salvataggio in corso... {percent}%",
-    "empty_canvas_line1": "Trascina qui uno o piu file CBZ/CBR/CB7/PDF o le tue immagini",
+    "empty_canvas_line1": "Trascina qui uno o piu file CBZ/CBR/CB7/CBT/PDF o le tue immagini",
     "empty_canvas_line2": "Una volta aperto un file, puoi continuare a trascinarne altri",
     "empty_canvas_line3": "Rilascia una o più cartelle per avviare un'elaborazione batch",
     "icon_toolbar_config_title": "Configurazione barra delle icone",
@@ -786,8 +785,10 @@
       "complete_message": "{count} file CBR convertiti nella directory:",
       "complete_message_errors": "{count} file CBR convertiti su {total} nella directory:",
       "errors_count": "{count} errore(i) riscontrato(i).",
-      "renamed_count": "{count} file rinominato(i) in CBZ",
-      "rarfile_unavailable": "Il modulo rarfile non è disponibile. Impossibile convertire i file CBR."
+      "rarfile_unavailable": "Il modulo rarfile non è disponibile. Impossibile convertire i file CBR.",
+      "renamed_cbz_count": "{count} file rinominati in CBZ",
+      "renamed_cb7_count": "{count} file rinominati in CB7",
+      "renamed_cbt_count": "{count} file rinominati in CBT"
     },
     "close_warning": {
       "title": "Attenzione!",
@@ -1047,7 +1048,7 @@
     },
     "open_file": {
       "title": "Apri un archivio",
-      "filter_archives": "Archivi (*.cbz *.cbr *.cb7 *.epub *.pdf)",
+      "filter_archives": "Archivi (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "Tutti i file (*)"
     },
     "license": {
@@ -1058,7 +1059,68 @@
       "filter_images": "Immagini (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
       "filter_all": "Tutti i file (*)"
     },
-    "see_log": "VEDI LOG"
+    "see_log": "VEDI LOG",
+    "straighten_viewer": {
+      "title": "Raddrizza",
+      "instruction": "Tracciate una linea retta su ciò che deve essere orizzontale (o verticale) nell'immagine"
+    },
+    "clone_zone_viewer": {
+      "title": "Clonazione di zona",
+      "instruction": "Ctrl+clic : definisci origine  •  Clic sinistro : dipingi zona clonata",
+      "mode_label": "Origine :",
+      "mode_fixed": "Origine fissa",
+      "mode_relative": "Origine relativa",
+      "brush_size_label": "Dimensione :"
+    },
+    "text_viewer": {
+      "title": "Inserisci testo",
+      "instruction": "Fai clic dove vuoi inserire il testo  •  Ctrl+frecce: sposta il testo di un pixel alla volta",
+      "size_label": "Dimensione:",
+      "color_label": "Colore:",
+      "bold_btn": "G",
+      "italic_btn": "C",
+      "underline_btn": "S",
+      "apply_btn": "Applica testo",
+      "pick_color_title": "Scegli il colore del testo"
+    },
+    "batch_cb7": {
+      "select_directory_title": "Seleziona la cartella contenente i file CB7",
+      "no_cb7_title": "Nessun file CB7",
+      "no_cb7_message": "Nessun file CB7 trovato nella cartella :\n{directory}",
+      "confirm_title": "Conversione batch CB7 in CBZ",
+      "confirm_message": "{count} file CB7 da convertire in {directory} (sottocartelle incluse).",
+      "checkbox_permanent_delete": "Elimina definitivamente i file CB7 originali senza\nspostarli nel cestino (NESSUN RIPRISTINO POSSIBILE)",
+      "start_button": "Avvia",
+      "converting_title": "Conversione in corso...",
+      "converting_progress": "Conversione file {current} di {total}",
+      "page_progress": "Pagina {current} / {total}",
+      "complete_title": "Conversione completata",
+      "complete_message": "{count} file CB7 convertiti nella cartella :",
+      "complete_message_errors": "{count} file CB7 convertiti su {total} nella cartella :",
+      "errors_count": "{count} errore/i riscontrato/i.",
+      "renamed_cbz_count": "{count} file rinominati in CBZ",
+      "renamed_cbr_count": "{count} file rinominati in CBR",
+      "renamed_cbt_count": "{count} file rinominati in CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "Seleziona la cartella contenente i file CBT",
+      "no_cbt_title": "Nessun file CBT",
+      "no_cbt_message": "Nessun file CBT trovato nella cartella :\n{directory}",
+      "confirm_title": "Conversione batch CBT in CBZ",
+      "confirm_message": "{count} file CBT da convertire in {directory} (sottocartelle incluse).",
+      "checkbox_permanent_delete": "Elimina definitivamente i file CBT originali senza\nspostarli nel cestino (NESSUN RIPRISTINO POSSIBILE)",
+      "start_button": "Avvia",
+      "converting_title": "Conversione in corso...",
+      "converting_progress": "Conversione file {current} di {total}",
+      "page_progress": "Pagina {current} / {total}",
+      "complete_title": "Conversione completata",
+      "complete_message": "{count} file CBT convertiti nella cartella :",
+      "complete_message_errors": "{count} file CBT convertiti su {total} nella cartella :",
+      "errors_count": "{count} errore/i riscontrato/i.",
+      "renamed_cbz_count": "{count} file rinominati in CBZ",
+      "renamed_cbr_count": "{count} file rinominati in CBR",
+      "renamed_cb7_count": "{count} file rinominati in CB7"
+    }
   },
   "tooltip": {
     "source_archive": "File di origine: {name}",
@@ -1101,13 +1163,20 @@
     "icon_toolbar_size_decrease": "Riduci dimensione icone",
     "icon_toolbar_size_increase": "Aumenta dimensione icone",
     "source_loose": "Immagine libera",
-    "source_web": "Immagine web"
+    "source_web": "Immagine web",
+    "straighten": "Raddrizza immagine",
+    "clone_zone": "Clona zona",
+    "text": "Aggiungi testo",
+    "batch_cb7_to_cbz": "Converte tutti i file CB7 in una cartella\ne nelle sue sottocartelle in CBZ.",
+    "batch_cb7_permanent_delete": "ATTENZIONE : se questa opzione è selezionata,\ni file CB7 originali verranno eliminati\ndefinitivamente dopo la conversione senza\npossibilità di recupero.\nAssicurarsi di avere un backup.",
+    "batch_cbt_to_cbz": "Converte tutti i file CBT in una cartella\ne nelle sue sottocartelle in CBZ.",
+    "batch_cbt_permanent_delete": "ATTENZIONE : se questa opzione è selezionata,\ni file CBT originali verranno eliminati\ndefinitivamente dopo la conversione senza\npossibilità di recupero.\nAssicurarsi di avere un backup."
   },
   "help": {
     "title": "MosaicView - Manuale utente",
     "intro": "MosaicView ti permette di manipolare e modificare fumetti (BD digitali) senza doverli estrarre dai loro archivi. L'applicazione supporta i formati CBZ (ZIP), CBR (RAR) e PDF. L'applicazione è compatibile solo con sistemi a 64 bit.",
     "open_files": "Aprire file",
-    "open_files_content": "• Clicca sul pulsante 'Apri CBZ/CBR/CB7/PDF'\n• Oppure trascina e rilascia direttamente un file nella finestra\n• Formati supportati: CBZ, CBR, CB7, PDF, immagini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). I file EPUB possono anche essere aperti, ma solo le loro immagini verranno estratte (il testo viene ignorato). Nota: le estensioni visualizzate in rosso (WEBP, TIFF, GIF, ICO…) segnalano formati potenzialmente incompatibili con i vecchi lettori CBZ/CBR. Questi file vengono comunque elaborati normalmente da MosaicView.\n• PDF cifrato (password richiesta per l'apertura): il file non può essere importato, viene visualizzato un messaggio di errore.\n• PDF protetto contro le modifiche (owner password): le pagine vengono importate normalmente. MosaicView propone di salvare una copia sbloccata del file nella stessa cartella.",
+    "open_files_content": "• Fare clic sul pulsante 'Apri un file' o trascinare e rilasciare un file direttamente nella finestra\n• Formati supportati: CBZ, CBR, CB7, CBT, PDF, immagini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). I file EPUB possono anche essere aperti, ma solo le loro immagini verranno estratte (il testo viene ignorato). Nota: le estensioni visualizzate in rosso (WEBP, TIFF, GIF, ICO…) segnalano formati potenzialmente incompatibili con i vecchi lettori CBZ/CBR. Questi file vengono comunque elaborati normalmente da MosaicView.\n• PDF cifrato (password richiesta per l'apertura): il file non può essere importato, viene visualizzato un messaggio di errore.\n• PDF protetto contro le modifiche (owner password): le pagine vengono importate normalmente. MosaicView propone di salvare una copia sbloccata del file nella stessa cartella.",
     "mosaic": "Il mosaico",
     "mosaic_content": "Il mosaico visualizza tutte le pagine del tuo fumetto come miniature. Puoi:\n• Riorganizzare le pagine tramite trascinamento (la rinumerazione delle pagine sarà automatica e seguirà la modalità di rinumerazione attiva)\n• Selezionare più pagine (Ctrl+clic o Maiusc+clic)\n• Regolare la dimensione delle miniature con il cursore\n• Rinominare manualmente i file cliccando sul loro nome\n• Trascinare file di fumetti (CBZ/CBR/PDF) da Esplora file direttamente in un altro fumetto aperto per unire il loro contenuto",
     "manipulation": "Manipolazione delle pagine",
@@ -1171,7 +1240,7 @@
     "create_icon": "Crea un'icona",
     "create_icon_content": "MosaicView consente di creare file icona (.ico) da qualsiasi immagine nel mosaico.\n• Clic destro su un'immagine → 'Crea un'icona'\n• Inquadra l'area desiderata nel visualizzatore (l'icona sarà obbligatoriamente quadrata)\n• Regola la trasparenza se necessario\n• Convalida: il file .ico viene aggiunto direttamente al mosaico\n• I file .ico contengono automaticamente tutte le risoluzioni standard (da 16×16 a 256×256)\n• Finché è presente un file .ico nel mosaico, il salvataggio in un archivio CBZ è bloccato poiché il formato ICO non è supportato da questi archivi. Esporta il file .ico separatamente (Ctrl+C poi incolla in una cartella Windows), quindi eliminalo dal mosaico prima di salvare.",
     "batch_convert": "Conversione in blocco",
-    "batch_convert_content": "MosaicView offre tre funzioni di conversione in blocco, disponibili solo quando il mosaico è vuoto. Per ciascuna, il principio è lo stesso : selezionare una directory, confermare, seguire l'avanzamento in tempo reale, consultare il riepilogo finale. Un'opzione consente di eliminare definitivamente i file originali invece di inviarli nel cestino.\n• CBR → CBZ : converte tutti i file CBR (RAR) in una directory e nelle sue sottodirectory. Se un CBR è in realtà un ZIP, viene semplicemente rinominato senza conversione.\n• PDF → CBZ : converte tutti i file PDF in una directory e nelle sue sottodirectory. Le immagini vengono estratte senza ricompressione.\n• IMMAGINI ISOLATE → CBZ : crea un CBZ individuale per ogni file immagine trovato nella directory e nelle sue sottodirectory. Le immagini non valide, danneggiate, multipagina (TIFF) o animate (GIF) vengono ignorate e registrate in un log.",
+    "batch_convert_content": "MosaicView offre cinque funzioni di conversione batch, disponibili solo quando il mosaico è vuoto. Per ciascuna, il principio è lo stesso: seleziona una cartella, conferma, segui l'avanzamento in tempo reale, leggi il riepilogo finale. Un'opzione consente di eliminare definitivamente i file originali invece di inviarli nel cestino.\n• CBR → CBZ: converte tutti i file CBR (RAR) in una cartella e nelle sue sottocartelle. Se un CBR è in realtà un ZIP, 7z o TAR, il file viene rinominato con l'estensione corretta (.cbz, .cb7 o .cbt) senza conversione. I file rinominati e gli errori vengono registrati nel log.\n• CB7 → CBZ: converte tutti i file CB7 (7-Zip) in una cartella e nelle sue sottocartelle. Se un CB7 è in realtà un ZIP, RAR o TAR, il file viene rinominato con l'estensione corretta (.cbz, .cbr o .cbt) senza conversione. I file rinominati e gli errori vengono registrati nel log.\n• CBT → CBZ: converte tutti i file CBT (TAR) in una cartella e nelle sue sottocartelle. Se un CBT è in realtà un ZIP, RAR o 7z, il file viene rinominato con l'estensione corretta (.cbz, .cbr o .cb7) senza conversione. I file rinominati e gli errori vengono registrati nel log.\n• PDF → CBZ: converte tutti i file PDF in una cartella e nelle sue sottocartelle. Le immagini vengono estratte senza ricompressione.\n• IMMAGINI SINGOLE → CBZ: crea un CBZ individuale per ogni file immagine trovato nella cartella e nelle sue sottocartelle. Le immagini non valide, corrotte, multipagina (TIFF) o animate (GIF) vengono ignorate e registrate nel log.",
     "config_open_temp_folder": "Apri cartella temporanea",
     "icon_toolbar": "Barra delle icone",
     "icon_toolbar_content": "La barra delle icone consente di accedere rapidamente alle funzioni principali dell'applicazione. È possibile riorganizzare le icone a proprio piacimento trascinandole direttamente nella barra. Per scegliere quali icone mostrare o nascondere, fare clic sul pulsante a forma di ingranaggio in fondo alla barra: si apre una finestra di configurazione in cui è possibile spostare le icone tra la barra attiva e la riserva. Usare i pulsanti « + » e « − » per regolare la dimensione delle icone. La configurazione viene salvata automaticamente.",
@@ -1296,7 +1365,9 @@
     "export_piqad_font": "Salva carattere pIqaD",
     "export_tengwar_fonts": "Salva caratteri tengwar",
     "view_on_github": "Codice sorgente su GitHub",
-    "check_for_updates": "Verifica aggiornamenti"
+    "check_for_updates": "Verifica aggiornamenti",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ"
   },
   "updates": {
     "dialog_title": "Aggiornamenti",

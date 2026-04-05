@@ -71,6 +71,8 @@ from modules.qt.file_operations_qt import (
 )
 from modules.qt.batch_dialogs_qt import (
     batch_convert_cbr_to_cbz as _qt_batch_cbr,
+    batch_convert_cb7_to_cbz as _qt_batch_cb7,
+    batch_convert_cbt_to_cbz as _qt_batch_cbt,
     batch_convert_pdf_to_cbz as _qt_batch_pdf,
     batch_convert_img_to_cbz as _qt_batch_img,
 )
@@ -550,6 +552,12 @@ class PanelWidget(QWidget):
     def _batch_convert_cbr_to_cbz(self):
         _qt_batch_cbr(self, self._get_batch_callbacks())
 
+    def _batch_convert_cb7_to_cbz(self):
+        _qt_batch_cb7(self, self._get_batch_callbacks())
+
+    def _batch_convert_cbt_to_cbz(self):
+        _qt_batch_cbt(self, self._get_batch_callbacks())
+
     def _batch_convert_pdf_to_cbz(self):
         _qt_batch_pdf(self, self._get_batch_callbacks())
 
@@ -782,7 +790,7 @@ class PanelWidget(QWidget):
         st = self._state
         already_open = st.current_file is not None or bool(st.images_data)
 
-        cbz_files   = [p for p in paths if os.path.splitext(p)[1].lower() in ('.cbz', '.cbr', '.cb7', '.epub')]
+        cbz_files   = [p for p in paths if os.path.splitext(p)[1].lower() in ('.cbz', '.cbr', '.cb7', '.cbt', '.epub')]
         pdf_files   = [p for p in paths if os.path.splitext(p)[1].lower() == '.pdf']
         image_files = [p for p in paths if os.path.splitext(p)[1].lower() in IMAGE_EXTS]
         other_files = [p for p in paths if p not in cbz_files and p not in pdf_files and p not in image_files]
@@ -1168,6 +1176,63 @@ class PanelWidget(QWidget):
             "render_mosaic":      _with_state(self._canvas.render_mosaic),
             "update_button_text": self._refresh_toolbar_states,
             "canvas":             self._canvas,
+            "state":              panel_state,
+        }
+
+    def _straighten_callbacks(self) -> dict:
+        from modules.qt import state as _state_module
+        panel_state = self._state
+        def _with_state(fn):
+            def _wrapped(*a, **kw):
+                _prev = _state_module.state
+                _state_module.state = panel_state
+                try:
+                    return fn(*a, **kw)
+                finally:
+                    _state_module.state = _prev
+            return _wrapped
+        return {
+            "save_state":         _with_state(self.save_state),
+            "render_mosaic":      _with_state(self._canvas.render_mosaic),
+            "update_button_text": self._refresh_toolbar_states,
+            "state":              panel_state,
+        }
+
+    def _clone_zone_callbacks(self) -> dict:
+        from modules.qt import state as _state_module
+        panel_state = self._state
+        def _with_state(fn):
+            def _wrapped(*a, **kw):
+                _prev = _state_module.state
+                _state_module.state = panel_state
+                try:
+                    return fn(*a, **kw)
+                finally:
+                    _state_module.state = _prev
+            return _wrapped
+        return {
+            "save_state":         _with_state(self.save_state),
+            "render_mosaic":      _with_state(self._canvas.render_mosaic),
+            "update_button_text": self._refresh_toolbar_states,
+            "state":              panel_state,
+        }
+
+    def _text_viewer_callbacks(self) -> dict:
+        from modules.qt import state as _state_module
+        panel_state = self._state
+        def _with_state(fn):
+            def _wrapped(*a, **kw):
+                _prev = _state_module.state
+                _state_module.state = panel_state
+                try:
+                    return fn(*a, **kw)
+                finally:
+                    _state_module.state = _prev
+            return _wrapped
+        return {
+            "save_state":         _with_state(self.save_state),
+            "render_mosaic":      _with_state(self._canvas.render_mosaic),
+            "update_button_text": self._refresh_toolbar_states,
             "state":              panel_state,
         }
 

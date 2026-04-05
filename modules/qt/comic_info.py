@@ -2,6 +2,7 @@
 # Parsing et gestion des métadonnées ComicInfo.xml
 # -------------------------
 import os
+import tarfile
 import zipfile
 import xml.etree.ElementTree as ET
 
@@ -149,6 +150,14 @@ def read_comic_info(filepath):
                 xml_files = [f for f in archive.namelist() if f.lower().endswith('comicinfo.xml')]
                 if xml_files:
                     xml_data = archive.read(xml_files[0])
+                    return parse_comic_info_xml(xml_data)
+
+        elif ext == '.cbt':
+            with tarfile.open(filepath, 'r:*') as archive:
+                xml_files = [m.name for m in archive.getmembers()
+                             if m.isfile() and m.name.lower().endswith('comicinfo.xml')]
+                if xml_files:
+                    xml_data = archive.extractfile(archive.getmember(xml_files[0])).read()
                     return parse_comic_info_xml(xml_data)
 
     except Exception:
