@@ -132,7 +132,8 @@
       "refresh_mosaic": "Päivitä mosaiikki (F5)",
       "create_ico": "Luo .ico-tiedosto",
       "straighten": "Oikaise kuva...",
-      "clone_zone": "Kloonaa alue..."
+      "clone_zone": "Kloonaa alue...",
+      "text": "Lisää teksti..."
     },
     "canvas_no_file": {
       "open": "Avaa CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Odota, säätöjä käynnissä...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS -fontin lisenssi",
     "license_tengwar_full": "Alcarin Tengwar -fontin lisenssi",
-    "view_full_piqad_license": "Näytä pIqaD qolqoS -lisenssi kokonaan"
+    "view_full_piqad_license": "Näytä pIqaD qolqoS -lisenssi kokonaan",
+    "rotating": "Pyöritetään...\n{percent}%",
+    "flipping": "Peilataan...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Tyyppi :",
       "transparency_type_flood": "Alue",
       "transparency_type_global": "Yleinen",
-      "transparency_tolerance_label": "Toleranssi : {value}",
+      "transparency_tolerance_label": "Toleranssi :",
       "transparency_viewer_title": "Läpinäkyvyyden säätö",
       "transparency_click_instruction": "Napsauta väriä, jonka haluat tehdä läpinäkyväksi",
       "transparency_undo": "Kumoa viimeisin napsautus",

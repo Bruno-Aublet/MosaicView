@@ -905,7 +905,8 @@ class ArchiveLoader(QObject):
     def _show_cancel_button(self):
         from modules.qt.web_import_qt import _show_cancel_item
         cancel_text = f"[ {_('buttons.cancel')} ]"
-        _show_cancel_item(self._canvas, cancel_text, self._cancel_item_holder, self.cancel)
+        _show_cancel_item(self._canvas, cancel_text, self._cancel_item_holder, self.cancel,
+                          anchor_lbl=self._loading_item_holder[0])
 
     def _hide_cancel_button(self):
         _hide_canvas_text(self._canvas, self._cancel_item_holder)

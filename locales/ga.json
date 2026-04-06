@@ -132,7 +132,8 @@
       "refresh_mosaic": "Athnuaigh an mósáic (F5)",
       "create_ico": "Cruthaigh comhad .ico",
       "straighten": "Díriú íomhá...",
-      "clone_zone": "Crios a chlónáil..."
+      "clone_zone": "Crios a chlónáil...",
+      "text": "Cuir téacs leis..."
     },
     "canvas_no_file": {
       "open": "Oscail CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Fan le do thoil, coigeartuithe ar siúl...\n{current} / {total}",
     "license_piqad_full": "Ceadúnas cló pIqaD qolqoS",
     "license_tengwar_full": "Ceadúnas cló Alcarin Tengwar",
-    "view_full_piqad_license": "Féach ar cheadúnas iomlán pIqaD qolqoS"
+    "view_full_piqad_license": "Féach ar cheadúnas iomlán pIqaD qolqoS",
+    "rotating": "Ag rothlú...\n{percent}%",
+    "flipping": "Ag smeach...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Cineál :",
       "transparency_type_flood": "Crios",
       "transparency_type_global": "Domhanda",
-      "transparency_tolerance_label": "Lamháil : {value}",
+      "transparency_tolerance_label": "Lamháil :",
       "transparency_viewer_title": "Coigeartú trédhearcachta",
       "transparency_click_instruction": "Cliceáil ar an dath atá le déanamh trédhearcach",
       "transparency_undo": "Cealaigh an cliceáil deireanach",

@@ -132,7 +132,8 @@
       "refresh_mosaic": "Mozaiği yenile (F5)",
       "create_ico": ".ico dosyası oluştur",
       "straighten": "Görüntüyü düzelt...",
-      "clone_zone": "Bölgeyi klonla..."
+      "clone_zone": "Bölgeyi klonla...",
+      "text": "Metin ekle..."
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF Aç",
@@ -684,7 +685,9 @@
     "adjusting": "Lütfen bekleyin, ayarlamalar devam ediyor...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS yazı tipi lisansı",
     "license_tengwar_full": "Alcarin Tengwar yazı tipi lisansı",
-    "view_full_piqad_license": "Tam pIqaD qolqoS lisansını görüntüle"
+    "view_full_piqad_license": "Tam pIqaD qolqoS lisansını görüntüle",
+    "rotating": "Döndürülüyor...\n{percent}%",
+    "flipping": "Çevriliyor...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Tür :",
       "transparency_type_flood": "Bölge",
       "transparency_type_global": "Genel",
-      "transparency_tolerance_label": "Tolerans : {value}",
+      "transparency_tolerance_label": "Tolerans :",
       "transparency_viewer_title": "Şeffaflık ayarı",
       "transparency_click_instruction": "Şeffaf yapmak istediğiniz renge tıklayın",
       "transparency_undo": "Son tıklamayı geri al",

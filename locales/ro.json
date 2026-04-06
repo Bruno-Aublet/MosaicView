@@ -132,7 +132,8 @@
       "refresh_mosaic": "Reîmprospătează mozaicul (F5)",
       "create_ico": "Creează fișier .ico",
       "straighten": "Îndreptați imaginea...",
-      "clone_zone": "Clonare zonă..."
+      "clone_zone": "Clonare zonă...",
+      "text": "Adaugă text..."
     },
     "canvas_no_file": {
       "open": "Deschide CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Vă rugăm așteptați, ajustările sunt în curs...\n{current} / {total}",
     "license_piqad_full": "Licența fontului pIqaD qolqoS",
     "license_tengwar_full": "Licența fontului Alcarin Tengwar",
-    "view_full_piqad_license": "Vizualizați licența completă pIqaD qolqoS"
+    "view_full_piqad_license": "Vizualizați licența completă pIqaD qolqoS",
+    "rotating": "Rotire...\n{percent}%",
+    "flipping": "Răsturnare...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Tip :",
       "transparency_type_flood": "Zonă",
       "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Toleranță : {value}",
+      "transparency_tolerance_label": "Toleranță :",
       "transparency_viewer_title": "Ajustarea transparenței",
       "transparency_click_instruction": "Faceți clic pe culoarea pe care doriți să o faceți transparentă",
       "transparency_undo": "Anulați ultimul clic",

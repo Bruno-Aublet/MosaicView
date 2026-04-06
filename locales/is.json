@@ -132,7 +132,8 @@
       "refresh_mosaic": "Endurglæða mósaík (F5)",
       "create_ico": "Búa til .ico skrá",
       "straighten": "Rétta mynd...",
-      "clone_zone": "Klóna svæði..."
+      "clone_zone": "Klóna svæði...",
+      "text": "Bæta við texta..."
     },
     "canvas_no_file": {
       "open": "Opna CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Vinsamlegast bíddu, stillingar í gangi...\n{current} / {total}",
     "license_piqad_full": "Leyfissamningur leturgerðar pIqaD qolqoS",
     "license_tengwar_full": "Leyfis leturgerðarinnar Alcarin Tengwar",
-    "view_full_piqad_license": "Skoða fullan leyfissamning pIqaD qolqoS"
+    "view_full_piqad_license": "Skoða fullan leyfissamning pIqaD qolqoS",
+    "rotating": "Snýr...\n{percent}%",
+    "flipping": "Speglar...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Tegund :",
       "transparency_type_flood": "Svæði",
       "transparency_type_global": "Altækt",
-      "transparency_tolerance_label": "Þol : {value}",
+      "transparency_tolerance_label": "Þol :",
       "transparency_viewer_title": "Stilling gegnsæis",
       "transparency_click_instruction": "Smelltu á litinn sem á að gera gegnsæjan",
       "transparency_undo": "Afturkalla síðasta smell",

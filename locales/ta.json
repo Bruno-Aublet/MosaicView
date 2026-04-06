@@ -132,7 +132,8 @@
       "refresh_mosaic": "மொசைக்கைப் புதுப்பிக்கவும் (F5)",
       "create_ico": ".ico கோப்பை உருவாக்கு",
       "straighten": "படத்தை நேர்படுத்து...",
-      "clone_zone": "மண்டலத்தை குளோன் செய்..."
+      "clone_zone": "மண்டலத்தை குளோன் செய்...",
+      "text": "உரையைச் சேர்க்கவும்..."
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF ஐ திற",
@@ -684,7 +685,9 @@
     "adjusting": "தயவுசெய்து காத்திருங்கள், சரிசெய்தல் நடைபெறுகிறது...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS எழுத்துரு உரிமம்",
     "license_tengwar_full": "Alcarin Tengwar எழுத்துரு உரிமம்",
-    "view_full_piqad_license": "pIqaD qolqoS முழு உரிமத்தைக் காண்க"
+    "view_full_piqad_license": "pIqaD qolqoS முழு உரிமத்தைக் காண்க",
+    "rotating": "சுழற்றுகிறது...\n{percent}%",
+    "flipping": "திருப்புகிறது...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "வகை :",
       "transparency_type_flood": "மண்டலம்",
       "transparency_type_global": "உலகளாவிய",
-      "transparency_tolerance_label": "சகிப்புத்தன்மை : {value}",
+      "transparency_tolerance_label": "சகிப்புத்தன்மை :",
       "transparency_viewer_title": "வெளிப்படைத்தன்மை சரிசெய்தல்",
       "transparency_click_instruction": "வெளிப்படையாக்க வேண்டிய நிறத்தை கிளிக் செய்யவும்",
       "transparency_undo": "கடைசி கிளிக்கை மீட்டெடுக்கவும்",

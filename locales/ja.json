@@ -132,7 +132,8 @@
       "refresh_mosaic": "モザイクを更新 (F5)",
       "create_ico": ".icoファイルを作成",
       "straighten": "画像を傾き補正...",
-      "clone_zone": "ゾーンをクローン..."
+      "clone_zone": "ゾーンをクローン...",
+      "text": "テキストを追加..."
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDFを開く",
@@ -684,7 +685,9 @@
     "adjusting": "しばらくお待ちください、調整中...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS フォントライセンス",
     "license_tengwar_full": "Alcarin Tengwarフォントのライセンス",
-    "view_full_piqad_license": "pIqaD qolqoS ライセンス全文を表示"
+    "view_full_piqad_license": "pIqaD qolqoS ライセンス全文を表示",
+    "rotating": "回転中...\n{percent}%",
+    "flipping": "反転中...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "種類 :",
       "transparency_type_flood": "領域",
       "transparency_type_global": "全体",
-      "transparency_tolerance_label": "許容値 : {value}",
+      "transparency_tolerance_label": "許容値 :",
       "transparency_viewer_title": "透明度の調整",
       "transparency_click_instruction": "透明にする色をクリックしてください",
       "transparency_undo": "最後のクリックを元に戻す",

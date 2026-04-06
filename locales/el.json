@@ -132,7 +132,8 @@
       "refresh_mosaic": "Ανανέωση μωσαϊκού (F5)",
       "create_ico": "Δημιουργία αρχείου .ico",
       "straighten": "Ευθυγράμμιση εικόνας...",
-      "clone_zone": "Κλωνοποίηση ζώνης..."
+      "clone_zone": "Κλωνοποίηση ζώνης...",
+      "text": "Προσθήκη κειμένου..."
     },
     "canvas_no_file": {
       "open": "Άνοιγμα CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Παρακαλώ περιμένετε, γίνονται προσαρμογές...\n{current} / {total}",
     "license_piqad_full": "Άδεια γραμματοσειράς pIqaD qolqoS",
     "license_tengwar_full": "Άδεια γραμματοσειράς Alcarin Tengwar",
-    "view_full_piqad_license": "Προβολή πλήρους άδειας pIqaD qolqoS"
+    "view_full_piqad_license": "Προβολή πλήρους άδειας pIqaD qolqoS",
+    "rotating": "Περιστροφή...\n{percent}%",
+    "flipping": "Αντιστροφή...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Τύπος :",
       "transparency_type_flood": "Ζώνη",
       "transparency_type_global": "Καθολικό",
-      "transparency_tolerance_label": "Ανοχή : {value}",
+      "transparency_tolerance_label": "Ανοχή :",
       "transparency_viewer_title": "Ρύθμιση διαφάνειας",
       "transparency_click_instruction": "Κάντε κλικ στο χρώμα που θέλετε να γίνει διαφανές",
       "transparency_undo": "Αναίρεση τελευταίου κλικ",

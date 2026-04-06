@@ -132,7 +132,8 @@
       "refresh_mosaic": "Uppdatera mosaiken (F5)",
       "create_ico": "Skapa .ico-fil",
       "straighten": "Räta upp bild...",
-      "clone_zone": "Klona zon..."
+      "clone_zone": "Klona zon...",
+      "text": "Lägg till text..."
     },
     "canvas_no_file": {
       "open": "Öppna CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Vänta, justeringar pågår...\n{current} / {total}",
     "license_piqad_full": "Licens för pIqaD qolqoS-teckensnitt",
     "license_tengwar_full": "Licens för teckensnittet Alcarin Tengwar",
-    "view_full_piqad_license": "Visa fullständig pIqaD qolqoS-licens"
+    "view_full_piqad_license": "Visa fullständig pIqaD qolqoS-licens",
+    "rotating": "Roterar...\n{percent}%",
+    "flipping": "Speglar...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Typ :",
       "transparency_type_flood": "Område",
       "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Tolerans : {value}",
+      "transparency_tolerance_label": "Tolerans :",
       "transparency_viewer_title": "Justering av genomskinlighet",
       "transparency_click_instruction": "Klicka på den färg som ska göras genomskinlig",
       "transparency_undo": "Ångra senaste klick",

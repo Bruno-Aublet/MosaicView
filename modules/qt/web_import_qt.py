@@ -85,13 +85,11 @@ def extract_images_from_html(url: str, html_content: str) -> list[str]:
 # Item cliquable pour le bouton annuler (sous-classe QGraphicsTextItem)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _show_cancel_item(canvas, text: str, item_holder: list, on_click, offset_y: int = 40) -> None:
-    """Crée ou met à jour le label Annuler cliquable sur le viewport, offset_y px sous le centre."""
-    viewport = canvas.viewport()
-
+def _show_cancel_item(canvas, text: str, item_holder: list, on_click, anchor_lbl=None) -> None:
+    """Crée ou met à jour le label Annuler cliquable sur le viewport, placé sous anchor_lbl + 8px."""
     lbl = item_holder[0] if item_holder else None
     if lbl is None or not isinstance(lbl, QLabel):
-        lbl = QLabel(viewport)
+        lbl = QLabel(canvas)
         lbl.setStyleSheet(
             "color: rgb(255, 102, 102); background: transparent;"
             "text-decoration: underline;"
@@ -108,10 +106,15 @@ def _show_cancel_item(canvas, text: str, item_holder: list, on_click, offset_y: 
     lbl.setFont(_get_current_font(16, bold=True))
     lbl.setText(text)
 
-    vr = viewport.rect()
+    vr = canvas.rect()
     lbl.setFixedWidth(vr.width())
     lbl.adjustSize()
-    lbl.move(0, (vr.height() - lbl.height()) // 2 + offset_y)
+
+    if anchor_lbl is not None and isinstance(anchor_lbl, QLabel):
+        y = anchor_lbl.y() + anchor_lbl.height()
+    else:
+        y = (vr.height() - lbl.height()) // 2 + 40
+    lbl.move(0, y)
     lbl.show()
 
 
@@ -227,7 +230,7 @@ class WebDownloadController:
 
         cancel_text = f"[ {_('web.web_download_cancel')} ]"
         _show_cancel_item(self._canvas, cancel_text, self._cancel_item_holder,
-                          self._on_cancel)
+                          self._on_cancel, anchor_lbl=self._item_holder[0])
 
     def _hide_overlay(self):
         _hide_canvas_text(self._canvas, self._item_holder)

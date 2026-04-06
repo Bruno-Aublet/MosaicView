@@ -132,7 +132,8 @@
       "refresh_mosaic": "Obnoviť mozaiku (F5)",
       "create_ico": "Vytvoriť súbor .ico",
       "straighten": "Vyrovnať obrázok...",
-      "clone_zone": "Klonovanie oblasti..."
+      "clone_zone": "Klonovanie oblasti...",
+      "text": "Pridať text..."
     },
     "canvas_no_file": {
       "open": "Otvoriť CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Čakajte prosím, prebieha úprava...\n{current} / {total}",
     "license_piqad_full": "Licencia písma pIqaD qolqoS",
     "license_tengwar_full": "Licencia písma Alcarin Tengwar",
-    "view_full_piqad_license": "Zobraziť celú licenciu pIqaD qolqoS"
+    "view_full_piqad_license": "Zobraziť celú licenciu pIqaD qolqoS",
+    "rotating": "Otáčanie...\n{percent}%",
+    "flipping": "Prevrátenie...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Typ :",
       "transparency_type_flood": "Oblasť",
       "transparency_type_global": "Globálny",
-      "transparency_tolerance_label": "Tolerancia : {value}",
+      "transparency_tolerance_label": "Tolerancia :",
       "transparency_viewer_title": "Úprava priehľadnosti",
       "transparency_click_instruction": "Kliknite na farbu, ktorú chcete zpriesvitniť",
       "transparency_undo": "Vrátiť posledné kliknutie",

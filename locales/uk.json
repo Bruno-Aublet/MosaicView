@@ -132,7 +132,8 @@
       "refresh_mosaic": "Оновити мозаїку (F5)",
       "create_ico": "Створити файл .ico",
       "straighten": "Вирівняти зображення...",
-      "clone_zone": "Клонування зони..."
+      "clone_zone": "Клонування зони...",
+      "text": "Додати текст..."
     },
     "canvas_no_file": {
       "open": "Відкрити CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Будь ласка, зачекайте, виконуються корекції...\n{current} / {total}",
     "license_piqad_full": "Ліцензія шрифту pIqaD qolqoS",
     "license_tengwar_full": "Ліцензія шрифту Alcarin Tengwar",
-    "view_full_piqad_license": "Переглянути повну ліцензію pIqaD qolqoS"
+    "view_full_piqad_license": "Переглянути повну ліцензію pIqaD qolqoS",
+    "rotating": "Обертання...\n{percent}%",
+    "flipping": "Відображення...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Тип :",
       "transparency_type_flood": "Зона",
       "transparency_type_global": "Глобальний",
-      "transparency_tolerance_label": "Допуск : {value}",
+      "transparency_tolerance_label": "Допуск :",
       "transparency_viewer_title": "Налаштування прозорості",
       "transparency_click_instruction": "Натисніть на колір, який потрібно зробити прозорим",
       "transparency_undo": "Скасувати останнє натискання",

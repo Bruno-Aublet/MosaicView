@@ -132,7 +132,8 @@
       "refresh_mosaic": "chu'Ha' mosaic (F5)",
       "create_ico": "chenmoH .ico nav",
       "straighten": "nIt chenmoH mIllogh...",
-      "clone_zone": "Daq tIng..."
+      "clone_zone": "Daq tIng...",
+      "text": "mu' yIchel..."
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF poSmoH",
@@ -684,7 +685,9 @@
     "adjusting": "yIloS, ngovwI' chenmoHlu'taH...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS ghItlhwI' chut",
     "license_tengwar_full": "Alcarin Tengwar ghItlh chaw'",
-    "view_full_piqad_license": "pIqaD qolqoS chut naQ legh"
+    "view_full_piqad_license": "pIqaD qolqoS chut naQ legh",
+    "rotating": "jIrmoH...\n{percent}%",
+    "flipping": "nISmoH...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "moj :",
       "transparency_type_flood": "Sep",
       "transparency_type_global": "Hoch",
-      "transparency_tolerance_label": "chebmey : {value}",
+      "transparency_tolerance_label": "chebmey :",
       "transparency_viewer_title": "wovmoH tI'",
       "transparency_click_instruction": "ratlh wovmoHpu'bogh rIt",
       "transparency_undo": "lIj qeq qaSpa'",

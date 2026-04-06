@@ -1016,10 +1016,8 @@ class PdfLoader:
         _show_canvas_text(self._canvas, f"{line1}\n{line2}\n{line3}", self._overlay_holder)
         self._canvas.viewport().update()
         from modules.qt.web_import_qt import _show_cancel_item
-        main_item = self._overlay_holder[0]
-        from shiboken6 import isValid
-        offset_y = int(main_item.boundingRect().height() / 2) + 10 if main_item and isValid(main_item) else 60
-        _show_cancel_item(self._canvas, f"[ {_('buttons.cancel')} ]", self._cancel_item_holder, self.cancel, offset_y=offset_y)
+        _show_cancel_item(self._canvas, f"[ {_('buttons.cancel')} ]", self._cancel_item_holder, self.cancel,
+                          anchor_lbl=self._overlay_holder[0])
 
     def _hide_overlay(self):
         _hide_canvas_text(self._canvas, self._overlay_holder)
@@ -1290,10 +1288,8 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
             line1 = _("labels.pdf_converting", total=0, dpi=dpi)
         _show_canvas_text(canvas, f"{line1}\n{percent}%", overlay_holder)
         from modules.qt.web_import_qt import _show_cancel_item
-        from shiboken6 import isValid
-        main_item = overlay_holder[0]
-        offset_y = int(main_item.boundingRect().height() / 2) + 10 if main_item and isValid(main_item) else 50
-        _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel, offset_y=offset_y)
+        _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel,
+                          anchor_lbl=overlay_holder[0])
 
     def _hide():
         _hide_canvas_text(canvas, overlay_holder)
@@ -1324,10 +1320,8 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
         line1 = _("labels.pdf_converting", total=0, dpi=dpi)
     _show_canvas_text(canvas, f"{line1}\n0%", overlay_holder)
     from modules.qt.web_import_qt import _show_cancel_item
-    from shiboken6 import isValid
-    _main_item = overlay_holder[0]
-    _offset_y = int(_main_item.boundingRect().height() / 2) + 10 if _main_item and isValid(_main_item) else 50
-    _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel, offset_y=_offset_y)
+    _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel,
+                      anchor_lbl=overlay_holder[0])
     from PySide6.QtWidgets import QApplication
     QApplication.processEvents()
 

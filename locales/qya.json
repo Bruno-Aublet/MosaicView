@@ -132,7 +132,8 @@
       "refresh_mosaic": "Envinyata i mosaic (F5)",
       "create_ico": "Carë .ico quetta",
       "straighten": "Lempina lómë...",
-      "clone_zone": "Óre fëa lúmequenta..."
+      "clone_zone": "Óre fëa lúmequenta...",
+      "text": "Yanta quetta..."
     },
     "canvas_no_file": {
       "open": "Panya CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Apsenë, cemë carë olë...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS tengwesta lícuma",
     "license_tengwar_full": "Alcarin Tengwar sarmion tecilwë",
-    "view_full_piqad_license": "Cen i quanda lícuma pIqaD qolqoS"
+    "view_full_piqad_license": "Cen i quanda lícuma pIqaD qolqoS",
+    "rotating": "Wanwa rimbë...\n{percent}%",
+    "flipping": "Wanwa apsa...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Quetta :",
       "transparency_type_flood": "Nórë",
       "transparency_type_global": "Ilúvë",
-      "transparency_tolerance_label": "Apsenna : {value}",
+      "transparency_tolerance_label": "Apsenna :",
       "transparency_viewer_title": "Calima cantaina",
       "transparency_click_instruction": "Tecë i quessë i carir calima",
       "transparency_undo": "Ava tecë vinya",

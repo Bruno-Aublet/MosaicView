@@ -132,7 +132,8 @@
       "refresh_mosaic": "모자이크 새로고침 (F5)",
       "create_ico": ".ico 파일 만들기",
       "straighten": "이미지 기울기 보정...",
-      "clone_zone": "영역 복제..."
+      "clone_zone": "영역 복제...",
+      "text": "텍스트 추가..."
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF 열기",
@@ -684,7 +685,9 @@
     "adjusting": "잠시 기다려 주세요, 조정 중...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS 글꼴 라이선스",
     "license_tengwar_full": "Alcarin Tengwar 글꼴 라이선스",
-    "view_full_piqad_license": "pIqaD qolqoS 전체 라이선스 보기"
+    "view_full_piqad_license": "pIqaD qolqoS 전체 라이선스 보기",
+    "rotating": "회전 중...\n{percent}%",
+    "flipping": "뒤집는 중...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "유형 :",
       "transparency_type_flood": "영역",
       "transparency_type_global": "전체",
-      "transparency_tolerance_label": "허용 오차 : {value}",
+      "transparency_tolerance_label": "허용 오차 :",
       "transparency_viewer_title": "투명도 조정",
       "transparency_click_instruction": "투명하게 만들 색상을 클릭하세요",
       "transparency_undo": "마지막 클릭 실행 취소",

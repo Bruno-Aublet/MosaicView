@@ -132,7 +132,8 @@
       "refresh_mosaic": "मोज़ेक ताज़ा करें (F5)",
       "create_ico": ".ico फ़ाइल बनाएं",
       "straighten": "छवि सीधी करें...",
-      "clone_zone": "ज़ोन क्लोन करें..."
+      "clone_zone": "ज़ोन क्लोन करें...",
+      "text": "पाठ जोड़ें..."
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF खोलें",
@@ -684,7 +685,9 @@
     "adjusting": "कृपया प्रतीक्षा करें, समायोजन जारी है...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS फ़ॉन्ट लाइसेंस",
     "license_tengwar_full": "Alcarin Tengwar फ़ॉन्ट लाइसेंस",
-    "view_full_piqad_license": "पूर्ण pIqaD qolqoS लाइसेंस देखें"
+    "view_full_piqad_license": "पूर्ण pIqaD qolqoS लाइसेंस देखें",
+    "rotating": "घुमाया जा रहा है...\n{percent}%",
+    "flipping": "पलटा जा रहा है...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "प्रकार :",
       "transparency_type_flood": "क्षेत्र",
       "transparency_type_global": "वैश्विक",
-      "transparency_tolerance_label": "सहनशीलता : {value}",
+      "transparency_tolerance_label": "सहनशीलता :",
       "transparency_viewer_title": "पारदर्शिता समायोजन",
       "transparency_click_instruction": "उस रंग पर क्लिक करें जिसे पारदर्शी बनाना है",
       "transparency_undo": "अंतिम क्लिक पूर्ववत करें",

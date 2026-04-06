@@ -685,7 +685,9 @@
     "adjusting": "Patientez, ajustements en cours...\n{current} / {total}",
     "license_piqad_full": "Licence police pIqaD qolqoS",
     "license_tengwar_full": "Licence police Alcarin Tengwar",
-    "view_full_piqad_license": "Voir la licence pIqaD qolqoS"
+    "view_full_piqad_license": "Voir la licence pIqaD qolqoS",
+    "rotating": "Rotation en cours...\n{percent}%",
+    "flipping": "Retournement en cours...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -963,7 +965,7 @@
       "transparency_type_label": "Type :",
       "transparency_type_flood": "Zone",
       "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Tolérance : {value}",
+      "transparency_tolerance_label": "Tolérance :",
       "transparency_viewer_title": "Ajustement de la transparence",
       "transparency_click_instruction": "Cliquez sur la couleur à rendre transparente",
       "transparency_undo": "Annuler le dernier clic",

@@ -27,7 +27,7 @@ from PIL import Image
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QWidget, QFrame, QScrollArea, QSizePolicy,
-    QApplication,
+    QApplication, QSpinBox,
 )
 from PySide6.QtCore import Qt, QPoint, QSize
 from PySide6.QtGui import QPixmap, QImage, QCursor, QKeySequence, QShortcut, QIcon
@@ -575,10 +575,23 @@ class AdjustmentViewerDialog(QDialog):
             self._transp_tol_slider = FocusSlider(Qt.Orientation.Horizontal)
             self._transp_tol_slider.setRange(0, 255)
             self._transp_tol_slider.setValue(self._settings.get('transparency_tolerance', 30))
-            self._transp_tol_slider.setFixedWidth(120)
+            self._transp_tol_slider.setFixedWidth(180)
             self._transp_tol_slider.setStyleSheet(_slider_style(theme))
             self._transp_tol_slider.valueChanged.connect(self._on_transp_tol_changed)
             bot_layout.addWidget(self._transp_tol_slider)
+
+            self._transp_tol_spin = QSpinBox()
+            self._transp_tol_spin.setRange(0, 255)
+            self._transp_tol_spin.setValue(self._settings.get('transparency_tolerance', 30))
+            self._transp_tol_spin.setFixedWidth(58)
+            self._transp_tol_spin.setFont(font_btn)
+            self._transp_tol_spin.setStyleSheet(
+                f"QSpinBox {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+                f"border: 1px solid #aaaaaa; padding: 2px 4px; }} "
+                f"QSpinBox::up-button, QSpinBox::down-button {{ width: 16px; }}"
+            )
+            self._transp_tol_spin.valueChanged.connect(self._on_transp_tol_spin_changed)
+            bot_layout.addWidget(self._transp_tol_spin)
 
             # Espacement net avant undo/redo
             bot_layout.addSpacing(24)
@@ -833,8 +846,19 @@ class AdjustmentViewerDialog(QDialog):
 
     def _on_transp_tol_changed(self, val):
         self._settings['transparency_tolerance'] = val
-        self._transp_tol_lbl.setText(
-            _("dialogs.adjustments.transparency_tolerance_label", value=val))
+        # Synchronise la spinbox sans boucle infinie
+        if self._transp_tol_spin.value() != val:
+            self._transp_tol_spin.blockSignals(True)
+            self._transp_tol_spin.setValue(val)
+            self._transp_tol_spin.blockSignals(False)
+
+    def _on_transp_tol_spin_changed(self, val):
+        # Synchronise le slider sans boucle infinie
+        if self._transp_tol_slider.value() != val:
+            self._transp_tol_slider.blockSignals(True)
+            self._transp_tol_slider.setValue(val)
+            self._transp_tol_slider.blockSignals(False)
+        self._on_transp_tol_changed(val)
 
     def _update_transp_type_labels(self):
         """Grise le label du type inactif."""
@@ -1484,9 +1508,7 @@ class AdjustmentViewerDialog(QDialog):
             self._transp_global_lbl.setFont(font)
             self._transp_global_lbl.setText(_("dialogs.adjustments.transparency_type_global"))
             self._transp_tol_lbl.setFont(font)
-            self._transp_tol_lbl.setText(
-                _("dialogs.adjustments.transparency_tolerance_label",
-                  value=self._settings.get('transparency_tolerance', 30)))
+            self._transp_tol_lbl.setText(_("dialogs.adjustments.transparency_tolerance_label"))
             self._update_transp_type_labels()
         else:
             self._apply_current_btn.setFont(font_btn)

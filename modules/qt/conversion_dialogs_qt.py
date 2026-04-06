@@ -658,7 +658,8 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
         if worker_ref[0] is None:
             return
         _show_canvas_text(canvas, _("labels.converting", percent=pct), item_holder)
-        _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_holder, _cancel)
+        _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_holder, _cancel,
+                          anchor_lbl=item_holder[0])
 
     def _hide():
         _hide_canvas_text(canvas, item_holder)
@@ -703,7 +704,7 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
                 "state": callbacks.get('state'),
             }
         )
-        if action in ("delete_orig", "delete_conv"):
+        if action in ("delete_orig", None):
             callbacks['render_mosaic']()
 
         from modules.qt.comic_info import sync_pages_in_xml_data

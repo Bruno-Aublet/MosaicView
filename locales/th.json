@@ -132,7 +132,8 @@
       "refresh_mosaic": "รีเฟรชโมเสก (F5)",
       "create_ico": "สร้างไฟล์ .ico",
       "straighten": "ปรับภาพให้ตรง...",
-      "clone_zone": "โคลนโซน..."
+      "clone_zone": "โคลนโซน...",
+      "text": "เพิ่มข้อความ..."
     },
     "canvas_no_file": {
       "open": "เปิด CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "กรุณารอสักครู่ กำลังปรับแต่ง...\n{current} / {total}",
     "license_piqad_full": "ใบอนุญาตฟอนต์ pIqaD qolqoS",
     "license_tengwar_full": "ใบอนุญาตฟอนต์ Alcarin Tengwar",
-    "view_full_piqad_license": "ดูใบอนุญาต pIqaD qolqoS ฉบับเต็ม"
+    "view_full_piqad_license": "ดูใบอนุญาต pIqaD qolqoS ฉบับเต็ม",
+    "rotating": "กำลังหมุน...\n{percent}%",
+    "flipping": "กำลังพลิก...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "ประเภท :",
       "transparency_type_flood": "โซน",
       "transparency_type_global": "ทั่วทั้งภาพ",
-      "transparency_tolerance_label": "ค่าความคลาดเคลื่อน : {value}",
+      "transparency_tolerance_label": "ค่าความคลาดเคลื่อน :",
       "transparency_viewer_title": "ปรับความโปร่งใส",
       "transparency_click_instruction": "คลิกที่สีที่ต้องการทำให้โปร่งใส",
       "transparency_undo": "เลิกทำการคลิกล่าสุด",

@@ -132,7 +132,8 @@
       "refresh_mosaic": "Mozaïek vernieuwen (F5)",
       "create_ico": ".ico-bestand aanmaken",
       "straighten": "Afbeelding rechtzetten...",
-      "clone_zone": "Zone klonen..."
+      "clone_zone": "Zone klonen...",
+      "text": "Tekst toevoegen..."
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF openen",
@@ -684,7 +685,9 @@
     "adjusting": "Even geduld, aanpassingen worden uitgevoerd...\n{current} / {total}",
     "license_piqad_full": "Licentie lettertype pIqaD qolqoS",
     "license_tengwar_full": "Licentie lettertype Alcarin Tengwar",
-    "view_full_piqad_license": "Volledige pIqaD qolqoS-licentie bekijken"
+    "view_full_piqad_license": "Volledige pIqaD qolqoS-licentie bekijken",
+    "rotating": "Draaien...\n{percent}%",
+    "flipping": "Spiegelen...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Type :",
       "transparency_type_flood": "Zone",
       "transparency_type_global": "Globaal",
-      "transparency_tolerance_label": "Tolerantie : {value}",
+      "transparency_tolerance_label": "Tolerantie :",
       "transparency_viewer_title": "Transparantie aanpassen",
       "transparency_click_instruction": "Klik op de kleur die transparant moet worden",
       "transparency_undo": "Laatste klik ongedaan maken",

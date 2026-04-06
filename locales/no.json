@@ -132,7 +132,8 @@
       "refresh_mosaic": "Oppdater mosaikken (F5)",
       "create_ico": "Opprett .ico-fil",
       "straighten": "Rette opp bilde...",
-      "clone_zone": "Klon sone..."
+      "clone_zone": "Klon sone...",
+      "text": "Legg til tekst..."
     },
     "canvas_no_file": {
       "open": "Åpne CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Vennligst vent, justeringer pågår...\n{current} / {total}",
     "license_piqad_full": "Lisens for pIqaD qolqoS-skrift",
     "license_tengwar_full": "Lisens for skrifttypen Alcarin Tengwar",
-    "view_full_piqad_license": "Vis fullstendig pIqaD qolqoS-lisens"
+    "view_full_piqad_license": "Vis fullstendig pIqaD qolqoS-lisens",
+    "rotating": "Roterer...\n{percent}%",
+    "flipping": "Speilvender...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Type :",
       "transparency_type_flood": "Område",
       "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Toleranse : {value}",
+      "transparency_tolerance_label": "Toleranse :",
       "transparency_viewer_title": "Justering av gjennomsiktighet",
       "transparency_click_instruction": "Klikk på fargen som skal gjøres gjennomsiktig",
       "transparency_undo": "Angre siste klikk",

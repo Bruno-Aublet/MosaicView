@@ -132,7 +132,8 @@
       "refresh_mosaic": "Segarkan mosaik (F5)",
       "create_ico": "Buat file .ico",
       "straighten": "Luruskan gambar...",
-      "clone_zone": "Klon zona..."
+      "clone_zone": "Klon zona...",
+      "text": "Tambah teks..."
     },
     "canvas_no_file": {
       "open": "Buka CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Harap tunggu, penyesuaian sedang berlangsung...\n{current} / {total}",
     "license_piqad_full": "Lisensi font pIqaD qolqoS",
     "license_tengwar_full": "Lisensi font Alcarin Tengwar",
-    "view_full_piqad_license": "Lihat lisensi pIqaD qolqoS lengkap"
+    "view_full_piqad_license": "Lihat lisensi pIqaD qolqoS lengkap",
+    "rotating": "Memutar...\n{percent}%",
+    "flipping": "Membalik...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Jenis :",
       "transparency_type_flood": "Zona",
       "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Toleransi : {value}",
+      "transparency_tolerance_label": "Toleransi :",
       "transparency_viewer_title": "Penyesuaian transparansi",
       "transparency_click_instruction": "Klik pada warna yang ingin dijadikan transparan",
       "transparency_undo": "Batalkan klik terakhir",

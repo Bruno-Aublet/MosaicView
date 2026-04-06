@@ -594,6 +594,8 @@ class MetadataTab(QScrollArea):
             header_h = self._pages_table.horizontalHeader().height()
             row_h    = self._pages_table.verticalHeader().defaultSectionSize()
             self._pages_table.setFixedHeight(header_h + row_h * model.rowCount() + 2)
+        if self._pages_builder is not None:
+            self._pages_builder.deleteLater()
         self._pages_builder = None
         self._restyle()
 
@@ -607,6 +609,7 @@ class MetadataTab(QScrollArea):
         self._toggle_btn.setText(f"{arrow}  {_('metadata.pages')}  ({self._pages_count})")
         if self._pages_builder is not None:
             self._pages_builder.cancel()
+            self._pages_builder.deleteLater()
         self._pages_builder = _PagesModelBuilder(pages)
         self._pages_builder.done.connect(self._on_pages_model_ready)
         self._pages_builder.start()

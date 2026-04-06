@@ -132,7 +132,8 @@
       "refresh_mosaic": "Osvježi mozaik (F5)",
       "create_ico": "Stvori .ico datoteku",
       "straighten": "Ispravi sliku...",
-      "clone_zone": "Kloniranje zone..."
+      "clone_zone": "Kloniranje zone...",
+      "text": "Dodaj tekst..."
     },
     "canvas_no_file": {
       "open": "Otvori CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Molimo pričekajte, prilagodbe su u tijeku...\n{current} / {total}",
     "license_piqad_full": "Licenca fonta pIqaD qolqoS",
     "license_tengwar_full": "Licenca fonta Alcarin Tengwar",
-    "view_full_piqad_license": "Pogledaj punu licencu pIqaD qolqoS"
+    "view_full_piqad_license": "Pogledaj punu licencu pIqaD qolqoS",
+    "rotating": "Rotiranje...\n{percent}%",
+    "flipping": "Zrcaljenje...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Vrsta :",
       "transparency_type_flood": "Zona",
       "transparency_type_global": "Globalno",
-      "transparency_tolerance_label": "Tolerancija : {value}",
+      "transparency_tolerance_label": "Tolerancija :",
       "transparency_viewer_title": "Podešavanje prozirnosti",
       "transparency_click_instruction": "Kliknite na boju koju želite učiniti prozirnom",
       "transparency_undo": "Poništi posljednji klik",

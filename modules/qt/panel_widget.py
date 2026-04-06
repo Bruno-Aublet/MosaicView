@@ -692,7 +692,8 @@ class PanelWidget(QWidget):
             from shiboken6 import isValid
             offset_y = 40
             _show_cancel_item(self._canvas, f"[ {_('buttons.cancel')} ]",
-                              self._image_cancel_holder, _cancel, offset_y=offset_y)
+                              self._image_cancel_holder, _cancel,
+                              anchor_lbl=self._image_overlay_holder[0])
 
         def _hide():
             self._canvas._loading = False
@@ -1147,6 +1148,8 @@ class PanelWidget(QWidget):
             "save_state":         self.save_state,
             "render_mosaic":      self._render_mosaic,
             "update_button_text": self._refresh_toolbar_states,
+            "refresh_status":     self._update_status_bar,
+            "canvas":             self._canvas,
             "state":              self._state,
         }
 
@@ -1155,6 +1158,7 @@ class PanelWidget(QWidget):
             "save_state":         self.save_state,
             "render_mosaic":      self._render_mosaic,
             "update_button_text": self._refresh_toolbar_states,
+            "refresh_status":     self._update_status_bar,
             "canvas":             self._canvas,
             "state":              self._state,
         }
@@ -1394,7 +1398,8 @@ class PanelWidget(QWidget):
         self._refresh_title()
         self._update_tabs()
         self._update_status_bar()
-        self._icon_toolbar.refresh_states()
+        if hasattr(self, "_icon_toolbar"):
+            self._icon_toolbar.refresh_states()
 
     # ──────────────────────────────────────────────────────────────────────────
     # Barre de statut / toolbar
@@ -1404,7 +1409,8 @@ class PanelWidget(QWidget):
         self._status_bar.refresh(self._state)
 
     def _refresh_toolbar_states(self):
-        self._icon_toolbar.refresh_states()
+        if hasattr(self, "_icon_toolbar"):
+            self._icon_toolbar.refresh_states()
 
     def cleanup(self):
         """Déconnecte les signaux globaux avant destruction du panneau."""

@@ -132,7 +132,8 @@
       "refresh_mosaic": "Opdater mosaikken (F5)",
       "create_ico": "Opret .ico-fil",
       "straighten": "Ret billede op...",
-      "clone_zone": "Kloning af zone..."
+      "clone_zone": "Kloning af zone...",
+      "text": "Tilføj tekst..."
     },
     "canvas_no_file": {
       "open": "Åbn CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Vent venligst, justeringer er i gang...\n{current} / {total}",
     "license_piqad_full": "Licens for pIqaD qolqoS-skrift",
     "license_tengwar_full": "Licens for skrifttypen Alcarin Tengwar",
-    "view_full_piqad_license": "Se den fulde pIqaD qolqoS-licens"
+    "view_full_piqad_license": "Se den fulde pIqaD qolqoS-licens",
+    "rotating": "Roterer...\n{percent}%",
+    "flipping": "Spejlvender...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Type :",
       "transparency_type_flood": "Område",
       "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Tolerance : {value}",
+      "transparency_tolerance_label": "Tolerance :",
       "transparency_viewer_title": "Justering af gennemsigtighed",
       "transparency_click_instruction": "Klik på den farve, der skal gøres gennemsigtig",
       "transparency_undo": "Fortryd sidste klik",

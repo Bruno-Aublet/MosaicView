@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.1] - 2026-04-06
+
+- Fixed a bug where the status bar was not updated after resizing images. It now refreshes automatically when the resize operation completes.
+- Fixed the progress overlay labels (message, percentage, Cancel button) overlapping when the window is narrow. The Cancel button is now positioned directly below the main label instead of at a fixed offset from the center.
+- Fixed the progress overlay labels scrolling with the mosaic during long operations. The labels are now parented to the canvas widget instead of the viewport, so they remain fixed on screen regardless of scroll position.
+- Fixed a freeze when cancelling a resize operation. The cancel handler was calling render_mosaic on the UI thread after restoring the original image data, which rebuilt the entire mosaic unnecessarily. Since thumbnails are unchanged when a resize is cancelled, the render_mosaic call has been removed.
+- Rotate and flip operations (rotate left, rotate right, flip horizontal, flip vertical) now run in a background thread. A progress overlay with a Cancel button is displayed during the operation, keeping the UI responsive on large selections.
+- Fixed missing translation for the "Add text" context menu entry in all languages except French.
+- Reduced the file size of the BTN_Batch_CB7-CBZ.png and BTN_Batch_CBT-CBZ.png toolbar icons.
+- Improved the tolerance slider in the transparency viewer. The slider is now wider (180 px instead of 120 px) for finer control near small values, and a spin box has been added next to it for direct numeric input (0–255). The two controls are kept in sync. The tolerance label no longer displays the current value, since it is already shown in the spin box.
+- Fixed a bug where choosing "Keep all" in the post-conversion dialog (keep originals and converted files) did not refresh the mosaic. The new images were inserted into the data but the mosaic was not redrawn until a manual F5 refresh.
+
 ## [1.1.0] - 2026-04-05
 
 - Added Straighten image feature. A new toolbar icon, Images menu entry, and right-click context menu entry open a dedicated viewer. In the viewer, draw a reference line on what should be horizontal or vertical in the image; the image is then rotated by the exact correction angle and the result is applied to the mosaic. The reference line has draggable endpoints. Per-page undo/redo is available within the viewer.

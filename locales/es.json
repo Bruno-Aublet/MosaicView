@@ -132,7 +132,8 @@
       "refresh_mosaic": "Actualizar el mosaico (F5)",
       "create_ico": "Crear archivo .ico",
       "straighten": "Enderezar imagen...",
-      "clone_zone": "Clonar zona..."
+      "clone_zone": "Clonar zona...",
+      "text": "Añadir texto..."
     },
     "canvas_no_file": {
       "open": "Abrir CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Espere por favor, ajustes en curso...\n{current} / {total}",
     "license_piqad_full": "Licencia fuente pIqaD qolqoS",
     "license_tengwar_full": "Licencia de la fuente Alcarin Tengwar",
-    "view_full_piqad_license": "Ver licencia completa pIqaD qolqoS"
+    "view_full_piqad_license": "Ver licencia completa pIqaD qolqoS",
+    "rotating": "Rotando...\n{percent}%",
+    "flipping": "Reflejando...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Tipo :",
       "transparency_type_flood": "Zona",
       "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Tolerancia : {value}",
+      "transparency_tolerance_label": "Tolerancia :",
       "transparency_viewer_title": "Ajuste de transparencia",
       "transparency_click_instruction": "Haga clic en el color que desea hacer transparente",
       "transparency_undo": "Deshacer último clic",

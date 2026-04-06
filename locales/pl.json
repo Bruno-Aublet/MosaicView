@@ -132,7 +132,8 @@
       "refresh_mosaic": "Odśwież mozaikę (F5)",
       "create_ico": "Utwórz plik .ico",
       "straighten": "Wyprostuj obraz...",
-      "clone_zone": "Klonowanie strefy..."
+      "clone_zone": "Klonowanie strefy...",
+      "text": "Dodaj tekst..."
     },
     "canvas_no_file": {
       "open": "Otwórz CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Proszę czekać, trwa dostosowywanie...\n{current} / {total}",
     "license_piqad_full": "Licencja czcionki pIqaD qolqoS",
     "license_tengwar_full": "Licencja czcionki Alcarin Tengwar",
-    "view_full_piqad_license": "Wyświetl pełną licencję pIqaD qolqoS"
+    "view_full_piqad_license": "Wyświetl pełną licencję pIqaD qolqoS",
+    "rotating": "Obracanie...\n{percent}%",
+    "flipping": "Odbijanie...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Typ :",
       "transparency_type_flood": "Strefa",
       "transparency_type_global": "Globalny",
-      "transparency_tolerance_label": "Tolerancja : {value}",
+      "transparency_tolerance_label": "Tolerancja :",
       "transparency_viewer_title": "Regulacja przezroczystości",
       "transparency_click_instruction": "Kliknij kolor, który ma stać się przezroczysty",
       "transparency_undo": "Cofnij ostatnie kliknięcie",

@@ -132,7 +132,8 @@
       "refresh_mosaic": "Edro i mosaic (F5)",
       "create_ico": "Bâd .ico parf",
       "straighten": "Trenarna tâl...",
-      "clone_zone": "Glawar i·dôl..."
+      "clone_zone": "Glawar i·dôl...",
+      "text": "Ennas peth..."
     },
     "canvas_no_file": {
       "open": "Edro CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Dîol aros, gwneud addasiadau...\n{current} / {total}",
     "license_piqad_full": "Teitho pIqaD qolqoS faenor",
     "license_tengwar_full": "Alcarin Tengwar tîw feredir",
-    "view_full_piqad_license": "Cen i faenor pIqaD qolqoS"
+    "view_full_piqad_license": "Cen i faenor pIqaD qolqoS",
+    "rotating": "Suilad rotho...\n{percent}%",
+    "flipping": "Suilad aphadui...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Dôl :",
       "transparency_type_flood": "Canthan",
       "transparency_type_global": "Govad",
-      "transparency_tolerance_label": "Godreb : {value}",
+      "transparency_tolerance_label": "Godreb :",
       "transparency_viewer_title": "Atheg gweledigrwydd",
       "transparency_click_instruction": "Brono i liw a vennir gweledigrwydd",
       "transparency_undo": "Dirio i bronad diwettha",

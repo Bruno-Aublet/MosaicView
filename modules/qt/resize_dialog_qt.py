@@ -992,6 +992,7 @@ class ResizeDialog(QDialog):
         save_state_fn      = callbacks.get("save_state",         lambda: None)
         render_mosaic_fn   = callbacks.get("render_mosaic",      lambda: None)
         update_button_text = callbacks.get("update_button_text", lambda: None)
+        refresh_status_fn  = callbacks.get("refresh_status",     lambda: None)
         canvas             = callbacks.get("canvas")
         item_holder        = [None]
 
@@ -1128,7 +1129,7 @@ class ResizeDialog(QDialog):
             width_mapping, height_mapping,
             outlier_choices,
             original_bytes,
-            save_state_fn, render_mosaic_fn, update_button_text,
+            save_state_fn, render_mosaic_fn, update_button_text, refresh_status_fn,
         )
 
 
@@ -1312,7 +1313,7 @@ def _start_resize_worker(canvas, selected_entries, state,
                          width_mapping, height_mapping,
                          outlier_choices,
                          original_bytes,
-                         save_state_fn, render_mosaic_fn, update_button_text):
+                         save_state_fn, render_mosaic_fn, update_button_text, refresh_status_fn):
     from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct, hide_canvas_text as _hide_ct
     from modules.qt.web_import_qt import _show_cancel_item
 
@@ -1325,7 +1326,8 @@ def _start_resize_worker(canvas, selected_entries, state,
         if worker_ref[0] is None:
             return
         _show_ct(canvas, _("labels.resizing", percent=pct), item_holder)
-        _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_holder, _cancel)
+        _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_holder, _cancel,
+                          anchor_lbl=item_holder[0])
 
     def _hide():
         _hide_ct(canvas, item_holder)
@@ -1355,7 +1357,6 @@ def _start_resize_worker(canvas, selected_entries, state,
         pop_last_state(state)
         # Restaure l'état modifié d'avant le resize
         state.modified = modified_before
-        render_mosaic_fn()
         update_button_text()
 
     def on_progress(pct):
@@ -1374,6 +1375,7 @@ def _start_resize_worker(canvas, selected_entries, state,
             if real_idx is not None:
                 canvas.refresh_thumbnail(real_idx)
         update_button_text()
+        refresh_status_fn()
         save_state_fn()
 
     def on_cancelled():

@@ -132,7 +132,8 @@
       "refresh_mosaic": "Osveži mozaik (F5)",
       "create_ico": "Ustvari datoteko .ico",
       "straighten": "Poravnaj sliko...",
-      "clone_zone": "Kloniranje cone..."
+      "clone_zone": "Kloniranje cone...",
+      "text": "Dodaj besedilo..."
     },
     "canvas_no_file": {
       "open": "Odpri CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Prosimo počakajte, prilagoditve potekajo...\n{current} / {total}",
     "license_piqad_full": "Licenca pisave pIqaD qolqoS",
     "license_tengwar_full": "Licenca pisave Alcarin Tengwar",
-    "view_full_piqad_license": "Oglej si celotno licenco pIqaD qolqoS"
+    "view_full_piqad_license": "Oglej si celotno licenco pIqaD qolqoS",
+    "rotating": "Vrtenje...\n{percent}%",
+    "flipping": "Zrcaljenje...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Vrsta :",
       "transparency_type_flood": "Območje",
       "transparency_type_global": "Globalno",
-      "transparency_tolerance_label": "Toleranca : {value}",
+      "transparency_tolerance_label": "Toleranca :",
       "transparency_viewer_title": "Prilagoditev prosojnosti",
       "transparency_click_instruction": "Kliknite na barvo, ki jo želite narediti prosojno",
       "transparency_undo": "Razveljavite zadnji klik",

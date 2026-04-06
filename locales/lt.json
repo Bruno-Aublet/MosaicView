@@ -132,7 +132,8 @@
       "refresh_mosaic": "Atnaujinti mozaiką (F5)",
       "create_ico": "Sukurti .ico failą",
       "straighten": "Ištiesinti vaizdą...",
-      "clone_zone": "Klonuoti zoną..."
+      "clone_zone": "Klonuoti zoną...",
+      "text": "Pridėti tekstą..."
     },
     "canvas_no_file": {
       "open": "Atidaryti CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Prašome palaukti, vykdomos korekcijos...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS šrifto licencija",
     "license_tengwar_full": "Alcarin Tengwar šrifto licencija",
-    "view_full_piqad_license": "Peržiūrėti visą pIqaD qolqoS licenciją"
+    "view_full_piqad_license": "Peržiūrėti visą pIqaD qolqoS licenciją",
+    "rotating": "Sukama...\n{percent}%",
+    "flipping": "Atspindima...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Tipas :",
       "transparency_type_flood": "Zona",
       "transparency_type_global": "Globalus",
-      "transparency_tolerance_label": "Tolerancija : {value}",
+      "transparency_tolerance_label": "Tolerancija :",
       "transparency_viewer_title": "Skaidrumo reguliavimas",
       "transparency_click_instruction": "Spustelėkite spalvą, kurią norite padaryti skaidrią",
       "transparency_undo": "Atšaukti paskutinį paspaudimą",

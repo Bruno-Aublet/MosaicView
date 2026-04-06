@@ -132,7 +132,8 @@
       "refresh_mosaic": "刷新拼图 (F5)",
       "create_ico": "创建 .ico 文件",
       "straighten": "矫正图像...",
-      "clone_zone": "克隆区域..."
+      "clone_zone": "克隆区域...",
+      "text": "添加文字..."
     },
     "canvas_no_file": {
       "open": "打开 CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "请稍候，正在调整...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS 字体许可证",
     "license_tengwar_full": "Alcarin Tengwar字体许可证",
-    "view_full_piqad_license": "查看完整 pIqaD qolqoS 许可证"
+    "view_full_piqad_license": "查看完整 pIqaD qolqoS 许可证",
+    "rotating": "旋转中...\n{percent}%",
+    "flipping": "翻转中...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "类型 :",
       "transparency_type_flood": "区域",
       "transparency_type_global": "全局",
-      "transparency_tolerance_label": "容差 : {value}",
+      "transparency_tolerance_label": "容差 :",
       "transparency_viewer_title": "透明度调整",
       "transparency_click_instruction": "点击要变为透明的颜色",
       "transparency_undo": "撤销上次点击",

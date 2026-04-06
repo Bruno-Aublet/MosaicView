@@ -132,7 +132,8 @@
       "refresh_mosaic": "تحديث الفسيفساء (F5)",
       "create_ico": "إنشاء ملف .ico",
       "straighten": "تقويم الصورة...",
-      "clone_zone": "استنساخ المنطقة..."
+      "clone_zone": "استنساخ المنطقة...",
+      "text": "إضافة نص..."
     },
     "canvas_no_file": {
       "open": "فتح CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "يُرجى الانتظار، جارٍ التعديل...\n{current} / {total}",
     "license_piqad_full": "ترخيص خط pIqaD qolqoS",
     "license_tengwar_full": "ترخيص خط Alcarin Tengwar",
-    "view_full_piqad_license": "عرض ترخيص pIqaD qolqoS كاملاً"
+    "view_full_piqad_license": "عرض ترخيص pIqaD qolqoS كاملاً",
+    "rotating": "جارٍ التدوير...\n{percent}%",
+    "flipping": "جارٍ القلب...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "النوع :",
       "transparency_type_flood": "منطقة",
       "transparency_type_global": "شامل",
-      "transparency_tolerance_label": "التسامح : {value}",
+      "transparency_tolerance_label": "التسامح :",
       "transparency_viewer_title": "ضبط الشفافية",
       "transparency_click_instruction": "انقر على اللون لجعله شفافاً",
       "transparency_undo": "تراجع عن آخر نقرة",

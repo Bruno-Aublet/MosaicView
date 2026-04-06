@@ -132,7 +132,8 @@
       "refresh_mosaic": "Làm mới bảng ghép (F5)",
       "create_ico": "Tạo tệp .ico",
       "straighten": "Chỉnh thẳng ảnh...",
-      "clone_zone": "Nhân bản vùng..."
+      "clone_zone": "Nhân bản vùng...",
+      "text": "Thêm văn bản..."
     },
     "canvas_no_file": {
       "open": "Mở CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Vui lòng chờ, đang điều chỉnh...\n{current} / {total}",
     "license_piqad_full": "Giấy phép phông chữ pIqaD qolqoS",
     "license_tengwar_full": "Giấy phép phông chữ Alcarin Tengwar",
-    "view_full_piqad_license": "Xem giấy phép đầy đủ pIqaD qolqoS"
+    "view_full_piqad_license": "Xem giấy phép đầy đủ pIqaD qolqoS",
+    "rotating": "Đang xoay...\n{percent}%",
+    "flipping": "Đang lật...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Loại :",
       "transparency_type_flood": "Vùng",
       "transparency_type_global": "Toàn cục",
-      "transparency_tolerance_label": "Dung sai : {value}",
+      "transparency_tolerance_label": "Dung sai :",
       "transparency_viewer_title": "Điều chỉnh độ trong suốt",
       "transparency_click_instruction": "Nhấp vào màu cần làm trong suốt",
       "transparency_undo": "Hoàn tác lần nhấp cuối",

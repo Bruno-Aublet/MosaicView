@@ -25,11 +25,9 @@ def show_canvas_text(canvas, text: str, item_holder: list) -> None:
         text:        texte déjà traduit et formaté à afficher
         item_holder: liste à 1 élément [label | None] — persistance entre appels.
     """
-    viewport = canvas.viewport()
-
     lbl = item_holder[0] if item_holder else None
     if lbl is None or not isinstance(lbl, QLabel):
-        lbl = QLabel(viewport)
+        lbl = QLabel(canvas)
         lbl.setStyleSheet("color: rgb(220, 0, 0); background: transparent;")
         lbl.setAttribute(Qt.WA_TransparentForMouseEvents)
         lbl.setAlignment(Qt.AlignCenter)
@@ -43,7 +41,7 @@ def show_canvas_text(canvas, text: str, item_holder: list) -> None:
     lbl.setFont(_get_current_font(24, bold=True))
     lbl.setText(text)
 
-    vr = viewport.rect()
+    vr = canvas.rect()
     lbl.setFixedWidth(vr.width())
     lbl.adjustSize()
     lbl.move(0, (vr.height() - lbl.height()) // 2)

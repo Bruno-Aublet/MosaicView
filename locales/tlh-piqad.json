@@ -132,7 +132,8 @@
       "refresh_mosaic": " sic (F5)",
       "create_ico": " .ic ",
       "straighten": "  ...",
-      "clone_zone": " ..."
+      "clone_zone": " ...",
+      "text": " ..."
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PF ",
@@ -684,7 +685,9 @@
     "adjusting": ",  ...\n{current} / {total}",
     "license_piqad_full": "   ",
     "license_tengwar_full": "Aci T  ",
-    "view_full_piqad_license": "    "
+    "view_full_piqad_license": "    ",
+    "rotating": "...\n{percent}%",
+    "flipping": "...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": " :",
       "transparency_type_flood": "",
       "transparency_type_global": "",
-      "transparency_tolerance_label": " : {value}",
+      "transparency_tolerance_label": " :",
       "transparency_viewer_title": " ",
       "transparency_click_instruction": "  ",
       "transparency_undo": "  ",

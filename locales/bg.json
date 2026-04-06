@@ -132,7 +132,8 @@
       "refresh_mosaic": "Опресняване на мозайката (F5)",
       "create_ico": "Създаване на .ico файл",
       "straighten": "Изправяне на изображението...",
-      "clone_zone": "Клониране на зона..."
+      "clone_zone": "Клониране на зона...",
+      "text": "Добавяне на текст..."
     },
     "canvas_no_file": {
       "open": "Отвори CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Моля, изчакайте, корекцията е в ход...\n{current} / {total}",
     "license_piqad_full": "Лиценз на шрифт pIqaD qolqoS",
     "license_tengwar_full": "Лиценз на шрифта Alcarin Tengwar",
-    "view_full_piqad_license": "Вижте пълния лиценз pIqaD qolqoS"
+    "view_full_piqad_license": "Вижте пълния лиценз pIqaD qolqoS",
+    "rotating": "Завъртане...\n{percent}%",
+    "flipping": "Огледално...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Тип :",
       "transparency_type_flood": "Зона",
       "transparency_type_global": "Глобален",
-      "transparency_tolerance_label": "Толеранс : {value}",
+      "transparency_tolerance_label": "Толеранс :",
       "transparency_viewer_title": "Настройка на прозрачността",
       "transparency_click_instruction": "Кликнете върху цвета, за да го направите прозрачен",
       "transparency_undo": "Отмени последното кликване",

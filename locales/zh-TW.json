@@ -132,7 +132,8 @@
       "refresh_mosaic": "重新整理拼圖 (F5)",
       "create_ico": "建立 .ico 檔案",
       "straighten": "矯正圖像...",
-      "clone_zone": "克隆區域..."
+      "clone_zone": "克隆區域...",
+      "text": "新增文字..."
     },
     "canvas_no_file": {
       "open": "開啟 CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "請稍候，正在調整...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS 字型授權",
     "license_tengwar_full": "Alcarin Tengwar字體授權",
-    "view_full_piqad_license": "檢視完整 pIqaD qolqoS 授權"
+    "view_full_piqad_license": "檢視完整 pIqaD qolqoS 授權",
+    "rotating": "旋轉中...\n{percent}%",
+    "flipping": "翻轉中...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "類型 :",
       "transparency_type_flood": "區域",
       "transparency_type_global": "全域",
-      "transparency_tolerance_label": "容差 : {value}",
+      "transparency_tolerance_label": "容差 :",
       "transparency_viewer_title": "透明度調整",
       "transparency_click_instruction": "點擊要變為透明的顏色",
       "transparency_undo": "撤銷上次點擊",

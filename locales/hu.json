@@ -132,7 +132,8 @@
       "refresh_mosaic": "Mozaik frissítése (F5)",
       "create_ico": ".ico fájl létrehozása",
       "straighten": "Kép egyenesítése...",
-      "clone_zone": "Zóna klónozása..."
+      "clone_zone": "Zóna klónozása...",
+      "text": "Szöveg hozzáadása..."
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF megnyitása",
@@ -684,7 +685,9 @@
     "adjusting": "Kérjük, várjon, a beállítások folyamatban vannak...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS betűkészlet licence",
     "license_tengwar_full": "Alcarin Tengwar betűtípus licence",
-    "view_full_piqad_license": "Teljes pIqaD qolqoS licenc megtekintése"
+    "view_full_piqad_license": "Teljes pIqaD qolqoS licenc megtekintése",
+    "rotating": "Forgatás...\n{percent}%",
+    "flipping": "Tükrözés...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Típus :",
       "transparency_type_flood": "Zóna",
       "transparency_type_global": "Globális",
-      "transparency_tolerance_label": "Tűrés : {value}",
+      "transparency_tolerance_label": "Tűrés :",
       "transparency_viewer_title": "Átlátszóság beállítása",
       "transparency_click_instruction": "Kattintson arra a színre, amelyet átlátszóvá szeretne tenni",
       "transparency_undo": "Utolsó kattintás visszavonása",

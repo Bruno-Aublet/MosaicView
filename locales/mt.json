@@ -132,7 +132,8 @@
       "refresh_mosaic": "Aġġorna l-mużajk (F5)",
       "create_ico": "Oħloq fajl .ico",
       "straighten": "Sewwi l-immaġni...",
-      "clone_zone": "Ikklona żona..."
+      "clone_zone": "Ikklona żona...",
+      "text": "Żid test..."
     },
     "canvas_no_file": {
       "open": "Iftaħ CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Jekk jogħġbok stenna, l-aġġustamenti qegħdin isiru...\n{current} / {total}",
     "license_piqad_full": "Liċenzja tal-font pIqaD qolqoS",
     "license_tengwar_full": "Liċenza tal-font Alcarin Tengwar",
-    "view_full_piqad_license": "Ara l-liċenzja sħiħa ta' pIqaD qolqoS"
+    "view_full_piqad_license": "Ara l-liċenzja sħiħa ta' pIqaD qolqoS",
+    "rotating": "Idur...\n{percent}%",
+    "flipping": "Jitfa...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Tip :",
       "transparency_type_flood": "Żona",
       "transparency_type_global": "Globali",
-      "transparency_tolerance_label": "Tolleranza : {value}",
+      "transparency_tolerance_label": "Tolleranza :",
       "transparency_viewer_title": "Aġġustament tat-trasparenza",
       "transparency_click_instruction": "Ikklikkja fuq il-kulur biex tagħmlu trasparenti",
       "transparency_undo": "Agħmel lura l-aħħar klikk",

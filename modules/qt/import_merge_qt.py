@@ -183,7 +183,8 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
             return
         _show_canvas_text(canvas, _("labels.import_progress", percent=percent), item_holder)
         from modules.qt.web_import_qt import _show_cancel_item
-        _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel)
+        _show_cancel_item(canvas, f"[ {_('buttons.cancel')} ]", cancel_item_holder, _cancel,
+                          anchor_lbl=item_holder[0])
 
     def _remove_label():
         _hide_canvas_text(canvas, item_holder)

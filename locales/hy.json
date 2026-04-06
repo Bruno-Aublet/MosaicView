@@ -132,7 +132,8 @@
       "refresh_mosaic": "Թարմացնել խճանկարը (F5)",
       "create_ico": "Ստեղծել .ico ֆայլ",
       "straighten": "Ուղղել պատկերը...",
-      "clone_zone": "Գոտու կրկնօրինակում..."
+      "clone_zone": "Գոտու կրկնօրինակում...",
+      "text": "Ավելացնել տեքստ..."
     },
     "canvas_no_file": {
       "open": "Բացել CBZ/CBR/CB7/CBT/PDF",
@@ -684,7 +685,9 @@
     "adjusting": "Խնդրում ենք սպասել, կարգաբերումներն ընթացքի մեջ են...\n{current} / {total}",
     "license_piqad_full": "pIqaD qolqoS տառատեսակի լիցենզիա",
     "license_tengwar_full": "Alcarin Tengwar տառատեսակի արտոնագիր",
-    "view_full_piqad_license": "Տեսնել pIqaD qolqoS-ի ամբողջական լիցենզիան"
+    "view_full_piqad_license": "Տեսնել pIqaD qolqoS-ի ամբողջական լիցենզիան",
+    "rotating": "Պտտում...\n{percent}%",
+    "flipping": "Շրջում...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -931,7 +934,7 @@
       "transparency_type_label": "Տեսակ :",
       "transparency_type_flood": "Գոտի",
       "transparency_type_global": "Գլոբալ",
-      "transparency_tolerance_label": "Հանդուրժողականություն : {value}",
+      "transparency_tolerance_label": "Հանդուրժողականություն :",
       "transparency_viewer_title": "Թափանցիկության կարգավորում",
       "transparency_click_instruction": "Սեղմեք այն գույնի վրա, որը ցանկանում եք թափանցիկ դարձնել",
       "transparency_undo": "Չեղարկել վերջին սեղմումը",
