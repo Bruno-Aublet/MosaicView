@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.1.1"
+__version__ = "1.1.2"
 
 import sys
 import os
@@ -545,6 +545,8 @@ class MainWindow(QMainWindow):
             pass
 
         get_config_manager().set_split_active(False)
+        from modules.qt import state as _state_module
+        _state_module.state = self._panel._state
         self._panel._refresh_toolbar_states()
         self._panel._refresh_title()
 
@@ -829,8 +831,9 @@ def main():
     check_for_updates_on_startup(win)
 
     # Préchauffage du process fitz en arrière-plan — élimine le délai au 1er PDF
+    # DÉSACTIVÉ : le warmup garde ~670 Mo en RAM au repos ; réactiver si latence perceptible
     from modules.qt.pdf_loading_qt import warmup_pdf_process, shutdown_pdf_process
-    warmup_pdf_process()
+    # warmup_pdf_process()
     app.aboutToQuit.connect(shutdown_pdf_process)
 
     # ── Focus initial ──────────────────────────────────────────────────────

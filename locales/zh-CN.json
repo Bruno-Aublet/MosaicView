@@ -1380,6 +1380,7 @@
     "download": "下载",
     "checking": "正在检查...",
     "banner_message": "有新版本: {latest}",
-    "menu_update_available": "有更新 ({latest})"
+    "menu_update_available": "有更新 ({latest})",
+    "retry": "重试"
   }
 }

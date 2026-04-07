@@ -1380,6 +1380,7 @@
     "download": "Unduh",
     "checking": "Memeriksa...",
     "banner_message": "Versi baru tersedia: {latest}",
-    "menu_update_available": "Pembaruan tersedia ({latest})"
+    "menu_update_available": "Pembaruan tersedia ({latest})",
+    "retry": "Coba lagi"
   }
 }

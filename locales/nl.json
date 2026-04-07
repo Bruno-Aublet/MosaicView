@@ -1380,6 +1380,7 @@
     "download": "Downloaden",
     "checking": "Controleren...",
     "banner_message": "Nieuwe versie beschikbaar: {latest}",
-    "menu_update_available": "Update beschikbaar ({latest})"
+    "menu_update_available": "Update beschikbaar ({latest})",
+    "retry": "Opnieuw proberen"
   }
 }

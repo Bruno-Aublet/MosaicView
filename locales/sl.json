@@ -1380,6 +1380,7 @@
     "download": "Prenesi",
     "checking": "Preverjam...",
     "banner_message": "Na voljo je nova različica: {latest}",
-    "menu_update_available": "Posodobitev na voljo ({latest})"
+    "menu_update_available": "Posodobitev na voljo ({latest})",
+    "retry": "Poskusi znova"
   }
 }

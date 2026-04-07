@@ -1380,6 +1380,7 @@
     "download": "பதிவிறக்கம்",
     "checking": "சரிபார்க்கிறது...",
     "banner_message": "புதிய பதிப்பு கிடைக்கிறது: {latest}",
-    "menu_update_available": "புதுப்பிப்பு கிடைக்கிறது ({latest})"
+    "menu_update_available": "புதுப்பிப்பு கிடைக்கிறது ({latest})",
+    "retry": "மீண்டும் முயற்சி செய்"
   }
 }

@@ -1380,6 +1380,7 @@
     "download": "डाउनलोड करें",
     "checking": "जांच हो रही है...",
     "banner_message": "नया संस्करण उपलब्ध: {latest}",
-    "menu_update_available": "अपडेट उपलब्ध ({latest})"
+    "menu_update_available": "अपडेट उपलब्ध ({latest})",
+    "retry": "पुनः प्रयास करें"
   }
 }

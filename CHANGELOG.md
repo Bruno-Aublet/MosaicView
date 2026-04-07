@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.2] - 2026-04-07
+
+- Fixed a bug where, after restoring a two-panel session and closing the second panel, all menu bar and context menu actions were disabled even after opening a file. The global state singleton (`_state_module.state`) was being poisoned during split restoration: while `_open_split` temporarily pointed the singleton at panel 2's state, wrapped callbacks from panel 1 captured that value as `_prev` and restored it in their `finally` block, leaving the singleton pointed at the (later destroyed) panel 2 state for the rest of the session. Fixed by validating `_prev` against the set of currently active panels before restoring it, falling back to the current panel's own state if `_prev` no longer belongs to any active panel. `_close_split` also now explicitly resets the singleton to panel 1's state.
+- Added a Retry button in the "Check for updates" dialog. When the update check fails (no network, timeout), the dialog now shows a Retry button next to the Close button. Clicking it re-runs the check without closing the dialog.
+- Improved version comparison robustness in the update checker. Version numbers are now compared using `packaging.version.Version` (PEP 440) instead of a manual integer tuple, correctly handling pre-release tags such as `1.2.0rc1` or `1.2.0-beta`.
+- PDF thumbnail generation is now pipelined: each page's thumbnail is built immediately after it is decoded, while the remaining pages are still being processed. Previously all thumbnails were built after the last page was received. The mosaic display time after loading is now near-instant regardless of page count.
+- Reduced PDF memory footprint at rest. The warm PDF process and merge PDF process are no longer kept alive between file loads. They are started on demand and shut down after each file is closed, recovering ~670 MB of RAM that was previously held permanently.
+- Reduced the height of the image format conversion dialog.
+- Fixed the resize dialog not being centered on the application window. Reduced its height.
+- Fixed the image adjustments dialog being partially off-screen when the main window is positioned near the bottom of the screen. The dialog now repositions itself after being shown, taking the window frame height into account, so it always fits within the available screen area. Reduced the height of the image adjustments dialog.
+
 ## [1.1.1] - 2026-04-06
 
 - Fixed a bug where the status bar was not updated after resizing images. It now refreshes automatically when the resize operation completes.

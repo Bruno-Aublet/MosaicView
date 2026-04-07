@@ -1380,6 +1380,7 @@
     "download": "Lataa",
     "checking": "Tarkistetaan...",
     "banner_message": "Uusi versio saatavilla: {latest}",
-    "menu_update_available": "Päivitys saatavilla ({latest})"
+    "menu_update_available": "Päivitys saatavilla ({latest})",
+    "retry": "Yritä uudelleen"
   }
 }

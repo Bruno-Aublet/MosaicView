@@ -1380,6 +1380,7 @@
     "download": "Ներբեռնել",
     "checking": "Ստուգվում է...",
     "banner_message": "Հասանելի է նոր տարբերակ՝ {latest}",
-    "menu_update_available": "Թարմացում հասանելի է ({latest})"
+    "menu_update_available": "Թարմացում հասանելի է ({latest})",
+    "retry": "Կրկին փորձել"
   }
 }

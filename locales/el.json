@@ -1380,6 +1380,7 @@
     "download": "Λήψη",
     "checking": "Έλεγχος...",
     "banner_message": "Νέα έκδοση διαθέσιμη: {latest}",
-    "menu_update_available": "Διαθέσιμη ενημέρωση ({latest})"
+    "menu_update_available": "Διαθέσιμη ενημέρωση ({latest})",
+    "retry": "Δοκιμή ξανά"
   }
 }

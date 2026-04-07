@@ -190,13 +190,25 @@ class OutlierDialog(QDialog):
 
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
+        self._center_parent = parent
 
-        if parent:
-            pg = parent.geometry()
-            self.move(
-                pg.x() + (pg.width()  - self.width())  // 2,
-                pg.y() + (pg.height() - self.height()) // 2,
-            )
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            QTimer.singleShot(0, self._center_on_parent)
+
+    def _center_on_parent(self):
+        if self._center_parent:
+            pg = self._center_parent.frameGeometry()
+            center = pg.center()
+            fg = self.frameGeometry()
+            fg.moveCenter(center)
+            print(f"[CENTER OutlierDialog] parent.frameGeometry={pg} center={center}")
+            print(f"[CENTER OutlierDialog] self.size={self.size()} self.frameGeometry={self.frameGeometry()}")
+            print(f"[CENTER OutlierDialog] moving to={fg.topLeft()}")
+            self.move(fg.topLeft())
+            print(f"[CENTER OutlierDialog] after move pos={self.pos()}")
 
     # ── Construction des widgets pages ────────────────────────────────────────
 
@@ -424,7 +436,7 @@ class ResizeDialog(QDialog):
         self._multi_page_state = _multi_page_checkbox_state
 
         self.setModal(True)
-        self.resize(700, 650)
+        self.resize(700, 560)
 
         ico_path = resource_path("icons/MosaicView.ico")
         if os.path.exists(ico_path):
@@ -470,12 +482,22 @@ class ResizeDialog(QDialog):
                 )
             self._overlay_tip.track(self._multi_page_cb, _tip_html())
 
-        if parent:
-            pg = parent.geometry()
-            self.move(
-                pg.x() + (pg.width()  - self.width())  // 2,
-                pg.y() + (pg.height() - self.height()) // 2,
-            )
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            QTimer.singleShot(0, self._center_on_parent)
+
+    def _center_on_parent(self):
+        if self._center_parent:
+            win = self._center_parent.window()
+            pg = win.frameGeometry()
+            center = pg.center()
+            fg = self.frameGeometry()
+            fg.moveCenter(center)
+            self.move(fg.topLeft())
 
     # ── Construction UI ───────────────────────────────────────────────────────
 

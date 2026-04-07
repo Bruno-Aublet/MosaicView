@@ -1380,6 +1380,7 @@
     "download": "تنزيل",
     "checking": "جارٍ التحقق...",
     "banner_message": "إصدار جديد متاح: {latest}",
-    "menu_update_available": "تحديث متاح ({latest})"
+    "menu_update_available": "تحديث متاح ({latest})",
+    "retry": "إعادة المحاولة"
   }
 }

@@ -134,7 +134,7 @@ class AdjustmentsDialog(QDialog):
         if os.path.exists(ico_path):
             self.setWindowIcon(QIcon(ico_path))
 
-        self.resize(1020, 940)
+        self.resize(1020, 900)
 
         # ── Détection qualité JPEG ────────────────────────────────────────────
         jpeg_qualities = []
@@ -197,17 +197,33 @@ class AdjustmentsDialog(QDialog):
 
         _connect_lang(self, lambda _: self._retranslate())
 
-        # Centrage sur la fenêtre principale
-        top = parent.window() if parent else None
-        if top:
-            pg = top.geometry()
-            self.move(
-                pg.x() + (pg.width()  - self.width())  // 2,
-                pg.y() + (pg.height() - self.height()) // 2,
-            )
+        self._center_parent = parent.window() if parent else None
 
     # ─────────────────────────────────────────────────────────────────────────
     # Construction de l'UI
+    # ─────────────────────────────────────────────────────────────────────────
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        top = self._center_parent
+        self._center_parent = None
+        if top:
+            from PySide6.QtCore import QTimer
+            from PySide6.QtWidgets import QApplication
+            def _do_move():
+                pg = top.geometry()
+                x = pg.x() + (pg.width()  - self.width())  // 2
+                y = pg.y() + (pg.height() - self.height()) // 2
+                screen = QApplication.screenAt(pg.center()) or QApplication.primaryScreen()
+                sa = screen.availableGeometry()
+                fh = self.frameGeometry().height()
+                fw = self.frameGeometry().width()
+                x = max(sa.x(), min(x, sa.x() + sa.width() - fw))
+                y = min(y, sa.y() + sa.height() - fh)
+                y = max(sa.y(), y)
+                self.move(x, y)
+            QTimer.singleShot(0, _do_move)
+
     # ─────────────────────────────────────────────────────────────────────────
 
     def _build_ui(self):

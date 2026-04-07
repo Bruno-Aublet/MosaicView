@@ -363,6 +363,10 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     gc.collect()
     gc.collect()  # 2e passe pour les cycles Python/Qt
 
+    from modules.qt.pdf_loading_qt import shutdown_pdf_process
+    shutdown_pdf_process()
+
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # close_file — logique principale avec dialogs de confirmation

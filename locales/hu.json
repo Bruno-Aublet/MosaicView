@@ -1380,6 +1380,7 @@
     "download": "Letöltés",
     "checking": "Ellenőrzés...",
     "banner_message": "Új verzió érhető el: {latest}",
-    "menu_update_available": "Frissítés elérhető ({latest})"
+    "menu_update_available": "Frissítés elérhető ({latest})",
+    "retry": "Újrapróbálás"
   }
 }

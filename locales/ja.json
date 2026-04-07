@@ -1380,6 +1380,7 @@
     "download": "ダウンロード",
     "checking": "確認中...",
     "banner_message": "新しいバージョンが利用可能: {latest}",
-    "menu_update_available": "アップデートあり ({latest})"
+    "menu_update_available": "アップデートあり ({latest})",
+    "retry": "再試行"
   }
 }

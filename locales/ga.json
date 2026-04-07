@@ -1380,6 +1380,7 @@
     "download": "Íosluchtaigh",
     "checking": "Ag seiceáil...",
     "banner_message": "Leagan nua ar fáil: {latest}",
-    "menu_update_available": "Nuashonrú ar fáil ({latest})"
+    "menu_update_available": "Nuashonrú ar fáil ({latest})",
+    "retry": "Aththriail"
   }
 }

@@ -874,6 +874,8 @@ class PdfLoadWorker(QThread):
                 entry = create_entry(filename, img_data, IMAGE_EXTS)
                 entry["source"] = "pdf"
                 entry["dpi"]    = used_dpi
+                from modules.qt.mosaic_canvas import build_qimage_for_entry
+                build_qimage_for_entry(entry)
                 temp_entries.append(entry)
 
             elif kind == 'progress':
@@ -1234,6 +1236,8 @@ class PdfMergeWorker(QThread):
                 entry = create_entry(filename, img_data, IMAGE_EXTS)
                 entry["source"] = "pdf"
                 entry["dpi"]    = used_dpi
+                from modules.qt.mosaic_canvas import build_qimage_for_entry
+                build_qimage_for_entry(entry)
                 new_entries.append(entry)
 
             elif kind == 'progress':

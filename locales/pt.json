@@ -1380,6 +1380,7 @@
     "download": "Baixar",
     "checking": "Verificando...",
     "banner_message": "Nova versão disponível: {latest}",
-    "menu_update_available": "Atualização disponível ({latest})"
+    "menu_update_available": "Atualização disponível ({latest})",
+    "retry": "Tentar novamente"
   }
 }

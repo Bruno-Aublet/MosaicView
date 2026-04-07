@@ -1,3 +1,5 @@
+# Fichiers exclus du dépôt Git (builds, config locale, caches, environnements).
+
 # Config utilisateur (devrait être dans %APPDATA%, pas dans le projet)
 .mosaicview_config.json
 

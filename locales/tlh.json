@@ -1380,6 +1380,7 @@
     "download": "tagh",
     "checking": "nej...",
     "banner_message": "chu' paq'yav' tu'lu': {latest}",
-    "menu_update_available": "chu' De' ({latest})"
+    "menu_update_available": "chu' De' ({latest})",
+    "retry": "nIteb ghItlhqa'"
   }
 }

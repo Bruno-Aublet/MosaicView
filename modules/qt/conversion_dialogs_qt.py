@@ -428,7 +428,7 @@ class _ConvertFormatDialog(QDialog):
         self._chosen_format    = "PNG"
 
         self.setModal(True)
-        self.setFixedSize(620, 400)
+        self.setFixedSize(620, 310)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 10, 20, 10)

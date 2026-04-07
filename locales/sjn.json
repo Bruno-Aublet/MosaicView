@@ -1380,6 +1380,7 @@
     "download": "Esgar",
     "checking": "Gwelo...",
     "banner_message": "Gwanath newydd: {latest}",
-    "menu_update_available": "Gwanath newydd ({latest})"
+    "menu_update_available": "Gwanath newydd ({latest})",
+    "retry": "Garo velui"
   }
 }

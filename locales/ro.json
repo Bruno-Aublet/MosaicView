@@ -1380,6 +1380,7 @@
     "download": "Descarcă",
     "checking": "Se verifică...",
     "banner_message": "Versiune nouă disponibilă: {latest}",
-    "menu_update_available": "Actualizare disponibilă ({latest})"
+    "menu_update_available": "Actualizare disponibilă ({latest})",
+    "retry": "Reîncercați"
   }
 }

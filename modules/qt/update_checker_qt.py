@@ -5,6 +5,7 @@ from urllib.request import urlopen
 from urllib.error import URLError
 import json
 import threading
+from packaging.version import Version
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
@@ -35,9 +36,8 @@ def _normalize(tag: str) -> str:
 def _is_newer(latest: str, current: str) -> bool:
     """Retourne True si latest est strictement supérieur à current."""
     try:
-        return tuple(int(x) for x in latest.split(".")) > \
-               tuple(int(x) for x in current.split("."))
-    except ValueError:
+        return Version(latest) > Version(current)
+    except Exception:
         return False
 
 
@@ -88,6 +88,11 @@ class _UpdateDialog(QDialog):
         self._download_btn.hide()
         btn_row.addWidget(self._download_btn)
 
+        self._retry_btn = QPushButton()
+        self._retry_btn.clicked.connect(self._on_retry)
+        self._retry_btn.hide()
+        btn_row.addWidget(self._retry_btn)
+
         self._ok_btn = QPushButton()
         self._ok_btn.clicked.connect(self.accept)
         btn_row.addWidget(self._ok_btn)
@@ -128,6 +133,12 @@ class _UpdateDialog(QDialog):
     def _on_download(self):
         webbrowser.open(_RELEASES_PAGE)
 
+    def _on_retry(self):
+        self._status = "checking"
+        self._retranslate()
+        t = threading.Thread(target=self._fetch, daemon=True)
+        t.start()
+
     def _retranslate(self):
         theme = get_current_theme()
         font  = _get_current_font(11)
@@ -147,12 +158,14 @@ class _UpdateDialog(QDialog):
         if self._status == "checking":
             self._message.setText(_("updates.checking"))
             self._download_btn.hide()
+            self._retry_btn.hide()
 
         elif self._status == "ok":
             self._message.setText(
                 _("updates.up_to_date").replace("{version}", _normalize(self._latest_tag))
             )
             self._download_btn.hide()
+            self._retry_btn.hide()
 
         elif self._status == "update":
             self._message.setText(
@@ -168,10 +181,19 @@ class _UpdateDialog(QDialog):
                 f"border: none; padding: 6px 16px; border-radius: 4px; }} "
                 f"QPushButton:hover {{ background: #3a9a3a; }}"
             )
+            self._retry_btn.hide()
 
         elif self._status == "error":
             self._message.setText(_("updates.error"))
             self._download_btn.hide()
+            self._retry_btn.setText(_("updates.retry"))
+            self._retry_btn.setFont(font_btn)
+            self._retry_btn.setStyleSheet(
+                f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+                f"border: 1px solid #aaaaaa; padding: 6px 16px; border-radius: 4px; }} "
+                f"QPushButton:hover {{ background: {theme['separator']}; }}"
+            )
+            self._retry_btn.show()
 
         self._ok_btn.setText(_("buttons.close"))
         self._ok_btn.setFont(font_btn)
@@ -195,14 +217,19 @@ class _StartupSignal(QObject):
     update_found = Signal(str)   # latest_tag
 
 
+_startup_sig = None  # référence module-level pour éviter le GC
+
+
 def check_for_updates_on_startup(main_window) -> None:
     """Lance la vérification en arrière-plan au démarrage.
     Si une nouvelle version est détectée, notifie main_window via
     show_update_banner(latest) et set_update_available_in_menu(latest).
     Silencieux si à jour ou erreur réseau.
     """
+    global _startup_sig
     sig = _StartupSignal()
     sig.update_found.connect(lambda tag: _on_startup_update_found(main_window, tag))
+    _startup_sig = sig
 
     def _fetch():
         try:
@@ -216,8 +243,6 @@ def check_for_updates_on_startup(main_window) -> None:
 
     t = threading.Thread(target=_fetch, daemon=True)
     t.start()
-    # Conserver une référence au signal pour éviter le GC
-    main_window._startup_update_signal = sig
 
 
 def _on_startup_update_found(main_window, latest_tag: str) -> None:

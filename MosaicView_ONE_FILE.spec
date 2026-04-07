@@ -1,3 +1,5 @@
+# MosaicView_ONE_FILE.exe: single executable, no installation required
+
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_all, collect_data_files
 

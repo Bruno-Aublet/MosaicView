@@ -1380,6 +1380,7 @@
     "download": "Изтегляне",
     "checking": "Проверка...",
     "banner_message": "Налична е нова версия: {latest}",
-    "menu_update_available": "Налична актуализация ({latest})"
+    "menu_update_available": "Налична актуализация ({latest})",
+    "retry": "Опитай отново"
   }
 }

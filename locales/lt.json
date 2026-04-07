@@ -1380,6 +1380,7 @@
     "download": "Atsisiųsti",
     "checking": "Tikrinama...",
     "banner_message": "Prieinama nauja versija: {latest}",
-    "menu_update_available": "Atnaujinimas prieinamas ({latest})"
+    "menu_update_available": "Atnaujinimas prieinamas ({latest})",
+    "retry": "Bandyti dar kartą"
   }
 }

@@ -1380,6 +1380,7 @@
     "download": "Завантажити",
     "checking": "Перевірка...",
     "banner_message": "Доступна нова версія: {latest}",
-    "menu_update_available": "Доступне оновлення ({latest})"
+    "menu_update_available": "Доступне оновлення ({latest})",
+    "retry": "Спробувати ще раз"
   }
 }

@@ -1380,6 +1380,7 @@
     "download": "Lahta",
     "checking": "Cendela...",
     "banner_message": "Vinya pol tulta: {latest}",
-    "menu_update_available": "Vinya pol ({latest})"
+    "menu_update_available": "Vinya pol ({latest})",
+    "retry": "Auta minna coivie"
   }
 }

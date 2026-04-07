@@ -1380,6 +1380,7 @@
     "download": "다운로드",
     "checking": "확인 중...",
     "banner_message": "새 버전 사용 가능: {latest}",
-    "menu_update_available": "업데이트 가능 ({latest})"
+    "menu_update_available": "업데이트 가능 ({latest})",
+    "retry": "다시 시도"
   }
 }

@@ -1380,6 +1380,7 @@
     "download": "Hlaða niður",
     "checking": "Athugað...",
     "banner_message": "Ný útgáfa í boði: {latest}",
-    "menu_update_available": "Uppfærsla í boði ({latest})"
+    "menu_update_available": "Uppfærsla í boði ({latest})",
+    "retry": "Reyna aftur"
   }
 }

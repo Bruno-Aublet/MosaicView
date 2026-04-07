@@ -1380,6 +1380,7 @@
     "download": "Muat turun",
     "checking": "Menyemak...",
     "banner_message": "Versi baharu tersedia: {latest}",
-    "menu_update_available": "Kemas kini tersedia ({latest})"
+    "menu_update_available": "Kemas kini tersedia ({latest})",
+    "retry": "Cuba lagi"
   }
 }

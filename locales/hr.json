@@ -1380,6 +1380,7 @@
     "download": "Preuzmi",
     "checking": "Provjera...",
     "banner_message": "Dostupna je nova verzija: {latest}",
-    "menu_update_available": "Dostupno ažuriranje ({latest})"
+    "menu_update_available": "Dostupno ažuriranje ({latest})",
+    "retry": "Pokušaj ponovo"
   }
 }

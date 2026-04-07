@@ -1380,6 +1380,7 @@
     "download": "ดาวน์โหลด",
     "checking": "กำลังตรวจสอบ...",
     "banner_message": "มีเวอร์ชันใหม่: {latest}",
-    "menu_update_available": "มีอัปเดต ({latest})"
+    "menu_update_available": "มีอัปเดต ({latest})",
+    "retry": "ลองอีกครั้ง"
   }
 }

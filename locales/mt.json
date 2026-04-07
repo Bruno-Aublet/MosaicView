@@ -1380,6 +1380,7 @@
     "download": "Niżżel",
     "checking": "Qed jiċċekkja...",
     "banner_message": "Verżjoni ġdida disponibbli: {latest}",
-    "menu_update_available": "Aġġornament disponibbli ({latest})"
+    "menu_update_available": "Aġġornament disponibbli ({latest})",
+    "retry": "Erġa' pprova"
   }
 }

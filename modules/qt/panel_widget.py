@@ -465,6 +465,7 @@ class PanelWidget(QWidget):
         # Wrapper : chaque callable redirige le singleton vers self._state
         # avant exécution, et le restaure après.
         panel_state = self._state
+        mw = self._main_window
         def _wrap(fn):
             def _wrapped(*a, **kw):
                 _prev = _state_module.state
@@ -472,7 +473,16 @@ class PanelWidget(QWidget):
                 try:
                     return fn(*a, **kw)
                 finally:
-                    _state_module.state = _prev
+                    # Ne restaurer _prev que si c'est un état valide (panel actif).
+                    # Si _prev appartient à un panel2 détruit, remettre panel_state.
+                    try:
+                        active_states = {id(p._state) for p in mw._all_panels()}
+                    except AttributeError:
+                        active_states = {id(panel_state)}
+                    if id(_prev) in active_states:
+                        _state_module.state = _prev
+                    else:
+                        _state_module.state = panel_state
             return _wrapped
         wrapped = {k: (_wrap(v) if callable(v) else v) for k, v in raw.items()}
         # Injecte la version disponible si une mise à jour a été détectée

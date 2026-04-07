@@ -1380,6 +1380,7 @@
     "download": "İndir",
     "checking": "Kontrol ediliyor...",
     "banner_message": "Yeni sürüm mevcut: {latest}",
-    "menu_update_available": "Güncelleme mevcut ({latest})"
+    "menu_update_available": "Güncelleme mevcut ({latest})",
+    "retry": "Yeniden dene"
   }
 }

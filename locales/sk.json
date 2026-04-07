@@ -1380,6 +1380,7 @@
     "download": "Stiahnuť",
     "checking": "Kontrolujem...",
     "banner_message": "Je dostupná nová verzia: {latest}",
-    "menu_update_available": "Aktualizácia dostupná ({latest})"
+    "menu_update_available": "Aktualizácia dostupná ({latest})",
+    "retry": "Skúsiť znova"
   }
 }

@@ -1380,6 +1380,7 @@
     "download": "Lejupielādēt",
     "checking": "Pārbauda...",
     "banner_message": "Pieejama jauna versija: {latest}",
-    "menu_update_available": "Atjauninājums pieejams ({latest})"
+    "menu_update_available": "Atjauninājums pieejams ({latest})",
+    "retry": "Mēģināt vēlreiz"
   }
 }

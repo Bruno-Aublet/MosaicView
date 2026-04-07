@@ -1380,6 +1380,7 @@
     "download": "Tải xuống",
     "checking": "Đang kiểm tra...",
     "banner_message": "Phiên bản mới có sẵn: {latest}",
-    "menu_update_available": "Có bản cập nhật ({latest})"
+    "menu_update_available": "Có bản cập nhật ({latest})",
+    "retry": "Thử lại"
   }
 }

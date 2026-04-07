@@ -1380,6 +1380,7 @@
     "download": "Last ned",
     "checking": "Sjekker...",
     "banner_message": "Ny versjon tilgjengelig: {latest}",
-    "menu_update_available": "Oppdatering tilgjengelig ({latest})"
+    "menu_update_available": "Oppdatering tilgjengelig ({latest})",
+    "retry": "Prøv igjen"
   }
 }

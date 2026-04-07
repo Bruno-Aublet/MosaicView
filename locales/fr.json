@@ -1379,6 +1379,7 @@
     "error": "Impossible de vérifier les mises à jour.\nVérifiez votre connexion internet.",
     "download": "Télécharger",
     "checking": "Vérification en cours...",
+    "retry": "Réessayer",
     "banner_message": "Nouvelle version disponible : {latest}",
     "menu_update_available": "Mise à jour disponible ({latest})"
   }

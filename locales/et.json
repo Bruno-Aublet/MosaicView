@@ -1380,6 +1380,7 @@
     "download": "Laadi alla",
     "checking": "Kontrollin...",
     "banner_message": "Uus versioon saadaval: {latest}",
-    "menu_update_available": "Uuendus saadaval ({latest})"
+    "menu_update_available": "Uuendus saadaval ({latest})",
+    "retry": "Proovi uuesti"
   }
 }

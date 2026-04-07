@@ -1380,6 +1380,7 @@
     "download": "Ladda ner",
     "checking": "Söker...",
     "banner_message": "Ny version tillgänglig: {latest}",
-    "menu_update_available": "Uppdatering tillgänglig ({latest})"
+    "menu_update_available": "Uppdatering tillgänglig ({latest})",
+    "retry": "Försök igen"
   }
 }
