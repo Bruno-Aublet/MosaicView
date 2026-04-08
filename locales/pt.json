@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "O arquivo '{file}' não é um arquivo TAR válido ou está corrompido."
+      },
+      "disk_full": {
+        "message": "Espaço em disco insuficiente na unidade de destino.\nNecessário: {needed}\nDisponível: {free}"
       }
     },
     "info": {

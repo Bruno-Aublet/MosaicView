@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "'{file}' は有効な TAR アーカイブではないか、破損しています。"
+      },
+      "disk_full": {
+        "message": "転送先ドライブの空き容量が不足しています。\n必要: {needed}\n空き容量: {free}"
       }
     },
     "info": {

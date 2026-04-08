@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Súbor '{file}' nie je platný archív TAR alebo je poškodený."
+      },
+      "disk_full": {
+        "message": "Na cieľovom disku nie je dostatok miesta.\nPotrebné: {needed}\nDostupné: {free}"
       }
     },
     "info": {

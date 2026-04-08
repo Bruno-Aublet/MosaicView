@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Filen '{file}' er ikke et gyldig TAR-arkiv eller er skadet."
+      },
+      "disk_full": {
+        "message": "Ikke nok diskplass på måldisken.\nNødvendig: {needed}\nTilgjengelig: {free}"
       }
     },
     "info": {

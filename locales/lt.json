@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Failas '{file}' nėra galiojantis TAR archyvas arba yra sugadintas."
+      },
+      "disk_full": {
+        "message": "Trūksta vietos diske paskirties diske.\nReikalinga: {needed}\nYra: {free}"
       }
     },
     "info": {

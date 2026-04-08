@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Fail '{file}' ei ole kehtiv TAR-arhiiv või on rikutud."
+      },
+      "disk_full": {
+        "message": "Sihtkettale ei jätku kettaruumi.\nVajalik: {needed}\nSaadaval: {free}"
       }
     },
     "info": {

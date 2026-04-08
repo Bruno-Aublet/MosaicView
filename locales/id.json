@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "File '{file}' bukan arsip TAR yang valid atau rusak."
+      },
+      "disk_full": {
+        "message": "Ruang disk tidak cukup di drive tujuan.\nDiperlukan: {needed}\nTersedia: {free}"
       }
     },
     "info": {

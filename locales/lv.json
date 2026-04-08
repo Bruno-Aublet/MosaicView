@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Fails '{file}' nav derīgs TAR arhīvs vai ir bojāts."
+      },
+      "disk_full": {
+        "message": "Galamērķa diskā nav pietiekami daudz vietas.\nNepieciešams: {needed}\nPieejams: {free}"
       }
     },
     "info": {

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.3] - 2026-04-08
+
+- Added a 1 px separator line between the mosaic and the vertical scrollbar, and between the mosaic and the status bar. Both lines adapt to the current theme (light/dark).
+- The status bar now displays file counts even when no archive is open (0 directories, 0 files, 0 selected).
+- Fixed the status bar showing 0 directories when opening an archive with a subdirectory structure. Directories are now counted by detecting distinct top-level subdirectory prefixes in the entry names, matching what the mosaic displays.
+- Fixed the "first multiple page" renumbering dialog not being centered on the application window. Reduced its height.
+- The JPEG/WEBP quality dialog now displays the number of files to convert and their total size. Reduced its height. Radio buttons are now centered.
+- Fixed a bug where saving a CBZ when the destination drive was out of disk space could corrupt the archive. The save now checks available disk space before moving the temporary file to the destination. If there is not enough space, the temporary file is deleted and an error message is shown with the required and available sizes; the archive is not modified and the file is not closed.
+
 ## [1.1.2] - 2026-04-07
 
 - Fixed a bug where, after restoring a two-panel session and closing the second panel, all menu bar and context menu actions were disabled even after opening a file. The global state singleton (`_state_module.state`) was being poisoned during split restoration: while `_open_split` temporarily pointed the singleton at panel 2's state, wrapped callbacks from panel 1 captured that value as `_prev` and restored it in their `finally` block, leaving the singleton pointed at the (later destroyed) panel 2 state for the rest of the session. Fixed by validating `_prev` against the set of currently active panels before restoring it, falling back to the current panel's own state if `_prev` no longer belongs to any active panel. `_close_split` also now explicitly resets the singleton to panel 1's state.

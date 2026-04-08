@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Plik '{file}' nie jest prawidłowym archiwum TAR lub jest uszkodzony."
+      },
+      "disk_full": {
+        "message": "Brak miejsca na dysku docelowym.\nWymagane: {needed}\nDostępne: {free}"
       }
     },
     "info": {

@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Skráin '{file}' er ekki gilt TAR-safn eða er skemmd."
+      },
+      "disk_full": {
+        "message": "Ekki nægt diskpláss á viðtökudrifi.\nÞarf: {needed}\nTiltækt: {free}"
       }
     },
     "info": {

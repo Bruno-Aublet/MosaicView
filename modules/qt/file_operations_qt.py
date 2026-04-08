@@ -39,6 +39,7 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
 from modules.qt.config_manager import get_config_manager
 from modules.qt.entries import save_image_to_bytes
+from modules.qt.utils import format_file_size
 from modules.qt.dialogs_qt import (
     detect_duplicate_filenames_for_save,
     ErrorDialog, InfoDialog, QuestionYNCDialog,
@@ -1042,15 +1043,16 @@ def apply_new_names(parent, canvas, callbacks: dict):
     - Si archive CBR/EPUB/PDF ouverte et modifiée → propose un nouveau fichier .cbz
       (bouton « Appliquer et créer un CBZ »)
     Logique identique à file_operations.apply_new_names.
+    Retourne False si la sauvegarde n'a pas eu lieu (erreur ou annulation), True si succès.
     """
     state = _state_module.state
     if not state.current_file or not state.images_data:
-        return
+        return False
 
     if not _check_no_ico(parent):
-        return
+        return False
     if not _check_no_video(parent):
-        return
+        return False
 
     _auto_update_page_count_qt()
 
@@ -1082,14 +1084,14 @@ def apply_new_names(parent, canvas, callbacks: dict):
             msg += _("messages.errors.duplicate_names.footer")
             return msg
         DuplicateNamesErrorDialog(parent, _make_msg, "messages.errors.duplicate_names.title")
-        return
+        return False
 
     render_mosaic = callbacks.get("render_mosaic", lambda: None)
     if not _validate_filenames_qt(parent, render_mosaic):
-        return
+        return False
 
     if not _check_animated_gifs_qt(parent):
-        return
+        return False
 
     ext = os.path.splitext(state.current_file)[1].lower()
     safe_delete = callbacks.get("safe_delete_file", _safe_delete)
@@ -1105,6 +1107,22 @@ def apply_new_names(parent, canvas, callbacks: dict):
                 for entry in state.images_data:
                     if entry["bytes"] is not None and not entry.get("is_dir"):
                         zf.writestr(entry["orig_name"], entry["bytes"])
+            # Vérifie la place disponible sur le disque de destination avant le move
+            temp_size = os.path.getsize(temp_file)
+            dest_dir = os.path.dirname(os.path.abspath(state.current_file))
+            free_space = shutil.disk_usage(dest_dir).free
+            if temp_size > free_space:
+                try:
+                    os.remove(temp_file)
+                except Exception:
+                    pass
+                _needed = format_file_size(temp_size)
+                _free   = format_file_size(free_space)
+                ErrorDialog(parent,
+                            lambda: _("messages.errors.save_failed.title"),
+                            lambda: _("messages.errors.disk_full.message",
+                                      needed=_needed, free=_free)).exec()
+                return False
             shutil.move(temp_file, state.current_file)
             InfoDialogClickablePath(parent,
                                     "messages.info.cbz_saved.title",
@@ -1114,7 +1132,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
             ErrorDialog(parent,
                         _("messages.errors.save_failed.title"),
                         _("messages.errors.save_failed.message", error=e)).exec()
-            return
+            return False
 
     elif ext in (".cbr", ".cbt", ".epub"):
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
@@ -1128,7 +1146,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
             "Comic Book Archive (*.cbz)",
         )
         if not new_file:
-            return
+            return False
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
         try:
             with zipfile.ZipFile(new_file, "w") as zf:
@@ -1155,7 +1173,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
             ErrorDialog(parent,
                         _("messages.errors.save_failed.title"),
                         _("messages.errors.save_failed.message", error=e)).exec()
-            return
+            return False
 
     elif ext == ".pdf":
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
@@ -1169,7 +1187,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
             "Comic Book Archive (*.cbz)",
         )
         if not new_file:
-            return
+            return False
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
         try:
             with zipfile.ZipFile(new_file, "w") as zf:
@@ -1196,7 +1214,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
             ErrorDialog(parent,
                         _("messages.errors.save_failed.title"),
                         _("messages.errors.save_failed.message", error=e)).exec()
-            return
+            return False
 
     state.modified = False
     if callbacks.get("render_mosaic"):
@@ -1205,6 +1223,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
         callbacks["update_button_text"]()
     if callbacks.get("update_tabs"):
         callbacks["update_tabs"]()
+    return True
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

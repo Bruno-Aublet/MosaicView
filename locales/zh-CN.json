@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "文件 '{file}' 不是有效的 TAR 归档文件或已损坏。"
+      },
+      "disk_full": {
+        "message": "目标驱动器磁盘空间不足。\n需要: {needed}\n可用: {free}"
       }
     },
     "info": {

@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "'{file}' 파일은 유효한 TAR 아카이브가 아니거나 손상되었습니다."
+      },
+      "disk_full": {
+        "message": "대상 드라이브에 디스크 공간이 부족합니다.\n필요: {needed}\n사용 가능: {free}"
       }
     },
     "info": {

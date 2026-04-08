@@ -973,9 +973,10 @@ class MosaicCanvas(QGraphicsView):
         self._scene.setBackgroundBrush(QBrush(QColor(bg)))
         sep     = "#555555" if dark else "#cccccc"
         handle  = "#888888" if dark else "#aaaaaa"
+        line    = "#444444" if dark else "#d0d0d0"
         self.setStyleSheet(
             f"QGraphicsView {{ background: {bg}; border: none; }}"
-            f"QScrollBar:vertical {{ background: {bg}; width: 14px; margin: 0px; }}"
+            f"QScrollBar:vertical {{ background: {bg}; width: 14px; margin: 0px; border-left: 1px solid {line}; }}"
             f"QScrollBar::handle:vertical {{ background: {sep}; min-height: 20px; border-radius: 3px; }}"
             f"QScrollBar::handle:vertical:hover {{ background: {handle}; }}"
             f"QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{ height: 0px; }}"

@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "I pheth '{file}' u dhîn TAR i vaer nâ."
+      },
+      "disk_full": {
+        "message": "Ú-boe lô pân i 'raw vorn.\nDînen: {needed}\nGalad: {free}"
       }
     },
     "info": {

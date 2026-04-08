@@ -35,7 +35,7 @@ from PySide6.QtWidgets import (
     QWidget, QStackedWidget,
     QVBoxLayout, QHBoxLayout, QSplitter,
     QFileDialog, QDialog, QLabel, QPushButton,
-    QApplication,
+    QApplication, QFrame,
 )
 from PySide6.QtCore import QTimer, Qt, QThread, Signal
 from PySide6.QtGui import QKeySequence, QShortcut
@@ -331,6 +331,12 @@ class PanelWidget(QWidget):
         self._content_stack.setCurrentIndex(0)
         layout.addWidget(self._content_stack, stretch=1)
 
+        self._status_separator = QFrame()
+        self._status_separator.setObjectName("statusSeparator")
+        self._status_separator.setFixedHeight(1)
+        self._status_separator.setStyleSheet("background: #d0d0d0;")
+        layout.addWidget(self._status_separator)
+
         self._status_bar = StatusBar()
         layout.addWidget(self._status_bar)
 
@@ -538,8 +544,9 @@ class PanelWidget(QWidget):
         self._canvas.render_mosaic()
 
     def _apply_new_names(self):
-        _qt_apply_new_names(self, self._canvas, self._file_op_callbacks())
+        result = _qt_apply_new_names(self, self._canvas, self._file_op_callbacks())
         self._canvas.render_mosaic()
+        return result
 
     # ──────────────────────────────────────────────────────────────────────────
     # Conversions par lot (batch)
@@ -609,6 +616,12 @@ class PanelWidget(QWidget):
         if hasattr(self, "_icon_toolbar") and hasattr(self._icon_toolbar, "_overlay_tip"):
             self._icon_toolbar._overlay_tip.update_font()
         self._metadata_tab.apply_theme()
+
+    def apply_separator_theme(self):
+        from modules.qt.state import state
+        dark = state.dark_mode if state and hasattr(state, "dark_mode") else False
+        line = "#444444" if dark else "#d0d0d0"
+        self._status_separator.setStyleSheet(f"background: {line};")
 
     def _reset_to_defaults(self):
         self._main_window._reset_to_defaults()

@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Datoteka '{file}' ni veljavni arhiv TAR ali je poškodovana."
+      },
+      "disk_full": {
+        "message": "Na ciljnem disku ni dovolj prostora.\nPotrebno: {needed}\nDostopno: {free}"
       }
     },
     "info": {

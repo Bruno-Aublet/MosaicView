@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Il file '{file}' non è un archivio TAR valido o è danneggiato."
+      },
+      "disk_full": {
+        "message": "Spazio su disco insufficiente sull'unità di destinazione.\nNecessario: {needed}\nDisponibile: {free}"
       }
     },
     "info": {

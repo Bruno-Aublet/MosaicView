@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "A '{file}' fájl nem érvényes TAR archívum, vagy sérült."
+      },
+      "disk_full": {
+        "message": "Nincs elegendő lemezterület a célmeghajtón.\nSzükséges: {needed}\nElérhető: {free}"
       }
     },
     "info": {

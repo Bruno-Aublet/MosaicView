@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Níl '{file}' ina chartlann TAR bailí nó tá sé truaillithe."
+      },
+      "disk_full": {
+        "message": "Níl go leor spáis diosca ar an gceann scríbe.\nDe dhíth: {needed}\nAr fáil: {free}"
       }
     },
     "info": {

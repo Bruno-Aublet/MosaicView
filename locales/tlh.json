@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "'{file}' ngan ghe''or TAR potlh mIS."
+      },
+      "disk_full": {
+        "message": "Huj Dochvetlh, Duj'e' yIlo' 'ej bID ngo'bogh lo'laHbe'.\npoQ: {needed}\ntu'lu': {free}"
       }
     },
     "info": {

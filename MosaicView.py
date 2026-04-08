@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.1.2"
+__version__ = "1.1.3"
 
 import sys
 import os
@@ -318,6 +318,7 @@ class MainWindow(QMainWindow):
             p._icon_toolbar.update_language_combo()
             apply_theme(self._app_ref, p._canvas, p._left_panel, p._tab_bar, render=False)
             p._metadata_tab.apply_theme()
+            p.apply_separator_theme()
             if not p._state.images_data:
                 p._canvas.render_mosaic()
             else:
@@ -334,6 +335,7 @@ class MainWindow(QMainWindow):
         toggle_theme(self._app_ref, self._active_panel._canvas,
                      self._active_panel._left_panel, self._active_panel._tab_bar)
         self._active_panel._metadata_tab.apply_theme()
+        self._active_panel.apply_separator_theme()
         # Synchronise dark_mode sur tous les autres panneaux et applique le thème
         new_dark = self._active_panel._state.dark_mode
         for p in self._all_panels():
@@ -343,6 +345,7 @@ class MainWindow(QMainWindow):
             _state_module.state = p._state
             apply_theme(self._app_ref, p._canvas, p._left_panel, p._tab_bar)
             p._metadata_tab.apply_theme()
+            p.apply_separator_theme()
         _state_module.state = self._active_panel._state
         # Met à jour le bandeau de mise à jour si affiché
         for p in self._all_panels():
@@ -443,6 +446,7 @@ class MainWindow(QMainWindow):
         from modules.qt import state as _state_module
         _state_module.state = self._panel2._state
         apply_theme(self._app_ref, self._panel2._canvas, self._panel2._left_panel, self._panel2._tab_bar)
+        self._panel2.apply_separator_theme()
         _state_module.state = self._panel._state
 
         # Restaure le ratio depuis la config — différé pour que la fenêtre ait sa taille finale
@@ -865,3 +869,4 @@ if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()  # requis pour PyInstaller + spawn
     main()
+    

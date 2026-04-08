@@ -33,12 +33,12 @@ class StatusBar(QWidget):
         """Met à jour le texte selon l'état courant (reproduit canvas_rendering.update_status_bar)."""
         self._label.setFont(get_current_font(9))
 
-        if state is None or not state.images_data:
+        if state is None:
             self._label.setText("")
             return
 
-        dirs_count  = sum(1 for e in state.images_data if e.get("is_dir"))
-        files_count = len(state.images_data) - dirs_count
+        dirs_count  = len({e["orig_name"].split("/")[0] for e in state.images_data if "/" in e.get("orig_name", "") and not e.get("is_dir")})
+        files_count = sum(1 for e in state.images_data if not e.get("is_dir"))
         selected_count = len(state.selected_indices)
 
         total_size = sum(

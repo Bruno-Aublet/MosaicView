@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Het bestand '{file}' is geen geldig TAR-archief of is beschadigd."
+      },
+      "disk_full": {
+        "message": "Onvoldoende schijfruimte op het doelstation.\nVereist: {needed}\nBeschikbaar: {free}"
       }
     },
     "info": {

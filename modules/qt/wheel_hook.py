@@ -113,7 +113,8 @@ class WheelHook:
         lpos = target.mapFromGlobal(gpos)
         if not target.rect().contains(lpos):
             return
-        # Ne pas envoyer si le widget est recouvert par une fenêtre modale
+        # Envoyer la molette au combo même si une autre fenêtre est au-dessus,
+        # sauf si c'est une fenêtre modale ApplicationModal (bloque toute l'appli).
         widget_at = QApplication.widgetAt(gpos)
         if widget_at is not None:
             w = widget_at
@@ -122,8 +123,10 @@ class WheelHook:
                     break
                 w = w.parent()
             else:
-                # Le widget sous le curseur n'est pas le combo ni un de ses enfants → recouvert
-                return
+                from PySide6.QtCore import Qt as _Qt
+                top = widget_at.window()
+                if top is not None and top.windowModality() == _Qt.ApplicationModal:
+                    return
         angle = QPoint(0, delta // 120 * 120)
         event = QWheelEvent(
             QPointF(lpos), QPointF(gpos),

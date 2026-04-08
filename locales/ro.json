@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Fișierul '{file}' nu este o arhivă TAR validă sau este corupt."
+      },
+      "disk_full": {
+        "message": "Spațiu insuficient pe discul de destinație.\nNecesar: {needed}\nDisponibil: {free}"
       }
     },
     "info": {

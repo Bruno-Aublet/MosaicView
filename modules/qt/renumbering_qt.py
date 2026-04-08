@@ -41,7 +41,6 @@ class _FirstPageDialog(QDialog):
     def __init__(self, parent, first_entry: dict, first_mult: int, total_logical_pages: int):
         super().__init__(parent)
         self.setModal(True)
-        self.resize(520, 380)
         self._result = None
 
         ico_path = resource_path("icons/MosaicView.ico")
@@ -184,9 +183,11 @@ class _FirstPageDialog(QDialog):
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
 
-        # Centrage sur le parent
-        if parent:
-            pg = parent.geometry()
+        # Centrage sur la fenêtre principale
+        self.adjustSize()
+        main_win = parent.window() if parent else None
+        if main_win:
+            pg = main_win.geometry()
             self.move(
                 pg.x() + (pg.width()  - self.width())  // 2,
                 pg.y() + (pg.height() - self.height()) // 2,

@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "檔案 '{file}' 不是有效的 TAR 封存檔或已損毀。"
+      },
+      "disk_full": {
+        "message": "目標磁碟機的磁碟空間不足。\n需要: {needed}\n可用: {free}"
       }
     },
     "info": {

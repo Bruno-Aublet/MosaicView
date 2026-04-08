@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "I parma '{file}' ua formë coimas TA-quanta ú-lómë."
+      },
+      "disk_full": {
+        "message": "Lá ná mára roimbe i andon ve i andon cendelë.\nMerya: {needed}\nLerta: {free}"
       }
     },
     "info": {

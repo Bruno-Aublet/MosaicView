@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Tệp '{file}' không phải là tệp lưu trữ TAR hợp lệ hoặc bị hỏng."
+      },
+      "disk_full": {
+        "message": "Không đủ dung lượng đĩa trên ổ đĩa đích.\nCần: {needed}\nKhả dụng: {free}"
       }
     },
     "info": {

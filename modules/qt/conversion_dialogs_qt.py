@@ -234,7 +234,7 @@ class _QualityDialog(QDialog):
         self._use_custom    = False
 
         self.setModal(True)
-        self.setFixedSize(620, 500)
+        self.setFixedWidth(620)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 10, 20, 10)
@@ -245,9 +245,20 @@ class _QualityDialog(QDialog):
         self._title_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._title_lbl)
 
+        # Info fichiers (nombre + poids)
+        self._files_info_lbl = QLabel()
+        self._files_info_lbl.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._files_info_lbl)
+
         layout.addSpacing(4)
 
-        # Radios presets
+        # Radios presets — centrés
+        from PySide6.QtWidgets import QWidget as _QWidget
+        radios_widget = _QWidget()
+        radios_layout = QVBoxLayout(radios_widget)
+        radios_layout.setContentsMargins(0, 0, 0, 0)
+        radios_layout.setSpacing(4)
+
         self._btn_group = QButtonGroup(self)
         self._radios    = []
         preset_labels   = [
@@ -263,8 +274,10 @@ class _QualityDialog(QDialog):
             rb._key         = key
             self._btn_group.addButton(rb, i)
             self._radios.append(rb)
-            layout.addWidget(rb)
+            radios_layout.addWidget(rb)
             rb.toggled.connect(self._on_preset_toggled)
+
+        layout.addWidget(radios_widget, alignment=Qt.AlignHCenter)
 
         layout.addSpacing(4)
 
@@ -372,6 +385,13 @@ class _QualityDialog(QDialog):
 
         self._title_lbl.setText(_("dialogs.convert.quality_label"))
         self._title_lbl.setFont(font_lrg)
+
+        nb    = len(self._selected_entries)
+        size  = sum(len(e.get("bytes", b"")) for e in self._selected_entries)
+        word  = _("dialogs.convert.word_image") if nb == 1 else _("dialogs.convert.word_images")
+        self._files_info_lbl.setText(f"{nb} {word} · {format_file_size(size)}")
+        self._files_info_lbl.setFont(font)
+        self._files_info_lbl.setStyleSheet(f"color: {note_color};")
 
         for rb in self._radios:
             rb.setText(_(rb._key))

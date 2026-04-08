@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "'{file}' dosyası geçerli bir TAR arşivi değil veya bozuk."
+      },
+      "disk_full": {
+        "message": "Hedef sürücüde yeterli disk alanı yok.\nGerekli: {needed}\nKullanılabilir: {free}"
       }
     },
     "info": {

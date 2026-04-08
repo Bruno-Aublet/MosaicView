@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Il-fajl '{file}' mhuwiex arkivju TAR validu jew huwa korrott."
+      },
+      "disk_full": {
+        "message": "Mhux biżżejjed spazju fid-disk fuq id-drive tad-destinazzjoni.\nMeħtieġ: {needed}\nDisponibbli: {free}"
       }
     },
     "info": {

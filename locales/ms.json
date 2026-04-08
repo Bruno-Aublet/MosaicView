@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Fail '{file}' bukan arkib TAR yang sah atau rosak."
+      },
+      "disk_full": {
+        "message": "Ruang cakera tidak mencukupi pada pemacu destinasi.\nDiperlukan: {needed}\nTersedia: {free}"
       }
     },
     "info": {

@@ -479,6 +479,9 @@
       },
       "cbt_invalid": {
         "message": "Tiedosto '{file}' ei ole kelvollinen TAR-arkisto tai se on vioittunut."
+      },
+      "disk_full": {
+        "message": "Kohdeasemalla ei ole tarpeeksi levytilaa.\nTarvitaan: {needed}\nSaatavilla: {free}"
       }
     },
     "info": {
