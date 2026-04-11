@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.4] - 2026-04-11
+
+- Fixed a race condition in the image format conversion worker: if the user clicked Cancel while a page was being converted, the in-flight conversion could complete and insert the new entry into the archive after the cancellation cleanup had already run, leaving a spurious extra page in the mosaic. The worker now re-checks the cancellation flag immediately after each conversion, before inserting the result.
+- Fixed rotate and flip cancellation: clicking Cancel mid-operation now fully reverts all already-rotated/flipped pages to their original state. Previously, pages that had already been processed were left modified with no visual feedback. Also fixed the same race condition as conversion (flag is now checked after each operation, before invalidating the thumbnail cache).
+- Fixed a bug where changing the application language while two panels were open caused a spurious tab to appear in the second (empty) panel. The `TabBar` was created without a reference to its panel's own state, so on language change it fell back to the global state singleton (pointing to the active panel with an open file) and rendered that panel's tab instead of nothing.
+- Fixed live language switching not working when two panels were open simultaneously. A global Win32 mouse-hook singleton was routing all mouse-wheel events to a single target combo box; opening a second panel overwrote that target, so scrolling the language combo had no effect. The hook now maintains a list of registered combo boxes and dispatches each wheel event to whichever one is under the cursor.
+- Improved live language switching performance. The global Qt application stylesheet was being reapplied on every language change even though the theme had not changed, causing a full re-style of all widgets in all windows. The stylesheet is now only applied when the theme actually changes; language changes update only the text content of each panel.
+- Dropping `.nfo`, `.txt`, and `.xml` files from an external source (e.g. Windows Explorer) onto the mosaic now works correctly. These files are added to the mosaic with their respective icon and are included in the archive when saving as CBZ. Other unsupported file types still trigger the existing warning dialog.
+- Removed leftover debug print statements in the resize dialog (`_center_on_parent` and the resize worker exception handler).
+
 ## [1.1.3] - 2026-04-08
 
 - Added a 1 px separator line between the mosaic and the vertical scrollbar, and between the mosaic and the status bar. Both lines adapt to the current theme (light/dark).

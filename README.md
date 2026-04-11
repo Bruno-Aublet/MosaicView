@@ -4,11 +4,13 @@
 
 **MosaicView** is a desktop application for editing digital comics files — CBZ, CBR, CB7 and PDF — without ever having to open or extract them manually.
 
+**This is NOT a reader, although it has a viewer. It is an editing tool for comic archives.**
+
 Designed for comic, manga and BD readers who want to organize, clean up and prepare their files quickly and intuitively.
 
 This is my first application, and I hope you’ll like it. I have absolutely no programming knowledge. None, zero, nada. I built MosaicView with the help of Claude Code. Yes, I used an AI to write this program. You can hate me if it makes you feel better.
 
-> ⚠️ **Active development** — features are being added regularly. Feedback and bug reports are welcome via [GitHub Issues](https://github.com/Bruno-Aublet/MosaicView/issues).
+> ⚠️ **Active development** — features are being added regularly. Feedback and bug reports are welcome via [GitHub Issues](https://github.com/Bruno-Aublet/MosaicView/issues). If you use this tool, please report bugs, unexpected behavior, performance issues and files that don't work correctly.
 
 ---
 

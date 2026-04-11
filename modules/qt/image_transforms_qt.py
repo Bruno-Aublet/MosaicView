@@ -57,11 +57,17 @@ class _TransformWorker(QThread):
                 self.cancelled.emit()
                 return
             try:
-                if self._operation(entry, self._state):
-                    _regenerate_thumbnail_qt(entry)
+                self._operation(entry, self._state)
             except Exception as e:
                 import traceback
                 traceback.print_exc()
+            # Vérifier le flag après l'opération (qui peut être longue) :
+            # si _cancel() a été appelé pendant l'opération, on arrête sans invalider le thumbnail
+            # (la restauration d'état via undo se charge de remettre les bytes d'origine).
+            if self._cancelled.is_set():
+                self.cancelled.emit()
+                return
+            _regenerate_thumbnail_qt(entry)
             self.progress.emit(int((idx + 1) / total * 100))
         self.done.emit()
 
@@ -101,6 +107,12 @@ def _run_transform(entries, operation, label_key, callbacks):
         w._cancelled.set()
         worker_ref[0] = None
         _hide()
+        # Restaure l'état au sommet de l'historique (= avant la transformation)
+        # sans décrémenter history_index — save_state() n'a rien ajouté car
+        # l'état était identique au précédent au moment du lancement.
+        rollback = callbacks.get('rollback')
+        if rollback:
+            rollback()
 
     def on_progress(pct):
         _show(pct)

@@ -803,7 +803,8 @@ class _LangCombo(QComboBox):
             _wheel_hook_singleton = WheelHook(self)
             _wheel_hook_singleton.install()
         else:
-            _wheel_hook_singleton._target = self
+            _wheel_hook_singleton.register(self)
+        self.destroyed.connect(lambda: _wheel_hook_singleton.unregister(self))
 
     def showPopup(self):
         super().showPopup()

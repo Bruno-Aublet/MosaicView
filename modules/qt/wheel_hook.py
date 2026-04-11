@@ -33,11 +33,11 @@ class _MSLLHOOKSTRUCT(ctypes.Structure):
 class WheelHook:
     """
     Hook souris global Win32. Quand WM_MOUSEWHEEL est détecté et que la souris
-    est sur `target`, simule un wheelEvent Qt sur ce widget.
+    est sur l'un des targets enregistrés, simule un wheelEvent Qt sur ce widget.
     """
 
     def __init__(self, target):
-        self._target  = target
+        self._targets = [target]
         self._hook    = None
         self._proc    = None
         self._thread  = None
@@ -102,38 +102,41 @@ class WheelHook:
                 # Widget C++ déjà détruit (ex: panel2 fermé)
                 pass
 
+    def register(self, target):
+        if target not in self._targets:
+            self._targets.append(target)
+
+    def unregister(self, target):
+        try:
+            self._targets.remove(target)
+        except ValueError:
+            pass
+
     def _dispatch(self, gx, gy, delta):
-        target = self._target
-        if target is None or not target.isVisible():
-            return
         from PySide6.QtCore import QPoint, QPointF, Qt
         from PySide6.QtGui import QWheelEvent
         from PySide6.QtWidgets import QApplication
         gpos = QPoint(gx, gy)
-        lpos = target.mapFromGlobal(gpos)
-        if not target.rect().contains(lpos):
-            return
-        # Envoyer la molette au combo même si une autre fenêtre est au-dessus,
-        # sauf si c'est une fenêtre modale ApplicationModal (bloque toute l'appli).
+        # Fenêtre modale ApplicationModal : bloquer tout
         widget_at = QApplication.widgetAt(gpos)
         if widget_at is not None:
-            w = widget_at
-            while w is not None:
-                if w is target:
-                    break
-                w = w.parent()
+            top = widget_at.window()
+            if top is not None and top.windowModality() == Qt.ApplicationModal:
+                return
+        for target in list(self._targets):
+            if target is None or not target.isVisible():
+                continue
+            lpos = target.mapFromGlobal(gpos)
+            if not target.rect().contains(lpos):
+                continue
+            angle = QPoint(0, delta // 120 * 120)
+            event = QWheelEvent(
+                QPointF(lpos), QPointF(gpos),
+                QPoint(0, 0), angle,
+                Qt.NoButton, Qt.NoModifier, Qt.NoScrollPhase, False
+            )
+            if hasattr(target, 'wheel_from_hook'):
+                target.wheel_from_hook(event)
             else:
-                from PySide6.QtCore import Qt as _Qt
-                top = widget_at.window()
-                if top is not None and top.windowModality() == _Qt.ApplicationModal:
-                    return
-        angle = QPoint(0, delta // 120 * 120)
-        event = QWheelEvent(
-            QPointF(lpos), QPointF(gpos),
-            QPoint(0, 0), angle,
-            Qt.NoButton, Qt.NoModifier, Qt.NoScrollPhase, False
-        )
-        if hasattr(target, 'wheel_from_hook'):
-            target.wheel_from_hook(event)
-        else:
-            QApplication.sendEvent(target, event)
+                QApplication.sendEvent(target, event)
+            break  # Un seul target par événement (la souris ne peut être que sur un)

@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.1.3"
+__version__ = "1.1.4"
 
 import sys
 import os
@@ -309,16 +309,13 @@ class MainWindow(QMainWindow):
         if not self._loc.change_language(lang_code):
             return
         from modules.qt.menubar_qt import build_menubar
-        from modules.qt.toggle_theme_qt import apply_theme
         for p in self._all_panels():
             build_menubar(p, p._build_menubar_callbacks(), p._menubar)
             p._refresh_title()
             p._update_status_bar()
             p._icon_toolbar.update_language()
             p._icon_toolbar.update_language_combo()
-            apply_theme(self._app_ref, p._canvas, p._left_panel, p._tab_bar, render=False)
             p._metadata_tab.apply_theme()
-            p.apply_separator_theme()
             if not p._state.images_data:
                 p._canvas.render_mosaic()
             else:

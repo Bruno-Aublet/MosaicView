@@ -643,6 +643,11 @@ class _ConversionWorker(QThread):
                 return
             new_entry, _err = convert_image_data(entry, self._target_format, self._quality)
             if new_entry:
+                # Vérifier le flag après la conversion (qui peut être longue) :
+                # si _cancel() a été appelé pendant la conversion, on n'insère pas.
+                if self._cancelled.is_set():
+                    self.cancelled.emit()
+                    return
                 from modules.qt.mosaic_canvas import build_qimage_for_entry
                 build_qimage_for_entry(new_entry)
                 free_image_memory(new_entry)

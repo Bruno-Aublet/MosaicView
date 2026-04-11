@@ -204,11 +204,7 @@ class OutlierDialog(QDialog):
             center = pg.center()
             fg = self.frameGeometry()
             fg.moveCenter(center)
-            print(f"[CENTER OutlierDialog] parent.frameGeometry={pg} center={center}")
-            print(f"[CENTER OutlierDialog] self.size={self.size()} self.frameGeometry={self.frameGeometry()}")
-            print(f"[CENTER OutlierDialog] moving to={fg.topLeft()}")
             self.move(fg.topLeft())
-            print(f"[CENTER OutlierDialog] after move pos={self.pos()}")
 
     # ── Construction des widgets pages ────────────────────────────────────────
 
@@ -1317,10 +1313,8 @@ class _ResizeWorker(QThread):
                 build_qimage_for_entry(entry)   # pré-calcule la miniature dans le thread bg
                 free_image_memory(entry)
 
-            except Exception as exc:
-                import traceback
-                print(f"[RESIZE DEBUG] idx={idx} EXCEPTION: {exc}")
-                traceback.print_exc()
+            except Exception:
+                pass
 
             self.progress.emit(int((idx + 1) / total * 100))
 

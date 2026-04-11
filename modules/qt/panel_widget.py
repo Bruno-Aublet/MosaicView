@@ -53,6 +53,7 @@ from modules.qt.undo_redo_qt import (
     save_state_qt as _save_state_qt,
     undo_action_qt as _undo_action_qt,
     redo_action_qt as _redo_action_qt,
+    rollback_to_current_state_qt as _rollback_to_current_state_qt,
 )
 import modules.qt.recent_files as _recent_files_module
 
@@ -311,6 +312,7 @@ class PanelWidget(QWidget):
         layout.addWidget(self._menubar)
 
         self._tab_bar = TabBar(tooltip_parent=panel)
+        self._tab_bar._state = self._state  # lié au state du panneau dès la création
         self._tab_bar.tab_changed.connect(self._on_tab_changed)
         layout.addWidget(self._tab_bar)
 
@@ -810,6 +812,7 @@ class PanelWidget(QWidget):
 
         IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
                       '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp')
+        ANNEX_EXTS = ('.nfo', '.txt', '.xml')
 
         st = self._state
         already_open = st.current_file is not None or bool(st.images_data)
@@ -817,7 +820,9 @@ class PanelWidget(QWidget):
         cbz_files   = [p for p in paths if os.path.splitext(p)[1].lower() in ('.cbz', '.cbr', '.cb7', '.cbt', '.epub')]
         pdf_files   = [p for p in paths if os.path.splitext(p)[1].lower() == '.pdf']
         image_files = [p for p in paths if os.path.splitext(p)[1].lower() in IMAGE_EXTS]
-        other_files = [p for p in paths if p not in cbz_files and p not in pdf_files and p not in image_files]
+        annex_files = [p for p in paths if os.path.splitext(p)[1].lower() in ANNEX_EXTS]
+        other_files = [p for p in paths if p not in cbz_files and p not in pdf_files
+                       and p not in image_files and p not in annex_files]
 
         if other_files:
             names = "\n".join(os.path.basename(p) for p in other_files)
@@ -846,8 +851,8 @@ class PanelWidget(QWidget):
                 st.current_file = cbz_sorted[0]
                 self._loader.load(cbz_sorted)
 
-        if image_files:
-            self._start_image_load(image_files, already_open, IMAGE_EXTS, st)
+        if image_files or annex_files:
+            self._start_image_load(image_files + annex_files, already_open, IMAGE_EXTS, st)
 
     def _show_dpi_dialog_for_merge(self, filepath: str):
         from modules.qt.pdf_loading_qt import DpiDialog, import_and_merge_pdf
@@ -1174,6 +1179,7 @@ class PanelWidget(QWidget):
             "refresh_status":     self._update_status_bar,
             "canvas":             self._canvas,
             "state":              self._state,
+            "rollback":           lambda: _rollback_to_current_state_qt(self._state, *self._undo_redo_callbacks()),
         }
 
     def _resize_callbacks(self) -> dict:

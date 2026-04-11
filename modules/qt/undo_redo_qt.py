@@ -209,6 +209,26 @@ def restore_state_qt(state,
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# rollback_to_current_state_qt — restaure le sommet sans décrémenter
+# ─────────────────────────────────────────────────────────────────────────────
+
+def rollback_to_current_state_qt(state, render_mosaic_cb, clear_selection_cb,
+                                  update_tabs_cb, refresh_toolbar_cb):
+    """Restaure l'état au sommet de l'historique (history_index) sans le décrémenter.
+
+    Utilisé pour annuler une opération en cours (ex. rotation annulée) quand
+    save_state() n'a rien sauvegardé avant le lancement (état identique au précédent) :
+    les modifications en place sont défaites en relisant le snapshot existant.
+    """
+    if state.history_index < 0 or not state.history:
+        return
+    saved_state = state.history[state.history_index]
+    restore_state_qt(state, saved_state, render_mosaic_cb, clear_selection_cb,
+                     update_tabs_cb, refresh_toolbar_cb)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Wrappers publics — save_state_qt / undo_action_qt / redo_action_qt
 # ─────────────────────────────────────────────────────────────────────────────
 
