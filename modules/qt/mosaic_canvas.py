@@ -1732,14 +1732,16 @@ class MosaicCanvas(QGraphicsView):
                 st.modified = True
                 from modules.qt.comic_info import sync_pages_in_xml_data
                 sync_pages_in_xml_data(st)
-                # Met à jour selected_indices
-                new_reals = set()
-                for entry in dragged_entries:
-                    idx = remaining.index(entry)
-                    new_reals.add(idx)
-                st.selected_indices = new_reals
+                # Renumérotation — peut appeler reposition_non_images et modifier
+                # l'ordre de st.images_data (ex. XML repositionné en tête)
                 if self._renumber_after_drop_callback:
                     self._renumber_after_drop_callback()
+                # Recalcule selected_indices APRÈS renumérotation, par identité objet
+                dragged_ids = {id(e) for e in dragged_entries}
+                st.selected_indices = {
+                    idx for idx, e in enumerate(st.images_data)
+                    if id(e) in dragged_ids
+                }
                 if self._save_state_callback:
                     self._save_state_callback()
                 self._reorder_items_after_drop()

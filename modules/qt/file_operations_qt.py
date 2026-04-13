@@ -1046,7 +1046,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
     Retourne False si la sauvegarde n'a pas eu lieu (erreur ou annulation), True si succès.
     """
     state = _state_module.state
-    if not state.current_file or not state.images_data:
+    if not state.current_file:
         return False
 
     if not _check_no_ico(parent):

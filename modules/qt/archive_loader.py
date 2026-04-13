@@ -218,6 +218,7 @@ class _MessageDialog(QDialog):
         self._title_key = title_key
         self._msg       = msg
         self.setModal(True)
+        self.setMinimumWidth(420)
 
         layout = QVBoxLayout(self)
         self._lbl = QLabel()

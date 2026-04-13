@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5] - 2026-04-13
+
+- Fixed a bug where drag-and-dropping pages in an archive containing a metadata XML file (e.g. `comicinfo.xml`) left the post-drop selection offset by one. After the drop, renumbering repositions the XML to its alphabetical slot (position 0), shifting all image indices by one; the selection indices were computed before this reposition and therefore pointed to the wrong pages. Selection indices are now recomputed after renumbering, by matching entries by object identity in the final `images_data` list.
+- Fixed a bug where saving a CBZ that had been emptied of all its pages (all images deleted) silently failed: clicking "Apply and save" dismissed the dialog but left the empty archive open and unsaved. The save function was guarded by a check that returned early when the image list was empty. The guard has been removed; saving an empty CBZ is now permitted and produces a valid empty ZIP file.
+- Fixed empty CBZ files being rejected on open with a "not a valid ZIP archive" error. An empty ZIP file uses `PK\x05\x06` (End of Central Directory) as its first four bytes instead of the usual `PK\x03\x04` (Local File Header). The archive type detector now recognises both signatures as valid ZIP.
+- Widened the error dialog shown when an archive cannot be opened (minimum width 420 px).
+
 ## [1.1.4] - 2026-04-11
 
 - Fixed a race condition in the image format conversion worker: if the user clicked Cancel while a page was being converted, the in-flight conversion could complete and insert the new entry into the archive after the cancellation cleanup had already run, leaving a spurious extra page in the mosaic. The worker now re-checks the cancellation flag immediately after each conversion, before inserting the result.

@@ -11,7 +11,8 @@ import zipfile
 
 
 # Magic bytes des formats supportés
-_MAGIC_ZIP   = b'PK\x03\x04'
+_MAGIC_ZIP        = b'PK\x03\x04'  # ZIP avec entrées
+_MAGIC_ZIP_EMPTY  = b'PK\x05\x06'  # ZIP vide (End of Central Directory uniquement)
 _MAGIC_RAR4  = b'Rar!\x1a\x07\x00'
 _MAGIC_RAR5  = b'Rar!\x1a\x07\x01\x00'
 _MAGIC_7Z    = b'7z\xbc\xaf\x27\x1c'
@@ -34,7 +35,7 @@ def detect_archive_type(filepath: str) -> str | None:
     except OSError:
         return None
 
-    if magic[:4] == _MAGIC_ZIP:
+    if magic[:4] == _MAGIC_ZIP or magic[:4] == _MAGIC_ZIP_EMPTY:
         # ZIP — distinguer CBZ et EPUB
         try:
             with zipfile.ZipFile(filepath, 'r') as zf:
