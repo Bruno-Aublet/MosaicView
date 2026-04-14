@@ -623,6 +623,7 @@ class TextViewerDialog(QDialog):
 
         self._build_ui(theme)
         _connect_lang(self, self._retranslate)
+        self._center_parent = parent
 
         QShortcut(QKeySequence("F11"),    self).activated.connect(self._toggle_fullscreen)
         QShortcut(QKeySequence("Ctrl+0"), self).activated.connect(self._img_widget.reset_zoom)
@@ -636,6 +637,14 @@ class TextViewerDialog(QDialog):
 
         self._load_work_image()
         self._display_image(reset_offset=True)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── Construction UI ───────────────────────────────────────────────────────
 

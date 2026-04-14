@@ -84,6 +84,15 @@ class CloseWarningDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -171,6 +180,15 @@ class CloseWithoutSaveDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     _BTN_STYLE = (
         "QPushButton {{ background-color: {bg}; color: #000000; font-size: 13pt;"
@@ -265,6 +283,15 @@ class DeleteConfirmDialog(QDialog):
         self.finished.connect(self._on_close)
 
         self._btn_yes.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()

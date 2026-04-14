@@ -3,10 +3,36 @@ dialogs_qt.py — Boîtes de dialogue Qt respectant thème et police.
 """
 
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 
 from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
+
+
+def _center_on_widget(dialog, parent):
+    """Centre `dialog` sur `parent` en respectant les limites de l'écran.
+
+    À appeler depuis showEvent via QTimer.singleShot(0, ...) pour laisser
+    Qt calculer la taille réelle du dialogue avant le déplacement.
+    """
+    if parent is None:
+        return
+    from PySide6.QtWidgets import QApplication
+    from PySide6.QtCore import QPoint
+    # mapToGlobal donne la position absolue écran (même si parent est un widget enfant)
+    top_left = parent.mapToGlobal(QPoint(0, 0))
+    pw = parent.width()
+    ph = parent.height()
+    x = top_left.x() + (pw - dialog.width())  // 2
+    y = top_left.y() + (ph - dialog.height()) // 2
+    screen = QApplication.screenAt(top_left) or QApplication.primaryScreen()
+    if screen:
+        sa = screen.availableGeometry()
+        fw = dialog.frameGeometry().width()
+        fh = dialog.frameGeometry().height()
+        x = max(sa.x(), min(x, sa.x() + sa.width()  - fw))
+        y = max(sa.y(), min(y, sa.y() + sa.height() - fh))
+    dialog.move(x, y)
 
 
 class MsgDialog(QDialog):
@@ -26,6 +52,7 @@ class MsgDialog(QDialog):
         self._title_key = title_key
         self._message_key = message_key
         self._message_kwargs = message_kwargs or {}
+        self._center_parent = parent
         self.setModal(True)
 
         layout = QVBoxLayout(self)
@@ -49,6 +76,12 @@ class MsgDialog(QDialog):
         self._lang_handler = lambda _: (self._retranslate(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -110,6 +143,7 @@ class ConfirmDialog(QDialog):
         self._title_key = title_key
         self._message_key = message_key
         self._message_kwargs = message_kwargs or {}
+        self._center_parent = parent
         self.setModal(True)
 
         layout = QVBoxLayout(self)
@@ -141,6 +175,12 @@ class ConfirmDialog(QDialog):
         self._lang_handler = lambda _: (self._retranslate(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -197,6 +237,7 @@ class ErrorDialog(QDialog):
         super().__init__(parent)
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
+        self._center_parent = parent
         self.setModal(True)
 
         layout = QVBoxLayout(self)
@@ -220,6 +261,12 @@ class ErrorDialog(QDialog):
         self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -270,6 +317,7 @@ class InfoDialog(QDialog):
         super().__init__(parent)
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
+        self._center_parent = parent
         self.setModal(True)
 
         layout = QVBoxLayout(self)
@@ -293,6 +341,12 @@ class InfoDialog(QDialog):
         self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -348,6 +402,7 @@ class QuestionYNCDialog(QDialog):
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
         self._result = "cancel"
+        self._center_parent = parent
         self.setModal(True)
 
         layout = QVBoxLayout(self)
@@ -382,6 +437,12 @@ class QuestionYNCDialog(QDialog):
         self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _on_yes(self):
         self._result = "yes"

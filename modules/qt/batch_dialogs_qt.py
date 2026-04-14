@@ -183,6 +183,15 @@ class _ConfirmDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._start_btn.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -276,6 +285,15 @@ class _ProgressDialog(QDialog):
 
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -381,6 +399,15 @@ class _CbrSummaryDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._ok_btn.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -483,6 +510,15 @@ class _PdfSummaryDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._ok_btn.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -589,6 +625,15 @@ class _ImgSummaryDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._ok_btn.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -964,6 +1009,15 @@ class _Cb7SummaryDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._ok_btn.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -1338,6 +1392,15 @@ class _CbtSummaryDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._ok_btn.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -1991,16 +2054,15 @@ class _ImgModeDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _lang: self._retranslate())
         self._ok_btn.setFocus()
+        self._center_parent = parent
 
-        # Centrer sur le parent
-        self.adjustSize()
-        self.setFixedHeight(self.sizeHint().height() + 30)
-        if parent:
-            pg = parent.geometry()
-            self.move(
-                pg.x() + (pg.width()  - self.width())  // 2,
-                pg.y() + (pg.height() - self.height()) // 2,
-            )
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()

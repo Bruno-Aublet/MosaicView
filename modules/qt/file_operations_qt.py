@@ -157,8 +157,17 @@ class InfoDialogClickablePath(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+        self._center_parent = parent
 
         self.exec()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         self.setWindowTitle(_wt(self._title_key))
@@ -243,9 +252,18 @@ class SaveSuccessDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+        self._center_parent = parent
 
         self._no_btn.setFocus()
         self.exec()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         self.setWindowTitle(_wt(self._title_key))
@@ -313,8 +331,17 @@ class DuplicateNamesErrorDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+        self._center_parent = parent
 
         self.exec()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         self.setWindowTitle(_wt(self._title_key))
@@ -379,9 +406,18 @@ class DuplicateFilenameDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+        self._center_parent = parent
 
         self._renumber_btn.setFocus()
         self.exec()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         self._title_lbl.setText(_("dialogs.duplicate_filenames.title"))
@@ -457,8 +493,17 @@ class FileSavedDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+        self._center_parent = parent
 
         self.exec()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         self.setWindowTitle(_wt("messages.info.files_saved.title"))

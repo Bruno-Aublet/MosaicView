@@ -197,7 +197,7 @@ class AdjustmentsDialog(QDialog):
 
         _connect_lang(self, lambda _: self._retranslate())
 
-        self._center_parent = parent.window() if parent else None
+        self._center_parent = parent
 
     # ─────────────────────────────────────────────────────────────────────────
     # Construction de l'UI
@@ -205,24 +205,11 @@ class AdjustmentsDialog(QDialog):
 
     def showEvent(self, event):
         super().showEvent(event)
-        top = self._center_parent
-        self._center_parent = None
-        if top:
+        if self._center_parent and not event.spontaneous():
             from PySide6.QtCore import QTimer
-            from PySide6.QtWidgets import QApplication
-            def _do_move():
-                pg = top.geometry()
-                x = pg.x() + (pg.width()  - self.width())  // 2
-                y = pg.y() + (pg.height() - self.height()) // 2
-                screen = QApplication.screenAt(pg.center()) or QApplication.primaryScreen()
-                sa = screen.availableGeometry()
-                fh = self.frameGeometry().height()
-                fw = self.frameGeometry().width()
-                x = max(sa.x(), min(x, sa.x() + sa.width() - fw))
-                y = min(y, sa.y() + sa.height() - fh)
-                y = max(sa.y(), y)
-                self.move(x, y)
-            QTimer.singleShot(0, _do_move)
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ─────────────────────────────────────────────────────────────────────────
 

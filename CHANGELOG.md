@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.6] - 2026-04-14
+
+- In two-panel mode, all dialogs, pop-ups, and viewer windows now open centered on the panel that triggered them, rather than on the application window as a whole. Exception: application-level dialogs (license, donation, update checker) remain centered on the main window.
+- Fixed a bug where drag-and-dropping pages between two panels left the post-drop selection offset when the destination panel contained a metadata XML file (e.g. `comicinfo.xml`). This is the same root cause as the intra-panel selection offset fixed in 1.1.5, occurring in the inter-panel code path which had not been updated. Renumbering repositions the XML to its alphabetical slot after the insert, shifting all image indices; the selection indices were computed before this reposition and therefore pointed to the wrong pages. Selection indices are now recomputed after renumbering, by matching entries by object identity in the destination panel's final `images_data` list.
+- Fixed the "Open mail client" action in the menu bar and context menu doing nothing. The callback was wired up for the toolbar icon but was missing from the menu callback registry.
+
 ## [1.1.5] - 2026-04-13
 
 - Fixed a bug where drag-and-dropping pages in an archive containing a metadata XML file (e.g. `comicinfo.xml`) left the post-drop selection offset by one. After the drop, renumbering repositions the XML to its alphabetical slot (position 0), shifting all image indices by one; the selection indices were computed before this reposition and therefore pointed to the wrong pages. Selection indices are now recomputed after renumbering, by matching entries by object identity in the final `images_data` list.

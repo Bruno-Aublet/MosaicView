@@ -609,8 +609,17 @@ class ImageViewer(QDialog):
         language_signal.changed.connect(self._lang_handler)
         self._closed = False
 
+        self._center_parent = parent
         self._retranslate()
         self.display_image()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── Traduction à la volée ─────────────────────────────────────────────────
 

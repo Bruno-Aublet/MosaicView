@@ -125,6 +125,15 @@ class SizeAdjustmentDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._ok_btn.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -495,6 +504,15 @@ class YesNoCancelDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._btn_yes.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -622,6 +640,15 @@ class MergeDialog(QDialog):
         _connect_lang(self, lambda _: self._retranslate())
         self._join_btn.setFocus()
         self._update_preview()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()

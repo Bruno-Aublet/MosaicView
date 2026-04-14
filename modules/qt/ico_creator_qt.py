@@ -532,6 +532,15 @@ class IcoCreatorDialog(QDialog):
         self._build_phase_a()
 
         _connect_lang(self, lambda _: self._retranslate())
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ─────────────────────────────────────────────────────────────────────────
     # Helpers nommage

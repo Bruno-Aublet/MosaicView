@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.1.5"
+__version__ = "1.1.6"
 
 import sys
 import os
@@ -866,4 +866,3 @@ if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()  # requis pour PyInstaller + spawn
     main()
-    

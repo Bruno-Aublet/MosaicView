@@ -143,6 +143,7 @@ def build_menubar_callbacks(mw) -> dict:
         "clear_clipboard_files":    mw._clear_clipboard_files,
         "open_temp_folder":         mw._open_temp_folder,
         "open_github":              lambda: _webbrowser.open("https://github.com/Bruno-Aublet/MosaicView"),
+        "open_mail":                lambda: _webbrowser.open("mailto:mosaicview1969@gmail.com?subject=MosaicView"),
         "check_for_updates":        lambda: _check_for_updates_qt(mw),
         "show_donation_dialog":      mw._show_donation_dialog,
         "copy_mail_address":        mw._copy_mail_address,

@@ -196,15 +196,9 @@ class OutlierDialog(QDialog):
         super().showEvent(event)
         if self._center_parent and not event.spontaneous():
             from PySide6.QtCore import QTimer
-            QTimer.singleShot(0, self._center_on_parent)
-
-    def _center_on_parent(self):
-        if self._center_parent:
-            pg = self._center_parent.frameGeometry()
-            center = pg.center()
-            fg = self.frameGeometry()
-            fg.moveCenter(center)
-            self.move(fg.topLeft())
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── Construction des widgets pages ────────────────────────────────────────
 
@@ -484,16 +478,9 @@ class ResizeDialog(QDialog):
         super().showEvent(event)
         if self._center_parent and not event.spontaneous():
             from PySide6.QtCore import QTimer
-            QTimer.singleShot(0, self._center_on_parent)
-
-    def _center_on_parent(self):
-        if self._center_parent:
-            win = self._center_parent.window()
-            pg = win.frameGeometry()
-            center = pg.center()
-            fg = self.frameGeometry()
-            fg.moveCenter(center)
-            self.move(fg.topLeft())
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── Construction UI ───────────────────────────────────────────────────────
 

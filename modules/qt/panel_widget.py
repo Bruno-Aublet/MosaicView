@@ -202,7 +202,7 @@ class PanelWidget(QWidget):
         h_layout.addWidget(self._splitter)
 
         # ── Chargeurs d'archives ──────────────────────────────────────────────
-        self._loader = ArchiveLoader(main_window, self._canvas, self._state)
+        self._loader = ArchiveLoader(self, self._canvas, self._state)
         self._loader.loading_finished.connect(self._on_loading_finished)
 
         from modules.qt.pdf_loading_qt import PdfLoader
@@ -1508,10 +1508,14 @@ class PanelWidget(QWidget):
             dst_st.images_data.insert(insert_real + offset, entry)
         dst_st.modified = True
         sync_pages_in_xml_data(dst_st, emit_signal=False)
-        new_reals = set(range(insert_real, insert_real + len(dragged_entries)))
-        dst_st.selected_indices = new_reals
         if has_images:
             self._renumber_no_save()
+        # Recalcule selected_indices APRÈS renumérotation, par identité objet
+        dragged_ids = {id(e) for e in dragged_entries}
+        dst_st.selected_indices = {
+            idx for idx, e in enumerate(dst_st.images_data)
+            if id(e) in dragged_ids
+        }
         self.save_state()
         self._canvas.render_mosaic()
 

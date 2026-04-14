@@ -135,6 +135,7 @@ class _CorruptedImagesDialog(QDialog):
         super().__init__(parent)
         self._corrupted_names = corrupted_names
         self._total = total
+        self._center_parent = parent
         self.setModal(True)
 
         layout = QVBoxLayout(self)
@@ -156,6 +157,14 @@ class _CorruptedImagesDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         from modules.qt.state import get_current_theme
@@ -217,6 +226,7 @@ class _MessageDialog(QDialog):
         super().__init__(parent)
         self._title_key = title_key
         self._msg       = msg
+        self._center_parent = parent
         self.setModal(True)
         self.setMinimumWidth(420)
 
@@ -240,6 +250,14 @@ class _MessageDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -283,6 +301,7 @@ class ExtensionCorrectionDialog(QDialog):
         self._detected = detected
         self._declared = declared
         self._rename_ext = _TYPE_TO_EXT.get(detected.upper(), "." + detected.lower())
+        self._center_parent = parent
         self.setModal(True)
 
         layout = QVBoxLayout(self)
@@ -311,6 +330,14 @@ class ExtensionCorrectionDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()

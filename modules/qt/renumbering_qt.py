@@ -183,15 +183,15 @@ class _FirstPageDialog(QDialog):
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
 
-        # Centrage sur la fenêtre principale
-        self.adjustSize()
-        main_win = parent.window() if parent else None
-        if main_win:
-            pg = main_win.geometry()
-            self.move(
-                pg.x() + (pg.width()  - self.width())  // 2,
-                pg.y() + (pg.height() - self.height()) // 2,
-            )
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
