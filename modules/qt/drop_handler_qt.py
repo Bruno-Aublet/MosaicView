@@ -7,8 +7,33 @@ de MosaicView.py (tkinter).
 import os
 
 from PySide6.QtWidgets import QMessageBox
+from PySide6.QtCore import QTimer
 
 from modules.qt.localization import _, _wt
+
+
+def _show_centered_msgbox(parent, title, text, icon=QMessageBox.NoIcon):
+    from modules.qt.dialogs_qt import _center_on_widget
+    from modules.qt.font_manager_qt import get_current_font as _get_current_font
+    from modules.qt.state import get_current_theme
+    mb = QMessageBox(parent)
+    mb.setWindowTitle(title)
+    mb.setText(text)
+    if icon != QMessageBox.NoIcon:
+        mb.setIcon(icon)
+    theme = get_current_theme()
+    mb.setStyleSheet(
+        f"QMessageBox {{ background: {theme['bg']}; color: {theme['text']}; }}"
+        f"QLabel {{ background: {theme['bg']}; color: {theme['text']}; }}"
+        f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+        f"border: 1px solid #aaaaaa; padding: 4px 8px; }}"
+        f"QPushButton:hover {{ background: {theme['separator']}; }}"
+    )
+    font = _get_current_font(10)
+    mb.setFont(font)
+    mb.setModal(False)
+    mb.show()
+    QTimer.singleShot(0, lambda: _center_on_widget(mb, parent))
 
 
 def handle_dropped_paths(parent, paths: list, load_files_callback, batch_callbacks: dict,
@@ -31,11 +56,10 @@ def handle_dropped_paths(parent, paths: list, load_files_callback, batch_callbac
     files = [p for p in paths if not os.path.isdir(p)]
 
     if dirs and files:
-        mb = QMessageBox(parent)
-        mb.setWindowTitle(_wt("dialogs.batch_drop.mixed_drop_title"))
-        mb.setText(_("dialogs.batch_drop.mixed_drop_message"))
-        mb.setIcon(QMessageBox.Warning)
-        mb.exec()
+        _show_centered_msgbox(parent,
+            _wt("dialogs.batch_drop.mixed_drop_title"),
+            _("dialogs.batch_drop.mixed_drop_message"),
+            QMessageBox.Warning)
         return
 
     if dirs:
@@ -69,16 +93,15 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
     def _make_batch_cbr():
         files = []
         for d in dirs:
-            for dirpath, _, filenames in os.walk(d):
+            for dirpath, _subdirs, filenames in os.walk(d):
                 for fn in filenames:
                     if fn.lower().endswith('.cbr'):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            mb = QMessageBox(parent)
-            mb.setWindowTitle(_wt("dialogs.batch_cbr.no_cbr_title"))
-            mb.setText(_("dialogs.batch_cbr.no_cbr_message").format(directory=", ".join(dirs)))
-            mb.exec()
+            _show_centered_msgbox(parent,
+                _wt("dialogs.batch_cbr.no_cbr_title"),
+                _("dialogs.batch_cbr.no_cbr_message").format(directory=", ".join(dirs)))
             return
         batch_convert_cbr_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
 
@@ -91,10 +114,9 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            mb = QMessageBox(parent)
-            mb.setWindowTitle(_wt("dialogs.batch_cb7.no_cb7_title"))
-            mb.setText(_("dialogs.batch_cb7.no_cb7_message").format(directory=", ".join(dirs)))
-            mb.exec()
+            _show_centered_msgbox(parent,
+                _wt("dialogs.batch_cb7.no_cb7_title"),
+                _("dialogs.batch_cb7.no_cb7_message").format(directory=", ".join(dirs)))
             return
         batch_convert_cb7_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
 
@@ -107,33 +129,30 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            mb = QMessageBox(parent)
-            mb.setWindowTitle(_wt("dialogs.batch_cbt.no_cbt_title"))
-            mb.setText(_("dialogs.batch_cbt.no_cbt_message").format(directory=", ".join(dirs)))
-            mb.exec()
+            _show_centered_msgbox(parent,
+                _wt("dialogs.batch_cbt.no_cbt_title"),
+                _("dialogs.batch_cbt.no_cbt_message").format(directory=", ".join(dirs)))
             return
         batch_convert_cbt_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
 
     def _make_batch_pdf():
         if not PDF_AVAILABLE:
-            mb = QMessageBox(parent)
-            mb.setWindowTitle(_wt("dialogs.batch_pdf.pymupdf_required_title"))
-            mb.setText(_("dialogs.batch_pdf.pymupdf_required_message"))
-            mb.setIcon(QMessageBox.Warning)
-            mb.exec()
+            _show_centered_msgbox(parent,
+                _wt("dialogs.batch_pdf.pymupdf_required_title"),
+                _("dialogs.batch_pdf.pymupdf_required_message"),
+                QMessageBox.Warning)
             return
         files = []
         for d in dirs:
-            for dirpath, _, filenames in os.walk(d):
+            for dirpath, _subdirs, filenames in os.walk(d):
                 for fn in filenames:
                     if fn.lower().endswith('.pdf'):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            mb = QMessageBox(parent)
-            mb.setWindowTitle(_wt("dialogs.batch_pdf.no_pdf_title"))
-            mb.setText(_("dialogs.batch_pdf.no_pdf_message").format(directory=", ".join(dirs)))
-            mb.exec()
+            _show_centered_msgbox(parent,
+                _wt("dialogs.batch_pdf.no_pdf_title"),
+                _("dialogs.batch_pdf.no_pdf_message").format(directory=", ".join(dirs)))
             return
         batch_convert_pdf_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
 
@@ -146,19 +165,22 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            mb = QMessageBox(parent)
-            mb.setWindowTitle(_wt("dialogs.batch_img.no_img_title"))
-            mb.setText(_("dialogs.batch_img.no_img_message").format(directory=", ".join(dirs)))
-            mb.exec()
+            _show_centered_msgbox(parent,
+                _wt("dialogs.batch_img.no_img_title"),
+                _("dialogs.batch_img.no_img_message").format(directory=", ".join(dirs)))
             return
         mode_dlg = _ImgModeDialog(parent)
-        mode_dlg.exec()
-        if mode_dlg.chosen_mode is None:
-            return
-        if mode_dlg.chosen_mode == _ImgModeDialog.MODE_ONE_PER_IMAGE:
-            batch_convert_img_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
-        else:
-            batch_convert_imgs_to_single_cbz(parent, files, dirs[0], batch_callbacks)
+
+        def _on_mode_done():
+            if mode_dlg.chosen_mode is None:
+                return
+            if mode_dlg.chosen_mode == _ImgModeDialog.MODE_ONE_PER_IMAGE:
+                batch_convert_img_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
+            else:
+                batch_convert_imgs_to_single_cbz(parent, files, dirs[0], batch_callbacks)
+
+        mode_dlg.finished.connect(lambda _: _on_mode_done())
+        mode_dlg.show()
 
     callbacks = {
         'batch_cbr': _make_batch_cbr,

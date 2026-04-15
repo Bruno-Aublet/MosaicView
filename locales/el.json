@@ -1373,7 +1373,8 @@
     "view_on_github": "Πηγαίος κώδικας στο GitHub",
     "check_for_updates": "Έλεγχος για ενημερώσεις",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "Αρχείο αλλαγών"
   },
   "updates": {
     "dialog_title": "Ενημερώσεις",

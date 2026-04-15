@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.1.6"
+__version__ = "1.1.7"
 
 import sys
 import os
@@ -566,6 +566,10 @@ class MainWindow(QMainWindow):
     def _show_license_dialog(self):
         from modules.qt.license_dialog_qt import show_license_dialog_qt
         show_license_dialog_qt(self)
+
+    def _show_changelog(self):
+        from modules.qt.changelog_dialog_qt import show_changelog_dialog_qt
+        show_changelog_dialog_qt(self)
 
     def show_update_banner(self, latest: str) -> None:
         """Affiche le bandeau de mise à jour sur tous les panneaux actifs."""

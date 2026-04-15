@@ -749,6 +749,82 @@ def _write_zip_with_progress(filepath, images_data, overlay):
                 overlay.update(int(processed / total * 100))
 
 
+def _get_save_filename(parent, title: str, path: str, filter_str: str) -> str:
+    """
+    Remplace QFileDialog.getSaveFileName() statique.
+    Utilise le dialog natif Windows mais le recentre sur `parent` via Win32.
+    Retourne le chemin choisi (str) ou "" si annulé.
+    """
+    import ctypes
+    import ctypes.wintypes
+    import threading
+    import time
+    from PySide6.QtCore import QPoint
+
+    user32 = ctypes.windll.user32
+
+    # Calcul de la zone cible (centre du widget parent) en coordonnées écran
+    top_left = parent.mapToGlobal(QPoint(0, 0))
+    target_cx = top_left.x() + parent.width() // 2
+    target_cy = top_left.y() + parent.height() // 2
+
+    stop_event = threading.Event()
+
+    def _reposition_thread():
+        buf_title = ctypes.create_unicode_buffer(512)
+        buf_class = ctypes.create_unicode_buffer(64)
+        sw = user32.GetSystemMetrics(0)
+        sh = user32.GetSystemMetrics(1)
+
+        # 1. Trouver le hwnd du dialog
+        found_hwnd = None
+        for _ in range(100):
+            if stop_event.is_set():
+                return
+            def _enum_cb(hwnd, _):
+                nonlocal found_hwnd
+                user32.GetClassNameW(hwnd, buf_class, 64)
+                if buf_class.value != "#32770":
+                    return True
+                user32.GetWindowTextW(hwnd, buf_title, 512)
+                if buf_title.value == title:
+                    found_hwnd = hwnd
+                    return False
+                return True
+            EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.wintypes.HWND, ctypes.wintypes.LPARAM)
+            user32.EnumWindows(EnumWindowsProc(_enum_cb), 0)
+            if found_hwnd:
+                break
+            time.sleep(0.01)
+        if not found_hwnd:
+            return
+
+        # 2. Attendre que la fenêtre soit visible, puis la déplacer
+        rect = ctypes.wintypes.RECT()
+        for _ in range(100):
+            if stop_event.is_set():
+                return
+            if user32.IsWindowVisible(found_hwnd):
+                break
+            time.sleep(0.01)
+
+        user32.GetWindowRect(found_hwnd, ctypes.byref(rect))
+        w = rect.right - rect.left
+        h = rect.bottom - rect.top
+        if w > 100 and h > 100:
+            x = max(0, min(target_cx - w // 2, sw - w))
+            y = max(0, min(target_cy - h // 2, sh - h))
+            user32.SetWindowPos(found_hwnd, None, x, y, 0, 0, 0x0001 | 0x0004)
+
+    t = threading.Thread(target=_reposition_thread, daemon=True)
+    t.start()
+
+    filepath, _filter = QFileDialog.getSaveFileName(parent, title, path, filter_str)
+
+    stop_event.set()
+    return filepath or ""
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # 1. save_as_cbz — Enregistrer sous (nouveau fichier CBZ)
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -786,7 +862,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
     if not initial_dir:
         initial_dir = get_config_manager().get('last_open_dir', "")
     initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
-    filepath, _filter = QFileDialog.getSaveFileName(
+    filepath = _get_save_filename(
         parent,
         _("buttons.save_as"),
         os.path.join(initial_dir, initial_name),
@@ -873,7 +949,7 @@ def save_selection_as_cbz(parent, callbacks: dict):
         initial_dir = get_config_manager().get('last_open_dir', "")
 
     start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
-    filepath, _filter = QFileDialog.getSaveFileName(
+    filepath = _get_save_filename(
         parent,
         _("buttons.save_selection"),
         start,
@@ -939,7 +1015,7 @@ def save_selection_to_folder(parent, callbacks: dict):
             filter_str = (f"Fichiers {file_ext} (*{file_ext});;Tous les fichiers (*.*)"
                           if file_ext else "Tous les fichiers (*.*)")
             start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
-            file_path, _filter = QFileDialog.getSaveFileName(
+            file_path = _get_save_filename(
                 parent,
                 _("dialogs.save_to_folder.title"),
                 start,
@@ -1036,7 +1112,7 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
         initial_dir = get_config_manager().get('last_open_dir', "")
 
     start = os.path.join(initial_dir, "nouveau_comics.cbz") if initial_dir else "nouveau_comics.cbz"
-    filepath, _filter = QFileDialog.getSaveFileName(
+    filepath = _get_save_filename(
         parent,
         _("buttons.create_cbz"),
         start,
@@ -1184,7 +1260,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
         if not initial_dir:
             initial_dir = get_config_manager().get('last_open_dir', "")
         initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
-        new_file, _filter = QFileDialog.getSaveFileName(
+        new_file = _get_save_filename(
             parent,
             _("labels.apply_create_cbz"),
             os.path.join(initial_dir, initial_name),
@@ -1225,7 +1301,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
         if not initial_dir:
             initial_dir = get_config_manager().get('last_open_dir', "")
         initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
-        new_file, _filter = QFileDialog.getSaveFileName(
+        new_file = _get_save_filename(
             parent,
             _("labels.apply_create_cbz"),
             os.path.join(initial_dir, initial_name),

@@ -54,8 +54,10 @@ def _add_action(menu: QMenu, label: str, callback=None, shortcut: str = None,
 
 
 def _add_submenu(menu: QMenu, label: str, enabled: bool = True) -> QMenu:
+    font = _get_current_font(9)
     sub = QMenu(label, menu)
-    sub.setFont(_get_current_font(9))
+    sub.setFont(font)
+    sub.setStyleSheet(f'QMenu {{ font-family: "{font.family()}"; font-size: {font.pointSize()}pt; }}')
     sub.setEnabled(enabled)
     menu.addMenu(sub)
     return sub
@@ -387,6 +389,7 @@ def _populate_about_menu(menu: QMenu, callbacks: dict):
             action.setFont(font)
     else:
         _add_action(menu, _("menu.check_for_updates"), callbacks.get("check_for_updates"))
+    _add_action(menu, _("menu.show_changelog"), callbacks.get("show_changelog"))
     menu.addSeparator()
 
     _add_action(menu, _("donation.menu_label"),    callbacks.get("show_donation_dialog"))
@@ -440,6 +443,7 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
 
     font = _get_current_font(9)
     mb.setFont(font)
+    mb.setStyleSheet(f'QMenuBar {{ font-family: "{font.family()}"; font-size: {font.pointSize()}pt; }}')
     mb.update()
 
     # ── Entrée chevron : rabat/déploie la colonne d'icônes ────────────────────
@@ -464,6 +468,7 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
     for title, populate_fn in menus:
         menu = mb.addMenu(title)
         menu.setFont(font)
+        menu.setStyleSheet(f'QMenu {{ font-family: "{font.family()}"; font-size: {font.pointSize()}pt; }}')
         menu.menuAction().setFont(font)
         def make_handler(m, fn):
             def handler():

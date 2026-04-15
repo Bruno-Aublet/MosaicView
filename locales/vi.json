@@ -1373,7 +1373,8 @@
     "view_on_github": "Mã nguồn trên GitHub",
     "check_for_updates": "Kiểm tra cập nhật",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "Nhật ký thay đổi"
   },
   "updates": {
     "dialog_title": "Cập nhật",

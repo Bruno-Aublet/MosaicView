@@ -16,9 +16,14 @@ import re
 
 
 def _natural_key(s: str):
-    """Clé de tri alphanumérique naturel (insensible à la casse)."""
-    parts = re.split(r'(\d+)', s.lower())
-    return [int(p) if p.isdigit() else p for p in parts]
+    """Clé de tri alphanumérique naturel (insensible à la casse).
+    Trie d'abord sur le nom sans extension, puis sur l'extension — cohérent avec
+    archive_loader._natural_sort_key utilisé à l'ouverture de l'archive."""
+    import os
+    name, ext = os.path.splitext(s)
+    name_parts = re.split(r'(\d+)', name.lower())
+    name_key = [int(p) if p.isdigit() else p for p in name_parts]
+    return (name_key, ext.lower())
 
 
 def reposition_non_images(images_data: list) -> list:

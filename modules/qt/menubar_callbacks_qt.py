@@ -145,6 +145,7 @@ def build_menubar_callbacks(mw) -> dict:
         "open_github":              lambda: _webbrowser.open("https://github.com/Bruno-Aublet/MosaicView"),
         "open_mail":                lambda: _webbrowser.open("mailto:mosaicview1969@gmail.com?subject=MosaicView"),
         "check_for_updates":        lambda: _check_for_updates_qt(mw),
+        "show_changelog":           mw._show_changelog,
         "show_donation_dialog":      mw._show_donation_dialog,
         "copy_mail_address":        mw._copy_mail_address,
         "show_license_dialog":      mw._show_license_dialog,

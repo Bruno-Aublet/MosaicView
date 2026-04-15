@@ -16,7 +16,11 @@ from modules.qt import state as _state_module
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _make_menu(parent) -> QMenu:
-    return QMenu(parent)
+    from modules.qt.font_manager_qt import get_current_font as _get_current_font
+    menu = QMenu(parent)
+    font = _get_current_font(9)
+    menu.setStyleSheet(f'QMenu {{ font-family: "{font.family()}"; font-size: {font.pointSize()}pt; }}')
+    return menu
 
 
 def _add_disabled(menu: QMenu, label: str) -> QAction:
@@ -494,7 +498,8 @@ def _build_system_submenu(parent, callbacks: dict) -> QMenu:
 
     # Langues (sous-menu)
     from modules.qt.menubar_qt import _populate_language_menu
-    lang_menu = QMenu(_("menu.language"), submenu)
+    lang_menu = _make_menu(submenu)
+    lang_menu.setTitle(_("menu.language"))
     _populate_language_menu(lang_menu, callbacks)
     submenu.addMenu(lang_menu)
     submenu.addSeparator()
@@ -550,6 +555,7 @@ def _build_about_submenu(parent, callbacks: dict) -> QMenu:
             action.setFont(font)
     else:
         submenu.addAction(_("menu.check_for_updates"), callbacks.get("check_for_updates"))
+    submenu.addAction(_("menu.show_changelog"), callbacks.get("show_changelog"))
     submenu.addSeparator()
     submenu.addAction(_("donation.menu_label"),   callbacks.get("show_donation_dialog"))
     submenu.addAction(_("mail.menu_label"),        callbacks.get("open_mail"))
@@ -563,7 +569,8 @@ def _build_about_submenu(parent, callbacks: dict) -> QMenu:
     submenu.addSeparator()
     submenu.addAction("© Bruno Aublet 2025-2026",         callbacks['show_license_dialog'])
 
-    lic_menu = QMenu(_("labels.licenses_button"), submenu)
+    lic_menu = _make_menu(submenu)
+    lic_menu.setTitle(_("labels.licenses_button"))
     lic_menu.addAction(_("labels.license_gpl_full"),   callbacks.get("show_full_gpl_license"))
     lic_menu.addSeparator()
     lic_menu.addAction(_("labels.license_unrar_full"), callbacks.get("show_full_unrar_license"))

@@ -1373,7 +1373,8 @@
     "view_on_github": "GitHub'da kaynak kodu",
     "check_for_updates": "Güncellemeleri kontrol et",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "Değişiklik Günlüğü"
   },
   "updates": {
     "dialog_title": "Güncellemeler",

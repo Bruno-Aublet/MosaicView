@@ -1372,6 +1372,7 @@
     "export_tengwar_fonts": "Enregistrer les polices tengwar",
     "view_on_github": "Code source sur GitHub",
     "check_for_updates": "Vérifier les mises à jour",
+    "show_changelog": "Changelog",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ"
   },

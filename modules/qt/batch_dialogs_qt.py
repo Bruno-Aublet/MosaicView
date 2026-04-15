@@ -48,6 +48,23 @@ image_exts = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.tiff', '.tif',
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# Registre des batchs actifs — empêche le GC de détruire prog/signals pendant
+# qu'un thread de conversion tourne en arrière-plan.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+_active_batches = []   # liste de dicts {'prog': ..., 'signals': ...}
+
+
+def _register_batch(prog, signals):
+    _active_batches.append({'prog': prog, 'signals': signals})
+
+
+def _unregister_batch(prog):
+    global _active_batches
+    _active_batches = [b for b in _active_batches if b['prog'] is not prog]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # Signal thread → UI (pour mise à jour thread-safe)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -142,7 +159,7 @@ class _ConfirmDialog(QDialog):
         self._callbacks    = callbacks
         self.confirmed     = False
 
-        self.setModal(True)
+        self.setModal(False)
         self.setFixedWidth(500)
 
         layout = QVBoxLayout(self)
@@ -246,7 +263,7 @@ class _ProgressDialog(QDialog):
         self._has_page_bar = has_page_bar
         self._running     = True
 
-        self.setModal(True)
+        self.setModal(False)
         self.setFixedWidth(450)
         self.setFixedHeight(400 if has_page_bar else 350)
 
@@ -338,7 +355,7 @@ class _CbrSummaryDialog(QDialog):
     def __init__(self, parent, data):
         super().__init__(parent)
         self._data = data
-        self.setModal(True)
+        self.setModal(False)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -467,7 +484,7 @@ class _PdfSummaryDialog(QDialog):
         super().__init__(parent)
         self._data      = data
         self._callbacks = callbacks
-        self.setModal(True)
+        self.setModal(False)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -577,7 +594,7 @@ class _ImgSummaryDialog(QDialog):
     def __init__(self, parent, data):
         super().__init__(parent)
         self._data = data
-        self.setModal(True)
+        self.setModal(False)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -739,17 +756,24 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
         start_key    = "dialogs.batch_cbr.start_button",
         callbacks    = callbacks,
     )
-    dlg.exec()
-    if not dlg.confirmed:
-        return
 
-    is_permanent = dlg.permanent_delete
+    def _on_confirm_done():
+        if not dlg.confirmed:
+            return
+        is_permanent = dlg.permanent_delete
+        _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is_permanent)
 
+    dlg.finished.connect(lambda _: _on_confirm_done())
+    dlg.show()
+
+
+def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is_permanent):
     prog = _ProgressDialog(parent, "dialogs.batch_cbr.converting_title", has_page_bar=True)
     prog.show()
     QApplication.processEvents()
 
     signals          = _ThreadSignals()
+    _register_batch(prog, signals)
     conversion_errors = []
     renamed_entries   = []
     converted_count  = [0]
@@ -885,7 +909,8 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
 
     def on_done():
         prog.mark_done()
-        prog.accept()
+        prog.close()
+        _unregister_batch(prog)
 
         log_path = None
         if conversion_errors or renamed_entries:
@@ -938,12 +963,11 @@ def batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks, di
     signals.conversion_done.connect(on_done)
     thread = threading.Thread(target=do_conversion, daemon=True)
     thread.start()
-    prog.exec()
 
 
 def show_batch_cbr_summary(parent, data, callbacks):
     dlg = _CbrSummaryDialog(parent, data)
-    dlg.exec()
+    dlg.show()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -954,7 +978,7 @@ class _Cb7SummaryDialog(QDialog):
     def __init__(self, parent, data):
         super().__init__(parent)
         self._data = data
-        self.setModal(True)
+        self.setModal(False)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1120,18 +1144,23 @@ def batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks, di
         start_key    = "dialogs.batch_cb7.start_button",
         callbacks    = callbacks,
     )
-    dlg.exec()
+    def _on_confirm_done_cb7():
+        if not dlg.confirmed:
+            return
+        is_permanent = dlg.permanent_delete
+        _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is_permanent)
 
-    if not dlg.confirmed:
-        return
+    dlg.finished.connect(lambda _: _on_confirm_done_cb7())
+    dlg.show()
 
-    is_permanent = dlg.permanent_delete
 
+def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is_permanent):
     prog = _ProgressDialog(parent, "dialogs.batch_cb7.converting_title", has_page_bar=True)
     prog.show()
     QApplication.processEvents()
 
     signals           = _ThreadSignals()
+    _register_batch(prog, signals)
     conversion_errors = []
     renamed_entries   = []
     converted_count   = [0]
@@ -1268,7 +1297,8 @@ def batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks, di
 
     def on_done():
         prog.mark_done()
-        prog.accept()
+        prog.close()
+        _unregister_batch(prog)
 
         log_path = None
         if conversion_errors or renamed_entries:
@@ -1321,12 +1351,11 @@ def batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks, di
     signals.conversion_done.connect(on_done)
     thread = threading.Thread(target=do_conversion, daemon=True)
     thread.start()
-    prog.exec()
 
 
 def show_batch_cb7_summary(parent, data, callbacks):
     dlg = _Cb7SummaryDialog(parent, data)
-    dlg.exec()
+    dlg.show()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1337,7 +1366,7 @@ class _CbtSummaryDialog(QDialog):
     def __init__(self, parent, data):
         super().__init__(parent)
         self._data = data
-        self.setModal(True)
+        self.setModal(False)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -1484,7 +1513,6 @@ def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
 
 def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, directories=None):
     """Fenêtre de confirmation + progression + résumé CBT→CBZ."""
-    import tarfile as _tarfile
     cbt_files = [os.path.normpath(f) for f in cbt_files]
     directory = os.path.normpath(directory) if directory else directory
     if directories:
@@ -1504,18 +1532,24 @@ def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, di
         start_key    = "dialogs.batch_cbt.start_button",
         callbacks    = callbacks,
     )
-    dlg.exec()
+    def _on_confirm_done_cbt():
+        if not dlg.confirmed:
+            return
+        is_permanent = dlg.permanent_delete
+        _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is_permanent)
 
-    if not dlg.confirmed:
-        return
+    dlg.finished.connect(lambda _: _on_confirm_done_cbt())
+    dlg.show()
 
-    is_permanent = dlg.permanent_delete
 
+def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is_permanent):
+    import tarfile as _tarfile
     prog = _ProgressDialog(parent, "dialogs.batch_cbt.converting_title", has_page_bar=True)
     prog.show()
     QApplication.processEvents()
 
     signals           = _ThreadSignals()
+    _register_batch(prog, signals)
     conversion_errors = []
     renamed_entries   = []
     converted_count   = [0]
@@ -1654,7 +1688,8 @@ def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, di
 
     def on_done():
         prog.mark_done()
-        prog.accept()
+        prog.close()
+        _unregister_batch(prog)
 
         log_path = None
         if conversion_errors or renamed_entries:
@@ -1707,12 +1742,11 @@ def batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks, di
     signals.conversion_done.connect(on_done)
     thread = threading.Thread(target=do_conversion, daemon=True)
     thread.start()
-    prog.exec()
 
 
 def show_batch_cbt_summary(parent, data, callbacks):
     dlg = _CbtSummaryDialog(parent, data)
-    dlg.exec()
+    dlg.show()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1774,17 +1808,23 @@ def batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks, di
         start_key    = "dialogs.batch_pdf.start_button",
         callbacks    = callbacks,
     )
-    dlg.exec()
-    if not dlg.confirmed:
-        return
+    def _on_confirm_done_pdf():
+        if not dlg.confirmed:
+            return
+        is_permanent = dlg.permanent_delete
+        _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is_permanent, state)
 
-    is_permanent = dlg.permanent_delete
+    dlg.finished.connect(lambda _: _on_confirm_done_pdf())
+    dlg.show()
 
+
+def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is_permanent, state):
     prog = _ProgressDialog(parent, "dialogs.batch_pdf.converting_title", has_page_bar=True)
     prog.show()
     QApplication.processEvents()
 
     signals           = _ThreadSignals()
+    _register_batch(prog, signals)
     conversion_errors = []
     converted_count   = [0]
     owner_protected   = []
@@ -1921,7 +1961,8 @@ def batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks, di
 
     def on_done():
         prog.mark_done()
-        prog.accept()
+        prog.close()
+        _unregister_batch(prog)
 
         log_path = None
         if conversion_errors:
@@ -1964,12 +2005,11 @@ def batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks, di
     signals.conversion_done.connect(on_done)
     thread = threading.Thread(target=do_conversion, daemon=True)
     thread.start()
-    prog.exec()
 
 
 def show_batch_pdf_summary(parent, data, callbacks):
     dlg = _PdfSummaryDialog(parent, data, callbacks)
-    dlg.exec()
+    dlg.show()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1984,7 +2024,7 @@ class _ImgModeDialog(QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.setModal(True)
+        self.setModal(False)
         self.setMinimumWidth(480)
         self.chosen_mode = None
 
@@ -2125,36 +2165,42 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch images→CBZ."""
     # Choix du mode avant la sélection du répertoire
     mode_dlg = _ImgModeDialog(parent)
-    mode_dlg.exec()
-    if mode_dlg.chosen_mode is None:
-        return
 
-    if directory is None:
-        cfg = get_config_manager()
-        directory = QFileDialog.getExistingDirectory(
-            parent, _("dialogs.batch_img.select_directory_title"),
-            cfg.get('last_open_dir', ""))
-        if directory:
-            cfg.set('last_open_dir', directory)
-    if not directory:
-        return
+    def _on_mode_done():
+        if mode_dlg.chosen_mode is None:
+            return
+        chosen_mode = mode_dlg.chosen_mode
 
-    img_files = []
-    for dirpath, _subdirs, filenames in os.walk(directory):
-        for fn in filenames:
-            if fn.lower().endswith(image_exts):
-                img_files.append(os.path.join(dirpath, fn))
-    img_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
+        actual_directory = directory
+        if actual_directory is None:
+            cfg = get_config_manager()
+            actual_directory = QFileDialog.getExistingDirectory(
+                parent, _("dialogs.batch_img.select_directory_title"),
+                cfg.get('last_open_dir', ""))
+            if actual_directory:
+                cfg.set('last_open_dir', actual_directory)
+        if not actual_directory:
+            return
 
-    if not img_files:
-        InfoDialog(parent, _("dialogs.batch_img.no_img_title"),
-                   _("dialogs.batch_img.no_img_message").format(directory=directory)).exec()
-        return
+        img_files = []
+        for dirpath, _subdirs, filenames in os.walk(actual_directory):
+            for fn in filenames:
+                if fn.lower().endswith(image_exts):
+                    img_files.append(os.path.join(dirpath, fn))
+        img_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
-    if mode_dlg.chosen_mode == _ImgModeDialog.MODE_ONE_PER_IMAGE:
-        batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks)
-    else:
-        batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks)
+        if not img_files:
+            InfoDialog(parent, _("dialogs.batch_img.no_img_title"),
+                       _("dialogs.batch_img.no_img_message").format(directory=actual_directory)).exec()
+            return
+
+        if chosen_mode == _ImgModeDialog.MODE_ONE_PER_IMAGE:
+            batch_convert_img_to_cbz_confirm(parent, img_files, actual_directory, callbacks)
+        else:
+            batch_convert_imgs_to_single_cbz(parent, img_files, actual_directory, callbacks)
+
+    mode_dlg.finished.connect(lambda _: _on_mode_done())
+    mode_dlg.show()
 
 
 def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, directories=None):
@@ -2177,17 +2223,23 @@ def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, di
         start_key    = "dialogs.batch_img.start_button",
         callbacks    = callbacks,
     )
-    dlg.exec()
-    if not dlg.confirmed:
-        return
+    def _on_confirm_done_img():
+        if not dlg.confirmed:
+            return
+        is_permanent = dlg.permanent_delete
+        _run_img_conversion(parent, img_files, directory, directories, callbacks, is_permanent)
 
-    is_permanent = dlg.permanent_delete
+    dlg.finished.connect(lambda _: _on_confirm_done_img())
+    dlg.show()
 
+
+def _run_img_conversion(parent, img_files, directory, directories, callbacks, is_permanent):
     prog = _ProgressDialog(parent, "dialogs.batch_img.converting_title", has_page_bar=False)
     prog.show()
     QApplication.processEvents()
 
     signals           = _ThreadSignals()
+    _register_batch(prog, signals)
     conversion_errors = []
     converted_count   = [0]
     converted_by_ext  = {}
@@ -2277,7 +2329,8 @@ def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, di
 
     def on_done():
         prog.mark_done()
-        prog.accept()
+        prog.close()
+        _unregister_batch(prog)
 
         log_path = None
         if conversion_errors:
@@ -2318,12 +2371,11 @@ def batch_convert_img_to_cbz_confirm(parent, img_files, directory, callbacks, di
     signals.conversion_done.connect(on_done)
     thread = threading.Thread(target=do_conversion, daemon=True)
     thread.start()
-    prog.exec()
 
 
 def show_batch_img_summary(parent, data, callbacks):
     dlg = _ImgSummaryDialog(parent, data)
-    dlg.exec()
+    dlg.show()
 
 
 def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks):
@@ -2344,17 +2396,23 @@ def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks):
         start_key    = "dialogs.batch_img.start_button",
         callbacks    = callbacks,
     )
-    dlg.exec()
-    if not dlg.confirmed:
-        return
+    def _on_confirm_done_single():
+        if not dlg.confirmed:
+            return
+        is_permanent = dlg.permanent_delete
+        _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent)
 
-    is_permanent = dlg.permanent_delete
+    dlg.finished.connect(lambda _: _on_confirm_done_single())
+    dlg.show()
 
+
+def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanent):
     prog = _ProgressDialog(parent, "dialogs.batch_img.converting_title", has_page_bar=False)
     prog.show()
     QApplication.processEvents()
 
     signals           = _ThreadSignals()
+    _register_batch(prog, signals)
     conversion_errors = []
     converted_count   = [0]
     converted_by_ext  = {}
@@ -2449,7 +2507,8 @@ def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks):
 
     def on_done():
         prog.mark_done()
-        prog.accept()
+        prog.close()
+        _unregister_batch(prog)
 
         log_path = None
         if conversion_errors:
@@ -2491,4 +2550,3 @@ def batch_convert_imgs_to_single_cbz(parent, img_files, directory, callbacks):
     signals.conversion_done.connect(on_done)
     thread = threading.Thread(target=do_conversion, daemon=True)
     thread.start()
-    prog.exec()

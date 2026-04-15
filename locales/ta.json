@@ -1373,7 +1373,8 @@
     "view_on_github": "GitHub-இல் மூலக் குறியீடு",
     "check_for_updates": "புதுப்பிப்புகளை சரிபார்க்கவும்",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "மாற்ற பதிவு"
   },
   "updates": {
     "dialog_title": "புதுப்பிப்புகள்",

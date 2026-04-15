@@ -1373,7 +1373,8 @@
     "view_on_github": "GitHub पर स्रोत कोड",
     "check_for_updates": "अपडेट की जांच करें",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "बदलाव का इतिहास"
   },
   "updates": {
     "dialog_title": "अपडेट",

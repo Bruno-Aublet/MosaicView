@@ -1373,7 +1373,8 @@
     "view_on_github": "GitHub에서 소스 코드 보기",
     "check_for_updates": "업데이트 확인",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "변경 로그"
   },
   "updates": {
     "dialog_title": "업데이트",

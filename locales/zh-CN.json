@@ -1373,7 +1373,8 @@
     "view_on_github": "在 GitHub 上查看源码",
     "check_for_updates": "检查更新",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "更新日志"
   },
   "updates": {
     "dialog_title": "更新",

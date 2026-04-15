@@ -1373,7 +1373,8 @@
     "view_on_github": "Cod sursă pe GitHub",
     "check_for_updates": "Verifică actualizări",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "Jurnal de modificări"
   },
   "updates": {
     "dialog_title": "Actualizări",

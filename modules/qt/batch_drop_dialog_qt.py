@@ -53,7 +53,7 @@ class BatchDropDialog(QDialog):
         self._count = len(dirs)
         self.chosen = None   # 'cbr' | 'cb7' | 'cbt' | 'pdf' | 'img' | None (annuler)
 
-        self.setModal(True)
+        self.setModal(False)
         self.setFixedSize(480, 280)
 
         layout = QVBoxLayout(self)
@@ -212,8 +212,12 @@ def show_batch_drop_dialog(parent, dirs: list[str], callbacks: dict):
     callbacks : dict avec 'batch_cbr', 'batch_pdf', 'batch_img' (callables sans argument)
     """
     dlg = BatchDropDialog(parent, dirs)
-    dlg.exec()
-    if dlg.chosen:
-        fn = callbacks.get("batch_" + dlg.chosen)
-        if fn:
-            fn()
+
+    def _on_done():
+        if dlg.chosen:
+            fn = callbacks.get("batch_" + dlg.chosen)
+            if fn:
+                fn()
+
+    dlg.finished.connect(lambda _: _on_done())
+    dlg.show()

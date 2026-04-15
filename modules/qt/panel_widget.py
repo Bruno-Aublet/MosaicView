@@ -157,8 +157,13 @@ class PanelWidget(QWidget):
     de fonctionner sans modification.
     """
 
+    # Signal émis depuis le thread de surveillance des fichiers non-image
+    # pour traverser la barrière de threads vers le thread Qt principal.
+    _non_image_modified = Signal(object, bytes)  # (entry, new_bytes)
+
     def __init__(self, *, app_ref, main_window, language_list, loc, font_manager, is_primary=True):
         super().__init__()
+        self._non_image_modified.connect(self._on_non_image_file_modified)
 
         self._app_ref       = app_ref
         self._main_window   = main_window   # accès aux actions globales (thème, langue…)
@@ -236,7 +241,11 @@ class PanelWidget(QWidget):
             pos, self, self._build_menubar_callbacks()
         )
         self._canvas._open_image_viewer_callback = self._open_image_viewer
-        self._canvas._open_non_image_callback    = _open_file_with_default_app
+        self._canvas._open_non_image_callback    = lambda entry: _open_file_with_default_app(
+            entry,
+            state=self._state,
+            on_modified_callback=lambda nb, e=entry: self._non_image_modified.emit(e, nb),
+        )
 
         # ── Barre d'icônes ────────────────────────────────────────────────────
         self._build_icon_toolbar()
@@ -633,6 +642,9 @@ class PanelWidget(QWidget):
 
     def _show_license_dialog(self):
         self._main_window._show_license_dialog()
+
+    def _show_changelog(self):
+        self._main_window._show_changelog()
 
     def _show_full_gpl_license(self):
         self._main_window._show_full_gpl_license()
@@ -1436,6 +1448,18 @@ class PanelWidget(QWidget):
 
     def _update_status_bar(self):
         self._status_bar.refresh(self._state)
+
+    def _on_non_image_file_modified(self, entry, new_bytes):
+        """Appelé dans le thread Qt quand un fichier non-image a été modifié.
+        Sauvegarde l'ancien état dans l'historique undo/redo, puis applique la modification."""
+        self.save_state(force=True)   # snapshot ancien état → Ctrl+Z restaure ici
+        entry["bytes"] = new_bytes
+        self._state.modified = True
+        self.save_state(force=True)   # snapshot nouvel état → Ctrl+Y restaure ici
+        self._refresh_title()
+        self._update_status_bar()
+        if hasattr(self, "_icon_toolbar"):
+            self._icon_toolbar.refresh_states()
 
     def _refresh_toolbar_states(self):
         if hasattr(self, "_icon_toolbar"):

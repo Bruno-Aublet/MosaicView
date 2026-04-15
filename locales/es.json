@@ -1373,7 +1373,8 @@
     "view_on_github": "Código fuente en GitHub",
     "check_for_updates": "Buscar actualizaciones",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "Registro de cambios"
   },
   "updates": {
     "dialog_title": "Actualizaciones",

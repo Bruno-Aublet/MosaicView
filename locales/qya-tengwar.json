@@ -1373,7 +1373,8 @@
     "view_on_github": " -",
     "check_for_updates": "  ",
     "batch_cb7_to_cbz": "CB7 ☠ CBZ",
-    "batch_cbt_to_cbz": " ☠ CBZ"
+    "batch_cbt_to_cbz": " ☠ CBZ",
+    "show_changelog": " "
   },
   "updates": {
     "dialog_title": " ",

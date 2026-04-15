@@ -1373,7 +1373,8 @@
     "view_on_github": "Изходен код в GitHub",
     "check_for_updates": "Проверка за актуализации",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "Списък с промени"
   },
   "updates": {
     "dialog_title": "Актуализации",

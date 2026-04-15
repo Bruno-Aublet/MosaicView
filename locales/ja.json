@@ -1373,7 +1373,8 @@
     "view_on_github": "GitHubでソースコードを見る",
     "check_for_updates": "アップデートを確認",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "更新履歴"
   },
   "updates": {
     "dialog_title": "アップデート",

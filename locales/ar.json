@@ -1373,7 +1373,8 @@
     "view_on_github": "الكود المصدري على GitHub",
     "check_for_updates": "التحقق من التحديثات",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "سجل التغييرات"
   },
   "updates": {
     "dialog_title": "التحديثات",

@@ -1373,7 +1373,8 @@
     "view_on_github": "Frumkóði á GitHub",
     "check_for_updates": "Athugaðu uppfærslur",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "Breytingaskrá"
   },
   "updates": {
     "dialog_title": "Uppfærslur",

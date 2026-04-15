@@ -75,6 +75,8 @@ class _SelectableText(QTextBrowser):
         self.anchorClicked.connect(lambda url: QDesktopServices.openUrl(url))
         self.setReadOnly(True)
         self.setFrameShape(QFrame.NoFrame)
+        from modules.qt.utils import setup_text_browser_context_menu
+        setup_text_browser_context_menu(self)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -123,6 +125,8 @@ class _LinkText(QTextBrowser):
         self.anchorClicked.connect(self._on_anchor_clicked)
         self.setReadOnly(True)
         self.setFrameShape(QFrame.NoFrame)
+        from modules.qt.utils import setup_text_browser_context_menu
+        setup_text_browser_context_menu(self)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)

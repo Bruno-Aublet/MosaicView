@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.7] - 2026-04-15
+
+- Batch conversion dialogs (type selection, confirmation, progress, summary) are no longer modal. It is now possible to start a batch in one panel and continue working in the other panel, or start a second batch simultaneously.
+- Non-image files (e.g. `.nfo`, `.txt`) can now be edited externally: double-clicking opens them in the default application, and any changes saved in that application are automatically detected and applied to the archive. The modification is recorded in the undo/redo history.
+- Added a Changelog viewer accessible from the "About" menu in the menu bar and from the canvas context menu.
+- Fixed the save dialog (CBR/CBT/EPUB/PDF → CBZ conversion, "Save as", "Save selection") not being centered on the panel that triggered it in two-panel mode. The native Windows file dialog ignores Qt's parent widget for positioning; the dialog is now located by its Win32 handle and moved after it becomes visible.
+- Fixed the menu bar and context menus displaying unreadable glyphs when using a fictional-alphabet language (pIqaD, Tengwar). Qt's global stylesheet was overriding `setFont()` calls with the previously computed font family; each `QMenuBar` and `QMenu` now also receives an explicit `setStyleSheet` with the correct font family at construction time.
+- Replaced the native English-only right-click context menu on all read-only text areas (Changelog, License, User Guide) with a translated menu showing "Copy" and "Select All" in the active language.
+- Fixed a bug where drag-and-dropping an image in an archive containing non-image files (e.g. `.nfo`, `.txt`) could change their relative order. The sort key used by `reposition_non_images` after renumbering was applied to the full filename including extension, while the sort key used at archive open time was applied to the name without extension. This discrepancy caused different orderings for files with the same base name but different extensions (e.g. `test.nfo` vs `test .txt`). Both now sort on the base name first, then the extension as a tiebreaker.
+
 ## [1.1.6] - 2026-04-14
 
 - In two-panel mode, all dialogs, pop-ups, and viewer windows now open centered on the panel that triggered them, rather than on the application window as a whole. Exception: application-level dialogs (license, donation, update checker) remain centered on the main window.

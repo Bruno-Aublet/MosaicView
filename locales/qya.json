@@ -1373,7 +1373,8 @@
     "view_on_github": "Quenta GitHub-sse",
     "check_for_updates": "Cena i vinya",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "Quenta Cendelëva"
   },
   "updates": {
     "dialog_title": "Vinya quettar",

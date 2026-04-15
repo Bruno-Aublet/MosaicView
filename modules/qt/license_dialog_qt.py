@@ -75,6 +75,8 @@ class _LicenseDialog(QDialog):
         self._browser = QTextBrowser()
         self._browser.setOpenLinks(False)
         self._browser.anchorClicked.connect(self._on_link_clicked)
+        from modules.qt.utils import setup_text_browser_context_menu
+        setup_text_browser_context_menu(self._browser)
         layout.addWidget(self._browser, stretch=1)
 
         # Bouton "Voir la licence complète"
@@ -218,6 +220,8 @@ class _FullLicenseDialog(QDialog):
 
         self._browser = QTextBrowser()
         self._browser.setOpenLinks(False)
+        from modules.qt.utils import setup_text_browser_context_menu
+        setup_text_browser_context_menu(self._browser)
         layout.addWidget(self._browser, stretch=1)
 
         self._btn_close = QPushButton()

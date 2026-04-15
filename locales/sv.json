@@ -1373,7 +1373,8 @@
     "view_on_github": "Källkod på GitHub",
     "check_for_updates": "Sök efter uppdateringar",
     "batch_cb7_to_cbz": "CB7 → CBZ",
-    "batch_cbt_to_cbz": "CBT → CBZ"
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "Ändringslogg"
   },
   "updates": {
     "dialog_title": "Uppdateringar",
