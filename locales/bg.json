@@ -1386,5 +1386,22 @@
     "banner_message": "Налична е нова версия: {latest}",
     "menu_update_available": "Налична актуализация ({latest})",
     "retry": "Опитай отново"
+  },
+  "nfo": {
+    "window_title": "Създаване на NFO файл",
+    "window_title_edit": "Редактиране на NFO файл",
+    "filename_label": "Име на файл",
+    "content_label": "Съдържание",
+    "btn_create": "Създай NFO",
+    "btn_save": "Запази",
+    "btn_clear": "Изчисти",
+    "menu_item": "Създаване на NFO файл",
+    "tooltip": "Създаване на NFO файл",
+    "success_title": "NFO файлът е създаден",
+    "success_message": "Файлът {filename} беше създаден.",
+    "error_title": "Грешка",
+    "error_empty_name": "Моля, въведете име на файл.",
+    "error_write": "Неуспешен запис на файл:\n{error}",
+    "error_duplicate": "Файл с име {filename} вече съществува в мозайката."
   }
 }

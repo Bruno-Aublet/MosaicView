@@ -241,11 +241,7 @@ class PanelWidget(QWidget):
             pos, self, self._build_menubar_callbacks()
         )
         self._canvas._open_image_viewer_callback = self._open_image_viewer
-        self._canvas._open_non_image_callback    = lambda entry: _open_file_with_default_app(
-            entry,
-            state=self._state,
-            on_modified_callback=lambda nb, e=entry: self._non_image_modified.emit(e, nb),
-        )
+        self._canvas._open_non_image_callback    = self._open_non_image_entry
 
         # ── Barre d'icônes ────────────────────────────────────────────────────
         self._build_icon_toolbar()
@@ -813,11 +809,7 @@ class PanelWidget(QWidget):
 
     def _close_file(self):
         from modules.qt.file_close_qt import close_file
-        from modules.qt import state as _state_module
-        _prev = _state_module.state
-        _state_module.state = self._state
-        close_file(self, **self._file_close_args())
-        _state_module.state = _prev
+        close_file(self, state=self._state, **self._file_close_args())
 
     def _load_files(self, paths: list, from_drop: bool = False):
         from modules.qt.archive_loader import _natural_sort_key
@@ -1313,29 +1305,31 @@ class PanelWidget(QWidget):
 
         from modules.qt.file_close_qt import DeleteConfirmDialog
         dlg = DeleteConfirmDialog(self, count, size_str)
-        if dlg.exec() != QDialog.Accepted:
-            return
 
-        _save_state_qt(st, self._refresh_toolbar_states)
-        for idx in sorted(st.selected_indices, reverse=True):
-            if idx < len(st.images_data):
-                st.images_data.pop(idx)
-        st.selected_indices.clear()
-        st.modified = True
-        from modules.qt.comic_info import sync_pages_in_xml_data
-        sync_pages_in_xml_data(st)
+        def _do_delete():
+            _save_state_qt(st, self._refresh_toolbar_states)
+            for idx in sorted(st.selected_indices, reverse=True):
+                if idx < len(st.images_data):
+                    st.images_data.pop(idx)
+            st.selected_indices.clear()
+            st.modified = True
+            from modules.qt.comic_info import sync_pages_in_xml_data
+            sync_pages_in_xml_data(st)
 
-        image_count = sum(1 for e in st.images_data if e.get("is_image", False))
-        if image_count == 0:
-            st.needs_renumbering = False
+            image_count = sum(1 for e in st.images_data if e.get("is_image", False))
+            if image_count == 0:
+                st.needs_renumbering = False
 
-        has_xml = has_comic_info_entry(st)
-        if not has_xml and st.comic_metadata:
-            st.comic_metadata = None
-            self._refresh_tabs()
+            has_xml = has_comic_info_entry(st)
+            if not has_xml and st.comic_metadata:
+                st.comic_metadata = None
+                self._refresh_tabs()
 
-        _save_state_qt(st, self._refresh_toolbar_states)
-        self._canvas.render_mosaic()
+            _save_state_qt(st, self._refresh_toolbar_states)
+            self._canvas.render_mosaic()
+
+        dlg.accepted.connect(_do_delete)
+        dlg.exec()
         self._refresh_toolbar_states()
 
     def _replace_corrupted_image(self, idx: int):
@@ -1666,6 +1660,7 @@ class PanelWidget(QWidget):
         update = getattr(self._menubar, "_update_sidebar_chevron", None)
         if update:
             update()
+        self._canvas.setFocus()
         mw = self._main_window
         if not getattr(mw, "_split_active", False) or getattr(mw, "_panel", None) is self:
             from modules.qt.session_restore_qt import save_sidebar_state
@@ -1682,3 +1677,64 @@ class PanelWidget(QWidget):
             self._toggle_fullscreen()
         else:
             self._canvas._clear_selection_and_emit()
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # NFO
+    # ──────────────────────────────────────────────────────────────────────────
+
+    def _open_non_image_entry(self, entry: dict):
+        """Double-clic sur un fichier non-image : ouvre les .nfo dans notre
+        éditeur intégré, et délègue le reste à l'application Windows par défaut."""
+        orig = entry.get("orig_name", "")
+        if orig.lower().endswith(".nfo"):
+            self._open_nfo_for_edit(entry)
+        else:
+            _open_file_with_default_app(
+                entry,
+                state=self._state,
+                on_modified_callback=lambda nb, e=entry: self._non_image_modified.emit(e, nb),
+            )
+
+    def _open_nfo_for_edit(self, entry: dict):
+        from modules.qt.nfo_dialog_qt import show_nfo_edit_dialog
+
+        st = self._state
+
+        def _edit_fn(new_content: str):
+            new_bytes = new_content.encode("utf-8")
+            self.save_state(force=True)
+            entry["bytes"] = new_bytes
+            st.modified = True
+            self.save_state(force=True)
+            self._refresh_title()
+            self._update_status_bar()
+            self._refresh_toolbar_states()
+
+        show_nfo_edit_dialog(self, entry, _edit_fn)
+
+    def _show_nfo_dialog(self):
+        from modules.qt.nfo_dialog_qt import show_nfo_dialog
+        from modules.qt.entries import create_entry
+        from modules.qt.undo_redo_qt import save_state_qt as _save_state_qt
+        from modules.qt.comic_info import sync_pages_in_xml_data
+
+        IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
+                      '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp')
+
+        st = self._state
+
+        def _inject_nfo(filename: str, content: str):
+            data = content.encode("utf-8")
+            entry = create_entry(filename, data, IMAGE_EXTS)
+            if entry is None:
+                return
+            entry["source_archive"] = "loose"
+            _save_state_qt(st, self._refresh_toolbar_states)
+            st.images_data.append(entry)
+            st.modified = True
+            sync_pages_in_xml_data(st)
+            _save_state_qt(st, self._refresh_toolbar_states)
+            self._canvas.render_mosaic()
+            self._refresh_toolbar_states()
+
+        show_nfo_dialog(self, _inject_nfo, st)

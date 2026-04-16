@@ -1386,5 +1386,22 @@
     "banner_message": "새 버전 사용 가능: {latest}",
     "menu_update_available": "업데이트 가능 ({latest})",
     "retry": "다시 시도"
+  },
+  "nfo": {
+    "window_title": "NFO 파일 만들기",
+    "window_title_edit": "NFO 파일 편집",
+    "filename_label": "파일 이름",
+    "content_label": "내용",
+    "btn_create": "NFO 만들기",
+    "btn_save": "저장",
+    "btn_clear": "지우기",
+    "menu_item": "NFO 파일 만들기",
+    "tooltip": "NFO 파일 만들기",
+    "success_title": "NFO 파일이 생성되었습니다",
+    "success_message": "{filename} 파일이 생성되었습니다.",
+    "error_title": "오류",
+    "error_empty_name": "파일 이름을 입력하세요.",
+    "error_write": "파일을 쓸 수 없습니다:\n{error}",
+    "error_duplicate": "{filename} 이름의 파일이 모자이크에 이미 존재합니다."
   }
 }

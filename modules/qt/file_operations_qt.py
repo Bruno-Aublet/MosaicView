@@ -115,7 +115,8 @@ class InfoDialogClickablePath(QDialog):
         super().__init__(parent)
         self._title_key = title_key
         self._message_key = message_key
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedWidth(440)
 
         layout = QVBoxLayout(self)
@@ -159,7 +160,9 @@ class InfoDialogClickablePath(QDialog):
         self.finished.connect(self._on_close)
         self._center_parent = parent
 
-        self.exec()
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -191,7 +194,8 @@ class SaveSuccessDialog(QDialog):
 
     def __init__(self, parent, title_key: str, message_key: str,
                  filepath: str, question_key: str,
-                 yes_key: str = "misc.yes", no_key: str = "misc.no"):
+                 yes_key: str = "misc.yes", no_key: str = "misc.no",
+                 on_done=None):
         super().__init__(parent)
         self.result = False
         self._title_key = title_key
@@ -199,7 +203,9 @@ class SaveSuccessDialog(QDialog):
         self._question_key = question_key
         self._yes_key = yes_key
         self._no_key = no_key
-        self.setModal(True)
+        self._on_done = on_done
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedWidth(440)
 
         layout = QVBoxLayout(self)
@@ -255,7 +261,9 @@ class SaveSuccessDialog(QDialog):
         self._center_parent = parent
 
         self._no_btn.setFocus()
-        self.exec()
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -279,13 +287,25 @@ class SaveSuccessDialog(QDialog):
         except RuntimeError:
             pass
 
+    def _fire_done(self):
+        cb = self._on_done
+        self._on_done = None
+        if cb is not None:
+            cb(self.result)
+
     def _yes(self):
         self.result = True
-        self.accept()
+        self._fire_done()
+        self.close()
 
     def _no(self):
         self.result = False
-        self.accept()
+        self._fire_done()
+        self.close()
+
+    def closeEvent(self, event):
+        self._fire_done()
+        super().closeEvent(event)
 
 
 class DuplicateNamesErrorDialog(QDialog):
@@ -457,7 +477,8 @@ class FileSavedDialog(QDialog):
         super().__init__(parent)
         self._count = count
         self._folder = folder
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
@@ -482,7 +503,7 @@ class FileSavedDialog(QDialog):
         self._close_btn = QPushButton()
         self._close_btn.setFixedWidth(120)
         self._close_btn.setDefault(True)
-        self._close_btn.clicked.connect(self.accept)
+        self._close_btn.clicked.connect(self.close)
         btn_row.addWidget(self._close_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
@@ -495,7 +516,9 @@ class FileSavedDialog(QDialog):
         self.finished.connect(self._on_close)
         self._center_parent = parent
 
-        self.exec()
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -886,28 +909,32 @@ def save_as_cbz(parent, canvas, callbacks: dict):
         if overlay:
             overlay.remove()
 
-    dlg = SaveSuccessDialog(
-        parent,
-        "messages.info.new_cbz_saved.title",
-        "messages.info.new_cbz_saved.message",
-        filepath,
-        "messages.info.new_cbz_saved.question",
-    )
-    if dlg.result:
-        try:
-            if os.path.exists(state.current_file):
-                _safe_delete(state.current_file)
-        except Exception as e:
-            ErrorDialog(parent,
-                        _("messages.errors.save_failed.title"),
-                        _("messages.errors.delete_error", error=e)).exec()
-
+    old_file = state.current_file
     state.current_file = filepath
     state.modified = False
     if callbacks.get("update_button_text"):
         callbacks["update_button_text"]()
     if callbacks.get("update_tabs"):
         callbacks["update_tabs"]()
+
+    def _after_save_as(result):
+        if result:
+            try:
+                if old_file and os.path.exists(old_file):
+                    _safe_delete(old_file)
+            except Exception as e:
+                ErrorDialog(parent,
+                            _("messages.errors.save_failed.title"),
+                            _("messages.errors.delete_error", error=e)).exec()
+
+    SaveSuccessDialog(
+        parent,
+        "messages.info.new_cbz_saved.title",
+        "messages.info.new_cbz_saved.message",
+        filepath,
+        "messages.info.new_cbz_saved.question",
+        on_done=_after_save_as,
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1274,22 +1301,27 @@ def apply_new_names(parent, canvas, callbacks: dict):
                 for entry in state.images_data:
                     if entry["bytes"] is not None and not entry.get("is_dir"):
                         zf.writestr(entry["orig_name"], entry["bytes"])
-            dlg = SaveSuccessDialog(
+            old_file_cbz = state.current_file
+            state.current_file = new_file
+
+            def _after_cbz_converted(result):
+                if result:
+                    try:
+                        if old_file_cbz and os.path.exists(old_file_cbz):
+                            safe_delete(old_file_cbz)
+                    except Exception as e:
+                        ErrorDialog(parent,
+                                    _("messages.errors.save_failed.title"),
+                                    _("messages.errors.delete_error", error=e)).exec()
+
+            SaveSuccessDialog(
                 parent,
                 "messages.info.cbz_converted.title",
                 "messages.info.cbz_converted.message",
                 new_file,
                 "messages.info.cbz_converted.question",
+                on_done=_after_cbz_converted,
             )
-            if dlg.result:
-                try:
-                    if os.path.exists(state.current_file):
-                        safe_delete(state.current_file)
-                except Exception as e:
-                    ErrorDialog(parent,
-                                _("messages.errors.save_failed.title"),
-                                _("messages.errors.delete_error", error=e)).exec()
-            state.current_file = new_file
         except Exception as e:
             ErrorDialog(parent,
                         _("messages.errors.save_failed.title"),
@@ -1315,22 +1347,27 @@ def apply_new_names(parent, canvas, callbacks: dict):
                 for entry in state.images_data:
                     if entry["bytes"] is not None and not entry.get("is_dir"):
                         zf.writestr(entry["orig_name"], entry["bytes"])
-            dlg = SaveSuccessDialog(
+            old_file_pdf = state.current_file
+            state.current_file = new_file
+
+            def _after_pdf_converted(result):
+                if result:
+                    try:
+                        if old_file_pdf and os.path.exists(old_file_pdf):
+                            safe_delete(old_file_pdf)
+                    except Exception as e:
+                        ErrorDialog(parent,
+                                    _("messages.errors.save_failed.title"),
+                                    _("messages.errors.delete_error", error=e)).exec()
+
+            SaveSuccessDialog(
                 parent,
                 "messages.info.cbz_converted_from_pdf.title",
                 "messages.info.cbz_converted_from_pdf.message",
                 new_file,
                 "messages.info.cbz_converted_from_pdf.question",
+                on_done=_after_pdf_converted,
             )
-            if dlg.result:
-                try:
-                    if os.path.exists(state.current_file):
-                        safe_delete(state.current_file)
-                except Exception as e:
-                    ErrorDialog(parent,
-                                _("messages.errors.save_failed.title"),
-                                _("messages.errors.delete_error", error=e)).exec()
-            state.current_file = new_file
         except Exception as e:
             ErrorDialog(parent,
                         _("messages.errors.save_failed.title"),

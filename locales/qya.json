@@ -1386,5 +1386,22 @@
     "banner_message": "Vinya pol tulta: {latest}",
     "menu_update_available": "Vinya pol ({latest})",
     "retry": "Auta minna coivie"
+  },
+  "nfo": {
+    "window_title": "Carë NFO-parma",
+    "window_title_edit": "Harna NFO-parma",
+    "filename_label": "Parma essë",
+    "content_label": "Sanwë",
+    "btn_create": "Carë NFO",
+    "btn_save": "Harya",
+    "btn_clear": "Exa",
+    "menu_item": "Carë NFO-parma",
+    "tooltip": "Carë NFO-parma",
+    "success_title": "NFO-parma cárienwa",
+    "success_message": "I parma {filename} cárnë.",
+    "error_title": "Raxë",
+    "error_empty_name": "Á tulca parma essë.",
+    "error_write": "Ná umba carë i parma:\n{error}",
+    "error_duplicate": "I parma {filename} essenen ná sís i mosaicossë."
   }
 }

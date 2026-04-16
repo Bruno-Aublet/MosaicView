@@ -1386,5 +1386,22 @@
     "banner_message": "Leagan nua ar fáil: {latest}",
     "menu_update_available": "Nuashonrú ar fáil ({latest})",
     "retry": "Aththriail"
+  },
+  "nfo": {
+    "window_title": "Cruthaigh comhad NFO",
+    "window_title_edit": "Cuir comhad NFO in eagar",
+    "filename_label": "Ainm comhaid",
+    "content_label": "Ábhar",
+    "btn_create": "Cruthaigh NFO",
+    "btn_save": "Sábháil",
+    "btn_clear": "Glan",
+    "menu_item": "Cruthaigh comhad NFO",
+    "tooltip": "Cruthaigh comhad NFO",
+    "success_title": "Comhad NFO cruthaithe",
+    "success_message": "Cruthaíodh an comhad {filename}.",
+    "error_title": "Earráid",
+    "error_empty_name": "Cuir isteach ainm comhaid le do thoil.",
+    "error_write": "Ní féidir an comhad a scríobh:\n{error}",
+    "error_duplicate": "Tá comhad darb ainm {filename} ann cheana sa mhósáic."
   }
 }

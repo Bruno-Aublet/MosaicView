@@ -91,6 +91,13 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
 
     menu.addSeparator()
 
+    if has_images:
+        menu.addAction(_("nfo.menu_item"), callbacks['show_nfo_dialog'])
+    else:
+        _add_disabled(menu, _("nfo.menu_item"))
+
+    menu.addSeparator()
+
     # Conversions en lot (sous-menu)
     batch_submenu = _make_menu(menu)
     batch_submenu.setTitle(_("menu.batch_convert"))

@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.1.7"
+__version__ = "1.1.8"
 
 import sys
 import os
@@ -503,14 +503,8 @@ class MainWindow(QMainWindow):
         # Confirmation si panel2 a une archive ouverte
         st2 = self._panel2._state
         if st2.images_data or st2.modified:
-            from modules.qt import state as _state_module
             from modules.qt.file_close_qt import close_file
-            _prev_state = _state_module.state
-            _state_module.state = st2
-            closed = close_file(self, **self._panel2._file_close_args())
-            _state_module.state = _prev_state
-            if not closed:
-                return  # L'utilisateur a annulé
+            close_file(self, state=st2, **self._panel2._file_close_args())
 
         # Sauvegarde le ratio
         self._save_split_ratio()

@@ -1386,5 +1386,22 @@
     "banner_message": "Հասանելի է նոր տարբերակ՝ {latest}",
     "menu_update_available": "Թարմացում հասանելի է ({latest})",
     "retry": "Կրկին փորձել"
+  },
+  "nfo": {
+    "window_title": "Ստեղծել NFO ֆայլ",
+    "window_title_edit": "Խմբագրել NFO ֆայլը",
+    "filename_label": "Ֆայլի անուն",
+    "content_label": "Բովանդակություն",
+    "btn_create": "Ստեղծել NFO",
+    "btn_save": "Պահպանել",
+    "btn_clear": "Մաքրել",
+    "menu_item": "Ստեղծել NFO ֆայլ",
+    "tooltip": "Ստեղծել NFO ֆայլ",
+    "success_title": "NFO ֆայլը ստեղծված է",
+    "success_message": "{filename} ֆայլը ստեղծվեց։",
+    "error_title": "Սխալ",
+    "error_empty_name": "Խնդրում ենք մուտքագրել ֆայլի անուն։",
+    "error_write": "Հնարավոր չէ գրել ֆայլը.\n{error}",
+    "error_duplicate": "{filename} անունով ֆայլն արդեն գոյություն ունի մոզաիկայում։"
   }
 }

@@ -1386,5 +1386,22 @@
     "banner_message": "नया संस्करण उपलब्ध: {latest}",
     "menu_update_available": "अपडेट उपलब्ध ({latest})",
     "retry": "पुनः प्रयास करें"
+  },
+  "nfo": {
+    "window_title": "NFO फ़ाइल बनाएं",
+    "window_title_edit": "NFO फ़ाइल संपादित करें",
+    "filename_label": "फ़ाइल का नाम",
+    "content_label": "सामग्री",
+    "btn_create": "NFO बनाएं",
+    "btn_save": "सहेजें",
+    "btn_clear": "साफ़ करें",
+    "menu_item": "NFO फ़ाइल बनाएं",
+    "tooltip": "NFO फ़ाइल बनाएं",
+    "success_title": "NFO फ़ाइल बनाई गई",
+    "success_message": "फ़ाइल {filename} बनाई गई।",
+    "error_title": "त्रुटि",
+    "error_empty_name": "कृपया फ़ाइल का नाम दर्ज करें।",
+    "error_write": "फ़ाइल लिखने में असमर्थ:\n{error}",
+    "error_duplicate": "मोज़ेक में {filename} नाम की फ़ाइल पहले से मौजूद है।"
   }
 }

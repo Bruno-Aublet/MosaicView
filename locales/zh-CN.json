@@ -1386,5 +1386,22 @@
     "banner_message": "有新版本: {latest}",
     "menu_update_available": "有更新 ({latest})",
     "retry": "重试"
+  },
+  "nfo": {
+    "window_title": "创建 NFO 文件",
+    "window_title_edit": "编辑 NFO 文件",
+    "filename_label": "文件名",
+    "content_label": "内容",
+    "btn_create": "创建 NFO",
+    "btn_save": "保存",
+    "btn_clear": "清除",
+    "menu_item": "创建 NFO 文件",
+    "tooltip": "创建 NFO 文件",
+    "success_title": "NFO 文件已创建",
+    "success_message": "文件 {filename} 已创建。",
+    "error_title": "错误",
+    "error_empty_name": "请输入文件名。",
+    "error_write": "无法写入文件:\n{error}",
+    "error_duplicate": "名为 {filename} 的文件已在拼贴中存在。"
   }
 }

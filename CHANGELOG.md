@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.8] - 2026-04-16
+
+- Oops... fixed the Changelog viewer showing "CHANGELOG.md not found" in the packaged build. The file was missing from the PyInstaller `datas` list in both `.spec` files and was therefore not bundled.
+- Added an NFO file creator accessible from the toolbar, the File menu, and the canvas context menu. The dialog is non-modal and injects the new `.nfo` file directly into the mosaic; the operation is recorded in the undo/redo history. Double-clicking an existing `.nfo` file in the mosaic now opens it in the same integrated editor instead of launching the default external application; saving the changes is also recorded in the undo/redo history.
+- The image format conversion dialogs (format selector, quality selector, post-conversion action) are no longer modal. They no longer block the other panel in two-panel mode.
+- The save confirmation dialogs (unsaved changes warning, post-save success with delete-original option) are no longer modal. They no longer block the other panel in two-panel mode.
+- Fixed a bug where clicking the collapse button in the menu bar (show/hide icon column) left the menu bar active after the click. When collapsing the column, the window content shifts and the cursor could land on an adjacent menu, opening it unintentionally. The canvas now receives focus immediately after the toggle.
+- Increased the width of the mosaic tab (showing the open file name) by 60%.
+
 ## [1.1.7] - 2026-04-15
 
 - Batch conversion dialogs (type selection, confirmation, progress, summary) are no longer modal. It is now possible to start a batch in one panel and continue working in the other panel, or start a second batch simultaneously.

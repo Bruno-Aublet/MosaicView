@@ -1386,5 +1386,22 @@
     "banner_message": "Yeni sürüm mevcut: {latest}",
     "menu_update_available": "Güncelleme mevcut ({latest})",
     "retry": "Yeniden dene"
+  },
+  "nfo": {
+    "window_title": "NFO dosyası oluştur",
+    "window_title_edit": "NFO dosyasını düzenle",
+    "filename_label": "Dosya adı",
+    "content_label": "İçerik",
+    "btn_create": "NFO oluştur",
+    "btn_save": "Kaydet",
+    "btn_clear": "Temizle",
+    "menu_item": "NFO dosyası oluştur",
+    "tooltip": "NFO dosyası oluştur",
+    "success_title": "NFO dosyası oluşturuldu",
+    "success_message": "{filename} dosyası oluşturuldu.",
+    "error_title": "Hata",
+    "error_empty_name": "Lütfen bir dosya adı girin.",
+    "error_write": "Dosya yazılamıyor:\n{error}",
+    "error_duplicate": "{filename} adlı bir dosya mozaikte zaten mevcut."
   }
 }

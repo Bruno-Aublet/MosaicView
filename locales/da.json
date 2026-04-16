@@ -1386,5 +1386,22 @@
     "banner_message": "En ny version er tilgængelig: {latest}",
     "menu_update_available": "Opdatering tilgængelig ({latest})",
     "retry": "Prøv igen"
+  },
+  "nfo": {
+    "window_title": "Opret NFO-fil",
+    "window_title_edit": "Rediger NFO-fil",
+    "filename_label": "Filnavn",
+    "content_label": "Indhold",
+    "btn_create": "Opret NFO",
+    "btn_save": "Gem",
+    "btn_clear": "Ryd",
+    "menu_item": "Opret NFO-fil",
+    "tooltip": "Opret NFO-fil",
+    "success_title": "NFO-fil oprettet",
+    "success_message": "Filen {filename} blev oprettet.",
+    "error_title": "Fejl",
+    "error_empty_name": "Angiv venligst et filnavn.",
+    "error_write": "Kan ikke skrive filen:\n{error}",
+    "error_duplicate": "En fil med navnet {filename} findes allerede i mosaikken."
   }
 }

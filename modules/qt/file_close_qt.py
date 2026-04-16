@@ -47,7 +47,8 @@ class CloseWarningDialog(QDialog):
         self._apply_and_close_cb = apply_and_close_cb
         ext = os.path.splitext(current_file)[1].lower() if current_file else ""
         self._is_cbz = (ext == ".cbz")
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedSize(550, 450)
 
         layout = QVBoxLayout(self)
@@ -75,7 +76,7 @@ class CloseWarningDialog(QDialog):
         self._btn_cancel = QPushButton()
         self._btn_cancel.setStyleSheet(self._BTN_STYLE.format(bg="#cccccc", bg_hover="#aaaaaa"))
         self._btn_cancel.setFixedHeight(80)
-        self._btn_cancel.clicked.connect(self.reject)
+        self._btn_cancel.clicked.connect(self._on_cancel)
         layout.addWidget(self._btn_cancel)
 
         self._retranslate()
@@ -85,6 +86,10 @@ class CloseWarningDialog(QDialog):
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
         self._center_parent = parent
+
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -112,12 +117,15 @@ class CloseWarningDialog(QDialog):
         self._btn_cancel.setFont(font)
 
     def _on_lose(self):
-        self.accept()
+        self.close()
         self._force_close_cb()
 
     def _on_save(self):
-        self.accept()
+        self.close()
         self._apply_and_close_cb()
+
+    def _on_cancel(self):
+        self.close()
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -135,13 +143,13 @@ class CloseWarningDialog(QDialog):
 class CloseWithoutSaveDialog(QDialog):
     """Dialog affiché quand des images non-archive ont des modifications non sauvegardées."""
 
-    # Résultat : True=Oui(créer CBZ), False=Non(fermer sans sauver), None=Annuler
-    result_value = None
-
-    def __init__(self, parent):
+    def __init__(self, parent, on_yes, on_no, on_cancel):
         super().__init__(parent)
-        self.result_value = None
-        self.setModal(True)
+        self._on_yes_cb    = on_yes
+        self._on_no_cb     = on_no
+        self._on_cancel_cb = on_cancel
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedSize(500, 400)
 
         layout = QVBoxLayout(self)
@@ -182,6 +190,10 @@ class CloseWithoutSaveDialog(QDialog):
         self.finished.connect(self._on_close)
         self._center_parent = parent
 
+        self.show()
+        self.raise_()
+        self.activateWindow()
+
     def showEvent(self, event):
         super().showEvent(event)
         if self._center_parent and not event.spontaneous():
@@ -216,16 +228,19 @@ class CloseWithoutSaveDialog(QDialog):
         self._btn_cancel.setStyleSheet(self._BTN_STYLE.format(bg="#cccccc", bg_hover="#aaaaaa"))
 
     def _on_yes(self):
-        self.result_value = True
-        self.accept()
+        self.close()
+        if self._on_yes_cb:
+            self._on_yes_cb()
 
     def _on_no(self):
-        self.result_value = False
-        self.accept()
+        self.close()
+        if self._on_no_cb:
+            self._on_no_cb()
 
     def _on_cancel(self):
-        self.result_value = None
-        self.reject()
+        self.close()
+        if self._on_cancel_cb:
+            self._on_cancel_cb()
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -252,7 +267,8 @@ class DeleteConfirmDialog(QDialog):
         super().__init__(parent)
         self._count    = count
         self._size_str = size_str
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedSize(500, 170)
 
         layout = QVBoxLayout(self)
@@ -333,7 +349,7 @@ class DeleteConfirmDialog(QDialog):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
-                     refresh_status, refresh_menubar):
+                     refresh_status, refresh_menubar, state=None):
     """
     Fermeture effective : libère la mémoire, nettoie le canvas.
 
@@ -343,9 +359,11 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     refresh_tabs    : callable()
     refresh_status  : callable()
     refresh_menubar : callable()
+    state           : state explicite (optionnel, sinon _state_module.state)
     """
     from modules.qt.mosaic_canvas import invalidate_pixmap_cache
-    state = _state_module.state
+    if state is None:
+        state = _state_module.state
 
     invalidate_pixmap_cache()
 
@@ -394,7 +412,6 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     shutdown_pdf_process()
 
 
-
 # ═══════════════════════════════════════════════════════════════════════════════
 # close_file — logique principale avec dialogs de confirmation
 # Reproduit close_file() de modules/file_close.py
@@ -402,23 +419,22 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
 
 def close_file(parent, canvas, create_cbz_cb, apply_new_names_cb,
                refresh_title, refresh_toolbar, refresh_tabs,
-               refresh_status, refresh_menubar):
+               refresh_status, refresh_menubar,
+               state=None):
     """
     Ferme le fichier courant avec confirmation si modifié.
-    Retourne True si le fichier a été fermé (ou qu'il n'y avait rien),
-    False si l'utilisateur a annulé.
-
-    parent            : QWidget parent pour les dialogs
-    canvas            : MosaicCanvas
-    create_cbz_cb     : callable() → créer CBZ depuis images libres
-    apply_new_names_cb: callable() → appliquer noms + sauvegarder
-    refresh_*         : callables de rafraîchissement UI
+    Si un dialog de confirmation est nécessaire, il est affiché de façon non-modale
+    et la suite est gérée par callbacks.
+    Retourne True si la fermeture peut se faire immédiatement (pas de dialog),
+    False si un dialog non-modal a été ouvert (la suite se fait en async).
     """
-    state = _state_module.state
+    if state is None:
+        state = _state_module.state
 
     def _force():
         force_close_file(canvas, refresh_title, refresh_toolbar,
-                         refresh_tabs, refresh_status, refresh_menubar)
+                         refresh_tabs, refresh_status, refresh_menubar,
+                         state=state)
 
     # ── Pas d'archive, images présentes ──────────────────────────────────────
     if not state.current_file and state.images_data:
@@ -426,38 +442,36 @@ def close_file(parent, canvas, create_cbz_cb, apply_new_names_cb,
             _force()
             return True
 
-        dlg = CloseWithoutSaveDialog(parent)
-        dlg.exec()
-        response = dlg.result_value
-
-        if response is None:    # Annuler
-            return False
-        elif response:          # Oui → créer CBZ
+        def _yes():   # Créer CBZ
             create_cbz_cb()
-            if state.current_file:  # Archive créée avec succès
+            if state.current_file:
                 _force()
-        else:                   # Non → fermer sans sauver
+
+        def _no():    # Fermer sans sauver
             _force()
-        return True
+
+        def _cancel():
+            pass
+
+        CloseWithoutSaveDialog(parent, _yes, _no, _cancel)
+        return False  # dialog ouvert, suite en async
 
     # ── Pas d'archive, pas d'images ──────────────────────────────────────────
     if not state.current_file and not state.images_data:
-        return True  # Rien à fermer (l'appelant gère la fermeture de l'appli)
+        return True
 
     # ── Archive présente ──────────────────────────────────────────────────────
     if not state.modified:
         _force()
         return True
-    else:
-        def _apply_and_close():
-            result = apply_new_names_cb()
-            if result is not False:
-                _force()
 
-        dlg = CloseWarningDialog(parent, state.current_file, _force, _apply_and_close)
-        dlg.exec()
-        # Si l'utilisateur a cliqué Annuler (reject), on ne ferme pas
-        return dlg.result() == QDialog.Accepted
+    def _apply_and_close():
+        result = apply_new_names_cb()
+        if result is not False:
+            _force()
+
+    CloseWarningDialog(parent, state.current_file, _force, _apply_and_close)
+    return False  # dialog ouvert, suite en async
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -471,7 +485,8 @@ def on_window_close(main_window, canvas, create_cbz_cb, apply_new_names_cb,
                     save_session_cb, cleanup_temp_cb):
     """
     Gère le clic sur la croix de fermeture.
-    Retourne True si l'application peut se fermer, False si l'utilisateur a annulé.
+    Retourne True si l'application peut se fermer immédiatement,
+    False si un dialog non-modal a été ouvert ou si l'utilisateur a annulé.
 
     main_window    : QMainWindow (parent des dialogs)
     save_session_cb: callable() → sauvegarde géométrie/état
@@ -481,15 +496,14 @@ def on_window_close(main_window, canvas, create_cbz_cb, apply_new_names_cb,
 
     if state.images_data or state.modified:
         had_archive = bool(state.current_file)
-        closed = close_file(
+        closed_sync = close_file(
             main_window, canvas, create_cbz_cb, apply_new_names_cb,
             refresh_title, refresh_toolbar, refresh_tabs,
             refresh_status, refresh_menubar,
         )
-        if not closed:
-            return False  # L'utilisateur a annulé → ne pas fermer l'appli
+        if not closed_sync:
+            return False  # Dialog ouvert ou annulé
 
-        # Si on avait une archive et qu'on vient de la fermer → rester sur canvas vide
         if had_archive:
             try:
                 cleanup_temp_cb()
@@ -497,7 +511,6 @@ def on_window_close(main_window, canvas, create_cbz_cb, apply_new_names_cb,
                 print(f"Erreur nettoyage temp files : {e}")
             return False
 
-        # Pas d'archive (mode sans archive) : la fermeture vide le canvas → quitter l'appli
         save_session_cb()
         try:
             cleanup_temp_cb()

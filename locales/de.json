@@ -1386,5 +1386,22 @@
     "banner_message": "Neue Version verfügbar: {latest}",
     "menu_update_available": "Update verfügbar ({latest})",
     "retry": "Erneut versuchen"
+  },
+  "nfo": {
+    "window_title": "NFO-Datei erstellen",
+    "window_title_edit": "NFO-Datei bearbeiten",
+    "filename_label": "Dateiname",
+    "content_label": "Inhalt",
+    "btn_create": "NFO erstellen",
+    "btn_save": "Speichern",
+    "btn_clear": "Leeren",
+    "menu_item": "NFO-Datei erstellen",
+    "tooltip": "NFO-Datei erstellen",
+    "success_title": "NFO-Datei erstellt",
+    "success_message": "Die Datei {filename} wurde erstellt.",
+    "error_title": "Fehler",
+    "error_empty_name": "Bitte geben Sie einen Dateinamen ein.",
+    "error_write": "Datei konnte nicht geschrieben werden:\n{error}",
+    "error_duplicate": "Eine Datei namens {filename} existiert bereits im Mosaik."
   }
 }

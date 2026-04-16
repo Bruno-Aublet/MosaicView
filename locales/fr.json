@@ -1386,5 +1386,22 @@
     "retry": "Réessayer",
     "banner_message": "Nouvelle version disponible : {latest}",
     "menu_update_available": "Mise à jour disponible ({latest})"
+  },
+  "nfo": {
+    "window_title": "Création de fichier NFO",
+    "window_title_edit": "Modifier un fichier NFO",
+    "filename_label": "Nom du fichier",
+    "content_label": "Contenu",
+    "btn_create": "Créer le NFO",
+    "btn_save": "Enregistrer",
+    "btn_clear": "Effacer",
+    "menu_item": "Créer un fichier NFO",
+    "tooltip": "Créer un fichier NFO",
+    "success_title": "Fichier NFO créé",
+    "success_message": "Le fichier {filename} a été créé.",
+    "error_title": "Erreur",
+    "error_empty_name": "Veuillez saisir un nom de fichier.",
+    "error_write": "Impossible d'écrire le fichier :\n{error}",
+    "error_duplicate": "Un fichier nommé {filename} existe déjà dans la mosaïque."
   }
 }

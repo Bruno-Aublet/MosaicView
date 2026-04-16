@@ -1386,5 +1386,22 @@
     "banner_message": "Gwanath newydd: {latest}",
     "menu_update_available": "Gwanath newydd ({latest})",
     "retry": "Garo velui"
+  },
+  "nfo": {
+    "window_title": "Carph NFO-parf",
+    "window_title_edit": "Gresta NFO-parf",
+    "filename_label": "Eneth parf",
+    "content_label": "Hammad",
+    "btn_create": "Carph NFO",
+    "btn_save": "Teitho",
+    "btn_clear": "Gwanna",
+    "menu_item": "Carph NFO-parf",
+    "tooltip": "Carph NFO-parf",
+    "success_title": "NFO-parf carphannen",
+    "success_message": "I barf {filename} carphannen.",
+    "error_title": "Mablung",
+    "error_empty_name": "Anno eneth parf.",
+    "error_write": "Ú-gell teitho i barf:\n{error}",
+    "error_duplicate": "Parf {filename} enethren iest vi i mozaic."
   }
 }

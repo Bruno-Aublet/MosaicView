@@ -1386,5 +1386,22 @@
     "banner_message": "Uusi versio saatavilla: {latest}",
     "menu_update_available": "Päivitys saatavilla ({latest})",
     "retry": "Yritä uudelleen"
+  },
+  "nfo": {
+    "window_title": "Luo NFO-tiedosto",
+    "window_title_edit": "Muokkaa NFO-tiedostoa",
+    "filename_label": "Tiedoston nimi",
+    "content_label": "Sisältö",
+    "btn_create": "Luo NFO",
+    "btn_save": "Tallenna",
+    "btn_clear": "Tyhjennä",
+    "menu_item": "Luo NFO-tiedosto",
+    "tooltip": "Luo NFO-tiedosto",
+    "success_title": "NFO-tiedosto luotu",
+    "success_message": "Tiedosto {filename} luotiin.",
+    "error_title": "Virhe",
+    "error_empty_name": "Anna tiedoston nimi.",
+    "error_write": "Tiedostoa ei voi kirjoittaa:\n{error}",
+    "error_duplicate": "Tiedosto nimeltä {filename} on jo olemassa mosaiikissa."
   }
 }

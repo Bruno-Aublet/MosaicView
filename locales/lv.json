@@ -1386,5 +1386,22 @@
     "banner_message": "Pieejama jauna versija: {latest}",
     "menu_update_available": "Atjauninājums pieejams ({latest})",
     "retry": "Mēģināt vēlreiz"
+  },
+  "nfo": {
+    "window_title": "Izveidot NFO failu",
+    "window_title_edit": "Rediģēt NFO failu",
+    "filename_label": "Faila nosaukums",
+    "content_label": "Saturs",
+    "btn_create": "Izveidot NFO",
+    "btn_save": "Saglabāt",
+    "btn_clear": "Notīrīt",
+    "menu_item": "Izveidot NFO failu",
+    "tooltip": "Izveidot NFO failu",
+    "success_title": "NFO fails izveidots",
+    "success_message": "Fails {filename} tika izveidots.",
+    "error_title": "Kļūda",
+    "error_empty_name": "Lūdzu, ievadiet faila nosaukumu.",
+    "error_write": "Nevar ierakstīt failu:\n{error}",
+    "error_duplicate": "Fails ar nosaukumu {filename} mozaīkā jau pastāv."
   }
 }

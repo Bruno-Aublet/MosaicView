@@ -1386,5 +1386,22 @@
     "banner_message": "Je dostupná nová verze: {latest}",
     "menu_update_available": "Dostupná aktualizace ({latest})",
     "retry": "Zkusit znovu"
+  },
+  "nfo": {
+    "window_title": "Vytvoření souboru NFO",
+    "window_title_edit": "Upravit soubor NFO",
+    "filename_label": "Název souboru",
+    "content_label": "Obsah",
+    "btn_create": "Vytvořit NFO",
+    "btn_save": "Uložit",
+    "btn_clear": "Vymazat",
+    "menu_item": "Vytvořit soubor NFO",
+    "tooltip": "Vytvořit soubor NFO",
+    "success_title": "Soubor NFO byl vytvořen",
+    "success_message": "Soubor {filename} byl vytvořen.",
+    "error_title": "Chyba",
+    "error_empty_name": "Zadejte prosím název souboru.",
+    "error_write": "Nelze zapsat soubor:\n{error}",
+    "error_duplicate": "Soubor s názvem {filename} již v mozaice existuje."
   }
 }

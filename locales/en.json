@@ -1386,5 +1386,22 @@
     "banner_message": "New version available: {latest}",
     "menu_update_available": "Update available ({latest})",
     "retry": "Retry"
+  },
+  "nfo": {
+    "window_title": "Create NFO file",
+    "window_title_edit": "Edit NFO file",
+    "filename_label": "File name",
+    "content_label": "Content",
+    "btn_create": "Create NFO",
+    "btn_save": "Save",
+    "btn_clear": "Clear",
+    "menu_item": "Create NFO file",
+    "tooltip": "Create NFO file",
+    "success_title": "NFO file created",
+    "success_message": "The file {filename} was created.",
+    "error_title": "Error",
+    "error_empty_name": "Please enter a file name.",
+    "error_write": "Unable to write the file:\n{error}",
+    "error_duplicate": "A file named {filename} already exists in the mosaic."
   }
 }

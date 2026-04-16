@@ -1386,5 +1386,22 @@
     "banner_message": "มีเวอร์ชันใหม่: {latest}",
     "menu_update_available": "มีอัปเดต ({latest})",
     "retry": "ลองอีกครั้ง"
+  },
+  "nfo": {
+    "window_title": "สร้างไฟล์ NFO",
+    "window_title_edit": "แก้ไขไฟล์ NFO",
+    "filename_label": "ชื่อไฟล์",
+    "content_label": "เนื้อหา",
+    "btn_create": "สร้าง NFO",
+    "btn_save": "บันทึก",
+    "btn_clear": "ล้าง",
+    "menu_item": "สร้างไฟล์ NFO",
+    "tooltip": "สร้างไฟล์ NFO",
+    "success_title": "สร้างไฟล์ NFO แล้ว",
+    "success_message": "ไฟล์ {filename} ถูกสร้างแล้ว",
+    "error_title": "ข้อผิดพลาด",
+    "error_empty_name": "กรุณาใส่ชื่อไฟล์",
+    "error_write": "ไม่สามารถเขียนไฟล์ได้:\n{error}",
+    "error_duplicate": "มีไฟล์ชื่อ {filename} อยู่ในโมเสกแล้ว"
   }
 }

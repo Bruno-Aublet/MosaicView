@@ -1386,5 +1386,22 @@
     "banner_message": "Prieinama nauja versija: {latest}",
     "menu_update_available": "Atnaujinimas prieinamas ({latest})",
     "retry": "Bandyti dar kartą"
+  },
+  "nfo": {
+    "window_title": "Sukurti NFO failą",
+    "window_title_edit": "Redaguoti NFO failą",
+    "filename_label": "Failo pavadinimas",
+    "content_label": "Turinys",
+    "btn_create": "Sukurti NFO",
+    "btn_save": "Išsaugoti",
+    "btn_clear": "Išvalyti",
+    "menu_item": "Sukurti NFO failą",
+    "tooltip": "Sukurti NFO failą",
+    "success_title": "NFO failas sukurtas",
+    "success_message": "Failas {filename} buvo sukurtas.",
+    "error_title": "Klaida",
+    "error_empty_name": "Įveskite failo pavadinimą.",
+    "error_write": "Nepavyko įrašyti failo:\n{error}",
+    "error_duplicate": "Failas pavadinimu {filename} jau yra mozaikoje."
   }
 }

@@ -1386,5 +1386,22 @@
     "banner_message": "Na voljo je nova različica: {latest}",
     "menu_update_available": "Posodobitev na voljo ({latest})",
     "retry": "Poskusi znova"
+  },
+  "nfo": {
+    "window_title": "Ustvari datoteko NFO",
+    "window_title_edit": "Uredi datoteko NFO",
+    "filename_label": "Ime datoteke",
+    "content_label": "Vsebina",
+    "btn_create": "Ustvari NFO",
+    "btn_save": "Shrani",
+    "btn_clear": "Počisti",
+    "menu_item": "Ustvari datoteko NFO",
+    "tooltip": "Ustvari datoteko NFO",
+    "success_title": "Datoteka NFO ustvarjena",
+    "success_message": "Datoteka {filename} je bila ustvarjena.",
+    "error_title": "Napaka",
+    "error_empty_name": "Vnesite ime datoteke.",
+    "error_write": "Datoteke ni mogoče zapisati:\n{error}",
+    "error_duplicate": "Datoteka z imenom {filename} v mozaiku že obstaja."
   }
 }

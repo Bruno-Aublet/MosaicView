@@ -1386,5 +1386,22 @@
     "banner_message": "Νέα έκδοση διαθέσιμη: {latest}",
     "menu_update_available": "Διαθέσιμη ενημέρωση ({latest})",
     "retry": "Δοκιμή ξανά"
+  },
+  "nfo": {
+    "window_title": "Δημιουργία αρχείου NFO",
+    "window_title_edit": "Επεξεργασία αρχείου NFO",
+    "filename_label": "Όνομα αρχείου",
+    "content_label": "Περιεχόμενο",
+    "btn_create": "Δημιουργία NFO",
+    "btn_save": "Αποθήκευση",
+    "btn_clear": "Εκκαθάριση",
+    "menu_item": "Δημιουργία αρχείου NFO",
+    "tooltip": "Δημιουργία αρχείου NFO",
+    "success_title": "Το αρχείο NFO δημιουργήθηκε",
+    "success_message": "Το αρχείο {filename} δημιουργήθηκε.",
+    "error_title": "Σφάλμα",
+    "error_empty_name": "Εισάγετε ένα όνομα αρχείου.",
+    "error_write": "Αδύνατη η εγγραφή αρχείου:\n{error}",
+    "error_duplicate": "Ένα αρχείο με όνομα {filename} υπάρχει ήδη στο μωσαϊκό."
   }
 }

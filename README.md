@@ -92,6 +92,7 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 - **Join** — combine multiple selected pages into a single image by positioning them freely, with a live preview
 - **Animated GIF export** — generate an animated GIF from the pages of an archive
 - **ICO export** — create an icon file from a page
+- **NFO file editor** — create `.nfo` files directly inside an archive from the toolbar, the File menu, or the right-click context menu. The non-modal dialog lets you enter a filename and write free-form text content; the file is injected into the mosaic immediately. Double-clicking an existing `.nfo` file in the mosaic opens it in the same integrated editor for editing. Both creation and editing are recorded in the undo/redo history.
 - **Flatten subdirectories** — some archives store pages in a subfolder structure; this flattens everything to the root level in one click, with automatic conflict resolution if two files share the same name
 - **Undo / Redo** — every operation is reversible
 - **Corrupted page detection** — unreadable or damaged pages are flagged visually in the mosaic

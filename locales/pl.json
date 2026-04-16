@@ -1386,5 +1386,22 @@
     "banner_message": "Dostępna nowa wersja: {latest}",
     "menu_update_available": "Aktualizacja dostępna ({latest})",
     "retry": "Spróbuj ponownie"
+  },
+  "nfo": {
+    "window_title": "Utwórz plik NFO",
+    "window_title_edit": "Edytuj plik NFO",
+    "filename_label": "Nazwa pliku",
+    "content_label": "Zawartość",
+    "btn_create": "Utwórz NFO",
+    "btn_save": "Zapisz",
+    "btn_clear": "Wyczyść",
+    "menu_item": "Utwórz plik NFO",
+    "tooltip": "Utwórz plik NFO",
+    "success_title": "Plik NFO został utworzony",
+    "success_message": "Plik {filename} został utworzony.",
+    "error_title": "Błąd",
+    "error_empty_name": "Proszę podać nazwę pliku.",
+    "error_write": "Nie można zapisać pliku:\n{error}",
+    "error_duplicate": "Plik o nazwie {filename} już istnieje w mozaice."
   }
 }

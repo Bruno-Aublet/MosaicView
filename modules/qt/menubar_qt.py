@@ -89,6 +89,9 @@ def _populate_file_menu(menu: QMenu, callbacks: dict):
 
     _add_action(menu, _("web.import_web_button"), callbacks.get("show_web_import_dialog"))
     menu.addSeparator()
+    _add_action(menu, _("nfo.menu_item"), callbacks.get("show_nfo_dialog"),
+                enabled=bool(st.images_data))
+    menu.addSeparator()
 
     # Conversion en lot — actif seulement si canvas vide
     canvas_empty = not st.current_file and not st.images_data
@@ -455,11 +458,6 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
         if toggle_toolbar:
             toggle_toolbar()
         sidebar_action.setText("«" if get_toolbar_visible() else "»")
-        from PySide6.QtCore import QTimer
-        def _restore_focus():
-            mb.setFocus()
-            mb.setActiveAction(sidebar_action)
-        QTimer.singleShot(0, _restore_focus)
     sidebar_action.triggered.connect(_on_sidebar_toggle)
     mb.addAction(sidebar_action)
     # Expose un callable pour mettre à jour le chevron sans passer par triggered

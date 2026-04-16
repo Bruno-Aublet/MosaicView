@@ -1386,5 +1386,22 @@
     "banner_message": "إصدار جديد متاح: {latest}",
     "menu_update_available": "تحديث متاح ({latest})",
     "retry": "إعادة المحاولة"
+  },
+  "nfo": {
+    "window_title": "إنشاء ملف NFO",
+    "window_title_edit": "تعديل ملف NFO",
+    "filename_label": "اسم الملف",
+    "content_label": "المحتوى",
+    "btn_create": "إنشاء NFO",
+    "btn_save": "حفظ",
+    "btn_clear": "مسح",
+    "menu_item": "إنشاء ملف NFO",
+    "tooltip": "إنشاء ملف NFO",
+    "success_title": "تم إنشاء ملف NFO",
+    "success_message": "تم إنشاء الملف {filename}.",
+    "error_title": "خطأ",
+    "error_empty_name": "يرجى إدخال اسم الملف.",
+    "error_write": "تعذّر كتابة الملف:\n{error}",
+    "error_duplicate": "يوجد ملف باسم {filename} بالفعل في الموزاييك."
   }
 }

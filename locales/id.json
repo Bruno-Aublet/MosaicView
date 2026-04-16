@@ -1386,5 +1386,22 @@
     "banner_message": "Versi baru tersedia: {latest}",
     "menu_update_available": "Pembaruan tersedia ({latest})",
     "retry": "Coba lagi"
+  },
+  "nfo": {
+    "window_title": "Buat file NFO",
+    "window_title_edit": "Edit file NFO",
+    "filename_label": "Nama file",
+    "content_label": "Konten",
+    "btn_create": "Buat NFO",
+    "btn_save": "Simpan",
+    "btn_clear": "Hapus",
+    "menu_item": "Buat file NFO",
+    "tooltip": "Buat file NFO",
+    "success_title": "File NFO dibuat",
+    "success_message": "File {filename} telah dibuat.",
+    "error_title": "Kesalahan",
+    "error_empty_name": "Masukkan nama file.",
+    "error_write": "Tidak dapat menulis file:\n{error}",
+    "error_duplicate": "File bernama {filename} sudah ada di mosaik."
   }
 }

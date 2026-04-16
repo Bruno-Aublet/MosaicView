@@ -1386,5 +1386,22 @@
     "banner_message": "Je dostupná nová verzia: {latest}",
     "menu_update_available": "Aktualizácia dostupná ({latest})",
     "retry": "Skúsiť znova"
+  },
+  "nfo": {
+    "window_title": "Vytvoriť súbor NFO",
+    "window_title_edit": "Upraviť súbor NFO",
+    "filename_label": "Názov súboru",
+    "content_label": "Obsah",
+    "btn_create": "Vytvoriť NFO",
+    "btn_save": "Uložiť",
+    "btn_clear": "Vymazať",
+    "menu_item": "Vytvoriť súbor NFO",
+    "tooltip": "Vytvoriť súbor NFO",
+    "success_title": "Súbor NFO bol vytvorený",
+    "success_message": "Súbor {filename} bol vytvorený.",
+    "error_title": "Chyba",
+    "error_empty_name": "Zadajte názov súboru.",
+    "error_write": "Súbor sa nedá zapísať:\n{error}",
+    "error_duplicate": "Súbor s názvom {filename} už v mozaike existuje."
   }
 }

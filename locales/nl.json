@@ -1386,5 +1386,22 @@
     "banner_message": "Nieuwe versie beschikbaar: {latest}",
     "menu_update_available": "Update beschikbaar ({latest})",
     "retry": "Opnieuw proberen"
+  },
+  "nfo": {
+    "window_title": "NFO-bestand aanmaken",
+    "window_title_edit": "NFO-bestand bewerken",
+    "filename_label": "Bestandsnaam",
+    "content_label": "Inhoud",
+    "btn_create": "NFO aanmaken",
+    "btn_save": "Opslaan",
+    "btn_clear": "Wissen",
+    "menu_item": "NFO-bestand aanmaken",
+    "tooltip": "NFO-bestand aanmaken",
+    "success_title": "NFO-bestand aangemaakt",
+    "success_message": "Het bestand {filename} is aangemaakt.",
+    "error_title": "Fout",
+    "error_empty_name": "Voer een bestandsnaam in.",
+    "error_write": "Kan het bestand niet schrijven:\n{error}",
+    "error_duplicate": "Een bestand met de naam {filename} bestaat al in het mozaïek."
   }
 }

@@ -1386,5 +1386,22 @@
     "banner_message": "  : {latest}",
     "menu_update_available": "  ({latest})",
     "retry": " "
+  },
+  "nfo": {
+    "window_title": "NFO-qawHaq chenmoH",
+    "window_title_edit": "NFO- ",
+    "filename_label": " ",
+    "content_label": "",
+    "btn_create": "NFO ",
+    "btn_save": "",
+    "btn_clear": "",
+    "menu_item": "NFO- ",
+    "tooltip": "NFO- ",
+    "success_title": "NFO- ",
+    "success_message": "{filename}  .",
+    "error_title": "",
+    "error_empty_name": "  .",
+    "error_write": "   :\n{error}",
+    "error_duplicate": "{filename}   sic ."
   }
 }

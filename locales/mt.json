@@ -1386,5 +1386,22 @@
     "banner_message": "Verżjoni ġdida disponibbli: {latest}",
     "menu_update_available": "Aġġornament disponibbli ({latest})",
     "retry": "Erġa' pprova"
+  },
+  "nfo": {
+    "window_title": "Oħloq fajl NFO",
+    "window_title_edit": "Editja fajl NFO",
+    "filename_label": "Isem il-fajl",
+    "content_label": "Kontenut",
+    "btn_create": "Oħloq NFO",
+    "btn_save": "Salva",
+    "btn_clear": "Ħassar",
+    "menu_item": "Oħloq fajl NFO",
+    "tooltip": "Oħloq fajl NFO",
+    "success_title": "Fajl NFO maħluq",
+    "success_message": "Il-fajl {filename} inħoloq.",
+    "error_title": "Żball",
+    "error_empty_name": "Jekk jogħġbok daħħal isem il-fajl.",
+    "error_write": "Ma nistax nikteb il-fajl:\n{error}",
+    "error_duplicate": "Fajl bl-isem {filename} diġà jeżisti fil-mużajk."
   }
 }

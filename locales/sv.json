@@ -1386,5 +1386,22 @@
     "banner_message": "Ny version tillgänglig: {latest}",
     "menu_update_available": "Uppdatering tillgänglig ({latest})",
     "retry": "Försök igen"
+  },
+  "nfo": {
+    "window_title": "Skapa NFO-fil",
+    "window_title_edit": "Redigera NFO-fil",
+    "filename_label": "Filnamn",
+    "content_label": "Innehåll",
+    "btn_create": "Skapa NFO",
+    "btn_save": "Spara",
+    "btn_clear": "Rensa",
+    "menu_item": "Skapa NFO-fil",
+    "tooltip": "Skapa NFO-fil",
+    "success_title": "NFO-fil skapad",
+    "success_message": "Filen {filename} skapades.",
+    "error_title": "Fel",
+    "error_empty_name": "Ange ett filnamn.",
+    "error_write": "Kan inte skriva filen:\n{error}",
+    "error_duplicate": "En fil med namnet {filename} finns redan i mosaiken."
   }
 }

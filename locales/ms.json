@@ -1386,5 +1386,22 @@
     "banner_message": "Versi baharu tersedia: {latest}",
     "menu_update_available": "Kemas kini tersedia ({latest})",
     "retry": "Cuba lagi"
+  },
+  "nfo": {
+    "window_title": "Buat fail NFO",
+    "window_title_edit": "Edit fail NFO",
+    "filename_label": "Nama fail",
+    "content_label": "Kandungan",
+    "btn_create": "Buat NFO",
+    "btn_save": "Simpan",
+    "btn_clear": "Padam",
+    "menu_item": "Buat fail NFO",
+    "tooltip": "Buat fail NFO",
+    "success_title": "Fail NFO dibuat",
+    "success_message": "Fail {filename} telah dibuat.",
+    "error_title": "Ralat",
+    "error_empty_name": "Sila masukkan nama fail.",
+    "error_write": "Tidak dapat menulis fail:\n{error}",
+    "error_duplicate": "Fail bernama {filename} sudah wujud dalam mosaik."
   }
 }

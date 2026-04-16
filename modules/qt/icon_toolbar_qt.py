@@ -45,6 +45,7 @@ ICON_DEFINITIONS = [
     {"id": "redo",                "tooltip_key": None,                            "png": "BTN_Batch_Redo.png"},
     {"id": "flatten_directories", "tooltip_key": None,                            "png": "BTN_Flatten_Directory.png"},
     {"id": "web_import",          "tooltip_key": "web.import_web_tooltip",        "png": "BTN_Web_Import.png"},
+    {"id": "create_nfo",          "tooltip_key": "nfo.tooltip",                   "png": "BTN_nfo.png"},
     {"id": "delete_selected",     "tooltip_key": None,                            "png": "BTN_Delete.png"},
     # --- PRESSE-PAPIERS ---
     {"id": "copy_selected",       "tooltip_key": "context_menu.image.copy",      "png": "BTN_Copy.png"},
@@ -142,6 +143,7 @@ _ACTIVATION_RULES = {
     "renumber":            lambda sg: sg["needs_renumbering"]() and not sg["has_subdirs"](),
     "sort":                lambda sg: sg["has_images"](),
     "web_import":          None,
+    "create_nfo":          lambda sg: sg["has_images"](),
     "open_mail":           None,
     "donation":            None,
     "toggle_theme":        None,
@@ -1598,6 +1600,7 @@ class IconToolbarQt(QWidget):
         "straighten":          "tooltip.straighten",
         "clone_zone":          "tooltip.clone_zone",
         "text":                "tooltip.text",
+        "create_nfo":          "nfo.menu_item",
     }
 
     def _get_icon_label(self, icon_id: str) -> str:
@@ -1988,6 +1991,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "redo":                  cb["redo_action"],
         "flatten_directories":   cb["flatten_directories"],
         "web_import":            cb["show_web_import_dialog"],
+        "create_nfo":            cb["show_nfo_dialog"],
         "delete_selected":       cb["delete_selected"],
         "copy_selected":         cb["copy_selected"],
         "cut_selected":          cb["cut_selected"],

@@ -1386,5 +1386,22 @@
     "banner_message": "Ný útgáfa í boði: {latest}",
     "menu_update_available": "Uppfærsla í boði ({latest})",
     "retry": "Reyna aftur"
+  },
+  "nfo": {
+    "window_title": "Búa til NFO skrá",
+    "window_title_edit": "Breyta NFO skrá",
+    "filename_label": "Skráarheiti",
+    "content_label": "Efni",
+    "btn_create": "Búa til NFO",
+    "btn_save": "Vista",
+    "btn_clear": "Hreinsa",
+    "menu_item": "Búa til NFO skrá",
+    "tooltip": "Búa til NFO skrá",
+    "success_title": "NFO skrá búin til",
+    "success_message": "Skráin {filename} var búin til.",
+    "error_title": "Villa",
+    "error_empty_name": "Vinsamlegast sláðu inn skráarheiti.",
+    "error_write": "Ekki er hægt að skrifa skrána:\n{error}",
+    "error_duplicate": "Skrá að nafni {filename} er þegar til í mósaíkinum."
   }
 }

@@ -47,6 +47,7 @@ def build_menubar_callbacks(mw) -> dict:
         "open_recent_file":         mw._open_recent_file,
         "clear_recent_files":       mw._clear_recent_files,
         "show_web_import_dialog":   lambda: _show_web_import_dialog(mw, mw._canvas, mw._web_import_callbacks()),
+        "show_nfo_dialog":          mw._show_nfo_dialog,
         "batch_convert_cbr_to_cbz": mw._batch_convert_cbr_to_cbz,
         "batch_convert_cb7_to_cbz": mw._batch_convert_cb7_to_cbz,
         "batch_convert_cbt_to_cbz": mw._batch_convert_cbt_to_cbz,

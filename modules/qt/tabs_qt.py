@@ -213,7 +213,7 @@ class TabBar(QWidget):
             style = self._tab_style(self._current_tab == "mosaic")
             self._btn_mosaic._base_style = style
             self._btn_mosaic.setStyleSheet(style)
-            self._btn_mosaic.setMaximumWidth(200)
+            self._btn_mosaic.setMaximumWidth(320)
             elided = self._btn_mosaic.fontMetrics().elidedText(
                 display_name, Qt.ElideRight,
                 self._btn_mosaic.maximumWidth() - 32,  # 32 = padding stylesheet (8×2) + marges Qt internes

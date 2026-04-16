@@ -1386,5 +1386,22 @@
     "banner_message": "chu' paq'yav' tu'lu': {latest}",
     "menu_update_available": "chu' De' ({latest})",
     "retry": "nIteb ghItlhqa'"
+  },
+  "nfo": {
+    "window_title": "NFO-qawHaq chenmoH",
+    "window_title_edit": "NFO-qawHaq tISaH",
+    "filename_label": "qawHaq pong",
+    "content_label": "QIn",
+    "btn_create": "NFO chenmoH",
+    "btn_save": "choq",
+    "btn_clear": "teq",
+    "menu_item": "NFO-qawHaq chenmoH",
+    "tooltip": "NFO-qawHaq chenmoH",
+    "success_title": "NFO-qawHaq chenmoHlu'pu'",
+    "success_message": "{filename} qawHaq chenmoHlu'pu'.",
+    "error_title": "Qagh",
+    "error_empty_name": "qawHaq pong yInob.",
+    "error_write": "qawHaq mughmeH qoj Sutlh:\n{error}",
+    "error_duplicate": "{filename} ponglIj qawHaq mosaicDaq taH."
   }
 }

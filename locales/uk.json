@@ -1386,5 +1386,22 @@
     "banner_message": "Доступна нова версія: {latest}",
     "menu_update_available": "Доступне оновлення ({latest})",
     "retry": "Спробувати ще раз"
+  },
+  "nfo": {
+    "window_title": "Створити файл NFO",
+    "window_title_edit": "Редагувати файл NFO",
+    "filename_label": "Ім'я файлу",
+    "content_label": "Вміст",
+    "btn_create": "Створити NFO",
+    "btn_save": "Зберегти",
+    "btn_clear": "Очистити",
+    "menu_item": "Створити файл NFO",
+    "tooltip": "Створити файл NFO",
+    "success_title": "Файл NFO створено",
+    "success_message": "Файл {filename} було створено.",
+    "error_title": "Помилка",
+    "error_empty_name": "Будь ласка, введіть ім'я файлу.",
+    "error_write": "Неможливо записати файл:\n{error}",
+    "error_duplicate": "Файл з іменем {filename} вже існує в мозаїці."
   }
 }

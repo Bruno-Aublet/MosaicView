@@ -1386,5 +1386,22 @@
     "banner_message": "Versiune nouă disponibilă: {latest}",
     "menu_update_available": "Actualizare disponibilă ({latest})",
     "retry": "Reîncercați"
+  },
+  "nfo": {
+    "window_title": "Creare fișier NFO",
+    "window_title_edit": "Editare fișier NFO",
+    "filename_label": "Nume fișier",
+    "content_label": "Conținut",
+    "btn_create": "Creare NFO",
+    "btn_save": "Salvare",
+    "btn_clear": "Golire",
+    "menu_item": "Creare fișier NFO",
+    "tooltip": "Creare fișier NFO",
+    "success_title": "Fișier NFO creat",
+    "success_message": "Fișierul {filename} a fost creat.",
+    "error_title": "Eroare",
+    "error_empty_name": "Introduceți un nume de fișier.",
+    "error_write": "Nu se poate scrie fișierul:\n{error}",
+    "error_duplicate": "Un fișier numit {filename} există deja în mozaic."
   }
 }

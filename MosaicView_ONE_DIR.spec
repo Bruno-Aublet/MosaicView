@@ -10,6 +10,7 @@ datas = [
     ('locales', 'locales'),
     ('fonts', 'fonts'),
     ('LICENSE', '.'),
+    ('CHANGELOG.md', '.'),
     ('icons/MosaicView.ico', 'icons'),
     ('unrar/UnRAR.exe', 'unrar'),
     ('unrar/license.txt', 'unrar'),

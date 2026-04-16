@@ -88,12 +88,13 @@ class _ConversionCompleteDialog(QDialog):
     """
 
     def __init__(self, parent, converted, target_format,
-                 selected_entries, converted_entries):
+                 selected_entries, converted_entries, on_done):
         super().__init__(parent)
         self._converted = converted
         self._target_format = target_format
         self._selected_entries = selected_entries
         self._converted_entries = converted_entries
+        self._on_done = on_done
 
         # Calcul des poids
         self._orig_size  = sum(len(e.get("bytes", b"")) for e in selected_entries)
@@ -105,7 +106,8 @@ class _ConversionCompleteDialog(QDialog):
 
         self.action = None  # None / "delete_orig" / "delete_conv"
 
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedWidth(620)
 
         layout = QVBoxLayout(self)
@@ -151,15 +153,29 @@ class _ConversionCompleteDialog(QDialog):
 
     def _on_delete(self):
         self.action = "delete_orig"
-        self.accept()
+        self._fire_done()
+        self.close()
 
     def _on_cancel_conversion(self):
         self.action = "delete_conv"
-        self.accept()
+        self._fire_done()
+        self.close()
 
     def _on_keep(self):
         self.action = None
-        self.accept()
+        self._fire_done()
+        self.close()
+
+    def _fire_done(self):
+        cb = self._on_done
+        self._on_done = None
+        if cb is not None:
+            cb(self.action)
+
+    def closeEvent(self, event):
+        # Si fermé via la croix sans avoir cliqué un bouton
+        self._fire_done()
+        super().closeEvent(event)
 
     # ── retranslate / restyle ─────────────────────────────────────────────────
 
@@ -202,26 +218,30 @@ class _ConversionCompleteDialog(QDialog):
 
 
 def show_conversion_complete_dialog(parent, converted, target_format,
-                                    selected_entries, converted_entries, callbacks):
+                                    selected_entries, converted_entries, callbacks,
+                                    on_done=None):
     """Affiche le dialogue de fin de conversion avec option de supprimer les originaux."""
     state = callbacks.get('state') or _state_module.state
 
+    def _handle_action(action):
+        if action == "delete_orig":
+            for idx in sorted(state.selected_indices, reverse=True):
+                if idx < len(state.images_data):
+                    state.images_data.pop(idx)
+            state.selected_indices.clear()
+        elif action == "delete_conv":
+            conv_ids = {id(e) for e in converted_entries}
+            state.images_data[:] = [e for e in state.images_data if id(e) not in conv_ids]
+
+        if on_done:
+            on_done(action)
+
     dialog = _ConversionCompleteDialog(
-        parent, converted, target_format, selected_entries, converted_entries
+        parent, converted, target_format, selected_entries, converted_entries, _handle_action
     )
-    dialog.exec()
-
-    if dialog.action == "delete_orig":
-        for idx in sorted(state.selected_indices, reverse=True):
-            if idx < len(state.images_data):
-                state.images_data.pop(idx)
-        state.selected_indices.clear()
-
-    elif dialog.action == "delete_conv":
-        conv_ids = {id(e) for e in converted_entries}
-        state.images_data[:] = [e for e in state.images_data if id(e) not in conv_ids]
-
-    return dialog.action  # retourne l'action pour que perform_conversion gère la suite
+    dialog.show()
+    dialog.raise_()
+    dialog.activateWindow()
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -242,7 +262,8 @@ class _QualityDialog(QDialog):
         self._quality_value = 95    # valeur courante
         self._use_custom    = False
 
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedWidth(620)
 
         layout = QVBoxLayout(self)
@@ -321,7 +342,7 @@ class _QualityDialog(QDialog):
         btn_row.addWidget(self._convert_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setFixedWidth(120)
-        self._cancel_btn.clicked.connect(self.reject)
+        self._cancel_btn.clicked.connect(self.close)
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
@@ -381,7 +402,7 @@ class _QualityDialog(QDialog):
 
     def _on_convert(self):
         quality = self._quality_value
-        self.accept()
+        self.close()
         self._callbacks['perform_conversion'](
             self._target_format, quality, self._selected_entries
         )
@@ -439,7 +460,9 @@ class _QualityDialog(QDialog):
 def show_quality_dialog(parent, target_format, selected_entries, callbacks):
     """Affiche la fenêtre de choix de qualité pour JPEG et WEBP, puis lance la conversion."""
     dialog = _QualityDialog(parent, target_format, selected_entries, callbacks)
-    dialog.exec()
+    dialog.show()
+    dialog.raise_()
+    dialog.activateWindow()
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -465,7 +488,8 @@ class _ConvertFormatDialog(QDialog):
         self._callbacks        = callbacks
         self._chosen_format    = "PNG"
 
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedSize(620, 310)
 
         layout = QVBoxLayout(self)
@@ -520,7 +544,7 @@ class _ConvertFormatDialog(QDialog):
         btn_row.addWidget(self._convert_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setFixedWidth(120)
-        self._cancel_btn.clicked.connect(self.reject)
+        self._cancel_btn.clicked.connect(self.close)
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
@@ -545,7 +569,18 @@ class _ConvertFormatDialog(QDialog):
             if rb.isChecked():
                 self._chosen_format = rb._format_val
                 break
-        self.accept()
+        target_format = self._chosen_format
+        self.close()
+
+        if target_format in ("JPEG", "WEBP"):
+            show_quality_dialog(self._center_parent, target_format,
+                                self._selected_entries, self._callbacks)
+        elif target_format == "GIF_ANIMATED":
+            self._callbacks['show_animated_gif_dialog'](self._selected_entries)
+        else:
+            # PNG, BMP, TIFF, GIF_STATIC : conversion directe
+            fmt = "GIF" if target_format == "GIF_STATIC" else target_format
+            self._callbacks['perform_conversion'](fmt, 95, self._selected_entries)
 
     # ── retranslate / restyle ─────────────────────────────────────────────────
 
@@ -623,19 +658,9 @@ def convert_selected_images(parent, callbacks):
         return
 
     dialog = _ConvertFormatDialog(parent, selected_entries, callbacks)
-    if dialog.exec() != QDialog.Accepted:
-        return
-
-    target_format = dialog._chosen_format
-
-    if target_format in ("JPEG", "WEBP"):
-        show_quality_dialog(parent, target_format, selected_entries, callbacks)
-    elif target_format == "GIF_ANIMATED":
-        callbacks['show_animated_gif_dialog'](selected_entries)
-    else:
-        # PNG, BMP, TIFF, GIF_STATIC : conversion directe
-        fmt = "GIF" if target_format == "GIF_STATIC" else target_format
-        callbacks['perform_conversion'](fmt, 95, selected_entries)
+    dialog.show()
+    dialog.raise_()
+    dialog.activateWindow()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -751,18 +776,19 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
             return
 
         # Dialogue de choix (supprimer originaux / annuler / garder tout)
-        action = show_conversion_complete_dialog(
-            parent, converted, target_format, selected_entries, inserted_entries, {
-                "state": callbacks.get('state'),
-            }
-        )
-        if action in ("delete_orig", None):
-            callbacks['render_mosaic']()
+        def _after_complete(action):
+            if action in ("delete_orig", None):
+                callbacks['render_mosaic']()
+            from modules.qt.comic_info import sync_pages_in_xml_data
+            sync_pages_in_xml_data(state)
+            callbacks['update_button_text']()
+            callbacks['save_state']()
 
-        from modules.qt.comic_info import sync_pages_in_xml_data
-        sync_pages_in_xml_data(state)
-        callbacks['update_button_text']()
-        callbacks['save_state']()
+        show_conversion_complete_dialog(
+            parent, converted, target_format, selected_entries, inserted_entries,
+            {"state": callbacks.get('state')},
+            on_done=_after_complete,
+        )
 
     def on_cancelled():
         # Le nettoyage est déjà fait dans _cancel (appelé depuis le thread UI)

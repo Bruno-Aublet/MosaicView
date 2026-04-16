@@ -1386,5 +1386,22 @@
     "banner_message": "有新版本: {latest}",
     "menu_update_available": "有更新 ({latest})",
     "retry": "重試"
+  },
+  "nfo": {
+    "window_title": "建立 NFO 檔案",
+    "window_title_edit": "編輯 NFO 檔案",
+    "filename_label": "檔案名稱",
+    "content_label": "內容",
+    "btn_create": "建立 NFO",
+    "btn_save": "儲存",
+    "btn_clear": "清除",
+    "menu_item": "建立 NFO 檔案",
+    "tooltip": "建立 NFO 檔案",
+    "success_title": "NFO 檔案已建立",
+    "success_message": "檔案 {filename} 已建立。",
+    "error_title": "錯誤",
+    "error_empty_name": "請輸入檔案名稱。",
+    "error_write": "無法寫入檔案:\n{error}",
+    "error_duplicate": "名為 {filename} 的檔案已存在於馬賽克中。"
   }
 }

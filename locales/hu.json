@@ -1386,5 +1386,22 @@
     "banner_message": "Új verzió érhető el: {latest}",
     "menu_update_available": "Frissítés elérhető ({latest})",
     "retry": "Újrapróbálás"
+  },
+  "nfo": {
+    "window_title": "NFO fájl létrehozása",
+    "window_title_edit": "NFO fájl szerkesztése",
+    "filename_label": "Fájlnév",
+    "content_label": "Tartalom",
+    "btn_create": "NFO létrehozása",
+    "btn_save": "Mentés",
+    "btn_clear": "Törlés",
+    "menu_item": "NFO fájl létrehozása",
+    "tooltip": "NFO fájl létrehozása",
+    "success_title": "NFO fájl létrehozva",
+    "success_message": "A(z) {filename} fájl létrejött.",
+    "error_title": "Hiba",
+    "error_empty_name": "Adjon meg egy fájlnevet.",
+    "error_write": "A fájl nem írható:\n{error}",
+    "error_duplicate": "A {filename} nevű fájl már létezik a mozaikban."
   }
 }

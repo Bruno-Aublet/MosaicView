@@ -1386,5 +1386,22 @@
     "banner_message": "Uus versioon saadaval: {latest}",
     "menu_update_available": "Uuendus saadaval ({latest})",
     "retry": "Proovi uuesti"
+  },
+  "nfo": {
+    "window_title": "Loo NFO-fail",
+    "window_title_edit": "Muuda NFO-faili",
+    "filename_label": "Faili nimi",
+    "content_label": "Sisu",
+    "btn_create": "Loo NFO",
+    "btn_save": "Salvesta",
+    "btn_clear": "Tühjenda",
+    "menu_item": "Loo NFO-fail",
+    "tooltip": "Loo NFO-fail",
+    "success_title": "NFO-fail loodud",
+    "success_message": "Fail {filename} loodi.",
+    "error_title": "Viga",
+    "error_empty_name": "Palun sisestage faili nimi.",
+    "error_write": "Faili kirjutamine ebaõnnestus:\n{error}",
+    "error_duplicate": "Fail nimega {filename} on mosaiigis juba olemas."
   }
 }

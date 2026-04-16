@@ -1386,5 +1386,22 @@
     "banner_message": "Phiên bản mới có sẵn: {latest}",
     "menu_update_available": "Có bản cập nhật ({latest})",
     "retry": "Thử lại"
+  },
+  "nfo": {
+    "window_title": "Tạo tệp NFO",
+    "window_title_edit": "Chỉnh sửa tệp NFO",
+    "filename_label": "Tên tệp",
+    "content_label": "Nội dung",
+    "btn_create": "Tạo NFO",
+    "btn_save": "Lưu",
+    "btn_clear": "Xóa",
+    "menu_item": "Tạo tệp NFO",
+    "tooltip": "Tạo tệp NFO",
+    "success_title": "Tệp NFO đã được tạo",
+    "success_message": "Tệp {filename} đã được tạo.",
+    "error_title": "Lỗi",
+    "error_empty_name": "Vui lòng nhập tên tệp.",
+    "error_write": "Không thể ghi tệp:\n{error}",
+    "error_duplicate": "Tệp có tên {filename} đã tồn tại trong bức khảm."
   }
 }

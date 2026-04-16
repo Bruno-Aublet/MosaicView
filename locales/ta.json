@@ -1386,5 +1386,22 @@
     "banner_message": "புதிய பதிப்பு கிடைக்கிறது: {latest}",
     "menu_update_available": "புதுப்பிப்பு கிடைக்கிறது ({latest})",
     "retry": "மீண்டும் முயற்சி செய்"
+  },
+  "nfo": {
+    "window_title": "NFO கோப்பை உருவாக்கு",
+    "window_title_edit": "NFO கோப்பை திருத்து",
+    "filename_label": "கோப்பு பெயர்",
+    "content_label": "உள்ளடக்கம்",
+    "btn_create": "NFO உருவாக்கு",
+    "btn_save": "சேமி",
+    "btn_clear": "அழி",
+    "menu_item": "NFO கோப்பை உருவாக்கு",
+    "tooltip": "NFO கோப்பை உருவாக்கு",
+    "success_title": "NFO கோப்பு உருவாக்கப்பட்டது",
+    "success_message": "{filename} கோப்பு உருவாக்கப்பட்டது.",
+    "error_title": "பிழை",
+    "error_empty_name": "கோப்பு பெயரை உள்ளிடவும்.",
+    "error_write": "கோப்பை எழுத முடியவில்லை:\n{error}",
+    "error_duplicate": "{filename} என்ற பெயரிலான கோப்பு ஏற்கனவே மொசைக்கில் உள்ளது."
   }
 }
