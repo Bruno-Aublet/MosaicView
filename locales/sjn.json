@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} tînco/tinconi dorthannen mi:",
     "icons_save_failed": "Ú-bedinnen dortha tinconi: {error}",
     "split_ui": "Gwened a phaned dou",
-    "split_ui_content": "MosaicView a allow gwelet dou archiv yn preder, tu ha tu.\n\nKlikañ war an ikon Parzañ evit digeriñ eil panel. Pep panel a zo diDependencies: gallout a rit digeriñ, kemmañ ha salvañ un archiv diwar-bouez. Al panel oberiant a zo diskouezet gant ur vord glas.\n\nEvit tremen pajennoù eus ur panel d'egile, lusket anezho ent eeun. Ma'z eo choazet meur a bajenn, mont a reont an holl a-gevret. Ar pajennoù a vez lakaet en tu ma tisklêrij ar barre ruz.\n\nKlikañ war an ikon Serriñ eil panel evit distreiñ d'ar mod panel unan.",
+    "split_ui_content": "MosaicView a allow gwelet dou archiv yn preder, tu ha tu.\n\nKlikañ war an ikon Parzañ evit digeriñ eil panel. Pep panel a zo diDependencies: gallout a rit digeriñ, kemmañ ha salvañ un archiv diwar-bouez. Al panel oberiant a zo diskouezet gant ur vord glas.\n\nEvit tremen pajennoù eus ur panel d'egile, lusket anezho ent eeun. Ma'z eo choazet meur a bajenn, mont a reont an holl a-gevret. Ar pajennoù a vez lakaet en tu ma tisklêrij ar barre ruz.\n\nKlikañ war an ikon Serriñ eil panel evit distreiñ d'ar mod panel unan.\n\nI govan i·dôr in paned iest pennas raitha. Nesta i archant dessui restad i paned vi maen-then (50/50).",
     "license_gpl": "GPL v3 Covad",
     "license_unrar": "UnRAR Taflen",
     "config_clear_clipboard": "Deri edhellen i gîl prestannen",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Edro i sant anann",
     "icon_toolbar": "Bar in glyphi",
     "icon_toolbar_content": "I lŷr ervyr a rydd mynediad cyflym i brif swyddogaethau'r rhaglen. Gallwch aildrefnu'r eiconau yn ôl eich dymuniad drwy eu llusgo'n uniongyrchol i'r lŷr. I ddewis pa eiconau i'w dangos neu eu cuddio, cliciwch ar y botwm olwyn ddanheddog ar waelod y lŷr: agorir ffenestr ffurfweddu lle gallwch symud eiconau rhwng y lŷr weithredol a'r cronfa. Defnyddiwch y botymau « + » a « − » i addasu maint yr eiconau. Cedwir y ffurfweddiad yn awtomatig.",
-    "license_7zip": "7-Zip Tolgnas"
+    "license_7zip": "7-Zip Tolgnas",
+    "nfo_editor": "Carph a gresta NFO-pherph",
+    "nfo_editor_content": "NFO-parf i parf teitho (.nfo enethren) i gabed tirhad an i archiv: hammad, cannas, nothas…\n\nCarpho NFO-parf, anno i dîr hain vi i orthad, vi i lîst parf, egor vi i lîst comhad (pent forven vi i mosaig). I amber agor ach nag i mosaig i chwest. Anno eneth a hammad: i barf carpho sui vi i mosaig, bain amman gûr egor teitho erin-lend.\n\nGresto NFO-parf iest, nesta i archant vi i mosaig. I thûl agor pre-anno eneth a hammad iest, ammen gresto. Vi ammen, i trevad nottir vi i lîst heb-no."
   },
   "misc": {
     "file_word": "bâr",

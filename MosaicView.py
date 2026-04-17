@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.1.8"
+__version__ = "1.1.9"
 
 import sys
 import os
@@ -612,11 +612,12 @@ class MainWindow(QMainWindow):
         from modules.qt.license_dialog_qt import show_full_tengwar_license_window_qt
         show_full_tengwar_license_window_qt(self)
 
-    def _show_user_guide(self):
+    def _show_user_guide(self, source_panel=None):
         from modules.qt.user_guide_qt import (
             show_user_guide, export_piqad_font, export_tengwar_fonts, save_all_icons,
         )
-        show_user_guide(self, {
+        panel = source_panel or self._active_panel
+        show_user_guide(panel, {
             "export_piqad_font":              lambda: export_piqad_font(self),
             "export_tengwar_fonts":           lambda: export_tengwar_fonts(self),
             "clear_temp_files_with_message":  self._active_panel._clear_temp_files_with_message,

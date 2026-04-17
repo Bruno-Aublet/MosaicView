@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} pictogramă/pictograme salvată/salvate în:",
     "icons_save_failed": "Nu se pot salva pictogramele: {error}",
     "split_ui": "Interfață cu două panouri",
-    "split_ui_content": "MosaicView permite afișarea simultană a două arhive, una lângă alta.\n\nFaceți clic pe pictograma Împarte pentru a deschide un al doilea panou. Fiecare panou este independent: puteți deschide, edita și salva o arhivă separat. Panoul activ este indicat printr-un chenar albastru.\n\nPentru a muta pagini dintr-un panou în altul, trageți-le direct. Dacă sunt selectate mai multe pagini, toate se mută împreună. Paginile sunt inserate la poziția indicată de bara roșie.\n\nFaceți clic pe pictograma Închide al doilea panou pentru a reveni la modul cu un singur panou.",
+    "split_ui_content": "MosaicView permite afișarea simultană a două arhive, una lângă alta.\n\nFaceți clic pe pictograma Împarte pentru a deschide un al doilea panou. Fiecare panou este independent: puteți deschide, edita și salva o arhivă separat. Panoul activ este indicat printr-un chenar albastru.\n\nPentru a muta pagini dintr-un panou în altul, trageți-le direct. Dacă sunt selectate mai multe pagini, toate se mută împreună. Paginile sunt inserate la poziția indicată de bara roșie.\n\nFaceți clic pe pictograma Închide al doilea panou pentru a reveni la modul cu un singur panou.\n\nBara de separare dintre cele două panouri poate fi trasă liber. Un dublu clic pe ea resetează panourile la dimensiuni egale (50/50).",
     "license_gpl": "Licență GPL v3",
     "license_unrar": "Licența UnRAR",
     "config_clear_clipboard": "Șterge fișierele din clipboard",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Deschide folderul temporar",
     "icon_toolbar": "Bara de pictograme",
     "icon_toolbar_content": "Bara de pictograme oferă acces rapid la funcțiile principale ale aplicației. Puteți rearanja pictogramele după cum doriți trăgându-le direct în bară. Pentru a alege ce pictograme să fie afișate sau ascunse, faceți clic pe butonul roată dințată aflat în partea de jos a barei: se deschide o fereastră de configurare unde puteți muta pictogramele între bara activă și rezervă. Folosiți butoanele « + » și « − » pentru a ajusta dimensiunea pictogramelor. Configurația este salvată automat.",
-    "license_7zip": "Licență 7-Zip"
+    "license_7zip": "Licență 7-Zip",
+    "nfo_editor": "Crearea și editarea fișierelor NFO",
+    "nfo_editor_content": "Un fișier NFO este un fișier text (cu extensia .nfo) folosit pentru a stoca informații despre arhivă: sinopsis, credite, note…\n\nPentru a crea un fișier NFO, folosiți pictograma dedicată din bara de instrumente, meniul Fișier sau meniul contextual (clic dreapta pe mozaic). Comanda este disponibilă numai când mozaicul nu este gol. Introduceți un nume și un conținut: fișierul este inserat direct în mozaic fără extragere sau salvare intermediară.\n\nPentru a edita un fișier NFO existent, faceți dublu clic pe el în mozaic. Fereastra se deschide precompletată cu numele și conținutul curent, ambele editabile. În ambele cazuri, operațiunea este înregistrată în istoricul de anulare."
   },
   "misc": {
     "file_word": "fișier",

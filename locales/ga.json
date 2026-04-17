@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} deilbhín(í) sábháilte i:",
     "icons_save_failed": "Ní féidir deilbhíní a shábháil: {error}",
     "split_ui": "Comhéadan dhá phainéal",
-    "split_ui_content": "Ligeann MosaicView duit dhá chartlann a thaispeáint ag an am céanna, taobh le taobh.\n\nCliceáil ar an deilbhín Roinn chun an dara painéal a oscailt. Tá gach painéal neamhspleách: is féidir leat cartlann a oscailt, a chur in eagar agus a shábháil ar leithligh. Taispeántar an painéal gníomhach le teorainn ghorm.\n\nChun leathanaigh a bhogadh ó phainéal amháin go ceann eile, tarraing go díreach iad. Má tá leathanaigh iolracha roghnaithe, bogann siad go léir le chéile. Cuirtear leathanaigh isteach ag an suíomh atá léirithe ag an mbarra dearg.\n\nCliceáil ar an deilbhín Dún an dara painéal chun filleadh ar mhód aon phainéil.",
+    "split_ui_content": "Ligeann MosaicView duit dhá chartlann a thaispeáint ag an am céanna, taobh le taobh.\n\nCliceáil ar an deilbhín Roinn chun an dara painéal a oscailt. Tá gach painéal neamhspleách: is féidir leat cartlann a oscailt, a chur in eagar agus a shábháil ar leithligh. Taispeántar an painéal gníomhach le teorainn ghorm.\n\nChun leathanaigh a bhogadh ó phainéal amháin go ceann eile, tarraing go díreach iad. Má tá leathanaigh iolracha roghnaithe, bogann siad go léir le chéile. Cuirtear leathanaigh isteach ag an suíomh atá léirithe ag an mbarra dearg.\n\nCliceáil ar an deilbhín Dún an dara painéal chun filleadh ar mhód aon phainéil.\n\nIs féidir an barra scartha idir an dá phainéal a tharraingt go saor. Cliceáil dhúbailte air chun na painéil a athshocrú go méid cothrom (50/50).",
     "license_gpl": "Ceadúnas GPL v3",
     "license_unrar": "Ceadúnas UnRAR",
     "config_clear_clipboard": "Glan comhaid an ghearrthaisce",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Oscail fillteán sealadach",
     "icon_toolbar": "Barra deilbhíní",
     "icon_toolbar_content": "Tugann an barra deilbhíní rochtain thapa ar phríomhfheidhmeanna an fheidhmchláir. Is féidir leat na deilbhíní a atheagrú de réir mar is mian leat trína dtarraingt díreach sa bharra. Chun a roghnú cé na deilbhíní le taispeáint nó a cheilt, cliceáil ar an gcnaipe roth fiacla ag bun an bharra: osclóidh fuinneog chumraíochta inar féidir leat deilbhíní a bhogadh idir an barra gníomhach agus an cúltaca. Úsáid na cnaipí « + » agus « − » chun méid na ndeilbhíní a choigeartú. Sábháiltear an chumraíocht go huathoibríoch.",
-    "license_7zip": "Ceadúnas 7-Zip"
+    "license_7zip": "Ceadúnas 7-Zip",
+    "nfo_editor": "Comhaid NFO a chruthú agus a chur in eagar",
+    "nfo_editor_content": "Is comhad téacs é comhad NFO (le síneadh .nfo) a úsáidtear chun faisnéis faoin gcartlann a stóráil: achoimre, creidmheasanna, nótaí…\n\nChun comhad NFO a chruthú, úsáid an deilbhín tiomnaithe sa bharra uirlisí, an roghchlár Comhad, nó an roghchlár comhthéacs (cliceáil ar dheis ar an móisáic). Níl an t-ordú ar fáil ach amháin nuair nach bhfuil an móisáic folamh. Cuir isteach ainm agus ábhar: cuirtear an comhad isteach sa mhóisáic go díreach gan asbhaint ná sábháil eatramhach.\n\nChun comhad NFO atá ann cheana a chur in eagar, déan cliceáil dúbailte air sa mhóisáic. Osclaíonn an fhuinneog réamhlíonta leis an ainm agus an t-ábhar reatha, agus is féidir an dá cheann a chur in eagar. Sa dá chás, taifeadtar an oibríocht i stair na céim ar gcúl."
   },
   "misc": {
     "file_word": "comhad",

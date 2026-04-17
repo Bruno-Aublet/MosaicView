@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikona/ikoni ssejvjat/issejvjati f':",
     "icons_save_failed": "Ma jistax jissejvja l-ikoni: {error}",
     "split_ui": "Interfaċċa b'żewġ panelli",
-    "split_ui_content": "MosaicView jippermetti li juri żewġ arkivji simultanjament, ħdejn xulxin.\n\nIkklikkja fuq l-ikona Aqsam biex tiftaħ panel ieħor. Kull panel huwa indipendenti: tista' tiftaħ, teditja u issalva arkivju separatament. Il-panel attiv hu indikat b'bordura blu.\n\nBiex tħarrek paġni minn panel għall-ieħor, iġbed direttament. Jekk ikunu magħżula paġni multipli, dawn jimxu kollha flimkien. Il-paġni jiġu mdaħħla fil-pożizzjoni indikata mill-barra ħamra.\n\nIkklikkja fuq l-ikona Agħlaq it-tieni panel biex terġa' lura għall-modalità ta' panel wieħed.",
+    "split_ui_content": "MosaicView jippermetti li juri żewġ arkivji simultanjament, ħdejn xulxin.\n\nIkklikkja fuq l-ikona Aqsam biex tiftaħ panel ieħor. Kull panel huwa indipendenti: tista' tiftaħ, teditja u issalva arkivju separatament. Il-panel attiv hu indikat b'bordura blu.\n\nBiex tħarrek paġni minn panel għall-ieħor, iġbed direttament. Jekk ikunu magħżula paġni multipli, dawn jimxu kollha flimkien. Il-paġni jiġu mdaħħla fil-pożizzjoni indikata mill-barra ħamra.\n\nIkklikkja fuq l-ikona Agħlaq it-tieni panel biex terġa' lura għall-modalità ta' panel wieħed.\n\nIl-bar tas-separatur bejn iż-żewġ panels jista' jiġi mġibed liberament. Klikk doppju fuqu jerġa' jpoġġi l-panels f'daqs ugwali (50/50).",
     "license_gpl": "Liċenzja GPL v3",
     "license_unrar": "Liċenza UnRAR",
     "config_clear_clipboard": "Neħħi fajls tal-clipboard",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Iftaħ il-folder temporanju",
     "icon_toolbar": "Barra tal-ikoni",
     "icon_toolbar_content": "Il-bar tal-ikoni jipprovdi aċċess rapidu għall-funzjonijiet ewlenin tal-applikazzjoni. Tista' terġa' tarranġa l-ikoni kif tixtieq billi tiġbidhoм direttament fil-bar. Biex tagħżel liema ikoni turi jew taħbi, ikklikkja l-buttuna tal-ġir fil-qiegħ tal-bar: tinfetaħ tieqa ta' konfigurazzjoni fejn tista' tċaqlaq l-ikoni bejn il-bar attiv u r-riserva. Uża l-buttuni « + » u « − » biex taġġusta d-daqs tal-ikoni. Il-konfigurazzjoni tinħażen awtomatikament.",
-    "license_7zip": "Liċenzja 7-Zip"
+    "license_7zip": "Liċenzja 7-Zip",
+    "nfo_editor": "Ħolqien u editjar ta' fajls NFO",
+    "nfo_editor_content": "Fajl NFO huwa fajl ta' test (bl-estensjoni .nfo) użat biex jaħżen informazzjoni dwar l-arkivju: sinopsi, krediti, noti…\n\nBiex toħloq fajl NFO, uża l-ikona ddedikata fit-taskbar, il-menu Fajl jew il-menu tal-kuntest (klikk tal-lemin fuq il-mużajk). Il-kmand huwa disponibbli biss meta l-mużajk ma jkunx vojt. Daħħal isem u kontenut: il-fajl jiġi inserit direttament fil-mużajk mingħajr estrazzjoni jew salvaġġ interim.\n\nBiex teditja fajl NFO eżistenti, klikk doppju fuqu fil-mużajk. It-tieqa tinfetaħ mimlijha minn qabel bl-isem u l-kontenut attwali, it-tnejn editjabbli. Fiż-żewġ każijiet, l-operazzjoni tiġi rreġistrata fl-istorja tal-annullament."
   },
   "misc": {
     "file_word": "fajl",

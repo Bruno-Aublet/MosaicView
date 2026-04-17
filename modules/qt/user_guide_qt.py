@@ -1,14 +1,13 @@
 """
 user_guide_qt.py — Fenêtre de mode d'emploi (version PySide6)
-Reproduit fidèlement modules/user_guide.py (tkinter).
 
-Comportement identique :
-  - Fenêtre modale centrée sur la fenêtre principale
+Comportement :
+  - Non-modale, une instance par panneau
   - Sections collapsibles (état persistant par session)
   - Scrollable avec molette souris
   - Texte sélectionnable, liens cliquables
   - Boutons d'action (exporter polices, vider fichiers temporaires, etc.)
-  - Mise à jour à la volée si rouverte après changement de langue
+  - Mise à jour à la volée sans recréation si changement de langue
 """
 
 import os
@@ -16,16 +15,14 @@ import re
 import shutil
 import tempfile
 import subprocess
-import webbrowser
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QScrollArea, QWidget, QFrame, QSizePolicy, QTextBrowser,
-    QFileDialog,
-    QApplication,
+    QFileDialog, QApplication,
 )
-from PySide6.QtCore import Qt, QUrl
-from PySide6.QtGui import QFont, QDesktopServices, QIcon
+from PySide6.QtCore import Qt, QUrl, QTimer
+from PySide6.QtGui import QDesktopServices, QIcon
 
 from modules.qt.localization import _, _wt
 from modules.qt.font_loader import resource_path, PIQAD_FONT_FILE, TENGWAR_FONT_FILES
@@ -35,17 +32,12 @@ from modules.qt.dialogs_qt import ErrorDialog
 from modules.qt.config_manager import get_config_manager
 
 
-# ── Référence globale (singleton) ─────────────────────────────────────────────
-_help_window_ref: QDialog | None = None
-_help_parent_ref = None
-_help_callbacks_ref = None
-_help_lang_handler = None  # handler connecté au signal langue (un seul à la fois)
-_help_debounce_timer = None  # QTimer pour debounce du changement de langue
-_active_child_reopen: "callable | None" = None  # fonction pour rouvrir le dialogue enfant après recréation du guide
+# ── Registre des fenêtres ouvertes (une par panneau) ─────────────────────────
+_help_windows: dict = {}  # id(panel) → _HelpDialog
+_active_child_reopen = None
 
 
 def register_child_reopen(reopen_func):
-    """Enregistre une fonction pour rouvrir le dialogue enfant après recréation du guide."""
     global _active_child_reopen
     _active_child_reopen = reopen_func
 
@@ -53,6 +45,7 @@ def register_child_reopen(reopen_func):
 def unregister_child_reopen():
     global _active_child_reopen
     _active_child_reopen = None
+
 
 # ── État collapse/expand des sections (persistant par session) ────────────────
 _section_collapsed_state: dict[int, bool] = {}
@@ -63,11 +56,6 @@ _section_collapsed_state: dict[int, bool] = {}
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class _SelectableText(QTextBrowser):
-    """
-    Texte sélectionnable en lecture seule.
-    Reproduit _make_selectable_text (tkinter).
-    Liens cliquables via anchorClicked.
-    """
     def __init__(self, text: str, parent=None):
         super().__init__(parent)
         self.setOpenExternalLinks(False)
@@ -82,7 +70,12 @@ class _SelectableText(QTextBrowser):
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.document().setDocumentMargin(0)
         self.setContentsMargins(0, 0, 0, 0)
+        self._apply_theme()
+        self.setPlainText(text)
+        self._adjust_height()
+        self.document().contentsChanged.connect(self._adjust_height)
 
+    def _apply_theme(self):
         theme = get_current_theme()
         link_color = theme.get("link", "#0066cc")
         self.setStyleSheet(
@@ -90,11 +83,11 @@ class _SelectableText(QTextBrowser):
             f"border: none; padding: 0px; }} "
             f"a {{ color: {link_color}; }}"
         )
-        font = _get_current_font(10)
-        self.setFont(font)
+        self.setFont(_get_current_font(10))
+
+    def retranslate(self, text: str):
+        self._apply_theme()
         self.setPlainText(text)
-        self._adjust_height()
-        self.document().contentsChanged.connect(self._adjust_height)
 
     def _adjust_height(self):
         doc_h = int(self.document().size().height()) + 4
@@ -105,19 +98,14 @@ class _SelectableText(QTextBrowser):
         self._adjust_height()
 
     def scrollContentsBy(self, dx, dy):
-        # Toujours maintenir le viewport en haut (le widget a hauteur fixe = tout son contenu)
         super().scrollContentsBy(dx, dy)
         self.verticalScrollBar().setValue(0)
 
     def wheelEvent(self, event):
-        # Transmet la molette au QScrollArea parent au lieu de scroller le texte
         event.ignore()
 
 
 class _LinkText(QTextBrowser):
-    """
-    Texte avec liens HTML cliquables (pour URLs, chemins cliquables).
-    """
     def __init__(self, html: str, parent=None):
         super().__init__(parent)
         self.setOpenExternalLinks(False)
@@ -132,7 +120,12 @@ class _LinkText(QTextBrowser):
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.document().setDocumentMargin(0)
         self.setContentsMargins(0, 0, 0, 0)
+        self._apply_theme()
+        self.setHtml(html)
+        self._adjust_height()
+        self.document().contentsChanged.connect(self._adjust_height)
 
+    def _apply_theme(self):
         theme = get_current_theme()
         link_color = theme.get("link", "#0066cc")
         self.setStyleSheet(
@@ -140,11 +133,11 @@ class _LinkText(QTextBrowser):
             f"border: none; padding: 0px; }} "
             f"a {{ color: {link_color}; }}"
         )
-        font = _get_current_font(10)
-        self.setFont(font)
+        self.setFont(_get_current_font(10))
+
+    def retranslate(self, html: str):
+        self._apply_theme()
         self.setHtml(html)
-        self._adjust_height()
-        self.document().contentsChanged.connect(self._adjust_height)
 
     def _on_anchor_clicked(self, url: QUrl):
         if url.isLocalFile():
@@ -168,12 +161,10 @@ class _LinkText(QTextBrowser):
         self._adjust_height()
 
     def scrollContentsBy(self, dx, dy):
-        # Toujours maintenir le viewport en haut (le widget a hauteur fixe = tout son contenu)
         super().scrollContentsBy(dx, dy)
         self.verticalScrollBar().setValue(0)
 
     def wheelEvent(self, event):
-        # Transmet la molette au QScrollArea parent au lieu de scroller le texte
         event.ignore()
 
 
@@ -196,22 +187,33 @@ def _make_action_button(parent, text: str, callback) -> QPushButton:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class _CollapsibleSection(QWidget):
-    def __init__(self, title: str, section_idx: int, parent=None):
+    def __init__(self, title_key: str, section_idx: int, parent=None):
         super().__init__(parent)
         self._idx = section_idx
+        self._title_key = title_key
         self._collapsed = _section_collapsed_state.get(section_idx, True)
-
-        theme = get_current_theme()
-        self._theme = theme
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 8, 0, 0)
         layout.setSpacing(0)
 
-        # Bouton titre
         self._btn = QPushButton()
         self._btn.setFlat(True)
         self._btn.setCursor(Qt.PointingHandCursor)
+        self._btn.clicked.connect(self._toggle)
+        layout.addWidget(self._btn)
+
+        self._content = QWidget()
+        self._content_layout = QVBoxLayout(self._content)
+        self._content_layout.setContentsMargins(0, 0, 0, 0)
+        self._content_layout.setSpacing(4)
+        layout.addWidget(self._content)
+
+        self._content.setVisible(not self._collapsed)
+        self._apply_theme()
+
+    def _apply_theme(self):
+        theme = get_current_theme()
         self._btn.setStyleSheet(
             f"QPushButton {{ background: {theme['bg']}; color: {theme['text']}; "
             f"text-align: left; padding: 4px 10px; font-weight: bold; }} "
@@ -220,30 +222,20 @@ class _CollapsibleSection(QWidget):
         font = _get_current_font(12)
         font.setBold(True)
         self._btn.setFont(font)
-        self._btn.clicked.connect(self._toggle)
-        layout.addWidget(self._btn)
+        self._update_btn_text()
 
-        # Contenu
-        self._content = QWidget()
-        content_layout = QVBoxLayout(self._content)
-        content_layout.setContentsMargins(0, 0, 0, 0)
-        content_layout.setSpacing(4)
-        self._content_layout = content_layout
-        layout.addWidget(self._content)
-
-        self._title = title
-        self._update_btn()
-        self._content.setVisible(not self._collapsed)
-
-    def _update_btn(self):
+    def _update_btn_text(self):
         arrow = "\u25ba" if self._collapsed else "\u25bc"
-        self._btn.setText(f"{arrow}  {self._title}")
+        self._btn.setText(f"{arrow}  {_(self._title_key)}")
+
+    def retranslate(self):
+        self._apply_theme()
 
     def _toggle(self):
         self._collapsed = not self._collapsed
         _section_collapsed_state[self._idx] = self._collapsed
         self._content.setVisible(not self._collapsed)
-        self._update_btn()
+        self._update_btn_text()
 
     def add_widget(self, widget: QWidget):
         self._content_layout.addWidget(widget)
@@ -254,7 +246,7 @@ class _CollapsibleSection(QWidget):
         self._content_layout.setContentsMargins(20, 0, 20, 10)
         return btn
 
-    def add_buttons_row(self, buttons: list[tuple[str, object]]) -> QWidget:
+    def add_buttons_row(self, buttons: list) -> QWidget:
         row = QWidget(self._content)
         row_layout = QHBoxLayout(row)
         row_layout.setContentsMargins(20, 0, 20, 10)
@@ -272,7 +264,6 @@ class _CollapsibleSection(QWidget):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def _show_success_dialog(parent, title: str, message: str, folder_path: str, first_file: str):
-    """Fenêtre de confirmation post-export avec lien cliquable vers le dossier."""
     dlg = QDialog(parent)
     dlg.setWindowTitle(title)
     dlg.setModal(True)
@@ -316,7 +307,6 @@ def _show_success_dialog(parent, title: str, message: str, folder_path: str, fir
     btn_ok.clicked.connect(dlg.accept)
     layout.addWidget(btn_ok, alignment=Qt.AlignHCenter)
 
-    # Centrer sur le parent
     if parent:
         pg = parent.geometry()
         dlg.move(
@@ -327,7 +317,6 @@ def _show_success_dialog(parent, title: str, message: str, folder_path: str, fir
 
 
 def export_piqad_font(parent_widget):
-    """Exporte la police pIqaD vers un fichier choisi par l'utilisateur."""
     cfg = get_config_manager()
     initial = os.path.join(cfg.get('last_open_dir', ""), PIQAD_FONT_FILE)
     save_path, _filt = QFileDialog.getSaveFileName(
@@ -360,7 +349,6 @@ def export_piqad_font(parent_widget):
 
 
 def export_tengwar_fonts(parent_widget):
-    """Exporte toutes les polices Tengwar vers un dossier choisi par l'utilisateur."""
     cfg = get_config_manager()
     initial = os.path.join(cfg.get('last_open_dir', ""), TENGWAR_FONT_FILES[0])
     save_path, _filt = QFileDialog.getSaveFileName(
@@ -400,7 +388,6 @@ def export_tengwar_fonts(parent_widget):
 
 
 def save_all_icons(parent_widget):
-    """Enregistre toutes les icônes PNG dans un dossier choisi par l'utilisateur."""
     cfg = get_config_manager()
     save_dir = QFileDialog.getExistingDirectory(
         parent_widget,
@@ -450,366 +437,511 @@ def save_all_icons(parent_widget):
 # Fenêtre principale du guide
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def show_user_guide(parent_widget, callbacks: dict):
-    """
-    Affiche la fenêtre de mode d'emploi.
+class _HelpDialog(QDialog):
 
-    Args:
-        parent_widget : QWidget parent (MainWindow)
-        callbacks     : dict avec les clés :
-            'export_piqad_font'
-            'export_tengwar_fonts'
-            'clear_temp_files_with_message'
-            'clear_recent_files'
-            'clear_config_file'
-            'clear_clipboard_files'
-            'save_all_icons'
-    """
-    global _help_window_ref, _help_parent_ref, _help_callbacks_ref
+    def __init__(self, parent_widget, callbacks: dict):
+        super().__init__(parent_widget)
+        self._parent_widget = parent_widget
+        self._callbacks = callbacks
 
-    # Singleton : si déjà ouverte, mettre au premier plan
-    if _help_window_ref is not None and _help_window_ref.isVisible():
-        _help_window_ref.raise_()
-        _help_window_ref.activateWindow()
-        return
+        self.setWindowTitle(_wt("help.title"))
+        self.resize(680, 600)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self.setWindowFlags(self.windowFlags() | Qt.Window)
 
-    _help_parent_ref   = parent_widget
-    _help_callbacks_ref = callbacks
+        ico_path = resource_path("icons/MosaicView.ico")
+        if os.path.exists(ico_path):
+            self.setWindowIcon(QIcon(ico_path))
 
-    dlg = QDialog(parent_widget)
-    _help_window_ref = dlg
-    dlg.setWindowTitle(_wt("help.title"))
-    dlg.resize(780, 600)
-    dlg.setModal(True)
+        self._build_ui()
+        self._apply_theme()
 
-    # Icône
-    ico_path = resource_path("icons/MosaicView.ico")
-    if os.path.exists(ico_path):
-        from PySide6.QtGui import QIcon
-        dlg.setWindowIcon(QIcon(ico_path))
+        # Langue
+        from modules.qt.language_signal import language_signal
+        self._lang_handler = lambda _: self._retranslate()
+        language_signal.changed.connect(self._lang_handler)
+        self.finished.connect(self._on_close)
 
-    theme = get_current_theme()
-    dlg.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+    # ── Construction de l'UI (une seule fois) ─────────────────────────────────
 
-    def on_close():
-        global _help_window_ref, _help_lang_handler
-        _help_window_ref = None
-        if _help_lang_handler is not None:
-            from modules.qt.language_signal import language_signal
-            try:
-                language_signal.changed.disconnect(_help_lang_handler)
-            except RuntimeError:
-                pass
-            _help_lang_handler = None
-        dlg.accept()
+    def _build_ui(self):
+        theme = get_current_theme()
 
-    dlg.rejected.connect(on_close)
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(10, 10, 10, 10)
+        main_layout.setSpacing(6)
 
-    # ── Layout principal ──────────────────────────────────────────────────────
-    main_layout = QVBoxLayout(dlg)
-    main_layout.setContentsMargins(10, 10, 10, 10)
-    main_layout.setSpacing(6)
+        self._scroll = QScrollArea()
+        self._scroll.setWidgetResizable(True)
+        self._scroll.setFrameShape(QFrame.NoFrame)
+        self._scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-    # Zone scrollable
-    scroll = QScrollArea()
-    scroll.setWidgetResizable(True)
-    scroll.setFrameShape(QFrame.NoFrame)
-    scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self._scroll_content = QWidget()
+        self._content_layout = QVBoxLayout(self._scroll_content)
+        self._content_layout.setContentsMargins(10, 0, 10, 10)
+        self._content_layout.setSpacing(0)
+        self._content_layout.setAlignment(Qt.AlignTop)
 
-    scroll_content = QWidget()
-    scroll_content.setStyleSheet(f"background: {theme['bg']};")
-    content_layout = QVBoxLayout(scroll_content)
-    content_layout.setContentsMargins(10, 0, 10, 10)
-    content_layout.setSpacing(0)
-    content_layout.setAlignment(Qt.AlignTop)
+        self._scroll.setWidget(self._scroll_content)
+        main_layout.addWidget(self._scroll, stretch=1)
 
-    scroll.setWidget(scroll_content)
-    main_layout.addWidget(scroll, stretch=1)
+        # Titre
+        self._title_lbl = QLabel()
+        title_font = _get_current_font(16)
+        title_font.setBold(True)
+        self._title_lbl.setFont(title_font)
+        self._title_lbl.setAlignment(Qt.AlignCenter)
+        self._content_layout.addWidget(self._title_lbl)
 
-    # ── Titre ─────────────────────────────────────────────────────────────────
-    title_lbl = QLabel(_("help.title"))
-    title_font = _get_current_font(16)
-    title_font.setBold(True)
-    title_lbl.setFont(title_font)
-    title_lbl.setAlignment(Qt.AlignCenter)
-    title_lbl.setStyleSheet(f"color: {theme['text']}; padding-bottom: 10px;")
-    content_layout.addWidget(title_lbl)
+        # Liste des sections : (title_key_or_"", content_key_or_SPECIAL)
+        self._SECTIONS = [
+            ("",                          "help.intro"),
+            ("help.open_files",           "help.open_files_content"),
+            ("help.mosaic",               "help.mosaic_content"),
+            ("help.icon_toolbar",         "help.icon_toolbar_content"),
+            ("help.manipulation",         "help.manipulation_content"),
+            ("help.renumber",             "help.renumber_content"),
+            ("help.flatten",              "help.flatten_content"),
+            ("help.viewer",               "help.viewer_content"),
+            ("help.crop",                 "help.crop_content"),
+            ("help.resize_pages",         "help.resize_pages_content"),
+            ("help.join_pages",           "help.join_pages_content"),
+            ("help.split_pages",          "help.split_pages_content"),
+            ("help.adjust_images",        "help.adjust_images_content"),
+            ("help.create_icon",          "help.create_icon_content"),
+            ("help.batch_convert",        "help.batch_convert_content"),
+            ("help.shortcuts",            "help.shortcuts_content"),
+            ("help.dark_mode",            "help.dark_mode_content"),
+            ("help.sort",                 "help.sort_content"),
+            ("help.save",                 "help.save_content"),
+            ("help.other",                "help.other_content"),
+            ("help.nfo_editor",           "help.nfo_editor_content"),
+            ("help.language",             "LANGUAGE_SECTION"),
+            ("help.config_files",         "CONFIG_SECTION"),
+            ("help.icons",                "ICONS_SECTION"),
+            ("help.split_ui",             "help.split_ui_content"),
+            ("help.license_gpl",          "LICENSE_GPL_SECTION"),
+            ("help.license_unrar",        "LICENSE_UNRAR_SECTION"),
+            ("help.license_7zip",         "LICENSE_7ZIP_SECTION"),
+            ("help.credits",              "help.credits_content"),
+        ]
 
-    # ── Contenu du guide ──────────────────────────────────────────────────────
-    guide_content = [
-        ("",                            _("help.intro")),
-        (_("help.open_files"),          _("help.open_files_content")),
-        (_("help.mosaic"),              _("help.mosaic_content")),
-        (_("help.icon_toolbar"),        _("help.icon_toolbar_content")),
-        (_("help.manipulation"),        _("help.manipulation_content")),
-        (_("help.renumber"),            _("help.renumber_content")),
-        (_("help.flatten"),             _("help.flatten_content")),
-        (_("help.viewer"),              _("help.viewer_content")),
-        (_("help.crop"),                _("help.crop_content")),
-        (_("help.resize_pages"),        _("help.resize_pages_content")),
-        (_("help.join_pages"),          _("help.join_pages_content")),
-        (_("help.split_pages"),         _("help.split_pages_content")),
-        (_("help.adjust_images"),       _("help.adjust_images_content")),
-        (_("help.create_icon"),         _("help.create_icon_content")),
-        (_("help.batch_convert"),       _("help.batch_convert_content")),
-        (_("help.shortcuts"),           _("help.shortcuts_content")),
-        (_("help.dark_mode"),           _("help.dark_mode_content")),
-        (_("help.sort"),                _("help.sort_content")),
-        (_("help.save"),                _("help.save_content")),
-        (_("help.other"),               _("help.other_content")),
-        (_("help.language"),            _("help.language_content")),
-        (_("help.config_files"),        "CONFIG_SECTION"),
-        (_("help.icons"),               "ICONS_SECTION"),
-        (_("help.split_ui"),            _("help.split_ui_content")),
-        (_("help.license_gpl"),         "LICENSE_GPL_SECTION"),
-        (_("help.license_unrar"),       "LICENSE_UNRAR_SECTION"),
-        (_("help.license_7zip"),        "LICENSE_7ZIP_SECTION"),
-        (_("help.credits"),             _("help.credits_content")),
-    ]
+        # Widgets à mettre à jour lors du retranslate
+        self._intro_widget: _SelectableText | None = None
+        self._sections: list[_CollapsibleSection] = []
+        # Par section spéciale : références aux sous-widgets
+        self._section_widgets: dict = {}  # title_key → dict de widgets
 
-    for idx, (title_text, content_text) in enumerate(guide_content):
-
-        # ── Intro : toujours visible, non collapsible ─────────────────────────
-        if not title_text:
-            w = _SelectableText(content_text)
-            w.setContentsMargins(20, 0, 20, 10)
-            content_layout.addWidget(w)
-            continue
-
-        # ── Section collapsible ───────────────────────────────────────────────
-        section = _CollapsibleSection(title_text, idx)
-        content_layout.addWidget(section)
-
-        # ── Langue ────────────────────────────────────────────────────────────
-        if title_text == _("help.language"):
-            url_piqad   = "https://github.com/dadap/pIqaD-fonts"
-            url_tengwar = "https://www.dafont.com/fr/tengwar-annatar.font"
-            full = content_text.replace("{url_piqad}", url_piqad).replace("{url_tengwar}", url_tengwar)
-
-            paragraphs = full.split("\n\n")
-            regular, fonts_parts, italic_parts = [], [], []
-            for para in paragraphs:
-                if url_piqad in para or url_tengwar in para:
-                    fonts_parts.append(para)
-                elif "Claude" in para:
-                    italic_parts.append(para)
-                else:
-                    regular.append(para)
-
-            if regular:
-                w = _SelectableText("\n\n".join(regular))
-                w.setContentsMargins(20, 0, 20, 5)
-                section.add_widget(w)
-
-            if fonts_parts:
-                text = "\n\n".join(fonts_parts)
-                # Convertit les URLs en liens HTML
-                html = _text_with_links_html(text, [url_piqad, url_tengwar])
-                lw = _LinkText(html)
-                lw.setContentsMargins(20, 0, 20, 5)
-                section.add_widget(lw)
-                section.add_buttons_row([
-                    (_("help.language_export_piqad"),   callbacks.get("export_piqad_font",   lambda: None)),
-                    (_("help.language_export_tengwar"), callbacks.get("export_tengwar_fonts", lambda: None)),
-                ])
-
-            if italic_parts:
-                w = _SelectableText("\n\n".join(italic_parts))
+        for idx, (title_key, content_key) in enumerate(self._SECTIONS):
+            if not title_key:
+                # Intro
+                w = _SelectableText(_(content_key))
                 w.setContentsMargins(20, 0, 20, 10)
-                # Italique via stylesheet
-                f = w.font()
-                f.setItalic(True)
-                w.setFont(f)
+                self._content_layout.addWidget(w)
+                self._intro_widget = (w, content_key)
+                continue
+
+            section = _CollapsibleSection(title_key, idx)
+            self._content_layout.addWidget(section)
+            self._sections.append(section)
+            sw = {}
+
+            if content_key == "LANGUAGE_SECTION":
+                sw = self._build_language_section(section)
+            elif content_key == "CONFIG_SECTION":
+                sw = self._build_config_section(section)
+            elif content_key == "ICONS_SECTION":
+                sw = self._build_icons_section(section)
+            elif content_key == "LICENSE_GPL_SECTION":
+                sw = self._build_license_section(section, "labels.license_text",
+                                                  "labels.view_full_license",
+                                                  self._open_full_gpl)
+            elif content_key == "LICENSE_UNRAR_SECTION":
+                sw = self._build_license_section(section, "labels.license_unrar_text",
+                                                  "labels.view_full_unrar_license",
+                                                  self._open_full_unrar)
+            elif content_key == "LICENSE_7ZIP_SECTION":
+                sw = self._build_license_section(section, "labels.license_7zip_text",
+                                                  "labels.view_full_7zip_license",
+                                                  self._open_full_7zip)
+            else:
+                pady = (5, 10) if title_key == "help.credits" else (0, 10)
+                w = _SelectableText(_(content_key))
+                w.setContentsMargins(20, pady[0], 20, pady[1])
                 section.add_widget(w)
+                sw = {"text": (w, content_key)}
 
-        # ── Configuration ─────────────────────────────────────────────────────
-        elif content_text == "CONFIG_SECTION":
-            temp_dir      = os.path.join(os.path.realpath(tempfile.gettempdir()), "MosaicViewTemp")
-            config_fname  = ".mosaicview_config.json"
-            config_path   = os.path.join(temp_dir, config_fname)
-            config_text   = _("help.config_files_content").replace("{temp_dir}", temp_dir)
+            self._section_widgets[title_key] = sw
 
-            def _open_explorer(path):
-                try:
-                    subprocess.Popen(["explorer", "/select,", path])
-                except Exception as e:
-                    print(f"Erreur ouverture explorateur : {e}")
+        # Bouton Fermer
+        self._close_btn = QPushButton()
+        self._close_btn.setCursor(Qt.PointingHandCursor)
+        close_font = _get_current_font(10)
+        close_font.setBold(True)
+        self._close_btn.setFont(close_font)
+        self._close_btn.clicked.connect(self.close)
+        self._content_layout.addWidget(self._close_btn, alignment=Qt.AlignHCenter)
 
-            # Liens cliquables : temp_dir → ouvre le dossier, config_fname → sélectionne le fichier
-            html = _text_with_explorer_links_html(
-                config_text,
-                [(temp_dir, temp_dir), (config_fname, config_path)],
-                _open_explorer,
-            )
-            lw = _LinkText(html)
-            lw.setContentsMargins(20, 0, 20, 5)
-            section.add_widget(lw)
+    # ── Builders de sections spéciales ────────────────────────────────────────
 
-            section.add_buttons_row([
-                (_("help.config_clear_temp"),   callbacks.get("clear_temp_files_with_message", lambda: None)),
-                (_("help.config_clear_recent"), callbacks.get("clear_recent_files",            lambda: None)),
-                (_("help.config_clear_config"), callbacks.get("clear_config_file",             lambda: None)),
+    def _build_language_section(self, section: _CollapsibleSection) -> dict:
+        url_piqad   = "https://github.com/dadap/pIqaD-fonts"
+        url_tengwar = "https://www.dafont.com/fr/tengwar-annatar.font"
+        regular_w = italic_w = fonts_w = None
+        buttons_row = None
+
+        content_text = _("help.language_content")
+        full = content_text.replace("{url_piqad}", url_piqad).replace("{url_tengwar}", url_tengwar)
+        paragraphs = full.split("\n\n")
+        regular, fonts_parts, italic_parts = [], [], []
+        for para in paragraphs:
+            if url_piqad in para or url_tengwar in para:
+                fonts_parts.append(para)
+            elif "Claude" in para:
+                italic_parts.append(para)
+            else:
+                regular.append(para)
+
+        if regular:
+            regular_w = _SelectableText("\n\n".join(regular))
+            regular_w.setContentsMargins(20, 0, 20, 5)
+            section.add_widget(regular_w)
+
+        if fonts_parts:
+            html = _text_with_links_html("\n\n".join(fonts_parts), [url_piqad, url_tengwar])
+            fonts_w = _LinkText(html)
+            fonts_w.setContentsMargins(20, 0, 20, 5)
+            section.add_widget(fonts_w)
+            buttons_row = section.add_buttons_row([
+                (_("help.language_export_piqad"),   self._callbacks.get("export_piqad_font",   lambda: None)),
+                (_("help.language_export_tengwar"), self._callbacks.get("export_tengwar_fonts", lambda: None)),
             ])
 
-            clip_note = _SelectableText(_("help.config_clipboard_note"))
-            clip_note.setContentsMargins(20, 10, 20, 0)
-            section.add_widget(clip_note)
+        if italic_parts:
+            italic_w = _SelectableText("\n\n".join(italic_parts))
+            italic_w.setContentsMargins(20, 0, 20, 10)
+            f = italic_w.font()
+            f.setItalic(True)
+            italic_w.setFont(f)
+            section.add_widget(italic_w)
 
-            section.add_button(
-                _("help.config_clear_clipboard"),
-                callbacks.get("clear_clipboard_files", lambda: None),
+        return {
+            "regular_w": regular_w,
+            "fonts_w": fonts_w,
+            "italic_w": italic_w,
+            "buttons_row": buttons_row,
+            "url_piqad": url_piqad,
+            "url_tengwar": url_tengwar,
+        }
+
+    def _build_config_section(self, section: _CollapsibleSection) -> dict:
+        temp_dir     = os.path.join(os.path.realpath(tempfile.gettempdir()), "MosaicViewTemp")
+        config_fname = ".mosaicview_config.json"
+        config_path  = os.path.join(temp_dir, config_fname)
+
+        config_text = _("help.config_files_content").replace("{temp_dir}", temp_dir)
+        html = _text_with_explorer_links_html(
+            config_text,
+            [(temp_dir, temp_dir), (config_fname, config_path)],
+            None,
+        )
+        lw = _LinkText(html)
+        lw.setContentsMargins(20, 0, 20, 5)
+        section.add_widget(lw)
+
+        btns_row = section.add_buttons_row([
+            (_("help.config_clear_temp"),   self._callbacks.get("clear_temp_files_with_message", lambda: None)),
+            (_("help.config_clear_recent"), self._callbacks.get("clear_recent_files",            lambda: None)),
+            (_("help.config_clear_config"), self._callbacks.get("clear_config_file",             lambda: None)),
+        ])
+
+        clip_note = _SelectableText(_("help.config_clipboard_note"))
+        clip_note.setContentsMargins(20, 10, 20, 0)
+        section.add_widget(clip_note)
+
+        clip_btn = section.add_button(
+            _("help.config_clear_clipboard"),
+            self._callbacks.get("clear_clipboard_files", lambda: None),
+        )
+
+        log_note = _SelectableText(_("help.config_log_note"))
+        log_note.setContentsMargins(20, 10, 20, 10)
+        section.add_widget(log_note)
+
+        return {
+            "lw": lw,
+            "btns_row": btns_row,
+            "clip_note": clip_note,
+            "clip_btn": clip_btn,
+            "log_note": log_note,
+            "temp_dir": temp_dir,
+            "config_fname": config_fname,
+            "config_path": config_path,
+        }
+
+    def _build_icons_section(self, section: _CollapsibleSection) -> dict:
+        url_icons = "https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail"
+        html = _text_with_links_html(_("help.icons_content"), [url_icons])
+        lw = _LinkText(html)
+        lw.setContentsMargins(20, 0, 20, 5)
+        section.add_widget(lw)
+        btn = section.add_button(
+            _("help.icons_save_all"),
+            self._callbacks.get("save_all_icons", lambda: None),
+        )
+        return {"lw": lw, "btn": btn, "url_icons": url_icons}
+
+    def _build_license_section(self, section, text_key, btn_key, open_func) -> dict:
+        html = _text_with_angle_bracket_links_html(_(text_key))
+        lw = _LinkText(html)
+        lw.setContentsMargins(20, 0, 20, 5)
+        section.add_widget(lw)
+
+        btn = _make_action_button(section._content, _(btn_key), open_func)
+        btn_font = btn.font()
+        btn_font.setBold(True)
+        btn.setFont(btn_font)
+        section._content_layout.addWidget(btn, alignment=Qt.AlignLeft)
+        section._content_layout.setContentsMargins(20, 0, 20, 10)
+        return {"lw": lw, "btn": btn, "text_key": text_key, "btn_key": btn_key}
+
+    # ── Callbacks licences ────────────────────────────────────────────────────
+
+    def _open_full_gpl(self):
+        from modules.qt.license_dialog_qt import show_full_license_window_qt
+        register_child_reopen(self._open_full_gpl)
+        show_full_license_window_qt(self)
+        unregister_child_reopen()
+
+    def _open_full_unrar(self):
+        from modules.qt.license_dialog_qt import show_full_unrar_license_window_qt
+        register_child_reopen(self._open_full_unrar)
+        show_full_unrar_license_window_qt(self)
+        unregister_child_reopen()
+
+    def _open_full_7zip(self):
+        from modules.qt.license_dialog_qt import show_full_7zip_license_window_qt
+        register_child_reopen(self._open_full_7zip)
+        show_full_7zip_license_window_qt(self)
+        unregister_child_reopen()
+
+    # ── Thème ─────────────────────────────────────────────────────────────────
+
+    def _apply_theme(self):
+        theme = get_current_theme()
+        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+        self._scroll_content.setStyleSheet(f"background: {theme['bg']};")
+        self._title_lbl.setStyleSheet(f"color: {theme['text']}; padding-bottom: 10px;")
+
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 5px 20px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        self._close_btn.setStyleSheet(btn_style)
+
+    # ── Retranslate (sans recréer la fenêtre) ─────────────────────────────────
+
+    def _retranslate(self):
+        self.setWindowTitle(_wt("help.title"))
+        self._apply_theme()
+
+        # Titre
+        title_font = _get_current_font(16)
+        title_font.setBold(True)
+        self._title_lbl.setFont(title_font)
+        self._title_lbl.setText(_("help.title"))
+
+        # Bouton fermer
+        close_font = _get_current_font(10)
+        close_font.setBold(True)
+        self._close_btn.setFont(close_font)
+        self._close_btn.setText(_("buttons.close"))
+
+        # Intro
+        if self._intro_widget:
+            w, key = self._intro_widget
+            w.retranslate(_(key))
+
+        # Sections
+        for section in self._sections:
+            section.retranslate()
+            title_key = section._title_key
+            sw = self._section_widgets.get(title_key, {})
+
+            if title_key == "help.language":
+                self._retranslate_language_section(sw)
+            elif title_key == "help.config_files":
+                self._retranslate_config_section(sw)
+            elif title_key == "help.icons":
+                self._retranslate_icons_section(sw)
+            elif title_key in ("help.license_gpl", "help.license_unrar", "help.license_7zip"):
+                self._retranslate_license_section(sw)
+            else:
+                if "text" in sw:
+                    w, key = sw["text"]
+                    w.retranslate(_(key))
+
+    def _retranslate_language_section(self, sw: dict):
+        url_piqad   = sw["url_piqad"]
+        url_tengwar = sw["url_tengwar"]
+        content_text = _("help.language_content")
+        full = content_text.replace("{url_piqad}", url_piqad).replace("{url_tengwar}", url_tengwar)
+        paragraphs = full.split("\n\n")
+        regular, fonts_parts, italic_parts = [], [], []
+        for para in paragraphs:
+            if url_piqad in para or url_tengwar in para:
+                fonts_parts.append(para)
+            elif "Claude" in para:
+                italic_parts.append(para)
+            else:
+                regular.append(para)
+
+        if sw.get("regular_w") and regular:
+            sw["regular_w"].retranslate("\n\n".join(regular))
+        if sw.get("fonts_w") and fonts_parts:
+            html = _text_with_links_html("\n\n".join(fonts_parts), [url_piqad, url_tengwar])
+            sw["fonts_w"].retranslate(html)
+        if sw.get("italic_w") and italic_parts:
+            sw["italic_w"].retranslate("\n\n".join(italic_parts))
+            f = sw["italic_w"].font()
+            f.setItalic(True)
+            sw["italic_w"].setFont(f)
+        # Boutons de la ligne export
+        if sw.get("buttons_row"):
+            row = sw["buttons_row"]
+            btns = [b for b in row.findChildren(QPushButton)]
+            keys = ["help.language_export_piqad", "help.language_export_tengwar"]
+            theme = get_current_theme()
+            btn_style = (
+                f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+                f"border: 1px solid #aaaaaa; padding: 3px 10px; }} "
+                f"QPushButton:hover {{ background: {theme['separator']}; }}"
             )
+            for btn, key in zip(btns, keys):
+                btn.setText(_(key))
+                btn.setFont(_get_current_font(10))
+                btn.setStyleSheet(btn_style)
 
-            log_note = _SelectableText(_("help.config_log_note"))
-            log_note.setContentsMargins(20, 10, 20, 10)
-            section.add_widget(log_note)
+    def _retranslate_config_section(self, sw: dict):
+        temp_dir     = sw["temp_dir"]
+        config_fname = sw["config_fname"]
+        config_path  = sw["config_path"]
+        config_text  = _("help.config_files_content").replace("{temp_dir}", temp_dir)
+        html = _text_with_explorer_links_html(
+            config_text,
+            [(temp_dir, temp_dir), (config_fname, config_path)],
+            None,
+        )
+        sw["lw"].retranslate(html)
+        sw["clip_note"].retranslate(_("help.config_clipboard_note"))
+        sw["log_note"].retranslate(_("help.config_log_note"))
+        # Boutons de la ligne config
+        theme = get_current_theme()
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 3px 10px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        btns = [b for b in sw["btns_row"].findChildren(QPushButton)]
+        keys = ["help.config_clear_temp", "help.config_clear_recent", "help.config_clear_config"]
+        for btn, key in zip(btns, keys):
+            btn.setText(_(key))
+            btn.setFont(_get_current_font(10))
+            btn.setStyleSheet(btn_style)
+        sw["clip_btn"].setText(_("help.config_clear_clipboard"))
+        sw["clip_btn"].setFont(_get_current_font(10))
+        sw["clip_btn"].setStyleSheet(btn_style)
 
-        # ── Icônes ────────────────────────────────────────────────────────────
-        elif content_text == "ICONS_SECTION":
-            url_icons = "https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail"
-            icons_text = _("help.icons_content")
-            html = _text_with_links_html(icons_text, [url_icons])
-            lw = _LinkText(html)
-            lw.setContentsMargins(20, 0, 20, 5)
-            section.add_widget(lw)
-            section.add_button(
-                _("help.icons_save_all"),
-                callbacks.get("save_all_icons", lambda: None),
-            )
+    def _retranslate_icons_section(self, sw: dict):
+        url_icons = sw["url_icons"]
+        html = _text_with_links_html(_("help.icons_content"), [url_icons])
+        sw["lw"].retranslate(html)
+        theme = get_current_theme()
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 3px 10px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        sw["btn"].setText(_("help.icons_save_all"))
+        sw["btn"].setFont(_get_current_font(10))
+        sw["btn"].setStyleSheet(btn_style)
 
-        # ── Licence GPL ───────────────────────────────────────────────────────
-        elif content_text == "LICENSE_GPL_SECTION":
-            license_text = _("labels.license_text")
-            html = _text_with_angle_bracket_links_html(license_text)
-            lw = _LinkText(html)
-            lw.setContentsMargins(20, 0, 20, 5)
-            section.add_widget(lw)
+    def _retranslate_license_section(self, sw: dict):
+        html = _text_with_angle_bracket_links_html(_(sw["text_key"]))
+        sw["lw"].retranslate(html)
+        theme = get_current_theme()
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 3px 10px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        btn_font = _get_current_font(10)
+        btn_font.setBold(True)
+        sw["btn"].setText(_(sw["btn_key"]))
+        sw["btn"].setFont(btn_font)
+        sw["btn"].setStyleSheet(btn_style)
 
-            def _open_full_gpl():
-                from modules.qt.license_dialog_qt import show_full_license_window_qt
-                register_child_reopen(_open_full_gpl)
-                show_full_license_window_qt(dlg)
-                unregister_child_reopen()
+    # ── Centrage à l'affichage ────────────────────────────────────────────────
 
-            btn = _make_action_button(section._content, _("labels.view_full_license"), _open_full_gpl)
-            btn_font = btn.font()
-            btn_font.setBold(True)
-            btn.setFont(btn_font)
-            section._content_layout.addWidget(btn, alignment=Qt.AlignLeft)
-            section._content_layout.setContentsMargins(20, 0, 20, 10)
+    def showEvent(self, event):
+        super().showEvent(event)
+        if not event.spontaneous():
+            QTimer.singleShot(0, self._center_on_parent)
 
-        # ── Licence UnRAR ──────────────────────────────────────────────────────
-        elif content_text == "LICENSE_UNRAR_SECTION":
-            unrar_text = _("labels.license_unrar_text")
-            html = _text_with_angle_bracket_links_html(unrar_text)
-            lw = _LinkText(html)
-            lw.setContentsMargins(20, 0, 20, 5)
-            section.add_widget(lw)
+    def _center_on_parent(self):
+        p = self._parent_widget
+        if p is None:
+            return
+        from PySide6.QtCore import QPoint
+        top_left = p.mapToGlobal(QPoint(0, 0))
+        x = top_left.x() + (p.width()  - self.width())  // 2
+        y = top_left.y() + (p.height() - self.height()) // 2
+        screen = QApplication.screenAt(top_left)
+        if screen:
+            sg = screen.availableGeometry()
+            x = max(sg.x(), min(x, sg.x() + sg.width()  - self.width()))
+            y = max(sg.y(), min(y, sg.y() + sg.height() - self.height()))
+        self.move(x, y)
 
-            def _open_full_unrar():
-                from modules.qt.license_dialog_qt import show_full_unrar_license_window_qt
-                register_child_reopen(_open_full_unrar)
-                show_full_unrar_license_window_qt(dlg)
-                unregister_child_reopen()
+    # ── Nettoyage ─────────────────────────────────────────────────────────────
 
-            btn = _make_action_button(section._content, _("labels.view_full_unrar_license"), _open_full_unrar)
-            btn_font2 = btn.font()
-            btn_font2.setBold(True)
-            btn.setFont(btn_font2)
-            section._content_layout.addWidget(btn, alignment=Qt.AlignLeft)
-            section._content_layout.setContentsMargins(20, 0, 20, 10)
-
-        # ── Licence 7-Zip ──────────────────────────────────────────────────────
-        elif content_text == "LICENSE_7ZIP_SECTION":
-            sevenzip_text = _("labels.license_7zip_text")
-            html = _text_with_angle_bracket_links_html(sevenzip_text)
-            lw = _LinkText(html)
-            lw.setContentsMargins(20, 0, 20, 5)
-            section.add_widget(lw)
-
-            def _open_full_7zip():
-                from modules.qt.license_dialog_qt import show_full_7zip_license_window_qt
-                register_child_reopen(_open_full_7zip)
-                show_full_7zip_license_window_qt(dlg)
-                unregister_child_reopen()
-
-            btn = _make_action_button(section._content, _("labels.view_full_7zip_license"), _open_full_7zip)
-            btn_font3 = btn.font()
-            btn_font3.setBold(True)
-            btn.setFont(btn_font3)
-            section._content_layout.addWidget(btn, alignment=Qt.AlignLeft)
-            section._content_layout.setContentsMargins(20, 0, 20, 10)
-
-        # ── Sections standard ─────────────────────────────────────────────────
-        else:
-            pady = (5, 10) if title_text == _("help.credits") else (0, 10)
-            w = _SelectableText(content_text)
-            w.setContentsMargins(20, pady[0], 20, pady[1])
-            section.add_widget(w)
-
-    # ── Bouton Fermer ─────────────────────────────────────────────────────────
-    close_btn = QPushButton(_("buttons.close"))
-    close_btn.setCursor(Qt.PointingHandCursor)
-    close_font = _get_current_font(10)
-    close_font.setBold(True)
-    close_btn.setFont(close_font)
-    close_btn.setStyleSheet(
-        f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
-        f"border: 1px solid #aaaaaa; padding: 5px 20px; }} "
-        f"QPushButton:hover {{ background: {theme['separator']}; }}"
-    )
-    close_btn.clicked.connect(on_close)
-    content_layout.addWidget(close_btn, alignment=Qt.AlignHCenter)
-
-    # ── Centrage sur la fenêtre principale ────────────────────────────────────
-    if parent_widget:
-        pg = parent_widget.geometry()
-        x = pg.x() + (pg.width()  - dlg.width())  // 2
-        y = pg.y() + (pg.height() - dlg.height()) // 2
-        dlg.move(max(x, 0), max(y, 0))
-
-    # Mise à jour à la volée lors d'un changement de langue (un seul handler à la fois)
-    global _help_lang_handler, _help_debounce_timer
-    from modules.qt.language_signal import language_signal
-    if _help_lang_handler is not None:
+    def _on_close(self):
+        panel_key = id(self._parent_widget)
+        _help_windows.pop(panel_key, None)
+        from modules.qt.language_signal import language_signal
         try:
-            language_signal.changed.disconnect(_help_lang_handler)
+            language_signal.changed.disconnect(self._lang_handler)
         except RuntimeError:
             pass
-    if _help_debounce_timer is None:
-        from PySide6.QtCore import QTimer
-        _help_debounce_timer = QTimer()
-        _help_debounce_timer.setSingleShot(True)
-        _help_debounce_timer.timeout.connect(
-            lambda: update_help_window_if_open(lambda: show_user_guide(_help_parent_ref, _help_callbacks_ref))
-        )
-    def _on_lang_changed(lang_code):
-        _help_debounce_timer.start(150)
-    _help_lang_handler = _on_lang_changed
-    language_signal.changed.connect(_help_lang_handler)
-
-    dlg.show()
 
 
-def update_help_window_if_open(reopen_func):
-    """Met à jour la fenêtre d'aide si elle est ouverte (changement de langue).
-    Ne recrée pas le guide si un dialogue enfant modal est actif devant lui."""
-    global _help_window_ref
-    if _help_window_ref is None or not _help_window_ref.isVisible():
+# ═══════════════════════════════════════════════════════════════════════════════
+# Point d'entrée public
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def show_user_guide(parent_widget, callbacks: dict):
+    panel_key = id(parent_widget)
+
+    entry = _help_windows.get(panel_key)
+    if entry is not None and entry.isVisible():
+        entry.raise_()
+        entry.activateWindow()
         return
-    # Si un dialogue modal enfant est ouvert : le fermer, recréer le guide, puis le rouvrir
-    active = QApplication.activeModalWidget()
-    if active is not None and active is not _help_window_ref:
-        active.close()
-    geom = _help_window_ref.geometry()
-    _help_window_ref.close()
-    _help_window_ref = None
-    reopen_func()
-    if _help_window_ref is not None and _help_window_ref.isVisible():
-        _help_window_ref.setGeometry(geom)
-    # Rouvrir le dialogue enfant par-dessus si enregistré
-    if _active_child_reopen is not None:
-        _active_child_reopen()
+
+    dlg = _HelpDialog(parent_widget, callbacks)
+    _help_windows[panel_key] = dlg
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
+
+
+def update_help_window_if_open(reopen_func=None):
+    """Maintenu pour compatibilité — met à jour toutes les fenêtres ouvertes."""
+    for dlg in list(_help_windows.values()):
+        if dlg.isVisible():
+            dlg._retranslate()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -821,15 +953,13 @@ def _escape_html(text: str) -> str:
     return html.escape(text).replace("\n", "<br>")
 
 
-def _text_with_links_html(text: str, urls: list[str]) -> str:
-    """Convertit un texte brut en HTML avec les URLs rendues cliquables."""
+def _text_with_links_html(text: str, urls: list) -> str:
     import html as _html
     theme = get_current_theme()
     link_color = theme.get("link", "#0066cc")
 
     result = []
     pos = 0
-    # Trouve chaque URL dans l'ordre d'apparition
     pending = [(text.find(u, 0), u) for u in urls if text.find(u, 0) != -1]
     pending.sort()
 
@@ -845,7 +975,6 @@ def _text_with_links_html(text: str, urls: list[str]) -> str:
 
 
 def _text_with_angle_bracket_links_html(text: str) -> str:
-    """Convertit <https://...> en liens cliquables HTML."""
     import html as _html
     theme = get_current_theme()
     link_color = theme.get("link", "#0066cc")
@@ -855,21 +984,10 @@ def _text_with_angle_bracket_links_html(text: str) -> str:
         return f'<a href="{_html.escape(url)}" style="color:{link_color};">{_html.escape(url)}</a>'
 
     escaped = _html.escape(text).replace("\n", "<br>")
-    # Les < et > sont échappés → &lt;https://...&gt;
     return re.sub(r"&lt;(https?://[^&]+)&gt;", _replace, escaped)
 
 
-def _text_with_explorer_links_html(
-    text: str,
-    replacements: list[tuple[str, str]],
-    _open_explorer_func,
-) -> str:
-    """
-    Convertit les occurrences de textes en liens qui ouvrent l'explorateur.
-    replacements : liste de (texte_à_chercher, chemin_à_ouvrir)
-    Note : comme QTextBrowser ouvre les liens via anchorClicked, on utilise
-    un scheme custom "explorer://" — intercepté dans _LinkText via anchorClicked.
-    """
+def _text_with_explorer_links_html(text: str, replacements: list, _open_explorer_func) -> str:
     import html as _html
     theme = get_current_theme()
     link_color = theme.get("link", "#0066cc")
@@ -877,7 +995,6 @@ def _text_with_explorer_links_html(
     result = []
     pos = 0
 
-    # Tri par ordre d'apparition dans le texte
     candidates = []
     for needle, path in replacements:
         idx = text.find(needle, 0)
@@ -907,5 +1024,4 @@ def _text_with_explorer_links_html(
         pos = url_pos + len(needle)
 
     result.append(_html.escape(text[pos:]).replace("\n", "<br>"))
-    html_str = "".join(result)
-    return html_str
+    return "".join(result)

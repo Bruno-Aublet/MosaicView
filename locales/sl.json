@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikona/ikone shranjeno/shranjene v:",
     "icons_save_failed": "Ni mogoče shraniti ikon: {error}",
     "split_ui": "Vmesnik z dvema ploščama",
-    "split_ui_content": "MosaicView omogoča hkratni prikaz dveh arhivov drug ob drugem.\n\nKliknite ikono Razdeli, da odprete drugo ploščo. Vsaka plošča je neodvisna: arhiv lahko odprete, urejate in shranite ločeno. Aktivna plošča je označena z modrim robom.\n\nZa premikanje strani z ene plošče na drugo jih povlecite neposredno. Če je izbranih več strani, se vse premaknejo skupaj. Strani se vstavijo na položaj, ki ga označuje rdeča vrstica.\n\nKliknite ikono Zapri drugo ploščo, da se vrnete v način ene plošče.",
+    "split_ui_content": "MosaicView omogoča hkratni prikaz dveh arhivov drug ob drugem.\n\nKliknite ikono Razdeli, da odprete drugo ploščo. Vsaka plošča je neodvisna: arhiv lahko odprete, urejate in shranite ločeno. Aktivna plošča je označena z modrim robom.\n\nZa premikanje strani z ene plošče na drugo jih povlecite neposredno. Če je izbranih več strani, se vse premaknejo skupaj. Strani se vstavijo na položaj, ki ga označuje rdeča vrstica.\n\nKliknite ikono Zapri drugo ploščo, da se vrnete v način ene plošče.\n\nLočilno vrstico med dvema podokoma lahko prosto vlečete. Dvojni klik nanjo ponastavi podokni na enako velikost (50/50).",
     "license_gpl": "Licenca GPL v3",
     "license_unrar": "Licenca UnRAR",
     "config_clear_clipboard": "Počisti datoteke odložišča",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Odpri začasno mapo",
     "icon_toolbar": "Vrstica ikon",
     "icon_toolbar_content": "Orodna vrstica z ikonami omogoča hiter dostop do glavnih funkcij aplikacije. Ikone lahko prerazporedite po svojih željah tako, da jih povlečete neposredno v vrstico. Če želite izbrati, katere ikone se prikažejo ali skrijejo, kliknite gumb z zobniškim kolesom na dnu vrstice: odpre se konfiguracijsko okno, v katerem lahko premikate ikone med aktivno vrstico in rezervo. Z gumboma « + » in « − » prilagodite velikost ikon. Konfiguracija se shrani samodejno.",
-    "license_7zip": "Licenca 7-Zip"
+    "license_7zip": "Licenca 7-Zip",
+    "nfo_editor": "Ustvarjanje in urejanje datotek NFO",
+    "nfo_editor_content": "Datoteka NFO je besedilna datoteka (s pripono .nfo), ki se uporablja za shranjevanje informacij o arhivu: povzetek, zasluge, opombe…\n\nZa ustvarjanje datoteke NFO uporabite namensko ikono v orodni vrstici, meni Datoteka ali kontekstni meni (desni klik na mozaik). Ukaz je na voljo samo, ko mozaik ni prazen. Vnesite ime in vsebino: datoteka se vstavi neposredno v mozaik brez ekstrakcije ali vmesnega shranjevanja.\n\nZa urejanje obstoječe datoteke NFO nanjo dvokliknite v mozaiku. Okno se odpre vnaprej izpolnjeno s trenutnim imenom in vsebino, oboje je urejljivo. V obeh primerih se operacija zabeleži v zgodovino razveljavitev."
   },
   "misc": {
     "file_word": "datoteka",

@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} Del choqta'pu' tI'wI'Daq:",
     "icons_save_failed": "Del choq Qagh: {error}",
     "split_ui": "cha' ghomDu' De'wI' jIH",
-    "split_ui_content": "MosaicView chaw' cha' ghomDu' leghlaHmeH, chuqDaq.\n\nSep nIS Split nap reH cha' ghom wIv. ghom'e' wa' ghom reH: ghom wIv, ghom choH, ghom mev je. ghom HoS nap SuD nap wIv.\n\nghom ghomDu' chenmoH, baH'egh. Hoch ghomDu' wIv chaw' reH. ghomDu' vItu' Duj DoS Doq.\n\nSep nIS Close cha' ghom nap wa' ghom.",
+    "split_ui_content": "MosaicView chaw' cha' ghomDu' leghlaHmeH, chuqDaq.\n\nSep nIS Split nap reH cha' ghom wIv. ghom'e' wa' ghom reH: ghom wIv, ghom choH, ghom mev je. ghom HoS nap SuD nap wIv.\n\nghom ghomDu' chenmoH, baH'egh. Hoch ghomDu' wIv chaw' reH. ghomDu' vItu' Duj DoS Doq.\n\nSep nIS Close cha' ghom nap wa' ghom.\n\nghItlh bIng cha' mIw polmeH De'wI' mIw nIHDaq raIta'. cha' chen mIwDaq paneli tIn nIHDaq rehtë (50/50).",
     "license_gpl": "GPL v3 chut",
     "license_unrar": "UnRAR Segh",
     "config_clear_clipboard": "ghItlhmeH De tetlh teq",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "poSmoH HoS Daq",
     "icon_toolbar": "nugh mI' SeHlaw",
     "icon_toolbar_content": "Icon toolbar-Daq tIn Qu' De' lI' qach latlh jatlh. bIje'laH icon-mey reH toolbar-Daq 'ach SoH neH. icon-mey Dalegh pagh Dabel 'e' DamaS net chaw'meH, gear button toolbar-Daq bIH 'ej SoH: configuration window poSmoH, Daj icon-mey toolbar lIH je puS buS mej. « + » « − » je button-mey lo' icon-mey'e' nI' je. configuration automatically choHlu'.",
-    "license_7zip": "7-Zip chut"
+    "license_7zip": "7-Zip chut",
+    "nfo_editor": "NFO-qawHaq chenmoH 'ej tISaH",
+    "nfo_editor_content": "NFO-qawHaq 'oH ghItlh qawHaq'e' (.nfo De'wI' mIwDaj) 'ej lo'lu' archiv De' choqmeH: QIn, paq, De'mey…\n\nNFO-qawHaq chenmoHmeH, lo' tancDaq Dun tancDaj, paq-lIst, pagh comhad-lIst (moSaIq nIHDaq pagh chos). ngoQ tu'lu' neH moSaIq nampDaq 'oHbe'chugh. pong yInob 'ej QIn yInob: qawHaq coivë moSaIqDaq, chu'moHlu'be'chugh pagh choqbe'lu'.\n\nNFO-qawHaq jev tISaHmeH, moSaIqDaq chen chen. mIw poSmoH urë-carwa pong 'ej QIn, nati tISaHlaH. wa' mIwDaq je, ngoQ notta' harna-QIn-lIstDaq."
   },
   "misc": {
     "file_word": "De'",

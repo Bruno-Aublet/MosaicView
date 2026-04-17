@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikona/ikony zapisana/zapisane w:",
     "icons_save_failed": "Nie można zapisać ikon: {error}",
     "split_ui": "Interfejs z dwoma panelami",
-    "split_ui_content": "MosaicView umożliwia jednoczesne wyświetlanie dwóch archiwów obok siebie.\n\nKliknij ikonę Podziel, aby otworzyć drugi panel. Każdy panel jest niezależny: można osobno otwierać, edytować i zapisywać archiwum. Aktywny panel jest oznaczony niebieską ramką.\n\nAby przenieść strony z jednego panelu do drugiego, przeciągnij je bezpośrednio. Jeśli zaznaczono wiele stron, wszystkie przenoszą się razem. Strony są wstawiane w pozycji wskazanej przez czerwony pasek.\n\nKliknij ikonę Zamknij drugi panel, aby powrócić do trybu jednego panelu.",
+    "split_ui_content": "MosaicView umożliwia jednoczesne wyświetlanie dwóch archiwów obok siebie.\n\nKliknij ikonę Podziel, aby otworzyć drugi panel. Każdy panel jest niezależny: można osobno otwierać, edytować i zapisywać archiwum. Aktywny panel jest oznaczony niebieską ramką.\n\nAby przenieść strony z jednego panelu do drugiego, przeciągnij je bezpośrednio. Jeśli zaznaczono wiele stron, wszystkie przenoszą się razem. Strony są wstawiane w pozycji wskazanej przez czerwony pasek.\n\nKliknij ikonę Zamknij drugi panel, aby powrócić do trybu jednego panelu.\n\nPasek separatora między dwoma panelami można swobodnie przeciągać. Dwukrotne kliknięcie na nim przywraca panele do równego rozmiaru (50/50).",
     "license_gpl": "Licencja GPL v3",
     "license_unrar": "Licencja UnRAR",
     "config_clear_clipboard": "Wyczyść pliki schowka",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Otwórz folder tymczasowy",
     "icon_toolbar": "Pasek ikon",
     "icon_toolbar_content": "Pasek ikon umożliwia szybki dostęp do głównych funkcji aplikacji. Możesz zmieniać układ ikon według własnych preferencji, przeciągając je bezpośrednio na pasek. Aby wybrać, które ikony mają być wyświetlane lub ukryte, kliknij przycisk koła zębatego u dołu paska: otwiera się okno konfiguracji, w którym można przenosić ikony między aktywnym paskiem a rezerwą. Użyj przycisków « + » i « − », aby dostosować rozmiar ikon. Konfiguracja jest zapisywana automatycznie.",
-    "license_7zip": "Licencja 7-Zip"
+    "license_7zip": "Licencja 7-Zip",
+    "nfo_editor": "Tworzenie i edytowanie plików NFO",
+    "nfo_editor_content": "Plik NFO to plik tekstowy (z rozszerzeniem .nfo) używany do przechowywania informacji o archiwum: synopsis, kredyty, notatki…\n\nAby utworzyć plik NFO, użyj dedikowanej ikony na pasku narzędzi, menu Plik lub menu kontekstowego (prawy przycisk myszy na mozaice). Polecenie jest dostępne tylko wtedy, gdy mozaika nie jest pusta. Wprowadź nazwę i zawartość: plik jest wstawiany bezpośrednio do mozaiki bez wyodrębniania ani pośredniego zapisywania.\n\nAby edytować istniejący plik NFO, kliknij go dwukrotnie na mozaice. Okno otwiera się wstępnie wypełnione bieżącą nazwą i zawartością, obie są edytowalne. W obu przypadkach operacja jest rejestrowana w historii cofania."
   },
   "misc": {
     "file_word": "plik",

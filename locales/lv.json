@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikona/ikonas saglabāta/saglabātas:",
     "icons_save_failed": "Nevar saglabāt ikonas: {error}",
     "split_ui": "Divu paneļu saskarne",
-    "split_ui_content": "MosaicView ļauj vienlaicīgi parādīt divus arhīvus blakus.\n\nNoklikšķiniet uz ikonas Sadalīt, lai atvērtu otro paneli. Katrs panelis ir neatkarīgs: varat atsevišķi atvērt, rediģēt un saglabāt arhīvu. Aktīvais panelis ir norādīts ar zilu apmali.\n\nLai pārvietotu lapas no viena paneļa uz otru, velciet tās tieši. Ja ir atlasītas vairākas lapas, tās visas pārvietojas kopā. Lapas tiek ievietotas pozīcijā, ko norāda sarkanā josla.\n\nNoklikšķiniet uz ikonas Aizvērt otro paneli, lai atgrieztos viena paneļa režīmā.",
+    "split_ui_content": "MosaicView ļauj vienlaicīgi parādīt divus arhīvus blakus.\n\nNoklikšķiniet uz ikonas Sadalīt, lai atvērtu otro paneli. Katrs panelis ir neatkarīgs: varat atsevišķi atvērt, rediģēt un saglabāt arhīvu. Aktīvais panelis ir norādīts ar zilu apmali.\n\nLai pārvietotu lapas no viena paneļa uz otru, velciet tās tieši. Ja ir atlasītas vairākas lapas, tās visas pārvietojas kopā. Lapas tiek ievietotas pozīcijā, ko norāda sarkanā josla.\n\nNoklikšķiniet uz ikonas Aizvērt otro paneli, lai atgrieztos viena paneļa režīmā.\n\nAtdalītāja joslu starp diviem paneļiem var brīvi vilkt. Veicot dubultklikšķi uz tās, paneļi tiek atiestatīti uz vienādu izmēru (50/50).",
     "license_gpl": "GPL v3 licence",
     "license_unrar": "UnRAR licence",
     "config_clear_clipboard": "Notīrīt starpliktuvē saglabātos failus",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Atvērt pagaidu mapi",
     "icon_toolbar": "Ikonu josla",
     "icon_toolbar_content": "Ikonu rīkjosla nodrošina ātru piekļuvi lietojumprogrammas galvenajām funkcijām. Ikonas var pārkārtot pēc saviem ieskatiem, velkot tās tieši joslā. Lai izvēlētos, kuras ikonas rādīt vai slēpt, noklikšķiniet uz zobrata pogas joslas apakšdaļā: atveras konfigurācijas logs, kurā var pārvietot ikonas starp aktīvo joslu un rezervi. Izmantojiet pogas « + » un « − », lai pielāgotu ikonu izmēru. Konfigurācija tiek saglabāta automātiski.",
-    "license_7zip": "7-Zip licence"
+    "license_7zip": "7-Zip licence",
+    "nfo_editor": "NFO failu izveide un rediģēšana",
+    "nfo_editor_content": "NFO fails ir teksta fails (ar paplašinājumu .nfo), ko izmanto, lai glabātu informāciju par arhīvu: satura apraksts, autori, piezīmes…\n\nLai izveidotu NFO failu, izmantojiet rīkjoslā esošo ikonu, izvēlni Fails vai konteksta izvēlni (ar peles labo pogu noklikšķiniet uz mozaīkas). Komanda ir pieejama tikai tad, ja mozaīka nav tukša. Ievadiet nosaukumu un saturu: fails tiek ievietots tieši mozaīkā bez izvilkšanas vai starpposma saglabāšanas.\n\nLai rediģētu esošu NFO failu, veiciet dubultklikšķi uz tā mozaīkā. Logs atveras ar iepriekš aizpildītu pašreizējo nosaukumu un saturu, abi ir rediģējami. Abos gadījumos darbība tiek reģistrēta atsaukšanas vēsturē."
   },
   "misc": {
     "file_word": "fails",

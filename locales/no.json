@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikon(er) lagret i:",
     "icons_save_failed": "Kan ikke lagre ikoner: {error}",
     "split_ui": "To-panel grensesnitt",
-    "split_ui_content": "MosaicView gjør det mulig å vise to arkiver samtidig, side om side.\n\nKlikk på Del-ikonet for å åpne et andre panel. Hvert panel er uavhengig: du kan åpne, redigere og lagre et arkiv separat. Det aktive panelet er angitt med en blå ramme.\n\nFor å flytte sider fra ett panel til det andre, dra dem direkte. Hvis flere sider er valgt, flyttes de alle sammen. Sidene settes inn på posisjonen som er angitt av den røde linjen.\n\nKlikk på Lukk andre panel-ikonet for å gå tilbake til enkeltpanelmodus.",
+    "split_ui_content": "MosaicView gjør det mulig å vise to arkiver samtidig, side om side.\n\nKlikk på Del-ikonet for å åpne et andre panel. Hvert panel er uavhengig: du kan åpne, redigere og lagre et arkiv separat. Det aktive panelet er angitt med en blå ramme.\n\nFor å flytte sider fra ett panel til det andre, dra dem direkte. Hvis flere sider er valgt, flyttes de alle sammen. Sidene settes inn på posisjonen som er angitt av den røde linjen.\n\nKlikk på Lukk andre panel-ikonet for å gå tilbake til enkeltpanelmodus.\n\nSkillelinjen mellom de to panelene kan dras fritt. Et dobbeltklikk på den tilbakestiller panelene til lik størrelse (50/50).",
     "license_gpl": "GPL v3-lisens",
     "license_unrar": "UnRAR-lisens",
     "config_clear_clipboard": "Slett utklippstavle-filer",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Åpne midlertidig mappe",
     "icon_toolbar": "Ikonlinje",
     "icon_toolbar_content": "Ikonlinjen gir rask tilgang til programmets hovedfunksjoner. Du kan omorganisere ikonene etter eget ønske ved å dra dem direkte i linjen. For å velge hvilke ikoner som skal vises eller skjules, klikk på tannhjulknappen nederst i linjen: et konfigurasjonsvindu åpnes der du kan flytte ikoner mellom den aktive linjen og reserven. Bruk knappene « + » og « − » for å justere størrelsen på ikonene. Konfigurasjonen lagres automatisk.",
-    "license_7zip": "7-Zip-lisens"
+    "license_7zip": "7-Zip-lisens",
+    "nfo_editor": "Opprette og redigere NFO-filer",
+    "nfo_editor_content": "En NFO-fil er en tekstfil (med filendelsen .nfo) som brukes til å lagre informasjon om arkivet: synopsis, credits, notater…\n\nFor å opprette en NFO-fil, bruk det dedikerte ikonet i verktøylinjen, Fil-menyen eller kontekstmenyen (høyreklikk på mosaikken). Kommandoen er bare tilgjengelig når mosaikken ikke er tom. Skriv inn et navn og innhold: filen settes inn direkte i mosaikken uten utpakking eller mellomlagring.\n\nFor å redigere en eksisterende NFO-fil, dobbeltklikk på den i mosaikken. Vinduet åpnes forhåndsutfylt med gjeldende navn og innhold, begge redigerbare. I begge tilfeller registreres operasjonen i angrehistorikken."
   },
   "misc": {
     "file_word": "fil",

@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} kuvake(tta) tallennettu:",
     "icons_save_failed": "Kuvakkeita ei voi tallentaa: {error}",
     "split_ui": "Kaksi-paneeli käyttöliittymä",
-    "split_ui_content": "MosaicView mahdollistaa kahden arkiston näyttämisen samanaikaisesti vierekkäin.\n\nNapsauta Jaa-kuvaketta avataksesi toisen paneelin. Kukin paneeli on itsenäinen: voit avata, muokata ja tallentaa arkiston erikseen. Aktiivinen paneeli on merkitty sinisellä reunuksella.\n\nSiirtääksesi sivuja paneelista toiseen, vedä ne suoraan. Jos useita sivuja on valittu, ne siirtyvät kaikki yhdessä. Sivut lisätään punaisella palkilla osoitettuun kohtaan.\n\nNapsauta Sulje toinen paneeli -kuvaketta palataksesi yhden paneelin tilaan.",
+    "split_ui_content": "MosaicView mahdollistaa kahden arkiston näyttämisen samanaikaisesti vierekkäin.\n\nNapsauta Jaa-kuvaketta avataksesi toisen paneelin. Kukin paneeli on itsenäinen: voit avata, muokata ja tallentaa arkiston erikseen. Aktiivinen paneeli on merkitty sinisellä reunuksella.\n\nSiirtääksesi sivuja paneelista toiseen, vedä ne suoraan. Jos useita sivuja on valittu, ne siirtyvät kaikki yhdessä. Sivut lisätään punaisella palkilla osoitettuun kohtaan.\n\nNapsauta Sulje toinen paneeli -kuvaketta palataksesi yhden paneelin tilaan.\n\nKahden paneelin välistä erotuspalkkia voi vetää vapaasti. Kaksoisnapsautus sillä palauttaa paneelit tasaiseen kokoon (50/50).",
     "license_gpl": "GPL v3 -lisenssi",
     "license_unrar": "UnRAR-lisenssi",
     "config_clear_clipboard": "Tyhjenna leikepoydan tiedostot",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Avaa väliaikainen kansio",
     "icon_toolbar": "Kuvakepalkki",
     "icon_toolbar_content": "Kuvakepalkki tarjoaa nopean pääsyn sovelluksen päätoimintoihin. Voit järjestää kuvakkeet haluamallasi tavalla vetämällä niitä suoraan palkkiin. Valitaksesi, mitkä kuvakkeet näytetään tai piilotetaan, napsauta palkin alaosassa olevaa hammasrataspainiketta: avautuu asetusikkuna, jossa voit siirtää kuvakkeita aktiivisen palkin ja varannon välillä. Käytä « + »- ja « − »-painikkeita kuvakkeiden koon säätämiseen. Asetukset tallennetaan automaattisesti.",
-    "license_7zip": "7-Zip-lisenssi"
+    "license_7zip": "7-Zip-lisenssi",
+    "nfo_editor": "NFO-tiedostojen luominen ja muokkaaminen",
+    "nfo_editor_content": "NFO-tiedosto on tekstitiedosto (tunnisteella .nfo), jota käytetään arkistoa koskevien tietojen tallentamiseen: synopsis, tekijätiedot, muistiinpanot…\n\nLuo NFO-tiedosto käyttämällä työkalurivin omistettua kuvaketta, Tiedosto-valikkoa tai pikavalikoa (napsauta hiiren oikealla painikkeella mosaiikkia). Komento on käytettävissä vain, kun mosaiikki ei ole tyhjä. Syötä nimi ja sisältö: tiedosto lisätään suoraan mosaiikkiin ilman purkamista tai väliaikaista tallentamista.\n\nMuokataksesi olemassa olevaa NFO-tiedostoa kaksoisnapsauta sitä mosaiikissa. Ikkuna avautuu valmiiksi täytettynä nykyisellä nimellä ja sisällöllä, molemmat muokattavissa. Molemmissa tapauksissa toiminto tallennetaan peruutushistoriaan."
   },
   "misc": {
     "file_word": "tiedosto",

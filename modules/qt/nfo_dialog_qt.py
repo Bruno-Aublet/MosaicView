@@ -37,13 +37,14 @@ def show_nfo_dialog(parent, inject_fn, state) -> None:
     dlg.activateWindow()
 
 
-def show_nfo_edit_dialog(parent, entry: dict, edit_fn) -> None:
+def show_nfo_edit_dialog(parent, entry: dict, edit_fn, state) -> None:
     """Ouvre la fenêtre en mode édition (non-modale).
 
-    entry — entrée existante dans images_data (orig_name + bytes).
-    edit_fn(new_content: str) — appelé à la validation avec le nouveau contenu.
+    entry    — entrée existante dans images_data (orig_name + bytes).
+    edit_fn(new_filename: str, new_content: str) — appelé à la validation.
+    state    — AppState du panneau, pour vérifier les doublons.
     """
-    dlg = _NfoDialog(parent, entry=entry, edit_fn=edit_fn)
+    dlg = _NfoDialog(parent, entry=entry, edit_fn=edit_fn, state=state)
     dlg.show()
     dlg.raise_()
     dlg.activateWindow()
@@ -120,11 +121,9 @@ class _NfoDialog(QDialog):
         # ── Pré-remplissage en mode édition ────────────────────────────────────
         if self._edit_mode:
             orig = self._entry.get("orig_name", "")
-            # Affiche le nom sans l'extension dans le champ (l'ext est à droite)
             import os as _os
             base = _os.path.splitext(_os.path.basename(orig))[0]
             self._edit_filename.setText(base)
-            self._edit_filename.setReadOnly(True)
 
         # ── Label contenu ──────────────────────────────────────────────────────
         self._lbl_content = QLabel()
@@ -199,14 +198,7 @@ class _NfoDialog(QDialog):
         self._lbl_filename.setStyleSheet(_label_style(theme))
 
         self._edit_filename.setFont(font)
-        if self._edit_mode:
-            # Champ non éditable : fond légèrement différent pour l'indiquer visuellement
-            self._edit_filename.setStyleSheet(
-                f"QLineEdit {{ background: {theme['bg']}; color: {theme['text']}; "
-                f"border: 1px solid #aaaaaa; padding: 2px 6px; }}"
-            )
-        else:
-            self._edit_filename.setStyleSheet(_input_style(theme))
+        self._edit_filename.setStyleSheet(_input_style(theme))
 
         self._lbl_ext.setText(".nfo")
         self._lbl_ext.setFont(font)
@@ -277,8 +269,23 @@ class _NfoDialog(QDialog):
         content = self._text_edit.toPlainText()
 
         if self._edit_mode:
-            # Mode édition : met à jour le contenu de l'entrée existante
-            self._edit_fn(content)
+            filename = self._edit_filename.text().strip()
+            if not filename:
+                from modules.qt.dialogs_qt import ErrorDialog
+                ErrorDialog(self, _("nfo.error_title"), _("nfo.error_empty_name")).exec()
+                self._edit_filename.setFocus()
+                return
+            if not filename.lower().endswith(".nfo"):
+                filename += ".nfo"
+            # Doublon : vérifie dans toutes les entrées sauf l'entrée en cours d'édition
+            if any(e is not self._entry and e.get("orig_name", "").lower() == filename.lower()
+                   for e in self._state.images_data):
+                from modules.qt.dialogs_qt import ErrorDialog
+                ErrorDialog(self, _("nfo.error_title"),
+                            _("nfo.error_duplicate").format(filename=filename)).exec()
+                self._edit_filename.setFocus()
+                return
+            self._edit_fn(filename, content)
             self.close()
             return
 

@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} piktograma/piktogramos išsaugota/išsaugotos:",
     "icons_save_failed": "Nepavyko išsaugoti piktogramų: {error}",
     "split_ui": "Dviejų skydelių sąsaja",
-    "split_ui_content": "MosaicView leidžia vienu metu rodyti du archyvus vienas šalia kito.\n\nSpustelėkite piktogramą Padalinti, kad atidarytumėte antrą skydelį. Kiekvienas skydelis yra nepriklausomas: galite atskirai atidaryti, redaguoti ir išsaugoti archyvą. Aktyvus skydelis pažymėtas mėlynu rėmeliu.\n\nNorėdami perkelti puslapius iš vieno skydelio į kitą, vilkite juos tiesiogiai. Jei pasirinkti keli puslapiai, jie visi juda kartu. Puslapiai įterpiami ten, kur nurodo raudona juosta.\n\nSpustelėkite piktogramą Uždaryti antrą skydelį, kad grįžtumėte į vieno skydelio režimą.",
+    "split_ui_content": "MosaicView leidžia vienu metu rodyti du archyvus vienas šalia kito.\n\nSpustelėkite piktogramą Padalinti, kad atidarytumėte antrą skydelį. Kiekvienas skydelis yra nepriklausomas: galite atskirai atidaryti, redaguoti ir išsaugoti archyvą. Aktyvus skydelis pažymėtas mėlynu rėmeliu.\n\nNorėdami perkelti puslapius iš vieno skydelio į kitą, vilkite juos tiesiogiai. Jei pasirinkti keli puslapiai, jie visi juda kartu. Puslapiai įterpiami ten, kur nurodo raudona juosta.\n\nSpustelėkite piktogramą Uždaryti antrą skydelį, kad grįžtumėte į vieno skydelio režimą.\n\nSkyriklio juostą tarp dviejų sričių galima laisvai tempti. Dukart spustelėjus ant jos, sritys grąžinamos į vienodą dydį (50/50).",
     "license_gpl": "GPL v3 licencija",
     "license_unrar": "UnRAR licencija",
     "config_clear_clipboard": "Išvalyti iškarpinės failus",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Atidaryti laikiną aplanką",
     "icon_toolbar": "Piktogramų juosta",
     "icon_toolbar_content": "Piktogramų juosta suteikia greitą prieigą prie pagrindinių programos funkcijų. Piktogramas galite išdėstyti pagal savo pageidavimą jas vilkdami tiesiogiai į juostą. Norėdami pasirinkti, kurias piktogramas rodyti ar slėpti, spustelėkite krumpliaračio mygtuką juostos apačioje: atsidaro konfigūracijos langas, kuriame galite perkelti piktogramas tarp aktyviosios juostos ir atsargų. Naudokite mygtukus « + » ir « − » piktogramų dydžiui reguliuoti. Konfigūracija išsaugoma automatiškai.",
-    "license_7zip": "7-Zip licencija"
+    "license_7zip": "7-Zip licencija",
+    "nfo_editor": "NFO failų kūrimas ir redagavimas",
+    "nfo_editor_content": "NFO failas yra tekstinis failas (su plėtiniu .nfo), naudojamas archyvo informacijai saugoti: siužetas, autoriai, pastabos…\n\nNorėdami sukurti NFO failą, naudokite skirtąją piktogramą įrankių juostoje, meniu Failas arba kontekstinį meniu (dešiniuoju mygtuku spustelėkite mozaiką). Komanda galima tik tada, kai mozaika nėra tuščia. Įveskite pavadinimą ir turinį: failas įterpiamas tiesiai į mozaiką be išpakavimo ar tarpinio išsaugojimo.\n\nNorėdami redaguoti esamą NFO failą, dukart spustelėkite jį mozaikoje. Langas atsidaro iš anksto užpildytas dabartiniu pavadinimu ir turiniu, abu redaguojami. Abiem atvejais operacija užregistruojama atšaukimo istorijoje."
   },
   "misc": {
     "file_word": "failas",

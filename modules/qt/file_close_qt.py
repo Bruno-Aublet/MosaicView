@@ -15,7 +15,7 @@ Comportement de la croix de fermeture :
 import gc
 import os
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
 )
@@ -85,19 +85,12 @@ class CloseWarningDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
-        self._center_parent = parent
-
+        if parent is not None:
+            from modules.qt.dialogs_qt import _center_on_widget
+            _center_on_widget(self, parent)
         self.show()
         self.raise_()
         self.activateWindow()
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -188,19 +181,12 @@ class CloseWithoutSaveDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
-        self._center_parent = parent
-
+        if parent is not None:
+            from modules.qt.dialogs_qt import _center_on_widget
+            _center_on_widget(self, parent)
         self.show()
         self.raise_()
         self.activateWindow()
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     _BTN_STYLE = (
         "QPushButton {{ background-color: {bg}; color: #000000; font-size: 13pt;"
@@ -468,7 +454,7 @@ def close_file(parent, canvas, create_cbz_cb, apply_new_names_cb,
     def _apply_and_close():
         result = apply_new_names_cb()
         if result is not False:
-            _force()
+            QTimer.singleShot(0, _force)
 
     CloseWarningDialog(parent, state.current_file, _force, _apply_and_close)
     return False  # dialog ouvert, suite en async

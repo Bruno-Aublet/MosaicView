@@ -12,14 +12,14 @@ from modules.qt.localization import _, _wt
 def _center_on_widget(dialog, parent):
     """Centre `dialog` sur `parent` en respectant les limites de l'écran.
 
-    À appeler depuis showEvent via QTimer.singleShot(0, ...) pour laisser
-    Qt calculer la taille réelle du dialogue avant le déplacement.
+    Peut être appelé avant show() : adjustSize() force Qt à calculer la taille
+    réelle sans afficher la fenêtre.
     """
     if parent is None:
         return
+    dialog.adjustSize()
     from PySide6.QtWidgets import QApplication
     from PySide6.QtCore import QPoint
-    # mapToGlobal donne la position absolue écran (même si parent est un widget enfant)
     top_left = parent.mapToGlobal(QPoint(0, 0))
     pw = parent.width()
     ph = parent.height()

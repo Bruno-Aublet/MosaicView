@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikona/ikony uložená/uložené v:",
     "icons_save_failed": "Nie je možné uložiť ikony: {error}",
     "split_ui": "Rozhranie s dvoma panelmi",
-    "split_ui_content": "MosaicView umožňuje súčasné zobrazenie dvoch archívov vedľa seba.\n\nKliknite na ikonu Rozdeliť a otvorte druhý panel. Každý panel je nezávislý: môžete samostatne otvárať, upravovať a ukladať archív. Aktívny panel je označený modrým rámčekom.\n\nNa presunutie strán z jedného panela do druhého ich priamo pretiahnite. Ak je vybratých viacero strán, všetky sa presunú spolu. Stránky sa vložia na pozíciu označenú červenou lištou.\n\nKliknite na ikonu Zavrieť druhý panel a vráťte sa do režimu jedného panela.",
+    "split_ui_content": "MosaicView umožňuje súčasné zobrazenie dvoch archívov vedľa seba.\n\nKliknite na ikonu Rozdeliť a otvorte druhý panel. Každý panel je nezávislý: môžete samostatne otvárať, upravovať a ukladať archív. Aktívny panel je označený modrým rámčekom.\n\nNa presunutie strán z jedného panela do druhého ich priamo pretiahnite. Ak je vybratých viacero strán, všetky sa presunú spolu. Stránky sa vložia na pozíciu označenú červenou lištou.\n\nKliknite na ikonu Zavrieť druhý panel a vráťte sa do režimu jedného panela.\n\nOddeľovacia lišta medzi dvoma panelmi sa dá voľne presúvať. Dvojklik na ňu obnoví panely na rovnakú veľkosť (50/50).",
     "license_gpl": "Licencia GPL v3",
     "license_unrar": "Licencia UnRAR",
     "config_clear_clipboard": "Vymazať súbory schránky",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Otvoriť dočasný priečinok",
     "icon_toolbar": "Panel ikon",
     "icon_toolbar_content": "Panel ikon umožňuje rýchly prístup k hlavným funkciám aplikácie. Ikony môžete preskupovať podľa vlastných predstáv ich priamym presunom na panel. Ak chcete vybrať, ktoré ikony sa majú zobrazovať alebo skryť, kliknite na tlačidlo ozubeného kolieska v dolnej časti panela: otvorí sa okno konfigurácie, v ktorom môžete presúvať ikony medzi aktívnym panelom a zásobníkom. Tlačidlami « + » a « − » upravíte veľkosť ikon. Konfigurácia sa ukladá automaticky.",
-    "license_7zip": "Licencia 7-Zip"
+    "license_7zip": "Licencia 7-Zip",
+    "nfo_editor": "Vytváranie a úprava súborov NFO",
+    "nfo_editor_content": "Súbor NFO je textový súbor (s príponou .nfo) slúžiaci na uloženie informácií o archíve: synopsa, autori, poznámky…\n\nPre vytvorenie súboru NFO použite príslušnú ikonu na paneli nástrojov, ponuku Súbor alebo kontextovú ponuku (pravý klik na mozaiku). Príkaz je dostupný iba vtedy, keď mozaika nie je prázdna. Zadajte názov a obsah: súbor sa vloží priamo do mozaiky bez extrakcie alebo medzuloženia.\n\nPre úpravu existujúceho súboru NFO naň dvakrát kliknite v mozaike. Okno sa otvorí predvyplnené aktuálnym názvom a obsahom, pričom oboje je možné upraviť. V oboch prípadoch sa operácia zaznamená do histórie späť."
   },
   "misc": {
     "file_word": "súbor",

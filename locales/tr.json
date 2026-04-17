@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} simge kaydedildi:",
     "icons_save_failed": "Simgeler kaydedilemedi: {error}",
     "split_ui": "İki panelli arayüz",
-    "split_ui_content": "MosaicView, iki arşivi aynı anda yan yana görüntülemenize olanak tanır.\n\nİkinci paneli açmak için Böl simgesine tıklayın. Her panel bağımsızdır: bir arşivi ayrı ayrı açabilir, düzenleyebilir ve kaydedebilirsiniz. Aktif panel mavi bir kenarlıkla gösterilir.\n\nSayfaları bir panelden diğerine taşımak için doğrudan sürükleyin. Birden fazla sayfa seçiliyse, hepsi birlikte taşınır. Sayfalar kırmızı çubuk tarafından gösterilen konuma eklenir.\n\nTek panel moduna dönmek için İkinci paneli kapat simgesine tıklayın.",
+    "split_ui_content": "MosaicView, iki arşivi aynı anda yan yana görüntülemenize olanak tanır.\n\nİkinci paneli açmak için Böl simgesine tıklayın. Her panel bağımsızdır: bir arşivi ayrı ayrı açabilir, düzenleyebilir ve kaydedebilirsiniz. Aktif panel mavi bir kenarlıkla gösterilir.\n\nSayfaları bir panelden diğerine taşımak için doğrudan sürükleyin. Birden fazla sayfa seçiliyse, hepsi birlikte taşınır. Sayfalar kırmızı çubuk tarafından gösterilen konuma eklenir.\n\nTek panel moduna dönmek için İkinci paneli kapat simgesine tıklayın.\n\nİki panel arasındaki ayırıcı çubuk serbestçe sürüklenebilir. Üzerine çift tıklamak panelleri eşit boyuta (50/50) sıfırlar.",
     "license_gpl": "GPL v3 Lisansı",
     "license_unrar": "UnRAR Lisansı",
     "config_clear_clipboard": "Pano dosyalarını temizle",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Geçici klasörü aç",
     "icon_toolbar": "Simge araç çubuğu",
     "icon_toolbar_content": "Simge araç çubuğu, uygulamanın temel işlevlerine hızlı erişim sağlar. Simgeleri doğrudan çubuğa sürükleyerek istediğiniz gibi yeniden düzenleyebilirsiniz. Hangi simgelerin görüntüleneceğini veya gizleneceğini seçmek için çubuğun alt kısmındaki dişli çark düğmesine tıklayın: simgeleri etkin çubuk ile rezerv arasında taşıyabileceğiniz bir yapılandırma penceresi açılır. Simge boyutunu ayarlamak için « + » ve « − » düğmelerini kullanın. Yapılandırma otomatik olarak kaydedilir.",
-    "license_7zip": "7-Zip Lisansı"
+    "license_7zip": "7-Zip Lisansı",
+    "nfo_editor": "NFO dosyaları oluşturma ve düzenleme",
+    "nfo_editor_content": "NFO dosyası, arşiv hakkında bilgi depolamak için kullanılan bir metin dosyasıdır (.nfo uzantılı): özet, katkıda bulunanlar, notlar…\n\nBir NFO dosyası oluşturmak için araç çubuğundaki özel simgeyi, Dosya menüsünü veya bağlam menüsünü (mozaiğe sağ tıklayın) kullanın. Komut yalnızca mozaik boş olmadığında kullanılabilir. Bir ad ve içerik girin: dosya, çıkarma veya ara kaydetme işlemi yapılmadan doğrudan mozaiğe eklenir.\n\nMevcut bir NFO dosyasını düzenlemek için mozaikte üzerine çift tıklayın. Pencere, mevcut ad ve içerikle önceden doldurulmuş olarak açılır; ikisi de düzenlenebilir. Her iki durumda da işlem geri alma geçmişine kaydedilir."
   },
   "misc": {
     "file_word": "dosya",

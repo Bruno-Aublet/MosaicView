@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikon(er) gemt i:",
     "icons_save_failed": "Kan ikke gemme ikoner: {error}",
     "split_ui": "Grænseflade med to paneler",
-    "split_ui_content": "MosaicView giver mulighed for at vise to arkiver samtidigt side om side.\n\nKlik på ikonet Opdel for at åbne et andet panel. Hvert panel er uafhængigt: du kan åbne, redigere og gemme et arkiv separat. Det aktive panel er angivet med en blå ramme.\n\nFor at flytte sider fra et panel til et andet skal du trække dem direkte. Hvis flere sider er valgt, flyttes de alle sammen. Siderne indsættes ved den position, som den røde bjælke angiver.\n\nKlik på ikonet Luk andet panel for at vende tilbage til enkeltpaneltilstand.",
+    "split_ui_content": "MosaicView giver mulighed for at vise to arkiver samtidigt side om side.\n\nKlik på ikonet Opdel for at åbne et andet panel. Hvert panel er uafhængigt: du kan åbne, redigere og gemme et arkiv separat. Det aktive panel er angivet med en blå ramme.\n\nFor at flytte sider fra et panel til et andet skal du trække dem direkte. Hvis flere sider er valgt, flyttes de alle sammen. Siderne indsættes ved den position, som den røde bjælke angiver.\n\nKlik på ikonet Luk andet panel for at vende tilbage til enkeltpaneltilstand.\n\nSkillelinjen mellem de to paneler kan trækkes frit. Et dobbeltklik på den gendanner panelerne til lige store dele (50/50).",
     "license_gpl": "GPL v3-licens",
     "license_unrar": "UnRAR-licens",
     "config_clear_clipboard": "Ryd udklipsholderens filer",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Åbn den midlertidige mappe",
     "icon_toolbar": "Ikonlinje",
     "icon_toolbar_content": "Ikonlinjen giver hurtig adgang til programmets hovedfunktioner. Du kan omarrangere ikonerne efter eget ønske ved at trække dem direkte i linjen. For at vælge, hvilke ikoner der skal vises eller skjules, klik på tandhjulsknappen nederst i linjen: et konfigurationsvindue åbnes, hvor du kan flytte ikoner mellem den aktive linje og reserven. Brug knapperne « + » og « − » til at justere størrelsen på ikonerne. Konfigurationen gemmes automatisk.",
-    "license_7zip": "7-Zip-licens"
+    "license_7zip": "7-Zip-licens",
+    "nfo_editor": "Oprettelse og redigering af NFO-filer",
+    "nfo_editor_content": "En NFO-fil er en tekstfil (med filtypenavnet .nfo), der bruges til at gemme oplysninger om arkivet: synopsis, krediteringer, noter…\n\nFor at oprette en NFO-fil skal du bruge det dedikerede ikon i værktøjslinjen, menuen Fil eller kontekstmenuen (højreklik på mosaikken). Kommandoen er kun tilgængelig, når mosaikken ikke er tom. Angiv et navn og indhold: filen indsættes direkte i mosaikken uden udtræk eller mellemliggende lagring.\n\nFor at redigere en eksisterende NFO-fil skal du dobbeltklikke på den i mosaikken. Vinduet åbnes forudfyldt med det aktuelle navn og indhold, som begge kan redigeres. I begge tilfælde registreres handlingen i fortryd-historikken."
   },
   "misc": {
     "file_word": "fil",

@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikon disimpan dalam:",
     "icons_save_failed": "Tidak dapat menyimpan ikon: {error}",
     "split_ui": "Antara muka dua panel",
-    "split_ui_content": "MosaicView membolehkan paparan dua arkib serentak, bersebelahan.\n\nKlik ikon Pisah untuk membuka panel kedua. Setiap panel adalah bebas: anda boleh membuka, mengedit dan menyimpan arkib secara berasingan. Panel aktif ditunjukkan dengan sempadan biru.\n\nUntuk mengalihkan halaman dari satu panel ke panel lain, seret terus. Jika beberapa halaman dipilih, semuanya bergerak bersama. Halaman disisipkan pada kedudukan yang ditunjukkan oleh bar merah.\n\nKlik ikon Tutup panel kedua untuk kembali ke mod panel tunggal.",
+    "split_ui_content": "MosaicView membolehkan paparan dua arkib serentak, bersebelahan.\n\nKlik ikon Pisah untuk membuka panel kedua. Setiap panel adalah bebas: anda boleh membuka, mengedit dan menyimpan arkib secara berasingan. Panel aktif ditunjukkan dengan sempadan biru.\n\nUntuk mengalihkan halaman dari satu panel ke panel lain, seret terus. Jika beberapa halaman dipilih, semuanya bergerak bersama. Halaman disisipkan pada kedudukan yang ditunjukkan oleh bar merah.\n\nKlik ikon Tutup panel kedua untuk kembali ke mod panel tunggal.\n\nBar pemisah antara dua panel boleh diseret dengan bebas. Klik dua kali padanya untuk menetapkan semula panel kepada saiz yang sama (50/50).",
     "license_gpl": "Lesen GPL v3",
     "license_unrar": "Lesen UnRAR",
     "config_clear_clipboard": "Kosongkan fail papan keratan",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Buka folder sementara",
     "icon_toolbar": "Bar ikon",
     "icon_toolbar_content": "Bar ikon menyediakan akses pantas kepada fungsi utama aplikasi. Anda boleh menyusun semula ikon mengikut kehendak anda dengan menyeretnya terus ke bar. Untuk memilih ikon mana yang hendak dipaparkan atau disembunyikan, klik butang gear di bahagian bawah bar: tetingkap konfigurasi akan dibuka di mana anda boleh menggerakkan ikon antara bar aktif dan simpanan. Gunakan butang « + » dan « − » untuk melaraskan saiz ikon. Konfigurasi disimpan secara automatik.",
-    "license_7zip": "Lesen 7-Zip"
+    "license_7zip": "Lesen 7-Zip",
+    "nfo_editor": "Mencipta dan mengedit fail NFO",
+    "nfo_editor_content": "Fail NFO ialah fail teks (dengan sambungan .nfo) yang digunakan untuk menyimpan maklumat tentang arkib: sinopsis, kredit, nota…\n\nUntuk mencipta fail NFO, gunakan ikon khusus dalam bar alat, menu Fail atau menu konteks (klik kanan pada mosaik). Arahan ini hanya tersedia apabila mosaik tidak kosong. Masukkan nama dan kandungan: fail disisipkan terus ke dalam mosaik tanpa pengekstrakan atau penyimpanan pertengahan.\n\nUntuk mengedit fail NFO sedia ada, klik dua kali padanya dalam mosaik. Tetingkap dibuka dengan nama dan kandungan semasa yang telah diisi, kedua-duanya boleh diedit. Dalam kedua-dua kes, operasi direkodkan dalam sejarah buat asal."
   },
   "misc": {
     "file_word": "fail",

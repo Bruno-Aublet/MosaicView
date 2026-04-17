@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} icon(s) saved in:",
     "icons_save_failed": "Unable to save icons: {error}",
     "split_ui": "Two-panel interface",
-    "split_ui_content": "MosaicView allows displaying two archives simultaneously, side by side.\n\nClick the Split icon to open a second panel. Each panel is independent: you can open, edit and save an archive separately. The active panel is indicated by a blue border.\n\nTo move pages from one panel to the other, drag them directly. If multiple pages are selected, they all move together. Pages are inserted at the position indicated by the red bar.\n\nClick the Close second panel icon to return to single-panel mode.",
+    "split_ui_content": "MosaicView allows displaying two archives simultaneously, side by side.\n\nClick the Split icon to open a second panel. Each panel is independent: you can open, edit and save an archive separately. The active panel is indicated by a blue border.\n\nTo move pages from one panel to the other, drag them directly. If multiple pages are selected, they all move together. Pages are inserted at the position indicated by the red bar.\n\nClick the Close second panel icon to return to single-panel mode.\n\nThe separator bar between the two panels can be dragged freely. A double-click on it resets the panels to equal size (50/50).",
     "license_gpl": "GPL v3 License",
     "license_unrar": "UnRAR License",
     "config_clear_clipboard": "Clear clipboard files",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Open temporary folder",
     "icon_toolbar": "Icon toolbar",
     "icon_toolbar_content": "The icon toolbar provides quick access to the main functions of the application. You can rearrange the icons as you wish by dragging them directly in the toolbar. To choose which icons to show or hide, click the gear button at the bottom of the toolbar: a configuration window opens where you can move icons between the active toolbar and the reserve. Use the « + » and « − » buttons to adjust the size of the icons. The configuration is saved automatically.",
-    "license_7zip": "7-Zip License"
+    "license_7zip": "7-Zip License",
+    "nfo_editor": "Creating and editing NFO files",
+    "nfo_editor_content": "An NFO file is a text file (with the .nfo extension) used to store information about the archive: synopsis, credits, notes…\n\nTo create an NFO file, use the dedicated icon in the toolbar, the File menu, or the context menu (right-click on the mosaic). The command is only available when the mosaic is not empty. Enter a name and content: the file is inserted directly into the mosaic, with no extraction or intermediate save.\n\nTo edit an existing NFO file, double-click it in the mosaic. The window opens pre-filled with the current name and content, both of which can be edited. In both cases, the operation is recorded in the undo history."
   },
   "misc": {
     "file_word": "file",

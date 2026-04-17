@@ -1,8 +1,8 @@
 # UTF-8
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 1, 8, 0),
-    prodvers=(1, 1, 8, 0),
+    filevers=(1, 1, 9, 0),
+    prodvers=(1, 1, 9, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -18,12 +18,12 @@ VSVersionInfo(
           [
             StringStruct(u'CompanyName', u'Bruno Aublet'),
             StringStruct(u'FileDescription', u'MosaicView'),
-            StringStruct(u'FileVersion', u'1.1.8.0'),
+            StringStruct(u'FileVersion', u'1.1.9.0'),
             StringStruct(u'InternalName', u'MosaicView'),
             StringStruct(u'LegalCopyright', u'Bruno Aublet'),
             StringStruct(u'OriginalFilename', u'MosaicView.exe'),
             StringStruct(u'ProductName', u'MosaicView'),
-            StringStruct(u'ProductVersion', u'1.1.8.0'),
+            StringStruct(u'ProductVersion', u'1.1.9.0'),
           ]
         )
       ]

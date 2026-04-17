@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikona/ikone spremljeno/spremljene u:",
     "icons_save_failed": "Nije moguće spremiti ikone: {error}",
     "split_ui": "Sučelje s dva panela",
-    "split_ui_content": "MosaicView omogućuje istovremeni prikaz dva arhiva jednog pored drugog.\n\nKliknite na ikonu Podijeli da biste otvorili drugi panel. Svaki panel je neovisan: možete zasebno otvarati, uređivati i spremati arhiv. Aktivni panel označen je plavim okvirom.\n\nZa premještanje stranica iz jednog panela u drugi, povucite ih izravno. Ako je odabrano više stranica, sve se premještaju zajedno. Stranice se umeću na položaj koji označava crvena traka.\n\nKliknite na ikonu Zatvori drugi panel za povratak na način rada s jednim panelom.",
+    "split_ui_content": "MosaicView omogućuje istovremeni prikaz dva arhiva jednog pored drugog.\n\nKliknite na ikonu Podijeli da biste otvorili drugi panel. Svaki panel je neovisan: možete zasebno otvarati, uređivati i spremati arhiv. Aktivni panel označen je plavim okvirom.\n\nZa premještanje stranica iz jednog panela u drugi, povucite ih izravno. Ako je odabrano više stranica, sve se premještaju zajedno. Stranice se umeću na položaj koji označava crvena traka.\n\nKliknite na ikonu Zatvori drugi panel za povratak na način rada s jednim panelom.\n\nTraka za razdvajanje između dva panela može se slobodno povlačiti. Dvostruki klik na nju vraća panele na jednaku veličinu (50/50).",
     "license_gpl": "GPL v3 licenca",
     "license_unrar": "UnRAR licenca",
     "config_clear_clipboard": "Obriši datoteke meduspravilišta",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Otvori privremenu mapu",
     "icon_toolbar": "Alatna traka ikona",
     "icon_toolbar_content": "Alatna traka s ikonama omogućuje brz pristup glavnim funkcijama aplikacije. Ikone možete rasporediti po svojoj volji povlačenjem izravno u traku. Za odabir koje ikone prikazati ili sakriti, kliknite na gumb zupčanika na dnu trake: otvori se prozor za konfiguraciju u kojemu možete premještati ikone između aktivne trake i rezerve. Koristite gumbe « + » i « − » za podešavanje veličine ikona. Konfiguracija se sprema automatski.",
-    "license_7zip": "Licencija 7-Zip"
+    "license_7zip": "Licencija 7-Zip",
+    "nfo_editor": "Stvaranje i uređivanje NFO datoteka",
+    "nfo_editor_content": "NFO datoteka je tekstualna datoteka (s nastavkom .nfo) koja se koristi za pohranu informacija o arhivi: sažetak, zasluge, napomene…\n\nZa stvaranje NFO datoteke koristite namjensku ikonu na alatnoj traci, izbornik Datoteka ili kontekstni izbornik (desni klik na mozaik). Naredba je dostupna samo kada mozaik nije prazan. Unesite naziv i sadržaj: datoteka se umeće izravno u mozaik bez ekstrakcije ili međuspremanja.\n\nZa uređivanje postojeće NFO datoteke dvaput kliknite na nju u mozaiku. Prozor se otvara s unaprijed ispunjenim trenutnim nazivom i sadržajem, oba su urečiva. U oba slučaja operacija se bilježi u povijest poništavanja."
   },
   "misc": {
     "file_word": "datoteka",

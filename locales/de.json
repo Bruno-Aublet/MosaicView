@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} Symbol(e) gespeichert in:",
     "icons_save_failed": "Symbole können nicht gespeichert werden: {error}",
     "split_ui": "Zweifenster-Oberfläche",
-    "split_ui_content": "MosaicView ermöglicht die gleichzeitige Anzeige von zwei Archiven nebeneinander.\n\nKlicken Sie auf das Symbol Teilen, um ein zweites Fenster zu öffnen. Jedes Fenster ist unabhängig: Sie können ein Archiv separat öffnen, bearbeiten und speichern. Das aktive Fenster ist durch einen blauen Rahmen gekennzeichnet.\n\nUm Seiten von einem Fenster in das andere zu verschieben, ziehen Sie sie direkt hinüber. Wenn mehrere Seiten ausgewählt sind, werden sie alle zusammen verschoben. Die Seiten werden an der durch den roten Balken angezeigten Position eingefügt.\n\nKlicken Sie auf das Symbol Zweites Fenster schließen, um zum Einzelfenstermodus zurückzukehren.",
+    "split_ui_content": "MosaicView ermöglicht die gleichzeitige Anzeige von zwei Archiven nebeneinander.\n\nKlicken Sie auf das Symbol Teilen, um ein zweites Fenster zu öffnen. Jedes Fenster ist unabhängig: Sie können ein Archiv separat öffnen, bearbeiten und speichern. Das aktive Fenster ist durch einen blauen Rahmen gekennzeichnet.\n\nUm Seiten von einem Fenster in das andere zu verschieben, ziehen Sie sie direkt hinüber. Wenn mehrere Seiten ausgewählt sind, werden sie alle zusammen verschoben. Die Seiten werden an der durch den roten Balken angezeigten Position eingefügt.\n\nKlicken Sie auf das Symbol Zweites Fenster schließen, um zum Einzelfenstermodus zurückzukehren.\n\nDer Trennbalken zwischen den beiden Panels lässt sich frei verschieben. Ein Doppelklick darauf stellt die Panels wieder auf gleichmäßige Aufteilung (50/50) zurück.",
     "license_gpl": "GPL v3-Lizenz",
     "license_unrar": "UnRAR-Lizenz",
     "config_clear_clipboard": "Zwischenablage-Dateien loschen",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Temporären Ordner öffnen",
     "icon_toolbar": "Symbolleiste",
     "icon_toolbar_content": "Die Symbolleiste ermöglicht den schnellen Zugriff auf die Hauptfunktionen der Anwendung. Sie können die Symbole nach Belieben durch direktes Verschieben in der Leiste anordnen. Um auszuwählen, welche Symbole angezeigt oder ausgeblendet werden sollen, klicken Sie auf die Zahnrad-Schaltfläche am unteren Ende der Leiste: Es öffnet sich ein Konfigurationsfenster, in dem Sie Symbole zwischen der aktiven Leiste und dem Vorrat verschieben können. Mit den Schaltflächen « + » und « − » können Sie die Symbolgröße anpassen. Die Konfiguration wird automatisch gespeichert.",
-    "license_7zip": "7-Zip-Lizenz"
+    "license_7zip": "7-Zip-Lizenz",
+    "nfo_editor": "NFO-Dateien erstellen und bearbeiten",
+    "nfo_editor_content": "Eine NFO-Datei ist eine Textdatei (mit der Erweiterung .nfo), die zum Speichern von Informationen über das Archiv verwendet wird: Synopsis, Mitwirkende, Notizen…\n\nUm eine NFO-Datei zu erstellen, verwenden Sie das entsprechende Symbol in der Symbolleiste, das Menü Datei oder das Kontextmenü (Rechtsklick auf das Mosaik). Der Befehl ist nur verfügbar, wenn das Mosaik nicht leer ist. Geben Sie einen Namen und einen Inhalt ein: Die Datei wird direkt in das Mosaik eingefügt, ohne Extraktion oder Zwischenspeicherung.\n\nUm eine vorhandene NFO-Datei zu bearbeiten, doppelklicken Sie darauf im Mosaik. Das Fenster öffnet sich mit dem aktuellen Namen und Inhalt vorausgefüllt, beides kann bearbeitet werden. In beiden Fällen wird der Vorgang im Rückgängig-Verlauf gespeichert."
   },
   "misc": {
     "file_word": "Datei",

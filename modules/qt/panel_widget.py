@@ -538,7 +538,6 @@ class PanelWidget(QWidget):
 
     def _save_as_cbz(self):
         _qt_save_as_cbz(self, self._canvas, self._file_op_callbacks())
-        self._canvas.render_mosaic()
 
     def _save_selection_as_cbz(self):
         _qt_save_selection_as_cbz(self, self._file_op_callbacks())
@@ -548,11 +547,11 @@ class PanelWidget(QWidget):
 
     def _create_cbz_from_images(self):
         _qt_create_cbz_from_images(self, self._canvas, self._file_op_callbacks())
-        self._canvas.render_mosaic()
 
-    def _apply_new_names(self):
+    def _apply_new_names(self, skip_render=False):
         result = _qt_apply_new_names(self, self._canvas, self._file_op_callbacks())
-        self._canvas.render_mosaic()
+        if not skip_render:
+            self._canvas.render_mosaic()
         return result
 
     # ──────────────────────────────────────────────────────────────────────────
@@ -634,7 +633,7 @@ class PanelWidget(QWidget):
         self._main_window._reset_to_defaults()
 
     def _show_user_guide(self):
-        self._main_window._show_user_guide()
+        self._main_window._show_user_guide(self)
 
     def _show_license_dialog(self):
         self._main_window._show_license_dialog()
@@ -796,7 +795,7 @@ class PanelWidget(QWidget):
         return dict(
             canvas=self._canvas,
             create_cbz_cb=self._create_cbz_from_images,
-            apply_new_names_cb=self._apply_new_names,
+            apply_new_names_cb=lambda: self._apply_new_names(skip_render=True),
             refresh_title=self._refresh_title,
             refresh_toolbar=self._refresh_toolbar_states,
             refresh_tabs=lambda: (self._content_stack.setCurrentIndex(0), self._update_tabs()),
@@ -1700,17 +1699,19 @@ class PanelWidget(QWidget):
 
         st = self._state
 
-        def _edit_fn(new_content: str):
+        def _edit_fn(new_filename: str, new_content: str):
             new_bytes = new_content.encode("utf-8")
             self.save_state(force=True)
+            entry["orig_name"] = new_filename
             entry["bytes"] = new_bytes
             st.modified = True
             self.save_state(force=True)
+            self._canvas.render_mosaic()
             self._refresh_title()
             self._update_status_bar()
             self._refresh_toolbar_states()
 
-        show_nfo_edit_dialog(self, entry, _edit_fn)
+        show_nfo_edit_dialog(self, entry, _edit_fn, st)
 
     def _show_nfo_dialog(self):
         from modules.qt.nfo_dialog_qt import show_nfo_dialog

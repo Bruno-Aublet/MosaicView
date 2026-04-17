@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} icono(s) guardado(s) en:",
     "icons_save_failed": "No se pueden guardar los iconos: {error}",
     "split_ui": "Interfaz de dos paneles",
-    "split_ui_content": "MosaicView permite mostrar dos archivos simultáneamente, uno al lado del otro.\n\nHaga clic en el icono Dividir para abrir un segundo panel. Cada panel es independiente: puede abrir, editar y guardar un archivo por separado. El panel activo se indica con un borde azul.\n\nPara mover páginas de un panel a otro, arrástrelas directamente. Si hay varias páginas seleccionadas, se mueven todas juntas. Las páginas se insertan en la posición indicada por la barra roja.\n\nHaga clic en el icono Cerrar segundo panel para volver al modo de un solo panel.",
+    "split_ui_content": "MosaicView permite mostrar dos archivos simultáneamente, uno al lado del otro.\n\nHaga clic en el icono Dividir para abrir un segundo panel. Cada panel es independiente: puede abrir, editar y guardar un archivo por separado. El panel activo se indica con un borde azul.\n\nPara mover páginas de un panel a otro, arrástrelas directamente. Si hay varias páginas seleccionadas, se mueven todas juntas. Las páginas se insertan en la posición indicada por la barra roja.\n\nHaga clic en el icono Cerrar segundo panel para volver al modo de un solo panel.\n\nLa barra separadora entre los dos paneles puede arrastrarse libremente. Un doble clic sobre ella restablece los paneles a igual tamaño (50/50).",
     "license_gpl": "Licencia GPL v3",
     "license_unrar": "Licencia UnRAR",
     "config_clear_clipboard": "Borrar archivos del portapapeles",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Abrir carpeta temporal",
     "icon_toolbar": "Barra de iconos",
     "icon_toolbar_content": "La barra de iconos permite acceder rápidamente a las principales funciones de la aplicación. Puede reorganizar los iconos a su conveniencia arrastrándolos directamente en la barra. Para elegir qué iconos mostrar u ocultar, haga clic en el botón de rueda dentada situado en la parte inferior de la barra: se abre una ventana de configuración donde puede mover los iconos entre la barra activa y la reserva. Use los botones « + » y « − » para ajustar el tamaño de los iconos. La configuración se guarda automáticamente.",
-    "license_7zip": "Licencia 7-Zip"
+    "license_7zip": "Licencia 7-Zip",
+    "nfo_editor": "Creación y edición de archivos NFO",
+    "nfo_editor_content": "Un archivo NFO es un archivo de texto (con extensión .nfo) que se utiliza para almacenar información sobre el archivo: sinopsis, créditos, notas…\n\nPara crear un archivo NFO, use el icono dedicado en la barra de herramientas, el menú Archivo o el menú contextual (clic derecho en el mosaico). El comando solo está disponible cuando el mosaico no está vacío. Introduzca un nombre y contenido: el archivo se inserta directamente en el mosaico sin extracción ni guardado intermedio.\n\nPara editar un archivo NFO existente, haga doble clic sobre él en el mosaico. La ventana se abre prerrellenada con el nombre y el contenido actuales, ambos editables. En ambos casos, la operación se registra en el historial de deshacer."
   },
   "misc": {
     "file_word": "archivo",

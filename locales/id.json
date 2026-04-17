@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikon disimpan di:",
     "icons_save_failed": "Tidak dapat menyimpan ikon: {error}",
     "split_ui": "Antarmuka dua panel",
-    "split_ui_content": "MosaicView memungkinkan tampilan dua arsip secara bersamaan, berdampingan.\n\nKlik ikon Pisah untuk membuka panel kedua. Setiap panel bersifat independen: Anda dapat membuka, mengedit, dan menyimpan arsip secara terpisah. Panel aktif ditandai dengan bingkai biru.\n\nUntuk memindahkan halaman dari satu panel ke panel lain, seret langsung. Jika beberapa halaman dipilih, semuanya berpindah bersama. Halaman disisipkan pada posisi yang ditunjukkan oleh bilah merah.\n\nKlik ikon Tutup panel kedua untuk kembali ke mode panel tunggal.",
+    "split_ui_content": "MosaicView memungkinkan tampilan dua arsip secara bersamaan, berdampingan.\n\nKlik ikon Pisah untuk membuka panel kedua. Setiap panel bersifat independen: Anda dapat membuka, mengedit, dan menyimpan arsip secara terpisah. Panel aktif ditandai dengan bingkai biru.\n\nUntuk memindahkan halaman dari satu panel ke panel lain, seret langsung. Jika beberapa halaman dipilih, semuanya berpindah bersama. Halaman disisipkan pada posisi yang ditunjukkan oleh bilah merah.\n\nKlik ikon Tutup panel kedua untuk kembali ke mode panel tunggal.\n\nBilah pemisah antara dua panel dapat diseret dengan bebas. Klik ganda padanya mengatur ulang panel ke ukuran yang sama (50/50).",
     "license_gpl": "Lisensi GPL v3",
     "license_unrar": "Lisensi UnRAR",
     "config_clear_clipboard": "Hapus file clipboard",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Buka folder sementara",
     "icon_toolbar": "Bilah ikon",
     "icon_toolbar_content": "Bilah ikon memberikan akses cepat ke fungsi utama aplikasi. Anda dapat mengatur ulang ikon sesuai keinginan dengan menyeretnya langsung ke bilah. Untuk memilih ikon mana yang ditampilkan atau disembunyikan, klik tombol roda gigi di bagian bawah bilah: jendela konfigurasi akan terbuka tempat Anda dapat memindahkan ikon antara bilah aktif dan cadangan. Gunakan tombol « + » dan « − » untuk menyesuaikan ukuran ikon. Konfigurasi disimpan secara otomatis.",
-    "license_7zip": "Lisensi 7-Zip"
+    "license_7zip": "Lisensi 7-Zip",
+    "nfo_editor": "Membuat dan mengedit file NFO",
+    "nfo_editor_content": "File NFO adalah file teks (dengan ekstensi .nfo) yang digunakan untuk menyimpan informasi tentang arsip: sinopsis, kredit, catatan…\n\nUntuk membuat file NFO, gunakan ikon khusus di toolbar, menu File, atau menu konteks (klik kanan pada mosaik). Perintah ini hanya tersedia ketika mosaik tidak kosong. Masukkan nama dan konten: file disisipkan langsung ke dalam mosaik tanpa ekstraksi atau penyimpanan sementara.\n\nUntuk mengedit file NFO yang sudah ada, klik dua kali padanya di mosaik. Jendela terbuka dengan nama dan konten saat ini yang sudah diisi, keduanya dapat diedit. Dalam kedua kasus, operasi dicatat dalam riwayat urungkan."
   },
   "misc": {
     "file_word": "file",

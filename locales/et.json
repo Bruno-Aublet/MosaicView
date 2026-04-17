@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikoon(i) salvestatud:",
     "icons_save_failed": "Ikoone ei saa salvestada: {error}",
     "split_ui": "Kahe paneelne liides",
-    "split_ui_content": "MosaicView võimaldab kuvada kahte arhiivi samaaegselt kõrvuti.\n\nKlõpsake ikoonil Tükelda, et avada teine paneel. Iga paneel on iseseisev: saate arhiivi eraldi avada, muuta ja salvestada. Aktiivne paneel on tähistatud sinise äärisega.\n\nLehekülgede teisaldamiseks ühest paneelist teise lohistage neid otse. Kui valitud on mitu lehekülge, liiguvad need kõik koos. Leheküljed sisestatakse punase riba näidatud kohale.\n\nKlõpsake ikoonil Sulge teine paneel, et naasta ühepaneelilisse režiimi.",
+    "split_ui_content": "MosaicView võimaldab kuvada kahte arhiivi samaaegselt kõrvuti.\n\nKlõpsake ikoonil Tükelda, et avada teine paneel. Iga paneel on iseseisev: saate arhiivi eraldi avada, muuta ja salvestada. Aktiivne paneel on tähistatud sinise äärisega.\n\nLehekülgede teisaldamiseks ühest paneelist teise lohistage neid otse. Kui valitud on mitu lehekülge, liiguvad need kõik koos. Leheküljed sisestatakse punase riba näidatud kohale.\n\nKlõpsake ikoonil Sulge teine paneel, et naasta ühepaneelilisse režiimi.\n\nKahe paneeli vahelist eraldusriba saab vabalt lohistada. Topeltklõps sellel taastab paneelid võrdseks (50/50).",
     "license_gpl": "GPL v3 litsents",
     "license_unrar": "UnRAR litsents",
     "config_clear_clipboard": "Kustuta loikelaua failid",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Ava ajutine kaust",
     "icon_toolbar": "Ikooniriba",
     "icon_toolbar_content": "Ikooniriba pakub kiiret juurdepääsu rakenduse põhifunktsioonidele. Saate ikoone oma soovi järgi ümber korraldada, lohistades neid otse ribale. Et valida, milliseid ikoone kuvada või peita, klõpsake riba allosas asuvat hammasratta nuppu: avaneb seadistusaken, kus saate ikoone liigutada aktiivse riba ja reservi vahel. Kasutage ikooni suuruse reguleerimiseks nuppe « + » ja « − ». Seadistus salvestatakse automaatselt.",
-    "license_7zip": "7-Zip litsents"
+    "license_7zip": "7-Zip litsents",
+    "nfo_editor": "NFO-failide loomine ja redigeerimine",
+    "nfo_editor_content": "NFO-fail on tekstifail (laiendiga .nfo), mida kasutatakse arhiivi kohta teabe salvestamiseks: kokkuvõte, autorid, märkmed…\n\nNFO-faili loomiseks kasutage tööriistaribalt vastavat ikooni, menüüd Fail või kontekstimenüüd (paremklõps mosaiikal). Käsk on saadaval ainult siis, kui mosaiik ei ole tühi. Sisestage nimi ja sisu: fail lisatakse otse mosaiiki ilma ekstraktimise või vahepealse salvestamiseta.\n\nOlemasoleva NFO-faili redigeerimiseks tehke sellel mosaiigis topeltklõps. Aken avaneb eeltäidetult praeguse nime ja sisuga, mõlemad on muudetavad. Mõlemal juhul salvestatakse toiming tagasivõtu ajalukku."
   },
   "misc": {
     "file_word": "fail",

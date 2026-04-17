@@ -139,15 +139,6 @@ class _ConversionCompleteDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._delete_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── actions ──────────────────────────────────────────────────────────────
 
@@ -239,6 +230,8 @@ def show_conversion_complete_dialog(parent, converted, target_format,
     dialog = _ConversionCompleteDialog(
         parent, converted, target_format, selected_entries, converted_entries, _handle_action
     )
+    from modules.qt.dialogs_qt import _center_on_widget
+    _center_on_widget(dialog, parent)
     dialog.show()
     dialog.raise_()
     dialog.activateWindow()
@@ -350,15 +343,6 @@ class _QualityDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._convert_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── slots ─────────────────────────────────────────────────────────────────
 
@@ -460,6 +444,8 @@ class _QualityDialog(QDialog):
 def show_quality_dialog(parent, target_format, selected_entries, callbacks):
     """Affiche la fenêtre de choix de qualité pour JPEG et WEBP, puis lance la conversion."""
     dialog = _QualityDialog(parent, target_format, selected_entries, callbacks)
+    from modules.qt.dialogs_qt import _center_on_widget
+    _center_on_widget(dialog, parent)
     dialog.show()
     dialog.raise_()
     dialog.activateWindow()
@@ -552,15 +538,6 @@ class _ConvertFormatDialog(QDialog):
         self._retranslate()
         _connect_lang(self, lambda _: self._retranslate())
         self._convert_btn.setFocus()
-        self._center_parent = parent
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── slot ──────────────────────────────────────────────────────────────────
 
@@ -573,7 +550,7 @@ class _ConvertFormatDialog(QDialog):
         self.close()
 
         if target_format in ("JPEG", "WEBP"):
-            show_quality_dialog(self._center_parent, target_format,
+            show_quality_dialog(self.parent(), target_format,
                                 self._selected_entries, self._callbacks)
         elif target_format == "GIF_ANIMATED":
             self._callbacks['show_animated_gif_dialog'](self._selected_entries)
@@ -658,6 +635,8 @@ def convert_selected_images(parent, callbacks):
         return
 
     dialog = _ConvertFormatDialog(parent, selected_entries, callbacks)
+    from modules.qt.dialogs_qt import _center_on_widget
+    _center_on_widget(dialog, parent)
     dialog.show()
     dialog.raise_()
     dialog.activateWindow()

@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} pictogram(men) opgeslagen in:",
     "icons_save_failed": "Kan pictogrammen niet opslaan: {error}",
     "split_ui": "Interface met twee panelen",
-    "split_ui_content": "MosaicView maakt het mogelijk twee archieven tegelijkertijd naast elkaar te tonen.\n\nKlik op het pictogram Splitsen om een tweede paneel te openen. Elk paneel is onafhankelijk: u kunt een archief afzonderlijk openen, bewerken en opslaan. Het actieve paneel wordt aangegeven met een blauwe rand.\n\nSleep pagina's direct om ze van het ene paneel naar het andere te verplaatsen. Als meerdere pagina's zijn geselecteerd, worden ze allemaal tegelijk verplaatst. Pagina's worden ingevoegd op de positie die door de rode balk wordt aangegeven.\n\nKlik op het pictogram Tweede paneel sluiten om terug te keren naar de modus met één paneel.",
+    "split_ui_content": "MosaicView maakt het mogelijk twee archieven tegelijkertijd naast elkaar te tonen.\n\nKlik op het pictogram Splitsen om een tweede paneel te openen. Elk paneel is onafhankelijk: u kunt een archief afzonderlijk openen, bewerken en opslaan. Het actieve paneel wordt aangegeven met een blauwe rand.\n\nSleep pagina's direct om ze van het ene paneel naar het andere te verplaatsen. Als meerdere pagina's zijn geselecteerd, worden ze allemaal tegelijk verplaatst. Pagina's worden ingevoegd op de positie die door de rode balk wordt aangegeven.\n\nKlik op het pictogram Tweede paneel sluiten om terug te keren naar de modus met één paneel.\n\nDe scheidingsbalk tussen de twee panelen kan vrij worden versleept. Een dubbelklik erop stelt de panelen opnieuw in op gelijke grootte (50/50).",
     "license_gpl": "GPL v3-licentie",
     "license_unrar": "UnRAR-licentie",
     "config_clear_clipboard": "Klembordbestanden wissen",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Tijdelijke map openen",
     "icon_toolbar": "Pictogrambalk",
     "icon_toolbar_content": "De werkbalk met pictogrammen biedt snelle toegang tot de belangrijkste functies van de toepassing. U kunt de pictogrammen naar wens herschikken door ze direct in de werkbalk te slepen. Om te kiezen welke pictogrammen worden weergegeven of verborgen, klikt u op de tandwielknop onderaan de werkbalk: er opent een configuratievenster waarin u pictogrammen kunt verplaatsen tussen de actieve werkbalk en de reserve. Gebruik de knoppen « + » en « − » om de grootte van de pictogrammen aan te passen. De configuratie wordt automatisch opgeslagen.",
-    "license_7zip": "7-Zip-licentie"
+    "license_7zip": "7-Zip-licentie",
+    "nfo_editor": "NFO-bestanden maken en bewerken",
+    "nfo_editor_content": "Een NFO-bestand is een tekstbestand (met de extensie .nfo) dat wordt gebruikt om informatie over het archief op te slaan: synopsis, credits, notities…\n\nOm een NFO-bestand te maken, gebruikt u het speciale pictogram in de werkbalk, het menu Bestand of het contextmenu (rechtsklik op het mozaïek). De opdracht is alleen beschikbaar als het mozaïek niet leeg is. Voer een naam en inhoud in: het bestand wordt direct in het mozaïek ingevoegd zonder extractie of tussentijdse opslag.\n\nOm een bestaand NFO-bestand te bewerken, dubbelklikt u erop in het mozaïek. Het venster opent vooraf ingevuld met de huidige naam en inhoud, beide bewerkbaar. In beide gevallen wordt de bewerking vastgelegd in de ongedaan maken-geschiedenis."
   },
   "misc": {
     "file_word": "bestand",

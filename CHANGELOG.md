@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.9] - 2026-04-16
+
+- Fixed non-modal dialogs (conversion, save confirmation, close warning) flashing at the center of the application window before moving to their correct position. Dialogs are now positioned before being shown, eliminating the visual glitch.
+- Fixed the save-confirmation dialog appearing empty for 1–2 seconds after a save. The mosaic canvas was being re-rendered immediately after the save, blocking the Qt paint event that would have drawn the dialog contents. The canvas is now updated before the dialog is shown, not after.
+- Fixed the NFO editor (edit mode): the filename field is now editable. Duplicate detection correctly excludes the entry currently being edited.
+- Added a help section for the NFO file creator/editor in the User Guide. Available in all 45 languages.
+- The User Guide window is now non-modal and centered on the panel that triggered it. In two-panel mode, it is possible to open the User Guide in one panel and continue working in the other. One independent instance can be open per panel simultaneously. The window no longer rebuilds itself on language change — text is updated in place without any visual disruption.
+
 ## [1.1.8] - 2026-04-16
 
 - Oops... fixed the Changelog viewer showing "CHANGELOG.md not found" in the packaged build. The file was missing from the PyInstaller `datas` list in both `.spec` files and was therefore not bundled.

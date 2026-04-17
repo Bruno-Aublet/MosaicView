@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} nossë/nossëo colyaina mi:",
     "icons_save_failed": "Lá lerta colya nossëo: {error}",
     "split_ui": "Parma yúyo ataltaina",
-    "split_ui_content": "MosaicView lerta parmali yúyo ataltaina, telpë telpë.\n\nTece i forme Nótima i parma ataltaina pantie. Ilya parma lerta: poles pahta, carë ar tiuva i parma eressëa. I parma cuivëa istuva laurëa pahta.\n\nNan pahta i quettar parmallo parmanna, rac tenna. Qui nótima quettar pantanë, ilye telpë rac. I quettar tiuvar i nótimë i rocco carnë.\n\nTece i forme Panya i parma atalta i pahtanna eressëan.",
+    "split_ui_content": "MosaicView lerta parmali yúyo ataltaina, telpë telpë.\n\nTece i forme Nótima i parma ataltaina pantie. Ilya parma lerta: poles pahta, carë ar tiuva i parma eressëa. I parma cuivëa istuva laurëa pahta.\n\nNan pahta i quettar parmallo parmanna, rac tenna. Qui nótima quettar pantanë, ilye telpë rac. I quettar tiuvar i nótimë i rocco carnë.\n\nTece i forme Panya i parma atalta i pahtanna eressëan.\n\nI telpë mitta i nati paneli polë raita raitar. Ataquetë senna rehtë i paneli úr telpë raina (50/50).",
     "license_gpl": "GPL v3 Parmácië",
     "license_unrar": "UnRAR Tërvantë",
     "config_clear_clipboard": "Pusta i parmar ar lindello",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Panya i sanga mahta",
     "icon_toolbar": "Tehtar tanwar",
     "icon_toolbar_content": "I turco i tíron carda poldorëa na eär lúmëo maitar. Polë rehtar i tíroni ar merin sí terë i carda. Á cirya i tíroni i cenuvar ar i moruvár, á tece i rincë rocco andessë i cardava: parë ohta apantëa, sí polë lerta i tíroni ter i carda minya ar i carda lúva. Á yur i parmar « + » ar « − » na marta i coardalë i tírono. I parë inventahtëa ananta.",
-    "license_7zip": "7-Zip Raitalë"
+    "license_7zip": "7-Zip Raitalë",
+    "nfo_editor": "NFO-parmar carë ar harna",
+    "nfo_editor_content": "NFO-parma ná tecilwa parma (.nfo quetilnen) i harya i mossë i archivossë: sanwë, carmë, notë…\n\nCarë NFO-parma, á sav i caruva tancë i tancalessë, i parma-lendë, hya i sanwë-lendë (formavoitë i mossaicossë). I carda ná canwa erin lá i mossaic nampë ná. Á tulca essë ar quetië: i parma carmë coivë i mossaicossë úr quetilya hya coivë endessë.\n\nHarna NFO-parma ëa, á ataquetë senna i mossaicossë. I tyulma pahta urë-carwa essënen ar quetienën ëa, nati harnanwa. Ambulë, i carda nottë i harna-quenta-lendessë."
   },
   "misc": {
     "file_word": "parma",

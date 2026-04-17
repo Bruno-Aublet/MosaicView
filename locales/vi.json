@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} biểu tượng đã lưu trong:",
     "icons_save_failed": "Không thể lưu biểu tượng: {error}",
     "split_ui": "Giao diện hai bảng",
-    "split_ui_content": "MosaicView cho phép hiển thị hai kho lưu trữ đồng thời, cạnh nhau.\n\nNhấp vào biểu tượng Tách để mở bảng thứ hai. Mỗi bảng độc lập: bạn có thể mở, chỉnh sửa và lưu một kho lưu trữ riêng biệt. Bảng đang hoạt động được chỉ báo bằng viền màu xanh.\n\nĐể di chuyển các trang từ bảng này sang bảng khác, hãy kéo trực tiếp. Nếu nhiều trang được chọn, tất cả chúng di chuyển cùng nhau. Các trang được chèn vào vị trí được chỉ báo bởi thanh màu đỏ.\n\nNhấp vào biểu tượng Đóng bảng thứ hai để quay lại chế độ một bảng.",
+    "split_ui_content": "MosaicView cho phép hiển thị hai kho lưu trữ đồng thời, cạnh nhau.\n\nNhấp vào biểu tượng Tách để mở bảng thứ hai. Mỗi bảng độc lập: bạn có thể mở, chỉnh sửa và lưu một kho lưu trữ riêng biệt. Bảng đang hoạt động được chỉ báo bằng viền màu xanh.\n\nĐể di chuyển các trang từ bảng này sang bảng khác, hãy kéo trực tiếp. Nếu nhiều trang được chọn, tất cả chúng di chuyển cùng nhau. Các trang được chèn vào vị trí được chỉ báo bởi thanh màu đỏ.\n\nNhấp vào biểu tượng Đóng bảng thứ hai để quay lại chế độ một bảng.\n\nThanh phân cách giữa hai bảng có thể kéo tự do. Nhấp đúp vào nó để đặt lại các bảng về kích thước bằng nhau (50/50).",
     "license_gpl": "Giấy phép GPL v3",
     "license_unrar": "Giấy phép UnRAR",
     "config_clear_clipboard": "Xóa các tệp clipboard",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Mở thư mục tạm thời",
     "icon_toolbar": "Thanh biểu tượng",
     "icon_toolbar_content": "Thanh công cụ biểu tượng cung cấp quyền truy cập nhanh vào các chức năng chính của ứng dụng. Bạn có thể sắp xếp lại các biểu tượng theo ý muốn bằng cách kéo trực tiếp vào thanh. Để chọn biểu tượng nào hiển thị hoặc ẩn, hãy nhấp vào nút bánh răng ở cuối thanh: một cửa sổ cấu hình mở ra, nơi bạn có thể di chuyển biểu tượng giữa thanh đang hoạt động và kho dự phòng. Dùng nút « + » và « − » để điều chỉnh kích thước biểu tượng. Cấu hình được lưu tự động.",
-    "license_7zip": "Giấy phép 7-Zip"
+    "license_7zip": "Giấy phép 7-Zip",
+    "nfo_editor": "Tạo và chỉnh sửa tệp NFO",
+    "nfo_editor_content": "Tệp NFO là tệp văn bản (với phần mở rộng .nfo) dùng để lưu trữ thông tin về kho lưu trữ: tóm tắt, ghi công, ghi chú…\n\nĐể tạo tệp NFO, hãy dùng biểu tượng chuyên dụng trong thanh công cụ, menu Tệp hoặc menu ngữ cảnh (nhấp chuột phải vào bức khảm). Lệnh chỉ khả dụng khi bức khảm không trống. Nhập tên và nội dung: tệp được chèn trực tiếp vào bức khảm mà không cần trích xuất hay lưu trung gian.\n\nĐể chỉnh sửa tệp NFO hiện có, nhấp đúp vào nó trong bức khảm. Cửa sổ mở ra với tên và nội dung hiện tại được điền sẵn, cả hai đều có thể chỉnh sửa. Trong cả hai trường hợp, thao tác được ghi vào lịch sử hoàn tác."
   },
   "misc": {
     "file_word": "tệp",

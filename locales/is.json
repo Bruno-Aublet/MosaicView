@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} táknmynd(ir) vistaðar í:",
     "icons_save_failed": "Get ekki vistað táknmyndir: {error}",
     "split_ui": "Tveggja spjaldagluggaviðmót",
-    "split_ui_content": "MosaicView gerir kleift að sýna tvær skjalasafnar samtímis, hlið við hlið.\n\nSmelltu á Skipta táknið til að opna annað spjaldaglugga. Hvert spjaldaglugga er sjálfstætt: þú getur opnað, breytt og vistað skjalasafn sérstaklega. Virka spjaldagluggan er gefið til kynna með bláum ramma.\n\nTil að færa síður frá einu spjaldaglugga til annars skaltu draga þær beint. Ef margar síður eru valdar færast þær allar saman. Síðurnar eru settar inn á þeirri stöðu sem rauða stikan gefur til kynna.\n\nSmelltu á Loka öðru spjaldaglugga táknið til að fara aftur í eins spjaldaglugga ham.",
+    "split_ui_content": "MosaicView gerir kleift að sýna tvær skjalasafnar samtímis, hlið við hlið.\n\nSmelltu á Skipta táknið til að opna annað spjaldaglugga. Hvert spjaldaglugga er sjálfstætt: þú getur opnað, breytt og vistað skjalasafn sérstaklega. Virka spjaldagluggan er gefið til kynna með bláum ramma.\n\nTil að færa síður frá einu spjaldaglugga til annars skaltu draga þær beint. Ef margar síður eru valdar færast þær allar saman. Síðurnar eru settar inn á þeirri stöðu sem rauða stikan gefur til kynna.\n\nSmelltu á Loka öðru spjaldaglugga táknið til að fara aftur í eins spjaldaglugga ham.\n\nSkiptistikuna á milli tveggja spjalda má draga frjálslega. Tvöfaldur smellur á hana endurstillir spjaldin í jafnar stærðir (50/50).",
     "license_gpl": "GPL v3 leyfi",
     "license_unrar": "UnRAR leyfi",
     "config_clear_clipboard": "Hreinsa klippiborðsskrár",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Opna tímabundna möppu",
     "icon_toolbar": "Táknaslá",
     "icon_toolbar_content": "Táknslátturinn veitir skjótan aðgang að aðalaðgerðum forritsins. Þú getur endurraðað táknunum að eigin vild með því að draga þau beint í slátturinn. Til að velja hvaða tákn á að sýna eða fela, smelltu á gírtakkann neðst í slátturnum: stillingagluggi opnast þar sem þú getur fært tákn milli virka sláttursins og varabirgðanna. Notaðu « + » og « − » takka til að stilla stærð táknanna. Stillingarnar eru vistaðar sjálfkrafa.",
-    "license_7zip": "7-Zip leyfi"
+    "license_7zip": "7-Zip leyfi",
+    "nfo_editor": "Búa til og breyta NFO skrám",
+    "nfo_editor_content": "NFO skrá er textaskrá (með endinguna .nfo) sem er notuð til að geyma upplýsingar um safnið: samantekt, þakkir, athugasemdir…\n\nTil að búa til NFO skrá skaltu nota sérstaka táknið í tækjastikunni, Skrá-valmyndina eða samhengisvalmyndina (hægrismellur á mósaíkinn). Skipunin er aðeins tiltæk þegar mósaíkurinn er ekki tómur. Sláðu inn nafn og efni: skráin er sett inn beint í mósaíkinn án útdráttarins eða milligeymslu.\n\nTil að breyta fyrirliggjandi NFO skrá skaltu tvísmella á hana í mósaíknum. Glugginn opnast forútfylltur með núverandi nafni og efni, bæði breytanleg. Í báðum tilvikum er aðgerðin skráð í afturkallunarsöguna."
   },
   "misc": {
     "file_word": "skrá",

@@ -1234,7 +1234,7 @@
     "icons_saved_success": "{count} ikon mentve:",
     "icons_save_failed": "Nem lehet menteni az ikonokat: {error}",
     "split_ui": "Kétpaneles felület",
-    "split_ui_content": "A MosaicView lehetővé teszi két archívum egyidejű, egymás melletti megjelenítését.\n\nKattintson a Felosztás ikonra a második panel megnyitásához. Minden panel független: külön nyithat meg, szerkeszthet és menthet archívumot. Az aktív panelt kék keret jelzi.\n\nAz oldalak egyik panelből a másikba való áthelyezéséhez húzza őket közvetlenül. Ha több oldal van kijelölve, mind együtt mozog. Az oldalak a piros sáv által jelzett pozícióba kerülnek.\n\nKattintson a Második panel bezárása ikonra az egypaneles módhoz való visszatéréshez.",
+    "split_ui_content": "A MosaicView lehetővé teszi két archívum egyidejű, egymás melletti megjelenítését.\n\nKattintson a Felosztás ikonra a második panel megnyitásához. Minden panel független: külön nyithat meg, szerkeszthet és menthet archívumot. Az aktív panelt kék keret jelzi.\n\nAz oldalak egyik panelből a másikba való áthelyezéséhez húzza őket közvetlenül. Ha több oldal van kijelölve, mind együtt mozog. Az oldalak a piros sáv által jelzett pozícióba kerülnek.\n\nKattintson a Második panel bezárása ikonra az egypaneles módhoz való visszatéréshez.\n\nA két panel közötti elválasztó sáv szabadon húzható. Dupla kattintással visszaállítja a paneleket egyenlő méretűre (50/50).",
     "license_gpl": "GPL v3 licenc",
     "license_unrar": "UnRAR licenc",
     "config_clear_clipboard": "Vágólap fájlok törlése",
@@ -1250,7 +1250,9 @@
     "config_open_temp_folder": "Ideiglenes mappa megnyitása",
     "icon_toolbar": "Ikonsáv",
     "icon_toolbar_content": "Az ikonsor gyors hozzáférést biztosít az alkalmazás főbb funkcióihoz. Az ikonokat kedve szerint rendezheti át, közvetlenül a sorba húzva őket. A megjelenítendő vagy elrejtendő ikonok kiválasztásához kattintson a sor alján lévő fogaskerék gombra: megnyílik egy beállítási ablak, amelyben az ikonokat mozgathatja az aktív sor és a tartalék között. A « + » és « − » gombok segítségével módosíthatja az ikonok méretét. A konfiguráció automatikusan mentésre kerül.",
-    "license_7zip": "7-Zip licenc"
+    "license_7zip": "7-Zip licenc",
+    "nfo_editor": "NFO fájlok létrehozása és szerkesztése",
+    "nfo_editor_content": "Az NFO fájl egy szöveges fájl (.nfo kiterjesztéssel), amelyet az archívumra vonatkozó információk tárolására használnak: szinopszis, közreműködők, jegyzetek…\n\nNFO fájl létrehozásához használja az eszköztáron lévő dedikált ikont, a Fájl menüt vagy a helyi menüt (jobb kattintás a mozaikon). A parancs csak akkor érhető el, ha a mozaik nem üres. Adjon meg egy nevet és tartalmat: a fájl közvetlenül a mozaikba kerül, kicsomagolás vagy közbülső mentés nélkül.\n\nMeglévő NFO fájl szerkesztéséhez kattintson rá duplán a mozaikon. Az ablak előre kitöltve nyílik meg az aktuális névvel és tartalommal, mindkettő szerkeszthető. Mindkét esetben a művelet rögzítésre kerül a visszavonási előzményekben."
   },
   "misc": {
     "file_word": "fájl",
