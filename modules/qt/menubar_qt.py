@@ -330,6 +330,24 @@ def _populate_language_menu(menu: QMenu, callbacks: dict):
                                              code == current_lang, menu))
 
 
+def _populate_metadata_menu(menu: QMenu, callbacks: dict):
+    menu.clear()
+    st = _state_module.state
+    has_file = bool(st.current_file)
+    canvas_empty = not st.current_file and not st.images_data
+    _add_action(menu, _("comicvine.tooltip"), callbacks.get("fetch_metadata"), enabled=has_file)
+    _add_action(menu, _("buttons.batch_metadata"), callbacks.get("batch_metadata"), enabled=canvas_empty)
+    menu.addSeparator()
+    _add_action(menu, _("comicvine.change_api_key"), callbacks.get("change_apikey"))
+    menu.addSeparator()
+    from PySide6.QtGui import QDesktopServices
+    from PySide6.QtCore import QUrl
+    _add_action(menu, "ComicVine",
+                lambda: QDesktopServices.openUrl(QUrl("https://comicvine.gamespot.com/")))
+    _add_action(menu, "ComicVine Scraper",
+                lambda: QDesktopServices.openUrl(QUrl("https://github.com/cbanack/comic-vine-scraper")))
+
+
 def _populate_system_menu(menu: QMenu, callbacks: dict):
     menu.clear()
 
@@ -439,7 +457,8 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
         (_("menu.file"),     _populate_file_menu),
         (_("menu.edit"),     _populate_edit_menu),
         (_("menu.images"),   _populate_images_menu),
-        (_("menu.archives"), _populate_archives_menu),
+        (_("menu.archives"),   _populate_archives_menu),
+        (_("comicvine.menu_label"), _populate_metadata_menu),
         (_("menu.system"),   _populate_system_menu),
         (_("menu.about"),    _populate_about_menu),
     ]

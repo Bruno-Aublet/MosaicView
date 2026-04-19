@@ -61,7 +61,8 @@
     "unsplit_ui": "Fermer le second panneau",
     "rename_to_ext": "Renommer en {ext}",
     "batch_cb7_to_cbz": "Conversion en lot\n de fichiers CB7 en CBZ",
-    "batch_cbt_to_cbz": "Conversion en lot\n de fichiers CBT en CBZ"
+    "batch_cbt_to_cbz": "Conversion en lot\n de fichiers CBT en CBZ",
+    "batch_metadata": "Import des métadonnées en lot"
   },
   "tabs": {
     "mosaic": "Mosaïque",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} fichier(s) renommé(s) en CBZ",
       "renamed_cbr_count": "{count} fichier(s) renommé(s) en CBR",
       "renamed_cb7_count": "{count} fichier(s) renommé(s) en CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Aucun fichier compatible",
+      "no_files_message": "Aucun fichier compatible (CBZ, CBR, CB7, CBT, PDF) trouvé dans :\n{directory}",
+      "confirm_title": "Import des métadonnées en lot",
+      "confirm_message": "{count} fichier(s) trouvé(s) dans {directory} (sous-répertoires inclus).",
+      "start_button": "Commencer",
+      "cbz_warning": "Seul le format CBZ supporte les métadonnées ComicInfo. Les fichiers CBR, CBT, CB7 et PDF seront automatiquement convertis en CBZ.",
+      "checkbox_permanent_delete": "Suppression des fichiers originaux non-CBZ sans passer\npar la corbeille (PAS DE RETOUR EN ARRIÈRE POSSIBLE)",
+      "complete_title": "Import des métadonnées terminé",
+      "complete_message": "{done} fichier(s) traité(s) sur {total}. {skipped} ignoré(s).",
+      "complete_message_errors": "{done} fichier(s) traité(s) sur {total}. {skipped} ignoré(s). {errors} erreur(s).",
+      "errors_count": "{count} erreur(s)",
+      "done_count": "{done} fichier(s) traité(s) sur {total}.",
+      "skipped_count": "{skipped} ignoré(s).",
+      "select_directory_title": "Sélectionner un dossier à traiter"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Convertit en CBZ tous les fichiers CB7 contenus\ndans un répertoire et ses sous-répertoires.",
     "batch_cb7_permanent_delete": "ATTENTION : si cette option est cochée,\nles fichiers CB7 originaux seront définitivement\nsupprimés après leur conversion, sans possibilité\nde récupération. Assurez-vous de disposer\nd'une sauvegarde si nécessaire.",
     "batch_cbt_to_cbz": "Convertit en CBZ tous les fichiers CBT contenus\ndans un répertoire et ses sous-répertoires.",
-    "batch_cbt_permanent_delete": "ATTENTION : si cette option est cochée,\nles fichiers CBT originaux seront définitivement\nsupprimés après leur conversion, sans possibilité\nde récupération. Assurez-vous de disposer\nd'une sauvegarde si nécessaire."
+    "batch_cbt_permanent_delete": "ATTENTION : si cette option est cochée,\nles fichiers CBT originaux seront définitivement\nsupprimés après leur conversion, sans possibilité\nde récupération. Assurez-vous de disposer\nd'une sauvegarde si nécessaire.",
+    "batch_metadata": "Import des métadonnées en lot"
   },
   "help": {
     "title": "MosaicView - Mode d'emploi",
@@ -1252,7 +1270,9 @@
     "batch_convert_content": "MosaicView propose cinq fonctions de conversion en lot, disponibles uniquement lorsque la mosaïque est vide. Pour chacune, le principe est le même : sélectionnez un répertoire, confirmez, suivez la progression en temps réel, consultez le résumé final. Une option permet de supprimer définitivement les fichiers originaux au lieu de les envoyer dans la corbeille.\n• CBR → CBZ : convertit tous les fichiers CBR (RAR) d’un répertoire et de ses sous-répertoires. Si un CBR est en réalité un ZIP, un 7z ou un TAR, le fichier est renommé avec la bonne extension (.cbz, .cb7 ou .cbt) sans conversion. Les fichiers renommés et les erreurs sont consignés dans un log.\n• CB7 → CBZ : convertit tous les fichiers CB7 (7-Zip) d’un répertoire et de ses sous-répertoires. Si un CB7 est en réalité un ZIP, un RAR ou un TAR, le fichier est renommé avec la bonne extension (.cbz, .cbr ou .cbt) sans conversion. Les fichiers renommés et les erreurs sont consignés dans un log.\n• CBT → CBZ : convertit tous les fichiers CBT (TAR) d’un répertoire et de ses sous-répertoires. Si un CBT est en réalité un ZIP, un RAR ou un 7z, le fichier est renommé avec la bonne extension (.cbz, .cbr ou .cb7) sans conversion. Les fichiers renommés et les erreurs sont consignés dans un log.\n• PDF → CBZ : convertit tous les fichiers PDF d’un répertoire et de ses sous-répertoires. Les images sont extraites sans recompression.\n• IMAGES ISOLÉES → CBZ : crée un CBZ individuel pour chaque fichier image trouvé dans le répertoire et ses sous-répertoires. Les images invalides, corrompues, multipages (TIFF) ou animées (GIF) sont ignorées et consignées dans un log.",
     "icon_toolbar": "Barre d’icônes",
     "icon_toolbar_content": "La barre d’icônes permet d’accéder rapidement aux principales fonctions de l’application. Vous pouvez réorganiser les icônes à votre convenance en les déplaçant directement dans la barre. Pour choisir quelles icônes afficher ou masquer, cliquez sur le bouton en forme de roue crantée situé en bas de la barre : une fenêtre de configuration s’ouvre, dans laquelle vous pouvez déplacer les icônes entre la barre active et la réserve. Utilisez les boutons « + » et « − » pour ajuster la taille des icônes. La configuration est sauvegardée automatiquement.",
-    "license_7zip": "Licence 7-Zip"
+    "license_7zip": "Licence 7-Zip",
+    "metadata": "Métadonnées ComicVine",
+    "metadata_content": "MosaicView permet de récupérer automatiquement les métadonnées de vos BD (titre, série, numéro, auteurs, résumé...) depuis la base de données ComicVine, un site collaboratif maintenu par la communauté.\n\nMode BD unique : ouvrez une BD, puis utilisez le bouton de la barre d'outils ou le menu Métadonnées. Un assistant en deux étapes s'ouvre : choisissez d'abord la série, puis l'épisode correspondant. Les métadonnées sont écrites dans un fichier ComicInfo.xml à l'intérieur de l'archive.\n\nMode batch : déposez un ou plusieurs dossiers sur la mosaïque et choisissez \"Import de métadonnées en lot\", ou utilisez le bouton dédié de la barre d'outils ou le menu Métadonnées. L'assistant s'ouvre successivement pour chaque fichier trouvé (CBZ, CBR, CB7, CBT, PDF). Les fichiers non-CBZ sont automatiquement convertis en CBZ après écriture des métadonnées.\n\nClé API : une clé API ComicVine gratuite est requise. L'application vous guidera pour la récupérer. Elle s'obtient sur comicvine.gamespot.com après création d'un compte.\n\nLimitations de l'API : ces limitations sont imposées par ComicVine et ne peuvent pas être contournées.\n• 200 requêtes par ressource et par heure. Si cette limite est atteinte, les recherches échouent temporairement jusqu'à la fin de l'heure.\n• 100 résultats maximum par requête, ce qui oblige à segmenter les recherches sur plusieurs appels pour les séries comportant de nombreux épisodes.\n• 1 requête par seconde autorisée par le site. Par sécurité, MosaicView attend 2 secondes entre chaque requête, des requêtes plus rapides étant fortement susceptibles de provoquer des blocages temporaires.\n\nCette fonctionnalité est entièrement basée sur le projet open source {scraper}."
   },
   "misc": {
     "file_word": "fichier",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Veuillez saisir un nom de fichier.",
     "error_write": "Impossible d'écrire le fichier :\n{error}",
     "error_duplicate": "Un fichier nommé {filename} existe déjà dans la mosaïque."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "Clé API ComicVine",
+      "explanation": "Pour récupérer les métadonnées de vos comics, MosaicView utilise la base de données ComicVine. Vous avez besoin d'une clé API gratuite.",
+      "instructions": "Créez un compte sur {comicvine}, puis rendez-vous sur la {api_page} pour obtenir votre clé.",
+      "api_page_label": "page API",
+      "field_label": "Clé API :",
+      "placeholder": "Collez votre clé API ici",
+      "validate": "Valider",
+      "clear": "Effacer la clé",
+      "error_empty": "Veuillez saisir une clé API."
+    },
+    "menu_label": "Métadonnées",
+    "tooltip": "Récupérer les métadonnées",
+    "change_api_key": "Modifier la clé API ComicVine",
+    "search_placeholder": "Rechercher une série...",
+    "search_button": "Rechercher",
+    "searching": "Recherche en cours...",
+    "loading_issues": "Chargement des numéros...",
+    "results_count": "{count} résultat(s) sur {total}",
+    "issues_count": "{count} numéro(s) pour \"{series}\"",
+    "col_series": "Série",
+    "col_year": "Année",
+    "col_issues": "Issues",
+    "col_publisher": "Éditeur",
+    "col_issue_num": "N°",
+    "col_issue_title": "Titre",
+    "btn_skip": "Ignorer",
+    "btn_back": "Retour",
+    "info_single": "Cette fonction récupère les métadonnées de la BD actuellement ouverte. Pour traiter plusieurs fichiers d’affilée, utilisez le traitement par lot (déposez un dossier sur la fenêtre).",
+    "page_indicator": "Page {page}",
+    "loading_issues_progress": "Chargement... {loaded} / {total}",
+    "issues_partial_load": "{count} numéro(s) chargé(s) — chargement interrompu : {error}",
+    "credit": "Métadonnées : {comicvine} · inspiré de {scraper}"
   }
 }

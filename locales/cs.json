@@ -61,7 +61,8 @@
     "unsplit_ui": "Zavřít druhý panel",
     "rename_to_ext": "Přejmenovat na {ext}",
     "batch_cb7_to_cbz": "Hromadná konverze\n souborů CB7 na CBZ",
-    "batch_cbt_to_cbz": "Hromadná konverze\n souborů CBT na CBZ"
+    "batch_cbt_to_cbz": "Hromadná konverze\n souborů CBT na CBZ",
+    "batch_metadata": "Hromadný import metadat"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} soubor(ů) přejmenováno na CBZ",
       "renamed_cbr_count": "{count} soubor(ů) přejmenováno na CBR",
       "renamed_cb7_count": "{count} soubor(ů) přejmenováno na CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Žádné kompatibilní soubory",
+      "no_files_message": "V adresáři nebyly nalezeny žádné kompatibilní soubory (CBZ, CBR, CB7, CBT, PDF):\n{directory}",
+      "confirm_title": "Hromadný import metadat",
+      "confirm_message": "Nalezeno {count} soubor(ů) v {directory} (včetně podadresářů).",
+      "start_button": "Spustit",
+      "cbz_warning": "Pouze formát CBZ podporuje metadata ComicInfo. Soubory CBR, CBT, CB7 a PDF budou automaticky převedeny na CBZ.",
+      "checkbox_permanent_delete": "Trvalé smazání původních souborů (ne CBZ) bez koše\n(NELZE VRÁTIT ZPĚT)",
+      "complete_title": "Import metadat dokončen",
+      "complete_message": "Zpracováno {done} soubor(ů) z {total}. Přeskočeno {skipped}.",
+      "complete_message_errors": "Zpracováno {done} soubor(ů) z {total}. Přeskočeno {skipped}. {errors} chyba(y).",
+      "errors_count": "{count} chyba(y)",
+      "done_count": "Zpracováno {done} soubor(ů) z {total}.",
+      "skipped_count": "Přeskočeno {skipped}.",
+      "select_directory_title": "Vyberte složku ke zpracování"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Převede všechny soubory CB7 v adresáři\na jeho podadresářích na CBZ.",
     "batch_cb7_permanent_delete": "UPOZORNĚNÍ : pokud je tato možnost zaškrtnuta,\npůvodní soubory CB7 budou trvale smazány\npo konverzi bez možnosti obnovení.\nUjistěte se, že máte zálohu.",
     "batch_cbt_to_cbz": "Převede všechny soubory CBT v adresáři\na jeho podadresářích na CBZ.",
-    "batch_cbt_permanent_delete": "UPOZORNĚNÍ : pokud je tato možnost zaškrtnuta,\npůvodní soubory CBT budou trvale smazány\npo konverzi bez možnosti obnovení.\nUjistěte se, že máte zálohu."
+    "batch_cbt_permanent_delete": "UPOZORNĚNÍ : pokud je tato možnost zaškrtnuta,\npůvodní soubory CBT budou trvale smazány\npo konverzi bez možnosti obnovení.\nUjistěte se, že máte zálohu.",
+    "batch_metadata": "Dávkový import metadat"
   },
   "help": {
     "title": "MosaicView - Nápověda",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Panel ikon umožňuje rychlý přístup k hlavním funkcím aplikace. Ikony můžete přeskupovat dle libosti přetažením přímo v panelu. Chcete-li zvolit, které ikony zobrazit nebo skrýt, klikněte na tlačítko ozubeného kola v dolní části panelu: otevře se okno konfigurace, kde můžete přesouvat ikony mezi aktivním panelem a zásobníkem. Tlačítky « + » a « − » upravíte velikost ikon. Konfigurace se ukládá automaticky.",
     "license_7zip": "Licence 7-Zip",
     "nfo_editor": "Vytváření a úprava souborů NFO",
-    "nfo_editor_content": "Soubor NFO je textový soubor (s příponou .nfo) sloužící k uložení informací o archivu: synopse, přispěvatelé, poznámky…\n\nPro vytvoření souboru NFO použijte příslušnou ikonu v panelu nástrojů, nabídku Soubor nebo kontextovou nabídku (pravý klik na mozaiku). Příkaz je dostupný pouze tehdy, když mozaika není prázdná. Zadejte název a obsah: soubor je vložen přímo do mozaiky bez extrakce nebo meziuložení.\n\nPro úpravu existujícího souboru NFO na něj v mozaice dvakrát klikněte. Okno se otevře předvyplněné aktuálním názvem a obsahem, přičemž obojí lze upravit. V obou případech je operace zaznamenána do historie zpět."
+    "nfo_editor_content": "Soubor NFO je textový soubor (s příponou .nfo) sloužící k uložení informací o archivu: synopse, přispěvatelé, poznámky…\n\nPro vytvoření souboru NFO použijte příslušnou ikonu v panelu nástrojů, nabídku Soubor nebo kontextovou nabídku (pravý klik na mozaiku). Příkaz je dostupný pouze tehdy, když mozaika není prázdná. Zadejte název a obsah: soubor je vložen přímo do mozaiky bez extrakce nebo meziuložení.\n\nPro úpravu existujícího souboru NFO na něj v mozaice dvakrát klikněte. Okno se otevře předvyplněné aktuálním názvem a obsahem, přičemž obojí lze upravit. V obou případech je operace zaznamenána do historie zpět.",
+    "metadata": "Metadata ComicVine",
+    "metadata_content": "MosaicView umožňuje automatické načítání metadat vašich komiksů (název, série, číslo, autoři, shrnutí...) z databáze ComicVine, kolaborativního webu spravovaného komunitou.\n\nJednotlivý režim: otevřete komiks a použijte tlačítko na panelu nástrojů nebo nabídku Metadata. Otevře se průvodce ve dvou krocích: nejprve vyberte sérii, poté odpovídající epizodu. Metadata jsou zapsána do souboru ComicInfo.xml uvnitř archivu.\n\nDávkový režim: přetáhněte jednu nebo více složek na mozaiku a zvolte \"Hromadný import metadat\", nebo použijte příslušné tlačítko na panelu nástrojů nebo nabídku Metadata. Průvodce se otevírá postupně pro každý nalezený soubor (CBZ, CBR, CB7, CBT, PDF). Soubory jiné než CBZ jsou automaticky převedeny na CBZ po zápisu metadat.\n\nAPI klíč: je vyžadován bezplatný API klíč pro ComicVine. Aplikace vás provede jeho získáním. Získá se na comicvine.gamespot.com po vytvoření účtu.\n\nOmezení API: tato omezení jsou uložena ComicVine a nelze je obejít.\n• 200 požadavků na zdroj za hodinu. Po dosažení tohoto limitu vyhledávání dočasně selhává do konce hodiny.\n• Maximálně 100 výsledků na požadavek, což nutí rozdělit vyhledávání na více volání pro série s mnoha epizodami.\n• 1 požadavek za sekundu povolený webem. Pro jistotu MosaicView čeká 2 sekundy mezi požadavky, rychlejší požadavky jsou silně náchylné k dočasnému zablokování.\n\nTato funkce je zcela založena na projektu s otevřeným zdrojovým kódem {scraper}."
   },
   "misc": {
     "file_word": "soubor",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Zadejte prosím název souboru.",
     "error_write": "Nelze zapsat soubor:\n{error}",
     "error_duplicate": "Soubor s názvem {filename} již v mozaice existuje."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "API klíč ComicVine",
+      "explanation": "Pro načtení metadat komiksů používá MosaicView databázi ComicVine. Potřebujete bezplatný API klíč.",
+      "instructions": "Vytvořte si účet na {comicvine} a poté přejděte na {api_page} pro získání klíče.",
+      "api_page_label": "stránka API",
+      "field_label": "API klíč:",
+      "placeholder": "Vložte sem svůj API klíč",
+      "validate": "Potvrdit",
+      "error_empty": "Zadejte prosím API klíč.",
+      "clear": "Vymazat klíč"
+    },
+    "menu_label": "Metadata",
+    "tooltip": "Načíst metadata",
+    "change_api_key": "Změnit API klíč ComicVine",
+    "search_placeholder": "Hledat sérii...",
+    "search_button": "Hledat",
+    "searching": "Vyhledávání...",
+    "loading_issues": "Načítání čísel...",
+    "results_count": "{count} výsledek/výsledků z {total}",
+    "issues_count": "{count} číslo/čísel pro \"{series}\"",
+    "col_series": "Série",
+    "col_year": "Rok",
+    "col_issues": "Čísla",
+    "col_publisher": "Vydavatel",
+    "col_issue_num": "č.",
+    "col_issue_title": "Název",
+    "btn_skip": "Přeskočit",
+    "btn_back": "Zpět",
+    "info_single": "Tato funkce načítá metadata aktuálně otevřeného komiksu. Pro zpracování více souborů najednou použijte dávkové zpracování (přetáhněte složku do okna).",
+    "page_indicator": "Strana {page}",
+    "loading_issues_progress": "Načítání... {loaded} / {total}",
+    "issues_partial_load": "{count} číslo/čísel načteno — načítání přerušeno: {error}",
+    "credit": "Metadata: {comicvine} · inspirováno {scraper}"
   }
 }

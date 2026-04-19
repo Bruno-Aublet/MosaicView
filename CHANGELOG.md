@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0] - 2026-04-18
+
+- Added ComicVine metadata scraping. A new "Metadata" menu in the menu bar and a new button in the icon toolbar open a two-panel wizard: the first panel searches for the comic series by name (sortable results, pagination, search cache), the second panel lists all issues for the selected series (full load with progress overlay, issue cache) and pre-selects the issue matching the current file's number. Confirmed metadata is written to `ComicInfo.xml` inside the archive, creating or updating the file as needed, including the `<Pages>` section. Requires a free ComicVine API key.
+- Added a "Change ComicVine API key" action in the Metadata menu and the canvas context menu. The API key dialog now pre-fills the current key and includes a "Clear key" button (disabled when the field is empty).
+- Added batch metadata import. It can be triggered by a dedicated toolbar icon (available in the icon configuration panel), by the "Batch metadata import" action in the Metadata menu, or by the same action in the canvas context menu. When triggered from the toolbar or menus, a folder picker opens; when triggered by dropping one or more folders onto the canvas, the existing batch drop dialog is used. In all cases, the tool finds all comic files (CBZ, CBR, CB7, CBT, PDF) recursively in the selected folder(s) and opens a ComicVine wizard for each one. Non-CBZ files are automatically converted to CBZ after metadata is written. The wizard reuses series and issue caches across files, pre-selects the issue number guessed from the filename (ignoring leading dates and first-position numbers), and displays the source filename rather than the generated CBZ name. A summary dialog is shown at the end with the count of processed, skipped, and failed files; errors are written to a log file.
+- All ComicVine UI strings translated into all 45 supported languages, including pIqaD and Tengwar.
+- Fixed the version checker, changelog, donation (PayPal), icon toolbar configuration, and all license (GPL, UnRAR, 7-Zip, pIqaD, Tengwar) dialogs being modal. All these windows are now non-modal. Fixed the version checker dialog being too small. Fixed all these dialogs being centered on the application window instead of the panel that triggered them. Fixed these dialogs being displayed at a much smaller size than intended.
+
 ## [1.1.9] - 2026-04-16
 
 - Fixed non-modal dialogs (conversion, save confirmation, close warning) flashing at the center of the application window before moving to their correct position. Dialogs are now positioned before being shown, eliminating the visual glitch.

@@ -30,6 +30,7 @@ class ConfigManager:
         'buttons_column_width': 220,  # Largeur de la colonne de boutons (par défaut 220px)
         'recent_files': [],  # Liste des fichiers récemment ouverts (max 10)
         'use_icon_toolbar': False,  # TEMPORAIRE (dev) — barre d'icônes active
+        'comicvine_api_key': '',    # Clé API ComicVine
     }
 
     def __init__(self, config_dir=None):

@@ -165,9 +165,23 @@ def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
     if render:
         canvas.render_mosaic()
 
-    # Repeuple les fenêtres de licence ouvertes pour mettre à jour la couleur du lien
-    from modules.qt.license_dialog_qt import _LicenseDialog
+    # Met à jour toutes les fenêtres ouvertes qui gèrent le thème
+    from modules.qt.license_dialog_qt import _LicenseDialog, _FullLicenseDialog
+    from modules.qt.changelog_dialog_qt import _ChangelogDialog
+    from modules.qt.batch_metadata_dialog_qt import _MetadataConfirmDialog, _MetadataSummaryDialog
+    from modules.qt.batch_drop_dialog_qt import BatchDropDialog
+    from modules.qt.comicvine_dialog_qt import _ComicVineDialog
+    from modules.qt.comicvine_apikey_dialog_qt import _ApiKeyDialog
+    from modules.qt.nfo_dialog_qt import _NfoDialog
+    from modules.qt.update_checker_qt import _UpdateDialog
+    from modules.qt.user_guide_qt import _HelpDialog
+    from modules.qt.donation_dialog_qt import _DonationDialog
+    from modules.qt.icon_toolbar_qt import _IconConfigDialog
     from PySide6.QtWidgets import QApplication
     for widget in QApplication.topLevelWidgets():
-        if isinstance(widget, _LicenseDialog):
-            widget._populate()
+        if isinstance(widget, (_LicenseDialog, _FullLicenseDialog, _ChangelogDialog,
+                                _MetadataConfirmDialog, _MetadataSummaryDialog, BatchDropDialog,
+                                _ComicVineDialog, _ApiKeyDialog,
+                                _NfoDialog, _UpdateDialog, _HelpDialog,
+                                _DonationDialog, _IconConfigDialog)):
+            widget._retranslate()

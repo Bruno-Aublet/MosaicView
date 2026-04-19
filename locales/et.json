@@ -61,7 +61,8 @@
     "unsplit_ui": "Sulge teine paneel",
     "rename_to_ext": "Nimeta ümber {ext}-ks",
     "batch_cb7_to_cbz": "CB7-failide\n pakett-teisendus CBZ-ks",
-    "batch_cbt_to_cbz": "CBT-failide\n pakett-teisendus CBZ-ks"
+    "batch_cbt_to_cbz": "CBT-failide\n pakett-teisendus CBZ-ks",
+    "batch_metadata": "Metaandmete hulkimport"
   },
   "tabs": {
     "mosaic": "Mosaiik",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} fail(i) nimetati ümber CBZ-ks",
       "renamed_cbr_count": "{count} fail(i) nimetati ümber CBR-ks",
       "renamed_cb7_count": "{count} fail(i) nimetati ümber CB7-ks"
+    },
+    "batch_metadata": {
+      "no_files_title": "Ühilduvaid faile pole",
+      "no_files_message": "Ühilduvaid faile (CBZ, CBR, CB7, CBT, PDF) ei leitud kaustast:\n{directory}",
+      "confirm_title": "Metaandmete hulkimport",
+      "confirm_message": "Leitud {count} fail(i) kaustast {directory} (alamkaustad kaasatud).",
+      "start_button": "Alusta",
+      "cbz_warning": "Ainult CBZ-formaat toetab ComicInfo metaandmeid. CBR-, CBT-, CB7- ja PDF-failid teisendatakse automaatselt CBZ-iks.",
+      "checkbox_permanent_delete": "Kustuta originaal-mitte-CBZ-failid jäädavalt prügikastita\n(TAGASIVÕTMINE POLE VÕIMALIK)",
+      "complete_title": "Metaandmete importimine lõpetatud",
+      "complete_message": "{done} fail(i) töödeldud {total}-st. {skipped} vahele jäetud.",
+      "complete_message_errors": "{done} fail(i) töödeldud {total}-st. {skipped} vahele jäetud. {errors} viga(d).",
+      "errors_count": "{count} viga(d)",
+      "done_count": "{done} fail(i) töödeldud {total}-st.",
+      "skipped_count": "{skipped} vahele jäetud.",
+      "select_directory_title": "Valige töödeldav kaust"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Teisendab kõik CB7-failid kaustas\nja selle alamkaustades CBZ-ks.",
     "batch_cb7_permanent_delete": "HOIATUS : kui see valik on märgitud,\nkustutatakse originaalsed CB7-failid\npärast teisendamist jäädavalt ilma\ntaastamisvõimaluseta. Veenduge, et teil on varukoopia.",
     "batch_cbt_to_cbz": "Teisendab kõik CBT-failid kaustas\nja selle alamkaustades CBZ-ks.",
-    "batch_cbt_permanent_delete": "HOIATUS : kui see valik on märgitud,\nkustutatakse originaalsed CBT-failid\npärast teisendamist jäädavalt ilma\ntaastamisvõimaluseta. Veenduge, et teil on varukoopia."
+    "batch_cbt_permanent_delete": "HOIATUS : kui see valik on märgitud,\nkustutatakse originaalsed CBT-failid\npärast teisendamist jäädavalt ilma\ntaastamisvõimaluseta. Veenduge, et teil on varukoopia.",
+    "batch_metadata": "Metaandmete pakettimport"
   },
   "help": {
     "title": "MosaicView - Kasutusjuhend",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Ikooniriba pakub kiiret juurdepääsu rakenduse põhifunktsioonidele. Saate ikoone oma soovi järgi ümber korraldada, lohistades neid otse ribale. Et valida, milliseid ikoone kuvada või peita, klõpsake riba allosas asuvat hammasratta nuppu: avaneb seadistusaken, kus saate ikoone liigutada aktiivse riba ja reservi vahel. Kasutage ikooni suuruse reguleerimiseks nuppe « + » ja « − ». Seadistus salvestatakse automaatselt.",
     "license_7zip": "7-Zip litsents",
     "nfo_editor": "NFO-failide loomine ja redigeerimine",
-    "nfo_editor_content": "NFO-fail on tekstifail (laiendiga .nfo), mida kasutatakse arhiivi kohta teabe salvestamiseks: kokkuvõte, autorid, märkmed…\n\nNFO-faili loomiseks kasutage tööriistaribalt vastavat ikooni, menüüd Fail või kontekstimenüüd (paremklõps mosaiikal). Käsk on saadaval ainult siis, kui mosaiik ei ole tühi. Sisestage nimi ja sisu: fail lisatakse otse mosaiiki ilma ekstraktimise või vahepealse salvestamiseta.\n\nOlemasoleva NFO-faili redigeerimiseks tehke sellel mosaiigis topeltklõps. Aken avaneb eeltäidetult praeguse nime ja sisuga, mõlemad on muudetavad. Mõlemal juhul salvestatakse toiming tagasivõtu ajalukku."
+    "nfo_editor_content": "NFO-fail on tekstifail (laiendiga .nfo), mida kasutatakse arhiivi kohta teabe salvestamiseks: kokkuvõte, autorid, märkmed…\n\nNFO-faili loomiseks kasutage tööriistaribalt vastavat ikooni, menüüd Fail või kontekstimenüüd (paremklõps mosaiikal). Käsk on saadaval ainult siis, kui mosaiik ei ole tühi. Sisestage nimi ja sisu: fail lisatakse otse mosaiiki ilma ekstraktimise või vahepealse salvestamiseta.\n\nOlemasoleva NFO-faili redigeerimiseks tehke sellel mosaiigis topeltklõps. Aken avaneb eeltäidetult praeguse nime ja sisuga, mõlemad on muudetavad. Mõlemal juhul salvestatakse toiming tagasivõtu ajalukku.",
+    "metadata": "ComicVine metaandmed",
+    "metadata_content": "MosaicView võimaldab automaatselt alla laadida teie koomiksitele metaandmeid (pealkiri, sari, number, autorid, kokkuvõte...) ComicVine'i andmebaasist, kogukonna poolt hallatavast koostöölisest veebisaidist.\n\nÜksikrežiim: avage koomiksit, seejärel kasutage tööriistariba nuppu või menüüd Metaandmed. Avaneb kaheastmeline viisard: valige esmalt sari, seejärel vastav episood. Metaandmed kirjutatakse arhiivis olevasse ComicInfo.xml-i.\n\nPakktöötlus: lohistage üks või mitu kausta mosaiikvaadetele ja valige \"Metaandmete pakettimport\", või kasutage tööriistariba pühendatud nuppu või menüüd Metaandmed. Viisard avaneb järjestikku iga leitud faili jaoks (CBZ, CBR, CB7, CBT, PDF). Mitte-CBZ-failid teisendatakse automaatselt CBZ-ks pärast metaandmete kirjutamist.\n\nAPI-võti: nõutav on tasuta ComicVine'i API-võti. Rakendus juhendab teid selle hankimisel. Seda saab comicvine.gamespot.com-ist pärast konto loomist.\n\nAPI piirangud: need piirangud kehtestab ComicVine ja neid ei saa eirata.\n• 200 päringut ressursi kohta tunnis. Kui see limiit saavutatakse, ebaõnnestuvad otsingud ajutiselt kuni tunni lõpuni.\n• Maksimaalselt 100 tulemust päringu kohta, mis sunnib otsinguid mitme kõne peale jagama paljude episoodidega sarjade puhul.\n• 1 päring sekundis on saidi poolt lubatud. Ohutuse huvides ootab MosaicView päringute vahel 2 sekundit, kuna kiiremad päringud põhjustavad suure tõenäosusega ajutisi blokeeringuid.\n\nSee funktsioon põhineb täielikult avatud lähtekoodiga projektil {scraper}."
   },
   "misc": {
     "file_word": "fail",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Palun sisestage faili nimi.",
     "error_write": "Faili kirjutamine ebaõnnestus:\n{error}",
     "error_duplicate": "Fail nimega {filename} on mosaiigis juba olemas."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API-võti",
+      "explanation": "Koomiksite metaandmete toomiseks kasutab MosaicView ComicVine andmebaasi. Vajate tasuta API-võtit.",
+      "instructions": "Looge konto saidil {comicvine} ja minge seejärel {api_page} lehele võtme saamiseks.",
+      "api_page_label": "API leht",
+      "field_label": "API-võti:",
+      "placeholder": "Kleepige API-võti siia",
+      "validate": "Kinnita",
+      "error_empty": "Sisestage API-võti.",
+      "clear": "Kustuta võti"
+    },
+    "menu_label": "Metaandmed",
+    "tooltip": "Tõmba metaandmed",
+    "change_api_key": "Muuda ComicVine API-võtit",
+    "search_placeholder": "Otsi seeriat...",
+    "search_button": "Otsi",
+    "searching": "Otsimine...",
+    "loading_issues": "Numbrite laadimine...",
+    "results_count": "{count} tulemus(t) {total}-st",
+    "issues_count": "{count} number(it) sarjale \"{series}\"",
+    "col_series": "Seeria",
+    "col_year": "Aasta",
+    "col_issues": "Numbrid",
+    "col_publisher": "Kirjastaja",
+    "col_issue_num": "Nr.",
+    "col_issue_title": "Pealkiri",
+    "btn_skip": "Jäta vahele",
+    "btn_back": "Tagasi",
+    "info_single": "See funktsioon toob metaandmed praegu avatud koomiksile. Mitme faili korraga töötlemiseks kasutage pakettöötlust (lohistage kaust aknasse).",
+    "page_indicator": "Lehekülg {page}",
+    "loading_issues_progress": "Laadimine... {loaded} / {total}",
+    "issues_partial_load": "{count} number(it) laaditud — laadimine katkes: {error}",
+    "credit": "Metaandmed: {comicvine} · inspireeritud {scraper}"
   }
 }

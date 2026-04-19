@@ -61,7 +61,8 @@
     "unsplit_ui": "Sulje toinen paneeli",
     "rename_to_ext": "Nimeä uudelleen {ext}:ksi",
     "batch_cb7_to_cbz": "CB7-tiedostojen\n erämuunnos CBZ:ksi",
-    "batch_cbt_to_cbz": "CBT-tiedostojen\n erämuunnos CBZ:ksi"
+    "batch_cbt_to_cbz": "CBT-tiedostojen\n erämuunnos CBZ:ksi",
+    "batch_metadata": "Metatietojen erätuonti"
   },
   "tabs": {
     "mosaic": "Mosaïque",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} tiedosto(a) nimetty uudelleen CBZ:ksi",
       "renamed_cbr_count": "{count} tiedosto(a) nimetty uudelleen CBR:ksi",
       "renamed_cb7_count": "{count} tiedosto(a) nimetty uudelleen CB7:ksi"
+    },
+    "batch_metadata": {
+      "no_files_title": "Ei yhteensopivia tiedostoja",
+      "no_files_message": "Yhteensopivia tiedostoja (CBZ, CBR, CB7, CBT, PDF) ei löydy hakemistosta:\n{directory}",
+      "confirm_title": "Metatietojen erätuonti",
+      "confirm_message": "{count} tiedosto(a) löydetty hakemistosta {directory} (alihakemistot mukaan lukien).",
+      "start_button": "Aloita",
+      "cbz_warning": "Vain CBZ-muoto tukee ComicInfo-metatietoja. CBR-, CBT-, CB7- ja PDF-tiedostot muunnetaan automaattisesti CBZ-muotoon.",
+      "checkbox_permanent_delete": "Poista alkuperäiset ei-CBZ-tiedostot pysyvästi ilman roskakoriin siirtämistä\n(EI PERUUTUSMAHDOLLISUUTTA)",
+      "complete_title": "Metatietojen tuonti valmis",
+      "complete_message": "{done} tiedosto(a) käsitelty {total}:stä. {skipped} ohitettu.",
+      "complete_message_errors": "{done} tiedosto(a) käsitelty {total}:stä. {skipped} ohitettu. {errors} virhe(ttä).",
+      "errors_count": "{count} virhe(ttä)",
+      "done_count": "{done} tiedosto(a) käsitelty {total}:stä.",
+      "skipped_count": "{skipped} ohitettu.",
+      "select_directory_title": "Valitse käsiteltävä kansio"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Muuntaa kaikki CB7-tiedostot kansiossa\nja sen alikansioissa CBZ:ksi.",
     "batch_cb7_permanent_delete": "VAROITUS : jos tämä asetus on valittu,\nalkuperäiset CB7-tiedostot poistetaan\npysyvästi muunnoksen jälkeen ilman\npalautusmahdollisuutta. Varmista, että sinulla on varmuuskopio.",
     "batch_cbt_to_cbz": "Muuntaa kaikki CBT-tiedostot kansiossa\nja sen alikansioissa CBZ:ksi.",
-    "batch_cbt_permanent_delete": "VAROITUS : jos tämä asetus on valittu,\nalkuperäiset CBT-tiedostot poistetaan\npysyvästi muunnoksen jälkeen ilman\npalautusmahdollisuutta. Varmista, että sinulla on varmuuskopio."
+    "batch_cbt_permanent_delete": "VAROITUS : jos tämä asetus on valittu,\nalkuperäiset CBT-tiedostot poistetaan\npysyvästi muunnoksen jälkeen ilman\npalautusmahdollisuutta. Varmista, että sinulla on varmuuskopio.",
+    "batch_metadata": "Metatietojen erätuonti"
   },
   "help": {
     "title": "MosaicView - Käyttöohje",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Kuvakepalkki tarjoaa nopean pääsyn sovelluksen päätoimintoihin. Voit järjestää kuvakkeet haluamallasi tavalla vetämällä niitä suoraan palkkiin. Valitaksesi, mitkä kuvakkeet näytetään tai piilotetaan, napsauta palkin alaosassa olevaa hammasrataspainiketta: avautuu asetusikkuna, jossa voit siirtää kuvakkeita aktiivisen palkin ja varannon välillä. Käytä « + »- ja « − »-painikkeita kuvakkeiden koon säätämiseen. Asetukset tallennetaan automaattisesti.",
     "license_7zip": "7-Zip-lisenssi",
     "nfo_editor": "NFO-tiedostojen luominen ja muokkaaminen",
-    "nfo_editor_content": "NFO-tiedosto on tekstitiedosto (tunnisteella .nfo), jota käytetään arkistoa koskevien tietojen tallentamiseen: synopsis, tekijätiedot, muistiinpanot…\n\nLuo NFO-tiedosto käyttämällä työkalurivin omistettua kuvaketta, Tiedosto-valikkoa tai pikavalikoa (napsauta hiiren oikealla painikkeella mosaiikkia). Komento on käytettävissä vain, kun mosaiikki ei ole tyhjä. Syötä nimi ja sisältö: tiedosto lisätään suoraan mosaiikkiin ilman purkamista tai väliaikaista tallentamista.\n\nMuokataksesi olemassa olevaa NFO-tiedostoa kaksoisnapsauta sitä mosaiikissa. Ikkuna avautuu valmiiksi täytettynä nykyisellä nimellä ja sisällöllä, molemmat muokattavissa. Molemmissa tapauksissa toiminto tallennetaan peruutushistoriaan."
+    "nfo_editor_content": "NFO-tiedosto on tekstitiedosto (tunnisteella .nfo), jota käytetään arkistoa koskevien tietojen tallentamiseen: synopsis, tekijätiedot, muistiinpanot…\n\nLuo NFO-tiedosto käyttämällä työkalurivin omistettua kuvaketta, Tiedosto-valikkoa tai pikavalikoa (napsauta hiiren oikealla painikkeella mosaiikkia). Komento on käytettävissä vain, kun mosaiikki ei ole tyhjä. Syötä nimi ja sisältö: tiedosto lisätään suoraan mosaiikkiin ilman purkamista tai väliaikaista tallentamista.\n\nMuokataksesi olemassa olevaa NFO-tiedostoa kaksoisnapsauta sitä mosaiikissa. Ikkuna avautuu valmiiksi täytettynä nykyisellä nimellä ja sisällöllä, molemmat muokattavissa. Molemmissa tapauksissa toiminto tallennetaan peruutushistoriaan.",
+    "metadata": "ComicVine-metatiedot",
+    "metadata_content": "MosaicView mahdollistaa sarjakuviesi metatietojen automaattisen hakemisen (otsikko, sarja, numero, tekijät, tiivistelmä...) ComicVine-tietokannasta, yhteisön ylläpitämältä yhteistyösivustolta.\n\nYksittäinen tila: avaa sarjakuva ja käytä sitten työkalupalkin painiketta tai Metatiedot-valikkoa. Kaksivaiheinen ohjattu toiminto avautuu: valitse ensin sarja, sitten vastaava jakso. Metatiedot kirjoitetaan arkiston sisällä olevaan ComicInfo.xml-tiedostoon.\n\nEräkäsittelytila: pudota yksi tai useampi kansio mosaiikkiin ja valitse \"Metatietojen erätuonti\", tai käytä työkalupalkin omistettua painiketta tai Metatiedot-valikkoa. Ohjattu toiminto avautuu peräkkäin jokaiselle löydetylle tiedostolle (CBZ, CBR, CB7, CBT, PDF). Muut kuin CBZ-tiedostot muunnetaan automaattisesti CBZ-muotoon metatietojen kirjoittamisen jälkeen.\n\nAPI-avain: tarvitaan ilmainen ComicVine API-avain. Sovellus opastaa sinua hankkimaan sen. Se saadaan osoitteesta comicvine.gamespot.com tilin luomisen jälkeen.\n\nAPI-rajoitukset: nämä rajoitukset asettaa ComicVine, eikä niitä voi kiertää.\n• 200 pyyntöä per resurssi per tunti. Jos tämä raja saavutetaan, haut epäonnistuvat väliaikaisesti tunnin loppuun asti.\n• Enintään 100 tulosta per pyyntö, mikä pakottaa jakamaan haut useisiin kutsuihin sarjoille, joissa on paljon jaksoja.\n• 1 pyyntö sekunnissa sivuston sallima. Turvallisuuden vuoksi MosaicView odottaa 2 sekuntia pyyntöjen välillä, sillä nopeammat pyynnöt aiheuttavat hyvin todennäköisesti väliaikaisia estoja.\n\nTämä toiminto perustuu kokonaan avoimen lähdekoodin projektiin {scraper}."
   },
   "misc": {
     "file_word": "tiedosto",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Anna tiedoston nimi.",
     "error_write": "Tiedostoa ei voi kirjoittaa:\n{error}",
     "error_duplicate": "Tiedosto nimeltä {filename} on jo olemassa mosaiikissa."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API-avain",
+      "explanation": "Sarjakuvien metatietojen hakemiseen MosaicView käyttää ComicVine-tietokantaa. Tarvitset ilmaisen API-avaimen.",
+      "instructions": "Luo tili {comicvine}-sivustolla ja siirry sitten {api_page}-sivulle saadaksesi avaimesi.",
+      "api_page_label": "API-sivu",
+      "field_label": "API-avain:",
+      "placeholder": "Liitä API-avaimesi tähän",
+      "validate": "Vahvista",
+      "error_empty": "Anna API-avain.",
+      "clear": "Tyhjennä avain"
+    },
+    "menu_label": "Metatiedot",
+    "tooltip": "Hae metatiedot",
+    "change_api_key": "Muuta ComicVine API-avainta",
+    "search_placeholder": "Etsi sarjaa...",
+    "search_button": "Etsi",
+    "searching": "Haetaan...",
+    "loading_issues": "Ladataan numeroita...",
+    "results_count": "{count} tulos(ta) / {total}",
+    "issues_count": "{count} numero(a) sarjalle \"{series}\"",
+    "col_series": "Sarja",
+    "col_year": "Vuosi",
+    "col_issues": "Numerot",
+    "col_publisher": "Kustantaja",
+    "col_issue_num": "Nro",
+    "col_issue_title": "Otsikko",
+    "btn_skip": "Ohita",
+    "btn_back": "Takaisin",
+    "info_single": "Tämä toiminto hakee metatiedot tällä hetkellä avatulle sarjakuvalle. Useiden tiedostojen käsittelyyn kerralla käytä eräkäsittelyä (vedä kansio ikkunaan).",
+    "page_indicator": "Sivu {page}",
+    "loading_issues_progress": "Ladataan... {loaded} / {total}",
+    "issues_partial_load": "{count} numero(a) ladattu — lataus keskeytyi: {error}",
+    "credit": "Metatiedot: {comicvine} · inspiroitu {scraper}"
   }
 }

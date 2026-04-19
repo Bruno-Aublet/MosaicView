@@ -18,44 +18,44 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
 
+def _show_dialog(dlg):
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
+
+
 def show_license_dialog_qt(parent):
     """Ouvre la fenêtre de licence (équivalent Qt de show_license_dialog)."""
-    dlg = _LicenseDialog(parent)
-    dlg.exec()
+    _show_dialog(_LicenseDialog(parent))
 
 
 def show_full_license_window_qt(parent):
     """Ouvre le fichier LICENSE en lecture seule (équivalent Qt de show_full_license_window)."""
-    dlg = _FullLicenseDialog(parent, resource_path("LICENSE"), "GNU General Public License v3.0")
-    dlg.exec()
+    _show_dialog(_FullLicenseDialog(parent, resource_path("LICENSE"), "GNU General Public License v3.0"))
 
 
 def show_full_unrar_license_window_qt(parent):
     """Ouvre unrar/license.txt en lecture seule."""
     import os
-    dlg = _FullLicenseDialog(parent, resource_path(os.path.join("unrar", "license.txt")), "UnRAR License")
-    dlg.exec()
+    _show_dialog(_FullLicenseDialog(parent, resource_path(os.path.join("unrar", "license.txt")), "UnRAR License"))
 
 
 def show_full_7zip_license_window_qt(parent):
     """Ouvre 7zip/license.txt en lecture seule."""
     import os
-    dlg = _FullLicenseDialog(parent, resource_path(os.path.join("7zip", "license.txt")), "7-Zip License")
-    dlg.exec()
+    _show_dialog(_FullLicenseDialog(parent, resource_path(os.path.join("7zip", "license.txt")), "7-Zip License"))
 
 
 def show_full_piqad_license_window_qt(parent):
     """Ouvre fonts/pIqaD-qolqoS-LICENSE.txt en lecture seule."""
     import os
-    dlg = _FullLicenseDialog(parent, resource_path(os.path.join("fonts", "pIqaD-qolqoS-LICENSE.txt")), "pIqaD qolqoS — SIL Open Font License 1.1")
-    dlg.exec()
+    _show_dialog(_FullLicenseDialog(parent, resource_path(os.path.join("fonts", "pIqaD-qolqoS-LICENSE.txt")), "pIqaD qolqoS — SIL Open Font License 1.1"))
 
 
 def show_full_tengwar_license_window_qt(parent):
     """Ouvre fonts/AlcarinTengwar-LICENSE.txt en lecture seule."""
     import os
-    dlg = _FullLicenseDialog(parent, resource_path(os.path.join("fonts", "AlcarinTengwar-LICENSE.txt")), "Alcarin Tengwar — SIL Open Font License 1.1")
-    dlg.exec()
+    _show_dialog(_FullLicenseDialog(parent, resource_path(os.path.join("fonts", "AlcarinTengwar-LICENSE.txt")), "Alcarin Tengwar — SIL Open Font License 1.1"))
 
 
 # ── Dialog résumé de licence ──────────────────────────────────────────────────
@@ -65,7 +65,8 @@ class _LicenseDialog(QDialog):
     def __init__(self, parent):
         super().__init__(parent)
         self.resize(650, 550)
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 15)
@@ -212,7 +213,8 @@ class _FullLicenseDialog(QDialog):
         super().__init__(parent)
         self._window_title = window_title
         self.resize(800, 600)
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)

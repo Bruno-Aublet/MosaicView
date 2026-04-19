@@ -61,7 +61,8 @@
     "unsplit_ui": "Telpë ve parma",
     "rename_to_ext": "Esselenta {ext}-nna",
     "batch_cb7_to_cbz": "Lotë canta CB7\n fílion na CBZ",
-    "batch_cbt_to_cbz": "Lotë canta CBT\n fílion na CBZ"
+    "batch_cbt_to_cbz": "Lotë canta CBT\n fílion na CBZ",
+    "batch_metadata": "Quenta sambië i hanwa"
   },
   "tabs": {
     "mosaic": "Mossaica",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} fílë(li) essetanë na CBZ",
       "renamed_cbr_count": "{count} fílë(li) essetanë na CBR",
       "renamed_cb7_count": "{count} fílë(li) essetanë na CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Lá mátamë quettar",
+      "no_files_message": "Lá mátamë quettar (CBZ, CBR, CB7, CBT, PDF) hirner :\n{directory}",
+      "confirm_title": "Quenta sambië i hanwa",
+      "confirm_message": "{count} quetta/r hirner mi {directory} (amalambar mistarner).",
+      "start_button": "Coa",
+      "cbz_warning": "CBZ quanta mátamë i ComicInfo hanwa. CBR, CBT, CB7 ar PDF quettar nauvar automat' quantaina CBZ-nna.",
+      "checkbox_permanent_delete": "Heca i CBZ-lá quettar ilyë rimbenen\n(UA POLE ENVINYATAR)",
+      "complete_title": "Númen i métanotessë úva",
+      "complete_message": "{done} quetil(i) carner {total}-llo. {skipped} lencaner.",
+      "complete_message_errors": "{done} quetil(i) carner {total}-llo. {skipped} lencaner. {errors} raxë(li).",
+      "errors_count": "{count} raxë(li)",
+      "done_count": "{done} quetil(i) carner {total}-llo.",
+      "skipped_count": "{skipped} lencaner.",
+      "select_directory_title": "Chose i taurelë caritalva"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Canta ilyë CB7 fíli i mápessë\nar nu-mápissen na CBZ.",
     "batch_cb7_permanent_delete": "VÁQUETË : cé sina tant' is i CB7 fíli\nhehtuvanë tennoio ar cantuvaina\nan lá nótë or rucë.",
     "batch_cbt_to_cbz": "Canta ilyë CBT fíli i mápessë\nar nu-mápissen na CBZ.",
-    "batch_cbt_permanent_delete": "VÁQUETË : cé sina tant' is i CBT fíli\nhehtuvanë tennoio ar cantuvaina\nan lá nótë or rucë."
+    "batch_cbt_permanent_delete": "VÁQUETË : cé sina tant' is i CBT fíli\nhehtuvanë tennoio ar cantuvaina\nan lá nótë or rucë.",
+    "batch_metadata": "Númenotessë turúva i métanotessë"
   },
   "help": {
     "title": "MosaicView - Nottië návaren",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "I turco i tíron carda poldorëa na eär lúmëo maitar. Polë rehtar i tíroni ar merin sí terë i carda. Á cirya i tíroni i cenuvar ar i moruvár, á tece i rincë rocco andessë i cardava: parë ohta apantëa, sí polë lerta i tíroni ter i carda minya ar i carda lúva. Á yur i parmar « + » ar « − » na marta i coardalë i tírono. I parë inventahtëa ananta.",
     "license_7zip": "7-Zip Raitalë",
     "nfo_editor": "NFO-parmar carë ar harna",
-    "nfo_editor_content": "NFO-parma ná tecilwa parma (.nfo quetilnen) i harya i mossë i archivossë: sanwë, carmë, notë…\n\nCarë NFO-parma, á sav i caruva tancë i tancalessë, i parma-lendë, hya i sanwë-lendë (formavoitë i mossaicossë). I carda ná canwa erin lá i mossaic nampë ná. Á tulca essë ar quetië: i parma carmë coivë i mossaicossë úr quetilya hya coivë endessë.\n\nHarna NFO-parma ëa, á ataquetë senna i mossaicossë. I tyulma pahta urë-carwa essënen ar quetienën ëa, nati harnanwa. Ambulë, i carda nottë i harna-quenta-lendessë."
+    "nfo_editor_content": "NFO-parma ná tecilwa parma (.nfo quetilnen) i harya i mossë i archivossë: sanwë, carmë, notë…\n\nCarë NFO-parma, á sav i caruva tancë i tancalessë, i parma-lendë, hya i sanwë-lendë (formavoitë i mossaicossë). I carda ná canwa erin lá i mossaic nampë ná. Á tulca essë ar quetië: i parma carmë coivë i mossaicossë úr quetilya hya coivë endessë.\n\nHarna NFO-parma ëa, á ataquetë senna i mossaicossë. I tyulma pahta urë-carwa essënen ar quetienën ëa, nati harnanwa. Ambulë, i carda nottë i harna-quenta-lendessë.",
+    "metadata": "ComicVine Métanótë",
+    "metadata_content": "MosaicView ista i métanótissen i comicvalion (esselya, sérë, notë, tëvorini, onómë...) úcarin ComicVine i nótessëllo, i communtë carila.\n\nMód er: apanta i comicva, sí use i tancal o i Métanótë menu. Tirtanë ataquetaina úpa: ece lerta i sérë, sí i episod. Métanótë carë ComicInfo.xml nu i cáno.\n\nMód batch: lerta i taureli ar selec \"Métanótessen turúva\", o use i tancal o i Métanótë menu. Tirtanë úpa quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa métanótë.\n\nAPI tanca: ComicVine API tanca lemya. I app tirtanëuva tye. Ista comicvine.gamespot.com épa conta.\n\nAPI raxi: ComicVine carë tai raxi, ar umir náner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni epizodion séressen.\n• 1 petitioni quë secunda. MosaicView caita 2 secondar quë petitioni, ar raita petitioni nar raxi.\n\nI quantale sina nó á mer {scraper} apanen."
   },
   "misc": {
     "file_word": "parma",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Á tulca parma essë.",
     "error_write": "Ná umba carë i parma:\n{error}",
     "error_duplicate": "I parma {filename} essenen ná sís i mosaicossë."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API parma",
+      "explanation": "Lá lambë i commici, MosaicView sára i nótë ComicVine. Merin parma API vanwa.",
+      "instructions": "Carë conta ná {comicvine}, ar auta {api_page} lá parma cén.",
+      "api_page_label": "API lambë",
+      "field_label": "API parma:",
+      "placeholder": "Hyarë API parma sís",
+      "validate": "Nótë",
+      "error_empty": "Maxa API parma.",
+      "clear": "Lusta parma"
+    },
+    "menu_label": "Nótë lambë",
+    "tooltip": "Lerta nótë lambë",
+    "change_api_key": "Muta API parma ComicVine",
+    "search_placeholder": "Sír quenta...",
+    "search_button": "Sír",
+    "searching": "Síra...",
+    "loading_issues": "Ortë nótë...",
+    "results_count": "{count} quenta ná {total}",
+    "issues_count": "{count} nótë ló \"{series}\"",
+    "col_series": "Quenta",
+    "col_year": "Loa",
+    "col_issues": "Nótë",
+    "col_publisher": "Túr",
+    "col_issue_num": "Nót.",
+    "col_issue_title": "Essë",
+    "btn_skip": "Auta",
+    "btn_back": "Apa",
+    "info_single": "Sí función lerta nótë i commici sina. Lá ortë queni fili, sára i ortë harna (hyarë mappa ná i coimas).",
+    "page_indicator": "Lambë {page}",
+    "loading_issues_progress": "Ortë... {loaded} / {total}",
+    "issues_partial_load": "{count} nótë ortaina — ortë hauta: {error}",
+    "credit": "Métanótë: {comicvine} · inspired by {scraper}"
   }
 }

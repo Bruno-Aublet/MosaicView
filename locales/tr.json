@@ -61,7 +61,8 @@
     "unsplit_ui": "İkinci paneli kapat",
     "rename_to_ext": "{ext} olarak yeniden adlandır",
     "batch_cb7_to_cbz": "CB7 dosyalarının\n CBZ'ye toplu dönüştürülmesi",
-    "batch_cbt_to_cbz": "CBT dosyalarının\n CBZ'ye toplu dönüştürülmesi"
+    "batch_cbt_to_cbz": "CBT dosyalarının\n CBZ'ye toplu dönüştürülmesi",
+    "batch_metadata": "Toplu meta veri içe aktarımı"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} dosya CBZ olarak yeniden adlandırıldı",
       "renamed_cbr_count": "{count} dosya CBR olarak yeniden adlandırıldı",
       "renamed_cb7_count": "{count} dosya CB7 olarak yeniden adlandırıldı"
+    },
+    "batch_metadata": {
+      "no_files_title": "Uyumlu dosya bulunamadı",
+      "no_files_message": "Şu konumda uyumlu dosya (CBZ, CBR, CB7, CBT, PDF) bulunamadı:\n{directory}",
+      "confirm_title": "Toplu meta veri içe aktarımı",
+      "confirm_message": "{directory} konumunda {count} dosya bulundu (alt dizinler dahil).",
+      "start_button": "Başlat",
+      "cbz_warning": "Yalnızca CBZ formatı ComicInfo meta verilerini destekler. CBR, CBT, CB7 ve PDF dosyaları otomatik olarak CBZ'ye dönüştürülecektir.",
+      "checkbox_permanent_delete": "Orijinal CBZ olmayan dosyaları geri dönüşüm kutusu kullanmadan kalıcı olarak sil\n(GERİ ALINAMAZ)",
+      "complete_title": "Meta veri içe aktarımı tamamlandı",
+      "complete_message": "{total} dosyadan {done} tanesi işlendi. {skipped} atlandı.",
+      "complete_message_errors": "{total} dosyadan {done} tanesi işlendi. {skipped} atlandı. {errors} hata.",
+      "errors_count": "{count} hata",
+      "done_count": "{total} dosyadan {done} tanesi işlendi.",
+      "skipped_count": "{skipped} atlandı.",
+      "select_directory_title": "İşlenecek klasörü seçin"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Bir klasördeki ve alt klasörlerindeki\ntüm CB7 dosyalarını CBZ'ye dönüştürür.",
     "batch_cb7_permanent_delete": "UYARI : bu seçenek işaretlenirse,\norijinal CB7 dosyaları dönüştürme sonrasında\ngeri alma imkânı olmaksızın kalıcı olarak silinir.\nYedek kopyanız olduğundan emin olun.",
     "batch_cbt_to_cbz": "Bir klasördeki ve alt klasörlerindeki\ntüm CBT dosyalarını CBZ'ye dönüştürür.",
-    "batch_cbt_permanent_delete": "UYARI : bu seçenek işaretlenirse,\norijinal CBT dosyaları dönüştürme sonrasında\ngeri alma imkânı olmaksızın kalıcı olarak silinir.\nYedek kopyanız olduğundan emin olun."
+    "batch_cbt_permanent_delete": "UYARI : bu seçenek işaretlenirse,\norijinal CBT dosyaları dönüştürme sonrasında\ngeri alma imkânı olmaksızın kalıcı olarak silinir.\nYedek kopyanız olduğundan emin olun.",
+    "batch_metadata": "Toplu meta veri içe aktarımı"
   },
   "help": {
     "title": "MosaicView - Kullanım Kılavuzu",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Simge araç çubuğu, uygulamanın temel işlevlerine hızlı erişim sağlar. Simgeleri doğrudan çubuğa sürükleyerek istediğiniz gibi yeniden düzenleyebilirsiniz. Hangi simgelerin görüntüleneceğini veya gizleneceğini seçmek için çubuğun alt kısmındaki dişli çark düğmesine tıklayın: simgeleri etkin çubuk ile rezerv arasında taşıyabileceğiniz bir yapılandırma penceresi açılır. Simge boyutunu ayarlamak için « + » ve « − » düğmelerini kullanın. Yapılandırma otomatik olarak kaydedilir.",
     "license_7zip": "7-Zip Lisansı",
     "nfo_editor": "NFO dosyaları oluşturma ve düzenleme",
-    "nfo_editor_content": "NFO dosyası, arşiv hakkında bilgi depolamak için kullanılan bir metin dosyasıdır (.nfo uzantılı): özet, katkıda bulunanlar, notlar…\n\nBir NFO dosyası oluşturmak için araç çubuğundaki özel simgeyi, Dosya menüsünü veya bağlam menüsünü (mozaiğe sağ tıklayın) kullanın. Komut yalnızca mozaik boş olmadığında kullanılabilir. Bir ad ve içerik girin: dosya, çıkarma veya ara kaydetme işlemi yapılmadan doğrudan mozaiğe eklenir.\n\nMevcut bir NFO dosyasını düzenlemek için mozaikte üzerine çift tıklayın. Pencere, mevcut ad ve içerikle önceden doldurulmuş olarak açılır; ikisi de düzenlenebilir. Her iki durumda da işlem geri alma geçmişine kaydedilir."
+    "nfo_editor_content": "NFO dosyası, arşiv hakkında bilgi depolamak için kullanılan bir metin dosyasıdır (.nfo uzantılı): özet, katkıda bulunanlar, notlar…\n\nBir NFO dosyası oluşturmak için araç çubuğundaki özel simgeyi, Dosya menüsünü veya bağlam menüsünü (mozaiğe sağ tıklayın) kullanın. Komut yalnızca mozaik boş olmadığında kullanılabilir. Bir ad ve içerik girin: dosya, çıkarma veya ara kaydetme işlemi yapılmadan doğrudan mozaiğe eklenir.\n\nMevcut bir NFO dosyasını düzenlemek için mozaikte üzerine çift tıklayın. Pencere, mevcut ad ve içerikle önceden doldurulmuş olarak açılır; ikisi de düzenlenebilir. Her iki durumda da işlem geri alma geçmişine kaydedilir.",
+    "metadata": "ComicVine Meta Verisi",
+    "metadata_content": "MosaicView, çizgi romanlarınızın meta verilerini (başlık, seri, numara, yazarlar, özet...) topluluk tarafından sürdürülen işbirlikçi bir site olan ComicVine veritabanından otomatik olarak almanızı sağlar.\n\nTekli mod: bir çizgi roman açın, ardından araç çubuğundaki düğmeyi veya Meta Veri menüsünü kullanın. İki adımlı bir sihirbaz açılır: önce seriyi seçin, ardından ilgili bölümü. Meta veriler arşiv içindeki ComicInfo.xml dosyasına yazılır.\n\nToplu mod: bir veya daha fazla klasörü mozaiğe bırakın ve \"Toplu meta veri içe aktarımı\"nı seçin, veya araç çubuğundaki özel düğmeyi ya da Meta Veri menüsünü kullanın. Sihirbaz bulunan her dosya için sırayla açılır (CBZ, CBR, CB7, CBT, PDF). CBZ olmayan dosyalar, meta veriler yazıldıktan sonra otomatik olarak CBZ'ye dönüştürülür.\n\nAPI anahtarı: Ücretsiz bir ComicVine API anahtarı gereklidir. Uygulama, anahtarı edinmeniz için sizi yönlendirecektir. comicvine.gamespot.com'da hesap oluşturduktan sonra edinilir.\n\nAPI sınırlamaları: bu sınırlamalar ComicVine tarafından uygulanmaktadır ve atlatılamaz.\n• Saat başına kaynak başına 200 istek. Bu sınıra ulaşıldığında, saatin sonuna kadar aramalar geçici olarak başarısız olur.\n• İstek başına maksimum 100 sonuç, bu da çok sayıda bölüm içeren seriler için aramaların birden fazla çağrıya bölünmesini zorunlu kılar.\n• Site tarafından saniyede 1 istek izin verilmektedir. Güvenlik açısından MosaicView her istek arasında 2 saniye bekler, çünkü daha hızlı istekler geçici engellemelere neden olma olasılığı çok yüksektir.\n\nBu özellik tamamen açık kaynaklı {scraper} projesine dayanmaktadır."
   },
   "misc": {
     "file_word": "dosya",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Lütfen bir dosya adı girin.",
     "error_write": "Dosya yazılamıyor:\n{error}",
     "error_duplicate": "{filename} adlı bir dosya mozaikte zaten mevcut."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API Anahtarı",
+      "explanation": "Çizgi romanlarınızın meta verilerini almak için MosaicView, ComicVine veritabanını kullanır. Ücretsiz bir API anahtarına ihtiyacınız var.",
+      "instructions": "{comicvine} sitesinde bir hesap oluşturun, ardından anahtarınızı almak için {api_page} sayfasına gidin.",
+      "api_page_label": "API sayfası",
+      "field_label": "API Anahtarı:",
+      "placeholder": "API anahtarınızı buraya yapıştırın",
+      "validate": "Doğrula",
+      "error_empty": "Lütfen bir API anahtarı girin.",
+      "clear": "Anahtarı temizle"
+    },
+    "menu_label": "Meta Veriler",
+    "tooltip": "Meta verileri al",
+    "change_api_key": "ComicVine API anahtarını değiştir",
+    "search_placeholder": "Seri ara...",
+    "search_button": "Ara",
+    "searching": "Aranıyor...",
+    "loading_issues": "Sayılar yükleniyor...",
+    "results_count": "{total} içinden {count} sonuç",
+    "issues_count": "\"{series}\" için {count} sayı",
+    "col_series": "Seri",
+    "col_year": "Yıl",
+    "col_issues": "Sayılar",
+    "col_publisher": "Yayıncı",
+    "col_issue_num": "No.",
+    "col_issue_title": "Başlık",
+    "btn_skip": "Atla",
+    "btn_back": "Geri",
+    "info_single": "Bu fonksiyon, şu an açık olan çizgi romanın meta verilerini alır. Birden fazla dosyayı aynı anda işlemek için toplu işlemeyi kullanın (bir klasörü pencereye sürükleyin).",
+    "page_indicator": "Sayfa {page}",
+    "loading_issues_progress": "Yükleniyor... {loaded} / {total}",
+    "issues_partial_load": "{count} sayı yüklendi — yükleme kesintiye uğradı: {error}",
+    "credit": "Meta veri: {comicvine} · {scraper} tarafından ilham alındı"
   }
 }

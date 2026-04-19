@@ -61,7 +61,8 @@
     "unsplit_ui": "legh wa' Hol",
     "rename_to_ext": "{ext} pong choH",
     "batch_cb7_to_cbz": "CB7 De'wI'mey\n nav CBZ ngor tay'",
-    "batch_cbt_to_cbz": "CBT De'wI'mey\n nav CBZ ngor tay'"
+    "batch_cbt_to_cbz": "CBT De'wI'mey\n nav CBZ ngor tay'",
+    "batch_metadata": "paq SeHtaHbogh DIl tlheghHom"
   },
   "tabs": {
     "mosaic": "Hur'",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} De'wI'(mey) pong choH CBZ",
       "renamed_cbr_count": "{count} De'wI'(mey) pong choH CBR",
       "renamed_cb7_count": "{count} De'wI'(mey) pong choH CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "paq tu'lu'be'",
+      "no_files_message": "paq tu'lu'be' (CBZ, CBR, CB7, CBT, PDF) ({directory}):\n{directory}",
+      "confirm_title": "paq SeHtaHbogh DIl tlheghHom",
+      "confirm_message": "{count} paq tu'lu' {directory} (Daqmey boq).",
+      "start_button": "taH",
+      "cbz_warning": "CBZ neH ComicInfo De' Qap. CBR, CBT, CB7 je PDF paQDI'norgh CBZ-Daq choHlu'.",
+      "checkbox_permanent_delete": "CBZ net tu'be'bogh paQDI'norgh teqlu' reH, qulpa' HoHbe'\n(QAP pIch)",
+      "complete_title": "chImmoH QumwI' lIngwI' mung qaw rIn",
+      "complete_message": "{done} De'wI'mey lInglu'pu' {total} DochmeyDaq. {skipped} lIjlu'pu'.",
+      "complete_message_errors": "{done} De'wI'mey lInglu'pu' {total} DochmeyDaq. {skipped} lIjlu'pu'. {errors} Qagh.",
+      "errors_count": "{count} Qagh",
+      "done_count": "{done} De'wI'mey lInglu'pu' {total} DochmeyDaq.",
+      "skipped_count": "{skipped} lIjlu'pu'.",
+      "select_directory_title": "He'So' Daqem tIwIj"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Daqvo' CB7 De'wI'mey naQ ngorlu'\nnav CBZ je DaqHommey.",
     "batch_cb7_permanent_delete": "yIQaH : De'wI'mey mejHa'meH qaw\nCB7 De'wI'mey ngor vanDI'\nvaj ngor lojmIt vIpoQ.",
     "batch_cbt_to_cbz": "Daqvo' CBT De'wI'mey naQ ngorlu'\nnav CBZ je DaqHommey.",
-    "batch_cbt_permanent_delete": "yIQaH : De'wI'mey mejHa'meH qaw\nCBT De'wI'mey ngor vanDI'\nvaj ngor lojmIt vIpoQ."
+    "batch_cbt_permanent_delete": "yIQaH : De'wI'mey mejHa'meH qaw\nCBT De'wI'mey ngor vanDI'\nvaj ngor lojmIt vIpoQ.",
+    "batch_metadata": "pagh QumwI' lIngwI' mung qaw teywI'"
   },
   "help": {
     "title": "MosaicView - lo'laHghach QIjmeH",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Icon toolbar-Daq tIn Qu' De' lI' qach latlh jatlh. bIje'laH icon-mey reH toolbar-Daq 'ach SoH neH. icon-mey Dalegh pagh Dabel 'e' DamaS net chaw'meH, gear button toolbar-Daq bIH 'ej SoH: configuration window poSmoH, Daj icon-mey toolbar lIH je puS buS mej. « + » « − » je button-mey lo' icon-mey'e' nI' je. configuration automatically choHlu'.",
     "license_7zip": "7-Zip chut",
     "nfo_editor": "NFO-qawHaq chenmoH 'ej tISaH",
-    "nfo_editor_content": "NFO-qawHaq 'oH ghItlh qawHaq'e' (.nfo De'wI' mIwDaj) 'ej lo'lu' archiv De' choqmeH: QIn, paq, De'mey…\n\nNFO-qawHaq chenmoHmeH, lo' tancDaq Dun tancDaj, paq-lIst, pagh comhad-lIst (moSaIq nIHDaq pagh chos). ngoQ tu'lu' neH moSaIq nampDaq 'oHbe'chugh. pong yInob 'ej QIn yInob: qawHaq coivë moSaIqDaq, chu'moHlu'be'chugh pagh choqbe'lu'.\n\nNFO-qawHaq jev tISaHmeH, moSaIqDaq chen chen. mIw poSmoH urë-carwa pong 'ej QIn, nati tISaHlaH. wa' mIwDaq je, ngoQ notta' harna-QIn-lIstDaq."
+    "nfo_editor_content": "NFO-qawHaq 'oH ghItlh qawHaq'e' (.nfo De'wI' mIwDaj) 'ej lo'lu' archiv De' choqmeH: QIn, paq, De'mey…\n\nNFO-qawHaq chenmoHmeH, lo' tancDaq Dun tancDaj, paq-lIst, pagh comhad-lIst (moSaIq nIHDaq pagh chos). ngoQ tu'lu' neH moSaIq nampDaq 'oHbe'chugh. pong yInob 'ej QIn yInob: qawHaq coivë moSaIqDaq, chu'moHlu'be'chugh pagh choqbe'lu'.\n\nNFO-qawHaq jev tISaHmeH, moSaIqDaq chen chen. mIw poSmoH urë-carwa pong 'ej QIn, nati tISaHlaH. wa' mIwDaq je, ngoQ notta' harna-QIn-lIstDaq.",
+    "metadata": "ComicVine De' mung qaw",
+    "metadata_content": "MosaicView ComicVine De'wI'mey qaw vIlo' (pongmey, SepHom, mIw, ghItlhwI'pu', mu'mey...) ComicVine De'wI'vo' - ghom qaw veS.\n\nMód wa': SoQ comics, ghIq toolbar pong o Metadata menu lo'. cha' pong tIr: wa'DIch SepHom wIv, ghIq episod wIv. De' mung qaw ComicInfo.xml qon.\n\nMód batch: tay' folder(mey) bach ar \"De' mung qaw teywI' pagh\", o toolbar pong o Metadata menu lo'. Tir quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa De' mung qaw.\n\nAPI tI: ComicVine API tI lemya. App vIlo' tIr. comicvine.gamespot.com conta épa ista.\n\nAPI HoS: ComicVine HoS, ar umir.\n• 200 petitioni quë resurs quë rep. I limita, ghIq cari nar.\n• 100 resultati quë petitioni, ista quë episodmey SepHom.\n• 1 petitioni quë lup. MosaicView caita 2 lup quë petitioni, ar raita petitioni nar HoS.\n\nDe'wI' gholwI' {scraper} chen'eghmoHlu'bogh vIlo' naQ."
   },
   "misc": {
     "file_word": "De'",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "qawHaq pong yInob.",
     "error_write": "qawHaq mughmeH qoj Sutlh:\n{error}",
     "error_duplicate": "{filename} ponglIj qawHaq mosaicDaq taH."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API buq",
+      "explanation": "commic De' laDmeH MosaicView ComicVine De'wI' lo'. API buq DIchDaq DapoQ.",
+      "instructions": "{comicvine} conta yIcher, ej {api_page} yIjaH buq DaSuqmeH.",
+      "api_page_label": "API ley'",
+      "field_label": "API buq:",
+      "placeholder": "API buq naDev yIlan",
+      "validate": "yIchel",
+      "error_empty": "API buq yIlan.",
+      "clear": "buq yIteq"
+    },
+    "menu_label": "De' qun",
+    "tooltip": "De' qun yIlaj",
+    "change_api_key": "ComicVine API buq yIchoH",
+    "search_placeholder": "HovpoH yInej...",
+    "search_button": "yInej",
+    "searching": "nejlI'...",
+    "loading_issues": "De' qun laDlI'...",
+    "results_count": "{total} 'oH {count} mIS",
+    "issues_count": "\"{series}\" {count} De' qun",
+    "col_series": "HovpoH",
+    "col_year": "DIS",
+    "col_issues": "De' qun",
+    "col_publisher": "HutlhwI'",
+    "col_issue_num": "mIS.",
+    "col_issue_title": "pong",
+    "btn_skip": "yImev",
+    "btn_back": "pe'vIl",
+    "info_single": "Dochvam commic De' qun laDlI'. law' De' laDmeH Hoch batch lo' (mappa window yIlan).",
+    "page_indicator": "ley' {page}",
+    "loading_issues_progress": "laDlI'... {loaded} / {total}",
+    "issues_partial_load": "{count} De' qun laDlu' — laD mevpu': {error}",
+    "credit": "De' mung: {comicvine} · {scraper} ghItlhbogh"
   }
 }

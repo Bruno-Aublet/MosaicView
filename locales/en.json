@@ -61,7 +61,8 @@
     "unsplit_ui": "Close the second panel",
     "rename_to_ext": "Rename to {ext}",
     "batch_cb7_to_cbz": "Batch conversion\n of CB7 files to CBZ",
-    "batch_cbt_to_cbz": "Batch conversion\n of CBT files to CBZ"
+    "batch_cbt_to_cbz": "Batch conversion\n of CBT files to CBZ",
+    "batch_metadata": "Batch metadata import"
   },
   "tabs": {
     "mosaic": "Mosaic",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} file(s) renamed to CBZ",
       "renamed_cbr_count": "{count} file(s) renamed to CBR",
       "renamed_cb7_count": "{count} file(s) renamed to CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "No compatible files",
+      "no_files_message": "No compatible files (CBZ, CBR, CB7, CBT, PDF) found in:\n{directory}",
+      "confirm_title": "Batch metadata import",
+      "confirm_message": "{count} file(s) found in {directory} (subdirectories included).",
+      "start_button": "Start",
+      "cbz_warning": "Only the CBZ format supports ComicInfo metadata. CBR, CBT, CB7 and PDF files will be automatically converted to CBZ.",
+      "checkbox_permanent_delete": "Permanently delete original non-CBZ files without using the recycle bin\n(NO UNDO POSSIBLE)",
+      "complete_title": "Metadata import complete",
+      "complete_message": "{done} file(s) processed out of {total}. {skipped} skipped.",
+      "complete_message_errors": "{done} file(s) processed out of {total}. {skipped} skipped. {errors} error(s).",
+      "errors_count": "{count} error(s)",
+      "done_count": "{done} file(s) processed out of {total}.",
+      "skipped_count": "{skipped} skipped.",
+      "select_directory_title": "Select a folder to process"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Converts all CB7 files in a directory\nand its subdirectories to CBZ.",
     "batch_cb7_permanent_delete": "WARNING : if this option is checked,\nthe original CB7 files will be permanently\ndeleted after conversion with no possibility\nof recovery. Make sure you have a backup.",
     "batch_cbt_to_cbz": "Converts all CBT files in a directory\nand its subdirectories to CBZ.",
-    "batch_cbt_permanent_delete": "WARNING : if this option is checked,\nthe original CBT files will be permanently\ndeleted after conversion with no possibility\nof recovery. Make sure you have a backup."
+    "batch_cbt_permanent_delete": "WARNING : if this option is checked,\nthe original CBT files will be permanently\ndeleted after conversion with no possibility\nof recovery. Make sure you have a backup.",
+    "batch_metadata": "Batch metadata import"
   },
   "help": {
     "title": "MosaicView - User Manual",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "The icon toolbar provides quick access to the main functions of the application. You can rearrange the icons as you wish by dragging them directly in the toolbar. To choose which icons to show or hide, click the gear button at the bottom of the toolbar: a configuration window opens where you can move icons between the active toolbar and the reserve. Use the « + » and « − » buttons to adjust the size of the icons. The configuration is saved automatically.",
     "license_7zip": "7-Zip License",
     "nfo_editor": "Creating and editing NFO files",
-    "nfo_editor_content": "An NFO file is a text file (with the .nfo extension) used to store information about the archive: synopsis, credits, notes…\n\nTo create an NFO file, use the dedicated icon in the toolbar, the File menu, or the context menu (right-click on the mosaic). The command is only available when the mosaic is not empty. Enter a name and content: the file is inserted directly into the mosaic, with no extraction or intermediate save.\n\nTo edit an existing NFO file, double-click it in the mosaic. The window opens pre-filled with the current name and content, both of which can be edited. In both cases, the operation is recorded in the undo history."
+    "nfo_editor_content": "An NFO file is a text file (with the .nfo extension) used to store information about the archive: synopsis, credits, notes…\n\nTo create an NFO file, use the dedicated icon in the toolbar, the File menu, or the context menu (right-click on the mosaic). The command is only available when the mosaic is not empty. Enter a name and content: the file is inserted directly into the mosaic, with no extraction or intermediate save.\n\nTo edit an existing NFO file, double-click it in the mosaic. The window opens pre-filled with the current name and content, both of which can be edited. In both cases, the operation is recorded in the undo history.",
+    "metadata": "ComicVine Metadata",
+    "metadata_content": "MosaicView allows you to automatically retrieve metadata for your comics (title, series, number, authors, summary...) from the ComicVine database, a collaborative website maintained by the community.\n\nSingle mode: open a comic, then use the toolbar button or the Metadata menu. A two-step wizard opens: first choose the series, then the corresponding episode. Metadata is written to ComicInfo.xml inside the archive.\n\nBatch mode: drop one or more folders onto the mosaic and choose \"Batch metadata import\", or use the dedicated toolbar button or the Metadata menu. The wizard opens successively for each file found (CBZ, CBR, CB7, CBT, PDF). Non-CBZ files are automatically converted to CBZ after the metadata is written.\n\nAPI key: a free ComicVine API key is required. The application will guide you to obtain it. It is obtained at comicvine.gamespot.com after creating an account.\n\nAPI limitations: these limitations are imposed by ComicVine and cannot be bypassed.\n• 200 requests per resource per hour. If this limit is reached, searches temporarily fail until the end of the hour.\n• Maximum 100 results per request, which forces searches to be split across multiple calls for series with many episodes.\n• 1 request per second allowed by the site. For safety, MosaicView waits 2 seconds between each request, as faster requests are highly likely to cause temporary blocks.\n\nThis feature is entirely based on the open source project {scraper}."
   },
   "misc": {
     "file_word": "file",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Please enter a file name.",
     "error_write": "Unable to write the file:\n{error}",
     "error_duplicate": "A file named {filename} already exists in the mosaic."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API Key",
+      "explanation": "To retrieve metadata for your comics, MosaicView uses the ComicVine database. You need a free API key.",
+      "instructions": "Create an account on {comicvine}, then go to the {api_page} to get your key.",
+      "api_page_label": "API page",
+      "field_label": "API Key:",
+      "placeholder": "Paste your API key here",
+      "validate": "Validate",
+      "error_empty": "Please enter an API key.",
+      "clear": "Clear key"
+    },
+    "menu_label": "Metadata",
+    "tooltip": "Retrieve metadata",
+    "change_api_key": "Change ComicVine API key",
+    "search_placeholder": "Search for a series...",
+    "search_button": "Search",
+    "searching": "Searching...",
+    "loading_issues": "Loading issues...",
+    "results_count": "{count} result(s) out of {total}",
+    "issues_count": "{count} issue(s) for \"{series}\"",
+    "col_series": "Series",
+    "col_year": "Year",
+    "col_issues": "Issues",
+    "col_publisher": "Publisher",
+    "col_issue_num": "No.",
+    "col_issue_title": "Title",
+    "btn_skip": "Skip",
+    "btn_back": "Back",
+    "info_single": "This function retrieves metadata for the currently open comic. To process multiple files at once, use batch processing (drop a folder onto the window).",
+    "page_indicator": "Page {page}",
+    "loading_issues_progress": "Loading... {loaded} / {total}",
+    "issues_partial_load": "{count} issue(s) loaded — loading interrupted: {error}",
+    "credit": "Metadata: {comicvine} · inspired by {scraper}"
   }
 }

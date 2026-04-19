@@ -511,6 +511,7 @@ class _HelpDialog(QDialog):
             ("help.adjust_images",        "help.adjust_images_content"),
             ("help.create_icon",          "help.create_icon_content"),
             ("help.batch_convert",        "help.batch_convert_content"),
+            ("help.metadata",             "METADATA_SECTION"),
             ("help.shortcuts",            "help.shortcuts_content"),
             ("help.dark_mode",            "help.dark_mode_content"),
             ("help.sort",                 "help.sort_content"),
@@ -547,7 +548,9 @@ class _HelpDialog(QDialog):
             self._sections.append(section)
             sw = {}
 
-            if content_key == "LANGUAGE_SECTION":
+            if content_key == "METADATA_SECTION":
+                sw = self._build_metadata_section(section)
+            elif content_key == "LANGUAGE_SECTION":
                 sw = self._build_language_section(section)
             elif content_key == "CONFIG_SECTION":
                 sw = self._build_config_section(section)
@@ -584,6 +587,24 @@ class _HelpDialog(QDialog):
         self._content_layout.addWidget(self._close_btn, alignment=Qt.AlignHCenter)
 
     # ── Builders de sections spéciales ────────────────────────────────────────
+
+    def _build_metadata_section(self, section: _CollapsibleSection) -> dict:
+        url_scraper = "https://github.com/cbanack/comic-vine-scraper"
+        html = self._metadata_html(url_scraper)
+        lw = _LinkText(html)
+        lw.setContentsMargins(20, 0, 20, 10)
+        section.add_widget(lw)
+        return {"lw": lw, "url_scraper": url_scraper}
+
+    def _metadata_html(self, url_scraper: str) -> str:
+        import html as _html
+        theme = get_current_theme()
+        link_color = theme.get("link", "#0066cc")
+        text = _("help.metadata_content")
+        scraper_link = f'<a href="{_html.escape(url_scraper)}" style="color:{link_color};">cbanack/comic-vine-scraper</a>'
+        escaped = _html.escape(text).replace("\n", "<br>")
+        escaped = escaped.replace("{scraper}", scraper_link)
+        return escaped
 
     def _build_language_section(self, section: _CollapsibleSection) -> dict:
         url_piqad   = "https://github.com/dadap/pIqaD-fonts"
@@ -770,7 +791,9 @@ class _HelpDialog(QDialog):
             title_key = section._title_key
             sw = self._section_widgets.get(title_key, {})
 
-            if title_key == "help.language":
+            if title_key == "help.metadata":
+                sw["lw"].retranslate(self._metadata_html(sw["url_scraper"]))
+            elif title_key == "help.language":
                 self._retranslate_language_section(sw)
             elif title_key == "help.config_files":
                 self._retranslate_config_section(sw)

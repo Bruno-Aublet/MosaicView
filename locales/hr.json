@@ -61,7 +61,8 @@
     "unsplit_ui": "Zatvori drugu ploču",
     "rename_to_ext": "Preimenuj u {ext}",
     "batch_cb7_to_cbz": "Skupna konverzija\n CB7 datoteka u CBZ",
-    "batch_cbt_to_cbz": "Skupna konverzija\n CBT datoteka u CBZ"
+    "batch_cbt_to_cbz": "Skupna konverzija\n CBT datoteka u CBZ",
+    "batch_metadata": "Skupni uvoz metapodataka"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} datoteka(e) preimenovana(e) u CBZ",
       "renamed_cbr_count": "{count} datoteka(e) preimenovana(e) u CBR",
       "renamed_cb7_count": "{count} datoteka(e) preimenovana(e) u CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Nema kompatibilnih datoteka",
+      "no_files_message": "Nisu pronađene kompatibilne datoteke (CBZ, CBR, CB7, CBT, PDF) u:\n{directory}",
+      "confirm_title": "Skupni uvoz metapodataka",
+      "confirm_message": "Pronađeno {count} datoteka/e u {directory} (uključujući poddirektorije).",
+      "start_button": "Pokreni",
+      "cbz_warning": "Samo CBZ format podržava ComicInfo metapodatke. Datoteke CBR, CBT, CB7 i PDF automatski će se pretvoriti u CBZ.",
+      "checkbox_permanent_delete": "Trajno brisanje izvornih datoteka koje nisu CBZ bez koša za smeće\n(NEMA POVRATA)",
+      "complete_title": "Uvoz metapodataka završen",
+      "complete_message": "Obrađeno {done} datoteka(e) od {total}. Preskočeno {skipped}.",
+      "complete_message_errors": "Obrađeno {done} datoteka(e) od {total}. Preskočeno {skipped}. {errors} pogreška(e).",
+      "errors_count": "{count} pogreška(e)",
+      "done_count": "Obrađeno {done} datoteka(e) od {total}.",
+      "skipped_count": "Preskočeno {skipped}.",
+      "select_directory_title": "Odaberite mapu za obradu"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Konvertira sve CB7 datoteke u mapi\ni njezinim podmapama u CBZ.",
     "batch_cb7_permanent_delete": "UPOZORENJE : ako je ova opcija označena,\noriginalne CB7 datoteke bit će trajno obrisane\nnakon konverzije bez mogućnosti oporavka.\nUvjerite se da imate sigurnosnu kopiju.",
     "batch_cbt_to_cbz": "Konvertira sve CBT datoteke u mapi\ni njezinim podmapama u CBZ.",
-    "batch_cbt_permanent_delete": "UPOZORENJE : ako je ova opcija označena,\noriginalne CBT datoteke bit će trajno obrisane\nnakon konverzije bez mogućnosti oporavka.\nUvjerite se da imate sigurnosnu kopiju."
+    "batch_cbt_permanent_delete": "UPOZORENJE : ako je ova opcija označena,\noriginalne CBT datoteke bit će trajno obrisane\nnakon konverzije bez mogućnosti oporavka.\nUvjerite se da imate sigurnosnu kopiju.",
+    "batch_metadata": "Grupni uvoz metapodataka"
   },
   "help": {
     "title": "MosaicView - Upute za korištenje",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Alatna traka s ikonama omogućuje brz pristup glavnim funkcijama aplikacije. Ikone možete rasporediti po svojoj volji povlačenjem izravno u traku. Za odabir koje ikone prikazati ili sakriti, kliknite na gumb zupčanika na dnu trake: otvori se prozor za konfiguraciju u kojemu možete premještati ikone između aktivne trake i rezerve. Koristite gumbe « + » i « − » za podešavanje veličine ikona. Konfiguracija se sprema automatski.",
     "license_7zip": "Licencija 7-Zip",
     "nfo_editor": "Stvaranje i uređivanje NFO datoteka",
-    "nfo_editor_content": "NFO datoteka je tekstualna datoteka (s nastavkom .nfo) koja se koristi za pohranu informacija o arhivi: sažetak, zasluge, napomene…\n\nZa stvaranje NFO datoteke koristite namjensku ikonu na alatnoj traci, izbornik Datoteka ili kontekstni izbornik (desni klik na mozaik). Naredba je dostupna samo kada mozaik nije prazan. Unesite naziv i sadržaj: datoteka se umeće izravno u mozaik bez ekstrakcije ili međuspremanja.\n\nZa uređivanje postojeće NFO datoteke dvaput kliknite na nju u mozaiku. Prozor se otvara s unaprijed ispunjenim trenutnim nazivom i sadržajem, oba su urečiva. U oba slučaja operacija se bilježi u povijest poništavanja."
+    "nfo_editor_content": "NFO datoteka je tekstualna datoteka (s nastavkom .nfo) koja se koristi za pohranu informacija o arhivi: sažetak, zasluge, napomene…\n\nZa stvaranje NFO datoteke koristite namjensku ikonu na alatnoj traci, izbornik Datoteka ili kontekstni izbornik (desni klik na mozaik). Naredba je dostupna samo kada mozaik nije prazan. Unesite naziv i sadržaj: datoteka se umeće izravno u mozaik bez ekstrakcije ili međuspremanja.\n\nZa uređivanje postojeće NFO datoteke dvaput kliknite na nju u mozaiku. Prozor se otvara s unaprijed ispunjenim trenutnim nazivom i sadržajem, oba su urečiva. U oba slučaja operacija se bilježi u povijest poništavanja.",
+    "metadata": "Metapodaci ComicVine",
+    "metadata_content": "MosaicView omogućuje automatsko dohvaćanje metapodataka za vaše stripove (naslov, serija, broj, autori, sažetak...) iz baze podataka ComicVine, suradničke web stranice koju održava zajednica.\n\nPojedinačni način: otvorite strip, a zatim koristite gumb na alatnoj traci ili izbornik Metapodaci. Otvara se čarobnjak u dva koraka: najprije odaberite seriju, zatim odgovarajuću epizodu. Metapodaci se zapisuju u ComicInfo.xml unutar arhive.\n\nGrupni način: ispustite jednu ili više mapa na mozaik i odaberite \"Grupni uvoz metapodataka\", ili koristite namjenski gumb na alatnoj traci ili izbornik Metapodaci. Čarobnjak se otvara uzastopno za svaku pronađenu datoteku (CBZ, CBR, CB7, CBT, PDF). Datoteke koje nisu CBZ automatski se pretvaraju u CBZ nakon zapisivanja metapodataka.\n\nAPI ključ: potreban je besplatni API ključ za ComicVine. Aplikacija će vas voditi kroz postupak dobivanja. Dobiva se na comicvine.gamespot.com nakon stvaranja računa.\n\nOgraničenja API-ja: ova ograničenja nameće ComicVine i ne mogu se zaobići.\n• 200 zahtjeva po resursu na sat. Ako se dostigne ovaj limit, pretraživanja privremeno ne uspijevaju do kraja sata.\n• Maksimalno 100 rezultata po zahtjevu, što prisiljava na segmentiranje pretraživanja na više poziva za serije s mnogim epizodama.\n• 1 zahtjev u sekundi dopušten od strane stranice. Radi sigurnosti MosaicView čeka 2 sekunde između svakog zahtjeva, jer su brži zahtjevi vrlo skloni izazivanju privremenih blokada.\n\nOva je funkcionalnost u potpunosti temeljena na projektu otvorenog koda {scraper}."
   },
   "misc": {
     "file_word": "datoteka",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Unesite naziv datoteke.",
     "error_write": "Nije moguće zapisati datoteku:\n{error}",
     "error_duplicate": "Datoteka pod nazivom {filename} već postoji u mozaiku."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "API ključ ComicVine",
+      "explanation": "Za dohvaćanje metapodataka stripova MosaicView koristi bazu podataka ComicVine. Potreban vam je besplatni API ključ.",
+      "instructions": "Stvorite račun na {comicvine} i zatim idite na {api_page} kako biste dobili ključ.",
+      "api_page_label": "API stranica",
+      "field_label": "API ključ:",
+      "placeholder": "Zalijepite API ključ ovdje",
+      "validate": "Potvrdi",
+      "error_empty": "Unesite API ključ.",
+      "clear": "Obriši ključ"
+    },
+    "menu_label": "Metapodaci",
+    "tooltip": "Dohvati metapodatke",
+    "change_api_key": "Promijeni API ključ ComicVine",
+    "search_placeholder": "Traži seriju...",
+    "search_button": "Traži",
+    "searching": "Pretraživanje...",
+    "loading_issues": "Učitavanje brojeva...",
+    "results_count": "{count} rezultat(a) od {total}",
+    "issues_count": "{count} broj(eva) za \"{series}\"",
+    "col_series": "Serija",
+    "col_year": "Godina",
+    "col_issues": "Brojevi",
+    "col_publisher": "Nakladnik",
+    "col_issue_num": "Br.",
+    "col_issue_title": "Naslov",
+    "btn_skip": "Preskoči",
+    "btn_back": "Natrag",
+    "info_single": "Ova funkcija dohvaća metapodatke trenutno otvorenog stripa. Za obradu više datoteka odjednom koristite skupnu obradu (povucite mapu na prozor).",
+    "page_indicator": "Stranica {page}",
+    "loading_issues_progress": "Učitavanje... {loaded} / {total}",
+    "issues_partial_load": "{count} broj(eva) učitan — učitavanje prekinuto: {error}",
+    "credit": "Metapodaci: {comicvine} · inspirirano od {scraper}"
   }
 }

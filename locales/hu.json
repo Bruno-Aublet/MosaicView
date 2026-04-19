@@ -61,7 +61,8 @@
     "unsplit_ui": "A második panel bezárása",
     "rename_to_ext": "Átnevezés {ext}-re",
     "batch_cb7_to_cbz": "CB7 fájlok kötegelt\n konvertálása CBZ-vé",
-    "batch_cbt_to_cbz": "CBT fájlok kötegelt\n konvertálása CBZ-vé"
+    "batch_cbt_to_cbz": "CBT fájlok kötegelt\n konvertálása CBZ-vé",
+    "batch_metadata": "Metaadatok tömeges importálása"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} fájl átnevezve CBZ-re",
       "renamed_cbr_count": "{count} fájl átnevezve CBR-re",
       "renamed_cb7_count": "{count} fájl átnevezve CB7-re"
+    },
+    "batch_metadata": {
+      "no_files_title": "Nincsenek kompatibilis fájlok",
+      "no_files_message": "Nem találhatók kompatibilis fájlok (CBZ, CBR, CB7, CBT, PDF) ebben a mappában:\n{directory}",
+      "confirm_title": "Metaadatok tömeges importálása",
+      "confirm_message": "{count} fájl található itt: {directory} (almappákkal együtt).",
+      "start_button": "Indítás",
+      "cbz_warning": "Csak a CBZ formátum támogatja a ComicInfo metaadatokat. A CBR, CBT, CB7 és PDF fájlok automatikusan CBZ formátumba lesznek konvertálva.",
+      "checkbox_permanent_delete": "Az eredeti nem CBZ fájlok végleges törlése lomtár nélkül\n(NEM VONHATÓ VISSZA)",
+      "complete_title": "Metaadatok importálása kész",
+      "complete_message": "{done} fájl feldolgozva {total}-ből. {skipped} kihagyva.",
+      "complete_message_errors": "{done} fájl feldolgozva {total}-ből. {skipped} kihagyva. {errors} hiba.",
+      "errors_count": "{count} hiba",
+      "done_count": "{done} fájl feldolgozva {total}-ből.",
+      "skipped_count": "{skipped} kihagyva.",
+      "select_directory_title": "Válasszon mappát a feldolgozáshoz"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "A mappában és almappáiban lévő összes\nCB7 fájlt CBZ formátumba konvertálja.",
     "batch_cb7_permanent_delete": "FIGYELEM : ha ez a beállítás be van jelölve,\naz eredeti CB7 fájlok véglegesen törlésre kerülnek\na konvertálás után visszaállítás lehetősége nélkül.\nGyőződjön meg arról, hogy van biztonsági másolata.",
     "batch_cbt_to_cbz": "A mappában és almappáiban lévő összes\nCBT fájlt CBZ formátumba konvertálja.",
-    "batch_cbt_permanent_delete": "FIGYELEM : ha ez a beállítás be van jelölve,\naz eredeti CBT fájlok véglegesen törlésre kerülnek\na konvertálás után visszaállítás lehetősége nélkül.\nGyőződjön meg arról, hogy van biztonsági másolata."
+    "batch_cbt_permanent_delete": "FIGYELEM : ha ez a beállítás be van jelölve,\naz eredeti CBT fájlok véglegesen törlésre kerülnek\na konvertálás után visszaállítás lehetősége nélkül.\nGyőződjön meg arról, hogy van biztonsági másolata.",
+    "batch_metadata": "Metaadatok kötegelt importálása"
   },
   "help": {
     "title": "MosaicView - Útmutató",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Az ikonsor gyors hozzáférést biztosít az alkalmazás főbb funkcióihoz. Az ikonokat kedve szerint rendezheti át, közvetlenül a sorba húzva őket. A megjelenítendő vagy elrejtendő ikonok kiválasztásához kattintson a sor alján lévő fogaskerék gombra: megnyílik egy beállítási ablak, amelyben az ikonokat mozgathatja az aktív sor és a tartalék között. A « + » és « − » gombok segítségével módosíthatja az ikonok méretét. A konfiguráció automatikusan mentésre kerül.",
     "license_7zip": "7-Zip licenc",
     "nfo_editor": "NFO fájlok létrehozása és szerkesztése",
-    "nfo_editor_content": "Az NFO fájl egy szöveges fájl (.nfo kiterjesztéssel), amelyet az archívumra vonatkozó információk tárolására használnak: szinopszis, közreműködők, jegyzetek…\n\nNFO fájl létrehozásához használja az eszköztáron lévő dedikált ikont, a Fájl menüt vagy a helyi menüt (jobb kattintás a mozaikon). A parancs csak akkor érhető el, ha a mozaik nem üres. Adjon meg egy nevet és tartalmat: a fájl közvetlenül a mozaikba kerül, kicsomagolás vagy közbülső mentés nélkül.\n\nMeglévő NFO fájl szerkesztéséhez kattintson rá duplán a mozaikon. Az ablak előre kitöltve nyílik meg az aktuális névvel és tartalommal, mindkettő szerkeszthető. Mindkét esetben a művelet rögzítésre kerül a visszavonási előzményekben."
+    "nfo_editor_content": "Az NFO fájl egy szöveges fájl (.nfo kiterjesztéssel), amelyet az archívumra vonatkozó információk tárolására használnak: szinopszis, közreműködők, jegyzetek…\n\nNFO fájl létrehozásához használja az eszköztáron lévő dedikált ikont, a Fájl menüt vagy a helyi menüt (jobb kattintás a mozaikon). A parancs csak akkor érhető el, ha a mozaik nem üres. Adjon meg egy nevet és tartalmat: a fájl közvetlenül a mozaikba kerül, kicsomagolás vagy közbülső mentés nélkül.\n\nMeglévő NFO fájl szerkesztéséhez kattintson rá duplán a mozaikon. Az ablak előre kitöltve nyílik meg az aktuális névvel és tartalommal, mindkettő szerkeszthető. Mindkét esetben a művelet rögzítésre kerül a visszavonási előzményekben.",
+    "metadata": "ComicVine metaadatok",
+    "metadata_content": "A MosaicView lehetővé teszi a képregények metaadatainak (cím, sorozat, szám, szerzők, összefoglaló...) automatikus lekérését a ComicVine adatbázisából, egy közösség által fenntartott kollaboratív weboldalról.\n\nEgyéni mód: nyisson meg egy képregényt, majd használja az eszköztár gombját vagy a Metaadatok menüt. Kétlépéses varázsló nyílik meg: először válassza ki a sorozatot, majd a megfelelő epizódot. A metaadatok a ComicInfo.xml fájlba íródnak az archívumon belül.\n\nKötegelt mód: húzzon egy vagy több mappát a mozaikra, és válassza a \"Metaadatok kötegelt importálása\" lehetőséget, vagy használja az eszköztár dedikált gombját vagy a Metaadatok menüt. A varázsló egymás után nyílik meg minden talált fájlhoz (CBZ, CBR, CB7, CBT, PDF). A nem CBZ fájlok automatikusan CBZ-vé konvertálódnak a metaadatok írása után.\n\nAPI-kulcs: ingyenes ComicVine API-kulcs szükséges. Az alkalmazás végigvezeti a megszerzésén. A comicvine.gamespot.com oldalon szerezhető be fiók létrehozása után.\n\nAPI-korlátozások: ezeket a korlátozásokat a ComicVine szabja meg, és nem lehet megkerülni őket.\n• Óránként 200 kérés erőforrásonként. Ha ezt a határt eléri, a keresések ideiglenesen meghiúsulnak az óra végéig.\n• Kérésenként legfeljebb 100 eredmény, ami arra kényszerít, hogy sok epizóddal rendelkező sorozatoknál a kereséseket több hívásra ossza fel.\n• Másodpercenként 1 kérés engedélyezett az oldal által. Biztonság kedvéért a MosaicView 2 másodpercet vár minden kérés között, mivel a gyorsabb kérések nagy valószínűséggel ideiglenes blokkolásokat okoznak.\n\nEz a funkció teljes egészében a(z) {scraper} nyílt forráskódú projekten alapul."
   },
   "misc": {
     "file_word": "fájl",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Adjon meg egy fájlnevet.",
     "error_write": "A fájl nem írható:\n{error}",
     "error_duplicate": "A {filename} nevű fájl már létezik a mozaikban."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API-kulcs",
+      "explanation": "A képregények metaadatainak lekéréséhez a MosaicView a ComicVine adatbázist használja. Ingyenes API-kulcsra van szüksége.",
+      "instructions": "Hozzon létre fiókot a {comicvine} oldalon, majd látogasson el az {api_page} oldalra a kulcs megszerzéséhez.",
+      "api_page_label": "API oldal",
+      "field_label": "API-kulcs:",
+      "placeholder": "Illessze be ide az API-kulcsát",
+      "validate": "Érvényesítés",
+      "error_empty": "Kérjük, adjon meg egy API-kulcsot.",
+      "clear": "Kulcs törlése"
+    },
+    "menu_label": "Metaadatok",
+    "tooltip": "Metaadatok lekérése",
+    "change_api_key": "ComicVine API-kulcs módosítása",
+    "search_placeholder": "Sorozat keresése...",
+    "search_button": "Keresés",
+    "searching": "Keresés folyamatban...",
+    "loading_issues": "Számok betöltése...",
+    "results_count": "{count} találat {total}-ból",
+    "issues_count": "{count} szám a(z) \"{series}\" sorozathoz",
+    "col_series": "Sorozat",
+    "col_year": "Év",
+    "col_issues": "Számok",
+    "col_publisher": "Kiadó",
+    "col_issue_num": "Sz.",
+    "col_issue_title": "Cím",
+    "btn_skip": "Kihagyás",
+    "btn_back": "Vissza",
+    "info_single": "Ez a funkció az aktuálisan megnyitott képregény metaadatait kéri le. Több fájl egyszerre történő feldolgozásához használja a kötegelt feldolgozást (húzzon egy mappát az ablakra).",
+    "page_indicator": "{page}. oldal",
+    "loading_issues_progress": "Betöltés... {loaded} / {total}",
+    "issues_partial_load": "{count} szám betöltve — betöltés megszakadt: {error}",
+    "credit": "Metaadatok: {comicvine} · inspirálva: {scraper}"
   }
 }

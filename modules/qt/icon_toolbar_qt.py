@@ -40,6 +40,7 @@ ICON_DEFINITIONS = [
     {"id": "batch_cbt_cbz",       "tooltip_key": "tooltip.batch_cbt_to_cbz",     "png": "BTN_Batch_CBT-CBZ.png"},
     {"id": "batch_pdf_cbz",       "tooltip_key": "tooltip.batch_pdf_to_cbz",     "png": "BTN_Batch-PDF-CBZ.png"},
     {"id": "batch_img_cbz",       "tooltip_key": "tooltip.batch_img_to_cbz",     "png": "BTN_Batch_IMAGES-CBZ.png"},
+    {"id": "batch_metadata",      "tooltip_key": "tooltip.batch_metadata",        "png": "BTN_Batch_Metadata.png"},
     # --- ÉDITION ---
     {"id": "undo",                "tooltip_key": None,                            "png": "BTN_Batch_Undo.png"},
     {"id": "redo",                "tooltip_key": None,                            "png": "BTN_Batch_Redo.png"},
@@ -71,6 +72,8 @@ ICON_DEFINITIONS = [
     # --- IMPRESSION ---
     {"id": "print_selection",     "tooltip_key": "buttons.print_selection",       "png": "BTN_Print.png"},
     {"id": "print_all",           "tooltip_key": "buttons.print_all",             "png": "BTN_Print_All.png"},
+    # --- MÉTADONNÉES ---
+    {"id": "fetch_metadata",      "tooltip_key": "comicvine.tooltip",             "png": "BTN_Metadate_xml.png"},
     # --- ORGANISATION ---
     {"id": "renumber",            "tooltip_key": None,                            "png": "BTN_Renumber.png"},
     {"id": "sort",                "tooltip_key": "menu.sort",                     "png": "BTN_Sort.png"},
@@ -115,6 +118,7 @@ _ACTIVATION_RULES = {
     "batch_cbt_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "batch_pdf_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "batch_img_cbz":       lambda sg: not sg["has_file"]() and not sg["has_images"](),
+    "batch_metadata":      lambda sg: not sg["has_file"]() and not sg["has_images"](),
     "close_file":          lambda sg: sg["has_file"]() or sg["has_images"](),
     "apply_save":          lambda sg: sg["has_images"](),
     "undo":                lambda sg: sg["has_undo"](),
@@ -140,6 +144,7 @@ _ACTIVATION_RULES = {
     "split_page":          lambda sg: sg["has_selected_images"]() and sg["selection_count"]() == 1,
     "print_selection":     lambda sg: sg["print_available"]() and sg["has_selection"](),
     "print_all":           lambda sg: sg["print_available"]() and sg["has_images"](),
+    "fetch_metadata":      lambda sg: sg["has_file"](),
     "renumber":            lambda sg: sg["needs_renumbering"]() and not sg["has_subdirs"](),
     "sort":                lambda sg: sg["has_images"](),
     "web_import":          None,
@@ -1018,6 +1023,318 @@ class LanguageComboWidget(QWidget):
         self._update_current_role(self._current_code)
 
 
+# ── Fenêtre de configuration de la barre d'icônes ────────────────────────────
+
+class _IconConfigDialog(QDialog):
+    """Dialog non-modal de configuration de la barre d'icônes (ordre, visibilité)."""
+
+    THUMB = 56
+    COLS  = 4
+
+    def __init__(self, toolbar: "IconToolbarQt"):
+        super().__init__(toolbar)
+        self._toolbar = toolbar
+        self._photo_cache: dict = {}
+
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self.resize(1100, 580)
+
+        all_known  = [d["id"] for d in ICON_DEFINITIONS]
+        self._active_ids = [i for i in toolbar._layout if i in toolbar._defs]
+        self._hidden_ids = [i for i in all_known if i not in self._active_ids]
+        self._sel_active: set = set()
+        self._sel_hidden: set = set()
+
+        from modules.qt.font_manager_qt import get_current_font as _gcf
+        from PySide6.QtWidgets import QCheckBox
+
+        root_layout = QVBoxLayout(self)
+        root_layout.setContentsMargins(10, 10, 10, 10)
+        root_layout.setSpacing(6)
+
+        self._title_lbl = QLabel()
+        self._title_lbl.setAlignment(Qt.AlignCenter)
+        root_layout.addWidget(self._title_lbl)
+
+        main_widget = QWidget()
+        main_layout = QHBoxLayout(main_widget)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(6)
+        root_layout.addWidget(main_widget, stretch=1)
+
+        self._left_panel  = self._make_panel()
+        self._right_panel = self._make_panel()
+
+        arrow_widget = QWidget()
+        arrow_layout = QVBoxLayout(arrow_widget)
+        arrow_layout.setContentsMargins(4, 0, 4, 0)
+        arrow_layout.setSpacing(24)
+        arrow_layout.setAlignment(Qt.AlignVCenter)
+        self._btn_to_hidden = QPushButton()
+        self._btn_to_hidden.setFixedSize(40, 40)
+        self._btn_to_hidden.setCursor(Qt.PointingHandCursor)
+        toolbar._set_btn_icon(self._btn_to_hidden, "BTN_Arrow_RIGHT.png", 32)
+        self._btn_to_active = QPushButton()
+        self._btn_to_active.setFixedSize(40, 40)
+        self._btn_to_active.setCursor(Qt.PointingHandCursor)
+        toolbar._set_btn_icon(self._btn_to_active, "BTN_Arrow_LEFT.png", 32)
+        arrow_layout.addWidget(self._btn_to_hidden)
+        arrow_layout.addWidget(self._btn_to_active)
+
+        main_layout.addWidget(self._left_panel,  stretch=1)
+        main_layout.addWidget(arrow_widget,       stretch=0)
+        main_layout.addWidget(self._right_panel,  stretch=1)
+
+        self._chk_thumb = QCheckBox()
+        self._chk_thumb.setChecked(toolbar._show_thumb_slider)
+        self._chk_lang  = QCheckBox()
+        self._chk_lang.setChecked(toolbar._show_lang_combo)
+
+        bottom = QWidget()
+        bottom_layout = QHBoxLayout(bottom)
+        bottom_layout.setContentsMargins(0, 0, 0, 0)
+        bottom_layout.setSpacing(8)
+        self._btn_reset  = QPushButton()
+        self._btn_reset.setCursor(Qt.PointingHandCursor)
+        self._btn_ok     = QPushButton()
+        self._btn_ok.setCursor(Qt.PointingHandCursor)
+        self._btn_cancel = QPushButton()
+        self._btn_cancel.setCursor(Qt.PointingHandCursor)
+        bottom_layout.addWidget(self._btn_reset)
+        bottom_layout.addStretch()
+        bottom_layout.addWidget(self._chk_thumb)
+        bottom_layout.addSpacing(16)
+        bottom_layout.addWidget(self._chk_lang)
+        bottom_layout.addStretch()
+        bottom_layout.addWidget(self._btn_ok)
+        bottom_layout.addWidget(self._btn_cancel)
+        root_layout.addWidget(bottom)
+
+        self._btn_to_hidden.clicked.connect(self._move_to_hidden)
+        self._btn_to_active.clicked.connect(self._move_to_active)
+        self._btn_reset.clicked.connect(self._do_reset)
+        self._btn_ok.clicked.connect(self._do_ok)
+        self._btn_cancel.clicked.connect(self.reject)
+
+        self._retranslate()
+        self._refresh_all()
+
+        from modules.qt.language_signal import language_signal
+        self._lang_handler = lambda _: self._retranslate()
+        language_signal.changed.connect(self._lang_handler)
+        self.finished.connect(self._on_close)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if not event.spontaneous():
+            from modules.qt.dialogs_qt import _center_on_widget
+            QTimer.singleShot(0, lambda: _center_on_widget(self, self._toolbar))
+
+    def _on_close(self):
+        from modules.qt.language_signal import language_signal
+        try:
+            language_signal.changed.disconnect(self._lang_handler)
+        except RuntimeError:
+            pass
+
+    def _retranslate(self):
+        from modules.qt.state import get_current_theme
+        from modules.qt.font_manager_qt import get_current_font as _gcf
+        theme = get_current_theme()
+        self.setWindowTitle(_wt("labels.icon_toolbar_config_title"))
+        self._title_lbl.setText(_("labels.icon_toolbar_config_title"))
+        self._title_lbl.setFont(_gcf(11))
+        self._left_panel._hdr.setText(_("labels.icon_toolbar_active"))
+        self._left_panel._hdr.setFont(_gcf(9))
+        self._right_panel._hdr.setText(_("labels.icon_toolbar_hidden"))
+        self._right_panel._hdr.setFont(_gcf(9))
+        self._chk_thumb.setText(_("labels.icon_toolbar_show_thumb_slider"))
+        self._chk_thumb.setFont(_gcf(9))
+        self._chk_lang.setText(_("labels.icon_toolbar_show_lang_combo"))
+        self._chk_lang.setFont(_gcf(9))
+        self._btn_reset.setText(_("buttons.icon_toolbar_reset"))
+        self._btn_reset.setFont(_gcf(9))
+        self._btn_ok.setText(_("buttons.ok"))
+        self._btn_ok.setFont(_gcf(9))
+        self._btn_cancel.setText(_("buttons.cancel"))
+        self._btn_cancel.setFont(_gcf(9))
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        self.setStyleSheet(
+            f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }} "
+            f"QLabel  {{ color: {theme['text']}; }} "
+            f"QWidget {{ background: {theme['bg']}; color: {theme['text']}; }} "
+            f"QScrollArea {{ border: 1px solid {theme['separator']}; }} "
+            f"QCheckBox {{ color: {theme['text']}; }} "
+            + btn_style
+        )
+        self._refresh_all()
+
+    def _make_panel(self):
+        frame = QWidget()
+        vlay  = QVBoxLayout(frame)
+        vlay.setContentsMargins(0, 0, 0, 0)
+        vlay.setSpacing(4)
+        hdr = QLabel()
+        hdr.setAlignment(Qt.AlignCenter)
+        vlay.addWidget(hdr)
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setFrameShape(QFrame.StyledPanel)
+        scroll.setMinimumWidth(500)
+        scroll.setMinimumHeight(460)
+        vlay.addWidget(scroll, stretch=1)
+        grid_widget = QWidget()
+        grid_layout = QGridLayout(grid_widget)
+        grid_layout.setSpacing(4)
+        grid_layout.setContentsMargins(6, 6, 6, 6)
+        scroll.setWidget(grid_widget)
+        frame._grid_layout = grid_layout
+        frame._hdr = hdr
+        return frame
+
+    def _get_thumb(self, icon_id: str) -> "QPixmap":
+        if icon_id in self._photo_cache:
+            return self._photo_cache[icon_id]
+        toolbar = self._toolbar
+        defn = toolbar._defs.get(icon_id)
+        if defn:
+            if defn.get("png"):
+                img_path = os.path.join(toolbar._icons_dir, defn["png"])
+            elif defn.get("img_path"):
+                img_path = resource_path(defn["img_path"])
+            else:
+                img_path = None
+            if img_path and os.path.exists(img_path):
+                try:
+                    img = Image.open(img_path).convert("RGBA").resize(
+                        (self.THUMB, self.THUMB), Image.LANCZOS
+                    )
+                    pm = _pil_to_qpixmap(img)
+                    self._photo_cache[icon_id] = pm
+                    return pm
+                except Exception:
+                    pass
+        pm = QPixmap(self.THUMB, self.THUMB)
+        pm.fill(QColor(200, 200, 220))
+        self._photo_cache[icon_id] = pm
+        return pm
+
+    def _render_panel(self, panel, id_list: list, sel_set: set):
+        from modules.qt.font_manager_qt import get_current_font as _gcf
+        gl = panel._grid_layout
+        while gl.count():
+            item = gl.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()
+
+        CELL_W = 110
+        CELL_H = self.THUMB + 72
+        for pos, icon_id in enumerate(id_list):
+            row = pos // self.COLS
+            col = pos % self.COLS
+            is_sel = icon_id in sel_set
+
+            cell = QWidget()
+            cell.setFixedSize(CELL_W, CELL_H)
+            cell_layout = QVBoxLayout(cell)
+            cell_layout.setContentsMargins(3, 3, 3, 3)
+            cell_layout.setSpacing(2)
+            cell_layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+            if is_sel:
+                cell.setStyleSheet("background: #3a7bd5; border-radius: 4px;")
+
+            img_lbl = QLabel()
+            img_lbl.setPixmap(self._get_thumb(icon_id))
+            img_lbl.setAlignment(Qt.AlignCenter)
+            cell_layout.addWidget(img_lbl)
+
+            txt_lbl = QLabel(self._toolbar._get_icon_label(icon_id))
+            txt_lbl.setAlignment(Qt.AlignCenter)
+            txt_lbl.setWordWrap(True)
+            txt_lbl.setFixedWidth(CELL_W - 6)
+            txt_lbl.setFont(_gcf(8))
+            cell_layout.addWidget(txt_lbl)
+
+            def _on_click(checked=False, iid=icon_id, p=panel, sel=sel_set):
+                if iid in sel:
+                    sel.discard(iid)
+                else:
+                    sel.add(iid)
+                if p is self._left_panel:
+                    self._sel_hidden.clear()
+                    self._render_panel(self._right_panel, self._hidden_ids, self._sel_hidden)
+                else:
+                    self._sel_active.clear()
+                    self._render_panel(self._left_panel, self._active_ids, self._sel_active)
+                self._render_panel(p, id_list, sel)
+
+            for w in (cell, img_lbl, txt_lbl):
+                w.mousePressEvent = lambda e, fn=_on_click: fn()
+
+            gl.addWidget(cell, row, col)
+
+        last_row = max(len(id_list) - 1, 0) // self.COLS
+        gl.setRowStretch(last_row + 1, 1)
+
+    def _refresh_all(self):
+        self._render_panel(self._left_panel,  self._active_ids, self._sel_active)
+        self._render_panel(self._right_panel, self._hidden_ids, self._sel_hidden)
+
+    def _move_to_hidden(self):
+        if not self._sel_active:
+            return
+        for iid in list(self._sel_active):
+            if iid in self._active_ids:
+                self._active_ids.remove(iid)
+                self._hidden_ids.append(iid)
+        self._sel_active.clear()
+        self._refresh_all()
+
+    def _move_to_active(self):
+        if not self._sel_hidden:
+            return
+        for iid in list(self._sel_hidden):
+            if iid in self._hidden_ids:
+                self._hidden_ids.remove(iid)
+                self._active_ids.append(iid)
+        self._sel_hidden.clear()
+        self._refresh_all()
+
+    def _do_reset(self):
+        all_known = [d["id"] for d in ICON_DEFINITIONS]
+        self._active_ids.clear()
+        self._hidden_ids.clear()
+        self._active_ids.extend(all_known)
+        self._sel_active.clear()
+        self._sel_hidden.clear()
+        self._chk_thumb.setChecked(True)
+        self._chk_lang.setChecked(True)
+        self._refresh_all()
+
+    def _do_ok(self):
+        tb = self._toolbar
+        tb._layout = list(self._active_ids)
+        if hasattr(tb._config, "set_icon_toolbar_layout"):
+            tb._config.set_icon_toolbar_layout(tb._layout)
+        tb._show_thumb_slider = self._chk_thumb.isChecked()
+        tb._show_lang_combo   = self._chk_lang.isChecked()
+        if hasattr(tb._config, "set_show_thumb_slider"):
+            tb._config.set_show_thumb_slider(tb._show_thumb_slider)
+        if hasattr(tb._config, "set_show_lang_combo"):
+            tb._config.set_show_lang_combo(tb._show_lang_combo)
+        tb._thumb_size_slider.setVisible(tb._show_thumb_slider)
+        tb._lang_combo.setVisible(tb._show_lang_combo)
+        tb._slider_lang_row.setVisible(tb._show_thumb_slider or tb._show_lang_combo)
+        tb._populate_grid()
+        self.accept()
+
+
 # ── Barre d'icônes principale ─────────────────────────────────────────────────
 
 class IconToolbarQt(QWidget):
@@ -1566,6 +1883,7 @@ class IconToolbarQt(QWidget):
         "batch_cbt_cbz":       "buttons.batch_cbt_to_cbz",
         "batch_pdf_cbz":       "buttons.batch_pdf_to_cbz",
         "batch_img_cbz":       "buttons.batch_img_to_cbz",
+        "batch_metadata":      "buttons.batch_metadata",
         "undo":                "buttons.undo",
         "redo":                "buttons.redo",
         "flatten_directories": "buttons.flatten_dirs",
@@ -1601,6 +1919,7 @@ class IconToolbarQt(QWidget):
         "clone_zone":          "tooltip.clone_zone",
         "text":                "tooltip.text",
         "create_nfo":          "nfo.menu_item",
+        "fetch_metadata":      "comicvine.tooltip",
     }
 
     def _get_icon_label(self, icon_id: str) -> str:
@@ -1616,285 +1935,10 @@ class IconToolbarQt(QWidget):
     # ── Fenêtre de configuration ───────────────────────────────────────────────
 
     def _open_config_window(self):
-        all_known  = [d["id"] for d in ICON_DEFINITIONS]
-        active_ids = [i for i in self._layout if i in self._defs]
-        hidden_ids = [i for i in all_known if i not in active_ids]
-
-        sel_active: set = set()
-        sel_hidden: set = set()
-
-        THUMB = 56
-        COLS  = 4
-        photo_cache: dict = {}
-
-        def get_thumb(icon_id: str) -> QPixmap:
-            if icon_id in photo_cache:
-                return photo_cache[icon_id]
-            defn = self._defs.get(icon_id)
-            if defn:
-                if defn.get("png"):
-                    img_path = os.path.join(self._icons_dir, defn["png"])
-                elif defn.get("img_path"):
-                    img_path = resource_path(defn["img_path"])
-                else:
-                    img_path = None
-                if img_path and os.path.exists(img_path):
-                    try:
-                        img = Image.open(img_path).convert("RGBA").resize(
-                            (THUMB, THUMB), Image.LANCZOS
-                        )
-                        pm = _pil_to_qpixmap(img)
-                        photo_cache[icon_id] = pm
-                        return pm
-                    except Exception:
-                        pass
-            pm = QPixmap(THUMB, THUMB)
-            pm.fill(QColor(200, 200, 220))
-            photo_cache[icon_id] = pm
-            return pm
-
-        dlg = QDialog(self)
-        dlg.setWindowTitle(_wt("labels.icon_toolbar_config_title"))
-        dlg.setModal(True)
-        dlg.resize(1100, 580)
-
-        root_layout = QVBoxLayout(dlg)
-        root_layout.setContentsMargins(10, 10, 10, 10)
-        root_layout.setSpacing(6)
-
-        from modules.qt.font_manager_qt import get_current_font as _gcf
-        title_lbl = QLabel(_("labels.icon_toolbar_config_title"))
-        title_lbl.setAlignment(Qt.AlignCenter)
-        title_lbl.setFont(_gcf(11))
-        root_layout.addWidget(title_lbl)
-
-        main_widget = QWidget()
-        main_layout = QHBoxLayout(main_widget)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(6)
-        root_layout.addWidget(main_widget, stretch=1)
-
-        def make_panel(header_key: str):
-            frame = QWidget()
-            vlay  = QVBoxLayout(frame)
-            vlay.setContentsMargins(0, 0, 0, 0)
-            vlay.setSpacing(4)
-            hdr = QLabel(_(header_key))
-            hdr.setAlignment(Qt.AlignCenter)
-            hdr.setFont(_gcf(9))
-            hdr._key = header_key
-            vlay.addWidget(hdr)
-            scroll = QScrollArea()
-            scroll.setWidgetResizable(True)
-            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            scroll.setFrameShape(QFrame.StyledPanel)
-            scroll.setMinimumWidth(500)
-            scroll.setMinimumHeight(460)
-            vlay.addWidget(scroll, stretch=1)
-            grid_widget = QWidget()
-            grid_layout = QGridLayout(grid_widget)
-            grid_layout.setSpacing(4)
-            grid_layout.setContentsMargins(6, 6, 6, 6)
-            scroll.setWidget(grid_widget)
-            frame._grid_layout = grid_layout
-            frame._hdr = hdr
-            return frame
-
-        left_panel  = make_panel("labels.icon_toolbar_active")
-        right_panel = make_panel("labels.icon_toolbar_hidden")
-
-        arrow_widget = QWidget()
-        arrow_layout = QVBoxLayout(arrow_widget)
-        arrow_layout.setContentsMargins(4, 0, 4, 0)
-        arrow_layout.setSpacing(24)
-        arrow_layout.setAlignment(Qt.AlignVCenter)
-        btn_to_hidden = QPushButton()
-        btn_to_hidden.setFixedSize(40, 40)
-        btn_to_hidden.setCursor(Qt.PointingHandCursor)
-        self._set_btn_icon(btn_to_hidden, "BTN_Arrow_RIGHT.png", 32)
-        btn_to_active = QPushButton()
-        btn_to_active.setFixedSize(40, 40)
-        btn_to_active.setCursor(Qt.PointingHandCursor)
-        self._set_btn_icon(btn_to_active, "BTN_Arrow_LEFT.png", 32)
-        arrow_layout.addWidget(btn_to_hidden)
-        arrow_layout.addWidget(btn_to_active)
-
-        main_layout.addWidget(left_panel,   stretch=1)
-        main_layout.addWidget(arrow_widget, stretch=0)
-        main_layout.addWidget(right_panel,  stretch=1)
-
-        from PySide6.QtWidgets import QCheckBox
-
-        chk_thumb = QCheckBox(_("labels.icon_toolbar_show_thumb_slider"))
-        chk_thumb.setFont(_gcf(9))
-        chk_thumb.setChecked(self._show_thumb_slider)
-
-        chk_lang  = QCheckBox(_("labels.icon_toolbar_show_lang_combo"))
-        chk_lang.setFont(_gcf(9))
-        chk_lang.setChecked(self._show_lang_combo)
-
-        bottom = QWidget()
-        bottom_layout = QHBoxLayout(bottom)
-        bottom_layout.setContentsMargins(0, 0, 0, 0)
-        bottom_layout.setSpacing(8)
-        btn_reset  = QPushButton(_("buttons.icon_toolbar_reset"))
-        btn_reset.setCursor(Qt.PointingHandCursor)
-        btn_reset.setFont(_gcf(9))
-        btn_ok     = QPushButton(_("buttons.ok"))
-        btn_ok.setCursor(Qt.PointingHandCursor)
-        btn_ok.setFont(_gcf(9))
-        btn_cancel = QPushButton(_("buttons.cancel"))
-        btn_cancel.setCursor(Qt.PointingHandCursor)
-        btn_cancel.setFont(_gcf(9))
-        bottom_layout.addWidget(btn_reset)
-        bottom_layout.addStretch()
-        bottom_layout.addWidget(chk_thumb)
-        bottom_layout.addSpacing(16)
-        bottom_layout.addWidget(chk_lang)
-        bottom_layout.addStretch()
-        bottom_layout.addWidget(btn_ok)
-        bottom_layout.addWidget(btn_cancel)
-        root_layout.addWidget(bottom)
-
-        def render_panel(panel, id_list: list, sel_set: set):
-            gl = panel._grid_layout
-            while gl.count():
-                item = gl.takeAt(0)
-                if item.widget():
-                    item.widget().deleteLater()
-
-            for pos, icon_id in enumerate(id_list):
-                row = pos // COLS
-                col = pos % COLS
-                is_sel = icon_id in sel_set
-
-                CELL_W = 110
-                CELL_H = THUMB + 72
-
-                cell = QWidget()
-                cell.setFixedSize(CELL_W, CELL_H)
-                cell_layout = QVBoxLayout(cell)
-                cell_layout.setContentsMargins(3, 3, 3, 3)
-                cell_layout.setSpacing(2)
-                cell_layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
-                if is_sel:
-                    cell.setStyleSheet("background: #3a7bd5; border-radius: 4px;")
-
-                img_lbl = QLabel()
-                img_lbl.setPixmap(get_thumb(icon_id))
-                img_lbl.setAlignment(Qt.AlignCenter)
-                cell_layout.addWidget(img_lbl)
-
-                txt_lbl = QLabel(self._get_icon_label(icon_id))
-                txt_lbl.setAlignment(Qt.AlignCenter)
-                txt_lbl.setWordWrap(True)
-                txt_lbl.setFixedWidth(CELL_W - 6)
-                txt_lbl.setFont(_gcf(8))
-                cell_layout.addWidget(txt_lbl)
-
-                def _on_click(checked=False, iid=icon_id, p=panel, sel=sel_set):
-                    if iid in sel:
-                        sel.discard(iid)
-                    else:
-                        sel.add(iid)
-                    if p is left_panel:
-                        sel_hidden.clear()
-                        render_panel(right_panel, hidden_ids, sel_hidden)
-                    else:
-                        sel_active.clear()
-                        render_panel(left_panel, active_ids, sel_active)
-                    render_panel(p, id_list, sel)
-
-                for w in (cell, img_lbl, txt_lbl):
-                    w.mousePressEvent = lambda e, fn=_on_click: fn()
-
-                gl.addWidget(cell, row, col)
-
-            last_row = max(len(id_list) - 1, 0) // COLS
-            gl.setRowStretch(last_row + 1, 1)
-
-        def refresh_all():
-            render_panel(left_panel,  active_ids, sel_active)
-            render_panel(right_panel, hidden_ids, sel_hidden)
-
-        def _retranslate(_lang=None):
-            dlg.setWindowTitle(_wt("labels.icon_toolbar_config_title"))
-            title_lbl.setText(_("labels.icon_toolbar_config_title"))
-            title_lbl.setFont(_gcf(11))
-            left_panel._hdr.setText(_("labels.icon_toolbar_active"))
-            left_panel._hdr.setFont(_gcf(9))
-            right_panel._hdr.setText(_("labels.icon_toolbar_hidden"))
-            right_panel._hdr.setFont(_gcf(9))
-            chk_thumb.setText(_("labels.icon_toolbar_show_thumb_slider"))
-            chk_thumb.setFont(_gcf(9))
-            chk_lang.setText(_("labels.icon_toolbar_show_lang_combo"))
-            chk_lang.setFont(_gcf(9))
-            btn_reset.setText(_("buttons.icon_toolbar_reset"))
-            btn_reset.setFont(_gcf(9))
-            btn_ok.setText(_("buttons.ok"))
-            btn_ok.setFont(_gcf(9))
-            btn_cancel.setText(_("buttons.cancel"))
-            btn_cancel.setFont(_gcf(9))
-            refresh_all()
-
-        from modules.qt.language_signal import language_signal
-        language_signal.changed.connect(_retranslate)
-        dlg.finished.connect(lambda: language_signal.changed.disconnect(_retranslate))
-
-        def move_to_hidden():
-            if not sel_active:
-                return
-            for iid in list(sel_active):
-                if iid in active_ids:
-                    active_ids.remove(iid)
-                    hidden_ids.append(iid)
-            sel_active.clear()
-            refresh_all()
-
-        def move_to_active():
-            if not sel_hidden:
-                return
-            for iid in list(sel_hidden):
-                if iid in hidden_ids:
-                    hidden_ids.remove(iid)
-                    active_ids.append(iid)
-            sel_hidden.clear()
-            refresh_all()
-
-        def do_reset():
-            active_ids.clear()
-            hidden_ids.clear()
-            active_ids.extend(all_known)
-            sel_active.clear()
-            sel_hidden.clear()
-            chk_thumb.setChecked(True)
-            chk_lang.setChecked(True)
-            refresh_all()
-
-        def do_ok():
-            self._layout = list(active_ids)
-            if hasattr(self._config, "set_icon_toolbar_layout"):
-                self._config.set_icon_toolbar_layout(self._layout)
-            self._show_thumb_slider = chk_thumb.isChecked()
-            self._show_lang_combo   = chk_lang.isChecked()
-            if hasattr(self._config, "set_show_thumb_slider"):
-                self._config.set_show_thumb_slider(self._show_thumb_slider)
-            if hasattr(self._config, "set_show_lang_combo"):
-                self._config.set_show_lang_combo(self._show_lang_combo)
-            self._thumb_size_slider.setVisible(self._show_thumb_slider)
-            self._lang_combo.setVisible(self._show_lang_combo)
-            self._slider_lang_row.setVisible(self._show_thumb_slider or self._show_lang_combo)
-            self._populate_grid()
-            dlg.accept()
-
-        btn_to_hidden.clicked.connect(move_to_hidden)
-        btn_to_active.clicked.connect(move_to_active)
-        btn_reset.clicked.connect(do_reset)
-        btn_ok.clicked.connect(do_ok)
-        btn_cancel.clicked.connect(dlg.reject)
-
-        refresh_all()
-        dlg.exec()
+        dlg = _IconConfigDialog(self)
+        dlg.show()
+        dlg.raise_()
+        dlg.activateWindow()
 
     # ── Réordonnancement par drag & drop ──────────────────────────────────────
 
@@ -1987,11 +2031,13 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "batch_cbt_cbz":         cb["batch_convert_cbt_to_cbz"],
         "batch_pdf_cbz":         cb["batch_convert_pdf_to_cbz"],
         "batch_img_cbz":         cb["batch_convert_img_to_cbz"],
+        "batch_metadata":        cb["batch_metadata"],
         "undo":                  cb["undo_action"],
         "redo":                  cb["redo_action"],
         "flatten_directories":   cb["flatten_directories"],
         "web_import":            cb["show_web_import_dialog"],
         "create_nfo":            cb["show_nfo_dialog"],
+        "fetch_metadata":        cb["fetch_metadata"],
         "delete_selected":       cb["delete_selected"],
         "copy_selected":         cb["copy_selected"],
         "cut_selected":          cb["cut_selected"],

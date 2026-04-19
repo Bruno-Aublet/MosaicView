@@ -61,7 +61,8 @@
     "unsplit_ui": "Tutup panel kedua",
     "rename_to_ext": "Ganti nama menjadi {ext}",
     "batch_cb7_to_cbz": "Konversi massal\n file CB7 ke CBZ",
-    "batch_cbt_to_cbz": "Konversi massal\n file CBT ke CBZ"
+    "batch_cbt_to_cbz": "Konversi massal\n file CBT ke CBZ",
+    "batch_metadata": "Impor metadata sekaligus"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} berkas diubah namanya menjadi CBZ",
       "renamed_cbr_count": "{count} berkas diubah namanya menjadi CBR",
       "renamed_cb7_count": "{count} berkas diubah namanya menjadi CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Tidak ada file yang kompatibel",
+      "no_files_message": "Tidak ditemukan file kompatibel (CBZ, CBR, CB7, CBT, PDF) di:\n{directory}",
+      "confirm_title": "Impor metadata sekaligus",
+      "confirm_message": "{count} file ditemukan di {directory} (subdirektori disertakan).",
+      "start_button": "Mulai",
+      "cbz_warning": "Hanya format CBZ yang mendukung metadata ComicInfo. File CBR, CBT, CB7, dan PDF akan otomatis dikonversi ke CBZ.",
+      "checkbox_permanent_delete": "Hapus file asli non-CBZ secara permanen tanpa recycle bin\n(TIDAK DAPAT DIBATALKAN)",
+      "complete_title": "Impor metadata selesai",
+      "complete_message": "{done} file diproses dari {total}. {skipped} dilewati.",
+      "complete_message_errors": "{done} file diproses dari {total}. {skipped} dilewati. {errors} kesalahan.",
+      "errors_count": "{count} kesalahan",
+      "done_count": "{done} file diproses dari {total}.",
+      "skipped_count": "{skipped} dilewati.",
+      "select_directory_title": "Pilih folder untuk diproses"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Mengonversi semua file CB7 di sebuah\ndirektori dan subdirektorinya ke CBZ.",
     "batch_cb7_permanent_delete": "PERINGATAN : jika opsi ini dicentang,\nfile CB7 asli akan dihapus secara permanen\nsetelah konversi tanpa kemungkinan pemulihan.\nPastikan Anda memiliki cadangan.",
     "batch_cbt_to_cbz": "Mengonversi semua file CBT di sebuah\ndirektori dan subdirektorinya ke CBZ.",
-    "batch_cbt_permanent_delete": "PERINGATAN : jika opsi ini dicentang,\nfile CBT asli akan dihapus secara permanen\nsetelah konversi tanpa kemungkinan pemulihan.\nPastikan Anda memiliki cadangan."
+    "batch_cbt_permanent_delete": "PERINGATAN : jika opsi ini dicentang,\nfile CBT asli akan dihapus secara permanen\nsetelah konversi tanpa kemungkinan pemulihan.\nPastikan Anda memiliki cadangan.",
+    "batch_metadata": "Impor metadata batch"
   },
   "help": {
     "title": "MosaicView - Panduan Penggunaan",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Bilah ikon memberikan akses cepat ke fungsi utama aplikasi. Anda dapat mengatur ulang ikon sesuai keinginan dengan menyeretnya langsung ke bilah. Untuk memilih ikon mana yang ditampilkan atau disembunyikan, klik tombol roda gigi di bagian bawah bilah: jendela konfigurasi akan terbuka tempat Anda dapat memindahkan ikon antara bilah aktif dan cadangan. Gunakan tombol « + » dan « − » untuk menyesuaikan ukuran ikon. Konfigurasi disimpan secara otomatis.",
     "license_7zip": "Lisensi 7-Zip",
     "nfo_editor": "Membuat dan mengedit file NFO",
-    "nfo_editor_content": "File NFO adalah file teks (dengan ekstensi .nfo) yang digunakan untuk menyimpan informasi tentang arsip: sinopsis, kredit, catatan…\n\nUntuk membuat file NFO, gunakan ikon khusus di toolbar, menu File, atau menu konteks (klik kanan pada mosaik). Perintah ini hanya tersedia ketika mosaik tidak kosong. Masukkan nama dan konten: file disisipkan langsung ke dalam mosaik tanpa ekstraksi atau penyimpanan sementara.\n\nUntuk mengedit file NFO yang sudah ada, klik dua kali padanya di mosaik. Jendela terbuka dengan nama dan konten saat ini yang sudah diisi, keduanya dapat diedit. Dalam kedua kasus, operasi dicatat dalam riwayat urungkan."
+    "nfo_editor_content": "File NFO adalah file teks (dengan ekstensi .nfo) yang digunakan untuk menyimpan informasi tentang arsip: sinopsis, kredit, catatan…\n\nUntuk membuat file NFO, gunakan ikon khusus di toolbar, menu File, atau menu konteks (klik kanan pada mosaik). Perintah ini hanya tersedia ketika mosaik tidak kosong. Masukkan nama dan konten: file disisipkan langsung ke dalam mosaik tanpa ekstraksi atau penyimpanan sementara.\n\nUntuk mengedit file NFO yang sudah ada, klik dua kali padanya di mosaik. Jendela terbuka dengan nama dan konten saat ini yang sudah diisi, keduanya dapat diedit. Dalam kedua kasus, operasi dicatat dalam riwayat urungkan.",
+    "metadata": "Metadata ComicVine",
+    "metadata_content": "MosaicView memungkinkan pengambilan metadata komik Anda (judul, seri, nomor, penulis, ringkasan...) secara otomatis dari basis data ComicVine, situs kolaboratif yang dikelola komunitas.\n\nMode tunggal: buka komik, lalu gunakan tombol bilah alat atau menu Metadata. Wizard dua langkah terbuka: pilih dulu seri, lalu episode yang sesuai. Metadata ditulis ke ComicInfo.xml di dalam arsip.\n\nMode batch: jatuhkan satu atau beberapa folder ke mosaik dan pilih \"Impor metadata batch\", atau gunakan tombol khusus di bilah alat atau menu Metadata. Wizard terbuka berturut-turut untuk setiap file yang ditemukan (CBZ, CBR, CB7, CBT, PDF). File non-CBZ dikonversi otomatis ke CBZ setelah penulisan metadata.\n\nKunci API: diperlukan kunci API ComicVine gratis. Aplikasi akan memandu Anda mendapatkannya. Diperoleh di comicvine.gamespot.com setelah membuat akun.\n\nBatasan API: batasan ini diberlakukan oleh ComicVine dan tidak dapat dihindari.\n• 200 permintaan per sumber daya per jam. Jika batas ini tercapai, pencarian gagal sementara hingga akhir jam.\n• Maksimum 100 hasil per permintaan, yang memaksa pencarian dibagi menjadi beberapa panggilan untuk seri dengan banyak episode.\n• 1 permintaan per detik diizinkan oleh situs. Demi keamanan, MosaicView menunggu 2 detik di antara setiap permintaan, karena permintaan yang lebih cepat sangat mungkin menyebabkan pemblokiran sementara.\n\nFitur ini sepenuhnya didasarkan pada proyek sumber terbuka {scraper}."
   },
   "misc": {
     "file_word": "file",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Masukkan nama file.",
     "error_write": "Tidak dapat menulis file:\n{error}",
     "error_duplicate": "File bernama {filename} sudah ada di mosaik."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "Kunci API ComicVine",
+      "explanation": "Untuk mengambil metadata komik, MosaicView menggunakan database ComicVine. Anda memerlukan kunci API gratis.",
+      "instructions": "Buat akun di {comicvine}, lalu pergi ke {api_page} untuk mendapatkan kunci Anda.",
+      "api_page_label": "halaman API",
+      "field_label": "Kunci API:",
+      "placeholder": "Tempelkan kunci API Anda di sini",
+      "validate": "Validasi",
+      "error_empty": "Harap masukkan kunci API.",
+      "clear": "Hapus kunci"
+    },
+    "menu_label": "Metadata",
+    "tooltip": "Ambil metadata",
+    "change_api_key": "Ubah kunci API ComicVine",
+    "search_placeholder": "Cari seri...",
+    "search_button": "Cari",
+    "searching": "Mencari...",
+    "loading_issues": "Memuat nomor...",
+    "results_count": "{count} hasil dari {total}",
+    "issues_count": "{count} nomor untuk \"{series}\"",
+    "col_series": "Seri",
+    "col_year": "Tahun",
+    "col_issues": "Nomor",
+    "col_publisher": "Penerbit",
+    "col_issue_num": "No.",
+    "col_issue_title": "Judul",
+    "btn_skip": "Lewati",
+    "btn_back": "Kembali",
+    "info_single": "Fungsi ini mengambil metadata untuk komik yang sedang dibuka. Untuk memproses beberapa file sekaligus, gunakan pemrosesan batch (seret folder ke jendela).",
+    "page_indicator": "Halaman {page}",
+    "loading_issues_progress": "Memuat... {loaded} / {total}",
+    "issues_partial_load": "{count} nomor dimuat — pemuatan terputus: {error}",
+    "credit": "Metadata: {comicvine} · terinspirasi dari {scraper}"
   }
 }

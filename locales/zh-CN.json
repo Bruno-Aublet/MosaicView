@@ -61,7 +61,8 @@
     "unsplit_ui": "关闭第二个面板",
     "rename_to_ext": "重命名为 {ext}",
     "batch_cb7_to_cbz": "批量将 CB7\n 文件转换为 CBZ",
-    "batch_cbt_to_cbz": "批量将 CBT\n 文件转换为 CBZ"
+    "batch_cbt_to_cbz": "批量将 CBT\n 文件转换为 CBZ",
+    "batch_metadata": "批量导入元数据"
   },
   "tabs": {
     "mosaic": "缩略图",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "已将 {count} 个文件重命名为 CBZ",
       "renamed_cbr_count": "已将 {count} 个文件重命名为 CBR",
       "renamed_cb7_count": "已将 {count} 个文件重命名为 CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "没有兼容文件",
+      "no_files_message": "在以下目录中未找到兼容文件 (CBZ、CBR、CB7、CBT、PDF):\n{directory}",
+      "confirm_title": "批量导入元数据",
+      "confirm_message": "在 {directory} 中找到 {count} 个文件（包含子目录）。",
+      "start_button": "开始",
+      "cbz_warning": "只有CBZ格式支持ComicInfo元数据。CBR、CBT、CB7和PDF文件将自动转换为CBZ。",
+      "checkbox_permanent_delete": "永久删除原始非CBZ文件，不经过回收站\n（无法撤销）",
+      "complete_title": "元数据导入完成",
+      "complete_message": "已处理 {done} 个文件，共 {total} 个。已跳过 {skipped} 个。",
+      "complete_message_errors": "已处理 {done} 个文件，共 {total} 个。已跳过 {skipped} 个。{errors} 个错误。",
+      "errors_count": "{count} 个错误",
+      "done_count": "已处理 {done} 个文件，共 {total} 个。",
+      "skipped_count": "已跳过 {skipped} 个。",
+      "select_directory_title": "选择要处理的文件夹"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "将目录及其子目录中的所有\nCB7 文件转换为 CBZ。",
     "batch_cb7_permanent_delete": "警告：如果勾选此选项，\n原始 CB7 文件将在转换后被永久删除，\n无法恢复。请确保已有备份。",
     "batch_cbt_to_cbz": "将目录及其子目录中的所有\nCBT 文件转换为 CBZ。",
-    "batch_cbt_permanent_delete": "警告：如果勾选此选项，\n原始 CBT 文件将在转换后被永久删除，\n无法恢复。请确保已有备份。"
+    "batch_cbt_permanent_delete": "警告：如果勾选此选项，\n原始 CBT 文件将在转换后被永久删除，\n无法恢复。请确保已有备份。",
+    "batch_metadata": "批量导入元数据"
   },
   "help": {
     "title": "MosaicView - 使用说明",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "图标工具栏可快速访问应用程序的主要功能。您可以通过直接在工具栏中拖动图标来随意重新排列。要选择显示或隐藏哪些图标，请单击工具栏底部的齿轮按钮:将打开一个配置窗口，您可以在活动工具栏和备用区之间移动图标。使用 « + » 和 « − » 按钮调整图标大小。配置将自动保存。",
     "license_7zip": "7-Zip 许可证",
     "nfo_editor": "创建和编辑 NFO 文件",
-    "nfo_editor_content": "NFO 文件是一种文本文件（扩展名为 .nfo），用于存储关于档案的信息：简介、制作人员、备注…\n\n要创建 NFO 文件，请使用工具栏中的专用图标、文件菜单或上下文菜单（在拼贴上右键单击）。只有当拼贴不为空时，该命令才可用。输入名称和内容：文件直接插入拼贴中，无需解压或中间保存。\n\n要编辑现有的 NFO 文件，请在拼贴中双击它。窗口打开时已预先填入当前名称和内容，两者均可编辑。在两种情况下，操作都会记录在撤销历史记录中。"
+    "nfo_editor_content": "NFO 文件是一种文本文件（扩展名为 .nfo），用于存储关于档案的信息：简介、制作人员、备注…\n\n要创建 NFO 文件，请使用工具栏中的专用图标、文件菜单或上下文菜单（在拼贴上右键单击）。只有当拼贴不为空时，该命令才可用。输入名称和内容：文件直接插入拼贴中，无需解压或中间保存。\n\n要编辑现有的 NFO 文件，请在拼贴中双击它。窗口打开时已预先填入当前名称和内容，两者均可编辑。在两种情况下，操作都会记录在撤销历史记录中。",
+    "metadata": "ComicVine 元数据",
+    "metadata_content": "MosaicView 支持从 ComicVine 数据库（由社区维护的协作网站）自动获取漫画元数据（标题、系列、期号、作者、简介...）。\n\n单本模式：打开一本漫画，然后使用工具栏按钮或元数据菜单。向导分两步打开：先选择系列，再选择对应的期次。元数据将写入压缩包内的 ComicInfo.xml 文件。\n\n批量模式：将一个或多个文件夹拖放到拼贴板并选择“批量导入元数据”，或使用工具栏上的专用按钮或元数据菜单。向导依次为找到的每个文件（CBZ、CBR、CB7、CBT、PDF）打开。非 CBZ 文件在写入元数据后会自动转换为 CBZ。\n\nAPI 密钥：需要免费的 ComicVine API 密钥。应用程序将引导您获取。在 comicvine.gamespot.com 上创建账户后即可获得。\n\nAPI 限制：以下限制由 ComicVine 施加，无法绕过。\n• 每小时每个资源最多 200 次请求。达到此限制后，搜索将暂时失败直到小时结束。\n• 每次请求最多返回 100 条结果，对于期数较多的系列需将搜索拆分为多次调用。\n• 网站每秒仅允许 1 次请求。为安全起见，MosaicView 在每次请求之间等待 2 秒，因为更快的请求极有可能导致临时封锁。\n\n该功能完全基于开源项目 {scraper}。"
   },
   "misc": {
     "file_word": "文件",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "请输入文件名。",
     "error_write": "无法写入文件:\n{error}",
     "error_duplicate": "名为 {filename} 的文件已在拼贴中存在。"
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API 密钥",
+      "explanation": "为了获取漫画的元数据，MosaicView 使用 ComicVine 数据库。您需要一个免费的 API 密钥。",
+      "instructions": "在 {comicvine} 上创建账户，然后前往 {api_page} 获取您的密钥。",
+      "api_page_label": "API 页面",
+      "field_label": "API 密钥:",
+      "placeholder": "在此处粘贴您的 API 密钥",
+      "validate": "确认",
+      "error_empty": "请输入 API 密钥。",
+      "clear": "清除密钥"
+    },
+    "menu_label": "元数据",
+    "tooltip": "获取元数据",
+    "change_api_key": "更改 ComicVine API 密钥",
+    "search_placeholder": "搜索系列...",
+    "search_button": "搜索",
+    "searching": "搜索中...",
+    "loading_issues": "正在加载期次...",
+    "results_count": "{total} 个结果中的 {count} 个",
+    "issues_count": "\"{series}\" 的 {count} 期",
+    "col_series": "系列",
+    "col_year": "年份",
+    "col_issues": "期次",
+    "col_publisher": "出版社",
+    "col_issue_num": "期号",
+    "col_issue_title": "标题",
+    "btn_skip": "跳过",
+    "btn_back": "返回",
+    "info_single": "此功能获取当前打开的漫画的元数据。要一次处理多个文件，请使用批处理（将文件夹拖到窗口上）。",
+    "page_indicator": "第 {page} 页",
+    "loading_issues_progress": "加载中... {loaded} / {total}",
+    "issues_partial_load": "已加载 {count} 期 — 加载中断: {error}",
+    "credit": "元数据：{comicvine} · 灵感来自 {scraper}"
   }
 }

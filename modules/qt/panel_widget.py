@@ -587,6 +587,34 @@ class PanelWidget(QWidget):
     def _batch_convert_img_to_cbz(self):
         _qt_batch_img(self, self._get_batch_callbacks())
 
+    def _batch_metadata(self):
+        from modules.qt.config_manager import get_config_manager
+        from modules.qt.localization import _, _wt
+        from PySide6.QtWidgets import QFileDialog
+        cfg = get_config_manager()
+        directory = QFileDialog.getExistingDirectory(
+            self, _wt("dialogs.batch_metadata.select_directory_title"),
+            cfg.get('last_open_dir', ""))
+        if not directory:
+            return
+        cfg.set('last_open_dir', directory)
+        import os
+        from modules.qt.archive_loader import _natural_sort_key
+        files = []
+        for dirpath, _subdirs, filenames in os.walk(directory):
+            for fn in filenames:
+                if fn.lower().endswith(('.cbz', '.cbr', '.cb7', '.cbt', '.pdf')):
+                    files.append(os.path.join(dirpath, fn))
+        files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
+        if not files:
+            from modules.qt.drop_handler_qt import _show_centered_msgbox
+            _show_centered_msgbox(self,
+                _wt("dialogs.batch_metadata.no_files_title"),
+                _("dialogs.batch_metadata.no_files_message").format(directory=directory))
+            return
+        from modules.qt.batch_metadata_dialog_qt import show_batch_metadata_dialog
+        show_batch_metadata_dialog(self, files, [directory], self._get_batch_callbacks())
+
     # ──────────────────────────────────────────────────────────────────────────
     # Langue / thème / police — délégués à MainWindow (globaux)
     # ──────────────────────────────────────────────────────────────────────────
@@ -639,7 +667,7 @@ class PanelWidget(QWidget):
         self._main_window._show_license_dialog()
 
     def _show_changelog(self):
-        self._main_window._show_changelog()
+        self._main_window._show_changelog(self)
 
     def _show_full_gpl_license(self):
         self._main_window._show_full_gpl_license()
@@ -1739,3 +1767,28 @@ class PanelWidget(QWidget):
             self._refresh_toolbar_states()
 
         show_nfo_dialog(self, _inject_nfo, st)
+
+    def _change_apikey(self):
+        from modules.qt.config_manager import get_config_manager
+        from modules.qt.comicvine_apikey_dialog_qt import show_apikey_dialog
+        show_apikey_dialog(self, get_config_manager())
+
+    def _fetch_metadata(self):
+        from modules.qt.config_manager import get_config_manager
+        from modules.qt.comicvine_apikey_dialog_qt import show_apikey_dialog
+        cfg = get_config_manager()
+        api_key = cfg.get('comicvine_api_key', '').strip()
+        if not api_key:
+            dlg = show_apikey_dialog(self, cfg)
+            dlg.accepted.connect(self._fetch_metadata)
+            return
+        from modules.qt.comicvine_dialog_qt import show_comicvine_dialog
+        show_comicvine_dialog(self, self._state, api_key,
+                              on_done=self._on_comicvine_metadata_done)
+
+    def _on_comicvine_metadata_done(self):
+        self.save_state()
+        self._render_mosaic_invalidating()
+        self._refresh_toolbar_states()
+        self._update_tabs()
+

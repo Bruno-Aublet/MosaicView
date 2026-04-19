@@ -61,7 +61,8 @@
     "unsplit_ui": "Đóng bảng thứ hai",
     "rename_to_ext": "Đổi tên thành {ext}",
     "batch_cb7_to_cbz": "Chuyển đổi hàng loạt\n tệp CB7 sang CBZ",
-    "batch_cbt_to_cbz": "Chuyển đổi hàng loạt\n tệp CBT sang CBZ"
+    "batch_cbt_to_cbz": "Chuyển đổi hàng loạt\n tệp CBT sang CBZ",
+    "batch_metadata": "Nhập siêu dữ liệu hàng loạt"
   },
   "tabs": {
     "mosaic": "Mosaic",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} tệp được đổi tên thành CBZ",
       "renamed_cbr_count": "{count} tệp được đổi tên thành CBR",
       "renamed_cb7_count": "{count} tệp được đổi tên thành CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Không có tệp tương thích",
+      "no_files_message": "Không tìm thấy tệp tương thích (CBZ, CBR, CB7, CBT, PDF) trong:\n{directory}",
+      "confirm_title": "Nhập siêu dữ liệu hàng loạt",
+      "confirm_message": "Tìm thấy {count} tệp trong {directory} (bao gồm thư mục con).",
+      "start_button": "Bắt đầu",
+      "cbz_warning": "Chỉ định dạng CBZ hỗ trợ siêu dữ liệu ComicInfo. Các tệp CBR, CBT, CB7 và PDF sẽ được tự động chuyển đổi sang CBZ.",
+      "checkbox_permanent_delete": "Xóa vĩnh viễn các tệp gốc không phải CBZ mà không qua thùng rác\n(KHÔNG THỂ HOÀN TÁC)",
+      "complete_title": "Nhập siêu dữ liệu hoàn tất",
+      "complete_message": "Đã xử lý {done} tệp trong số {total}. Đã bỏ qua {skipped}.",
+      "complete_message_errors": "Đã xử lý {done} tệp trong số {total}. Đã bỏ qua {skipped}. {errors} lỗi.",
+      "errors_count": "{count} lỗi",
+      "done_count": "Đã xử lý {done} tệp trong số {total}.",
+      "skipped_count": "Đã bỏ qua {skipped}.",
+      "select_directory_title": "Chọn thư mục để xử lý"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Chuyển đổi tất cả tệp CB7 trong thư mục\nvà các thư mục con sang CBZ.",
     "batch_cb7_permanent_delete": "CẢNH BÁO : nếu tùy chọn này được chọn,\ncác tệp CB7 gốc sẽ bị xóa vĩnh viễn\nsau khi chuyển đổi mà không thể khôi phục.\nHãy đảm bảo bạn có bản sao lưu.",
     "batch_cbt_to_cbz": "Chuyển đổi tất cả tệp CBT trong thư mục\nvà các thư mục con sang CBZ.",
-    "batch_cbt_permanent_delete": "CẢNH BÁO : nếu tùy chọn này được chọn,\ncác tệp CBT gốc sẽ bị xóa vĩnh viễn\nsau khi chuyển đổi mà không thể khôi phục.\nHãy đảm bảo bạn có bản sao lưu."
+    "batch_cbt_permanent_delete": "CẢNH BÁO : nếu tùy chọn này được chọn,\ncác tệp CBT gốc sẽ bị xóa vĩnh viễn\nsau khi chuyển đổi mà không thể khôi phục.\nHãy đảm bảo bạn có bản sao lưu.",
+    "batch_metadata": "Nhập siêu dữ liệu hàng loạt"
   },
   "help": {
     "title": "MosaicView - Hướng dẫn sử dụng",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Thanh công cụ biểu tượng cung cấp quyền truy cập nhanh vào các chức năng chính của ứng dụng. Bạn có thể sắp xếp lại các biểu tượng theo ý muốn bằng cách kéo trực tiếp vào thanh. Để chọn biểu tượng nào hiển thị hoặc ẩn, hãy nhấp vào nút bánh răng ở cuối thanh: một cửa sổ cấu hình mở ra, nơi bạn có thể di chuyển biểu tượng giữa thanh đang hoạt động và kho dự phòng. Dùng nút « + » và « − » để điều chỉnh kích thước biểu tượng. Cấu hình được lưu tự động.",
     "license_7zip": "Giấy phép 7-Zip",
     "nfo_editor": "Tạo và chỉnh sửa tệp NFO",
-    "nfo_editor_content": "Tệp NFO là tệp văn bản (với phần mở rộng .nfo) dùng để lưu trữ thông tin về kho lưu trữ: tóm tắt, ghi công, ghi chú…\n\nĐể tạo tệp NFO, hãy dùng biểu tượng chuyên dụng trong thanh công cụ, menu Tệp hoặc menu ngữ cảnh (nhấp chuột phải vào bức khảm). Lệnh chỉ khả dụng khi bức khảm không trống. Nhập tên và nội dung: tệp được chèn trực tiếp vào bức khảm mà không cần trích xuất hay lưu trung gian.\n\nĐể chỉnh sửa tệp NFO hiện có, nhấp đúp vào nó trong bức khảm. Cửa sổ mở ra với tên và nội dung hiện tại được điền sẵn, cả hai đều có thể chỉnh sửa. Trong cả hai trường hợp, thao tác được ghi vào lịch sử hoàn tác."
+    "nfo_editor_content": "Tệp NFO là tệp văn bản (với phần mở rộng .nfo) dùng để lưu trữ thông tin về kho lưu trữ: tóm tắt, ghi công, ghi chú…\n\nĐể tạo tệp NFO, hãy dùng biểu tượng chuyên dụng trong thanh công cụ, menu Tệp hoặc menu ngữ cảnh (nhấp chuột phải vào bức khảm). Lệnh chỉ khả dụng khi bức khảm không trống. Nhập tên và nội dung: tệp được chèn trực tiếp vào bức khảm mà không cần trích xuất hay lưu trung gian.\n\nĐể chỉnh sửa tệp NFO hiện có, nhấp đúp vào nó trong bức khảm. Cửa sổ mở ra với tên và nội dung hiện tại được điền sẵn, cả hai đều có thể chỉnh sửa. Trong cả hai trường hợp, thao tác được ghi vào lịch sử hoàn tác.",
+    "metadata": "Siêu dữ liệu ComicVine",
+    "metadata_content": "MosaicView cho phép tự động truy xuất siêu dữ liệu truyện tranh của bạn (tiêu đề, series, số, tác giả, tóm tắt...) từ cơ sở dữ liệu ComicVine, một trang web cộng tác do cộng đồng duy trì.\n\nChế độ đơn lẻ: mở một cuốn truyện tranh, sau đó sử dụng nút trên thanh công cụ hoặc menu Siêu dữ liệu. Trình hướng dẫn hai bước mở ra: chọn series trước, sau đó chọn tập tương ứng. Siêu dữ liệu được ghi vào ComicInfo.xml bên trong kho lưu trữ.\n\nChế độ hàng loạt: thả một hoặc nhiều thư mục vào mosaic và chọn \"Nhập siêu dữ liệu hàng loạt\", hoặc sử dụng nút chuyên dụng trên thanh công cụ hoặc menu Siêu dữ liệu. Trình hướng dẫn mở lần lượt cho mỗi tệp được tìm thấy (CBZ, CBR, CB7, CBT, PDF). Các tệp không phải CBZ được tự động chuyển đổi sang CBZ sau khi ghi siêu dữ liệu.\n\nKhóa API: cần có khóa API ComicVine miễn phí. Ứng dụng sẽ hướng dẫn bạn lấy khóa. Có thể lấy tại comicvine.gamespot.com sau khi tạo tài khoản.\n\nGiới hạn API: những giới hạn này do ComicVine áp đặt và không thể vượt qua.\n• 200 yêu cầu mỗi tài nguyên mỗi giờ. Nếu đạt giới hạn này, các tìm kiếm sẽ tạm thời thất bại cho đến cuối giờ.\n• Tối đa 100 kết quả mỗi yêu cầu, buộc phải chia nhỏ tìm kiếm thành nhiều lần gọi cho các series có nhiều tập.\n• 1 yêu cầu mỗi giây được trang web cho phép. Để an toàn, MosaicView đợi 2 giây giữa mỗi yêu cầu, vì các yêu cầu nhanh hơn rất có khả năng gây ra chặn tạm thời.\n\nTính năng này hoàn toàn dựa trên dự án mã nguồn mở {scraper}."
   },
   "misc": {
     "file_word": "tệp",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Vui lòng nhập tên tệp.",
     "error_write": "Không thể ghi tệp:\n{error}",
     "error_duplicate": "Tệp có tên {filename} đã tồn tại trong bức khảm."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "Khóa API ComicVine",
+      "explanation": "Để lấy siêu dữ liệu truyện tranh, MosaicView sử dụng cơ sở dữ liệu ComicVine. Bạn cần một khóa API miễn phí.",
+      "instructions": "Tạo tài khoản trên {comicvine}, sau đó truy cập {api_page} để lấy khóa của bạn.",
+      "api_page_label": "trang API",
+      "field_label": "Khóa API:",
+      "placeholder": "Dán khóa API của bạn vào đây",
+      "validate": "Xác nhận",
+      "error_empty": "Vui lòng nhập khóa API.",
+      "clear": "Xóa khóa"
+    },
+    "menu_label": "Siêu dữ liệu",
+    "tooltip": "Lấy siêu dữ liệu",
+    "change_api_key": "Thay đổi khóa API ComicVine",
+    "search_placeholder": "Tìm kiếm series...",
+    "search_button": "Tìm kiếm",
+    "searching": "Đang tìm kiếm...",
+    "loading_issues": "Đang tải số...",
+    "results_count": "{count} kết quả trong số {total}",
+    "issues_count": "{count} số cho \"{series}\"",
+    "col_series": "Series",
+    "col_year": "Năm",
+    "col_issues": "Số",
+    "col_publisher": "Nhà xuất bản",
+    "col_issue_num": "Số",
+    "col_issue_title": "Tiêu đề",
+    "btn_skip": "Bỏ qua",
+    "btn_back": "Quay lại",
+    "info_single": "Chức năng này lấy siêu dữ liệu cho truyện tranh đang mở. Để xử lý nhiều tệp cùng lúc, hãy sử dụng xử lý hàng loạt (kéo thư mục vào cửa sổ).",
+    "page_indicator": "Trang {page}",
+    "loading_issues_progress": "Đang tải... {loaded} / {total}",
+    "issues_partial_load": "{count} số đã tải — tải bị gián đoạn: {error}",
+    "credit": "Siêu dữ liệu: {comicvine} · lấy cảm hứng từ {scraper}"
   }
 }

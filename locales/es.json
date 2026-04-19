@@ -61,7 +61,8 @@
     "unsplit_ui": "Cerrar el segundo panel",
     "rename_to_ext": "Renombrar a {ext}",
     "batch_cb7_to_cbz": "Conversión por lotes\n de archivos CB7 a CBZ",
-    "batch_cbt_to_cbz": "Conversión por lotes\n de archivos CBT a CBZ"
+    "batch_cbt_to_cbz": "Conversión por lotes\n de archivos CBT a CBZ",
+    "batch_metadata": "Importación de metadatos en lote"
   },
   "tabs": {
     "mosaic": "Mosaico",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} archivo(s) renombrado(s) a CBZ",
       "renamed_cbr_count": "{count} archivo(s) renombrado(s) a CBR",
       "renamed_cb7_count": "{count} archivo(s) renombrado(s) a CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "No hay archivos compatibles",
+      "no_files_message": "No se encontraron archivos compatibles (CBZ, CBR, CB7, CBT, PDF) en:\n{directory}",
+      "confirm_title": "Importación de metadatos en lote",
+      "confirm_message": "{count} archivo(s) encontrado(s) en {directory} (subdirectorios incluidos).",
+      "start_button": "Iniciar",
+      "cbz_warning": "Solo el formato CBZ admite metadatos ComicInfo. Los archivos CBR, CBT, CB7 y PDF se convertirán automáticamente a CBZ.",
+      "checkbox_permanent_delete": "Eliminar permanentemente los archivos originales no CBZ sin papelera\n(SIN POSIBILIDAD DE RECUPERACIÓN)",
+      "complete_title": "Importación de metadatos completada",
+      "complete_message": "{done} archivo(s) procesado(s) de {total}. {skipped} omitido(s).",
+      "complete_message_errors": "{done} archivo(s) procesado(s) de {total}. {skipped} omitido(s). {errors} error(es).",
+      "errors_count": "{count} error(es)",
+      "done_count": "{done} archivo(s) procesado(s) de {total}.",
+      "skipped_count": "{skipped} omitido(s).",
+      "select_directory_title": "Seleccionar una carpeta para procesar"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Convierte todos los archivos CB7 de una carpeta\ny sus subcarpetas a CBZ.",
     "batch_cb7_permanent_delete": "ATENCIÓN : si esta opción está marcada,\nlos archivos CB7 originales se eliminarán\npermanentemente tras la conversión sin\nposibilidad de recuperación.\nAsegúrese de tener una copia de seguridad.",
     "batch_cbt_to_cbz": "Convierte todos los archivos CBT de una carpeta\ny sus subcarpetas a CBZ.",
-    "batch_cbt_permanent_delete": "ATENCIÓN : si esta opción está marcada,\nlos archivos CBT originales se eliminarán\npermanentemente tras la conversión sin\nposibilidad de recuperación.\nAsegúrese de tener una copia de seguridad."
+    "batch_cbt_permanent_delete": "ATENCIÓN : si esta opción está marcada,\nlos archivos CBT originales se eliminarán\npermanentemente tras la conversión sin\nposibilidad de recuperación.\nAsegúrese de tener una copia de seguridad.",
+    "batch_metadata": "Importación masiva de metadatos"
   },
   "help": {
     "title": "MosaicView - Manual de usuario",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "La barra de iconos permite acceder rápidamente a las principales funciones de la aplicación. Puede reorganizar los iconos a su conveniencia arrastrándolos directamente en la barra. Para elegir qué iconos mostrar u ocultar, haga clic en el botón de rueda dentada situado en la parte inferior de la barra: se abre una ventana de configuración donde puede mover los iconos entre la barra activa y la reserva. Use los botones « + » y « − » para ajustar el tamaño de los iconos. La configuración se guarda automáticamente.",
     "license_7zip": "Licencia 7-Zip",
     "nfo_editor": "Creación y edición de archivos NFO",
-    "nfo_editor_content": "Un archivo NFO es un archivo de texto (con extensión .nfo) que se utiliza para almacenar información sobre el archivo: sinopsis, créditos, notas…\n\nPara crear un archivo NFO, use el icono dedicado en la barra de herramientas, el menú Archivo o el menú contextual (clic derecho en el mosaico). El comando solo está disponible cuando el mosaico no está vacío. Introduzca un nombre y contenido: el archivo se inserta directamente en el mosaico sin extracción ni guardado intermedio.\n\nPara editar un archivo NFO existente, haga doble clic sobre él en el mosaico. La ventana se abre prerrellenada con el nombre y el contenido actuales, ambos editables. En ambos casos, la operación se registra en el historial de deshacer."
+    "nfo_editor_content": "Un archivo NFO es un archivo de texto (con extensión .nfo) que se utiliza para almacenar información sobre el archivo: sinopsis, créditos, notas…\n\nPara crear un archivo NFO, use el icono dedicado en la barra de herramientas, el menú Archivo o el menú contextual (clic derecho en el mosaico). El comando solo está disponible cuando el mosaico no está vacío. Introduzca un nombre y contenido: el archivo se inserta directamente en el mosaico sin extracción ni guardado intermedio.\n\nPara editar un archivo NFO existente, haga doble clic sobre él en el mosaico. La ventana se abre prerrellenada con el nombre y el contenido actuales, ambos editables. En ambos casos, la operación se registra en el historial de deshacer.",
+    "metadata": "Metadatos ComicVine",
+    "metadata_content": "MosaicView permite recuperar automáticamente los metadatos de sus cómics (título, serie, número, autores, resumen...) desde la base de datos ComicVine, un sitio colaborativo mantenido por la comunidad.\n\nModo individual: abra un cómic y utilice el botón de la barra de herramientas o el menú Metadatos. Se abre un asistente de dos pasos: elija primero la serie, luego el episodio correspondiente. Los metadatos se escriben en ComicInfo.xml dentro del archivo.\n\nModo por lotes: suelte una o varias carpetas en el mosaico y elija \"Importación masiva de metadatos\", o utilice el botón dedicado de la barra de herramientas o el menú Metadatos. El asistente se abre sucesivamente para cada archivo encontrado (CBZ, CBR, CB7, CBT, PDF). Los archivos que no son CBZ se convierten automáticamente a CBZ tras escribir los metadatos.\n\nClave API: se requiere una clave API gratuita de ComicVine. La aplicación le guiará para obtenerla. Se obtiene en comicvine.gamespot.com tras crear una cuenta.\n\nLimitaciones de la API: estas limitaciones son impuestas por ComicVine y no pueden evitarse.\n• 200 solicitudes por recurso y por hora. Si se alcanza este límite, las búsquedas fallan temporalmente hasta el final de la hora.\n• Máximo 100 resultados por solicitud, lo que obliga a segmentar las búsquedas en varias llamadas para series con muchos episodios.\n• 1 solicitud por segundo permitida por el sitio. Por seguridad, MosaicView espera 2 segundos entre cada solicitud, ya que las solicitudes más rápidas son muy propensas a provocar bloqueos temporales.\n\nEsta funcionalidad está completamente basada en el proyecto de código abierto {scraper}."
   },
   "misc": {
     "file_word": "archivo",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Por favor, introduzca un nombre de archivo.",
     "error_write": "No se puede escribir el archivo:\n{error}",
     "error_duplicate": "Ya existe un archivo llamado {filename} en el mosaico."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "Clave API de ComicVine",
+      "explanation": "Para recuperar metadatos de sus cómics, MosaicView utiliza la base de datos de ComicVine. Necesita una clave API gratuita.",
+      "instructions": "Cree una cuenta en {comicvine} y luego vaya a la {api_page} para obtener su clave.",
+      "api_page_label": "página API",
+      "field_label": "Clave API:",
+      "placeholder": "Pegue su clave API aquí",
+      "validate": "Validar",
+      "error_empty": "Por favor, introduzca una clave API.",
+      "clear": "Borrar clave"
+    },
+    "menu_label": "Metadatos",
+    "tooltip": "Recuperar metadatos",
+    "change_api_key": "Cambiar clave API de ComicVine",
+    "search_placeholder": "Buscar una serie...",
+    "search_button": "Buscar",
+    "searching": "Buscando...",
+    "loading_issues": "Cargando números...",
+    "results_count": "{count} resultado(s) de {total}",
+    "issues_count": "{count} número(s) para \"{series}\"",
+    "col_series": "Serie",
+    "col_year": "Año",
+    "col_issues": "Números",
+    "col_publisher": "Editorial",
+    "col_issue_num": "Núm.",
+    "col_issue_title": "Título",
+    "btn_skip": "Omitir",
+    "btn_back": "Volver",
+    "info_single": "Esta función recupera metadatos del cómic actualmente abierto. Para procesar varios archivos a la vez, utilice el procesamiento por lotes (arrastre una carpeta a la ventana).",
+    "page_indicator": "Página {page}",
+    "loading_issues_progress": "Cargando... {loaded} / {total}",
+    "issues_partial_load": "{count} número(s) cargado(s) — carga interrumpida: {error}",
+    "credit": "Metadatos: {comicvine} · inspirado en {scraper}"
   }
 }

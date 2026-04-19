@@ -61,7 +61,8 @@
     "unsplit_ui": "Tweede paneel sluiten",
     "rename_to_ext": "Hernoemen naar {ext}",
     "batch_cb7_to_cbz": "Batchconversie van\n CB7-bestanden naar CBZ",
-    "batch_cbt_to_cbz": "Batchconversie van\n CBT-bestanden naar CBZ"
+    "batch_cbt_to_cbz": "Batchconversie van\n CBT-bestanden naar CBZ",
+    "batch_metadata": "Metadata bulkimport"
   },
   "tabs": {
     "mosaic": "Mozaïek",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} bestand(en) hernoemd naar CBZ",
       "renamed_cbr_count": "{count} bestand(en) hernoemd naar CBR",
       "renamed_cb7_count": "{count} bestand(en) hernoemd naar CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Geen compatibele bestanden",
+      "no_files_message": "Geen compatibele bestanden (CBZ, CBR, CB7, CBT, PDF) gevonden in:\n{directory}",
+      "confirm_title": "Metadata bulkimport",
+      "confirm_message": "{count} bestand(en) gevonden in {directory} (inclusief submappen).",
+      "start_button": "Starten",
+      "cbz_warning": "Alleen het CBZ-formaat ondersteunt ComicInfo-metadata. CBR-, CBT-, CB7- en PDF-bestanden worden automatisch omgezet naar CBZ.",
+      "checkbox_permanent_delete": "Originele niet-CBZ-bestanden definitief verwijderen zonder prullenbak\n(NIET ONGEDAAN TE MAKEN)",
+      "complete_title": "Metadataimport voltooid",
+      "complete_message": "{done} bestand(en) verwerkt van {total}. {skipped} overgeslagen.",
+      "complete_message_errors": "{done} bestand(en) verwerkt van {total}. {skipped} overgeslagen. {errors} fout(en).",
+      "errors_count": "{count} fout(en)",
+      "done_count": "{done} bestand(en) verwerkt van {total}.",
+      "skipped_count": "{skipped} overgeslagen.",
+      "select_directory_title": "Selecteer een map om te verwerken"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Converteert alle CB7-bestanden in een map\nen de submappen ervan naar CBZ.",
     "batch_cb7_permanent_delete": "WAARSCHUWING : als deze optie is aangevinkt,\nworden de originele CB7-bestanden na de\nconversie permanent verwijderd zonder\nmogelijkheid tot herstel.\nZorg dat u een back-up heeft.",
     "batch_cbt_to_cbz": "Converteert alle CBT-bestanden in een map\nen de submappen ervan naar CBZ.",
-    "batch_cbt_permanent_delete": "WAARSCHUWING : als deze optie is aangevinkt,\nworden de originele CBT-bestanden na de\nconversie permanent verwijderd zonder\nmogelijkheid tot herstel.\nZorg dat u een back-up heeft."
+    "batch_cbt_permanent_delete": "WAARSCHUWING : als deze optie is aangevinkt,\nworden de originele CBT-bestanden na de\nconversie permanent verwijderd zonder\nmogelijkheid tot herstel.\nZorg dat u een back-up heeft.",
+    "batch_metadata": "Metadata batchimport"
   },
   "help": {
     "title": "MosaicView - Gebruiksaanwijzing",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "De werkbalk met pictogrammen biedt snelle toegang tot de belangrijkste functies van de toepassing. U kunt de pictogrammen naar wens herschikken door ze direct in de werkbalk te slepen. Om te kiezen welke pictogrammen worden weergegeven of verborgen, klikt u op de tandwielknop onderaan de werkbalk: er opent een configuratievenster waarin u pictogrammen kunt verplaatsen tussen de actieve werkbalk en de reserve. Gebruik de knoppen « + » en « − » om de grootte van de pictogrammen aan te passen. De configuratie wordt automatisch opgeslagen.",
     "license_7zip": "7-Zip-licentie",
     "nfo_editor": "NFO-bestanden maken en bewerken",
-    "nfo_editor_content": "Een NFO-bestand is een tekstbestand (met de extensie .nfo) dat wordt gebruikt om informatie over het archief op te slaan: synopsis, credits, notities…\n\nOm een NFO-bestand te maken, gebruikt u het speciale pictogram in de werkbalk, het menu Bestand of het contextmenu (rechtsklik op het mozaïek). De opdracht is alleen beschikbaar als het mozaïek niet leeg is. Voer een naam en inhoud in: het bestand wordt direct in het mozaïek ingevoegd zonder extractie of tussentijdse opslag.\n\nOm een bestaand NFO-bestand te bewerken, dubbelklikt u erop in het mozaïek. Het venster opent vooraf ingevuld met de huidige naam en inhoud, beide bewerkbaar. In beide gevallen wordt de bewerking vastgelegd in de ongedaan maken-geschiedenis."
+    "nfo_editor_content": "Een NFO-bestand is een tekstbestand (met de extensie .nfo) dat wordt gebruikt om informatie over het archief op te slaan: synopsis, credits, notities…\n\nOm een NFO-bestand te maken, gebruikt u het speciale pictogram in de werkbalk, het menu Bestand of het contextmenu (rechtsklik op het mozaïek). De opdracht is alleen beschikbaar als het mozaïek niet leeg is. Voer een naam en inhoud in: het bestand wordt direct in het mozaïek ingevoegd zonder extractie of tussentijdse opslag.\n\nOm een bestaand NFO-bestand te bewerken, dubbelklikt u erop in het mozaïek. Het venster opent vooraf ingevuld met de huidige naam en inhoud, beide bewerkbaar. In beide gevallen wordt de bewerking vastgelegd in de ongedaan maken-geschiedenis.",
+    "metadata": "ComicVine metadata",
+    "metadata_content": "MosaicView maakt het mogelijk om automatisch metadata voor uw strips op te halen (titel, reeks, nummer, auteurs, samenvatting...) uit de ComicVine-database, een collaboratieve website die door de community wordt onderhouden.\n\nEnkelvoudige modus: open een strip en gebruik vervolgens de knop op de werkbalk of het menu Metadata. Een wizard in twee stappen opent: kies eerst de reeks, dan het bijbehorende aflevering. Metadata wordt geschreven naar ComicInfo.xml in het archief.\n\nBatchmodus: sleep een of meer mappen naar het mozaïek en kies \"Metadata batchimport\", of gebruik de speciale knop op de werkbalk of het menu Metadata. De wizard opent achtereenvolgens voor elk gevonden bestand (CBZ, CBR, CB7, CBT, PDF). Niet-CBZ-bestanden worden na het schrijven van de metadata automatisch geconverteerd naar CBZ.\n\nAPI-sleutel: een gratis ComicVine API-sleutel is vereist. De applicatie begeleidt u bij het verkrijgen ervan. Deze is te verkrijgen op comicvine.gamespot.com na het aanmaken van een account.\n\nAPI-beperkingen: deze beperkingen worden opgelegd door ComicVine en kunnen niet worden omzeild.\n• 200 verzoeken per resource per uur. Als deze limiet bereikt wordt, mislukken zoekopdrachten tijdelijk tot het einde van het uur.\n• Maximaal 100 resultaten per verzoek, wat zoekacties dwingt te verdelen over meerdere aanroepen voor reeksen met veel afleveringen.\n• 1 verzoek per seconde toegestaan door de site. Voor de veiligheid wacht MosaicView 2 seconden tussen elk verzoek, omdat snellere verzoeken zeer waarschijnlijk tijdelijke blokkades veroorzaken.\n\nDeze functie is volledig gebaseerd op het open source-project {scraper}."
   },
   "misc": {
     "file_word": "bestand",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Voer een bestandsnaam in.",
     "error_write": "Kan het bestand niet schrijven:\n{error}",
     "error_duplicate": "Een bestand met de naam {filename} bestaat al in het mozaïek."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API-sleutel",
+      "explanation": "Om metadata van uw strips op te halen, gebruikt MosaicView de ComicVine-database. U heeft een gratis API-sleutel nodig.",
+      "instructions": "Maak een account aan op {comicvine} en ga naar de {api_page} om uw sleutel te verkrijgen.",
+      "api_page_label": "API-pagina",
+      "field_label": "API-sleutel:",
+      "placeholder": "Plak hier uw API-sleutel",
+      "validate": "Bevestigen",
+      "error_empty": "Voer een API-sleutel in.",
+      "clear": "Sleutel wissen"
+    },
+    "menu_label": "Metadata",
+    "tooltip": "Metadata ophalen",
+    "change_api_key": "ComicVine API-sleutel wijzigen",
+    "search_placeholder": "Zoek een reeks...",
+    "search_button": "Zoeken",
+    "searching": "Zoeken...",
+    "loading_issues": "Nummers laden...",
+    "results_count": "{count} resultaat/resultaten van {total}",
+    "issues_count": "{count} nummer(s) voor \"{series}\"",
+    "col_series": "Reeks",
+    "col_year": "Jaar",
+    "col_issues": "Nummers",
+    "col_publisher": "Uitgever",
+    "col_issue_num": "Nr.",
+    "col_issue_title": "Titel",
+    "btn_skip": "Overslaan",
+    "btn_back": "Terug",
+    "info_single": "Deze functie haalt metadata op voor het momenteel geopende stripboek. Om meerdere bestanden tegelijk te verwerken, gebruik de batchverwerking (sleep een map naar het venster).",
+    "page_indicator": "Pagina {page}",
+    "loading_issues_progress": "Laden... {loaded} / {total}",
+    "issues_partial_load": "{count} nummer(s) geladen — laden onderbroken: {error}",
+    "credit": "Metadata: {comicvine} · geïnspireerd door {scraper}"
   }
 }

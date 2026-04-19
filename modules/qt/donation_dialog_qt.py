@@ -19,7 +19,10 @@ _PAYPAL_URL = "https://www.paypal.com/donate/?hosted_button_id=SRSSMSSTEVTJY"
 def show_donation_dialog_qt(parent):
     """Ouvre la fenêtre de donation (équivalent Qt de show_donation_dialog)."""
     dlg = _DonationDialog(parent)
-    dlg.exec()
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
+    return dlg
 
 
 class _DonationDialog(QDialog):
@@ -27,7 +30,8 @@ class _DonationDialog(QDialog):
     def __init__(self, parent):
         super().__init__(parent)
         self.resize(550, 300)
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(30, 30, 30, 30)

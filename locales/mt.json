@@ -61,7 +61,8 @@
     "unsplit_ui": "Agħlaq it-tieni panel",
     "rename_to_ext": "Ibdel l-isem għal {ext}",
     "batch_cb7_to_cbz": "Konverżjoni batch\n ta' fajls CB7 għal CBZ",
-    "batch_cbt_to_cbz": "Konverżjoni batch\n ta' fajls CBT għal CBZ"
+    "batch_cbt_to_cbz": "Konverżjoni batch\n ta' fajls CBT għal CBZ",
+    "batch_metadata": "Importazzjoni tal-metadejta bin-numru"
   },
   "tabs": {
     "mosaic": "Mużajk",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} fajl(s) isem inbidel għal CBZ",
       "renamed_cbr_count": "{count} fajl(s) isem inbidel għal CBR",
       "renamed_cb7_count": "{count} fajl(s) isem inbidel għal CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "L-ebda fajls kompatibbli",
+      "no_files_message": "Ma nstabux fajls kompatibbli (CBZ, CBR, CB7, CBT, PDF) f':\n{directory}",
+      "confirm_title": "Importazzjoni tal-metadejta bin-numru",
+      "confirm_message": "Instab {count} fajl/s f'{directory} (sottodirektorji inklużi).",
+      "start_button": "Ibda",
+      "cbz_warning": "Biss il-format CBZ jappoġġja l-metadejta ComicInfo. Il-fajls CBR, CBT, CB7 u PDF se jiġu konvertiti awtomatikament għal CBZ.",
+      "checkbox_permanent_delete": "Ħassar il-fajls oriġinali mhux CBZ b'mod permanenti mingħajr il-basket\n(MA TISTAX TAGĦMEL LURA)",
+      "complete_title": "L-importazzjon tal-metadejta lesta",
+      "complete_message": "{done} fajl(s) ipproċessat(i) minn {total}. {skipped} mqbiż(a).",
+      "complete_message_errors": "{done} fajl(s) ipproċessat(i) minn {total}. {skipped} mqbiż(a). {errors} żball(i).",
+      "errors_count": "{count} żball(i)",
+      "done_count": "{done} fajl(s) ipproċessat(i) minn {total}.",
+      "skipped_count": "{skipped} mqbiż(a).",
+      "select_directory_title": "Agħżel folder biex tipproċessa"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Tikkonverti l-fajls CB7 kollha f'direttorju\nu s-sottodirektorji tiegħu għal CBZ.",
     "batch_cb7_permanent_delete": "TWISSIJA : jekk din l-għażla hija mmarkata,\nil-fajls CB7 oriġinali jitħassru b'mod permanenti\nwara l-konverżjoni mingħajr possibilità ta' rkupru.\nIkkonferma li għandek backup.",
     "batch_cbt_to_cbz": "Tikkonverti l-fajls CBT kollha f'direttorju\nu s-sottodirektorji tiegħu għal CBZ.",
-    "batch_cbt_permanent_delete": "TWISSIJA : jekk din l-għażla hija mmarkata,\nil-fajls CBT oriġinali jitħassru b'mod permanenti\nwara l-konverżjoni mingħajr possibilità ta' rkupru.\nIkkonferma li għandek backup."
+    "batch_cbt_permanent_delete": "TWISSIJA : jekk din l-għażla hija mmarkata,\nil-fajls CBT oriġinali jitħassru b'mod permanenti\nwara l-konverżjoni mingħajr possibilità ta' rkupru.\nIkkonferma li għandek backup.",
+    "batch_metadata": "Importazzjoni tal-metadejta bil-lott"
   },
   "help": {
     "title": "MosaicView - Manwal tal-utent",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Il-bar tal-ikoni jipprovdi aċċess rapidu għall-funzjonijiet ewlenin tal-applikazzjoni. Tista' terġa' tarranġa l-ikoni kif tixtieq billi tiġbidhoм direttament fil-bar. Biex tagħżel liema ikoni turi jew taħbi, ikklikkja l-buttuna tal-ġir fil-qiegħ tal-bar: tinfetaħ tieqa ta' konfigurazzjoni fejn tista' tċaqlaq l-ikoni bejn il-bar attiv u r-riserva. Uża l-buttuni « + » u « − » biex taġġusta d-daqs tal-ikoni. Il-konfigurazzjoni tinħażen awtomatikament.",
     "license_7zip": "Liċenzja 7-Zip",
     "nfo_editor": "Ħolqien u editjar ta' fajls NFO",
-    "nfo_editor_content": "Fajl NFO huwa fajl ta' test (bl-estensjoni .nfo) użat biex jaħżen informazzjoni dwar l-arkivju: sinopsi, krediti, noti…\n\nBiex toħloq fajl NFO, uża l-ikona ddedikata fit-taskbar, il-menu Fajl jew il-menu tal-kuntest (klikk tal-lemin fuq il-mużajk). Il-kmand huwa disponibbli biss meta l-mużajk ma jkunx vojt. Daħħal isem u kontenut: il-fajl jiġi inserit direttament fil-mużajk mingħajr estrazzjoni jew salvaġġ interim.\n\nBiex teditja fajl NFO eżistenti, klikk doppju fuqu fil-mużajk. It-tieqa tinfetaħ mimlijha minn qabel bl-isem u l-kontenut attwali, it-tnejn editjabbli. Fiż-żewġ każijiet, l-operazzjoni tiġi rreġistrata fl-istorja tal-annullament."
+    "nfo_editor_content": "Fajl NFO huwa fajl ta' test (bl-estensjoni .nfo) użat biex jaħżen informazzjoni dwar l-arkivju: sinopsi, krediti, noti…\n\nBiex toħloq fajl NFO, uża l-ikona ddedikata fit-taskbar, il-menu Fajl jew il-menu tal-kuntest (klikk tal-lemin fuq il-mużajk). Il-kmand huwa disponibbli biss meta l-mużajk ma jkunx vojt. Daħħal isem u kontenut: il-fajl jiġi inserit direttament fil-mużajk mingħajr estrazzjoni jew salvaġġ interim.\n\nBiex teditja fajl NFO eżistenti, klikk doppju fuqu fil-mużajk. It-tieqa tinfetaħ mimlijha minn qabel bl-isem u l-kontenut attwali, it-tnejn editjabbli. Fiż-żewġ każijiet, l-operazzjoni tiġi rreġistrata fl-istorja tal-annullament.",
+    "metadata": "Metadejta ComicVine",
+    "metadata_content": "MosaicView jippermetti l-irkupru awtomatiku tal-metadejta tal-komiks tiegħek (titlu, serje, numru, awturi, sommarju...) mill-bażi tad-data ComicVine, sit kollaborattiv miżmum mill-komunità.\n\nModalità waħda: iftaħ komiks, imbagħad uża l-buttuna tal-bar tal-għodda jew il-menu Metadejta. Jinfetaħ wizard b'żewġ passi: agħżel l-ewwel is-serje, imbagħad l-episodju korrispondenti. Il-metadejta tinkiteb f'ComicInfo.xml ġewwa l-arkivju.\n\nModalità batch: agħti waqa' folder wieħed jew aktar fuq il-mużajk u agħżel \"Importazzjon tal-metadejta bil-lott\", jew uża l-buttuna ddedikata tal-bar tal-għodda jew il-menu Metadejta. Il-wizard jinfetaħ suċċessivament għal kull fajl misjub (CBZ, CBR, CB7, CBT, PDF). Fajls mhux CBZ jiġu kkonvertiti awtomatikament għal CBZ wara l-kitba tal-metadejta.\n\nĊavetta API: hija meħtieġa ċavetta API ComicVine b'xejn. L-applikazzjoni tgħinik biex tiksibha. Tinkiseb fuq comicvine.gamespot.com wara l-ħolqien ta' kont.\n\nLimitazzjonijiet API: dawn il-limitazzjonijiet huma imposti minn ComicVine u ma jistgħux jiġu evitati.\n• 200 talbiet għal kull riżorsa fis-siegħa. Jekk din il-limitu tintlaħaq, it-tiftixiet jaqilgħu falliment temporanju sat-tmiem tas-siegħa.\n• Massimu 100 riżultati għal kull talba, li jġiegħel it-tiftixiet jinqasmu f'diversi sejħiet għal serji b'ħafna episodji.\n• 1 talba kull sekonda permessa mis-sit. Għas-sigurtà, MosaicView jistenna 2 sekondi bejn kull talba, peress li talbiet aktar mgħaġġla huma ħafna probabbli li jikkawżaw blokkji temporanji.\n\nDin il-funzjonalità hija bbażata kompletament fuq il-proġett open source {scraper}."
   },
   "misc": {
     "file_word": "fajl",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Jekk jogħġbok daħħal isem il-fajl.",
     "error_write": "Ma nistax nikteb il-fajl:\n{error}",
     "error_duplicate": "Fajl bl-isem {filename} diġà jeżisti fil-mużajk."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "Ċavetta API ComicVine",
+      "explanation": "Biex tikseb il-metadejta tal-komiks, MosaicView juża l-bażi tad-dejta ComicVine. Għandek bżonn ċavetta API b'xejn.",
+      "instructions": "Oħloq kont fuq {comicvine}, imbagħad mur fuq {api_page} biex tikseb iċ-ċavetta tiegħek.",
+      "api_page_label": "paġna API",
+      "field_label": "Ċavetta API:",
+      "placeholder": "Idħol iċ-ċavetta API hawnhekk",
+      "validate": "Ikkonferma",
+      "error_empty": "Jekk jogħġbok daħħal ċavetta API.",
+      "clear": "Ħassar iċ-ċavetta"
+    },
+    "menu_label": "Metadejta",
+    "tooltip": "Ikseb metadejta",
+    "change_api_key": "Ibdel iċ-ċavetta API ComicVine",
+    "search_placeholder": "Fittex serje...",
+    "search_button": "Fittex",
+    "searching": "Qed jfittex...",
+    "loading_issues": "Qed jgħabbi n-numri...",
+    "results_count": "{count} riżultat(i) minn {total}",
+    "issues_count": "{count} numru/i għal \"{series}\"",
+    "col_series": "Serje",
+    "col_year": "Sena",
+    "col_issues": "Numri",
+    "col_publisher": "Editur",
+    "col_issue_num": "Nru.",
+    "col_issue_title": "Titlu",
+    "btn_skip": "Aqbeż",
+    "btn_back": "Lura",
+    "info_single": "Din il-funzjoni tikseb il-metadejta tal-komik miftuħ bħalissa. Biex tipproċessa diversi fajls fl-istess ħin, uża l-ipproċessar bl-imħattar (igħaddi folder lejn it-tieqa).",
+    "page_indicator": "Paġna {page}",
+    "loading_issues_progress": "Qed jgħabbi... {loaded} / {total}",
+    "issues_partial_load": "{count} numru/i mgħobbija — tagħbija mwaqqfa: {error}",
+    "credit": "Metadejta: {comicvine} · ispirat minn {scraper}"
   }
 }

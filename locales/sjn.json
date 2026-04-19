@@ -61,7 +61,8 @@
     "unsplit_ui": "Dago i fain neledh",
     "rename_to_ext": "Enethol {ext}-na",
     "batch_cb7_to_cbz": "Lotë cant CB7\n faifin na CBZ",
-    "batch_cbt_to_cbz": "Lotë cant CBT\n faifin na CBZ"
+    "batch_cbt_to_cbz": "Lotë cant CBT\n faifin na CBZ",
+    "batch_metadata": "Govad bronad i nedh-ambar"
   },
   "tabs": {
     "mosaic": "Mosaig",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} faif(in) estent egor CBZ",
       "renamed_cbr_count": "{count} faif(in) estent egor CBR",
       "renamed_cb7_count": "{count} faif(in) estent egor CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Ú-nedh ambar",
+      "no_files_message": "Ú-nedh ambar (CBZ, CBR, CB7, CBT, PDF) govanner in:\n{directory}",
+      "confirm_title": "Govad bronad i nedh-ambar",
+      "confirm_message": "{count} ambar govanner mi {directory} (imath nedh-bar rainaned).",
+      "start_button": "Minno",
+      "cbz_warning": "CBZ ambar er govanner i ComicInfo nedh-ambar. CBR, CBT, CB7 ar PDF amarth bronad na CBZ.",
+      "checkbox_permanent_delete": "Danna i CBZ-ú amarth or mín\n(Ú-pole edrevia)",
+      "complete_title": "I·Channas i·nothrim úva",
+      "complete_message": "{done} vilthin(r) carner {total}-lo. {skipped} lencaner.",
+      "complete_message_errors": "{done} vilthin(r) carner {total}-lo. {skipped} lencaner. {errors} raeg(rin).",
+      "errors_count": "{count} raeg(rin)",
+      "done_count": "{done} vilthin(r) carner {total}-lo.",
+      "skipped_count": "{skipped} lencaner.",
+      "select_directory_title": "Tiro i·taur na·cared"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Cant ilyë CB7 faif i randir\nar nu-randirissen na CBZ.",
     "batch_cb7_permanent_delete": "VÁQUETË : cé sina tant' is i CB7 faif\nhehtuvanë tennoio ar cantuvaina\nan lá nóta or rucë.",
     "batch_cbt_to_cbz": "Cant ilyë CBT faif i randir\nar nu-randirissen na CBZ.",
-    "batch_cbt_permanent_delete": "VÁQUETË : cé sina tant' is i CBT faif\nhehtuvanë tennoio ar cantuvaina\nan lá nóta or rucë."
+    "batch_cbt_permanent_delete": "VÁQUETË : cé sina tant' is i CBT faif\nhehtuvanë tennoio ar cantuvaina\nan lá nóta or rucë.",
+    "batch_metadata": "Govaded i·nothrim an·channas"
   },
   "help": {
     "title": "MosaicView - Bâd thuriol",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "I lŷr ervyr a rydd mynediad cyflym i brif swyddogaethau'r rhaglen. Gallwch aildrefnu'r eiconau yn ôl eich dymuniad drwy eu llusgo'n uniongyrchol i'r lŷr. I ddewis pa eiconau i'w dangos neu eu cuddio, cliciwch ar y botwm olwyn ddanheddog ar waelod y lŷr: agorir ffenestr ffurfweddu lle gallwch symud eiconau rhwng y lŷr weithredol a'r cronfa. Defnyddiwch y botymau « + » a « − » i addasu maint yr eiconau. Cedwir y ffurfweddiad yn awtomatig.",
     "license_7zip": "7-Zip Tolgnas",
     "nfo_editor": "Carph a gresta NFO-pherph",
-    "nfo_editor_content": "NFO-parf i parf teitho (.nfo enethren) i gabed tirhad an i archiv: hammad, cannas, nothas…\n\nCarpho NFO-parf, anno i dîr hain vi i orthad, vi i lîst parf, egor vi i lîst comhad (pent forven vi i mosaig). I amber agor ach nag i mosaig i chwest. Anno eneth a hammad: i barf carpho sui vi i mosaig, bain amman gûr egor teitho erin-lend.\n\nGresto NFO-parf iest, nesta i archant vi i mosaig. I thûl agor pre-anno eneth a hammad iest, ammen gresto. Vi ammen, i trevad nottir vi i lîst heb-no."
+    "nfo_editor_content": "NFO-parf i parf teitho (.nfo enethren) i gabed tirhad an i archiv: hammad, cannas, nothas…\n\nCarpho NFO-parf, anno i dîr hain vi i orthad, vi i lîst parf, egor vi i lîst comhad (pent forven vi i mosaig). I amber agor ach nag i mosaig i chwest. Anno eneth a hammad: i barf carpho sui vi i mosaig, bain amman gûr egor teitho erin-lend.\n\nGresto NFO-parf iest, nesta i archant vi i mosaig. I thûl agor pre-anno eneth a hammad iest, ammen gresto. Vi ammen, i trevad nottir vi i lîst heb-no.",
+    "metadata": "ComicVine Nothrannath",
+    "metadata_content": "MosaicView ista i nothrannath i comicin (eneth, sîr, nûr, tîw, glaur...) ned i daur ComicVine, i veth govaded o i·chobar.\n\nMód er: egeria i comic, sí use i tangel o i Nothrannath menu. Tîr atho úpa: ece caro i sîr, sí i episod. Nothrannath carë ComicInfo.xml nu i cân.\n\nMód batch: lerta i taur ar selec \"Govaded i·nothrannath an·channas\", o use i tangel o i Nothrannath menu. Tîr úpa quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa nothrannath.\n\nAPI tangel: ComicVine API tangel lemya. I app tîruva le. Ista comicvine.gamespot.com épa conta.\n\nAPI raeg: ComicVine carë tai raeg, ar umir nanner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni episodion sîren.\n• 1 petitioni quë cant. MosaicView caita 2 cant quë petitioni, ar raita petitioni nar raeg.\n\nI·thirnath hen certha i·vimp {scraper} am·men."
   },
   "misc": {
     "file_word": "bâr",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Anno eneth parf.",
     "error_write": "Ú-gell teitho i barf:\n{error}",
     "error_duplicate": "Parf {filename} enethren iest vi i mozaic."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API têw",
+      "explanation": "An luith i dîn i-'elaidh, MosaicView sôr i nauth ComicVine. Gerin têw API vanui.",
+      "instructions": "Carvo conta na {comicvine}, ar aen {api_page} an têw gîn.",
+      "api_page_label": "lalf API",
+      "field_label": "API têw:",
+      "placeholder": "Pâd API têw si",
+      "validate": "Nauth",
+      "error_empty": "Maetho API têw.",
+      "clear": "Pân têw"
+    },
+    "menu_label": "Nauth dîn",
+    "tooltip": "Beria nauth dîn",
+    "change_api_key": "Câr têw API ComicVine",
+    "search_placeholder": "Tir quil...",
+    "search_button": "Tir",
+    "searching": "Tiriel...",
+    "loading_issues": "Beria nauth...",
+    "results_count": "{count} maeth na {total}",
+    "issues_count": "{count} nauth na \"{series}\"",
+    "col_series": "Quil",
+    "col_year": "Iaur",
+    "col_issues": "Nauth",
+    "col_publisher": "Tûr",
+    "col_issue_num": "Nau.",
+    "col_issue_title": "Eneth",
+    "btn_skip": "Aen",
+    "btn_back": "Adel",
+    "info_single": "Sí função beria nauth i dhîn sina. An beria fili queni, sôr i beria harn (pâd mappa na i cai).",
+    "page_indicator": "Lalf {page}",
+    "loading_issues_progress": "Beria... {loaded} / {total}",
+    "issues_partial_load": "{count} nauth beriar — beria hauta: {error}",
+    "credit": "Methannas: {comicvine} · inspired by {scraper}"
   }
 }

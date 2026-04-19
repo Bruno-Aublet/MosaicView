@@ -61,7 +61,8 @@
     "unsplit_ui": "Aizvērt otro paneli",
     "rename_to_ext": "Pārdēvēt par {ext}",
     "batch_cb7_to_cbz": "CB7 failu pakešu\n konvertēšana uz CBZ",
-    "batch_cbt_to_cbz": "CBT failu pakešu\n konvertēšana uz CBZ"
+    "batch_cbt_to_cbz": "CBT failu pakešu\n konvertēšana uz CBZ",
+    "batch_metadata": "Metadatu lielapjoma imports"
   },
   "tabs": {
     "mosaic": "Mozaīka",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} fails(-i) pārdēvēts(-i) uz CBZ",
       "renamed_cbr_count": "{count} fails(-i) pārdēvēts(-i) uz CBR",
       "renamed_cb7_count": "{count} fails(-i) pārdēvēts(-i) uz CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Nav saderīgu failu",
+      "no_files_message": "Mapē nav atrasti saderīgi faili (CBZ, CBR, CB7, CBT, PDF):\n{directory}",
+      "confirm_title": "Metadatu lielapjoma imports",
+      "confirm_message": "Mapē {directory} atrasti {count} fails(-i) (iekļaujot apakšmapes).",
+      "start_button": "Sākt",
+      "cbz_warning": "Tikai CBZ formāts atbalsta ComicInfo metadatus. CBR, CBT, CB7 un PDF faili tiks automātiski konvertēti uz CBZ.",
+      "checkbox_permanent_delete": "Neatgriezeniski dzēst oriģinālos ne-CBZ failus bez atkritnes\n(ATSAUKŠANA NAV IESPĒJAMA)",
+      "complete_title": "Metadatu importēšana pabeigta",
+      "complete_message": "Apstrādāti {done} fails(-i) no {total}. Izlaisti {skipped}.",
+      "complete_message_errors": "Apstrādāti {done} fails(-i) no {total}. Izlaisti {skipped}. {errors} kļūda(-as).",
+      "errors_count": "{count} kļūda(-as)",
+      "done_count": "Apstrādāti {done} fails(-i) no {total}.",
+      "skipped_count": "Izlaisti {skipped}.",
+      "select_directory_title": "Izvēlieties apstrādājamo mapi"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Konvertē visus CB7 failus mapē\nun tās apakšmapēs uz CBZ.",
     "batch_cb7_permanent_delete": "BRĪDINĀJUMS : ja šī opcija ir atzīmēta,\nsākotnējie CB7 faili tiks neatgriezeniski dzēsti\npēc konvertēšanas bez atkopšanas iespējas.\nPārliecinieties, ka jums ir dublējumkopija.",
     "batch_cbt_to_cbz": "Konvertē visus CBT failus mapē\nun tās apakšmapēs uz CBZ.",
-    "batch_cbt_permanent_delete": "BRĪDINĀJUMS : ja šī opcija ir atzīmēta,\nsākotnējie CBT faili tiks neatgriezeniski dzēsti\npēc konvertēšanas bez atkopšanas iespējas.\nPārliecinieties, ka jums ir dublējumkopija."
+    "batch_cbt_permanent_delete": "BRĪDINĀJUMS : ja šī opcija ir atzīmēta,\nsākotnējie CBT faili tiks neatgriezeniski dzēsti\npēc konvertēšanas bez atkopšanas iespējas.\nPārliecinieties, ka jums ir dublējumkopija.",
+    "batch_metadata": "Metadatu pakešimportēšana"
   },
   "help": {
     "title": "MosaicView - Lietošanas instrukcija",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Ikonu rīkjosla nodrošina ātru piekļuvi lietojumprogrammas galvenajām funkcijām. Ikonas var pārkārtot pēc saviem ieskatiem, velkot tās tieši joslā. Lai izvēlētos, kuras ikonas rādīt vai slēpt, noklikšķiniet uz zobrata pogas joslas apakšdaļā: atveras konfigurācijas logs, kurā var pārvietot ikonas starp aktīvo joslu un rezervi. Izmantojiet pogas « + » un « − », lai pielāgotu ikonu izmēru. Konfigurācija tiek saglabāta automātiski.",
     "license_7zip": "7-Zip licence",
     "nfo_editor": "NFO failu izveide un rediģēšana",
-    "nfo_editor_content": "NFO fails ir teksta fails (ar paplašinājumu .nfo), ko izmanto, lai glabātu informāciju par arhīvu: satura apraksts, autori, piezīmes…\n\nLai izveidotu NFO failu, izmantojiet rīkjoslā esošo ikonu, izvēlni Fails vai konteksta izvēlni (ar peles labo pogu noklikšķiniet uz mozaīkas). Komanda ir pieejama tikai tad, ja mozaīka nav tukša. Ievadiet nosaukumu un saturu: fails tiek ievietots tieši mozaīkā bez izvilkšanas vai starpposma saglabāšanas.\n\nLai rediģētu esošu NFO failu, veiciet dubultklikšķi uz tā mozaīkā. Logs atveras ar iepriekš aizpildītu pašreizējo nosaukumu un saturu, abi ir rediģējami. Abos gadījumos darbība tiek reģistrēta atsaukšanas vēsturē."
+    "nfo_editor_content": "NFO fails ir teksta fails (ar paplašinājumu .nfo), ko izmanto, lai glabātu informāciju par arhīvu: satura apraksts, autori, piezīmes…\n\nLai izveidotu NFO failu, izmantojiet rīkjoslā esošo ikonu, izvēlni Fails vai konteksta izvēlni (ar peles labo pogu noklikšķiniet uz mozaīkas). Komanda ir pieejama tikai tad, ja mozaīka nav tukša. Ievadiet nosaukumu un saturu: fails tiek ievietots tieši mozaīkā bez izvilkšanas vai starpposma saglabāšanas.\n\nLai rediģētu esošu NFO failu, veiciet dubultklikšķi uz tā mozaīkā. Logs atveras ar iepriekš aizpildītu pašreizējo nosaukumu un saturu, abi ir rediģējami. Abos gadījumos darbība tiek reģistrēta atsaukšanas vēsturē.",
+    "metadata": "ComicVine metadati",
+    "metadata_content": "MosaicView ļauj automātiski iegūt komiksu metadatus (nosaukums, sērija, numurs, autori, kopsavilkums...) no ComicVine datu bāzes — kopienas uzturētas sadarbības vietnes.\n\nAtsevišķais režīms: atveriet komiksu, pēc tam izmantojiet rīkjoslas pogu vai izvēlni Metadati. Atveras divpakāpju vednis: vispirms izvēlieties sēriju, pēc tam atbilstošo epizodi. Metadati tiek ierakstīti ComicInfo.xml arhīvā.\n\nPakešu režīms: nometiet vienu vai vairākas mapes uz mozaīkas un izvēlieties \"Metadatu pakešimportēšana\", vai izmantojiet rīkjoslas speciālo pogu vai izvēlni Metadati. Vednis atveras secīgi katram atrastajam failam (CBZ, CBR, CB7, CBT, PDF). Faili, kas nav CBZ, pēc metadatu ierakstīšanas automātiski tiek konvertēti uz CBZ.\n\nAPI atslēga: nepieciešama bezmaksas ComicVine API atslēga. Lietojumprogramma vadīs jūs tās iegūšanā. To var iegūt vietnē comicvine.gamespot.com pēc konta izveides.\n\nAPI ierobežojumi: šos ierobežojumus nosaka ComicVine, un tos nevar apiet.\n• 200 pieprasījumu vienam resursam stundā. Sasniedzot šo ierobežojumu, meklēšanas īslaicīgi neizdodas līdz stundas beigām.\n• Maksimums 100 rezultātu vienam pieprasījumam, kas piespiež sadalīt meklēšanas vairākos izsaukumos sērijām ar daudzām epizodēm.\n• Vietne atļauj 1 pieprasījumu sekundē. Drošībai MosaicView gaida 2 sekundes starp katru pieprasījumu, jo ātrāki pieprasījumi ir ļoti iespējami, ka izraisīs īslaicīgas bloķēšanas.\n\nŠī funkcija ir pilnībā balstīta uz atvērtā pirmkoda projektu {scraper}."
   },
   "misc": {
     "file_word": "fails",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Lūdzu, ievadiet faila nosaukumu.",
     "error_write": "Nevar ierakstīt failu:\n{error}",
     "error_duplicate": "Fails ar nosaukumu {filename} mozaīkā jau pastāv."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API atslēga",
+      "explanation": "Lai iegūtu komiksu metadatus, MosaicView izmanto ComicVine datu bāzi. Jums nepieciešama bezmaksas API atslēga.",
+      "instructions": "Izveidojiet kontu vietnē {comicvine} un pēc tam dodieties uz {api_page}, lai iegūtu atslēgu.",
+      "api_page_label": "API lapa",
+      "field_label": "API atslēga:",
+      "placeholder": "Ielīmējiet šeit savu API atslēgu",
+      "validate": "Apstiprināt",
+      "error_empty": "Lūdzu, ievadiet API atslēgu.",
+      "clear": "Dzēst atslēgu"
+    },
+    "menu_label": "Metadati",
+    "tooltip": "Iegūt metadatus",
+    "change_api_key": "Mainīt ComicVine API atslēgu",
+    "search_placeholder": "Meklēt sēriju...",
+    "search_button": "Meklēt",
+    "searching": "Meklē...",
+    "loading_issues": "Ielādē numurus...",
+    "results_count": "{count} rezultāts(-i) no {total}",
+    "issues_count": "{count} numurs(-i) sērijai \"{series}\"",
+    "col_series": "Sērija",
+    "col_year": "Gads",
+    "col_issues": "Numuri",
+    "col_publisher": "Izdevējs",
+    "col_issue_num": "Nr.",
+    "col_issue_title": "Nosaukums",
+    "btn_skip": "Izlaist",
+    "btn_back": "Atpakaļ",
+    "info_single": "Šī funkcija iegūst metadatus pašlaik atvērtajam komiksum. Lai apstrādātu vairākus failus vienlaikus, izmantojiet pakešapstrādi (velciet mapi uz logu).",
+    "page_indicator": "Lapa {page}",
+    "loading_issues_progress": "Ielādē... {loaded} / {total}",
+    "issues_partial_load": "{count} numurs(-i) ielādēts(-i) — ielāde pārtraukta: {error}",
+    "credit": "Metadati: {comicvine} · iedvesmojies no {scraper}"
   }
 }

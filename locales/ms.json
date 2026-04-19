@@ -61,7 +61,8 @@
     "unsplit_ui": "Tutup panel kedua",
     "rename_to_ext": "Namakan semula kepada {ext}",
     "batch_cb7_to_cbz": "Penukaran kelompok\n fail CB7 ke CBZ",
-    "batch_cbt_to_cbz": "Penukaran kelompok\n fail CBT ke CBZ"
+    "batch_cbt_to_cbz": "Penukaran kelompok\n fail CBT ke CBZ",
+    "batch_metadata": "Import metadata secara pukal"
   },
   "tabs": {
     "mosaic": "Mozek",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} fail dinamakan semula kepada CBZ",
       "renamed_cbr_count": "{count} fail dinamakan semula kepada CBR",
       "renamed_cb7_count": "{count} fail dinamakan semula kepada CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Tiada fail yang serasi",
+      "no_files_message": "Tiada fail serasi (CBZ, CBR, CB7, CBT, PDF) ditemui dalam:\n{directory}",
+      "confirm_title": "Import metadata secara pukal",
+      "confirm_message": "{count} fail ditemui dalam {directory} (subdirektori disertakan).",
+      "start_button": "Mula",
+      "cbz_warning": "Hanya format CBZ menyokong metadata ComicInfo. Fail CBR, CBT, CB7 dan PDF akan ditukar secara automatik kepada CBZ.",
+      "checkbox_permanent_delete": "Padamkan fail asal bukan CBZ secara kekal tanpa tong sampah\n(TIDAK BOLEH DIBUAT ASAL)",
+      "complete_title": "Import metadata selesai",
+      "complete_message": "{done} fail diproses daripada {total}. {skipped} dilangkau.",
+      "complete_message_errors": "{done} fail diproses daripada {total}. {skipped} dilangkau. {errors} ralat.",
+      "errors_count": "{count} ralat",
+      "done_count": "{done} fail diproses daripada {total}.",
+      "skipped_count": "{skipped} dilangkau.",
+      "select_directory_title": "Pilih folder untuk diproses"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Menukar semua fail CB7 dalam direktori\ndan subdirektorinya kepada CBZ.",
     "batch_cb7_permanent_delete": "AMARAN : jika pilihan ini ditanda,\nfail CB7 asal akan dipadamkan secara kekal\nselepas penukaran tanpa kemungkinan pemulihan.\nPastikan anda mempunyai sandaran.",
     "batch_cbt_to_cbz": "Menukar semua fail CBT dalam direktori\ndan subdirektorinya kepada CBZ.",
-    "batch_cbt_permanent_delete": "AMARAN : jika pilihan ini ditanda,\nfail CBT asal akan dipadamkan secara kekal\nselepas penukaran tanpa kemungkinan pemulihan.\nPastikan anda mempunyai sandaran."
+    "batch_cbt_permanent_delete": "AMARAN : jika pilihan ini ditanda,\nfail CBT asal akan dipadamkan secara kekal\nselepas penukaran tanpa kemungkinan pemulihan.\nPastikan anda mempunyai sandaran.",
+    "batch_metadata": "Import metadata kelompok"
   },
   "help": {
     "title": "MosaicView - Manual Pengguna",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Bar ikon menyediakan akses pantas kepada fungsi utama aplikasi. Anda boleh menyusun semula ikon mengikut kehendak anda dengan menyeretnya terus ke bar. Untuk memilih ikon mana yang hendak dipaparkan atau disembunyikan, klik butang gear di bahagian bawah bar: tetingkap konfigurasi akan dibuka di mana anda boleh menggerakkan ikon antara bar aktif dan simpanan. Gunakan butang « + » dan « − » untuk melaraskan saiz ikon. Konfigurasi disimpan secara automatik.",
     "license_7zip": "Lesen 7-Zip",
     "nfo_editor": "Mencipta dan mengedit fail NFO",
-    "nfo_editor_content": "Fail NFO ialah fail teks (dengan sambungan .nfo) yang digunakan untuk menyimpan maklumat tentang arkib: sinopsis, kredit, nota…\n\nUntuk mencipta fail NFO, gunakan ikon khusus dalam bar alat, menu Fail atau menu konteks (klik kanan pada mosaik). Arahan ini hanya tersedia apabila mosaik tidak kosong. Masukkan nama dan kandungan: fail disisipkan terus ke dalam mosaik tanpa pengekstrakan atau penyimpanan pertengahan.\n\nUntuk mengedit fail NFO sedia ada, klik dua kali padanya dalam mosaik. Tetingkap dibuka dengan nama dan kandungan semasa yang telah diisi, kedua-duanya boleh diedit. Dalam kedua-dua kes, operasi direkodkan dalam sejarah buat asal."
+    "nfo_editor_content": "Fail NFO ialah fail teks (dengan sambungan .nfo) yang digunakan untuk menyimpan maklumat tentang arkib: sinopsis, kredit, nota…\n\nUntuk mencipta fail NFO, gunakan ikon khusus dalam bar alat, menu Fail atau menu konteks (klik kanan pada mosaik). Arahan ini hanya tersedia apabila mosaik tidak kosong. Masukkan nama dan kandungan: fail disisipkan terus ke dalam mosaik tanpa pengekstrakan atau penyimpanan pertengahan.\n\nUntuk mengedit fail NFO sedia ada, klik dua kali padanya dalam mosaik. Tetingkap dibuka dengan nama dan kandungan semasa yang telah diisi, kedua-duanya boleh diedit. Dalam kedua-dua kes, operasi direkodkan dalam sejarah buat asal.",
+    "metadata": "Metadata ComicVine",
+    "metadata_content": "MosaicView membolehkan pengambilan metadata komik anda (tajuk, siri, nombor, pengarang, ringkasan...) secara automatik daripada pangkalan data ComicVine, laman web kolaboratif yang diselenggarakan oleh komuniti.\n\nMod tunggal: buka komik, kemudian gunakan butang bar alat atau menu Metadata. Wizard dua langkah dibuka: pilih siri dahulu, kemudian episod yang berkaitan. Metadata ditulis ke ComicInfo.xml di dalam arkib.\n\nMod kelompok: jatuhkan satu atau lebih folder ke mosaik dan pilih \"Import metadata kelompok\", atau gunakan butang khusus pada bar alat atau menu Metadata. Wizard dibuka berturut-turut untuk setiap fail yang ditemui (CBZ, CBR, CB7, CBT, PDF). Fail bukan CBZ ditukar secara automatik kepada CBZ selepas penulisan metadata.\n\nKunci API: kunci API ComicVine percuma diperlukan. Aplikasi akan membimbing anda untuk mendapatkannya. Ia diperoleh di comicvine.gamespot.com selepas membuat akaun.\n\nHad API: had ini dikenakan oleh ComicVine dan tidak boleh dielakkan.\n• 200 permintaan setiap sumber sejam. Jika had ini dicapai, carian gagal sementara sehingga akhir jam.\n• Maksimum 100 keputusan setiap permintaan, yang memaksa carian dibahagikan kepada beberapa panggilan untuk siri dengan banyak episod.\n• 1 permintaan sesaat dibenarkan oleh laman web. Untuk keselamatan, MosaicView menunggu 2 saat antara setiap permintaan, kerana permintaan yang lebih pantas berkemungkinan besar menyebabkan sekatan sementara.\n\nCiri ini sepenuhnya berdasarkan projek sumber terbuka {scraper}."
   },
   "misc": {
     "file_word": "fail",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Sila masukkan nama fail.",
     "error_write": "Tidak dapat menulis fail:\n{error}",
     "error_duplicate": "Fail bernama {filename} sudah wujud dalam mosaik."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "Kunci API ComicVine",
+      "explanation": "Untuk mendapatkan metadata komik, MosaicView menggunakan pangkalan data ComicVine. Anda memerlukan kunci API percuma.",
+      "instructions": "Buat akaun di {comicvine}, kemudian pergi ke {api_page} untuk mendapatkan kunci anda.",
+      "api_page_label": "halaman API",
+      "field_label": "Kunci API:",
+      "placeholder": "Tampal kunci API anda di sini",
+      "validate": "Sahkan",
+      "error_empty": "Sila masukkan kunci API.",
+      "clear": "Padam kunci"
+    },
+    "menu_label": "Metadata",
+    "tooltip": "Dapatkan metadata",
+    "change_api_key": "Tukar kunci API ComicVine",
+    "search_placeholder": "Cari siri...",
+    "search_button": "Cari",
+    "searching": "Mencari...",
+    "loading_issues": "Memuatkan isu...",
+    "results_count": "{count} keputusan daripada {total}",
+    "issues_count": "{count} isu untuk \"{series}\"",
+    "col_series": "Siri",
+    "col_year": "Tahun",
+    "col_issues": "Isu",
+    "col_publisher": "Penerbit",
+    "col_issue_num": "No.",
+    "col_issue_title": "Tajuk",
+    "btn_skip": "Langkau",
+    "btn_back": "Kembali",
+    "info_single": "Fungsi ini mendapatkan metadata untuk komik yang sedang dibuka. Untuk memproses beberapa fail sekaligus, gunakan pemprosesan kelompok (seret folder ke tetingkap).",
+    "page_indicator": "Halaman {page}",
+    "loading_issues_progress": "Memuatkan... {loaded} / {total}",
+    "issues_partial_load": "{count} isu dimuatkan — pemuatan terganggu: {error}",
+    "credit": "Metadata: {comicvine} · terinspirasi daripada {scraper}"
   }
 }

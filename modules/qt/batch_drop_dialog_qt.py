@@ -51,10 +51,10 @@ class BatchDropDialog(QDialog):
         super().__init__(parent)
         self._dirs  = dirs
         self._count = len(dirs)
-        self.chosen = None   # 'cbr' | 'cb7' | 'cbt' | 'pdf' | 'img' | None (annuler)
+        self.chosen = None   # 'cbr' | 'cb7' | 'cbt' | 'pdf' | 'img' | 'metadata' | None (annuler)
 
         self.setModal(False)
-        self.setFixedSize(480, 280)
+        self.setFixedSize(480, 310)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 14)
@@ -71,20 +71,23 @@ class BatchDropDialog(QDialog):
         # Radio buttons
         self._btn_group = QButtonGroup(self)
 
-        self._radio_cbr = QRadioButton()
-        self._radio_cb7 = QRadioButton()
-        self._radio_cbt = QRadioButton()
-        self._radio_pdf = QRadioButton()
-        self._radio_img = QRadioButton()
+        self._radio_cbr      = QRadioButton()
+        self._radio_cb7      = QRadioButton()
+        self._radio_cbt      = QRadioButton()
+        self._radio_pdf      = QRadioButton()
+        self._radio_img      = QRadioButton()
+        self._radio_metadata = QRadioButton()
 
-        self._btn_group.addButton(self._radio_cbr, 0)
-        self._btn_group.addButton(self._radio_cb7, 1)
-        self._btn_group.addButton(self._radio_cbt, 2)
-        self._btn_group.addButton(self._radio_pdf, 3)
-        self._btn_group.addButton(self._radio_img, 4)
+        self._btn_group.addButton(self._radio_cbr,      0)
+        self._btn_group.addButton(self._radio_cb7,      1)
+        self._btn_group.addButton(self._radio_cbt,      2)
+        self._btn_group.addButton(self._radio_pdf,      3)
+        self._btn_group.addButton(self._radio_img,      4)
+        self._btn_group.addButton(self._radio_metadata, 5)
         self._radio_cbr.setChecked(True)
 
-        for rb in (self._radio_cbr, self._radio_cb7, self._radio_cbt, self._radio_pdf, self._radio_img):
+        for rb in (self._radio_cbr, self._radio_cb7, self._radio_cbt,
+                   self._radio_pdf, self._radio_img, self._radio_metadata):
             layout.addWidget(rb)
 
         layout.addSpacing(4)
@@ -177,6 +180,8 @@ class BatchDropDialog(QDialog):
         self._radio_pdf.setFont(font10)
         self._radio_img.setText(_radio_label("batch_img_to_cbz"))
         self._radio_img.setFont(font10)
+        self._radio_metadata.setText(_radio_label("batch_metadata"))
+        self._radio_metadata.setFont(font10)
 
         self._lbl_note.setText(_("dialogs.batch_drop.recursive_note"))
         self._lbl_note.setFont(font9)
@@ -192,7 +197,7 @@ class BatchDropDialog(QDialog):
 
     def _on_ok(self):
         checked = self._btn_group.checkedId()
-        self.chosen = ("cbr", "cb7", "cbt", "pdf", "img")[checked]
+        self.chosen = ("cbr", "cb7", "cbt", "pdf", "img", "metadata")[checked]
         self.accept()
 
     def _on_cancel(self):

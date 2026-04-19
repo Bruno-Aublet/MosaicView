@@ -61,7 +61,8 @@
     "unsplit_ui": "Dún an dara painéal",
     "rename_to_ext": "Athainmnigh go {ext}",
     "batch_cb7_to_cbz": "Tiontú baisc\n comhaid CB7 go CBZ",
-    "batch_cbt_to_cbz": "Tiontú baisc\n comhaid CBT go CBZ"
+    "batch_cbt_to_cbz": "Tiontú baisc\n comhaid CBT go CBZ",
+    "batch_metadata": "Iompórtáil meiteashonraí ina bhaisce"
   },
   "tabs": {
     "mosaic": "Mósáic",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "Athainmníodh {count} comhad(comhaid) go CBZ",
       "renamed_cbr_count": "Athainmníodh {count} comhad(comhaid) go CBR",
       "renamed_cb7_count": "Athainmníodh {count} comhad(comhaid) go CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Gan comhaid comhoiriúnacha",
+      "no_files_message": "Níor aimsíodh comhaid comhoiriúnacha (CBZ, CBR, CB7, CBT, PDF) i:\n{directory}",
+      "confirm_title": "Iompórtáil meiteashonraí ina bhaisce",
+      "confirm_message": "Aimsíodh {count} comhad/comhaid i {directory} (fochomhadlanna san áireamh).",
+      "start_button": "Tosaigh",
+      "cbz_warning": "Ní thacaíonn ach an fhormáid CBZ le meiteashonraí ComicInfo. Tiontófar comhaid CBR, CBT, CB7 agus PDF go CBZ go huathoibríoch.",
+      "checkbox_permanent_delete": "Scrios comhaid bhunaidh neamh-CBZ go buan gan an bhosca bruscair\n(NÍL AON CHÚLÚ INDÉANTA)",
+      "complete_title": "Iompórtáil meitashonraí críochnaithe",
+      "complete_message": "Próiseáladh {done} comhad(comhaid) as {total}. Scipeáladh {skipped}.",
+      "complete_message_errors": "Próiseáladh {done} comhad(comhaid) as {total}. Scipeáladh {skipped}. {errors} earráid(earráidí).",
+      "errors_count": "{count} earráid(earráidí)",
+      "done_count": "Próiseáladh {done} comhad(comhaid) as {total}.",
+      "skipped_count": "Scipeáladh {skipped}.",
+      "select_directory_title": "Roghnaigh fillteán le próiseáil"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Tiontaíonn sé gach comhad CB7 in eolaire\nagus a fho-eolairí go CBZ.",
     "batch_cb7_permanent_delete": "RABHADH : má roghnaítear an rogha seo,\nscriosfar na comhaid CB7 bunaidh go buan\ntar éis an tiontaithe gan féidearthacht aisghabhála.\nCinntigh go bhfuil cúltaca agat.",
     "batch_cbt_to_cbz": "Tiontaíonn sé gach comhad CBT in eolaire\nagus a fho-eolairí go CBZ.",
-    "batch_cbt_permanent_delete": "RABHADH : má roghnaítear an rogha seo,\nscriosfar na comhaid CBT bunaidh go buan\ntar éis an tiontaithe gan féidearthacht aisghabhála.\nCinntigh go bhfuil cúltaca agat."
+    "batch_cbt_permanent_delete": "RABHADH : má roghnaítear an rogha seo,\nscriosfar na comhaid CBT bunaidh go buan\ntar éis an tiontaithe gan féidearthacht aisghabhála.\nCinntigh go bhfuil cúltaca agat.",
+    "batch_metadata": "Iompórtáil meitashonraí baisceanna"
   },
   "help": {
     "title": "MosaicView - Treoir",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Tugann an barra deilbhíní rochtain thapa ar phríomhfheidhmeanna an fheidhmchláir. Is féidir leat na deilbhíní a atheagrú de réir mar is mian leat trína dtarraingt díreach sa bharra. Chun a roghnú cé na deilbhíní le taispeáint nó a cheilt, cliceáil ar an gcnaipe roth fiacla ag bun an bharra: osclóidh fuinneog chumraíochta inar féidir leat deilbhíní a bhogadh idir an barra gníomhach agus an cúltaca. Úsáid na cnaipí « + » agus « − » chun méid na ndeilbhíní a choigeartú. Sábháiltear an chumraíocht go huathoibríoch.",
     "license_7zip": "Ceadúnas 7-Zip",
     "nfo_editor": "Comhaid NFO a chruthú agus a chur in eagar",
-    "nfo_editor_content": "Is comhad téacs é comhad NFO (le síneadh .nfo) a úsáidtear chun faisnéis faoin gcartlann a stóráil: achoimre, creidmheasanna, nótaí…\n\nChun comhad NFO a chruthú, úsáid an deilbhín tiomnaithe sa bharra uirlisí, an roghchlár Comhad, nó an roghchlár comhthéacs (cliceáil ar dheis ar an móisáic). Níl an t-ordú ar fáil ach amháin nuair nach bhfuil an móisáic folamh. Cuir isteach ainm agus ábhar: cuirtear an comhad isteach sa mhóisáic go díreach gan asbhaint ná sábháil eatramhach.\n\nChun comhad NFO atá ann cheana a chur in eagar, déan cliceáil dúbailte air sa mhóisáic. Osclaíonn an fhuinneog réamhlíonta leis an ainm agus an t-ábhar reatha, agus is féidir an dá cheann a chur in eagar. Sa dá chás, taifeadtar an oibríocht i stair na céim ar gcúl."
+    "nfo_editor_content": "Is comhad téacs é comhad NFO (le síneadh .nfo) a úsáidtear chun faisnéis faoin gcartlann a stóráil: achoimre, creidmheasanna, nótaí…\n\nChun comhad NFO a chruthú, úsáid an deilbhín tiomnaithe sa bharra uirlisí, an roghchlár Comhad, nó an roghchlár comhthéacs (cliceáil ar dheis ar an móisáic). Níl an t-ordú ar fáil ach amháin nuair nach bhfuil an móisáic folamh. Cuir isteach ainm agus ábhar: cuirtear an comhad isteach sa mhóisáic go díreach gan asbhaint ná sábháil eatramhach.\n\nChun comhad NFO atá ann cheana a chur in eagar, déan cliceáil dúbailte air sa mhóisáic. Osclaíonn an fhuinneog réamhlíonta leis an ainm agus an t-ábhar reatha, agus is féidir an dá cheann a chur in eagar. Sa dá chás, taifeadtar an oibríocht i stair na céim ar gcúl.",
+    "metadata": "Meitashonraí ComicVine",
+    "metadata_content": "Ligeann MosaicView duit meitashonraí do leabhar grinn (teideal, sraith, uimhir, údair, achoimre...) a aisghabháil go huathoibríoch ó bhunachar sonraí ComicVine, suíomh comhoibríoch arna chothabháil ag an bpobal.\n\nMód aonair: oscail leabhar grinn, ansin úsáid cnaipe an bharra uirlisí nó an roghchlár Meitashonraí. Osclaítear treoraí dhá chéim: roghnaigh an tsraith ar dtús, ansin an t-eipeasóid comhfhreagrach. Scríobhtar meitashonraí chuig ComicInfo.xml laistigh den chartlann.\n\nMód baisce: tit ceann amháin nó níos mó fillteán ar an mósáic agus roghnaigh \"Iompórtáil meitashonraí baisceanna\", nó úsáid an cnaipe tiomnaithe sa bharra uirlisí nó an roghchlár Meitashonraí. Osclaítear an treoraí de réir a chéile do gach comhad a aimsítear (CBZ, CBR, CB7, CBT, PDF). Comhaid neamh-CBZ tiontaítear go CBZ go huathoibríoch tar éis na meitashonraí a scríobh.\n\nEochair API: tá eochair API saor in aisce ComicVine ag teastáil. Treorófar thú ag an bhfeidhmchlár chun í a fháil. Faightear é ar comicvine.gamespot.com tar éis cuntas a chruthú.\n\nTeorainneacha API: forchuirtear na teorainneacha seo ag ComicVine agus ní féidir iad a sheachaint.\n• 200 iarratas in aghaidh an acmhainn in aghaidh na huaire. Má shroichtear an teorainn seo, teipeann cuardaigh go sealadach go dtí deireadh na huaire.\n• 100 toradh ar a mhéad in aghaidh an iarratais, rud a chuireann iallach cuardaigh a roinnt ar roinnt glaonna do shraitheanna le go leor eipeasóidí.\n• 1 iarratas in aghaidh an tsoicind ceadaithe ag an suíomh. Ar mhaithe le sábháilteacht, fanann MosaicView 2 shoicind idir gach iarratas, toisc go bhfuil sé an-dóchúil go gcuirfeadh iarratais níos tapúla bac sealadach.\n\nTá an ghné seo bunaithe go hiomlán ar an tionscadal foinse oscailte {scraper}."
   },
   "misc": {
     "file_word": "comhad",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Cuir isteach ainm comhaid le do thoil.",
     "error_write": "Ní féidir an comhad a scríobh:\n{error}",
     "error_duplicate": "Tá comhad darb ainm {filename} ann cheana sa mhósáic."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "Eochair API ComicVine",
+      "explanation": "Chun meiteashonraí do leabhair ghraif a aisghabháil, úsáideann MosaicView bunachar sonraí ComicVine. Tá eochair API saor in aisce uait.",
+      "instructions": "Cruthaigh cuntas ar {comicvine}, ansin téigh go dtí {api_page} chun d'eochair a fháil.",
+      "api_page_label": "leathanach API",
+      "field_label": "Eochair API:",
+      "placeholder": "Greamaigh d'eochair API anseo",
+      "validate": "Deimhnigh",
+      "error_empty": "Iontráil eochair API le do thoil.",
+      "clear": "Glan eochair"
+    },
+    "menu_label": "Meiteashonraí",
+    "tooltip": "Aisghabh meiteashonraí",
+    "change_api_key": "Athraigh eochair API ComicVine",
+    "search_placeholder": "Cuardaigh sraith...",
+    "search_button": "Cuardaigh",
+    "searching": "Ag cuardach...",
+    "loading_issues": "Ag luchtú uimhreacha...",
+    "results_count": "{count} toradh as {total}",
+    "issues_count": "{count} uimhir do \"{series}\"",
+    "col_series": "Sraith",
+    "col_year": "Bliain",
+    "col_issues": "Uimhreacha",
+    "col_publisher": "Foilsitheoir",
+    "col_issue_num": "Uimh.",
+    "col_issue_title": "Teideal",
+    "btn_skip": "Scipeáil",
+    "btn_back": "Ar ais",
+    "info_single": "Aisghabhadh an fheidhm seo meiteashonraí don leabhar graif atá oscailte faoi láthair. Chun comhaid iolracha a phróiseáil ag an am céanna, úsáid próiseáil bhaisc (tarraing fillteán chuig an bhfuinneog).",
+    "page_indicator": "Leathanach {page}",
+    "loading_issues_progress": "Ag luchtú... {loaded} / {total}",
+    "issues_partial_load": "{count} uimhir luchtaithe — luchtú curtha isteach: {error}",
+    "credit": "Meitashonraí: {comicvine} · inspioráilte ag {scraper}"
   }
 }

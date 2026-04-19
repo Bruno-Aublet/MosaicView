@@ -182,11 +182,29 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
         mode_dlg.finished.connect(lambda _: _on_mode_done())
         mode_dlg.show()
 
+    def _make_batch_metadata():
+        files = []
+        for d in dirs:
+            for dirpath, _subdirs, filenames in os.walk(d):
+                for fn in filenames:
+                    if fn.lower().endswith(('.cbz', '.cbr', '.cb7', '.cbt', '.pdf')):
+                        files.append(os.path.join(dirpath, fn))
+        from modules.qt.archive_loader import _natural_sort_key
+        files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
+        if not files:
+            _show_centered_msgbox(parent,
+                _wt("dialogs.batch_metadata.no_files_title"),
+                _("dialogs.batch_metadata.no_files_message").format(directory=", ".join(dirs)))
+            return
+        from modules.qt.batch_metadata_dialog_qt import show_batch_metadata_dialog
+        show_batch_metadata_dialog(parent, files, dirs, batch_callbacks)
+
     callbacks = {
-        'batch_cbr': _make_batch_cbr,
-        'batch_cb7': _make_batch_cb7,
-        'batch_cbt': _make_batch_cbt,
-        'batch_pdf': _make_batch_pdf,
-        'batch_img': _make_batch_img,
+        'batch_cbr':      _make_batch_cbr,
+        'batch_cb7':      _make_batch_cb7,
+        'batch_cbt':      _make_batch_cbt,
+        'batch_pdf':      _make_batch_pdf,
+        'batch_img':      _make_batch_img,
+        'batch_metadata': _make_batch_metadata,
     }
     show_batch_drop_dialog(parent, dirs, callbacks)

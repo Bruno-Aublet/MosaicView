@@ -61,7 +61,8 @@
     "unsplit_ui": "Loka öðrum hlutanum",
     "rename_to_ext": "Endurnefna í {ext}",
     "batch_cb7_to_cbz": "Lotuvinna CB7-skráa\n í CBZ",
-    "batch_cbt_to_cbz": "Lotuvinna CBT-skráa\n í CBZ"
+    "batch_cbt_to_cbz": "Lotuvinna CBT-skráa\n í CBZ",
+    "batch_metadata": "Lotuinnflutningur lýsigagna"
   },
   "tabs": {
     "mosaic": "Mósaík",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} skrá(r) endurnefnd(ar) í CBZ",
       "renamed_cbr_count": "{count} skrá(r) endurnefnd(ar) í CBR",
       "renamed_cb7_count": "{count} skrá(r) endurnefnd(ar) í CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Engar samhæfar skrár",
+      "no_files_message": "Engar samhæfar skrár (CBZ, CBR, CB7, CBT, PDF) fundust í:\n{directory}",
+      "confirm_title": "Lotuinnflutningur lýsigagna",
+      "confirm_message": "{count} skrá(r) fundust í {directory} (undirmöppur innifaldar).",
+      "start_button": "Byrja",
+      "cbz_warning": "Aðeins CBZ-snið styður ComicInfo lýsigögn. CBR-, CBT-, CB7- og PDF-skrár verða sjálfkrafa umbreyttar í CBZ.",
+      "checkbox_permanent_delete": "Eyða upprunalegum non-CBZ skrám að fullu án ruslafötu\n(EKKI HÆGT AÐ AFTURKALLA)",
+      "complete_title": "Innflutningur lýsigagna lokið",
+      "complete_message": "{done} skrá(r) unnar af {total}. {skipped} sleppt.",
+      "complete_message_errors": "{done} skrá(r) unnar af {total}. {skipped} sleppt. {errors} villa(r).",
+      "errors_count": "{count} villa(r)",
+      "done_count": "{done} skrá(r) unnar af {total}.",
+      "skipped_count": "{skipped} sleppt.",
+      "select_directory_title": "Veldu möppu til að vinna"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Umbreytir öllum CB7-skrám í möppu\nog undirmöppum hennar í CBZ.",
     "batch_cb7_permanent_delete": "VIÐVÖRUN : ef þessi valkostur er valinn,\nverða upprunalegar CB7-skrár eytt varanlega\neftir umbreytingu án endurheimtumöguleika.\nGakktu úr skugga um að þú hafir öryggisafrit.",
     "batch_cbt_to_cbz": "Umbreytir öllum CBT-skrám í möppu\nog undirmöppum hennar í CBZ.",
-    "batch_cbt_permanent_delete": "VIÐVÖRUN : ef þessi valkostur er valinn,\nverða upprunalegar CBT-skrár eytt varanlega\neftir umbreytingu án endurheimtumöguleika.\nGakktu úr skugga um að þú hafir öryggisafrit."
+    "batch_cbt_permanent_delete": "VIÐVÖRUN : ef þessi valkostur er valinn,\nverða upprunalegar CBT-skrár eytt varanlega\neftir umbreytingu án endurheimtumöguleika.\nGakktu úr skugga um að þú hafir öryggisafrit.",
+    "batch_metadata": "Fjöldainnflutningur lýsigagna"
   },
   "help": {
     "title": "MosaicView - Notkunarleiðbeiningar",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Táknslátturinn veitir skjótan aðgang að aðalaðgerðum forritsins. Þú getur endurraðað táknunum að eigin vild með því að draga þau beint í slátturinn. Til að velja hvaða tákn á að sýna eða fela, smelltu á gírtakkann neðst í slátturnum: stillingagluggi opnast þar sem þú getur fært tákn milli virka sláttursins og varabirgðanna. Notaðu « + » og « − » takka til að stilla stærð táknanna. Stillingarnar eru vistaðar sjálfkrafa.",
     "license_7zip": "7-Zip leyfi",
     "nfo_editor": "Búa til og breyta NFO skrám",
-    "nfo_editor_content": "NFO skrá er textaskrá (með endinguna .nfo) sem er notuð til að geyma upplýsingar um safnið: samantekt, þakkir, athugasemdir…\n\nTil að búa til NFO skrá skaltu nota sérstaka táknið í tækjastikunni, Skrá-valmyndina eða samhengisvalmyndina (hægrismellur á mósaíkinn). Skipunin er aðeins tiltæk þegar mósaíkurinn er ekki tómur. Sláðu inn nafn og efni: skráin er sett inn beint í mósaíkinn án útdráttarins eða milligeymslu.\n\nTil að breyta fyrirliggjandi NFO skrá skaltu tvísmella á hana í mósaíknum. Glugginn opnast forútfylltur með núverandi nafni og efni, bæði breytanleg. Í báðum tilvikum er aðgerðin skráð í afturkallunarsöguna."
+    "nfo_editor_content": "NFO skrá er textaskrá (með endinguna .nfo) sem er notuð til að geyma upplýsingar um safnið: samantekt, þakkir, athugasemdir…\n\nTil að búa til NFO skrá skaltu nota sérstaka táknið í tækjastikunni, Skrá-valmyndina eða samhengisvalmyndina (hægrismellur á mósaíkinn). Skipunin er aðeins tiltæk þegar mósaíkurinn er ekki tómur. Sláðu inn nafn og efni: skráin er sett inn beint í mósaíkinn án útdráttarins eða milligeymslu.\n\nTil að breyta fyrirliggjandi NFO skrá skaltu tvísmella á hana í mósaíknum. Glugginn opnast forútfylltur með núverandi nafni og efni, bæði breytanleg. Í báðum tilvikum er aðgerðin skráð í afturkallunarsöguna.",
+    "metadata": "ComicVine lýsigögn",
+    "metadata_content": "MosaicView gerir kleift að sækja lýsigögn fyrir myndasögur þínar (titill, þáttur, númer, höfundar, samantekt...) sjálfkrafa úr gagnagrunni ComicVine, samstarfsvefsíðu sem samfélagið heldur við.\n\nEinstaka ham: opnaðu myndasögu og notaðu síðan hnappinn á tækjastikunni eða Lýsigögn-valmyndina. Tvíþrepa leiðsögumaður opnast: veldu fyrst þáttinn, síðan viðeigandi þátt. Lýsigögn eru skrifuð í ComicInfo.xml inni í skjalasafninu.\n\nRunuham: slepptu einum eða fleiri möppum á mósaíkinn og veldu \"Fjöldainnflutningur lýsigagna\", eða notaðu sérstaka hnappinn á tækjastikunni eða Lýsigögn-valmyndina. Leiðsögumaðurinn opnast í röð fyrir hverja skrá sem finnst (CBZ, CBR, CB7, CBT, PDF). Skrár sem eru ekki CBZ eru sjálfkrafa umbreyttar í CBZ eftir skrift lýsigagna.\n\nAPI-lykill: ókeypis ComicVine API-lykill er nauðsynlegur. Forritið leiðbeinir þér í að fá hann. Hann fæst á comicvine.gamespot.com eftir að búið er að stofna reikning.\n\nAPI-takmarkanir: þessar takmarkanir eru settar af ComicVine og er ekki hægt að komast hjá þeim.\n• 200 beiðnir á auðlind á klukkustund. Ef þessum mörkum er náð, mistakast leit tímabundið þar til klukkan líður.\n• Hámark 100 niðurstöður á beiðni, sem þvingar til að skipta leit í fleiri símtöl fyrir þætti með mörgum þáttum.\n• 1 beiðni á sekúndu leyfð af vefsíðunni. Til öryggis bíður MosaicView 2 sekúndur á milli hverrar beiðni, þar sem hraðari beiðnir eru mjög líklegar til að valda tímabundinni lokun.\n\nÞessi eiginleiki byggist að fullu á opnum hugbúnaðarverkefninu {scraper}."
   },
   "misc": {
     "file_word": "skrá",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Vinsamlegast sláðu inn skráarheiti.",
     "error_write": "Ekki er hægt að skrifa skrána:\n{error}",
     "error_duplicate": "Skrá að nafni {filename} er þegar til í mósaíkinum."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API-lykill",
+      "explanation": "Til að sækja lýsigögn fyrir myndasögur notar MosaicView ComicVine-gagnagrunninn. Þú þarft ókeypis API-lykil.",
+      "instructions": "Búðu til reikning á {comicvine} og farðu síðan á {api_page} til að fá lykilinn þinn.",
+      "api_page_label": "API-síða",
+      "field_label": "API-lykill:",
+      "placeholder": "Límdu API-lykilinn þinn hér",
+      "validate": "Staðfesta",
+      "error_empty": "Sláðu inn API-lykil.",
+      "clear": "Hreinsa lykil"
+    },
+    "menu_label": "Lýsigögn",
+    "tooltip": "Sækja lýsigögn",
+    "change_api_key": "Breyta ComicVine API-lykli",
+    "search_placeholder": "Leita að seríu...",
+    "search_button": "Leita",
+    "searching": "Leitar...",
+    "loading_issues": "Hleður tölublöðum...",
+    "results_count": "{count} niðurstaða/niðurstöður af {total}",
+    "issues_count": "{count} tölublað/tölublöð fyrir \"{series}\"",
+    "col_series": "Seríu",
+    "col_year": "Ár",
+    "col_issues": "Tölublöð",
+    "col_publisher": "Útgefandi",
+    "col_issue_num": "Nr.",
+    "col_issue_title": "Titill",
+    "btn_skip": "Sleppa",
+    "btn_back": "Til baka",
+    "info_single": "Þessi aðgerð sækir lýsigögn fyrir myndasöguna sem er opin. Til að vinna úr mörgum skrám í einu skaltu nota lotuvinnsluna (draga möppu að glugganum).",
+    "page_indicator": "Síða {page}",
+    "loading_issues_progress": "Hleður... {loaded} / {total}",
+    "issues_partial_load": "{count} tölublað/tölublöð hlaðið — hleðsla rofnaði: {error}",
+    "credit": "Lýsigögn: {comicvine} · innblásið af {scraper}"
   }
 }

@@ -61,7 +61,8 @@
     "unsplit_ui": "Zamknij drugi panel",
     "rename_to_ext": "Zmień nazwę na {ext}",
     "batch_cb7_to_cbz": "Konwersja wsadowa\n plików CB7 do CBZ",
-    "batch_cbt_to_cbz": "Konwersja wsadowa\n plików CBT do CBZ"
+    "batch_cbt_to_cbz": "Konwersja wsadowa\n plików CBT do CBZ",
+    "batch_metadata": "Hurtowy import metadanych"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} plik(i) przemianowane na CBZ",
       "renamed_cbr_count": "{count} plik(i) przemianowane na CBR",
       "renamed_cb7_count": "{count} plik(i) przemianowane na CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Brak kompatybilnych plików",
+      "no_files_message": "Nie znaleziono kompatybilnych plików (CBZ, CBR, CB7, CBT, PDF) w:\n{directory}",
+      "confirm_title": "Hurtowy import metadanych",
+      "confirm_message": "Znaleziono {count} plik(ów) w {directory} (podkatalogi uwzględnione).",
+      "start_button": "Rozpocznij",
+      "cbz_warning": "Tylko format CBZ obsługuje metadane ComicInfo. Pliki CBR, CBT, CB7 i PDF zostaną automatycznie przekonwertowane do CBZ.",
+      "checkbox_permanent_delete": "Trwałe usunięcie oryginalnych plików nie-CBZ z pominięciem kosza\n(BRAK MOŻLIWOŚCI COFNIĘCIA)",
+      "complete_title": "Import metadanych zakończony",
+      "complete_message": "Przetworzono {done} plik(i) z {total}. Pominięto {skipped}.",
+      "complete_message_errors": "Przetworzono {done} plik(i) z {total}. Pominięto {skipped}. {errors} błąd(y).",
+      "errors_count": "{count} błąd(y)",
+      "done_count": "Przetworzono {done} plik(i) z {total}.",
+      "skipped_count": "Pominięto {skipped}.",
+      "select_directory_title": "Wybierz folder do przetworzenia"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Konwertuje wszystkie pliki CB7 w katalogu\ni jego podkatalogach do formatu CBZ.",
     "batch_cb7_permanent_delete": "UWAGA : jeśli ta opcja jest zaznaczona,\noryginalne pliki CB7 zostaną trwale usunięte\npo konwersji bez możliwości odzyskania.\nUpewnij się, że masz kopię zapasową.",
     "batch_cbt_to_cbz": "Konwertuje wszystkie pliki CBT w katalogu\ni jego podkatalogach do formatu CBZ.",
-    "batch_cbt_permanent_delete": "UWAGA : jeśli ta opcja jest zaznaczona,\noryginalne pliki CBT zostaną trwale usunięte\npo konwersji bez możliwości odzyskania.\nUpewnij się, że masz kopię zapasową."
+    "batch_cbt_permanent_delete": "UWAGA : jeśli ta opcja jest zaznaczona,\noryginalne pliki CBT zostaną trwale usunięte\npo konwersji bez możliwości odzyskania.\nUpewnij się, że masz kopię zapasową.",
+    "batch_metadata": "Masowy import metadanych"
   },
   "help": {
     "title": "MosaicView - Instrukcja obsługi",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Pasek ikon umożliwia szybki dostęp do głównych funkcji aplikacji. Możesz zmieniać układ ikon według własnych preferencji, przeciągając je bezpośrednio na pasek. Aby wybrać, które ikony mają być wyświetlane lub ukryte, kliknij przycisk koła zębatego u dołu paska: otwiera się okno konfiguracji, w którym można przenosić ikony między aktywnym paskiem a rezerwą. Użyj przycisków « + » i « − », aby dostosować rozmiar ikon. Konfiguracja jest zapisywana automatycznie.",
     "license_7zip": "Licencja 7-Zip",
     "nfo_editor": "Tworzenie i edytowanie plików NFO",
-    "nfo_editor_content": "Plik NFO to plik tekstowy (z rozszerzeniem .nfo) używany do przechowywania informacji o archiwum: synopsis, kredyty, notatki…\n\nAby utworzyć plik NFO, użyj dedikowanej ikony na pasku narzędzi, menu Plik lub menu kontekstowego (prawy przycisk myszy na mozaice). Polecenie jest dostępne tylko wtedy, gdy mozaika nie jest pusta. Wprowadź nazwę i zawartość: plik jest wstawiany bezpośrednio do mozaiki bez wyodrębniania ani pośredniego zapisywania.\n\nAby edytować istniejący plik NFO, kliknij go dwukrotnie na mozaice. Okno otwiera się wstępnie wypełnione bieżącą nazwą i zawartością, obie są edytowalne. W obu przypadkach operacja jest rejestrowana w historii cofania."
+    "nfo_editor_content": "Plik NFO to plik tekstowy (z rozszerzeniem .nfo) używany do przechowywania informacji o archiwum: synopsis, kredyty, notatki…\n\nAby utworzyć plik NFO, użyj dedikowanej ikony na pasku narzędzi, menu Plik lub menu kontekstowego (prawy przycisk myszy na mozaice). Polecenie jest dostępne tylko wtedy, gdy mozaika nie jest pusta. Wprowadź nazwę i zawartość: plik jest wstawiany bezpośrednio do mozaiki bez wyodrębniania ani pośredniego zapisywania.\n\nAby edytować istniejący plik NFO, kliknij go dwukrotnie na mozaice. Okno otwiera się wstępnie wypełnione bieżącą nazwą i zawartością, obie są edytowalne. W obu przypadkach operacja jest rejestrowana w historii cofania.",
+    "metadata": "Metadane ComicVine",
+    "metadata_content": "MosaicView umożliwia automatyczne pobieranie metadanych komiksów (tytuł, seria, numer, autorzy, streszczenie...) z bazy danych ComicVine, kolaboratywnego serwisu utrzymywanego przez społeczność.\n\nTryb pojedynczy: otwórz komiks, a następnie użyj przycisku na pasku narzędzi lub menu Metadane. Otwiera się dwuetapowy kreator: najpierw wybierz serię, potem odpowiedni odcinek. Metadane są zapisywane do ComicInfo.xml wewnątrz archiwum.\n\nTryb wsadowy: upuść jeden lub więcej folderów na mozaikę i wybierz \"Masowy import metadanych\", lub użyj dedykowanego przycisku na pasku narzędzi lub menu Metadane. Kreator otwiera się kolejno dla każdego znalezionego pliku (CBZ, CBR, CB7, CBT, PDF). Pliki inne niż CBZ są automatycznie konwertowane do CBZ po zapisaniu metadanych.\n\nKlucz API: wymagany jest bezpłatny klucz API ComicVine. Aplikacja poprowadzi cię przez jego uzyskanie. Można go uzyskać na comicvine.gamespot.com po utworzeniu konta.\n\nOgraniczenia API: te ograniczenia są narzucone przez ComicVine i nie można ich obejść.\n• 200 żądań na zasób na godzinę. Po osiągnięciu tego limitu wyszukiwania tymczasowo kończą się niepowodzeniem do końca godziny.\n• Maksymalnie 100 wyników na żądanie, co zmusza do podzielenia wyszukiwań na wiele wywołań dla serii z wieloma odcinkami.\n• 1 żądanie na sekundę dozwolone przez serwis. Dla bezpieczeństwa MosaicView czeka 2 sekundy między każdym żądaniem, ponieważ szybsze żądania są bardzo podatne na powodowanie tymczasowych blokad.\n\nTa funkcja jest w całości oparta na projekcie open source {scraper}."
   },
   "misc": {
     "file_word": "plik",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Proszę podać nazwę pliku.",
     "error_write": "Nie można zapisać pliku:\n{error}",
     "error_duplicate": "Plik o nazwie {filename} już istnieje w mozaice."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "Klucz API ComicVine",
+      "explanation": "Aby pobrać metadane komiksów, MosaicView korzysta z bazy danych ComicVine. Potrzebny jest bezpłatny klucz API.",
+      "instructions": "Utwórz konto na {comicvine}, a następnie przejdź na {api_page}, aby uzyskać klucz.",
+      "api_page_label": "strona API",
+      "field_label": "Klucz API:",
+      "placeholder": "Wklej tutaj swój klucz API",
+      "validate": "Zatwierdź",
+      "error_empty": "Proszę wprowadzić klucz API.",
+      "clear": "Wyczyść klucz"
+    },
+    "menu_label": "Metadane",
+    "tooltip": "Pobierz metadane",
+    "change_api_key": "Zmień klucz API ComicVine",
+    "search_placeholder": "Szukaj serii...",
+    "search_button": "Szukaj",
+    "searching": "Wyszukiwanie...",
+    "loading_issues": "Ładowanie zeszytów...",
+    "results_count": "{count} wynik(ów) z {total}",
+    "issues_count": "{count} zeszyt(ów) dla \"{series}\"",
+    "col_series": "Seria",
+    "col_year": "Rok",
+    "col_issues": "Zeszyty",
+    "col_publisher": "Wydawca",
+    "col_issue_num": "Nr",
+    "col_issue_title": "Tytuł",
+    "btn_skip": "Pomiń",
+    "btn_back": "Wstecz",
+    "info_single": "Ta funkcja pobiera metadane aktualnie otwartego komiksu. Aby przetworzyć wiele plików naraz, użyj przetwarzania wsadowego (przeciągnij folder do okna).",
+    "page_indicator": "Strona {page}",
+    "loading_issues_progress": "Ładowanie... {loaded} / {total}",
+    "issues_partial_load": "{count} zeszyt(ów) załadowany(ch) — ładowanie przerwane: {error}",
+    "credit": "Metadane: {comicvine} · inspirowane przez {scraper}"
   }
 }

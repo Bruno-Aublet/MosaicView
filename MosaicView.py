@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.1.9"
+__version__ = "1.2.0"
 
 import sys
 import os
@@ -559,11 +559,11 @@ class MainWindow(QMainWindow):
 
     def _show_license_dialog(self):
         from modules.qt.license_dialog_qt import show_license_dialog_qt
-        show_license_dialog_qt(self)
+        show_license_dialog_qt(self._active_panel)
 
-    def _show_changelog(self):
+    def _show_changelog(self, panel=None):
         from modules.qt.changelog_dialog_qt import show_changelog_dialog_qt
-        show_changelog_dialog_qt(self)
+        show_changelog_dialog_qt(panel or self._active_panel)
 
     def show_update_banner(self, latest: str) -> None:
         """Affiche le bandeau de mise à jour sur tous les panneaux actifs."""
@@ -586,7 +586,7 @@ class MainWindow(QMainWindow):
 
     def _show_donation_dialog(self):
         from modules.qt.donation_dialog_qt import show_donation_dialog_qt
-        show_donation_dialog_qt(self)
+        self._donation_dlg = show_donation_dialog_qt(self._active_panel)
 
     def _copy_mail_address(self):
         from PySide6.QtWidgets import QApplication
@@ -594,23 +594,23 @@ class MainWindow(QMainWindow):
 
     def _show_full_gpl_license(self):
         from modules.qt.license_dialog_qt import show_full_license_window_qt
-        show_full_license_window_qt(self)
+        show_full_license_window_qt(self._active_panel)
 
     def _show_full_unrar_license(self):
         from modules.qt.license_dialog_qt import show_full_unrar_license_window_qt
-        show_full_unrar_license_window_qt(self)
+        show_full_unrar_license_window_qt(self._active_panel)
 
     def _show_full_7zip_license(self):
         from modules.qt.license_dialog_qt import show_full_7zip_license_window_qt
-        show_full_7zip_license_window_qt(self)
+        show_full_7zip_license_window_qt(self._active_panel)
 
     def _show_full_piqad_license(self):
         from modules.qt.license_dialog_qt import show_full_piqad_license_window_qt
-        show_full_piqad_license_window_qt(self)
+        show_full_piqad_license_window_qt(self._active_panel)
 
     def _show_full_tengwar_license(self):
         from modules.qt.license_dialog_qt import show_full_tengwar_license_window_qt
-        show_full_tengwar_license_window_qt(self)
+        show_full_tengwar_license_window_qt(self._active_panel)
 
     def _show_user_guide(self, source_panel=None):
         from modules.qt.user_guide_qt import (

@@ -16,7 +16,9 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 def show_changelog_dialog_qt(parent):
     """Ouvre la fenêtre de changelog."""
     dlg = _ChangelogDialog(parent)
-    dlg.exec()
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
 
 
 class _ChangelogDialog(QDialog):
@@ -24,7 +26,8 @@ class _ChangelogDialog(QDialog):
     def __init__(self, parent):
         super().__init__(parent)
         self.resize(750, 600)
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
@@ -58,10 +61,20 @@ class _ChangelogDialog(QDialog):
     def showEvent(self, event):
         super().showEvent(event)
         if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
+            from PySide6.QtCore import QTimer, QPoint
+            from PySide6.QtWidgets import QApplication
             p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+            def _do_center():
+                top_left = p.mapToGlobal(QPoint(0, 0))
+                x = top_left.x() + (p.width()  - self.width())  // 2
+                y = top_left.y() + (p.height() - self.height()) // 2
+                screen = QApplication.screenAt(top_left) or QApplication.primaryScreen()
+                if screen:
+                    sa = screen.availableGeometry()
+                    x = max(sa.left(), min(x, sa.right()  - self.width()))
+                    y = max(sa.top(),  min(y, sa.bottom() - self.height()))
+                self.move(x, y)
+            QTimer.singleShot(0, _do_center)
 
     def _retranslate(self):
         theme = get_current_theme()

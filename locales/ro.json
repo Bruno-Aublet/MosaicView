@@ -61,7 +61,8 @@
     "unsplit_ui": "Închide al doilea panou",
     "rename_to_ext": "Redenumește în {ext}",
     "batch_cb7_to_cbz": "Conversie în lot\n a fișierelor CB7 la CBZ",
-    "batch_cbt_to_cbz": "Conversie în lot\n a fișierelor CBT la CBZ"
+    "batch_cbt_to_cbz": "Conversie în lot\n a fișierelor CBT la CBZ",
+    "batch_metadata": "Import în masă a metadatelor"
   },
   "tabs": {
     "mosaic": "Mozaic",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} fișier(e) redenumit(e) în CBZ",
       "renamed_cbr_count": "{count} fișier(e) redenumit(e) în CBR",
       "renamed_cb7_count": "{count} fișier(e) redenumit(e) în CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Niciun fișier compatibil",
+      "no_files_message": "Nu s-au găsit fișiere compatibile (CBZ, CBR, CB7, CBT, PDF) în:\n{directory}",
+      "confirm_title": "Import în masă a metadatelor",
+      "confirm_message": "{count} fișier(e) găsite în {directory} (subdirectoare incluse).",
+      "start_button": "Pornire",
+      "cbz_warning": "Numai formatul CBZ acceptă metadate ComicInfo. Fișierele CBR, CBT, CB7 și PDF vor fi convertite automat în CBZ.",
+      "checkbox_permanent_delete": "Ștergerea permanentă a fișierelor originale non-CBZ fără coșul de reciclare\n(FĂRĂ POSIBILITATE DE RECUPERARE)",
+      "complete_title": "Importul metadatelor finalizat",
+      "complete_message": "{done} fișier(e) procesate din {total}. {skipped} omise.",
+      "complete_message_errors": "{done} fișier(e) procesate din {total}. {skipped} omise. {errors} eroare(ri).",
+      "errors_count": "{count} eroare(ri)",
+      "done_count": "{done} fișier(e) procesate din {total}.",
+      "skipped_count": "{skipped} omise.",
+      "select_directory_title": "Selectați un dosar de procesat"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Convertește toate fișierele CB7 dintr-un\ndirector și subdirectoarele sale la CBZ.",
     "batch_cb7_permanent_delete": "ATENȚIE : dacă această opțiune este bifată,\nfișierele CB7 originale vor fi șterse permanent\ndupă conversie fără posibilitate de recuperare.\nAsigurați-vă că aveți o copie de rezervă.",
     "batch_cbt_to_cbz": "Convertește toate fișierele CBT dintr-un\ndirector și subdirectoarele sale la CBZ.",
-    "batch_cbt_permanent_delete": "ATENȚIE : dacă această opțiune este bifată,\nfișierele CBT originale vor fi șterse permanent\ndupă conversie fără posibilitate de recuperare.\nAsigurați-vă că aveți o copie de rezervă."
+    "batch_cbt_permanent_delete": "ATENȚIE : dacă această opțiune este bifată,\nfișierele CBT originale vor fi șterse permanent\ndupă conversie fără posibilitate de recuperare.\nAsigurați-vă că aveți o copie de rezervă.",
+    "batch_metadata": "Import în lot de metadate"
   },
   "help": {
     "title": "MosaicView - Manual utilizator",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Bara de pictograme oferă acces rapid la funcțiile principale ale aplicației. Puteți rearanja pictogramele după cum doriți trăgându-le direct în bară. Pentru a alege ce pictograme să fie afișate sau ascunse, faceți clic pe butonul roată dințată aflat în partea de jos a barei: se deschide o fereastră de configurare unde puteți muta pictogramele între bara activă și rezervă. Folosiți butoanele « + » și « − » pentru a ajusta dimensiunea pictogramelor. Configurația este salvată automat.",
     "license_7zip": "Licență 7-Zip",
     "nfo_editor": "Crearea și editarea fișierelor NFO",
-    "nfo_editor_content": "Un fișier NFO este un fișier text (cu extensia .nfo) folosit pentru a stoca informații despre arhivă: sinopsis, credite, note…\n\nPentru a crea un fișier NFO, folosiți pictograma dedicată din bara de instrumente, meniul Fișier sau meniul contextual (clic dreapta pe mozaic). Comanda este disponibilă numai când mozaicul nu este gol. Introduceți un nume și un conținut: fișierul este inserat direct în mozaic fără extragere sau salvare intermediară.\n\nPentru a edita un fișier NFO existent, faceți dublu clic pe el în mozaic. Fereastra se deschide precompletată cu numele și conținutul curent, ambele editabile. În ambele cazuri, operațiunea este înregistrată în istoricul de anulare."
+    "nfo_editor_content": "Un fișier NFO este un fișier text (cu extensia .nfo) folosit pentru a stoca informații despre arhivă: sinopsis, credite, note…\n\nPentru a crea un fișier NFO, folosiți pictograma dedicată din bara de instrumente, meniul Fișier sau meniul contextual (clic dreapta pe mozaic). Comanda este disponibilă numai când mozaicul nu este gol. Introduceți un nume și un conținut: fișierul este inserat direct în mozaic fără extragere sau salvare intermediară.\n\nPentru a edita un fișier NFO existent, faceți dublu clic pe el în mozaic. Fereastra se deschide precompletată cu numele și conținutul curent, ambele editabile. În ambele cazuri, operațiunea este înregistrată în istoricul de anulare.",
+    "metadata": "Metadate ComicVine",
+    "metadata_content": "MosaicView permite recuperarea automată a metadatelor benzilor desenate (titlu, serie, număr, autori, rezumat...) din baza de date ComicVine, un site colaborativ întreținut de comunitate.\n\nMod individual: deschideți o bandă desenată, apoi folosiți butonul din bara de instrumente sau meniul Metadate. Se deschide un asistent în două etape: alegeți mai întâi seria, apoi episodul corespunzător. Metadatele sunt scrise în ComicInfo.xml din interiorul arhivei.\n\nMod batch: aruncați unul sau mai multe dosare pe mozaic și alegeți \"Import în lot de metadate\", sau folosiți butonul dedicat din bara de instrumente sau meniul Metadate. Asistentul se deschide succesiv pentru fiecare fișier găsit (CBZ, CBR, CB7, CBT, PDF). Fișierele non-CBZ sunt convertite automat în CBZ după scrierea metadatelor.\n\nCheie API: este necesară o cheie API gratuită ComicVine. Aplicația vă va ghida pentru a o obține. Se obține pe comicvine.gamespot.com după crearea unui cont.\n\nLimitări API: aceste limitări sunt impuse de ComicVine și nu pot fi evitate.\n• 200 cereri pe resursă pe oră. Dacă această limită este atinsă, căutările eșuează temporar până la sfârșitul orei.\n• Maximum 100 rezultate pe cerere, ceea ce obligă la segmentarea căutărilor în mai multe apeluri pentru seriile cu multe episoade.\n• 1 cerere pe secundă permisă de site. Din motive de siguranță, MosaicView așteaptă 2 secunde între fiecare cerere, deoarece cererile mai rapide sunt foarte susceptibile să provoace blocaje temporare.\n\nAceastă funcționalitate se bazează în întregime pe proiectul open source {scraper}."
   },
   "misc": {
     "file_word": "fișier",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Introduceți un nume de fișier.",
     "error_write": "Nu se poate scrie fișierul:\n{error}",
     "error_duplicate": "Un fișier numit {filename} există deja în mozaic."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "Cheie API ComicVine",
+      "explanation": "Pentru a prelua metadatele benzilor desenate, MosaicView folosește baza de date ComicVine. Aveți nevoie de o cheie API gratuită.",
+      "instructions": "Creați un cont pe {comicvine}, apoi accesați {api_page} pentru a obține cheia.",
+      "api_page_label": "pagina API",
+      "field_label": "Cheie API:",
+      "placeholder": "Lipiți cheia API aici",
+      "validate": "Validare",
+      "error_empty": "Introduceți o cheie API.",
+      "clear": "Șterge cheia"
+    },
+    "menu_label": "Metadate",
+    "tooltip": "Preluare metadate",
+    "change_api_key": "Modificare cheie API ComicVine",
+    "search_placeholder": "Căutați o serie...",
+    "search_button": "Căutare",
+    "searching": "Căutare în curs...",
+    "loading_issues": "Încărcare numere...",
+    "results_count": "{count} rezultat(e) din {total}",
+    "issues_count": "{count} număr(e) pentru \"{series}\"",
+    "col_series": "Serie",
+    "col_year": "An",
+    "col_issues": "Numere",
+    "col_publisher": "Editor",
+    "col_issue_num": "Nr.",
+    "col_issue_title": "Titlu",
+    "btn_skip": "Omitere",
+    "btn_back": "Înapoi",
+    "info_single": "Această funcție preia metadatele benzii desenate deschise în prezent. Pentru a procesa mai multe fișiere simultan, utilizați procesarea în lot (trageți un dosar în fereastră).",
+    "page_indicator": "Pagina {page}",
+    "loading_issues_progress": "Încărcare... {loaded} / {total}",
+    "issues_partial_load": "{count} număr(e) încărcat(e) — încărcare întreruptă: {error}",
+    "credit": "Metadate: {comicvine} · inspirat din {scraper}"
   }
 }

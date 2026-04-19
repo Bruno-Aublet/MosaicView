@@ -61,7 +61,8 @@
     "unsplit_ui": "2つ目のパネルを閉じる",
     "rename_to_ext": "{ext} に名前を変更",
     "batch_cb7_to_cbz": "CB7ファイルの\n CBZへの一括変換",
-    "batch_cbt_to_cbz": "CBTファイルの\n CBZへの一括変換"
+    "batch_cbt_to_cbz": "CBTファイルの\n CBZへの一括変換",
+    "batch_metadata": "メタデータの一括インポート"
   },
   "tabs": {
     "mosaic": "モザイク",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count}個のファイルをCBZに名前変更しました",
       "renamed_cbr_count": "{count}個のファイルをCBRに名前変更しました",
       "renamed_cb7_count": "{count}個のファイルをCB7に名前変更しました"
+    },
+    "batch_metadata": {
+      "no_files_title": "対応ファイルなし",
+      "no_files_message": "次のフォルダに対応ファイル (CBZ, CBR, CB7, CBT, PDF) が見つかりませんでした:\n{directory}",
+      "confirm_title": "メタデータの一括インポート",
+      "confirm_message": "{directory} 内に {count} 件のファイルが見つかりました（サブフォルダを含む）。",
+      "start_button": "開始",
+      "cbz_warning": "ComicInfoメタデータをサポートするのはCBZ形式のみです。CBR、CBT、CB7、PDFファイルは自動的にCBZに変換されます。",
+      "checkbox_permanent_delete": "元の非CBZファイルをごみ箱を使わず完全に削除する\n（元に戻すことはできません）",
+      "complete_title": "メタデータのインポートが完了しました",
+      "complete_message": "{total}件中{done}件のファイルを処理しました。{skipped}件スキップ。",
+      "complete_message_errors": "{total}件中{done}件のファイルを処理しました。{skipped}件スキップ。{errors}件のエラー。",
+      "errors_count": "{count}件のエラー",
+      "done_count": "{total}件中{done}件のファイルを処理しました。",
+      "skipped_count": "{skipped}件スキップ。",
+      "select_directory_title": "処理するフォルダを選択"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "フォルダとそのサブフォルダ内のすべての\nCB7ファイルをCBZに変換します。",
     "batch_cb7_permanent_delete": "警告：このオプションをオンにすると、\n変換後に元のCB7ファイルが完全に削除され、\n復元できません。\nバックアップがあることを確認してください。",
     "batch_cbt_to_cbz": "フォルダとそのサブフォルダ内のすべての\nCBTファイルをCBZに変換します。",
-    "batch_cbt_permanent_delete": "警告：このオプションをオンにすると、\n変換後に元のCBTファイルが完全に削除され、\n復元できません。\nバックアップがあることを確認してください。"
+    "batch_cbt_permanent_delete": "警告：このオプションをオンにすると、\n変換後に元のCBTファイルが完全に削除され、\n復元できません。\nバックアップがあることを確認してください。",
+    "batch_metadata": "メタデータの一括インポート"
   },
   "help": {
     "title": "MosaicView - 使用方法",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "アイコンツールバーからアプリケーションの主要な機能にすばやくアクセスできます。アイコンをバー内で直接ドラッグして自由に並べ替えることができます。表示または非表示にするアイコンを選択するには、バー下部の歯車ボタンをクリックします。設定ウィンドウが開き、アクティブバーと予備の間でアイコンを移動できます。「+」と「−」ボタンを使用してアイコンのサイズを調整します。設定は自動的に保存されます。",
     "license_7zip": "7-Zip ライセンス",
     "nfo_editor": "NFOファイルの作成と編集",
-    "nfo_editor_content": "NFOファイルは、アーカイブに関する情報（あらすじ、クレジット、メモなど）を保存するためのテキストファイル（拡張子 .nfo）です。\n\nNFOファイルを作成するには、ツールバーの専用アイコン、ファイルメニュー、またはコンテキストメニュー（モザイクを右クリック）を使用します。このコマンドはモザイクが空でない場合にのみ使用できます。名前と内容を入力してください。ファイルは抽出や中間保存なしに直接モザイクに挿入されます。\n\n既存のNFOファイルを編集するには、モザイク内でダブルクリックします。ウィンドウは現在の名前と内容が事前に入力された状態で開き、両方とも編集できます。どちらの場合も、操作は元に戻す履歴に記録されます。"
+    "nfo_editor_content": "NFOファイルは、アーカイブに関する情報（あらすじ、クレジット、メモなど）を保存するためのテキストファイル（拡張子 .nfo）です。\n\nNFOファイルを作成するには、ツールバーの専用アイコン、ファイルメニュー、またはコンテキストメニュー（モザイクを右クリック）を使用します。このコマンドはモザイクが空でない場合にのみ使用できます。名前と内容を入力してください。ファイルは抽出や中間保存なしに直接モザイクに挿入されます。\n\n既存のNFOファイルを編集するには、モザイク内でダブルクリックします。ウィンドウは現在の名前と内容が事前に入力された状態で開き、両方とも編集できます。どちらの場合も、操作は元に戻す履歴に記録されます。",
+    "metadata": "ComicVine メタデータ",
+    "metadata_content": "MosaicView では、ComicVine データベース（コミュニティが維持する共同サイト）から コミックのメタデータ（タイトル、シリーズ、番号、著者、あらすじ...）を自動的に取得できます。\n\nシングルモード: コミックを開き、ツールバーのボタンまたはメタデータメニューを使用します。 2 ステップのウィザードが開きます: まずシリーズを選択し、次に対応するエピソードを選択します。 メタデータはアーカイブ内の ComicInfo.xml に書き込まれます。\n\nバッチモード: 1 つ以上のフォルダをモザイクにドロップして「メタデータの一括インポート」を選択するか、 ツールバーの専用ボタンまたはメタデータメニューを使用します。 ウィザードは見つかったファイルごとに順次開きます（CBZ、CBR、CB7、CBT、PDF）。 CBZ 以外のファイルはメタデータの書き込み後に自動的に CBZ に変換されます。\n\nAPI キー: 無料の ComicVine API キーが必要です。アプリがキーの取得方法を案内します。 comicvine.gamespot.com でアカウントを作成後に取得できます。\n\nAPI の制限: これらの制限は ComicVine によって課されており、回避することはできません。\n• 1 時間あたりリソースごとに 200 リクエスト。この上限に達すると、時間の終わりまで検索が一時的に失敗します。\n• リクエストあたり最大 100 件の結果。多くのエピソードを持つシリーズでは検索を複数の呼び出しに分割する必要があります。\n• サイトが許可するのは 1 秒あたり 1 リクエストです。安全のため MosaicView はリクエスト間に 2 秒待機します。 速いリクエストは一時的なブロックを引き起こす可能性が高いためです。\n\nこの機能は、オープンソースプロジェクト {scraper} に完全に基づいています。"
   },
   "misc": {
     "file_word": "個のファイル",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "ファイル名を入力してください。",
     "error_write": "ファイルを書き込めません:\n{error}",
     "error_duplicate": "{filename} という名前のファイルがすでにモザイクに存在します。"
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine APIキー",
+      "explanation": "コミックのメタデータを取得するために、MosaicViewはComicVineデータベースを使用します。無料のAPIキーが必要です。",
+      "instructions": "{comicvine}にアカウントを作成し、{api_page}にアクセスしてキーを取得してください。",
+      "api_page_label": "APIページ",
+      "field_label": "APIキー:",
+      "placeholder": "ここにAPIキーを貼り付けてください",
+      "validate": "確認",
+      "error_empty": "APIキーを入力してください。",
+      "clear": "キーを消去"
+    },
+    "menu_label": "メタデータ",
+    "tooltip": "メタデータを取得",
+    "change_api_key": "ComicVine APIキーを変更",
+    "search_placeholder": "シリーズを検索...",
+    "search_button": "検索",
+    "searching": "検索中...",
+    "loading_issues": "号を読み込み中...",
+    "results_count": "{total}件中{count}件",
+    "issues_count": "\"{series}\"の{count}号",
+    "col_series": "シリーズ",
+    "col_year": "年",
+    "col_issues": "号数",
+    "col_publisher": "出版社",
+    "col_issue_num": "号",
+    "col_issue_title": "タイトル",
+    "btn_skip": "スキップ",
+    "btn_back": "戻る",
+    "info_single": "この機能は現在開いているコミックのメタデータを取得します。複数のファイルを一度に処理するには、バッチ処理を使用してください（フォルダをウィンドウにドラッグ）。",
+    "page_indicator": "{page}ページ",
+    "loading_issues_progress": "読み込み中... {loaded} / {total}",
+    "issues_partial_load": "{count}号読み込み完了 — 読み込み中断: {error}",
+    "credit": "メタデータ: {comicvine} · {scraper} にインスパイア"
   }
 }

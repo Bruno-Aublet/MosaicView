@@ -61,7 +61,8 @@
     "unsplit_ui": "Stäng det andra panelet",
     "rename_to_ext": "Byt namn till {ext}",
     "batch_cb7_to_cbz": "Batchkonvertering\n av CB7-filer till CBZ",
-    "batch_cbt_to_cbz": "Batchkonvertering\n av CBT-filer till CBZ"
+    "batch_cbt_to_cbz": "Batchkonvertering\n av CBT-filer till CBZ",
+    "batch_metadata": "Batchimport av metadata"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} fil(er) omdöpt till CBZ",
       "renamed_cbr_count": "{count} fil(er) omdöpt till CBR",
       "renamed_cb7_count": "{count} fil(er) omdöpt till CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Inga kompatibla filer",
+      "no_files_message": "Inga kompatibla filer (CBZ, CBR, CB7, CBT, PDF) hittades i:\n{directory}",
+      "confirm_title": "Batchimport av metadata",
+      "confirm_message": "{count} fil(er) hittades i {directory} (undermappar inkluderade).",
+      "start_button": "Starta",
+      "cbz_warning": "Endast CBZ-formatet stöder ComicInfo-metadata. CBR-, CBT-, CB7- och PDF-filer konverteras automatiskt till CBZ.",
+      "checkbox_permanent_delete": "Ta bort ursprungliga icke-CBZ-filer permanent utan papperskorg\n(KAN INTE ÅNGRAS)",
+      "complete_title": "Import av metadata klar",
+      "complete_message": "{done} fil(er) bearbetade av {total}. {skipped} hoppades över.",
+      "complete_message_errors": "{done} fil(er) bearbetade av {total}. {skipped} hoppades över. {errors} fel.",
+      "errors_count": "{count} fel",
+      "done_count": "{done} fil(er) bearbetade av {total}.",
+      "skipped_count": "{skipped} hoppades över.",
+      "select_directory_title": "Välj en mapp att bearbeta"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Konverterar alla CB7-filer i en mapp\noch dess undermappar till CBZ.",
     "batch_cb7_permanent_delete": "VARNING : om detta alternativ är markerat\nkommer de ursprungliga CB7-filerna att\nraderas permanent efter konverteringen utan\nmöjlighet till återställning.\nKontrollera att du har en säkerhetskopia.",
     "batch_cbt_to_cbz": "Konverterar alla CBT-filer i en mapp\noch dess undermappar till CBZ.",
-    "batch_cbt_permanent_delete": "VARNING : om detta alternativ är markerat\nkommer de ursprungliga CBT-filerna att\nraderas permanent efter konverteringen utan\nmöjlighet till återställning.\nKontrollera att du har en säkerhetskopia."
+    "batch_cbt_permanent_delete": "VARNING : om detta alternativ är markerat\nkommer de ursprungliga CBT-filerna att\nraderas permanent efter konverteringen utan\nmöjlighet till återställning.\nKontrollera att du har en säkerhetskopia.",
+    "batch_metadata": "Massimport av metadata"
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Ikonfältet ger snabb åtkomst till programmets huvudfunktioner. Du kan ordna om ikonerna efter eget tycke genom att dra dem direkt i fältet. För att välja vilka ikoner som ska visas eller döljas, klicka på kugghjulsknappen längst ned i fältet: ett konfigurationsfönster öppnas där du kan flytta ikoner mellan det aktiva fältet och reserven. Använd knapparna « + » och « − » för att justera storleken på ikonerna. Konfigurationen sparas automatiskt.",
     "license_7zip": "7-Zip-licens",
     "nfo_editor": "Skapa och redigera NFO-filer",
-    "nfo_editor_content": "En NFO-fil är en textfil (med tillägget .nfo) som används för att lagra information om arkivet: synopsis, kreditering, anteckningar…\n\nFör att skapa en NFO-fil, använd den dedikerade ikonen i verktygsfältet, menyn Fil eller snabbmenyn (högerklicka på mosaiken). Kommandot är bara tillgängligt när mosaiken inte är tom. Ange ett namn och innehåll: filen infogas direkt i mosaiken utan extrahering eller mellansparande.\n\nFör att redigera en befintlig NFO-fil dubbelklickar du på den i mosaiken. Fönstret öppnas förifylt med det aktuella namnet och innehållet, båda redigerbara. I båda fallen registreras åtgärden i ångra-historiken."
+    "nfo_editor_content": "En NFO-fil är en textfil (med tillägget .nfo) som används för att lagra information om arkivet: synopsis, kreditering, anteckningar…\n\nFör att skapa en NFO-fil, använd den dedikerade ikonen i verktygsfältet, menyn Fil eller snabbmenyn (högerklicka på mosaiken). Kommandot är bara tillgängligt när mosaiken inte är tom. Ange ett namn och innehåll: filen infogas direkt i mosaiken utan extrahering eller mellansparande.\n\nFör att redigera en befintlig NFO-fil dubbelklickar du på den i mosaiken. Fönstret öppnas förifylt med det aktuella namnet och innehållet, båda redigerbara. I båda fallen registreras åtgärden i ångra-historiken.",
+    "metadata": "ComicVine metadata",
+    "metadata_content": "MosaicView gör det möjligt att automatiskt hämta metadata för dina serier (titel, serie, nummer, upphovsmän, sammanfattning...) från ComicVine-databasen, en samarbetswebbplats som underhålls av gemenskapen.\n\nEnstaka läge: öppna en serie och använd sedan knappen i verktygsfältet eller menyn Metadata. En tvåstegsguide öppnas: välj först serien, sedan motsvarande avsnitt. Metadata skrivs till ComicInfo.xml inuti arkivet.\n\nBatchläge: släpp en eller flera mappar på mosaiken och välj \"Massimport av metadata\", eller använd den dedikerade knappen i verktygsfältet eller menyn Metadata. Guiden öppnas successivt för varje hittad fil (CBZ, CBR, CB7, CBT, PDF). Filer som inte är CBZ konverteras automatiskt till CBZ efter att metadata har skrivits.\n\nAPI-nyckel: en gratis ComicVine API-nyckel krävs. Applikationen vägleder dig att skaffa den. Den fås på comicvine.gamespot.com efter att ett konto har skapats.\n\nAPI-begränsningar: dessa begränsningar åläggs av ComicVine och kan inte kringgås.\n• 200 förfrågningar per resurs per timme. Om denna gräns nås misslyckas sökningarna tillfälligt till slutet av timmen.\n• Maximalt 100 resultat per förfrågan, vilket tvingar sökningarna att delas upp i flera anrop för serier med många avsnitt.\n• 1 förfrågan per sekund tillåten av webbplatsen. För säkerhets skull väntar MosaicView 2 sekunder mellan varje förfrågan, eftersom snabbare förfrågningar är mycket benägna att orsaka tillfälliga blockeringar.\n\nDen här funktionen är helt baserad på öppen källkodsprojektet {scraper}."
   },
   "misc": {
     "file_word": "fil",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Ange ett filnamn.",
     "error_write": "Kan inte skriva filen:\n{error}",
     "error_duplicate": "En fil med namnet {filename} finns redan i mosaiken."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API-nyckel",
+      "explanation": "För att hämta metadata för dina serier använder MosaicView ComicVine-databasen. Du behöver en gratis API-nyckel.",
+      "instructions": "Skapa ett konto på {comicvine} och gå sedan till {api_page} för att få din nyckel.",
+      "api_page_label": "API-sida",
+      "field_label": "API-nyckel:",
+      "placeholder": "Klistra in din API-nyckel här",
+      "validate": "Bekräfta",
+      "error_empty": "Ange en API-nyckel.",
+      "clear": "Rensa nyckel"
+    },
+    "menu_label": "Metadata",
+    "tooltip": "Hämta metadata",
+    "change_api_key": "Ändra ComicVine API-nyckel",
+    "search_placeholder": "Sök efter en serie...",
+    "search_button": "Sök",
+    "searching": "Söker...",
+    "loading_issues": "Laddar nummer...",
+    "results_count": "{count} resultat av {total}",
+    "issues_count": "{count} nummer för \"{series}\"",
+    "col_series": "Serie",
+    "col_year": "År",
+    "col_issues": "Nummer",
+    "col_publisher": "Förlag",
+    "col_issue_num": "Nr.",
+    "col_issue_title": "Titel",
+    "btn_skip": "Hoppa över",
+    "btn_back": "Tillbaka",
+    "info_single": "Den här funktionen hämtar metadata för den aktuellt öppna serien. För att bearbeta flera filer på en gång, använd batchbearbetning (dra en mapp till fönstret).",
+    "page_indicator": "Sida {page}",
+    "loading_issues_progress": "Laddar... {loaded} / {total}",
+    "issues_partial_load": "{count} nummer laddade — laddning avbruten: {error}",
+    "credit": "Metadata: {comicvine} · inspirerad av {scraper}"
   }
 }

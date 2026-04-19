@@ -256,6 +256,29 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
 
     menu.addSeparator()
 
+    # ── Métadonnées ComicVine (sous-menu) ─────────────────────────────────────
+    from PySide6.QtGui import QDesktopServices
+    from PySide6.QtCore import QUrl
+    meta_submenu = _make_menu(menu)
+    meta_submenu.setTitle(_("comicvine.menu_label"))
+    if has_file:
+        meta_submenu.addAction(_("comicvine.tooltip"), callbacks['fetch_metadata'])
+    else:
+        _add_disabled(meta_submenu, _("comicvine.tooltip"))
+    if canvas_empty:
+        meta_submenu.addAction(_("buttons.batch_metadata"), callbacks['batch_metadata'])
+    else:
+        _add_disabled(meta_submenu, _("buttons.batch_metadata"))
+    meta_submenu.addAction(_("comicvine.change_api_key"), callbacks['change_apikey'])
+    meta_submenu.addSeparator()
+    meta_submenu.addAction("ComicVine",
+                           lambda: QDesktopServices.openUrl(QUrl("https://comicvine.gamespot.com/")))
+    meta_submenu.addAction("ComicVine Scraper",
+                           lambda: QDesktopServices.openUrl(QUrl("https://github.com/cbanack/comic-vine-scraper")))
+    menu.addMenu(meta_submenu)
+
+    menu.addSeparator()
+
     # ── Système (sous-menu) ───────────────────────────────────────────────────
     system_submenu = _build_system_submenu(menu, callbacks)
     menu.addMenu(system_submenu)

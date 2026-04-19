@@ -44,7 +44,9 @@ def _is_newer(latest: str, current: str) -> bool:
 def check_for_updates_qt(parent):
     """Point d'entrée : ouvre la fenêtre de vérification (callback menubar)."""
     dlg = _UpdateDialog(parent)
-    dlg.exec()
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
 
 
 # ── Signal interne pour renvoyer le résultat du thread vers le QDialog ────────
@@ -59,8 +61,9 @@ class _UpdateDialog(QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.setModal(True)
-        self.resize(420, 160)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self.resize(360, 160)
 
         self._latest_tag  = ""
         self._status      = "checking"   # "checking" | "ok" | "update" | "error"
@@ -119,7 +122,19 @@ class _UpdateDialog(QDialog):
             from PySide6.QtCore import QTimer
             from modules.qt.dialogs_qt import _center_on_widget
             p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+            def _do_center():
+                from PySide6.QtWidgets import QApplication
+                from PySide6.QtCore import QPoint
+                top_left = p.mapToGlobal(QPoint(0, 0))
+                x = top_left.x() + (p.width()  - self.width())  // 2
+                y = top_left.y() + (p.height() - self.height()) // 2
+                screen = QApplication.screenAt(top_left) or QApplication.primaryScreen()
+                if screen:
+                    sa = screen.availableGeometry()
+                    x = max(sa.left(), min(x, sa.right()  - self.width()))
+                    y = max(sa.top(),  min(y, sa.bottom() - self.height()))
+                self.move(x, y)
+            QTimer.singleShot(0, _do_center)
 
     def _fetch(self):
         """Exécuté dans un thread — ne touche pas aux widgets Qt directement."""

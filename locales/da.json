@@ -61,7 +61,8 @@
     "unsplit_ui": "Luk det andet panel",
     "rename_to_ext": "Omdøb til {ext}",
     "batch_cb7_to_cbz": "Massekonvertering\n af CB7-filer til CBZ",
-    "batch_cbt_to_cbz": "Massekonvertering\n af CBT-filer til CBZ"
+    "batch_cbt_to_cbz": "Massekonvertering\n af CBT-filer til CBZ",
+    "batch_metadata": "Masseimport af metadata"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} fil(er) omdøbt til CBZ",
       "renamed_cbr_count": "{count} fil(er) omdøbt til CBR",
       "renamed_cb7_count": "{count} fil(er) omdøbt til CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Ingen kompatible filer",
+      "no_files_message": "Ingen kompatible filer (CBZ, CBR, CB7, CBT, PDF) fundet i:\n{directory}",
+      "confirm_title": "Masseimport af metadata",
+      "confirm_message": "{count} fil(er) fundet i {directory} (undermapper inkluderet).",
+      "start_button": "Start",
+      "cbz_warning": "Kun CBZ-formatet understøtter ComicInfo-metadata. CBR-, CBT-, CB7- og PDF-filer konverteres automatisk til CBZ.",
+      "checkbox_permanent_delete": "Slet originale ikke-CBZ-filer uden papirkurven\n(KAN IKKE FORTRYDES)",
+      "complete_title": "Import af metadata fuldført",
+      "complete_message": "{done} fil(er) behandlet ud af {total}. {skipped} ignoreret.",
+      "complete_message_errors": "{done} fil(er) behandlet ud af {total}. {skipped} ignoreret. {errors} fejl.",
+      "errors_count": "{count} fejl",
+      "done_count": "{done} fil(er) behandlet ud af {total}.",
+      "skipped_count": "{skipped} ignoreret.",
+      "select_directory_title": "Vælg en mappe til behandling"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Konverterer alle CB7-filer i en mappe\nog dens undermapper til CBZ.",
     "batch_cb7_permanent_delete": "ADVARSEL : hvis denne indstilling er valgt,\nslettes de originale CB7-filer permanent\nefter konvertering uden mulighed for gendannelse.\nSørg for at have en sikkerhedskopi.",
     "batch_cbt_to_cbz": "Konverterer alle CBT-filer i en mappe\nog dens undermapper til CBZ.",
-    "batch_cbt_permanent_delete": "ADVARSEL : hvis denne indstilling er valgt,\nslettes de originale CBT-filer permanent\nefter konvertering uden mulighed for gendannelse.\nSørg for at have en sikkerhedskopi."
+    "batch_cbt_permanent_delete": "ADVARSEL : hvis denne indstilling er valgt,\nslettes de originale CBT-filer permanent\nefter konvertering uden mulighed for gendannelse.\nSørg for at have en sikkerhedskopi.",
+    "batch_metadata": "Masseimport af metadata"
   },
   "help": {
     "title": "MosaicView - Brugervejledning",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Ikonlinjen giver hurtig adgang til programmets hovedfunktioner. Du kan omarrangere ikonerne efter eget ønske ved at trække dem direkte i linjen. For at vælge, hvilke ikoner der skal vises eller skjules, klik på tandhjulsknappen nederst i linjen: et konfigurationsvindue åbnes, hvor du kan flytte ikoner mellem den aktive linje og reserven. Brug knapperne « + » og « − » til at justere størrelsen på ikonerne. Konfigurationen gemmes automatisk.",
     "license_7zip": "7-Zip-licens",
     "nfo_editor": "Oprettelse og redigering af NFO-filer",
-    "nfo_editor_content": "En NFO-fil er en tekstfil (med filtypenavnet .nfo), der bruges til at gemme oplysninger om arkivet: synopsis, krediteringer, noter…\n\nFor at oprette en NFO-fil skal du bruge det dedikerede ikon i værktøjslinjen, menuen Fil eller kontekstmenuen (højreklik på mosaikken). Kommandoen er kun tilgængelig, når mosaikken ikke er tom. Angiv et navn og indhold: filen indsættes direkte i mosaikken uden udtræk eller mellemliggende lagring.\n\nFor at redigere en eksisterende NFO-fil skal du dobbeltklikke på den i mosaikken. Vinduet åbnes forudfyldt med det aktuelle navn og indhold, som begge kan redigeres. I begge tilfælde registreres handlingen i fortryd-historikken."
+    "nfo_editor_content": "En NFO-fil er en tekstfil (med filtypenavnet .nfo), der bruges til at gemme oplysninger om arkivet: synopsis, krediteringer, noter…\n\nFor at oprette en NFO-fil skal du bruge det dedikerede ikon i værktøjslinjen, menuen Fil eller kontekstmenuen (højreklik på mosaikken). Kommandoen er kun tilgængelig, når mosaikken ikke er tom. Angiv et navn og indhold: filen indsættes direkte i mosaikken uden udtræk eller mellemliggende lagring.\n\nFor at redigere en eksisterende NFO-fil skal du dobbeltklikke på den i mosaikken. Vinduet åbnes forudfyldt med det aktuelle navn og indhold, som begge kan redigeres. I begge tilfælde registreres handlingen i fortryd-historikken.",
+    "metadata": "Metadata ComicVine",
+    "metadata_content": "MosaicView giver mulighed for automatisk at hente metadata for dine tegneserier (titel, serie, nummer, forfattere, resumé...) fra databasen ComicVine, et kollaborativt websted vedligeholdt af fællesskabet.\n\nEnkelt tilstand: åbn en tegneserie, og brug derefter knappen på værktøjslinjen eller menuen Metadata. En guide i to trin åbnes: vælg først serien, derefter det tilsvarende afsnit. Metadata skrives til ComicInfo.xml inde i arkivet.\n\nBatch-tilstand: slip en eller flere mapper på mosaïkken og vælg \"Masseimport af metadata\", eller brug den dedikerede knap på værktøjslinjen eller menuen Metadata. Guiden åbnes successivt for hver fundet fil (CBZ, CBR, CB7, CBT, PDF). Ikke-CBZ-filer konverteres automatisk til CBZ efter skrivning af metadata.\n\nAPI-nøgle: en gratis API-nøgle til ComicVine er påkrævet. Applikationen guider dig til at hente den. Den fås på comicvine.gamespot.com efter oprettelse af en konto.\n\nAPI-begrænsninger: disse begrænsninger er pålagt af ComicVine og kan ikke omgås.\n• 200 forespørgsler pr. ressource pr. time. Hvis denne grænse nås, mislykkes søgningerne midlertidigt indtil slutningen af timen.\n• Maksimalt 100 resultater pr. forespørgsel, hvilket tvinger til at opdele søgningerne i flere kald for serier med mange afsnit.\n• 1 forespørgsel pr. sekund tilladt af webstedet. For sikkerheds skyld venter MosaicView 2 sekunder mellem hver forespørgsel, da hurtigere forespørgsler er stærkt tilbøjelige til at forårsage midlertidige blokeringer.\n\nDenne funktion er udelukkende baseret på open source-projektet {scraper}."
   },
   "misc": {
     "file_word": "fil",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Angiv venligst et filnavn.",
     "error_write": "Kan ikke skrive filen:\n{error}",
     "error_duplicate": "En fil med navnet {filename} findes allerede i mosaikken."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API-nøgle",
+      "explanation": "For at hente metadata til dine tegneserier bruger MosaicView ComicVine-databasen. Du har brug for en gratis API-nøgle.",
+      "instructions": "Opret en konto på {comicvine} og gå derefter til {api_page} for at få din nøgle.",
+      "api_page_label": "API-side",
+      "field_label": "API-nøgle:",
+      "placeholder": "Indsæt din API-nøgle her",
+      "validate": "Bekræft",
+      "error_empty": "Angiv en API-nøgle.",
+      "clear": "Ryd nøgle"
+    },
+    "menu_label": "Metadata",
+    "tooltip": "Hent metadata",
+    "change_api_key": "Skift ComicVine API-nøgle",
+    "search_placeholder": "Søg efter en serie...",
+    "search_button": "Søg",
+    "searching": "Søger...",
+    "loading_issues": "Indlæser numre...",
+    "results_count": "{count} resultat(er) af {total}",
+    "issues_count": "{count} nummer/numre for \"{series}\"",
+    "col_series": "Serie",
+    "col_year": "År",
+    "col_issues": "Numre",
+    "col_publisher": "Udgiver",
+    "col_issue_num": "Nr.",
+    "col_issue_title": "Titel",
+    "btn_skip": "Spring over",
+    "btn_back": "Tilbage",
+    "info_single": "Denne funktion henter metadata for den aktuelt åbnede tegneserie. For at behandle flere filer på én gang skal du bruge batchbehandling (træk en mappe til vinduet).",
+    "page_indicator": "Side {page}",
+    "loading_issues_progress": "Indlæser... {loaded} / {total}",
+    "issues_partial_load": "{count} nummer/numre indlæst — indlæsning afbrudt: {error}",
+    "credit": "Metadata: {comicvine} · inspireret af {scraper}"
   }
 }

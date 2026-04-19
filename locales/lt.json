@@ -61,7 +61,8 @@
     "unsplit_ui": "Uždaryti antrą skydelį",
     "rename_to_ext": "Pervardyti į {ext}",
     "batch_cb7_to_cbz": "Masinis CB7 failų\n konvertavimas į CBZ",
-    "batch_cbt_to_cbz": "Masinis CBT failų\n konvertavimas į CBZ"
+    "batch_cbt_to_cbz": "Masinis CBT failų\n konvertavimas į CBZ",
+    "batch_metadata": "Masinis metaduomenų importas"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -1126,6 +1127,22 @@
       "renamed_cbz_count": "{count} failas(-ai) pervardintas(-i) į CBZ",
       "renamed_cbr_count": "{count} failas(-ai) pervardintas(-i) į CBR",
       "renamed_cb7_count": "{count} failas(-ai) pervardintas(-i) į CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "Nėra suderinamų failų",
+      "no_files_message": "Nerasta suderinamų failų (CBZ, CBR, CB7, CBT, PDF) šiame aplanke:\n{directory}",
+      "confirm_title": "Masinis metaduomenų importas",
+      "confirm_message": "Rasta {count} failas(-ų) aplanke {directory} (įskaitant poaplankius).",
+      "start_button": "Pradėti",
+      "cbz_warning": "Tik CBZ formatas palaiko ComicInfo metaduomenis. CBR, CBT, CB7 ir PDF failai bus automatiškai konvertuoti į CBZ.",
+      "checkbox_permanent_delete": "Visam laikui ištrinti originalius ne-CBZ failus be šiukšlinės\n(ANULIUOTI NEĮMANOMA)",
+      "complete_title": "Metaduomenų importavimas baigtas",
+      "complete_message": "Apdorota {done} failas(-ai) iš {total}. Praleista {skipped}.",
+      "complete_message_errors": "Apdorota {done} failas(-ai) iš {total}. Praleista {skipped}. {errors} klaida(-os).",
+      "errors_count": "{count} klaida(-os)",
+      "done_count": "Apdorota {done} failas(-ai) iš {total}.",
+      "skipped_count": "Praleista {skipped}.",
+      "select_directory_title": "Pasirinkite apdorojamą aplanką"
     }
   },
   "tooltip": {
@@ -1176,7 +1193,8 @@
     "batch_cb7_to_cbz": "Konvertuoja visus CB7 failus kataloge\nir jo pakatalogiuose į CBZ.",
     "batch_cb7_permanent_delete": "DĖMESIO : jei ši parinktis pažymėta,\noriginalūs CB7 failai bus visam laikui ištrinti\npo konvertavimo be galimybės atkurti.\nĮsitikinkite, kad turite atsarginę kopiją.",
     "batch_cbt_to_cbz": "Konvertuoja visus CBT failus kataloge\nir jo pakatalogiuose į CBZ.",
-    "batch_cbt_permanent_delete": "DĖMESIO : jei ši parinktis pažymėta,\noriginalūs CBT failai bus visam laikui ištrinti\npo konvertavimo be galimybės atkurti.\nĮsitikinkite, kad turite atsarginę kopiją."
+    "batch_cbt_permanent_delete": "DĖMESIO : jei ši parinktis pažymėta,\noriginalūs CBT failai bus visam laikui ištrinti\npo konvertavimo be galimybės atkurti.\nĮsitikinkite, kad turite atsarginę kopiją.",
+    "batch_metadata": "Metaduomenų paketinis importas"
   },
   "help": {
     "title": "MosaicView - Naudojimo instrukcija",
@@ -1252,7 +1270,9 @@
     "icon_toolbar_content": "Piktogramų juosta suteikia greitą prieigą prie pagrindinių programos funkcijų. Piktogramas galite išdėstyti pagal savo pageidavimą jas vilkdami tiesiogiai į juostą. Norėdami pasirinkti, kurias piktogramas rodyti ar slėpti, spustelėkite krumpliaračio mygtuką juostos apačioje: atsidaro konfigūracijos langas, kuriame galite perkelti piktogramas tarp aktyviosios juostos ir atsargų. Naudokite mygtukus « + » ir « − » piktogramų dydžiui reguliuoti. Konfigūracija išsaugoma automatiškai.",
     "license_7zip": "7-Zip licencija",
     "nfo_editor": "NFO failų kūrimas ir redagavimas",
-    "nfo_editor_content": "NFO failas yra tekstinis failas (su plėtiniu .nfo), naudojamas archyvo informacijai saugoti: siužetas, autoriai, pastabos…\n\nNorėdami sukurti NFO failą, naudokite skirtąją piktogramą įrankių juostoje, meniu Failas arba kontekstinį meniu (dešiniuoju mygtuku spustelėkite mozaiką). Komanda galima tik tada, kai mozaika nėra tuščia. Įveskite pavadinimą ir turinį: failas įterpiamas tiesiai į mozaiką be išpakavimo ar tarpinio išsaugojimo.\n\nNorėdami redaguoti esamą NFO failą, dukart spustelėkite jį mozaikoje. Langas atsidaro iš anksto užpildytas dabartiniu pavadinimu ir turiniu, abu redaguojami. Abiem atvejais operacija užregistruojama atšaukimo istorijoje."
+    "nfo_editor_content": "NFO failas yra tekstinis failas (su plėtiniu .nfo), naudojamas archyvo informacijai saugoti: siužetas, autoriai, pastabos…\n\nNorėdami sukurti NFO failą, naudokite skirtąją piktogramą įrankių juostoje, meniu Failas arba kontekstinį meniu (dešiniuoju mygtuku spustelėkite mozaiką). Komanda galima tik tada, kai mozaika nėra tuščia. Įveskite pavadinimą ir turinį: failas įterpiamas tiesiai į mozaiką be išpakavimo ar tarpinio išsaugojimo.\n\nNorėdami redaguoti esamą NFO failą, dukart spustelėkite jį mozaikoje. Langas atsidaro iš anksto užpildytas dabartiniu pavadinimu ir turiniu, abu redaguojami. Abiem atvejais operacija užregistruojama atšaukimo istorijoje.",
+    "metadata": "ComicVine metaduomenys",
+    "metadata_content": "MosaicView leidžia automatiškai gauti komiksų metaduomenis (pavadinimas, serija, numeris, autoriai, santrauka...) iš ComicVine duomenų bazės – bendruomenės palaikomo bendradarbiavimo svetainės.\n\nVieno failo režimas: atidarykite komiksą, tada naudokite įrankių juostos mygtuką arba meniu Metaduomenys. Atidaromas dviejų žingsnių vedlys: pirmiausia pasirinkite seriją, tada atitinkamą epizodą. Metaduomenys įrašomi į ComicInfo.xml archyvo viduje.\n\nPaketinis režimas: numeskite vieną ar kelis aplankus ant mozaikos ir pasirinkite \"Metaduomenų paketinis importas\", arba naudokite skirtą įrankių juostos mygtuką arba meniu Metaduomenys. Vedlys atidaromas paeiliui kiekvienam rastam failui (CBZ, CBR, CB7, CBT, PDF). Ne CBZ failai po metaduomenų įrašymo automatiškai konvertuojami į CBZ.\n\nAPI raktas: reikalingas nemokamas ComicVine API raktas. Programa padės jums jį gauti. Jis gaunamas comicvine.gamespot.com sukūrus paskyrą.\n\nAPI apribojimai: šiuos apribojimus nustato ComicVine ir jų negalima apeiti.\n• 200 užklausų vienam ištekliui per valandą. Pasiekus šią ribą, ieškojimai laikinai nepavyksta iki valandos pabaigos.\n• Daugiausiai 100 rezultatų vienai užklausai, kas verčia suskaidyti paieškas į kelis kvietimus serijoms su daugeliu epizodų.\n• Svetainėje leidžiama 1 užklausa per sekundę. Saugumui MosaicView laukia 2 sekundes tarp kiekvienos užklausos, nes greitesnės užklausos labai tikėtinai sukeltų laikinus blokavimus.\n\nŠi funkcija visiškai pagrįsta atvirojo kodo projektu {scraper}."
   },
   "misc": {
     "file_word": "failas",
@@ -1405,5 +1425,40 @@
     "error_empty_name": "Įveskite failo pavadinimą.",
     "error_write": "Nepavyko įrašyti failo:\n{error}",
     "error_duplicate": "Failas pavadinimu {filename} jau yra mozaikoje."
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API raktas",
+      "explanation": "Komiksų metaduomenims gauti MosaicView naudoja ComicVine duomenų bazę. Jums reikia nemokamo API rakto.",
+      "instructions": "Sukurkite paskyrą {comicvine} svetainėje, tada eikite į {api_page}, kad gautumėte raktą.",
+      "api_page_label": "API puslapis",
+      "field_label": "API raktas:",
+      "placeholder": "Įklijuokite API raktą čia",
+      "validate": "Patvirtinti",
+      "error_empty": "Įveskite API raktą.",
+      "clear": "Išvalyti raktą"
+    },
+    "menu_label": "Metaduomenys",
+    "tooltip": "Gauti metaduomenis",
+    "change_api_key": "Keisti ComicVine API raktą",
+    "search_placeholder": "Ieškoti serijos...",
+    "search_button": "Ieškoti",
+    "searching": "Ieškoma...",
+    "loading_issues": "Kraunami numeriai...",
+    "results_count": "{count} rezultatas(-ai) iš {total}",
+    "issues_count": "{count} numeris(-iai) serijai \"{series}\"",
+    "col_series": "Serija",
+    "col_year": "Metai",
+    "col_issues": "Numeriai",
+    "col_publisher": "Leidėjas",
+    "col_issue_num": "Nr.",
+    "col_issue_title": "Pavadinimas",
+    "btn_skip": "Praleisti",
+    "btn_back": "Atgal",
+    "info_single": "Ši funkcija gauna šiuo metu atidaryto komikso metaduomenis. Norint apdoroti kelis failus iš karto, naudokite paketinį apdorojimą (nutempkite aplanką į langą).",
+    "page_indicator": "Puslapis {page}",
+    "loading_issues_progress": "Kraunama... {loaded} / {total}",
+    "issues_partial_load": "{count} numeris(-iai) įkeltas(-i) — įkėlimas nutrauktas: {error}",
+    "credit": "Metaduomenys: {comicvine} · įkvėpta {scraper}"
   }
 }
