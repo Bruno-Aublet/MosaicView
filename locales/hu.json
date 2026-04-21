@@ -86,7 +86,8 @@
       "reading_mode_single": "Olvasási mód váltása (D) → Egyszerű oldal",
       "fullscreen_exit": "Kilépés a teljes képernyőből (F11)",
       "fullscreen": "Teljes képernyő (F11)",
-      "close_viewer": "Néző bezárása (ESC)"
+      "close_viewer": "Néző bezárása (ESC)",
+      "delete_bookmark": "Könyvjelző törlése"
     },
     "image": {
       "corrupted_replace": "⚠️ Sérült kép - Csere",
@@ -169,7 +170,9 @@
       "invert_selection": "Kijelölés megfordítása (Ctrl+I)",
       "fullscreen": "Teljes képernyő (F11)",
       "fullscreen_exit": "Kilépés a teljes képernyőből (F11 vagy ESC)",
-      "quit": "Alkalmazás bezárása"
+      "quit": "Alkalmazás bezárása",
+      "delete_bookmark": "Könyvjelző törlése ehhez a képregényhez",
+      "delete_all_bookmarks": "Összes könyvjelző törlése"
     },
     "canvas": {
       "quit": "Alkalmazás bezárása",
@@ -1136,6 +1139,7 @@
       "start_button": "Indítás",
       "cbz_warning": "Csak a CBZ formátum támogatja a ComicInfo metaadatokat. A CBR, CBT, CB7 és PDF fájlok automatikusan CBZ formátumba lesznek konvertálva.",
       "checkbox_permanent_delete": "Az eredeti nem CBZ fájlok végleges törlése lomtár nélkül\n(NEM VONHATÓ VISSZA)",
+      "checkbox_skip_existing": "Kihagyja a már metaadatokkal rendelkező fájlokat\n(cbz archívumok, amelyek tartalmazzák a ComicInfo.xml fájlt)",
       "complete_title": "Metaadatok importálása kész",
       "complete_message": "{done} fájl feldolgozva {total}-ből. {skipped} kihagyva.",
       "complete_message_errors": "{done} fájl feldolgozva {total}-ből. {skipped} kihagyva. {errors} hiba.",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Betöltés... {loaded} / {total}",
     "issues_partial_load": "{count} szám betöltve — betöltés megszakadt: {error}",
     "credit": "Metaadatok: {comicvine} · inspirálva: {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Könyvjelző",
+    "popup_message": "Könyvjelzője van a(z) {page}. oldalon ebben a képregényben.\nFolytassa az olvasást?",
+    "popup_yes": "Igen",
+    "popup_no": "Nem"
   }
 }

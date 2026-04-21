@@ -86,7 +86,8 @@
       "reading_mode_single": "Athraigh mód léitheoireachta (D) → Leathanach singil",
       "fullscreen_exit": "Fág lánscáileán (F11)",
       "fullscreen": "Lánscáileán (F11)",
-      "close_viewer": "Dún an t-amharcóir (ESC)"
+      "close_viewer": "Dún an t-amharcóir (ESC)",
+      "delete_bookmark": "Scrios leabharmharc"
     },
     "image": {
       "corrupted_replace": "⚠️ Íomhá truaillithe - Ionadaigh",
@@ -169,7 +170,9 @@
       "invert_selection": "Inbhéartaigh roghnú (Ctrl+I)",
       "fullscreen": "Lánscáileán (F11)",
       "fullscreen_exit": "Scoir de lánscáileán (F11 nó ESC)",
-      "quit": "Dún an feidhmchlár"
+      "quit": "Dún an feidhmchlár",
+      "delete_bookmark": "Scrios leabharmharc don chlár grinn seo",
+      "delete_all_bookmarks": "Scrios gach leabharmharc"
     },
     "canvas": {
       "quit": "Dún an feidhmchlár",
@@ -1136,6 +1139,7 @@
       "start_button": "Tosaigh",
       "cbz_warning": "Ní thacaíonn ach an fhormáid CBZ le meiteashonraí ComicInfo. Tiontófar comhaid CBR, CBT, CB7 agus PDF go CBZ go huathoibríoch.",
       "checkbox_permanent_delete": "Scrios comhaid bhunaidh neamh-CBZ go buan gan an bhosca bruscair\n(NÍL AON CHÚLÚ INDÉANTA)",
+      "checkbox_skip_existing": "Ná déan próiseáil ar chomhaid a bhfuil meiteashonraí acu cheana\n(cartlanna cbz ina bhfuil comhad ComicInfo.xml)",
       "complete_title": "Iompórtáil meitashonraí críochnaithe",
       "complete_message": "Próiseáladh {done} comhad(comhaid) as {total}. Scipeáladh {skipped}.",
       "complete_message_errors": "Próiseáladh {done} comhad(comhaid) as {total}. Scipeáladh {skipped}. {errors} earráid(earráidí).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Ag luchtú... {loaded} / {total}",
     "issues_partial_load": "{count} uimhir luchtaithe — luchtú curtha isteach: {error}",
     "credit": "Meitashonraí: {comicvine} · inspioráilte ag {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Leabharmharc",
+    "popup_message": "Tá leabharmharc agat ar leathanach {page} den chlár grinn seo.\nAn leanúint ar aghaidh ag léamh?",
+    "popup_yes": "Tá",
+    "popup_no": "Níl"
   }
 }

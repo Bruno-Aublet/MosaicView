@@ -177,11 +177,12 @@ def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
     from modules.qt.user_guide_qt import _HelpDialog
     from modules.qt.donation_dialog_qt import _DonationDialog
     from modules.qt.icon_toolbar_qt import _IconConfigDialog
+    from modules.qt.panel_widget import _BookmarkPopup
     from PySide6.QtWidgets import QApplication
     for widget in QApplication.topLevelWidgets():
         if isinstance(widget, (_LicenseDialog, _FullLicenseDialog, _ChangelogDialog,
                                 _MetadataConfirmDialog, _MetadataSummaryDialog, BatchDropDialog,
                                 _ComicVineDialog, _ApiKeyDialog,
                                 _NfoDialog, _UpdateDialog, _HelpDialog,
-                                _DonationDialog, _IconConfigDialog)):
+                                _DonationDialog, _IconConfigDialog, _BookmarkPopup)):
             widget._retranslate()

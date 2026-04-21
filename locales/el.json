@@ -86,7 +86,8 @@
       "reading_mode_single": "Αλλαγή λειτουργίας ανάγνωσης (D) → Μονή σελίδα",
       "fullscreen_exit": "Έξοδος από πλήρη οθόνη (F11)",
       "fullscreen": "Πλήρης οθόνη (F11)",
-      "close_viewer": "Κλείσιμο προβολέα (ESC)"
+      "close_viewer": "Κλείσιμο προβολέα (ESC)",
+      "delete_bookmark": "Διαγραφή σελιδοδείκτη"
     },
     "image": {
       "corrupted_replace": "⚠️ Κατεστραμμένη εικόνα - Αντικατάσταση",
@@ -169,7 +170,9 @@
       "invert_selection": "Αντιστροφή επιλογής (Ctrl+I)",
       "fullscreen": "Πλήρης οθόνη (F11)",
       "fullscreen_exit": "Έξοδος από πλήρη οθόνη (F11 ή ESC)",
-      "quit": "Κλείσιμο εφαρμογής"
+      "quit": "Κλείσιμο εφαρμογής",
+      "delete_bookmark": "Διαγραφή σελιδοδείκτη για αυτό το κόμικς",
+      "delete_all_bookmarks": "Διαγραφή όλων των σελιδοδεικτών"
     },
     "canvas": {
       "quit": "Κλείσιμο εφαρμογής",
@@ -1136,6 +1139,7 @@
       "start_button": "Έναρξη",
       "cbz_warning": "Μόνο η μορφή CBZ υποστηρίζει μεταδεδομένα ComicInfo. Τα αρχεία CBR, CBT, CB7 και PDF θα μετατραπούν αυτόματα σε CBZ.",
       "checkbox_permanent_delete": "Οριστική διαγραφή των πρωτότυπων αρχείων non-CBZ χωρίς κάδο\n(ΔΕΝ ΥΠΑΡΧΕΙ ΕΠΑΝΑΦΟΡΑ)",
+      "checkbox_skip_existing": "Παράλειψη αρχείων που έχουν ήδη μεταδεδομένα\n(αρχεία cbz που περιέχουν αρχείο ComicInfo.xml)",
       "complete_title": "Η εισαγωγή μεταδεδομένων ολοκληρώθηκε",
       "complete_message": "Επεξεργάστηκαν {done} αρχείο(α) από {total}. Παραλείφθηκαν {skipped}.",
       "complete_message_errors": "Επεξεργάστηκαν {done} αρχείο(α) από {total}. Παραλείφθηκαν {skipped}. {errors} σφάλμα(τα).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Φόρτωση... {loaded} / {total}",
     "issues_partial_load": "{count} τεύχος(-η) φορτώθηκε — φόρτωση διακόπηκε: {error}",
     "credit": "Μεταδεδομένα: {comicvine} · εμπνευσμένο από {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Σελιδοδείκτης",
+    "popup_message": "Έχετε σελιδοδείκτη στη σελίδα {page} για αυτό το κόμικς.\nΣυνέχιση ανάγνωσης;",
+    "popup_yes": "Ναι",
+    "popup_no": "Όχι"
   }
 }

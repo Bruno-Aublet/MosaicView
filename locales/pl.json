@@ -86,7 +86,8 @@
       "reading_mode_single": "Zmień tryb czytania (D) → Pojedyncza strona",
       "fullscreen_exit": "Opuść pełny ekran (F11)",
       "fullscreen": "Pełny ekran (F11)",
-      "close_viewer": "Zamknij przeglądarkę (ESC)"
+      "close_viewer": "Zamknij przeglądarkę (ESC)",
+      "delete_bookmark": "Usuń zakładkę"
     },
     "image": {
       "corrupted_replace": "⚠️ Uszkodzony obraz - Zamień",
@@ -169,7 +170,9 @@
       "invert_selection": "Odwróć zaznaczenie (Ctrl+I)",
       "fullscreen": "Pełny ekran (F11)",
       "fullscreen_exit": "Wyjdź z pełnego ekranu (F11 lub ESC)",
-      "quit": "Zamknij aplikację"
+      "quit": "Zamknij aplikację",
+      "delete_bookmark": "Usuń zakładkę dla tego komiksu",
+      "delete_all_bookmarks": "Usuń wszystkie zakładki"
     },
     "canvas": {
       "quit": "Zamknij aplikację",
@@ -1136,6 +1139,7 @@
       "start_button": "Rozpocznij",
       "cbz_warning": "Tylko format CBZ obsługuje metadane ComicInfo. Pliki CBR, CBT, CB7 i PDF zostaną automatycznie przekonwertowane do CBZ.",
       "checkbox_permanent_delete": "Trwałe usunięcie oryginalnych plików nie-CBZ z pominięciem kosza\n(BRAK MOŻLIWOŚCI COFNIĘCIA)",
+      "checkbox_skip_existing": "Pomiń pliki, które mają już metadane\n(archiwa cbz zawierające plik ComicInfo.xml)",
       "complete_title": "Import metadanych zakończony",
       "complete_message": "Przetworzono {done} plik(i) z {total}. Pominięto {skipped}.",
       "complete_message_errors": "Przetworzono {done} plik(i) z {total}. Pominięto {skipped}. {errors} błąd(y).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Ładowanie... {loaded} / {total}",
     "issues_partial_load": "{count} zeszyt(ów) załadowany(ch) — ładowanie przerwane: {error}",
     "credit": "Metadane: {comicvine} · inspirowane przez {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Zakładka",
+    "popup_message": "Masz zakładkę na stronie {page} tego komiksu.\nWznowić czytanie?",
+    "popup_yes": "Tak",
+    "popup_no": "Nie"
   }
 }

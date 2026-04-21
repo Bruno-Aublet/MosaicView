@@ -86,7 +86,8 @@
       "reading_mode_single": "Promijeni način čitanja (D) → Jednostruka stranica",
       "fullscreen_exit": "Izađi iz cijelog zaslona (F11)",
       "fullscreen": "Cijeli zaslon (F11)",
-      "close_viewer": "Zatvori preglednik (ESC)"
+      "close_viewer": "Zatvori preglednik (ESC)",
+      "delete_bookmark": "Obriši oznaku"
     },
     "image": {
       "corrupted_replace": "⚠️ Oštećena slika - Zamijeni",
@@ -169,7 +170,9 @@
       "invert_selection": "Invertiraj odabir (Ctrl+I)",
       "fullscreen": "Cijeli zaslon (F11)",
       "fullscreen_exit": "Izlaz iz cijelog zaslona (F11 ili ESC)",
-      "quit": "Zatvori aplikaciju"
+      "quit": "Zatvori aplikaciju",
+      "delete_bookmark": "Obriši oznaku za ovaj strip",
+      "delete_all_bookmarks": "Obriši sve oznake"
     },
     "canvas": {
       "quit": "Zatvori aplikaciju",
@@ -1136,6 +1139,7 @@
       "start_button": "Pokreni",
       "cbz_warning": "Samo CBZ format podržava ComicInfo metapodatke. Datoteke CBR, CBT, CB7 i PDF automatski će se pretvoriti u CBZ.",
       "checkbox_permanent_delete": "Trajno brisanje izvornih datoteka koje nisu CBZ bez koša za smeće\n(NEMA POVRATA)",
+      "checkbox_skip_existing": "Preskoči datoteke koje već imaju metapodatke\n(cbz arhive koje sadrže datoteku ComicInfo.xml)",
       "complete_title": "Uvoz metapodataka završen",
       "complete_message": "Obrađeno {done} datoteka(e) od {total}. Preskočeno {skipped}.",
       "complete_message_errors": "Obrađeno {done} datoteka(e) od {total}. Preskočeno {skipped}. {errors} pogreška(e).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Učitavanje... {loaded} / {total}",
     "issues_partial_load": "{count} broj(eva) učitan — učitavanje prekinuto: {error}",
     "credit": "Metapodaci: {comicvine} · inspirirano od {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Oznaka",
+    "popup_message": "Imate oznaku na stranici {page} za ovaj strip.\nNastaviti čitanje?",
+    "popup_yes": "Da",
+    "popup_no": "Ne"
   }
 }

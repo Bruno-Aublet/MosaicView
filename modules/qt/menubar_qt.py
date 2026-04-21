@@ -267,6 +267,18 @@ def _populate_archives_menu(menu: QMenu, callbacks: dict):
         _add_action(sort_menu, _(label_key),
                     lambda checked=False, k=key: callbacks["sort_images"](k)
                     if "sort_images" in callbacks else None)
+    menu.addSeparator()
+
+    from modules.qt.config_manager import get_config_manager
+    cfg = get_config_manager()
+    has_bookmark_for_current = bool(
+        st.current_file and cfg and cfg.get_bookmark(st.current_file) is not None
+    )
+    has_any_bookmark = bool(cfg and cfg.has_any_bookmark())
+    _add_action(menu, _("context_menu.canvas_with_file.delete_bookmark"),
+                callbacks.get("delete_bookmark"), enabled=has_bookmark_for_current)
+    _add_action(menu, _("context_menu.canvas_with_file.delete_all_bookmarks"),
+                callbacks.get("delete_all_bookmarks"), enabled=has_any_bookmark)
 
 
 def _populate_language_menu(menu: QMenu, callbacks: dict):

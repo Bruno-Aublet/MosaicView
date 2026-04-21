@@ -86,7 +86,8 @@
       "reading_mode_single": "Breyta lestrarham (D) → Stök síða",
       "fullscreen_exit": "Hætta í heilskjá (F11)",
       "fullscreen": "Heilskjár (F11)",
-      "close_viewer": "Loka skoðara (ESC)"
+      "close_viewer": "Loka skoðara (ESC)",
+      "delete_bookmark": "Eyða bókamerkinu"
     },
     "image": {
       "corrupted_replace": "⚠️ Skemmd mynd - Skipta út",
@@ -169,7 +170,9 @@
       "invert_selection": "Snúa við vali (Ctrl+I)",
       "fullscreen": "Allur skjárinn (F11)",
       "fullscreen_exit": "Hætta í öllum skjánum (F11 eða ESC)",
-      "quit": "Loka forriti"
+      "quit": "Loka forriti",
+      "delete_bookmark": "Eyða bókamerki fyrir þennan myndasögu",
+      "delete_all_bookmarks": "Eyða öllum bókamerkjum"
     },
     "canvas": {
       "quit": "Loka forriti",
@@ -1136,6 +1139,7 @@
       "start_button": "Byrja",
       "cbz_warning": "Aðeins CBZ-snið styður ComicInfo lýsigögn. CBR-, CBT-, CB7- og PDF-skrár verða sjálfkrafa umbreyttar í CBZ.",
       "checkbox_permanent_delete": "Eyða upprunalegum non-CBZ skrám að fullu án ruslafötu\n(EKKI HÆGT AÐ AFTURKALLA)",
+      "checkbox_skip_existing": "Sleppa skrám sem þegar hafa lýsigögn\n(cbz-skjalasafn sem inniheldur ComicInfo.xml-skrá)",
       "complete_title": "Innflutningur lýsigagna lokið",
       "complete_message": "{done} skrá(r) unnar af {total}. {skipped} sleppt.",
       "complete_message_errors": "{done} skrá(r) unnar af {total}. {skipped} sleppt. {errors} villa(r).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Hleður... {loaded} / {total}",
     "issues_partial_load": "{count} tölublað/tölublöð hlaðið — hleðsla rofnaði: {error}",
     "credit": "Lýsigögn: {comicvine} · innblásið af {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Bókamerki",
+    "popup_message": "Þú ert með bókamerki á blaðsíðu {page} í þessum myndasögu.\nHalda áfram að lesa?",
+    "popup_yes": "Já",
+    "popup_no": "Nei"
   }
 }

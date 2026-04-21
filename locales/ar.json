@@ -86,7 +86,8 @@
       "reading_mode_single": "تغيير وضع القراءة (D) ← صفحة واحدة",
       "fullscreen_exit": "الخروج من ملء الشاشة (F11)",
       "fullscreen": "ملء الشاشة (F11)",
-      "close_viewer": "إغلاق العارض (ESC)"
+      "close_viewer": "إغلاق العارض (ESC)",
+      "delete_bookmark": "حذف الإشارة المرجعية"
     },
     "image": {
       "corrupted_replace": "⚠️ صورة تالفة - استبدال",
@@ -169,7 +170,9 @@
       "invert_selection": "عكس التحديد (Ctrl+I)",
       "fullscreen": "ملء الشاشة (F11)",
       "fullscreen_exit": "الخروج من ملء الشاشة (F11 أو ESC)",
-      "quit": "إغلاق التطبيق"
+      "quit": "إغلاق التطبيق",
+      "delete_bookmark": "حذف الإشارة المرجعية لهذه القصة المصورة",
+      "delete_all_bookmarks": "حذف جميع الإشارات المرجعية"
     },
     "canvas": {
       "quit": "إغلاق التطبيق",
@@ -1136,6 +1139,7 @@
       "start_button": "بدء",
       "cbz_warning": "يدعم تنسيق CBZ فقط بيانات ComicInfo الوصفية. سيتم تحويل ملفات CBR وCBT وCB7 وPDF تلقائياً إلى CBZ.",
       "checkbox_permanent_delete": "حذف الملفات الأصلية غير CBZ دون المرور بسلة المحذوفات\n(لا يمكن التراجع عن هذا الإجراء)",
+      "checkbox_skip_existing": "تجاهل الملفات التي تحتوي بالفعل على بيانات وصفية\n(أرشيفات cbz تحتوي على ملف ComicInfo.xml)",
       "complete_title": "اكتمل استيراد البيانات الوصفية",
       "complete_message": "تمت معالجة {done} ملف(ملفات) من أصل {total}. تم تجاهل {skipped}.",
       "complete_message_errors": "تمت معالجة {done} ملف(ملفات) من أصل {total}. تم تجاهل {skipped}. {errors} خطأ(أخطاء).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "جارٍ التحميل... {loaded} / {total}",
     "issues_partial_load": "تم تحميل {count} عدد — انقطع التحميل: {error}",
     "credit": "البيانات الوصفية: {comicvine} · مستوحى من {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "إشارة مرجعية",
+    "popup_message": "لديك إشارة مرجعية في الصفحة {page} لهذه القصة المصورة.\nهل تريد استئناف القراءة؟",
+    "popup_yes": "نعم",
+    "popup_no": "لا"
   }
 }

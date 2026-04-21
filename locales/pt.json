@@ -86,7 +86,8 @@
       "reading_mode_single": "Mudar modo de leitura (D) → Página única",
       "fullscreen_exit": "Sair do ecrã inteiro (F11)",
       "fullscreen": "Ecrã inteiro (F11)",
-      "close_viewer": "Fechar visualizador (ESC)"
+      "close_viewer": "Fechar visualizador (ESC)",
+      "delete_bookmark": "Apagar marcador"
     },
     "image": {
       "corrupted_replace": "⚠️ Imagem corrompida - Substituir",
@@ -169,7 +170,9 @@
       "invert_selection": "Inverter seleção (Ctrl+I)",
       "fullscreen": "Tela cheia (F11)",
       "fullscreen_exit": "Sair da tela cheia (F11 ou ESC)",
-      "quit": "Fechar aplicação"
+      "quit": "Fechar aplicação",
+      "delete_bookmark": "Apagar marcador deste quadrinho",
+      "delete_all_bookmarks": "Apagar todos os marcadores"
     },
     "canvas": {
       "quit": "Fechar aplicação",
@@ -1136,6 +1139,7 @@
       "start_button": "Iniciar",
       "cbz_warning": "Apenas o formato CBZ suporta metadados ComicInfo. Os ficheiros CBR, CBT, CB7 e PDF serão automaticamente convertidos para CBZ.",
       "checkbox_permanent_delete": "Eliminar permanentemente os ficheiros originais não CBZ sem a reciclagem\n(SEM POSSIBILIDADE DE RECUPERAÇÃO)",
+      "checkbox_skip_existing": "Ignorar os ficheiros que já têm metadados\n(arquivos cbz contendo um arquivo ComicInfo.xml)",
       "complete_title": "Importação de metadados concluída",
       "complete_message": "{done} ficheiro(s) processado(s) de {total}. {skipped} ignorado(s).",
       "complete_message_errors": "{done} ficheiro(s) processado(s) de {total}. {skipped} ignorado(s). {errors} erro(s).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Carregando... {loaded} / {total}",
     "issues_partial_load": "{count} edição(ões) carregada(s) — carregamento interrompido: {error}",
     "credit": "Metadados: {comicvine} · inspirado em {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Marcador",
+    "popup_message": "Você tem um marcador na página {page} deste quadrinho.\nRetomar a leitura?",
+    "popup_yes": "Sim",
+    "popup_no": "Não"
   }
 }

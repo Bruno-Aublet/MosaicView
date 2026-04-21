@@ -86,7 +86,8 @@
       "reading_mode_single": "Change reading mode (D) → Single page",
       "fullscreen_exit": "Exit fullscreen (F11)",
       "fullscreen": "Fullscreen (F11)",
-      "close_viewer": "Close viewer (ESC)"
+      "close_viewer": "Close viewer (ESC)",
+      "delete_bookmark": "Clear bookmark"
     },
     "image": {
       "corrupted_replace": "⚠️ Corrupted image - Replace",
@@ -169,7 +170,9 @@
       "invert_selection": "Invert selection (Ctrl+I)",
       "fullscreen": "Fullscreen (F11)",
       "fullscreen_exit": "Exit fullscreen (F11 or ESC)",
-      "quit": "Quit application"
+      "quit": "Quit application",
+      "delete_bookmark": "Clear bookmark for this comic",
+      "delete_all_bookmarks": "Clear all bookmarks"
     },
     "canvas": {
       "quit": "Quit application",
@@ -1136,6 +1139,7 @@
       "start_button": "Start",
       "cbz_warning": "Only the CBZ format supports ComicInfo metadata. CBR, CBT, CB7 and PDF files will be automatically converted to CBZ.",
       "checkbox_permanent_delete": "Permanently delete original non-CBZ files without using the recycle bin\n(NO UNDO POSSIBLE)",
+      "checkbox_skip_existing": "Ignore files that already have metadata\n(cbz archives containing a ComicInfo.xml file)",
       "complete_title": "Metadata import complete",
       "complete_message": "{done} file(s) processed out of {total}. {skipped} skipped.",
       "complete_message_errors": "{done} file(s) processed out of {total}. {skipped} skipped. {errors} error(s).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Loading... {loaded} / {total}",
     "issues_partial_load": "{count} issue(s) loaded — loading interrupted: {error}",
     "credit": "Metadata: {comicvine} · inspired by {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Bookmark",
+    "popup_message": "You have a bookmark at page {page} for this comic.\nResume reading?",
+    "popup_yes": "Yes",
+    "popup_no": "No"
   }
 }

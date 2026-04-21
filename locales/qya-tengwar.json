@@ -86,7 +86,8 @@
       "reading_mode_single": "  () ☠  ",
       "fullscreen_exit": "   (11)",
       "fullscreen": "  (11)",
-      "close_viewer": "   ()"
+      "close_viewer": "   ()",
+      "delete_bookmark": " ⸱"
     },
     "image": {
       "corrupted_replace": "☠☠   - ",
@@ -169,7 +170,9 @@
       "invert_selection": "   (+)",
       "fullscreen": "  (11)",
       "fullscreen_exit": "   (11  )",
-      "quit": " "
+      "quit": " ",
+      "delete_bookmark": " ⸱ ⸱ ",
+      "delete_all_bookmarks": "  "
     },
     "canvas": {
       "quit": " ",
@@ -1136,6 +1139,7 @@
       "start_button": "",
       "cbz_warning": "CBZ     . CBR, , CB7  PDF     CBZ-.",
       "checkbox_permanent_delete": "  CBZ-   \n(  )",
+      "checkbox_skip_existing": "    \n(  . )",
       "complete_title": "   ",
       "complete_message": "{done} ()  {total}-. {skipped} .",
       "complete_message_errors": "{done} ()  {total}-. {skipped} . {errors} ().",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "... {loaded} / {total}",
     "issues_partial_load": "{count}     : {error}",
     "credit": ": {comicvine} ⸱   {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "",
+    "popup_message": "   {page} ⸱ .\n ?",
+    "popup_yes": "",
+    "popup_no": ""
   }
 }

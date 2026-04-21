@@ -86,7 +86,8 @@
       "reading_mode_single": "Muuda lugemisrežiimi (D) → Üksik lehekülg",
       "fullscreen_exit": "Välju täisekraanist (F11)",
       "fullscreen": "Täisekraan (F11)",
-      "close_viewer": "Sulge vaatur (ESC)"
+      "close_viewer": "Sulge vaatur (ESC)",
+      "delete_bookmark": "Kustuta järjehoidja"
     },
     "image": {
       "corrupted_replace": "⚠️ Rikutud pilt - Asenda",
@@ -169,7 +170,9 @@
       "invert_selection": "Pööra valik ümber (Ctrl+I)",
       "fullscreen": "Täisekraan (F11)",
       "fullscreen_exit": "Välju täisekraanist (F11 või ESC)",
-      "quit": "Sulge rakendus"
+      "quit": "Sulge rakendus",
+      "delete_bookmark": "Kustuta järjehoidja selle koomiksi jaoks",
+      "delete_all_bookmarks": "Kustuta kõik järjehoidjad"
     },
     "canvas": {
       "quit": "Sulge rakendus",
@@ -1136,6 +1139,7 @@
       "start_button": "Alusta",
       "cbz_warning": "Ainult CBZ-formaat toetab ComicInfo metaandmeid. CBR-, CBT-, CB7- ja PDF-failid teisendatakse automaatselt CBZ-iks.",
       "checkbox_permanent_delete": "Kustuta originaal-mitte-CBZ-failid jäädavalt prügikastita\n(TAGASIVÕTMINE POLE VÕIMALIK)",
+      "checkbox_skip_existing": "Jäta vahele failid, millel on juba metaandmed\n(cbz-arhiivid, mis sisaldavad ComicInfo.xml-faili)",
       "complete_title": "Metaandmete importimine lõpetatud",
       "complete_message": "{done} fail(i) töödeldud {total}-st. {skipped} vahele jäetud.",
       "complete_message_errors": "{done} fail(i) töödeldud {total}-st. {skipped} vahele jäetud. {errors} viga(d).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Laadimine... {loaded} / {total}",
     "issues_partial_load": "{count} number(it) laaditud — laadimine katkes: {error}",
     "credit": "Metaandmed: {comicvine} · inspireeritud {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Järjehoidja",
+    "popup_message": "Teil on järjehoidja sellel koomiksel lehel {page}.\nJätkata lugemist?",
+    "popup_yes": "Jah",
+    "popup_no": "Ei"
   }
 }

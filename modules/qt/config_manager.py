@@ -536,6 +536,39 @@ class ConfigManager:
     def set_buttons_column_width_panel2(self, width, save=True):
         return self.set('buttons_column_width_panel2', int(width), save)
 
+    # ── Marques-pages ─────────────────────────────────────────────────────────
+
+    def get_bookmarks(self) -> dict:
+        """Retourne le dict {chemin_archive: index_page} de tous les marques-pages."""
+        return self.config.get('bookmarks', {})
+
+    def get_bookmark(self, filepath: str) -> int | None:
+        """Retourne l'index de page mémorisé pour filepath, ou None."""
+        return self.get_bookmarks().get(os.path.abspath(filepath))
+
+    def set_bookmark(self, filepath: str, page_idx: int, save: bool = True):
+        """Mémorise page_idx pour filepath."""
+        bookmarks = self.get_bookmarks().copy()
+        bookmarks[os.path.abspath(filepath)] = page_idx
+        return self.set('bookmarks', bookmarks, save)
+
+    def remove_bookmark(self, filepath: str, save: bool = True):
+        """Supprime le marque-page de filepath (sans erreur si absent)."""
+        bookmarks = self.get_bookmarks().copy()
+        key = os.path.abspath(filepath)
+        if key in bookmarks:
+            del bookmarks[key]
+            return self.set('bookmarks', bookmarks, save)
+        return True
+
+    def clear_bookmarks(self, save: bool = True):
+        """Supprime tous les marques-pages."""
+        return self.set('bookmarks', {}, save)
+
+    def has_any_bookmark(self) -> bool:
+        """Retourne True si au moins un marque-page existe."""
+        return bool(self.get_bookmarks())
+
 
 class Panel2Config:
     """Wrapper autour de ConfigManager qui lit/écrit les clés dédiées au panneau 2.

@@ -86,7 +86,8 @@
       "reading_mode_single": "Bytt lesemodus (D) → Enkeltside",
       "fullscreen_exit": "Avslutt fullskjerm (F11)",
       "fullscreen": "Fullskjerm (F11)",
-      "close_viewer": "Lukk fremviseren (ESC)"
+      "close_viewer": "Lukk fremviseren (ESC)",
+      "delete_bookmark": "Slett bokmerke"
     },
     "image": {
       "corrupted_replace": "⚠️ Korrupt bilde - Erstatt",
@@ -169,7 +170,9 @@
       "invert_selection": "Inverter markering (Ctrl+I)",
       "fullscreen": "Fullskjerm (F11)",
       "fullscreen_exit": "Avslutt fullskjerm (F11 eller ESC)",
-      "quit": "Lukk programmet"
+      "quit": "Lukk programmet",
+      "delete_bookmark": "Slett bokmerke for dette tegneseriealbum",
+      "delete_all_bookmarks": "Slett alle bokmerker"
     },
     "canvas": {
       "quit": "Lukk programmet",
@@ -1136,6 +1139,7 @@
       "start_button": "Start",
       "cbz_warning": "Bare CBZ-formatet støtter ComicInfo-metadata. CBR-, CBT-, CB7- og PDF-filer konverteres automatisk til CBZ.",
       "checkbox_permanent_delete": "Slett originale ikke-CBZ-filer permanent uten papirkurv\n(KAN IKKE ANGRES)",
+      "checkbox_skip_existing": "Ignorer filer som allerede har metadata\n(cbz-arkiver som inneholder en ComicInfo.xml-fil)",
       "complete_title": "Import av metadata fullført",
       "complete_message": "{done} fil(er) behandlet av {total}. {skipped} hoppet over.",
       "complete_message_errors": "{done} fil(er) behandlet av {total}. {skipped} hoppet over. {errors} feil.",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Laster... {loaded} / {total}",
     "issues_partial_load": "{count} nummer(e) lastet — lasting avbrutt: {error}",
     "credit": "Metadata: {comicvine} · inspirert av {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Bokmerke",
+    "popup_message": "Du har et bokmerke på side {page} for dette tegneseriealbum.\nGjenoppta lesingen?",
+    "popup_yes": "Ja",
+    "popup_no": "Nei"
   }
 }

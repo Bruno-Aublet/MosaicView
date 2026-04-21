@@ -86,7 +86,8 @@
       "reading_mode_single": "Tukar mod bacaan (D) → Halaman tunggal",
       "fullscreen_exit": "Keluar skrin penuh (F11)",
       "fullscreen": "Skrin penuh (F11)",
-      "close_viewer": "Tutup penonton (ESC)"
+      "close_viewer": "Tutup penonton (ESC)",
+      "delete_bookmark": "Padam penanda buku"
     },
     "image": {
       "corrupted_replace": "⚠️ Imej rosak - Ganti",
@@ -169,7 +170,9 @@
       "invert_selection": "Songsangkan pilihan (Ctrl+I)",
       "fullscreen": "Skrin penuh (F11)",
       "fullscreen_exit": "Keluar dari skrin penuh (F11 atau ESC)",
-      "quit": "Tutup aplikasi"
+      "quit": "Tutup aplikasi",
+      "delete_bookmark": "Padam penanda buku untuk komik ini",
+      "delete_all_bookmarks": "Padam semua penanda buku"
     },
     "canvas": {
       "quit": "Tutup aplikasi",
@@ -1136,6 +1139,7 @@
       "start_button": "Mula",
       "cbz_warning": "Hanya format CBZ menyokong metadata ComicInfo. Fail CBR, CBT, CB7 dan PDF akan ditukar secara automatik kepada CBZ.",
       "checkbox_permanent_delete": "Padamkan fail asal bukan CBZ secara kekal tanpa tong sampah\n(TIDAK BOLEH DIBUAT ASAL)",
+      "checkbox_skip_existing": "Abaikan fail yang sudah mempunyai metadata\n(arkib cbz yang mengandungi fail ComicInfo.xml)",
       "complete_title": "Import metadata selesai",
       "complete_message": "{done} fail diproses daripada {total}. {skipped} dilangkau.",
       "complete_message_errors": "{done} fail diproses daripada {total}. {skipped} dilangkau. {errors} ralat.",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Memuatkan... {loaded} / {total}",
     "issues_partial_load": "{count} isu dimuatkan — pemuatan terganggu: {error}",
     "credit": "Metadata: {comicvine} · terinspirasi daripada {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Penanda buku",
+    "popup_message": "Anda mempunyai penanda buku pada halaman {page} untuk komik ini.\nTeruskan membaca?",
+    "popup_yes": "Ya",
+    "popup_no": "Tidak"
   }
 }

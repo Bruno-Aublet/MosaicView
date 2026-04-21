@@ -86,7 +86,8 @@
       "reading_mode_single": "読書モードを変更 (D) → 単ページ",
       "fullscreen_exit": "フルスクリーン終了 (F11)",
       "fullscreen": "フルスクリーン (F11)",
-      "close_viewer": "ビューアを閉じる (ESC)"
+      "close_viewer": "ビューアを閉じる (ESC)",
+      "delete_bookmark": "ブックマークを削除"
     },
     "image": {
       "corrupted_replace": "⚠️ 破損画像 - 置換",
@@ -169,7 +170,9 @@
       "invert_selection": "選択を反転 (Ctrl+I)",
       "fullscreen": "フルスクリーン (F11)",
       "fullscreen_exit": "フルスクリーンを終了 (F11またはESC)",
-      "quit": "アプリケーションを終了"
+      "quit": "アプリケーションを終了",
+      "delete_bookmark": "このコミックのブックマークを削除",
+      "delete_all_bookmarks": "すべてのブックマークを削除"
     },
     "canvas": {
       "quit": "アプリケーションを終了",
@@ -1136,6 +1139,7 @@
       "start_button": "開始",
       "cbz_warning": "ComicInfoメタデータをサポートするのはCBZ形式のみです。CBR、CBT、CB7、PDFファイルは自動的にCBZに変換されます。",
       "checkbox_permanent_delete": "元の非CBZファイルをごみ箱を使わず完全に削除する\n（元に戻すことはできません）",
+      "checkbox_skip_existing": "すでにメタデータがあるファイルを無視する\n(ComicInfo.xmlファイルを含むcbzアーカイブ)",
       "complete_title": "メタデータのインポートが完了しました",
       "complete_message": "{total}件中{done}件のファイルを処理しました。{skipped}件スキップ。",
       "complete_message_errors": "{total}件中{done}件のファイルを処理しました。{skipped}件スキップ。{errors}件のエラー。",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "読み込み中... {loaded} / {total}",
     "issues_partial_load": "{count}号読み込み完了 — 読み込み中断: {error}",
     "credit": "メタデータ: {comicvine} · {scraper} にインスパイア"
+  },
+  "bookmark": {
+    "popup_title": "ブックマーク",
+    "popup_message": "このコミックの{page}ページにブックマークがあります。\n読み続けますか？",
+    "popup_yes": "はい",
+    "popup_no": "いいえ"
   }
 }

@@ -86,7 +86,8 @@
       "reading_mode_single": "Changer mode de lecture (D) → Page simple",
       "fullscreen_exit": "Quitter le plein écran (F11)",
       "fullscreen": "Plein écran (F11)",
-      "close_viewer": "Fermer la visionneuse (ESC)"
+      "close_viewer": "Fermer la visionneuse (ESC)",
+      "delete_bookmark": "Effacer le marque-page"
     },
     "image": {
       "corrupted_replace": "⚠️ Image corrompue - Remplacer",
@@ -169,7 +170,9 @@
       "update_page_count": "Mettre à jour le nombre de pages dans les métadonnées",
       "fullscreen": "Plein écran (F11)",
       "fullscreen_exit": "Quitter le plein écran (F11 ou ESC)",
-      "quit": "Fermer l'application"
+      "quit": "Fermer l'application",
+      "delete_bookmark": "Effacer le marque-page de cette BD",
+      "delete_all_bookmarks": "Effacer tous les marques-pages"
     },
     "canvas": {
       "quit": "Fermer l'application",
@@ -1136,6 +1139,7 @@
       "start_button": "Commencer",
       "cbz_warning": "Seul le format CBZ supporte les métadonnées ComicInfo. Les fichiers CBR, CBT, CB7 et PDF seront automatiquement convertis en CBZ.",
       "checkbox_permanent_delete": "Suppression des fichiers originaux non-CBZ sans passer\npar la corbeille (PAS DE RETOUR EN ARRIÈRE POSSIBLE)",
+      "checkbox_skip_existing": "Ignorer les fichiers ayant déjà des métadonnées\n(archives cbz contenant un fichier ComicInfo.xml)",
       "complete_title": "Import des métadonnées terminé",
       "complete_message": "{done} fichier(s) traité(s) sur {total}. {skipped} ignoré(s).",
       "complete_message_errors": "{done} fichier(s) traité(s) sur {total}. {skipped} ignoré(s). {errors} erreur(s).",
@@ -1397,6 +1401,12 @@
     "show_changelog": "Changelog",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ"
+  },
+  "bookmark": {
+    "popup_title": "Marque-page",
+    "popup_message": "Vous avez un marque-page à la page {page} pour cette BD.\nReprendre la lecture ?",
+    "popup_yes": "Oui",
+    "popup_no": "Non"
   },
   "updates": {
     "dialog_title": "Mises à jour",

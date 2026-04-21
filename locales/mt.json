@@ -86,7 +86,8 @@
       "reading_mode_single": "Ibdel il-modalità tal-qari (D) → Paġna waħda",
       "fullscreen_exit": "Oħroġ mill-iskrin sħiħ (F11)",
       "fullscreen": "Iskrin sħiħ (F11)",
-      "close_viewer": "Agħlaq il-visualizzatur (ESC)"
+      "close_viewer": "Agħlaq il-visualizzatur (ESC)",
+      "delete_bookmark": "Ħassar il-bookmark"
     },
     "image": {
       "corrupted_replace": "⚠️ Immaġni korrotta - Ibdel",
@@ -169,7 +170,9 @@
       "invert_selection": "Inverti l-għażla (Ctrl+I)",
       "fullscreen": "Skrin sħiħa (F11)",
       "fullscreen_exit": "Oħroġ minn skrin sħiħa (F11 jew ESC)",
-      "quit": "Agħlaq l-applikazzjoni"
+      "quit": "Agħlaq l-applikazzjoni",
+      "delete_bookmark": "Ħassar il-bookmark għal din il-ktieb tal-komiks",
+      "delete_all_bookmarks": "Ħassar il-bookmarks kollha"
     },
     "canvas": {
       "quit": "Agħlaq l-applikazzjoni",
@@ -1136,6 +1139,7 @@
       "start_button": "Ibda",
       "cbz_warning": "Biss il-format CBZ jappoġġja l-metadejta ComicInfo. Il-fajls CBR, CBT, CB7 u PDF se jiġu konvertiti awtomatikament għal CBZ.",
       "checkbox_permanent_delete": "Ħassar il-fajls oriġinali mhux CBZ b'mod permanenti mingħajr il-basket\n(MA TISTAX TAGĦMEL LURA)",
+      "checkbox_skip_existing": "Aqbeż il-fajls li diġà għandhom metadejta\n(arkivji cbz li fihom fajl ComicInfo.xml)",
       "complete_title": "L-importazzjon tal-metadejta lesta",
       "complete_message": "{done} fajl(s) ipproċessat(i) minn {total}. {skipped} mqbiż(a).",
       "complete_message_errors": "{done} fajl(s) ipproċessat(i) minn {total}. {skipped} mqbiż(a). {errors} żball(i).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Qed jgħabbi... {loaded} / {total}",
     "issues_partial_load": "{count} numru/i mgħobbija — tagħbija mwaqqfa: {error}",
     "credit": "Metadejta: {comicvine} · ispirat minn {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Bookmark",
+    "popup_message": "Għandek bookmark fil-paġna {page} ta' dan il-ktieb tal-komiks.\nKompli taqra?",
+    "popup_yes": "Iva",
+    "popup_no": "Le"
   }
 }

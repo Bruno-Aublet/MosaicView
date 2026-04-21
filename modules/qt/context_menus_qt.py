@@ -145,6 +145,25 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
 
     menu.addSeparator()
 
+    from modules.qt.config_manager import get_config_manager
+    cfg = get_config_manager()
+    has_bookmark_for_current = bool(
+        state.current_file and cfg and cfg.get_bookmark(state.current_file) is not None
+    )
+    has_any_bookmark = bool(cfg and cfg.has_any_bookmark())
+    if has_bookmark_for_current:
+        menu.addAction(_("context_menu.canvas_with_file.delete_bookmark"),
+                       callbacks.get('delete_bookmark', lambda: None))
+    else:
+        _add_disabled(menu, _("context_menu.canvas_with_file.delete_bookmark"))
+    if has_any_bookmark:
+        menu.addAction(_("context_menu.canvas_with_file.delete_all_bookmarks"),
+                       callbacks.get('delete_all_bookmarks', lambda: None))
+    else:
+        _add_disabled(menu, _("context_menu.canvas_with_file.delete_all_bookmarks"))
+
+    menu.addSeparator()
+
     menu.addAction(_("context_menu.canvas.quit"), callbacks['on_window_close'])
 
     menu.addSeparator()
@@ -423,6 +442,23 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
     # ── Section ARCHIVES ──────────────────────────────────────────────────────
 
     has_images = bool(st.images_data)
+
+    menu.addSeparator()
+
+    from modules.qt.config_manager import get_config_manager as _gcm
+    _cfg = _gcm()
+    _has_bm_current = bool(st.current_file and _cfg and _cfg.get_bookmark(st.current_file) is not None)
+    _has_any_bm = bool(_cfg and _cfg.has_any_bookmark())
+    if _has_bm_current:
+        menu.addAction(_("context_menu.canvas_with_file.delete_bookmark"),
+                       callbacks.get('delete_bookmark', lambda: None))
+    else:
+        _add_disabled(menu, _("context_menu.canvas_with_file.delete_bookmark"))
+    if _has_any_bm:
+        menu.addAction(_("context_menu.canvas_with_file.delete_all_bookmarks"),
+                       callbacks.get('delete_all_bookmarks', lambda: None))
+    else:
+        _add_disabled(menu, _("context_menu.canvas_with_file.delete_all_bookmarks"))
 
     menu.addSeparator()
 

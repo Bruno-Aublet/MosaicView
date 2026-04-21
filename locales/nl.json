@@ -86,7 +86,8 @@
       "reading_mode_single": "Leesmodus wijzigen (D) → Enkele pagina",
       "fullscreen_exit": "Volledig scherm verlaten (F11)",
       "fullscreen": "Volledig scherm (F11)",
-      "close_viewer": "Viewer sluiten (ESC)"
+      "close_viewer": "Viewer sluiten (ESC)",
+      "delete_bookmark": "Bladwijzer verwijderen"
     },
     "image": {
       "corrupted_replace": "⚠️ Beschadigde afbeelding - Vervangen",
@@ -169,7 +170,9 @@
       "invert_selection": "Selectie omkeren (Ctrl+I)",
       "fullscreen": "Volledig scherm (F11)",
       "fullscreen_exit": "Volledig scherm verlaten (F11 of ESC)",
-      "quit": "Applicatie sluiten"
+      "quit": "Applicatie sluiten",
+      "delete_bookmark": "Bladwijzer voor dit stripboek verwijderen",
+      "delete_all_bookmarks": "Alle bladwijzers verwijderen"
     },
     "canvas": {
       "quit": "Applicatie sluiten",
@@ -1136,6 +1139,7 @@
       "start_button": "Starten",
       "cbz_warning": "Alleen het CBZ-formaat ondersteunt ComicInfo-metadata. CBR-, CBT-, CB7- en PDF-bestanden worden automatisch omgezet naar CBZ.",
       "checkbox_permanent_delete": "Originele niet-CBZ-bestanden definitief verwijderen zonder prullenbak\n(NIET ONGEDAAN TE MAKEN)",
+      "checkbox_skip_existing": "Bestanden met bestaande metadata overslaan\n(cbz-archieven die een ComicInfo.xml-bestand bevatten)",
       "complete_title": "Metadataimport voltooid",
       "complete_message": "{done} bestand(en) verwerkt van {total}. {skipped} overgeslagen.",
       "complete_message_errors": "{done} bestand(en) verwerkt van {total}. {skipped} overgeslagen. {errors} fout(en).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Laden... {loaded} / {total}",
     "issues_partial_load": "{count} nummer(s) geladen — laden onderbroken: {error}",
     "credit": "Metadata: {comicvine} · geïnspireerd door {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Bladwijzer",
+    "popup_message": "U heeft een bladwijzer op pagina {page} voor dit stripboek.\nLezen hervatten?",
+    "popup_yes": "Ja",
+    "popup_no": "Nee"
   }
 }

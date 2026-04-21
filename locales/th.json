@@ -86,7 +86,8 @@
       "reading_mode_single": "เปลี่ยนโหมดการอ่าน (D) → หน้าเดียว",
       "fullscreen_exit": "ออกจากเต็มหน้าจอ (F11)",
       "fullscreen": "เต็มหน้าจอ (F11)",
-      "close_viewer": "ปิดโปรแกรมดู (ESC)"
+      "close_viewer": "ปิดโปรแกรมดู (ESC)",
+      "delete_bookmark": "ลบที่คั่นหนังสือ"
     },
     "image": {
       "corrupted_replace": "⚠️ ภาพเสียหาย - แทนที่",
@@ -169,7 +170,9 @@
       "invert_selection": "กลับด้านการเลือก (Ctrl+I)",
       "fullscreen": "เต็มหน้าจอ (F11)",
       "fullscreen_exit": "ออกจากเต็มหน้าจอ (F11 หรือ ESC)",
-      "quit": "ปิดแอปพลิเคชัน"
+      "quit": "ปิดแอปพลิเคชัน",
+      "delete_bookmark": "ลบที่คั่นหนังสือสำหรับการ์ตูนนี้",
+      "delete_all_bookmarks": "ลบที่คั่นหนังสือทั้งหมด"
     },
     "canvas": {
       "quit": "ปิดแอปพลิเคชัน",
@@ -1136,6 +1139,7 @@
       "start_button": "เริ่ม",
       "cbz_warning": "เฉพาะรูปแบบ CBZ เท่านั้นที่รองรับข้อมูลเมตา ComicInfo ไฟล์ CBR, CBT, CB7 และ PDF จะถูกแปลงเป็น CBZ โดยอัตโนมัติ",
       "checkbox_permanent_delete": "ลบไฟล์ต้นฉบับที่ไม่ใช่ CBZ อย่างถาวรโดยไม่ผ่านถังรีไซเคิล\n(ไม่สามารถเลิกทำได้)",
+      "checkbox_skip_existing": "ข้ามไฟล์ที่มีข้อมูลเมตาอยู่แล้ว\n(ไฟล์เก็บถาวร cbz ที่มีไฟล์ ComicInfo.xml)",
       "complete_title": "นำเข้าข้อมูลเมตาเสร็จสิ้น",
       "complete_message": "ประมวลผล {done} ไฟล์จาก {total} ข้าม {skipped} ไฟล์",
       "complete_message_errors": "ประมวลผล {done} ไฟล์จาก {total} ข้าม {skipped} ไฟล์ {errors} ข้อผิดพลาด",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "กำลังโหลด... {loaded} / {total}",
     "issues_partial_load": "โหลดแล้ว {count} ฉบับ — การโหลดถูกขัดจังหวะ: {error}",
     "credit": "เมตาดาต้า: {comicvine} · ได้รับแรงบันดาลใจจาก {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "ที่คั่นหนังสือ",
+    "popup_message": "คุณมีที่คั่นหนังสือที่หน้า {page} ของการ์ตูนนี้\nอ่านต่อหรือไม่?",
+    "popup_yes": "ใช่",
+    "popup_no": "ไม่"
   }
 }

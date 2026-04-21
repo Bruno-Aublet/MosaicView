@@ -86,7 +86,8 @@
       "reading_mode_single": "Keisti skaitymo režimą (D) → Vienas puslapis",
       "fullscreen_exit": "Išeiti iš viso ekrano (F11)",
       "fullscreen": "Visas ekranas (F11)",
-      "close_viewer": "Uždaryti žiūryklę (ESC)"
+      "close_viewer": "Uždaryti žiūryklę (ESC)",
+      "delete_bookmark": "Ištrinti žymę"
     },
     "image": {
       "corrupted_replace": "⚠️ Sugadintas vaizdas - Pakeisti",
@@ -169,7 +170,9 @@
       "invert_selection": "Apversti pasirinkimą (Ctrl+I)",
       "fullscreen": "Viso ekrano režimas (F11)",
       "fullscreen_exit": "Išeiti iš viso ekrano režimo (F11 arba ESC)",
-      "quit": "Uždaryti programą"
+      "quit": "Uždaryti programą",
+      "delete_bookmark": "Ištrinti žymę šiam komiksui",
+      "delete_all_bookmarks": "Ištrinti visas žymes"
     },
     "canvas": {
       "quit": "Uždaryti programą",
@@ -1136,6 +1139,7 @@
       "start_button": "Pradėti",
       "cbz_warning": "Tik CBZ formatas palaiko ComicInfo metaduomenis. CBR, CBT, CB7 ir PDF failai bus automatiškai konvertuoti į CBZ.",
       "checkbox_permanent_delete": "Visam laikui ištrinti originalius ne-CBZ failus be šiukšlinės\n(ANULIUOTI NEĮMANOMA)",
+      "checkbox_skip_existing": "Praleisti failus, kuriuose jau yra metaduomenų\n(cbz archyvai, kuriuose yra ComicInfo.xml failas)",
       "complete_title": "Metaduomenų importavimas baigtas",
       "complete_message": "Apdorota {done} failas(-ai) iš {total}. Praleista {skipped}.",
       "complete_message_errors": "Apdorota {done} failas(-ai) iš {total}. Praleista {skipped}. {errors} klaida(-os).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Kraunama... {loaded} / {total}",
     "issues_partial_load": "{count} numeris(-iai) įkeltas(-i) — įkėlimas nutrauktas: {error}",
     "credit": "Metaduomenys: {comicvine} · įkvėpta {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Žymė",
+    "popup_message": "Turite žymę puslapyje {page} šiame komikse.\nTęsti skaitymą?",
+    "popup_yes": "Taip",
+    "popup_no": "Ne"
   }
 }

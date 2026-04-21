@@ -86,7 +86,8 @@
       "reading_mode_single": "Změnit režim čtení (D) → Jedna stránka",
       "fullscreen_exit": "Ukončit celou obrazovku (F11)",
       "fullscreen": "Celá obrazovka (F11)",
-      "close_viewer": "Zavřít prohlížeč (ESC)"
+      "close_viewer": "Zavřít prohlížeč (ESC)",
+      "delete_bookmark": "Smazat záložku"
     },
     "image": {
       "corrupted_replace": "⚠️ Poškozený obrázek - Nahradit",
@@ -169,7 +170,9 @@
       "invert_selection": "Invertovat výběr (Ctrl+I)",
       "fullscreen": "Celá obrazovka (F11)",
       "fullscreen_exit": "Ukončit celou obrazovku (F11 nebo ESC)",
-      "quit": "Zavřít aplikaci"
+      "quit": "Zavřít aplikaci",
+      "delete_bookmark": "Smazat záložku pro tento komiks",
+      "delete_all_bookmarks": "Smazat všechny záložky"
     },
     "canvas": {
       "quit": "Zavřít aplikaci",
@@ -1136,6 +1139,7 @@
       "start_button": "Spustit",
       "cbz_warning": "Pouze formát CBZ podporuje metadata ComicInfo. Soubory CBR, CBT, CB7 a PDF budou automaticky převedeny na CBZ.",
       "checkbox_permanent_delete": "Trvalé smazání původních souborů (ne CBZ) bez koše\n(NELZE VRÁTIT ZPĚT)",
+      "checkbox_skip_existing": "Přeskočit soubory, které již obsahují metadata\n(cbz archivy obsahující soubor ComicInfo.xml)",
       "complete_title": "Import metadat dokončen",
       "complete_message": "Zpracováno {done} soubor(ů) z {total}. Přeskočeno {skipped}.",
       "complete_message_errors": "Zpracováno {done} soubor(ů) z {total}. Přeskočeno {skipped}. {errors} chyba(y).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Načítání... {loaded} / {total}",
     "issues_partial_load": "{count} číslo/čísel načteno — načítání přerušeno: {error}",
     "credit": "Metadata: {comicvine} · inspirováno {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Záložka",
+    "popup_message": "Máte záložku na straně {page} tohoto komiksu.\nPokračovat ve čtení?",
+    "popup_yes": "Ano",
+    "popup_no": "Ne"
   }
 }

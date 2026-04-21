@@ -86,7 +86,8 @@
       "reading_mode_single": "Lesemodus ändern (D) → Einzelseite",
       "fullscreen_exit": "Vollbild beenden (F11)",
       "fullscreen": "Vollbild (F11)",
-      "close_viewer": "Viewer schließen (ESC)"
+      "close_viewer": "Viewer schließen (ESC)",
+      "delete_bookmark": "Lesezeichen löschen"
     },
     "image": {
       "corrupted_replace": "⚠️ Beschädigtes Bild - Ersetzen",
@@ -169,7 +170,9 @@
       "invert_selection": "Auswahl umkehren (Strg+I)",
       "fullscreen": "Vollbild (F11)",
       "fullscreen_exit": "Vollbild beenden (F11 oder ESC)",
-      "quit": "Anwendung schließen"
+      "quit": "Anwendung schließen",
+      "delete_bookmark": "Lesezeichen für dieses Comic löschen",
+      "delete_all_bookmarks": "Alle Lesezeichen löschen"
     },
     "canvas": {
       "quit": "Anwendung schließen",
@@ -1136,6 +1139,7 @@
       "start_button": "Starten",
       "cbz_warning": "Nur das CBZ-Format unterstützt ComicInfo-Metadaten. CBR-, CBT-, CB7- und PDF-Dateien werden automatisch in CBZ konvertiert.",
       "checkbox_permanent_delete": "Originaldateien (nicht CBZ) dauerhaft löschen, ohne Papierkorb\n(KEIN RÜCKGÄNGIG MÖGLICH)",
+      "checkbox_skip_existing": "Dateien mit vorhandenen Metadaten überspringen\n(cbz-Archive, die eine ComicInfo.xml-Datei enthalten)",
       "complete_title": "Metadaten-Import abgeschlossen",
       "complete_message": "{done} Datei(en) von {total} verarbeitet. {skipped} übersprungen.",
       "complete_message_errors": "{done} Datei(en) von {total} verarbeitet. {skipped} übersprungen. {errors} Fehler.",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Laden... {loaded} / {total}",
     "issues_partial_load": "{count} Heft(e) geladen — Laden unterbrochen: {error}",
     "credit": "Metadaten: {comicvine} · inspiriert von {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Lesezeichen",
+    "popup_message": "Sie haben ein Lesezeichen auf Seite {page} für dieses Comic.\nLektüre fortsetzen?",
+    "popup_yes": "Ja",
+    "popup_no": "Nein"
   }
 }

@@ -114,6 +114,8 @@ def build_menubar_callbacks(mw) -> dict:
         "get_current_image_count":       lambda: len(st.images_data),
         "flatten_directories":           mw._flatten_directories,
         "sort_images":                   mw._sort_images,
+        "delete_bookmark":               mw._delete_current_bookmark,
+        "delete_all_bookmarks":          mw._delete_all_bookmarks,
         # ── Système ───────────────────────────────────────────────────────────
         "get_font_manager":         lambda: mw._font_manager,
         "get_available_languages":  lambda: list(mw._loc.get_available_languages().keys()),

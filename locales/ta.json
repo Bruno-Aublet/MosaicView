@@ -86,7 +86,8 @@
       "reading_mode_single": "வாசிப்பு பயன்முறையை மாற்று (D) → ஒற்றை பக்கம்",
       "fullscreen_exit": "முழுத்திரையிலிருந்து வெளியேறு (F11)",
       "fullscreen": "முழுத்திரை (F11)",
-      "close_viewer": "காட்சியாளரை மூடு (ESC)"
+      "close_viewer": "காட்சியாளரை மூடு (ESC)",
+      "delete_bookmark": "புக்மார்க்கை நீக்கு"
     },
     "image": {
       "corrupted_replace": "⚠️ சிதைந்த படம் - மாற்று",
@@ -169,7 +170,9 @@
       "invert_selection": "தேர்வை தலைகீழாக்கு (Ctrl+I)",
       "fullscreen": "முழுத்திரை (F11)",
       "fullscreen_exit": "முழுத்திரையிலிருந்து வெளியேறு (F11 அல்லது ESC)",
-      "quit": "பயன்பாட்டை மூடு"
+      "quit": "பயன்பாட்டை மூடு",
+      "delete_bookmark": "இந்த காமிக்ஸின் புக்மார்க்கை நீக்கு",
+      "delete_all_bookmarks": "அனைத்து புக்மார்க்குகளையும் நீக்கு"
     },
     "canvas": {
       "quit": "பயன்பாட்டை மூடு",
@@ -1136,6 +1139,7 @@
       "start_button": "தொடங்கு",
       "cbz_warning": "CBZ வடிவமைப்பு மட்டுமே ComicInfo மெட்டாதரவை ஆதரிக்கிறது. CBR, CBT, CB7 மற்றும் PDF கோப்புகள் தானாக CBZ ஆக மாற்றப்படும்.",
       "checkbox_permanent_delete": "அசல் CBZ அல்லாத கோப்புகளை மறுசுழற்சி தொட்டி இல்லாமல் நிரந்தரமாக நீக்கு\n(மீட்டெடுக்க முடியாது)",
+      "checkbox_skip_existing": "ஏற்கனவே மெட்டாடேட்டா உள்ள கோப்புகளை புறக்கணி\n(ComicInfo.xml கோப்பு கொண்ட cbz காப்பகங்கள்)",
       "complete_title": "மேட்டாடேட்டா இறக்குமதி முடிந்தது",
       "complete_message": "{total} இல் {done} கோப்பு(கள்) செயலாக்கப்பட்டது. {skipped} தவிர்க்கப்பட்டது.",
       "complete_message_errors": "{total} இல் {done} கோப்பு(கள்) செயலாக்கப்பட்டது. {skipped} தவிர்க்கப்பட்டது. {errors} பிழை(கள்).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "ஏற்றுகிறது... {loaded} / {total}",
     "issues_partial_load": "{count} இதழ்கள் ஏற்றப்பட்டன — ஏற்றம் தடைப்பட்டது: {error}",
     "credit": "மேட்டாடேட்டா: {comicvine} · {scraper} ஆல் ஈர்க்கப்பட்டது"
+  },
+  "bookmark": {
+    "popup_title": "புக்மார்க்",
+    "popup_message": "இந்த காமிக்ஸின் {page}வது பக்கத்தில் உங்களுக்கு புக்மார்க் உள்ளது.\nதொடர்ந்து படிக்கவா?",
+    "popup_yes": "ஆம்",
+    "popup_no": "இல்லை"
   }
 }

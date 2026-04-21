@@ -147,6 +147,89 @@ class _ImageLoadWorker(QThread):
         self.finished.emit(new_entries)
 
 
+class _BookmarkPopup(QDialog):
+    """Pop-up non-modal demandant si l'utilisateur veut reprendre la lecture au marque-page."""
+
+    def __init__(self, parent, page_number: int, on_yes_callback):
+        super().__init__(parent)
+        self._page_number = page_number
+        self._on_yes = on_yes_callback
+
+        self.setWindowFlags(Qt.Dialog | Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+
+        from modules.qt.localization import _
+        from PySide6.QtWidgets import QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+        layout = QVBoxLayout(self)
+        layout.setSpacing(12)
+        layout.setContentsMargins(20, 16, 20, 16)
+
+        self._lbl = QLabel()
+        self._lbl.setWordWrap(True)
+        self._lbl.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._lbl)
+
+        btn_layout = QHBoxLayout()
+        btn_layout.setSpacing(8)
+        self._btn_yes = QPushButton()
+        self._btn_no  = QPushButton()
+        btn_layout.addStretch()
+        btn_layout.addWidget(self._btn_yes)
+        btn_layout.addWidget(self._btn_no)
+        layout.addLayout(btn_layout)
+
+        self._btn_yes.clicked.connect(self._do_yes)
+        self._btn_no.clicked.connect(self.close)
+
+        from modules.qt.language_signal import language_signal
+        self._lang_handler = lambda _: self._retranslate()
+        language_signal.changed.connect(self._lang_handler)
+
+        self._retranslate()
+
+    def _do_yes(self):
+        self.close()
+        self._on_yes()
+
+    def _retranslate(self):
+        from modules.qt.localization import _
+        from modules.qt.state import get_current_theme
+        from modules.qt.font_manager_qt import get_current_font
+        theme = get_current_theme()
+        font  = get_current_font(10)
+
+        self.setWindowTitle(_("bookmark.popup_title"))
+        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+
+        msg = _("bookmark.popup_message").replace("{page}", str(self._page_number))
+        self._lbl.setText(msg)
+        self._lbl.setFont(font)
+        self._lbl.setStyleSheet(f"color: {theme['text']}; background: transparent;")
+
+        self._btn_yes.setText(_("bookmark.popup_yes"))
+        self._btn_yes.setFont(font)
+        self._btn_no.setText(_("bookmark.popup_no"))
+        self._btn_no.setFont(font)
+
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 16px; }}"
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        self._btn_yes.setStyleSheet(btn_style)
+        self._btn_no.setStyleSheet(btn_style)
+
+    def closeEvent(self, event):
+        from modules.qt.language_signal import language_signal
+        try:
+            language_signal.changed.disconnect(self._lang_handler)
+        except Exception:
+            pass
+        super().closeEvent(event)
+
+
 class PanelWidget(QWidget):
     """
     Panneau autonome : colonne gauche (toolbar icônes) + zone centrale
@@ -182,6 +265,7 @@ class PanelWidget(QWidget):
 
         # ── Fichiers récents ──────────────────────────────────────────────────
         _recent_files_module.init_recent_files()
+
 
         # ── Layout principal du panneau ───────────────────────────────────────
         h_layout = QHBoxLayout(self)
@@ -1077,6 +1161,21 @@ class PanelWidget(QWidget):
         finally:
             _state_module.state = _prev
 
+    def _delete_current_bookmark(self):
+        filepath = self._state.current_file
+        if not filepath:
+            return
+        from modules.qt.config_manager import get_config_manager
+        cfg = get_config_manager()
+        if cfg:
+            cfg.remove_bookmark(filepath)
+
+    def _delete_all_bookmarks(self):
+        from modules.qt.config_manager import get_config_manager
+        cfg = get_config_manager()
+        if cfg:
+            cfg.clear_bookmarks()
+
     def _warn_flatten_required_renumber(self):
         _WarnDialog(
             self,
@@ -1462,6 +1561,34 @@ class PanelWidget(QWidget):
         self._update_status_bar()
         if hasattr(self, "_icon_toolbar"):
             self._icon_toolbar.refresh_states()
+        self._maybe_show_bookmark_popup()
+
+    def _maybe_show_bookmark_popup(self):
+        """Affiche le pop-up marque-page si un marque-page existe pour le fichier chargé."""
+        filepath = self._state.current_file
+        if not filepath:
+            return
+        from modules.qt.config_manager import get_config_manager
+        cfg = get_config_manager()
+        if not cfg:
+            return
+        page_idx = cfg.get_bookmark(filepath)
+        if page_idx is None:
+            return
+        img_indices = [i for i, e in enumerate(self._state.images_data) if e.get("is_image")]
+        if not img_indices or page_idx >= len(img_indices):
+            return
+        page_number = page_idx + 1
+
+        def on_yes():
+            real_idx = img_indices[page_idx]
+            self._open_image_viewer(real_idx)
+
+        dlg = _BookmarkPopup(self, page_number, on_yes)
+        dlg.show()
+        from PySide6.QtCore import QTimer
+        from modules.qt.dialogs_qt import _center_on_widget
+        QTimer.singleShot(0, lambda: _center_on_widget(dlg, self))
 
     # ──────────────────────────────────────────────────────────────────────────
     # Barre de statut / toolbar

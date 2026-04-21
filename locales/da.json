@@ -86,7 +86,8 @@
       "reading_mode_single": "Skift læsetilstand (D) → Enkelt side",
       "fullscreen_exit": "Afslut fuldskærm (F11)",
       "fullscreen": "Fuldskærm (F11)",
-      "close_viewer": "Luk fremviseren (ESC)"
+      "close_viewer": "Luk fremviseren (ESC)",
+      "delete_bookmark": "Slet bogmærke"
     },
     "image": {
       "corrupted_replace": "⚠️ Beskadiget billede - Erstat",
@@ -169,7 +170,9 @@
       "invert_selection": "Invertér markering (Ctrl+I)",
       "fullscreen": "Fuld skærm (F11)",
       "fullscreen_exit": "Afslut fuld skærm (F11 eller ESC)",
-      "quit": "Luk applikationen"
+      "quit": "Luk applikationen",
+      "delete_bookmark": "Slet bogmærke for dette tegneseriealbum",
+      "delete_all_bookmarks": "Slet alle bogmærker"
     },
     "canvas": {
       "quit": "Luk applikationen",
@@ -1136,6 +1139,7 @@
       "start_button": "Start",
       "cbz_warning": "Kun CBZ-formatet understøtter ComicInfo-metadata. CBR-, CBT-, CB7- og PDF-filer konverteres automatisk til CBZ.",
       "checkbox_permanent_delete": "Slet originale ikke-CBZ-filer uden papirkurven\n(KAN IKKE FORTRYDES)",
+      "checkbox_skip_existing": "Ignorer filer, der allerede har metadata\n(cbz-arkiver indeholdende en ComicInfo.xml-fil)",
       "complete_title": "Import af metadata fuldført",
       "complete_message": "{done} fil(er) behandlet ud af {total}. {skipped} ignoreret.",
       "complete_message_errors": "{done} fil(er) behandlet ud af {total}. {skipped} ignoreret. {errors} fejl.",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Indlæser... {loaded} / {total}",
     "issues_partial_load": "{count} nummer/numre indlæst — indlæsning afbrudt: {error}",
     "credit": "Metadata: {comicvine} · inspireret af {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Bogmærke",
+    "popup_message": "Du har et bogmærke på side {page} for dette tegneseriealbum.\nGenoptage læsningen?",
+    "popup_yes": "Ja",
+    "popup_no": "Nej"
   }
 }

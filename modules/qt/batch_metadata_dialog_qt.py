@@ -4,6 +4,9 @@ batch_metadata_dialog_qt.py — Confirmation + orchestration du batch d'import d
 
 import os
 
+# Référence module-level pour empêcher le GC de détruire l'orchestrateur en cours de batch
+_active_orchestrators = []
+
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame, QCheckBox,
 )
@@ -12,6 +15,7 @@ from PySide6.QtCore import Qt, QTimer, QThread, Signal as _Signal
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
+from modules.qt.archive_loader import _natural_sort_key
 
 
 def _connect_lang(dialog, handler):
@@ -39,8 +43,9 @@ class _MetadataConfirmDialog(QDialog):
         super().__init__(parent)
         self._files = files
         self._dirs  = dirs
-        self.confirmed       = False
+        self.confirmed        = False
         self.permanent_delete = False
+        self.skip_existing    = False
 
         # Y a-t-il des fichiers non-CBZ ?
         self._has_non_cbz = any(
@@ -75,6 +80,10 @@ class _MetadataConfirmDialog(QDialog):
         self._chk = QCheckBox()
         self._chk.setVisible(self._has_non_cbz)
         layout.addWidget(self._chk, alignment=Qt.AlignCenter)
+
+        # Checkbox ignorer les fichiers ayant déjà des métadonnées
+        self._chk_skip = QCheckBox()
+        layout.addWidget(self._chk_skip, alignment=Qt.AlignCenter)
 
         layout.addSpacing(8)
 
@@ -147,6 +156,9 @@ class _MetadataConfirmDialog(QDialog):
         self._chk.setText(_("dialogs.batch_metadata.checkbox_permanent_delete"))
         self._chk.setFont(font9)
 
+        self._chk_skip.setText(_("dialogs.batch_metadata.checkbox_skip_existing"))
+        self._chk_skip.setFont(font9)
+
         self._start_btn.setText(_("dialogs.batch_metadata.start_button"))
         self._start_btn.setFont(font)
         self._start_btn.setStyleSheet(btn_style)
@@ -157,6 +169,7 @@ class _MetadataConfirmDialog(QDialog):
     def _on_start(self):
         self.confirmed        = True
         self.permanent_delete = self._chk.isChecked()
+        self.skip_existing    = self._chk_skip.isChecked()
         self.accept()
 
     def _on_cancel(self):
@@ -186,8 +199,9 @@ class _LoadWorker(QThread):
 
 
 class _SaveWorker(QThread):
-    done  = _Signal()
-    error = _Signal(str)
+    done     = _Signal()
+    error    = _Signal(str)
+    progress = _Signal(int)   # pourcentage conversion PDF
 
     def __init__(self, orchestrator, filepath, state):
         super().__init__()
@@ -197,7 +211,8 @@ class _SaveWorker(QThread):
 
     def run(self):
         try:
-            self._orc._save_state_for_file(self._filepath, self._state)
+            self._orc._save_state_for_file(self._filepath, self._state,
+                                           progress_cb=lambda pct: self.progress.emit(pct))
             self.done.emit()
         except Exception as e:
             self.error.emit(str(e))
@@ -213,14 +228,16 @@ class _BatchMetadataOrchestrator:
     avec caches partagés entre fichiers.
     """
 
-    def __init__(self, parent, files: list, batch_callbacks: dict, permanent_delete: bool = False):
+    def __init__(self, parent, files: list, batch_callbacks: dict, permanent_delete: bool = False, skip_existing: bool = False):
         self._parent          = parent
         self._files           = files
         self._callbacks       = batch_callbacks
         self._permanent_delete = permanent_delete
+        self._skip_existing   = skip_existing
         self._index           = 0
         self._current_dlg     = None
         self._worker          = None
+        self._orphan_workers  = []   # workers abandonnés mais encore en cours
         self._pending_timer   = None
         self._seq             = 0
 
@@ -246,22 +263,24 @@ class _BatchMetadataOrchestrator:
 
         orig_filepath = self._files[self._index]
 
+        # Skip si l'option est cochée et que le fichier CBZ contient déjà un ComicInfo.xml
+        if self._skip_existing and orig_filepath.lower().endswith('.cbz'):
+            try:
+                import zipfile as _zf
+                with _zf.ZipFile(orig_filepath, 'r') as _z:
+                    if any(n.lower().endswith('comicinfo.xml') for n in _z.namelist()):
+                        self._skipped_count += 1
+                        self._index += 1
+                        self._load_and_open(first=first)
+                        return
+            except Exception:
+                pass
+
         # Annuler un timer en attente et ignorer le worker précédent s'il tourne encore
         if self._pending_timer is not None:
             self._pending_timer.stop()
             self._pending_timer = None
-        if self._worker is not None and self._worker.isRunning():
-            try:
-                self._worker.done.disconnect()
-            except RuntimeError:
-                pass
-            try:
-                self._worker.error.disconnect()
-            except RuntimeError:
-                pass
-            self._worker.finished.connect(self._worker.deleteLater)
-            self._worker.quit()
-            self._worker = None
+        self._retire_current_worker()
 
         self._seq += 1
         my_seq = self._seq
@@ -283,13 +302,13 @@ class _BatchMetadataOrchestrator:
             self._worker.start()
             self._pending_timer = None
 
-    def _show_converting_overlay(self, visible):
+    def _show_converting_overlay(self, visible, text=None):
         """Affiche/cache l'overlay 'Conversion en cours' sur la page courante."""
         if not self._current_dlg:
             return
         dlg = self._current_dlg
         stack_idx = dlg._stack.currentIndex()
-        txt = _("dialogs.batch_cbr.converting_title")
+        txt = text if text is not None else _("dialogs.batch_cbr.converting_title")
         if stack_idx == 0:
             if visible:
                 dlg._page1.set_loading(True)
@@ -306,6 +325,11 @@ class _BatchMetadataOrchestrator:
                 dlg._page2._loading_overlay.raise_()
             else:
                 dlg._page2.show_loading_overlay(False, 0, 0)
+
+    def _on_save_progress(self, pct):
+        """Met à jour le texte de l'overlay avec le pourcentage de conversion PDF."""
+        txt = _("dialogs.batch_cbr.converting_title") + f"\n{pct}%"
+        self._show_converting_overlay(True, text=txt)
 
     def _on_load_done_first(self, cbz_filepath, state):
         self._current_cbz_filepath = cbz_filepath
@@ -326,8 +350,10 @@ class _BatchMetadataOrchestrator:
 
     def _on_load_done_next(self, cbz_filepath, state):
         self._current_cbz_filepath = cbz_filepath
+        if self._current_dlg:
+            self._rescue_dlg_workers(self._current_dlg)
         self._update_dialog(state, cbz_filepath)
-        # L'overlay est caché automatiquement par set_loading(False) lors du retour à la page 1
+        self._lock_nav_buttons(False)
 
     def _on_load_error(self, msg):
         fname = os.path.basename(self._files[self._index]) if self._index < len(self._files) else "?"
@@ -336,21 +362,91 @@ class _BatchMetadataOrchestrator:
             self._current_dlg._page1.set_loading(False)
             self._current_dlg._page2.show_loading_overlay(False, 0, 0)
         self._index += 1
+        self._lock_nav_buttons(False)
         self._load_and_open(first=self._current_dlg is None)
 
     def _on_skip(self):
-        """Appelé sur Ignorer — compte le skip et passe au suivant."""
         self._skipped_count += 1
         self._on_next()
 
     def _on_next(self):
-        """Passe au fichier suivant ou affiche le résumé si batch terminé."""
         self._index += 1
         if self._index >= len(self._files):
+            self._retire_current_worker()
             self._show_summary()
             return
+        self._lock_nav_buttons(True)
         self._reset_dialog()
         self._load_and_open(first=False)
+
+    def _rescue_dlg_workers(self, dlg):
+        """Détache les workers internes du dialog et garde les références vivantes."""
+        from modules.qt.comicvine_dialog_qt import _ComicVineDialog
+        for attr in ('_worker', '_image_worker'):
+            w = getattr(dlg, attr, None)
+            if w is None:
+                continue
+            for sig in ('finished', 'error', 'done'):
+                try:
+                    getattr(w, sig).disconnect()
+                except (RuntimeError, AttributeError):
+                    pass
+            # Détacher du parent Qt AVANT de stocker la référence Python
+            try:
+                w.setParent(None)
+            except RuntimeError:
+                pass
+            # Garder la référence dans la liste de classe du dialog jusqu'à fin naturelle
+            _ComicVineDialog._dying_workers.append(w)
+            w.finished.connect(
+                lambda ww=w: _ComicVineDialog._dying_workers.remove(ww)
+                if ww in _ComicVineDialog._dying_workers else None)
+            setattr(dlg, attr, None)
+
+    def _retire_save_worker(self):
+        """Met le save_worker en orphelin s'il tourne encore (évite destruction par GC)."""
+        w = getattr(self, '_save_worker', None)
+        if w is None or not w.isRunning():
+            return
+        try:
+            w.done.disconnect()
+        except RuntimeError:
+            pass
+        try:
+            w.error.disconnect()
+        except RuntimeError:
+            pass
+        self._orphan_workers.append(w)
+        w.finished.connect(
+            lambda ww=w: self._orphan_workers.remove(ww) if ww in self._orphan_workers else None)
+        self._save_worker = None
+
+    def _retire_current_worker(self):
+        """Déconnecte et met en orphelin le worker courant s'il tourne encore."""
+        if self._worker is None or not self._worker.isRunning():
+            return
+        try:
+            self._worker.done.disconnect()
+        except RuntimeError:
+            pass
+        try:
+            self._worker.error.disconnect()
+        except RuntimeError:
+            pass
+        orphan = self._worker
+        self._orphan_workers.append(orphan)
+        orphan.finished.connect(
+            lambda w=orphan: self._orphan_workers.remove(w) if w in self._orphan_workers else None)
+        self._worker = None
+
+    def _lock_nav_buttons(self, locked):
+        """Désactive/réactive les boutons Skip et Cancel pendant le chargement."""
+        dlg = self._current_dlg
+        if not dlg:
+            return
+        for page in (dlg._page1, dlg._page2):
+            page._btn_skip.setEnabled(not locked)
+            page._btn_cancel.setEnabled(not locked)
 
     def _reset_dialog(self):
         """Vide immédiatement le dialog en attendant le chargement du fichier suivant."""
@@ -406,9 +502,9 @@ class _BatchMetadataOrchestrator:
         # Retranslate (met à jour le compteur dans le titre et les pages)
         dlg._retranslate()
 
-        # Lancer la recherche automatiquement
+        # Lancer la recherche automatiquement (guard : dialog peut être fermé avant le délai)
         if initial:
-            QTimer.singleShot(100, dlg._page1._on_search_clicked)
+            QTimer.singleShot(100, lambda: dlg._page1._on_search_clicked() if dlg.isVisible() else None)
 
     def _on_file_done(self, filepath, state):
         """Lance la sauvegarde en thread avec overlay, puis passe au suivant."""
@@ -418,21 +514,27 @@ class _BatchMetadataOrchestrator:
             self._show_converting_overlay(True)
         self._save_worker = _SaveWorker(self, filepath, state)
         self._save_worker.done.connect(self._on_save_done)
+        self._save_worker.progress.connect(self._on_save_progress)
         def _on_save_error(msg):
             fname = os.path.basename(filepath)
             self._errors.append((fname, msg))
-            self._on_save_done()
+            self._retire_save_worker()
+            self._show_converting_overlay(False)
+            self._done_count += 1
+            self._on_next()
         self._save_worker.error.connect(_on_save_error)
         self._save_worker.start()
 
     def _on_save_done(self):
         self._show_converting_overlay(False)
         self._done_count += 1
+        self._retire_save_worker()
         self._on_next()
 
     def _show_summary(self):
         """Ferme le dialog ComicVine et affiche la fenêtre de résumé."""
         if self._current_dlg:
+            self._rescue_dlg_workers(self._current_dlg)
             self._current_dlg.close()
 
         # Écrire le log si erreurs
@@ -466,6 +568,8 @@ class _BatchMetadataOrchestrator:
             "log_path": log_path,
         }
         _show_metadata_summary(self._parent, summary_data)
+        if hasattr(self, '_on_batch_complete'):
+            self._on_batch_complete()
 
     def _load_state_for_file(self, orig_filepath):
         """
@@ -489,26 +593,46 @@ class _BatchMetadataOrchestrator:
 
         if ext == '.cbz':
             cbz_filepath = orig_filepath
-            try:
-                with zipfile.ZipFile(orig_filepath, 'r') as zf:
-                    for name in zf.namelist():
-                        data     = zf.read(name)
-                        is_image = name.lower().endswith(
-                            ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif'))
-                        is_xml   = name.lower().endswith('.xml')
-                        new_state.images_data.append({
-                            "orig_name": name, "name": name,
-                            "bytes": data, "is_image": is_image,
-                            "is_dir": False,
-                            "extension": os.path.splitext(name)[1].lower(),
-                        })
-                        if is_xml and 'comicinfo' in name.lower():
-                            try:
-                                new_state.comic_metadata = parse_comic_info_xml(data) or {}
-                            except Exception:
-                                pass
-            except Exception as e:
-                print(f"Erreur chargement CBZ {orig_filepath}: {e}")
+            with zipfile.ZipFile(orig_filepath, 'r') as zf:
+                all_names = zf.namelist()
+                cover_name = next(
+                    (n for n in sorted(all_names, key=_natural_sort_key)
+                     if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif'))),
+                    None
+                )
+                # Couverture uniquement
+                if cover_name:
+                    data = zf.read(cover_name)
+                    new_state.images_data.append({
+                        "orig_name": cover_name, "name": cover_name,
+                        "bytes": data, "is_image": True,
+                        "is_dir": False,
+                        "extension": os.path.splitext(cover_name)[1].lower(),
+                    })
+                # ComicInfo.xml uniquement
+                xml_name = next(
+                    (n for n in all_names if n.lower().endswith('.xml') and 'comicinfo' in n.lower()),
+                    None
+                )
+                if xml_name:
+                    xml_data = zf.read(xml_name)
+                    new_state.images_data.append({
+                        "orig_name": xml_name, "name": xml_name,
+                        "bytes": xml_data, "is_image": False,
+                        "is_dir": False,
+                        "extension": ".xml",
+                    })
+                    try:
+                        new_state.comic_metadata = parse_comic_info_xml(xml_data) or {}
+                    except Exception:
+                        pass
+                # Manifest pour que _save_state_for_file réécrive le CBZ complet
+                new_state.images_data.append({
+                    "_cbz_path": orig_filepath,
+                    "is_image": False, "is_dir": False,
+                    "orig_name": "__cbz_manifest__", "name": "__cbz_manifest__",
+                    "bytes": None, "extension": "",
+                })
 
         else:
             # Fichier non-CBZ : extraire les images via les loaders existants
@@ -527,45 +651,53 @@ class _BatchMetadataOrchestrator:
         images_data = []
 
         if ext == '.cbr':
-            try:
-                import rarfile
+            import rarfile
+            with rarfile.RarFile(filepath) as rf:
+                all_names = sorted(
+                    n for n in rf.namelist()
+                    if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'))
+                )
+            if all_names:
                 with rarfile.RarFile(filepath) as rf:
-                    for name in sorted(rf.namelist()):
-                        if name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')):
-                            images_data.append({
-                                "orig_name": name, "name": name,
-                                "bytes": rf.read(name), "is_image": True,
-                                "is_dir": False,
-                                "extension": os.path.splitext(name)[1].lower(),
-                            })
-            except Exception as e:
-                print(f"Erreur CBR {filepath}: {e}")
+                    data = rf.read(all_names[0])
+                images_data.append({
+                    "orig_name": all_names[0], "name": all_names[0],
+                    "bytes": data, "is_image": True,
+                    "is_dir": False,
+                    "extension": os.path.splitext(all_names[0])[1].lower(),
+                })
+            images_data.append({
+                "_cbr_path": filepath,
+                "is_image": False, "is_dir": False,
+                "orig_name": "__cbr_manifest__", "name": "__cbr_manifest__",
+                "bytes": None, "extension": "",
+            })
 
         elif ext == '.cbt':
-            try:
-                import tarfile
-                with tarfile.open(filepath, 'r:*') as tf:
-                    img_members = sorted(
-                        (m for m in tf.getmembers()
-                         if m.isfile() and m.name.lower().endswith(
-                             ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'))),
-                        key=lambda m: m.name
-                    )
-                    for member in img_members:
-                        try:
-                            data = tf.extractfile(member).read()
-                        except Exception:
-                            continue
-                        if data:
-                            images_data.append({
-                                "orig_name": member.name,
-                                "name": os.path.basename(member.name),
-                                "bytes": data, "is_image": True,
-                                "is_dir": False,
-                                "extension": os.path.splitext(member.name)[1].lower(),
-                            })
-            except Exception as e:
-                print(f"Erreur CBT {filepath}: {e}")
+            import tarfile
+            with tarfile.open(filepath, 'r:*') as tf:
+                img_members = sorted(
+                    (m for m in tf.getmembers()
+                     if m.isfile() and m.name.lower().endswith(
+                         ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'))),
+                    key=lambda m: m.name
+                )
+                if img_members:
+                    data = tf.extractfile(img_members[0]).read()
+                    if data:
+                        images_data.append({
+                            "orig_name": img_members[0].name,
+                            "name": os.path.basename(img_members[0].name),
+                            "bytes": data, "is_image": True,
+                            "is_dir": False,
+                            "extension": os.path.splitext(img_members[0].name)[1].lower(),
+                        })
+            images_data.append({
+                "_cbt_path": filepath,
+                "is_image": False, "is_dir": False,
+                "orig_name": "__cbt_manifest__", "name": "__cbt_manifest__",
+                "bytes": None, "extension": "",
+            })
 
         elif ext == '.cb7':
             from modules.qt.archive_loader import _list_7z_files, _read_7z_file
@@ -589,28 +721,33 @@ class _BatchMetadataOrchestrator:
                                      "bytes": None, "extension": ""})
 
         elif ext == '.pdf':
-            try:
-                import fitz
-                doc = fitz.open(filepath)
-                if doc.is_closed or len(doc) == 0:
-                    doc.close()
-                    raise ValueError("PDF vide ou illisible")
-                for i, page in enumerate(doc):
-                    pix  = page.get_pixmap(dpi=150)
-                    data = pix.tobytes("jpeg")
-                    name = f"page_{i+1:04d}.jpg"
-                    images_data.append({
-                        "orig_name": name, "name": name,
-                        "bytes": data, "is_image": True,
-                        "is_dir": False, "extension": ".jpg",
-                    })
+            import fitz
+            doc = fitz.open(filepath)
+            if doc.is_closed or len(doc) == 0:
                 doc.close()
-            except Exception as e:
-                print(f"Erreur PDF {filepath}: {e}")
+                raise ValueError("PDF vide ou illisible")
+            # On ne rasterise que la première page (couverture) pour l'aperçu.
+            # La conversion complète se fera dans _save_state_for_file.
+            page = doc[0]
+            pix  = page.get_pixmap(dpi=96)
+            data = pix.tobytes("jpeg")
+            doc.close()
+            images_data.append({
+                "orig_name": "page_0001.jpg", "name": "page_0001.jpg",
+                "bytes": data, "is_image": True,
+                "is_dir": False, "extension": ".jpg",
+            })
+            # Manifest pour que _save_state_for_file sache ré-extraire toutes les pages
+            images_data.append({
+                "_pdf_path": filepath,
+                "is_image": False, "is_dir": False,
+                "orig_name": "__pdf_manifest__", "name": "__pdf_manifest__",
+                "bytes": None, "extension": "",
+            })
 
         return images_data
 
-    def _save_state_for_file(self, filepath, state):
+    def _save_state_for_file(self, filepath, state, progress_cb=None):
         """Sauvegarde le CBZ modifié sur disque. Supprime l'original si non-CBZ et permanent_delete."""
         if not state.modified:
             return
@@ -619,39 +756,124 @@ class _BatchMetadataOrchestrator:
         try:
             import zipfile
 
-            # Récupérer le manifest CB7 si présent (on n'a chargé que la couverture)
-            manifest = next(
-                (e for e in state.images_data if e.get("orig_name") == "__cb7_manifest__"),
-                None
-            )
+            MANIFEST_NAMES = {
+                "__cbz_manifest__", "__cbr_manifest__", "__cbt_manifest__",
+                "__cb7_manifest__", "__pdf_manifest__",
+            }
+
+            def _get_manifest(tag):
+                return next((e for e in state.images_data if e.get("orig_name") == tag), None)
+
+            cbz_manifest = _get_manifest("__cbz_manifest__")
+            cbr_manifest = _get_manifest("__cbr_manifest__")
+            cbt_manifest = _get_manifest("__cbt_manifest__")
+            cb7_manifest = _get_manifest("__cb7_manifest__")
+            pdf_manifest = _get_manifest("__pdf_manifest__")
+
+            def _write_non_manifest(zf):
+                """Écrit les entrées avec bytes (couverture + XML metadata)."""
+                for entry in state.images_data:
+                    if entry.get("orig_name") in MANIFEST_NAMES:
+                        continue
+                    if entry.get("bytes") is None or entry.get("is_dir"):
+                        continue
+                    zf.writestr(entry["orig_name"], entry["bytes"])
+
+            def _write_xml_only(zf):
+                """Écrit uniquement les entrées non-image (ComicInfo.xml)."""
+                for entry in state.images_data:
+                    if entry.get("orig_name") in MANIFEST_NAMES:
+                        continue
+                    if entry.get("bytes") is None or entry.get("is_dir"):
+                        continue
+                    if entry.get("is_image"):
+                        continue
+                    zf.writestr(entry["orig_name"], entry["bytes"])
+
+            def _cover_name():
+                return next(
+                    (e["orig_name"] for e in state.images_data if e.get("is_image")),
+                    None
+                )
 
             with zipfile.ZipFile(filepath, 'w', zipfile.ZIP_DEFLATED) as zf:
-                if manifest:
-                    # Écrire d'abord les entrées non-manifest (couverture + XML métadonnées)
-                    for entry in state.images_data:
-                        if entry.get("orig_name") == "__cb7_manifest__":
-                            continue
-                        if entry.get("bytes") is None or entry.get("is_dir"):
-                            continue
-                        zf.writestr(entry["orig_name"], entry["bytes"])
-                    # Extraire et écrire toutes les autres images du CB7
-                    from modules.qt.archive_loader import _list_7z_files, _read_7z_file
-                    cover_name = next(
-                        (e["orig_name"] for e in state.images_data
-                         if e.get("is_image") and e.get("orig_name") != "__cb7_manifest__"),
-                        None
-                    )
-                    for name in manifest["_cb7_all_names"]:
-                        if name == cover_name:
-                            continue  # déjà écrite
-                        data = _read_7z_file(manifest["_cb7_path"], name)
+                if cbz_manifest:
+                    _write_non_manifest(zf)
+                    # Recopier toutes les entrées de l'original sauf couverture et XML déjà écrits
+                    written = {e["orig_name"] for e in state.images_data
+                               if e.get("orig_name") not in MANIFEST_NAMES and e.get("bytes") is not None}
+                    with zipfile.ZipFile(cbz_manifest["_cbz_path"], 'r') as src:
+                        for name in src.namelist():
+                            if name not in written:
+                                zf.writestr(name, src.read(name))
+
+                elif cbr_manifest:
+                    _write_xml_only(zf)
+                    import rarfile
+                    with rarfile.RarFile(cbr_manifest["_cbr_path"]) as rf:
+                        for name in sorted(rf.namelist()):
+                            if name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')):
+                                zf.writestr(name, rf.read(name))
+
+                elif cbt_manifest:
+                    _write_xml_only(zf)
+                    import tarfile
+                    with tarfile.open(cbt_manifest["_cbt_path"], 'r:*') as tf:
+                        for m in sorted(tf.getmembers(), key=lambda x: x.name):
+                            if not m.isfile():
+                                continue
+                            if not m.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')):
+                                continue
+                            data = tf.extractfile(m).read()
+                            if data:
+                                zf.writestr(m.name, data)
+
+                elif cb7_manifest:
+                    _write_xml_only(zf)
+                    from modules.qt.archive_loader import _read_7z_file
+                    for name in cb7_manifest["_cb7_all_names"]:
+                        data = _read_7z_file(cb7_manifest["_cb7_path"], name)
                         if data:
                             zf.writestr(name, data)
-                else:
-                    for entry in state.images_data:
-                        if entry.get("bytes") is None or entry.get("is_dir"):
+
+                elif pdf_manifest:
+                    _write_xml_only(zf)
+                    import modules.qt.pdf_loading_qt as _pdfmod
+                    from modules.qt.archive_loader import _natural_sort_key as _nsk
+
+                    pdf_path = pdf_manifest["_pdf_path"]
+                    _pdfmod._ensure_merge_process()
+                    _pdfmod._merge_in_q.put(('run_merge', pdf_path, 0, ""))
+
+                    while True:
+                        if not _pdfmod._merge_out_conn.poll(0.1):
+                            if _pdfmod._merge_process is None or not _pdfmod._merge_process.is_alive():
+                                raise ValueError("PDF merge process terminated unexpectedly")
                             continue
-                        zf.writestr(entry["orig_name"], entry["bytes"])
+                        msg = _pdfmod._merge_out_conn.recv()
+                        kind = msg[0]
+                        if kind == '_debug':
+                            continue
+                        elif kind == 'total':
+                            pass
+                        elif kind == 'merge_page':
+                            _, filename, img_data, _used_dpi = msg
+                            zf.writestr(filename, img_data)
+                        elif kind == 'progress':
+                            _, percent, _cur, _tot = msg
+                            if progress_cb:
+                                progress_cb(percent)
+                        elif kind == 'done':
+                            break
+                        elif kind == 'error':
+                            raise ValueError(msg[1])
+                        elif kind == 'password_error':
+                            raise ValueError("PDF protégé par mot de passe")
+                        elif kind == 'empty_pdf':
+                            raise ValueError("PDF vide")
+
+                else:
+                    _write_non_manifest(zf)
         except Exception as e:
             print(f"Erreur sauvegarde {filepath}: {e}")
             return
@@ -848,7 +1070,11 @@ def show_batch_metadata_dialog(parent, files: list, dirs: list, batch_callbacks:
         orchestrator = _BatchMetadataOrchestrator(
             parent, files, batch_callbacks,
             permanent_delete=dlg.permanent_delete,
+            skip_existing=dlg.skip_existing,
         )
+        # Garder une référence module-level pour éviter la destruction par le GC
+        _active_orchestrators.append(orchestrator)
+        orchestrator._on_batch_complete = lambda: _active_orchestrators.remove(orchestrator) if orchestrator in _active_orchestrators else None
         orchestrator.start()
 
     dlg.finished.connect(lambda _: _on_confirm_done())

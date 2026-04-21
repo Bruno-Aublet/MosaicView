@@ -86,7 +86,8 @@
       "reading_mode_single": "Vaihda lukutilaa (D) → Yksittäinen sivu",
       "fullscreen_exit": "Poistu koko näytöstä (F11)",
       "fullscreen": "Koko näyttö (F11)",
-      "close_viewer": "Sulje katselin (ESC)"
+      "close_viewer": "Sulje katselin (ESC)",
+      "delete_bookmark": "Poista kirjanmerkki"
     },
     "image": {
       "corrupted_replace": "⚠️ Vioittunut kuva - Korvaa",
@@ -169,7 +170,9 @@
       "invert_selection": "Käännä valinta (Ctrl+I)",
       "fullscreen": "Koko näyttö (F11)",
       "fullscreen_exit": "Poistu koko näytöstä (F11 tai ESC)",
-      "quit": "Sulje sovellus"
+      "quit": "Sulje sovellus",
+      "delete_bookmark": "Poista kirjanmerkki tästä sarjakuva-albumista",
+      "delete_all_bookmarks": "Poista kaikki kirjanmerkit"
     },
     "canvas": {
       "quit": "Sulje sovellus",
@@ -1136,6 +1139,7 @@
       "start_button": "Aloita",
       "cbz_warning": "Vain CBZ-muoto tukee ComicInfo-metatietoja. CBR-, CBT-, CB7- ja PDF-tiedostot muunnetaan automaattisesti CBZ-muotoon.",
       "checkbox_permanent_delete": "Poista alkuperäiset ei-CBZ-tiedostot pysyvästi ilman roskakoriin siirtämistä\n(EI PERUUTUSMAHDOLLISUUTTA)",
+      "checkbox_skip_existing": "Ohita tiedostot, joilla on jo metatiedot\n(cbz-arkistot, jotka sisältävät ComicInfo.xml-tiedoston)",
       "complete_title": "Metatietojen tuonti valmis",
       "complete_message": "{done} tiedosto(a) käsitelty {total}:stä. {skipped} ohitettu.",
       "complete_message_errors": "{done} tiedosto(a) käsitelty {total}:stä. {skipped} ohitettu. {errors} virhe(ttä).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Ladataan... {loaded} / {total}",
     "issues_partial_load": "{count} numero(a) ladattu — lataus keskeytyi: {error}",
     "credit": "Metatiedot: {comicvine} · inspiroitu {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Kirjanmerkki",
+    "popup_message": "Sinulla on kirjanmerkki sivulla {page} tässä sarjakuva-albumissa.\nJatka lukemista?",
+    "popup_yes": "Kyllä",
+    "popup_no": "Ei"
   }
 }

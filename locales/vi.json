@@ -86,7 +86,8 @@
       "reading_mode_single": "Đổi chế độ đọc (D) → Một trang",
       "fullscreen_exit": "Thoát toàn màn hình (F11)",
       "fullscreen": "Toàn màn hình (F11)",
-      "close_viewer": "Đóng trình xem (ESC)"
+      "close_viewer": "Đóng trình xem (ESC)",
+      "delete_bookmark": "Xóa dấu trang"
     },
     "image": {
       "corrupted_replace": "⚠️ Ảnh hỏng - Thay thế",
@@ -169,7 +170,9 @@
       "invert_selection": "Đảo ngược lựa chọn (Ctrl+I)",
       "fullscreen": "Toàn màn hình (F11)",
       "fullscreen_exit": "Thoát toàn màn hình (F11 hoặc ESC)",
-      "quit": "Đóng ứng dụng"
+      "quit": "Đóng ứng dụng",
+      "delete_bookmark": "Xóa dấu trang cho truyện tranh này",
+      "delete_all_bookmarks": "Xóa tất cả dấu trang"
     },
     "canvas": {
       "quit": "Đóng ứng dụng",
@@ -1136,6 +1139,7 @@
       "start_button": "Bắt đầu",
       "cbz_warning": "Chỉ định dạng CBZ hỗ trợ siêu dữ liệu ComicInfo. Các tệp CBR, CBT, CB7 và PDF sẽ được tự động chuyển đổi sang CBZ.",
       "checkbox_permanent_delete": "Xóa vĩnh viễn các tệp gốc không phải CBZ mà không qua thùng rác\n(KHÔNG THỂ HOÀN TÁC)",
+      "checkbox_skip_existing": "Bỏ qua các tệp đã có siêu dữ liệu\n(kho lưu trữ cbz chứa tệp ComicInfo.xml)",
       "complete_title": "Nhập siêu dữ liệu hoàn tất",
       "complete_message": "Đã xử lý {done} tệp trong số {total}. Đã bỏ qua {skipped}.",
       "complete_message_errors": "Đã xử lý {done} tệp trong số {total}. Đã bỏ qua {skipped}. {errors} lỗi.",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Đang tải... {loaded} / {total}",
     "issues_partial_load": "{count} số đã tải — tải bị gián đoạn: {error}",
     "credit": "Siêu dữ liệu: {comicvine} · lấy cảm hứng từ {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Dấu trang",
+    "popup_message": "Bạn có dấu trang ở trang {page} của truyện tranh này.\nTiếp tục đọc?",
+    "popup_yes": "Có",
+    "popup_no": "Không"
   }
 }

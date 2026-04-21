@@ -86,7 +86,8 @@
       "reading_mode_single": "Goheno i bâd rlinn (D) → Tell er",
       "fullscreen_exit": "Avego i lain pen (F11)",
       "fullscreen": "Lain pen (F11)",
-      "close_viewer": "Tegi i harthad (ESC)"
+      "close_viewer": "Tegi i harthad (ESC)",
+      "delete_bookmark": "Tolo i·bethleg"
     },
     "image": {
       "corrupted_replace": "⚠️ Randir orthel - Gohedo",
@@ -169,7 +170,9 @@
       "invert_selection": "Thervia i orthel (Ctrl+I)",
       "fullscreen": "Pân-sgrîn (F11)",
       "fullscreen_exit": "Edro o bân-sgrîn (F11 or ESC)",
-      "quit": "haryalë falasse"
+      "quit": "haryalë falasse",
+      "delete_bookmark": "Tolo i·bethleg e·parf hen",
+      "delete_all_bookmarks": "Tolo pân i·bethlegin"
     },
     "canvas": {
       "quit": "haryalë falasse",
@@ -1136,6 +1139,7 @@
       "start_button": "Minno",
       "cbz_warning": "CBZ ambar er govanner i ComicInfo nedh-ambar. CBR, CBT, CB7 ar PDF amarth bronad na CBZ.",
       "checkbox_permanent_delete": "Danna i CBZ-ú amarth or mín\n(Ú-pole edrevia)",
+      "checkbox_skip_existing": "Awartha i phain o redan i vellyn\n(cbz sarch ComicInfo.xml i vellyn)",
       "complete_title": "I·Channas i·nothrim úva",
       "complete_message": "{done} vilthin(r) carner {total}-lo. {skipped} lencaner.",
       "complete_message_errors": "{done} vilthin(r) carner {total}-lo. {skipped} lencaner. {errors} raeg(rin).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Beria... {loaded} / {total}",
     "issues_partial_load": "{count} nauth beriar — beria hauta: {error}",
     "credit": "Methannas: {comicvine} · inspired by {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Bethleg",
+    "popup_message": "Im·ail bethleg an·leben {page} e·parf hen.\nLeithian a·dharlenn?",
+    "popup_yes": "Ónen",
+    "popup_no": "Law"
   }
 }

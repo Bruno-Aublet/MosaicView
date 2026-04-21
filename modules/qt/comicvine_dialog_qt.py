@@ -22,6 +22,18 @@ _DATA_ROLE = Qt.UserRole   # stocke l'index dans _series_data / _issues_data
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _bytes_to_pixmap(data: bytes) -> QPixmap:
+    # Passer par PIL pour normaliser les données avant de les confier à Qt.
+    # Qt peut spawner des threads internes instables sur des JPEG corrompus.
+    try:
+        from PIL import Image
+        import io
+        img = Image.open(io.BytesIO(data))
+        img = img.convert("RGB")
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=90)
+        data = buf.getvalue()
+    except Exception:
+        pass
     return QPixmap.fromImage(QImage.fromData(data))
 
 
@@ -180,6 +192,8 @@ def show_comicvine_dialog(parent, state, api_key, batch=False, on_done=None,
 
 class _ComicVineDialog(QDialog):
 
+    _dying_workers = []   # référence globale pour éviter la destruction par GC
+
     def __init__(self, parent, state, api_key, batch=False, on_done=None,
                  batch_index=None, batch_total=None,
                  shared_search_cache=None, shared_issues_cache=None,
@@ -239,11 +253,12 @@ class _ComicVineDialog(QDialog):
         self._page1.set_filename(filename)
         self._page2.set_filename(filename)
 
+        raw = os.path.splitext(os.path.basename(orig_path))[0] if orig_path else ""
         initial = ""
         if state and state.comic_metadata:
             initial = state.comic_metadata.get("series", "").strip()
-        if not initial and orig_path:
-            initial = os.path.splitext(os.path.basename(orig_path))[0]
+        if not initial:
+            initial = self._clean_filename_for_search(raw)
         self._page1.set_search_term(initial)
 
         self._retranslate()
@@ -255,7 +270,7 @@ class _ComicVineDialog(QDialog):
         self._center_parent = parent
 
         if initial:
-            QTimer.singleShot(100, self._page1._on_search_clicked)
+            QTimer.singleShot(100, lambda: self._page1._on_search_clicked() if self.isVisible() else None)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -294,11 +309,7 @@ class _ComicVineDialog(QDialog):
     # ── Actions ───────────────────────────────────────────────────────────────
 
     def _do_search(self, search_terms, page=1):
-        # Vider le cache si les termes changent
-        if self._search_cache and next(iter(self._search_cache))[0] != search_terms:
-            self._search_cache.clear()
-
-        cache_key = (search_terms, page)
+        cache_key = (self._cache_key_for_terms(search_terms), page)
         if cache_key in self._search_cache:
             results, total = self._search_cache[cache_key]
             self._page1.populate_series(results, total, search_terms, page)
@@ -311,7 +322,7 @@ class _ComicVineDialog(QDialog):
         self._worker.start()
 
     def _on_search_done(self, results, total, terms, page):
-        self._search_cache[(terms, page)] = (results, total)
+        self._search_cache[(self._cache_key_for_terms(terms), page)] = (results, total)
         self._page1.set_loading(False)
         self._page1.populate_series(results, total, terms, page)
 
@@ -359,6 +370,30 @@ class _ComicVineDialog(QDialog):
 
     def _go_to_series(self):
         self._stack.setCurrentIndex(0)
+
+    @staticmethod
+    def _clean_filename_for_search(fname):
+        """Retire le préfixe numérique de nommage (ex. '05909 ') et les dates en tête."""
+        import re
+        # Supprimer les dates en début de chaîne : YYYY-MM-DD, YYYY MM DD, YYYYMMDD
+        fname = re.sub(r'^\d{4}[-\s]?\d{2}[-\s]?\d{2}\s*[-_]?\s*', '', fname)
+        # Supprimer le préfixe numérique de nommage (ex. "05909 " ou "05909_")
+        fname = re.sub(r'^\d+[\s_\-]+', '', fname)
+        return fname.strip()
+
+    @staticmethod
+    def _cache_key_for_terms(terms):
+        """Normalise un terme de recherche pour la clé de cache série.
+        Retire préfixe numérique, dates, numéro d'issue et suffixes parasites."""
+        import re
+        s = terms.strip()
+        # Dates en début
+        s = re.sub(r'^\d{4}[-\s]?\d{2}[-\s]?\d{2}\s*[-_]?\s*', '', s)
+        # Préfixe numérique de nommage
+        s = re.sub(r'^\d+[\s_\-]+', '', s)
+        # Numéro d'issue isolé en fin et tout ce qui suit (ex. " 116 - Copie", " 125")
+        s = re.sub(r'\s+\d+\b.*$', '', s)
+        return s.strip()
 
     def _guess_issue_number(self):
         """Devine le numéro d'issue depuis les métadonnées ou le texte de recherche saisi."""
@@ -521,23 +556,21 @@ class _ComicVineDialog(QDialog):
         except RuntimeError:
             pass
         for w in (self._worker, self._image_worker):
-            if w and w.isRunning():
+            if w is None:
+                continue
+            for sig in ('finished', 'error', 'done'):
                 try:
-                    w.finished.disconnect()
-                except RuntimeError:
-                    pass
-                try:
-                    w.error.disconnect()
-                except RuntimeError:
-                    pass
-                try:
-                    w.done.disconnect()
+                    getattr(w, sig).disconnect()
                 except (RuntimeError, AttributeError):
                     pass
-                # Connecter finished à deleteLater pour que Qt détruise le thread
-                # proprement une fois terminé, sans bloquer l'UI
-                w.finished.connect(w.deleteLater)
-                w.quit()
+            try:
+                w.setParent(None)
+            except RuntimeError:
+                pass
+            if w.isRunning():
+                _ComicVineDialog._dying_workers.append(w)
+                w.finished.connect(lambda ww=w: _ComicVineDialog._dying_workers.remove(ww)
+                                   if ww in _ComicVineDialog._dying_workers else None)
 
 
 # ── Page 1 : Choix de la série ────────────────────────────────────────────────
@@ -810,7 +843,41 @@ class _Page1Series(QWidget):
         self._table.setSortingEnabled(True)
         self._table.sortByColumn(1, Qt.AscendingOrder)
         if series_list:
-            self._table.selectRow(0)
+            best_row = 0
+            if terms:
+                import difflib, re
+                query = terms.lower()
+
+                # Extraire une année (1800-2100) depuis le terme de recherche
+                year_match = re.search(r'\b(1[89]\d{2}|20\d{2}|21\d{2})\b', terms)
+                target_year = int(year_match.group(1)) if year_match else None
+
+                best_score = -1.0
+                best_year_dist = float('inf')
+                for row in range(self._table.rowCount()):
+                    item = self._table.item(row, 0)
+                    if not item:
+                        continue
+                    score = difflib.SequenceMatcher(None, query, item.text().lower()).ratio()
+                    if score > best_score:
+                        best_score = score
+                        best_row = row
+                        year_item = self._table.item(row, 1)
+                        try:
+                            best_year_dist = abs(int(year_item.text()) - target_year) if (target_year and year_item and year_item.text()) else float('inf')
+                        except ValueError:
+                            best_year_dist = float('inf')
+                    elif score == best_score and target_year:
+                        year_item = self._table.item(row, 1)
+                        try:
+                            dist = abs(int(year_item.text()) - target_year) if (year_item and year_item.text()) else float('inf')
+                        except ValueError:
+                            dist = float('inf')
+                        if dist < best_year_dist:
+                            best_year_dist = dist
+                            best_row = row
+            self._table.selectRow(best_row)
+            self._table.scrollTo(self._table.model().index(best_row, 0))
 
         label = _("comicvine.results_count").format(count=len(series_list), total=total)
         self._status_lbl.setText(label)
@@ -1036,6 +1103,7 @@ class _Page2Issues(QWidget):
     def show_loading_overlay(self, visible, loaded, total):
         if visible:
             self._table.setRowCount(0)
+            self._status_lbl.setText(" ")
             font = _get_current_font(18, bold=True)
             self._loading_overlay.setFont(font)
             if total > 0:

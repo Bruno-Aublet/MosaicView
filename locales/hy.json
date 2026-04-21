@@ -86,7 +86,8 @@
       "reading_mode_single": "Փոխել ընթերցման ռեժիմը (D) → Մեկ էջ",
       "fullscreen_exit": "Ելք լիաէկրան ռեժիմից (F11)",
       "fullscreen": "Լիաէկրան ռեժիմ (F11)",
-      "close_viewer": "Փակել դիտարկիչը (ESC)"
+      "close_viewer": "Փակել դիտարկիչը (ESC)",
+      "delete_bookmark": "Ջնջել էջանիշը"
     },
     "image": {
       "corrupted_replace": "⚠️ Վնասված պատկեր - Փոխարինել",
@@ -169,7 +170,9 @@
       "invert_selection": "Շրջել ընտրությունը (Ctrl+I)",
       "fullscreen": "Լիէկրան ռեժիմ (F11)",
       "fullscreen_exit": "Ելք լիէկրան ռեժիմից (F11 կամ ESC)",
-      "quit": "Փակել հավելվածը"
+      "quit": "Փակել հավելվածը",
+      "delete_bookmark": "Ջնջել այս կոմիքսի էջանիշը",
+      "delete_all_bookmarks": "Ջնջել բոլոր էջանիշները"
     },
     "canvas": {
       "quit": "Փակել հավելվածը",
@@ -1136,6 +1139,7 @@
       "start_button": "Սկսել",
       "cbz_warning": "Միայն CBZ ձևաչափն է աջակցում ComicInfo մետատվյալներին։ CBR, CBT, CB7 և PDF ֆայլերը ինքնաբերաբար կվերածվեն CBZ-ի։",
       "checkbox_permanent_delete": "Ոչ-CBZ բնօրինակ ֆայլերի մշտական ջնջում առանց աղբամանի\n(ՀՆԱՐԱՎՈՐ ՉԷ ՎԵՐԱԿԱՆԳՆԵԼ)",
+      "checkbox_skip_existing": "Բաց թողնել արդեն մետատվյալներ ունեցող ֆայլերը\n(cbz արխիվներ, որոնք պարունակում են ComicInfo.xml ֆայլ)",
       "complete_title": "Մետատվյալների ներմուծումն ավարտված է",
       "complete_message": "{done} ֆայл(եր) մշակված {total}-ից։ {skipped} բաց թողնված։",
       "complete_message_errors": "{done} ֆայл(եր) մշակված {total}-ից։ {skipped} բաց թողնված։ {errors} սխալ(ներ)։",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Բեռնվում է... {loaded} / {total}",
     "issues_partial_load": "{count} համար բեռնվել է — բեռնումը ընդհատվել է. {error}",
     "credit": "Մետատվյալներ: {comicvine} · ոգեշնչված {scraper}-ից"
+  },
+  "bookmark": {
+    "popup_title": "Էջանիշ",
+    "popup_message": "Այս կոմիքսի {page}-րդ էջում ունեք էջանիշ։\nՇարո՞ւնակել ընթերցումը։",
+    "popup_yes": "Այո",
+    "popup_no": "Ոչ"
   }
 }

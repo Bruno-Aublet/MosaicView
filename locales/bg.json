@@ -86,7 +86,8 @@
       "reading_mode_single": "Промени режима на четене (D) → Една страница",
       "fullscreen_exit": "Изход от цял екран (F11)",
       "fullscreen": "Цял екран (F11)",
-      "close_viewer": "Затвори прегледа (ESC)"
+      "close_viewer": "Затвори прегледа (ESC)",
+      "delete_bookmark": "Изтриване на отметката"
     },
     "image": {
       "corrupted_replace": "⚠️ Повредено изображение - Замени",
@@ -169,7 +170,9 @@
       "invert_selection": "Обърни селекцията (Ctrl+I)",
       "fullscreen": "Цял екран (F11)",
       "fullscreen_exit": "Изход от цял екран (F11 или ESC)",
-      "quit": "Затваряне на приложението"
+      "quit": "Затваряне на приложението",
+      "delete_bookmark": "Изтриване на отметката за тази комикс",
+      "delete_all_bookmarks": "Изтриване на всички отметки"
     },
     "canvas": {
       "quit": "Затваряне на приложението",
@@ -1136,6 +1139,7 @@
       "start_button": "Започни",
       "cbz_warning": "Само форматът CBZ поддържа метаданни ComicInfo. Файловете CBR, CBT, CB7 и PDF ще бъдат автоматично конвертирани в CBZ.",
       "checkbox_permanent_delete": "Изтриване на оригиналните не-CBZ файлове без кошчето\n(БЕЗ ВЪЗМОЖНОСТ ЗА ВРЪЩАНЕ)",
+      "checkbox_skip_existing": "Пропускане на файловете, съдържащи вече метаданни\n(cbz архиви, съдържащи файл ComicInfo.xml)",
       "complete_title": "Импортирането на метаданни завърши",
       "complete_message": "Обработени {done} файл(а) от {total}. Пропуснати {skipped}.",
       "complete_message_errors": "Обработени {done} файл(а) от {total}. Пропуснати {skipped}. {errors} грешка(и).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Зареждане... {loaded} / {total}",
     "issues_partial_load": "{count} брой(а) заредени — зареждането е прекъснато: {error}",
     "credit": "Метаданни: {comicvine} · вдъхновено от {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Отметка",
+    "popup_message": "Имате отметка на страница {page} за тази комикс.\nПродължаване на четенето?",
+    "popup_yes": "Да",
+    "popup_no": "Не"
   }
 }

@@ -86,7 +86,8 @@
       "reading_mode_single": "읽기 모드 변경 (D) → 한 페이지",
       "fullscreen_exit": "전체 화면 종료 (F11)",
       "fullscreen": "전체 화면 (F11)",
-      "close_viewer": "뷰어 닫기 (ESC)"
+      "close_viewer": "뷰어 닫기 (ESC)",
+      "delete_bookmark": "북마크 삭제"
     },
     "image": {
       "corrupted_replace": "⚠️ 손상된 이미지 - 교체",
@@ -169,7 +170,9 @@
       "invert_selection": "선택 반전 (Ctrl+I)",
       "fullscreen": "전체 화면 (F11)",
       "fullscreen_exit": "전체 화면 종료 (F11 또는 ESC)",
-      "quit": "애플리케이션 종료"
+      "quit": "애플리케이션 종료",
+      "delete_bookmark": "이 만화의 북마크 삭제",
+      "delete_all_bookmarks": "모든 북마크 삭제"
     },
     "canvas": {
       "quit": "애플리케이션 종료",
@@ -1136,6 +1139,7 @@
       "start_button": "시작",
       "cbz_warning": "ComicInfo 메타데이터는 CBZ 형식만 지원합니다. CBR, CBT, CB7 및 PDF 파일은 자동으로 CBZ로 변환됩니다.",
       "checkbox_permanent_delete": "원본 비-CBZ 파일을 휴지통 없이 영구 삭제\n(실행 취소 불가)",
+      "checkbox_skip_existing": "이미 메타데이터가 있는 파일 무시\n(ComicInfo.xml 파일이 포함된 cbz 아카이브)",
       "complete_title": "메타데이터 가져오기 완료",
       "complete_message": "{total}개 중 {done}개 파일 처리됨. {skipped}개 건너뜀.",
       "complete_message_errors": "{total}개 중 {done}개 파일 처리됨. {skipped}개 건너뜀. {errors}개 오류.",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "로딩 중... {loaded} / {total}",
     "issues_partial_load": "{count}호 로드됨 — 로딩 중단: {error}",
     "credit": "메타데이터: {comicvine} · {scraper}에서 영감받음"
+  },
+  "bookmark": {
+    "popup_title": "북마크",
+    "popup_message": "이 만화의 {page}페이지에 북마크가 있습니다.\n계속 읽으시겠습니까?",
+    "popup_yes": "예",
+    "popup_no": "아니요"
   }
 }

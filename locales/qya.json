@@ -86,7 +86,8 @@
       "reading_mode_single": "Návë nottië (D) → Parma erya",
       "fullscreen_exit": "Elda larca cénë (F11)",
       "fullscreen": "Larca cénë (F11)",
-      "close_viewer": "Hanta i centuva (ESC)"
+      "close_viewer": "Hanta i centuva (ESC)",
+      "delete_bookmark": "Lahta i·lambetengwe"
     },
     "image": {
       "corrupted_replace": "⚠️ Fána russë - Envinyata",
@@ -169,7 +170,9 @@
       "invert_selection": "Hwinya i orthelë (Ctrl+I)",
       "fullscreen": "Írima lanwa (F11)",
       "fullscreen_exit": "Auta írima lanwa (F11 mal ESC)",
-      "quit": "apa falasse"
+      "quit": "apa falasse",
+      "delete_bookmark": "Lahta i·lambetengwe i·parma sina",
+      "delete_all_bookmarks": "Lahta ilye lambetengwi"
     },
     "canvas": {
       "quit": "apa falasse",
@@ -1136,6 +1139,7 @@
       "start_button": "Coa",
       "cbz_warning": "CBZ quanta mátamë i ComicInfo hanwa. CBR, CBT, CB7 ar PDF quettar nauvar automat' quantaina CBZ-nna.",
       "checkbox_permanent_delete": "Heca i CBZ-lá quettar ilyë rimbenen\n(UA POLE ENVINYATAR)",
+      "checkbox_skip_existing": "Lerta i quettar engë nóresse\n(cbz hosta ComicInfo.xml quettar)",
       "complete_title": "Númen i métanotessë úva",
       "complete_message": "{done} quetil(i) carner {total}-llo. {skipped} lencaner.",
       "complete_message_errors": "{done} quetil(i) carner {total}-llo. {skipped} lencaner. {errors} raxë(li).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Ortë... {loaded} / {total}",
     "issues_partial_load": "{count} nótë ortaina — ortë hauta: {error}",
     "credit": "Métanótë: {comicvine} · inspired by {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Lambetengwe",
+    "popup_message": "Haryal lambetengwe lehte {page} i·parma sina.\nLen quantuva?",
+    "popup_yes": "Á",
+    "popup_no": "Lá"
   }
 }

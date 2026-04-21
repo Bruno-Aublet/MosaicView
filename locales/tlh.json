@@ -86,7 +86,8 @@
       "reading_mode_single": "laD cham choHmoH (D) → ghItlh wa'",
       "fullscreen_exit": "Hoch SIrgh mej (F11)",
       "fullscreen": "Hoch SIrgh (F11)",
-      "close_viewer": "leghwI' SoQmoH (ESC)"
+      "close_viewer": "leghwI' SoQmoH (ESC)",
+      "delete_bookmark": "ghItlh lughomHa'"
     },
     "image": {
       "corrupted_replace": "⚠️ cha'nob Qaw'lu' - latlh cha'nob lo'",
@@ -169,7 +170,9 @@
       "invert_selection": "wIvghach tam (Ctrl+I)",
       "fullscreen": "Hoch beQ (F11)",
       "fullscreen_exit": "Hoch beQ mej (F11 pagh ESC)",
-      "quit": "qawHaq mevmoH"
+      "quit": "qawHaq mevmoH",
+      "delete_bookmark": "HevwI' ghItlh lughomHa'",
+      "delete_all_bookmarks": "Hoch ghItlhmey lughomHa'"
     },
     "canvas": {
       "quit": "qawHaq mevmoH",
@@ -1136,6 +1139,7 @@
       "start_button": "taH",
       "cbz_warning": "CBZ neH ComicInfo De' Qap. CBR, CBT, CB7 je PDF paQDI'norgh CBZ-Daq choHlu'.",
       "checkbox_permanent_delete": "CBZ net tu'be'bogh paQDI'norgh teqlu' reH, qulpa' HoHbe'\n(QAP pIch)",
+      "checkbox_skip_existing": "yImev HeHmey ghaj Dochvam\n(cbz tetlhvam ComicInfo.xml ngaS)",
       "complete_title": "chImmoH QumwI' lIngwI' mung qaw rIn",
       "complete_message": "{done} De'wI'mey lInglu'pu' {total} DochmeyDaq. {skipped} lIjlu'pu'.",
       "complete_message_errors": "{done} De'wI'mey lInglu'pu' {total} DochmeyDaq. {skipped} lIjlu'pu'. {errors} Qagh.",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "laDlI'... {loaded} / {total}",
     "issues_partial_load": "{count} De' qun laDlu' — laD mevpu': {error}",
     "credit": "De' mung: {comicvine} · {scraper} ghItlhbogh"
+  },
+  "bookmark": {
+    "popup_title": "ghItlh",
+    "popup_message": "HevwI' ghItlh {page} ghap DaghItlhpu'.\njISopqa'?",
+    "popup_yes": "HISlaH",
+    "popup_no": "ghobe'"
   }
 }

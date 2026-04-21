@@ -86,7 +86,8 @@
       "reading_mode_single": "पठन मोड बदलें (D) → एकल पृष्ठ",
       "fullscreen_exit": "पूर्ण स्क्रीन से बाहर निकलें (F11)",
       "fullscreen": "पूर्ण स्क्रीन (F11)",
-      "close_viewer": "व्यूअर बंद करें (ESC)"
+      "close_viewer": "व्यूअर बंद करें (ESC)",
+      "delete_bookmark": "बुकमार्क हटाएं"
     },
     "image": {
       "corrupted_replace": "⚠️ दूषित छवि - बदलें",
@@ -169,7 +170,9 @@
       "invert_selection": "चयन उलटें (Ctrl+I)",
       "fullscreen": "पूर्ण स्क्रीन (F11)",
       "fullscreen_exit": "पूर्ण स्क्रीन से बाहर निकलें (F11 या ESC)",
-      "quit": "एप्लिकेशन बंद करें"
+      "quit": "एप्लिकेशन बंद करें",
+      "delete_bookmark": "इस कॉमिक का बुकमार्क हटाएं",
+      "delete_all_bookmarks": "सभी बुकमार्क हटाएं"
     },
     "canvas": {
       "quit": "एप्लिकेशन बंद करें",
@@ -1136,6 +1139,7 @@
       "start_button": "शुरू करें",
       "cbz_warning": "केवल CBZ प्रारूप ComicInfo मेटाडेटा का समर्थन करता है। CBR, CBT, CB7 और PDF फ़ाइलें स्वचालित रूप से CBZ में बदली जाएंगी।",
       "checkbox_permanent_delete": "मूल गैर-CBZ फ़ाइलों को रीसायकल बिन के बिना स्थायी रूप से हटाएं\n(पूर्ववत करना संभव नहीं)",
+      "checkbox_skip_existing": "उन फ़ाइलों को अनदेखा करें जिनमें पहले से मेटाडेटा है\n(cbz आर्काइव जिनमें ComicInfo.xml फ़ाइल है)",
       "complete_title": "मेटाडेटा आयात पूर्ण",
       "complete_message": "{total} में से {done} फ़ाइल(ें) संसाधित। {skipped} छोड़ी गईं।",
       "complete_message_errors": "{total} में से {done} फ़ाइल(ें) संसाधित। {skipped} छोड़ी गईं। {errors} त्रुटि(याँ)।",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "लोड हो रहा है... {loaded} / {total}",
     "issues_partial_load": "{count} अंक लोड हुए — लोडिंग बाधित: {error}",
     "credit": "मेटाडेटा: {comicvine} · {scraper} से प्रेरित"
+  },
+  "bookmark": {
+    "popup_title": "बुकमार्क",
+    "popup_message": "इस कॉमिक के पृष्ठ {page} पर आपका एक बुकमार्क है।\nपढ़ना जारी रखें?",
+    "popup_yes": "हाँ",
+    "popup_no": "नहीं"
   }
 }

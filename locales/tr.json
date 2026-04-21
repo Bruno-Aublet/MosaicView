@@ -86,7 +86,8 @@
       "reading_mode_single": "Okuma modunu değiştir (D) → Tek sayfa",
       "fullscreen_exit": "Tam ekrandan çık (F11)",
       "fullscreen": "Tam ekran (F11)",
-      "close_viewer": "Görüntüleyiciyi kapat (ESC)"
+      "close_viewer": "Görüntüleyiciyi kapat (ESC)",
+      "delete_bookmark": "Yer imini sil"
     },
     "image": {
       "corrupted_replace": "⚠️ Bozuk görüntü - Değiştir",
@@ -169,7 +170,9 @@
       "invert_selection": "Seçimi ters çevir (Ctrl+I)",
       "fullscreen": "Tam ekran (F11)",
       "fullscreen_exit": "Tam ekrandan çık (F11 veya ESC)",
-      "quit": "Uygulamayı kapat"
+      "quit": "Uygulamayı kapat",
+      "delete_bookmark": "Bu çizgi roman için yer imini sil",
+      "delete_all_bookmarks": "Tüm yer imlerini sil"
     },
     "canvas": {
       "quit": "Uygulamayı kapat",
@@ -1136,6 +1139,7 @@
       "start_button": "Başlat",
       "cbz_warning": "Yalnızca CBZ formatı ComicInfo meta verilerini destekler. CBR, CBT, CB7 ve PDF dosyaları otomatik olarak CBZ'ye dönüştürülecektir.",
       "checkbox_permanent_delete": "Orijinal CBZ olmayan dosyaları geri dönüşüm kutusu kullanmadan kalıcı olarak sil\n(GERİ ALINAMAZ)",
+      "checkbox_skip_existing": "Zaten meta veriye sahip dosyaları atla\n(ComicInfo.xml dosyası içeren cbz arşivleri)",
       "complete_title": "Meta veri içe aktarımı tamamlandı",
       "complete_message": "{total} dosyadan {done} tanesi işlendi. {skipped} atlandı.",
       "complete_message_errors": "{total} dosyadan {done} tanesi işlendi. {skipped} atlandı. {errors} hata.",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Yükleniyor... {loaded} / {total}",
     "issues_partial_load": "{count} sayı yüklendi — yükleme kesintiye uğradı: {error}",
     "credit": "Meta veri: {comicvine} · {scraper} tarafından ilham alındı"
+  },
+  "bookmark": {
+    "popup_title": "Yer imi",
+    "popup_message": "Bu çizgi romanın {page}. sayfasında yer iminiz var.\nOkumaya devam et?",
+    "popup_yes": "Evet",
+    "popup_no": "Hayır"
   }
 }

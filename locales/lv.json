@@ -86,7 +86,8 @@
       "reading_mode_single": "Mainīt lasīšanas režīmu (D) → Viena lappuse",
       "fullscreen_exit": "Iziet no pilnekrāna (F11)",
       "fullscreen": "Pilnekrāns (F11)",
-      "close_viewer": "Aizvērt skatītāju (ESC)"
+      "close_viewer": "Aizvērt skatītāju (ESC)",
+      "delete_bookmark": "Dzēst grāmatzīmi"
     },
     "image": {
       "corrupted_replace": "⚠️ Bojāts attēls - Aizstāt",
@@ -169,7 +170,9 @@
       "invert_selection": "Apgriezt izvēli (Ctrl+I)",
       "fullscreen": "Pilnekrāna režīms (F11)",
       "fullscreen_exit": "Iziet no pilnekrāna režīma (F11 vai ESC)",
-      "quit": "Aizvērt lietojumprogrammu"
+      "quit": "Aizvērt lietojumprogrammu",
+      "delete_bookmark": "Dzēst grāmatzīmi šim komikam",
+      "delete_all_bookmarks": "Dzēst visas grāmatzīmes"
     },
     "canvas": {
       "quit": "Aizvērt lietojumprogrammu",
@@ -1136,6 +1139,7 @@
       "start_button": "Sākt",
       "cbz_warning": "Tikai CBZ formāts atbalsta ComicInfo metadatus. CBR, CBT, CB7 un PDF faili tiks automātiski konvertēti uz CBZ.",
       "checkbox_permanent_delete": "Neatgriezeniski dzēst oriģinālos ne-CBZ failus bez atkritnes\n(ATSAUKŠANA NAV IESPĒJAMA)",
+      "checkbox_skip_existing": "Izlaist failus, kuriem jau ir metadati\n(cbz arhīvi, kas satur ComicInfo.xml failu)",
       "complete_title": "Metadatu importēšana pabeigta",
       "complete_message": "Apstrādāti {done} fails(-i) no {total}. Izlaisti {skipped}.",
       "complete_message_errors": "Apstrādāti {done} fails(-i) no {total}. Izlaisti {skipped}. {errors} kļūda(-as).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Ielādē... {loaded} / {total}",
     "issues_partial_load": "{count} numurs(-i) ielādēts(-i) — ielāde pārtraukta: {error}",
     "credit": "Metadati: {comicvine} · iedvesmojies no {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Grāmatzīme",
+    "popup_message": "Jums ir grāmatzīme lapā {page} šim komikam.\nTurpināt lasīšanu?",
+    "popup_yes": "Jā",
+    "popup_no": "Nē"
   }
 }

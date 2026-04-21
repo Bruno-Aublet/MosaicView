@@ -86,7 +86,8 @@
       "reading_mode_single": "Змінити режим читання (D) → Одна сторінка",
       "fullscreen_exit": "Вийти з повноекранного режиму (F11)",
       "fullscreen": "Повноекранний режим (F11)",
-      "close_viewer": "Закрити переглядач (ESC)"
+      "close_viewer": "Закрити переглядач (ESC)",
+      "delete_bookmark": "Видалити закладку"
     },
     "image": {
       "corrupted_replace": "⚠️ Пошкоджене зображення - Замінити",
@@ -169,7 +170,9 @@
       "invert_selection": "Інвертувати виділення (Ctrl+I)",
       "fullscreen": "Повноекранний режим (F11)",
       "fullscreen_exit": "Вийти з повноекранного режиму (F11 або ESC)",
-      "quit": "Закрити програму"
+      "quit": "Закрити програму",
+      "delete_bookmark": "Видалити закладку для цього коміксу",
+      "delete_all_bookmarks": "Видалити всі закладки"
     },
     "canvas": {
       "quit": "Закрити програму",
@@ -1136,6 +1139,7 @@
       "start_button": "Почати",
       "cbz_warning": "Лише формат CBZ підтримує метадані ComicInfo. Файли CBR, CBT, CB7 і PDF будуть автоматично конвертовані в CBZ.",
       "checkbox_permanent_delete": "Остаточне видалення оригінальних не-CBZ файлів без кошика\n(СКАСУВАННЯ НЕМОЖЛИВЕ)",
+      "checkbox_skip_existing": "Пропустити файли, що вже мають метадані\n(cbz архіви, що містять файл ComicInfo.xml)",
       "complete_title": "Імпорт метаданих завершено",
       "complete_message": "Оброблено {done} файл(ів) з {total}. Пропущено {skipped}.",
       "complete_message_errors": "Оброблено {done} файл(ів) з {total}. Пропущено {skipped}. {errors} помилка(и).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Завантаження... {loaded} / {total}",
     "issues_partial_load": "{count} випуск(ів) завантажено — завантаження перервано: {error}",
     "credit": "Метадані: {comicvine} · натхненно {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Закладка",
+    "popup_message": "У вас є закладка на сторінці {page} цього коміксу.\nПродовжити читання?",
+    "popup_yes": "Так",
+    "popup_no": "Ні"
   }
 }

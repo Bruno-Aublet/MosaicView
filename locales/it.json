@@ -86,7 +86,8 @@
       "reading_mode_single": "Cambia modalità lettura (D) → Pagina singola",
       "fullscreen_exit": "Esci da schermo intero (F11)",
       "fullscreen": "Schermo intero (F11)",
-      "close_viewer": "Chiudi visualizzatore (ESC)"
+      "close_viewer": "Chiudi visualizzatore (ESC)",
+      "delete_bookmark": "Elimina segnalibro"
     },
     "image": {
       "corrupted_replace": "⚠️ Immagine corrotta - Sostituisci",
@@ -169,7 +170,9 @@
       "invert_selection": "Inverti selezione (Ctrl+I)",
       "fullscreen": "Schermo intero (F11)",
       "fullscreen_exit": "Esci da schermo intero (F11 o ESC)",
-      "quit": "Chiudi applicazione"
+      "quit": "Chiudi applicazione",
+      "delete_bookmark": "Elimina segnalibro per questo fumetto",
+      "delete_all_bookmarks": "Elimina tutti i segnalibri"
     },
     "canvas": {
       "quit": "Chiudi applicazione",
@@ -1136,6 +1139,7 @@
       "start_button": "Avvia",
       "cbz_warning": "Solo il formato CBZ supporta i metadati ComicInfo. I file CBR, CBT, CB7 e PDF saranno automaticamente convertiti in CBZ.",
       "checkbox_permanent_delete": "Eliminazione definitiva dei file originali non CBZ senza cestino\n(NESSUN RIPRISTINO POSSIBILE)",
+      "checkbox_skip_existing": "Ignora i file che hanno già metadati\n(archivi cbz contenenti un file ComicInfo.xml)",
       "complete_title": "Importazione metadati completata",
       "complete_message": "{done} file elaborato/i su {total}. {skipped} ignorato/i.",
       "complete_message_errors": "{done} file elaborato/i su {total}. {skipped} ignorato/i. {errors} errore/i.",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Caricamento... {loaded} / {total}",
     "issues_partial_load": "{count} numero/i caricato/i — caricamento interrotto: {error}",
     "credit": "Metadati: {comicvine} · ispirato da {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Segnalibro",
+    "popup_message": "Hai un segnalibro alla pagina {page} per questo fumetto.\nRiprendere la lettura?",
+    "popup_yes": "Sì",
+    "popup_no": "No"
   }
 }

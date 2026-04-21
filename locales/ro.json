@@ -86,7 +86,8 @@
       "reading_mode_single": "Schimbă modul de citire (D) → Pagină simplă",
       "fullscreen_exit": "Ieși din ecran complet (F11)",
       "fullscreen": "Ecran complet (F11)",
-      "close_viewer": "Închide vizualizatorul (ESC)"
+      "close_viewer": "Închide vizualizatorul (ESC)",
+      "delete_bookmark": "Șterge marcajul"
     },
     "image": {
       "corrupted_replace": "⚠️ Imagine coruptă - Înlocuiește",
@@ -169,7 +170,9 @@
       "invert_selection": "Inversează selecția (Ctrl+I)",
       "fullscreen": "Ecran complet (F11)",
       "fullscreen_exit": "Ieșire din ecran complet (F11 sau ESC)",
-      "quit": "Închide aplicația"
+      "quit": "Închide aplicația",
+      "delete_bookmark": "Șterge marcajul pentru acest comic",
+      "delete_all_bookmarks": "Șterge toate marcajele"
     },
     "canvas": {
       "quit": "Închide aplicația",
@@ -1136,6 +1139,7 @@
       "start_button": "Pornire",
       "cbz_warning": "Numai formatul CBZ acceptă metadate ComicInfo. Fișierele CBR, CBT, CB7 și PDF vor fi convertite automat în CBZ.",
       "checkbox_permanent_delete": "Ștergerea permanentă a fișierelor originale non-CBZ fără coșul de reciclare\n(FĂRĂ POSIBILITATE DE RECUPERARE)",
+      "checkbox_skip_existing": "Ignoră fișierele care au deja metadate\n(arhive cbz ce conțin un fișier ComicInfo.xml)",
       "complete_title": "Importul metadatelor finalizat",
       "complete_message": "{done} fișier(e) procesate din {total}. {skipped} omise.",
       "complete_message_errors": "{done} fișier(e) procesate din {total}. {skipped} omise. {errors} eroare(ri).",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "Încărcare... {loaded} / {total}",
     "issues_partial_load": "{count} număr(e) încărcat(e) — încărcare întreruptă: {error}",
     "credit": "Metadate: {comicvine} · inspirat din {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "Marcaj",
+    "popup_message": "Aveți un marcaj la pagina {page} pentru acest comic.\nReluați lectura?",
+    "popup_yes": "Da",
+    "popup_no": "Nu"
   }
 }

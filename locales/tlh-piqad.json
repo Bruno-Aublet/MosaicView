@@ -86,7 +86,8 @@
       "reading_mode_single": "   () →  ",
       "fullscreen_exit": "   (F11)",
       "fullscreen": "  (F11)",
-      "close_viewer": "  (EC)"
+      "close_viewer": "  (EC)",
+      "delete_bookmark": " "
     },
     "image": {
       "corrupted_replace": "⚠️   -   ",
@@ -169,7 +170,9 @@
       "invert_selection": "  (C+)",
       "fullscreen": "  (F11)",
       "fullscreen_exit": "   (F11  EC)",
-      "quit": " "
+      "quit": " ",
+      "delete_bookmark": "  ",
+      "delete_all_bookmarks": "  "
     },
     "canvas": {
       "quit": " ",
@@ -1136,6 +1139,7 @@
       "start_button": "",
       "cbz_warning": "CBZ  Cicf  . CBR, CBT, CB7  PF  CBZ- .",
       "checkbox_permanent_delete": "CBZ     ,  \n(AP )",
+      "checkbox_skip_existing": "   \n(cz  Cicf.x )",
       "complete_title": "     ",
       "complete_message": "{done}   {total} . {skipped} .",
       "complete_message_errors": "{done}   {total} . {skipped} . {errors} .",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "... {loaded} / {total}",
     "issues_partial_load": "{count}    —  : {error}",
     "credit": " : {comicvine} · {scraper} "
+  },
+  "bookmark": {
+    "popup_title": "",
+    "popup_message": "  {page}  .\n?",
+    "popup_yes": "",
+    "popup_no": ""
   }
 }

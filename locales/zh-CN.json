@@ -86,7 +86,8 @@
       "reading_mode_single": "更改阅读模式 (D) → 单页",
       "fullscreen_exit": "退出全屏 (F11)",
       "fullscreen": "全屏 (F11)",
-      "close_viewer": "关闭查看器 (ESC)"
+      "close_viewer": "关闭查看器 (ESC)",
+      "delete_bookmark": "删除书签"
     },
     "image": {
       "corrupted_replace": "⚠️ 损坏的图像 - 替换",
@@ -169,7 +170,9 @@
       "invert_selection": "反选 (Ctrl+I)",
       "fullscreen": "全屏 (F11)",
       "fullscreen_exit": "退出全屏 (F11或ESC)",
-      "quit": "关闭应用程序"
+      "quit": "关闭应用程序",
+      "delete_bookmark": "删除此漫画的书签",
+      "delete_all_bookmarks": "删除所有书签"
     },
     "canvas": {
       "quit": "关闭应用程序",
@@ -1136,6 +1139,7 @@
       "start_button": "开始",
       "cbz_warning": "只有CBZ格式支持ComicInfo元数据。CBR、CBT、CB7和PDF文件将自动转换为CBZ。",
       "checkbox_permanent_delete": "永久删除原始非CBZ文件，不经过回收站\n（无法撤销）",
+      "checkbox_skip_existing": "忽略已有元数据的文件\n(包含ComicInfo.xml文件的cbz压缩包)",
       "complete_title": "元数据导入完成",
       "complete_message": "已处理 {done} 个文件，共 {total} 个。已跳过 {skipped} 个。",
       "complete_message_errors": "已处理 {done} 个文件，共 {total} 个。已跳过 {skipped} 个。{errors} 个错误。",
@@ -1460,5 +1464,11 @@
     "loading_issues_progress": "加载中... {loaded} / {total}",
     "issues_partial_load": "已加载 {count} 期 — 加载中断: {error}",
     "credit": "元数据：{comicvine} · 灵感来自 {scraper}"
+  },
+  "bookmark": {
+    "popup_title": "书签",
+    "popup_message": "您在此漫画第 {page} 页有一个书签。\n继续阅读？",
+    "popup_yes": "是",
+    "popup_no": "否"
   }
 }

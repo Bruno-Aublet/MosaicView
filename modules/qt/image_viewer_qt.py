@@ -686,6 +686,8 @@ class ImageViewer(QDialog):
         self._name_hide_timer.stop()
         self._resize_timer.stop()
 
+        self._save_bookmark(state)
+
         for entry in state.images_data:
             if entry.get("is_image"):
                 free_image_memory(entry)
@@ -701,6 +703,26 @@ class ImageViewer(QDialog):
             pass
 
         super().closeEvent(event)
+
+    def _save_bookmark(self, state):
+        """Sauvegarde la page courante comme marque-page (sauf page 0 et dernière page)."""
+        filepath = getattr(state, 'current_file', None)
+        if not filepath:
+            return
+        img_indices = self.get_image_indices()
+        if not img_indices:
+            return
+        try:
+            current_pos = img_indices.index(self.current_idx)
+        except ValueError:
+            return
+        last_pos = len(img_indices) - 1
+        if current_pos == 0 or current_pos >= last_pos:
+            return
+        from modules.qt.config_manager import get_config_manager
+        cfg = get_config_manager()
+        if cfg:
+            cfg.set_bookmark(filepath, current_pos)
 
     # ── Navigation ────────────────────────────────────────────────────────────
 
@@ -816,10 +838,30 @@ class ImageViewer(QDialog):
                 new_pos = current_pos + delta
             new_pos = max(0, min(new_pos, len(img_indices) - 1))
             self.current_idx = img_indices[new_pos]
+            self._check_clear_bookmark_on_last_page(img_indices, new_pos)
             self.display_image()
         except ValueError:
             self.current_idx = img_indices[0]
             self.display_image()
+
+    def _check_clear_bookmark_on_last_page(self, img_indices, current_pos):
+        """Efface le marque-page si la dernière page est maintenant visible."""
+        last_pos = len(img_indices) - 1
+        is_last = False
+        if self.page_mode == "double":
+            is_last = (current_pos >= last_pos or current_pos + 1 >= last_pos)
+        else:
+            is_last = (current_pos >= last_pos)
+        if not is_last:
+            return
+        state = self.callbacks.get('state') or _state_module.state
+        filepath = getattr(state, 'current_file', None)
+        if not filepath:
+            return
+        from modules.qt.config_manager import get_config_manager
+        cfg = get_config_manager()
+        if cfg and cfg.get_bookmark(filepath) is not None:
+            cfg.remove_bookmark(filepath)
 
     def _on_wheel(self, event):
         mods = event.modifiers()
@@ -933,6 +975,18 @@ class ImageViewer(QDialog):
         else:
             self.close()
 
+    # ── Marque-page ───────────────────────────────────────────────────────────
+
+    def _delete_current_bookmark(self):
+        state = self.callbacks.get('state') or _state_module.state
+        filepath = getattr(state, 'current_file', None)
+        if not filepath:
+            return
+        from modules.qt.config_manager import get_config_manager
+        cfg = get_config_manager()
+        if cfg:
+            cfg.remove_bookmark(filepath)
+
     # ── Menu contextuel ───────────────────────────────────────────────────────
 
     def _show_context_menu(self, global_pos: QPoint):
@@ -968,6 +1022,15 @@ class ImageViewer(QDialog):
         menu.addAction(fs_label, self.toggle_fullscreen)
         menu.addSeparator()
         menu.addAction(_("context_menu.viewer.close_viewer"), self.close)
+        menu.addSeparator()
+
+        state = self.callbacks.get('state') or _state_module.state
+        filepath = getattr(state, 'current_file', None)
+        from modules.qt.config_manager import get_config_manager
+        cfg = get_config_manager()
+        has_bookmark = bool(filepath and cfg and cfg.get_bookmark(filepath) is not None)
+        act_del_bm = menu.addAction(_("context_menu.viewer.delete_bookmark"), self._delete_current_bookmark)
+        act_del_bm.setEnabled(has_bookmark)
 
         menu.exec(global_pos)
 
