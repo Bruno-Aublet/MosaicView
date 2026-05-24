@@ -13,11 +13,11 @@ import os
 
 from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QPushButton, QScrollArea, QLabel,
-    QFrame, QVBoxLayout, QSizePolicy, QStyle, QStyleOptionButton, QMenu,
-    QTableView, QHeaderView, QAbstractItemView,
+    QFrame, QVBoxLayout, QSizePolicy, QMenu,
+    QTableView, QAbstractItemView,
 )
-from PySide6.QtCore import Qt, Signal, QTimer, QThread
-from PySide6.QtGui import QFont, QPainter, QColor, QPen, QGuiApplication, QStandardItemModel, QStandardItem
+from PySide6.QtCore import Qt, Signal, QThread
+from PySide6.QtGui import QPainter, QColor, QPen, QGuiApplication, QStandardItemModel, QStandardItem
 
 from modules.qt import state as _state_module
 from modules.qt.state import get_current_theme
@@ -27,6 +27,30 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
 class _TabButton(QPushButton):
     """QPushButton plat avec indicateur visuel de focus clavier (bordure)."""
+
+    _full_text = None  # nom complet pour elision dynamique
+
+    def minimumSizeHint(self):
+        hint = super().minimumSizeHint()
+        return hint.__class__(0, hint.height())
+
+    def sizeHint(self):
+        hint = super().sizeHint()
+        if self._full_text is not None:
+            w = self.fontMetrics().horizontalAdvance(self._full_text) + 16
+            return hint.__class__(w, hint.height())
+        return hint
+
+    def _update_elision(self):
+        if self._full_text is not None:
+            elided = self.fontMetrics().elidedText(
+                self._full_text, Qt.ElideRight, max(0, self.width() - 16)
+            )
+            self.setText(elided)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._update_elision()
 
     def focusInEvent(self, event):
         super().focusInEvent(event)
@@ -129,6 +153,7 @@ class TabBar(QWidget):
     def __init__(self, parent=None, tooltip_parent=None):
         super().__init__(parent)
         self.setFixedHeight(22)
+        self.setMinimumWidth(0)
         self._layout = QHBoxLayout(self)
         self._layout.setContentsMargins(4, 0, 4, 0)
         self._layout.setSpacing(0)
@@ -213,13 +238,9 @@ class TabBar(QWidget):
             style = self._tab_style(self._current_tab == "mosaic")
             self._btn_mosaic._base_style = style
             self._btn_mosaic.setStyleSheet(style)
-            self._btn_mosaic.setMaximumWidth(320)
-            elided = self._btn_mosaic.fontMetrics().elidedText(
-                display_name, Qt.ElideRight,
-                self._btn_mosaic.maximumWidth() - 32,  # 32 = padding stylesheet (8×2) + marges Qt internes
-            )
-            if elided != display_name:
-                self._btn_mosaic.setText(elided)
+            self._btn_mosaic.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            self._btn_mosaic.setMinimumWidth(0)
+            self._btn_mosaic._full_text = display_name
             self._btn_mosaic.setMouseTracking(True)
             self._overlay_tip.track(self._btn_mosaic, display_name)
             self._layout.addWidget(self._btn_mosaic)
@@ -264,6 +285,11 @@ class TabBar(QWidget):
         self._rebuild()
         self.tab_changed.emit(tab)
 
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self._btn_mosaic is not None:
+            self._btn_mosaic._update_elision()
+
     def apply_theme(self):
         """Met à jour les couleurs des onglets selon le thème courant."""
         self._overlay_tip._apply_style()
@@ -279,7 +305,8 @@ class TabBar(QWidget):
             return (f"QPushButton {{ background: {bg}; color: {text}; "
                     f"font-weight: bold; border: none; padding: 2px 8px; }}")
         else:
-            hover = "#d0d0d0" if not _state_module.state.dark_mode else "#3a3a3a"
+            st = self._state if self._state is not None else _state_module.state
+            hover = "#d0d0d0" if not st.dark_mode else "#3a3a3a"
             return (f"QPushButton {{ background: {toolbar}; color: {text}; "
                     f"font-weight: normal; border: none; padding: 2px 8px; }}"
                     f"QPushButton:hover {{ background: {hover}; }}")
@@ -350,6 +377,8 @@ class MetadataTab(QScrollArea):
         self._vlay.setContentsMargins(20, 10, 20, 10)
         self._vlay.setSpacing(0)
 
+        self._state = None  # state du panneau propriétaire
+
         # Références conservées pour _restyle() — liste de (key, lbl_widget, txt_widget)
         self._field_widgets  = []   # [(key, QLabel_titre, _SelectableLabel_valeur), ...]
         self._toggle_btn     = None
@@ -382,11 +411,6 @@ class MetadataTab(QScrollArea):
         except RuntimeError:
             pass
 
-        # Si des métadonnées sont déjà chargées (ex: fichier ouvert avant création du widget)
-        st = _state_module.state
-        if st and st.comic_metadata:
-            self.refresh()
-
     def keyPressEvent(self, event):
         key = event.key()
         vbar = self.verticalScrollBar()
@@ -417,7 +441,7 @@ class MetadataTab(QScrollArea):
             if w:
                 w.deleteLater()
 
-        st = _state_module.state
+        st = self._state or _state_module.state
         if not st or not st.comic_metadata:
             self._restyle()
             return
@@ -467,7 +491,7 @@ class MetadataTab(QScrollArea):
 
     def refresh_pages_only(self):
         """Mise à jour légère : remet à jour uniquement le tableau Pages sans reconstruire tout le panneau."""
-        st = _state_module.state
+        st = self._state or _state_module.state
         if not st or not st.comic_metadata:
             return
         pages = st.comic_metadata.get('pages')

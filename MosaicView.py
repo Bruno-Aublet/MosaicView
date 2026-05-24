@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 
 import sys
 import os
@@ -402,6 +402,7 @@ class MainWindow(QMainWindow):
     def _wrap_in_frame(self, panel: "PanelWidget") -> "_PanelFrame":
         """Enroule un PanelWidget dans un _PanelFrame pour gérer la bordure active."""
         frame = _PanelFrame()
+        frame.setMinimumWidth(0)
         layout = QVBoxLayout(frame)
         layout.setContentsMargins(3, 3, 3, 3)
         layout.setSpacing(0)

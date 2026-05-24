@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.2] - 2026-05-24
+
+- The mosaic tab (showing the open file name) now expands to fill all available horizontal space, leaving room for the Metadata tab when present. The filename is elided with `…` when space is insufficient and expands back when space is restored. The tab no longer imposes a fixed maximum width that could block resizing the window or the splitter between the two panels in dual-panel mode.
+- Fixed a freeze when clicking the Metadata tab for the first time after opening a comic with metadata. The tab content is now built in the background immediately after the file is loaded, so it is ready by the time the user clicks the tab. The `MetadataTab` widget now holds a reference to its own panel state instead of reading the global singleton, which also fixes correctness in dual-panel mode when each panel has a different file open.
+
 ## [1.2.1] - 2026-04-21
 
 - Added a "Skip files that already have metadata" option to the batch metadata import confirmation dialog. When checked, CBZ archives containing a ComicInfo.xml file are automatically skipped and counted as ignored in the final summary.

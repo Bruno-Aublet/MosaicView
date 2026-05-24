@@ -1008,6 +1008,9 @@ class ArchiveLoader(QObject):
                 build_page_attrs_map(st)
             except Exception:
                 pass
+            if st.comic_metadata and hasattr(self._win, '_metadata_tab'):
+                from PySide6.QtCore import QTimer as _QTimer
+                _QTimer.singleShot(0, self._win._metadata_tab.refresh)
 
         self._canvas.render_mosaic()
         self.loading_finished.emit()

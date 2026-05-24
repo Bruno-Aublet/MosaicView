@@ -246,6 +246,7 @@ class PanelWidget(QWidget):
 
     def __init__(self, *, app_ref, main_window, language_list, loc, font_manager, is_primary=True):
         super().__init__()
+        self.setMinimumWidth(0)
         self._non_image_modified.connect(self._on_non_image_file_modified)
 
         self._app_ref       = app_ref
@@ -417,6 +418,7 @@ class PanelWidget(QWidget):
         self._content_stack.addWidget(self._canvas)       # index 0
 
         self._metadata_tab = MetadataTab()
+        self._metadata_tab._state = self._state
         self._content_stack.addWidget(self._metadata_tab) # index 1
 
         self._content_stack.setCurrentIndex(0)
@@ -787,9 +789,9 @@ class PanelWidget(QWidget):
                     self._canvas._set_focus(0)
                     self._canvas._scroll_to(self._canvas._items[0])
         elif tab == "info":
-            if not self._metadata_tab._field_widgets and not self._metadata_tab._toggle_btn:
-                self._metadata_tab.refresh()
             self._content_stack.setCurrentIndex(1)
+            if not self._metadata_tab._field_widgets and not self._metadata_tab._toggle_btn:
+                QTimer.singleShot(0, self._metadata_tab.refresh)
             self._metadata_tab.setFocus()
 
     def _update_tabs(self):
