@@ -199,6 +199,24 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
         from modules.qt.batch_metadata_dialog_qt import show_batch_metadata_dialog
         show_batch_metadata_dialog(parent, files, dirs, batch_callbacks)
 
+    def _make_batch_library():
+        from modules.qt.archive_loader import _natural_sort_key
+        sorted_dirs = sorted(dirs, key=lambda d: _natural_sort_key(os.path.basename(d).lower()))
+        master_dir  = sorted_dirs[0]
+        extra_dirs  = sorted_dirs[1:]
+        from modules.qt.library_window import open_library_window
+        lib_win = open_library_window(parent)
+        from PySide6.QtCore import QTimer
+        QTimer.singleShot(0, lambda: _open_new_db_with_preset(lib_win, master_dir, extra_dirs))
+
+    def _open_new_db_with_preset(lib_win, master_dir, extra_dirs):
+        from modules.qt.library_dialogs import NewDbDialog
+        dlg = NewDbDialog(parent=lib_win, preset_dir=master_dir)
+        dlg.accepted.connect(lambda: lib_win._on_new_db_accepted(dlg, extra_dirs=extra_dirs))
+        dlg.show()
+        dlg.raise_()
+        dlg.activateWindow()
+
     callbacks = {
         'batch_cbr':      _make_batch_cbr,
         'batch_cb7':      _make_batch_cb7,
@@ -206,5 +224,6 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
         'batch_pdf':      _make_batch_pdf,
         'batch_img':      _make_batch_img,
         'batch_metadata': _make_batch_metadata,
+        'batch_library':  _make_batch_library,
     }
     show_batch_drop_dialog(parent, dirs, callbacks)

@@ -796,84 +796,102 @@ class _BatchMetadataOrchestrator:
                     None
                 )
 
-            with zipfile.ZipFile(filepath, 'w', zipfile.ZIP_DEFLATED) as zf:
-                if cbz_manifest:
-                    _write_non_manifest(zf)
-                    # Recopier toutes les entrées de l'original sauf couverture et XML déjà écrits
-                    written = {e["orig_name"] for e in state.images_data
-                               if e.get("orig_name") not in MANIFEST_NAMES and e.get("bytes") is not None}
-                    with zipfile.ZipFile(cbz_manifest["_cbz_path"], 'r') as src:
-                        for name in src.namelist():
-                            if name not in written:
-                                zf.writestr(name, src.read(name))
+            tmp_path = filepath + '.~tmp'
+            try:
+                with zipfile.ZipFile(tmp_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+                    if cbz_manifest:
+                        _write_non_manifest(zf)
+                        # Recopier toutes les entrées de l'original sauf couverture et XML déjà écrits
+                        written = {e["orig_name"] for e in state.images_data
+                                   if e.get("orig_name") not in MANIFEST_NAMES and e.get("bytes") is not None}
+                        with zipfile.ZipFile(cbz_manifest["_cbz_path"], 'r') as src:
+                            for name in src.namelist():
+                                if name not in written:
+                                    zf.writestr(name, src.read(name))
 
-                elif cbr_manifest:
-                    _write_xml_only(zf)
-                    import rarfile
-                    with rarfile.RarFile(cbr_manifest["_cbr_path"]) as rf:
-                        for name in sorted(rf.namelist()):
-                            if name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')):
-                                zf.writestr(name, rf.read(name))
+                    elif cbr_manifest:
+                        _write_xml_only(zf)
+                        import rarfile
+                        with rarfile.RarFile(cbr_manifest["_cbr_path"]) as rf:
+                            for name in sorted(rf.namelist()):
+                                if name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')):
+                                    zf.writestr(name, rf.read(name))
 
-                elif cbt_manifest:
-                    _write_xml_only(zf)
-                    import tarfile
-                    with tarfile.open(cbt_manifest["_cbt_path"], 'r:*') as tf:
-                        for m in sorted(tf.getmembers(), key=lambda x: x.name):
-                            if not m.isfile():
-                                continue
-                            if not m.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')):
-                                continue
-                            data = tf.extractfile(m).read()
+                    elif cbt_manifest:
+                        _write_xml_only(zf)
+                        import tarfile
+                        with tarfile.open(cbt_manifest["_cbt_path"], 'r:*') as tf:
+                            for m in sorted(tf.getmembers(), key=lambda x: x.name):
+                                if not m.isfile():
+                                    continue
+                                if not m.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')):
+                                    continue
+                                data = tf.extractfile(m).read()
+                                if data:
+                                    zf.writestr(m.name, data)
+
+                    elif cb7_manifest:
+                        _write_xml_only(zf)
+                        from modules.qt.archive_loader import _read_7z_file
+                        for name in cb7_manifest["_cb7_all_names"]:
+                            data = _read_7z_file(cb7_manifest["_cb7_path"], name)
                             if data:
-                                zf.writestr(m.name, data)
+                                zf.writestr(name, data)
 
-                elif cb7_manifest:
-                    _write_xml_only(zf)
-                    from modules.qt.archive_loader import _read_7z_file
-                    for name in cb7_manifest["_cb7_all_names"]:
-                        data = _read_7z_file(cb7_manifest["_cb7_path"], name)
-                        if data:
-                            zf.writestr(name, data)
+                    elif pdf_manifest:
+                        _write_xml_only(zf)
+                        import modules.qt.pdf_loading_qt as _pdfmod
+                        from modules.qt.archive_loader import _natural_sort_key as _nsk
 
-                elif pdf_manifest:
-                    _write_xml_only(zf)
-                    import modules.qt.pdf_loading_qt as _pdfmod
-                    from modules.qt.archive_loader import _natural_sort_key as _nsk
+                        pdf_path = pdf_manifest["_pdf_path"]
+                        _pdfmod._ensure_merge_process()
+                        _pdfmod._merge_in_q.put(('run_merge', pdf_path, 0, ""))
 
-                    pdf_path = pdf_manifest["_pdf_path"]
-                    _pdfmod._ensure_merge_process()
-                    _pdfmod._merge_in_q.put(('run_merge', pdf_path, 0, ""))
+                        while True:
+                            if not _pdfmod._merge_out_conn.poll(0.1):
+                                if _pdfmod._merge_process is None or not _pdfmod._merge_process.is_alive():
+                                    raise ValueError("PDF merge process terminated unexpectedly")
+                                continue
+                            msg = _pdfmod._merge_out_conn.recv()
+                            kind = msg[0]
+                            if kind == '_debug':
+                                continue
+                            elif kind == 'total':
+                                pass
+                            elif kind == 'merge_page':
+                                _, filename, img_data, _used_dpi = msg
+                                zf.writestr(filename, img_data)
+                            elif kind == 'progress':
+                                _, percent, _cur, _tot = msg
+                                if progress_cb:
+                                    progress_cb(percent)
+                            elif kind == 'done':
+                                break
+                            elif kind == 'error':
+                                raise ValueError(msg[1])
+                            elif kind == 'password_error':
+                                raise ValueError("PDF protégé par mot de passe")
+                            elif kind == 'empty_pdf':
+                                raise ValueError("PDF vide")
 
-                    while True:
-                        if not _pdfmod._merge_out_conn.poll(0.1):
-                            if _pdfmod._merge_process is None or not _pdfmod._merge_process.is_alive():
-                                raise ValueError("PDF merge process terminated unexpectedly")
-                            continue
-                        msg = _pdfmod._merge_out_conn.recv()
-                        kind = msg[0]
-                        if kind == '_debug':
-                            continue
-                        elif kind == 'total':
-                            pass
-                        elif kind == 'merge_page':
-                            _, filename, img_data, _used_dpi = msg
-                            zf.writestr(filename, img_data)
-                        elif kind == 'progress':
-                            _, percent, _cur, _tot = msg
-                            if progress_cb:
-                                progress_cb(percent)
-                        elif kind == 'done':
-                            break
-                        elif kind == 'error':
-                            raise ValueError(msg[1])
-                        elif kind == 'password_error':
-                            raise ValueError("PDF protégé par mot de passe")
-                        elif kind == 'empty_pdf':
-                            raise ValueError("PDF vide")
+                    else:
+                        _write_non_manifest(zf)
 
+                # Écriture réussie : remplacer l'original par le tmp
+                if os.path.exists(filepath):
+                    os.replace(tmp_path, filepath)
                 else:
-                    _write_non_manifest(zf)
+                    os.rename(tmp_path, filepath)
+
+            except Exception:
+                # Nettoyage du fichier tmp en cas d'erreur
+                try:
+                    if os.path.exists(tmp_path):
+                        os.remove(tmp_path)
+                except Exception:
+                    pass
+                raise
+
         except Exception as e:
             print(f"Erreur sauvegarde {filepath}: {e}")
             return
@@ -1074,7 +1092,13 @@ def show_batch_metadata_dialog(parent, files: list, dirs: list, batch_callbacks:
         )
         # Garder une référence module-level pour éviter la destruction par le GC
         _active_orchestrators.append(orchestrator)
-        orchestrator._on_batch_complete = lambda: _active_orchestrators.remove(orchestrator) if orchestrator in _active_orchestrators else None
+        _extra_cb = batch_callbacks.get('on_batch_complete')
+        def _on_complete():
+            if orchestrator in _active_orchestrators:
+                _active_orchestrators.remove(orchestrator)
+            if _extra_cb:
+                _extra_cb()
+        orchestrator._on_batch_complete = _on_complete
         orchestrator.start()
 
     dlg.finished.connect(lambda _: _on_confirm_done())

@@ -342,6 +342,8 @@ class PanelWidget(QWidget):
         # ── Mise à jour initiale ──────────────────────────────────────────────
         self._update_status_bar()
         QTimer.singleShot(0, self._canvas.render_mosaic)
+        if self._is_primary:
+            QTimer.singleShot(2000, self._prewarm_library)
 
 
     # ──────────────────────────────────────────────────────────────────────────
@@ -603,7 +605,22 @@ class PanelWidget(QWidget):
             "renumber_btn_action":         self._renumber_pages_auto,
             "safe_delete_file":            self._safe_delete_file,
             "get_mosaicview_temp_dir":     self._get_temp_dir,
+            "on_file_saved":               self._on_file_saved,
         }
+
+    def _on_file_saved(self, filepath: str):
+        lib = getattr(self, '_library_window', None)
+        if lib is None:
+            return
+        try:
+            db = lib._db
+            if db is None:
+                return
+            db.reindex_files([filepath])
+            lib._rows = db.search([])
+            lib._populate_table(lib._rows)
+        except Exception:
+            pass
 
     def _safe_delete_file(self, filepath: str):
         try:
@@ -745,6 +762,21 @@ class PanelWidget(QWidget):
 
     def _reset_to_defaults(self):
         self._main_window._reset_to_defaults()
+
+    def _prewarm_library(self):
+        from modules.qt.library_window import open_library_window
+        open_library_window(parent_panel=self, prewarm=True)
+
+    def _open_library(self):
+        from modules.qt.library_window import open_library_window
+        open_library_window(parent_panel=self)
+
+    def _open_library_db(self, filepath: str):
+        from modules.qt.library_window import open_library_window, _library_window
+        open_library_window(parent_panel=self)
+        from modules.qt.library_window import _library_window as lib_win
+        if lib_win is not None:
+            lib_win._action_open_db(filepath=filepath)
 
     def _show_user_guide(self):
         self._main_window._show_user_guide(self)
@@ -925,6 +957,7 @@ class PanelWidget(QWidget):
         close_file(self, state=self._state, **self._file_close_args())
 
     def _load_files(self, paths: list, from_drop: bool = False):
+        self._library_window = None
         from modules.qt.archive_loader import _natural_sort_key
 
         IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
@@ -1731,6 +1764,9 @@ class PanelWidget(QWidget):
         regular_paths = []
         for p in paths:
             ext = os.path.splitext(p)[1].lower()
+            if ext == '.mvdb':
+                self._open_library_db(p)
+                continue
             if ext == '.url':
                 try:
                     cfg = configparser.ConfigParser()

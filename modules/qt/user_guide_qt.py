@@ -512,6 +512,7 @@ class _HelpDialog(QDialog):
             ("help.create_icon",          "help.create_icon_content"),
             ("help.batch_convert",        "help.batch_convert_content"),
             ("help.metadata",             "METADATA_SECTION"),
+            ("help.library",              "help.library_content"),
             ("help.shortcuts",            "help.shortcuts_content"),
             ("help.dark_mode",            "help.dark_mode_content"),
             ("help.sort",                 "help.sort_content"),

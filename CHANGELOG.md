@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.1] - 2026-05-26
+
+- Added a Library feature. A dedicated window (accessible from the toolbar and menus) lets the user create and manage SQLite-based comic databases. Each database is built by scanning a master directory and optional additional directories; the scan is incremental and runs in a background thread with a red progress overlay showing the current file and percentage. During indexing, each archive's `ComicInfo.xml` is read and all its fields (title, series, writer, publisher, etc.) are extracted and stored in the database. The library table is fully sortable and searchable with multi-criteria filters. From the library, comics can be opened directly in the mosaic viewer, their metadata can be fetched via the existing ComicVine batch mechanism (and the database is automatically updated after the fetch), and files can be opened in Explorer. When a comic is opened from the library and subsequently saved in the mosaic viewer, the library entry is automatically reindexed to reflect the new metadata and page count.
+- Fixed mouse wheel events propagating through the library window and inadvertently changing the language selector in the panel behind it. The wheel hook now checks whether another Qt window physically covers the target widget at the cursor position before dispatching the event.
+
 ## [1.2.2] - 2026-05-24
 
 - The mosaic tab (showing the open file name) now expands to fill all available horizontal space, leaving room for the Metadata tab when present. The filename is elided with `…` when space is insufficient and expands back when space is restored. The tab no longer imposes a fixed maximum width that could block resizing the window or the splitter between the two panels in dual-panel mode.

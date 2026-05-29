@@ -129,6 +129,9 @@ class WheelHook:
             lpos = target.mapFromGlobal(gpos)
             if not target.rect().contains(lpos):
                 continue
+            # Si une fenêtre étrangère recouvre physiquement la target, ne pas dispatcher
+            if widget_at is not None and widget_at.window() is not target.window():
+                continue
             angle = QPoint(0, delta // 120 * 120)
             event = QWheelEvent(
                 QPointF(lpos), QPointF(gpos),

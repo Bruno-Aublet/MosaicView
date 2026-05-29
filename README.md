@@ -115,10 +115,36 @@ Batch conversions can be launched from the toolbar, the menu bar, the right-clic
 - **CBT → CBZ** — converts all CBT files in a folder to CBZ. Misnamed CBT files that are actually ZIP, RAR, or 7z archives are automatically renamed to the correct extension (.cbz, .cbr, .cb7).
 - **PDF → CBZ** — converts all PDF files in a folder to CBZ, extracting each page as an image
 - **Images → CBZ** — packages loose image files into CBZ archives, with two modes: one CBZ per image, or all images grouped into a single CBZ
+- **Metadata import** — automatically retrieves metadata (title, series, authors…) from ComicVine for all compatible files in a folder. A wizard opens successively for each file. See the Metadata section below.
+- **Create library** — indexes all compatible files in a folder into a new MosaicView library (*.mvdb). See the Library section below.
 
 When renamed files or errors occur, a log file is created and a link to it is shown in the summary dialog.
 
 [![Batch conversions](Screenshots/009.png)](Screenshots/009.png)
+
+---
+
+## Metadata
+
+MosaicView can automatically retrieve metadata (title, series, issue number, authors, publisher, summary…) from [ComicVine](https://comicvine.gamespot.com/), a community-maintained comics database.
+
+A free ComicVine API key is required. The application will guide you through obtaining one.
+
+This feature is entirely based on the open source project [cbanack/comic-vine-scraper](https://github.com/cbanack/comic-vine-scraper).
+
+- **Single file** — open a file, then use the toolbar button or the Metadata menu. A two-step wizard lets you pick the series, then the matching issue. Metadata is written as a `ComicInfo.xml` file inside the archive.
+- **Batch mode** — drop one or more folders onto the mosaic and choose "Metadata import", or use the dedicated toolbar button. The wizard opens for each compatible file (CBZ, CBR, CB7, CBT, PDF) found in the folder and its subfolders. Non-CBZ files are automatically converted to CBZ after writing.
+
+---
+
+## Library
+
+The library lets you catalogue and search your entire digital comics collection. It works by reading the metadata already present in each file (title, series, authors, publisher…) and gathering it into a single library file (`*.mvdb`).
+
+- **Create** — use the Library menu → New database, or drop one or more folders onto the mosaic and choose "Create a library from the folder(s)". MosaicView scans the folders and indexes all compatible files automatically.
+- **Search** — filter by series, author, year, publisher, and more, combining as many criteria as needed (AND/OR).
+- **Open** — double-click any entry to open the file directly in MosaicView.
+- **Export** — the "Export results" button saves the current table to an Excel file (*.xlsx).
 
 ---
 
@@ -128,7 +154,7 @@ When renamed files or errors occur, a log file is created and a link to it is sh
 - Dependencies (install with `pip install -r requirements.txt`):
 
 ```
-PySide6, Pillow, numpy, rarfile, PyMuPDF
+PySide6, Pillow, numpy, rarfile, PyMuPDF, packaging, openpyxl
 ```
 
 - **UnRAR** (for CBR support): place `UnRAR.exe` in the `unrar/` folder

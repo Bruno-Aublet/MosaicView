@@ -46,6 +46,7 @@ def show_canvas_text(canvas, text: str, item_holder: list) -> None:
     lbl.adjustSize()
     lbl.move(0, (vr.height() - lbl.height()) // 2)
     lbl.show()
+    lbl.raise_()
 
 
 def hide_canvas_text(canvas, item_holder: list) -> None:

@@ -892,6 +892,8 @@ def save_as_cbz(parent, canvas, callbacks: dict):
                             _("messages.errors.save_failed.title"),
                             _("messages.errors.delete_error", error=e)).exec()
 
+    if callbacks.get("on_file_saved"):
+        callbacks["on_file_saved"](filepath)
     render_mosaic()
     SaveSuccessDialog(
         parent,
@@ -1347,6 +1349,8 @@ def apply_new_names(parent, canvas, callbacks: dict):
         callbacks["update_button_text"]()
     if callbacks.get("update_tabs"):
         callbacks["update_tabs"]()
+    if callbacks.get("on_file_saved"):
+        callbacks["on_file_saved"](state.current_file)
     return True
 
 

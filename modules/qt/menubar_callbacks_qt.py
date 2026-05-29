@@ -116,6 +116,8 @@ def build_menubar_callbacks(mw) -> dict:
         "sort_images":                   mw._sort_images,
         "delete_bookmark":               mw._delete_current_bookmark,
         "delete_all_bookmarks":          mw._delete_all_bookmarks,
+        # ── Bibliothèque ─────────────────────────────────────────────────────
+        "open_library":             mw._open_library,
         # ── Système ───────────────────────────────────────────────────────────
         "get_font_manager":         lambda: mw._font_manager,
         "get_available_languages":  lambda: list(mw._loc.get_available_languages().keys()),

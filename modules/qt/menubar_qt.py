@@ -360,6 +360,46 @@ def _populate_metadata_menu(menu: QMenu, callbacks: dict):
                 lambda: QDesktopServices.openUrl(QUrl("https://github.com/cbanack/comic-vine-scraper")))
 
 
+def _populate_library_menu(menu: QMenu, callbacks: dict):
+    menu.clear()
+    open_lib = callbacks.get("open_library")
+
+    # Ouvrir la fenêtre bibliothèque
+    from modules.qt.localization import _ as _loc
+    act_open = QAction(_loc("library.menu_label"), menu)
+    if open_lib:
+        act_open.triggered.connect(open_lib)
+    menu.addAction(act_open)
+    menu.addSeparator()
+
+    # Sous-menu Base de données (délégué à LibraryWindow si visible)
+    from modules.qt.library_window import _library_window
+    if _library_window is not None and not _library_window._prewarmed:
+        _library_window.build_db_menu(menu)
+    else:
+        def _open_then(action_name):
+            from modules.qt.library_window import open_library_window, _library_window as _lw
+            open_library_window()
+            from modules.qt.library_window import _library_window as lw
+            if lw:
+                QTimer = __import__('PySide6.QtCore', fromlist=['QTimer']).QTimer
+                QTimer.singleShot(0, getattr(lw, action_name))
+
+        for key in ('library.db_new', 'library.db_open'):
+            act = QAction(_loc(key), menu)
+            if key == 'library.db_new':
+                act.triggered.connect(lambda: _open_then('_action_new_db'))
+            elif key == 'library.db_open':
+                act.triggered.connect(lambda: _open_then('_action_open_db'))
+            menu.addAction(act)
+        for key in ('library.db_rename', 'library.db_add_directory',
+                    'library.db_edit_master', 'library.db_scan',
+                    'library.db_open_explorer', 'library.db_delete'):
+            act = QAction(_loc(key), menu)
+            act.setEnabled(False)
+            menu.addAction(act)
+
+
 def _populate_system_menu(menu: QMenu, callbacks: dict):
     menu.clear()
 
@@ -471,6 +511,7 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
         (_("menu.images"),   _populate_images_menu),
         (_("menu.archives"),   _populate_archives_menu),
         (_("comicvine.menu_label"), _populate_metadata_menu),
+        (_("library.menu_label"),  _populate_library_menu),
         (_("menu.system"),   _populate_system_menu),
         (_("menu.about"),    _populate_about_menu),
     ]

@@ -233,7 +233,8 @@ class ErrorDialog(QDialog):
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
         self._center_parent = parent
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -273,12 +274,16 @@ class ErrorDialog(QDialog):
     def _apply_theme(self):
         from modules.qt.state import get_current_theme
         theme = get_current_theme()
-        self.setStyleSheet(
-            f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }} "
-            f"QLabel  {{ color: {theme['text']}; }} "
-            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
-            f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
-            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        bg   = theme['bg']
+        fg   = theme['text']
+        alt  = theme.get('toolbar_bg', bg)
+        sep  = theme.get('separator', '#aaaaaa')
+        self.setStyleSheet(f"QDialog {{ background: {bg}; }}")
+        self._lbl.setStyleSheet(f"color: {fg}; background: {bg};")
+        self._btn_ok.setStyleSheet(
+            f"QPushButton {{ background: {alt}; color: {fg}; "
+            f"border: 1px solid {sep}; padding: 4px 12px; border-radius: 3px; }} "
+            f"QPushButton:hover {{ background: {sep}; }}"
         )
         self.setWindowTitle(self._title_fn())
         self._lbl.setText(self._message_fn())
@@ -313,7 +318,8 @@ class InfoDialog(QDialog):
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
         self._center_parent = parent
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -353,12 +359,16 @@ class InfoDialog(QDialog):
     def _apply_theme(self):
         from modules.qt.state import get_current_theme
         theme = get_current_theme()
-        self.setStyleSheet(
-            f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }} "
-            f"QLabel  {{ color: {theme['text']}; }} "
-            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
-            f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
-            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        bg   = theme['bg']
+        fg   = theme['text']
+        alt  = theme.get('toolbar_bg', bg)
+        sep  = theme.get('separator', '#aaaaaa')
+        self.setStyleSheet(f"QDialog {{ background: {bg}; }}")
+        self._lbl.setStyleSheet(f"color: {fg}; background: {bg};")
+        self._btn_ok.setStyleSheet(
+            f"QPushButton {{ background: {alt}; color: {fg}; "
+            f"border: 1px solid {sep}; padding: 4px 12px; border-radius: 3px; }} "
+            f"QPushButton:hover {{ background: {sep}; }}"
         )
         self.setWindowTitle(self._title_fn())
         self._lbl.setText(self._message_fn())

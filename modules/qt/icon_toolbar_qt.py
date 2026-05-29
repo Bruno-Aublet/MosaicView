@@ -77,6 +77,8 @@ ICON_DEFINITIONS = [
     # --- ORGANISATION ---
     {"id": "renumber",            "tooltip_key": None,                            "png": "BTN_Renumber.png"},
     {"id": "sort",                "tooltip_key": "menu.sort",                     "png": "BTN_Sort.png"},
+    # --- BIBLIOTHÈQUE --- (hors layout par défaut)
+    {"id": "open_library",        "tooltip_key": "library.tooltip",               "png": "BTN_Library.png"},
     # --- CONTACT / DON --- (hors layout par défaut)
     {"id": "open_mail",           "tooltip_key": "mail.tooltip",                  "png": None,  "img_path": "icons/mail.png"},
     {"id": "donation",            "tooltip_key": "donation.menu_label",           "png": None,  "img_path": "paypal/paypal.png"},
@@ -149,6 +151,7 @@ _ACTIVATION_RULES = {
     "sort":                lambda sg: sg["has_images"](),
     "web_import":          None,
     "create_nfo":          lambda sg: sg["has_images"](),
+    "open_library":        None,
     "open_mail":           None,
     "donation":            None,
     "toggle_theme":        None,
@@ -861,15 +864,22 @@ class _LangCombo(QComboBox):
         self.update()
 
     def wheelEvent(self, event):
+        from PySide6.QtWidgets import QApplication
+        gpos = event.globalPosition().toPoint()
+        on_widget = self.rect().contains(self.mapFromGlobal(gpos))
+        active_win = QApplication.activeWindow()
+        top = self.window()
         # Si l'événement vient du hook, on l'a déjà traité dans wheel_from_hook → ignorer
         if self._from_hook:
             event.accept()
             return
+        # Bloquer si le curseur n'est pas physiquement sur ce widget (propagation involontaire)
+        if not on_widget:
+            event.accept()
+            return
         # Windows "scroll inactive windows" : Qt peut livrer un wheel natif même si la fenêtre
         # n'est pas active. Dans ce cas le hook va aussi envoyer → on laisse le hook gérer seul.
-        from PySide6.QtWidgets import QApplication
-        top = self.window()
-        if top and top != QApplication.activeWindow():
+        if top and top != active_win:
             event.accept()
             return
         super().wheelEvent(event)
@@ -880,7 +890,8 @@ class _LangCombo(QComboBox):
         Si la fenêtre parente est la fenêtre Qt active, Qt livrera l'événement natif → ne rien faire."""
         from PySide6.QtWidgets import QApplication
         top = self.window()
-        if top and top is QApplication.activeWindow():
+        active = QApplication.activeWindow()
+        if top and top is active:
             return
         self._from_hook = True
         try:
@@ -1907,6 +1918,7 @@ class IconToolbarQt(QWidget):
         "print_all":           "buttons.print_all",
         "renumber":            "buttons.renumber",
         "sort":                "menu.sort",
+        "open_library":        "library.menu_label",
         "open_mail":           "mail.icon_label",
         "donation":            "donation.menu_label",
         "toggle_theme":        "tooltip.theme_button",
@@ -2061,6 +2073,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "print_selection":       lambda: _print_selection(mw, mw._canvas, st),
         "print_all":             lambda: _print_all(mw, mw._canvas, st),
         "sort":                  mw._show_sort_menu,
+        "open_library":          lambda: __import__('modules.qt.library_window', fromlist=['open_library_window']).open_library_window(mw._left_panel),
         "open_mail":             lambda: webbrowser.open("mailto:mosaicview1969@gmail.com?subject=MosaicView"),
         "donation":              mw._show_donation_dialog,
         "show_license_dialog":   mw._show_license_dialog,

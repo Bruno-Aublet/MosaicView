@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.2.2"
+__version__ = "1.3.1"
 
 import sys
 import os
@@ -352,6 +352,9 @@ class MainWindow(QMainWindow):
             self._set_frame_active(self._frame1, self._active_panel is self._panel)
             if self._frame2:
                 self._set_frame_active(self._frame2, self._active_panel is self._panel2)
+        # Notifie toutes les fenêtres secondaires (bibliothèque, dialogs ouverts)
+        from modules.qt.language_signal import language_signal
+        language_signal.emit(self._loc.get_current_language())
 
     def _toggle_fullscreen(self):
         cfg = get_config_manager()
@@ -700,6 +703,15 @@ class MainWindow(QMainWindow):
             **self._panel._file_close_args(),
         )
         if can_close:
+            # Fermer la fenêtre bibliothèque (et sa DB) si ouverte
+            try:
+                from modules.qt.library_window import _library_window as _lib_win
+                if _lib_win is not None:
+                    if _lib_win._db is not None:
+                        _lib_win._db.close()
+                    _lib_win.close()
+            except Exception:
+                pass
             event.accept()
         else:
             self._close_event_handled = False
@@ -752,6 +764,7 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName("MosaicView")
     app.setStyle("Fusion")
+
 
     app.setStyleSheet("""
         QMainWindow { background: #f5f5f5; }
