@@ -3,7 +3,7 @@ dialogs_qt.py — Boîtes de dialogue Qt respectant thème et police.
 """
 
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, Signal
 
 from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
@@ -307,6 +307,8 @@ class InfoDialog(QDialog):
     """Boîte de dialogue d'information respectant thème et police.
 
     title et message peuvent être une str (figée) ou un callable () → str.
+    Le message peut contenir du HTML avec des liens <a href="...">.
+    Connecter linkActivated pour gérer les clics sur les liens.
 
     Usage :
         InfoDialog(parent, title_text, message_text).exec()
@@ -329,6 +331,8 @@ class InfoDialog(QDialog):
         self._lbl.setAlignment(Qt.AlignCenter)
         self._lbl.setWordWrap(True)
         self._lbl.setMinimumWidth(380)
+        self._lbl.setOpenExternalLinks(False)
+        self._lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
         layout.addWidget(self._lbl)
 
         self._btn_ok = QPushButton()
@@ -492,6 +496,111 @@ class QuestionYNCDialog(QDialog):
             self._btn_yes.setFont(font)
             self._btn_no.setFont(font)
             self._btn_cancel.setFont(font)
+        except Exception:
+            pass
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ConfirmYNDialog — Oui / Non non-modal avec signal
+# ─────────────────────────────────────────────────────────────────────────────
+
+class ConfirmYNDialog(QDialog):
+    """Boîte de dialogue non-modale Oui / Non.
+
+    title et message sont des callables () → str pour le support multilingue.
+    Émet result_signal(True) si Oui, result_signal(False) si Non ou fermeture.
+    """
+
+    result_signal = Signal(bool)
+
+    def __init__(self, parent, title, message):
+        super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
+        self._message_fn = message if callable(message) else (lambda m=message: m)
+        self._center_parent = parent
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 16, 20, 12)
+        layout.setSpacing(12)
+
+        self._lbl = QLabel()
+        self._lbl.setAlignment(Qt.AlignCenter)
+        self._lbl.setWordWrap(True)
+        self._lbl.setMinimumWidth(380)
+        layout.addWidget(self._lbl)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self._btn_yes = QPushButton()
+        self._btn_yes.setDefault(True)
+        self._btn_yes.clicked.connect(self._on_yes)
+        btn_row.addWidget(self._btn_yes)
+        self._btn_no = QPushButton()
+        self._btn_no.clicked.connect(self._on_no)
+        btn_row.addWidget(self._btn_no)
+        btn_row.addStretch()
+        layout.addLayout(btn_row)
+
+        self._apply_theme()
+        self._apply_font()
+
+        from modules.qt.language_signal import language_signal
+        self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
+        language_signal.changed.connect(self._lang_handler)
+        self.finished.connect(self._on_close)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+
+    def _on_yes(self):
+        self.result_signal.emit(True)
+        self.hide()
+        self.deleteLater()
+
+    def _on_no(self):
+        self.result_signal.emit(False)
+        self.hide()
+        self.deleteLater()
+
+    def closeEvent(self, event):
+        self.result_signal.emit(False)
+        event.accept()
+
+    def _on_close(self):
+        from modules.qt.language_signal import language_signal
+        try:
+            language_signal.changed.disconnect(self._lang_handler)
+        except RuntimeError:
+            pass
+
+    def _apply_theme(self):
+        from modules.qt.state import get_current_theme
+        theme = get_current_theme()
+        self.setStyleSheet(
+            f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }} "
+            f"QLabel  {{ color: {theme['text']}; }} "
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        self.setWindowTitle(self._title_fn())
+        self._lbl.setText(self._message_fn())
+        self._btn_yes.setText(_("buttons.yes"))
+        self._btn_no.setText(_("buttons.no"))
+
+    def _apply_font(self):
+        try:
+            from modules.qt.font_manager_qt import get_current_font
+            font = get_current_font()
+            self._lbl.setFont(font)
+            self._btn_yes.setFont(font)
+            self._btn_no.setFont(font)
         except Exception:
             pass
 

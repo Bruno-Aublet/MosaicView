@@ -687,6 +687,61 @@ class LibraryDB:
                 progress_callback(int(len(rows) * 100 / total))
         return rows
 
+    def search_cursor(self, criteria: list[dict], order_by: str = 'series',
+                      order_asc: bool = True):
+        """Comme search() mais retourne (total, cursor) sans tout charger en mémoire."""
+        # Réutilise la même logique de construction SQL que search()
+        from collections import OrderedDict
+        groups: OrderedDict[str, list] = OrderedDict()
+        group_params: dict[str, list] = {}
+        for crit in criteria:
+            field = crit.get('field', '')
+            op    = crit.get('op', 'contains')
+            value = crit.get('value', '')
+            link  = crit.get('link', 'and').upper()
+            if field not in self._SEARCHABLE or op not in self._OP_MAP:
+                continue
+            op_sql, transform = self._OP_MAP[op]
+            p: list = []
+            col_expr = f"CAST({field} AS INTEGER)" if field in self._INT_CAST_FIELDS else field
+            if '{col}' in op_sql:
+                clause = f"{field} {op_sql.format(col=field)}"
+            elif transform is None and op == 'between':
+                v1, v2 = (value if isinstance(value, (list, tuple)) and len(value) == 2 else (value, value))
+                try: v1, v2 = int(v1), int(v2)
+                except (ValueError, TypeError): pass
+                clause = f"{col_expr} BETWEEN ? AND ?"
+                p = [v1, v2]
+            elif transform is None:
+                clause = f"{col_expr} {op_sql}"
+                p = [value]
+            else:
+                clause = f"{field} {op_sql}"
+                p = [transform(value)]
+            if field not in groups:
+                groups[field] = []
+                group_params[field] = []
+            groups[field].append((clause, p, link))
+            group_params[field].extend(p)
+        params = []
+        group_sqls = []
+        for field, entries in groups.items():
+            parts = []
+            for j, (clause, p, link) in enumerate(entries):
+                params.extend(p)
+                parts.append(clause if j == 0 else f"{link} {clause}")
+            group_sqls.append(f"({' '.join(parts)})")
+        where_sql = ('WHERE ' + ' AND '.join(group_sqls)) if group_sqls else ''
+        order_col = order_by if order_by in self._SEARCHABLE else 'series'
+        direction = 'ASC' if order_asc else 'DESC'
+        null_order = 'NULLS LAST' if order_asc else 'NULLS FIRST'
+        sql = f"SELECT * FROM comics {where_sql} ORDER BY {order_col} {direction} {null_order}"
+        total = self._conn.execute(
+            f"SELECT COUNT(*) FROM comics {where_sql}", params
+        ).fetchone()[0]
+        cursor = self._conn.execute(sql, params)
+        return total, cursor
+
     # ── Configuration colonnes ────────────────────────────────────────────────
 
     def get_columns_config(self) -> list[str] | None:

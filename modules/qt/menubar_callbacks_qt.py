@@ -146,7 +146,7 @@ def build_menubar_callbacks(mw) -> dict:
         "increase_thumb_size":      mw._increase_thumb_size,
         # ── À propos / maintenance ────────────────────────────────────────────
         "clear_temp_files":         mw._clear_temp_files_with_message,
-        "clear_recent_files_about": mw._clear_recent_files,
+        "clear_recent_files_about": mw._clear_all_recent,
         "clear_config_file":        mw._clear_config_file,
         "clear_clipboard_files":    mw._clear_clipboard_files,
         "open_temp_folder":         mw._open_temp_folder,

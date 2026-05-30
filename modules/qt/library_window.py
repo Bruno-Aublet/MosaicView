@@ -18,15 +18,43 @@ from PySide6.QtWidgets import (
     QLabel, QPushButton, QLineEdit, QComboBox, QTableWidget,
     QTableWidgetItem, QHeaderView, QAbstractItemView, QFrame,
     QScrollArea, QFileDialog, QMenu, QApplication, QMessageBox,
-    QSizePolicy,
+    QSizePolicy, QStyledItemDelegate,
 )
 from PySide6.QtCore import Qt, QTimer, QThread, Signal, QSortFilterProxyModel, QItemSelectionModel
-from PySide6.QtGui import QFont, QAction
+from PySide6.QtGui import QFont, QAction, QColor
 
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_font
 from modules.qt.language_signal import language_signal
+
+
+def _explorer_select(path: str):
+    """Ouvre l'Explorateur Windows avec focus sur le fichier, via SHOpenFolderAndSelectItems."""
+    import ctypes, threading, time
+    def _run():
+        ctypes.windll.ole32.CoInitialize(None)
+        try:
+            shell32 = ctypes.windll.shell32
+            def _select():
+                pidl = shell32.ILCreateFromPathW(path)
+                if pidl:
+                    shell32.SHOpenFolderAndSelectItems(pidl, 0, None, 0)
+                    shell32.ILFree(pidl)
+                    return True
+                return False
+            if not _select():
+                subprocess.Popen('explorer /select,"' + path + '"', shell=True)
+                return
+            # Second appel après un délai : sélectionne le fichier dans la fenêtre
+            # qui vient d'être ouverte (bug Explorer : 1er appel ouvre sans focus)
+            time.sleep(0.6)
+            _select()
+        except Exception:
+            subprocess.Popen('explorer /select,"' + path + '"', shell=True)
+        finally:
+            ctypes.windll.ole32.CoUninitialize()
+    threading.Thread(target=_run, daemon=True).start()
 
 
 # ── Instance globale ───────────────────────────────────────────────────────────
@@ -57,27 +85,6 @@ def open_library_window(parent_panel=None, prewarm=False):
 
 # ── Worker de chargement DB ───────────────────────────────────────────────────
 
-class _LoadWorker(QThread):
-    progress = Signal(int)          # pourcentage 0-100
-    finished = Signal(object)       # list[sqlite3.Row]
-    error    = Signal(str)
-
-    def __init__(self, filepath: str):
-        super().__init__()
-        self._filepath = filepath
-
-    def run(self):
-        from modules.qt.library_db import LibraryDB
-        db = None
-        try:
-            db = LibraryDB.open(self._filepath)
-            rows = db.search([], progress_callback=lambda pct: self.progress.emit(pct))
-            self.finished.emit(rows)
-        except Exception as e:
-            self.error.emit(str(e))
-        finally:
-            if db:
-                db.close()
 
 
 # ── Worker de scan ─────────────────────────────────────────────────────────────
@@ -208,8 +215,8 @@ _ALL_COLUMNS = [
     ('library.col_age_rating',       'age_rating'),
     ('library.col_black_and_white',  'black_and_white'),
     ('library.col_manga',            'manga'),
-    ('library.col_has_comicinfo',    'has_comicinfo'),
     ('library.col_can_have_comicinfo','can_have_comicinfo'),
+    ('library.col_has_comicinfo',    'has_comicinfo'),
     ('library.col_summary',          'summary'),
     ('library.col_relative_path',    'relative_path'),
     ('library.col_file_modified_at', 'file_modified_at'),
@@ -257,8 +264,8 @@ _ALL_FIELDS = [
     ('library.col_age_rating',       'age_rating'),
     ('library.col_black_and_white',  'black_and_white'),
     ('library.col_manga',            'manga'),
-    ('library.col_has_comicinfo',    'has_comicinfo'),
     ('library.col_can_have_comicinfo','can_have_comicinfo'),
+    ('library.col_has_comicinfo',    'has_comicinfo'),
     ('library.col_relative_path',    'relative_path'),
     ('library.col_file_modified_at', 'file_modified_at'),
     ('library.col_indexed_at',       'indexed_at'),
@@ -335,7 +342,7 @@ class _PreviewWorker(QThread):
         from PySide6.QtGui import QPixmap, QImage
         try:
             from PIL import Image
-            import zipfile, tarfile
+            import zipfile, tarfile, io
             ext = os.path.splitext(self.abs_path)[1].lower()
             img = None
             _IMG = ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')
@@ -370,6 +377,90 @@ class _PreviewWorker(QThread):
                 except Exception:
                     pass
 
+            elif ext == '.cbr':
+                try:
+                    import rarfile
+                    with rarfile.RarFile(self.abs_path, 'r') as rf:
+                        names = sorted(n for n in rf.namelist()
+                                       if os.path.splitext(n)[1].lower() in _IMG)
+                        if names and not self.cancelled:
+                            with rf.open(names[0]) as f:
+                                img = Image.open(f)
+                                img.load()
+                except Exception:
+                    pass
+
+            elif ext == '.cb7':
+                try:
+                    from modules.qt.archive_loader import _list_7z_files, _read_7z_file
+                    names = sorted(n for n in _list_7z_files(self.abs_path)
+                                   if os.path.splitext(n)[1].lower() in _IMG)
+                    if names and not self.cancelled:
+                        data = _read_7z_file(self.abs_path, names[0])
+                        img = Image.open(io.BytesIO(data))
+                        img.load()
+                except Exception:
+                    pass
+
+            elif ext == '.epub':
+                try:
+                    import zipfile, xml.etree.ElementTree as ET, io
+                    with zipfile.ZipFile(self.abs_path, 'r') as zf:
+                        names_lower = {n.lower(): n for n in zf.namelist()}
+                        cover_path = None
+                        # 1. Cherche via OPF (méthode standard EPUB)
+                        container = names_lower.get('meta-inf/container.xml')
+                        if container:
+                            tree = ET.parse(io.BytesIO(zf.read(container)))
+                            ns = {'c': 'urn:oasis:names:tc:opendocument:xmlns:container'}
+                            rf = tree.find('.//c:rootfile', ns)
+                            if rf is not None:
+                                opf_path = rf.get('full-path', '')
+                                opf_lower = names_lower.get(opf_path.lower())
+                                if opf_lower:
+                                    opf_tree = ET.parse(io.BytesIO(zf.read(opf_lower)))
+                                    opf_ns = {'opf': 'http://www.idpf.org/2007/opf'}
+                                    # Cherche item avec properties="cover-image" ou id lié à cover
+                                    manifest = opf_tree.find('.//opf:manifest', opf_ns)
+                                    if manifest is not None:
+                                        for item in manifest:
+                                            props = item.get('properties', '')
+                                            media = item.get('media-type', '')
+                                            href  = item.get('href', '')
+                                            if 'cover-image' in props and 'image' in media:
+                                                base = opf_path.rsplit('/', 1)[0] + '/' if '/' in opf_path else ''
+                                                cover_path = names_lower.get((base + href).lower())
+                                                break
+                                        if not cover_path:
+                                            # Cherche meta name="cover" → id → href
+                                            meta = opf_tree.find('.//opf:meta[@name="cover"]', opf_ns)
+                                            if meta is not None:
+                                                cid = meta.get('content', '')
+                                                item = opf_tree.find(f'.//opf:item[@id="{cid}"]', opf_ns)
+                                                if item is not None:
+                                                    href = item.get('href', '')
+                                                    base = opf_path.rsplit('/', 1)[0] + '/' if '/' in opf_path else ''
+                                                    cover_path = names_lower.get((base + href).lower())
+                        # 2. Fallback : première image nommée cover.*
+                        if not cover_path:
+                            for lname, rname in names_lower.items():
+                                base = os.path.splitext(os.path.basename(lname))[0]
+                                if base == 'cover' and os.path.splitext(lname)[1] in _IMG:
+                                    cover_path = rname
+                                    break
+                        # 3. Fallback : première image de l'archive
+                        if not cover_path:
+                            imgs = sorted(n for n in zf.namelist()
+                                         if os.path.splitext(n)[1].lower() in _IMG)
+                            if imgs:
+                                cover_path = imgs[0]
+                        if cover_path and not self.cancelled:
+                            with zf.open(cover_path) as f:
+                                img = Image.open(f)
+                                img.load()
+                except Exception:
+                    pass
+
             if self.cancelled or img is None:
                 self.ready.emit(QPixmap())
                 return
@@ -385,8 +476,11 @@ class _PreviewWorker(QThread):
 
 # ── ScrollArea qui force le widget interne à la largeur du viewport ────────────
 
+
 class _LibraryTable(QTableWidget):
     """QTableWidget avec Home/End redirigés vers première/dernière ligne."""
+    enter_pressed = Signal()
+
     def mousePressEvent(self, event):
         if event.button() == Qt.RightButton:
             return  # ne pas changer la sélection sur clic droit
@@ -419,10 +513,42 @@ class _LibraryTable(QTableWidget):
                     new_sel.select(model.index(row, 0), model.index(row, cols - 1))
             self.selectionModel().select(new_sel, QItemSelectionModel.ClearAndSelect)
             return
+        if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+            if self.currentRow() >= 0:
+                self.enter_pressed.emit()
+            return
         if event.key() == Qt.Key_Escape:
             self.clearSelection()
             return
         super().keyPressEvent(event)
+
+
+_EMPTY_ROLE = Qt.UserRole + 1   # 'text' | 'num' | None
+
+
+class _EmptyDelegate(QStyledItemDelegate):
+    """Affiche les textes 'non renseigné'/'N/R' depuis deux strings centralisées.
+    Au changement de langue, on met à jour ces strings + viewport().update() — aucune boucle."""
+
+    def __init__(self, get_text, get_num, parent=None):
+        super().__init__(parent)
+        self._get_text = get_text   # callable → str courant pour _EMPTY_TEXT_COLS
+        self._get_num  = get_num    # callable → str courant pour _EMPTY_NUM_COLS
+
+    def initStyleOption(self, option, index):
+        super().initStyleOption(option, index)
+        from PySide6.QtGui import QPalette
+        marker = index.data(_EMPTY_ROLE)
+        if marker == 'text':
+            option.text = self._get_text()
+            option.palette.setColor(QPalette.ColorRole.Text, QColor('#999999'))
+            font = option.font
+            font.setItalic(True)
+            option.font = font
+        elif marker == 'num':
+            option.text = self._get_num()
+            option.palette.setColor(QPalette.ColorRole.Text, QColor('#999999'))
+            option.displayAlignment = Qt.AlignCenter
 
 
 class _TableItem(QTableWidgetItem):
@@ -434,7 +560,7 @@ class _TableItem(QTableWidgetItem):
             return False
         if my_val and not other_val:
             return True
-        return my_val < other_val
+        return my_val.lower() < other_val.lower()
 
 
 class _PreviewLabel(QLabel):
@@ -454,6 +580,16 @@ class _PreviewLabel(QLabel):
         self._src_pixmap = None
         self.clear()
         self.setFixedHeight(50)
+
+    def show_unavailable(self, text: str, font=None, color: str = '#aaaaaa'):
+        self._src_pixmap = None
+        self.clear()
+        self.setAlignment(Qt.AlignCenter)
+        self.setWordWrap(True)
+        self.setText(f'<span style="color:{color};">{text.replace(chr(10), "<br>")}</span>')
+        if font:
+            self.setFont(font)
+        self.setFixedHeight(120)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -489,22 +625,22 @@ class _FitScrollArea(QScrollArea):
 # ── Ligne de critère de recherche (une ligne fixe par champ) ──────────────────
 
 class _SubField(QWidget):
-    """Un sous-champ de saisie : connecteur (ET/OU) + QLineEdit + boutons ET/OU/✕."""
+    """Un sous-champ de saisie : connecteur (ET/OU/SAUF) + QLineEdit + boutons ET/OU/SAUF/✕."""
 
     def __init__(self, field: str, connector: str = None, parent=None):
         """
         field     : nom de colonne SQL
-        connector : 'and' | 'or' | None (premier sous-champ)
+        connector : 'and' | 'or' | 'not' | None (premier sous-champ)
         """
         super().__init__(parent)
         self._field     = field
-        self._connector = connector  # None pour le premier, 'and'/'or' pour les suivants
+        self._connector = connector  # None pour le premier, 'and'/'or'/'not' pour les suivants
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(2)
 
-        # Label connecteur (ET / OU) — masqué pour le premier sous-champ
+        # Label connecteur (ET / OU / SAUF) — masqué pour le premier sous-champ
         self._connector_label = QLabel()
         self._connector_label.setVisible(connector is not None)
         layout.addWidget(self._connector_label)
@@ -519,9 +655,10 @@ class _SubField(QWidget):
 
         self._btn_and = QPushButton()
         self._btn_or  = QPushButton()
+        self._btn_not = QPushButton()
         self._btn_del = QPushButton()
         self._btn_del.setObjectName('btn_del')
-        for btn in (self._btn_and, self._btn_or, self._btn_del):
+        for btn in (self._btn_and, self._btn_or, self._btn_not, self._btn_del):
             btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
             row.addWidget(btn)
 
@@ -534,15 +671,19 @@ class _SubField(QWidget):
         has_text = bool(self._edit.text().strip())
         self._btn_and.setEnabled(has_text)
         self._btn_or.setEnabled(has_text)
+        self._btn_not.setEnabled(has_text)
 
     def retranslate(self):
         self._btn_and.setText(_('library.search_link_and'))
         self._btn_or.setText(_('library.search_link_or'))
+        self._btn_not.setText(_('library.search_link_not'))
         self._btn_del.setText('✕')
         if self._connector == 'and':
             self._connector_label.setText(_('library.search_link_and'))
         elif self._connector == 'or':
             self._connector_label.setText(_('library.search_link_or'))
+        elif self._connector == 'not':
+            self._connector_label.setText(_('library.search_link_not'))
 
     def apply_theme(self, theme, font):
         inp_ss = _input_style(theme)
@@ -564,6 +705,8 @@ class _SubField(QWidget):
         self._btn_and.setFont(font)
         self._btn_or.setStyleSheet(btn_ss)
         self._btn_or.setFont(font)
+        self._btn_not.setStyleSheet(btn_ss)
+        self._btn_not.setFont(font)
         self._btn_del.setStyleSheet(btn_ss)
         self._btn_del.setFont(font)
         self._connector_label.setFont(font)
@@ -585,6 +728,7 @@ class _FieldRow(QWidget):
         self._theme       = None
         self._font        = None
         self._scroll_area = None
+        self._search_cb   = None
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self._outer = QVBoxLayout(self)
@@ -639,6 +783,8 @@ class _FieldRow(QWidget):
             self._op_combo.currentIndexChanged.connect(lambda _idx: self._notify_changed())
             self._value_edit.textChanged.connect(lambda _t: self._notify_changed())
             self._value_edit2.textChanged.connect(lambda _t: self._notify_changed())
+            self._value_edit.returnPressed.connect(lambda: self._search_cb() if self._search_cb else None)
+            self._value_edit2.returnPressed.connect(lambda: self._search_cb() if self._search_cb else None)
             self._populate_ops()
 
     def _add_subfield(self, connector: str = None):
@@ -650,8 +796,10 @@ class _FieldRow(QWidget):
         self._subfields_container.addWidget(sf)
         sf._btn_and.clicked.connect(lambda: self._on_add('and'))
         sf._btn_or.clicked.connect(lambda: self._on_add('or'))
+        sf._btn_not.clicked.connect(lambda: self._on_add('not'))
         sf._btn_del.clicked.connect(self._on_del)
         sf._edit.textChanged.connect(lambda _t: self._notify_changed())
+        sf._edit.returnPressed.connect(lambda: self._search_cb() if self._search_cb else None)
         self._update_del_btn()
         if connector is not None:
             def _give_focus(edit=sf._edit):
@@ -684,6 +832,7 @@ class _FieldRow(QWidget):
             is_last = (i == len(self._subfields) - 1)
             sf._btn_and.setVisible(is_last)
             sf._btn_or.setVisible(is_last)
+            sf._btn_not.setVisible(is_last)
             sf._btn_del.setVisible(is_last)
 
     def _update_del_btn(self):
@@ -723,6 +872,9 @@ class _FieldRow(QWidget):
 
     def set_changed_callback(self, cb):
         self._changed_cb = cb
+
+    def set_search_callback(self, cb):
+        self._search_cb = cb
 
     def set_scroll_area(self, scroll):
         self._scroll_area = scroll
@@ -790,8 +942,10 @@ class _FieldRow(QWidget):
                 if not val:
                     continue
                 connector = sf._connector if i > 0 else 'and'
-                result.append({'field': self._field, 'op': 'contains',
-                                'value': val, 'link': connector})
+                op = 'not_contains' if connector == 'not' else 'contains'
+                link = 'and' if connector == 'not' else connector
+                result.append({'field': self._field, 'op': op,
+                                'value': val, 'link': link})
             return result
         else:
             op = self._op_combo.currentData() or 'contains'
@@ -832,11 +986,15 @@ class LibraryWindow(QWidget):
         self.setWindowModality(Qt.NonModal)
         self.setMinimumSize(400, 300)
 
-        self._db = None           # LibraryDB instance
-        self._rows: list = []     # dernière liste de résultats (sqlite3.Row)
+        self._db = None            # LibraryDB instance
+        self._rows: list = []      # résultats courants pour l'export (sqlite3.Row)
+        self._main_rows: list = [] # cache des sqlite3.Row du tableau complet
+        self._filter_active = False  # True si _filter_table est visible
         self._scan_worker = None
         self._load_worker = None
         self._load_overlay_holder = [None]
+        self._load_cancel_holder = [None]
+        self._load_cancelled = False
         self._load_pending_filepath = None
         self._preview_worker = None
         self._preview_pixmap = None
@@ -845,6 +1003,8 @@ class LibraryWindow(QWidget):
         self._prewarmed = False   # True = créée en avance, pas encore montrée
         self._visible_cols: list[str] = [c[1] for c in _DEFAULT_COLUMNS]
         self._ignore_section_moved = False  # True pendant les rebuilds programmatiques
+        self._empty_text = _('library.cell_not_set')
+        self._empty_num  = _('library.cell_not_set_num')
 
         self._build_ui()
         self._retranslate()
@@ -852,6 +1012,7 @@ class LibraryWindow(QWidget):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self._first_show = True
+        self.setAcceptDrops(True)
 
     # ── Cycle de vie ──────────────────────────────────────────────────────────
 
@@ -865,6 +1026,22 @@ class LibraryWindow(QWidget):
             QTimer.singleShot(0, self._on_first_show)
         else:
             QTimer.singleShot(50, self._debug_sizes)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            urls = event.mimeData().urls()
+            if any(u.toLocalFile().lower().endswith('.mvdb') for u in urls):
+                event.acceptProposedAction()
+                return
+        event.ignore()
+
+    def dropEvent(self, event):
+        urls = event.mimeData().urls()
+        for url in urls:
+            path = url.toLocalFile()
+            if path.lower().endswith('.mvdb'):
+                self._action_open_db(path)
+                break
 
     def _on_first_show(self):
         self.showMaximized()
@@ -900,11 +1077,13 @@ class LibraryWindow(QWidget):
         tb_line1.setSpacing(6)
 
         # Boutons visibles sans DB
-        self._btn_new_db  = QPushButton()
-        self._btn_open_db = QPushButton()
+        self._btn_new_db      = QPushButton()
+        self._btn_open_db     = QPushButton()
+        self._btn_recent_dbs  = QPushButton()
         self._btn_new_db.clicked.connect(self._action_new_db)
         self._btn_open_db.clicked.connect(self._action_open_db)
-        for btn in (self._btn_new_db, self._btn_open_db):
+        self._btn_recent_dbs.clicked.connect(self._action_recent_dbs)
+        for btn in (self._btn_new_db, self._btn_open_db, self._btn_recent_dbs):
             tb_line1.addWidget(btn)
 
         # Boutons visibles avec DB
@@ -965,9 +1144,9 @@ class LibraryWindow(QWidget):
         root.addWidget(self._toolbar)
 
         # ── Séparateur ────────────────────────────────────────────────────
-        sep = QFrame()
-        sep.setFrameShape(QFrame.HLine)
-        root.addWidget(sep)
+        self._toolbar_sep = QFrame()
+        self._toolbar_sep.setFrameShape(QFrame.HLine)
+        root.addWidget(self._toolbar_sep)
 
         # ── Splitter principal (recherche | tableau) ───────────────────────
         self._splitter = QSplitter(Qt.Horizontal)
@@ -1013,6 +1192,7 @@ class LibraryWindow(QWidget):
         for i18n_key, field in _ALL_FIELDS:
             fr = _FieldRow(i18n_key, field, self._criteria_container)
             fr.set_changed_callback(self._update_search_buttons)
+            fr.set_search_callback(self._do_search)
             fr.set_scroll_area(self._criteria_scroll)
             self._field_rows.append(fr)
             self._criteria_layout.addWidget(fr)
@@ -1034,12 +1214,42 @@ class LibraryWindow(QWidget):
         self._preview_label = _PreviewLabel()
         prev_layout.addWidget(self._preview_label)
 
-        sep_prev = QFrame()
-        sep_prev.setFrameShape(QFrame.HLine)
-        prev_layout.addWidget(sep_prev)
+        # Infos fichier (chemin, taille, pages) — sous la couverture
+        self._preview_path_lbl = QLabel()
+        self._preview_path_lbl.setWordWrap(True)
+        self._preview_path_lbl.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        self._preview_path_lbl.setOpenExternalLinks(False)
+        self._preview_path_lbl.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+        self._preview_path_lbl.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._preview_path_lbl.customContextMenuRequested.connect(lambda pos: self._meta_label_context_menu(self._preview_path_lbl, pos))
+        self._preview_path_lbl.linkActivated.connect(self._preview_open_in_explorer)
+        self._preview_path_lbl.hide()
+        prev_layout.addWidget(self._preview_path_lbl)
+
+        self._preview_size_lbl = QLabel()
+        self._preview_size_lbl.setAlignment(Qt.AlignHCenter)
+        self._preview_size_lbl.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+        self._preview_size_lbl.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._preview_size_lbl.customContextMenuRequested.connect(lambda pos: self._meta_label_context_menu(self._preview_size_lbl, pos))
+        self._preview_size_lbl.hide()
+        prev_layout.addWidget(self._preview_size_lbl)
+
+        self._preview_pages_lbl = QLabel()
+        self._preview_pages_lbl.setAlignment(Qt.AlignHCenter)
+        self._preview_pages_lbl.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+        self._preview_pages_lbl.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._preview_pages_lbl.customContextMenuRequested.connect(lambda pos: self._meta_label_context_menu(self._preview_pages_lbl, pos))
+        self._preview_pages_lbl.hide()
+        prev_layout.addWidget(self._preview_pages_lbl)
+
+        self._preview_abs_path: str | None = None  # mémorise le chemin pour l'explorateur
+
+        self._sep_info = QFrame()
+        self._sep_info.setFrameShape(QFrame.HLine)
+        prev_layout.addWidget(self._sep_info)
 
         # Métadonnées scrollables
-        self._meta_scroll = QScrollArea()
+        self._meta_scroll = _FitScrollArea()
         self._meta_scroll.setWidgetResizable(True)
         self._meta_scroll.setFrameShape(QFrame.NoFrame)
         self._meta_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -1082,23 +1292,73 @@ class LibraryWindow(QWidget):
         self._table.horizontalHeader().customContextMenuRequested.connect(self._on_header_context_menu)
         self._table.horizontalHeader().sectionMoved.connect(self._on_section_moved)
         self._table.horizontalHeader().setMouseTracking(True)
-        self._overlay_tip.track(self._table.horizontalHeader(), '')
         self._overlay_tip.track(self._btn_export, '')
         self._table.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self._table.verticalHeader().setDefaultSectionSize(22)
         self._table.verticalHeader().setVisible(False)
         self._table.doubleClicked.connect(self._on_double_click)
+        self._table.enter_pressed.connect(self._open_in_mosaicview)
         self._table.setContextMenuPolicy(Qt.CustomContextMenu)
         self._table.customContextMenuRequested.connect(self._on_context_menu)
         self._table.itemSelectionChanged.connect(self._on_selection_changed)
-        self._rebuild_columns()
         right_layout.addWidget(self._table)
 
+        # Tableau filtré — même config, masqué par défaut
+        self._filter_table = _LibraryTable(0, 0)
+        self._filter_table.setAlternatingRowColors(True)
+        self._filter_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self._filter_table.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self._filter_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self._filter_table.setSortingEnabled(True)
+        self._filter_table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        self._filter_table.horizontalHeader().setStretchLastSection(False)
+        self._filter_table.horizontalHeader().setSectionsMovable(True)
+        self._filter_table.horizontalHeader().setContextMenuPolicy(Qt.CustomContextMenu)
+        self._filter_table.horizontalHeader().customContextMenuRequested.connect(self._on_header_context_menu)
+        self._filter_table.horizontalHeader().setMouseTracking(True)
+        self._filter_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self._filter_table.verticalHeader().setDefaultSectionSize(22)
+        self._filter_table.verticalHeader().setVisible(False)
+        self._filter_table.doubleClicked.connect(self._on_double_click)
+        self._filter_table.enter_pressed.connect(self._open_in_mosaicview)
+        self._filter_table.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._filter_table.customContextMenuRequested.connect(self._on_context_menu)
+        self._filter_table.itemSelectionChanged.connect(self._on_selection_changed)
+        self._filter_table.setVisible(False)
+        right_layout.addWidget(self._filter_table)
+
+        _empty_delegate = _EmptyDelegate(
+            lambda: self._empty_text,
+            lambda: self._empty_num,
+        )
+        self._table.setItemDelegate(_empty_delegate)
+        self._filter_table.setItemDelegate(_empty_delegate)
+        self._empty_delegate = _empty_delegate  # anti-GC
+
+        from modules.qt.overlay_tooltip_qt import _CellTooltipFilter, _FixedTooltipFilter
+        _cell_tip_filter = _CellTooltipFilter(self._overlay_tip, self)
+        self._table.viewport().setMouseTracking(True)
+        self._filter_table.viewport().setMouseTracking(True)
+        self._table.viewport().installEventFilter(_cell_tip_filter)
+        self._filter_table.viewport().installEventFilter(_cell_tip_filter)
+        self._cell_tip_filter = _cell_tip_filter  # anti-GC
+
+        self._header_tip_filter = _FixedTooltipFilter(self._overlay_tip, '')
+        self._table.horizontalHeader().viewport().setMouseTracking(True)
+        self._table.horizontalHeader().viewport().installEventFilter(self._header_tip_filter)
+        self._btn_export_tip_filter = _FixedTooltipFilter(self._overlay_tip, '')
+        self._overlay_tip.track(self._btn_export, '')
+
+        self._rebuild_columns()
         self._splitter.addWidget(right_panel)
 
         # Boutons toolbar
         self._btn_mark_read.clicked.connect(lambda: self._set_read(True))
         self._btn_mark_unread.clicked.connect(lambda: self._set_read(False))
+
+    @property
+    def _active_table(self):
+        return self._filter_table if self._filter_active else self._table
 
     # ── Menu Base de données (appelé depuis menubar) ───────────────────────
 
@@ -1110,6 +1370,7 @@ class LibraryWindow(QWidget):
         actions = [
             ('library.db_new',          self._action_new_db),
             ('library.db_open',         self._action_open_db),
+            ('library.db_close',        self._action_close_db),
             None,
             ('library.db_rename',       self._action_rename_db),
             ('library.db_add_directory',self._action_add_directory),
@@ -1147,11 +1408,62 @@ class LibraryWindow(QWidget):
     def _do_search(self):
         if not self._db:
             return
-        self._db.reopen()
         criteria = [c for fr in self._field_rows for c in fr.to_criteria()]
         try:
-            self._rows = self._db.search(criteria)
-            self._populate_table(self._rows)
+            # Mémoriser la sélection courante avant de changer de tableau
+            cur = self._active_table.currentItem()
+            cur_row_id = cur.data(Qt.UserRole) if cur else None
+            cur_col    = self._active_table.currentColumn() if cur else 0
+
+            if criteria:
+                self._db.reopen()
+                self._rows = self._db.search(criteria)
+                self._populate_filter_table(self._rows)
+                # Bloquer les signaux pendant le changement de visibilité
+                self._filter_table.blockSignals(True)
+                self._table.blockSignals(True)
+                self._table.setVisible(False)
+                self._filter_table.setVisible(True)
+                self._filter_active = True
+                self._table.blockSignals(False)
+                self._filter_table.blockSignals(False)
+                # Restaurer la sélection dans _filter_table si la ligne y existe
+                if cur_row_id is not None:
+                    self._restore_cell(cur_row_id, cur_col)
+            else:
+                # Mémoriser la sélection du tableau filtré avant de le masquer
+                filter_cur = self._filter_table.currentItem()
+                filter_row_id = filter_cur.data(Qt.UserRole) if filter_cur else None
+                filter_col    = self._filter_table.currentColumn() if filter_cur else 0
+                # Bloquer les signaux pendant le changement de visibilité
+                self._filter_table.blockSignals(True)
+                self._table.blockSignals(True)
+                self._filter_table.setVisible(False)
+                self._filter_table.setRowCount(0)
+                self._filter_active = False
+                if self._table.rowCount() == 0:
+                    self._table.blockSignals(False)
+                    self._filter_table.blockSignals(False)
+                    # tableau principal vide (premier chargement ou après scan) — on recharge
+                    self._db.reopen()
+                    self._main_rows = self._db.search([])
+                    self._rows = self._main_rows
+                    self._populate_table(self._rows)
+                else:
+                    # tableau principal déjà construit — affichage instantané
+                    self._rows = self._main_rows
+                    self._table.setVisible(True)
+                    self._table.blockSignals(False)
+                    self._filter_table.blockSignals(False)
+                    self._set_result_count(self._rows)
+                    self._btn_export.setVisible(len(self._rows) > 0)
+                    self._no_db_label.setVisible(False)
+                    # Restaurer dans _table la sélection du tableau filtré, sinon celle d'avant
+                    row_to_restore = filter_row_id if filter_row_id is not None else cur_row_id
+                    if row_to_restore is not None:
+                        self._restore_cell(row_to_restore, filter_col if filter_row_id is not None else cur_col)
+                    else:
+                        self._on_selection_changed()
         except Exception as e:
             self._show_error(str(e))
 
@@ -1171,19 +1483,19 @@ class LibraryWindow(QWidget):
     }
 
     def _rebuild_columns(self):
-        """Reconstruit les colonnes du tableau selon _visible_cols (ordre respecté)."""
+        """Reconstruit les colonnes des deux tableaux selon _visible_cols (ordre respecté)."""
         self._ignore_section_moved = True
         try:
             key_map = {f: k for k, f in _ALL_COLUMNS}
             visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
-            self._table.setColumnCount(len(visible))
-            self._table.setHorizontalHeaderLabels([_wt(k) for k, _f in visible])
-            self._table.horizontalHeader().setSortIndicator(
-                next((i for i, (_k, f) in enumerate(visible) if f == 'series'), 0),
-                Qt.AscendingOrder
-            )
-            for i, (_k, field) in enumerate(visible):
-                self._table.setColumnWidth(i, self._COL_WIDTHS.get(field, 120))
+            labels = [_wt(k) for k, _f in visible]
+            sort_col = next((i for i, (_k, f) in enumerate(visible) if f == 'series'), 0)
+            for tbl in (self._table, self._filter_table):
+                tbl.setColumnCount(len(visible))
+                tbl.setHorizontalHeaderLabels(labels)
+                tbl.horizontalHeader().setSortIndicator(sort_col, Qt.AscendingOrder)
+                for i, (_k, field) in enumerate(visible):
+                    tbl.setColumnWidth(i, self._COL_WIDTHS.get(field, 120))
         finally:
             self._ignore_section_moved = False
 
@@ -1208,7 +1520,8 @@ class LibraryWindow(QWidget):
         act_reset = QAction(_('library.reset_columns'), menu)
         act_reset.triggered.connect(self._action_reset_columns)
         menu.addAction(act_reset)
-        menu.exec(self._table.horizontalHeader().mapToGlobal(pos))
+        sender_header = self.sender()
+        menu.exec(sender_header.mapToGlobal(pos) if sender_header else self._table.horizontalHeader().mapToGlobal(pos))
 
     def _toggle_column(self, field: str):
         if field in self._visible_cols:
@@ -1224,22 +1537,26 @@ class LibraryWindow(QWidget):
                     insert_at = i + 1
             self._visible_cols.insert(insert_at, field)
         self._rebuild_columns()
-        self._populate_table(self._rows)
+        if self._filter_active:
+            self._populate_filter_table(self._rows)
+        else:
+            self._populate_table(self._rows)
         self._save_columns_config()
 
     def _on_section_moved(self, logical: int, old_visual: int, new_visual: int):
         """Synchronise _visible_cols avec l'ordre visuel après un déplacement de colonne."""
         if self._ignore_section_moved:
             return
-        header = self._table.horizontalHeader()
-        count = self._table.columnCount()
+        tbl = self._active_table
+        header = tbl.horizontalHeader()
+        count = tbl.columnCount()
         # Reconstruit _visible_cols dans l'ordre visuel courant
         # en lisant le champ (field) associé à chaque index logique via _label_to_field
         label_to_field = {_(k): f for k, f in _ALL_COLUMNS}
         new_order = []
         for vi in range(count):
             li = header.logicalIndex(vi)
-            item = self._table.horizontalHeaderItem(li)
+            item = tbl.horizontalHeaderItem(li)
             if item:
                 field = label_to_field.get(item.text())
                 if field:
@@ -1254,7 +1571,10 @@ class LibraryWindow(QWidget):
         self._table.horizontalHeader().reset()
         self._ignore_section_moved = False
         self._rebuild_columns()
-        self._populate_table(self._rows)
+        if self._filter_active:
+            self._populate_filter_table(self._rows)
+        else:
+            self._populate_table(self._rows)
         self._save_columns_config()
 
     def _save_columns_config(self):
@@ -1302,21 +1622,26 @@ class LibraryWindow(QWidget):
         str_val = str(val) if val not in (None, '', 0) or col not in (_EMPTY_TEXT_COLS | _EMPTY_NUM_COLS) else ''
         if not str_val and col in _EMPTY_TEXT_COLS:
             item = _TableItem('')
-            item.setText(_('library.cell_not_set'))
-            gray = '#999999'
-            item.setForeground(QColor(gray))
-            f = _get_font(9)
-            f.setItalic(True)
-            item.setFont(f)
+            item.setData(_EMPTY_ROLE, 'text')
         elif not str_val and col in _EMPTY_NUM_COLS:
             item = _TableItem('')
-            item.setText(_('library.cell_not_set_num'))
-            item.setForeground(QColor('#999999'))
-            item.setTextAlignment(Qt.AlignCenter)
+            item.setData(_EMPTY_ROLE, 'num')
         else:
             item = _TableItem(str_val)
         item.setData(Qt.UserRole, row_id)
         return item
+
+    def _set_result_count(self, rows):
+        from modules.qt.utils import format_file_size
+        count = len(rows)
+        total_size = sum(r['file_size'] for r in rows if r['file_size'])
+        size_str = format_file_size(total_size) if total_size else ''
+        if size_str:
+            text = f"{_('library.search_results_count', count=count)}  ({size_str})"
+        else:
+            text = _('library.search_results_count', count=count)
+        self._result_count_lbl.setText(text)
+        self._result_count_lbl.setVisible(True)
 
     def _populate_table(self, rows, overlay_holder=None):
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
@@ -1339,18 +1664,35 @@ class LibraryWindow(QWidget):
         self._table.setSortingEnabled(True)
         self._ignore_section_moved = False
         count = len(rows)
-        self._result_count_lbl.setText(_('library.search_results_count', count=count))
-        self._result_count_lbl.setVisible(True)
+        self._set_result_count(rows)
         self._btn_export.setVisible(count > 0)
         self._no_db_label.setVisible(False)
         self._table.setVisible(True)
+
+    def _populate_filter_table(self, rows):
+        key_map = {f: k for k, f in _ALL_COLUMNS}
+        visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
+        self._filter_table.setSortingEnabled(False)
+        self._filter_table.setColumnCount(len(visible))
+        self._filter_table.setHorizontalHeaderLabels([_wt(k) for k, _f in visible])
+        self._filter_table.setRowCount(0)
+        self._filter_table.setRowCount(len(rows))
+        for r, row in enumerate(rows):
+            for c, (_k, col) in enumerate(visible):
+                val = row[col] if col in row.keys() else None
+                self._filter_table.setItem(r, c, self._make_cell_item(col, val, row['id']))
+        self._filter_table.setSortingEnabled(True)
+        count = len(rows)
+        self._set_result_count(rows)
+        self._btn_export.setVisible(count > 0)
+        self._no_db_label.setVisible(False)
 
     # ── Actions tableau ────────────────────────────────────────────────────
 
     def _selected_ids(self) -> list[int]:
         seen = set()
         ids  = []
-        for item in self._table.selectedItems():
+        for item in self._active_table.selectedItems():
             row_id = item.data(Qt.UserRole)
             if row_id not in seen:
                 seen.add(row_id)
@@ -1363,38 +1705,54 @@ class LibraryWindow(QWidget):
         ids = self._selected_ids()
         if not ids:
             return
-        cur = self._table.currentItem()
+        cur = self._active_table.currentItem()
         cur_row_id = cur.data(Qt.UserRole) if cur else None
-        cur_col    = self._table.currentColumn() if cur else None
+        cur_col    = self._active_table.currentColumn() if cur else None
         try:
             self._db.set_read(ids, is_read)
-            self._do_search()
+            # Mettre à jour la colonne is_read dans _main_rows et les deux tableaux
+            ids_set = set(ids)
+            key_map = {f: k for k, f in _ALL_COLUMNS}
+            visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
+            read_col = next((c for c, (_k, f) in enumerate(visible) if f == 'is_read'), None)
+            # Mettre à jour les items is_read dans les deux tableaux
+            if read_col is not None:
+                val = 1 if is_read else 0
+                for tbl in (self._table, self._filter_table):
+                    for r in range(tbl.rowCount()):
+                        item0 = tbl.item(r, 0)
+                        if item0 and item0.data(Qt.UserRole) in ids_set:
+                            tbl.setItem(r, read_col,
+                                self._make_cell_item('is_read', val, item0.data(Qt.UserRole)))
             if cur_row_id is not None:
                 self._restore_cell(cur_row_id, cur_col)
         except Exception as e:
             self._show_error(str(e))
 
     def _restore_cell(self, row_id, col_idx):
-        for r in range(self._table.rowCount()):
-            item = self._table.item(r, 0)
+        tbl = self._active_table
+        for r in range(tbl.rowCount()):
+            item = tbl.item(r, 0)
             if item and item.data(Qt.UserRole) == row_id:
-                target = self._table.item(r, col_idx if col_idx is not None else 0)
+                target = tbl.item(r, col_idx if col_idx is not None else 0)
                 if target:
-                    self._table.setSelectionBehavior(QAbstractItemView.SelectItems)
-                    self._table.setCurrentItem(target)
-                    self._table.setSelectionBehavior(QAbstractItemView.SelectRows)
-                    self._table.scrollToItem(target)
+                    tbl.setSelectionBehavior(QAbstractItemView.SelectItems)
+                    tbl.setCurrentItem(target)
+                    tbl.setSelectionBehavior(QAbstractItemView.SelectRows)
+                    tbl.scrollToItem(target)
                 return
 
     def _on_selection_changed(self):
         ids = self._selected_ids()
         if len(ids) == 1:
-            self._start_preview_worker(ids[0])
             row = next((r for r in self._rows if r['id'] == ids[0]), None)
+            self._start_preview_worker(ids[0], row)
             self._populate_meta(row)
         else:
             self._cancel_preview()
             self._preview_label.clear_pixmap()
+            self._preview_file_missing = False
+            self._update_preview_info(None, None)
             self._populate_meta(None)
 
     def _cancel_preview(self):
@@ -1403,14 +1761,22 @@ class LibraryWindow(QWidget):
             self._preview_worker.wait()
             self._preview_worker = None
 
-    def _start_preview_worker(self, comic_id: int):
+    def _start_preview_worker(self, comic_id: int, row=None):
         self._cancel_preview()
         if not self._db:
             return
         abs_path = self._db.get_absolute_path(comic_id)
         if not abs_path or not os.path.isfile(abs_path):
-            self._preview_label.clear()
+            from modules.qt.font_manager_qt import get_current_font
+            self._preview_label.show_unavailable(
+                _('library.preview_unavailable'),
+                font=get_current_font(11),
+            )
+            self._preview_file_missing = True
+            self._update_preview_info(row, None)
             return
+        self._preview_file_missing = False
+        self._update_preview_info(row, abs_path)
         pw = max(self._preview_panel.width() - 16, 50)
         ph = max(self._preview_panel.height() - 16, 50)
         worker = _PreviewWorker(abs_path, pw, ph)
@@ -1423,6 +1789,88 @@ class LibraryWindow(QWidget):
             self._preview_label.clear_pixmap()
         else:
             self._preview_label.set_source_pixmap(pixmap)
+
+    def _meta_label_context_menu(self, label: QLabel, pos):
+        selected = label.selectedText()
+        if not selected:
+            return
+        theme = get_current_theme()
+        sep = theme.get("separator", "#aaaaaa")
+        bg  = theme.get("toolbar_bg", theme["bg"])
+        fg  = theme["text"]
+        font = _get_font(9)
+        menu = QMenu(self)
+        menu.setFont(font)
+        menu.setStyleSheet(
+            f"QMenu {{ background: {bg}; color: {fg}; border: 1px solid {sep};"
+            f" font-family: '{font.family()}'; font-size: {font.pointSize()}pt; }} "
+            f"QMenu::item:selected {{ background: #3399ff; color: #ffffff; }}"
+        )
+        act_copy = QAction(_('buttons.copy'), menu)
+        act_copy.triggered.connect(lambda: QApplication.clipboard().setText(selected))
+        menu.addAction(act_copy)
+        menu.exec(label.mapToGlobal(pos))
+
+    def _preview_open_in_explorer(self, _url):
+        if not self._preview_abs_path:
+            return
+        path = self._preview_abs_path.replace('/', '\\')
+        _explorer_select(path)
+
+    def _update_preview_info(self, row, abs_path: str | None):
+        """Met à jour chemin / taille / pages sous la couverture. row peut être None."""
+        from modules.qt.utils import format_file_size
+        theme = get_current_theme()
+        link_color = theme.get('link', '#4a9eff')
+        fg = theme['text']
+        font = _get_font(8)
+
+        self._preview_abs_path = abs_path
+        any_visible = False
+
+        if abs_path:
+            path_escaped = abs_path.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+            self._preview_path_lbl.setText(
+                f'<a href="file" style="color:{link_color};">{path_escaped}</a>'
+            )
+            self._preview_path_lbl.setFont(font)
+            self._preview_path_lbl.show()
+            any_visible = True
+        else:
+            self._preview_path_lbl.hide()
+
+        if row is not None:
+            size_val = row['file_size'] if 'file_size' in row.keys() else None
+            pages_val = row['page_count'] if 'page_count' in row.keys() else None
+
+            if size_val:
+                lbl_size = _('library.col_file_size')
+                self._preview_size_lbl.setText(
+                    f'<span style="color:{fg};">{lbl_size} : {format_file_size(int(size_val))}</span>'
+                )
+                self._preview_size_lbl.setTextFormat(Qt.RichText)
+                self._preview_size_lbl.setFont(font)
+                self._preview_size_lbl.show()
+                any_visible = True
+            else:
+                self._preview_size_lbl.hide()
+
+            if pages_val:
+                lbl_pages = _('library.col_page_count')
+                self._preview_pages_lbl.setText(
+                    f'<span style="color:{fg};">{lbl_pages} : {pages_val}</span>'
+                )
+                self._preview_pages_lbl.setTextFormat(Qt.RichText)
+                self._preview_pages_lbl.setFont(font)
+                self._preview_pages_lbl.show()
+                any_visible = True
+            else:
+                self._preview_pages_lbl.hide()
+        else:
+            self._preview_size_lbl.hide()
+            self._preview_pages_lbl.hide()
+
+        pass  # _sep_info toujours visible, stylé dans _retranslate
 
     def _populate_meta(self, row):
         # Vider
@@ -1496,8 +1944,10 @@ class LibraryWindow(QWidget):
             txt.setFont(font_normal)
             txt.setWordWrap(True)
             txt.setAlignment(Qt.AlignTop | Qt.AlignLeft)
-            txt.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            txt.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            txt.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+            txt.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+            txt.setContextMenuPolicy(Qt.CustomContextMenu)
+            txt.customContextMenuRequested.connect(lambda pos, w=txt: self._meta_label_context_menu(w, pos))
             txt.setStyleSheet(f"color: {fg};")
             r_lay.addWidget(txt, 1)
 
@@ -1515,21 +1965,22 @@ class LibraryWindow(QWidget):
         self._open_in_mosaicview()
 
     def _on_context_menu(self, pos):
-        col_idx = self._table.columnAt(pos.x())
-        row_idx = self._table.rowAt(pos.y())
+        tbl = self._active_table
+        col_idx = tbl.columnAt(pos.x())
+        row_idx = tbl.rowAt(pos.y())
         if row_idx < 0 or col_idx < 0:
             return
-        clicked_item = self._table.item(row_idx, col_idx)
+        clicked_item = tbl.item(row_idx, col_idx)
         if clicked_item is None:
             return
 
         # Sélectionner uniquement la cellule cliquée (sans changer la sélection de lignes)
-        self._table.setSelectionBehavior(QAbstractItemView.SelectItems)
-        self._table.setCurrentItem(clicked_item)
-        self._table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        tbl.setSelectionBehavior(QAbstractItemView.SelectItems)
+        tbl.setCurrentItem(clicked_item)
+        tbl.setSelectionBehavior(QAbstractItemView.SelectRows)
 
         # row_id depuis UserRole de n'importe quel item de cette ligne
-        row_id = self._table.item(row_idx, 0).data(Qt.UserRole) if self._table.item(row_idx, 0) else None
+        row_id = tbl.item(row_idx, 0).data(Qt.UserRole) if tbl.item(row_idx, 0) else None
         if row_id is None:
             return
 
@@ -1582,7 +2033,7 @@ class LibraryWindow(QWidget):
             act_fetch = QAction(_('library.fetch_metadata'), menu)
             act_fetch.triggered.connect(self._action_fetch_metadata)
             menu.addAction(act_fetch)
-        menu.exec(self._table.viewport().mapToGlobal(pos))
+        menu.exec(tbl.viewport().mapToGlobal(pos))
 
     def _open_in_mosaicview(self):
         if not self._db:
@@ -1615,9 +2066,7 @@ class LibraryWindow(QWidget):
         abs_path = self._db.get_absolute_path(ids[0])
         if not abs_path:
             return
-        folder = os.path.dirname(abs_path)
-        if os.path.isdir(folder):
-            subprocess.Popen(['explorer', folder])
+        _explorer_select(abs_path.replace('/', '\\'))
 
     # ── Actions DB ────────────────────────────────────────────────────────
 
@@ -1639,6 +2088,12 @@ class LibraryWindow(QWidget):
             self._db = LibraryDB.create(filepath, master_dir)
             for d in (extra_dirs or []):
                 self._db.add_directory(d)
+            self._rows = []
+            self._main_rows = []
+            self._filter_active = False
+            self._filter_table.setVisible(False)
+            self._filter_table.setRowCount(0)
+            self._table.setRowCount(0)
             # Nouvelle DB : pas de config sauvegardée, on repart des défauts
             self._visible_cols = [c[1] for c in _DEFAULT_COLUMNS]
             self._rebuild_columns()
@@ -1656,97 +2111,112 @@ class LibraryWindow(QWidget):
             )
         if not filepath:
             return
-        if self._load_worker and self._load_worker.isRunning():
+        if self._load_worker:
             return
 
-        from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
-        self._no_db_label.setVisible(False)
-        _show_ct(self._right_panel, _('library.loading', percent=0), self._load_overlay_holder)
-
-        self._load_pending_filepath = filepath
-        self._load_worker = _LoadWorker(filepath)
-        self._load_worker.progress.connect(self._on_load_progress)
-        self._load_worker.finished.connect(self._on_load_finished)
-        self._load_worker.error.connect(self._on_load_error)
-        self._load_worker.start()
-
-    def _on_load_progress(self, pct: int):
-        from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
-        _show_ct(self._right_panel, _('library.loading', percent=pct), self._load_overlay_holder)
-        lbl = self._load_overlay_holder[0]
-        if lbl:
-            self._right_panel.repaint()
-
-    def _on_load_finished(self, rows):
-        from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
         from modules.qt.library_db import LibraryDB
+        from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
         try:
             if self._db:
                 self._db.close()
-            self._db = LibraryDB.open(self._load_pending_filepath)
-            if not self._load_columns_config():
-                self._visible_cols = [c[1] for c in _DEFAULT_COLUMNS]
-            self._rows = rows
-            self._retranslate()
-            self._ignore_section_moved = True
-            self._table.horizontalHeader().reset()
-            self._ignore_section_moved = False
-            self._rebuild_columns()
-            QTimer.singleShot(0, lambda: self._populate_table_batched(rows))
+            self._db = LibraryDB.open(filepath)
         except Exception as e:
-            _hide_ct(self._right_panel, self._load_overlay_holder)
             self._show_error(str(e))
+            return
+
+        from modules.qt.recent_dbs import add_to_recent_dbs
+        add_to_recent_dbs(filepath)
+
+        if not self._load_columns_config():
+            self._visible_cols = [c[1] for c in _DEFAULT_COLUMNS]
+        self._rows = []
+        self._main_rows = []
+        self._retranslate()
+        self._ignore_section_moved = True
+        self._table.horizontalHeader().reset()
+        self._ignore_section_moved = False
+        self._rebuild_columns()
+        self._table.setSortingEnabled(False)
+        self._table.setVisible(False)
+        self._no_db_label.setVisible(False)
+
+        total, cursor = self._db.search_cursor([])
+        self._table.setRowCount(total)
+        key_map = {f: k for k, f in _ALL_COLUMNS}
+        visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
+        self._load_cancel_holder = [None]
+        self._load_cancelled = False
+        _show_ct(self._right_panel, _('library.loading', percent=0), self._load_overlay_holder)
+        from modules.qt.web_import_qt import _show_cancel_item
+        _show_cancel_item(
+            self._right_panel,
+            f"[ {_('buttons.cancel')} ]",
+            self._load_cancel_holder,
+            self._cancel_db_load,
+            self._load_overlay_holder[0],
+        )
+
+        # _load_worker utilisé comme guard (pas un QThread ici)
+        self._load_worker = True
+        self._load_pending_filepath = filepath
+
+        def _load_batch(start=0):
+            if self._load_cancelled:
+                return
+            batch = cursor.fetchmany(500)
+            if not batch:
+                # Terminé
+                self._main_rows = self._rows
+                self._table.setSortingEnabled(True)
+                self._ignore_section_moved = False
+                self._set_result_count(self._rows)
+                self._btn_export.setVisible(len(self._rows) > 0)
+                self._table.setVisible(True)
+                self._load_worker = None
+                from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
+                QTimer.singleShot(300, lambda: _hide_ct(self._right_panel, self._load_overlay_holder))
+                QTimer.singleShot(300, lambda: _hide_ct(self._right_panel, self._load_cancel_holder))
+                return
+            for r, row in enumerate(batch):
+                real_r = start + r
+                for c, (_k, col) in enumerate(visible):
+                    val = row[col] if col in row.keys() else None
+                    self._table.setItem(real_r, c, self._make_cell_item(col, val, row['id']))
+            self._rows.extend(batch)
+            inserted = start + len(batch)
+            pct = int(inserted * 100 / total) if total > 0 else 100
+            _show_ct(self._right_panel, _('library.loading', percent=pct), self._load_overlay_holder)
+            _show_cancel_item(
+                self._right_panel,
+                f"[ {_('buttons.cancel')} ]",
+                self._load_cancel_holder,
+                self._cancel_db_load,
+                self._load_overlay_holder[0],
+            )
+            QTimer.singleShot(0, lambda: _load_batch(inserted))
+
+        QTimer.singleShot(0, lambda: _load_batch(0))
 
     def _on_load_error(self, msg: str):
         from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
         _hide_ct(self._right_panel, self._load_overlay_holder)
+        _hide_ct(self._right_panel, self._load_cancel_holder)
         self._no_db_label.setVisible(True)
         self._show_error(msg)
 
-    def _populate_table_batched(self, rows, batch_size=500, _start=0):
-        """Peuple le tableau par batches via QTimer pour laisser l'UI peindre entre chaque."""
-        from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct, hide_canvas_text as _hide_ct
-        total = len(rows)
-
-        if _start == 0:
-            self._ignore_section_moved = True
-            self._table.setSortingEnabled(False)
-            self._table.setRowCount(0)
-            self._table.setRowCount(total)
-            key_map = {f: k for k, f in _ALL_COLUMNS}
-            self._populate_visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
-
-        visible = self._populate_visible
-        end = min(_start + batch_size, total)
-
-        for r in range(_start, end):
-            row = rows[r]
-            for c, (_k, col) in enumerate(visible):
-                val = row[col] if col in row.keys() else None
-                self._table.setItem(r, c, self._make_cell_item(col, val, row['id']))
-
-        pct = int(end * 100 / total) if total > 0 else 100
-        _show_ct(self._right_panel, _('library.loading', percent=pct), self._load_overlay_holder)
-        lbl = self._load_overlay_holder[0]
-        if lbl:
-            lbl.raise_()
-            lbl.repaint()
-
-        if end < total:
-            QTimer.singleShot(0, lambda: self._populate_table_batched(rows, batch_size, end))
-        else:
-            self._table.setSortingEnabled(True)
-            self._ignore_section_moved = False
-            self._result_count_lbl.setText(_('library.search_results_count', count=total))
-            self._result_count_lbl.setVisible(True)
-            self._btn_export.setVisible(total > 0)
-            self._no_db_label.setVisible(False)
-            self._table.setVisible(True)
-            lbl = self._load_overlay_holder[0]
-            if lbl:
-                lbl.raise_()
-                lbl.repaint()
-            QTimer.singleShot(300, lambda: _hide_ct(self._right_panel, self._load_overlay_holder))
+    def _cancel_db_load(self):
+        from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
+        self._load_cancelled = True
+        self._load_worker = None
+        _hide_ct(self._right_panel, self._load_overlay_holder)
+        _hide_ct(self._right_panel, self._load_cancel_holder)
+        self._table.setVisible(False)
+        self._table.setRowCount(0)
+        self._rows = []
+        self._main_rows = []
+        self._set_result_count([])
+        self._btn_export.setVisible(False)
+        self._no_db_label.setVisible(True)
 
     def _action_rename_db(self):
         if not self._db:
@@ -1826,6 +2296,12 @@ class LibraryWindow(QWidget):
     def _on_scan_finished(self, stats):
         from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
         _hide_ct(self._right_panel, self._scan_overlay_holder)
+        # invalide le cache — les données ont changé, on vide et reconstruit le tableau principal
+        self._main_rows = []
+        self._table.setRowCount(0)
+        self._filter_active = False
+        self._filter_table.setVisible(False)
+        self._filter_table.setRowCount(0)
         n, u, d = stats['new'], stats['updated'], stats['deleted']
         if n == 0 and u == 0 and d == 0:
             msg = _('library.scan_nothing')
@@ -1853,14 +2329,52 @@ class LibraryWindow(QWidget):
         self._db.close()
         self._db = None
         self._rows = []
+        self._main_rows = []
+        self._filter_active = False
+        self._filter_table.setVisible(False)
+        self._filter_table.setRowCount(0)
         self._table.setRowCount(0)
         self._retranslate()
+
+    def _action_recent_dbs(self):
+        from modules.qt.recent_dbs import get_recent_dbs, remove_from_recent_dbs, clear_recent_dbs
+        recent = get_recent_dbs()
+        if not recent:
+            return
+        menu = QMenu(self)
+        theme = get_current_theme()
+        font = _get_font(9)
+        menu.setFont(font)
+        menu.setStyleSheet(
+            f"QMenu {{ background: {theme['bg']}; color: {theme['text']}; "
+            f"border: 1px solid {theme.get('separator','#aaaaaa')}; "
+            f"font-family: '{font.family()}'; font-size: {font.pointSize()}pt; }} "
+            f"QMenu::item:selected {{ background: #3399ff; color: #ffffff; }} "
+            f"QMenu::item:disabled {{ color: {theme.get('disabled','#888888')}; }}"
+        )
+        for fp in recent:
+            import os as _os
+            act = menu.addAction(_os.path.basename(fp))
+            act.setToolTip(fp)
+            if not _os.path.exists(fp):
+                act.setEnabled(False)
+            else:
+                act.triggered.connect(lambda checked=False, p=fp: self._action_open_db(p))
+        menu.addSeparator()
+        clear_act = menu.addAction(_('library.db_recent_clear'))
+        def _clear():
+            clear_recent_dbs()
+            self._update_toolbar_visibility()
+        clear_act.triggered.connect(_clear)
+        menu.exec(self._btn_recent_dbs.mapToGlobal(
+            self._btn_recent_dbs.rect().bottomLeft()
+        ))
 
     def _action_delete_db(self):
         if not self._db:
             return
         from modules.qt.library_dialogs import ConfirmDeleteDialog
-        dlg = ConfirmDeleteDialog(self._db.name, parent=self)
+        dlg = ConfirmDeleteDialog(self._db.db_path, parent=self)
         dlg.accepted.connect(lambda: self._on_delete_accepted(dlg))
         dlg.show()
         dlg.raise_()
@@ -1874,12 +2388,19 @@ class LibraryWindow(QWidget):
         self._db.close()
         self._db = None
         self._rows = []
+        self._main_rows = []
+        self._filter_active = False
+        self._filter_table.setVisible(False)
+        self._filter_table.setRowCount(0)
         self._table.setRowCount(0)
         try:
-            if os.path.exists(db_path):
-                os.remove(db_path)
-            if os.path.exists(old_path):
-                os.remove(old_path)
+            import send2trash
+            db_path_norm  = os.path.normpath(db_path)
+            old_path_norm = os.path.normpath(old_path)
+            if os.path.exists(db_path_norm):
+                send2trash.send2trash(db_path_norm)
+            if os.path.exists(old_path_norm):
+                send2trash.send2trash(old_path_norm)
         except Exception as e:
             self._show_error(str(e))
         self._retranslate()
@@ -1889,6 +2410,9 @@ class LibraryWindow(QWidget):
         # Sans DB
         self._btn_new_db.setVisible(not has_db)
         self._btn_open_db.setVisible(not has_db)
+        from modules.qt.recent_dbs import get_recent_dbs
+        self._btn_recent_dbs.setVisible(not has_db)
+        self._btn_recent_dbs.setEnabled(bool(get_recent_dbs()))
         # Avec DB
         for btn in (self._btn_rename_db, self._btn_add_dir, self._btn_edit_master,
                     self._btn_scan, self._btn_open_exp, self._btn_close_db,
@@ -1909,6 +2433,7 @@ class LibraryWindow(QWidget):
         theme = get_current_theme()
         font9 = _get_font(9)
         font10 = _get_font(10)
+        self.setFont(font9)  # propage la police aux QMenu créés depuis cette fenêtre
         bg   = theme["bg"]
         fg   = theme["text"]
         sep  = theme.get("separator", "#aaaaaa")
@@ -1931,12 +2456,14 @@ class LibraryWindow(QWidget):
         )
 
         # Toolbar
-        self._toolbar.setStyleSheet(f"background: {alt}; border-bottom: 1px solid {sep};")
+        self._toolbar.setStyleSheet(f"background: {alt};")
+        self._toolbar_sep.setStyleSheet(f"color: {sep}; background: {sep}; max-height: 1px;")
         btn_ss = _btn_style(theme)
         sep_ss = f"QFrame {{ background: {sep}; max-width: 1px; margin: 4px 2px; }}"
         for btn, key in (
             (self._btn_new_db,      'library.db_new'),
             (self._btn_open_db,     'library.db_open'),
+            (self._btn_recent_dbs,  'library.db_recent'),
             (self._btn_rename_db,   'library.db_rename'),
             (self._btn_add_dir,     'library.db_add_directory'),
             (self._btn_edit_master, 'library.db_edit_master'),
@@ -1956,10 +2483,9 @@ class LibraryWindow(QWidget):
         self._btn_export.setStyleSheet(btn_ss)
         self._btn_export.setFont(font9)
         self._result_count_lbl.setFont(font9)
-        self._result_count_lbl.setStyleSheet(f"color: {fg};")
+        self._result_count_lbl.setStyleSheet(f"color: {fg}; text-decoration: none;")
         if self._result_count_lbl.isVisible():
-            count = len(self._rows)
-            self._result_count_lbl.setText(_('library.search_results_count', count=count))
+            self._set_result_count(self._rows)
         self._update_toolbar_visibility()
 
         # Panneau recherche
@@ -1968,6 +2494,7 @@ class LibraryWindow(QWidget):
         self._criteria_container.setStyleSheet(f"background: {alt};")
 
         self._preview_panel.setStyleSheet(f"background: {bg};")
+        self._sep_info.setStyleSheet(f"background: {sep}; max-height: 1px; margin: 2px 0px;")
         self._meta_content.setStyleSheet(f"background: {bg};")
         self._meta_scroll.setStyleSheet(f"QScrollArea {{ background: {bg}; border: none; }}")
 
@@ -1985,16 +2512,15 @@ class LibraryWindow(QWidget):
         self._no_db_label.setFont(_get_font(18))
         self._no_db_label.setStyleSheet(f"color: {empty_color}; background: {bg};")
         self._no_db_label.setVisible(self._db is None)
-        self._table.setVisible(self._db is not None)
+        self._table.setVisible(self._db is not None and not self._filter_active)
+        self._filter_table.setVisible(self._db is not None and self._filter_active)
 
-        # Tableau
-        self._table.setStyleSheet(_tbl_style(theme))
+        # Tableau principal
+        tbl_style = _tbl_style(theme)
+        self._table.setStyleSheet(tbl_style)
         self._table.setFont(font9)
         self._table.horizontalHeader().setFont(font9)
-        self._overlay_tip.set_tracked_html(
-            _('library.table_header_tooltip').replace('\n', '<br>'),
-            widget=self._table.horizontalHeader()
-        )
+        self._header_tip_filter.set_html(_('library.table_header_tooltip').replace('\n', '<br>'))
         self._overlay_tip.set_tracked_html(
             _('library.export_results_tooltip').replace('\n', '<br>'),
             widget=self._btn_export
@@ -2005,6 +2531,12 @@ class LibraryWindow(QWidget):
         self._table.setHorizontalHeaderLabels(headers)
         self._ignore_section_moved = False
 
+        # Tableau filtré — même style et headers
+        self._filter_table.setStyleSheet(tbl_style)
+        self._filter_table.setFont(font9)
+        self._filter_table.horizontalHeader().setFont(font9)
+        self._filter_table.setHorizontalHeaderLabels(headers)
+
         # Critères
         for fr in self._field_rows:
             fr.retranslate()
@@ -2012,9 +2544,20 @@ class LibraryWindow(QWidget):
 
         self._update_search_buttons()
 
-        # Re-remplir le tableau pour mettre à jour les textes traduits et les polices
-        if self._rows:
-            self._populate_table(self._rows)
+        # Mettre à jour les 2 textes centralisés — le delegate les lit à chaque paint
+        self._empty_text = _('library.cell_not_set')
+        self._empty_num  = _('library.cell_not_set_num')
+        self._table.viewport().update()
+        self._filter_table.viewport().update()
+
+        # Rafraîchir les labels d'info preview (couleurs/police/textes traduits)
+        ids = self._selected_ids()
+        _cur_row = next((r for r in self._rows if r['id'] == ids[0]), None) if len(ids) == 1 else None
+        self._update_preview_info(_cur_row, self._preview_abs_path)
+
+        if getattr(self, '_preview_file_missing', False):
+            from modules.qt.font_manager_qt import get_current_font
+            self._preview_label.show_unavailable(_('library.preview_unavailable'), font=get_current_font(11))
 
     def _action_fetch_metadata(self):
         if not self._db or not self._parent_panel:
@@ -2050,8 +2593,9 @@ class LibraryWindow(QWidget):
         if not self._rows:
             self._show_error(_('library.export_no_data'))
             return
+        default_name = (self._db.name if self._db else '') + '.xlsx'
         path, _filter = QFileDialog.getSaveFileName(
-            self, _wt('library.export_save_title'), '',
+            self, _wt('library.export_save_title'), default_name,
             'Excel (*.xlsx)',
         )
         if not path:
@@ -2176,9 +2720,23 @@ class LibraryWindow(QWidget):
             _hide_ct(self._right_panel, _export_holder)
             count = len(self._rows)
             from modules.qt.dialogs_qt import InfoDialog
+            from modules.qt.state import get_current_theme as _gct
+            def _export_msg(c=count, p=path):
+                theme = _gct()
+                link_color = theme.get('link', '#4a9eff')
+                p_esc = p.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+                full = _('library.export_success', count=c, path=p_esc)
+                # Remplace le chemin en clair par un lien cliquable
+                full_html = full.replace(
+                    p_esc,
+                    f'<a href="file" style="color:{link_color};">{p_esc}</a>'
+                )
+                return full_html
             dlg = InfoDialog(self,
                              lambda: _wt('library.export_save_title'),
-                             lambda c=count, p=path: _('library.export_success', count=c, path=p))
+                             _export_msg)
+            dlg._lbl.linkActivated.connect(
+                lambda _url, p=path: _explorer_select(p.replace('/', '\\')))
             dlg.show()
             dlg.raise_()
             dlg.activateWindow()

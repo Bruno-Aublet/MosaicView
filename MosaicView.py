@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.3.1"
+__version__ = "1.3.2"
 
 import sys
 import os
@@ -656,6 +656,34 @@ class MainWindow(QMainWindow):
         if getattr(self, '_close_event_handled', False):
             event.accept()
             return
+
+        # Avertissement si une DB est ouverte et que l'utilisateur n'a pas encore confirmé
+        if not getattr(self, '_close_db_confirmed', False):
+            try:
+                from modules.qt.library_window import _library_window as _lib_win
+                db_open = _lib_win is not None and _lib_win._db is not None
+            except Exception:
+                db_open = False
+            if db_open:
+                event.ignore()
+                from modules.qt.dialogs_qt import ConfirmYNDialog
+                from modules.qt.localization import _, _wt
+                dlg = ConfirmYNDialog(
+                    self,
+                    lambda: _wt('library.close_warning_title'),
+                    lambda: _('library.close_warning_message'),
+                )
+                def _on_done(accepted):
+                    if accepted:
+                        self._close_db_confirmed = True
+                        self.close()
+                dlg.result_signal.connect(_on_done)
+                dlg.show()
+                dlg.raise_()
+                dlg.activateWindow()
+                return
+        self._close_db_confirmed = False  # reset pour la prochaine fois
+
         self._close_event_handled = True
 
         from modules.qt.file_close_qt import on_window_close
@@ -850,6 +878,21 @@ def main():
     # warmup_pdf_process()
     app.aboutToQuit.connect(shutdown_pdf_process)
 
+    def _cleanup_library():
+        from modules.qt import library_window as _lw
+        lw = _lw._library_window
+        if lw is not None:
+            lw._table.setRowCount(0)
+            lw._filter_table.setRowCount(0)
+            lw._rows = []
+            lw._main_rows = []
+            lw._empty_text_items = []
+            lw._empty_num_items = []
+            if lw._db:
+                lw._db.close()
+                lw._db = None
+    app.aboutToQuit.connect(_cleanup_library)
+
     # ── Focus initial ──────────────────────────────────────────────────────
     if win._panel._sidebar_visible:
         first = win._panel._icon_toolbar.get_first_icon() if win._panel._icon_toolbar else None
@@ -871,6 +914,23 @@ def main():
                 mb.setActiveAction(act)
                 QCoreApplication.sendEvent(mb, fake_esc)
             QTimer.singleShot(0, _close_menu)
+
+    # ── Ouverture via association de fichier Windows ───────────────────────
+    _argv_path = sys.argv[1] if len(sys.argv) > 1 else None
+    if _argv_path and os.path.isfile(_argv_path):
+        _ext = os.path.splitext(_argv_path)[1].lower()
+        _COMIC_EXTS = {'.cbz', '.cbr', '.cb7', '.cbt', '.epub', '.pdf',
+                       '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
+                       '.tiff', '.tif', '.ico'}
+        if _ext == '.mvdb':
+            def _open_mvdb():
+                from modules.qt.library_window import open_library_window
+                lib = open_library_window(parent_panel=win._panel)
+                if lib:
+                    lib._action_open_db(_argv_path)
+            QTimer.singleShot(200, _open_mvdb)
+        elif _ext in _COMIC_EXTS:
+            QTimer.singleShot(200, lambda: win._panel._load_files([_argv_path]))
 
     sys.exit(app.exec())
 

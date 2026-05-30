@@ -372,6 +372,36 @@ def _populate_library_menu(menu: QMenu, callbacks: dict):
     menu.addAction(act_open)
     menu.addSeparator()
 
+    # Bases de données récentes
+    from modules.qt.recent_dbs import get_recent_dbs, clear_recent_dbs
+    recent_dbs = get_recent_dbs()
+    recent_db_menu = QMenu(_loc("library.db_recent"), menu)
+    recent_db_menu.setEnabled(bool(recent_dbs))
+    if recent_dbs:
+        import os as _os
+        for fp in recent_dbs:
+            act = QAction(_os.path.basename(fp), recent_db_menu)
+            act.setToolTip(fp)
+            if not _os.path.exists(fp):
+                act.setEnabled(False)
+            else:
+                def _open_db(checked=False, p=fp):
+                    from modules.qt.library_window import open_library_window, _library_window as _lw
+                    lib = open_library_window()
+                    if lib:
+                        lib._action_open_db(p)
+                act.triggered.connect(_open_db)
+            recent_db_menu.addAction(act)
+        recent_db_menu.addSeparator()
+        def _clear_recent():
+            clear_recent_dbs()
+            from modules.qt.library_window import _library_window as _lw
+            if _lw:
+                _lw._update_toolbar_visibility()
+        recent_db_menu.addAction(_loc("library.db_recent_clear"), _clear_recent)
+    menu.addMenu(recent_db_menu)
+    menu.addSeparator()
+
     # Sous-menu Base de données (délégué à LibraryWindow si visible)
     from modules.qt.library_window import _library_window
     if _library_window is not None and not _library_window._prewarmed:
@@ -392,7 +422,7 @@ def _populate_library_menu(menu: QMenu, callbacks: dict):
             elif key == 'library.db_open':
                 act.triggered.connect(lambda: _open_then('_action_open_db'))
             menu.addAction(act)
-        for key in ('library.db_rename', 'library.db_add_directory',
+        for key in ('library.db_close', 'library.db_rename', 'library.db_add_directory',
                     'library.db_edit_master', 'library.db_scan',
                     'library.db_open_explorer', 'library.db_delete'):
             act = QAction(_loc(key), menu)
@@ -511,7 +541,7 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
         (_("menu.images"),   _populate_images_menu),
         (_("menu.archives"),   _populate_archives_menu),
         (_("comicvine.menu_label"), _populate_metadata_menu),
-        (_("library.menu_label"),  _populate_library_menu),
+        (_("library.menu_title"),  _populate_library_menu),
         (_("menu.system"),   _populate_system_menu),
         (_("menu.about"),    _populate_about_menu),
     ]

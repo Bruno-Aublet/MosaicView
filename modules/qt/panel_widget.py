@@ -266,6 +266,8 @@ class PanelWidget(QWidget):
 
         # ── Fichiers récents ──────────────────────────────────────────────────
         _recent_files_module.init_recent_files()
+        from modules.qt.recent_dbs import init_recent_dbs as _init_recent_dbs
+        _init_recent_dbs()
 
 
         # ── Layout principal du panneau ───────────────────────────────────────
@@ -1029,7 +1031,18 @@ class PanelWidget(QWidget):
             ).exec()
 
     def _clear_recent_files(self):
+        """Efface uniquement les comics récents (menu Fichiers récents)."""
         _recent_files_module.clear_recent_files()
+        self._main_window._sync_recent_menus()
+
+    def _clear_all_recent(self):
+        """Efface les comics ET les DBs récentes (bouton mode d'emploi)."""
+        _recent_files_module.clear_recent_files()
+        from modules.qt.recent_dbs import clear_recent_dbs as _clear_dbs
+        _clear_dbs()
+        from modules.qt.library_window import _library_window as _lw
+        if _lw:
+            _lw._update_toolbar_visibility()
         self._main_window._sync_recent_menus()
         _WarnDialog(
             self,
@@ -1039,9 +1052,9 @@ class PanelWidget(QWidget):
 
     def _guide_or_self(self):
         from modules.qt import user_guide_qt as _guide_mod
-        w = _guide_mod._help_window_ref
-        if w is not None and w.isVisible():
-            return w
+        for w in _guide_mod._help_windows.values():
+            if w is not None and w.isVisible():
+                return w
         return self
 
     def _clear_temp_files_with_message(self):

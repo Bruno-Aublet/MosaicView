@@ -1486,12 +1486,17 @@
   "library": {
     "window_title": "Taur Parth — {name}",
     "window_title_no_db": "Taur Parth",
+    "close_warning_title": " MosaicView",
+    "close_warning_message": "   .  MosaicView   .\n\n?",
     "menu_label": " ",
+    "menu_title": "",
     "tooltip": "   ",
     "db_menu": "",
     "db_new": " ...",
     "db_open": " ...",
     "db_close": "  ",
+    "db_recent": " ",
+    "db_recent_clear": "  ",
     "db_rename": "  ...",
     "db_add_directory": " ...",
     "db_edit_master": "   ...",
@@ -1512,8 +1517,8 @@
     "db_edit_master_label": "  :",
     "db_add_directory_title": "  ",
     "db_delete_title": " ",
-    "db_delete_message": "   ☠{name}☠?\n\n  .  .\n   .",
-    "db_delete_confirm": " ",
+    "db_delete_message": "      ",
+    "db_delete_confirm": "",
     "scan_title": "...",
     "scan_scanning": " {path}...",
     "scan_new": ": {filename}",
@@ -1576,6 +1581,7 @@
     "search_clear": "",
     "search_link_and": "",
     "search_link_or": "",
+    "search_link_not": "",
     "search_op_contains": "",
     "search_op_not_contains": " ",
     "search_op_is": "",
@@ -1616,6 +1622,8 @@
     "export_no_data": "  .",
     "export_hidden_cols_note": "    . ,    .",
     "export_progress": "\n {percent}%",
-    "export_saving": "\n..."
+    "export_saving": "\n...",
+    "db_delete_irreversible": "  .",
+    "preview_unavailable": " \n\n    ,     ."
   }
 }

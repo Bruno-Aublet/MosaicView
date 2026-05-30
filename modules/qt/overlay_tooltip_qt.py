@@ -12,9 +12,9 @@ Usage :
     tip.untrack(widget) # retire le suivi
 """
 
-from PySide6.QtWidgets import QLabel, QApplication
+from PySide6.QtWidgets import QLabel, QApplication, QTableWidget
 from PySide6.QtCore import Qt, QObject, QEvent
-from PySide6.QtGui import QCursor
+from PySide6.QtGui import QCursor, QFontMetrics
 
 
 class _MouseTracker(QObject):
@@ -50,8 +50,8 @@ class _MouseTracker(QObject):
             if html:
                 self._overlay.show_tooltip(html)
         elif t == QEvent.MouseMove:
-            if html and self._overlay._label.isVisible():
-                self._overlay._reposition()
+            if html:
+                self._overlay.show_tooltip(html)
         elif t == QEvent.Leave:
             self._overlay.hide_tooltip()
         return False  # ne pas consommer l'événement
@@ -168,3 +168,63 @@ class OverlayTooltip:
     def hide_tooltip(self):
         """Cache le tooltip."""
         self._label.hide()
+
+
+class _FixedTooltipFilter(QObject):
+    """Event filter pour un widget à texte fixe (header, bouton…). Suit la souris."""
+
+    def __init__(self, overlay: OverlayTooltip, html: str):
+        super().__init__()
+        self._overlay = overlay
+        self._html = html
+
+    def set_html(self, html: str):
+        self._html = html
+
+    def eventFilter(self, obj, event):
+        t = event.type()
+        if t in (QEvent.Enter, QEvent.MouseMove):
+            if self._html:
+                self._overlay.show_tooltip(self._html)
+        elif t == QEvent.Leave:
+            self._overlay.hide_tooltip()
+        return False
+
+
+class _CellTooltipFilter(QObject):
+    """
+    Event filter installé sur le viewport d'un QTableWidget.
+    Affiche un OverlayTooltip uniquement si le texte de la cellule survolée est tronqué.
+    """
+
+    def __init__(self, overlay: OverlayTooltip, table: QTableWidget):
+        super().__init__()
+        self._overlay = overlay
+        self._table = table
+
+    def eventFilter(self, obj, event):
+        t = event.type()
+        if t in (QEvent.MouseMove, QEvent.Enter):
+            table = obj.parent() if hasattr(obj, 'parent') else None
+            if not isinstance(table, QTableWidget):
+                self._overlay.hide_tooltip()
+                return False
+            pos = event.pos()
+            row = table.rowAt(pos.y())
+            col = table.columnAt(pos.x())
+            if row < 0 or col < 0:
+                self._overlay.hide_tooltip()
+                return False
+            item = table.item(row, col)
+            if not item or not item.text():
+                self._overlay.hide_tooltip()
+                return False
+            text = item.text()
+            fm = QFontMetrics(item.font() if item.font().family() else table.font())
+            if fm.horizontalAdvance(text) > table.columnWidth(col) - 8:
+                self._overlay.show_tooltip(text)
+            else:
+                self._overlay.hide_tooltip()
+        elif t == QEvent.Leave:
+            self._overlay.hide_tooltip()
+        return False

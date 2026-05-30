@@ -273,11 +273,11 @@ class RenameDbDialog(QDialog):
 # ── Dialogue Confirmer suppression ────────────────────────────────────────────
 
 class ConfirmDeleteDialog(QDialog):
-    def __init__(self, db_name: str, parent=None):
+    def __init__(self, db_path: str, parent=None):
         super().__init__(parent)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
-        self._db_name = db_name
+        self._db_path = db_path
         self._first_show = True
 
         self._build_ui()
@@ -294,13 +294,25 @@ class ConfirmDeleteDialog(QDialog):
 
     def _build_ui(self):
         layout = QVBoxLayout(self)
-        layout.setSpacing(12)
+        layout.setSpacing(8)
         layout.setContentsMargins(20, 20, 20, 20)
 
         self._msg_lbl = QLabel()
         self._msg_lbl.setWordWrap(True)
-        self._msg_lbl.setAlignment(Qt.AlignLeft)
+        self._msg_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._msg_lbl)
+
+        self._path_lbl = QLabel()
+        self._path_lbl.setWordWrap(True)
+        self._path_lbl.setAlignment(Qt.AlignCenter)
+        self._path_lbl.setOpenExternalLinks(False)
+        self._path_lbl.linkActivated.connect(self._open_in_explorer)
+        layout.addWidget(self._path_lbl)
+
+        self._irrev_lbl = QLabel()
+        self._irrev_lbl.setAlignment(Qt.AlignCenter)
+        layout.addSpacing(4)
+        layout.addWidget(self._irrev_lbl)
 
         sep = QFrame()
         sep.setFrameShape(QFrame.HLine)
@@ -312,17 +324,28 @@ class ConfirmDeleteDialog(QDialog):
         self._confirm_btn = QPushButton()
         btn_row.addWidget(self._cancel_btn)
         btn_row.addWidget(self._confirm_btn)
+        btn_row.addStretch()
         layout.addLayout(btn_row)
 
         self._confirm_btn.clicked.connect(self.accept)
         self._cancel_btn.clicked.connect(self.reject)
+
+    def _open_in_explorer(self, _url):
+        import subprocess
+        from modules.qt.library_window import _explorer_select
+        path = self._db_path.replace('/', '\\')
+        _explorer_select(path)
 
     def _retranslate(self):
         theme = get_current_theme()
         font  = _get_font(9)
         _apply_dialog_theme(self, theme)
         self.setWindowTitle(_wt('library.db_delete_title'))
-        self._msg_lbl.setText(_('library.db_delete_message', name=self._db_name))
+        self._msg_lbl.setText(_('library.db_delete_message'))
+        link_color = theme.get('link', '#4a9eff')
+        path_escaped = self._db_path.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        self._path_lbl.setText(f'<a href="file" style="color:{link_color};">{path_escaped}</a>')
+        self._irrev_lbl.setText(_('library.db_delete_irreversible'))
         self._confirm_btn.setText(_('library.db_delete_confirm'))
         self._cancel_btn.setText(_('buttons.cancel'))
 
@@ -336,3 +359,5 @@ class ConfirmDeleteDialog(QDialog):
         )
         self._confirm_btn.setFont(font)
         self._msg_lbl.setFont(font)
+        self._path_lbl.setFont(font)
+        self._irrev_lbl.setFont(font)

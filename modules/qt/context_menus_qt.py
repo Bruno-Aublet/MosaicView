@@ -299,7 +299,7 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     menu.addSeparator()
 
     # ── Bibliothèque (sous-menu) ──────────────────────────────────────────────
-    lib_submenu = QMenu(_("library.menu_label"), menu)
+    lib_submenu = QMenu(_("library.menu_title"), menu)
     from modules.qt.menubar_qt import _populate_library_menu
     _populate_library_menu(lib_submenu, callbacks)
     menu.addMenu(lib_submenu)

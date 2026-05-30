@@ -29,6 +29,7 @@ class ConfigManager:
         'font_size_offset': 0,  # Offset additif pour la taille de police (0 = taille par défaut)
         'buttons_column_width': 220,  # Largeur de la colonne de boutons (par défaut 220px)
         'recent_files': [],  # Liste des fichiers récemment ouverts (max 10)
+        'recent_dbs':   [],  # Liste des bases de données récemment ouvertes (max 10)
         'use_icon_toolbar': False,  # TEMPORAIRE (dev) — barre d'icônes active
         'comicvine_api_key': '',    # Clé API ComicVine
     }
@@ -403,6 +404,28 @@ class ConfigManager:
 
         if len(cleaned) != len(recent_files):
             return self.set('recent_files', cleaned, save)
+        return True
+
+    def get_recent_dbs(self):
+        return self.config.get('recent_dbs', self.DEFAULT_CONFIG['recent_dbs'])
+
+    def set_recent_dbs(self, recent_dbs, save=True):
+        return self.set('recent_dbs', recent_dbs, save)
+
+    def add_recent_db(self, filepath, max_files=10, save=True):
+        filepath = os.path.abspath(filepath)
+        recent = self.get_recent_dbs().copy()
+        if filepath in recent:
+            recent.remove(filepath)
+        recent.insert(0, filepath)
+        recent = recent[:max_files]
+        return self.set('recent_dbs', recent, save)
+
+    def clean_recent_dbs(self, save=True):
+        recent = self.get_recent_dbs()
+        cleaned = [p for p in recent if os.path.exists(p)]
+        if len(cleaned) != len(recent):
+            return self.set('recent_dbs', cleaned, save)
         return True
 
     # ===== Méthodes utilitaires =====
