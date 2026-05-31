@@ -558,26 +558,32 @@ class ConfirmYNDialog(QDialog):
             p = self._center_parent
             QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
-    def _on_yes(self):
-        self.result_signal.emit(True)
-        self.hide()
-        self.deleteLater()
-
-    def _on_no(self):
-        self.result_signal.emit(False)
-        self.hide()
-        self.deleteLater()
-
-    def closeEvent(self, event):
-        self.result_signal.emit(False)
-        event.accept()
-
-    def _on_close(self):
+    def _disconnect_lang(self):
         from modules.qt.language_signal import language_signal
         try:
             language_signal.changed.disconnect(self._lang_handler)
         except RuntimeError:
             pass
+
+    def _on_yes(self):
+        self._disconnect_lang()
+        self.result_signal.emit(True)
+        self.hide()
+        self.deleteLater()
+
+    def _on_no(self):
+        self._disconnect_lang()
+        self.result_signal.emit(False)
+        self.hide()
+        self.deleteLater()
+
+    def closeEvent(self, event):
+        self._disconnect_lang()
+        self.result_signal.emit(False)
+        event.accept()
+
+    def _on_close(self):
+        pass
 
     def _apply_theme(self):
         from modules.qt.state import get_current_theme

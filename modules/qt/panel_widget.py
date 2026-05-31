@@ -619,8 +619,43 @@ class PanelWidget(QWidget):
             if db is None:
                 return
             db.reindex_files([filepath])
-            lib._rows = db.search([])
-            lib._populate_table(lib._rows)
+            fresh_row = db.get_by_filepath(filepath)
+            if not fresh_row:
+                return
+            comic_id = fresh_row['id']
+            from modules.qt.library_window import _ALL_COLUMNS
+            from PySide6.QtCore import Qt
+            key_map = {f: k for k, f in _ALL_COLUMNS}
+            visible = [(key_map[f], f) for f in lib._visible_cols if f in key_map]
+
+            # Met à jour _main_rows
+            for i, r in enumerate(lib._main_rows):
+                if r['id'] == comic_id:
+                    lib._main_rows[i] = fresh_row
+                    break
+
+            def _update_tbl(tbl):
+                hdr = tbl.horizontalHeader()
+                sort_col = hdr.sortIndicatorSection()
+                sort_order = hdr.sortIndicatorOrder()
+                tbl.setSortingEnabled(False)
+                for row_idx in range(tbl.rowCount()):
+                    item0 = tbl.item(row_idx, 0)
+                    if item0 and item0.data(Qt.UserRole) == comic_id:
+                        for c, (_k, col) in enumerate(visible):
+                            val = fresh_row[col] if col in fresh_row.keys() else None
+                            tbl.setItem(row_idx, c, lib._make_cell_item(col, val, comic_id))
+                        break
+                tbl.setSortingEnabled(True)
+                tbl.sortByColumn(sort_col, sort_order)
+
+            _update_tbl(lib._table)
+            if lib._filter_active:
+                for i, r in enumerate(lib._rows):
+                    if r['id'] == comic_id:
+                        lib._rows[i] = fresh_row
+                        break
+                _update_tbl(lib._filter_table)
         except Exception:
             pass
 

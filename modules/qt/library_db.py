@@ -120,6 +120,38 @@ def _now_iso():
     return datetime.datetime.now().isoformat(timespec='seconds')
 
 
+def _date_bound_before(v: str) -> str:
+    """Borne inférieure pour 'avant' : retourne v tel quel (comparaison ISO prefix suffit)."""
+    return v.strip()
+
+
+def _date_bound_after(v: str) -> str:
+    """Borne pour 'après' : incrémente la partie pertinente selon la précision saisie.
+    '2024'      → '2025'
+    '2024-03'   → '2024-04'
+    '2024-12'   → '2025-01'
+    '2024-03-15'→ '2024-03-16'
+    '2024-03-31'→ '2024-04-01'  (approximation : on laisse SQLite gérer les débordements via tri lexico)
+    """
+    v = v.strip()
+    parts = v.split('-')
+    try:
+        if len(parts) == 1:
+            return str(int(parts[0]) + 1)
+        elif len(parts) == 2:
+            y, m = int(parts[0]), int(parts[1])
+            if m == 12:
+                return f"{y + 1:04d}-01"
+            return f"{y:04d}-{m + 1:02d}"
+        else:
+            y, m, d = int(parts[0]), int(parts[1]), int(parts[2])
+            # Utilise datetime pour incrémenter proprement le jour
+            dt = datetime.date(y, m, d) + datetime.timedelta(days=1)
+            return dt.isoformat()
+    except (ValueError, TypeError):
+        return v
+
+
 def _ext(filename):
     return os.path.splitext(filename)[1].lower()
 
@@ -392,7 +424,8 @@ class LibraryDB:
         ).fetchall():
             db_files[row['relative_path']] = row
 
-        stats = {'new': 0, 'updated': 0, 'deleted': 0}
+        stats = {'new': 0, 'updated': 0, 'deleted': 0,
+                 'new_paths': [], 'updated_paths': [], 'deleted_ids': []}
         now = _now_iso()
         total = len(disk_files) + len(db_files)
         done = 0
@@ -411,6 +444,7 @@ class LibraryDB:
                     progress_callback(('new', fname, pct))
                 self._index_file(rel, abs_path, mtime, now)
                 stats['new'] += 1
+                stats['new_paths'].append(abs_path)
             else:
                 db_row = db_files[rel]
                 db_mtime = db_row['file_modified_at']
@@ -420,6 +454,7 @@ class LibraryDB:
                     self._index_file(rel, abs_path, mtime, now,
                                      existing_id=db_row['id'])
                     stats['updated'] += 1
+                    stats['updated_paths'].append(abs_path)
 
         # Suppressions
         for rel, row in db_files.items():
@@ -431,6 +466,7 @@ class LibraryDB:
                 pct = int(done * 100 / total) if total > 0 else 100
                 if progress_callback:
                     progress_callback(('deleted', fname, pct))
+                stats['deleted_ids'].append(row['id'])
                 self._conn.execute("DELETE FROM comics WHERE id=?", (row['id'],))
                 stats['deleted'] += 1
 
@@ -573,8 +609,8 @@ class LibraryDB:
         'between':      ("BETWEEN ? AND ?",   None),
         'true':         ("= 1",               None),
         'false':        ("= 0",               None),
-        'before':       ("< ?",               lambda v: v),
-        'after':        ("> ?",               lambda v: v),
+        'before':       ("< ?",               lambda v: _date_bound_before(v)),
+        'after':        (">= ?",              lambda v: _date_bound_after(v)),
     }
 
     def search(self, criteria: list[dict], order_by: str = 'series',
@@ -771,6 +807,18 @@ class LibraryDB:
     def get_by_id(self, comic_id: int) -> sqlite3.Row | None:
         return self._conn.execute(
             "SELECT * FROM comics WHERE id=?", (comic_id,)
+        ).fetchone()
+
+    def get_by_filepath(self, abs_path: str) -> 'sqlite3.Row | None':
+        """Retourne la row d'un comic par son chemin absolu."""
+        master = self.get_master_dir()
+        try:
+            rel = os.path.relpath(abs_path, master) if master else abs_path
+        except ValueError:
+            rel = abs_path
+        rel = rel.replace('\\', '/')
+        return self._conn.execute(
+            "SELECT * FROM comics WHERE relative_path=?", (rel,)
         ).fetchone()
 
     def get_absolute_path(self, comic_id: int) -> str | None:

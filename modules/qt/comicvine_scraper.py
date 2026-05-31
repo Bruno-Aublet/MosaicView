@@ -212,6 +212,21 @@ def get_issue_details(api_key, issue_id):
     # Série
     volume = r.get("volume") or {}
     meta["series"] = (volume.get("name") or "").strip()
+    series_id = volume.get("id")
+
+    # Volume, publisher, genre — récupérés depuis l'objet volume de la série
+    if series_id:
+        series_details = get_series_details(api_key, series_id)
+        if series_details:
+            start_year = (series_details.get("start_year") or "").strip()
+            if start_year:
+                meta["volume"] = start_year
+            publisher = (series_details.get("publisher") or "").strip()
+            if publisher:
+                meta["publisher"] = publisher
+            genre = (series_details.get("genre") or "").strip()
+            if genre:
+                meta["genre"] = genre
 
     # Numéro
     meta["number"] = (r.get("issue_number") or "").strip()
@@ -288,17 +303,22 @@ def get_issue_details(api_key, issue_id):
 
 def get_series_details(api_key, series_id):
     """
-    Récupère le nom de l'éditeur et l'année de début d'une série.
-    Retourne { 'publisher', 'start_year' } ou None.
+    Récupère l'éditeur, l'année de début et les genres d'une série.
+    Retourne { 'publisher', 'start_year', 'genre' } ou None.
     """
     url = f"{_API_BASE}/volume/4050-{series_id}/"
-    params = {"field_list": "name,start_year,publisher,image,count_of_issues,id"}
+    params = {"field_list": "name,start_year,publisher,genres,image,count_of_issues,id"}
     data = _get_json(url, api_key, params)
     r = data.get("results")
     if not r:
         return None
     pub = r.get("publisher") or {}
+    genres = r.get("genres") or []
+    if isinstance(genres, dict):
+        genres = [genres]
+    genre_str = ", ".join((g.get("name") or "").strip() for g in genres if g.get("name"))
     return {
-        "publisher": pub.get("name", "") if isinstance(pub, dict) else "",
+        "publisher":  pub.get("name", "") if isinstance(pub, dict) else "",
         "start_year": (r.get("start_year") or "").rstrip("- "),
+        "genre":      genre_str,
     }

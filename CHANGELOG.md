@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.3] - 2026-05-31
+
+- ComicVine metadata scraping now also retrieves the Volume (series start year), Publisher, and Genre fields. Volume and Publisher were previously not imported at all; Genre is fetched from the series endpoint in the same API call as Volume and Publisher, so the total cost is one extra call per import.
+- Added an "Open in MosaicView" button to the preview panel, below the file info (path, size, page count). The button is always visible when a database is open, active when the file exists on disk, and grayed out otherwise.
+- All toolbar buttons and database menu entries are now disabled while a database is loading. Only the Cancel button remains active. Buttons are re-enabled automatically when loading completes or is cancelled.
+- The Read, Black & White, and Manga search fields now use a drop-down instead of a free-text field. The Read field offers Ignore / Read / Unread; Black & White and Manga offer Ignore / True / False.
+- The Age Rating (Classification) search field now uses a drop-down listing all standard ComicInfo.xml age rating values instead of a free-text field. The And / Or / Except buttons are still available to combine multiple values.
+- The date search fields (Date modified, Date indexed) now support partial ISO dates: year only (2024), year and month (2024-03), or full date (2024-03-15). A tooltip on the input field explains the accepted formats. Six additional operators are available: =, ≠, >, <, ≥, ≤, in addition to the existing Before, After, Between, Empty, and Not empty.
+- Home and End keys now scroll the search criteria panel and the metadata preview panel to the top or bottom respectively, from any focused widget within those panels.
+- Fixed the library scan reconstructing the entire table after every scan regardless of whether anything changed. The table is now updated in place: unchanged rows are left untouched, modified and new rows are patched individually, and deleted rows are removed. No full rebuild, no UI freeze.
+- The scan progress overlay no longer shows a percentage (which was always stuck at 0% when no files changed). It now simply reads "Scanning…" with the filename appended only when a new, modified, or deleted file is encountered.
+- Fixed a RuntimeError occurring when the language was changed after closing a confirmation dialog, caused by the language signal remaining connected after the dialog's C++ object was destroyed.
+- Fixed a double-table visual glitch in the library window after a metadata fetch or a save from the mosaic viewer. The library now updates only the affected rows in place (both the main table and the filtered table), with no full rebuild and no layout corruption. Sorting is preserved after the update.
+- Fixed the library table opening the wrong comic after an in-place row update when sorting was active. Row updates now disable sorting during the patch and restore the sort column and order afterwards.
+
 ## [1.3.2] - 2026-05-30
 
 - Improved library performance with large databases. The main table is now built once and never rebuilt when clearing a search filter, switching back to the unfiltered view is instantaneous regardless of database size. Search results are displayed in a separate table that is swapped in and out without touching the main table. Selection and cover preview are preserved when switching between filtered and unfiltered views.

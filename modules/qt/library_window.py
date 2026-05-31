@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (
     QScrollArea, QFileDialog, QMenu, QApplication, QMessageBox,
     QSizePolicy, QStyledItemDelegate,
 )
-from PySide6.QtCore import Qt, QTimer, QThread, Signal, QSortFilterProxyModel, QItemSelectionModel
+from PySide6.QtCore import Qt, QTimer, QThread, Signal, QSortFilterProxyModel, QItemSelectionModel, QObject, QEvent
 from PySide6.QtGui import QFont, QAction, QColor
 
 from modules.qt.localization import _, _wt
@@ -296,15 +296,26 @@ _OPS_BOOL = [
     ('library.search_op_true',  'true'),
     ('library.search_op_false', 'false'),
 ]
+_OPS_IS_READ = [
+    ('library.search_op_any',       'any'),
+    ('library.search_op_is_read',   'true'),
+    ('library.search_op_not_read',  'false'),
+]
 _OPS_DATE = [
     ('library.search_op_before',    'before'),
     ('library.search_op_after',     'after'),
+    ('library.search_op_eq',        'eq'),
+    ('library.search_op_neq',       'neq'),
+    ('library.search_op_gt',        'gt'),
+    ('library.search_op_lt',        'lt'),
+    ('library.search_op_gte',       'gte'),
+    ('library.search_op_lte',       'lte'),
     ('library.search_op_between',   'between'),
     ('library.search_op_empty',     'empty'),
     ('library.search_op_not_empty', 'not_empty'),
 ]
 
-_BOOL_FIELDS = {'is_read', 'has_comicinfo', 'can_have_comicinfo'}
+_BOOL_FIELDS = {'is_read', 'has_comicinfo', 'can_have_comicinfo', 'black_and_white', 'manga'}
 _NUM_FIELDS  = {'page_count', 'file_size', 'year', 'month', 'day', 'volume', 'number'}
 _DATE_FIELDS = {'file_modified_at', 'indexed_at'}
 
@@ -317,6 +328,8 @@ _EMPTY_NUM_COLS  = {'volume', 'number', 'year'}
 
 
 def _ops_for_field(field):
+    if field == 'is_read':
+        return _OPS_IS_READ
     if field in _BOOL_FIELDS:
         return _OPS_BOOL
     if field in _NUM_FIELDS:
@@ -650,7 +663,19 @@ class _SubField(QWidget):
         row.setContentsMargins(0, 0, 0, 0)
         row.setSpacing(4)
 
-        self._edit = QLineEdit()
+        _AGE_RATING_VALUES = [
+            '', 'Adults Only 18+', 'Early Childhood', 'Everyone', 'Everyone 10+',
+            'G', 'Kids to Adults', 'M', 'MA15+', 'Mature 17+', 'PG',
+            'R18+', 'Rating Pending', 'Teen', 'Unknown', 'X18+',
+        ]
+        self._is_combo = field == 'age_rating'
+        if self._is_combo:
+            self._edit = QComboBox()
+            for v in _AGE_RATING_VALUES:
+                self._edit.addItem(v)
+            self._edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        else:
+            self._edit = QLineEdit()
         row.addWidget(self._edit, 1)
 
         self._btn_and = QPushButton()
@@ -664,11 +689,14 @@ class _SubField(QWidget):
 
         layout.addLayout(row)
 
-        self._edit.textChanged.connect(self._update_btn_states)
+        if self._is_combo:
+            self._edit.currentIndexChanged.connect(self._update_btn_states)
+        else:
+            self._edit.textChanged.connect(self._update_btn_states)
         self._update_btn_states()
 
     def _update_btn_states(self):
-        has_text = bool(self._edit.text().strip())
+        has_text = bool(self.value())
         self._btn_and.setEnabled(has_text)
         self._btn_or.setEnabled(has_text)
         self._btn_not.setEnabled(has_text)
@@ -699,7 +727,10 @@ class _SubField(QWidget):
             f"QPushButton#btn_del {{ color: #cc0000; }}"
             f"QPushButton#btn_del:disabled {{ color: {dis}; }}"
         )
-        self._edit.setStyleSheet(inp_ss)
+        if self._is_combo:
+            self._edit.setStyleSheet(_combo_style(theme))
+        else:
+            self._edit.setStyleSheet(inp_ss)
         self._edit.setFont(font)
         self._btn_and.setStyleSheet(btn_ss)
         self._btn_and.setFont(font)
@@ -713,6 +744,8 @@ class _SubField(QWidget):
         self._connector_label.setStyleSheet(f"color: {fg};")
 
     def value(self) -> str:
+        if self._is_combo:
+            return self._edit.currentText().strip()
         return self._edit.text().strip()
 
 
@@ -729,6 +762,7 @@ class _FieldRow(QWidget):
         self._font        = None
         self._scroll_area = None
         self._search_cb   = None
+        self._overlay_tip = None
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self._outer = QVBoxLayout(self)
@@ -798,8 +832,11 @@ class _FieldRow(QWidget):
         sf._btn_or.clicked.connect(lambda: self._on_add('or'))
         sf._btn_not.clicked.connect(lambda: self._on_add('not'))
         sf._btn_del.clicked.connect(self._on_del)
-        sf._edit.textChanged.connect(lambda _t: self._notify_changed())
-        sf._edit.returnPressed.connect(lambda: self._search_cb() if self._search_cb else None)
+        if sf._is_combo:
+            sf._edit.currentTextChanged.connect(lambda _t: self._notify_changed())
+        else:
+            sf._edit.textChanged.connect(lambda _t: self._notify_changed())
+            sf._edit.returnPressed.connect(lambda: self._search_cb() if self._search_cb else None)
         self._update_del_btn()
         if connector is not None:
             def _give_focus(edit=sf._edit):
@@ -879,6 +916,28 @@ class _FieldRow(QWidget):
     def set_scroll_area(self, scroll):
         self._scroll_area = scroll
 
+    def install_home_end_filter(self, filt, scroll):
+        """Installe l'event filter Home/End sur tous les widgets de saisie."""
+        for sf in self._subfields:
+            filt.register(sf._edit, scroll)
+            sf._edit.installEventFilter(filt)
+        if self._op_combo:
+            filt.register(self._op_combo, scroll)
+            self._op_combo.installEventFilter(filt)
+        if self._value_edit:
+            filt.register(self._value_edit, scroll)
+            self._value_edit.installEventFilter(filt)
+        if self._value_edit2:
+            filt.register(self._value_edit2, scroll)
+            self._value_edit2.installEventFilter(filt)
+
+    def set_overlay_tip(self, tip):
+        self._overlay_tip = tip
+        if self._field in _DATE_FIELDS and self._value_edit is not None:
+            tip.track(self._value_edit, _('library.search_date_placeholder'))
+            if self._value_edit2 is not None:
+                tip.track(self._value_edit2, _('library.search_date_placeholder'))
+
     def _notify_changed(self):
         cb = getattr(self, '_changed_cb', None)
         if cb:
@@ -907,6 +966,12 @@ class _FieldRow(QWidget):
                         if self._op_combo.itemData(i) == cur_op), 0)
             self._op_combo.setCurrentIndex(idx)
             self._and_label.setText(_('library.search_link_and').lower())
+            if self._field in _DATE_FIELDS:
+                tip = getattr(self, '_overlay_tip', None)
+                if tip and self._value_edit:
+                    tip.set_tracked_html(_('library.search_date_placeholder'), self._value_edit)
+                    if self._value_edit2:
+                        tip.set_tracked_html(_('library.search_date_placeholder'), self._value_edit2)
 
     def apply_theme(self, theme, font):
         self._theme = theme
@@ -961,6 +1026,12 @@ class _FieldRow(QWidget):
             val = self._value_edit.text().strip()
             if op not in ('empty', 'not_empty', 'true', 'false') and not val:
                 return []
+            # Pour les champs date, = et ≠ utilisent LIKE/NOT LIKE (prefix ISO)
+            if self._field in _DATE_FIELDS:
+                if op == 'eq':
+                    op = 'contains'
+                elif op == 'neq':
+                    op = 'not_contains'
             return [{'field': self._field, 'op': op, 'value': val, 'link': 'and'}]
 
     def clear(self):
@@ -968,7 +1039,11 @@ class _FieldRow(QWidget):
             # Garder un seul sous-champ vide
             while len(self._subfields) > 1:
                 self._on_del()
-            self._subfields[0]._edit.clear()
+            sf = self._subfields[0]
+            if sf._is_combo:
+                sf._edit.setCurrentIndex(0)
+            else:
+                sf._edit.clear()
         else:
             self._value_edit.clear()
             self._value_edit2.clear()
@@ -1182,6 +1257,31 @@ class LibraryWindow(QWidget):
         self._criteria_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self._criteria_scroll.setFrameShape(QFrame.NoFrame)
 
+        class _HomeEndFilter(QObject):
+            """Intercepte Home/End et scrolle le QScrollArea associé au widget source."""
+            def __init__(self, parent):
+                super().__init__(parent)
+                self._widget_to_scroll = {}  # widget → QScrollArea
+
+            def register(self, widget, scroll):
+                self._widget_to_scroll[widget] = scroll
+
+            def eventFilter(self, obj, event):
+                if event.type() == QEvent.KeyPress:
+                    key = event.key()
+                    if key in (Qt.Key_Home, Qt.Key_End):
+                        scroll = self._widget_to_scroll.get(obj)
+                        if scroll:
+                            sb = scroll.verticalScrollBar()
+                            sb.setValue(sb.minimum() if key == Qt.Key_Home else sb.maximum())
+                            return True
+                return False
+
+        self._home_end_filter = _HomeEndFilter(self)
+        for w in (self._criteria_scroll, self._criteria_scroll.viewport()):
+            self._home_end_filter.register(w, self._criteria_scroll)
+            w.installEventFilter(self._home_end_filter)
+
         self._criteria_container = QWidget()
         self._criteria_layout = QVBoxLayout(self._criteria_container)
         self._criteria_layout.setContentsMargins(0, 0, 6, 0)
@@ -1244,6 +1344,11 @@ class LibraryWindow(QWidget):
 
         self._preview_abs_path: str | None = None  # mémorise le chemin pour l'explorateur
 
+        self._btn_open_mosaic = QPushButton()
+        self._btn_open_mosaic.clicked.connect(self._open_in_mosaicview)
+        self._btn_open_mosaic.setEnabled(False)
+        prev_layout.addWidget(self._btn_open_mosaic)
+
         self._sep_info = QFrame()
         self._sep_info.setFrameShape(QFrame.HLine)
         prev_layout.addWidget(self._sep_info)
@@ -1259,6 +1364,9 @@ class LibraryWindow(QWidget):
         self._meta_layout.setSpacing(0)
         self._meta_layout.setAlignment(Qt.AlignTop)
         self._meta_scroll.setWidget(self._meta_content)
+        for w in (self._meta_scroll, self._meta_scroll.viewport()):
+            self._home_end_filter.register(w, self._meta_scroll)
+            w.installEventFilter(self._home_end_filter)
         prev_layout.addWidget(self._meta_scroll, 1)
 
         self._splitter.addWidget(self._preview_panel)
@@ -1349,6 +1457,10 @@ class LibraryWindow(QWidget):
         self._btn_export_tip_filter = _FixedTooltipFilter(self._overlay_tip, '')
         self._overlay_tip.track(self._btn_export, '')
 
+        for fr in self._field_rows:
+            fr.set_overlay_tip(self._overlay_tip)
+            fr.install_home_end_filter(self._home_end_filter, self._criteria_scroll)
+
         self._rebuild_columns()
         self._splitter.addWidget(right_panel)
 
@@ -1389,7 +1501,7 @@ class LibraryWindow(QWidget):
                 act = QAction(_(key), parent_menu)
                 act.triggered.connect(cb)
                 db_required = key not in ('library.db_new', 'library.db_open')
-                if db_required and self._db is None:
+                if (db_required and self._db is None) or (self._is_loading() and key != 'library.db_open'):
                     act.setEnabled(False)
                 parent_menu.addAction(act)
 
@@ -1870,7 +1982,8 @@ class LibraryWindow(QWidget):
             self._preview_size_lbl.hide()
             self._preview_pages_lbl.hide()
 
-        pass  # _sep_info toujours visible, stylé dans _retranslate
+        import os as _os
+        self._btn_open_mosaic.setEnabled(bool(abs_path and _os.path.isfile(abs_path)))
 
     def _populate_meta(self, row):
         # Vider
@@ -1949,6 +2062,8 @@ class LibraryWindow(QWidget):
             txt.setContextMenuPolicy(Qt.CustomContextMenu)
             txt.customContextMenuRequested.connect(lambda pos, w=txt: self._meta_label_context_menu(w, pos))
             txt.setStyleSheet(f"color: {fg};")
+            self._home_end_filter.register(txt, self._meta_scroll)
+            txt.installEventFilter(self._home_end_filter)
             r_lay.addWidget(txt, 1)
 
             self._meta_layout.addWidget(r_widget)
@@ -2070,7 +2185,12 @@ class LibraryWindow(QWidget):
 
     # ── Actions DB ────────────────────────────────────────────────────────
 
+    def _is_loading(self) -> bool:
+        return bool(self._load_worker)
+
     def _action_new_db(self):
+        if self._is_loading():
+            return
         from modules.qt.library_dialogs import NewDbDialog
         dlg = NewDbDialog(parent=self)
         dlg.accepted.connect(lambda: self._on_new_db_accepted(dlg))
@@ -2159,6 +2279,7 @@ class LibraryWindow(QWidget):
         # _load_worker utilisé comme guard (pas un QThread ici)
         self._load_worker = True
         self._load_pending_filepath = filepath
+        self._update_toolbar_visibility()
 
         def _load_batch(start=0):
             if self._load_cancelled:
@@ -2173,6 +2294,7 @@ class LibraryWindow(QWidget):
                 self._btn_export.setVisible(len(self._rows) > 0)
                 self._table.setVisible(True)
                 self._load_worker = None
+                self._update_toolbar_visibility()
                 from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
                 QTimer.singleShot(300, lambda: _hide_ct(self._right_panel, self._load_overlay_holder))
                 QTimer.singleShot(300, lambda: _hide_ct(self._right_panel, self._load_cancel_holder))
@@ -2217,9 +2339,10 @@ class LibraryWindow(QWidget):
         self._set_result_count([])
         self._btn_export.setVisible(False)
         self._no_db_label.setVisible(True)
+        self._update_toolbar_visibility()
 
     def _action_rename_db(self):
-        if not self._db:
+        if not self._db or self._is_loading():
             return
         from modules.qt.library_dialogs import RenameDbDialog
         dlg = RenameDbDialog(self._db.name, parent=self)
@@ -2236,7 +2359,7 @@ class LibraryWindow(QWidget):
             self._show_error(str(e))
 
     def _action_add_directory(self):
-        if not self._db:
+        if not self._db or self._is_loading():
             return
         folder = QFileDialog.getExistingDirectory(
             self, _wt('library.db_add_directory_title')
@@ -2248,7 +2371,7 @@ class LibraryWindow(QWidget):
                 self._show_error(str(e))
 
     def _action_edit_master(self):
-        if not self._db:
+        if not self._db or self._is_loading():
             return
         folder = QFileDialog.getExistingDirectory(
             self, _wt('library.db_edit_master_title'),
@@ -2261,14 +2384,14 @@ class LibraryWindow(QWidget):
                 self._show_error(str(e))
 
     def _action_scan(self):
-        if not self._db:
+        if not self._db or self._is_loading():
             return
         if self._scan_worker and self._scan_worker.isRunning():
             return
 
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
         self._scan_overlay_holder = [None]
-        _show_ct(self._right_panel, _('library.scan_progress', percent=0, message=''), self._scan_overlay_holder)
+        _show_ct(self._right_panel, _('library.scan_progress'), self._scan_overlay_holder)
         lbl = self._scan_overlay_holder[0]
         if lbl:
             lbl.raise_()
@@ -2282,7 +2405,8 @@ class LibraryWindow(QWidget):
 
     def _on_scan_progress(self, msg: str, pct: int):
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
-        _show_ct(self._right_panel, _('library.scan_progress', percent=pct, message=msg), self._scan_overlay_holder)
+        text = _('library.scan_progress') if not msg else f"{_('library.scan_progress')}\n{msg}"
+        _show_ct(self._right_panel, text, self._scan_overlay_holder)
         lbl = self._scan_overlay_holder[0]
         if lbl:
             lbl.raise_()
@@ -2296,20 +2420,100 @@ class LibraryWindow(QWidget):
     def _on_scan_finished(self, stats):
         from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
         _hide_ct(self._right_panel, self._scan_overlay_holder)
-        # invalide le cache — les données ont changé, on vide et reconstruit le tableau principal
-        self._main_rows = []
-        self._table.setRowCount(0)
-        self._filter_active = False
-        self._filter_table.setVisible(False)
-        self._filter_table.setRowCount(0)
+
         n, u, d = stats['new'], stats['updated'], stats['deleted']
+
         if n == 0 and u == 0 and d == 0:
+            # Aucun changement — on ne touche pas au tableau
             msg = _('library.scan_nothing')
+            from modules.qt.dialogs_qt import InfoDialog
+            dlg = InfoDialog(self, _('library.scan_complete_title'), msg)
+            dlg.show()
+            dlg.raise_()
+            dlg.activateWindow()
+            return
+
+        # Il y a eu des changements — mise à jour chirurgicale
+        db = self._db
+        key_map = {f: k for k, f in _ALL_COLUMNS}
+        visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
+
+        def _patch_tbl(tbl, fresh_dict, deleted_ids):
+            hdr = tbl.horizontalHeader()
+            sort_col = hdr.sortIndicatorSection()
+            sort_order = hdr.sortIndicatorOrder()
+            tbl.setSortingEnabled(False)
+            # Supprimer les lignes supprimées (parcours en sens inverse)
+            rows_to_delete = []
+            for row_idx in range(tbl.rowCount()):
+                item0 = tbl.item(row_idx, 0)
+                if item0 and item0.data(Qt.UserRole) in deleted_ids:
+                    rows_to_delete.append(row_idx)
+            for row_idx in reversed(rows_to_delete):
+                tbl.removeRow(row_idx)
+            # Mettre à jour les lignes modifiées
+            for row_idx in range(tbl.rowCount()):
+                item0 = tbl.item(row_idx, 0)
+                if item0 is None:
+                    continue
+                comic_id = item0.data(Qt.UserRole)
+                if comic_id not in fresh_dict:
+                    continue
+                row = fresh_dict[comic_id]
+                for c, (_k, col) in enumerate(visible):
+                    val = row[col] if col in row.keys() else None
+                    tbl.setItem(row_idx, c, self._make_cell_item(col, val, comic_id))
+            # Ajouter les nouvelles lignes
+            for comic_id, row in fresh_dict.items():
+                if not any(
+                    tbl.item(r, 0) and tbl.item(r, 0).data(Qt.UserRole) == comic_id
+                    for r in range(tbl.rowCount())
+                ):
+                    row_idx = tbl.rowCount()
+                    tbl.insertRow(row_idx)
+                    for c, (_k, col) in enumerate(visible):
+                        val = row[col] if col in row.keys() else None
+                        tbl.setItem(row_idx, c, self._make_cell_item(col, val, comic_id))
+            tbl.setSortingEnabled(True)
+            tbl.sortByColumn(sort_col, sort_order)
+
+        deleted_ids = set(stats.get('deleted_ids', []))
+        changed_paths = stats.get('updated_paths', []) + stats.get('new_paths', [])
+
+        # Récupérer les rows fraîches (modifiées + nouvelles)
+        fresh = {}
+        for fp in changed_paths:
+            row = db.get_by_filepath(fp)
+            if row:
+                fresh[row['id']] = row
+
+        # Mettre à jour _main_rows
+        self._main_rows = [r for r in self._main_rows if r['id'] not in deleted_ids]
+        for i, r in enumerate(self._main_rows):
+            if r['id'] in fresh:
+                self._main_rows[i] = fresh[r['id']]
+        for comic_id, row in fresh.items():
+            if not any(r['id'] == comic_id for r in self._main_rows):
+                self._main_rows.append(row)
+
+        # Patcher _table
+        _patch_tbl(self._table, fresh, deleted_ids)
+
+        # Patcher _filter_table si filtre actif
+        if self._filter_active:
+            self._rows = [r for r in self._rows if r['id'] not in deleted_ids]
+            for i, r in enumerate(self._rows):
+                if r['id'] in fresh:
+                    self._rows[i] = fresh[r['id']]
+            _patch_tbl(self._filter_table, fresh, deleted_ids)
         else:
-            msg = _('library.scan_complete_message', new=n, updated=u, deleted=d)
+            self._rows = list(self._main_rows)
+
+        self._set_result_count(self._rows)
+
+        msg = _('library.scan_complete_message', new=n, updated=u, deleted=d)
         from modules.qt.dialogs_qt import InfoDialog
         dlg = InfoDialog(self, _('library.scan_complete_title'), msg)
-        dlg.finished.connect(lambda: self._do_search())
         dlg.show()
         dlg.raise_()
         dlg.activateWindow()
@@ -2322,7 +2526,7 @@ class LibraryWindow(QWidget):
             subprocess.Popen(['explorer', master])
 
     def _action_close_db(self):
-        if not self._db:
+        if not self._db or self._is_loading():
             return
         self._cancel_preview()
         self._preview_label.clear_pixmap()
@@ -2371,7 +2575,7 @@ class LibraryWindow(QWidget):
         ))
 
     def _action_delete_db(self):
-        if not self._db:
+        if not self._db or self._is_loading():
             return
         from modules.qt.library_dialogs import ConfirmDeleteDialog
         dlg = ConfirmDeleteDialog(self._db.db_path, parent=self)
@@ -2407,23 +2611,32 @@ class LibraryWindow(QWidget):
 
     def _update_toolbar_visibility(self):
         has_db = self._db is not None
+        loading = self._is_loading()
         # Sans DB
         self._btn_new_db.setVisible(not has_db)
         self._btn_open_db.setVisible(not has_db)
+        self._btn_new_db.setEnabled(not loading)
+        self._btn_open_db.setEnabled(not loading)
         from modules.qt.recent_dbs import get_recent_dbs
         self._btn_recent_dbs.setVisible(not has_db)
-        self._btn_recent_dbs.setEnabled(bool(get_recent_dbs()))
-        # Avec DB
+        self._btn_recent_dbs.setEnabled(bool(get_recent_dbs()) and not loading)
+        # Avec DB — grisés pendant le chargement
         for btn in (self._btn_rename_db, self._btn_add_dir, self._btn_edit_master,
                     self._btn_scan, self._btn_open_exp, self._btn_close_db,
                     self._btn_delete_db, self._btn_mark_read, self._btn_mark_unread,
                     self._btn_reset_cols):
             btn.setVisible(has_db)
+            btn.setEnabled(not loading)
         has_panel = has_db and self._parent_panel is not None
         self._btn_fetch_meta.setVisible(has_panel)
+        self._btn_fetch_meta.setEnabled(not loading)
         # Bouton export : visible seulement si des résultats sont affichés
         if not has_db:
             self._btn_export.setVisible(False)
+        self._btn_export.setEnabled(not loading)
+        # Bouton ouvrir dans la mosaïque : caché si pas de DB
+        self._btn_open_mosaic.setVisible(has_db)
+        self._btn_open_mosaic.setEnabled(not loading)
 
     # ── Thème / langue / police ───────────────────────────────────────────
 
@@ -2482,6 +2695,9 @@ class LibraryWindow(QWidget):
         self._btn_export.setText(_('library.export_results'))
         self._btn_export.setStyleSheet(btn_ss)
         self._btn_export.setFont(font9)
+        self._btn_open_mosaic.setText(_('library.open_in_mosaicview'))
+        self._btn_open_mosaic.setStyleSheet(btn_ss)
+        self._btn_open_mosaic.setFont(font9)
         self._result_count_lbl.setFont(font9)
         self._result_count_lbl.setStyleSheet(f"color: {fg}; text-decoration: none;")
         if self._result_count_lbl.isVisible():
@@ -2560,7 +2776,7 @@ class LibraryWindow(QWidget):
             self._preview_label.show_unavailable(_('library.preview_unavailable'), font=get_current_font(11))
 
     def _action_fetch_metadata(self):
-        if not self._db or not self._parent_panel:
+        if not self._db or not self._parent_panel or self._is_loading():
             return
         ids = self._selected_ids()
         if not ids:
@@ -2579,8 +2795,54 @@ class LibraryWindow(QWidget):
         def _on_batch_complete():
             try:
                 db.reindex_files(files_snapshot)
-                self._rows = db.search([])
-                self._populate_table(self._rows)
+
+                key_map = {f: k for k, f in _ALL_COLUMNS}
+                visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
+
+                # Récupère les rows fraîches pour les fichiers reindexés
+                # et construit un dict id → row
+                fresh = {}
+                for fp in files_snapshot:
+                    row = db.get_by_filepath(fp)
+                    if row:
+                        fresh[row['id']] = row
+
+                if not fresh:
+                    return
+
+                # Met à jour _main_rows en place
+                for i, r in enumerate(self._main_rows):
+                    if r['id'] in fresh:
+                        self._main_rows[i] = fresh[r['id']]
+
+                def _patch_tbl(tbl, fresh_dict):
+                    hdr = tbl.horizontalHeader()
+                    sort_col = hdr.sortIndicatorSection()
+                    sort_order = hdr.sortIndicatorOrder()
+                    tbl.setSortingEnabled(False)
+                    for row_idx in range(tbl.rowCount()):
+                        item0 = tbl.item(row_idx, 0)
+                        if item0 is None:
+                            continue
+                        comic_id = item0.data(Qt.UserRole)
+                        if comic_id not in fresh_dict:
+                            continue
+                        row = fresh_dict[comic_id]
+                        for c, (_k, col) in enumerate(visible):
+                            val = row[col] if col in row.keys() else None
+                            tbl.setItem(row_idx, c, self._make_cell_item(col, val, comic_id))
+                    tbl.setSortingEnabled(True)
+                    tbl.sortByColumn(sort_col, sort_order)
+
+                # Met à jour les cellules dans _table (tableau principal)
+                _patch_tbl(self._table, fresh)
+
+                # Met à jour les cellules dans _filter_table si filtre actif
+                if self._filter_active:
+                    for i, r in enumerate(self._rows):
+                        if r['id'] in fresh:
+                            self._rows[i] = fresh[r['id']]
+                    _patch_tbl(self._filter_table, fresh)
             except Exception:
                 pass
 
@@ -2590,6 +2852,8 @@ class LibraryWindow(QWidget):
         show_batch_metadata_dialog(self, files, [], callbacks)
 
     def _action_export(self):
+        if self._is_loading():
+            return
         if not self._rows:
             self._show_error(_('library.export_no_data'))
             return
