@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.4] - 2026-06-02
+
+- Added a ComicInfo.xml editor: create or edit the ComicInfo.xml file embedded in a comic archive directly from MosaicView, without opening an external application. The editor covers all standard ComicInfo fields, organized by section (series, publication, classification, credits, content, miscellaneous). Fields with a fixed set of allowed values (month, day, age rating, black & white, manga, series complete, language) use drop-down lists. The page count is filled in automatically from the actual number of pages and cannot be edited. The editor is accessible from the Metadata menu, the canvas context menu, by double-clicking the ComicInfo.xml entry in the mosaic, and via a new toolbar icon. It is also accessible from the library window on comics that already have a ComicInfo.xml (edit-only from the library, never create).
+- Added a "Create or edit a ComicInfo.xml file" toolbar icon (in the reserve icons by default).
+- Added an "Edit ComicInfo.xml" button at the top of the Metadata tab in the main window, opening the ComicInfo editor directly from the metadata view.
+- Fixed a crash (QThread destroyed while still running) occurring when editing a ComicInfo.xml in the second panel in split mode, caused by the pages model builder thread being destroyed without waiting for completion. The thread now waits for the current iteration to finish before being released.
+- Fixed closing behaviour when a library database and one or more comics are open simultaneously: clicking the close button now first prompts to close the database only, closes it immediately on confirmation, and lets the user close the comics panel by panel on subsequent clicks. Previously the database warning would reappear after the comics were closed.
+- Fixed the "Library" command disappearing from the Metadata menu and the canvas context menu after closing a database. The database sub-menu is now built into a dedicated sub-menu instead of replacing the parent menu, preserving the "Open Library" entry at all times.
+
 ## [1.3.3] - 2026-05-31
 
 - ComicVine metadata scraping now also retrieves the Volume (series start year), Publisher, and Genre fields. Volume and Publisher were previously not imported at all; Genre is fetched from the series endpoint in the same API call as Volume and Publisher, so the total cost is one extra call per import.

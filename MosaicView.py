@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.3.3"
+__version__ = "1.3.4"
 
 import sys
 import os
@@ -657,33 +657,36 @@ class MainWindow(QMainWindow):
             event.accept()
             return
 
-        # Avertissement si une DB est ouverte et que l'utilisateur n'a pas encore confirmé
-        if not getattr(self, '_close_db_confirmed', False):
-            try:
-                from modules.qt.library_window import _library_window as _lib_win
-                db_open = _lib_win is not None and _lib_win._db is not None
-            except Exception:
-                db_open = False
-            if db_open:
-                event.ignore()
-                from modules.qt.dialogs_qt import ConfirmYNDialog
-                from modules.qt.localization import _, _wt
-                dlg = ConfirmYNDialog(
-                    self,
-                    lambda: _wt('library.close_warning_title'),
-                    lambda: _('library.close_warning_message'),
-                )
-                def _on_done(accepted):
-                    if accepted:
-                        self._close_db_confirmed = True
-                        self.close()
-                dlg.result_signal.connect(_on_done)
-                dlg.show()
-                dlg.raise_()
-                dlg.activateWindow()
-                return
-        self._close_db_confirmed = False  # reset pour la prochaine fois
-
+        # Avertissement si une DB est ouverte
+        try:
+            from modules.qt.library_window import _library_window as _lib_win
+            db_open = _lib_win is not None and _lib_win._db is not None
+        except Exception:
+            db_open = False
+        if db_open:
+            event.ignore()
+            from modules.qt.dialogs_qt import ConfirmYNDialog
+            from modules.qt.localization import _, _wt
+            dlg = ConfirmYNDialog(
+                self,
+                lambda: _wt('library.close_warning_title'),
+                lambda: _('library.close_warning_message'),
+            )
+            def _on_done(accepted):
+                if accepted:
+                    # Ferme la DB et cache la fenêtre — l'utilisateur recliquera sur la croix
+                    try:
+                        from modules.qt.library_window import _library_window as _lw
+                        if _lw is not None:
+                            _lw._action_close_db()
+                            _lw.hide()
+                    except Exception:
+                        pass
+            dlg.result_signal.connect(_on_done)
+            dlg.show()
+            dlg.raise_()
+            dlg.activateWindow()
+            return
         self._close_event_handled = True
 
         from modules.qt.file_close_qt import on_window_close

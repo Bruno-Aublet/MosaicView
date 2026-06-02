@@ -325,6 +325,7 @@ class _PagesModelBuilder(QThread):
 
     def cancel(self):
         self._cancelled = True
+        self.wait()
 
     def run(self):
         from modules.qt.utils import format_file_size
@@ -382,6 +383,7 @@ class MetadataTab(QScrollArea):
         # Références conservées pour _restyle() — liste de (key, lbl_widget, txt_widget)
         self._field_widgets  = []   # [(key, QLabel_titre, _SelectableLabel_valeur), ...]
         self._toggle_btn     = None
+        self._edit_btn       = None
         self._pages_count    = 0
         self._pages_table    = None  # QTableView
         self._pages_builder  = None  # _PagesModelBuilder en cours
@@ -429,6 +431,7 @@ class MetadataTab(QScrollArea):
         # Vide tout
         self._field_widgets = []
         self._toggle_btn    = None
+        self._edit_btn      = None
         self._pages_count   = 0
         self._pages_table   = None
         if self._pages_builder is not None:
@@ -449,6 +452,26 @@ class MetadataTab(QScrollArea):
         normal_font = _get_current_font(10)
         bold_font   = _get_current_font(10)
         bold_font.setBold(True)
+
+        # Bouton "Modifier le fichier ComicInfo.xml" en haut de l'onglet
+        edit_btn = QPushButton(_("comicvine.edit_comicinfo"))
+        edit_btn.setFont(normal_font)
+        def _on_edit_click():
+            p = self.parent()
+            while p is not None:
+                if hasattr(p, '_edit_comicinfo'):
+                    p._edit_comicinfo()
+                    return
+                p = p.parent()
+        edit_btn.clicked.connect(_on_edit_click)
+        btn_row = QWidget()
+        btn_lay = QHBoxLayout(btn_row)
+        btn_lay.setContentsMargins(0, 4, 0, 8)
+        btn_lay.addStretch()
+        btn_lay.addWidget(edit_btn)
+        btn_lay.addStretch()
+        self._vlay.addWidget(btn_row)
+        self._edit_btn = edit_btn
 
         for key, value in st.comic_metadata.items():
             if key == 'pages':
@@ -513,6 +536,15 @@ class MetadataTab(QScrollArea):
 
         self.setStyleSheet(f"QScrollArea {{ background: {bg}; border: none; }}")
         self._content.setStyleSheet(f"background: {bg}; color: {text};")
+
+        if self._edit_btn is not None:
+            self._edit_btn.setText(_("comicvine.edit_comicinfo"))
+            self._edit_btn.setFont(normal_font)
+            self._edit_btn.setStyleSheet(
+                f"QPushButton {{ background: {theme['toolbar_bg']}; color: {text}; "
+                f"border: 1px solid #aaaaaa; padding: 4px 10px; }} "
+                f"QPushButton:hover {{ background: {theme['separator']}; }}"
+            )
 
         for key, lbl, txt in self._field_widgets:
             lbl.setText(f"{_(f'metadata.{key}')} :")

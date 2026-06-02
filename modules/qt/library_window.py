@@ -1202,6 +1202,10 @@ class LibraryWindow(QWidget):
         self._btn_fetch_meta.clicked.connect(self._action_fetch_metadata)
         tb_line2.addWidget(self._btn_fetch_meta)
 
+        self._btn_edit_comicinfo = QPushButton()
+        self._btn_edit_comicinfo.clicked.connect(self._action_edit_comicinfo)
+        tb_line2.addWidget(self._btn_edit_comicinfo)
+
         tb_line2.addStretch(1)
 
         self._btn_export = QPushButton()
@@ -1866,6 +1870,10 @@ class LibraryWindow(QWidget):
             self._preview_file_missing = False
             self._update_preview_info(None, None)
             self._populate_meta(None)
+        if hasattr(self, '_btn_edit_comicinfo'):
+            self._btn_edit_comicinfo.setEnabled(
+                not self._is_loading() and self._selection_has_comicinfo()
+            )
 
     def _cancel_preview(self):
         if hasattr(self, '_preview_worker') and self._preview_worker is not None:
@@ -2148,6 +2156,10 @@ class LibraryWindow(QWidget):
             act_fetch = QAction(_('library.fetch_metadata'), menu)
             act_fetch.triggered.connect(self._action_fetch_metadata)
             menu.addAction(act_fetch)
+            act_edit_ci = QAction(_('comicvine.edit_comicinfo'), menu)
+            act_edit_ci.setEnabled(self._selection_has_comicinfo())
+            act_edit_ci.triggered.connect(self._action_edit_comicinfo)
+            menu.addAction(act_edit_ci)
         menu.exec(tbl.viewport().mapToGlobal(pos))
 
     def _open_in_mosaicview(self):
@@ -2630,6 +2642,8 @@ class LibraryWindow(QWidget):
         has_panel = has_db and self._parent_panel is not None
         self._btn_fetch_meta.setVisible(has_panel)
         self._btn_fetch_meta.setEnabled(not loading)
+        self._btn_edit_comicinfo.setVisible(has_panel)
+        self._btn_edit_comicinfo.setEnabled(not loading and self._selection_has_comicinfo())
         # Bouton export : visible seulement si des résultats sont affichés
         if not has_db:
             self._btn_export.setVisible(False)
@@ -2687,7 +2701,8 @@ class LibraryWindow(QWidget):
             (self._btn_mark_read,   'library.mark_read'),
             (self._btn_mark_unread, 'library.mark_unread'),
             (self._btn_reset_cols,  'library.reset_columns'),
-            (self._btn_fetch_meta,  'library.fetch_metadata'),
+            (self._btn_fetch_meta,       'library.fetch_metadata'),
+            (self._btn_edit_comicinfo,   'comicvine.edit_comicinfo'),
         ):
             btn.setText(_(key))
             btn.setStyleSheet(btn_ss)
@@ -2774,6 +2789,129 @@ class LibraryWindow(QWidget):
         if getattr(self, '_preview_file_missing', False):
             from modules.qt.font_manager_qt import get_current_font
             self._preview_label.show_unavailable(_('library.preview_unavailable'), font=get_current_font(11))
+
+    def _selection_has_comicinfo(self) -> bool:
+        """Retourne True si exactement une ligne est sélectionnée et qu'elle a un ComicInfo.xml."""
+        ids = self._selected_ids()
+        if len(ids) != 1:
+            return False
+        row = next((r for r in self._rows if r['id'] == ids[0]), None)
+        return bool(row and row['has_comicinfo'])
+
+    def _action_edit_comicinfo(self):
+        if not self._db or self._is_loading():
+            return
+        if not self._selection_has_comicinfo():
+            return
+        ids = self._selected_ids()
+        abs_path = self._db.get_absolute_path(ids[0])
+        if not abs_path or not os.path.isfile(abs_path):
+            return
+        db = self._db
+
+        # Lit le ComicInfo.xml directement depuis l'archive
+        import zipfile
+        xml_bytes = None
+        xml_name = "ComicInfo.xml"
+        try:
+            with zipfile.ZipFile(abs_path, 'r') as zf:
+                for name in zf.namelist():
+                    if name.lower().endswith('comicinfo.xml'):
+                        xml_bytes = zf.read(name)
+                        xml_name = name
+                        break
+        except Exception:
+            return
+        if xml_bytes is None:
+            return
+
+        # Crée un entry factice pour la fenêtre d'édition
+        entry = {"orig_name": xml_name, "bytes": xml_bytes}
+
+        # Crée un state factice avec images_data minimal pour que la fenêtre
+        # puisse calculer le nombre de pages réel
+        import zipfile as _zf
+        from modules.qt import state as _state_module
+        fake_state = type('_FakeState', (), {
+            'images_data': [],
+            'selected_indices': set(),
+        })()
+        try:
+            with _zf.ZipFile(abs_path, 'r') as zf:
+                IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp',
+                              '.bmp', '.tiff', '.tif', '.jfif')
+                for name in zf.namelist():
+                    ext = os.path.splitext(name)[1].lower()
+                    if ext in IMAGE_EXTS:
+                        fake_state.images_data.append({
+                            'orig_name': name, 'is_image': True,
+                        })
+        except Exception:
+            pass
+
+        def _on_edit_done(new_filename: str, new_xml_bytes: bytes):
+            import zipfile, shutil
+            tmp_path = abs_path + ".tmp_ci"
+            try:
+                with zipfile.ZipFile(abs_path, 'r') as zin, \
+                     zipfile.ZipFile(tmp_path, 'w', zipfile.ZIP_DEFLATED) as zout:
+                    for item in zin.infolist():
+                        if item.filename.lower().endswith('comicinfo.xml'):
+                            zout.writestr(new_filename, new_xml_bytes)
+                        else:
+                            zout.writestr(item, zin.read(item.filename))
+                shutil.move(tmp_path, abs_path)
+            except Exception:
+                try:
+                    os.remove(tmp_path)
+                except OSError:
+                    pass
+                return
+
+            # Réindexe uniquement ce fichier dans la DB
+            db.reindex_files([abs_path])
+
+            # Rafraîchit les cellules du tableau sans recréer le tableau
+            fresh_row = db.get_by_filepath(abs_path)
+            if not fresh_row:
+                return
+            fresh = {fresh_row['id']: fresh_row}
+
+            key_map = {f: k for k, f in _ALL_COLUMNS}
+            visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
+
+            for i, r in enumerate(self._main_rows):
+                if r['id'] in fresh:
+                    self._main_rows[i] = fresh[r['id']]
+
+            def _patch_tbl(tbl):
+                hdr = tbl.horizontalHeader()
+                sort_col = hdr.sortIndicatorSection()
+                sort_order = hdr.sortIndicatorOrder()
+                tbl.setSortingEnabled(False)
+                for row_idx in range(tbl.rowCount()):
+                    item0 = tbl.item(row_idx, 0)
+                    if item0 is None:
+                        continue
+                    comic_id = item0.data(Qt.UserRole)
+                    if comic_id not in fresh:
+                        continue
+                    row = fresh[comic_id]
+                    for c, (_k, col) in enumerate(visible):
+                        val = row[col] if col in row.keys() else None
+                        tbl.setItem(row_idx, c, self._make_cell_item(col, val, comic_id))
+                tbl.setSortingEnabled(True)
+                tbl.sortByColumn(sort_col, sort_order)
+
+            _patch_tbl(self._table)
+            if self._filter_active:
+                for i, r in enumerate(self._rows):
+                    if r['id'] in fresh:
+                        self._rows[i] = fresh[r['id']]
+                _patch_tbl(self._filter_table)
+
+        from modules.qt.comicinfo_dialog_qt import show_comicinfo_edit_dialog
+        show_comicinfo_edit_dialog(self, entry, _on_edit_done, fake_state)
 
     def _action_fetch_metadata(self):
         if not self._db or not self._parent_panel or self._is_loading():

@@ -350,6 +350,16 @@ def _populate_metadata_menu(menu: QMenu, callbacks: dict):
     _add_action(menu, _("comicvine.tooltip"), callbacks.get("fetch_metadata"), enabled=has_file)
     _add_action(menu, _("buttons.batch_metadata"), callbacks.get("batch_metadata"), enabled=canvas_empty)
     menu.addSeparator()
+    # Créer / Modifier ComicInfo.xml
+    if not has_file:
+        _add_action(menu, _("comicvine.create_comicinfo"), None, enabled=False)
+    else:
+        from modules.qt.comic_info import has_comic_info_entry
+        if not has_comic_info_entry(st):
+            _add_action(menu, _("comicvine.create_comicinfo"), callbacks.get("edit_comicinfo"), enabled=True)
+        else:
+            _add_action(menu, _("comicvine.edit_comicinfo"), callbacks.get("edit_comicinfo"), enabled=True)
+    menu.addSeparator()
     _add_action(menu, _("comicvine.change_api_key"), callbacks.get("change_apikey"))
     menu.addSeparator()
     from PySide6.QtGui import QDesktopServices
@@ -402,13 +412,14 @@ def _populate_library_menu(menu: QMenu, callbacks: dict):
     menu.addMenu(recent_db_menu)
     menu.addSeparator()
 
-    # Sous-menu Base de données (délégué à LibraryWindow si visible)
+    # Sous-menu Base de données
     from modules.qt.library_window import _library_window
+    db_submenu = QMenu(_loc("library.db_menu"), menu)
     if _library_window is not None and not _library_window._prewarmed:
-        _library_window.build_db_menu(menu)
+        _library_window.build_db_menu(db_submenu)
     else:
         def _open_then(action_name):
-            from modules.qt.library_window import open_library_window, _library_window as _lw
+            from modules.qt.library_window import open_library_window
             open_library_window()
             from modules.qt.library_window import _library_window as lw
             if lw:
@@ -416,18 +427,19 @@ def _populate_library_menu(menu: QMenu, callbacks: dict):
                 QTimer.singleShot(0, getattr(lw, action_name))
 
         for key in ('library.db_new', 'library.db_open'):
-            act = QAction(_loc(key), menu)
+            act = QAction(_loc(key), db_submenu)
             if key == 'library.db_new':
                 act.triggered.connect(lambda: _open_then('_action_new_db'))
             elif key == 'library.db_open':
                 act.triggered.connect(lambda: _open_then('_action_open_db'))
-            menu.addAction(act)
+            db_submenu.addAction(act)
         for key in ('library.db_close', 'library.db_rename', 'library.db_add_directory',
                     'library.db_edit_master', 'library.db_scan',
                     'library.db_open_explorer', 'library.db_delete'):
-            act = QAction(_loc(key), menu)
+            act = QAction(_loc(key), db_submenu)
             act.setEnabled(False)
-            menu.addAction(act)
+            db_submenu.addAction(act)
+    menu.addMenu(db_submenu)
 
 
 def _populate_system_menu(menu: QMenu, callbacks: dict):

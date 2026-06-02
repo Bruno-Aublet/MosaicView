@@ -288,6 +288,17 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
         meta_submenu.addAction(_("buttons.batch_metadata"), callbacks['batch_metadata'])
     else:
         _add_disabled(meta_submenu, _("buttons.batch_metadata"))
+    meta_submenu.addSeparator()
+    # Créer / Modifier ComicInfo.xml
+    if not has_file:
+        _add_disabled(meta_submenu, _("comicvine.create_comicinfo"))
+    else:
+        from modules.qt.comic_info import has_comic_info_entry
+        if not has_comic_info_entry(state):
+            meta_submenu.addAction(_("comicvine.create_comicinfo"), callbacks['edit_comicinfo'])
+        else:
+            meta_submenu.addAction(_("comicvine.edit_comicinfo"), callbacks['edit_comicinfo'])
+    meta_submenu.addSeparator()
     meta_submenu.addAction(_("comicvine.change_api_key"), callbacks['change_apikey'])
     meta_submenu.addSeparator()
     meta_submenu.addAction("ComicVine",
@@ -445,6 +456,15 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
     else:
         _add_disabled(menu, _("context_menu.image.corrupted_delete"))
 
+    menu.addSeparator()
+
+    # ── ComicInfo.xml ─────────────────────────────────────────────────────────
+    clicked_entry = st.images_data[real_idx] if real_idx < len(st.images_data) else None
+    is_comicinfo = bool(clicked_entry and clicked_entry.get('orig_name', '').lower().endswith('comicinfo.xml'))
+    if is_comicinfo:
+        menu.addAction(_("comicvine.edit_comicinfo"), callbacks['edit_comicinfo'])
+    else:
+        _add_disabled(menu, _("comicvine.edit_comicinfo"))
     menu.addSeparator()
 
     # ── Section ARCHIVES ──────────────────────────────────────────────────────

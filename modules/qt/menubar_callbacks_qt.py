@@ -50,6 +50,7 @@ def build_menubar_callbacks(mw) -> dict:
         "show_nfo_dialog":          mw._show_nfo_dialog,
         "fetch_metadata":           mw._fetch_metadata,
         "change_apikey":            mw._change_apikey,
+        "edit_comicinfo":           mw._edit_comicinfo,
         "batch_convert_cbr_to_cbz": mw._batch_convert_cbr_to_cbz,
         "batch_convert_cb7_to_cbz": mw._batch_convert_cb7_to_cbz,
         "batch_convert_cbt_to_cbz": mw._batch_convert_cbt_to_cbz,

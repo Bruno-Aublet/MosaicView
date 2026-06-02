@@ -1923,11 +1923,13 @@ class PanelWidget(QWidget):
     # ──────────────────────────────────────────────────────────────────────────
 
     def _open_non_image_entry(self, entry: dict):
-        """Double-clic sur un fichier non-image : ouvre les .nfo dans notre
+        """Double-clic sur un fichier non-image : ouvre les .nfo et ComicInfo.xml dans notre
         éditeur intégré, et délègue le reste à l'application Windows par défaut."""
         orig = entry.get("orig_name", "")
         if orig.lower().endswith(".nfo"):
             self._open_nfo_for_edit(entry)
+        elif orig.lower().endswith("comicinfo.xml"):
+            self._open_comicinfo_for_edit(entry)
         else:
             _open_file_with_default_app(
                 entry,
@@ -1953,6 +1955,44 @@ class PanelWidget(QWidget):
             self._refresh_toolbar_states()
 
         show_nfo_edit_dialog(self, entry, _edit_fn, st)
+
+    def _open_comicinfo_for_edit(self, entry: dict):
+        from modules.qt.comicinfo_dialog_qt import show_comicinfo_edit_dialog
+        from modules.qt.comic_info import sync_pages_in_xml_data
+
+        st = self._state
+
+        def _edit_fn(new_filename: str, xml_bytes: bytes):
+            self.save_state(force=True)
+            entry["orig_name"] = new_filename
+            entry["bytes"] = xml_bytes
+            st.modified = True
+            sync_pages_in_xml_data(st)
+            self._reload_comicinfo_metadata(xml_bytes)
+            self.save_state(force=True)
+            self._canvas.render_mosaic()
+            self._refresh_title()
+            self._update_status_bar()
+            self._refresh_toolbar_states()
+
+        show_comicinfo_edit_dialog(self, entry, _edit_fn, st)
+
+    def _reload_comicinfo_metadata(self, xml_bytes: bytes):
+        """Recharge st.comic_metadata depuis les bytes XML et rafraîchit l'onglet."""
+        from modules.qt.comic_info import parse_comic_info_xml, build_page_attrs_map
+        st = self._state
+        try:
+            st.comic_metadata = parse_comic_info_xml(xml_bytes)
+            if st.comic_metadata and st.comic_metadata.get('page_count'):
+                try:
+                    st.original_page_count = int(st.comic_metadata['page_count'])
+                except (ValueError, TypeError):
+                    pass
+            build_page_attrs_map(st)
+        except Exception:
+            pass
+        if hasattr(self, '_metadata_tab'):
+            self._metadata_tab.refresh()
 
     def _show_nfo_dialog(self):
         from modules.qt.nfo_dialog_qt import show_nfo_dialog
@@ -1980,6 +2020,64 @@ class PanelWidget(QWidget):
             self._refresh_toolbar_states()
 
         show_nfo_dialog(self, _inject_nfo, st)
+
+    def _edit_comicinfo(self):
+        from modules.qt.comicinfo_dialog_qt import (
+            show_comicinfo_create_dialog,
+            show_comicinfo_edit_dialog,
+        )
+        from modules.qt.comic_info import has_comic_info_entry
+        from modules.qt.entries import create_entry
+        from modules.qt.undo_redo_qt import save_state_qt as _save_state_qt
+        from modules.qt.comic_info import sync_pages_in_xml_data
+
+        IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
+                      '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp')
+
+        st = self._state
+
+        if not has_comic_info_entry(st):
+            # ── Mode création ──────────────────────────────────────────────────
+            def _inject_fn(filename: str, xml_bytes: bytes):
+                entry = create_entry(filename, xml_bytes, IMAGE_EXTS)
+                if entry is None:
+                    return
+                entry["source_archive"] = "loose"
+                _save_state_qt(st, self._refresh_toolbar_states)
+                st.images_data.append(entry)
+                st.modified = True
+                sync_pages_in_xml_data(st)
+                _save_state_qt(st, self._refresh_toolbar_states)
+                self._canvas.render_mosaic()
+                self._refresh_toolbar_states()
+                self._reload_comicinfo_metadata(xml_bytes)
+                self._update_tabs()
+
+            show_comicinfo_create_dialog(self, _inject_fn, st)
+        else:
+            # ── Mode édition ───────────────────────────────────────────────────
+            entry = next(
+                (e for e in st.images_data
+                 if e.get("orig_name", "").lower().endswith("comicinfo.xml")),
+                None,
+            )
+            if entry is None:
+                return
+
+            def _edit_fn(new_filename: str, xml_bytes: bytes):
+                self.save_state(force=True)
+                entry["orig_name"] = new_filename
+                entry["bytes"] = xml_bytes
+                st.modified = True
+                sync_pages_in_xml_data(st)
+                self._reload_comicinfo_metadata(xml_bytes)
+                self.save_state(force=True)
+                self._canvas.render_mosaic()
+                self._refresh_title()
+                self._update_status_bar()
+                self._refresh_toolbar_states()
+
+            show_comicinfo_edit_dialog(self, entry, _edit_fn, st)
 
     def _change_apikey(self):
         from modules.qt.config_manager import get_config_manager

@@ -74,6 +74,7 @@ ICON_DEFINITIONS = [
     {"id": "print_all",           "tooltip_key": "buttons.print_all",             "png": "BTN_Print_All.png"},
     # --- MÉTADONNÉES ---
     {"id": "fetch_metadata",      "tooltip_key": "comicvine.tooltip",             "png": "BTN_Metadate_xml.png"},
+    {"id": "edit_comicinfo",      "tooltip_key": "comicinfo.icon_label",          "png": "BTN_Write_xml.png"},
     # --- ORGANISATION ---
     {"id": "renumber",            "tooltip_key": None,                            "png": "BTN_Renumber.png"},
     {"id": "sort",                "tooltip_key": "menu.sort",                     "png": "BTN_Sort.png"},
@@ -147,6 +148,7 @@ _ACTIVATION_RULES = {
     "print_selection":     lambda sg: sg["print_available"]() and sg["has_selection"](),
     "print_all":           lambda sg: sg["print_available"]() and sg["has_images"](),
     "fetch_metadata":      lambda sg: sg["has_file"](),
+    "edit_comicinfo":      lambda sg: sg["has_file"](),
     "renumber":            lambda sg: sg["needs_renumbering"]() and not sg["has_subdirs"](),
     "sort":                lambda sg: sg["has_images"](),
     "web_import":          None,
@@ -1932,6 +1934,7 @@ class IconToolbarQt(QWidget):
         "text":                "tooltip.text",
         "create_nfo":          "nfo.menu_item",
         "fetch_metadata":      "comicvine.tooltip",
+        "edit_comicinfo":      "comicinfo.icon_label",
     }
 
     def _get_icon_label(self, icon_id: str) -> str:
@@ -2050,6 +2053,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "web_import":            cb["show_web_import_dialog"],
         "create_nfo":            cb["show_nfo_dialog"],
         "fetch_metadata":        cb["fetch_metadata"],
+        "edit_comicinfo":        cb["edit_comicinfo"],
         "delete_selected":       cb["delete_selected"],
         "copy_selected":         cb["copy_selected"],
         "cut_selected":          cb["cut_selected"],
