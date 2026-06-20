@@ -32,7 +32,7 @@ def copy_archive_to_clipboard(parent):
             parent,
             lambda: _("messages.info.pywin32_required.title"),
             lambda: _("messages.info.pywin32_required.message"),
-        ).exec()
+        ).show()
         return
 
     try:
@@ -55,7 +55,7 @@ def copy_archive_to_clipboard(parent):
             parent,
             lambda: _("messages.info.archive_copied.title"),
             lambda: _("messages.info.archive_copied.message"),
-        ).exec()
+        ).show()
 
     except Exception as e:
         import traceback
@@ -65,15 +65,18 @@ def copy_archive_to_clipboard(parent):
             parent,
             lambda: _("messages.errors.copy_archive_failed.title"),
             lambda err=e: _("messages.errors.copy_archive_failed.message", error=err),
-        ).exec()
+        ).show()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Copie / Coupe vers le presse-papiers système
 # ─────────────────────────────────────────────────────────────────────────────
 
-def copy_to_system_clipboard(get_temp_dir_func):
-    """Copie les fichiers sélectionnés vers le presse-papiers Windows (CF_HDROP)."""
+def copy_to_system_clipboard(get_temp_dir_func, parent=None):
+    """Copie les fichiers sélectionnés vers le presse-papiers Windows (CF_HDROP).
+
+    parent : widget source (panneau) pour centrer l'avertissement éventuel.
+    """
     state = _state_module.state
     if not state.selected_indices:
         return
@@ -86,6 +89,7 @@ def copy_to_system_clipboard(get_temp_dir_func):
         return
 
     try:
+        from modules.qt.utils import safe_join
         mosaicview_temp = get_temp_dir_func()
         temp_dir = os.path.join(
             mosaicview_temp,
@@ -93,6 +97,7 @@ def copy_to_system_clipboard(get_temp_dir_func):
         )
         os.makedirs(temp_dir, exist_ok=True)
         file_list = []
+        skipped = 0
 
         for idx in sorted(state.selected_indices):
             if idx >= len(state.images_data):
@@ -101,7 +106,12 @@ def copy_to_system_clipboard(get_temp_dir_func):
             if entry["bytes"] is None or entry.get("is_dir"):
                 continue
 
-            temp_path = os.path.join(temp_dir, entry["orig_name"])
+            # Sécurité : empêche toute écriture hors du dossier temp
+            # (nom d'entrée piégé "../" — Zip Slip). Entrée ignorée si évasion.
+            temp_path = safe_join(temp_dir, entry["orig_name"])
+            if temp_path is None:
+                skipped += 1
+                continue
             temp_dir_path = os.path.dirname(temp_path)
             if temp_dir_path and temp_dir_path != temp_dir:
                 os.makedirs(temp_dir_path, exist_ok=True)
@@ -111,6 +121,8 @@ def copy_to_system_clipboard(get_temp_dir_func):
             file_list.append(temp_path)
 
         if not file_list:
+            if skipped > 0:
+                _warn_unsafe_paths_skipped(parent, skipped)
             return
 
         offset = 20
@@ -126,18 +138,35 @@ def copy_to_system_clipboard(get_temp_dir_func):
         finally:
             win32clipboard.CloseClipboard()
 
+        if skipped > 0:
+            _warn_unsafe_paths_skipped(parent, skipped)
+
     except Exception:
         import traceback
         traceback.print_exc()
 
 
-def cut_selected(get_temp_dir_func, render_mosaic, save_state):
+def _warn_unsafe_paths_skipped(parent, skipped):
+    """Avertit (fenêtre non-modale) que des entrées ont été ignorées car
+    leur nom tentait d'écrire hors du dossier cible (chemin non valide)."""
+    from modules.qt.dialogs_qt import InfoDialog
+    dlg = InfoDialog(
+        parent,
+        lambda: _("messages.warnings.unsafe_path_skipped.title"),
+        lambda n=skipped: _("messages.warnings.unsafe_path_skipped.message", count=n),
+    )
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
+
+
+def cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None):
     """Coupe les images sélectionnées : copie dans presse-papiers puis supprime."""
     state = _state_module.state
     if not state.selected_indices:
         return
 
-    copy_to_system_clipboard(get_temp_dir_func)
+    copy_to_system_clipboard(get_temp_dir_func, parent=parent)
 
     save_state()
     for idx in sorted(state.selected_indices, reverse=True):
@@ -165,7 +194,7 @@ def paste_from_system_clipboard(parent, load_files_callback, save_state, render_
     except ImportError:
         MsgDialog(parent,
                   "messages.info.pywin32_required.title",
-                  "messages.info.pywin32_required.message").exec()
+                  "messages.info.pywin32_required.message").show_nonmodal()
         return
 
     try:
@@ -211,7 +240,7 @@ def paste_from_system_clipboard(parent, load_files_callback, save_state, render_
             except ImportError:
                 MsgDialog(parent,
                           "messages.warnings.pil_not_available.title",
-                          "messages.warnings.pil_not_available.message").exec()
+                          "messages.warnings.pil_not_available.message").show_nonmodal()
         else:
             win32clipboard.CloseClipboard()
 
@@ -221,4 +250,4 @@ def paste_from_system_clipboard(parent, load_files_callback, save_state, render_
         MsgDialog(parent,
                   "messages.errors.paste_failed.title",
                   "messages.errors.paste_failed.message",
-                  {"error": str(e)}).exec()
+                  {"error": str(e)}).show_nonmodal()

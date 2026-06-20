@@ -617,7 +617,7 @@ def convert_selected_images(parent, callbacks):
             "messages.warnings.no_selection_convert.title",
             "messages.warnings.no_selection_convert.message",
         )
-        dlg.exec()
+        dlg.show_nonmodal()
         return
 
     selected_entries = [
@@ -631,7 +631,7 @@ def convert_selected_images(parent, callbacks):
             "messages.warnings.invalid_selection_convert.title",
             "messages.warnings.invalid_selection_convert.message",
         )
-        dlg.exec()
+        dlg.show_nonmodal()
         return
 
     dialog = _ConvertFormatDialog(parent, selected_entries, callbacks)

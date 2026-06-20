@@ -295,6 +295,7 @@ class PanelWidget(QWidget):
 
         # ── Chargeurs d'archives ──────────────────────────────────────────────
         self._loader = ArchiveLoader(self, self._canvas, self._state)
+        self._loader.loading_started.connect(self._refresh_title)
         self._loader.loading_finished.connect(self._on_loading_finished)
 
         from modules.qt.pdf_loading_qt import PdfLoader
@@ -688,11 +689,13 @@ class PanelWidget(QWidget):
     def _create_cbz_from_images(self):
         _qt_create_cbz_from_images(self, self._canvas, self._file_op_callbacks())
 
-    def _apply_new_names(self, skip_render=False):
-        result = _qt_apply_new_names(self, self._canvas, self._file_op_callbacks())
-        if not skip_render:
-            self._canvas.render_mosaic()
-        return result
+    def _apply_new_names(self, skip_render=False, on_complete=None):
+        def _after(success):
+            if not skip_render:
+                self._canvas.render_mosaic()
+            if on_complete is not None:
+                on_complete(success)
+        _qt_apply_new_names(self, self._canvas, self._file_op_callbacks(), on_complete=_after)
 
     # ──────────────────────────────────────────────────────────────────────────
     # Conversions par lot (batch)
@@ -978,7 +981,7 @@ class PanelWidget(QWidget):
         return dict(
             canvas=self._canvas,
             create_cbz_cb=self._create_cbz_from_images,
-            apply_new_names_cb=lambda: self._apply_new_names(skip_render=True),
+            apply_new_names_cb=lambda on_complete=None: self._apply_new_names(skip_render=True, on_complete=on_complete),
             refresh_title=self._refresh_title,
             refresh_toolbar=self._refresh_toolbar_states,
             refresh_tabs=lambda: (self._content_stack.setCurrentIndex(0), self._update_tabs()),
@@ -1018,7 +1021,7 @@ class PanelWidget(QWidget):
                 "messages.errors.unsupported_files.title",
                 "messages.errors.unsupported_files.message",
                 message_kwargs={"files": names},
-            ).exec()
+            ).show_nonmodal()
 
         if pdf_files:
             if already_open:
@@ -1026,6 +1029,7 @@ class PanelWidget(QWidget):
             else:
                 reset_history(st)
                 st.current_file = pdf_files[0]
+                self._refresh_title()
                 self._pdf_loader.load(pdf_files[0])
 
         elif cbz_files:
@@ -1044,9 +1048,13 @@ class PanelWidget(QWidget):
     def _show_dpi_dialog_for_merge(self, filepath: str):
         from modules.qt.pdf_loading_qt import DpiDialog, import_and_merge_pdf
         dlg = DpiDialog(self, "dialogs.pdf.merge_quality_title", "dialogs.pdf.quality_merge")
-        if dlg.exec() != DpiDialog.Accepted or dlg.selected_dpi is None:
-            return
-        import_and_merge_pdf(filepath, dlg.selected_dpi, self, self._canvas, self._state)
+
+        def _on_dpi(selected_dpi):
+            if selected_dpi is None:
+                return
+            import_and_merge_pdf(filepath, selected_dpi, self, self._canvas, self._state)
+
+        dlg.ask_async(_on_dpi)
 
     def _import_merge_archive(self, filepath: str):
         from modules.qt.import_merge_qt import import_and_merge_archive
@@ -1063,7 +1071,7 @@ class PanelWidget(QWidget):
                 "messages.errors.file_not_found.title",
                 "messages.errors.file_not_found.message",
                 message_kwargs={"path": filepath},
-            ).exec()
+            ).show_nonmodal()
 
     def _clear_recent_files(self):
         """Efface uniquement les comics récents (menu Fichiers récents)."""
@@ -1083,7 +1091,7 @@ class PanelWidget(QWidget):
             self,
             "messages.info.history_cleared.title",
             "messages.info.history_cleared.message",
-        ).exec()
+        ).show_nonmodal()
 
     def _guide_or_self(self):
         from modules.qt import user_guide_qt as _guide_mod
@@ -1099,7 +1107,7 @@ class PanelWidget(QWidget):
             self._guide_or_self(),
             "messages.info.history_cleared.title",
             "help.config_temp_cleared",
-        ).exec()
+        ).show_nonmodal()
 
     def _clear_config_file(self):
         try:
@@ -1112,7 +1120,7 @@ class PanelWidget(QWidget):
             self._guide_or_self(),
             "messages.info.history_cleared.title",
             "help.config_config_cleared",
-        ).exec()
+        ).show_nonmodal()
 
     def _clear_clipboard_files(self):
         try:
@@ -1132,7 +1140,7 @@ class PanelWidget(QWidget):
             self._guide_or_self(),
             "messages.info.history_cleared.title",
             "help.config_clipboard_cleared",
-        ).exec()
+        ).show_nonmodal()
 
     def _open_temp_folder(self):
         temp_dir = os.path.join(os.path.realpath(tempfile.gettempdir()), "MosaicViewTemp")
@@ -1153,62 +1161,44 @@ class PanelWidget(QWidget):
 
     def _renumber_pages_auto(self):
         from modules.qt.renumbering_qt import renumber_pages_auto_qt
-        from modules.qt import state as _state_module
         if self._has_subdirectory_structure():
             self._warn_flatten_required_renumber()
             return
-        _prev = _state_module.state
-        _state_module.state = self._state
-        try:
-            renumber_pages_auto_qt(self, self._canvas.render_mosaic, save_state_func=self.save_state)
-        finally:
-            _state_module.state = _prev
-        self._canvas.status_changed.emit()
+        # Renumérotation liée explicitement à CE panneau (state=self._state) :
+        # plus de swap du state global. NON modale → status_changed émis en on_done.
+        renumber_pages_auto_qt(
+            self, self._render_mosaic, save_state_func=self.save_state,
+            state=self._state,
+            on_done=lambda: self._canvas.status_changed.emit(),
+        )
 
     def _renumber_pages(self):
         from modules.qt.renumbering_qt import renumber_pages_qt
-        from modules.qt import state as _state_module
         if self._has_subdirectory_structure():
             self._warn_flatten_required_renumber()
             return
-        _prev = _state_module.state
-        _state_module.state = self._state
-        try:
-            renumber_pages_qt(self._canvas.render_mosaic, save_state_func=self.save_state)
-        finally:
-            _state_module.state = _prev
+        renumber_pages_qt(self._render_mosaic, save_state_func=self.save_state,
+                          state=self._state)
         self._canvas.status_changed.emit()
 
-    def _renumber_no_save(self):
-        from modules.qt import renumbering as _renumbering_module
-        from modules.qt.renumbering_qt import show_first_page_dialog_qt
-        from modules.qt import state as _state_module
-        noop = lambda: None
-        _prev = _state_module.state
-        _state_module.state = self._state
-        try:
-            if getattr(self._state, "renumber_mode", 1) == 1:
-                original = _renumbering_module.show_first_page_dialog
-                def _qt_dialog(first_entry, first_mult, total_logical_pages, callbacks):
-                    return show_first_page_dialog_qt(self, first_entry, first_mult, total_logical_pages)
-                _renumbering_module.show_first_page_dialog = _qt_dialog
-                try:
-                    _renumbering_module.renumber_pages_auto({
-                        "save_state":         noop,
-                        "render_mosaic":      noop,
-                        "update_button_text": noop,
-                        "root":               self,
-                    })
-                finally:
-                    _renumbering_module.show_first_page_dialog = original
-            else:
-                _renumbering_module.renumber_pages({
-                    "save_state":         noop,
-                    "render_mosaic":      noop,
-                    "update_button_text": noop,
-                })
-        finally:
-            _state_module.state = _prev
+    def _renumber_no_save(self, on_done=None):
+        """Renumérotation auto/simple liée à CE panneau (state=self._state), sans
+        swap du state global. NON modale : si la 1ère page est multiple (mode auto),
+        un dialogue s'ouvre et la renumérotation de CE panneau se fait à la réponse.
+        Chaque panneau finalise lui-même son rendu ; on_done() est appelé à la fin.
+        """
+        from modules.qt.renumbering_qt import renumber_pages_auto_qt, renumber_pages_qt
+        finish = on_done if on_done is not None else (lambda: None)
+
+        if getattr(self._state, "renumber_mode", 1) == 1:
+            renumber_pages_auto_qt(
+                self, self._render_mosaic, save_state_func=None,
+                state=self._state, on_done=finish,
+            )
+        else:
+            renumber_pages_qt(self._render_mosaic, save_state_func=None,
+                              state=self._state)
+            finish()
 
     def _renumber_btn_action(self):
         if getattr(self._state, "renumber_mode", 1) == 1:
@@ -1264,14 +1254,14 @@ class PanelWidget(QWidget):
             self,
             "messages.warnings.renumber_disabled_in_subdirectory.title",
             "messages.warnings.renumber_disabled_in_subdirectory.message",
-        ).exec()
+        ).show_nonmodal()
 
     def _warn_flatten_required_dnd(self):
         _WarnDialog(
             self,
             "messages.warnings.drag_drop_disabled_in_subdirectory.title",
             "messages.warnings.drag_drop_disabled_in_subdirectory.message",
-        ).exec()
+        ).show_nonmodal()
 
     # ──────────────────────────────────────────────────────────────────────────
     # Undo / Redo
@@ -1370,17 +1360,17 @@ class PanelWidget(QWidget):
         state = self._state
         if not state.selected_indices:
             _WarnDialog(self, "messages.warnings.no_selection_crop.title",
-                        "messages.warnings.no_selection_crop.message").exec()
+                        "messages.warnings.no_selection_crop.message").show_nonmodal()
             return
         if len(state.selected_indices) > 1:
             _WarnDialog(self, "messages.warnings.multi_selection_crop.title",
-                        "messages.warnings.multi_selection_crop.message").exec()
+                        "messages.warnings.multi_selection_crop.message").show_nonmodal()
             return
         idx = list(state.selected_indices)[0]
         entry = state.images_data[idx]
         if not entry["is_image"]:
             _WarnDialog(self, "messages.warnings.invalid_selection_crop.title",
-                        "messages.warnings.invalid_selection_crop.message").exec()
+                        "messages.warnings.invalid_selection_crop.message").show_nonmodal()
             return
         self._open_image_viewer(idx)
 
@@ -1538,8 +1528,13 @@ class PanelWidget(QWidget):
             self._canvas.render_mosaic()
 
         dlg.accepted.connect(_do_delete)
-        dlg.exec()
-        self._refresh_toolbar_states()
+        # NON modal : le refresh se fait à la fermeture (Oui ou Non), pas après exec().
+        dlg.finished.connect(lambda _: self._refresh_toolbar_states())
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        position_dialog_on_parent(dlg, self)
+        dlg.show()
+        dlg.raise_()
+        dlg.activateWindow()
 
     def _replace_corrupted_image(self, idx: int):
         st = self._state
@@ -1594,7 +1589,7 @@ class PanelWidget(QWidget):
                 "messages.errors.load_image_failed.title",
                 "messages.errors.load_image_failed.message",
                 {"error": str(e)},
-            ).exec()
+            ).show_nonmodal()
 
     # ──────────────────────────────────────────────────────────────────────────
     # Presse-papiers
@@ -1602,7 +1597,7 @@ class PanelWidget(QWidget):
 
     def _copy_selected(self):
         from modules.qt.clipboard_qt import copy_to_system_clipboard
-        copy_to_system_clipboard(self._get_temp_dir)
+        copy_to_system_clipboard(self._get_temp_dir, parent=self)
 
     def _copy_archive_to_clipboard(self):
         from modules.qt.clipboard_qt import copy_archive_to_clipboard
@@ -1614,6 +1609,7 @@ class PanelWidget(QWidget):
             get_temp_dir_func=self._get_temp_dir,
             render_mosaic=self._canvas.render_mosaic,
             save_state=self.save_state,
+            parent=self,
         )
         self._refresh_toolbar_states()
 
@@ -1742,6 +1738,9 @@ class PanelWidget(QWidget):
         if not dragged_entries:
             return
 
+        from modules.qt.comic_info import sync_pages_in_xml_data
+        has_images = any(e.get("is_image") for e in dragged_entries)
+
         # ── Supprime du source ────────────────────────────────────────────────
         kept = [e for i, e in enumerate(src_st.images_data) if i not in set(dragged_reals)]
         src_st.images_data = kept
@@ -1749,13 +1748,21 @@ class PanelWidget(QWidget):
         # Si le panneau source est maintenant vide et sans archive, pas besoin de
         # le marquer modifié (évite de bloquer la fermeture de l'appli)
         src_st.modified = True if (kept or src_st.current_file) else False
-        from modules.qt.comic_info import sync_pages_in_xml_data
         sync_pages_in_xml_data(src_st, emit_signal=False)
-        has_images = any(e.get("is_image") for e in dragged_entries)
+
+        # Finalisation du panneau SOURCE : exécutée APRÈS sa renumérotation (qui
+        # peut être asynchrone si la 1ère page est multiple). Étanche : ne touche
+        # que le panneau source.
+        def _finalize_source():
+            source_panel.save_state()
+            if src_st.comic_metadata and 'pages' in src_st.comic_metadata:
+                source_panel._metadata_tab.update_pages(src_st.comic_metadata['pages'])
+
         if has_images:
-            source_panel._renumber_no_save()
-        source_panel.save_state()
-        source_panel._canvas.render_mosaic()
+            source_panel._renumber_no_save(on_done=_finalize_source)
+        else:
+            source_panel._canvas.render_mosaic()
+            _finalize_source()
 
         # ── Insère dans la cible (self) ───────────────────────────────────────
         insert_real = max(0, min(insert_real, len(dst_st.images_data)))
@@ -1763,22 +1770,24 @@ class PanelWidget(QWidget):
             dst_st.images_data.insert(insert_real + offset, entry)
         dst_st.modified = True
         sync_pages_in_xml_data(dst_st, emit_signal=False)
-        if has_images:
-            self._renumber_no_save()
-        # Recalcule selected_indices APRÈS renumérotation, par identité objet
-        dragged_ids = {id(e) for e in dragged_entries}
-        dst_st.selected_indices = {
-            idx for idx, e in enumerate(dst_st.images_data)
-            if id(e) in dragged_ids
-        }
-        self.save_state()
-        self._canvas.render_mosaic()
 
-        # Mise à jour incrémentale des onglets métadonnées (pas de signal global)
-        if src_st.comic_metadata and 'pages' in src_st.comic_metadata:
-            source_panel._metadata_tab.update_pages(src_st.comic_metadata['pages'])
-        if dst_st.comic_metadata and 'pages' in dst_st.comic_metadata:
-            self._metadata_tab.update_pages(dst_st.comic_metadata['pages'])
+        # Finalisation du panneau CIBLE : recalcul sélection (par identité objet,
+        # indépendant des noms) + save_state + métadonnées, APRÈS sa renumérotation.
+        def _finalize_target():
+            dragged_ids = {id(e) for e in dragged_entries}
+            dst_st.selected_indices = {
+                idx for idx, e in enumerate(dst_st.images_data)
+                if id(e) in dragged_ids
+            }
+            self.save_state()
+            if dst_st.comic_metadata and 'pages' in dst_st.comic_metadata:
+                self._metadata_tab.update_pages(dst_st.comic_metadata['pages'])
+
+        if has_images:
+            self._renumber_no_save(on_done=_finalize_target)
+        else:
+            self._canvas.render_mosaic()
+            _finalize_target()
 
     # ──────────────────────────────────────────────────────────────────────────
     # Panneau actif (bordure colorée en mode split)
@@ -1935,6 +1944,7 @@ class PanelWidget(QWidget):
                 entry,
                 state=self._state,
                 on_modified_callback=lambda nb, e=entry: self._non_image_modified.emit(e, nb),
+                parent=self,
             )
 
     def _open_nfo_for_edit(self, entry: dict):
@@ -2088,7 +2098,7 @@ class PanelWidget(QWidget):
         from modules.qt.config_manager import get_config_manager
         from modules.qt.comicvine_apikey_dialog_qt import show_apikey_dialog
         cfg = get_config_manager()
-        api_key = cfg.get('comicvine_api_key', '').strip()
+        api_key = cfg.get_comicvine_api_key()
         if not api_key:
             dlg = show_apikey_dialog(self, cfg)
             dlg.accepted.connect(self._fetch_metadata)

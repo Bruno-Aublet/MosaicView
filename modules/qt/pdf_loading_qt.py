@@ -41,12 +41,17 @@ IMAGE_EXTS = (
 class DpiDialog(QDialog):
     """Dialogue de sélection du DPI avant chargement PDF."""
 
+    result_signal = Signal(object)   # dpi (int) si OK, None si annulé
+
     def __init__(self, parent, title_key, label_key):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self.selected_dpi = None
+        self._emitted = False
         self._title_key = title_key
         self._label_key = label_key
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedSize(450, 260)
 
         from modules.qt.overlay_tooltip_qt import OverlayTooltip
@@ -96,7 +101,7 @@ class DpiDialog(QDialog):
         self._btn_ok     = QPushButton()
         self._btn_cancel = QPushButton()
         self._btn_ok.clicked.connect(self._on_ok)
-        self._btn_cancel.clicked.connect(self.reject)
+        self._btn_cancel.clicked.connect(lambda: self._finish(None))
         btn_layout.addWidget(self._btn_ok)
         btn_layout.addWidget(self._btn_cancel)
         layout.addLayout(btn_layout)
@@ -110,12 +115,8 @@ class DpiDialog(QDialog):
         self._center_parent = parent
 
     def showEvent(self, event):
+        # Centrage fait dans ask_async() avant show() (pas de flash de recentrage).
         super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _update_original_tooltip(self):
         import html as _html
@@ -139,6 +140,7 @@ class DpiDialog(QDialog):
         )
         self.setWindowTitle(_wt(self._title_key))
         self._lbl.setText(_(self._label_key))
+        self._lbl.setFont(font)
         for dpi, key in self._dpi_options:
             for d, rb in self._radios:
                 if d == dpi:
@@ -154,11 +156,40 @@ class DpiDialog(QDialog):
             self._update_original_tooltip()
 
     def _on_ok(self):
-        for dpi, rb in self._radios:
+        dpi = None
+        for d, rb in self._radios:
             if rb.isChecked():
-                self.selected_dpi = dpi
+                dpi = d
                 break
-        self.accept()
+        self.selected_dpi = dpi
+        self._finish(dpi)
+
+    def _finish(self, dpi):
+        if self._emitted:
+            return
+        self._emitted = True
+        self.selected_dpi = dpi
+        self._on_close()
+        self.result_signal.emit(dpi)
+        self.hide()
+        self.deleteLater()
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            self.selected_dpi = None
+            self._on_close()
+            self.result_signal.emit(None)
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche (NON modal) et appelle on_result(dpi|None) à la réponse."""
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        self.result_signal.connect(on_result)
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -176,10 +207,12 @@ class _MsgDialog(QDialog):
 
     def __init__(self, parent, title_key, message_key, message_kwargs=None):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self._title_key    = title_key
         self._message_key  = message_key
         self._message_kwargs = message_kwargs or {}
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -191,7 +224,7 @@ class _MsgDialog(QDialog):
         layout.addWidget(self._lbl)
 
         self._btn_ok = QPushButton()
-        self._btn_ok.clicked.connect(self.accept)
+        self._btn_ok.clicked.connect(self.close)
         layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
 
         self._retranslate()
@@ -201,6 +234,13 @@ class _MsgDialog(QDialog):
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
         self._center_parent = parent
+
+    def show_nonmodal(self):
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -242,9 +282,11 @@ class PdfSuccessDialog(QDialog):
 
     def __init__(self, parent, count: int, dpi: int):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self._count = count
         self._dpi   = dpi
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         self._lbl = QLabel()
@@ -253,7 +295,7 @@ class PdfSuccessDialog(QDialog):
         layout.addWidget(self._lbl)
 
         self._btn_ok = QPushButton()
-        self._btn_ok.clicked.connect(self.accept)
+        self._btn_ok.clicked.connect(self.close)
         layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
 
         self._retranslate()
@@ -263,6 +305,13 @@ class PdfSuccessDialog(QDialog):
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
         self._center_parent = parent
+
+    def show_nonmodal(self):
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -961,7 +1010,7 @@ class PdfLoader:
             _MsgDialog(self._win,
                 "messages.errors.pymupdf_not_installed.title",
                 "messages.errors.pymupdf_not_installed.message",
-            ).exec()
+            ).show_nonmodal()
             return
 
         # Lance le preopen AVANT d'afficher le dialogue DPI — fitz.open() se
@@ -998,40 +1047,44 @@ class PdfLoader:
             "dialogs.pdf.export_quality_title",
             "dialogs.pdf.quality_export",
         )
-        if dlg.exec() != QDialog.Accepted or dlg.selected_dpi is None:
-            # Annulation : dit au process d'abandonner le doc pré-ouvert
-            _warm_in_q.put(('discard',))
-            self._state.current_file = None
-            return
 
-        # Attend que le preopen soit terminé (normalement déjà fait)
-        _drain_thread.join(timeout=10)
+        def _on_dpi_chosen(selected_dpi):
+            if selected_dpi is None:
+                # Annulation : dit au process d'abandonner le doc pré-ouvert
+                _warm_in_q.put(('discard',))
+                self._state.current_file = None
+                return
 
-        # Si le preopen a échoué, on le gère ici avant de démarrer le worker
-        result = _preopen_result[0]
-        if result is not None and result[0] == 'password_error':
-            self._state.current_file = None
-            _MsgDialog(self._win,
-                "messages.errors.pdf_password_required.title",
-                "messages.errors.pdf_password_required.message",
-            ).exec()
-            return
-        if result is not None and result[0] == 'empty_pdf':
-            self._state.current_file = None
-            _MsgDialog(self._win,
-                "messages.warnings.empty_pdf.title",
-                "messages.warnings.empty_pdf.message",
-            ).exec()
-            return
-        if result is not None and result[0] == 'error':
-            self._state.current_file = None
-            _MsgDialog(self._win,
-                "messages.errors.pdf_load_failed.title",
-                "messages.errors.pdf_load_failed.message",
-            ).exec()
-            return
+            # Attend que le preopen soit terminé (normalement déjà fait)
+            _drain_thread.join(timeout=10)
 
-        self._start_pdf_loading(filepath, dlg.selected_dpi)
+            # Si le preopen a échoué, on le gère ici avant de démarrer le worker
+            result = _preopen_result[0]
+            if result is not None and result[0] == 'password_error':
+                self._state.current_file = None
+                _MsgDialog(self._win,
+                    "messages.errors.pdf_password_required.title",
+                    "messages.errors.pdf_password_required.message",
+                ).show_nonmodal()
+                return
+            if result is not None and result[0] == 'empty_pdf':
+                self._state.current_file = None
+                _MsgDialog(self._win,
+                    "messages.warnings.empty_pdf.title",
+                    "messages.warnings.empty_pdf.message",
+                ).show_nonmodal()
+                return
+            if result is not None and result[0] == 'error':
+                self._state.current_file = None
+                _MsgDialog(self._win,
+                    "messages.errors.pdf_load_failed.title",
+                    "messages.errors.pdf_load_failed.message",
+                ).show_nonmodal()
+                return
+
+            self._start_pdf_loading(filepath, selected_dpi)
+
+        dlg.ask_async(_on_dpi_chosen)
 
     def _show_overlay(self, percent: int, current_page: int, total_pages: int, dpi: int):
         if self._worker is None:
@@ -1175,7 +1228,7 @@ class PdfLoader:
             "messages.errors.pdf_load_failed.title",
             "messages.errors.pdf_load_failed.message",
             {"error": msg},
-        ).exec()
+        ).show_nonmodal()
 
     def _on_password_error(self):
         self._hide_overlay()
@@ -1185,7 +1238,7 @@ class PdfLoader:
         _MsgDialog(self._win,
             "messages.errors.pdf_password_required.title",
             "messages.errors.pdf_password_required.message",
-        ).exec()
+        ).show_nonmodal()
 
     def _on_empty_pdf(self):
         self._hide_overlay()
@@ -1193,7 +1246,7 @@ class PdfLoader:
         _MsgDialog(self._win,
             "messages.warnings.empty_pdf.title",
             "messages.warnings.empty_pdf.message",
-        ).exec()
+        ).show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1300,7 +1353,7 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
         _MsgDialog(win,
             "messages.errors.pymupdf_not_installed.title",
             "messages.errors.pymupdf_not_installed.message",
-        ).exec()
+        ).show_nonmodal()
         return
 
     state.merge_counter += 1
@@ -1392,21 +1445,21 @@ def import_and_merge_pdf(filepath: str, dpi: int, win, canvas, state):
             "messages.errors.pdf_import_failed.title",
             "messages.errors.pdf_import_failed.message",
             {"error": msg},
-        ).exec()
+        ).show_nonmodal()
 
     def on_password_error():
         _hide()
         _MsgDialog(win,
             "messages.errors.pdf_password_required.title",
             "messages.errors.pdf_password_required.message",
-        ).exec()
+        ).show_nonmodal()
 
     def on_empty_pdf():
         _hide()
         _MsgDialog(win,
             "messages.warnings.empty_pdf.title",
             "messages.warnings.empty_pdf.message",
-        ).exec()
+        ).show_nonmodal()
 
     worker = PdfMergeWorker(filepath, dpi, merge_prefix)
     worker_ref[0] = worker

@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Ciri tidak tersedia",
         "message": "Penomboran semula tidak tersedia sehingga folder diratakan.\nRatakan folder sebelum menombor semula."
+      },
+      "unsafe_path_skipped": {
+        "title": "Fail dilangkau",
+        "message": "{count} fail dilangkau kerana lokasinya tidak sah."
+      },
+      "unsafe_path_open": {
+        "title": "Tidak dapat membuka",
+        "message": "Fail ini tidak dapat dibuka kerana lokasinya tidak sah."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Berjaya disimpan",
         "message": "{count} fail disimpan di:\n{folder}",
-        "open_folder": "Adakah anda ingin membuka folder?"
+        "open_folder": "Adakah anda ingin membuka folder?",
+        "message_with_skipped": "{count} fail disimpan ke {folder}. {skipped} fail dilangkau kerana lokasinya tidak sah."
       },
       "adjustments_applied": {
         "title": "Pelarasan digunakan",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Mencipta dan mengedit fail NFO",
     "nfo_editor_content": "Fail NFO ialah fail teks (dengan sambungan .nfo) yang digunakan untuk menyimpan maklumat tentang arkib: sinopsis, kredit, nota…\n\nUntuk mencipta fail NFO, gunakan ikon khusus dalam bar alat, menu Fail atau menu konteks (klik kanan pada mosaik). Arahan ini hanya tersedia apabila mosaik tidak kosong. Masukkan nama dan kandungan: fail disisipkan terus ke dalam mosaik tanpa pengekstrakan atau penyimpanan pertengahan.\n\nUntuk mengedit fail NFO sedia ada, klik dua kali padanya dalam mosaik. Tetingkap dibuka dengan nama dan kandungan semasa yang telah diisi, kedua-duanya boleh diedit. Dalam kedua-dua kes, operasi direkodkan dalam sejarah buat asal.",
     "metadata": "Metadata ComicVine",
-    "metadata_content": "MosaicView membolehkan pengambilan metadata komik anda (tajuk, siri, nombor, pengarang, ringkasan...) secara automatik daripada pangkalan data ComicVine, laman web kolaboratif yang diselenggarakan oleh komuniti.\n\nMod tunggal: buka komik, kemudian gunakan butang bar alat atau menu Metadata. Wizard dua langkah dibuka: pilih siri dahulu, kemudian episod yang berkaitan. Metadata ditulis ke ComicInfo.xml di dalam arkib.\n\nMod kelompok: jatuhkan satu atau lebih folder ke mosaik dan pilih \"Import metadata kelompok\", atau gunakan butang khusus pada bar alat atau menu Metadata. Wizard dibuka berturut-turut untuk setiap fail yang ditemui (CBZ, CBR, CB7, CBT, PDF). Fail bukan CBZ ditukar secara automatik kepada CBZ selepas penulisan metadata.\n\nKunci API: kunci API ComicVine percuma diperlukan. Aplikasi akan membimbing anda untuk mendapatkannya. Ia diperoleh di comicvine.gamespot.com selepas membuat akaun.\n\nHad API: had ini dikenakan oleh ComicVine dan tidak boleh dielakkan.\n• 200 permintaan setiap sumber sejam. Jika had ini dicapai, carian gagal sementara sehingga akhir jam.\n• Maksimum 100 keputusan setiap permintaan, yang memaksa carian dibahagikan kepada beberapa panggilan untuk siri dengan banyak episod.\n• 1 permintaan sesaat dibenarkan oleh laman web. Untuk keselamatan, MosaicView menunggu 2 saat antara setiap permintaan, kerana permintaan yang lebih pantas berkemungkinan besar menyebabkan sekatan sementara.\n\nCiri ini sepenuhnya berdasarkan projek sumber terbuka {scraper}.",
+    "metadata_content": "MosaicView membolehkan pengambilan metadata komik anda (tajuk, siri, nombor, pengarang, ringkasan...) secara automatik daripada pangkalan data ComicVine, laman web kolaboratif yang diselenggarakan oleh komuniti.\n\nMod tunggal: buka komik, kemudian gunakan butang bar alat atau menu Metadata. Wizard dua langkah dibuka: pilih siri dahulu, kemudian episod yang berkaitan. Metadata ditulis ke ComicInfo.xml di dalam arkib.\n\nMod kelompok: jatuhkan satu atau lebih folder ke mosaik dan pilih \"Import metadata kelompok\", atau gunakan butang khusus pada bar alat atau menu Metadata. Wizard dibuka berturut-turut untuk setiap fail yang ditemui (CBZ, CBR, CB7, CBT, PDF). Fail bukan CBZ ditukar secara automatik kepada CBZ selepas penulisan metadata.\n\nKunci API: kunci API ComicVine percuma diperlukan. Aplikasi akan membimbing anda untuk mendapatkannya. Ia diperoleh di comicvine.gamespot.com selepas membuat akaun. Kunci tidak pernah disimpan dalam teks biasa: ia disulitkan oleh Windows DPAPI dan hanya boleh dibaca oleh akaun Windows anda.\n\nHad API: had ini dikenakan oleh ComicVine dan tidak boleh dielakkan.\n• 200 permintaan setiap sumber sejam. Jika had ini dicapai, carian gagal sementara sehingga akhir jam.\n• Maksimum 100 keputusan setiap permintaan, yang memaksa carian dibahagikan kepada beberapa panggilan untuk siri dengan banyak episod.\n• 1 permintaan sesaat dibenarkan oleh laman web. Untuk keselamatan, MosaicView menunggu 2 saat antara setiap permintaan, kerana permintaan yang lebih pantas berkemungkinan besar menyebabkan sekatan sementara.\n\nCiri ini sepenuhnya berdasarkan projek sumber terbuka {scraper}.",
     "library": "Perpustakaan",
     "library_content": "Perpustakaan membolehkan anda mengkatalog dan mencari komik digital anda dengan mudah. Ia berfungsi dengan membaca metadata yang terkandung dalam setiap fail (tajuk, siri, pengarang, penerbit…) dan mengumpulkannya ke dalam satu fail perpustakaan (*.mvdb).\n\nUntuk mencipta perpustakaan, gunakan menu Perpustakaan → Pangkalan data baharu, atau seret satu atau lebih folder ke dalam mosaik dan pilih \"Buat perpustakaan daripada folder\". MosaicView kemudian akan mengimbas folder anda dan mengindeks semua fail yang serasi secara automatik.\n\nSetelah perpustakaan dibuka, anda boleh menapis komik mengikut siri, pengarang, tahun, penerbit dan lain-lain, dengan menggabungkan seberapa banyak kriteria yang diperlukan. Klik dua kali membuka fail dalam MosaicView. Keputusan boleh dieksport dalam format Excel (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Tampal kunci API anda di sini",
       "validate": "Sahkan",
       "error_empty": "Sila masukkan kunci API.",
-      "clear": "Padam kunci"
+      "clear": "Padam kunci",
+      "encryption_notice": "Kunci anda tidak pernah disimpan dalam teks biasa. Ia dilindungi oleh penyulitan Windows DPAPI, yang terikat dengan sesi anda.",
+      "show_key": "Tunjuk",
+      "hide_key": "Sembunyikan"
     },
     "menu_label": "Metadata",
     "tooltip": "Dapatkan metadata",

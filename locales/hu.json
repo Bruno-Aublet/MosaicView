@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "A funkció nem elérhető",
         "message": "Az átszámozás nem érhető el, amíg a mappák nem lettek kisimítva.\nSimítsa ki a mappákat az átszámozás előtt."
+      },
+      "unsafe_path_skipped": {
+        "title": "Kihagyott fájlok",
+        "message": "{count} fájl lett kihagyva, mert a helyük nem volt érvényes."
+      },
+      "unsafe_path_open": {
+        "title": "Nem nyitható meg",
+        "message": "Ezt a fájlt nem lehetett megnyitni, mert a helye nem volt érvényes."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Sikeresen mentve",
         "message": "{count} fájl mentve ide:\n{folder}",
-        "open_folder": "Szeretné megnyitni a mappát?"
+        "open_folder": "Szeretné megnyitni a mappát?",
+        "message_with_skipped": "{count} fájl mentve ide: {folder}. {skipped} fájl kihagyva, mert a helyük nem volt érvényes."
       },
       "adjustments_applied": {
         "title": "Beallitasok alkalmazva",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "NFO fájlok létrehozása és szerkesztése",
     "nfo_editor_content": "Az NFO fájl egy szöveges fájl (.nfo kiterjesztéssel), amelyet az archívumra vonatkozó információk tárolására használnak: szinopszis, közreműködők, jegyzetek…\n\nNFO fájl létrehozásához használja az eszköztáron lévő dedikált ikont, a Fájl menüt vagy a helyi menüt (jobb kattintás a mozaikon). A parancs csak akkor érhető el, ha a mozaik nem üres. Adjon meg egy nevet és tartalmat: a fájl közvetlenül a mozaikba kerül, kicsomagolás vagy közbülső mentés nélkül.\n\nMeglévő NFO fájl szerkesztéséhez kattintson rá duplán a mozaikon. Az ablak előre kitöltve nyílik meg az aktuális névvel és tartalommal, mindkettő szerkeszthető. Mindkét esetben a művelet rögzítésre kerül a visszavonási előzményekben.",
     "metadata": "ComicVine metaadatok",
-    "metadata_content": "A MosaicView lehetővé teszi a képregények metaadatainak (cím, sorozat, szám, szerzők, összefoglaló...) automatikus lekérését a ComicVine adatbázisából, egy közösség által fenntartott kollaboratív weboldalról.\n\nEgyéni mód: nyisson meg egy képregényt, majd használja az eszköztár gombját vagy a Metaadatok menüt. Kétlépéses varázsló nyílik meg: először válassza ki a sorozatot, majd a megfelelő epizódot. A metaadatok a ComicInfo.xml fájlba íródnak az archívumon belül.\n\nKötegelt mód: húzzon egy vagy több mappát a mozaikra, és válassza a \"Metaadatok kötegelt importálása\" lehetőséget, vagy használja az eszköztár dedikált gombját vagy a Metaadatok menüt. A varázsló egymás után nyílik meg minden talált fájlhoz (CBZ, CBR, CB7, CBT, PDF). A nem CBZ fájlok automatikusan CBZ-vé konvertálódnak a metaadatok írása után.\n\nAPI-kulcs: ingyenes ComicVine API-kulcs szükséges. Az alkalmazás végigvezeti a megszerzésén. A comicvine.gamespot.com oldalon szerezhető be fiók létrehozása után.\n\nAPI-korlátozások: ezeket a korlátozásokat a ComicVine szabja meg, és nem lehet megkerülni őket.\n• Óránként 200 kérés erőforrásonként. Ha ezt a határt eléri, a keresések ideiglenesen meghiúsulnak az óra végéig.\n• Kérésenként legfeljebb 100 eredmény, ami arra kényszerít, hogy sok epizóddal rendelkező sorozatoknál a kereséseket több hívásra ossza fel.\n• Másodpercenként 1 kérés engedélyezett az oldal által. Biztonság kedvéért a MosaicView 2 másodpercet vár minden kérés között, mivel a gyorsabb kérések nagy valószínűséggel ideiglenes blokkolásokat okoznak.\n\nEz a funkció teljes egészében a(z) {scraper} nyílt forráskódú projekten alapul.",
+    "metadata_content": "A MosaicView lehetővé teszi a képregények metaadatainak (cím, sorozat, szám, szerzők, összefoglaló...) automatikus lekérését a ComicVine adatbázisából, egy közösség által fenntartott kollaboratív weboldalról.\n\nEgyéni mód: nyisson meg egy képregényt, majd használja az eszköztár gombját vagy a Metaadatok menüt. Kétlépéses varázsló nyílik meg: először válassza ki a sorozatot, majd a megfelelő epizódot. A metaadatok a ComicInfo.xml fájlba íródnak az archívumon belül.\n\nKötegelt mód: húzzon egy vagy több mappát a mozaikra, és válassza a \"Metaadatok kötegelt importálása\" lehetőséget, vagy használja az eszköztár dedikált gombját vagy a Metaadatok menüt. A varázsló egymás után nyílik meg minden talált fájlhoz (CBZ, CBR, CB7, CBT, PDF). A nem CBZ fájlok automatikusan CBZ-vé konvertálódnak a metaadatok írása után.\n\nAPI-kulcs: ingyenes ComicVine API-kulcs szükséges. Az alkalmazás végigvezeti a megszerzésén. A comicvine.gamespot.com oldalon szerezhető be fiók létrehozása után. A kulcsot soha nem tároljuk egyszerű szövegként: a Windows DPAPI titkosítja, és csak a Windows-fiókja olvashatja.\n\nAPI-korlátozások: ezeket a korlátozásokat a ComicVine szabja meg, és nem lehet megkerülni őket.\n• Óránként 200 kérés erőforrásonként. Ha ezt a határt eléri, a keresések ideiglenesen meghiúsulnak az óra végéig.\n• Kérésenként legfeljebb 100 eredmény, ami arra kényszerít, hogy sok epizóddal rendelkező sorozatoknál a kereséseket több hívásra ossza fel.\n• Másodpercenként 1 kérés engedélyezett az oldal által. Biztonság kedvéért a MosaicView 2 másodpercet vár minden kérés között, mivel a gyorsabb kérések nagy valószínűséggel ideiglenes blokkolásokat okoznak.\n\nEz a funkció teljes egészében a(z) {scraper} nyílt forráskódú projekten alapul.",
     "library": "Könyvtár",
     "library_content": "A könyvtár lehetővé teszi digitális képregényeinek katalogizálását és egyszerű megtalálását. Úgy működik, hogy beolvassa az egyes fájlokban található metaadatokat (cím, sorozat, szerzők, kiadó…) és egyetlen könyvtárfájlba (*.mvdb) gyűjti őket.\n\nKönyvtár létrehozásához használja a Könyvtár → Új adatbázis menüpontot, vagy húzzon egy vagy több mappát a mozaikba, és válassza a \"Könyvtár létrehozása a mappá(k)ból\" lehetőséget. A MosaicView ekkor átvizsgálja a mappákat, és automatikusan indexeli az összes kompatibilis fájlt.\n\nA megnyitott könyvtárban sorozat, szerző, év, kiadó stb. szerint szűrheti képregényeit, tetszőleges számú feltételt kombinálva. Dupla kattintással megnyitja a fájlt a MosaicView-ban. Az eredmények Excel formátumban (*.xlsx) exportálhatók."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Illessze be ide az API-kulcsát",
       "validate": "Érvényesítés",
       "error_empty": "Kérjük, adjon meg egy API-kulcsot.",
-      "clear": "Kulcs törlése"
+      "clear": "Kulcs törlése",
+      "encryption_notice": "A kulcsát soha nem tároljuk egyszerű szövegként. A Windows DPAPI-titkosítás védi, amely a munkamenetéhez kötött.",
+      "show_key": "Megjelenít",
+      "hide_key": "Elrejt"
     },
     "menu_label": "Metaadatok",
     "tooltip": "Metaadatok lekérése",

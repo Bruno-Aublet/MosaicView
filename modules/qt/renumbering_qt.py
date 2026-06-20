@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QRadioButton,
     QPushButton, QButtonGroup, QWidget, QFrame,
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QPixmap, QImage, QIcon
 
 from modules.qt.localization import _, _wt
@@ -38,9 +38,14 @@ from modules.qt import renumbering as _renumbering_module
 class _FirstPageDialog(QDialog):
     """Dialogue "première page multiple" — supporte le changement de langue à la volée."""
 
+    result_signal = Signal(object)   # 'auto'|'joint'|'exclude' ou None si annulé
+
     def __init__(self, parent, first_entry: dict, first_mult: int, total_logical_pages: int):
         super().__init__(parent)
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self._emitted = False
         self._result = None
 
         ico_path = resource_path("icons/MosaicView.ico")
@@ -186,23 +191,37 @@ class _FirstPageDialog(QDialog):
         self._center_parent = parent
 
     def showEvent(self, event):
+        # Le centrage est fait dans ask_async() AVANT show() (pas de flash).
+        # On ne re-centre PAS ici : le QTimer.singleShot() différé déplaçait la
+        # fenêtre après le premier rendu → flash de recentrage visible.
         super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
+        # Réapplique les polices (suivent la langue : Tengwar/pIqaD pour les langues
+        # fictives). setFont seul à la construction ne suffit pas — sinon glyphes
+        # illisibles au changement de langue.
+        title_font = _get_current_font(11)
+        title_font.setBold(True)
+        font_normal = _get_current_font(10)
+        font_small_italic = _get_current_font(9)
+        font_small_italic.setItalic(True)
+
         self.setWindowTitle(_wt("dialogs.first_page_multi.title"))
         self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
         self._title_lbl.setText(_("dialogs.first_page_multi.message"))
+        self._title_lbl.setFont(title_font)
         self._title_lbl.setStyleSheet(f"color: {theme['text']};")
+        self._rb_auto.setFont(font_normal)
+        self._rb_joint.setFont(font_normal)
+        self._rb_exclude.setFont(font_normal)
         self._desc_auto.setText(_("dialogs.first_page_multi.option_auto_desc"))
+        self._desc_auto.setFont(font_small_italic)
         self._desc_joint.setText(_("dialogs.first_page_multi.option_joint_desc"))
+        self._desc_joint.setFont(font_small_italic)
         self._rb_exclude.setText(_("dialogs.first_page_multi.option_exclude_label"))
         self._desc_exclude.setText(_("dialogs.first_page_multi.option_exclude_desc"))
+        self._desc_exclude.setFont(font_small_italic)
         btn_style = (
             f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
             f"border: 1px solid #aaaaaa; padding: 4px 0; }} "
@@ -216,15 +235,45 @@ class _FirstPageDialog(QDialog):
         self._btn_cancel.setStyleSheet(btn_style)
 
     def _on_ok(self):
+        result = None
         for btn in self._btn_group.buttons():
             if btn.isChecked():
-                self._result = btn.property("option_value")
+                result = btn.property("option_value")
                 break
-        self.accept()
+        self._finish(result)
 
     def _on_cancel(self):
-        self._result = None
-        self.reject()
+        self._finish(None)
+
+    def _finish(self, result):
+        if self._emitted:
+            return
+        self._emitted = True
+        self._result = result
+        self._on_close()
+        self.result_signal.emit(result)
+        self.hide()
+        self.deleteLater()
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            self._result = None
+            self._on_close()
+            self.result_signal.emit(None)
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche (NON modal) et appelle on_result('auto'|'joint'|'exclude'|None)."""
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        self.result_signal.connect(on_result)
+        # Taille libre (pas de setFixedSize) : adjustSize() fige la taille reelle
+        # (avec la vignette) AVANT le centrage, pour eviter tout flash de recentrage.
+        self.adjustSize()
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -234,60 +283,84 @@ class _FirstPageDialog(QDialog):
             pass
 
 
-def show_first_page_dialog_qt(parent, first_entry: dict, first_mult: int,
-                               total_logical_pages: int) -> str | None:
-    """
-    Dialogue Qt demandant comment traiter la première page si elle est multiple.
-    Reproduit show_first_page_dialog de modules/renumbering.py.
-
-    Retourne : 'auto', 'joint', 'exclude', ou None si annulé.
-    """
-    dlg = _FirstPageDialog(parent, first_entry, first_mult, total_logical_pages)
-    dlg.exec()
-    return dlg._result
-
-
 # ═══════════════════════════════════════════════════════════════════════════════
 # Points d'entrée Qt
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def renumber_pages_auto_qt(parent_widget, canvas_render_func, save_state_func=None):
+def renumber_pages_auto_qt(parent_widget, canvas_render_func, save_state_func=None,
+                           state=None, on_done=None):
     """
-    Renumérotation auto Qt — reproduit renumber_pages_auto de MosaicView.py.
+    Renumérotation auto Qt — reproduit renumber_pages_auto de MosaicView.py. NON modale.
 
     Args:
-        parent_widget   : QWidget parent pour le dialogue
-        canvas_render_func : callable → re-render la mosaïque après renumérotation
-        save_state_func : callable → sauvegarde undo (None = noop)
+        parent_widget   : QWidget parent pour le dialogue (panneau source)
+        canvas_render_func : callable → re-render la mosaïque de CE panneau
+        save_state_func : callable → sauvegarde undo de CE panneau (None = noop)
+        state           : AppState du panneau cible. Lie la renumérotation à ce
+                          panneau précis (étanche vis-à-vis de l'autre panneau).
+        on_done         : callable() appelé quand la renumérotation est terminée
+                          (immédiatement si pas de question, ou après réponse).
     """
+    import modules.qt.state as _state_module
     noop = lambda: None
     save = save_state_func or noop
+    panel_state = state if state is not None else _state_module.state
 
-    def _show_dialog(first_entry, first_mult, total_logical_pages, callbacks):
-        return show_first_page_dialog_qt(parent_widget, first_entry, first_mult,
-                                         total_logical_pages)
+    def _run_with_choice(first_page_mode):
+        """Lance la renumérotation en injectant un show_first_page_dialog qui
+        retourne directement le choix déjà obtenu (plus aucun dialogue ouvert)."""
+        def _show_dialog(first_entry, first_mult, total_logical_pages, callbacks):
+            return first_page_mode
 
-    # Monkey-patch temporaire de show_first_page_dialog pour injecter notre version Qt
-    original = _renumbering_module.show_first_page_dialog
-    _renumbering_module.show_first_page_dialog = _show_dialog
-    try:
-        _renumbering_module.renumber_pages_auto({
-            "save_state":         save,
-            "render_mosaic":      canvas_render_func,
-            "update_button_text": noop,
-            "root":               parent_widget,  # non utilisé avec le patch
-        })
-    finally:
-        _renumbering_module.show_first_page_dialog = original
+        original = _renumbering_module.show_first_page_dialog
+        _renumbering_module.show_first_page_dialog = _show_dialog
+        try:
+            _renumbering_module.renumber_pages_auto({
+                "save_state":         save,
+                "render_mosaic":      canvas_render_func,
+                "update_button_text": noop,
+                "root":               parent_widget,
+            }, state=panel_state)
+        finally:
+            _renumbering_module.show_first_page_dialog = original
+        if on_done is not None:
+            on_done()
+
+    # Étape 1 : détecter si la 1ère page est multiple (calcul pur, sur CE panneau).
+    image_entries = [e for e in panel_state.images_data if e["is_image"]]
+    if not image_entries:
+        if on_done is not None:
+            on_done()
+        return
+    multipliers, first_mult = _renumbering_module.compute_first_page_info(image_entries)
+
+    if first_mult > 1:
+        # Rafraîchit la mosaïque AVANT d'ouvrir la question, pour que l'utilisateur
+        # voie l'état réel des pages et réponde en connaissance de cause.
+        canvas_render_func()
+        last_page_joint = sum(multipliers[1:]) + 2 if len(multipliers) > 1 else 2
+        dlg = _FirstPageDialog(parent_widget, image_entries[0], first_mult, last_page_joint)
+
+        def _after_choice(choice):
+            if choice is None:
+                if on_done is not None:
+                    on_done()
+                return   # annulé
+            _run_with_choice(choice)
+
+        dlg.ask_async(_after_choice)
+    else:
+        _run_with_choice(None)
 
 
-def renumber_pages_qt(canvas_render_func, save_state_func=None):
+def renumber_pages_qt(canvas_render_func, save_state_func=None, state=None):
     """
     Renumérotation simple Qt — reproduit renumber_pages de MosaicView.py.
 
     Args:
         canvas_render_func : callable → re-render la mosaïque après renumérotation
         save_state_func    : callable → sauvegarde undo (None = noop)
+        state              : AppState du panneau cible (lie l'opération au panneau).
     """
     noop = lambda: None
     save = save_state_func or noop
@@ -296,4 +369,4 @@ def renumber_pages_qt(canvas_render_func, save_state_func=None):
         "save_state":         save,
         "render_mosaic":      canvas_render_func,
         "update_button_text": noop,
-    })
+    }, state=state)

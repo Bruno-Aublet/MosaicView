@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QButtonGroup, QRadioButton, QScrollArea, QWidget, QSizePolicy,
 )
-from PySide6.QtCore import Qt, QPoint, QRect
+from PySide6.QtCore import Qt, QPoint, QRect, Signal
 from PySide6.QtGui import QPixmap, QImage, QPainter, QPen, QColor
 
 from modules.qt import state as _state_module
@@ -50,13 +50,18 @@ def _disconnect_lang(dialog):
 class SizeAdjustmentDialog(QDialog):
     """Dialogue pour choisir le mode d'ajustement des tailles d'images."""
 
+    result_signal = Signal(object)   # mode (str) ou None si annulé
+
     def __init__(self, parent, dimension_type: str, dimensions_list: list):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self._dimension_type = dimension_type
         self._dimensions_list = dimensions_list
         self._result_mode = None
-        self.setModal(True)
-        self.setFixedSize(520, 400)
+        self._emitted = False
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self.setMinimumSize(520, 400)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 16)
@@ -117,7 +122,7 @@ class SizeAdjustmentDialog(QDialog):
         btn_row.addWidget(self._ok_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setFixedWidth(130)
-        self._cancel_btn.clicked.connect(self.reject)
+        self._cancel_btn.clicked.connect(lambda: self._finish(None))
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
@@ -187,12 +192,38 @@ class SizeAdjustmentDialog(QDialog):
 
     def _on_ok(self):
         if self._rb_keep.isChecked():
-            self._result_mode = 'keep_original'
+            mode = 'keep_original'
         elif self._rb_enlarge.isChecked():
-            self._result_mode = 'enlarge_small'
+            mode = 'enlarge_small'
         else:
-            self._result_mode = 'reduce_large'
-        self.accept()
+            mode = 'reduce_large'
+        self._finish(mode)
+
+    def _finish(self, mode):
+        if self._emitted:
+            return
+        self._emitted = True
+        self._result_mode = mode
+        _disconnect_lang(self)
+        self.result_signal.emit(mode)
+        self.hide()
+        self.deleteLater()
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            _disconnect_lang(self)
+            self.result_signal.emit(None)
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche (NON modal) et appelle on_result(mode|None) à la réponse."""
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        self.result_signal.connect(on_result)
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     @property
     def result_mode(self):
@@ -469,13 +500,21 @@ class YesNoCancelDialog(QDialog):
     NO     = 2
     CANCEL = 0
 
+    result_signal = Signal(int)   # YES | NO | CANCEL
+
     def __init__(self, parent, title_key: str, message_key: str):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self._title_key   = title_key
         self._message_key = message_key
         self._result_val  = self.CANCEL
-        self.setModal(True)
-        self.setFixedSize(420, 160)
+        self._emitted = False
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        # Largeur fixe (design), hauteur libre : le message fait 3 lignes + boutons,
+        # 160px etait trop juste (3e ligne coupee). Qt calcule la hauteur reelle.
+        self.setFixedWidth(420)
+        self.setMinimumHeight(160)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -527,6 +566,11 @@ class YesNoCancelDialog(QDialog):
         self.setWindowTitle(_wt(self._title_key))
         self._lbl.setText(_(self._message_key))
         self._lbl.setFont(font)
+        # Le sizeHint d'un QLabel WordWrap sous-estime la hauteur (il suppose le
+        # texte sur une seule ligne large). On impose la hauteur reelle pour la
+        # largeur contrainte (420 - marges 20*2 = 380px), sinon la derniere ligne
+        # du message multi-lignes est coupee.
+        self._lbl.setMinimumHeight(self._lbl.heightForWidth(380))
         self._btn_yes.setText(_("buttons.yes"))
         self._btn_yes.setFont(font)
         self._btn_no.setText(_("buttons.no"))
@@ -535,16 +579,43 @@ class YesNoCancelDialog(QDialog):
         self._btn_cancel.setFont(font)
 
     def _on_yes(self):
-        self._result_val = self.YES
-        self.accept()
+        self._finish(self.YES)
 
     def _on_no(self):
-        self._result_val = self.NO
-        self.accept()
+        self._finish(self.NO)
 
     def _on_cancel(self):
-        self._result_val = self.CANCEL
-        self.reject()
+        self._finish(self.CANCEL)
+
+    def _finish(self, result):
+        if self._emitted:
+            return
+        self._emitted = True
+        self._result_val = result
+        _disconnect_lang(self)
+        self.result_signal.emit(result)
+        self.hide()
+        self.deleteLater()
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            self._result_val = self.CANCEL
+            _disconnect_lang(self)
+            self.result_signal.emit(self.CANCEL)
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche (NON modal) et appelle on_result(int) à la réponse."""
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        self.result_signal.connect(on_result)
+        # Hauteur libre : adjustSize() ajuste la hauteur au contenu (message 3 lignes)
+        # AVANT le centrage. La largeur reste fixée par setFixedWidth(420).
+        self.adjustSize()
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     @property
     def result_value(self):
@@ -578,7 +649,9 @@ class MergeDialog(QDialog):
         super().__init__(parent)
         self._callbacks = callbacks
         self._state = callbacks.get('state') or _state_module.state
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setMinimumSize(600, 700)
         self.resize(620, 740)
 
@@ -631,7 +704,7 @@ class MergeDialog(QDialog):
         btn_row.addWidget(self._join_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setFixedWidth(130)
-        self._cancel_btn.clicked.connect(self.reject)
+        self._cancel_btn.clicked.connect(self.close)
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
@@ -712,24 +785,39 @@ class MergeDialog(QDialog):
         pixmap = _pil_to_qpixmap(preview)
         self._preview_lbl.setPixmap(pixmap)
 
-    def _ask_size_adjustment(self, dimension_type, dimensions_list):
-        """Ouvre le dialogue de choix d'ajustement ; retourne le mode ou None si annulé."""
-        dlg = SizeAdjustmentDialog(self, dimension_type, dimensions_list)
-        if dlg.exec() != QDialog.Accepted:
-            return None
-        return dlg.result_mode
-
     def _on_join(self):
         positions = self._canvas.get_positions_data()
+
+        # Étape 1 : détecter SI un ajustement de taille est nécessaire (calcul pur,
+        # pas d'UI). Si oui → demander à l'utilisateur via SizeAdjustmentDialog NON
+        # modal, puis poursuivre dans le callback ; sinon → poursuivre directement.
+        from modules.qt.image_ops import detect_merge_adjustment
+        need, dimension_type, dimensions_list = detect_merge_adjustment(positions)
+
+        if need:
+            dlg = SizeAdjustmentDialog(self, dimension_type, dimensions_list)
+
+            def _after_size(mode):
+                if mode is None:
+                    return   # annulé → MergeDialog reste ouvert
+                self._finish_join(positions, mode)
+
+            dlg.ask_async(_after_size)
+        else:
+            self._finish_join(positions, 'keep_original')
+
+    def _finish_join(self, positions, adjustment_mode):
+        """Étape 2 : fusionne avec le mode déjà choisi, crée l'entrée, ferme la
+        fenêtre, puis demande la suppression des sources (NON modal)."""
         state = self._state
 
-        # Fusion PIL
+        # Fusion PIL avec le mode déjà décidé (ask_adjustment_func retourne ce mode,
+        # plus aucun dialogue n'est ouvert ici).
         merged_img = merge_images_2d(
             positions,
-            ask_adjustment_func=self._ask_size_adjustment,
+            ask_adjustment_func=lambda dt, dl: adjustment_mode,
         )
         if merged_img is None:
-            # Annulé par l'utilisateur dans le dialogue d'ajustement → reste ouvert
             return
 
         # Détermine le format de sortie
@@ -771,50 +859,54 @@ class MergeDialog(QDialog):
         new_entry = create_entry(collage_name, img_bytes.getvalue(), image_exts)
         new_entry["img"] = merged_img
 
-        # Ferme le dialogue de disposition
-        self.accept()
+        merge_parent = self.parent()
 
-        # Demande si on supprime les fichiers sources
+        # Ferme le dialogue de disposition
+        self.close()
+
+        # Étape 3 : demande si on supprime les fichiers sources (NON modal)
         ync = YesNoCancelDialog(
-            self.parent(),
+            merge_parent,
             "messages.questions.delete_source_files.title",
             "messages.questions.delete_source_files.message",
         )
-        ync.exec()
 
-        if ync.result_value == YesNoCancelDialog.CANCEL:
-            # Rien à défaire — on n'a pas encore modifié state
+        def _after_delete_choice(result):
+            if result == YesNoCancelDialog.CANCEL:
+                # Rien à défaire — on n'a pas encore modifié state
+                self._callbacks["render_mosaic"]()
+                self._callbacks["update_button_text"]()
+                return
+
+            # Sauvegarde l'état AVANT modification (point de retour pour undo)
+            _save_state_data(state, force=True)
+
+            # Insère en tête de mosaïque
+            state.images_data.insert(0, new_entry)
+            state.modified = True
+            state.needs_renumbering = True
+
+            if result == YesNoCancelDialog.YES:
+                indices_to_remove = sorted(state.selected_indices, reverse=True)
+                for idx in indices_to_remove:
+                    adjusted = idx + 1
+                    if adjusted < len(state.images_data):
+                        state.images_data.pop(adjusted)
+
+            from modules.qt.comic_info import sync_pages_in_xml_data
+            sync_pages_in_xml_data(state)
+
+            # Déselectionne tout et sélectionne la nouvelle image
+            self._callbacks["clear_selection"]()
+            state.selected_indices.add(0)
+
+            # Sauvegarde l'état APRÈS modification (point de retour pour redo)
+            _save_state_data(state, force=True)
+
             self._callbacks["render_mosaic"]()
             self._callbacks["update_button_text"]()
-            return
 
-        # Sauvegarde l'état AVANT modification (point de retour pour undo)
-        _save_state_data(state, force=True)
-
-        # Insère en tête de mosaïque
-        state.images_data.insert(0, new_entry)
-        state.modified = True
-        state.needs_renumbering = True
-
-        if ync.result_value == YesNoCancelDialog.YES:
-            indices_to_remove = sorted(state.selected_indices, reverse=True)
-            for idx in indices_to_remove:
-                adjusted = idx + 1
-                if adjusted < len(state.images_data):
-                    state.images_data.pop(adjusted)
-
-        from modules.qt.comic_info import sync_pages_in_xml_data
-        sync_pages_in_xml_data(state)
-
-        # Déselectionne tout et sélectionne la nouvelle image
-        self._callbacks["clear_selection"]()
-        state.selected_indices.add(0)
-
-        # Sauvegarde l'état APRÈS modification (point de retour pour redo)
-        _save_state_data(state, force=True)
-
-        self._callbacks["render_mosaic"]()
-        self._callbacks["update_button_text"]()
+        ync.ask_async(_after_delete_choice)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -834,7 +926,7 @@ def open_merge_window(parent, callbacks):
             "messages.warnings.insufficient_selection_join.title",
             "messages.warnings.insufficient_selection_join.message",
         )
-        dlg.exec()
+        dlg.show_nonmodal()
         return
 
     selected_entries = [
@@ -848,8 +940,12 @@ def open_merge_window(parent, callbacks):
             "messages.warnings.invalid_selection_join.title",
             "messages.warnings.invalid_selection_join.message",
         )
-        dlg.exec()
+        dlg.show_nonmodal()
         return
 
     dlg = MergeDialog(parent, callbacks)
-    dlg.exec()
+    from modules.qt.dialogs_qt import position_dialog_on_parent
+    position_dialog_on_parent(dlg, parent)
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()

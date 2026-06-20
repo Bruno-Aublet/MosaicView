@@ -31,7 +31,7 @@ from PySide6.QtWidgets import (
     QFrame, QSizePolicy, QProgressDialog,
     QFileDialog, QApplication,
 )
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtGui import QCursor, QDesktopServices
 from PySide6.QtCore import QUrl
 
@@ -39,7 +39,7 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
 from modules.qt.config_manager import get_config_manager
 from modules.qt.entries import save_image_to_bytes
-from modules.qt.utils import format_file_size
+from modules.qt.utils import format_file_size, safe_join
 from modules.qt.dialogs_qt import (
     detect_duplicate_filenames_for_save,
     ErrorDialog, InfoDialog, QuestionYNCDialog,
@@ -63,7 +63,7 @@ def _check_no_ico(parent):
         from modules.qt.dialogs_qt import MsgDialog
         MsgDialog(parent,
                   "dialogs.ico_creator.save_blocked_title",
-                  "dialogs.ico_creator.save_blocked_message").exec()
+                  "dialogs.ico_creator.save_blocked_message").show_nonmodal()
         return False
     return True
 
@@ -73,8 +73,8 @@ def _check_no_video(parent):
     if any(os.path.splitext(e.get("orig_name", "").lower())[1] in _VIDEO_EXTENSIONS
            for e in state.images_data):
         ErrorDialog(parent,
-                    _("dialogs.video_save_blocked.title"),
-                    _("dialogs.video_save_blocked.message")).exec()
+                    lambda: _("dialogs.video_save_blocked.title"),
+                    lambda: _("dialogs.video_save_blocked.message")).show()
         return False
     return True
 
@@ -302,9 +302,11 @@ class DuplicateNamesErrorDialog(QDialog):
 
     def __init__(self, parent, message_func, title_key: str):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self._title_key = title_key
         self._message_func = message_func
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedWidth(480)
 
         layout = QVBoxLayout(self)
@@ -340,7 +342,9 @@ class DuplicateNamesErrorDialog(QDialog):
         if parent is not None:
             from modules.qt.dialogs_qt import _center_on_widget
             _center_on_widget(self, parent)
-        self.exec()
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def _retranslate(self):
         self.setWindowTitle(_wt(self._title_key))
@@ -363,11 +367,16 @@ class DuplicateFilenameDialog(QDialog):
     result = "renumber" | "ignore" | None (annuler)
     """
 
+    result_signal = Signal(object)   # "renumber" | "ignore" | None
+
     def __init__(self, parent, duplicate_names):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self.result = None
+        self._emitted = False
         self.setWindowTitle("")
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedWidth(520)
 
         layout = QVBoxLayout(self)
@@ -406,10 +415,7 @@ class DuplicateFilenameDialog(QDialog):
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
         self._renumber_btn.setFocus()
-        if parent is not None:
-            from modules.qt.dialogs_qt import _center_on_widget
-            _center_on_widget(self, parent)
-        self.exec()
+        self._center_parent = parent
 
     def _retranslate(self):
         self._title_lbl.setText(_("dialogs.duplicate_filenames.title"))
@@ -425,17 +431,41 @@ class DuplicateFilenameDialog(QDialog):
         except RuntimeError:
             pass
 
+    def _finish(self, result):
+        if self._emitted:
+            return
+        self._emitted = True
+        self.result = result
+        self._on_close()
+        self.result_signal.emit(result)
+        self.hide()
+        self.deleteLater()
+
     def _renumber(self):
-        self.result = "renumber"
-        self.accept()
+        self._finish("renumber")
 
     def _ignore(self):
-        self.result = "ignore"
-        self.accept()
+        self._finish("ignore")
 
     def _cancel(self):
-        self.result = None
-        self.accept()
+        self._finish(None)
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            self._on_close()
+            self.result_signal.emit(None)
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche le dialogue (NON modal) et appelle on_result(result) à la réponse.
+        result ∈ {'renumber','ignore', None}."""
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        self.result_signal.connect(on_result)
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -445,10 +475,11 @@ class DuplicateFilenameDialog(QDialog):
 class FileSavedDialog(QDialog):
     """Dialogue de confirmation avec lien cliquable vers le dossier."""
 
-    def __init__(self, parent, count: int, folder: str):
+    def __init__(self, parent, count: int, folder: str, skipped: int = 0):
         super().__init__(parent)
         self._count = count
         self._folder = folder
+        self._skipped = skipped
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
         self.setFixedWidth(520)
@@ -495,7 +526,11 @@ class FileSavedDialog(QDialog):
 
     def _retranslate(self):
         self.setWindowTitle(_wt("messages.info.files_saved.title"))
-        self._msg.setText(_("messages.info.files_saved.message", count=self._count, folder=self._folder))
+        if self._skipped > 0:
+            self._msg.setText(_("messages.info.files_saved.message_with_skipped",
+                                count=self._count, folder=self._folder, skipped=self._skipped))
+        else:
+            self._msg.setText(_("messages.info.files_saved.message", count=self._count, folder=self._folder))
         self._close_btn.setText(_("buttons.close"))
 
     def _on_close(self):
@@ -552,15 +587,23 @@ class _SavingOverlay:
 # Vérifications pré-sauvegarde (portées de file_operations.py)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _validate_filenames_qt(parent, render_mosaic):
+def _validate_filenames_qt(parent, render_mosaic, on_done):
     """
-    Valide les noms de fichiers (caractères interdits, etc.).
-    Version Qt de file_validation.validate_filenames.
-    Retourne True si OK, False si l'utilisateur annule.
+    Valide les noms de fichiers (caractères interdits, etc.). NON modal.
+    Appelle on_done(True) si on peut continuer, on_done(False) si annulation.
+
+    Détection des sous-répertoires : un nom contenant '/' (et qui n'est pas une
+    entrée dossier) signifie une structure de sous-dossiers légitime — dans ce cas
+    le '/' n'est PAS un caractère interdit. Détection canonique du projet, identique
+    à has_subdirectory_structure (basée sur orig_name, pas sur la présence d'entrées
+    is_dir).
     """
     state = _state_module.state
     invalid_chars = '<>:"|?*'
-    has_subdirs = any(e.get("is_dir") for e in state.images_data)
+    has_subdirs = any(
+        '/' in e.get("orig_name", "") and not e.get("is_dir")
+        for e in state.images_data
+    )
     invalid_files = []
 
     for idx, entry in enumerate(state.images_data):
@@ -586,7 +629,8 @@ def _validate_filenames_qt(parent, render_mosaic):
             invalid_files.append({"index": idx, "original": filename, "entry": entry})
 
     if not invalid_files:
-        return True
+        on_done(True)
+        return
 
     # Prépare les callables pour que le message se retraduit à la volée
     chars_str = invalid_chars if has_subdirs else (invalid_chars + " / \\")
@@ -602,46 +646,49 @@ def _validate_filenames_qt(parent, render_mosaic):
         m += "\n\n" + _("messages.questions.invalid_filenames.fix_question")
         return m
 
-    reply = QuestionYNCDialog(
+    def _on_reply(reply):
+        if reply == "cancel":
+            on_done(False)
+            return
+
+        if reply == "yes":
+            for item in invalid_files:
+                entry = item["entry"]
+                filename = item["original"]
+                cleaned = filename
+                if has_subdirs:
+                    parts = cleaned.replace("\\", "/").split("/")
+                    parts = [p for p in parts if p]
+                    cleaned = "/".join(parts) if parts else "fichier" + entry["extension"]
+                else:
+                    cleaned = cleaned.replace("/", "_").replace("\\", "_")
+                for char in invalid_chars:
+                    cleaned = cleaned.replace(char, "_")
+                cleaned = "".join(c if ord(c) >= 32 else "_" for c in cleaned)
+                cleaned = cleaned.replace("..", "")
+                entry["orig_name"] = cleaned
+            render_mosaic()
+            InfoDialog(
+                parent,
+                lambda: _("messages.info.correction_done.title"),
+                lambda c=len(invalid_files): _("messages.info.correction_done.message", count=c),
+            ).show()
+            on_done(True)
+            return
+
+        # Non — ne pas corriger
+        ErrorDialog(
+            parent,
+            lambda: _("messages.warnings.save_cancelled.title"),
+            lambda: _("messages.warnings.save_cancelled.message"),
+        ).show()
+        on_done(False)
+
+    QuestionYNCDialog(
         parent,
         lambda: _("messages.questions.invalid_filenames.title"),
         _build_msg,
-    ).ask()
-
-    if reply == "cancel":
-        return False
-
-    if reply == "yes":
-        for item in invalid_files:
-            entry = item["entry"]
-            filename = item["original"]
-            cleaned = filename
-            if has_subdirs:
-                parts = cleaned.replace("\\", "/").split("/")
-                parts = [p for p in parts if p]
-                cleaned = "/".join(parts) if parts else "fichier" + entry["extension"]
-            else:
-                cleaned = cleaned.replace("/", "_").replace("\\", "_")
-            for char in invalid_chars:
-                cleaned = cleaned.replace(char, "_")
-            cleaned = "".join(c if ord(c) >= 32 else "_" for c in cleaned)
-            cleaned = cleaned.replace("..", "")
-            entry["orig_name"] = cleaned
-        render_mosaic()
-        InfoDialog(
-            parent,
-            _("messages.info.correction_done.title"),
-            _("messages.info.correction_done.message", count=len(invalid_files)),
-        ).exec()
-        return True
-
-    # Non — ne pas corriger
-    ErrorDialog(
-        parent,
-        _("messages.warnings.save_cancelled.title"),
-        _("messages.warnings.save_cancelled.message"),
-    ).exec()
-    return False
+    ).ask_async(_on_reply)
 
 
 def _auto_update_page_count_qt():
@@ -660,6 +707,29 @@ def _auto_update_page_count_qt():
         update_page_count_in_xml_data(state, current_count)
 
 
+def _run_validation_chain(steps, on_all_passed):
+    """
+    Enchaîne des validations NON modales (callbacks) et n'exécute on_all_passed()
+    que si toutes réussissent. Chaque step est un callable step(on_done) qui appelle
+    on_done(True) pour continuer ou on_done(False) pour interrompre la chaîne.
+
+    Remplace la cascade modale `if not A(): return; if not B(): return; ...`.
+    """
+    def _run(index):
+        if index >= len(steps):
+            on_all_passed()
+            return
+
+        def _on_step_done(ok):
+            if ok:
+                _run(index + 1)
+            # ok=False : on interrompt silencieusement (le dialogue a déjà informé)
+
+        steps[index](_on_step_done)
+
+    _run(0)
+
+
 def _has_animated_gifs():
     """Retourne True si la liste d'images contient au moins un GIF animé."""
     for entry in _state_module.state.images_data:
@@ -668,38 +738,43 @@ def _has_animated_gifs():
     return False
 
 
-def _check_animated_gifs_qt(parent):
+def _check_animated_gifs_qt(parent, on_done):
     """
-    Vérifie la présence de GIFs animés et affiche l'avertissement.
-    Retourne True si on peut continuer, False si l'utilisateur annule.
+    Vérifie la présence de GIFs animés et affiche l'avertissement. NON modal.
+    Appelle on_done(True) si on peut continuer, on_done(False) si annulation.
     """
     if not _has_animated_gifs():
-        return True
+        on_done(True)
+        return
     from modules.qt.dialogs_qt import ConfirmDialog
-    return ConfirmDialog(
+    ConfirmDialog(
         parent,
         "messages.warnings.animated_gif_in_comic.title",
         "messages.warnings.animated_gif_in_comic.message",
-    ).ask()
+    ).ask_async(on_done)
 
 
-def _handle_duplicate_filenames_qt(parent, renumber_func, entries_to_check=None):
+def _handle_duplicate_filenames_qt(parent, renumber_func, on_done, entries_to_check=None):
     """
-    Vérifie les doublons et affiche le dialogue si nécessaire.
-    Retourne True pour continuer, False pour annuler.
+    Vérifie les doublons et affiche le dialogue si nécessaire. NON modal.
+    Appelle on_done(True) pour continuer, on_done(False) pour annuler.
     """
     has_duplicates, duplicate_names = detect_duplicate_filenames_for_save(entries_to_check)
     if not has_duplicates:
-        return True
+        on_done(True)
+        return
 
-    dlg = DuplicateFilenameDialog(parent, duplicate_names)
-    if dlg.result == "renumber":
-        if renumber_func:
-            renumber_func()
-        return True
-    elif dlg.result == "ignore":
-        return True
-    return False
+    def _on_result(result):
+        if result == "renumber":
+            if renumber_func:
+                renumber_func()
+            on_done(True)
+        elif result == "ignore":
+            on_done(True)
+        else:
+            on_done(False)
+
+    DuplicateFilenameDialog(parent, duplicate_names).ask_async(_on_result)
 
 
 def _write_zip_with_progress(filepath, images_data, overlay):
@@ -837,71 +912,72 @@ def save_as_cbz(parent, canvas, callbacks: dict):
     render_mosaic = callbacks.get("render_mosaic", lambda: None)
     renumber_func = callbacks.get("renumber_btn_action")
 
-    if not _validate_filenames_qt(parent, render_mosaic):
-        return
+    def _on_validated():
+        initial_dir = os.path.dirname(os.path.abspath(state.current_file))
+        if not initial_dir:
+            initial_dir = get_config_manager().get('last_open_dir', "")
+        initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
+        filepath = _get_save_filename(
+            parent,
+            _("buttons.save_as"),
+            os.path.join(initial_dir, initial_name),
+            "Comic Book Archive (*.cbz)",
+        )
+        if not filepath:
+            return
+        get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
-    if not _check_animated_gifs_qt(parent):
-        return
+        overlay = _SavingOverlay(canvas) if canvas else None
+        try:
+            _write_zip_with_progress(filepath, state.images_data, overlay)
+        except Exception as e:
+            if overlay:
+                overlay.remove()
+            ErrorDialog(parent,
+                        lambda: _("messages.errors.save_failed.title"),
+                        lambda err=e: _("messages.errors.save_failed.message", error=err)).show()
+            return
+        finally:
+            if overlay:
+                overlay.remove()
 
-    if not _handle_duplicate_filenames_qt(parent, renumber_func):
-        return
+        old_file = state.current_file
+        state.current_file = filepath
+        state.modified = False
+        if callbacks.get("update_button_text"):
+            callbacks["update_button_text"]()
+        if callbacks.get("update_tabs"):
+            callbacks["update_tabs"]()
 
-    initial_dir = os.path.dirname(os.path.abspath(state.current_file))
-    if not initial_dir:
-        initial_dir = get_config_manager().get('last_open_dir', "")
-    initial_name = os.path.splitext(os.path.basename(state.current_file))[0] + ".cbz"
-    filepath = _get_save_filename(
-        parent,
-        _("buttons.save_as"),
-        os.path.join(initial_dir, initial_name),
-        "Comic Book Archive (*.cbz)",
-    )
-    if not filepath:
-        return
-    get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
+        def _after_save_as(result):
+            if result:
+                try:
+                    if old_file and os.path.exists(old_file):
+                        _safe_delete(old_file)
+                except Exception as e:
+                    ErrorDialog(parent,
+                                lambda: _("messages.errors.save_failed.title"),
+                                lambda err=e: _("messages.errors.delete_error", error=err)).show()
 
-    overlay = _SavingOverlay(canvas) if canvas else None
-    try:
-        _write_zip_with_progress(filepath, state.images_data, overlay)
-    except Exception as e:
-        if overlay:
-            overlay.remove()
-        ErrorDialog(parent,
-                    _("messages.errors.save_failed.title"),
-                    _("messages.errors.save_failed.message", error=e)).exec()
-        return
-    finally:
-        if overlay:
-            overlay.remove()
+        if callbacks.get("on_file_saved"):
+            callbacks["on_file_saved"](filepath)
+        render_mosaic()
+        SaveSuccessDialog(
+            parent,
+            "messages.info.new_cbz_saved.title",
+            "messages.info.new_cbz_saved.message",
+            filepath,
+            "messages.info.new_cbz_saved.question",
+            on_done=_after_save_as,
+        )
 
-    old_file = state.current_file
-    state.current_file = filepath
-    state.modified = False
-    if callbacks.get("update_button_text"):
-        callbacks["update_button_text"]()
-    if callbacks.get("update_tabs"):
-        callbacks["update_tabs"]()
-
-    def _after_save_as(result):
-        if result:
-            try:
-                if old_file and os.path.exists(old_file):
-                    _safe_delete(old_file)
-            except Exception as e:
-                ErrorDialog(parent,
-                            _("messages.errors.save_failed.title"),
-                            _("messages.errors.delete_error", error=e)).exec()
-
-    if callbacks.get("on_file_saved"):
-        callbacks["on_file_saved"](filepath)
-    render_mosaic()
-    SaveSuccessDialog(
-        parent,
-        "messages.info.new_cbz_saved.title",
-        "messages.info.new_cbz_saved.message",
-        filepath,
-        "messages.info.new_cbz_saved.question",
-        on_done=_after_save_as,
+    _run_validation_chain(
+        [
+            lambda done: _validate_filenames_qt(parent, render_mosaic, done),
+            lambda done: _check_animated_gifs_qt(parent, done),
+            lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done),
+        ],
+        on_all_passed=_on_validated,
     )
 
 
@@ -917,8 +993,8 @@ def save_selection_as_cbz(parent, callbacks: dict):
     state = _state_module.state
     if not state.selected_indices or not state.images_data:
         ErrorDialog(parent,
-                    _("messages.warnings.no_selection_save.title"),
-                    _("messages.warnings.no_selection_save.message")).exec()
+                    lambda: _("messages.warnings.no_selection_save.title"),
+                    lambda: _("messages.warnings.no_selection_save.message")).show()
         return
 
     if not _check_no_ico(parent):
@@ -929,46 +1005,50 @@ def save_selection_as_cbz(parent, callbacks: dict):
     renumber_func = callbacks.get("renumber_btn_action")
     selected_entries = [state.images_data[i] for i in state.selected_indices
                         if i < len(state.images_data) and state.images_data[i]["is_image"]]
-    if not _handle_duplicate_filenames_qt(parent, renumber_func, selected_entries):
-        return
+    def _on_validated():
+        initial_dir = None
+        if state.current_file:
+            initial_dir = os.path.dirname(os.path.abspath(state.current_file))
+            base_name = os.path.splitext(os.path.basename(state.current_file))[0]
+            initial_file = f"{base_name}_{_('misc.selection_suffix')}.cbz"
+        else:
+            initial_dir = getattr(state, "first_image_dir", None)
+            initial_file = f"{_('misc.selection_suffix')}.cbz"
+        if not initial_dir:
+            initial_dir = get_config_manager().get('last_open_dir', "")
 
-    initial_dir = None
-    if state.current_file:
-        initial_dir = os.path.dirname(os.path.abspath(state.current_file))
-        base_name = os.path.splitext(os.path.basename(state.current_file))[0]
-        initial_file = f"{base_name}_{_('misc.selection_suffix')}.cbz"
-    else:
-        initial_dir = getattr(state, "first_image_dir", None)
-        initial_file = f"{_('misc.selection_suffix')}.cbz"
-    if not initial_dir:
-        initial_dir = get_config_manager().get('last_open_dir', "")
+        start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
+        filepath = _get_save_filename(
+            parent,
+            _("buttons.save_selection"),
+            start,
+            "Comic Book Archive (*.cbz)",
+        )
+        if not filepath:
+            return
+        get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
-    start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
-    filepath = _get_save_filename(
-        parent,
-        _("buttons.save_selection"),
-        start,
-        "Comic Book Archive (*.cbz)",
+        try:
+            with zipfile.ZipFile(filepath, "w") as zf:
+                for idx in sorted(state.selected_indices):
+                    if idx < len(state.images_data):
+                        entry = state.images_data[idx]
+                        if entry["bytes"] is not None and not entry.get("is_dir"):
+                            zf.writestr(entry["orig_name"], entry["bytes"])
+            InfoDialogClickablePath(parent,
+                                    "messages.info.selection_saved.title",
+                                    "messages.info.selection_saved.message",
+                                    filepath)
+        except Exception as e:
+            ErrorDialog(parent,
+                        lambda: _("messages.errors.save_selection_failed.title"),
+                        lambda err=e: _("messages.errors.save_selection_failed.message", error=err)).show()
+
+    _handle_duplicate_filenames_qt(
+        parent, renumber_func,
+        lambda ok: _on_validated() if ok else None,
+        entries_to_check=selected_entries,
     )
-    if not filepath:
-        return
-    get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
-
-    try:
-        with zipfile.ZipFile(filepath, "w") as zf:
-            for idx in sorted(state.selected_indices):
-                if idx < len(state.images_data):
-                    entry = state.images_data[idx]
-                    if entry["bytes"] is not None and not entry.get("is_dir"):
-                        zf.writestr(entry["orig_name"], entry["bytes"])
-        InfoDialogClickablePath(parent,
-                                "messages.info.selection_saved.title",
-                                "messages.info.selection_saved.message",
-                                filepath)
-    except Exception as e:
-        ErrorDialog(parent,
-                    _("messages.errors.save_selection_failed.title"),
-                    _("messages.errors.save_selection_failed.message", error=e)).exec()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -987,72 +1067,83 @@ def save_selection_to_folder(parent, callbacks: dict):
     renumber_func = callbacks.get("renumber_btn_action")
     selected_entries = [state.images_data[i] for i in state.selected_indices
                         if i < len(state.images_data) and state.images_data[i]["is_image"]]
-    if not _handle_duplicate_filenames_qt(parent, renumber_func, selected_entries):
-        return
 
-    initial_dir = None
-    if state.current_file:
-        initial_dir = os.path.dirname(os.path.abspath(state.current_file))
-    elif getattr(state, "first_image_dir", None):
-        initial_dir = state.first_image_dir
-    if not initial_dir:
-        initial_dir = get_config_manager().get('last_open_dir', "")
+    def _on_validated():
+        initial_dir = None
+        if state.current_file:
+            initial_dir = os.path.dirname(os.path.abspath(state.current_file))
+        elif getattr(state, "first_image_dir", None):
+            initial_dir = state.first_image_dir
+        if not initial_dir:
+            initial_dir = get_config_manager().get('last_open_dir', "")
 
-    try:
-        saved_count = 0
-        folder = None
+        try:
+            saved_count = 0
+            skipped_count = 0
+            folder = None
 
-        if len(state.selected_indices) == 1:
-            idx = list(state.selected_indices)[0]
-            entry = state.images_data[idx]
-            initial_file = entry["orig_name"]
-            file_ext = os.path.splitext(initial_file)[1].lower()
-            filter_str = (f"Fichiers {file_ext} (*{file_ext});;Tous les fichiers (*.*)"
-                          if file_ext else "Tous les fichiers (*.*)")
-            start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
-            file_path = _get_save_filename(
-                parent,
-                _("dialogs.save_to_folder.title"),
-                start,
-                filter_str,
-            )
-            if not file_path:
-                return
-            get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(file_path)))
-            if entry["bytes"] is not None and not entry.get("is_dir"):
-                file_dir = os.path.dirname(file_path)
-                if file_dir and not os.path.exists(file_dir):
-                    os.makedirs(file_dir, exist_ok=True)
-                with open(file_path, "wb") as f:
-                    f.write(entry["bytes"])
-                saved_count = 1
-            folder = os.path.dirname(file_path)
-        else:
-            folder = QFileDialog.getExistingDirectory(
-                parent,
-                _("dialogs.save_to_folder.title"),
-                initial_dir or "",
-            )
-            if not folder:
-                return
-            get_config_manager().set('last_open_dir', folder)
-            for idx in sorted(state.selected_indices):
-                if idx < len(state.images_data):
-                    entry = state.images_data[idx]
-                    if entry["bytes"] is not None and not entry.get("is_dir"):
-                        file_path = os.path.join(folder, entry["orig_name"])
-                        file_dir = os.path.dirname(file_path)
-                        if file_dir and not os.path.exists(file_dir):
-                            os.makedirs(file_dir, exist_ok=True)
-                        with open(file_path, "wb") as f:
-                            f.write(entry["bytes"])
-                        saved_count += 1
+            if len(state.selected_indices) == 1:
+                idx = list(state.selected_indices)[0]
+                entry = state.images_data[idx]
+                initial_file = entry["orig_name"]
+                file_ext = os.path.splitext(initial_file)[1].lower()
+                filter_str = (f"Fichiers {file_ext} (*{file_ext});;Tous les fichiers (*.*)"
+                              if file_ext else "Tous les fichiers (*.*)")
+                start = os.path.join(initial_dir, initial_file) if initial_dir else initial_file
+                file_path = _get_save_filename(
+                    parent,
+                    _("dialogs.save_to_folder.title"),
+                    start,
+                    filter_str,
+                )
+                if not file_path:
+                    return
+                get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(file_path)))
+                if entry["bytes"] is not None and not entry.get("is_dir"):
+                    file_dir = os.path.dirname(file_path)
+                    if file_dir and not os.path.exists(file_dir):
+                        os.makedirs(file_dir, exist_ok=True)
+                    with open(file_path, "wb") as f:
+                        f.write(entry["bytes"])
+                    saved_count = 1
+                folder = os.path.dirname(file_path)
+            else:
+                folder = QFileDialog.getExistingDirectory(
+                    parent,
+                    _("dialogs.save_to_folder.title"),
+                    initial_dir or "",
+                )
+                if not folder:
+                    return
+                get_config_manager().set('last_open_dir', folder)
+                for idx in sorted(state.selected_indices):
+                    if idx < len(state.images_data):
+                        entry = state.images_data[idx]
+                        if entry["bytes"] is not None and not entry.get("is_dir"):
+                            # Sécurité : empêche toute écriture hors du dossier choisi
+                            # (nom d'entrée piégé "../" — Zip Slip). Entrée ignorée si évasion.
+                            file_path = safe_join(folder, entry["orig_name"])
+                            if file_path is None:
+                                skipped_count += 1
+                                continue
+                            file_dir = os.path.dirname(file_path)
+                            if file_dir and not os.path.exists(file_dir):
+                                os.makedirs(file_dir, exist_ok=True)
+                            with open(file_path, "wb") as f:
+                                f.write(entry["bytes"])
+                            saved_count += 1
 
-        FileSavedDialog(parent, saved_count, folder)
-    except Exception as e:
-        ErrorDialog(parent,
-                    _("messages.errors.save_files_failed.title"),
-                    _("messages.errors.save_files_failed.message", error=str(e))).exec()
+            FileSavedDialog(parent, saved_count, folder, skipped_count)
+        except Exception as e:
+            ErrorDialog(parent,
+                        lambda: _("messages.errors.save_files_failed.title"),
+                        lambda err=e: _("messages.errors.save_files_failed.message", error=str(err))).show()
+
+    _handle_duplicate_filenames_qt(
+        parent, renumber_func,
+        lambda ok: _on_validated() if ok else None,
+        entries_to_check=selected_entries,
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1089,86 +1180,94 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
     render_mosaic = callbacks.get("render_mosaic", lambda: None)
     renumber_func = callbacks.get("renumber_btn_action")
 
-    if not _validate_filenames_qt(parent, render_mosaic):
-        return
+    def _on_validated():
+        initial_dir = None
+        if state.current_file:
+            initial_dir = os.path.dirname(os.path.abspath(state.current_file))
+        elif getattr(state, "first_image_dir", None):
+            initial_dir = state.first_image_dir
+        if not initial_dir:
+            initial_dir = get_config_manager().get('last_open_dir', "")
 
-    if not _check_animated_gifs_qt(parent):
-        return
+        start = os.path.join(initial_dir, "nouveau_comics.cbz") if initial_dir else "nouveau_comics.cbz"
+        filepath = _get_save_filename(
+            parent,
+            _("buttons.create_cbz"),
+            start,
+            "Comic Book Archive (*.cbz)",
+        )
+        if not filepath:
+            return
+        get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
-    if not _handle_duplicate_filenames_qt(parent, renumber_func):
-        return
+        overlay = _SavingOverlay(canvas) if canvas else None
+        try:
+            _write_zip_with_progress(filepath, state.images_data, overlay)
+        except Exception as e:
+            if overlay:
+                overlay.remove()
+            ErrorDialog(parent,
+                        lambda: _("messages.errors.create_archive_failed.title"),
+                        lambda err=e: _("messages.errors.create_archive_failed.message").format(error=err)).show()
+            return
+        finally:
+            if overlay:
+                overlay.remove()
 
-    initial_dir = None
-    if state.current_file:
-        initial_dir = os.path.dirname(os.path.abspath(state.current_file))
-    elif getattr(state, "first_image_dir", None):
-        initial_dir = state.first_image_dir
-    if not initial_dir:
-        initial_dir = get_config_manager().get('last_open_dir', "")
-
-    start = os.path.join(initial_dir, "nouveau_comics.cbz") if initial_dir else "nouveau_comics.cbz"
-    filepath = _get_save_filename(
-        parent,
-        _("buttons.create_cbz"),
-        start,
-        "Comic Book Archive (*.cbz)",
-    )
-    if not filepath:
-        return
-    get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
-
-    overlay = _SavingOverlay(canvas) if canvas else None
-    try:
-        _write_zip_with_progress(filepath, state.images_data, overlay)
-    except Exception as e:
-        if overlay:
-            overlay.remove()
-        ErrorDialog(parent,
-                    _("messages.errors.create_archive_failed.title"),
-                    _("messages.errors.create_archive_failed.message").format(error=e)).exec()
-        return
-    finally:
-        if overlay:
-            overlay.remove()
-
-    state.current_file = filepath
-    state.modified = False
-    if callbacks.get("update_button_text"):
-        callbacks["update_button_text"]()
-    if callbacks.get("update_window_title"):
-        callbacks["update_window_title"]()
-    if callbacks.get("update_tabs"):
-        callbacks["update_tabs"]()
-    render_mosaic()
-    InfoDialogClickablePath(parent,
+        state.current_file = filepath
+        state.modified = False
+        if callbacks.get("update_button_text"):
+            callbacks["update_button_text"]()
+        if callbacks.get("update_window_title"):
+            callbacks["update_window_title"]()
+        if callbacks.get("update_tabs"):
+            callbacks["update_tabs"]()
+        render_mosaic()
+        InfoDialogClickablePath(parent,
                             "messages.info.cbz_created.title",
                             "messages.info.cbz_created.message",
                             filepath)
+
+    _run_validation_chain(
+        [
+            lambda done: _validate_filenames_qt(parent, render_mosaic, done),
+            lambda done: _check_animated_gifs_qt(parent, done),
+            lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done),
+        ],
+        on_all_passed=_on_validated,
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 5 & 6. apply_new_names — Appliquer les modifications et sauvegarder/créer CBZ
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def apply_new_names(parent, canvas, callbacks: dict):
+def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
     """
-    Applique les nouveaux noms et sauvegarde ou crée une archive CBZ.
+    Applique les nouveaux noms et sauvegarde ou crée une archive CBZ. NON modal.
 
     - Si archive .cbz ouverte et modifiée → écrase le fichier CBZ existant
       (bouton « Appliquer et sauvegarder le CBZ »)
     - Si archive CBR/EPUB/PDF ouverte et modifiée → propose un nouveau fichier .cbz
       (bouton « Appliquer et créer un CBZ »)
-    Logique identique à file_operations.apply_new_names.
-    Retourne False si la sauvegarde n'a pas eu lieu (erreur ou annulation), True si succès.
+
+    on_complete(success: bool) : appelé en fin de traitement (sauvegarde réussie =
+    True, annulation/erreur = False). Remplace l'ancienne valeur de retour booléenne,
+    car la validation est désormais asynchrone (dialogues non modaux).
     """
     state = _state_module.state
+
+    def _done(success):
+        if on_complete is not None:
+            on_complete(success)
+
     if not state.current_file:
-        return False
+        return _done(False)
 
     if not _check_no_ico(parent):
-        return False
+        return _done(False)
     if not _check_no_video(parent):
-        return False
+        return _done(False)
 
     _auto_update_page_count_qt()
 
@@ -1200,15 +1299,26 @@ def apply_new_names(parent, canvas, callbacks: dict):
             msg += _("messages.errors.duplicate_names.footer")
             return msg
         DuplicateNamesErrorDialog(parent, _make_msg, "messages.errors.duplicate_names.title")
-        return False
+        return _done(False)
 
     render_mosaic = callbacks.get("render_mosaic", lambda: None)
-    if not _validate_filenames_qt(parent, render_mosaic):
-        return False
 
-    if not _check_animated_gifs_qt(parent):
-        return False
+    def _on_validated():
+        _write_apply_new_names(parent, canvas, callbacks, _done)
 
+    _run_validation_chain(
+        [
+            lambda d: _validate_filenames_qt(parent, render_mosaic, d),
+            lambda d: _check_animated_gifs_qt(parent, d),
+        ],
+        on_all_passed=_on_validated,
+    )
+
+
+def _write_apply_new_names(parent, canvas, callbacks, _done):
+    """Écrit l'archive pour apply_new_names après validation. NON modal.
+    Appelle _done(True) en cas de succès, _done(False) en cas d'annulation/erreur."""
+    state = _state_module.state
     ext = os.path.splitext(state.current_file)[1].lower()
     safe_delete = callbacks.get("safe_delete_file", _safe_delete)
     get_temp_dir = callbacks.get("get_mosaicview_temp_dir", tempfile.gettempdir)
@@ -1236,9 +1346,9 @@ def apply_new_names(parent, canvas, callbacks: dict):
                 _free   = format_file_size(free_space)
                 ErrorDialog(parent,
                             lambda: _("messages.errors.save_failed.title"),
-                            lambda: _("messages.errors.disk_full.message",
-                                      needed=_needed, free=_free)).exec()
-                return False
+                            lambda n=_needed, fr=_free: _("messages.errors.disk_full.message",
+                                      needed=n, free=fr)).show()
+                return _done(False)
             shutil.move(temp_file, state.current_file)
             InfoDialogClickablePath(parent,
                                     "messages.info.cbz_saved.title",
@@ -1246,9 +1356,9 @@ def apply_new_names(parent, canvas, callbacks: dict):
                                     state.current_file)
         except Exception as e:
             ErrorDialog(parent,
-                        _("messages.errors.save_failed.title"),
-                        _("messages.errors.save_failed.message", error=e)).exec()
-            return False
+                        lambda: _("messages.errors.save_failed.title"),
+                        lambda err=e: _("messages.errors.save_failed.message", error=err)).show()
+            return _done(False)
 
     elif ext in (".cbr", ".cbt", ".epub"):
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
@@ -1262,7 +1372,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
             "Comic Book Archive (*.cbz)",
         )
         if not new_file:
-            return False
+            return _done(False)
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
         try:
             with zipfile.ZipFile(new_file, "w") as zf:
@@ -1279,8 +1389,8 @@ def apply_new_names(parent, canvas, callbacks: dict):
                             safe_delete(old_file_cbz)
                     except Exception as e:
                         ErrorDialog(parent,
-                                    _("messages.errors.save_failed.title"),
-                                    _("messages.errors.delete_error", error=e)).exec()
+                                    lambda: _("messages.errors.save_failed.title"),
+                                    lambda err=e: _("messages.errors.delete_error", error=err)).show()
 
             SaveSuccessDialog(
                 parent,
@@ -1292,9 +1402,9 @@ def apply_new_names(parent, canvas, callbacks: dict):
             )
         except Exception as e:
             ErrorDialog(parent,
-                        _("messages.errors.save_failed.title"),
-                        _("messages.errors.save_failed.message", error=e)).exec()
-            return False
+                        lambda: _("messages.errors.save_failed.title"),
+                        lambda err=e: _("messages.errors.save_failed.message", error=err)).show()
+            return _done(False)
 
     elif ext == ".pdf":
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
@@ -1308,7 +1418,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
             "Comic Book Archive (*.cbz)",
         )
         if not new_file:
-            return False
+            return _done(False)
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
         try:
             with zipfile.ZipFile(new_file, "w") as zf:
@@ -1325,8 +1435,8 @@ def apply_new_names(parent, canvas, callbacks: dict):
                             safe_delete(old_file_pdf)
                     except Exception as e:
                         ErrorDialog(parent,
-                                    _("messages.errors.save_failed.title"),
-                                    _("messages.errors.delete_error", error=e)).exec()
+                                    lambda: _("messages.errors.save_failed.title"),
+                                    lambda err=e: _("messages.errors.delete_error", error=err)).show()
 
             SaveSuccessDialog(
                 parent,
@@ -1338,9 +1448,9 @@ def apply_new_names(parent, canvas, callbacks: dict):
             )
         except Exception as e:
             ErrorDialog(parent,
-                        _("messages.errors.save_failed.title"),
-                        _("messages.errors.save_failed.message", error=e)).exec()
-            return False
+                        lambda: _("messages.errors.save_failed.title"),
+                        lambda err=e: _("messages.errors.save_failed.message", error=err)).show()
+            return _done(False)
 
     state.modified = False
     if callbacks.get("render_mosaic"):
@@ -1351,7 +1461,7 @@ def apply_new_names(parent, canvas, callbacks: dict):
         callbacks["update_tabs"]()
     if callbacks.get("on_file_saved"):
         callbacks["on_file_saved"](state.current_file)
-    return True
+    _done(True)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Functie niet beschikbaar",
         "message": "Hernummering is niet beschikbaar totdat de mappen zijn samengevoegd.\nSamenvoeging van mappen vóór hernummering."
+      },
+      "unsafe_path_skipped": {
+        "title": "Bestanden overgeslagen",
+        "message": "{count} bestand(en) zijn overgeslagen omdat de locatie ongeldig was."
+      },
+      "unsafe_path_open": {
+        "title": "Kan niet openen",
+        "message": "Dit bestand kon niet worden geopend omdat de locatie ongeldig was."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Succesvol opgeslagen",
         "message": "{count} bestanden opgeslagen in:\n{folder}",
-        "open_folder": "Wilt u de map openen?"
+        "open_folder": "Wilt u de map openen?",
+        "message_with_skipped": "{count} bestand(en) opgeslagen in {folder}. {skipped} bestand(en) overgeslagen omdat de locatie ongeldig was."
       },
       "adjustments_applied": {
         "title": "Aanpassingen toegepast",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "NFO-bestanden maken en bewerken",
     "nfo_editor_content": "Een NFO-bestand is een tekstbestand (met de extensie .nfo) dat wordt gebruikt om informatie over het archief op te slaan: synopsis, credits, notities…\n\nOm een NFO-bestand te maken, gebruikt u het speciale pictogram in de werkbalk, het menu Bestand of het contextmenu (rechtsklik op het mozaïek). De opdracht is alleen beschikbaar als het mozaïek niet leeg is. Voer een naam en inhoud in: het bestand wordt direct in het mozaïek ingevoegd zonder extractie of tussentijdse opslag.\n\nOm een bestaand NFO-bestand te bewerken, dubbelklikt u erop in het mozaïek. Het venster opent vooraf ingevuld met de huidige naam en inhoud, beide bewerkbaar. In beide gevallen wordt de bewerking vastgelegd in de ongedaan maken-geschiedenis.",
     "metadata": "ComicVine metadata",
-    "metadata_content": "MosaicView maakt het mogelijk om automatisch metadata voor uw strips op te halen (titel, reeks, nummer, auteurs, samenvatting...) uit de ComicVine-database, een collaboratieve website die door de community wordt onderhouden.\n\nEnkelvoudige modus: open een strip en gebruik vervolgens de knop op de werkbalk of het menu Metadata. Een wizard in twee stappen opent: kies eerst de reeks, dan het bijbehorende aflevering. Metadata wordt geschreven naar ComicInfo.xml in het archief.\n\nBatchmodus: sleep een of meer mappen naar het mozaïek en kies \"Metadata batchimport\", of gebruik de speciale knop op de werkbalk of het menu Metadata. De wizard opent achtereenvolgens voor elk gevonden bestand (CBZ, CBR, CB7, CBT, PDF). Niet-CBZ-bestanden worden na het schrijven van de metadata automatisch geconverteerd naar CBZ.\n\nAPI-sleutel: een gratis ComicVine API-sleutel is vereist. De applicatie begeleidt u bij het verkrijgen ervan. Deze is te verkrijgen op comicvine.gamespot.com na het aanmaken van een account.\n\nAPI-beperkingen: deze beperkingen worden opgelegd door ComicVine en kunnen niet worden omzeild.\n• 200 verzoeken per resource per uur. Als deze limiet bereikt wordt, mislukken zoekopdrachten tijdelijk tot het einde van het uur.\n• Maximaal 100 resultaten per verzoek, wat zoekacties dwingt te verdelen over meerdere aanroepen voor reeksen met veel afleveringen.\n• 1 verzoek per seconde toegestaan door de site. Voor de veiligheid wacht MosaicView 2 seconden tussen elk verzoek, omdat snellere verzoeken zeer waarschijnlijk tijdelijke blokkades veroorzaken.\n\nDeze functie is volledig gebaseerd op het open source-project {scraper}.",
+    "metadata_content": "MosaicView maakt het mogelijk om automatisch metadata voor uw strips op te halen (titel, reeks, nummer, auteurs, samenvatting...) uit de ComicVine-database, een collaboratieve website die door de community wordt onderhouden.\n\nEnkelvoudige modus: open een strip en gebruik vervolgens de knop op de werkbalk of het menu Metadata. Een wizard in twee stappen opent: kies eerst de reeks, dan het bijbehorende aflevering. Metadata wordt geschreven naar ComicInfo.xml in het archief.\n\nBatchmodus: sleep een of meer mappen naar het mozaïek en kies \"Metadata batchimport\", of gebruik de speciale knop op de werkbalk of het menu Metadata. De wizard opent achtereenvolgens voor elk gevonden bestand (CBZ, CBR, CB7, CBT, PDF). Niet-CBZ-bestanden worden na het schrijven van de metadata automatisch geconverteerd naar CBZ.\n\nAPI-sleutel: een gratis ComicVine API-sleutel is vereist. De applicatie begeleidt u bij het verkrijgen ervan. Deze is te verkrijgen op comicvine.gamespot.com na het aanmaken van een account. De sleutel wordt nooit als leesbare tekst opgeslagen: hij wordt versleuteld door Windows DPAPI en kan alleen worden gelezen door uw Windows-account.\n\nAPI-beperkingen: deze beperkingen worden opgelegd door ComicVine en kunnen niet worden omzeild.\n• 200 verzoeken per resource per uur. Als deze limiet bereikt wordt, mislukken zoekopdrachten tijdelijk tot het einde van het uur.\n• Maximaal 100 resultaten per verzoek, wat zoekacties dwingt te verdelen over meerdere aanroepen voor reeksen met veel afleveringen.\n• 1 verzoek per seconde toegestaan door de site. Voor de veiligheid wacht MosaicView 2 seconden tussen elk verzoek, omdat snellere verzoeken zeer waarschijnlijk tijdelijke blokkades veroorzaken.\n\nDeze functie is volledig gebaseerd op het open source-project {scraper}.",
     "library": "Bibliotheek",
     "library_content": "De bibliotheek stelt u in staat uw digitale strips te catalogiseren en gemakkelijk terug te vinden. Ze werkt door de metadata in elk bestand (titel, reeks, auteurs, uitgever…) te lezen en samen te brengen in één bibliotheekbestand (*.mvdb).\n\nOm een bibliotheek aan te maken, gebruikt u het menu Bibliotheek → Nieuwe database, of sleept u een of meer mappen naar het mozaïek en kiest u \"Maak een bibliotheek van de map(pen)\". MosaicView scant vervolgens uw mappen en indexeert automatisch alle compatibele bestanden.\n\nZodra de bibliotheek geopend is, kunt u uw strips filteren op reeks, auteur, jaar, uitgever enz., met een combinatie van zoveel criteria als nodig. Een dubbelklik opent het bestand in MosaicView. De resultaten kunnen worden geëxporteerd in Excel-formaat (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Plak hier uw API-sleutel",
       "validate": "Bevestigen",
       "error_empty": "Voer een API-sleutel in.",
-      "clear": "Sleutel wissen"
+      "clear": "Sleutel wissen",
+      "encryption_notice": "Uw sleutel wordt nooit opgeslagen als leesbare tekst. Hij wordt beschermd door Windows DPAPI-versleuteling, gekoppeld aan uw sessie.",
+      "show_key": "Tonen",
+      "hide_key": "Verbergen"
     },
     "menu_label": "Metadata",
     "tooltip": "Metadata ophalen",

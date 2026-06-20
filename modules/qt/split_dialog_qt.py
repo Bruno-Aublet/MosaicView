@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QSpinBox, QButtonGroup, QRadioButton,
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 
 from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
@@ -37,12 +37,17 @@ def _disconnect_lang(dialog):
 
 
 class SplitDialog(QDialog):
-    """Fenêtre de découpe d'image en N parties égales (horizontale ou verticale)."""
+    """Fenêtre de découpe d'image en N parties égales (horizontale ou verticale). NON modale."""
+
+    result_signal = Signal(bool)   # True = OK (num_pages/direction valides), False = annulation
 
     def __init__(self, parent, callbacks):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self._callbacks = callbacks
-        self.setModal(True)
+        self._emitted = False
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedSize(420, 280)
 
         layout = QVBoxLayout(self)
@@ -104,7 +109,7 @@ class SplitDialog(QDialog):
         btn_row.addWidget(self._ok_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setFixedWidth(100)
-        self._cancel_btn.clicked.connect(self.reject)
+        self._cancel_btn.clicked.connect(lambda: self._finish(False))
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         layout.addLayout(btn_row)
@@ -187,11 +192,36 @@ class SplitDialog(QDialog):
                 "messages.warnings.invalid_number_split.title",
                 "messages.warnings.invalid_number_split.message",
             )
-            dlg.exec()
+            dlg.show_nonmodal()
             return
         self._num_pages = num_pages
         self._direction = "horizontal" if self._radio_h.isChecked() else "vertical"
-        self.accept()
+        self._finish(True)
+
+    def _finish(self, result: bool):
+        if self._emitted:
+            return
+        self._emitted = True
+        _disconnect_lang(self)
+        self.result_signal.emit(result)
+        self.hide()
+        self.deleteLater()
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            _disconnect_lang(self)
+            self.result_signal.emit(False)
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche (NON modal) et appelle on_result(bool) à la réponse."""
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        self.result_signal.connect(on_result)
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     @property
     def num_pages(self):
@@ -218,7 +248,7 @@ def split_page(parent, callbacks):
             "messages.warnings.no_selection_split.title",
             "messages.warnings.no_selection_split.message",
         )
-        dlg.exec()
+        dlg.show_nonmodal()
         return
 
     if len(state.selected_indices) > 1:
@@ -227,7 +257,7 @@ def split_page(parent, callbacks):
             "messages.warnings.multi_selection_split.title",
             "messages.warnings.multi_selection_split.message",
         )
-        dlg.exec()
+        dlg.show_nonmodal()
         return
 
     idx = list(state.selected_indices)[0]
@@ -239,7 +269,7 @@ def split_page(parent, callbacks):
             "messages.warnings.invalid_selection_split.title",
             "messages.warnings.invalid_selection_split.message",
         )
-        dlg.exec()
+        dlg.show_nonmodal()
         return
 
     # Lazy loading
@@ -250,78 +280,82 @@ def split_page(parent, callbacks):
             "messages.warnings.invalid_selection_split.title",
             "messages.warnings.invalid_selection_split.message",
         )
-        dlg.exec()
+        dlg.show_nonmodal()
         return
 
-    # Ouvre le dialogue de paramètres
+    # Ouvre le dialogue de paramètres (NON modal)
     dialog = SplitDialog(parent, callbacks)
-    if dialog.exec() != QDialog.Accepted:
-        return
 
-    num_pages = dialog.num_pages
-    direction = dialog.direction
+    def _on_confirmed(ok):
+        if not ok:
+            return
 
-    # Sauvegarde l'état pour undo
-    callbacks["save_state"]()
+        num_pages = dialog.num_pages
+        direction = dialog.direction
 
-    # Dimensions de l'image
-    width, height = img.size
+        # Sauvegarde l'état pour undo
+        callbacks["save_state"]()
 
-    # Nom de base + extension
-    orig_name = entry["orig_name"]
-    base_name, ext = os.path.splitext(orig_name)
+        # Dimensions de l'image
+        width, height = img.size
 
-    output_format = ext.upper()[1:]  # Retire le point
-    if output_format == "JPG":
-        output_format = "JPEG"
+        # Nom de base + extension
+        orig_name = entry["orig_name"]
+        base_name, ext = os.path.splitext(orig_name)
 
-    image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif"}
-    new_entries = []
+        output_format = ext.upper()[1:]  # Retire le point
+        if output_format == "JPG":
+            output_format = "JPEG"
 
-    if direction == "horizontal":
-        split_height = height / num_pages
-        for i in range(num_pages):
-            top    = int(i * split_height)
-            bottom = int((i + 1) * split_height)
-            cropped_img = img.crop((0, top, width, bottom))
-            new_name = f"{base_name}_part{i+1:02d}{ext}"
-            img_bytes = io.BytesIO()
-            if output_format in ["JPEG", "WEBP"]:
-                if cropped_img.mode in ('RGBA', 'LA', 'P'):
-                    cropped_img = cropped_img.convert('RGB')
-                cropped_img.save(img_bytes, format=output_format, quality=100, subsampling=0)
-            else:
-                cropped_img.save(img_bytes, format=output_format)
-            new_entries.append(create_entry(new_name, img_bytes.getvalue(), image_exts))
+        image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif"}
+        new_entries = []
 
-    else:  # vertical
-        split_width = width / num_pages
-        for i in range(num_pages):
-            left  = int(i * split_width)
-            right = int((i + 1) * split_width)
-            cropped_img = img.crop((left, 0, right, height))
-            new_name = f"{base_name}_part{i+1:02d}{ext}"
-            img_bytes = io.BytesIO()
-            if output_format in ["JPEG", "WEBP"]:
-                if cropped_img.mode in ('RGBA', 'LA', 'P'):
-                    cropped_img = cropped_img.convert('RGB')
-                cropped_img.save(img_bytes, format=output_format, quality=100, subsampling=0)
-            else:
-                cropped_img.save(img_bytes, format=output_format)
-            new_entries.append(create_entry(new_name, img_bytes.getvalue(), image_exts))
+        if direction == "horizontal":
+            split_height = height / num_pages
+            for i in range(num_pages):
+                top    = int(i * split_height)
+                bottom = int((i + 1) * split_height)
+                cropped_img = img.crop((0, top, width, bottom))
+                new_name = f"{base_name}_part{i+1:02d}{ext}"
+                img_bytes = io.BytesIO()
+                if output_format in ["JPEG", "WEBP"]:
+                    if cropped_img.mode in ('RGBA', 'LA', 'P'):
+                        cropped_img = cropped_img.convert('RGB')
+                    cropped_img.save(img_bytes, format=output_format, quality=100, subsampling=0)
+                else:
+                    cropped_img.save(img_bytes, format=output_format)
+                new_entries.append(create_entry(new_name, img_bytes.getvalue(), image_exts))
 
-    # Insère les nouvelles entrées juste après l'image d'origine
-    for i, new_entry in enumerate(new_entries):
-        state.images_data.insert(idx + 1 + i, new_entry)
+        else:  # vertical
+            split_width = width / num_pages
+            for i in range(num_pages):
+                left  = int(i * split_width)
+                right = int((i + 1) * split_width)
+                cropped_img = img.crop((left, 0, right, height))
+                new_name = f"{base_name}_part{i+1:02d}{ext}"
+                img_bytes = io.BytesIO()
+                if output_format in ["JPEG", "WEBP"]:
+                    if cropped_img.mode in ('RGBA', 'LA', 'P'):
+                        cropped_img = cropped_img.convert('RGB')
+                    cropped_img.save(img_bytes, format=output_format, quality=100, subsampling=0)
+                else:
+                    cropped_img.save(img_bytes, format=output_format)
+                new_entries.append(create_entry(new_name, img_bytes.getvalue(), image_exts))
 
-    # Libère la mémoire
-    free_image_memory(entry)
+        # Insère les nouvelles entrées juste après l'image d'origine
+        for i, new_entry in enumerate(new_entries):
+            state.images_data.insert(idx + 1 + i, new_entry)
 
-    # Archive modifiée
-    state.modified = True
-    from modules.qt.comic_info import sync_pages_in_xml_data
-    sync_pages_in_xml_data(state)
+        # Libère la mémoire
+        free_image_memory(entry)
 
-    # Rafraîchit l'affichage
-    callbacks["render_mosaic"]()
-    callbacks["update_button_text"]()
+        # Archive modifiée
+        state.modified = True
+        from modules.qt.comic_info import sync_pages_in_xml_data
+        sync_pages_in_xml_data(state)
+
+        # Rafraîchit l'affichage
+        callbacks["render_mosaic"]()
+        callbacks["update_button_text"]()
+
+    dialog.ask_async(_on_confirmed)

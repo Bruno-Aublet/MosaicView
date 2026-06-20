@@ -517,7 +517,9 @@ class IcoCreatorDialog(QDialog):
         self._undo_stack_b: list = []
         self._redo_stack_b: list = []
 
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.resize(900, 700)
         self.setMinimumSize(600, 500)
 
@@ -613,7 +615,7 @@ class IcoCreatorDialog(QDialog):
 
         self._btn_validate_crop.clicked.connect(self._on_validate_crop)
         self._btn_validate_no_crop.clicked.connect(self._on_validate_no_crop)
-        self._btn_cancel_a.clicked.connect(self.reject)
+        self._btn_cancel_a.clicked.connect(self.close)
 
         vbox.addWidget(self._btn_bar_a)
 
@@ -944,7 +946,7 @@ class IcoCreatorDialog(QDialog):
         self._btn_pipette.clicked.connect(self._toggle_pipette)
         self._btn_validate_b.clicked.connect(self._on_validate_final)
         self._btn_back_to_crop.clicked.connect(self._on_back_to_crop)
-        self._btn_cancel_b.clicked.connect(self.reject)
+        self._btn_cancel_b.clicked.connect(self.close)
 
         self._phase_widget = container
         self._layout.addWidget(container)
@@ -1144,12 +1146,15 @@ class IcoCreatorDialog(QDialog):
         self._callbacks["refresh_toolbar"]()
 
         from modules.qt.dialogs_qt import MsgDialog
-        dlg = MsgDialog(self, "dialogs.ico_creator.success_title",
+        # Centrer sur le panneau source (parent de cette fenêtre), pas sur self :
+        # self.accept() ci-dessous ferme l'IcoCreatorDialog, donc le centrer dessus
+        # donnerait une géométrie invalide au moment du showEvent différé.
+        dlg = MsgDialog(self.parent(), "dialogs.ico_creator.success_title",
                         "dialogs.ico_creator.success_message",
                         message_kwargs={"filename": self._ico_name})
-        dlg.exec()
+        dlg.show_nonmodal()
 
-        self.accept()
+        self.close()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1168,4 +1173,8 @@ def create_ico_from_selected(parent, callbacks: dict):
     if not entry.get("is_image") or entry.get("is_corrupted"):
         return
     dlg = IcoCreatorDialog(parent, idx, callbacks)
-    dlg.exec()
+    from modules.qt.dialogs_qt import position_dialog_on_parent
+    position_dialog_on_parent(dlg, parent)
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()

@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Funktionen är inte tillgänglig",
         "message": "Omnumrering är inte tillgänglig förrän mapparna har tillplattats.\nTillplatta mapparna innan omnumrering."
+      },
+      "unsafe_path_skipped": {
+        "title": "Överhoppade filer",
+        "message": "{count} fil(er) hoppades över eftersom deras plats inte var giltig."
+      },
+      "unsafe_path_open": {
+        "title": "Kan inte öppna",
+        "message": "Den här filen kunde inte öppnas eftersom dess plats inte var giltig."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Sparat",
         "message": "{count} filer sparade i:\n{folder}",
-        "open_folder": "Vill du öppna mappen?"
+        "open_folder": "Vill du öppna mappen?",
+        "message_with_skipped": "{count} fil(er) sparade till {folder}. {skipped} fil(er) hoppades över eftersom deras plats inte var giltig."
       },
       "adjustments_applied": {
         "title": "Justeringar tillaampade",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Skapa och redigera NFO-filer",
     "nfo_editor_content": "En NFO-fil är en textfil (med tillägget .nfo) som används för att lagra information om arkivet: synopsis, kreditering, anteckningar…\n\nFör att skapa en NFO-fil, använd den dedikerade ikonen i verktygsfältet, menyn Fil eller snabbmenyn (högerklicka på mosaiken). Kommandot är bara tillgängligt när mosaiken inte är tom. Ange ett namn och innehåll: filen infogas direkt i mosaiken utan extrahering eller mellansparande.\n\nFör att redigera en befintlig NFO-fil dubbelklickar du på den i mosaiken. Fönstret öppnas förifylt med det aktuella namnet och innehållet, båda redigerbara. I båda fallen registreras åtgärden i ångra-historiken.",
     "metadata": "ComicVine metadata",
-    "metadata_content": "MosaicView gör det möjligt att automatiskt hämta metadata för dina serier (titel, serie, nummer, upphovsmän, sammanfattning...) från ComicVine-databasen, en samarbetswebbplats som underhålls av gemenskapen.\n\nEnstaka läge: öppna en serie och använd sedan knappen i verktygsfältet eller menyn Metadata. En tvåstegsguide öppnas: välj först serien, sedan motsvarande avsnitt. Metadata skrivs till ComicInfo.xml inuti arkivet.\n\nBatchläge: släpp en eller flera mappar på mosaiken och välj \"Massimport av metadata\", eller använd den dedikerade knappen i verktygsfältet eller menyn Metadata. Guiden öppnas successivt för varje hittad fil (CBZ, CBR, CB7, CBT, PDF). Filer som inte är CBZ konverteras automatiskt till CBZ efter att metadata har skrivits.\n\nAPI-nyckel: en gratis ComicVine API-nyckel krävs. Applikationen vägleder dig att skaffa den. Den fås på comicvine.gamespot.com efter att ett konto har skapats.\n\nAPI-begränsningar: dessa begränsningar åläggs av ComicVine och kan inte kringgås.\n• 200 förfrågningar per resurs per timme. Om denna gräns nås misslyckas sökningarna tillfälligt till slutet av timmen.\n• Maximalt 100 resultat per förfrågan, vilket tvingar sökningarna att delas upp i flera anrop för serier med många avsnitt.\n• 1 förfrågan per sekund tillåten av webbplatsen. För säkerhets skull väntar MosaicView 2 sekunder mellan varje förfrågan, eftersom snabbare förfrågningar är mycket benägna att orsaka tillfälliga blockeringar.\n\nDen här funktionen är helt baserad på öppen källkodsprojektet {scraper}.",
+    "metadata_content": "MosaicView gör det möjligt att automatiskt hämta metadata för dina serier (titel, serie, nummer, upphovsmän, sammanfattning...) från ComicVine-databasen, en samarbetswebbplats som underhålls av gemenskapen.\n\nEnstaka läge: öppna en serie och använd sedan knappen i verktygsfältet eller menyn Metadata. En tvåstegsguide öppnas: välj först serien, sedan motsvarande avsnitt. Metadata skrivs till ComicInfo.xml inuti arkivet.\n\nBatchläge: släpp en eller flera mappar på mosaiken och välj \"Massimport av metadata\", eller använd den dedikerade knappen i verktygsfältet eller menyn Metadata. Guiden öppnas successivt för varje hittad fil (CBZ, CBR, CB7, CBT, PDF). Filer som inte är CBZ konverteras automatiskt till CBZ efter att metadata har skrivits.\n\nAPI-nyckel: en gratis ComicVine API-nyckel krävs. Applikationen vägleder dig att skaffa den. Den fås på comicvine.gamespot.com efter att ett konto har skapats. Nyckeln lagras aldrig i klartext: den krypteras av Windows DPAPI och kan endast läsas av ditt Windows-konto.\n\nAPI-begränsningar: dessa begränsningar åläggs av ComicVine och kan inte kringgås.\n• 200 förfrågningar per resurs per timme. Om denna gräns nås misslyckas sökningarna tillfälligt till slutet av timmen.\n• Maximalt 100 resultat per förfrågan, vilket tvingar sökningarna att delas upp i flera anrop för serier med många avsnitt.\n• 1 förfrågan per sekund tillåten av webbplatsen. För säkerhets skull väntar MosaicView 2 sekunder mellan varje förfrågan, eftersom snabbare förfrågningar är mycket benägna att orsaka tillfälliga blockeringar.\n\nDen här funktionen är helt baserad på öppen källkodsprojektet {scraper}.",
     "library": "Bibliotek",
     "library_content": "Biblioteket låter dig katalogisera och enkelt hitta dina digitala serier. Det fungerar genom att läsa metadata i varje fil (titel, serie, upphovsmän, förlag…) och samla dem i en enda biblioteksfil (*.mvdb).\n\nFör att skapa ett bibliotek, använd menyn Bibliotek → Ny databas eller dra en eller flera mappar till mosaiken och välj \"Skapa ett bibliotek från mapp(ar)\". MosaicView skannar sedan dina mappar och indexerar automatiskt alla kompatibla filer.\n\nNär biblioteket är öppet kan du filtrera dina serier efter serie, upphovsman, år, förlag osv. och kombinera så många kriterier som behövs. Ett dubbelklick öppnar filen i MosaicView. Resultaten kan exporteras i Excel-format (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Klistra in din API-nyckel här",
       "validate": "Bekräfta",
       "error_empty": "Ange en API-nyckel.",
-      "clear": "Rensa nyckel"
+      "clear": "Rensa nyckel",
+      "encryption_notice": "Din nyckel lagras aldrig i klartext. Den skyddas av Windows DPAPI-kryptering, kopplad till din session.",
+      "show_key": "Visa",
+      "hide_key": "Dölj"
     },
     "menu_label": "Metadata",
     "tooltip": "Hämta metadata",

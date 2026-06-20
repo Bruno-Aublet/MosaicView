@@ -452,9 +452,10 @@ def close_file(parent, canvas, create_cbz_cb, apply_new_names_cb,
         return True
 
     def _apply_and_close():
-        result = apply_new_names_cb()
-        if result is not False:
-            QTimer.singleShot(0, _force)
+        def _on_complete(success):
+            if success is not False:
+                QTimer.singleShot(0, _force)
+        apply_new_names_cb(on_complete=_on_complete)
 
     CloseWarningDialog(parent, state.current_file, _force, _apply_and_close)
     return False  # dialog ouvert, suite en async

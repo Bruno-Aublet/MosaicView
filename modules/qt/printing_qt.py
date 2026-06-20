@@ -137,7 +137,7 @@ def _open_print_dialog(tiff_path, parent):
             parent,
             lambda: _("messages.errors.print_error.title"),
             lambda err=str(e): _("messages.errors.print_error.message", error=err),
-        ).exec()
+        ).show()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -247,7 +247,7 @@ def _print_images(images_to_print, parent, canvas):
             parent,
             lambda: _("messages.warnings.no_valid_image_print.title"),
             lambda: _("messages.warnings.no_valid_image_print.message"),
-        ).exec()
+        ).show()
 
     def _on_error(msg):
         _hide_overlay()
@@ -256,7 +256,7 @@ def _print_images(images_to_print, parent, canvas):
             parent,
             lambda: _("messages.errors.print_error.title"),
             lambda m=msg: _("messages.errors.print_error.message", error=m),
-        ).exec()
+        ).show()
 
     worker.ready.connect(_on_ready)
     worker.no_images.connect(_on_no_images)
@@ -275,7 +275,7 @@ def print_selection(parent, canvas, state):
             parent,
             lambda: _("messages.errors.print_not_available.title"),
             lambda: _("messages.errors.print_not_available.message"),
-        ).exec()
+        ).show()
         return
 
     if not state.selected_indices:
@@ -283,7 +283,7 @@ def print_selection(parent, canvas, state):
             parent,
             lambda: _("messages.warnings.no_selection_print.title"),
             lambda: _("messages.warnings.no_selection_print.message"),
-        ).exec()
+        ).show()
         return
 
     images = [
@@ -299,7 +299,7 @@ def print_selection(parent, canvas, state):
             parent,
             lambda: _("messages.warnings.no_valid_selection_print.title"),
             lambda: _("messages.warnings.no_valid_selection_print.message"),
-        ).exec()
+        ).show()
         return
 
     _print_images(images, parent, canvas)
@@ -312,7 +312,7 @@ def print_all(parent, canvas, state):
             parent,
             lambda: _("messages.errors.print_not_available.title"),
             lambda: _("messages.errors.print_not_available.message"),
-        ).exec()
+        ).show()
         return
 
     if not state.images_data:
@@ -320,7 +320,7 @@ def print_all(parent, canvas, state):
             parent,
             lambda: _("messages.warnings.no_image_print.title"),
             lambda: _("messages.warnings.no_image_print.message"),
-        ).exec()
+        ).show()
         return
 
     images = [
@@ -333,7 +333,7 @@ def print_all(parent, canvas, state):
             parent,
             lambda: _("messages.warnings.no_valid_image_print.title"),
             lambda: _("messages.warnings.no_valid_image_print.message"),
-        ).exec()
+        ).show()
         return
 
     _print_images(images, parent, canvas)

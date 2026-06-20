@@ -444,6 +444,9 @@ class CloneZoneViewerDialog(QDialog):
 
     def __init__(self, parent, entry, callbacks=None):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self._entry = entry
         self._callbacks = callbacks or {}
 
@@ -492,12 +495,8 @@ class CloneZoneViewerDialog(QDialog):
         self._display_image(reset_offset=True)
 
     def showEvent(self, event):
+        # Centrage fait au site d'appel avant show() (pas de flash de recentrage).
         super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── Construction UI ───────────────────────────────────────────────────────
 
@@ -687,7 +686,7 @@ class CloneZoneViewerDialog(QDialog):
         self._close_btn = QPushButton()
         self._close_btn.setFont(font_btn)
         self._close_btn.setStyleSheet(_btn_style(theme))
-        self._close_btn.clicked.connect(self.reject)
+        self._close_btn.clicked.connect(self.close)
         bot_layout.addWidget(self._close_btn)
 
         root.addWidget(bot)
@@ -1115,7 +1114,7 @@ class CloneZoneViewerDialog(QDialog):
             if self._is_fullscreen:
                 self._toggle_fullscreen()
             else:
-                self.reject()
+                self.close()
         else:
             super().keyPressEvent(event)
 
@@ -1167,4 +1166,8 @@ def show_clone_zone_viewer(parent=None, callbacks=None):
             entry['_orig_mode'] = 'RGB'
 
     dlg = CloneZoneViewerDialog(parent, entry, callbacks=callbacks)
-    dlg.exec()
+    from modules.qt.dialogs_qt import position_dialog_on_parent
+    position_dialog_on_parent(dlg, parent)
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()

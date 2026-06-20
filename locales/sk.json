@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Funkcia nie je dostupná",
         "message": "Prečíslovanie nie je dostupné, kým priečinky nie sú zlúčené.\nZlúčte priečinky pred prečíslovaním."
+      },
+      "unsafe_path_skipped": {
+        "title": "Preskočené súbory",
+        "message": "{count} súbor(ov) bolo preskočených, pretože ich umiestnenie nebolo platné."
+      },
+      "unsafe_path_open": {
+        "title": "Nedá sa otvoriť",
+        "message": "Tento súbor sa nedá otvoriť, pretože jeho umiestnenie nebolo platné."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Úspešne uložené",
         "message": "{count} súborov bolo uložených do:\n{folder}",
-        "open_folder": "Chcete otvoriť priečinok?"
+        "open_folder": "Chcete otvoriť priečinok?",
+        "message_with_skipped": "{count} súbor(ov) uložených do {folder}. {skipped} súbor(ov) preskočených, pretože ich umiestnenie nebolo platné."
       },
       "adjustments_applied": {
         "title": "Upravy pouzite",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Vytváranie a úprava súborov NFO",
     "nfo_editor_content": "Súbor NFO je textový súbor (s príponou .nfo) slúžiaci na uloženie informácií o archíve: synopsa, autori, poznámky…\n\nPre vytvorenie súboru NFO použite príslušnú ikonu na paneli nástrojov, ponuku Súbor alebo kontextovú ponuku (pravý klik na mozaiku). Príkaz je dostupný iba vtedy, keď mozaika nie je prázdna. Zadajte názov a obsah: súbor sa vloží priamo do mozaiky bez extrakcie alebo medzuloženia.\n\nPre úpravu existujúceho súboru NFO naň dvakrát kliknite v mozaike. Okno sa otvorí predvyplnené aktuálnym názvom a obsahom, pričom oboje je možné upraviť. V oboch prípadoch sa operácia zaznamená do histórie späť.",
     "metadata": "Metaúdaje ComicVine",
-    "metadata_content": "MosaicView umožňuje automatické načítanie metaúdajov komiksov (názov, séria, číslo, autori, zhrnutie...) z databázy ComicVine, kolaboratívneho webu udržiavaného komunitou.\n\nJednotlivý režim: otvorte komiks a použite tlačidlo na paneli nástrojov alebo ponuku Metaúdaje. Otvorí sa sprievodca v dvoch krokoch: najprv vyberte sériu, potom zodpovedajúcu epizódu. Metaúdaje sú zapísané do ComicInfo.xml vnútri archívu.\n\nDávkový režim: presuňte jeden alebo viac priečinkov na mozaiku a zvoľte \"Hromadný import metaúdajov\", alebo použite príslušné tlačidlo na paneli nástrojov alebo ponuku Metaúdaje. Sprievodca sa otvára postupne pre každý nájdený súbor (CBZ, CBR, CB7, CBT, PDF). Súbory iné ako CBZ sú po zapísaní metaúdajov automaticky skonvertované na CBZ.\n\nAPI kľúč: je potrebný bezplatný API kľúč pre ComicVine. Aplikácia vás prevedie jeho získaním. Získa sa na comicvine.gamespot.com po vytvorení účtu.\n\nObmedzenia API: tieto obmedzenia stanovuje ComicVine a nemožno ich obísť.\n• 200 požiadaviek na zdroj za hodinu. Po dosiahnutí tohto limitu vyhľadávania dočasne zlyhávajú do konca hodiny.\n• Maximálne 100 výsledkov na požiadavku, čo núti rozdeliť vyhľadávania na viac volaní pre série s mnohými epizódami.\n• 1 požiadavka za sekundu povolená webom. Pre istotu MosaicView čaká 2 sekundy medzi požiadavkami, pretože rýchlejšie požiadavky sú silne náchylné na dočasné zablokovanie.\n\nTáto funkcia je úplne založená na open source projekte {scraper}.",
+    "metadata_content": "MosaicView umožňuje automatické načítanie metaúdajov komiksov (názov, séria, číslo, autori, zhrnutie...) z databázy ComicVine, kolaboratívneho webu udržiavaného komunitou.\n\nJednotlivý režim: otvorte komiks a použite tlačidlo na paneli nástrojov alebo ponuku Metaúdaje. Otvorí sa sprievodca v dvoch krokoch: najprv vyberte sériu, potom zodpovedajúcu epizódu. Metaúdaje sú zapísané do ComicInfo.xml vnútri archívu.\n\nDávkový režim: presuňte jeden alebo viac priečinkov na mozaiku a zvoľte \"Hromadný import metaúdajov\", alebo použite príslušné tlačidlo na paneli nástrojov alebo ponuku Metaúdaje. Sprievodca sa otvára postupne pre každý nájdený súbor (CBZ, CBR, CB7, CBT, PDF). Súbory iné ako CBZ sú po zapísaní metaúdajov automaticky skonvertované na CBZ.\n\nAPI kľúč: je potrebný bezplatný API kľúč pre ComicVine. Aplikácia vás prevedie jeho získaním. Získa sa na comicvine.gamespot.com po vytvorení účtu. Kľúč nie je nikdy uložený v čistom texte: je šifrovaný Windows DPAPI a môže ho čítať iba váš účet Windows.\n\nObmedzenia API: tieto obmedzenia stanovuje ComicVine a nemožno ich obísť.\n• 200 požiadaviek na zdroj za hodinu. Po dosiahnutí tohto limitu vyhľadávania dočasne zlyhávajú do konca hodiny.\n• Maximálne 100 výsledkov na požiadavku, čo núti rozdeliť vyhľadávania na viac volaní pre série s mnohými epizódami.\n• 1 požiadavka za sekundu povolená webom. Pre istotu MosaicView čaká 2 sekundy medzi požiadavkami, pretože rýchlejšie požiadavky sú silne náchylné na dočasné zablokovanie.\n\nTáto funkcia je úplne založená na open source projekte {scraper}.",
     "library": "Knižnica",
     "library_content": "Knižnica vám umožňuje katalogizovať a ľahko vyhľadávať vaše digitálne komiksy. Funguje tak, že číta metadáta obsiahnuté v každom súbore (názov, séria, autori, vydavateľ…) a zhromažďuje ich v jedinom súbore knižnice (*.mvdb).\n\nNa vytvorenie knižnice použite ponuku Knižnica → Nová databáza alebo presuňte jeden či viac priečinkov do mozaiky a zvoľte \"Vytvoriť knižnicu z priečinka(ov)\". MosaicView potom prehľadá vaše priečinky a automaticky zaindexuje všetky kompatibilné súbory.\n\nKeď je knižnica otvorená, môžete filtrovať komiksy podľa série, autora, roku, vydavateľa atď. a kombinovať ľubovoľný počet kritérií. Dvojité kliknutie otvorí súbor v MosaicView. Výsledky je možné exportovať vo formáte Excel (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Vložte sem svoj API kľúč",
       "validate": "Potvrdiť",
       "error_empty": "Zadajte prosím API kľúč.",
-      "clear": "Vymazať kľúč"
+      "clear": "Vymazať kľúč",
+      "encryption_notice": "Váš kľúč nie je nikdy uložený v čistom texte. Je chránený šifrovaním Windows DPAPI, viazaným na vašu reláciu.",
+      "show_key": "Zobraziť",
+      "hide_key": "Skryť"
     },
     "menu_label": "Metadáta",
     "tooltip": "Načítať metadáta",

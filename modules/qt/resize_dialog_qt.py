@@ -126,10 +126,15 @@ def cluster_and_find_reference(dimensions, tolerance=0.10):
 class OutlierDialog(QDialog):
     """Dialogue secondaire pour traiter les pages aux dimensions aberrantes."""
 
+    result_signal = Signal(object)   # dict = choix utilisateur, None = annulé
+
     def __init__(self, parent, outlier_pages, target_width, target_height,
                  reference_width, reference_height, use_custom_dimensions):
         super().__init__(parent)
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self._emitted = False
         self._result = None          # None = annulé, dict = choix utilisateur
 
         ico_path = resource_path("icons/MosaicView.ico")
@@ -205,6 +210,11 @@ class OutlierDialog(QDialog):
     def _build_page_widgets(self):
         from PIL import Image
 
+        # Liste de fonctions () -> None qui ré-appliquent le texte traduit des
+        # widgets dynamiques (labels/radios par page). Rejouées dans _retranslate()
+        # pour que ces textes suivent le changement de langue à la volée.
+        self._retranslators = []
+
         for page_info in self._outlier_pages:
             entry               = page_info["entry"]
             has_width_outlier   = page_info["has_width_outlier"]
@@ -244,11 +254,13 @@ class OutlierDialog(QDialog):
 
             # Largeur outlier
             if (has_width_outlier or has_height_outlier) and self._use_custom_dim and self._target_width:
-                info_lbl = QLabel(
-                    f"    {_('dialogs.outliers.width')}: {img_w}px ({_('dialogs.outliers.unusual')})"
-                )
-                info_lbl.setFont(_get_current_font(9))
+                info_lbl = QLabel()
                 left_layout.addWidget(info_lbl)
+                def _tr_info_w(lbl=info_lbl, w=img_w):
+                    lbl.setText(f"    {_('dialogs.outliers.width')}: {w}px ({_('dialogs.outliers.unusual')})")
+                    lbl.setFont(_get_current_font(9))
+                self._retranslators.append(_tr_info_w)
+                _tr_info_w()
 
                 grp = QButtonGroup(self)
                 self._choice_groups[page_name]["width"] = grp
@@ -267,22 +279,26 @@ class OutlierDialog(QDialog):
                     grp.addButton(rb)
                     left_layout.addWidget(rb)
 
-                rb_skip = QRadioButton(
-                    f"{_('dialogs.outliers.skip')} ({_('dialogs.outliers.keep')} {img_w}px)"
-                )
-                rb_skip.setFont(_get_current_font(9))
+                rb_skip = QRadioButton()
                 rb_skip.setProperty("mult_value", 0)
                 rb_skip.toggled.connect(self._check_all_selected)
                 grp.addButton(rb_skip)
                 left_layout.addWidget(rb_skip)
+                def _tr_skip_w(rb=rb_skip, w=img_w):
+                    rb.setText(f"{_('dialogs.outliers.skip')} ({_('dialogs.outliers.keep')} {w}px)")
+                    rb.setFont(_get_current_font(9))
+                self._retranslators.append(_tr_skip_w)
+                _tr_skip_w()
 
             # Hauteur outlier
             if (has_width_outlier or has_height_outlier) and self._use_custom_dim and self._target_height:
-                info_lbl = QLabel(
-                    f"    {_('dialogs.outliers.height')}: {img_h}px ({_('dialogs.outliers.unusual')})"
-                )
-                info_lbl.setFont(_get_current_font(9))
+                info_lbl = QLabel()
                 left_layout.addWidget(info_lbl)
+                def _tr_info_h(lbl=info_lbl, h=img_h):
+                    lbl.setText(f"    {_('dialogs.outliers.height')}: {h}px ({_('dialogs.outliers.unusual')})")
+                    lbl.setFont(_get_current_font(9))
+                self._retranslators.append(_tr_info_h)
+                _tr_info_h()
 
                 grp = QButtonGroup(self)
                 self._choice_groups[page_name]["height"] = grp
@@ -301,14 +317,16 @@ class OutlierDialog(QDialog):
                     grp.addButton(rb)
                     left_layout.addWidget(rb)
 
-                rb_skip = QRadioButton(
-                    f"{_('dialogs.outliers.skip')} ({_('dialogs.outliers.keep')} {img_h}px)"
-                )
-                rb_skip.setFont(_get_current_font(9))
+                rb_skip = QRadioButton()
                 rb_skip.setProperty("mult_value", 0)
                 rb_skip.toggled.connect(self._check_all_selected)
                 grp.addButton(rb_skip)
                 left_layout.addWidget(rb_skip)
+                def _tr_skip_h(rb=rb_skip, h=img_h):
+                    rb.setText(f"{_('dialogs.outliers.skip')} ({_('dialogs.outliers.keep')} {h}px)")
+                    rb.setFont(_get_current_font(9))
+                self._retranslators.append(_tr_skip_h)
+                _tr_skip_h()
 
             left_layout.addStretch()
             frame_layout.addWidget(left_w, stretch=1)
@@ -375,6 +393,10 @@ class OutlierDialog(QDialog):
         self._btn_cancel.setFont(_get_current_font(10))
         self._btn_cancel.setStyleSheet(btn_style)
 
+        # Retraduit les labels/radios dynamiques par page (suivent la langue)
+        for _tr in getattr(self, "_retranslators", []):
+            _tr()
+
     # ── Actions ───────────────────────────────────────────────────────────────
 
     def _on_continue(self):
@@ -392,11 +414,38 @@ class OutlierDialog(QDialog):
             else:
                 choices[page_name]["height_mult"] = None
         self._result = choices
-        self.accept()
+        self._finish(choices)
 
     def _on_cancel(self):
         self._result = None
-        self.reject()
+        self._finish(None)
+
+    def _finish(self, result):
+        if self._emitted:
+            return
+        self._emitted = True
+        self._result = result
+        _disconnect_lang(self)
+        self.result_signal.emit(result)
+        self.hide()
+        self.deleteLater()
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            self._result = None
+            _disconnect_lang(self)
+            self.result_signal.emit(None)
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche (NON modal) et appelle on_result(dict|None) à la réponse."""
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        self.result_signal.connect(on_result)
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -425,7 +474,9 @@ class ResizeDialog(QDialog):
         self._updating         = False
         self._multi_page_state = _multi_page_checkbox_state
 
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.resize(700, 560)
 
         ico_path = resource_path("icons/MosaicView.ico")
@@ -698,7 +749,7 @@ class ResizeDialog(QDialog):
         btn_row.addSpacing(10)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setFixedWidth(120)
-        self._cancel_btn.clicked.connect(self.reject)
+        self._cancel_btn.clicked.connect(self.close)
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         main_layout.addLayout(btn_row)
@@ -1026,19 +1077,19 @@ class ResizeDialog(QDialog):
                     "messages.warnings.invalid_dimensions.title",
                     "messages.warnings.invalid_dimensions.message",
                 )
-                dlg.exec()
+                dlg.show_nonmodal()
                 return
 
             if (self._same_dim and target_width and target_height
                     and target_width == self._cur_w and target_height == self._cur_h):
-                self.accept()
+                self.close()
                 return
 
         scale_factor = 1.0
         if not use_custom_dim:
             checked = self._pct_group.checkedButton()
             if checked is None or checked.property("pct_type") == "zero":
-                self.accept()
+                self.close()
                 return
             pct_type  = checked.property("pct_type")
             pct_value = checked.property("pct_value")
@@ -1083,9 +1134,8 @@ class ResizeDialog(QDialog):
             has_diff_heights = len(set(all_heights)) > 1
 
         # ── Dialogue outliers si nécessaire ───────────────────────────────────
-        outlier_choices = {}
+        outlier_pages = []
         if use_custom_dim and multi_page and (width_outliers or height_outliers):
-            outlier_pages = []
             for entry in selected_entries:
                 if not entry.get("bytes"):
                     continue
@@ -1103,39 +1153,45 @@ class ResizeDialog(QDialog):
                 except Exception:
                     pass
 
-            if outlier_pages:
-                odlg = OutlierDialog(
-                    self,
-                    outlier_pages,
-                    target_width, target_height,
-                    reference_width, reference_height,
-                    use_custom_dim,
-                )
-                odlg.exec()
-                if odlg._result is None:
+        def _finish_resize(outlier_choices):
+            # ── Ferme la fenêtre et lance le worker ───────────────────────────
+            self.close()
+
+            # Sauvegarde état avant
+            save_state_fn()
+
+            # Sauvegarde des bytes originaux pour restauration en cas d'annulation
+            original_bytes = {id(e): e["bytes"] for e in selected_entries if e.get("bytes")}
+
+            _start_resize_worker(
+                canvas, selected_entries, state,
+                use_custom_dim, target_width, target_height, scale_factor,
+                multi_page, self._nb_files,
+                has_diff_widths, has_diff_heights,
+                reference_width, reference_height,
+                width_mapping, height_mapping,
+                outlier_choices,
+                original_bytes,
+                save_state_fn, render_mosaic_fn, update_button_text, refresh_status_fn,
+            )
+
+        if use_custom_dim and multi_page and (width_outliers or height_outliers) and outlier_pages:
+            odlg = OutlierDialog(
+                self,
+                outlier_pages,
+                target_width, target_height,
+                reference_width, reference_height,
+                use_custom_dim,
+            )
+
+            def _on_outlier(result):
+                if result is None:
                     return   # annulé → on reste dans ResizeDialog
-                outlier_choices = odlg._result
+                _finish_resize(result)
 
-        # ── Ferme la fenêtre et lance le worker ───────────────────────────────
-        self.accept()
-
-        # Sauvegarde état avant
-        save_state_fn()
-
-        # Sauvegarde des bytes originaux pour restauration en cas d'annulation
-        original_bytes = {id(e): e["bytes"] for e in selected_entries if e.get("bytes")}
-
-        _start_resize_worker(
-            canvas, selected_entries, state,
-            use_custom_dim, target_width, target_height, scale_factor,
-            multi_page, self._nb_files,
-            has_diff_widths, has_diff_heights,
-            reference_width, reference_height,
-            width_mapping, height_mapping,
-            outlier_choices,
-            original_bytes,
-            save_state_fn, render_mosaic_fn, update_button_text, refresh_status_fn,
-        )
+            odlg.ask_async(_on_outlier)
+        else:
+            _finish_resize({})
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1431,7 +1487,7 @@ def reduce_selected_images_size_qt(parent, callbacks: dict):
             "messages.warnings.no_selection_reduce.title",
             "messages.warnings.no_selection_reduce.message",
         )
-        dlg.exec()
+        dlg.show_nonmodal()
         return
 
     selected_entries = [
@@ -1445,8 +1501,12 @@ def reduce_selected_images_size_qt(parent, callbacks: dict):
             "messages.warnings.invalid_selection_reduce.title",
             "messages.warnings.invalid_selection_reduce.message",
         )
-        dlg.exec()
+        dlg.show_nonmodal()
         return
 
     dlg = ResizeDialog(parent, selected_entries, callbacks)
-    dlg.exec()
+    from modules.qt.dialogs_qt import position_dialog_on_parent
+    position_dialog_on_parent(dlg, parent)
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()

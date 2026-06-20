@@ -1331,7 +1331,7 @@ class ImageViewer(QDialog):
                 "messages.warnings.no_crop_selection.title",
                 "messages.warnings.no_crop_selection.message",
             )
-            dlg.exec()
+            dlg.show_nonmodal()
             return
         self.perform_crop()
 
@@ -1348,7 +1348,7 @@ class ImageViewer(QDialog):
             if original_img is None:
                 dlg = MsgDialog(self, "messages.errors.crop_failed.title",
                                 "messages.errors.crop_failed.title")
-                dlg.exec()
+                dlg.show_nonmodal()
                 return
 
             cw = self._canvas.width()
@@ -1381,7 +1381,7 @@ class ImageViewer(QDialog):
             if orig_x2 <= orig_x1 or orig_y2 <= orig_y1:
                 dlg = MsgDialog(self, "messages.errors.crop_invalid.title",
                                 "messages.errors.crop_invalid.message")
-                dlg.exec()
+                dlg.show_nonmodal()
                 return
 
             if save_state:
@@ -1417,7 +1417,7 @@ class ImageViewer(QDialog):
             import traceback; traceback.print_exc()
             dlg = MsgDialog(self, "messages.errors.crop_failed.title",
                             "messages.errors.crop_failed.title")
-            dlg.exec()
+            dlg.show_nonmodal()
 
 
 # ─────────────────────────────────────────────────────────────────────────────

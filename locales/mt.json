@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Il-funzjoni mhix disponibbli",
         "message": "L-innumerar mill-ġdid mhuwiex disponibbli sakemm il-kartelli ma jiġux livellati.\nIvvella l-kartelli qabel ma tinnumera mill-ġdid."
+      },
+      "unsafe_path_skipped": {
+        "title": "Fajls maqbuża",
+        "message": "{count} fajl(s) ġew maqbuża minħabba li l-post tagħhom ma kienx validu."
+      },
+      "unsafe_path_open": {
+        "title": "Ma jistax jinfetaħ",
+        "message": "Dan il-fajl ma setax jinfetaħ minħabba li l-post tiegħu ma kienx validu."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Salvat b'suċċess",
         "message": "{count} fajls salvaw f':\n{folder}",
-        "open_folder": "Trid tiftaħ il-folder?"
+        "open_folder": "Trid tiftaħ il-folder?",
+        "message_with_skipped": "{count} fajl(s) salvat(i) f'{folder}. {skipped} fajl(s) maqbuża minħabba li l-post tagħhom ma kienx validu."
       },
       "adjustments_applied": {
         "title": "Aġġustamenti applikati",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Ħolqien u editjar ta' fajls NFO",
     "nfo_editor_content": "Fajl NFO huwa fajl ta' test (bl-estensjoni .nfo) użat biex jaħżen informazzjoni dwar l-arkivju: sinopsi, krediti, noti…\n\nBiex toħloq fajl NFO, uża l-ikona ddedikata fit-taskbar, il-menu Fajl jew il-menu tal-kuntest (klikk tal-lemin fuq il-mużajk). Il-kmand huwa disponibbli biss meta l-mużajk ma jkunx vojt. Daħħal isem u kontenut: il-fajl jiġi inserit direttament fil-mużajk mingħajr estrazzjoni jew salvaġġ interim.\n\nBiex teditja fajl NFO eżistenti, klikk doppju fuqu fil-mużajk. It-tieqa tinfetaħ mimlijha minn qabel bl-isem u l-kontenut attwali, it-tnejn editjabbli. Fiż-żewġ każijiet, l-operazzjoni tiġi rreġistrata fl-istorja tal-annullament.",
     "metadata": "Metadejta ComicVine",
-    "metadata_content": "MosaicView jippermetti l-irkupru awtomatiku tal-metadejta tal-komiks tiegħek (titlu, serje, numru, awturi, sommarju...) mill-bażi tad-data ComicVine, sit kollaborattiv miżmum mill-komunità.\n\nModalità waħda: iftaħ komiks, imbagħad uża l-buttuna tal-bar tal-għodda jew il-menu Metadejta. Jinfetaħ wizard b'żewġ passi: agħżel l-ewwel is-serje, imbagħad l-episodju korrispondenti. Il-metadejta tinkiteb f'ComicInfo.xml ġewwa l-arkivju.\n\nModalità batch: agħti waqa' folder wieħed jew aktar fuq il-mużajk u agħżel \"Importazzjon tal-metadejta bil-lott\", jew uża l-buttuna ddedikata tal-bar tal-għodda jew il-menu Metadejta. Il-wizard jinfetaħ suċċessivament għal kull fajl misjub (CBZ, CBR, CB7, CBT, PDF). Fajls mhux CBZ jiġu kkonvertiti awtomatikament għal CBZ wara l-kitba tal-metadejta.\n\nĊavetta API: hija meħtieġa ċavetta API ComicVine b'xejn. L-applikazzjoni tgħinik biex tiksibha. Tinkiseb fuq comicvine.gamespot.com wara l-ħolqien ta' kont.\n\nLimitazzjonijiet API: dawn il-limitazzjonijiet huma imposti minn ComicVine u ma jistgħux jiġu evitati.\n• 200 talbiet għal kull riżorsa fis-siegħa. Jekk din il-limitu tintlaħaq, it-tiftixiet jaqilgħu falliment temporanju sat-tmiem tas-siegħa.\n• Massimu 100 riżultati għal kull talba, li jġiegħel it-tiftixiet jinqasmu f'diversi sejħiet għal serji b'ħafna episodji.\n• 1 talba kull sekonda permessa mis-sit. Għas-sigurtà, MosaicView jistenna 2 sekondi bejn kull talba, peress li talbiet aktar mgħaġġla huma ħafna probabbli li jikkawżaw blokkji temporanji.\n\nDin il-funzjonalità hija bbażata kompletament fuq il-proġett open source {scraper}.",
+    "metadata_content": "MosaicView jippermetti l-irkupru awtomatiku tal-metadejta tal-komiks tiegħek (titlu, serje, numru, awturi, sommarju...) mill-bażi tad-data ComicVine, sit kollaborattiv miżmum mill-komunità.\n\nModalità waħda: iftaħ komiks, imbagħad uża l-buttuna tal-bar tal-għodda jew il-menu Metadejta. Jinfetaħ wizard b'żewġ passi: agħżel l-ewwel is-serje, imbagħad l-episodju korrispondenti. Il-metadejta tinkiteb f'ComicInfo.xml ġewwa l-arkivju.\n\nModalità batch: agħti waqa' folder wieħed jew aktar fuq il-mużajk u agħżel \"Importazzjon tal-metadejta bil-lott\", jew uża l-buttuna ddedikata tal-bar tal-għodda jew il-menu Metadejta. Il-wizard jinfetaħ suċċessivament għal kull fajl misjub (CBZ, CBR, CB7, CBT, PDF). Fajls mhux CBZ jiġu kkonvertiti awtomatikament għal CBZ wara l-kitba tal-metadejta.\n\nĊavetta API: hija meħtieġa ċavetta API ComicVine b'xejn. L-applikazzjoni tgħinik biex tiksibha. Tinkiseb fuq comicvine.gamespot.com wara l-ħolqien ta' kont. Iċ-ċavetta qatt ma tinħażen f'test sempliċi: hija kriptata minn Windows DPAPI u tista' tinqara biss mill-kont Windows tiegħek.\n\nLimitazzjonijiet API: dawn il-limitazzjonijiet huma imposti minn ComicVine u ma jistgħux jiġu evitati.\n• 200 talbiet għal kull riżorsa fis-siegħa. Jekk din il-limitu tintlaħaq, it-tiftixiet jaqilgħu falliment temporanju sat-tmiem tas-siegħa.\n• Massimu 100 riżultati għal kull talba, li jġiegħel it-tiftixiet jinqasmu f'diversi sejħiet għal serji b'ħafna episodji.\n• 1 talba kull sekonda permessa mis-sit. Għas-sigurtà, MosaicView jistenna 2 sekondi bejn kull talba, peress li talbiet aktar mgħaġġla huma ħafna probabbli li jikkawżaw blokkji temporanji.\n\nDin il-funzjonalità hija bbażata kompletament fuq il-proġett open source {scraper}.",
     "library": "Librerija",
     "library_content": "Il-librerija tippermettiek tikkattaloga u ssib faċilment il-komiks diġitali tiegħek. Taħdem billi taqra l-metadejta li tinsab f'kull fajl (titlu, sensiela, awturi, pubblikatur…) u tiġborhom f'fajl wieħed tal-librerija (*.mvdb).\n\nBiex toħloq librerija, uża l-meniu Librerija → Bażi ta' dejta ġdida, jew ibgħat folder wieħed jew aktar fil-mużajk u agħżel \"Oħloq librerija mill-folder(s)\". MosaicView imbagħad jagħmel skaner tal-follers tiegħek u jiffatturizza awtomatikament il-fajls kollha kompatibbli.\n\nLadarba l-librerija tkun miftuħa, tista' tiffiltra l-komiks tiegħek skont is-sensiela, l-awtur, is-sena, il-pubblikatur, eċċ., billi tgħaqqad daqskemm kriterji hemm bżonn. Klikk doppju jiftaħ il-fajl f'MosaicView. Ir-riżultati jistgħu jiġu esportati fil-format Excel (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Idħol iċ-ċavetta API hawnhekk",
       "validate": "Ikkonferma",
       "error_empty": "Jekk jogħġbok daħħal ċavetta API.",
-      "clear": "Ħassar iċ-ċavetta"
+      "clear": "Ħassar iċ-ċavetta",
+      "encryption_notice": "Ċavetta tiegħek qatt ma tinħażen f'test sempliċi. Hija protetta bil-kriptaġġ Windows DPAPI, marbuta mas-sessjoni tiegħek.",
+      "show_key": "Uri",
+      "hide_key": "Aħbi"
     },
     "menu_label": "Metadejta",
     "tooltip": "Ikseb metadejta",

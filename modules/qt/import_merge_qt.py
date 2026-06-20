@@ -252,54 +252,39 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
             "messages.errors.import_failed.title",
             "messages.errors.import_failed.message",
             {"error": msg},
-        ).exec()
+        ).show_nonmodal()
+
+    def _handle_ext_choice(choice, filepath, new_ext):
+        """Suite commune après choix de correction d'extension (NON modal)."""
+        if choice is None:
+            return
+        actual = filepath
+        if choice == 'rename':
+            new_path = os.path.splitext(filepath)[0] + new_ext
+            try:
+                os.rename(filepath, new_path)
+                actual = new_path
+            except Exception as e:
+                _MsgDialog(win,
+                    "messages.errors.rename_failed.title",
+                    "messages.errors.rename_failed.message",
+                    {"error": str(e)[:100]},
+                ).show_nonmodal()
+                return
+        elif choice != 'keep':
+            return
+        _start_worker(actual)
 
     def on_bad_zip():
         """CBZ qui est en fait un RAR — dialogue de correction d'extension."""
         _remove_label()
         dlg = ExtensionCorrectionDialog(win, filepath, "CBR", "CBZ")
-        if dlg.exec() != QDialog.Accepted:
-            return
-        choice = dlg.result_choice
-        actual = filepath
-        if choice == 'rename':
-            new_path = os.path.splitext(filepath)[0] + '.cbr'
-            try:
-                os.rename(filepath, new_path)
-                actual = new_path
-            except Exception as e:
-                _MsgDialog(win,
-                    "messages.errors.rename_failed.title",
-                    "messages.errors.rename_failed.message",
-                    {"error": str(e)[:100]},
-                ).exec()
-                return
-        elif choice != 'keep':
-            return
-        _start_worker(actual)
+        dlg.ask_async(lambda choice: _handle_ext_choice(choice, filepath, '.cbr'))
 
     def on_bad_rar():
         """CBR qui est en fait un ZIP — dialogue de correction d'extension."""
         _remove_label()
         dlg = ExtensionCorrectionDialog(win, filepath, "CBZ", "CBR")
-        if dlg.exec() != QDialog.Accepted:
-            return
-        choice = dlg.result_choice
-        actual = filepath
-        if choice == 'rename':
-            new_path = os.path.splitext(filepath)[0] + '.cbz'
-            try:
-                os.rename(filepath, new_path)
-                actual = new_path
-            except Exception as e:
-                _MsgDialog(win,
-                    "messages.errors.rename_failed.title",
-                    "messages.errors.rename_failed.message",
-                    {"error": str(e)[:100]},
-                ).exec()
-                return
-        elif choice != 'keep':
-            return
-        _start_worker(actual)
+        dlg.ask_async(lambda choice: _handle_ext_choice(choice, filepath, '.cbz'))
 
     _start_worker(filepath)

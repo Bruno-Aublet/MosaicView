@@ -3,10 +3,37 @@ Module de gestion centralisée de la configuration pour MosaicView
 Gère tous les paramètres de l'application dans un fichier JSON unique
 """
 
+import base64
 import json
 import os
 import sys
 import tempfile
+
+
+def _dpapi_encrypt(plaintext: str) -> str:
+    """Chiffre plaintext via DPAPI (Windows). Retourne une chaîne base64."""
+    try:
+        import win32crypt
+        encrypted = win32crypt.CryptProtectData(
+            plaintext.encode('utf-8'), None, None, None, None, 0
+        )
+        return base64.b64encode(encrypted).decode('ascii')
+    except Exception as e:
+        print(f"DPAPI chiffrement échoué : {e}")
+        return ''
+
+
+def _dpapi_decrypt(b64_cipher: str) -> str:
+    """Déchiffre une chaîne base64 DPAPI. Retourne '' en cas d'échec."""
+    try:
+        import win32crypt
+        encrypted = base64.b64decode(b64_cipher)
+        _desc, plaintext = win32crypt.CryptUnprotectData(
+            encrypted, None, None, None, 0
+        )
+        return plaintext.decode('utf-8')
+    except Exception:
+        return ''
 
 
 class ConfigManager:
@@ -31,7 +58,7 @@ class ConfigManager:
         'recent_files': [],  # Liste des fichiers récemment ouverts (max 10)
         'recent_dbs':   [],  # Liste des bases de données récemment ouvertes (max 10)
         'use_icon_toolbar': False,  # TEMPORAIRE (dev) — barre d'icônes active
-        'comicvine_api_key': '',    # Clé API ComicVine
+        'comicvine_api_key': '',    # Clé API ComicVine (chiffrée DPAPI, base64)
     }
 
     def __init__(self, config_dir=None):
@@ -427,6 +454,25 @@ class ConfigManager:
         if len(cleaned) != len(recent):
             return self.set('recent_dbs', cleaned, save)
         return True
+
+    # ── Clé API ComicVine (chiffrée DPAPI) ───────────────────────────────────
+
+    def get_comicvine_api_key(self) -> str:
+        """Retourne la clé API ComicVine déchiffrée, ou '' si absente/illisible."""
+        raw = self.config.get('comicvine_api_key', '').strip()
+        if not raw:
+            return ''
+        decrypted = _dpapi_decrypt(raw)
+        if decrypted:
+            return decrypted
+        # Migration : valeur en clair héritée — on la rechiffre immédiatement
+        self.set_comicvine_api_key(raw)
+        return raw
+
+    def set_comicvine_api_key(self, key: str, save: bool = True) -> bool:
+        """Chiffre key via DPAPI et la persiste dans la config."""
+        encrypted = _dpapi_encrypt(key) if key else ''
+        return self.set('comicvine_api_key', encrypted, save)
 
     # ===== Méthodes utilitaires =====
 

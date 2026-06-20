@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Funcție indisponibilă",
         "message": "Renumerotarea nu este disponibilă până când folderele nu sunt aplatizate.\nAplatizați folderele înainte de a renumerota."
+      },
+      "unsafe_path_skipped": {
+        "title": "Fișiere omise",
+        "message": "{count} fișier(e) au fost omise deoarece locația lor nu era validă."
+      },
+      "unsafe_path_open": {
+        "title": "Imposibil de deschis",
+        "message": "Acest fișier nu a putut fi deschis deoarece locația sa nu era validă."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Salvat cu succes",
         "message": "{count} fișiere salvate în:\n{folder}",
-        "open_folder": "Doriți să deschideți folderul?"
+        "open_folder": "Doriți să deschideți folderul?",
+        "message_with_skipped": "{count} fișier(e) salvat(e) în {folder}. {skipped} fișier(e) omis(e) deoarece locația lor nu era validă."
       },
       "adjustments_applied": {
         "title": "Ajustari aplicate",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Crearea și editarea fișierelor NFO",
     "nfo_editor_content": "Un fișier NFO este un fișier text (cu extensia .nfo) folosit pentru a stoca informații despre arhivă: sinopsis, credite, note…\n\nPentru a crea un fișier NFO, folosiți pictograma dedicată din bara de instrumente, meniul Fișier sau meniul contextual (clic dreapta pe mozaic). Comanda este disponibilă numai când mozaicul nu este gol. Introduceți un nume și un conținut: fișierul este inserat direct în mozaic fără extragere sau salvare intermediară.\n\nPentru a edita un fișier NFO existent, faceți dublu clic pe el în mozaic. Fereastra se deschide precompletată cu numele și conținutul curent, ambele editabile. În ambele cazuri, operațiunea este înregistrată în istoricul de anulare.",
     "metadata": "Metadate ComicVine",
-    "metadata_content": "MosaicView permite recuperarea automată a metadatelor benzilor desenate (titlu, serie, număr, autori, rezumat...) din baza de date ComicVine, un site colaborativ întreținut de comunitate.\n\nMod individual: deschideți o bandă desenată, apoi folosiți butonul din bara de instrumente sau meniul Metadate. Se deschide un asistent în două etape: alegeți mai întâi seria, apoi episodul corespunzător. Metadatele sunt scrise în ComicInfo.xml din interiorul arhivei.\n\nMod batch: aruncați unul sau mai multe dosare pe mozaic și alegeți \"Import în lot de metadate\", sau folosiți butonul dedicat din bara de instrumente sau meniul Metadate. Asistentul se deschide succesiv pentru fiecare fișier găsit (CBZ, CBR, CB7, CBT, PDF). Fișierele non-CBZ sunt convertite automat în CBZ după scrierea metadatelor.\n\nCheie API: este necesară o cheie API gratuită ComicVine. Aplicația vă va ghida pentru a o obține. Se obține pe comicvine.gamespot.com după crearea unui cont.\n\nLimitări API: aceste limitări sunt impuse de ComicVine și nu pot fi evitate.\n• 200 cereri pe resursă pe oră. Dacă această limită este atinsă, căutările eșuează temporar până la sfârșitul orei.\n• Maximum 100 rezultate pe cerere, ceea ce obligă la segmentarea căutărilor în mai multe apeluri pentru seriile cu multe episoade.\n• 1 cerere pe secundă permisă de site. Din motive de siguranță, MosaicView așteaptă 2 secunde între fiecare cerere, deoarece cererile mai rapide sunt foarte susceptibile să provoace blocaje temporare.\n\nAceastă funcționalitate se bazează în întregime pe proiectul open source {scraper}.",
+    "metadata_content": "MosaicView permite recuperarea automată a metadatelor benzilor desenate (titlu, serie, număr, autori, rezumat...) din baza de date ComicVine, un site colaborativ întreținut de comunitate.\n\nMod individual: deschideți o bandă desenată, apoi folosiți butonul din bara de instrumente sau meniul Metadate. Se deschide un asistent în două etape: alegeți mai întâi seria, apoi episodul corespunzător. Metadatele sunt scrise în ComicInfo.xml din interiorul arhivei.\n\nMod batch: aruncați unul sau mai multe dosare pe mozaic și alegeți \"Import în lot de metadate\", sau folosiți butonul dedicat din bara de instrumente sau meniul Metadate. Asistentul se deschide succesiv pentru fiecare fișier găsit (CBZ, CBR, CB7, CBT, PDF). Fișierele non-CBZ sunt convertite automat în CBZ după scrierea metadatelor.\n\nCheie API: este necesară o cheie API gratuită ComicVine. Aplicația vă va ghida pentru a o obține. Se obține pe comicvine.gamespot.com după crearea unui cont. Cheia nu este niciodată stocată în text simplu: este criptată de Windows DPAPI și poate fi citită doar de contul dvs. Windows.\n\nLimitări API: aceste limitări sunt impuse de ComicVine și nu pot fi evitate.\n• 200 cereri pe resursă pe oră. Dacă această limită este atinsă, căutările eșuează temporar până la sfârșitul orei.\n• Maximum 100 rezultate pe cerere, ceea ce obligă la segmentarea căutărilor în mai multe apeluri pentru seriile cu multe episoade.\n• 1 cerere pe secundă permisă de site. Din motive de siguranță, MosaicView așteaptă 2 secunde între fiecare cerere, deoarece cererile mai rapide sunt foarte susceptibile să provoace blocaje temporare.\n\nAceastă funcționalitate se bazează în întregime pe proiectul open source {scraper}.",
     "library": "Bibliotecă",
     "library_content": "Biblioteca vă permite să catalogați și să găsiți ușor benzile desenate digitale. Funcționează citind metadatele conținute în fiecare fișier (titlu, serie, autori, editor…) și adunându-le într-un singur fișier de bibliotecă (*.mvdb).\n\nPentru a crea o bibliotecă, utilizați meniul Bibliotecă → Bază de date nouă sau trageți unul sau mai multe dosare în mozaic și alegeți \"Creați o bibliotecă din dosar(e)\". MosaicView va scana apoi dosarele și va indexa automat toate fișierele compatibile.\n\nOdată deschisă biblioteca, puteți filtra benzile desenate după serie, autor, an, editor etc., combinând câte criterii sunt necesare. Un dublu clic deschide fișierul în MosaicView. Rezultatele pot fi exportate în format Excel (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Lipiți cheia API aici",
       "validate": "Validare",
       "error_empty": "Introduceți o cheie API.",
-      "clear": "Șterge cheia"
+      "clear": "Șterge cheia",
+      "encryption_notice": "Cheia dvs. nu este niciodată stocată în text simplu. Este protejată de criptarea Windows DPAPI, legată de sesiunea dvs.",
+      "show_key": "Afișează",
+      "hide_key": "Ascunde"
     },
     "menu_label": "Metadate",
     "tooltip": "Preluare metadate",

@@ -258,9 +258,9 @@ class WebDownloadController:
         if not self._cancel_flag[0]:
             ErrorDialog(
                 self._canvas.window(),
-                _("web.web_no_images"),
-                _("web.web_no_images_found"),
-            ).exec()
+                lambda: _("web.web_no_images"),
+                lambda: _("web.web_no_images_found"),
+            ).show()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -444,9 +444,9 @@ def process_web_image(image_data: bytes, suggested_filename: str | None,
     except Exception as e:
         ErrorDialog(
             parent_widget,
-            _("errors.title"),
-            f"{_('web.import_web_invalid_url')}\n\n{e}",
-        ).exec()
+            lambda: _("errors.title"),
+            lambda err=e: f"{_('web.import_web_invalid_url')}\n\n{err}",
+        ).show()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -480,7 +480,9 @@ class WebImportDialog(QDialog):
         self._canvas    = canvas
         self._callbacks = callbacks
 
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setFixedSize(500, 180)
 
         layout = QVBoxLayout(self)
@@ -508,7 +510,7 @@ class WebImportDialog(QDialog):
         self._btn_ok.clicked.connect(self._process_url)
         self._btn_cancel = QPushButton()
         self._btn_cancel.setFixedWidth(110)
-        self._btn_cancel.clicked.connect(self.reject)
+        self._btn_cancel.clicked.connect(self.close)
         btn_row.addWidget(self._btn_ok)
         btn_row.addSpacing(16)
         btn_row.addWidget(self._btn_cancel)
@@ -588,12 +590,12 @@ class WebImportDialog(QDialog):
         if not url.startswith(('http://', 'https://')):
             ErrorDialog(
                 self,
-                _("web.import_web_dialog_title"),
-                _("web.import_web_invalid_url"),
-            ).exec()
+                lambda: _("web.import_web_dialog_title"),
+                lambda: _("web.import_web_invalid_url"),
+            ).show()
             return
 
-        self.accept()  # ferme la fenêtre avant de lancer le téléchargement
+        self.close()  # ferme la fenêtre avant de lancer le téléchargement
 
         try:
             headers = {'User-Agent': _USER_AGENT}
@@ -615,9 +617,9 @@ class WebImportDialog(QDialog):
                 except Exception:
                     InfoDialog(
                         self.parent(),
-                        _("web.web_drag_drop_title"),
-                        _("web.web_copy_paste_message"),
-                    ).exec()
+                        lambda: _("web.web_drag_drop_title"),
+                        lambda: _("web.web_copy_paste_message"),
+                    ).show()
             else:
                 try:
                     html_content = content.decode('utf-8', errors='ignore')
@@ -632,19 +634,23 @@ class WebImportDialog(QDialog):
                 else:
                     InfoDialog(
                         self.parent(),
-                        _("web.web_drag_drop_title"),
-                        _("web.web_copy_paste_message"),
-                    ).exec()
+                        lambda: _("web.web_drag_drop_title"),
+                        lambda: _("web.web_copy_paste_message"),
+                    ).show()
 
         except Exception as e:
             ErrorDialog(
                 self.parent(),
-                _("web.import_web_dialog_title"),
-                f"{_('web.import_web_invalid_url')}\n\n{e}",
-            ).exec()
+                lambda: _("web.import_web_dialog_title"),
+                lambda err=e: f"{_('web.import_web_invalid_url')}\n\n{err}",
+            ).show()
 
 
 def show_web_import_dialog(parent, canvas, callbacks: dict) -> None:
     """Ouvre la fenêtre d'import web (point d'entrée public)."""
     dlg = WebImportDialog(parent, canvas, callbacks)
-    dlg.exec()
+    from modules.qt.dialogs_qt import position_dialog_on_parent
+    position_dialog_on_parent(dlg, parent)
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()

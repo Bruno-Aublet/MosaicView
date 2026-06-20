@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Cant nâ veth ervyn",
         "message": "Nothrim echannen nâ derthad an i erain u-alaglenner.\nAlaglia i erain vi ndorthrog echannen."
+      },
+      "unsafe_path_skipped": {
+        "title": "Phern awarthennin",
+        "message": "{count} parf(in) awarthennin an i had în ú-mâ."
+      },
+      "unsafe_path_open": {
+        "title": "Ú-bui edro",
+        "message": "I barf hen ú-bui edro an i had în ú-mâ."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Gothaina",
         "message": "{count} parma gothaina:\n{folder}",
-        "open_folder": "Panta tarcil?"
+        "open_folder": "Panta tarcil?",
+        "message_with_skipped": "{count} parf(in) hennin na {folder}. {skipped} parf(in) awarthennin an i had în ú-mâ."
       },
       "adjustments_applied": {
         "title": "Aðagobith aphadol",
@@ -1162,7 +1171,7 @@
     "dpi_single": "DPI: {dpi}",
     "dpi_double": "DPI: {dpi_x} × {dpi_y}",
     "dpi_undefined": "DPI: ú-meril",
-    "cbr_info": "CBR fîchiérs bûkent RAR-formât, dât propriétêr én patentéart is;\nsij konnen nét bewurkje wurde, wizigings wurde bewarre yn in nij CBZ-fyl.",
+    "cbr_info": "I phyrth CBR bûkent an formât RAR, i·dôr anglennol ar patented;\nú-ellint bain cened, i thiw savant vi parf CBZ thui.",
     "rotate_left": "Covad 90 minui hair",
     "rotate_right": "Covad 90 minui forn",
     "mirror_horizontal": "Tarlang thala",
@@ -1217,7 +1226,7 @@
     "viewer": "Harthad",
     "viewer_content": "Edeb-gano ben tell na edro i harthad:\n• Tungil ← →: tírad immi telleir\n• Tungol D: misto immi ner bâd rlinn\n  - Tell er: er tell sui lû\n  - Telleir edeb: tell er erui, sui ben 2-3, 4-5, etc.\n  - Telleir edeb tadol: tell er erui, sui ben 2-3, 3-4, 4-5, etc.\n• Rodel i lhaw: tírad lim\n• Ctrl+Rodel pedo Ctrl+Mas/Lim: megil\n• Ctrl+0: adnortho i megil\n• Tungol F11: lain pen\n• Edeb-ganad: misto lain pen\n• Tungol Échap: awartha i thammas / avego i harthad",
     "join_pages": "Antha telleir",
-    "join_pages_content": "Ethro mî parth consecutive, haer-pitha → 'parth egor onta' parth horizontal or vertical onta. I naith en i chammad gwannen tholed na naith en i phyrth thui, anim PNG and thenid.",
+    "join_pages_content": "Ethro mî parth thlinnui, haer-pitha → 'parth egor onta' parth trî no dannen egor trî no aear. I naith en i chammad gwannen tholed na naith en i phyrth thui, anim PNG thenid.",
     "split_pages": "Dagro telleir",
     "split_pages_content": "Na dagro thennas telleir edeb:\n• Eglerio i telleir na dhagro\n• Ganad formen → 'Dagro i telleir thelegin'\n• Eglerio i rhaw (orthi pedo forn)",
     "crop": "Orchad mi harthad",
@@ -1233,7 +1242,7 @@
     "other": "Orthair edhel",
     "other_content": "• Misto: misto er pedo rendir erui\n• Edregol: edrego i rendir na thîr edhellen (PNG, JPEG, WEBP, BMP, TIFF, GIF). Pedo: i rendir CMYK autorui edregannar na RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Pedo: i rendir CMYK autorui edregannar na RGB\n• Teitho: teitho i telleir thelegin pedo nel i telleir\n• Esgalad: esgelo telleir uirib\n• Thaul Greinaid: panna i greinaid o bâr ComicInfo.xml (pe mi târ). Pe orthad pedo esgelo teleth o veleithron a breithar greinaid, i harfuil pannathad gohedo i rîm telleir berthanna. I greinaid edhel ú-gohedir. Si berth în aerlinn a sui thand o goheb.",
     "config_files": "Beirain teHmeH a beirain rast",
-    "config_files_content": "MosaicView harna .mosaicview_config.json parf. Parf hen harya wIvmey nórima i chu'moH tab nan po bertha, ar i ngo'Daq pantannen gonedir lista, mí ammar nórima i ngo'Daq pantannen beirain na tira. MosaicView harya beirain rast, mí i pathu randir orchadmeH orchan i nórima.\nBeirain hin raim i {temp_dir} aldassë.\nBeirain rast deletar caita mí i harfuil tora, nan .mosaicview_config.json parf, nathra, harnar na hartha.\nNan, beirain hin edhellen ú-cheria lín penia i {temp_dir} aldassë edro, mal i vuidain mi na ganad. .mosaicview_config.json parf recriar caita mí i harfuil penia, ar beirain rast recriar caita mí nórima.",
+    "config_files_content": "MosaicView harna .mosaicview_config.json parf. Parf hen harya wIv nórima i·vab tab nan po bertha, ar i phyrth pantannen gonedir lista, mí ammar nórima i phyrth pantannen beirain na tira. MosaicView harya beirain rast, mí i pathu randir orchadion orchan i nórima.\nBeirain hin raim i {temp_dir} aldassë.\nBeirain rast edhellir caita mí i harfuil tora, nan .mosaicview_config.json parf, nathra, harnar na hartha.\nNan, beirain hin ú-cheria lîn penia i {temp_dir} aldassë edro, mal i vuidain mi na ganad. .mosaicview_config.json parf recriar caita mí i harfuil penia, ar beirain rast recriar caita mí nórima.",
     "config_clear_temp": "Mistro beirain rast",
     "config_clear_recent": "Mistro beirain nui",
     "config_clear_config": "Mistro bâr teHmeH",
@@ -1244,7 +1253,7 @@
     "credits": "Vibe Coding, meleth nín",
     "credits_content": "Ú-iston eneth o ortho parmagolath. Ú-eneth. Nu rimm hen, nerthanen hen celwir nu chorn Claude, i IA o Anthropic, a ú-orthweg nu Claude Code. Ú-cherithon anno annog im breitho Claude Code, hen harfuil în maer hael!",
     "resize_pages": "Baugon i phenni",
-    "resize_pages_content": "Parth reduction or enlargement:\n• Mîn or mî parth ethro\n• Haer-pitha → 'resize'\n• Neled options erib:\n  - custom dimensionir: desired width or height bado (aspect ratio automatically preserved).\n  - percentage reduction: 10% hen 90% percentage ethro\n  - percentage enlargement: 10% hen 100% percentage ethro\n• Application bereth estimated sad modification qaSpu cala\n• Modification egor parth hain applies",
+    "resize_pages_content": "Parth thinno egor aglarno:\n• Mîn egor mî parth ethro\n• Haer-pitha → 'Cuio sad'\n• Neled gobennath hain:\n  - Cefnas pennir: bado laer egor sad bain (i·ratio tholed na maethol).\n  - Thinno vi cannas: ethro cannas o 10% na 90%\n  - Aglarno vi cannas: ethro cannas o 10% na 100%\n• I·vaidol bereth estimated en i phyrth lîn elia cuio\n• I·cuio egor parth hain govaded",
     "language_export_piqad": "pIqaD Font",
     "language_export_tengwar": "Tengwar Fonts",
     "language_export_piqad_success": "Tegwar achannent: {filename}\nI:",
@@ -1257,7 +1266,7 @@
     "icons_saved_success": "{count} tînco/tinconi dorthannen mi:",
     "icons_save_failed": "Ú-bedinnen dortha tinconi: {error}",
     "split_ui": "Gwened a phaned dou",
-    "split_ui_content": "MosaicView a allow gwelet dou archiv yn preder, tu ha tu.\n\nKlikañ war an ikon Parzañ evit digeriñ eil panel. Pep panel a zo diDependencies: gallout a rit digeriñ, kemmañ ha salvañ un archiv diwar-bouez. Al panel oberiant a zo diskouezet gant ur vord glas.\n\nEvit tremen pajennoù eus ur panel d'egile, lusket anezho ent eeun. Ma'z eo choazet meur a bajenn, mont a reont an holl a-gevret. Ar pajennoù a vez lakaet en tu ma tisklêrij ar barre ruz.\n\nKlikañ war an ikon Serriñ eil panel evit distreiñ d'ar mod panel unan.\n\nI govan i·dôr in paned iest pennas raitha. Nesta i archant dessui restad i paned vi maen-then (50/50).",
+    "split_ui_content": "MosaicView a allow gwelet dou archiv yn preder, tu ha tu.\n\nToc i vuidon Nótho na paned thui edro. Pan paned dôr han: bado edro, anno, a sartha archiv dîn. I paned cuia sinnir vi luith lasc.\n\nNa phyrth lesta o paned na paned, raeg in hain ent. Ce parth ethrir iest, lestir pan na genediad. I phyrth savant vi sad annir vi barre caran.\n\nToc i vuidon Serra i paned thui na mod paned eraid edro.\n\nI govan i·dôr in paned iest pennas raitha. Nesta i archant dessui restad i paned vi maen-then (50/50).",
     "license_gpl": "GPL v3 Covad",
     "license_unrar": "UnRAR Taflen",
     "config_clear_clipboard": "Deri edhellen i gîl prestannen",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Carph a gresta NFO-pherph",
     "nfo_editor_content": "NFO-parf i parf teitho (.nfo enethren) i gabed tirhad an i archiv: hammad, cannas, nothas…\n\nCarpho NFO-parf, anno i dîr hain vi i orthad, vi i lîst parf, egor vi i lîst comhad (pent forven vi i mosaig). I amber agor ach nag i mosaig i chwest. Anno eneth a hammad: i barf carpho sui vi i mosaig, bain amman gûr egor teitho erin-lend.\n\nGresto NFO-parf iest, nesta i archant vi i mosaig. I thûl agor pre-anno eneth a hammad iest, ammen gresto. Vi ammen, i trevad nottir vi i lîst heb-no.",
     "metadata": "ComicVine Nothrannath",
-    "metadata_content": "MosaicView ista i nothrannath i comicin (eneth, sîr, nûr, tîw, glaur...) ned i daur ComicVine, i veth govaded o i·chobar.\n\nMód er: egeria i comic, sí use i tangel o i Nothrannath menu. Tîr atho úpa: ece caro i sîr, sí i episod. Nothrannath carë ComicInfo.xml nu i cân.\n\nMód batch: lerta i taur ar selec \"Govaded i·nothrannath an·channas\", o use i tangel o i Nothrannath menu. Tîr úpa quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa nothrannath.\n\nAPI tangel: ComicVine API tangel lemya. I app tîruva le. Ista comicvine.gamespot.com épa conta.\n\nAPI raeg: ComicVine carë tai raeg, ar umir nanner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni episodion sîren.\n• 1 petitioni quë cant. MosaicView caita 2 cant quë petitioni, ar raita petitioni nar raeg.\n\nI·thirnath hen certha i·vimp {scraper} am·men.",
+    "metadata_content": "MosaicView ista i nothrannath i comicin (eneth, sîr, nûr, tîw, glaur...) ned i daur ComicVine, i veth govaded o i·chobar.\n\nMód er: egeria i comic, sí use i tangel o i Nothrannath menu. Tîr atho úpa: ece caro i sîr, sí i episod. Nothrannath carë ComicInfo.xml nu i cân.\n\nMód batch: lerta i taur ar selec \"Govaded i·nothrannath an·channas\", o use i tangel o i Nothrannath menu. Tîr úpa quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa nothrannath.\n\nAPI tangel: ComicVine API tangel lemya. I app tîruva le. Ista comicvine.gamespot.com épa conta. I ngilith ú-garar i phân eglain: orchenner o chryptad Windows DPAPI a chen ú-lethrar ach o i rant lín.\n\nAPI raeg: ComicVine carë tai raeg, ar umir nanner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni episodion sîren.\n• 1 petitioni quë cant. MosaicView caita 2 cant quë petitioni, ar raita petitioni nar raeg.\n\nI·thirnath hen certha i·vimp {scraper} am·men.",
     "library": "I·Thamb",
     "library_content": "I·thamb allow lín catalogu ar hirë i·lîr teleryn. Eria o leithian i·maethor i·naid (eneth, i·naid, i·pedair, i·taur…) ar egleria mi er thamb (*.mvdb).\n\nCë carë i·thamb, use i·taur Thamb → Massa nóna, or lanta er ar lane taur na i·rembar ar maita \"Caro i·thambe o·i·taur(in)\". MosaicView maita i·taur ar cantë i·naid.\n\nCë i·thamb eria, lé lanta i·lîr o i·naid, i·pedair, loa, i·taur, etc. Er lempë anta i·naid mi MosaicView. I·maethor lé egleria mi XLSX (Excel)."
   },
@@ -1440,7 +1449,7 @@
     "error_title": "Mablung",
     "error_empty_name": "Anno eneth parf.",
     "error_write": "Ú-gell teitho i barf:\n{error}",
-    "error_duplicate": "Parf {filename} enethren iest vi i mozaic."
+    "error_duplicate": "Parf {filename} enethren iest vi i mossaic."
   },
   "comicvine": {
     "api_key_dialog": {
@@ -1452,7 +1461,10 @@
       "placeholder": "Pâd API têw si",
       "validate": "Nauth",
       "error_empty": "Maetho API têw.",
-      "clear": "Pân têw"
+      "clear": "Pân têw",
+      "encryption_notice": "I ngilith lín ú-garar i phân eglain. I orchennen o chryptad Windows DPAPI, cennin na i chuireb lín.",
+      "show_key": "Cenio",
+      "hide_key": "Thilio"
     },
     "menu_label": "Nauth dîn",
     "tooltip": "Beria nauth dîn",
@@ -1471,7 +1483,7 @@
     "col_issue_title": "Eneth",
     "btn_skip": "Aen",
     "btn_back": "Adel",
-    "info_single": "Sí função beria nauth i dhîn sina. An beria fili queni, sôr i beria harn (pâd mappa na i cai).",
+    "info_single": "Sí cannas beria nauth i dhîn sina. An beria fili queni, sôr i beria harn (pâd mappa na i cai).",
     "page_indicator": "Lalf {page}",
     "loading_issues_progress": "Beria... {loaded} / {total}",
     "issues_partial_load": "{count} nauth beriar — beria hauta: {error}",

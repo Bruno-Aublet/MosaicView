@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Feidhm nach bhfuil ar fáil",
         "message": "Níl an athúimhriú ar fáil go dtí go bhfuil na fillteáin leaptha.\nCothromaigh na fillteáin roimh athúimhriú."
+      },
+      "unsafe_path_skipped": {
+        "title": "Comhaid scipeáilte",
+        "message": "Scipeáladh {count} comhad toisc nach raibh a suíomh bailí."
+      },
+      "unsafe_path_open": {
+        "title": "Ní féidir a oscailt",
+        "message": "Níorbh fhéidir an comhad seo a oscailt toisc nach raibh a shuíomh bailí."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Sábháilte go rathúil",
         "message": "Sábháladh {count} comhad i:\n{folder}",
-        "open_folder": "Ar mhaith leat an fillteán a oscailt?"
+        "open_folder": "Ar mhaith leat an fillteán a oscailt?",
+        "message_with_skipped": "Sábháladh {count} comhad chuig {folder}. Scipeáladh {skipped} comhad toisc nach raibh a suíomh bailí."
       },
       "adjustments_applied": {
         "title": "Coigeartuithe curtha i bhfeidhm",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Comhaid NFO a chruthú agus a chur in eagar",
     "nfo_editor_content": "Is comhad téacs é comhad NFO (le síneadh .nfo) a úsáidtear chun faisnéis faoin gcartlann a stóráil: achoimre, creidmheasanna, nótaí…\n\nChun comhad NFO a chruthú, úsáid an deilbhín tiomnaithe sa bharra uirlisí, an roghchlár Comhad, nó an roghchlár comhthéacs (cliceáil ar dheis ar an móisáic). Níl an t-ordú ar fáil ach amháin nuair nach bhfuil an móisáic folamh. Cuir isteach ainm agus ábhar: cuirtear an comhad isteach sa mhóisáic go díreach gan asbhaint ná sábháil eatramhach.\n\nChun comhad NFO atá ann cheana a chur in eagar, déan cliceáil dúbailte air sa mhóisáic. Osclaíonn an fhuinneog réamhlíonta leis an ainm agus an t-ábhar reatha, agus is féidir an dá cheann a chur in eagar. Sa dá chás, taifeadtar an oibríocht i stair na céim ar gcúl.",
     "metadata": "Meitashonraí ComicVine",
-    "metadata_content": "Ligeann MosaicView duit meitashonraí do leabhar grinn (teideal, sraith, uimhir, údair, achoimre...) a aisghabháil go huathoibríoch ó bhunachar sonraí ComicVine, suíomh comhoibríoch arna chothabháil ag an bpobal.\n\nMód aonair: oscail leabhar grinn, ansin úsáid cnaipe an bharra uirlisí nó an roghchlár Meitashonraí. Osclaítear treoraí dhá chéim: roghnaigh an tsraith ar dtús, ansin an t-eipeasóid comhfhreagrach. Scríobhtar meitashonraí chuig ComicInfo.xml laistigh den chartlann.\n\nMód baisce: tit ceann amháin nó níos mó fillteán ar an mósáic agus roghnaigh \"Iompórtáil meitashonraí baisceanna\", nó úsáid an cnaipe tiomnaithe sa bharra uirlisí nó an roghchlár Meitashonraí. Osclaítear an treoraí de réir a chéile do gach comhad a aimsítear (CBZ, CBR, CB7, CBT, PDF). Comhaid neamh-CBZ tiontaítear go CBZ go huathoibríoch tar éis na meitashonraí a scríobh.\n\nEochair API: tá eochair API saor in aisce ComicVine ag teastáil. Treorófar thú ag an bhfeidhmchlár chun í a fháil. Faightear é ar comicvine.gamespot.com tar éis cuntas a chruthú.\n\nTeorainneacha API: forchuirtear na teorainneacha seo ag ComicVine agus ní féidir iad a sheachaint.\n• 200 iarratas in aghaidh an acmhainn in aghaidh na huaire. Má shroichtear an teorainn seo, teipeann cuardaigh go sealadach go dtí deireadh na huaire.\n• 100 toradh ar a mhéad in aghaidh an iarratais, rud a chuireann iallach cuardaigh a roinnt ar roinnt glaonna do shraitheanna le go leor eipeasóidí.\n• 1 iarratas in aghaidh an tsoicind ceadaithe ag an suíomh. Ar mhaithe le sábháilteacht, fanann MosaicView 2 shoicind idir gach iarratas, toisc go bhfuil sé an-dóchúil go gcuirfeadh iarratais níos tapúla bac sealadach.\n\nTá an ghné seo bunaithe go hiomlán ar an tionscadal foinse oscailte {scraper}.",
+    "metadata_content": "Ligeann MosaicView duit meitashonraí do leabhar grinn (teideal, sraith, uimhir, údair, achoimre...) a aisghabháil go huathoibríoch ó bhunachar sonraí ComicVine, suíomh comhoibríoch arna chothabháil ag an bpobal.\n\nMód aonair: oscail leabhar grinn, ansin úsáid cnaipe an bharra uirlisí nó an roghchlár Meitashonraí. Osclaítear treoraí dhá chéim: roghnaigh an tsraith ar dtús, ansin an t-eipeasóid comhfhreagrach. Scríobhtar meitashonraí chuig ComicInfo.xml laistigh den chartlann.\n\nMód baisce: tit ceann amháin nó níos mó fillteán ar an mósáic agus roghnaigh \"Iompórtáil meitashonraí baisceanna\", nó úsáid an cnaipe tiomnaithe sa bharra uirlisí nó an roghchlár Meitashonraí. Osclaítear an treoraí de réir a chéile do gach comhad a aimsítear (CBZ, CBR, CB7, CBT, PDF). Comhaid neamh-CBZ tiontaítear go CBZ go huathoibríoch tar éis na meitashonraí a scríobh.\n\nEochair API: tá eochair API saor in aisce ComicVine ag teastáil. Treorófar thú ag an bhfeidhmchlár chun í a fháil. Faightear é ar comicvine.gamespot.com tar éis cuntas a chruthú. Ní stóráiltear an eochair riamh i dtéacs soiléir: tá sí criptithe ag Windows DPAPI agus ní féidir ach le do chuntas Windows í a léamh.\n\nTeorainneacha API: forchuirtear na teorainneacha seo ag ComicVine agus ní féidir iad a sheachaint.\n• 200 iarratas in aghaidh an acmhainn in aghaidh na huaire. Má shroichtear an teorainn seo, teipeann cuardaigh go sealadach go dtí deireadh na huaire.\n• 100 toradh ar a mhéad in aghaidh an iarratais, rud a chuireann iallach cuardaigh a roinnt ar roinnt glaonna do shraitheanna le go leor eipeasóidí.\n• 1 iarratas in aghaidh an tsoicind ceadaithe ag an suíomh. Ar mhaithe le sábháilteacht, fanann MosaicView 2 shoicind idir gach iarratas, toisc go bhfuil sé an-dóchúil go gcuirfeadh iarratais níos tapúla bac sealadach.\n\nTá an ghné seo bunaithe go hiomlán ar an tionscadal foinse oscailte {scraper}.",
     "library": "Leabharlann",
     "library_content": "Ligeann an leabharlann duit do chnuasach grianghraifléitheoireachta digiteach a chatalógú agus a aimsiú go héasca. Oibríonn sí trí na meiteashonraí atá i ngach comhad a léamh (teideal, sraith, údair, foilsitheoir…) agus iad a bhailiú i gcomhad leabharlainne amháin (*.mvdb).\n\nChun leabharlann a chruthú, úsáid an roghchlár Leabharlann → Bunachar sonraí nua, nó tarraing agus scaoil comhad amháin nó níos mó isteach sa mhósáic agus roghnaigh \"Cruthaigh leabharlann ón gcomhad(comhaid)\". Ansin déanfaidh MosaicView do fhillteáin a scanadh agus gach comhad comhoiriúnach a innéacsú go huathoibríoch.\n\nNuair atá an leabharlann oscailte, is féidir leat do chnuasach a scagadh de réir sraithe, údair, bliana, foilsitheora, etc., ag comhcheangal an oiread critéar agus is gá. Osclaíonn cliceáil faoi dhó an comhad i MosaicView. Is féidir torthaí a easpórtáil i bhformáid Excel (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Greamaigh d'eochair API anseo",
       "validate": "Deimhnigh",
       "error_empty": "Iontráil eochair API le do thoil.",
-      "clear": "Glan eochair"
+      "clear": "Glan eochair",
+      "encryption_notice": "Ní stóráiltear d'eochair riamh i dtéacs soiléir. Tá sí cosanta ag criptiú Windows DPAPI, ceangailte le do sheisiún.",
+      "show_key": "Taispeáin",
+      "hide_key": "Folaigh"
     },
     "menu_label": "Meiteashonraí",
     "tooltip": "Aisghabh meiteashonraí",

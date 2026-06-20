@@ -1,3 +1,5 @@
+import os
+
 from PySide6.QtWidgets import QSlider, QMenu
 from PySide6.QtGui import QPainter, QColor, QPen
 from PySide6.QtCore import Qt
@@ -61,3 +63,23 @@ def format_file_size(size_bytes):
         return f"{size_bytes / (1024 * 1024 * 1024):.2f} Go"
     else:
         return f"{size_bytes / (1024 * 1024 * 1024 * 1024):.2f} To"
+
+
+def safe_join(base, name):
+    """
+    Joint `name` à `base` en garantissant que le résultat reste à l'intérieur
+    de `base`. Préserve les sous-dossiers légitimes (ex. "chapitre1/page01.jpg").
+
+    Protège contre la traversée de répertoire (Zip Slip) : un nom contenant
+    "../", un chemin absolu ou une autre lettre de lecteur produit un chemin
+    hors de `base`.
+
+    Returns:
+        str: le chemin absolu sûr si `name` reste sous `base`.
+        None: si `name` tente de sortir de `base` (l'appelant doit ignorer l'entrée).
+    """
+    base_real = os.path.realpath(base)
+    dest = os.path.realpath(os.path.join(base_real, name))
+    if dest != base_real and os.path.commonpath([base_real, dest]) != base_real:
+        return None
+    return dest

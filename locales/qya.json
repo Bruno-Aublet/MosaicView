@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Valar morna lá carë",
         "message": "Nótimë nólë um caritas ter i parmë an i tarmar úvanë hlaputanë.\nHlaput i tarmar sí ter i nótimë."
+      },
+      "unsafe_path_skipped": {
+        "title": "Parmar hehtaina",
+        "message": "{count} parma(r) náner hehtaina an nómesta táina lá sanya né."
+      },
+      "unsafe_path_open": {
+        "title": "Uë pólima latya",
+        "message": "Sina parma uë pólima né latyaina an nómesta sina lá sanya né."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Tehtaina mára",
         "message": "{count} tengwi tehtaina mi:\n{folder}",
-        "open_folder": "Mára tárma pan?"
+        "open_folder": "Mára tárma pan?",
+        "message_with_skipped": "{count} parma(r) hostaina mir {folder}. {skipped} parma(r) hehtaina an nómesta táina lá sanya né."
       },
       "adjustments_applied": {
         "title": "Ontarear caraina",
@@ -916,7 +925,7 @@
       "black_point_label": "Morna punta: {value}",
       "gamma_label": "Sundo (menel): {value}",
       "white_point_label": "Lossea punta: {value}",
-      "auto_levels_button": "Automatic adjustment",
+      "auto_levels_button": "Automaite mahtaina",
       "open_viewer_button": "Atarta lë tirmo (verca)",
       "compression_info": "I nihta ná ten YÚYO ar WEBE coivierya",
       "open_viewer_button_simple": "Atalta as i tíralyanen",
@@ -1085,7 +1094,7 @@
     },
     "text_viewer": {
       "title": "Tengwesta Quenta",
-      "instruction": "Teca i nómë ya merил quenta  •  Ctrl+rambor: morna quenta",
+      "instruction": "Teca i nómë ya meril quenta  •  Ctrl+rambor: morna quenta",
       "size_label": "Rimbe:",
       "color_label": "Falma:",
       "bold_btn": "T",
@@ -1185,7 +1194,7 @@
     "unknown_error": "Úmië ista",
     "batch_img_to_cbz": "Quantaina ilye cilvë tengwi hirnë i tarcase\nar i tarcassillon CBZ-nna,\ncarnë er CBZ tengwë er cilvëna.",
     "batch_img_permanent_delete": "VORO : ce sina maquetta tancaina,\ni oira cilvë tengwi nauvar hauta\nhúmë quantaina lá polië\nenvinyatar. Cen ma haryal entulessë\nce maure.",
-    "too_large_header": "I nире anaie lanta ve quantien",
+    "too_large_header": "I nire anaie lanta ve quantien",
     "too_large_pixels": "Tannar: {pixels}",
     "icon_toolbar_config_button": "Quettar parmar",
     "icon_toolbar_size_decrease": "Minya icon formar",
@@ -1233,7 +1242,7 @@
     "other": "Yanëar návëar",
     "other_content": "• Winië: winë parma erë maldë rimbëa\n• Návië: návië i fánar mi quentar yaner (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nosta: i fánar CMYK aqua nahtanë na RGB (PNG, JPEG, WEBP, BMP, TIFF, GIF). Nosta: i fánar CMYK aqua nahtanë na RGB\n• Técië: téca i parmar cilyar maldë illi i parmar\n• Extyië: extya parmar arantar\n• Síma Encartalion: cenda i encar i parmaiva ComicInfo.xml (ai ëa mi raincelma). Ai ortië maldë estyë parma cormarillon tyë encartalion, i návë tercëa návië i nótë parmaion cendëa tanomë. I yaner encartalion ú-návëar. Sina berë ná mernëa ar nauva cilmëo palantírëo.",
     "config_files": "Parmar teHmeH ar parmar raxëar",
-    "config_files_content": "MosaicView cára .mosaicview_config.json estel. Tengwë sina harya illi nauva tecili i chu'moH pano nan faila mára, ar i sírima pantaina parmar tólima lista, mí nauva i sírima pantaina parmar na cenë. MosaicView harya raxëar parmar, mí i yára fána tecmë aldar i nauva.\nParmar sina ilyë oa i {temp_dir} mallë.\nRaxëar parmar vanwa ilya sírë mí i návëa fanya, nan .mosaicview_config.json tengwë, inya, técina na harya.\nNan, parmar sina lerta ú-faila linyë fíriëo i {temp_dir} mallë edro, mal i panor yassë na nutta. .mosaicview_config.json tengwë recára ilya sírë mí i návëa panta, ar raxëar parmar recára ilya sírë mí nauva.",
+    "config_files_content": "MosaicView cára .mosaicview_config.json estel. Tengwë sina harya illi nauva tecili i cenduva pano nan faila mára, ar i sírima pantaina parmar tólima lista, mí nauva i sírima pantaina parmar na cenë. MosaicView harya raxëar parmar, mí i yára fána tecmë aldar i nauva.\nParmar sina ilyë oa i {temp_dir} mallë.\nRaxëar parmar vanwa ilya sírë mí i návëa fanya, nan .mosaicview_config.json tengwë, inya, técina na harya.\nNan, parmar sina lerta ú-faila linyë fíriëo i {temp_dir} mallë edro, mal i panor yassë na nutta. .mosaicview_config.json tengwë recára ilya sírë mí i návëa panta, ar raxëar parmar recára ilya sírë mí nauva.",
     "config_clear_temp": "Vanya raxëar parmar",
     "config_clear_recent": "Vanya yéni parmar",
     "config_clear_config": "Vanya teHmeH parma",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "NFO-parmar carë ar harna",
     "nfo_editor_content": "NFO-parma ná tecilwa parma (.nfo quetilnen) i harya i mossë i archivossë: sanwë, carmë, notë…\n\nCarë NFO-parma, á sav i caruva tancë i tancalessë, i parma-lendë, hya i sanwë-lendë (formavoitë i mossaicossë). I carda ná canwa erin lá i mossaic nampë ná. Á tulca essë ar quetië: i parma carmë coivë i mossaicossë úr quetilya hya coivë endessë.\n\nHarna NFO-parma ëa, á ataquetë senna i mossaicossë. I tyulma pahta urë-carwa essënen ar quetienën ëa, nati harnanwa. Ambulë, i carda nottë i harna-quenta-lendessë.",
     "metadata": "ComicVine Métanótë",
-    "metadata_content": "MosaicView ista i métanótissen i comicvalion (esselya, sérë, notë, tëvorini, onómë...) úcarin ComicVine i nótessëllo, i communtë carila.\n\nMód er: apanta i comicva, sí use i tancal o i Métanótë menu. Tirtanë ataquetaina úpa: ece lerta i sérë, sí i episod. Métanótë carë ComicInfo.xml nu i cáno.\n\nMód batch: lerta i taureli ar selec \"Métanótessen turúva\", o use i tancal o i Métanótë menu. Tirtanë úpa quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa métanótë.\n\nAPI tanca: ComicVine API tanca lemya. I app tirtanëuva tye. Ista comicvine.gamespot.com épa conta.\n\nAPI raxi: ComicVine carë tai raxi, ar umir náner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni epizodion séressen.\n• 1 petitioni quë secunda. MosaicView caita 2 secondar quë petitioni, ar raita petitioni nar raxi.\n\nI quantale sina nó á mer {scraper} apanen.",
+    "metadata_content": "MosaicView ista i métanótissen i comicvalion (esselya, sérë, notë, tëvorini, onómë...) úcarin ComicVine i nótessëllo, i communtë carila.\n\nMód er: apanta i comicva, sí use i tancal o i Métanótë menu. Tirtanë ataquetaina úpa: ece lerta i sérë, sí i episod. Métanótë carë ComicInfo.xml nu i cáno.\n\nMód batch: lerta i taureli ar selec \"Métanótessen turúva\", o use i tancal o i Métanótë menu. Tirtanë úpa quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa métanótë.\n\nAPI tanca: ComicVine API tanca lemya. I app tirtanëuva tye. Ista comicvine.gamespot.com épa conta. I ngilith úva quantaina quenderyan: halda ná DPAPI Windearon hyarmainen ar lerya coirëanyallo ananta.\n\nAPI raxi: ComicVine carë tai raxi, ar umir náner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni epizodion séressen.\n• 1 petitioni quë secunda. MosaicView caita 2 secondar quë petitioni, ar raita petitioni nar raxi.\n\nI quantale sina nó á mer {scraper} apanen.",
     "library": "I·Parmavorn",
     "library_content": "I·parmavorn ná i·carma ya lé lanta i·mathli ar hirë i·parmaron telerya. Ná cantaina mi i·lempë i·quantaina mi i·rembar (esse, i·quenta, i·telpëo, i·rembar…) ar entuluva mi er parmavorn (*.mvdb).\n\nCë carë i·parmavorn, use i·taur Parmavorn → Nóna massa, or lanta er ar lane tarmar na i·rembar ar maita \"Carë i·parmavorn ve i·tarmar\". MosaicView maita i·tarmar ar cantë i·rembar quantainë.\n\nCë i·parmavorn cantaina ná, lé lanta i·mathli er i·quenta, i·telpëo, loa, i·rembar, etc., cantaina quantë criteria. Er lempë anta i·rembar mi MosaicView. I·parmë lé entuluva mi XLSX (Excel)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Hyarë API parma sís",
       "validate": "Nótë",
       "error_empty": "Maxa API parma.",
-      "clear": "Lusta parma"
+      "clear": "Lusta parma",
+      "encryption_notice": "Turwa lya lantainiéva úva quantaina quenderyan. Halda ná i DPAPI Windearon hyarmainen, lehtiéva coirëannar lya.",
+      "show_key": "Cen",
+      "hide_key": "Halda"
     },
     "menu_label": "Nótë lambë",
     "tooltip": "Lerta nótë lambë",
@@ -1471,7 +1483,7 @@
     "col_issue_title": "Essë",
     "btn_skip": "Auta",
     "btn_back": "Apa",
-    "info_single": "Sí función lerta nótë i commici sina. Lá ortë queni fili, sára i ortë harna (hyarë mappa ná i coimas).",
+    "info_single": "Sí canwa lerta nótë i commici sina. Lá ortë queni fili, sára i ortë harna (hyarë mappa ná i coimas).",
     "page_indicator": "Lambë {page}",
     "loading_issues_progress": "Ortë... {loaded} / {total}",
     "issues_partial_load": "{count} nótë ortaina — ortë hauta: {error}",

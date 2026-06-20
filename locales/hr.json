@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Funkcija nije dostupna",
         "message": "Prebroj nije dostupan dok se mape ne izravnaju.\nIzravnajte mape prije prebrojanja."
+      },
+      "unsafe_path_skipped": {
+        "title": "Preskočene datoteke",
+        "message": "{count} datoteka preskočeno jer njihova lokacija nije bila valjana."
+      },
+      "unsafe_path_open": {
+        "title": "Nije moguće otvoriti",
+        "message": "Ovu datoteku nije bilo moguće otvoriti jer njezina lokacija nije bila valjana."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Uspješno spremljeno",
         "message": "{count} datoteka spremljeno u:\n{folder}",
-        "open_folder": "Želite li otvoriti mapu?"
+        "open_folder": "Želite li otvoriti mapu?",
+        "message_with_skipped": "{count} datoteka spremljeno u {folder}. {skipped} datoteka preskočeno jer njihova lokacija nije bila valjana."
       },
       "adjustments_applied": {
         "title": "Prilagodbe primijenjene",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Stvaranje i uređivanje NFO datoteka",
     "nfo_editor_content": "NFO datoteka je tekstualna datoteka (s nastavkom .nfo) koja se koristi za pohranu informacija o arhivi: sažetak, zasluge, napomene…\n\nZa stvaranje NFO datoteke koristite namjensku ikonu na alatnoj traci, izbornik Datoteka ili kontekstni izbornik (desni klik na mozaik). Naredba je dostupna samo kada mozaik nije prazan. Unesite naziv i sadržaj: datoteka se umeće izravno u mozaik bez ekstrakcije ili međuspremanja.\n\nZa uređivanje postojeće NFO datoteke dvaput kliknite na nju u mozaiku. Prozor se otvara s unaprijed ispunjenim trenutnim nazivom i sadržajem, oba su urečiva. U oba slučaja operacija se bilježi u povijest poništavanja.",
     "metadata": "Metapodaci ComicVine",
-    "metadata_content": "MosaicView omogućuje automatsko dohvaćanje metapodataka za vaše stripove (naslov, serija, broj, autori, sažetak...) iz baze podataka ComicVine, suradničke web stranice koju održava zajednica.\n\nPojedinačni način: otvorite strip, a zatim koristite gumb na alatnoj traci ili izbornik Metapodaci. Otvara se čarobnjak u dva koraka: najprije odaberite seriju, zatim odgovarajuću epizodu. Metapodaci se zapisuju u ComicInfo.xml unutar arhive.\n\nGrupni način: ispustite jednu ili više mapa na mozaik i odaberite \"Grupni uvoz metapodataka\", ili koristite namjenski gumb na alatnoj traci ili izbornik Metapodaci. Čarobnjak se otvara uzastopno za svaku pronađenu datoteku (CBZ, CBR, CB7, CBT, PDF). Datoteke koje nisu CBZ automatski se pretvaraju u CBZ nakon zapisivanja metapodataka.\n\nAPI ključ: potreban je besplatni API ključ za ComicVine. Aplikacija će vas voditi kroz postupak dobivanja. Dobiva se na comicvine.gamespot.com nakon stvaranja računa.\n\nOgraničenja API-ja: ova ograničenja nameće ComicVine i ne mogu se zaobići.\n• 200 zahtjeva po resursu na sat. Ako se dostigne ovaj limit, pretraživanja privremeno ne uspijevaju do kraja sata.\n• Maksimalno 100 rezultata po zahtjevu, što prisiljava na segmentiranje pretraživanja na više poziva za serije s mnogim epizodama.\n• 1 zahtjev u sekundi dopušten od strane stranice. Radi sigurnosti MosaicView čeka 2 sekunde između svakog zahtjeva, jer su brži zahtjevi vrlo skloni izazivanju privremenih blokada.\n\nOva je funkcionalnost u potpunosti temeljena na projektu otvorenog koda {scraper}.",
+    "metadata_content": "MosaicView omogućuje automatsko dohvaćanje metapodataka za vaše stripove (naslov, serija, broj, autori, sažetak...) iz baze podataka ComicVine, suradničke web stranice koju održava zajednica.\n\nPojedinačni način: otvorite strip, a zatim koristite gumb na alatnoj traci ili izbornik Metapodaci. Otvara se čarobnjak u dva koraka: najprije odaberite seriju, zatim odgovarajuću epizodu. Metapodaci se zapisuju u ComicInfo.xml unutar arhive.\n\nGrupni način: ispustite jednu ili više mapa na mozaik i odaberite \"Grupni uvoz metapodataka\", ili koristite namjenski gumb na alatnoj traci ili izbornik Metapodaci. Čarobnjak se otvara uzastopno za svaku pronađenu datoteku (CBZ, CBR, CB7, CBT, PDF). Datoteke koje nisu CBZ automatski se pretvaraju u CBZ nakon zapisivanja metapodataka.\n\nAPI ključ: potreban je besplatni API ključ za ComicVine. Aplikacija će vas voditi kroz postupak dobivanja. Dobiva se na comicvine.gamespot.com nakon stvaranja računa. Ključ se nikada ne pohranjuje u otvorenom tekstu: šifriran je Windows DPAPI-jem i može ga čitati samo vaš Windows račun.\n\nOgraničenja API-ja: ova ograničenja nameće ComicVine i ne mogu se zaobići.\n• 200 zahtjeva po resursu na sat. Ako se dostigne ovaj limit, pretraživanja privremeno ne uspijevaju do kraja sata.\n• Maksimalno 100 rezultata po zahtjevu, što prisiljava na segmentiranje pretraživanja na više poziva za serije s mnogim epizodama.\n• 1 zahtjev u sekundi dopušten od strane stranice. Radi sigurnosti MosaicView čeka 2 sekunde između svakog zahtjeva, jer su brži zahtjevi vrlo skloni izazivanju privremenih blokada.\n\nOva je funkcionalnost u potpunosti temeljena na projektu otvorenog koda {scraper}.",
     "library": "Knjižnica",
     "library_content": "Knjižnica vam omogućuje katalogiziranje i lako pronalaženje vaših digitalnih stripova. Funkcionira čitanjem metapodataka sadržanih u svakoj datoteci (naslov, serija, autori, izdavač…) i prikupljanjem u jednu datoteku knjižnice (*.mvdb).\n\nZa stvaranje knjižnice koristite izbornik Knjižnica → Nova baza podataka ili povucite jednu ili više mapa u mozaik i odaberite \"Stvori biblioteku iz mape(a)\". MosaicView će zatim pregledati vaše mape i automatski indeksirati sve kompatibilne datoteke.\n\nKad je knjižnica otvorena, možete filtrirati stripove prema seriji, autoru, godini, izdavaču itd., kombinirajući onoliko kriterija koliko je potrebno. Dvostruki klik otvara datoteku u MosaicView. Rezultati se mogu izvesti u Excel formatu (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Zalijepite API ključ ovdje",
       "validate": "Potvrdi",
       "error_empty": "Unesite API ključ.",
-      "clear": "Obriši ključ"
+      "clear": "Obriši ključ",
+      "encryption_notice": "Vaš ključ nikada se ne pohranjuje u otvorenom tekstu. Zaštićen je enkripcijom Windows DPAPI, vezanom uz vašu sesiju.",
+      "show_key": "Prikaži",
+      "hide_key": "Sakrij"
     },
     "menu_label": "Metapodaci",
     "tooltip": "Dohvati metapodatke",

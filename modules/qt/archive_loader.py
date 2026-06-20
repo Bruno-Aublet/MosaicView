@@ -136,7 +136,9 @@ class _CorruptedImagesDialog(QDialog):
         self._corrupted_names = corrupted_names
         self._total = total
         self._center_parent = parent
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -148,7 +150,7 @@ class _CorruptedImagesDialog(QDialog):
         layout.addWidget(self._lbl)
 
         self._btn_ok = QPushButton()
-        self._btn_ok.clicked.connect(self.accept)
+        self._btn_ok.clicked.connect(self.close)
         layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
 
         self._retranslate()
@@ -201,6 +203,13 @@ class _CorruptedImagesDialog(QDialog):
         except RuntimeError:
             pass
 
+    def show_nonmodal(self):
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
+
 
 def _detect_corrupted_qt(win):
     """
@@ -214,7 +223,7 @@ def _detect_corrupted_qt(win):
     corrupted = [e["orig_name"] for e in state.images_data if e.get("is_corrupted")]
     if corrupted:
         total = len([e for e in state.images_data if e.get("is_image")])
-        _CorruptedImagesDialog(win, corrupted, total).exec()
+        _CorruptedImagesDialog(win, corrupted, total).show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -227,7 +236,9 @@ class _MessageDialog(QDialog):
         self._title_key = title_key
         self._msg       = msg
         self._center_parent = parent
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setMinimumWidth(420)
 
         layout = QVBoxLayout(self)
@@ -239,7 +250,7 @@ class _MessageDialog(QDialog):
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
         self._btn_ok = QPushButton()
-        self._btn_ok.clicked.connect(self.accept)
+        self._btn_ok.clicked.connect(self.close)
         btn_layout.addWidget(self._btn_ok)
         btn_layout.addStretch()
         layout.addLayout(btn_layout)
@@ -285,6 +296,13 @@ class _MessageDialog(QDialog):
         except RuntimeError:
             pass
 
+    def show_nonmodal(self):
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Dialogue correction d'extension
@@ -294,15 +312,20 @@ class ExtensionCorrectionDialog(QDialog):
     Affiché quand l'extension d'un fichier ne correspond pas à son format réel.
     Résultat : 'rename', 'keep', ou None (annuler).
     """
+    result_signal = Signal(object)   # 'rename' | 'keep' | None
+
     def __init__(self, parent, filepath: str, detected: str, declared: str):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self.result_choice = None
+        self._emitted = False
         self._filepath = filepath
         self._detected = detected
         self._declared = declared
         self._rename_ext = _TYPE_TO_EXT.get(detected.upper(), "." + detected.lower())
         self._center_parent = parent
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         self._lbl = QLabel()
@@ -332,12 +355,8 @@ class ExtensionCorrectionDialog(QDialog):
         self.finished.connect(self._on_close)
 
     def showEvent(self, event):
+        # Centrage fait dans ask_async() avant show() (pas de flash de recentrage).
         super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -375,16 +394,41 @@ class ExtensionCorrectionDialog(QDialog):
             pass
 
     def _rename(self):
-        self.result_choice = 'rename'
-        self.accept()
+        self._finish('rename')
 
     def _keep(self):
-        self.result_choice = 'keep'
-        self.accept()
+        self._finish('keep')
 
     def _cancel(self):
-        self.result_choice = None
-        self.reject()
+        self._finish(None)
+
+    def _finish(self, result):
+        if self._emitted:
+            return
+        self._emitted = True
+        self.result_choice = result
+        self._on_close()
+        self.result_signal.emit(result)
+        self.hide()
+        self.deleteLater()
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            self.result_choice = None
+            self._on_close()
+            self.result_signal.emit(None)
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche (NON modal) et appelle on_result('rename'|'keep'|None)."""
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        self.result_signal.connect(on_result)
+        self.adjustSize()
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1020,7 +1064,7 @@ class ArchiveLoader(QObject):
 
         if errors:
             dlg = _MessageDialog(self._win, "messages.warnings.files_ignored.title", "\n".join(errors[:20]))
-            dlg.exec()
+            dlg.show_nonmodal()
 
     def _on_error(self, msg: str):
         self._hide_loading_text()
@@ -1029,7 +1073,7 @@ class ArchiveLoader(QObject):
         self._canvas.render_mosaic()
         self.loading_finished.emit()
         dlg = _MessageDialog(self._win, "messages.warnings.cannot_open_file.title", msg)
-        dlg.exec()
+        dlg.show_nonmodal()
 
     def _on_cancelled(self):
         self._hide_loading_text()
@@ -1039,9 +1083,15 @@ class ArchiveLoader(QObject):
         self.loading_finished.emit()
 
     def _on_need_ext_dialog(self, filepath: str, detected: str, declared: str):
-        """Affiché dans le thread principal, réponse transmise au worker."""
+        """Affiché dans le thread principal (NON modal) ; la réponse est transmise
+        au worker via son callback. Le worker (dans son propre thread) reste bloqué
+        sur son threading.Event jusqu'à set_ext_result — le thread UI, lui, n'est
+        PAS bloqué : l'utilisateur peut agir sur l'autre panneau."""
         dlg = ExtensionCorrectionDialog(self._win, filepath, detected, declared)
-        dlg.exec()
-        # Réaffiche le texte rouge après fermeture du dialogue modal
-        self._show_loading_text(0)
-        self._worker.set_ext_result(dlg.result_choice)
+
+        def _on_choice(choice):
+            # Réaffiche le texte rouge après fermeture du dialogue
+            self._show_loading_text(0)
+            self._worker.set_ext_result(choice)
+
+        dlg.ask_async(_on_choice)

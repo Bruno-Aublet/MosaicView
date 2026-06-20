@@ -334,7 +334,7 @@ class _BatchMetadataOrchestrator:
     def _on_load_done_first(self, cbz_filepath, state):
         self._current_cbz_filepath = cbz_filepath
         from modules.qt.config_manager import get_config_manager
-        api_key = get_config_manager().get('comicvine_api_key', '').strip()
+        api_key = get_config_manager().get_comicvine_api_key()
         from modules.qt.comicvine_dialog_qt import show_comicvine_dialog
         self._current_dlg = show_comicvine_dialog(
             self._parent, state, api_key,
@@ -1068,7 +1068,7 @@ def show_batch_metadata_dialog(parent, files: list, dirs: list, batch_callbacks:
             return
 
         from modules.qt.config_manager import get_config_manager
-        api_key = get_config_manager().get('comicvine_api_key', '').strip()
+        api_key = get_config_manager().get_comicvine_api_key()
 
         if not api_key:
             # Pas de clé API → ouvrir le dialog de saisie d'abord
@@ -1076,7 +1076,7 @@ def show_batch_metadata_dialog(parent, files: list, dirs: list, batch_callbacks:
             key_dlg = show_apikey_dialog(parent, get_config_manager())
 
             def _on_key_done():
-                new_key = get_config_manager().get('comicvine_api_key', '').strip()
+                new_key = get_config_manager().get_comicvine_api_key()
                 if new_key:
                     _start_batch(new_key)
 

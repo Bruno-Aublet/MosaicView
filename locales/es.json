@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Función no disponible",
         "message": "La renumeración no está disponible hasta que las carpetas no se hayan aplanado.\nAplane las carpetas antes de renumerar."
+      },
+      "unsafe_path_skipped": {
+        "title": "Archivos omitidos",
+        "message": "Se omitieron {count} archivo(s) porque su ubicación no era válida."
+      },
+      "unsafe_path_open": {
+        "title": "No se puede abrir",
+        "message": "No se pudo abrir este archivo porque su ubicación no era válida."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Archivos guardados",
         "message": "{count} archivo(s) guardado(s) en {folder}",
-        "open_folder": "¿Desea abrir la carpeta?"
+        "open_folder": "¿Desea abrir la carpeta?",
+        "message_with_skipped": "{count} archivo(s) guardado(s) en {folder}. {skipped} archivo(s) omitido(s) porque su ubicación no era válida."
       },
       "adjustments_applied": {
         "title": "Ajustes aplicados",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Creación y edición de archivos NFO",
     "nfo_editor_content": "Un archivo NFO es un archivo de texto (con extensión .nfo) que se utiliza para almacenar información sobre el archivo: sinopsis, créditos, notas…\n\nPara crear un archivo NFO, use el icono dedicado en la barra de herramientas, el menú Archivo o el menú contextual (clic derecho en el mosaico). El comando solo está disponible cuando el mosaico no está vacío. Introduzca un nombre y contenido: el archivo se inserta directamente en el mosaico sin extracción ni guardado intermedio.\n\nPara editar un archivo NFO existente, haga doble clic sobre él en el mosaico. La ventana se abre prerrellenada con el nombre y el contenido actuales, ambos editables. En ambos casos, la operación se registra en el historial de deshacer.",
     "metadata": "Metadatos ComicVine",
-    "metadata_content": "MosaicView permite recuperar automáticamente los metadatos de sus cómics (título, serie, número, autores, resumen...) desde la base de datos ComicVine, un sitio colaborativo mantenido por la comunidad.\n\nModo individual: abra un cómic y utilice el botón de la barra de herramientas o el menú Metadatos. Se abre un asistente de dos pasos: elija primero la serie, luego el episodio correspondiente. Los metadatos se escriben en ComicInfo.xml dentro del archivo.\n\nModo por lotes: suelte una o varias carpetas en el mosaico y elija \"Importación masiva de metadatos\", o utilice el botón dedicado de la barra de herramientas o el menú Metadatos. El asistente se abre sucesivamente para cada archivo encontrado (CBZ, CBR, CB7, CBT, PDF). Los archivos que no son CBZ se convierten automáticamente a CBZ tras escribir los metadatos.\n\nClave API: se requiere una clave API gratuita de ComicVine. La aplicación le guiará para obtenerla. Se obtiene en comicvine.gamespot.com tras crear una cuenta.\n\nLimitaciones de la API: estas limitaciones son impuestas por ComicVine y no pueden evitarse.\n• 200 solicitudes por recurso y por hora. Si se alcanza este límite, las búsquedas fallan temporalmente hasta el final de la hora.\n• Máximo 100 resultados por solicitud, lo que obliga a segmentar las búsquedas en varias llamadas para series con muchos episodios.\n• 1 solicitud por segundo permitida por el sitio. Por seguridad, MosaicView espera 2 segundos entre cada solicitud, ya que las solicitudes más rápidas son muy propensas a provocar bloqueos temporales.\n\nEsta funcionalidad está completamente basada en el proyecto de código abierto {scraper}.",
+    "metadata_content": "MosaicView permite recuperar automáticamente los metadatos de sus cómics (título, serie, número, autores, resumen...) desde la base de datos ComicVine, un sitio colaborativo mantenido por la comunidad.\n\nModo individual: abra un cómic y utilice el botón de la barra de herramientas o el menú Metadatos. Se abre un asistente de dos pasos: elija primero la serie, luego el episodio correspondiente. Los metadatos se escriben en ComicInfo.xml dentro del archivo.\n\nModo por lotes: suelte una o varias carpetas en el mosaico y elija \"Importación masiva de metadatos\", o utilice el botón dedicado de la barra de herramientas o el menú Metadatos. El asistente se abre sucesivamente para cada archivo encontrado (CBZ, CBR, CB7, CBT, PDF). Los archivos que no son CBZ se convierten automáticamente a CBZ tras escribir los metadatos.\n\nClave API: se requiere una clave API gratuita de ComicVine. La aplicación le guiará para obtenerla. Se obtiene en comicvine.gamespot.com tras crear una cuenta. La clave nunca se almacena en texto claro: está cifrada por Windows DPAPI y solo puede leerla su cuenta de Windows.\n\nLimitaciones de la API: estas limitaciones son impuestas por ComicVine y no pueden evitarse.\n• 200 solicitudes por recurso y por hora. Si se alcanza este límite, las búsquedas fallan temporalmente hasta el final de la hora.\n• Máximo 100 resultados por solicitud, lo que obliga a segmentar las búsquedas en varias llamadas para series con muchos episodios.\n• 1 solicitud por segundo permitida por el sitio. Por seguridad, MosaicView espera 2 segundos entre cada solicitud, ya que las solicitudes más rápidas son muy propensas a provocar bloqueos temporales.\n\nEsta funcionalidad está completamente basada en el proyecto de código abierto {scraper}.",
     "library": "Biblioteca",
     "library_content": "La biblioteca le permite catalogar y encontrar fácilmente sus cómics digitales. Funciona leyendo los metadatos contenidos en cada archivo (título, serie, autores, editorial…) y reuniéndolos en un único archivo de biblioteca (*.mvdb).\n\nPara crear una biblioteca, use el menú Biblioteca → Nueva base de datos, o arrastre una o varias carpetas a la mosaico y elija \"Crear una biblioteca a partir de la(s) carpeta(s)\". MosaicView analizará entonces sus carpetas e indexará automáticamente todos los archivos compatibles.\n\nUna vez abierta la biblioteca, puede filtrar sus cómics por serie, autor, año, editorial, etc., combinando tantos criterios como sea necesario. Un doble clic abre el archivo en MosaicView. Los resultados se pueden exportar en formato Excel (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Pegue su clave API aquí",
       "validate": "Validar",
       "error_empty": "Por favor, introduzca una clave API.",
-      "clear": "Borrar clave"
+      "clear": "Borrar clave",
+      "encryption_notice": "Su clave nunca se almacena en texto claro. Está protegida por el cifrado Windows DPAPI, vinculado a su sesión.",
+      "show_key": "Mostrar",
+      "hide_key": "Ocultar"
     },
     "menu_label": "Metadatos",
     "tooltip": "Recuperar metadatos",

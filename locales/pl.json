@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Funkcja niedostępna",
         "message": "Ponowne numerowanie jest niedostępne, dopóki foldery nie zostaną spłaszczone.\nSpłaszcz foldery przed ponownym numerowaniem."
+      },
+      "unsafe_path_skipped": {
+        "title": "Pominięte pliki",
+        "message": "Pominięto {count} plik(ów), ponieważ ich lokalizacja była nieprawidłowa."
+      },
+      "unsafe_path_open": {
+        "title": "Nie można otworzyć",
+        "message": "Nie można otworzyć tego pliku, ponieważ jego lokalizacja była nieprawidłowa."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Zapisano pomyślnie",
         "message": "{count} plików zapisano w:\n{folder}",
-        "open_folder": "Czy chcesz otworzyć folder?"
+        "open_folder": "Czy chcesz otworzyć folder?",
+        "message_with_skipped": "Zapisano {count} plik(ów) w {folder}. Pominięto {skipped} plik(ów), ponieważ ich lokalizacja była nieprawidłowa."
       },
       "adjustments_applied": {
         "title": "Dostosowania zastosowane",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Tworzenie i edytowanie plików NFO",
     "nfo_editor_content": "Plik NFO to plik tekstowy (z rozszerzeniem .nfo) używany do przechowywania informacji o archiwum: synopsis, kredyty, notatki…\n\nAby utworzyć plik NFO, użyj dedikowanej ikony na pasku narzędzi, menu Plik lub menu kontekstowego (prawy przycisk myszy na mozaice). Polecenie jest dostępne tylko wtedy, gdy mozaika nie jest pusta. Wprowadź nazwę i zawartość: plik jest wstawiany bezpośrednio do mozaiki bez wyodrębniania ani pośredniego zapisywania.\n\nAby edytować istniejący plik NFO, kliknij go dwukrotnie na mozaice. Okno otwiera się wstępnie wypełnione bieżącą nazwą i zawartością, obie są edytowalne. W obu przypadkach operacja jest rejestrowana w historii cofania.",
     "metadata": "Metadane ComicVine",
-    "metadata_content": "MosaicView umożliwia automatyczne pobieranie metadanych komiksów (tytuł, seria, numer, autorzy, streszczenie...) z bazy danych ComicVine, kolaboratywnego serwisu utrzymywanego przez społeczność.\n\nTryb pojedynczy: otwórz komiks, a następnie użyj przycisku na pasku narzędzi lub menu Metadane. Otwiera się dwuetapowy kreator: najpierw wybierz serię, potem odpowiedni odcinek. Metadane są zapisywane do ComicInfo.xml wewnątrz archiwum.\n\nTryb wsadowy: upuść jeden lub więcej folderów na mozaikę i wybierz \"Masowy import metadanych\", lub użyj dedykowanego przycisku na pasku narzędzi lub menu Metadane. Kreator otwiera się kolejno dla każdego znalezionego pliku (CBZ, CBR, CB7, CBT, PDF). Pliki inne niż CBZ są automatycznie konwertowane do CBZ po zapisaniu metadanych.\n\nKlucz API: wymagany jest bezpłatny klucz API ComicVine. Aplikacja poprowadzi cię przez jego uzyskanie. Można go uzyskać na comicvine.gamespot.com po utworzeniu konta.\n\nOgraniczenia API: te ograniczenia są narzucone przez ComicVine i nie można ich obejść.\n• 200 żądań na zasób na godzinę. Po osiągnięciu tego limitu wyszukiwania tymczasowo kończą się niepowodzeniem do końca godziny.\n• Maksymalnie 100 wyników na żądanie, co zmusza do podzielenia wyszukiwań na wiele wywołań dla serii z wieloma odcinkami.\n• 1 żądanie na sekundę dozwolone przez serwis. Dla bezpieczeństwa MosaicView czeka 2 sekundy między każdym żądaniem, ponieważ szybsze żądania są bardzo podatne na powodowanie tymczasowych blokad.\n\nTa funkcja jest w całości oparta na projekcie open source {scraper}.",
+    "metadata_content": "MosaicView umożliwia automatyczne pobieranie metadanych komiksów (tytuł, seria, numer, autorzy, streszczenie...) z bazy danych ComicVine, kolaboratywnego serwisu utrzymywanego przez społeczność.\n\nTryb pojedynczy: otwórz komiks, a następnie użyj przycisku na pasku narzędzi lub menu Metadane. Otwiera się dwuetapowy kreator: najpierw wybierz serię, potem odpowiedni odcinek. Metadane są zapisywane do ComicInfo.xml wewnątrz archiwum.\n\nTryb wsadowy: upuść jeden lub więcej folderów na mozaikę i wybierz \"Masowy import metadanych\", lub użyj dedykowanego przycisku na pasku narzędzi lub menu Metadane. Kreator otwiera się kolejno dla każdego znalezionego pliku (CBZ, CBR, CB7, CBT, PDF). Pliki inne niż CBZ są automatycznie konwertowane do CBZ po zapisaniu metadanych.\n\nKlucz API: wymagany jest bezpłatny klucz API ComicVine. Aplikacja poprowadzi cię przez jego uzyskanie. Można go uzyskać na comicvine.gamespot.com po utworzeniu konta. Klucz nigdy nie jest przechowywany w postaci jawnej: jest szyfrowany przez Windows DPAPI i może być odczytany tylko przez Twoje konto Windows.\n\nOgraniczenia API: te ograniczenia są narzucone przez ComicVine i nie można ich obejść.\n• 200 żądań na zasób na godzinę. Po osiągnięciu tego limitu wyszukiwania tymczasowo kończą się niepowodzeniem do końca godziny.\n• Maksymalnie 100 wyników na żądanie, co zmusza do podzielenia wyszukiwań na wiele wywołań dla serii z wieloma odcinkami.\n• 1 żądanie na sekundę dozwolone przez serwis. Dla bezpieczeństwa MosaicView czeka 2 sekundy między każdym żądaniem, ponieważ szybsze żądania są bardzo podatne na powodowanie tymczasowych blokad.\n\nTa funkcja jest w całości oparta na projekcie open source {scraper}.",
     "library": "Biblioteka",
     "library_content": "Biblioteka umożliwia katalogowanie i łatwe odnajdywanie cyfrowych komiksów. Działa poprzez odczytywanie metadanych zawartych w każdym pliku (tytuł, seria, autorzy, wydawca…) i gromadzenie ich w jednym pliku biblioteki (*.mvdb).\n\nAby utworzyć bibliotekę, użyj menu Biblioteka → Nowa baza danych lub przeciągnij jeden lub więcej folderów do mozaiki i wybierz \"Utwórz bibliotekę z folderu(ów)\". MosaicView przeskanuje foldery i automatycznie zaindeksuje wszystkie zgodne pliki.\n\nPo otwarciu biblioteki możesz filtrować komiksy według serii, autora, roku, wydawcy itp., łącząc dowolną liczbę kryteriów. Dwukrotne kliknięcie otwiera plik w MosaicView. Wyniki można eksportować w formacie Excel (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Wklej tutaj swój klucz API",
       "validate": "Zatwierdź",
       "error_empty": "Proszę wprowadzić klucz API.",
-      "clear": "Wyczyść klucz"
+      "clear": "Wyczyść klucz",
+      "encryption_notice": "Twój klucz nigdy nie jest przechowywany w postaci jawnej. Jest chroniony szyfrowaniem Windows DPAPI, powiązanym z Twoją sesją.",
+      "show_key": "Pokaż",
+      "hide_key": "Ukryj"
     },
     "menu_label": "Metadane",
     "tooltip": "Pobierz metadane",

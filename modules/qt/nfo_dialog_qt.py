@@ -272,7 +272,8 @@ class _NfoDialog(QDialog):
             filename = self._edit_filename.text().strip()
             if not filename:
                 from modules.qt.dialogs_qt import ErrorDialog
-                ErrorDialog(self, _("nfo.error_title"), _("nfo.error_empty_name")).exec()
+                ErrorDialog(self, lambda: _("nfo.error_title"),
+                            lambda: _("nfo.error_empty_name")).show()
                 self._edit_filename.setFocus()
                 return
             if not filename.lower().endswith(".nfo"):
@@ -281,8 +282,8 @@ class _NfoDialog(QDialog):
             if any(e is not self._entry and e.get("orig_name", "").lower() == filename.lower()
                    for e in self._state.images_data):
                 from modules.qt.dialogs_qt import ErrorDialog
-                ErrorDialog(self, _("nfo.error_title"),
-                            _("nfo.error_duplicate").format(filename=filename)).exec()
+                ErrorDialog(self, lambda: _("nfo.error_title"),
+                            lambda fn=filename: _("nfo.error_duplicate").format(filename=fn)).show()
                 self._edit_filename.setFocus()
                 return
             self._edit_fn(filename, content)
@@ -295,9 +296,9 @@ class _NfoDialog(QDialog):
             from modules.qt.dialogs_qt import ErrorDialog
             ErrorDialog(
                 self,
-                _("nfo.error_title"),
-                _("nfo.error_empty_name"),
-            ).exec()
+                lambda: _("nfo.error_title"),
+                lambda: _("nfo.error_empty_name"),
+            ).show()
             self._edit_filename.setFocus()
             return
 
@@ -311,9 +312,9 @@ class _NfoDialog(QDialog):
             from modules.qt.dialogs_qt import ErrorDialog
             ErrorDialog(
                 self,
-                _("nfo.error_title"),
-                _("nfo.error_duplicate").format(filename=filename),
-            ).exec()
+                lambda: _("nfo.error_title"),
+                lambda fn=filename: _("nfo.error_duplicate").format(filename=fn),
+            ).show()
             self._edit_filename.setFocus()
             return
 

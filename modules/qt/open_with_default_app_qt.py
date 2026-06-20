@@ -33,6 +33,7 @@ def open_file_with_default_app(
     entry: dict,
     state=None,
     on_modified_callback=None,
+    parent=None,
 ) -> None:
     """
     Extrait le fichier de l'archive vers le dossier temporaire MosaicView,
@@ -54,7 +55,15 @@ def open_file_with_default_app(
     # orig_name peut contenir des sous-dossiers (ex. "sub/image.txt") — on garde
     # la structure pour éviter les collisions de noms.
     mosaicview_temp = get_mosaicview_temp_dir()
-    tmp_path = os.path.join(mosaicview_temp, orig_name)
+
+    # Sécurité : empêche toute écriture hors du dossier temp (nom d'entrée piégé
+    # "../" — Zip Slip). Le fichier est ensuite ouvert via os.startfile() ; un
+    # chemin évadé pourrait déposer/lancer un fichier ailleurs. On refuse.
+    from modules.qt.utils import safe_join
+    tmp_path = safe_join(mosaicview_temp, orig_name)
+    if tmp_path is None:
+        _warn_unsafe_path(parent)
+        return
 
     parent_dir = os.path.dirname(tmp_path)
     if parent_dir and not os.path.exists(parent_dir):
@@ -123,3 +132,18 @@ def _start_watch_thread(
 
     t = threading.Thread(target=_watch, daemon=True, name="NonImageFileWatcher")
     t.start()
+
+
+def _warn_unsafe_path(parent):
+    """Avertit (fenêtre non-modale) que le fichier n'a pas pu être ouvert car
+    son nom tentait d'écrire hors du dossier temporaire (chemin non valide)."""
+    from modules.qt.localization import _
+    from modules.qt.dialogs_qt import InfoDialog
+    dlg = InfoDialog(
+        parent,
+        lambda: _("messages.warnings.unsafe_path_open.title"),
+        lambda: _("messages.warnings.unsafe_path_open.message"),
+    )
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()

@@ -63,12 +63,10 @@ def show_first_page_dialog(first_entry, first_mult, total_logical_pages, callbac
     return 'auto'
 
 
-def renumber_pages_auto(callbacks):
-    """Renumérotation avec auto-détection des pages multiples via le ratio largeur/hauteur."""
-    image_entries = [e for e in _state_module.state.images_data if e["is_image"]]
-    if not image_entries:
-        return
-
+def compute_first_page_info(image_entries):
+    """Calcule (multipliers, first_mult) pour la liste d'images, SANS renuméroter.
+    Permet de détecter si la 1ère page est multiple AVANT de lancer la
+    renumérotation (et donc de poser la question via une UI non modale)."""
     ratios = []
     for entry in image_entries:
         w = entry.get("img_width")
@@ -82,12 +80,28 @@ def renumber_pages_auto(callbacks):
                 img.close()
             except Exception:
                 ratios.append(0)
-
     multipliers = compute_auto_multipliers(ratios)
+    first_mult = multipliers[0] if multipliers else 1
+    return multipliers, first_mult
+
+
+def renumber_pages_auto(callbacks, state=None):
+    """Renumérotation avec auto-détection des pages multiples via le ratio largeur/hauteur.
+
+    state : panneau cible (AppState). Si None, retombe sur le state global (legacy).
+    Lier explicitement la renumérotation à un panneau garantit qu'elle ne touche QUE
+    les images de ce panneau, même si l'utilisateur agit sur l'autre panneau pendant
+    qu'un dialogue (1ère page multiple) est ouvert (fenêtres non modales).
+    """
+    state = state if state is not None else _state_module.state
+    image_entries = [e for e in state.images_data if e["is_image"]]
+    if not image_entries:
+        return
+
+    multipliers, first_mult = compute_first_page_info(image_entries)
     extensions = [entry["extension"] for entry in image_entries]
 
     first_page_mode = None
-    first_mult = multipliers[0] if multipliers else 1
 
     if first_mult > 1 and callbacks.get("root"):
         last_page_joint = sum(multipliers[1:]) + 2 if len(multipliers) > 1 else 2
@@ -115,28 +129,32 @@ def renumber_pages_auto(callbacks):
         if new_name is not None:
             entry["orig_name"] = new_name
 
-    _state_module.state.images_data = reposition_non_images(_state_module.state.images_data)
-    _state_module.state.modified = True
+    state.images_data = reposition_non_images(state.images_data)
+    state.modified = True
     callbacks["save_state"]()
     callbacks["render_mosaic"]()
     callbacks["update_button_text"]()
 
 
-def renumber_pages(callbacks):
-    """Renumérotation de toutes les images selon leur position actuelle."""
+def renumber_pages(callbacks, state=None):
+    """Renumérotation de toutes les images selon leur position actuelle.
+
+    state : panneau cible (AppState). Si None, retombe sur le state global (legacy).
+    """
+    state = state if state is not None else _state_module.state
     callbacks["save_state"]()
 
-    total_images = len([e for e in _state_module.state.images_data if e["is_image"]])
+    total_images = len([e for e in state.images_data if e["is_image"]])
     digits = max(2, len(str(total_images)))
     counter = 1
 
-    for entry in _state_module.state.images_data:
+    for entry in state.images_data:
         if entry["is_image"]:
             entry["orig_name"] = str(counter).zfill(digits) + entry["extension"]
             counter += 1
 
-    _state_module.state.images_data = reposition_non_images(_state_module.state.images_data)
-    _state_module.state.modified = True
+    state.images_data = reposition_non_images(state.images_data)
+    state.modified = True
     callbacks["save_state"]()
     callbacks["render_mosaic"]()
     callbacks["update_button_text"]()

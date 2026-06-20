@@ -128,7 +128,7 @@ When renamed files or errors occur, a log file is created and a link to it is sh
 
 MosaicView can automatically retrieve metadata (title, series, issue number, authors, publisher, summary…) from [ComicVine](https://comicvine.gamespot.com/), a community-maintained comics database.
 
-A free ComicVine API key is required. The application will guide you through obtaining one.
+A free ComicVine API key is required. The application will guide you through obtaining one. The key is never stored in plain text, it is encrypted using Windows DPAPI and can only be read by the same Windows user account.
 
 This feature is entirely based on the open source project [cbanack/comic-vine-scraper](https://github.com/cbanack/comic-vine-scraper).
 

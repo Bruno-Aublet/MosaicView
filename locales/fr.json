@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Fonction non disponible",
         "message": "La renumérotation n'est pas disponible tant que les dossiers n'ont pas été aplatis.\nVeuillez aplatir les dossiers avant de renuméroter."
+      },
+      "unsafe_path_skipped": {
+        "title": "Fichiers ignorés",
+        "message": "{count} fichier(s) ont été ignorés car leur emplacement n'était pas valide."
+      },
+      "unsafe_path_open": {
+        "title": "Ouverture impossible",
+        "message": "Ce fichier n'a pas pu être ouvert car son emplacement n'était pas valide."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Fichiers enregistrés",
         "message": "{count} fichier(s) enregistré(s) dans {folder}",
-        "open_folder": "Voulez-vous ouvrir le dossier ?"
+        "open_folder": "Voulez-vous ouvrir le dossier ?",
+        "message_with_skipped": "{count} fichier(s) enregistré(s) dans {folder}. {skipped} fichier(s) ignoré(s) car leur emplacement n'était pas valide."
       },
       "adjustments_applied": {
         "title": "Ajustements appliqués",
@@ -1277,7 +1286,7 @@
     "icon_toolbar_content": "La barre d’icônes permet d’accéder rapidement aux principales fonctions de l’application. Vous pouvez réorganiser les icônes à votre convenance en les déplaçant directement dans la barre. Pour choisir quelles icônes afficher ou masquer, cliquez sur le bouton en forme de roue crantée situé en bas de la barre : une fenêtre de configuration s’ouvre, dans laquelle vous pouvez déplacer les icônes entre la barre active et la réserve. Utilisez les boutons « + » et « − » pour ajuster la taille des icônes. La configuration est sauvegardée automatiquement.",
     "license_7zip": "Licence 7-Zip",
     "metadata": "Métadonnées ComicVine",
-    "metadata_content": "MosaicView permet de récupérer automatiquement les métadonnées de vos BD (titre, série, numéro, auteurs, résumé...) depuis la base de données ComicVine, un site collaboratif maintenu par la communauté.\n\nMode BD unique : ouvrez une BD, puis utilisez le bouton de la barre d'outils ou le menu Métadonnées. Un assistant en deux étapes s'ouvre : choisissez d'abord la série, puis l'épisode correspondant. Les métadonnées sont écrites dans un fichier ComicInfo.xml à l'intérieur de l'archive.\n\nMode batch : déposez un ou plusieurs dossiers sur la mosaïque et choisissez \"Import de métadonnées en lot\", ou utilisez le bouton dédié de la barre d'outils ou le menu Métadonnées. L'assistant s'ouvre successivement pour chaque fichier trouvé (CBZ, CBR, CB7, CBT, PDF). Les fichiers non-CBZ sont automatiquement convertis en CBZ après écriture des métadonnées.\n\nClé API : une clé API ComicVine gratuite est requise. L'application vous guidera pour la récupérer. Elle s'obtient sur comicvine.gamespot.com après création d'un compte.\n\nLimitations de l'API : ces limitations sont imposées par ComicVine et ne peuvent pas être contournées.\n• 200 requêtes par ressource et par heure. Si cette limite est atteinte, les recherches échouent temporairement jusqu'à la fin de l'heure.\n• 100 résultats maximum par requête, ce qui oblige à segmenter les recherches sur plusieurs appels pour les séries comportant de nombreux épisodes.\n• 1 requête par seconde autorisée par le site. Par sécurité, MosaicView attend 2 secondes entre chaque requête, des requêtes plus rapides étant fortement susceptibles de provoquer des blocages temporaires.\n\nCette fonctionnalité est entièrement basée sur le projet open source {scraper}.",
+    "metadata_content": "MosaicView permet de récupérer automatiquement les métadonnées de vos BD (titre, série, numéro, auteurs, résumé...) depuis la base de données ComicVine, un site collaboratif maintenu par la communauté.\n\nMode BD unique : ouvrez une BD, puis utilisez le bouton de la barre d'outils ou le menu Métadonnées. Un assistant en deux étapes s'ouvre : choisissez d'abord la série, puis l'épisode correspondant. Les métadonnées sont écrites dans un fichier ComicInfo.xml à l'intérieur de l'archive.\n\nMode batch : déposez un ou plusieurs dossiers sur la mosaïque et choisissez \"Import de métadonnées en lot\", ou utilisez le bouton dédié de la barre d'outils ou le menu Métadonnées. L'assistant s'ouvre successivement pour chaque fichier trouvé (CBZ, CBR, CB7, CBT, PDF). Les fichiers non-CBZ sont automatiquement convertis en CBZ après écriture des métadonnées.\n\nClé API : une clé API ComicVine gratuite est requise. L'application vous guidera pour la récupérer. Elle s'obtient sur comicvine.gamespot.com après création d'un compte. La clé n'est jamais stockée en clair : elle est chiffrée par Windows DPAPI et ne peut être lue que par votre compte Windows.\n\nLimitations de l'API : ces limitations sont imposées par ComicVine et ne peuvent pas être contournées.\n• 200 requêtes par ressource et par heure. Si cette limite est atteinte, les recherches échouent temporairement jusqu'à la fin de l'heure.\n• 100 résultats maximum par requête, ce qui oblige à segmenter les recherches sur plusieurs appels pour les séries comportant de nombreux épisodes.\n• 1 requête par seconde autorisée par le site. Par sécurité, MosaicView attend 2 secondes entre chaque requête, des requêtes plus rapides étant fortement susceptibles de provoquer des blocages temporaires.\n\nCette fonctionnalité est entièrement basée sur le projet open source {scraper}.",
     "library": "Bibliothèque",
     "library_content": "La bibliothèque vous permet de cataloguer et retrouver facilement vos BD numériques. Elle fonctionne en lisant les métadonnées contenues dans chacun de vos fichiers (titre, série, auteurs, éditeur…) et en les rassemblant dans un fichier de bibliothèque unique (*.mvdb).\n\nPour créer une bibliothèque, utilisez le menu Bibliothèque → Nouvelle base de données, ou déposez un ou plusieurs dossiers dans la mosaïque et choisissez \"Créer une bibliothèque à partir du(des) dossier(s)\". MosaicView parcourt alors vos répertoires et indexe automatiquement tous les fichiers compatibles.\n\nUne fois la bibliothèque ouverte, vous pouvez filtrer vos BD par série, auteur, année, éditeur, etc., en combinant autant de critères que nécessaire. Un double-clic ouvre le fichier dans MosaicView. Les résultats peuvent être exportés au format Excel (*.xlsx)."
   },
@@ -1604,7 +1613,10 @@
       "placeholder": "Collez votre clé API ici",
       "validate": "Valider",
       "clear": "Effacer la clé",
-      "error_empty": "Veuillez saisir une clé API."
+      "error_empty": "Veuillez saisir une clé API.",
+      "encryption_notice": "Votre clé n'est jamais stockée en clair. Elle est protégée par le chiffrement Windows DPAPI, lié à votre session.",
+      "show_key": "Afficher",
+      "hide_key": "Masquer"
     },
     "menu_label": "Métadonnées",
     "tooltip": "Récupérer les métadonnées",

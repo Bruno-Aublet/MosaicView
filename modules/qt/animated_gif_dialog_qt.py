@@ -395,7 +395,9 @@ class AnimatedGifDialog(QDialog):
             self._optimize = True
 
         # ── Fenêtre ───────────────────────────────────────────────────────
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setMinimumSize(800, 600)
         self.resize(1000, 700)
 
@@ -537,7 +539,7 @@ class AnimatedGifDialog(QDialog):
         btn_row.addWidget(self._create_btn)
         self._cancel_btn = QPushButton()
         self._cancel_btn.setFixedWidth(140)
-        self._cancel_btn.clicked.connect(self.reject)
+        self._cancel_btn.clicked.connect(self.close)
         btn_row.addWidget(self._cancel_btn)
         btn_row.addStretch()
         root_layout.addLayout(btn_row)
@@ -644,7 +646,7 @@ class AnimatedGifDialog(QDialog):
             dlg = MsgDialog(self,
                             "messages.warnings.no_images_for_gif.title",
                             "messages.warnings.no_images_for_gif.message")
-            dlg.exec()
+            dlg.show_nonmodal()
             return
 
         try:
@@ -723,7 +725,7 @@ class AnimatedGifDialog(QDialog):
                 dlg = MsgDialog(self,
                                 "messages.warnings.no_valid_images.title",
                                 "messages.warnings.no_valid_images.message")
-                dlg.exec()
+                dlg.show_nonmodal()
                 return
 
             self._progress_lbl.setText(_("dialogs.gif_animated.creating_saving"))
@@ -774,7 +776,7 @@ class AnimatedGifDialog(QDialog):
             if self._callbacks.get("update_button_text"):
                 self._callbacks["update_button_text"]()
 
-            self.accept()
+            self.close()
 
         except Exception as e:
             self._create_btn.setEnabled(True)
@@ -785,7 +787,7 @@ class AnimatedGifDialog(QDialog):
                       "messages.errors.gif_creation_failed.title",
                       "messages.errors.gif_creation_failed.message",
                       {"error": str(e)})
-            dlg.exec()
+            dlg.show_nonmodal()
 
     # ── Retranslate / restyle ─────────────────────────────────────────────────
 
@@ -885,4 +887,8 @@ def show_animated_gif_dialog(selected_entries: list, callbacks: dict = None):
     """
     parent = (callbacks or {}).get("parent")
     dialog = AnimatedGifDialog(parent, selected_entries, callbacks or {})
-    dialog.exec()
+    from modules.qt.dialogs_qt import position_dialog_on_parent
+    position_dialog_on_parent(dialog, parent)
+    dialog.show()
+    dialog.raise_()
+    dialog.activateWindow()

@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Eiginleiki ekki tiltækur",
         "message": "Endurnúmerun er ekki tiltæk fyrr en möppurnar hafa verið jafnaðar.\nJafnaðu möppurnar áður en þú endurnúmerir."
+      },
+      "unsafe_path_skipped": {
+        "title": "Skrár sem sleppt var",
+        "message": "{count} skrá(r) var sleppt þar sem staðsetning þeirra var ógild."
+      },
+      "unsafe_path_open": {
+        "title": "Ekki hægt að opna",
+        "message": "Ekki var hægt að opna þessa skrá þar sem staðsetning hennar var ógild."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Vistað",
         "message": "{count} skrár vistaðar í:\n{folder}",
-        "open_folder": "Viltu opna möppuna?"
+        "open_folder": "Viltu opna möppuna?",
+        "message_with_skipped": "{count} skrá(r) vistaðar í {folder}. {skipped} skrá(r) sleppt þar sem staðsetning þeirra var ógild."
       },
       "adjustments_applied": {
         "title": "Aðlaganir beittar",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Búa til og breyta NFO skrám",
     "nfo_editor_content": "NFO skrá er textaskrá (með endinguna .nfo) sem er notuð til að geyma upplýsingar um safnið: samantekt, þakkir, athugasemdir…\n\nTil að búa til NFO skrá skaltu nota sérstaka táknið í tækjastikunni, Skrá-valmyndina eða samhengisvalmyndina (hægrismellur á mósaíkinn). Skipunin er aðeins tiltæk þegar mósaíkurinn er ekki tómur. Sláðu inn nafn og efni: skráin er sett inn beint í mósaíkinn án útdráttarins eða milligeymslu.\n\nTil að breyta fyrirliggjandi NFO skrá skaltu tvísmella á hana í mósaíknum. Glugginn opnast forútfylltur með núverandi nafni og efni, bæði breytanleg. Í báðum tilvikum er aðgerðin skráð í afturkallunarsöguna.",
     "metadata": "ComicVine lýsigögn",
-    "metadata_content": "MosaicView gerir kleift að sækja lýsigögn fyrir myndasögur þínar (titill, þáttur, númer, höfundar, samantekt...) sjálfkrafa úr gagnagrunni ComicVine, samstarfsvefsíðu sem samfélagið heldur við.\n\nEinstaka ham: opnaðu myndasögu og notaðu síðan hnappinn á tækjastikunni eða Lýsigögn-valmyndina. Tvíþrepa leiðsögumaður opnast: veldu fyrst þáttinn, síðan viðeigandi þátt. Lýsigögn eru skrifuð í ComicInfo.xml inni í skjalasafninu.\n\nRunuham: slepptu einum eða fleiri möppum á mósaíkinn og veldu \"Fjöldainnflutningur lýsigagna\", eða notaðu sérstaka hnappinn á tækjastikunni eða Lýsigögn-valmyndina. Leiðsögumaðurinn opnast í röð fyrir hverja skrá sem finnst (CBZ, CBR, CB7, CBT, PDF). Skrár sem eru ekki CBZ eru sjálfkrafa umbreyttar í CBZ eftir skrift lýsigagna.\n\nAPI-lykill: ókeypis ComicVine API-lykill er nauðsynlegur. Forritið leiðbeinir þér í að fá hann. Hann fæst á comicvine.gamespot.com eftir að búið er að stofna reikning.\n\nAPI-takmarkanir: þessar takmarkanir eru settar af ComicVine og er ekki hægt að komast hjá þeim.\n• 200 beiðnir á auðlind á klukkustund. Ef þessum mörkum er náð, mistakast leit tímabundið þar til klukkan líður.\n• Hámark 100 niðurstöður á beiðni, sem þvingar til að skipta leit í fleiri símtöl fyrir þætti með mörgum þáttum.\n• 1 beiðni á sekúndu leyfð af vefsíðunni. Til öryggis bíður MosaicView 2 sekúndur á milli hverrar beiðni, þar sem hraðari beiðnir eru mjög líklegar til að valda tímabundinni lokun.\n\nÞessi eiginleiki byggist að fullu á opnum hugbúnaðarverkefninu {scraper}.",
+    "metadata_content": "MosaicView gerir kleift að sækja lýsigögn fyrir myndasögur þínar (titill, þáttur, númer, höfundar, samantekt...) sjálfkrafa úr gagnagrunni ComicVine, samstarfsvefsíðu sem samfélagið heldur við.\n\nEinstaka ham: opnaðu myndasögu og notaðu síðan hnappinn á tækjastikunni eða Lýsigögn-valmyndina. Tvíþrepa leiðsögumaður opnast: veldu fyrst þáttinn, síðan viðeigandi þátt. Lýsigögn eru skrifuð í ComicInfo.xml inni í skjalasafninu.\n\nRunuham: slepptu einum eða fleiri möppum á mósaíkinn og veldu \"Fjöldainnflutningur lýsigagna\", eða notaðu sérstaka hnappinn á tækjastikunni eða Lýsigögn-valmyndina. Leiðsögumaðurinn opnast í röð fyrir hverja skrá sem finnst (CBZ, CBR, CB7, CBT, PDF). Skrár sem eru ekki CBZ eru sjálfkrafa umbreyttar í CBZ eftir skrift lýsigagna.\n\nAPI-lykill: ókeypis ComicVine API-lykill er nauðsynlegur. Forritið leiðbeinir þér í að fá hann. Hann fæst á comicvine.gamespot.com eftir að búið er að stofna reikning. Lykillinn er aldrei geymdur í hreinum texta: hann er dulkóðaður af Windows DPAPI og aðeins Windows-reikningurinn þinn getur lesið hann.\n\nAPI-takmarkanir: þessar takmarkanir eru settar af ComicVine og er ekki hægt að komast hjá þeim.\n• 200 beiðnir á auðlind á klukkustund. Ef þessum mörkum er náð, mistakast leit tímabundið þar til klukkan líður.\n• Hámark 100 niðurstöður á beiðni, sem þvingar til að skipta leit í fleiri símtöl fyrir þætti með mörgum þáttum.\n• 1 beiðni á sekúndu leyfð af vefsíðunni. Til öryggis bíður MosaicView 2 sekúndur á milli hverrar beiðni, þar sem hraðari beiðnir eru mjög líklegar til að valda tímabundinni lokun.\n\nÞessi eiginleiki byggist að fullu á opnum hugbúnaðarverkefninu {scraper}.",
     "library": "Bókasafn",
     "library_content": "Bókasafnið gerir þér kleift að skrá og finna stafrænar myndasögur þínar á auðveldan hátt. Það virkar með því að lesa lýsigögn í hverri skrá (titill, þáttaröð, höfundar, útgefandi…) og safna þeim saman í eina bókasafnsskrá (*.mvdb).\n\nTil að búa til bókasafn skaltu nota valmyndina Bókasafn → Ný gagnagrunnur eða draga einn eða fleiri möppur í mósaíkinn og velja \"Búa til bókasafn úr möppu(m)\". MosaicView mun þá skanna möppurnar þínar og sjálfkrafa skrá allar samhæfar skrár.\n\nÞegar bókasafnið er opið geturðu síað myndasögurnar þínar eftir þáttaröð, höfundi, ári, útgefanda o.s.frv. og sameinað eins mörg skilyrði og þörf er á. Tvísmella opnar skrána í MosaicView. Hægt er að flytja út niðurstöður á Excel-sniði (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Límdu API-lykilinn þinn hér",
       "validate": "Staðfesta",
       "error_empty": "Sláðu inn API-lykil.",
-      "clear": "Hreinsa lykil"
+      "clear": "Hreinsa lykil",
+      "encryption_notice": "Lykillinn þinn er aldrei geymdur í hreinum texta. Hann er varinn af Windows DPAPI-dulkóðun, bundnum við lotuna þína.",
+      "show_key": "Sýna",
+      "hide_key": "Fela"
     },
     "menu_label": "Lýsigögn",
     "tooltip": "Sækja lýsigögn",

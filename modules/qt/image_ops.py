@@ -295,6 +295,62 @@ def merge_images_horizontally(images_list, adjustment_mode='keep_original'):
     return merged_img
 
 
+def detect_merge_adjustment(positions_data):
+    """
+    Détecte si une fusion 2D nécessitera un ajustement de taille, SANS fusionner.
+    Permet de poser la question à l'utilisateur AVANT la fusion (UI non modale).
+
+    Returns:
+        (need_adjustment: bool, dimension_type: str, dimensions_list: list)
+        Reproduit exactement la détection de merge_images_2d.
+    """
+    if not positions_data:
+        return False, 'height', []
+
+    items = []
+    for i, pos_data in enumerate(positions_data):
+        items.append({
+            "idx": i,
+            "img": pos_data["entry"]["img"],
+            "x": pos_data["x"],
+            "y": pos_data["y"]
+        })
+
+    align_threshold = 20
+    items_sorted_by_y = sorted(items, key=lambda item: item["y"])
+    rows = []
+    current_row = [items_sorted_by_y[0]]
+    for item in items_sorted_by_y[1:]:
+        if abs(item["y"] - current_row[0]["y"]) < align_threshold:
+            current_row.append(item)
+        else:
+            rows.append(current_row)
+            current_row = [item]
+    rows.append(current_row)
+    for row in rows:
+        row.sort(key=lambda item: item["x"])
+
+    # Hauteurs dans chaque ligne horizontale
+    for row in rows:
+        if len(row) > 1:
+            heights = [item["img"].height for item in row]
+            if len(set(heights)) > 1:
+                return True, 'height', heights
+
+    # Largeurs entre les lignes
+    if len(rows) > 1:
+        row_widths = []
+        for row in rows:
+            if len(row) == 1:
+                row_widths.append(row[0]["img"].width)
+            else:
+                row_widths.append(sum(item["img"].width for item in row))
+        if len(set(row_widths)) > 1:
+            return True, 'width', row_widths
+
+    return False, 'height', []
+
+
 def merge_images_2d(positions_data, ask_adjustment_func=None):
     """
     Fusionne plusieurs images selon leur disposition 2D exacte.

@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Funktion nicht verfügbar",
         "message": "Die Neunummerierung ist nicht verfügbar, solange die Ordner nicht zusammengeführt wurden.\nBitte führen Sie die Ordner zusammen, bevor Sie neu nummerieren."
+      },
+      "unsafe_path_skipped": {
+        "title": "Dateien übersprungen",
+        "message": "{count} Datei(en) wurden übersprungen, da ihr Speicherort ungültig war."
+      },
+      "unsafe_path_open": {
+        "title": "Öffnen nicht möglich",
+        "message": "Diese Datei konnte nicht geöffnet werden, da ihr Speicherort ungültig war."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Dateien gespeichert",
         "message": "{count} Datei(en) in {folder} gespeichert",
-        "open_folder": "Möchten Sie den Ordner öffnen?"
+        "open_folder": "Möchten Sie den Ordner öffnen?",
+        "message_with_skipped": "{count} Datei(en) in {folder} gespeichert. {skipped} Datei(en) übersprungen, da ihr Speicherort ungültig war."
       },
       "adjustments_applied": {
         "title": "Anpassungen angewendet",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "NFO-Dateien erstellen und bearbeiten",
     "nfo_editor_content": "Eine NFO-Datei ist eine Textdatei (mit der Erweiterung .nfo), die zum Speichern von Informationen über das Archiv verwendet wird: Synopsis, Mitwirkende, Notizen…\n\nUm eine NFO-Datei zu erstellen, verwenden Sie das entsprechende Symbol in der Symbolleiste, das Menü Datei oder das Kontextmenü (Rechtsklick auf das Mosaik). Der Befehl ist nur verfügbar, wenn das Mosaik nicht leer ist. Geben Sie einen Namen und einen Inhalt ein: Die Datei wird direkt in das Mosaik eingefügt, ohne Extraktion oder Zwischenspeicherung.\n\nUm eine vorhandene NFO-Datei zu bearbeiten, doppelklicken Sie darauf im Mosaik. Das Fenster öffnet sich mit dem aktuellen Namen und Inhalt vorausgefüllt, beides kann bearbeitet werden. In beiden Fällen wird der Vorgang im Rückgängig-Verlauf gespeichert.",
     "metadata": "Metadaten ComicVine",
-    "metadata_content": "MosaicView ermöglicht das automatische Abrufen von Metadaten für Ihre Comics (Titel, Serie, Nummer, Autoren, Zusammenfassung...) aus der Datenbank ComicVine, einer kollaborativen Website der Community.\n\nEinzelmodus: Öffnen Sie einen Comic und verwenden Sie dann die Schaltfläche in der Symbolleiste oder das Menü Metadaten. Ein zweistufiger Assistent öffnet sich: Wählen Sie zunächst die Serie, dann die entsprechende Episode. Die Metadaten werden in ComicInfo.xml im Archiv gespeichert.\n\nBatch-Modus: Ziehen Sie einen oder mehrere Ordner auf das Mosaik und wählen Sie \"Metadaten-Massenimport\", oder verwenden Sie die dedizierte Schaltfläche in der Symbolleiste oder das Menü Metadaten. Der Assistent öffnet sich nacheinander für jede gefundene Datei (CBZ, CBR, CB7, CBT, PDF). Nicht-CBZ-Dateien werden nach dem Schreiben der Metadaten automatisch in CBZ konvertiert.\n\nAPI-Schlüssel: Ein kostenloser API-Schlüssel für ComicVine ist erforderlich. Die Anwendung führt Sie durch die Beschaffung. Er wird auf comicvine.gamespot.com nach der Kontoerstellung erhalten.\n\nAPI-Einschränkungen: Diese Einschränkungen werden von ComicVine auferlegt und können nicht umgangen werden.\n• 200 Anfragen pro Ressource und Stunde. Wird dieses Limit erreicht, schlagen Suchen bis zum Ende der Stunde vorübergehend fehl.\n• Maximal 100 Ergebnisse pro Anfrage, was eine Aufteilung der Suchen auf mehrere Aufrufe für Serien mit vielen Episoden erzwingt.\n• 1 Anfrage pro Sekunde durch die Website erlaubt. MosaicView wartet sicherheitshalber 2 Sekunden zwischen den Anfragen, da schnellere Anfragen sehr wahrscheinlich vorübergehende Sperren verursachen.\n\nDiese Funktion basiert vollständig auf dem Open-Source-Projekt {scraper}.",
+    "metadata_content": "MosaicView ermöglicht das automatische Abrufen von Metadaten für Ihre Comics (Titel, Serie, Nummer, Autoren, Zusammenfassung...) aus der Datenbank ComicVine, einer kollaborativen Website der Community.\n\nEinzelmodus: Öffnen Sie einen Comic und verwenden Sie dann die Schaltfläche in der Symbolleiste oder das Menü Metadaten. Ein zweistufiger Assistent öffnet sich: Wählen Sie zunächst die Serie, dann die entsprechende Episode. Die Metadaten werden in ComicInfo.xml im Archiv gespeichert.\n\nBatch-Modus: Ziehen Sie einen oder mehrere Ordner auf das Mosaik und wählen Sie \"Metadaten-Massenimport\", oder verwenden Sie die dedizierte Schaltfläche in der Symbolleiste oder das Menü Metadaten. Der Assistent öffnet sich nacheinander für jede gefundene Datei (CBZ, CBR, CB7, CBT, PDF). Nicht-CBZ-Dateien werden nach dem Schreiben der Metadaten automatisch in CBZ konvertiert.\n\nAPI-Schlüssel: Ein kostenloser API-Schlüssel für ComicVine ist erforderlich. Die Anwendung führt Sie durch die Beschaffung. Er wird auf comicvine.gamespot.com nach der Kontoerstellung erhalten. Der Schlüssel wird niemals im Klartext gespeichert: Er wird durch Windows DPAPI verschlüsselt und kann nur von Ihrem Windows-Konto gelesen werden.\n\nAPI-Einschränkungen: Diese Einschränkungen werden von ComicVine auferlegt und können nicht umgangen werden.\n• 200 Anfragen pro Ressource und Stunde. Wird dieses Limit erreicht, schlagen Suchen bis zum Ende der Stunde vorübergehend fehl.\n• Maximal 100 Ergebnisse pro Anfrage, was eine Aufteilung der Suchen auf mehrere Aufrufe für Serien mit vielen Episoden erzwingt.\n• 1 Anfrage pro Sekunde durch die Website erlaubt. MosaicView wartet sicherheitshalber 2 Sekunden zwischen den Anfragen, da schnellere Anfragen sehr wahrscheinlich vorübergehende Sperren verursachen.\n\nDiese Funktion basiert vollständig auf dem Open-Source-Projekt {scraper}.",
     "library": "Bibliothek",
     "library_content": "Die Bibliothek ermöglicht es Ihnen, Ihre digitalen Comics zu katalogisieren und leicht wiederzufinden. Sie funktioniert, indem sie die in jeder Datei enthaltenen Metadaten (Titel, Serie, Autoren, Verlag…) liest und in einer einzigen Bibliotheksdatei (*.mvdb) zusammenführt.\n\nUm eine Bibliothek zu erstellen, verwenden Sie das Menü Bibliothek → Neue Datenbank oder ziehen Sie einen oder mehrere Ordner in die Mosaikanzeige und wählen Sie \"Bibliothek aus dem/den Ordner(n) erstellen\". MosaicView durchsucht dann Ihre Ordner und indiziert automatisch alle kompatiblen Dateien.\n\nSobald die Bibliothek geöffnet ist, können Sie Ihre Comics nach Serie, Autor, Jahr, Verlag usw. filtern und beliebig viele Kriterien kombinieren. Ein Doppelklick öffnet die Datei in MosaicView. Die Ergebnisse können im Excel-Format (*.xlsx) exportiert werden."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Fügen Sie hier Ihren API-Schlüssel ein",
       "validate": "Bestätigen",
       "error_empty": "Bitte geben Sie einen API-Schlüssel ein.",
-      "clear": "Schlüssel löschen"
+      "clear": "Schlüssel löschen",
+      "encryption_notice": "Ihr Schlüssel wird niemals im Klartext gespeichert. Er ist durch Windows-DPAPI-Verschlüsselung geschützt, die an Ihre Sitzung gebunden ist.",
+      "show_key": "Anzeigen",
+      "hide_key": "Verbergen"
     },
     "menu_label": "Metadaten",
     "tooltip": "Metadaten abrufen",

@@ -122,7 +122,9 @@ class AdjustmentsDialog(QDialog):
 
     def __init__(self, parent, selected_entries, callbacks=None):
         super().__init__(parent)
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self._selected_entries = selected_entries
         self._callbacks = callbacks or {}
         self._preview_pixmap_ref = None   # anti-GC
@@ -1206,7 +1208,7 @@ class AdjustmentsDialog(QDialog):
             # Traitement en cours → demande d'annulation
             self._cancel_requested = True
         else:
-            self.reject()
+            self.close()
 
     def _on_apply(self):
         """Applique les ajustements aux images sélectionnées et ferme."""
@@ -1288,7 +1290,7 @@ class AdjustmentsDialog(QDialog):
                                      callbacks=self._callbacks)
 
         self._progress_lbl.setVisible(False)
-        self.accept()
+        self.close()
 
     def _open_viewer(self, mode):
         """Ouvre la visionneuse plein écran pour le mode donné."""
@@ -1344,7 +1346,7 @@ class AdjustmentsDialog(QDialog):
 
             self._retranslate()
             self._update_preview()
-            self.accept()
+            self.close()
 
         def on_cancel():
             """Annulation : remet les settings au snapshot initial (sans modification)."""
@@ -1356,7 +1358,11 @@ class AdjustmentsDialog(QDialog):
             on_cancel_callback=on_cancel,
             callbacks=self._callbacks,
         )
-        viewer.exec()
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        position_dialog_on_parent(viewer, self)
+        viewer.show()
+        viewer.raise_()
+        viewer.activateWindow()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1377,7 +1383,7 @@ def show_image_adjustments_dialog(parent=None, callbacks=None):
             parent,
             "messages.warnings.no_selection_adjust.title",
             "messages.warnings.no_selection_adjust.message",
-        ).exec()
+        ).show_nonmodal()
         return
 
     selected_entries = [
@@ -1391,8 +1397,12 @@ def show_image_adjustments_dialog(parent=None, callbacks=None):
             parent,
             "messages.warnings.invalid_selection_adjust.title",
             "messages.warnings.invalid_selection_adjust.message",
-        ).exec()
+        ).show_nonmodal()
         return
 
     dlg = AdjustmentsDialog(parent, selected_entries, callbacks=callbacks)
-    dlg.exec()
+    from modules.qt.dialogs_qt import position_dialog_on_parent
+    position_dialog_on_parent(dlg, parent)
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()

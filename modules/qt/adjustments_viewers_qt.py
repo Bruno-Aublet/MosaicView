@@ -251,6 +251,9 @@ class AdjustmentViewerDialog(QDialog):
                  on_close_callback=None, on_cancel_callback=None,
                  callbacks=None):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self._settings = settings           # dict partagé (sera mutated par les sliders)
         self._mode = mode
         self._on_close_callback = on_close_callback
@@ -311,12 +314,8 @@ class AdjustmentViewerDialog(QDialog):
         self._display_image(reset_offset=True)
 
     def showEvent(self, event):
+        # Centrage fait au site d'appel avant show() (pas de flash de recentrage).
         super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── Construction de l'UI ──────────────────────────────────────────────────
 
@@ -1279,7 +1278,7 @@ class AdjustmentViewerDialog(QDialog):
 
         if self._on_close_callback:
             self._on_close_callback()
-        self.accept()
+        self.close()
 
     # ── Clic sur l'image (pipette levels + transparency) ─────────────────────
 
@@ -1352,7 +1351,7 @@ class AdjustmentViewerDialog(QDialog):
         self._reset_mode_slider()
         if self._on_close_callback:
             self._on_close_callback()
-        self.accept()
+        self.close()
 
     def _apply_to_all(self):
         _apply_image_adjustments(self._selected_entries, self._settings,
@@ -1360,7 +1359,7 @@ class AdjustmentViewerDialog(QDialog):
         self._reset_mode_slider()
         if self._on_close_callback:
             self._on_close_callback()
-        self.accept()
+        self.close()
 
     def _apply_levels_all(self):
         """Mode levels : applique les valeurs de niveaux individuelles à chaque page."""
@@ -1393,7 +1392,7 @@ class AdjustmentViewerDialog(QDialog):
 
         if self._on_close_callback:
             self._on_close_callback()
-        self.accept()
+        self.close()
 
     def _reset_mode_slider(self):
         """Remet le curseur du mode à zéro après application."""
@@ -1411,7 +1410,7 @@ class AdjustmentViewerDialog(QDialog):
     def _cancel(self):
         if self._on_cancel_callback:
             self._on_cancel_callback()
-        self.reject()
+        self.close()
 
     # ── Traduction ────────────────────────────────────────────────────────────
 

@@ -263,57 +263,99 @@ class _CollapsibleSection(QWidget):
 # Fonctions d'export (polices, icônes)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _show_success_dialog(parent, title: str, message: str, folder_path: str, first_file: str):
-    dlg = QDialog(parent)
-    dlg.setWindowTitle(title)
-    dlg.setModal(True)
-    dlg.resize(500, 150)
+class _ExportSuccessDialog(QDialog):
+    """Dialogue de succès d'export (police/icônes), NON modal, avec thème, police
+    et langue à la volée. title_key/message_key sont des clés de traduction ;
+    message_kwargs est passé au formatage du message (filename/count)."""
 
-    ico_path = resource_path("icons/MosaicView.ico")
-    if os.path.exists(ico_path):
-        dlg.setWindowIcon(QIcon(ico_path))
+    def __init__(self, parent, title_key, message_key, message_kwargs, folder_path, first_file):
+        super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self._title_key = title_key
+        self._message_key = message_key
+        self._message_kwargs = message_kwargs or {}
+        self._first_file = first_file
+        self._center_parent = parent
+        self.resize(500, 150)
 
-    theme = get_current_theme()
-    dlg.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+        ico_path = resource_path("icons/MosaicView.ico")
+        if os.path.exists(ico_path):
+            self.setWindowIcon(QIcon(ico_path))
 
-    layout = QVBoxLayout(dlg)
-    layout.setContentsMargins(20, 15, 20, 15)
-    layout.setSpacing(8)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 15, 20, 15)
+        layout.setSpacing(8)
 
-    msg_lbl = QLabel(message)
-    msg_lbl.setStyleSheet(f"color: {theme['text']};")
-    msg_lbl.setWordWrap(True)
-    msg_lbl.setAlignment(Qt.AlignCenter)
-    layout.addWidget(msg_lbl)
+        self._msg_lbl = QLabel()
+        self._msg_lbl.setWordWrap(True)
+        self._msg_lbl.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._msg_lbl)
 
-    folder_norm = os.path.abspath(folder_path)
-    link_lbl = QLabel(f'<a href="explorer://{first_file}" style="color:#0000cc;">{folder_norm}</a>')
-    link_lbl.setOpenExternalLinks(False)
-    link_lbl.setStyleSheet("color: #0000cc; text-decoration: underline;")
-    link_lbl.setCursor(Qt.PointingHandCursor)
-    link_lbl.setAlignment(Qt.AlignCenter)
+        self._folder_norm = os.path.abspath(folder_path)
+        self._link_lbl = QLabel()
+        self._link_lbl.setOpenExternalLinks(False)
+        self._link_lbl.setCursor(Qt.PointingHandCursor)
+        self._link_lbl.setAlignment(Qt.AlignCenter)
+        self._link_lbl.mousePressEvent = lambda e: self._open_explorer()
+        layout.addWidget(self._link_lbl)
 
-    def _open_explorer():
+        self._btn_ok = QPushButton()
+        self._btn_ok.setCursor(Qt.PointingHandCursor)
+        self._btn_ok.clicked.connect(self.close)
+        layout.addWidget(self._btn_ok, alignment=Qt.AlignHCenter)
+
+        self._retranslate()
+        from modules.qt.language_signal import language_signal
+        self._lang_handler = lambda _: self._retranslate()
+        language_signal.changed.connect(self._lang_handler)
+        self.finished.connect(self._on_close)
+
+    def _open_explorer(self):
         try:
-            subprocess.run(f'explorer /select,"{os.path.abspath(first_file)}"', shell=True)
+            subprocess.run(f'explorer /select,"{os.path.abspath(self._first_file)}"', shell=True)
         except Exception as ex:
             print(f"Erreur ouverture explorateur: {ex}")
 
-    link_lbl.mousePressEvent = lambda e: _open_explorer()
-    layout.addWidget(link_lbl)
-
-    btn_ok = QPushButton(_("buttons.ok"))
-    btn_ok.setCursor(Qt.PointingHandCursor)
-    btn_ok.clicked.connect(dlg.accept)
-    layout.addWidget(btn_ok, alignment=Qt.AlignHCenter)
-
-    if parent:
-        pg = parent.geometry()
-        dlg.move(
-            pg.x() + (pg.width()  - dlg.width())  // 2,
-            pg.y() + (pg.height() - dlg.height()) // 2,
+    def _retranslate(self):
+        theme = get_current_theme()
+        font = _get_current_font()
+        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+        self.setWindowTitle(_wt(self._title_key))
+        self._msg_lbl.setText(_(self._message_key, **self._message_kwargs))
+        self._msg_lbl.setFont(font)
+        self._msg_lbl.setStyleSheet(f"color: {theme['text']};")
+        # Lien : bleu clair (#4A9EFF) lisible en mode clair ET sombre (convention projet)
+        self._link_lbl.setText(
+            f'<a href="explorer://{self._first_file}" '
+            f'style="color:#4A9EFF;">{self._folder_norm}</a>')
+        self._link_lbl.setStyleSheet("color: #4A9EFF; text-decoration: underline;")
+        self._link_lbl.setFont(font)
+        self._btn_ok.setText(_("buttons.ok"))
+        self._btn_ok.setFont(font)
+        self._btn_ok.setStyleSheet(
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
-    dlg.exec()
+
+    def _on_close(self):
+        from modules.qt.language_signal import language_signal
+        try:
+            language_signal.changed.disconnect(self._lang_handler)
+        except RuntimeError:
+            pass
+
+
+def _show_success_dialog(parent, title_key, message_key, message_kwargs, folder_path, first_file):
+    dlg = _ExportSuccessDialog(parent, title_key, message_key, message_kwargs,
+                               folder_path, first_file)
+    from modules.qt.dialogs_qt import position_dialog_on_parent
+    position_dialog_on_parent(dlg, parent)
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
 
 
 def export_piqad_font(parent_widget):
@@ -330,22 +372,23 @@ def export_piqad_font(parent_widget):
     cfg.set('last_open_dir', os.path.dirname(os.path.abspath(save_path)))
     font_source = resource_path(os.path.join("fonts", PIQAD_FONT_FILE))
     if not os.path.exists(font_source):
-        ErrorDialog(parent_widget, _("messages.errors.file_not_found.title"),
-                    _("messages.errors.font_source_not_found", path=font_source)).exec()
+        ErrorDialog(parent_widget, lambda: _("messages.errors.file_not_found.title"),
+                    lambda p=font_source: _("messages.errors.font_source_not_found", path=p)).show()
         return
     try:
         shutil.copy2(font_source, save_path)
         filename = os.path.basename(save_path)
         _show_success_dialog(
             parent_widget,
-            _("help.language_export_piqad"),
-            _("help.language_export_piqad_success").format(filename=filename),
+            "help.language_export_piqad",
+            "help.language_export_piqad_success",
+            {"filename": filename},
             os.path.dirname(save_path),
             save_path,
         )
     except Exception as e:
-        ErrorDialog(parent_widget, _("messages.errors.file_not_found.title"),
-                    _("messages.errors.export_error", error=e)).exec()
+        ErrorDialog(parent_widget, lambda: _("messages.errors.file_not_found.title"),
+                    lambda err=e: _("messages.errors.export_error", error=err)).show()
 
 
 def export_tengwar_fonts(parent_widget):
@@ -377,14 +420,15 @@ def export_tengwar_fonts(parent_widget):
     if copied_count > 0:
         _show_success_dialog(
             parent_widget,
-            _("help.language_export_tengwar"),
-            _("help.language_export_tengwar_success").format(count=copied_count),
+            "help.language_export_tengwar",
+            "help.language_export_tengwar_success",
+            {"count": copied_count},
             save_dir,
             first_file,
         )
     else:
-        ErrorDialog(parent_widget, _("messages.errors.file_not_found.title"),
-                    _("messages.errors.no_tengwar_font")).exec()
+        ErrorDialog(parent_widget, lambda: _("messages.errors.file_not_found.title"),
+                    lambda: _("messages.errors.no_tengwar_font")).show()
 
 
 def save_all_icons(parent_widget):
@@ -423,14 +467,15 @@ def save_all_icons(parent_widget):
     if copied_count > 0:
         _show_success_dialog(
             parent_widget,
-            _("help.icons_save_all"),
-            _("help.icons_saved_success").format(count=copied_count),
+            "help.icons_save_all",
+            "help.icons_saved_success",
+            {"count": copied_count},
             save_dir,
             first_file,
         )
     else:
-        ErrorDialog(parent_widget, _("messages.errors.file_not_found.title"),
-                    _("messages.errors.no_icons_found")).exec()
+        ErrorDialog(parent_widget, lambda: _("messages.errors.file_not_found.title"),
+                    lambda: _("messages.errors.no_icons_found")).show()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

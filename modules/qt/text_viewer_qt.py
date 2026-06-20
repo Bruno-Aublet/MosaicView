@@ -598,6 +598,9 @@ class TextViewerDialog(QDialog):
 
     def __init__(self, parent, selected_entries, start_index=0, callbacks=None):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self._selected_entries = selected_entries
         self._current_idx = max(0, min(start_index, len(selected_entries) - 1))
         self._callbacks = callbacks or {}
@@ -639,12 +642,8 @@ class TextViewerDialog(QDialog):
         self._display_image(reset_offset=True)
 
     def showEvent(self, event):
+        # Centrage fait au site d'appel avant show() (pas de flash de recentrage).
         super().showEvent(event)
-        if self._center_parent and not event.spontaneous():
-            from PySide6.QtCore import QTimer
-            from modules.qt.dialogs_qt import _center_on_widget
-            p = self._center_parent
-            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
     # ── Construction UI ───────────────────────────────────────────────────────
 
@@ -877,7 +876,7 @@ class TextViewerDialog(QDialog):
         self._close_btn = QPushButton()
         self._close_btn.setFont(font_btn)
         self._close_btn.setStyleSheet(_btn_style(theme))
-        self._close_btn.clicked.connect(self.reject)
+        self._close_btn.clicked.connect(self.close)
         bot_layout.addWidget(self._close_btn)
 
         root.addWidget(bot)
@@ -1444,7 +1443,7 @@ class TextViewerDialog(QDialog):
             if self._is_fullscreen:
                 self._toggle_fullscreen()
             else:
-                self.reject()
+                self.close()
         else:
             super().keyPressEvent(event)
 
@@ -1492,4 +1491,8 @@ def show_text_viewer(parent=None, callbacks=None):
 
     selected_entries = [e for _, e in image_entries]
     dlg = TextViewerDialog(parent, selected_entries, start_index, callbacks=callbacks)
-    dlg.exec()
+    from modules.qt.dialogs_qt import position_dialog_on_parent
+    position_dialog_on_parent(dlg, parent)
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()

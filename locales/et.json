@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Funktsioon pole saadaval",
         "message": "Ümber nummerdamine ei ole saadaval, kuni kaustad pole tasandatud.\nTasandage kaustad enne ümber nummerdamist."
+      },
+      "unsafe_path_skipped": {
+        "title": "Vahelejäetud failid",
+        "message": "{count} fail(i) jäeti vahele, kuna nende asukoht polnud kehtiv."
+      },
+      "unsafe_path_open": {
+        "title": "Ei saa avada",
+        "message": "Seda faili ei saanud avada, kuna selle asukoht polnud kehtiv."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Edukalt salvestatud",
         "message": "{count} faili salvestati asukohta:\n{folder}",
-        "open_folder": "Kas soovite kausta avada?"
+        "open_folder": "Kas soovite kausta avada?",
+        "message_with_skipped": "{count} fail(i) salvestatud asukohta {folder}. {skipped} fail(i) jäeti vahele, kuna nende asukoht polnud kehtiv."
       },
       "adjustments_applied": {
         "title": "Kohandused rakendatud",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "NFO-failide loomine ja redigeerimine",
     "nfo_editor_content": "NFO-fail on tekstifail (laiendiga .nfo), mida kasutatakse arhiivi kohta teabe salvestamiseks: kokkuvõte, autorid, märkmed…\n\nNFO-faili loomiseks kasutage tööriistaribalt vastavat ikooni, menüüd Fail või kontekstimenüüd (paremklõps mosaiikal). Käsk on saadaval ainult siis, kui mosaiik ei ole tühi. Sisestage nimi ja sisu: fail lisatakse otse mosaiiki ilma ekstraktimise või vahepealse salvestamiseta.\n\nOlemasoleva NFO-faili redigeerimiseks tehke sellel mosaiigis topeltklõps. Aken avaneb eeltäidetult praeguse nime ja sisuga, mõlemad on muudetavad. Mõlemal juhul salvestatakse toiming tagasivõtu ajalukku.",
     "metadata": "ComicVine metaandmed",
-    "metadata_content": "MosaicView võimaldab automaatselt alla laadida teie koomiksitele metaandmeid (pealkiri, sari, number, autorid, kokkuvõte...) ComicVine'i andmebaasist, kogukonna poolt hallatavast koostöölisest veebisaidist.\n\nÜksikrežiim: avage koomiksit, seejärel kasutage tööriistariba nuppu või menüüd Metaandmed. Avaneb kaheastmeline viisard: valige esmalt sari, seejärel vastav episood. Metaandmed kirjutatakse arhiivis olevasse ComicInfo.xml-i.\n\nPakktöötlus: lohistage üks või mitu kausta mosaiikvaadetele ja valige \"Metaandmete pakettimport\", või kasutage tööriistariba pühendatud nuppu või menüüd Metaandmed. Viisard avaneb järjestikku iga leitud faili jaoks (CBZ, CBR, CB7, CBT, PDF). Mitte-CBZ-failid teisendatakse automaatselt CBZ-ks pärast metaandmete kirjutamist.\n\nAPI-võti: nõutav on tasuta ComicVine'i API-võti. Rakendus juhendab teid selle hankimisel. Seda saab comicvine.gamespot.com-ist pärast konto loomist.\n\nAPI piirangud: need piirangud kehtestab ComicVine ja neid ei saa eirata.\n• 200 päringut ressursi kohta tunnis. Kui see limiit saavutatakse, ebaõnnestuvad otsingud ajutiselt kuni tunni lõpuni.\n• Maksimaalselt 100 tulemust päringu kohta, mis sunnib otsinguid mitme kõne peale jagama paljude episoodidega sarjade puhul.\n• 1 päring sekundis on saidi poolt lubatud. Ohutuse huvides ootab MosaicView päringute vahel 2 sekundit, kuna kiiremad päringud põhjustavad suure tõenäosusega ajutisi blokeeringuid.\n\nSee funktsioon põhineb täielikult avatud lähtekoodiga projektil {scraper}.",
+    "metadata_content": "MosaicView võimaldab automaatselt alla laadida teie koomiksitele metaandmeid (pealkiri, sari, number, autorid, kokkuvõte...) ComicVine'i andmebaasist, kogukonna poolt hallatavast koostöölisest veebisaidist.\n\nÜksikrežiim: avage koomiksit, seejärel kasutage tööriistariba nuppu või menüüd Metaandmed. Avaneb kaheastmeline viisard: valige esmalt sari, seejärel vastav episood. Metaandmed kirjutatakse arhiivis olevasse ComicInfo.xml-i.\n\nPakktöötlus: lohistage üks või mitu kausta mosaiikvaadetele ja valige \"Metaandmete pakettimport\", või kasutage tööriistariba pühendatud nuppu või menüüd Metaandmed. Viisard avaneb järjestikku iga leitud faili jaoks (CBZ, CBR, CB7, CBT, PDF). Mitte-CBZ-failid teisendatakse automaatselt CBZ-ks pärast metaandmete kirjutamist.\n\nAPI-võti: nõutav on tasuta ComicVine'i API-võti. Rakendus juhendab teid selle hankimisel. Seda saab comicvine.gamespot.com-ist pärast konto loomist. Võtit ei salvestata kunagi lihttekstina: see on krüptitud Windows DPAPI poolt ja seda saab lugeda ainult teie Windowsi konto.\n\nAPI piirangud: need piirangud kehtestab ComicVine ja neid ei saa eirata.\n• 200 päringut ressursi kohta tunnis. Kui see limiit saavutatakse, ebaõnnestuvad otsingud ajutiselt kuni tunni lõpuni.\n• Maksimaalselt 100 tulemust päringu kohta, mis sunnib otsinguid mitme kõne peale jagama paljude episoodidega sarjade puhul.\n• 1 päring sekundis on saidi poolt lubatud. Ohutuse huvides ootab MosaicView päringute vahel 2 sekundit, kuna kiiremad päringud põhjustavad suure tõenäosusega ajutisi blokeeringuid.\n\nSee funktsioon põhineb täielikult avatud lähtekoodiga projektil {scraper}.",
     "library": "Kogu",
     "library_content": "Kogu võimaldab teil katalogiseerida ja hõlpsalt leida oma digitaalseid koomikseid. See töötab, lugedes iga faili metaandmeid (pealkiri, sari, autorid, kirjastaja…) ja koondades need ühte kogufaili (*.mvdb).\n\nKogu loomiseks kasutage menüüd Kogu → Uus andmebaas või lohistage üks või mitu kausta mosaiigivaatesse ja valige \"Loo kaust(adest) teek\". MosaicView skannib seejärel teie kaustad ja indekseerib automaatselt kõik ühilduvad failid.\n\nKui kogu on avatud, saate filtreerida oma koomikseid sarja, autori, aasta, kirjastaja jms järgi, kombineerides nii palju kriteeriume kui vaja. Topeltklõps avab faili MosaicView's. Tulemused saab eksportida Exceli formaadis (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Kleepige API-võti siia",
       "validate": "Kinnita",
       "error_empty": "Sisestage API-võti.",
-      "clear": "Kustuta võti"
+      "clear": "Kustuta võti",
+      "encryption_notice": "Teie võtit ei salvestata kunagi lihttekstina. Seda kaitseb Windows DPAPI krüpteerimine, mis on seotud teie seansiga.",
+      "show_key": "Näita",
+      "hide_key": "Peida"
     },
     "menu_label": "Metaandmed",
     "tooltip": "Tõmba metaandmed",

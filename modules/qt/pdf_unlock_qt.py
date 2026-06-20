@@ -6,7 +6,7 @@ Reproduit à l'identique pdf_unlock.py (show_pdf_unlock_dialog + _save_unlocked)
 
 import os
 
-from PySide6.QtCore import Qt, QUrl
+from PySide6.QtCore import Qt, QUrl, Signal
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
 
@@ -21,8 +21,10 @@ class _PdfUnlockedSuccessDialog(QDialog):
 
     def __init__(self, parent, dest_path: str):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self._dest_path = dest_path
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -94,11 +96,16 @@ class _PdfUnlockedSuccessDialog(QDialog):
 # Dialogue de proposition de déverrouillage — supporte le changement de langue
 # ═══════════════════════════════════════════════════════════════════════════════
 class PdfUnlockDialog(QDialog):
-    """Propose d'enregistrer une copie déverrouillée du PDF (owner password)."""
+    """Propose d'enregistrer une copie déverrouillée du PDF (owner password). NON modal."""
+
+    result_signal = Signal(bool)   # True = Oui, False = Non/fermeture
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.setModal(True)
+        self.setWindowFlags(Qt.Window)
+        self._emitted = False
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
         self.setMinimumWidth(480)
 
         layout = QVBoxLayout(self)
@@ -114,8 +121,8 @@ class PdfUnlockDialog(QDialog):
         btn_layout = QHBoxLayout()
         self._btn_yes = QPushButton()
         self._btn_no  = QPushButton()
-        self._btn_yes.clicked.connect(self.accept)
-        self._btn_no.clicked.connect(self.reject)
+        self._btn_yes.clicked.connect(lambda: self._finish(True))
+        self._btn_no.clicked.connect(lambda: self._finish(False))
 
         btn_layout.addWidget(self._btn_yes)
         btn_layout.addWidget(self._btn_no)
@@ -126,8 +133,32 @@ class PdfUnlockDialog(QDialog):
         from modules.qt.language_signal import language_signal
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
-        self.finished.connect(self._on_close)
         self._center_parent = parent
+
+    def _finish(self, result: bool):
+        if self._emitted:
+            return
+        self._emitted = True
+        self._on_close()
+        self.result_signal.emit(result)
+        self.hide()
+        self.deleteLater()
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            self._on_close()
+            self.result_signal.emit(False)
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche (NON modal) et appelle on_result(bool) à la réponse."""
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        self.result_signal.connect(on_result)
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -176,8 +207,7 @@ def show_pdf_unlock_dialog(filepath: str, parent):
         return
 
     dlg = PdfUnlockDialog(parent)
-    if dlg.exec() == QDialog.Accepted:
-        _save_unlocked(filepath, parent)
+    dlg.ask_async(lambda yes: _save_unlocked(filepath, parent) if yes else None)
 
 
 def _save_unlocked(filepath: str, parent):
@@ -200,11 +230,14 @@ def _save_unlocked(filepath: str, parent):
         doc.save(dest_path, encryption=fitz.PDF_ENCRYPT_NONE)
         doc.close()
 
-        _PdfUnlockedSuccessDialog(parent, dest_path).exec()
+        dlg = _PdfUnlockedSuccessDialog(parent, dest_path)
+        dlg.show()
+        dlg.raise_()
+        dlg.activateWindow()
 
     except Exception as e:
         _MsgDialog(parent,
             "messages.errors.pdf_unlock_failed.title",
             "messages.errors.pdf_unlock_failed.message",
             {"error": str(e)},
-        ).exec()
+        ).show_nonmodal()

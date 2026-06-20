@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Özellik kullanılamıyor",
         "message": "Klasörler düzleştirilene kadar yeniden numaralandırma kullanılamaz.\nYeniden numaralandırmadan önce klasörleri düzleştirin."
+      },
+      "unsafe_path_skipped": {
+        "title": "Atlanan dosyalar",
+        "message": "Konumu geçerli olmadığı için {count} dosya atlandı."
+      },
+      "unsafe_path_open": {
+        "title": "Açılamıyor",
+        "message": "Konumu geçerli olmadığı için bu dosya açılamadı."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Başarıyla kaydedildi",
         "message": "{count} dosya şuraya kaydedildi:\n{folder}",
-        "open_folder": "Klasörü açmak ister misiniz?"
+        "open_folder": "Klasörü açmak ister misiniz?",
+        "message_with_skipped": "{folder} konumuna {count} dosya kaydedildi. {skipped} dosya, konumu geçerli olmadığı için atlandı."
       },
       "adjustments_applied": {
         "title": "Ayarlar uygulandi",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "NFO dosyaları oluşturma ve düzenleme",
     "nfo_editor_content": "NFO dosyası, arşiv hakkında bilgi depolamak için kullanılan bir metin dosyasıdır (.nfo uzantılı): özet, katkıda bulunanlar, notlar…\n\nBir NFO dosyası oluşturmak için araç çubuğundaki özel simgeyi, Dosya menüsünü veya bağlam menüsünü (mozaiğe sağ tıklayın) kullanın. Komut yalnızca mozaik boş olmadığında kullanılabilir. Bir ad ve içerik girin: dosya, çıkarma veya ara kaydetme işlemi yapılmadan doğrudan mozaiğe eklenir.\n\nMevcut bir NFO dosyasını düzenlemek için mozaikte üzerine çift tıklayın. Pencere, mevcut ad ve içerikle önceden doldurulmuş olarak açılır; ikisi de düzenlenebilir. Her iki durumda da işlem geri alma geçmişine kaydedilir.",
     "metadata": "ComicVine Meta Verisi",
-    "metadata_content": "MosaicView, çizgi romanlarınızın meta verilerini (başlık, seri, numara, yazarlar, özet...) topluluk tarafından sürdürülen işbirlikçi bir site olan ComicVine veritabanından otomatik olarak almanızı sağlar.\n\nTekli mod: bir çizgi roman açın, ardından araç çubuğundaki düğmeyi veya Meta Veri menüsünü kullanın. İki adımlı bir sihirbaz açılır: önce seriyi seçin, ardından ilgili bölümü. Meta veriler arşiv içindeki ComicInfo.xml dosyasına yazılır.\n\nToplu mod: bir veya daha fazla klasörü mozaiğe bırakın ve \"Toplu meta veri içe aktarımı\"nı seçin, veya araç çubuğundaki özel düğmeyi ya da Meta Veri menüsünü kullanın. Sihirbaz bulunan her dosya için sırayla açılır (CBZ, CBR, CB7, CBT, PDF). CBZ olmayan dosyalar, meta veriler yazıldıktan sonra otomatik olarak CBZ'ye dönüştürülür.\n\nAPI anahtarı: Ücretsiz bir ComicVine API anahtarı gereklidir. Uygulama, anahtarı edinmeniz için sizi yönlendirecektir. comicvine.gamespot.com'da hesap oluşturduktan sonra edinilir.\n\nAPI sınırlamaları: bu sınırlamalar ComicVine tarafından uygulanmaktadır ve atlatılamaz.\n• Saat başına kaynak başına 200 istek. Bu sınıra ulaşıldığında, saatin sonuna kadar aramalar geçici olarak başarısız olur.\n• İstek başına maksimum 100 sonuç, bu da çok sayıda bölüm içeren seriler için aramaların birden fazla çağrıya bölünmesini zorunlu kılar.\n• Site tarafından saniyede 1 istek izin verilmektedir. Güvenlik açısından MosaicView her istek arasında 2 saniye bekler, çünkü daha hızlı istekler geçici engellemelere neden olma olasılığı çok yüksektir.\n\nBu özellik tamamen açık kaynaklı {scraper} projesine dayanmaktadır.",
+    "metadata_content": "MosaicView, çizgi romanlarınızın meta verilerini (başlık, seri, numara, yazarlar, özet...) topluluk tarafından sürdürülen işbirlikçi bir site olan ComicVine veritabanından otomatik olarak almanızı sağlar.\n\nTekli mod: bir çizgi roman açın, ardından araç çubuğundaki düğmeyi veya Meta Veri menüsünü kullanın. İki adımlı bir sihirbaz açılır: önce seriyi seçin, ardından ilgili bölümü. Meta veriler arşiv içindeki ComicInfo.xml dosyasına yazılır.\n\nToplu mod: bir veya daha fazla klasörü mozaiğe bırakın ve \"Toplu meta veri içe aktarımı\"nı seçin, veya araç çubuğundaki özel düğmeyi ya da Meta Veri menüsünü kullanın. Sihirbaz bulunan her dosya için sırayla açılır (CBZ, CBR, CB7, CBT, PDF). CBZ olmayan dosyalar, meta veriler yazıldıktan sonra otomatik olarak CBZ'ye dönüştürülür.\n\nAPI anahtarı: Ücretsiz bir ComicVine API anahtarı gereklidir. Uygulama, anahtarı edinmeniz için sizi yönlendirecektir. comicvine.gamespot.com'da hesap oluşturduktan sonra edinilir. Anahtar asla düz metin olarak saklanmaz: Windows DPAPI tarafından şifrelenir ve yalnızca Windows hesabınız tarafından okunabilir.\n\nAPI sınırlamaları: bu sınırlamalar ComicVine tarafından uygulanmaktadır ve atlatılamaz.\n• Saat başına kaynak başına 200 istek. Bu sınıra ulaşıldığında, saatin sonuna kadar aramalar geçici olarak başarısız olur.\n• İstek başına maksimum 100 sonuç, bu da çok sayıda bölüm içeren seriler için aramaların birden fazla çağrıya bölünmesini zorunlu kılar.\n• Site tarafından saniyede 1 istek izin verilmektedir. Güvenlik açısından MosaicView her istek arasında 2 saniye bekler, çünkü daha hızlı istekler geçici engellemelere neden olma olasılığı çok yüksektir.\n\nBu özellik tamamen açık kaynaklı {scraper} projesine dayanmaktadır.",
     "library": "Kütüphane",
     "library_content": "Kütüphane, dijital çizgi romanlarınızı kataloglamanıza ve kolayca bulmanıza olanak tanır. Her dosyada bulunan meta verileri (başlık, seri, yazarlar, yayıncı…) okuyarak tek bir kütüphane dosyasında (*.mvdb) toplayarak çalışır.\n\nKütüphane oluşturmak için Kütüphane → Yeni veritabanı menüsünü kullanın ya da bir veya daha fazla klasörü mozaiğe sürükleyin ve \"Klasör(ler)den kitaplık oluştur\"u seçin. MosaicView klasörlerinizi tarayacak ve uyumlu tüm dosyaları otomatik olarak dizinleyecektir.\n\nKütüphane açıldıktan sonra çizgi romanlarınızı seri, yazar, yıl, yayıncı vb. kriterlere göre filtreleyebilir, ihtiyaç duyduğunuz kadar kriter birleştirebilirsiniz. Çift tıklama dosyayı MosaicView'da açar. Sonuçlar Excel formatında (*.xlsx) dışa aktarılabilir."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "API anahtarınızı buraya yapıştırın",
       "validate": "Doğrula",
       "error_empty": "Lütfen bir API anahtarı girin.",
-      "clear": "Anahtarı temizle"
+      "clear": "Anahtarı temizle",
+      "encryption_notice": "Anahtarınız hiçbir zaman düz metin olarak saklanmaz. Oturumunuza bağlı Windows DPAPI şifrelemesiyle korunmaktadır.",
+      "show_key": "Göster",
+      "hide_key": "Gizle"
     },
     "menu_label": "Meta Veriler",
     "tooltip": "Meta verileri al",

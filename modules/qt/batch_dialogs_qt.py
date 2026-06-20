@@ -707,8 +707,8 @@ class _ImgSummaryDialog(QDialog):
 def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch CBR→CBZ. Équivalent de batch_dialogs.batch_convert_cbr_to_cbz."""
     if rarfile is None:
-        ErrorDialog(parent, _("dialogs.batch_cbr.no_cbr_title"),
-                    _("dialogs.batch_cbr.rarfile_unavailable")).exec()
+        ErrorDialog(parent, lambda: _("dialogs.batch_cbr.no_cbr_title"),
+                    lambda: _("dialogs.batch_cbr.rarfile_unavailable")).show()
         return
 
     if directory is None:
@@ -729,8 +729,8 @@ def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
     cbr_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not cbr_files:
-        InfoDialog(parent, _("dialogs.batch_cbr.no_cbr_title"),
-                   _("dialogs.batch_cbr.no_cbr_message").format(directory=directory)).exec()
+        InfoDialog(parent, lambda: _("dialogs.batch_cbr.no_cbr_title"),
+                   lambda d=directory: _("dialogs.batch_cbr.no_cbr_message").format(directory=d)).show()
         return
 
     batch_convert_cbr_to_cbz_confirm(parent, cbr_files, directory, callbacks)
@@ -1116,8 +1116,8 @@ def batch_convert_cb7_to_cbz(parent, callbacks, directory=None):
     cb7_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not cb7_files:
-        InfoDialog(parent, _("dialogs.batch_cb7.no_cb7_title"),
-                   _("dialogs.batch_cb7.no_cb7_message").format(directory=directory)).exec()
+        InfoDialog(parent, lambda: _("dialogs.batch_cb7.no_cb7_title"),
+                   lambda d=directory: _("dialogs.batch_cb7.no_cb7_message").format(directory=d)).show()
         return
 
     batch_convert_cb7_to_cbz_confirm(parent, cb7_files, directory, callbacks)
@@ -1504,8 +1504,8 @@ def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
     cbt_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not cbt_files:
-        InfoDialog(parent, _("dialogs.batch_cbt.no_cbt_title"),
-                   _("dialogs.batch_cbt.no_cbt_message").format(directory=directory)).exec()
+        InfoDialog(parent, lambda: _("dialogs.batch_cbt.no_cbt_title"),
+                   lambda d=directory: _("dialogs.batch_cbt.no_cbt_message").format(directory=d)).show()
         return
 
     batch_convert_cbt_to_cbz_confirm(parent, cbt_files, directory, callbacks)
@@ -1757,8 +1757,8 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch PDF→CBZ."""
     if not PDF_AVAILABLE:
         ErrorDialog(parent,
-                    _("dialogs.batch_pdf.pymupdf_required_title"),
-                    _("dialogs.batch_pdf.pymupdf_required_message")).exec()
+                    lambda: _("dialogs.batch_pdf.pymupdf_required_title"),
+                    lambda: _("dialogs.batch_pdf.pymupdf_required_message")).show()
         return
 
     if directory is None:
@@ -1779,8 +1779,8 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
     pdf_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not pdf_files:
-        InfoDialog(parent, _("dialogs.batch_pdf.no_pdf_title"),
-                   _("dialogs.batch_pdf.no_pdf_message").format(directory=directory)).exec()
+        InfoDialog(parent, lambda: _("dialogs.batch_pdf.no_pdf_title"),
+                   lambda d=directory: _("dialogs.batch_pdf.no_pdf_message").format(directory=d)).show()
         return
 
     batch_convert_pdf_to_cbz_confirm(parent, pdf_files, directory, callbacks)
@@ -2190,8 +2190,8 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
         img_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
         if not img_files:
-            InfoDialog(parent, _("dialogs.batch_img.no_img_title"),
-                       _("dialogs.batch_img.no_img_message").format(directory=actual_directory)).exec()
+            InfoDialog(parent, lambda: _("dialogs.batch_img.no_img_title"),
+                       lambda d=actual_directory: _("dialogs.batch_img.no_img_message").format(directory=d)).show()
             return
 
         if chosen_mode == _ImgModeDialog.MODE_ONE_PER_IMAGE:

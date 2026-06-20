@@ -114,7 +114,7 @@ hiddenimports = [
     # Optionnels
     'fitz',
     'rarfile',
-    'win32clipboard', 'win32print', 'win32ui', 'win32con',
+    'win32clipboard', 'win32print', 'win32ui', 'win32con', 'win32crypt',
     'numpy', 'tifffile', 'olefile', 'defusedxml',
 ]
 

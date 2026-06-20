@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Função não disponível",
         "message": "A renumeração não está disponível enquanto as pastas não forem achatadas.\nAchate as pastas antes de renumerar."
+      },
+      "unsafe_path_skipped": {
+        "title": "Ficheiros ignorados",
+        "message": "{count} ficheiro(s) foram ignorados porque a sua localização não era válida."
+      },
+      "unsafe_path_open": {
+        "title": "Não é possível abrir",
+        "message": "Não foi possível abrir este ficheiro porque a sua localização não era válida."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Arquivos salvos",
         "message": "{count} arquivo(s) salvo(s) em {folder}",
-        "open_folder": "Deseja abrir a pasta?"
+        "open_folder": "Deseja abrir a pasta?",
+        "message_with_skipped": "{count} ficheiro(s) guardado(s) em {folder}. {skipped} ficheiro(s) ignorado(s) porque a sua localização não era válida."
       },
       "adjustments_applied": {
         "title": "Ajustes aplicados",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Criação e edição de ficheiros NFO",
     "nfo_editor_content": "Um ficheiro NFO é um ficheiro de texto (com a extensão .nfo) utilizado para armazenar informações sobre o arquivo: sinopse, créditos, notas…\n\nPara criar um ficheiro NFO, utilize o ícone dedicado na barra de ferramentas, o menu Ficheiro ou o menu de contexto (clique com o botão direito no mosaico). O comando só está disponível quando o mosaico não está vazio. Introduza um nome e conteúdo: o ficheiro é inserido diretamente no mosaico sem extração ou gravação intermédia.\n\nPara editar um ficheiro NFO existente, faça duplo clique sobre ele no mosaico. A janela abre-se pré-preenchida com o nome e conteúdo atuais, ambos editáveis. Em ambos os casos, a operação é registada no histórico de desfazer.",
     "metadata": "Metadados ComicVine",
-    "metadata_content": "O MosaicView permite recuperar automaticamente os metadados das suas BD (título, série, número, autores, resumo...) da base de dados ComicVine, um site colaborativo mantido pela comunidade.\n\nModo individual: abra uma BD e utilize o botão da barra de ferramentas ou o menu Metadados. Abre-se um assistente em duas etapas: escolha primeiro a série, depois o episódio correspondente. Os metadados são escritos no ComicInfo.xml dentro do arquivo.\n\nModo batch: largue uma ou mais pastas no mosaico e escolha \"Importação em lote de metadados\", ou utilize o botão dedicado na barra de ferramentas ou o menu Metadados. O assistente abre-se sucessivamente para cada ficheiro encontrado (CBZ, CBR, CB7, CBT, PDF). Os ficheiros que não são CBZ são automaticamente convertidos para CBZ após a escrita dos metadados.\n\nChave API: é necessária uma chave API gratuita do ComicVine. A aplicação irá guiá-lo para a obter. Obtém-se em comicvine.gamespot.com após a criação de uma conta.\n\nLimitações da API: estas limitações são impostas pelo ComicVine e não podem ser contornadas.\n• 200 pedidos por recurso por hora. Se este limite for atingido, as pesquisas falham temporariamente até ao final da hora.\n• Máximo de 100 resultados por pedido, o que obriga a segmentar as pesquisas em várias chamadas para séries com muitos episódios.\n• 1 pedido por segundo permitido pelo site. Por segurança, o MosaicView aguarda 2 segundos entre cada pedido, pois pedidos mais rápidos são muito propensos a causar bloqueios temporários.\n\nEsta funcionalidade é inteiramente baseada no projeto de código aberto {scraper}.",
+    "metadata_content": "O MosaicView permite recuperar automaticamente os metadados das suas BD (título, série, número, autores, resumo...) da base de dados ComicVine, um site colaborativo mantido pela comunidade.\n\nModo individual: abra uma BD e utilize o botão da barra de ferramentas ou o menu Metadados. Abre-se um assistente em duas etapas: escolha primeiro a série, depois o episódio correspondente. Os metadados são escritos no ComicInfo.xml dentro do arquivo.\n\nModo batch: largue uma ou mais pastas no mosaico e escolha \"Importação em lote de metadados\", ou utilize o botão dedicado na barra de ferramentas ou o menu Metadados. O assistente abre-se sucessivamente para cada ficheiro encontrado (CBZ, CBR, CB7, CBT, PDF). Os ficheiros que não são CBZ são automaticamente convertidos para CBZ após a escrita dos metadados.\n\nChave API: é necessária uma chave API gratuita do ComicVine. A aplicação irá guiá-lo para a obter. Obtém-se em comicvine.gamespot.com após a criação de uma conta. A chave nunca é armazenada em texto simples: é cifrada pelo Windows DPAPI e só pode ser lida pela sua conta Windows.\n\nLimitações da API: estas limitações são impostas pelo ComicVine e não podem ser contornadas.\n• 200 pedidos por recurso por hora. Se este limite for atingido, as pesquisas falham temporariamente até ao final da hora.\n• Máximo de 100 resultados por pedido, o que obriga a segmentar as pesquisas em várias chamadas para séries com muitos episódios.\n• 1 pedido por segundo permitido pelo site. Por segurança, o MosaicView aguarda 2 segundos entre cada pedido, pois pedidos mais rápidos são muito propensos a causar bloqueios temporários.\n\nEsta funcionalidade é inteiramente baseada no projeto de código aberto {scraper}.",
     "library": "Biblioteca",
     "library_content": "A biblioteca permite-lhe catalogar e encontrar facilmente as suas BD digitais. Funciona lendo os metadados contidos em cada ficheiro (título, série, autores, editora…) e reunindo-os num único ficheiro de biblioteca (*.mvdb).\n\nPara criar uma biblioteca, utilize o menu Biblioteca → Nova base de dados, ou arraste uma ou mais pastas para o mosaico e escolha \"Criar uma biblioteca a partir da(s) pasta(s)\". O MosaicView percorrerá então as suas pastas e indexará automaticamente todos os ficheiros compatíveis.\n\nUma vez aberta a biblioteca, pode filtrar as suas BD por série, autor, ano, editora, etc., combinando tantos critérios quantos necessários. Um duplo clique abre o ficheiro no MosaicView. Os resultados podem ser exportados no formato Excel (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Cole sua chave API aqui",
       "validate": "Validar",
       "error_empty": "Por favor, insira uma chave API.",
-      "clear": "Apagar chave"
+      "clear": "Apagar chave",
+      "encryption_notice": "A sua chave nunca é armazenada em texto simples. É protegida pela encriptação Windows DPAPI, associada à sua sessão.",
+      "show_key": "Mostrar",
+      "hide_key": "Ocultar"
     },
     "menu_label": "Metadados",
     "tooltip": "Recuperar metadados",

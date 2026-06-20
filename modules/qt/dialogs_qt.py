@@ -9,6 +9,22 @@ from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
 
 
+def position_dialog_on_parent(dialog, parent):
+    """Centre `dialog` sur `parent` AVANT le premier affichage, sans flash.
+
+    À appeler juste avant show()/show_nonmodal() (PAS dans showEvent). Force le
+    calcul de la taille via adjustSize() puis positionne la fenêtre, de sorte que
+    le premier rendu se fasse déjà au bon endroit (pas de saut visible).
+    """
+    if parent is None:
+        return
+    # ensurePolished() force le calcul du layout SANS modifier la taille demandée
+    # (resize()/setFixedSize()). NE PAS utiliser adjustSize() : il écraserait la
+    # taille explicite de la fenêtre par la taille minimale du contenu.
+    dialog.ensurePolished()
+    _center_on_widget(dialog, parent)
+
+
 def _center_on_widget(dialog, parent):
     """Centre `dialog` sur `parent` en respectant les limites de l'écran."""
     if parent is None:
@@ -44,11 +60,13 @@ class MsgDialog(QDialog):
     def __init__(self, parent, title_key: str, message_key: str,
                  message_kwargs: dict | None = None):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self._title_key = title_key
         self._message_key = message_key
         self._message_kwargs = message_kwargs or {}
         self._center_parent = parent
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -61,7 +79,7 @@ class MsgDialog(QDialog):
         layout.addWidget(self._lbl)
 
         self._btn_ok = QPushButton()
-        self._btn_ok.clicked.connect(self.accept)
+        self._btn_ok.clicked.connect(self.close)
         layout.addWidget(self._btn_ok, alignment=Qt.AlignCenter)
 
         self._retranslate()
@@ -85,21 +103,13 @@ class MsgDialog(QDialog):
         except RuntimeError:
             pass
 
-    def exec(self):
-        from modules.qt import user_guide_qt as _guide_mod
-        title_key = self._title_key
-        message_key = self._message_key
-        message_kwargs = self._message_kwargs
-
-        def _reopen():
-            w = MsgDialog(_guide_mod._help_window_ref, title_key, message_key, message_kwargs)
-            w.exec()
-
-        _guide_mod.register_child_reopen(_reopen)
-        try:
-            return super().exec()
-        finally:
-            _guide_mod.unregister_child_reopen()
+    def show_nonmodal(self):
+        # Positionne sur le panneau AVANT le premier affichage (pas de flash de
+        # recentrage). Le showEvent ajuste ensuite si la taille a changé.
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def _retranslate(self):
         from modules.qt.state import get_current_theme
@@ -132,14 +142,19 @@ class ConfirmDialog(QDialog):
     Utilisation : ConfirmDialog(parent, title_key, message_key).ask()
     """
 
+    result_signal = Signal(bool)   # True = OK, False = Annuler/fermeture
+
     def __init__(self, parent, title_key: str, message_key: str,
                  message_kwargs: dict | None = None):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self._title_key = title_key
         self._message_key = message_key
         self._message_kwargs = message_kwargs or {}
+        self._emitted = False
         self._center_parent = parent
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -155,10 +170,10 @@ class ConfirmDialog(QDialog):
         btn_row.addStretch()
         self._btn_ok = QPushButton()
         self._btn_ok.setDefault(True)
-        self._btn_ok.clicked.connect(self.accept)
+        self._btn_ok.clicked.connect(self._on_ok)
         btn_row.addWidget(self._btn_ok)
         self._btn_cancel = QPushButton()
-        self._btn_cancel.clicked.connect(self.reject)
+        self._btn_cancel.clicked.connect(self._on_cancel)
         btn_row.addWidget(self._btn_cancel)
         btn_row.addStretch()
         layout.addLayout(btn_row)
@@ -169,7 +184,6 @@ class ConfirmDialog(QDialog):
         from modules.qt.language_signal import language_signal
         self._lang_handler = lambda _: (self._retranslate(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
-        self.finished.connect(self._on_close)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -177,15 +191,42 @@ class ConfirmDialog(QDialog):
             p = self._center_parent
             QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
-    def _on_close(self):
+    def _disconnect_lang(self):
         from modules.qt.language_signal import language_signal
         try:
             language_signal.changed.disconnect(self._lang_handler)
         except RuntimeError:
             pass
 
-    def ask(self) -> bool:
-        return self.exec() == QDialog.Accepted
+    def _finish(self, result: bool):
+        if self._emitted:
+            return
+        self._emitted = True
+        self._disconnect_lang()
+        self.result_signal.emit(result)
+        self.hide()
+        self.deleteLater()
+
+    def _on_ok(self):
+        self._finish(True)
+
+    def _on_cancel(self):
+        self._finish(False)
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            self._disconnect_lang()
+            self.result_signal.emit(False)
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche le dialogue (NON modal) et appelle on_result(bool) à la réponse."""
+        self.result_signal.connect(on_result)
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def _retranslate(self):
         from modules.qt.state import get_current_theme
@@ -406,13 +447,18 @@ class QuestionYNCDialog(QDialog):
         result = QuestionYNCDialog(parent, lambda: _("key"), lambda: build_msg()).ask()
     """
 
+    result_signal = Signal(str)   # "yes" | "no" | "cancel"
+
     def __init__(self, parent, title, message):
         super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
         self._result = "cancel"
+        self._emitted = False
         self._center_parent = parent
-        self.setModal(True)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -434,7 +480,7 @@ class QuestionYNCDialog(QDialog):
         self._btn_no.clicked.connect(self._on_no)
         btn_row.addWidget(self._btn_no)
         self._btn_cancel = QPushButton()
-        self._btn_cancel.clicked.connect(self.reject)
+        self._btn_cancel.clicked.connect(self._on_cancel)
         btn_row.addWidget(self._btn_cancel)
         btn_row.addStretch()
         layout.addLayout(btn_row)
@@ -445,7 +491,6 @@ class QuestionYNCDialog(QDialog):
         from modules.qt.language_signal import language_signal
         self._lang_handler = lambda _: (self._apply_theme(), self._apply_font())
         language_signal.changed.connect(self._lang_handler)
-        self.finished.connect(self._on_close)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -453,24 +498,47 @@ class QuestionYNCDialog(QDialog):
             p = self._center_parent
             QTimer.singleShot(0, lambda: _center_on_widget(self, p))
 
-    def _on_yes(self):
-        self._result = "yes"
-        self.accept()
-
-    def _on_no(self):
-        self._result = "no"
-        self.accept()
-
-    def _on_close(self):
+    def _disconnect_lang(self):
         from modules.qt.language_signal import language_signal
         try:
             language_signal.changed.disconnect(self._lang_handler)
         except RuntimeError:
             pass
 
-    def ask(self) -> str:
-        self.exec()
-        return self._result
+    def _finish(self, result):
+        if self._emitted:
+            return
+        self._emitted = True
+        self._result = result
+        self._disconnect_lang()
+        self.result_signal.emit(result)
+        self.hide()
+        self.deleteLater()
+
+    def _on_yes(self):
+        self._finish("yes")
+
+    def _on_no(self):
+        self._finish("no")
+
+    def _on_cancel(self):
+        self._finish("cancel")
+
+    def closeEvent(self, event):
+        if not self._emitted:
+            self._emitted = True
+            self._disconnect_lang()
+            self.result_signal.emit("cancel")
+        event.accept()
+
+    def ask_async(self, on_result):
+        """Affiche le dialogue (NON modal) et appelle on_result(str) à la réponse.
+        result ∈ {'yes','no','cancel'}. Remplace l'ancien ask() modal."""
+        self.result_signal.connect(on_result)
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def _apply_theme(self):
         from modules.qt.state import get_current_theme

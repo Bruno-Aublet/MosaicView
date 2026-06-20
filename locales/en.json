@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Feature not available",
         "message": "Renumbering is not available until the folders have been flattened.\nPlease flatten the folders before renumbering."
+      },
+      "unsafe_path_skipped": {
+        "title": "Files skipped",
+        "message": "{count} file(s) were skipped because their location was not valid."
+      },
+      "unsafe_path_open": {
+        "title": "Cannot open",
+        "message": "This file could not be opened because its location was not valid."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Files saved",
         "message": "{count} file(s) saved to {folder}",
-        "open_folder": "Do you want to open the folder?"
+        "open_folder": "Do you want to open the folder?",
+        "message_with_skipped": "{count} file(s) saved to {folder}. {skipped} file(s) skipped because their location was not valid."
       },
       "adjustments_applied": {
         "title": "Adjustments Applied",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "Creating and editing NFO files",
     "nfo_editor_content": "An NFO file is a text file (with the .nfo extension) used to store information about the archive: synopsis, credits, notes…\n\nTo create an NFO file, use the dedicated icon in the toolbar, the File menu, or the context menu (right-click on the mosaic). The command is only available when the mosaic is not empty. Enter a name and content: the file is inserted directly into the mosaic, with no extraction or intermediate save.\n\nTo edit an existing NFO file, double-click it in the mosaic. The window opens pre-filled with the current name and content, both of which can be edited. In both cases, the operation is recorded in the undo history.",
     "metadata": "ComicVine Metadata",
-    "metadata_content": "MosaicView allows you to automatically retrieve metadata for your comics (title, series, number, authors, summary...) from the ComicVine database, a collaborative website maintained by the community.\n\nSingle mode: open a comic, then use the toolbar button or the Metadata menu. A two-step wizard opens: first choose the series, then the corresponding episode. Metadata is written to ComicInfo.xml inside the archive.\n\nBatch mode: drop one or more folders onto the mosaic and choose \"Batch metadata import\", or use the dedicated toolbar button or the Metadata menu. The wizard opens successively for each file found (CBZ, CBR, CB7, CBT, PDF). Non-CBZ files are automatically converted to CBZ after the metadata is written.\n\nAPI key: a free ComicVine API key is required. The application will guide you to obtain it. It is obtained at comicvine.gamespot.com after creating an account.\n\nAPI limitations: these limitations are imposed by ComicVine and cannot be bypassed.\n• 200 requests per resource per hour. If this limit is reached, searches temporarily fail until the end of the hour.\n• Maximum 100 results per request, which forces searches to be split across multiple calls for series with many episodes.\n• 1 request per second allowed by the site. For safety, MosaicView waits 2 seconds between each request, as faster requests are highly likely to cause temporary blocks.\n\nThis feature is entirely based on the open source project {scraper}.",
+    "metadata_content": "MosaicView allows you to automatically retrieve metadata for your comics (title, series, number, authors, summary...) from the ComicVine database, a collaborative website maintained by the community.\n\nSingle mode: open a comic, then use the toolbar button or the Metadata menu. A two-step wizard opens: first choose the series, then the corresponding episode. Metadata is written to ComicInfo.xml inside the archive.\n\nBatch mode: drop one or more folders onto the mosaic and choose \"Batch metadata import\", or use the dedicated toolbar button or the Metadata menu. The wizard opens successively for each file found (CBZ, CBR, CB7, CBT, PDF). Non-CBZ files are automatically converted to CBZ after the metadata is written.\n\nAPI key: a free ComicVine API key is required. The application will guide you to obtain it. It is obtained at comicvine.gamespot.com after creating an account. The key is never stored in plain text: it is encrypted by Windows DPAPI and can only be read by your Windows account.\n\nAPI limitations: these limitations are imposed by ComicVine and cannot be bypassed.\n• 200 requests per resource per hour. If this limit is reached, searches temporarily fail until the end of the hour.\n• Maximum 100 results per request, which forces searches to be split across multiple calls for series with many episodes.\n• 1 request per second allowed by the site. For safety, MosaicView waits 2 seconds between each request, as faster requests are highly likely to cause temporary blocks.\n\nThis feature is entirely based on the open source project {scraper}.",
     "library": "Library",
     "library_content": "The library allows you to catalogue and easily find your digital comics. It works by reading the metadata contained in each file (title, series, authors, publisher…) and gathering them into a single library file (*.mvdb).\n\nTo create a library, use the Library menu → New database, or drop one or more folders into the mosaic and choose \"Create a library from the folder(s)\". MosaicView will then scan your folders and automatically index all compatible files.\n\nOnce the library is open, you can filter your comics by series, author, year, publisher, etc., combining as many criteria as needed. A double-click opens the file in MosaicView. Results can be exported in Excel format (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Paste your API key here",
       "validate": "Validate",
       "error_empty": "Please enter an API key.",
-      "clear": "Clear key"
+      "clear": "Clear key",
+      "encryption_notice": "Your key is never stored in plain text. It is protected by Windows DPAPI encryption, tied to your session.",
+      "show_key": "Show",
+      "hide_key": "Hide"
     },
     "menu_label": "Metadata",
     "tooltip": "Retrieve metadata",

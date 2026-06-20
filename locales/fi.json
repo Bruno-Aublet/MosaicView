@@ -344,6 +344,14 @@
       "renumber_disabled_in_subdirectory": {
         "title": "Toiminto ei ole käytettävissä",
         "message": "Uudelleennumerointi ei ole käytettävissä, ennen kuin kansiot on tasoitettu.\nTasoita kansiot ennen uudelleennumerointia."
+      },
+      "unsafe_path_skipped": {
+        "title": "Ohitetut tiedostot",
+        "message": "{count} tiedosto(a) ohitettiin, koska niiden sijainti ei ollut kelvollinen."
+      },
+      "unsafe_path_open": {
+        "title": "Ei voi avata",
+        "message": "Tätä tiedostoa ei voitu avata, koska sen sijainti ei ollut kelvollinen."
       }
     },
     "errors": {
@@ -588,7 +596,8 @@
       "files_saved": {
         "title": "Tallennettu onnistuneesti",
         "message": "{count} tiedostoa tallennettiin kohteeseen:\n{folder}",
-        "open_folder": "Haluatko avata kansion?"
+        "open_folder": "Haluatko avata kansion?",
+        "message_with_skipped": "{count} tiedosto(a) tallennettu kohteeseen {folder}. {skipped} tiedosto(a) ohitettu, koska niiden sijainti ei ollut kelvollinen."
       },
       "adjustments_applied": {
         "title": "Saadot kaytetty",
@@ -1277,7 +1286,7 @@
     "nfo_editor": "NFO-tiedostojen luominen ja muokkaaminen",
     "nfo_editor_content": "NFO-tiedosto on tekstitiedosto (tunnisteella .nfo), jota käytetään arkistoa koskevien tietojen tallentamiseen: synopsis, tekijätiedot, muistiinpanot…\n\nLuo NFO-tiedosto käyttämällä työkalurivin omistettua kuvaketta, Tiedosto-valikkoa tai pikavalikoa (napsauta hiiren oikealla painikkeella mosaiikkia). Komento on käytettävissä vain, kun mosaiikki ei ole tyhjä. Syötä nimi ja sisältö: tiedosto lisätään suoraan mosaiikkiin ilman purkamista tai väliaikaista tallentamista.\n\nMuokataksesi olemassa olevaa NFO-tiedostoa kaksoisnapsauta sitä mosaiikissa. Ikkuna avautuu valmiiksi täytettynä nykyisellä nimellä ja sisällöllä, molemmat muokattavissa. Molemmissa tapauksissa toiminto tallennetaan peruutushistoriaan.",
     "metadata": "ComicVine-metatiedot",
-    "metadata_content": "MosaicView mahdollistaa sarjakuviesi metatietojen automaattisen hakemisen (otsikko, sarja, numero, tekijät, tiivistelmä...) ComicVine-tietokannasta, yhteisön ylläpitämältä yhteistyösivustolta.\n\nYksittäinen tila: avaa sarjakuva ja käytä sitten työkalupalkin painiketta tai Metatiedot-valikkoa. Kaksivaiheinen ohjattu toiminto avautuu: valitse ensin sarja, sitten vastaava jakso. Metatiedot kirjoitetaan arkiston sisällä olevaan ComicInfo.xml-tiedostoon.\n\nEräkäsittelytila: pudota yksi tai useampi kansio mosaiikkiin ja valitse \"Metatietojen erätuonti\", tai käytä työkalupalkin omistettua painiketta tai Metatiedot-valikkoa. Ohjattu toiminto avautuu peräkkäin jokaiselle löydetylle tiedostolle (CBZ, CBR, CB7, CBT, PDF). Muut kuin CBZ-tiedostot muunnetaan automaattisesti CBZ-muotoon metatietojen kirjoittamisen jälkeen.\n\nAPI-avain: tarvitaan ilmainen ComicVine API-avain. Sovellus opastaa sinua hankkimaan sen. Se saadaan osoitteesta comicvine.gamespot.com tilin luomisen jälkeen.\n\nAPI-rajoitukset: nämä rajoitukset asettaa ComicVine, eikä niitä voi kiertää.\n• 200 pyyntöä per resurssi per tunti. Jos tämä raja saavutetaan, haut epäonnistuvat väliaikaisesti tunnin loppuun asti.\n• Enintään 100 tulosta per pyyntö, mikä pakottaa jakamaan haut useisiin kutsuihin sarjoille, joissa on paljon jaksoja.\n• 1 pyyntö sekunnissa sivuston sallima. Turvallisuuden vuoksi MosaicView odottaa 2 sekuntia pyyntöjen välillä, sillä nopeammat pyynnöt aiheuttavat hyvin todennäköisesti väliaikaisia estoja.\n\nTämä toiminto perustuu kokonaan avoimen lähdekoodin projektiin {scraper}.",
+    "metadata_content": "MosaicView mahdollistaa sarjakuviesi metatietojen automaattisen hakemisen (otsikko, sarja, numero, tekijät, tiivistelmä...) ComicVine-tietokannasta, yhteisön ylläpitämältä yhteistyösivustolta.\n\nYksittäinen tila: avaa sarjakuva ja käytä sitten työkalupalkin painiketta tai Metatiedot-valikkoa. Kaksivaiheinen ohjattu toiminto avautuu: valitse ensin sarja, sitten vastaava jakso. Metatiedot kirjoitetaan arkiston sisällä olevaan ComicInfo.xml-tiedostoon.\n\nEräkäsittelytila: pudota yksi tai useampi kansio mosaiikkiin ja valitse \"Metatietojen erätuonti\", tai käytä työkalupalkin omistettua painiketta tai Metatiedot-valikkoa. Ohjattu toiminto avautuu peräkkäin jokaiselle löydetylle tiedostolle (CBZ, CBR, CB7, CBT, PDF). Muut kuin CBZ-tiedostot muunnetaan automaattisesti CBZ-muotoon metatietojen kirjoittamisen jälkeen.\n\nAPI-avain: tarvitaan ilmainen ComicVine API-avain. Sovellus opastaa sinua hankkimaan sen. Se saadaan osoitteesta comicvine.gamespot.com tilin luomisen jälkeen. Avainta ei koskaan tallenneta selväkielisenä: se on salattu Windows DPAPI:lla ja vain Windows-tilisi voi lukea sen.\n\nAPI-rajoitukset: nämä rajoitukset asettaa ComicVine, eikä niitä voi kiertää.\n• 200 pyyntöä per resurssi per tunti. Jos tämä raja saavutetaan, haut epäonnistuvat väliaikaisesti tunnin loppuun asti.\n• Enintään 100 tulosta per pyyntö, mikä pakottaa jakamaan haut useisiin kutsuihin sarjoille, joissa on paljon jaksoja.\n• 1 pyyntö sekunnissa sivuston sallima. Turvallisuuden vuoksi MosaicView odottaa 2 sekuntia pyyntöjen välillä, sillä nopeammat pyynnöt aiheuttavat hyvin todennäköisesti väliaikaisia estoja.\n\nTämä toiminto perustuu kokonaan avoimen lähdekoodin projektiin {scraper}.",
     "library": "Kirjasto",
     "library_content": "Kirjasto antaa sinulle mahdollisuuden luetteloida ja löytää helposti digitaaliset sarjakuvasi. Se toimii lukemalla jokaisen tiedoston metatiedot (nimi, sarja, tekijät, kustantaja…) ja kokoamalla ne yhteen kirjastotiedostoon (*.mvdb).\n\nLuo kirjasto käyttämällä Kirjasto-valikon kohtaa Uusi tietokanta tai pudottamalla yksi tai useampi kansio mosaiikkiin ja valitsemalla \"Luo kirjasto kansiosta/kansioista\". MosaicView skannaa sitten kansiot ja indeksoi automaattisesti kaikki yhteensopivat tiedostot.\n\nKun kirjasto on auki, voit suodattaa sarjakuviasi sarjan, tekijän, vuoden, kustantajan jne. mukaan yhdistämällä niin monta kriteeriä kuin tarvitaan. Kaksoisnapsautus avaa tiedoston MosaicView'ssa. Tulokset voidaan viedä Excel-muodossa (*.xlsx)."
   },
@@ -1452,7 +1461,10 @@
       "placeholder": "Liitä API-avaimesi tähän",
       "validate": "Vahvista",
       "error_empty": "Anna API-avain.",
-      "clear": "Tyhjennä avain"
+      "clear": "Tyhjennä avain",
+      "encryption_notice": "Avaintasi ei koskaan tallenneta selväkielisenä. Se on suojattu Windows DPAPI -salauksella, joka on sidottu istuntoosi.",
+      "show_key": "Näytä",
+      "hide_key": "Piilota"
     },
     "menu_label": "Metatiedot",
     "tooltip": "Hae metatiedot",

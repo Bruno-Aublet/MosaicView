@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.3.4"
+__version__ = "1.3.5"
 
 import sys
 import os
@@ -622,13 +622,15 @@ class MainWindow(QMainWindow):
         )
         panel = source_panel or self._active_panel
         show_user_guide(panel, {
-            "export_piqad_font":              lambda: export_piqad_font(self),
-            "export_tengwar_fonts":           lambda: export_tengwar_fonts(self),
+            # parent = panel (pas self) : les dialogues de succès se centrent sur le
+            # panneau qui a ouvert le mode d'emploi, pas sur la fenêtre principale.
+            "export_piqad_font":              lambda: export_piqad_font(panel),
+            "export_tengwar_fonts":           lambda: export_tengwar_fonts(panel),
             "clear_temp_files_with_message":  self._active_panel._clear_temp_files_with_message,
             "clear_recent_files":             self._active_panel._clear_recent_files,
             "clear_config_file":              self._active_panel._clear_config_file,
             "clear_clipboard_files":          self._active_panel._clear_clipboard_files,
-            "save_all_icons":                 lambda: save_all_icons(self),
+            "save_all_icons":                 lambda: save_all_icons(panel),
         })
 
     # ──────────────────────────────────────────────────────────────────────────

@@ -36,7 +36,7 @@ class _ApiKeyDialog(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
-        self.resize(500, 230)
+        self.setMinimumWidth(500)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(30, 24, 30, 24)
@@ -45,14 +45,14 @@ class _ApiKeyDialog(QDialog):
         # Explication
         self._explanation = QLabel()
         self._explanation.setWordWrap(True)
-        self._explanation.setAlignment(Qt.AlignLeft)
+        self._explanation.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._explanation)
 
         # Instructions avec liens cliquables
         self._instructions = QLabel()
         self._instructions.setWordWrap(True)
         self._instructions.setOpenExternalLinks(True)
-        self._instructions.setAlignment(Qt.AlignLeft)
+        self._instructions.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._instructions)
 
         # Champ de saisie
@@ -61,13 +61,23 @@ class _ApiKeyDialog(QDialog):
         self._field_label = QLabel()
         field_row.addWidget(self._field_label)
         self._key_input = QLineEdit()
+        self._key_input.setEchoMode(QLineEdit.Password)
         self._key_input.setContextMenuPolicy(Qt.DefaultContextMenu)
         field_row.addWidget(self._key_input)
+        self._btn_toggle_visibility = QPushButton()
+        self._btn_toggle_visibility.clicked.connect(self._on_toggle_visibility)
+        field_row.addWidget(self._btn_toggle_visibility)
         layout.addLayout(field_row)
+
+        # Notice chiffrement
+        self._encryption_notice = QLabel()
+        self._encryption_notice.setWordWrap(True)
+        self._encryption_notice.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._encryption_notice)
 
         # Message d'erreur (caché par défaut)
         self._error_label = QLabel()
-        self._error_label.setAlignment(Qt.AlignLeft)
+        self._error_label.setAlignment(Qt.AlignCenter)
         self._error_label.hide()
         layout.addWidget(self._error_label)
 
@@ -89,7 +99,7 @@ class _ApiKeyDialog(QDialog):
         btn_row.addWidget(self._btn_validate)
         layout.addLayout(btn_row)
 
-        existing_key = config_manager.get('comicvine_api_key', '').strip()
+        existing_key = config_manager.get_comicvine_api_key()
         if existing_key:
             self._key_input.setText(existing_key)
         self._key_input.textChanged.connect(self._update_clear_btn)
@@ -104,6 +114,8 @@ class _ApiKeyDialog(QDialog):
 
     def showEvent(self, event):
         super().showEvent(event)
+        if not event.spontaneous():
+            self.adjustSize()
         if self._center_parent and not event.spontaneous():
             from modules.qt.dialogs_qt import _center_on_widget
             p = self._center_parent
@@ -139,8 +151,9 @@ class _ApiKeyDialog(QDialog):
         self._explanation.setFont(font)
         self._explanation.setStyleSheet(label_style)
 
-        cv_link     = f'<a href="{_CV_URL}" style="color:{theme["text"]};">ComicVine</a>'
-        api_link    = f'<a href="{_CV_API_URL}" style="color:{theme["text"]};">{_("comicvine.api_key_dialog.api_page_label")}</a>'
+        link_color  = theme.get("link", "#4A9EFF")
+        cv_link     = f'<a href="{_CV_URL}" style="color:{link_color};">ComicVine</a>'
+        api_link    = f'<a href="{_CV_API_URL}" style="color:{link_color};">{_("comicvine.api_key_dialog.api_page_label")}</a>'
         instructions_tpl = _("comicvine.api_key_dialog.instructions")
         self._instructions.setText(instructions_tpl.format(comicvine=cv_link, api_page=api_link))
         self._instructions.setFont(font)
@@ -153,6 +166,16 @@ class _ApiKeyDialog(QDialog):
         self._key_input.setPlaceholderText(_("comicvine.api_key_dialog.placeholder"))
         self._key_input.setFont(font)
         self._key_input.setStyleSheet(input_style)
+
+        is_hidden = self._key_input.echoMode() == QLineEdit.Password
+        toggle_key = "comicvine.api_key_dialog.show_key" if is_hidden else "comicvine.api_key_dialog.hide_key"
+        self._btn_toggle_visibility.setText(_(toggle_key))
+        self._btn_toggle_visibility.setFont(font)
+        self._btn_toggle_visibility.setStyleSheet(btn_style)
+
+        self._encryption_notice.setText(_("comicvine.api_key_dialog.encryption_notice"))
+        self._encryption_notice.setFont(font_small)
+        self._encryption_notice.setStyleSheet(f"color: {theme.get('disabled', '#aaaaaa')}; background: transparent;")
 
         self._error_label.setFont(font_small)
         self._error_label.setStyleSheet(error_style)
@@ -170,12 +193,19 @@ class _ApiKeyDialog(QDialog):
         self._btn_validate.setFont(font)
         self._btn_validate.setStyleSheet(btn_style)
 
+    def _on_toggle_visibility(self):
+        if self._key_input.echoMode() == QLineEdit.Password:
+            self._key_input.setEchoMode(QLineEdit.Normal)
+        else:
+            self._key_input.setEchoMode(QLineEdit.Password)
+        self._retranslate()
+
     def _update_clear_btn(self):
         self._btn_clear.setEnabled(bool(self._key_input.text().strip()))
 
     def _on_clear(self):
         self._key_input.clear()
-        self._config.set('comicvine_api_key', '')
+        self._config.set_comicvine_api_key('')
 
     def _on_validate(self):
         key = self._key_input.text().strip()
@@ -183,7 +213,7 @@ class _ApiKeyDialog(QDialog):
             self._error_label.setText(_("comicvine.api_key_dialog.error_empty"))
             self._error_label.show()
             return
-        self._config.set('comicvine_api_key', key)
+        self._config.set_comicvine_api_key(key)
         self.result_key = key
         self.accept()
 
