@@ -1486,6 +1486,7 @@
     "info_single": "Din il-funzjoni tikseb il-metadejta tal-komik miftuħ bħalissa. Biex tipproċessa diversi fajls fl-istess ħin, uża l-ipproċessar bl-imħattar (igħaddi folder lejn it-tieqa).",
     "page_indicator": "Paġna {page}",
     "loading_issues_progress": "Qed jgħabbi... {loaded} / {total}",
+    "fetching_metadata": "Qed jitniżżlu l-metadati...",
     "issues_partial_load": "{count} numru/i mgħobbija — tagħbija mwaqqfa: {error}",
     "credit": "Metadejta: {comicvine} · ispirat minn {scraper}",
     "create_comicinfo": "Oħloq fajl ComicInfo.xml",

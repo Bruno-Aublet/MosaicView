@@ -1486,6 +1486,7 @@
     "info_single": "Esta função recupera metadados do quadrinho atualmente aberto. Para processar vários arquivos de uma vez, use o processamento em lote (arraste uma pasta para a janela).",
     "page_indicator": "Página {page}",
     "loading_issues_progress": "Carregando... {loaded} / {total}",
+    "fetching_metadata": "A descarregar metadados...",
     "issues_partial_load": "{count} edição(ões) carregada(s) — carregamento interrompido: {error}",
     "credit": "Metadados: {comicvine} · inspirado em {scraper}",
     "create_comicinfo": "Criar um ficheiro ComicInfo.xml",

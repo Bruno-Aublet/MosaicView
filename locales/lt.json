@@ -1486,6 +1486,7 @@
     "info_single": "Ši funkcija gauna šiuo metu atidaryto komikso metaduomenis. Norint apdoroti kelis failus iš karto, naudokite paketinį apdorojimą (nutempkite aplanką į langą).",
     "page_indicator": "Puslapis {page}",
     "loading_issues_progress": "Kraunama... {loaded} / {total}",
+    "fetching_metadata": "Atsisiunčiami metaduomenys...",
     "issues_partial_load": "{count} numeris(-iai) įkeltas(-i) — įkėlimas nutrauktas: {error}",
     "credit": "Metaduomenys: {comicvine} · įkvėpta {scraper}",
     "create_comicinfo": "Sukurti ComicInfo.xml failą",

@@ -376,6 +376,7 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     state.current_file = None
     state.images_data = []
     state.all_entries = []
+    state.selected_indices.clear()
     state.comic_metadata = None
     state._page_attrs_by_entry_id = {}
     state.modified = False

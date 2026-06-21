@@ -36,6 +36,11 @@ def _explorer_select(path: str):
         ctypes.windll.ole32.CoInitialize(None)
         try:
             shell32 = ctypes.windll.shell32
+            # Déclarer restype=ctypes.c_void_p pour ILCreateFromPathW et ILFree
+            # afin d'éviter la troncature 32 bits du pointeur PIDL sur Windows 64 bits
+            shell32.ILCreateFromPathW.restype = ctypes.c_void_p
+            shell32.ILFree.argtypes = [ctypes.c_void_p]
+            shell32.SHOpenFolderAndSelectItems.argtypes = [ctypes.c_void_p, ctypes.c_uint, ctypes.c_void_p, ctypes.c_ulong]
             def _select():
                 pidl = shell32.ILCreateFromPathW(path)
                 if pidl:
@@ -44,14 +49,14 @@ def _explorer_select(path: str):
                     return True
                 return False
             if not _select():
-                subprocess.Popen('explorer /select,"' + path + '"', shell=True)
+                subprocess.Popen(['explorer', f'/select,{path}'], shell=False)
                 return
             # Second appel après un délai : sélectionne le fichier dans la fenêtre
             # qui vient d'être ouverte (bug Explorer : 1er appel ouvre sans focus)
             time.sleep(0.6)
             _select()
         except Exception:
-            subprocess.Popen('explorer /select,"' + path + '"', shell=True)
+            subprocess.Popen(['explorer', f'/select,{path}'], shell=False)
         finally:
             ctypes.windll.ole32.CoUninitialize()
     threading.Thread(target=_run, daemon=True).start()

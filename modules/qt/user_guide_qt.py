@@ -314,7 +314,7 @@ class _ExportSuccessDialog(QDialog):
 
     def _open_explorer(self):
         try:
-            subprocess.run(f'explorer /select,"{os.path.abspath(self._first_file)}"', shell=True)
+            subprocess.run(['explorer', f'/select,{os.path.abspath(self._first_file)}'], shell=False)
         except Exception as ex:
             print(f"Erreur ouverture explorateur: {ex}")
 
@@ -623,14 +623,14 @@ class _HelpDialog(QDialog):
 
             self._section_widgets[title_key] = sw
 
-        # Bouton Fermer
-        self._close_btn = QPushButton()
+        # Bouton Fermer (hors scroll)
+        self._close_btn = QPushButton(_("buttons.close"))
         self._close_btn.setCursor(Qt.PointingHandCursor)
         close_font = _get_current_font(10)
         close_font.setBold(True)
         self._close_btn.setFont(close_font)
         self._close_btn.clicked.connect(self.close)
-        self._content_layout.addWidget(self._close_btn, alignment=Qt.AlignHCenter)
+        main_layout.addWidget(self._close_btn, alignment=Qt.AlignHCenter)
 
     # ── Builders de sections spéciales ────────────────────────────────────────
 

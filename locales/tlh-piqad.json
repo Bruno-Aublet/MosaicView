@@ -1486,6 +1486,7 @@
     "info_single": " cic   .       ( id ).",
     "page_indicator": " {page}",
     "loading_issues_progress": "... {loaded} / {total}",
+    "fetching_metadata": "d  ...",
     "issues_partial_load": "{count}    —  : {error}",
     "credit": " : {comicvine} · {scraper} ",
     "create_comicinfo": "Cicf.x  ",

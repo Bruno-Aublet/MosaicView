@@ -1486,6 +1486,7 @@
     "info_single": "यह फ़ंक्शन वर्तमान में खुले कॉमिक के मेटाडेटा प्राप्त करता है। एक साथ कई फ़ाइलों को संसाधित करने के लिए, बैच प्रोसेसिंग का उपयोग करें (एक फ़ोल्डर को विंडो पर खींचें)।",
     "page_indicator": "पृष्ठ {page}",
     "loading_issues_progress": "लोड हो रहा है... {loaded} / {total}",
+    "fetching_metadata": "मेटाडेटा डाउनलोड हो रहा है...",
     "issues_partial_load": "{count} अंक लोड हुए — लोडिंग बाधित: {error}",
     "credit": "मेटाडेटा: {comicvine} · {scraper} से प्रेरित",
     "create_comicinfo": "ComicInfo.xml फ़ाइल बनाएं",

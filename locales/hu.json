@@ -1486,6 +1486,7 @@
     "info_single": "Ez a funkció az aktuálisan megnyitott képregény metaadatait kéri le. Több fájl egyszerre történő feldolgozásához használja a kötegelt feldolgozást (húzzon egy mappát az ablakra).",
     "page_indicator": "{page}. oldal",
     "loading_issues_progress": "Betöltés... {loaded} / {total}",
+    "fetching_metadata": "Metaadatok letöltése...",
     "issues_partial_load": "{count} szám betöltve — betöltés megszakadt: {error}",
     "credit": "Metaadatok: {comicvine} · inspirálva: {scraper}",
     "create_comicinfo": "ComicInfo.xml fájl létrehozása",

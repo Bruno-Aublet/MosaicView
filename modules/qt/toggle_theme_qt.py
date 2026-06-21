@@ -8,11 +8,34 @@ Usage :
     apply_theme(app, state, canvas, left_panel)
 """
 
+import ctypes
+import sys
+
 from PySide6.QtGui import QColor, QPalette
 
 from modules.qt import state as _state_module
 from modules.qt.state import get_current_theme
 from modules.qt.config_manager import get_config_manager
+
+
+def _set_titlebar_dark(window, dark: bool, force_repaint: bool = False) -> None:
+    """Demande à Windows de peindre la barre de titre en mode sombre ou clair.
+    force_repaint=True : envoie WM_NCACTIVATE pour forcer le repeint de la barre (Windows 10)."""
+    if sys.platform != "win32":
+        return
+    try:
+        hwnd = int(window.winId())
+        value = ctypes.c_int(1 if dark else 0)
+        ctypes.windll.dwmapi.DwmSetWindowAttribute(
+            hwnd, 20, ctypes.byref(value), ctypes.sizeof(value),
+        )
+        if force_repaint:
+            WM_NCACTIVATE = 0x0086
+            ctypes.windll.user32.SendMessageW(hwnd, WM_NCACTIVATE, 1, 0)
+            ctypes.windll.user32.SendMessageW(hwnd, WM_NCACTIVATE, 0, 0)
+            ctypes.windll.user32.SendMessageW(hwnd, WM_NCACTIVATE, 1, 0)
+    except Exception:
+        pass
 
 
 def toggle_theme(app, canvas, left_panel, tab_bar=None):
@@ -180,6 +203,15 @@ def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
     from modules.qt.panel_widget import _BookmarkPopup
     from modules.qt.library_window import LibraryWindow
     from PySide6.QtWidgets import QApplication
+
+    # Barre de titre Windows — DWM immédiat, WM_NCACTIVATE après le prochain cycle événementiel
+    from PySide6.QtCore import QTimer
+    visible = [w for w in QApplication.topLevelWidgets() if w.isVisible()]
+    for w in visible:
+        _set_titlebar_dark(w, dark, force_repaint=False)
+    for w in visible:
+        QTimer.singleShot(0, lambda w=w: _set_titlebar_dark(w, dark, force_repaint=True))
+
     for widget in QApplication.topLevelWidgets():
         if isinstance(widget, (_LicenseDialog, _FullLicenseDialog, _ChangelogDialog,
                                 _MetadataConfirmDialog, _MetadataSummaryDialog, BatchDropDialog,

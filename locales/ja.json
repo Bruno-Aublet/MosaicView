@@ -1486,6 +1486,7 @@
     "info_single": "この機能は現在開いているコミックのメタデータを取得します。複数のファイルを一度に処理するには、バッチ処理を使用してください（フォルダをウィンドウにドラッグ）。",
     "page_indicator": "{page}ページ",
     "loading_issues_progress": "読み込み中... {loaded} / {total}",
+    "fetching_metadata": "メタデータをダウンロード中...",
     "issues_partial_load": "{count}号読み込み完了 — 読み込み中断: {error}",
     "credit": "メタデータ: {comicvine} · {scraper} にインスパイア",
     "create_comicinfo": "ComicInfo.xmlファイルを作成",

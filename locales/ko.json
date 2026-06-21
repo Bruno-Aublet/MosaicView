@@ -1486,6 +1486,7 @@
     "info_single": "이 기능은 현재 열려 있는 만화의 메타데이터를 가져옵니다. 여러 파일을 한 번에 처리하려면 일괄 처리를 사용하세요(폴더를 창에 끌어다 놓으세요).",
     "page_indicator": "{page}페이지",
     "loading_issues_progress": "로딩 중... {loaded} / {total}",
+    "fetching_metadata": "메타데이터 다운로드 중...",
     "issues_partial_load": "{count}호 로드됨 — 로딩 중단: {error}",
     "credit": "메타데이터: {comicvine} · {scraper}에서 영감받음",
     "create_comicinfo": "ComicInfo.xml 파일 만들기",

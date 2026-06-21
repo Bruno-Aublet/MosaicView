@@ -1486,6 +1486,7 @@
     "info_single": "Aisghabhadh an fheidhm seo meiteashonraí don leabhar graif atá oscailte faoi láthair. Chun comhaid iolracha a phróiseáil ag an am céanna, úsáid próiseáil bhaisc (tarraing fillteán chuig an bhfuinneog).",
     "page_indicator": "Leathanach {page}",
     "loading_issues_progress": "Ag luchtú... {loaded} / {total}",
+    "fetching_metadata": "Ag íoslódáil meiteashonraí...",
     "issues_partial_load": "{count} uimhir luchtaithe — luchtú curtha isteach: {error}",
     "credit": "Meitashonraí: {comicvine} · inspioráilte ag {scraper}",
     "create_comicinfo": "Cruthaigh comhad ComicInfo.xml",

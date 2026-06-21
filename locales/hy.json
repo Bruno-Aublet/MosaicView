@@ -1486,6 +1486,7 @@
     "info_single": "Այս ֆունկցիան ստանում է ներկայումս բաց կոմիքսի մետատվյալները: Մի քանի ֆայլ միաժամանակ մշակելու համար օգտագործեք փաթեթային մշակումը (քաշեք թղթապանակը դեպի պատուհան):",
     "page_indicator": "Էջ {page}",
     "loading_issues_progress": "Բեռնվում է... {loaded} / {total}",
+    "fetching_metadata": "Մետատվյալների բեռնում...",
     "issues_partial_load": "{count} համար բեռնվել է — բեռնումը ընդհատվել է. {error}",
     "credit": "Մետատվյալներ: {comicvine} · ոգեշնչված {scraper}-ից",
     "create_comicinfo": "Ստեղծել ComicInfo.xml ֆայլ",

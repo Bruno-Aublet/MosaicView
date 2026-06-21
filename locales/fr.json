@@ -1638,6 +1638,7 @@
     "info_single": "Cette fonction récupère les métadonnées de la BD actuellement ouverte. Pour traiter plusieurs fichiers d’affilée, utilisez le traitement par lot (déposez un dossier sur la fenêtre).",
     "page_indicator": "Page {page}",
     "loading_issues_progress": "Chargement... {loaded} / {total}",
+    "fetching_metadata": "Téléchargement des métadonnées en cours...",
     "issues_partial_load": "{count} numéro(s) chargé(s) — chargement interrompu : {error}",
     "credit": "Métadonnées : {comicvine} · inspiré de {scraper}",
     "create_comicinfo": "Créer un fichier ComicInfo.xml",

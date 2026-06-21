@@ -1486,6 +1486,7 @@
     "info_single": "This function retrieves metadata for the currently open comic. To process multiple files at once, use batch processing (drop a folder onto the window).",
     "page_indicator": "Page {page}",
     "loading_issues_progress": "Loading... {loaded} / {total}",
+    "fetching_metadata": "Downloading metadata...",
     "issues_partial_load": "{count} issue(s) loaded — loading interrupted: {error}",
     "credit": "Metadata: {comicvine} · inspired by {scraper}",
     "create_comicinfo": "Create a ComicInfo.xml file",

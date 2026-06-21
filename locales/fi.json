@@ -1486,6 +1486,7 @@
     "info_single": "Tämä toiminto hakee metatiedot tällä hetkellä avatulle sarjakuvalle. Useiden tiedostojen käsittelyyn kerralla käytä eräkäsittelyä (vedä kansio ikkunaan).",
     "page_indicator": "Sivu {page}",
     "loading_issues_progress": "Ladataan... {loaded} / {total}",
+    "fetching_metadata": "Ladataan metatietoja...",
     "issues_partial_load": "{count} numero(a) ladattu — lataus keskeytyi: {error}",
     "credit": "Metatiedot: {comicvine} · inspiroitu {scraper}",
     "create_comicinfo": "Luo ComicInfo.xml-tiedosto",

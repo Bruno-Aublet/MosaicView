@@ -1486,6 +1486,7 @@
     "info_single": "Dochvam commic De' qun laDlI'. law' De' laDmeH Hoch batch lo' (mappa window yIlan).",
     "page_indicator": "ley' {page}",
     "loading_issues_progress": "laDlI'... {loaded} / {total}",
+    "fetching_metadata": "metadata nIb yIHev...",
     "issues_partial_load": "{count} De' qun laDlu' — laD mevpu': {error}",
     "credit": "De' mung: {comicvine} · {scraper} ghItlhbogh",
     "create_comicinfo": "ComicInfo.xml HevleH chenmoH",

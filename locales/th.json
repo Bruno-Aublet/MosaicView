@@ -1486,6 +1486,7 @@
     "info_single": "ฟังก์ชันนี้ดึงเมทาดาต้าสำหรับการ์ตูนที่เปิดอยู่ หากต้องการประมวลผลหลายไฟล์พร้อมกัน ให้ใช้การประมวลผลแบบกลุ่ม (ลากโฟลเดอร์ไปที่หน้าต่าง)",
     "page_indicator": "หน้า {page}",
     "loading_issues_progress": "กำลังโหลด... {loaded} / {total}",
+    "fetching_metadata": "กำลังดาวน์โหลดเมทาดาทา...",
     "issues_partial_load": "โหลดแล้ว {count} ฉบับ — การโหลดถูกขัดจังหวะ: {error}",
     "credit": "เมตาดาต้า: {comicvine} · ได้รับแรงบันดาลใจจาก {scraper}",
     "create_comicinfo": "สร้างไฟล์ ComicInfo.xml",

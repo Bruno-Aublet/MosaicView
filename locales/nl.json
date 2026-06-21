@@ -1486,6 +1486,7 @@
     "info_single": "Deze functie haalt metadata op voor het momenteel geopende stripboek. Om meerdere bestanden tegelijk te verwerken, gebruik de batchverwerking (sleep een map naar het venster).",
     "page_indicator": "Pagina {page}",
     "loading_issues_progress": "Laden... {loaded} / {total}",
+    "fetching_metadata": "Metagegevens downloaden...",
     "issues_partial_load": "{count} nummer(s) geladen — laden onderbroken: {error}",
     "credit": "Metadata: {comicvine} · geïnspireerd door {scraper}",
     "create_comicinfo": "Een ComicInfo.xml-bestand maken",

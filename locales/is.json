@@ -1486,6 +1486,7 @@
     "info_single": "Þessi aðgerð sækir lýsigögn fyrir myndasöguna sem er opin. Til að vinna úr mörgum skrám í einu skaltu nota lotuvinnsluna (draga möppu að glugganum).",
     "page_indicator": "Síða {page}",
     "loading_issues_progress": "Hleður... {loaded} / {total}",
+    "fetching_metadata": "Sæki lýsigögn...",
     "issues_partial_load": "{count} tölublað/tölublöð hlaðið — hleðsla rofnaði: {error}",
     "credit": "Lýsigögn: {comicvine} · innblásið af {scraper}",
     "create_comicinfo": "Búa til ComicInfo.xml skrá",

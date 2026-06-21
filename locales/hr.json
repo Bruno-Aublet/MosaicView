@@ -1486,6 +1486,7 @@
     "info_single": "Ova funkcija dohvaća metapodatke trenutno otvorenog stripa. Za obradu više datoteka odjednom koristite skupnu obradu (povucite mapu na prozor).",
     "page_indicator": "Stranica {page}",
     "loading_issues_progress": "Učitavanje... {loaded} / {total}",
+    "fetching_metadata": "Preuzimanje metapodataka...",
     "issues_partial_load": "{count} broj(eva) učitan — učitavanje prekinuto: {error}",
     "credit": "Metapodaci: {comicvine} · inspirirano od {scraper}",
     "create_comicinfo": "Stvori datoteku ComicInfo.xml",

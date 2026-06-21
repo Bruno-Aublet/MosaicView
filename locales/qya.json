@@ -1486,6 +1486,7 @@
     "info_single": "Sí canwa lerta nótë i commici sina. Lá ortë queni fili, sára i ortë harna (hyarë mappa ná i coimas).",
     "page_indicator": "Lambë {page}",
     "loading_issues_progress": "Ortë... {loaded} / {total}",
+    "fetching_metadata": "Mettassen i nótier cantielwa...",
     "issues_partial_load": "{count} nótë ortaina — ortë hauta: {error}",
     "credit": "Métanótë: {comicvine} · inspired by {scraper}",
     "create_comicinfo": "Carë i quetta ComicInfo.xml",

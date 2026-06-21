@@ -1486,6 +1486,7 @@
     "info_single": "Sí cannas beria nauth i dhîn sina. An beria fili queni, sôr i beria harn (pâd mappa na i cai).",
     "page_indicator": "Lalf {page}",
     "loading_issues_progress": "Beria... {loaded} / {total}",
+    "fetching_metadata": "Gohenadur an data-meta...",
     "issues_partial_load": "{count} nauth beriar — beria hauta: {error}",
     "credit": "Methannas: {comicvine} · inspired by {scraper}",
     "create_comicinfo": "Garo vâr ComicInfo.xml",

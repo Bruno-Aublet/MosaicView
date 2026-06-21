@@ -41,6 +41,7 @@ All operations are performed **directly on the archive** — no manual extractio
 | CB7 (7-Zip) | ✅ | — |
 | CBT (TAR) | ✅ | — |
 | PDF | ✅ | — |
+| EPUB | ✅ (images only) | — |
 
 CBR, CB7, CBT and PDF files are always exported as CBZ after editing. This is a deliberate choice: the ZIP engine is free and open, while RAR is proprietary, 7-Zip and TAR are rarely used in practice for comics.
 
@@ -96,6 +97,8 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 - **Flatten subdirectories** — some archives store pages in a subfolder structure; this flattens everything to the root level in one click, with automatic conflict resolution if two files share the same name
 - **Undo / Redo** — every operation is reversible
 - **Corrupted page detection** — unreadable or damaged pages are flagged visually in the mosaic
+- **Fullscreen mode** — toggle fullscreen at any time from the toolbar or with F11
+- **ComicInfo.xml editor** — create or edit the ComicInfo.xml metadata file embedded in an archive directly from MosaicView. See the Metadata section below.
 - **Automatic update check** — on startup, MosaicView silently checks GitHub Releases in the background; if a newer version is available, a banner appears in the window and the menu is updated. No notification if already up to date or if there is no network. A manual check is also available from the menu.
 
 <p>
@@ -143,7 +146,8 @@ The library lets you catalogue and search your entire digital comics collection.
 
 - **Create** — use the Library menu → New database, or drop one or more folders onto the mosaic and choose "Create a library from the folder(s)". MosaicView scans the folders and indexes all compatible files automatically.
 - **Search** — filter by series, author, year, publisher, and more, combining as many criteria as needed (AND/OR).
-- **Open** — double-click any entry to open the file directly in MosaicView.
+- **Open** — double-click any entry to open the file directly in MosaicView. An "Open in MosaicView" button is also available in the preview panel.
+- **Edit metadata** — comics that already have a ComicInfo.xml can be edited directly from the library without opening the file first.
 - **Export** — the "Export results" button saves the current table to an Excel file (*.xlsx).
 
 ---
@@ -154,7 +158,7 @@ The library lets you catalogue and search your entire digital comics collection.
 - Dependencies (install with `pip install -r requirements.txt`):
 
 ```
-PySide6, Pillow, numpy, rarfile, PyMuPDF, packaging, openpyxl
+PySide6, Pillow, numpy, rarfile, PyMuPDF, packaging, openpyxl, pywin32, send2trash, defusedxml
 ```
 
 - **UnRAR** (for CBR support): place `UnRAR.exe` in the `unrar/` folder

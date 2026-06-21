@@ -1486,6 +1486,7 @@
     "info_single": "Šī funkcija iegūst metadatus pašlaik atvērtajam komiksum. Lai apstrādātu vairākus failus vienlaikus, izmantojiet pakešapstrādi (velciet mapi uz logu).",
     "page_indicator": "Lapa {page}",
     "loading_issues_progress": "Ielādē... {loaded} / {total}",
+    "fetching_metadata": "Lejupielādē metadatus...",
     "issues_partial_load": "{count} numurs(-i) ielādēts(-i) — ielāde pārtraukta: {error}",
     "credit": "Metadati: {comicvine} · iedvesmojies no {scraper}",
     "create_comicinfo": "Izveidot ComicInfo.xml failu",

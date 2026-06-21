@@ -1486,6 +1486,7 @@
     "info_single": "Această funcție preia metadatele benzii desenate deschise în prezent. Pentru a procesa mai multe fișiere simultan, utilizați procesarea în lot (trageți un dosar în fereastră).",
     "page_indicator": "Pagina {page}",
     "loading_issues_progress": "Încărcare... {loaded} / {total}",
+    "fetching_metadata": "Se descarcă metadatele...",
     "issues_partial_load": "{count} număr(e) încărcat(e) — încărcare întreruptă: {error}",
     "credit": "Metadate: {comicvine} · inspirat din {scraper}",
     "create_comicinfo": "Creați un fișier ComicInfo.xml",

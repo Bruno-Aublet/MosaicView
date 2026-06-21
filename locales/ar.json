@@ -1486,6 +1486,7 @@
     "info_single": "تسترد هذه الوظيفة البيانات الوصفية للقصة المصورة المفتوحة حاليًا. لمعالجة ملفات متعددة في وقت واحد، استخدم المعالجة الدفعية (اسحب مجلدًا إلى النافذة).",
     "page_indicator": "الصفحة {page}",
     "loading_issues_progress": "جارٍ التحميل... {loaded} / {total}",
+    "fetching_metadata": "جاري تنزيل البيانات الوصفية...",
     "issues_partial_load": "تم تحميل {count} عدد — انقطع التحميل: {error}",
     "credit": "البيانات الوصفية: {comicvine} · مستوحى من {scraper}",
     "create_comicinfo": "إنشاء ملف ComicInfo.xml",

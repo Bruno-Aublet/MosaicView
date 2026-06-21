@@ -1486,6 +1486,7 @@
     "info_single": "Ta funkcja pobiera metadane aktualnie otwartego komiksu. Aby przetworzyć wiele plików naraz, użyj przetwarzania wsadowego (przeciągnij folder do okna).",
     "page_indicator": "Strona {page}",
     "loading_issues_progress": "Ładowanie... {loaded} / {total}",
+    "fetching_metadata": "Pobieranie metadanych...",
     "issues_partial_load": "{count} zeszyt(ów) załadowany(ch) — ładowanie przerwane: {error}",
     "credit": "Metadane: {comicvine} · inspirowane przez {scraper}",
     "create_comicinfo": "Utwórz plik ComicInfo.xml",

@@ -1486,6 +1486,7 @@
     "info_single": "Fungsi ini mengambil metadata untuk komik yang sedang dibuka. Untuk memproses beberapa file sekaligus, gunakan pemrosesan batch (seret folder ke jendela).",
     "page_indicator": "Halaman {page}",
     "loading_issues_progress": "Memuat... {loaded} / {total}",
+    "fetching_metadata": "Mengunduh metadata...",
     "issues_partial_load": "{count} nomor dimuat — pemuatan terputus: {error}",
     "credit": "Metadata: {comicvine} · terinspirasi dari {scraper}",
     "create_comicinfo": "Buat file ComicInfo.xml",

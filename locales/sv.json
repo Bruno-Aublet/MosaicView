@@ -1486,6 +1486,7 @@
     "info_single": "Den här funktionen hämtar metadata för den aktuellt öppna serien. För att bearbeta flera filer på en gång, använd batchbearbetning (dra en mapp till fönstret).",
     "page_indicator": "Sida {page}",
     "loading_issues_progress": "Laddar... {loaded} / {total}",
+    "fetching_metadata": "Laddar ned metadata...",
     "issues_partial_load": "{count} nummer laddade — laddning avbruten: {error}",
     "credit": "Metadata: {comicvine} · inspirerad av {scraper}",
     "create_comicinfo": "Skapa en ComicInfo.xml-fil",

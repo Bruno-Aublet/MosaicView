@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.3.5"
+__version__ = "1.3.6"
 
 import sys
 import os
@@ -872,6 +872,16 @@ def main():
 
     if _splash is not None:
         _splash.finish(win)
+
+    # Applique la couleur de barre de titre DWM à chaque nouvelle fenêtre qui reçoit le focus
+    def _on_focus_window_changed(focused_win):
+        if focused_win is None:
+            return
+        from modules.qt import state as _st
+        dark = getattr(_st.state, "dark_mode", False) if _st.state else False
+        from modules.qt.toggle_theme_qt import _set_titlebar_dark
+        _set_titlebar_dark(focused_win, dark, force_repaint=True)
+    app.focusWindowChanged.connect(_on_focus_window_changed)
 
     # Vérification des mises à jour en arrière-plan
     from modules.qt.update_checker_qt import check_for_updates_on_startup

@@ -33,6 +33,11 @@ def restore_session(win):
         else:
             win.show()
 
+        # Barre de titre Windows — après show(), WM_NCACTIVATE force le repeint sans vider l'écran
+        if cfg.get_dark_mode():
+            from modules.qt.toggle_theme_qt import _set_titlebar_dark
+            QTimer.singleShot(200, lambda: _set_titlebar_dark(win, True, force_repaint=True))
+
         # Sidebar repliée
         if cfg.get_sidebar_collapsed():
             # _sidebar_visible démarre à True → _toggle_sidebar le passe à False

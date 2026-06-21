@@ -1486,6 +1486,7 @@
     "info_single": "Questa funzione recupera i metadati del fumetto attualmente aperto. Per elaborare più file contemporaneamente, utilizza l'elaborazione in batch (trascina una cartella sulla finestra).",
     "page_indicator": "Pagina {page}",
     "loading_issues_progress": "Caricamento... {loaded} / {total}",
+    "fetching_metadata": "Download dei metadati in corso...",
     "issues_partial_load": "{count} numero/i caricato/i — caricamento interrotto: {error}",
     "credit": "Metadati: {comicvine} · ispirato da {scraper}",
     "create_comicinfo": "Creare un file ComicInfo.xml",

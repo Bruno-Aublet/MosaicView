@@ -1486,6 +1486,7 @@
     "info_single": "See funktsioon toob metaandmed praegu avatud koomiksile. Mitme faili korraga töötlemiseks kasutage pakettöötlust (lohistage kaust aknasse).",
     "page_indicator": "Lehekülg {page}",
     "loading_issues_progress": "Laadimine... {loaded} / {total}",
+    "fetching_metadata": "Metaandmete allalaadimine...",
     "issues_partial_load": "{count} number(it) laaditud — laadimine katkes: {error}",
     "credit": "Metaandmed: {comicvine} · inspireeritud {scraper}",
     "create_comicinfo": "Loo ComicInfo.xml fail",

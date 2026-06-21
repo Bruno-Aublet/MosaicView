@@ -1486,6 +1486,7 @@
     "info_single": "Denne funksjonen henter metadata for den åpne tegneserien. For å behandle flere filer på én gang, bruk batchbehandling (dra en mappe til vinduet).",
     "page_indicator": "Side {page}",
     "loading_issues_progress": "Laster... {loaded} / {total}",
+    "fetching_metadata": "Laster ned metadata...",
     "issues_partial_load": "{count} nummer(e) lastet — lasting avbrutt: {error}",
     "credit": "Metadata: {comicvine} · inspirert av {scraper}",
     "create_comicinfo": "Opprett en ComicInfo.xml-fil",

@@ -1486,6 +1486,7 @@
     "info_single": "此功能获取当前打开的漫画的元数据。要一次处理多个文件，请使用批处理（将文件夹拖到窗口上）。",
     "page_indicator": "第 {page} 页",
     "loading_issues_progress": "加载中... {loaded} / {total}",
+    "fetching_metadata": "正在下载元数据...",
     "issues_partial_load": "已加载 {count} 期 — 加载中断: {error}",
     "credit": "元数据：{comicvine} · 灵感来自 {scraper}",
     "create_comicinfo": "创建 ComicInfo.xml 文件",

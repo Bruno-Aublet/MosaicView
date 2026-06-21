@@ -16,6 +16,8 @@ import zipfile
 import tarfile
 import datetime
 
+from modules.qt.utils import safe_join
+
 try:
     import rarfile
 except ImportError:
@@ -829,6 +831,9 @@ class LibraryDB:
         master = self.get_master_dir()
         rel = row['relative_path']
         if master:
+            safe = safe_join(master, rel)
+            if safe is not None:
+                return safe
             return os.path.normpath(os.path.join(master, rel))
         return rel
 

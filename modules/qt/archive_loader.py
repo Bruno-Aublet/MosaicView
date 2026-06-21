@@ -92,7 +92,7 @@ def _read_7z_file(archive_path, member_name):
     # Passer le nom seul + -r pour recherche récursive dans les sous-dossiers
     filename = os.path.basename(member_name.replace('\\', '/'))
     result = subprocess.run(
-        [exe, "e", "-so", "-r", short_path, filename],
+        [exe, "e", "-so", "-r", short_path, "--", filename],
         capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW
     )
     if result.returncode != 0:
@@ -695,6 +695,8 @@ class LoadWorker(QThread):
                             return False
                         try:
                             member = archive.getmember(file)
+                            if member.issym() or member.islnk():
+                                continue
                             data = archive.extractfile(member).read()
                         except Exception as e:
                             data = None
@@ -826,6 +828,8 @@ class LoadWorker(QThread):
                         for file in files_list:
                             try:
                                 member = archive.getmember(file)
+                                if member.issym() or member.islnk():
+                                    continue
                                 data = archive.extractfile(member).read()
                             except Exception as e:
                                 errors.append(f"{file}: {str(e)[:50]}")

@@ -1486,6 +1486,7 @@
     "info_single": "此功能獲取當前開啟的漫畫的元數據。要一次處理多個檔案，請使用批次處理（將資料夾拖曳到視窗上）。",
     "page_indicator": "第 {page} 頁",
     "loading_issues_progress": "載入中... {loaded} / {total}",
+    "fetching_metadata": "正在下載元數據...",
     "issues_partial_load": "已載入 {count} 期 — 載入中斷: {error}",
     "credit": "元資料：{comicvine} · 靈感來自 {scraper}",
     "create_comicinfo": "建立 ComicInfo.xml 檔案",

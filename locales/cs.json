@@ -1486,6 +1486,7 @@
     "info_single": "Tato funkce načítá metadata aktuálně otevřeného komiksu. Pro zpracování více souborů najednou použijte dávkové zpracování (přetáhněte složku do okna).",
     "page_indicator": "Strana {page}",
     "loading_issues_progress": "Načítání... {loaded} / {total}",
+    "fetching_metadata": "Stahování metadat...",
     "issues_partial_load": "{count} číslo/čísel načteno — načítání přerušeno: {error}",
     "credit": "Metadata: {comicvine} · inspirováno {scraper}",
     "create_comicinfo": "Vytvořit soubor ComicInfo.xml",

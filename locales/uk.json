@@ -1486,6 +1486,7 @@
     "info_single": "Ця функція отримує метадані поточного відкритого коміксу. Для обробки кількох файлів одночасно використовуйте пакетну обробку (перетягніть папку у вікно).",
     "page_indicator": "Сторінка {page}",
     "loading_issues_progress": "Завантаження... {loaded} / {total}",
+    "fetching_metadata": "Завантаження метаданих...",
     "issues_partial_load": "{count} випуск(ів) завантажено — завантаження перервано: {error}",
     "credit": "Метадані: {comicvine} · натхненно {scraper}",
     "create_comicinfo": "Створити файл ComicInfo.xml",

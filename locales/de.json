@@ -1486,6 +1486,7 @@
     "info_single": "Diese Funktion ruft Metadaten für das aktuell geöffnete Comic ab. Um mehrere Dateien auf einmal zu verarbeiten, verwenden Sie die Stapelverarbeitung (Ordner auf das Fenster ziehen).",
     "page_indicator": "Seite {page}",
     "loading_issues_progress": "Laden... {loaded} / {total}",
+    "fetching_metadata": "Metadaten werden heruntergeladen...",
     "issues_partial_load": "{count} Heft(e) geladen — Laden unterbrochen: {error}",
     "credit": "Metadaten: {comicvine} · inspiriert von {scraper}",
     "create_comicinfo": "ComicInfo.xml-Datei erstellen",

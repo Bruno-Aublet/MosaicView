@@ -1486,6 +1486,7 @@
     "info_single": "Bu fonksiyon, şu an açık olan çizgi romanın meta verilerini alır. Birden fazla dosyayı aynı anda işlemek için toplu işlemeyi kullanın (bir klasörü pencereye sürükleyin).",
     "page_indicator": "Sayfa {page}",
     "loading_issues_progress": "Yükleniyor... {loaded} / {total}",
+    "fetching_metadata": "Meta veriler indiriliyor...",
     "issues_partial_load": "{count} sayı yüklendi — yükleme kesintiye uğradı: {error}",
     "credit": "Meta veri: {comicvine} · {scraper} tarafından ilham alındı",
     "create_comicinfo": "ComicInfo.xml dosyası oluştur",

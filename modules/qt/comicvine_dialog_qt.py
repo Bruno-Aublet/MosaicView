@@ -438,6 +438,8 @@ class _ComicVineDialog(QDialog):
 
     def _apply_metadata(self, issue):
         self._page2._btn_ok.setEnabled(False)
+        self._page2.show_loading_overlay(True, 0, 0)
+        self._page2._loading_overlay.setText(_("comicvine.fetching_metadata"))
         worker = _MetadataWorker(self._api_key, issue["id"])
         worker.finished.connect(self._on_metadata_done)
         worker.error.connect(self._on_metadata_error)
@@ -445,6 +447,7 @@ class _ComicVineDialog(QDialog):
         self._worker = worker
 
     def _on_metadata_done(self, meta):
+        self._page2.show_loading_overlay(False, 0, 0)
         self._page2._btn_ok.setEnabled(True)
         self._write_metadata(meta)
         if self._on_done:
@@ -457,12 +460,17 @@ class _ComicVineDialog(QDialog):
             self.close()
 
     def _on_metadata_error(self, msg):
+        self._page2.show_loading_overlay(False, 0, 0)
         self._page2._btn_ok.setEnabled(True)
         from PySide6.QtWidgets import QMessageBox
         QMessageBox.warning(self, _wt("comicvine.menu_label"), msg)
 
     def _write_metadata(self, meta):
         import xml.etree.ElementTree as ET
+        try:
+            from defusedxml.ElementTree import fromstring as _safe_fromstring
+        except ImportError:
+            _safe_fromstring = ET.fromstring
         from modules.qt.comic_info import parse_comic_info_xml, _serialize_comic_xml
         from modules.qt.metadata_signal import metadata_signal
 
@@ -494,9 +502,9 @@ class _ComicVineDialog(QDialog):
                     raw = raw.encode("utf-8")
                 # Tenter UTF-8 puis latin-1 en fallback
                 try:
-                    root = ET.fromstring(raw)
+                    root = _safe_fromstring(raw)
                 except ET.ParseError:
-                    root = ET.fromstring(raw.decode("latin-1").encode("utf-8"))
+                    root = _safe_fromstring(raw.decode("latin-1").encode("utf-8"))
                 original_bytes = raw
             except Exception:
                 root = ET.Element("ComicInfo")
@@ -537,7 +545,7 @@ class _ComicVineDialog(QDialog):
             )
             if xml_entry_now and xml_entry_now.get('bytes'):
                 try:
-                    root_now = ET.fromstring(xml_entry_now['bytes'])
+                    root_now = _safe_fromstring(xml_entry_now['bytes'])
                     ET.SubElement(root_now, 'Pages')
                     from modules.qt.comic_info import _serialize_comic_xml
                     xml_entry_now['bytes'] = _serialize_comic_xml(root_now, xml_entry_now['bytes'])

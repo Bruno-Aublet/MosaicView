@@ -5,6 +5,10 @@ import os
 import tarfile
 import zipfile
 import xml.etree.ElementTree as ET
+try:
+    from defusedxml.ElementTree import fromstring as _safe_fromstring
+except ImportError:
+    _safe_fromstring = ET.fromstring
 
 try:
     import rarfile
@@ -65,7 +69,7 @@ def parse_comic_info_xml(xml_data):
     Parse les données XML ComicInfo et retourne un dictionnaire avec les métadonnées
     """
     try:
-        root = ET.fromstring(xml_data)
+        root = _safe_fromstring(xml_data)
         metadata = {}
 
         # Extraire les métadonnées principales
@@ -206,7 +210,7 @@ def update_page_count_in_xml_data(state, new_page_count):
             return False
 
         _original_xml_bytes = xml_entry['bytes']
-        root = ET.fromstring(_original_xml_bytes)
+        root = _safe_fromstring(_original_xml_bytes)
 
         page_count_elem = root.find('PageCount')
         if page_count_elem is not None:
@@ -256,7 +260,7 @@ def sync_pages_in_xml_data(state, emit_signal=True):
             return
 
         _original_xml_bytes = xml_entry['bytes']
-        root = ET.fromstring(_original_xml_bytes)
+        root = _safe_fromstring(_original_xml_bytes)
         pages_elem = root.find('Pages')
         if pages_elem is None:
             return
@@ -405,7 +409,7 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
             return
 
         _original_xml_bytes = xml_entry['bytes']
-        root = ET.fromstring(_original_xml_bytes)
+        root = _safe_fromstring(_original_xml_bytes)
         pages_elem = root.find('Pages')
         if pages_elem is None:
             return

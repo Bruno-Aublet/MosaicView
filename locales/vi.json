@@ -1486,6 +1486,7 @@
     "info_single": "Chức năng này lấy siêu dữ liệu cho truyện tranh đang mở. Để xử lý nhiều tệp cùng lúc, hãy sử dụng xử lý hàng loạt (kéo thư mục vào cửa sổ).",
     "page_indicator": "Trang {page}",
     "loading_issues_progress": "Đang tải... {loaded} / {total}",
+    "fetching_metadata": "Đang tải siêu dữ liệu...",
     "issues_partial_load": "{count} số đã tải — tải bị gián đoạn: {error}",
     "credit": "Siêu dữ liệu: {comicvine} · lấy cảm hứng từ {scraper}",
     "create_comicinfo": "Tạo tệp ComicInfo.xml",
