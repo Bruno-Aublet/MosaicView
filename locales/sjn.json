@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Balan: {value} %",
       "unsharp_threshold_label": "Tiria: {value}",
       "unsharp_viewer_title": "Telpina adannen",
-      "auto_levels_tooltip": "Prestannen cada lîw ar govorer yn otomatig lefelau du a gwyn i fwyafu cyferbyniad.\nI ddewis tudalen wrth dudalen, defnyddiwch y gwyliedydd."
+      "auto_levels_tooltip": "Prestannen cada lîw ar govorer yn otomatig lefelau du a gwyn i fwyafu cyferbyniad.\nI ddewis tudalen wrth dudalen, defnyddiwch y gwyliedydd.",
+      "transparency_unsaved_title": "Cenedhin erui",
+      "transparency_unsaved_message": "Pedich henion ú-ortherthant i gûl. Manen nidh careg?",
+      "transparency_unsaved_discard": "Tolo u-ortherthas",
+      "transparency_unsaved_apply": "Orthertha a tolo",
+      "transparency_unsaved_cancel": "Awartha"
     },
     "levels_viewer": {
       "title": "Adleg levain ah ithes",
@@ -1224,7 +1229,7 @@
     "flatten": "Pelthaedi i gorvaraid",
     "flatten_content": "Pe i târ gerir and-gorvaraid, breitho 'Pelthaedi i gorvaraid' na brestegi nel i rendir na i andeb er.",
     "viewer": "Harthad",
-    "viewer_content": "Edeb-gano ben tell na edro i harthad:\n• Tungil ← →: tírad immi telleir\n• Tungol D: misto immi ner bâd rlinn\n  - Tell er: er tell sui lû\n  - Telleir edeb: tell er erui, sui ben 2-3, 4-5, etc.\n  - Telleir edeb tadol: tell er erui, sui ben 2-3, 3-4, 4-5, etc.\n• Rodel i lhaw: tírad lim\n• Ctrl+Rodel pedo Ctrl+Mas/Lim: megil\n• Ctrl+0: adnortho i megil\n• Tungol F11: lain pen\n• Edeb-ganad: misto lain pen\n• Tungol Échap: awartha i thammas / avego i harthad",
+    "viewer_content": "Edeb-gano ben tell na edro i harthad:\n• Tungil ← →: tírad immi telleir\n• Tungol D: misto immi ner bâd rlinn\n  - Tell er: er tell sui lû\n  - Telleir edeb: tell er erui, sui ben 2-3, 4-5, etc.\n  - Telleir edeb tadol: tell er erui, sui ben 2-3, 3-4, 4-5, etc.\n• Rodel i lhaw: tírad lim\n• Ctrl+Rodel pedo Ctrl+Mas/Lim: megil\n• Ctrl+0: adnortho i megil\n• Tungol F11: lain pen\n• Edeb-ganad: misto lain pen\n• Tungol Échap: awartha i thammas / avego i harthad\n• Tîr-lam: auto-berian i lô current ned daered i thinnar (ú-bar i minuial ar i methuial lô). Rhibin caran ceðir or i lant thinnaren i faelas. Ned i aphadon egored, peth aphadon i rad na i lô sí. Auto-thinnathren ned i methuial lô egor perin ned clikk-ban ned i thinnar.",
     "join_pages": "Antha telleir",
     "join_pages_content": "Ethro mî parth thlinnui, haer-pitha → 'parth egor onta' parth trî no dannen egor trî no aear. I naith en i chammad gwannen tholed na naith en i phyrth thui, anim PNG thenid.",
     "split_pages": "Dagro telleir",

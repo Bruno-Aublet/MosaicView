@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensità: {value} %",
       "unsharp_threshold_label": "Limitu: {value}",
       "unsharp_viewer_title": "Tidqiq adattiv",
-      "auto_levels_tooltip": "Janalizza kull paġna u jaġġusta awtomatikament il-livelli tal-iswed u l-abjad biex jimmassimizza l-kuntrast.\nBiex tagħżel paġna b'paġna, uża l-viewer."
+      "auto_levels_tooltip": "Janalizza kull paġna u jaġġusta awtomatikament il-livelli tal-iswed u l-abjad biex jimmassimizza l-kuntrast.\nBiex tagħżel paġna b'paġna, uża l-viewer.",
+      "transparency_unsaved_title": "Bidliet mhux applikati",
+      "transparency_unsaved_message": "Il-bidliet attwali ma ġewx applikati fuq l-immaġni. X'trid tagħmel?",
+      "transparency_unsaved_discard": "Agħlaq mingħajr ma tapplika",
+      "transparency_unsaved_apply": "Applika u agħlaq",
+      "transparency_unsaved_cancel": "Ikkanċella"
     },
     "levels_viewer": {
       "title": "Aġġustament tal-livelli bil-qattara",
@@ -1224,7 +1229,7 @@
     "flatten": "Saħħan id-direttorji",
     "flatten_content": "Jekk l-arkivju tiegħek fih sottofolders, uża 'Saħħan id-direttorji' biex tġib l-immaġini kollha fl-istess livell.",
     "viewer": "Visualizzatur",
-    "viewer_content": "Ikklikkja darbtejn fuq paġna biex tiftaħ il-visualizzatur:\n• Buttuni ← →: navigazzjoni bejn il-paġni\n• Buttuna D: ibdel bejn 3 modalitajiet ta' qari\n  - Paġna waħda: paġna waħda kull darba\n  - Paġni doppji: paġna 1 waħedha, imbagħad 2-3, 4-5, eċċ.\n  - Paġni doppji kontinwi: paġna 1 waħedha, imbagħad 2-3, 3-4, 4-5, eċċ.\n• Rota tal-maws: navigazzjoni veloċi\n• Ctrl+Rota jew Ctrl+Plus/Minus: zoom\n• Ctrl+0: irrisettja l-zoom\n• Buttuna F11: iskrin sħiħ\n• Ikklikkja darbtejn: ibdel l-iskrin sħiħ\n• Buttuna Esc: ikkanċella l-kwadru tal-qtugħ / oħroġ mill-visualizzatur",
+    "viewer_content": "Ikklikkja darbtejn fuq paġna biex tiftaħ il-visualizzatur:\n• Buttuni ← →: navigazzjoni bejn il-paġni\n• Buttuna D: ibdel bejn 3 modalitajiet ta' qari\n  - Paġna waħda: paġna waħda kull darba\n  - Paġni doppji: paġna 1 waħedha, imbagħad 2-3, 4-5, eċċ.\n  - Paġni doppji kontinwi: paġna 1 waħedha, imbagħad 2-3, 3-4, 4-5, eċċ.\n• Rota tal-maws: navigazzjoni veloċi\n• Ctrl+Rota jew Ctrl+Plus/Minus: zoom\n• Ctrl+0: irrisettja l-zoom\n• Buttuna F11: iskrin sħiħ\n• Ikklikkja darbtejn: ibdel l-iskrin sħiħ\n• Buttuna Esc: ikkanċella l-kwadru tal-qtugħ / oħroġ mill-visualizzatur\n• Bukmark: jaħżen awtomatikament il-paġna attwali meta tagħlaq il-viewer (ħlief l-ewwel u l-aħħar paġna). Faxxa ħamra tidher fuq it-thumbnail korrispondenti fil-mużajk. Fl-apertura li jmiss, messaġġ jissuġġerixxi li terġa' lura għal din il-paġna. Jitħassar awtomatikament fl-aħħar paġna jew manwalment permezz ta' klikk tal-lemin fil-viewer.",
     "join_pages": "Waħħad il-paġni",
     "join_pages_content": "Agħżel diversi paġni konsekuttivi, ikklikkja leminija → 'Għaqqad il-paġni magħżula' biex tgħaqqad il-paġni orizzontalment jew vertikalment. Il-format tal-immaġni prodotta jikkorrispondi għal dak tal-paġni sors jekk kollha identiċi, inkella PNG bħala standard.",
     "split_pages": "Aqsam il-paġni",

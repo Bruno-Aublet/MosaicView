@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensiivsus: {value} %",
       "unsharp_threshold_label": "Lävi: {value}",
       "unsharp_viewer_title": "Adaptiivne teravus",
-      "auto_levels_tooltip": "Analüüsib iga lehekülge ja reguleerib automaatselt musta ja valge tasemeid, et maksimeerida kontrasti.\nLehe kaupa valimiseks kasutage vaaturit."
+      "auto_levels_tooltip": "Analüüsib iga lehekülge ja reguleerib automaatselt musta ja valge tasemeid, et maksimeerida kontrasti.\nLehe kaupa valimiseks kasutage vaaturit.",
+      "transparency_unsaved_title": "Rakendamata muudatused",
+      "transparency_unsaved_message": "Praegused muudatused ei ole pildile rakendatud. Mida soovite teha?",
+      "transparency_unsaved_discard": "Sulge rakendamata",
+      "transparency_unsaved_apply": "Rakenda ja sulge",
+      "transparency_unsaved_cancel": "Tühista"
     },
     "levels_viewer": {
       "title": "Tasemete kohandamine tilgutiga",
@@ -1224,7 +1229,7 @@
     "flatten": "Kataloogide lamestamine",
     "flatten_content": "Kui teie arhiiv sisaldab alamkaustu, kasutage 'Lamesta kataloogid', et tuua kõik pildid samale tasandile.",
     "viewer": "Vaatur",
-    "viewer_content": "Topeltklõpsake leheküljel, et avada vaatur:\n• Nooled ← → : navigeerimine lehekülgede vahel\n• Klahv D: vahelduvad 3 lugemisrežiimi\n  - Üksik lehekülg: üks lehekülg korraga\n  - Kahekordsed leheküljed: lehekülg 1 üksinda, seejärel 2-3, 4-5 jne\n  - Pidevad kahekordsed leheküljed: lehekülg 1 üksinda, seejärel 2-3, 3-4, 4-5 jne\n• Hiireratas: kiire navigeerimine\n• Ctrl+Ratas või Ctrl+Pluss/Miinus: suum\n• Ctrl+0: lähtesta suum\n• Klahv F11: täisekraan\n• Topeltklõps: lülitu täisekraani\n• Klahv Esc: tühista kärpimisraam / sulge vaatur",
+    "viewer_content": "Topeltklõpsake leheküljel, et avada vaatur:\n• Nooled ← → : navigeerimine lehekülgede vahel\n• Klahv D: vahelduvad 3 lugemisrežiimi\n  - Üksik lehekülg: üks lehekülg korraga\n  - Kahekordsed leheküljed: lehekülg 1 üksinda, seejärel 2-3, 4-5 jne\n  - Pidevad kahekordsed leheküljed: lehekülg 1 üksinda, seejärel 2-3, 3-4, 4-5 jne\n• Hiireratas: kiire navigeerimine\n• Ctrl+Ratas või Ctrl+Pluss/Miinus: suum\n• Ctrl+0: lähtesta suum\n• Klahv F11: täisekraan\n• Topeltklõps: lülitu täisekraani\n• Klahv Esc: tühista kärpimisraam / sulge vaatur\n• Järjehoidja: salvestab automaatselt praeguse lehe vaataja sulgemisel (välja arvatud esimene ja viimane leht). Mosaiigiaknas ilmub vastava pisipildi peale punane lint. Järgmisel avamisel pakub teade naasta sellele lehele. Kustutatakse automaatselt viimasel lehel või käsitsi parema hiireklõpsuga vaatajas.",
     "join_pages": "Lehekülgede ühendamine",
     "join_pages_content": "Valige mitu järjestikust lehekülge, paremklõps → 'Ühenda valitud leheküljed' lehekülgede horisontaalseks või vertikaalseks ühendamiseks. Loodud pildi vorming vastab lähtelehekülgede vormingule, kui need on kõik identsed, vastasel juhul vaikimisi PNG.",
     "split_pages": "Lehekülgede tükeldamine",

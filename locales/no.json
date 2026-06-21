@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensitet: {value} %",
       "unsharp_threshold_label": "Terskel: {value}",
       "unsharp_viewer_title": "Adaptiv skarphet",
-      "auto_levels_tooltip": "Analyserer hver side og justerer automatisk svart- og hvitnivåene for å maksimere kontrasten.\nBruk visningsprogrammet for å velge side for side."
+      "auto_levels_tooltip": "Analyserer hver side og justerer automatisk svart- og hvitnivåene for å maksimere kontrasten.\nBruk visningsprogrammet for å velge side for side.",
+      "transparency_unsaved_title": "Ubrukte endringer",
+      "transparency_unsaved_message": "De gjeldende endringene er ikke blitt brukt på bildet. Hva vil du gjøre?",
+      "transparency_unsaved_discard": "Lukk uten å bruke",
+      "transparency_unsaved_apply": "Bruk og lukk",
+      "transparency_unsaved_cancel": "Avbryt"
     },
     "levels_viewer": {
       "title": "Nivajustering med pipette",
@@ -1224,7 +1229,7 @@
     "flatten": "Flat ut mapper",
     "flatten_content": "Hvis arkivet ditt inneholder undermapper, bruk 'Flat ut mapper' for å bringe alle bildene til samme nivå.",
     "viewer": "Fremviser",
-    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← → : navigering mellom sider\n• Tast D : bytt mellom 3 lesemodi\n  - Enkeltside: én side om gangen\n  - Doble sider: side 1 alene, deretter 2-3, 4-5, osv.\n  - Kontinuerlige doble sider: side 1 alene, deretter 2-3, 3-4, 4-5, osv.\n• Musehjul: rask navigering\n• Ctrl+Musehjul eller Ctrl+Plus/Minus: zoom\n• Ctrl+0: tilbakestill zoom\n• Tast F11: fullskjerm\n• Dobbeltklikk: bytt fullskjerm\n• Tast Esc: avbryt beskjæringsramme / avslutt fremviseren",
+    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← → : navigering mellom sider\n• Tast D : bytt mellom 3 lesemodi\n  - Enkeltside: én side om gangen\n  - Doble sider: side 1 alene, deretter 2-3, 4-5, osv.\n  - Kontinuerlige doble sider: side 1 alene, deretter 2-3, 3-4, 4-5, osv.\n• Musehjul: rask navigering\n• Ctrl+Musehjul eller Ctrl+Plus/Minus: zoom\n• Ctrl+0: tilbakestill zoom\n• Tast F11: fullskjerm\n• Dobbeltklikk: bytt fullskjerm\n• Tast Esc: avbryt beskjæringsramme / avslutt fremviseren\n• Bokmerke: lagrer automatisk den gjeldende siden når visningsprogrammet lukkes (unntatt første og siste side). Et rødt bånd vises på den tilsvarende miniatyrbildet i mosaikken. Ved neste åpning foreslår en melding å gå tilbake til denne siden. Slettes automatisk på siste side eller manuelt via høyreklikk i visningsprogrammet.",
     "join_pages": "Slå sammen sider",
     "join_pages_content": "Velg flere påfølgende sider, høyreklikk → 'Slå sammen valgte sider' for å slå sammen sider horisontalt eller vertikalt. Formatet på det produserte bildet tilsvarer kildesidenes format hvis de alle er identiske, ellers PNG som standard.",
     "split_pages": "Del sider",

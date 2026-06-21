@@ -1242,12 +1242,14 @@ class PanelWidget(QWidget):
         cfg = get_config_manager()
         if cfg:
             cfg.remove_bookmark(filepath)
+            self._on_bookmark_changed(None)
 
     def _delete_all_bookmarks(self):
         from modules.qt.config_manager import get_config_manager
         cfg = get_config_manager()
         if cfg:
             cfg.clear_bookmarks()
+            self._on_bookmark_changed(None)
 
     def _warn_flatten_required_renumber(self):
         _WarnDialog(
@@ -1351,7 +1353,15 @@ class PanelWidget(QWidget):
             "update_button_text": self._refresh_toolbar_states,
             "state":              self._state,
             "canvas":             self._canvas,
+            "on_bookmark_changed": self._on_bookmark_changed,
         }
+
+    def _on_bookmark_changed(self, bookmarked_real_idx: int | None):
+        """Met à jour l'icône marque-page dans la mosaïque."""
+        # Synchronise le flag _is_bookmarked sur toutes les entrées
+        for i, entry in enumerate(self._state.images_data):
+            entry["_is_bookmarked"] = (i == bookmarked_real_idx)
+        self._canvas.refresh_bookmark_overlay(bookmarked_real_idx)
 
     def _open_image_viewer(self, idx: int):
         _open_image_viewer_qt(self, idx, self._image_viewer_callbacks())
@@ -1640,7 +1650,24 @@ class PanelWidget(QWidget):
         self._update_status_bar()
         if hasattr(self, "_icon_toolbar"):
             self._icon_toolbar.refresh_states()
+        self._init_bookmark_overlay()
         self._maybe_show_bookmark_popup()
+
+    def _init_bookmark_overlay(self):
+        """Initialise le flag _is_bookmarked sur toutes les entrées à l'ouverture d'un fichier."""
+        from modules.qt.config_manager import get_config_manager
+        cfg = get_config_manager()
+        filepath = self._state.current_file
+        bookmarked_real_idx = None
+        if cfg and filepath:
+            page_idx = cfg.get_bookmark(filepath)
+            if page_idx is not None:
+                img_indices = [i for i, e in enumerate(self._state.images_data) if e.get("is_image")]
+                if img_indices and page_idx < len(img_indices):
+                    bookmarked_real_idx = img_indices[page_idx]
+        for i, entry in enumerate(self._state.images_data):
+            entry["_is_bookmarked"] = (i == bookmarked_real_idx)
+        self._canvas.refresh_bookmark_overlay(bookmarked_real_idx)
 
     def _maybe_show_bookmark_popup(self):
         """Affiche le pop-up marque-page si un marque-page existe pour le fichier chargé."""

@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Déine: {value} %",
       "unsharp_threshold_label": "Tairseach: {value}",
       "unsharp_viewer_title": "Géire oiriúnach",
-      "auto_levels_tooltip": "Déanann sé anailís ar gach leathanach agus coigeartaíonn sé leibhéil na dubhe agus na báine go huathoibríoch chun an codarsnacht a uasmhéadú.\nChun roghnú leathanach ar leathanach, úsáid an breathnóir."
+      "auto_levels_tooltip": "Déanann sé anailís ar gach leathanach agus coigeartaíonn sé leibhéil na dubhe agus na báine go huathoibríoch chun an codarsnacht a uasmhéadú.\nChun roghnú leathanach ar leathanach, úsáid an breathnóir.",
+      "transparency_unsaved_title": "Athruithe gan cur i bhfeidhm",
+      "transparency_unsaved_message": "Níor cuireadh na hathruithe reatha i bhfeidhm ar an íomhá. Cad ba mhaith leat a dhéanamh?",
+      "transparency_unsaved_discard": "Dún gan cur i bhfeidhm",
+      "transparency_unsaved_apply": "Cuir i bhfeidhm agus dún",
+      "transparency_unsaved_cancel": "Cealaigh"
     },
     "levels_viewer": {
       "title": "Coigeartu leibheil le droichead",
@@ -1224,7 +1229,7 @@
     "flatten": "Comhadlanna a chomhréiteach",
     "flatten_content": "Má tá fochomhadlanna i do chartlann, úsáid 'Comhréitigh fillteáin' chun na híomhánna go léir a thabhairt chuig an leibhéal céanna.",
     "viewer": "Amharcóir",
-    "viewer_content": "Déclic ar leathanach le hamharcóir a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: malartú idir 3 mhód léitheoireachta\n  - Leathanach singil: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 ina aonar, ansin 2-3, 4-5, srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 ina aonar, ansin 2-3, 3-4, 4-5, srl.\n• Roth luiche: nascleanúint tapa\n• Ctrl+Roth nó Ctrl+Plus/Mionús: zúmáil\n• Ctrl+0: athshocraigh zúmáil\n• Eochair F11: lánscáileán\n• Déclic: scoránaigh lánscáileán\n• Eochair Esc: cealaigh fráma barrthuanaithe / fág an t-amharcóir",
+    "viewer_content": "Déclic ar leathanach le hamharcóir a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: malartú idir 3 mhód léitheoireachta\n  - Leathanach singil: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 ina aonar, ansin 2-3, 4-5, srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 ina aonar, ansin 2-3, 3-4, 4-5, srl.\n• Roth luiche: nascleanúint tapa\n• Ctrl+Roth nó Ctrl+Plus/Mionús: zúmáil\n• Ctrl+0: athshocraigh zúmáil\n• Eochair F11: lánscáileán\n• Déclic: scoránaigh lánscáileán\n• Eochair Esc: cealaigh fráma barrthuanaithe / fág an t-amharcóir\n• Leabharmharc: sábhálann sé an leathanach reatha go huathoibríoch nuair a dhúntar an breathnadóir (ach amháin an chéad leathanach agus an leathanach deireanach). Feictear ribín dearg ar an mionsamhail chomhfhreagrach sa mhóisáic. Ar an gcéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriostar go huathoibríoch ar an leathanach deireanach nó de láimh trí chliceáil deas san breathnadóir.",
     "join_pages": "Leathanaigh a cheangal",
     "join_pages_content": "Roghnaigh leathanaigh iolracha i ndiaidh a chéile, deaschliceáil → 'Cumasc leathanaigh roghnaithe' chun leathanaigh a chumasc go cothrománach nó go hingearach. Comhfhreagraonn formáid an íomhá a táirgtear d'fhormáid na leathanach foinse má tá siad go léir comhionann, murach sin PNG de réir réamhshocrú.",
     "split_pages": "Leathanaigh a roinnt",

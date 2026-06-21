@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intenzitet: {value} %",
       "unsharp_threshold_label": "Prag: {value}",
       "unsharp_viewer_title": "Adaptivna oštrina",
-      "auto_levels_tooltip": "Analizira svaku stranicu i automatski prilagođava razine crne i bijele radi maksimalnog kontrasta.\nZa odabir stranice po stranicu koristite preglednik."
+      "auto_levels_tooltip": "Analizira svaku stranicu i automatski prilagođava razine crne i bijele radi maksimalnog kontrasta.\nZa odabir stranice po stranicu koristite preglednik.",
+      "transparency_unsaved_title": "Neprimijenjene promjene",
+      "transparency_unsaved_message": "Trenutne promjene nisu primijenjene na sliku. Što želite učiniti?",
+      "transparency_unsaved_discard": "Zatvori bez primjene",
+      "transparency_unsaved_apply": "Primijeni i zatvori",
+      "transparency_unsaved_cancel": "Odustani"
     },
     "levels_viewer": {
       "title": "Prilagodba razina s kapaljicom",
@@ -1224,7 +1229,7 @@
     "flatten": "Ravnanje mapa",
     "flatten_content": "Ako vaša arhiva sadrži podmape, koristite 'Ravnaj mape' za premještanje svih slika na istu razinu.",
     "viewer": "Preglednik",
-    "viewer_content": "Dvaput kliknite na stranicu za otvaranje preglednika:\n• Tipke ← → : navigacija između stranica\n• Tipka D : prebacivanje između 3 načina čitanja\n  - Jednostruka stranica: po jedna stranica\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5, itd.\n  - Kontinuirane dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5, itd.\n• Kotačić miša: brza navigacija\n• Ctrl+kotačić ili Ctrl+Plus/Minus: povećanje\n• Ctrl+0: resetiranje povećanja\n• Tipka F11: cijeli zaslon\n• Dvostruki klik: prebacivanje cijelog zaslona\n• Tipka Escape: otkaz okvira za obrezivanje / izlaz iz preglednika",
+    "viewer_content": "Dvaput kliknite na stranicu za otvaranje preglednika:\n• Tipke ← → : navigacija između stranica\n• Tipka D : prebacivanje između 3 načina čitanja\n  - Jednostruka stranica: po jedna stranica\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5, itd.\n  - Kontinuirane dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5, itd.\n• Kotačić miša: brza navigacija\n• Ctrl+kotačić ili Ctrl+Plus/Minus: povećanje\n• Ctrl+0: resetiranje povećanja\n• Tipka F11: cijeli zaslon\n• Dvostruki klik: prebacivanje cijelog zaslona\n• Tipka Escape: otkaz okvira za obrezivanje / izlaz iz preglednika\n• Oznaka: automatski sprema trenutnu stranicu pri zatvaranju preglednika (osim prve i zadnje stranice). Crvena vrpca pojavljuje se na odgovarajućoj sličici u mozaiku. Sljedeći put kad se otvori, poruka predlaže povratak na tu stranicu. Automatski se briše na zadnjoj stranici ili ručno desnim klikom u pregledniku.",
     "join_pages": "Spajanje stranica",
     "join_pages_content": "Odaberite više uzastopnih stranica, desni klik → 'Spoji odabrane stranice' za spajanje stranica vodoravno ili okomito. Format stvorene slike odgovara formatu izvornih stranica ako su sve identične, inače je prema zadanim postavkama PNG.",
     "split_pages": "Dijeljenje stranica",

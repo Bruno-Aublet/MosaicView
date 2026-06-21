@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intenzita: {value} %",
       "unsharp_threshold_label": "Práh: {value}",
       "unsharp_viewer_title": "Adaptivní ostrost",
-      "auto_levels_tooltip": "Analyzuje každou stránku a automaticky upraví úrovně černé a bílé pro maximální kontrast.\nPro výběr stránku po stránce použijte prohlížeč."
+      "auto_levels_tooltip": "Analyzuje každou stránku a automaticky upraví úrovně černé a bílé pro maximální kontrast.\nPro výběr stránku po stránce použijte prohlížeč.",
+      "transparency_unsaved_title": "Nepoužité změny",
+      "transparency_unsaved_message": "Aktuální úpravy nebyly na obrázek použity. Co chcete udělat?",
+      "transparency_unsaved_discard": "Zavřít bez použití",
+      "transparency_unsaved_apply": "Použít a zavřít",
+      "transparency_unsaved_cancel": "Zrušit"
     },
     "levels_viewer": {
       "title": "Uprava urovni pomoci kapátka",
@@ -1224,7 +1229,7 @@
     "flatten": "Sloučení adresářů",
     "flatten_content": "Pokud váš archiv obsahuje podadresáře, použijte 'Sloučit adresáře' pro přesunutí všech obrázků na stejnou úroveň.",
     "viewer": "Prohlížeč",
-    "viewer_content": "Dvojklikem na stránku otevřete prohlížeč:\n• Klávesy ← →: navigace mezi stránkami\n• Klávesa D: přepínání mezi 3 režimy čtení\n  - Jedna stránka: jedna stránka najednou\n  - Dvě stránky: stránka 1 samostatně, pak 2-3, 4-5 atd.\n  - Průběžné dvě stránky: stránka 1 samostatně, pak 2-3, 3-4, 4-5 atd.\n• Kolečko myši: rychlá navigace\n• Ctrl+Kolečko nebo Ctrl+Plus/Mínus: přiblížení\n• Ctrl+0: obnovit přiblížení\n• Klávesa F11: celá obrazovka\n• Dvojklik: přepnout celou obrazovku\n• Klávesa Esc: zrušit rámeček výřezu / ukončit prohlížeč",
+    "viewer_content": "Dvojklikem na stránku otevřete prohlížeč:\n• Klávesy ← →: navigace mezi stránkami\n• Klávesa D: přepínání mezi 3 režimy čtení\n  - Jedna stránka: jedna stránka najednou\n  - Dvě stránky: stránka 1 samostatně, pak 2-3, 4-5 atd.\n  - Průběžné dvě stránky: stránka 1 samostatně, pak 2-3, 3-4, 4-5 atd.\n• Kolečko myši: rychlá navigace\n• Ctrl+Kolečko nebo Ctrl+Plus/Mínus: přiblížení\n• Ctrl+0: obnovit přiblížení\n• Klávesa F11: celá obrazovka\n• Dvojklik: přepnout celou obrazovku\n• Klávesa Esc: zrušit rámeček výřezu / ukončit prohlížeč\n• Záložka: automaticky ukládá aktuální stránku při zavření prohlížeče (kromě první a poslední stránky). Na odpovídající miniatuře v mozaice se zobrazí červená stuha. Při dalším otevření se zobrazí zpráva s nabídkou návratu na tuto stránku. Záložka se automaticky odstraní při dosažení poslední stránky nebo ručně přes pravé tlačítko myši v prohlížeči.",
     "join_pages": "Spojení stránek",
     "join_pages_content": "Vyberte několik po sobě jdoucích stránek, klikněte pravým tlačítkem → 'Spojit vybrané stránky' pro spojení stránek vodorovně nebo svisle. Formát vytvořeného obrázku odpovídá formátu zdrojových stránek, pokud jsou všechny identické, jinak ve výchozím nastavení PNG.",
     "split_pages": "Rozdělení stránek",

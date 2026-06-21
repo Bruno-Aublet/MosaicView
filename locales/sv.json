@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensitet: {value} %",
       "unsharp_threshold_label": "Tröskel: {value}",
       "unsharp_viewer_title": "Adaptiv skärpa",
-      "auto_levels_tooltip": "Analyserar varje sida och justerar automatiskt svart- och vitnivåerna för att maximera kontrasten.\nAnvänd visningsprogrammet för att välja sida för sida."
+      "auto_levels_tooltip": "Analyserar varje sida och justerar automatiskt svart- och vitnivåerna för att maximera kontrasten.\nAnvänd visningsprogrammet för att välja sida för sida.",
+      "transparency_unsaved_title": "Ej tillämpade ändringar",
+      "transparency_unsaved_message": "De aktuella ändringarna har inte tillämpats på bilden. Vad vill du göra?",
+      "transparency_unsaved_discard": "Stäng utan att tillämpa",
+      "transparency_unsaved_apply": "Tillämpa och stäng",
+      "transparency_unsaved_cancel": "Avbryt"
     },
     "levels_viewer": {
       "title": "Nivaajustering med pipett",
@@ -1224,7 +1229,7 @@
     "flatten": "Platta till mappar",
     "flatten_content": "Om ditt arkiv innehåller undermappar, använd 'Platta till mappar' för att flytta alla bilder till samma nivå.",
     "viewer": "Visare",
-    "viewer_content": "Dubbelklicka på en sida för att öppna visaren:\n• Tangenterna ← → : navigera mellan sidor\n• Tangent D: växla mellan 3 läslägen\n  - Enkel sida: en sida åt gången\n  - Dubbelsidor: sida 1 ensam, sedan 2-3, 4-5, etc.\n  - Kontinuerliga dubbelsidor: sida 1 ensam, sedan 2-3, 3-4, 4-5, etc.\n• Mushjul: snabb navigering\n• Ctrl+Mushjul eller Ctrl+Plus/Minus: zoom\n• Ctrl+0: återställ zoom\n• Tangent F11: helskärm\n• Dubbelklick: växla helskärm\n• Tangent Esc: avbryt beskärningsram / stäng visaren",
+    "viewer_content": "Dubbelklicka på en sida för att öppna visaren:\n• Tangenterna ← → : navigera mellan sidor\n• Tangent D: växla mellan 3 läslägen\n  - Enkel sida: en sida åt gången\n  - Dubbelsidor: sida 1 ensam, sedan 2-3, 4-5, etc.\n  - Kontinuerliga dubbelsidor: sida 1 ensam, sedan 2-3, 3-4, 4-5, etc.\n• Mushjul: snabb navigering\n• Ctrl+Mushjul eller Ctrl+Plus/Minus: zoom\n• Ctrl+0: återställ zoom\n• Tangent F11: helskärm\n• Dubbelklick: växla helskärm\n• Tangent Esc: avbryt beskärningsram / stäng visaren\n• Bokmärke: sparar automatiskt den aktuella sidan när visningsprogrammet stängs (utom första och sista sidan). Ett rött band visas på den motsvarande miniatyrbilden i mosaiken. Vid nästa öppning föreslår ett meddelande att återvända till den här sidan. Tas bort automatiskt på sista sidan eller manuellt via högerklick i visningsprogrammet.",
     "join_pages": "Sammanfoga sidor",
     "join_pages_content": "Välj flera på varandra följande sidor, högerklicka → 'Sammanfoga valda sidor' för att sammanfoga sidor horisontellt eller vertikalt. Formatet på den skapade bilden motsvarar källsidornas format om de alla är identiska, annars PNG som standard.",
     "split_pages": "Dela sidor",

@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Yoğunluk: {value} %",
       "unsharp_threshold_label": "Eşik: {value}",
       "unsharp_viewer_title": "Uyarlamalı keskinlik",
-      "auto_levels_tooltip": "Her sayfayı analiz eder ve kontrastı en üst düzeye çıkarmak için siyah ve beyaz düzeylerini otomatik olarak ayarlar.\nSayfa sayfa seçmek için görüntüleyiciyi kullanın."
+      "auto_levels_tooltip": "Her sayfayı analiz eder ve kontrastı en üst düzeye çıkarmak için siyah ve beyaz düzeylerini otomatik olarak ayarlar.\nSayfa sayfa seçmek için görüntüleyiciyi kullanın.",
+      "transparency_unsaved_title": "Uygulanmamis degisiklikler",
+      "transparency_unsaved_message": "Mevcut degisiklikler goruntüye uygulanmadi. Ne yapmak istersiniz?",
+      "transparency_unsaved_discard": "Uygulamadan kapat",
+      "transparency_unsaved_apply": "Uygula ve kapat",
+      "transparency_unsaved_cancel": "Iptal"
     },
     "levels_viewer": {
       "title": "Damlalık ile seviye ayari",
@@ -1224,7 +1229,7 @@
     "flatten": "Dizinleri düzleştirme",
     "flatten_content": "Arşiviniz alt klasörler içeriyorsa, tüm görüntüleri aynı seviyeye getirmek için 'Dizinleri düzleştir' seçeneğini kullanın.",
     "viewer": "Görüntüleyici",
-    "viewer_content": "Görüntüleyiciyi açmak için bir sayfaya çift tıklayın:\n• ← → tuşları: sayfalar arasında gezinme\n• D tuşu: 3 okuma modu arasında geçiş\n  - Tek sayfa: bir seferde bir sayfa\n  - Çift sayfa: önce sayfa 1, sonra 2-3, 4-5, vb.\n  - Sürekli çift sayfa: önce sayfa 1, sonra 2-3, 3-4, 4-5, vb.\n• Fare tekerleği: hızlı gezinme\n• Ctrl+Tekerlek veya Ctrl+Artı/Eksi: yakınlaştırma\n• Ctrl+0: yakınlaştırmayı sıfırla\n• F11 tuşu: tam ekran\n• Çift tıklama: tam ekrana geç\n• Esc tuşu: kırpma çerçevesini iptal et / görüntüleyiciden çık",
+    "viewer_content": "Görüntüleyiciyi açmak için bir sayfaya çift tıklayın:\n• ← → tuşları: sayfalar arasında gezinme\n• D tuşu: 3 okuma modu arasında geçiş\n  - Tek sayfa: bir seferde bir sayfa\n  - Çift sayfa: önce sayfa 1, sonra 2-3, 4-5, vb.\n  - Sürekli çift sayfa: önce sayfa 1, sonra 2-3, 3-4, 4-5, vb.\n• Fare tekerleği: hızlı gezinme\n• Ctrl+Tekerlek veya Ctrl+Artı/Eksi: yakınlaştırma\n• Ctrl+0: yakınlaştırmayı sıfırla\n• F11 tuşu: tam ekran\n• Çift tıklama: tam ekrana geç\n• Esc tuşu: kırpma çerçevesini iptal et / görüntüleyiciden çık\n• Yer imi: görüntüleyici kapatılırken geçerli sayfayı otomatik olarak kaydeder (ilk ve son sayfa hariç). Mozaikte ilgili küçük resmin üzerinde kırmızı bir şerit görünür. Bir sonraki açılışta, bu sayfaya geri dönmeyi öneren bir mesaj görünür. Son sayfada otomatik olarak silinir veya görüntüleyicide sağ tıklama ile manuel olarak silinir.",
     "join_pages": "Sayfaları birleştirme",
     "join_pages_content": "Birden fazla ardışık sayfa seçin, sağ tıklayın → 'Seçili sayfaları birleştir' ile sayfaları yatay veya dikey olarak birleştirin. Üretilen görüntünün biçimi, hepsi aynıysa kaynak sayfaların biçimiyle eşleşir, aksi takdirde varsayılan olarak PNG.",
     "split_pages": "Sayfaları bölme",

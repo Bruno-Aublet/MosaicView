@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Keamatan: {value} %",
       "unsharp_threshold_label": "Ambang: {value}",
       "unsharp_viewer_title": "Ketajaman adaptif",
-      "auto_levels_tooltip": "Menganalisis setiap halaman dan menyesuaikan tahap hitam dan putih secara automatik untuk memaksimumkan kontras.\nUntuk memilih halaman demi halaman, gunakan penampil."
+      "auto_levels_tooltip": "Menganalisis setiap halaman dan menyesuaikan tahap hitam dan putih secara automatik untuk memaksimumkan kontras.\nUntuk memilih halaman demi halaman, gunakan penampil.",
+      "transparency_unsaved_title": "Perubahan belum digunakan",
+      "transparency_unsaved_message": "Perubahan semasa belum digunakan pada imej. Apa yang anda ingin lakukan?",
+      "transparency_unsaved_discard": "Tutup tanpa menggunakan",
+      "transparency_unsaved_apply": "Gunakan dan tutup",
+      "transparency_unsaved_cancel": "Batal"
     },
     "levels_viewer": {
       "title": "Pelarasan tahap dengan penitis",
@@ -1224,7 +1229,7 @@
     "flatten": "Meratakan direktori",
     "flatten_content": "Jika arkib anda mengandungi subfolder, gunakan 'Ratakan direktori' untuk membawa semua imej ke tahap yang sama.",
     "viewer": "Penonton",
-    "viewer_content": "Klik dua kali pada halaman untuk membuka penonton:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: beralih antara 3 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berganda: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berganda berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n• Roda tetikus: navigasi pantas\n• Ctrl+Roda atau Ctrl+Plus/Minus: zum\n• Ctrl+0: set semula zum\n• Kekunci F11: skrin penuh\n• Klik dua kali: tukar skrin penuh\n• Kekunci Esc: batalkan bingkai pangkas / keluar dari penonton",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka penonton:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: beralih antara 3 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berganda: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berganda berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n• Roda tetikus: navigasi pantas\n• Ctrl+Roda atau Ctrl+Plus/Minus: zum\n• Ctrl+0: set semula zum\n• Kekunci F11: skrin penuh\n• Klik dua kali: tukar skrin penuh\n• Kekunci Esc: batalkan bingkai pangkas / keluar dari penonton\n• Penanda halaman: menyimpan halaman semasa secara automatik apabila menutup pemapar (kecuali halaman pertama dan terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Pada pembukaan seterusnya, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir atau secara manual melalui klik kanan dalam pemapar.",
     "join_pages": "Mencantum halaman",
     "join_pages_content": "Pilih beberapa halaman berturut-turut, klik kanan → 'Gabungkan halaman terpilih' untuk menggabungkan halaman secara mendatar atau menegak. Format imej yang dihasilkan sepadan dengan format halaman sumber jika semuanya sama, jika tidak PNG secara lalai.",
     "split_pages": "Memisahkan halaman",

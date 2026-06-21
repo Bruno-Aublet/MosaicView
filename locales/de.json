@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Stärke: {value} %",
       "unsharp_threshold_label": "Schwellenwert: {value}",
       "unsharp_viewer_title": "Adaptive Schärfe",
-      "auto_levels_tooltip": "Analysiert jede Seite und passt die Schwarz- und Weißpegel automatisch an, um den Kontrast zu maximieren.\nUm Seite für Seite auszuwählen, verwenden Sie den Viewer."
+      "auto_levels_tooltip": "Analysiert jede Seite und passt die Schwarz- und Weißpegel automatisch an, um den Kontrast zu maximieren.\nUm Seite für Seite auszuwählen, verwenden Sie den Viewer.",
+      "transparency_unsaved_title": "Nicht angewendete Änderungen",
+      "transparency_unsaved_message": "Die aktuellen Änderungen wurden noch nicht auf das Bild angewendet. Was möchten Sie tun?",
+      "transparency_unsaved_discard": "Schließen ohne Anwenden",
+      "transparency_unsaved_apply": "Anwenden und schließen",
+      "transparency_unsaved_cancel": "Abbrechen"
     },
     "levels_viewer": {
       "title": "Ebenenanpassung mit Pipetten",
@@ -1224,7 +1229,7 @@
     "flatten": "Verzeichnisse abflachen",
     "flatten_content": "Wenn Ihr Archiv Unterordner enthält, verwenden Sie 'Verzeichnisse abflachen', um alle Bilder auf die gleiche Ebene zu bringen.",
     "viewer": "Viewer",
-    "viewer_content": "Doppelklicken Sie auf eine Seite, um den Viewer zu öffnen:\n• Tasten ← →: Navigation zwischen Seiten\n• Taste D: Zwischen 3 Lesemodi wechseln\n  - Einzelseite: eine Seite auf einmal\n  - Doppelseiten: Seite 1 allein, dann 2-3, 4-5 usw.\n  - Fortlaufende Doppelseiten: Seite 1 allein, dann 2-3, 3-4, 4-5 usw.\n• Mausrad: Schnelle Navigation\n• Strg+Rad oder Strg+Plus/Minus: Zoom\n• Strg+0: Zoom zurücksetzen\n• Taste F11: Vollbild\n• Doppelklick: Vollbild umschalten\n• Taste Esc: Zuschneiderahmen abbrechen / Viewer verlassen",
+    "viewer_content": "Doppelklicken Sie auf eine Seite, um den Viewer zu öffnen:\n• Tasten ← →: Navigation zwischen Seiten\n• Taste D: Zwischen 3 Lesemodi wechseln\n  - Einzelseite: eine Seite auf einmal\n  - Doppelseiten: Seite 1 allein, dann 2-3, 4-5 usw.\n  - Fortlaufende Doppelseiten: Seite 1 allein, dann 2-3, 3-4, 4-5 usw.\n• Mausrad: Schnelle Navigation\n• Strg+Rad oder Strg+Plus/Minus: Zoom\n• Strg+0: Zoom zurücksetzen\n• Taste F11: Vollbild\n• Doppelklick: Vollbild umschalten\n• Taste Esc: Zuschneiderahmen abbrechen / Viewer verlassen\n• Lesezeichen: speichert die aktuelle Seite beim Schließen des Betrachters automatisch (außer der ersten und letzten Seite). Ein rotes Band erscheint auf der entsprechenden Miniaturansicht im Mosaik. Beim erneuten Öffnen schlägt eine Meldung vor, zu dieser Seite zurückzukehren. Wird automatisch bei der letzten Seite entfernt oder manuell per Rechtsklick im Betrachter.",
     "join_pages": "Seiten verbinden",
     "join_pages_content": "Wählen Sie mehrere aufeinanderfolgende Seiten aus, Rechtsklick → 'Ausgewählte Seiten verbinden', um Seiten horizontal oder vertikal zu verbinden. Das Format des erzeugten Bildes entspricht dem der Quellseiten, wenn sie alle identisch sind, andernfalls standardmäßig PNG.",
     "split_pages": "Seiten teilen",

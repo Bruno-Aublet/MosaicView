@@ -21,15 +21,15 @@ from PIL import Image
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QWidget, QFrame, QSizePolicy, QButtonGroup, QRadioButton, QSlider,
+    QWidget, QFrame, QSizePolicy, QButtonGroup, QRadioButton, QSlider, QSpinBox,
 )
-from PySide6.QtCore import Qt, QPoint, QSize
+from PySide6.QtCore import Qt, QPoint, QSize, QElapsedTimer
 from PySide6.QtGui import (
     QPixmap, QImage, QCursor, QKeySequence, QShortcut, QIcon,
     QPainter, QPen, QColor, QBitmap,
 )
 
-from modules.qt.localization import _
+from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_loader import resource_path
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -135,12 +135,12 @@ def _make_crosshair_cursor(r_screen):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Constante : rayon du tampon de clonage (px image)
+# Taille du tampon de clonage : diamètre en pixels image (1 = 1 pixel copié)
 # ─────────────────────────────────────────────────────────────────────────────
 
-_BRUSH_RADIUS_DEFAULT = 20
-_BRUSH_RADIUS_MIN     = 1
-_BRUSH_RADIUS_MAX     = 200
+_BRUSH_SIZE_DEFAULT = 20
+_BRUSH_SIZE_MIN     = 1
+_BRUSH_SIZE_MAX     = 400
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -177,8 +177,8 @@ class _CloneImageWidget(QWidget):
         # Mode : 'fixed' ou 'relative'
         self._mode = 'fixed'
 
-        # Rayon du tampon (mis à jour par le dialog via set_brush_radius)
-        self._brush_radius = _BRUSH_RADIUS_DEFAULT
+        # Taille du tampon : diamètre en px image (mis à jour par le dialog via set_brush_radius)
+        self._brush_radius = _BRUSH_SIZE_DEFAULT
 
         # Callbacks
         self.on_zoom_changed = None         # callback(zoom_level)
@@ -187,7 +187,7 @@ class _CloneImageWidget(QWidget):
         self.on_paint_move = None           # callback(img_x, img_y) → mouvement sans peindre (suivi marqueur)
         self.on_paint_end = None            # callback() → fin du stroke (mouseRelease)
 
-        self._crosshair_cursor = _make_crosshair_cursor(_BRUSH_RADIUS_DEFAULT)
+        self._crosshair_cursor = _make_crosshair_cursor(max(1, _BRUSH_SIZE_DEFAULT // 2))
         self.setMouseTracking(True)
         self.setCursor(QCursor(Qt.CursorShape.CrossCursor))
 
@@ -240,7 +240,7 @@ class _CloneImageWidget(QWidget):
         self._rebuild_crosshair_cursor()
 
     def _rebuild_crosshair_cursor(self):
-        r_screen = max(1, int(self._brush_radius * self._zoom))
+        r_screen = max(1, int(self._brush_radius * self._zoom / 2))
         self._crosshair_cursor = _make_crosshair_cursor(r_screen)
 
     def clear_source(self):
@@ -268,7 +268,7 @@ class _CloneImageWidget(QWidget):
         # Marqueur de source : live pendant le stroke, sinon position Ctrl+clic
         marker = self._live_source_widget_pt if self._painting else self._source_widget_pt
         if marker is not None:
-            r_screen = max(1, int(self._brush_radius * self._zoom))
+            r_screen = max(1, int(self._brush_radius * self._zoom / 2))
             self._draw_source_marker(painter, marker, r_screen)
 
     @staticmethod
@@ -464,8 +464,8 @@ class CloneZoneViewerDialog(QDialog):
         self._stroke_start_dest = None  # (ix, iy) premier point du stroke courant
         self._stroke_start_src = None   # (ix, iy) source au début du stroke
 
-        # Taille du tampon (rayon en px image)
-        self._brush_radius = 20
+        # Taille du tampon : diamètre en px image (1 = 1 pixel copié)
+        self._brush_radius = _BRUSH_SIZE_DEFAULT
 
         # Sauvegarde avant chaque stroke (pour undo)
         self._bytes_before_stroke = None
@@ -473,10 +473,15 @@ class CloneZoneViewerDialog(QDialog):
         self._stroke_snapshot = None      # Copie PIL de l'image au début du stroke (lecture seule)
         self._stroke_last_dest = None     # Dernier point destination du stroke (pour mode relatif)
 
+        # Throttle du rafraîchissement pendant le stroke (max ~30 fps)
+        self._display_timer = QElapsedTimer()
+        self._display_timer.start()
+        self._display_interval_ms = 33   # ~30 fps
+
         self._is_fullscreen = False
 
         theme = get_current_theme()
-        self.setWindowTitle(_("dialogs.clone_zone_viewer.title"))
+        self.setWindowTitle(_wt("dialogs.clone_zone_viewer.title"))
         self.resize(900, 700)
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
@@ -520,7 +525,8 @@ class CloneZoneViewerDialog(QDialog):
                 return None
 
         # ── Toolbar ───────────────────────────────────────────────────────────
-        tb = QWidget()
+        self._tb = QWidget()
+        tb = self._tb
         tb.setFixedHeight(50)
         tb.setStyleSheet(f"background: {theme['toolbar_bg']}; color: {theme['text']};")
         tb_layout = QHBoxLayout(tb)
@@ -537,10 +543,10 @@ class CloneZoneViewerDialog(QDialog):
         tb_layout.addWidget(self._instr_lbl, stretch=1)
 
         # Séparateur
-        sep = QFrame()
-        sep.setFrameShape(QFrame.Shape.VLine)
-        sep.setStyleSheet(f"color: {theme['separator']};")
-        tb_layout.addWidget(sep)
+        self._tb_sep = QFrame()
+        self._tb_sep.setFrameShape(QFrame.Shape.VLine)
+        self._tb_sep.setStyleSheet(f"color: {theme['separator']};")
+        tb_layout.addWidget(self._tb_sep)
 
         # Zoom − % +
         _icon_minus = _load_icon("BTN_-.png", 20)
@@ -590,7 +596,8 @@ class CloneZoneViewerDialog(QDialog):
         root.addWidget(self._img_widget, stretch=1)
 
         # ── Barre du bas ──────────────────────────────────────────────────────
-        bot = QWidget()
+        self._bot = QWidget()
+        bot = self._bot
         bot.setStyleSheet(f"background: {theme['bg']}; color: {theme['text']};")
         bot_layout = QHBoxLayout(bot)
         bot_layout.setContentsMargins(10, 6, 10, 6)
@@ -621,10 +628,10 @@ class CloneZoneViewerDialog(QDialog):
         self._mode_group.addButton(self._radio_relative)
 
         # Séparateur
-        sep2 = QFrame()
-        sep2.setFrameShape(QFrame.Shape.VLine)
-        sep2.setStyleSheet(f"color: {theme['separator']};")
-        bot_layout.addWidget(sep2)
+        self._bot_sep2 = QFrame()
+        self._bot_sep2.setFrameShape(QFrame.Shape.VLine)
+        self._bot_sep2.setStyleSheet(f"color: {theme['separator']};")
+        bot_layout.addWidget(self._bot_sep2)
 
         # Taille du tampon
         self._lbl_brush = QLabel()
@@ -632,23 +639,31 @@ class CloneZoneViewerDialog(QDialog):
         bot_layout.addWidget(self._lbl_brush)
 
         self._brush_slider = QSlider(Qt.Orientation.Horizontal)
-        self._brush_slider.setMinimum(_BRUSH_RADIUS_MIN)
-        self._brush_slider.setMaximum(_BRUSH_RADIUS_MAX)
-        self._brush_slider.setValue(_BRUSH_RADIUS_DEFAULT)
+        self._brush_slider.setMinimum(_BRUSH_SIZE_MIN)
+        self._brush_slider.setMaximum(_BRUSH_SIZE_MAX)
+        self._brush_slider.setValue(_BRUSH_SIZE_DEFAULT)
         self._brush_slider.setFixedWidth(120)
         self._brush_slider.valueChanged.connect(self._on_brush_size_changed)
         bot_layout.addWidget(self._brush_slider)
 
-        self._lbl_brush_val = QLabel(str(_BRUSH_RADIUS_DEFAULT))
-        self._lbl_brush_val.setFont(font_btn)
-        self._lbl_brush_val.setMinimumWidth(30)
-        bot_layout.addWidget(self._lbl_brush_val)
+        self._brush_spin = QSpinBox()
+        self._brush_spin.setRange(_BRUSH_SIZE_MIN, _BRUSH_SIZE_MAX)
+        self._brush_spin.setValue(_BRUSH_SIZE_DEFAULT)
+        self._brush_spin.setFixedWidth(62)
+        self._brush_spin.setFont(font_btn)
+        self._brush_spin.setStyleSheet(
+            f"QSpinBox {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 2px 4px; }} "
+            f"QSpinBox::up-button, QSpinBox::down-button {{ width: 16px; }}"
+        )
+        self._brush_spin.valueChanged.connect(self._on_brush_spin_changed)
+        bot_layout.addWidget(self._brush_spin)
 
         # Séparateur
-        sep3 = QFrame()
-        sep3.setFrameShape(QFrame.Shape.VLine)
-        sep3.setStyleSheet(f"color: {theme['separator']};")
-        bot_layout.addWidget(sep3)
+        self._bot_sep3 = QFrame()
+        self._bot_sep3.setFrameShape(QFrame.Shape.VLine)
+        self._bot_sep3.setStyleSheet(f"color: {theme['separator']};")
+        bot_layout.addWidget(self._bot_sep3)
 
         # Undo
         icon_undo = _load_icon("BTN_Batch_Undo.png", 22)
@@ -771,7 +786,18 @@ class CloneZoneViewerDialog(QDialog):
     def _on_brush_size_changed(self, value):
         self._brush_radius = value
         self._img_widget.set_brush_radius(value)
-        self._lbl_brush_val.setText(str(value))
+        if self._brush_spin.value() != value:
+            self._brush_spin.blockSignals(True)
+            self._brush_spin.setValue(value)
+            self._brush_spin.blockSignals(False)
+
+    def _on_brush_spin_changed(self, value):
+        if self._brush_slider.value() != value:
+            self._brush_slider.blockSignals(True)
+            self._brush_slider.setValue(value)
+            self._brush_slider.blockSignals(False)
+        self._brush_radius = value
+        self._img_widget.set_brush_radius(value)
 
     def _on_mode_changed(self):
         if self._radio_fixed.isChecked():
@@ -813,7 +839,10 @@ class CloneZoneViewerDialog(QDialog):
         src_x, src_y = self._get_effective_source(ix, iy)
         self._apply_stamp(ix, iy, src_x, src_y)
         self._stroke_last_dest = (ix, iy)
-        self._display_image(reset_offset=False)
+        # Throttle : rafraîchit l'affichage au plus toutes les ~33 ms (~30 fps)
+        if self._display_timer.elapsed() >= self._display_interval_ms:
+            self._display_image(reset_offset=False)
+            self._display_timer.restart()
 
     def _get_effective_source(self, dest_x, dest_y):
         """Calcule la source effective : décalage constant (source initiale - dest initiale) appliqué à dest courante.
@@ -826,29 +855,27 @@ class CloneZoneViewerDialog(QDialog):
         return (dest_x + dx, dest_y + dy)
 
     def _apply_stamp(self, dest_x, dest_y, src_x, src_y):
-        """Copie un disque de rayon _BRUSH_RADIUS depuis le snapshot vers _work_img.
+        """Copie un disque de diamètre _brush_radius px depuis le snapshot vers _work_img.
         Utilise crop/paste PIL (C natif) avec un masque circulaire."""
         snap = self._stroke_snapshot
         dst = self._work_img
         w, h = dst.size
-        r = self._brush_radius
+        # _brush_radius est un diamètre : r est le demi-rayon flottant
+        r = (self._brush_radius - 1) / 2
 
         # Bounding box de destination (clampée à l'image)
-        d_left  = max(0, dest_x - r)
-        d_top   = max(0, dest_y - r)
-        d_right = min(w, dest_x + r + 1)
-        d_bottom = min(h, dest_y + r + 1)
+        d_left   = max(0, int(dest_x - r))
+        d_top    = max(0, int(dest_y - r))
+        d_right  = min(w, int(dest_x + r) + 1)
+        d_bottom = min(h, int(dest_y + r) + 1)
         if d_left >= d_right or d_top >= d_bottom:
             return
 
         # Bounding box source correspondante (même décalage)
-        s_left  = src_x - (dest_x - d_left)
-        s_top   = src_y - (dest_y - d_top)
+        s_left   = src_x - (dest_x - d_left)
+        s_top    = src_y - (dest_y - d_top)
         s_right  = s_left + (d_right - d_left)
         s_bottom = s_top  + (d_bottom - d_top)
-
-        bw = d_right - d_left
-        bh = d_bottom - d_top
 
         # Crop source depuis le snapshot (avec clamping si hors image)
         sc_left   = max(0, s_left)
@@ -868,8 +895,11 @@ class CloneZoneViewerDialog(QDialog):
         ph = sc_bottom - sc_top
 
         # Masque circulaire pour la zone de collage
+        if r == 0.0:
+            # Diamètre 1 : un seul pixel, pas besoin de masque
+            dst.paste(src_crop, (paste_x, paste_y))
+            return
         mask = Image.new('L', (pw, ph), 0)
-        import math
         cx = dest_x - paste_x
         cy = dest_y - paste_y
         from PIL import ImageDraw
@@ -891,6 +921,9 @@ class CloneZoneViewerDialog(QDialog):
         try:
             if save_state:
                 save_state()
+
+            # Affichage final du stroke (le throttle a peut-être sauté le dernier point)
+            self._display_image(reset_offset=False)
 
             # Sauvegarde l'image de travail dans l'entrée
             self._commit_work_image(state)
@@ -1004,9 +1037,12 @@ class CloneZoneViewerDialog(QDialog):
 
             # Recharge l'image de travail depuis les bytes restaurés
             self._load_work_image()
-            self._img_widget.clear_source()
-            self._source_pt = None
             self._display_image()
+            # Restaure le marqueur source dans le widget (source_pt inchangée)
+            if self._source_pt is not None:
+                self._img_widget._source_pt = QPoint(*self._source_pt)
+                self._img_widget._recalc_source_widget_pt()
+            self._img_widget.update()
 
             if render:
                 render()
@@ -1050,9 +1086,12 @@ class CloneZoneViewerDialog(QDialog):
             self._update_undo_redo_buttons()
 
             self._load_work_image()
-            self._img_widget.clear_source()
-            self._source_pt = None
             self._display_image()
+            # Restaure le marqueur source dans le widget (source_pt inchangée)
+            if self._source_pt is not None:
+                self._img_widget._source_pt = QPoint(*self._source_pt)
+                self._img_widget._recalc_source_widget_pt()
+            self._img_widget.update()
 
             if render:
                 render()
@@ -1072,10 +1111,22 @@ class CloneZoneViewerDialog(QDialog):
         font_btn = _get_current_font(11)
         font_radio = _get_current_font(10)
 
-        self.setWindowTitle(_("dialogs.clone_zone_viewer.title"))
+        self.setWindowTitle(_wt("dialogs.clone_zone_viewer.title"))
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
+
+        # Thème : toolbar, barre du bas, boutons, séparateurs, spinbox
+        self._tb.setStyleSheet(f"background: {theme['toolbar_bg']}; color: {theme['text']};")
+        self._bot.setStyleSheet(f"background: {theme['bg']}; color: {theme['text']};")
+        self._tb_sep.setStyleSheet(f"color: {theme['separator']};")
+        self._bot_sep2.setStyleSheet(f"color: {theme['separator']};")
+        self._bot_sep3.setStyleSheet(f"color: {theme['separator']};")
+        self._zoom_minus_btn.setStyleSheet(_btn_style(theme))
+        self._zoom_plus_btn.setStyleSheet(_btn_style(theme))
+        self._undo_btn.setStyleSheet(_btn_style(theme))
+        self._redo_btn.setStyleSheet(_btn_style(theme))
+        self._close_btn.setStyleSheet(_btn_style(theme))
 
         self._instr_lbl.setText(_("dialogs.clone_zone_viewer.instruction"))
         self._instr_lbl.setFont(font)
@@ -1084,7 +1135,12 @@ class CloneZoneViewerDialog(QDialog):
 
         self._lbl_brush.setText(_("dialogs.clone_zone_viewer.brush_size_label"))
         self._lbl_brush.setFont(font_btn)
-        self._lbl_brush_val.setFont(font_btn)
+        self._brush_spin.setFont(font_btn)
+        self._brush_spin.setStyleSheet(
+            f"QSpinBox {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 2px 4px; }} "
+            f"QSpinBox::up-button, QSpinBox::down-button {{ width: 16px; }}"
+        )
 
         self._lbl_mode.setText(_("dialogs.clone_zone_viewer.mode_label"))
         self._lbl_mode.setFont(font_btn)
@@ -1099,12 +1155,6 @@ class CloneZoneViewerDialog(QDialog):
 
         self._close_btn.setText(_("buttons.close"))
         self._close_btn.setFont(font_btn)
-        self._close_btn.setStyleSheet(_btn_style(theme))
-
-        self._zoom_minus_btn.setStyleSheet(_btn_style(theme))
-        self._zoom_plus_btn.setStyleSheet(_btn_style(theme))
-        self._undo_btn.setStyleSheet(_btn_style(theme))
-        self._redo_btn.setStyleSheet(_btn_style(theme))
 
     # ── Keyboard ─────────────────────────────────────────────────────────────
 

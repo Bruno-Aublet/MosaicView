@@ -996,7 +996,12 @@
       "unsharp_percent_label": "Intensité : {value} %",
       "unsharp_threshold_label": "Seuil : {value}",
       "unsharp_viewer_title": "Netteté adaptative",
-      "auto_levels_tooltip": "Analyse chaque page et ajuste automatiquement les niveaux de noir et de blanc pour maximiser le contraste.\nPour choisir page par page, utilisez la visionneuse."
+      "auto_levels_tooltip": "Analyse chaque page et ajuste automatiquement les niveaux de noir et de blanc pour maximiser le contraste.\nPour choisir page par page, utilisez la visionneuse.",
+      "transparency_unsaved_title": "Modifications non appliquées",
+      "transparency_unsaved_message": "Les modifications en cours n'ont pas été appliquées à l'image. Que souhaitez-vous faire ?",
+      "transparency_unsaved_discard": "Fermer sans appliquer",
+      "transparency_unsaved_apply": "Appliquer et fermer",
+      "transparency_unsaved_cancel": "Annuler"
     },
     "levels_viewer": {
       "title": "Ajustement des niveaux avec pipettes",
@@ -1224,7 +1229,7 @@
     "flatten": "Aplatir les répertoires",
     "flatten_content": "Si votre archive contient des sous-dossiers, utilisez 'Aplatir les répertoires' pour ramener toutes les images au même niveau.",
     "viewer": "Visionneuse",
-    "viewer_content": "Double-cliquez sur une page pour ouvrir la visionneuse :\n• Touches ← → : navigation entre les pages\n• Touche D : basculer entre 3 modes de lecture\n  - Page simple : une page à la fois\n  - Double pages : page 1 seule, puis 2-3, 4-5, etc.\n  - Double pages continues : page 1 seule, puis 2-3, 3-4, 4-5, etc.\n• Molette de la souris : navigation rapide\n• Ctrl+Molette ou Ctrl+Plus/Moins : zoom\n• Ctrl+0 : réinitialiser le zoom\n• Touche F11 : plein écran\n• Double-clic : basculer plein écran\n• Touche Échap : annuler le cadre de découpe / quitter la visionneuse",
+    "viewer_content": "Double-cliquez sur une page pour ouvrir la visionneuse :\n• Touches ← → : navigation entre les pages\n• Touche D : basculer entre 3 modes de lecture\n  - Page simple : une page à la fois\n  - Double pages : page 1 seule, puis 2-3, 4-5, etc.\n  - Double pages continues : page 1 seule, puis 2-3, 3-4, 4-5, etc.\n• Molette de la souris : navigation rapide\n• Ctrl+Molette ou Ctrl+Plus/Moins : zoom\n• Ctrl+0 : réinitialiser le zoom\n• Touche F11 : plein écran\n• Double-clic : basculer plein écran\n• Touche Échap : annuler le cadre de découpe / quitter la visionneuse\n• Marque-page : mémorise automatiquement la page courante à la fermeture (sauf première/dernière page). Un ruban rouge s'affiche sur la vignette correspondante dans la mosaïque. À la réouverture, un message propose de reprendre à cette page. Suppression automatique à la dernière page, ou manuelle via clic droit dans la visionneuse.",
     "join_pages": "Joindre des pages",
     "join_pages_content": "Sélectionnez plusieurs pages consécutives, clic droit → 'Joindre les pages sélectionnées' pour joindre les pages horizontalement ou verticalement. Le format de l'image produite correspond à celui des pages sources si elles sont toutes identiques, sinon PNG par défaut.",
     "split_pages": "Scinder des pages",

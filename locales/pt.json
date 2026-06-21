@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensidade: {value} %",
       "unsharp_threshold_label": "Limiar: {value}",
       "unsharp_viewer_title": "Nitidez adaptativa",
-      "auto_levels_tooltip": "Analisa cada página e ajusta automaticamente os níveis de preto e branco para maximizar o contraste.\nPara escolher página por página, utilize o visualizador."
+      "auto_levels_tooltip": "Analisa cada página e ajusta automaticamente os níveis de preto e branco para maximizar o contraste.\nPara escolher página por página, utilize o visualizador.",
+      "transparency_unsaved_title": "Alterações não aplicadas",
+      "transparency_unsaved_message": "As alterações atuais não foram aplicadas à imagem. O que deseja fazer?",
+      "transparency_unsaved_discard": "Fechar sem aplicar",
+      "transparency_unsaved_apply": "Aplicar e fechar",
+      "transparency_unsaved_cancel": "Cancelar"
     },
     "levels_viewer": {
       "title": "Ajuste de niveis com conta-gotas",
@@ -1224,7 +1229,7 @@
     "flatten": "Nivelar as pastas",
     "flatten_content": "Se o seu arquivo contém subpastas, use 'Nivelar pastas' para trazer todas as imagens ao mesmo nível.",
     "viewer": "Visualizador",
-    "viewer_content": "Faça duplo clique numa página para abrir o visualizador:\n• Teclas ← →: navegação entre páginas\n• Tecla D: alternar entre 3 modos de leitura\n  - Página única: uma página de cada vez\n  - Páginas duplas: página 1 sozinha, depois 2-3, 4-5, etc.\n  - Páginas duplas contínuas: página 1 sozinha, depois 2-3, 3-4, 4-5, etc.\n• Roda do rato: navegação rápida\n• Ctrl+Roda ou Ctrl+Mais/Menos: zoom\n• Ctrl+0: reiniciar zoom\n• Tecla F11: ecrã inteiro\n• Duplo clique: alternar ecrã inteiro\n• Tecla Esc: cancelar o quadro de recorte / sair do visualizador",
+    "viewer_content": "Faça duplo clique numa página para abrir o visualizador:\n• Teclas ← →: navegação entre páginas\n• Tecla D: alternar entre 3 modos de leitura\n  - Página única: uma página de cada vez\n  - Páginas duplas: página 1 sozinha, depois 2-3, 4-5, etc.\n  - Páginas duplas contínuas: página 1 sozinha, depois 2-3, 3-4, 4-5, etc.\n• Roda do rato: navegação rápida\n• Ctrl+Roda ou Ctrl+Mais/Menos: zoom\n• Ctrl+0: reiniciar zoom\n• Tecla F11: ecrã inteiro\n• Duplo clique: alternar ecrã inteiro\n• Tecla Esc: cancelar o quadro de recorte / sair do visualizador\n• Marcador: guarda automaticamente a página atual ao fechar o visualizador (exceto a primeira e a última página). Uma fita vermelha aparece na miniatura correspondente no mosaico. Na próxima abertura, uma mensagem sugere voltar a esta página. Eliminado automaticamente na última página ou manualmente com o botão direito do rato no visualizador.",
     "join_pages": "Unir páginas",
     "join_pages_content": "Selecione várias páginas consecutivas, clique com o botão direito → 'Juntar páginas selecionadas' para unir páginas horizontal ou verticalmente. O formato da imagem produzida corresponde ao das páginas de origem se forem todas idênticas, caso contrário PNG por padrão.",
     "split_pages": "Dividir páginas",

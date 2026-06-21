@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensitate: {value} %",
       "unsharp_threshold_label": "Prag: {value}",
       "unsharp_viewer_title": "Claritate adaptivă",
-      "auto_levels_tooltip": "Analizează fiecare pagină și reglează automat nivelurile de negru și alb pentru a maximiza contrastul.\nPentru a alege pagină cu pagină, utilizați vizualizatorul."
+      "auto_levels_tooltip": "Analizează fiecare pagină și reglează automat nivelurile de negru și alb pentru a maximiza contrastul.\nPentru a alege pagină cu pagină, utilizați vizualizatorul.",
+      "transparency_unsaved_title": "Modificări neaplicate",
+      "transparency_unsaved_message": "Modificările curente nu au fost aplicate imaginii. Ce doriți să faceți?",
+      "transparency_unsaved_discard": "Închide fără a aplica",
+      "transparency_unsaved_apply": "Aplică și închide",
+      "transparency_unsaved_cancel": "Anulare"
     },
     "levels_viewer": {
       "title": "Ajustarea nivelurilor cu picurator",
@@ -1224,7 +1229,7 @@
     "flatten": "Aplatizarea directoarelor",
     "flatten_content": "Dacă arhiva conține subdosare, folosiți 'Aplatizează dosarele' pentru a aduce toate imaginile la același nivel.",
     "viewer": "Vizualizator",
-    "viewer_content": "Faceți dublu clic pe o pagină pentru a deschide vizualizatorul:\n• Taste ← →: navigare între pagini\n• Tasta D: comutare între 3 moduri de citire\n  - Pagină simplă: o pagină odată\n  - Pagini duble: pagina 1 singură, apoi 2-3, 4-5, etc.\n  - Pagini duble continue: pagina 1 singură, apoi 2-3, 3-4, 4-5, etc.\n• Rotița mouse-ului: navigare rapidă\n• Ctrl+Rotița sau Ctrl+Plus/Minus: zoom\n• Ctrl+0: resetează zoom\n• Tasta F11: ecran complet\n• Dublu clic: comutare ecran complet\n• Tasta Esc: anulați cadrul de decupare / ieșire din vizualizator",
+    "viewer_content": "Faceți dublu clic pe o pagină pentru a deschide vizualizatorul:\n• Taste ← →: navigare între pagini\n• Tasta D: comutare între 3 moduri de citire\n  - Pagină simplă: o pagină odată\n  - Pagini duble: pagina 1 singură, apoi 2-3, 4-5, etc.\n  - Pagini duble continue: pagina 1 singură, apoi 2-3, 3-4, 4-5, etc.\n• Rotița mouse-ului: navigare rapidă\n• Ctrl+Rotița sau Ctrl+Plus/Minus: zoom\n• Ctrl+0: resetează zoom\n• Tasta F11: ecran complet\n• Dublu clic: comutare ecran complet\n• Tasta Esc: anulați cadrul de decupare / ieșire din vizualizator\n• Semn de carte: salvează automat pagina curentă la închiderea vizualizatorului (cu excepția primei și ultimei pagini). O panglică roșie apare pe miniatura corespunzătoare din mozaic. La următoarea deschidere, un mesaj sugerează revenirea la această pagină. Șters automat la ultima pagină sau manual prin clic dreapta în vizualizator.",
     "join_pages": "Unirea paginilor",
     "join_pages_content": "Selectați mai multe pagini consecutive, clic dreapta → 'Îmbină paginile selectate' pentru a îmbina paginile orizontal sau vertical. Formatul imaginii produse corespunde celui al paginilor sursă dacă sunt toate identice, altfel PNG implicit.",
     "split_pages": "Împărțirea paginilor",

@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensyvumas: {value} %",
       "unsharp_threshold_label": "Slenkstis: {value}",
       "unsharp_viewer_title": "Adaptyvus ryškumas",
-      "auto_levels_tooltip": "Analizuoja kiekvieną puslapį ir automatiškai reguliuoja juodos ir baltos spalvos lygius, kad maksimaliai padidintų kontrastą.\nNorėdami pasirinkti puslapį po puslapio, naudokite peržiūros priemonę."
+      "auto_levels_tooltip": "Analizuoja kiekvieną puslapį ir automatiškai reguliuoja juodos ir baltos spalvos lygius, kad maksimaliai padidintų kontrastą.\nNorėdami pasirinkti puslapį po puslapio, naudokite peržiūros priemonę.",
+      "transparency_unsaved_title": "Nepritaikyti pakeitimai",
+      "transparency_unsaved_message": "Dabartiniai pakeitimai nebuvo pritaikyti paveikslėliui. Ką norite daryti?",
+      "transparency_unsaved_discard": "Uždaryti nepritaikius",
+      "transparency_unsaved_apply": "Pritaikyti ir uždaryti",
+      "transparency_unsaved_cancel": "Atšaukti"
     },
     "levels_viewer": {
       "title": "Lygio reguliavimas lašintuku",
@@ -1224,7 +1229,7 @@
     "flatten": "Aplankų išlyginimas",
     "flatten_content": "Jei jūsų archyve yra poaplankai, naudokite 'Išlyginti aplankus', kad visus vaizdus perkeltumėte į tą patį lygį.",
     "viewer": "Žiūryklė",
-    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte žiūryklę:\n• Klavišai ← → : naršymas tarp puslapių\n• Klavišas D : perjungti tarp 3 skaitymo režimų\n  - Vienas puslapis: po vieną puslapį\n  - Dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 4-5 ir t.t.\n  - Dvigubi puslapiai nuosekliai: 1 puslapis vienas, tada 2-3, 3-4, 4-5 ir t.t.\n• Pelės ratukas: greitas naršymas\n• Ctrl+Ratukas arba Ctrl+Plius/Minus: mastelis\n• Ctrl+0 : atstatyti mastelį\n• Klavišas F11 : visas ekranas\n• Dukart spustelėti: perjungti visą ekraną\n• Klavišas Esc : atšaukti apkarpymo rėmelį / uždaryti žiūryklę",
+    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte žiūryklę:\n• Klavišai ← → : naršymas tarp puslapių\n• Klavišas D : perjungti tarp 3 skaitymo režimų\n  - Vienas puslapis: po vieną puslapį\n  - Dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 4-5 ir t.t.\n  - Dvigubi puslapiai nuosekliai: 1 puslapis vienas, tada 2-3, 3-4, 4-5 ir t.t.\n• Pelės ratukas: greitas naršymas\n• Ctrl+Ratukas arba Ctrl+Plius/Minus: mastelis\n• Ctrl+0 : atstatyti mastelį\n• Klavišas F11 : visas ekranas\n• Dukart spustelėti: perjungti visą ekraną\n• Klavišas Esc : atšaukti apkarpymo rėmelį / uždaryti žiūryklę\n• Žyma: automatiškai išsaugo dabartinį puslapį, kai uždaromas peržiūros įrankis (išskyrus pirmą ir paskutinį puslapį). Mozaikoje ant atitinkamos miniatiūros pasirodo raudona juostelė. Kitą kartą atidarant, pranešimas siūlo grįžti į šį puslapį. Automatiškai ištrinamas paskutiniame puslapyje arba rankiniu būdu dešiniuoju pelės mygtuku peržiūros įrankyje.",
     "join_pages": "Puslapių sujungimas",
     "join_pages_content": "Pasirinkite kelis iš eilės einančius puslapius, dešiniuoju spustelėjimu → 'Sujungti pasirinktus puslapius', kad sujungtumėte puslapius horizontaliai arba vertikaliai. Sukurto vaizdo formatas atitinka šaltinio puslapių formatą, jei jie visi vienodi, kitu atveju pagal numatytuosius nustatymus PNG.",
     "split_pages": "Puslapių padalinimas",

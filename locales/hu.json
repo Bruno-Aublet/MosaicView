@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Erősség: {value} %",
       "unsharp_threshold_label": "Küszöb: {value}",
       "unsharp_viewer_title": "Adaptív élesség",
-      "auto_levels_tooltip": "Elemzi az egyes oldalakat, és automatikusan beállítja a fekete és fehér szinteket a kontraszt maximalizálása érdekében.\nOldalankénti választáshoz használja a megjelenítőt."
+      "auto_levels_tooltip": "Elemzi az egyes oldalakat, és automatikusan beállítja a fekete és fehér szinteket a kontraszt maximalizálása érdekében.\nOldalankénti választáshoz használja a megjelenítőt.",
+      "transparency_unsaved_title": "Nem alkalmazott változtatások",
+      "transparency_unsaved_message": "A jelenlegi módosítások még nem lettek alkalmazva a képen. Mit szeretne tenni?",
+      "transparency_unsaved_discard": "Bezárás alkalmazás nélkül",
+      "transparency_unsaved_apply": "Alkalmaz és bezár",
+      "transparency_unsaved_cancel": "Mégse"
     },
     "levels_viewer": {
       "title": "Szintbeallitas cseppentővel",
@@ -1224,7 +1229,7 @@
     "flatten": "Könyvtárak egyengetése",
     "flatten_content": "Ha az archívum almappákat tartalmaz, használja a 'Mappák egyengetése' funkciót az összes kép ugyanarra a szintre hozásához.",
     "viewer": "Néző",
-    "viewer_content": "Dupla kattintással nyissa meg a nézőt:\n• ← → billentyűk: navigáció az oldalak között\n• D billentyű: váltás 3 olvasási mód között\n  - Egyszerű oldal: egyszerre egy oldal\n  - Dupla oldal: 1. oldal egyedül, majd 2-3, 4-5, stb.\n  - Folyamatos dupla oldal: 1. oldal egyedül, majd 2-3, 3-4, 4-5, stb.\n• Egérgörgő: gyors navigáció\n• Ctrl+Görgő vagy Ctrl+Plus/Mínusz: nagyítás\n• Ctrl+0: nagyítás visszaállítása\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: vágási keret megszakítása / kilépés a nézőből",
+    "viewer_content": "Dupla kattintással nyissa meg a nézőt:\n• ← → billentyűk: navigáció az oldalak között\n• D billentyű: váltás 3 olvasási mód között\n  - Egyszerű oldal: egyszerre egy oldal\n  - Dupla oldal: 1. oldal egyedül, majd 2-3, 4-5, stb.\n  - Folyamatos dupla oldal: 1. oldal egyedül, majd 2-3, 3-4, 4-5, stb.\n• Egérgörgő: gyors navigáció\n• Ctrl+Görgő vagy Ctrl+Plus/Mínusz: nagyítás\n• Ctrl+0: nagyítás visszaállítása\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: vágási keret megszakítása / kilépés a nézőből\n• Könyvjelző: automatikusan menti az aktuális oldalt a megjelenítő bezárásakor (az első és az utolsó oldal kivételével). Egy piros szalag jelenik meg a mozaik megfelelő bélyegképén. A következő megnyitáskor egy üzenet javasolja, hogy térjen vissza erre az oldalra. Az utolsó oldalon automatikusan törlődik, vagy manuálisan a jobb gombbal kattintva a megjelenítőben.",
     "join_pages": "Oldalak egyesítése",
     "join_pages_content": "Válasszon ki több egymást követő oldalt, jobb klikk → 'Kiválasztott oldalak egyesítése' az oldalak vízszintes vagy függőleges egyesítéséhez. A létrehozott kép formátuma megegyezik a forrásoldalak formátumával, ha azok mind azonosak, egyébként alapértelmezetten PNG.",
     "split_pages": "Oldalak felosztása",

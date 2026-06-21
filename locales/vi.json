@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Cường độ: {value} %",
       "unsharp_threshold_label": "Ngưỡng: {value}",
       "unsharp_viewer_title": "Độ sắc nét thích ứng",
-      "auto_levels_tooltip": "Phân tích từng trang và tự động điều chỉnh mức độ đen trắng để tối đa hóa độ tương phản.\nĐể chọn từng trang, hãy sử dụng trình xem."
+      "auto_levels_tooltip": "Phân tích từng trang và tự động điều chỉnh mức độ đen trắng để tối đa hóa độ tương phản.\nĐể chọn từng trang, hãy sử dụng trình xem.",
+      "transparency_unsaved_title": "Thay doi chua duoc ap dung",
+      "transparency_unsaved_message": "Cac thay doi hien tai chua duoc ap dung vao anh. Ban muon lam gi?",
+      "transparency_unsaved_discard": "Dong ma khong ap dung",
+      "transparency_unsaved_apply": "Ap dung va dong",
+      "transparency_unsaved_cancel": "Huy"
     },
     "levels_viewer": {
       "title": "Dieu chinh muc bang cong cu hut mau",
@@ -1224,7 +1229,7 @@
     "flatten": "Làm phẳng thư mục",
     "flatten_content": "Nếu kho lưu trữ của bạn chứa thư mục con, hãy sử dụng 'Làm phẳng thư mục' để đưa tất cả ảnh về cùng một cấp.",
     "viewer": "Trình xem",
-    "viewer_content": "Nhấp đúp vào trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 3 chế độ đọc\n  - Một trang: một trang tại một thời điểm\n  - Hai trang: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Hai trang liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n• Con lăn chuột: điều hướng nhanh\n• Ctrl+Con lăn hoặc Ctrl+Plus/Minus: zoom\n• Ctrl+0: đặt lại zoom\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy khung cắt / đóng trình xem",
+    "viewer_content": "Nhấp đúp vào trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 3 chế độ đọc\n  - Một trang: một trang tại một thời điểm\n  - Hai trang: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Hai trang liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n• Con lăn chuột: điều hướng nhanh\n• Ctrl+Con lăn hoặc Ctrl+Plus/Minus: zoom\n• Ctrl+0: đặt lại zoom\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy khung cắt / đóng trình xem\n• Dấu trang: tự động lưu trang hiện tại khi đóng trình xem (ngoại trừ trang đầu và trang cuối). Một dải băng đỏ xuất hiện trên hình thu nhỏ tương ứng trong khảm. Lần mở tiếp theo, một thông báo gợi ý quay lại trang này. Tự động xóa ở trang cuối hoặc thủ công bằng cách nhấp chuột phải trong trình xem.",
     "join_pages": "Ghép trang",
     "join_pages_content": "Chọn nhiều trang liên tiếp, nhấp chuột phải → 'Ghép các trang đã chọn' để ghép trang theo chiều ngang hoặc chiều dọc. Định dạng của ảnh tạo ra tương ứng với định dạng của các trang nguồn nếu chúng đều giống nhau, nếu không thì mặc định là PNG.",
     "split_pages": "Tách trang",

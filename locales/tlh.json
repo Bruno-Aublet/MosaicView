@@ -965,7 +965,12 @@
       "unsharp_percent_label": "HurDagh: {value} %",
       "unsharp_threshold_label": "mI'moH: {value}",
       "unsharp_viewer_title": "HurDagh 'ugh mI'",
-      "auto_levels_tooltip": "Soj Hoch nav je chenmoH qaStaHvIS SuD wov rap je qIb.\nnav je nav wIv DaneH chugh, viewer yIlo'."
+      "auto_levels_tooltip": "Soj Hoch nav je chenmoH qaStaHvIS SuD wov rap je qIb.\nnav je nav wIv DaneH chugh, viewer yIlo'.",
+      "transparency_unsaved_title": "lIngwI' qImroH pagh chenmoHlu'pu'",
+      "transparency_unsaved_message": "DaH lIngwI' qImroH tu'lu' 'ach pagh chenmoHlu'pu'. nuq DaneH?",
+      "transparency_unsaved_discard": "chenmoHlI' pagh SoQmoH",
+      "transparency_unsaved_apply": "chenmoH 'ej SoQmoH",
+      "transparency_unsaved_cancel": "tujpa'"
     },
     "levels_viewer": {
       "title": "chapwI ngah qibmey choH",
@@ -1224,7 +1229,7 @@
     "flatten": "vo'mey chuHmoH",
     "flatten_content": "per vo' puSmey tu'lu'chugh, 'vo'mey chuHmoH' lo' 'ej Hoch cha'nobmey wa' chen Daq yIvIH.",
     "viewer": "leghwI'",
-    "viewer_content": "ghItlh cha'logh yIbuS 'ej leghwI' yIpoS:\n• qItmey ← → : ghItlhmey jotmeH\n• qIt D : wej laD chamey cha'DIch choH\n  - ghItlh wa': ghItlh wa' neH\n  - cha' ghItlhmey: ghItlh wa' neH, ghItlhmey cha'-wej, loS-vagh, latlh\n  - cha' ghItlhmey taH: ghItlh wa' neH, cha'-wej, wej-loS, loS-vagh, latlh\n• ghom jojmey: jotmeH nom\n• Ctrl+ghom pagh Ctrl+Plus/Minus: tIn ngo'\n• Ctrl+0: tIn ngo' chu'moH\n• qIt F11: Hoch SIrgh\n• cha'logh buS: Hoch SIrgh choH\n• qIt Échap: pe'meH mIvvo' bIHarghaH / leghwI' mej",
+    "viewer_content": "ghItlh cha'logh yIbuS 'ej leghwI' yIpoS:\n• qItmey ← → : ghItlhmey jotmeH\n• qIt D : wej laD chamey cha'DIch choH\n  - ghItlh wa': ghItlh wa' neH\n  - cha' ghItlhmey: ghItlh wa' neH, ghItlhmey cha'-wej, loS-vagh, latlh\n  - cha' ghItlhmey taH: ghItlh wa' neH, cha'-wej, wej-loS, loS-vagh, latlh\n• ghom jojmey: jotmeH nom\n• Ctrl+ghom pagh Ctrl+Plus/Minus: tIn ngo'\n• Ctrl+0: tIn ngo' chu'moH\n• qIt F11: Hoch SIrgh\n• cha'logh buS: Hoch SIrgh choH\n• qIt Échap: pe'meH mIvvo' bIHarghaH / leghwI' mej\n• bukmarka: pa'meH tu'lu' laDmeH 'avwI' SoQmoHDI' (wa'DIch paq'or Qav je lulajlu'be'). HIDjolev Doq tu'lu' mosaiq ngoq Doch HIDjolev. latlh bIghHa', paq'or nov chu' chu'lu'DI', pa' chegh. Qav paq'or pa' moj pagh 'avwI' qech pat HIch 'oSbogh.",
     "join_pages": "ghItlhmey qIpmoH",
     "join_pages_content": "law' qonmey DawIv consecutive, nIH-click → 'qonmey selected ghom' qonmey horizontal pagh vertical ghom. nagh'Ij mIllogh chenmoHlu'bogh qonmey source mIllogh format rap 'e' luDelchugh Hoch, pagh PNG motlh.",
     "split_pages": "ghItlhmey mobmoH",

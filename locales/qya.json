@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Moia: {value} %",
       "unsharp_threshold_label": "Telpe: {value}",
       "unsharp_viewer_title": "Adaptative telpina",
-      "auto_levels_tooltip": "Cenin quanta parma ar autómatavë cemë morë ar ninquë rambor an úmea canwa.\nCen parma mi parma, anta vistar."
+      "auto_levels_tooltip": "Cenin quanta parma ar autómatavë cemë morë ar ninquë rambor an úmea canwa.\nCen parma mi parma, anta vistar.",
+      "transparency_unsaved_title": "Carmir umbar únotë",
+      "transparency_unsaved_message": "I carmir sí umbar únotë i cuilë andavë. Manen meril carë?",
+      "transparency_unsaved_discard": "Patya únotë",
+      "transparency_unsaved_apply": "Nota ar patya",
+      "transparency_unsaved_cancel": "Avatyara"
     },
     "levels_viewer": {
       "title": "Atalta lestaron cene ihtesse",
@@ -1224,7 +1229,7 @@
     "flatten": "Lanya i aldasseli",
     "flatten_content": "Ai raincelma lyéva harya aldasseli, nota 'Lanya i aldasseli' an horya illi fánar at anwa erë.",
     "viewer": "Centuva",
-    "viewer_content": "Attëa-naucë parma an panya i centuva:\n• Macar ← → : návië enda i parmar\n• Macil D : návë enda neldë nottier\n  - Parma erya: parma erya tambë\n  - Parmar attëar: parma 1 erë, san 2-3, 4-5, etc.\n  - Parmar attëar vórimar: parma 1 erë, san 2-3, 3-4, 4-5, etc.\n• Corma númenno: návië árië\n• Ctrl+Corma maldë Ctrl+Plus/Moins: tyalië\n• Ctrl+0: rinyë tyalië\n• Macil F11: larca cénë\n• Attëa-naucë: návë larca cénë\n• Macil Échap: avatyaro i napanorwa / elda i centuva",
+    "viewer_content": "Attëa-naucë parma an panya i centuva:\n• Macar ← → : návië enda i parmar\n• Macil D : návë enda neldë nottier\n  - Parma erya: parma erya tambë\n  - Parmar attëar: parma 1 erë, san 2-3, 4-5, etc.\n  - Parmar attëar vórimar: parma 1 erë, san 2-3, 3-4, 4-5, etc.\n• Corma númenno: návië árië\n• Ctrl+Corma maldë Ctrl+Plus/Moins: tyalië\n• Ctrl+0: rinyë tyalië\n• Macil F11: larca cénë\n• Attëa-naucë: návë larca cénë\n• Macil Échap: avatyaro i napanorwa / elda i centuva\n• Quantalë: automaivë carda ya cuv' i hísar vihtanë (sív' i minya ar i telda carda). Carnë telco orëa i parma i mósaikessë. I nev' apantaina, parma-quetë mapa i yestuvantë i carda senna. Autamaivë nortaina i telda cardassë yan i handa nurtainë vihtanessë.",
     "join_pages": "Oacë parmar",
     "join_pages_content": "Calya atya parmar consecutive, haira-pitya → 'parmar calqua onta' parmar horizontal mal vertical onta. I nasta en i quetta ondova mapa na nasta en i parmar yesta, qui enta PNG túrima.",
     "split_pages": "Rahta parmar",

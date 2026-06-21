@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensitas: {value} %",
       "unsharp_threshold_label": "Ambang batas: {value}",
       "unsharp_viewer_title": "Ketajaman adaptif",
-      "auto_levels_tooltip": "Menganalisis setiap halaman dan secara otomatis menyesuaikan tingkat hitam dan putih untuk memaksimalkan kontras.\nUntuk memilih halaman per halaman, gunakan penampil."
+      "auto_levels_tooltip": "Menganalisis setiap halaman dan secara otomatis menyesuaikan tingkat hitam dan putih untuk memaksimalkan kontras.\nUntuk memilih halaman per halaman, gunakan penampil.",
+      "transparency_unsaved_title": "Perubahan belum diterapkan",
+      "transparency_unsaved_message": "Perubahan saat ini belum diterapkan pada gambar. Apa yang ingin Anda lakukan?",
+      "transparency_unsaved_discard": "Tutup tanpa menerapkan",
+      "transparency_unsaved_apply": "Terapkan dan tutup",
+      "transparency_unsaved_cancel": "Batal"
     },
     "levels_viewer": {
       "title": "Penyesuaian level dengan pipet",
@@ -1224,7 +1229,7 @@
     "flatten": "Ratakan direktori",
     "flatten_content": "Jika arsip Anda berisi sub-folder, gunakan 'Ratakan direktori' untuk membawa semua gambar ke tingkat yang sama.",
     "viewer": "Penampil",
-    "viewer_content": "Klik dua kali pada halaman untuk membuka penampil:\n• Tombol ← →: navigasi antar halaman\n• Tombol D: beralih antara 3 mode baca\n  - Halaman tunggal: satu halaman sekaligus\n  - Halaman ganda: halaman 1 sendiri, lalu 2-3, 4-5, dll.\n  - Halaman ganda berkelanjutan: halaman 1 sendiri, lalu 2-3, 3-4, 4-5, dll.\n• Roda mouse: navigasi cepat\n• Ctrl+Roda atau Ctrl+Plus/Minus: zoom\n• Ctrl+0: reset zoom\n• Tombol F11: layar penuh\n• Klik dua kali: toggle layar penuh\n• Tombol Esc: batalkan bingkai pangkas / tutup penampil",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka penampil:\n• Tombol ← →: navigasi antar halaman\n• Tombol D: beralih antara 3 mode baca\n  - Halaman tunggal: satu halaman sekaligus\n  - Halaman ganda: halaman 1 sendiri, lalu 2-3, 4-5, dll.\n  - Halaman ganda berkelanjutan: halaman 1 sendiri, lalu 2-3, 3-4, 4-5, dll.\n• Roda mouse: navigasi cepat\n• Ctrl+Roda atau Ctrl+Plus/Minus: zoom\n• Ctrl+0: reset zoom\n• Tombol F11: layar penuh\n• Klik dua kali: toggle layar penuh\n• Tombol Esc: batalkan bingkai pangkas / tutup penampil\n• Penanda: secara otomatis menyimpan halaman saat ini saat menutup penampil (kecuali halaman pertama dan terakhir). Pita merah muncul pada thumbnail yang sesuai di mosaik. Saat dibuka berikutnya, sebuah pesan menyarankan untuk kembali ke halaman ini. Dihapus otomatis di halaman terakhir, atau secara manual melalui klik kanan di penampil.",
     "join_pages": "Gabungkan halaman",
     "join_pages_content": "Pilih beberapa halaman berurutan, klik kanan → 'Gabungkan halaman yang dipilih' untuk menggabungkan halaman secara horizontal atau vertikal. Format gambar yang dihasilkan sesuai dengan format halaman sumber jika semuanya identik, jika tidak maka PNG secara default.",
     "split_pages": "Pisahkan halaman",

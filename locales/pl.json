@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensywność: {value} %",
       "unsharp_threshold_label": "Próg: {value}",
       "unsharp_viewer_title": "Adaptywna ostrość",
-      "auto_levels_tooltip": "Analizuje każdą stronę i automatycznie dostosowuje poziomy czerni i bieli, aby zmaksymalizować kontrast.\nAby wybrać strona po stronie, użyj przeglądarki."
+      "auto_levels_tooltip": "Analizuje każdą stronę i automatycznie dostosowuje poziomy czerni i bieli, aby zmaksymalizować kontrast.\nAby wybrać strona po stronie, użyj przeglądarki.",
+      "transparency_unsaved_title": "Niezastosowane zmiany",
+      "transparency_unsaved_message": "Bieżące zmiany nie zostały zastosowane do obrazu. Co chcesz zrobić?",
+      "transparency_unsaved_discard": "Zamknij bez zastosowania",
+      "transparency_unsaved_apply": "Zastosuj i zamknij",
+      "transparency_unsaved_cancel": "Anuluj"
     },
     "levels_viewer": {
       "title": "Dostosowanie poziomow za pomoca pipety",
@@ -1224,7 +1229,7 @@
     "flatten": "Spłaszczanie katalogów",
     "flatten_content": "Jeśli archiwum zawiera podkatalogi, użyj 'Spłaszcz katalogi', aby przenieść wszystkie obrazy na ten sam poziom.",
     "viewer": "Przeglądarka",
-    "viewer_content": "Kliknij dwukrotnie na stronę, aby otworzyć przeglądarkę:\n• Klawisze ← → : nawigacja między stronami\n• Klawisz D : przełączanie między 3 trybami czytania\n  - Pojedyncza strona: jedna strona na raz\n  - Podwójne strony: strona 1 osobno, potem 2-3, 4-5 itd.\n  - Podwójne strony ciągłe: strona 1 osobno, potem 2-3, 3-4, 4-5 itd.\n• Kółko myszy: szybka nawigacja\n• Ctrl+Kółko lub Ctrl+Plus/Minus: powiększenie\n• Ctrl+0: resetuj powiększenie\n• Klawisz F11: pełny ekran\n• Podwójne kliknięcie: przełącz pełny ekran\n• Klawisz Esc: anuluj ramkę przycinania / zamknij przeglądarkę",
+    "viewer_content": "Kliknij dwukrotnie na stronę, aby otworzyć przeglądarkę:\n• Klawisze ← → : nawigacja między stronami\n• Klawisz D : przełączanie między 3 trybami czytania\n  - Pojedyncza strona: jedna strona na raz\n  - Podwójne strony: strona 1 osobno, potem 2-3, 4-5 itd.\n  - Podwójne strony ciągłe: strona 1 osobno, potem 2-3, 3-4, 4-5 itd.\n• Kółko myszy: szybka nawigacja\n• Ctrl+Kółko lub Ctrl+Plus/Minus: powiększenie\n• Ctrl+0: resetuj powiększenie\n• Klawisz F11: pełny ekran\n• Podwójne kliknięcie: przełącz pełny ekran\n• Klawisz Esc: anuluj ramkę przycinania / zamknij przeglądarkę\n• Zakładka: automatycznie zapisuje bieżącą stronę przy zamykaniu przeglądarki (z wyjątkiem pierwszej i ostatniej strony). Na odpowiedniej miniaturze w mozaice pojawia się czerwona wstążka. Przy następnym otwarciu komunikat sugeruje powrót do tej strony. Usuwana automatycznie na ostatniej stronie lub ręcznie prawym przyciskiem myszy w przeglądarce.",
     "join_pages": "Łączenie stron",
     "join_pages_content": "Wybierz kilka kolejnych stron, kliknij prawym przyciskiem → 'Połącz wybrane strony', aby połączyć strony poziomo lub pionowo. Format utworzonego obrazu odpowiada formatowi stron źródłowych, jeśli są one wszystkie identyczne, w przeciwnym razie domyślnie PNG.",
     "split_pages": "Dzielenie stron",

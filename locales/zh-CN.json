@@ -965,7 +965,12 @@
       "unsharp_percent_label": "强度: {value}%",
       "unsharp_threshold_label": "阈值: {value}",
       "unsharp_viewer_title": "自适应锐化",
-      "auto_levels_tooltip": "分析每一页并自动调整黑白色阶以最大化对比度。\n若要逐页选择，请使用查看器。"
+      "auto_levels_tooltip": "分析每一页并自动调整黑白色阶以最大化对比度。\n若要逐页选择，请使用查看器。",
+      "transparency_unsaved_title": "未应用的更改",
+      "transparency_unsaved_message": "当前更改尚未应用到图像。您希望怎么做?",
+      "transparency_unsaved_discard": "关闭而不应用",
+      "transparency_unsaved_apply": "应用并关闭",
+      "transparency_unsaved_cancel": "取消"
     },
     "levels_viewer": {
       "title": "使用吸管调整色阶",
@@ -1224,7 +1229,7 @@
     "flatten": "展平目录",
     "flatten_content": "如果您的压缩包包含子文件夹,请使用\"展平目录\"将所有图像移至同一级别。",
     "viewer": "查看器",
-    "viewer_content": "双击页面打开查看器:\n• ← → 键:在页面间导航\n• D 键:在 3 种阅读模式间切换\n  - 单页:一次一页\n  - 双页:第 1 页单独,然后 2-3、4-5 等\n  - 连续双页:第 1 页单独,然后 2-3、3-4、4-5 等\n• 鼠标滚轮:快速导航\n• Ctrl+滚轮或 Ctrl+加/减:缩放\n• Ctrl+0:重置缩放\n• F11 键:全屏\n• 双击:切换全屏\n• Esc 键:取消裁剪框 / 退出查看器",
+    "viewer_content": "双击页面打开查看器:\n• ← → 键:在页面间导航\n• D 键:在 3 种阅读模式间切换\n  - 单页:一次一页\n  - 双页:第 1 页单独,然后 2-3、4-5 等\n  - 连续双页:第 1 页单独,然后 2-3、3-4、4-5 等\n• 鼠标滚轮:快速导航\n• Ctrl+滚轮或 Ctrl+加/减:缩放\n• Ctrl+0:重置缩放\n• F11 键:全屏\n• 双击:切换全屏\n• Esc 键:取消裁剪框 / 退出查看器\n• 书签: 关闭查看器时自动保存当前页面（第一页和最后一页除外）。马赛克中相应的缩略图上会出现一条红色丝带。下次打开时，会有消息提示返回该页面。在最后一页自动删除，或在查看器中右键单击手动删除。",
     "join_pages": "合并页面",
     "join_pages_content": "选择多个连续页面，右键单击→'合并选定页面'以水平或垂直合并页面。生成图像的格式与源页面的格式一致(如果它们全部相同)，否则默认为PNG。",
     "split_pages": "分割页面",

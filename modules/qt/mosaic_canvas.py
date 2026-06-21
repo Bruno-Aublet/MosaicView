@@ -157,6 +157,19 @@ SEL_OUTLINE = QColor(0, 0, 255)       # bleu pur — identique à outline="blue"
 FOCUS_COLOR = QColor(128, 128, 128)   # gris — identique à outline="gray" tkinter
 DROP_COLOR  = QColor(220, 30, 30)
 
+# ── Icône marque-page (chargée une seule fois) ────────────────────────────────
+_BOOKMARK_PIXMAP: QPixmap | None = None
+
+def _get_bookmark_pixmap() -> QPixmap | None:
+    global _BOOKMARK_PIXMAP
+    if _BOOKMARK_PIXMAP is None:
+        import os as _os
+        icon_path = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.dirname(
+            _os.path.abspath(__file__)))), "icons", "Bookmark Ribbon.png")
+        if _os.path.exists(icon_path):
+            _BOOKMARK_PIXMAP = QPixmap(icon_path)
+    return _BOOKMARK_PIXMAP
+
 
 # ── Conversion PIL → QImage (thread-safe) et PIL → QPixmap (thread UI) ────────
 def _pil_to_qimage(pil_img) -> QImage:
@@ -692,6 +705,16 @@ class ThumbnailItem(QGraphicsItem):
             painter.setPen(QPen(QColor("#aaaaaa"), 1))
             painter.drawRect(int(name_x), th + 4, self._name_w, line_h)
 
+        # Icône marque-page en surimpression (coin supérieur droit, dépasse légèrement en haut)
+        if self.entry.get("_is_bookmarked"):
+            bm_px = _get_bookmark_pixmap()
+            if bm_px and not bm_px.isNull():
+                bm_size = max(32, tw // 2)
+                scaled = bm_px.scaled(bm_size, bm_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                painter.setOpacity(0.85)
+                painter.drawPixmap(tw - scaled.width() - 2, -scaled.height() // 10, scaled)
+                painter.setOpacity(1.0)
+
     # ── Double-clic → édition (fallback si déjà sélectionné) ─────────────────
     def mouseDoubleClickEvent(self, event):
         pos = event.pos()
@@ -882,6 +905,20 @@ class MosaicCanvas(QGraphicsView):
                     item._ext_item.setPos(item._name_x + item._name_w + 2, th + 4 + offset_y)
             elif isinstance(item, DirItem):
                 item.update()  # DirItem appelle _get_current_font() dans paint()
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # Marque-page — surimpression de l'icône
+    # ──────────────────────────────────────────────────────────────────────────
+    def refresh_bookmark_overlay(self, bookmarked_real_idx: int | None):
+        """Met à jour le flag _is_bookmarked sur tous les ThumbnailItem et force un repaint.
+        bookmarked_real_idx : real_idx de la page bookmarkée, ou None si plus de marque-page."""
+        for item in self._items:
+            if isinstance(item, ThumbnailItem):
+                was = item.entry.get("_is_bookmarked", False)
+                now = (item.real_idx == bookmarked_real_idx)
+                if was != now:
+                    item.entry["_is_bookmarked"] = now
+                    item.update()
 
     # ──────────────────────────────────────────────────────────────────────────
     # Mise à jour ciblée d'une vignette (sans reconstruire la scène)

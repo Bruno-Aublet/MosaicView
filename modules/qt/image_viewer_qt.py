@@ -723,6 +723,9 @@ class ImageViewer(QDialog):
         cfg = get_config_manager()
         if cfg:
             cfg.set_bookmark(filepath, current_pos)
+            on_bm = self.callbacks.get("on_bookmark_changed")
+            if on_bm:
+                on_bm(img_indices[current_pos])
 
     # ── Navigation ────────────────────────────────────────────────────────────
 
@@ -862,6 +865,9 @@ class ImageViewer(QDialog):
         cfg = get_config_manager()
         if cfg and cfg.get_bookmark(filepath) is not None:
             cfg.remove_bookmark(filepath)
+            on_bm = self.callbacks.get("on_bookmark_changed")
+            if on_bm:
+                on_bm(None)
 
     def _on_wheel(self, event):
         mods = event.modifiers()
@@ -986,6 +992,9 @@ class ImageViewer(QDialog):
         cfg = get_config_manager()
         if cfg:
             cfg.remove_bookmark(filepath)
+            on_bm = self.callbacks.get("on_bookmark_changed")
+            if on_bm:
+                on_bm(None)
 
     # ── Menu contextuel ───────────────────────────────────────────────────────
 

@@ -27,7 +27,7 @@ from PySide6.QtGui import (
     QPainter, QPen, QColor,
 )
 
-from modules.qt.localization import _
+from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_loader import resource_path
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -336,7 +336,7 @@ class StraightenViewerDialog(QDialog):
         self._is_fullscreen = False
 
         theme = get_current_theme()
-        self.setWindowTitle(_("dialogs.straighten_viewer.title"))
+        self.setWindowTitle(_wt("dialogs.straighten_viewer.title"))
         self.resize(900, 700)
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
@@ -379,7 +379,8 @@ class StraightenViewerDialog(QDialog):
                 return None
 
         # ── Toolbar ───────────────────────────────────────────────────────────
-        tb = QWidget()
+        self._tb = QWidget()
+        tb = self._tb
         tb.setFixedHeight(50)
         tb.setStyleSheet(f"background: {theme['toolbar_bg']}; color: {theme['text']};")
         tb_layout = QHBoxLayout(tb)
@@ -410,10 +411,10 @@ class StraightenViewerDialog(QDialog):
         tb_layout.addWidget(self._next_btn)
 
         # Séparateur
-        sep = QFrame()
-        sep.setFrameShape(QFrame.Shape.VLine)
-        sep.setStyleSheet(f"color: {theme['separator']};")
-        tb_layout.addWidget(sep)
+        self._tb_sep = QFrame()
+        self._tb_sep.setFrameShape(QFrame.Shape.VLine)
+        self._tb_sep.setStyleSheet(f"color: {theme['separator']};")
+        tb_layout.addWidget(self._tb_sep)
 
         tb_layout.addStretch()
 
@@ -428,17 +429,17 @@ class StraightenViewerDialog(QDialog):
 
         # Zoom − % +
         _icon_minus = _load_icon("BTN_-.png", 20)
-        lbl_zoom_minus = QPushButton()
-        lbl_zoom_minus.setFixedSize(28, 28)
-        lbl_zoom_minus.setStyleSheet(_btn_style(theme))
-        lbl_zoom_minus.clicked.connect(lambda: self._adjust_zoom(-0.15))
+        self._zoom_minus_btn = QPushButton()
+        self._zoom_minus_btn.setFixedSize(28, 28)
+        self._zoom_minus_btn.setStyleSheet(_btn_style(theme))
+        self._zoom_minus_btn.clicked.connect(lambda: self._adjust_zoom(-0.15))
         if _icon_minus:
-            lbl_zoom_minus.setIcon(_icon_minus)
-            lbl_zoom_minus.setIconSize(QSize(20, 20))
+            self._zoom_minus_btn.setIcon(_icon_minus)
+            self._zoom_minus_btn.setIconSize(QSize(20, 20))
         else:
-            lbl_zoom_minus.setText("−")
-            lbl_zoom_minus.setFont(font_tb)
-        tb_layout.addWidget(lbl_zoom_minus)
+            self._zoom_minus_btn.setText("−")
+            self._zoom_minus_btn.setFont(font_tb)
+        tb_layout.addWidget(self._zoom_minus_btn)
 
         self._zoom_lbl = QLabel("100%")
         self._zoom_lbl.setFont(font_tb)
@@ -447,17 +448,17 @@ class StraightenViewerDialog(QDialog):
         tb_layout.addWidget(self._zoom_lbl)
 
         _icon_plus = _load_icon("BTN_+.png", 20)
-        lbl_zoom_plus = QPushButton()
-        lbl_zoom_plus.setFixedSize(28, 28)
-        lbl_zoom_plus.setStyleSheet(_btn_style(theme))
-        lbl_zoom_plus.clicked.connect(lambda: self._adjust_zoom(0.15))
+        self._zoom_plus_btn = QPushButton()
+        self._zoom_plus_btn.setFixedSize(28, 28)
+        self._zoom_plus_btn.setStyleSheet(_btn_style(theme))
+        self._zoom_plus_btn.clicked.connect(lambda: self._adjust_zoom(0.15))
         if _icon_plus:
-            lbl_zoom_plus.setIcon(_icon_plus)
-            lbl_zoom_plus.setIconSize(QSize(20, 20))
+            self._zoom_plus_btn.setIcon(_icon_plus)
+            self._zoom_plus_btn.setIconSize(QSize(20, 20))
         else:
-            lbl_zoom_plus.setText("+")
-            lbl_zoom_plus.setFont(font_tb)
-        tb_layout.addWidget(lbl_zoom_plus)
+            self._zoom_plus_btn.setText("+")
+            self._zoom_plus_btn.setFont(font_tb)
+        tb_layout.addWidget(self._zoom_plus_btn)
 
         root.addWidget(tb)
 
@@ -471,7 +472,8 @@ class StraightenViewerDialog(QDialog):
         root.addWidget(self._img_widget, stretch=1)
 
         # ── Barre du bas ──────────────────────────────────────────────────────
-        bot = QWidget()
+        self._bot = QWidget()
+        bot = self._bot
         bot.setStyleSheet(f"background: {theme['bg']}; color: {theme['text']};")
         bot_layout = QHBoxLayout(bot)
         bot_layout.setContentsMargins(10, 6, 10, 6)
@@ -488,10 +490,10 @@ class StraightenViewerDialog(QDialog):
         bot_layout.addWidget(self._apply_btn)
 
         # Séparateur
-        sep2 = QFrame()
-        sep2.setFrameShape(QFrame.Shape.VLine)
-        sep2.setStyleSheet(f"color: {theme['separator']};")
-        bot_layout.addWidget(sep2)
+        self._bot_sep2 = QFrame()
+        self._bot_sep2.setFrameShape(QFrame.Shape.VLine)
+        self._bot_sep2.setStyleSheet(f"color: {theme['separator']};")
+        bot_layout.addWidget(self._bot_sep2)
 
         # Undo
         icon_undo = _load_icon("BTN_Batch_Undo.png", 22)
@@ -844,10 +846,22 @@ class StraightenViewerDialog(QDialog):
         font = _get_current_font(10)
         font_btn = _get_current_font(11)
 
-        self.setWindowTitle(_("dialogs.straighten_viewer.title"))
+        self.setWindowTitle(_wt("dialogs.straighten_viewer.title"))
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
+
+        # Thème : toolbar, barre du bas, boutons, séparateurs
+        self._tb.setStyleSheet(f"background: {theme['toolbar_bg']}; color: {theme['text']};")
+        self._bot.setStyleSheet(f"background: {theme['bg']}; color: {theme['text']};")
+        self._tb_sep.setStyleSheet(f"color: {theme['separator']};")
+        self._bot_sep2.setStyleSheet(f"color: {theme['separator']};")
+        self._zoom_minus_btn.setStyleSheet(_btn_style(theme))
+        self._zoom_plus_btn.setStyleSheet(_btn_style(theme))
+        self._apply_btn.setStyleSheet(_btn_style(theme))
+        self._undo_btn.setStyleSheet(_btn_style(theme))
+        self._redo_btn.setStyleSheet(_btn_style(theme))
+        self._cancel_btn.setStyleSheet(_btn_style(theme))
 
         self._instr_lbl.setText(_("dialogs.straighten_viewer.instruction"))
         self._instr_lbl.setFont(font)

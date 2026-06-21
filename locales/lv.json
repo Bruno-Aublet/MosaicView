@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensitāte: {value} %",
       "unsharp_threshold_label": "Slieksnis: {value}",
       "unsharp_viewer_title": "Adaptīvais asums",
-      "auto_levels_tooltip": "Analizē katru lapu un automātiski pielāgo melnā un baltā līmeņus, lai maksimizētu kontrastu.\nLai izvēlētos lapu pēc lapas, izmantojiet skatītāju."
+      "auto_levels_tooltip": "Analizē katru lapu un automātiski pielāgo melnā un baltā līmeņus, lai maksimizētu kontrastu.\nLai izvēlētos lapu pēc lapas, izmantojiet skatītāju.",
+      "transparency_unsaved_title": "Nepielietotās izmaiņas",
+      "transparency_unsaved_message": "Pašreizējās izmaiņas nav pielietotas attēlam. Ko vēlaties darīt?",
+      "transparency_unsaved_discard": "Aizvērt bez pielietošanas",
+      "transparency_unsaved_apply": "Pielietot un aizvērt",
+      "transparency_unsaved_cancel": "Atcelt"
     },
     "levels_viewer": {
       "title": "Līmeņu pielāgošana ar pipeti",
@@ -1224,7 +1229,7 @@
     "flatten": "Mapju izlīdzināšana",
     "flatten_content": "Ja jūsu arhīvs satur apakšmapes, izmantojiet 'Izlīdzināt mapes', lai pārvietotu visus attēlus uz vienu līmeni.",
     "viewer": "Skatītājs",
-    "viewer_content": "Veiciet dubultklikšķi uz lappuses, lai atvērtu skatītāju:\n• Taustiņi ← → : navigācija starp lappusēm\n• Taustiņš D: pārslēgties starp 3 lasīšanas režīmiem\n  - Viena lappuse: pa vienai lappusei\n  - Dubultlappuses: 1. lappuse viena, pēc tam 2-3, 4-5 utt.\n  - Nepārtrauktas dubultlappuses: 1. lappuse viena, pēc tam 2-3, 3-4, 4-5 utt.\n• Peles ritenītis: ātra navigācija\n• Ctrl+ritenītis vai Ctrl+Plus/Mīnuss: tuvināšana\n• Ctrl+0: atiestatīt tuvināšanu\n• Taustiņš F11: pilnekrāna režīms\n• Dubultklikšķis: pārslēgt pilnekrāna režīmu\n• Taustiņš Escape: atcelt apgriešanas rāmi / iziet no skatītāja",
+    "viewer_content": "Veiciet dubultklikšķi uz lappuses, lai atvērtu skatītāju:\n• Taustiņi ← → : navigācija starp lappusēm\n• Taustiņš D: pārslēgties starp 3 lasīšanas režīmiem\n  - Viena lappuse: pa vienai lappusei\n  - Dubultlappuses: 1. lappuse viena, pēc tam 2-3, 4-5 utt.\n  - Nepārtrauktas dubultlappuses: 1. lappuse viena, pēc tam 2-3, 3-4, 4-5 utt.\n• Peles ritenītis: ātra navigācija\n• Ctrl+ritenītis vai Ctrl+Plus/Mīnuss: tuvināšana\n• Ctrl+0: atiestatīt tuvināšanu\n• Taustiņš F11: pilnekrāna režīms\n• Dubultklikšķis: pārslēgt pilnekrāna režīmu\n• Taustiņš Escape: atcelt apgriešanas rāmi / iziet no skatītāja\n• Grāmatzīme: automātiski saglabā pašreizējo lapu, aizverot skatītāju (izņemot pirmo un pēdējo lapu). Uz atbilstošā sīktēla mozaīkā parādās sarkana lente. Nākamreiz atverot, ziņojums piedāvā atgriezties šajā lapā. Automātiski dzēsta pēdējā lapā vai manuāli ar peles labo taustiņu skatītājā.",
     "join_pages": "Lappušu savienošana",
     "join_pages_content": "Atlasiet vairākas secīgas lappuses, labā pele → 'Apvienot atlasītās lappuses', lai apvienotu lappuses horizontāli vai vertikāli. Izveidotā attēla formāts atbilst avota lappušu formātam, ja tās visas ir vienādas, pretējā gadījumā pēc noklusējuma PNG.",
     "split_pages": "Lappušu sadalīšana",

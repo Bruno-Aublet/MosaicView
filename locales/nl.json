@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensiteit: {value} %",
       "unsharp_threshold_label": "Drempelwaarde: {value}",
       "unsharp_viewer_title": "Adaptieve scherpte",
-      "auto_levels_tooltip": "Analyseert elke pagina en past automatisch de zwart- en witniveaus aan om het contrast te maximaliseren.\nGebruik de viewer om pagina voor pagina te kiezen."
+      "auto_levels_tooltip": "Analyseert elke pagina en past automatisch de zwart- en witniveaus aan om het contrast te maximaliseren.\nGebruik de viewer om pagina voor pagina te kiezen.",
+      "transparency_unsaved_title": "Niet toegepaste wijzigingen",
+      "transparency_unsaved_message": "De huidige wijzigingen zijn nog niet op de afbeelding toegepast. Wat wilt u doen?",
+      "transparency_unsaved_discard": "Sluiten zonder toe te passen",
+      "transparency_unsaved_apply": "Toepassen en sluiten",
+      "transparency_unsaved_cancel": "Annuleren"
     },
     "levels_viewer": {
       "title": "Niveaus aanpassen met pipetten",
@@ -1224,7 +1229,7 @@
     "flatten": "Mappen afvlakken",
     "flatten_content": "Als uw archief submappen bevat, gebruik dan 'Mappen afvlakken' om alle afbeeldingen naar hetzelfde niveau te brengen.",
     "viewer": "Viewer",
-    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Pijltoetsen ← → : navigatie tussen pagina's\n• Toets D: schakelen tussen 3 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, daarna 2-3, 4-5, etc.\n  - Continue dubbele pagina's: pagina 1 alleen, daarna 2-3, 3-4, 4-5, etc.\n• Muiswiel: snelle navigatie\n• Ctrl+Wiel of Ctrl+Plus/Min: zoomen\n• Ctrl+0: zoom resetten\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm in-/uitschakelen\n• Esc-toets: bijsnijkader annuleren / viewer sluiten",
+    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Pijltoetsen ← → : navigatie tussen pagina's\n• Toets D: schakelen tussen 3 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, daarna 2-3, 4-5, etc.\n  - Continue dubbele pagina's: pagina 1 alleen, daarna 2-3, 3-4, 4-5, etc.\n• Muiswiel: snelle navigatie\n• Ctrl+Wiel of Ctrl+Plus/Min: zoomen\n• Ctrl+0: zoom resetten\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm in-/uitschakelen\n• Esc-toets: bijsnijkader annuleren / viewer sluiten\n• Bladwijzer: slaat de huidige pagina automatisch op bij het sluiten van de viewer (behalve de eerste en laatste pagina). Een rood lint verschijnt op de bijbehorende miniatuur in het mozaïek. Bij de volgende opening stelt een bericht voor om naar deze pagina terug te keren. Automatisch verwijderd op de laatste pagina of handmatig via rechtermuisklik in de viewer.",
     "join_pages": "Pagina's samenvoegen",
     "join_pages_content": "Selecteer meerdere opeenvolgende pagina's, rechtsklik → 'Geselecteerde pagina's samenvoegen' om pagina's horizontaal of verticaal samen te voegen. Het formaat van de geproduceerde afbeelding komt overeen met dat van de bronpagina's als ze allemaal identiek zijn, anders standaard PNG.",
     "split_pages": "Pagina's splitsen",

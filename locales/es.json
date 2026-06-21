@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intensidad: {value} %",
       "unsharp_threshold_label": "Umbral: {value}",
       "unsharp_viewer_title": "Nitidez adaptativa",
-      "auto_levels_tooltip": "Analiza cada página y ajusta automáticamente los niveles de negro y blanco para maximizar el contraste.\nPara elegir página por página, utilice el visor."
+      "auto_levels_tooltip": "Analiza cada página y ajusta automáticamente los niveles de negro y blanco para maximizar el contraste.\nPara elegir página por página, utilice el visor.",
+      "transparency_unsaved_title": "Cambios no aplicados",
+      "transparency_unsaved_message": "Los cambios actuales no se han aplicado a la imagen. ¿Qué desea hacer?",
+      "transparency_unsaved_discard": "Cerrar sin aplicar",
+      "transparency_unsaved_apply": "Aplicar y cerrar",
+      "transparency_unsaved_cancel": "Cancelar"
     },
     "levels_viewer": {
       "title": "Ajuste de niveles con cuentagotas",
@@ -1224,7 +1229,7 @@
     "flatten": "Aplanar directorios",
     "flatten_content": "Si su archivo contiene subcarpetas, use 'Aplanar directorios' para llevar todas las imágenes al mismo nivel.",
     "viewer": "Visor",
-    "viewer_content": "Haga doble clic en una página para abrir el visor:\n• Teclas ← →: navegación entre páginas\n• Tecla D: cambiar entre 3 modos de lectura\n  - Página simple: una página a la vez\n  - Páginas dobles: página 1 sola, luego 2-3, 4-5, etc.\n  - Páginas dobles continuas: página 1 sola, luego 2-3, 3-4, 4-5, etc.\n• Rueda del ratón: navegación rápida\n• Ctrl+Rueda o Ctrl+Más/Menos: zoom\n• Ctrl+0: restablecer zoom\n• Tecla F11: pantalla completa\n• Doble clic: alternar pantalla completa\n• Tecla Esc: cancelar el marco de recorte / salir del visor",
+    "viewer_content": "Haga doble clic en una página para abrir el visor:\n• Teclas ← →: navegación entre páginas\n• Tecla D: cambiar entre 3 modos de lectura\n  - Página simple: una página a la vez\n  - Páginas dobles: página 1 sola, luego 2-3, 4-5, etc.\n  - Páginas dobles continuas: página 1 sola, luego 2-3, 3-4, 4-5, etc.\n• Rueda del ratón: navegación rápida\n• Ctrl+Rueda o Ctrl+Más/Menos: zoom\n• Ctrl+0: restablecer zoom\n• Tecla F11: pantalla completa\n• Doble clic: alternar pantalla completa\n• Tecla Esc: cancelar el marco de recorte / salir del visor\n• Marcador: guarda automáticamente la página actual al cerrar el visor (excepto la primera y la última página). Una cinta roja aparece en la miniatura correspondiente en el mosaico. Al volver a abrir, un mensaje sugiere regresar a esa página. Se elimina automáticamente en la última página o manualmente con clic derecho en el visor.",
     "join_pages": "Unir páginas",
     "join_pages_content": "Selecciona varias páginas consecutivas, clic derecho → 'Unir páginas seleccionadas' para unir páginas horizontal o verticalmente. El formato de la imagen resultante corresponde al de las páginas de origen si todas son idénticas, de lo contrario PNG por defecto.",
     "split_pages": "Dividir páginas",

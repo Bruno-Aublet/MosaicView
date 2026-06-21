@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intenzita: {value} %",
       "unsharp_threshold_label": "Prah: {value}",
       "unsharp_viewer_title": "Adaptívna ostrosť",
-      "auto_levels_tooltip": "Analyzuje každú stránku a automaticky upraví úrovne čiernej a bielej pre maximálny kontrast.\nPre výber stránku po stránke použite prehliadač."
+      "auto_levels_tooltip": "Analyzuje každú stránku a automaticky upraví úrovne čiernej a bielej pre maximálny kontrast.\nPre výber stránku po stránke použite prehliadač.",
+      "transparency_unsaved_title": "Nepoužité zmeny",
+      "transparency_unsaved_message": "Aktuálne zmeny neboli na obrázok použité. Čo chcete urobiť?",
+      "transparency_unsaved_discard": "Zavrieť bez použitia",
+      "transparency_unsaved_apply": "Použiť a zavrieť",
+      "transparency_unsaved_cancel": "Zrušiť"
     },
     "levels_viewer": {
       "title": "Uprava urovni pomocou kvapkadla",
@@ -1224,7 +1229,7 @@
     "flatten": "Zrovnanie adresárov",
     "flatten_content": "Ak váš archív obsahuje podpriečinky, použite 'Zrovnať adresáre' pre presunutie všetkých obrázkov na rovnakú úroveň.",
     "viewer": "Prehliadač",
-    "viewer_content": "Dvojitým kliknutím na stranu otvorte prehliadač:\n• Klávesy ← → : navigácia medzi stranami\n• Kláves D : prepínanie medzi 3 režimami čítania\n  - Jedna strana: jedna strana naraz\n  - Dvojstrany: strana 1 sama, potom 2-3, 4-5, atď.\n  - Spojité dvojstrany: strana 1 sama, potom 2-3, 3-4, 4-5, atď.\n• Koliesko myši: rýchla navigácia\n• Ctrl+Koliesko alebo Ctrl+Plus/Mínus: priblíženie\n• Ctrl+0: obnoviť priblíženie\n• Kláves F11: celá obrazovka\n• Dvojité kliknutie: prepnúť celú obrazovku\n• Kláves Esc: zrušiť rámček výrezu / ukončiť prehliadač",
+    "viewer_content": "Dvojitým kliknutím na stranu otvorte prehliadač:\n• Klávesy ← → : navigácia medzi stranami\n• Kláves D : prepínanie medzi 3 režimami čítania\n  - Jedna strana: jedna strana naraz\n  - Dvojstrany: strana 1 sama, potom 2-3, 4-5, atď.\n  - Spojité dvojstrany: strana 1 sama, potom 2-3, 3-4, 4-5, atď.\n• Koliesko myši: rýchla navigácia\n• Ctrl+Koliesko alebo Ctrl+Plus/Mínus: priblíženie\n• Ctrl+0: obnoviť priblíženie\n• Kláves F11: celá obrazovka\n• Dvojité kliknutie: prepnúť celú obrazovku\n• Kláves Esc: zrušiť rámček výrezu / ukončiť prehliadač\n• Záložka: automaticky ukladá aktuálnu stranu pri zatváraní prehliadača (okrem prvej a poslednej strany). Na zodpovedajúcej miniatúre v mozaike sa zobrazí červená stuha. Pri ďalšom otvorení správa navrhne návrat na túto stranu. Automaticky sa odstráni na poslednej strane alebo ručne cez pravé tlačidlo myši v prehliadači.",
     "join_pages": "Spojenie strán",
     "join_pages_content": "Vyberte niekoľko po sebe nasledujúcich strán, kliknite pravým tlačidlom → 'Spojiť vybrané strany' pre spojenie strán vodorovne alebo zvisle. Formát vytvoreného obrázku zodpovedá formátu zdrojových strán, ak sú všetky identické, inak štandardne PNG.",
     "split_pages": "Rozdelenie strán",

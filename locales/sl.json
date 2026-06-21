@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Intenziteta: {value} %",
       "unsharp_threshold_label": "Prag: {value}",
       "unsharp_viewer_title": "Adaptivna ostrina",
-      "auto_levels_tooltip": "Analizira vsako stran in samodejno prilagodi ravni črne in bele za maksimalni kontrast.\nZa izbiro stran po stran uporabite pregledovalnik."
+      "auto_levels_tooltip": "Analizira vsako stran in samodejno prilagodi ravni črne in bele za maksimalni kontrast.\nZa izbiro stran po stran uporabite pregledovalnik.",
+      "transparency_unsaved_title": "Neuporabljene spremembe",
+      "transparency_unsaved_message": "Trenutne spremembe niso bile uporabljene na sliki. Kaj želite storiti?",
+      "transparency_unsaved_discard": "Zapri brez uporabe",
+      "transparency_unsaved_apply": "Uporabi in zapri",
+      "transparency_unsaved_cancel": "Prekliči"
     },
     "levels_viewer": {
       "title": "Prilagoditev ravni s kapalko",
@@ -1224,7 +1229,7 @@
     "flatten": "Splošcenje map",
     "flatten_content": "Če vaš arhiv vsebuje podmape, uporabite 'Splošči mape', da prenesete vse slike na isto raven.",
     "viewer": "Pregledovalnik",
-    "viewer_content": "Dvakrat kliknite na stran za odprtje pregledovalnika:\n• Tipki ← → : navigacija med stranmi\n• Tipka D: preklapljanje med 3 načini branja\n  - Enojne strani: ena stran naenkrat\n  - Dvojne strani: stran 1 sama, nato 2-3, 4-5 itd.\n  - Neprekinjene dvojne strani: stran 1 sama, nato 2-3, 3-4, 4-5 itd.\n• Miškin kolešček: hitra navigacija\n• Ctrl+kolešček ali Ctrl+Plus/Minus: povečava\n• Ctrl+0: ponastavi povečavo\n• Tipka F11: celozaslonski način\n• Dvakrat kliknite: preklopi celozaslonski način\n• Tipka Esc: prekliči okvir za obrezovanje / zapusti pregledovalnik",
+    "viewer_content": "Dvakrat kliknite na stran za odprtje pregledovalnika:\n• Tipki ← → : navigacija med stranmi\n• Tipka D: preklapljanje med 3 načini branja\n  - Enojne strani: ena stran naenkrat\n  - Dvojne strani: stran 1 sama, nato 2-3, 4-5 itd.\n  - Neprekinjene dvojne strani: stran 1 sama, nato 2-3, 3-4, 4-5 itd.\n• Miškin kolešček: hitra navigacija\n• Ctrl+kolešček ali Ctrl+Plus/Minus: povečava\n• Ctrl+0: ponastavi povečavo\n• Tipka F11: celozaslonski način\n• Dvakrat kliknite: preklopi celozaslonski način\n• Tipka Esc: prekliči okvir za obrezovanje / zapusti pregledovalnik\n• Zaznamek: samodejno shrani trenutno stran ob zaprtju pregledovalnika (razen prve in zadnje strani). Na ustrezni sličici v mozaiku se prikaže rdeč trak. Ob naslednjem odpiranju sporočilo predlaga vrnitev na to stran. Samodejno se izbriše na zadnji strani ali ročno z desnim klikom v pregledovalniku.",
     "join_pages": "Združevanje strani",
     "join_pages_content": "Izberite več zaporednih strani, desni klik → 'Združi izbrane strani' za združitev strani vodoravno ali navpično. Format ustvarjene slike ustreza formatu izvornih strani, če so vse enake, sicer privzeto PNG.",
     "split_pages": "Razdelitev strani",

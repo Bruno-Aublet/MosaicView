@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Amount: {value}%",
       "unsharp_threshold_label": "Threshold: {value}",
       "unsharp_viewer_title": "Adaptive sharpness",
-      "auto_levels_tooltip": "Analyses each page and automatically adjusts the black and white levels to maximise contrast.\nTo choose page by page, use the viewer."
+      "auto_levels_tooltip": "Analyses each page and automatically adjusts the black and white levels to maximise contrast.\nTo choose page by page, use the viewer.",
+      "transparency_unsaved_title": "Unapplied changes",
+      "transparency_unsaved_message": "The current changes have not been applied to the image. What would you like to do?",
+      "transparency_unsaved_discard": "Close without applying",
+      "transparency_unsaved_apply": "Apply and close",
+      "transparency_unsaved_cancel": "Cancel"
     },
     "levels_viewer": {
       "title": "Levels adjustment with eyedroppers",
@@ -1224,7 +1229,7 @@
     "flatten": "Flattening directories",
     "flatten_content": "If your archive contains subdirectories, use 'Flatten directories' to bring all images to the same level.",
     "viewer": "Viewer",
-    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 3 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n• Mouse wheel: quick navigation\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom\n• Ctrl+0: reset zoom\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel crop frame / exit viewer",
+    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 3 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n• Mouse wheel: quick navigation\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom\n• Ctrl+0: reset zoom\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel crop frame / exit viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer.",
     "join_pages": "Joining pages",
     "join_pages_content": "Select multiple consecutive pages, right-click → 'Join selected pages' to join pages horizontally or vertically. The output image format matches the source pages' format if they are all identical, otherwise PNG by default.",
     "split_pages": "Splitting pages",

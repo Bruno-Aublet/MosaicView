@@ -27,7 +27,7 @@ from PySide6.QtGui import (
     QTextCharFormat, QTextOption,
 )
 
-from modules.qt.localization import _
+from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_loader import resource_path
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
@@ -618,7 +618,7 @@ class TextViewerDialog(QDialog):
         self._ignore_format_signals = False
 
         theme = get_current_theme()
-        self.setWindowTitle(_("dialogs.text_viewer.title"))
+        self.setWindowTitle(_wt("dialogs.text_viewer.title"))
         self.resize(960, 750)
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
@@ -667,7 +667,8 @@ class TextViewerDialog(QDialog):
                 return None
 
         # ── Toolbar navigation + zoom ──────────────────────────────────────────
-        tb = QWidget()
+        self._tb = QWidget()
+        tb = self._tb
         tb.setFixedHeight(50)
         tb.setStyleSheet(f"background: {theme['toolbar_bg']}; color: {theme['text']};")
         tb_layout = QHBoxLayout(tb)
@@ -696,9 +697,9 @@ class TextViewerDialog(QDialog):
         self._next_btn.clicked.connect(self._next_image)
         tb_layout.addWidget(self._next_btn)
 
-        sep = QFrame(); sep.setFrameShape(QFrame.Shape.VLine)
-        sep.setStyleSheet(f"color: {theme['separator']};")
-        tb_layout.addWidget(sep)
+        self._tb_sep = QFrame(); self._tb_sep.setFrameShape(QFrame.Shape.VLine)
+        self._tb_sep.setStyleSheet(f"color: {theme['separator']};")
+        tb_layout.addWidget(self._tb_sep)
 
         tb_layout.addStretch()
 
@@ -742,7 +743,8 @@ class TextViewerDialog(QDialog):
         root.addWidget(tb)
 
         # ── Barre d'options rich text ──────────────────────────────────────────
-        opt = QWidget()
+        self._opt = QWidget()
+        opt = self._opt
         opt.setStyleSheet(f"background: {theme['toolbar_bg']}; color: {theme['text']};")
         opt_layout = QHBoxLayout(opt)
         opt_layout.setContentsMargins(8, 4, 8, 4)
@@ -773,9 +775,9 @@ class TextViewerDialog(QDialog):
         self._size_spin.valueChanged.connect(self._on_font_size_changed)
         opt_layout.addWidget(self._size_spin)
 
-        sep2 = QFrame(); sep2.setFrameShape(QFrame.Shape.VLine)
-        sep2.setStyleSheet(f"color: {theme['separator']};")
-        opt_layout.addWidget(sep2)
+        self._opt_sep2 = QFrame(); self._opt_sep2.setFrameShape(QFrame.Shape.VLine)
+        self._opt_sep2.setStyleSheet(f"color: {theme['separator']};")
+        opt_layout.addWidget(self._opt_sep2)
 
         self._bold_btn = QPushButton(_("dialogs.text_viewer.bold_btn"))
         self._bold_btn.setFixedSize(28, 28)
@@ -798,9 +800,9 @@ class TextViewerDialog(QDialog):
         self._underline_btn.clicked.connect(self._on_underline_clicked)
         opt_layout.addWidget(self._underline_btn)
 
-        sep3 = QFrame(); sep3.setFrameShape(QFrame.Shape.VLine)
-        sep3.setStyleSheet(f"color: {theme['separator']};")
-        opt_layout.addWidget(sep3)
+        self._opt_sep3 = QFrame(); self._opt_sep3.setFrameShape(QFrame.Shape.VLine)
+        self._opt_sep3.setStyleSheet(f"color: {theme['separator']};")
+        opt_layout.addWidget(self._opt_sep3)
 
         self._lbl_color = QLabel()
         self._lbl_color.setFont(font_opt)
@@ -817,9 +819,9 @@ class TextViewerDialog(QDialog):
         opt_layout.addStretch()
         root.addWidget(opt)
 
-        hline = QFrame(); hline.setFrameShape(QFrame.Shape.HLine)
-        hline.setStyleSheet(f"color: {theme['separator']};")
-        root.addWidget(hline)
+        self._hline = QFrame(); self._hline.setFrameShape(QFrame.Shape.HLine)
+        self._hline.setStyleSheet(f"color: {theme['separator']};")
+        root.addWidget(self._hline)
 
         # ── Zone image ────────────────────────────────────────────────────────
         self._img_widget = _TextImageWidget()
@@ -830,7 +832,8 @@ class TextViewerDialog(QDialog):
         root.addWidget(self._img_widget, stretch=1)
 
         # ── Barre du bas ──────────────────────────────────────────────────────
-        bot = QWidget()
+        self._bot = QWidget()
+        bot = self._bot
         bot.setStyleSheet(f"background: {theme['bg']}; color: {theme['text']};")
         bot_layout = QHBoxLayout(bot)
         bot_layout.setContentsMargins(10, 6, 10, 6)
@@ -1382,10 +1385,21 @@ class TextViewerDialog(QDialog):
         font     = _get_current_font(10)
         font_btn = _get_current_font(11)
 
-        self.setWindowTitle(_("dialogs.text_viewer.title"))
+        self.setWindowTitle(_wt("dialogs.text_viewer.title"))
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
+
+        # Thème : toolbar, opt bar, barre du bas, séparateurs, boutons nav
+        self._tb.setStyleSheet(f"background: {theme['toolbar_bg']}; color: {theme['text']};")
+        self._opt.setStyleSheet(f"background: {theme['toolbar_bg']}; color: {theme['text']};")
+        self._bot.setStyleSheet(f"background: {theme['bg']}; color: {theme['text']};")
+        self._tb_sep.setStyleSheet(f"color: {theme['separator']};")
+        self._opt_sep2.setStyleSheet(f"color: {theme['separator']};")
+        self._opt_sep3.setStyleSheet(f"color: {theme['separator']};")
+        self._hline.setStyleSheet(f"color: {theme['separator']};")
+        self._prev_btn.setStyleSheet(_btn_style(theme))
+        self._next_btn.setStyleSheet(_btn_style(theme))
         self._instr_lbl.setText(_("dialogs.text_viewer.instruction"))
         self._instr_lbl.setFont(font)
 

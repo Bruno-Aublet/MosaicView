@@ -965,7 +965,12 @@
       "unsharp_percent_label": "強度: {value}%",
       "unsharp_threshold_label": "閾值: {value}",
       "unsharp_viewer_title": "自適應銳化",
-      "auto_levels_tooltip": "分析每一頁並自動調整黑白色階以最大化對比度。\n若要逐頁選擇，請使用檢視器。"
+      "auto_levels_tooltip": "分析每一頁並自動調整黑白色階以最大化對比度。\n若要逐頁選擇，請使用檢視器。",
+      "transparency_unsaved_title": "未套用的變更",
+      "transparency_unsaved_message": "目前的變更尚未套用到圖像。您想要怎麼做?",
+      "transparency_unsaved_discard": "關閉而不套用",
+      "transparency_unsaved_apply": "套用並關閉",
+      "transparency_unsaved_cancel": "取消"
     },
     "levels_viewer": {
       "title": "使用滴管調整色階",
@@ -1224,7 +1229,7 @@
     "flatten": "展平目錄",
     "flatten_content": "如果您的壓縮檔包含子資料夾,請使用「展平目錄」將所有圖像移至同一層級。",
     "viewer": "檢視器",
-    "viewer_content": "按兩下頁面開啟檢視器:\n• ← → 鍵:在頁面間導覽\n• D 鍵:在 3 種閱讀模式間切換\n  - 單頁:一次一頁\n  - 雙頁:第 1 頁單獨,然後 2-3、4-5 等\n  - 連續雙頁:第 1 頁單獨,然後 2-3、3-4、4-5 等\n• 滑鼠滾輪:快速導覽\n• Ctrl+滾輪或 Ctrl+加/減:縮放\n• Ctrl+0:重設縮放\n• F11 鍵:全螢幕\n• 按兩下:切換全螢幕\n• Esc 鍵:取消裁剪框 / 離開檢視器",
+    "viewer_content": "按兩下頁面開啟檢視器:\n• ← → 鍵:在頁面間導覽\n• D 鍵:在 3 種閱讀模式間切換\n  - 單頁:一次一頁\n  - 雙頁:第 1 頁單獨,然後 2-3、4-5 等\n  - 連續雙頁:第 1 頁單獨,然後 2-3、3-4、4-5 等\n• 滑鼠滾輪:快速導覽\n• Ctrl+滾輪或 Ctrl+加/減:縮放\n• Ctrl+0:重設縮放\n• F11 鍵:全螢幕\n• 按兩下:切換全螢幕\n• Esc 鍵:取消裁剪框 / 離開檢視器\n• 書籤: 關閉檢視器時自動儲存目前頁面（第一頁和最後一頁除外）。馬賽克中相應的縮圖上會出現一條紅色絲帶。下次開啟時，會有訊息提示返回該頁面。在最後一頁自動刪除，或在檢視器中按右鍵手動刪除。",
     "join_pages": "合併頁面",
     "join_pages_content": "選擇多個連續頁面，按右鍵→'合併選定頁面'以水平或垂直合併頁面。產生的圖像格式與來源頁面的格式一致(如果它們全部相同)，否則預設為PNG。",
     "split_pages": "分割頁面",

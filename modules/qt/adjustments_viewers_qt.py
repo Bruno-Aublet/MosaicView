@@ -29,10 +29,10 @@ from PySide6.QtWidgets import (
     QWidget, QFrame, QScrollArea, QSizePolicy,
     QApplication, QSpinBox,
 )
-from PySide6.QtCore import Qt, QPoint, QSize
-from PySide6.QtGui import QPixmap, QImage, QCursor, QKeySequence, QShortcut, QIcon
+from PySide6.QtCore import Qt, QPoint, QSize, QTimer
+from PySide6.QtGui import QPixmap, QImage, QCursor, QKeySequence, QShortcut, QIcon, QPainter, QPen, QColor
 
-from modules.qt.localization import _
+from modules.qt.localization import _, _wt
 from modules.qt.utils import FocusSlider
 from modules.qt.state import get_current_theme
 from modules.qt.font_loader import resource_path
@@ -66,6 +66,40 @@ def _disconnect_lang(dialog):
 # ─────────────────────────────────────────────────────────────────────────────
 # Styles
 # ─────────────────────────────────────────────────────────────────────────────
+
+def _make_crosshair_cursor():
+    """Curseur croix avec contour blanc — visible sur fond clair, foncé et damier gris."""
+    size = 25
+    cx = cy = size // 2
+    arm = 10   # longueur de chaque bras depuis le centre
+
+    pm = QPixmap(size, size)
+    pm.fill(Qt.GlobalColor.transparent)
+
+    painter = QPainter(pm)
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+    pen_white = QPen(QColor(255, 255, 255, 220), 2.5)
+    pen_black = QPen(QColor(0, 0, 0, 230), 1.5)
+
+    for pen in (pen_white, pen_black):
+        painter.setPen(pen)
+        painter.drawLine(cx - arm, cy, cx + arm, cy)
+        painter.drawLine(cx, cy - arm, cx, cy + arm)
+
+    painter.end()
+    return QCursor(pm, cx, cy)
+
+
+_CROSSHAIR_CURSOR = None
+
+
+def _get_crosshair_cursor():
+    global _CROSSHAIR_CURSOR
+    if _CROSSHAIR_CURSOR is None:
+        _CROSSHAIR_CURSOR = _make_crosshair_cursor()
+    return _CROSSHAIR_CURSOR
+
 
 def _btn_style(theme):
     return (
@@ -198,7 +232,7 @@ class _ImageScrollWidget(QWidget):
             while parent:
                 if isinstance(parent, AdjustmentViewerDialog):
                     if parent._mode == 'transparency':
-                        self.setCursor(QCursor(Qt.CursorShape.CrossCursor))
+                        self.setCursor(_get_crosshair_cursor())
                     else:
                         self.unsetCursor()
                     break
@@ -228,6 +262,107 @@ class _ImageScrollWidget(QWidget):
         ox = max(-max_ox, min(max_ox, self._offset.x()))
         oy = max(-max_oy, min(max_oy, self._offset.y()))
         self._offset = QPoint(ox, oy)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Dialog confirmation fermeture transparence (3 boutons)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class _TransparencyUnsavedDialog(QDialog):
+    """Dialog non-modal à 3 boutons : Fermer sans appliquer / Appliquer et fermer / Annuler.
+    Respecte thème, police et langue à la volée.
+    Callbacks : on_discard() et on_apply() à définir après instanciation.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowFlags(Qt.Window)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+
+        self.on_discard = None
+        self.on_apply   = None
+        self._center_parent = parent
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 16, 20, 12)
+        layout.setSpacing(12)
+
+        self._lbl = QLabel()
+        self._lbl.setWordWrap(True)
+        self._lbl.setAlignment(Qt.AlignCenter)
+        self._lbl.setMinimumWidth(380)
+        layout.addWidget(self._lbl)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self._btn_discard = QPushButton()
+        self._btn_apply   = QPushButton()
+        self._btn_cancel  = QPushButton()
+        btn_row.addWidget(self._btn_discard)
+        btn_row.addWidget(self._btn_apply)
+        btn_row.addWidget(self._btn_cancel)
+        btn_row.addStretch()
+        layout.addLayout(btn_row)
+
+        self._btn_discard.clicked.connect(self._on_discard)
+        self._btn_apply.clicked.connect(self._on_apply)
+        self._btn_cancel.clicked.connect(self.close)
+
+        self._retranslate()
+
+        from modules.qt.language_signal import language_signal
+        self._lang_handler = lambda: self._retranslate()
+        language_signal.changed.connect(self._lang_handler)
+        self.finished.connect(self._disconnect_lang)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+
+    def _disconnect_lang(self):
+        from modules.qt.language_signal import language_signal
+        try:
+            language_signal.changed.disconnect(self._lang_handler)
+        except RuntimeError:
+            pass
+
+    def _retranslate(self):
+        theme = get_current_theme()
+        font = _get_current_font(11)
+        self.setWindowTitle(_wt("dialogs.adjustments.transparency_unsaved_title"))
+        self.setStyleSheet(
+            f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }} "
+            f"QLabel   {{ color: {theme['text']}; }} "
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 12px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        self._lbl.setText(_("dialogs.adjustments.transparency_unsaved_message"))
+        self._lbl.setFont(font)
+        self._btn_discard.setText(_("dialogs.adjustments.transparency_unsaved_discard"))
+        self._btn_discard.setFont(font)
+        self._btn_apply.setText(_("dialogs.adjustments.transparency_unsaved_apply"))
+        self._btn_apply.setFont(font)
+        self._btn_cancel.setText(_("dialogs.adjustments.transparency_unsaved_cancel"))
+        self._btn_cancel.setFont(font)
+
+    def _on_discard(self):
+        self.close()
+        if self.on_discard:
+            self.on_discard()
+
+    def _on_apply(self):
+        self.close()
+        if self.on_apply:
+            self.on_apply()
+
+
+def _center_on_widget(dialog, parent):
+    from modules.qt.dialogs_qt import _center_on_widget as _cow
+    _cow(dialog, parent)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -273,6 +408,7 @@ class AdjustmentViewerDialog(QDialog):
 
         self._current_idx = 0
         self._is_fullscreen = False
+        self._confirmed_close = False   # True quand la fermeture a déjà été confirmée
 
         # Variables spécifiques au mode levels (pipettes)
         self._pipette_mode = None       # None | 'black' | 'white'
@@ -291,7 +427,7 @@ class AdjustmentViewerDialog(QDialog):
         self._transp_redo_stks = {}     # dict idx → pile redo
 
         theme = get_current_theme()
-        self.setWindowTitle(self._get_title())
+        self.setWindowTitle(_wt(self._get_title_key()))
         self.resize(900, 700)
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
@@ -340,7 +476,8 @@ class AdjustmentViewerDialog(QDialog):
                 return None
 
         # ── Toolbar ──────────────────────────────────────────────────────────
-        tb = QWidget()
+        self._tb = QWidget()
+        tb = self._tb
         tb.setFixedHeight(50)
         tb.setStyleSheet(f"background: {theme['toolbar_bg']}; color: {theme['text']};")
         tb_layout = QHBoxLayout(tb)
@@ -371,10 +508,10 @@ class AdjustmentViewerDialog(QDialog):
         tb_layout.addWidget(self._next_btn)
 
         # Séparateur vertical
-        sep = QFrame()
-        sep.setFrameShape(QFrame.Shape.VLine)
-        sep.setStyleSheet(f"color: {theme['separator']};")
-        tb_layout.addWidget(sep)
+        self._tb_sep = QFrame()
+        self._tb_sep.setFrameShape(QFrame.Shape.VLine)
+        self._tb_sep.setStyleSheet(f"color: {theme['separator']};")
+        tb_layout.addWidget(self._tb_sep)
 
         # Contrôles spécifiques au mode
         self._mode_widgets = []
@@ -383,18 +520,18 @@ class AdjustmentViewerDialog(QDialog):
         tb_layout.addStretch()
 
         # Zoom − % +
-        lbl_zoom_minus = QPushButton()
-        lbl_zoom_minus.setFixedSize(28, 28)
-        lbl_zoom_minus.setStyleSheet(_btn_style(theme))
-        lbl_zoom_minus.clicked.connect(lambda: self._adjust_zoom(-0.15))
+        self._zoom_minus_btn = QPushButton()
+        self._zoom_minus_btn.setFixedSize(28, 28)
+        self._zoom_minus_btn.setStyleSheet(_btn_style(theme))
+        self._zoom_minus_btn.clicked.connect(lambda: self._adjust_zoom(-0.15))
         _icon_minus = _load_icon("BTN_-.png", 20)
         if _icon_minus:
-            lbl_zoom_minus.setIcon(_icon_minus)
-            lbl_zoom_minus.setIconSize(QSize(20, 20))
+            self._zoom_minus_btn.setIcon(_icon_minus)
+            self._zoom_minus_btn.setIconSize(QSize(20, 20))
         else:
-            lbl_zoom_minus.setText("−")
-            lbl_zoom_minus.setFont(font_tb)
-        tb_layout.addWidget(lbl_zoom_minus)
+            self._zoom_minus_btn.setText("−")
+            self._zoom_minus_btn.setFont(font_tb)
+        tb_layout.addWidget(self._zoom_minus_btn)
 
         self._zoom_lbl = QLabel("100%")
         self._zoom_lbl.setFont(font_tb)
@@ -402,18 +539,18 @@ class AdjustmentViewerDialog(QDialog):
         self._zoom_lbl.setMinimumWidth(48)
         tb_layout.addWidget(self._zoom_lbl)
 
-        lbl_zoom_plus = QPushButton()
-        lbl_zoom_plus.setFixedSize(28, 28)
-        lbl_zoom_plus.setStyleSheet(_btn_style(theme))
-        lbl_zoom_plus.clicked.connect(lambda: self._adjust_zoom(0.15))
+        self._zoom_plus_btn = QPushButton()
+        self._zoom_plus_btn.setFixedSize(28, 28)
+        self._zoom_plus_btn.setStyleSheet(_btn_style(theme))
+        self._zoom_plus_btn.clicked.connect(lambda: self._adjust_zoom(0.15))
         _icon_plus = _load_icon("BTN_+.png", 20)
         if _icon_plus:
-            lbl_zoom_plus.setIcon(_icon_plus)
-            lbl_zoom_plus.setIconSize(QSize(20, 20))
+            self._zoom_plus_btn.setIcon(_icon_plus)
+            self._zoom_plus_btn.setIconSize(QSize(20, 20))
         else:
-            lbl_zoom_plus.setText("+")
-            lbl_zoom_plus.setFont(font_tb)
-        tb_layout.addWidget(lbl_zoom_plus)
+            self._zoom_plus_btn.setText("+")
+            self._zoom_plus_btn.setFont(font_tb)
+        tb_layout.addWidget(self._zoom_plus_btn)
 
         root.addWidget(tb)
 
@@ -433,11 +570,12 @@ class AdjustmentViewerDialog(QDialog):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self._img_widget.on_zoom_changed = lambda z: self._zoom_lbl.setText(f"{int(z * 100)}%")
         if self._mode == 'transparency':
-            self._img_widget.setCursor(QCursor(Qt.CursorShape.CrossCursor))
+            self._img_widget.setCursor(_get_crosshair_cursor())
         root.addWidget(self._img_widget, stretch=1)
 
         # ── Barre du bas ─────────────────────────────────────────────────────
-        bot = QWidget()
+        self._bot = QWidget()
+        bot = self._bot
         bot.setStyleSheet(f"background: {theme['bg']}; color: {theme['text']};")
         bot_layout = QHBoxLayout(bot)
         bot_layout.setContentsMargins(10, 6, 10, 6)
@@ -470,10 +608,10 @@ class AdjustmentViewerDialog(QDialog):
             self._apply_current_btn.clicked.connect(self._apply_levels_all)
             bot_layout.addWidget(self._apply_current_btn)
 
-            sep2 = QFrame()
-            sep2.setFrameShape(QFrame.Shape.VLine)
-            sep2.setStyleSheet(f"color: {theme['separator']};")
-            bot_layout.addWidget(sep2)
+            self._bot_sep2 = QFrame()
+            self._bot_sep2.setFrameShape(QFrame.Shape.VLine)
+            self._bot_sep2.setStyleSheet(f"color: {theme['separator']};")
+            bot_layout.addWidget(self._bot_sep2)
 
             # Pipette noire
             self._black_pip_btn = QPushButton()
@@ -524,10 +662,10 @@ class AdjustmentViewerDialog(QDialog):
             self._levels_redo_btn.clicked.connect(self._levels_redo)
             bot_layout.addWidget(self._levels_redo_btn)
 
-            sep3 = QFrame()
-            sep3.setFrameShape(QFrame.Shape.VLine)
-            sep3.setStyleSheet(f"color: {theme['separator']};")
-            bot_layout.addWidget(sep3)
+            self._bot_sep3 = QFrame()
+            self._bot_sep3.setFrameShape(QFrame.Shape.VLine)
+            self._bot_sep3.setStyleSheet(f"color: {theme['separator']};")
+            bot_layout.addWidget(self._bot_sep3)
 
             self._auto_levels_btn = QPushButton()
             self._auto_levels_btn.setFont(font_btn)
@@ -546,10 +684,10 @@ class AdjustmentViewerDialog(QDialog):
             bot_layout.addWidget(self._apply_current_btn)
 
             # Séparateur
-            sep_bt = QFrame()
-            sep_bt.setFrameShape(QFrame.Shape.VLine)
-            sep_bt.setStyleSheet(f"color: {theme['separator']};")
-            bot_layout.addWidget(sep_bt)
+            self._bot_sep_bt = QFrame()
+            self._bot_sep_bt.setFrameShape(QFrame.Shape.VLine)
+            self._bot_sep_bt.setStyleSheet(f"color: {theme['separator']};")
+            bot_layout.addWidget(self._bot_sep_bt)
 
             # Zone [slider] Global
             self._transp_flood_lbl = QLabel()
@@ -570,10 +708,10 @@ class AdjustmentViewerDialog(QDialog):
             bot_layout.addWidget(self._transp_global_lbl)
 
             # Séparateur
-            sep_bt2 = QFrame()
-            sep_bt2.setFrameShape(QFrame.Shape.VLine)
-            sep_bt2.setStyleSheet(f"color: {theme['separator']};")
-            bot_layout.addWidget(sep_bt2)
+            self._bot_sep_bt2 = QFrame()
+            self._bot_sep_bt2.setFrameShape(QFrame.Shape.VLine)
+            self._bot_sep_bt2.setStyleSheet(f"color: {theme['separator']};")
+            bot_layout.addWidget(self._bot_sep_bt2)
 
             # Tolérance
             self._transp_tol_lbl = QLabel()
@@ -1408,14 +1546,17 @@ class AdjustmentViewerDialog(QDialog):
         # compression et remove_colors : pas de remise à zéro
 
     def _cancel(self):
+        if not self._confirmed_close and self._has_unapplied_transparency():
+            self._confirm_close_transparency()
+            return
         if self._on_cancel_callback:
             self._on_cancel_callback()
         self.close()
 
     # ── Traduction ────────────────────────────────────────────────────────────
 
-    def _get_title(self):
-        titles = {
+    def _get_title_key(self):
+        return {
             'sharpness':     "dialogs.sharpness_viewer.title",
             'brightness':    "dialogs.brightness_viewer.title",
             'compression':   "dialogs.compression_viewer.title",
@@ -1424,17 +1565,68 @@ class AdjustmentViewerDialog(QDialog):
             'unsharp':       "dialogs.adjustments.unsharp_viewer_title",
             'levels':        "dialogs.levels_viewer.title",
             'transparency':  "dialogs.adjustments.transparency_viewer_title",
-        }
-        return _(titles.get(self._mode, "dialogs.levels_viewer.title"))
+        }.get(self._mode, "dialogs.levels_viewer.title")
+
+    def _get_title(self):
+        return _(self._get_title_key())
 
     def _retranslate(self):
         theme = get_current_theme()
         font = _get_current_font(10)
 
-        self.setWindowTitle(self._get_title())
+        self.setWindowTitle(_wt(self._get_title_key()))
         self.setStyleSheet(
             f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
         )
+
+        # Thème : toolbar, barre du bas, boutons, séparateurs, sliders, spinbox
+        self._tb.setStyleSheet(f"background: {theme['toolbar_bg']}; color: {theme['text']};")
+        self._bot.setStyleSheet(f"background: {theme['bg']}; color: {theme['text']};")
+        self._tb_sep.setStyleSheet(f"color: {theme['separator']};")
+        self._prev_btn.setStyleSheet(_btn_style(theme))
+        self._next_btn.setStyleSheet(_btn_style(theme))
+        self._zoom_minus_btn.setStyleSheet(_btn_style(theme))
+        self._zoom_plus_btn.setStyleSheet(_btn_style(theme))
+        self._cancel_btn.setStyleSheet(_btn_style(theme))
+        self._apply_current_btn.setStyleSheet(_btn_style(theme))
+        if self._apply_all_btn:
+            self._apply_all_btn.setStyleSheet(_btn_style(theme))
+        # Sliders de la toolbar (selon le mode)
+        if self._mode == 'sharpness':
+            self._sharp_slider.setStyleSheet(_slider_style(theme))
+        elif self._mode == 'brightness':
+            self._bright_slider.setStyleSheet(_slider_style(theme))
+            self._contrast_slider.setStyleSheet(_slider_style(theme))
+        elif self._mode == 'compression':
+            self._comp_slider.setStyleSheet(_slider_style(theme))
+        elif self._mode == 'remove_colors':
+            self._remove_slider.setStyleSheet(_slider_style(theme))
+        elif self._mode == 'saturation':
+            self._sat_slider.setStyleSheet(_slider_style(theme))
+        elif self._mode == 'unsharp':
+            self._unsharp_radius_slider.setStyleSheet(_slider_style(theme))
+            self._unsharp_percent_slider.setStyleSheet(_slider_style(theme))
+            self._unsharp_threshold_slider.setStyleSheet(_slider_style(theme))
+        elif self._mode == 'levels':
+            self._bot_sep2.setStyleSheet(f"color: {theme['separator']};")
+            self._bot_sep3.setStyleSheet(f"color: {theme['separator']};")
+            self._black_pip_btn.setStyleSheet(_pip_btn_style(theme))
+            self._white_pip_btn.setStyleSheet(_pip_btn_style(theme))
+            self._levels_undo_btn.setStyleSheet(_btn_style(theme))
+            self._levels_redo_btn.setStyleSheet(_btn_style(theme))
+            self._auto_levels_btn.setStyleSheet(_btn_style(theme))
+        elif self._mode == 'transparency':
+            self._bot_sep_bt.setStyleSheet(f"color: {theme['separator']};")
+            self._bot_sep_bt2.setStyleSheet(f"color: {theme['separator']};")
+            self._transp_type_slider.setStyleSheet(_slider_style(theme))
+            self._transp_tol_slider.setStyleSheet(_slider_style(theme))
+            self._transp_tol_spin.setStyleSheet(
+                f"QSpinBox {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+                f"border: 1px solid #aaaaaa; padding: 2px 4px; }} "
+                f"QSpinBox::up-button, QSpinBox::down-button {{ width: 16px; }}"
+            )
+            self._transp_undo_btn.setStyleSheet(_btn_style(theme))
+            self._transp_redo_btn.setStyleSheet(_btn_style(theme))
 
         # Bandeau d'avertissement (transparency : images ignorées)
         if self._skipped_count > 0:
@@ -1524,6 +1716,47 @@ class AdjustmentViewerDialog(QDialog):
             if self._apply_all_btn:
                 self._apply_all_btn.setFont(font_btn)
                 self._apply_all_btn.setText(_("dialogs.levels_viewer.apply_all"))
+
+    # ── Fermeture avec confirmation (mode transparence) ───────────────────────
+
+    def _has_unapplied_transparency(self):
+        """Retourne True si des clics de transparence ont été faits mais pas encore appliqués."""
+        if self._mode != 'transparency':
+            return False
+        # Sauvegarde l'état de la page courante avant de vérifier toutes les pages
+        self._save_transp_state()
+        return any(hist for hist in self._transp_histories.values())
+
+    def _confirm_close_transparency(self):
+        """Affiche la boîte de confirmation à 3 boutons (non-modale)."""
+        dlg = _TransparencyUnsavedDialog(self)
+
+        def _on_discard():
+            self._confirmed_close = True
+            if self._on_cancel_callback:
+                self._on_cancel_callback()
+            self._transp_histories.clear()
+            self.close()
+
+        def _on_apply():
+            self._confirmed_close = True
+            self._apply_transparency()
+
+        dlg.on_discard = _on_discard
+        dlg.on_apply   = _on_apply
+
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        position_dialog_on_parent(dlg, self)
+        dlg.show()
+        dlg.raise_()
+        dlg.activateWindow()
+
+    def closeEvent(self, event):
+        if not self._confirmed_close and self._has_unapplied_transparency():
+            event.ignore()
+            self._confirm_close_transparency()
+        else:
+            super().closeEvent(event)
 
     # ── Keyboard ──────────────────────────────────────────────────────────────
 

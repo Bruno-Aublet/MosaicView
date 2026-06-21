@@ -965,7 +965,12 @@
       "unsharp_percent_label": "Styrkur: {value} %",
       "unsharp_threshold_label": "Þröskuldur: {value}",
       "unsharp_viewer_title": "Aðlæg skýrleiki",
-      "auto_levels_tooltip": "Greinir hverja síðu og stillir sjálfkrafa svart- og hvítgildistig til að hámarka skerpu.\nTil að velja síðu fyrir síðu skaltu nota skoðarann."
+      "auto_levels_tooltip": "Greinir hverja síðu og stillir sjálfkrafa svart- og hvítgildistig til að hámarka skerpu.\nTil að velja síðu fyrir síðu skaltu nota skoðarann.",
+      "transparency_unsaved_title": "Ónotuðar breytingar",
+      "transparency_unsaved_message": "Núverandi breytingar hafa ekki verið notaðar á myndina. Hvað viltu gera?",
+      "transparency_unsaved_discard": "Loka án þess að nota",
+      "transparency_unsaved_apply": "Nota og loka",
+      "transparency_unsaved_cancel": "Hætta við"
     },
     "levels_viewer": {
       "title": "Stillingar a stigum med dropatoli",
@@ -1224,7 +1229,7 @@
     "flatten": "Fletja möppur",
     "flatten_content": "Ef safnskráin þín inniheldur undirmöppur skaltu nota 'Fletja möppur' til að færa allar myndir á sama stig.",
     "viewer": "Skoðarinn",
-    "viewer_content": "Tvísmelltu á síðu til að opna skoðarann:\n• Lyklar ← → : flakk milli síðna\n• Lykill D : skipta á milli 3 lestrarhamna\n  - Stök síða: ein síða í einu\n  - Tvöfaldar síður: síða 1 ein, síðan 2-3, 4-5, o.s.frv.\n  - Samfelldar tvöfaldar síður: síða 1 ein, síðan 2-3, 3-4, 4-5, o.s.frv.\n• Músarhjól: hraður flakk\n• Ctrl+Hjól eða Ctrl+Plús/Mínus: aðdráttur\n• Ctrl+0: endurstilla aðdrátt\n• Lykill F11: heilskjár\n• Tvísmella: skipta um heilskjá\n• ESC lykill: hætta við skurðaramma / loka skoðara",
+    "viewer_content": "Tvísmelltu á síðu til að opna skoðarann:\n• Lyklar ← → : flakk milli síðna\n• Lykill D : skipta á milli 3 lestrarhamna\n  - Stök síða: ein síða í einu\n  - Tvöfaldar síður: síða 1 ein, síðan 2-3, 4-5, o.s.frv.\n  - Samfelldar tvöfaldar síður: síða 1 ein, síðan 2-3, 3-4, 4-5, o.s.frv.\n• Músarhjól: hraður flakk\n• Ctrl+Hjól eða Ctrl+Plús/Mínus: aðdráttur\n• Ctrl+0: endurstilla aðdrátt\n• Lykill F11: heilskjár\n• Tvísmella: skipta um heilskjá\n• ESC lykill: hætta við skurðaramma / loka skoðara\n• Bókamerki: vistar sjálfkrafa núverandi síðu þegar lesarinn er lokaður (nema fyrsta og síðasta síðu). Rautt borði birtist á samsvarandi smámynd í mósaíkinu. Við næstu opnun leggur skilaboð til að fara aftur á þessa síðu. Eytt sjálfkrafa á síðustu síðu eða handvirkt með hægri smelli í lesaranum.",
     "join_pages": "Sameina síður",
     "join_pages_content": "Veldu margar samfelldar síður, hægrismelltu → 'Sameina valdar síður' til að sameina síður lárétt eða lóðrétt. Snið myndarinnar sem búin er til samsvarar sniði upprunasíðnanna ef þær eru allar eins, annars PNG sjálfgefið.",
     "split_pages": "Skipta síðum",
