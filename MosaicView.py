@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.3.7"
+__version__ = "1.3.8"
 
 import sys
 import os
@@ -210,8 +210,9 @@ class MainWindow(QMainWindow):
         f5 = QShortcut(QKeySequence("F5"), self)
         f5.setContext(_Qt.ApplicationShortcut)
         f5.activated.connect(lambda: self._active_panel._canvas.render_mosaic())
-        QShortcut(QKeySequence("F11"),    self).activated.connect(self._toggle_fullscreen)
-        QShortcut(QKeySequence("Escape"), self).activated.connect(lambda: self._active_panel._on_escape())
+        QShortcut(QKeySequence("F11"),        self).activated.connect(self._toggle_fullscreen)
+        QShortcut(QKeySequence("Escape"),     self).activated.connect(lambda: self._active_panel._on_escape())
+        QShortcut(QKeySequence("Ctrl+Alt+T"), self).activated.connect(self._export_thumbnails)
 
         # ── Désactive la native QMainWindow menubar ───────────────────────────
         self.menuBar().setVisible(False)
@@ -607,6 +608,55 @@ class MainWindow(QMainWindow):
     def _show_full_7zip_license(self):
         from modules.qt.license_dialog_qt import show_full_7zip_license_window_qt
         show_full_7zip_license_window_qt(self._active_panel)
+
+    def _export_thumbnails(self):
+        import os
+        import io as _io
+        from PIL import Image as _Image
+        from PySide6.QtWidgets import QFileDialog
+        from modules.qt.file_operations_qt import ThumbnailSavedDialog
+        from modules.qt.localization import _, _wt
+
+        panel = self._active_panel
+        state = panel._state
+        if not state.images_data:
+            return
+
+        initial_dir = ""
+        if state.current_file:
+            initial_dir = os.path.dirname(os.path.abspath(state.current_file))
+
+        folder = QFileDialog.getExistingDirectory(
+            panel,
+            _wt("messages.info.thumbnails_saved.title"),
+            initial_dir,
+        )
+        if not folder:
+            return
+
+        tw, th = state.thumb_w, state.thumb_h
+        count = 0
+        for entry in state.images_data:
+            if not entry.get("is_image") or entry.get("is_corrupted"):
+                continue
+            raw = entry.get("bytes")
+            if not raw:
+                continue
+            orig_name = entry.get("orig_name", "")
+            basename = os.path.basename(orig_name)
+            ext = os.path.splitext(basename)[1].lower()
+            if ext not in (".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"):
+                ext = ".png"
+            try:
+                img = _Image.open(_io.BytesIO(raw))
+                img.thumbnail((tw, th), _Image.Resampling.LANCZOS)
+                dest = os.path.join(folder, basename if basename else f"thumb_{count}{ext}")
+                img.save(dest)
+                count += 1
+            except Exception:
+                continue
+
+        ThumbnailSavedDialog(panel, count, folder)
 
     def _show_full_piqad_license(self):
         from modules.qt.license_dialog_qt import show_full_piqad_license_window_qt

@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF odblokowany",
         "message": "Odblokowany plik PDF został zapisany:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Eksportuj miniatury",
+        "message": "{count} miniatura(y) zapisana(e) w :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Otwieranie plików",
     "open_files_content": "• Kliknij przycisk 'Otwórz plik' lub przeciągnij i upuść plik bezpośrednio do okna\n• Obsługiwane formaty: CBZ, CBR, CB7, CBT, PDF, obrazy (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Pliki EPUB moga rowniez byc otwierane, ale tylko ich obrazy beda wyodrebnione (tekst jest ignorowany). Uwaga: rozszerzenia wyświetlane na czerwono (WEBP, TIFF, GIF, ICO…) oznaczają formaty potencjalnie niekompatybilne ze starszymi czytnikami CBZ/CBR. Pliki te są jednak normalnie przetwarzane przez MosaicView.\n• Zaszyfrowany PDF (hasło wymagane do otwarcia): plik nie może zostać zaimportowany, wyświetla się komunikat o błędzie.\n• PDF chroniony przed modyfikacjami (owner password): strony są importowane normalnie. MosaicView proponuje zapisanie odblokowanej kopii pliku w tym samym folderze.",
     "mosaic": "Mozaika",
-    "mosaic_content": "Mozaika wyświetla wszystkie strony komiksu jako miniatury. Możesz:\n• Zmieniać układ stron przeciągając i upuszczając (numeracja stron będzie automatyczna i zostanie wykonana według aktywnego trybu przenumerowania)\n• Wybierać wiele stron (Ctrl+klik lub Shift+klik)\n• Dostosować rozmiar miniatur suwakiem\n• Ręcznie zmieniać nazwy plików klikając na ich nazwę\n• Przeciągać i upuszczać pliki komiksów (CBZ/CBR/PDF) z Eksploratora Windows bezpośrednio do innego otwartego komiksu, aby scalić ich zawartość",
+    "mosaic_content": "Mozaika wyświetla wszystkie strony komiksu jako miniatury. Możesz:\n• Zmieniać układ stron przeciągając i upuszczając (numeracja stron będzie automatyczna i zostanie wykonana według aktywnego trybu przenumerowania)\n• Wybierać wiele stron (Ctrl+klik lub Shift+klik)\n• Dostosować rozmiar miniatur suwakiem\n• Ręcznie zmieniać nazwy plików klikając na ich nazwę\n• Przeciągać i upuszczać pliki komiksów (CBZ/CBR/PDF) z Eksploratora Windows bezpośrednio do innego otwartego komiksu, aby scalić ich zawartość\n• Eksportuj wszystkie wyświetlane miniatury do wybranego folderu (ukryte polecenie, dostępne tylko za pomocą skrótu Ctrl+Alt+T)",
     "manipulation": "Manipulacja stronami",
     "manipulation_content": "• Przeciągaj strony, aby je przeorganizować\n• Przeciągnij cały komiks do innego, aby je połączyć\n• Prawy przycisk myszy na stronie, aby uzyskać dostęp do opcji (obrót, usuwanie itp.)\n• Podwójne kliknięcie strony, aby otworzyć przeglądarkę\n• Eksportuj poszczególne strony przeciągając je do folderu Windows lub za pomocą Ctrl+C / Ctrl+V",
     "renumber": "Przenumerowanie stron",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Sprawdź aktualizacje",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Dziennik zmian"
+    "show_changelog": "Dziennik zmian",
+    "webpage": "Strona internetowa"
   },
   "updates": {
     "dialog_title": "Aktualizacje",

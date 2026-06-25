@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF opnað",
         "message": "Opnaða PDF skráin var vistuð:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Flytja út smámyndir",
+        "message": "{count} smámynd(ir) vistuð(ar) í :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Opna skrár",
     "open_files_content": "• Smelltu á hnappinn 'Opna skrá' eða dragðu og slepptu skrá beint í gluggann\n• Studd snið: CBZ, CBR, CB7, CBT, PDF, myndir (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Einnig er haegt ad opna EPUB skrar, en aedins verda myndir thyggdar ut (texti er hundsad).\n• Dulkóðuð PDF (lykilorð þarf til að opna): ekki er hægt að flytja inn skrána, villuboð birtast.\n• PDF vernduð gegn breytingum (owner password): síðurnar eru fluttar inn eðlilega. MosaicView býður upp á að vista opið afrit af skránni í sömu möppu. Athugasemd: skráarviðskeyti sýnd með rauðum lit (WEBP, TIFF, GIF, ICO…) gefa til kynna snið sem gætu verið ósamhæf við eldri CBZ/CBR-lesara. Þessar skrár eru þó unnar eðlilega af MosaicView.",
     "mosaic": "Mósaíkið",
-    "mosaic_content": "Mósaíkið sýnir allar síður myndasögunnar þinnar sem smámyndir. Þú getur:\n• Endurraðað síðum með því að draga og sleppa (síðunúmerun verður sjálfvirk og fer eftir virku endurnúmerunarstillingu)\n• Valið margar síður (Ctrl+smella eða Shift+smella)\n• Stillt smámyndastærð með rennisleðanum\n• Endurnefnt skrár handvirkt með því að smella á nafn þeirra\n• Dregið og sleppt myndasagaskrám (CBZ/CBR/PDF) úr Windows Explorer beint inn í aðra opna myndasögu til að sameina efni þeirra",
+    "mosaic_content": "Mósaíkið sýnir allar síður myndasögunnar þinnar sem smámyndir. Þú getur:\n• Endurraðað síðum með því að draga og sleppa (síðunúmerun verður sjálfvirk og fer eftir virku endurnúmerunarstillingu)\n• Valið margar síður (Ctrl+smella eða Shift+smella)\n• Stillt smámyndastærð með rennisleðanum\n• Endurnefnt skrár handvirkt með því að smella á nafn þeirra\n• Dregið og sleppt myndasagaskrám (CBZ/CBR/PDF) úr Windows Explorer beint inn í aðra opna myndasögu til að sameina efni þeirra\n• Flytja út allar sýndar smámyndir í möppu að eigin vali (falin skipun, aðeins aðgengileg með flýtilyklinum Ctrl+Alt+T)",
     "manipulation": "Vinnsla síðna",
     "manipulation_content": "• Dragðu og slepptu síðum til að endurraða þeim\n• Dragðu heila myndasögu inn í aðra til að sameina þær\n• Hægrismelltu á síðu til að nálgast valkosti (snúningur, eyðing o.fl.)\n• Tvísmelltu á síðu til að opna skoðarann\n• Flyttu út einstakar síður með því að draga þær í Windows-möppu eða með Ctrl+C / Ctrl+V",
     "renumber": "Endurnúmera síður",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Athugaðu uppfærslur",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Breytingaskrá"
+    "show_changelog": "Breytingaskrá",
+    "webpage": "Vefsíða"
   },
   "updates": {
     "dialog_title": "Uppfærslur",

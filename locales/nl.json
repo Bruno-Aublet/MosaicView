@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF ontgrendeld",
         "message": "Het ontgrendelde PDF-bestand is opgeslagen:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Miniaturen exporteren",
+        "message": "{count} miniatuur(en) opgeslagen in :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Bestanden openen",
     "open_files_content": "• Klik op de knop 'Een bestand openen' of sleep een bestand rechtstreeks naar het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, CBT, PDF, afbeeldingen (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geextraheerd (tekst wordt genegeerd).\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan. Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.",
     "mosaic": "Het mozaïek",
-    "mosaic_content": "Het mozaïek toont alle pagina's van je strip als miniaturen. Je kunt:\n• Pagina's herschikken door slepen en neerzetten (paginanummering wordt automatisch en volgt de actieve hernummeringsmodus)\n• Meerdere pagina's selecteren (Ctrl+klik of Shift+klik)\n• Miniatuurgrootte aanpassen met de schuifregelaar\n• Bestanden handmatig hernoemen door op hun naam te klikken\n• Stripbestanden (CBZ/CBR/PDF) vanuit Windows Verkenner direct naar een andere geopende strip slepen om hun inhoud samen te voegen",
+    "mosaic_content": "Het mozaïek toont alle pagina's van je strip als miniaturen. Je kunt:\n• Pagina's herschikken door slepen en neerzetten (paginanummering wordt automatisch en volgt de actieve hernummeringsmodus)\n• Meerdere pagina's selecteren (Ctrl+klik of Shift+klik)\n• Miniatuurgrootte aanpassen met de schuifregelaar\n• Bestanden handmatig hernoemen door op hun naam te klikken\n• Stripbestanden (CBZ/CBR/PDF) vanuit Windows Verkenner direct naar een andere geopende strip slepen om hun inhoud samen te voegen\n• Alle weergegeven miniaturen exporteren naar een map naar keuze (verborgen opdracht, alleen toegankelijk via de sneltoets Ctrl+Alt+T)",
     "manipulation": "Paginamanipulatie",
     "manipulation_content": "• Versleep pagina's om ze te herordenen\n• Sleep een volledig stripboek in een ander om ze samen te voegen\n• Rechtsklik op een pagina voor opties (roteren, verwijderen, enz.)\n• Dubbelklik op een pagina om de viewer te openen\n• Exporteer afzonderlijke pagina's door ze naar een Windows-map te slepen of via Ctrl+C / Ctrl+V",
     "renumber": "Hernummering van pagina's",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Controleer op updates",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Wijzigingenlog"
+    "show_changelog": "Wijzigingenlog",
+    "webpage": "Webpagina"
   },
   "updates": {
     "dialog_title": "Updates",

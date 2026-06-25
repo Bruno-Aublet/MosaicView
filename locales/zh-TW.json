@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF已解鎖",
         "message": "已解鎖的PDF檔案已儲存:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "匯出縮圖",
+        "message": "已將 {count} 張縮圖儲存至 :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "開啟檔案",
     "open_files_content": "• 按一下'開啟檔案'按鈕，或將檔案直接拖放至視窗中\n• 支援的格式:CBZ、CBR、PDF、圖像(JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). 也可以打開EPUB檔案，但只會提取其圖像（文字會被忽略）。 注意：以紅色顯示的副檔名（WEBP、TIFF、GIF、ICO…）表示可能與舊版 CBZ/CBR 閱讀器不相容的格式。不過，MosaicView 仍可正常處理這些檔案。\n• 已加密的PDF（開啟時需要密碼）:檔案無法匯入，將顯示錯誤訊息。\n• 受保護禁止修改的PDF（owner password）:頁面正常匯入。MosaicView建議在同一資料夾中儲存一份解鎖的副本。",
     "mosaic": "縮圖",
-    "mosaic_content": "馬賽克以縮圖形式顯示您漫畫的所有頁面。您可以：\n• 透過拖放重新排列頁面（頁碼將自動更新，並會按照當前啟用的重新編號模式進行）\n• 選擇多個頁面（Ctrl+點擊或Shift+點擊）\n• 使用滑桿調整縮圖大小\n• 點擊檔案名稱手動重新命名檔案\n• 從Windows檔案總管直接拖放漫畫檔案（CBZ/CBR/PDF）到另一個開啟的漫畫中以合併其內容",
+    "mosaic_content": "馬賽克以縮圖形式顯示您漫畫的所有頁面。您可以：\n• 透過拖放重新排列頁面（頁碼將自動更新，並會按照當前啟用的重新編號模式進行）\n• 選擇多個頁面（Ctrl+點擊或Shift+點擊）\n• 使用滑桿調整縮圖大小\n• 點擊檔案名稱手動重新命名檔案\n• 從Windows檔案總管直接拖放漫畫檔案（CBZ/CBR/PDF）到另一個開啟的漫畫中以合併其內容\n• 將所有顯示的縮圖匯出至您選擇的資料夾（隱藏指令，僅可透過快速鍵 Ctrl+Alt+T 存取）",
     "manipulation": "頁面操作",
     "manipulation_content": "• 拖放頁面以重新排列\n• 將整本漫畫拖入另一本以合併\n• 右鍵單擊頁面以存取選項（旋轉、刪除等）\n• 雙擊頁面以開啟檢視器\n• 將單個頁面拖到 Windows 資料夾中匯出，或透過 Ctrl+C / Ctrl+V",
     "renumber": "頁面重新編號",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "檢查更新",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "更新日誌"
+    "show_changelog": "更新日誌",
+    "webpage": "網頁"
   },
   "updates": {
     "dialog_title": "更新",

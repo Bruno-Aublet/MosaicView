@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF avatud",
         "message": "Avatud PDF-fail on salvestatud:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Ekspordi pisipildid",
+        "message": "{count} pisipilt(-i) salvestatud kausta :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Failide avamine",
     "open_files_content": "• Klõpsake nupul 'Ava fail' või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, CBT, PDF, pildid (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jaetakse tahelepanuta).\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): lehed imporditakse tavapäraselt. MosaicView pakub avatud koopia salvestamist samasse kausta. Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.",
     "mosaic": "Mosaiik",
-    "mosaic_content": "Mosaiik kuvab kõiki teie koomiksi lehti pisipiltidena. Saate:\n• Ümber korraldada lehti lohistamise ja kukutamisega (lehekülgede nummerdamine on automaatne ja toimub vastavalt aktiivsele ümbernummerdamise režiimile)\n• Valida mitu lehekülge (Ctrl+klõps või Shift+klõps)\n• Reguleerida pisipiltide suurust liuguriga\n• Käsitsi ümber nimetada faile, klõpsates nende nimel\n• Lohistada ja kukutada koomiksi faile (CBZ/CBR/PDF) Windows Explorerist otse teise avatud koomikusse nende sisu ühendamiseks",
+    "mosaic_content": "Mosaiik kuvab kõiki teie koomiksi lehti pisipiltidena. Saate:\n• Ümber korraldada lehti lohistamise ja kukutamisega (lehekülgede nummerdamine on automaatne ja toimub vastavalt aktiivsele ümbernummerdamise režiimile)\n• Valida mitu lehekülge (Ctrl+klõps või Shift+klõps)\n• Reguleerida pisipiltide suurust liuguriga\n• Käsitsi ümber nimetada faile, klõpsates nende nimel\n• Lohistada ja kukutada koomiksi faile (CBZ/CBR/PDF) Windows Explorerist otse teise avatud koomikusse nende sisu ühendamiseks\n• Ekspordi kõik kuvatud pisipildid valitud kausta (peidetud käsk, juurdepääsetav ainult otsetee Ctrl+Alt+T kaudu)",
     "manipulation": "Lehekülgede manipuleerimine",
     "manipulation_content": "• Lohista lehekülgi nende ümberkorraldamiseks\n• Lohista terve koomiksiraamat teise sisse nende ühendamiseks\n• Paremklikk leheküljel valikute kuvamiseks (pööramine, kustutamine jne)\n• Topeltklõps leheküljel vaataja avamiseks\n• Ekspordi üksikud leheküljed, lohistades neid Windowsi kausta, või Ctrl+C / Ctrl+V kaudu",
     "renumber": "Lehekülgede ümbernummerdamine",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Otsi uuendusi",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Muudatuste logi"
+    "show_changelog": "Muudatuste logi",
+    "webpage": "Veebileht"
   },
   "updates": {
     "dialog_title": "Uuendused",

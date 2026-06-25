@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF desbloqueado",
         "message": "El archivo PDF desbloqueado se ha guardado:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Exportar miniaturas",
+        "message": "{count} miniatura(s) guardada(s) en :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Abrir archivos",
     "open_files_content": "• Haga clic en el botón 'Abrir un archivo' o arrastre y suelte un archivo directamente en la ventana\n• Formatos admitidos: CBZ, CBR, CB7, CBT, PDF, imágenes (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Los archivos EPUB tambien se pueden abrir, pero solo se extraeran sus imagenes (el texto se ignora).\n• PDF cifrado (se requiere contraseña para abrir): el archivo no puede importarse, se muestra un mensaje de error.\n• PDF protegido contra modificaciones (owner password): las páginas se importan normalmente. MosaicView propone guardar una copia desbloqueada del archivo en la misma carpeta. Nota: las extensiones mostradas en rojo (WEBP, TIFF, GIF, ICO…) señalan formatos potencialmente incompatibles con lectores CBZ/CBR antiguos. Sin embargo, MosaicView procesa estos archivos con normalidad.",
     "mosaic": "El mosaico",
-    "mosaic_content": "El mosaico muestra todas las páginas de tu cómic en forma de miniaturas. Puedes:\n• Reorganizar las páginas arrastrando y soltando (la renumeración de páginas será automática y se hará según el modo de renumeración activo)\n• Seleccionar varias páginas (Ctrl+clic o Mayús+clic)\n• Ajustar el tamaño de las miniaturas con el control deslizante\n• Renombrar archivos manualmente haciendo clic en su nombre\n• Arrastrar y soltar archivos de cómics (CBZ/CBR/PDF) desde el Explorador de Windows directamente en otro cómic abierto para fusionar su contenido",
+    "mosaic_content": "El mosaico muestra todas las páginas de tu cómic en forma de miniaturas. Puedes:\n• Reorganizar las páginas arrastrando y soltando (la renumeración de páginas será automática y se hará según el modo de renumeración activo)\n• Seleccionar varias páginas (Ctrl+clic o Mayús+clic)\n• Ajustar el tamaño de las miniaturas con el control deslizante\n• Renombrar archivos manualmente haciendo clic en su nombre\n• Arrastrar y soltar archivos de cómics (CBZ/CBR/PDF) desde el Explorador de Windows directamente en otro cómic abierto para fusionar su contenido\n• Exportar todas las miniaturas mostradas a una carpeta de su elección (comando oculto, accesible solo mediante el atajo Ctrl+Alt+T)",
     "manipulation": "Manipulación de páginas",
     "manipulation_content": "• Arrastre y suelte páginas para reorganizarlas\n• Arrastre un cómic completo a otro para fusionarlos\n• Clic derecho en una página para acceder a las opciones (rotación, eliminación, etc.)\n• Doble clic en una página para abrir el visor\n• Exporte páginas individuales arrastrándolas a una carpeta de Windows, o mediante Ctrl+C / Ctrl+V",
     "renumber": "Renumeración de páginas",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Buscar actualizaciones",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Registro de cambios"
+    "show_changelog": "Registro de cambios",
+    "webpage": "Página web"
   },
   "updates": {
     "dialog_title": "Actualizaciones",

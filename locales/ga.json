@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF díghlasáilte",
         "message": "Sábháladh an comhad PDF díghlasáilte:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Easpórtáil mionsamhlacha",
+        "message": "{count} mionsamhail(eacha) sábháilte go :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Comhaid a oscailt",
     "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail comhad' nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, CBT, PDF, íomhánna (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Is feidir comhaid EPUB a oscailt freisin, ach ni bheidh ach a n-iomhanna a bhaint amach (deantar neamhaird ar an tecs).\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san fhillteán céanna. Nóta: léiríonn iarmhíreanna i gclódeirge (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamh-chomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, déanann MosaicView na comhaid seo a phróiseáil go gnáth.",
     "mosaic": "An mhósáic",
-    "mosaic_content": "Taispeánann an mhósáic gach leathanach de do ghreannán mar mhionsamhlacha. Is féidir leat:\n• Athshocraigh leathanaigh trí tharraingt agus scaoileadh (beidh uimhriú leathanaigh uathoibríoch, agus leanúidh sé an mód ath-uimhrithe gníomhach)\n• Roghnaigh leathanaigh iolracha (Ctrl+cliceáil nó Shift+cliceáil)\n• Coigeartaigh méid na mionsamhlacha leis an sleamhnán\n• Athainmnigh comhaid de láimh trí chliceáil ar a n-ainm\n• Tarraing agus scaoil comhaid ghreannáin (CBZ/CBR/PDF) ó Windows Explorer go díreach isteach i ngreannán eile atá oscailte chun a n-ábhar a chumasc",
+    "mosaic_content": "Taispeánann an mhósáic gach leathanach de do ghreannán mar mhionsamhlacha. Is féidir leat:\n• Athshocraigh leathanaigh trí tharraingt agus scaoileadh (beidh uimhriú leathanaigh uathoibríoch, agus leanúidh sé an mód ath-uimhrithe gníomhach)\n• Roghnaigh leathanaigh iolracha (Ctrl+cliceáil nó Shift+cliceáil)\n• Coigeartaigh méid na mionsamhlacha leis an sleamhnán\n• Athainmnigh comhaid de láimh trí chliceáil ar a n-ainm\n• Tarraing agus scaoil comhaid ghreannáin (CBZ/CBR/PDF) ó Windows Explorer go díreach isteach i ngreannán eile atá oscailte chun a n-ábhar a chumasc\n• Easpórtáil gach mionsamhail atá le feiceáil go fillteán de do rogha féin (ordú i bhfolach, inrochtana trí aicearra Ctrl+Alt+T amháin)",
     "manipulation": "Láimhseáil leathanach",
     "manipulation_content": "• Tarraing agus scaoil leathanaigh chun iad a atheagrú\n• Tarraing ealaínchlár iomlán isteach i gceann eile chun iad a chumasc\n• Cliceáil ar dheis ar leathanach chun roghanna a rochtain (rothú, scriosadh, srl.)\n• Cliceáil faoi dhó ar leathanach chun an breathnóir a oscailt\n• Easpórtáil leathanaigh aonair trína dtarraingt chuig fillteán Windows, nó via Ctrl+C / Ctrl+V",
     "renumber": "Athuimhriú leathanach",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Seiceáil le haghaidh nuashonruithe",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Loga Athruithe"
+    "show_changelog": "Loga Athruithe",
+    "webpage": "Leathanach gréasáin"
   },
   "updates": {
     "dialog_title": "Nuashonruithe",

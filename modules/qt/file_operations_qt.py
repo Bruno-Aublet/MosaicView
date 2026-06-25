@@ -541,6 +541,77 @@ class FileSavedDialog(QDialog):
             pass
 
 
+class ThumbnailSavedDialog(QDialog):
+    """Dialogue de confirmation après export des vignettes, avec lien cliquable vers le dossier."""
+
+    def __init__(self, parent, count: int, folder: str):
+        super().__init__(parent)
+        self._count = count
+        self._folder = folder
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self.setFixedWidth(520)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(10)
+
+        self._msg = QLabel()
+        self._msg.setWordWrap(True)
+        self._msg.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._msg)
+
+        # Lien vers le dossier
+        from modules.qt.state import get_current_theme
+        link_color = get_current_theme().get("link", "#4A9EFF")
+        display = folder if len(folder) <= 60 else "..." + folder[-57:]
+        self._link_lbl = QLabel(f'<a href="folder" style="color:{link_color};">{display}</a>')
+        self._link_lbl.setAlignment(Qt.AlignCenter)
+        self._link_lbl.setCursor(QCursor(Qt.PointingHandCursor))
+        self._link_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self._link_lbl.linkActivated.connect(lambda _: _open_folder(folder))
+        layout.addWidget(self._link_lbl)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self._close_btn = QPushButton()
+        self._close_btn.setFixedWidth(120)
+        self._close_btn.setDefault(True)
+        self._close_btn.clicked.connect(self.close)
+        btn_row.addWidget(self._close_btn)
+        btn_row.addStretch()
+        layout.addLayout(btn_row)
+
+        self._retranslate()
+
+        from modules.qt.language_signal import language_signal
+        self._lang_handler = lambda _: self._retranslate()
+        language_signal.changed.connect(self._lang_handler)
+        self.finished.connect(self._on_close)
+        if parent is not None:
+            from modules.qt.dialogs_qt import _center_on_widget
+            _center_on_widget(self, parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
+
+    def _retranslate(self):
+        from modules.qt.font_manager_qt import get_current_font
+        font = get_current_font()
+        self.setWindowTitle(_wt("messages.info.thumbnails_saved.title"))
+        self._msg.setText(_("messages.info.thumbnails_saved.message", count=self._count))
+        self._msg.setFont(font)
+        self._close_btn.setText(_("buttons.close"))
+        self._close_btn.setFont(font)
+
+    def _on_close(self):
+        from modules.qt.language_signal import language_signal
+        try:
+            language_signal.changed.disconnect(self._lang_handler)
+        except RuntimeError:
+            pass
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Overlay de progression sur le canvas Qt
 # ═══════════════════════════════════════════════════════════════════════════════

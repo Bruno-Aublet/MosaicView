@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF miftuħ",
         "message": "Il-fajl PDF miftuħ ġie ssejvjat:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Esporta minijaturi",
+        "message": "{count} miniatura(i) mifruxa(in) fi :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Iftaħ il-fajls",
     "open_files_content": "• Ikklikkja l-buttuna 'Iftaħ fajl' jew drag and drop fajl direttament fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, CBT, PDF, immaġini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fajls EPUB jistghu jinfethu wkoll, izda biss l-istampi taghhom se jkunu estratti (it-test jigie injorat).\n• PDF kriptat (password meħtieġa biex tiftaħ): il-fajl ma jistax jiġi importat, tiġi murija messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jsejvja kopja miftuħa tal-fajl fl-istess folder. Nota: l-estensjonijiet murija bil-aħmar (WEBP, TIFF, GIF, ICO…) jindikaw formati potenzjalment inkompatibbli ma' qarrejja CBZ/CBR aktar antiki. Madankollu, dawn il-fajls jiġu pproċessati normalment minn MosaicView.",
     "mosaic": "Il-mużajk",
-    "mosaic_content": "Il-mużajk juri l-paġni kollha tal-fumett tiegħek bħala minjaturi. Tista':\n• Irranġa mill-ġdid il-paġni billi tiġbed u twaqqagħhom (in-numrazzjoni tal-paġni tkun awtomatika, u ssir skont il-mod ta' numrazzjoni mill-ġdid attiv)\n• Agħżel diversi paġni (Ctrl+ikklikkja jew Shift+ikklikkja)\n• Aġġusta d-daqs tal-minjaturi bil-vagun\n• Semmi mill-ġdid manwalment il-fajls billi tikklikkja fuq isimhom\n• Iġbed u waqqagħ fajls ta' fumetti (CBZ/CBR/PDF) minn Windows Explorer direttament fi fumett ieħor miftuħ biex tgħaqqad il-kontenut tagħhom",
+    "mosaic_content": "Il-mużajk juri l-paġni kollha tal-fumett tiegħek bħala minjaturi. Tista':\n• Irranġa mill-ġdid il-paġni billi tiġbed u twaqqagħhom (in-numrazzjoni tal-paġni tkun awtomatika, u ssir skont il-mod ta' numrazzjoni mill-ġdid attiv)\n• Agħżel diversi paġni (Ctrl+ikklikkja jew Shift+ikklikkja)\n• Aġġusta d-daqs tal-minjaturi bil-vagun\n• Semmi mill-ġdid manwalment il-fajls billi tikklikkja fuq isimhom\n• Iġbed u waqqagħ fajls ta' fumetti (CBZ/CBR/PDF) minn Windows Explorer direttament fi fumett ieħor miftuħ biex tgħaqqad il-kontenut tagħhom\n• Esporta l-minijaturi kollha murija f'folder tal-għażla tiegħek (kmand moħbi, aċċessibbli biss permezz tal-qabar Ctrl+Alt+T)",
     "manipulation": "Manipulazzjoni tal-paġni",
     "manipulation_content": "• Ġib u erħi l-paġni biex torganizzahom mill-ġdid\n• Ġib fumett sħiħ f'ieħor biex tgħaqqadhom\n• Ikklikkja bil-lemin fuq paġna biex taċċessa l-għażliet (rotazzjoni, tħassir, eċċ.)\n• Ikklikkja darbtejn fuq paġna biex tiftaħ il-viewer\n• Esporta paġni individwali billi tiġbidhom lejn folder tal-Windows, jew permezz ta' Ctrl+C / Ctrl+V",
     "renumber": "Numerazzjoni mill-ġdid tal-paġni",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Iċċekkja għall-aġġornamenti",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Reġistru tal-Bidliet"
+    "show_changelog": "Reġistru tal-Bidliet",
+    "webpage": "Paġna tal-web"
   },
   "updates": {
     "dialog_title": "Aġġornamenti",

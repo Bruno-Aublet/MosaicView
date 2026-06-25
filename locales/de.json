@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF entsperrt",
         "message": "Die entsperrte PDF-Datei wurde gespeichert:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Vorschaubilder exportieren",
+        "message": "{count} Vorschaubild(er) gespeichert in :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Dateien öffnen",
     "open_files_content": "• Klicken Sie auf die Schaltfläche 'Eine Datei öffnen' oder ziehen Sie eine Datei direkt in das Fenster\n• Unterstützte Formate: CBZ, CBR, CB7, CBT, PDF, Bilder (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-Dateien koennen ebenfalls geoeffnet werden, aber nur ihre Bilder werden extrahiert (der Text wird ignoriert). Hinweis: rot angezeigte Erweiterungen (WEBP, TIFF, GIF, ICO…) kennzeichnen Formate, die mit älteren CBZ/CBR-Leseprogrammen möglicherweise nicht kompatibel sind. Diese Dateien werden von MosaicView dennoch normal verarbeitet.\n• Verschlüsselte PDF (Passwort beim Öffnen erforderlich): Die Datei kann nicht importiert werden, eine Fehlermeldung wird angezeigt.\n• PDF gegen Änderungen geschützt (owner password): Die Seiten werden normal importiert. MosaicView bietet an, eine entsperrte Kopie der Datei im selben Verzeichnis zu speichern.",
     "mosaic": "Das Mosaik",
-    "mosaic_content": "Das Mosaik zeigt alle Seiten Ihres Comics als Miniaturansichten an. Sie können:\n• Seiten per Drag-and-Drop neu anordnen (die Seitennummerierung erfolgt automatisch und richtet sich nach dem aktiven Umnummerierungsmodus)\n• Mehrere Seiten auswählen (Strg+Klick oder Umschalt+Klick)\n• Miniaturgröße mit dem Schieberegler anpassen\n• Dateien manuell umbenennen, indem Sie auf ihren Namen klicken\n• Comic-Dateien (CBZ/CBR/PDF) aus dem Windows Explorer direkt in ein anderes geöffnetes Comic ziehen, um deren Inhalt zusammenzuführen",
+    "mosaic_content": "Das Mosaik zeigt alle Seiten Ihres Comics als Miniaturansichten an. Sie können:\n• Seiten per Drag-and-Drop neu anordnen (die Seitennummerierung erfolgt automatisch und richtet sich nach dem aktiven Umnummerierungsmodus)\n• Mehrere Seiten auswählen (Strg+Klick oder Umschalt+Klick)\n• Miniaturgröße mit dem Schieberegler anpassen\n• Dateien manuell umbenennen, indem Sie auf ihren Namen klicken\n• Comic-Dateien (CBZ/CBR/PDF) aus dem Windows Explorer direkt in ein anderes geöffnetes Comic ziehen, um deren Inhalt zusammenzuführen\n• Alle angezeigten Miniaturansichten in einen Ordner Ihrer Wahl exportieren (versteckter Befehl, nur über die Tastenkombination Ctrl+Alt+T zugänglich)",
     "manipulation": "Seitenmanipulation",
     "manipulation_content": "• Seiten per Drag & Drop neu anordnen\n• Ein ganzes Comic per Drag & Drop in ein anderes ziehen, um sie zusammenzuführen\n• Rechtsklick auf eine Seite für Optionen (Drehen, Löschen usw.)\n• Doppelklick auf eine Seite zum Öffnen des Betrachters\n• Einzelne Seiten exportieren, indem Sie sie in einen Windows-Ordner ziehen oder über Strg+C / Strg+V",
     "renumber": "Seitennummerierung",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Nach Updates suchen",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Changelog"
+    "show_changelog": "Changelog",
+    "webpage": "Webseite"
   },
   "updates": {
     "dialog_title": "Updates",

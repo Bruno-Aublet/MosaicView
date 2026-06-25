@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF opplåst",
         "message": "Den opplåste PDF-filen ble lagret:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Eksporter miniatyrbilder",
+        "message": "{count} miniatyrbilde(r) lagret i :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Åpne filer",
     "open_files_content": "• Klikk på knappen 'Åpne en fil' eller dra og slipp en fil direkte i vinduet\n• Støttede formater: CBZ, CBR, CB7, CBT, PDF, bilder (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-filer kan ogsa apnes, men bare bildene deres vil bli ekstrahert (teksten ignoreres). Merk: utvidelser vist med rødt (WEBP, TIFF, GIF, ICO…) angir formater som potensielt er inkompatible med eldre CBZ/CBR-lesere. Disse filene behandles likevel normalt av MosaicView.\n• Kryptert PDF (passord kreves for å åpne): filen kan ikke importeres, det vises en feilmelding.\n• PDF beskyttet mot endringer (owner password): sidene importeres normalt. MosaicView tilbyr å lagre en opplåst kopi av filen i samme mappe.",
     "mosaic": "Mosaikken",
-    "mosaic_content": "Mosaikken viser alle sidene i tegneserien din som miniatyrbilder. Du kan:\n• Reorganisere sider ved å dra og slippe (sidenummerering vil være automatisk og vil følge den aktive omnummereringsmodusen)\n• Velge flere sider (Ctrl+klikk eller Skift+klikk)\n• Justere miniatyrstørrelse med glideren\n• Gi nytt navn til filer manuelt ved å klikke på navnet deres\n• Dra og slipp tegneseriefiler (CBZ/CBR/PDF) fra Windows Utforsker direkte inn i en annen åpen tegneserie for å slå sammen innholdet",
+    "mosaic_content": "Mosaikken viser alle sidene i tegneserien din som miniatyrbilder. Du kan:\n• Reorganisere sider ved å dra og slippe (sidenummerering vil være automatisk og vil følge den aktive omnummereringsmodusen)\n• Velge flere sider (Ctrl+klikk eller Skift+klikk)\n• Justere miniatyrstørrelse med glideren\n• Gi nytt navn til filer manuelt ved å klikke på navnet deres\n• Dra og slipp tegneseriefiler (CBZ/CBR/PDF) fra Windows Utforsker direkte inn i en annen åpen tegneserie for å slå sammen innholdet\n• Eksporter alle viste miniatyrbilder til en mappe etter eget valg (skjult kommando, tilgjengelig kun via snarveien Ctrl+Alt+T)",
     "manipulation": "Manipulering av sider",
     "manipulation_content": "• Dra og slipp sider for å omorganisere dem\n• Dra et helt tegneseriealbum inn i et annet for å slå dem sammen\n• Høyreklikk på en side for å få tilgang til alternativer (rotasjon, sletting osv.)\n• Dobbeltklikk på en side for å åpne visningsprogrammet\n• Eksporter enkelt sider ved å dra dem til en Windows-mappe eller via Ctrl+C / Ctrl+V",
     "renumber": "Omnummerering av sider",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Se etter oppdateringer",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Endringslogg"
+    "show_changelog": "Endringslogg",
+    "webpage": "Nettside"
   },
   "updates": {
     "dialog_title": "Oppdateringer",

@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF desbloqueado",
         "message": "O arquivo PDF desbloqueado foi salvo:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Exportar miniaturas",
+        "message": "{count} miniatura(s) guardada(s) em :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Abrir ficheiros",
     "open_files_content": "• Clique no botão 'Abrir um arquivo' ou arraste e solte um arquivo diretamente na janela\n• Formatos suportados: CBZ, CBR, CB7, CBT, PDF, imagens (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Os arquivos EPUB tambem podem ser abertos, mas apenas suas imagens serao extraidas (o texto e ignorado).\n• PDF criptografado (senha necessária para abrir): o arquivo não pode ser importado, uma mensagem de erro é exibida.\n• PDF protegido contra modificações (owner password): as páginas são importadas normalmente. MosaicView propõe salvar uma cópia desbloqueada do arquivo na mesma pasta. Nota: as extensões exibidas a vermelho (WEBP, TIFF, GIF, ICO…) indicam formatos potencialmente incompatíveis com leitores CBZ/CBR mais antigos. Esses ficheiros são, no entanto, processados normalmente pelo MosaicView.",
     "mosaic": "O mosaico",
-    "mosaic_content": "O mosaico exibe todas as páginas da sua banda desenhada como miniaturas. Você pode:\n• Reorganizar as páginas arrastando e soltando (a renumeração de páginas será automática e seguirá o modo de renumeração ativo)\n• Selecionar várias páginas (Ctrl+clique ou Shift+clique)\n• Ajustar o tamanho das miniaturas com o controle deslizante\n• Renomear arquivos manualmente clicando em seu nome\n• Arrastar e soltar arquivos de BD (CBZ/CBR/PDF) do Explorador do Windows diretamente em outra BD aberta para mesclar seu conteúdo",
+    "mosaic_content": "O mosaico exibe todas as páginas da sua banda desenhada como miniaturas. Você pode:\n• Reorganizar as páginas arrastando e soltando (a renumeração de páginas será automática e seguirá o modo de renumeração ativo)\n• Selecionar várias páginas (Ctrl+clique ou Shift+clique)\n• Ajustar o tamanho das miniaturas com o controle deslizante\n• Renomear arquivos manualmente clicando em seu nome\n• Arrastar e soltar arquivos de BD (CBZ/CBR/PDF) do Explorador do Windows diretamente em outra BD aberta para mesclar seu conteúdo\n• Exportar todas as miniaturas apresentadas para uma pasta à sua escolha (comando oculto, acessível apenas pelo atalho Ctrl+Alt+T)",
     "manipulation": "Manipulação das páginas",
     "manipulation_content": "• Arraste e solte páginas para as reorganizar\n• Arraste uma BD completa para outra para as fundir\n• Clique com o botão direito numa página para aceder às opções (rotação, eliminação, etc.)\n• Duplo clique numa página para abrir o visualizador\n• Exporte páginas individuais arrastando-as para uma pasta do Windows ou via Ctrl+C / Ctrl+V",
     "renumber": "Renumeração de páginas",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Verificar atualizações",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Registo de alterações"
+    "show_changelog": "Registo de alterações",
+    "webpage": "Página web"
   },
   "updates": {
     "dialog_title": "Atualizações",

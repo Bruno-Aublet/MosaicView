@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF atrakintas",
         "message": "Atrakintas PDF failas buvo įrašytas:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Eksportuoti miniatiūras",
+        "message": "{count} miniatiūra(os) išsaugota(os) į :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Failų atidarymas",
     "open_files_content": "• Spustelėkite mygtuką 'Atidaryti failą' arba vilkite failą tiesiai į langą\n• Palaikomi formatai: CBZ, CBR, CB7, CBT, PDF, vaizdai (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus iskeltos tik ju nuotraukos (tekstas ignoruojamas). Pastaba: raudonai rodomos plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo įrašyti atrakintą failo kopiją į tą patį aplanką.",
     "mosaic": "Mozaika",
-    "mosaic_content": "Mozaika rodo visus jūsų komikso puslapius kaip miniatiūras. Galite:\n• Pertvarkyti puslapius vilkdami ir numesdami (puslapių numeravimas bus automatinis ir vyks pagal aktyvų pernumeravimo režimą)\n• Pasirinkti kelis puslapius (Ctrl+spustelėjimas arba Shift+spustelėjimas)\n• Reguliuoti miniatiūrų dydį slankikliu\n• Rankiniu būdu pervardyti failus spustelėdami jų pavadinimą\n• Vilkti ir numesti komiksų failus (CBZ/CBR/PDF) iš Windows Explorer tiesiai į kitą atidarytą komiksą, kad sujungtumėte jų turinį",
+    "mosaic_content": "Mozaika rodo visus jūsų komikso puslapius kaip miniatiūras. Galite:\n• Pertvarkyti puslapius vilkdami ir numesdami (puslapių numeravimas bus automatinis ir vyks pagal aktyvų pernumeravimo režimą)\n• Pasirinkti kelis puslapius (Ctrl+spustelėjimas arba Shift+spustelėjimas)\n• Reguliuoti miniatiūrų dydį slankikliu\n• Rankiniu būdu pervardyti failus spustelėdami jų pavadinimą\n• Vilkti ir numesti komiksų failus (CBZ/CBR/PDF) iš Windows Explorer tiesiai į kitą atidarytą komiksą, kad sujungtumėte jų turinį\n• Eksportuoti visas rodomas miniatiūras į pasirinktą aplanką (paslėpta komanda, pasiekiama tik sparčiuoju klavišu Ctrl+Alt+T)",
     "manipulation": "Puslapių manipuliavimas",
     "manipulation_content": "• Vilkite ir meskite puslapius jiems pertvarkyti\n• Vilkite visą komiksą į kitą, kad juos sujungtumėte\n• Dešiniuoju pelės mygtuku spustelėkite puslapį, kad pasiektumėte parinktis (sukimas, šalinimas ir kt.)\n• Dukart spustelėkite puslapį, kad atidarytumėte žiūroklį\n• Eksportuokite atskirus puslapius vilkdami juos į Windows aplanką arba naudodami Ctrl+C / Ctrl+V",
     "renumber": "Puslapių pernumeravimas",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Tikrinti atnaujinimus",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Pakeitimų žurnalas"
+    "show_changelog": "Pakeitimų žurnalas",
+    "webpage": "Tinklalapis"
   },
   "updates": {
     "dialog_title": "Atnaujinimai",

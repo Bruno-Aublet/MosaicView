@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF tidak dikunci",
         "message": "Fail PDF yang tidak dikunci telah disimpan:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Eksport imej kecil",
+        "message": "{count} imej kecil disimpan ke :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Membuka fail",
     "open_files_content": "• Klik butang 'Buka fail' atau seret dan lepas fail terus ke tetingkap\n• Format disokong: CBZ, CBR, CB7, CBT, PDF, imej (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fail EPUB juga boleh dibuka, tetapi hanya imej mereka akan diekstrak (teks diabaikan). Nota: sambungan yang dipaparkan dalam warna merah (WEBP, TIFF, GIF, ICO…) menunjukkan format yang mungkin tidak serasi dengan pembaca CBZ/CBR lama. Walau bagaimanapun, fail-fail ini diproses secara normal oleh MosaicView.\n• PDF disulitkan (kata laluan diperlukan untuk dibuka): fail tidak dapat diimport, mesej ralat dipaparkan.\n• PDF dilindungi daripada pengubahsuaian (owner password): halaman diimport secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak dikunci dalam folder yang sama.",
     "mosaic": "Mozek",
-    "mosaic_content": "Mozek memaparkan semua halaman buku komik anda sebagai gambar kecil. Anda boleh:\n• Susun semula halaman dengan menyeret dan melepas (penomboran halaman akan automatik, dan akan mengikut mod penomboran semula yang aktif)\n• Pilih berbilang halaman (Ctrl+klik atau Shift+klik)\n• Laraskan saiz gambar kecil dengan peluncur\n• Namakan semula fail secara manual dengan mengklik nama mereka\n• Seret dan lepas fail buku komik (CBZ/CBR/PDF) dari Windows Explorer terus ke buku komik terbuka lain untuk menggabungkan kandungan mereka",
+    "mosaic_content": "Mozek memaparkan semua halaman buku komik anda sebagai gambar kecil. Anda boleh:\n• Susun semula halaman dengan menyeret dan melepas (penomboran halaman akan automatik, dan akan mengikut mod penomboran semula yang aktif)\n• Pilih berbilang halaman (Ctrl+klik atau Shift+klik)\n• Laraskan saiz gambar kecil dengan peluncur\n• Namakan semula fail secara manual dengan mengklik nama mereka\n• Seret dan lepas fail buku komik (CBZ/CBR/PDF) dari Windows Explorer terus ke buku komik terbuka lain untuk menggabungkan kandungan mereka\n• Eksport semua imej kecil yang dipaparkan ke folder pilihan anda (perintah tersembunyi, hanya boleh diakses melalui pintasan Ctrl+Alt+T)",
     "manipulation": "Manipulasi halaman",
     "manipulation_content": "• Seret dan lepas halaman untuk mengatur semula\n• Seret keseluruhan komik ke dalam komik lain untuk menggabungkannya\n• Klik kanan pada halaman untuk mengakses pilihan (putaran, pemadaman, dll.)\n• Klik dua kali pada halaman untuk membuka penonton\n• Eksport halaman individu dengan menyeretnya ke folder Windows, atau melalui Ctrl+C / Ctrl+V",
     "renumber": "Penomboran semula halaman",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Semak kemas kini",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Log Perubahan"
+    "show_changelog": "Log Perubahan",
+    "webpage": "Laman web"
   },
   "updates": {
     "dialog_title": "Kemas Kini",

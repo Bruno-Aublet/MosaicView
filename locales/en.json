@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF unlocked",
         "message": "The unlocked PDF file has been saved:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Export thumbnails",
+        "message": "{count} thumbnail(s) saved to :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Opening files",
     "open_files_content": "• Click the 'Open a file' button or drag and drop a file directly into the window\n• Supported formats: CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB files can also be opened, but only their images will be extracted (text is ignored). Note: extensions displayed in red (WEBP, TIFF, GIF, ICO…) indicate formats potentially incompatible with older CBZ/CBR readers. These files are nevertheless processed normally by MosaicView.\n• Encrypted PDF (password required to open): the file cannot be imported, an error message is displayed.\n• PDF protected against modifications (owner password): pages are imported normally. MosaicView offers to save an unlocked copy of the file in the same folder.",
     "mosaic": "The mosaic",
-    "mosaic_content": "The mosaic displays all pages of your comic book as thumbnails. You can:\n• Rearrange pages by drag-and-drop (page renumbering will be automatic, and will follow the active renumbering mode)\n• Select multiple pages (Ctrl+click or Shift+click)\n• Adjust thumbnail size with the slider\n• Manually rename files by clicking on their name\n• Drag-and-drop comic book files (CBZ/CBR/PDF) from Windows Explorer directly into another open comic book to merge their content",
+    "mosaic_content": "The mosaic displays all pages of your comic book as thumbnails. You can:\n• Rearrange pages by drag-and-drop (page renumbering will be automatic, and will follow the active renumbering mode)\n• Select multiple pages (Ctrl+click or Shift+click)\n• Adjust thumbnail size with the slider\n• Manually rename files by clicking on their name\n• Drag-and-drop comic book files (CBZ/CBR/PDF) from Windows Explorer directly into another open comic book to merge their content\n• Export all displayed thumbnails to a folder of your choice (hidden command, accessible only via the shortcut Ctrl+Alt+T)",
     "manipulation": "Page manipulation",
     "manipulation_content": "• Drag and drop pages to reorganize them\n• Drag an entire comic into another to merge them\n• Right-click on a page to access options (rotation, deletion, etc.)\n• Double-click on a page to open the viewer\n• Export individual pages by dragging them to a Windows folder, or via Ctrl+C / Ctrl+V",
     "renumber": "Page renumbering",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Check for updates",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Changelog"
+    "show_changelog": "Changelog",
+    "webpage": "Web page"
   },
   "updates": {
     "dialog_title": "Updates",

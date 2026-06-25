@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF odklenjen",
         "message": "Odklenjena datoteka PDF je bila shranjena:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Izvozi sličice",
+        "message": "{count} sličica(e) shranjeno v :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Odpiranje datotek",
     "open_files_content": "• Kliknite gumb 'Odpri datoteko' ali povlecite in spustite datoteko neposredno v okno\n• Podprti formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Datoteke EPUB se lahko tudi odprejo, vendar bodo izvlecene samo njihove slike (besedilo se prezre).\n• Šifriran PDF (za odpiranje je potrebno geslo): datoteke ni mogoče uvoziti, prikaže se sporočilo o napaki.\n• PDF zaščiten pred spremembami (owner password): strani se uvozijo normalno. MosaicView ponudi shranjevanje odklenjene kopije datoteke v isto mapo. Opomba: končnice, prikazane z rdečo (WEBP, TIFF, GIF, ICO…), označujejo formate, ki morda niso združljivi s starejšimi bralniki CBZ/CBR. Te datoteke MosaicView kljub temu obdeluje normalno.",
     "mosaic": "Mozaik",
-    "mosaic_content": "Mozaik prikazuje vse strani vašega stripa kot sličice. Lahko:\n• Preuredite strani s povleci in spusti (številčenje strani bo samodejno in bo potekalo glede na aktivni način preštevilčenja)\n• Izberete več strani (Ctrl+klik ali Shift+klik)\n• Prilagodite velikost sličic z drsnikom\n• Ročno preimenujete datoteke s klikom na njihovo ime\n• Povlečete in spustite datoteke stripov (CBZ/CBR/PDF) iz Windows Raziskovalca neposredno v drug odprt strip za združitev njihove vsebine",
+    "mosaic_content": "Mozaik prikazuje vse strani vašega stripa kot sličice. Lahko:\n• Preuredite strani s povleci in spusti (številčenje strani bo samodejno in bo potekalo glede na aktivni način preštevilčenja)\n• Izberete več strani (Ctrl+klik ali Shift+klik)\n• Prilagodite velikost sličic z drsnikom\n• Ročno preimenujete datoteke s klikom na njihovo ime\n• Povlečete in spustite datoteke stripov (CBZ/CBR/PDF) iz Windows Raziskovalca neposredno v drug odprt strip za združitev njihove vsebine\n• Izvozi vse prikazane sličice v mapo po lastni izbiri (skrita ukaz, dostopen samo s bližnjico Ctrl+Alt+T)",
     "manipulation": "Urejanje strani",
     "manipulation_content": "• Povlecite in spustite strani za njihovo preureditev\n• Povlecite celoten strip v drugega, da ju združite\n• Desni klik na stran za dostop do možnosti (vrtenje, brisanje itd.)\n• Dvojni klik na stran za odpiranje pregledovalnika\n• Izvozite posamezne strani z vlečenjem v mapo Windows ali prek Ctrl+C / Ctrl+V",
     "renumber": "Preštevilčenje strani",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Preveri posodobitve",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Dnevnik sprememb"
+    "show_changelog": "Dnevnik sprememb",
+    "webpage": "Spletna stran"
   },
   "updates": {
     "dialog_title": "Posodobitve",

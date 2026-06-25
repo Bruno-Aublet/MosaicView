@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF đã được mở khóa",
         "message": "Tệp PDF đã mở khóa đã được lưu:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Xuất hình thu nhỏ",
+        "message": "{count} hình thu nhỏ đã được lưu vào :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Mở tệp",
     "open_files_content": "• Nhấp vào nút 'Mở tệp' hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, CBT, PDF, ảnh (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Cac tep EPUB cung co the duoc mo, nhung chi cac hinh anh cua chung se duoc trich xuat (van ban bi bo qua).\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục. Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.",
     "mosaic": "Mosaic",
-    "mosaic_content": "Khung hiển thị tất cả các trang của truyện tranh dưới dạng hình thu nhỏ. Bạn có thể:\n• Sắp xếp lại các trang bằng cách kéo và thả (đánh số trang sẽ tự động và sẽ theo chế độ đánh số lại đang hoạt động)\n• Chọn nhiều trang (Ctrl+nhấp hoặc Shift+nhấp)\n• Điều chỉnh kích thước hình thu nhỏ bằng thanh trượt\n• Đổi tên tệp thủ công bằng cách nhấp vào tên của chúng\n• Kéo và thả tệp truyện tranh (CBZ/CBR/PDF) từ Windows Explorer trực tiếp vào truyện tranh đang mở khác để hợp nhất nội dung của chúng",
+    "mosaic_content": "Khung hiển thị tất cả các trang của truyện tranh dưới dạng hình thu nhỏ. Bạn có thể:\n• Sắp xếp lại các trang bằng cách kéo và thả (đánh số trang sẽ tự động và sẽ theo chế độ đánh số lại đang hoạt động)\n• Chọn nhiều trang (Ctrl+nhấp hoặc Shift+nhấp)\n• Điều chỉnh kích thước hình thu nhỏ bằng thanh trượt\n• Đổi tên tệp thủ công bằng cách nhấp vào tên của chúng\n• Kéo và thả tệp truyện tranh (CBZ/CBR/PDF) từ Windows Explorer trực tiếp vào truyện tranh đang mở khác để hợp nhất nội dung của chúng\n• Xuất tất cả hình thu nhỏ đang hiển thị vào thư mục tùy chọn (lệnh ẩn, chỉ có thể truy cập qua phím tắt Ctrl+Alt+T)",
     "manipulation": "Thao tác trang",
     "manipulation_content": "• Kéo và thả các trang để sắp xếp lại\n• Kéo toàn bộ truyện tranh vào một cuốn khác để gộp chúng\n• Nhấp chuột phải vào trang để truy cập các tùy chọn (xoay, xóa, v.v.)\n• Nhấp đúp vào trang để mở trình xem\n• Xuất các trang riêng lẻ bằng cách kéo vào thư mục Windows hoặc qua Ctrl+C / Ctrl+V",
     "renumber": "Đánh số lại trang",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Kiểm tra cập nhật",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Nhật ký thay đổi"
+    "show_changelog": "Nhật ký thay đổi",
+    "webpage": "Trang web"
   },
   "updates": {
     "dialog_title": "Cập nhật",

@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF poSmoHlu'",
         "message": "PDF QaH poSmoHlu' ngeHlu':\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "mIllogh'a' Suq",
+        "message": "{count} mIllogh'a'(mey) Segh :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "De'mey poSmoH",
     "open_files_content": "• 'De' Hab' nob tIpSer ghap De' 'och chu'wI' tIqem\n• cham Qorlu'bogh: CBZ, CBR, CB7, CBT, PDF, cha'nobmey (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB De'mey poSmoH je laH, 'ach ngogh neH chenmoHlu' (mu'mey lughbe').\n• PDF SIch'eghlu' (mIw luSov DaneH poSmeH): QaH ngeHlaHbe', Qagh quetlu'.\n• PDF tIqmoH mach luSovlu' (owner password): ghItlhmey ngeHlu' motlh. MosaicView rar PDF QaH poSmoHlu' ngeH je'. pagh: Dochvam ghItlhbogh DoSmey Dub DaH (WEBP, TIFF, GIF, ICO…) QInmey CBZ/CBR ngo' DIvI' rurbe'bogh mI' lucher. 'ach MosaicView Dochmey pagh DaHjaj.",
     "mosaic": "Hur'",
-    "mosaic_content": "mozayIk QIn qaStaHvIS Hoch qonmey qIn thumbnail jangwI'. DaneH:\n• qonmey choHmoH drag-drop lo' (qon mI' DIch automatic, 'ej mIw qon mI' chu' lo'lu'bogh lupoQ)\n• law' qonmey DawIv (Ctrl+click pagh Shift+click)\n• thumbnail ngaS choH slider lo'\n• De'wI'mey pong choH manual pong click\n• QIn De'wI'mey (CBZ/CBR/PDF) Windows Explorer vo' drag-drop laH latlh poSmoH QIn content ghom",
+    "mosaic_content": "mozayIk QIn qaStaHvIS Hoch qonmey qIn thumbnail jangwI'. DaneH:\n• qonmey choHmoH drag-drop lo' (qon mI' DIch automatic, 'ej mIw qon mI' chu' lo'lu'bogh lupoQ)\n• law' qonmey DawIv (Ctrl+click pagh Shift+click)\n• thumbnail ngaS choH slider lo'\n• De'wI'mey pong choH manual pong click\n• QIn De'wI'mey (CBZ/CBR/PDF) Windows Explorer vo' drag-drop laH latlh poSmoH QIn content ghom\n• Suq Hoch mIllogh'a'mey legh DaneHbogh ra'ghom yIghoS (pegh ra'ghom, Ctrl+Alt+T ngoqDe' neH lo'laH)",
     "manipulation": "ghItlhmey vangmeH",
     "manipulation_content": "• maqlegh pages reorder chaH drag-and-drop\n• Hoch comic vay' merge chaH drag\n• right-click page options lulegh (rotation, deletion, etc.)\n• double-click page viewer poSmoH\n• pages individual export windows folder drag, pagh ctrl+c / ctrl+v",
     "renumber": "tetlh mI' choHqa'moH",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "chu' Datu'",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "mI' SeHlaw"
+    "show_changelog": "mI' SeHlaw",
+    "webpage": "QoQ De'wI' Daq"
   },
   "updates": {
     "dialog_title": "chu' De'",

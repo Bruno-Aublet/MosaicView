@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF atbloķēts",
         "message": "Atbloķētais PDF fails tika saglabāts:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Eksportēt sīkattēlus",
+        "message": "{count} sīkattēls(-i) saglabāts(-i) mapē :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Failu atvēršana",
     "open_files_content": "• Noklikšķiniet uz pogas 'Atvērt failu' vai velciet un nometiet failu tieši logā\n• Atbalstītie formāti: CBZ, CBR, CB7, CBT, PDF, attēli (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus var ari atvert, bet tiks izvilkti tikai to atteli (teksts tiek ignorets).\n• Šifrēts PDF (lai atvērtu, nepieciešama parole): failu nevar importēt, tiek parādīts kļūdas ziņojums.\n• PDF aizsargāts pret izmaiņām (owner password): lapas tiek importētas normāli. MosaicView piedāvā saglabāt atbloķētu faila kopiju tajā pašā mapē. Piezīme: sarkanā krāsā rādītie paplašinājumi (WEBP, TIFF, GIF, ICO…) norāda formātus, kas var nebūt saderīgi ar vecākiem CBZ/CBR lasītājiem. Tomēr MosaicView šos failus apstrādā normāli.",
     "mosaic": "Mozaīka",
-    "mosaic_content": "Mozaīka attēlo visas jūsu komiksa lappuses kā sīktēlus. Jūs varat:\n• Pārkārtot lappuses, velkot un nometot (lappušu numerācija būs automātiska un tiks veikta atbilstoši aktīvajam pārnumerācijas režīmam)\n• Atlasīt vairākas lappuses (Ctrl+noklikšķināt vai Shift+noklikšķināt)\n• Pielāgot sīktēlu izmēru ar slīdni\n• Manuāli pārdēvēt failus, noklikšķinot uz to nosaukuma\n• Vilkt un nomest komiksu failus (CBZ/CBR/PDF) no Windows Explorer tieši citā atvērtā komiksā, lai apvienotu to saturu",
+    "mosaic_content": "Mozaīka attēlo visas jūsu komiksa lappuses kā sīktēlus. Jūs varat:\n• Pārkārtot lappuses, velkot un nometot (lappušu numerācija būs automātiska un tiks veikta atbilstoši aktīvajam pārnumerācijas režīmam)\n• Atlasīt vairākas lappuses (Ctrl+noklikšķināt vai Shift+noklikšķināt)\n• Pielāgot sīktēlu izmēru ar slīdni\n• Manuāli pārdēvēt failus, noklikšķinot uz to nosaukuma\n• Vilkt un nomest komiksu failus (CBZ/CBR/PDF) no Windows Explorer tieši citā atvērtā komiksā, lai apvienotu to saturu\n• Eksportēt visus rādītos sīkattēlus uz izvēlēto mapi (slēpta komanda, pieejama tikai ar īsinājumtaustiņu Ctrl+Alt+T)",
     "manipulation": "Lappušu manipulācija",
     "manipulation_content": "• Velciet un nometiet lapas, lai tās pārkārtotu\n• Velciet veselu komiksu citā, lai tos apvienotu\n• Ar peles labo pogu noklikšķiniet uz lapas, lai piekļūtu opcijām (pagriešana, dzēšana u.c.)\n• Veiciet dubultklikšķi uz lapas, lai atvērtu skatītāju\n• Eksportējiet atsevišķas lapas, velkot tās uz Windows mapi, vai izmantojot Ctrl+C / Ctrl+V",
     "renumber": "Lappusēm pārnumerēšana",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Pārbaudīt atjauninājumus",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Izmaiņu žurnāls"
+    "show_changelog": "Izmaiņu žurnāls",
+    "webpage": "Tīmekļa lapa"
   },
   "updates": {
     "dialog_title": "Atjauninājumi",

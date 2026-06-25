@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF feloldva",
         "message": "A feloldott PDF-fájl mentve lett:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Indexképek exportálása",
+        "message": "{count} indexkép mentve ide :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Fájlok megnyitása",
     "open_files_content": "• Kattintson a 'Fájl megnyitása' gombra, vagy húzzon egy fájlt közvetlenül az ablakba\n• Támogatott formátumok: CBZ, CBR, CB7, CBT, PDF, képek (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Az EPUB fajlok is megnyithatok, de csak a kepek lesznek kinyerve (a szoveg figyelmen kivul marad).\n• Titkosított PDF (jelszó szükséges a megnyitáshoz): a fájl nem importálható, hibaüzenet jelenik meg.\n• PDF módosítás ellen védett (owner password): az oldalak normálisan importálódnak. A MosaicView felajánlja a feloldott másolat mentését ugyanabba a mappába. Megjegyzés: a piros színnel megjelenített kiterjesztések (WEBP, TIFF, GIF, ICO…) olyan formátumokat jelölnek, amelyek régebbi CBZ/CBR-olvasókkal esetleg nem kompatibilisek. Ezeket a fájlokat azonban a MosaicView normálisan dolgozza fel.",
     "mosaic": "A mozaik",
-    "mosaic_content": "A mozaik miniatűrként jeleníti meg a képregény összes oldalát. Lehetőségei:\n• Átrendezheti az oldalakat húzással (az oldalak számozása automatikus lesz, és az aktív átszámozási mód szerint történik)\n• Több oldalt is kijelölhet (Ctrl+kattintás vagy Shift+kattintás)\n• Beállíthatja a miniatűrök méretét a csúszkával\n• Manuálisan átnevezheti a fájlokat a nevükre kattintva\n• Húzhat és ejthet képregényfájlokat (CBZ/CBR/PDF) a Windows Intézőből közvetlenül egy másik nyitott képregénybe a tartalmuk egyesítéséhez",
+    "mosaic_content": "A mozaik miniatűrként jeleníti meg a képregény összes oldalát. Lehetőségei:\n• Átrendezheti az oldalakat húzással (az oldalak számozása automatikus lesz, és az aktív átszámozási mód szerint történik)\n• Több oldalt is kijelölhet (Ctrl+kattintás vagy Shift+kattintás)\n• Beállíthatja a miniatűrök méretét a csúszkával\n• Manuálisan átnevezheti a fájlokat a nevükre kattintva\n• Húzhat és ejthet képregényfájlokat (CBZ/CBR/PDF) a Windows Intézőből közvetlenül egy másik nyitott képregénybe a tartalmuk egyesítéséhez\n• Az összes megjelenített indexkép exportálása egy tetszőleges mappába (rejtett parancs, csak a Ctrl+Alt+T billentyűparanccsal érhető el)",
     "manipulation": "Oldalak kezelése",
     "manipulation_content": "• Húzza és ejtse az oldalakat az átrendezéshez\n• Húzzon egy teljes képregényt egy másikba az összevonáshoz\n• Jobb kattintás az oldalra a beállítások eléréséhez (forgatás, törlés stb.)\n• Dupla kattintás az oldalra a megjelenítő megnyitásához\n• Egyes oldalak exportálása Windows-mappába húzással vagy Ctrl+C / Ctrl+V segítségével",
     "renumber": "Oldalak újraszámozása",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Frissítések keresése",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Változásnapló"
+    "show_changelog": "Változásnapló",
+    "webpage": "Weboldal"
   },
   "updates": {
     "dialog_title": "Frissítések",

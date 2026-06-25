@@ -493,6 +493,7 @@ def _populate_system_menu(menu: QMenu, callbacks: dict):
 def _populate_about_menu(menu: QMenu, callbacks: dict):
     menu.clear()
 
+    _add_action(menu, _("menu.webpage"),              callbacks.get("open_webpage"))
     _add_action(menu, _("menu.view_on_github"),       callbacks.get("open_github"))
 
     latest = callbacks.get("_update_latest")

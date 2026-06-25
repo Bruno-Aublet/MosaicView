@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF odomknuté",
         "message": "Odomknutý súbor PDF bol uložený:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Exportovať miniatúry",
+        "message": "{count} miniatúra(y) uložená(é) do :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Otvorenie súborov",
     "open_files_content": "• Kliknite na tlačidlo 'Otvoriť súbor' alebo presuňte súbor priamo do okna\n• Podporované formáty: CBZ, CBR, CB7, CBT, PDF, obrázky (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Subory EPUB mozno tiez otvorit, ale budu extrahovane len ich obrazky (text sa ignoruje). Poznámka: prípony zobrazené červenou farbou (WEBP, TIFF, GIF, ICO…) označujú formáty potenciálne nekompatibilné so staršími čítačkami CBZ/CBR. Tieto súbory sú napriek tomu spracované normálne programom MosaicView.\n• Šifrovaný PDF (pri otváraní je potrebné heslo): súbor sa nedá importovať, zobrazí sa chybové hlásenie.\n• PDF chránené pred úpravami (owner password): stránky sa importujú normálne. MosaicView ponúka uloženie odomknutej kópie súboru do rovnakého priečinka.",
     "mosaic": "Mozaika",
-    "mosaic_content": "Mozaika zobrazuje všetky strany vášho komiksu ako miniatúry. Môžete:\n• Preusporiadať strany presunutím (číslovanie strán bude automatické a vykoná sa podľa aktívneho režimu prečíslovania)\n• Vybrať viac strán (Ctrl+klik alebo Shift+klik)\n• Upraviť veľkosť miniatúr posuvníkom\n• Ručne premenovať súbory kliknutím na ich názov\n• Presunúť súbory komiksov (CBZ/CBR/PDF) z Prieskumníka Windows priamo do iného otvoreného komiksu pre zlúčenie ich obsahu",
+    "mosaic_content": "Mozaika zobrazuje všetky strany vášho komiksu ako miniatúry. Môžete:\n• Preusporiadať strany presunutím (číslovanie strán bude automatické a vykoná sa podľa aktívneho režimu prečíslovania)\n• Vybrať viac strán (Ctrl+klik alebo Shift+klik)\n• Upraviť veľkosť miniatúr posuvníkom\n• Ručne premenovať súbory kliknutím na ich názov\n• Presunúť súbory komiksov (CBZ/CBR/PDF) z Prieskumníka Windows priamo do iného otvoreného komiksu pre zlúčenie ich obsahu\n• Exportovať všetky zobrazené miniatúry do priečinka podľa vášho výberu (skrytý príkaz, dostupný iba klávesovou skratkou Ctrl+Alt+T)",
     "manipulation": "Manipulácia so stranami",
     "manipulation_content": "• Presuňte stránky pretiahnutím a pustenímpre ich reorganizáciu\n• Presuňte celý komiks do iného, aby ste ich zlúčili\n• Pravý klik na stránku pre prístup k možnostiam (otočenie, vymazanie atď.)\n• Dvojitý klik na stránku pre otvorenie prehliadača\n• Exportujte jednotlivé stránky pretiahnutím do priečinka Windows alebo pomocou Ctrl+C / Ctrl+V",
     "renumber": "Prečíslovanie stránok",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Skontrolovať aktualizácie",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Zoznam zmien"
+    "show_changelog": "Zoznam zmien",
+    "webpage": "Webová stránka"
   },
   "updates": {
     "dialog_title": "Aktualizácie",

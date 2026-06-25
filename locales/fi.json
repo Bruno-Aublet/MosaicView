@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF avattu",
         "message": "Avattu PDF-tiedosto on tallennettu:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Vie pienoiskuvat",
+        "message": "{count} pienoiskuva(t) tallennettu kohteeseen :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Tiedostojen avaaminen",
     "open_files_content": "• Napsauta 'Avaa tiedosto' -painiketta tai vedä ja pudota tiedosto suoraan ikkunaan\n• Tuetut muodot: CBZ, CBR, CB7, CBT, PDF, kuvat (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-tiedostot voidaan myos avata, mutta vain niiden kuvat poimitaan (teksti jatetaan huomiotta).\n• Salattu PDF (salasana vaaditaan avattaessa): tiedostoa ei voi tuoda, näytetään virheilmoitus.\n• PDF suojattu muokkauksilta (owner password): sivut tuodaan normaalisti. MosaicView tarjoaa avatun kopion tallentamista samaan kansioon. Huomio: punaisella näytettävät tiedostopäätteet (WEBP, TIFF, GIF, ICO…) merkitsevät muotoja, jotka saattavat olla yhteensopimattomia vanhojen CBZ/CBR-lukijoiden kanssa. MosaicView käsittelee nämä tiedostot kuitenkin normaalisti.",
     "mosaic": "Mosaïque",
-    "mosaic_content": "Mosaiikki näyttää kaikki sarjakuvasi sivut pienoiskuvina. Voit:\n• Järjestää sivuja uudelleen vetämällä ja pudottamalla (sivunumerointi on automaattista ja tapahtuu aktiivisen uudelleennumeroinnin tilan mukaisesti)\n• Valita useita sivuja (Ctrl+napsautus tai Vaihto+napsautus)\n• Säätää pienoiskuvien kokoa liukusäätimellä\n• Nimetä tiedostoja uudelleen manuaalisesti napsauttamalla niiden nimeä\n• Vetää ja pudottaa sarjakuvatiedostoja (CBZ/CBR/PDF) Windowsin Resurssienhallinnasta suoraan toiseen avoinna olevaan sarjakuvaan yhdistääksesi niiden sisällön",
+    "mosaic_content": "Mosaiikki näyttää kaikki sarjakuvasi sivut pienoiskuvina. Voit:\n• Järjestää sivuja uudelleen vetämällä ja pudottamalla (sivunumerointi on automaattista ja tapahtuu aktiivisen uudelleennumeroinnin tilan mukaisesti)\n• Valita useita sivuja (Ctrl+napsautus tai Vaihto+napsautus)\n• Säätää pienoiskuvien kokoa liukusäätimellä\n• Nimetä tiedostoja uudelleen manuaalisesti napsauttamalla niiden nimeä\n• Vetää ja pudottaa sarjakuvatiedostoja (CBZ/CBR/PDF) Windowsin Resurssienhallinnasta suoraan toiseen avoinna olevaan sarjakuvaan yhdistääksesi niiden sisällön\n• Vie kaikki näytetyt pienoiskuvat valitsemaasi kansioon (piilotettu komento, käytettävissä vain pikanäppäimellä Ctrl+Alt+T)",
     "manipulation": "Sivujen käsittely",
     "manipulation_content": "• Vedä ja pudota sivuja järjestääksesi ne uudelleen\n• Vedä koko sarjakuva toiseen yhdistääksesi ne\n• Napsauta sivua hiiren oikealla painikkeella vaihtoehtojen käyttämiseksi (kierto, poisto jne.)\n• Kaksoisnapsauta sivua avataksesi katseluohjelman\n• Vie yksittäisiä sivuja vetämällä ne Windows-kansioon tai Ctrl+C / Ctrl+V:n kautta",
     "renumber": "Sivujen uudelleennumerointi",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Tarkista päivitykset",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Muutosloki"
+    "show_changelog": "Muutosloki",
+    "webpage": "Verkkosivu"
   },
   "updates": {
     "dialog_title": "Päivitykset",

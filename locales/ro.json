@@ -606,6 +606,10 @@
       "pdf_unlocked": {
         "title": "PDF deblocat",
         "message": "Fișierul PDF deblocat a fost salvat:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "Exportare miniaturi",
+        "message": "{count} miniatură(i) salvată(e) în :"
       }
     },
     "questions": {
@@ -1221,7 +1225,7 @@
     "open_files": "Deschiderea fișierelor",
     "open_files_content": "• Faceți clic pe butonul 'Deschide un fișier' sau trageți și plasați un fișier direct în fereastră\n• Formate suportate: CBZ, CBR, CB7, CBT, PDF, imagini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fisierele EPUB pot fi deschise si ele, dar doar imaginile lor vor fi extrase (textul este ignorat). Notă: extensiile afișate cu roșu (WEBP, TIFF, GIF, ICO…) indică formate potențial incompatibile cu cititoarele CBZ/CBR mai vechi. Aceste fișiere sunt totuși procesate normal de MosaicView.\n• PDF criptat (parolă necesară pentru deschidere): fișierul nu poate fi importat, se afișează un mesaj de eroare.\n• PDF protejat împotriva modificărilor (owner password): paginile sunt importate normal. MosaicView propune salvarea unei copii deblocate a fișierului în același folder.",
     "mosaic": "Mozaicul",
-    "mosaic_content": "Mozaicul afișează toate paginile benzii tale desenate ca miniaturi. Puteți:\n• Rearanja paginile prin glisare și plasare (renumerotarea paginilor va fi automată și se va face conform modului de renumerotare activ)\n• Selecta mai multe pagini (Ctrl+clic sau Shift+clic)\n• Ajusta dimensiunea miniaturilor cu cursorul\n• Redenumi manual fișierele făcând clic pe numele lor\n• Glisa și plasa fișiere de benzi desenate (CBZ/CBR/PDF) din Windows Explorer direct într-o altă bandă desenată deschisă pentru a le îmbina conținutul",
+    "mosaic_content": "Mozaicul afișează toate paginile benzii tale desenate ca miniaturi. Puteți:\n• Rearanja paginile prin glisare și plasare (renumerotarea paginilor va fi automată și se va face conform modului de renumerotare activ)\n• Selecta mai multe pagini (Ctrl+clic sau Shift+clic)\n• Ajusta dimensiunea miniaturilor cu cursorul\n• Redenumi manual fișierele făcând clic pe numele lor\n• Glisa și plasa fișiere de benzi desenate (CBZ/CBR/PDF) din Windows Explorer direct într-o altă bandă desenată deschisă pentru a le îmbina conținutul\n• Exportați toate miniaturile afișate într-un dosar la alegerea dvs. (comandă ascunsă, accesibilă doar prin comanda rapidă Ctrl+Alt+T)",
     "manipulation": "Manipularea paginilor",
     "manipulation_content": "• Trageți și plasați pagini pentru a le reorganiza\n• Trageți o bandă desenată întreagă în alta pentru a le îmbina\n• Clic dreapta pe o pagină pentru a accesa opțiunile (rotație, ștergere etc.)\n• Dublu clic pe o pagină pentru a deschide vizualizatorul\n• Exportați pagini individuale trăgându-le într-un folder Windows sau prin Ctrl+C / Ctrl+V",
     "renumber": "Renumerotarea paginilor",
@@ -1426,7 +1430,8 @@
     "check_for_updates": "Verifică actualizări",
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
-    "show_changelog": "Jurnal de modificări"
+    "show_changelog": "Jurnal de modificări",
+    "webpage": "Pagină web"
   },
   "updates": {
     "dialog_title": "Actualizări",

@@ -637,6 +637,7 @@ def _build_about_submenu(parent, callbacks: dict) -> QMenu:
     submenu = _make_menu(parent)
     submenu.setTitle(_("menu.about"))
 
+    submenu.addAction(_("menu.webpage"),              callbacks.get("open_webpage"))
     submenu.addAction(_("menu.view_on_github"),       callbacks.get("open_github"))
 
     latest = callbacks.get("_update_latest")

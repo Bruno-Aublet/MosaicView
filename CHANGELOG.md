@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.8] - 2026-06-25
+
+- Added a hidden thumbnail export command, accessible only via the keyboard shortcut Ctrl+Alt+T. When triggered, a folder picker opens in the directory of the currently open archive; all displayed thumbnails are exported to the selected folder using PIL, at the currently active thumbnail size (small, medium, or large as set by the slider), in their original file format. A confirmation dialog shows the number of exported thumbnails and a clickable path that opens the destination folder in Windows Explorer. The command is intentionally absent from all menus and toolbars.
+- Added a landing page (`index.html`) for the project, intended for GitHub Pages hosting. The page is entirely self-contained: all translations (46 languages including 6 fictional language variants with native Tengwar and pIqaD alphabets, served via embedded base64 fonts), all styles, and all scripts are inlined in a single HTML file. Features include a live mosaic animation showing pages being drag-and-dropped, a language switcher dropdown with translated language names, a dark/light theme toggle, and a dual-panel section showing thumbnails from two different comics side by side. A Content-Security-Policy meta tag is included for GitHub Pages hosting.
+- Added a "Web page" entry to the About menu (menu bar and canvas context menu), opening the GitHub Pages landing page in the default browser. Translated into all 46 interface languages including Tengwar and pIqaD variants.
+
 ## [1.3.7] - 2026-06-21
 
 - Added a bookmark indicator in the mosaic: when a bookmark exists for the open archive, a red ribbon icon is displayed as an overlay on the corresponding thumbnail. The overlay appears immediately when the archive is loaded, updates in real time when the bookmark changes (page advanced, bookmark deleted from the viewer context menu or from the main window context menu), and disappears automatically when the last page is reached. The ribbon icon is positioned in the top-right corner of the thumbnail, slightly overlapping the top edge.
