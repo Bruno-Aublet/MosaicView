@@ -472,10 +472,10 @@
         "message": " {filename}  {size}   500 MB  ."
       },
       "license_file_not_found": {
-        "message": "Lics fi  fd: {path}"
+        "message": "  : {path}"
       },
       "license_file_read_error": {
-        "message": "U  d ics fi: {error}"
+        "message": "   : {error}"
       },
       "7z_invalid": {
         "title": "7Z ",
@@ -683,7 +683,7 @@
     "pdf_converting_no_change": "{total}   ...",
     "print_progress": "  ...\n{percent}%",
     "print_preparing": ",   ...",
-    "license_text": "Ci © 2025-2026 B A\n\nGNU   3 \n\nTVA RGT\n, ,   \nMsicVi,    .\n\nNAP AME\n  (  )  :\n– GPL 3  i\n–     ,   \n–    i\n\nVOMO\n  VOMOBE.\nP     .\n\nGNU    .  ,  <hs://.g.g/icss/>.",
+    "license_text": "Ci © 2025-2026 B A\n\nGNU   3 \n\nTVA RGT\n, ,   \nMsicVi,    .\n\nCUT AME\n  (  )  :\n– GPL 3  i\n–     ,   \n–    i\n\nVOMO\n  VOMOBE.\nP     .\n\nGNU    .  ,  <hs://.g.g/icss/>.",
     "view_full_license": "  ",
     "license_unrar_text": "CBZ  ZP  ,    . CBR , , RAR  ,  .\n\nMsicVi CBR   URAR , RAR     .\n\nWsi: <hs://..c/_dd.h>",
     "view_full_unrar_license": "URAR  ",
@@ -1081,7 +1081,7 @@
       "filter_all": "A fis (*)"
     },
     "license": {
-      "window_title": "MosaicView - License"
+      "window_title": "MosaicView - chut"
     },
     "replace_corrupted_image": {
       "title": "Rc cd ",

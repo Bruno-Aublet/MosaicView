@@ -2,6 +2,8 @@
 
 ![Version](https://img.shields.io/github/v/tag/Bruno-Aublet/MosaicView?label=version) ![License](https://img.shields.io/badge/license-GPLv3-green) ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 
+🌐 [https://bruno-aublet.github.io/MosaicView/](https://bruno-aublet.github.io/MosaicView/)
+
 **MosaicView** is a desktop application for editing digital comics files — CBZ, CBR, CB7 and PDF — without ever having to open or extract them manually.
 
 **This is NOT a reader, although it has a viewer. It is an editing tool for comic archives.**

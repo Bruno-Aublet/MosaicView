@@ -472,10 +472,10 @@
         "message": "I fair {filename} ná {size} ar ú-boe i nauth (500 MB) i thîr."
       },
       "license_file_not_found": {
-        "message": "License file not found: {path}"
+        "message": "Ni gellir canfod ffeil gwedheid: {path}"
       },
       "license_file_read_error": {
-        "message": "Unable to read license file: {error}"
+        "message": "Ni ellir darllen ffeil gwedheid: {error}"
       },
       "7z_invalid": {
         "title": "Raxë 7Z",
@@ -683,7 +683,7 @@
     "pdf_converting_no_change": "{total} echuir estol boda ú...",
     "print_progress": "Estare tequo...\n{percent}%",
     "print_preparing": "Árie mantuvo, estare tequo...",
-    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nTeitho i GNU Coleg Rhydd v3\n\nRHYDDID A RODDIR\nGallwch ddefnyddio, copïo, newid a dosbarthu\nMosaicView, hyd yn oed at ddibenion masnachol.\n\nRHWYMEDIGAETHAU\nRhaid i bob dosbarthiad (gwreiddiol neu newidiedig) :\n– gadw trwydded GPL v3\n– cynnwys y cod ffynhonnell neu nodi ble i'w gael\n– peidio â gosod cyfyngiadau ychwanegol\n\nGWARANTAU\nDosberthir y meddalwedd hwn HEB UNRHYW WARANT.\nNi ellir dal ei awdur yn gyfrifol am ddifrod sy'n deillio o'i ddefnydd.\n\nDylech fod wedi derbyn copi o'r GNU Coleg Rhydd gyda'r rhaglen hon. Os na, gweler <https://www.gnu.org/licenses/>.",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nTeitho i GNU Gwedheid Rhydd v3\n\nRHYDDID A RODDIR\nGallwch ddefnyddio, copïo, newid a dosbarthu\nMosaicView, hyd yn oed at ddibenion masnachol.\n\nRHWYMEDIGAETHAU\nRhaid i bob dosbarthiad (gwreiddiol neu newidiedig) :\n– gadw gwedheid GPL v3\n– cynnwys y cod ffynhonnell neu nodi ble i'w gael\n– peidio â gosod cyfyngiadau ychwanegol\n\nGWARANTAU\nDosberthir y meddalwedd hwn HEB UNRHYW WARANT.\nNi ellir dal ei awdur yn gyfrifol am ddifrod sy'n deillio o'i ddefnydd.\n\nDylech fod wedi derbyn copi o'r GNU Gwedheid Rhydd gyda'r rhaglen hon. Os na, gweler <https://www.gnu.org/licenses/>.",
     "view_full_license": "Thiro i covad ennorath",
     "license_unrar_text": "I phith CBZ erin ennas ZIP, ennas bain a galadh. I phith CBR, bo dann, erin ennas RAR, ennas herdir.\n\nMosaicView gell egored phith CBR trwy UnRAR, offeryn gwnaed gan RARlab a ellir ei rannu.\n\nGwefan swyddogol: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Gweler Taflen UnRAR",
@@ -1081,7 +1081,7 @@
       "filter_all": "All files (*)"
     },
     "license": {
-      "window_title": "MosaicView - License"
+      "window_title": "MosaicView - gwedheid"
     },
     "replace_corrupted_image": {
       "title": "Teitho corf angren",

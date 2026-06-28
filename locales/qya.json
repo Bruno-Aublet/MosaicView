@@ -472,10 +472,10 @@
         "message": "I nómë {filename} ná {size} ar lá polë i quanta nómë (500 MB) i tec."
       },
       "license_file_not_found": {
-        "message": "License file not found: {path}"
+        "message": "Parma termaro umir massë: {path}"
       },
       "license_file_read_error": {
-        "message": "Unable to read license file: {error}"
+        "message": "Lá polë lerta i parma termaro: {error}"
       },
       "7z_invalid": {
         "title": "Raxë 7Z",
@@ -683,7 +683,7 @@
     "pdf_converting_no_change": "{total} parma lesta moita ala...",
     "print_progress": "Ataquenta tecë...\n{percent}%",
     "print_preparing": "Á etelya, ataquenta tecë...",
-    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nNótië i GNU Mirilya Palantírëa Lícensë v3\n\nLELYAR ANTAR\nPolyal usë, kopiër, qualintë ar apanótë\nMosaicView, yando ve tercáneva mardenna.\n\nMAUYA\nIlya apanótë (quetima hya qualintë) mauya :\n– harya i GPL v3 lícensë\n– hostë i yuldar quetima hya entë manna haryal\n– lá apanta quantë raxë\n\nVORONWË\nI súrë sinë apanótëa ÚAR VORONWË.\nI tyaro umir massë i raxor i usëllo tuler.\n\nEce le cöa i GNU Mirilya Palantírëa Lícensë i programmanen. Lá cenë, mahtë <https://www.gnu.org/licenses/>.",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nNótië i GNU Mirilya Palantírëa Termar v3\n\nLELYAR ANTAR\nPolyal usë, kopiër, qualintë ar apanótë\nMosaicView, yando ve tercáneva mardenna.\n\nMAUYA\nIlya apanótë (quetima hya qualintë) mauya :\n– harya i GPL v3 termar\n– hostë i yuldar quetima hya entë manna haryal\n– lá apanta quantë raxë\n\nVORONWË\nI súrë sinë apanótëa ÚAR VORONWË.\nI tyaro umir massë i raxor i usëllo tuler.\n\nEce le cöa i GNU Mirilya Palantírëa Termar i programmanen. Lá cenë, mahtë <https://www.gnu.org/licenses/>.",
     "view_full_license": "Cita i hára parmácië",
     "license_unrar_text": "CBZ parmar nar coitaner ZIP coimas, i coimas lerta ar panta. CBR parmar, ananta, nar coitaner RAR coimas, i coimas i seldo.\n\nMosaicView pol apantie CBR parmar han UnRAR, i tanwe cenwa RARlab ar lerta coitaner.\n\nMbar auta: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Cen UnRAR Tërvantë",
@@ -1081,7 +1081,7 @@
       "filter_all": "All files (*)"
     },
     "license": {
-      "window_title": "MosaicView - License"
+      "window_title": "MosaicView - termar"
     },
     "replace_corrupted_image": {
       "title": "Ahya quenta corupta",

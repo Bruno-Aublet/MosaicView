@@ -472,10 +472,10 @@
         "message": "De'wI' {filename} 'oH {size} 'ej law' 500 MB nIS tIch."
       },
       "license_file_not_found": {
-        "message": "License file not found: {path}"
+        "message": "chut De' tu'be'lu': {path}"
       },
       "license_file_read_error": {
-        "message": "Unable to read license file: {error}"
+        "message": "chut De' laD lach: {error}"
       },
       "7z_invalid": {
         "title": "7Z Qagh",
@@ -683,7 +683,7 @@
     "pdf_converting_no_change": "{total} 'echlet choH pagh...",
     "print_progress": "Qonlu' chuqmeH ghuH...\n{percent}%",
     "print_preparing": "yIloS, qonlu' chuqmeH ghuH...",
-    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU potlh nap v3 lunar\n\nTIVQA' RIGHTS\nDalaDlaH, DanuplaHbogh, Dalargh je Daghajtaugh\nMosaicView, Hem DIvI' Dun neH.\n\nNAP QA'MEH\nHoch Daghajtaugh (wa'DIch pagh Dalargh) nap :\n– GPL v3 potlh tiv\n– pagh mu' ghom potlh chel, ghap nuq Daghaj\n– potlh nap latlh tiv\n\nVOQMOH\nHoch nap VOQMOHHBE'.\nPagh loD Hoch mIwmey nap loQ.\n\nGNU potlh nap DaSuqlaH DIvI'vetlh. chIch pagh, legh <https://www.gnu.org/licenses/>.",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU potlh chut v3 lunar\n\nTIVQA' RIGHTS\nDalaDlaH, DanuplaHbogh, Dalargh je Daghajtaugh\nMosaicView, Hem DIvI' Dun neH.\n\nCHUT QA'MEH\nHoch Daghajtaugh (wa'DIch pagh Dalargh) chut :\n– GPL v3 potlh tiv\n– pagh mu' ghom potlh chel, ghap nuq Daghaj\n– potlh chut latlh tiv\n\nVOQMOH\nHoch chut VOQMOHHBE'.\nPagh loD Hoch mIwmey chut loQ.\n\nGNU potlh chut DaSuqlaH DIvI'vetlh. chIch pagh, legh <https://www.gnu.org/licenses/>.",
     "view_full_license": "chut naQ yIlegh",
     "license_unrar_text": "CBZ De'mey ZIP ngoqDe' lo', ngoqDe' notlh 'ej poSmoHlu'. CBR De'mey, wa'DIch, RAR ngoqDe' lo', ngoqDe' potlh.\n\nMosaicView CBR De'mey poSmoHlaH UnRAR lo'taHvIS, RARlab chenmoHta' 'ej Dachaw'meH latlh chenmoHlu'laH.\n\nWebsite: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "UnRAR Segh legh",
@@ -1081,7 +1081,7 @@
       "filter_all": "All files (*)"
     },
     "license": {
-      "window_title": "MosaicView - License"
+      "window_title": "MosaicView - chut"
     },
     "replace_corrupted_image": {
       "title": "Replace corrupted mIl",

@@ -1,12 +1,21 @@
 # Changelog
 
-## [1.3.8] - 2026-06-25
+## [1.3.9] - 2026-06-28 - Landing page polish, minor translation fixes
+
+- Added a favicon to the landing page (`index.html`): the application icon (`icons/MosaicView.ico`) is now displayed in the browser tab when the page is open.
+- Added two application icons (`MosaicView.png` and `Icone_exe.png`) displayed at the bottom of the landing page, between the metadata row and the footer.
+- Added a contact link in the footer of the landing page, with the `mail.png` icon, opening the default mail client with "MosaicView" as the pre-filled subject.
+- Added a link to the GitHub Pages landing page in the README, placed just below the badges.
+- Added the commit message to each version header in the CHANGELOG, after the date.
+- Fixed the license dialog window title not being translated in fictional languages (Klingon, Quenya, Sindarin and their native-script variants). Also fixed inconsistent use of the word for "licence" between the window title and the body text in those languages.
+
+## [1.3.8] - 2026-06-25 - Hidden thumbnail export, landing page, web page menu entry
 
 - Added a hidden thumbnail export command, accessible only via the keyboard shortcut Ctrl+Alt+T. When triggered, a folder picker opens in the directory of the currently open archive; all displayed thumbnails are exported to the selected folder using PIL, at the currently active thumbnail size (small, medium, or large as set by the slider), in their original file format. A confirmation dialog shows the number of exported thumbnails and a clickable path that opens the destination folder in Windows Explorer. The command is intentionally absent from all menus and toolbars.
 - Added a landing page (`index.html`) for the project, intended for GitHub Pages hosting. The page is entirely self-contained: all translations (46 languages including 6 fictional language variants with native Tengwar and pIqaD alphabets, served via embedded base64 fonts), all styles, and all scripts are inlined in a single HTML file. Features include a live mosaic animation showing pages being drag-and-dropped, a language switcher dropdown with translated language names, a dark/light theme toggle, and a dual-panel section showing thumbnails from two different comics side by side. A Content-Security-Policy meta tag is included for GitHub Pages hosting.
 - Added a "Web page" entry to the About menu (menu bar and canvas context menu), opening the GitHub Pages landing page in the default browser. Translated into all 46 interface languages including Tengwar and pIqaD variants.
 
-## [1.3.7] - 2026-06-21
+## [1.3.7] - 2026-06-21 - Bookmark indicators on thumbnails, bug fixes
 
 - Added a bookmark indicator in the mosaic: when a bookmark exists for the open archive, a red ribbon icon is displayed as an overlay on the corresponding thumbnail. The overlay appears immediately when the archive is loaded, updates in real time when the bookmark changes (page advanced, bookmark deleted from the viewer context menu or from the main window context menu), and disappears automatically when the last page is reached. The ribbon icon is positioned in the top-right corner of the thumbnail, slightly overlapping the top edge.
 - Fixed undo/redo in the clone zone viewer clearing the source selection: after pressing Ctrl+Z or Ctrl+Y, the source point (defined with Ctrl+click) was being reset, forcing the user to redefine it before continuing to paint. The source selection now persists across undo and redo operations.
@@ -18,7 +27,7 @@
 - Fixed the crosshair cursor in the transparency adjustment viewer blending into the grey checkerboard pattern at high zoom levels. The system CrossCursor (a grey cross) has been replaced with a custom cursor — a black cross with a white outline — that remains visible on any background.
 - Added a confirmation dialog when closing the transparency adjustment viewer with unapplied changes. The dialog offers three choices: close without applying, apply and close, or cancel and return to the viewer. The dialog is non-modal, follows the current theme and font, and updates its text immediately when the interface language changes.
 
-## [1.3.6] - 2026-06-21
+## [1.3.6] - 2026-06-21 - Security fixes and UI improvements
 
 - Fixed a command injection vulnerability in the "Open in Explorer" feature: file paths were previously concatenated into a shell command string with `shell=True`, allowing a maliciously crafted filename to execute arbitrary shell commands. The subprocess call now uses a list of arguments with `shell=False`. Also fixed a ctypes 64-bit pointer truncation bug (`ILCreateFromPathW` returning a 32-bit int instead of `c_void_p`) that caused `SHOpenFolderAndSelectItems` to raise an access violation and fall back to the unsafe subprocess call; file selection in Explorer now works correctly without the fallback.
 - Fixed a potential argument injection in the 7-Zip subprocess call: filenames extracted from CB7 archives were passed directly as arguments without an end-of-options separator, so a filename starting with `-` could be interpreted as a 7z command-line option. A `--` separator is now inserted before the filename.
@@ -32,7 +41,7 @@
 - Fixed the Close button in the User Guide window not showing its label on initial open. The button was created without text and only populated during language changes, and was placed inside the scrollable area instead of below it. It is now created with the correct translated label and placed in the fixed footer, always visible regardless of scroll position.
 - Added a loading indicator in the ComicVine dialog when fetching issue metadata after confirming a selection: the table area now shows a red "Downloading metadata..." message while the API request is in progress, preventing the window from appearing frozen.
 
-## [1.3.5] - 2026-06-20
+## [1.3.5] - 2026-06-20 - Security fixes, non-modal dialogs, renumbering fixes, translation fixes
 
 - Fixed a directory traversal vulnerability (Zip Slip) when writing files extracted from an archive. A maliciously crafted archive could contain an entry whose name pointed outside the target folder (for example `..\..\file`), causing the file to be written outside the location chosen by the user. Every file write that uses an archive entry name now validates that the destination stays inside the target folder: "Save files to a folder", copy/cut to the clipboard, and "Open with the default application". Legitimate sub-folders inside the archive are fully preserved; only entries that try to escape the target folder are rejected. Affected entries are skipped and the operation continues for the others, with a notice indicating how many files were skipped.
 - The ComicVine API key is no longer stored in plain text. It is now encrypted using Windows DPAPI before being written to the configuration file, and can only be decrypted by the same Windows user account. Existing keys stored in plain text are migrated automatically on first launch. The API key dialog now masks the key by default (password field) and includes a Show/Hide toggle button. A notice below the input field informs the user that the key is protected by Windows DPAPI encryption. The links in the dialog (ComicVine website and API page) are now displayed in the accent colour, consistent with the rest of the application.
@@ -43,7 +52,7 @@
 - Fixed several translation errors in the Sindarin and Quenya locales: two translations that had been written in Frisian and Breton respectively instead of Sindarin, mixed English, Portuguese, and Spanish words in other Sindarin and Quenya strings, a Klingon verb (`chu'moH`) inserted into a Quenya text, and Cyrillic characters embedded in two Quenya strings due to a copy-paste encoding error.
 - Fixed the display of Sindarin and Quenya in their native Tengwar alphabet: a number of technical terms (archive format names, file extensions, application names, UI symbols, URLs) were being sent to the Tengwar transcription engine and returned as skull characters (☠) because the engine had no rule for them. These tokens are now passed through unchanged. Additionally, the letters `q` and `x` — which appear in authentic Tolkien words such as `quetta` or `raxë` — were not defined in the Sindarin Tengwar mode; they are now handled correctly (`q` as QUESSE, `x` as CALMA+SARINCE).
 
-## [1.3.4] - 2026-06-02
+## [1.3.4] - 2026-06-02 - ComicInfo.xml editor, split-panel crash fix, close behaviour fix
 
 - Added a ComicInfo.xml editor: create or edit the ComicInfo.xml file embedded in a comic archive directly from MosaicView, without opening an external application. The editor covers all standard ComicInfo fields, organized by section (series, publication, classification, credits, content, miscellaneous). Fields with a fixed set of allowed values (month, day, age rating, black & white, manga, series complete, language) use drop-down lists. The page count is filled in automatically from the actual number of pages and cannot be edited. The editor is accessible from the Metadata menu, the canvas context menu, by double-clicking the ComicInfo.xml entry in the mosaic, and via a new toolbar icon. It is also accessible from the library window on comics that already have a ComicInfo.xml (edit-only from the library, never create).
 - Added a "Create or edit a ComicInfo.xml file" toolbar icon (in the reserve icons by default).
@@ -52,7 +61,7 @@
 - Fixed closing behaviour when a library database and one or more comics are open simultaneously: clicking the close button now first prompts to close the database only, closes it immediately on confirmation, and lets the user close the comics panel by panel on subsequent clicks. Previously the database warning would reappear after the comics were closed.
 - Fixed the "Library" command disappearing from the Metadata menu and the canvas context menu after closing a database. The database sub-menu is now built into a dedicated sub-menu instead of replacing the parent menu, preserving the "Open Library" entry at all times.
 
-## [1.3.3] - 2026-05-31
+## [1.3.3] - 2026-05-31 - library search improvements, ComicVine metadata fixes, scan and table update optimizations
 
 - ComicVine metadata scraping now also retrieves the Volume (series start year), Publisher, and Genre fields. Volume and Publisher were previously not imported at all; Genre is fetched from the series endpoint in the same API call as Volume and Publisher, so the total cost is one extra call per import.
 - Added an "Open in MosaicView" button to the preview panel, below the file info (path, size, page count). The button is always visible when a database is open, active when the file exists on disk, and grayed out otherwise.
@@ -67,7 +76,7 @@
 - Fixed a double-table visual glitch in the library window after a metadata fetch or a save from the mosaic viewer. The library now updates only the affected rows in place (both the main table and the filtered table), with no full rebuild and no layout corruption. Sorting is preserved after the update.
 - Fixed the library table opening the wrong comic after an in-place row update when sorting was active. Row updates now disable sorting during the patch and restore the sort column and order afterwards.
 
-## [1.3.2] - 2026-05-30
+## [1.3.2] - 2026-05-30 - library improvements, recent databases, file associations, bug fixes
 
 - Improved library performance with large databases. The main table is now built once and never rebuilt when clearing a search filter, switching back to the unfiltered view is instantaneous regardless of database size. Search results are displayed in a separate table that is swapped in and out without touching the main table. Selection and cover preview are preserved when switching between filtered and unfiltered views.
 - Improved the "Delete database" dialog. The full file path (with `.mvdb` extension) is now displayed as a clickable link that opens the containing folder in Explorer with the file selected. The dialog no longer mentions `.db`. The deleted file is now sent to the Recycle Bin instead of being permanently deleted. Buttons are centered.
@@ -96,17 +105,17 @@
 - Fixed the "Clear temporary files" button in the user guide failing with an AttributeError due to a renamed module attribute.
 - MosaicView now handles file associations. When a file is opened via a Windows file association (right-click → Open with → MosaicView), the file is automatically loaded on startup: `.mvdb` files open the library window and load the database, comic and image files (CBZ, CBR, CB7, CBT, EPUB, PDF, and common image formats) are loaded directly into the mosaic viewer.
 
-## [1.3.1] - 2026-05-26
+## [1.3.1] - 2026-05-26 - new library feature, batch drop integration, bug fixes
 
 - Added a Library feature. A dedicated window (accessible from the toolbar and menus) lets the user create and manage SQLite-based comic databases. Each database is built by scanning a master directory and optional additional directories; the scan is incremental and runs in a background thread with a red progress overlay showing the current file and percentage. During indexing, each archive's `ComicInfo.xml` is read and all its fields (title, series, writer, publisher, etc.) are extracted and stored in the database. The library table is fully sortable and searchable with multi-criteria filters. From the library, comics can be opened directly in the mosaic viewer, their metadata can be fetched via the existing ComicVine batch mechanism (and the database is automatically updated after the fetch), and files can be opened in Explorer. When a comic is opened from the library and subsequently saved in the mosaic viewer, the library entry is automatically reindexed to reflect the new metadata and page count.
 - Fixed mouse wheel events propagating through the library window and inadvertently changing the language selector in the panel behind it. The wheel hook now checks whether another Qt window physically covers the target widget at the cursor position before dispatching the event.
 
-## [1.2.2] - 2026-05-24
+## [1.2.2] - 2026-05-24 - mosaic tab expands to fill available width, fix metadata tab freeze on first click
 
 - The mosaic tab (showing the open file name) now expands to fill all available horizontal space, leaving room for the Metadata tab when present. The filename is elided with `…` when space is insufficient and expands back when space is restored. The tab no longer imposes a fixed maximum width that could block resizing the window or the splitter between the two panels in dual-panel mode.
 - Fixed a freeze when clicking the Metadata tab for the first time after opening a comic with metadata. The tab content is now built in the background immediately after the file is loaded, so it is ready by the time the user clicks the tab. The `MetadataTab` widget now holds a reference to its own panel state instead of reading the global singleton, which also fixes correctness in dual-panel mode when each panel has a different file open.
 
-## [1.2.1] - 2026-04-21
+## [1.2.1] - 2026-04-21 - bookmarks, ComicVine batch fixes and improvements
 
 - Added a "Skip files that already have metadata" option to the batch metadata import confirmation dialog. When checked, CBZ archives containing a ComicInfo.xml file are automatically skipped and counted as ignored in the final summary.
 - Fixed the issue list panel in the ComicVine metadata wizard displaying the result count from the previously processed file while loading issues for the next file in a batch. The status label is now cleared when the loading overlay appears.
@@ -120,7 +129,7 @@
 - Improved series pre-selection in the ComicVine metadata wizard. The series list is now pre-scrolled and pre-selected on the closest match to the search terms (using name similarity scoring) instead of always selecting the first result. When multiple series share the same name and the search terms contain a year, the series whose start year is closest to that year is preferred.
 - Added a bookmark system. When closing the viewer, the current page is saved as a bookmark for the open archive (page 1 is never bookmarked). When reopening a bookmarked archive, a non-modal pop-up asks whether to resume reading at the saved page; clicking Yes opens the viewer directly at that page. The bookmark is automatically cleared when the last page is reached. Bookmarks can also be deleted manually: from the viewer's right-click context menu (for the current archive), from the Archives menu and the canvas/image context menus (for the current archive, or all bookmarks at once). All actions are disabled when no bookmark applies. Bookmarks are stored in the application configuration file. Available in all 45 supported languages.
 
-## [1.2.0] - 2026-04-18
+## [1.2.0] - 2026-04-18 - ComicVine metadata import, various bug fixes and UI improvements
 
 - Added ComicVine metadata scraping. A new "Metadata" menu in the menu bar and a new button in the icon toolbar open a two-panel wizard: the first panel searches for the comic series by name (sortable results, pagination, search cache), the second panel lists all issues for the selected series (full load with progress overlay, issue cache) and pre-selects the issue matching the current file's number. Confirmed metadata is written to `ComicInfo.xml` inside the archive, creating or updating the file as needed, including the `<Pages>` section. Requires a free ComicVine API key.
 - Added a "Change ComicVine API key" action in the Metadata menu and the canvas context menu. The API key dialog now pre-fills the current key and includes a "Clear key" button (disabled when the field is empty).
@@ -128,7 +137,7 @@
 - All ComicVine UI strings translated into all 45 supported languages, including pIqaD and Tengwar.
 - Fixed the version checker, changelog, donation (PayPal), icon toolbar configuration, and all license (GPL, UnRAR, 7-Zip, pIqaD, Tengwar) dialogs being modal. All these windows are now non-modal. Fixed the version checker dialog being too small. Fixed all these dialogs being centered on the application window instead of the panel that triggered them. Fixed these dialogs being displayed at a much smaller size than intended.
 
-## [1.1.9] - 2026-04-16
+## [1.1.9] - 2026-04-16 - Bug fixes on non-modal dialogs. NFO editor: filename now editable. User Guide: non-modal, one instance per panel, live language update.
 
 - Fixed non-modal dialogs (conversion, save confirmation, close warning) flashing at the center of the application window before moving to their correct position. Dialogs are now positioned before being shown, eliminating the visual glitch.
 - Fixed the save-confirmation dialog appearing empty for 1–2 seconds after a save. The mosaic canvas was being re-rendered immediately after the save, blocking the Qt paint event that would have drawn the dialog contents. The canvas is now updated before the dialog is shown, not after.
@@ -136,7 +145,7 @@
 - Added a help section for the NFO file creator/editor in the User Guide. Available in all 45 languages.
 - The User Guide window is now non-modal and centered on the panel that triggered it. In two-panel mode, it is possible to open the User Guide in one panel and continue working in the other. One independent instance can be open per panel simultaneously. The window no longer rebuilds itself on language change — text is updated in place without any visual disruption.
 
-## [1.1.8] - 2026-04-16
+## [1.1.8] - 2026-04-16 - non-modal conversion/save dialogs, NFO editor, various bug fixes
 
 - Oops... fixed the Changelog viewer showing "CHANGELOG.md not found" in the packaged build. The file was missing from the PyInstaller `datas` list in both `.spec` files and was therefore not bundled.
 - Added an NFO file creator accessible from the toolbar, the File menu, and the canvas context menu. The dialog is non-modal and injects the new `.nfo` file directly into the mosaic; the operation is recorded in the undo/redo history. Double-clicking an existing `.nfo` file in the mosaic now opens it in the same integrated editor instead of launching the default external application; saving the changes is also recorded in the undo/redo history.
@@ -145,7 +154,7 @@
 - Fixed a bug where clicking the collapse button in the menu bar (show/hide icon column) left the menu bar active after the click. When collapsing the column, the window content shifts and the cursor could land on an adjacent menu, opening it unintentionally. The canvas now receives focus immediately after the toggle.
 - Increased the width of the mosaic tab (showing the open file name) by 60%.
 
-## [1.1.7] - 2026-04-15
+## [1.1.7] - 2026-04-15 - non-modal batch, edit non-image files externally, changelog viewer, various fixes
 
 - Batch conversion dialogs (type selection, confirmation, progress, summary) are no longer modal. It is now possible to start a batch in one panel and continue working in the other panel, or start a second batch simultaneously.
 - Non-image files (e.g. `.nfo`, `.txt`) can now be edited externally: double-clicking opens them in the default application, and any changes saved in that application are automatically detected and applied to the archive. The modification is recorded in the undo/redo history.
@@ -155,20 +164,20 @@
 - Replaced the native English-only right-click context menu on all read-only text areas (Changelog, License, User Guide) with a translated menu showing "Copy" and "Select All" in the active language.
 - Fixed a bug where drag-and-dropping an image in an archive containing non-image files (e.g. `.nfo`, `.txt`) could change their relative order. The sort key used by `reposition_non_images` after renumbering was applied to the full filename including extension, while the sort key used at archive open time was applied to the name without extension. This discrepancy caused different orderings for files with the same base name but different extensions (e.g. `test.nfo` vs `test .txt`). Both now sort on the base name first, then the extension as a tiebreaker.
 
-## [1.1.6] - 2026-04-14
+## [1.1.6] - 2026-04-14 - center dialogs on active panel in split mode, fix open-mail menu action
 
 - In two-panel mode, all dialogs, pop-ups, and viewer windows now open centered on the panel that triggered them, rather than on the application window as a whole. Exception: application-level dialogs (license, donation, update checker) remain centered on the main window.
 - Fixed a bug where drag-and-dropping pages between two panels left the post-drop selection offset when the destination panel contained a metadata XML file (e.g. `comicinfo.xml`). This is the same root cause as the intra-panel selection offset fixed in 1.1.5, occurring in the inter-panel code path which had not been updated. Renumbering repositions the XML to its alphabetical slot after the insert, shifting all image indices; the selection indices were computed before this reposition and therefore pointed to the wrong pages. Selection indices are now recomputed after renumbering, by matching entries by object identity in the destination panel's final `images_data` list.
 - Fixed the "Open mail client" action in the menu bar and context menu doing nothing. The callback was wired up for the toolbar icon but was missing from the menu callback registry.
 
-## [1.1.5] - 2026-04-13
+## [1.1.5] - 2026-04-13 - fix drag-drop selection offset after XML renumbering, empty CBZ save/open, widen error dialog
 
 - Fixed a bug where drag-and-dropping pages in an archive containing a metadata XML file (e.g. `comicinfo.xml`) left the post-drop selection offset by one. After the drop, renumbering repositions the XML to its alphabetical slot (position 0), shifting all image indices by one; the selection indices were computed before this reposition and therefore pointed to the wrong pages. Selection indices are now recomputed after renumbering, by matching entries by object identity in the final `images_data` list.
 - Fixed a bug where saving a CBZ that had been emptied of all its pages (all images deleted) silently failed: clicking "Apply and save" dismissed the dialog but left the empty archive open and unsaved. The save function was guarded by a check that returned early when the image list was empty. The guard has been removed; saving an empty CBZ is now permitted and produces a valid empty ZIP file.
 - Fixed empty CBZ files being rejected on open with a "not a valid ZIP archive" error. An empty ZIP file uses `PK\x05\x06` (End of Central Directory) as its first four bytes instead of the usual `PK\x03\x04` (Local File Header). The archive type detector now recognises both signatures as valid ZIP.
 - Widened the error dialog shown when an archive cannot be opened (minimum width 420 px).
 
-## [1.1.4] - 2026-04-11
+## [1.1.4] - 2026-04-11 - fix cancellation race conditions, two-panel language switching bugs, drop support for .nfo/.txt/.xml files
 
 - Fixed a race condition in the image format conversion worker: if the user clicked Cancel while a page was being converted, the in-flight conversion could complete and insert the new entry into the archive after the cancellation cleanup had already run, leaving a spurious extra page in the mosaic. The worker now re-checks the cancellation flag immediately after each conversion, before inserting the result.
 - Fixed rotate and flip cancellation: clicking Cancel mid-operation now fully reverts all already-rotated/flipped pages to their original state. Previously, pages that had already been processed were left modified with no visual feedback. Also fixed the same race condition as conversion (flag is now checked after each operation, before invalidating the thumbnail cache).
@@ -178,7 +187,7 @@
 - Dropping `.nfo`, `.txt`, and `.xml` files from an external source (e.g. Windows Explorer) onto the mosaic now works correctly. These files are added to the mosaic with their respective icon and are included in the archive when saving as CBZ. Other unsupported file types still trigger the existing warning dialog.
 - Removed leftover debug print statements in the resize dialog (`_center_on_parent` and the resize worker exception handler).
 
-## [1.1.3] - 2026-04-08
+## [1.1.3] - 2026-04-08 - UI improvements (separator lines, status bar fixes) and a critical fix preventing CBZ corruption when disk space is insufficient.
 
 - Added a 1 px separator line between the mosaic and the vertical scrollbar, and between the mosaic and the status bar. Both lines adapt to the current theme (light/dark).
 - The status bar now displays file counts even when no archive is open (0 directories, 0 files, 0 selected).
@@ -187,7 +196,7 @@
 - The JPEG/WEBP quality dialog now displays the number of files to convert and their total size. Reduced its height. Radio buttons are now centered.
 - Fixed a bug where saving a CBZ when the destination drive was out of disk space could corrupt the archive. The save now checks available disk space before moving the temporary file to the destination. If there is not enough space, the temporary file is deleted and an error message is shown with the required and available sizes; the archive is not modified and the file is not closed.
 
-## [1.1.2] - 2026-04-07
+## [1.1.2] - 2026-04-07 - bug fixes, UI improvements, PDF performance and memory optimizations
 
 - Fixed a bug where, after restoring a two-panel session and closing the second panel, all menu bar and context menu actions were disabled even after opening a file. The global state singleton (`_state_module.state`) was being poisoned during split restoration: while `_open_split` temporarily pointed the singleton at panel 2's state, wrapped callbacks from panel 1 captured that value as `_prev` and restored it in their `finally` block, leaving the singleton pointed at the (later destroyed) panel 2 state for the rest of the session. Fixed by validating `_prev` against the set of currently active panels before restoring it, falling back to the current panel's own state if `_prev` no longer belongs to any active panel. `_close_split` also now explicitly resets the singleton to panel 1's state.
 - Added a Retry button in the "Check for updates" dialog. When the update check fails (no network, timeout), the dialog now shows a Retry button next to the Close button. Clicking it re-runs the check without closing the dialog.
@@ -198,7 +207,7 @@
 - Fixed the resize dialog not being centered on the application window. Reduced its height.
 - Fixed the image adjustments dialog being partially off-screen when the main window is positioned near the bottom of the screen. The dialog now repositions itself after being shown, taking the window frame height into account, so it always fits within the available screen area. Reduced the height of the image adjustments dialog.
 
-## [1.1.1] - 2026-04-06
+## [1.1.1] - 2026-04-06 - Bug fixes and UI improvements: progress overlay, rotate/flip threading, transparency slider, status bar refresh
 
 - Fixed a bug where the status bar was not updated after resizing images. It now refreshes automatically when the resize operation completes.
 - Fixed the progress overlay labels (message, percentage, Cancel button) overlapping when the window is narrow. The Cancel button is now positioned directly below the main label instead of at a fixed offset from the center.
@@ -210,7 +219,7 @@
 - Improved the tolerance slider in the transparency viewer. The slider is now wider (180 px instead of 120 px) for finer control near small values, and a spin box has been added next to it for direct numeric input (0–255). The two controls are kept in sync. The tolerance label no longer displays the current value, since it is already shown in the spin box.
 - Fixed a bug where choosing "Keep all" in the post-conversion dialog (keep originals and converted files) did not refresh the mosaic. The new images were inserted into the data but the mosaic was not redrawn until a manual F5 refresh.
 
-## [1.1.0] - 2026-04-05
+## [1.1.0] - 2026-04-05 - v1.1.0 - New functions: Straighten, Clone Zone, Text insertion, CBT support, batch CB7/CBT→CBZ conversions, magic-bytes format detection, bug fixes
 
 - Added Straighten image feature. A new toolbar icon, Images menu entry, and right-click context menu entry open a dedicated viewer. In the viewer, draw a reference line on what should be horizontal or vertical in the image; the image is then rotated by the exact correction angle and the result is applied to the mosaic. The reference line has draggable endpoints. Per-page undo/redo is available within the viewer.
 - Added Clone Zone tool. A new toolbar icon, Images menu entry, and right-click context menu entry open a dedicated viewer on the current image (or the first image if none is selected). In the viewer, Ctrl+click sets the source area; left-click (held) paints the cloned area onto the image. Two source modes are available: Fixed (each new stroke restarts from the original source point) and Relative (the source advances with the brush between strokes). A slider controls the brush radius from 1 to 200 px. The source marker and the Ctrl+click crosshair cursor both reflect the current brush size and zoom level. Zoom (mouse wheel, +/− buttons) and right-click pan are available. Per-stroke undo/redo is available within the viewer via buttons and Ctrl+Z/Ctrl+Y.
@@ -224,7 +233,7 @@
 - Fixed a bug in the ICO creator where clicking "Back to crop" would display a black canvas and throw an `AttributeError` on any mouse interaction. The crop canvas widget was recreated correctly, but the image was never rendered into it because the `showEvent` does not fire on a dialog that is already visible. The image is now displayed immediately after the widget is rebuilt.
 - Fixed a bug where dropping an image onto an empty canvas (no-archive mode), then deleting it, left the application in a broken state: the status bar still showed the deleted image's info, and the application could not be closed. The status bar now updates immediately when the mosaic becomes empty. The close logic now correctly detects that there is nothing left to save and exits the application normally.
 
-## [1.0.5] - 2026-04-03
+## [1.0.5] - 2026-04-03 - Bug fixes and performance improvements
 
 - Fixed a multi-second delay when opening a CBZ archive. The loader was calling `testzip()` on the archive before reading any images, which read and verified the CRC of every file in the archive before loading could begin. This check has been removed: individual read errors are already caught during loading.
 - Fixed a bug where lazy-loading a corrupted image would spam the console with the same error message on every repaint. The entry is now marked `is_corrupted = True` on the first failure so subsequent load attempts are skipped immediately.
@@ -247,7 +256,7 @@
 - Fixed the progress overlay (conversion percentage, cancel button) scrolling with the mosaic instead of staying fixed on screen. Both overlays were `QGraphicsItem` elements added to the scene and therefore moved with it. They are now `QLabel` widgets parented to the viewport, so they remain centered on screen regardless of scroll position.
 - Fixed a bug where a `.cb7` file that was actually a ZIP or RAR archive would open silently without prompting to rename it. Since 7-Zip can read ZIP and RAR files transparently, the format detection never fell through to the rename dialog. The file's magic bytes are now checked before invoking 7z, so misnamed archives are correctly detected and the rename dialog is shown.
 
-## [1.0.4] - 2026-03-31
+## [1.0.4] - 2026-03-31 - Technical updates
 
 - Fixed a bug where resizing images in a CBZ containing a `ComicInfo.xml` with a `<Pages>` section would cause the application to become unresponsive for the entire duration of the operation. After each resized image, the XML metadata was updated and a signal was emitted from the worker thread, triggering a full rebuild of the metadata panel UI on each image. On a 110-page file this resulted in 110 queued UI rebuilds that could take over an hour to drain. The signal is now suppressed during the resize loop and emitted once when the operation completes.
 - Fixed a long freeze at the end of a resize operation. The worker was unnecessarily invalidating the cached thumbnail pixmap for each resized image, forcing `render_mosaic` to rebuild all thumbnails from scratch in the UI thread. Since resizing does not change the visual appearance of thumbnails, the cache is now preserved.
@@ -260,7 +269,7 @@
 - In split view, resizing the window now preserves the ratio between the two panels instead of forcing a 50/50 split. Double-clicking the separator resets it to 50/50.
 - Reorganized the right-click context menus. Commands that act on a selection (Save selection as CBZ, Export selected pages, Print selection, Copy, Cut, Delete, Deselect) have been moved from the canvas context menu to the thumbnail context menu. Commands that act on the archive as a whole (Renumber pages, Flatten directories) have been moved from the thumbnail context menu to the canvas context menu. The Show/Hide icon column command is now the first item in the canvas context menu.
 
-## [1.0.3] - 2026-03-29
+## [1.0.3] - 2026-03-29 - Fix UI bugs: dark mode on panel 2, panel border performance, tab filename display, tooltips, drag-and-drop temp file lifetime, and non-image file handling
 
 - Fixed panel 2 always starting in light theme when the application was launched in dark mode with split view active.
 - Fixed a ~600ms delay when switching between panels in split mode after flattening a comic with subdirectory structure. The active panel border was drawn using `setStyleSheet`, which caused Qt to recompute styles for all descendant widgets. Replaced with a `paintEvent`-based approach that draws the border directly without touching the style tree.
@@ -271,19 +280,19 @@
 - Fixed a bug where temporary files were not cleaned up when closing a comic (only cleaned up on the second close, when the canvas was already empty).
 - Fixed a bug where dragging a non-image file (e.g. `.nfo`) from one panel to another would show an incorrect "subdirectory structure" warning. Non-image files can now be dragged between panels. Within the same panel, non-image files are excluded from reordering (only images move). Dragging a mixed selection between panels moves everything; renumbering is only triggered if the selection contains at least one image.
 
-## [1.0.2] - 2026-03-28
+## [1.0.2] - 2026-03-28 - Fix app not closing when panel 2 emptied by inter-panel drag
 
 - Fixed a bug where the application could not be closed after dragging all images from panel 2 into panel 1, leaving panel 2 empty. Clicking the close button had no effect in that situation.
 - Fixed a bug where dragging an image from a web browser onto panel 2 would add it to panel 1 instead, when panel 1 was the active panel at the time the download completed.
 - The file name tab is now capped at 200px wide and truncated with an ellipsis when the file name is too long. The full name is shown in a tooltip on hover.
 - Minor README updates: wording fix and added documentation for the automatic update check feature.
 
-## [1.0.1] - 2026-03-26
+## [1.0.1] - 2026-03-26 - Prise en compte des mises à jour
 
 - Added "Source code on GitHub" entry in the About menu and context menu, linking to the project repository. Translated into all 47 languages.
 - Added "Check for updates" entry in the About menu and context menu. Compares the current version against the latest GitHub release and shows a download link if a newer version is available. Translated into all 47 languages.
 - Added automatic update check at startup: if a newer version is found on GitHub, a notification banner appears below the tab bar and the About menu entry is highlighted in bold.
 
-## [1.0.0] - 2026-03-25
+## [1.0.0] - 2026-03-25 - Initial release
 
 First public release.
