@@ -844,6 +844,7 @@ class MosaicCanvas(QGraphicsView):
         self._delete_selected_callback = None         # () → None, défini par MainWindow après création
         self._web_import_callback = None              # (urls: list[str]) → None, défini par MainWindow après création
         self._inter_panel_drop_callback = None        # (entries, insert_real, source_canvas) → None
+        self._thumb_size_wheel_callback = None        # (delta: int) → None, défini par PanelWidget après création
 
         # Rubber band (sélection par cadre)
         self._rubber_band: QRubberBand | None = None
@@ -867,6 +868,9 @@ class MosaicCanvas(QGraphicsView):
 
         # ── Tooltip overlay (créé AVANT _apply_theme_bg() qui lui applique son style) ──
         self._overlay_tip = OverlayTooltip(self.viewport())
+
+        # Intercepte la molette sur le viewport même sans focus clavier
+        self.viewport().installEventFilter(self)
 
         self._apply_theme_bg()
 
@@ -1818,6 +1822,24 @@ class MosaicCanvas(QGraphicsView):
     # ──────────────────────────────────────────────────────────────────────────
     # Navigation clavier
     # ──────────────────────────────────────────────────────────────────────────
+    def eventFilter(self, obj, event):
+        from PySide6.QtCore import QEvent
+        if obj is self.viewport() and event.type() == QEvent.Wheel:
+            if event.modifiers() & Qt.ControlModifier:
+                cb = self._thumb_size_wheel_callback
+                if cb:
+                    delta = 1 if event.angleDelta().y() > 0 else -1
+                    cb(delta)
+                event.accept()
+                return True
+        return super().eventFilter(obj, event)
+
+    def wheelEvent(self, event):
+        if event.modifiers() & Qt.ControlModifier:
+            event.accept()
+            return
+        super().wheelEvent(event)
+
     def keyPressEvent(self, event):
         # Si un NameEdit est actif (proxy focusé dans la scène), lui déléguer l'événement
         focused_item = self._scene.focusItem() if self._scene else None

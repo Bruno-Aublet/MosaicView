@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.3.9"
+__version__ = "1.4.0"
 
 import sys
 import os
@@ -334,6 +334,7 @@ class MainWindow(QMainWindow):
                      self._active_panel._left_panel, self._active_panel._tab_bar)
         self._active_panel._metadata_tab.apply_theme()
         self._active_panel.apply_separator_theme()
+        self._active_panel._update_status_bar()
         # Synchronise dark_mode sur tous les autres panneaux et applique le thème
         new_dark = self._active_panel._state.dark_mode
         for p in self._all_panels():
@@ -344,6 +345,7 @@ class MainWindow(QMainWindow):
             apply_theme(self._app_ref, p._canvas, p._left_panel, p._tab_bar)
             p._metadata_tab.apply_theme()
             p.apply_separator_theme()
+            p._update_status_bar()
         _state_module.state = self._active_panel._state
         # Met à jour le bandeau de mise à jour si affiché
         for p in self._all_panels():
@@ -449,6 +451,7 @@ class MainWindow(QMainWindow):
         _state_module.state = self._panel2._state
         apply_theme(self._app_ref, self._panel2._canvas, self._panel2._left_panel, self._panel2._tab_bar)
         self._panel2.apply_separator_theme()
+        self._panel2._update_status_bar()
         _state_module.state = self._panel._state
 
         # Restaure le ratio depuis la config — différé pour que la fenêtre ait sa taille finale
@@ -769,6 +772,7 @@ class MainWindow(QMainWindow):
                         main_window=self,
                         save_session_cb=lambda: None,
                         cleanup_temp_cb=lambda: None,
+                        dialog_parent=self._panel2,
                         **self._panel2._file_close_args(),
                     )
                 finally:
@@ -783,6 +787,7 @@ class MainWindow(QMainWindow):
             main_window=self,
             save_session_cb=lambda: save_session(self),
             cleanup_temp_cb=lambda: cleanup_all_temp_files(keep_logs=True),
+            dialog_parent=self._panel,
             **self._panel._file_close_args(),
         )
         if can_close:

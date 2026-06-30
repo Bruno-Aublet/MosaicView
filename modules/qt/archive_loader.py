@@ -128,6 +128,25 @@ def _natural_sort_key(text):
     return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', name)]
 
 
+def _detect_zip_compression_state(filepath):
+    """
+    Détecte si un CBZ est stocké sans compression ou compressé, en lisant le
+    compress_type de la première entrée fichier (hors dossiers) de l'archive.
+    Retourne 'stored', 'deflated', ou None (non-CBZ, ou détection impossible).
+    """
+    if not filepath or os.path.splitext(filepath)[1].lower() != '.cbz':
+        return None
+    try:
+        with zipfile.ZipFile(filepath, 'r') as archive:
+            for info in archive.infolist():
+                if info.is_dir():
+                    continue
+                return 'stored' if info.compress_type == zipfile.ZIP_STORED else 'deflated'
+    except Exception:
+        pass
+    return None
+
+
 class _CorruptedImagesDialog(QDialog):
     """Dialogue d'avertissement images corrompues — thème, langue et police dynamiques."""
 
@@ -1038,6 +1057,7 @@ class ArchiveLoader(QObject):
         st.current_directory = ""
         st.needs_renumbering = True
         st.focused_index     = None
+        st.zip_compression_state = _detect_zip_compression_state(first_filepath) if first_filepath else None
         if first_filepath:
             st.current_file = first_filepath
 

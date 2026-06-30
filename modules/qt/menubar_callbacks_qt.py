@@ -139,6 +139,7 @@ def build_menubar_callbacks(mw) -> dict:
         "toggle_fullscreen":        mw._toggle_fullscreen,
         "reset_settings":           mw._reset_to_defaults,
         "reset_to_defaults":        mw._reset_to_defaults,
+        "open_zip_compression_dialog": mw._open_zip_compression_dialog,
         "toggle_split_ui":          mw._toggle_split_ui,
         "get_split_active":         lambda: mw._split_active,
         "get_toolbar_visible":      lambda: mw._sidebar_visible,

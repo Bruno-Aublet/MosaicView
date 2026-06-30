@@ -382,6 +382,7 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     state.modified = False
     state.needs_renumbering = False
     state.merge_counter = 0
+    state.zip_compression_state = None
     state.current_directory = ""
     reset_history(state)
 
@@ -470,22 +471,26 @@ def close_file(parent, canvas, create_cbz_cb, apply_new_names_cb,
 def on_window_close(main_window, canvas, create_cbz_cb, apply_new_names_cb,
                     refresh_title, refresh_toolbar, refresh_tabs,
                     refresh_status, refresh_menubar,
-                    save_session_cb, cleanup_temp_cb):
+                    save_session_cb, cleanup_temp_cb,
+                    dialog_parent=None):
     """
     Gère le clic sur la croix de fermeture.
     Retourne True si l'application peut se fermer immédiatement,
     False si un dialog non-modal a été ouvert ou si l'utilisateur a annulé.
 
-    main_window    : QMainWindow (parent des dialogs)
+    main_window    : QMainWindow (utilisée pour les actions globales)
     save_session_cb: callable() → sauvegarde géométrie/état
     cleanup_temp_cb: callable() → nettoyage des fichiers temporaires
+    dialog_parent  : widget sur lequel centrer le dialog de confirmation
+                     (le panneau concerné). Si None, utilise main_window.
     """
     state = _state_module.state
+    parent = dialog_parent if dialog_parent is not None else main_window
 
     if state.images_data or state.modified:
         had_archive = bool(state.current_file)
         closed_sync = close_file(
-            main_window, canvas, create_cbz_cb, apply_new_names_cb,
+            parent, canvas, create_cbz_cb, apply_new_names_cb,
             refresh_title, refresh_toolbar, refresh_tabs,
             refresh_status, refresh_menubar,
         )

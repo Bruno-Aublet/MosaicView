@@ -83,7 +83,7 @@ def _open_file_location(filepath):
     """Ouvre l'explorateur Windows et sélectionne le fichier."""
     try:
         if os.name == "nt":
-            subprocess.Popen(f'explorer /select,"{os.path.abspath(filepath)}"')
+            subprocess.Popen(["explorer", "/select,", os.path.abspath(filepath)])
         else:
             QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.dirname(filepath)))
     except Exception as e:
@@ -848,11 +848,12 @@ def _handle_duplicate_filenames_qt(parent, renumber_func, on_done, entries_to_ch
     DuplicateFilenameDialog(parent, duplicate_names).ask_async(_on_result)
 
 
-def _write_zip_with_progress(filepath, images_data, overlay):
+def _write_zip_with_progress(filepath, images_data, overlay, compression_level=0):
     """Écrit le fichier ZIP et met à jour l'overlay. Retourne True si OK."""
+    from modules.qt.utils import zip_compression_kwargs
     total = len([e for e in images_data if e["bytes"] is not None and not e.get("is_dir")])
     processed = 0
-    with zipfile.ZipFile(filepath, "w") as zf:
+    with zipfile.ZipFile(filepath, "w", **zip_compression_kwargs(compression_level)) as zf:
         for entry in images_data:
             if entry["bytes"] is None or entry.get("is_dir"):
                 continue
@@ -999,8 +1000,9 @@ def save_as_cbz(parent, canvas, callbacks: dict):
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
         overlay = _SavingOverlay(canvas) if canvas else None
+        comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
         try:
-            _write_zip_with_progress(filepath, state.images_data, overlay)
+            _write_zip_with_progress(filepath, state.images_data, overlay, comp_level)
         except Exception as e:
             if overlay:
                 overlay.remove()
@@ -1015,6 +1017,9 @@ def save_as_cbz(parent, canvas, callbacks: dict):
         old_file = state.current_file
         state.current_file = filepath
         state.modified = False
+        state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
+        if hasattr(parent, "_update_status_bar"):
+            parent._update_status_bar()
         if callbacks.get("update_button_text"):
             callbacks["update_button_text"]()
         if callbacks.get("update_tabs"):
@@ -1099,8 +1104,10 @@ def save_selection_as_cbz(parent, callbacks: dict):
             return
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
+        from modules.qt.utils import zip_compression_kwargs
+        comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
         try:
-            with zipfile.ZipFile(filepath, "w") as zf:
+            with zipfile.ZipFile(filepath, "w", **zip_compression_kwargs(comp_level)) as zf:
                 for idx in sorted(state.selected_indices):
                     if idx < len(state.images_data):
                         entry = state.images_data[idx]
@@ -1272,8 +1279,9 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(filepath)))
 
         overlay = _SavingOverlay(canvas) if canvas else None
+        comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
         try:
-            _write_zip_with_progress(filepath, state.images_data, overlay)
+            _write_zip_with_progress(filepath, state.images_data, overlay, comp_level)
         except Exception as e:
             if overlay:
                 overlay.remove()
@@ -1389,10 +1397,12 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
 def _write_apply_new_names(parent, canvas, callbacks, _done):
     """Écrit l'archive pour apply_new_names après validation. NON modal.
     Appelle _done(True) en cas de succès, _done(False) en cas d'annulation/erreur."""
+    from modules.qt.utils import zip_compression_kwargs
     state = _state_module.state
     ext = os.path.splitext(state.current_file)[1].lower()
     safe_delete = callbacks.get("safe_delete_file", _safe_delete)
     get_temp_dir = callbacks.get("get_mosaicview_temp_dir", tempfile.gettempdir)
+    comp_level = parent._zip_compression_config().get_zip_compression_level() if hasattr(parent, "_zip_compression_config") else 0
 
     if ext == ".cbz":
         # Écrase le fichier CBZ existant via un fichier temporaire
@@ -1400,7 +1410,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
             temp_file = tempfile.NamedTemporaryFile(
                 delete=False, suffix=".cbz", dir=get_temp_dir()
             ).name
-            with zipfile.ZipFile(temp_file, "w") as zf:
+            with zipfile.ZipFile(temp_file, "w", **zip_compression_kwargs(comp_level)) as zf:
                 for entry in state.images_data:
                     if entry["bytes"] is not None and not entry.get("is_dir"):
                         zf.writestr(entry["orig_name"], entry["bytes"])
@@ -1421,6 +1431,9 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                                       needed=n, free=fr)).show()
                 return _done(False)
             shutil.move(temp_file, state.current_file)
+            state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
+            if hasattr(parent, "_update_status_bar"):
+                parent._update_status_bar()
             InfoDialogClickablePath(parent,
                                     "messages.info.cbz_saved.title",
                                     "messages.info.cbz_saved.message",
@@ -1446,12 +1459,15 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
             return _done(False)
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
         try:
-            with zipfile.ZipFile(new_file, "w") as zf:
+            with zipfile.ZipFile(new_file, "w", **zip_compression_kwargs(comp_level)) as zf:
                 for entry in state.images_data:
                     if entry["bytes"] is not None and not entry.get("is_dir"):
                         zf.writestr(entry["orig_name"], entry["bytes"])
             old_file_cbz = state.current_file
             state.current_file = new_file
+            state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
+            if hasattr(parent, "_update_status_bar"):
+                parent._update_status_bar()
 
             def _after_cbz_converted(result):
                 if result:
@@ -1492,12 +1508,15 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
             return _done(False)
         get_config_manager().set('last_open_dir', os.path.dirname(os.path.abspath(new_file)))
         try:
-            with zipfile.ZipFile(new_file, "w") as zf:
+            with zipfile.ZipFile(new_file, "w", **zip_compression_kwargs(comp_level)) as zf:
                 for entry in state.images_data:
                     if entry["bytes"] is not None and not entry.get("is_dir"):
                         zf.writestr(entry["orig_name"], entry["bytes"])
             old_file_pdf = state.current_file
             state.current_file = new_file
+            state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
+            if hasattr(parent, "_update_status_bar"):
+                parent._update_status_bar()
 
             def _after_pdf_converted(result):
                 if result:

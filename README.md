@@ -20,7 +20,7 @@ This is my first application, and I hope you’ll like it. I have absolutely no 
 
 Open an archive and its pages fill the window as thumbnails — your entire comic, at a glance. Everything is designed to be handled directly in that mosaic: drag pages to reorder them, drop files to add them, click to rename or delete. The goal was to make it feel like something you can figure out without reading the docs.
 
-Thumbnail size is adjustable (3 sizes). The interface comes in light and dark themes. A fullscreen mode is also available.
+Thumbnail size is adjustable (3 sizes), via the slider or Ctrl+scroll wheel directly on the mosaic. The interface comes in light and dark themes. A fullscreen mode is also available.
 
 The window can be split into two independent panels side by side, each with its own archive, its own undo/redo history, and its own toolbar. The divider between the two panels is freely resizable. Pages can be dragged from one panel to the other (i.e. moving pages from one archive to the other).
 
@@ -55,7 +55,7 @@ MosaicView also accepts loose image files (dragged individually or as a folder),
 
 ## Languages
 
-MosaicView is fully translated into **47 languages**, including English, French, German, Spanish, Japanese, Chinese, Arabic, and many more.
+MosaicView is fully translated into **46 languages**, including English, French, German, Spanish, Japanese, Chinese, Arabic, and many more.
 
 The interface language is detected automatically from your system settings.
 
@@ -83,7 +83,8 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 - **Image adjustments** — brightness, contrast, gamma, sepia, black & white, and more, with a live preview
 - **Merge archives** — combine multiple CBZ/CBR/CB7/PDF files into one (especially useful for variant covers)
 - **Convert formats** — batch-convert CBR → CBZ, CB7 → CBZ, CBT → CBZ, PDF → CBZ, or image folders → CBZ
-- **Renumber pages** — two modes: simple sequential renumbering (01, 02, 03…), or smart renumbering that detects double-page spreads by their aspect ratio and generates compound names (01-02, 03, 04-05…)
+- **Renumber pages** — three modes: simple sequential renumbering (01, 02, 03…), smart renumbering that detects double-page spreads by their aspect ratio and generates compound names (01-02, 03, 04-05…), or OFF to keep original filenames untouched. The active mode is shown in a clickable status bar indicator and is remembered between sessions.
+- **ZIP compression** — a configurable default compression level (0-9, defaulting to no compression) is applied whenever a CBZ is saved, since comic images are already compressed by their own format and ZIP compression on top brings no real space savings while slowing down saving and reading. A status bar indicator shows the compression state of the currently open file and offers to resave it at the default level when relevant.
 - **Image viewer** — double-click any page to open a full viewer: navigate with arrow keys or mouse wheel, zoom with Ctrl+scroll, pan with right-click drag, toggle fullscreen with F11 or double-click. Three reading modes: single page, double-page spread, and continuous scroll. Animated GIFs are played back with a Play/Pause button. Cropping is also available directly from the viewer. A **bookmark** is automatically saved when closing the viewer (except on the first and last page) — a red ribbon icon appears on the corresponding thumbnail in the mosaic. On the next opening, a prompt offers to resume reading from that page.
 - **Sort pages** — sort all pages by name, file type, file size, width, height, resolution, or DPI
 - **Rotate / flip** — rotate pages 90° left or right, or flip them horizontally or vertically
@@ -122,6 +123,7 @@ Batch conversions can be launched from the toolbar, the menu bar, the right-clic
 - **Images → CBZ** — packages loose image files into CBZ archives, with two modes: one CBZ per image, or all images grouped into a single CBZ
 - **Metadata import** — automatically retrieves metadata (title, series, authors…) from ComicVine for all compatible files in a folder. A wizard opens successively for each file. See the Metadata section below.
 - **Create library** — indexes all compatible files in a folder into a new MosaicView library (*.mvdb). See the Library section below.
+- **Recompress CBZ at default level** — scans a folder for CBZ/CBR/CB7/CBT files, detects the real format of each by magic bytes (catching files saved with the wrong extension in either direction), renames mis-named CBZ files to the correct extension, and recompresses every CBZ not already at the configured default ZIP compression level. See the ZIP compression entry above.
 
 When renamed files or errors occur, a log file is created and a link to it is shown in the summary dialog.
 
@@ -139,6 +141,7 @@ This feature is entirely based on the open source project [cbanack/comic-vine-sc
 
 - **Single file** — open a file, then use the toolbar button or the Metadata menu. A two-step wizard lets you pick the series, then the matching issue. Metadata is written as a `ComicInfo.xml` file inside the archive.
 - **Batch mode** — drop one or more folders onto the mosaic and choose "Metadata import", or use the dedicated toolbar button. The wizard opens for each compatible file (CBZ, CBR, CB7, CBT, PDF) found in the folder and its subfolders. Non-CBZ files are automatically converted to CBZ after writing.
+- **Source traceability** — every metadata import records the source date and the ComicVine page URL inside `ComicInfo.xml`. This information is shown read-only in both the Metadata tab and the ComicInfo.xml editor, with a clickable link to the original page. A newer import replaces the previous record rather than stacking up.
 
 ---
 
@@ -148,7 +151,8 @@ The library lets you catalogue and search your entire digital comics collection.
 
 - **Create** — use the Library menu → New database, or drop one or more folders onto the mosaic and choose "Create a library from the folder(s)". MosaicView scans the folders and indexes all compatible files automatically.
 - **Search** — filter by series, author, year, publisher, and more, combining as many criteria as needed (AND/OR).
-- **Open** — double-click any entry to open the file directly in MosaicView. An "Open in MosaicView" button is also available in the preview panel.
+- **Open** — double-click any entry to open the file directly in MosaicView. An "Open in MosaicView" button is also available in the preview panel. The right-click menu also offers "Open with default application" to launch the file with whatever program Windows has associated with it.
+- **Drag and drop into the mosaic** — selected entries can be dragged straight from the library table onto a panel: a single file opens it, multiple files merge them, exactly like dropping files from Windows Explorer.
 - **Edit metadata** — comics that already have a ComicInfo.xml can be edited directly from the library without opening the file first.
 - **Export** — the "Export results" button saves the current table to an Excel file (*.xlsx).
 

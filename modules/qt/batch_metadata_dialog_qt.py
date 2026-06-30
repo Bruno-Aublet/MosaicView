@@ -798,7 +798,9 @@ class _BatchMetadataOrchestrator:
 
             tmp_path = filepath + '.~tmp'
             try:
-                with zipfile.ZipFile(tmp_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+                from modules.qt.utils import zip_compression_kwargs
+                from modules.qt.config_manager import get_config_manager as _gcm
+                with zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zf:
                     if cbz_manifest:
                         _write_non_manifest(zf)
                         # Recopier toutes les entrées de l'original sauf couverture et XML déjà écrits

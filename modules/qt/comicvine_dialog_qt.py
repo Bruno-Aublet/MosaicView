@@ -471,7 +471,7 @@ class _ComicVineDialog(QDialog):
             from defusedxml.ElementTree import fromstring as _safe_fromstring
         except ImportError:
             _safe_fromstring = ET.fromstring
-        from modules.qt.comic_info import parse_comic_info_xml, _serialize_comic_xml
+        from modules.qt.comic_info import parse_comic_info_xml, _serialize_comic_xml, set_mosaicview_trace
         from modules.qt.metadata_signal import metadata_signal
 
         st = self._state
@@ -521,6 +521,11 @@ class _ComicVineDialog(QDialog):
             if elem is None:
                 elem = ET.SubElement(root, tag)
             elem.text = value
+
+        web_url = meta.get("web", "").strip()
+        if web_url:
+            from datetime import datetime
+            set_mosaicview_trace(root, datetime.now().strftime("%Y-%m-%d"), web_url)
 
         new_bytes = _serialize_comic_xml(root, original_bytes)
 

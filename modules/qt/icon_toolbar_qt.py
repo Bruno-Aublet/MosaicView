@@ -67,8 +67,8 @@ ICON_DEFINITIONS = [
     {"id": "text",                "tooltip_key": "tooltip.text",                  "png": "BTN_Text.png"},
     {"id": "create_ico",          "tooltip_key": None,                            "png": "BTN_ICO.png"},
     # --- ASSEMBLAGE ---
-    {"id": "join_pages",          "tooltip_key": None,                            "png": "BTN_Join.png"},
-    {"id": "split_page",          "tooltip_key": None,                            "png": "BTN_Split.png"},
+    {"id": "join_pages",          "tooltip_key": "buttons.join_pages",            "png": "BTN_Join.png"},
+    {"id": "split_page",          "tooltip_key": "buttons.split_page",            "png": "BTN_Split.png"},
     # --- IMPRESSION ---
     {"id": "print_selection",     "tooltip_key": "buttons.print_selection",       "png": "BTN_Print.png"},
     {"id": "print_all",           "tooltip_key": "buttons.print_all",             "png": "BTN_Print_All.png"},
@@ -149,7 +149,8 @@ _ACTIVATION_RULES = {
     "print_all":           lambda sg: sg["print_available"]() and sg["has_images"](),
     "fetch_metadata":      lambda sg: sg["has_file"](),
     "edit_comicinfo":      lambda sg: sg["has_file"](),
-    "renumber":            lambda sg: sg["needs_renumbering"]() and not sg["has_subdirs"](),
+    "renumber":            lambda sg: sg["needs_renumbering"]() and not sg["has_subdirs"]()
+                                       and sg["renumber_mode"]() != 0,
     "sort":                lambda sg: sg["has_images"](),
     "web_import":          None,
     "create_nfo":          lambda sg: sg["has_images"](),
@@ -227,14 +228,20 @@ class IconLabel(QLabel):
         return f'<p style="white-space: normal; max-width: 320px;">{escaped}</p>'
 
     def enterEvent(self, event):
+        if self.icon_id == "renumber":
+            # Toujours actif au survol, même grisé en mode OFF : le clic droit
+            # (changement de mode) doit rester disponible et le tooltip visible.
+            c = IconToolbarQt._hover_color
+            self.setStyleSheet(f"background: {c}; border-radius: 4px;")
+            tb = self._toolbar
+            mode = tb._state_getters.get("renumber_mode", lambda: 1)()
+            tb.show_tooltip(self._format_tooltip(_(f"tooltip.renumber_btn_{mode}")))
+            return
         if self._active:
             c = IconToolbarQt._hover_color
             self.setStyleSheet(f"background: {c}; border-radius: 4px;")
             tb = self._toolbar
-            if self.icon_id == "renumber":
-                mode = tb._state_getters.get("renumber_mode", lambda: 1)()
-                tb.show_tooltip(self._format_tooltip(_(f"tooltip.renumber_btn_{mode}")))
-            elif self.icon_id == "split_ui":
+            if self.icon_id == "split_ui":
                 defn = tb._defs.get("split_ui", {})
                 split_active = tb._state_getters.get("split_active", lambda: False)()
                 key = defn.get("tooltip_key_alt") if split_active else defn.get("tooltip_key")
@@ -1399,8 +1406,9 @@ class IconToolbarQt(QWidget):
         self._main_layout.setContentsMargins(0, 0, 0, 0)
         self._main_layout.setSpacing(0)
 
-        # Tooltip overlay (QLabel enfant de la toolbar, positionné près du curseur)
-        self._overlay_tip = OverlayTooltip(self)
+        # Tooltip overlay : QLabel enfant de la fenêtre top-level (pas de la toolbar
+        # elle-même) pour ne pas être borné par l'étroite largeur de la colonne d'icônes
+        self._overlay_tip = OverlayTooltip(self.window())
 
         self._build()
 

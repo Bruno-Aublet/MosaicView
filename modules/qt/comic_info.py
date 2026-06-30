@@ -48,6 +48,13 @@ def _serialize_comic_xml(root, original_bytes=None):
                 attrs = ''.join(f' {k}="{page.attrib[k]}"' for k in all_keys)
                 lines.append(f'    <Page{attrs} />')
             lines.append('  </Pages>')
+        elif child.tag == 'MosaicViewTrace':
+            # Élément à attributs (date, url), auto-fermant — comme <Page>
+            ordered_keys = ['date', 'url']
+            extra_keys = [k for k in child.attrib if k not in ordered_keys]
+            all_keys = [k for k in ordered_keys if k in child.attrib] + extra_keys
+            attrs = ''.join(f' {k}="{child.attrib[k]}"' for k in all_keys)
+            lines.append(f'  <MosaicViewTrace{attrs} />')
         else:
             # Élément simple : texte éventuel
             text = child.text or ''
@@ -117,6 +124,12 @@ def parse_comic_info_xml(xml_data):
         metadata['review'] = root.findtext('Review', '')
         metadata['gtin'] = root.findtext('GTIN', '')
 
+        # Traçabilité MosaicView (tag custom, hors schéma ComicInfo standard)
+        trace_elem = root.find('MosaicViewTrace')
+        if trace_elem is not None:
+            metadata['mosaicview_trace_date'] = trace_elem.get('date', '')
+            metadata['mosaicview_trace_url'] = trace_elem.get('url', '')
+
         # Extraire les entrées <Page> si présentes
         pages_elem = root.find('Pages')
         if pages_elem is not None:
@@ -168,6 +181,19 @@ def read_comic_info(filepath):
         return None
 
     return None
+
+
+def set_mosaicview_trace(root, date_str, url):
+    """
+    Insère ou remplace l'élément <MosaicViewTrace date="..." url="..." /> dans l'arbre XML.
+    Un seul enregistrement de traçabilité à la fois — l'ancien est remplacé, pas cumulé.
+    """
+    existing = root.find('MosaicViewTrace')
+    if existing is not None:
+        root.remove(existing)
+    elem = ET.SubElement(root, 'MosaicViewTrace')
+    elem.set('date', date_str)
+    elem.set('url', url)
 
 
 def get_current_image_count(state):

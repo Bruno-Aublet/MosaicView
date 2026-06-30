@@ -301,6 +301,29 @@ class _ComicInfoDialog(QDialog):
         # PageCount : rempli automatiquement, non éditable
         self._setup_page_count()
 
+        # Traçabilité MosaicView : affichage lecture seule, lien cliquable
+        self._trace_date = None
+        self._trace_url  = None
+        if self._edit_mode:
+            raw = self._entry.get("bytes", b"")
+            if raw:
+                try:
+                    trace_root = ET.fromstring(raw)
+                    trace_elem = trace_root.find("MosaicViewTrace")
+                    if trace_elem is not None:
+                        self._trace_date = trace_elem.get("date", "")
+                        self._trace_url  = trace_elem.get("url", "")
+                except Exception:
+                    pass
+        self._trace_lbl = None
+        if self._trace_date and self._trace_url:
+            self._trace_lbl = QLabel()
+            self._trace_lbl.setOpenExternalLinks(True)
+            self._trace_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            self._trace_lbl.setWordWrap(True)
+            self._trace_lbl.setContentsMargins(0, 6, 0, 6)
+            self._form_layout.addWidget(self._trace_lbl)
+
         # ── Boutons ────────────────────────────────────────────────────────────
         btn_row = QHBoxLayout()
         btn_row.setSpacing(8)
@@ -580,6 +603,21 @@ class _ComicInfoDialog(QDialog):
         self._btn_clear.setFont(font)
         self._btn_clear.setStyleSheet(btn_style)
 
+        if self._trace_lbl is not None:
+            link_color = theme.get("link", "#4A9EFF")
+            text_color = theme.get('disabled', '#888888')
+            # Texte toujours en anglais/latin (non traduit) : police latine fixe,
+            # indépendante de get_current_font() (qui basculerait en Tengwar/pIqaD)
+            trace_font = QFont("Arial", font.pointSize())
+            self._trace_lbl.setFont(trace_font)
+            self._trace_lbl.setStyleSheet(f"color: {text_color};")
+            self._trace_lbl.setText(
+                f'<span style="font-family:\'Arial\'; '
+                f'font-size:{trace_font.pointSize()}pt; color:{text_color};">'
+                f'Metadata retrieved on {self._trace_date} with MosaicView from '
+                f'<a href="{self._trace_url}" style="color:{link_color};">{self._trace_url}</a></span>'
+            )
+
     # ── Construction du XML à partir des champs ────────────────────────────────
 
     def _build_xml_bytes(self) -> bytes:
@@ -599,7 +637,7 @@ class _ComicInfoDialog(QDialog):
                 child = ET.SubElement(root, tag)
                 child.text = value
 
-        # Préserve les Pages existantes en mode édition
+        # Préserve les Pages et la traçabilité MosaicView existantes en mode édition
         if self._edit_mode:
             raw = self._entry.get("bytes", b"")
             if raw:
@@ -608,6 +646,9 @@ class _ComicInfoDialog(QDialog):
                     pages_elem = orig_root.find("Pages")
                     if pages_elem is not None:
                         root.append(pages_elem)
+                    trace_elem = orig_root.find("MosaicViewTrace")
+                    if trace_elem is not None:
+                        root.append(trace_elem)
                 except Exception:
                     pass
 

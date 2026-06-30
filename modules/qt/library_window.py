@@ -499,10 +499,98 @@ class _LibraryTable(QTableWidget):
     """QTableWidget avec Home/End redirigés vers première/dernière ligne."""
     enter_pressed = Signal()
 
+    def __init__(self, rows, cols, parent=None):
+        super().__init__(rows, cols, parent)
+        self._get_abs_path = None  # callable(row_id) → str|None, défini après création
+        self._drag_start_pos = None
+        self._pending_select_row = None  # ligne à sélectionner au release si pas de drag
+        self._saved_drag_rows = None    # sélection sauvegardée au mousePressEvent
+        self._drag_just_done = False    # True si un drag vient de se terminer
+        self._rows_to_restore = None    # lignes à restaurer après le drag
+
     def mousePressEvent(self, event):
         if event.button() == Qt.RightButton:
             return  # ne pas changer la sélection sur clic droit
+        if event.button() == Qt.LeftButton:
+            mods = event.modifiers()
+            row = self.rowAt(event.position().toPoint().y())
+            already_selected = (row >= 0
+                                and self.selectionModel().isRowSelected(row, self.rootIndex()))
+            if already_selected and not (mods & (Qt.ControlModifier | Qt.ShiftModifier)):
+                self._saved_drag_rows = [idx.row() for idx in self.selectionModel().selectedRows()]
+                self._drag_start_pos = event.position().toPoint()
+                self._pending_select_row = row
+                return
+            self._drag_start_pos = None
+            self._pending_select_row = None
+            self._saved_drag_rows = None
         super().mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton and self._drag_just_done:
+            self._drag_just_done = False
+            self._rows_to_restore = None
+            return
+        if event.button() == Qt.LeftButton and self._pending_select_row is not None:
+            row = self._pending_select_row
+            self._pending_select_row = None
+            self._drag_start_pos = None
+            self.selectionModel().select(
+                self.model().index(row, 0),
+                QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
+            )
+            return
+        self._drag_start_pos = None
+        self._pending_select_row = None
+        super().mouseReleaseEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if (self._drag_start_pos is not None
+                and event.buttons() & Qt.LeftButton
+                and self._get_abs_path):
+            dist = (event.position().toPoint() - self._drag_start_pos).manhattanLength()
+            if dist >= QApplication.startDragDistance():
+                saved = self._saved_drag_rows
+                self._pending_select_row = None
+                self._drag_start_pos = None
+                self._saved_drag_rows = None
+                self._do_drag(saved)
+                return
+            # Seuil pas encore atteint : on bloque super() pour éviter le rubber-band select
+            return
+        super().mouseMoveEvent(event)
+
+    def _do_drag(self, rows=None):
+        if rows is None:
+            rows = [idx.row() for idx in self.selectionModel().selectedRows()]
+        urls = []
+        for row in sorted(rows):
+            item = self.item(row, 0)
+            if item is None:
+                continue
+            row_id = item.data(Qt.UserRole)
+            if row_id is None:
+                continue
+            path = self._get_abs_path(row_id)
+            if path and os.path.isfile(path):
+                from PySide6.QtCore import QUrl
+                urls.append(QUrl.fromLocalFile(path))
+        if not urls:
+            return
+        from PySide6.QtCore import QMimeData
+        from PySide6.QtGui import QDrag
+        mime = QMimeData()
+        mime.setUrls(urls)
+        drag = QDrag(self)
+        drag.setMimeData(mime)
+        drag.exec(Qt.CopyAction)
+        self._drag_just_done = True
+        self.selectionModel().clearSelection()
+        for row in sorted(rows):
+            self.selectionModel().select(
+                self.model().index(row, 0),
+                QItemSelectionModel.Select | QItemSelectionModel.Rows
+            )
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Home:
@@ -1418,6 +1506,8 @@ class LibraryWindow(QWidget):
         self._table.setContextMenuPolicy(Qt.CustomContextMenu)
         self._table.customContextMenuRequested.connect(self._on_context_menu)
         self._table.itemSelectionChanged.connect(self._on_selection_changed)
+        self._table.setDragEnabled(False)
+        self._table._get_abs_path = lambda row_id: self._db.get_absolute_path(row_id) if self._db else None
         right_layout.addWidget(self._table)
 
         # Tableau filtré — même config, masqué par défaut
@@ -1441,6 +1531,8 @@ class LibraryWindow(QWidget):
         self._filter_table.setContextMenuPolicy(Qt.CustomContextMenu)
         self._filter_table.customContextMenuRequested.connect(self._on_context_menu)
         self._filter_table.itemSelectionChanged.connect(self._on_selection_changed)
+        self._filter_table.setDragEnabled(False)
+        self._filter_table._get_abs_path = lambda row_id: self._db.get_absolute_path(row_id) if self._db else None
         self._filter_table.setVisible(False)
         right_layout.addWidget(self._filter_table)
 
@@ -2118,8 +2210,11 @@ class LibraryWindow(QWidget):
         bg  = theme.get("toolbar_bg", theme["bg"])
         fg  = theme["text"]
         sel = theme.get("selected", "#3399ff")
+        _font = _get_font()
+        menu.setFont(_font)
         menu.setStyleSheet(
-            f"QMenu {{ background: {bg}; color: {fg}; border: 1px solid {sep}; }} "
+            f"QMenu {{ background: {bg}; color: {fg}; border: 1px solid {sep}; "
+            f"font-family: \"{_font.family()}\"; font-size: {_font.pointSize()}pt; }} "
             f"QMenu::item:selected {{ background: #3399ff; color: #ffffff; }}"
         )
 
@@ -2147,15 +2242,18 @@ class LibraryWindow(QWidget):
         act_unread  = QAction(_('library.mark_unread'),        menu)
         act_open_mv = QAction(_('library.open_in_mosaicview'), menu)
         act_open_ex = QAction(_('library.open_in_explorer'),   menu)
+        act_open_df = QAction(_('library.open_with_default'),  menu)
         act_read.triggered.connect(lambda: self._set_read(True))
         act_unread.triggered.connect(lambda: self._set_read(False))
         act_open_mv.triggered.connect(self._open_in_mosaicview)
         act_open_ex.triggered.connect(self._open_in_explorer)
+        act_open_df.triggered.connect(self._open_with_default)
         menu.addAction(act_read)
         menu.addAction(act_unread)
         menu.addSeparator()
         menu.addAction(act_open_mv)
         menu.addAction(act_open_ex)
+        menu.addAction(act_open_df)
         if self._parent_panel:
             menu.addSeparator()
             act_fetch = QAction(_('library.fetch_metadata'), menu)
@@ -2199,6 +2297,20 @@ class LibraryWindow(QWidget):
         if not abs_path:
             return
         _explorer_select(abs_path.replace('/', '\\'))
+
+    def _open_with_default(self):
+        if not self._db:
+            return
+        ids = self._selected_ids()
+        if not ids:
+            return
+        abs_path = self._db.get_absolute_path(ids[0])
+        if not abs_path or not os.path.isfile(abs_path):
+            return
+        try:
+            os.startfile(abs_path)
+        except Exception as e:
+            self._show_error(_('library.open_file_error_message', error=str(e)))
 
     # ── Actions DB ────────────────────────────────────────────────────────
 
@@ -2856,10 +2968,12 @@ class LibraryWindow(QWidget):
 
         def _on_edit_done(new_filename: str, new_xml_bytes: bytes):
             import zipfile, shutil
+            from modules.qt.utils import zip_compression_kwargs
+            from modules.qt.config_manager import get_config_manager as _gcm
             tmp_path = abs_path + ".tmp_ci"
             try:
                 with zipfile.ZipFile(abs_path, 'r') as zin, \
-                     zipfile.ZipFile(tmp_path, 'w', zipfile.ZIP_DEFLATED) as zout:
+                     zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zout:
                     for item in zin.infolist():
                         if item.filename.lower().endswith('comicinfo.xml'):
                             zout.writestr(new_filename, new_xml_bytes)

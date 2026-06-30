@@ -25,6 +25,7 @@ def restore_session(win):
         if cfg.get_dark_mode():
             win._state.dark_mode = True
         apply_theme(app, win._canvas, win._left_panel, win._tab_bar, render=False)
+        win._active_panel._update_status_bar()
 
         # Affichage : maximized, normal ou plein écran
         from PySide6.QtCore import Qt
@@ -161,6 +162,13 @@ def reset_to_defaults(win):
             p._icon_toolbar.adapt_cols_to_width(default_col_w)
     cfg.set_buttons_column_width(default_col_w, save=False)
     cfg.set_buttons_column_width_panel2(default_col_w, save=False)
+
+    # Mode de renumérotation et taux de compression ZIP par défaut — tous les panneaux
+    for p in win._all_panels():
+        p._state.renumber_mode = 1
+        p._renumber_config().set_renumber_mode(1)
+        p._zip_compression_config().set_zip_compression_level(0)
+        p._update_status_bar()
 
     # Sauvegarder
     cfg.set_window_size(default_width, default_height, save=False)

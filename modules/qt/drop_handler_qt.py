@@ -217,13 +217,30 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
         dlg.raise_()
         dlg.activateWindow()
 
+    def _make_batch_recompress():
+        from modules.qt.batch_dialogs_qt import batch_recompress_cbz_confirm
+        files = []
+        for d in dirs:
+            for dirpath, _subdirs, filenames in os.walk(d):
+                for fn in filenames:
+                    if fn.lower().endswith(('.cbz', '.cbr', '.cb7', '.cbt')):
+                        files.append(os.path.join(dirpath, fn))
+        files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
+        if not files:
+            _show_centered_msgbox(parent,
+                _wt("dialogs.batch_recompress.no_files_title"),
+                _("dialogs.batch_recompress.no_files_message").format(directory=", ".join(dirs)))
+            return
+        batch_recompress_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
+
     callbacks = {
-        'batch_cbr':      _make_batch_cbr,
-        'batch_cb7':      _make_batch_cb7,
-        'batch_cbt':      _make_batch_cbt,
-        'batch_pdf':      _make_batch_pdf,
-        'batch_img':      _make_batch_img,
-        'batch_metadata': _make_batch_metadata,
-        'batch_library':  _make_batch_library,
+        'batch_cbr':        _make_batch_cbr,
+        'batch_cb7':        _make_batch_cb7,
+        'batch_cbt':        _make_batch_cbt,
+        'batch_pdf':        _make_batch_pdf,
+        'batch_img':        _make_batch_img,
+        'batch_metadata':   _make_batch_metadata,
+        'batch_library':    _make_batch_library,
+        'batch_recompress': _make_batch_recompress,
     }
     show_batch_drop_dialog(parent, dirs, callbacks)

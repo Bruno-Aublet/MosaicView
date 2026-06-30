@@ -547,6 +547,7 @@ class _HelpDialog(QDialog):
             ("help.icon_toolbar",         "help.icon_toolbar_content"),
             ("help.manipulation",         "help.manipulation_content"),
             ("help.renumber",             "help.renumber_content"),
+            ("help.zip_compression",      "help.zip_compression_content"),
             ("help.flatten",              "help.flatten_content"),
             ("help.viewer",               "help.viewer_content"),
             ("help.crop",                 "help.crop_content"),

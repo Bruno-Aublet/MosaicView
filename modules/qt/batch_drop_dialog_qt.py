@@ -51,10 +51,10 @@ class BatchDropDialog(QDialog):
         super().__init__(parent)
         self._dirs  = dirs
         self._count = len(dirs)
-        self.chosen = None   # 'cbr' | 'cb7' | 'cbt' | 'pdf' | 'img' | 'metadata' | 'library' | None (annuler)
+        self.chosen = None   # 'cbr' | 'cb7' | 'cbt' | 'pdf' | 'img' | 'metadata' | 'library' | 'recompress' | None (annuler)
 
         self.setModal(False)
-        self.setFixedSize(480, 355)
+        self.setFixedSize(480, 400)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 14)
@@ -71,21 +71,23 @@ class BatchDropDialog(QDialog):
         # Radio buttons
         self._btn_group = QButtonGroup(self)
 
-        self._radio_cbr      = QRadioButton()
-        self._radio_cb7      = QRadioButton()
-        self._radio_cbt      = QRadioButton()
-        self._radio_pdf      = QRadioButton()
-        self._radio_img      = QRadioButton()
-        self._radio_metadata = QRadioButton()
-        self._radio_library  = QRadioButton()
+        self._radio_cbr        = QRadioButton()
+        self._radio_cb7        = QRadioButton()
+        self._radio_cbt        = QRadioButton()
+        self._radio_pdf        = QRadioButton()
+        self._radio_img        = QRadioButton()
+        self._radio_metadata   = QRadioButton()
+        self._radio_library    = QRadioButton()
+        self._radio_recompress = QRadioButton()
 
-        self._btn_group.addButton(self._radio_cbr,      0)
-        self._btn_group.addButton(self._radio_cb7,      1)
-        self._btn_group.addButton(self._radio_cbt,      2)
-        self._btn_group.addButton(self._radio_pdf,      3)
-        self._btn_group.addButton(self._radio_img,      4)
-        self._btn_group.addButton(self._radio_metadata, 5)
-        self._btn_group.addButton(self._radio_library,  6)
+        self._btn_group.addButton(self._radio_cbr,        0)
+        self._btn_group.addButton(self._radio_cb7,        1)
+        self._btn_group.addButton(self._radio_cbt,        2)
+        self._btn_group.addButton(self._radio_pdf,        3)
+        self._btn_group.addButton(self._radio_img,        4)
+        self._btn_group.addButton(self._radio_metadata,   5)
+        self._btn_group.addButton(self._radio_library,    6)
+        self._btn_group.addButton(self._radio_recompress, 7)
         self._radio_cbr.setChecked(True)
 
         for rb in (self._radio_cbr, self._radio_cb7, self._radio_cbt,
@@ -98,6 +100,16 @@ class BatchDropDialog(QDialog):
         sep_radios.setFrameShadow(QFrame.Sunken)
         self._sep_radios = sep_radios
         layout.addWidget(sep_radios)
+        layout.addSpacing(4)
+
+        layout.addWidget(self._radio_recompress)
+
+        layout.addSpacing(4)
+        sep_radios2 = QFrame()
+        sep_radios2.setFrameShape(QFrame.HLine)
+        sep_radios2.setFrameShadow(QFrame.Sunken)
+        self._sep_radios2 = sep_radios2
+        layout.addWidget(sep_radios2)
         layout.addSpacing(4)
 
         for rb in (self._radio_metadata, self._radio_library):
@@ -165,6 +177,7 @@ class BatchDropDialog(QDialog):
             f"QFrame[frameShape='4'] {{ color: {sep}; }}"  # HLine = 4
         )
         self._sep_radios.setStyleSheet(f"color: {sep};")
+        self._sep_radios2.setStyleSheet(f"color: {sep};")
 
         font10 = _get_current_font(10)
         font11 = _get_current_font(11)
@@ -198,6 +211,8 @@ class BatchDropDialog(QDialog):
         self._radio_metadata.setFont(font10)
         self._radio_library.setText(_radio_label("batch_library"))
         self._radio_library.setFont(font10)
+        self._radio_recompress.setText(_radio_label("batch_recompress"))
+        self._radio_recompress.setFont(font10)
 
         self._lbl_note.setText(_("dialogs.batch_drop.recursive_note"))
         self._lbl_note.setFont(font9)
@@ -213,7 +228,7 @@ class BatchDropDialog(QDialog):
 
     def _on_ok(self):
         checked = self._btn_group.checkedId()
-        self.chosen = ("cbr", "cb7", "cbt", "pdf", "img", "metadata", "library")[checked]
+        self.chosen = ("cbr", "cb7", "cbt", "pdf", "img", "metadata", "library", "recompress")[checked]
         self.accept()
 
     def _on_cancel(self):

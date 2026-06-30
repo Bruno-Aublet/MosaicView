@@ -860,7 +860,9 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                             c += 1
                         cbz_path = f"{base_path} ({c}).cbz"
 
-                    with zipfile.ZipFile(cbz_path, 'w') as cbz:
+                    from modules.qt.utils import zip_compression_kwargs
+                    from modules.qt.config_manager import get_config_manager as _gcm
+                    with zipfile.ZipFile(cbz_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                         for page_num, file_name in enumerate(all_files):
                             try:
                                 raw = archive.read(file_name)
@@ -1248,7 +1250,9 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                         c += 1
                     cbz_path = f"{base_path} ({c}).cbz"
 
-                with zipfile.ZipFile(cbz_path, 'w') as cbz:
+                from modules.qt.utils import zip_compression_kwargs
+                from modules.qt.config_manager import get_config_manager as _gcm
+                with zipfile.ZipFile(cbz_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                     for page_num, file_name in enumerate(all_files):
                         try:
                             raw = _read_7z_file(cb7_path, file_name)
@@ -1639,7 +1643,9 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                             c += 1
                         cbz_path = f"{base_path} ({c}).cbz"
 
-                    with zipfile.ZipFile(cbz_path, 'w') as cbz:
+                    from modules.qt.utils import zip_compression_kwargs
+                    from modules.qt.config_manager import get_config_manager as _gcm
+                    with zipfile.ZipFile(cbz_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                         for page_num, member in enumerate(all_members):
                             try:
                                 raw = archive.extractfile(member).read()
@@ -1919,8 +1925,10 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
             _send(('batch_convert', filenames_list))
 
             # Reçoit les pages et les écrit dans le CBZ
+            from modules.qt.utils import zip_compression_kwargs
+            from modules.qt.config_manager import get_config_manager as _gcm
             try:
-                with zipfile.ZipFile(cbz_path, 'w') as cbz:
+                with zipfile.ZipFile(cbz_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as cbz:
                     while True:
                         msg = _recv(timeout=120)
                         if msg is None:
@@ -2550,3 +2558,370 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
     signals.conversion_done.connect(on_done)
     thread = threading.Thread(target=do_conversion, daemon=True)
     thread.start()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Batch : recompression ZIP des CBZ au taux par défaut
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class _RecompressConfirmDialog(QDialog):
+    """Fenêtre de confirmation avant le lancement de la recompression batch.
+    Pas de checkbox (pas de suppression de fichiers dans ce batch)."""
+
+    def __init__(self, parent, count, directory, total_size, level):
+        super().__init__(parent)
+        self._count      = count
+        self._directory  = directory
+        self._total_size = total_size
+        self._level      = level
+        self.confirmed   = False
+
+        self.setModal(False)
+        self.setFixedWidth(500)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(8)
+
+        self._msg_lbl = QLabel()
+        self._msg_lbl.setWordWrap(True)
+        self._msg_lbl.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._msg_lbl)
+
+        self._size_lbl = QLabel()
+        self._size_lbl.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._size_lbl)
+
+        layout.addSpacing(6)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self._start_btn = QPushButton()
+        self._start_btn.setFixedWidth(110)
+        self._start_btn.clicked.connect(self._on_start)
+        self._start_btn.setDefault(True)
+        btn_row.addWidget(self._start_btn)
+        self._cancel_btn = QPushButton()
+        self._cancel_btn.setFixedWidth(110)
+        self._cancel_btn.clicked.connect(self._on_cancel)
+        btn_row.addWidget(self._cancel_btn)
+        btn_row.addStretch()
+        layout.addLayout(btn_row)
+
+        self.rejected.connect(self._on_cancel)
+        self._retranslate()
+        _connect_lang(self, lambda _: self._retranslate())
+        self._start_btn.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+
+    def _retranslate(self):
+        theme = get_current_theme()
+        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+        font = _get_current_font(10)
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        display_dir = self._directory if len(self._directory) <= 60 else "..." + self._directory[-57:]
+        self.setWindowTitle(_wt("dialogs.batch_recompress.window_title"))
+        self._msg_lbl.setText(_("dialogs.batch_recompress.confirm_message").format(
+            count=self._count, directory=display_dir, level=self._level))
+        self._msg_lbl.setFont(font)
+        self._size_lbl.setText(f"({format_file_size(self._total_size)})")
+        self._size_lbl.setFont(font)
+        self._start_btn.setText(_("dialogs.batch_recompress.start_button"))
+        self._start_btn.setFont(font)
+        self._start_btn.setStyleSheet(btn_style)
+        self._cancel_btn.setText(_("buttons.cancel"))
+        self._cancel_btn.setFont(font)
+        self._cancel_btn.setStyleSheet(btn_style)
+
+    def _on_start(self):
+        self.confirmed = True
+        self.accept()
+
+    def _on_cancel(self):
+        self.confirmed = False
+        self.accept()
+
+
+def batch_recompress_cbz_confirm(parent, archive_files, directory, callbacks, directories=None):
+    """Fenêtre de confirmation + progression + résumé pour la recompression batch des CBZ."""
+    archive_files = [os.path.normpath(f) for f in archive_files]
+    directory     = os.path.normpath(directory) if directory else directory
+    if directories:
+        directories = [os.path.normpath(d) for d in directories]
+    total_size = sum(os.path.getsize(f) for f in archive_files)
+    level = get_config_manager().get_zip_compression_level()
+
+    dlg = _RecompressConfirmDialog(parent, len(archive_files), directory, total_size, level)
+
+    def _on_confirm_done():
+        if not dlg.confirmed:
+            return
+        _run_recompress(parent, archive_files, directory, directories, callbacks, level)
+
+    dlg.finished.connect(lambda _: _on_confirm_done())
+    dlg.show()
+
+
+def _run_recompress(parent, archive_files, directory, directories, callbacks, level):
+    from modules.qt.utils import zip_compression_kwargs
+    from modules.qt.archive_loader import _detect_zip_compression_state
+
+    prog = _ProgressDialog(parent, "dialogs.batch_recompress.running_title", has_page_bar=False)
+    prog.show()
+    QApplication.processEvents()
+
+    signals = _ThreadSignals()
+    _register_batch(prog, signals)
+
+    conversion_errors = []
+    renamed_entries    = []
+    recompressed_count = [0]
+    already_optimal_count = [0]
+    ignored_count       = [0]
+
+    signals.update_filename.connect(prog.set_filename)
+    signals.update_progress.connect(prog.set_progress)
+    signals.update_thumb.connect(prog.set_thumbnail)
+
+    def do_recompress():
+        total = len(archive_files)
+        for idx, path in enumerate(archive_files):
+            basename = os.path.basename(path)
+            signals.update_filename.emit(basename)
+            signals.update_progress.emit(
+                _("dialogs.batch_recompress.progress").format(current=idx + 1, total=total))
+
+            real_type = detect_archive_type(path)
+
+            if real_type != "CBZ":
+                # Vraie archive non-CBZ (CBR/CB7/CBT réel, ou format inconnu) : ignorée
+                signals.update_thumb.emit(None)
+                ignored_count[0] += 1
+                continue
+
+            # Vignette : première image du CBZ
+            try:
+                with zipfile.ZipFile(path, 'r') as arc:
+                    names = sorted(
+                        [f for f in arc.namelist() if not f.endswith('/') and f.lower().endswith(image_exts)],
+                        key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower())
+                    )
+                    if names:
+                        data = arc.read(names[0])
+                        img  = Image.open(io.BytesIO(data))
+                        px   = _pil_to_qpixmap(img, 150, 210, callbacks)
+                        signals.update_thumb.emit(px)
+                        img = None
+                    else:
+                        signals.update_thumb.emit(None)
+            except Exception:
+                signals.update_thumb.emit(None)
+
+            # Fichier mal nommé (extension ≠ .cbz mais contenu réellement ZIP) : renommer en .cbz
+            target_path = path
+            if os.path.splitext(path)[1].lower() != ".cbz":
+                base_path, _ext = os.path.splitext(path)
+                new_path = base_path + ".cbz"
+                if os.path.exists(new_path):
+                    c = 1
+                    while os.path.exists(f"{base_path} ({c}).cbz"):
+                        c += 1
+                    new_path = f"{base_path} ({c}).cbz"
+                try:
+                    os.rename(path, new_path)
+                    renamed_entries.append(f"{basename} → {os.path.basename(new_path)}")
+                    target_path = new_path
+                except Exception as e:
+                    conversion_errors.append(f"{basename}: {e}")
+                    continue
+
+            # Déjà au taux par défaut : ne pas retraiter
+            state = _detect_zip_compression_state(target_path)
+            if level <= 0 and state == "stored":
+                already_optimal_count[0] += 1
+                continue
+
+            # Recompresse via fichier temporaire
+            try:
+                tmp_path = target_path + ".~recompress.tmp"
+                with zipfile.ZipFile(target_path, "r") as zin, \
+                     zipfile.ZipFile(tmp_path, "w", **zip_compression_kwargs(level)) as zout:
+                    for name in zin.namelist():
+                        zout.writestr(name, zin.read(name))
+                import shutil as _shutil
+                _shutil.move(tmp_path, target_path)
+                recompressed_count[0] += 1
+            except Exception as e:
+                conversion_errors.append(f"{os.path.basename(target_path)}: {e}")
+                try:
+                    if os.path.exists(tmp_path):
+                        os.remove(tmp_path)
+                except Exception:
+                    pass
+
+        signals.conversion_done.emit()
+
+    def on_done():
+        prog.mark_done()
+        prog.close()
+        _unregister_batch(prog)
+
+        log_path = None
+        if conversion_errors or renamed_entries:
+            try:
+                from datetime import datetime
+                now = datetime.now()
+                log_filename = f"Log_recompress_{now.strftime('%Y_%m_%d_%H_%M')}.txt"
+                mosaicview_temp = callbacks['get_mosaicview_temp_dir']()
+                log_path = os.path.join(mosaicview_temp, log_filename)
+                with open(log_path, 'w', encoding='utf-8') as lf:
+                    lf.write("MosaicView - CBZ Recompression Batch Log\n")
+                    lf.write(f"Date: {now.strftime('%Y-%m-%d %H:%M')}\n")
+                    lf.write(f"Directory: {directory}\n")
+                    lf.write(f"Total files: {len(archive_files)}\n")
+                    lf.write(f"Recompressed: {recompressed_count[0]}\n")
+                    lf.write(f"Already optimal: {already_optimal_count[0]}\n")
+                    lf.write(f"Ignored (not CBZ): {ignored_count[0]}\n")
+                    lf.write(f"Renamed (mis-named → .cbz): {len(renamed_entries)}\n")
+                    lf.write(f"Errors: {len(conversion_errors)}\n")
+                    if renamed_entries:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write("Renamed files:\n")
+                        lf.write(f"{'='*60}\n\n")
+                        for entry in renamed_entries:
+                            lf.write(f"  - {entry}\n")
+                    if conversion_errors:
+                        lf.write(f"\n{'='*60}\n")
+                        lf.write("Error details:\n")
+                        lf.write(f"{'='*60}\n\n")
+                        for err in conversion_errors:
+                            lf.write(f"  - {err}\n")
+            except Exception as log_err:
+                print(f"Erreur log : {log_err}")
+                log_path = None
+
+        summary_data = {
+            "total":               len(archive_files),
+            "recompressed_count":  recompressed_count[0],
+            "already_optimal_count": already_optimal_count[0],
+            "ignored_count":       ignored_count[0],
+            "renamed_count":       len(renamed_entries),
+            "errors_count":        len(conversion_errors),
+            "has_errors":          bool(conversion_errors),
+            "directory":           directory,
+            "directories":         directories,
+            "log_path":            log_path,
+        }
+        show_batch_recompress_summary(parent, summary_data)
+
+    signals.conversion_done.connect(on_done)
+    thread = threading.Thread(target=do_recompress, daemon=True)
+    thread.start()
+
+
+class _RecompressSummaryDialog(QDialog):
+    def __init__(self, parent, data):
+        super().__init__(parent)
+        self._data = data
+        self.setModal(False)
+        self.setFixedWidth(480)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(8)
+
+        top = QVBoxLayout()
+        top.setSpacing(0)
+        top.setContentsMargins(0, 0, 0, 0)
+        self._msg_lbl = QLabel()
+        self._msg_lbl.setWordWrap(True)
+        self._msg_lbl.setAlignment(Qt.AlignCenter)
+        top.addWidget(self._msg_lbl)
+        _add_dir_links(top, data)
+        layout.addLayout(top)
+
+        self._error_lbl = None
+        log_path = data.get("log_path")
+        if data.get("has_errors") or log_path:
+            self._error_lbl = QLabel()
+            self._error_lbl.setWordWrap(True)
+            self._error_lbl.setAlignment(Qt.AlignCenter)
+            self._error_lbl.setStyleSheet("color: #4A9EFF;")
+            self._error_lbl.setCursor(QCursor(Qt.PointingHandCursor))
+            self._error_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            if log_path:
+                self._error_lbl.linkActivated.connect(lambda _, p=log_path: _open_path(p))
+            layout.addWidget(self._error_lbl)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self._ok_btn = QPushButton()
+        self._ok_btn.setFixedWidth(100)
+        self._ok_btn.setDefault(True)
+        self._ok_btn.clicked.connect(self.accept)
+        btn_row.addWidget(self._ok_btn)
+        btn_row.addStretch()
+        layout.addLayout(btn_row)
+
+        self._retranslate()
+        _connect_lang(self, lambda _: self._retranslate())
+        self._ok_btn.setFocus()
+        self._center_parent = parent
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self._center_parent and not event.spontaneous():
+            from PySide6.QtCore import QTimer
+            from modules.qt.dialogs_qt import _center_on_widget
+            p = self._center_parent
+            QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+
+    def _retranslate(self):
+        theme = get_current_theme()
+        self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
+        font = _get_current_font(10)
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        data = self._data
+        self.setWindowTitle(_wt("dialogs.batch_recompress.complete_title"))
+        self._msg_lbl.setText(_("dialogs.batch_recompress.summary_message").format(
+            total=data["total"],
+            recompressed=data["recompressed_count"],
+            already_optimal=data["already_optimal_count"],
+            ignored=data["ignored_count"],
+        ))
+        self._msg_lbl.setFont(font)
+
+        if self._error_lbl is not None:
+            log_path = data.get("log_path")
+            if data.get("has_errors") and log_path:
+                text = _("dialogs.batch_recompress.errors_with_log").format(
+                    count=data["errors_count"])
+                self._error_lbl.setText(f'<a href="#">{text}</a>')
+            elif log_path:
+                self._error_lbl.setText(f'<a href="#">{_("dialogs.batch_recompress.view_log")}</a>')
+            self._error_lbl.setFont(font)
+
+        self._ok_btn.setText(_("buttons.ok"))
+        self._ok_btn.setFont(font)
+        self._ok_btn.setStyleSheet(btn_style)
+
+
+def show_batch_recompress_summary(parent, data):
+    dlg = _RecompressSummaryDialog(parent, data)
+    dlg.show()

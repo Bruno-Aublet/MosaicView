@@ -557,6 +557,22 @@ class ConfigManager:
         """Persiste le flag barre d'icônes (TEMPORAIRE — dev)."""
         return self.set('use_icon_toolbar', bool(value))
 
+    def get_renumber_mode(self):
+        """Retourne le mode de renumérotation persisté (0=OFF, 1=auto, 2=simple)."""
+        return int(self.config.get('renumber_mode', 1))
+
+    def set_renumber_mode(self, mode):
+        """Persiste le mode de renumérotation."""
+        return self.set('renumber_mode', int(mode))
+
+    def get_zip_compression_level(self):
+        """Retourne le niveau de compression ZIP par défaut à l'enregistrement (0-9, défaut 0=store)."""
+        return int(self.config.get('zip_compression_level', 0))
+
+    def set_zip_compression_level(self, level):
+        """Persiste le niveau de compression ZIP par défaut."""
+        return self.set('zip_compression_level', int(level))
+
     def get_split_active(self):
         """Retourne True si l'interface est scindée en deux panneaux."""
         return bool(self.config.get('split_active', False))
@@ -604,6 +620,22 @@ class ConfigManager:
 
     def set_buttons_column_width_panel2(self, width, save=True):
         return self.set('buttons_column_width_panel2', int(width), save)
+
+    def get_renumber_mode_panel2(self):
+        """Retourne le mode de renumérotation persisté du panneau 2 (0=OFF, 1=auto, 2=simple)."""
+        return int(self.config.get('renumber_mode_panel2', 1))
+
+    def set_renumber_mode_panel2(self, mode):
+        """Persiste le mode de renumérotation du panneau 2."""
+        return self.set('renumber_mode_panel2', int(mode))
+
+    def get_zip_compression_level_panel2(self):
+        """Retourne le niveau de compression ZIP par défaut du panneau 2 (0-9, défaut 0=store)."""
+        return int(self.config.get('zip_compression_level_panel2', 0))
+
+    def set_zip_compression_level_panel2(self, level):
+        """Persiste le niveau de compression ZIP par défaut du panneau 2."""
+        return self.set('zip_compression_level_panel2', int(level))
 
     # ── Marques-pages ─────────────────────────────────────────────────────────
 
@@ -670,6 +702,18 @@ class Panel2Config:
 
     def set_show_lang_combo(self, value):
         return self._cfg.set_show_lang_combo_panel2(value)
+
+    def get_renumber_mode(self):
+        return self._cfg.get_renumber_mode_panel2()
+
+    def set_renumber_mode(self, mode):
+        return self._cfg.set_renumber_mode_panel2(mode)
+
+    def get_zip_compression_level(self):
+        return self._cfg.get_zip_compression_level_panel2()
+
+    def set_zip_compression_level(self, level):
+        return self._cfg.set_zip_compression_level_panel2(level)
 
 
 # Instance globale du gestionnaire de configuration

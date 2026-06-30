@@ -263,6 +263,7 @@ class PanelWidget(QWidget):
         # Expose le state dans le singleton global (requis par les modules qui
         # accèdent à _state_module.state, ex. recent_files, undo_redo_qt…)
         _state_module.state = self._state
+        self._state.renumber_mode = self._renumber_config().get_renumber_mode()
 
         # ── Fichiers récents ──────────────────────────────────────────────────
         _recent_files_module.init_recent_files()
@@ -316,6 +317,7 @@ class PanelWidget(QWidget):
         self._canvas._delete_selected_callback            = self._delete_selected_qt
         self._canvas._web_import_callback                 = self._handle_dropped_web_urls
         self._canvas._inter_panel_drop_callback           = self._on_inter_panel_drop
+        self._canvas._thumb_size_wheel_callback           = self._on_thumb_size_wheel
 
         # ── Menus contextuels ─────────────────────────────────────────────────
         from modules.qt.context_menus_qt import show_canvas_context_menu, show_image_context_menu, show_dir_context_menu
@@ -435,7 +437,13 @@ class PanelWidget(QWidget):
         self._status_separator.setStyleSheet("background: #d0d0d0;")
         layout.addWidget(self._status_separator)
 
-        self._status_bar = StatusBar()
+        self._status_bar = StatusBar(tooltip_parent=panel)
+        self._status_bar.set_renumber_click_callback(self._toggle_renumber_mode)
+        self._status_bar.set_zip_click_callback(self._zip_indicator_clicked)
+        self._status_bar.set_zip_right_click_callback(self._open_zip_compression_dialog)
+        self._status_bar.set_zip_level_getter(
+            lambda: self._zip_compression_config().get_zip_compression_level()
+        )
         layout.addWidget(self._status_bar)
 
         return panel
@@ -792,6 +800,8 @@ class PanelWidget(QWidget):
             self._canvas._overlay_tip.update_font()
         if hasattr(self, "_icon_toolbar") and hasattr(self._icon_toolbar, "_overlay_tip"):
             self._icon_toolbar._overlay_tip.update_font()
+        if hasattr(self, "_status_bar") and hasattr(self._status_bar, "_overlay_tip"):
+            self._status_bar._overlay_tip.update_font()
         self._metadata_tab.apply_theme()
 
     def apply_separator_theme(self):
@@ -1029,6 +1039,7 @@ class PanelWidget(QWidget):
             else:
                 reset_history(st)
                 st.current_file = pdf_files[0]
+                st.zip_compression_state = None
                 self._refresh_title()
                 self._pdf_loader.load(pdf_files[0])
 
@@ -1181,16 +1192,80 @@ class PanelWidget(QWidget):
                           state=self._state)
         self._canvas.status_changed.emit()
 
+    def _renumber_config(self):
+        """Retourne l'objet config approprié (ConfigManager ou Panel2Config) selon le panneau."""
+        if self._is_primary:
+            return get_config_manager()
+        from modules.qt.config_manager import Panel2Config
+        return Panel2Config(get_config_manager())
+
+    def _zip_compression_config(self):
+        """Retourne l'objet config approprié (ConfigManager ou Panel2Config) selon le panneau,
+        pour le réglage du niveau de compression ZIP par défaut."""
+        if self._is_primary:
+            return get_config_manager()
+        from modules.qt.config_manager import Panel2Config
+        return Panel2Config(get_config_manager())
+
+    def _open_zip_compression_dialog(self):
+        existing = getattr(self, "_zip_compression_dialog", None)
+        if existing is not None:
+            try:
+                existing.raise_()
+                existing.activateWindow()
+                return
+            except RuntimeError:
+                pass  # fenêtre détruite côté C++, on en recrée une
+        from modules.qt.zip_compression_dialog_qt import show_zip_compression_dialog
+        def _on_result(ok):
+            self._zip_compression_dialog = None
+            if ok:
+                self._update_status_bar()
+        self._zip_compression_dialog = show_zip_compression_dialog(
+            self, self._zip_compression_config(), on_result=_on_result,
+        )
+
+    def _zip_indicator_clicked(self):
+        """Clic gauche sur l'indicateur ZIP de la statusbar :
+        - pas de fichier ouvert : ne fait rien
+        - fichier non CBZ : propose d'enregistrer en CBZ (apply_new_names)
+        - CBZ déjà STORED ET taux par défaut = 0 : ne fait rien (déjà optimal)
+        - CBZ compressé, ou STORED avec taux par défaut > 0 : propose de réenregistrer
+        """
+        st = self._state
+        if not st.images_data:
+            return
+        default_level = self._zip_compression_config().get_zip_compression_level()
+        is_cbz = bool(st.current_file) and os.path.splitext(st.current_file)[1].lower() == ".cbz"
+        if is_cbz and st.zip_compression_state == "stored" and default_level <= 0:
+            return
+
+        from modules.qt.dialogs_qt import ConfirmDialog
+        title_key = "messages.questions.zip_recompress.title" if is_cbz else "messages.questions.zip_convert_to_cbz.title"
+        message_key = "messages.questions.zip_recompress.message" if is_cbz else "messages.questions.zip_convert_to_cbz.message"
+
+        def _on_confirm(ok):
+            if ok:
+                self._apply_new_names()
+
+        ConfirmDialog(self, title_key, message_key,
+                      message_kwargs={"level": default_level}).ask_async(_on_confirm)
+
     def _renumber_no_save(self, on_done=None):
         """Renumérotation auto/simple liée à CE panneau (state=self._state), sans
         swap du state global. NON modale : si la 1ère page est multiple (mode auto),
         un dialogue s'ouvre et la renumérotation de CE panneau se fait à la réponse.
         Chaque panneau finalise lui-même son rendu ; on_done() est appelé à la fin.
+        Mode OFF (0) : ne fait rien.
         """
         from modules.qt.renumbering_qt import renumber_pages_auto_qt, renumber_pages_qt
         finish = on_done if on_done is not None else (lambda: None)
 
-        if getattr(self._state, "renumber_mode", 1) == 1:
+        mode = getattr(self._state, "renumber_mode", 1)
+        if mode == 0:
+            finish()
+            return
+        if mode == 1:
             renumber_pages_auto_qt(
                 self, self._render_mosaic, save_state_func=None,
                 state=self._state, on_done=finish,
@@ -1201,14 +1276,21 @@ class PanelWidget(QWidget):
             finish()
 
     def _renumber_btn_action(self):
-        if getattr(self._state, "renumber_mode", 1) == 1:
+        mode = getattr(self._state, "renumber_mode", 1)
+        if mode == 0:
+            return
+        if mode == 1:
             self._renumber_pages_auto()
         else:
             self._renumber_pages()
 
     def _toggle_renumber_mode(self):
         current = getattr(self._state, "renumber_mode", 1)
-        self._state.renumber_mode = 2 if current == 1 else 1
+        new_mode = {0: 1, 1: 2, 2: 0}[current]
+        self._state.renumber_mode = new_mode
+        self._renumber_config().set_renumber_mode(new_mode)
+        self._update_status_bar()
+        self._refresh_toolbar_states()
 
     def _sort_images(self, sort_method: str):
         from modules.qt.sorting_qt import sort_images_qt
@@ -1702,6 +1784,7 @@ class PanelWidget(QWidget):
 
     def _update_status_bar(self):
         self._status_bar.refresh(self._state)
+        self._status_bar._overlay_tip._apply_style()
 
     def _on_non_image_file_modified(self, entry, new_bytes):
         """Appelé dans le thread Qt quand un fichier non-image a été modifié.
@@ -1902,6 +1985,7 @@ class PanelWidget(QWidget):
         self._apply_thumb_size(index, save=True)
 
     def _apply_thumb_size(self, index: int, save: bool = True):
+        from modules.qt import state as _state_module
         st = self._state
         st.current_thumb_size = index
         st.thumb_w, st.thumb_h = THUMB_SIZES[index]
@@ -1910,7 +1994,13 @@ class PanelWidget(QWidget):
             size_names = ['small', 'normal', 'large']
             get_config_manager().set_thumbnail_size(size_names[index])
         if not getattr(st, 'loading_label', None):
-            self._canvas.render_mosaic()
+            prev = _state_module.state
+            _state_module.state = st
+            try:
+                self._canvas.render_mosaic()
+            finally:
+                _state_module.state = prev
+            self._canvas.viewport().repaint()
 
     def _decrease_thumb_size(self):
         st = self._state
@@ -1923,6 +2013,13 @@ class PanelWidget(QWidget):
         st = self._state
         if st.current_thumb_size < 2:
             new_idx = st.current_thumb_size + 1
+            self._apply_thumb_size(new_idx)
+            self._icon_toolbar.set_thumb_size_index(new_idx)
+
+    def _on_thumb_size_wheel(self, delta: int):
+        st = self._state
+        new_idx = max(0, min(2, st.current_thumb_size + delta))
+        if new_idx != st.current_thumb_size:
             self._apply_thumb_size(new_idx)
             self._icon_toolbar.set_thumb_size_index(new_idx)
 

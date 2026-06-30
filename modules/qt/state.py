@@ -64,7 +64,8 @@ class AppState:
         self.last_canvas_width = 0
         self.active_viewers = 0
         self.needs_renumbering = False
-        self.renumber_mode = 1  # 1 = auto-détection pages multiples, 2 = énumération simple
+        self.renumber_mode = 1  # 0 = OFF (désactivé), 1 = auto-détection pages multiples, 2 = énumération simple
+        self.zip_compression_state = None  # 'stored' | 'deflated' | None (non-CBZ ou aucun fichier) — détecté à l'ouverture
         self.modal_open = False  # Flag pour bloquer les menus contextuels
         self.block_canvas_menu = False  # Flag pour bloquer temporairement le menu canvas
         self.block_tooltip = False  # Flag pour bloquer les tooltips (ex: menu déroulant ouvert)

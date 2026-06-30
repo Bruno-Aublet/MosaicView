@@ -615,6 +615,9 @@ def _build_system_submenu(parent, callbacks: dict) -> QMenu:
                     enabled=font_offset < max_font)
     submenu.addSeparator()
 
+    _add_action_ctx(submenu, _("menu.zip_compression"), callbacks.get('open_zip_compression_dialog'))
+    submenu.addSeparator()
+
     _add_action_ctx(submenu, _("context_menu.canvas_with_file.help"), callbacks.get('show_user_guide'))
     submenu.addSeparator()
 

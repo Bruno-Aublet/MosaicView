@@ -474,6 +474,9 @@ def _populate_system_menu(menu: QMenu, callbacks: dict):
                 enabled=font_off < max_font)
     menu.addSeparator()
 
+    _add_action(menu, _("menu.zip_compression"), callbacks.get("open_zip_compression_dialog"))
+    menu.addSeparator()
+
     _add_action(menu, _("context_menu.canvas_with_file.help"), callbacks.get("show_user_guide"))
     menu.addSeparator()
 

@@ -85,7 +85,8 @@ def _combo_style(theme):
 def _spinbox_style(theme):
     return (
         f"QSpinBox {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
-        f"border: 1px solid #aaaaaa; padding: 2px 4px; }}"
+        f"border: 1px solid #aaaaaa; padding: 2px 4px; }} "
+        f"QSpinBox::up-button, QSpinBox::down-button {{ width: 16px; }}"
     )
 
 

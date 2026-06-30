@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
     QTableView, QAbstractItemView,
 )
 from PySide6.QtCore import Qt, Signal, QThread
-from PySide6.QtGui import QPainter, QColor, QPen, QGuiApplication, QStandardItemModel, QStandardItem
+from PySide6.QtGui import QPainter, QColor, QPen, QGuiApplication, QStandardItemModel, QStandardItem, QFont
 
 from modules.qt import state as _state_module
 from modules.qt.state import get_current_theme
@@ -387,6 +387,7 @@ class MetadataTab(QScrollArea):
         self._pages_count    = 0
         self._pages_table    = None  # QTableView
         self._pages_builder  = None  # _PagesModelBuilder en cours
+        self._trace_lbl      = None  # QLabel traçabilité MosaicView (lecture seule)
 
         from modules.qt.metadata_signal import metadata_signal, metadata_pages_signal
         metadata_signal.changed.connect(self.refresh)
@@ -434,6 +435,7 @@ class MetadataTab(QScrollArea):
         self._edit_btn      = None
         self._pages_count   = 0
         self._pages_table   = None
+        self._trace_lbl     = None
         if self._pages_builder is not None:
             self._pages_builder.cancel()
             self._pages_builder = None
@@ -474,7 +476,7 @@ class MetadataTab(QScrollArea):
         self._edit_btn = edit_btn
 
         for key, value in st.comic_metadata.items():
-            if key == 'pages':
+            if key == 'pages' or key in ('mosaicview_trace_date', 'mosaicview_trace_url'):
                 continue
             if not value or not str(value).strip():
                 continue
@@ -503,6 +505,17 @@ class MetadataTab(QScrollArea):
             sep = QFrame()
             sep.setFrameShape(QFrame.HLine)
             self._vlay.addWidget(sep)
+
+        trace_date = st.comic_metadata.get('mosaicview_trace_date')
+        trace_url  = st.comic_metadata.get('mosaicview_trace_url')
+        if trace_date and trace_url:
+            trace_lbl = QLabel()
+            trace_lbl.setOpenExternalLinks(True)
+            trace_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            trace_lbl.setWordWrap(True)
+            trace_lbl.setContentsMargins(0, 10, 0, 10)
+            self._vlay.addWidget(trace_lbl)
+            self._trace_lbl = trace_lbl
 
         pages = st.comic_metadata.get('pages')
         if pages:
@@ -550,6 +563,24 @@ class MetadataTab(QScrollArea):
             lbl.setText(f"{_(f'metadata.{key}')} :")
             lbl.setFont(bold_font)
             txt.setFont(normal_font)
+
+        if self._trace_lbl is not None:
+            st = self._state or _state_module.state
+            trace_date = st.comic_metadata.get('mosaicview_trace_date', '') if st and st.comic_metadata else ''
+            trace_url  = st.comic_metadata.get('mosaicview_trace_url', '') if st and st.comic_metadata else ''
+            link_color = theme.get("link", "#4A9EFF")
+            text_color = theme.get('disabled', '#888888')
+            # Texte toujours en anglais/latin (non traduit) : police latine fixe,
+            # indépendante de get_current_font() (qui basculerait en Tengwar/pIqaD)
+            trace_font = QFont("Arial", normal_font.pointSize())
+            self._trace_lbl.setFont(trace_font)
+            self._trace_lbl.setStyleSheet(f"color: {text_color};")
+            self._trace_lbl.setText(
+                f'<span style="font-family:\'Arial\'; '
+                f'font-size:{trace_font.pointSize()}pt; color:{text_color};">'
+                f'Metadata retrieved on {trace_date} with MosaicView from '
+                f'<a href="{trace_url}" style="color:{link_color};">{trace_url}</a></span>'
+            )
 
         if self._toggle_btn is not None:
             arrow = "▼" if self._toggle_btn.isChecked() else "▶"

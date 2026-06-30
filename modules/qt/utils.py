@@ -65,6 +65,18 @@ def format_file_size(size_bytes):
         return f"{size_bytes / (1024 * 1024 * 1024 * 1024):.2f} To"
 
 
+def zip_compression_kwargs(level: int) -> dict:
+    """
+    Convertit un niveau de compression 0-9 (réglage utilisateur) en kwargs
+    pour zipfile.ZipFile(..., **kwargs).
+    0 → ZIP_STORED (pas de compression). 1-9 → ZIP_DEFLATED avec compresslevel.
+    """
+    import zipfile
+    if level <= 0:
+        return {"compression": zipfile.ZIP_STORED}
+    return {"compression": zipfile.ZIP_DEFLATED, "compresslevel": level}
+
+
 def safe_join(base, name):
     """
     Joint `name` à `base` en garantissant que le résultat reste à l'intérieur
