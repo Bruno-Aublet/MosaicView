@@ -28,6 +28,13 @@ def _fetch_latest_version() -> str:
     return data["tag_name"]
 
 
+def _fetch_latest_release() -> tuple:
+    """Retourne (tag_name, release_title) de la dernière release, ou lève une exception."""
+    with urlopen(_RELEASES_API, timeout=_TIMEOUT) as resp:
+        data = json.loads(resp.read().decode())
+    return data["tag_name"], data.get("name") or data["tag_name"]
+
+
 def _normalize(tag: str) -> str:
     """'v1.0.1' → '1.0.1'"""
     return tag.lstrip("v")
@@ -238,7 +245,7 @@ class _UpdateDialog(QDialog):
 # ── Vérification automatique au démarrage ─────────────────────────────────────
 
 class _StartupSignal(QObject):
-    update_found = Signal(str)   # latest_tag
+    update_found = Signal(str, str)   # (latest_tag, release_title)
 
 
 _startup_sig = None  # référence module-level pour éviter le GC
@@ -247,21 +254,21 @@ _startup_sig = None  # référence module-level pour éviter le GC
 def check_for_updates_on_startup(main_window) -> None:
     """Lance la vérification en arrière-plan au démarrage.
     Si une nouvelle version est détectée, notifie main_window via
-    show_update_banner(latest) et set_update_available_in_menu(latest).
+    show_update_banner(latest, title) et set_update_available_in_menu(latest).
     Silencieux si à jour ou erreur réseau.
     """
     global _startup_sig
     sig = _StartupSignal()
-    sig.update_found.connect(lambda tag: _on_startup_update_found(main_window, tag))
+    sig.update_found.connect(lambda tag, title: _on_startup_update_found(main_window, tag, title))
     _startup_sig = sig
 
     def _fetch():
         try:
-            tag = _fetch_latest_version()
+            tag, title = _fetch_latest_release()
             import MosaicView as _main
             current = getattr(_main, "__version__", "0.0.0")
             if _is_newer(_normalize(tag), _normalize(current)):
-                sig.update_found.emit(tag)
+                sig.update_found.emit(tag, title)
         except Exception:
             pass  # silencieux au démarrage
 
@@ -269,9 +276,9 @@ def check_for_updates_on_startup(main_window) -> None:
     t.start()
 
 
-def _on_startup_update_found(main_window, latest_tag: str) -> None:
+def _on_startup_update_found(main_window, latest_tag: str, release_title: str) -> None:
     latest = _normalize(latest_tag)
     if hasattr(main_window, "show_update_banner"):
-        main_window.show_update_banner(latest)
+        main_window.show_update_banner(latest, release_title)
     if hasattr(main_window, "set_update_available_in_menu"):
         main_window.set_update_available_in_menu(latest)

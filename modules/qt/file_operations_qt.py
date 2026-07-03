@@ -73,7 +73,7 @@ def _check_no_video(parent):
     if any(os.path.splitext(e.get("orig_name", "").lower())[1] in _VIDEO_EXTENSIONS
            for e in state.images_data):
         ErrorDialog(parent,
-                    lambda: _("dialogs.video_save_blocked.title"),
+                    lambda: _wt("dialogs.video_save_blocked.title"),
                     lambda: _("dialogs.video_save_blocked.message")).show()
         return False
     return True
@@ -135,6 +135,8 @@ class InfoDialogClickablePath(QDialog):
         path_lbl.setCursor(QCursor(Qt.PointingHandCursor))
         path_lbl.setStyleSheet("color: #4A9EFF;")
         path_lbl.linkActivated.connect(lambda _: _open_file_location(filepath))
+        from modules.qt.utils import setup_path_label_context_menu
+        setup_path_label_context_menu(path_lbl, lambda: filepath, lambda: _open_file_location(filepath))
         layout.addWidget(path_lbl)
 
         sep = QFrame()
@@ -188,12 +190,13 @@ class SaveSuccessDialog(QDialog):
     def __init__(self, parent, title_key: str, message_key: str,
                  filepath: str, question_key: str,
                  yes_key: str = "misc.yes", no_key: str = "misc.no",
-                 on_done=None):
+                 on_done=None, question_kwargs: dict = None):
         super().__init__(parent)
         self.result = False
         self._title_key = title_key
         self._message_key = message_key
         self._question_key = question_key
+        self._question_kwargs = question_kwargs or {}
         self._yes_key = yes_key
         self._no_key = no_key
         self._on_done = on_done
@@ -217,6 +220,8 @@ class SaveSuccessDialog(QDialog):
         path_lbl.setCursor(QCursor(Qt.PointingHandCursor))
         path_lbl.setStyleSheet("color: #4A9EFF;")
         path_lbl.linkActivated.connect(lambda _: _open_file_location(filepath))
+        from modules.qt.utils import setup_path_label_context_menu
+        setup_path_label_context_menu(path_lbl, lambda: filepath, lambda: _open_file_location(filepath))
         layout.addWidget(path_lbl)
 
         sep = QFrame()
@@ -262,7 +267,7 @@ class SaveSuccessDialog(QDialog):
     def _retranslate(self):
         self.setWindowTitle(_wt(self._title_key))
         self._msg.setText(_(self._message_key))
-        self._question.setText(_(self._question_key))
+        self._question.setText(_(self._question_key, **self._question_kwargs))
         self._yes_btn.setText(_(self._yes_key))
         self._no_btn.setText(_(self._no_key))
 
@@ -499,6 +504,8 @@ class FileSavedDialog(QDialog):
         link_lbl.setCursor(QCursor(Qt.PointingHandCursor))
         link_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
         link_lbl.linkActivated.connect(lambda _: _open_folder(folder))
+        from modules.qt.utils import setup_path_label_context_menu
+        setup_path_label_context_menu(link_lbl, lambda: folder, lambda: _open_folder(folder))
         layout.addWidget(link_lbl)
 
         btn_row = QHBoxLayout()
@@ -570,6 +577,8 @@ class ThumbnailSavedDialog(QDialog):
         self._link_lbl.setCursor(QCursor(Qt.PointingHandCursor))
         self._link_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
         self._link_lbl.linkActivated.connect(lambda _: _open_folder(folder))
+        from modules.qt.utils import setup_path_label_context_menu
+        setup_path_label_context_menu(self._link_lbl, lambda: folder, lambda: _open_folder(folder))
         layout.addWidget(self._link_lbl)
 
         btn_row = QHBoxLayout()
@@ -741,7 +750,7 @@ def _validate_filenames_qt(parent, render_mosaic, on_done):
             render_mosaic()
             InfoDialog(
                 parent,
-                lambda: _("messages.info.correction_done.title"),
+                lambda: _wt("messages.info.correction_done.title"),
                 lambda c=len(invalid_files): _("messages.info.correction_done.message", count=c),
             ).show()
             on_done(True)
@@ -750,14 +759,14 @@ def _validate_filenames_qt(parent, render_mosaic, on_done):
         # Non — ne pas corriger
         ErrorDialog(
             parent,
-            lambda: _("messages.warnings.save_cancelled.title"),
+            lambda: _wt("messages.warnings.save_cancelled.title"),
             lambda: _("messages.warnings.save_cancelled.message"),
         ).show()
         on_done(False)
 
     QuestionYNCDialog(
         parent,
-        lambda: _("messages.questions.invalid_filenames.title"),
+        lambda: _wt("messages.questions.invalid_filenames.title"),
         _build_msg,
     ).ask_async(_on_reply)
 
@@ -1007,8 +1016,9 @@ def save_as_cbz(parent, canvas, callbacks: dict):
             if overlay:
                 overlay.remove()
             ErrorDialog(parent,
-                        lambda: _("messages.errors.save_failed.title"),
-                        lambda err=e: _("messages.errors.save_failed.message", error=err)).show()
+                        lambda: _wt("messages.errors.save_failed.title"),
+                        lambda err=e: _("messages.errors.save_failed.message", error=err),
+                        play_sound=True).show()
             return
         finally:
             if overlay:
@@ -1032,12 +1042,14 @@ def save_as_cbz(parent, canvas, callbacks: dict):
                         _safe_delete(old_file)
                 except Exception as e:
                     ErrorDialog(parent,
-                                lambda: _("messages.errors.save_failed.title"),
-                                lambda err=e: _("messages.errors.delete_error", error=err)).show()
+                                lambda: _wt("messages.errors.save_failed.title"),
+                                lambda err=e: _("messages.errors.delete_error", error=err),
+                                play_sound=True).show()
 
         if callbacks.get("on_file_saved"):
             callbacks["on_file_saved"](filepath)
         render_mosaic()
+        old_ext = os.path.splitext(old_file)[1].lstrip(".").upper() if old_file else ""
         SaveSuccessDialog(
             parent,
             "messages.info.new_cbz_saved.title",
@@ -1045,6 +1057,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
             filepath,
             "messages.info.new_cbz_saved.question",
             on_done=_after_save_as,
+            question_kwargs={"ext": old_ext},
         )
 
     _run_validation_chain(
@@ -1069,7 +1082,7 @@ def save_selection_as_cbz(parent, callbacks: dict):
     state = _state_module.state
     if not state.selected_indices or not state.images_data:
         ErrorDialog(parent,
-                    lambda: _("messages.warnings.no_selection_save.title"),
+                    lambda: _wt("messages.warnings.no_selection_save.title"),
                     lambda: _("messages.warnings.no_selection_save.message")).show()
         return
 
@@ -1119,8 +1132,9 @@ def save_selection_as_cbz(parent, callbacks: dict):
                                     filepath)
         except Exception as e:
             ErrorDialog(parent,
-                        lambda: _("messages.errors.save_selection_failed.title"),
-                        lambda err=e: _("messages.errors.save_selection_failed.message", error=err)).show()
+                        lambda: _wt("messages.errors.save_selection_failed.title"),
+                        lambda err=e: _("messages.errors.save_selection_failed.message", error=err),
+                        play_sound=True).show()
 
     _handle_duplicate_filenames_qt(
         parent, renumber_func,
@@ -1214,8 +1228,9 @@ def save_selection_to_folder(parent, callbacks: dict):
             FileSavedDialog(parent, saved_count, folder, skipped_count)
         except Exception as e:
             ErrorDialog(parent,
-                        lambda: _("messages.errors.save_files_failed.title"),
-                        lambda err=e: _("messages.errors.save_files_failed.message", error=str(err))).show()
+                        lambda: _wt("messages.errors.save_files_failed.title"),
+                        lambda err=e: _("messages.errors.save_files_failed.message", error=str(err)),
+                        play_sound=True).show()
 
     _handle_duplicate_filenames_qt(
         parent, renumber_func,
@@ -1286,8 +1301,9 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
             if overlay:
                 overlay.remove()
             ErrorDialog(parent,
-                        lambda: _("messages.errors.create_archive_failed.title"),
-                        lambda err=e: _("messages.errors.create_archive_failed.message").format(error=err)).show()
+                        lambda: _wt("messages.errors.create_archive_failed.title"),
+                        lambda err=e: _("messages.errors.create_archive_failed.message").format(error=err),
+                        play_sound=True).show()
             return
         finally:
             if overlay:
@@ -1295,6 +1311,9 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
 
         state.current_file = filepath
         state.modified = False
+        state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
+        if hasattr(parent, "_update_status_bar"):
+            parent._update_status_bar()
         if callbacks.get("update_button_text"):
             callbacks["update_button_text"]()
         if callbacks.get("update_window_title"):
@@ -1426,9 +1445,10 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                 _needed = format_file_size(temp_size)
                 _free   = format_file_size(free_space)
                 ErrorDialog(parent,
-                            lambda: _("messages.errors.save_failed.title"),
+                            lambda: _wt("messages.errors.save_failed.title"),
                             lambda n=_needed, fr=_free: _("messages.errors.disk_full.message",
-                                      needed=n, free=fr)).show()
+                                      needed=n, free=fr),
+                            play_sound=True).show()
                 return _done(False)
             shutil.move(temp_file, state.current_file)
             state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
@@ -1440,11 +1460,12 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                                     state.current_file)
         except Exception as e:
             ErrorDialog(parent,
-                        lambda: _("messages.errors.save_failed.title"),
-                        lambda err=e: _("messages.errors.save_failed.message", error=err)).show()
+                        lambda: _wt("messages.errors.save_failed.title"),
+                        lambda err=e: _("messages.errors.save_failed.message", error=err),
+                        play_sound=True).show()
             return _done(False)
 
-    elif ext in (".cbr", ".cbt", ".epub"):
+    elif ext in (".cbr", ".cb7", ".cbt", ".epub"):
         initial_dir = os.path.dirname(os.path.abspath(state.current_file))
         if not initial_dir:
             initial_dir = get_config_manager().get('last_open_dir', "")
@@ -1476,8 +1497,9 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                             safe_delete(old_file_cbz)
                     except Exception as e:
                         ErrorDialog(parent,
-                                    lambda: _("messages.errors.save_failed.title"),
-                                    lambda err=e: _("messages.errors.delete_error", error=err)).show()
+                                    lambda: _wt("messages.errors.save_failed.title"),
+                                    lambda err=e: _("messages.errors.delete_error", error=err),
+                                    play_sound=True).show()
 
             SaveSuccessDialog(
                 parent,
@@ -1486,11 +1508,13 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                 new_file,
                 "messages.info.cbz_converted.question",
                 on_done=_after_cbz_converted,
+                question_kwargs={"ext": ext.lstrip(".").upper()},
             )
         except Exception as e:
             ErrorDialog(parent,
-                        lambda: _("messages.errors.save_failed.title"),
-                        lambda err=e: _("messages.errors.save_failed.message", error=err)).show()
+                        lambda: _wt("messages.errors.save_failed.title"),
+                        lambda err=e: _("messages.errors.save_failed.message", error=err),
+                        play_sound=True).show()
             return _done(False)
 
     elif ext == ".pdf":
@@ -1525,8 +1549,9 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                             safe_delete(old_file_pdf)
                     except Exception as e:
                         ErrorDialog(parent,
-                                    lambda: _("messages.errors.save_failed.title"),
-                                    lambda err=e: _("messages.errors.delete_error", error=err)).show()
+                                    lambda: _wt("messages.errors.save_failed.title"),
+                                    lambda err=e: _("messages.errors.delete_error", error=err),
+                                    play_sound=True).show()
 
             SaveSuccessDialog(
                 parent,
@@ -1538,8 +1563,9 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
             )
         except Exception as e:
             ErrorDialog(parent,
-                        lambda: _("messages.errors.save_failed.title"),
-                        lambda err=e: _("messages.errors.save_failed.message", error=err)).show()
+                        lambda: _wt("messages.errors.save_failed.title"),
+                        lambda err=e: _("messages.errors.save_failed.message", error=err),
+                        play_sound=True).show()
             return _done(False)
 
     state.modified = False

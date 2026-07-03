@@ -384,10 +384,10 @@ class MetadataTab(QScrollArea):
         self._field_widgets  = []   # [(key, QLabel_titre, _SelectableLabel_valeur), ...]
         self._toggle_btn     = None
         self._edit_btn       = None
+        self._check_updates_btn = None
         self._pages_count    = 0
         self._pages_table    = None  # QTableView
         self._pages_builder  = None  # _PagesModelBuilder en cours
-        self._trace_lbl      = None  # QLabel traçabilité MosaicView (lecture seule)
 
         from modules.qt.metadata_signal import metadata_signal, metadata_pages_signal
         metadata_signal.changed.connect(self.refresh)
@@ -433,9 +433,9 @@ class MetadataTab(QScrollArea):
         self._field_widgets = []
         self._toggle_btn    = None
         self._edit_btn      = None
+        self._check_updates_btn = None
         self._pages_count   = 0
         self._pages_table   = None
-        self._trace_lbl     = None
         if self._pages_builder is not None:
             self._pages_builder.cancel()
             self._pages_builder = None
@@ -471,12 +471,31 @@ class MetadataTab(QScrollArea):
         btn_lay.setContentsMargins(0, 4, 0, 8)
         btn_lay.addStretch()
         btn_lay.addWidget(edit_btn)
-        btn_lay.addStretch()
-        self._vlay.addWidget(btn_row)
         self._edit_btn = edit_btn
 
+        # Bouton "Vérifier les mises à jour" — visible seulement si une URL
+        # ComicVine d'issue est détectée dans les métadonnées locales.
+        from modules.qt.comic_info import get_source_comicvine_issue_id
+        self._check_updates_btn = None
+        if get_source_comicvine_issue_id(st.comic_metadata):
+            check_btn = QPushButton(_("comicvine_update.btn_check"))
+            check_btn.setFont(normal_font)
+            def _on_check_click():
+                p = self.parent()
+                while p is not None:
+                    if hasattr(p, '_check_comicvine_updates'):
+                        p._check_comicvine_updates(busy_widget=check_btn)
+                        return
+                    p = p.parent()
+            check_btn.clicked.connect(_on_check_click)
+            btn_lay.addWidget(check_btn)
+            self._check_updates_btn = check_btn
+
+        btn_lay.addStretch()
+        self._vlay.addWidget(btn_row)
+
         for key, value in st.comic_metadata.items():
-            if key == 'pages' or key in ('mosaicview_trace_date', 'mosaicview_trace_url'):
+            if key == 'pages':
                 continue
             if not value or not str(value).strip():
                 continue
@@ -492,7 +511,22 @@ class MetadataTab(QScrollArea):
             lbl.setFixedWidth(160)
             row_lay.addWidget(lbl)
 
-            txt = _SelectableLabel(str(value))
+            if key == 'web':
+                # Lien cliquable (URL web réelle) plutôt qu'un simple texte
+                # sélectionnable, cf. feedback_securite_urls_externes.md :
+                # setOpenExternalLinks(False) + open_url filtre le schéma.
+                link_color = get_current_theme().get("link", "#4A9EFF")
+                escaped_value = (str(value).replace('&', '&amp;')
+                                 .replace('<', '&lt;').replace('>', '&gt;'))
+                txt = QLabel(f'<a href="{value}" style="color:{link_color};">{escaped_value}</a>')
+                txt.setOpenExternalLinks(False)
+                from modules.qt.utils import open_url as _open_url_fn
+                txt.linkActivated.connect(_open_url_fn)
+                txt.setTextInteractionFlags(Qt.TextBrowserInteraction)
+                from modules.qt.utils import setup_link_label_context_menu
+                setup_link_label_context_menu(txt, lambda v=value: v)
+            else:
+                txt = _SelectableLabel(str(value))
             txt.setFont(normal_font)
             txt.setWordWrap(True)
             txt.setAlignment(Qt.AlignTop | Qt.AlignLeft)
@@ -505,17 +539,6 @@ class MetadataTab(QScrollArea):
             sep = QFrame()
             sep.setFrameShape(QFrame.HLine)
             self._vlay.addWidget(sep)
-
-        trace_date = st.comic_metadata.get('mosaicview_trace_date')
-        trace_url  = st.comic_metadata.get('mosaicview_trace_url')
-        if trace_date and trace_url:
-            trace_lbl = QLabel()
-            trace_lbl.setOpenExternalLinks(True)
-            trace_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
-            trace_lbl.setWordWrap(True)
-            trace_lbl.setContentsMargins(0, 10, 0, 10)
-            self._vlay.addWidget(trace_lbl)
-            self._trace_lbl = trace_lbl
 
         pages = st.comic_metadata.get('pages')
         if pages:
@@ -559,28 +582,29 @@ class MetadataTab(QScrollArea):
                 f"QPushButton:hover {{ background: {theme['separator']}; }}"
             )
 
+        if self._check_updates_btn is not None:
+            checking = self._check_updates_btn.property("is_checking_updates")
+            self._check_updates_btn.setText(
+                _("comicvine_update.checking") if checking else _("comicvine_update.btn_check"))
+            self._check_updates_btn.setFont(normal_font)
+            self._check_updates_btn.setStyleSheet(
+                f"QPushButton {{ background: {theme['toolbar_bg']}; color: {text}; "
+                f"border: 1px solid #aaaaaa; padding: 4px 10px; }} "
+                f"QPushButton:hover {{ background: {theme['separator']}; }}"
+            )
+
+        _st = self._state or _state_module.state
         for key, lbl, txt in self._field_widgets:
             lbl.setText(f"{_(f'metadata.{key}')} :")
             lbl.setFont(bold_font)
             txt.setFont(normal_font)
-
-        if self._trace_lbl is not None:
-            st = self._state or _state_module.state
-            trace_date = st.comic_metadata.get('mosaicview_trace_date', '') if st and st.comic_metadata else ''
-            trace_url  = st.comic_metadata.get('mosaicview_trace_url', '') if st and st.comic_metadata else ''
-            link_color = theme.get("link", "#4A9EFF")
-            text_color = theme.get('disabled', '#888888')
-            # Texte toujours en anglais/latin (non traduit) : police latine fixe,
-            # indépendante de get_current_font() (qui basculerait en Tengwar/pIqaD)
-            trace_font = QFont("Arial", normal_font.pointSize())
-            self._trace_lbl.setFont(trace_font)
-            self._trace_lbl.setStyleSheet(f"color: {text_color};")
-            self._trace_lbl.setText(
-                f'<span style="font-family:\'Arial\'; '
-                f'font-size:{trace_font.pointSize()}pt; color:{text_color};">'
-                f'Metadata retrieved on {trace_date} with MosaicView from '
-                f'<a href="{trace_url}" style="color:{link_color};">{trace_url}</a></span>'
-            )
+            if key == 'web':
+                web_url = _st.comic_metadata.get('web', '') if _st and _st.comic_metadata else ''
+                if web_url:
+                    link_color = theme.get("link", "#4A9EFF")
+                    escaped_url = (web_url.replace('&', '&amp;')
+                                   .replace('<', '&lt;').replace('>', '&gt;'))
+                    txt.setText(f'<a href="{web_url}" style="color:{link_color};">{escaped_url}</a>')
 
         if self._toggle_btn is not None:
             arrow = "▼" if self._toggle_btn.isChecked() else "▶"

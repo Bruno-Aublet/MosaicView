@@ -36,8 +36,18 @@ IMAGE_EXTS = (
 _USER_AGENT = (
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
     'AppleWebKit/537.36 (KHTML, like Gecko) '
-    'Chrome/91.0.4472.124 Safari/537.36'
+    'Chrome/124.0.0.0 Safari/537.36'
 )
+
+# En-têtes imitant un vrai navigateur — un User-Agent seul suffit à faire
+# reconnaître la requête comme un script par certains serveurs (ex. Cloudflare)
+# et à déclencher un 403 Forbidden, alors que la même URL s'ouvre normalement
+# dans un navigateur.
+_BROWSER_HEADERS = {
+    'User-Agent':      _USER_AGENT,
+    'Accept':          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+}
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -142,7 +152,7 @@ class _DownloadWorker(QThread):
         has_comics_open = state.current_file is not None
         new_entries     = []
         downloaded      = 0
-        headers         = {'User-Agent': _USER_AGENT}
+        headers         = dict(_BROWSER_HEADERS)
 
         for idx, img_url in enumerate(self._image_urls):
             if self._cancel_flag[0]:
@@ -258,9 +268,9 @@ class WebDownloadController:
         if not self._cancel_flag[0]:
             ErrorDialog(
                 self._canvas.window(),
-                lambda: _("web.web_no_images"),
+                lambda: _wt("web.web_no_images"),
                 lambda: _("web.web_no_images_found"),
-            ).show()
+            ).show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -346,7 +356,8 @@ def _url_looks_like_image(url: str) -> bool:
 class _ResolveWorker(QThread):
     """Résout une URL (HEAD ou GET) dans un thread, puis lance le téléchargement."""
 
-    resolved = Signal(list, str)   # (image_urls, page_title)
+    resolved       = Signal(list, str)   # (image_urls, page_title)
+    error_occurred = Signal(str, str)    # (kind, detail)  kind: "forbidden" | "network"
 
     def __init__(self, url: str):
         super().__init__()
@@ -354,14 +365,14 @@ class _ResolveWorker(QThread):
 
     def run(self):
         import urllib.request
+        import urllib.error
 
         url        = self._url
         parsed_url = urlparse(url)
         page_title = parsed_url.netloc.replace('www.', '')
 
         try:
-            headers = {'User-Agent': _USER_AGENT}
-            req = urllib.request.Request(url, headers=headers)
+            req = urllib.request.Request(url, headers=dict(_BROWSER_HEADERS))
             with urllib.request.urlopen(req, timeout=10) as response:
                 content      = response.read()
                 content_type = response.headers.get('Content-Type', '').lower()
@@ -376,13 +387,22 @@ class _ResolveWorker(QThread):
                 image_urls = extract_images_from_html(url, html_content)
                 self.resolved.emit(image_urls, page_title)
 
+        except urllib.error.HTTPError as e:
+            print(f"[web_import] _ResolveWorker error: {e}")
+            kind = "forbidden" if e.code == 403 else "network"
+            self.error_occurred.emit(kind, str(e))
         except Exception as e:
             print(f"[web_import] _ResolveWorker error: {e}")
-            self.resolved.emit([], page_title)
+            self.error_occurred.emit("network", str(e))
 
 
-def _resolve_and_download(canvas, url: str, callbacks: dict) -> None:
-    """Résout une URL droppée sans bloquer l'UI, puis lance le téléchargement."""
+def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> None:
+    """Résout une URL droppée sans bloquer l'UI, puis lance le téléchargement.
+
+    parent : panneau (PanelWidget) sur lequel centrer les dialogues d'erreur.
+    À défaut de parent explicite, on replie sur canvas.window() (fenêtre entière —
+    centrage incorrect en mode split, mais fonctionnel)."""
+    dialog_parent = parent if parent is not None else canvas.window()
     parsed_url = urlparse(url)
     page_title = parsed_url.netloc.replace('www.', '')
 
@@ -397,8 +417,24 @@ def _resolve_and_download(canvas, url: str, callbacks: dict) -> None:
     def _on_resolved(image_urls, pt):
         if image_urls:
             download_and_add_web_images(canvas, image_urls, pt, callbacks)
+        else:
+            ErrorDialog(
+                dialog_parent,
+                lambda: _wt("web.web_drop_no_images_title"),
+                lambda: _("web.web_drop_no_images_message"),
+            ).show_nonmodal()
+
+    def _on_error(kind, detail):
+        title_key   = "web.web_drop_forbidden_title" if kind == "forbidden" else "web.web_drop_error_title"
+        message_key = "web.web_drop_forbidden_message" if kind == "forbidden" else "web.web_drop_error_message"
+        ErrorDialog(
+            dialog_parent,
+            lambda: _wt(title_key),
+            lambda: _(message_key),
+        ).show_nonmodal()
 
     worker.resolved.connect(_on_resolved)
+    worker.error_occurred.connect(_on_error)
     # Garde une référence pour éviter le GC avant la fin du thread
     canvas._resolve_workers = getattr(canvas, '_resolve_workers', [])
     canvas._resolve_workers.append(worker)
@@ -444,9 +480,10 @@ def process_web_image(image_data: bytes, suggested_filename: str | None,
     except Exception as e:
         ErrorDialog(
             parent_widget,
-            lambda: _("errors.title"),
+            lambda: _wt("errors.title"),
             lambda err=e: f"{_('web.import_web_invalid_url')}\n\n{err}",
-        ).show()
+            play_sound=True,
+        ).show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -500,6 +537,8 @@ class WebImportDialog(QDialog):
         self._entry_url = QLineEdit()
         self._entry_url.setMinimumWidth(400)
         self._entry_url.returnPressed.connect(self._process_url)
+        from modules.qt.utils import setup_lineedit_context_menu
+        setup_lineedit_context_menu(self._entry_url)
         layout.addWidget(self._entry_url, alignment=Qt.AlignCenter)
 
         btn_row = QHBoxLayout()
@@ -590,15 +629,15 @@ class WebImportDialog(QDialog):
         if not url.startswith(('http://', 'https://')):
             ErrorDialog(
                 self,
-                lambda: _("web.import_web_dialog_title"),
+                lambda: _wt("web.import_web_dialog_title"),
                 lambda: _("web.import_web_invalid_url"),
-            ).show()
+            ).show_nonmodal()
             return
 
         self.close()  # ferme la fenêtre avant de lancer le téléchargement
 
         try:
-            headers = {'User-Agent': _USER_AGENT}
+            headers = dict(_BROWSER_HEADERS)
             req = urllib.request.Request(url, headers=headers)
 
             with urllib.request.urlopen(req, timeout=10) as response:
@@ -617,9 +656,9 @@ class WebImportDialog(QDialog):
                 except Exception:
                     InfoDialog(
                         self.parent(),
-                        lambda: _("web.web_drag_drop_title"),
+                        lambda: _wt("web.web_drag_drop_title"),
                         lambda: _("web.web_copy_paste_message"),
-                    ).show()
+                    ).show_nonmodal()
             else:
                 try:
                     html_content = content.decode('utf-8', errors='ignore')
@@ -634,16 +673,17 @@ class WebImportDialog(QDialog):
                 else:
                     InfoDialog(
                         self.parent(),
-                        lambda: _("web.web_drag_drop_title"),
+                        lambda: _wt("web.web_drag_drop_title"),
                         lambda: _("web.web_copy_paste_message"),
-                    ).show()
+                    ).show_nonmodal()
 
         except Exception as e:
             ErrorDialog(
                 self.parent(),
-                lambda: _("web.import_web_dialog_title"),
+                lambda: _wt("web.import_web_dialog_title"),
                 lambda err=e: f"{_('web.import_web_invalid_url')}\n\n{err}",
-            ).show()
+                play_sound=True,
+            ).show_nonmodal()
 
 
 def show_web_import_dialog(parent, canvas, callbacks: dict) -> None:

@@ -9,7 +9,7 @@ import struct
 import time
 
 from modules.qt import state as _state_module
-from modules.qt.localization import _
+from modules.qt.localization import _, _wt
 from modules.qt.dialogs_qt import MsgDialog
 
 
@@ -30,7 +30,7 @@ def copy_archive_to_clipboard(parent):
         from modules.qt.dialogs_qt import InfoDialog
         InfoDialog(
             parent,
-            lambda: _("messages.info.pywin32_required.title"),
+            lambda: _wt("messages.info.pywin32_required.title"),
             lambda: _("messages.info.pywin32_required.message"),
         ).show()
         return
@@ -53,7 +53,7 @@ def copy_archive_to_clipboard(parent):
         from modules.qt.dialogs_qt import InfoDialog
         InfoDialog(
             parent,
-            lambda: _("messages.info.archive_copied.title"),
+            lambda: _wt("messages.info.archive_copied.title"),
             lambda: _("messages.info.archive_copied.message"),
         ).show()
 
@@ -63,8 +63,9 @@ def copy_archive_to_clipboard(parent):
         from modules.qt.dialogs_qt import ErrorDialog
         ErrorDialog(
             parent,
-            lambda: _("messages.errors.copy_archive_failed.title"),
+            lambda: _wt("messages.errors.copy_archive_failed.title"),
             lambda err=e: _("messages.errors.copy_archive_failed.message", error=err),
+            play_sound=True,
         ).show()
 
 
@@ -152,7 +153,7 @@ def _warn_unsafe_paths_skipped(parent, skipped):
     from modules.qt.dialogs_qt import InfoDialog
     dlg = InfoDialog(
         parent,
-        lambda: _("messages.warnings.unsafe_path_skipped.title"),
+        lambda: _wt("messages.warnings.unsafe_path_skipped.title"),
         lambda n=skipped: _("messages.warnings.unsafe_path_skipped.message", count=n),
     )
     dlg.show()

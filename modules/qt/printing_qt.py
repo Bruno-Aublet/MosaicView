@@ -16,7 +16,7 @@ import time
 
 from PIL import Image
 
-from modules.qt.localization import _
+from modules.qt.localization import _, _wt
 from modules.qt.canvas_overlay_qt import (
     show_canvas_text as _show_canvas_text,
     hide_canvas_text as _hide_canvas_text,
@@ -135,8 +135,9 @@ def _open_print_dialog(tiff_path, parent):
     except Exception as e:
         ErrorDialog(
             parent,
-            lambda: _("messages.errors.print_error.title"),
+            lambda: _wt("messages.errors.print_error.title"),
             lambda err=str(e): _("messages.errors.print_error.message", error=err),
+            play_sound=True,
         ).show()
 
 
@@ -245,7 +246,7 @@ def _print_images(images_to_print, parent, canvas):
         worker.deleteLater()
         ErrorDialog(
             parent,
-            lambda: _("messages.warnings.no_valid_image_print.title"),
+            lambda: _wt("messages.warnings.no_valid_image_print.title"),
             lambda: _("messages.warnings.no_valid_image_print.message"),
         ).show()
 
@@ -254,8 +255,9 @@ def _print_images(images_to_print, parent, canvas):
         worker.deleteLater()
         ErrorDialog(
             parent,
-            lambda: _("messages.errors.print_error.title"),
+            lambda: _wt("messages.errors.print_error.title"),
             lambda m=msg: _("messages.errors.print_error.message", error=m),
+            play_sound=True,
         ).show()
 
     worker.ready.connect(_on_ready)
@@ -273,7 +275,7 @@ def print_selection(parent, canvas, state):
     if not PRINT_AVAILABLE:
         ErrorDialog(
             parent,
-            lambda: _("messages.errors.print_not_available.title"),
+            lambda: _wt("messages.errors.print_not_available.title"),
             lambda: _("messages.errors.print_not_available.message"),
         ).show()
         return
@@ -281,7 +283,7 @@ def print_selection(parent, canvas, state):
     if not state.selected_indices:
         ErrorDialog(
             parent,
-            lambda: _("messages.warnings.no_selection_print.title"),
+            lambda: _wt("messages.warnings.no_selection_print.title"),
             lambda: _("messages.warnings.no_selection_print.message"),
         ).show()
         return
@@ -297,7 +299,7 @@ def print_selection(parent, canvas, state):
     if not images:
         ErrorDialog(
             parent,
-            lambda: _("messages.warnings.no_valid_selection_print.title"),
+            lambda: _wt("messages.warnings.no_valid_selection_print.title"),
             lambda: _("messages.warnings.no_valid_selection_print.message"),
         ).show()
         return
@@ -310,7 +312,7 @@ def print_all(parent, canvas, state):
     if not PRINT_AVAILABLE:
         ErrorDialog(
             parent,
-            lambda: _("messages.errors.print_not_available.title"),
+            lambda: _wt("messages.errors.print_not_available.title"),
             lambda: _("messages.errors.print_not_available.message"),
         ).show()
         return
@@ -318,7 +320,7 @@ def print_all(parent, canvas, state):
     if not state.images_data:
         ErrorDialog(
             parent,
-            lambda: _("messages.warnings.no_image_print.title"),
+            lambda: _wt("messages.warnings.no_image_print.title"),
             lambda: _("messages.warnings.no_image_print.message"),
         ).show()
         return
@@ -331,7 +333,7 @@ def print_all(parent, canvas, state):
     if not images:
         ErrorDialog(
             parent,
-            lambda: _("messages.warnings.no_valid_image_print.title"),
+            lambda: _wt("messages.warnings.no_valid_image_print.title"),
             lambda: _("messages.warnings.no_valid_image_print.message"),
         ).show()
         return

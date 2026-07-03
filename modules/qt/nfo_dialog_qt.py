@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QLineEdit, QTextEdit, QMenu,
 )
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, QEvent
 
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
@@ -133,6 +133,7 @@ class _NfoDialog(QDialog):
         self._text_edit = QTextEdit()
         self._text_edit.setAcceptRichText(False)
         self._setup_text_context_menu()
+        self._text_edit.installEventFilter(self)
         layout.addWidget(self._text_edit, stretch=1)
 
         # ── Pré-remplissage du contenu en mode édition ─────────────────────────
@@ -180,6 +181,20 @@ class _NfoDialog(QDialog):
     def _center_on(self, parent):
         from modules.qt.dialogs_qt import _center_on_widget
         _center_on_widget(self, parent)
+
+    def eventFilter(self, obj, event):
+        # Home/End dans la zone de contenu : aller au tout début/toute fin du
+        # texte (comme Ctrl+Home/Ctrl+End) plutôt que début/fin de ligne.
+        if obj is self._text_edit and event.type() == QEvent.KeyPress \
+                and event.key() in (Qt.Key_Home, Qt.Key_End):
+            from PySide6.QtGui import QTextCursor
+            cursor = self._text_edit.textCursor()
+            moveMode = QTextCursor.KeepAnchor if event.modifiers() & Qt.ShiftModifier else QTextCursor.MoveAnchor
+            position = QTextCursor.Start if event.key() == Qt.Key_Home else QTextCursor.End
+            cursor.movePosition(position, moveMode)
+            self._text_edit.setTextCursor(cursor)
+            return True
+        return super().eventFilter(obj, event)
 
     # ── Traduction + thème ─────────────────────────────────────────────────────
 
@@ -272,7 +287,7 @@ class _NfoDialog(QDialog):
             filename = self._edit_filename.text().strip()
             if not filename:
                 from modules.qt.dialogs_qt import ErrorDialog
-                ErrorDialog(self, lambda: _("nfo.error_title"),
+                ErrorDialog(self, lambda: _wt("nfo.error_title"),
                             lambda: _("nfo.error_empty_name")).show()
                 self._edit_filename.setFocus()
                 return
@@ -282,7 +297,7 @@ class _NfoDialog(QDialog):
             if any(e is not self._entry and e.get("orig_name", "").lower() == filename.lower()
                    for e in self._state.images_data):
                 from modules.qt.dialogs_qt import ErrorDialog
-                ErrorDialog(self, lambda: _("nfo.error_title"),
+                ErrorDialog(self, lambda: _wt("nfo.error_title"),
                             lambda fn=filename: _("nfo.error_duplicate").format(filename=fn)).show()
                 self._edit_filename.setFocus()
                 return
@@ -296,7 +311,7 @@ class _NfoDialog(QDialog):
             from modules.qt.dialogs_qt import ErrorDialog
             ErrorDialog(
                 self,
-                lambda: _("nfo.error_title"),
+                lambda: _wt("nfo.error_title"),
                 lambda: _("nfo.error_empty_name"),
             ).show()
             self._edit_filename.setFocus()
@@ -312,7 +327,7 @@ class _NfoDialog(QDialog):
             from modules.qt.dialogs_qt import ErrorDialog
             ErrorDialog(
                 self,
-                lambda: _("nfo.error_title"),
+                lambda: _wt("nfo.error_title"),
                 lambda fn=filename: _("nfo.error_duplicate").format(filename=fn),
             ).show()
             self._edit_filename.setFocus()

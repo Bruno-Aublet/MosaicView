@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.4.0"
+__version__ = "1.4.1"
 
 import sys
 import os
@@ -573,11 +573,11 @@ class MainWindow(QMainWindow):
         from modules.qt.changelog_dialog_qt import show_changelog_dialog_qt
         show_changelog_dialog_qt(panel or self._active_panel)
 
-    def show_update_banner(self, latest: str) -> None:
+    def show_update_banner(self, latest: str, release_title: str = "") -> None:
         """Affiche le bandeau de mise à jour sur tous les panneaux actifs."""
         self._update_latest = latest
         for p in self._all_panels():
-            p.show_update_banner(latest)
+            p.show_update_banner(latest, release_title)
 
     def set_update_available_in_menu(self, latest: str) -> None:
         """Stocke la version disponible et reconstruit la menubar."""
@@ -672,6 +672,7 @@ class MainWindow(QMainWindow):
     def _show_user_guide(self, source_panel=None):
         from modules.qt.user_guide_qt import (
             show_user_guide, export_piqad_font, export_tengwar_fonts, save_all_icons,
+            export_wilhelm_scream,
         )
         panel = source_panel or self._active_panel
         show_user_guide(panel, {
@@ -684,6 +685,7 @@ class MainWindow(QMainWindow):
             "clear_config_file":              self._active_panel._clear_config_file,
             "clear_clipboard_files":          self._active_panel._clear_clipboard_files,
             "save_all_icons":                 lambda: save_all_icons(panel),
+            "export_wilhelm_scream":          lambda: export_wilhelm_scream(panel),
         })
 
     # ──────────────────────────────────────────────────────────────────────────

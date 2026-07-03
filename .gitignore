@@ -19,6 +19,7 @@ venv/
 # Notes de l'assistant Claude (spécifiques à cette machine)
 .claude/
 idees_ajustements.txt
+idees.txt
 
 # Fichiers compilés Python
 __pycache__/

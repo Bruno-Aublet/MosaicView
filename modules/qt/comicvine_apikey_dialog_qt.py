@@ -53,6 +53,11 @@ class _ApiKeyDialog(QDialog):
         self._instructions.setWordWrap(True)
         self._instructions.setOpenExternalLinks(True)
         self._instructions.setAlignment(Qt.AlignCenter)
+        from modules.qt.utils import setup_link_label_context_menu
+        setup_link_label_context_menu(self._instructions, lambda: [
+            ("ComicVine", _CV_URL),
+            (_("comicvine.api_key_dialog.api_page_label"), _CV_API_URL),
+        ])
         layout.addWidget(self._instructions)
 
         # Champ de saisie
@@ -62,7 +67,8 @@ class _ApiKeyDialog(QDialog):
         field_row.addWidget(self._field_label)
         self._key_input = QLineEdit()
         self._key_input.setEchoMode(QLineEdit.Password)
-        self._key_input.setContextMenuPolicy(Qt.DefaultContextMenu)
+        from modules.qt.utils import setup_lineedit_context_menu
+        setup_lineedit_context_menu(self._key_input, allow_copy_cut=False)
         field_row.addWidget(self._key_input)
         self._btn_toggle_visibility = QPushButton()
         self._btn_toggle_visibility.clicked.connect(self._on_toggle_visibility)

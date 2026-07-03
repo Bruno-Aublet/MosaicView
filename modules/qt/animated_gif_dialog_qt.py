@@ -515,6 +515,8 @@ class AnimatedGifDialog(QDialog):
         self._comment_edit = QTextEdit()
         self._comment_edit.setFixedHeight(80)
         self._comment_edit.setPlainText(self._comment)
+        from modules.qt.utils import setup_textedit_context_menu
+        setup_textedit_context_menu(self._comment_edit)
         right_col.addWidget(self._comment_edit)
 
         right_col.addStretch()

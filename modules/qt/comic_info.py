@@ -124,12 +124,6 @@ def parse_comic_info_xml(xml_data):
         metadata['review'] = root.findtext('Review', '')
         metadata['gtin'] = root.findtext('GTIN', '')
 
-        # Traçabilité MosaicView (tag custom, hors schéma ComicInfo standard)
-        trace_elem = root.find('MosaicViewTrace')
-        if trace_elem is not None:
-            metadata['mosaicview_trace_date'] = trace_elem.get('date', '')
-            metadata['mosaicview_trace_url'] = trace_elem.get('url', '')
-
         # Extraire les entrées <Page> si présentes
         pages_elem = root.find('Pages')
         if pages_elem is not None:
@@ -183,17 +177,180 @@ def read_comic_info(filepath):
     return None
 
 
-def set_mosaicview_trace(root, date_str, url):
+_TRACE_NOTE_PREFIX = "MosaicView: metadata retrieved on"
+
+
+def _update_trace_note(notes_text, date_str):
     """
-    Insère ou remplace l'élément <MosaicViewTrace date="..." url="..." /> dans l'arbre XML.
-    Un seul enregistrement de traçabilité à la fois — l'ancien est remplacé, pas cumulé.
+    Ajoute ou remplace, dans le texte du champ Notes, la ligne de traçabilité
+    MosaicView ("MosaicView: metadata retrieved on {date}."). Le reste du
+    contenu de Notes (texte utilisateur ou d'un autre outil) est préservé
+    intact — seule la ligne portant le préfixe MosaicView est remplacée.
     """
-    existing = root.find('MosaicViewTrace')
-    if existing is not None:
-        root.remove(existing)
-    elem = ET.SubElement(root, 'MosaicViewTrace')
-    elem.set('date', date_str)
-    elem.set('url', url)
+    new_line = f"{_TRACE_NOTE_PREFIX} {date_str}."
+    notes_text = notes_text or ""
+    lines = notes_text.split("\n") if notes_text else []
+    for i, line in enumerate(lines):
+        if line.startswith(_TRACE_NOTE_PREFIX):
+            lines[i] = new_line
+            return "\n".join(lines)
+    if notes_text:
+        return notes_text + "\n" + new_line
+    return new_line
+
+
+_SCRAPER_FIELD_MAP = {
+    "title": "Title", "series": "Series", "number": "Number",
+    "volume": "Volume", "summary": "Summary", "writer": "Writer",
+    "penciller": "Penciller", "inker": "Inker", "colorist": "Colorist",
+    "letterer": "Letterer", "cover_artist": "CoverArtist",
+    "editor": "Editor", "publisher": "Publisher", "imprint": "Imprint",
+    "genre": "Genre", "web": "Web", "year": "Year", "month": "Month",
+    "day": "Day", "characters": "Characters", "teams": "Teams",
+    "locations": "Locations", "story_arc": "StoryArc",
+}
+
+
+def write_comic_metadata_from_scraper(state, meta):
+    """
+    Écrit dans state.images_data (ComicInfo.xml) les métadonnées `meta` obtenues
+    depuis le scraper ComicVine (get_issue_details). Met à jour state.comic_metadata,
+    state.modified et régénère <Pages> si absent. Émet metadata_signal.
+    """
+    from modules.qt.metadata_signal import metadata_signal
+
+    st = state
+    if not st:
+        return
+
+    xml_entry = None
+    for e in st.images_data:
+        if e.get("orig_name", "").lower().endswith("comicinfo.xml"):
+            xml_entry = e
+            break
+
+    if xml_entry and xml_entry.get("bytes"):
+        try:
+            raw = xml_entry["bytes"]
+            if isinstance(raw, str):
+                raw = raw.encode("utf-8")
+            # Tenter UTF-8 puis latin-1 en fallback
+            try:
+                root = _safe_fromstring(raw)
+            except ET.ParseError:
+                root = _safe_fromstring(raw.decode("latin-1").encode("utf-8"))
+            original_bytes = raw
+        except Exception:
+            root = ET.Element("ComicInfo")
+            original_bytes = None
+    else:
+        root = ET.Element("ComicInfo")
+        original_bytes = None
+
+    for field, tag in _SCRAPER_FIELD_MAP.items():
+        value = meta.get(field, "").strip()
+        if not value:
+            continue
+        elem = root.find(tag)
+        if elem is None:
+            elem = ET.SubElement(root, tag)
+        elem.text = value
+
+    web_url = meta.get("web", "").strip()
+    if web_url:
+        from datetime import datetime
+        notes_elem = root.find("Notes")
+        if notes_elem is None:
+            notes_elem = ET.SubElement(root, "Notes")
+        notes_elem.text = _update_trace_note(
+            notes_elem.text, datetime.now().strftime("%Y-%m-%d"))
+
+    new_bytes = _serialize_comic_xml(root, original_bytes)
+
+    if xml_entry:
+        xml_entry["bytes"] = new_bytes
+    else:
+        st.images_data.append({
+            "orig_name": "ComicInfo.xml", "name": "ComicInfo.xml",
+            "bytes": new_bytes, "is_image": False,
+            "is_dir": False, "extension": ".xml",
+        })
+
+    st.comic_metadata = parse_comic_info_xml(new_bytes)
+    st.modified = True
+
+    # Si le XML n'avait pas de <Pages>, les construire depuis images_data
+    if st.comic_metadata and 'pages' not in st.comic_metadata:
+        # Injecter <Pages> vide dans le XML pour que sync_pages_in_xml_data puisse le remplir
+        xml_entry_now = next(
+            (e for e in st.images_data if e.get('orig_name', '').lower().endswith('comicinfo.xml')),
+            None
+        )
+        if xml_entry_now and xml_entry_now.get('bytes'):
+            try:
+                root_now = _safe_fromstring(xml_entry_now['bytes'])
+                ET.SubElement(root_now, 'Pages')
+                xml_entry_now['bytes'] = _serialize_comic_xml(root_now, xml_entry_now['bytes'])
+                st.comic_metadata['pages'] = []
+                sync_pages_in_xml_data(st, emit_signal=False)
+            except Exception:
+                pass
+
+    metadata_signal.emit()
+
+
+# Sous-ensemble de _SCRAPER_FIELD_MAP réellement comparable : "imprint" est
+# dans FIELD_MAP mais get_issue_details() ne le renseigne jamais, une diff
+# dessus serait donc toujours un faux "ajouté" côté distant.
+_DIFF_FIELDS = [k for k in _SCRAPER_FIELD_MAP if k != "imprint"]
+
+
+def diff_comic_metadata(local_meta, remote_meta):
+    """
+    Compare les métadonnées locales (state.comic_metadata) aux métadonnées
+    fraîchement téléchargées depuis ComicVine (get_issue_details), champ par
+    champ, sur le sous-ensemble de champs que le scraper renseigne réellement.
+
+    Retourne une liste de (field_key, status), status ∈ {"modified", "added"} :
+    - "added"    : vide en local, non vide côté distant.
+    - "modified" : non vide des deux côtés mais différent.
+    Un champ vide côté distant n'est jamais reporté (on ne supprime jamais une
+    donnée locale silencieusement).
+    """
+    local_meta = local_meta or {}
+    remote_meta = remote_meta or {}
+    diffs = []
+    for key in _DIFF_FIELDS:
+        remote_val = str(remote_meta.get(key, "") or "").strip()
+        if not remote_val:
+            continue
+        local_val = str(local_meta.get(key, "") or "").strip()
+        if not local_val:
+            diffs.append((key, "added"))
+        elif local_val != remote_val:
+            diffs.append((key, "modified"))
+    return diffs
+
+
+def get_source_comicvine_issue_id(comic_metadata):
+    """
+    Détecte une URL ComicVine d'issue dans le champ standard ComicInfo Web.
+
+    Retourne l'id numérique de l'issue (str) si trouvé, sinon None. Ignore les
+    URLs de série (4050-xxxxx) : seule une URL d'issue précise est exploitable
+    pour retélécharger des métadonnées de numéro.
+    """
+    if not comic_metadata:
+        return None
+    from modules.qt.comicvine_url_dialog_qt import _parse_comicvine_url
+
+    url = (comic_metadata.get("web") or "").strip()
+    if not url:
+        return None
+    parsed = _parse_comicvine_url(url)
+    if parsed and parsed[0] == "issue":
+        return parsed[1]
+    return None
 
 
 def get_current_image_count(state):

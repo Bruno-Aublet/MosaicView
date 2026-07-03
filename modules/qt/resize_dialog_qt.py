@@ -592,6 +592,8 @@ class ResizeDialog(QDialog):
         self._width_edit.setFixedWidth(80)
         self._width_edit.setValidator(QIntValidator(1, 99999, self))
         self._width_edit.setText(str(self._cur_w) if self._same_dim else "")
+        from modules.qt.utils import setup_lineedit_context_menu
+        setup_lineedit_context_menu(self._width_edit)
         dim_row.addWidget(self._width_edit)
         dim_row.addSpacing(3)
 
@@ -612,6 +614,7 @@ class ResizeDialog(QDialog):
         self._height_edit.setFixedWidth(80)
         self._height_edit.setValidator(QIntValidator(1, 99999, self))
         self._height_edit.setText(str(self._cur_h) if self._same_dim else "")
+        setup_lineedit_context_menu(self._height_edit)
         dim_row.addWidget(self._height_edit)
         dim_row.addSpacing(3)
 

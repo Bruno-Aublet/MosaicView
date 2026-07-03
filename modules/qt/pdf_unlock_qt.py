@@ -39,6 +39,8 @@ class _PdfUnlockedSuccessDialog(QDialog):
         self._link.setAlignment(Qt.AlignCenter)
         self._link.setOpenExternalLinks(False)
         self._link.linkActivated.connect(self._open_file)
+        from modules.qt.utils import setup_path_label_context_menu
+        setup_path_label_context_menu(self._link, lambda: self._dest_path, self._open_file)
         layout.addWidget(self._link)
 
         self._btn_ok = QPushButton()

@@ -16,11 +16,11 @@ import xml.etree.ElementTree as ET
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-    QPushButton, QLineEdit, QComboBox, QScrollArea, QWidget,
-    QSizePolicy, QFrame,
+    QPushButton, QLineEdit, QTextEdit, QComboBox, QScrollArea, QWidget,
+    QSizePolicy, QFrame, QToolButton,
 )
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QIntValidator, QStandardItemModel, QStandardItem, QColor, QFont
+from PySide6.QtCore import Qt, QTimer, QEvent
+from PySide6.QtGui import QIntValidator, QStandardItemModel, QStandardItem, QColor, QFont, QFontMetrics
 
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
@@ -220,6 +220,13 @@ def _input_style(theme):
     )
 
 
+def _textedit_style(theme):
+    return (
+        f"QTextEdit {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+        f"border: 1px solid #aaaaaa; padding: 2px 6px; }}"
+    )
+
+
 def _combo_style(theme):
     return (
         f"QComboBox {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
@@ -246,6 +253,90 @@ def _scroll_style(theme):
     )
 
 
+# Correspondance clé dict (comic_metadata) → tag XML ComicInfo, utilisée pour
+# appliquer un dict de métadonnées (parsé ou téléchargé) aux widgets de champs.
+_KEY_TO_TAG = {
+    "title": "Title", "series": "Series", "number": "Number",
+    "count": "Count", "volume": "Volume",
+    "alternate_series": "AlternateSeries",
+    "alternate_number": "AlternateNumber",
+    "alternate_count": "AlternateCount",
+    "series_group": "SeriesGroup", "story_arc": "StoryArc",
+    "story_arc_number": "StoryArcNumber", "publisher": "Publisher",
+    "imprint": "Imprint", "year": "Year", "month": "Month",
+    "day": "Day", "format": "Format", "language_iso": "LanguageISO",
+    "page_count": "PageCount", "genre": "Genre", "tags": "Tags",
+    "age_rating": "AgeRating", "community_rating": "CommunityRating",
+    "black_and_white": "BlackAndWhite", "manga": "Manga",
+    "series_complete": "SeriesComplete", "writer": "Writer",
+    "penciller": "Penciller", "inker": "Inker",
+    "colorist": "Colorist", "letterer": "Letterer",
+    "cover_artist": "CoverArtist", "editor": "Editor",
+    "translator": "Translator", "characters": "Characters",
+    "teams": "Teams", "locations": "Locations", "web": "Web",
+    "gtin": "GTIN", "scan_information": "ScanInformation",
+    "notes": "Notes", "summary": "Summary", "review": "Review",
+}
+
+
+# ── Champ texte extensible (Summary, Notes, Writer, Characters...) ────────────
+
+class _AutoResizeTextEdit(QTextEdit):
+    """QTextEdit dont la hauteur suit son contenu en continu (grandit pendant
+    la frappe, rétrécit si on supprime du texte), toujours visible sur
+    plusieurs lignes sans interaction — pas de bascule mono/multi-ligne au
+    focus comme NameEdit. Hauteur minimale = une ligne."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setLineWrapMode(QTextEdit.WidgetWidth)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.document().setDocumentMargin(2)
+        self._last_width = -1
+        self.textChanged.connect(self._update_height)
+
+    def _min_height(self):
+        return QFontMetrics(self.font()).lineSpacing() + 10
+
+    def _update_height(self):
+        width = self.viewport().width()
+        if width <= 0:
+            return
+        self.document().setTextWidth(width)
+        height = max(self._min_height(), int(self.document().size().height()) + 8)
+        if height != self.height():
+            self.setFixedHeight(height)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        width = self.viewport().width()
+        # setFixedHeight() ci-dessous redéclenche resizeEvent (la géométrie
+        # change) ; recalculer immédiatement sur cette largeur intermédiaire
+        # peut faire osciller la largeur du viewport (apparition/disparition
+        # de la scrollbar du QScrollArea parent selon la hauteur cumulée des
+        # champs). On ne recalcule que si la largeur a réellement changé, et
+        # on le fait au cycle d'évènements suivant, une fois la géométrie du
+        # parent stabilisée.
+        if width != self._last_width:
+            self._last_width = width
+            QTimer.singleShot(0, self._update_height)
+
+    def showEvent(self, event):
+        # Au premier affichage, le layout parent (QScrollArea) n'a pas
+        # toujours fini de donner sa largeur finale au widget au moment où
+        # setPlainText() est appelé (juste après la construction des champs) :
+        # sans ce recalcul différé, la hauteur peut se figer sur une largeur
+        # provisoire trop étroite, gonflant artificiellement le nombre de
+        # lignes calculées (espace vide en bas du champ).
+        super().showEvent(event)
+        QTimer.singleShot(0, self._update_height)
+
+    def setFont(self, font):
+        super().setFont(font)
+        self._update_height()
+
+
 # ── Fenêtre principale ────────────────────────────────────────────────────────
 
 class _ComicInfoDialog(QDialog):
@@ -259,12 +350,13 @@ class _ComicInfoDialog(QDialog):
         self._edit_mode     = entry is not None
         self._center_parent = parent
 
-        # _fields_map : tag_xml → QLineEdit
-        self._fields_map: dict[str, QLineEdit] = {}
+        # _fields_map : tag_xml → QLineEdit | QComboBox | _AutoResizeTextEdit
+        self._fields_map: dict[str, QWidget] = {}
         # _section_labels : liste de (QLabel, clé_i18n)
         self._section_labels: list[tuple[QLabel, str]] = []
         # _field_labels : liste de (QLabel, clé_i18n)
         self._field_labels: list[tuple[QLabel, str]] = []
+        self._web_open_btn = None
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
@@ -298,31 +390,23 @@ class _ComicInfoDialog(QDialog):
         if self._edit_mode:
             self._populate_from_entry()
 
+        # Recalcule la hauteur des champs longs une fois le layout stabilisé :
+        # au premier remplissage, la largeur réelle des champs n'est pas
+        # encore connue (widgets pas encore layoutés dans le QScrollArea),
+        # ce qui peut figer une hauteur trop grande (texte réparti sur un
+        # nombre de lignes surestimé avec une largeur provisoire trop étroite).
+        QTimer.singleShot(0, self._refresh_long_text_heights)
+
         # PageCount : rempli automatiquement, non éditable
         self._setup_page_count()
 
-        # Traçabilité MosaicView : affichage lecture seule, lien cliquable
-        self._trace_date = None
-        self._trace_url  = None
-        if self._edit_mode:
-            raw = self._entry.get("bytes", b"")
-            if raw:
-                try:
-                    trace_root = ET.fromstring(raw)
-                    trace_elem = trace_root.find("MosaicViewTrace")
-                    if trace_elem is not None:
-                        self._trace_date = trace_elem.get("date", "")
-                        self._trace_url  = trace_elem.get("url", "")
-                except Exception:
-                    pass
-        self._trace_lbl = None
-        if self._trace_date and self._trace_url:
-            self._trace_lbl = QLabel()
-            self._trace_lbl.setOpenExternalLinks(True)
-            self._trace_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
-            self._trace_lbl.setWordWrap(True)
-            self._trace_lbl.setContentsMargins(0, 6, 0, 6)
-            self._form_layout.addWidget(self._trace_lbl)
+        # Bouton "Vérifier les mises à jour" — visible seulement si une URL
+        # ComicVine d'issue est détectée dans les métadonnées du panneau.
+        from modules.qt.comic_info import get_source_comicvine_issue_id
+        self._check_updates_btn = None
+        if self._state and get_source_comicvine_issue_id(self._state.comic_metadata):
+            self._check_updates_btn = QPushButton()
+            self._check_updates_btn.clicked.connect(self._on_check_updates_clicked)
 
         # ── Boutons ────────────────────────────────────────────────────────────
         btn_row = QHBoxLayout()
@@ -343,6 +427,8 @@ class _ComicInfoDialog(QDialog):
         btn_row.addWidget(self._btn_cancel)
         btn_row.addStretch()
         btn_row.addWidget(self._btn_clear)
+        if self._check_updates_btn is not None:
+            btn_row.addWidget(self._check_updates_btn)
 
         outer.addLayout(btn_row)
 
@@ -356,17 +442,54 @@ class _ComicInfoDialog(QDialog):
 
     # ── Construction des champs ────────────────────────────────────────────────
 
-    def _make_field_widget(self, tag: str):
-        """Retourne un QComboBox ou QLineEdit selon le tag."""
+    def _make_field_widget(self, tag: str, long_text: bool = False):
+        """Retourne un QComboBox, un QLineEdit, ou un champ extensible
+        (_AutoResizeTextEdit) selon le tag. long_text=True pour les champs
+        pleine largeur (Summary, Notes, Writer, Characters, Web...) qui
+        doivent s'étendre avec leur contenu au lieu d'être tronqués."""
         if tag in _COMBO_ITEMS:
             combo = QComboBox()
             combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
             self._fill_combo(combo, tag)
+            combo.installEventFilter(self)
             return combo
+        if long_text:
+            edit = _AutoResizeTextEdit()
+            from modules.qt.utils import setup_textedit_context_menu
+            setup_textedit_context_menu(edit)
+            edit.installEventFilter(self)
+            return edit
         edit = QLineEdit()
         if tag in _INT_TAGS:
             edit.setValidator(QIntValidator(0, 99999, edit))
+        from modules.qt.utils import setup_lineedit_context_menu
+        setup_lineedit_context_menu(edit)
+        edit.installEventFilter(self)
         return edit
+
+    def _make_web_open_button(self, edit) -> QToolButton:
+        """Petit bouton à côté du champ Web pour ouvrir l'URL saisie dans le
+        navigateur, sans perdre la possibilité d'éditer le champ normalement.
+        Désactivé si le contenu actuel n'est pas une URL http(s) valide.
+        Accepte un QLineEdit ou un QTextEdit (_AutoResizeTextEdit)."""
+        btn = QToolButton()
+        get_text = edit.toPlainText if isinstance(edit, QTextEdit) else edit.text
+
+        def _is_valid_web_url(text):
+            from urllib.parse import urlsplit
+            return urlsplit(text.strip()).scheme.lower() in ("http", "https")
+
+        def _update_enabled():
+            btn.setEnabled(_is_valid_web_url(get_text()))
+
+        def _on_click():
+            from modules.qt.utils import open_url
+            open_url(get_text().strip())
+
+        edit.textChanged.connect(_update_enabled)
+        btn.clicked.connect(_on_click)
+        _update_enabled()
+        return btn
 
     def _fill_combo(self, combo: QComboBox, tag: str):
         """Peuple la combobox avec les labels traduits ; stocke la valeur XML dans UserRole."""
@@ -440,10 +563,20 @@ class _ComicInfoDialog(QDialog):
                     lbl = QLabel()
                     lbl.setFixedWidth(160)
                     self._field_labels.append((lbl, key_i18n))
-                    widget = self._make_field_widget(tag)
+                    widget = self._make_field_widget(tag, long_text=True)
                     row.addWidget(lbl)
                     row.addWidget(widget, stretch=1)
+                    if isinstance(widget, QTextEdit):
+                        # Le label reste collé en haut quand le champ grandit
+                        # sur plusieurs lignes, au lieu d'être étiré/centré
+                        # par le QHBoxLayout sur toute la hauteur du champ.
+                        row.setAlignment(lbl, Qt.AlignTop)
                     self._fields_map[tag] = widget
+                    if tag == "Web":
+                        self._web_open_btn = self._make_web_open_button(widget)
+                        row.addWidget(self._web_open_btn)
+                        if isinstance(widget, QTextEdit):
+                            row.setAlignment(self._web_open_btn, Qt.AlignTop)
                     self._form_layout.addLayout(row)
                     i += 1
                 else:
@@ -497,43 +630,70 @@ class _ComicInfoDialog(QDialog):
             meta = parse_comic_info_xml(raw)
             if not meta:
                 return
-            # Correspondance clé dict → tag XML
-            _key_to_tag = {
-                "title": "Title", "series": "Series", "number": "Number",
-                "count": "Count", "volume": "Volume",
-                "alternate_series": "AlternateSeries",
-                "alternate_number": "AlternateNumber",
-                "alternate_count": "AlternateCount",
-                "series_group": "SeriesGroup", "story_arc": "StoryArc",
-                "story_arc_number": "StoryArcNumber", "publisher": "Publisher",
-                "imprint": "Imprint", "year": "Year", "month": "Month",
-                "day": "Day", "format": "Format", "language_iso": "LanguageISO",
-                "page_count": "PageCount", "genre": "Genre", "tags": "Tags",
-                "age_rating": "AgeRating", "community_rating": "CommunityRating",
-                "black_and_white": "BlackAndWhite", "manga": "Manga",
-                "series_complete": "SeriesComplete", "writer": "Writer",
-                "penciller": "Penciller", "inker": "Inker",
-                "colorist": "Colorist", "letterer": "Letterer",
-                "cover_artist": "CoverArtist", "editor": "Editor",
-                "translator": "Translator", "characters": "Characters",
-                "teams": "Teams", "locations": "Locations", "web": "Web",
-                "gtin": "GTIN", "scan_information": "ScanInformation",
-                "notes": "Notes", "summary": "Summary", "review": "Review",
-            }
-            for dict_key, tag in _key_to_tag.items():
-                value = meta.get(dict_key, "")
-                if value and tag in self._fields_map:
-                    widget = self._fields_map[tag]
-                    if isinstance(widget, QComboBox):
-                        xml_val = str(value)
-                        for i in range(widget.count()):
-                            if widget.itemData(i, Qt.UserRole) == xml_val:
-                                widget.setCurrentIndex(i)
-                                break
-                    else:
-                        widget.setText(str(value))
+            self._apply_metadata_to_fields(meta)
         except Exception:
             pass
+
+    def _refresh_long_text_heights(self, passes: int = 3):
+        """Force le recalcul de hauteur de tous les champs longs.
+
+        L'apparition/disparition de la scrollbar verticale du QScrollArea
+        (selon la hauteur cumulée des champs) change la largeur disponible
+        pour chaque champ, ce qui change à son tour le nombre de lignes
+        nécessaires — donc la hauteur. Une seule passe peut donc figer une
+        hauteur calculée sur une largeur transitoire encore fausse.
+        Plusieurs passes différées laissent le layout converger avant que
+        l'utilisateur ne voie le résultat.
+        """
+        for widget in self._fields_map.values():
+            if isinstance(widget, QTextEdit):
+                widget._update_height()
+        if passes > 1:
+            QTimer.singleShot(0, lambda: self._refresh_long_text_heights(passes - 1))
+
+    def _apply_metadata_to_fields(self, meta):
+        """Applique un dict de métadonnées (clé comic_metadata → valeur) aux
+        widgets de champs existants, via _KEY_TO_TAG. Ignore les clés absentes
+        du dict ou les tags sans widget correspondant."""
+        for dict_key, tag in _KEY_TO_TAG.items():
+            value = meta.get(dict_key, "")
+            if value and tag in self._fields_map:
+                widget = self._fields_map[tag]
+                if isinstance(widget, QComboBox):
+                    xml_val = str(value)
+                    for i in range(widget.count()):
+                        if widget.itemData(i, Qt.UserRole) == xml_val:
+                            widget.setCurrentIndex(i)
+                            break
+                elif isinstance(widget, QTextEdit):
+                    widget.setPlainText(str(value))
+                else:
+                    widget.setText(str(value))
+
+    def _on_check_updates_clicked(self):
+        from modules.qt.comic_info import get_source_comicvine_issue_id
+        issue_id = get_source_comicvine_issue_id(self._state.comic_metadata if self._state else None)
+        if not issue_id:
+            return
+        from modules.qt.config_manager import get_config_manager
+        from modules.qt.comicvine_apikey_dialog_qt import show_apikey_dialog
+        cfg = get_config_manager()
+        api_key = cfg.get_comicvine_api_key()
+        if not api_key:
+            dlg = show_apikey_dialog(self, cfg)
+            dlg.accepted.connect(self._on_check_updates_clicked)
+            return
+        from modules.qt.comicvine_update_check_qt import show_comicvine_update_check
+        show_comicvine_update_check(self, self._state, api_key, issue_id,
+                                    on_done=self._on_updates_applied,
+                                    busy_widget=self._check_updates_btn)
+
+    def _on_updates_applied(self):
+        # Le ComicInfo.xml (self._entry["bytes"]) a été réécrit en place par
+        # write_comic_metadata_from_scraper : recharger les champs affichés
+        # (dont Notes, qui porte désormais la ligne de traçabilité MosaicView).
+        self._populate_from_entry()
+        self._refresh_long_text_heights()
 
     # ── Centrage à l'affichage ─────────────────────────────────────────────────
 
@@ -542,10 +702,48 @@ class _ComicInfoDialog(QDialog):
         if self._center_parent and not event.spontaneous():
             p = self._center_parent
             QTimer.singleShot(0, lambda: self._center_on(p))
+        # Premier affichage réel : le QScrollArea connaît enfin sa taille
+        # définitive (avant show(), toute largeur lue était provisoire).
+        QTimer.singleShot(0, self._refresh_long_text_heights)
 
     def _center_on(self, parent):
         from modules.qt.dialogs_qt import _center_on_widget
         _center_on_widget(self, parent)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Home:
+            self._scroll.verticalScrollBar().setValue(0)
+            return
+        if event.key() == Qt.Key_End:
+            bar = self._scroll.verticalScrollBar()
+            bar.setValue(bar.maximum())
+            return
+        super().keyPressEvent(event)
+
+    def eventFilter(self, obj, event):
+        # Home/End dans un champ mono-ligne (QLineEdit/QComboBox) : scroller le
+        # formulaire en position extrême au lieu du comportement natif
+        # (début/fin de texte), cohérent avec Ctrl+Home/End qui n'ont pas de
+        # sens dans ces petits champs. Ne s'applique PAS aux champs longs
+        # multi-lignes (_AutoResizeTextEdit) : Home/End y gardent leur usage
+        # normal de navigation dans le texte (début/fin de ligne courante).
+        if (event.type() == QEvent.KeyPress and event.key() in (Qt.Key_Home, Qt.Key_End)
+                and isinstance(obj, (QLineEdit, QComboBox))):
+            if event.key() == Qt.Key_Home:
+                self._scroll.verticalScrollBar().setValue(0)
+            else:
+                bar = self._scroll.verticalScrollBar()
+                bar.setValue(bar.maximum())
+            return True
+        # Molette au survol d'un QComboBox non déroulé : très gênant, elle
+        # change silencieusement la valeur sélectionnée au lieu de scroller
+        # le formulaire. On bloque l'événement sur le combo et on fait
+        # défiler le formulaire nous-mêmes à la place.
+        if event.type() == QEvent.Wheel and isinstance(obj, QComboBox):
+            bar = self._scroll.verticalScrollBar()
+            bar.setValue(bar.value() - event.angleDelta().y())
+            return True
+        return super().eventFilter(obj, event)
 
     # ── Traduction + thème ─────────────────────────────────────────────────────
 
@@ -573,8 +771,9 @@ class _ComicInfoDialog(QDialog):
             lbl.setFont(font)
             lbl.setStyleSheet(_label_style(theme))
 
-        input_ss   = _input_style(theme)
-        combo_ss   = _combo_style(theme)
+        input_ss    = _input_style(theme)
+        textedit_ss = _textedit_style(theme)
+        combo_ss    = _combo_style(theme)
         readonly_ss = (
             f"QLineEdit {{ background: {theme['separator']}; color: {theme['text']}; "
             f"border: 1px solid #aaaaaa; padding: 2px 6px; }}"
@@ -584,6 +783,8 @@ class _ComicInfoDialog(QDialog):
             if isinstance(widget, QComboBox):
                 widget.setStyleSheet(combo_ss)
                 self._fill_combo(widget, tag)
+            elif isinstance(widget, QTextEdit):
+                widget.setStyleSheet(textedit_ss)
             elif tag == "PageCount":
                 widget.setStyleSheet(readonly_ss)
             else:
@@ -603,20 +804,17 @@ class _ComicInfoDialog(QDialog):
         self._btn_clear.setFont(font)
         self._btn_clear.setStyleSheet(btn_style)
 
-        if self._trace_lbl is not None:
-            link_color = theme.get("link", "#4A9EFF")
-            text_color = theme.get('disabled', '#888888')
-            # Texte toujours en anglais/latin (non traduit) : police latine fixe,
-            # indépendante de get_current_font() (qui basculerait en Tengwar/pIqaD)
-            trace_font = QFont("Arial", font.pointSize())
-            self._trace_lbl.setFont(trace_font)
-            self._trace_lbl.setStyleSheet(f"color: {text_color};")
-            self._trace_lbl.setText(
-                f'<span style="font-family:\'Arial\'; '
-                f'font-size:{trace_font.pointSize()}pt; color:{text_color};">'
-                f'Metadata retrieved on {self._trace_date} with MosaicView from '
-                f'<a href="{self._trace_url}" style="color:{link_color};">{self._trace_url}</a></span>'
-            )
+        if self._check_updates_btn is not None:
+            checking = self._check_updates_btn.property("is_checking_updates")
+            self._check_updates_btn.setText(
+                _("comicvine_update.checking") if checking else _("comicvine_update.btn_check"))
+            self._check_updates_btn.setFont(font)
+            self._check_updates_btn.setStyleSheet(btn_style)
+
+        if self._web_open_btn is not None:
+            self._web_open_btn.setText(_("dialogs.link.open"))
+            self._web_open_btn.setFont(font)
+            self._web_open_btn.setStyleSheet(btn_style)
 
     # ── Construction du XML à partir des champs ────────────────────────────────
 
@@ -631,6 +829,8 @@ class _ComicInfoDialog(QDialog):
                 continue
             if isinstance(widget, QComboBox):
                 value = (widget.currentData(Qt.UserRole) or "").strip()
+            elif isinstance(widget, QTextEdit):
+                value = widget.toPlainText().strip()
             else:
                 value = widget.text().strip()
             if value:

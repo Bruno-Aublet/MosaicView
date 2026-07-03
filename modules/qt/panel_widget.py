@@ -227,6 +227,9 @@ class _BookmarkPopup(QDialog):
             language_signal.changed.disconnect(self._lang_handler)
         except Exception:
             pass
+        parent = self.parent()
+        if parent is not None and getattr(parent, "_bookmark_popup", None) is self:
+            parent._bookmark_popup = None
         super().closeEvent(event)
 
 
@@ -257,6 +260,7 @@ class PanelWidget(QWidget):
         self._is_primary    = is_primary    # False → ne sauvegarde pas ses prefs locales en config
 
         self._sidebar_visible = True
+        self._bookmark_popup = None
 
         # ── État applicatif propre à ce panneau ───────────────────────────────
         self._state = AppState()
@@ -448,7 +452,7 @@ class PanelWidget(QWidget):
 
         return panel
 
-    def show_update_banner(self, latest: str) -> None:
+    def show_update_banner(self, latest: str, release_title: str = "") -> None:
         """Affiche le bandeau 'nouvelle version disponible' sous la tab bar."""
         if self._update_banner is not None:
             return  # déjà affiché
@@ -460,29 +464,29 @@ class PanelWidget(QWidget):
         from modules.qt.font_manager_qt import get_current_font as _gcf
 
         self._update_banner_latest = latest
+        self._update_banner_title  = release_title
 
         banner = QWidget()
-        banner.setFixedHeight(36)
         row = QHBoxLayout(banner)
-        row.setContentsMargins(12, 0, 8, 0)
+        row.setContentsMargins(12, 6, 8, 6)
         row.setSpacing(8)
 
         lbl = QLabel()
-        row.addWidget(lbl)
-        row.addStretch()
+        lbl.setWordWrap(True)
+        row.addWidget(lbl, stretch=1)
 
         dl_btn = QPushButton()
         dl_btn.setCursor(Qt.PointingHandCursor)
         dl_btn.clicked.connect(
             lambda: webbrowser.open("https://github.com/Bruno-Aublet/MosaicView/releases/latest")
         )
-        row.addWidget(dl_btn)
+        row.addWidget(dl_btn, alignment=Qt.AlignTop)
 
         close_btn = QPushButton("✕")
         close_btn.setFixedSize(24, 24)
         close_btn.setCursor(Qt.PointingHandCursor)
         close_btn.clicked.connect(self._close_update_banner)
-        row.addWidget(close_btn)
+        row.addWidget(close_btn, alignment=Qt.AlignTop)
 
         self._update_banner         = banner
         self._banner_lbl            = lbl
@@ -511,6 +515,7 @@ class PanelWidget(QWidget):
         theme  = get_current_theme()
         font   = _gcf(10)
         latest = self._update_banner_latest
+        title  = getattr(self, "_update_banner_title", "")
 
         # Couleurs : vert foncé en mode clair, vert plus doux en mode sombre
         dark = getattr(self._state, "dark_mode", False)
@@ -525,7 +530,11 @@ class PanelWidget(QWidget):
         )
         self._banner_lbl.setFont(font)
         self._banner_lbl.setStyleSheet(f"color: {txt_color}; background: transparent;")
-        self._banner_lbl.setText(_("updates.banner_message").replace("{latest}", latest))
+        headline = _("updates.banner_message").replace("{latest}", latest)
+        if title:
+            self._banner_lbl.setText(f"{headline}\n{title}")
+        else:
+            self._banner_lbl.setText(headline)
 
         self._banner_dl_btn.setFont(font)
         self._banner_dl_btn.setText(_("updates.download"))
@@ -994,7 +1003,7 @@ class PanelWidget(QWidget):
             apply_new_names_cb=lambda on_complete=None: self._apply_new_names(skip_render=True, on_complete=on_complete),
             refresh_title=self._refresh_title,
             refresh_toolbar=self._refresh_toolbar_states,
-            refresh_tabs=lambda: (self._content_stack.setCurrentIndex(0), self._update_tabs()),
+            refresh_tabs=lambda: (self._content_stack.setCurrentIndex(0), self._update_tabs(), self._close_bookmark_popup()),
             refresh_status=self._update_status_bar,
             refresh_menubar=self._rebuild_menubar,
         )
@@ -1228,6 +1237,7 @@ class PanelWidget(QWidget):
     def _zip_indicator_clicked(self):
         """Clic gauche sur l'indicateur ZIP de la statusbar :
         - pas de fichier ouvert : ne fait rien
+        - mode images seules (pas d'archive) : propose de créer un CBZ (create_cbz_from_images)
         - fichier non CBZ : propose d'enregistrer en CBZ (apply_new_names)
         - CBZ déjà STORED ET taux par défaut = 0 : ne fait rien (déjà optimal)
         - CBZ compressé, ou STORED avec taux par défaut > 0 : propose de réenregistrer
@@ -1245,7 +1255,11 @@ class PanelWidget(QWidget):
         message_key = "messages.questions.zip_recompress.message" if is_cbz else "messages.questions.zip_convert_to_cbz.message"
 
         def _on_confirm(ok):
-            if ok:
+            if not ok:
+                return
+            if not st.current_file:
+                self._create_cbz_from_images()
+            else:
                 self._apply_new_names()
 
         ConfirmDialog(self, title_key, message_key,
@@ -1406,7 +1420,7 @@ class PanelWidget(QWidget):
     def _handle_dropped_web_urls(self, urls: list) -> None:
         from modules.qt.web_import_qt import _resolve_and_download
         for url in urls:
-            _resolve_and_download(self._canvas, url, self._web_import_callbacks())
+            _resolve_and_download(self._canvas, url, self._web_import_callbacks(), parent=self)
 
     def _web_import_callbacks(self) -> dict:
         return {
@@ -1773,10 +1787,21 @@ class PanelWidget(QWidget):
             self._open_image_viewer(real_idx)
 
         dlg = _BookmarkPopup(self, page_number, on_yes)
+        self._bookmark_popup = dlg
         dlg.show()
         from PySide6.QtCore import QTimer
         from modules.qt.dialogs_qt import _center_on_widget
         QTimer.singleShot(0, lambda: _center_on_widget(dlg, self))
+
+    def _close_bookmark_popup(self):
+        """Ferme la pop-up marque-page si elle est encore ouverte (ex: fermeture du comics)."""
+        dlg = getattr(self, "_bookmark_popup", None)
+        if dlg is not None:
+            try:
+                dlg.close()
+            except Exception:
+                pass
+            self._bookmark_popup = None
 
     # ──────────────────────────────────────────────────────────────────────────
     # Barre de statut / toolbar
@@ -1940,7 +1965,7 @@ class PanelWidget(QWidget):
                     cfg.read(p, encoding='utf-8')
                     url = cfg.get('InternetShortcut', 'URL', fallback=None)
                     if url and url.startswith(('http://', 'https://')):
-                        _resolve_and_download(self._canvas, url, self._web_import_callbacks())
+                        _resolve_and_download(self._canvas, url, self._web_import_callbacks(), parent=self)
                         continue
                 except Exception:
                     pass
@@ -1951,7 +1976,7 @@ class PanelWidget(QWidget):
                         data = plistlib.load(f)
                     url = data.get('URL', '')
                     if url.startswith(('http://', 'https://')):
-                        _resolve_and_download(self._canvas, url, self._web_import_callbacks())
+                        _resolve_and_download(self._canvas, url, self._web_import_callbacks(), parent=self)
                         continue
                 except Exception:
                     pass
@@ -2227,13 +2252,31 @@ class PanelWidget(QWidget):
             dlg = show_apikey_dialog(self, cfg)
             dlg.accepted.connect(self._fetch_metadata)
             return
-        from modules.qt.comicvine_dialog_qt import show_comicvine_dialog
-        show_comicvine_dialog(self, self._state, api_key,
-                              on_done=self._on_comicvine_metadata_done)
+        from modules.qt.comicvine_url_dialog_qt import show_comicvine_url_dialog
+        show_comicvine_url_dialog(self, self._state, api_key,
+                                  on_done=self._on_comicvine_metadata_done)
 
     def _on_comicvine_metadata_done(self):
         self.save_state()
         self._render_mosaic_invalidating()
         self._refresh_toolbar_states()
         self._update_tabs()
+
+    def _check_comicvine_updates(self, busy_widget=None):
+        from modules.qt.comic_info import get_source_comicvine_issue_id
+        issue_id = get_source_comicvine_issue_id(self._state.comic_metadata if self._state else None)
+        if not issue_id:
+            return
+        from modules.qt.config_manager import get_config_manager
+        from modules.qt.comicvine_apikey_dialog_qt import show_apikey_dialog
+        cfg = get_config_manager()
+        api_key = cfg.get_comicvine_api_key()
+        if not api_key:
+            dlg = show_apikey_dialog(self, cfg)
+            dlg.accepted.connect(lambda: self._check_comicvine_updates(busy_widget))
+            return
+        from modules.qt.comicvine_update_check_qt import show_comicvine_update_check
+        show_comicvine_update_check(self, self._state, api_key, issue_id,
+                                    on_done=self._on_comicvine_metadata_done,
+                                    busy_widget=busy_widget)
 

@@ -969,6 +969,8 @@ class _MetadataSummaryDialog(QDialog):
             self._log_lbl.setTextInteractionFlags(_Qt.TextBrowserInteraction)
             lp = data["log_path"]
             self._log_lbl.linkActivated.connect(lambda _, p=lp: _open_log(p))
+            from modules.qt.utils import setup_path_label_context_menu
+            setup_path_label_context_menu(self._log_lbl, lambda p=lp: p, lambda p=lp: _open_log(p))
             layout.addWidget(self._log_lbl)
 
         sep = QFrame()

@@ -187,6 +187,9 @@ class _RichTextOverlay(QTextEdit):
         self.document().contentsChanged.connect(self._on_contents_changed)
         self.cursorPositionChanged.connect(self._on_cursor_moved)
 
+        from modules.qt.utils import setup_textedit_context_menu
+        setup_textedit_context_menu(self)
+
         self.hide()
 
     # ── Taille auto ───────────────────────────────────────────────────────────

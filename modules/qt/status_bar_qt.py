@@ -6,6 +6,8 @@ Placée dans le panneau central uniquement (pas sous la colonne gauche),
 contrairement à QMainWindow.setStatusBar() qui s'étend sur toute la largeur.
 """
 
+import os
+
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel
 from PySide6.QtCore import Qt
 
@@ -169,7 +171,11 @@ class StatusBar(QWidget):
             zip_tip_key = "tooltip.zip_indicator_deflated"
         else:
             zip_tip_key = "tooltip.zip_indicator_na"
-        zip_tip_html = _format_tooltip(_(zip_tip_key, level=default_level)) if has_file else ""
+        if zip_tip_key == "tooltip.zip_indicator_na" and has_file:
+            ext = os.path.splitext(state.current_file or "")[1].lower() if state.current_file else ""
+            zip_tip_html = _format_tooltip(_(zip_tip_key, level=default_level, ext=ext or _("tooltip.zip_indicator_ext_image")))
+        else:
+            zip_tip_html = _format_tooltip(_(zip_tip_key, level=default_level)) if has_file else ""
         self._overlay_tip.set_tracked_html(zip_tip_html, self._zip_indicator)
         if self._overlay_tip._label.isVisible():
             self._overlay_tip.show_tooltip(zip_tip_html)

@@ -107,6 +107,7 @@ def _pil_to_qpixmap(img, w, h, callbacks):
 
 def _add_dir_links(layout, data):
     """Ajoute des liens cliquables vers les dossiers dans le layout."""
+    from modules.qt.utils import setup_path_label_context_menu
     dirs = data.get("directories") or [data.get("directory", "")]
     for d in dirs:
         display = d if len(d) <= 60 else "..." + d[-57:]
@@ -117,6 +118,7 @@ def _add_dir_links(layout, data):
         lbl.setWordWrap(True)
         lbl.linkActivated.connect(lambda _, p=d: _open_path(p))
         lbl.setAlignment(Qt.AlignCenter)
+        setup_path_label_context_menu(lbl, lambda p=d: p, lambda p=d: _open_path(p))
         layout.addWidget(lbl)
 
 
@@ -395,6 +397,8 @@ class _CbrSummaryDialog(QDialog):
                 self._error_lbl.setCursor(QCursor(Qt.PointingHandCursor))
                 self._error_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
                 self._error_lbl.linkActivated.connect(lambda _, p=log_path: _open_path(p))
+                from modules.qt.utils import setup_path_label_context_menu
+                setup_path_label_context_menu(self._error_lbl, lambda p=log_path: p, lambda p=log_path: _open_path(p))
                 layout.addWidget(self._error_lbl)
             else:
                 self._error_lbl = QLabel()
@@ -512,6 +516,8 @@ class _PdfSummaryDialog(QDialog):
                 self._error_lbl.setCursor(QCursor(Qt.PointingHandCursor))
                 self._error_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
                 self._error_lbl.linkActivated.connect(lambda _, p=log_path: _open_path(p))
+                from modules.qt.utils import setup_path_label_context_menu
+                setup_path_label_context_menu(self._error_lbl, lambda p=log_path: p, lambda p=log_path: _open_path(p))
             layout.addWidget(self._error_lbl)
 
         btn_row = QHBoxLayout()
@@ -627,6 +633,8 @@ class _ImgSummaryDialog(QDialog):
                 self._error_lbl.setCursor(QCursor(Qt.PointingHandCursor))
                 self._error_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
                 self._error_lbl.linkActivated.connect(lambda _, p=log_path: _open_path(p))
+                from modules.qt.utils import setup_path_label_context_menu
+                setup_path_label_context_menu(self._error_lbl, lambda p=log_path: p, lambda p=log_path: _open_path(p))
             layout.addWidget(self._error_lbl)
 
         btn_row = QHBoxLayout()
@@ -707,7 +715,7 @@ class _ImgSummaryDialog(QDialog):
 def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch CBR→CBZ. Équivalent de batch_dialogs.batch_convert_cbr_to_cbz."""
     if rarfile is None:
-        ErrorDialog(parent, lambda: _("dialogs.batch_cbr.no_cbr_title"),
+        ErrorDialog(parent, lambda: _wt("dialogs.batch_cbr.no_cbr_title"),
                     lambda: _("dialogs.batch_cbr.rarfile_unavailable")).show()
         return
 
@@ -729,7 +737,7 @@ def batch_convert_cbr_to_cbz(parent, callbacks, directory=None):
     cbr_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not cbr_files:
-        InfoDialog(parent, lambda: _("dialogs.batch_cbr.no_cbr_title"),
+        InfoDialog(parent, lambda: _wt("dialogs.batch_cbr.no_cbr_title"),
                    lambda d=directory: _("dialogs.batch_cbr.no_cbr_message").format(directory=d)).show()
         return
 
@@ -1020,6 +1028,8 @@ class _Cb7SummaryDialog(QDialog):
             self._error_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
             if log_path:
                 self._error_lbl.linkActivated.connect(lambda _, p=log_path: _open_path(p))
+                from modules.qt.utils import setup_path_label_context_menu
+                setup_path_label_context_menu(self._error_lbl, lambda p=log_path: p, lambda p=log_path: _open_path(p))
             layout.addWidget(self._error_lbl)
 
         btn_row = QHBoxLayout()
@@ -1118,7 +1128,7 @@ def batch_convert_cb7_to_cbz(parent, callbacks, directory=None):
     cb7_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not cb7_files:
-        InfoDialog(parent, lambda: _("dialogs.batch_cb7.no_cb7_title"),
+        InfoDialog(parent, lambda: _wt("dialogs.batch_cb7.no_cb7_title"),
                    lambda d=directory: _("dialogs.batch_cb7.no_cb7_message").format(directory=d)).show()
         return
 
@@ -1410,6 +1420,8 @@ class _CbtSummaryDialog(QDialog):
             self._error_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
             if log_path:
                 self._error_lbl.linkActivated.connect(lambda _, p=log_path: _open_path(p))
+                from modules.qt.utils import setup_path_label_context_menu
+                setup_path_label_context_menu(self._error_lbl, lambda p=log_path: p, lambda p=log_path: _open_path(p))
             layout.addWidget(self._error_lbl)
 
         btn_row = QHBoxLayout()
@@ -1508,7 +1520,7 @@ def batch_convert_cbt_to_cbz(parent, callbacks, directory=None):
     cbt_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not cbt_files:
-        InfoDialog(parent, lambda: _("dialogs.batch_cbt.no_cbt_title"),
+        InfoDialog(parent, lambda: _wt("dialogs.batch_cbt.no_cbt_title"),
                    lambda d=directory: _("dialogs.batch_cbt.no_cbt_message").format(directory=d)).show()
         return
 
@@ -1763,7 +1775,7 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
     """Lance la conversion batch PDF→CBZ."""
     if not PDF_AVAILABLE:
         ErrorDialog(parent,
-                    lambda: _("dialogs.batch_pdf.pymupdf_required_title"),
+                    lambda: _wt("dialogs.batch_pdf.pymupdf_required_title"),
                     lambda: _("dialogs.batch_pdf.pymupdf_required_message")).show()
         return
 
@@ -1785,7 +1797,7 @@ def batch_convert_pdf_to_cbz(parent, callbacks, directory=None):
     pdf_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
     if not pdf_files:
-        InfoDialog(parent, lambda: _("dialogs.batch_pdf.no_pdf_title"),
+        InfoDialog(parent, lambda: _wt("dialogs.batch_pdf.no_pdf_title"),
                    lambda d=directory: _("dialogs.batch_pdf.no_pdf_message").format(directory=d)).show()
         return
 
@@ -2198,7 +2210,7 @@ def batch_convert_img_to_cbz(parent, callbacks, directory=None):
         img_files.sort(key=lambda f: callbacks['natural_sort_key'](os.path.basename(f).lower()))
 
         if not img_files:
-            InfoDialog(parent, lambda: _("dialogs.batch_img.no_img_title"),
+            InfoDialog(parent, lambda: _wt("dialogs.batch_img.no_img_title"),
                        lambda d=actual_directory: _("dialogs.batch_img.no_img_message").format(directory=d)).show()
             return
 
@@ -2863,6 +2875,8 @@ class _RecompressSummaryDialog(QDialog):
             self._error_lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
             if log_path:
                 self._error_lbl.linkActivated.connect(lambda _, p=log_path: _open_path(p))
+                from modules.qt.utils import setup_path_label_context_menu
+                setup_path_label_context_menu(self._error_lbl, lambda p=log_path: p, lambda p=log_path: _open_path(p))
             layout.addWidget(self._error_lbl)
 
         btn_row = QHBoxLayout()

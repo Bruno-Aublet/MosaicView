@@ -104,6 +104,15 @@ class _SelectableText(QTextBrowser):
     def wheelEvent(self, event):
         event.ignore()
 
+    def keyPressEvent(self, event):
+        # Home/End : laisser remonter à la fenêtre du guide (scroll tout en
+        # haut/bas), au lieu du comportement natif QTextBrowser (déplacer le
+        # curseur de texte en lecture seule dans ce widget uniquement).
+        if event.key() in (Qt.Key_Home, Qt.Key_End):
+            event.ignore()
+            return
+        super().keyPressEvent(event)
+
 
 class _LinkText(QTextBrowser):
     def __init__(self, html: str, parent=None):
@@ -166,6 +175,15 @@ class _LinkText(QTextBrowser):
 
     def wheelEvent(self, event):
         event.ignore()
+
+    def keyPressEvent(self, event):
+        # Home/End : laisser remonter à la fenêtre du guide (scroll tout en
+        # haut/bas), au lieu du comportement natif QTextBrowser (déplacer le
+        # curseur de texte en lecture seule dans ce widget uniquement).
+        if event.key() in (Qt.Key_Home, Qt.Key_End):
+            event.ignore()
+            return
+        super().keyPressEvent(event)
 
 
 def _make_action_button(parent, text: str, callback) -> QPushButton:
@@ -298,7 +316,11 @@ class _ExportSuccessDialog(QDialog):
         self._link_lbl.setOpenExternalLinks(False)
         self._link_lbl.setCursor(Qt.PointingHandCursor)
         self._link_lbl.setAlignment(Qt.AlignCenter)
-        self._link_lbl.mousePressEvent = lambda e: self._open_explorer()
+        self._link_lbl.mousePressEvent = (
+            lambda e: self._open_explorer() if e.button() == Qt.LeftButton else None
+        )
+        from modules.qt.utils import setup_path_label_context_menu
+        setup_path_label_context_menu(self._link_lbl, lambda: self._folder_norm, self._open_explorer)
         layout.addWidget(self._link_lbl)
 
         self._btn_ok = QPushButton()
@@ -313,10 +335,9 @@ class _ExportSuccessDialog(QDialog):
         self.finished.connect(self._on_close)
 
     def _open_explorer(self):
-        try:
-            subprocess.run(['explorer', f'/select,{os.path.abspath(self._first_file)}'], shell=False)
-        except Exception as ex:
-            print(f"Erreur ouverture explorateur: {ex}")
+        from modules.qt.library_window import _explorer_select
+        target = os.path.abspath(self._first_file).replace('/', '\\')
+        _explorer_select(target)
 
     def _retranslate(self):
         theme = get_current_theme()
@@ -363,7 +384,7 @@ def export_piqad_font(parent_widget):
     initial = os.path.join(cfg.get('last_open_dir', ""), PIQAD_FONT_FILE)
     save_path, _filt = QFileDialog.getSaveFileName(
         parent_widget,
-        _("help.language_export_piqad"),
+        _wt("help.language_export_piqad"),
         initial,
         "TrueType Font (*.ttf);;All files (*.*)",
     )
@@ -372,7 +393,7 @@ def export_piqad_font(parent_widget):
     cfg.set('last_open_dir', os.path.dirname(os.path.abspath(save_path)))
     font_source = resource_path(os.path.join("fonts", PIQAD_FONT_FILE))
     if not os.path.exists(font_source):
-        ErrorDialog(parent_widget, lambda: _("messages.errors.file_not_found.title"),
+        ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
                     lambda p=font_source: _("messages.errors.font_source_not_found", path=p)).show()
         return
     try:
@@ -387,7 +408,7 @@ def export_piqad_font(parent_widget):
             save_path,
         )
     except Exception as e:
-        ErrorDialog(parent_widget, lambda: _("messages.errors.file_not_found.title"),
+        ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
                     lambda err=e: _("messages.errors.export_error", error=err)).show()
 
 
@@ -396,7 +417,7 @@ def export_tengwar_fonts(parent_widget):
     initial = os.path.join(cfg.get('last_open_dir', ""), TENGWAR_FONT_FILES[0])
     save_path, _filt = QFileDialog.getSaveFileName(
         parent_widget,
-        _("help.language_export_tengwar"),
+        _wt("help.language_export_tengwar"),
         initial,
         "TrueType Font (*.ttf);;All files (*.*)",
     )
@@ -427,15 +448,55 @@ def export_tengwar_fonts(parent_widget):
             first_file,
         )
     else:
-        ErrorDialog(parent_widget, lambda: _("messages.errors.file_not_found.title"),
+        ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
                     lambda: _("messages.errors.no_tengwar_font")).show()
+
+
+_WILHELM_SCREAM_FILES = ["Wilhelm_Scream.ogg", "Wilhelm_Scream.wav"]
+
+
+def export_wilhelm_scream(parent_widget):
+    cfg = get_config_manager()
+    save_dir = QFileDialog.getExistingDirectory(
+        parent_widget,
+        _wt("help.wilhelm_scream_save"),
+        cfg.get('last_open_dir', ""),
+    )
+    if not save_dir:
+        return
+    cfg.set('last_open_dir', save_dir)
+    copied_count = 0
+    first_file = None
+    for sound_file in _WILHELM_SCREAM_FILES:
+        sound_source = resource_path(os.path.join("Sound", sound_file))
+        if os.path.exists(sound_source):
+            dest = os.path.join(save_dir, sound_file)
+            try:
+                shutil.copy2(sound_source, dest)
+                if copied_count == 0:
+                    first_file = dest
+                copied_count += 1
+            except Exception as e:
+                print(f"Erreur copie {sound_file}: {e}")
+    if copied_count > 0:
+        _show_success_dialog(
+            parent_widget,
+            "help.wilhelm_scream_save",
+            "help.wilhelm_scream_save_success",
+            {"count": copied_count},
+            save_dir,
+            first_file,
+        )
+    else:
+        ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
+                    lambda: _("messages.errors.no_wilhelm_scream_found")).show()
 
 
 def save_all_icons(parent_widget):
     cfg = get_config_manager()
     save_dir = QFileDialog.getExistingDirectory(
         parent_widget,
-        _("help.icons_save_all"),
+        _wt("help.icons_save_all"),
         cfg.get('last_open_dir', ""),
     )
     if not save_dir:
@@ -474,7 +535,7 @@ def save_all_icons(parent_widget):
             first_file,
         )
     else:
-        ErrorDialog(parent_widget, lambda: _("messages.errors.file_not_found.title"),
+        ErrorDialog(parent_widget, lambda: _wt("messages.errors.file_not_found.title"),
                     lambda: _("messages.errors.no_icons_found")).show()
 
 
@@ -572,6 +633,7 @@ class _HelpDialog(QDialog):
             ("help.license_gpl",          "LICENSE_GPL_SECTION"),
             ("help.license_unrar",        "LICENSE_UNRAR_SECTION"),
             ("help.license_7zip",         "LICENSE_7ZIP_SECTION"),
+            ("help.wilhelm_scream",       "WILHELM_SCREAM_SECTION"),
             ("help.credits",              "help.credits_content"),
         ]
 
@@ -603,6 +665,8 @@ class _HelpDialog(QDialog):
                 sw = self._build_config_section(section)
             elif content_key == "ICONS_SECTION":
                 sw = self._build_icons_section(section)
+            elif content_key == "WILHELM_SCREAM_SECTION":
+                sw = self._build_wilhelm_scream_section(section)
             elif content_key == "LICENSE_GPL_SECTION":
                 sw = self._build_license_section(section, "labels.license_text",
                                                   "labels.view_full_license",
@@ -760,6 +824,18 @@ class _HelpDialog(QDialog):
         )
         return {"lw": lw, "btn": btn, "url_icons": url_icons}
 
+    def _build_wilhelm_scream_section(self, section: _CollapsibleSection) -> dict:
+        url_wilhelm = "https://en.wikipedia.org/wiki/Wilhelm_scream"
+        html = _text_with_links_html(_("help.wilhelm_scream_content"), [url_wilhelm])
+        lw = _LinkText(html)
+        lw.setContentsMargins(20, 0, 20, 5)
+        section.add_widget(lw)
+        btn = section.add_button(
+            _("help.wilhelm_scream_save"),
+            self._callbacks.get("export_wilhelm_scream", lambda: None),
+        )
+        return {"lw": lw, "btn": btn, "url_wilhelm": url_wilhelm}
+
     def _build_license_section(self, section, text_key, btn_key, open_func) -> dict:
         html = _text_with_angle_bracket_links_html(_(text_key))
         lw = _LinkText(html)
@@ -846,6 +922,8 @@ class _HelpDialog(QDialog):
                 self._retranslate_config_section(sw)
             elif title_key == "help.icons":
                 self._retranslate_icons_section(sw)
+            elif title_key == "help.wilhelm_scream":
+                self._retranslate_wilhelm_scream_section(sw)
             elif title_key in ("help.license_gpl", "help.license_unrar", "help.license_7zip"):
                 self._retranslate_license_section(sw)
             else:
@@ -938,6 +1016,20 @@ class _HelpDialog(QDialog):
         sw["btn"].setFont(_get_current_font(10))
         sw["btn"].setStyleSheet(btn_style)
 
+    def _retranslate_wilhelm_scream_section(self, sw: dict):
+        url_wilhelm = sw["url_wilhelm"]
+        html = _text_with_links_html(_("help.wilhelm_scream_content"), [url_wilhelm])
+        sw["lw"].retranslate(html)
+        theme = get_current_theme()
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 3px 10px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+        sw["btn"].setText(_("help.wilhelm_scream_save"))
+        sw["btn"].setFont(_get_current_font(10))
+        sw["btn"].setStyleSheet(btn_style)
+
     def _retranslate_license_section(self, sw: dict):
         html = _text_with_angle_bracket_links_html(_(sw["text_key"]))
         sw["lw"].retranslate(html)
@@ -974,6 +1066,18 @@ class _HelpDialog(QDialog):
             x = max(sg.x(), min(x, sg.x() + sg.width()  - self.width()))
             y = max(sg.y(), min(y, sg.y() + sg.height() - self.height()))
         self.move(x, y)
+
+    # ── Navigation clavier ────────────────────────────────────────────────────
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Home:
+            self._scroll.verticalScrollBar().setValue(0)
+            return
+        if event.key() == Qt.Key_End:
+            bar = self._scroll.verticalScrollBar()
+            bar.setValue(bar.maximum())
+            return
+        super().keyPressEvent(event)
 
     # ── Nettoyage ─────────────────────────────────────────────────────────────
 

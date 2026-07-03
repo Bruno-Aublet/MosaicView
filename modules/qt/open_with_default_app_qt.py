@@ -24,6 +24,17 @@ _POLL_INTERVAL = 1.0
 # Durée max de surveillance (secondes) — arrêt automatique après 1 heure
 _WATCH_TIMEOUT = 3600
 
+# Extensions pour lesquelles os.startfile() EXÉCUTE le fichier au lieu de
+# l'afficher (scripts, binaires, raccourcis…). Un fichier piégé dans une
+# archive téléchargée serait lancé tel quel — on refuse de l'ouvrir.
+_EXECUTABLE_EXTS = frozenset({
+    ".exe", ".com", ".scr", ".pif", ".bat", ".cmd", ".vbs", ".vbe",
+    ".js", ".jse", ".wsf", ".wsh", ".ws", ".msi", ".msp", ".mst",
+    ".hta", ".cpl", ".jar", ".lnk", ".url", ".scf", ".reg", ".inf",
+    ".msc", ".vb", ".sct", ".gadget", ".application", ".appref-ms",
+    ".ps1", ".psm1", ".psd1", ".psc1", ".diagcab",
+})
+
 
 def _md5(data: bytes) -> bytes:
     return hashlib.md5(data, usedforsecurity=False).digest()
@@ -52,6 +63,14 @@ def open_file_with_default_app(
         return
 
     orig_name: str = entry.get("orig_name", "file")
+
+    # Sécurité : refuse les types de fichiers que Windows exécuterait via
+    # os.startfile() (l'utilisateur s'attend à "voir" le fichier, pas à le lancer).
+    ext = os.path.splitext(orig_name)[1].lower()
+    if ext in _EXECUTABLE_EXTS:
+        _warn_executable_file(parent, ext)
+        return
+
     # orig_name peut contenir des sous-dossiers (ex. "sub/image.txt") — on garde
     # la structure pour éviter les collisions de noms.
     mosaicview_temp = get_mosaicview_temp_dir()
@@ -134,14 +153,29 @@ def _start_watch_thread(
     t.start()
 
 
-def _warn_unsafe_path(parent):
-    """Avertit (fenêtre non-modale) que le fichier n'a pas pu être ouvert car
-    son nom tentait d'écrire hors du dossier temporaire (chemin non valide)."""
-    from modules.qt.localization import _
+def _warn_executable_file(parent, ext):
+    """Avertit (fenêtre non-modale) que le fichier n'a pas été ouvert car son
+    extension correspond à un type exécutable par Windows."""
+    from modules.qt.localization import _, _wt
     from modules.qt.dialogs_qt import InfoDialog
     dlg = InfoDialog(
         parent,
-        lambda: _("messages.warnings.unsafe_path_open.title"),
+        lambda: _wt("messages.warnings.executable_file_open.title"),
+        lambda: _("messages.warnings.executable_file_open.message").replace("{ext}", ext),
+    )
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
+
+
+def _warn_unsafe_path(parent):
+    """Avertit (fenêtre non-modale) que le fichier n'a pas pu être ouvert car
+    son nom tentait d'écrire hors du dossier temporaire (chemin non valide)."""
+    from modules.qt.localization import _, _wt
+    from modules.qt.dialogs_qt import InfoDialog
+    dlg = InfoDialog(
+        parent,
+        lambda: _wt("messages.warnings.unsafe_path_open.title"),
         lambda: _("messages.warnings.unsafe_path_open.message"),
     )
     dlg.show()

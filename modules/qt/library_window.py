@@ -18,7 +18,7 @@ from PySide6.QtWidgets import (
     QLabel, QPushButton, QLineEdit, QComboBox, QTableWidget,
     QTableWidgetItem, QHeaderView, QAbstractItemView, QFrame,
     QScrollArea, QFileDialog, QMenu, QApplication, QMessageBox,
-    QSizePolicy, QStyledItemDelegate,
+    QSizePolicy, QStyledItemDelegate, QWidgetAction, QGridLayout, QCheckBox,
 )
 from PySide6.QtCore import Qt, QTimer, QThread, Signal, QSortFilterProxyModel, QItemSelectionModel, QObject, QEvent
 from PySide6.QtGui import QFont, QAction, QColor
@@ -95,7 +95,10 @@ def open_library_window(parent_panel=None, prewarm=False):
 # ── Worker de scan ─────────────────────────────────────────────────────────────
 
 class _ScanWorker(QThread):
-    progress = Signal(str, int)   # message, pourcentage
+    # (kind, filename, pourcentage) bruts, non traduits : la traduction se
+    # fait côté thread Qt principal (_on_scan_progress) pour pouvoir être
+    # rejouée si la langue change pendant le scan (cf. language_signal).
+    progress = Signal(str, str, int)
     finished = Signal(dict)       # stats {'new', 'updated', 'deleted'}
     error    = Signal(str)
 
@@ -125,13 +128,7 @@ class _ScanWorker(QThread):
 
     def _on_progress(self, event):
         kind, fname, pct = event
-        if kind == 'new':
-            msg = _('library.scan_new', filename=fname)
-        elif kind == 'updated':
-            msg = _('library.scan_updated', filename=fname)
-        else:
-            msg = _('library.scan_deleted', filename=fname)
-        self.progress.emit(msg, pct)
+        self.progress.emit(kind, fname, pct)
 
 
 # ── Helpers UI ─────────────────────────────────────────────────────────────────
@@ -209,6 +206,19 @@ _ALL_COLUMNS = [
     ('library.col_teams',            'teams'),
     ('library.col_locations',        'locations'),
     ('library.col_story_arc',        'story_arc'),
+    ('metadata.story_arc_number',    'story_arc_number'),
+    ('metadata.series_group',        'series_group'),
+    ('metadata.count',               'count'),
+    ('metadata.alternate_series',    'alternate_series'),
+    ('metadata.alternate_number',    'alternate_number'),
+    ('metadata.alternate_count',     'alternate_count'),
+    ('metadata.series_complete',     'series_complete'),
+    ('metadata.translator',          'translator'),
+    ('metadata.tags',                'tags'),
+    ('metadata.scan_information',    'scan_information'),
+    ('metadata.community_rating',    'community_rating'),
+    ('metadata.review',              'review'),
+    ('metadata.gtin',                'gtin'),
     ('library.col_year',             'year'),
     ('library.col_month',            'month'),
     ('library.col_day',              'day'),
@@ -217,12 +227,15 @@ _ALL_COLUMNS = [
     ('library.col_filename',         'filename'),
     ('library.col_file_extension',   'file_extension'),
     ('library.col_language',         'language_iso'),
+    ('metadata.format',              'format'),
     ('library.col_age_rating',       'age_rating'),
     ('library.col_black_and_white',  'black_and_white'),
     ('library.col_manga',            'manga'),
     ('library.col_can_have_comicinfo','can_have_comicinfo'),
     ('library.col_has_comicinfo',    'has_comicinfo'),
     ('library.col_summary',          'summary'),
+    ('library.col_web',              'web'),
+    ('metadata.notes',               'notes'),
     ('library.col_relative_path',    'relative_path'),
     ('library.col_file_modified_at', 'file_modified_at'),
     ('library.col_indexed_at',       'indexed_at'),
@@ -258,6 +271,19 @@ _ALL_FIELDS = [
     ('library.col_teams',            'teams'),
     ('library.col_locations',        'locations'),
     ('library.col_story_arc',        'story_arc'),
+    ('metadata.story_arc_number',    'story_arc_number'),
+    ('metadata.series_group',        'series_group'),
+    ('metadata.count',               'count'),
+    ('metadata.alternate_series',    'alternate_series'),
+    ('metadata.alternate_number',    'alternate_number'),
+    ('metadata.alternate_count',     'alternate_count'),
+    ('metadata.series_complete',     'series_complete'),
+    ('metadata.translator',          'translator'),
+    ('metadata.tags',                'tags'),
+    ('metadata.scan_information',    'scan_information'),
+    ('metadata.community_rating',    'community_rating'),
+    ('metadata.review',              'review'),
+    ('metadata.gtin',                'gtin'),
     ('library.col_year',             'year'),
     ('library.col_month',            'month'),
     ('library.col_day',              'day'),
@@ -266,11 +292,15 @@ _ALL_FIELDS = [
     ('library.col_filename',         'filename'),
     ('library.col_file_extension',   'file_extension'),
     ('library.col_language',         'language_iso'),
+    ('metadata.format',              'format'),
     ('library.col_age_rating',       'age_rating'),
     ('library.col_black_and_white',  'black_and_white'),
     ('library.col_manga',            'manga'),
     ('library.col_can_have_comicinfo','can_have_comicinfo'),
     ('library.col_has_comicinfo',    'has_comicinfo'),
+    ('library.col_summary',          'summary'),
+    ('library.col_web',              'web'),
+    ('metadata.notes',               'notes'),
     ('library.col_relative_path',    'relative_path'),
     ('library.col_file_modified_at', 'file_modified_at'),
     ('library.col_indexed_at',       'indexed_at'),
@@ -320,16 +350,23 @@ _OPS_DATE = [
     ('library.search_op_not_empty', 'not_empty'),
 ]
 
-_BOOL_FIELDS = {'is_read', 'has_comicinfo', 'can_have_comicinfo', 'black_and_white', 'manga'}
-_NUM_FIELDS  = {'page_count', 'file_size', 'year', 'month', 'day', 'volume', 'number'}
+_BOOL_FIELDS = {'is_read', 'has_comicinfo', 'can_have_comicinfo', 'black_and_white', 'manga',
+                'series_complete'}
+_NUM_FIELDS  = {'page_count', 'file_size', 'year', 'month', 'day', 'volume', 'number',
+                'count', 'story_arc_number', 'alternate_number', 'alternate_count'}
 _DATE_FIELDS = {'file_modified_at', 'indexed_at'}
 
 # Colonnes affichant "non renseigné" en italique gris si vide
 _EMPTY_TEXT_COLS = {'series', 'title', 'writer', 'penciller', 'inker', 'colorist',
                     'letterer', 'cover_artist', 'publisher', 'imprint', 'genre',
-                    'characters', 'teams', 'locations', 'story_arc', 'collection', 'editor'}
+                    'characters', 'teams', 'locations', 'story_arc', 'collection', 'editor',
+                    'web', 'format', 'notes', 'series_group', 'alternate_series',
+                    'series_complete', 'translator', 'tags', 'scan_information',
+                    'community_rating', 'review', 'gtin', 'black_and_white', 'manga',
+                    'summary', 'language_iso', 'age_rating'}
 # Colonnes affichant "N/R" si vide
-_EMPTY_NUM_COLS  = {'volume', 'number', 'year'}
+_EMPTY_NUM_COLS  = {'volume', 'number', 'year', 'count', 'story_arc_number',
+                    'alternate_number', 'alternate_count', 'month', 'day'}
 
 
 def _ops_for_field(field):
@@ -769,6 +806,8 @@ class _SubField(QWidget):
             self._edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         else:
             self._edit = QLineEdit()
+            from modules.qt.utils import setup_lineedit_context_menu
+            setup_lineedit_context_menu(self._edit)
         row.addWidget(self._edit, 1)
 
         self._btn_and = QPushButton()
@@ -904,6 +943,10 @@ class _FieldRow(QWidget):
             self._value_edit2 = QLineEdit()
             self._value_edit2.setVisible(False)
             line2.addWidget(self._value_edit2, 1)
+
+            from modules.qt.utils import setup_lineedit_context_menu
+            setup_lineedit_context_menu(self._value_edit)
+            setup_lineedit_context_menu(self._value_edit2)
 
             self._outer.addLayout(line2)
             self._op_combo.currentIndexChanged.connect(lambda _idx: self._on_op_changed())
@@ -1159,6 +1202,8 @@ class LibraryWindow(QWidget):
         self._main_rows: list = [] # cache des sqlite3.Row du tableau complet
         self._filter_active = False  # True si _filter_table est visible
         self._scan_worker = None
+        self._scan_last_event = None
+        self._scan_lang_handler = None
         self._load_worker = None
         self._load_overlay_holder = [None]
         self._load_cancel_holder = [None]
@@ -1372,6 +1417,15 @@ class LibraryWindow(QWidget):
                             sb = scroll.verticalScrollBar()
                             sb.setValue(sb.minimum() if key == Qt.Key_Home else sb.maximum())
                             return True
+                # Molette au survol d'un QComboBox non déroulé : change silencieusement
+                # l'opérateur sélectionné au lieu de scroller la liste des critères.
+                # On bloque l'événement sur le combo et on scrolle nous-mêmes à la place.
+                if event.type() == QEvent.Wheel and isinstance(obj, QComboBox):
+                    scroll = self._widget_to_scroll.get(obj)
+                    if scroll:
+                        sb = scroll.verticalScrollBar()
+                        sb.setValue(sb.value() - event.angleDelta().y())
+                        return True
                 return False
 
         self._home_end_filter = _HomeEndFilter(self)
@@ -1687,11 +1741,16 @@ class LibraryWindow(QWidget):
         'colorist': 180, 'letterer': 180, 'cover_artist': 180,
         'editor': 150, 'publisher': 150, 'imprint': 150, 'genre': 150,
         'characters': 180, 'teams': 150, 'locations': 150,
-        'story_arc': 180, 'year': 55, 'month': 55, 'day': 55,
+        'story_arc': 180, 'story_arc_number': 120, 'series_group': 150,
+        'count': 100, 'alternate_series': 180, 'alternate_number': 100,
+        'alternate_count': 100, 'series_complete': 100, 'translator': 150,
+        'tags': 180, 'scan_information': 200, 'community_rating': 100,
+        'review': 250, 'gtin': 120,
+        'year': 55, 'month': 55, 'day': 55,
         'page_count': 55, 'file_size': 80, 'filename': 250,
-        'file_extension': 65, 'language_iso': 80, 'age_rating': 100,
+        'file_extension': 65, 'language_iso': 80, 'format': 100, 'age_rating': 100,
         'black_and_white': 80, 'manga': 80, 'has_comicinfo': 180,
-        'can_have_comicinfo': 200, 'summary': 300,
+        'can_have_comicinfo': 200, 'summary': 300, 'web': 250, 'notes': 250,
         'relative_path': 300, 'file_modified_at': 140, 'indexed_at': 140,
     }
 
@@ -1718,17 +1777,39 @@ class LibraryWindow(QWidget):
         sep = theme.get("separator", "#aaaaaa")
         bg  = theme.get("toolbar_bg", theme["bg"])
         fg  = theme["text"]
+        _font = _get_font()
+        menu.setFont(_font)
         menu.setStyleSheet(
             f"QMenu {{ background: {bg}; color: {fg}; border: 1px solid {sep}; }} "
             f"QMenu::item:selected {{ background: {sep}; }}"
         )
-        for i18n_key, field in _ALL_COLUMNS:
-            action = QAction(_(i18n_key), menu)
-            action.setCheckable(True)
-            action.setChecked(field in self._visible_cols)
-            action.setData(field)
-            action.triggered.connect(lambda checked, f=field: self._toggle_column(f))
-            menu.addAction(action)
+        checkbox_ss = (
+            f"QCheckBox {{ color: {fg}; background: transparent; padding: 3px 6px; }} "
+            f"QCheckBox:hover {{ background: {sep}; }}"
+        )
+
+        # Grille à 2 colonnes (coupe à la moitié du nombre d'entrées) pour éviter
+        # un menu trop haut, plutôt que le rendu natif Qt en colonnes (qui tronque
+        # des entrées quand on limite sa hauteur).
+        grid_widget = QWidget(menu)
+        grid = QGridLayout(grid_widget)
+        grid.setContentsMargins(4, 4, 4, 4)
+        grid.setHorizontalSpacing(16)
+        grid.setVerticalSpacing(0)
+        half = (len(_ALL_COLUMNS) + 1) // 2
+        for i, (i18n_key, field) in enumerate(_ALL_COLUMNS):
+            cb = QCheckBox(_(i18n_key), grid_widget)
+            cb.setFont(_font)
+            cb.setStyleSheet(checkbox_ss)
+            cb.setChecked(field in self._visible_cols)
+            cb.toggled.connect(lambda _checked, f=field: self._toggle_column(f))
+            col = i // half
+            row = i % half
+            grid.addWidget(cb, row, col)
+        grid_action = QWidgetAction(menu)
+        grid_action.setDefaultWidget(grid_widget)
+        menu.addAction(grid_action)
+
         menu.addSeparator()
         act_reset = QAction(_('library.reset_columns'), menu)
         act_reset.triggered.connect(self._action_reset_columns)
@@ -2236,6 +2317,18 @@ class LibraryWindow(QWidget):
         act_copy.triggered.connect(_do_copy)
         menu.aboutToHide.connect(lambda: QTimer.singleShot(0, _flash_if_copied))
         menu.addAction(act_copy)
+
+        # Ouvrir le lien : disponible quelle que soit la colonne cliquée (comme les
+        # autres commandes), désactivé si la ligne n'a pas d'URL Web renseignée.
+        row = next((r for r in self._rows if r['id'] == row_id), None)
+        url = (row['web'] or '').strip() if row else ''
+        act_open_link = QAction(_('dialogs.link.open'), menu)
+        act_open_link.setEnabled(bool(url))
+        if url:
+            from modules.qt.utils import open_url
+            act_open_link.triggered.connect(lambda _c=False, u=url: open_url(u))
+        menu.addAction(act_open_link)
+
         menu.addSeparator()
 
         act_read    = QAction(_('library.mark_read'),          menu)
@@ -2520,11 +2613,18 @@ class LibraryWindow(QWidget):
 
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
         self._scan_overlay_holder = [None]
+        # Dernier événement reçu (kind, filename) — None tant qu'aucun n'est
+        # arrivé. Rejoué par _redraw_scan_overlay() au changement de langue.
+        self._scan_last_event = None
         _show_ct(self._right_panel, _('library.scan_progress'), self._scan_overlay_holder)
         lbl = self._scan_overlay_holder[0]
         if lbl:
             lbl.raise_()
             lbl.repaint()
+
+        from modules.qt.language_signal import language_signal
+        self._scan_lang_handler = lambda _: self._redraw_scan_overlay()
+        language_signal.changed.connect(self._scan_lang_handler)
 
         self._scan_worker = _ScanWorker(self._db.db_path)
         self._scan_worker.progress.connect(self._on_scan_progress)
@@ -2532,31 +2632,52 @@ class LibraryWindow(QWidget):
         self._scan_worker.error.connect(self._on_scan_error)
         self._scan_worker.start()
 
-    def _on_scan_progress(self, msg: str, pct: int):
+    def _redraw_scan_overlay(self):
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct
-        text = _('library.scan_progress') if not msg else f"{_('library.scan_progress')}\n{msg}"
+        if self._scan_last_event is None:
+            text = _('library.scan_progress')
+        else:
+            kind, fname = self._scan_last_event
+            key = {'new': 'library.scan_new', 'updated': 'library.scan_updated',
+                   'deleted': 'library.scan_deleted'}[kind]
+            text = f"{_('library.scan_progress')}\n{_(key, filename=fname)}"
         _show_ct(self._right_panel, text, self._scan_overlay_holder)
         lbl = self._scan_overlay_holder[0]
         if lbl:
             lbl.raise_()
             lbl.repaint()
 
+    def _on_scan_progress(self, kind: str, fname: str, pct: int):
+        self._scan_last_event = (kind, fname)
+        self._redraw_scan_overlay()
+
+    def _disconnect_scan_lang_handler(self):
+        if getattr(self, "_scan_lang_handler", None) is not None:
+            from modules.qt.language_signal import language_signal
+            try:
+                language_signal.changed.disconnect(self._scan_lang_handler)
+            except RuntimeError:
+                pass
+            self._scan_lang_handler = None
+
     def _on_scan_error(self, msg: str):
         from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
+        self._disconnect_scan_lang_handler()
         _hide_ct(self._right_panel, self._scan_overlay_holder)
         self._show_error(msg)
 
     def _on_scan_finished(self, stats):
         from modules.qt.canvas_overlay_qt import hide_canvas_text as _hide_ct
+        self._disconnect_scan_lang_handler()
         _hide_ct(self._right_panel, self._scan_overlay_holder)
 
         n, u, d = stats['new'], stats['updated'], stats['deleted']
 
         if n == 0 and u == 0 and d == 0:
             # Aucun changement — on ne touche pas au tableau
-            msg = _('library.scan_nothing')
             from modules.qt.dialogs_qt import InfoDialog
-            dlg = InfoDialog(self, _('library.scan_complete_title'), msg)
+            dlg = InfoDialog(self, lambda: _wt('library.scan_complete_title'),
+                              lambda: _('library.scan_nothing'))
             dlg.show()
             dlg.raise_()
             dlg.activateWindow()
@@ -2640,9 +2761,9 @@ class LibraryWindow(QWidget):
 
         self._set_result_count(self._rows)
 
-        msg = _('library.scan_complete_message', new=n, updated=u, deleted=d)
         from modules.qt.dialogs_qt import InfoDialog
-        dlg = InfoDialog(self, _('library.scan_complete_title'), msg)
+        dlg = InfoDialog(self, lambda: _wt('library.scan_complete_title'),
+                          lambda: _('library.scan_complete_message', new=n, updated=u, deleted=d))
         dlg.show()
         dlg.raise_()
         dlg.activateWindow()
@@ -3112,7 +3233,7 @@ class LibraryWindow(QWidget):
         if self._is_loading():
             return
         if not self._rows:
-            self._show_error(_('library.export_no_data'))
+            self._show_error(_('library.export_no_data'), play_sound=False)
             return
         default_name = (self._db.name if self._db else '') + '.xlsx'
         path, _filter = QFileDialog.getSaveFileName(
@@ -3265,9 +3386,9 @@ class LibraryWindow(QWidget):
             _hide_ct(self._right_panel, _export_holder)
             self._show_error(_('library.export_error', error=str(e)))
 
-    def _show_error(self, msg: str):
+    def _show_error(self, msg: str, play_sound: bool = True):
         from modules.qt.dialogs_qt import ErrorDialog
-        dlg = ErrorDialog(self, _('library.open_file_error_title'), msg)
+        dlg = ErrorDialog(self, lambda: _wt('library.open_file_error_title'), msg, play_sound=play_sound)
         dlg.show()
         dlg.raise_()
         dlg.activateWindow()

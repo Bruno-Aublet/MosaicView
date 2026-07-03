@@ -591,10 +591,19 @@ class LibraryDB:
         'language_iso', 'age_rating', 'black_and_white', 'manga', 'locations',
         'story_arc', 'summary', 'web', 'has_comicinfo', 'can_have_comicinfo',
         'relative_path', 'file_modified_at', 'indexed_at',
+        'format', 'notes', 'story_arc_number', 'series_group', 'count',
+        'alternate_series', 'alternate_number', 'alternate_count',
+        'series_complete', 'translator', 'tags', 'scan_information',
+        'community_rating', 'review', 'gtin',
     }
 
     # Champs stockés TEXT mais comparés numériquement → CAST(col AS INTEGER)
-    _INT_CAST_FIELDS = {'number', 'volume', 'year', 'month', 'day', 'page_count', 'file_size'}
+    _INT_CAST_FIELDS = {'number', 'volume', 'year', 'month', 'day', 'page_count', 'file_size',
+                        'story_arc_number', 'count', 'alternate_number', 'alternate_count'}
+
+    # Champs booléens stockés en TEXT ComicInfo ("Yes"/"No"/"Unknown"/"") plutôt
+    # qu'en INTEGER 0/1 — 'true'/'false' doivent comparer à ces littéraux, pas à 1/0.
+    _YESNO_TEXT_FIELDS = {'black_and_white', 'manga', 'series_complete'}
 
     _OP_MAP = {
         'contains':     ("LIKE ?",            lambda v: f"%{v}%"),
@@ -609,8 +618,8 @@ class LibraryDB:
         'gte':          (">= ?",              lambda v: v),
         'lte':          ("<= ?",              lambda v: v),
         'between':      ("BETWEEN ? AND ?",   None),
-        'true':         ("= 1",               None),
-        'false':        ("= 0",               None),
+        'true':         ("= ?",               None),
+        'false':        ("= ?",               None),
         'before':       ("< ?",               lambda v: _date_bound_before(v)),
         'after':        (">= ?",              lambda v: _date_bound_after(v)),
     }
@@ -664,6 +673,13 @@ class LibraryDB:
                     pass
                 clause = f"{col_expr} BETWEEN ? AND ?"
                 p = [v1, v2]
+            elif transform is None and op in ('true', 'false'):
+                is_yesno = field in self._YESNO_TEXT_FIELDS
+                if op == 'true':
+                    p = ['Yes'] if is_yesno else [1]
+                else:
+                    p = ['No'] if is_yesno else [0]
+                clause = f"{col_expr} {op_sql}"
             elif transform is None:
                 clause = f"{col_expr} {op_sql}"
             else:
@@ -750,12 +766,24 @@ class LibraryDB:
                 except (ValueError, TypeError): pass
                 clause = f"{col_expr} BETWEEN ? AND ?"
                 p = [v1, v2]
+            elif transform is None and op in ('true', 'false'):
+                is_yesno = field in self._YESNO_TEXT_FIELDS
+                if op == 'true':
+                    p = ['Yes'] if is_yesno else [1]
+                else:
+                    p = ['No'] if is_yesno else [0]
+                clause = f"{col_expr} {op_sql}"
             elif transform is None:
                 clause = f"{col_expr} {op_sql}"
-                p = [value]
             else:
-                clause = f"{field} {op_sql}"
-                p = [transform(value)]
+                clause = f"{col_expr} {op_sql}"
+                if field in self._INT_CAST_FIELDS:
+                    try:
+                        p = [int(transform(value))]
+                    except (ValueError, TypeError):
+                        p = [transform(value)]
+                else:
+                    p = [transform(value)]
             if field not in groups:
                 groups[field] = []
                 group_params[field] = []

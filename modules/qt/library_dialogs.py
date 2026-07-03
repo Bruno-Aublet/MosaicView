@@ -85,8 +85,11 @@ class NewDbDialog(QDialog):
         layout.setSpacing(10)
         layout.setContentsMargins(20, 20, 20, 20)
 
+        from modules.qt.utils import setup_lineedit_context_menu
+
         self._name_lbl  = QLabel()
         self._name_edit = QLineEdit()
+        setup_lineedit_context_menu(self._name_edit)
         layout.addWidget(self._name_lbl)
         layout.addWidget(self._name_edit)
 
@@ -94,6 +97,7 @@ class NewDbDialog(QDialog):
         layout.addWidget(self._dir_lbl)
         dir_row = QHBoxLayout()
         self._dir_edit   = QLineEdit()
+        setup_lineedit_context_menu(self._dir_edit)
         self._dir_browse = QPushButton()
         self._dir_browse.setFixedWidth(100)
         dir_row.addWidget(self._dir_edit, 1)
@@ -104,6 +108,7 @@ class NewDbDialog(QDialog):
         layout.addWidget(self._save_lbl)
         save_row = QHBoxLayout()
         self._save_edit   = QLineEdit()
+        setup_lineedit_context_menu(self._save_edit)
         self._save_browse = QPushButton()
         self._save_browse.setFixedWidth(100)
         save_row.addWidget(self._save_edit, 1)
@@ -225,6 +230,8 @@ class RenameDbDialog(QDialog):
 
         self._lbl      = QLabel()
         self._name_edit = QLineEdit()
+        from modules.qt.utils import setup_lineedit_context_menu
+        setup_lineedit_context_menu(self._name_edit)
         layout.addWidget(self._lbl)
         layout.addWidget(self._name_edit)
 
@@ -307,6 +314,9 @@ class ConfirmDeleteDialog(QDialog):
         self._path_lbl.setAlignment(Qt.AlignCenter)
         self._path_lbl.setOpenExternalLinks(False)
         self._path_lbl.linkActivated.connect(self._open_in_explorer)
+        from modules.qt.utils import setup_path_label_context_menu
+        setup_path_label_context_menu(self._path_lbl, lambda: self._db_path,
+                                      lambda: self._open_in_explorer(None))
         layout.addWidget(self._path_lbl)
 
         self._irrev_lbl = QLabel()

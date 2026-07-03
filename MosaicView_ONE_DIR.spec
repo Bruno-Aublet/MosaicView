@@ -9,6 +9,7 @@ datas = [
     ('paypal', 'paypal'),
     ('locales', 'locales'),
     ('fonts', 'fonts'),
+    ('Sound', 'Sound'),
     ('LICENSE', '.'),
     ('CHANGELOG.md', '.'),
     ('icons/MosaicView.ico', 'icons'),

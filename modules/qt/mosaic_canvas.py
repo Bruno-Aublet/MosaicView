@@ -436,6 +436,9 @@ class NameEdit(QTextEdit):
 
         self.textChanged.connect(self._on_text_changed)
 
+        from modules.qt.utils import setup_textedit_context_menu
+        setup_textedit_context_menu(self)
+
     def _apply_theme(self):
         theme = get_current_theme()
         self.setStyleSheet(

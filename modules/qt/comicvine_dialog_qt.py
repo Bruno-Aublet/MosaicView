@@ -97,7 +97,8 @@ class _SearchWorker(QThread):
             results, total = search_series(self._api_key, self._terms, self._page)
             self.finished.emit(results, total)
         except Exception as e:
-            self.error.emit(str(e))
+            from modules.qt.comicvine_scraper import error_to_signal_payload
+            self.error.emit(error_to_signal_payload(e))
 
 
 class _IssuesWorker(QThread):
@@ -128,7 +129,8 @@ class _IssuesWorker(QThread):
             # Retourner les résultats partiels déjà chargés, puis signaler l'erreur
             if all_results:
                 self.finished.emit(all_results)
-            self.error.emit(str(e))
+            from modules.qt.comicvine_scraper import error_to_signal_payload
+            self.error.emit(error_to_signal_payload(e))
 
 
 class _ImageWorker(QThread):
@@ -167,7 +169,8 @@ class _MetadataWorker(QThread):
             else:
                 self.error.emit("No data returned")
         except Exception as e:
-            self.error.emit(str(e))
+            from modules.qt.comicvine_scraper import error_to_signal_payload
+            self.error.emit(error_to_signal_payload(e))
 
 
 # ── Point d'entrée public ─────────────────────────────────────────────────────
@@ -175,13 +178,19 @@ class _MetadataWorker(QThread):
 def show_comicvine_dialog(parent, state, api_key, batch=False, on_done=None,
                           batch_index=None, batch_total=None,
                           shared_search_cache=None, shared_issues_cache=None,
-                          on_next=None, cbz_filepath=None):
-    """Ouvre la fenêtre de scraping ComicVine (non-modale)."""
+                          on_next=None, cbz_filepath=None, preselected_series=None):
+    """Ouvre la fenêtre de scraping ComicVine (non-modale).
+
+    preselected_series : si fourni (dict {'id', 'name', ...}), la fenêtre
+    s'ouvre directement sur la page 2 (liste des issues de cette série),
+    sans passer par la recherche par nom.
+    """
     dlg = _ComicVineDialog(parent, state, api_key, batch=batch, on_done=on_done,
                            batch_index=batch_index, batch_total=batch_total,
                            shared_search_cache=shared_search_cache,
                            shared_issues_cache=shared_issues_cache,
-                           on_next=on_next, cbz_filepath=cbz_filepath)
+                           on_next=on_next, cbz_filepath=cbz_filepath,
+                           preselected_series=preselected_series)
     dlg.show()
     dlg.raise_()
     dlg.activateWindow()
@@ -197,7 +206,7 @@ class _ComicVineDialog(QDialog):
     def __init__(self, parent, state, api_key, batch=False, on_done=None,
                  batch_index=None, batch_total=None,
                  shared_search_cache=None, shared_issues_cache=None,
-                 on_next=None, cbz_filepath=None):
+                 on_next=None, cbz_filepath=None, preselected_series=None):
         super().__init__(parent)
         self._state        = state
         self._api_key      = api_key
@@ -209,6 +218,7 @@ class _ComicVineDialog(QDialog):
         self._worker  = None
         self._image_worker = None
         self._selected_series = None
+        self._preselected_series = preselected_series
         # Caches : partagés si fournis, sinon locaux
         self._search_cache = shared_search_cache if shared_search_cache is not None else {}
         self._issues_cache = shared_issues_cache if shared_issues_cache is not None else {}
@@ -269,7 +279,10 @@ class _ComicVineDialog(QDialog):
         self.finished.connect(self._on_close)
         self._center_parent = parent
 
-        if initial:
+        if self._preselected_series:
+            QTimer.singleShot(0, lambda: self._go_to_issues(self._preselected_series)
+                               if self.isVisible() else None)
+        elif initial:
             QTimer.singleShot(100, lambda: self._page1._on_search_clicked() if self.isVisible() else None)
 
     def showEvent(self, event):
@@ -327,8 +340,9 @@ class _ComicVineDialog(QDialog):
         self._page1.populate_series(results, total, terms, page)
 
     def _on_search_error(self, msg):
+        from modules.qt.comicvine_scraper import error_message_fn
         self._page1.set_loading(False)
-        self._page1.show_error(msg)
+        self._page1.show_error(error_message_fn(msg))
 
     def _go_to_issues(self, series):
         self._selected_series = series
@@ -358,14 +372,16 @@ class _ComicVineDialog(QDialog):
         self._issues_had_done = True   # finished a été émis (peut être suivi d'un error partiel)
 
     def _on_issues_error(self, msg):
+        from modules.qt.comicvine_scraper import error_message_fn
         self._page2.show_loading_overlay(False, 0, 0)
+        error_fn = error_message_fn(msg)
         if getattr(self, '_issues_had_done', False):
             # Résultats partiels déjà affichés — afficher un avertissement non bloquant
             partial_count = len(self._page2._issues_data) if hasattr(self._page2, '_issues_data') else 0
-            status = _("comicvine.issues_partial_load").format(count=partial_count, error=msg)
+            status_fn = lambda c=partial_count: _("comicvine.issues_partial_load").format(count=c, error=error_fn())
         else:
-            status = msg
-        self._page2.show_error(status)
+            status_fn = error_fn
+        self._page2.show_error(status_fn)
         self._issues_had_done = False
 
     def _go_to_series(self):
@@ -439,7 +455,8 @@ class _ComicVineDialog(QDialog):
     def _apply_metadata(self, issue):
         self._page2._btn_ok.setEnabled(False)
         self._page2.show_loading_overlay(True, 0, 0)
-        self._page2._loading_overlay.setText(_("comicvine.fetching_metadata"))
+        self._page2._loading_overlay_text_fn = lambda: _("comicvine.fetching_metadata")
+        self._page2._loading_overlay.setText(self._page2._loading_overlay_text_fn())
         worker = _MetadataWorker(self._api_key, issue["id"])
         worker.finished.connect(self._on_metadata_done)
         worker.error.connect(self._on_metadata_error)
@@ -460,107 +477,15 @@ class _ComicVineDialog(QDialog):
             self.close()
 
     def _on_metadata_error(self, msg):
+        from modules.qt.comicvine_scraper import error_message_fn
         self._page2.show_loading_overlay(False, 0, 0)
         self._page2._btn_ok.setEnabled(True)
         from PySide6.QtWidgets import QMessageBox
-        QMessageBox.warning(self, _wt("comicvine.menu_label"), msg)
+        QMessageBox.warning(self, _wt("comicvine.menu_label"), error_message_fn(msg)())
 
     def _write_metadata(self, meta):
-        import xml.etree.ElementTree as ET
-        try:
-            from defusedxml.ElementTree import fromstring as _safe_fromstring
-        except ImportError:
-            _safe_fromstring = ET.fromstring
-        from modules.qt.comic_info import parse_comic_info_xml, _serialize_comic_xml, set_mosaicview_trace
-        from modules.qt.metadata_signal import metadata_signal
-
-        st = self._state
-        if not st:
-            return
-
-        FIELD_MAP = {
-            "title": "Title", "series": "Series", "number": "Number",
-            "volume": "Volume", "summary": "Summary", "writer": "Writer",
-            "penciller": "Penciller", "inker": "Inker", "colorist": "Colorist",
-            "letterer": "Letterer", "cover_artist": "CoverArtist",
-            "editor": "Editor", "publisher": "Publisher", "imprint": "Imprint",
-            "genre": "Genre", "web": "Web", "year": "Year", "month": "Month",
-            "day": "Day", "characters": "Characters", "teams": "Teams",
-            "locations": "Locations", "story_arc": "StoryArc",
-        }
-
-        xml_entry = None
-        for e in st.images_data:
-            if e.get("orig_name", "").lower().endswith("comicinfo.xml"):
-                xml_entry = e
-                break
-
-        if xml_entry and xml_entry.get("bytes"):
-            try:
-                raw = xml_entry["bytes"]
-                if isinstance(raw, str):
-                    raw = raw.encode("utf-8")
-                # Tenter UTF-8 puis latin-1 en fallback
-                try:
-                    root = _safe_fromstring(raw)
-                except ET.ParseError:
-                    root = _safe_fromstring(raw.decode("latin-1").encode("utf-8"))
-                original_bytes = raw
-            except Exception:
-                root = ET.Element("ComicInfo")
-                original_bytes = None
-        else:
-            root = ET.Element("ComicInfo")
-            original_bytes = None
-
-        for field, tag in FIELD_MAP.items():
-            value = meta.get(field, "").strip()
-            if not value:
-                continue
-            elem = root.find(tag)
-            if elem is None:
-                elem = ET.SubElement(root, tag)
-            elem.text = value
-
-        web_url = meta.get("web", "").strip()
-        if web_url:
-            from datetime import datetime
-            set_mosaicview_trace(root, datetime.now().strftime("%Y-%m-%d"), web_url)
-
-        new_bytes = _serialize_comic_xml(root, original_bytes)
-
-        if xml_entry:
-            xml_entry["bytes"] = new_bytes
-        else:
-            st.images_data.append({
-                "orig_name": "ComicInfo.xml", "name": "ComicInfo.xml",
-                "bytes": new_bytes, "is_image": False,
-                "is_dir": False, "extension": ".xml",
-            })
-
-        st.comic_metadata = parse_comic_info_xml(new_bytes)
-        st.modified = True
-
-        # Si le XML n'avait pas de <Pages>, les construire depuis images_data
-        if st.comic_metadata and 'pages' not in st.comic_metadata:
-            # Injecter <Pages> vide dans le XML pour que sync_pages_in_xml_data puisse le remplir
-            xml_entry_now = next(
-                (e for e in st.images_data if e.get('orig_name', '').lower().endswith('comicinfo.xml')),
-                None
-            )
-            if xml_entry_now and xml_entry_now.get('bytes'):
-                try:
-                    root_now = _safe_fromstring(xml_entry_now['bytes'])
-                    ET.SubElement(root_now, 'Pages')
-                    from modules.qt.comic_info import _serialize_comic_xml
-                    xml_entry_now['bytes'] = _serialize_comic_xml(root_now, xml_entry_now['bytes'])
-                    st.comic_metadata['pages'] = []
-                    from modules.qt.comic_info import sync_pages_in_xml_data
-                    sync_pages_in_xml_data(st, emit_signal=False)
-                except Exception:
-                    pass
-
-        metadata_signal.emit()
+        from modules.qt.comic_info import write_comic_metadata_from_scraper
+        write_comic_metadata_from_scraper(self._state, meta)
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -602,6 +527,12 @@ class _Page1Series(QWidget):
         self._total        = 0
         self._current_terms = ""
         self._batch        = batch
+        # Fonction () -> str retraduisant le statut actuellement affiché dans
+        # self._status_lbl, réappelée depuis _retranslate() au changement de
+        # langue (sinon le label reste figé dans l'ancienne langue).
+        self._status_text_fn = lambda: " "
+        # Idem pour le texte de l'overlay de chargement (_loading_overlay).
+        self._loading_overlay_text_fn = lambda: ""
 
         main = QHBoxLayout(self)
         main.setContentsMargins(12, 12, 12, 12)
@@ -635,6 +566,8 @@ class _Page1Series(QWidget):
         search_row = QHBoxLayout()
         self._search_input = QLineEdit()
         self._search_input.returnPressed.connect(self._on_search_clicked)
+        from modules.qt.utils import setup_lineedit_context_menu
+        setup_lineedit_context_menu(self._search_input)
         search_row.addWidget(self._search_input)
         self._search_btn = QPushButton()
         self._search_btn.setMinimumWidth(100)
@@ -704,6 +637,11 @@ class _Page1Series(QWidget):
         self._credit_lbl = QLabel()
         self._credit_lbl.setAlignment(Qt.AlignCenter)
         self._credit_lbl.setOpenExternalLinks(True)
+        from modules.qt.utils import setup_link_label_context_menu
+        setup_link_label_context_menu(self._credit_lbl, lambda: [
+            ("ComicVine", "https://comicvine.gamespot.com/"),
+            ("comic-vine-scraper", "https://github.com/cbanack/comic-vine-scraper"),
+        ])
         right.addWidget(self._credit_lbl)
 
         main.addLayout(right, 1)
@@ -743,8 +681,12 @@ class _Page1Series(QWidget):
         self._search_btn.setStyleSheet(bs)
         self._search_btn.setText(_("comicvine.search_button"))
 
+        self._status_lbl.setText(self._status_text_fn())
         self._status_lbl.setFont(font9)
         self._status_lbl.setStyleSheet(f"color: {fg}; background: transparent;")
+
+        self._loading_overlay.setFont(_get_current_font(18, bold=True))
+        self._loading_overlay.setText(self._loading_overlay_text_fn())
 
         nav_style = (
             f"QPushButton {{ background: {alt}; color: {fg}; "
@@ -775,12 +717,6 @@ class _Page1Series(QWidget):
         self._table.setColumnWidth(0, 380)
         self._table.setColumnWidth(1, 60)
         self._table.setColumnWidth(2, 60)
-
-        # Mettre à jour le status_lbl si une recherche est déjà affichée
-        if self._total > 0:
-            self._status_lbl.setText(
-                _("comicvine.results_count").format(count=len(self._series_data), total=self._total)
-            )
 
         for btn, key in [
             (self._btn_skip,   "comicvine.btn_skip"),
@@ -817,11 +753,12 @@ class _Page1Series(QWidget):
         self._search_btn.setEnabled(not loading)
         self._btn_prev.setEnabled(False)
         self._btn_next.setEnabled(False)
-        self._status_lbl.setText(" ")
+        self._set_status(lambda: " ")
         if loading:
             self._table.setRowCount(0)
             self._loading_overlay.setFont(_get_current_font(18, bold=True))
-            self._loading_overlay.setText(_("comicvine.searching"))
+            self._loading_overlay_text_fn = lambda: _("comicvine.searching")
+            self._loading_overlay.setText(self._loading_overlay_text_fn())
             self._loading_overlay.show()
             self._loading_overlay.raise_()
             self._table.setEnabled(False)
@@ -829,8 +766,13 @@ class _Page1Series(QWidget):
             self._loading_overlay.hide()
             self._table.setEnabled(True)
 
-    def show_error(self, msg):
-        self._status_lbl.setText(msg)
+    def _set_status(self, status_fn):
+        """status_fn : callable () -> str, réappelé depuis _retranslate()."""
+        self._status_text_fn = status_fn
+        self._status_lbl.setText(status_fn())
+
+    def show_error(self, status_fn):
+        self._set_status(status_fn)
 
     def populate_series(self, series_list, total, terms, page):
         self._series_data   = series_list
@@ -892,8 +834,8 @@ class _Page1Series(QWidget):
             self._table.selectRow(best_row)
             self._table.scrollTo(self._table.model().index(best_row, 0))
 
-        label = _("comicvine.results_count").format(count=len(series_list), total=total)
-        self._status_lbl.setText(label)
+        self._set_status(lambda c=len(series_list), t=total:
+                         _("comicvine.results_count").format(count=c, total=t))
         self._update_pagination_ui()
 
     def _update_pagination_ui(self):
@@ -948,6 +890,12 @@ class _Page2Issues(QWidget):
         self._issues_data    = []
         self._batch          = batch
         self._batch_counter  = None
+        # Fonction () -> str retraduisant le statut actuellement affiché dans
+        # self._status_lbl, réappelée depuis _retranslate() au changement de
+        # langue (sinon le label reste figé dans l'ancienne langue).
+        self._status_text_fn = lambda: " "
+        # Idem pour le texte de l'overlay de chargement (_loading_overlay).
+        self._loading_overlay_text_fn = lambda: ""
 
         main = QHBoxLayout(self)
         main.setContentsMargins(12, 12, 12, 12)
@@ -1034,6 +982,11 @@ class _Page2Issues(QWidget):
         self._credit_lbl = QLabel()
         self._credit_lbl.setAlignment(Qt.AlignCenter)
         self._credit_lbl.setOpenExternalLinks(True)
+        from modules.qt.utils import setup_link_label_context_menu
+        setup_link_label_context_menu(self._credit_lbl, lambda: [
+            ("ComicVine", "https://comicvine.gamespot.com/"),
+            ("comic-vine-scraper", "https://github.com/cbanack/comic-vine-scraper"),
+        ])
         right.addWidget(self._credit_lbl)
 
         main.addLayout(right, 1)
@@ -1056,8 +1009,12 @@ class _Page2Issues(QWidget):
         self._filename_lbl.setFont(font9)
         self._filename_lbl.setStyleSheet(f"color: {fg}; background: transparent;")
 
+        self._status_lbl.setText(self._status_text_fn())
         self._status_lbl.setFont(font9)
         self._status_lbl.setStyleSheet(f"color: {fg}; background: transparent;")
+
+        self._loading_overlay.setFont(_get_current_font(18, bold=True))
+        self._loading_overlay.setText(self._loading_overlay_text_fn())
 
         self._table.setStyleSheet(_tbl_style(theme))
         self._table.setFont(font8)
@@ -1113,18 +1070,23 @@ class _Page2Issues(QWidget):
         self._issue_cover_lbl.clear()
         self._issue_cover_lbl.setText("—")
 
+    def _set_status(self, status_fn):
+        """status_fn : callable () -> str, réappelé depuis _retranslate()."""
+        self._status_text_fn = status_fn
+        self._status_lbl.setText(status_fn())
+
     def show_loading_overlay(self, visible, loaded, total):
         if visible:
             self._table.setRowCount(0)
-            self._status_lbl.setText(" ")
+            self._set_status(lambda: " ")
             font = _get_current_font(18, bold=True)
             self._loading_overlay.setFont(font)
             if total > 0:
-                txt = _("comicvine.loading_issues_progress").format(
-                    loaded=loaded, total=total)
+                self._loading_overlay_text_fn = lambda loaded=loaded, total=total: _(
+                    "comicvine.loading_issues_progress").format(loaded=loaded, total=total)
             else:
-                txt = _("comicvine.loading_issues")
-            self._loading_overlay.setText(txt)
+                self._loading_overlay_text_fn = lambda: _("comicvine.loading_issues")
+            self._loading_overlay.setText(self._loading_overlay_text_fn())
             self._loading_overlay.show()
             self._loading_overlay.raise_()
             self._table.setEnabled(False)
@@ -1133,10 +1095,10 @@ class _Page2Issues(QWidget):
             self._table.setEnabled(True)
 
     def set_loading(self, loading):
-        self._status_lbl.setText(_("comicvine.loading_issues") if loading else " ")
+        self._set_status((lambda: _("comicvine.loading_issues")) if loading else (lambda: " "))
 
-    def show_error(self, msg):
-        self._status_lbl.setText(msg)
+    def show_error(self, status_fn):
+        self._set_status(status_fn)
 
     def populate_issues(self, issues, series, target_number=None):
         self._issues_data = issues
@@ -1152,10 +1114,14 @@ class _Page2Issues(QWidget):
             self._table.setItem(row, 1, QTableWidgetItem(iss.get("name", "")))
         self._table.setSortingEnabled(True)
         series_name = series.get("name", "") if series else ""
-        status = _("comicvine.issues_count").format(series=series_name, count=len(issues))
-        if self._batch_counter:
-            status = f"{status}  —  {self._batch_counter}"
-        self._status_lbl.setText(status)
+
+        def _status_fn(sn=series_name, n=len(issues), bc=self._batch_counter):
+            status = _("comicvine.issues_count").format(series=sn, count=n)
+            if bc:
+                status = f"{status}  —  {bc}"
+            return status
+
+        self._set_status(_status_fn)
 
         if not issues:
             return

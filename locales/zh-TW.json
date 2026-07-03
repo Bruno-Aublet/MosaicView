@@ -1,1797 +1,1853 @@
 {
-	"app_title": "MosaicView",
-	"app_baseline": "數位漫畫收藏家的瑞士刀",
-	"buttons": {
-		"open_file": "開啟 CBZ/CBR/CB7/CBT/PDF",
-		"close_file": "關閉檔案",
-		"create_cbz": "建立 CBZ 壓縮檔",
-		"flatten_dirs": "將所有檔案移至\n根目錄並刪除\n子目錄",
-		"renumber": "重新編號\n頁面",
-		"undo": "⤺ 復原",
-		"redo": "重做 ⤻",
-		"copy": "複製",
-		"cut": "剪下",
-		"paste": "貼上",
-		"rotate_right": "↷",
-		"rotate_left": "↶",
-		"mirror": "⇄",
-		"convert": "轉換為其他\n圖像格式",
-		"join_pages": "合併頁面",
-		"split_page": "分割頁面",
-		"save_as": "另存新檔\n(建立新的 CBZ)",
-		"save_selection": "將選取內容\n儲存為 CBZ",
-		"print_selection": "列印選取內容",
-		"print_all": "列印整本漫畫",
-		"sort": "排序",
-		"toggle_sidebar": "«",
-		"toggle_sidebar_show": "»",
-		"convert_button": "轉換",
-		"cancel": "取消",
-		"split_button": "分割",
-		"join_button": "開始",
-		"validate_crop": "確認裁切",
-		"ok": "確定",
-		"close": "關閉",
-		"apply_and_save": "套用修改並儲存檔案",
-		"apply_and_create": "套用修改並建立 CBZ 檔案",
-		"close_and_lose": "關閉檔案並放棄修改",
-		"cancel_return": "取消並返回縮圖",
-		"update_page_count": "更新元數據中的\n頁數",
-		"invert_selection": "反選",
-		"reduce_size": "調整頁面大小",
-		"mirror_vertical": "⇅",
-		"create_gif": "建立GIF",
-		"edit_gif": "編輯動畫GIF",
-		"save_to_folder": "匯出所選\n頁面",
-		"continue": "繼續",
-		"reset": "↻",
-		"yes": "是",
-		"no": "否",
-		"renumber_recommended": "重新編號（推薦）",
-		"ignore_and_save": "忽略並儲存",
-		"open_without_rename": "開啟而不重新命名",
-		"adjustments": "亮度、\n對比度等",
-		"batch_cbr_to_cbz": "批次轉換\n CBR檔案為CBZ",
-		"batch_pdf_to_cbz": "批次轉換\n PDF檔案為CBZ",
-		"batch_img_to_cbz": "批次轉換\n 獨立圖像為 CBZ",
-		"icon_toolbar_reset": "重置",
-		"delete_selected": "刪除",
-		"save": "儲存",
-		"split_ui": "將介面分割為兩個面板",
-		"unsplit_ui": "關閉第二個面板",
-		"rename_to_ext": "重新命名為 {ext}",
-		"batch_cb7_to_cbz": "批次將 CB7\n 檔案轉換為 CBZ",
-		"batch_cbt_to_cbz": "批次將 CBT\n 檔案轉換為 CBZ",
-		"batch_metadata": "批次匯入中繼資料",
-		"batch_library": "從資料夾建立資料庫",
-		"batch_recompress": "以預設等級重新壓縮 CBZ 檔案"
-	},
-	"tabs": {
-		"mosaic": "縮圖",
-		"metadata": "中繼資料"
-	},
-	"viewer": {
-		"title": "檢視器",
-		"mode_single": "單頁  [D]",
-		"mode_double": "雙頁  [D]",
-		"mode_continuous": "連續模式  [D]"
-	},
-	"context_menu": {
-		"viewer": {
-			"prev_page": "上一頁 (←)",
-			"next_page": "下一頁 (→)",
-			"zoom_in": "放大 (Ctrl+Plus)",
-			"zoom_out": "縮小 (Ctrl+Minus)",
-			"zoom_reset": "重設縮放 (Ctrl+0)",
-			"reading_mode_double": "變更閱讀模式 (D) → 雙頁",
-			"reading_mode_continuous": "變更閱讀模式 (D) → 連續雙頁",
-			"reading_mode_single": "變更閱讀模式 (D) → 單頁",
-			"fullscreen_exit": "離開全螢幕 (F11)",
-			"fullscreen": "全螢幕 (F11)",
-			"close_viewer": "關閉檢視器 (ESC)",
-			"delete_bookmark": "刪除書籤"
-		},
-		"image": {
-			"corrupted_replace": "⚠️ 損毀的圖像 - 取代",
-			"corrupted_delete": "⚠️ 刪除此圖像",
-			"copy": "複製 (Ctrl+C)",
-			"cut": "剪下 (Ctrl+X)",
-			"paste": "貼上 (Ctrl+V)",
-			"paste_clipboard": "從剪貼簿貼上 (Ctrl+V)",
-			"delete": "刪除 (Del)",
-			"deselect": "取消選取 (ESC)",
-			"rotate_right": "↻ 向右旋轉",
-			"rotate_left": "↺ 向左旋轉",
-			"mirror": "⇄ 水平鏡像",
-			"crop": "裁切",
-			"convert": "轉換為其他格式...",
-			"join": "合併選取的頁面",
-			"split": "分割選取的頁面",
-			"save_selection": "將選取內容儲存為 CBZ",
-			"print_selection": "列印選取內容",
-			"copy_archive": "複製完整壓縮檔",
-			"undo": "復原 (Ctrl+Z)",
-			"redo": "重做 (Ctrl+Y)",
-			"renumber_auto": "重新編號頁面 (自動偵測多頁)",
-			"renumber_simple": "重新編號頁面 (簡單編號)",
-			"sort_submenu": "排序頁面",
-			"sort_name": "依名稱",
-			"sort_type": "依類型",
-			"sort_size": "依大小",
-			"sort_width": "依寬度",
-			"sort_height": "依高度",
-			"sort_resolution": "依解析度",
-			"sort_dpi": "依 DPI",
-			"create_cbz": "建立 CBZ 壓縮檔",
-			"save_as": "另存新檔...",
-			"close_file": "關閉檔案",
-			"help": "使用說明",
-			"update_page_count": "更新元數據中的頁數",
-			"invert_selection": "反選 (Ctrl+I)",
-			"reduce_size": "調整頁面大小",
-			"mirror_vertical": "⇅ 垂直鏡像",
-			"edit_animated_gif": "編輯動畫GIF...",
-			"save_to_folder": "匯出所選頁面",
-			"adjustments": "亮度、對比度、顏色...",
-			"refresh_mosaic": "重新整理拼圖 (F5)",
-			"create_ico": "建立 .ico 檔案",
-			"straighten": "矯正圖像...",
-			"clone_zone": "克隆區域...",
-			"text": "新增文字..."
-		},
-		"canvas_no_file": {
-			"open": "開啟 CBZ/CBR/CB7/CBT/PDF",
-			"recent_files": "最近的檔案",
-			"clear_history": "清除歷程記錄"
-		},
-		"canvas_with_file": {
-			"close": "關閉檔案",
-			"paste": "貼上 (Ctrl+V)",
-			"paste_clipboard": "從剪貼簿貼上 (Ctrl+V)",
-			"select_all": "全選 (Ctrl+A)",
-			"deselect": "取消選取 (ESC)",
-			"copy_archive": "複製完整壓縮檔",
-			"print_all": "列印整本漫畫",
-			"renumber_auto": "重新編號頁面 (自動偵測多頁)",
-			"renumber_simple": "重新編號頁面 (簡單編號)",
-			"flatten": "展平資料夾",
-			"save_selection": "將選取內容儲存為 CBZ",
-			"hide_sidebar": "« 隱藏按鈕欄",
-			"show_sidebar": "» 顯示按鈕欄",
-			"decrease_thumbs": "減小縮圖大小",
-			"increase_thumbs": "增大縮圖大小",
-			"theme_dark": "切換到深色主題",
-			"theme_light": "切換到淺色主題",
-			"sort_submenu": "排序頁面",
-			"undo": "復原 (Ctrl+Z)",
-			"redo": "重做 (Ctrl+Y)",
-			"create_cbz": "建立 CBZ 壓縮檔",
-			"save_as": "另存新檔...",
-			"help": "使用說明",
-			"update_page_count": "更新元數據中的頁數",
-			"invert_selection": "反選 (Ctrl+I)",
-			"fullscreen": "全螢幕 (F11)",
-			"fullscreen_exit": "退出全螢幕 (F11或ESC)",
-			"quit": "關閉應用程式",
-			"delete_bookmark": "刪除此漫畫的書籤",
-			"delete_all_bookmarks": "刪除所有書籤"
-		},
-		"canvas": {
-			"quit": "關閉應用程式",
-			"reset": "重置應用程式:\n• 視窗大小和位置\n• 深色模式 → 淺色\n• 縮圖大小 → 一般\n• 側邊欄 → 可見 / 220 px\n• 語言 → 自動偵測\n• 字體大小 → 預設",
-			"reset_label": "重置應用程式"
-		},
-		"font_size": {
-			"decrease": "縮小字體大小",
-			"increase": "放大字體大小"
-		}
-	},
-	"sort_menu": {
-		"sort_name": "依名稱排序",
-		"sort_type": "依類型排序",
-		"sort_size": "依大小排序",
-		"sort_width": "依寬度排序",
-		"sort_height": "依高度排序",
-		"sort_resolution": "依解析度排序",
-		"sort_dpi": "依 DPI 排序"
-	},
-	"messages": {
-		"warnings": {
-			"empty_cbz": {
-				"title": "空壓縮檔",
-				"message": "CBZ 壓縮檔不包含任何檔案。"
-			},
-			"empty_cbr": {
-				"title": "空壓縮檔",
-				"message": "CBR 壓縮檔不包含任何檔案。"
-			},
-			"files_ignored": {
-				"title": "檔案已忽略"
-			},
-			"no_selection_crop": {
-				"title": "未選取",
-				"message": "請選取要裁切的圖像。"
-			},
-			"multi_selection_crop": {
-				"title": "多重選取",
-				"message": "一次只能裁切一個圖像。\n請選取單一圖像。"
-			},
-			"invalid_selection_crop": {
-				"title": "無效選取",
-				"message": "只能裁切圖像。"
-			},
-			"drag_drop_disabled_in_subdirectory": {
-				"title": "功能無法使用",
-				"message": "在子目錄中無法移動頁面。\n請展平資料夾或返回根目錄。"
-			},
-			"no_selection_convert": {
-				"title": "未選取",
-				"message": "請至少選取一個要轉換的圖像。"
-			},
-			"invalid_selection_convert": {
-				"title": "無效選取",
-				"message": "只能轉換圖像。"
-			},
-			"no_selection_split": {
-				"title": "未選取",
-				"message": "請選取要分割的圖像。"
-			},
-			"multi_selection_split": {
-				"title": "多重選取",
-				"message": "一次只能分割一個圖像。\n請選取單一圖像。"
-			},
-			"invalid_selection_split": {
-				"title": "無效選取",
-				"message": "只能分割圖像。"
-			},
-			"invalid_number_split": {
-				"title": "無效數字",
-				"message": "頁面數必須在 2 到 10 之間。"
-			},
-			"insufficient_selection_join": {
-				"title": "選取不足",
-				"message": "請至少選取 2 個要合併的圖像。"
-			},
-			"invalid_selection_join": {
-				"title": "無效選取",
-				"message": "只能合併圖像。"
-			},
-			"pil_not_available": {
-				"title": "PIL 無法使用",
-				"message": "PIL 模組無法使用,無法從系統剪貼簿貼上。"
-			},
-			"format_not_supported": {
-				"title": "不支援的格式",
-				"message": "不支援的圖像格式或檔案已損毀。\n支援的格式:JPG、PNG、WEBP、BMP、TIFF、GIF、ICO"
-			},
-			"no_crop_selection": {
-				"title": "未選取",
-				"message": "請先繪製裁切矩形。"
-			},
-			"cannot_open_file": {
-				"title": "無法開啟檔案",
-				"message": "無法載入檔案。"
-			},
-			"corrupted_images": {
-				"title": "損毀的圖像",
-				"summary": "在 {total} 張圖片中偵測到 {count} 張損壞圖片。",
-				"hint": "它們以特殊圖示顯示。\n在損壞的圖片上按右鍵以取代或刪除它。",
-				"more": "... 還有 {count} 張"
-			},
-			"no_image_print": {
-				"title": "沒有圖像",
-				"message": "沒有可列印的圖像。"
-			},
-			"no_valid_image_print": {
-				"title": "沒有圖像",
-				"message": "沒有有效的可列印圖像。"
-			},
-			"no_selection_print": {
-				"title": "未選取",
-				"message": "請至少選取一個圖像。"
-			},
-			"no_valid_selection_print": {
-				"title": "沒有圖像",
-				"message": "選取內容中沒有有效圖像。"
-			},
-			"save_cancelled": {
-				"title": "儲存已取消",
-				"message": "請在儲存前手動更正檔名。"
-			},
-			"empty_pdf": {
-				"title": "空 PDF",
-				"message": "PDF 檔案不包含任何頁面。"
-			},
-			"no_selection_save": {
-				"title": "注意",
-				"message": "請至少選取一個要儲存的頁面。"
-			},
-			"drag_disabled_subdirectory": {
-				"title": "拖放已停用",
-				"message": "拖放移動頁面僅在漫畫根目錄中可用。\n\n要移動頁面:\n1. 點擊向上圖示返回根目錄\n2. 或展平漫畫以刪除子目錄"
-			},
-			"no_selection_reduce": {
-				"title": "未選擇",
-				"message": "請至少選擇一頁進行縮小。"
-			},
-			"invalid_selection_reduce": {
-				"title": "無效選擇",
-				"message": "只能縮小圖像。"
-			},
-			"invalid_dimensions": {
-				"title": "無效尺寸",
-				"message": "請輸入有效尺寸（正整數）。"
-			},
-			"no_images_for_gif": {
-				"title": "沒有圖像",
-				"message": "至少需要一個圖像來創建動畫GIF。"
-			},
-			"no_valid_images": {
-				"title": "沒有有效圖像",
-				"message": "未找到有效圖像來創建GIF。"
-			},
-			"animated_gif_in_comic": {
-				"title": "偵測到動畫GIF",
-				"message": "警告：此漫畫包含一個或多個動畫GIF。\\n\\n漫畫閱讀器（CDisplayEx、YACReader等）只會將每個GIF的第一幀顯示為靜態頁面。\\n\\n要正確查看動畫GIF，您必須使用「匯出所選頁面」或「編輯動畫GIF」按鈕將其單獨儲存在漫畫之外。\\n\\n您還要繼續儲存漫畫嗎？"
-			},
-			"no_selection_adjust": {
-				"title": "未選擇",
-				"message": "請至少選擇一張圖像以套用調整。"
-			},
-			"invalid_selection_adjust": {
-				"title": "選擇無效",
-				"message": "調整只能套用於圖像。"
-			},
-			"renumber_disabled_in_subdirectory": {
-				"title": "功能無法使用",
-				"message": "在資料夾被攤平之前，無法重新編號。\n請在重新編號之前先攤平資料夾。"
-			},
-			"unsafe_path_skipped": {
-				"title": "已略過的檔案",
-				"message": "由於位置無效，已略過 {count} 個檔案。"
-			},
-			"unsafe_path_open": {
-				"title": "無法開啟",
-				"message": "由於位置無效，無法開啟此檔案。"
-			}
-		},
-		"errors": {
-			"zip_invalid": {
-				"title": "ZIP 錯誤",
-				"message": "該檔案不是有效的 '{file}' ZIP 壓縮檔或已損毀。"
-			},
-			"zip_cannot_open": {
-				"title": "ZIP 錯誤",
-				"message": "無法開啟 CBZ 檔案:{error}"
-			},
-			"rar_invalid": {
-				"title": "RAR 錯誤",
-				"message": "該檔案不是有效的 '{file}' RAR 壓縮檔或已損毀。"
-			},
-			"rar_cannot_open": {
-				"title": "RAR 錯誤",
-				"message": "無法開啟 CBR 壓縮檔:{error}"
-			},
-			"cbr_unexpected": {
-				"title": "錯誤",
-				"message": "開啟 CBR 時發生意外錯誤:{error}"
-			},
-			"join_failed": {
-				"title": "錯誤",
-				"message": "無法合併圖像。"
-			},
-			"paste_failed": {
-				"title": "錯誤",
-				"message": "貼上時出錯:{error}"
-			},
-			"copy_archive_failed": {
-				"title": "錯誤",
-				"message": "無法複製壓縮檔:{error}"
-			},
-			"crop_invalid": {
-				"title": "錯誤",
-				"message": "裁切區域無效。"
-			},
-			"crop_failed": {
-				"title": "錯誤",
-				"message": "無法裁切圖像:{error}"
-			},
-			"load_image_failed": {
-				"title": "錯誤",
-				"message": "無法載入圖像:\n{error}"
-			},
-			"print_error": {
-				"title": "列印錯誤",
-				"message": "列印時出錯:\n{error}"
-			},
-			"print_not_available": {
-				"title": "列印無法使用",
-				"message": "未安裝 win32print 模組。\n請使用以下命令安裝:pip install pywin32"
-			},
-			"file_not_found": {
-				"title": "檔案未找到",
-				"message": "檔案不再存在:\n{path}"
-			},
-			"import_failed": {
-				"title": "匯入錯誤",
-				"message": "無法匯入檔案:{error}"
-			},
-			"pymupdf_not_installed": {
-				"title": "PyMuPDF 未安裝",
-				"message": "未安裝 PyMuPDF (fitz) 函式庫。\n請使用以下命令安裝:pip install PyMuPDF"
-			},
-			"pdf_import_failed": {
-				"title": "錯誤",
-				"message": "匯入 PDF 時出錯:{error}"
-			},
-			"pdf_load_failed": {
-				"title": "PDF 錯誤",
-				"message": "無法載入 PDF:\n{error}"
-			},
-			"duplicate_names": {
-				"title": "重複的檔名",
-				"intro": "偵測到 {count} 個重複檔案名稱:\n\n",
-				"item": "  • {name}（{times} 次）\n",
-				"more": "  ... 以及另外 {more} 個\n",
-				"footer": "\nZIP 壓縮檔不接受重複名稱。\n請在儲存前重新命名這些檔案。"
-			},
-			"save_failed": {
-				"title": "錯誤",
-				"message": "無法儲存檔案:{error}"
-			},
-			"create_archive_failed": {
-				"title": "錯誤",
-				"message": "無法建立壓縮檔:{error}"
-			},
-			"save_selection_failed": {
-				"title": "錯誤",
-				"message": "無法儲存選取內容:{error}"
-			},
-			"gif_creation_failed": {
-				"title": "GIF創建錯誤",
-				"message": "無法創建動畫GIF：\n{error}"
-			},
-			"save_files_failed": {
-				"title": "儲存錯誤",
-				"message": "儲存檔案時發生錯誤：\n{error}"
-			},
-			"rename_failed": {
-				"title": "重新命名錯誤",
-				"message": "無法重新命名檔案：{error}"
-			},
-			"pdf_password_required": {
-				"title": "PDF受密碼保護",
-				"message": "此PDF檔案已加密並受密碼保護。\n沒有密碼無法開啟。"
-			},
-			"pdf_unlock_failed": {
-				"title": "錯誤",
-				"message": "無法儲存已解鎖的PDF檔案:\n{error}"
-			},
-			"pdf_encrypted_skipped": "{filename}: 加密的PDF（需要密碼），已跳過",
-			"file_too_large": {
-				"title": "檔案過大",
-				"message": "檔案 {filename} 大小為 {size}，超過了圖像允許的最大大小（500 MB）。"
-			},
-			"license_file_not_found": {
-				"message": "找不到授權檔案: {path}"
-			},
-			"license_file_read_error": {
-				"message": "無法讀取授權檔案: {error}"
-			},
-			"7z_invalid": {
-				"title": "7Z 錯誤",
-				"message": "檔案「{file}」不是有效的 7Z 壓縮檔或已損毀。"
-			},
-			"delete_error": "刪除時發生錯誤: {error}",
-			"export_error": "匯出時發生錯誤: {error}",
-			"font_source_not_found": "找不到字型來源檔案: {path}",
-			"no_tengwar_font": "找不到Tengwar字型。",
-			"no_icons_found": "找不到圖示。",
-			"unsupported_files": {
-				"title": "不支援的檔案",
-				"message": "以下檔案不受支援，已被忽略:\n\n{files}"
-			},
-			"cbt_invalid": {
-				"message": "檔案 '{file}' 不是有效的 TAR 封存檔或已損毀。"
-			},
-			"disk_full": {
-				"message": "目標磁碟機的磁碟空間不足。\n需要: {needed}\n可用: {free}"
-			}
-		},
-		"info": {
-			"gif_created": {
-				"title": "GIF創建成功",
-				"message": "動畫GIF '{name}' 已創建並添加到馬賽克中。"
-			},
-			"pywin32_required": {
-				"title": "功能無法使用",
-				"message": "從系統剪貼簿貼上需要 pywin32 模組。\n請使用以下命令安裝:pip install pywin32"
-			},
-			"images_imported": {
-				"title": "圖像已匯入",
-				"message": "已匯入 {count} 個圖像"
-			},
-			"archive_copied": {
-				"title": "壓縮檔已複製",
-				"message": "已將存檔複製到剪貼簿。"
-			},
-			"function_not_available": {
-				"title": "功能無法使用",
-				"message": "此功能暫時無法使用。"
-			},
-			"duplicate_detected": {
-				"title": "偵測到重複",
-				"message": "已存在同名檔案。\n\n檔案已重新命名為:\n{name}"
-			},
-			"replace_success": {
-				"title": "成功",
-				"message": "圖像 '{name}' 已成功取代。"
-			},
-			"history_cleared": {
-				"title": "歷程記錄已清除",
-				"message": "最近檔案清單已清除。"
-			},
-			"files_copied_clipboard": {
-				"title": "檔案已複製到剪貼簿",
-				"message": "由於技術原因,無法拖出應用程式。\n\n✓ {count} 個{word}已複製到剪貼簿\n\n您現在可以在任何位置貼上:\n  • 按一下右鍵 → 貼上\n  • 或 Ctrl+V"
-			},
-			"correction_done": {
-				"title": "更正完成",
-				"message": "已更正 {count} 個檔名。"
-			},
-			"import_success": {
-				"title": "匯入成功",
-				"message": "已從 {file} 匯入 {count} 頁"
-			},
-			"pdf_import_success": {
-				"title": "匯入成功",
-				"message": "已從 {file} 匯入 {count} 頁 PDF\n品質:{dpi} DPI"
-			},
-			"pdf_convert_success": {
-				"title": "成功",
-				"message": "PDF 轉換成功!\n已載入 {count} 頁,品質為 {dpi} DPI。"
-			},
-			"cbz_saved": {
-				"title": "成功",
-				"message": "CBZ檔案已成功儲存:"
-			},
-			"cbz_converted": {
-				"title": "成功",
-				"message": "檔案已成功轉換為CBZ:",
-				"question": "您要刪除原始CBR檔案嗎?"
-			},
-			"cbz_converted_from_pdf": {
-				"title": "成功",
-				"message": "檔案已成功轉換為CBZ:",
-				"question": "您要刪除原始PDF檔案嗎?"
-			},
-			"cbz_save_as": {
-				"title": "成功",
-				"message": "新 CBZ 檔案已儲存:{path}"
-			},
-			"cbz_created": {
-				"title": "成功",
-				"message": "CBZ封存已成功建立:"
-			},
-			"selection_saved": {
-				"title": "成功",
-				"message": "選擇已成功儲存:"
-			},
-			"flatten_done": {
-				"title": "展平完成",
-				"message": "已從 {dirs} 個子資料夾移動 {files} 個檔案。"
-			},
-			"language_changed": {
-				"title": "語言已變更",
-				"message": "介面語言已成功變更。"
-			},
-			"new_cbz_saved": {
-				"title": "檔案已儲存",
-				"message": "新的CBZ檔案已成功儲存：",
-				"question": "您想刪除原始檔案嗎？"
-			},
-			"page_count_updated": {
-				"title": "頁數已更新",
-				"message": "元數據中的頁數已更新為 {count} 頁。"
-			},
-			"files_saved": {
-				"title": "成功儲存",
-				"message": "{count} 個檔案已儲存至：\n{folder}",
-				"open_folder": "您要開啟資料夾嗎？",
-				"message_with_skipped": "已將 {count} 個檔案儲存至 {folder}。由於位置無效，已略過 {skipped} 個檔案。"
-			},
-			"adjustments_applied": {
-				"title": "已套用調整",
-				"message": "調整已成功套用。"
-			},
-			"pdf_unlocked": {
-				"title": "PDF已解鎖",
-				"message": "已解鎖的PDF檔案已儲存:\n{path}"
-			},
-			"thumbnails_saved": {
-				"title": "匯出縮圖",
-				"message": "已將 {count} 張縮圖儲存至 :"
-			}
-		},
-		"questions": {
-			"large_archive": {
-				"title": "大型壓縮檔",
-				"message": "此壓縮檔解壓縮後為 {size} MB。\n載入可能會消耗大量記憶體 (RAM)。\n\n是否繼續?"
-			},
-			"confirm_delete": {
-				"title": "確認",
-				"message": "您確定要刪除 {count} 個檔案 ({size}) 嗎?"
-			},
-			"delete_source_files": {
-				"title": "刪除來源檔案?",
-				"message": "是否刪除已合併的圖像?\n\n是 = 刪除來源檔案\n否 = 保留來源檔案\n取消 = 取消操作"
-			},
-			"invalid_filenames": {
-				"title": "無效的檔名",
-				"intro": "{count}個檔案包含禁止字元:",
-				"item": "  • {name}",
-				"more": "  ... 還有{more}個",
-				"forbidden_chars": "禁止字元: {chars}",
-				"fix_question": "是否自動修正這些檔案名稱?\n(禁止字元將被替換為'_')"
-			},
-			"close_without_save": {
-				"title": "關閉前儲存?",
-				"message": "已新增圖像。是否在關閉前建立 CBZ 壓縮檔?"
-			},
-			"flatten_folders": {
-				"title": "展平資料夾",
-				"subdirs_detected": "偵測到子資料夾:",
-				"files_to_move": "{count} 個檔案將移至根目錄。",
-				"folders_to_delete": "{count} 個子資料夾將被刪除。",
-				"continue_question": "是否繼續?"
-			},
-			"update_page_count": {
-				"title": "更新頁數",
-				"message": "漫畫的頁數已更改。\n\n元數據中指示的頁數：{original}\n當前頁數：{current}\n\n要更新元數據中的頁數嗎？"
-			},
-			"conversion_complete": {
-				"title": "轉換完成",
-				"message": "轉換完成！\n\n{count}張圖像已轉換為{format}格式並新增至您的選擇之後。\n\n刪除原始圖像嗎？",
-				"delete_originals": "刪除原始檔案\n{count} 個檔案 - {size}",
-				"keep_all": "保留全部\n{count} 個檔案 - {size}",
-				"cancel_conversion": "取消轉換\n{count} 個檔案 - {size}"
-			},
-			"zip_recompress": {
-				"title": "重新儲存封存檔？",
-				"message": "檔案將以預設壓縮等級（{level}）重新儲存。"
-			},
-			"zip_convert_to_cbz": {
-				"title": "儲存為 CBZ？",
-				"message": "檔案將以預設壓縮等級（{level}）儲存為 CBZ。"
-			}
-		},
-		"extension_mismatch_generic": {
-			"message": "偵測到錯誤的副檔名: 檔案 '{filename}' 是 {real}，而非 {declared}。重新命名?",
-			"title": "副檔名錯誤"
-		}
-	},
-	"labels": {
-		"copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
-		"thumb_size": "縮圖大小",
-		"loading": "請稍候,正在載入...\n{percent}%",
-		"resizing": "請稍候,正在調整大小...\n{percent}%",
-		"converting": "請稍候，正在轉換...\n{percent}%",
-		"loading_lazy": "請稍候，正在載入...\n{percent}%\n\n由於此檔案較大（{size} MB），頁面將逐步載入。螢幕上可見的頁面會立即載入，其他頁面將在捲動時自動載入。",
-		"apply_save_cbz": "套用修改\n並儲存 CBZ 檔案",
-		"apply_create_cbz": "套用修改\n並建立 CBZ 檔案",
-		"import_progress": "正在匯入...\n{percent}%",
-		"pdf_import_progress": "正在匯入 PDF...\n{percent}%",
-		"pdf_opening": "正在開啟 PDF 檔案...",
-		"pdf_page": "第 {current} 頁 / 共 {total} 頁",
-		"warning_close": "注意!修改尚未儲存,將會遺失!",
-		"language_label": "語言:",
-		"directory_tooltip": "資料夾:{name}\n{count} 個檔案\n總大小:{size} MB",
-		"folder_up_tooltip": "按兩下返回\n上一層目錄",
-		"status_bar": "{dirs} 個資料夾  |  {files} 個檔案 ({total_size})  |  {selected} 個已選 ({selected_size})",
-		"pdf_converting": "正在將{total}頁轉換為{dpi} DPI的圖像...",
-		"pdf_converting_no_change": "正在提取{total}頁而不修改...",
-		"print_progress": "準備列印中...\n{percent}%",
-		"print_preparing": "請稍候，準備列印中...",
-		"license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU 通用公共授權條款 v3 摘要\n\n授予的自由\n您可以使用、複製、修改和再散布\nMosaicView，包括用於商業目的。\n\n義務\n任何再散布（原始版或修改版）必須 :\n– 保留 GPL v3 授權條款\n– 包含原始碼或注明取得途徑\n– 不得施加額外限制\n\n保證\n本軟體在不提供任何保證的情況下散布。\n作者不對使用本軟體所造成的損失承擔責任。\n\n您應該已隨本程式收到 GNU 通用公共授權條款的副本。 如果沒有，請參閱 <https://www.gnu.org/licenses/>。",
-		"view_full_license": "查看完整授權",
-		"license_unrar_text": "CBZ 檔案基於 ZIP 格式，這是一種自由開放的格式。CBR 檔案則基於 RAR 格式，這是一種專有格式。\n\nMosaicView 可以借助 UnRAR 開啟 CBR 檔案，UnRAR 是由 RARlab 開發的可自由再發行的實用程式。\n\n官方網站: <https://www.rarlab.com/rar_add.htm>",
-		"view_full_unrar_license": "檢視 UnRAR 授權",
-		"saving_cbz": "正在儲存... {percent}%",
-		"empty_canvas_line1": "將一個或多個CBZ/CBR/CB7/CBT/PDF檔案或你的圖片放置在這裡",
-		"empty_canvas_line2": "打開檔案後，你可以繼續放置其他檔案",
-		"empty_canvas_line3": "放入一個或多個資料夾以開始批次處理",
-		"icon_toolbar_config_title": "圖示工具列配置",
-		"icon_toolbar_active": "工具列中的圖示",
-		"icon_toolbar_hidden": "備用圖示",
-		"license_gpl_full": "GNU GPL v3 授權條款",
-		"license_unrar_full": "UnRAR 授權條款",
-		"licenses_button": "授權條款",
-		"view_full_gpl_license": "檢視完整 GNU GPL v3 授權條款",
-		"license_7zip_text": "CB7 檔案基於 7z 格式，由 Igor Pavlov 開發，並在 GNU LGPL 授權下發布。\n\nMosaicView 可以借助 7-Zip 開啟 CB7 檔案 — 一款免費的開源工具。\n\n官方網站 : <https://www.7-zip.org/>",
-		"view_full_7zip_license": "檢視 7-Zip 授權",
-		"license_7zip_full": "7-Zip 授權",
-		"icon_toolbar_show_thumb_slider": "顯示縮圖大小滑桿",
-		"icon_toolbar_show_lang_combo": "顯示語言選擇器",
-		"adjusting": "請稍候，正在調整...\n{current} / {total}",
-		"license_piqad_full": "pIqaD qolqoS 字型授權",
-		"license_tengwar_full": "Alcarin Tengwar字體授權",
-		"view_full_piqad_license": "檢視完整 pIqaD qolqoS 授權",
-		"rotating": "旋轉中...\n{percent}%",
-		"flipping": "翻轉中...\n{percent}%",
-		"renumber_indicator_off": "編號: 關閉",
-		"renumber_indicator_auto": "編號: 自動",
-		"renumber_indicator_simple": "編號: 簡單",
-		"zip_indicator_stored": "ZIP: 0",
-		"zip_indicator_deflated": "ZIP: 1",
-		"zip_indicator_na": "ZIP: --"
-	},
-	"dialogs": {
-		"convert": {
-			"window_title": "圖像轉換",
-			"title": "轉換 {count} 個{word}",
-			"word_image": "圖像",
-			"word_images": "圖像",
-			"info": "選擇目標格式:",
-			"format_png": "PNG (無損)",
-			"format_jpg": "JPEG (有損壓縮)",
-			"format_webp": "WEBP (現代格式)",
-			"format_bmp": "BMP (點陣圖)",
-			"format_tiff": "TIFF (高品質)",
-			"format_gif": "GIF (動畫)",
-			"quality_label": "JPG/WEBP 品質:",
-			"quality_maximum": "最高 — 品質 95/100",
-			"quality_high": "高 — 品質 85/100",
-			"quality_medium": "中等 — 品質 75/100",
-			"quality_low": "低 — 品質 60/100",
-			"quality_custom_option": "自訂",
-			"quality_custom": "品質 自訂 : {value}/100",
-			"quality_note": "(此設定僅影響 JPG 和 WEBP 格式)",
-			"quality_window_title": "品質選擇",
-			"format_gif_static": "靜態GIF",
-			"format_gif_animated": "動畫GIF（選擇多個圖像）"
-		},
-		"split": {
-			"window_title": "分割頁面",
-			"title": "分割頁面",
-			"pages_label": "頁面數:",
-			"direction_label": "分割方向:",
-			"horizontal": "水平 (左 → 右)",
-			"vertical": "垂直 (上 → 下)",
-			"warning": "⚠ 由於分割是自動計算的,\n可能需要手動調整。",
-			"button_split": "分割",
-			"button_cancel": "取消"
-		},
-		"join": {
-			"window_title": "合併頁面 - 重新排列順序",
-			"instructions": "排列圖像:\n• 垂直(上/下)進行垂直拼接\n• 水平(左/右)進行水平拼接",
-			"merged_filename_prefix": "拼接",
-			"heights_label": "高度",
-			"widths_label": "寬度",
-			"size_adjustment_title": "大小調整",
-			"size_adjustment_warning": "⚠️ 選定的圖像具有不同的尺寸。\n請選擇如何調整它們的大小以進行合併。\n每個圖像的縱橫比將始終保留。",
-			"keep_original": "保持原始大小",
-			"keep_original_desc": "(添加黑條填充)",
-			"enlarge_small": "放大小圖像",
-			"enlarge_small_desc": "(對齊到最大尺寸)",
-			"reduce_large": "縮小大圖像",
-			"reduce_large_desc": "(對齊到最小尺寸)",
-			"back_to_arrangement": "返回"
-		},
-		"pdf": {
-			"quality_merge": "選擇合併品質:",
-			"quality_export": "選擇匯出品質:",
-			"merge_quality_title": "PDF合併品質",
-			"export_quality_title": "PDF匯出品質",
-			"loading_title": "正在載入PDF...",
-			"dpi_90": "90 DPI - 網路發布",
-			"dpi_150": "150 DPI - 良好品質（建議用於顯示）",
-			"dpi_200": "200 DPI - 非常好的品質",
-			"dpi_300": "300 DPI - 優秀品質（漫畫標準）",
-			"dpi_600": "600 DPI - 最高品質（大檔案）",
-			"dpi_original": "不修改圖像",
-			"dpi_original_tooltip": "智慧分析每個PDF頁面：\n• 僅圖像頁面：保留原始DPI\n• 僅文字頁面：300 DPI\n• 混合頁面（文字+圖像）：如果圖像DPI >= 300則使用圖像DPI，否則使用300 DPI\n最大值：2400 DPI以限制檔案大小"
-		},
-		"batch_pdf": {
-			"pymupdf_required_title": "需要 PyMuPDF",
-			"pymupdf_required_message": "PyMuPDF (fitz) 未安裝。無法轉換 PDF 檔案。",
-			"select_directory_title": "選擇包含 PDF 檔案的目錄",
-			"no_pdf_title": "沒有 PDF 檔案",
-			"no_pdf_message": "在目錄中未找到 PDF 檔案：\n{directory}",
-			"confirm_title": "批次將 PDF 轉換為 CBZ",
-			"confirm_message": "{directory} 中有 {count} 個 PDF 檔案待轉換（包含子目錄）。",
-			"checkbox_permanent_delete": "刪除原始 PDF 檔案且不經過\n資源回收筒（無法復原）",
-			"start_button": "開始",
-			"converting_title": "正在轉換...",
-			"converting_progress": "正在轉換檔案 {current} / {total}",
-			"page_progress": "頁面 {current} / {total}",
-			"complete_title": "轉換完成",
-			"complete_message": "目錄中已轉換 {count} 個 PDF 檔案：",
-			"complete_message_errors": "目錄中已轉換 {total} 個中的 {count} 個 PDF 檔案：",
-			"errors_count": "遇到 {count} 個錯誤。"
-		},
-		"batch_cbr": {
-			"select_directory_title": "選擇包含CBR檔案的目錄",
-			"no_cbr_title": "沒有CBR檔案",
-			"no_cbr_message": "在目錄中未找到CBR檔案：\\n{directory}",
-			"confirm_title": "批次轉換CBR為CBZ",
-			"confirm_message": "{directory}中有{count}個CBR檔案待轉換（含子目錄）。",
-			"checkbox_permanent_delete": "不經回收站直接刪除原始CBR檔案\n（無法復原）",
-			"start_button": "開始",
-			"converting_title": "轉換中...",
-			"converting_progress": "正在轉換檔案 {current} / {total}",
-			"page_progress": "頁面 {current} / {total}",
-			"complete_title": "轉換完成",
-			"complete_message": "目錄中已轉換{count}個CBR檔案：",
-			"complete_message_errors": "目錄中已轉換{total}個中的{count}個CBR檔案：",
-			"errors_count": "遇到{count}個錯誤。",
-			"rarfile_unavailable": "rarfile模組不可用，無法轉換CBR檔案。",
-			"renamed_cbz_count": "已將 {count} 個檔案重命名為 CBZ",
-			"renamed_cb7_count": "已將 {count} 個檔案重命名為 CB7",
-			"renamed_cbt_count": "已將 {count} 個檔案重命名為 CBT"
-		},
-		"close_warning": {
-			"title": "注意!",
-			"message": "修改尚未儲存,將會遺失!",
-			"btn_close_lose": "關閉檔案並放棄修改",
-			"btn_save_cbz": "套用修改並儲存檔案",
-			"btn_create_cbz": "套用修改並建立 CBZ 檔案",
-			"btn_cancel": "取消並返回縮圖"
-		},
-		"replace_image": {
-			"title": "取代損毀的圖像"
-		},
-		"reduce_size": {
-			"window_title": "圖像大小調整",
-			"title": "調整{count}{word}的大小",
-			"word_image": "圖像",
-			"word_images": "圖像",
-			"current_size": "目前大小：{size} MB",
-			"current_dimensions": "目前尺寸：{width} × {height} px",
-			"choose_method": "選擇調整大小方法：",
-			"custom_dimensions": "自訂尺寸",
-			"width_label": "寬度：",
-			"height_label": "高度：",
-			"use_custom_dimensions": "使用這些尺寸",
-			"different_dimensions_warning": "所選頁面具有不同的尺寸。自定義尺寸將強制所有頁面為相同大小。在繼續之前，請確保您了解其影響。",
-			"estimated_size": "預估大小：{size} MB",
-			"percentage_reduction": "百分比縮減",
-			"percentage_enlargement": "百分比放大",
-			"reduce_0": "0%（無變化）",
-			"reduce_10": "10%",
-			"reduce_20": "20%",
-			"reduce_25": "25%",
-			"reduce_33": "33%",
-			"reduce_50": "50%",
-			"reduce_75": "75%",
-			"enlarge_0": "0%（無變化）",
-			"enlarge_10": "10%",
-			"enlarge_20": "20%",
-			"enlarge_25": "25%",
-			"enlarge_33": "33%",
-			"enlarge_50": "50%",
-			"enlarge_75": "75%",
-			"enlarge_100": "100%",
-			"reduce_90": "90%",
-			"page_width_info": "最常見的頁面寬度是 1024、1280、1600、1920 和 2000 像素，但其他值也適用。",
-			"multi_page_width": "自動檢測並調整多頁大小（寬度/高度）",
-			"multi_page_width_tooltip": "啟用多頁自動檢測：雙頁、三頁等。乘數係數根據每頁的比例自動計算，無論是寬度（並排頁面）還是高度（堆疊頁面）"
-		},
-		"gif_animated": {
-			"window_title": "建立動畫GIF",
-			"images_title": "動畫圖像",
-			"params_title": "GIF參數",
-			"frame_delay_label": "圖像間延遲：",
-			"fps_normal": "{fps} 幀/秒",
-			"fps_slow": "每{seconds}秒1幀",
-			"loop_label": "重複次數：",
-			"loop_info": "（0 = 無限迴圈）",
-			"disposal_label": "圖像處理：",
-			"disposal_0": "未指定",
-			"disposal_1": "保留前一圖像",
-			"disposal_2": "恢復為背景色",
-			"disposal_3": "恢復為之前狀態",
-			"optimize": "最佳化檔案（僅儲存差異）",
-			"metadata_title": "GIF中繼資料",
-			"metadata_dimensions": "尺寸：{width} × {height} 像素",
-			"metadata_frames": "幀數：{count}",
-			"metadata_duration": "總時長：{duration} 秒",
-			"metadata_fps": "頻率：{fps} fps",
-			"metadata_palette": "調色盤：最多256色",
-			"metadata_size": "預估大小：{size} KB",
-			"comment_label": "評論（選填）：",
-			"no_images": "未選取圖像",
-			"creating_progress": "正在載入圖片... ({current}/{total})",
-			"creating_normalizing": "正在標準化圖片... ({current}/{total})",
-			"creating_quantizing": "正在量化顏色... ({current}/{total})",
-			"creating_saving": "正在儲存 GIF..."
-		},
-		"save_to_folder": {
-			"title": "選擇目標資料夾"
-		},
-		"duplicate_filenames": {
-			"title": "⚠️ 檔案名稱重複",
-			"message": "偵測到相同的檔案名稱。雖然技術上可以儲存，但這可能會導致某些\n漫畫閱讀器應用程式出現閱讀問題（顯示不完整、頁面遺失等）。\n\n建議在儲存之前重新編號頁面。"
-		},
-		"adjustments": {
-			"window_title": "圖像調整",
-			"title": "{count}張{word}的調整",
-			"word_image": "圖像",
-			"word_images": "圖像",
-			"apply_button": "套用",
-			"color_depth_section": "色彩深度",
-			"brightness_contrast_section": "亮度和對比度",
-			"compression_section": "壓縮",
-			"effects_section": "效果",
-			"sharpness_section": "銳利度",
-			"levels_section": "黑/白色階",
-			"depth_unchanged": "不更改",
-			"depth_32bit": "32位元 (RGBA - 顏色+透明度)",
-			"depth_24bit": "24位元 (RGB - 顏色)",
-			"depth_8bit": "8 wei (PNG diaoseban / JPEG huidu)",
-			"depth_1bit": "1位元 (黑白)",
-			"brightness_label": "亮度: {value}",
-			"contrast_label": "對比度: {value}",
-			"compression_enable": "啟用重新壓縮",
-			"compression_quality_label": "品質 : {value}/100",
-			"sharpness_label": "銳利度: {value}",
-			"effect_none": "無效果",
-			"effect_grayscale": "灰階",
-			"effect_sepia": "棕褐色",
-			"levels_none": "無調整",
-			"levels_threshold": "閾值 (純黑或純白)",
-			"levels_advanced": "進階色階 (陰影/中間調/亮部)",
-			"threshold_label": "閾值: {value}",
-			"black_point_label": "黑場: {value}",
-			"gamma_label": "伽瑪 (中間調): {value}",
-			"white_point_label": "白場: {value}",
-			"auto_levels_button": "自動調整",
-			"open_viewer_button": "使用檢視器調整 (建議)",
-			"compression_info": "壓縮僅適用於JPG和WebP圖像",
-			"open_viewer_button_simple": "使用檢視器調整",
-			"reset_button": "重置",
-			"preview_section": "預覽",
-			"effect_invert": "顏色反轉",
-			"preview_warning": "預覽可能與最終結果不同",
-			"effect_remove_colors": "去除顏色",
-			"remove_colors_intensity_label": "強度 : {value}",
-			"image_mode_section": "圖像模式",
-			"image_mode_rgb": "RGB (彩色)",
-			"image_mode_rgba": "RGBA (彩色 + 透明度)",
-			"image_mode_l": "L (灰階)",
-			"image_mode_la": "LA (灰階 + 透明度)",
-			"image_mode_cmyk": "CMYK (印刷)",
-			"image_mode_1": "1 (純黑白)",
-			"image_mode_p": "P (256色調色盤)",
-			"saturation_section": "飽和度",
-			"saturation_label": "飽和度 : {value}",
-			"saturation_viewer_title": "飽和度調整",
-			"transparency_section": "透明度",
-			"transparency_info": "透明度僅適用於 PNG、WebP 和 ICO 圖像",
-			"transparency_type_label": "類型 :",
-			"transparency_type_flood": "區域",
-			"transparency_type_global": "全域",
-			"transparency_tolerance_label": "容差 :",
-			"transparency_viewer_title": "透明度調整",
-			"transparency_click_instruction": "點擊要變為透明的顏色",
-			"transparency_undo": "撤銷上次點擊",
-			"transparency_redo": "重做",
-			"transparency_type_flood_tooltip": "洪水填充 : 使點擊像素周圍的均勻色彩區域變為透明",
-			"transparency_type_global_tooltip": "全域透明度 : 影響圖像中所有顏色與點擊顏色相近的像素",
-			"transparency_apply": "套用",
-			"transparency_skipped_warning": "{count} 張圖像已跳過 — 格式與透明度不相容。如需包含，請先轉換為 PNG。",
-			"unsharp_section": "自適應銳化",
-			"unsharp_radius_label": "半徑: {value}",
-			"unsharp_percent_label": "強度: {value}%",
-			"unsharp_threshold_label": "閾值: {value}",
-			"unsharp_viewer_title": "自適應銳化",
-			"auto_levels_tooltip": "分析每一頁並自動調整黑白色階以最大化對比度。\n若要逐頁選擇，請使用檢視器。",
-			"transparency_unsaved_title": "未套用的變更",
-			"transparency_unsaved_message": "目前的變更尚未套用到圖像。您想要怎麼做?",
-			"transparency_unsaved_discard": "關閉而不套用",
-			"transparency_unsaved_apply": "套用並關閉",
-			"transparency_unsaved_cancel": "取消"
-		},
-		"levels_viewer": {
-			"title": "使用滴管調整色階",
-			"apply_current": "套用於此頁",
-			"apply_all": "套用至所有選定的頁面",
-			"black_pipette": "黑點吸管",
-			"white_pipette": "白點吸管",
-			"black_pipette_tooltip": "點擊應該完全黑色的像素。注意：很容易做過頭！",
-			"white_pipette_tooltip": "點擊應該完全白色的像素。注意：很容易做過頭！"
-		},
-		"sharpness_viewer": {
-			"title": "清晰度調整"
-		},
-		"brightness_viewer": {
-			"title": "亮度和對比度調整"
-		},
-		"compression_viewer": {
-			"title": "壓縮調整"
-		},
-		"outliers": {
-			"title": "尺寸異常的頁面",
-			"message": "以下頁面的尺寸與其他頁面有很大不同。請選擇如何處理它們:",
-			"width": "寬度",
-			"height": "高度",
-			"unusual": "異常",
-			"skip": "不調整大小",
-			"keep": "保持"
-		},
-		"first_page_multi": {
-			"title": "第一頁是多頁",
-			"message": "第一頁被偵測為多頁。您希望如何編號？",
-			"option_auto_desc": "正常重新編號，自動偵測。",
-			"option_joint_desc": "漫畫第一頁與最後一頁的連接。",
-			"option_exclude_label": "不包含在重新編號中",
-			"option_exclude_desc": "頁面保留其目前名稱並保持在第一位置。您可以稍後手動重新命名。"
-		},
-		"batch_img": {
-			"select_directory_title": "選擇包含圖像的資料夾",
-			"no_img_title": "未找到圖像檔案",
-			"no_img_message": "在資料夾中未找到獨立圖像檔案 :\n{directory}",
-			"confirm_title": "批次將獨立圖像轉換為 CBZ",
-			"confirm_message": "{directory} 中有 {count} 個圖像檔案待轉換（包含子資料夾）。",
-			"checkbox_permanent_delete": "永久刪除原始圖像檔案，不發送到\n資源回收筒（無法復原）",
-			"start_button": "開始",
-			"converting_title": "正在轉換...",
-			"converting_progress": "正在轉換第 {current} 個檔案，共 {total} 個",
-			"complete_title": "轉換完成",
-			"complete_message": "資料夾中已轉換 {count} 個圖像檔案 :",
-			"complete_message_errors": "資料夾中已轉換 {total} 個中的 {count} 個圖像檔案 :",
-			"errors_count": "遇到 {count} 個錯誤。",
-			"converted_by_ext": "{ext} : {count} 個檔案",
-			"mode_title": "將圖片轉換為CBZ",
-			"mode_intro": "您希望如何分組圖片？",
-			"mode_one_per_image": "將每張圖片轉換為單獨的CBZ檔案",
-			"mode_one_per_image_sub": "(每張圖片成為一個單獨的CBZ檔案)",
-			"mode_all_in_one": "將所有圖片合併為一個CBZ檔案",
-			"mode_all_in_one_sub": "(目錄中的所有圖片合併為一個CBZ檔案)"
-		},
-		"batch_drop": {
-			"window_title": "資料夾批次處理",
-			"intro_single": "已放入1個資料夾。您想套用哪種處理？",
-			"intro_multiple": "已放入{count}個資料夾。您想套用哪種處理？",
-			"recursive_note": "子資料夾也將被掃描。",
-			"mixed_drop_title": "不支援此放置操作",
-			"mixed_drop_message": "您同時放入了檔案和資料夾。請只放入檔案或只放入資料夾。"
-		},
-		"pdf_unlock": {
-			"title": "PDF受保護，禁止修改",
-			"message": "頁面已正常匯入。\n\n此PDF檔案受保護，禁止修改（擁有者密碼）。\n\n是否要儲存不含此保護的PDF檔案副本?",
-			"yes": "是，儲存已解鎖的副本",
-			"no": "否，繼續而不解鎖"
-		},
-		"batch_pdf_unlock": {
-			"title": "受保護不可修改的PDF檔案",
-			"message_single": "偵測到1個受保護不可修改的PDF檔案。已正常轉換為CBZ。\n\n是否要在其原始目錄中儲存已解鎖的副本？",
-			"message_plural": "偵測到{count}個受保護不可修改的PDF檔案。已正常轉換為CBZ。\n\n是否要在每個檔案的原始目錄中儲存已解鎖的副本？",
-			"yes": "是，儲存已解鎖的副本",
-			"no": "否，不解鎖繼續"
-		},
-		"ico_creator": {
-			"title": "建立 .ico 圖示",
-			"info_message": "圖像將調整為多種解析度 (16, 32, 48, 64, 128, 256 px)。\n目前框架大小: {w} × {h} px",
-			"btn_validate_crop": "確認裁剪",
-			"btn_validate_no_crop": "確認不裁剪",
-			"btn_cancel": "取消",
-			"btn_transparency": "設定透明度",
-			"btn_validate_final": "確認",
-			"tolerance_label": "容差:",
-			"success_title": ".ico 檔案已建立",
-			"success_message": "檔案 {filename} 已成功建立。",
-			"overwrite_title": "檔案已存在",
-			"overwrite_message": "檔案 {filename} 已存在。是否覆蓋？",
-			"save_blocked_title": "無法儲存",
-			"save_blocked_message": "此存檔包含一個或多個不是漫畫圖像的 .ico 檔案。只要這些檔案存在於馬賽克中，儲存功能將被停用。\n要重新啟用儲存，請從馬賽克中刪除它們 (Del 鍵) 或剪下 (Ctrl+X) 後貼上到其他地方。",
-			"btn_back_to_crop": "返回裁剪"
-		},
-		"video_save_blocked": {
-			"title": "無法儲存",
-			"message": "此存檔包含一個或多個視訊檔案。只要這些檔案存在於馬賽克中，儲存功能就會被停用。\n若要重新啟用儲存，請從馬賽克中刪除它們（Del鍵）或剪下它們（Ctrl+X）以貼上到其他地方。"
-		},
-		"open_file": {
-			"title": "開啟封存檔",
-			"filter_archives": "封存檔 (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
-			"filter_all": "所有檔案 (*)"
-		},
-		"license": {
-			"window_title": "MosaicView - 授權"
-		},
-		"replace_corrupted_image": {
-			"title": "替換損壞的圖片",
-			"filter_images": "圖片 (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
-			"filter_all": "所有檔案 (*)"
-		},
-		"see_log": "查看日誌",
-		"straighten_viewer": {
-			"title": "矯正",
-			"instruction": "在圖像中應為水平（或垂直）的部分畫一條直線"
-		},
-		"clone_zone_viewer": {
-			"title": "區域克隆",
-			"instruction": "Ctrl+單擊 : 設置源區域  •  左鍵單擊 : 繪製克隆區域",
-			"mode_label": "源 :",
-			"mode_fixed": "固定源",
-			"mode_relative": "相對源",
-			"brush_size_label": "大小 :"
-		},
-		"text_viewer": {
-			"title": "插入文字",
-			"instruction": "點擊要插入文字的位置  •  Ctrl+方向鍵:逐像素移動文字",
-			"size_label": "大小:",
-			"color_label": "顏色:",
-			"bold_btn": "粗",
-			"italic_btn": "斜",
-			"underline_btn": "底",
-			"apply_btn": "套用文字",
-			"pick_color_title": "選擇文字顏色"
-		},
-		"batch_cb7": {
-			"select_directory_title": "選擇包含 CB7 檔案的目錄",
-			"no_cb7_title": "沒有 CB7 檔案",
-			"no_cb7_message": "在目錄中未找到 CB7 檔案 :\n{directory}",
-			"confirm_title": "批次將 CB7 轉換為 CBZ",
-			"confirm_message": "將在 {directory} 中轉換 {count} 個 CB7 檔案（包含子目錄）。",
-			"checkbox_permanent_delete": "永久刪除原始 CB7 檔案而不移至回收站\n（無法復原）",
-			"start_button": "開始",
-			"converting_title": "轉換中...",
-			"converting_progress": "正在轉換第 {current} / {total} 個檔案",
-			"page_progress": "第 {current} / {total} 頁",
-			"complete_title": "轉換完成",
-			"complete_message": "目錄中已轉換 {count} 個 CB7 檔案 :",
-			"complete_message_errors": "目錄中已轉換 {total} 個中的 {count} 個 CB7 檔案 :",
-			"errors_count": "遇到 {count} 個錯誤。",
-			"renamed_cbz_count": "已將 {count} 個檔案重命名為 CBZ",
-			"renamed_cbr_count": "已將 {count} 個檔案重命名為 CBR",
-			"renamed_cbt_count": "已將 {count} 個檔案重命名為 CBT"
-		},
-		"batch_cbt": {
-			"select_directory_title": "選擇包含 CBT 檔案的目錄",
-			"no_cbt_title": "沒有 CBT 檔案",
-			"no_cbt_message": "在目錄中未找到 CBT 檔案 :\n{directory}",
-			"confirm_title": "批次將 CBT 轉換為 CBZ",
-			"confirm_message": "將在 {directory} 中轉換 {count} 個 CBT 檔案（包含子目錄）。",
-			"checkbox_permanent_delete": "永久刪除原始 CBT 檔案而不移至回收站\n（無法復原）",
-			"start_button": "開始",
-			"converting_title": "轉換中...",
-			"converting_progress": "正在轉換第 {current} / {total} 個檔案",
-			"page_progress": "第 {current} / {total} 頁",
-			"complete_title": "轉換完成",
-			"complete_message": "目錄中已轉換 {count} 個 CBT 檔案 :",
-			"complete_message_errors": "目錄中已轉換 {total} 個中的 {count} 個 CBT 檔案 :",
-			"errors_count": "遇到 {count} 個錯誤。",
-			"renamed_cbz_count": "已將 {count} 個檔案重命名為 CBZ",
-			"renamed_cbr_count": "已將 {count} 個檔案重命名為 CBR",
-			"renamed_cb7_count": "已將 {count} 個檔案重命名為 CB7"
-		},
-		"batch_metadata": {
-			"no_files_title": "沒有相容的檔案",
-			"no_files_message": "在以下目錄中未找到相容檔案 (CBZ、CBR、CB7、CBT、PDF):\n{directory}",
-			"confirm_title": "批次匯入中繼資料",
-			"confirm_message": "在 {directory} 中找到 {count} 個檔案（包含子目錄）。",
-			"start_button": "開始",
-			"cbz_warning": "只有CBZ格式支援ComicInfo中繼資料。CBR、CBT、CB7和PDF檔案將自動轉換為CBZ。",
-			"checkbox_permanent_delete": "永久刪除原始非CBZ檔案，不經過資源回收桶\n（無法復原）",
-			"checkbox_skip_existing": "忽略已有元數據的文件\n(包含ComicInfo.xml文件的cbz壓縮包)",
-			"complete_title": "元資料匯入完成",
-			"complete_message": "已處理 {done} 個檔案，共 {total} 個。已略過 {skipped} 個。",
-			"complete_message_errors": "已處理 {done} 個檔案，共 {total} 個。已略過 {skipped} 個。{errors} 個錯誤。",
-			"errors_count": "{count} 個錯誤",
-			"done_count": "已處理 {done} 個檔案，共 {total} 個。",
-			"skipped_count": "已略過 {skipped} 個。",
-			"select_directory_title": "選擇要處理的資料夾"
-		},
-		"zip_compression": {
-			"window_title": "ZIP 壓縮",
-			"title": "預設 ZIP 壓縮等級",
-			"explanation": "漫畫圖片已經由其自身格式壓縮過（JPEG、PNG、WebP...）。在此基礎上再壓縮 ZIP 封存檔不會節省任何空間，但會明顯減慢儲存和讀取速度。這就是預設等級為 0（不壓縮）的原因。\n\n除非有特殊需求，否則不建議變更此設定。",
-			"level_label": "等級（0-9）："
-		},
-		"batch_recompress": {
-			"no_files_title": "未找到檔案",
-			"no_files_message": "在目錄中未找到任何 CBZ/CBR/CB7/CBT 檔案：\n{directory}",
-			"window_title": "批次重新壓縮 CBZ",
-			"confirm_message": "在 {directory} 中要分析 {count} 個檔案（包括子目錄）。\n尚未處於預設等級（{level}）的 CBZ 檔案將被重新壓縮。",
-			"start_button": "開始",
-			"running_title": "正在重新壓縮...",
-			"progress": "正在分析檔案 {current}/{total}",
-			"complete_title": "重新壓縮完成",
-			"summary_message": "已分析 {total} 個檔案：\n{recompressed} 個已重新壓縮\n{already_optimal} 個已處於預設等級\n{ignored} 個已忽略（不是 CBZ）",
-			"errors_with_log": "遇到 {count} 個錯誤。請查看記錄。",
-			"view_log": "查看記錄"
-		}
-	},
-	"tooltip": {
-		"source_archive": "來源檔案: {name}",
-		"file": "檔案:{name}",
-		"reason": "原因:{reason}",
-		"size_kb": "大小:{size} KB",
-		"size_mb": "大小:{size} MB",
-		"file_size": "大小:{size}",
-		"dimensions": "尺寸:{width} × {height} 像素",
-		"resolution": "解析度:{mp} MP",
-		"dpi_single": "DPI:{dpi}",
-		"dpi_double": "DPI:{dpi_x} × {dpi_y}",
-		"dpi_undefined": "DPI：未定義",
-		"cbr_info": "CBR 檔案使用 RAR 格式，該格式是專有且已獲專利的；\n無法修改它們，變更將儲存到新的 CBZ 檔案中。",
-		"rotate_left": "向左旋轉90度",
-		"rotate_right": "向右旋轉90度",
-		"mirror_horizontal": "水平翻轉",
-		"mirror_vertical": "垂直翻轉",
-		"fullscreen": "全螢幕",
-		"help_button": "使用者手冊",
-		"theme_button": "在淺色和深色主題之間切換",
-		"font_decrease_button": "縮小字體大小",
-		"font_increase_button": "放大字體大小",
-		"color_depth": "顏色：{bits} 位元 ({mode})",
-		"batch_pdf_to_cbz": "將目錄及其子目錄中的所有PDF檔案\n轉換為CBZ。圖像按原樣提取並歸檔，\n不進行任何重新壓縮。",
-		"batch_pdf_permanent_delete": "警告：如果勾選此選項，\n原始PDF檔案將在轉換後被\n永久刪除，無法復原。\n請確保您有備份（如有必要）。",
-		"batch_cbr_to_cbz": "將目錄及其子目錄中的\n所有CBR檔案轉換為CBZ。",
-		"batch_cbr_permanent_delete": "警告：如果勾選此選項，\n原始CBR檔案將在轉換後\n被永久刪除，無法復原。\n請確保您已備份，\n如有必要。",
-		"renumber_btn_1": "自動偵測多頁模式\n右鍵點擊切換模式",
-		"renumber_btn_2": "簡單編號模式\n右鍵點擊切換模式",
-		"corrupted_header": "圖片已損壞",
-		"right_click_instruction1": "右鍵點擊以替換或刪除",
-		"right_click_instruction2": "此圖片。",
-		"unknown_error": "未知錯誤",
-		"batch_img_to_cbz": "將資料夾及其子資料夾中找到的所有\n圖像檔案轉換為 CBZ，\n每張圖像生成一個 CBZ 檔案。",
-		"batch_img_permanent_delete": "警告 : 如果選取此選項，\n原始圖像檔案將在轉換後被永久刪除，\n無法復原。如有必要，\n請確保您有備份。",
-		"too_large_header": "圖像太大無法載入",
-		"too_large_pixels": "尺寸: {pixels}",
-		"icon_toolbar_config_button": "圖示設定",
-		"icon_toolbar_size_decrease": "縮小圖示大小",
-		"icon_toolbar_size_increase": "放大圖示大小",
-		"source_loose": "獨立圖片",
-		"source_web": "網路圖片",
-		"straighten": "矯正圖像",
-		"clone_zone": "克隆區域",
-		"text": "新增文字",
-		"batch_cb7_to_cbz": "將目錄及其子目錄中的所有\nCB7 檔案轉換為 CBZ。",
-		"batch_cb7_permanent_delete": "警告：如果勾選此選項，\n原始 CB7 檔案將在轉換後被永久刪除，\n無法復原。請確保已有備份。",
-		"batch_cbt_to_cbz": "將目錄及其子目錄中的所有\nCBT 檔案轉換為 CBZ。",
-		"batch_cbt_permanent_delete": "警告：如果勾選此選項，\n原始 CBT 檔案將在轉換後被永久刪除，\n無法復原。請確保已有備份。",
-		"batch_metadata": "批量匯入元資料",
-		"renumber_btn_0": "模式已停用（重新編號已關閉）\n按右鍵以變更模式",
-		"renumber_indicator_0": "頁面重新編號已停用\n點擊以變更模式",
-		"renumber_indicator_1": "頁面重新編號：\n多頁自動偵測模式\n點擊以變更模式",
-		"renumber_indicator_2": "頁面重新編號：\n簡單編號模式\n點擊以變更模式",
-		"zip_indicator_deflated": "此檔案已壓縮（原始等級未知）。\n點擊以預設等級（{level}）重新儲存它。\n按右鍵以變更預設等級。",
-		"zip_indicator_na": "壓縮不適用於此檔案類型。\n點擊以預設等級（{level}）將其儲存為 CBZ。\n按右鍵以變更預設等級。",
-		"zip_indicator_stored_noop": "此檔案未壓縮。\n按右鍵以變更預設等級。",
-		"zip_indicator_stored_action": "此檔案未壓縮。\n點擊以預設等級（{level}）壓縮它。\n按右鍵以變更預設等級。"
-	},
-	"help": {
-		"title": "MosaicView - 使用說明",
-		"intro": "MosaicView 允許您操作和編輯漫畫(數位漫畫書),而無需將其從壓縮檔中提取。該應用程式支援 CBZ (ZIP)、CBR (RAR) 和 PDF 格式。 本應用程式僅相容64位元系統。",
-		"open_files": "開啟檔案",
-		"open_files_content": "• 按一下'開啟檔案'按鈕，或將檔案直接拖放至視窗中\n• 支援的格式:CBZ、CBR、PDF、圖像(JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). 也可以打開EPUB檔案，但只會提取其圖像（文字會被忽略）。 注意：以紅色顯示的副檔名（WEBP、TIFF、GIF、ICO…）表示可能與舊版 CBZ/CBR 閱讀器不相容的格式。不過，MosaicView 仍可正常處理這些檔案。\n• 已加密的PDF（開啟時需要密碼）:檔案無法匯入，將顯示錯誤訊息。\n• 受保護禁止修改的PDF（owner password）:頁面正常匯入。MosaicView建議在同一資料夾中儲存一份解鎖的副本。",
-		"mosaic": "縮圖",
-		"mosaic_content": "馬賽克以縮圖形式顯示您漫畫的所有頁面。您可以：\n• 透過拖放重新排列頁面（頁碼將自動更新，並會按照當前啟用的重新編號模式進行）\n• 選擇多個頁面（Ctrl+點擊或Shift+點擊）\n• 使用滑桿或 Ctrl+滑鼠滾輪調整縮圖大小\n• 點擊檔案名稱手動重新命名檔案\n• 從Windows檔案總管直接拖放漫畫檔案（CBZ/CBR/PDF）到另一個開啟的漫畫中以合併其內容\n• 將所有顯示的縮圖匯出至您選擇的資料夾（隱藏指令，僅可透過快速鍵 Ctrl+Alt+T 存取）",
-		"manipulation": "頁面操作",
-		"manipulation_content": "• 拖放頁面以重新排列\n• 將整本漫畫拖入另一本以合併\n• 右鍵單擊頁面以存取選項（旋轉、刪除等）\n• 雙擊頁面以開啟檢視器\n• 將單個頁面拖到 Windows 資料夾中匯出，或透過 Ctrl+C / Ctrl+V",
-		"renumber": "頁面重新編號",
-		"renumber_content": "MosaicView 提供三種頁面重新編號模式，可透過重新編號按鈕、右鍵選單、狀態列指示器存取，或在拖放時自動套用：\n\n• 多頁自動偵測模式（預設模式）：應用程式分析每頁的寬度以偵測雙頁、三頁等。多頁將相應地重新編號（例如，雙頁將被命名為 003-004，三頁為 005-006-007）。超過 4 頁時，僅顯示第一個和最後一個編號（例如 010---025）。\n\n• 簡單編號模式：每頁都會獲得一個唯一的連續編號（001、002、003...），與頁面寬度無關。\n\n• 關閉模式：自動重新編號已停用。原始檔案名稱將被保留，包括在拖放期間。\n\n若要在模式之間切換，請按右鍵點擊重新編號按鈕，或點擊狀態列右下角的指示器。在兩種情況下，工具提示都會顯示目前模式。所選模式也適用於拖放期間的自動重新編號，並在工作階段之間被記住。",
-		"flatten": "展平目錄",
-		"flatten_content": "如果您的壓縮檔包含子資料夾,請使用「展平目錄」將所有圖像移至同一層級。",
-		"viewer": "檢視器",
-		"viewer_content": "按兩下頁面開啟檢視器:\n• ← → 鍵:在頁面間導覽\n• D 鍵:在 3 種閱讀模式間切換\n  - 單頁:一次一頁\n  - 雙頁:第 1 頁單獨,然後 2-3、4-5 等\n  - 連續雙頁:第 1 頁單獨,然後 2-3、3-4、4-5 等\n• 滑鼠滾輪:快速導覽\n• Ctrl+滾輪或 Ctrl+加/減:縮放\n• Ctrl+0:重設縮放\n• F11 鍵:全螢幕\n• 按兩下:切換全螢幕\n• Esc 鍵:取消裁剪框 / 離開檢視器\n• 書籤: 關閉檢視器時自動儲存目前頁面（第一頁和最後一頁除外）。馬賽克中相應的縮圖上會出現一條紅色絲帶。下次開啟時，會有訊息提示返回該頁面。在最後一頁自動刪除，或在檢視器中按右鍵手動刪除。",
-		"join_pages": "合併頁面",
-		"join_pages_content": "選擇多個連續頁面，按右鍵→'合併選定頁面'以水平或垂直合併頁面。產生的圖像格式與來源頁面的格式一致(如果它們全部相同)，否則預設為PNG。",
-		"split_pages": "分割頁面",
-		"split_pages_content": "要自動分割雙頁:\n• 選取要分割的頁面\n• 按一下右鍵 → 「分割選取的頁面」\n• 選擇方向(垂直或水平)",
-		"crop": "檢視器中的裁切",
-		"crop_content": "在檢視器中,在圖像上繪製矩形以定義裁切區域:\n• 用滑鼠繪製矩形\n• 透過拖曳邊緣或角來調整大小\n• 點擊「確認裁切」套用\n• 裁切套用於目前圖像\n• Esc 鍵:取消裁剪框",
-		"shortcuts": "鍵盤快速鍵",
-		"shortcuts_content": "• Ctrl+Z:復原上一操作\n• Ctrl+Y:重做復原的操作\n• Ctrl+A:選取所有頁面\n• Ctrl+I：反選\n• Ctrl+C:複製選取的頁面\n• Ctrl+X:剪下選取的頁面\n• Ctrl+V:貼上頁面\n• Del:刪除選取的頁面\n• F5：更新馬賽克顯示\n• F11：切換全螢幕（按F11或ESC退出）",
-		"dark_mode": "深色模式",
-		"dark_mode_content": "點擊太陽/月亮按鈕在淺色和深色主題之間切換。",
-		"sort": "排序頁面",
-		"sort_content": "使用「排序」按鈕自動重新排列頁面,依:\n• 名稱、類型、大小、寬度、高度、解析度或 DPI",
-		"save": "儲存",
-		"save_content": "• 「儲存」:將修改儲存到原始檔案\n• 「另存新檔」:建立新壓縮檔\n• 「建立 CBZ」:僅在圖像模式下可用(無壓縮檔)",
-		"other": "其他功能",
-		"other_content": "• 旋轉:旋轉一個或多個頁面\n• 轉換:將圖像轉換為不同格式（PNG、JPEG、WEBP、BMP、TIFF、GIF）。注意:CMYK模式的圖像會自動轉換為RGB\n• 列印:列印選取的頁面或所有頁面\n• 提取:提取特定頁面\n• 中繼資料索引標籤:顯示 ComicInfo.xml 檔案的資訊(如果壓縮檔中存在)。如果您從包含中繼資料的漫畫中新增或刪除頁面,應用程式將建議修改其中指示的頁數。其他中繼資料無法修改。此限制是有意的,是設計選擇的結果。",
-		"config_files": "設定檔和臨時檔案",
-		"config_files_content": "MosaicView會建立一個名為.mosaicview_config.json的檔案。此檔案包含重設按鈕正常運作所需的一些參數，以及最近開啟的漫畫清單，這顯然是顯示最近開啟的檔案所必需的。MosaicView也會儲存臨時檔案，這些檔案是各種影像處理作業所必需的。\n所有這些檔案都位於{temp_dir}目錄中。\n每次關閉應用程式時都會刪除臨時檔案，但.mosaicview_config.json檔案由於其性質而應保留。\n但是，您可以透過前往{temp_dir}目錄或按一下下方的按鈕手動刪除這些檔案。每次開啟應用程式時都會重新建立.mosaicview_config.json檔案，並根據需要重新建立臨時檔案。",
-		"config_clear_temp": "刪除臨時檔案",
-		"config_clear_recent": "清除最近檔案",
-		"config_clear_config": "刪除設定檔",
-		"config_temp_cleared": "臨時檔案已成功刪除。",
-		"config_config_cleared": "設定檔已成功刪除。\n將在下次啟動應用程式時重新建立。",
-		"language": "語言選擇",
-		"language_content": "MosaicView 提供多種語言版本。\n預設情況下,應用程式會自動偵測您作業系統的語言,並在支援的情況下以該語言顯示。如果您的系統使用不支援的語言,介面將以英語顯示。\n您可以隨時使用位於按鈕欄底部、縮圖大小滑桿下方的下拉式選單手動變更語言。您的選擇將被儲存並在下次啟動應用程式時套用。\n可用語言:阿拉伯語、愛爾蘭語、愛沙尼亞語、保加利亞語、冰島語、波蘭語、丹麥語、德語、俄語(烏克蘭語)、法語、芬蘭語、韓語、荷蘭語、克羅地亞語、拉脫維亞語、立陶宛語、羅馬尼亞語、馬來語、馬爾他語、挪威語、葡萄牙語、日語、瑞典語、斯洛伐克語、斯洛文尼亞語、泰米爾語、泰語、土耳其語、西班牙語、希伯來語、希臘語、匈牙利語、亞美尼亞語、意大利語、印地語、印度尼西亞語、英語、越南語、中文(繁體)、中文(簡體)、捷克語。\n\n此實用程式使用Windows字型，但pIqaD（克林貢語）和tengwar（精靈語：辛達林和昆雅）字型除外。這些字型是免費的，來自以下網站：\n- pIqaD（克林貢字母）：{url_piqad}\n- tengwar（精靈字母，用於辛達林和昆雅）：{url_tengwar}\n如果這些網站不再活躍，您可以通過單擊下面的按鈕來獲取pIqaD和tengwar字型：\n\n本軟體以法語開發。其他語言的翻譯是透過 AI(特別是 Claude)完成的。我決定支援大約四十種語言。但顯然,我不會說所有這些語言。因此,我別無選擇,只能求助於 AI,因為雇用和支付 40 名不同的翻譯人員不在考慮範圍內。由於這些翻譯是自動完成的,可能存在錯誤。對此我深表歉意。\n可用虛構語言: 克林貢語（拉丁字母和pIqaD字母版本），辛達林語（拉丁字母和tengwar字母版本），昆雅語（拉丁字母和tengwar字母版本）.",
-		"credits": "Vibe Coding，我的愛",
-		"credits_content": "我對程式設計一竅不通。完全不懂。因此,我使用 Anthropic 的 AI Claude(更具體地說是 Claude Code)開發了這個軟體。我強烈推薦 Claude Code,這個應用程式太棒了!",
-		"resize_pages": "修改頁面大小",
-		"resize_pages_content": "要縮小或放大頁面：\n• 選擇一個或多個頁面\n• 按右鍵→'調整大小'\n• 三個選項可用：\n  - 自訂尺寸：輸入所需的寬度或高度（縱橫比自動保留）。\n  - 百分比縮小：選擇10%到90%的百分比\n  - 百分比放大：選擇10%到100%的百分比\n• 應用程式顯示修改後圖像的估計大小\n• 修改立即套用於所有選定的頁面",
-		"language_export_piqad": "pIqaD字型",
-		"language_export_tengwar": "Tengwar字型",
-		"language_export_piqad_success": "字型已匯出：{filename}\n位置：",
-		"language_export_tengwar_success": "已匯出 {count} 個字型\n位置：",
-		"icons": "圖示",
-		"icons_content": "本實用程式中使用的大多數圖示來自此網站，可免費用於非商業目的: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\n其中一些由我進行了修改。\n只有一個圖示，即Windows可執行檔圖示，是我創建的（但使用了AI，因為我是一個非常、非常、非常糟糕的平面設計師）。只要您註明來源，您就可以隨意使用此圖示。",
-		"icons_view_button": "檢視圖示",
-		"icons_window_title": "MosaicView圖示",
-		"icons_save_all": "儲存圖示",
-		"icons_saved_success": "{count}個圖示已儲存到：",
-		"icons_save_failed": "無法儲存圖示：{error}",
-		"split_ui": "雙面板介面",
-		"split_ui_content": "MosaicView允許同時並排顯示兩個檔案。\n\n點擊分割圖示開啟第二個面板。每個面板都是獨立的：您可以分別開啟、編輯和儲存檔案。活動面板以藍色邊框標示。\n\n要將頁面從一個面板移動到另一個面板，直接拖曳即可。如果選取了多個頁面，它們將一起移動。頁面將插入到紅色列所指示的位置。\n\n點擊關閉第二個面板圖示以返回單面板模式。\n\n兩個面板之間的分隔條可以自由拖動。雙擊分隔條可將兩個面板重置為相同大小（50/50）。",
-		"license_gpl": "GPL v3 授權",
-		"license_unrar": "UnRAR 授權",
-		"config_clear_clipboard": "清除剪貼簿檔案",
-		"config_clipboard_note": "例外：Windows剪貼簿使用的暫存檔案（clipboard_XXXXX檔案）在複製後會保留12小時，因此即使關閉應用程式後您也可以貼上它們。12小時後，它們會被自動刪除。",
-		"config_log_note": "批次轉換（PDF轉CBZ和CBR轉CBZ）在發生錯誤時會建立日誌檔案。這些檔案（Log_pdftocbz_.txt和Log_cbrtocbz_.txt）即使在關閉應用程式後也會保留，以便日後查看。它們僅透過上方的\"刪除暫存檔案\"按鈕刪除。",
-		"config_clipboard_cleared": "剪貼簿檔案已成功清除。",
-		"adjust_images": "圖像調整",
-		"adjust_images_content": "此功能允許您直接在 MosaicView 中修飾圖像。您可以調整亮度、對比度、銳度、色階、飽和度，套用效果（黑白、棕褐色、色彩反轉），調整壓縮品質，刪除色彩，套用透明度或轉換為不同的色彩深度。某些設定具有專用檢視器，可在套用前以全解析度查看結果。主視窗中的縮圖預覽即時顯示結果。",
-		"create_icon": "建立圖示",
-		"create_icon_content": "MosaicView允許您從馬賽克中的任何圖像建立圖示檔案(.ico)。\n• 右鍵點擊圖像 → '建立圖示'\n• 在檢視器中框選所需區域（圖示必須為正方形）\n• 如有需要，調整透明度\n• 確認：.ico檔案直接新增至馬賽克中\n• .ico檔案自動包含所有標準解析度（從16×16到256×256）\n• 只要馬賽克中存在.ico檔案，儲存至CBZ壓縮檔就會被封鎖，因為這些壓縮檔不支援ICO格式。單獨匯出.ico檔案（Ctrl+C然後貼上至Windows資料夾），然後在儲存前從馬賽克中刪除它。",
-		"batch_convert": "批次轉換",
-		"batch_convert_content": "MosaicView提供八種批次轉換功能，僅在拼圖為空時可用。每種功能的原則相同：選擇目錄、確認、即時追蹤進度、查看最終摘要。一個選項允許永久刪除原始檔案，而不是將其傳送至資源回收筒。\n• CBR → CBZ：轉換目錄及其子目錄中的所有CBR（RAR）檔案。如果CBR實際上是ZIP、7z或TAR，則無需轉換直接用正確的副檔名重新命名。重新命名的檔案和錯誤記錄在日誌中。\n• CB7 → CBZ：轉換所有CB7（7-Zip）檔案。如果是ZIP、RAR或TAR則重新命名。記錄。\n• CBT → CBZ：轉換所有CBT（TAR）檔案。如果是ZIP、RAR或7z則重新命名。記錄。\n• PDF → CBZ：轉換目錄及子目錄中的所有PDF檔案。影像無需重新壓縮即可擷取。\n• 獨立影像 → CBZ：為目錄及子目錄中的每個影像檔案建立單獨的CBZ。無效、損毀、多頁（TIFF）或動畫（GIF）影像將被忽略並記錄。\n• 詮釋資料匯入：自動從ComicVine取得所有相容檔案（CBZ、CBR、CB7、CBT、PDF）的詮釋資料（標題、系列、作者…）。精靈依序為每個檔案開啟。\n• 建立書庫：將目錄及子目錄中的所有相容檔案索引至新的MosaicView書庫（*.mvdb）中。詳情請參閱書庫部分。\n• 以預設等級重新壓縮 CBZ 檔案：掃描目錄及其子目錄中的所有 CBZ、CBR、CB7 和 CBT 檔案。無論副檔名為何，都會偵測每個檔案的真實格式：命名錯誤的檔案（例如實際上是 ZIP 的 .cbr 檔案）會在處理前重新命名為正確的副檔名。只有真正的 CBZ 檔案才會被重新壓縮，而且僅當它們尚未處於預設壓縮等級時才會處理。最終摘要顯示已分析、已重新壓縮、已處於預設等級和已忽略（非 CBZ）的檔案數量。",
-		"config_open_temp_folder": "開啟暫存資料夾",
-		"icon_toolbar": "圖示工具列",
-		"icon_toolbar_content": "圖示工具列可快速存取應用程式的主要功能。您可以直接在工具列中拖曳圖示，隨意重新排列。若要選擇顯示或隱藏哪些圖示，請按一下工具列底部的齒輪按鈕:將開啟一個設定視窗，您可以在活動工具列和備用區之間移動圖示。使用 « + » 和 « − » 按鈕調整圖示大小。設定將自動儲存。",
-		"license_7zip": "7-Zip 授權",
-		"nfo_editor": "建立和編輯 NFO 檔案",
-		"nfo_editor_content": "NFO 檔案是一種文字檔案（副檔名為 .nfo），用於儲存關於封存的資訊：簡介、製作人員、備註…\n\n要建立 NFO 檔案，請使用工具列中的專用圖示、檔案選單或內容選單（在馬賽克上按右鍵）。只有當馬賽克不為空時，該命令才可用。輸入名稱和內容：檔案直接插入馬賽克中，無需解壓縮或中間儲存。\n\n要編輯現有的 NFO 檔案，請在馬賽克中雙擊它。視窗開啟時已預先填入目前名稱和內容，兩者均可編輯。在兩種情況下，操作都會記錄在復原歷史記錄中。",
-		"metadata": "ComicVine 元資料",
-		"metadata_content": "MosaicView 支援從 ComicVine 資料庫（由社群維護的協作網站）自動擷取漫畫元資料（標題、系列、期號、作者、簡介...）。\n\n單本模式：開啟一本漫畫，然後使用工具列按鈕或元資料選單。精靈分兩步開啟：先選擇系列，再選擇對應的期次。元資料將寫入壓縮檔內的 ComicInfo.xml 檔案。\n\n批次模式：將一個或多個資料夾拖放到拼貼板並選擇「批量匯入元資料」，或使用工具列上的專用按鈕或元資料選單。精靈依序為找到的每個檔案（CBZ、CBR、CB7、CBT、PDF）開啟。非 CBZ 檔案在寫入元資料後會自動轉換為 CBZ。\n\nAPI 金鑰：需要免費的 ComicVine API 金鑰。應用程式將引導您取得。在 comicvine.gamespot.com 上建立帳號後即可獲得。 金鑰永遠不會以明文儲存：它由 Windows DPAPI 加密，只有您的 Windows 帳號才能讀取。\n\nAPI 限制：以下限制由 ComicVine 施加，無法繞過。\n• 每小時每個資源最多 200 次請求。達到此限制後，搜尋將暫時失敗直到整點結束。\n• 每次請求最多返回 100 筆結果，對於期數較多的系列需將搜尋拆分為多次呼叫。\n• 網站每秒僅允許 1 次請求。為安全起見，MosaicView 在每次請求之間等待 2 秒，因為更快的請求極有可能導致暫時封鎖。\n\n此功能完全基於開源專案 {scraper}。",
-		"library": "書庫",
-		"library_content": "書庫讓您可以對數位漫畫進行分類並輕鬆找到它們。它透過讀取每個檔案中包含的詮釋資料（標題、系列、作者、出版社…）並將其彙集到單一書庫檔案（*.mvdb）中來運作。\n\n若要建立書庫，請使用書庫選單 → 新建資料庫，或將一個或多個資料夾拖曳到馬賽克中並選擇「從資料夾建立資料庫」。MosaicView 將掃描您的資料夾並自動為所有相容檔案建立索引。\n\n書庫開啟後，您可以依系列、作者、年份、出版社等篩選漫畫，可組合任意數量的條件。雙擊可在 MosaicView 中開啟檔案。結果可以匯出為 Excel 格式（*.xlsx）。",
-		"zip_compression": "ZIP 壓縮",
-		"zip_compression_content": "MosaicView 允許您選擇每次儲存 CBZ 時套用的 ZIP 壓縮等級，可透過狀態列指示器、系統選單或右鍵選單（在畫布上按右鍵）存取。\n\n預設等級為 0（不壓縮）：漫畫圖片已經由其自身格式壓縮過（JPEG、PNG、WebP...），因此在此基礎上再壓縮 ZIP 封存檔不會節省任何空間，但會明顯減慢儲存和讀取速度。可以變更此等級，但除非有特殊需求，否則不建議這樣做。\n\n狀態列指示器顯示開啟檔案的實際壓縮狀態：如果檔案未壓縮則顯示「0」，如果已壓縮則顯示「1」（ZIP 格式無法得知確切的原始等級），如果檔案不是 CBZ 則顯示「--」。在相關情況下，按左鍵點擊指示器會提供以預設等級重新儲存檔案（或將其轉換為 CBZ）的選項。按右鍵點擊會開啟預設等級設定視窗。"
-	},
-	"misc": {
-		"file_word": "檔案",
-		"files_word": "檔案",
-		"corrupted": "已損毀",
-		"yes": "是",
-		"no": "否",
-		"cancel": "取消",
-		"selection_suffix": "副本-選取"
-	},
-	"metadata": {
-		"title": "標題",
-		"series": "系列",
-		"number": "編號",
-		"volume": "卷",
-		"summary": "摘要",
-		"writer": "編劇",
-		"penciller": "鉛筆畫家",
-		"inker": "描線師",
-		"colorist": "上色師",
-		"letterer": "字體師",
-		"cover_artist": "封面藝術家",
-		"editor": "編輯(人)",
-		"publisher": "出版社",
-		"imprint": "叢書",
-		"genre": "類型",
-		"web": "網站",
-		"page_count": "頁數",
-		"language_iso": "語言",
-		"format": "格式",
-		"black_and_white": "黑白",
-		"manga": "漫畫",
-		"year": "年",
-		"month": "月",
-		"day": "日",
-		"notes": "備註",
-		"characters": "角色",
-		"locations": "地點",
-		"teams": "團隊",
-		"story_arc": "故事弧",
-		"story_arc_number": "故事弧編號",
-		"series_group": "系列組",
-		"count": "期數",
-		"alternate_series": "替代系列",
-		"alternate_number": "替代編號",
-		"alternate_count": "替代計數",
-		"age_rating": "年齡分級",
-		"series_complete": "系列完結",
-		"translator": "譯者",
-		"tags": "標籤",
-		"scan_information": "掃描信息",
-		"community_rating": "社區評分",
-		"review": "評論",
-		"gtin": "GTIN",
-		"pages": "頁面",
-		"pages_col_image": "圖像",
-		"pages_col_type": "類型",
-		"pages_col_width": "寬度",
-		"pages_col_height": "高度",
-		"pages_col_size": "大小 (B)",
-		"is_read": "已讀",
-		"has_comicinfo": "ComicInfo.xml",
-		"can_have_comicinfo": "可包含ComicInfo",
-		"filename": "檔案名稱",
-		"file_extension": "副檔名",
-		"file_size": "檔案大小",
-		"file_modified_at": "修改日期",
-		"indexed_at": "索引日期",
-		"relative_path": "相對路徑"
-	},
-	"web": {
-		"web_download_progress": "下載中：{downloaded}/{total} 張圖片...",
-		"web_download_cancel": "取消",
-		"web_no_images": "無圖片",
-		"web_no_images_found": "此頁面未找到圖片。",
-		"web_imported": "從網頁匯入了 {count} 張圖片",
-		"web_drag_drop_title": "網頁圖片拖放",
-		"web_copy_paste_message": "不支援從網路瀏覽器直接拖放。\\n\\n替代解決方案（更簡單）：\\n\\n1. 在瀏覽器中右鍵點擊圖片\\n2. 選擇「複製圖片」\\n3. 在 MosaicView 中，使用「貼上」按鈕或 Ctrl+V\\n\\n此方法適用於所有網頁圖片！",
-		"import_web_button": "網頁匯入",
-		"import_web_tooltip": "貼上網址以取得頁面中的所有圖片",
-		"import_web_menu": "網頁匯入...",
-		"import_web_dialog_title": "從網頁匯入圖片",
-		"import_web_url_label": "網頁地址：",
-		"import_web_ok_button": "確定",
-		"import_web_cancel_button": "取消",
-		"import_web_invalid_url": "無效的 URL。請輸入有效的網址。"
-	},
-	"donation": {
-		"menu_label": "向作者捐贈",
-		"title": "進行捐贈",
-		"message": "您喜歡這個小工具，並經常使用它。我在它上面投入了幾百個小時。您會考慮通過捐贈來感謝我嗎？請善良一點，我真的需要錢來用香檳填滿我的游泳池。\n\n無論您想給我寄幾分錢還是幾十億歐元，我都接受所有金額。您可以通過paypal進行捐贈"
-	},
-	"mail": {
-		"tooltip": "此按鈕打開Windows中的預設電子郵件軟體以發送電子郵件。如果未配置軟體（例如，如果您僅使用網路郵件），則可以透過右鍵單擊圖示將MosaicView地址複製到剪貼簿。",
-		"copy_address": "複製 MosaicView 電子郵件地址",
-		"menu_label": "向MosaicView發送電子郵件",
-		"icon_label": "傳送電子郵件"
-	},
-	"menu": {
-		"file": "檔案",
-		"file_open": "開啟檔案",
-		"file_close": "關閉檔案",
-		"batch_convert": "批次轉換檔案",
-		"batch_cbr_to_cbz": "CBR → CBZ",
-		"batch_pdf_to_cbz": "PDF → CBZ",
-		"batch_img_to_cbz": "獨立圖片 → CBZ",
-		"edit": "編輯",
-		"undo": "復原",
-		"redo": "取消復原",
-		"paste": "貼上",
-		"delete": "刪除",
-		"invert_selection": "反向選取",
-		"select_all": "全選",
-		"deselect": "取消選取",
-		"refresh_mosaic": "重新整理拼圖",
-		"images": "圖片",
-		"rotation": "旋轉",
-		"archives": "檔案庫",
-		"sort": "排序",
-		"system": "系統",
-		"decrease_font": "縮小字型",
-		"increase_font": "放大字型",
-		"language": "語言",
-		"language_real": "真實語言",
-		"language_fictional": "虛構語言",
-		"about": "關於",
-		"export_piqad_font": "儲存 pIqaD 字型",
-		"export_tengwar_fonts": "儲存 tengwar 字型",
-		"view_on_github": "在 GitHub 上查看原始碼",
-		"check_for_updates": "檢查更新",
-		"batch_cb7_to_cbz": "CB7 → CBZ",
-		"batch_cbt_to_cbz": "CBT → CBZ",
-		"show_changelog": "更新日誌",
-		"webpage": "網頁",
-		"zip_compression": "預設 ZIP 壓縮"
-	},
-	"updates": {
-		"dialog_title": "更新",
-		"up_to_date": "您正在使用最新版本的 MosaicView ({version})。",
-		"update_available": "有新版本可用: {latest}\n您目前使用的是版本 {current}。",
-		"error": "無法檢查更新。\n請檢查您的網路連線。",
-		"download": "下載",
-		"checking": "正在檢查...",
-		"banner_message": "有新版本: {latest}",
-		"menu_update_available": "有更新 ({latest})",
-		"retry": "重試"
-	},
-	"nfo": {
-		"window_title": "建立 NFO 檔案",
-		"window_title_edit": "編輯 NFO 檔案",
-		"filename_label": "檔案名稱",
-		"content_label": "內容",
-		"btn_create": "建立 NFO",
-		"btn_save": "儲存",
-		"btn_clear": "清除",
-		"menu_item": "建立 NFO 檔案",
-		"tooltip": "建立 NFO 檔案",
-		"success_title": "NFO 檔案已建立",
-		"success_message": "檔案 {filename} 已建立。",
-		"error_title": "錯誤",
-		"error_empty_name": "請輸入檔案名稱。",
-		"error_write": "無法寫入檔案:\n{error}",
-		"error_duplicate": "名為 {filename} 的檔案已存在於馬賽克中。"
-	},
-	"comicvine": {
-		"api_key_dialog": {
-			"title": "ComicVine API 金鑰",
-			"explanation": "為了獲取漫畫的元數據，MosaicView 使用 ComicVine 資料庫。您需要一個免費的 API 金鑰。",
-			"instructions": "在 {comicvine} 上建立帳戶，然後前往 {api_page} 取得您的金鑰。",
-			"api_page_label": "API 頁面",
-			"field_label": "API 金鑰:",
-			"placeholder": "在此處貼上您的 API 金鑰",
-			"validate": "確認",
-			"error_empty": "請輸入 API 金鑰。",
-			"clear": "清除金鑰",
-			"encryption_notice": "您的金鑰永遠不會以明文儲存。它受到 Windows DPAPI 加密保護，與您的工作階段綁定。",
-			"show_key": "顯示",
-			"hide_key": "隱藏"
-		},
-		"menu_label": "元數據",
-		"tooltip": "獲取元數據",
-		"change_api_key": "更改 ComicVine API 金鑰",
-		"search_placeholder": "搜尋系列...",
-		"search_button": "搜尋",
-		"searching": "搜尋中...",
-		"loading_issues": "正在載入期次...",
-		"results_count": "{total} 個結果中的 {count} 個",
-		"issues_count": "\"{series}\" 的 {count} 期",
-		"col_series": "系列",
-		"col_year": "年份",
-		"col_issues": "期次",
-		"col_publisher": "出版社",
-		"col_issue_num": "期號",
-		"col_issue_title": "標題",
-		"btn_skip": "跳過",
-		"btn_back": "返回",
-		"info_single": "此功能獲取當前開啟的漫畫的元數據。要一次處理多個檔案，請使用批次處理（將資料夾拖曳到視窗上）。",
-		"page_indicator": "第 {page} 頁",
-		"loading_issues_progress": "載入中... {loaded} / {total}",
-		"fetching_metadata": "正在下載元數據...",
-		"issues_partial_load": "已載入 {count} 期 — 載入中斷: {error}",
-		"credit": "元資料：{comicvine} · 靈感來自 {scraper}",
-		"create_comicinfo": "建立 ComicInfo.xml 檔案",
-		"edit_comicinfo": "編輯 ComicInfo.xml 檔案"
-	},
-	"bookmark": {
-		"popup_title": "書籤",
-		"popup_message": "您在此漫畫第 {page} 頁有一個書籤。\n繼續閱讀？",
-		"popup_yes": "是",
-		"popup_no": "否"
-	},
-	"library": {
-		"window_title": "資料庫 — {name}",
-		"window_title_no_db": "資料庫",
-		"close_warning_title": "關閉 MosaicView",
-		"close_warning_message": "目前有一個資料庫正在開啟中。關閉 MosaicView 也將關閉該資料庫。\n\n是否要繼續？",
-		"menu_label": "資料庫",
-		"menu_title": "資料庫",
-		"tooltip": "開啟資料庫",
-		"db_menu": "資料庫",
-		"db_new": "新增資料庫...",
-		"db_open": "開啟資料庫...",
-		"db_close": "關閉資料庫",
-		"db_recent": "最近的資料庫",
-		"db_recent_clear": "清除歷程記錄",
-		"db_rename": "重新命名資料庫...",
-		"db_add_directory": "新增目錄...",
-		"db_edit_master": "編輯主目錄...",
-		"db_scan": "掃描目錄",
-		"db_open_explorer": "在檔案總管中開啟主目錄",
-		"db_delete": "刪除資料庫...",
-		"db_new_title": "新增資料庫",
-		"db_new_name_label": "資料庫名稱:",
-		"db_new_dir_label": "主目錄:",
-		"db_new_dir_browse": "瀏覽...",
-		"db_new_dir_title": "選擇主目錄",
-		"db_new_error_no_name": "請輸入資料庫名稱。",
-		"db_new_error_no_dir": "請選擇主目錄。",
-		"db_rename_title": "重新命名資料庫",
-		"db_rename_label": "新名稱:",
-		"db_rename_error_empty": "名稱不能為空。",
-		"db_edit_master_title": "編輯主目錄",
-		"db_edit_master_label": "新主目錄:",
-		"db_add_directory_title": "新增附加目錄",
-		"db_delete_title": "刪除資料庫",
-		"db_delete_message": "您確定要刪除資料庫嗎",
-		"db_delete_confirm": "刪除",
-		"scan_title": "正在掃描...",
-		"scan_scanning": "正在掃描 {path}...",
-		"scan_new": "新增: {filename}",
-		"scan_updated": "已更新: {filename}",
-		"scan_deleted": "已刪除: {filename}",
-		"scan_complete_title": "掃描完成",
-		"scan_complete_message": "新增 {new} 個，更新 {updated} 個，刪除 {deleted} 個。",
-		"scan_nothing": "未偵測到任何變更。",
-		"col_is_read": "已讀",
-		"col_series": "系列",
-		"col_volume": "卷",
-		"col_number": "期號",
-		"col_writer": "編劇",
-		"col_penciller": "繪者",
-		"col_inker": "上墨師",
-		"col_publisher": "出版商",
-		"col_characters": "角色",
-		"col_teams": "團隊",
-		"col_year": "年份",
-		"col_page_count": "頁數",
-		"col_file_size": "大小",
-		"col_filename": "檔案",
-		"col_file_extension": "副檔名",
-		"col_title": "標題",
-		"col_month": "月份",
-		"col_day": "日",
-		"col_penciller_short": "繪者",
-		"col_colorist": "上色師",
-		"col_letterer": "字母師",
-		"col_cover_artist": "封面藝術家",
-		"col_editor": "編輯",
-		"col_imprint": "系列集",
-		"col_genre": "類型",
-		"col_language": "語言",
-		"col_age_rating": "年齡分級",
-		"col_black_and_white": "黑白",
-		"col_manga": "漫畫",
-		"col_locations": "地點",
-		"col_story_arc": "故事弧",
-		"col_summary": "簡介",
-		"col_web": "網站",
-		"col_has_comicinfo": "包含 ComicInfo.xml 檔案",
-		"col_can_have_comicinfo": "可以包含 ComicInfo.xml 檔案",
-		"col_relative_path": "路徑",
-		"col_file_modified_at": "修改日期",
-		"col_indexed_at": "索引日期",
-		"mark_read": "標記為已讀",
-		"mark_unread": "標記為未讀",
-		"open_in_mosaicview": "在MosaicView中閱讀",
-		"open_in_explorer": "在檔案總管中開啟資料夾",
-		"open_with_default": "以預設應用程式開啟",
-		"no_db_open": "沒有開啟的資料庫。\n使用「資料庫」選單建立或開啟資料庫。",
-		"search_panel_title": "搜尋",
-		"search_field_label": "欄位",
-		"search_operator_label": "運算子",
-		"search_value_label": "值",
-		"search_link_label": "連結",
-		"search_add_criterion": "+ 新增條件",
-		"search_remove_criterion": "刪除",
-		"search_button": "搜尋",
-		"search_clear": "清除",
-		"search_link_and": "且",
-		"search_link_or": "或",
-		"search_link_not": "排除",
-		"search_op_contains": "包含",
-		"search_op_not_contains": "不包含",
-		"search_op_is": "完全符合",
-		"search_op_empty": "為空",
-		"search_op_not_empty": "不為空",
-		"search_op_eq": "=",
-		"search_op_neq": "≠",
-		"search_op_gt": ">",
-		"search_op_lt": "<",
-		"search_op_gte": "≥",
-		"search_op_lte": "≤",
-		"search_op_between": "介於",
-		"search_op_true": "= 真",
-		"search_op_false": "= 假",
-		"search_op_before": "早於",
-		"search_op_after": "晚於",
-		"search_date_placeholder": "YYYY, YYYY-MM 或 YYYY-MM-DD",
-		"search_results_count": "{count} 個結果",
-		"search_error_unknown_token": "未知詞: \"{token}\"",
-		"db_filter_title": "選擇資料庫",
-		"db_filter_all": "資料庫檔案 (*.mvdb)",
-		"open_file_error_title": "錯誤",
-		"open_file_error_message": "無法在MosaicView中開啟檔案: {error}",
-		"db_new_save_label": "資料庫儲存目錄 :",
-		"db_new_save_title": "選擇儲存目錄",
-		"search_op_any": "(忽略)",
-		"search_op_is_read": "已讀",
-		"search_op_not_read": "未讀",
-		"reset_columns": "重置欄位",
-		"loading": "載入中...\n{percent}%",
-		"scan_progress": "掃描中...",
-		"fetch_metadata": "取得中繼資料",
-		"table_header_tooltip": "拖動以移動欄。\n拉伸欄以調整大小。\n按右鍵以新增或隱藏欄。",
-		"cell_not_set": "未填寫",
-		"cell_not_set_num": "未",
-		"export_results": "匯出結果",
-		"export_results_tooltip": "將結果以XLSX（Excel）格式匯出，大多數試算表應用程式可原生讀取。若搜尋處於啟用狀態，僅匯出其結果。未顯示的欄位將以隱藏欄位的形式包含在內。",
-		"export_save_title": "儲存表格",
-		"export_success": "已將 {count} 列匯出至 {path}",
-		"export_error": "匯出時發生錯誤: {error}",
-		"export_no_data": "沒有可匯出的資料。",
-		"export_hidden_cols_note": "此表格包含隱藏欄位。若要顯示，請參閱您的試算表軟體說明。",
-		"export_progress": "請稍候\n正在儲存 {percent}%",
-		"export_saving": "請稍候\n正在儲存...",
-		"db_delete_irreversible": "此操作無法復原。",
-		"preview_unavailable": "封面不可用\n\n該檔案在此電腦上可能無法存取，或已被移動或刪除。"
-	},
-	"comicinfo": {
-		"window_title_create": "建立 ComicInfo.xml 檔案",
-		"window_title_edit": "編輯 ComicInfo.xml 檔案",
-		"filename_label": "檔案名稱 :",
-		"btn_create": "建立",
-		"btn_save": "儲存",
-		"btn_clear": "清空所有欄位",
-		"error_title": "錯誤",
-		"error_empty_name": "檔案名稱不能為空。",
-		"error_duplicate": "檔案 {filename} 在拼圖中已存在。",
-		"section_series": "系列",
-		"section_publication": "出版",
-		"section_classification": "分類",
-		"section_credits": "創作團隊",
-		"section_content": "內容",
-		"section_misc": "其他",
-		"field_series": "系列 :",
-		"field_title": "標題 :",
-		"field_number": "編號 :",
-		"field_count": "總數 :",
-		"field_volume": "冊 :",
-		"field_alternate_series": "替代系列 :",
-		"field_alternate_number": "替代編號 :",
-		"field_alternate_count": "替代總數 :",
-		"field_series_group": "系列群組 :",
-		"field_story_arc": "故事弧 :",
-		"field_story_arc_number": "弧編號 :",
-		"field_publisher": "出版商 :",
-		"field_imprint": "印記 :",
-		"field_year": "年 :",
-		"field_month": "月 :",
-		"field_day": "日 :",
-		"field_format": "格式 :",
-		"field_language_iso": "語言 (ISO) :",
-		"field_page_count": "頁數 :",
-		"field_genre": "類型 :",
-		"field_tags": "標籤 :",
-		"field_age_rating": "年齡分級 :",
-		"field_community_rating": "社群評分 :",
-		"field_black_and_white": "黑白 :",
-		"field_manga": "漫畫 :",
-		"field_series_complete": "系列完結 :",
-		"field_writer": "編劇 :",
-		"field_penciller": "鉛筆師 :",
-		"field_inker": "上墨師 :",
-		"field_colorist": "上色師 :",
-		"field_letterer": "字體師 :",
-		"field_cover_artist": "封面畫師 :",
-		"field_editor": "編輯 :",
-		"field_translator": "譯者 :",
-		"field_characters": "角色 :",
-		"field_teams": "團隊 :",
-		"field_locations": "地點 :",
-		"field_web": "網站 :",
-		"field_gtin": "GTIN :",
-		"field_scan_information": "掃描資訊 :",
-		"field_notes": "備註 :",
-		"field_summary": "摘要 :",
-		"field_review": "評論 :",
-		"combo_empty": "(空)",
-		"combo_other_language": "(其他)",
-		"month_1": "一月",
-		"month_2": "二月",
-		"month_3": "三月",
-		"month_4": "四月",
-		"month_5": "五月",
-		"month_6": "六月",
-		"month_7": "七月",
-		"month_8": "八月",
-		"month_9": "九月",
-		"month_10": "十月",
-		"month_11": "十一月",
-		"month_12": "十二月",
-		"age_adults_only": "僅限成人 (18+)",
-		"age_early_childhood": "幼兒",
-		"age_everyone": "全年齡",
-		"age_everyone_10": "10歲以上",
-		"age_g": "G",
-		"age_kids_to_adults": "兒童至成人",
-		"age_m": "M",
-		"age_ma15": "MA15+",
-		"age_mature_17": "成熟 (17+)",
-		"age_pg": "PG",
-		"age_r18": "R18+",
-		"age_rating_pending": "評級待定",
-		"age_teen": "青少年",
-		"age_unknown": "未知",
-		"age_x18": "X18+",
-		"yesno_unknown": "未知",
-		"yesno_no": "否",
-		"yesno_yes": "是",
-		"manga_yes_right_to_left": "是 (從右到左)",
-		"icon_label": "建立或編輯 ComicInfo.xml 檔案"
-	}
+  "app_title": "MosaicView",
+  "app_baseline": "數位漫畫收藏家的瑞士刀",
+  "buttons": {
+    "open_file": "開啟 CBZ/CBR/CB7/CBT/PDF",
+    "close_file": "關閉檔案",
+    "create_cbz": "建立 CBZ 壓縮檔",
+    "flatten_dirs": "將所有檔案移至\n根目錄並刪除\n子目錄",
+    "renumber": "重新編號\n頁面",
+    "undo": "⤺ 復原",
+    "redo": "重做 ⤻",
+    "copy": "複製",
+    "cut": "剪下",
+    "paste": "貼上",
+    "rotate_right": "↷",
+    "rotate_left": "↶",
+    "mirror": "⇄",
+    "convert": "轉換為其他\n圖像格式",
+    "join_pages": "合併頁面",
+    "split_page": "分割頁面",
+    "save_as": "另存新檔\n(建立新的 CBZ)",
+    "save_selection": "將選取內容\n儲存為 CBZ",
+    "print_selection": "列印選取內容",
+    "print_all": "列印整本漫畫",
+    "sort": "排序",
+    "toggle_sidebar": "«",
+    "toggle_sidebar_show": "»",
+    "convert_button": "轉換",
+    "cancel": "取消",
+    "split_button": "分割",
+    "join_button": "開始",
+    "validate_crop": "確認裁切",
+    "ok": "確定",
+    "close": "關閉",
+    "apply_and_save": "套用修改並儲存檔案",
+    "apply_and_create": "套用修改並建立 CBZ 檔案",
+    "close_and_lose": "關閉檔案並放棄修改",
+    "cancel_return": "取消並返回縮圖",
+    "update_page_count": "更新元數據中的\n頁數",
+    "invert_selection": "反選",
+    "reduce_size": "調整頁面大小",
+    "mirror_vertical": "⇅",
+    "create_gif": "建立GIF",
+    "edit_gif": "編輯動畫GIF",
+    "save_to_folder": "匯出所選\n頁面",
+    "continue": "繼續",
+    "reset": "↻",
+    "yes": "是",
+    "no": "否",
+    "renumber_recommended": "重新編號（推薦）",
+    "ignore_and_save": "忽略並儲存",
+    "open_without_rename": "開啟而不重新命名",
+    "adjustments": "亮度、\n對比度等",
+    "batch_cbr_to_cbz": "批次轉換\n CBR檔案為CBZ",
+    "batch_pdf_to_cbz": "批次轉換\n PDF檔案為CBZ",
+    "batch_img_to_cbz": "批次轉換\n 獨立圖像為 CBZ",
+    "icon_toolbar_reset": "重置",
+    "delete_selected": "刪除",
+    "save": "儲存",
+    "split_ui": "將介面分割為兩個面板",
+    "unsplit_ui": "關閉第二個面板",
+    "rename_to_ext": "重新命名為 {ext}",
+    "batch_cb7_to_cbz": "批次將 CB7\n 檔案轉換為 CBZ",
+    "batch_cbt_to_cbz": "批次將 CBT\n 檔案轉換為 CBZ",
+    "batch_metadata": "批次匯入中繼資料",
+    "batch_library": "從資料夾建立資料庫",
+    "batch_recompress": "以預設等級重新壓縮 CBZ 檔案"
+  },
+  "tabs": {
+    "mosaic": "縮圖",
+    "metadata": "中繼資料"
+  },
+  "viewer": {
+    "title": "檢視器",
+    "mode_single": "單頁  [D]",
+    "mode_double": "雙頁  [D]",
+    "mode_continuous": "連續模式  [D]"
+  },
+  "context_menu": {
+    "viewer": {
+      "prev_page": "上一頁 (←)",
+      "next_page": "下一頁 (→)",
+      "zoom_in": "放大 (Ctrl+Plus)",
+      "zoom_out": "縮小 (Ctrl+Minus)",
+      "zoom_reset": "重設縮放 (Ctrl+0)",
+      "reading_mode_double": "變更閱讀模式 (D) → 雙頁",
+      "reading_mode_continuous": "變更閱讀模式 (D) → 連續雙頁",
+      "reading_mode_single": "變更閱讀模式 (D) → 單頁",
+      "fullscreen_exit": "離開全螢幕 (F11)",
+      "fullscreen": "全螢幕 (F11)",
+      "close_viewer": "關閉檢視器 (ESC)",
+      "delete_bookmark": "刪除書籤"
+    },
+    "image": {
+      "corrupted_replace": "⚠️ 損毀的圖像 - 取代",
+      "corrupted_delete": "⚠️ 刪除此圖像",
+      "copy": "複製 (Ctrl+C)",
+      "cut": "剪下 (Ctrl+X)",
+      "paste": "貼上 (Ctrl+V)",
+      "paste_clipboard": "從剪貼簿貼上 (Ctrl+V)",
+      "delete": "刪除 (Del)",
+      "deselect": "取消選取 (ESC)",
+      "rotate_right": "↻ 向右旋轉",
+      "rotate_left": "↺ 向左旋轉",
+      "mirror": "⇄ 水平鏡像",
+      "crop": "裁切",
+      "convert": "轉換為其他格式...",
+      "join": "合併選取的頁面",
+      "split": "分割選取的頁面",
+      "save_selection": "將選取內容儲存為 CBZ",
+      "print_selection": "列印選取內容",
+      "copy_archive": "複製完整壓縮檔",
+      "undo": "復原 (Ctrl+Z)",
+      "redo": "重做 (Ctrl+Y)",
+      "renumber_auto": "重新編號頁面 (自動偵測多頁)",
+      "renumber_simple": "重新編號頁面 (簡單編號)",
+      "sort_submenu": "排序頁面",
+      "sort_name": "依名稱",
+      "sort_type": "依類型",
+      "sort_size": "依大小",
+      "sort_width": "依寬度",
+      "sort_height": "依高度",
+      "sort_resolution": "依解析度",
+      "sort_dpi": "依 DPI",
+      "create_cbz": "建立 CBZ 壓縮檔",
+      "save_as": "另存新檔...",
+      "close_file": "關閉檔案",
+      "help": "使用說明",
+      "update_page_count": "更新元數據中的頁數",
+      "invert_selection": "反選 (Ctrl+I)",
+      "reduce_size": "調整頁面大小",
+      "mirror_vertical": "⇅ 垂直鏡像",
+      "edit_animated_gif": "編輯動畫GIF...",
+      "save_to_folder": "匯出所選頁面",
+      "adjustments": "亮度、對比度、顏色...",
+      "refresh_mosaic": "重新整理拼圖 (F5)",
+      "create_ico": "建立 .ico 檔案",
+      "straighten": "矯正圖像...",
+      "clone_zone": "克隆區域...",
+      "text": "新增文字..."
+    },
+    "canvas_no_file": {
+      "open": "開啟 CBZ/CBR/CB7/CBT/PDF",
+      "recent_files": "最近的檔案",
+      "clear_history": "清除歷程記錄"
+    },
+    "canvas_with_file": {
+      "close": "關閉檔案",
+      "paste": "貼上 (Ctrl+V)",
+      "paste_clipboard": "從剪貼簿貼上 (Ctrl+V)",
+      "select_all": "全選 (Ctrl+A)",
+      "deselect": "取消選取 (ESC)",
+      "copy_archive": "複製完整壓縮檔",
+      "print_all": "列印整本漫畫",
+      "renumber_auto": "重新編號頁面 (自動偵測多頁)",
+      "renumber_simple": "重新編號頁面 (簡單編號)",
+      "flatten": "展平資料夾",
+      "save_selection": "將選取內容儲存為 CBZ",
+      "hide_sidebar": "« 隱藏按鈕欄",
+      "show_sidebar": "» 顯示按鈕欄",
+      "decrease_thumbs": "減小縮圖大小",
+      "increase_thumbs": "增大縮圖大小",
+      "theme_dark": "切換到深色主題",
+      "theme_light": "切換到淺色主題",
+      "sort_submenu": "排序頁面",
+      "undo": "復原 (Ctrl+Z)",
+      "redo": "重做 (Ctrl+Y)",
+      "create_cbz": "建立 CBZ 壓縮檔",
+      "save_as": "另存新檔...",
+      "help": "使用說明",
+      "update_page_count": "更新元數據中的頁數",
+      "invert_selection": "反選 (Ctrl+I)",
+      "fullscreen": "全螢幕 (F11)",
+      "fullscreen_exit": "退出全螢幕 (F11或ESC)",
+      "quit": "關閉應用程式",
+      "delete_bookmark": "刪除此漫畫的書籤",
+      "delete_all_bookmarks": "刪除所有書籤"
+    },
+    "canvas": {
+      "quit": "關閉應用程式",
+      "reset": "重置應用程式:\n• 全螢幕 → 視窗化\n• 視窗大小和位置\n• 深色模式 → 淺色\n• 側邊欄 → 可見 / 預設寬度\n• 圖示和縮圖大小 → 一般\n• 字體大小 → 預設\n• 語言 → 自動偵測\n• 視窗分割 → 50 / 50\n• 重新編號 → 自動\n• ZIP 壓縮 → 無",
+      "reset_label": "重置應用程式"
+    },
+    "font_size": {
+      "decrease": "縮小字體大小",
+      "increase": "放大字體大小"
+    }
+  },
+  "sort_menu": {
+    "sort_name": "依名稱排序",
+    "sort_type": "依類型排序",
+    "sort_size": "依大小排序",
+    "sort_width": "依寬度排序",
+    "sort_height": "依高度排序",
+    "sort_resolution": "依解析度排序",
+    "sort_dpi": "依 DPI 排序"
+  },
+  "messages": {
+    "warnings": {
+      "empty_cbz": {
+        "title": "空壓縮檔",
+        "message": "CBZ 壓縮檔不包含任何檔案。"
+      },
+      "empty_cbr": {
+        "title": "空壓縮檔",
+        "message": "CBR 壓縮檔不包含任何檔案。"
+      },
+      "files_ignored": {
+        "title": "檔案已忽略"
+      },
+      "no_selection_crop": {
+        "title": "未選取",
+        "message": "請選取要裁切的圖像。"
+      },
+      "multi_selection_crop": {
+        "title": "多重選取",
+        "message": "一次只能裁切一個圖像。\n請選取單一圖像。"
+      },
+      "invalid_selection_crop": {
+        "title": "無效選取",
+        "message": "只能裁切圖像。"
+      },
+      "drag_drop_disabled_in_subdirectory": {
+        "title": "功能無法使用",
+        "message": "在子目錄中無法移動頁面。\n請展平資料夾或返回根目錄。"
+      },
+      "no_selection_convert": {
+        "title": "未選取",
+        "message": "請至少選取一個要轉換的圖像。"
+      },
+      "invalid_selection_convert": {
+        "title": "無效選取",
+        "message": "只能轉換圖像。"
+      },
+      "no_selection_split": {
+        "title": "未選取",
+        "message": "請選取要分割的圖像。"
+      },
+      "multi_selection_split": {
+        "title": "多重選取",
+        "message": "一次只能分割一個圖像。\n請選取單一圖像。"
+      },
+      "invalid_selection_split": {
+        "title": "無效選取",
+        "message": "只能分割圖像。"
+      },
+      "invalid_number_split": {
+        "title": "無效數字",
+        "message": "頁面數必須在 2 到 10 之間。"
+      },
+      "insufficient_selection_join": {
+        "title": "選取不足",
+        "message": "請至少選取 2 個要合併的圖像。"
+      },
+      "invalid_selection_join": {
+        "title": "無效選取",
+        "message": "只能合併圖像。"
+      },
+      "pil_not_available": {
+        "title": "PIL 無法使用",
+        "message": "PIL 模組無法使用,無法從系統剪貼簿貼上。"
+      },
+      "format_not_supported": {
+        "title": "不支援的格式",
+        "message": "不支援的圖像格式或檔案已損毀。\n支援的格式:JPG、PNG、WEBP、BMP、TIFF、GIF、ICO"
+      },
+      "no_crop_selection": {
+        "title": "未選取",
+        "message": "請先繪製裁切矩形。"
+      },
+      "cannot_open_file": {
+        "title": "無法開啟檔案",
+        "message": "無法載入檔案。"
+      },
+      "corrupted_images": {
+        "title": "損毀的圖像",
+        "summary": "在 {total} 張圖片中偵測到 {count} 張損壞圖片。",
+        "hint": "它們以特殊圖示顯示。\n在損壞的圖片上按右鍵以取代或刪除它。",
+        "more": "... 還有 {count} 張"
+      },
+      "no_image_print": {
+        "title": "沒有圖像",
+        "message": "沒有可列印的圖像。"
+      },
+      "no_valid_image_print": {
+        "title": "沒有圖像",
+        "message": "沒有有效的可列印圖像。"
+      },
+      "no_selection_print": {
+        "title": "未選取",
+        "message": "請至少選取一個圖像。"
+      },
+      "no_valid_selection_print": {
+        "title": "沒有圖像",
+        "message": "選取內容中沒有有效圖像。"
+      },
+      "save_cancelled": {
+        "title": "儲存已取消",
+        "message": "請在儲存前手動更正檔名。"
+      },
+      "empty_pdf": {
+        "title": "空 PDF",
+        "message": "PDF 檔案不包含任何頁面。"
+      },
+      "no_selection_save": {
+        "title": "注意",
+        "message": "請至少選取一個要儲存的頁面。"
+      },
+      "drag_disabled_subdirectory": {
+        "title": "拖放已停用",
+        "message": "拖放移動頁面僅在漫畫根目錄中可用。\n\n要移動頁面:\n1. 點擊向上圖示返回根目錄\n2. 或展平漫畫以刪除子目錄"
+      },
+      "no_selection_reduce": {
+        "title": "未選擇",
+        "message": "請至少選擇一頁進行縮小。"
+      },
+      "invalid_selection_reduce": {
+        "title": "無效選擇",
+        "message": "只能縮小圖像。"
+      },
+      "invalid_dimensions": {
+        "title": "無效尺寸",
+        "message": "請輸入有效尺寸（正整數）。"
+      },
+      "no_images_for_gif": {
+        "title": "沒有圖像",
+        "message": "至少需要一個圖像來創建動畫GIF。"
+      },
+      "no_valid_images": {
+        "title": "沒有有效圖像",
+        "message": "未找到有效圖像來創建GIF。"
+      },
+      "animated_gif_in_comic": {
+        "title": "偵測到動畫GIF",
+        "message": "警告：此漫畫包含一個或多個動畫GIF。\\n\\n漫畫閱讀器（CDisplayEx、YACReader等）只會將每個GIF的第一幀顯示為靜態頁面。\\n\\n要正確查看動畫GIF，您必須使用「匯出所選頁面」或「編輯動畫GIF」按鈕將其單獨儲存在漫畫之外。\\n\\n您還要繼續儲存漫畫嗎？"
+      },
+      "no_selection_adjust": {
+        "title": "未選擇",
+        "message": "請至少選擇一張圖像以套用調整。"
+      },
+      "invalid_selection_adjust": {
+        "title": "選擇無效",
+        "message": "調整只能套用於圖像。"
+      },
+      "renumber_disabled_in_subdirectory": {
+        "title": "功能無法使用",
+        "message": "在資料夾被攤平之前，無法重新編號。\n請在重新編號之前先攤平資料夾。"
+      },
+      "unsafe_path_skipped": {
+        "title": "已略過的檔案",
+        "message": "由於位置無效，已略過 {count} 個檔案。"
+      },
+      "unsafe_path_open": {
+        "title": "無法開啟",
+        "message": "由於位置無效，無法開啟此檔案。"
+      },
+      "executable_file_open": {
+        "title": "已封鎖開啟",
+        "message": "此檔案未被開啟: {ext} 檔案可能在您的電腦上執行程式碼。\n如果您信任它，請將其解壓縮後手動開啟。"
+      }
+    },
+    "errors": {
+      "zip_invalid": {
+        "title": "ZIP 錯誤",
+        "message": "該檔案不是有效的 '{file}' ZIP 壓縮檔或已損毀。"
+      },
+      "zip_cannot_open": {
+        "title": "ZIP 錯誤",
+        "message": "無法開啟 CBZ 檔案:{error}"
+      },
+      "rar_invalid": {
+        "title": "RAR 錯誤",
+        "message": "該檔案不是有效的 '{file}' RAR 壓縮檔或已損毀。"
+      },
+      "rar_cannot_open": {
+        "title": "RAR 錯誤",
+        "message": "無法開啟 CBR 壓縮檔:{error}"
+      },
+      "cbr_unexpected": {
+        "title": "錯誤",
+        "message": "開啟 CBR 時發生意外錯誤:{error}"
+      },
+      "join_failed": {
+        "title": "錯誤",
+        "message": "無法合併圖像。"
+      },
+      "paste_failed": {
+        "title": "錯誤",
+        "message": "貼上時出錯:{error}"
+      },
+      "copy_archive_failed": {
+        "title": "錯誤",
+        "message": "無法複製壓縮檔:{error}"
+      },
+      "crop_invalid": {
+        "title": "錯誤",
+        "message": "裁切區域無效。"
+      },
+      "crop_failed": {
+        "title": "錯誤",
+        "message": "無法裁切圖像:{error}"
+      },
+      "load_image_failed": {
+        "title": "錯誤",
+        "message": "無法載入圖像:\n{error}"
+      },
+      "print_error": {
+        "title": "列印錯誤",
+        "message": "列印時出錯:\n{error}"
+      },
+      "print_not_available": {
+        "title": "列印無法使用",
+        "message": "未安裝 win32print 模組。\n請使用以下命令安裝:pip install pywin32"
+      },
+      "file_not_found": {
+        "title": "檔案未找到",
+        "message": "檔案不再存在:\n{path}"
+      },
+      "import_failed": {
+        "title": "匯入錯誤",
+        "message": "無法匯入檔案:{error}"
+      },
+      "pymupdf_not_installed": {
+        "title": "PyMuPDF 未安裝",
+        "message": "未安裝 PyMuPDF (fitz) 函式庫。\n請使用以下命令安裝:pip install PyMuPDF"
+      },
+      "pdf_import_failed": {
+        "title": "錯誤",
+        "message": "匯入 PDF 時出錯:{error}"
+      },
+      "pdf_load_failed": {
+        "title": "PDF 錯誤",
+        "message": "無法載入 PDF:\n{error}"
+      },
+      "duplicate_names": {
+        "title": "重複的檔名",
+        "intro": "偵測到 {count} 個重複檔案名稱:\n\n",
+        "item": "  • {name}（{times} 次）\n",
+        "more": "  ... 以及另外 {more} 個\n",
+        "footer": "\nZIP 壓縮檔不接受重複名稱。\n請在儲存前重新命名這些檔案。"
+      },
+      "save_failed": {
+        "title": "錯誤",
+        "message": "無法儲存檔案:{error}"
+      },
+      "create_archive_failed": {
+        "title": "錯誤",
+        "message": "無法建立壓縮檔:{error}"
+      },
+      "save_selection_failed": {
+        "title": "錯誤",
+        "message": "無法儲存選取內容:{error}"
+      },
+      "gif_creation_failed": {
+        "title": "GIF創建錯誤",
+        "message": "無法創建動畫GIF：\n{error}"
+      },
+      "save_files_failed": {
+        "title": "儲存錯誤",
+        "message": "儲存檔案時發生錯誤：\n{error}"
+      },
+      "rename_failed": {
+        "title": "重新命名錯誤",
+        "message": "無法重新命名檔案：{error}"
+      },
+      "pdf_password_required": {
+        "title": "PDF受密碼保護",
+        "message": "此PDF檔案已加密並受密碼保護。\n沒有密碼無法開啟。"
+      },
+      "pdf_unlock_failed": {
+        "title": "錯誤",
+        "message": "無法儲存已解鎖的PDF檔案:\n{error}"
+      },
+      "pdf_encrypted_skipped": "{filename}: 加密的PDF（需要密碼），已跳過",
+      "file_too_large": {
+        "title": "檔案過大",
+        "message": "檔案 {filename} 大小為 {size}，超過了圖像允許的最大大小（500 MB）。"
+      },
+      "license_file_not_found": {
+        "message": "找不到授權檔案: {path}"
+      },
+      "license_file_read_error": {
+        "message": "無法讀取授權檔案: {error}"
+      },
+      "7z_invalid": {
+        "title": "7Z 錯誤",
+        "message": "檔案「{file}」不是有效的 7Z 壓縮檔或已損毀。"
+      },
+      "delete_error": "刪除時發生錯誤: {error}",
+      "export_error": "匯出時發生錯誤: {error}",
+      "font_source_not_found": "找不到字型來源檔案: {path}",
+      "no_tengwar_font": "找不到Tengwar字型。",
+      "no_icons_found": "找不到圖示。",
+      "unsupported_files": {
+        "title": "不支援的檔案",
+        "message": "以下檔案不受支援，已被忽略:\n\n{files}"
+      },
+      "cbt_invalid": {
+        "message": "檔案 '{file}' 不是有效的 TAR 封存檔或已損毀。"
+      },
+      "disk_full": {
+        "message": "目標磁碟機的磁碟空間不足。\n需要: {needed}\n可用: {free}"
+      },
+      "no_wilhelm_scream_found": "找不到音訊檔案。"
+    },
+    "info": {
+      "gif_created": {
+        "title": "GIF創建成功",
+        "message": "動畫GIF '{name}' 已創建並添加到馬賽克中。"
+      },
+      "pywin32_required": {
+        "title": "功能無法使用",
+        "message": "從系統剪貼簿貼上需要 pywin32 模組。\n請使用以下命令安裝:pip install pywin32"
+      },
+      "images_imported": {
+        "title": "圖像已匯入",
+        "message": "已匯入 {count} 個圖像"
+      },
+      "archive_copied": {
+        "title": "壓縮檔已複製",
+        "message": "已將存檔複製到剪貼簿。"
+      },
+      "function_not_available": {
+        "title": "功能無法使用",
+        "message": "此功能暫時無法使用。"
+      },
+      "duplicate_detected": {
+        "title": "偵測到重複",
+        "message": "已存在同名檔案。\n\n檔案已重新命名為:\n{name}"
+      },
+      "replace_success": {
+        "title": "成功",
+        "message": "圖像 '{name}' 已成功取代。"
+      },
+      "history_cleared": {
+        "title": "歷程記錄已清除",
+        "message": "最近檔案清單已清除。"
+      },
+      "files_copied_clipboard": {
+        "title": "檔案已複製到剪貼簿",
+        "message": "由於技術原因,無法拖出應用程式。\n\n✓ {count} 個{word}已複製到剪貼簿\n\n您現在可以在任何位置貼上:\n  • 按一下右鍵 → 貼上\n  • 或 Ctrl+V"
+      },
+      "correction_done": {
+        "title": "更正完成",
+        "message": "已更正 {count} 個檔名。"
+      },
+      "import_success": {
+        "title": "匯入成功",
+        "message": "已從 {file} 匯入 {count} 頁"
+      },
+      "pdf_import_success": {
+        "title": "匯入成功",
+        "message": "已從 {file} 匯入 {count} 頁 PDF\n品質:{dpi} DPI"
+      },
+      "pdf_convert_success": {
+        "title": "成功",
+        "message": "PDF 轉換成功!\n已載入 {count} 頁,品質為 {dpi} DPI。"
+      },
+      "cbz_saved": {
+        "title": "成功",
+        "message": "CBZ檔案已成功儲存:"
+      },
+      "cbz_converted": {
+        "title": "成功",
+        "message": "檔案已成功轉換為CBZ:",
+        "question": "您要刪除原始{ext}檔案嗎?"
+      },
+      "cbz_converted_from_pdf": {
+        "title": "成功",
+        "message": "檔案已成功轉換為CBZ:",
+        "question": "您要刪除原始PDF檔案嗎?"
+      },
+      "cbz_save_as": {
+        "title": "成功",
+        "message": "新 CBZ 檔案已儲存:{path}"
+      },
+      "cbz_created": {
+        "title": "成功",
+        "message": "CBZ封存已成功建立:"
+      },
+      "selection_saved": {
+        "title": "成功",
+        "message": "選擇已成功儲存:"
+      },
+      "flatten_done": {
+        "title": "展平完成",
+        "message": "已從 {dirs} 個子資料夾移動 {files} 個檔案。"
+      },
+      "language_changed": {
+        "title": "語言已變更",
+        "message": "介面語言已成功變更。"
+      },
+      "new_cbz_saved": {
+        "title": "檔案已儲存",
+        "message": "新的CBZ檔案已成功儲存：",
+        "question": "您想刪除原始{ext}檔案嗎？"
+      },
+      "page_count_updated": {
+        "title": "頁數已更新",
+        "message": "元數據中的頁數已更新為 {count} 頁。"
+      },
+      "files_saved": {
+        "title": "成功儲存",
+        "message": "{count} 個檔案已儲存至：\n{folder}",
+        "open_folder": "您要開啟資料夾嗎？",
+        "message_with_skipped": "已將 {count} 個檔案儲存至 {folder}。由於位置無效，已略過 {skipped} 個檔案。"
+      },
+      "adjustments_applied": {
+        "title": "已套用調整",
+        "message": "調整已成功套用。"
+      },
+      "pdf_unlocked": {
+        "title": "PDF已解鎖",
+        "message": "已解鎖的PDF檔案已儲存:\n{path}"
+      },
+      "thumbnails_saved": {
+        "title": "匯出縮圖",
+        "message": "已將 {count} 張縮圖儲存至 :"
+      }
+    },
+    "questions": {
+      "large_archive": {
+        "title": "大型壓縮檔",
+        "message": "此壓縮檔解壓縮後為 {size} MB。\n載入可能會消耗大量記憶體 (RAM)。\n\n是否繼續?"
+      },
+      "confirm_delete": {
+        "title": "確認",
+        "message": "您確定要刪除 {count} 個檔案 ({size}) 嗎?"
+      },
+      "delete_source_files": {
+        "title": "刪除來源檔案?",
+        "message": "是否刪除已合併的圖像?\n\n是 = 刪除來源檔案\n否 = 保留來源檔案\n取消 = 取消操作"
+      },
+      "invalid_filenames": {
+        "title": "無效的檔名",
+        "intro": "{count}個檔案包含禁止字元:",
+        "item": "  • {name}",
+        "more": "  ... 還有{more}個",
+        "forbidden_chars": "禁止字元: {chars}",
+        "fix_question": "是否自動修正這些檔案名稱?\n(禁止字元將被替換為'_')"
+      },
+      "close_without_save": {
+        "title": "關閉前儲存?",
+        "message": "已新增圖像。是否在關閉前建立 CBZ 壓縮檔?"
+      },
+      "flatten_folders": {
+        "title": "展平資料夾",
+        "subdirs_detected": "偵測到子資料夾:",
+        "files_to_move": "{count} 個檔案將移至根目錄。",
+        "folders_to_delete": "{count} 個子資料夾將被刪除。",
+        "continue_question": "是否繼續?"
+      },
+      "update_page_count": {
+        "title": "更新頁數",
+        "message": "漫畫的頁數已更改。\n\n元數據中指示的頁數：{original}\n當前頁數：{current}\n\n要更新元數據中的頁數嗎？"
+      },
+      "conversion_complete": {
+        "title": "轉換完成",
+        "message": "轉換完成！\n\n{count}張圖像已轉換為{format}格式並新增至您的選擇之後。\n\n刪除原始圖像嗎？",
+        "delete_originals": "刪除原始檔案\n{count} 個檔案 - {size}",
+        "keep_all": "保留全部\n{count} 個檔案 - {size}",
+        "cancel_conversion": "取消轉換\n{count} 個檔案 - {size}"
+      },
+      "zip_recompress": {
+        "title": "重新儲存封存檔？",
+        "message": "檔案將以預設壓縮等級（{level}）重新儲存。"
+      },
+      "zip_convert_to_cbz": {
+        "title": "儲存為 CBZ？",
+        "message": "檔案將以預設壓縮等級（{level}）儲存為 CBZ。"
+      }
+    },
+    "extension_mismatch_generic": {
+      "message": "偵測到錯誤的副檔名: 檔案 '{filename}' 是 {real}，而非 {declared}。重新命名?",
+      "title": "副檔名錯誤"
+    }
+  },
+  "labels": {
+    "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
+    "thumb_size": "縮圖大小",
+    "loading": "請稍候,正在載入...\n{percent}%",
+    "resizing": "請稍候,正在調整大小...\n{percent}%",
+    "converting": "請稍候，正在轉換...\n{percent}%",
+    "loading_lazy": "請稍候，正在載入...\n{percent}%\n\n由於此檔案較大（{size} MB），頁面將逐步載入。螢幕上可見的頁面會立即載入，其他頁面將在捲動時自動載入。",
+    "apply_save_cbz": "套用修改\n並儲存 CBZ 檔案",
+    "apply_create_cbz": "套用修改\n並建立 CBZ 檔案",
+    "import_progress": "正在匯入...\n{percent}%",
+    "pdf_import_progress": "正在匯入 PDF...\n{percent}%",
+    "pdf_opening": "正在開啟 PDF 檔案...",
+    "pdf_page": "第 {current} 頁 / 共 {total} 頁",
+    "warning_close": "注意!修改尚未儲存,將會遺失!",
+    "language_label": "語言:",
+    "directory_tooltip": "資料夾:{name}\n{count} 個檔案\n總大小:{size} MB",
+    "folder_up_tooltip": "按兩下返回\n上一層目錄",
+    "status_bar": "{dirs} 個資料夾  |  {files} 個檔案 ({total_size})  |  {selected} 個已選 ({selected_size})",
+    "pdf_converting": "正在將{total}頁轉換為{dpi} DPI的圖像...",
+    "pdf_converting_no_change": "正在提取{total}頁而不修改...",
+    "print_progress": "準備列印中...\n{percent}%",
+    "print_preparing": "請稍候，準備列印中...",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nGNU 通用公共授權條款 v3 摘要\n\n授予的自由\n您可以使用、複製、修改和再散布\nMosaicView，包括用於商業目的。\n\n義務\n任何再散布（原始版或修改版）必須 :\n– 保留 GPL v3 授權條款\n– 包含原始碼或注明取得途徑\n– 不得施加額外限制\n\n保證\n本軟體在不提供任何保證的情況下散布。\n作者不對使用本軟體所造成的損失承擔責任。\n\n您應該已隨本程式收到 GNU 通用公共授權條款的副本。 如果沒有，請參閱 <https://www.gnu.org/licenses/>。",
+    "view_full_license": "查看完整授權",
+    "license_unrar_text": "CBZ 檔案基於 ZIP 格式，這是一種自由開放的格式。CBR 檔案則基於 RAR 格式，這是一種專有格式。\n\nMosaicView 可以借助 UnRAR 開啟 CBR 檔案，UnRAR 是由 RARlab 開發的可自由再發行的實用程式。\n\n官方網站: <https://www.rarlab.com/rar_add.htm>",
+    "view_full_unrar_license": "檢視 UnRAR 授權",
+    "saving_cbz": "正在儲存... {percent}%",
+    "empty_canvas_line1": "將一個或多個CBZ/CBR/CB7/CBT/PDF檔案或你的圖片放置在這裡",
+    "empty_canvas_line2": "打開檔案後，你可以繼續放置其他檔案",
+    "empty_canvas_line3": "放入一個或多個資料夾以開始批次處理",
+    "icon_toolbar_config_title": "圖示工具列配置",
+    "icon_toolbar_active": "工具列中的圖示",
+    "icon_toolbar_hidden": "備用圖示",
+    "license_gpl_full": "GNU GPL v3 授權條款",
+    "license_unrar_full": "UnRAR 授權條款",
+    "licenses_button": "授權條款",
+    "view_full_gpl_license": "檢視完整 GNU GPL v3 授權條款",
+    "license_7zip_text": "CB7 檔案基於 7z 格式，由 Igor Pavlov 開發，並在 GNU LGPL 授權下發布。\n\nMosaicView 可以借助 7-Zip 開啟 CB7 檔案 — 一款免費的開源工具。\n\n官方網站 : <https://www.7-zip.org/>",
+    "view_full_7zip_license": "檢視 7-Zip 授權",
+    "license_7zip_full": "7-Zip 授權",
+    "icon_toolbar_show_thumb_slider": "顯示縮圖大小滑桿",
+    "icon_toolbar_show_lang_combo": "顯示語言選擇器",
+    "adjusting": "請稍候，正在調整...\n{current} / {total}",
+    "license_piqad_full": "pIqaD qolqoS 字型授權",
+    "license_tengwar_full": "Alcarin Tengwar字體授權",
+    "view_full_piqad_license": "檢視完整 pIqaD qolqoS 授權",
+    "rotating": "旋轉中...\n{percent}%",
+    "flipping": "翻轉中...\n{percent}%",
+    "renumber_indicator_off": "編號: 關閉",
+    "renumber_indicator_auto": "編號: 自動",
+    "renumber_indicator_simple": "編號: 簡單",
+    "zip_indicator_stored": "ZIP: 0",
+    "zip_indicator_deflated": "ZIP: 1",
+    "zip_indicator_na": "ZIP: --"
+  },
+  "dialogs": {
+    "convert": {
+      "window_title": "圖像轉換",
+      "title": "轉換 {count} 個{word}",
+      "word_image": "圖像",
+      "word_images": "圖像",
+      "info": "選擇目標格式:",
+      "format_png": "PNG (無損)",
+      "format_jpg": "JPEG (有損壓縮)",
+      "format_webp": "WEBP (現代格式)",
+      "format_bmp": "BMP (點陣圖)",
+      "format_tiff": "TIFF (高品質)",
+      "format_gif": "GIF (動畫)",
+      "quality_label": "JPG/WEBP 品質:",
+      "quality_maximum": "最高 — 品質 95/100",
+      "quality_high": "高 — 品質 85/100",
+      "quality_medium": "中等 — 品質 75/100",
+      "quality_low": "低 — 品質 60/100",
+      "quality_custom_option": "自訂",
+      "quality_custom": "品質 自訂 : {value}/100",
+      "quality_note": "(此設定僅影響 JPG 和 WEBP 格式)",
+      "quality_window_title": "品質選擇",
+      "format_gif_static": "靜態GIF",
+      "format_gif_animated": "動畫GIF（選擇多個圖像）"
+    },
+    "split": {
+      "window_title": "分割頁面",
+      "title": "分割頁面",
+      "pages_label": "頁面數:",
+      "direction_label": "分割方向:",
+      "horizontal": "水平 (左 → 右)",
+      "vertical": "垂直 (上 → 下)",
+      "warning": "⚠ 由於分割是自動計算的,\n可能需要手動調整。",
+      "button_split": "分割",
+      "button_cancel": "取消"
+    },
+    "join": {
+      "window_title": "合併頁面 - 重新排列順序",
+      "instructions": "排列圖像:\n• 垂直(上/下)進行垂直拼接\n• 水平(左/右)進行水平拼接",
+      "merged_filename_prefix": "拼接",
+      "heights_label": "高度",
+      "widths_label": "寬度",
+      "size_adjustment_title": "大小調整",
+      "size_adjustment_warning": "⚠️ 選定的圖像具有不同的尺寸。\n請選擇如何調整它們的大小以進行合併。\n每個圖像的縱橫比將始終保留。",
+      "keep_original": "保持原始大小",
+      "keep_original_desc": "(添加黑條填充)",
+      "enlarge_small": "放大小圖像",
+      "enlarge_small_desc": "(對齊到最大尺寸)",
+      "reduce_large": "縮小大圖像",
+      "reduce_large_desc": "(對齊到最小尺寸)",
+      "back_to_arrangement": "返回"
+    },
+    "pdf": {
+      "quality_merge": "選擇合併品質:",
+      "quality_export": "選擇匯出品質:",
+      "merge_quality_title": "PDF合併品質",
+      "export_quality_title": "PDF匯出品質",
+      "loading_title": "正在載入PDF...",
+      "dpi_90": "90 DPI - 網路發布",
+      "dpi_150": "150 DPI - 良好品質（建議用於顯示）",
+      "dpi_200": "200 DPI - 非常好的品質",
+      "dpi_300": "300 DPI - 優秀品質（漫畫標準）",
+      "dpi_600": "600 DPI - 最高品質（大檔案）",
+      "dpi_original": "不修改圖像",
+      "dpi_original_tooltip": "智慧分析每個PDF頁面：\n• 僅圖像頁面：保留原始DPI\n• 僅文字頁面：300 DPI\n• 混合頁面（文字+圖像）：如果圖像DPI >= 300則使用圖像DPI，否則使用300 DPI\n最大值：2400 DPI以限制檔案大小"
+    },
+    "batch_pdf": {
+      "pymupdf_required_title": "需要 PyMuPDF",
+      "pymupdf_required_message": "PyMuPDF (fitz) 未安裝。無法轉換 PDF 檔案。",
+      "select_directory_title": "選擇包含 PDF 檔案的目錄",
+      "no_pdf_title": "沒有 PDF 檔案",
+      "no_pdf_message": "在目錄中未找到 PDF 檔案：\n{directory}",
+      "confirm_title": "批次將 PDF 轉換為 CBZ",
+      "confirm_message": "{directory} 中有 {count} 個 PDF 檔案待轉換（包含子目錄）。",
+      "checkbox_permanent_delete": "刪除原始 PDF 檔案且不經過\n資源回收筒（無法復原）",
+      "start_button": "開始",
+      "converting_title": "正在轉換...",
+      "converting_progress": "正在轉換檔案 {current} / {total}",
+      "page_progress": "頁面 {current} / {total}",
+      "complete_title": "轉換完成",
+      "complete_message": "目錄中已轉換 {count} 個 PDF 檔案：",
+      "complete_message_errors": "目錄中已轉換 {total} 個中的 {count} 個 PDF 檔案：",
+      "errors_count": "遇到 {count} 個錯誤。"
+    },
+    "batch_cbr": {
+      "select_directory_title": "選擇包含CBR檔案的目錄",
+      "no_cbr_title": "沒有CBR檔案",
+      "no_cbr_message": "在目錄中未找到CBR檔案：\\n{directory}",
+      "confirm_title": "批次轉換CBR為CBZ",
+      "confirm_message": "{directory}中有{count}個CBR檔案待轉換（含子目錄）。",
+      "checkbox_permanent_delete": "不經回收站直接刪除原始CBR檔案\n（無法復原）",
+      "start_button": "開始",
+      "converting_title": "轉換中...",
+      "converting_progress": "正在轉換檔案 {current} / {total}",
+      "page_progress": "頁面 {current} / {total}",
+      "complete_title": "轉換完成",
+      "complete_message": "目錄中已轉換{count}個CBR檔案：",
+      "complete_message_errors": "目錄中已轉換{total}個中的{count}個CBR檔案：",
+      "errors_count": "遇到{count}個錯誤。",
+      "rarfile_unavailable": "rarfile模組不可用，無法轉換CBR檔案。",
+      "renamed_cbz_count": "已將 {count} 個檔案重命名為 CBZ",
+      "renamed_cb7_count": "已將 {count} 個檔案重命名為 CB7",
+      "renamed_cbt_count": "已將 {count} 個檔案重命名為 CBT"
+    },
+    "close_warning": {
+      "title": "注意!",
+      "message": "修改尚未儲存,將會遺失!",
+      "btn_close_lose": "關閉檔案並放棄修改",
+      "btn_save_cbz": "套用修改並儲存檔案",
+      "btn_create_cbz": "套用修改並建立 CBZ 檔案",
+      "btn_cancel": "取消並返回縮圖"
+    },
+    "replace_image": {
+      "title": "取代損毀的圖像"
+    },
+    "reduce_size": {
+      "window_title": "圖像大小調整",
+      "title": "調整{count}{word}的大小",
+      "word_image": "圖像",
+      "word_images": "圖像",
+      "current_size": "目前大小：{size} MB",
+      "current_dimensions": "目前尺寸：{width} × {height} px",
+      "choose_method": "選擇調整大小方法：",
+      "custom_dimensions": "自訂尺寸",
+      "width_label": "寬度：",
+      "height_label": "高度：",
+      "use_custom_dimensions": "使用這些尺寸",
+      "different_dimensions_warning": "所選頁面具有不同的尺寸。自定義尺寸將強制所有頁面為相同大小。在繼續之前，請確保您了解其影響。",
+      "estimated_size": "預估大小：{size} MB",
+      "percentage_reduction": "百分比縮減",
+      "percentage_enlargement": "百分比放大",
+      "reduce_0": "0%（無變化）",
+      "reduce_10": "10%",
+      "reduce_20": "20%",
+      "reduce_25": "25%",
+      "reduce_33": "33%",
+      "reduce_50": "50%",
+      "reduce_75": "75%",
+      "enlarge_0": "0%（無變化）",
+      "enlarge_10": "10%",
+      "enlarge_20": "20%",
+      "enlarge_25": "25%",
+      "enlarge_33": "33%",
+      "enlarge_50": "50%",
+      "enlarge_75": "75%",
+      "enlarge_100": "100%",
+      "reduce_90": "90%",
+      "page_width_info": "最常見的頁面寬度是 1024、1280、1600、1920 和 2000 像素，但其他值也適用。",
+      "multi_page_width": "自動檢測並調整多頁大小（寬度/高度）",
+      "multi_page_width_tooltip": "啟用多頁自動檢測：雙頁、三頁等。乘數係數根據每頁的比例自動計算，無論是寬度（並排頁面）還是高度（堆疊頁面）"
+    },
+    "gif_animated": {
+      "window_title": "建立動畫GIF",
+      "images_title": "動畫圖像",
+      "params_title": "GIF參數",
+      "frame_delay_label": "圖像間延遲：",
+      "fps_normal": "{fps} 幀/秒",
+      "fps_slow": "每{seconds}秒1幀",
+      "loop_label": "重複次數：",
+      "loop_info": "（0 = 無限迴圈）",
+      "disposal_label": "圖像處理：",
+      "disposal_0": "未指定",
+      "disposal_1": "保留前一圖像",
+      "disposal_2": "恢復為背景色",
+      "disposal_3": "恢復為之前狀態",
+      "optimize": "最佳化檔案（僅儲存差異）",
+      "metadata_title": "GIF中繼資料",
+      "metadata_dimensions": "尺寸：{width} × {height} 像素",
+      "metadata_frames": "幀數：{count}",
+      "metadata_duration": "總時長：{duration} 秒",
+      "metadata_fps": "頻率：{fps} fps",
+      "metadata_palette": "調色盤：最多256色",
+      "metadata_size": "預估大小：{size} KB",
+      "comment_label": "評論（選填）：",
+      "no_images": "未選取圖像",
+      "creating_progress": "正在載入圖片... ({current}/{total})",
+      "creating_normalizing": "正在標準化圖片... ({current}/{total})",
+      "creating_quantizing": "正在量化顏色... ({current}/{total})",
+      "creating_saving": "正在儲存 GIF..."
+    },
+    "save_to_folder": {
+      "title": "選擇目標資料夾"
+    },
+    "duplicate_filenames": {
+      "title": "⚠️ 檔案名稱重複",
+      "message": "偵測到相同的檔案名稱。雖然技術上可以儲存，但這可能會導致某些\n漫畫閱讀器應用程式出現閱讀問題（顯示不完整、頁面遺失等）。\n\n建議在儲存之前重新編號頁面。"
+    },
+    "adjustments": {
+      "window_title": "圖像調整",
+      "title": "{count}張{word}的調整",
+      "word_image": "圖像",
+      "word_images": "圖像",
+      "apply_button": "套用",
+      "color_depth_section": "色彩深度",
+      "brightness_contrast_section": "亮度和對比度",
+      "compression_section": "壓縮",
+      "effects_section": "效果",
+      "sharpness_section": "銳利度",
+      "levels_section": "黑/白色階",
+      "depth_unchanged": "不更改",
+      "depth_32bit": "32位元 (RGBA - 顏色+透明度)",
+      "depth_24bit": "24位元 (RGB - 顏色)",
+      "depth_8bit": "8 wei (PNG diaoseban / JPEG huidu)",
+      "depth_1bit": "1位元 (黑白)",
+      "brightness_label": "亮度: {value}",
+      "contrast_label": "對比度: {value}",
+      "compression_enable": "啟用重新壓縮",
+      "compression_quality_label": "品質 : {value}/100",
+      "sharpness_label": "銳利度: {value}",
+      "effect_none": "無效果",
+      "effect_grayscale": "灰階",
+      "effect_sepia": "棕褐色",
+      "levels_none": "無調整",
+      "levels_threshold": "閾值 (純黑或純白)",
+      "levels_advanced": "進階色階 (陰影/中間調/亮部)",
+      "threshold_label": "閾值: {value}",
+      "black_point_label": "黑場: {value}",
+      "gamma_label": "伽瑪 (中間調): {value}",
+      "white_point_label": "白場: {value}",
+      "auto_levels_button": "自動調整",
+      "open_viewer_button": "使用檢視器調整 (建議)",
+      "compression_info": "壓縮僅適用於JPG和WebP圖像",
+      "open_viewer_button_simple": "使用檢視器調整",
+      "reset_button": "重置",
+      "preview_section": "預覽",
+      "effect_invert": "顏色反轉",
+      "preview_warning": "預覽可能與最終結果不同",
+      "effect_remove_colors": "去除顏色",
+      "remove_colors_intensity_label": "強度 : {value}",
+      "image_mode_section": "圖像模式",
+      "image_mode_rgb": "RGB (彩色)",
+      "image_mode_rgba": "RGBA (彩色 + 透明度)",
+      "image_mode_l": "L (灰階)",
+      "image_mode_la": "LA (灰階 + 透明度)",
+      "image_mode_cmyk": "CMYK (印刷)",
+      "image_mode_1": "1 (純黑白)",
+      "image_mode_p": "P (256色調色盤)",
+      "saturation_section": "飽和度",
+      "saturation_label": "飽和度 : {value}",
+      "saturation_viewer_title": "飽和度調整",
+      "transparency_section": "透明度",
+      "transparency_info": "透明度僅適用於 PNG、WebP 和 ICO 圖像",
+      "transparency_type_label": "類型 :",
+      "transparency_type_flood": "區域",
+      "transparency_type_global": "全域",
+      "transparency_tolerance_label": "容差 :",
+      "transparency_viewer_title": "透明度調整",
+      "transparency_click_instruction": "點擊要變為透明的顏色",
+      "transparency_undo": "撤銷上次點擊",
+      "transparency_redo": "重做",
+      "transparency_type_flood_tooltip": "洪水填充 : 使點擊像素周圍的均勻色彩區域變為透明",
+      "transparency_type_global_tooltip": "全域透明度 : 影響圖像中所有顏色與點擊顏色相近的像素",
+      "transparency_apply": "套用",
+      "transparency_skipped_warning": "{count} 張圖像已跳過 — 格式與透明度不相容。如需包含，請先轉換為 PNG。",
+      "unsharp_section": "自適應銳化",
+      "unsharp_radius_label": "半徑: {value}",
+      "unsharp_percent_label": "強度: {value}%",
+      "unsharp_threshold_label": "閾值: {value}",
+      "unsharp_viewer_title": "自適應銳化",
+      "auto_levels_tooltip": "分析每一頁並自動調整黑白色階以最大化對比度。\n若要逐頁選擇，請使用檢視器。",
+      "transparency_unsaved_title": "未套用的變更",
+      "transparency_unsaved_message": "目前的變更尚未套用到圖像。您想要怎麼做?",
+      "transparency_unsaved_discard": "關閉而不套用",
+      "transparency_unsaved_apply": "套用並關閉",
+      "transparency_unsaved_cancel": "取消"
+    },
+    "levels_viewer": {
+      "title": "使用滴管調整色階",
+      "apply_current": "套用於此頁",
+      "apply_all": "套用至所有選定的頁面",
+      "black_pipette": "黑點吸管",
+      "white_pipette": "白點吸管",
+      "black_pipette_tooltip": "點擊應該完全黑色的像素。注意：很容易做過頭！",
+      "white_pipette_tooltip": "點擊應該完全白色的像素。注意：很容易做過頭！"
+    },
+    "sharpness_viewer": {
+      "title": "清晰度調整"
+    },
+    "brightness_viewer": {
+      "title": "亮度和對比度調整"
+    },
+    "compression_viewer": {
+      "title": "壓縮調整"
+    },
+    "outliers": {
+      "title": "尺寸異常的頁面",
+      "message": "以下頁面的尺寸與其他頁面有很大不同。請選擇如何處理它們:",
+      "width": "寬度",
+      "height": "高度",
+      "unusual": "異常",
+      "skip": "不調整大小",
+      "keep": "保持"
+    },
+    "first_page_multi": {
+      "title": "第一頁是多頁",
+      "message": "第一頁被偵測為多頁。您希望如何編號？",
+      "option_auto_desc": "正常重新編號，自動偵測。",
+      "option_joint_desc": "漫畫第一頁與最後一頁的連接。",
+      "option_exclude_label": "不包含在重新編號中",
+      "option_exclude_desc": "頁面保留其目前名稱並保持在第一位置。您可以稍後手動重新命名。"
+    },
+    "batch_img": {
+      "select_directory_title": "選擇包含圖像的資料夾",
+      "no_img_title": "未找到圖像檔案",
+      "no_img_message": "在資料夾中未找到獨立圖像檔案 :\n{directory}",
+      "confirm_title": "批次將獨立圖像轉換為 CBZ",
+      "confirm_message": "{directory} 中有 {count} 個圖像檔案待轉換（包含子資料夾）。",
+      "checkbox_permanent_delete": "永久刪除原始圖像檔案，不發送到\n資源回收筒（無法復原）",
+      "start_button": "開始",
+      "converting_title": "正在轉換...",
+      "converting_progress": "正在轉換第 {current} 個檔案，共 {total} 個",
+      "complete_title": "轉換完成",
+      "complete_message": "資料夾中已轉換 {count} 個圖像檔案 :",
+      "complete_message_errors": "資料夾中已轉換 {total} 個中的 {count} 個圖像檔案 :",
+      "errors_count": "遇到 {count} 個錯誤。",
+      "converted_by_ext": "{ext} : {count} 個檔案",
+      "mode_title": "將圖片轉換為CBZ",
+      "mode_intro": "您希望如何分組圖片？",
+      "mode_one_per_image": "將每張圖片轉換為單獨的CBZ檔案",
+      "mode_one_per_image_sub": "(每張圖片成為一個單獨的CBZ檔案)",
+      "mode_all_in_one": "將所有圖片合併為一個CBZ檔案",
+      "mode_all_in_one_sub": "(目錄中的所有圖片合併為一個CBZ檔案)"
+    },
+    "batch_drop": {
+      "window_title": "資料夾批次處理",
+      "intro_single": "已放入1個資料夾。您想套用哪種處理？",
+      "intro_multiple": "已放入{count}個資料夾。您想套用哪種處理？",
+      "recursive_note": "子資料夾也將被掃描。",
+      "mixed_drop_title": "不支援此放置操作",
+      "mixed_drop_message": "您同時放入了檔案和資料夾。請只放入檔案或只放入資料夾。"
+    },
+    "pdf_unlock": {
+      "title": "PDF受保護，禁止修改",
+      "message": "頁面已正常匯入。\n\n此PDF檔案受保護，禁止修改（擁有者密碼）。\n\n是否要儲存不含此保護的PDF檔案副本?",
+      "yes": "是，儲存已解鎖的副本",
+      "no": "否，繼續而不解鎖"
+    },
+    "batch_pdf_unlock": {
+      "title": "受保護不可修改的PDF檔案",
+      "message_single": "偵測到1個受保護不可修改的PDF檔案。已正常轉換為CBZ。\n\n是否要在其原始目錄中儲存已解鎖的副本？",
+      "message_plural": "偵測到{count}個受保護不可修改的PDF檔案。已正常轉換為CBZ。\n\n是否要在每個檔案的原始目錄中儲存已解鎖的副本？",
+      "yes": "是，儲存已解鎖的副本",
+      "no": "否，不解鎖繼續"
+    },
+    "ico_creator": {
+      "title": "建立 .ico 圖示",
+      "info_message": "圖像將調整為多種解析度 (16, 32, 48, 64, 128, 256 px)。\n目前框架大小: {w} × {h} px",
+      "btn_validate_crop": "確認裁剪",
+      "btn_validate_no_crop": "確認不裁剪",
+      "btn_cancel": "取消",
+      "btn_transparency": "設定透明度",
+      "btn_validate_final": "確認",
+      "tolerance_label": "容差:",
+      "success_title": ".ico 檔案已建立",
+      "success_message": "檔案 {filename} 已成功建立。",
+      "overwrite_title": "檔案已存在",
+      "overwrite_message": "檔案 {filename} 已存在。是否覆蓋？",
+      "save_blocked_title": "無法儲存",
+      "save_blocked_message": "此存檔包含一個或多個不是漫畫圖像的 .ico 檔案。只要這些檔案存在於馬賽克中，儲存功能將被停用。\n要重新啟用儲存，請從馬賽克中刪除它們 (Del 鍵) 或剪下 (Ctrl+X) 後貼上到其他地方。",
+      "btn_back_to_crop": "返回裁剪"
+    },
+    "video_save_blocked": {
+      "title": "無法儲存",
+      "message": "此存檔包含一個或多個視訊檔案。只要這些檔案存在於馬賽克中，儲存功能就會被停用。\n若要重新啟用儲存，請從馬賽克中刪除它們（Del鍵）或剪下它們（Ctrl+X）以貼上到其他地方。"
+    },
+    "open_file": {
+      "title": "開啟封存檔",
+      "filter_archives": "封存檔 (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
+      "filter_all": "所有檔案 (*)"
+    },
+    "license": {
+      "window_title": "MosaicView - 授權"
+    },
+    "replace_corrupted_image": {
+      "title": "替換損壞的圖片",
+      "filter_images": "圖片 (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "所有檔案 (*)"
+    },
+    "see_log": "查看日誌",
+    "straighten_viewer": {
+      "title": "矯正",
+      "instruction": "在圖像中應為水平（或垂直）的部分畫一條直線"
+    },
+    "clone_zone_viewer": {
+      "title": "區域克隆",
+      "instruction": "Ctrl+單擊 : 設置源區域  •  左鍵單擊 : 繪製克隆區域",
+      "mode_label": "源 :",
+      "mode_fixed": "固定源",
+      "mode_relative": "相對源",
+      "brush_size_label": "大小 :"
+    },
+    "text_viewer": {
+      "title": "插入文字",
+      "instruction": "點擊要插入文字的位置  •  Ctrl+方向鍵:逐像素移動文字",
+      "size_label": "大小:",
+      "color_label": "顏色:",
+      "bold_btn": "粗",
+      "italic_btn": "斜",
+      "underline_btn": "底",
+      "apply_btn": "套用文字",
+      "pick_color_title": "選擇文字顏色"
+    },
+    "batch_cb7": {
+      "select_directory_title": "選擇包含 CB7 檔案的目錄",
+      "no_cb7_title": "沒有 CB7 檔案",
+      "no_cb7_message": "在目錄中未找到 CB7 檔案 :\n{directory}",
+      "confirm_title": "批次將 CB7 轉換為 CBZ",
+      "confirm_message": "將在 {directory} 中轉換 {count} 個 CB7 檔案（包含子目錄）。",
+      "checkbox_permanent_delete": "永久刪除原始 CB7 檔案而不移至回收站\n（無法復原）",
+      "start_button": "開始",
+      "converting_title": "轉換中...",
+      "converting_progress": "正在轉換第 {current} / {total} 個檔案",
+      "page_progress": "第 {current} / {total} 頁",
+      "complete_title": "轉換完成",
+      "complete_message": "目錄中已轉換 {count} 個 CB7 檔案 :",
+      "complete_message_errors": "目錄中已轉換 {total} 個中的 {count} 個 CB7 檔案 :",
+      "errors_count": "遇到 {count} 個錯誤。",
+      "renamed_cbz_count": "已將 {count} 個檔案重命名為 CBZ",
+      "renamed_cbr_count": "已將 {count} 個檔案重命名為 CBR",
+      "renamed_cbt_count": "已將 {count} 個檔案重命名為 CBT"
+    },
+    "batch_cbt": {
+      "select_directory_title": "選擇包含 CBT 檔案的目錄",
+      "no_cbt_title": "沒有 CBT 檔案",
+      "no_cbt_message": "在目錄中未找到 CBT 檔案 :\n{directory}",
+      "confirm_title": "批次將 CBT 轉換為 CBZ",
+      "confirm_message": "將在 {directory} 中轉換 {count} 個 CBT 檔案（包含子目錄）。",
+      "checkbox_permanent_delete": "永久刪除原始 CBT 檔案而不移至回收站\n（無法復原）",
+      "start_button": "開始",
+      "converting_title": "轉換中...",
+      "converting_progress": "正在轉換第 {current} / {total} 個檔案",
+      "page_progress": "第 {current} / {total} 頁",
+      "complete_title": "轉換完成",
+      "complete_message": "目錄中已轉換 {count} 個 CBT 檔案 :",
+      "complete_message_errors": "目錄中已轉換 {total} 個中的 {count} 個 CBT 檔案 :",
+      "errors_count": "遇到 {count} 個錯誤。",
+      "renamed_cbz_count": "已將 {count} 個檔案重命名為 CBZ",
+      "renamed_cbr_count": "已將 {count} 個檔案重命名為 CBR",
+      "renamed_cb7_count": "已將 {count} 個檔案重命名為 CB7"
+    },
+    "batch_metadata": {
+      "no_files_title": "沒有相容的檔案",
+      "no_files_message": "在以下目錄中未找到相容檔案 (CBZ、CBR、CB7、CBT、PDF):\n{directory}",
+      "confirm_title": "批次匯入中繼資料",
+      "confirm_message": "在 {directory} 中找到 {count} 個檔案（包含子目錄）。",
+      "start_button": "開始",
+      "cbz_warning": "只有CBZ格式支援ComicInfo中繼資料。CBR、CBT、CB7和PDF檔案將自動轉換為CBZ。",
+      "checkbox_permanent_delete": "永久刪除原始非CBZ檔案，不經過資源回收桶\n（無法復原）",
+      "checkbox_skip_existing": "忽略已有元數據的文件\n(包含ComicInfo.xml文件的cbz壓縮包)",
+      "complete_title": "元資料匯入完成",
+      "complete_message": "已處理 {done} 個檔案，共 {total} 個。已略過 {skipped} 個。",
+      "complete_message_errors": "已處理 {done} 個檔案，共 {total} 個。已略過 {skipped} 個。{errors} 個錯誤。",
+      "errors_count": "{count} 個錯誤",
+      "done_count": "已處理 {done} 個檔案，共 {total} 個。",
+      "skipped_count": "已略過 {skipped} 個。",
+      "select_directory_title": "選擇要處理的資料夾"
+    },
+    "zip_compression": {
+      "window_title": "ZIP 壓縮",
+      "title": "預設 ZIP 壓縮等級",
+      "explanation": "漫畫圖片已經由其自身格式壓縮過（JPEG、PNG、WebP...）。在此基礎上再壓縮 ZIP 封存檔不會節省任何空間，但會明顯減慢儲存和讀取速度。這就是預設等級為 0（不壓縮）的原因。\n\n除非有特殊需求，否則不建議變更此設定。",
+      "level_label": "等級（0-9）："
+    },
+    "batch_recompress": {
+      "no_files_title": "未找到檔案",
+      "no_files_message": "在目錄中未找到任何 CBZ/CBR/CB7/CBT 檔案：\n{directory}",
+      "window_title": "批次重新壓縮 CBZ",
+      "confirm_message": "在 {directory} 中要分析 {count} 個檔案（包括子目錄）。\n尚未處於預設等級（{level}）的 CBZ 檔案將被重新壓縮。",
+      "start_button": "開始",
+      "running_title": "正在重新壓縮...",
+      "progress": "正在分析檔案 {current}/{total}",
+      "complete_title": "重新壓縮完成",
+      "summary_message": "已分析 {total} 個檔案：\n{recompressed} 個已重新壓縮\n{already_optimal} 個已處於預設等級\n{ignored} 個已忽略（不是 CBZ）",
+      "errors_with_log": "遇到 {count} 個錯誤。請查看記錄。",
+      "view_log": "查看記錄"
+    },
+    "link": {
+      "open": "開啟連結",
+      "copy": "複製連結",
+      "open_location": "開啟位置",
+      "copy_path": "複製路徑"
+    }
+  },
+  "tooltip": {
+    "source_archive": "來源檔案: {name}",
+    "file": "檔案:{name}",
+    "reason": "原因:{reason}",
+    "size_kb": "大小:{size} KB",
+    "size_mb": "大小:{size} MB",
+    "file_size": "大小:{size}",
+    "dimensions": "尺寸:{width} × {height} 像素",
+    "resolution": "解析度:{mp} MP",
+    "dpi_single": "DPI:{dpi}",
+    "dpi_double": "DPI:{dpi_x} × {dpi_y}",
+    "dpi_undefined": "DPI：未定義",
+    "cbr_info": "CBR 檔案使用 RAR 格式，該格式是專有且已獲專利的；\n無法修改它們，變更將儲存到新的 CBZ 檔案中。",
+    "rotate_left": "向左旋轉90度",
+    "rotate_right": "向右旋轉90度",
+    "mirror_horizontal": "水平翻轉",
+    "mirror_vertical": "垂直翻轉",
+    "fullscreen": "全螢幕",
+    "help_button": "使用者手冊",
+    "theme_button": "在淺色和深色主題之間切換",
+    "font_decrease_button": "縮小字體大小",
+    "font_increase_button": "放大字體大小",
+    "color_depth": "顏色：{bits} 位元 ({mode})",
+    "batch_pdf_to_cbz": "將目錄及其子目錄中的所有PDF檔案\n轉換為CBZ。圖像按原樣提取並歸檔，\n不進行任何重新壓縮。",
+    "batch_pdf_permanent_delete": "警告：如果勾選此選項，\n原始PDF檔案將在轉換後被\n永久刪除，無法復原。\n請確保您有備份（如有必要）。",
+    "batch_cbr_to_cbz": "將目錄及其子目錄中的\n所有CBR檔案轉換為CBZ。",
+    "batch_cbr_permanent_delete": "警告：如果勾選此選項，\n原始CBR檔案將在轉換後\n被永久刪除，無法復原。\n請確保您已備份，\n如有必要。",
+    "renumber_btn_1": "自動偵測多頁模式\n右鍵點擊切換模式",
+    "renumber_btn_2": "簡單編號模式\n右鍵點擊切換模式",
+    "corrupted_header": "圖片已損壞",
+    "right_click_instruction1": "右鍵點擊以替換或刪除",
+    "right_click_instruction2": "此圖片。",
+    "unknown_error": "未知錯誤",
+    "batch_img_to_cbz": "將資料夾及其子資料夾中找到的所有\n圖像檔案轉換為 CBZ，\n每張圖像生成一個 CBZ 檔案。",
+    "batch_img_permanent_delete": "警告 : 如果選取此選項，\n原始圖像檔案將在轉換後被永久刪除，\n無法復原。如有必要，\n請確保您有備份。",
+    "too_large_header": "圖像太大無法載入",
+    "too_large_pixels": "尺寸: {pixels}",
+    "icon_toolbar_config_button": "圖示設定",
+    "icon_toolbar_size_decrease": "縮小圖示大小",
+    "icon_toolbar_size_increase": "放大圖示大小",
+    "source_loose": "獨立圖片",
+    "source_web": "網路圖片",
+    "straighten": "矯正圖像",
+    "clone_zone": "克隆區域",
+    "text": "新增文字",
+    "batch_cb7_to_cbz": "將目錄及其子目錄中的所有\nCB7 檔案轉換為 CBZ。",
+    "batch_cb7_permanent_delete": "警告：如果勾選此選項，\n原始 CB7 檔案將在轉換後被永久刪除，\n無法復原。請確保已有備份。",
+    "batch_cbt_to_cbz": "將目錄及其子目錄中的所有\nCBT 檔案轉換為 CBZ。",
+    "batch_cbt_permanent_delete": "警告：如果勾選此選項，\n原始 CBT 檔案將在轉換後被永久刪除，\n無法復原。請確保已有備份。",
+    "batch_metadata": "批量匯入元資料",
+    "renumber_btn_0": "模式已停用（重新編號已關閉）\n按右鍵以變更模式",
+    "renumber_indicator_0": "頁面重新編號已停用\n點擊以變更模式",
+    "renumber_indicator_1": "頁面重新編號：\n多頁自動偵測模式\n點擊以變更模式",
+    "renumber_indicator_2": "頁面重新編號：\n簡單編號模式\n點擊以變更模式",
+    "zip_indicator_deflated": "此檔案已壓縮（原始等級未知）。\n點擊以預設等級（{level}）重新儲存它。\n按右鍵以變更預設等級。",
+    "zip_indicator_na": "ZIP 壓縮等級不適用於 {ext} 檔案。\n點擊以預設等級（{level}）儲存為 CBZ。\n按右鍵以變更預設等級。",
+    "zip_indicator_ext_image": "圖像",
+    "zip_indicator_stored_noop": "此檔案未壓縮。\n按右鍵以變更預設等級。",
+    "zip_indicator_stored_action": "此檔案未壓縮。\n點擊以預設等級（{level}）壓縮它。\n按右鍵以變更預設等級。"
+  },
+  "help": {
+    "title": "MosaicView - 使用說明",
+    "intro": "MosaicView 允許您操作和編輯漫畫(數位漫畫書),而無需將其從壓縮檔中提取。該應用程式支援 CBZ (ZIP)、CBR (RAR) 和 PDF 格式。 本應用程式僅相容64位元系統。",
+    "open_files": "開啟檔案",
+    "open_files_content": "• 按一下'開啟檔案'按鈕，或將檔案直接拖放至視窗中\n• 支援的格式:CBZ、CBR、PDF、圖像(JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). 也可以打開EPUB檔案，但只會提取其圖像（文字會被忽略）。 注意：以紅色顯示的副檔名（WEBP、TIFF、GIF、ICO…）表示可能與舊版 CBZ/CBR 閱讀器不相容的格式。不過，MosaicView 仍可正常處理這些檔案。\n• 已加密的PDF（開啟時需要密碼）:檔案無法匯入，將顯示錯誤訊息。\n• 受保護禁止修改的PDF（owner password）:頁面正常匯入。MosaicView建議在同一資料夾中儲存一份解鎖的副本。",
+    "mosaic": "縮圖",
+    "mosaic_content": "馬賽克以縮圖形式顯示您漫畫的所有頁面。您可以：\n• 透過拖放重新排列頁面（頁碼將自動更新，並會按照當前啟用的重新編號模式進行）\n• 選擇多個頁面（Ctrl+點擊或Shift+點擊）\n• 使用滑桿或 Ctrl+滑鼠滾輪調整縮圖大小\n• 點擊檔案名稱手動重新命名檔案\n• 從Windows檔案總管直接拖放漫畫檔案（CBZ/CBR/PDF）到另一個開啟的漫畫中以合併其內容\n• 將所有顯示的縮圖匯出至您選擇的資料夾（隱藏指令，僅可透過快速鍵 Ctrl+Alt+T 存取）",
+    "manipulation": "頁面操作",
+    "manipulation_content": "• 拖放頁面以重新排列\n• 將整本漫畫拖入另一本以合併\n• 右鍵單擊頁面以存取選項（旋轉、刪除等）\n• 雙擊頁面以開啟檢視器\n• 將單個頁面拖到 Windows 資料夾中匯出，或透過 Ctrl+C / Ctrl+V",
+    "renumber": "頁面重新編號",
+    "renumber_content": "MosaicView 提供三種頁面重新編號模式，可透過重新編號按鈕、右鍵選單、狀態列指示器存取，或在拖放時自動套用：\n\n• 多頁自動偵測模式（預設模式）：應用程式分析每頁的寬度以偵測雙頁、三頁等。多頁將相應地重新編號（例如，雙頁將被命名為 003-004，三頁為 005-006-007）。超過 4 頁時，僅顯示第一個和最後一個編號（例如 010---025）。\n\n• 簡單編號模式：每頁都會獲得一個唯一的連續編號（001、002、003...），與頁面寬度無關。\n\n• 關閉模式：自動重新編號已停用。原始檔案名稱將被保留，包括在拖放期間。\n\n若要在模式之間切換，請按右鍵點擊重新編號按鈕，或點擊狀態列右下角的指示器。在兩種情況下，工具提示都會顯示目前模式。所選模式也適用於拖放期間的自動重新編號，並在工作階段之間被記住。",
+    "flatten": "展平目錄",
+    "flatten_content": "如果您的壓縮檔包含子資料夾,請使用「展平目錄」將所有圖像移至同一層級。",
+    "viewer": "檢視器",
+    "viewer_content": "按兩下頁面開啟檢視器:\n• ← → 鍵:在頁面間導覽\n• D 鍵:在 3 種閱讀模式間切換\n  - 單頁:一次一頁\n  - 雙頁:第 1 頁單獨,然後 2-3、4-5 等\n  - 連續雙頁:第 1 頁單獨,然後 2-3、3-4、4-5 等\n• 滑鼠滾輪:快速導覽\n• Ctrl+滾輪或 Ctrl+加/減:縮放\n• Ctrl+0:重設縮放\n• F11 鍵:全螢幕\n• 按兩下:切換全螢幕\n• Esc 鍵:取消裁剪框 / 離開檢視器\n• 書籤: 關閉檢視器時自動儲存目前頁面（第一頁和最後一頁除外）。馬賽克中相應的縮圖上會出現一條紅色絲帶。下次開啟時，會有訊息提示返回該頁面。在最後一頁自動刪除，或在檢視器中按右鍵手動刪除。",
+    "join_pages": "合併頁面",
+    "join_pages_content": "選擇多個連續頁面，按右鍵→'合併選定頁面'以水平或垂直合併頁面。產生的圖像格式與來源頁面的格式一致(如果它們全部相同)，否則預設為PNG。",
+    "split_pages": "分割頁面",
+    "split_pages_content": "要自動分割雙頁:\n• 選取要分割的頁面\n• 按一下右鍵 → 「分割選取的頁面」\n• 選擇方向(垂直或水平)",
+    "crop": "檢視器中的裁切",
+    "crop_content": "在檢視器中,在圖像上繪製矩形以定義裁切區域:\n• 用滑鼠繪製矩形\n• 透過拖曳邊緣或角來調整大小\n• 點擊「確認裁切」套用\n• 裁切套用於目前圖像\n• Esc 鍵:取消裁剪框",
+    "shortcuts": "鍵盤快速鍵",
+    "shortcuts_content": "• Ctrl+Z:復原上一操作\n• Ctrl+Y:重做復原的操作\n• Ctrl+A:選取所有頁面\n• Ctrl+I：反選\n• Ctrl+C:複製選取的頁面\n• Ctrl+X:剪下選取的頁面\n• Ctrl+V:貼上頁面\n• Del:刪除選取的頁面\n• Ctrl+滑鼠滾輪：放大/縮小縮圖大小\n• Ctrl+Alt+T：匯出馬賽克中顯示的所有縮圖\n• F5：更新馬賽克顯示\n• F11：切換全螢幕（按F11或ESC退出）",
+    "dark_mode": "深色模式",
+    "dark_mode_content": "點擊太陽/月亮按鈕在淺色和深色主題之間切換。",
+    "sort": "排序頁面",
+    "sort_content": "使用「排序」按鈕自動重新排列頁面,依:\n• 名稱、類型、大小、寬度、高度、解析度或 DPI",
+    "save": "儲存",
+    "save_content": "• 「儲存」:將修改儲存到原始檔案\n• 「另存新檔」:建立新壓縮檔\n• 「建立 CBZ」:僅在圖像模式下可用(無壓縮檔)\n\n無論哪種情況,儲存始終以 CBZ 格式進行,使用預設的 ZIP 壓縮等級。建議將此等級保持為 0。更多詳情請參閱 ZIP 壓縮部分。",
+    "other": "其他功能",
+    "other_content": "• 旋轉:旋轉一個或多個頁面\n• 轉換:將圖像轉換為不同格式（PNG、JPEG、WEBP、BMP、TIFF、GIF）。注意:CMYK模式的圖像會自動轉換為RGB\n• 列印:列印選取的頁面或所有頁面\n• 提取:提取特定頁面",
+    "config_files": "設定檔和臨時檔案",
+    "config_files_content": "MosaicView會建立一個名為.mosaicview_config.json的檔案。此檔案包含重設按鈕正常運作所需的一些參數，以及最近開啟的漫畫清單，這顯然是顯示最近開啟的檔案所必需的。MosaicView也會儲存臨時檔案，這些檔案是各種影像處理作業所必需的。\n所有這些檔案都位於{temp_dir}目錄中。\n每次關閉應用程式時都會刪除臨時檔案，但.mosaicview_config.json檔案由於其性質而應保留。\n但是，您可以透過前往{temp_dir}目錄或按一下下方的按鈕手動刪除這些檔案。每次開啟應用程式時都會重新建立.mosaicview_config.json檔案，並根據需要重新建立臨時檔案。",
+    "config_clear_temp": "刪除臨時檔案",
+    "config_clear_recent": "清除最近檔案",
+    "config_clear_config": "刪除設定檔",
+    "config_temp_cleared": "臨時檔案已成功刪除。",
+    "config_config_cleared": "設定檔已成功刪除。\n將在下次啟動應用程式時重新建立。",
+    "language": "語言選擇",
+    "language_content": "MosaicView 提供多種語言版本。\n預設情況下,應用程式會自動偵測您作業系統的語言,並在支援的情況下以該語言顯示。如果您的系統使用不支援的語言,介面將以英語顯示。\n您可以隨時使用位於按鈕欄底部、縮圖大小滑桿下方的下拉式選單手動變更語言。您的選擇將被儲存並在下次啟動應用程式時套用。\n可用語言:阿拉伯語、愛爾蘭語、愛沙尼亞語、保加利亞語、冰島語、波蘭語、丹麥語、德語、俄語(烏克蘭語)、法語、芬蘭語、韓語、荷蘭語、克羅地亞語、拉脫維亞語、立陶宛語、羅馬尼亞語、馬來語、馬爾他語、挪威語、葡萄牙語、日語、瑞典語、斯洛伐克語、斯洛文尼亞語、泰米爾語、泰語、土耳其語、西班牙語、希伯來語、希臘語、匈牙利語、亞美尼亞語、意大利語、印地語、印度尼西亞語、英語、越南語、中文(繁體)、中文(簡體)、捷克語。\n\n此實用程式使用Windows字型，但pIqaD（克林貢語）和tengwar（精靈語：辛達林和昆雅）字型除外。這些字型是免費的，來自以下網站：\n- pIqaD（克林貢字母）：{url_piqad}\n- tengwar（精靈字母，用於辛達林和昆雅）：{url_tengwar}\n如果這些網站不再活躍，您可以通過單擊下面的按鈕來獲取pIqaD和tengwar字型：\n\n本軟體以法語開發。其他語言的翻譯是透過 AI(特別是 Claude)完成的。我決定支援大約四十種語言。但顯然,我不會說所有這些語言。因此,我別無選擇,只能求助於 AI,因為雇用和支付 40 名不同的翻譯人員不在考慮範圍內。由於這些翻譯是自動完成的,可能存在錯誤。對此我深表歉意。\n可用虛構語言: 克林貢語（拉丁字母和pIqaD字母版本），辛達林語（拉丁字母和tengwar字母版本），昆雅語（拉丁字母和tengwar字母版本）.",
+    "credits": "Vibe Coding，我的愛",
+    "credits_content": "我對程式設計一竅不通。完全不懂。因此,我使用 Anthropic 的 AI Claude(更具體地說是 Claude Code)開發了這個軟體。我強烈推薦 Claude Code,這個應用程式太棒了!",
+    "resize_pages": "修改頁面大小",
+    "resize_pages_content": "要縮小或放大頁面：\n• 選擇一個或多個頁面\n• 按右鍵→'調整大小'\n• 三個選項可用：\n  - 自訂尺寸：輸入所需的寬度或高度（縱橫比自動保留）。\n  - 百分比縮小：選擇10%到90%的百分比\n  - 百分比放大：選擇10%到100%的百分比\n• 應用程式顯示修改後圖像的估計大小\n• 修改立即套用於所有選定的頁面",
+    "language_export_piqad": "pIqaD字型",
+    "language_export_tengwar": "Tengwar字型",
+    "language_export_piqad_success": "字型已匯出：{filename}\n位置：",
+    "language_export_tengwar_success": "已匯出 {count} 個字型\n位置：",
+    "icons": "圖示",
+    "icons_content": "本實用程式中使用的大多數圖示來自此網站，可免費用於非商業目的: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\n其中一些由我進行了修改。\n只有一個圖示，即Windows可執行檔圖示，是我創建的（但使用了AI，因為我是一個非常、非常、非常糟糕的平面設計師）。只要您註明來源，您就可以隨意使用此圖示。",
+    "icons_view_button": "檢視圖示",
+    "icons_window_title": "MosaicView圖示",
+    "icons_save_all": "儲存圖示",
+    "icons_saved_success": "{count}個圖示已儲存到：",
+    "icons_save_failed": "無法儲存圖示：{error}",
+    "split_ui": "雙面板介面",
+    "split_ui_content": "MosaicView允許同時並排顯示兩個檔案。\n\n點擊分割圖示開啟第二個面板。每個面板都是獨立的：您可以分別開啟、編輯和儲存檔案。活動面板以藍色邊框標示。\n\n要將頁面從一個面板移動到另一個面板，直接拖曳即可。如果選取了多個頁面，它們將一起移動。頁面將插入到紅色列所指示的位置。\n\n點擊關閉第二個面板圖示以返回單面板模式。\n\n兩個面板之間的分隔條可以自由拖動。雙擊分隔條可將兩個面板重置為相同大小（50/50）。",
+    "license_gpl": "GPL v3 授權",
+    "license_unrar": "UnRAR 授權",
+    "config_clear_clipboard": "清除剪貼簿檔案",
+    "config_clipboard_note": "例外：Windows剪貼簿使用的暫存檔案（clipboard_XXXXX檔案）在複製後會保留12小時，因此即使關閉應用程式後您也可以貼上它們。12小時後，它們會被自動刪除。",
+    "config_log_note": "批次轉換（PDF轉CBZ和CBR轉CBZ）在發生錯誤時會建立日誌檔案。這些檔案（Log_pdftocbz_.txt和Log_cbrtocbz_.txt）即使在關閉應用程式後也會保留，以便日後查看。它們僅透過上方的\"刪除暫存檔案\"按鈕刪除。",
+    "config_clipboard_cleared": "剪貼簿檔案已成功清除。",
+    "adjust_images": "圖像調整",
+    "adjust_images_content": "此功能允許您直接在 MosaicView 中修飾圖像。您可以調整亮度、對比度、銳度、色階、飽和度，套用效果（黑白、棕褐色、色彩反轉），調整壓縮品質，刪除色彩，套用透明度或轉換為不同的色彩深度。某些設定具有專用檢視器，可在套用前以全解析度查看結果。主視窗中的縮圖預覽即時顯示結果。",
+    "create_icon": "建立圖示",
+    "create_icon_content": "MosaicView允許您從馬賽克中的任何圖像建立圖示檔案(.ico)。\n• 右鍵點擊圖像 → '建立圖示'\n• 在檢視器中框選所需區域（圖示必須為正方形）\n• 如有需要，調整透明度\n• 確認：.ico檔案直接新增至馬賽克中\n• .ico檔案自動包含所有標準解析度（從16×16到256×256）\n• 只要馬賽克中存在.ico檔案，儲存至CBZ壓縮檔就會被封鎖，因為這些壓縮檔不支援ICO格式。單獨匯出.ico檔案（Ctrl+C然後貼上至Windows資料夾），然後在儲存前從馬賽克中刪除它。",
+    "batch_convert": "批次轉換",
+    "batch_convert_content": "MosaicView提供八種批次轉換功能，僅在拼圖為空時可用。每種功能的原則相同：選擇目錄、確認、即時追蹤進度、查看最終摘要。一個選項允許永久刪除原始檔案，而不是將其傳送至資源回收筒。\n• CBR → CBZ：轉換目錄及其子目錄中的所有CBR（RAR）檔案。如果CBR實際上是ZIP、7z或TAR，則無需轉換直接用正確的副檔名重新命名。重新命名的檔案和錯誤記錄在日誌中。\n• CB7 → CBZ：轉換所有CB7（7-Zip）檔案。如果是ZIP、RAR或TAR則重新命名。記錄。\n• CBT → CBZ：轉換所有CBT（TAR）檔案。如果是ZIP、RAR或7z則重新命名。記錄。\n• PDF → CBZ：轉換目錄及子目錄中的所有PDF檔案。影像無需重新壓縮即可擷取。\n• 獨立影像 → CBZ：為目錄及子目錄中的每個影像檔案建立單獨的CBZ。無效、損毀、多頁（TIFF）或動畫（GIF）影像將被忽略並記錄。\n• 詮釋資料匯入：自動從ComicVine取得所有相容檔案（CBZ、CBR、CB7、CBT、PDF）的詮釋資料（標題、系列、作者…）。精靈依序為每個檔案開啟。\n• 建立書庫：將目錄及子目錄中的所有相容檔案索引至新的MosaicView書庫（*.mvdb）中。詳情請參閱書庫部分。\n• 以預設等級重新壓縮 CBZ 檔案：掃描目錄及其子目錄中的所有 CBZ、CBR、CB7 和 CBT 檔案。無論副檔名為何，都會偵測每個檔案的真實格式：命名錯誤的檔案（例如實際上是 ZIP 的 .cbr 檔案）會在處理前重新命名為正確的副檔名。只有真正的 CBZ 檔案才會被重新壓縮，而且僅當它們尚未處於預設壓縮等級時才會處理。最終摘要顯示已分析、已重新壓縮、已處於預設等級和已忽略（非 CBZ）的檔案數量。",
+    "config_open_temp_folder": "開啟暫存資料夾",
+    "icon_toolbar": "圖示工具列",
+    "icon_toolbar_content": "圖示工具列可快速存取應用程式的主要功能。您可以直接在工具列中拖曳圖示，隨意重新排列。若要選擇顯示或隱藏哪些圖示，請按一下工具列底部的齒輪按鈕:將開啟一個設定視窗，您可以在活動工具列和備用區之間移動圖示。使用 « + » 和 « − » 按鈕調整圖示大小。設定將自動儲存。",
+    "license_7zip": "7-Zip 授權",
+    "nfo_editor": "建立和編輯 NFO 檔案",
+    "nfo_editor_content": "NFO 檔案是一種文字檔案（副檔名為 .nfo），用於儲存關於封存的資訊：簡介、製作人員、備註…\n\n要建立 NFO 檔案，請使用工具列中的專用圖示、檔案選單或內容選單（在馬賽克上按右鍵）。只有當馬賽克不為空時，該命令才可用。輸入名稱和內容：檔案直接插入馬賽克中，無需解壓縮或中間儲存。\n\n要編輯現有的 NFO 檔案，請在馬賽克中雙擊它。視窗開啟時已預先填入目前名稱和內容，兩者均可編輯。在兩種情況下，操作都會記錄在復原歷史記錄中。",
+    "metadata": "ComicVine 元資料",
+    "metadata_content": "MosaicView 支援從 ComicVine 資料庫（由社群維護的協作網站）自動擷取漫畫元資料（標題、系列、期號、作者、簡介...）。\n\n單本模式：開啟一本漫畫，然後使用工具列按鈕或元資料選單。精靈分兩步開啟：先選擇系列，再選擇對應的期次。元資料將寫入壓縮檔內的 ComicInfo.xml 檔案。\n\n批次模式：將一個或多個資料夾拖放到拼貼板並選擇「批量匯入元資料」，或使用工具列上的專用按鈕或元資料選單。精靈依序為找到的每個檔案（CBZ、CBR、CB7、CBT、PDF）開啟。非 CBZ 檔案在寫入元資料後會自動轉換為 CBZ。\n\nAPI 金鑰：需要免費的 ComicVine API 金鑰。應用程式將引導您取得。在 comicvine.gamespot.com 上建立帳號後即可獲得。 金鑰永遠不會以明文儲存：它由 Windows DPAPI 加密，只有您的 Windows 帳號才能讀取。\n\nAPI 限制：以下限制由 ComicVine 施加，無法繞過。\n• 每小時每個資源最多 200 次請求。達到此限制後，搜尋將暫時失敗直到整點結束。\n• 每次請求最多返回 100 筆結果，對於期數較多的系列需將搜尋拆分為多次呼叫。\n• 網站每秒僅允許 1 次請求。為安全起見，MosaicView 在每次請求之間等待 2 秒，因為更快的請求極有可能導致暫時封鎖。\n\n此功能完全基於開源專案 {scraper}。",
+    "library": "書庫",
+    "library_content": "書庫讓您可以對數位漫畫進行分類並輕鬆找到它們。它透過讀取每個檔案中包含的詮釋資料（標題、系列、作者、出版社…）並將其彙集到單一書庫檔案（*.mvdb）中來運作。\n\n若要建立書庫，請使用書庫選單 → 新建資料庫，或將一個或多個資料夾拖曳到馬賽克中並選擇「從資料夾建立資料庫」。MosaicView 將掃描您的資料夾並自動為所有相容檔案建立索引。\n\n書庫開啟後，您可以依系列、作者、年份、出版社等篩選漫畫，可組合任意數量的條件。雙擊可在 MosaicView 中開啟檔案。結果可以匯出為 Excel 格式（*.xlsx）。",
+    "zip_compression": "ZIP 壓縮",
+    "zip_compression_content": "MosaicView 允許您選擇每次儲存 CBZ 時套用的 ZIP 壓縮等級，可透過狀態列指示器、系統選單或右鍵選單（在畫布上按右鍵）存取。\n\n預設等級為 0（不壓縮）：漫畫圖片已經由其自身格式壓縮過（JPEG、PNG、WebP...），因此在此基礎上再壓縮 ZIP 封存檔不會節省任何空間，但會明顯減慢儲存和讀取速度。可以變更此等級，但除非有特殊需求，否則不建議這樣做。\n\n狀態列指示器顯示開啟檔案的實際壓縮狀態：如果檔案未壓縮則顯示「0」，如果已壓縮則顯示「1」（ZIP 格式無法得知確切的原始等級），如果檔案不是 CBZ 則顯示「--」。在相關情況下，按左鍵點擊指示器會提供以預設等級重新儲存檔案（或將其轉換為 CBZ）的選項。按右鍵點擊會開啟預設等級設定視窗。",
+    "wilhelm_scream": "威廉的尖叫",
+    "wilhelm_scream_content": "少數罕見且嚴重的錯誤會觸發著名的威廉尖叫音效，這是自1950年代以來在數百部電影和電視劇中使用的音效。如果您不知道這是什麼，維基百科頁面（英文）對此有很好的解釋:https://en.wikipedia.org/wiki/Wilhelm_scream\nMosaicView中使用的聲音來自該頁面，並已轉換為WAV格式以便應用程式播放。",
+    "wilhelm_scream_save": "儲存聲音",
+    "wilhelm_scream_save_success": "已將{count}個音訊檔案儲存至:"
+  },
+  "misc": {
+    "file_word": "檔案",
+    "files_word": "檔案",
+    "corrupted": "已損毀",
+    "yes": "是",
+    "no": "否",
+    "cancel": "取消",
+    "selection_suffix": "副本-選取"
+  },
+  "metadata": {
+    "title": "標題",
+    "series": "系列",
+    "number": "編號",
+    "volume": "卷",
+    "summary": "摘要",
+    "writer": "編劇",
+    "penciller": "鉛筆畫家",
+    "inker": "描線師",
+    "colorist": "上色師",
+    "letterer": "字體師",
+    "cover_artist": "封面藝術家",
+    "editor": "編輯(人)",
+    "publisher": "出版社",
+    "imprint": "叢書",
+    "genre": "類型",
+    "web": "網站",
+    "page_count": "頁數",
+    "language_iso": "語言",
+    "format": "格式",
+    "black_and_white": "黑白",
+    "manga": "漫畫",
+    "year": "年",
+    "month": "月",
+    "day": "日",
+    "notes": "備註",
+    "characters": "角色",
+    "locations": "地點",
+    "teams": "團隊",
+    "story_arc": "故事弧",
+    "story_arc_number": "故事弧編號",
+    "series_group": "系列組",
+    "count": "期數",
+    "alternate_series": "替代系列",
+    "alternate_number": "替代編號",
+    "alternate_count": "替代計數",
+    "age_rating": "年齡分級",
+    "series_complete": "系列完結",
+    "translator": "譯者",
+    "tags": "標籤",
+    "scan_information": "掃描信息",
+    "community_rating": "社區評分",
+    "review": "評論",
+    "gtin": "GTIN",
+    "pages": "頁面",
+    "pages_col_image": "圖像",
+    "pages_col_type": "類型",
+    "pages_col_width": "寬度",
+    "pages_col_height": "高度",
+    "pages_col_size": "大小 (B)",
+    "is_read": "已讀",
+    "has_comicinfo": "ComicInfo.xml",
+    "can_have_comicinfo": "可包含ComicInfo",
+    "filename": "檔案名稱",
+    "file_extension": "副檔名",
+    "file_size": "檔案大小",
+    "file_modified_at": "修改日期",
+    "indexed_at": "索引日期",
+    "relative_path": "相對路徑"
+  },
+  "web": {
+    "web_download_progress": "下載中：{downloaded}/{total} 張圖片...",
+    "web_download_cancel": "取消",
+    "web_no_images": "無圖片",
+    "web_no_images_found": "此頁面未找到圖片。",
+    "web_imported": "從網頁匯入了 {count} 張圖片",
+    "web_drag_drop_title": "網頁圖片拖放",
+    "web_copy_paste_message": "不支援從網路瀏覽器直接拖放。\\n\\n替代解決方案（更簡單）：\\n\\n1. 在瀏覽器中右鍵點擊圖片\\n2. 選擇「複製圖片」\\n3. 在 MosaicView 中，使用「貼上」按鈕或 Ctrl+V\\n\\n此方法適用於所有網頁圖片！",
+    "web_drop_no_images_title": "沒有圖片",
+    "web_drop_no_images_message": "在此頁面上未找到任何圖片。",
+    "web_drop_forbidden_title": "存取被拒絕",
+    "web_drop_forbidden_message": "網站拒絕了連線(錯誤 403)。\n\n某些網站會封鎖自動下載。請嘗試在瀏覽器中開啟該頁面並直接複製圖片(右鍵點擊 → 複製圖片，然後在 MosaicView 中按 Ctrl+V)。",
+    "web_drop_error_title": "連線失敗",
+    "web_drop_error_message": "無法取得此頁面的內容。請檢查您的網際網路連線或連結位址。",
+    "import_web_button": "網頁匯入",
+    "import_web_tooltip": "貼上網址以取得頁面中的所有圖片",
+    "import_web_menu": "網頁匯入...",
+    "import_web_dialog_title": "從網頁匯入圖片",
+    "import_web_url_label": "網頁地址：",
+    "import_web_ok_button": "確定",
+    "import_web_cancel_button": "取消",
+    "import_web_invalid_url": "無效的 URL。請輸入有效的網址。"
+  },
+  "donation": {
+    "menu_label": "向作者捐贈",
+    "title": "進行捐贈",
+    "message": "您喜歡這個小工具，並經常使用它。我在它上面投入了幾百個小時。您會考慮通過捐贈來感謝我嗎？請善良一點，我真的需要錢來用香檳填滿我的游泳池。\n\n無論您想給我寄幾分錢還是幾十億歐元，我都接受所有金額。您可以通過paypal進行捐贈"
+  },
+  "mail": {
+    "tooltip": "此按鈕打開Windows中的預設電子郵件軟體以發送電子郵件。如果未配置軟體（例如，如果您僅使用網路郵件），則可以透過右鍵單擊圖示將MosaicView地址複製到剪貼簿。",
+    "copy_address": "複製 MosaicView 電子郵件地址",
+    "menu_label": "向MosaicView發送電子郵件",
+    "icon_label": "傳送電子郵件"
+  },
+  "menu": {
+    "file": "檔案",
+    "file_open": "開啟檔案",
+    "file_close": "關閉檔案",
+    "batch_convert": "批次轉換檔案",
+    "batch_cbr_to_cbz": "CBR → CBZ",
+    "batch_pdf_to_cbz": "PDF → CBZ",
+    "batch_img_to_cbz": "獨立圖片 → CBZ",
+    "edit": "編輯",
+    "undo": "復原",
+    "redo": "取消復原",
+    "paste": "貼上",
+    "delete": "刪除",
+    "invert_selection": "反向選取",
+    "select_all": "全選",
+    "deselect": "取消選取",
+    "refresh_mosaic": "重新整理拼圖",
+    "images": "圖片",
+    "rotation": "旋轉",
+    "archives": "檔案庫",
+    "sort": "排序",
+    "system": "系統",
+    "decrease_font": "縮小字型",
+    "increase_font": "放大字型",
+    "language": "語言",
+    "language_real": "真實語言",
+    "language_fictional": "虛構語言",
+    "about": "關於",
+    "export_piqad_font": "儲存 pIqaD 字型",
+    "export_tengwar_fonts": "儲存 tengwar 字型",
+    "view_on_github": "在 GitHub 上查看原始碼",
+    "check_for_updates": "檢查更新",
+    "batch_cb7_to_cbz": "CB7 → CBZ",
+    "batch_cbt_to_cbz": "CBT → CBZ",
+    "show_changelog": "更新日誌",
+    "webpage": "網頁",
+    "zip_compression": "預設 ZIP 壓縮"
+  },
+  "updates": {
+    "dialog_title": "更新",
+    "up_to_date": "您正在使用最新版本的 MosaicView ({version})。",
+    "update_available": "有新版本可用: {latest}\n您目前使用的是版本 {current}。",
+    "error": "無法檢查更新。\n請檢查您的網路連線。",
+    "download": "下載",
+    "checking": "正在檢查...",
+    "banner_message": "有新版本:",
+    "menu_update_available": "有更新 ({latest})",
+    "retry": "重試"
+  },
+  "nfo": {
+    "window_title": "建立 NFO 檔案",
+    "window_title_edit": "編輯 NFO 檔案",
+    "filename_label": "檔案名稱",
+    "content_label": "內容",
+    "btn_create": "建立 NFO",
+    "btn_save": "儲存",
+    "btn_clear": "清除",
+    "menu_item": "建立 NFO 檔案",
+    "tooltip": "建立 NFO 檔案",
+    "success_title": "NFO 檔案已建立",
+    "success_message": "檔案 {filename} 已建立。",
+    "error_title": "錯誤",
+    "error_empty_name": "請輸入檔案名稱。",
+    "error_write": "無法寫入檔案:\n{error}",
+    "error_duplicate": "名為 {filename} 的檔案已存在於馬賽克中。"
+  },
+  "comicvine": {
+    "api_key_dialog": {
+      "title": "ComicVine API 金鑰",
+      "explanation": "為了獲取漫畫的元數據，MosaicView 使用 ComicVine 資料庫。您需要一個免費的 API 金鑰。",
+      "instructions": "在 {comicvine} 上建立帳戶，然後前往 {api_page} 取得您的金鑰。",
+      "api_page_label": "API 頁面",
+      "field_label": "API 金鑰:",
+      "placeholder": "在此處貼上您的 API 金鑰",
+      "validate": "確認",
+      "error_empty": "請輸入 API 金鑰。",
+      "clear": "清除金鑰",
+      "encryption_notice": "您的金鑰永遠不會以明文儲存。它受到 Windows DPAPI 加密保護，與您的工作階段綁定。",
+      "show_key": "顯示",
+      "hide_key": "隱藏"
+    },
+    "menu_label": "元數據",
+    "tooltip": "獲取元數據",
+    "change_api_key": "更改 ComicVine API 金鑰",
+    "search_placeholder": "搜尋系列...",
+    "search_button": "搜尋",
+    "searching": "搜尋中...",
+    "loading_issues": "正在載入期次...",
+    "results_count": "{total} 個結果中的 {count} 個",
+    "issues_count": "\"{series}\" 的 {count} 期",
+    "col_series": "系列",
+    "col_year": "年份",
+    "col_issues": "期次",
+    "col_publisher": "出版社",
+    "col_issue_num": "期號",
+    "col_issue_title": "標題",
+    "btn_skip": "跳過",
+    "btn_back": "返回",
+    "info_single": "此功能獲取當前開啟的漫畫的元數據。要一次處理多個檔案，請使用批次處理（將資料夾拖曳到視窗上）。",
+    "page_indicator": "第 {page} 頁",
+    "loading_issues_progress": "載入中... {loaded} / {total}",
+    "fetching_metadata": "正在下載元數據...",
+    "issues_partial_load": "已載入 {count} 期 — 載入中斷: {error}",
+    "credit": "元資料：{comicvine} · 靈感來自 {scraper}",
+    "create_comicinfo": "建立 ComicInfo.xml 檔案",
+    "edit_comicinfo": "編輯 ComicInfo.xml 檔案",
+    "error_network_connection": "無法連線至 ComicVine，請檢查您的網路連線。",
+    "error_network_timeout": "ComicVine 回應時間過長，請稍後再試。"
+  },
+  "bookmark": {
+    "popup_title": "書籤",
+    "popup_message": "您在此漫畫第 {page} 頁有一個書籤。\n繼續閱讀？",
+    "popup_yes": "是",
+    "popup_no": "否"
+  },
+  "library": {
+    "window_title": "資料庫 — {name}",
+    "window_title_no_db": "資料庫",
+    "close_warning_title": "關閉 MosaicView",
+    "close_warning_message": "目前有一個資料庫正在開啟中。關閉 MosaicView 也將關閉該資料庫。\n\n是否要繼續？",
+    "menu_label": "資料庫",
+    "menu_title": "資料庫",
+    "tooltip": "開啟資料庫",
+    "db_menu": "資料庫",
+    "db_new": "新增資料庫...",
+    "db_open": "開啟資料庫...",
+    "db_close": "關閉資料庫",
+    "db_recent": "最近的資料庫",
+    "db_recent_clear": "清除歷程記錄",
+    "db_rename": "重新命名資料庫...",
+    "db_add_directory": "新增目錄...",
+    "db_edit_master": "編輯主目錄...",
+    "db_scan": "掃描目錄",
+    "db_open_explorer": "在檔案總管中開啟主目錄",
+    "db_delete": "刪除資料庫...",
+    "db_new_title": "新增資料庫",
+    "db_new_name_label": "資料庫名稱:",
+    "db_new_dir_label": "主目錄:",
+    "db_new_dir_browse": "瀏覽...",
+    "db_new_dir_title": "選擇主目錄",
+    "db_new_error_no_name": "請輸入資料庫名稱。",
+    "db_new_error_no_dir": "請選擇主目錄。",
+    "db_rename_title": "重新命名資料庫",
+    "db_rename_label": "新名稱:",
+    "db_rename_error_empty": "名稱不能為空。",
+    "db_edit_master_title": "編輯主目錄",
+    "db_edit_master_label": "新主目錄:",
+    "db_add_directory_title": "新增附加目錄",
+    "db_delete_title": "刪除資料庫",
+    "db_delete_message": "您確定要刪除資料庫嗎",
+    "db_delete_confirm": "刪除",
+    "scan_title": "正在掃描...",
+    "scan_scanning": "正在掃描 {path}...",
+    "scan_new": "新增: {filename}",
+    "scan_updated": "已更新: {filename}",
+    "scan_deleted": "已刪除: {filename}",
+    "scan_complete_title": "掃描完成",
+    "scan_complete_message": "新增 {new} 個，更新 {updated} 個，刪除 {deleted} 個。",
+    "scan_nothing": "未偵測到任何變更。",
+    "col_is_read": "已讀",
+    "col_series": "系列",
+    "col_volume": "卷",
+    "col_number": "期號",
+    "col_writer": "編劇",
+    "col_penciller": "繪者",
+    "col_inker": "上墨師",
+    "col_publisher": "出版商",
+    "col_characters": "角色",
+    "col_teams": "團隊",
+    "col_year": "年份",
+    "col_page_count": "頁數",
+    "col_file_size": "大小",
+    "col_filename": "檔案",
+    "col_file_extension": "副檔名",
+    "col_title": "標題",
+    "col_month": "月份",
+    "col_day": "日",
+    "col_penciller_short": "繪者",
+    "col_colorist": "上色師",
+    "col_letterer": "字母師",
+    "col_cover_artist": "封面藝術家",
+    "col_editor": "編輯",
+    "col_imprint": "系列集",
+    "col_genre": "類型",
+    "col_language": "語言",
+    "col_age_rating": "年齡分級",
+    "col_black_and_white": "黑白",
+    "col_manga": "漫畫",
+    "col_locations": "地點",
+    "col_story_arc": "故事弧",
+    "col_summary": "簡介",
+    "col_web": "網站",
+    "col_has_comicinfo": "包含 ComicInfo.xml 檔案",
+    "col_can_have_comicinfo": "可以包含 ComicInfo.xml 檔案",
+    "col_relative_path": "路徑",
+    "col_file_modified_at": "修改日期",
+    "col_indexed_at": "索引日期",
+    "mark_read": "標記為已讀",
+    "mark_unread": "標記為未讀",
+    "open_in_mosaicview": "在MosaicView中閱讀",
+    "open_in_explorer": "在檔案總管中開啟資料夾",
+    "open_with_default": "以預設應用程式開啟",
+    "no_db_open": "沒有開啟的資料庫。\n使用「資料庫」選單建立或開啟資料庫。",
+    "search_panel_title": "搜尋",
+    "search_field_label": "欄位",
+    "search_operator_label": "運算子",
+    "search_value_label": "值",
+    "search_link_label": "連結",
+    "search_add_criterion": "+ 新增條件",
+    "search_remove_criterion": "刪除",
+    "search_button": "搜尋",
+    "search_clear": "清除",
+    "search_link_and": "且",
+    "search_link_or": "或",
+    "search_link_not": "排除",
+    "search_op_contains": "包含",
+    "search_op_not_contains": "不包含",
+    "search_op_is": "完全符合",
+    "search_op_empty": "為空",
+    "search_op_not_empty": "不為空",
+    "search_op_eq": "=",
+    "search_op_neq": "≠",
+    "search_op_gt": ">",
+    "search_op_lt": "<",
+    "search_op_gte": "≥",
+    "search_op_lte": "≤",
+    "search_op_between": "介於",
+    "search_op_true": "= 真",
+    "search_op_false": "= 假",
+    "search_op_before": "早於",
+    "search_op_after": "晚於",
+    "search_date_placeholder": "YYYY, YYYY-MM 或 YYYY-MM-DD",
+    "search_results_count": "{count} 個結果",
+    "search_error_unknown_token": "未知詞: \"{token}\"",
+    "db_filter_title": "選擇資料庫",
+    "db_filter_all": "資料庫檔案 (*.mvdb)",
+    "open_file_error_title": "錯誤",
+    "open_file_error_message": "無法在MosaicView中開啟檔案: {error}",
+    "db_new_save_label": "資料庫儲存目錄 :",
+    "db_new_save_title": "選擇儲存目錄",
+    "search_op_any": "(忽略)",
+    "search_op_is_read": "已讀",
+    "search_op_not_read": "未讀",
+    "reset_columns": "重置欄位",
+    "loading": "載入中...\n{percent}%",
+    "scan_progress": "掃描中...",
+    "fetch_metadata": "取得中繼資料",
+    "table_header_tooltip": "拖動以移動欄。\n拉伸欄以調整大小。\n按右鍵以新增或隱藏欄。",
+    "cell_not_set": "未填寫",
+    "cell_not_set_num": "未",
+    "export_results": "匯出結果",
+    "export_results_tooltip": "將結果以XLSX（Excel）格式匯出，大多數試算表應用程式可原生讀取。若搜尋處於啟用狀態，僅匯出其結果。未顯示的欄位將以隱藏欄位的形式包含在內。",
+    "export_save_title": "儲存表格",
+    "export_success": "已將 {count} 列匯出至 {path}",
+    "export_error": "匯出時發生錯誤: {error}",
+    "export_no_data": "沒有可匯出的資料。",
+    "export_hidden_cols_note": "此表格包含隱藏欄位。若要顯示，請參閱您的試算表軟體說明。",
+    "export_progress": "請稍候\n正在儲存 {percent}%",
+    "export_saving": "請稍候\n正在儲存...",
+    "db_delete_irreversible": "此操作無法復原。",
+    "preview_unavailable": "封面不可用\n\n該檔案在此電腦上可能無法存取，或已被移動或刪除。"
+  },
+  "comicinfo": {
+    "window_title_create": "建立 ComicInfo.xml 檔案",
+    "window_title_edit": "編輯 ComicInfo.xml 檔案",
+    "filename_label": "檔案名稱 :",
+    "btn_create": "建立",
+    "btn_save": "儲存",
+    "btn_clear": "清空所有欄位",
+    "error_title": "錯誤",
+    "error_empty_name": "檔案名稱不能為空。",
+    "error_duplicate": "檔案 {filename} 在拼圖中已存在。",
+    "section_series": "系列",
+    "section_publication": "出版",
+    "section_classification": "分類",
+    "section_credits": "創作團隊",
+    "section_content": "內容",
+    "section_misc": "其他",
+    "field_series": "系列 :",
+    "field_title": "標題 :",
+    "field_number": "編號 :",
+    "field_count": "總數 :",
+    "field_volume": "冊 :",
+    "field_alternate_series": "替代系列 :",
+    "field_alternate_number": "替代編號 :",
+    "field_alternate_count": "替代總數 :",
+    "field_series_group": "系列群組 :",
+    "field_story_arc": "故事弧 :",
+    "field_story_arc_number": "弧編號 :",
+    "field_publisher": "出版商 :",
+    "field_imprint": "印記 :",
+    "field_year": "年 :",
+    "field_month": "月 :",
+    "field_day": "日 :",
+    "field_format": "格式 :",
+    "field_language_iso": "語言 (ISO) :",
+    "field_page_count": "頁數 :",
+    "field_genre": "類型 :",
+    "field_tags": "標籤 :",
+    "field_age_rating": "年齡分級 :",
+    "field_community_rating": "社群評分 :",
+    "field_black_and_white": "黑白 :",
+    "field_manga": "漫畫 :",
+    "field_series_complete": "系列完結 :",
+    "field_writer": "編劇 :",
+    "field_penciller": "鉛筆師 :",
+    "field_inker": "上墨師 :",
+    "field_colorist": "上色師 :",
+    "field_letterer": "字體師 :",
+    "field_cover_artist": "封面畫師 :",
+    "field_editor": "編輯 :",
+    "field_translator": "譯者 :",
+    "field_characters": "角色 :",
+    "field_teams": "團隊 :",
+    "field_locations": "地點 :",
+    "field_web": "網站 :",
+    "field_gtin": "GTIN :",
+    "field_scan_information": "掃描資訊 :",
+    "field_notes": "備註 :",
+    "field_summary": "摘要 :",
+    "field_review": "評論 :",
+    "combo_empty": "(空)",
+    "combo_other_language": "(其他)",
+    "month_1": "一月",
+    "month_2": "二月",
+    "month_3": "三月",
+    "month_4": "四月",
+    "month_5": "五月",
+    "month_6": "六月",
+    "month_7": "七月",
+    "month_8": "八月",
+    "month_9": "九月",
+    "month_10": "十月",
+    "month_11": "十一月",
+    "month_12": "十二月",
+    "age_adults_only": "僅限成人 (18+)",
+    "age_early_childhood": "幼兒",
+    "age_everyone": "全年齡",
+    "age_everyone_10": "10歲以上",
+    "age_g": "G",
+    "age_kids_to_adults": "兒童至成人",
+    "age_m": "M",
+    "age_ma15": "MA15+",
+    "age_mature_17": "成熟 (17+)",
+    "age_pg": "PG",
+    "age_r18": "R18+",
+    "age_rating_pending": "評級待定",
+    "age_teen": "青少年",
+    "age_unknown": "未知",
+    "age_x18": "X18+",
+    "yesno_unknown": "未知",
+    "yesno_no": "否",
+    "yesno_yes": "是",
+    "manga_yes_right_to_left": "是 (從右到左)",
+    "icon_label": "建立或編輯 ComicInfo.xml 檔案"
+  },
+  "comicvine_url": {
+    "window_title": "ComicVine 中繼資料",
+    "intro": "如果您知道確切的網址，可以直接從 ComicVine 頁面載入中繼資料，或者繼續進行搜尋。",
+    "field_label": "ComicVine 頁面網址:",
+    "placeholder": "在此貼上網址",
+    "hint_series": "您也可以貼上整個系列的網址:之後您可以從清單中選擇期號。",
+    "warning": "請確認此網址確實對應正確的系列和期號。",
+    "btn_download": "從該網址下載中繼資料",
+    "btn_search": "前往搜尋",
+    "error_empty": "請輸入一個網址。",
+    "error_invalid_url": "該網址似乎不是有效的 ComicVine 頁面（系列或期號）。",
+    "error_not_found": "在該網址未找到任何資料。",
+    "downloading": "正在下載...",
+    "download_done_title": "中繼資料已下載",
+    "download_done_message": "中繼資料已成功下載並儲存。"
+  },
+  "comicvine_update": {
+    "btn_check": "檢查更新",
+    "checking": "正在檢查...",
+    "up_to_date_title": "中繼資料已是最新",
+    "up_to_date_message": "未發現任何差異。中繼資料已是最新。",
+    "diff_window_title": "有可用更新",
+    "diff_intro": "以下欄位在 ComicVine 上已變更:",
+    "status_modified": "已修改",
+    "status_added": "已新增",
+    "btn_update_all": "更新所有中繼資料",
+    "btn_cancel": "取消",
+    "error_title": "檢查錯誤",
+    "error_not_found": "在 ComicVine 上未找到該期號的資料。",
+    "update_done_title": "中繼資料已更新",
+    "update_done_message": "中繼資料已成功更新。"
+  }
 }

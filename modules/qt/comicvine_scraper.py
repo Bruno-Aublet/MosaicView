@@ -16,6 +16,51 @@ except ImportError:
 _API_BASE = "https://comicvine.gamespot.com/api"
 _CLIENT_TAG = "&client=mosaicview"
 
+
+class ComicVineNetworkError(RuntimeError):
+    """Erreur réseau ComicVine (timeout, connexion impossible...).
+
+    Porte une clé de traduction (`translation_key`) plutôt qu'un message déjà
+    résolu, pour que les fenêtres Qt puissent la retraduire dynamiquement au
+    changement de langue via `lambda: _(exc.translation_key)`, exactement
+    comme un message d'erreur normal construit avec une clé de traduction."""
+
+    def __init__(self, translation_key):
+        self.translation_key = translation_key
+        from modules.qt.localization import _
+        super().__init__(_(translation_key))
+
+
+# Préfixe interne utilisé pour faire transiter une clé de traduction à travers
+# un signal Qt `Signal(str)` (qui ne peut porter qu'une chaîne déjà figée).
+_TRANSLATION_KEY_PREFIX = "\x00i18n:"
+
+
+def error_to_signal_payload(exc):
+    """Convertit une exception levée par le scraper en chaîne à faire
+    transiter via un signal Qt `error = Signal(str)`.
+
+    Si `exc` est une ComicVineNetworkError, encode sa clé de traduction
+    (préfixée) au lieu du message déjà résolu, pour permettre une retraduction
+    dynamique côté UI. Sinon, retourne str(exc) tel quel (comportement
+    historique, message technique ou déjà nettoyé par _redact_api_key)."""
+    if isinstance(exc, ComicVineNetworkError):
+        return _TRANSLATION_KEY_PREFIX + exc.translation_key
+    return str(exc)
+
+
+def error_message_fn(payload):
+    """Reconstruit, côté UI, un callable () -> str affichable dans un
+    ErrorDialog à partir du payload produit par `error_to_signal_payload`.
+
+    Retraduit dynamiquement si le payload encode une clé de traduction
+    (changement de langue pris en compte), sinon affiche le texte tel quel."""
+    from modules.qt.localization import _
+    if payload.startswith(_TRANSLATION_KEY_PREFIX):
+        key = payload[len(_TRANSLATION_KEY_PREFIX):]
+        return lambda: _(key)
+    return lambda p=payload: p
+
 # Rate limiting : 1 requête/seconde minimum (ComicVine l'exige)
 _next_query_time = 0.0
 _QUERY_DELAY_S = 2.0
@@ -71,7 +116,35 @@ def _get_json(url, api_key, params=None):
             if attempt < _MAX_RETRIES - 1:
                 time.sleep(_RETRY_DELAYS[attempt])
 
-    raise last_exc
+    network_error = _classify_network_error(last_exc)
+    if network_error:
+        raise network_error from last_exc
+    raise RuntimeError(_redact_api_key(str(last_exc))) from last_exc
+
+
+def _classify_network_error(exc):
+    """Reconnaît une exception réseau requests/urllib3 (ConnectionError,
+    Timeout...) et retourne une ComicVineNetworkError correspondante, avec
+    une clé de traduction plutôt qu'un message figé, pour que l'UI puisse
+    l'afficher clairement (au lieu de la stack technique brute — hôte, port,
+    NameResolutionError, Errno...) et la retraduire au changement de langue.
+    Retourne None si ce n'est pas une erreur réseau reconnue (ex. RuntimeError
+    d'API, qui garde son message tel quel, juste nettoyé de la clé API)."""
+    if not _REQUESTS_AVAILABLE:
+        return None
+    if isinstance(exc, _requests.exceptions.Timeout):
+        return ComicVineNetworkError("comicvine.error_network_timeout")
+    if isinstance(exc, _requests.exceptions.ConnectionError):
+        return ComicVineNetworkError("comicvine.error_network_connection")
+    return None
+
+
+def _redact_api_key(message):
+    """Masque la valeur api_key=... d'un message d'erreur avant affichage
+    utilisateur : les exceptions réseau de `requests` incluent souvent l'URL
+    complète appelée, clé API en clair comprise (visible dans une capture
+    d'écran d'erreur partagée pour demander de l'aide, par exemple)."""
+    return re.sub(r'(api_key=)[^&\s]+', r'\1***', message)
 
 
 def _strip_html(text):
@@ -321,4 +394,27 @@ def get_series_details(api_key, series_id):
         "publisher":  pub.get("name", "") if isinstance(pub, dict) else "",
         "start_year": (r.get("start_year") or "").rstrip("- "),
         "genre":      genre_str,
+    }
+
+
+def get_series_summary(api_key, series_id):
+    """
+    Récupère un résumé minimal d'une série, au format attendu par la page de
+    choix des issues (_Page2Issues.populate_issues) : { 'id', 'name', 'start_year',
+    'publisher', 'issue_count', 'image_url' } ou None si la série n'existe pas.
+    """
+    url = f"{_API_BASE}/volume/4050-{series_id}/"
+    params = {"field_list": "id,name,start_year,publisher,count_of_issues,image"}
+    data = _get_json(url, api_key, params)
+    r = data.get("results")
+    if not r:
+        return None
+    pub = r.get("publisher") or {}
+    return {
+        "id": r.get("id"),
+        "name": r.get("name", ""),
+        "start_year": (r.get("start_year") or "").rstrip("- "),
+        "publisher": pub.get("name", "") if isinstance(pub, dict) else "",
+        "issue_count": r.get("count_of_issues", ""),
+        "image_url": _parse_image_url(r.get("image")),
     }

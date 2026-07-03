@@ -264,18 +264,26 @@ class ErrorDialog(QDialog):
     title et message peuvent être une str (figée) ou un callable () → str
     (callable utilisé pour reconstruire le texte à chaque changement de langue).
 
+    play_sound : easter egg (cri de Wilhelm) joué à l'ouverture — réservé aux
+    erreurs système rares et graves (échec d'écriture disque, erreur réseau
+    imprévue...), jamais aux simples validations utilisateur. False par défaut.
+
     Usage :
         ErrorDialog(parent, title_text, message_text).exec()
-        ErrorDialog(parent, lambda: _("key.title"), lambda: _("key.msg")).exec()
+        ErrorDialog(parent, lambda: _wt("key.title"), lambda: _("key.msg")).exec()
     """
 
-    def __init__(self, parent, title, message):
+    def __init__(self, parent, title, message, play_sound=False):
         super().__init__(parent)
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
         self._center_parent = parent
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
+
+        if play_sound:
+            from modules.qt.easter_eggs_qt import play_wilhelm_scream
+            play_wilhelm_scream()
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 12)
@@ -304,6 +312,14 @@ class ErrorDialog(QDialog):
         if self._center_parent and not event.spontaneous():
             p = self._center_parent
             QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+
+    def show_nonmodal(self):
+        # Positionne sur le panneau AVANT le premier affichage (pas de flash de
+        # recentrage). Le showEvent ajuste ensuite si la taille a changé.
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -353,7 +369,7 @@ class InfoDialog(QDialog):
 
     Usage :
         InfoDialog(parent, title_text, message_text).exec()
-        InfoDialog(parent, lambda: _("key.title"), lambda: _("key.msg")).exec()
+        InfoDialog(parent, lambda: _wt("key.title"), lambda: _("key.msg")).exec()
     """
 
     def __init__(self, parent, title, message):
@@ -374,6 +390,8 @@ class InfoDialog(QDialog):
         self._lbl.setMinimumWidth(380)
         self._lbl.setOpenExternalLinks(False)
         self._lbl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        from modules.qt.utils import setup_html_label_context_menu
+        setup_html_label_context_menu(self._lbl)
         layout.addWidget(self._lbl)
 
         self._btn_ok = QPushButton()
@@ -393,6 +411,14 @@ class InfoDialog(QDialog):
         if self._center_parent and not event.spontaneous():
             p = self._center_parent
             QTimer.singleShot(0, lambda: _center_on_widget(self, p))
+
+    def show_nonmodal(self):
+        # Positionne sur le panneau AVANT le premier affichage (pas de flash de
+        # recentrage). Le showEvent ajuste ensuite si la taille a changé.
+        position_dialog_on_parent(self, self._center_parent)
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -444,7 +470,7 @@ class QuestionYNCDialog(QDialog):
 
     Usage :
         result = QuestionYNCDialog(parent, title_text, message_text).ask()
-        result = QuestionYNCDialog(parent, lambda: _("key"), lambda: build_msg()).ask()
+        result = QuestionYNCDialog(parent, lambda: _wt("key"), lambda: build_msg()).ask()
     """
 
     result_signal = Signal(str)   # "yes" | "no" | "cancel"
