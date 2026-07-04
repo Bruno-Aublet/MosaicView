@@ -1349,7 +1349,7 @@
     "nfo_editor": "Carph a gresta NFO-pherph",
     "nfo_editor_content": "NFO-parf i parf teitho (.nfo enethren) i gabed tirhad an i archiv: hammad, cannas, nothas…\n\nCarpho NFO-parf, anno i dîr hain vi i orthad, vi i lîst parf, egor vi i lîst comhad (pent forven vi i mosaig). I amber agor ach nag i mosaig i chwest. Anno eneth a hammad: i barf carpho sui vi i mosaig, bain amman gûr egor teitho erin-lend.\n\nGresto NFO-parf iest, nesta i archant vi i mosaig. I thûl agor pre-anno eneth a hammad iest, ammen gresto. Vi ammen, i trevad nottir vi i lîst heb-no.",
     "metadata": "ComicVine Nothrannath",
-    "metadata_content": "MosaicView ista i nothrannath i comicin (eneth, sîr, nûr, tîw, glaur...) ned i daur ComicVine, i veth govaded o i·chobar.\n\nMód er: egeria i comic, sí use i tangel o i Nothrannath menu. Tîr atho úpa: ece caro i sîr, sí i episod. Nothrannath carë ComicInfo.xml nu i cân.\n\nMód batch: lerta i taur ar selec \"Govaded i·nothrannath an·channas\", o use i tangel o i Nothrannath menu. Tîr úpa quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa nothrannath.\n\nAPI tangel: ComicVine API tangel lemya. I app tîruva le. Ista comicvine.gamespot.com épa conta. I ngilith ú-garar i phân eglain: orchenner o chryptad Windows DPAPI a chen ú-lethrar ach o i rant lín.\n\nAPI raeg: ComicVine carë tai raeg, ar umir nanner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni episodion sîren.\n• 1 petitioni quë cant. MosaicView caita 2 cant quë petitioni, ar raita petitioni nar raeg.\n\nI·thirnath hen certha i·vimp {scraper} am·men.",
+    "metadata_content": "MosaicView ista i nothrannath i comicin (eneth, sîr, nûr, tîw, glaur...) ned i daur ComicVine, i veth govaded o i·chobar.\n\nMód er: egeria i comic, sí use i tangel o i Nothrannath menu. Tîr atho úpa: ece caro i sîr, sí i episod. Nothrannath carë ComicInfo.xml nu i cân.\n\nMód batch: lerta i taur ar selec \"Govaded i·nothrannath an·channas\", o use i tangel o i Nothrannath menu. Tîr úpa quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa nothrannath.\n\nAPI tangel: ComicVine API tangel lemya. I app tîruva le. Ista comicvine.gamespot.com épa conta. I ngilith ú-garar i phân eglain: orchenner o chryptad Windows DPAPI a chen ú-lethrar ach o i rant lín.\n\nAPI raeg: ComicVine carë tai raeg, ar umir nanner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni episodion sîren.\n• 1 petitioni quë cant. MosaicView caita 2 cant quë petitioni, ar raita petitioni nar raeg.\n\nFormath chan ComicVine: chan renas ComicVine ú-veitha ná nern formath tuo, ab i naeth dhi. MosaicView ista dhi erui.\n• Formath sí: comicvine.gamespot.com/.../4000-XXXXX an nûr, comicvine.gamespot.com/.../4050-XXXXX an sîr.\n• Formath iaur: comicvine.com/.../37-XXXXX an nûr (i·nûr adel i·achar ná i·sam ennas; pen i·domen a i·telchor goenner).\n\nI·thirnath hen certha i·vimp {scraper} am·men.",
     "library": "I·Thamb",
     "library_content": "I·thamb allow lín catalogu ar hirë i·lîr teleryn. Eria o leithian i·maethor i·naid (eneth, i·naid, i·pedair, i·taur…) ar egleria mi er thamb (*.mvdb).\n\nCë carë i·thamb, use i·taur Thamb → Massa nóna, or lanta er ar lane taur na i·rembar ar maita \"Caro i·thambe o·i·taur(in)\". MosaicView maita i·taur ar cantë i·naid.\n\nCë i·thamb eria, lé lanta i·lîr o i·naid, i·pedair, loa, i·taur, etc. Er lempë anta i·naid mi MosaicView. I·maethor lé egleria mi XLSX (Excel).",
     "zip_compression": "Modh cened ZIP hen pen",
@@ -1722,7 +1722,11 @@
     "export_progress": "Daro\nTeitho {percent}%",
     "export_saving": "Daro\nTeitho...",
     "db_delete_irreversible": "I·veth sí ú·chedithar.",
-    "preview_unavailable": "Tithen ú·goven\n\nI·parf cenedh ú·bedirol i·vi·n·computer sí, hain avárer hen nâr tangado."
+    "preview_unavailable": "Tithen ú·goven\n\nI·parf cenedh ú·bedirol i·vi·n·computer sí, hain avárer hen nâr tangado.",
+    "col_comicvine_format": "Post ComicVine",
+    "search_op_cv_old": "Enedh vaen",
+    "search_op_cv_new": "Vinion vaen",
+    "search_op_cv_none": "Ú-bost post ComicVine"
   },
   "comicinfo": {
     "window_title_create": "Garo vâr ComicInfo.xml",

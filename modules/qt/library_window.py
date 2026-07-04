@@ -300,6 +300,7 @@ _ALL_FIELDS = [
     ('library.col_has_comicinfo',    'has_comicinfo'),
     ('library.col_summary',          'summary'),
     ('library.col_web',              'web'),
+    ('library.col_comicvine_format', 'comicvine_format'),
     ('metadata.notes',               'notes'),
     ('library.col_relative_path',    'relative_path'),
     ('library.col_file_modified_at', 'file_modified_at'),
@@ -336,6 +337,12 @@ _OPS_IS_READ = [
     ('library.search_op_is_read',   'true'),
     ('library.search_op_not_read',  'false'),
 ]
+_OPS_COMICVINE_FORMAT = [
+    ('library.search_op_any',      'any'),
+    ('library.search_op_cv_old',   'cv_old'),
+    ('library.search_op_cv_new',   'cv_new'),
+    ('library.search_op_cv_none',  'cv_none'),
+]
 _OPS_DATE = [
     ('library.search_op_before',    'before'),
     ('library.search_op_after',     'after'),
@@ -352,6 +359,9 @@ _OPS_DATE = [
 
 _BOOL_FIELDS = {'is_read', 'has_comicinfo', 'can_have_comicinfo', 'black_and_white', 'manga',
                 'series_complete'}
+# Champ virtuel (pas de valeur libre à saisir, juste un choix d'opérateur) :
+# calculé depuis la colonne 'web' existante, jamais stocké en base ni réindexé.
+_ENUM_FIELDS = {'comicvine_format'}
 _NUM_FIELDS  = {'page_count', 'file_size', 'year', 'month', 'day', 'volume', 'number',
                 'count', 'story_arc_number', 'alternate_number', 'alternate_count'}
 _DATE_FIELDS = {'file_modified_at', 'indexed_at'}
@@ -372,6 +382,8 @@ _EMPTY_NUM_COLS  = {'volume', 'number', 'year', 'count', 'story_arc_number',
 def _ops_for_field(field):
     if field == 'is_read':
         return _OPS_IS_READ
+    if field in _ENUM_FIELDS:
+        return _OPS_COMICVINE_FORMAT
     if field in _BOOL_FIELDS:
         return _OPS_BOOL
     if field in _NUM_FIELDS:
@@ -888,7 +900,8 @@ class _FieldRow(QWidget):
         super().__init__(parent)
         self._i18n_key   = i18n_key
         self._field      = field
-        self._is_text    = field not in _BOOL_FIELDS and field not in _NUM_FIELDS and field not in _DATE_FIELDS
+        self._is_text    = (field not in _BOOL_FIELDS and field not in _NUM_FIELDS
+                             and field not in _DATE_FIELDS and field not in _ENUM_FIELDS)
         self._subfields: list[_SubField] = []
         self._theme       = None
         self._font        = None
@@ -1034,7 +1047,8 @@ class _FieldRow(QWidget):
         if self._op_combo is None:
             return
         op = self._op_combo.currentData()
-        show_val = self._field not in _BOOL_FIELDS and op not in ('empty', 'not_empty')
+        show_val = (self._field not in _BOOL_FIELDS and self._field not in _ENUM_FIELDS
+                    and op not in ('empty', 'not_empty'))
         is_between = op == 'between'
         self._value_edit.setVisible(show_val)
         self._and_label.setVisible(show_val and is_between)
@@ -1085,7 +1099,7 @@ class _FieldRow(QWidget):
         op = self._op_combo.currentData() if self._op_combo else 'any'
         if op in ('any',):
             return False
-        if op in ('empty', 'not_empty', 'true', 'false'):
+        if op in ('empty', 'not_empty', 'true', 'false', 'cv_old', 'cv_new', 'cv_none'):
             return True
         val = self._value_edit.text().strip() if self._value_edit else ''
         return bool(val)
@@ -1160,7 +1174,8 @@ class _FieldRow(QWidget):
                 return [{'field': self._field, 'op': op,
                          'value': (val1, val2), 'link': 'and'}]
             val = self._value_edit.text().strip()
-            if op not in ('empty', 'not_empty', 'true', 'false') and not val:
+            if (op not in ('empty', 'not_empty', 'true', 'false', 'cv_old', 'cv_new', 'cv_none')
+                    and not val):
                 return []
             # Pour les champs date, = et ≠ utilisent LIKE/NOT LIKE (prefix ISO)
             if self._field in _DATE_FIELDS:

@@ -18,19 +18,23 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 _ISSUE_RE  = re.compile(r'comicvine\.gamespot\.com/.*?/4000-(\d+)', re.IGNORECASE)
 _SERIES_RE = re.compile(r'comicvine\.gamespot\.com/.*?/4050-(\d+)', re.IGNORECASE)
 
-# Ancien domaine/format de page web ComicVine (avant l'unification sur
-# comicvine.gamespot.com) : préfixe "37-" pour une page d'issue, sur
-# comicvine.com (avec ou sans www). Le numéro après le tiret est le même
-# identifiant que le "4000-XXXXX" actuel — seul le préfixe/domaine a changé.
-_ISSUE_RE_OLD = re.compile(r'comicvine\.com/.*?/37-(\d+)', re.IGNORECASE)
+# Ancien domaine de page web ComicVine (avant l'unification sur
+# comicvine.gamespot.com), avec ou sans www. Le domaine à lui seul
+# caractérise l'"ancien format" — le préfixe numérique après le tiret peut
+# être "37-" (ancien identifiant d'issue) ou déjà "4000-"/"4050-" (certaines
+# pages comicvine.com utilisent le nouvel identifiant sans avoir basculé de
+# domaine). Dans tous les cas le numéro après le tiret est l'ID exploitable.
+_ISSUE_RE_OLD  = re.compile(r'comicvine\.com/.*?/(?:37|4000)-(\d+)', re.IGNORECASE)
+_SERIES_RE_OLD = re.compile(r'comicvine\.com/.*?/4050-(\d+)', re.IGNORECASE)
 
 
 def _parse_comicvine_url(url):
     """Extrait le type ('issue' | 'series') et l'ID numérique d'une URL ComicVine.
 
     Reconnaît à la fois le format actuel (comicvine.gamespot.com, préfixes
-    4000-/4050-) et l'ancien format de page web (comicvine.com, préfixe 37-
-    pour une issue), antérieur à l'unification des domaines/préfixes ComicVine.
+    4000-/4050-) et l'ancien domaine de page web (comicvine.com, préfixes
+    37-/4000- pour une issue, 4050- pour une série), antérieur à
+    l'unification des domaines ComicVine.
 
     Retourne (kind, id) ou None si l'URL ne correspond à aucun format connu.
     """
@@ -46,6 +50,9 @@ def _parse_comicvine_url(url):
     m = _ISSUE_RE_OLD.search(url)
     if m:
         return ("issue", m.group(1))
+    m = _SERIES_RE_OLD.search(url)
+    if m:
+        return ("series", m.group(1))
     return None
 
 
@@ -158,12 +165,8 @@ class _ComicVineUrlDialog(QDialog):
         self._edit_url = QLineEdit()
         self._edit_url.setMinimumWidth(400)
         self._edit_url.returnPressed.connect(self._on_download_clicked)
-        self._edit_url.textChanged.connect(self._update_download_btn_enabled)
         from modules.qt.utils import setup_lineedit_context_menu
         setup_lineedit_context_menu(self._edit_url)
-        existing_url = self._get_existing_comicvine_url()
-        if existing_url:
-            self._edit_url.setText(existing_url)
         field_row.addWidget(self._edit_url)
         field_row.addStretch()
         layout.addLayout(field_row)
@@ -196,6 +199,10 @@ class _ComicVineUrlDialog(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
+        self._edit_url.textChanged.connect(self._update_download_btn_enabled)
+        existing_url = self._get_existing_comicvine_url()
+        if existing_url:
+            self._edit_url.setText(existing_url)
         self._update_download_btn_enabled()
         self._retranslate()
 

@@ -12,11 +12,19 @@ Designed for comic, manga and BD readers who want to organize, clean up and prep
 
 This is my first application, and I hope you’ll like it. I have absolutely no programming knowledge. None, zero, nada. I built MosaicView with the help of Claude Code. Yes, I used an AI to write this program. You can hate me if it makes you feel better.
 
-> ⚠️ **Active development** — features are being added regularly. Feedback and bug reports are welcome via [GitHub Issues](https://github.com/Bruno-Aublet/MosaicView/issues). If you use this tool, please report bugs, unexpected behavior, performance issues and files that don't work correctly.
+> ⚠️ **Active development** — features are being added regularly.
+
+## 💬 Feedback wanted
+
+I'd love to hear from you: what works, what doesn't, what's missing, what's confusing. This project only gets better with real feedback from real users.
+
+- **Bug reports** → [GitHub Issues](https://github.com/Bruno-Aublet/MosaicView/issues)
+- **Ideas, suggestions, general feedback** → [GitHub Discussions](https://github.com/Bruno-Aublet/MosaicView/discussions)
+- **Anything else** <img src="icons/mail.png" width="16"> → [mosaicview1969@gmail.com](mailto:mosaicview1969@gmail.com?subject=MosaicView)
 
 ---
 
-## The UI
+## The Mosaic View
 
 Open an archive and its pages fill the window as thumbnails — your entire comic, at a glance. Everything is designed to be handled directly in that mosaic: drag pages to reorder them, drop files to add them, click to rename or delete. The goal was to make it feel like something you can figure out without reading the docs.
 
@@ -49,7 +57,7 @@ CBR, CB7, CBT and PDF files are always exported as CBZ after editing. This is a 
 
 MosaicView also detects misnamed archives (e.g. a CBR file saved with a `.cbz` extension) and offers to rename them automatically.
 
-MosaicView also accepts loose image files (dragged individually or as a folder), in the following formats: JPG, PNG, GIF, WebP, BMP, TIFF, ICO, JFIF. 
+MosaicView also accepts loose image files (dragged individually or as a folder), in the following formats: JPG, PNG, GIF, WebP, BMP, TIFF, ICO, JFIF.
 
 ---
 
@@ -81,7 +89,7 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 - **Delete pages** — remove unwanted pages in one click
 - **Resize pages** — batch-resize all pages of an archive to a target resolution
 - **Image adjustments** — brightness, contrast, gamma, sepia, black & white, and more, with a live preview
-- **Merge archives** — combine multiple CBZ/CBR/CB7/PDF files into one (especially useful for variant covers)
+- **Merge archives** — combine multiple CBZ/CBR/CB7/CBT/PDF files into one (especially useful for variant covers)
 - **Convert formats** — batch-convert CBR → CBZ, CB7 → CBZ, CBT → CBZ, PDF → CBZ, or image folders → CBZ
 - **Renumber pages** — three modes: simple sequential renumbering (01, 02, 03…), smart renumbering that detects double-page spreads by their aspect ratio and generates compound names (01-02, 03, 04-05…), or OFF to keep original filenames untouched. The active mode is shown in a clickable status bar indicator and is remembered between sessions.
 - **ZIP compression** — a configurable default compression level (0-9, defaulting to no compression) is applied whenever a CBZ is saved, since comic images are already compressed by their own format and ZIP compression on top brings no real space savings while slowing down saving and reading. A status bar indicator shows the compression state of the currently open file and offers to resave it at the default level when relevant.
@@ -141,7 +149,7 @@ This feature is entirely based on the open source project [cbanack/comic-vine-sc
 
 - **Single file** — open a file, then use the toolbar button or the Metadata menu. A two-step wizard lets you pick the series, then the matching issue. Metadata is written as a `ComicInfo.xml` file inside the archive.
 - **Batch mode** — drop one or more folders onto the mosaic and choose "Metadata import", or use the dedicated toolbar button. The wizard opens for each compatible file (CBZ, CBR, CB7, CBT, PDF) found in the folder and its subfolders. Non-CBZ files are automatically converted to CBZ after writing.
-- **Source traceability** — every metadata import records the source date and the ComicVine page URL inside `ComicInfo.xml`. This information is shown read-only in both the Metadata tab and the ComicInfo.xml editor, with a clickable link to the original page. A newer import replaces the previous record rather than stacking up.
+- **Source traceability** — every metadata import records the source page URL in the `Web` field and adds a dated line ("MosaicView: metadata retrieved on...") to the `Notes` field, both fully editable like any other field. A newer import updates that line in place rather than stacking up.
 
 ---
 
@@ -160,6 +168,8 @@ The library lets you catalogue and search your entire digital comics collection.
 
 ## Requirements
 
+*Only needed when running from source — the pre-built executables (see [Download](#download)) already include UnRAR and 7-Zip.*
+
 - Python 3.11+
 - Dependencies (install with `pip install -r requirements.txt`):
 
@@ -177,7 +187,10 @@ PySide6, Pillow, numpy, rarfile, PyMuPDF, packaging, openpyxl, pywin32, send2tra
 
 ## Download
 
-Pre-built executables for Windows are available on the [Releases page](https://github.com/Bruno-Aublet/MosaicView/releases/latest).
+Pre-built executables for Windows are available on the [Releases page](https://github.com/Bruno-Aublet/MosaicView/releases/latest). Each release provides two versions:
+
+- **ONE DIR** — starts faster, distributed as a ZIP archive containing a folder
+- **ONE FILE** — single `.exe` file, no need to unzip, more compact, slower startup
 
 ## Installation
 
@@ -188,7 +201,7 @@ pip install -r requirements.txt
 python MosaicView.py
 ```
 
-Two PyInstaller spec files are included for building a standalone executable: `MosaicView_ONE_DIR.spec` (faster startup, distributes as a folder) and `MosaicView_ONE_FILE.spec` (single executable, slower startup). Build with `pyinstaller MosaicView_ONE_DIR.spec` or `pyinstaller MosaicView_ONE_FILE.spec`.
+Two PyInstaller spec files are included for building a standalone executable (see the ONE DIR / ONE FILE difference above): build with `pyinstaller MosaicView_ONE_DIR.spec` or `pyinstaller MosaicView_ONE_FILE.spec`.
 
 ---
 
@@ -212,4 +225,4 @@ License files are included in the `unrar/` and `7zip/` folders. All third-party 
 
 ## Contact
 
-**Bruno Aublet** — [GitHub](https://github.com/Bruno-Aublet) — [mosaicview1969@gmail.com](mailto:mosaicview1969@gmail.com)
+**Bruno Aublet** — [GitHub](https://github.com/Bruno-Aublet) — <img src="icons/mail.png" width="16"> [mosaicview1969@gmail.com](mailto:mosaicview1969@gmail.com)

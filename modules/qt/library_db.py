@@ -624,6 +624,20 @@ class LibraryDB:
         'after':        (">= ?",              lambda v: _date_bound_after(v)),
     }
 
+    # Clauses SQL pour le champ virtuel 'comicvine_format' (non stocké, calculé
+    # depuis la colonne 'web' avec les mêmes formats reconnus que
+    # comicvine_url_dialog_qt.py::_parse_comicvine_url). Le domaine seul
+    # caractérise le format : comicvine.com = ancien (quel que soit le préfixe
+    # numérique 37-/4000-/4050- qui suit), comicvine.gamespot.com = nouveau.
+    _COMICVINE_FORMAT_CLAUSES = {
+        'cv_old':  "(web LIKE '%comicvine.com/%')",
+        'cv_new':  "(web LIKE '%comicvine.gamespot.com/%')",
+        'cv_none': "(web IS NULL OR ("
+                   "web NOT LIKE '%comicvine.com/%'"
+                   " AND web NOT LIKE '%comicvine.gamespot.com/%'"
+                   "))",
+    }
+
     def search(self, criteria: list[dict], order_by: str = 'series',
                order_asc: bool = True,
                progress_callback=None) -> list[sqlite3.Row]:
@@ -650,6 +664,16 @@ class LibraryDB:
             op    = crit.get('op', 'contains')
             value = crit.get('value', '')
             link  = crit.get('link', 'and').upper()
+
+            if field == 'comicvine_format':
+                clause = self._COMICVINE_FORMAT_CLAUSES.get(op)
+                if clause is None:
+                    continue
+                if field not in groups:
+                    groups[field] = []
+                    group_params[field] = []
+                groups[field].append((clause, [], link))
+                continue
 
             if field not in self._SEARCHABLE:
                 continue

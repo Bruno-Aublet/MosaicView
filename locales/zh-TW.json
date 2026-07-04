@@ -1349,7 +1349,7 @@
     "nfo_editor": "建立和編輯 NFO 檔案",
     "nfo_editor_content": "NFO 檔案是一種文字檔案（副檔名為 .nfo），用於儲存關於封存的資訊：簡介、製作人員、備註…\n\n要建立 NFO 檔案，請使用工具列中的專用圖示、檔案選單或內容選單（在馬賽克上按右鍵）。只有當馬賽克不為空時，該命令才可用。輸入名稱和內容：檔案直接插入馬賽克中，無需解壓縮或中間儲存。\n\n要編輯現有的 NFO 檔案，請在馬賽克中雙擊它。視窗開啟時已預先填入目前名稱和內容，兩者均可編輯。在兩種情況下，操作都會記錄在復原歷史記錄中。",
     "metadata": "ComicVine 元資料",
-    "metadata_content": "MosaicView 支援從 ComicVine 資料庫（由社群維護的協作網站）自動擷取漫畫元資料（標題、系列、期號、作者、簡介...）。\n\n單本模式：開啟一本漫畫，然後使用工具列按鈕或元資料選單。精靈分兩步開啟：先選擇系列，再選擇對應的期次。元資料將寫入壓縮檔內的 ComicInfo.xml 檔案。\n\n批次模式：將一個或多個資料夾拖放到拼貼板並選擇「批量匯入元資料」，或使用工具列上的專用按鈕或元資料選單。精靈依序為找到的每個檔案（CBZ、CBR、CB7、CBT、PDF）開啟。非 CBZ 檔案在寫入元資料後會自動轉換為 CBZ。\n\nAPI 金鑰：需要免費的 ComicVine API 金鑰。應用程式將引導您取得。在 comicvine.gamespot.com 上建立帳號後即可獲得。 金鑰永遠不會以明文儲存：它由 Windows DPAPI 加密，只有您的 Windows 帳號才能讀取。\n\nAPI 限制：以下限制由 ComicVine 施加，無法繞過。\n• 每小時每個資源最多 200 次請求。達到此限制後，搜尋將暫時失敗直到整點結束。\n• 每次請求最多返回 100 筆結果，對於期數較多的系列需將搜尋拆分為多次呼叫。\n• 網站每秒僅允許 1 次請求。為安全起見，MosaicView 在每次請求之間等待 2 秒，因為更快的請求極有可能導致暫時封鎖。\n\n此功能完全基於開源專案 {scraper}。",
+    "metadata_content": "MosaicView 支援從 ComicVine 資料庫（由社群維護的協作網站）自動擷取漫畫元資料（標題、系列、期號、作者、簡介...）。\n\n單本模式：開啟一本漫畫，然後使用工具列按鈕或元資料選單。精靈分兩步開啟：先選擇系列，再選擇對應的期次。元資料將寫入壓縮檔內的 ComicInfo.xml 檔案。\n\n批次模式：將一個或多個資料夾拖放到拼貼板並選擇「批量匯入元資料」，或使用工具列上的專用按鈕或元資料選單。精靈依序為找到的每個檔案（CBZ、CBR、CB7、CBT、PDF）開啟。非 CBZ 檔案在寫入元資料後會自動轉換為 CBZ。\n\nAPI 金鑰：需要免費的 ComicVine API 金鑰。應用程式將引導您取得。在 comicvine.gamespot.com 上建立帳號後即可獲得。 金鑰永遠不會以明文儲存：它由 Windows DPAPI 加密，只有您的 Windows 帳號才能讀取。\n\nAPI 限制：以下限制由 ComicVine 施加，無法繞過。\n• 每小時每個資源最多 200 次請求。達到此限制後，搜尋將暫時失敗直到整點結束。\n• 每次請求最多返回 100 筆結果，對於期數較多的系列需將搜尋拆分為多次呼叫。\n• 網站每秒僅允許 1 次請求。為安全起見，MosaicView 在每次請求之間等待 2 秒，因為更快的請求極有可能導致暫時封鎖。\n\nComicVine位址格式：ComicVine頁面位址可能有兩種格式之一，取決於其新舊程度。MosaicView可以識別這兩種格式，沒有差別。\n• 目前格式：單期為comicvine.gamespot.com/.../4000-XXXXX，系列為comicvine.gamespot.com/.../4050-XXXXX。\n• 舊格式：單期為comicvine.com/.../37-XXXXX（連字號後的數字是相同的識別碼；只有網域和前綴發生了變化）。\n\n此功能完全基於開源專案 {scraper}。",
     "library": "書庫",
     "library_content": "書庫讓您可以對數位漫畫進行分類並輕鬆找到它們。它透過讀取每個檔案中包含的詮釋資料（標題、系列、作者、出版社…）並將其彙集到單一書庫檔案（*.mvdb）中來運作。\n\n若要建立書庫，請使用書庫選單 → 新建資料庫，或將一個或多個資料夾拖曳到馬賽克中並選擇「從資料夾建立資料庫」。MosaicView 將掃描您的資料夾並自動為所有相容檔案建立索引。\n\n書庫開啟後，您可以依系列、作者、年份、出版社等篩選漫畫，可組合任意數量的條件。雙擊可在 MosaicView 中開啟檔案。結果可以匯出為 Excel 格式（*.xlsx）。",
     "zip_compression": "ZIP 壓縮",
@@ -1722,7 +1722,11 @@
     "export_progress": "請稍候\n正在儲存 {percent}%",
     "export_saving": "請稍候\n正在儲存...",
     "db_delete_irreversible": "此操作無法復原。",
-    "preview_unavailable": "封面不可用\n\n該檔案在此電腦上可能無法存取，或已被移動或刪除。"
+    "preview_unavailable": "封面不可用\n\n該檔案在此電腦上可能無法存取，或已被移動或刪除。",
+    "col_comicvine_format": "ComicVine 位址",
+    "search_op_cv_old": "舊格式",
+    "search_op_cv_new": "新格式",
+    "search_op_cv_none": "無 ComicVine 位址"
   },
   "comicinfo": {
     "window_title_create": "建立 ComicInfo.xml 檔案",

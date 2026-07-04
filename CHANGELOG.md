@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.2] - 2026-07-04 - 
+
+- Added a new "ComicVine address" search criterion to the library search panel, letting results be filtered by whether their Web field holds an old-format ComicVine URL (pre-2013 comicvine.com domain), a current-format one (comicvine.gamespot.com), or no recognised ComicVine address at all. This is a separate criterion from the existing free-text "Web" search, not a replacement for it.
+- Fixed old-format ComicVine URLs not being recognised when the legacy comicvine.com domain was combined with the current numeric ID prefix (e.g. `comicvine.com/.../4000-XXXXX/` instead of the expected `37-XXXXX`): such addresses were previously treated as if they held no ComicVine address at all, hiding the "Check for updates" button in the Metadata tab and the ComicInfo.xml editor for the affected files. The domain alone now determines old vs. current format, regardless of which numeric prefix follows it.
+- Fixed a crash when opening the "load metadata from a ComicVine URL" window on a file whose Web field is already filled in: the address field's pre-fill triggered the download button's enabled-state update before that button had been created yet.
+- Documented the two ComicVine address formats (current and legacy) in the in-app user guide's Metadata section.
+- Fixed the "Close database" command staying greyed out in both the menu bar and the context menu whenever the library window had been hidden (closed via its title bar cross) instead of destroyed, even though its database was still open in the background. The menu now always reflects the real database state instead of falling back to an all-disabled placeholder menu once the library window has been created at least once.
+- Fixed windows related to a comic (the ComicInfo.xml editor, the NFO editor, the ComicVine URL/update-check windows, resize, animated GIF export, page split, merge, adjustments, and other per-comic dialogs) staying open after closing that comic instead of closing along with it. Batch windows operating on a user-chosen folder (batch metadata, batch drop) are deliberately left open, since they aren't tied to the comic that was just closed.
+- Updated the README (feedback channels, download section, outdated Metadata traceability description, minor fixes).
+
 ## [1.4.1] - 2026-07-03 - Security hardening (archive execution, ComicVine link safety), ComicVine update checks and direct-URL loading, ComicInfo editor UX fixes, library column picker overhaul, translated context menus app-wide, Klingon/Tengwar translation fixes, easter egg, massive bug fix pass
 
 - Fixed non-image files extracted from an archive being silently executed instead of opened when double-clicked, if their extension is one Windows treats as a program (`.exe`, `.bat`, `.cmd`, `.vbs`, `.js`, `.ps1`, `.lnk`, `.msi`, `.reg`, etc.) — a booby-trapped file inside a downloaded CBZ/CBR/etc. could otherwise run arbitrary code. These file types are no longer extracted or opened at all; a message explains why and suggests extracting and opening the file manually if it is trusted.

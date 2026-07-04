@@ -1349,7 +1349,7 @@
     "nfo_editor": "NFO-qawHaq chenmoH 'ej tISaH",
     "nfo_editor_content": "NFO-qawHaq 'oH ghItlh qawHaq'e' (.nfo De'wI' mIwDaj) 'ej lo'lu' archiv De' choqmeH: QIn, paq, De'mey…\n\nNFO-qawHaq chenmoHmeH, lo' tancDaq Dun tancDaj, paq-lIst, pagh comhad-lIst (mosaic nIHDaq pagh chos). ngoQ tu'lu' neH mosaic nampDaq 'oHbe'chugh. pong yInob 'ej QIn yInob: qawHaq mosaicDaq tu'lu', chu'moHlu'be'chugh pagh choqbe'lu'.\n\nNFO-qawHaq jev tISaHmeH, mosaicDaq chen chen. mIw poSmoH pong 'ej QIn, choHlaH. wa' mIwDaq je, ngoQ tu'lu' harna-QIn-lIstDaq.",
     "metadata": "ComicVine De' mung qaw",
-    "metadata_content": "MosaicView ComicVine De'wI'mey qaw vIlo' (pongmey, SepHom, mIw, ghItlhwI'pu', mu'mey...) ComicVine De'wI'vo' - ghom qaw veS.\n\nmIw wa': SoQ paq, toolbar pagh menu De' mung qaw yIwIv. cha' pong tIr: wa'DIch SepHom wIv, ghIq episod wIv. De' mung qaw ComicInfo.xml qon.\n\nmIw batch: natlh(mey) tay' yIwIv 'ej toolbar pagh menu De' mung qaw teywI' pagh yIwIv. Hoch De'wI' nej (CBZ, CBR, CB7, CBT, PDF). De'wI'mey Hoch CBZ moj lujDI' De' mung qaw.\n\nbuq lo': ComicVine buq lo'lu' paq De' laDmeH. mIw ngoQ'a' comicvine.gamespot.com Daq yIchenmoH. mI' chu' DIvI' ra'ghomvaD yIlInbe': DPAPI Windows ngaqmeH mI' vISeHbe', 'ej Windows account-lIj neH laDlaH.\n\nbuq HoS: ComicVine buq HoS, wanI'mey Hutlh:\n• 200 nIS lup vatlh Hutlh.\n• 100 De' qun nIS Hoch, episodmey SepHom nIS.\n• 1 nIS lup Hutlh. MosaicView cha' lup wIj nIS Hoch, vaj HoS teblu'bogh natlhHa'be'.\n\nDe'wI' gholwI' {scraper} chen'eghmoHlu'bogh vIlo' naQ.",
+    "metadata_content": "MosaicView ComicVine De'wI'mey qaw vIlo' (pongmey, SepHom, mIw, ghItlhwI'pu', mu'mey...) ComicVine De'wI'vo' - ghom qaw veS.\n\nmIw wa': SoQ paq, toolbar pagh menu De' mung qaw yIwIv. cha' pong tIr: wa'DIch SepHom wIv, ghIq episod wIv. De' mung qaw ComicInfo.xml qon.\n\nmIw batch: natlh(mey) tay' yIwIv 'ej toolbar pagh menu De' mung qaw teywI' pagh yIwIv. Hoch De'wI' nej (CBZ, CBR, CB7, CBT, PDF). De'wI'mey Hoch CBZ moj lujDI' De' mung qaw.\n\nbuq lo': ComicVine buq lo'lu' paq De' laDmeH. mIw ngoQ'a' comicvine.gamespot.com Daq yIchenmoH. mI' chu' DIvI' ra'ghomvaD yIlInbe': DPAPI Windows ngaqmeH mI' vISeHbe', 'ej Windows account-lIj neH laDlaH.\n\nbuq HoS: ComicVine buq HoS, wanI'mey Hutlh:\n• 200 nIS lup vatlh Hutlh.\n• 100 De' qun nIS Hoch, episodmey SepHom nIS.\n• 1 nIS lup Hutlh. MosaicView cha' lup wIj nIS Hoch, vaj HoS teblu'bogh natlhHa'be'.\n\nComicVine chan mIw: ComicVine chan qaStaHvIS chaH mIw, qan pagh chu' rar. MosaicView chaH cha' Sov.\n• mIw chu': comicvine.gamespot.com/.../4000-XXXXX episod, comicvine.gamespot.com/.../4050-XXXXX SepHom.\n• mIw qan: comicvine.com/.../37-XXXXX episod (mI' pIH tIH rar pong; Daq pagh puqlogh neH chu').\n\nDe'wI' gholwI' {scraper} chen'eghmoHlu'bogh vIlo' naQ.",
     "library": "paqmey je",
     "library_content": "paqmey je DaqDaq lI'moH Hoch De'wI' paq. De'wI' laDlaH Hoch paq (pongmey, mIllogh, ghItlhwI'pu', chenmoHwI'…) je lI'moH wa' paqmey je De'wI' (*.mvdb).\n\npaqmey je chenmoHmeH, lo' paqmey je → chu' mIw, pagh lanta wa' qach latlh joq mIlloghDaq je lo' \"DaqDaq paqmey je chenmoH\". MosaicView Hoch qach je chenmoH Hoch De'wI' lI'laH.\n\npaqmey je poSmoHlu'DI', lanta De'wI' mIllogh, ghItlhwI', DIS, chenmoHwI' je nISmey. nIH-click yIwIv 'ej De'wI' MosaicView-Daq poSmoH laH. De'wI' lI'moH XLSX (Excel).",
     "zip_compression": "rar mIw rar tlhIngan",
@@ -1722,7 +1722,11 @@
     "export_progress": "yIloS\npe'vIl {percent}%",
     "export_saving": "yIloS\npe'vIl...",
     "db_delete_irreversible": "QaStaHvIS jabbe'lu'.",
-    "preview_unavailable": "notqa' HIvje' tu'be'lu'\n\nDe' HDD-Daq laDlaHbe'lu', pagh chellu', pagh chenmoHlu'pu'."
+    "preview_unavailable": "notqa' HIvje' tu'be'lu'\n\nDe' HDD-Daq laDlaHbe'lu', pagh chellu', pagh chenmoHlu'pu'.",
+    "col_comicvine_format": "ComicVine chan",
+    "search_op_cv_old": "qan mIw",
+    "search_op_cv_new": "chu' mIw",
+    "search_op_cv_none": "ComicVine chan Qup"
   },
   "comicinfo": {
     "window_title_create": "ComicInfo.xml HevleH chu' chenmoH",

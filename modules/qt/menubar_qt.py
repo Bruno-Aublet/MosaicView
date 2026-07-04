@@ -415,7 +415,11 @@ def _populate_library_menu(menu: QMenu, callbacks: dict):
     # Sous-menu Base de données
     from modules.qt.library_window import _library_window
     db_submenu = QMenu(_loc("library.db_menu"), menu)
-    if _library_window is not None and not _library_window._prewarmed:
+    if _library_window is not None:
+        # build_db_menu reflète l'état réel (self._db, self._is_loading()),
+        # indépendant de la visibilité de la fenêtre — y compris quand elle a
+        # été cachée par la croix (_prewarmed=True dans ce cas aussi, mais la
+        # DB peut très bien être encore ouverte en arrière-plan).
         _library_window.build_db_menu(db_submenu)
     else:
         def _open_then(action_name):

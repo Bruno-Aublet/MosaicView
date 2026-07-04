@@ -1003,7 +1003,7 @@ class PanelWidget(QWidget):
             apply_new_names_cb=lambda on_complete=None: self._apply_new_names(skip_render=True, on_complete=on_complete),
             refresh_title=self._refresh_title,
             refresh_toolbar=self._refresh_toolbar_states,
-            refresh_tabs=lambda: (self._content_stack.setCurrentIndex(0), self._update_tabs(), self._close_bookmark_popup()),
+            refresh_tabs=lambda: (self._content_stack.setCurrentIndex(0), self._update_tabs(), self._close_bookmark_popup(), self._close_comic_child_dialogs()),
             refresh_status=self._update_status_bar,
             refresh_menubar=self._rebuild_menubar,
         )
@@ -1802,6 +1802,25 @@ class PanelWidget(QWidget):
             except Exception:
                 pass
             self._bookmark_popup = None
+
+    # Fenêtres liées à un lot de fichiers/dossiers choisi par l'utilisateur
+    # (pas au comic actuellement affiché) : à ne pas fermer avec le comic.
+    _NON_COMIC_DIALOG_CLASSES = ("_MetadataConfirmDialog", "_MetadataSummaryDialog",
+                                 "BatchDropDialog")
+
+    def _close_comic_child_dialogs(self):
+        """Ferme toute fenêtre encore ouverte portant sur le comic qui vient de
+        se fermer (éditeur ComicInfo.xml/NFO, fenêtres ComicVine, redimensionnement,
+        export GIF, etc.) : toutes ont ce panel comme parent Qt, donc trouvables via
+        findChildren sans que chacune ait besoin de s'enregistrer explicitement."""
+        from PySide6.QtWidgets import QDialog
+        for dlg in self.findChildren(QDialog):
+            if type(dlg).__name__ in self._NON_COMIC_DIALOG_CLASSES:
+                continue
+            try:
+                dlg.close()
+            except Exception:
+                pass
 
     # ──────────────────────────────────────────────────────────────────────────
     # Barre de statut / toolbar
