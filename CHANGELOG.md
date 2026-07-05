@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.1] - 2026-07-05 - Emergency fix for broken save-and-close flow, minimap polish
+
+- Emergency fix: the save flow was broken. Fixed the "delete the original file?" prompt shown after converting a modified CBR/CB7/CBT/EPUB/PDF to CBZ while closing the comic (via the "save and close" unsaved-changes option) flashing on screen and disappearing before it could be answered. The comic-closing cascade that closes every window related to the comic, added in 1.4.2, was closing this prompt itself right after it appeared, since it fired as soon as the CBZ was written instead of waiting for the user's answer. The comic (and its related windows) now only closes after the prompt has been answered.
+- The minimap now overlays the duplicate and bookmark badges on each mini-thumbnail, matching the main mosaic, and shows a blue outline around the currently selected page(s).
+
 ## [1.5.0] - 2026-07-05 - Minimap, duplicate page detection, bug fixes
 
 - Added a minimap: an optional side panel to the right of the mosaic showing a miniature overview of all pages, with a rectangle marking the currently visible area. Click or drag the rectangle to jump straight to that spot in the comic; the mosaic and the minimap scroll together in both directions (mouse wheel over either one scrolls the other). Hidden by default, toggle it from the System menu (chevron at the far right of the menu bar) or the right-click context menu on the mosaic. In split mode, each panel has its own independent minimap and visibility setting; clicking or dragging on a panel's minimap makes that panel active. Reset to defaults hides the minimap again.

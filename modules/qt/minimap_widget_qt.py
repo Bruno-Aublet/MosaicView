@@ -21,6 +21,7 @@ from PySide6.QtGui import QPainter, QColor, QPen
 from modules.qt.state import get_current_theme
 from modules.qt.mosaic_canvas import (
     ThumbnailItem, DirItem, PAD_X, PAD_Y, LABEL_H, _get_pixmap_for_size,
+    _get_bookmark_pixmap, _get_duplicate_pixmap, SEL_OUTLINE,
 )
 
 _MINI_PAD = 4
@@ -197,6 +198,8 @@ class MinimapWidget(QWidget):
             else:
                 painter.fillRect(QRectF(x, y, mini_w, mini_h), QColor(theme["disabled"]))
 
+            self._paint_overlays(painter, item, x, y, mini_w, mini_h)
+
         # Rectangle de la zone actuellement visible dans la mosaïque
         vp_rect = self._viewport_rect_minimap()
         if vp_rect is not None:
@@ -216,6 +219,36 @@ class MinimapWidget(QWidget):
             return _get_pixmap_for_size(entry, mini_w, mini_h)
         except Exception:
             return None
+
+    def _paint_overlays(self, painter, item, x, y, mini_w, mini_h):
+        """Dessine, en surimpression réduite, le cadre de sélection ainsi que les
+        badges de doublon/marque-page — mêmes conditions que ThumbnailItem.paint(),
+        à l'échelle de la mini-vignette."""
+        if isinstance(item, ThumbnailItem) and getattr(item, "_selected", False):
+            painter.setPen(QPen(SEL_OUTLINE, 2))
+            painter.drawRect(QRectF(x - 1, y - 1, mini_w + 2, mini_h + 2))
+
+        entry = getattr(item, "entry", None)
+        if not entry:
+            return
+
+        if entry.get("_is_bookmarked"):
+            bm_px = _get_bookmark_pixmap()
+            if bm_px and not bm_px.isNull():
+                bm_size = max(6, mini_w // 2)
+                scaled = bm_px.scaled(bm_size, bm_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                painter.setOpacity(0.85)
+                painter.drawPixmap(int(x + mini_w - scaled.width()), int(y), scaled)
+                painter.setOpacity(1.0)
+
+        if entry.get("_is_duplicate"):
+            dup_px = _get_duplicate_pixmap()
+            if dup_px and not dup_px.isNull():
+                dup_size = max(6, mini_w // 2)
+                scaled_dup = dup_px.scaled(dup_size, dup_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                painter.setOpacity(0.85)
+                painter.drawPixmap(int(x), int(y), scaled_dup)
+                painter.setOpacity(1.0)
 
     # ── Navigation : clic / drag sur le rectangle de viewport ────────────────
     def _scroll_canvas_to_scene_center(self, scene_pos: QPointF):

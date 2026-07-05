@@ -1502,6 +1502,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: _("messages.errors.delete_error", error=err),
                                     play_sound=True).show()
+                _finish_apply_new_names(state, callbacks, _done)
 
             SaveSuccessDialog(
                 parent,
@@ -1512,6 +1513,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                 on_done=_after_cbz_converted,
                 question_kwargs={"ext": ext.lstrip(".").upper()},
             )
+            return
         except Exception as e:
             ErrorDialog(parent,
                         lambda: _wt("messages.errors.save_failed.title"),
@@ -1554,6 +1556,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                                     lambda: _wt("messages.errors.save_failed.title"),
                                     lambda err=e: _("messages.errors.delete_error", error=err),
                                     play_sound=True).show()
+                _finish_apply_new_names(state, callbacks, _done)
 
             SaveSuccessDialog(
                 parent,
@@ -1563,6 +1566,7 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                 "messages.info.cbz_converted_from_pdf.question",
                 on_done=_after_pdf_converted,
             )
+            return
         except Exception as e:
             ErrorDialog(parent,
                         lambda: _wt("messages.errors.save_failed.title"),
@@ -1570,6 +1574,15 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
                         play_sound=True).show()
             return _done(False)
 
+    _finish_apply_new_names(state, callbacks, _done)
+
+
+def _finish_apply_new_names(state, callbacks, _done):
+    """Termine apply_new_names : marque non-modifié, rafraîchit l'UI, signale le succès.
+    Appelée directement pour cbz/pdf-sans-conversion, ou différée jusqu'à la réponse de
+    SaveSuccessDialog pour une conversion cbr/cb7/cbt/epub/pdf (sans quoi _done(True)
+    déclenchait la fermeture en cascade des fenêtres liées au comic avant que l'utilisateur
+    ait pu répondre à la question de suppression du fichier d'origine)."""
     state.modified = False
     if callbacks.get("render_mosaic"):
         callbacks["render_mosaic"]()
