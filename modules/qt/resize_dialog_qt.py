@@ -1340,6 +1340,7 @@ class _ResizeWorker(QThread):
 
                 entry["bytes"] = output.getvalue()
                 entry["img"]   = None
+                entry["_hash"] = None
 
                 from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
                 _pidx = get_page_image_index(state, entry)
@@ -1408,6 +1409,7 @@ def _start_resize_worker(canvas, selected_entries, state,
             if orig is not None:
                 entry["bytes"] = orig
                 entry["img"] = None
+                entry["_hash"] = None
                 if entry.get("large_thumb_pil") is not None:
                     entry["large_thumb_pil"].close()
                     entry["large_thumb_pil"] = None
@@ -1436,6 +1438,7 @@ def _start_resize_worker(canvas, selected_entries, state,
             real_idx = entry.get("_real_idx")
             if real_idx is not None:
                 canvas.refresh_thumbnail(real_idx)
+        canvas.refresh_duplicate_overlay()
         update_button_text()
         refresh_status_fn()
         save_state_fn()

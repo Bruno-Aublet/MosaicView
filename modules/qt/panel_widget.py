@@ -261,6 +261,7 @@ class PanelWidget(QWidget):
 
         self._sidebar_visible = True
         self._bookmark_popup = None
+        self._bookmark_popup_shown_for = None  # chemin du fichier pour lequel le popup a déjà été proposé
 
         # ── État applicatif propre à ce panneau ───────────────────────────────
         self._state = AppState()
@@ -417,15 +418,25 @@ class PanelWidget(QWidget):
         self._tab_bar.tab_changed.connect(self._on_tab_changed)
         layout.addWidget(self._tab_bar)
 
+        self._tabbar_separator = QFrame()
+        self._tabbar_separator.setObjectName("tabbarSeparator")
+        self._tabbar_separator.setFixedHeight(1)
+        self._tabbar_separator.setStyleSheet("background: #d0d0d0;")
+        self._tabbar_separator.setVisible(bool(self._state.images_data))
+        layout.addWidget(self._tabbar_separator)
+
         # Bandeau mise à jour (caché par défaut, inséré ici quand nécessaire)
         self._update_banner = None
         self._center_layout = layout  # référence pour insérer le bandeau
 
         self._content_stack = QStackedWidget()
 
+        self._duplicates_window = None
+
         self._canvas = MosaicCanvas(self._state)
         self._canvas.status_changed.connect(self._update_status_bar)
         self._canvas.status_changed.connect(self._refresh_toolbar_states)
+        self._canvas.status_changed.connect(self._refresh_duplicates_window_if_open)
         self._content_stack.addWidget(self._canvas)       # index 0
 
         self._metadata_tab = MetadataTab()
@@ -433,7 +444,20 @@ class PanelWidget(QWidget):
         self._content_stack.addWidget(self._metadata_tab) # index 1
 
         self._content_stack.setCurrentIndex(0)
-        layout.addWidget(self._content_stack, stretch=1)
+
+        # ── Rangée centre/minimap : largeur minimap fixe, jamais redimensionnable
+        # par l'utilisateur (pas de QSplitter, juste un QHBoxLayout) ──────────────
+        self._minimap_visible = False
+        self._minimap_panel = self._build_minimap_panel()
+        self._minimap_panel.setVisible(self._minimap_visible)
+
+        self._content_row = QWidget()
+        content_row_layout = QHBoxLayout(self._content_row)
+        content_row_layout.setContentsMargins(0, 0, 0, 0)
+        content_row_layout.setSpacing(0)
+        content_row_layout.addWidget(self._content_stack, stretch=1)
+        content_row_layout.addWidget(self._minimap_panel)
+        layout.addWidget(self._content_row, stretch=1)
 
         self._status_separator = QFrame()
         self._status_separator.setObjectName("statusSeparator")
@@ -818,6 +842,7 @@ class PanelWidget(QWidget):
         dark = state.dark_mode if state and hasattr(state, "dark_mode") else False
         line = "#444444" if dark else "#d0d0d0"
         self._status_separator.setStyleSheet(f"background: {line};")
+        self._tabbar_separator.setStyleSheet(f"background: {line};")
 
     def _reset_to_defaults(self):
         self._main_window._reset_to_defaults()
@@ -1642,6 +1667,18 @@ class PanelWidget(QWidget):
         dlg.raise_()
         dlg.activateWindow()
 
+    def _show_duplicates_window(self):
+        from modules.qt.duplicate_detection_qt import show_duplicates_window
+        self._duplicates_window = show_duplicates_window(
+            self, self._state, self.save_state, self._canvas.render_mosaic, self._refresh_tabs
+        )
+
+    def _refresh_duplicates_window_if_open(self):
+        from shiboken6 import isValid
+        w = self._duplicates_window
+        if w is not None and isValid(w) and w.isVisible():
+            w.refresh()
+
     def _replace_corrupted_image(self, idx: int):
         st = self._state
         if idx >= len(st.images_data):
@@ -1679,6 +1716,7 @@ class PanelWidget(QWidget):
             entry["bytes"]             = data
             entry["is_corrupted"]      = False
             entry["corruption_reason"] = None
+            entry["_hash"]             = None
             entry.pop("qt_pixmap_large", None)
             entry.pop("qt_qimage_large", None)
 
@@ -1750,7 +1788,21 @@ class PanelWidget(QWidget):
         self._maybe_show_bookmark_popup()
 
     def _init_bookmark_overlay(self):
-        """Initialise le flag _is_bookmarked sur toutes les entrées à l'ouverture d'un fichier."""
+        """Initialise le flag _is_bookmarked à partir de la config, à l'ouverture d'un fichier.
+
+        Si une entrée porte déjà _is_bookmarked=True (import/collage en cours de session,
+        après l'ouverture initiale), on la préserve telle quelle au lieu de recalculer par
+        position : page_idx est une position figée dans la config, qui se décale dès qu'une
+        page est insérée avant elle (ex. Ctrl+V), pointant alors sur une page différente.
+        """
+        already_bookmarked_real_idx = next(
+            (i for i, e in enumerate(self._state.images_data) if e.get("_is_bookmarked")),
+            None
+        )
+        if already_bookmarked_real_idx is not None:
+            self._canvas.refresh_bookmark_overlay(already_bookmarked_real_idx)
+            return
+
         from modules.qt.config_manager import get_config_manager
         cfg = get_config_manager()
         filepath = self._state.current_file
@@ -1766,10 +1818,19 @@ class PanelWidget(QWidget):
         self._canvas.refresh_bookmark_overlay(bookmarked_real_idx)
 
     def _maybe_show_bookmark_popup(self):
-        """Affiche le pop-up marque-page si un marque-page existe pour le fichier chargé."""
+        """Affiche le pop-up marque-page si un marque-page existe pour le fichier chargé.
+
+        Ne doit s'afficher qu'à l'ouverture initiale du comic, jamais lors d'un rechargement
+        ultérieur de la mosaïque (import de pages, collage Ctrl+V, drop de fichier) — ces
+        rechargements appellent aussi _on_loading_finished(). On ne réaffiche donc le popup
+        que si le fichier courant diffère de celui pour lequel il a déjà été proposé.
+        """
         filepath = self._state.current_file
         if not filepath:
             return
+        if self._bookmark_popup_shown_for == filepath:
+            return
+        self._bookmark_popup_shown_for = filepath
         from modules.qt.config_manager import get_config_manager
         cfg = get_config_manager()
         if not cfg:
@@ -1829,6 +1890,7 @@ class PanelWidget(QWidget):
     def _update_status_bar(self):
         self._status_bar.refresh(self._state)
         self._status_bar._overlay_tip._apply_style()
+        self._tabbar_separator.setVisible(bool(self._state.images_data))
 
     def _on_non_image_file_modified(self, entry, new_bytes):
         """Appelé dans le thread Qt quand un fichier non-image a été modifié.
@@ -2084,6 +2146,37 @@ class PanelWidget(QWidget):
             save_sidebar_state(not self._sidebar_visible)
         elif getattr(mw, "_panel2", None) is self:
             get_config_manager().set_sidebar_collapsed_panel2(not self._sidebar_visible)
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # Minimap
+    # ──────────────────────────────────────────────────────────────────────────
+
+    _MINIMAP_WIDTH = 120
+
+    def _build_minimap_panel(self) -> QWidget:
+        from modules.qt.minimap_widget_qt import MinimapWidget
+        panel = QWidget()
+        panel.setObjectName("minimapPanel")
+        panel.setFixedWidth(self._MINIMAP_WIDTH)
+        layout = QVBoxLayout(panel)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        self._minimap_widget = MinimapWidget(self._canvas, owner_panel=self)
+        layout.addWidget(self._minimap_widget, stretch=1)
+        return panel
+
+    def _toggle_minimap(self):
+        self._minimap_visible = not self._minimap_visible
+        self._minimap_panel.setVisible(self._minimap_visible)
+        update = getattr(self._menubar, "_update_minimap_chevron", None)
+        if update:
+            update()
+        self._canvas.setFocus()
+        mw = self._main_window
+        if not getattr(mw, "_split_active", False) or getattr(mw, "_panel", None) is self:
+            get_config_manager().set_minimap_visible(self._minimap_visible)
+        elif getattr(mw, "_panel2", None) is self:
+            get_config_manager().set_minimap_visible_panel2(self._minimap_visible)
 
     # ──────────────────────────────────────────────────────────────────────────
     # Escape

@@ -167,6 +167,10 @@ def _populate_edit_menu(menu: QMenu, callbacks: dict):
     _add_action(menu, _("menu.refresh_mosaic") + "\tF5", callbacks.get("render_mosaic"),
                 enabled=True)
 
+    from modules.qt.duplicate_detection_qt import has_any_duplicate
+    _add_action(menu, _("menu.show_duplicates"), callbacks.get("show_duplicates_window"),
+                enabled=has_images and has_any_duplicate(st))
+
 
 def _populate_images_menu(menu: QMenu, callbacks: dict):
     menu.clear()
@@ -595,5 +599,19 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
                 fn(m, callbacks)
             return handler
         menu.aboutToShow.connect(make_handler(menu, populate_fn))
+
+    # ── Entrée chevron : affiche/masque la minimap (extrême droite, sens inversé) ──
+    toggle_minimap = callbacks.get("toggle_minimap")
+    get_minimap_visible = callbacks.get("get_minimap_visible", lambda: False)
+    minimap_action = QAction("»" if get_minimap_visible() else "«", mb)
+    minimap_action.setFont(font)
+    def _on_minimap_toggle():
+        if toggle_minimap:
+            toggle_minimap()
+        minimap_action.setText("»" if get_minimap_visible() else "«")
+    minimap_action.triggered.connect(_on_minimap_toggle)
+    mb.addAction(minimap_action)
+    # Expose un callable pour mettre à jour le chevron sans passer par triggered
+    mb._update_minimap_chevron = lambda: minimap_action.setText("»" if get_minimap_visible() else "«")
 
     return mb

@@ -174,11 +174,13 @@
       "fullscreen_exit": "退出全螢幕 (F11或ESC)",
       "quit": "關閉應用程式",
       "delete_bookmark": "刪除此漫畫的書籤",
-      "delete_all_bookmarks": "刪除所有書籤"
+      "delete_all_bookmarks": "刪除所有書籤",
+      "hide_minimap": "» 隱藏小地圖",
+      "show_minimap": "« 顯示小地圖"
     },
     "canvas": {
       "quit": "關閉應用程式",
-      "reset": "重置應用程式:\n• 全螢幕 → 視窗化\n• 視窗大小和位置\n• 深色模式 → 淺色\n• 側邊欄 → 可見 / 預設寬度\n• 圖示和縮圖大小 → 一般\n• 字體大小 → 預設\n• 語言 → 自動偵測\n• 視窗分割 → 50 / 50\n• 重新編號 → 自動\n• ZIP 壓縮 → 無",
+      "reset": "重置應用程式:\n• 全螢幕 → 視窗化\n• 視窗大小和位置\n• 深色模式 → 淺色\n• 側邊欄 → 可見 / 預設寬度\n• 小地圖 → 隱藏\n• 圖示和縮圖大小 → 一般\n• 字體大小 → 預設\n• 語言 → 自動偵測\n• 視窗分割 → 50 / 50\n• 重新編號 → 自動\n• ZIP 壓縮 → 無",
       "reset_label": "重置應用程式"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "複製連結",
       "open_location": "開啟位置",
       "copy_path": "複製路徑"
+    },
+    "duplicates": {
+      "window_title": "重複頁面",
+      "no_duplicates": "未偵測到重複頁面。",
+      "group_title": "第 {num} 組：{count} 個相同頁面",
+      "delete_selection": "刪除所選內容"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "ZIP 壓縮等級不適用於 {ext} 檔案。\n點擊以預設等級（{level}）儲存為 CBZ。\n按右鍵以變更預設等級。",
     "zip_indicator_ext_image": "圖像",
     "zip_indicator_stored_noop": "此檔案未壓縮。\n按右鍵以變更預設等級。",
-    "zip_indicator_stored_action": "此檔案未壓縮。\n點擊以預設等級（{level}）壓縮它。\n按右鍵以變更預設等級。"
+    "zip_indicator_stored_action": "此檔案未壓縮。\n點擊以預設等級（{level}）壓縮它。\n按右鍵以變更預設等級。",
+    "duplicate_image": "重複頁面"
   },
   "help": {
     "title": "MosaicView - 使用說明",
     "intro": "MosaicView 允許您操作和編輯漫畫(數位漫畫書),而無需將其從壓縮檔中提取。該應用程式支援 CBZ (ZIP)、CBR (RAR) 和 PDF 格式。 本應用程式僅相容64位元系統。",
     "open_files": "開啟檔案",
-    "open_files_content": "• 按一下'開啟檔案'按鈕，或將檔案直接拖放至視窗中\n• 支援的格式:CBZ、CBR、PDF、圖像(JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). 也可以打開EPUB檔案，但只會提取其圖像（文字會被忽略）。 注意：以紅色顯示的副檔名（WEBP、TIFF、GIF、ICO…）表示可能與舊版 CBZ/CBR 閱讀器不相容的格式。不過，MosaicView 仍可正常處理這些檔案。\n• 已加密的PDF（開啟時需要密碼）:檔案無法匯入，將顯示錯誤訊息。\n• 受保護禁止修改的PDF（owner password）:頁面正常匯入。MosaicView建議在同一資料夾中儲存一份解鎖的副本。",
+    "open_files_content": "• 按一下'開啟檔案'按鈕，或將檔案直接拖放至視窗中\n• 支援的格式:CBZ、CBR、PDF、圖像(JPG、PNG、WEBP、BMP、TIFF、GIF、ICO). 也可以打開EPUB檔案，但只會提取其圖像（文字會被忽略）。 注意：以紅色顯示的副檔名（WEBP、TIFF、GIF、ICO…）表示可能與舊版 CBZ/CBR 閱讀器不相容的格式。不過，MosaicView 仍可正常處理這些檔案。\n• 已加密的PDF（開啟時需要密碼）:檔案無法匯入，將顯示錯誤訊息。\n• 受保護禁止修改的PDF（owner password）:頁面正常匯入。MosaicView建議在同一資料夾中儲存一份解鎖的副本。\n• 重複頁面偵測：開啟壓縮檔時，內容完全相同的頁面（掃描或合併錯誤所致）會在縮圖上自動標記橘色徽章。「管理重複頁面」命令（編輯選單、在拼貼圖上按右鍵或在縮圖上按右鍵）會開啟一個視窗，列出每組相同的頁面，每個頁面都有一個核取方塊，用於刪除多餘的副本。",
     "mosaic": "縮圖",
-    "mosaic_content": "馬賽克以縮圖形式顯示您漫畫的所有頁面。您可以：\n• 透過拖放重新排列頁面（頁碼將自動更新，並會按照當前啟用的重新編號模式進行）\n• 選擇多個頁面（Ctrl+點擊或Shift+點擊）\n• 使用滑桿或 Ctrl+滑鼠滾輪調整縮圖大小\n• 點擊檔案名稱手動重新命名檔案\n• 從Windows檔案總管直接拖放漫畫檔案（CBZ/CBR/PDF）到另一個開啟的漫畫中以合併其內容\n• 將所有顯示的縮圖匯出至您選擇的資料夾（隱藏指令，僅可透過快速鍵 Ctrl+Alt+T 存取）",
+    "mosaic_content": "馬賽克以縮圖形式顯示您漫畫的所有頁面。您可以：\n• 透過拖放重新排列頁面（頁碼將自動更新，並會按照當前啟用的重新編號模式進行）\n• 選擇多個頁面（Ctrl+點擊或Shift+點擊）\n• 使用滑桿或 Ctrl+滑鼠滾輪調整縮圖大小\n• 點擊檔案名稱手動重新命名檔案\n• 從Windows檔案總管直接拖放漫畫檔案（CBZ/CBR/PDF）到另一個開啟的漫畫中以合併其內容\n• 將所有顯示的縮圖匯出至您選擇的資料夾（隱藏指令，僅可透過快速鍵 Ctrl+Alt+T 存取）\n• 顯示小地圖：馬賽克右側的可選側邊面板，顯示所有頁面的縮略概覽，並以矩形標示目前可見的區域。點擊或拖曳即可直接跳轉至漫畫中的該位置。可從系統選單或馬賽克右鍵選單啟用。",
     "manipulation": "頁面操作",
     "manipulation_content": "• 拖放頁面以重新排列\n• 將整本漫畫拖入另一本以合併\n• 右鍵單擊頁面以存取選項（旋轉、刪除等）\n• 雙擊頁面以開啟檢視器\n• 將單個頁面拖到 Windows 資料夾中匯出，或透過 Ctrl+C / Ctrl+V",
     "renumber": "頁面重新編號",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "更新日誌",
     "webpage": "網頁",
-    "zip_compression": "預設 ZIP 壓縮"
+    "zip_compression": "預設 ZIP 壓縮",
+    "show_duplicates": "管理重複頁面"
   },
   "updates": {
     "dialog_title": "更新",

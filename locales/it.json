@@ -174,11 +174,13 @@
       "fullscreen_exit": "Esci da schermo intero (F11 o ESC)",
       "quit": "Chiudi applicazione",
       "delete_bookmark": "Elimina segnalibro per questo fumetto",
-      "delete_all_bookmarks": "Elimina tutti i segnalibri"
+      "delete_all_bookmarks": "Elimina tutti i segnalibri",
+      "hide_minimap": "» Nascondi minimappa",
+      "show_minimap": "« Mostra minimappa"
     },
     "canvas": {
       "quit": "Chiudi applicazione",
-      "reset": "Reimposta l'applicazione:\n• schermo intero → finestra\n• dimensione e posizione della finestra\n• modalità scura → chiara\n• barra laterale → visibile / larghezza predefinita\n• dimensione icone e miniature → normale\n• dimensione carattere → predefinita\n• lingua → rilevamento automatico\n• divisione della finestra → 50 / 50\n• rinumerazione → automatica\n• compressione ZIP → nessuna",
+      "reset": "Reimposta l'applicazione:\n• schermo intero → finestra\n• dimensione e posizione della finestra\n• modalità scura → chiara\n• barra laterale → visibile / larghezza predefinita\n• minimappa → nascosta\n• dimensione icone e miniature → normale\n• dimensione carattere → predefinita\n• lingua → rilevamento automatico\n• divisione della finestra → 50 / 50\n• rinumerazione → automatica\n• compressione ZIP → nessuna",
       "reset_label": "Ripristina l'applicazione"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Copia link",
       "open_location": "Apri posizione",
       "copy_path": "Copia percorso"
+    },
+    "duplicates": {
+      "window_title": "Duplicati",
+      "no_duplicates": "Nessun duplicato rilevato.",
+      "group_title": "Gruppo {num}: {count} pagine identiche",
+      "delete_selection": "Elimina selezione"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Il livello di compressione ZIP non si applica ai file {ext}.\nClic per salvare come CBZ al livello predefinito ({level}).\nClic destro per modificare il livello predefinito.",
     "zip_indicator_ext_image": "immagine",
     "zip_indicator_stored_noop": "Questo file non è compresso.\nClic destro per modificare il livello predefinito.",
-    "zip_indicator_stored_action": "Questo file non è compresso.\nClic per comprimerlo al livello predefinito ({level}).\nClic destro per modificare il livello predefinito."
+    "zip_indicator_stored_action": "Questo file non è compresso.\nClic per comprimerlo al livello predefinito ({level}).\nClic destro per modificare il livello predefinito.",
+    "duplicate_image": "PAGINA DUPLICATA"
   },
   "help": {
     "title": "MosaicView - Manuale utente",
     "intro": "MosaicView ti permette di manipolare e modificare fumetti (BD digitali) senza doverli estrarre dai loro archivi. L'applicazione supporta i formati CBZ (ZIP), CBR (RAR) e PDF. L'applicazione è compatibile solo con sistemi a 64 bit.",
     "open_files": "Aprire file",
-    "open_files_content": "• Fare clic sul pulsante 'Apri un file' o trascinare e rilasciare un file direttamente nella finestra\n• Formati supportati: CBZ, CBR, CB7, CBT, PDF, immagini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). I file EPUB possono anche essere aperti, ma solo le loro immagini verranno estratte (il testo viene ignorato). Nota: le estensioni visualizzate in rosso (WEBP, TIFF, GIF, ICO…) segnalano formati potenzialmente incompatibili con i vecchi lettori CBZ/CBR. Questi file vengono comunque elaborati normalmente da MosaicView.\n• PDF cifrato (password richiesta per l'apertura): il file non può essere importato, viene visualizzato un messaggio di errore.\n• PDF protetto contro le modifiche (owner password): le pagine vengono importate normalmente. MosaicView propone di salvare una copia sbloccata del file nella stessa cartella.",
+    "open_files_content": "• Fare clic sul pulsante 'Apri un file' o trascinare e rilasciare un file direttamente nella finestra\n• Formati supportati: CBZ, CBR, CB7, CBT, PDF, immagini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). I file EPUB possono anche essere aperti, ma solo le loro immagini verranno estratte (il testo viene ignorato). Nota: le estensioni visualizzate in rosso (WEBP, TIFF, GIF, ICO…) segnalano formati potenzialmente incompatibili con i vecchi lettori CBZ/CBR. Questi file vengono comunque elaborati normalmente da MosaicView.\n• PDF cifrato (password richiesta per l'apertura): il file non può essere importato, viene visualizzato un messaggio di errore.\n• PDF protetto contro le modifiche (owner password): le pagine vengono importate normalmente. MosaicView propone di salvare una copia sbloccata del file nella stessa cartella.\n• Rilevamento pagine duplicate: all'apertura di un archivio, le pagine con contenuto strettamente identico (un errore di scansione o unione) vengono segnalate automaticamente con un badge arancione sulla miniatura. Il comando \"Gestisci duplicati\" (menu Modifica, clic destro sul mosaico o su una miniatura) apre una finestra che elenca ogni gruppo di pagine identiche, con una casella di controllo per pagina per eliminare le copie in eccesso.",
     "mosaic": "Il mosaico",
-    "mosaic_content": "Il mosaico visualizza tutte le pagine del tuo fumetto come miniature. Puoi:\n• Riorganizzare le pagine tramite trascinamento (la rinumerazione delle pagine sarà automatica e seguirà la modalità di rinumerazione attiva)\n• Selezionare più pagine (Ctrl+clic o Maiusc+clic)\n• Regolare la dimensione delle miniature con il cursore o Ctrl+rotella del mouse\n• Rinominare manualmente i file cliccando sul loro nome\n• Trascinare file di fumetti (CBZ/CBR/PDF) da Esplora file direttamente in un altro fumetto aperto per unire il loro contenuto\n• Esportare tutte le miniature visualizzate in una cartella a scelta (comando nascosto, accessibile solo tramite la scorciatoia Ctrl+Alt+T)",
+    "mosaic_content": "Il mosaico visualizza tutte le pagine del tuo fumetto come miniature. Puoi:\n• Riorganizzare le pagine tramite trascinamento (la rinumerazione delle pagine sarà automatica e seguirà la modalità di rinumerazione attiva)\n• Selezionare più pagine (Ctrl+clic o Maiusc+clic)\n• Regolare la dimensione delle miniature con il cursore o Ctrl+rotella del mouse\n• Rinominare manualmente i file cliccando sul loro nome\n• Trascinare file di fumetti (CBZ/CBR/PDF) da Esplora file direttamente in un altro fumetto aperto per unire il loro contenuto\n• Esportare tutte le miniature visualizzate in una cartella a scelta (comando nascosto, accessibile solo tramite la scorciatoia Ctrl+Alt+T)\n• Mostra minimappa: un pannello laterale opzionale a destra del mosaico che mostra una panoramica in miniatura di tutte le pagine, con un rettangolo che indica l'area attualmente visibile. Fai clic o trascina per spostarti direttamente in quel punto del fumetto. Attivabile dal menu Sistema o con il clic destro sul mosaico.",
     "manipulation": "Manipolazione delle pagine",
     "manipulation_content": "• Trascina e rilascia le pagine per riorganizzarle\n• Trascina un intero fumetto in un altro per unirli\n• Clic destro su una pagina per accedere alle opzioni (rotazione, eliminazione, ecc.)\n• Doppio clic su una pagina per aprire il visualizzatore\n• Esporta singole pagine trascinandole in una cartella Windows, o tramite Ctrl+C / Ctrl+V",
     "renumber": "Rinumerazione delle pagine",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Registro delle modifiche",
     "webpage": "Pagina web",
-    "zip_compression": "Compressione ZIP predefinita"
+    "zip_compression": "Compressione ZIP predefinita",
+    "show_duplicates": "Gestisci duplicati"
   },
   "updates": {
     "dialog_title": "Aggiornamenti",

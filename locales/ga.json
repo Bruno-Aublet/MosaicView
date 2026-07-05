@@ -174,11 +174,13 @@
       "fullscreen_exit": "Scoir de lánscáileán (F11 nó ESC)",
       "quit": "Dún an feidhmchlár",
       "delete_bookmark": "Scrios leabharmharc don chlár grinn seo",
-      "delete_all_bookmarks": "Scrios gach leabharmharc"
+      "delete_all_bookmarks": "Scrios gach leabharmharc",
+      "hide_minimap": "» Folaigh an mionléarscáil",
+      "show_minimap": "« Taispeáin an mionléarscáil"
     },
     "canvas": {
       "quit": "Dún an feidhmchlár",
-      "reset": "An feidhmchlár a athshocrú:\n• lánscáileán → fuinneogach\n• méid agus suíomh na fuinneoige\n• mód dorcha → geal\n• barra taoibh → infheicthe / leithead réamhshocraithe\n• méid na ndeilbhíní agus na mionsamhlacha → gnáth\n• méid cló → réamhshocraithe\n• teanga → braite uathoibríoch\n• roinnt na fuinneoige → 50 / 50\n• athuimhriú → uathoibríoch\n• comhbhrú ZIP → none",
+      "reset": "An feidhmchlár a athshocrú:\n• lánscáileán → fuinneogach\n• méid agus suíomh na fuinneoige\n• mód dorcha → geal\n• barra taoibh → infheicthe / leithead réamhshocraithe\n• mionléarscáil → i bhfolach\n• méid na ndeilbhíní agus na mionsamhlacha → gnáth\n• méid cló → réamhshocraithe\n• teanga → braite uathoibríoch\n• roinnt na fuinneoige → 50 / 50\n• athuimhriú → uathoibríoch\n• comhbhrú ZIP → dada",
       "reset_label": "Athshocraigh an feidhmchlár"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Cóipeáil nasc",
       "open_location": "Oscail suíomh",
       "copy_path": "Cóipeáil conair"
+    },
+    "duplicates": {
+      "window_title": "Dúblacha",
+      "no_duplicates": "Níor aimsíodh aon dhúblach.",
+      "group_title": "Grúpa {num}: {count} leathanach comhionann",
+      "delete_selection": "Scrios an roghnú"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Ní bhaineann leibhéal comhbhrú ZIP le comhaid {ext}.\nCliceáil chun sábháil mar CBZ ag an leibhéal réamhshocraithe ({level}).\nDeaschliceáil chun an leibhéal réamhshocraithe a athrú.",
     "zip_indicator_ext_image": "íomhá",
     "zip_indicator_stored_noop": "Níl an comhad seo comhbhrúite.\nDeaschliceáil chun an leibhéal réamhshocraithe a athrú.",
-    "zip_indicator_stored_action": "Níl an comhad seo comhbhrúite.\nCliceáil chun é a chomhbhrú ag an leibhéal réamhshocraithe ({level}).\nDeaschliceáil chun an leibhéal réamhshocraithe a athrú."
+    "zip_indicator_stored_action": "Níl an comhad seo comhbhrúite.\nCliceáil chun é a chomhbhrú ag an leibhéal réamhshocraithe ({level}).\nDeaschliceáil chun an leibhéal réamhshocraithe a athrú.",
+    "duplicate_image": "LEATHANACH DÚBLACH"
   },
   "help": {
     "title": "MosaicView - Treoir",
     "intro": "Ligeann MosaicView duit greannáin (greannáin dhigiteacha) a láimhseáil agus a mhodhnú gan iad a bhaint as a gcartlanna. Tacaíonn an feidhmchlár le formáidí CBZ (ZIP), CBR (RAR) agus PDF. Níl an feidhmchlár comhoiriúnach ach le córais 64 giotán.",
     "open_files": "Comhaid a oscailt",
-    "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail comhad' nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, CBT, PDF, íomhánna (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Is feidir comhaid EPUB a oscailt freisin, ach ni bheidh ach a n-iomhanna a bhaint amach (deantar neamhaird ar an tecs).\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san fhillteán céanna. Nóta: léiríonn iarmhíreanna i gclódeirge (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamh-chomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, déanann MosaicView na comhaid seo a phróiseáil go gnáth.",
+    "open_files_content": "• Cliceáil ar an gcnaipe 'Oscail comhad' nó tarraing agus scaoil comhad go díreach isteach san fhuinneog\n• Formáidí le tacaíocht: CBZ, CBR, CB7, CBT, PDF, íomhánna (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Is feidir comhaid EPUB a oscailt freisin, ach ni bheidh ach a n-iomhanna a bhaint amach (deantar neamhaird ar an tecs).\n• PDF criptithe (pasfhocal ag teastáil le hoscailt): ní féidir an comhad a iompórtáil, taispeántar teachtaireacht earráide.\n• PDF cosanta in aghaidh modhnuithe (owner password): iompórtáiltear na leathanaigh go normálta. Molann MosaicView cóip dhíghlasáilte den chomhad a shábháil san fhillteán céanna. Nóta: léiríonn iarmhíreanna i gclódeirge (WEBP, TIFF, GIF, ICO…) formáidí a d'fhéadfadh a bheith neamh-chomhoiriúnach le léitheoirí CBZ/CBR níos sine. Mar sin féin, déanann MosaicView na comhaid seo a phróiseáil go gnáth.\n• Braite leathanach dúblach: nuair a osclaítear cartlann, cuirtear suaitheantas oráiste go huathoibríoch ar mhionsamhail aon leathanaigh a bhfuil a n-inneachar go hiomlán comhionann (earráid scanta nó cumaisc). Osclaíonn an t-ordú \"Bainistigh dúblacha\" (roghchlár Eagar, deaschliceáil ar an mósáic nó ar mhionsamhail) fuinneog a liostaíonn gach grúpa leathanach comhionann, le ticbhosca in aghaidh an leathanaigh chun na cóipeanna breise a scriosadh.",
     "mosaic": "An mhósáic",
-    "mosaic_content": "Taispeánann an mhósáic gach leathanach de do ghreannán mar mhionsamhlacha. Is féidir leat:\n• Athshocraigh leathanaigh trí tharraingt agus scaoileadh (beidh uimhriú leathanaigh uathoibríoch, agus leanúidh sé an mód ath-uimhrithe gníomhach)\n• Roghnaigh leathanaigh iolracha (Ctrl+cliceáil nó Shift+cliceáil)\n• Coigeartaigh méid na mionsamhlacha leis an sleamhnán nó Ctrl+roth luiche\n• Athainmnigh comhaid de láimh trí chliceáil ar a n-ainm\n• Tarraing agus scaoil comhaid ghreannáin (CBZ/CBR/PDF) ó Windows Explorer go díreach isteach i ngreannán eile atá oscailte chun a n-ábhar a chumasc\n• Easpórtáil gach mionsamhail atá le feiceáil go fillteán de do rogha féin (ordú i bhfolach, inrochtana trí aicearra Ctrl+Alt+T amháin)",
+    "mosaic_content": "Taispeánann an mhósáic gach leathanach de do ghreannán mar mhionsamhlacha. Is féidir leat:\n• Athshocraigh leathanaigh trí tharraingt agus scaoileadh (beidh uimhriú leathanaigh uathoibríoch, agus leanúidh sé an mód ath-uimhrithe gníomhach)\n• Roghnaigh leathanaigh iolracha (Ctrl+cliceáil nó Shift+cliceáil)\n• Coigeartaigh méid na mionsamhlacha leis an sleamhnán nó Ctrl+roth luiche\n• Athainmnigh comhaid de láimh trí chliceáil ar a n-ainm\n• Tarraing agus scaoil comhaid ghreannáin (CBZ/CBR/PDF) ó Windows Explorer go díreach isteach i ngreannán eile atá oscailte chun a n-ábhar a chumasc\n• Easpórtáil gach mionsamhail atá le feiceáil go fillteán de do rogha féin (ordú i bhfolach, inrochtana trí aicearra Ctrl+Alt+T amháin)\n• Taispeáin an mionléarscáil: painéal roghnach ar thaobh na láimhe deise den mhósáic a thaispeánann forbhreathnú beag ar gach leathanach, le dronuilleog a léiríonn an limistéar atá le feiceáil faoi láthair. Cliceáil nó tarraing chun dul díreach chuig an áit sin sa ghreannán. Inathraithe ón roghchlár Córas nó tríd an deaschlic ar an mósáic.",
     "manipulation": "Láimhseáil leathanach",
     "manipulation_content": "• Tarraing agus scaoil leathanaigh chun iad a atheagrú\n• Tarraing ealaínchlár iomlán isteach i gceann eile chun iad a chumasc\n• Cliceáil ar dheis ar leathanach chun roghanna a rochtain (rothú, scriosadh, srl.)\n• Cliceáil faoi dhó ar leathanach chun an breathnóir a oscailt\n• Easpórtáil leathanaigh aonair trína dtarraingt chuig fillteán Windows, nó via Ctrl+C / Ctrl+V",
     "renumber": "Athuimhriú leathanach",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Loga Athruithe",
     "webpage": "Leathanach gréasáin",
-    "zip_compression": "Comhbhrú réamhshocraithe ZIP"
+    "zip_compression": "Comhbhrú réamhshocraithe ZIP",
+    "show_duplicates": "Bainistigh dúblacha"
   },
   "updates": {
     "dialog_title": "Nuashonruithe",

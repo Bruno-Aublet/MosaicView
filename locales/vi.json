@@ -174,11 +174,13 @@
       "fullscreen_exit": "Thoát toàn màn hình (F11 hoặc ESC)",
       "quit": "Đóng ứng dụng",
       "delete_bookmark": "Xóa dấu trang cho truyện tranh này",
-      "delete_all_bookmarks": "Xóa tất cả dấu trang"
+      "delete_all_bookmarks": "Xóa tất cả dấu trang",
+      "hide_minimap": "» Ẩn bản đồ thu nhỏ",
+      "show_minimap": "« Hiện bản đồ thu nhỏ"
     },
     "canvas": {
       "quit": "Đóng ứng dụng",
-      "reset": "Đặt lại ứng dụng:\n• toàn màn hình → cửa sổ\n• kích thước và vị trí cửa sổ\n• chế độ tối → sáng\n• thanh bên → hiển thị / chiều rộng mặc định\n• kích thước biểu tượng và hình thu nhỏ → bình thường\n• cỡ chữ → mặc định\n• ngôn ngữ → tự động phát hiện\n• chia cửa sổ → 50 / 50\n• đánh số lại → tự động\n• nén ZIP → không",
+      "reset": "Đặt lại ứng dụng:\n• toàn màn hình → cửa sổ\n• kích thước và vị trí cửa sổ\n• chế độ tối → sáng\n• thanh bên → hiển thị / chiều rộng mặc định\n• bản đồ thu nhỏ → đã ẩn\n• kích thước biểu tượng và hình thu nhỏ → bình thường\n• cỡ chữ → mặc định\n• ngôn ngữ → tự động phát hiện\n• chia cửa sổ → 50 / 50\n• đánh số lại → tự động\n• nén ZIP → không",
       "reset_label": "Đặt lại ứng dụng"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Sao chép liên kết",
       "open_location": "Mở vị trí",
       "copy_path": "Sao chép đường dẫn"
+    },
+    "duplicates": {
+      "window_title": "Trùng lặp",
+      "no_duplicates": "Không phát hiện trang trùng lặp.",
+      "group_title": "Nhóm {num}: {count} trang giống hệt nhau",
+      "delete_selection": "Xóa mục đã chọn"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Mức nén ZIP không áp dụng cho tệp {ext}.\nNhấp để lưu dưới dạng CBZ ở mức mặc định ({level}).\nNhấp chuột phải để thay đổi mức mặc định.",
     "zip_indicator_ext_image": "ảnh",
     "zip_indicator_stored_noop": "Tệp này không được nén.\nNhấp chuột phải để thay đổi mức mặc định.",
-    "zip_indicator_stored_action": "Tệp này không được nén.\nNhấp để nén ở mức mặc định ({level}).\nNhấp chuột phải để thay đổi mức mặc định."
+    "zip_indicator_stored_action": "Tệp này không được nén.\nNhấp để nén ở mức mặc định ({level}).\nNhấp chuột phải để thay đổi mức mặc định.",
+    "duplicate_image": "TRANG TRÙNG LẶP"
   },
   "help": {
     "title": "MosaicView - Hướng dẫn sử dụng",
     "intro": "MosaicView cho phép bạn thao tác và chỉnh sửa truyện tranh (sách truyện tranh kỹ thuật số) mà không cần giải nén chúng khỏi kho lưu trữ. Ứng dụng hỗ trợ định dạng CBZ (ZIP), CBR (RAR) và PDF. Ứng dụng chỉ tương thích với hệ thống 64-bit.",
     "open_files": "Mở tệp",
-    "open_files_content": "• Nhấp vào nút 'Mở tệp' hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, CBT, PDF, ảnh (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Cac tep EPUB cung co the duoc mo, nhung chi cac hinh anh cua chung se duoc trich xuat (van ban bi bo qua).\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục. Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.",
+    "open_files_content": "• Nhấp vào nút 'Mở tệp' hoặc kéo và thả tệp trực tiếp vào cửa sổ\n• Định dạng được hỗ trợ: CBZ, CBR, CB7, CBT, PDF, ảnh (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Cac tep EPUB cung co the duoc mo, nhung chi cac hinh anh cua chung se duoc trich xuat (van ban bi bo qua).\n• PDF được mã hóa (cần mật khẩu để mở): không thể nhập tệp, thông báo lỗi được hiển thị.\n• PDF được bảo vệ chống sửa đổi (owner password): các trang được nhập bình thường. MosaicView đề xuất lưu bản sao đã mở khóa của tệp vào cùng thư mục. Lưu ý: các phần mở rộng hiển thị màu đỏ (WEBP, TIFF, GIF, ICO…) biểu thị các định dạng có thể không tương thích với các trình đọc CBZ/CBR cũ. Tuy nhiên, MosaicView vẫn xử lý các tệp này bình thường.\n• Phát hiện trang trùng lặp: khi mở kho lưu trữ, các trang có nội dung hoàn toàn giống hệt nhau (do lỗi quét hoặc gộp) sẽ tự động được đánh dấu bằng huy hiệu màu cam trên hình thu nhỏ. Lệnh \"Quản lý trang trùng lặp\" (menu Chỉnh sửa, nhấp chuột phải vào ảnh khảm hoặc vào hình thu nhỏ) mở một cửa sổ liệt kê từng nhóm trang giống hệt nhau, với một hộp kiểm cho mỗi trang để xóa các bản sao thừa.",
     "mosaic": "Mosaic",
-    "mosaic_content": "Khung hiển thị tất cả các trang của truyện tranh dưới dạng hình thu nhỏ. Bạn có thể:\n• Sắp xếp lại các trang bằng cách kéo và thả (đánh số trang sẽ tự động và sẽ theo chế độ đánh số lại đang hoạt động)\n• Chọn nhiều trang (Ctrl+nhấp hoặc Shift+nhấp)\n• Điều chỉnh kích thước hình thu nhỏ bằng thanh trượt hoặc Ctrl+cuộn chuột\n• Đổi tên tệp thủ công bằng cách nhấp vào tên của chúng\n• Kéo và thả tệp truyện tranh (CBZ/CBR/PDF) từ Windows Explorer trực tiếp vào truyện tranh đang mở khác để hợp nhất nội dung của chúng\n• Xuất tất cả hình thu nhỏ đang hiển thị vào thư mục tùy chọn (lệnh ẩn, chỉ có thể truy cập qua phím tắt Ctrl+Alt+T)",
+    "mosaic_content": "Khung hiển thị tất cả các trang của truyện tranh dưới dạng hình thu nhỏ. Bạn có thể:\n• Sắp xếp lại các trang bằng cách kéo và thả (đánh số trang sẽ tự động và sẽ theo chế độ đánh số lại đang hoạt động)\n• Chọn nhiều trang (Ctrl+nhấp hoặc Shift+nhấp)\n• Điều chỉnh kích thước hình thu nhỏ bằng thanh trượt hoặc Ctrl+cuộn chuột\n• Đổi tên tệp thủ công bằng cách nhấp vào tên của chúng\n• Kéo và thả tệp truyện tranh (CBZ/CBR/PDF) từ Windows Explorer trực tiếp vào truyện tranh đang mở khác để hợp nhất nội dung của chúng\n• Xuất tất cả hình thu nhỏ đang hiển thị vào thư mục tùy chọn (lệnh ẩn, chỉ có thể truy cập qua phím tắt Ctrl+Alt+T)\n• Hiện bản đồ thu nhỏ: một bảng điều khiển bên tùy chọn ở bên phải khung, hiển thị bản xem trước thu nhỏ của tất cả các trang, với một hình chữ nhật đánh dấu khu vực hiện đang hiển thị. Nhấp hoặc kéo để điều hướng trực tiếp đến vị trí đó trong truyện tranh. Có thể bật từ menu Hệ thống hoặc nhấp chuột phải vào khung.",
     "manipulation": "Thao tác trang",
     "manipulation_content": "• Kéo và thả các trang để sắp xếp lại\n• Kéo toàn bộ truyện tranh vào một cuốn khác để gộp chúng\n• Nhấp chuột phải vào trang để truy cập các tùy chọn (xoay, xóa, v.v.)\n• Nhấp đúp vào trang để mở trình xem\n• Xuất các trang riêng lẻ bằng cách kéo vào thư mục Windows hoặc qua Ctrl+C / Ctrl+V",
     "renumber": "Đánh số lại trang",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Nhật ký thay đổi",
     "webpage": "Trang web",
-    "zip_compression": "Nén ZIP mặc định"
+    "zip_compression": "Nén ZIP mặc định",
+    "show_duplicates": "Quản lý trang trùng lặp"
   },
   "updates": {
     "dialog_title": "Cập nhật",

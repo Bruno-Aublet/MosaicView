@@ -174,11 +174,13 @@
       "fullscreen_exit": "Keluar dari skrin penuh (F11 atau ESC)",
       "quit": "Tutup aplikasi",
       "delete_bookmark": "Padam penanda buku untuk komik ini",
-      "delete_all_bookmarks": "Padam semua penanda buku"
+      "delete_all_bookmarks": "Padam semua penanda buku",
+      "hide_minimap": "» Sembunyikan peta mini",
+      "show_minimap": "« Tunjukkan peta mini"
     },
     "canvas": {
       "quit": "Tutup aplikasi",
-      "reset": "Tetapkan semula aplikasi:\n• skrin penuh → tetingkap\n• saiz dan kedudukan tetingkap\n• mod gelap → cerah\n• bar sisi → kelihatan / lebar lalai\n• saiz ikon dan lakaran kecil → biasa\n• saiz fon → lalai\n• bahasa → pengesanan automatik\n• pembahagian tetingkap → 50 / 50\n• penomboran semula → automatik\n• mampatan ZIP → tiada",
+      "reset": "Tetapkan semula aplikasi:\n• skrin penuh → tetingkap\n• saiz dan kedudukan tetingkap\n• mod gelap → cerah\n• bar sisi → kelihatan / lebar lalai\n• peta mini → tersembunyi\n• saiz ikon dan lakaran kecil → biasa\n• saiz fon → lalai\n• bahasa → pengesanan automatik\n• pembahagian tetingkap → 50 / 50\n• penomboran semula → automatik\n• mampatan ZIP → tiada",
       "reset_label": "Set semula aplikasi"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Salin pautan",
       "open_location": "Buka lokasi",
       "copy_path": "Salin laluan"
+    },
+    "duplicates": {
+      "window_title": "Pendua",
+      "no_duplicates": "Tiada pendua dikesan.",
+      "group_title": "Kumpulan {num}: {count} halaman serupa",
+      "delete_selection": "Padam pilihan"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Tahap mampatan ZIP tidak terpakai untuk fail {ext}.\nKlik untuk menyimpan sebagai CBZ pada tahap lalai ({level}).\nKlik kanan untuk menukar tahap lalai.",
     "zip_indicator_ext_image": "imej",
     "zip_indicator_stored_noop": "Fail ini tidak dimampatkan.\nKlik kanan untuk menukar tahap lalai.",
-    "zip_indicator_stored_action": "Fail ini tidak dimampatkan.\nKlik untuk memampatkannya pada tahap lalai ({level}).\nKlik kanan untuk menukar tahap lalai."
+    "zip_indicator_stored_action": "Fail ini tidak dimampatkan.\nKlik untuk memampatkannya pada tahap lalai ({level}).\nKlik kanan untuk menukar tahap lalai.",
+    "duplicate_image": "HALAMAN PENDUA"
   },
   "help": {
     "title": "MosaicView - Manual Pengguna",
     "intro": "MosaicView membolehkan anda memanipulasi dan mengubah komik (buku komik digital) tanpa perlu mengekstraknya dari arkib mereka. Aplikasi menyokong format CBZ (ZIP), CBR (RAR) dan PDF. Aplikasi ini hanya serasi dengan sistem 64-bit.",
     "open_files": "Membuka fail",
-    "open_files_content": "• Klik butang 'Buka fail' atau seret dan lepas fail terus ke tetingkap\n• Format disokong: CBZ, CBR, CB7, CBT, PDF, imej (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fail EPUB juga boleh dibuka, tetapi hanya imej mereka akan diekstrak (teks diabaikan). Nota: sambungan yang dipaparkan dalam warna merah (WEBP, TIFF, GIF, ICO…) menunjukkan format yang mungkin tidak serasi dengan pembaca CBZ/CBR lama. Walau bagaimanapun, fail-fail ini diproses secara normal oleh MosaicView.\n• PDF disulitkan (kata laluan diperlukan untuk dibuka): fail tidak dapat diimport, mesej ralat dipaparkan.\n• PDF dilindungi daripada pengubahsuaian (owner password): halaman diimport secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak dikunci dalam folder yang sama.",
+    "open_files_content": "• Klik butang 'Buka fail' atau seret dan lepas fail terus ke tetingkap\n• Format disokong: CBZ, CBR, CB7, CBT, PDF, imej (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fail EPUB juga boleh dibuka, tetapi hanya imej mereka akan diekstrak (teks diabaikan). Nota: sambungan yang dipaparkan dalam warna merah (WEBP, TIFF, GIF, ICO…) menunjukkan format yang mungkin tidak serasi dengan pembaca CBZ/CBR lama. Walau bagaimanapun, fail-fail ini diproses secara normal oleh MosaicView.\n• PDF disulitkan (kata laluan diperlukan untuk dibuka): fail tidak dapat diimport, mesej ralat dipaparkan.\n• PDF dilindungi daripada pengubahsuaian (owner password): halaman diimport secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak dikunci dalam folder yang sama.\n• Pengesanan halaman pendua: apabila membuka arkib, halaman dengan kandungan yang sama sepenuhnya (ralat imbasan atau penggabungan) secara automatik ditandakan dengan lencana jingga pada lakaran kecilnya. Arahan \"Urus pendua\" (menu Sunting, klik kanan pada mozek atau pada lakaran kecil) membuka tetingkap yang menyenaraikan setiap kumpulan halaman yang sama, dengan kotak semak setiap halaman untuk memadam salinan berlebihan.",
     "mosaic": "Mozek",
-    "mosaic_content": "Mozek memaparkan semua halaman buku komik anda sebagai gambar kecil. Anda boleh:\n• Susun semula halaman dengan menyeret dan melepas (penomboran halaman akan automatik, dan akan mengikut mod penomboran semula yang aktif)\n• Pilih berbilang halaman (Ctrl+klik atau Shift+klik)\n• Laraskan saiz gambar kecil dengan peluncur\n• Namakan semula fail secara manual dengan mengklik nama mereka\n• Seret dan lepas fail buku komik (CBZ/CBR/PDF) dari Windows Explorer terus ke buku komik terbuka lain untuk menggabungkan kandungan mereka\n• Eksport semua imej kecil yang dipaparkan ke folder pilihan anda (perintah tersembunyi, hanya boleh diakses melalui pintasan Ctrl+Alt+T)",
+    "mosaic_content": "Mozek memaparkan semua halaman buku komik anda sebagai gambar kecil. Anda boleh:\n• Susun semula halaman dengan menyeret dan melepas (penomboran halaman akan automatik, dan akan mengikut mod penomboran semula yang aktif)\n• Pilih berbilang halaman (Ctrl+klik atau Shift+klik)\n• Laraskan saiz gambar kecil dengan peluncur\n• Namakan semula fail secara manual dengan mengklik nama mereka\n• Seret dan lepas fail buku komik (CBZ/CBR/PDF) dari Windows Explorer terus ke buku komik terbuka lain untuk menggabungkan kandungan mereka\n• Eksport semua imej kecil yang dipaparkan ke folder pilihan anda (perintah tersembunyi, hanya boleh diakses melalui pintasan Ctrl+Alt+T)\n• Tunjukkan peta mini: panel sisi pilihan di sebelah kanan mozek yang menunjukkan tinjauan mini semua halaman, dengan segi empat tepat yang menandakan kawasan yang kelihatan pada masa ini. Klik atau seret untuk menavigasi terus ke lokasi itu dalam buku komik. Boleh diaktifkan daripada menu Sistem atau klik kanan pada mozek.",
     "manipulation": "Manipulasi halaman",
     "manipulation_content": "• Seret dan lepas halaman untuk mengatur semula\n• Seret keseluruhan komik ke dalam komik lain untuk menggabungkannya\n• Klik kanan pada halaman untuk mengakses pilihan (putaran, pemadaman, dll.)\n• Klik dua kali pada halaman untuk membuka penonton\n• Eksport halaman individu dengan menyeretnya ke folder Windows, atau melalui Ctrl+C / Ctrl+V",
     "renumber": "Penomboran semula halaman",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Log Perubahan",
     "webpage": "Laman web",
-    "zip_compression": "Mampatan ZIP lalai"
+    "zip_compression": "Mampatan ZIP lalai",
+    "show_duplicates": "Urus pendua"
   },
   "updates": {
     "dialog_title": "Kemas Kini",

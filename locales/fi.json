@@ -174,11 +174,13 @@
       "fullscreen_exit": "Poistu koko näytöstä (F11 tai ESC)",
       "quit": "Sulje sovellus",
       "delete_bookmark": "Poista kirjanmerkki tästä sarjakuva-albumista",
-      "delete_all_bookmarks": "Poista kaikki kirjanmerkit"
+      "delete_all_bookmarks": "Poista kaikki kirjanmerkit",
+      "hide_minimap": "» Piilota pienoiskartta",
+      "show_minimap": "« Näytä pienoiskartta"
     },
     "canvas": {
       "quit": "Sulje sovellus",
-      "reset": "Palauta sovellus:\n• koko näyttö → ikkuna\n• ikkunan koko ja sijainti\n• tumma tila → vaalea\n• sivupalkki → näkyvissä / oletusleveys\n• kuvake- ja pikkukuvakoko → normaali\n• fonttikoko → oletus\n• kieli → automaattinen tunnistus\n• ikkunan jako → 50 / 50\n• uudelleennumerointi → automaattinen\n• ZIP-pakkaus → ei mitään",
+      "reset": "Palauta sovellus:\n• koko näyttö → ikkuna\n• ikkunan koko ja sijainti\n• tumma tila → vaalea\n• sivupalkki → näkyvissä / oletusleveys\n• pienoiskartta → piilotettu\n• kuvake- ja pikkukuvakoko → normaali\n• fonttikoko → oletus\n• kieli → automaattinen tunnistus\n• ikkunan jako → 50 / 50\n• uudelleennumerointi → automaattinen\n• ZIP-pakkaus → ei mitään",
       "reset_label": "Palauta sovellus"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Kopioi linkki",
       "open_location": "Avaa sijainti",
       "copy_path": "Kopioi polku"
+    },
+    "duplicates": {
+      "window_title": "Kaksoiskappaleet",
+      "no_duplicates": "Kaksoiskappaleita ei löytynyt.",
+      "group_title": "Ryhmä {num}: {count} samanlaista sivua",
+      "delete_selection": "Poista valinta"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "ZIP-pakkaustaso ei koske {ext}-tiedostoja.\nNapsauta tallentaaksesi CBZ-muodossa oletustasolla ({level}).\nNapsauta hiiren oikealla painikkeella muuttaaksesi oletustasoa.",
     "zip_indicator_ext_image": "kuva",
     "zip_indicator_stored_noop": "Tätä tiedostoa ei ole pakattu.\nNapsauta hiiren oikealla painikkeella muuttaaksesi oletustasoa.",
-    "zip_indicator_stored_action": "Tätä tiedostoa ei ole pakattu.\nNapsauta pakataksesi sen oletustasolla ({level}).\nNapsauta hiiren oikealla painikkeella muuttaaksesi oletustasoa."
+    "zip_indicator_stored_action": "Tätä tiedostoa ei ole pakattu.\nNapsauta pakataksesi sen oletustasolla ({level}).\nNapsauta hiiren oikealla painikkeella muuttaaksesi oletustasoa.",
+    "duplicate_image": "KAKSOISKAPPALE"
   },
   "help": {
     "title": "MosaicView - Käyttöohje",
     "intro": "MosaicView mahdollistaa sarjakuvien (digitaalisten sarjakuvien) käsittelyn ja muokkaamisen ilman, että niitä tarvitsee purkaa arkistoista. Sovellus tukee CBZ (ZIP), CBR (RAR) ja PDF-muotoja. Sovellus on yhteensopiva vain 64-bittisten järjestelmien kanssa.",
     "open_files": "Tiedostojen avaaminen",
-    "open_files_content": "• Napsauta 'Avaa tiedosto' -painiketta tai vedä ja pudota tiedosto suoraan ikkunaan\n• Tuetut muodot: CBZ, CBR, CB7, CBT, PDF, kuvat (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-tiedostot voidaan myos avata, mutta vain niiden kuvat poimitaan (teksti jatetaan huomiotta).\n• Salattu PDF (salasana vaaditaan avattaessa): tiedostoa ei voi tuoda, näytetään virheilmoitus.\n• PDF suojattu muokkauksilta (owner password): sivut tuodaan normaalisti. MosaicView tarjoaa avatun kopion tallentamista samaan kansioon. Huomio: punaisella näytettävät tiedostopäätteet (WEBP, TIFF, GIF, ICO…) merkitsevät muotoja, jotka saattavat olla yhteensopimattomia vanhojen CBZ/CBR-lukijoiden kanssa. MosaicView käsittelee nämä tiedostot kuitenkin normaalisti.",
+    "open_files_content": "• Napsauta 'Avaa tiedosto' -painiketta tai vedä ja pudota tiedosto suoraan ikkunaan\n• Tuetut muodot: CBZ, CBR, CB7, CBT, PDF, kuvat (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-tiedostot voidaan myos avata, mutta vain niiden kuvat poimitaan (teksti jatetaan huomiotta).\n• Salattu PDF (salasana vaaditaan avattaessa): tiedostoa ei voi tuoda, näytetään virheilmoitus.\n• PDF suojattu muokkauksilta (owner password): sivut tuodaan normaalisti. MosaicView tarjoaa avatun kopion tallentamista samaan kansioon. Huomio: punaisella näytettävät tiedostopäätteet (WEBP, TIFF, GIF, ICO…) merkitsevät muotoja, jotka saattavat olla yhteensopimattomia vanhojen CBZ/CBR-lukijoiden kanssa. MosaicView käsittelee nämä tiedostot kuitenkin normaalisti.\n• Kaksoiskappaleiden tunnistus: arkistoa avattaessa täysin identtisen sisällön sivut (skannaus- tai yhdistämisvirhe) merkitään automaattisesti oranssilla merkillä pikkukuvaan. \"Hallitse kaksoiskappaleita\" (Muokkaa-valikko, hiiren oikea painike mosaiikissa tai pikkukuvassa) avaa ikkunan, jossa luetellaan jokainen identtisten sivujen ryhmä, ja jokaisen sivun kohdalla on valintaruutu ylimääräisten kopioiden poistamiseksi.",
     "mosaic": "Mosaïque",
-    "mosaic_content": "Mosaiikki näyttää kaikki sarjakuvasi sivut pienoiskuvina. Voit:\n• Järjestää sivuja uudelleen vetämällä ja pudottamalla (sivunumerointi on automaattista ja tapahtuu aktiivisen uudelleennumeroinnin tilan mukaisesti)\n• Valita useita sivuja (Ctrl+napsautus tai Vaihto+napsautus)\n• Säätää pienoiskuvien kokoa liukusäätimellä\n• Nimetä tiedostoja uudelleen manuaalisesti napsauttamalla niiden nimeä\n• Vetää ja pudottaa sarjakuvatiedostoja (CBZ/CBR/PDF) Windowsin Resurssienhallinnasta suoraan toiseen avoinna olevaan sarjakuvaan yhdistääksesi niiden sisällön\n• Vie kaikki näytetyt pienoiskuvat valitsemaasi kansioon (piilotettu komento, käytettävissä vain pikanäppäimellä Ctrl+Alt+T)",
+    "mosaic_content": "Mosaiikki näyttää kaikki sarjakuvasi sivut pienoiskuvina. Voit:\n• Järjestää sivuja uudelleen vetämällä ja pudottamalla (sivunumerointi on automaattista ja tapahtuu aktiivisen uudelleennumeroinnin tilan mukaisesti)\n• Valita useita sivuja (Ctrl+napsautus tai Vaihto+napsautus)\n• Säätää pienoiskuvien kokoa liukusäätimellä\n• Nimetä tiedostoja uudelleen manuaalisesti napsauttamalla niiden nimeä\n• Vetää ja pudottaa sarjakuvatiedostoja (CBZ/CBR/PDF) Windowsin Resurssienhallinnasta suoraan toiseen avoinna olevaan sarjakuvaan yhdistääksesi niiden sisällön\n• Vie kaikki näytetyt pienoiskuvat valitsemaasi kansioon (piilotettu komento, käytettävissä vain pikanäppäimellä Ctrl+Alt+T)\n• Näytä pienoiskartta: valinnainen sivupaneeli mosaiikin oikealla puolella, joka näyttää pienoiskuvan kaikista sivuista suorakulmiolla, joka osoittaa parhaillaan näkyvän alueen. Napsauta tai vedä siirtyäksesi suoraan sarjakuvan kyseiseen kohtaan. Kytkettävissä Järjestelmä-valikosta tai mosaiikin hiiren oikealla painikkeella avattavasta valikosta.",
     "manipulation": "Sivujen käsittely",
     "manipulation_content": "• Vedä ja pudota sivuja järjestääksesi ne uudelleen\n• Vedä koko sarjakuva toiseen yhdistääksesi ne\n• Napsauta sivua hiiren oikealla painikkeella vaihtoehtojen käyttämiseksi (kierto, poisto jne.)\n• Kaksoisnapsauta sivua avataksesi katseluohjelman\n• Vie yksittäisiä sivuja vetämällä ne Windows-kansioon tai Ctrl+C / Ctrl+V:n kautta",
     "renumber": "Sivujen uudelleennumerointi",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Muutosloki",
     "webpage": "Verkkosivu",
-    "zip_compression": "Oletus-ZIP-pakkaus"
+    "zip_compression": "Oletus-ZIP-pakkaus",
+    "show_duplicates": "Hallitse kaksoiskappaleita"
   },
   "updates": {
     "dialog_title": "Päivitykset",

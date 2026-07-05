@@ -174,11 +174,13 @@
       "fullscreen_exit": "Sair da tela cheia (F11 ou ESC)",
       "quit": "Fechar aplicação",
       "delete_bookmark": "Apagar marcador deste quadrinho",
-      "delete_all_bookmarks": "Apagar todos os marcadores"
+      "delete_all_bookmarks": "Apagar todos os marcadores",
+      "hide_minimap": "» Ocultar minimapa",
+      "show_minimap": "« Mostrar minimapa"
     },
     "canvas": {
       "quit": "Fechar aplicação",
-      "reset": "Redefinir a aplicação:\n• ecrã inteiro → janela\n• tamanho e posição da janela\n• modo escuro → claro\n• barra lateral → visível / largura padrão\n• tamanho dos ícones e miniaturas → normal\n• tamanho da fonte → padrão\n• idioma → deteção automática\n• divisão da janela → 50 / 50\n• renumeração → automática\n• compressão ZIP → nenhuma",
+      "reset": "Redefinir a aplicação:\n• ecrã inteiro → janela\n• tamanho e posição da janela\n• modo escuro → claro\n• barra lateral → visível / largura padrão\n• minimapa → oculto\n• tamanho dos ícones e miniaturas → normal\n• tamanho da fonte → padrão\n• idioma → deteção automática\n• divisão da janela → 50 / 50\n• renumeração → automática\n• compressão ZIP → nenhuma",
       "reset_label": "Redefinir a aplicação"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Copiar hiperligação",
       "open_location": "Abrir localização",
       "copy_path": "Copiar caminho"
+    },
+    "duplicates": {
+      "window_title": "Duplicados",
+      "no_duplicates": "Nenhum duplicado detetado.",
+      "group_title": "Grupo {num}: {count} páginas idênticas",
+      "delete_selection": "Eliminar seleção"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "O nível de compressão ZIP não se aplica a ficheiros {ext}.\nClique para guardar como CBZ com o nível predefinido ({level}).\nClique direito para alterar o nível predefinido.",
     "zip_indicator_ext_image": "imagem",
     "zip_indicator_stored_noop": "Este ficheiro não está comprimido.\nClique direito para alterar o nível predefinido.",
-    "zip_indicator_stored_action": "Este ficheiro não está comprimido.\nClique para o comprimir com o nível predefinido ({level}).\nClique direito para alterar o nível predefinido."
+    "zip_indicator_stored_action": "Este ficheiro não está comprimido.\nClique para o comprimir com o nível predefinido ({level}).\nClique direito para alterar o nível predefinido.",
+    "duplicate_image": "PÁGINA DUPLICADA"
   },
   "help": {
     "title": "MosaicView - Manual do utilizador",
     "intro": "O MosaicView permite-lhe manipular e modificar banda desenhada (BD digitais) sem ter de as extrair dos seus arquivos. A aplicação suporta os formatos CBZ (ZIP), CBR (RAR) e PDF. A aplicação é compatível apenas com sistemas de 64 bits.",
     "open_files": "Abrir ficheiros",
-    "open_files_content": "• Clique no botão 'Abrir um arquivo' ou arraste e solte um arquivo diretamente na janela\n• Formatos suportados: CBZ, CBR, CB7, CBT, PDF, imagens (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Os arquivos EPUB tambem podem ser abertos, mas apenas suas imagens serao extraidas (o texto e ignorado).\n• PDF criptografado (senha necessária para abrir): o arquivo não pode ser importado, uma mensagem de erro é exibida.\n• PDF protegido contra modificações (owner password): as páginas são importadas normalmente. MosaicView propõe salvar uma cópia desbloqueada do arquivo na mesma pasta. Nota: as extensões exibidas a vermelho (WEBP, TIFF, GIF, ICO…) indicam formatos potencialmente incompatíveis com leitores CBZ/CBR mais antigos. Esses ficheiros são, no entanto, processados normalmente pelo MosaicView.",
+    "open_files_content": "• Clique no botão 'Abrir um arquivo' ou arraste e solte um arquivo diretamente na janela\n• Formatos suportados: CBZ, CBR, CB7, CBT, PDF, imagens (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Os arquivos EPUB tambem podem ser abertos, mas apenas suas imagens serao extraidas (o texto e ignorado).\n• PDF criptografado (senha necessária para abrir): o arquivo não pode ser importado, uma mensagem de erro é exibida.\n• PDF protegido contra modificações (owner password): as páginas são importadas normalmente. MosaicView propõe salvar uma cópia desbloqueada do arquivo na mesma pasta. Nota: as extensões exibidas a vermelho (WEBP, TIFF, GIF, ICO…) indicam formatos potencialmente incompatíveis com leitores CBZ/CBR mais antigos. Esses ficheiros são, no entanto, processados normalmente pelo MosaicView.\n• Deteção de páginas duplicadas: ao abrir um arquivo, as páginas com conteúdo estritamente idêntico (um erro de digitalização ou fusão) são automaticamente assinaladas com um selo laranja na miniatura. O comando \"Gerir duplicados\" (menu Editar, clique direito no mosaico ou numa miniatura) abre uma janela que lista cada grupo de páginas idênticas, com uma caixa de verificação por página para eliminar as cópias extra.",
     "mosaic": "O mosaico",
-    "mosaic_content": "O mosaico exibe todas as páginas da sua banda desenhada como miniaturas. Você pode:\n• Reorganizar as páginas arrastando e soltando (a renumeração de páginas será automática e seguirá o modo de renumeração ativo)\n• Selecionar várias páginas (Ctrl+clique ou Shift+clique)\n• Ajustar o tamanho das miniaturas com o controle deslizante\n• Renomear arquivos manualmente clicando em seu nome\n• Arrastar e soltar arquivos de BD (CBZ/CBR/PDF) do Explorador do Windows diretamente em outra BD aberta para mesclar seu conteúdo\n• Exportar todas as miniaturas apresentadas para uma pasta à sua escolha (comando oculto, acessível apenas pelo atalho Ctrl+Alt+T)",
+    "mosaic_content": "O mosaico exibe todas as páginas da sua banda desenhada como miniaturas. Você pode:\n• Reorganizar as páginas arrastando e soltando (a renumeração de páginas será automática e seguirá o modo de renumeração ativo)\n• Selecionar várias páginas (Ctrl+clique ou Shift+clique)\n• Ajustar o tamanho das miniaturas com o controle deslizante\n• Renomear arquivos manualmente clicando em seu nome\n• Arrastar e soltar arquivos de BD (CBZ/CBR/PDF) do Explorador do Windows diretamente em outra BD aberta para mesclar seu conteúdo\n• Exportar todas as miniaturas apresentadas para uma pasta à sua escolha (comando oculto, acessível apenas pelo atalho Ctrl+Alt+T)\n• Mostrar minimapa: um painel lateral opcional à direita do mosaico que mostra uma visão geral em miniatura de todas as páginas, com um retângulo a marcar a área atualmente visível. Clique ou arraste para navegar diretamente para esse ponto na BD. Pode ser ativado a partir do menu Sistema ou clicando com o botão direito no mosaico.",
     "manipulation": "Manipulação das páginas",
     "manipulation_content": "• Arraste e solte páginas para as reorganizar\n• Arraste uma BD completa para outra para as fundir\n• Clique com o botão direito numa página para aceder às opções (rotação, eliminação, etc.)\n• Duplo clique numa página para abrir o visualizador\n• Exporte páginas individuais arrastando-as para uma pasta do Windows ou via Ctrl+C / Ctrl+V",
     "renumber": "Renumeração de páginas",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Registo de alterações",
     "webpage": "Página web",
-    "zip_compression": "Compressão ZIP predefinida"
+    "zip_compression": "Compressão ZIP predefinida",
+    "show_duplicates": "Gerir duplicados"
   },
   "updates": {
     "dialog_title": "Atualizações",

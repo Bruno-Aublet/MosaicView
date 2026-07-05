@@ -174,11 +174,13 @@
       "fullscreen_exit": "Kilépés a teljes képernyőből (F11 vagy ESC)",
       "quit": "Alkalmazás bezárása",
       "delete_bookmark": "Könyvjelző törlése ehhez a képregényhez",
-      "delete_all_bookmarks": "Összes könyvjelző törlése"
+      "delete_all_bookmarks": "Összes könyvjelző törlése",
+      "hide_minimap": "» Minitérkép elrejtése",
+      "show_minimap": "« Minitérkép megjelenítése"
     },
     "canvas": {
       "quit": "Alkalmazás bezárása",
-      "reset": "Az alkalmazás visszaállítása:\n• teljes képernyő → ablakos\n• ablakméret és -pozíció\n• sötét mód → világos\n• oldalsáv → látható / alapértelmezett szélesség\n• ikon- és bélyegképméret → normál\n• betűméret → alapértelmezett\n• nyelv → automatikus felismerés\n• ablakfelosztás → 50 / 50\n• átszámozás → automatikus\n• ZIP-tömörítés → nincs",
+      "reset": "Az alkalmazás visszaállítása:\n• teljes képernyő → ablakos\n• ablakméret és -pozíció\n• sötét mód → világos\n• oldalsáv → látható / alapértelmezett szélesség\n• minitérkép → rejtett\n• ikon- és bélyegképméret → normál\n• betűméret → alapértelmezett\n• nyelv → automatikus felismerés\n• ablakfelosztás → 50 / 50\n• átszámozás → automatikus\n• ZIP-tömörítés → nincs",
       "reset_label": "Alkalmazás alaphelyzetbe állítása"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Hivatkozás másolása",
       "open_location": "Hely megnyitása",
       "copy_path": "Elérési út másolása"
+    },
+    "duplicates": {
+      "window_title": "Ismétlődések",
+      "no_duplicates": "Nem található ismétlődés.",
+      "group_title": "{num}. csoport: {count} azonos oldal",
+      "delete_selection": "Kijelölés törlése"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "A ZIP tömörítési szint nem vonatkozik a {ext} fájlokra.\nKattintson a CBZ-ként való mentéshez az alapértelmezett szinten ({level}).\nJobb kattintás az alapértelmezett szint módosításához.",
     "zip_indicator_ext_image": "kép",
     "zip_indicator_stored_noop": "Ez a fájl nincs tömörítve.\nJobb kattintás az alapértelmezett szint módosításához.",
-    "zip_indicator_stored_action": "Ez a fájl nincs tömörítve.\nKattintson a tömörítéshez az alapértelmezett szinten ({level}).\nJobb kattintás az alapértelmezett szint módosításához."
+    "zip_indicator_stored_action": "Ez a fájl nincs tömörítve.\nKattintson a tömörítéshez az alapértelmezett szinten ({level}).\nJobb kattintás az alapértelmezett szint módosításához.",
+    "duplicate_image": "ISMÉTLŐDŐ OLDAL"
   },
   "help": {
     "title": "MosaicView - Útmutató",
     "intro": "A MosaicView lehetővé teszi képregények (digitális képregények) kezelését és módosítását anélkül, hogy ki kellene őket bontani az archívumból. Az alkalmazás támogatja a CBZ (ZIP), CBR (RAR) és PDF formátumokat. Az alkalmazás kizárólag 64 bites rendszerekkel kompatibilis.",
     "open_files": "Fájlok megnyitása",
-    "open_files_content": "• Kattintson a 'Fájl megnyitása' gombra, vagy húzzon egy fájlt közvetlenül az ablakba\n• Támogatott formátumok: CBZ, CBR, CB7, CBT, PDF, képek (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Az EPUB fajlok is megnyithatok, de csak a kepek lesznek kinyerve (a szoveg figyelmen kivul marad).\n• Titkosított PDF (jelszó szükséges a megnyitáshoz): a fájl nem importálható, hibaüzenet jelenik meg.\n• PDF módosítás ellen védett (owner password): az oldalak normálisan importálódnak. A MosaicView felajánlja a feloldott másolat mentését ugyanabba a mappába. Megjegyzés: a piros színnel megjelenített kiterjesztések (WEBP, TIFF, GIF, ICO…) olyan formátumokat jelölnek, amelyek régebbi CBZ/CBR-olvasókkal esetleg nem kompatibilisek. Ezeket a fájlokat azonban a MosaicView normálisan dolgozza fel.",
+    "open_files_content": "• Kattintson a 'Fájl megnyitása' gombra, vagy húzzon egy fájlt közvetlenül az ablakba\n• Támogatott formátumok: CBZ, CBR, CB7, CBT, PDF, képek (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Az EPUB fajlok is megnyithatok, de csak a kepek lesznek kinyerve (a szoveg figyelmen kivul marad).\n• Titkosított PDF (jelszó szükséges a megnyitáshoz): a fájl nem importálható, hibaüzenet jelenik meg.\n• PDF módosítás ellen védett (owner password): az oldalak normálisan importálódnak. A MosaicView felajánlja a feloldott másolat mentését ugyanabba a mappába. Megjegyzés: a piros színnel megjelenített kiterjesztések (WEBP, TIFF, GIF, ICO…) olyan formátumokat jelölnek, amelyek régebbi CBZ/CBR-olvasókkal esetleg nem kompatibilisek. Ezeket a fájlokat azonban a MosaicView normálisan dolgozza fel.\n• Ismétlődő oldalak felismerése: egy archívum megnyitásakor a teljesen azonos tartalmú oldalakat (szkennelési vagy összefésülési hiba) automatikusan narancssárga jelzéssel látja el a rendszer a bélyegképükön. A \"Ismétlődések kezelése\" parancs (Szerkesztés menü, jobb kattintás a mozaikra vagy egy bélyegképre) egy ablakot nyit meg, amely felsorolja az azonos oldalak minden csoportját, oldalanként egy jelölőnégyzettel a felesleges másolatok törléséhez.",
     "mosaic": "A mozaik",
-    "mosaic_content": "A mozaik miniatűrként jeleníti meg a képregény összes oldalát. Lehetőségei:\n• Átrendezheti az oldalakat húzással (az oldalak számozása automatikus lesz, és az aktív átszámozási mód szerint történik)\n• Több oldalt is kijelölhet (Ctrl+kattintás vagy Shift+kattintás)\n• Beállíthatja a miniatűrök méretét a csúszkával\n• Manuálisan átnevezheti a fájlokat a nevükre kattintva\n• Húzhat és ejthet képregényfájlokat (CBZ/CBR/PDF) a Windows Intézőből közvetlenül egy másik nyitott képregénybe a tartalmuk egyesítéséhez\n• Az összes megjelenített indexkép exportálása egy tetszőleges mappába (rejtett parancs, csak a Ctrl+Alt+T billentyűparanccsal érhető el)",
+    "mosaic_content": "A mozaik miniatűrként jeleníti meg a képregény összes oldalát. Lehetőségei:\n• Átrendezheti az oldalakat húzással (az oldalak számozása automatikus lesz, és az aktív átszámozási mód szerint történik)\n• Több oldalt is kijelölhet (Ctrl+kattintás vagy Shift+kattintás)\n• Beállíthatja a miniatűrök méretét a csúszkával\n• Manuálisan átnevezheti a fájlokat a nevükre kattintva\n• Húzhat és ejthet képregényfájlokat (CBZ/CBR/PDF) a Windows Intézőből közvetlenül egy másik nyitott képregénybe a tartalmuk egyesítéséhez\n• Az összes megjelenített indexkép exportálása egy tetszőleges mappába (rejtett parancs, csak a Ctrl+Alt+T billentyűparanccsal érhető el)\n• Minitérkép megjelenítése: opcionális oldalpanel a mozaik jobb oldalán, amely az összes oldal miniatűr áttekintését mutatja egy téglalappal, amely a jelenleg látható területet jelöli. Kattintson vagy húzza az egeret, hogy közvetlenül a képregény adott pontjára ugorjon. Bekapcsolható a Rendszer menüből vagy a mozaikon való jobb kattintással.",
     "manipulation": "Oldalak kezelése",
     "manipulation_content": "• Húzza és ejtse az oldalakat az átrendezéshez\n• Húzzon egy teljes képregényt egy másikba az összevonáshoz\n• Jobb kattintás az oldalra a beállítások eléréséhez (forgatás, törlés stb.)\n• Dupla kattintás az oldalra a megjelenítő megnyitásához\n• Egyes oldalak exportálása Windows-mappába húzással vagy Ctrl+C / Ctrl+V segítségével",
     "renumber": "Oldalak újraszámozása",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Változásnapló",
     "webpage": "Weboldal",
-    "zip_compression": "Alapértelmezett ZIP tömörítés"
+    "zip_compression": "Alapértelmezett ZIP tömörítés",
+    "show_duplicates": "Ismétlődések kezelése"
   },
   "updates": {
     "dialog_title": "Frissítések",

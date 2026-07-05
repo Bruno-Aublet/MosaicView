@@ -174,11 +174,13 @@
       "fullscreen_exit": "Exit fullscreen (F11 or ESC)",
       "quit": "Quit application",
       "delete_bookmark": "Clear bookmark for this comic",
-      "delete_all_bookmarks": "Clear all bookmarks"
+      "delete_all_bookmarks": "Clear all bookmarks",
+      "hide_minimap": "» Hide minimap",
+      "show_minimap": "« Show minimap"
     },
     "canvas": {
       "quit": "Quit application",
-      "reset": "Reset the application:\n• fullscreen → windowed\n• window size and position\n• dark mode → light\n• sidebar → visible / default width\n• icon and thumbnail size → normal\n• font size → default\n• language → automatic detection\n• window split → 50 / 50\n• renumbering → auto\n• ZIP compression → none",
+      "reset": "Reset the application:\n• fullscreen → windowed\n• window size and position\n• dark mode → light\n• sidebar → visible / default width\n• minimap → hidden\n• icon and thumbnail size → normal\n• font size → default\n• language → automatic detection\n• window split → 50 / 50\n• renumbering → auto\n• ZIP compression → none",
       "reset_label": "Reset application"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Copy link",
       "open_location": "Open location",
       "copy_path": "Copy path"
+    },
+    "duplicates": {
+      "window_title": "Duplicates",
+      "no_duplicates": "No duplicates detected.",
+      "group_title": "Group {num}: {count} identical pages",
+      "delete_selection": "Delete selection"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "The ZIP compression level does not apply to {ext} files.\nClick to save as CBZ at the default level ({level}).\nRight-click to change the default level.",
     "zip_indicator_ext_image": "image",
     "zip_indicator_stored_noop": "This file is not compressed.\nRight-click to change the default level.",
-    "zip_indicator_stored_action": "This file is not compressed.\nClick to compress it at the default level ({level}).\nRight-click to change the default level."
+    "zip_indicator_stored_action": "This file is not compressed.\nClick to compress it at the default level ({level}).\nRight-click to change the default level.",
+    "duplicate_image": "DUPLICATE PAGE"
   },
   "help": {
     "title": "MosaicView - User Manual",
     "intro": "MosaicView allows you to manipulate and edit comics (digital comics) without having to extract them from their archives. The application supports CBZ (ZIP), CBR (RAR) and PDF formats. The application is compatible only with 64-bit systems.",
     "open_files": "Opening files",
-    "open_files_content": "• Click the 'Open a file' button or drag and drop a file directly into the window\n• Supported formats: CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB files can also be opened, but only their images will be extracted (text is ignored). Note: extensions displayed in red (WEBP, TIFF, GIF, ICO…) indicate formats potentially incompatible with older CBZ/CBR readers. These files are nevertheless processed normally by MosaicView.\n• Encrypted PDF (password required to open): the file cannot be imported, an error message is displayed.\n• PDF protected against modifications (owner password): pages are imported normally. MosaicView offers to save an unlocked copy of the file in the same folder.",
+    "open_files_content": "• Click the 'Open a file' button or drag and drop a file directly into the window\n• Supported formats: CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB files can also be opened, but only their images will be extracted (text is ignored). Note: extensions displayed in red (WEBP, TIFF, GIF, ICO…) indicate formats potentially incompatible with older CBZ/CBR readers. These files are nevertheless processed normally by MosaicView.\n• Encrypted PDF (password required to open): the file cannot be imported, an error message is displayed.\n• PDF protected against modifications (owner password): pages are imported normally. MosaicView offers to save an unlocked copy of the file in the same folder.\n• Duplicate page detection: on opening an archive, pages with strictly identical content (a scanning or merging error) are automatically flagged with an orange badge on their thumbnail. \"Manage duplicates\" (Edit menu, right-click on the mosaic, or right-click on a thumbnail) opens a window listing every group of identical pages, with a checkbox per page to delete the extras.",
     "mosaic": "The mosaic",
-    "mosaic_content": "The mosaic displays all pages of your comic book as thumbnails. You can:\n• Rearrange pages by drag-and-drop (page renumbering will be automatic, and will follow the active renumbering mode)\n• Select multiple pages (Ctrl+click or Shift+click)\n• Adjust thumbnail size with the slider or Ctrl+scroll wheel\n• Manually rename files by clicking on their name\n• Drag-and-drop comic book files (CBZ/CBR/PDF) from Windows Explorer directly into another open comic book to merge their content\n• Export all displayed thumbnails to a folder of your choice (hidden command, accessible only via the shortcut Ctrl+Alt+T)",
+    "mosaic_content": "The mosaic displays all pages of your comic book as thumbnails. You can:\n• Rearrange pages by drag-and-drop (page renumbering will be automatic, and will follow the active renumbering mode)\n• Select multiple pages (Ctrl+click or Shift+click)\n• Adjust thumbnail size with the slider or Ctrl+scroll wheel\n• Manually rename files by clicking on their name\n• Drag-and-drop comic book files (CBZ/CBR/PDF) from Windows Explorer directly into another open comic book to merge their content\n• Export all displayed thumbnails to a folder of your choice (hidden command, accessible only via the shortcut Ctrl+Alt+T)\n• Show minimap: an optional side panel to the right of the mosaic showing a miniature overview of all pages, with a rectangle marking the currently visible area. Click or drag to navigate straight to that spot in the comic. Toggle it from the System menu or the right-click context menu on the mosaic.",
     "manipulation": "Page manipulation",
     "manipulation_content": "• Drag and drop pages to reorganize them\n• Drag an entire comic into another to merge them\n• Right-click on a page to access options (rotation, deletion, etc.)\n• Double-click on a page to open the viewer\n• Export individual pages by dragging them to a Windows folder, or via Ctrl+C / Ctrl+V",
     "renumber": "Page renumbering",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Changelog",
     "webpage": "Web page",
-    "zip_compression": "Default ZIP compression"
+    "zip_compression": "Default ZIP compression",
+    "show_duplicates": "Manage duplicates"
   },
   "updates": {
     "dialog_title": "Updates",

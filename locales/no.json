@@ -174,11 +174,13 @@
       "fullscreen_exit": "Avslutt fullskjerm (F11 eller ESC)",
       "quit": "Lukk programmet",
       "delete_bookmark": "Slett bokmerke for dette tegneseriealbum",
-      "delete_all_bookmarks": "Slett alle bokmerker"
+      "delete_all_bookmarks": "Slett alle bokmerker",
+      "hide_minimap": "» Skjul minikart",
+      "show_minimap": "« Vis minikart"
     },
     "canvas": {
       "quit": "Lukk programmet",
-      "reset": "Tilbakestill programmet:\n• fullskjerm → vindu\n• vinduestørrelse og -posisjon\n• mørk modus → lys\n• sidepanel → synlig / standardbredde\n• ikon- og miniatyrbildestørrelse → normal\n• skriftstørrelse → standard\n• språk → automatisk gjenkjenning\n• vindusdeling → 50 / 50\n• omnummerering → automatisk\n• ZIP-komprimering → ingen",
+      "reset": "Tilbakestill programmet:\n• fullskjerm → vindu\n• vinduestørrelse og -posisjon\n• mørk modus → lys\n• sidepanel → synlig / standardbredde\n• minikart → skjult\n• ikon- og miniatyrbildestørrelse → normal\n• skriftstørrelse → standard\n• språk → automatisk gjenkjenning\n• vindusdeling → 50 / 50\n• omnummerering → automatisk\n• ZIP-komprimering → ingen",
       "reset_label": "Tilbakestill programmet"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Kopier lenke",
       "open_location": "Åpne plassering",
       "copy_path": "Kopier bane"
+    },
+    "duplicates": {
+      "window_title": "Duplikater",
+      "no_duplicates": "Ingen duplikater oppdaget.",
+      "group_title": "Gruppe {num}: {count} identiske sider",
+      "delete_selection": "Slett utvalg"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "ZIP-komprimeringsnivået gjelder ikke for {ext}-filer.\nKlikk for å lagre som CBZ med standardnivået ({level}).\nHøyreklikk for å endre standardnivået.",
     "zip_indicator_ext_image": "bilde",
     "zip_indicator_stored_noop": "Denne filen er ikke komprimert.\nHøyreklikk for å endre standardnivået.",
-    "zip_indicator_stored_action": "Denne filen er ikke komprimert.\nKlikk for å komprimere den med standardnivået ({level}).\nHøyreklikk for å endre standardnivået."
+    "zip_indicator_stored_action": "Denne filen er ikke komprimert.\nKlikk for å komprimere den med standardnivået ({level}).\nHøyreklikk for å endre standardnivået.",
+    "duplicate_image": "DUPLISERT SIDE"
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
     "intro": "MosaicView lar deg manipulere og redigere tegneserier (digitale comics) uten å måtte pakke dem ut fra arkivene. Applikasjonen støtter formatene CBZ (ZIP), CBR (RAR) og PDF. Applikasjonen er kun kompatibel med 64-bits systemer.",
     "open_files": "Åpne filer",
-    "open_files_content": "• Klikk på knappen 'Åpne en fil' eller dra og slipp en fil direkte i vinduet\n• Støttede formater: CBZ, CBR, CB7, CBT, PDF, bilder (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-filer kan ogsa apnes, men bare bildene deres vil bli ekstrahert (teksten ignoreres). Merk: utvidelser vist med rødt (WEBP, TIFF, GIF, ICO…) angir formater som potensielt er inkompatible med eldre CBZ/CBR-lesere. Disse filene behandles likevel normalt av MosaicView.\n• Kryptert PDF (passord kreves for å åpne): filen kan ikke importeres, det vises en feilmelding.\n• PDF beskyttet mot endringer (owner password): sidene importeres normalt. MosaicView tilbyr å lagre en opplåst kopi av filen i samme mappe.",
+    "open_files_content": "• Klikk på knappen 'Åpne en fil' eller dra og slipp en fil direkte i vinduet\n• Støttede formater: CBZ, CBR, CB7, CBT, PDF, bilder (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-filer kan ogsa apnes, men bare bildene deres vil bli ekstrahert (teksten ignoreres). Merk: utvidelser vist med rødt (WEBP, TIFF, GIF, ICO…) angir formater som potensielt er inkompatible med eldre CBZ/CBR-lesere. Disse filene behandles likevel normalt av MosaicView.\n• Kryptert PDF (passord kreves for å åpne): filen kan ikke importeres, det vises en feilmelding.\n• PDF beskyttet mot endringer (owner password): sidene importeres normalt. MosaicView tilbyr å lagre en opplåst kopi av filen i samme mappe.\n• Oppdagelse av dupliserte sider: når et arkiv åpnes, blir sider med helt identisk innhold (en skanne- eller sammenslåingsfeil) automatisk merket med et oransje merke på miniatyrbildet. Kommandoen \"Administrer duplikater\" (Rediger-menyen, høyreklikk på mosaikken eller på en miniatyr) åpner et vindu som lister opp hver gruppe med identiske sider, med en avkrysningsboks per side for å slette de overflødige kopiene.",
     "mosaic": "Mosaikken",
-    "mosaic_content": "Mosaikken viser alle sidene i tegneserien din som miniatyrbilder. Du kan:\n• Reorganisere sider ved å dra og slippe (sidenummerering vil være automatisk og vil følge den aktive omnummereringsmodusen)\n• Velge flere sider (Ctrl+klikk eller Skift+klikk)\n• Justere miniatyrstørrelse med glideren\n• Gi nytt navn til filer manuelt ved å klikke på navnet deres\n• Dra og slipp tegneseriefiler (CBZ/CBR/PDF) fra Windows Utforsker direkte inn i en annen åpen tegneserie for å slå sammen innholdet\n• Eksporter alle viste miniatyrbilder til en mappe etter eget valg (skjult kommando, tilgjengelig kun via snarveien Ctrl+Alt+T)",
+    "mosaic_content": "Mosaikken viser alle sidene i tegneserien din som miniatyrbilder. Du kan:\n• Reorganisere sider ved å dra og slippe (sidenummerering vil være automatisk og vil følge den aktive omnummereringsmodusen)\n• Velge flere sider (Ctrl+klikk eller Skift+klikk)\n• Justere miniatyrstørrelse med glideren\n• Gi nytt navn til filer manuelt ved å klikke på navnet deres\n• Dra og slipp tegneseriefiler (CBZ/CBR/PDF) fra Windows Utforsker direkte inn i en annen åpen tegneserie for å slå sammen innholdet\n• Eksporter alle viste miniatyrbilder til en mappe etter eget valg (skjult kommando, tilgjengelig kun via snarveien Ctrl+Alt+T)\n• Vis minikart: et valgfritt sidepanel til høyre for mosaikken som viser en miniatyroversikt over alle sidene, med et rektangel som markerer det synlige området. Klikk eller dra for å navigere rett til det stedet i tegneserien. Kan slås på fra menyen System eller ved høyreklikk på mosaikken.",
     "manipulation": "Manipulering av sider",
     "manipulation_content": "• Dra og slipp sider for å omorganisere dem\n• Dra et helt tegneseriealbum inn i et annet for å slå dem sammen\n• Høyreklikk på en side for å få tilgang til alternativer (rotasjon, sletting osv.)\n• Dobbeltklikk på en side for å åpne visningsprogrammet\n• Eksporter enkelt sider ved å dra dem til en Windows-mappe eller via Ctrl+C / Ctrl+V",
     "renumber": "Omnummerering av sider",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Endringslogg",
     "webpage": "Nettside",
-    "zip_compression": "Standard ZIP-komprimering"
+    "zip_compression": "Standard ZIP-komprimering",
+    "show_duplicates": "Administrer duplikater"
   },
   "updates": {
     "dialog_title": "Oppdateringer",

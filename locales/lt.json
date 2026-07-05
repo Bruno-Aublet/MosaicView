@@ -174,11 +174,13 @@
       "fullscreen_exit": "Išeiti iš viso ekrano režimo (F11 arba ESC)",
       "quit": "Uždaryti programą",
       "delete_bookmark": "Ištrinti žymę šiam komiksui",
-      "delete_all_bookmarks": "Ištrinti visas žymes"
+      "delete_all_bookmarks": "Ištrinti visas žymes",
+      "hide_minimap": "» Slėpti mini žemėlapį",
+      "show_minimap": "« Rodyti mini žemėlapį"
     },
     "canvas": {
       "quit": "Uždaryti programą",
-      "reset": "Programos atstatymas:\n• visas ekranas → langas\n• lango dydis ir padėtis\n• tamsus režimas → šviesus\n• šoninis skydelis → matomas / numatytasis plotis\n• piktogramų ir miniatiūrų dydis → normalus\n• šrifto dydis → numatytasis\n• kalba → automatinis aptikimas\n• lango padalijimas → 50 / 50\n• pernumeravimas → automatinis\n• ZIP suspaudimas → jokio",
+      "reset": "Programos atstatymas:\n• visas ekranas → langas\n• lango dydis ir padėtis\n• tamsus režimas → šviesus\n• šoninis skydelis → matomas / numatytasis plotis\n• mini žemėlapis → paslėptas\n• piktogramų ir miniatiūrų dydis → normalus\n• šrifto dydis → numatytasis\n• kalba → automatinis aptikimas\n• lango padalijimas → 50 / 50\n• pernumeravimas → automatinis\n• ZIP suspaudimas → jokio",
       "reset_label": "Iš naujo nustatyti programą"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Kopijuoti nuorodą",
       "open_location": "Atidaryti vietą",
       "copy_path": "Kopijuoti kelią"
+    },
+    "duplicates": {
+      "window_title": "Dublikatai",
+      "no_duplicates": "Dublikatų nerasta.",
+      "group_title": "{num} grupė: {count} identiški puslapiai",
+      "delete_selection": "Ištrinti pasirinkimą"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "ZIP suspaudimo lygis netaikomas {ext} failams.\nSpustelėkite, kad išsaugotumėte kaip CBZ numatytuoju lygiu ({level}).\nSpustelėkite dešiniuoju pelės klavišu, kad pakeistumėte numatytąjį lygį.",
     "zip_indicator_ext_image": "vaizdas",
     "zip_indicator_stored_noop": "Šis failas nesuspaustas.\nSpustelėkite dešiniuoju pelės klavišu, kad pakeistumėte numatytąjį lygį.",
-    "zip_indicator_stored_action": "Šis failas nesuspaustas.\nSpustelėkite, kad jį suspaustumėte numatytuoju lygiu ({level}).\nSpustelėkite dešiniuoju pelės klavišu, kad pakeistumėte numatytąjį lygį."
+    "zip_indicator_stored_action": "Šis failas nesuspaustas.\nSpustelėkite, kad jį suspaustumėte numatytuoju lygiu ({level}).\nSpustelėkite dešiniuoju pelės klavišu, kad pakeistumėte numatytąjį lygį.",
+    "duplicate_image": "DUBLIKUOTAS PUSLAPIS"
   },
   "help": {
     "title": "MosaicView - Naudojimo instrukcija",
     "intro": "MosaicView leidžia manipuliuoti ir redaguoti komiksus (skaitmeninius komiksus) nereikalaujant jų išpakuoti iš archyvų. Programa palaiko CBZ (ZIP), CBR (RAR) ir PDF formatus. Programėlė suderinama tik su 64 bitų sistemomis.",
     "open_files": "Failų atidarymas",
-    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti failą' arba vilkite failą tiesiai į langą\n• Palaikomi formatai: CBZ, CBR, CB7, CBT, PDF, vaizdai (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus iskeltos tik ju nuotraukos (tekstas ignoruojamas). Pastaba: raudonai rodomos plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo įrašyti atrakintą failo kopiją į tą patį aplanką.",
+    "open_files_content": "• Spustelėkite mygtuką 'Atidaryti failą' arba vilkite failą tiesiai į langą\n• Palaikomi formatai: CBZ, CBR, CB7, CBT, PDF, vaizdai (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus taip pat galima atidaryti, bet bus iskeltos tik ju nuotraukos (tekstas ignoruojamas). Pastaba: raudonai rodomos plėtiniai (WEBP, TIFF, GIF, ICO…) žymi formatus, kurie gali būti nesuderinami su senesniais CBZ/CBR skaitytuvais. Vis dėlto MosaicView šiuos failus apdoroja įprastai.\n• Šifruotas PDF (atidaryti reikalingas slaptažodis): failo importuoti negalima, rodomas klaidos pranešimas.\n• PDF apsaugotas nuo pakeitimų (owner password): puslapiai importuojami įprastai. MosaicView siūlo įrašyti atrakintą failo kopiją į tą patį aplanką.\n• Dublikuotų puslapių aptikimas: atidarius archyvą, puslapiai su visiškai identišku turiniu (nuskaitymo ar sujungimo klaida) automatiškai pažymimi oranžiniu ženkleliu miniatiūroje. Komanda \"Tvarkyti dublikatus\" (meniu Redaguoti, dešiniuoju pelės mygtuku spustelėjus mozaiką ar miniatiūrą) atveria langą, kuriame išvardytos visos identiškų puslapių grupės, su žymimuoju langeliu kiekvienam puslapiui, skirtu perteklinėms kopijoms ištrinti.",
     "mosaic": "Mozaika",
-    "mosaic_content": "Mozaika rodo visus jūsų komikso puslapius kaip miniatiūras. Galite:\n• Pertvarkyti puslapius vilkdami ir numesdami (puslapių numeravimas bus automatinis ir vyks pagal aktyvų pernumeravimo režimą)\n• Pasirinkti kelis puslapius (Ctrl+spustelėjimas arba Shift+spustelėjimas)\n• Reguliuoti miniatiūrų dydį slankikliu\n• Rankiniu būdu pervardyti failus spustelėdami jų pavadinimą\n• Vilkti ir numesti komiksų failus (CBZ/CBR/PDF) iš Windows Explorer tiesiai į kitą atidarytą komiksą, kad sujungtumėte jų turinį\n• Eksportuoti visas rodomas miniatiūras į pasirinktą aplanką (paslėpta komanda, pasiekiama tik sparčiuoju klavišu Ctrl+Alt+T)",
+    "mosaic_content": "Mozaika rodo visus jūsų komikso puslapius kaip miniatiūras. Galite:\n• Pertvarkyti puslapius vilkdami ir numesdami (puslapių numeravimas bus automatinis ir vyks pagal aktyvų pernumeravimo režimą)\n• Pasirinkti kelis puslapius (Ctrl+spustelėjimas arba Shift+spustelėjimas)\n• Reguliuoti miniatiūrų dydį slankikliu\n• Rankiniu būdu pervardyti failus spustelėdami jų pavadinimą\n• Vilkti ir numesti komiksų failus (CBZ/CBR/PDF) iš Windows Explorer tiesiai į kitą atidarytą komiksą, kad sujungtumėte jų turinį\n• Eksportuoti visas rodomas miniatiūras į pasirinktą aplanką (paslėpta komanda, pasiekiama tik sparčiuoju klavišu Ctrl+Alt+T)\n• Rodyti mini žemėlapį: pasirenkamas šoninis skydelis mozaikos dešinėje, rodantis visų puslapių miniatiūrinę apžvalgą su stačiakampiu, žyminčiu šiuo metu matomą sritį. Spustelėkite arba vilkite, kad iš karto pereitumėte į tą komikso vietą. Įjungiama iš meniu Sistema arba dešiniuoju pelės klavišu spustelėjus mozaiką.",
     "manipulation": "Puslapių manipuliavimas",
     "manipulation_content": "• Vilkite ir meskite puslapius jiems pertvarkyti\n• Vilkite visą komiksą į kitą, kad juos sujungtumėte\n• Dešiniuoju pelės mygtuku spustelėkite puslapį, kad pasiektumėte parinktis (sukimas, šalinimas ir kt.)\n• Dukart spustelėkite puslapį, kad atidarytumėte žiūroklį\n• Eksportuokite atskirus puslapius vilkdami juos į Windows aplanką arba naudodami Ctrl+C / Ctrl+V",
     "renumber": "Puslapių pernumeravimas",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Pakeitimų žurnalas",
     "webpage": "Tinklalapis",
-    "zip_compression": "Numatytasis ZIP suspaudimas"
+    "zip_compression": "Numatytasis ZIP suspaudimas",
+    "show_duplicates": "Tvarkyti dublikatus"
   },
   "updates": {
     "dialog_title": "Atnaujinimai",

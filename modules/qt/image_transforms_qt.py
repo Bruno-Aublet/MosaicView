@@ -23,6 +23,7 @@ def _regenerate_thumbnail_qt(entry: dict):
     """Invalide qt_pixmap_large et qt_qimage_large pour forcer la reconstruction au prochain paint()."""
     entry["qt_pixmap_large"] = None
     entry["qt_qimage_large"] = None
+    entry["_hash"] = None
 
 
 _active_workers: list = []  # anti-GC : maintient les workers en vie jusqu'à leur destruction Qt
@@ -127,6 +128,7 @@ def _run_transform(entries, operation, label_key, callbacks):
             real_idx = entry.get("_real_idx")
             if real_idx is not None:
                 canvas.refresh_thumbnail(real_idx)
+        canvas.refresh_duplicate_overlay()
         update_button_text()
         refresh_status_fn()
         save_state_fn()

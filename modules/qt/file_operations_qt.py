@@ -880,11 +880,13 @@ def _write_zip_with_progress(filepath, images_data, overlay, compression_level=0
                         entry["img"] = Image.open(io.BytesIO(entry["bytes"]))
                         entry["bytes"] = save_image_to_bytes(entry)
                         entry["img"] = None
+                        entry["_hash"] = None
                 except Exception:
                     try:
                         entry["img"] = Image.open(io.BytesIO(entry["bytes"]))
                         entry["bytes"] = save_image_to_bytes(entry)
                         entry["img"] = None
+                        entry["_hash"] = None
                     except Exception:
                         pass
             zf.writestr(entry["orig_name"], entry["bytes"])

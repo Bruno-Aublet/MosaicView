@@ -174,11 +174,13 @@
       "fullscreen_exit": "Auta írima lanwa (F11 mal ESC)",
       "quit": "apa falasse",
       "delete_bookmark": "Lahta i·lambetengwe i·parma sina",
-      "delete_all_bookmarks": "Lahta ilye lambetengwi"
+      "delete_all_bookmarks": "Lahta ilye lambetengwi",
+      "hide_minimap": "» Núta i pityanwendë",
+      "show_minimap": "« Cenda i pityanwendë"
     },
     "canvas": {
       "quit": "apa falasse",
-      "reset": "Penia i application:\n• quanta tanna → telwa\n• quantesse ar telpë i coivierwa\n• morna forma → calima\n• telwa tanna → cenuva / default tessë\n• quantesse i tanwion ar parmalar → normal\n• quantesse i fëa → default\n• lambë → hlaruva autómatica\n• telwa perya → 50 / 50\n• envinyanótë → autómata\n• ZIP pusta → alwa",
+      "reset": "Penia i application:\n• quanta tanna → telwa\n• quantesse ar telpë i coivierwa\n• morna forma → calima\n• telwa tanna → cenuva / default tessë\n• pityanwendë → núna\n• quantesse i tanwion ar parmalar → normal\n• quantesse i fëa → default\n• lambë → hlaruva autómatica\n• telwa perya → 50 / 50\n• envinyanótë → autómata\n• ZIP pusta → alwa",
       "reset_label": "Restanya i sambë"
     },
     "font_size": {
@@ -270,13 +272,13 @@
       },
       "cannot_open_file": {
         "title": "Úma panya i parma",
-        "message": "Unable to load the file."
+        "message": "Úma polë panya i parma."
       },
       "corrupted_images": {
         "title": "Fánar russer",
-        "summary": "{count} corrupted image(s) detected out of {total}.",
-        "hint": "They are displayed with a special icon.\nRight-click a corrupted image to replace or delete it.",
-        "more": "... and {count} more"
+        "summary": "{count} fánar russer hirinë mi {total}.",
+        "hint": "Tanwe nar as canta hyara.\nNetyara i hyapa formen fánasse russëa an envinyata hya hauta sa.",
+        "more": "... ar {count} exe"
       },
       "no_image_print": {
         "title": "Úma fána",
@@ -672,7 +674,7 @@
     },
     "extension_mismatch_generic": {
       "message": "Formë coimas essa ú-marta: i parma '{filename}' {real} ná, ú {declared}. Esselenta?",
-      "title": "Incorrect extension"
+      "title": "Formë úsanwa"
     }
   },
   "labels": {
@@ -1096,7 +1098,7 @@
       "message": "Sina nómë centë er lá quanta i vinyar. Hauta nán quétina tenn' i nómë nar i mossë.\nAn pole hauta, ruc' tier (Del) hya rac' (Ctrl+X) pan' engë."
     },
     "open_file": {
-      "title": "Open an archive",
+      "title": "Panya quanta",
       "filter_archives": "Quantar (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "All files (*)"
     },
@@ -1128,7 +1130,7 @@
       "color_label": "Falma:",
       "bold_btn": "T",
       "italic_btn": "C",
-      "underline_btn": "U",
+      "underline_btn": "N",
       "apply_btn": "Carë quenta",
       "pick_color_title": "Sece falma quento"
     },
@@ -1211,6 +1213,12 @@
       "copy": "Hosta i tenna",
       "open_location": "Latya i nómë",
       "copy_path": "Hosta i tië"
+    },
+    "duplicates": {
+      "window_title": "Atta-parmar",
+      "no_duplicates": "Atta-parmar lá hirne.",
+      "group_title": "Ohtë {num}: {count} parmar ve ata",
+      "delete_selection": "Nas i cille"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "I ZIP nutta tereva lá venë {ext} macilin.\nFormë venë sa CBZ i tereva ({level}).\nFormë telpina i tereva.",
     "zip_indicator_ext_image": "emma",
     "zip_indicator_stored_noop": "Sina lestassë úva nuttala.\nFormë telpina i tereva.",
-    "zip_indicator_stored_action": "Sina lestassë úva nuttala.\nFormë nutta sa i tereva ({level}).\nFormë telpina i tereva."
+    "zip_indicator_stored_action": "Sina lestassë úva nuttala.\nFormë nutta sa i tereva ({level}).\nFormë telpina i tereva.",
+    "duplicate_image": "ATTA-PARMA"
   },
   "help": {
     "title": "MosaicView - Nottië návaren",
     "intro": "MosaicView túra lyë an carë ar návië coentëar (parmar parmalion coentuvar) ú-mauya extya lar raincelmalion. I návë turca i quentar CBZ (ZIP), CBR (RAR) ar PDF. I apsa ná mo mahtë te i 64 bittaron héreli.",
     "open_files": "Panya parmar",
-    "open_files_content": "• Tece i tombo 'Panta quanta' hya tanwe quanta mir i ohtar\n• Quentar turcuvar: CBZ, CBR, CB7, CBT, PDF, fánar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB tecir mauva esselyar, mal eresse i carinyar tenner nahtanyar (quetie la care).\n• PDF naitaina (palantírë nahtana apantassë): i parma umë pole tentë, raxë quetina.\n• PDF nahtana enqualuvassë (owner password): i quettar lantanë mardenna normályë. MosaicView merin harya copia apantaina i same parmassë. Sí: i quettar carir rossë (WEBP, TIFF, GIF, ICO…) cenitar i formë i umir nainë ná carnë CBZ/CBR i sanda. Nan i parmar sí carë mauya MosaicView.",
+    "open_files_content": "• Tece i tombo 'Panta quanta' hya tanwe quanta mir i ohtar\n• Quentar turcuvar: CBZ, CBR, CB7, CBT, PDF, fánar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB tecir mauva esselyar, mal eresse i carinyar tenner nahtanyar (quetie la care).\n• PDF naitaina (palantírë nahtana apantassë): i parma umë pole tentë, raxë quetina.\n• PDF nahtana enqualuvassë (owner password): i quettar lantanë mardenna normályë. MosaicView merin harya copia apantaina i same parmassë. Sí: i quettar carir rossë (WEBP, TIFF, GIF, ICO…) cenitar i formë i umir nainë ná carnë CBZ/CBR i sanda. Nan i parmar sí carë mauya MosaicView.\nHirie atta-parmava: í latya i colca, i parmar ilya ata (harma nótima ar sanya) na-tanaina anwavë maquettë oren pella. I quetta \"Nurta i atta-parmar\" (aptalë Ehta, ranta i ompa i musaica ar i maquette) latya i fenta yassë ea liste ilyë ohtë atta-parmaron, as tengwa cilya cé parma ilya cé auta i lestë.",
     "mosaic": "I mossaica",
-    "mosaic_content": "I quetta calya mi parmar coar neldesse mi lierya ar tixesse. Elyesse:\n• Atarasse parmar yo tulca ar nasta (parma nome sauresse autalle, ar hilyuva i cuina ennome-ohtar)\n• Calya atta parmar (Ctrl+pitya mal Shift+pitya)\n• Utulesse tixe ange yo calqua\n• Esse coasse arca parma yo pitya quentanya\n• Tulca ar nasta lierya essessen (CBZ/CBR/PDF) Windows Explorer vo atta calqua lierya yo onta mavoitya\n• Tankuva ilya tanwetier tiennar ve merin (mordo hyame, quetina Ctrl+Alt+T)",
+    "mosaic_content": "I quetta calya mi parmar coar neldesse mi lierya ar tixesse. Elyesse:\n• Atarasse parmar yo tulca ar nasta (parma nome sauresse autalle, ar hilyuva i cuina ennome-ohtar)\n• Calya atta parmar (Ctrl+pitya mal Shift+pitya)\n• Utulesse tixe ange yo calqua\n• Esse coasse arca parma yo pitya quentanya\n• Tulca ar nasta lierya essessen (CBZ/CBR/PDF) Windows Explorer vo atta calqua lierya yo onta mavoitya\n• Tankuva ilya tanwetier tiennar ve merin (mordo hyame, quetina Ctrl+Alt+T)\n• Cena mach parma: parma nulla mi forya i mosaig, i tanwe hyame ilya lierya, yo quantelle i lieryasse cenima sí. Pitya mal nasta ar tulca lierya essesse. Aravitima Sistem-lambesse mal atta pitya i mosaig.",
     "manipulation": "Návië i parmalion",
     "manipulation_content": "• Lerta i parmar ter i carda na rehtar\n• Lerta quenta ilya ter anda na harya\n• Forma hyapat quetta parma na marta\n• Atta hyapat parma na apanta\n• Lerta i parmar ter Windows mapa, hya Ctrl+C / Ctrl+V",
     "renumber": "Notessi ataquetien",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Quenta Cendelëva",
     "webpage": "Quenta vëa",
-    "zip_compression": "Tereva nutta ZIP"
+    "zip_compression": "Tereva nutta ZIP",
+    "show_duplicates": "Nurta i atta-parmar"
   },
   "updates": {
     "dialog_title": "Vinya quettar",

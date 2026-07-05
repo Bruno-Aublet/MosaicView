@@ -174,11 +174,13 @@
       "fullscreen_exit": "Volledig scherm verlaten (F11 of ESC)",
       "quit": "Applicatie sluiten",
       "delete_bookmark": "Bladwijzer voor dit stripboek verwijderen",
-      "delete_all_bookmarks": "Alle bladwijzers verwijderen"
+      "delete_all_bookmarks": "Alle bladwijzers verwijderen",
+      "hide_minimap": "» Minimap verbergen",
+      "show_minimap": "« Minimap tonen"
     },
     "canvas": {
       "quit": "Applicatie sluiten",
-      "reset": "Toepassing opnieuw instellen:\n• volledig scherm → venster\n• venstergrootte en -positie\n• donkere modus → licht\n• zijbalk → zichtbaar / standaardbreedte\n• pictogram- en miniatuurgrootte → normaal\n• lettergrootte → standaard\n• taal → automatische detectie\n• vensterverdeling → 50 / 50\n• hernummering → automatisch\n• ZIP-compressie → geen",
+      "reset": "Toepassing opnieuw instellen:\n• volledig scherm → venster\n• venstergrootte en -positie\n• donkere modus → licht\n• zijbalk → zichtbaar / standaardbreedte\n• minimap → verborgen\n• pictogram- en miniatuurgrootte → normaal\n• lettergrootte → standaard\n• taal → automatische detectie\n• vensterverdeling → 50 / 50\n• hernummering → automatisch\n• ZIP-compressie → geen",
       "reset_label": "Toepassing resetten"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Link kopiëren",
       "open_location": "Locatie openen",
       "copy_path": "Pad kopiëren"
+    },
+    "duplicates": {
+      "window_title": "Duplicaten",
+      "no_duplicates": "Geen duplicaten gevonden.",
+      "group_title": "Groep {num}: {count} identieke pagina's",
+      "delete_selection": "Selectie verwijderen"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Het ZIP-compressieniveau is niet van toepassing op {ext}-bestanden.\nKlik om op te slaan als CBZ op het standaardniveau ({level}).\nRechtsklikken om het standaardniveau te wijzigen.",
     "zip_indicator_ext_image": "afbeelding",
     "zip_indicator_stored_noop": "Dit bestand is niet gecomprimeerd.\nRechtsklikken om het standaardniveau te wijzigen.",
-    "zip_indicator_stored_action": "Dit bestand is niet gecomprimeerd.\nKlik om het te comprimeren op het standaardniveau ({level}).\nRechtsklikken om het standaardniveau te wijzigen."
+    "zip_indicator_stored_action": "Dit bestand is niet gecomprimeerd.\nKlik om het te comprimeren op het standaardniveau ({level}).\nRechtsklikken om het standaardniveau te wijzigen.",
+    "duplicate_image": "DUBBELE PAGINA"
   },
   "help": {
     "title": "MosaicView - Gebruiksaanwijzing",
     "intro": "MosaicView stelt u in staat om strips (digitale comics) te manipuleren en bewerken zonder ze uit hun archieven te hoeven extraheren. De applicatie ondersteunt de formaten CBZ (ZIP), CBR (RAR) en PDF. De applicatie is alleen compatibel met 64-bitsystemen.",
     "open_files": "Bestanden openen",
-    "open_files_content": "• Klik op de knop 'Een bestand openen' of sleep een bestand rechtstreeks naar het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, CBT, PDF, afbeeldingen (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geextraheerd (tekst wordt genegeerd).\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan. Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.",
+    "open_files_content": "• Klik op de knop 'Een bestand openen' of sleep een bestand rechtstreeks naar het venster\n• Ondersteunde formaten: CBZ, CBR, CB7, CBT, PDF, afbeeldingen (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-bestanden kunnen ook worden geopend, maar alleen hun afbeeldingen worden geextraheerd (tekst wordt genegeerd).\n• Versleutelde PDF (wachtwoord vereist om te openen): het bestand kan niet worden geïmporteerd, er wordt een foutmelding weergegeven.\n• PDF beveiligd tegen wijzigingen (owner password): pagina's worden normaal geïmporteerd. MosaicView biedt aan een ontgrendelde kopie van het bestand in dezelfde map op te slaan. Opmerking: extensies die in rood worden weergegeven (WEBP, TIFF, GIF, ICO…) duiden op formaten die mogelijk niet compatibel zijn met oudere CBZ/CBR-readers. Deze bestanden worden echter normaal verwerkt door MosaicView.\n• Detectie van dubbele pagina's: bij het openen van een archief worden pagina's met exact identieke inhoud (een scan- of samenvoegfout) automatisch gemarkeerd met een oranje badge op hun miniatuur. De opdracht \"Duplicaten beheren\" (menu Bewerken, rechtsklikken op de mozaïek of op een miniatuur) opent een venster met elke groep identieke pagina's, met een selectievakje per pagina om de overtollige exemplaren te verwijderen.",
     "mosaic": "Het mozaïek",
-    "mosaic_content": "Het mozaïek toont alle pagina's van je strip als miniaturen. Je kunt:\n• Pagina's herschikken door slepen en neerzetten (paginanummering wordt automatisch en volgt de actieve hernummeringsmodus)\n• Meerdere pagina's selecteren (Ctrl+klik of Shift+klik)\n• Miniatuurgrootte aanpassen met de schuifregelaar of Ctrl+muiswiel\n• Bestanden handmatig hernoemen door op hun naam te klikken\n• Stripbestanden (CBZ/CBR/PDF) vanuit Windows Verkenner direct naar een andere geopende strip slepen om hun inhoud samen te voegen\n• Alle weergegeven miniaturen exporteren naar een map naar keuze (verborgen opdracht, alleen toegankelijk via de sneltoets Ctrl+Alt+T)",
+    "mosaic_content": "Het mozaïek toont alle pagina's van je strip als miniaturen. Je kunt:\n• Pagina's herschikken door slepen en neerzetten (paginanummering wordt automatisch en volgt de actieve hernummeringsmodus)\n• Meerdere pagina's selecteren (Ctrl+klik of Shift+klik)\n• Miniatuurgrootte aanpassen met de schuifregelaar of Ctrl+muiswiel\n• Bestanden handmatig hernoemen door op hun naam te klikken\n• Stripbestanden (CBZ/CBR/PDF) vanuit Windows Verkenner direct naar een andere geopende strip slepen om hun inhoud samen te voegen\n• Alle weergegeven miniaturen exporteren naar een map naar keuze (verborgen opdracht, alleen toegankelijk via de sneltoets Ctrl+Alt+T)\n• Minimap tonen: een optioneel zijpaneel rechts van het mozaïek dat een miniatuuroverzicht van alle pagina's toont, met een rechthoek die het momenteel zichtbare gebied markeert. Klik of sleep om direct naar die plek in de strip te navigeren. Inschakelbaar vanuit het menu Systeem of via rechtsklikken op het mozaïek.",
     "manipulation": "Paginamanipulatie",
     "manipulation_content": "• Versleep pagina's om ze te herordenen\n• Sleep een volledig stripboek in een ander om ze samen te voegen\n• Rechtsklik op een pagina voor opties (roteren, verwijderen, enz.)\n• Dubbelklik op een pagina om de viewer te openen\n• Exporteer afzonderlijke pagina's door ze naar een Windows-map te slepen of via Ctrl+C / Ctrl+V",
     "renumber": "Hernummering van pagina's",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Wijzigingenlog",
     "webpage": "Webpagina",
-    "zip_compression": "Standaard ZIP-compressie"
+    "zip_compression": "Standaard ZIP-compressie",
+    "show_duplicates": "Duplicaten beheren"
   },
   "updates": {
     "dialog_title": "Updates",

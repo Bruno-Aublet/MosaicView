@@ -174,11 +174,13 @@
       "fullscreen_exit": "Iziet no pilnekrāna režīma (F11 vai ESC)",
       "quit": "Aizvērt lietojumprogrammu",
       "delete_bookmark": "Dzēst grāmatzīmi šim komikam",
-      "delete_all_bookmarks": "Dzēst visas grāmatzīmes"
+      "delete_all_bookmarks": "Dzēst visas grāmatzīmes",
+      "hide_minimap": "» Slēpt minikarti",
+      "show_minimap": "« Rādīt minikarti"
     },
     "canvas": {
       "quit": "Aizvērt lietojumprogrammu",
-      "reset": "Lietotnes atiestatīšana:\n• pilnekrāns → logs\n• loga izmērs un pozīcija\n• tumšais režīms → gaišs\n• sānjosla → redzama / noklusējuma platums\n• ikonu un sīkattēlu izmērs → normāls\n• fonta izmērs → noklusējuma\n• valoda → automātiskā noteikšana\n• loga sadalīšana → 50 / 50\n• pārnumurēšana → automātiska\n• ZIP saspiešana → nav",
+      "reset": "Lietotnes atiestatīšana:\n• pilnekrāns → logs\n• loga izmērs un pozīcija\n• tumšais režīms → gaišs\n• sānjosla → redzama / noklusējuma platums\n• minikarte → paslēpta\n• ikonu un sīkattēlu izmērs → normāls\n• fonta izmērs → noklusējuma\n• valoda → automātiskā noteikšana\n• loga sadalīšana → 50 / 50\n• pārnumurēšana → automātiska\n• ZIP saspiešana → nav",
       "reset_label": "Atiestatīt lietotni"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Kopēt saiti",
       "open_location": "Atvērt atrašanās vietu",
       "copy_path": "Kopēt ceļu"
+    },
+    "duplicates": {
+      "window_title": "Dublikāti",
+      "no_duplicates": "Dublikāti nav atrasti.",
+      "group_title": "{num}. grupa: {count} identiskas lapas",
+      "delete_selection": "Dzēst atlasi"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "ZIP saspiešanas līmenis neattiecas uz {ext} failiem.\nNoklikšķiniet, lai saglabātu kā CBZ noklusējuma līmenī ({level}).\nNoklikšķiniet ar labo peles pogu, lai mainītu noklusējuma līmeni.",
     "zip_indicator_ext_image": "attēls",
     "zip_indicator_stored_noop": "Šis fails nav saspiests.\nNoklikšķiniet ar labo peles pogu, lai mainītu noklusējuma līmeni.",
-    "zip_indicator_stored_action": "Šis fails nav saspiests.\nNoklikšķiniet, lai to saspiestu noklusējuma līmenī ({level}).\nNoklikšķiniet ar labo peles pogu, lai mainītu noklusējuma līmeni."
+    "zip_indicator_stored_action": "Šis fails nav saspiests.\nNoklikšķiniet, lai to saspiestu noklusējuma līmenī ({level}).\nNoklikšķiniet ar labo peles pogu, lai mainītu noklusējuma līmeni.",
+    "duplicate_image": "DUBLĒTA LAPA"
   },
   "help": {
     "title": "MosaicView - Lietošanas instrukcija",
     "intro": "MosaicView ļauj manipulēt un rediģēt komiksu failus, neizvelkot tos no arhīviem. Lietojumprogramma atbalsta CBZ (ZIP), CBR (RAR) un PDF formātus. Lietojumprogramma ir saderīga tikai ar 64 bitu sistēmām.",
     "open_files": "Failu atvēršana",
-    "open_files_content": "• Noklikšķiniet uz pogas 'Atvērt failu' vai velciet un nometiet failu tieši logā\n• Atbalstītie formāti: CBZ, CBR, CB7, CBT, PDF, attēli (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus var ari atvert, bet tiks izvilkti tikai to atteli (teksts tiek ignorets).\n• Šifrēts PDF (lai atvērtu, nepieciešama parole): failu nevar importēt, tiek parādīts kļūdas ziņojums.\n• PDF aizsargāts pret izmaiņām (owner password): lapas tiek importētas normāli. MosaicView piedāvā saglabāt atbloķētu faila kopiju tajā pašā mapē. Piezīme: sarkanā krāsā rādītie paplašinājumi (WEBP, TIFF, GIF, ICO…) norāda formātus, kas var nebūt saderīgi ar vecākiem CBZ/CBR lasītājiem. Tomēr MosaicView šos failus apstrādā normāli.",
+    "open_files_content": "• Noklikšķiniet uz pogas 'Atvērt failu' vai velciet un nometiet failu tieši logā\n• Atbalstītie formāti: CBZ, CBR, CB7, CBT, PDF, attēli (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB failus var ari atvert, bet tiks izvilkti tikai to atteli (teksts tiek ignorets).\n• Šifrēts PDF (lai atvērtu, nepieciešama parole): failu nevar importēt, tiek parādīts kļūdas ziņojums.\n• PDF aizsargāts pret izmaiņām (owner password): lapas tiek importētas normāli. MosaicView piedāvā saglabāt atbloķētu faila kopiju tajā pašā mapē. Piezīme: sarkanā krāsā rādītie paplašinājumi (WEBP, TIFF, GIF, ICO…) norāda formātus, kas var nebūt saderīgi ar vecākiem CBZ/CBR lasītājiem. Tomēr MosaicView šos failus apstrādā normāli.\n• Dublētu lapu noteikšana: atverot arhīvu, lapas ar pilnīgi identisku saturu (skenēšanas vai apvienošanas kļūda) automātiski tiek atzīmētas ar oranžu nozīmīti to sīktēlā. Komanda \"Pārvaldīt dublikātus\" (izvēlne Rediģēt, labais peles klikšķis uz mozaīkas vai sīktēla) atver logu, kurā uzskaitīta katra identisku lapu grupa, ar atzīmes rūtiņu katrai lapai, lai dzēstu liekās kopijas.",
     "mosaic": "Mozaīka",
-    "mosaic_content": "Mozaīka attēlo visas jūsu komiksa lappuses kā sīktēlus. Jūs varat:\n• Pārkārtot lappuses, velkot un nometot (lappušu numerācija būs automātiska un tiks veikta atbilstoši aktīvajam pārnumerācijas režīmam)\n• Atlasīt vairākas lappuses (Ctrl+noklikšķināt vai Shift+noklikšķināt)\n• Pielāgot sīktēlu izmēru ar slīdni\n• Manuāli pārdēvēt failus, noklikšķinot uz to nosaukuma\n• Vilkt un nomest komiksu failus (CBZ/CBR/PDF) no Windows Explorer tieši citā atvērtā komiksā, lai apvienotu to saturu\n• Eksportēt visus rādītos sīkattēlus uz izvēlēto mapi (slēpta komanda, pieejama tikai ar īsinājumtaustiņu Ctrl+Alt+T)",
+    "mosaic_content": "Mozaīka attēlo visas jūsu komiksa lappuses kā sīktēlus. Jūs varat:\n• Pārkārtot lappuses, velkot un nometot (lappušu numerācija būs automātiska un tiks veikta atbilstoši aktīvajam pārnumerācijas režīmam)\n• Atlasīt vairākas lappuses (Ctrl+noklikšķināt vai Shift+noklikšķināt)\n• Pielāgot sīktēlu izmēru ar slīdni\n• Manuāli pārdēvēt failus, noklikšķinot uz to nosaukuma\n• Vilkt un nomest komiksu failus (CBZ/CBR/PDF) no Windows Explorer tieši citā atvērtā komiksā, lai apvienotu to saturu\n• Eksportēt visus rādītos sīkattēlus uz izvēlēto mapi (slēpta komanda, pieejama tikai ar īsinājumtaustiņu Ctrl+Alt+T)\n• Rādīt minikarti: neobligāts sānu panelis mozaīkas labajā pusē, kas rāda visu lappušu sīktēlu pārskatu ar taisnstūri, kas atzīmē pašlaik redzamo apgabalu. Noklikšķiniet vai velciet, lai pārietu tieši uz šo vietu komiksā. Ieslēdzams no izvēlnes Sistēma vai ar peles labo klikšķi uz mozaīkas.",
     "manipulation": "Lappušu manipulācija",
     "manipulation_content": "• Velciet un nometiet lapas, lai tās pārkārtotu\n• Velciet veselu komiksu citā, lai tos apvienotu\n• Ar peles labo pogu noklikšķiniet uz lapas, lai piekļūtu opcijām (pagriešana, dzēšana u.c.)\n• Veiciet dubultklikšķi uz lapas, lai atvērtu skatītāju\n• Eksportējiet atsevišķas lapas, velkot tās uz Windows mapi, vai izmantojot Ctrl+C / Ctrl+V",
     "renumber": "Lappusēm pārnumerēšana",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Izmaiņu žurnāls",
     "webpage": "Tīmekļa lapa",
-    "zip_compression": "Noklusējuma ZIP saspiešana"
+    "zip_compression": "Noklusējuma ZIP saspiešana",
+    "show_duplicates": "Pārvaldīt dublikātus"
   },
   "updates": {
     "dialog_title": "Atjauninājumi",

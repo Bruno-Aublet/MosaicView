@@ -174,11 +174,13 @@
       "fullscreen_exit": "Hoch beQ mej (F11 pagh ESC)",
       "quit": "qawHaq mevmoH",
       "delete_bookmark": "HevwI' ghItlh lughomHa'",
-      "delete_all_bookmarks": "Hoch ghItlhmey lughomHa'"
+      "delete_all_bookmarks": "Hoch ghItlhmey lughomHa'",
+      "hide_minimap": "» mach De' chart So'",
+      "show_minimap": "« mach De' chart 'ang"
     },
     "canvas": {
       "quit": "qawHaq mevmoH",
-      "reset": "chu' qa' paq:\n• Hoch wovbe' → SIrgh\n• wanlIj HoS je 'otlh\n• Hurgh mIw → wov\n• DoQ tIq → leghlaH / motlh chuq\n• boQwI' pIq mach mIl'oD HoS → motlh\n• HoS mu' → motlh\n• Hol → chu'moH SeH\n• SIrgh peD → 50 / 50\n• chu' mI' → chu'moH\n• ZIP nIch → pagh",
+      "reset": "chu' qa' paq:\n• Hoch wovbe' → SIrgh\n• wanlIj HoS je 'otlh\n• Hurgh mIw → wov\n• DoQ tIq → leghlaH / motlh chuq\n• mach De' chart → So'lu'pu'\n• boQwI' pIq mach mIl'oD HoS → motlh\n• HoS mu' → motlh\n• Hol → chu'moH SeH\n• SIrgh peD → 50 / 50\n• chu' mI' → chu'moH\n• ZIP nIch → pagh",
       "reset_label": "chu' qawHaq"
     },
     "font_size": {
@@ -705,7 +707,7 @@
     "empty_canvas_line1": "naDev wa CBZ/CBR/CB7/CBT/PDF De pagh law De pagh puS yIngeH",
     "empty_canvas_line2": "De poSmoHlu pagh De law De pagh puS DangeH tlhoy",
     "empty_canvas_line3": "wa' qawHaq pagh law' yIpolHa' batch mI' yImev",
-    "icon_toolbar_config_title": "icon toolbar configuration",
+    "icon_toolbar_config_title": "icon toolbar SeHlaw",
     "icon_toolbar_active": "iconmey toolbar",
     "icon_toolbar_hidden": "nIteb Qapla' chenmoHlu'bogh",
     "license_gpl_full": "GNU GPL v3 naw'",
@@ -1211,6 +1213,12 @@
       "copy": "rar' yISIQ",
       "open_location": "Daq yIpoSmoH",
       "copy_path": "He yISIQ"
+    },
+    "duplicates": {
+      "window_title": "chovmey cha'logh",
+      "no_duplicates": "chov cha'logh tu'lu'be'.",
+      "group_title": "veS {num}: {count} chovmey rap",
+      "delete_selection": "wIvlu'bogh teq"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "rar ZIP mIw lo'be' De'wI' {ext}. nIH jIH CBZ So' mIw rar ({level}).\nnIH jIH mIw rar chu' DaH.",
     "zip_indicator_ext_image": "beQ",
     "zip_indicator_stored_noop": "De'wI' rarbe'.\nnIH jIH mIw rar chu' DaH.",
-    "zip_indicator_stored_action": "De'wI' rarbe'.\nnIH jIH rar mIw rar ({level}) lo'.\nnIH jIH mIw rar chu' DaH."
+    "zip_indicator_stored_action": "De'wI' rarbe'.\nnIH jIH rar mIw rar ({level}) lo'.\nnIH jIH mIw rar chu' DaH.",
+    "duplicate_image": "chov cha'logh"
   },
   "help": {
     "title": "MosaicView - lo'laHghach QIjmeH",
     "intro": "MosaicView paqmey per vo' nobmeH poQ tu'be'lu' choHmeH lo'laHghach nob. cham CBZ (ZIP), CBR (RAR) joq PDF Qor. ngoqDe' 64 bit patmey neH tu'lu'.",
     "open_files": "De'mey poSmoH",
-    "open_files_content": "• 'De' Hab' nob tIpSer ghap De' 'och chu'wI' tIqem\n• cham Qorlu'bogh: CBZ, CBR, CB7, CBT, PDF, cha'nobmey (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB De'mey poSmoH je laH, 'ach ngogh neH chenmoHlu' (mu'mey lughbe').\n• PDF SIch'eghlu' (mIw luSov DaneH poSmeH): QaH ngeHlaHbe', Qagh quetlu'.\n• PDF tIqmoH mach luSovlu' (owner password): ghItlhmey ngeHlu' motlh. MosaicView rar PDF QaH poSmoHlu' ngeH je'. pagh: Dochvam ghItlhbogh DoSmey Dub DaH (WEBP, TIFF, GIF, ICO…) QInmey CBZ/CBR ngo' DIvI' rurbe'bogh mI' lucher. 'ach MosaicView Dochmey pagh DaHjaj.",
+    "open_files_content": "• 'De' Hab' nob tIpSer ghap De' 'och chu'wI' tIqem\n• cham Qorlu'bogh: CBZ, CBR, CB7, CBT, PDF, cha'nobmey (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB De'mey poSmoH je laH, 'ach ngogh neH chenmoHlu' (mu'mey lughbe').\n• PDF SIch'eghlu' (mIw luSov DaneH poSmeH): QaH ngeHlaHbe', Qagh quetlu'.\n• PDF tIqmoH mach luSovlu' (owner password): ghItlhmey ngeHlu' motlh. MosaicView rar PDF QaH poSmoHlu' ngeH je'. pagh: Dochvam ghItlhbogh DoSmey Dub DaH (WEBP, TIFF, GIF, ICO…) QInmey CBZ/CBR ngo' DIvI' rurbe'bogh mI' lucher. 'ach MosaicView Dochmey pagh DaHjaj.\nchov chovmey cha'logh tu'lu'chugh: chovHom poSmoHlu'DI', chovmey rap Doch (voQ pagh rar Qagh) pIn wovqu' tu'lu'bogh nagh chIS Dev. mu'tlheghvam \"chovmey cha'logh teq\" ( 'ay' choH, nIH nem baS chovHom Dung joq chovmey Dung) SoQmeH lojmIt poSmoH, Hoch veS chovmey rap tetlh, teq bID pImHa'moHlu'meH Hoch chovmoHwI'.",
     "mosaic": "Hur'",
-    "mosaic_content": "mozayIk QIn qaStaHvIS Hoch qonmey qIn thumbnail jangwI'. DaneH:\n• qonmey choHmoH drag-drop lo' (qon mI' DIch chaq, 'ej mIw qon mI' chu' lo'lu'bogh lupoQ)\n• law' qonmey DawIv (Ctrl+click pagh Shift+click)\n• thumbnail ngaS choH slider lo'\n• De'wI'mey pong choH nIH lo'taHvIS click\n• QIn De'wI'mey (CBZ/CBR/PDF) Windows Explorer vo' drag-drop laH latlh poSmoH QIn ghom\n• Suq Hoch mIllogh'a'mey legh DaneHbogh ra'ghom yIghoS (pegh ra'ghom, Ctrl+Alt+T ngoqDe' neH lo'laH)",
+    "mosaic_content": "mozayIk QIn qaStaHvIS Hoch qonmey qIn thumbnail jangwI'. DaneH:\n• qonmey choHmoH drag-drop lo' (qon mI' DIch chaq, 'ej mIw qon mI' chu' lo'lu'bogh lupoQ)\n• law' qonmey DawIv (Ctrl+click pagh Shift+click)\n• thumbnail ngaS choH slider lo'\n• De'wI'mey pong choH nIH lo'taHvIS click\n• QIn De'wI'mey (CBZ/CBR/PDF) Windows Explorer vo' drag-drop laH latlh poSmoH QIn ghom\n• Suq Hoch mIllogh'a'mey legh DaneHbogh ra'ghom yIghoS (pegh ra'ghom, Ctrl+Alt+T ngoqDe' neH lo'laH)\n• mach De' chart cha': mozayIk nIHDaq nIH pIn (rIn), Hoch qonmey mach legh cha'moH, rectangle je DaSeHtaHbogh yem cha'moH. click pagh drag QIn Daq yInID. Sistem papmey pagh mozayIk nIHvo' click lo'lu'.",
     "manipulation": "ghItlhmey vangmeH",
     "manipulation_content": "• ghItlhwI'mey chuH: drag-drop lo'\n• Hoch paq tay'moH: drag lo'\n• nIH-click ghItlh wIvmey lulegh (jIr, HoHmoH, latlh je)\n• cha' nIH-click: ghItlh leghwI'Daq poSmoH\n• ghItlhwI'mey mob tepDaq drag, pagh Ctrl+C / Ctrl+V lo'",
     "renumber": "tetlh mI' choHqa'moH",
@@ -1319,8 +1328,8 @@
     "resize_pages_content": "qonmey ghItlhwI' wey choH (mach pagh tIn chenmoH):\n• wa' pagh law' qonmey DawIv\n• nIH-click → 'ghItlhwI' wey choH'\n• wej wIvmey tu'lu':\n  - toH 'ab: tIq je jen DaneHbogh yI'el (rur choHbe'taH)\n  - vatlhvI' puS: 10% vo' 90% wIv\n  - vatlhvI' tIq: 10% vo' 100% wIv\n• lo'meH ghItlhwI' wey choHta' chaq tIq cha'lu'\n• choHmeH Hoch wIvlu'bogh qonmey Daq lo'lu'",
     "language_export_piqad": "pIqaD Font",
     "language_export_tengwar": "Tengwar Fonts",
-    "language_export_piqad_success": "Qolqo' exported: {filename}\ntI'wI'Daq tu'lu':",
-    "language_export_tengwar_success": "{count} qolqo'mey exported\ntI'wI'Daq tu'lu':",
+    "language_export_piqad_success": "Qolqo' lI'moHlu'pu': {filename}\ntI'wI'Daq tu'lu':",
+    "language_export_tengwar_success": "{count} qolqo'mey lI'moHlu'pu'\ntI'wI'Daq tu'lu':",
     "icons": "Del",
     "icons_content": "Hoch mIqta'mey lo'lu'bogh qach QaD Dochvam DaH 'ej Dalo'laH wa' QaD: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nvagh mIwmey vIchenmoHta'.\nwav Del neH, Windows chavmoH De' Del, chenmoHpu' jIH ('ach AI lo', jIH cha'nob chenmoHwI' vaj Qugh 'ay 'ay 'ay). Del vaj lo' chut qaH, chanvo' DaqeS bIneH.",
     "icons_view_button": "Del legh",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "mI' SeHlaw",
     "webpage": "QoQ De'wI' Daq",
-    "zip_compression": "rar mIw rar tlhIngan"
+    "zip_compression": "rar mIw rar tlhIngan",
+    "show_duplicates": "ra' chovmey cha'logh"
   },
   "updates": {
     "dialog_title": "chu' De'",

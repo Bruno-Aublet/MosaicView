@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.4.2"
+__version__ = "1.5.0"
 
 import sys
 import os
@@ -498,6 +498,11 @@ class MainWindow(QMainWindow):
         if cfg.get_sidebar_collapsed_panel2():
             self._panel2._sidebar_visible = False
             self._panel2._left_panel.setVisible(False)
+
+        # Minimap panel2 : restaurer état depuis config
+        if cfg.get_minimap_visible_panel2():
+            self._panel2._minimap_visible = True
+            self._panel2._minimap_panel.setVisible(True)
 
         cfg.set_split_active(True)
         self._panel._refresh_toolbar_states()

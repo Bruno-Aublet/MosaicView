@@ -1270,6 +1270,7 @@ class AdjustmentsDialog(QDialog):
                     ob = orig_bytes.get(eid)
                     if ob is not None:
                         entry['bytes'] = ob
+                        entry['_hash'] = None
                     for k, v in orig_thumbs.get(eid, {}).items():
                         entry[k] = v
                 if render:

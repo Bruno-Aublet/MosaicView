@@ -174,11 +174,13 @@
       "fullscreen_exit": "Izhod iz celozaslonskega načina (F11 ali ESC)",
       "quit": "Zapri aplikacijo",
       "delete_bookmark": "Izbriši zaznamek za ta strip",
-      "delete_all_bookmarks": "Izbriši vse zaznamke"
+      "delete_all_bookmarks": "Izbriši vse zaznamke",
+      "hide_minimap": "» Skrij mini zemljevid",
+      "show_minimap": "« Prikaži mini zemljevid"
     },
     "canvas": {
       "quit": "Zapri aplikacijo",
-      "reset": "Ponastavitev aplikacije:\n• celozaslonski način → okno\n• velikost in položaj okna\n• temni način → svetli\n• stranska vrstica → vidna / privzeta širina\n• velikost ikon in sličic → normalna\n• velikost pisave → privzeta\n• jezik → samodejno zaznavanje\n• delitev okna → 50 / 50\n• ponovno oštevilčenje → samodejno\n• stiskanje ZIP → brez",
+      "reset": "Ponastavitev aplikacije:\n• celozaslonski način → okno\n• velikost in položaj okna\n• temni način → svetli\n• stranska vrstica → vidna / privzeta širina\n• mini zemljevid → skrit\n• velikost ikon in sličic → normalna\n• velikost pisave → privzeta\n• jezik → samodejno zaznavanje\n• delitev okna → 50 / 50\n• ponovno oštevilčenje → samodejno\n• stiskanje ZIP → brez",
       "reset_label": "Ponastavi aplikacijo"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Kopiraj povezavo",
       "open_location": "Odpri mesto",
       "copy_path": "Kopiraj pot"
+    },
+    "duplicates": {
+      "window_title": "Podvojitve",
+      "no_duplicates": "Ni zaznanih podvojitev.",
+      "group_title": "Skupina {num}: {count} enakih strani",
+      "delete_selection": "Izbriši izbor"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Raven stiskanja ZIP se ne uporablja za datoteke {ext}.\nKliknite za shranjevanje kot CBZ na privzeto raven ({level}).\nDesni klik za spremembo privzete ravni.",
     "zip_indicator_ext_image": "slika",
     "zip_indicator_stored_noop": "Ta datoteka ni stisnjena.\nDesni klik za spremembo privzete ravni.",
-    "zip_indicator_stored_action": "Ta datoteka ni stisnjena.\nKliknite za stiskanje na privzeto raven ({level}).\nDesni klik za spremembo privzete ravni."
+    "zip_indicator_stored_action": "Ta datoteka ni stisnjena.\nKliknite za stiskanje na privzeto raven ({level}).\nDesni klik za spremembo privzete ravni.",
+    "duplicate_image": "PODVOJENA STRAN"
   },
   "help": {
     "title": "MosaicView - Navodila za uporabo",
     "intro": "MosaicView vam omogoča urejanje in spreminjanje stripk (digitalnih stripov) brez potrebe po razpakiranju arhivov. Aplikacija podpira formate CBZ (ZIP), CBR (RAR) in PDF. Aplikacija je združljiva le s 64-bitnimi sistemi.",
     "open_files": "Odpiranje datotek",
-    "open_files_content": "• Kliknite gumb 'Odpri datoteko' ali povlecite in spustite datoteko neposredno v okno\n• Podprti formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Datoteke EPUB se lahko tudi odprejo, vendar bodo izvlecene samo njihove slike (besedilo se prezre).\n• Šifriran PDF (za odpiranje je potrebno geslo): datoteke ni mogoče uvoziti, prikaže se sporočilo o napaki.\n• PDF zaščiten pred spremembami (owner password): strani se uvozijo normalno. MosaicView ponudi shranjevanje odklenjene kopije datoteke v isto mapo. Opomba: končnice, prikazane z rdečo (WEBP, TIFF, GIF, ICO…), označujejo formate, ki morda niso združljivi s starejšimi bralniki CBZ/CBR. Te datoteke MosaicView kljub temu obdeluje normalno.",
+    "open_files_content": "• Kliknite gumb 'Odpri datoteko' ali povlecite in spustite datoteko neposredno v okno\n• Podprti formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Datoteke EPUB se lahko tudi odprejo, vendar bodo izvlecene samo njihove slike (besedilo se prezre).\n• Šifriran PDF (za odpiranje je potrebno geslo): datoteke ni mogoče uvoziti, prikaže se sporočilo o napaki.\n• PDF zaščiten pred spremembami (owner password): strani se uvozijo normalno. MosaicView ponudi shranjevanje odklenjene kopije datoteke v isto mapo. Opomba: končnice, prikazane z rdečo (WEBP, TIFF, GIF, ICO…), označujejo formate, ki morda niso združljivi s starejšimi bralniki CBZ/CBR. Te datoteke MosaicView kljub temu obdeluje normalno.\n• Zaznavanje podvojenih strani: ob odpiranju arhiva so strani s popolnoma enako vsebino (napaka pri skeniranju ali združevanju) samodejno označene z oranžno značko na sličici. Ukaz \"Upravljanje podvojitev\" (meni Uredi, desni klik na mozaik ali na sličico) odpre okno s seznamom vsake skupine enakih strani, s potrditvenim poljem za vsako stran za brisanje odvečnih kopij.",
     "mosaic": "Mozaik",
-    "mosaic_content": "Mozaik prikazuje vse strani vašega stripa kot sličice. Lahko:\n• Preuredite strani s povleci in spusti (številčenje strani bo samodejno in bo potekalo glede na aktivni način preštevilčenja)\n• Izberete več strani (Ctrl+klik ali Shift+klik)\n• Prilagodite velikost sličic z drsnikom ali Ctrl+kolesce miške\n• Ročno preimenujete datoteke s klikom na njihovo ime\n• Povlečete in spustite datoteke stripov (CBZ/CBR/PDF) iz Windows Raziskovalca neposredno v drug odprt strip za združitev njihove vsebine\n• Izvozi vse prikazane sličice v mapo po lastni izbiri (skrita ukaz, dostopen samo s bližnjico Ctrl+Alt+T)",
+    "mosaic_content": "Mozaik prikazuje vse strani vašega stripa kot sličice. Lahko:\n• Preuredite strani s povleci in spusti (številčenje strani bo samodejno in bo potekalo glede na aktivni način preštevilčenja)\n• Izberete več strani (Ctrl+klik ali Shift+klik)\n• Prilagodite velikost sličic z drsnikom ali Ctrl+kolesce miške\n• Ročno preimenujete datoteke s klikom na njihovo ime\n• Povlečete in spustite datoteke stripov (CBZ/CBR/PDF) iz Windows Raziskovalca neposredno v drug odprt strip za združitev njihove vsebine\n• Izvozi vse prikazane sličice v mapo po lastni izbiri (skrita ukaz, dostopen samo s bližnjico Ctrl+Alt+T)\n• Prikaži mini zemljevid: neobvezna stranska plošča na desni strani mozaika, ki prikazuje pomanjšan pregled vseh strani s pravokotnikom, ki označuje trenutno vidno območje. Kliknite ali povlecite za neposredno navigacijo na tisto mesto v stripu. Vklopljiv iz menija Sistem ali z desnim klikom na mozaik.",
     "manipulation": "Urejanje strani",
     "manipulation_content": "• Povlecite in spustite strani za njihovo preureditev\n• Povlecite celoten strip v drugega, da ju združite\n• Desni klik na stran za dostop do možnosti (vrtenje, brisanje itd.)\n• Dvojni klik na stran za odpiranje pregledovalnika\n• Izvozite posamezne strani z vlečenjem v mapo Windows ali prek Ctrl+C / Ctrl+V",
     "renumber": "Preštevilčenje strani",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Dnevnik sprememb",
     "webpage": "Spletna stran",
-    "zip_compression": "Privzeto stiskanje ZIP"
+    "zip_compression": "Privzeto stiskanje ZIP",
+    "show_duplicates": "Upravljanje podvojitev"
   },
   "updates": {
     "dialog_title": "Posodobitve",

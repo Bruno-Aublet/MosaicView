@@ -174,11 +174,13 @@
       "fullscreen_exit": "Välju täisekraanist (F11 või ESC)",
       "quit": "Sulge rakendus",
       "delete_bookmark": "Kustuta järjehoidja selle koomiksi jaoks",
-      "delete_all_bookmarks": "Kustuta kõik järjehoidjad"
+      "delete_all_bookmarks": "Kustuta kõik järjehoidjad",
+      "hide_minimap": "» Peida minikaart",
+      "show_minimap": "« Näita minikaarti"
     },
     "canvas": {
       "quit": "Sulge rakendus",
-      "reset": "Rakenduse lähtestamine:\n• täisekraan → aken\n• akna suurus ja asukoht\n• tume režiim → hele\n• külgriba → nähtav / vaikelaius\n• ikoonide ja pisipiltide suurus → tavaline\n• kirja suurus → vaikimisi\n• keel → automaatne tuvastamine\n• akna jagamine → 50 / 50\n• ümbernummerdamine → automaatne\n• ZIP-tihendus → puudub",
+      "reset": "Rakenduse lähtestamine:\n• täisekraan → aken\n• akna suurus ja asukoht\n• tume režiim → hele\n• külgriba → nähtav / vaikelaius\n• minikaart → peidetud\n• ikoonide ja pisipiltide suurus → tavaline\n• kirja suurus → vaikimisi\n• keel → automaatne tuvastamine\n• akna jagamine → 50 / 50\n• ümbernummerdamine → automaatne\n• ZIP-tihendus → puudub",
       "reset_label": "Lähtesta rakendus"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Kopeeri link",
       "open_location": "Ava asukoht",
       "copy_path": "Kopeeri tee"
+    },
+    "duplicates": {
+      "window_title": "Duplikaadid",
+      "no_duplicates": "Duplikaate ei leitud.",
+      "group_title": "Rühm {num}: {count} identset lehekülge",
+      "delete_selection": "Kustuta valik"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "ZIP-pakkimistase ei kehti {ext}-failidele.\nKlõpsake CBZ-na salvestamiseks vaiketasemel ({level}).\nParemklõps vaiketaseme muutmiseks.",
     "zip_indicator_ext_image": "pilt",
     "zip_indicator_stored_noop": "See fail ei ole pakitud.\nParemklõps vaiketaseme muutmiseks.",
-    "zip_indicator_stored_action": "See fail ei ole pakitud.\nKlõpsake selle pakkimiseks vaiketasemel ({level}).\nParemklõps vaiketaseme muutmiseks."
+    "zip_indicator_stored_action": "See fail ei ole pakitud.\nKlõpsake selle pakkimiseks vaiketasemel ({level}).\nParemklõps vaiketaseme muutmiseks.",
+    "duplicate_image": "DUBLEERITUD LEHEKÜLG"
   },
   "help": {
     "title": "MosaicView - Kasutusjuhend",
     "intro": "MosaicView võimaldab teil koomiksi (digitaalseid koomiksi) manipuleerida ja muuta ilma neid arhiividest välja pakkimata. Rakendus toetab CBZ (ZIP), CBR (RAR) ja PDF vorminguid. Rakendus ühildub ainult 64-bitiste süsteemidega.",
     "open_files": "Failide avamine",
-    "open_files_content": "• Klõpsake nupul 'Ava fail' või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, CBT, PDF, pildid (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jaetakse tahelepanuta).\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): lehed imporditakse tavapäraselt. MosaicView pakub avatud koopia salvestamist samasse kausta. Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.",
+    "open_files_content": "• Klõpsake nupul 'Ava fail' või lohistage fail otse aknasse\n• Toetatud vormingud: CBZ, CBR, CB7, CBT, PDF, pildid (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB-faile saab samuti avada, kuid ekstraktitakse ainult nende pildid (tekst jaetakse tahelepanuta).\n• Krüpteeritud PDF (avamisel on nõutav parool): faili ei saa importida, kuvatakse veateade.\n• PDF kaitstud muudatuste eest (owner password): lehed imporditakse tavapäraselt. MosaicView pakub avatud koopia salvestamist samasse kausta. Märkus: punasega kuvatud laiendid (WEBP, TIFF, GIF, ICO…) tähistavad formaate, mis võivad olla kokkusobimatud vanemate CBZ/CBR-lugejatega. MosaicView töötleb neid faile siiski tavapäraselt.\n• Dubleeritud lehekülgede tuvastamine: arhiivi avamisel märgistatakse täiesti identse sisuga leheküljed (skannimis- või liitmisviga) automaatselt oranži märgisega pisipildil. Käsk \"Halda duplikaate\" (menüü Redigeeri, paremklõps mosaiigil või pisipildil) avab akna, mis loetleb kõik identsete lehekülgede rühmad, iga lehekülje juures on märkeruut liigsete koopiate kustutamiseks.",
     "mosaic": "Mosaiik",
-    "mosaic_content": "Mosaiik kuvab kõiki teie koomiksi lehti pisipiltidena. Saate:\n• Ümber korraldada lehti lohistamise ja kukutamisega (lehekülgede nummerdamine on automaatne ja toimub vastavalt aktiivsele ümbernummerdamise režiimile)\n• Valida mitu lehekülge (Ctrl+klõps või Shift+klõps)\n• Reguleerida pisipiltide suurust liuguriga\n• Käsitsi ümber nimetada faile, klõpsates nende nimel\n• Lohistada ja kukutada koomiksi faile (CBZ/CBR/PDF) Windows Explorerist otse teise avatud koomikusse nende sisu ühendamiseks\n• Ekspordi kõik kuvatud pisipildid valitud kausta (peidetud käsk, juurdepääsetav ainult otsetee Ctrl+Alt+T kaudu)",
+    "mosaic_content": "Mosaiik kuvab kõiki teie koomiksi lehti pisipiltidena. Saate:\n• Ümber korraldada lehti lohistamise ja kukutamisega (lehekülgede nummerdamine on automaatne ja toimub vastavalt aktiivsele ümbernummerdamise režiimile)\n• Valida mitu lehekülge (Ctrl+klõps või Shift+klõps)\n• Reguleerida pisipiltide suurust liuguriga\n• Käsitsi ümber nimetada faile, klõpsates nende nimel\n• Lohistada ja kukutada koomiksi faile (CBZ/CBR/PDF) Windows Explorerist otse teise avatud koomikusse nende sisu ühendamiseks\n• Ekspordi kõik kuvatud pisipildid valitud kausta (peidetud käsk, juurdepääsetav ainult otsetee Ctrl+Alt+T kaudu)\n• Kuva minikaart: valikuline paneel mosaiigi paremal küljel, mis kuvab kõigi lehtede pisiülevaate koos ristkülikuga, mis tähistab hetkel nähtavat ala. Klõpsake või lohistage, et liikuda otse koomiksi vastavasse kohta. Lülitatav sisse menüüst Süsteem või mosaiigil paremklõpsuga.",
     "manipulation": "Lehekülgede manipuleerimine",
     "manipulation_content": "• Lohista lehekülgi nende ümberkorraldamiseks\n• Lohista terve koomiksiraamat teise sisse nende ühendamiseks\n• Paremklikk leheküljel valikute kuvamiseks (pööramine, kustutamine jne)\n• Topeltklõps leheküljel vaataja avamiseks\n• Ekspordi üksikud leheküljed, lohistades neid Windowsi kausta, või Ctrl+C / Ctrl+V kaudu",
     "renumber": "Lehekülgede ümbernummerdamine",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Muudatuste logi",
     "webpage": "Veebileht",
-    "zip_compression": "Vaikimisi ZIP-pakkimine"
+    "zip_compression": "Vaikimisi ZIP-pakkimine",
+    "show_duplicates": "Halda duplikaate"
   },
   "updates": {
     "dialog_title": "Uuendused",

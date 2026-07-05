@@ -174,11 +174,13 @@
       "fullscreen_exit": "Izlaz iz cijelog zaslona (F11 ili ESC)",
       "quit": "Zatvori aplikaciju",
       "delete_bookmark": "Obriši oznaku za ovaj strip",
-      "delete_all_bookmarks": "Obriši sve oznake"
+      "delete_all_bookmarks": "Obriši sve oznake",
+      "hide_minimap": "» Sakrij minikartu",
+      "show_minimap": "« Prikaži minikartu"
     },
     "canvas": {
       "quit": "Zatvori aplikaciju",
-      "reset": "Resetiranje aplikacije:\n• puni zaslon → prozor\n• veličina i položaj prozora\n• tamni način → svijetli\n• bočna traka → vidljiva / zadana širina\n• veličina ikona i sličica → normalna\n• veličina fonta → zadana\n• jezik → automatsko otkrivanje\n• podjela prozora → 50 / 50\n• ponovno numeriranje → automatsko\n• ZIP kompresija → nema",
+      "reset": "Resetiranje aplikacije:\n• puni zaslon → prozor\n• veličina i položaj prozora\n• tamni način → svijetli\n• bočna traka → vidljiva / zadana širina\n• minikarta → skrivena\n• veličina ikona i sličica → normalna\n• veličina fonta → zadana\n• jezik → automatsko otkrivanje\n• podjela prozora → 50 / 50\n• ponovno numeriranje → automatsko\n• ZIP kompresija → nema",
       "reset_label": "Resetiraj aplikaciju"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Kopiraj poveznicu",
       "open_location": "Otvori lokaciju",
       "copy_path": "Kopiraj putanju"
+    },
+    "duplicates": {
+      "window_title": "Duplikati",
+      "no_duplicates": "Nisu pronađeni duplikati.",
+      "group_title": "Skupina {num}: {count} identičnih stranica",
+      "delete_selection": "Izbriši odabir"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Razina ZIP kompresije ne primjenjuje se na datoteke {ext}.\nKliknite za spremanje kao CBZ na zadanoj razini ({level}).\nDesni klik za promjenu zadane razine.",
     "zip_indicator_ext_image": "slika",
     "zip_indicator_stored_noop": "Ova datoteka nije komprimirana.\nDesni klik za promjenu zadane razine.",
-    "zip_indicator_stored_action": "Ova datoteka nije komprimirana.\nKliknite za njezino komprimiranje na zadanoj razini ({level}).\nDesni klik za promjenu zadane razine."
+    "zip_indicator_stored_action": "Ova datoteka nije komprimirana.\nKliknite za njezino komprimiranje na zadanoj razini ({level}).\nDesni klik za promjenu zadane razine.",
+    "duplicate_image": "DUPLICIRANA STRANICA"
   },
   "help": {
     "title": "MosaicView - Upute za korištenje",
     "intro": "MosaicView vam omogućuje manipulaciju i uređivanje stripova (digitalnih knjiga stripova) bez potrebe za izvlačenjem iz arhiva. Aplikacija podržava CBZ (ZIP), CBR (RAR) i PDF formate. Aplikacija je kompatibilna isključivo sa 64-bitnim sustavima.",
     "open_files": "Otvaranje datoteka",
-    "open_files_content": "• Kliknite gumb 'Otvori datoteku' ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB datoteke se takoder mogu otvoriti, ali ce biti izvucene samo njihove slike (tekst se ignorira).\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u isti mapu. Napomena: ekstenzije prikazane crvenom bojom (WEBP, TIFF, GIF, ICO…) označavaju formate koji su potencijalno nekompatibilni sa starijim čitačima CBZ/CBR. MosaicView ipak obrađuje ove datoteke normalno.",
+    "open_files_content": "• Kliknite gumb 'Otvori datoteku' ili povucite i ispustite datoteku izravno u prozor\n• Podržani formati: CBZ, CBR, CB7, CBT, PDF, slike (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB datoteke se takoder mogu otvoriti, ali ce biti izvucene samo njihove slike (tekst se ignorira).\n• Šifrirani PDF (lozinka potrebna za otvaranje): datoteka se ne može uvesti, prikazuje se poruka o pogrešci.\n• PDF zaštićen od izmjena (owner password): stranice se uvoze normalno. MosaicView nudi spremanje otključane kopije datoteke u isti mapu. Napomena: ekstenzije prikazane crvenom bojom (WEBP, TIFF, GIF, ICO…) označavaju formate koji su potencijalno nekompatibilni sa starijim čitačima CBZ/CBR. MosaicView ipak obrađuje ove datoteke normalno.\n• Otkrivanje duplih stranica: pri otvaranju arhive, stranice s potpuno identičnim sadržajem (pogreška skeniranja ili spajanja) automatski se označavaju narančastom značkom na sličici. Naredba \"Upravljanje duplikatima\" (izbornik Uređivanje, desni klik na mozaik ili na sličicu) otvara prozor s popisom svake skupine identičnih stranica, s potvrdnim okvirom po stranici za brisanje viška kopija.",
     "mosaic": "Mozaik",
-    "mosaic_content": "Mozaik prikazuje sve stranice vašeg stripa kao sličice. Možete:\n• Promijeniti raspored stranica povlačenjem i ispuštanjem (numeriranje stranica bit će automatsko i provest će se prema aktivnom načinu prenumeriranja)\n• Odabrati više stranica (Ctrl+klik ili Shift+klik)\n• Prilagoditi veličinu sličica klizačem\n• Ručno preimenovati datoteke klikom na njihovo ime\n• Povući i ispustiti datoteke stripova (CBZ/CBR/PDF) iz Windows Explorera izravno u drugi otvoreni strip za spajanje njihovog sadržaja\n• Izvezi sve prikazane sličice u mapu po svom izboru (skrivena naredba, dostupna samo tipkovnim prečacem Ctrl+Alt+T)",
+    "mosaic_content": "Mozaik prikazuje sve stranice vašeg stripa kao sličice. Možete:\n• Promijeniti raspored stranica povlačenjem i ispuštanjem (numeriranje stranica bit će automatsko i provest će se prema aktivnom načinu prenumeriranja)\n• Odabrati više stranica (Ctrl+klik ili Shift+klik)\n• Prilagoditi veličinu sličica klizačem\n• Ručno preimenovati datoteke klikom na njihovo ime\n• Povući i ispustiti datoteke stripova (CBZ/CBR/PDF) iz Windows Explorera izravno u drugi otvoreni strip za spajanje njihovog sadržaja\n• Izvezi sve prikazane sličice u mapu po svom izboru (skrivena naredba, dostupna samo tipkovnim prečacem Ctrl+Alt+T)\n• Prikaži minikartu: neobavezna bočna ploča desno od mozaika koja prikazuje minijaturni pregled svih stranica, s pravokutnikom koji označava trenutno vidljivo područje. Kliknite ili povucite za izravnu navigaciju u stripu. Uključivo iz izbornika Sustav ili desnim klikom na mozaik.",
     "manipulation": "Manipulacija stranicama",
     "manipulation_content": "• Povucite i ispustite stranice kako biste ih reorganizirali\n• Povucite cijeli strip u drugi kako biste ih spojili\n• Desni klik na stranicu za pristup opcijama (rotacija, brisanje itd.)\n• Dvostruki klik na stranicu za otvaranje preglednika\n• Izvezite pojedinačne stranice povlačenjem u Windows mapu ili putem Ctrl+C / Ctrl+V",
     "renumber": "Prenumeriranje stranica",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Popis promjena",
     "webpage": "Web stranica",
-    "zip_compression": "Zadana ZIP kompresija"
+    "zip_compression": "Zadana ZIP kompresija",
+    "show_duplicates": "Upravljanje duplikatima"
   },
   "updates": {
     "dialog_title": "Ažuriranja",

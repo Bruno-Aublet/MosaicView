@@ -24,6 +24,7 @@ def rotate_entry_data(entry, angle, state=None):
 
     entry["bytes"] = save_image_to_bytes(entry)
     entry["large_thumb_pil"] = None
+    entry["_hash"] = None
 
     if state is not None:
         from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
@@ -56,6 +57,7 @@ def flip_entry_data(entry, direction, state=None):
 
     entry["bytes"] = save_image_to_bytes(entry)
     entry["large_thumb_pil"] = None
+    entry["_hash"] = None
 
     if state is not None:
         from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data

@@ -47,6 +47,7 @@ def _reload_thumb_qt(entry: dict, tw: int, th: int):
     """
     entry["qt_pixmap_large"] = None
     entry["large_thumb_pil"] = None
+    entry["_hash"] = None
 
 
 def _build_new_entry_qt(entry_data: dict, tw: int, th: int) -> dict:

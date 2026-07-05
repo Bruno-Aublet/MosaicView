@@ -80,6 +80,7 @@ def build_menubar_callbacks(mw) -> dict:
         "select_all":               mw._canvas._select_all,
         "clear_selection":          mw._canvas._clear_selection_and_emit,
         "render_mosaic":            mw._canvas.render_mosaic,
+        "show_duplicates_window":   mw._show_duplicates_window,
         # ── Images ────────────────────────────────────────────────────────────
         "rotate_selected_right":    lambda: _rotate_selected_qt(-90, mw._image_transforms_callbacks()),
         "rotate_selected_left":     lambda: _rotate_selected_qt(90,  mw._image_transforms_callbacks()),
@@ -144,6 +145,8 @@ def build_menubar_callbacks(mw) -> dict:
         "get_split_active":         lambda: mw._split_active,
         "get_toolbar_visible":      lambda: mw._sidebar_visible,
         "toggle_toolbar":           mw._toggle_sidebar,
+        "get_minimap_visible":      lambda: mw._minimap_visible,
+        "toggle_minimap":           mw._toggle_minimap,
         "decrease_thumb_size":      mw._decrease_thumb_size,
         "increase_thumb_size":      mw._increase_thumb_size,
         # ── À propos / maintenance ────────────────────────────────────────────

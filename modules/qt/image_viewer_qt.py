@@ -1402,6 +1402,7 @@ class ImageViewer(QDialog):
             entry["large_thumb_pil"] = None
             entry["qt_pixmap_large"] = None
             entry["qt_qimage_large"] = None
+            entry["_hash"] = None
             state.modified = True
 
             from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
@@ -1415,6 +1416,7 @@ class ImageViewer(QDialog):
                 from modules.qt.mosaic_canvas import build_qimage_for_entry
                 build_qimage_for_entry(entry)
                 canvas.refresh_thumbnail(real_idx)
+                canvas.refresh_duplicate_overlay()
             elif render_mosaic:
                 render_mosaic()
             if update_btn:

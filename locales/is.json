@@ -174,11 +174,13 @@
       "fullscreen_exit": "Hætta í öllum skjánum (F11 eða ESC)",
       "quit": "Loka forriti",
       "delete_bookmark": "Eyða bókamerki fyrir þennan myndasögu",
-      "delete_all_bookmarks": "Eyða öllum bókamerkjum"
+      "delete_all_bookmarks": "Eyða öllum bókamerkjum",
+      "hide_minimap": "» Fela smákort",
+      "show_minimap": "« Sýna smákort"
     },
     "canvas": {
       "quit": "Loka forriti",
-      "reset": "Endurstilling forritsins:\n• skjáfylling → gluggastilling\n• stærð og staðsetning glugga\n• dökkt þema → ljóst\n• hliðarslá → sýnileg / sjálfgefin breidd\n• stærð tákna og smámynda → venjuleg\n• leturstærð → sjálfgefin\n• tungumál → sjálfvirk greining\n• skipting glugga → 50 / 50\n• endurnúmerun → sjálfvirk\n• ZIP-þjöppun → engin",
+      "reset": "Endurstilling forritsins:\n• skjáfylling → gluggastilling\n• stærð og staðsetning glugga\n• dökkt þema → ljóst\n• hliðarslá → sýnileg / sjálfgefin breidd\n• smákort → falið\n• stærð tákna og smámynda → venjuleg\n• leturstærð → sjálfgefin\n• tungumál → sjálfvirk greining\n• skipting glugga → 50 / 50\n• endurnúmerun → sjálfvirk\n• ZIP-þjöppun → engin",
       "reset_label": "Endurstilla forritið"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Afrita tengil",
       "open_location": "Opna staðsetningu",
       "copy_path": "Afrita slóð"
+    },
+    "duplicates": {
+      "window_title": "Tvítekningar",
+      "no_duplicates": "Engar tvítekningar fundust.",
+      "group_title": "Hópur {num}: {count} eins síður",
+      "delete_selection": "Eyða vali"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "ZIP-þjöppunarstigið á ekki við um {ext}-skrár.\nSmelltu til að vista sem CBZ á sjálfgefnu stigi ({level}).\nHægrismelltu til að breyta sjálfgefnu stigi.",
     "zip_indicator_ext_image": "mynd",
     "zip_indicator_stored_noop": "Þessi skrá er ekki þjöppuð.\nHægrismelltu til að breyta sjálfgefnu stigi.",
-    "zip_indicator_stored_action": "Þessi skrá er ekki þjöppuð.\nSmelltu til að þjappa hana á sjálfgefnu stigi ({level}).\nHægrismelltu til að breyta sjálfgefnu stigi."
+    "zip_indicator_stored_action": "Þessi skrá er ekki þjöppuð.\nSmelltu til að þjappa hana á sjálfgefnu stigi ({level}).\nHægrismelltu til að breyta sjálfgefnu stigi.",
+    "duplicate_image": "TVÍTEKIN SÍÐA"
   },
   "help": {
     "title": "MosaicView - Notkunarleiðbeiningar",
     "intro": "MosaicView gerir þér kleift að vinna með og breyta teiknimyndabókum (stafrænum stripum) án þess að þurfa að afpakka þeim úr safnskrám. Forritið styður CBZ (ZIP), CBR (RAR) og PDF snið. Forritid er einungis samhæft 64 bita stýrikerfi.",
     "open_files": "Opna skrár",
-    "open_files_content": "• Smelltu á hnappinn 'Opna skrá' eða dragðu og slepptu skrá beint í gluggann\n• Studd snið: CBZ, CBR, CB7, CBT, PDF, myndir (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Einnig er haegt ad opna EPUB skrar, en aedins verda myndir thyggdar ut (texti er hundsad).\n• Dulkóðuð PDF (lykilorð þarf til að opna): ekki er hægt að flytja inn skrána, villuboð birtast.\n• PDF vernduð gegn breytingum (owner password): síðurnar eru fluttar inn eðlilega. MosaicView býður upp á að vista opið afrit af skránni í sömu möppu. Athugasemd: skráarviðskeyti sýnd með rauðum lit (WEBP, TIFF, GIF, ICO…) gefa til kynna snið sem gætu verið ósamhæf við eldri CBZ/CBR-lesara. Þessar skrár eru þó unnar eðlilega af MosaicView.",
+    "open_files_content": "• Smelltu á hnappinn 'Opna skrá' eða dragðu og slepptu skrá beint í gluggann\n• Studd snið: CBZ, CBR, CB7, CBT, PDF, myndir (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Einnig er haegt ad opna EPUB skrar, en aedins verda myndir thyggdar ut (texti er hundsad).\n• Dulkóðuð PDF (lykilorð þarf til að opna): ekki er hægt að flytja inn skrána, villuboð birtast.\n• PDF vernduð gegn breytingum (owner password): síðurnar eru fluttar inn eðlilega. MosaicView býður upp á að vista opið afrit af skránni í sömu möppu. Athugasemd: skráarviðskeyti sýnd með rauðum lit (WEBP, TIFF, GIF, ICO…) gefa til kynna snið sem gætu verið ósamhæf við eldri CBZ/CBR-lesara. Þessar skrár eru þó unnar eðlilega af MosaicView.\n• Greining á tvíteknum síðum: þegar skjalasafn er opnað eru síður með nákvæmlega eins innihaldi (skönnunar- eða sameiningarvilla) sjálfkrafa merktar með appelsínugulu merki á smámyndinni. Skipunin \"Stjórna tvíteknum\" (Breyta valmynd, hægrismelltu á mósaíkina eða á smámynd) opnar glugga sem telur upp hvern hóp eins síðna, með gátreit fyrir hverja síðu til að eyða umframafritunum.",
     "mosaic": "Mósaíkið",
-    "mosaic_content": "Mósaíkið sýnir allar síður myndasögunnar þinnar sem smámyndir. Þú getur:\n• Endurraðað síðum með því að draga og sleppa (síðunúmerun verður sjálfvirk og fer eftir virku endurnúmerunarstillingu)\n• Valið margar síður (Ctrl+smella eða Shift+smella)\n• Stillt smámyndastærð með rennisleðanum\n• Endurnefnt skrár handvirkt með því að smella á nafn þeirra\n• Dregið og sleppt myndasagaskrám (CBZ/CBR/PDF) úr Windows Explorer beint inn í aðra opna myndasögu til að sameina efni þeirra\n• Flytja út allar sýndar smámyndir í möppu að eigin vali (falin skipun, aðeins aðgengileg með flýtilyklinum Ctrl+Alt+T)",
+    "mosaic_content": "Mósaíkið sýnir allar síður myndasögunnar þinnar sem smámyndir. Þú getur:\n• Endurraðað síðum með því að draga og sleppa (síðunúmerun verður sjálfvirk og fer eftir virku endurnúmerunarstillingu)\n• Valið margar síður (Ctrl+smella eða Shift+smella)\n• Stillt smámyndastærð með rennisleðanum\n• Endurnefnt skrár handvirkt með því að smella á nafn þeirra\n• Dregið og sleppt myndasagaskrám (CBZ/CBR/PDF) úr Windows Explorer beint inn í aðra opna myndasögu til að sameina efni þeirra\n• Flytja út allar sýndar smámyndir í möppu að eigin vali (falin skipun, aðeins aðgengileg með flýtilyklinum Ctrl+Alt+T)\n• Sýna smákort: valfrjáls hliðarrúða hægra megin við mósaíkið sem sýnir smámyndaryfirlit yfir allar síður, með rétthyrningi sem merkir svæðið sem er sýnilegt hverju sinni. Smelltu eða dragðu til að fara beint á þann stað í myndasögunni. Hægt að kveikja á því úr Kerfi valmyndinni eða með hægrismelli á mósaíkið.",
     "manipulation": "Vinnsla síðna",
     "manipulation_content": "• Dragðu og slepptu síðum til að endurraða þeim\n• Dragðu heila myndasögu inn í aðra til að sameina þær\n• Hægrismelltu á síðu til að nálgast valkosti (snúningur, eyðing o.fl.)\n• Tvísmelltu á síðu til að opna skoðarann\n• Flyttu út einstakar síður með því að draga þær í Windows-möppu eða með Ctrl+C / Ctrl+V",
     "renumber": "Endurnúmera síður",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Breytingaskrá",
     "webpage": "Vefsíða",
-    "zip_compression": "Sjálfgefin ZIP-þjöppun"
+    "zip_compression": "Sjálfgefin ZIP-þjöppun",
+    "show_duplicates": "Stjórna tvíteknum"
   },
   "updates": {
     "dialog_title": "Uppfærslur",

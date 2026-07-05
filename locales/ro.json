@@ -174,11 +174,13 @@
       "fullscreen_exit": "Ieșire din ecran complet (F11 sau ESC)",
       "quit": "Închide aplicația",
       "delete_bookmark": "Șterge marcajul pentru acest comic",
-      "delete_all_bookmarks": "Șterge toate marcajele"
+      "delete_all_bookmarks": "Șterge toate marcajele",
+      "hide_minimap": "» Ascunde minimapa",
+      "show_minimap": "« Arată minimapa"
     },
     "canvas": {
       "quit": "Închide aplicația",
-      "reset": "Resetați aplicația:\n• ecran complet → fereastră\n• dimensiunea și poziția ferestrei\n• mod întunecat → luminos\n• bara laterală → vizibilă / lățime implicită\n• dimensiunea pictogramelor și miniaturilor → normală\n• dimensiunea fontului → implicită\n• limbă → detectare automată\n• împărțirea ferestrei → 50 / 50\n• renumerotare → automată\n• compresie ZIP → niciuna",
+      "reset": "Resetați aplicația:\n• ecran complet → fereastră\n• dimensiunea și poziția ferestrei\n• mod întunecat → luminos\n• bara laterală → vizibilă / lățime implicită\n• minimapă → ascunsă\n• dimensiunea pictogramelor și miniaturilor → normală\n• dimensiunea fontului → implicită\n• limbă → detectare automată\n• împărțirea ferestrei → 50 / 50\n• renumerotare → automată\n• compresie ZIP → niciuna",
       "reset_label": "Resetează aplicația"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Copiază linkul",
       "open_location": "Deschide locația",
       "copy_path": "Copiază calea"
+    },
+    "duplicates": {
+      "window_title": "Duplicate",
+      "no_duplicates": "Nu a fost detectat niciun duplicat.",
+      "group_title": "Grupul {num}: {count} pagini identice",
+      "delete_selection": "Șterge selecția"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Nivelul de compresie ZIP nu se aplică fișierelor {ext}.\nFaceți clic pentru a salva ca CBZ la nivelul implicit ({level}).\nClic dreapta pentru a schimba nivelul implicit.",
     "zip_indicator_ext_image": "imagine",
     "zip_indicator_stored_noop": "Acest fișier nu este comprimat.\nClic dreapta pentru a schimba nivelul implicit.",
-    "zip_indicator_stored_action": "Acest fișier nu este comprimat.\nFaceți clic pentru a-l comprima la nivelul implicit ({level}).\nClic dreapta pentru a schimba nivelul implicit."
+    "zip_indicator_stored_action": "Acest fișier nu este comprimat.\nFaceți clic pentru a-l comprima la nivelul implicit ({level}).\nClic dreapta pentru a schimba nivelul implicit.",
+    "duplicate_image": "PAGINĂ DUPLICAT"
   },
   "help": {
     "title": "MosaicView - Manual utilizator",
     "intro": "MosaicView vă permite să manipulați și să modificați benzi desenate (BD digitale) fără a fi nevoie să le extrageți din arhive. Aplicația suportă formatele CBZ (ZIP), CBR (RAR) și PDF. Aplicația este compatibilă doar cu sistemele pe 64 de biți.",
     "open_files": "Deschiderea fișierelor",
-    "open_files_content": "• Faceți clic pe butonul 'Deschide un fișier' sau trageți și plasați un fișier direct în fereastră\n• Formate suportate: CBZ, CBR, CB7, CBT, PDF, imagini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fisierele EPUB pot fi deschise si ele, dar doar imaginile lor vor fi extrase (textul este ignorat). Notă: extensiile afișate cu roșu (WEBP, TIFF, GIF, ICO…) indică formate potențial incompatibile cu cititoarele CBZ/CBR mai vechi. Aceste fișiere sunt totuși procesate normal de MosaicView.\n• PDF criptat (parolă necesară pentru deschidere): fișierul nu poate fi importat, se afișează un mesaj de eroare.\n• PDF protejat împotriva modificărilor (owner password): paginile sunt importate normal. MosaicView propune salvarea unei copii deblocate a fișierului în același folder.",
+    "open_files_content": "• Faceți clic pe butonul 'Deschide un fișier' sau trageți și plasați un fișier direct în fereastră\n• Formate suportate: CBZ, CBR, CB7, CBT, PDF, imagini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fisierele EPUB pot fi deschise si ele, dar doar imaginile lor vor fi extrase (textul este ignorat). Notă: extensiile afișate cu roșu (WEBP, TIFF, GIF, ICO…) indică formate potențial incompatibile cu cititoarele CBZ/CBR mai vechi. Aceste fișiere sunt totuși procesate normal de MosaicView.\n• PDF criptat (parolă necesară pentru deschidere): fișierul nu poate fi importat, se afișează un mesaj de eroare.\n• PDF protejat împotriva modificărilor (owner password): paginile sunt importate normal. MosaicView propune salvarea unei copii deblocate a fișierului în același folder.\n• Detectarea paginilor duplicate: la deschiderea unei arhive, paginile cu conținut strict identic (o eroare de scanare sau îmbinare) sunt semnalate automat printr-o insignă portocalie pe miniatura lor. Comanda \"Gestionează duplicatele\" (meniul Editare, clic dreapta pe mozaic sau pe o miniatură) deschide o fereastră care listează fiecare grup de pagini identice, cu o casetă de bifat pentru fiecare pagină pentru a șterge copiile în plus.",
     "mosaic": "Mozaicul",
-    "mosaic_content": "Mozaicul afișează toate paginile benzii tale desenate ca miniaturi. Puteți:\n• Rearanja paginile prin glisare și plasare (renumerotarea paginilor va fi automată și se va face conform modului de renumerotare activ)\n• Selecta mai multe pagini (Ctrl+clic sau Shift+clic)\n• Ajusta dimensiunea miniaturilor cu cursorul\n• Redenumi manual fișierele făcând clic pe numele lor\n• Glisa și plasa fișiere de benzi desenate (CBZ/CBR/PDF) din Windows Explorer direct într-o altă bandă desenată deschisă pentru a le îmbina conținutul\n• Exportați toate miniaturile afișate într-un dosar la alegerea dvs. (comandă ascunsă, accesibilă doar prin comanda rapidă Ctrl+Alt+T)",
+    "mosaic_content": "Mozaicul afișează toate paginile benzii tale desenate ca miniaturi. Puteți:\n• Rearanja paginile prin glisare și plasare (renumerotarea paginilor va fi automată și se va face conform modului de renumerotare activ)\n• Selecta mai multe pagini (Ctrl+clic sau Shift+clic)\n• Ajusta dimensiunea miniaturilor cu cursorul\n• Redenumi manual fișierele făcând clic pe numele lor\n• Glisa și plasa fișiere de benzi desenate (CBZ/CBR/PDF) din Windows Explorer direct într-o altă bandă desenată deschisă pentru a le îmbina conținutul\n• Exportați toate miniaturile afișate într-un dosar la alegerea dvs. (comandă ascunsă, accesibilă doar prin comanda rapidă Ctrl+Alt+T)\n• Afișare minimapă: un panou lateral opțional în dreapta mozaicului care afișează o previzualizare în miniatură a tuturor paginilor, cu un dreptunghi care marchează zona vizibilă în prezent. Faceți clic sau trageți pentru a naviga direct la acel loc din bandă. Se poate activa din meniul Sistem sau prin clic dreapta pe mozaic.",
     "manipulation": "Manipularea paginilor",
     "manipulation_content": "• Trageți și plasați pagini pentru a le reorganiza\n• Trageți o bandă desenată întreagă în alta pentru a le îmbina\n• Clic dreapta pe o pagină pentru a accesa opțiunile (rotație, ștergere etc.)\n• Dublu clic pe o pagină pentru a deschide vizualizatorul\n• Exportați pagini individuale trăgându-le într-un folder Windows sau prin Ctrl+C / Ctrl+V",
     "renumber": "Renumerotarea paginilor",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Jurnal de modificări",
     "webpage": "Pagină web",
-    "zip_compression": "Compresie ZIP implicită"
+    "zip_compression": "Compresie ZIP implicită",
+    "show_duplicates": "Gestionează duplicatele"
   },
   "updates": {
     "dialog_title": "Actualizări",

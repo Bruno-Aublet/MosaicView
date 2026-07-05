@@ -3,6 +3,7 @@
 # -------------------------
 import os
 import io
+import hashlib
 from PIL import Image
 
 from modules.qt import state as _state_module
@@ -248,6 +249,15 @@ def create_entry(file, data, image_exts):
             entry["is_animated_gif"] = False
     else:
         entry["img"] = None
+
+    entry["_hash"] = (
+        hashlib.md5(data).hexdigest()
+        if is_image and not entry["is_corrupted"] and data
+        else None
+    )
+    entry["_is_duplicate"] = False
+    entry["_duplicate_group"] = None
+
     return entry
 
 

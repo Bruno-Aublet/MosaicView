@@ -174,11 +174,13 @@
       "fullscreen_exit": "Tam ekrandan çık (F11 veya ESC)",
       "quit": "Uygulamayı kapat",
       "delete_bookmark": "Bu çizgi roman için yer imini sil",
-      "delete_all_bookmarks": "Tüm yer imlerini sil"
+      "delete_all_bookmarks": "Tüm yer imlerini sil",
+      "hide_minimap": "» Küçük haritayı gizle",
+      "show_minimap": "« Küçük haritayı göster"
     },
     "canvas": {
       "quit": "Uygulamayı kapat",
-      "reset": "Uygulamayı sıfırla:\n• tam ekran → pencere modu\n• pencere boyutu ve konumu\n• karanlık mod → aydınlık\n• kenar çubuğu → görünür / varsayılan genişlik\n• simge ve küçük resim boyutu → normal\n• yazı tipi boyutu → varsayılan\n• dil → otomatik algılama\n• pencere bölünmesi → 50 / 50\n• yeniden numaralandırma → otomatik\n• ZIP sıkıştırma → yok",
+      "reset": "Uygulamayı sıfırla:\n• tam ekran → pencere modu\n• pencere boyutu ve konumu\n• karanlık mod → aydınlık\n• kenar çubuğu → görünür / varsayılan genişlik\n• küçük harita → gizli\n• simge ve küçük resim boyutu → normal\n• yazı tipi boyutu → varsayılan\n• dil → otomatik algılama\n• pencere bölünmesi → 50 / 50\n• yeniden numaralandırma → otomatik\n• ZIP sıkıştırma → yok",
       "reset_label": "Uygulamayı sıfırla"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Bağlantıyı kopyala",
       "open_location": "Konumu aç",
       "copy_path": "Yolu kopyala"
+    },
+    "duplicates": {
+      "window_title": "Yinelenenler",
+      "no_duplicates": "Yinelenen sayfa bulunamadı.",
+      "group_title": "Grup {num}: {count} özdeş sayfa",
+      "delete_selection": "Seçimi sil"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "ZIP sıkıştırma seviyesi {ext} dosyaları için geçerli değildir.\nVarsayılan seviyede ({level}) CBZ olarak kaydetmek için tıklayın.\nVarsayılan seviyeyi değiştirmek için sağ tıklayın.",
     "zip_indicator_ext_image": "görüntü",
     "zip_indicator_stored_noop": "Bu dosya sıkıştırılmamış.\nVarsayılan seviyeyi değiştirmek için sağ tıklayın.",
-    "zip_indicator_stored_action": "Bu dosya sıkıştırılmamış.\nVarsayılan seviyede ({level}) sıkıştırmak için tıklayın.\nVarsayılan seviyeyi değiştirmek için sağ tıklayın."
+    "zip_indicator_stored_action": "Bu dosya sıkıştırılmamış.\nVarsayılan seviyede ({level}) sıkıştırmak için tıklayın.\nVarsayılan seviyeyi değiştirmek için sağ tıklayın.",
+    "duplicate_image": "YİNELENEN SAYFA"
   },
   "help": {
     "title": "MosaicView - Kullanım Kılavuzu",
     "intro": "MosaicView, arşivlerden çıkartmadan çizgi romanları (dijital çizgi romanlar) düzenlemenize ve değiştirmenize olanak tanır. Uygulama CBZ (ZIP), CBR (RAR) ve PDF formatlarını destekler. Uygulama yalnızca 64 bit sistemlerle uyumludur.",
     "open_files": "Dosya açma",
-    "open_files_content": "• 'Bir dosya aç' düğmesine tıklayın veya bir dosyayı doğrudan pencereye sürükleyip bırakın\n• Desteklenen formatlar: CBZ, CBR, CB7, CBT, PDF, görüntüler (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB dosyalari da acilabilir, ancak yalnizca goruntuleri cikarilir (metin yok sayilir).\n• Şifreli PDF (açmak için parola gerekli): dosya içe aktarılamaz, bir hata mesajı görüntülenir.\n• Değişikliklere karşı korumalı PDF (owner password): sayfalar normal olarak içe aktarılır. MosaicView, aynı klasörde dosyanın kilit açılmış bir kopyasını kaydetmeyi teklif eder. Not: kırmızı renkte görüntülenen uzantılar (WEBP, TIFF, GIF, ICO…) eski CBZ/CBR okuyucularıyla uyumlu olmayabilecek biçimleri belirtir. Bu dosyalar MosaicView tarafından yine de normal şekilde işlenir.",
+    "open_files_content": "• 'Bir dosya aç' düğmesine tıklayın veya bir dosyayı doğrudan pencereye sürükleyip bırakın\n• Desteklenen formatlar: CBZ, CBR, CB7, CBT, PDF, görüntüler (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB dosyalari da acilabilir, ancak yalnizca goruntuleri cikarilir (metin yok sayilir).\n• Şifreli PDF (açmak için parola gerekli): dosya içe aktarılamaz, bir hata mesajı görüntülenir.\n• Değişikliklere karşı korumalı PDF (owner password): sayfalar normal olarak içe aktarılır. MosaicView, aynı klasörde dosyanın kilit açılmış bir kopyasını kaydetmeyi teklif eder. Not: kırmızı renkte görüntülenen uzantılar (WEBP, TIFF, GIF, ICO…) eski CBZ/CBR okuyucularıyla uyumlu olmayabilecek biçimleri belirtir. Bu dosyalar MosaicView tarafından yine de normal şekilde işlenir.\n• Yinelenen sayfa tespiti: bir arşiv açıldığında, tamamen aynı içeriğe sahip sayfalar (bir tarama veya birleştirme hatası) küçük resimlerinde turuncu bir rozetle otomatik olarak işaretlenir. \"Yinelenenleri yönet\" komutu (Düzenle menüsü, mozaik üzerinde veya bir küçük resim üzerinde sağ tıklama) her özdeş sayfa grubunu listeleyen bir pencere açar; fazla kopyaları silmek için her sayfa için bir onay kutusu bulunur.",
     "mosaic": "Mozaik",
-    "mosaic_content": "Mozaik, çizgi romanınızın tüm sayfalarını küçük resim olarak görüntüler. Şunları yapabilirsiniz:\n• Sürükle ve bırak ile sayfaları yeniden düzenleyin (sayfa numaralandırma otomatik olacak ve etkin yeniden numaralandırma moduna göre yapılacaktır)\n• Birden fazla sayfa seçin (Ctrl+tıklama veya Shift+tıklama)\n• Kaydırıcı ile küçük resim boyutunu ayarlayın\n• Dosyaları adlarına tıklayarak manuel olarak yeniden adlandırın\n• Windows Gezgini'nden çizgi roman dosyalarını (CBZ/CBR/PDF) içeriklerini birleştirmek için doğrudan başka bir açık çizgi romana sürükleyip bırakın\n• Görüntülenen tüm küçük resimleri seçtiğiniz bir klasöre aktarın (gizli komut, yalnızca Ctrl+Alt+T kısayoluyla erişilebilir)",
+    "mosaic_content": "Mozaik, çizgi romanınızın tüm sayfalarını küçük resim olarak görüntüler. Şunları yapabilirsiniz:\n• Sürükle ve bırak ile sayfaları yeniden düzenleyin (sayfa numaralandırma otomatik olacak ve etkin yeniden numaralandırma moduna göre yapılacaktır)\n• Birden fazla sayfa seçin (Ctrl+tıklama veya Shift+tıklama)\n• Kaydırıcı ile küçük resim boyutunu ayarlayın\n• Dosyaları adlarına tıklayarak manuel olarak yeniden adlandırın\n• Windows Gezgini'nden çizgi roman dosyalarını (CBZ/CBR/PDF) içeriklerini birleştirmek için doğrudan başka bir açık çizgi romana sürükleyip bırakın\n• Görüntülenen tüm küçük resimleri seçtiğiniz bir klasöre aktarın (gizli komut, yalnızca Ctrl+Alt+T kısayoluyla erişilebilir)\n• Küçük haritayı göster: mozaiğin sağında, tüm sayfaların küçük bir önizlemesini ve şu anda görünen alanı gösteren bir dikdörtgeni içeren isteğe bağlı bir yan panel. Çizgi romanın o noktasına doğrudan gitmek için tıklayın veya sürükleyin. Sistem menüsünden veya mozaik üzerinde sağ tıklayarak açılıp kapatılabilir.",
     "manipulation": "Sayfa düzenleme",
     "manipulation_content": "• Sayfaları yeniden düzenlemek için sürükleyip bırakın\n• İki çizgi romanı birleştirmek için birini diğerine sürükleyin\n• Seçeneklere erişmek için sayfaya sağ tıklayın (döndürme, silme vb.)\n• Görüntüleyiciyi açmak için sayfaya çift tıklayın\n• Tek tek sayfaları bir Windows klasörüne sürükleyerek veya Ctrl+C / Ctrl+V ile dışa aktarın",
     "renumber": "Sayfa yeniden numaralandırma",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Değişiklik Günlüğü",
     "webpage": "Web sayfası",
-    "zip_compression": "Varsayılan ZIP sıkıştırma"
+    "zip_compression": "Varsayılan ZIP sıkıştırma",
+    "show_duplicates": "Yinelenenleri yönet"
   },
   "updates": {
     "dialog_title": "Güncellemeler",

@@ -44,6 +44,10 @@ def restore_session(win):
             # _sidebar_visible démarre à True → _toggle_sidebar le passe à False
             win._toggle_sidebar()
 
+        # Minimap affichée (cachée par défaut → _minimap_visible démarre à False)
+        if cfg.get_minimap_visible():
+            win._panel._toggle_minimap()
+
         # Largeur de la colonne d'icônes
         saved_w = cfg.get_buttons_column_width()
         panel = win._panel
@@ -119,6 +123,11 @@ def reset_to_defaults(win):
     for p in win._all_panels():
         if p._sidebar_visible:
             p._toggle_sidebar()
+
+    # Cacher la minimap si elle est visible — tous les panneaux
+    for p in win._all_panels():
+        if p._minimap_visible:
+            p._toggle_minimap()
 
     # Taille des icônes et vignettes — tous les panneaux
     panels = [win._panel]

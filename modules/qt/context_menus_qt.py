@@ -55,6 +55,11 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
                      else _("context_menu.canvas_with_file.show_sidebar"))
     menu.addAction(sidebar_label, callbacks['toggle_toolbar'])
 
+    minimap_visible = callbacks.get('get_minimap_visible', lambda: False)()
+    minimap_label = (_("context_menu.canvas_with_file.hide_minimap") if minimap_visible
+                      else _("context_menu.canvas_with_file.show_minimap"))
+    menu.addAction(minimap_label, callbacks['toggle_minimap'])
+
     menu.addSeparator()
 
     # ── Section FICHIER ───────────────────────────────────────────────────────
@@ -232,6 +237,12 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
         act = _add_disabled(menu, _("menu.refresh_mosaic"))
         act.setShortcut("F5")
         act.setShortcutVisibleInContextMenu(True)
+
+    from modules.qt.duplicate_detection_qt import has_any_duplicate
+    if has_images and has_any_duplicate(state):
+        menu.addAction(_("menu.show_duplicates"), callbacks['show_duplicates_window'])
+    else:
+        _add_disabled(menu, _("menu.show_duplicates"))
 
     menu.addSeparator()
 
@@ -442,6 +453,14 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
         menu.addAction(_("context_menu.image.create_ico"), callbacks['create_ico_from_selected'])
     else:
         _add_disabled(menu, _("context_menu.image.create_ico"))
+
+    menu.addSeparator()
+
+    from modules.qt.duplicate_detection_qt import has_any_duplicate
+    if has_any_duplicate(state):
+        menu.addAction(_("menu.show_duplicates"), callbacks['show_duplicates_window'])
+    else:
+        _add_disabled(menu, _("menu.show_duplicates"))
 
     menu.addSeparator()
 

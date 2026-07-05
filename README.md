@@ -84,6 +84,7 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 ## Features
 
 - **Mosaic view** — browse all pages of an archive at a glance, as thumbnails
+- **Minimap** — an optional side panel showing a miniature overview of the whole mosaic, with a rectangle marking the currently visible area. Drag the rectangle or click anywhere on the minimap to jump straight to that spot; the mosaic and the minimap scroll together in both directions. Hidden by default, toggle it from the menu bar or the right-click context menu.
 - **Reorder pages** — drag and drop pages into the right order directly in the mosaic
 - **Rename pages** — edit filenames inline, without extracting anything
 - **Delete pages** — remove unwanted pages in one click
@@ -108,6 +109,7 @@ The icon panel on the left is entirely optional. It can be hidden if you prefer 
 - **Flatten subdirectories** — some archives store pages in a subfolder structure; this flattens everything to the root level in one click, with automatic conflict resolution if two files share the same name
 - **Undo / Redo** — every operation is reversible
 - **Corrupted page detection** — unreadable or damaged pages are flagged visually in the mosaic
+- **Duplicate page detection** — pages with strictly identical content (a common side effect of scanning or merging errors) are flagged with a badge in the mosaic. "Manage duplicates" (menu bar, right-click on the mosaic, or right-click on a thumbnail) opens a window listing every group of identical pages with a thumbnail and a checkbox per page, letting you review and delete the extras in one go.
 - **Fullscreen mode** — toggle fullscreen at any time from the toolbar or with F11
 - **ComicInfo.xml editor** — create or edit the ComicInfo.xml metadata file embedded in an archive directly from MosaicView. See the Metadata section below.
 - **Automatic update check** — on startup, MosaicView silently checks GitHub Releases in the background; if a newer version is available, a banner appears in the window and the menu is updated. No notification if already up to date or if there is no network. A manual check is also available from the menu.

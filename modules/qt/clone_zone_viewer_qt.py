@@ -991,6 +991,7 @@ class CloneZoneViewerDialog(QDialog):
         self._entry['large_thumb_pil'] = None
         self._entry['qt_pixmap_large'] = None
         self._entry['qt_qimage_large'] = None
+        self._entry['_hash'] = None
 
         pidx = get_page_image_index(state, self._entry)
         if pidx is not None:
@@ -1022,6 +1023,7 @@ class CloneZoneViewerDialog(QDialog):
             self._entry['large_thumb_pil'] = None
             self._entry['qt_pixmap_large'] = None
             self._entry['qt_qimage_large'] = None
+            self._entry['_hash'] = None
 
             from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
             pidx = get_page_image_index(state, self._entry)
@@ -1072,6 +1074,7 @@ class CloneZoneViewerDialog(QDialog):
             self._entry['large_thumb_pil'] = None
             self._entry['qt_pixmap_large'] = None
             self._entry['qt_qimage_large'] = None
+            self._entry['_hash'] = None
 
             from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
             pidx = get_page_image_index(state, self._entry)

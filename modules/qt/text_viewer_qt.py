@@ -1252,6 +1252,7 @@ class TextViewerDialog(QDialog):
         entry['large_thumb_pil']  = None
         entry['qt_pixmap_large']  = None
         entry['qt_qimage_large']  = None
+        entry['_hash']            = None
 
         pidx = get_page_image_index(state, entry)
         if pidx is not None:
@@ -1296,6 +1297,7 @@ class TextViewerDialog(QDialog):
             entry['large_thumb_pil'] = None
             entry['qt_pixmap_large'] = None
             entry['qt_qimage_large'] = None
+            entry['_hash']           = None
 
             from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
             pidx = get_page_image_index(state, entry)
@@ -1354,6 +1356,7 @@ class TextViewerDialog(QDialog):
             entry['large_thumb_pil'] = None
             entry['qt_pixmap_large'] = None
             entry['qt_qimage_large'] = None
+            entry['_hash']           = None
 
             from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
             pidx = get_page_image_index(state, entry)

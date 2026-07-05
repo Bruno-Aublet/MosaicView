@@ -48,7 +48,7 @@
     "yes": "Aen",
     "no": "Ú",
     "renumber_recommended": "Alpharen sui estar (mellon)",
-    "ignore_and_save": "Númen na estar na gwaith",
+    "ignore_and_save": "Númen na estar",
     "open_without_rename": "Paned nu esselient",
     "adjustments": "Galad,\ngwahan etc.",
     "batch_cbr_to_cbz": "Govad-dregiad\n CBR teith na CBZ",
@@ -174,11 +174,13 @@
       "fullscreen_exit": "Edro o bân-sgrîn (F11 or ESC)",
       "quit": "haryalë falasse",
       "delete_bookmark": "Tolo i·bethleg e·parf hen",
-      "delete_all_bookmarks": "Tolo pân i·bethlegin"
+      "delete_all_bookmarks": "Tolo pân i·bethlegin",
+      "hide_minimap": "» Doltho'r fánfap",
+      "show_minimap": "« Panno'r fánfap"
     },
     "canvas": {
       "quit": "haryalë falasse",
-      "reset": "Adreithio'r rhaglen:\n• sgrin lawn → ffenestr\n• maint a safle'r ffenestr\n• modd tywyll → golau\n• bar ochr → gweladwy / lled rhagosodedig\n• maint eiconau a lluniau bach → arferol\n• maint ffont → rhagosodiad\n• iaith → canfod awtomatig\n• hollti'r ffenestr → 50 / 50\n• ailrifo → awtomatig\n• cywasgu ZIP → dim",
+      "reset": "Adferio i·chair:\n• pân-sgrîn → fennas\n• meir a thaled i fennas\n• bâd doll → calan\n• vuidain → gweladwy / lled dadwar\n• fánfap → dolen\n• meir eiconau a nirn-randirain → dadwar\n• meir têw → dadwar\n• lam → cannad auto\n• pennad i fennas → 50 / 50\n• ednodiad → auto\n• cened ZIP → law",
       "reset_label": "Adlanna i govannas"
     },
     "font_size": {
@@ -270,13 +272,13 @@
       },
       "cannot_open_file": {
         "title": "Ú-eston edro i bâr",
-        "message": "Unable to load the file."
+        "message": "Ú-eston edro i bâr."
       },
       "corrupted_images": {
         "title": "Rendir orthel",
-        "summary": "{count} corrupted image(s) detected out of {total}.",
-        "hint": "They are displayed with a special icon.\nRight-click a corrupted image to replace or delete it.",
-        "more": "... and {count} more"
+        "summary": "{count} randir orthel hirnen mi {total}.",
+        "hint": "Cenir as cant needig.\nNedhoro i formen ar randir orthel i·dhi ohedo egor deleb.",
+        "more": "... ah {count} eraid"
       },
       "no_image_print": {
         "title": "Ú-randir",
@@ -629,7 +631,7 @@
       },
       "delete_source_files": {
         "title": "Deleb i beirain edhellen?",
-        "message": "Reviad na deleb i rendir nedin annedil?\n\nAen = Deleb i beirain edhellen\nÚ = Gwara i beirain edhellen\nHaedh = Haedh i orthor"
+        "message": "Reviad na deleb i rendir nedin annedil?\n\nAen = Deleb i beirain edhellen\nÚ = Garo i beirain edhellen\nHaedh = Haedh i orthor"
       },
       "invalid_filenames": {
         "title": "Anuin o veirain ú-orchal",
@@ -672,7 +674,7 @@
     },
     "extension_mismatch_generic": {
       "message": "Cened 'lass dithen vorn: i pheth '{filename}' {real} bâd, {declared} ú-bâd. Enethol?",
-      "title": "Incorrect extension"
+      "title": "'Lass dithen vorn"
     }
   },
   "labels": {
@@ -697,14 +699,14 @@
     "pdf_converting_no_change": "{total} echuir estol boda ú...",
     "print_progress": "Estare tequo...\n{percent}%",
     "print_preparing": "Árie mantuvo, estare tequo...",
-    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nTeitho i GNU Gwedheid Rhydd v3\n\nRHYDDID A RODDIR\nGallwch ddefnyddio, copïo, newid a dosbarthu\nMosaicView, hyd yn oed at ddibenion masnachol.\n\nRHWYMEDIGAETHAU\nRhaid i bob dosbarthiad (gwreiddiol neu newidiedig) :\n– gadw gwedheid GPL v3\n– cynnwys y cod ffynhonnell neu nodi ble i'w gael\n– peidio â gosod cyfyngiadau ychwanegol\n\nGWARANTAU\nDosberthir y meddalwedd hwn HEB UNRHYW WARANT.\nNi ellir dal ei awdur yn gyfrifol am ddifrod sy'n deillio o'i ddefnydd.\n\nDylech fod wedi derbyn copi o'r GNU Gwedheid Rhydd gyda'r rhaglen hon. Os na, gweler <https://www.gnu.org/licenses/>.",
+    "license_text": "Copyright © 2025-2026 Bruno Aublet\n\nCrist i·Ravath Genediad GNU v3\n\nTALT ANNEN\nCael le naeth, tego, athreidio a rannad\nMosaicView, na tûr o vaeth erui.\n\nGLIN\nPân rannad (edhellen egor athreidiannen) an:\n– cado i ravath GPL v3\n– anno i chelin edhellen, egor tíra man i naeth\n– ú-anna glin eraid\n\nAVARTH\nI chîr hen rennir ÚVAIN AVARTH.\nI·bhereth dîn ú-gerithar tôl an raul\ngenir o'i naeth.\n\nLe annon i·dhilifel copi o'r Ravath Genediad GNU as i chîr hen. Ce ú, cenno <https://www.gnu.org/licenses/>.",
     "view_full_license": "Thiro i covad ennorath",
-    "license_unrar_text": "I phith CBZ erin ennas ZIP, ennas bain a galadh. I phith CBR, bo dann, erin ennas RAR, ennas herdir.\n\nMosaicView gell egored phith CBR trwy UnRAR, offeryn gwnaed gan RARlab a ellir ei rannu.\n\nGwefan swyddogol: <https://www.rarlab.com/rar_add.htm>",
+    "license_unrar_text": "I phith CBZ erin ennas ZIP, ennas bain a galadh. I phith CBR, bo dann, erin ennas RAR, ennas herdir.\n\nMosaicView gell egored phith CBR nu UnRAR, celvar carannen nu RARlab a ellir ei rannu.\n\nAmrun ledhben: <https://www.rarlab.com/rar_add.htm>",
     "view_full_unrar_license": "Gweler Taflen UnRAR",
     "saving_cbz": "Gostana... {percent}%",
     "empty_canvas_line1": "Tiro nin er min CBZ/CBR/CB7/CBT/PDF parf ed i nedh nyn",
     "empty_canvas_line2": "Pan parf panthir, gerin dago panna edhil",
-    "empty_canvas_line3": "Gollyngwch un rest neu fwy i gychwyn gwaith dosrannu",
+    "empty_canvas_line3": "Trasto and-gorvâr erui egor law i egledhia govaded",
     "icon_toolbar_config_title": "Tengwa tirno palantíreva",
     "icon_toolbar_active": "Tengwar mi palantír",
     "icon_toolbar_hidden": "Tithin i 'wanath",
@@ -717,7 +719,7 @@
     "license_7zip_full": "7-Zip Tolgnas",
     "icon_toolbar_show_thumb_slider": "Danno i glamhoth in dath i tithenin",
     "icon_toolbar_show_lang_combo": "Danno i glamhoth in lambë",
-    "adjusting": "Dîol aros, gwneud addasiadau...\n{current} / {total}",
+    "adjusting": "Dîol aros, aðagobith cemmen...\n{current} / {total}",
     "license_piqad_full": "Teitho pIqaD qolqoS faenor",
     "license_tengwar_full": "Alcarin Tengwar tîw feredir",
     "view_full_piqad_license": "Cen i faenor pIqaD qolqoS",
@@ -803,7 +805,7 @@
       "no_pdf_title": "Ú-PDF parth",
       "no_pdf_message": "Ú-PDF parth hirnen ned i bath:\n{directory}",
       "confirm_title": "Prestannad rim PDF na CBZ",
-      "confirm_message": "{count} PDF parth prestannol ned {directory} (nu-beth gennen).",
+      "confirm_message": "{count} PDF parth prestannol ned {directory} (and-gorvaraid gennen).",
       "checkbox_permanent_delete": "Drego i PDF parth ialla ú-avo i\nsogath (Ú-BELIN ADBRESTANNAD)",
       "start_button": "Echuio",
       "converting_title": "Prestannad ned le...",
@@ -820,7 +822,7 @@
       "no_cbr_message": "Lau CBR teith hirner vi i thamas:\\n{directory}",
       "confirm_title": "Govad-dregiad CBR na CBZ",
       "confirm_message": "{count} CBR teith dregiannen vi {directory} (i-hammad din nâd).",
-      "checkbox_permanent_delete": "Dago i CBR teith gwaith ulo\ni 'ammad delu (ULO EDREGIAD ANAND)",
+      "checkbox_permanent_delete": "Dago i CBR teith ennas ulo\ni 'ammad delu (ULO EDREGIAD ANAND)",
       "start_button": "Yesta",
       "converting_title": "Dregiannen...",
       "converting_progress": "Dregiad teith {current} / {total}",
@@ -915,7 +917,7 @@
     },
     "duplicate_filenames": {
       "title": "⚠️ Estel nestadren i hain",
-      "message": "Estel i nestadren hain gwennin. Númen na estar aen alpharen\nna gwaith, i alpharen na estar aen alpharen carad sui\nmellon (alpharen sui núm, sui estar na).\n\nNa estar aen alpharen sui estar na gwaith."
+      "message": "Estel i nestadren hain gwennin. Númen na estar aen alpharen\nna eneth, i alpharen na estar aen alpharen carad sui\nmellon (alpharen sui nûm, sui estar na).\n\nNa estar aen alpharen sui estar na eneth."
     },
     "adjustments": {
       "window_title": "Cuil aðagobith",
@@ -949,7 +951,7 @@
       "black_point_label": "Peg morn: {value}",
       "gamma_label": "Sund (menel): {value}",
       "white_point_label": "Peg nimp: {value}",
-      "auto_levels_button": "Automatic adjustment",
+      "auto_levels_button": "Cemmed auto",
       "open_viewer_button": "Tangado chen i thirio (orchal)",
       "compression_info": "I press peda i YÚYO a WEBE baradrim ben",
       "open_viewer_button_simple": "Orthad in trenarn",
@@ -982,14 +984,14 @@
       "transparency_redo": "Adbronad",
       "transparency_type_flood_tooltip": "Flood fill : gweledigrwydd i canthan liw unig a amgylcha i pixsel a bronwyd",
       "transparency_type_global_tooltip": "Gweledigrwydd govad : a bell ar holl bixeli i lun a liw agos ir pixsel a bronwyd",
-      "transparency_apply": "Cymhwyso",
+      "transparency_apply": "Cemmed",
       "transparency_skipped_warning": "{count} lith(lin) ortheri — i-format ui veleth vâr. An boe chebin, esta deri nan PNG.",
       "unsharp_section": "Telpina adannen",
       "unsharp_radius_label": "Raew: {value}",
       "unsharp_percent_label": "Balan: {value} %",
       "unsharp_threshold_label": "Tiria: {value}",
       "unsharp_viewer_title": "Telpina adannen",
-      "auto_levels_tooltip": "Prestannen cada lîw ar govorer yn otomatig lefelau du a gwyn i fwyafu cyferbyniad.\nI ddewis tudalen wrth dudalen, defnyddiwch y gwyliedydd.",
+      "auto_levels_tooltip": "Cenir pob peth ah athrenna i lend morn a gwen an tregad i thregad veleg.\nMi eglerio peth ha peth, na i lû istol.",
       "transparency_unsaved_title": "Cenedhin erui",
       "transparency_unsaved_message": "Pedich henion ú-ortherthant i gûl. Manen nidh careg?",
       "transparency_unsaved_discard": "Tolo u-ortherthas",
@@ -1041,7 +1043,7 @@
       "start_button": "Tolo",
       "converting_title": "Govad umbar...",
       "converting_progress": "Govad {current} tengwë {total}-lo",
-      "complete_title": "Govad agor",
+      "complete_title": "Govad gwannen",
       "complete_message": "{count} galadremmin govadier i mbaresse :",
       "complete_message_errors": "{count} {total}-lo galadremmin govadier i mbaresse :",
       "errors_count": "{count} raeg(rim) hirner.",
@@ -1054,12 +1056,12 @@
       "mode_all_in_one_sub": "(Pân lith i dir govadear i nîn CBZ)"
     },
     "batch_drop": {
-      "window_title": "Gwaith dosrannu ar restri",
-      "intro_single": "1 rest a adawyd. Pa waith a fynnwch ei gymhwyso?",
-      "intro_multiple": "{count} o restrau a adawyd. Pa waith a fynnwch ei gymhwyso?",
-      "recursive_note": "Bydd is-restrau hefyd yn cael eu sganio.",
-      "mixed_drop_title": "Ni chynhelir y gollwng hwn",
-      "mixed_drop_message": "Gollyngoch ffeiliau a restrau ar yr un pryd. Gollyngwch ffeiliau yn unig neu restrau yn unig."
+      "window_title": "Govaded and-gorvaraid",
+      "intro_single": "1 and-gorvâr trastannen. Man waith aníralch cemmed?",
+      "intro_multiple": "{count} and-gorvaraid trastannen. Man waith aníralch cemmed?",
+      "recursive_note": "I and-gorvaraid vain athan cenir.",
+      "mixed_drop_title": "Trastad ú-berian",
+      "mixed_drop_message": "Trastannech beirain ah and-gorvaraid ned i lû erui. Trasto beirain erui egor and-gorvaraid erui."
     },
     "pdf_unlock": {
       "title": "PDF nauthol na thírad",
@@ -1096,7 +1098,7 @@
       "message": "I parf sí heb aen ned in vi tirith. I govan prestannen an sí tirith nain i mosaic.\nAn díheno i govan, echado hain o i mosaic (Del) egor critha (Ctrl+X) an lepho ammen."
     },
     "open_file": {
-      "title": "Open an archive",
+      "title": "Edro pheth",
       "filter_archives": "Phethi (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
       "filter_all": "All files (*)"
     },
@@ -1128,7 +1130,7 @@
       "color_label": "Calen:",
       "bold_btn": "T",
       "italic_btn": "I",
-      "underline_btn": "U",
+      "underline_btn": "N",
       "apply_btn": "Bâd parth",
       "pick_color_title": "Egor calen i parth"
     },
@@ -1211,6 +1213,12 @@
       "copy": "Cemmo i vegil",
       "open_location": "Egor i nad",
       "copy_path": "Cemmo i vein"
+    },
+    "duplicates": {
+      "window_title": "Athrenilath",
+      "no_duplicates": "Ú-hannen athrenilath.",
+      "group_title": "Raid {num}: {count} pagath sui ben",
+      "delete_selection": "Aut i thûl"
     }
   },
   "tooltip": {
@@ -1236,10 +1244,10 @@
     "font_decrease_button": "Nestegi i têw i lam",
     "font_increase_button": "Thori i têw i lam",
     "color_depth": "Cuil: {bits} bits ({mode})",
-    "batch_pdf_to_cbz": "Prestanna na CBZ phin PDF ned i said ah\ni iau-said din. I lim tirith ar gwaith\nsui cerir, u-prestannen athan.",
-    "batch_pdf_permanent_delete": "TIRO: qui i gwest si togol ná nestannen,\ni parth PDF edain erthennir\nve-uir sui i ahyanieth, ú-gwestol\nen-edlennol. Tiro han i sí harnannen\nle cópia arwa qui maer.",
+    "batch_pdf_to_cbz": "Prestanna na CBZ phin PDF ned i said ah\ni iau-said din. I lim tirith ar cened\nsui cerir, u-prestannen athan.",
+    "batch_pdf_permanent_delete": "TIRO: qui i daw si togol ná nestannen,\ni parth PDF edain erthennir\nve-uir sui i ahyanieth, ulo estel\nedregiad. Tiro han i sí harnannen\nle cópia arwa qui maer.",
     "batch_cbr_to_cbz": "Drega na CBZ i-neder CBR teith\nvi i-thamas a i-hammad din.",
-    "batch_cbr_permanent_delete": "TIRO: qui i daw si togol,\ni CBR teith gwaith nauvar\nein-vannad ned i dregiad, ulo estel\nedregiad. No tiriel i hár\nnolwe-teith qui maer.",
+    "batch_cbr_permanent_delete": "TIRO: qui i daw si togol,\ni CBR teith ennas nauvar\nein-vannad ned i dregiad, ulo estel\nedregiad. No tiriel i hâr\nnolwe-teith qui maer.",
     "renumber_btn_1": "Gweth auto-hired linnas periannath\nDago daerageb nan gweth dangwethad",
     "renumber_btn_2": "Gweth said nodia\nDago daerageb nan gweth dangwethad",
     "corrupted_header": "Gwaen cant",
@@ -1271,17 +1279,18 @@
     "zip_indicator_na": "I modh venna ZIP ú venna na bess {ext}.\nRîn a thregad venna vi CBZ na i modh hen pen ({level}).\nRîn a chuiniath i modh hen pen.",
     "zip_indicator_ext_image": "amrûn",
     "zip_indicator_stored_noop": "I bess hen ú cened.\nRîn a chuiniath i modh hen pen.",
-    "zip_indicator_stored_action": "I bess hen ú cened.\nRîn a gened venna na i modh hen pen ({level}).\nRîn a chuiniath i modh hen pen."
+    "zip_indicator_stored_action": "I bess hen ú cened.\nRîn a gened venna na i modh hen pen ({level}).\nRîn a chuiniath i modh hen pen.",
+    "duplicate_image": "PAGE ATHRENIL"
   },
   "help": {
     "title": "MosaicView - Bâd thuriol",
     "intro": "MosaicView ertha achen na orthad a gohedo gonedir (gondirin golwen) ú-bui na esgeli hain o theirair. I harfuil orthal i thîr CBZ (ZIP), CBR (RAR) a PDF. I thangail nâ celeg na i chin 64 bit er-orath.",
     "open_files": "Edro beirain",
-    "open_files_content": "• Tolo i daur 'Eglo pheth' egor trasto pheth bar i fennas\n• Thîr orthol: CBZ, CBR, CB7, CBT, PDF, rendir (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB fajli a chui onodded hefyd, ond dim ond eu delweddau a gaiff eu hechdynnu (anwybyddir y testun).\n• PDF naitaina (auth gwend nauthol i agor): ú-'wann i prenn, raeg quetina.\n• PDF nauthol na thírad (owner password): i lef lanthannen thent. MosaicView prestanta i PDF prenn dúlennol i dôl ben. Nod: i pent erui cuinar coll (WEBP, TIFF, GIF, ICO…) prestannen i formath ned-govannen or CBZ/CBR vorn. Nan i phain sain berian e-MosaicView.",
+    "open_files_content": "• Tolo i daur 'Eglo pheth' egor trasto pheth bar i fennas needig\n• Thîr orthol: CBZ, CBR, CB7, CBT, PDF, rendir (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). EPUB fajli a chui onodded ah, ond i randirain dîn a gaiff eu hechdynnu (i thith ú-chenir).\n• PDF naitaina (auth gwend nauthol i agor): ú-'wann i prenn, raeg quetina.\n• PDF nauthol na thírad (owner password): i lef lanthannen thent. MosaicView prestanta i PDF prenn dúlennol i dôl ben. Nod: i pent erui cuinar coll (WEBP, TIFF, GIF, ICO…) prestannen i formath ned-govannen or CBZ/CBR vorn. Nan i phain sain berian e-MosaicView.\nHirn i randirain athrenil: pan aphenner cast, i randirain naeth sui ben (raxë síwedel egor annediad) a-genir arnhên le sam oren ned i randir vethig. I archen \"Dartha i athrenilath\" (bâd Aduial, nedhoro i formen ar i vosaic, egor ar randir vethig) a-aphenner fennas le pob raid o randirain sui ben, as i·dhilifio i choll pob randir.",
     "mosaic": "I mosaig",
-    "mosaic_content": "I mosaig gweda hain parth o aen bereth vi thiliol. Ci chem:\n• Athra i parth trî thelia a degir (partha-rem ben automagol, a aphada i cuia enedh-rem maenas)\n• Ethro mî parth (Ctrl+pitha or Shift+pitha)\n• Adloda thilia-sad am i calbar\n• Ailoda eneth i feil trî pitha ha eneth\n• Thelia a degir bereth-feil (CBZ/CBR/PDF) hen Windows Explorer thennas o aen bereth egor ned hadra ha gost\n• Govado i phennath thithen uireb a i-lû thiad vîr gîn (tolen thurin, echanted Ctrl+Alt+T)",
+    "mosaic_content": "I mosaig gweda hain parth o aen bereth vi thiliol. Ci chem:\n• Athra i parth trî thelia a degir (partha-rem ben automagol, a aphada i cuia enedh-rem maenas)\n• Ethro mî parth (Ctrl+pitha or Shift+pitha)\n• Adloda thilia-sad am i calbar\n• Ailoda eneth i feil trî pitha ha eneth\n• Thelia a degir bereth-feil (CBZ/CBR/PDF) hen Windows Explorer thennas o aen bereth egor ned hadra ha gost\n• Govado i phennath thithen uireb a i-lû thiad vîr gîn (tolen thurin, echanted Ctrl+Alt+T)\n• Ethro fánfap: parth uireb ned dôf i mosaig, thí hain aen bereth vi thiliol vinui, a i cudherven aen dôl gwannen sí. Pitha egor thelia am dôl i bereth-sad. Aravitima Cadwedd mír egor pitha dain i mosaig.",
     "manipulation": "Orthad telleir",
-    "manipulation_content": "• Llusgwch a gollyngwch dudalennau i'w haildrefnu\n• Llusgwch gyfanwaith i mewn i un arall i'w cyfuno\n• Cliciwch yn dde ar dudalen i gael mynediad at opsiynau (cylchdroi, dileu, ayyb)\n• Cliciwch ddwywaith ar dudalen i agor y gwyliedydd\n• Allforiwch dudalennau unigol drwy eu llusgo i ffolder Windows, neu drwy Ctrl+C / Ctrl+V",
+    "manipulation_content": "• Tolo egor trasto i randirain i·dhi ednodio\n• Tolo archiv veleg vi archiv eraid i·dhi annediad\n• Nedhoro i formen ar randir na naeth i·athol (misto, deleb, hb.)\n• Ganad formen ar randir i egor i lû istol\n• Esgalo randirain erui, drego dhin bar and-gorvâr Windows, egor as Ctrl+C / Ctrl+V",
     "renumber": "Edinor nothed o peith",
     "renumber_content": "Aníra MosaicView neled modh athnimherad i bess, gennen vi i athol athnimherad, i lû istol (rîn i lîw a chuin), i tâl e barad-archen, egor athrannen na rîn a thregad:\n\n• Modh angerthad o bess maded (modh hen pen): i celebren cened i thand o bess pân a chened bess tadui, neled, a venid. Bessui meded athnimheren (vel. bess tadui anim 003-004, neled 005-006-007). Athan canad bess, min a methed nadath cened (vel. 010---025).\n\n• Modh nimherad sain: pân bess cael min nadath ungerthad (001, 002, 003...), pen i thand.\n\n• Modh diestannen: athnimherad athrannen diestannen. I eneth bess hen i athol gennir, athan vi i thregad.\n\nNa chuiniath modh, rîn i lîw telwain a thregad athol nó rîn i tâl e barad-archen. I lû istol tira i modh enni vi i thand. I modh cílina venna yando na athrannen athnimherad vi i thregad, ar nattir enyalda.",
     "flatten": "Pelthaedi i gorvaraid",
@@ -1312,7 +1321,7 @@
     "config_temp_cleared": "Beirain rast mistranna.",
     "config_config_cleared": "Bâr teHmeH mistranna.\nRecriar caita i harfuil chu' penia.",
     "language": "Egleriad i lamm",
-    "language_content": "MosaicView erib mi lemmir erui.\nSui bâd, i harfuil hannatha thennas i lamm o lhaw i lhaw a panna mi lamm hen pe orthol. Pe i lhaw breithar lamm ú-orthol, i harfuil pannatha mi Annui.\nNenich gohedo lhaw i lamm sui lû nu breitho i menegol dannen sui bed o thírd o vuidain, nu bed i rhegol o veir nirn-randirain. I egleriad gwerent a heren na dreviad minui i harfuil.\nLEMMIR ERIB: Annui, Arad, Arabad, Armeleg, Belgiaid, Bolgareg, Chinan (rimmen), Chinan (thannol), Coread, Croateg, Daneg, Eileg, Estoneg, Fenneg, Galleg, Giriegol, Gwindig, Hindi, Hungareg, Indonesiad, Islandeg, Italiad, Iapaneg, Lettoneg, Lituaneg, Maleg, Malteg, Nederlandeg, Norvegeg, Poloneg, Portegol, Romeg, Slovaceg, Sloveneg, Suideg, Tamil, Tchegol, Thai, Tyrceg, Ucraniad, Vietnamiad.\nLEMMIR ANNEDOL ERIB: klingon (rimm ghItlh latin a ghItlh pIqaD), sindarin (rimm ghItlh latin a ghItlh tengwar), quenya (rimm ghItlh latin a ghItlh tengwar).\n\nSi revthin an úgartha tinconi Windows, ach pIqaD (lamm Klingon) ar tengwar (lemmir Edhellen: Sindarin ar Quenya) tinconi. Tinconi hen nar úgartha chutmey ar tulir o arnedir hen:\n- pIqaD an (parf Klingon lamm): {url_piqad}\n- tengwar an (parf Edhel, Sindarin ar Quenya an): {url_tengwar}\nPe arnedir hen ú-gwerir tanna, cenich tirtha tinconi pIqaD ar tengwar nu ganad i vuidain sui ned:\n\nHen celwir caren mi Galleg. I edregolaith na lemmir edhel gwerin nu chorn IA, a ú-orthweg nu Claude. Nerthanen sui ebed na orthad hael o lemmir. Min ú-glinnol, ú-orthannen ach IA na breitho, achir garo a galu pae cant edregolir ú mi rimmas berthanna. Nu rimm thennas i edregolaith, eneth meria vin aegair. Anno daer, awarth nin.",
+    "language_content": "MosaicView erib mi lemmir erui.\nSui bâd, i harfuil hannatha thennas i lamm o lhaw i lhaw a panna mi lamm hen pe orthol. Pe i lhaw breithar lamm ú-orthol, i harfuil pannatha mi Annui.\nNenich gohedo lhaw i lamm sui lû nu breitho i menegol dannen sui bed o thírd o vuidain, nu bed i rhegol o veir nirn-randirain. I egleriad gwerent a heren na dreviad minui i harfuil.\nLEMMIR ERIB: Annui, Arad, Arabad, Armeleg, Belgiaid, Bolgareg, Chinan (rimmen), Chinan (thannol), Coread, Croateg, Daneg, Eileg, Estoneg, Fenneg, Galleg, Giriegol, Gwindig, Hindi, Hungareg, Indonesiad, Islandeg, Italiad, Iapaneg, Lettoneg, Lituaneg, Maleg, Malteg, Nederlandeg, Norvegeg, Poloneg, Portegol, Romeg, Slovaceg, Sloveneg, Suideg, Tamil, Tchegol, Thai, Tyrceg, Ucraniad, Vietnamiad.\nLEMMIR ANNEDOL ERIB: klingon (rimm ghItlh latin a ghItlh pIqaD), sindarin (rimm ghItlh latin a ghItlh tengwar), quenya (rimm ghItlh latin a ghItlh tengwar).\n\nSi revthin an úgartha tinconi Windows, ach pIqaD (lamm Klingon) ar tengwar (lemmir Edhellen: Sindarin ar Quenya) tinconi. Tinconi hen nar úgartha chutmey ar tulir o arnedir hen:\n- pIqaD an (parf Klingon lamm): {url_piqad}\n- tengwar an (parf Edhel, Sindarin ar Quenya an): {url_tengwar}\nPe arnedir hen ú-gwerir tanna, cenich tirtha tinconi pIqaD ar tengwar nu ganad i vuidain sui ned:\n\nHarfuil hen nerthanen mi Edhellen. I edregolaith mi lemmir erui carannen nu IA, celwir nu Claude. Nerthanen carad daged rim lemmir, dan ú-iston pain lemmir hen. Ú-erin dâr eraid egor sui garo caul rim edregolir nedhben. Nu rimm thennas i edregolaith, eneth meria vin aegair. Anno daer, awarth nin.",
     "credits": "Vibe Coding, meleth nín",
     "credits_content": "Ú-iston eneth o ortho parmagolath. Ú-eneth. Nu rimm hen, nerthanen hen celwir nu chorn Claude, i IA o Anthropic, a ú-orthweg nu Claude Code. Ú-cherithon anno annog im breitho Claude Code, hen harfuil în maer hael!",
     "resize_pages": "Baugon i phenni",
@@ -1322,7 +1331,7 @@
     "language_export_piqad_success": "Tegwar achannent: {filename}\nI:",
     "language_export_tengwar_success": "{count} tegwir achannent\nI:",
     "icons": "Tinconi",
-    "icons_content": "I·velyn glamhoth nestannin i·thiw sennui sennui sennui gwador sí a lhûg na·bain i·thiw vail: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nNef e-goeir annin apharthant.\nMin tînco er, an tînco Windows danwen, awarnen nin (ah le AI, an na im bastog, bastog, bastog theledhir). Cenich nin chut na úgartha si tînco ve merich cín chanvo' cenich adnorthad or cín iaur.",
+    "icons_content": "Anann i eiconau ceni vi i chîr hen genir o'r had hen, ah nar law i·baw an naeth úvarant: https://www.freepik.com/author/juicy-fish/icons/juicy-fish-sketchy_908#from_element=resource_detail\nGenir apharthant nathrannen ganin.\nEr eicon nâ, i·dhâr i·bhereth Windows, genir ganin (dan as AI, an nin bâd theledhir vain, vain, vain). Anna le i·chuil an naeth eicon hen sui annedil ce cenich i·chuil lín.",
     "icons_view_button": "Penia tinconi",
     "icons_window_title": "Tinconi MosaicView",
     "icons_save_all": "Dortha tinconi",
@@ -1337,17 +1346,17 @@
     "config_log_note": "I prestannath eryd (PDF na CBZ a CBR na CBZ) crear gîl gladhad an i raeg telin. I gîl sen (Log_pdftocbz_.txt a Log_cbrtocbz_.txt) garant ir ab abad i theled, an telin ceniel ad. Reviar pan be i thalion \"Dago i gîl hannathel\" or bo.",
     "config_clipboard_cleared": "I gîl prestannen derianent awarth.",
     "adjust_images": "Adlanna i bain",
-    "adjust_images_content": "Mae'r nodwedd hon yn gadael ichi aildrethu eich lluniau'n uniongyrchol yn MosaicView. Gallwch addasu disgleirdeb, cyferbyniad, miniogder, lefelau, dwyster, cymhwyso effeithiau (du a gwyn, sepia, gwrthdroi lliwiau), addasu ansawdd cywasgu, dileu lliwiau, cymhwyso gweledigrwydd neu drosi i ddyfnderau lliw gwahanol. Mae gan rai gosodiadau wyliedydd pwrpasol sy'n gadael ichi weld y canlyniad ar ddatrysiad llawn cyn cymhwyso. Mae rhagolwg mân-lun yn dangos y canlyniad mewn amser real yn y ffenestr brif.",
+    "adjust_images_content": "I chîr hen anna le adfaeda i randirain lín needig vi MosaicView. Cael le athreidio i galas, i thregad, i vain, i lend, i annedil, cemmen effeithau (morn a gwen, sepia, dulu i galassath), athreidio i chaun cened, dilio i galassath, cemmen anwedh egor athrenna na lend galas eraid. Le annon i lû istol dîn i·dhilifel na cened i tregad na lend veleg nu chemmed. Adlan mân-lun tíra i tregad vi lû annedin ned i fennas veleg.",
     "create_icon": "Caro i veth tîw",
     "create_icon_content": "MosaicView leithia le caro i veth tîw (.ico) o any picture in i veth mosaig.\n• Nauth mîn i picture → 'Caro i veth tîw'\n• Tangado i mîn i cenirth (i veth tîw nauva côr)\n• Cenno i nixë mauya\n• Varyë: i .ico veth addë coimas mossë\n• I .ico vethi automarë sarnë ilyë commë vanwi (16×16 ter 256×256)\n• Tennoio i .ico veth ná mosaigossë, i tancë CBZ tancalanna ná harna, an i ICO commë ú-sarnë tancalnar. Ela i .ico veth enquerissë (Ctrl+C ar pasta Windowsë), sí antar co ohtë mosaigossë anta varyiëllo.",
     "batch_convert": "Prestanneth rimma",
     "batch_convert_content": "MosaicView offer tolothrad cantaina i·maethor, i·lempëo cantë mi i·naid. I·carma ná er: maita i·taur, canta, lé i·naid, cé i·lempë. Er cantaina lé anta i·naid morimë or lanta mi i·cottar.\n• CBR → CBZ: canta Hoch CBR (RAR) i·taur. Cë CBR ná ZIP, 7z ar TAR, i·naid cantë pong nó carma. I·pong cantainë ar i·raxë cantainë mi parmë.\n• CB7 → CBZ: canta Hoch CB7 (7-Zip). Cë ZIP, RAR ar TAR, cantë pong. Cantainë.\n• CBT → CBZ: canta Hoch CBT (TAR). Cë ZIP, RAR ar 7z, cantë pong. Cantainë.\n• PDF → CBZ: canta Hoch PDF i·taur. I·maethor entuluva nó cantaina.\n• MAETHOR MORIMË → CBZ: carë er CBZ maethor i·taur. I·maethor raxa, morimë, quantaina (TIFF) ar cantainë (GIF) lé húna ar cantainë.\n• IMPORT LEMPËO: hírë lempë (pong, i·naid, i·pedair…) ComicVine Hoch naid (CBZ, CBR, CB7, CBT, PDF). Er vinya anta maethor i·naid.\n• CARO I·THAMB: cantë Hoch naid i·taur mi er vinya thamb MosaicView (*.mvdb). Cé i·parmë Thamb quantainë.\n• ATHRENNA CENED CBZ NA I MODH HEN PEN: cened pân bessui CBZ, CBR, CB7 a CBT vi barad a barad nedig. I naned modh bess hen cenir athan i eneth: bess eneth dhraug (vel. .cbr ed naned ZIP) eneth venna nó cened. CBZ naned athan athrenna cenir, dan ú venna i modh hen pen. I methed glor: cenir, athrenna cenir, venna i modh hen pen, ú cenir (ú CBZ).",
     "config_open_temp_folder": "Edro i sant anann",
     "icon_toolbar": "Bar in glyphi",
-    "icon_toolbar_content": "I lŷr ervyr a rydd mynediad cyflym i brif swyddogaethau'r rhaglen. Gallwch aildrefnu'r eiconau yn ôl eich dymuniad drwy eu llusgo'n uniongyrchol i'r lŷr. I ddewis pa eiconau i'w dangos neu eu cuddio, cliciwch ar y botwm olwyn ddanheddog ar waelod y lŷr: agorir ffenestr ffurfweddu lle gallwch symud eiconau rhwng y lŷr weithredol a'r cronfa. Defnyddiwch y botymau « + » a « − » i addasu maint yr eiconau. Cedwir y ffurfweddiad yn awtomatig.",
+    "icon_toolbar_content": "I lûr eiconau anna athrad vain na naeth veleg i chîr. Cael le athreidio i eiconau sui annedin, drego dhi needig vi i lûr. Mi eglerio pân eiconau na thíred egor dolen, nedhoro i formen rundil i·chranthedig ned tâl i lûr: a-genir fennas i·govannad, i·le cael drego eiconau nu i lûr weithredol a i chronfa. Na i vothon « + » ah « − » athreidio meir i eiconau. I·chovannad cadwyr auto.",
     "license_7zip": "7-Zip Tolgnas",
     "nfo_editor": "Carph a gresta NFO-pherph",
-    "nfo_editor_content": "NFO-parf i parf teitho (.nfo enethren) i gabed tirhad an i archiv: hammad, cannas, nothas…\n\nCarpho NFO-parf, anno i dîr hain vi i orthad, vi i lîst parf, egor vi i lîst comhad (pent forven vi i mosaig). I amber agor ach nag i mosaig i chwest. Anno eneth a hammad: i barf carpho sui vi i mosaig, bain amman gûr egor teitho erin-lend.\n\nGresto NFO-parf iest, nesta i archant vi i mosaig. I thûl agor pre-anno eneth a hammad iest, ammen gresto. Vi ammen, i trevad nottir vi i lîst heb-no.",
+    "nfo_editor_content": "NFO-parf i parf teitho (.nfo enethren) i gabed tirhad an i archiv: hammad, cannas, nothas…\n\nCarpho NFO-parf, anno i dêr hain vi i orthad, vi i lêst parf, egor vi i lêst comhad (pent forven vi i mosaig). I amber erib ach nag i mosaig ú-lanw. Anno eneth a hammad: i barf carpho sui vi i mosaig, bain amman gûr egor teitho erin-lend.\n\nGresto NFO-parf iest, nesta i archant vi i mosaig. I thûl aphenner pre-anno eneth a hammad iest, ammen gresto. Vi ammen, i trevad nottir vi i lêst heb-no.",
     "metadata": "ComicVine Nothrannath",
     "metadata_content": "MosaicView ista i nothrannath i comicin (eneth, sîr, nûr, tîw, glaur...) ned i daur ComicVine, i veth govaded o i·chobar.\n\nMód er: egeria i comic, sí use i tangel o i Nothrannath menu. Tîr atho úpa: ece caro i sîr, sí i episod. Nothrannath carë ComicInfo.xml nu i cân.\n\nMód batch: lerta i taur ar selec \"Govaded i·nothrannath an·channas\", o use i tangel o i Nothrannath menu. Tîr úpa quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa nothrannath.\n\nAPI tangel: ComicVine API tangel lemya. I app tîruva le. Ista comicvine.gamespot.com épa conta. I ngilith ú-garar i phân eglain: orchenner o chryptad Windows DPAPI a chen ú-lethrar ach o i rant lín.\n\nAPI raeg: ComicVine carë tai raeg, ar umir nanner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni episodion sîren.\n• 1 petitioni quë cant. MosaicView caita 2 cant quë petitioni, ar raita petitioni nar raeg.\n\nFormath chan ComicVine: chan renas ComicVine ú-veitha ná nern formath tuo, ab i naeth dhi. MosaicView ista dhi erui.\n• Formath sí: comicvine.gamespot.com/.../4000-XXXXX an nûr, comicvine.gamespot.com/.../4050-XXXXX an sîr.\n• Formath iaur: comicvine.com/.../37-XXXXX an nûr (i·nûr adel i·achar ná i·sam ennas; pen i·domen a i·telchor goenner).\n\nI·thirnath hen certha i·vimp {scraper} am·men.",
     "library": "I·Thamb",
@@ -1397,20 +1406,20 @@
     "characters": "Perhain",
     "locations": "Ardhain",
     "teams": "Gweth",
-    "story_arc": "Peth chwedl",
-    "story_arc_number": "Rhif chwedl",
-    "series_group": "Gweth chwedlau",
+    "story_arc": "Lhê i hannas",
+    "story_arc_number": "Nœ i lhê",
+    "series_group": "Nœd i lû",
     "count": "Rhif",
-    "alternate_series": "Chwedl arall",
+    "alternate_series": "Lû bain",
     "alternate_number": "Rhif arall",
     "alternate_count": "Rhif arall",
     "age_rating": "Oed",
-    "series_complete": "Chwedl lawn",
-    "translator": "Cyfieithydd",
+    "series_complete": "Lû gwannen",
+    "translator": "Anglennol",
     "tags": "Nod",
-    "scan_information": "Gwybodaeth sgan",
-    "community_rating": "Sgôr cymuned",
-    "review": "Adolygiad",
+    "scan_information": "Tiw scantho",
+    "community_rating": "Nœ i·nothrim",
+    "review": "Echad",
     "gtin": "GTIN",
     "pages": "Paith",
     "pages_col_image": "Calen",
@@ -1498,17 +1507,18 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Amarth Chîn",
     "webpage": "Lam vëa",
-    "zip_compression": "Modh cened ZIP hen pen"
+    "zip_compression": "Modh cened ZIP hen pen",
+    "show_duplicates": "Dartha i athrenilath"
   },
   "updates": {
-    "dialog_title": "Gwanath newydd",
+    "dialog_title": "Gwanath thîn",
     "up_to_date": "Anog i {version} o MosaicView iest.",
-    "update_available": "Gwanath newydd: {latest}\nAnog i {current} iest in.",
+    "update_available": "Gwanath thîn: {latest}\nAnog i {current} iest in.",
     "error": "Ú-govaded pân i gwanath.\nPen i raew.",
     "download": "Esgar",
     "checking": "Gwelo...",
-    "banner_message": "Gwanath newydd:",
-    "menu_update_available": "Gwanath newydd ({latest})",
+    "banner_message": "Gwanath thîn:",
+    "menu_update_available": "Gwanath thîn ({latest})",
     "retry": "Garo velui"
   },
   "nfo": {
@@ -1589,7 +1599,7 @@
     "db_new": "Nothron nui...",
     "db_open": "Edro nothron...",
     "db_close": "Dharo i taul",
-    "db_recent": "Pairth gwaith",
+    "db_recent": "Pairth nedig",
     "db_recent_clear": "Mistro i gerth",
     "db_rename": "Athesto eneth nothron...",
     "db_add_directory": "Antha rant...",
@@ -1630,7 +1640,7 @@
     "col_inker": "Calmhor",
     "col_publisher": "Tirhor",
     "col_characters": "Onair",
-    "col_teams": "Gwaith",
+    "col_teams": "Gweth",
     "col_year": "Coron",
     "col_page_count": "Thelyn",
     "col_file_size": "Daer",
@@ -1743,7 +1753,7 @@
     "section_classification": "Cannas",
     "section_credits": "Harthad",
     "section_content": "Hannas",
-    "section_misc": "Gwaith",
+    "section_misc": "Ethuil",
     "field_series": "Lú :",
     "field_title": "Eneth :",
     "field_number": "Nœ :",
@@ -1766,7 +1776,7 @@
     "field_genre": "Cannas :",
     "field_tags": "Taeg :",
     "field_age_rating": "Nœ i în :",
-    "field_community_rating": "Nœ i gwaith :",
+    "field_community_rating": "Nœ i·nothrim :",
     "field_black_and_white": "Môr a glân :",
     "field_manga": "Manga :",
     "field_series_complete": "Lú gwannen :",

@@ -47,6 +47,8 @@ class ConfigManager:
         'language': None,  # None = détection automatique
         'sidebar_collapsed': True,   # Barre d'icônes rabattue par défaut
         'sidebar_collapsed_panel2': True,  # Barre d'icônes panel2 rabattue par défaut
+        'minimap_visible': False,   # Minimap cachée par défaut
+        'minimap_visible_panel2': False,  # Minimap panel2 cachée par défaut
         'fullscreen': False,  # Mode fenêtré par défaut
         'maximized': False,  # Fenêtre maximisée par défaut (False)
         'window_position': None,  # None = centré par défaut
@@ -253,6 +255,19 @@ class ConfigManager:
 
     def set_sidebar_collapsed_panel2(self, collapsed, save=True):
         return self.set('sidebar_collapsed_panel2', collapsed, save)
+
+    def get_minimap_visible(self):
+        """Récupère l'état de la minimap du panneau 1 (True = visible, False = cachée)"""
+        return self.config.get('minimap_visible', self.DEFAULT_CONFIG['minimap_visible'])
+
+    def set_minimap_visible(self, visible, save=True):
+        return self.set('minimap_visible', visible, save)
+
+    def get_minimap_visible_panel2(self):
+        return self.config.get('minimap_visible_panel2', self.DEFAULT_CONFIG['minimap_visible_panel2'])
+
+    def set_minimap_visible_panel2(self, visible, save=True):
+        return self.set('minimap_visible_panel2', visible, save)
 
     def set_fullscreen(self, fullscreen, save=True):
         """

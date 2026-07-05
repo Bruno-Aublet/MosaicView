@@ -159,6 +159,8 @@
       "save_selection": "Enregistrer la sélection en CBZ",
       "hide_sidebar": "« Masquer la colonne de boutons",
       "show_sidebar": "» Afficher la colonne de boutons",
+      "hide_minimap": "» Masquer la minimap",
+      "show_minimap": "« Afficher la minimap",
       "decrease_thumbs": "Diminuer la taille des vignettes",
       "increase_thumbs": "Augmenter la taille des vignettes",
       "theme_dark": "Passer au thème sombre",
@@ -178,7 +180,7 @@
     },
     "canvas": {
       "quit": "Fermer l'application",
-      "reset": "Réinitialiser l'application :\n• plein écran → fenêtré\n• taille et position de la fenêtre\n• mode sombre → clair\n• barre latérale → visible / largeur par défaut\n• taille des icônes et vignettes → normale\n• taille de police → par défaut\n• langue → détection automatique\n• partage de la fenêtre → 50 / 50\n• renumérotation → auto\n• compression ZIP → aucune",
+      "reset": "Réinitialiser l'application :\n• plein écran → fenêtré\n• taille et position de la fenêtre\n• mode sombre → clair\n• barre latérale → visible / largeur par défaut\n• minimap → cachée\n• taille des icônes et vignettes → normale\n• taille de police → par défaut\n• langue → détection automatique\n• partage de la fenêtre → 50 / 50\n• renumérotation → auto\n• compression ZIP → aucune",
       "reset_label": "Réinitialiser l'application"
     },
     "font_size": {
@@ -731,6 +733,12 @@
     "zip_indicator_na": "ZIP: --"
   },
   "dialogs": {
+    "duplicates": {
+      "window_title": "Doublons",
+      "no_duplicates": "Aucun doublon détecté.",
+      "group_title": "Groupe {num} : {count} pages identiques",
+      "delete_selection": "Supprimer la sélection"
+    },
     "convert": {
       "window_title": "Conversion d'images",
       "title": "Conversion de {count} {word}",
@@ -1250,6 +1258,7 @@
     "unknown_error": "Erreur inconnue",
     "too_large_header": "Image trop grande pour être chargée",
     "too_large_pixels": "Dimensions : {pixels}",
+    "duplicate_image": "PAGE EN DOUBLON",
     "icon_toolbar_config_button": "Configuration des icônes",
     "icon_toolbar_size_decrease": "Réduire la taille des icônes",
     "icon_toolbar_size_increase": "Augmenter la taille des icônes",
@@ -1277,9 +1286,9 @@
     "title": "MosaicView - Mode d'emploi",
     "intro": "MosaicView vous permet de manipuler et modifier des BD numériques sans avoir besoin de les extraire de leurs archives. L'application supporte les formats CBZ (ZIP), CBR (RAR) et PDF. L'application est compatible uniquement avec les systèmes 64 bits.",
     "open_files": "Ouvrir des fichiers",
-    "open_files_content": "• Cliquez sur le bouton 'Ouvrir un fichier' ou glissez-déposez directement un fichier dans la fenêtre\n• Formats supportés : CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Les fichiers EPUB peuvent aussi etre ouverts, mais seules leurs images seront extraites (le texte est ignoré). Note : les extensions affichées en rouge (WEBP, TIFF, GIF, ICO…) signalent des formats potentiellement incompatibles avec d’anciens lecteurs CBZ/CBR. Ces fichiers sont néanmoins traités normalement par MosaicView.\n• PDF chiffré (mot de passe requis à l’ouverture) : le fichier ne peut pas être importé, un message d’erreur s’affiche.\n• PDF protégé contre les modifications (owner password) : les pages sont importées normalement. MosaicView propose d’enregistrer une copie déverrouillée du fichier dans le même répertoire.",
+    "open_files_content": "• Cliquez sur le bouton 'Ouvrir un fichier' ou glissez-déposez directement un fichier dans la fenêtre\n• Formats supportés : CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Les fichiers EPUB peuvent aussi etre ouverts, mais seules leurs images seront extraites (le texte est ignoré). Note : les extensions affichées en rouge (WEBP, TIFF, GIF, ICO…) signalent des formats potentiellement incompatibles avec d’anciens lecteurs CBZ/CBR. Ces fichiers sont néanmoins traités normalement par MosaicView.\n• PDF chiffré (mot de passe requis à l’ouverture) : le fichier ne peut pas être importé, un message d’erreur s’affiche.\n• PDF protégé contre les modifications (owner password) : les pages sont importées normalement. MosaicView propose d’enregistrer une copie déverrouillée du fichier dans le même répertoire.\n• Détection des pages en double : à l'ouverture d'une archive, les pages strictement identiques (erreur de scan ou de fusion) sont automatiquement signalées par une pastille orange sur leur vignette. La commande « Gérer les doublons » (menu Édition, clic droit sur la mosaïque, ou clic droit sur une vignette) ouvre une fenêtre listant les groupes de pages identiques, avec une case à cocher par page pour supprimer les copies en trop.",
     "mosaic": "La mosaïque",
-    "mosaic_content": "La mosaïque affiche toutes les pages de votre BD sous forme de vignettes. Vous pouvez :\n• Réorganiser les pages par glisser-déposer (la renumérotation des pages sera automatique, et se fera selon le mode de renumérotation actif)\n• Sélectionner plusieurs pages (Ctrl+clic ou Maj+clic)\n• Ajuster la taille des vignettes avec la réglette ou Ctrl+molette\n• Renommer les fichiers manuellement en cliquant sur leur nom\n• Glisser-déposer des fichiers BD (CBZ/CBR/PDF) depuis l'explorateur Windows directement dans une autre BD ouverte pour fusionner leur contenu\n• Exporter toutes les vignettes affichées dans un dossier de votre choix (commande cachée, accessible uniquement par le raccourci Ctrl+Alt+T)",
+    "mosaic_content": "La mosaïque affiche toutes les pages de votre BD sous forme de vignettes. Vous pouvez :\n• Réorganiser les pages par glisser-déposer (la renumérotation des pages sera automatique, et se fera selon le mode de renumérotation actif)\n• Sélectionner plusieurs pages (Ctrl+clic ou Maj+clic)\n• Ajuster la taille des vignettes avec la réglette ou Ctrl+molette\n• Renommer les fichiers manuellement en cliquant sur leur nom\n• Glisser-déposer des fichiers BD (CBZ/CBR/PDF) depuis l'explorateur Windows directement dans une autre BD ouverte pour fusionner leur contenu\n• Exporter toutes les vignettes affichées dans un dossier de votre choix (commande cachée, accessible uniquement par le raccourci Ctrl+Alt+T)\n• Afficher une minimap : un panneau optionnel à droite de la mosaïque montrant un aperçu miniature de toutes les pages, avec un rectangle indiquant la zone actuellement visible. Cliquez ou faites-le glisser pour naviguer directement dans la BD. Activable depuis le menu Système ou le clic droit sur la mosaïque.",
     "manipulation": "Manipulation des pages",
     "manipulation_content": "• Glissez-déposez des pages pour les réorganiser\n• Glissez-déposez une BD entière dans une autre pour fusionner\n• Clic droit sur une page pour accéder aux options (rotation, suppression, etc.)\n• Double-clic sur une page pour ouvrir la visionneuse\n• Exportez des pages individuelles en les faisant glisser vers un répertoire Windows, ou via Ctrl+C / Ctrl+V",
     "renumber": "Renumérotation des pages",
@@ -1630,6 +1639,7 @@
     "select_all": "Tout sélectionner",
     "deselect": "Désélectionner",
     "refresh_mosaic": "Rafraîchir la mosaïque",
+    "show_duplicates": "Gérer les doublons",
     "images": "Images",
     "rotation": "Rotation",
     "archives": "Archives",

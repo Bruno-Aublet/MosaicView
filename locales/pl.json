@@ -174,11 +174,13 @@
       "fullscreen_exit": "Wyjdź z pełnego ekranu (F11 lub ESC)",
       "quit": "Zamknij aplikację",
       "delete_bookmark": "Usuń zakładkę dla tego komiksu",
-      "delete_all_bookmarks": "Usuń wszystkie zakładki"
+      "delete_all_bookmarks": "Usuń wszystkie zakładki",
+      "hide_minimap": "» Ukryj minimapę",
+      "show_minimap": "« Pokaż minimapę"
     },
     "canvas": {
       "quit": "Zamknij aplikację",
-      "reset": "Resetuj aplikację:\n• pełny ekran → okno\n• rozmiar i pozycja okna\n• tryb ciemny → jasny\n• pasek boczny → widoczny / domyślna szerokość\n• rozmiar ikon i miniatur → normalny\n• rozmiar czcionki → domyślny\n• język → automatyczne wykrywanie\n• podział okna → 50 / 50\n• ponowna numeracja → automatyczna\n• kompresja ZIP → brak",
+      "reset": "Resetuj aplikację:\n• pełny ekran → okno\n• rozmiar i pozycja okna\n• tryb ciemny → jasny\n• pasek boczny → widoczny / domyślna szerokość\n• minimapa → ukryta\n• rozmiar ikon i miniatur → normalny\n• rozmiar czcionki → domyślny\n• język → automatyczne wykrywanie\n• podział okna → 50 / 50\n• ponowna numeracja → automatyczna\n• kompresja ZIP → brak",
       "reset_label": "Resetuj aplikację"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Kopiuj link",
       "open_location": "Otwórz lokalizację",
       "copy_path": "Kopiuj ścieżkę"
+    },
+    "duplicates": {
+      "window_title": "Duplikaty",
+      "no_duplicates": "Nie wykryto duplikatów.",
+      "group_title": "Grupa {num}: {count} identycznych stron",
+      "delete_selection": "Usuń zaznaczenie"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Poziom kompresji ZIP nie dotyczy plików {ext}.\nKliknij, aby zapisać jako CBZ na poziomie domyślnym ({level}).\nKliknij prawym przyciskiem, aby zmienić poziom domyślny.",
     "zip_indicator_ext_image": "obraz",
     "zip_indicator_stored_noop": "Ten plik nie jest skompresowany.\nKliknij prawym przyciskiem, aby zmienić poziom domyślny.",
-    "zip_indicator_stored_action": "Ten plik nie jest skompresowany.\nKliknij, aby skompresować go na poziomie domyślnym ({level}).\nKliknij prawym przyciskiem, aby zmienić poziom domyślny."
+    "zip_indicator_stored_action": "Ten plik nie jest skompresowany.\nKliknij, aby skompresować go na poziomie domyślnym ({level}).\nKliknij prawym przyciskiem, aby zmienić poziom domyślny.",
+    "duplicate_image": "ZDUPLIKOWANA STRONA"
   },
   "help": {
     "title": "MosaicView - Instrukcja obsługi",
     "intro": "MosaicView umożliwia manipulowanie i edytowanie komiksów (cyfrowych komiksów) bez konieczności rozpakowywania ich z archiwów. Aplikacja obsługuje formaty CBZ (ZIP), CBR (RAR) i PDF. Aplikacja jest kompatybilna wyłącznie z systemami 64-bitowymi.",
     "open_files": "Otwieranie plików",
-    "open_files_content": "• Kliknij przycisk 'Otwórz plik' lub przeciągnij i upuść plik bezpośrednio do okna\n• Obsługiwane formaty: CBZ, CBR, CB7, CBT, PDF, obrazy (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Pliki EPUB moga rowniez byc otwierane, ale tylko ich obrazy beda wyodrebnione (tekst jest ignorowany). Uwaga: rozszerzenia wyświetlane na czerwono (WEBP, TIFF, GIF, ICO…) oznaczają formaty potencjalnie niekompatybilne ze starszymi czytnikami CBZ/CBR. Pliki te są jednak normalnie przetwarzane przez MosaicView.\n• Zaszyfrowany PDF (hasło wymagane do otwarcia): plik nie może zostać zaimportowany, wyświetla się komunikat o błędzie.\n• PDF chroniony przed modyfikacjami (owner password): strony są importowane normalnie. MosaicView proponuje zapisanie odblokowanej kopii pliku w tym samym folderze.",
+    "open_files_content": "• Kliknij przycisk 'Otwórz plik' lub przeciągnij i upuść plik bezpośrednio do okna\n• Obsługiwane formaty: CBZ, CBR, CB7, CBT, PDF, obrazy (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Pliki EPUB moga rowniez byc otwierane, ale tylko ich obrazy beda wyodrebnione (tekst jest ignorowany). Uwaga: rozszerzenia wyświetlane na czerwono (WEBP, TIFF, GIF, ICO…) oznaczają formaty potencjalnie niekompatybilne ze starszymi czytnikami CBZ/CBR. Pliki te są jednak normalnie przetwarzane przez MosaicView.\n• Zaszyfrowany PDF (hasło wymagane do otwarcia): plik nie może zostać zaimportowany, wyświetla się komunikat o błędzie.\n• PDF chroniony przed modyfikacjami (owner password): strony są importowane normalnie. MosaicView proponuje zapisanie odblokowanej kopii pliku w tym samym folderze.\n• Wykrywanie zduplikowanych stron: podczas otwierania archiwum strony o całkowicie identycznej zawartości (błąd skanowania lub scalania) są automatycznie oznaczane pomarańczową odznaką na miniaturze. Polecenie \"Zarządzaj duplikatami\" (menu Edycja, kliknięcie prawym przyciskiem myszy na mozaice lub na miniaturze) otwiera okno wyświetlające każdą grupę identycznych stron, z polem wyboru dla każdej strony umożliwiającym usunięcie zbędnych kopii.",
     "mosaic": "Mozaika",
-    "mosaic_content": "Mozaika wyświetla wszystkie strony komiksu jako miniatury. Możesz:\n• Zmieniać układ stron przeciągając i upuszczając (numeracja stron będzie automatyczna i zostanie wykonana według aktywnego trybu przenumerowania)\n• Wybierać wiele stron (Ctrl+klik lub Shift+klik)\n• Dostosować rozmiar miniatur suwakiem\n• Ręcznie zmieniać nazwy plików klikając na ich nazwę\n• Przeciągać i upuszczać pliki komiksów (CBZ/CBR/PDF) z Eksploratora Windows bezpośrednio do innego otwartego komiksu, aby scalić ich zawartość\n• Eksportuj wszystkie wyświetlane miniatury do wybranego folderu (ukryte polecenie, dostępne tylko za pomocą skrótu Ctrl+Alt+T)",
+    "mosaic_content": "Mozaika wyświetla wszystkie strony komiksu jako miniatury. Możesz:\n• Zmieniać układ stron przeciągając i upuszczając (numeracja stron będzie automatyczna i zostanie wykonana według aktywnego trybu przenumerowania)\n• Wybierać wiele stron (Ctrl+klik lub Shift+klik)\n• Dostosować rozmiar miniatur suwakiem\n• Ręcznie zmieniać nazwy plików klikając na ich nazwę\n• Przeciągać i upuszczać pliki komiksów (CBZ/CBR/PDF) z Eksploratora Windows bezpośrednio do innego otwartego komiksu, aby scalić ich zawartość\n• Eksportuj wszystkie wyświetlane miniatury do wybranego folderu (ukryte polecenie, dostępne tylko za pomocą skrótu Ctrl+Alt+T)\n• Pokaż minimapę: opcjonalny panel boczny po prawej stronie mozaiki, pokazujący miniaturowy podgląd wszystkich stron z prostokątem oznaczającym aktualnie widoczny obszar. Kliknij lub przeciągnij, aby przejść bezpośrednio do tego miejsca w komiksie. Można włączyć z menu System lub przez kliknięcie prawym przyciskiem myszy na mozaice.",
     "manipulation": "Manipulacja stronami",
     "manipulation_content": "• Przeciągaj strony, aby je przeorganizować\n• Przeciągnij cały komiks do innego, aby je połączyć\n• Prawy przycisk myszy na stronie, aby uzyskać dostęp do opcji (obrót, usuwanie itp.)\n• Podwójne kliknięcie strony, aby otworzyć przeglądarkę\n• Eksportuj poszczególne strony przeciągając je do folderu Windows lub za pomocą Ctrl+C / Ctrl+V",
     "renumber": "Przenumerowanie stron",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Dziennik zmian",
     "webpage": "Strona internetowa",
-    "zip_compression": "Domyślna kompresja ZIP"
+    "zip_compression": "Domyślna kompresja ZIP",
+    "show_duplicates": "Zarządzaj duplikatami"
   },
   "updates": {
     "dialog_title": "Aktualizacje",

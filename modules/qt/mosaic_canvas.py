@@ -171,6 +171,33 @@ def _get_bookmark_pixmap() -> QPixmap | None:
     return _BOOKMARK_PIXMAP
 
 
+# ── Icône badge doublon (pastille orange dessinée, pas de fichier) ───────────
+_DUPLICATE_PIXMAP: QPixmap | None = None
+DUPLICATE_BADGE_COLOR = QColor("#FF9800")
+
+def _get_duplicate_pixmap() -> QPixmap:
+    """Pastille pleine orange avec symbole de copie (deux carrés superposés)."""
+    global _DUPLICATE_PIXMAP
+    if _DUPLICATE_PIXMAP is None:
+        size = 64
+        px = QPixmap(size, size)
+        px.fill(Qt.transparent)
+        painter = QPainter(px)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QBrush(DUPLICATE_BADGE_COLOR))
+        painter.drawEllipse(0, 0, size, size)
+
+        painter.setPen(QPen(QColor("white"), 4))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawRect(18, 22, 22, 26)
+        painter.drawRect(26, 14, 22, 26)
+
+        painter.end()
+        _DUPLICATE_PIXMAP = px
+    return _DUPLICATE_PIXMAP
+
+
 # ── Conversion PIL → QImage (thread-safe) et PIL → QPixmap (thread UI) ────────
 def _pil_to_qimage(pil_img) -> QImage:
     """Convertit un PIL Image en QImage. Peut être appelé depuis n'importe quel thread."""
@@ -718,6 +745,16 @@ class ThumbnailItem(QGraphicsItem):
                 painter.drawPixmap(tw - scaled.width() - 2, -scaled.height() // 10, scaled)
                 painter.setOpacity(1.0)
 
+        # Badge doublon en surimpression (coin supérieur gauche, opposé au marque-page)
+        if self.entry.get("_is_duplicate"):
+            dup_px = _get_duplicate_pixmap()
+            if dup_px and not dup_px.isNull():
+                dup_size = max(32, tw // 2)
+                scaled_dup = dup_px.scaled(dup_size, dup_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                painter.setOpacity(0.85)
+                painter.drawPixmap(2, -scaled_dup.height() // 10, scaled_dup)
+                painter.setOpacity(1.0)
+
     # ── Double-clic → édition (fallback si déjà sélectionné) ─────────────────
     def mouseDoubleClickEvent(self, event):
         pos = event.pos()
@@ -738,10 +775,11 @@ class ThumbnailItem(QGraphicsItem):
             self.update()
 
     # ── Tooltip au survol ──────────────────────────────────────────────────────
-    @staticmethod
-    def _format_tooltip(text: str) -> str:
+    def _format_tooltip(self, text: str) -> str:
         import html as _html
         escaped = _html.escape(text).replace("\n", "<br>")
+        if self.entry.get("_is_duplicate"):
+            escaped = f"<b>{_html.escape(_('tooltip.duplicate_image'))}</b><br>{escaped}"
         return f'<p style="white-space: normal; max-width: 320px;">{escaped}</p>'
 
     def _is_over_name_box(self, pos) -> bool:
@@ -928,6 +966,18 @@ class MosaicCanvas(QGraphicsView):
                     item.update()
 
     # ──────────────────────────────────────────────────────────────────────────
+    # Doublons — surimpression du badge (sans reconstruire la scène)
+    # ──────────────────────────────────────────────────────────────────────────
+    def refresh_duplicate_overlay(self):
+        """Recalcule les groupes de doublons et force un repaint des ThumbnailItem
+        dont le flag _is_duplicate a changé, sans reconstruire toute la scène."""
+        from modules.qt.duplicate_detection_qt import recompute_duplicate_groups
+        recompute_duplicate_groups(self._state)
+        for item in self._items:
+            if isinstance(item, ThumbnailItem):
+                item.update()
+
+    # ──────────────────────────────────────────────────────────────────────────
     # Mise à jour ciblée d'une vignette (sans reconstruire la scène)
     # ──────────────────────────────────────────────────────────────────────────
     def refresh_thumbnail(self, real_idx: int):
@@ -957,6 +1007,9 @@ class MosaicCanvas(QGraphicsView):
             self._scene.setSceneRect(self.viewport().rect().toRectF())
             self.status_changed.emit()
             return
+
+        from modules.qt.duplicate_detection_qt import recompute_duplicate_groups
+        recompute_duplicate_groups(st)
 
         visible = get_visible_entries_qt(st)
         if not visible:

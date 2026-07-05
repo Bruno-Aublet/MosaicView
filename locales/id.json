@@ -174,11 +174,13 @@
       "fullscreen_exit": "Keluar dari layar penuh (F11 atau ESC)",
       "quit": "Tutup aplikasi",
       "delete_bookmark": "Hapus penanda untuk komik ini",
-      "delete_all_bookmarks": "Hapus semua penanda"
+      "delete_all_bookmarks": "Hapus semua penanda",
+      "hide_minimap": "» Sembunyikan minimap",
+      "show_minimap": "« Tampilkan minimap"
     },
     "canvas": {
       "quit": "Tutup aplikasi",
-      "reset": "Reset aplikasi:\n• layar penuh → jendela\n• ukuran dan posisi jendela\n• mode gelap → terang\n• bilah samping → terlihat / lebar default\n• ukuran ikon dan thumbnail → normal\n• ukuran font → default\n• bahasa → deteksi otomatis\n• pembagian jendela → 50 / 50\n• penomoran ulang → otomatis\n• kompresi ZIP → tidak ada",
+      "reset": "Reset aplikasi:\n• layar penuh → jendela\n• ukuran dan posisi jendela\n• mode gelap → terang\n• bilah samping → terlihat / lebar default\n• minimap → tersembunyi\n• ukuran ikon dan thumbnail → normal\n• ukuran font → default\n• bahasa → deteksi otomatis\n• pembagian jendela → 50 / 50\n• penomoran ulang → otomatis\n• kompresi ZIP → tidak ada",
       "reset_label": "Reset aplikasi"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Salin tautan",
       "open_location": "Buka lokasi",
       "copy_path": "Salin jalur"
+    },
+    "duplicates": {
+      "window_title": "Duplikat",
+      "no_duplicates": "Tidak ada duplikat yang terdeteksi.",
+      "group_title": "Grup {num}: {count} halaman identik",
+      "delete_selection": "Hapus pilihan"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Tingkat kompresi ZIP tidak berlaku untuk file {ext}.\nKlik untuk menyimpan sebagai CBZ pada tingkat default ({level}).\nKlik kanan untuk mengubah tingkat default.",
     "zip_indicator_ext_image": "gambar",
     "zip_indicator_stored_noop": "File ini tidak dikompresi.\nKlik kanan untuk mengubah tingkat default.",
-    "zip_indicator_stored_action": "File ini tidak dikompresi.\nKlik untuk mengompresinya pada tingkat default ({level}).\nKlik kanan untuk mengubah tingkat default."
+    "zip_indicator_stored_action": "File ini tidak dikompresi.\nKlik untuk mengompresinya pada tingkat default ({level}).\nKlik kanan untuk mengubah tingkat default.",
+    "duplicate_image": "HALAMAN DUPLIKAT"
   },
   "help": {
     "title": "MosaicView - Panduan Penggunaan",
     "intro": "MosaicView memungkinkan Anda memanipulasi dan mengedit komik (buku komik digital) tanpa perlu mengekstraknya dari arsip. Aplikasi mendukung format CBZ (ZIP), CBR (RAR) dan PDF. Aplikasi ini hanya kompatibel dengan sistem 64-bit.",
     "open_files": "Membuka file",
-    "open_files_content": "• Klik tombol 'Buka file' atau seret dan lepas file langsung ke jendela\n• Format yang didukung: CBZ, CBR, CB7, CBT, PDF, gambar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). File EPUB juga dapat dibuka, tetapi hanya gambar mereka yang akan diekstraksi (teks diabaikan). Catatan: ekstensi yang ditampilkan berwarna merah (WEBP, TIFF, GIF, ICO…) menandakan format yang berpotensi tidak kompatibel dengan pembaca CBZ/CBR lama. Namun, file-file ini tetap diproses secara normal oleh MosaicView.\n• PDF terenkripsi (kata sandi diperlukan untuk membuka): file tidak dapat diimpor, pesan kesalahan ditampilkan.\n• PDF dilindungi dari perubahan (owner password): halaman diimpor secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak terkunci di folder yang sama.",
+    "open_files_content": "• Klik tombol 'Buka file' atau seret dan lepas file langsung ke jendela\n• Format yang didukung: CBZ, CBR, CB7, CBT, PDF, gambar (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). File EPUB juga dapat dibuka, tetapi hanya gambar mereka yang akan diekstraksi (teks diabaikan). Catatan: ekstensi yang ditampilkan berwarna merah (WEBP, TIFF, GIF, ICO…) menandakan format yang berpotensi tidak kompatibel dengan pembaca CBZ/CBR lama. Namun, file-file ini tetap diproses secara normal oleh MosaicView.\n• PDF terenkripsi (kata sandi diperlukan untuk membuka): file tidak dapat diimpor, pesan kesalahan ditampilkan.\n• PDF dilindungi dari perubahan (owner password): halaman diimpor secara normal. MosaicView menawarkan untuk menyimpan salinan yang tidak terkunci di folder yang sama.\n• Deteksi halaman duplikat: saat membuka arsip, halaman dengan konten yang benar-benar identik (kesalahan pemindaian atau penggabungan) secara otomatis ditandai dengan lencana oranye pada thumbnail-nya. Perintah \"Kelola duplikat\" (menu Edit, klik kanan pada mosaik, atau klik kanan pada thumbnail) membuka jendela yang mencantumkan setiap kelompok halaman identik, dengan kotak centang per halaman untuk menghapus salinan berlebih.",
     "mosaic": "Mosaik",
-    "mosaic_content": "Mosaik menampilkan semua halaman buku komik Anda sebagai gambar mini. Anda dapat:\n• Menyusun ulang halaman dengan menyeret dan melepas (penomoran halaman akan otomatis, dan akan mengikuti mode penomoran ulang yang aktif)\n• Memilih beberapa halaman (Ctrl+klik atau Shift+klik)\n• Menyesuaikan ukuran gambar mini dengan penggeser\n• Mengganti nama file secara manual dengan mengklik namanya\n• Menyeret dan melepas file buku komik (CBZ/CBR/PDF) dari Windows Explorer langsung ke buku komik terbuka lainnya untuk menggabungkan kontennya\n• Ekspor semua gambar mini yang ditampilkan ke folder pilihan Anda (perintah tersembunyi, hanya dapat diakses melalui pintasan Ctrl+Alt+T)",
+    "mosaic_content": "Mosaik menampilkan semua halaman buku komik Anda sebagai gambar mini. Anda dapat:\n• Menyusun ulang halaman dengan menyeret dan melepas (penomoran halaman akan otomatis, dan akan mengikuti mode penomoran ulang yang aktif)\n• Memilih beberapa halaman (Ctrl+klik atau Shift+klik)\n• Menyesuaikan ukuran gambar mini dengan penggeser\n• Mengganti nama file secara manual dengan mengklik namanya\n• Menyeret dan melepas file buku komik (CBZ/CBR/PDF) dari Windows Explorer langsung ke buku komik terbuka lainnya untuk menggabungkan kontennya\n• Ekspor semua gambar mini yang ditampilkan ke folder pilihan Anda (perintah tersembunyi, hanya dapat diakses melalui pintasan Ctrl+Alt+T)\n• Tampilkan minimap: panel samping opsional di sebelah kanan mosaik yang menampilkan tinjauan mini semua halaman, dengan persegi panjang yang menandai area yang sedang terlihat. Klik atau seret untuk langsung menuju ke titik tersebut dalam komik. Dapat diaktifkan dari menu Sistem atau klik kanan pada mosaik.",
     "manipulation": "Manipulasi halaman",
     "manipulation_content": "• Seret dan lepaskan halaman untuk mengatur ulang\n• Seret seluruh komik ke komik lain untuk menggabungkannya\n• Klik kanan pada halaman untuk mengakses opsi (rotasi, penghapusan, dll.)\n• Klik dua kali pada halaman untuk membuka penampil\n• Ekspor halaman individual dengan menyeretnya ke folder Windows, atau melalui Ctrl+C / Ctrl+V",
     "renumber": "Penomoran ulang halaman",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Catatan Perubahan",
     "webpage": "Halaman web",
-    "zip_compression": "Kompresi ZIP default"
+    "zip_compression": "Kompresi ZIP default",
+    "show_duplicates": "Kelola duplikat"
   },
   "updates": {
     "dialog_title": "Pembaruan",

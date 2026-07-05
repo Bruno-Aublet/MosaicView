@@ -174,11 +174,13 @@
       "fullscreen_exit": "Oħroġ minn skrin sħiħa (F11 jew ESC)",
       "quit": "Agħlaq l-applikazzjoni",
       "delete_bookmark": "Ħassar il-bookmark għal din il-ktieb tal-komiks",
-      "delete_all_bookmarks": "Ħassar il-bookmarks kollha"
+      "delete_all_bookmarks": "Ħassar il-bookmarks kollha",
+      "hide_minimap": "» Aħbi l-minimappa",
+      "show_minimap": "« Uri l-minimappa"
     },
     "canvas": {
       "quit": "Agħlaq l-applikazzjoni",
-      "reset": "Irresettar l-applikazzjoni:\n• skrin sħiħ → tieqa\n• daqs u pożizzjoni tat-tieqa\n• modalità skura → ċara\n• barra laterali → viżibbli / wisa' default\n• daqs tal-ikoni u tal-minjaturi → normali\n• daqs tal-font → default\n• lingwa → detezzjoni awtomatika\n• qsim tat-tieqa → 50 / 50\n• numerazzjoni mill-ġdid → awtomatika\n• kompressjoni ZIP → xejn",
+      "reset": "Irresettar l-applikazzjoni:\n• skrin sħiħ → tieqa\n• daqs u pożizzjoni tat-tieqa\n• modalità skura → ċara\n• barra laterali → viżibbli / wisa' default\n• minimappa → moħbija\n• daqs tal-ikoni u tal-minjaturi → normali\n• daqs tal-font → default\n• lingwa → detezzjoni awtomatika\n• qsim tat-tieqa → 50 / 50\n• numerazzjoni mill-ġdid → awtomatika\n• kompressjoni ZIP → xejn",
       "reset_label": "Irrisettja l-applikazzjoni"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Ikkopja l-link",
       "open_location": "Iftaħ il-post",
       "copy_path": "Ikkopja l-perkors"
+    },
+    "duplicates": {
+      "window_title": "Duplikati",
+      "no_duplicates": "L-ebda duplikat ma nstab.",
+      "group_title": "Grupp {num}: {count} paġni identiċi",
+      "delete_selection": "Ħassar l-għażla"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Il-livell ta' kompressjoni ZIP ma japplikax għal fajls {ext}.\nIkklikkja biex taħżen bħala CBZ fil-livell prestabbilit ({level}).\nKlikkja bil-lemin biex tibdel il-livell prestabbilit.",
     "zip_indicator_ext_image": "immaġini",
     "zip_indicator_stored_noop": "Dan il-fajl mhux ikkumpressat.\nKlikkja bil-lemin biex tibdel il-livell prestabbilit.",
-    "zip_indicator_stored_action": "Dan il-fajl mhux ikkumpressat.\nIkklikkja biex tikkomprimih fil-livell prestabbilit ({level}).\nKlikkja bil-lemin biex tibdel il-livell prestabbilit."
+    "zip_indicator_stored_action": "Dan il-fajl mhux ikkumpressat.\nIkklikkja biex tikkomprimih fil-livell prestabbilit ({level}).\nKlikkja bil-lemin biex tibdel il-livell prestabbilit.",
+    "duplicate_image": "PAĠNA DUPLIKATA"
   },
   "help": {
     "title": "MosaicView - Manwal tal-utent",
     "intro": "MosaicView jippermettik timmanipolja u timmodifika fumetti (BD diġitali) mingħajr ma jkollok testraġihom mill-arkivji tagħhom. L-applikazzjoni tappoġġja l-formati CBZ (ZIP), CBR (RAR) u PDF. L-applikazzjoni hija kompatibbli biss ma' sistemi ta' 64 bit.",
     "open_files": "Iftaħ il-fajls",
-    "open_files_content": "• Ikklikkja l-buttuna 'Iftaħ fajl' jew drag and drop fajl direttament fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, CBT, PDF, immaġini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fajls EPUB jistghu jinfethu wkoll, izda biss l-istampi taghhom se jkunu estratti (it-test jigie injorat).\n• PDF kriptat (password meħtieġa biex tiftaħ): il-fajl ma jistax jiġi importat, tiġi murija messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jsejvja kopja miftuħa tal-fajl fl-istess folder. Nota: l-estensjonijiet murija bil-aħmar (WEBP, TIFF, GIF, ICO…) jindikaw formati potenzjalment inkompatibbli ma' qarrejja CBZ/CBR aktar antiki. Madankollu, dawn il-fajls jiġu pproċessati normalment minn MosaicView.",
+    "open_files_content": "• Ikklikkja l-buttuna 'Iftaħ fajl' jew drag and drop fajl direttament fit-tieqa\n• Formati appoġġjati: CBZ, CBR, CB7, CBT, PDF, immaġini (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Fajls EPUB jistghu jinfethu wkoll, izda biss l-istampi taghhom se jkunu estratti (it-test jigie injorat).\n• PDF kriptat (password meħtieġa biex tiftaħ): il-fajl ma jistax jiġi importat, tiġi murija messaġġ ta' żball.\n• PDF protett kontra modifiki (owner password): il-paġni jiġu importati normalment. MosaicView joffri li jsejvja kopja miftuħa tal-fajl fl-istess folder. Nota: l-estensjonijiet murija bil-aħmar (WEBP, TIFF, GIF, ICO…) jindikaw formati potenzjalment inkompatibbli ma' qarrejja CBZ/CBR aktar antiki. Madankollu, dawn il-fajls jiġu pproċessati normalment minn MosaicView.\n• Detezzjoni ta' paġni duplikati: meta jinfetaħ arkivju, paġni b'kontenut identiku strettament (żball ta' skenjar jew għaqda) jiġu mmarkati awtomatikament b'badge oranġjo fuq il-minjatura tagħhom. Il-kmand \"Immaniġġja d-duplikati\" (menu Editja, klikk bil-lemin fuq il-mosaic jew fuq minjatura) jiftaħ tieqa li telenka kull grupp ta' paġni identiċi, b'kaxxa tal-verifika għal kull paġna biex titħassar il-kopji żejda.",
     "mosaic": "Il-mużajk",
-    "mosaic_content": "Il-mużajk juri l-paġni kollha tal-fumett tiegħek bħala minjaturi. Tista':\n• Irranġa mill-ġdid il-paġni billi tiġbed u twaqqagħhom (in-numrazzjoni tal-paġni tkun awtomatika, u ssir skont il-mod ta' numrazzjoni mill-ġdid attiv)\n• Agħżel diversi paġni (Ctrl+ikklikkja jew Shift+ikklikkja)\n• Aġġusta d-daqs tal-minjaturi bil-vagun\n• Semmi mill-ġdid manwalment il-fajls billi tikklikkja fuq isimhom\n• Iġbed u waqqagħ fajls ta' fumetti (CBZ/CBR/PDF) minn Windows Explorer direttament fi fumett ieħor miftuħ biex tgħaqqad il-kontenut tagħhom\n• Esporta l-minijaturi kollha murija f'folder tal-għażla tiegħek (kmand moħbi, aċċessibbli biss permezz tal-qabar Ctrl+Alt+T)",
+    "mosaic_content": "Il-mużajk juri l-paġni kollha tal-fumett tiegħek bħala minjaturi. Tista':\n• Irranġa mill-ġdid il-paġni billi tiġbed u twaqqagħhom (in-numrazzjoni tal-paġni tkun awtomatika, u ssir skont il-mod ta' numrazzjoni mill-ġdid attiv)\n• Agħżel diversi paġni (Ctrl+ikklikkja jew Shift+ikklikkja)\n• Aġġusta d-daqs tal-minjaturi bil-vagun\n• Semmi mill-ġdid manwalment il-fajls billi tikklikkja fuq isimhom\n• Iġbed u waqqagħ fajls ta' fumetti (CBZ/CBR/PDF) minn Windows Explorer direttament fi fumett ieħor miftuħ biex tgħaqqad il-kontenut tagħhom\n• Esporta l-minijaturi kollha murija f'folder tal-għażla tiegħek (kmand moħbi, aċċessibbli biss permezz tal-qabar Ctrl+Alt+T)\n• Uri l-minimappa: pannell laterali fakultattiv fuq il-lemin tal-mużajk li juri ħarsa ġenerali minjatura tal-paġni kollha, b'rettangolu li jimmarka l-erja viżibbli bħalissa. Ikklikkja jew iġbed biex tinnaviga direttament għal dak il-punt fil-fumett. Jistgħu jinbidlu mill-menu Sistema jew bil-click tal-lemin fuq il-mużajk.",
     "manipulation": "Manipulazzjoni tal-paġni",
     "manipulation_content": "• Ġib u erħi l-paġni biex torganizzahom mill-ġdid\n• Ġib fumett sħiħ f'ieħor biex tgħaqqadhom\n• Ikklikkja bil-lemin fuq paġna biex taċċessa l-għażliet (rotazzjoni, tħassir, eċċ.)\n• Ikklikkja darbtejn fuq paġna biex tiftaħ il-viewer\n• Esporta paġni individwali billi tiġbidhom lejn folder tal-Windows, jew permezz ta' Ctrl+C / Ctrl+V",
     "renumber": "Numerazzjoni mill-ġdid tal-paġni",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Reġistru tal-Bidliet",
     "webpage": "Paġna tal-web",
-    "zip_compression": "Kompressjoni ZIP prestabbilita"
+    "zip_compression": "Kompressjoni ZIP prestabbilita",
+    "show_duplicates": "Immaniġġja d-duplikati"
   },
   "updates": {
     "dialog_title": "Aġġornamenti",

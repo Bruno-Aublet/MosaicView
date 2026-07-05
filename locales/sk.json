@@ -174,11 +174,13 @@
       "fullscreen_exit": "Ukončiť celú obrazovku (F11 alebo ESC)",
       "quit": "Zavrieť aplikáciu",
       "delete_bookmark": "Odstrániť záložku pre tento komiks",
-      "delete_all_bookmarks": "Odstrániť všetky záložky"
+      "delete_all_bookmarks": "Odstrániť všetky záložky",
+      "hide_minimap": "» Skryť minimapu",
+      "show_minimap": "« Zobraziť minimapu"
     },
     "canvas": {
       "quit": "Zavrieť aplikáciu",
-      "reset": "Resetovať aplikáciu:\n• celá obrazovka → okno\n• veľkosť a poloha okna\n• tmavý režim → svetlý\n• bočný panel → viditeľný / predvolená šírka\n• veľkosť ikon a miniatúr → normálna\n• veľkosť písma → predvolená\n• jazyk → automatická detekcia\n• rozdelenie okna → 50 / 50\n• prečíslovanie → automatické\n• ZIP kompresia → žiadna",
+      "reset": "Resetovať aplikáciu:\n• celá obrazovka → okno\n• veľkosť a poloha okna\n• tmavý režim → svetlý\n• bočný panel → viditeľný / predvolená šírka\n• minimapa → skrytá\n• veľkosť ikon a miniatúr → normálna\n• veľkosť písma → predvolená\n• jazyk → automatická detekcia\n• rozdelenie okna → 50 / 50\n• prečíslovanie → automatické\n• ZIP kompresia → žiadna",
       "reset_label": "Resetovať aplikáciu"
     },
     "font_size": {
@@ -1211,6 +1213,12 @@
       "copy": "Kopírovať odkaz",
       "open_location": "Otvoriť umiestnenie",
       "copy_path": "Kopírovať cestu"
+    },
+    "duplicates": {
+      "window_title": "Duplicity",
+      "no_duplicates": "Neboli zistené žiadne duplicity.",
+      "group_title": "Skupina {num}: {count} zhodných stránok",
+      "delete_selection": "Odstrániť výber"
     }
   },
   "tooltip": {
@@ -1271,15 +1279,16 @@
     "zip_indicator_na": "Úroveň kompresie ZIP sa nevzťahuje na súbory {ext}.\nKliknutím uložíte ako CBZ na predvolenej úrovni ({level}).\nKliknutím pravým tlačidlom zmeníte predvolenú úroveň.",
     "zip_indicator_ext_image": "obrázok",
     "zip_indicator_stored_noop": "Tento súbor nie je komprimovaný.\nKliknutím pravým tlačidlom zmeníte predvolenú úroveň.",
-    "zip_indicator_stored_action": "Tento súbor nie je komprimovaný.\nKliknutím ho komprimujete na predvolenej úrovni ({level}).\nKliknutím pravým tlačidlom zmeníte predvolenú úroveň."
+    "zip_indicator_stored_action": "Tento súbor nie je komprimovaný.\nKliknutím ho komprimujete na predvolenej úrovni ({level}).\nKliknutím pravým tlačidlom zmeníte predvolenú úroveň.",
+    "duplicate_image": "DUPLICITNÁ STRÁNKA"
   },
   "help": {
     "title": "MosaicView - Návod na používanie",
     "intro": "MosaicView vám umožňuje manipulovať a upravovať komiksy (digitálne komiksy) bez potreby ich rozbaľovať z archívov. Aplikácia podporuje formáty CBZ (ZIP), CBR (RAR) a PDF. Aplikácia je kompatibilná iba so 64-bitovými systémami.",
     "open_files": "Otvorenie súborov",
-    "open_files_content": "• Kliknite na tlačidlo 'Otvoriť súbor' alebo presuňte súbor priamo do okna\n• Podporované formáty: CBZ, CBR, CB7, CBT, PDF, obrázky (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Subory EPUB mozno tiez otvorit, ale budu extrahovane len ich obrazky (text sa ignoruje). Poznámka: prípony zobrazené červenou farbou (WEBP, TIFF, GIF, ICO…) označujú formáty potenciálne nekompatibilné so staršími čítačkami CBZ/CBR. Tieto súbory sú napriek tomu spracované normálne programom MosaicView.\n• Šifrovaný PDF (pri otváraní je potrebné heslo): súbor sa nedá importovať, zobrazí sa chybové hlásenie.\n• PDF chránené pred úpravami (owner password): stránky sa importujú normálne. MosaicView ponúka uloženie odomknutej kópie súboru do rovnakého priečinka.",
+    "open_files_content": "• Kliknite na tlačidlo 'Otvoriť súbor' alebo presuňte súbor priamo do okna\n• Podporované formáty: CBZ, CBR, CB7, CBT, PDF, obrázky (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Subory EPUB mozno tiez otvorit, ale budu extrahovane len ich obrazky (text sa ignoruje). Poznámka: prípony zobrazené červenou farbou (WEBP, TIFF, GIF, ICO…) označujú formáty potenciálne nekompatibilné so staršími čítačkami CBZ/CBR. Tieto súbory sú napriek tomu spracované normálne programom MosaicView.\n• Šifrovaný PDF (pri otváraní je potrebné heslo): súbor sa nedá importovať, zobrazí sa chybové hlásenie.\n• PDF chránené pred úpravami (owner password): stránky sa importujú normálne. MosaicView ponúka uloženie odomknutej kópie súboru do rovnakého priečinka.\n• Detekcia duplicitných stránok: pri otváraní archívu sú stránky s úplne identickým obsahom (chyba skenovania alebo zlúčenia) automaticky označené oranžovým odznakom na náhľade. Príkaz \"Spravovať duplicity\" (ponuka Upraviť, kliknutie pravým tlačidlom na mozaiku alebo na náhľad) otvorí okno so zoznamom každej skupiny identických stránok, so začiarkavacím políčkom pre každú stránku na odstránenie nadbytočných kópií.",
     "mosaic": "Mozaika",
-    "mosaic_content": "Mozaika zobrazuje všetky strany vášho komiksu ako miniatúry. Môžete:\n• Preusporiadať strany presunutím (číslovanie strán bude automatické a vykoná sa podľa aktívneho režimu prečíslovania)\n• Vybrať viac strán (Ctrl+klik alebo Shift+klik)\n• Upraviť veľkosť miniatúr posuvníkom\n• Ručne premenovať súbory kliknutím na ich názov\n• Presunúť súbory komiksov (CBZ/CBR/PDF) z Prieskumníka Windows priamo do iného otvoreného komiksu pre zlúčenie ich obsahu\n• Exportovať všetky zobrazené miniatúry do priečinka podľa vášho výberu (skrytý príkaz, dostupný iba klávesovou skratkou Ctrl+Alt+T)",
+    "mosaic_content": "Mozaika zobrazuje všetky strany vášho komiksu ako miniatúry. Môžete:\n• Preusporiadať strany presunutím (číslovanie strán bude automatické a vykoná sa podľa aktívneho režimu prečíslovania)\n• Vybrať viac strán (Ctrl+klik alebo Shift+klik)\n• Upraviť veľkosť miniatúr posuvníkom\n• Ručne premenovať súbory kliknutím na ich názov\n• Presunúť súbory komiksov (CBZ/CBR/PDF) z Prieskumníka Windows priamo do iného otvoreného komiksu pre zlúčenie ich obsahu\n• Exportovať všetky zobrazené miniatúry do priečinka podľa vášho výberu (skrytý príkaz, dostupný iba klávesovou skratkou Ctrl+Alt+T)\n• Zobraziť minimapu: voliteľný bočný panel vpravo od mozaiky zobrazujúci miniatúrny náhľad všetkých strán, s obdĺžnikom označujúcim aktuálne viditeľnú oblasť. Kliknite alebo presuňte myšou na priamu navigáciu v komikse. Aktivovateľné z ponuky Systém alebo pravým kliknutím na mozaiku.",
     "manipulation": "Manipulácia so stranami",
     "manipulation_content": "• Presuňte stránky pretiahnutím a pustenímpre ich reorganizáciu\n• Presuňte celý komiks do iného, aby ste ich zlúčili\n• Pravý klik na stránku pre prístup k možnostiam (otočenie, vymazanie atď.)\n• Dvojitý klik na stránku pre otvorenie prehliadača\n• Exportujte jednotlivé stránky pretiahnutím do priečinka Windows alebo pomocou Ctrl+C / Ctrl+V",
     "renumber": "Prečíslovanie stránok",
@@ -1498,7 +1507,8 @@
     "batch_cbt_to_cbz": "CBT → CBZ",
     "show_changelog": "Zoznam zmien",
     "webpage": "Webová stránka",
-    "zip_compression": "Predvolená kompresia ZIP"
+    "zip_compression": "Predvolená kompresia ZIP",
+    "show_duplicates": "Spravovať duplicity"
   },
   "updates": {
     "dialog_title": "Aktualizácie",
