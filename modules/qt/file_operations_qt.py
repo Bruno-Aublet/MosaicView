@@ -111,10 +111,11 @@ class InfoDialogClickablePath(QDialog):
     Équivalent Qt de InfoDialogWithClickablePath (tkinter).
     """
 
-    def __init__(self, parent, title_key: str, message_key: str, filepath: str):
+    def __init__(self, parent, title_key: str, message_key: str, filepath: str, on_done=None):
         super().__init__(parent)
         self._title_key = title_key
         self._message_key = message_key
+        self._on_done = on_done
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
         self.setFixedWidth(440)
@@ -178,6 +179,10 @@ class InfoDialogClickablePath(QDialog):
             language_signal.changed.disconnect(self._lang_handler)
         except RuntimeError:
             pass
+        cb = self._on_done
+        self._on_done = None
+        if cb is not None:
+            cb()
 
 
 class SaveSuccessDialog(QDialog):
@@ -748,12 +753,13 @@ def _validate_filenames_qt(parent, render_mosaic, on_done):
                 cleaned = cleaned.replace("..", "")
                 entry["orig_name"] = cleaned
             render_mosaic()
-            InfoDialog(
+            info_dlg = InfoDialog(
                 parent,
                 lambda: _wt("messages.info.correction_done.title"),
                 lambda c=len(invalid_files): _("messages.info.correction_done.message", count=c),
-            ).show()
-            on_done(True)
+            )
+            info_dlg.finished.connect(lambda _r: on_done(True))
+            info_dlg.show_nonmodal()
             return
 
         # Non — ne pas corriger
@@ -1456,10 +1462,14 @@ def _write_apply_new_names(parent, canvas, callbacks, _done):
             state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
             if hasattr(parent, "_update_status_bar"):
                 parent._update_status_bar()
-            InfoDialogClickablePath(parent,
-                                    "messages.info.cbz_saved.title",
-                                    "messages.info.cbz_saved.message",
-                                    state.current_file)
+            InfoDialogClickablePath(
+                parent,
+                "messages.info.cbz_saved.title",
+                "messages.info.cbz_saved.message",
+                state.current_file,
+                on_done=lambda: _finish_apply_new_names(state, callbacks, _done),
+            )
+            return
         except Exception as e:
             ErrorDialog(parent,
                         lambda: _wt("messages.errors.save_failed.title"),

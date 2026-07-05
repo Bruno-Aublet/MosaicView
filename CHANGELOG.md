@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.2] - 2026-07-05 - Second emergency fix for broken save-and-close flow (CBZ)
+
+- Emergency fix number 2: the save flow was still broken for plain CBZ files after the 1.5.1 fix, which only covered CBR/CB7/CBT/EPUB/PDF conversions. The "CBZ saved" confirmation shown after saving a modified CBZ while closing the comic (via the "save and close" unsaved-changes option) was flashing on screen and disappearing before it could be read, for the same reason as the 1.5.1 bug: the comic-closing cascade added in 1.4.2 was closing this confirmation itself right after it appeared, since the comic close fired as soon as the file was written instead of waiting for the confirmation to be dismissed. The comic (and its related windows) now only closes after the confirmation has been acknowledged.
+- Fixed the same flash-and-vanish issue affecting the "invalid filenames corrected" confirmation: when saving (as part of closing the comic) triggers an automatic fix of invalid characters in filenames, the confirmation could disappear before being read, for the same underlying reason as the two fixes above.
+
 ## [1.5.1] - 2026-07-05 - Emergency fix for broken save-and-close flow, minimap polish
 
 - Emergency fix: the save flow was broken. Fixed the "delete the original file?" prompt shown after converting a modified CBR/CB7/CBT/EPUB/PDF to CBZ while closing the comic (via the "save and close" unsaved-changes option) flashing on screen and disappearing before it could be answered. The comic-closing cascade that closes every window related to the comic, added in 1.4.2, was closing this prompt itself right after it appeared, since it fired as soon as the CBZ was written instead of waiting for the user's answer. The comic (and its related windows) now only closes after the prompt has been answered.
