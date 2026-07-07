@@ -93,6 +93,11 @@ html.light .panel-thumb { background: #e8e7e0; }
 html.light .download-section { background: #fafaf8; border-color: rgba(0,0,0,0.08); }
 .download-section h2 { font-family: Georgia, serif; font-size: 36px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
 .download-section p { color: var(--text2); font-size: 15px; margin-bottom: 32px; }
+.dl-formats-note { max-width: 560px; margin: 20px auto 0; text-align: center; font-size: 13px; color: var(--text2); }
+.dl-formats-note p { margin: 0 0 8px; font-size: 13px; }
+.dl-formats-note ul { margin: 0; padding: 0; list-style-position: inside; }
+.dl-formats-note li { margin-bottom: 4px; line-height: 1.5; }
+.dl-formats-note strong { color: var(--text); }
 .meta-row { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
 .meta-item { font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
 .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
@@ -251,12 +256,19 @@ html[lang="tlh-piqad"] #toggle-btn {
   <div class="mosaic-wrap">
     <div class="mosaic-grid" id="mosaic"></div>
   </div>
-  <div class="badge" id="version-badge">v1.5.2 &middot; Windows</div>
+  <div class="badge" id="version-badge">v1.5.3 &middot; Windows</div>
   <h1>Mosaic<span>View</span></h1>
   <p class="hero-sub" data-i18n="hero_sub">Un éditeur de BD numériques.</p>
   <div class="cta-group">
-    <a href="https://github.com/Bruno-Aublet/MosaicView/releases" class="btn-primary" data-i18n="btn_download">&#8659; Télécharger gratuitement</a>
+    <a href="https://github.com/Bruno-Aublet/MosaicView/releases/latest" class="btn-primary" data-i18n="btn_download">&#8659; Télécharger gratuitement</a>
     <a href="https://github.com/Bruno-Aublet/MosaicView" class="btn-secondary" data-i18n="btn_source">Code source &#8594;</a>
+  </div>
+  <div class="dl-formats-note">
+    <p data-i18n="dl_formats_intro">Deux formats de téléchargement sont proposés en bas de la page des releases (section «&nbsp;Assets&nbsp;») :</p>
+    <ul>
+      <li><strong>ONE_DIR</strong> (.zip) &#8212; <span data-i18n="dl_formats_onedir">à extraire ; plusieurs fichiers à garder ensemble dans le même dossier. Démarrage plus rapide.</span></li>
+      <li><strong>ONE_FILE</strong> (.exe) &#8212; <span data-i18n="dl_formats_onefile">un seul fichier autonome, rien d'autre à garder à proximité. Démarrage plus lent.</span></li>
+    </ul>
   </div>
 </section>
 
@@ -321,7 +333,14 @@ html[lang="tlh-piqad"] #toggle-btn {
   <h2 data-i18n="dl_title">Prêt à organiser votre collection ?</h2>
   <p data-i18n="dl_sub">Gratuit, open source, sans installation complexe. Windows uniquement.</p>
   <div class="cta-group">
-    <a href="https://github.com/Bruno-Aublet/MosaicView/releases" class="btn-primary" data-i18n="btn_dl2">&#8659; Télécharger MosaicView</a>
+    <a href="https://github.com/Bruno-Aublet/MosaicView/releases/latest" class="btn-primary" data-i18n="btn_dl2">&#8659; Télécharger MosaicView</a>
+  </div>
+  <div class="dl-formats-note">
+    <p data-i18n="dl_formats_intro">Deux formats de téléchargement sont proposés en bas de la page des releases (section «&nbsp;Assets&nbsp;») :</p>
+    <ul>
+      <li><strong>ONE_DIR</strong> (.zip) &#8212; <span data-i18n="dl_formats_onedir">à extraire ; plusieurs fichiers à garder ensemble dans le même dossier. Démarrage plus rapide.</span></li>
+      <li><strong>ONE_FILE</strong> (.exe) &#8212; <span data-i18n="dl_formats_onefile">un seul fichier autonome, rien d'autre à garder à proximité. Démarrage plus lent.</span></li>
+    </ul>
   </div>
   <div class="meta-row">
     <span class="meta-item"><span class="meta-dot"></span> Python / PySide6</span>
@@ -385,6 +404,9 @@ const translations = {
     "dl_title": "Prêt à organiser votre collection ?",
     "dl_sub": "Gratuit, open source, sans installation complexe. Windows uniquement.",
     "btn_dl2": "Télécharger MosaicView",
+    "dl_formats_intro": "Deux formats de téléchargement sont proposés en bas de la page des releases (section « Assets ») :",
+    "dl_formats_onedir": "à extraire ; plusieurs fichiers à garder ensemble dans le même dossier. Démarrage plus rapide.",
+    "dl_formats_onefile": "un seul fichier autonome, rien d'autre à garder à proximité. Démarrage plus lent.",
     "footer_by": "Fait avec Claude Code par",
     "lang_names": [
       "Allemand",
@@ -487,6 +509,9 @@ const translations = {
     "dl_title": "Ready to organize your collection?",
     "dl_sub": "Free, open source, no complex installation. Windows only.",
     "btn_dl2": "Download MosaicView",
+    "dl_formats_intro": "Two download formats are offered at the bottom of the releases page (“Assets” section):",
+    "dl_formats_onedir": "to extract; several files must be kept together in the same folder. Faster startup.",
+    "dl_formats_onefile": "a single self-contained file, nothing else to keep nearby. Slower startup.",
     "footer_by": "Made with Claude Code by",
     "lang_names": [
       "German",
@@ -589,6 +614,9 @@ const translations = {
     "dl_title": "Bereit, Ihre Sammlung zu organisieren?",
     "dl_sub": "Kostenlos, Open Source, keine komplexe Installation. Nur Windows.",
     "btn_dl2": "MosaicView herunterladen",
+    "dl_formats_intro": "Am Ende der Releases-Seite (Abschnitt « Assets ») werden zwei Download-Formate angeboten:",
+    "dl_formats_onedir": "zum Entpacken; mehrere Dateien müssen zusammen im selben Ordner bleiben. Schnellerer Start.",
+    "dl_formats_onefile": "eine einzelne eigenständige Datei, sonst nichts in der Nähe nötig. Langsamerer Start.",
     "footer_by": "Erstellt mit Claude Code von",
     "lang_names": [
       "Deutsch",
@@ -691,6 +719,9 @@ const translations = {
     "dl_title": "¿Listo para organizar tu colección?",
     "dl_sub": "Gratis, código abierto, sin instalación compleja. Solo Windows.",
     "btn_dl2": "Descargar MosaicView",
+    "dl_formats_intro": "Se ofrecen dos formatos de descarga al final de la página de releases (sección « Assets »):",
+    "dl_formats_onedir": "para extraer; varios archivos deben mantenerse juntos en la misma carpeta. Inicio más rápido.",
+    "dl_formats_onefile": "un único archivo autónomo, sin nada más que mantener cerca. Inicio más lento.",
     "footer_by": "Hecho con Claude Code por",
     "lang_names": [
       "Alemán",
@@ -793,6 +824,9 @@ const translations = {
     "dl_title": "Pronto a organizzare la tua collezione?",
     "dl_sub": "Gratuito, open source, senza installazione complessa. Solo Windows.",
     "btn_dl2": "Scarica MosaicView",
+    "dl_formats_intro": "Due formati di download sono proposti in fondo alla pagina delle release (sezione « Assets »):",
+    "dl_formats_onedir": "da estrarre; più file da tenere insieme nella stessa cartella. Avvio più rapido.",
+    "dl_formats_onefile": "un unico file autonomo, nient'altro da tenere vicino. Avvio più lento.",
     "footer_by": "Realizzato con Claude Code da",
     "lang_names": [
       "Tedesco",
@@ -895,6 +929,9 @@ const translations = {
     "dl_title": "Pronto para organizar sua coleção?",
     "dl_sub": "Gratuito, código aberto, sem instalação complexa. Somente Windows.",
     "btn_dl2": "Baixar MosaicView",
+    "dl_formats_intro": "Dois formatos de download são propostos no final da página de releases (secção « Assets »):",
+    "dl_formats_onedir": "para extrair; vários ficheiros a manter juntos na mesma pasta. Arranque mais rápido.",
+    "dl_formats_onefile": "um único ficheiro autónomo, sem mais nada para manter por perto. Arranque mais lento.",
     "footer_by": "Feito com Claude Code por",
     "lang_names": [
       "Alemão",
@@ -997,6 +1034,9 @@ const translations = {
     "dl_title": "Klaar om je collectie te organiseren?",
     "dl_sub": "Gratis, open source, geen complexe installatie. Alleen Windows.",
     "btn_dl2": "MosaicView downloaden",
+    "dl_formats_intro": "Onderaan de releases-pagina (sectie « Assets ») worden twee downloadformaten aangeboden:",
+    "dl_formats_onedir": "uit te pakken; meerdere bestanden moeten samen in dezelfde map blijven. Snellere opstart.",
+    "dl_formats_onefile": "één op zichzelf staand bestand, verder niets nodig in de buurt. Tragere opstart.",
     "footer_by": "Gemaakt met Claude Code door",
     "lang_names": [
       "Duits",
@@ -1099,6 +1139,9 @@ const translations = {
     "dl_title": "Redo att organisera din samling?",
     "dl_sub": "Gratis, öppen källkod, ingen komplex installation. Endast Windows.",
     "btn_dl2": "Ladda ned MosaicView",
+    "dl_formats_intro": "Två nedladdningsformat erbjuds längst ner på releases-sidan (avsnittet « Assets »):",
+    "dl_formats_onedir": "att packa upp; flera filer måste hållas tillsammans i samma mapp. Snabbare start.",
+    "dl_formats_onefile": "en enda fristående fil, inget annat behövs i närheten. Långsammare start.",
     "footer_by": "Gjord med Claude Code av",
     "lang_names": [
       "Tyska",
@@ -1201,6 +1244,9 @@ const translations = {
     "dl_title": "Klar til å organisere samlingen din?",
     "dl_sub": "Gratis, åpen kildekode, ingen kompleks installasjon. Bare Windows.",
     "btn_dl2": "Last ned MosaicView",
+    "dl_formats_intro": "To nedlastingsformater tilbys nederst på utgivelsessiden (delen « Assets »):",
+    "dl_formats_onedir": "å pakke ut; flere filer må holdes sammen i samme mappe. Raskere oppstart.",
+    "dl_formats_onefile": "én frittstående fil, ikke noe annet å ha i nærheten. Tregere oppstart.",
     "footer_by": "Laget med Claude Code av",
     "lang_names": [
       "Tysk",
@@ -1303,6 +1349,9 @@ const translations = {
     "dl_title": "Klar til at organisere din samling?",
     "dl_sub": "Gratis, open source, ingen kompleks installation. Kun Windows.",
     "btn_dl2": "Download MosaicView",
+    "dl_formats_intro": "To downloadformater tilbydes nederst på udgivelsessiden (sektionen « Assets »):",
+    "dl_formats_onedir": "skal udpakkes; flere filer skal holdes sammen i samme mappe. Hurtigere opstart.",
+    "dl_formats_onefile": "en enkelt selvstændig fil, intet andet at holde i nærheden. Langsommere opstart.",
     "footer_by": "Lavet med Claude Code af",
     "lang_names": [
       "Tysk",
@@ -1405,6 +1454,9 @@ const translations = {
     "dl_title": "Valmis järjestämään kokoelmasi?",
     "dl_sub": "Ilmainen, avoimen lähdekoodin, ei monimutkaista asennusta. Vain Windows.",
     "btn_dl2": "Lataa MosaicView",
+    "dl_formats_intro": "Julkaisusivun alaosassa (« Assets »-osio) tarjotaan kaksi latausmuotoa:",
+    "dl_formats_onedir": "purettava; useita tiedostoja pidettävä yhdessä samassa kansiossa. Nopeampi käynnistys.",
+    "dl_formats_onefile": "yksi itsenäinen tiedosto, ei muuta pidettävää lähellä. Hitaampi käynnistys.",
     "footer_by": "Tehty Claude Codella käyttäjän toimesta",
     "lang_names": [
       "Saksa",
@@ -1507,6 +1559,9 @@ const translations = {
     "dl_title": "Gotowy do organizacji swojej kolekcji?",
     "dl_sub": "Darmowy, open source, bez skomplikowanej instalacji. Tylko Windows.",
     "btn_dl2": "Pobierz MosaicView",
+    "dl_formats_intro": "U dołu strony wydań (sekcja « Assets ») dostępne są dwa formaty pobierania:",
+    "dl_formats_onedir": "do rozpakowania; kilka plików trzeba trzymać razem w tym samym folderze. Szybszy start.",
+    "dl_formats_onefile": "pojedynczy samodzielny plik, nic więcej nie trzeba trzymać obok. Wolniejszy start.",
     "footer_by": "Zrobione z Claude Code przez",
     "lang_names": [
       "Niemiecki",
@@ -1609,6 +1664,9 @@ const translations = {
     "dl_title": "Připraveni uspořádat svou sbírku?",
     "dl_sub": "Zdarma, open source, bez složité instalace. Pouze Windows.",
     "btn_dl2": "Stáhnout MosaicView",
+    "dl_formats_intro": "Ve spodní části stránky s vydáními (sekce „ Assets “) jsou nabízeny dva formáty ke stažení:",
+    "dl_formats_onedir": "k rozbalení; více souborů je třeba uchovávat společně ve stejné složce. Rychlejší spuštění.",
+    "dl_formats_onefile": "jediný samostatný soubor, nic dalšího není potřeba mít poblíž. Pomalejší spuštění.",
     "footer_by": "Vytvořeno s Claude Code od",
     "lang_names": [
       "Němčina",
@@ -1711,6 +1769,9 @@ const translations = {
     "dl_title": "Pripravení usporiadať svoju zbierku?",
     "dl_sub": "Zadarmo, open source, bez zložitej inštalácie. Iba Windows.",
     "btn_dl2": "Stiahnuť MosaicView",
+    "dl_formats_intro": "V spodnej časti stránky s vydaniami (sekcia „ Assets “) sú ponúkané dva formáty na stiahnutie:",
+    "dl_formats_onedir": "na rozbalenie; viacero súborov treba udržiavať spolu v tom istom priečinku. Rýchlejšie spustenie.",
+    "dl_formats_onefile": "jediný samostatný súbor, nič iné netreba mať nablízku. Pomalšie spustenie.",
     "footer_by": "Vytvorené s Claude Code od",
     "lang_names": [
       "Nemčina",
@@ -1813,6 +1874,9 @@ const translations = {
     "dl_title": "Készen áll gyűjteménye rendezésére?",
     "dl_sub": "Ingyenes, nyílt forrású, összetett telepítés nélkül. Csak Windows.",
     "btn_dl2": "MosaicView letöltése",
+    "dl_formats_intro": "A kiadások oldalának alján („ Assets ” szakasz) két letöltési formátum érhető el:",
+    "dl_formats_onedir": "kicsomagolandó; több fájlt együtt kell tartani ugyanabban a mappában. Gyorsabb indulás.",
+    "dl_formats_onefile": "egyetlen önálló fájl, semmi mást nem kell a közelben tartani. Lassabb indulás.",
     "footer_by": "Készült Claude Code-dal",
     "lang_names": [
       "Német",
@@ -1915,6 +1979,9 @@ const translations = {
     "dl_title": "Gata să vă organizați colecția?",
     "dl_sub": "Gratuit, open source, fără instalare complexă. Numai Windows.",
     "btn_dl2": "Descărcați MosaicView",
+    "dl_formats_intro": "Două formate de descărcare sunt propuse în partea de jos a paginii de lansări (secțiunea „ Assets ”):",
+    "dl_formats_onedir": "de extras; mai multe fișiere trebuie păstrate împreună în același folder. Pornire mai rapidă.",
+    "dl_formats_onefile": "un singur fișier autonom, nimic altceva de păstrat în apropiere. Pornire mai lentă.",
     "footer_by": "Realizat cu Claude Code de",
     "lang_names": [
       "Germană",
@@ -2017,6 +2084,9 @@ const translations = {
     "dl_title": "Spremni organizirati svoju zbirku?",
     "dl_sub": "Besplatno, open source, bez složene instalacije. Samo Windows.",
     "btn_dl2": "Preuzmi MosaicView",
+    "dl_formats_intro": "Na dnu stranice izdanja (odjeljak „ Assets ”) nude se dva formata za preuzimanje:",
+    "dl_formats_onedir": "za raspakiravanje; više datoteka treba čuvati zajedno u istoj mapi. Brže pokretanje.",
+    "dl_formats_onefile": "jedna samostalna datoteka, ništa drugo ne treba držati u blizini. Sporije pokretanje.",
     "footer_by": "Napravljeno s Claude Code od",
     "lang_names": [
       "Njemački",
@@ -2119,6 +2189,9 @@ const translations = {
     "dl_title": "Pripravljeni organizirati svojo zbirko?",
     "dl_sub": "Brezplačno, odprta koda, brez zapletene namestitve. Samo Windows.",
     "btn_dl2": "Prenesi MosaicView",
+    "dl_formats_intro": "Na dnu strani z izdajami (razdelek » Assets «) sta na voljo dva formata za prenos:",
+    "dl_formats_onedir": "za razpakiranje; več datotek je treba hraniti skupaj v isti mapi. Hitrejši zagon.",
+    "dl_formats_onefile": "ena sama samostojna datoteka, nič drugega ni treba imeti v bližini. Počasnejši zagon.",
     "footer_by": "Narejeno s Claude Code od",
     "lang_names": [
       "Nemščina",
@@ -2221,6 +2294,9 @@ const translations = {
     "dl_title": "Готови да организирате колекцията си?",
     "dl_sub": "Безплатно, с отворен код, без сложна инсталация. Само Windows.",
     "btn_dl2": "Изтегли MosaicView",
+    "dl_formats_intro": "В долната част на страницата с версии (секция „ Assets “) се предлагат два формата за изтегляне:",
+    "dl_formats_onedir": "за разархивиране; няколко файла трябва да се пазят заедно в една и съща папка. По-бързо стартиране.",
+    "dl_formats_onefile": "единичен самостоятелен файл, не се налага нищо друго наблизо. По-бавно стартиране.",
     "footer_by": "Направено с Claude Code от",
     "lang_names": [
       "Немски",
@@ -2323,6 +2399,9 @@ const translations = {
     "dl_title": "Готові організувати свою колекцію?",
     "dl_sub": "Безкоштовно, з відкритим кодом, без складного встановлення. Тільки Windows.",
     "btn_dl2": "Завантажити MosaicView",
+    "dl_formats_intro": "Унизу сторінки релізів (розділ « Assets ») пропонуються два формати завантаження:",
+    "dl_formats_onedir": "для розпакування; кілька файлів потрібно тримати разом в одній папці. Швидший запуск.",
+    "dl_formats_onefile": "єдиний самостійний файл, більше нічого тримати поруч не потрібно. Повільніший запуск.",
     "footer_by": "Створено з Claude Code",
     "lang_names": [
       "Німецька",
@@ -2425,6 +2504,9 @@ const translations = {
     "dl_title": "Έτοιμοι να οργανώσετε τη συλλογή σας;",
     "dl_sub": "Δωρεάν, ανοιχτού κώδικα, χωρίς πολύπλοκη εγκατάσταση. Μόνο Windows.",
     "btn_dl2": "Λήψη MosaicView",
+    "dl_formats_intro": "Στο κάτω μέρος της σελίδας εκδόσεων (ενότητα « Assets ») προσφέρονται δύο μορφές λήψης:",
+    "dl_formats_onedir": "προς εξαγωγή· πολλά αρχεία πρέπει να παραμένουν μαζί στον ίδιο φάκελο. Ταχύτερη εκκίνηση.",
+    "dl_formats_onefile": "ένα μόνο αυτόνομο αρχείο, τίποτα άλλο δεν χρειάζεται κοντά. Πιο αργή εκκίνηση.",
     "footer_by": "Φτιαγμένο με Claude Code από τον",
     "lang_names": [
       "Γερμανικά",
@@ -2527,6 +2609,9 @@ const translations = {
     "dl_title": "Koleksiyonunuzu düzenlemeye hazır mısınız?",
     "dl_sub": "Ücretsiz, açık kaynak, karmaşık kurulum yok. Yalnızca Windows.",
     "btn_dl2": "MosaicView'u indir",
+    "dl_formats_intro": "Sürümler sayfasının altında (“ Assets ” bölümü) iki indirme biçimi sunulur:",
+    "dl_formats_onedir": "çıkarılması gerekir; birden çok dosya aynı klasörde birlikte tutulmalıdır. Daha hızlı başlangıç.",
+    "dl_formats_onefile": "tek başına yeterli tek bir dosya, yakınında başka bir şey tutmaya gerek yok. Daha yavaş başlangıç.",
     "footer_by": "Claude Code ile yapıldı",
     "lang_names": [
       "Almanca",
@@ -2629,6 +2714,9 @@ const translations = {
     "dl_title": "هل أنت مستعد لتنظيم مجموعتك؟",
     "dl_sub": "مجاني ومفتوح المصدر وبدون تثبيت معقد. لنظام Windows فقط.",
     "btn_dl2": "تنزيل MosaicView",
+    "dl_formats_intro": "يُقترح تنسيقان للتنزيل أسفل صفحة الإصدارات (قسم «Assets»):",
+    "dl_formats_onedir": "يجب استخراجه؛ يجب الاحتفاظ بعدة ملفات معًا في نفس المجلد. بدء تشغيل أسرع.",
+    "dl_formats_onefile": "ملف واحد مستقل بذاته، لا حاجة للاحتفاظ بأي شيء آخر بجانبه. بدء تشغيل أبطأ.",
     "footer_by": "صُنع بـ Claude Code بواسطة",
     "lang_names": [
       "الألمانية",
@@ -2731,6 +2819,9 @@ const translations = {
     "dl_title": "Petq e kazmakerpeq dzer zhoghovatsun?",
     "dl_sub": "Anvchar, bac kawd, bets bazmapokhel teghadrum: Miayin Windows:",
     "btn_dl2": "Bnernabel MosaicView",
+    "dl_formats_intro": "Երկու ներբեռնման ձևաչափ է առաջարկվում թողարկումների էջի ներքևում («Assets» բաժինը՝",
+    "dl_formats_onedir": "պետք է հանել արխիվից; մի քանի ֆայլեր պետք է պահվեն միասին նույն թղթապանակում։ Ավելի արագ մեկնարկ։",
+    "dl_formats_onefile": "մեկ ինքնուրույն ֆայլ, ոչինչ այլ բան պահելու կարիք չկա մոտակայքում։ Ավելի դանդաղ մեկնարկ։",
     "footer_by": "Prastrel e Claude Code-ov",
     "lang_names": [
       "Gyermanerenm",
@@ -2833,6 +2924,9 @@ const translations = {
     "dl_title": "Valmis oma kogu korraldama?",
     "dl_sub": "Tasuta, avatud lähtekoodiga, keeruka installatsioonita. Ainult Windows.",
     "btn_dl2": "Laadi alla MosaicView",
+    "dl_formats_intro": "Väljalaskelehe allosas (jaotis « Assets ») pakutakse kahte allalaadimisvormingut:",
+    "dl_formats_onedir": "lahtipakkimiseks; mitu faili tuleb hoida koos samas kaustas. Kiirem käivitumine.",
+    "dl_formats_onefile": "üksik iseseisev fail, midagi muud ei ole vaja läheduses hoida. Aeglasem käivitumine.",
     "footer_by": "Tehtud Claude Code'iga",
     "lang_names": [
       "Saksa",
@@ -2935,6 +3029,9 @@ const translations = {
     "dl_title": "Gatavs kārtot savu kolekciju?",
     "dl_sub": "Bezmaksas, atvērtā koda, bez sarežģītas instalācijas. Tikai Windows.",
     "btn_dl2": "Lejupielādēt MosaicView",
+    "dl_formats_intro": "Izlaidumu lapas apakšā (sadaļa « Assets ») tiek piedāvāti divi lejupielādes formāti:",
+    "dl_formats_onedir": "jāatspiež; vairāki faili jātur kopā tajā pašā mapē. Ātrāka palaišana.",
+    "dl_formats_onefile": "viens patstāvīgs fails, nekas cits nav jātur tuvumā. Lēnāka palaišana.",
     "footer_by": "Izveidots ar Claude Code",
     "lang_names": [
       "Vācu",
@@ -3037,6 +3134,9 @@ const translations = {
     "dl_title": "Pasiruošę tvarkyti kolekciją?",
     "dl_sub": "Nemokama, atviro kodo, be sudėtingo diegimo. Tik Windows.",
     "btn_dl2": "Atsisiųsti MosaicView",
+    "dl_formats_intro": "Leidimų puslapio apačioje (skiltis „ Assets “) siūlomi du atsisiuntimo formatai:",
+    "dl_formats_onedir": "reikia išpakuoti; keli failai turi būti laikomi kartu tame pačiame aplanke. Greitesnis paleidimas.",
+    "dl_formats_onefile": "vienas savarankiškas failas, šalia nieko kito laikyti nereikia. Lėtesnis paleidimas.",
     "footer_by": "Sukurta su Claude Code",
     "lang_names": [
       "Vokiečių",
@@ -3139,6 +3239,9 @@ const translations = {
     "dl_title": "Tilbúin til að skipuleggja safnið þitt?",
     "dl_sub": "Ókeypis, opinn uppspretta, engin flókin uppsetning. Aðeins Windows.",
     "btn_dl2": "Sækja MosaicView",
+    "dl_formats_intro": "Tvö niðurhalssnið eru í boði neðst á útgáfusíðunni (kaflinn „ Assets “):",
+    "dl_formats_onedir": "þarf að afþjappa; halda þarf mörgum skrám saman í sömu möppu. Hraðari ræsing.",
+    "dl_formats_onefile": "ein sjálfstæð skrá, ekkert annað þarf að hafa nálægt. Hægari ræsing.",
     "footer_by": "Gert með Claude Code af",
     "lang_names": [
       "Þýska",
@@ -3241,6 +3344,9 @@ const translations = {
     "dl_title": "Réidh do bhailiúchán a eagrú?",
     "dl_sub": "Saor in aisce, foinse oscailte, gan suiteáil chasta. Windows amháin.",
     "btn_dl2": "Íoslódáil MosaicView",
+    "dl_formats_intro": "Tairgtear dhá fhormáid íoslódála ag bun leathanach na n-eisiúintí (rannán « Assets »):",
+    "dl_formats_onedir": "le baint amach; ní mór roinnt comhad a choinneáil le chéile san fhillteán céanna. Tosú níos tapa.",
+    "dl_formats_onefile": "comhad neamhspleách amháin, gan aon rud eile le coinneáil in aice láimhe. Tosú níos moille.",
     "footer_by": "Déanta le Claude Code ag",
     "lang_names": [
       "Gearmáinis",
@@ -3343,6 +3449,9 @@ const translations = {
     "dl_title": "Lest biex torganizza l-kollezzjoni tiegħek?",
     "dl_sub": "B'xejn, open source, mingħajr installazzjoni kumplessa. Windows biss.",
     "btn_dl2": "Niżżel MosaicView",
+    "dl_formats_intro": "Jiġu offruti żewġ formati ta' download fil-qiegħ tal-paġna tar-releases (taqsima « Assets »):",
+    "dl_formats_onedir": "biex jiġi estratt; diversi fajls iridu jinżammu flimkien fl-istess fowlder. Bidu aktar mgħaġġel.",
+    "dl_formats_onefile": "fajl waħdieni awtonomu, xejn ieħor biex jinżamm fil-qrib. Bidu aktar bil-mod.",
     "footer_by": "Magħmul b'Claude Code minn",
     "lang_names": [
       "Ġermaniż",
@@ -3445,6 +3554,9 @@ const translations = {
     "dl_title": "Siap mengatur koleksi Anda?",
     "dl_sub": "Gratis, open source, tanpa instalasi rumit. Hanya Windows.",
     "btn_dl2": "Unduh MosaicView",
+    "dl_formats_intro": "Dua format unduhan ditawarkan di bagian bawah halaman rilis (bagian « Assets »):",
+    "dl_formats_onedir": "perlu diekstrak; beberapa berkas harus disimpan bersama dalam folder yang sama. Mulai lebih cepat.",
+    "dl_formats_onefile": "satu berkas mandiri, tidak ada yang lain perlu disimpan di dekatnya. Mulai lebih lambat.",
     "footer_by": "Dibuat dengan Claude Code oleh",
     "lang_names": [
       "Jerman",
@@ -3547,6 +3659,9 @@ const translations = {
     "dl_title": "Bersedia menyusun koleksi anda?",
     "dl_sub": "Percuma, sumber terbuka, tiada pemasangan rumit. Windows sahaja.",
     "btn_dl2": "Muat turun MosaicView",
+    "dl_formats_intro": "Dua format muat turun ditawarkan di bahagian bawah halaman keluaran (bahagian « Assets »):",
+    "dl_formats_onedir": "perlu diekstrak; beberapa fail perlu disimpan bersama dalam folder yang sama. Permulaan lebih pantas.",
+    "dl_formats_onefile": "satu fail berdikari, tiada apa-apa lagi perlu disimpan berdekatan. Permulaan lebih perlahan.",
     "footer_by": "Dibuat dengan Claude Code oleh",
     "lang_names": [
       "Jerman",
@@ -3649,6 +3764,9 @@ const translations = {
     "dl_title": "Sẵn sàng tổ chức bộ sưu tập của bạn?",
     "dl_sub": "Miễn phí, mã nguồn mở, không cài đặt phức tạp. Chỉ Windows.",
     "btn_dl2": "Tải xuống MosaicView",
+    "dl_formats_intro": "Hai định dạng tải xuống được cung cấp ở cuối trang phát hành (mục « Assets »):",
+    "dl_formats_onedir": "cần giải nén; nhiều tệp phải được giữ cùng nhau trong cùng một thư mục. Khởi động nhanh hơn.",
+    "dl_formats_onefile": "một tệp độc lập duy nhất, không cần giữ gì khác gần đó. Khởi động chậm hơn.",
     "footer_by": "Được tạo bằng Claude Code bởi",
     "lang_names": [
       "Đức",
@@ -3751,6 +3869,9 @@ const translations = {
     "dl_title": "พร้อมจัดระเบียบคอลเลกชันของคุณหรือยัง?",
     "dl_sub": "ฟรี โอเพนซอร์ส ไม่ต้องติดตั้งซับซ้อน สำหรับ Windows เท่านั้น",
     "btn_dl2": "ดาวน์โหลด MosaicView",
+    "dl_formats_intro": "มีการเสนอรูปแบบการดาวน์โหลดสองแบบที่ด้านล่างของหน้ารีลีส (ส่วน «Assets»):",
+    "dl_formats_onedir": "ต้องแตกไฟล์; ต้องเก็บหลายไฟล์ไว้ด้วยกันในโฟลเดอร์เดียวกัน เริ่มทำงานเร็วกว่า",
+    "dl_formats_onefile": "ไฟล์เดี่ยวที่สมบูรณ์ในตัวเอง ไม่ต้องเก็บอย่างอื่นไว้ใกล้ ๆ เริ่มทำงานช้ากว่า",
     "footer_by": "สร้างด้วย Claude Code โดย",
     "lang_names": [
       "เยอรมัน",
@@ -3853,6 +3974,9 @@ const translations = {
     "dl_title": "अपना संग्रह व्यवस्थित करने के लिए तैयार हैं?",
     "dl_sub": "मुफ्त, ओपन सोर्स, जटिल इंस्टॉलेशन के बिना। केवल Windows।",
     "btn_dl2": "MosaicView डाउनलोड करें",
+    "dl_formats_intro": "रिलीज़ पेज के नीचे («Assets» सेक्शन) दो डाउनलोड फ़ॉर्मैट दिए गए हैं:",
+    "dl_formats_onedir": "एक्सट्रैक्ट करना होगा; कई फ़ाइलों को एक ही फ़ोल्डर में साथ रखना ज़रूरी है। तेज़ शुरुआत।",
+    "dl_formats_onefile": "एक ही स्वतंत्र फ़ाइल, पास में कुछ और रखने की ज़रूरत नहीं। धीमी शुरुआत।",
     "footer_by": "Claude Code के साथ बनाया गया",
     "lang_names": [
       "जर्मन",
@@ -3955,6 +4079,9 @@ const translations = {
     "dl_title": "உங்கள் சேகரிப்பை ஒழுங்கமைக்க தயாரா?",
     "dl_sub": "இலவசம், திறந்த மூலம், சிக்கலான நிறுவல் இல்லை. Windows மட்டுமே.",
     "btn_dl2": "MosaicView பதிவிறக்கவும்",
+    "dl_formats_intro": "வெளியீடுகள் பக்கத்தின் கீழே («Assets» பிரிவில்) இரண்டு பதிவிறக்க வடிவங்கள் வழங்கப்படுகின்றன:",
+    "dl_formats_onedir": "பிரித்தெடுக்க வேண்டும்; பல கோப்புகளை ஒரே கோப்புறையில் ஒன்றாக வைத்திருக்க வேண்டும். வேகமான தொடக்கம்.",
+    "dl_formats_onefile": "ஒரே ஒரு தன்னிறைவான கோப்பு, அருகில் வேறு எதையும் வைக்க வேண்டியதில்லை. மெதுவான தொடக்கம்.",
     "footer_by": "Claude Code மூலம் உருவாக்கப்பட்டது",
     "lang_names": [
       "ஜெர்மன்",
@@ -4057,6 +4184,9 @@ const translations = {
     "dl_title": "コレクションを整理する準備はできていますか？",
     "dl_sub": "無料、オープンソース、複雑なインストール不要。Windowsのみ。",
     "btn_dl2": "MosaicViewをダウンロード",
+    "dl_formats_intro": "リリースページ下部（「Assets」セクション）で2つのダウンロード形式が提供されています。",
+    "dl_formats_onedir": "展開が必要。複数のファイルを同じフォルダにまとめて保管する必要あり。起動が速い。",
+    "dl_formats_onefile": "単一の自己完結型ファイル。近くに他に保管するものは不要。起動が遅い。",
     "footer_by": "Claude Codeで制作",
     "lang_names": [
       "ドイツ語",
@@ -4159,6 +4289,9 @@ const translations = {
     "dl_title": "컬렉션을 정리할 준비가 되셨나요?",
     "dl_sub": "무료, 오픈 소스, 복잡한 설치 없음. Windows 전용.",
     "btn_dl2": "MosaicView 다운로드",
+    "dl_formats_intro": "릴리스 페이지 하단(「Assets」 섹션)에서 두 가지 다운로드 형식이 제공됩니다:",
+    "dl_formats_onedir": "압축을 풀어야 함; 여러 파일을 같은 폴더에 함께 보관해야 함. 시작이 더 빠름.",
+    "dl_formats_onefile": "단일 독립 실행 파일로, 근처에 다른 것을 보관할 필요 없음. 시작이 더 느림.",
     "footer_by": "Claude Code로 제작",
     "lang_names": [
       "독일어",
@@ -4261,6 +4394,9 @@ const translations = {
     "dl_title": "准备好整理您的收藏了吗?",
     "dl_sub": "免费，开源，无复杂安装。仅支持Windows。",
     "btn_dl2": "下载MosaicView",
+    "dl_formats_intro": "发布页面底部（「Assets」部分）提供两种下载格式:",
+    "dl_formats_onedir": "需要解压；多个文件必须保存在同一个文件夹中。启动更快。",
+    "dl_formats_onefile": "单个独立文件，不需要在旁边保留其他任何东西。启动较慢。",
     "footer_by": "使用Claude Code制作",
     "lang_names": [
       "德语",
@@ -4363,6 +4499,9 @@ const translations = {
     "dl_title": "準備好整理您的收藏了嗎?",
     "dl_sub": "免費、開源、無複雜安裝。僅支援Windows。",
     "btn_dl2": "下載MosaicView",
+    "dl_formats_intro": "發布頁面底部（「Assets」部分）提供兩種下載格式:",
+    "dl_formats_onedir": "需要解壓縮；多個檔案必須保存在同一個資料夾中。啟動更快。",
+    "dl_formats_onefile": "單一獨立檔案，不需要在旁邊保留其他任何東西。啟動較慢。",
     "footer_by": "使用Claude Code製作",
     "lang_names": [
       "德語",
@@ -4465,6 +4604,9 @@ const translations = {
     "dl_title": "De' naQ yIngaH DaneH'a'?",
     "dl_sub": "Doch Dalo'be' – mIwHa', Windows neH.",
     "btn_dl2": "MosaicView yInIH",
+    "dl_formats_intro": "cha' De'wI' hIvje' yInIHlu'meH lut mIn bIng chen (\"Assets\" ghom):",
+    "dl_formats_onedir": "yIpoSmoH – law' De'wI' wa' bIw Daq bIw pong. tugh chen.",
+    "dl_formats_onefile": "wa' De'wI' neH – pagh latlh Daq bIw pong. QIt chen.",
     "footer_by": "Claude Code lo'lu' – vumpu'",
     "lang_names": [
       "DoychDaq Hol",
@@ -4567,6 +4709,9 @@ const translations = {
     "dl_title": "Merë parë i lingwi?",
     "dl_sub": "Ilúvë – mardë Windows.",
     "btn_dl2": "Luhta MosaicView",
+    "dl_formats_intro": "Atta rongë hostaina nostar rango antaina i métima yesta yáve (\"Assets\" ando):",
+    "dl_formats_onedir": "má etelehta; rimbë ainu má hepta as imbë hosto erya. Rincë yesta.",
+    "dl_formats_onefile": "erya ainu ilfirin, alwa alwa hepta harë sen. Landë yesta.",
     "footer_by": "Tana Claude Code –",
     "lang_names": [
       "Teudisk",
@@ -4669,6 +4814,9 @@ const translations = {
     "dl_title": "Lhûg deiro i pharf lîn?",
     "dl_sub": "Dîn – parf Windows.",
     "btn_dl2": "Ias MosaicView",
+    "dl_formats_intro": "Tâd echil-hostad annen ned dad i thand hâd (\"Assets\" bess):",
+    "dl_formats_onedir": "ledho i chammad; venn thî e-vaith bo naur amar min. Thand yestad.",
+    "dl_formats_onefile": "erui thand ú-govaded, ú-baw bess dad harn. Lend yestad.",
     "footer_by": "Naen Claude Code –",
     "lang_names": [
       "Doithaneg",
@@ -4729,7 +4877,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "tlh-piqad": {
-    "badge": "v1.5.2 · Windows",
+    "badge": "v1.5.3 · Windows",
     "hero_sub": " kk  . CBZ, CBR, CB7  PF  , ,   –  .",
     "btn_download": " –  ",
     "btn_source": "  →",
@@ -4771,6 +4919,9 @@ const translations = {
     "dl_title": "   ?",
     "dl_sub": "  – , Wids .",
     "btn_dl2": "MsicVi ",
+    "dl_formats_intro": "  h      (\"Assets\" ):",
+    "dl_formats_onedir": " –       .  .",
+    "dl_formats_onefile": "   –     .  .",
     "footer_by": "Cd Cd  – ",
     "lang_names": [
       " ",
@@ -4831,7 +4982,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "qya-tengwar": {
-    "badge": "v1.5.2 · Windows",
+    "badge": "v1.5.3 · Windows",
     "hero_sub": "  : ⸱ ⸱     CBZ⸱ CBR⸱ CB7  PDF     :",
     "btn_download": "    ",
     "btn_source": "  →",
@@ -4873,6 +5024,9 @@ const translations = {
     "dl_title": "   ",
     "dl_sub": "   Windows:",
     "btn_dl2": " MosaicView",
+    "dl_formats_intro": "          (\"Assets\" ):",
+    "dl_formats_onedir": " ;        .  .",
+    "dl_formats_onefile": "  ,     .  .",
     "footer_by": " Claude Code ",
     "lang_names": [
       "",
@@ -4933,7 +5087,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "sjn-tengwar": {
-    "badge": "v1.5.2 · Windows",
+    "badge": "v1.5.3 · Windows",
     "hero_sub": "  : ⸱ ⸱      CBZ⸱ CBR⸱ CB7  PDF     :",
     "btn_download": "     ",
     "btn_source": "  →",
@@ -4975,6 +5129,9 @@ const translations = {
     "dl_title": "    ",
     "dl_sub": "   Windows:",
     "btn_dl2": " MosaicView",
+    "dl_formats_intro": " -       (\"Assets\" ):",
+    "dl_formats_onedir": "  ;   -    .  .",
+    "dl_formats_onefile": "  -, -   .  .",
     "footer_by": " Claude Code ",
     "lang_names": [
       "",
@@ -5129,7 +5286,7 @@ const GRID_SIZE = 24;
 function pad(n) { return String(n).padStart(2, '0'); }
 
 // Version is embedded at build time
-document.getElementById('version-badge').textContent = 'v1.5.2 · Windows';
+document.getElementById('version-badge').textContent = 'v1.5.3 · Windows';
 
 // ── dual panel thumbnails ──────────────────────────────────────
 const panelLeft = document.getElementById('panel-left');

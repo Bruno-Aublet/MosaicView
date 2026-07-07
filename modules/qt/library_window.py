@@ -240,6 +240,9 @@ _ALL_COLUMNS = [
     ('library.col_file_modified_at', 'file_modified_at'),
     ('library.col_indexed_at',       'indexed_at'),
 ]
+# Remarque : 'media_type' n'apparaît pas dans _ALL_COLUMNS (colonnes du
+# tableau) — c'est un champ virtuel de recherche uniquement, comme
+# 'comicvine_format'. Pas de colonne affichable correspondante.
 
 # Colonnes visibles par défaut
 _DEFAULT_VISIBLE = {
@@ -291,6 +294,7 @@ _ALL_FIELDS = [
     ('library.col_file_size',        'file_size'),
     ('library.col_filename',         'filename'),
     ('library.col_file_extension',   'file_extension'),
+    ('library.col_media_type',       'media_type'),
     ('library.col_language',         'language_iso'),
     ('metadata.format',              'format'),
     ('library.col_age_rating',       'age_rating'),
@@ -343,6 +347,16 @@ _OPS_COMICVINE_FORMAT = [
     ('library.search_op_cv_new',   'cv_new'),
     ('library.search_op_cv_none',  'cv_none'),
 ]
+_OPS_MEDIA_TYPE = [
+    ('library.search_op_any',        'any'),
+    ('library.search_op_mt_comics',  'mt_comics'),
+    ('library.search_op_mt_ebooks',  'mt_ebooks'),
+    ('library.search_op_mt_pdf',     'mt_pdf'),
+    ('library.search_op_mt_images',  'mt_images'),
+    ('library.search_op_mt_video',   'mt_video'),
+    ('library.search_op_mt_audio',   'mt_audio'),
+    ('library.search_op_mt_other',   'mt_other'),
+]
 _OPS_DATE = [
     ('library.search_op_before',    'before'),
     ('library.search_op_after',     'after'),
@@ -359,9 +373,10 @@ _OPS_DATE = [
 
 _BOOL_FIELDS = {'is_read', 'has_comicinfo', 'can_have_comicinfo', 'black_and_white', 'manga',
                 'series_complete'}
-# Champ virtuel (pas de valeur libre à saisir, juste un choix d'opérateur) :
-# calculé depuis la colonne 'web' existante, jamais stocké en base ni réindexé.
-_ENUM_FIELDS = {'comicvine_format'}
+# Champs virtuels (pas de valeur libre à saisir, juste un choix d'opérateur) :
+# calculés depuis une colonne existante ('web' / 'file_extension'), jamais
+# stockés en base ni réindexés.
+_ENUM_FIELDS = {'comicvine_format', 'media_type'}
 _NUM_FIELDS  = {'page_count', 'file_size', 'year', 'month', 'day', 'volume', 'number',
                 'count', 'story_arc_number', 'alternate_number', 'alternate_count'}
 _DATE_FIELDS = {'file_modified_at', 'indexed_at'}
@@ -382,6 +397,8 @@ _EMPTY_NUM_COLS  = {'volume', 'number', 'year', 'count', 'story_arc_number',
 def _ops_for_field(field):
     if field == 'is_read':
         return _OPS_IS_READ
+    if field == 'media_type':
+        return _OPS_MEDIA_TYPE
     if field in _ENUM_FIELDS:
         return _OPS_COMICVINE_FORMAT
     if field in _BOOL_FIELDS:
@@ -525,6 +542,13 @@ class _PreviewWorker(QThread):
                             with zf.open(cover_path) as f:
                                 img = Image.open(f)
                                 img.load()
+                except Exception:
+                    pass
+
+            elif ext in _IMG + ('.tiff', '.tif'):
+                try:
+                    img = Image.open(self.abs_path)
+                    img.load()
                 except Exception:
                     pass
 
@@ -1099,7 +1123,9 @@ class _FieldRow(QWidget):
         op = self._op_combo.currentData() if self._op_combo else 'any'
         if op in ('any',):
             return False
-        if op in ('empty', 'not_empty', 'true', 'false', 'cv_old', 'cv_new', 'cv_none'):
+        if op in ('empty', 'not_empty', 'true', 'false', 'cv_old', 'cv_new', 'cv_none',
+                  'mt_comics', 'mt_ebooks', 'mt_pdf', 'mt_images', 'mt_video', 'mt_audio',
+                  'mt_other'):
             return True
         val = self._value_edit.text().strip() if self._value_edit else ''
         return bool(val)
@@ -1174,7 +1200,9 @@ class _FieldRow(QWidget):
                 return [{'field': self._field, 'op': op,
                          'value': (val1, val2), 'link': 'and'}]
             val = self._value_edit.text().strip()
-            if (op not in ('empty', 'not_empty', 'true', 'false', 'cv_old', 'cv_new', 'cv_none')
+            if (op not in ('empty', 'not_empty', 'true', 'false', 'cv_old', 'cv_new', 'cv_none',
+                            'mt_comics', 'mt_ebooks', 'mt_pdf', 'mt_images', 'mt_video',
+                            'mt_audio', 'mt_other')
                     and not val):
                 return []
             # Pour les champs date, = et ≠ utilisent LIKE/NOT LIKE (prefix ISO)
@@ -1220,6 +1248,7 @@ class LibraryWindow(QWidget):
         self._scan_last_event = None
         self._scan_lang_handler = None
         self._load_worker = None
+        self._convert_worker = None
         self._load_overlay_holder = [None]
         self._load_cancel_holder = [None]
         self._load_cancelled = False
@@ -1485,7 +1514,8 @@ class LibraryWindow(QWidget):
         self._preview_path_lbl.setWordWrap(True)
         self._preview_path_lbl.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         self._preview_path_lbl.setOpenExternalLinks(False)
-        self._preview_path_lbl.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+        self._preview_path_lbl.setTextInteractionFlags(
+            Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard | Qt.LinksAccessibleByMouse)
         self._preview_path_lbl.setContextMenuPolicy(Qt.CustomContextMenu)
         self._preview_path_lbl.customContextMenuRequested.connect(lambda pos: self._meta_label_context_menu(self._preview_path_lbl, pos))
         self._preview_path_lbl.linkActivated.connect(self._preview_open_in_explorer)
@@ -1567,6 +1597,7 @@ class LibraryWindow(QWidget):
         self._table.horizontalHeader().sectionMoved.connect(self._on_section_moved)
         self._table.horizontalHeader().setMouseTracking(True)
         self._overlay_tip.track(self._btn_export, '')
+        self._overlay_tip.track(self._btn_scan, '')
         self._table.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self._table.verticalHeader().setDefaultSectionSize(22)
         self._table.verticalHeader().setVisible(False)
@@ -2371,6 +2402,11 @@ class LibraryWindow(QWidget):
             act_edit_ci.setEnabled(self._selection_has_comicinfo())
             act_edit_ci.triggered.connect(self._action_edit_comicinfo)
             menu.addAction(act_edit_ci)
+        menu.addSeparator()
+        act_convert = QAction(_('library.convert_to_cbz'), menu)
+        act_convert.setEnabled(not self._is_loading() and self._selection_is_convertible_archive())
+        act_convert.triggered.connect(self._action_convert_to_cbz)
+        menu.addAction(act_convert)
         menu.exec(tbl.viewport().mapToGlobal(pos))
 
     def _open_in_mosaicview(self):
@@ -2716,12 +2752,17 @@ class LibraryWindow(QWidget):
                     rows_to_delete.append(row_idx)
             for row_idx in reversed(rows_to_delete):
                 tbl.removeRow(row_idx)
-            # Mettre à jour les lignes modifiées
+            # Mettre à jour les lignes modifiées + collecter les ids déjà présents
+            # (un seul passage sur le tableau, au lieu de le rescanner pour
+            # chaque nouvelle ligne — sinon O(nouveaux × taille_tableau), qui
+            # devient rédhibitoire dès quelques milliers de nouveaux fichiers)
+            existing_ids = set()
             for row_idx in range(tbl.rowCount()):
                 item0 = tbl.item(row_idx, 0)
                 if item0 is None:
                     continue
                 comic_id = item0.data(Qt.UserRole)
+                existing_ids.add(comic_id)
                 if comic_id not in fresh_dict:
                     continue
                 row = fresh_dict[comic_id]
@@ -2730,10 +2771,7 @@ class LibraryWindow(QWidget):
                     tbl.setItem(row_idx, c, self._make_cell_item(col, val, comic_id))
             # Ajouter les nouvelles lignes
             for comic_id, row in fresh_dict.items():
-                if not any(
-                    tbl.item(r, 0) and tbl.item(r, 0).data(Qt.UserRole) == comic_id
-                    for r in range(tbl.rowCount())
-                ):
+                if comic_id not in existing_ids:
                     row_idx = tbl.rowCount()
                     tbl.insertRow(row_idx)
                     for c, (_k, col) in enumerate(visible):
@@ -2819,7 +2857,7 @@ class LibraryWindow(QWidget):
             f"border: 1px solid {theme.get('separator','#aaaaaa')}; "
             f"font-family: '{font.family()}'; font-size: {font.pointSize()}pt; }} "
             f"QMenu::item:selected {{ background: #3399ff; color: #ffffff; }} "
-            f"QMenu::item:disabled {{ color: {theme.get('disabled','#888888')}; }}"
+            f"QMenu::item:disabled {{ color: {theme.get('disabled','#aaaaaa')}; }}"
         )
         for fp in recent:
             import os as _os
@@ -3009,6 +3047,10 @@ class LibraryWindow(QWidget):
             _('library.export_results_tooltip').replace('\n', '<br>'),
             widget=self._btn_export
         )
+        self._overlay_tip.set_tracked_html(
+            _('library.db_scan_tooltip').replace('\n', '<br>'),
+            widget=self._btn_scan
+        )
         self._ignore_section_moved = True
         key_map = {f: k for k, f in _ALL_COLUMNS}
         headers = [_wt(key_map[f]) for f in self._visible_cols if f in key_map]
@@ -3051,6 +3093,194 @@ class LibraryWindow(QWidget):
         row = next((r for r in self._rows if r['id'] == ids[0]), None)
         return bool(row and row['has_comicinfo'])
 
+    _CONVERTIBLE_EXTS = ('.cbr', '.cb7', '.cbt')
+
+    def _selection_is_convertible_archive(self) -> bool:
+        """Retourne True si exactement une ligne est sélectionnée et que son
+        fichier est un .cbr/.cb7/.cbt (convertible en .cbz)."""
+        if not self._db:
+            return False
+        ids = self._selected_ids()
+        if len(ids) != 1:
+            return False
+        abs_path = self._db.get_absolute_path(ids[0])
+        if not abs_path:
+            return False
+        return os.path.splitext(abs_path)[1].lower() in self._CONVERTIBLE_EXTS
+
+    def _action_convert_to_cbz(self):
+        """Point d'entrée menu contextuel : convertit le fichier sélectionné
+        (.cbr/.cb7/.cbt) en .cbz, même dossier/même nom."""
+        if not self._db or self._is_loading():
+            return
+        if not self._selection_is_convertible_archive():
+            return
+        ids = self._selected_ids()
+        abs_path = self._db.get_absolute_path(ids[0])
+        if not abs_path or not os.path.isfile(abs_path):
+            return
+        self._convert_file_to_cbz(abs_path, old_id=ids[0])
+
+    def _convert_file_to_cbz(self, abs_path: str, old_id: int, on_done=None):
+        """Convertit une archive .cbr/.cb7/.cbt en .cbz (même dossier, même
+        nom). Non bloquant : extraction dans un thread (LoadWorker), avec le
+        même dialogue de correction d'extension que le panneau normal si le
+        format réel détecté diffère de l'extension déclarée. Propose ensuite
+        (SaveSuccessDialog) de supprimer le fichier d'origine, puis réindexe
+        la bibliothèque. on_done(new_path: str | None) est appelé à la fin
+        (None = échec/annulation)."""
+        import zipfile
+        from modules.qt.archive_loader import LoadWorker, ExtensionCorrectionDialog
+        from modules.qt.utils import zip_compression_kwargs
+        from modules.qt.config_manager import get_config_manager as _gcm
+        from modules.qt.file_operations_qt import SaveSuccessDialog, _safe_delete
+
+        db = self._db
+
+        def _finish(new_path):
+            if on_done is not None:
+                on_done(new_path)
+
+        if self._convert_worker is not None:
+            return _finish(None)
+
+        worker = LoadWorker([abs_path], multi=False)
+        self._convert_worker = worker
+
+        def _cleanup():
+            try:
+                worker.progress.disconnect()
+                worker.load_finished.disconnect()
+                worker.error.disconnect()
+                worker.cancelled.disconnect()
+                worker.need_ext_dialog.disconnect()
+            except RuntimeError:
+                pass
+            self._convert_worker = None
+            worker.deleteLater()
+
+        def _on_need_ext_dialog(filepath, detected, declared):
+            dlg = ExtensionCorrectionDialog(self, filepath, detected, declared)
+            dlg.ask_async(lambda choice: worker.set_ext_result(choice))
+
+        def _on_error(_msg):
+            _cleanup()
+            _finish(None)
+
+        def _on_cancelled():
+            _cleanup()
+            _finish(None)
+
+        def _on_load_finished(entries, errors, actual_filepath):
+            source_path = actual_filepath or abs_path
+            _cleanup()
+            new_path = os.path.splitext(source_path)[0] + ".cbz"
+            if os.path.exists(new_path):
+                self._show_error(_('library.convert_to_cbz_target_exists', path=new_path))
+                return _finish(None)
+            comp_level = _gcm().get_zip_compression_level()
+            try:
+                with zipfile.ZipFile(new_path, "w", **zip_compression_kwargs(comp_level)) as zf:
+                    for entry in entries:
+                        if entry.get("bytes") is not None and not entry.get("is_dir"):
+                            zf.writestr(entry["orig_name"], entry["bytes"])
+            except Exception as e:
+                self._show_error(_('library.convert_to_cbz_error_message', error=str(e)))
+                return _finish(None)
+
+            def _after_choice(delete_original: bool):
+                deleted_old = False
+                if delete_original:
+                    try:
+                        if os.path.exists(source_path):
+                            _safe_delete(source_path)
+                        deleted_old = True
+                    except Exception as e:
+                        self._show_error(_('messages.errors.delete_error', error=str(e)))
+                db.reindex_files([new_path])
+                if deleted_old:
+                    db.remove_by_id(old_id)
+                self._refresh_row_after_convert(old_id if deleted_old else None, new_path)
+                _finish(new_path)
+
+            SaveSuccessDialog(
+                self,
+                "messages.info.cbz_converted.title",
+                "messages.info.cbz_converted.message",
+                new_path,
+                "messages.info.cbz_converted.question",
+                on_done=_after_choice,
+                question_kwargs={"ext": os.path.splitext(source_path)[1].lstrip(".").upper()},
+            )
+
+        worker.progress.connect(lambda _p: None)
+        worker.load_finished.connect(_on_load_finished)
+        worker.error.connect(_on_error)
+        worker.cancelled.connect(_on_cancelled)
+        worker.need_ext_dialog.connect(_on_need_ext_dialog)
+        worker.start()
+
+    def _refresh_row_after_convert(self, old_id: int | None, new_abs_path: str):
+        """Rafraîchit la bibliothèque après conversion CBZ : retire la ligne
+        de l'ancien fichier (s'il a été supprimé, old_id fourni) et ajoute/
+        met à jour la ligne du nouveau .cbz. Le nouveau fichier a forcément
+        un id différent (relative_path a changé)."""
+        db = self._db
+        fresh_row = db.get_by_filepath(new_abs_path)
+        if not fresh_row:
+            return
+        new_id = fresh_row['id']
+        key_map = {f: k for k, f in _ALL_COLUMNS}
+        visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
+
+        if old_id is not None:
+            self._main_rows = [r for r in self._main_rows if r['id'] != old_id]
+        found = False
+        for i, r in enumerate(self._main_rows):
+            if r['id'] == new_id:
+                self._main_rows[i] = fresh_row
+                found = True
+        if not found:
+            self._main_rows.append(fresh_row)
+
+        def _patch_tbl(tbl):
+            rows_to_delete = []
+            for row_idx in range(tbl.rowCount()):
+                item0 = tbl.item(row_idx, 0)
+                if item0 is not None and old_id is not None and item0.data(Qt.UserRole) == old_id:
+                    rows_to_delete.append(row_idx)
+            for row_idx in reversed(rows_to_delete):
+                tbl.removeRow(row_idx)
+
+            updated = False
+            for row_idx in range(tbl.rowCount()):
+                item0 = tbl.item(row_idx, 0)
+                if item0 is None or item0.data(Qt.UserRole) != new_id:
+                    continue
+                updated = True
+                for c, (_k, col) in enumerate(visible):
+                    val = fresh_row[col] if col in fresh_row.keys() else None
+                    tbl.setItem(row_idx, c, self._make_cell_item(col, val, new_id))
+            if not updated:
+                row_idx = tbl.rowCount()
+                tbl.insertRow(row_idx)
+                for c, (_k, col) in enumerate(visible):
+                    val = fresh_row[col] if col in fresh_row.keys() else None
+                    tbl.setItem(row_idx, c, self._make_cell_item(col, val, new_id))
+
+        _patch_tbl(self._table)
+        if self._filter_active:
+            if old_id is not None:
+                self._rows = [r for r in self._rows if r['id'] != old_id]
+            found = False
+            for i, r in enumerate(self._rows):
+                if r['id'] == new_id:
+                    self._rows[i] = fresh_row
+                    found = True
+            if not found:
+                self._rows.append(fresh_row)
+            _patch_tbl(self._filter_table)
+
     def _action_edit_comicinfo(self):
         if not self._db or self._is_loading():
             return
@@ -3060,6 +3290,20 @@ class LibraryWindow(QWidget):
         abs_path = self._db.get_absolute_path(ids[0])
         if not abs_path or not os.path.isfile(abs_path):
             return
+
+        # Édition ComicInfo.xml limitée aux .cbz (écriture directe en zipfile) :
+        # pour les autres formats d'archive, convertir d'abord en .cbz puis
+        # ouvrir l'éditeur sur le nouveau fichier.
+        if os.path.splitext(abs_path)[1].lower() != '.cbz':
+            def _after_convert(new_path):
+                if new_path:
+                    self._open_comicinfo_editor(new_path)
+            self._convert_file_to_cbz(abs_path, old_id=ids[0], on_done=_after_convert)
+            return
+
+        self._open_comicinfo_editor(abs_path)
+
+    def _open_comicinfo_editor(self, abs_path: str):
         db = self._db
 
         # Lit le ComicInfo.xml directement depuis l'archive
@@ -3081,26 +3325,13 @@ class LibraryWindow(QWidget):
         # Crée un entry factice pour la fenêtre d'édition
         entry = {"orig_name": xml_name, "bytes": xml_bytes}
 
-        # Crée un state factice avec images_data minimal pour que la fenêtre
-        # puisse calculer le nombre de pages réel
-        import zipfile as _zf
-        from modules.qt import state as _state_module
-        fake_state = type('_FakeState', (), {
-            'images_data': [],
-            'selected_indices': set(),
-        })()
-        try:
-            with _zf.ZipFile(abs_path, 'r') as zf:
-                IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp',
-                              '.bmp', '.tiff', '.tif', '.jfif')
-                for name in zf.namelist():
-                    ext = os.path.splitext(name)[1].lower()
-                    if ext in IMAGE_EXTS:
-                        fake_state.images_data.append({
-                            'orig_name': name, 'is_image': True,
-                        })
-        except Exception:
-            pass
+        # Panneau virtuel bibliothèque : vrai AppState (images_data +
+        # comic_metadata), sans canvas ni fenêtre, pour que la fenêtre
+        # d'édition puisse calculer le nombre de pages réel
+        from modules.qt.virtual_library_panel import VirtualLibraryPanel
+        virtual_panel = VirtualLibraryPanel()
+        virtual_panel.open_from_file(abs_path)
+        virtual_state = virtual_panel.state
 
         def _on_edit_done(new_filename: str, new_xml_bytes: bytes):
             import zipfile, shutil
@@ -3166,7 +3397,7 @@ class LibraryWindow(QWidget):
                 _patch_tbl(self._filter_table)
 
         from modules.qt.comicinfo_dialog_qt import show_comicinfo_edit_dialog
-        show_comicinfo_edit_dialog(self, entry, _on_edit_done, fake_state)
+        show_comicinfo_edit_dialog(self, entry, _on_edit_done, virtual_state)
 
     def _action_fetch_metadata(self):
         if not self._db or not self._parent_panel or self._is_loading():

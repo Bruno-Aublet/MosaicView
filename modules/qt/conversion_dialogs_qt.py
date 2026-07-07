@@ -216,9 +216,8 @@ def show_conversion_complete_dialog(parent, converted, target_format,
 
     def _handle_action(action):
         if action == "delete_orig":
-            for idx in sorted(state.selected_indices, reverse=True):
-                if idx < len(state.images_data):
-                    state.images_data.pop(idx)
+            orig_ids = {id(e) for e in selected_entries}
+            state.images_data[:] = [e for e in state.images_data if id(e) not in orig_ids]
             state.selected_indices.clear()
         elif action == "delete_conv":
             conv_ids = {id(e) for e in converted_entries}

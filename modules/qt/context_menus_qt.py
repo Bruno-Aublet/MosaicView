@@ -19,14 +19,23 @@ def _make_menu(parent) -> QMenu:
     from modules.qt.font_manager_qt import get_current_font as _get_current_font
     menu = QMenu(parent)
     font = _get_current_font(9)
-    menu.setStyleSheet(f'QMenu {{ font-family: "{font.family()}"; font-size: {font.pointSize()}pt; }}')
+    theme = _state_module.get_current_theme()
+    menu.setStyleSheet(
+        f'QMenu {{ font-family: "{font.family()}"; font-size: {font.pointSize()}pt; }} '
+        f'QMenu::item:disabled {{ color: {theme["disabled"]}; }}'
+    )
     return menu
+
+
+def _disable_action(act: QAction) -> QAction:
+    """Désactive une QAction (item simple ou sous-menu)."""
+    act.setEnabled(False)
+    return act
 
 
 def _add_disabled(menu: QMenu, label: str) -> QAction:
     act = menu.addAction(label)
-    act.setEnabled(False)
-    return act
+    return _disable_action(act)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -83,7 +92,7 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
         menu.addMenu(recent_submenu)
     else:
         act = menu.addMenu(recent_submenu)
-        act.setEnabled(False)
+        _disable_action(act)
 
     if has_file:
         menu.addAction(_("menu.file_close"), callbacks['close_file'])
@@ -113,7 +122,7 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     batch_submenu.addAction(_("menu.batch_img_to_cbz"), callbacks['batch_convert_img_to_cbz'])
     batch_act = menu.addMenu(batch_submenu)
     if not canvas_empty:
-        batch_act.setEnabled(False)
+        _disable_action(batch_act)
 
     menu.addSeparator()
 
@@ -258,7 +267,7 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     sort_submenu.addAction(_("sort_menu.sort_dpi"),        lambda: callbacks['sort_images']("dpi"))
     sort_act = menu.addMenu(sort_submenu)
     if not has_images:
-        sort_act.setEnabled(False)
+        _disable_action(sort_act)
 
     menu.addSeparator()
 
@@ -390,7 +399,7 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
     rotation_submenu.addAction(_("context_menu.image.mirror_vertical"), callbacks['flip_selected_vertical'])
     rot_act = menu.addMenu(rotation_submenu)
     if not has_image_selection:
-        rot_act.setEnabled(False)
+        _disable_action(rot_act)
 
     if has_image_selection:
         menu.addAction(_("context_menu.image.reduce_size"), callbacks['reduce_selected_images_size'])

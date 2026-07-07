@@ -25,9 +25,35 @@ except ImportError:
 
 # Extensions supportées
 _ARCHIVE_EXTS   = {'.cbz', '.cbr', '.cb7', '.cbt', '.zip'}
-_NO_COMICINFO   = {'.pdf', '.jpg', '.jpeg', '.png', '.gif', '.tiff', '.tif',
-                   '.bmp', '.webp', '.epub', '.avif', '.heic', '.heif'}
+_EBOOK_EXTS     = {'.epub', '.mobi', '.azw', '.azw3', '.kfx', '.kepub'}
+_VIDEO_EXTS     = {'.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm',
+                   '.m4v', '.mpg', '.mpeg', '.3gp', '.ts', '.m2ts', '.vob',
+                   '.ogv', '.rm', '.rmvb', '.divx', '.asf', '.f4v',
+                   '.ifo', '.bup'}
+_AUDIO_EXTS     = {'.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.m4a',
+                   '.m4b', '.opus', '.aiff', '.alac', '.ape', '.dsd', '.dsf',
+                   '.amr', '.mid', '.midi', '.ac3', '.dts', '.m3u', '.sub',
+                   '.xma', '.swf', '.url'}
+# Extensions indexées mais sans catégorie de recherche propre : tombent dans
+# "Autres" via le complément NOT IN de _MEDIA_TYPE_CLAUSES['mt_other'].
+_OTHER_SCAN_EXTS = {'.txt', '.doc', '.cue', '.htm', '.html', '.rtf', '.log',
+                    '.xlsx', '.xls', '.placeholder', '.nfo'}
+_NO_COMICINFO   = ({'.pdf', '.jpg', '.jpeg', '.png', '.gif', '.tiff', '.tif',
+                    '.bmp', '.webp', '.avif', '.heic', '.heif'}
+                   | _EBOOK_EXTS | _VIDEO_EXTS | _AUDIO_EXTS | _OTHER_SCAN_EXTS)
 _ALL_EXTS       = _ARCHIVE_EXTS | _NO_COMICINFO
+
+# Catégories du champ virtuel 'media_type' (calculé depuis file_extension,
+# non stocké en base). _MEDIA_TYPE_COMICS/_EBOOKS/_PDF/_IMAGES/_VIDEO/_AUDIO
+# doivent rester disjointes ; tout le reste (dont _OTHER_SCAN_EXTS) tombe
+# dans "Autres".
+_MEDIA_TYPE_COMICS = {'.cbz', '.cbr', '.cb7', '.cbt'}
+_MEDIA_TYPE_EBOOKS = _EBOOK_EXTS
+_MEDIA_TYPE_PDF    = {'.pdf'}
+_MEDIA_TYPE_IMAGES = {'.jpg', '.jpeg', '.bmp', '.png', '.tif', '.tiff', '.webp',
+                      '.gif', '.avif', '.heic', '.heif'}
+_MEDIA_TYPE_VIDEO  = _VIDEO_EXTS
+_MEDIA_TYPE_AUDIO  = _AUDIO_EXTS
 
 # Champs ComicInfo stockés dans la DB (correspond à parse_comic_info_xml)
 _COMICINFO_FIELDS = [
@@ -568,6 +594,12 @@ class LibraryDB:
             self._index_file(rel, abs_path, mtime, now, existing_id=existing_id)
         self._conn.commit()
 
+    def remove_by_id(self, comic_id: int):
+        """Supprime une ligne de la bibliothèque (fichier disparu du disque,
+        ex. remplacé par une conversion). N'affecte pas le fichier réel."""
+        self._conn.execute("DELETE FROM comics WHERE id=?", (comic_id,))
+        self._conn.commit()
+
     # ── is_read ───────────────────────────────────────────────────────────────
 
     def set_read(self, ids: list[int], is_read: bool):
@@ -638,6 +670,27 @@ class LibraryDB:
                    "))",
     }
 
+    @staticmethod
+    def _in_clause(exts):
+        return "file_extension IN (" + ",".join(f"'{e}'" for e in sorted(exts)) + ")"
+
+    # Clauses SQL pour le champ virtuel 'media_type' (non stocké, calculé
+    # depuis 'file_extension'). Les catégories sont disjointes (cf. sets
+    # _MEDIA_TYPE_* définis en haut du module) ; 'mt_other' est le complément.
+    _MEDIA_TYPE_CLAUSES = {
+        'mt_comics': _in_clause.__func__(_MEDIA_TYPE_COMICS),
+        'mt_ebooks': _in_clause.__func__(_MEDIA_TYPE_EBOOKS),
+        'mt_pdf':    _in_clause.__func__(_MEDIA_TYPE_PDF),
+        'mt_images': _in_clause.__func__(_MEDIA_TYPE_IMAGES),
+        'mt_video':  _in_clause.__func__(_MEDIA_TYPE_VIDEO),
+        'mt_audio':  _in_clause.__func__(_MEDIA_TYPE_AUDIO),
+        'mt_other':  "file_extension NOT IN (" + ",".join(
+            f"'{e}'" for e in sorted(_MEDIA_TYPE_COMICS | _MEDIA_TYPE_EBOOKS
+                                      | _MEDIA_TYPE_PDF | _MEDIA_TYPE_IMAGES
+                                      | _MEDIA_TYPE_VIDEO | _MEDIA_TYPE_AUDIO)
+        ) + ")",
+    }
+
     def search(self, criteria: list[dict], order_by: str = 'series',
                order_asc: bool = True,
                progress_callback=None) -> list[sqlite3.Row]:
@@ -667,6 +720,16 @@ class LibraryDB:
 
             if field == 'comicvine_format':
                 clause = self._COMICVINE_FORMAT_CLAUSES.get(op)
+                if clause is None:
+                    continue
+                if field not in groups:
+                    groups[field] = []
+                    group_params[field] = []
+                groups[field].append((clause, [], link))
+                continue
+
+            if field == 'media_type':
+                clause = self._MEDIA_TYPE_CLAUSES.get(op)
                 if clause is None:
                     continue
                 if field not in groups:

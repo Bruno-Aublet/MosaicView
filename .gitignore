@@ -18,6 +18,7 @@ venv/
 
 # Notes de l'assistant Claude (spécifiques à cette machine)
 .claude/
+CLAUDE.md
 idees_ajustements.txt
 idees.txt
 
