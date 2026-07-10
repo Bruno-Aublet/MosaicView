@@ -1724,6 +1724,7 @@
     "loading": "Įkeliama...\n{percent}%",
     "scan_progress": "Nuskaitoma...",
     "fetch_metadata": "Gauti metaduomenis",
+    "check_updates_metadata": "Tikrinti metaduomenų naujinimus",
     "table_header_tooltip": "Vilkite stulpelius perkelti.\nTempkite stulpelius keisti dydžiui.\nSpustelėkite dešiniu mygtuku, kad pridėtumėte ar paslėptumėte stulpelius.",
     "cell_not_set": "neužpildyta",
     "cell_not_set_num": "N/U",

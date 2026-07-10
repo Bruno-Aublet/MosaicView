@@ -1724,6 +1724,7 @@
     "loading": "Laadimine...\n{percent}%",
     "scan_progress": "Skannimine...",
     "fetch_metadata": "Laadi metaandmed",
+    "check_updates_metadata": "Kontrolli metaandmete uuendusi",
     "table_header_tooltip": "Lohista veergude liigutamiseks.\nVenita veerge suuruse muutmiseks.\nParemklikk veergude lisamiseks või peitmiseks.",
     "cell_not_set": "täitmata",
     "cell_not_set_num": "T/T",

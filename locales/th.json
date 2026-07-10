@@ -1724,6 +1724,7 @@
     "loading": "กำลังโหลด...\n{percent}%",
     "scan_progress": "กำลังสแกน...",
     "fetch_metadata": "ดึงข้อมูลเมตา",
+    "check_updates_metadata": "ตรวจสอบการอัปเดตข้อมูลเมตา",
     "table_header_tooltip": "ลากเพื่อย้ายคอลัมน์\nยืดคอลัมน์เพื่อปรับขนาด\nคลิกขวาเพื่อเพิ่มหรือซ่อนคอลัมน์",
     "cell_not_set": "ไม่ได้กรอก",
     "cell_not_set_num": "ไ/ก",

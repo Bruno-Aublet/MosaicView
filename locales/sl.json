@@ -1724,6 +1724,7 @@
     "loading": "Nalaganje...\n{percent}%",
     "scan_progress": "Pregledovanje...",
     "fetch_metadata": "Pridobi metapodatke",
+    "check_updates_metadata": "Preveri posodobitve metapodatkov",
     "table_header_tooltip": "Povlecite za premikanje stolpcev.\nRaztegnite stolpce za spreminjanje velikosti.\nDesni klik za dodajanje ali skrivanje stolpcev.",
     "cell_not_set": "ni izpolnjeno",
     "cell_not_set_num": "N/I",

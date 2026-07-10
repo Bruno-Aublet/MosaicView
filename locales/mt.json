@@ -1724,6 +1724,7 @@
     "loading": "Qed jgħabbi...\n{percent}%",
     "scan_progress": "Qed jiskenja...",
     "fetch_metadata": "Ġib il-metadejta",
+    "check_updates_metadata": "Iċċekkja aġġornamenti tal-metadata",
     "table_header_tooltip": "Iġbed biex tċaqlaq il-kolonni.\nMedd il-kolonni biex tbiddel id-daqs.\nIklikkja bil-lemin biex iżżid jew taħbi l-kolonni.",
     "cell_not_set": "mhux imtela",
     "cell_not_set_num": "M/I",

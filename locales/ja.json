@@ -1724,6 +1724,7 @@
     "loading": "読み込み中...\n{percent}%",
     "scan_progress": "スキャン中...",
     "fetch_metadata": "メタデータを取得",
+    "check_updates_metadata": "メタデータの更新を確認",
     "table_header_tooltip": "列を移動するにはドラッグしてください。\n列をドラッグして幅を変更してください。\n列を追加または非表示にするには右クリックしてください。",
     "cell_not_set": "未入力",
     "cell_not_set_num": "未",

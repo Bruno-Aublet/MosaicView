@@ -1724,6 +1724,7 @@
     "loading": "Se încarcă...\n{percent}%",
     "scan_progress": "Se scanează...",
     "fetch_metadata": "Preluare metadate",
+    "check_updates_metadata": "Verificați actualizările metadatelor",
     "table_header_tooltip": "Trageți pentru a muta coloanele.\nÎntindeți coloanele pentru redimensionare.\nClic dreapta pentru a adăuga sau ascunde coloane.",
     "cell_not_set": "necompletat",
     "cell_not_set_num": "N/C",

@@ -21,9 +21,10 @@ def restore_session(win):
         cfg = get_config_manager()
 
         # Thème (appliqué avant show() pour éviter tout flash)
-        from modules.qt.toggle_theme_qt import apply_theme
+        from modules.qt.toggle_theme_qt import apply_app_theme, apply_theme
         if cfg.get_dark_mode():
             win._state.dark_mode = True
+        apply_app_theme(app)
         apply_theme(app, win._canvas, win._left_panel, win._tab_bar, render=False)
         win._active_panel._update_status_bar()
 

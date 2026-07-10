@@ -1724,6 +1724,7 @@
     "loading": "Memuat...\n{percent}%",
     "scan_progress": "Memindai...",
     "fetch_metadata": "Ambil metadata",
+    "check_updates_metadata": "Periksa pembaruan metadata",
     "table_header_tooltip": "Seret untuk memindahkan kolom.\nRentangkan kolom untuk mengubah ukurannya.\nKlik kanan untuk menambah atau menyembunyikan kolom.",
     "cell_not_set": "tidak diisi",
     "cell_not_set_num": "T/D",

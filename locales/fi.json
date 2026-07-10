@@ -1724,6 +1724,7 @@
     "loading": "Ladataan...\n{percent}%",
     "scan_progress": "Skannataan...",
     "fetch_metadata": "Hae metatiedot",
+    "check_updates_metadata": "Tarkista metatietojen päivitykset",
     "table_header_tooltip": "Vedä siirtääksesi sarakkeita.\nVenytä sarakkeita koon muuttamiseksi.\nOikealla painikkeella voit lisätä tai piilottaa sarakkeita.",
     "cell_not_set": "ei määritetty",
     "cell_not_set_num": "E/M",

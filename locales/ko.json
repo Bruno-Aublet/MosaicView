@@ -1724,6 +1724,7 @@
     "loading": "불러오는 중...\n{percent}%",
     "scan_progress": "스캔 중...",
     "fetch_metadata": "메타데이터 가져오기",
+    "check_updates_metadata": "메타데이터 업데이트 확인",
     "table_header_tooltip": "열을 이동하려면 드래그하세요.\n열 크기를 조정하려면 늘리세요.\n열을 추가하거나 숨기려면 오른쪽 클릭하세요.",
     "cell_not_set": "미입력",
     "cell_not_set_num": "미",

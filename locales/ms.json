@@ -1724,6 +1724,7 @@
     "loading": "Memuatkan...\n{percent}%",
     "scan_progress": "Mengimbas...",
     "fetch_metadata": "Dapatkan metadata",
+    "check_updates_metadata": "Semak kemas kini metadata",
     "table_header_tooltip": "Seret untuk mengalihkan lajur.\nRegangkan lajur untuk mengubah saiznya.\nKlik kanan untuk menambah atau menyembunyikan lajur.",
     "cell_not_set": "tidak diisi",
     "cell_not_set_num": "T/D",

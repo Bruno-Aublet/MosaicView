@@ -1724,6 +1724,7 @@
     "loading": "Loading...\n{percent}%",
     "scan_progress": "Scanning...",
     "fetch_metadata": "Fetch metadata",
+    "check_updates_metadata": "Check for metadata updates",
     "table_header_tooltip": "Drag to move columns.\nStretch columns to resize them.\nRight-click to add or hide columns.",
     "cell_not_set": "not set",
     "cell_not_set_num": "N/A",

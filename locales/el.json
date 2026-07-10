@@ -1667,6 +1667,7 @@
     "col_file_modified_at": "Ημερομηνία τροποποίησης",
     "col_indexed_at": "Ημερομηνία ευρετηρίασης",
     "fetch_metadata": "Ανάκτηση μεταδεδομένων",
+    "check_updates_metadata": "Έλεγχος για ενημερώσεις μεταδεδομένων",
     "mark_read": "Σήμανση ως αναγνωσμένο",
     "mark_unread": "Σήμανση ως μη αναγνωσμένο",
     "open_in_mosaicview": "Άνοιγμα στο MosaicView",

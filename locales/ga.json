@@ -1724,6 +1724,7 @@
     "loading": "Ag luchtú...\n{percent}%",
     "scan_progress": "Ag scanadh...",
     "fetch_metadata": "Faigh meiteashonraí",
+    "check_updates_metadata": "Seiceáil nuashonruithe meiteashonraí",
     "table_header_tooltip": "Tarraing chun colúin a bhogadh.\nSín na colúin chun iad a athmhéadú.\nDéan cliceáil deas chun colúin a chur leis nó a cheilt.",
     "cell_not_set": "gan sonrú",
     "cell_not_set_num": "G/S",

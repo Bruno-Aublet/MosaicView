@@ -1724,6 +1724,7 @@
     "loading": "Ielādē...\n{percent}%",
     "scan_progress": "Skenē...",
     "fetch_metadata": "Iegūt metadatus",
+    "check_updates_metadata": "Pārbaudīt metadatu atjauninājumus",
     "table_header_tooltip": "Velciet, lai pārvietotu kolonnas.\nStiepiet kolonnas, lai mainītu to izmēru.\nAr labo pogu pievienojiet vai paslēpiet kolonnas.",
     "cell_not_set": "nav aizpildīts",
     "cell_not_set_num": "N/A",

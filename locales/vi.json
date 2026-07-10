@@ -1724,6 +1724,7 @@
     "loading": "Đang tải...\n{percent}%",
     "scan_progress": "Đang quét...",
     "fetch_metadata": "Lấy siêu dữ liệu",
+    "check_updates_metadata": "Kiểm tra cập nhật siêu dữ liệu",
     "table_header_tooltip": "Kéo để di chuyển các cột.\nKéo dãn các cột để thay đổi kích thước.\nNhấp chuột phải để thêm hoặc ẩn các cột.",
     "cell_not_set": "chưa điền",
     "cell_not_set_num": "C/Đ",

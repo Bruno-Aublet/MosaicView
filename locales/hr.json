@@ -1724,6 +1724,7 @@
     "loading": "Učitavanje...\n{percent}%",
     "scan_progress": "Skeniranje...",
     "fetch_metadata": "Dohvati metapodatke",
+    "check_updates_metadata": "Provjeri ažuriranja metapodataka",
     "table_header_tooltip": "Povuci za premještanje stupaca.\nRasteži stupce za promjenu veličine.\nDesni klik za dodavanje ili skrivanje stupaca.",
     "cell_not_set": "nije uneseno",
     "cell_not_set_num": "N/U",

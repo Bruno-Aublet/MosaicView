@@ -1724,6 +1724,7 @@
     "loading": "Tentane...\n{percent}%",
     "scan_progress": "Mahtane...",
     "fetch_metadata": "Lerta i quettar",
+    "check_updates_metadata": "Cesta i vinye",
     "table_header_tooltip": "Lahta i telpannar mistar.\nRahta i telpannar quantien.\nHastaina lambenen mistar hya hlaraina.",
     "cell_not_set": "lá quantaina",
     "cell_not_set_num": "l/q",

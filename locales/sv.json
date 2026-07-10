@@ -1724,6 +1724,7 @@
     "loading": "Läser in...\n{percent}%",
     "scan_progress": "Skannar...",
     "fetch_metadata": "Hämta metadata",
+    "check_updates_metadata": "Sök efter metadatauppdateringar",
     "table_header_tooltip": "Dra för att flytta kolumner.\nSträck kolumnerna för att ändra storlek.\nHögerklicka för att lägga till eller dölja kolumner.",
     "cell_not_set": "ej ifyllt",
     "cell_not_set_num": "E/I",

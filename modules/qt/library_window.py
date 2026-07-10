@@ -256,6 +256,7 @@ _DEFAULT_COLUMNS = [c for c in _ALL_COLUMNS if c[1] in _DEFAULT_VISIBLE]
 
 # Tous les champs disponibles pour la recherche
 _ALL_FIELDS = [
+    ('library.col_media_type',       'media_type'),
     ('library.col_series',           'series'),
     ('library.col_title',            'title'),
     ('library.col_number',           'number'),
@@ -294,7 +295,6 @@ _ALL_FIELDS = [
     ('library.col_file_size',        'file_size'),
     ('library.col_filename',         'filename'),
     ('library.col_file_extension',   'file_extension'),
-    ('library.col_media_type',       'media_type'),
     ('library.col_language',         'language_iso'),
     ('metadata.format',              'format'),
     ('library.col_age_rating',       'age_rating'),
@@ -917,6 +917,75 @@ class _SubField(QWidget):
         return self._edit.text().strip()
 
 
+class _MediaTypeSubField(QWidget):
+    """Sous-ligne du critère 'media_type' : combo + bouton OU + bouton ✕.
+
+    Pas de ET/SAUF ici (contrairement à _SubField) : chaque sous-ligne choisit
+    une catégorie exclusive (Comics/E-books/PDF/...), ça n'a pas de sens de
+    demander "ET" entre deux catégories disjointes ; SAUF est déjà couvert en
+    choisissant simplement une autre catégorie.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        row = QHBoxLayout(self)
+        row.setContentsMargins(0, 0, 0, 0)
+        row.setSpacing(4)
+
+        self._combo = QComboBox()
+        self._combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        row.addWidget(self._combo, 1)
+
+        self._btn_or  = QPushButton()
+        self._btn_del = QPushButton()
+        self._btn_del.setObjectName('btn_del')
+        for btn in (self._btn_or, self._btn_del):
+            btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            row.addWidget(btn)
+
+        self._combo.currentIndexChanged.connect(lambda _idx: self._update_btn_states())
+
+    def _update_btn_states(self):
+        self._btn_or.setEnabled(self.op() != 'any')
+
+    def retranslate(self):
+        cur = self._combo.currentData()
+        self._combo.blockSignals(True)
+        self._combo.clear()
+        for i18n_key, op_id in _OPS_MEDIA_TYPE:
+            self._combo.addItem(_(i18n_key), op_id)
+        idx = next((i for i in range(self._combo.count())
+                    if self._combo.itemData(i) == cur), 0)
+        self._combo.setCurrentIndex(idx)
+        self._combo.blockSignals(False)
+        self._btn_or.setText(_('library.search_link_or'))
+        self._btn_del.setText('✕')
+        self._update_btn_states()
+
+    def apply_theme(self, theme, font):
+        fg  = theme['text']
+        dis = theme.get('disabled', '#888888')
+        sep = theme.get('separator', '#aaaaaa')
+        alt = theme.get('toolbar_bg', theme['bg'])
+        btn_ss = (
+            f"QPushButton {{ background: {alt}; color: {fg}; "
+            f"border: 1px solid {sep}; padding: 2px 6px; border-radius: 3px; }} "
+            f"QPushButton:hover {{ background: {sep}; }} "
+            f"QPushButton:disabled {{ color: {dis}; }}"
+            f"QPushButton#btn_del {{ color: #cc0000; }}"
+            f"QPushButton#btn_del:disabled {{ color: {dis}; }}"
+        )
+        self._combo.setStyleSheet(_combo_style(theme))
+        self._combo.setFont(font)
+        self._btn_or.setStyleSheet(btn_ss)
+        self._btn_or.setFont(font)
+        self._btn_del.setStyleSheet(btn_ss)
+        self._btn_del.setFont(font)
+
+    def op(self) -> str:
+        return self._combo.currentData() or 'any'
+
+
 class _FieldRow(QWidget):
     """Une ligne fixe pour un champ donné : label + opérateur + sous-champs."""
 
@@ -926,7 +995,9 @@ class _FieldRow(QWidget):
         self._field      = field
         self._is_text    = (field not in _BOOL_FIELDS and field not in _NUM_FIELDS
                              and field not in _DATE_FIELDS and field not in _ENUM_FIELDS)
+        self._is_media_type = field == 'media_type'
         self._subfields: list[_SubField] = []
+        self._mt_subfields: list[_MediaTypeSubField] = []
         self._theme       = None
         self._font        = None
         self._scroll_area = None
@@ -950,7 +1021,17 @@ class _FieldRow(QWidget):
         self._outer.addWidget(self._label)
 
         # Ligne opérateur + valeur (champs non-texte) ou premier sous-champ (texte)
-        if self._is_text:
+        if self._is_media_type:
+            self._op_combo   = None
+            self._value_edit = None
+            self._and_label  = None
+            self._value_edit2 = None
+            self._mt_container = QVBoxLayout()
+            self._mt_container.setContentsMargins(0, 0, 0, 0)
+            self._mt_container.setSpacing(2)
+            self._outer.addLayout(self._mt_container)
+            self._add_mt_subfield()
+        elif self._is_text:
             self._op_combo   = None
             self._value_edit = None
             self._and_label  = None
@@ -1051,6 +1132,37 @@ class _FieldRow(QWidget):
         last = self._subfields[-1]
         last._btn_del.setEnabled(len(self._subfields) > 1)
 
+    # ── Champ 'media_type' (combo répétable relié par OU) ─────────────────────
+
+    def _add_mt_subfield(self):
+        sf = _MediaTypeSubField(parent=self)
+        sf.retranslate()
+        if self._theme is not None:
+            sf.apply_theme(self._theme, self._font)
+        self._mt_subfields.append(sf)
+        self._mt_container.addWidget(sf)
+        sf._btn_or.clicked.connect(self._on_mt_add)
+        sf._btn_del.clicked.connect(lambda: self._on_mt_del(sf))
+        sf._combo.currentIndexChanged.connect(lambda _idx: self._notify_changed())
+        self._update_mt_del_btns()
+
+    def _on_mt_add(self):
+        self._add_mt_subfield()
+
+    def _on_mt_del(self, sf):
+        if len(self._mt_subfields) <= 1:
+            return
+        self._mt_subfields.remove(sf)
+        self._mt_container.removeWidget(sf)
+        sf.deleteLater()
+        self._update_mt_del_btns()
+        self._notify_changed()
+
+    def _update_mt_del_btns(self):
+        many = len(self._mt_subfields) > 1
+        for sf in self._mt_subfields:
+            sf._btn_del.setEnabled(many)
+
     # ── Champs non-texte (opérateur + valeur) ─────────────────────────────────
 
     def _populate_ops(self):
@@ -1095,6 +1207,9 @@ class _FieldRow(QWidget):
         for sf in self._subfields:
             filt.register(sf._edit, scroll)
             sf._edit.installEventFilter(filt)
+        for sf in self._mt_subfields:
+            filt.register(sf._combo, scroll)
+            sf._combo.installEventFilter(filt)
         if self._op_combo:
             filt.register(self._op_combo, scroll)
             self._op_combo.installEventFilter(filt)
@@ -1118,6 +1233,8 @@ class _FieldRow(QWidget):
             cb()
 
     def has_value(self) -> bool:
+        if self._is_media_type:
+            return any(sf.op() != 'any' for sf in self._mt_subfields)
         if self._is_text:
             return any(sf.value() for sf in self._subfields)
         op = self._op_combo.currentData() if self._op_combo else 'any'
@@ -1132,7 +1249,10 @@ class _FieldRow(QWidget):
 
     def retranslate(self):
         self._label.setText(_(self._i18n_key).upper())
-        if self._is_text:
+        if self._is_media_type:
+            for sf in self._mt_subfields:
+                sf.retranslate()
+        elif self._is_text:
             for sf in self._subfields:
                 sf.retranslate()
         else:
@@ -1159,7 +1279,10 @@ class _FieldRow(QWidget):
         self._sep.setStyleSheet(
             f"QFrame {{ border: none; border-top: 1px solid {sep_col}; }}"
         )
-        if self._is_text:
+        if self._is_media_type:
+            for sf in self._mt_subfields:
+                sf.apply_theme(theme, font)
+        elif self._is_text:
             for sf in self._subfields:
                 sf.apply_theme(theme, font)
         else:
@@ -1176,6 +1299,15 @@ class _FieldRow(QWidget):
 
     def to_criteria(self) -> list[dict]:
         """Retourne une liste de critères (peut être vide)."""
+        if self._is_media_type:
+            result = []
+            for sf in self._mt_subfields:
+                op = sf.op()
+                if op == 'any':
+                    continue
+                result.append({'field': self._field, 'op': op,
+                                'value': '', 'link': 'or'})
+            return result
         if self._is_text:
             result = []
             for i, sf in enumerate(self._subfields):
@@ -1214,7 +1346,12 @@ class _FieldRow(QWidget):
             return [{'field': self._field, 'op': op, 'value': val, 'link': 'and'}]
 
     def clear(self):
-        if self._is_text:
+        if self._is_media_type:
+            # Garder une seule sous-ligne réglée sur "aucun"
+            while len(self._mt_subfields) > 1:
+                self._on_mt_del(self._mt_subfields[-1])
+            self._mt_subfields[0]._combo.setCurrentIndex(0)
+        elif self._is_text:
             # Garder un seul sous-champ vide
             while len(self._subfields) > 1:
                 self._on_del()
@@ -1227,6 +1364,14 @@ class _FieldRow(QWidget):
             self._value_edit.clear()
             self._value_edit2.clear()
             self._op_combo.setCurrentIndex(0)
+
+    def set_op(self, op_id: str):
+        """Présélectionne un opérateur par son id (champs non-texte uniquement)."""
+        if self._op_combo is None:
+            return
+        idx = self._op_combo.findData(op_id)
+        if idx >= 0:
+            self._op_combo.setCurrentIndex(idx)
 
 
 # ── Fenêtre principale ────────────────────────────────────────────────────────
@@ -1381,7 +1526,7 @@ class LibraryWindow(QWidget):
         tb_line2.addWidget(self._btn_reset_cols)
 
         self._btn_fetch_meta = QPushButton()
-        self._btn_fetch_meta.clicked.connect(self._action_fetch_metadata)
+        self._btn_fetch_meta.clicked.connect(self._on_fetch_meta_button_clicked)
         tb_line2.addWidget(self._btn_fetch_meta)
 
         self._btn_edit_comicinfo = QPushButton()
@@ -1416,6 +1561,7 @@ class LibraryWindow(QWidget):
 
         # ── Panneau de recherche (gauche) ──────────────────────────────────
         self._search_panel = QFrame()
+        self._search_panel.setObjectName("librarySearchPanel")
         self._search_panel.setMinimumWidth(50)
         self._search_panel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sp_layout = QVBoxLayout(self._search_panel)
@@ -1438,6 +1584,7 @@ class LibraryWindow(QWidget):
 
         # Zone scrollable pour les critères
         self._criteria_scroll = _FitScrollArea()
+        self._criteria_scroll.setObjectName("libraryCriteriaScroll")
         self._criteria_scroll.setWidgetResizable(True)
         self._criteria_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self._criteria_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -1478,6 +1625,7 @@ class LibraryWindow(QWidget):
             w.installEventFilter(self._home_end_filter)
 
         self._criteria_container = QWidget()
+        self._criteria_container.setObjectName("libraryCriteriaContainer")
         self._criteria_layout = QVBoxLayout(self._criteria_container)
         self._criteria_layout.setContentsMargins(0, 0, 6, 0)
         self._criteria_layout.setSpacing(8)
@@ -2098,6 +2246,7 @@ class LibraryWindow(QWidget):
             self._btn_edit_comicinfo.setEnabled(
                 not self._is_loading() and self._selection_has_comicinfo()
             )
+        self._update_fetch_meta_button()
 
     def _cancel_preview(self):
         if hasattr(self, '_preview_worker') and self._preview_worker is not None:
@@ -2395,8 +2544,12 @@ class LibraryWindow(QWidget):
         menu.addAction(act_open_df)
         if self._parent_panel:
             menu.addSeparator()
-            act_fetch = QAction(_('library.fetch_metadata'), menu)
-            act_fetch.triggered.connect(self._action_fetch_metadata)
+            if self._selection_can_check_updates():
+                act_fetch = QAction(_('library.check_updates_metadata'), menu)
+                act_fetch.triggered.connect(self._action_check_updates_library)
+            else:
+                act_fetch = QAction(_('library.fetch_metadata'), menu)
+                act_fetch.triggered.connect(self._action_fetch_metadata)
             menu.addAction(act_fetch)
             act_edit_ci = QAction(_('comicvine.edit_comicinfo'), menu)
             act_edit_ci.setEnabled(self._selection_has_comicinfo())
@@ -2964,14 +3117,25 @@ class LibraryWindow(QWidget):
         else:
             self.setWindowTitle(_wt('library.window_title_no_db'))
 
-        # Stylesheet globale
-        self.setStyleSheet(
+        # Stylesheet globale — inclut aussi les containers du panneau recherche
+        # (#librarySearchPanel/#libraryCriteriaScroll/#libraryCriteriaContainer)
+        # pour éviter 3 setStyleSheet séparés qui forçaient chacun un repolish
+        # complet de toute la sous-arborescence (54 field rows) à chaque appel.
+        # setStyleSheet() force Qt à repolir les ~760 widgets descendants de
+        # cette fenêtre (coûteux, ~0.3s) : on ne le rappelle que si son contenu
+        # a réellement changé (ex. changement de langue seul, sans changement
+        # de thème, ne doit pas repayer ce coût).
+        new_stylesheet = (
             f"QWidget {{ background: {bg}; color: {fg}; }} "
             f"QFrame {{ border: none; }} "
             f"QScrollArea {{ border: none; }} "
             f"QSplitter::handle {{ background: {sep}; }} "
-            f"QSplitter::handle:horizontal {{ width: 3px; }}"
+            f"QSplitter::handle:horizontal {{ width: 3px; }} "
+            f"#librarySearchPanel, #libraryCriteriaScroll, #libraryCriteriaContainer {{ background: {alt}; }}"
         )
+        if new_stylesheet != getattr(self, '_last_stylesheet', None):
+            self.setStyleSheet(new_stylesheet)
+            self._last_stylesheet = new_stylesheet
 
         # Toolbar
         self._toolbar.setStyleSheet(f"background: {alt};")
@@ -2992,12 +3156,14 @@ class LibraryWindow(QWidget):
             (self._btn_mark_read,   'library.mark_read'),
             (self._btn_mark_unread, 'library.mark_unread'),
             (self._btn_reset_cols,  'library.reset_columns'),
-            (self._btn_fetch_meta,       'library.fetch_metadata'),
             (self._btn_edit_comicinfo,   'comicvine.edit_comicinfo'),
         ):
             btn.setText(_(key))
             btn.setStyleSheet(btn_ss)
             btn.setFont(font9)
+        self._btn_fetch_meta.setStyleSheet(btn_ss)
+        self._btn_fetch_meta.setFont(font9)
+        self._update_fetch_meta_button()
         self._btn_export.setText(_('library.export_results'))
         self._btn_export.setStyleSheet(btn_ss)
         self._btn_export.setFont(font9)
@@ -3010,11 +3176,8 @@ class LibraryWindow(QWidget):
             self._set_result_count(self._rows)
         self._update_toolbar_visibility()
 
-        # Panneau recherche
-        self._search_panel.setStyleSheet(f"background: {alt};")
-        self._criteria_scroll.setStyleSheet(f"background: {alt};")
-        self._criteria_container.setStyleSheet(f"background: {alt};")
-
+        # Panneau recherche — search_panel/criteria_scroll/criteria_container
+        # sont déjà stylés via #objectName dans le stylesheet global ci-dessus
         self._preview_panel.setStyleSheet(f"background: {bg};")
         self._sep_info.setStyleSheet(f"background: {sep}; max-height: 1px; margin: 2px 0px;")
         self._meta_content.setStyleSheet(f"background: {bg};")
@@ -3092,6 +3255,37 @@ class LibraryWindow(QWidget):
             return False
         row = next((r for r in self._rows if r['id'] == ids[0]), None)
         return bool(row and row['has_comicinfo'])
+
+    def _selection_can_check_updates(self) -> bool:
+        """Retourne True si exactement une ligne est sélectionnée, qu'elle a
+        un ComicInfo.xml et qu'une URL ComicVine d'issue exploitable est
+        renseignée dans son champ Web (bascule "Récupérer les métadonnées" /
+        "Vérifier les mises à jour des métadonnées")."""
+        ids = self._selected_ids()
+        if len(ids) != 1:
+            return False
+        row = next((r for r in self._rows if r['id'] == ids[0]), None)
+        if not row or not row['has_comicinfo']:
+            return False
+        from modules.qt.comic_info import get_source_comicvine_issue_id
+        return bool(get_source_comicvine_issue_id({'web': row['web']}))
+
+    def _update_fetch_meta_button(self):
+        """Met à jour le texte du bouton toolbar "Récupérer les métadonnées"
+        / "Vérifier les mises à jour des métadonnées" selon la sélection
+        courante — même bascule que le menu contextuel (has_comicinfo + URL
+        ComicVine d'issue exploitable, sélection unique uniquement)."""
+        if not hasattr(self, '_btn_fetch_meta'):
+            return
+        key = ('library.check_updates_metadata' if self._selection_can_check_updates()
+               else 'library.fetch_metadata')
+        self._btn_fetch_meta.setText(_(key))
+
+    def _on_fetch_meta_button_clicked(self):
+        if self._selection_can_check_updates():
+            self._action_check_updates_library()
+        else:
+            self._action_fetch_metadata()
 
     _CONVERTIBLE_EXTS = ('.cbr', '.cb7', '.cbt')
 
@@ -3467,6 +3661,7 @@ class LibraryWindow(QWidget):
                         if r['id'] in fresh:
                             self._rows[i] = fresh[r['id']]
                     _patch_tbl(self._filter_table, fresh)
+                self._update_fetch_meta_button()
             except Exception:
                 pass
 
@@ -3474,6 +3669,135 @@ class LibraryWindow(QWidget):
         callbacks = self._parent_panel._get_batch_callbacks()
         callbacks['on_batch_complete'] = _on_batch_complete
         show_batch_metadata_dialog(self, files, [], callbacks)
+
+    def _action_check_updates_library(self):
+        """Point d'entrée menu contextuel : vérifie les mises à jour ComicVine
+        du comic sélectionné (has_comicinfo=True + URL d'issue exploitable),
+        sans ouvrir de panneau MosaicView. Lit le ComicInfo.xml via
+        VirtualLibraryPanel, réutilise show_comicvine_update_check, puis
+        réécrit directement le fichier sur disque si l'utilisateur valide."""
+        if not self._db or self._is_loading():
+            return
+        ids = self._selected_ids()
+        if len(ids) != 1:
+            return
+        old_id = ids[0]
+        abs_path = self._db.get_absolute_path(old_id)
+        if not abs_path or not os.path.isfile(abs_path):
+            return
+
+        def _proceed(cbz_path: str, comic_id: int):
+            from modules.qt.virtual_library_panel import VirtualLibraryPanel
+            virtual_panel = VirtualLibraryPanel()
+            if not virtual_panel.open_from_file(cbz_path):
+                return
+            state = virtual_panel.state
+
+            from modules.qt.comic_info import get_source_comicvine_issue_id
+            issue_id = get_source_comicvine_issue_id(state.comic_metadata)
+            if not issue_id:
+                return
+
+            from modules.qt.config_manager import get_config_manager
+            cfg = get_config_manager()
+            api_key = cfg.get_comicvine_api_key()
+            if not api_key:
+                from modules.qt.comicvine_apikey_dialog_qt import show_apikey_dialog
+                dlg = show_apikey_dialog(self, cfg)
+                dlg.accepted.connect(lambda: _proceed(cbz_path, comic_id))
+                return
+
+            def _on_updates_applied():
+                self._write_comicinfo_and_reindex(cbz_path, state)
+
+            from modules.qt.comicvine_update_check_qt import show_comicvine_update_check
+            show_comicvine_update_check(self, state, api_key, issue_id,
+                                        on_done=_on_updates_applied)
+
+        if os.path.splitext(abs_path)[1].lower() != '.cbz':
+            def _after_convert(new_path):
+                if new_path:
+                    fresh_row = self._db.get_by_filepath(new_path)
+                    if fresh_row:
+                        _proceed(new_path, fresh_row['id'])
+            self._convert_file_to_cbz(abs_path, old_id=old_id, on_done=_after_convert)
+            return
+
+        _proceed(abs_path, old_id)
+
+    def _write_comicinfo_and_reindex(self, abs_path: str, state):
+        """Réécrit le ComicInfo.xml (déjà mis à jour en mémoire dans
+        state.images_data par write_comic_metadata_from_scraper) directement
+        dans l'archive .cbz sur disque, puis réindexe la ligne bibliothèque.
+        Même pattern que _open_comicinfo_editor._on_edit_done."""
+        xml_entry = next(
+            (e for e in state.images_data if e.get('orig_name', '').lower().endswith('comicinfo.xml')),
+            None
+        )
+        if not xml_entry or xml_entry.get('bytes') is None:
+            return
+
+        import zipfile, shutil
+        from modules.qt.utils import zip_compression_kwargs
+        from modules.qt.config_manager import get_config_manager as _gcm
+        tmp_path = abs_path + ".tmp_ci"
+        try:
+            with zipfile.ZipFile(abs_path, 'r') as zin, \
+                 zipfile.ZipFile(tmp_path, 'w', **zip_compression_kwargs(_gcm().get_zip_compression_level())) as zout:
+                for item in zin.infolist():
+                    if item.filename.lower().endswith('comicinfo.xml'):
+                        zout.writestr(xml_entry['orig_name'], xml_entry['bytes'])
+                    else:
+                        zout.writestr(item, zin.read(item.filename))
+            shutil.move(tmp_path, abs_path)
+        except Exception:
+            try:
+                os.remove(tmp_path)
+            except OSError:
+                pass
+            return
+
+        db = self._db
+        db.reindex_files([abs_path])
+
+        fresh_row = db.get_by_filepath(abs_path)
+        if not fresh_row:
+            return
+        fresh = {fresh_row['id']: fresh_row}
+
+        key_map = {f: k for k, f in _ALL_COLUMNS}
+        visible = [(key_map[f], f) for f in self._visible_cols if f in key_map]
+
+        for i, r in enumerate(self._main_rows):
+            if r['id'] in fresh:
+                self._main_rows[i] = fresh[r['id']]
+
+        def _patch_tbl(tbl):
+            hdr = tbl.horizontalHeader()
+            sort_col = hdr.sortIndicatorSection()
+            sort_order = hdr.sortIndicatorOrder()
+            tbl.setSortingEnabled(False)
+            for row_idx in range(tbl.rowCount()):
+                item0 = tbl.item(row_idx, 0)
+                if item0 is None:
+                    continue
+                comic_id = item0.data(Qt.UserRole)
+                if comic_id not in fresh:
+                    continue
+                row = fresh[comic_id]
+                for c, (_k, col) in enumerate(visible):
+                    val = row[col] if col in row.keys() else None
+                    tbl.setItem(row_idx, c, self._make_cell_item(col, val, comic_id))
+            tbl.setSortingEnabled(True)
+            tbl.sortByColumn(sort_col, sort_order)
+
+        _patch_tbl(self._table)
+        if self._filter_active:
+            for i, r in enumerate(self._rows):
+                if r['id'] in fresh:
+                    self._rows[i] = fresh[r['id']]
+            _patch_tbl(self._filter_table)
+        self._update_fetch_meta_button()
 
     def _action_export(self):
         if self._is_loading():

@@ -1724,6 +1724,7 @@
     "loading": "Caricamento...\n{percent}%",
     "scan_progress": "Scansione...",
     "fetch_metadata": "Recupera metadati",
+    "check_updates_metadata": "Verifica aggiornamenti metadati",
     "table_header_tooltip": "Trascinare per spostare le colonne.\nAllargare le colonne per ridimensionarle.\nClic destro per aggiungere o nascondere colonne.",
     "cell_not_set": "non specificato",
     "cell_not_set_num": "N/S",

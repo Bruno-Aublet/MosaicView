@@ -1724,6 +1724,7 @@
     "loading": "Načítavanie...\n{percent}%",
     "scan_progress": "Skenovanie...",
     "fetch_metadata": "Načítať metadáta",
+    "check_updates_metadata": "Skontrolovať aktualizácie metadát",
     "table_header_tooltip": "Pretiahnite na presunutie stĺpcov.\nNatahovajte stĺpce na zmenu veľkosti.\nPravý klik na pridanie alebo skrytie stĺpcov.",
     "cell_not_set": "nevyplnené",
     "cell_not_set_num": "N/V",

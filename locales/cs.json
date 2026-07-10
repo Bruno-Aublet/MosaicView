@@ -1724,6 +1724,7 @@
     "loading": "Načítání...\n{percent}%",
     "scan_progress": "Skenování...",
     "fetch_metadata": "Načíst metadata",
+    "check_updates_metadata": "Zkontrolovat aktualizace metadat",
     "table_header_tooltip": "Přetažením přesunete sloupce.\nRoztažením sloupců změníte jejich šířku.\nPravý klik pro přidání nebo skrytí sloupců.",
     "cell_not_set": "nevyplněno",
     "cell_not_set_num": "N/V",

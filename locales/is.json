@@ -1724,6 +1724,7 @@
     "loading": "Hleður...\n{percent}%",
     "scan_progress": "Skannar...",
     "fetch_metadata": "Sækja lýsigögn",
+    "check_updates_metadata": "Athuga hvort til séu uppfærslur á lýsigögnum",
     "table_header_tooltip": "Dragðu til að færa dálka.\nTeygðu dálka til að breyta stærð þeirra.\nHægri smellur til að bæta við eða fela dálka.",
     "cell_not_set": "ekki fyllt út",
     "cell_not_set_num": "E/F",

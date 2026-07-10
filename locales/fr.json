@@ -1529,6 +1529,7 @@
     "col_file_modified_at": "Date de modification",
     "col_indexed_at": "Date d'indexation",
     "fetch_metadata": "Récupérer les métadonnées",
+    "check_updates_metadata": "Vérifier les mises à jour des métadonnées",
     "mark_read": "Marquer comme lu",
     "mark_unread": "Marquer comme non lu",
     "open_in_mosaicview": "Lire dans MosaicView",

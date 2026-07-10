@@ -1724,6 +1724,7 @@
     "loading": "Gonathriel...\n{percent}%",
     "scan_progress": "Prestanneth...",
     "fetch_metadata": "Tolo i pheriannath",
+    "check_updates_metadata": "Cerio i eviad",
     "table_header_tooltip": "Thoro i thiw eryn.\nThaetha i thiw erin daur.\nToglo lammen eryn a dorthren.",
     "cell_not_set": "law peniath",
     "cell_not_set_num": "l/p",

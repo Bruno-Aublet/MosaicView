@@ -1724,6 +1724,7 @@
     "loading": "Yükleniyor...\n{percent}%",
     "scan_progress": "Taranıyor...",
     "fetch_metadata": "Meta verileri al",
+    "check_updates_metadata": "Meta veri güncellemelerini kontrol et",
     "table_header_tooltip": "Sütunları taşımak için sürükleyin.\nSütunları yeniden boyutlandırmak için uzatın.\nSütun eklemek veya gizlemek için sağ tıklayın.",
     "cell_not_set": "belirtilmemiş",
     "cell_not_set_num": "B/Y",

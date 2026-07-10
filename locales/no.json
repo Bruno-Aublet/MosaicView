@@ -1724,6 +1724,7 @@
     "loading": "Laster...\n{percent}%",
     "scan_progress": "Skanner...",
     "fetch_metadata": "Hent metadata",
+    "check_updates_metadata": "Se etter oppdateringer av metadata",
     "table_header_tooltip": "Dra for å flytte kolonner.\nStrekk kolonnene for å endre størrelsen.\nHøyreklikk for å legge til eller skjule kolonner.",
     "cell_not_set": "ikke fylt ut",
     "cell_not_set_num": "I/F",

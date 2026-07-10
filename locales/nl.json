@@ -1724,6 +1724,7 @@
     "loading": "Laden...\n{percent}%",
     "scan_progress": "Scannen...",
     "fetch_metadata": "Metadata ophalen",
+    "check_updates_metadata": "Controleren op metadata-updates",
     "table_header_tooltip": "Slepen om kolommen te verplaatsen.\nKolommen uitrekken om formaat te wijzigen.\nRechtermuisknop om kolommen toe te voegen of te verbergen.",
     "cell_not_set": "niet ingevuld",
     "cell_not_set_num": "N/I",

@@ -1724,6 +1724,7 @@
     "loading": "Indlæser...\n{percent}%",
     "scan_progress": "Scanner...",
     "fetch_metadata": "Hent metadata",
+    "check_updates_metadata": "Tjek for opdateringer af metadata",
     "table_header_tooltip": "Træk for at flytte kolonner.\nStræk kolonner for at ændre størrelse.\nHøjreklik for at tilføje eller skjule kolonner.",
     "cell_not_set": "ikke udfyldt",
     "cell_not_set_num": "I/U",

@@ -1724,6 +1724,7 @@
     "loading": "Betöltés...\n{percent}%",
     "scan_progress": "Vizsgálat...",
     "fetch_metadata": "Metaadatok lekérése",
+    "check_updates_metadata": "Metaadat-frissítések ellenőrzése",
     "table_header_tooltip": "Húzza az oszlopok áthelyezéséhez.\nNyújtsa az oszlopokat az átméretezéshez.\nJobb kattintás az oszlopok hozzáadásához vagy elrejtéséhez.",
     "cell_not_set": "nincs megadva",
     "cell_not_set_num": "N/A",

@@ -1724,6 +1724,7 @@
     "loading": "Ładowanie...\n{percent}%",
     "scan_progress": "Skanowanie...",
     "fetch_metadata": "Pobierz metadane",
+    "check_updates_metadata": "Sprawdź aktualizacje metadanych",
     "table_header_tooltip": "Przeciągnij, aby przenieść kolumny.\nRozciągnij kolumny, aby zmienić ich rozmiar.\nKliknij prawym przyciskiem, aby dodać lub ukryć kolumny.",
     "cell_not_set": "nie wypełniono",
     "cell_not_set_num": "N/W",

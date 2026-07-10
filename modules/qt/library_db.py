@@ -32,12 +32,13 @@ _VIDEO_EXTS     = {'.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm',
                    '.ifo', '.bup'}
 _AUDIO_EXTS     = {'.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.m4a',
                    '.m4b', '.opus', '.aiff', '.alac', '.ape', '.dsd', '.dsf',
-                   '.amr', '.mid', '.midi', '.ac3', '.dts', '.m3u', '.sub',
-                   '.xma', '.swf', '.url'}
+                   '.amr', '.mid', '.midi', '.ac3', '.dts', '.m3u',
+                   '.xma'}
 # Extensions indexées mais sans catégorie de recherche propre : tombent dans
 # "Autres" via le complément NOT IN de _MEDIA_TYPE_CLAUSES['mt_other'].
 _OTHER_SCAN_EXTS = {'.txt', '.doc', '.cue', '.htm', '.html', '.rtf', '.log',
-                    '.xlsx', '.xls', '.placeholder', '.nfo'}
+                    '.xlsx', '.xls', '.placeholder', '.nfo',
+                    '.sub', '.swf', '.url'}
 _NO_COMICINFO   = ({'.pdf', '.jpg', '.jpeg', '.png', '.gif', '.tiff', '.tif',
                     '.bmp', '.webp', '.avif', '.heic', '.heif'}
                    | _EBOOK_EXTS | _VIDEO_EXTS | _AUDIO_EXTS | _OTHER_SCAN_EXTS)

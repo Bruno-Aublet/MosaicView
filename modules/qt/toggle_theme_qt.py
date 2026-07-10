@@ -39,15 +39,20 @@ def _set_titlebar_dark(window, dark: bool, force_repaint: bool = False) -> None:
 
 
 def toggle_theme(app, canvas, left_panel, tab_bar=None):
-    """Bascule dark_mode, sauvegarde, et applique le thème."""
+    """Bascule dark_mode, sauvegarde, et applique le thème (app + panneau actif)."""
     state = _state_module.state
     state.dark_mode = not state.dark_mode
     get_config_manager().set_dark_mode(state.dark_mode)
+    apply_app_theme(app)
     apply_theme(app, canvas, left_panel, tab_bar)
 
 
-def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
-    """Applique le thème courant (depuis state.dark_mode) à l'application Qt."""
+def apply_app_theme(app):
+    """Applique la partie du thème commune à toute l'application (stylesheet
+    global QApplication, palette, barre de titre Windows, retranslate des
+    fenêtres secondaires). À appeler UNE SEULE FOIS par changement de thème,
+    quel que soit le nombre de panneaux — contrairement à apply_theme() qui
+    est spécifique à chaque panneau."""
     theme   = get_current_theme()
     bg         = theme["bg"]
     toolbar    = theme["toolbar_bg"]
@@ -55,8 +60,6 @@ def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
     sep        = theme["separator"]
     tip_bg     = theme["tooltip_bg"]
     tip_fg     = theme["tooltip_fg"]
-    entry      = theme["entry_bg"]
-    icon_hover = theme["icon_hover"]
     sel_bg     = "#3a7bd5"
     from modules.qt.font_manager_qt import get_current_font
     cur_font   = get_current_font(9)
@@ -162,6 +165,7 @@ def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
     """)
 
     # Palette Qt — contrôle les couleurs natives de Fusion (boutons radio, checkboxes, etc.)
+    entry = theme["entry_bg"]
     palette = QPalette()
     palette.setColor(QPalette.Window,          QColor(bg))
     palette.setColor(QPalette.WindowText,      QColor(text))
@@ -173,20 +177,6 @@ def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
     palette.setColor(QPalette.Highlight,       QColor(sel_bg))
     palette.setColor(QPalette.HighlightedText, QColor("#ffffff"))
     app.setPalette(palette)
-
-    canvas._apply_theme_bg()
-    left_panel.setStyleSheet(f"background: {toolbar};")
-    # Propage la couleur de survol aux icônes
-    from modules.qt.icon_toolbar_qt import IconToolbarQt
-    dark = _state_module.state.dark_mode
-    theme_name = "dark" if dark else "light"
-    for child in left_panel.findChildren(IconToolbarQt):
-        child.set_hover_color(icon_hover)
-        child.set_slider_theme(theme_name)
-    if tab_bar is not None:
-        tab_bar.apply_theme()
-    if render:
-        canvas.render_mosaic()
 
     # Met à jour toutes les fenêtres ouvertes qui gèrent le thème
     from modules.qt.license_dialog_qt import _LicenseDialog, _FullLicenseDialog
@@ -206,6 +196,7 @@ def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
 
     # Barre de titre Windows — DWM immédiat, WM_NCACTIVATE après le prochain cycle événementiel
     from PySide6.QtCore import QTimer
+    dark = _state_module.state.dark_mode
     visible = [w for w in QApplication.topLevelWidgets() if w.isVisible()]
     for w in visible:
         _set_titlebar_dark(w, dark, force_repaint=False)
@@ -220,3 +211,27 @@ def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
                                 _DonationDialog, _IconConfigDialog, _BookmarkPopup,
                                 LibraryWindow)):
             widget._retranslate()
+
+
+def apply_theme(app, canvas, left_panel, tab_bar=None, render=True):
+    """Applique la partie du thème spécifique à UN panneau (canvas, left_panel,
+    tab_bar). La partie globale à l'application (stylesheet, palette, dialogs
+    secondaires) est gérée séparément par apply_app_theme(), à appeler une
+    seule fois même en mode split (2 panneaux)."""
+    theme      = get_current_theme()
+    toolbar    = theme["toolbar_bg"]
+    icon_hover = theme["icon_hover"]
+
+    canvas._apply_theme_bg()
+    left_panel.setStyleSheet(f"background: {toolbar};")
+    # Propage la couleur de survol aux icônes
+    from modules.qt.icon_toolbar_qt import IconToolbarQt
+    dark = _state_module.state.dark_mode
+    theme_name = "dark" if dark else "light"
+    for child in left_panel.findChildren(IconToolbarQt):
+        child.set_hover_color(icon_hover)
+        child.set_slider_theme(theme_name)
+    if tab_bar is not None:
+        tab_bar.apply_theme()
+    if render:
+        canvas.render_mosaic()

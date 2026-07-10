@@ -1724,6 +1724,7 @@
     "loading": "...\n{percent}%",
     "scan_progress": "...",
     "fetch_metadata": "  ",
+    "check_updates_metadata": "  ",
     "table_header_tooltip": "   .\n    .\n    .",
     "cell_not_set": " ",
     "cell_not_set_num": "/",

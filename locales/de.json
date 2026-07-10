@@ -1724,6 +1724,7 @@
     "loading": "Wird geladen...\n{percent}%",
     "scan_progress": "Wird gescannt...",
     "fetch_metadata": "Metadaten abrufen",
+    "check_updates_metadata": "Nach Metadaten-Updates suchen",
     "table_header_tooltip": "Ziehen zum Verschieben der Spalten.\nSpalten strecken zum Ändern der Breite.\nRechtsklick zum Hinzufügen oder Ausblenden von Spalten.",
     "cell_not_set": "nicht angegeben",
     "cell_not_set_num": "k.A.",

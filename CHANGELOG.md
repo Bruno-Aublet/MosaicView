@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.4] - 2026-07-10 - Library metadata update check, media type search improvements, theme switch performance
+
+- The library's "Fetch metadata" command (context menu and toolbar button) now turns into "Check for metadata updates" when the selected comic already has a ComicInfo.xml with a usable ComicVine issue URL in its Web field, instead of always offering a fresh name-based search regardless of whether metadata was already fetched before. Reuses the existing "Check for updates" mechanism (re-downloads the issue's metadata, compares it field by field, and lets you apply all changes at once) without opening a visible panel: CBR/CB7/CBT files are converted to CBZ first if needed, and the updated ComicInfo.xml is written straight back to the file on disk.
+- Fixed the SUB, SWF, and URL file extensions being wrongly classified as Audio in the library's "Media type" search criterion: they now fall under Other, where they belong.
+- Moved the "Media type" search criterion to the top of the library search panel, above Series, since it's typically the first thing used to narrow down results.
+- The "Media type" search criterion now supports OR: an "OR" button lets you add another category row (e.g. E-books or PDF) instead of being limited to a single category at a time. The button is greyed out while its row is still set to "(ignore)", since adding another row from an unset choice wouldn't do anything.
+- Significantly sped up switching between light and dark theme (roughly 8s down to 3s in testing) and changing the display language (roughly 0.5s down to 0.25s): the global application stylesheet and the library window's dialog-refresh pass were both being redundantly re-applied once per open panel in split mode instead of once overall, and the library window's own stylesheet was being fully reapplied (forcing Qt to repolish its ~760 child widgets) even when only the language had changed and its colors hadn't.
+
 ## [1.5.3] - 2026-07-07 - Page conversion data-loss fix, library CBZ conversion, media type search, website fixes
 
 - Fixed a serious bug where converting the format of selected pages (e.g. JPG to JPG, used to change compression) while non-image files were also part of the selection (as they normally are after Ctrl+A) could delete those files: choosing "keep the new files" after the conversion deleted every originally selected entry, including the non-image ones that were never touched by the conversion itself, instead of only the images that had actually been converted.

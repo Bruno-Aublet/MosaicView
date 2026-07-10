@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.5.3"
+__version__ = "1.5.4"
 
 import sys
 import os
@@ -336,6 +336,8 @@ class MainWindow(QMainWindow):
         self._active_panel.apply_separator_theme()
         self._active_panel._update_status_bar()
         # Synchronise dark_mode sur tous les autres panneaux et applique le thème
+        # (seule la partie par-panneau : apply_app_theme a déjà tourné une fois
+        # ci-dessus, via toggle_theme(), pas besoin de la rejouer par panneau)
         new_dark = self._active_panel._state.dark_mode
         for p in self._all_panels():
             if p is self._active_panel:

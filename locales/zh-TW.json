@@ -1724,6 +1724,7 @@
     "loading": "載入中...\n{percent}%",
     "scan_progress": "掃描中...",
     "fetch_metadata": "取得中繼資料",
+    "check_updates_metadata": "檢查中繼資料更新",
     "table_header_tooltip": "拖動以移動欄。\n拉伸欄以調整大小。\n按右鍵以新增或隱藏欄。",
     "cell_not_set": "未填寫",
     "cell_not_set_num": "未",
