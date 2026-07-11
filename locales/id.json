@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "gambar",
     "zip_indicator_stored_noop": "File ini tidak dikompresi.\nKlik kanan untuk mengubah tingkat default.",
     "zip_indicator_stored_action": "File ini tidak dikompresi.\nKlik untuk mengompresinya pada tingkat default ({level}).\nKlik kanan untuk mengubah tingkat default.",
-    "duplicate_image": "HALAMAN DUPLIKAT"
+    "duplicate_image": "HALAMAN DUPLIKAT",
+    "duplicate_indicator": "Halaman duplikat terdeteksi dalam file ini.\nKlik untuk membuka jendela pengelolaan halaman duplikat.",
+    "duplicate_indicator_none": "Tidak ada duplikat terdeteksi"
   },
   "help": {
     "title": "MosaicView - Panduan Penggunaan",

@@ -33,6 +33,13 @@ _EXECUTABLE_EXTS = frozenset({
     ".hta", ".cpl", ".jar", ".lnk", ".url", ".scf", ".reg", ".inf",
     ".msc", ".vb", ".sct", ".gadget", ".application", ".appref-ms",
     ".ps1", ".psm1", ".psd1", ".psc1", ".diagcab",
+    # Aide compilée (peut exécuter du code) et scripts Python (exécutés si
+    # Python est installé sur la machine)
+    ".chm", ".py", ".pyw", ".pyz", ".pyzw",
+    # Images disque montées automatiquement par Windows au double-clic
+    ".iso", ".img", ".vhd", ".vhdx",
+    # Raccourci spécial Windows (même famille que .lnk/.scf)
+    ".desklink",
 })
 
 

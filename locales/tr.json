@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "görüntü",
     "zip_indicator_stored_noop": "Bu dosya sıkıştırılmamış.\nVarsayılan seviyeyi değiştirmek için sağ tıklayın.",
     "zip_indicator_stored_action": "Bu dosya sıkıştırılmamış.\nVarsayılan seviyede ({level}) sıkıştırmak için tıklayın.\nVarsayılan seviyeyi değiştirmek için sağ tıklayın.",
-    "duplicate_image": "YİNELENEN SAYFA"
+    "duplicate_image": "YİNELENEN SAYFA",
+    "duplicate_indicator": "Bu dosyada yinelenen sayfalar tespit edildi.\nYinelenen sayfa yönetimi penceresini açmak için tıklayın.",
+    "duplicate_indicator_none": "Yineleme tespit edilmedi"
   },
   "help": {
     "title": "MosaicView - Kullanım Kılavuzu",

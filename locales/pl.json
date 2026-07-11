@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "obraz",
     "zip_indicator_stored_noop": "Ten plik nie jest skompresowany.\nKliknij prawym przyciskiem, aby zmienić poziom domyślny.",
     "zip_indicator_stored_action": "Ten plik nie jest skompresowany.\nKliknij, aby skompresować go na poziomie domyślnym ({level}).\nKliknij prawym przyciskiem, aby zmienić poziom domyślny.",
-    "duplicate_image": "ZDUPLIKOWANA STRONA"
+    "duplicate_image": "ZDUPLIKOWANA STRONA",
+    "duplicate_indicator": "W tym pliku wykryto zduplikowane strony.\nKliknij, aby otworzyć okno zarządzania duplikatami.",
+    "duplicate_indicator_none": "Nie wykryto duplikatów"
   },
   "help": {
     "title": "MosaicView - Instrukcja obsługi",

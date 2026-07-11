@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "billede",
     "zip_indicator_stored_noop": "Denne fil er ikke komprimeret.\nHøjreklik for at ændre standardniveauet.",
     "zip_indicator_stored_action": "Denne fil er ikke komprimeret.\nKlik for at komprimere den med standardniveauet ({level}).\nHøjreklik for at ændre standardniveauet.",
-    "duplicate_image": "DUPLIKERET SIDE"
+    "duplicate_image": "DUPLIKERET SIDE",
+    "duplicate_indicator": "Der er fundet duplikerede sider i denne fil.\nKlik for at åbne vinduet til håndtering af duplikater.",
+    "duplicate_indicator_none": "Ingen duplikater fundet"
   },
   "help": {
     "title": "MosaicView - Brugervejledning",

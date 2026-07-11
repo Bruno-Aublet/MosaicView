@@ -1280,7 +1280,9 @@
     "zip_indicator_na": "Le taux de compression ZIP ne s'applique pas aux fichiers {ext}.\nCliquez pour enregistrer en CBZ au taux par défaut ({level}).\nClic droit pour modifier le taux par défaut.",
     "zip_indicator_ext_image": "image",
     "zip_indicator_stored_noop": "Ce fichier n'est pas compressé.\nClic droit pour modifier le taux par défaut.",
-    "zip_indicator_stored_action": "Ce fichier n'est pas compressé.\nCliquez pour le compresser au taux par défaut ({level}).\nClic droit pour modifier le taux par défaut."
+    "zip_indicator_stored_action": "Ce fichier n'est pas compressé.\nCliquez pour le compresser au taux par défaut ({level}).\nClic droit pour modifier le taux par défaut.",
+    "duplicate_indicator": "Des doublons de pages ont été détectées dans ce fichier.\nCliquez pour ouvrir la fenêtre de gestion des doublons.",
+    "duplicate_indicator_none": "Pas de doublon détecté"
   },
   "help": {
     "title": "MosaicView - Mode d'emploi",

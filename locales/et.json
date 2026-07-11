@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "pilt",
     "zip_indicator_stored_noop": "See fail ei ole pakitud.\nParemklõps vaiketaseme muutmiseks.",
     "zip_indicator_stored_action": "See fail ei ole pakitud.\nKlõpsake selle pakkimiseks vaiketasemel ({level}).\nParemklõps vaiketaseme muutmiseks.",
-    "duplicate_image": "DUBLEERITUD LEHEKÜLG"
+    "duplicate_image": "DUBLEERITUD LEHEKÜLG",
+    "duplicate_indicator": "Selles failis tuvastati dubleerivad leheküljed.\nKlõpsake dubleerivate lehekülgede haldamise akna avamiseks.",
+    "duplicate_indicator_none": "Duplikaate ei tuvastatud"
   },
   "help": {
     "title": "MosaicView - Kasutusjuhend",

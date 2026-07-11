@@ -717,7 +717,8 @@ class LibraryDB:
             field = crit.get('field', '')
             op    = crit.get('op', 'contains')
             value = crit.get('value', '')
-            link  = crit.get('link', 'and').upper()
+            # Whitelist stricte : link est inséré tel quel dans le SQL
+            link  = 'OR' if crit.get('link', 'and').upper() == 'OR' else 'AND'
 
             if field == 'comicvine_format':
                 clause = self._COMICVINE_FORMAT_CLAUSES.get(op)
@@ -840,7 +841,8 @@ class LibraryDB:
             field = crit.get('field', '')
             op    = crit.get('op', 'contains')
             value = crit.get('value', '')
-            link  = crit.get('link', 'and').upper()
+            # Whitelist stricte : link est inséré tel quel dans le SQL
+            link  = 'OR' if crit.get('link', 'and').upper() == 'OR' else 'AND'
             if field not in self._SEARCHABLE or op not in self._OP_MAP:
                 continue
             op_sql, transform = self._OP_MAP[op]

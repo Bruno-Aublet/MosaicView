@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "imagine",
     "zip_indicator_stored_noop": "Acest fișier nu este comprimat.\nClic dreapta pentru a schimba nivelul implicit.",
     "zip_indicator_stored_action": "Acest fișier nu este comprimat.\nFaceți clic pentru a-l comprima la nivelul implicit ({level}).\nClic dreapta pentru a schimba nivelul implicit.",
-    "duplicate_image": "PAGINĂ DUPLICAT"
+    "duplicate_image": "PAGINĂ DUPLICAT",
+    "duplicate_indicator": "Au fost detectate pagini duplicate în acest fișier.\nFaceți clic pentru a deschide fereastra de gestionare a duplicatelor.",
+    "duplicate_indicator_none": "Niciun duplicat detectat"
   },
   "help": {
     "title": "MosaicView - Manual utilizator",

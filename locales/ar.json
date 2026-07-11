@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "صورة",
     "zip_indicator_stored_noop": "هذا الملف غير مضغوط.\nانقر بزر الفأرة الأيمن لتغيير المستوى الافتراضي.",
     "zip_indicator_stored_action": "هذا الملف غير مضغوط.\nانقر لضغطه بالمستوى الافتراضي ({level}).\nانقر بزر الفأرة الأيمن لتغيير المستوى الافتراضي.",
-    "duplicate_image": "صفحة مكررة"
+    "duplicate_image": "صفحة مكررة",
+    "duplicate_indicator": "تم اكتشاف صفحات مكررة في هذا الملف.\nانقر لفتح نافذة إدارة الصفحات المكررة.",
+    "duplicate_indicator_none": "لم يتم اكتشاف أي تكرار"
   },
   "help": {
     "title": "MosaicView - دليل الاستخدام",

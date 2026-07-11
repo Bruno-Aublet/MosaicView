@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "ภาพ",
     "zip_indicator_stored_noop": "ไฟล์นี้ไม่ได้ถูกบีบอัด\nคลิกขวาเพื่อเปลี่ยนระดับเริ่มต้น",
     "zip_indicator_stored_action": "ไฟล์นี้ไม่ได้ถูกบีบอัด\nคลิกเพื่อบีบอัดที่ระดับเริ่มต้น ({level})\nคลิกขวาเพื่อเปลี่ยนระดับเริ่มต้น",
-    "duplicate_image": "หน้าซ้ำ"
+    "duplicate_image": "หน้าซ้ำ",
+    "duplicate_indicator": "ตรวจพบหน้าที่ซ้ำกันในไฟล์นี้\nคลิกเพื่อเปิดหน้าต่างจัดการหน้าที่ซ้ำกัน",
+    "duplicate_indicator_none": "ไม่พบรายการซ้ำ"
   },
   "help": {
     "title": "MosaicView - คู่มือการใช้งาน",

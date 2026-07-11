@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "ảnh",
     "zip_indicator_stored_noop": "Tệp này không được nén.\nNhấp chuột phải để thay đổi mức mặc định.",
     "zip_indicator_stored_action": "Tệp này không được nén.\nNhấp để nén ở mức mặc định ({level}).\nNhấp chuột phải để thay đổi mức mặc định.",
-    "duplicate_image": "TRANG TRÙNG LẶP"
+    "duplicate_image": "TRANG TRÙNG LẶP",
+    "duplicate_indicator": "Đã phát hiện các trang trùng lặp trong tệp này.\nNhấp để mở cửa sổ quản lý trang trùng lặp.",
+    "duplicate_indicator_none": "Không phát hiện trùng lặp"
   },
   "help": {
     "title": "MosaicView - Hướng dẫn sử dụng",

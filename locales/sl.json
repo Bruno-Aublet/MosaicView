@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "slika",
     "zip_indicator_stored_noop": "Ta datoteka ni stisnjena.\nDesni klik za spremembo privzete ravni.",
     "zip_indicator_stored_action": "Ta datoteka ni stisnjena.\nKliknite za stiskanje na privzeto raven ({level}).\nDesni klik za spremembo privzete ravni.",
-    "duplicate_image": "PODVOJENA STRAN"
+    "duplicate_image": "PODVOJENA STRAN",
+    "duplicate_indicator": "V tej datoteki so bile zaznane podvojene strani.\nKliknite za odprtje okna za upravljanje podvojenih strani.",
+    "duplicate_indicator_none": "Podvojitve niso zaznane"
   },
   "help": {
     "title": "MosaicView - Navodila za uporabo",

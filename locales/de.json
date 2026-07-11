@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "Bild",
     "zip_indicator_stored_noop": "Diese Datei ist nicht komprimiert.\nRechtsklick, um die Standardstufe zu ändern.",
     "zip_indicator_stored_action": "Diese Datei ist nicht komprimiert.\nKlicken, um sie mit der Standardstufe ({level}) zu komprimieren.\nRechtsklick, um die Standardstufe zu ändern.",
-    "duplicate_image": "DOPPELTE SEITE"
+    "duplicate_image": "DOPPELTE SEITE",
+    "duplicate_indicator": "In dieser Datei wurden doppelte Seiten erkannt.\nKlicken Sie, um das Fenster zur Verwaltung von Duplikaten zu öffnen.",
+    "duplicate_indicator_none": "Keine Duplikate erkannt"
   },
   "help": {
     "title": "MosaicView - Benutzerhandbuch",

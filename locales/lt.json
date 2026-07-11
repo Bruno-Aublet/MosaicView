@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "vaizdas",
     "zip_indicator_stored_noop": "Šis failas nesuspaustas.\nSpustelėkite dešiniuoju pelės klavišu, kad pakeistumėte numatytąjį lygį.",
     "zip_indicator_stored_action": "Šis failas nesuspaustas.\nSpustelėkite, kad jį suspaustumėte numatytuoju lygiu ({level}).\nSpustelėkite dešiniuoju pelės klavišu, kad pakeistumėte numatytąjį lygį.",
-    "duplicate_image": "DUBLIKUOTAS PUSLAPIS"
+    "duplicate_image": "DUBLIKUOTAS PUSLAPIS",
+    "duplicate_indicator": "Šiame faile aptikti dubliuoti puslapiai.\nSpustelėkite, kad atidarytumėte dublikatų valdymo langą.",
+    "duplicate_indicator_none": "Dublikatų neaptikta"
   },
   "help": {
     "title": "MosaicView - Naudojimo instrukcija",

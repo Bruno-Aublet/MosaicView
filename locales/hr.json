@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "slika",
     "zip_indicator_stored_noop": "Ova datoteka nije komprimirana.\nDesni klik za promjenu zadane razine.",
     "zip_indicator_stored_action": "Ova datoteka nije komprimirana.\nKliknite za njezino komprimiranje na zadanoj razini ({level}).\nDesni klik za promjenu zadane razine.",
-    "duplicate_image": "DUPLICIRANA STRANICA"
+    "duplicate_image": "DUPLICIRANA STRANICA",
+    "duplicate_indicator": "U ovoj datoteci otkrivene su duplicirane stranice.\nKliknite za otvaranje prozora za upravljanje duplikatima.",
+    "duplicate_indicator_none": "Nisu pronađeni duplikati"
   },
   "help": {
     "title": "MosaicView - Upute za korištenje",

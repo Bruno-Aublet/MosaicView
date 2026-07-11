@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "imej",
     "zip_indicator_stored_noop": "Fail ini tidak dimampatkan.\nKlik kanan untuk menukar tahap lalai.",
     "zip_indicator_stored_action": "Fail ini tidak dimampatkan.\nKlik untuk memampatkannya pada tahap lalai ({level}).\nKlik kanan untuk menukar tahap lalai.",
-    "duplicate_image": "HALAMAN PENDUA"
+    "duplicate_image": "HALAMAN PENDUA",
+    "duplicate_indicator": "Halaman pendua dikesan dalam fail ini.\nKlik untuk membuka tetingkap pengurusan halaman pendua.",
+    "duplicate_indicator_none": "Tiada pendua dikesan"
   },
   "help": {
     "title": "MosaicView - Manual Pengguna",

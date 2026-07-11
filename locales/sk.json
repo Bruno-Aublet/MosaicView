@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "obrázok",
     "zip_indicator_stored_noop": "Tento súbor nie je komprimovaný.\nKliknutím pravým tlačidlom zmeníte predvolenú úroveň.",
     "zip_indicator_stored_action": "Tento súbor nie je komprimovaný.\nKliknutím ho komprimujete na predvolenej úrovni ({level}).\nKliknutím pravým tlačidlom zmeníte predvolenú úroveň.",
-    "duplicate_image": "DUPLICITNÁ STRÁNKA"
+    "duplicate_image": "DUPLICITNÁ STRÁNKA",
+    "duplicate_indicator": "V tomto súbore boli zistené duplicitné stránky.\nKliknutím otvorte okno na správu duplicít.",
+    "duplicate_indicator_none": "Neboli zistené žiadne duplicity"
   },
   "help": {
     "title": "MosaicView - Návod na používanie",

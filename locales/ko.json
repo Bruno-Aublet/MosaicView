@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "이미지",
     "zip_indicator_stored_noop": "이 파일은 압축되어 있지 않습니다.\n기본 수준을 변경하려면 우클릭하세요.",
     "zip_indicator_stored_action": "이 파일은 압축되어 있지 않습니다.\n기본 수준({level})으로 압축하려면 클릭하세요.\n기본 수준을 변경하려면 우클릭하세요.",
-    "duplicate_image": "중복 페이지"
+    "duplicate_image": "중복 페이지",
+    "duplicate_indicator": "이 파일에서 중복된 페이지가 감지되었습니다.\n클릭하면 중복 페이지 관리 창이 열립니다.",
+    "duplicate_indicator_none": "중복이 감지되지 않았습니다"
   },
   "help": {
     "title": "MosaicView - 사용 방법",

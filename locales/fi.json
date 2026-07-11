@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "kuva",
     "zip_indicator_stored_noop": "Tätä tiedostoa ei ole pakattu.\nNapsauta hiiren oikealla painikkeella muuttaaksesi oletustasoa.",
     "zip_indicator_stored_action": "Tätä tiedostoa ei ole pakattu.\nNapsauta pakataksesi sen oletustasolla ({level}).\nNapsauta hiiren oikealla painikkeella muuttaaksesi oletustasoa.",
-    "duplicate_image": "KAKSOISKAPPALE"
+    "duplicate_image": "KAKSOISKAPPALE",
+    "duplicate_indicator": "Tästä tiedostosta löytyi kaksoiskappaleina olevia sivuja.\nAvaa kaksoiskappaleiden hallintaikkuna napsauttamalla.",
+    "duplicate_indicator_none": "Kaksoiskappaleita ei havaittu"
   },
   "help": {
     "title": "MosaicView - Käyttöohje",

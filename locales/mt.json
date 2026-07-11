@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "immaġini",
     "zip_indicator_stored_noop": "Dan il-fajl mhux ikkumpressat.\nKlikkja bil-lemin biex tibdel il-livell prestabbilit.",
     "zip_indicator_stored_action": "Dan il-fajl mhux ikkumpressat.\nIkklikkja biex tikkomprimih fil-livell prestabbilit ({level}).\nKlikkja bil-lemin biex tibdel il-livell prestabbilit.",
-    "duplicate_image": "PAĠNA DUPLIKATA"
+    "duplicate_image": "PAĠNA DUPLIKATA",
+    "duplicate_indicator": "Instabu paġni duplikati f'dan il-fajl.\nIkklikkja biex tiftaħ it-tieqa tal-ġestjoni tad-duplikati.",
+    "duplicate_indicator_none": "L-ebda duplikat ma nstab"
   },
   "help": {
     "title": "MosaicView - Manwal tal-utent",

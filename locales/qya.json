@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "emma",
     "zip_indicator_stored_noop": "Sina lestassë úva nuttala.\nFormë telpina i tereva.",
     "zip_indicator_stored_action": "Sina lestassë úva nuttala.\nFormë nutta sa i tereva ({level}).\nFormë telpina i tereva.",
-    "duplicate_image": "ATTA-PARMA"
+    "duplicate_image": "ATTA-PARMA",
+    "duplicate_indicator": "Atta-parmar hirne mi parma sina.\nFormë latya i atta-parmaron menta.",
+    "duplicate_indicator_none": "Atta-parmar lá hirne"
   },
   "help": {
     "title": "MosaicView - Nottië návaren",

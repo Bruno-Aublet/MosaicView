@@ -13,7 +13,7 @@ def position_dialog_on_parent(dialog, parent):
     """Centre `dialog` sur `parent` AVANT le premier affichage, sans flash.
 
     À appeler juste avant show()/show_nonmodal() (PAS dans showEvent). Force le
-    calcul de la taille via adjustSize() puis positionne la fenêtre, de sorte que
+    calcul du layout via ensurePolished() puis positionne la fenêtre, de sorte que
     le premier rendu se fasse déjà au bon endroit (pas de saut visible).
     """
     if parent is None:

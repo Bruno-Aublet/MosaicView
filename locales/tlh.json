@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "beQ",
     "zip_indicator_stored_noop": "De'wI' rarbe'.\nnIH jIH mIw rar chu' DaH.",
     "zip_indicator_stored_action": "De'wI' rarbe'.\nnIH jIH rar mIw rar ({level}) lo'.\nnIH jIH mIw rar chu' DaH.",
-    "duplicate_image": "chov cha'logh"
+    "duplicate_image": "chov cha'logh",
+    "duplicate_indicator": "De'vam Daq chovmey cha'logh tu'lu'.\nnIH jIH ra' chovmey cha'logh yIper.",
+    "duplicate_indicator_none": "chov cha'logh tu'lu'be'"
   },
   "help": {
     "title": "MosaicView - lo'laHghach QIjmeH",

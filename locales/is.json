@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "mynd",
     "zip_indicator_stored_noop": "Þessi skrá er ekki þjöppuð.\nHægrismelltu til að breyta sjálfgefnu stigi.",
     "zip_indicator_stored_action": "Þessi skrá er ekki þjöppuð.\nSmelltu til að þjappa hana á sjálfgefnu stigi ({level}).\nHægrismelltu til að breyta sjálfgefnu stigi.",
-    "duplicate_image": "TVÍTEKIN SÍÐA"
+    "duplicate_image": "TVÍTEKIN SÍÐA",
+    "duplicate_indicator": "Tvítekin blaðsíður fundust í þessari skrá.\nSmelltu til að opna gluggann fyrir stjórnun tvítekinna blaðsíðna.",
+    "duplicate_indicator_none": "Engin tvítekning fannst"
   },
   "help": {
     "title": "MosaicView - Notkunarleiðbeiningar",

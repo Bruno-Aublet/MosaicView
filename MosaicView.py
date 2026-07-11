@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.5.4"
+__version__ = "1.5.5"
 
 import sys
 import os

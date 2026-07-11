@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "attēls",
     "zip_indicator_stored_noop": "Šis fails nav saspiests.\nNoklikšķiniet ar labo peles pogu, lai mainītu noklusējuma līmeni.",
     "zip_indicator_stored_action": "Šis fails nav saspiests.\nNoklikšķiniet, lai to saspiestu noklusējuma līmenī ({level}).\nNoklikšķiniet ar labo peles pogu, lai mainītu noklusējuma līmeni.",
-    "duplicate_image": "DUBLĒTA LAPA"
+    "duplicate_image": "DUBLĒTA LAPA",
+    "duplicate_indicator": "Šajā failā tika konstatētas dublētas lapas.\nNoklikšķiniet, lai atvērtu dublikātu pārvaldības logu.",
+    "duplicate_indicator_none": "Dublikāti nav konstatēti"
   },
   "help": {
     "title": "MosaicView - Lietošanas instrukcija",

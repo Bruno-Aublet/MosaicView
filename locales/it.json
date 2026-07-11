@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "immagine",
     "zip_indicator_stored_noop": "Questo file non è compresso.\nClic destro per modificare il livello predefinito.",
     "zip_indicator_stored_action": "Questo file non è compresso.\nClic per comprimerlo al livello predefinito ({level}).\nClic destro per modificare il livello predefinito.",
-    "duplicate_image": "PAGINA DUPLICATA"
+    "duplicate_image": "PAGINA DUPLICATA",
+    "duplicate_indicator": "Sono state rilevate pagine duplicate in questo file.\nFai clic per aprire la finestra di gestione dei duplicati.",
+    "duplicate_indicator_none": "Nessun duplicato rilevato"
   },
   "help": {
     "title": "MosaicView - Manuale utente",

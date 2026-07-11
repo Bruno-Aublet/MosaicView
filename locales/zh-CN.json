@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "图像",
     "zip_indicator_stored_noop": "此文件未压缩。\n右键点击以更改默认级别。",
     "zip_indicator_stored_action": "此文件未压缩。\n点击以默认级别（{level}）压缩它。\n右键点击以更改默认级别。",
-    "duplicate_image": "重复页面"
+    "duplicate_image": "重复页面",
+    "duplicate_indicator": "在此文件中检测到重复页面.\n点击打开重复页面管理窗口.",
+    "duplicate_indicator_none": "未检测到重复项"
   },
   "help": {
     "title": "MosaicView - 使用说明",

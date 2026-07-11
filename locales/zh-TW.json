@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "圖像",
     "zip_indicator_stored_noop": "此檔案未壓縮。\n按右鍵以變更預設等級。",
     "zip_indicator_stored_action": "此檔案未壓縮。\n點擊以預設等級（{level}）壓縮它。\n按右鍵以變更預設等級。",
-    "duplicate_image": "重複頁面"
+    "duplicate_image": "重複頁面",
+    "duplicate_indicator": "在此檔案中偵測到重複頁面.\n按一下以開啟重複頁面管理視窗.",
+    "duplicate_indicator_none": "未偵測到重複項目"
   },
   "help": {
     "title": "MosaicView - 使用說明",

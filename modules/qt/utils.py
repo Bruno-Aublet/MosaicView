@@ -381,6 +381,12 @@ def safe_join(base, name):
     """
     base_real = os.path.realpath(base)
     dest = os.path.realpath(os.path.join(base_real, name))
-    if dest != base_real and os.path.commonpath([base_real, dest]) != base_real:
+    try:
+        if dest != base_real and os.path.commonpath([base_real, dest]) != base_real:
+            return None
+    except ValueError:
+        # commonpath lève ValueError si les chemins sont sur des lecteurs
+        # différents ou mélangent UNC et lettre de lecteur (ex. nom d'entrée
+        # "D:\evil" ou "\\serveur\part") — c'est une évasion, on refuse.
         return None
     return dest

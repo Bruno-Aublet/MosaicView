@@ -329,6 +329,7 @@ def renumber_pages_auto_qt(parent_widget, canvas_render_func, save_state_func=No
     # Étape 1 : détecter si la 1ère page est multiple (calcul pur, sur CE panneau).
     image_entries = [e for e in panel_state.images_data if e["is_image"]]
     if not image_entries:
+        canvas_render_func()
         if on_done is not None:
             on_done()
         return

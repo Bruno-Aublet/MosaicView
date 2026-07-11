@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "afbeelding",
     "zip_indicator_stored_noop": "Dit bestand is niet gecomprimeerd.\nRechtsklikken om het standaardniveau te wijzigen.",
     "zip_indicator_stored_action": "Dit bestand is niet gecomprimeerd.\nKlik om het te comprimeren op het standaardniveau ({level}).\nRechtsklikken om het standaardniveau te wijzigen.",
-    "duplicate_image": "DUBBELE PAGINA"
+    "duplicate_image": "DUBBELE PAGINA",
+    "duplicate_indicator": "Er zijn dubbele pagina's gevonden in dit bestand.\nKlik om het venster voor het beheren van duplicaten te openen.",
+    "duplicate_indicator_none": "Geen duplicaten gevonden"
   },
   "help": {
     "title": "MosaicView - Gebruiksaanwijzing",

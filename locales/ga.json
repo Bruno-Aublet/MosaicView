@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "íomhá",
     "zip_indicator_stored_noop": "Níl an comhad seo comhbhrúite.\nDeaschliceáil chun an leibhéal réamhshocraithe a athrú.",
     "zip_indicator_stored_action": "Níl an comhad seo comhbhrúite.\nCliceáil chun é a chomhbhrú ag an leibhéal réamhshocraithe ({level}).\nDeaschliceáil chun an leibhéal réamhshocraithe a athrú.",
-    "duplicate_image": "LEATHANACH DÚBLACH"
+    "duplicate_image": "LEATHANACH DÚBLACH",
+    "duplicate_indicator": "Braitheadh leathanaigh dhúblacha sa chomhad seo.\nCliceáil chun an fhuinneog bhainistíochta dúblach a oscailt.",
+    "duplicate_indicator_none": "Níor braitheadh aon dhúblach"
   },
   "help": {
     "title": "MosaicView - Treoir",

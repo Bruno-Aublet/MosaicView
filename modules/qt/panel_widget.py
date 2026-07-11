@@ -472,6 +472,7 @@ class PanelWidget(QWidget):
         self._status_bar.set_zip_level_getter(
             lambda: self._zip_compression_config().get_zip_compression_level()
         )
+        self._status_bar.set_duplicate_click_callback(self._show_duplicates_window)
         layout.addWidget(self._status_bar)
 
         return panel

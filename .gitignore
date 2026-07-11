@@ -13,7 +13,6 @@ Modules_OLD/
 BACKUP SCRIPT PRINCIPAL (old)/
 
 # Environnement virtuel Python
-venv/
 .venv/
 
 # Notes de l'assistant Claude (spécifiques à cette machine)

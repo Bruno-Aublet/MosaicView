@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "kép",
     "zip_indicator_stored_noop": "Ez a fájl nincs tömörítve.\nJobb kattintás az alapértelmezett szint módosításához.",
     "zip_indicator_stored_action": "Ez a fájl nincs tömörítve.\nKattintson a tömörítéshez az alapértelmezett szinten ({level}).\nJobb kattintás az alapértelmezett szint módosításához.",
-    "duplicate_image": "ISMÉTLŐDŐ OLDAL"
+    "duplicate_image": "ISMÉTLŐDŐ OLDAL",
+    "duplicate_indicator": "Duplikált oldalakat találtunk ebben a fájlban.\nKattintson a duplikátumkezelő ablak megnyitásához.",
+    "duplicate_indicator_none": "Nincs duplikátum"
   },
   "help": {
     "title": "MosaicView - Útmutató",

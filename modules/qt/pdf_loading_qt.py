@@ -378,9 +378,7 @@ def _pdf_persistent_process(in_queue, out_queue):
             except Exception:
                 pass
             doc = None
-        with open(filepath, 'rb') as f:
-            pdf_bytes = f.read()
-        doc = fitz.open(stream=pdf_bytes, filetype='pdf')
+        doc = fitz.open(filepath)
 
     def _convert(dpi):
         nonlocal doc

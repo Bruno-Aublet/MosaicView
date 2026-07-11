@@ -1280,7 +1280,9 @@
     "zip_indicator_ext_image": "amrûn",
     "zip_indicator_stored_noop": "I bess hen ú cened.\nRîn a chuiniath i modh hen pen.",
     "zip_indicator_stored_action": "I bess hen ú cened.\nRîn a gened venna na i modh hen pen ({level}).\nRîn a chuiniath i modh hen pen.",
-    "duplicate_image": "PAGE ATHRENIL"
+    "duplicate_image": "PAGE ATHRENIL",
+    "duplicate_indicator": "Pagath athrenil hirnen vi i filê hen.\nRîn a edro i chenneth athrenilath.",
+    "duplicate_indicator_none": "Ú-hannen athrenilath"
   },
   "help": {
     "title": "MosaicView - Bâd thuriol",
