@@ -1570,6 +1570,8 @@
     "col_publisher": "출판사",
     "col_issue_num": "호",
     "col_issue_title": "제목",
+    "cover_file_label": "파일 표지",
+    "cover_comicvine_label": "ComicVine 표지",
     "btn_skip": "건너뛰기",
     "btn_back": "뒤로",
     "info_single": "이 기능은 현재 열려 있는 만화의 메타데이터를 가져옵니다. 여러 파일을 한 번에 처리하려면 일괄 처리를 사용하세요(폴더를 창에 끌어다 놓으세요).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "ComicInfo.xml 파일 만들기",
     "edit_comicinfo": "ComicInfo.xml 파일 편집",
     "error_network_connection": "ComicVine에 연결할 수 없습니다. 인터넷 연결을 확인하세요.",
-    "error_network_timeout": "ComicVine의 응답이 너무 오래 걸립니다. 잠시 후 다시 시도해 주세요."
+    "error_network_timeout": "ComicVine의 응답이 너무 오래 걸립니다. 잠시 후 다시 시도해 주세요.",
+    "error_api_invalid_key": "ComicVine API 키가 유효하지 않습니다. 환경설정에서 확인하세요.",
+    "error_api_not_found": "이 요청에 대한 데이터를 ComicVine에서 찾을 수 없습니다.",
+    "error_api_url_format": "ComicVine으로 전송된 요청에 내부 오류가 발생했습니다 (잘못된 주소 형식).",
+    "error_api_jsonp": "ComicVine으로 전송된 요청에 내부 오류가 발생했습니다 (잘못된 응답 형식).",
+    "error_api_filter": "ComicVine으로 전송된 검색 조건에 내부 오류가 발생했습니다.",
+    "error_api_subscriber_only": "이 ComicVine 콘텐츠는 구독자 전용입니다.",
+    "error_api_rate_limit": "ComicVine 요청 한도에 도달했습니다. 몇 분 후 다시 시도하세요."
   },
   "bookmark": {
     "popup_title": "북마크",

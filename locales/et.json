@@ -1570,6 +1570,8 @@
     "col_publisher": "Kirjastaja",
     "col_issue_num": "Nr.",
     "col_issue_title": "Pealkiri",
+    "cover_file_label": "Faili kaas",
+    "cover_comicvine_label": "ComicVine'i kaas",
     "btn_skip": "Jäta vahele",
     "btn_back": "Tagasi",
     "info_single": "See funktsioon toob metaandmed praegu avatud koomiksile. Mitme faili korraga töötlemiseks kasutage pakettöötlust (lohistage kaust aknasse).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Loo ComicInfo.xml fail",
     "edit_comicinfo": "Muuda ComicInfo.xml faili",
     "error_network_connection": "ComicVine'iga ei õnnestunud ühendust luua. Kontrollige oma internetiühendust.",
-    "error_network_timeout": "ComicVine vastab liiga aeglaselt. Proovige veidi hiljem uuesti."
+    "error_network_timeout": "ComicVine vastab liiga aeglaselt. Proovige veidi hiljem uuesti.",
+    "error_api_invalid_key": "Teie ComicVine API-võti ei ole kehtiv. Kontrollige seda eelistustest.",
+    "error_api_not_found": "Selle päringu jaoks ei leitud ComicVine'ist andmeid.",
+    "error_api_url_format": "Sisemine viga ComicVine'ile saadetud päringus (kehtetu aadressivorming).",
+    "error_api_jsonp": "Sisemine viga ComicVine'ile saadetud päringus (kehtetu vastuse vorming).",
+    "error_api_filter": "Sisemine viga ComicVine'ile saadetud otsingukriteeriumides.",
+    "error_api_subscriber_only": "See ComicVine'i sisu on ainult tellijatele.",
+    "error_api_rate_limit": "ComicVine'i päringute limiit on saavutatud. Oodake enne uuesti proovimist mõni minut."
   },
   "bookmark": {
     "popup_title": "Järjehoidja",

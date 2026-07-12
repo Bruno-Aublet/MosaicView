@@ -1570,6 +1570,8 @@
     "col_publisher": "Útgefandi",
     "col_issue_num": "Nr.",
     "col_issue_title": "Titill",
+    "cover_file_label": "Kápa skrárinnar",
+    "cover_comicvine_label": "Kápa frá ComicVine",
     "btn_skip": "Sleppa",
     "btn_back": "Til baka",
     "info_single": "Þessi aðgerð sækir lýsigögn fyrir myndasöguna sem er opin. Til að vinna úr mörgum skrám í einu skaltu nota lotuvinnsluna (draga möppu að glugganum).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Búa til ComicInfo.xml skrá",
     "edit_comicinfo": "Breyta ComicInfo.xml skrá",
     "error_network_connection": "Ekki tókst að tengjast ComicVine. Athugaðu nettenginguna þína.",
-    "error_network_timeout": "ComicVine svarar of hægt. Reyndu aftur eftir smá stund."
+    "error_network_timeout": "ComicVine svarar of hægt. Reyndu aftur eftir smá stund.",
+    "error_api_invalid_key": "ComicVine API lykillinn þinn er ekki gildur. Athugaðu hann í kjörstillingum.",
+    "error_api_not_found": "Engin gögn fundust á ComicVine fyrir þessa fyrirspurn.",
+    "error_api_url_format": "Innri villa í fyrirspurninni sem send var til ComicVine (ógilt vistfangssnið).",
+    "error_api_jsonp": "Innri villa í fyrirspurninni sem send var til ComicVine (ógilt svarssnið).",
+    "error_api_filter": "Innri villa í leitarskilyrðum sem send voru til ComicVine.",
+    "error_api_subscriber_only": "Þetta ComicVine efni er eingöngu fyrir áskrifendur.",
+    "error_api_rate_limit": "Hámarki ComicVine fyrirspurna náð. Bíddu í nokkrar mínútur áður en þú reynir aftur."
   },
   "bookmark": {
     "popup_title": "Bókamerki",

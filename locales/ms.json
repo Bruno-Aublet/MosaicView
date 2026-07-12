@@ -1570,6 +1570,8 @@
     "col_publisher": "Penerbit",
     "col_issue_num": "No.",
     "col_issue_title": "Tajuk",
+    "cover_file_label": "Kulit fail",
+    "cover_comicvine_label": "Kulit ComicVine",
     "btn_skip": "Langkau",
     "btn_back": "Kembali",
     "info_single": "Fungsi ini mendapatkan metadata untuk komik yang sedang dibuka. Untuk memproses beberapa fail sekaligus, gunakan pemprosesan kelompok (seret folder ke tetingkap).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Buat fail ComicInfo.xml",
     "edit_comicinfo": "Edit fail ComicInfo.xml",
     "error_network_connection": "Tidak dapat menghubungi ComicVine. Semak sambungan Internet anda.",
-    "error_network_timeout": "ComicVine mengambil masa terlalu lama untuk bertindak balas. Cuba lagi sebentar lagi."
+    "error_network_timeout": "ComicVine mengambil masa terlalu lama untuk bertindak balas. Cuba lagi sebentar lagi.",
+    "error_api_invalid_key": "Kunci API ComicVine anda tidak sah. Semak dalam keutamaan.",
+    "error_api_not_found": "Tiada data dijumpai di ComicVine untuk permintaan ini.",
+    "error_api_url_format": "Ralat dalaman dalam permintaan yang dihantar ke ComicVine (format alamat tidak sah).",
+    "error_api_jsonp": "Ralat dalaman dalam permintaan yang dihantar ke ComicVine (format respons tidak sah).",
+    "error_api_filter": "Ralat dalaman dalam kriteria carian yang dihantar ke ComicVine.",
+    "error_api_subscriber_only": "Kandungan ComicVine ini hanya untuk pelanggan.",
+    "error_api_rate_limit": "Had permintaan ComicVine dicapai. Tunggu beberapa minit sebelum mencuba lagi."
   },
   "bookmark": {
     "popup_title": "Penanda buku",

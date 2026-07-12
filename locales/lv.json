@@ -1570,6 +1570,8 @@
     "col_publisher": "Izdevējs",
     "col_issue_num": "Nr.",
     "col_issue_title": "Nosaukums",
+    "cover_file_label": "Faila vāks",
+    "cover_comicvine_label": "ComicVine vāks",
     "btn_skip": "Izlaist",
     "btn_back": "Atpakaļ",
     "info_single": "Šī funkcija iegūst metadatus pašlaik atvērtajam komiksum. Lai apstrādātu vairākus failus vienlaikus, izmantojiet pakešapstrādi (velciet mapi uz logu).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Izveidot ComicInfo.xml failu",
     "edit_comicinfo": "Rediģēt ComicInfo.xml failu",
     "error_network_connection": "Neizdevās sazināties ar ComicVine. Pārbaudiet savu interneta savienojumu.",
-    "error_network_timeout": "ComicVine atbild pārāk ilgi. Mēģiniet vēlreiz pēc brīža."
+    "error_network_timeout": "ComicVine atbild pārāk ilgi. Mēģiniet vēlreiz pēc brīža.",
+    "error_api_invalid_key": "Jūsu ComicVine API atslēga nav derīga. Pārbaudiet to preferencēs.",
+    "error_api_not_found": "Šim pieprasījumam ComicVine netika atrasti dati.",
+    "error_api_url_format": "Iekšēja kļūda pieprasījumā, kas nosūtīts uz ComicVine (nederīgs adreses formāts).",
+    "error_api_jsonp": "Iekšēja kļūda pieprasījumā, kas nosūtīts uz ComicVine (nederīgs atbildes formāts).",
+    "error_api_filter": "Iekšēja kļūda meklēšanas kritērijos, kas nosūtīti uz ComicVine.",
+    "error_api_subscriber_only": "Šis ComicVine saturs ir paredzēts tikai abonentiem.",
+    "error_api_rate_limit": "Sasniegts ComicVine pieprasījumu limits. Uzgaidiet dažas minūtes pirms atkārtotas mēģināšanas."
   },
   "bookmark": {
     "popup_title": "Grāmatzīme",

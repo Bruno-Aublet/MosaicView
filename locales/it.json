@@ -1570,6 +1570,8 @@
     "col_publisher": "Editore",
     "col_issue_num": "N.",
     "col_issue_title": "Titolo",
+    "cover_file_label": "Copertina del file",
+    "cover_comicvine_label": "Copertina di ComicVine",
     "btn_skip": "Salta",
     "btn_back": "Indietro",
     "info_single": "Questa funzione recupera i metadati del fumetto attualmente aperto. Per elaborare più file contemporaneamente, utilizza l'elaborazione in batch (trascina una cartella sulla finestra).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Creare un file ComicInfo.xml",
     "edit_comicinfo": "Modificare il file ComicInfo.xml",
     "error_network_connection": "Impossibile contattare ComicVine. Controlla la tua connessione Internet.",
-    "error_network_timeout": "ComicVine impiega troppo tempo a rispondere. Riprova tra poco."
+    "error_network_timeout": "ComicVine impiega troppo tempo a rispondere. Riprova tra poco.",
+    "error_api_invalid_key": "La tua chiave API ComicVine non è valida. Controllala nelle preferenze.",
+    "error_api_not_found": "Nessun dato trovato su ComicVine per questa richiesta.",
+    "error_api_url_format": "Errore interno nella richiesta inviata a ComicVine (formato indirizzo non valido).",
+    "error_api_jsonp": "Errore interno nella richiesta inviata a ComicVine (formato risposta non valido).",
+    "error_api_filter": "Errore interno nei criteri di ricerca inviati a ComicVine.",
+    "error_api_subscriber_only": "Questo contenuto ComicVine è riservato agli abbonati.",
+    "error_api_rate_limit": "Limite di richieste ComicVine raggiunto. Attendi qualche minuto prima di riprovare."
   },
   "bookmark": {
     "popup_title": "Segnalibro",

@@ -40,6 +40,51 @@ _EXECUTABLE_EXTS = frozenset({
     ".iso", ".img", ".vhd", ".vhdx",
     # Raccourci spécial Windows (même famille que .lnk/.scf)
     ".desklink",
+    # Add-ins Excel (code natif ou VBA exécuté au chargement)
+    ".xll", ".xlam", ".xla",
+    # Fichiers de recherche/paramètres/bibliothèque Windows (lancement de
+    # commandes via leur contenu XML, ou fuite de hash NTLM via chemin UNC)
+    ".settingcontent-ms", ".search-ms", ".library-ms", ".searchconnector-ms",
+    # Scripts Monad/MSH (ancêtre de PowerShell, encore associés sur
+    # certaines configurations) + compléments de la famille PowerShell
+    ".msh", ".msh1", ".msh2", ".mshxml", ".msh1xml", ".msh2xml",
+    ".ps1xml", ".ps2", ".ps2xml", ".psc2", ".cdxml",
+    # Raccourcis Internet (même famille que .url)
+    ".website",
+    # Composant Windows Script (jumeau de .sct)
+    ".wsc",
+    # Lanceur Java Web Start (même famille que .jar)
+    ".jnlp",
+    # Paquets d'installation d'applications (App Installer)
+    ".appx", ".msix", ".appxbundle", ".msixbundle", ".appinstaller",
+    # Configuration Windows Sandbox (exécute sa LogonCommand au double-clic)
+    ".wsb",
+    # Connexion Bureau à distance automatique (redirection de disques possible)
+    ".rdp",
+    # Requêtes web Excel (téléchargement et exécution de contenu distant)
+    ".iqy", ".dqy", ".oqy", ".rqy",
+    # Scripts de configuration Internet (blocklist Outlook historique)
+    ".ins", ".isp",
+    # Thèmes Windows (peuvent désigner un .scr arbitraire ou une ressource UNC)
+    ".theme", ".themepack", ".deskthemepack",
+    # Vecteurs anciens : WinHelp (famille .chm), scrap objects, XAML Browser App
+    ".hlp", ".shs", ".shb", ".xbap",
+    # Scripts d'interpréteurs tiers associés à l'exécution par leurs installeurs
+    # (AutoHotkey, AutoIt, Perl, Ruby, Tcl) — même logique que .py
+    ".ahk", ".au3", ".pl", ".rb", ".tcl",
+    # Documents Office à macros / formats exécutant du code à l'ouverture
+    ".docm", ".dotm", ".xlsm", ".xltm", ".pptm", ".ppam", ".ppa",
+    ".ppsm", ".potm", ".sldm", ".slk",
+    # Anciens formats Office binaires (macros possibles sans que l'extension
+    # le signale)
+    ".doc", ".dot", ".xls", ".xlt", ".ppt", ".pot", ".pps",
+    # Formats Office modernes sans macros — bloqués par principe : un document
+    # bureautique n'a rien à faire dans une archive de BD, et un .docx peut
+    # servir de vecteur d'exploit contre Office lui-même (ex. Follina, 2022)
+    ".docx", ".dotx", ".xlsx", ".xltx", ".pptx", ".potx", ".ppsx", ".sldx",
+    # Bases et raccourcis Access (macro AutoExec exécutée à l'ouverture)
+    ".mdb", ".accdb", ".mde", ".accde", ".ade", ".adp",
+    ".mam", ".maq", ".mar", ".mat", ".maf",
 })
 
 

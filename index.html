@@ -256,7 +256,7 @@ html[lang="tlh-piqad"] #toggle-btn {
   <div class="mosaic-wrap">
     <div class="mosaic-grid" id="mosaic"></div>
   </div>
-  <div class="badge" id="version-badge">v1.5.5 &middot; Windows</div>
+  <div class="badge" id="version-badge">v1.5.6 &middot; Windows</div>
   <h1>Mosaic<span>View</span></h1>
   <p class="hero-sub" data-i18n="hero_sub">Un éditeur de BD numériques.</p>
   <div class="cta-group">
@@ -355,7 +355,7 @@ html[lang="tlh-piqad"] #toggle-btn {
 
 <footer>
   <div><span data-i18n="footer_by">Fait avec Claude Code par</span> <a href="https://github.com/Bruno-Aublet">Bruno Aublet</a> &#8211; <a href="https://github.com/Bruno-Aublet/MosaicView">GitHub</a></div>
-  <div style="margin-top:10px;"><a href="mailto:mosaicview1969@gmail.com?subject=MosaicView" style="display:inline-flex; align-items:center; gap:6px;"><img src="icons/mail.png" alt="Contact" style="width:16px; height:16px; object-fit:contain;"> Contact</a></div>
+  <div style="margin-top:10px;"><a id="contact-link" href="#" style="display:inline-flex; align-items:center; gap:6px;"><img src="icons/mail.png" alt="Contact" style="width:16px; height:16px; object-fit:contain;"> Contact</a></div>
 </footer>
 
 <script>
@@ -4877,7 +4877,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "tlh-piqad": {
-    "badge": "v1.5.5 · Windows",
+    "badge": "v1.5.6 · Windows",
     "hero_sub": " kk  . CBZ, CBR, CB7  PF  , ,   –  .",
     "btn_download": " –  ",
     "btn_source": "  →",
@@ -4982,7 +4982,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "qya-tengwar": {
-    "badge": "v1.5.5 · Windows",
+    "badge": "v1.5.6 · Windows",
     "hero_sub": "  : ⸱ ⸱     CBZ⸱ CBR⸱ CB7  PDF     :",
     "btn_download": "    ",
     "btn_source": "  →",
@@ -5087,7 +5087,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "sjn-tengwar": {
-    "badge": "v1.5.5 · Windows",
+    "badge": "v1.5.6 · Windows",
     "hero_sub": "  : ⸱ ⸱      CBZ⸱ CBR⸱ CB7  PDF     :",
     "btn_download": "     ",
     "btn_source": "  →",
@@ -5286,7 +5286,7 @@ const GRID_SIZE = 24;
 function pad(n) { return String(n).padStart(2, '0'); }
 
 // Version is embedded at build time
-document.getElementById('version-badge').textContent = 'v1.5.5 · Windows';
+document.getElementById('version-badge').textContent = 'v1.5.6 · Windows';
 
 // ── dual panel thumbnails ──────────────────────────────────────
 const panelLeft = document.getElementById('panel-left');
@@ -5464,6 +5464,13 @@ window.syncLangDropdown = function(code) {
   };
 })();
 setLang(currentLang);
+
+(function() {
+  const user = ['m','o','s','a','i','c','v','i','e','w','1','9','6','9'].join('');
+  const domain = ['g','m','a','i','l','.','c','o','m'].join('');
+  const link = document.getElementById('contact-link');
+  if (link) link.href = 'mailto:' + user + '@' + domain + '?subject=MosaicView';
+})();
 
 </script>
 </body>

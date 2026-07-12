@@ -1570,6 +1570,8 @@
     "col_publisher": "Wydawca",
     "col_issue_num": "Nr",
     "col_issue_title": "Tytuł",
+    "cover_file_label": "Okładka pliku",
+    "cover_comicvine_label": "Okładka z ComicVine",
     "btn_skip": "Pomiń",
     "btn_back": "Wstecz",
     "info_single": "Ta funkcja pobiera metadane aktualnie otwartego komiksu. Aby przetworzyć wiele plików naraz, użyj przetwarzania wsadowego (przeciągnij folder do okna).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Utwórz plik ComicInfo.xml",
     "edit_comicinfo": "Edytuj plik ComicInfo.xml",
     "error_network_connection": "Nie udało się połączyć z ComicVine. Sprawdź swoje połączenie internetowe.",
-    "error_network_timeout": "ComicVine odpowiada zbyt długo. Spróbuj ponownie za chwilę."
+    "error_network_timeout": "ComicVine odpowiada zbyt długo. Spróbuj ponownie za chwilę.",
+    "error_api_invalid_key": "Twój klucz API ComicVine jest nieprawidłowy. Sprawdź go w preferencjach.",
+    "error_api_not_found": "Nie znaleziono danych w ComicVine dla tego żądania.",
+    "error_api_url_format": "Błąd wewnętrzny w żądaniu wysłanym do ComicVine (nieprawidłowy format adresu).",
+    "error_api_jsonp": "Błąd wewnętrzny w żądaniu wysłanym do ComicVine (nieprawidłowy format odpowiedzi).",
+    "error_api_filter": "Błąd wewnętrzny w kryteriach wyszukiwania wysłanych do ComicVine.",
+    "error_api_subscriber_only": "Ta zawartość ComicVine jest dostępna tylko dla subskrybentów.",
+    "error_api_rate_limit": "Osiągnięto limit żądań ComicVine. Poczekaj kilka minut przed ponowną próbą."
   },
   "bookmark": {
     "popup_title": "Zakładka",

@@ -831,7 +831,7 @@
       "complete_message": "s- CBR   {count} :",
       "complete_message_errors": "s- CBR   {count}  {total}-:",
       "errors_count": "{count} () .",
-      "rarfile_unavailable": "fi d . cbr fi .",
+      "rarfile_unavailable": "fi . CBR  .",
       "renamed_cbz_count": "{count}    CBZ",
       "renamed_cb7_count": "{count}    CB7",
       "renamed_cbt_count": "{count}    CBT"
@@ -1366,7 +1366,7 @@
     "zip_compression": "   ",
     "zip_compression_content": "MosaicView      CBZ  ,   ,  ,    (  cs).\n\n   0 ( ):     (JPEG, PNG, WP...),  ZIP     ,     .    ,    .\n\n      : \"0\"  , \"1\"   (ZIP    ),  \"--\"  CBZ .       ( CBZ )  , .      .",
     "wilhelm_scream": "Wih ",
-    "wilhelm_scream_content": "  ,  , Wih   .        .   , Wikidi  ( )  : https://en.wikipedia.org/wiki/Wilhelm_scream\nMosaicView      WAV f   ici.",
+    "wilhelm_scream_content": "  ,  , Wih   .        .   , Wikidi  ( )  : https://en.wikipedia.org/wiki/Wilhelm_scream\nMosaicView      WAV f   .",
     "wilhelm_scream_save": " ",
     "wilhelm_scream_save_success": "{count}   :"
   },
@@ -1570,6 +1570,8 @@
     "col_publisher": "",
     "col_issue_num": ".",
     "col_issue_title": "",
+    "cover_file_label": "  ",
+    "cover_comicvine_label": "ComicVine  ",
     "btn_skip": "",
     "btn_back": "",
     "info_single": " cic   .       ( id ).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "ComicInfo.xml  ",
     "edit_comicinfo": "ComicInfo.xml  ",
     "error_network_connection": "ComicVine .   .",
-    "error_network_timeout": "ComicVine   .   ."
+    "error_network_timeout": "ComicVine   .   .",
+    "error_api_invalid_key": "ComicVine API   .   .",
+    "error_api_not_found": "  ComicVine    .",
+    "error_api_url_format": "ComicVine      (  ).",
+    "error_api_jsonp": "ComicVine      (  ).",
+    "error_api_filter": "ComicVine      .",
+    "error_api_subscriber_only": "ComicVine    .",
+    "error_api_rate_limit": "ComicVine   .     ."
   },
   "bookmark": {
     "popup_title": "",

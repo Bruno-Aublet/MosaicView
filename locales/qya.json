@@ -180,7 +180,7 @@
     },
     "canvas": {
       "quit": "apa falasse",
-      "reset": "Penia i application:\n• quanta tanna → telwa\n• quantesse ar telpë i coivierwa\n• morna forma → calima\n• telwa tanna → cenuva / default tessë\n• pityanwendë → núna\n• quantesse i tanwion ar parmalar → normal\n• quantesse i fëa → default\n• lambë → hlaruva autómatica\n• telwa perya → 50 / 50\n• envinyanótë → autómata\n• ZIP pusta → alwa",
+      "reset": "Penia i tamma:\n• quanta tanna → telwa\n• quantesse ar telpë i coivierwa\n• morna forma → calima\n• telwa tanna → cenuva / senya tessë\n• pityanwendë → núna\n• quantesse i tanwion ar parmalar → senya\n• quantesse i fëa → senya\n• lambë → hlaruva autómatica\n• telwa perya → 50 / 50\n• envinyanótë → autómata\n• ZIP pusta → alwa",
       "reset_label": "Restanya i sambë"
     },
     "font_size": {
@@ -635,7 +635,7 @@
       },
       "invalid_filenames": {
         "title": "Esser parmalion úvear",
-        "intro": "{count} file(r) mapa tengwi aqua:",
+        "intro": "{count} parma(r) mapa tengwi aqua:",
         "item": "  • {name}",
         "more": "  ... ar {more} ailë",
         "forbidden_chars": "Tengwi aqua: {chars}",
@@ -654,7 +654,7 @@
       },
       "update_page_count": {
         "title": "Atalta lesta rimbe",
-        "message": "I not parmar i cordalesse lambëo mernë.\n\nLesta rimbe parmalesseo: {original}\nLesta rimbe sí: {current}\n\nMeruval atalta lesta rimbe parmalesseo?"
+        "message": "I nótë parmar i cordalesse lambëo mernë.\n\nLesta rimbe parmalesseo: {original}\nLesta rimbe sí: {current}\n\nMeruval atalta lesta rimbe parmalesseo?"
       },
       "conversion_complete": {
         "title": "Maquëa caita",
@@ -831,10 +831,10 @@
       "complete_message": "{count} CBR tengwi navinnë i enyalies:",
       "complete_message_errors": "{count} CBR tengwi navinnë {total}-llo i enyalies:",
       "errors_count": "{count} apsa(r) hirnë.",
-      "rarfile_unavailable": "I module rarfile ua lala. Uin pol quenta i CBR file.",
-      "renamed_cbz_count": "{count} file(r) essë cantanë CBZ",
-      "renamed_cb7_count": "{count} file(r) essë cantanë CB7",
-      "renamed_cbt_count": "{count} file(r) essë cantanë CBT"
+      "rarfile_unavailable": "I ranta rarfile ua lala. Uin pol quenta i CBR parmar.",
+      "renamed_cbz_count": "{count} parma(r) essë cantanë CBZ",
+      "renamed_cb7_count": "{count} parma(r) essë cantanë CB7",
+      "renamed_cbt_count": "{count} parma(r) essë cantanë CBT"
     },
     "close_warning": {
       "title": "Etelë!",
@@ -1071,9 +1071,9 @@
     },
     "batch_pdf_unlock": {
       "title": "PDF parmar colla quettalëo",
-      "message_single": "Er PDF parma colla quettalëo hirna né. Sí maquenta CBZ lumbarelvë.\n\nMerin save mirilya coiva parma marderyassë?",
-      "message_plural": "{count} PDF parmar colla quettalëo hirni nér. Sí maquenti CBZ lumbarelvë.\n\nMerin save mirilya coiva parma arnóressë?",
-      "yes": "Ná, save mirilya coivë parmar",
+      "message_single": "Er PDF parma colla quettalëo hirna né. Sí maquenta CBZ lumbarelvë.\n\nMerin hepë mirilya coiva parma marderyassë?",
+      "message_plural": "{count} PDF parmar colla quettalëo hirni nér. Sí maquenti CBZ lumbarelvë.\n\nMerin hepë mirilya coiva parma arnóressë?",
+      "yes": "Ná, hepë mirilya coivë parmar",
       "no": "Lá, mána coivëa"
     },
     "ico_creator": {
@@ -1100,15 +1100,15 @@
     "open_file": {
       "title": "Panya quanta",
       "filter_archives": "Quantar (*.cbz *.cbr *.cb7 *.cbt *.epub *.pdf)",
-      "filter_all": "All files (*)"
+      "filter_all": "Ilyë parmar (*)"
     },
     "license": {
       "window_title": "MosaicView - termar"
     },
     "replace_corrupted_image": {
       "title": "Ahya quenta corupta",
-      "filter_images": "Images (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
-      "filter_all": "All files (*)"
+      "filter_images": "Emmar (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
+      "filter_all": "Ilyë parmar (*)"
     },
     "see_log": "CENA LOG",
     "straighten_viewer": {
@@ -1143,11 +1143,11 @@
       "checkbox_permanent_delete": "Hehta i CB7 fíli yesta tennoio\nan lá senna i rúcinassë (LAUMË NÓTË)",
       "start_button": "Canta",
       "converting_title": "Cantala...",
-      "converting_progress": "Cantëa fílë {current} of {total}",
+      "converting_progress": "Cantëa parma {current} mi {total}",
       "page_progress": "Lépë {current} / {total}",
       "complete_title": "Canta vanwa",
       "complete_message": "{count} CB7 fíli cantanë i mápessë :",
-      "complete_message_errors": "{count} CB7 fíli cantanë {total} of i mápessë :",
+      "complete_message_errors": "{count} parmar CB7 cantainë mi {total} i mápessë :",
       "errors_count": "{count} raxë(li) nótanë.",
       "renamed_cbz_count": "{count} fílë(li) essetanë na CBZ",
       "renamed_cbr_count": "{count} fílë(li) essetanë na CBR",
@@ -1162,11 +1162,11 @@
       "checkbox_permanent_delete": "Hehta i CBT fíli yesta tennoio\nan lá senna i rúcinassë (LAUMË NÓTË)",
       "start_button": "Canta",
       "converting_title": "Cantala...",
-      "converting_progress": "Cantëa fílë {current} of {total}",
+      "converting_progress": "Cantëa parma {current} mi {total}",
       "page_progress": "Lépë {current} / {total}",
       "complete_title": "Canta vanwa",
       "complete_message": "{count} CBT fíli cantanë i mápessë :",
-      "complete_message_errors": "{count} CBT fíli cantanë {total} of i mápessë :",
+      "complete_message_errors": "{count} parmar CBT cantainë mi {total} i mápessë :",
       "errors_count": "{count} raxë(li) nótanë.",
       "renamed_cbz_count": "{count} fílë(li) essetanë na CBZ",
       "renamed_cbr_count": "{count} fílë(li) essetanë na CBR",
@@ -1360,9 +1360,9 @@
     "nfo_editor": "NFO-parmar carë ar harna",
     "nfo_editor_content": "NFO-parma ná tecilwa parma (.nfo quetilnen) i harya i mossë i archivossë: sanwë, carmë, notë…\n\nCarë NFO-parma, á sav i caruva tancë i tancalessë, i parma-lendë, hya i sanwë-lendë (formavoitë i mossaicossë). I carda ná canwa erin lá i mossaic nampë ná. Á tulca essë ar quetië: i parma carmë coivë i mossaicossë úr quetilya hya coivë endessë.\n\nHarna NFO-parma ëa, á ataquetë senna i mossaicossë. I tyulma pahta urë-carwa essënen ar quetienën ëa, nati harnanwa. Ambulë, i carda nottë i harna-quenta-lendessë.",
     "metadata": "ComicVine Métanótë",
-    "metadata_content": "MosaicView ista i métanótissen i comicvalion (esselya, sérë, notë, tëvorini, onómë...) úcarin ComicVine i nótessëllo, i communtë carila.\n\nMód er: apanta i comicva, sí use i tancal o i Métanótë menu. Tirtanë ataquetaina úpa: ece lerta i sérë, sí i episod. Métanótë carë ComicInfo.xml nu i cáno.\n\nMód batch: lerta i taureli ar selec \"Métanótessen turúva\", o use i tancal o i Métanótë menu. Tirtanë úpa quë file (CBZ, CBR, CB7, CBT, PDF). Files ar CBZ cárë CBZ épa métanótë.\n\nAPI tanca: ComicVine API tanca lemya. I app tirtanëuva tye. Ista comicvine.gamespot.com épa conta. I ngilith úva quantaina quenderyan: halda ná DPAPI Windearon hyarmainen ar lerya coirëanyallo ananta.\n\nAPI raxi: ComicVine carë tai raxi, ar umir náner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni epizodion séressen.\n• 1 petitioni quë secunda. MosaicView caita 2 secondar quë petitioni, ar raita petitioni nar raxi.\n\nFormar chanie ComicVine: i chanie pautasso ComicVine véra samë er formaron atta, apa yárëarya. MosaicView ista attë ve er.\n• Formë sina: comicvine.gamespot.com/.../4000-XXXXX notessen, comicvine.gamespot.com/.../4050-XXXXX sérissen.\n• Formë yára: comicvine.com/.../37-XXXXX notessen (i nótë apa i achta ná i sama essë; man i·domen ar i yestacilme ahyanë).\n\nI quantale sina nó á mer {scraper} apanen.",
+    "metadata_content": "MosaicView ista i métanótissen i comicvalion (esselya, sérë, notë, tëvorini, onómë...) úcarin ComicVine i nótessëllo, i communtë carila.\n\nMód er: apanta i comicva, sí yuhta i tancal o i Métanótë menu. Tirtanë ataquetaina úpa: ece lerta i sérë, sí i episod. Métanótë carë ComicInfo.xml nu i cáno.\n\nMód batch: lerta i taureli ar selec \"Métanótessen turúva\", o yuhta i tancal o i Métanótë menu. Tirtanë úpa quë parma (CBZ, CBR, CB7, CBT, PDF). Parmar ar CBZ cárë CBZ épa métanótë.\n\nAPI tanca: ComicVine API tanca lemya. I tamma tirtanëuva tye. Ista comicvine.gamespot.com épa conta. I ngilith úva quantaina quenderyan: halda ná DPAPI Windearon hyarmainen ar lerya coirëanyallo ananta.\n\nAPI raxi: ComicVine carë tai raxi, ar umir náner.\n• 200 petitioni quë resurs quë hora. I limita ista, cari nar quë hora.\n• 100 resultati quë petitioni, ista quë petitioni epizodion séressen.\n• 1 petitioni quë secunda. MosaicView caita 2 secondar quë petitioni, ar raita petitioni nar raxi.\n\nFormar chanie ComicVine: i chanie pautasso ComicVine véra samë er formaron atta, apa yárëarya. MosaicView ista attë ve er.\n• Formë sina: comicvine.gamespot.com/.../4000-XXXXX notessen, comicvine.gamespot.com/.../4050-XXXXX sérissen.\n• Formë yára: comicvine.com/.../37-XXXXX notessen (i nótë apa i achta ná i sama essë; man i·domen ar i yestacilme ahyanë).\n\nI quantale sina nó á mer {scraper} apanen.",
     "library": "I·Parmavorn",
-    "library_content": "I·parmavorn ná i·carma ya lé lanta i·mathli ar hirë i·parmaron telerya. Ná cantaina mi i·lempë i·quantaina mi i·rembar (esse, i·quenta, i·telpëo, i·rembar…) ar entuluva mi er parmavorn (*.mvdb).\n\nCë carë i·parmavorn, use i·taur Parmavorn → Nóna massa, or lanta er ar lane tarmar na i·rembar ar maita \"Carë i·parmavorn ve i·tarmar\". MosaicView maita i·tarmar ar cantë i·rembar quantainë.\n\nCë i·parmavorn cantaina ná, lé lanta i·mathli er i·quenta, i·telpëo, loa, i·rembar, etc., cantaina quantë criteria. Er lempë anta i·rembar mi MosaicView. I·parmë lé entuluva mi XLSX (Excel).",
+    "library_content": "I·parmavorn ná i·carma ya lé lanta i·mathli ar hirë i·parmaron telerya. Ná cantaina mi i·lempë i·quantaina mi i·rembar (esse, i·quenta, i·telpëo, i·rembar…) ar entuluva mi er parmavorn (*.mvdb).\n\nCë carë i·parmavorn, yuhta i·taur Parmavorn → Nóna massa, or lanta er ar lane tarmar na i·rembar ar maita \"Carë i·parmavorn ve i·tarmar\". MosaicView maita i·tarmar ar cantë i·rembar quantainë.\n\nCë i·parmavorn cantaina ná, lé lanta i·mathli er i·quenta, i·telpëo, loa, i·rembar, etc., cantaina quantë criteria. Er lempë anta i·rembar mi MosaicView. I·parmë lé entuluva mi XLSX (Excel).",
     "zip_compression": "Tereva nutta ZIP",
     "zip_compression_content": "MosaicView anta lelya cilë i tereva nutta ZIP venna ilya lú CBZ venë, hirna i tana e tereva, i sanwë Carta, hya i sanwë lestar (formë telpina i tereva).\n\nI norma tereva ná 0 (úva nutta): i emma neldorë nuttala ná lestassë (JPEG, PNG, WebP...), sin nutta i ZIP lestassë ata úva anta sambë, mal núla i venë ar i tereva tana. Sina tereva pole véla, mal lá mauya, ela mauya tana.\n\nI tana e tereva tanë i nanwa nutta lestassë i latya lestassë: \"0\" qui i lestassë úva nuttala, \"1\" qui nuttala (ZIP lestassë lá lave ista i carya yára tereva), hya \"--\" qui i lestassë lá CBZ. Formë telpina i tana antë venë ata i lestassë (hya venë CBZ) as i tereva norma, írë ná mára. Formë telpina i tereva.",
     "wilhelm_scream": "I yaimë Wilhelm",
@@ -1570,6 +1570,8 @@
     "col_publisher": "Túr",
     "col_issue_num": "Nót.",
     "col_issue_title": "Essë",
+    "cover_file_label": "Tópa parmo",
+    "cover_comicvine_label": "Tópa ComicVine",
     "btn_skip": "Auta",
     "btn_back": "Apa",
     "info_single": "Sí canwa lerta nótë i commici sina. Lá ortë queni fili, sára i ortë harna (hyarë mappa ná i coimas).",
@@ -1577,11 +1579,18 @@
     "loading_issues_progress": "Ortë... {loaded} / {total}",
     "fetching_metadata": "Mettassen i nótier cantielwa...",
     "issues_partial_load": "{count} nótë ortaina — ortë hauta: {error}",
-    "credit": "Métanótë: {comicvine} · inspired by {scraper}",
+    "credit": "Métanótë: {comicvine} · apa {scraper}",
     "create_comicinfo": "Carë i quetta ComicInfo.xml",
     "edit_comicinfo": "Halya i quetta ComicInfo.xml",
     "error_network_connection": "ComicVine hirinwa lá. Cenda i tie mírëo lyëo.",
-    "error_network_timeout": "ComicVine anda lá handë. Yesta ata pella."
+    "error_network_timeout": "ComicVine anda lá handë. Yesta ata pella.",
+    "error_api_invalid_key": "Lá ná anwa i ComicVine API tercë lelya. Kesta sa mi meneldili.",
+    "error_api_not_found": "Ú-hirnenyë enyalië ComicVine-o an cesta sina.",
+    "error_api_url_format": "Úcarie mí-ré i cesta yána ComicVine-nna (loica tië-canta).",
+    "error_api_jsonp": "Úcarie mí-ré i cesta yána ComicVine-nna (loica quétië-canta).",
+    "error_api_filter": "Úcarie mí-ré i céstalië nótë yána ComicVine-nna.",
+    "error_api_subscriber_only": "Sina ComicVine enyalië ná ho i estelehtar erinqua.",
+    "error_api_rate_limit": "I ComicVine cestë telwa antuvë. Câ minutili nó ata-cestien."
   },
   "bookmark": {
     "popup_title": "Lambetengwe",

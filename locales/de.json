@@ -1570,6 +1570,8 @@
     "col_publisher": "Verlag",
     "col_issue_num": "Nr.",
     "col_issue_title": "Titel",
+    "cover_file_label": "Cover der Datei",
+    "cover_comicvine_label": "ComicVine-Cover",
     "btn_skip": "Überspringen",
     "btn_back": "Zurück",
     "info_single": "Diese Funktion ruft Metadaten für das aktuell geöffnete Comic ab. Um mehrere Dateien auf einmal zu verarbeiten, verwenden Sie die Stapelverarbeitung (Ordner auf das Fenster ziehen).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "ComicInfo.xml-Datei erstellen",
     "edit_comicinfo": "ComicInfo.xml-Datei bearbeiten",
     "error_network_connection": "ComicVine konnte nicht erreicht werden. Überprüfen Sie Ihre Internetverbindung.",
-    "error_network_timeout": "ComicVine antwortet zu langsam. Versuchen Sie es in Kürze erneut."
+    "error_network_timeout": "ComicVine antwortet zu langsam. Versuchen Sie es in Kürze erneut.",
+    "error_api_invalid_key": "Ihr ComicVine-API-Schlüssel ist ungültig. Überprüfen Sie ihn in den Einstellungen.",
+    "error_api_not_found": "Keine Daten auf ComicVine für diese Anfrage gefunden.",
+    "error_api_url_format": "Interner Fehler bei der an ComicVine gesendeten Anfrage (ungültiges Adressformat).",
+    "error_api_jsonp": "Interner Fehler bei der an ComicVine gesendeten Anfrage (ungültiges Antwortformat).",
+    "error_api_filter": "Interner Fehler in den an ComicVine gesendeten Suchkriterien.",
+    "error_api_subscriber_only": "Dieser ComicVine-Inhalt ist nur für Abonnenten.",
+    "error_api_rate_limit": "ComicVine-Anfragelimit erreicht. Warten Sie einige Minuten, bevor Sie es erneut versuchen."
   },
   "bookmark": {
     "popup_title": "Lesezeichen",

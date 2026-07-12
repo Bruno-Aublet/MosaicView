@@ -1570,6 +1570,8 @@
     "col_publisher": "Utgiver",
     "col_issue_num": "Nr.",
     "col_issue_title": "Tittel",
+    "cover_file_label": "Filens forside",
+    "cover_comicvine_label": "Forside fra ComicVine",
     "btn_skip": "Hopp over",
     "btn_back": "Tilbake",
     "info_single": "Denne funksjonen henter metadata for den åpne tegneserien. For å behandle flere filer på én gang, bruk batchbehandling (dra en mappe til vinduet).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Opprett en ComicInfo.xml-fil",
     "edit_comicinfo": "Rediger ComicInfo.xml-filen",
     "error_network_connection": "Kunne ikke kontakte ComicVine. Sjekk internettforbindelsen din.",
-    "error_network_timeout": "ComicVine bruker for lang tid på å svare. Prøv igjen om litt."
+    "error_network_timeout": "ComicVine bruker for lang tid på å svare. Prøv igjen om litt.",
+    "error_api_invalid_key": "ComicVine API-nøkkelen din er ikke gyldig. Sjekk den i innstillingene.",
+    "error_api_not_found": "Ingen data funnet på ComicVine for denne forespørselen.",
+    "error_api_url_format": "Intern feil i forespørselen sendt til ComicVine (ugyldig adresseformat).",
+    "error_api_jsonp": "Intern feil i forespørselen sendt til ComicVine (ugyldig svarformat).",
+    "error_api_filter": "Intern feil i søkekriteriene sendt til ComicVine.",
+    "error_api_subscriber_only": "Dette ComicVine-innholdet er kun for abonnenter.",
+    "error_api_rate_limit": "ComicVine-forespørselsgrensen er nådd. Vent noen minutter før du prøver igjen."
   },
   "bookmark": {
     "popup_title": "Bokmerke",

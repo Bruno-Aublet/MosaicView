@@ -8,6 +8,8 @@ import xml.etree.ElementTree as ET
 try:
     from defusedxml.ElementTree import fromstring as _safe_fromstring
 except ImportError:
+    print("AVERTISSEMENT : defusedxml absent — parsing XML sans protection XXE "
+          "(pip install defusedxml)")
     _safe_fromstring = ET.fromstring
 
 try:

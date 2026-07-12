@@ -1570,6 +1570,8 @@
     "col_publisher": "Leidėjas",
     "col_issue_num": "Nr.",
     "col_issue_title": "Pavadinimas",
+    "cover_file_label": "Failo viršelis",
+    "cover_comicvine_label": "ComicVine viršelis",
     "btn_skip": "Praleisti",
     "btn_back": "Atgal",
     "info_single": "Ši funkcija gauna šiuo metu atidaryto komikso metaduomenis. Norint apdoroti kelis failus iš karto, naudokite paketinį apdorojimą (nutempkite aplanką į langą).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Sukurti ComicInfo.xml failą",
     "edit_comicinfo": "Redaguoti ComicInfo.xml failą",
     "error_network_connection": "Nepavyko prisijungti prie ComicVine. Patikrinkite interneto ryšį.",
-    "error_network_timeout": "ComicVine atsako per ilgai. Bandykite dar kartą po kurio laiko."
+    "error_network_timeout": "ComicVine atsako per ilgai. Bandykite dar kartą po kurio laiko.",
+    "error_api_invalid_key": "Jūsų ComicVine API raktas negalioja. Patikrinkite jį nuostatose.",
+    "error_api_not_found": "Šiai užklausai ComicVine nerasta jokių duomenų.",
+    "error_api_url_format": "Vidinė klaida užklausoje, siųstoje į ComicVine (netinkamas adreso formatas).",
+    "error_api_jsonp": "Vidinė klaida užklausoje, siųstoje į ComicVine (netinkamas atsakymo formatas).",
+    "error_api_filter": "Vidinė klaida paieškos kriterijuose, siųstuose į ComicVine.",
+    "error_api_subscriber_only": "Šis ComicVine turinys skirtas tik prenumeratoriams.",
+    "error_api_rate_limit": "Pasiekta ComicVine užklausų riba. Prieš bandydami dar kartą, palaukite kelias minutes."
   },
   "bookmark": {
     "popup_title": "Žymė",

@@ -45,12 +45,11 @@ _TOLERANCE_DEFAULT = 15
 _ICON_SIZE = 24  # taille des icônes undo/redo dans les barres de boutons
 
 
-def _make_icon_btn(filename: str, tooltip: str = "") -> QPushButton:
+def _make_icon_btn(filename: str) -> QPushButton:
     """Crée un QPushButton carré avec l'icône chargée depuis icons/."""
     from modules.qt.font_loader import resource_path
     btn = QPushButton()
     btn.setFixedSize(_ICON_SIZE + 8, _ICON_SIZE + 8)
-    btn.setToolTip(tooltip)
     img_path = resource_path(os.path.join("icons", filename))
     if os.path.exists(img_path):
         try:

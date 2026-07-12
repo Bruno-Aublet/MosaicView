@@ -1570,6 +1570,8 @@
     "col_publisher": "Kustantaja",
     "col_issue_num": "Nro",
     "col_issue_title": "Otsikko",
+    "cover_file_label": "Tiedoston kansi",
+    "cover_comicvine_label": "ComicVine-kansi",
     "btn_skip": "Ohita",
     "btn_back": "Takaisin",
     "info_single": "Tämä toiminto hakee metatiedot tällä hetkellä avatulle sarjakuvalle. Useiden tiedostojen käsittelyyn kerralla käytä eräkäsittelyä (vedä kansio ikkunaan).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Luo ComicInfo.xml-tiedosto",
     "edit_comicinfo": "Muokkaa ComicInfo.xml-tiedostoa",
     "error_network_connection": "ComicVineen ei saatu yhteyttä. Tarkista internet-yhteytesi.",
-    "error_network_timeout": "ComicVine vastaa liian hitaasti. Yritä uudelleen hetken kuluttua."
+    "error_network_timeout": "ComicVine vastaa liian hitaasti. Yritä uudelleen hetken kuluttua.",
+    "error_api_invalid_key": "ComicVine-API-avaimesi ei ole voimassa. Tarkista se asetuksista.",
+    "error_api_not_found": "ComicVinesta ei löytynyt tietoja tälle pyynnölle.",
+    "error_api_url_format": "Sisäinen virhe ComicVineen lähetetyssä pyynnössä (virheellinen osoitemuoto).",
+    "error_api_jsonp": "Sisäinen virhe ComicVineen lähetetyssä pyynnössä (virheellinen vastausmuoto).",
+    "error_api_filter": "Sisäinen virhe ComicVineen lähetetyissä hakuehdoissa.",
+    "error_api_subscriber_only": "Tämä ComicVine-sisältö on vain tilaajille.",
+    "error_api_rate_limit": "ComicVine-pyyntöraja saavutettu. Odota muutama minuutti ennen uutta yritystä."
   },
   "bookmark": {
     "popup_title": "Kirjanmerkki",

@@ -1570,6 +1570,8 @@
     "col_publisher": "Nakladnik",
     "col_issue_num": "Br.",
     "col_issue_title": "Naslov",
+    "cover_file_label": "Naslovnica datoteke",
+    "cover_comicvine_label": "Naslovnica iz ComicVine",
     "btn_skip": "Preskoči",
     "btn_back": "Natrag",
     "info_single": "Ova funkcija dohvaća metapodatke trenutno otvorenog stripa. Za obradu više datoteka odjednom koristite skupnu obradu (povucite mapu na prozor).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Stvori datoteku ComicInfo.xml",
     "edit_comicinfo": "Uredi datoteku ComicInfo.xml",
     "error_network_connection": "Nije moguće uspostaviti vezu s ComicVineom. Provjerite internetsku vezu.",
-    "error_network_timeout": "ComicVine predugo odgovara. Pokušajte ponovno za trenutak."
+    "error_network_timeout": "ComicVine predugo odgovara. Pokušajte ponovno za trenutak.",
+    "error_api_invalid_key": "Vaš ComicVine API ključ nije valjan. Provjerite ga u postavkama.",
+    "error_api_not_found": "Nema pronađenih podataka na ComicVineu za ovaj zahtjev.",
+    "error_api_url_format": "Interna pogreška u zahtjevu poslanom na ComicVine (nevažeći format adrese).",
+    "error_api_jsonp": "Interna pogreška u zahtjevu poslanom na ComicVine (nevažeći format odgovora).",
+    "error_api_filter": "Interna pogreška u kriterijima pretraživanja poslanim na ComicVine.",
+    "error_api_subscriber_only": "Ovaj ComicVine sadržaj namijenjen je samo pretplatnicima.",
+    "error_api_rate_limit": "Dosegnut je limit zahtjeva ComicVinea. Pričekajte nekoliko minuta prije ponovnog pokušaja."
   },
   "bookmark": {
     "popup_title": "Oznaka",

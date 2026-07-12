@@ -1570,6 +1570,8 @@
     "col_publisher": "Založba",
     "col_issue_num": "Št.",
     "col_issue_title": "Naslov",
+    "cover_file_label": "Naslovnica datoteke",
+    "cover_comicvine_label": "Naslovnica iz ComicVine",
     "btn_skip": "Preskoči",
     "btn_back": "Nazaj",
     "info_single": "Ta funkcija pridobi metapodatke trenutno odprtega stripa. Za obdelavo več datotek hkrati uporabite paketno obdelavo (povlecite mapo v okno).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Ustvari datoteko ComicInfo.xml",
     "edit_comicinfo": "Uredi datoteko ComicInfo.xml",
     "error_network_connection": "Povezava s ComicVine ni uspela. Preverite internetno povezavo.",
-    "error_network_timeout": "ComicVine se odziva predolgo. Poskusite znova čez trenutek."
+    "error_network_timeout": "ComicVine se odziva predolgo. Poskusite znova čez trenutek.",
+    "error_api_invalid_key": "Vaš ComicVine API ključ ni veljaven. Preverite ga v nastavitvah.",
+    "error_api_not_found": "Za to zahtevo na ComicVine ni bilo najdenih podatkov.",
+    "error_api_url_format": "Notranja napaka v zahtevi, poslani na ComicVine (neveljavna oblika naslova).",
+    "error_api_jsonp": "Notranja napaka v zahtevi, poslani na ComicVine (neveljavna oblika odgovora).",
+    "error_api_filter": "Notranja napaka v iskalnih merilih, poslanih na ComicVine.",
+    "error_api_subscriber_only": "Ta vsebina ComicVine je namenjena samo naročnikom.",
+    "error_api_rate_limit": "Dosežena je omejitev zahtev ComicVine. Počakajte nekaj minut, preden poskusite znova."
   },
   "bookmark": {
     "popup_title": "Zaznamek",

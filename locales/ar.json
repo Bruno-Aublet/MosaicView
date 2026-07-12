@@ -1570,6 +1570,8 @@
     "col_publisher": "الناشر",
     "col_issue_num": "رقم",
     "col_issue_title": "العنوان",
+    "cover_file_label": "غلاف الملف",
+    "cover_comicvine_label": "غلاف ComicVine",
     "btn_skip": "تخطي",
     "btn_back": "رجوع",
     "info_single": "تسترد هذه الوظيفة البيانات الوصفية للقصة المصورة المفتوحة حاليًا. لمعالجة ملفات متعددة في وقت واحد، استخدم المعالجة الدفعية (اسحب مجلدًا إلى النافذة).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "إنشاء ملف ComicInfo.xml",
     "edit_comicinfo": "تعديل ملف ComicInfo.xml",
     "error_network_connection": "تعذر الاتصال بـ ComicVine. تحقق من اتصالك بالإنترنت.",
-    "error_network_timeout": "استغرقت ComicVine وقتًا طويلاً للاستجابة. حاول مرة أخرى بعد قليل."
+    "error_network_timeout": "استغرقت ComicVine وقتًا طويلاً للاستجابة. حاول مرة أخرى بعد قليل.",
+    "error_api_invalid_key": "مفتاح API الخاص بـ ComicVine غير صالح. تحقق منه في التفضيلات.",
+    "error_api_not_found": "لم يتم العثور على بيانات في ComicVine لهذا الطلب.",
+    "error_api_url_format": "خطأ داخلي في الطلب المرسل إلى ComicVine (تنسيق عنوان غير صالح).",
+    "error_api_jsonp": "خطأ داخلي في الطلب المرسل إلى ComicVine (تنسيق استجابة غير صالح).",
+    "error_api_filter": "خطأ داخلي في معايير البحث المرسلة إلى ComicVine.",
+    "error_api_subscriber_only": "هذا المحتوى من ComicVine مخصص للمشتركين فقط.",
+    "error_api_rate_limit": "تم بلوغ حد طلبات ComicVine. انتظر بضع دقائق قبل المحاولة مرة أخرى."
   },
   "bookmark": {
     "popup_title": "إشارة مرجعية",

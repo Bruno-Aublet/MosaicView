@@ -1570,6 +1570,8 @@
     "col_publisher": "Editor",
     "col_issue_num": "Nr.",
     "col_issue_title": "Titlu",
+    "cover_file_label": "Coperta fișierului",
+    "cover_comicvine_label": "Coperta ComicVine",
     "btn_skip": "Omitere",
     "btn_back": "Înapoi",
     "info_single": "Această funcție preia metadatele benzii desenate deschise în prezent. Pentru a procesa mai multe fișiere simultan, utilizați procesarea în lot (trageți un dosar în fereastră).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Creați un fișier ComicInfo.xml",
     "edit_comicinfo": "Editați fișierul ComicInfo.xml",
     "error_network_connection": "Nu s-a putut contacta ComicVine. Verificați conexiunea la internet.",
-    "error_network_timeout": "ComicVine durează prea mult să răspundă. Încercați din nou peste puțin timp."
+    "error_network_timeout": "ComicVine durează prea mult să răspundă. Încercați din nou peste puțin timp.",
+    "error_api_invalid_key": "Cheia API ComicVine nu este validă. Verificați-o în preferințe.",
+    "error_api_not_found": "Nu s-au găsit date pe ComicVine pentru această cerere.",
+    "error_api_url_format": "Eroare internă în cererea trimisă către ComicVine (format de adresă nevalid).",
+    "error_api_jsonp": "Eroare internă în cererea trimisă către ComicVine (format de răspuns nevalid).",
+    "error_api_filter": "Eroare internă în criteriile de căutare trimise către ComicVine.",
+    "error_api_subscriber_only": "Acest conținut ComicVine este disponibil doar pentru abonați.",
+    "error_api_rate_limit": "Limita de cereri ComicVine a fost atinsă. Așteptați câteva minute înainte de a reîncerca."
   },
   "bookmark": {
     "popup_title": "Marcaj",

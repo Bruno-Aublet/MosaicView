@@ -1570,6 +1570,8 @@
     "col_publisher": "வெளியீட்டாளர்",
     "col_issue_num": "எண்.",
     "col_issue_title": "தலைப்பு",
+    "cover_file_label": "கோப்பின் அட்டை",
+    "cover_comicvine_label": "ComicVine அட்டை",
     "btn_skip": "தவிர்",
     "btn_back": "திரும்பு",
     "info_single": "இந்த செயல்பாடு தற்போது திறந்திருக்கும் கோமிக்கின் மெட்டாடேட்டாவை மீட்டெடுக்கிறது. பல கோப்புகளை ஒரே நேரத்தில் செயலாக்க, தொகுதி செயலாக்கத்தைப் பயன்படுத்துங்கள்.",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "ComicInfo.xml கோப்பை உருவாக்கு",
     "edit_comicinfo": "ComicInfo.xml கோப்பை திருத்து",
     "error_network_connection": "ComicVine ஐ அணுக முடியவில்லை. உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும்.",
-    "error_network_timeout": "ComicVine பதிலளிக்க அதிக நேரம் எடுக்கிறது. சிறிது நேரத்தில் மீண்டும் முயற்சிக்கவும்."
+    "error_network_timeout": "ComicVine பதிலளிக்க அதிக நேரம் எடுக்கிறது. சிறிது நேரத்தில் மீண்டும் முயற்சிக்கவும்.",
+    "error_api_invalid_key": "உங்கள் ComicVine API விசை செல்லுபடியாகாதது. விருப்பங்களில் சரிபார்க்கவும்.",
+    "error_api_not_found": "இந்தக் கோரிக்கைக்கு ComicVine இல் தரவு எதுவும் கிடைக்கவில்லை.",
+    "error_api_url_format": "ComicVine க்கு அனுப்பப்பட்ட கோரிக்கையில் உள் பிழை (தவறான முகவரி வடிவம்).",
+    "error_api_jsonp": "ComicVine க்கு அனுப்பப்பட்ட கோரிக்கையில் உள் பிழை (தவறான பதில் வடிவம்).",
+    "error_api_filter": "ComicVine க்கு அனுப்பப்பட்ட தேடல் அளவுகோல்களில் உள் பிழை.",
+    "error_api_subscriber_only": "இந்த ComicVine உள்ளடக்கம் சந்தாதாரர்களுக்கு மட்டுமே.",
+    "error_api_rate_limit": "ComicVine கோரிக்கை வரம்பை எட்டிவிட்டது. மீண்டும் முயற்சிக்கும் முன் சில நிமிடங்கள் காத்திருக்கவும்."
   },
   "bookmark": {
     "popup_title": "புக்மார்க்",

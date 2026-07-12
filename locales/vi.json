@@ -1570,6 +1570,8 @@
     "col_publisher": "Nhà xuất bản",
     "col_issue_num": "Số",
     "col_issue_title": "Tiêu đề",
+    "cover_file_label": "Bìa của tệp",
+    "cover_comicvine_label": "Bìa từ ComicVine",
     "btn_skip": "Bỏ qua",
     "btn_back": "Quay lại",
     "info_single": "Chức năng này lấy siêu dữ liệu cho truyện tranh đang mở. Để xử lý nhiều tệp cùng lúc, hãy sử dụng xử lý hàng loạt (kéo thư mục vào cửa sổ).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Tạo tệp ComicInfo.xml",
     "edit_comicinfo": "Chỉnh sửa tệp ComicInfo.xml",
     "error_network_connection": "Không thể kết nối với ComicVine. Vui lòng kiểm tra kết nối Internet của bạn.",
-    "error_network_timeout": "ComicVine phản hồi quá lâu. Vui lòng thử lại sau giây lát."
+    "error_network_timeout": "ComicVine phản hồi quá lâu. Vui lòng thử lại sau giây lát.",
+    "error_api_invalid_key": "Khóa API ComicVine của bạn không hợp lệ. Hãy kiểm tra trong tùy chọn.",
+    "error_api_not_found": "Không tìm thấy dữ liệu nào trên ComicVine cho yêu cầu này.",
+    "error_api_url_format": "Lỗi nội bộ trong yêu cầu gửi tới ComicVine (định dạng địa chỉ không hợp lệ).",
+    "error_api_jsonp": "Lỗi nội bộ trong yêu cầu gửi tới ComicVine (định dạng phản hồi không hợp lệ).",
+    "error_api_filter": "Lỗi nội bộ trong tiêu chí tìm kiếm gửi tới ComicVine.",
+    "error_api_subscriber_only": "Nội dung ComicVine này chỉ dành cho người đăng ký.",
+    "error_api_rate_limit": "Đã đạt giới hạn yêu cầu ComicVine. Hãy đợi vài phút trước khi thử lại."
   },
   "bookmark": {
     "popup_title": "Dấu trang",

@@ -1570,6 +1570,8 @@
     "col_publisher": "Kiadó",
     "col_issue_num": "Sz.",
     "col_issue_title": "Cím",
+    "cover_file_label": "A fájl borítója",
+    "cover_comicvine_label": "ComicVine-borító",
     "btn_skip": "Kihagyás",
     "btn_back": "Vissza",
     "info_single": "Ez a funkció az aktuálisan megnyitott képregény metaadatait kéri le. Több fájl egyszerre történő feldolgozásához használja a kötegelt feldolgozást (húzzon egy mappát az ablakra).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "ComicInfo.xml fájl létrehozása",
     "edit_comicinfo": "ComicInfo.xml fájl szerkesztése",
     "error_network_connection": "Nem sikerült kapcsolódni a ComicVine-hoz. Ellenőrizze az internetkapcsolatát.",
-    "error_network_timeout": "A ComicVine túl sokáig válaszol. Próbálja meg újra egy kicsit később."
+    "error_network_timeout": "A ComicVine túl sokáig válaszol. Próbálja meg újra egy kicsit később.",
+    "error_api_invalid_key": "A ComicVine API-kulcsa érvénytelen. Ellenőrizze a beállításokban.",
+    "error_api_not_found": "Nem található adat a ComicVine-on ehhez a kéréshez.",
+    "error_api_url_format": "Belső hiba a ComicVine-nak küldött kérésben (érvénytelen címformátum).",
+    "error_api_jsonp": "Belső hiba a ComicVine-nak küldött kérésben (érvénytelen válaszformátum).",
+    "error_api_filter": "Belső hiba a ComicVine-nak küldött keresési feltételekben.",
+    "error_api_subscriber_only": "Ez a ComicVine-tartalom csak előfizetők számára érhető el.",
+    "error_api_rate_limit": "Elérte a ComicVine kéréskorlátot. Várjon néhány percet, mielőtt újra próbálkozna."
   },
   "bookmark": {
     "popup_title": "Könyvjelző",

@@ -1570,6 +1570,8 @@
     "col_publisher": "Foilsitheoir",
     "col_issue_num": "Uimh.",
     "col_issue_title": "Teideal",
+    "cover_file_label": "Clúdach an chomhaid",
+    "cover_comicvine_label": "Clúdach ó ComicVine",
     "btn_skip": "Scipeáil",
     "btn_back": "Ar ais",
     "info_single": "Aisghabhadh an fheidhm seo meiteashonraí don leabhar graif atá oscailte faoi láthair. Chun comhaid iolracha a phróiseáil ag an am céanna, úsáid próiseáil bhaisc (tarraing fillteán chuig an bhfuinneog).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Cruthaigh comhad ComicInfo.xml",
     "edit_comicinfo": "Cuir an comhad ComicInfo.xml in eagar",
     "error_network_connection": "Níorbh fhéidir teagmháil a dhéanamh le ComicVine. Seiceáil do cheangal Idirlín.",
-    "error_network_timeout": "Tá ComicVine ag tógáil an iomarca ama chun freagra a thabhairt. Bain triail eile as ar ball."
+    "error_network_timeout": "Tá ComicVine ag tógáil an iomarca ama chun freagra a thabhairt. Bain triail eile as ar ball.",
+    "error_api_invalid_key": "Níl d'eochair API ComicVine bailí. Seiceáil í sna sainroghanna.",
+    "error_api_not_found": "Níor aimsíodh aon sonraí ar ComicVine don iarratas seo.",
+    "error_api_url_format": "Earráid inmheánach san iarratas a seoladh chuig ComicVine (formáid seoltaí neamhbhailí).",
+    "error_api_jsonp": "Earráid inmheánach san iarratas a seoladh chuig ComicVine (formáid freagra neamhbhailí).",
+    "error_api_filter": "Earráid inmheánach sna critéir chuardaigh a seoladh chuig ComicVine.",
+    "error_api_subscriber_only": "Tá an t-ábhar ComicVine seo do shíntiúsóirí amháin.",
+    "error_api_rate_limit": "Baineadh amach teorainn iarratas ComicVine. Fan cúpla nóiméad sula dtriaileann tú arís."
   },
   "bookmark": {
     "popup_title": "Leabharmharc",

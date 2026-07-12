@@ -395,7 +395,6 @@ def _populate_library_menu(menu: QMenu, callbacks: dict):
         import os as _os
         for fp in recent_dbs:
             act = QAction(_os.path.basename(fp), recent_db_menu)
-            act.setToolTip(fp)
             if not _os.path.exists(fp):
                 act.setEnabled(False)
             else:

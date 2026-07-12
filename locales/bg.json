@@ -1570,6 +1570,8 @@
     "col_publisher": "Издател",
     "col_issue_num": "№",
     "col_issue_title": "Заглавие",
+    "cover_file_label": "Корица на файла",
+    "cover_comicvine_label": "Корица от ComicVine",
     "btn_skip": "Пропускане",
     "btn_back": "Назад",
     "info_single": "Тази функция извлича метаданни за текущо отворения комикс. За обработка на множество файлове наведнъж използвайте пакетната обработка (плъзнете папка върху прозореца).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Създаване на файл ComicInfo.xml",
     "edit_comicinfo": "Редактиране на файл ComicInfo.xml",
     "error_network_connection": "Неуспешно свързване с ComicVine. Проверете интернет връзката си.",
-    "error_network_timeout": "ComicVine отговаря твърде бавно. Опитайте отново след малко."
+    "error_network_timeout": "ComicVine отговаря твърде бавно. Опитайте отново след малко.",
+    "error_api_invalid_key": "Вашият API ключ за ComicVine не е валиден. Проверете го в предпочитанията.",
+    "error_api_not_found": "Не са намерени данни в ComicVine за тази заявка.",
+    "error_api_url_format": "Вътрешна грешка в заявката, изпратена до ComicVine (невалиден формат на адреса).",
+    "error_api_jsonp": "Вътрешна грешка в заявката, изпратена до ComicVine (невалиден формат на отговора).",
+    "error_api_filter": "Вътрешна грешка в критериите за търсене, изпратени до ComicVine.",
+    "error_api_subscriber_only": "Това съдържание на ComicVine е само за абонати.",
+    "error_api_rate_limit": "Достигнат е лимитът на заявки към ComicVine. Изчакайте няколко минути, преди да опитате отново."
   },
   "bookmark": {
     "popup_title": "Отметка",

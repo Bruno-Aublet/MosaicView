@@ -1570,6 +1570,8 @@
     "col_publisher": "Yayıncı",
     "col_issue_num": "No.",
     "col_issue_title": "Başlık",
+    "cover_file_label": "Dosyanın kapağı",
+    "cover_comicvine_label": "ComicVine kapağı",
     "btn_skip": "Atla",
     "btn_back": "Geri",
     "info_single": "Bu fonksiyon, şu an açık olan çizgi romanın meta verilerini alır. Birden fazla dosyayı aynı anda işlemek için toplu işlemeyi kullanın (bir klasörü pencereye sürükleyin).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "ComicInfo.xml dosyası oluştur",
     "edit_comicinfo": "ComicInfo.xml dosyasını düzenle",
     "error_network_connection": "ComicVine'a ulaşılamadı. İnternet bağlantınızı kontrol edin.",
-    "error_network_timeout": "ComicVine yanıt vermesi çok uzun sürüyor. Kısa süre sonra tekrar deneyin."
+    "error_network_timeout": "ComicVine yanıt vermesi çok uzun sürüyor. Kısa süre sonra tekrar deneyin.",
+    "error_api_invalid_key": "ComicVine API anahtarınız geçerli değil. Tercihlerden kontrol edin.",
+    "error_api_not_found": "Bu istek için ComicVine'da veri bulunamadı.",
+    "error_api_url_format": "ComicVine'a gönderilen istekte iç hata (geçersiz adres biçimi).",
+    "error_api_jsonp": "ComicVine'a gönderilen istekte iç hata (geçersiz yanıt biçimi).",
+    "error_api_filter": "ComicVine'a gönderilen arama kriterlerinde iç hata.",
+    "error_api_subscriber_only": "Bu ComicVine içeriği yalnızca abonelere yöneliktir.",
+    "error_api_rate_limit": "ComicVine istek sınırına ulaşıldı. Tekrar denemeden önce birkaç dakika bekleyin."
   },
   "bookmark": {
     "popup_title": "Yer imi",

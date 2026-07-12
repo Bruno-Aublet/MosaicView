@@ -1570,6 +1570,8 @@
     "col_publisher": "สำนักพิมพ์",
     "col_issue_num": "ฉบับที่",
     "col_issue_title": "ชื่อเรื่อง",
+    "cover_file_label": "ปกของไฟล์",
+    "cover_comicvine_label": "ปกจาก ComicVine",
     "btn_skip": "ข้าม",
     "btn_back": "ย้อนกลับ",
     "info_single": "ฟังก์ชันนี้ดึงเมทาดาต้าสำหรับการ์ตูนที่เปิดอยู่ หากต้องการประมวลผลหลายไฟล์พร้อมกัน ให้ใช้การประมวลผลแบบกลุ่ม (ลากโฟลเดอร์ไปที่หน้าต่าง)",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "สร้างไฟล์ ComicInfo.xml",
     "edit_comicinfo": "แก้ไขไฟล์ ComicInfo.xml",
     "error_network_connection": "ไม่สามารถติดต่อ ComicVine ได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณ",
-    "error_network_timeout": "ComicVine ใช้เวลาตอบสนองนานเกินไป โปรดลองอีกครั้งในอีกสักครู่"
+    "error_network_timeout": "ComicVine ใช้เวลาตอบสนองนานเกินไป โปรดลองอีกครั้งในอีกสักครู่",
+    "error_api_invalid_key": "คีย์ API ComicVine ของคุณไม่ถูกต้อง โปรดตรวจสอบในการตั้งค่า",
+    "error_api_not_found": "ไม่พบข้อมูลบน ComicVine สำหรับคำขอนี้",
+    "error_api_url_format": "ข้อผิดพลาดภายในในคำขอที่ส่งไปยัง ComicVine (รูปแบบที่อยู่ไม่ถูกต้อง)",
+    "error_api_jsonp": "ข้อผิดพลาดภายในในคำขอที่ส่งไปยัง ComicVine (รูปแบบการตอบกลับไม่ถูกต้อง)",
+    "error_api_filter": "ข้อผิดพลาดภายในในเกณฑ์การค้นหาที่ส่งไปยัง ComicVine",
+    "error_api_subscriber_only": "เนื้อหา ComicVine นี้สำหรับสมาชิกเท่านั้น",
+    "error_api_rate_limit": "ถึงขีดจำกัดคำขอ ComicVine แล้ว โปรดรอสักครู่ก่อนลองอีกครั้ง"
   },
   "bookmark": {
     "popup_title": "ที่คั่นหนังสือ",

@@ -1570,6 +1570,8 @@
     "col_publisher": "出版社",
     "col_issue_num": "号",
     "col_issue_title": "タイトル",
+    "cover_file_label": "ファイルの表紙",
+    "cover_comicvine_label": "ComicVineの表紙",
     "btn_skip": "スキップ",
     "btn_back": "戻る",
     "info_single": "この機能は現在開いているコミックのメタデータを取得します。複数のファイルを一度に処理するには、バッチ処理を使用してください（フォルダをウィンドウにドラッグ）。",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "ComicInfo.xmlファイルを作成",
     "edit_comicinfo": "ComicInfo.xmlファイルを編集",
     "error_network_connection": "ComicVine に接続できませんでした。インターネット接続を確認してください。",
-    "error_network_timeout": "ComicVine の応答に時間がかかりすぎています。しばらくしてから再試行してください。"
+    "error_network_timeout": "ComicVine の応答に時間がかかりすぎています。しばらくしてから再試行してください。",
+    "error_api_invalid_key": "ComicVine APIキーが無効です。環境設定で確認してください。",
+    "error_api_not_found": "このリクエストに対するデータがComicVineに見つかりませんでした。",
+    "error_api_url_format": "ComicVineへのリクエストに内部エラーが発生しました（無効なアドレス形式）。",
+    "error_api_jsonp": "ComicVineへのリクエストに内部エラーが発生しました（無効な応答形式）。",
+    "error_api_filter": "ComicVineに送信された検索条件に内部エラーが発生しました。",
+    "error_api_subscriber_only": "このComicVineコンテンツは購読者専用です。",
+    "error_api_rate_limit": "ComicVineのリクエスト制限に達しました。しばらく待ってから再試行してください。"
   },
   "bookmark": {
     "popup_title": "ブックマーク",

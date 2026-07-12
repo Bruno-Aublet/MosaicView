@@ -1740,6 +1740,8 @@
     "col_publisher": "Éditeur",
     "col_issue_num": "N°",
     "col_issue_title": "Titre",
+    "cover_file_label": "Couverture du fichier",
+    "cover_comicvine_label": "Couverture ComicVine",
     "btn_skip": "Ignorer",
     "btn_back": "Retour",
     "info_single": "Cette fonction récupère les métadonnées de la BD actuellement ouverte. Pour traiter plusieurs fichiers d’affilée, utilisez le traitement par lot (déposez un dossier sur la fenêtre).",
@@ -1751,7 +1753,14 @@
     "create_comicinfo": "Créer un fichier ComicInfo.xml",
     "edit_comicinfo": "Modifier le fichier ComicInfo.xml",
     "error_network_connection": "Impossible de contacter ComicVine. Vérifiez votre connexion Internet.",
-    "error_network_timeout": "ComicVine met trop de temps à répondre. Réessayez dans quelques instants."
+    "error_network_timeout": "ComicVine met trop de temps à répondre. Réessayez dans quelques instants.",
+    "error_api_invalid_key": "Votre clé API ComicVine n'est pas valide. Vérifiez-la dans les préférences.",
+    "error_api_not_found": "Aucune donnée trouvée sur ComicVine pour cette requête.",
+    "error_api_url_format": "Erreur interne dans la requête envoyée à ComicVine (format d'adresse invalide).",
+    "error_api_jsonp": "Erreur interne dans la requête envoyée à ComicVine (format de réponse invalide).",
+    "error_api_filter": "Erreur interne dans les critères de recherche envoyés à ComicVine.",
+    "error_api_subscriber_only": "Ce contenu ComicVine est réservé aux abonnés.",
+    "error_api_rate_limit": "Limite de requêtes ComicVine atteinte. Attendez quelques minutes avant de réessayer."
   },
   "comicvine_url": {
     "window_title": "Métadonnées ComicVine",

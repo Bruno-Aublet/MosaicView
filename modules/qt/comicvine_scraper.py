@@ -61,7 +61,7 @@ def error_message_fn(payload):
         return lambda: _(key)
     return lambda p=payload: p
 
-# Rate limiting : 1 requête/seconde minimum (ComicVine l'exige)
+# Rate limiting : délai minimum entre deux requêtes ComicVine
 _next_query_time = 0.0
 _QUERY_DELAY_S = 2.0
 
@@ -80,7 +80,7 @@ def _wait_rate_limit():
 
 
 _MAX_RETRIES = 3
-_RETRY_DELAYS = [5, 15, 30]   # secondes entre tentatives
+_RETRY_DELAYS = [5, 10]   # secondes entre tentatives
 
 
 def _get_json(url, api_key, params=None):
@@ -102,13 +102,20 @@ def _get_json(url, api_key, params=None):
         _wait_rate_limit()
         try:
             response = _requests.get(url, params=full_params, headers=headers, timeout=30)
+            if response.status_code in (401, 403):
+                raise ComicVineNetworkError("comicvine.error_api_invalid_key")
             response.raise_for_status()
             data = response.json()
             status = data.get("status_code", 0)
             if status != 1:
-                error = data.get("error", "unknown error")
+                api_error = _classify_api_error(status)
+                if api_error:
+                    raise api_error
+                error = _neutralize_html_chars(data.get("error", "unknown error"))
                 raise RuntimeError(f"ComicVine API error {status}: {error}")
             return data
+        except ComicVineNetworkError:
+            raise
         except RuntimeError:
             raise
         except Exception as exc:
@@ -120,6 +127,30 @@ def _get_json(url, api_key, params=None):
     if network_error:
         raise network_error from last_exc
     raise RuntimeError(_redact_api_key(str(last_exc))) from last_exc
+
+
+# Codes status_code documentés par l'API ComicVine (doc officielle pour
+# 100-105 ; 107 confirmé par les développeurs ComicVine sur leur forum,
+# absent de la doc officielle) associés à leur clé de traduction.
+_API_ERROR_KEYS = {
+    100: "comicvine.error_api_invalid_key",
+    101: "comicvine.error_api_not_found",
+    102: "comicvine.error_api_url_format",
+    103: "comicvine.error_api_jsonp",
+    104: "comicvine.error_api_filter",
+    105: "comicvine.error_api_subscriber_only",
+    107: "comicvine.error_api_rate_limit",
+}
+
+
+def _classify_api_error(status_code):
+    """Retourne une ComicVineNetworkError pour un status_code ComicVine connu
+    (voir _API_ERROR_KEYS), ou None si le code n'est pas catalogué (l'appelant
+    retombe alors sur le message générique avec le code et le texte brut)."""
+    key = _API_ERROR_KEYS.get(status_code)
+    if key:
+        return ComicVineNetworkError(key)
+    return None
 
 
 def _classify_network_error(exc):
@@ -145,6 +176,14 @@ def _redact_api_key(message):
     complète appelée, clé API en clair comprise (visible dans une capture
     d'écran d'erreur partagée pour demander de l'aide, par exemple)."""
     return re.sub(r'(api_key=)[^&\s]+', r'\1***', message)
+
+
+def _neutralize_html_chars(text):
+    """Remplace < et > par des guillemets simples dans un texte d'erreur brut
+    renvoyé par ComicVine, pour empêcher QLabel de le prendre pour du HTML
+    (bascule automatique en rich-text dès qu'il détecte un motif de balise)
+    tout en gardant le message intégralement lisible, sans rien supprimer."""
+    return text.replace('<', "'").replace('>', "'")
 
 
 def _strip_html(text):
@@ -173,12 +212,14 @@ def _join_names(items, key="name"):
 
 
 def _parse_image_url(image_dict):
-    """Extrait la meilleure URL d'image disponible dans un dict ComicVine 'image'."""
+    """Extrait la meilleure URL d'image disponible dans un dict ComicVine 'image'.
+    Seules les URLs http/https sont acceptées : une réponse API anormale ne doit
+    pas pouvoir faire télécharger un chemin file:// ou ftp:// (urllib les accepte)."""
     if not isinstance(image_dict, dict):
         return None
     for key in ("small_url", "medium_url", "large_url", "super_url", "thumb_url"):
         url = image_dict.get(key)
-        if url and isinstance(url, str):
+        if url and isinstance(url, str) and url.lower().startswith(("http://", "https://")):
             return url
     return None
 

@@ -1570,6 +1570,8 @@
     "col_publisher": "Editur",
     "col_issue_num": "Nru.",
     "col_issue_title": "Titlu",
+    "cover_file_label": "Il-qoxra tal-fajl",
+    "cover_comicvine_label": "Il-qoxra ta' ComicVine",
     "btn_skip": "Aqbeż",
     "btn_back": "Lura",
     "info_single": "Din il-funzjoni tikseb il-metadejta tal-komik miftuħ bħalissa. Biex tipproċessa diversi fajls fl-istess ħin, uża l-ipproċessar bl-imħattar (igħaddi folder lejn it-tieqa).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Oħloq fajl ComicInfo.xml",
     "edit_comicinfo": "Editja l-fajl ComicInfo.xml",
     "error_network_connection": "Ma setax jintlaħaq ComicVine. Iċċekkja l-konnessjoni tal-Internet tiegħek.",
-    "error_network_timeout": "ComicVine qed jieħu wisq żmien biex iwieġeb. Erġa' pprova wara ftit."
+    "error_network_timeout": "ComicVine qed jieħu wisq żmien biex iwieġeb. Erġa' pprova wara ftit.",
+    "error_api_invalid_key": "Iċ-ċavetta API ComicVine tiegħek mhix valida. Iċċekkjaha fil-preferenzi.",
+    "error_api_not_found": "Ma nstab l-ebda dejta fuq ComicVine għal din it-talba.",
+    "error_api_url_format": "Żball intern fit-talba mibgħuta lil ComicVine (format ta' indirizz invalidu).",
+    "error_api_jsonp": "Żball intern fit-talba mibgħuta lil ComicVine (format ta' tweġiba invalidu).",
+    "error_api_filter": "Żball intern fil-kriterji tat-tfittxija mibgħuta lil ComicVine.",
+    "error_api_subscriber_only": "Dan il-kontenut ComicVine huwa biss għall-abbonati.",
+    "error_api_rate_limit": "Il-limitu ta' talbiet ComicVine intlaħaq. Stenna ftit minuti qabel terġa' tipprova."
   },
   "bookmark": {
     "popup_title": "Bookmark",

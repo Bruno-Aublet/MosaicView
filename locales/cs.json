@@ -1570,6 +1570,8 @@
     "col_publisher": "Vydavatel",
     "col_issue_num": "č.",
     "col_issue_title": "Název",
+    "cover_file_label": "Obálka souboru",
+    "cover_comicvine_label": "Obálka z ComicVine",
     "btn_skip": "Přeskočit",
     "btn_back": "Zpět",
     "info_single": "Tato funkce načítá metadata aktuálně otevřeného komiksu. Pro zpracování více souborů najednou použijte dávkové zpracování (přetáhněte složku do okna).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Vytvořit soubor ComicInfo.xml",
     "edit_comicinfo": "Upravit soubor ComicInfo.xml",
     "error_network_connection": "Nelze se připojit k ComicVine. Zkontrolujte své internetové připojení.",
-    "error_network_timeout": "ComicVine odpovídá příliš dlouho. Zkuste to znovu za chvíli."
+    "error_network_timeout": "ComicVine odpovídá příliš dlouho. Zkuste to znovu za chvíli.",
+    "error_api_invalid_key": "Váš klíč API ComicVine není platný. Zkontrolujte jej v předvolbách.",
+    "error_api_not_found": "Pro tento požadavek nebyla na ComicVine nalezena žádná data.",
+    "error_api_url_format": "Interní chyba v požadavku odeslaném na ComicVine (neplatný formát adresy).",
+    "error_api_jsonp": "Interní chyba v požadavku odeslaném na ComicVine (neplatný formát odpovědi).",
+    "error_api_filter": "Interní chyba ve vyhledávacích kritériích odeslaných na ComicVine.",
+    "error_api_subscriber_only": "Tento obsah ComicVine je určen pouze pro předplatitele.",
+    "error_api_rate_limit": "Dosažen limit požadavků ComicVine. Před dalším pokusem počkejte několik minut."
   },
   "bookmark": {
     "popup_title": "Záložka",

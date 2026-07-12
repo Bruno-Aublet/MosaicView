@@ -488,21 +488,23 @@ class _PreviewWorker(QThread):
 
             elif ext == '.epub':
                 try:
-                    import zipfile, xml.etree.ElementTree as ET, io
+                    import zipfile
+                    # Parseur XML durci (defusedxml) : le XML vient d'un EPUB externe
+                    from modules.qt.comic_info import _safe_fromstring
                     with zipfile.ZipFile(self.abs_path, 'r') as zf:
                         names_lower = {n.lower(): n for n in zf.namelist()}
                         cover_path = None
                         # 1. Cherche via OPF (méthode standard EPUB)
                         container = names_lower.get('meta-inf/container.xml')
                         if container:
-                            tree = ET.parse(io.BytesIO(zf.read(container)))
+                            tree = _safe_fromstring(zf.read(container))
                             ns = {'c': 'urn:oasis:names:tc:opendocument:xmlns:container'}
                             rf = tree.find('.//c:rootfile', ns)
                             if rf is not None:
                                 opf_path = rf.get('full-path', '')
                                 opf_lower = names_lower.get(opf_path.lower())
                                 if opf_lower:
-                                    opf_tree = ET.parse(io.BytesIO(zf.read(opf_lower)))
+                                    opf_tree = _safe_fromstring(zf.read(opf_lower))
                                     opf_ns = {'opf': 'http://www.idpf.org/2007/opf'}
                                     # Cherche item avec properties="cover-image" ou id lié à cover
                                     manifest = opf_tree.find('.//opf:manifest', opf_ns)
@@ -3015,7 +3017,6 @@ class LibraryWindow(QWidget):
         for fp in recent:
             import os as _os
             act = menu.addAction(_os.path.basename(fp))
-            act.setToolTip(fp)
             if not _os.path.exists(fp):
                 act.setEnabled(False)
             else:

@@ -1570,6 +1570,8 @@
     "col_publisher": "Uitgever",
     "col_issue_num": "Nr.",
     "col_issue_title": "Titel",
+    "cover_file_label": "Cover van het bestand",
+    "cover_comicvine_label": "Cover van ComicVine",
     "btn_skip": "Overslaan",
     "btn_back": "Terug",
     "info_single": "Deze functie haalt metadata op voor het momenteel geopende stripboek. Om meerdere bestanden tegelijk te verwerken, gebruik de batchverwerking (sleep een map naar het venster).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Een ComicInfo.xml-bestand maken",
     "edit_comicinfo": "Het ComicInfo.xml-bestand bewerken",
     "error_network_connection": "Kan geen verbinding maken met ComicVine. Controleer uw internetverbinding.",
-    "error_network_timeout": "ComicVine reageert te traag. Probeer het straks opnieuw."
+    "error_network_timeout": "ComicVine reageert te traag. Probeer het straks opnieuw.",
+    "error_api_invalid_key": "Uw ComicVine API-sleutel is ongeldig. Controleer deze in de voorkeuren.",
+    "error_api_not_found": "Geen gegevens gevonden op ComicVine voor deze aanvraag.",
+    "error_api_url_format": "Interne fout in het verzoek naar ComicVine (ongeldig adresformaat).",
+    "error_api_jsonp": "Interne fout in het verzoek naar ComicVine (ongeldig antwoordformaat).",
+    "error_api_filter": "Interne fout in de zoekcriteria die naar ComicVine zijn verzonden.",
+    "error_api_subscriber_only": "Deze ComicVine-inhoud is alleen voor abonnees.",
+    "error_api_rate_limit": "Limiet van ComicVine-aanvragen bereikt. Wacht enkele minuten voordat u het opnieuw probeert."
   },
   "bookmark": {
     "popup_title": "Bladwijzer",

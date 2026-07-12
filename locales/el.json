@@ -1406,8 +1406,8 @@
     "day": "Ημέρα",
     "notes": "Σημειώσεις",
     "characters": "Χαρακτήρες",
-    "locations": "Τοποθεσίες",
     "teams": "Ομάδες",
+    "locations": "Τοποθεσίες",
     "story_arc": "Αφηγηματικό τόξο",
     "story_arc_number": "Αριθμός τόξου",
     "series_group": "Ομάδα σειράς",
@@ -1428,7 +1428,16 @@
     "pages_col_type": "Τύπος",
     "pages_col_width": "Πλάτος",
     "pages_col_height": "Ύψος",
-    "pages_col_size": "Μέγεθος (B)"
+    "pages_col_size": "Μέγεθος (B)",
+    "is_read": "Αναγνωσμένο",
+    "has_comicinfo": "Περιέχει αρχείο ComicInfo.xml",
+    "can_have_comicinfo": "Μπορεί να περιέχει αρχείο ComicInfo.xml",
+    "filename": "Όνομα αρχείου",
+    "file_extension": "Επέκταση",
+    "file_size": "Μέγεθος αρχείου",
+    "file_modified_at": "Ημερομηνία τροποποίησης",
+    "indexed_at": "Ημερομηνία ευρετηρίασης",
+    "relative_path": "Σχετική διαδρομή"
   },
   "web": {
     "web_download_progress": "Λήψη: {downloaded}/{total} εικόνες...",
@@ -1561,6 +1570,8 @@
     "col_publisher": "Εκδότης",
     "col_issue_num": "Αρ.",
     "col_issue_title": "Τίτλος",
+    "cover_file_label": "Εξώφυλλο του αρχείου",
+    "cover_comicvine_label": "Εξώφυλλο από το ComicVine",
     "btn_skip": "Παράλειψη",
     "btn_back": "Πίσω",
     "info_single": "Αυτή η λειτουργία ανακτά μεταδεδομένα για το τρέχον ανοιχτό κόμικ. Για επεξεργασία πολλαπλών αρχείων ταυτόχρονα, χρησιμοποιήστε την ομαδική επεξεργασία (σύρετε ένα φάκελο στο παράθυρο).",
@@ -1572,7 +1583,14 @@
     "create_comicinfo": "Δημιουργία αρχείου ComicInfo.xml",
     "edit_comicinfo": "Επεξεργασία αρχείου ComicInfo.xml",
     "error_network_connection": "Δεν ήταν δυνατή η σύνδεση με το ComicVine. Ελέγξτε τη σύνδεσή σας στο Διαδίκτυο.",
-    "error_network_timeout": "Το ComicVine αργεί πολύ να απαντήσει. Δοκιμάστε ξανά σε λίγο."
+    "error_network_timeout": "Το ComicVine αργεί πολύ να απαντήσει. Δοκιμάστε ξανά σε λίγο.",
+    "error_api_invalid_key": "Το κλειδί API του ComicVine δεν είναι έγκυρο. Ελέγξτε το στις προτιμήσεις.",
+    "error_api_not_found": "Δεν βρέθηκαν δεδομένα στο ComicVine για αυτό το αίτημα.",
+    "error_api_url_format": "Εσωτερικό σφάλμα στο αίτημα που στάλθηκε στο ComicVine (μη έγκυρη μορφή διεύθυνσης).",
+    "error_api_jsonp": "Εσωτερικό σφάλμα στο αίτημα που στάλθηκε στο ComicVine (μη έγκυρη μορφή απόκρισης).",
+    "error_api_filter": "Εσωτερικό σφάλμα στα κριτήρια αναζήτησης που στάλθηκαν στο ComicVine.",
+    "error_api_subscriber_only": "Αυτό το περιεχόμενο ComicVine είναι μόνο για συνδρομητές.",
+    "error_api_rate_limit": "Το όριο αιτημάτων ComicVine έχει εξαντληθεί. Περιμένετε λίγα λεπτά πριν δοκιμάσετε ξανά."
   },
   "bookmark": {
     "popup_title": "Σελιδοδείκτης",

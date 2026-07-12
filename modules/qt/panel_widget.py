@@ -194,13 +194,13 @@ class _BookmarkPopup(QDialog):
         self._on_yes()
 
     def _retranslate(self):
-        from modules.qt.localization import _
+        from modules.qt.localization import _, _wt
         from modules.qt.state import get_current_theme
         from modules.qt.font_manager_qt import get_current_font
         theme = get_current_theme()
         font  = get_current_font(10)
 
-        self.setWindowTitle(_("bookmark.popup_title"))
+        self.setWindowTitle(_wt("bookmark.popup_title"))
         self.setStyleSheet(f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}")
 
         msg = _("bookmark.popup_message").replace("{page}", str(self._page_number))

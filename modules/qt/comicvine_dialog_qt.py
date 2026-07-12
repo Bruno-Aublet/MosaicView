@@ -7,7 +7,7 @@ import urllib.request
 from PySide6.QtWidgets import (
     QDialog, QStackedWidget, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem,
-    QHeaderView, QAbstractItemView,
+    QHeaderView, QAbstractItemView, QFrame,
 )
 from PySide6.QtCore import Qt, QTimer, QThread, Signal
 from PySide6.QtGui import QPixmap, QImage
@@ -143,6 +143,10 @@ class _ImageWorker(QThread):
 
     def run(self):
         try:
+            # Défense en profondeur (voir _parse_image_url) : urllib accepte
+            # file:// et ftp://, on ne télécharge que du http/https.
+            if not self._url.lower().startswith(("http://", "https://")):
+                raise ValueError(f"unsupported URL scheme: {self._url[:40]}")
             req = urllib.request.Request(self._url,
                                          headers={"User-Agent": "MosaicView/1.0"})
             with urllib.request.urlopen(req, timeout=10) as r:
@@ -226,7 +230,10 @@ class _ComicVineDialog(QDialog):
 
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
-        self.resize(1100, 580)
+        # Hauteur ≥ minimum imposé par la colonne des couvertures de la page 2
+        # (2 blocs encadrés de 238 px + titres), sinon Windows refuse la
+        # géométrie (warning QWindowsWindow::setGeometry en console)
+        self.resize(1100, 660)
 
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
@@ -292,7 +299,7 @@ class _ComicVineDialog(QDialog):
             p = self._center_parent
             def _show():
                 _center_on_widget(self, p)
-                self.resize(1100, 580)
+                self.resize(1100, 660)
             QTimer.singleShot(0, _show)
 
     def _retranslate(self):
@@ -441,9 +448,35 @@ class _ComicVineDialog(QDialog):
             return num
         return None
 
+    def _park_running_worker(self, worker):
+        """Garde une référence vivante à un QThread encore en cours d'exécution
+        jusqu'à sa terminaison, pour empêcher Qt de détruire un thread qui tourne
+        (crash « QThread: Destroyed while thread is still running ») quand la
+        dernière référence Python est écrasée par un nouveau worker.
+
+        La purge se fait par isRunning() plutôt que via le signal finished :
+        _ImageWorker/_MetadataWorker redéfinissent `finished` en Signal custom,
+        qui masque QThread.finished natif et est émis AVANT la fin réelle du run.
+        isRunning() ne repasse à False qu'une fois run() retourné : test fiable."""
+        if worker is None:
+            return
+        # Détache les slots UI : la donnée téléchargée par ce worker est périmée
+        for sig in ('finished', 'error'):
+            try:
+                getattr(worker, sig).disconnect()
+            except (RuntimeError, TypeError):
+                pass
+        if worker.isRunning():
+            _ComicVineDialog._dying_workers.append(worker)
+        # Libère les workers parqués déjà terminés (référence gardée jusqu'ici)
+        _ComicVineDialog._dying_workers[:] = [
+            w for w in _ComicVineDialog._dying_workers if w.isRunning()
+        ]
+
     def _load_issue_image(self, url):
         if not url:
             return
+        self._park_running_worker(getattr(self, '_image_worker', None))
         self._image_worker = _ImageWorker(url)
         self._image_worker.finished.connect(self._on_issue_image_done)
         self._image_worker.error.connect(lambda _: None)
@@ -457,6 +490,7 @@ class _ComicVineDialog(QDialog):
         self._page2.show_loading_overlay(True, 0, 0)
         self._page2._loading_overlay_text_fn = lambda: _("comicvine.fetching_metadata")
         self._page2._loading_overlay.setText(self._page2._loading_overlay_text_fn())
+        self._park_running_worker(getattr(self, '_worker', None))
         worker = _MetadataWorker(self._api_key, issue["id"])
         worker.finished.connect(self._on_metadata_done)
         worker.error.connect(self._on_metadata_error)
@@ -493,22 +527,12 @@ class _ComicVineDialog(QDialog):
             language_signal.changed.disconnect(self._lang_handler)
         except RuntimeError:
             pass
-        for w in (self._worker, self._image_worker):
-            if w is None:
-                continue
-            for sig in ('finished', 'error', 'done'):
-                try:
-                    getattr(w, sig).disconnect()
-                except (RuntimeError, AttributeError):
-                    pass
-            try:
-                w.setParent(None)
-            except RuntimeError:
-                pass
-            if w.isRunning():
-                _ComicVineDialog._dying_workers.append(w)
-                w.finished.connect(lambda ww=w: _ComicVineDialog._dying_workers.remove(ww)
-                                   if ww in _ComicVineDialog._dying_workers else None)
+        # Parque les workers encore en cours pour éviter que la destruction de la
+        # fenêtre ne détruise un QThread qui tourne (même cause que le crash au
+        # changement d'issue). _park_running_worker détache les slots et garde la
+        # référence vivante jusqu'à la fin réelle du thread (purge par isRunning).
+        for w in (getattr(self, '_worker', None), getattr(self, '_image_worker', None)):
+            self._park_running_worker(w)
 
 
 # ── Page 1 : Choix de la série ────────────────────────────────────────────────
@@ -578,6 +602,8 @@ class _Page1Series(QWidget):
         # Status + pagination sur la même ligne
         status_row = QHBoxLayout()
         self._status_lbl = QLabel(" ")
+        self._status_lbl.setWordWrap(True)
+        self._status_is_error = False
         status_row.addWidget(self._status_lbl, 1)
         self._btn_prev = QPushButton("◀")
         self._btn_prev.setFixedWidth(32)
@@ -587,7 +613,7 @@ class _Page1Series(QWidget):
         self._btn_next.setFixedWidth(32)
         self._btn_next.clicked.connect(self._on_next_page)
         for w in (self._btn_prev, self._page_lbl, self._btn_next):
-            status_row.addWidget(w)
+            status_row.addWidget(w, 0, Qt.AlignTop)
         right.addLayout(status_row)
 
         # Tableau + overlay de chargement
@@ -683,7 +709,7 @@ class _Page1Series(QWidget):
 
         self._status_lbl.setText(self._status_text_fn())
         self._status_lbl.setFont(font9)
-        self._status_lbl.setStyleSheet(f"color: {fg}; background: transparent;")
+        self._apply_status_color()
 
         self._loading_overlay.setFont(_get_current_font(18, bold=True))
         self._loading_overlay.setText(self._loading_overlay_text_fn())
@@ -766,13 +792,20 @@ class _Page1Series(QWidget):
             self._loading_overlay.hide()
             self._table.setEnabled(True)
 
-    def _set_status(self, status_fn):
+    def _set_status(self, status_fn, is_error=False):
         """status_fn : callable () -> str, réappelé depuis _retranslate()."""
         self._status_text_fn = status_fn
+        self._status_is_error = is_error
         self._status_lbl.setText(status_fn())
+        self._apply_status_color()
+
+    def _apply_status_color(self):
+        theme = get_current_theme()
+        color = "#d9534f" if self._status_is_error else theme["text"]
+        self._status_lbl.setStyleSheet(f"color: {color}; background: transparent;")
 
     def show_error(self, status_fn):
-        self._set_status(status_fn)
+        self._set_status(status_fn, is_error=True)
 
     def populate_series(self, series_list, total, terms, page):
         self._series_data   = series_list
@@ -905,21 +938,50 @@ class _Page2Issues(QWidget):
         left = QVBoxLayout()
         left.setSpacing(8)
 
+        # Bloc « couverture du fichier » : titre au-dessus, couverture, nom du
+        # fichier — encadrés ensemble pour le distinguer du bloc ComicVine.
+        self._file_block = QFrame()
+        self._file_block.setObjectName("cvFileBlock")
+        file_block_lay = QVBoxLayout(self._file_block)
+        file_block_lay.setContentsMargins(6, 6, 6, 6)
+        file_block_lay.setSpacing(6)
+
+        self._file_cover_title = QLabel()
+        self._file_cover_title.setWordWrap(True)
+        self._file_cover_title.setAlignment(Qt.AlignCenter)
+        file_block_lay.addWidget(self._file_cover_title)
+
         self._cover_lbl = QLabel()
-        self._cover_lbl.setFixedSize(200, 280)
+        self._cover_lbl.setFixedSize(170, 238)
         self._cover_lbl.setAlignment(Qt.AlignCenter)
-        left.addWidget(self._cover_lbl)
+        file_block_lay.addWidget(self._cover_lbl, 0, Qt.AlignHCenter)
 
         self._filename_lbl = QLabel()
         self._filename_lbl.setWordWrap(True)
         self._filename_lbl.setAlignment(Qt.AlignCenter)
         self._filename_lbl.setFixedWidth(200)
-        left.addWidget(self._filename_lbl)
+        file_block_lay.addWidget(self._filename_lbl, 0, Qt.AlignHCenter)
+
+        left.addWidget(self._file_block)
+
+        # Bloc « couverture ComicVine » : couverture, puis titre en dessous.
+        self._cv_block = QFrame()
+        self._cv_block.setObjectName("cvIssueBlock")
+        cv_block_lay = QVBoxLayout(self._cv_block)
+        cv_block_lay.setContentsMargins(6, 6, 6, 6)
+        cv_block_lay.setSpacing(6)
 
         self._issue_cover_lbl = QLabel()
-        self._issue_cover_lbl.setFixedSize(120, 168)
+        self._issue_cover_lbl.setFixedSize(170, 238)
         self._issue_cover_lbl.setAlignment(Qt.AlignCenter)
-        left.addWidget(self._issue_cover_lbl, 0, Qt.AlignHCenter)
+        cv_block_lay.addWidget(self._issue_cover_lbl, 0, Qt.AlignHCenter)
+
+        self._cv_cover_title = QLabel()
+        self._cv_cover_title.setWordWrap(True)
+        self._cv_cover_title.setAlignment(Qt.AlignCenter)
+        cv_block_lay.addWidget(self._cv_cover_title)
+
+        left.addWidget(self._cv_block)
 
         left.addStretch()
         main.addLayout(left, 0)
@@ -929,7 +991,9 @@ class _Page2Issues(QWidget):
         right.setSpacing(6)
 
         self._status_lbl = QLabel(" ")
-        self._status_lbl.setFixedHeight(18)
+        self._status_lbl.setWordWrap(True)
+        self._status_lbl.setMinimumHeight(18)
+        self._status_is_error = False
         right.addWidget(self._status_lbl)
 
         # Conteneur pour tableau + overlay
@@ -1009,9 +1073,21 @@ class _Page2Issues(QWidget):
         self._filename_lbl.setFont(font9)
         self._filename_lbl.setStyleSheet(f"color: {fg}; background: transparent;")
 
+        # Cadres des deux blocs couverture (sélecteur par objectName : le style
+        # ne doit pas cascader sur les QLabel enfants)
+        block_style = f"border: 1px solid {sep}; border-radius: 4px;"
+        self._file_block.setStyleSheet(f"QFrame#cvFileBlock {{ {block_style} }}")
+        self._cv_block.setStyleSheet(f"QFrame#cvIssueBlock {{ {block_style} }}")
+        title_style = f"color: {fg}; background: transparent; border: none;"
+        for lbl in (self._file_cover_title, self._cv_cover_title):
+            lbl.setFont(_get_current_font(9, bold=True))
+            lbl.setStyleSheet(title_style)
+        self._file_cover_title.setText(_("comicvine.cover_file_label"))
+        self._cv_cover_title.setText(_("comicvine.cover_comicvine_label"))
+
         self._status_lbl.setText(self._status_text_fn())
         self._status_lbl.setFont(font9)
-        self._status_lbl.setStyleSheet(f"color: {fg}; background: transparent;")
+        self._apply_status_color()
 
         self._loading_overlay.setFont(_get_current_font(18, bold=True))
         self._loading_overlay.setText(self._loading_overlay_text_fn())
@@ -1052,7 +1128,7 @@ class _Page2Issues(QWidget):
     def set_cover(self, pix):
         if pix:
             self._cover_lbl.setPixmap(
-                pix.scaled(200, 280, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                pix.scaled(170, 238, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
             self._cover_lbl.setText("—")
 
@@ -1062,7 +1138,7 @@ class _Page2Issues(QWidget):
     def set_issue_cover(self, pix):
         if pix:
             self._issue_cover_lbl.setPixmap(
-                pix.scaled(120, 168, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                pix.scaled(170, 238, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
             self._issue_cover_lbl.setText("—")
 
@@ -1070,10 +1146,17 @@ class _Page2Issues(QWidget):
         self._issue_cover_lbl.clear()
         self._issue_cover_lbl.setText("—")
 
-    def _set_status(self, status_fn):
+    def _set_status(self, status_fn, is_error=False):
         """status_fn : callable () -> str, réappelé depuis _retranslate()."""
         self._status_text_fn = status_fn
+        self._status_is_error = is_error
         self._status_lbl.setText(status_fn())
+        self._apply_status_color()
+
+    def _apply_status_color(self):
+        theme = get_current_theme()
+        color = "#d9534f" if self._status_is_error else theme["text"]
+        self._status_lbl.setStyleSheet(f"color: {color}; background: transparent;")
 
     def show_loading_overlay(self, visible, loaded, total):
         if visible:
@@ -1098,7 +1181,7 @@ class _Page2Issues(QWidget):
         self._set_status((lambda: _("comicvine.loading_issues")) if loading else (lambda: " "))
 
     def show_error(self, status_fn):
-        self._set_status(status_fn)
+        self._set_status(status_fn, is_error=True)
 
     def populate_issues(self, issues, series, target_number=None):
         self._issues_data = issues

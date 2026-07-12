@@ -1570,6 +1570,8 @@
     "col_publisher": "Հրատարակիչ",
     "col_issue_num": "Համ.",
     "col_issue_title": "Վերնագիր",
+    "cover_file_label": "Ֆայլի կազմը",
+    "cover_comicvine_label": "ComicVine-ի կազմը",
     "btn_skip": "Բաց թողնել",
     "btn_back": "Հետ",
     "info_single": "Այս ֆունկցիան ստանում է ներկայումս բաց կոմիքսի մետատվյալները: Մի քանի ֆայլ միաժամանակ մշակելու համար օգտագործեք փաթեթային մշակումը (քաշեք թղթապանակը դեպի պատուհան):",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Ստեղծել ComicInfo.xml ֆայլ",
     "edit_comicinfo": "Խմբագրել ComicInfo.xml ֆայլը",
     "error_network_connection": "Չհաջողվեց կապվել ComicVine-ի հետ։ Ստուգեք ձեր ինտերնետ կապը։",
-    "error_network_timeout": "ComicVine-ը չափազանց երկար է պատասխանում։ Փորձեք կրկին մի փոքր ուշ։"
+    "error_network_timeout": "ComicVine-ը չափազանց երկար է պատասխանում։ Փորձեք կրկին մի փոքր ուշ։",
+    "error_api_invalid_key": "Ձեր ComicVine API բանալին վավեր չէ։ Ստուգեք այն նախապատվություններում։",
+    "error_api_not_found": "Այս հարցման համար ComicVine-ում տվյալներ չեն գտնվել։",
+    "error_api_url_format": "Ներքին սխալ ComicVine-ին ուղարկված հարցումում (հասցեի ձևաչափն անվավեր է)։",
+    "error_api_jsonp": "Ներքին սխալ ComicVine-ին ուղարկված հարցումում (պատասխանի ձևաչափն անվավեր է)։",
+    "error_api_filter": "Ներքին սխալ ComicVine-ին ուղարկված որոնման չափանիշներում։",
+    "error_api_subscriber_only": "Այս ComicVine բովանդակությունը հասանելի է միայն բաժանորդներին։",
+    "error_api_rate_limit": "ComicVine հարցումների սահմանաչափը սպառված է։ Սպասեք մի քանի րոպե, նախքան նորից փորձելը։"
   },
   "bookmark": {
     "popup_title": "Էջանիշ",

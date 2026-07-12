@@ -842,7 +842,10 @@ class _ComicInfoDialog(QDialog):
             raw = self._entry.get("bytes", b"")
             if raw:
                 try:
-                    orig_root = ET.fromstring(raw)
+                    # Parseur durci (defusedxml) : le ComicInfo.xml existant vient
+                    # d'une archive externe potentiellement téléchargée
+                    from modules.qt.comic_info import _safe_fromstring
+                    orig_root = _safe_fromstring(raw)
                     pages_elem = orig_root.find("Pages")
                     if pages_elem is not None:
                         root.append(pages_elem)

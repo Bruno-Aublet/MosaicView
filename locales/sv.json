@@ -1570,6 +1570,8 @@
     "col_publisher": "Förlag",
     "col_issue_num": "Nr.",
     "col_issue_title": "Titel",
+    "cover_file_label": "Filens omslag",
+    "cover_comicvine_label": "Omslag från ComicVine",
     "btn_skip": "Hoppa över",
     "btn_back": "Tillbaka",
     "info_single": "Den här funktionen hämtar metadata för den aktuellt öppna serien. För att bearbeta flera filer på en gång, använd batchbearbetning (dra en mapp till fönstret).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "Skapa en ComicInfo.xml-fil",
     "edit_comicinfo": "Redigera ComicInfo.xml-filen",
     "error_network_connection": "Det gick inte att nå ComicVine. Kontrollera din internetanslutning.",
-    "error_network_timeout": "ComicVine svarar för långsamt. Försök igen om en liten stund."
+    "error_network_timeout": "ComicVine svarar för långsamt. Försök igen om en liten stund.",
+    "error_api_invalid_key": "Din ComicVine API-nyckel är inte giltig. Kontrollera den i inställningarna.",
+    "error_api_not_found": "Ingen data hittades på ComicVine för denna begäran.",
+    "error_api_url_format": "Internt fel i begäran som skickades till ComicVine (ogiltigt adressformat).",
+    "error_api_jsonp": "Internt fel i begäran som skickades till ComicVine (ogiltigt svarsformat).",
+    "error_api_filter": "Internt fel i sökkriterierna som skickades till ComicVine.",
+    "error_api_subscriber_only": "Detta ComicVine-innehåll är endast för prenumeranter.",
+    "error_api_rate_limit": "Gränsen för ComicVine-förfrågningar har nåtts. Vänta några minuter innan du försöker igen."
   },
   "bookmark": {
     "popup_title": "Bokmärke",

@@ -1570,6 +1570,8 @@
     "col_publisher": "出版社",
     "col_issue_num": "期號",
     "col_issue_title": "標題",
+    "cover_file_label": "檔案封面",
+    "cover_comicvine_label": "ComicVine 封面",
     "btn_skip": "跳過",
     "btn_back": "返回",
     "info_single": "此功能獲取當前開啟的漫畫的元數據。要一次處理多個檔案，請使用批次處理（將資料夾拖曳到視窗上）。",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "建立 ComicInfo.xml 檔案",
     "edit_comicinfo": "編輯 ComicInfo.xml 檔案",
     "error_network_connection": "無法連線至 ComicVine，請檢查您的網路連線。",
-    "error_network_timeout": "ComicVine 回應時間過長，請稍後再試。"
+    "error_network_timeout": "ComicVine 回應時間過長，請稍後再試。",
+    "error_api_invalid_key": "您的 ComicVine API 金鑰無效，請在偏好設定中檢查。",
+    "error_api_not_found": "在 ComicVine 上找不到此請求的資料。",
+    "error_api_url_format": "傳送至 ComicVine 的請求發生內部錯誤（地址格式無效）。",
+    "error_api_jsonp": "傳送至 ComicVine 的請求發生內部錯誤（回應格式無效）。",
+    "error_api_filter": "傳送至 ComicVine 的搜尋條件發生內部錯誤。",
+    "error_api_subscriber_only": "此 ComicVine 內容僅限訂閱者使用。",
+    "error_api_rate_limit": "已達到 ComicVine 請求限制，請稍候幾分鐘後再試一次。"
   },
   "bookmark": {
     "popup_title": "書籤",

@@ -1570,6 +1570,8 @@
     "col_publisher": "प्रकाशक",
     "col_issue_num": "क्र.",
     "col_issue_title": "शीर्षक",
+    "cover_file_label": "फ़ाइल का कवर",
+    "cover_comicvine_label": "ComicVine का कवर",
     "btn_skip": "छोड़ें",
     "btn_back": "वापस",
     "info_single": "यह फ़ंक्शन वर्तमान में खुले कॉमिक के मेटाडेटा प्राप्त करता है। एक साथ कई फ़ाइलों को संसाधित करने के लिए, बैच प्रोसेसिंग का उपयोग करें (एक फ़ोल्डर को विंडो पर खींचें)।",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "ComicInfo.xml फ़ाइल बनाएं",
     "edit_comicinfo": "ComicInfo.xml फ़ाइल संपादित करें",
     "error_network_connection": "ComicVine से संपर्क नहीं हो सका। अपना इंटरनेट कनेक्शन जाँचें।",
-    "error_network_timeout": "ComicVine को प्रतिक्रिया देने में बहुत अधिक समय लग रहा है। कृपया थोड़ी देर बाद पुनः प्रयास करें।"
+    "error_network_timeout": "ComicVine को प्रतिक्रिया देने में बहुत अधिक समय लग रहा है। कृपया थोड़ी देर बाद पुनः प्रयास करें।",
+    "error_api_invalid_key": "आपकी ComicVine API कुंजी मान्य नहीं है। कृपया इसे प्राथमिकताओं में जाँचें।",
+    "error_api_not_found": "इस अनुरोध के लिए ComicVine पर कोई डेटा नहीं मिला।",
+    "error_api_url_format": "ComicVine को भेजे गए अनुरोध में आंतरिक त्रुटि (अमान्य पता प्रारूप)।",
+    "error_api_jsonp": "ComicVine को भेजे गए अनुरोध में आंतरिक त्रुटि (अमान्य प्रतिक्रिया प्रारूप)।",
+    "error_api_filter": "ComicVine को भेजे गए खोज मापदंडों में आंतरिक त्रुटि।",
+    "error_api_subscriber_only": "यह ComicVine सामग्री केवल सदस्यों के लिए है।",
+    "error_api_rate_limit": "ComicVine अनुरोध सीमा तक पहुँच गई। पुनः प्रयास करने से पहले कुछ मिनट प्रतीक्षा करें।"
   },
   "bookmark": {
     "popup_title": "बुकमार्क",

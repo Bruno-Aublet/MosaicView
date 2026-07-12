@@ -831,7 +831,7 @@
       "complete_message": "seHlaw-Daq CBR ngoq naghmey {count} choHlu'pu':",
       "complete_message_errors": "seHlaw-Daq CBR ngoq naghmey {count} choHlu'pu' {total}-vo':",
       "errors_count": "{count} Qagh(mey) tu'lu'.",
-      "rarfile_unavailable": "rarfile module tu'lu'be'. cbr file tI'ang'eghlaH.",
+      "rarfile_unavailable": "rarfile tu'lu'be'. CBR De'wI'mey ngorlaHbe'.",
       "renamed_cbz_count": "{count} De'wI' pong choH CBZ",
       "renamed_cb7_count": "{count} De'wI' pong choH CB7",
       "renamed_cbt_count": "{count} De'wI' pong choH CBT"
@@ -1366,7 +1366,7 @@
     "zip_compression": "rar mIw rar tlhIngan",
     "zip_compression_content": "MosaicView wIv mIw rar tlhIngan lo' CBZ So' Hoch, mIllogh So' qIl, qet Sov, pagh qet pegh (nIH jIH canvas).\n\nmIw rar tlhIngan 0 (rar pagh): De'wI' yIH rar 'oH (JPEG, PNG, WebP...), vaj ZIP rar latlh lo'be' Hop poQbe', 'ach So' je laD lI'be'. mIw wIv chu' laH, 'ach lo' chu'be' poQbe'.\n\nmIllogh So' qIl cha' De'wI' rar HochHom: \"0\" De'wI' rarbe', \"1\" De'wI' rarlu' (ZIP rar Sovbe' mIw qIl), pagh \"--\" De'wI' CBZ ghajbe'. nIH jIH mIllogh So' chu' De'wI' (pagh CBZ So') mIw rar, lI'lu'. nIH jIH mIw rar chu' DaH.",
     "wilhelm_scream": "Wilhelm SaghQa'",
-    "wilhelm_scream_content": "puS pIm rop, tIQ je, Wilhelm SaghQa' pov chenmoH. veS chu' vIH SaghQa' law' vaghmaH DIS puS. Dochvam Sovbe'chugh SoH, Wikipedia mIw (Doghlu' Hol) lut lutlhIj: https://en.wikipedia.org/wiki/Wilhelm_scream\nMosaicView SaghQa' vItlhIj pagh mIw je WAV format lIH lo' application.",
+    "wilhelm_scream_content": "puS pIm rop, tIQ je, Wilhelm SaghQa' pov chenmoH. veS chu' vIH SaghQa' law' vaghmaH DIS puS. Dochvam Sovbe'chugh SoH, Wikipedia mIw (Doghlu' Hol) lut lutlhIj: https://en.wikipedia.org/wiki/Wilhelm_scream\nMosaicView SaghQa' vItlhIj pagh mIw je WAV format lIH lo' jan.",
     "wilhelm_scream_save": "SaghQa' pol",
     "wilhelm_scream_save_success": "{count} De' chelmoH ghItlhlu':"
   },
@@ -1570,6 +1570,8 @@
     "col_publisher": "HutlhwI'",
     "col_issue_num": "mIS.",
     "col_issue_title": "pong",
+    "cover_file_label": "De' Hev nav",
+    "cover_comicvine_label": "ComicVine Hev nav",
     "btn_skip": "yImev",
     "btn_back": "pe'vIl",
     "info_single": "Dochvam commic De' qun laDlI'. law' De' laDmeH Hoch batch lo' (mappa window yIlan).",
@@ -1581,7 +1583,14 @@
     "create_comicinfo": "ComicInfo.xml HevleH chenmoH",
     "edit_comicinfo": "ComicInfo.xml HevleH tI'ang",
     "error_network_connection": "ComicVine jIpojlaHbe'. QIn rojmap yIpoQ.",
-    "error_network_timeout": "ComicVine tIQ law' jang. pIj DIvI' bIrIH."
+    "error_network_timeout": "ComicVine tIQ law' jang. pIj DIvI' bIrIH.",
+    "error_api_invalid_key": "ComicVine API mIw lIj Qap. choHmoHwI' pa' yIlegh.",
+    "error_api_not_found": "vay' ghItlh ComicVine Daq tu'lu'be' Dochvam poQmoHwI'vaD.",
+    "error_api_url_format": "ComicVine Daq ngeHta' poQmoHwI' Sech'a' mISmoH (Hop mIw Qapbe').",
+    "error_api_jsonp": "ComicVine Daq ngeHta' poQmoHwI' Sech'a' mISmoH (jang mIw Qapbe').",
+    "error_api_filter": "ComicVine Daq ngeHta' nej mIw Sech'a' mISmoH.",
+    "error_api_subscriber_only": "ComicVine ghItlhvam neH lo'wI' choHmoHwI'pu'vaD.",
+    "error_api_rate_limit": "ComicVine poQmoHwI' HeS chevlu'pu'. puS tup polqu' pa' yIqIp."
   },
   "bookmark": {
     "popup_title": "ghItlh",
