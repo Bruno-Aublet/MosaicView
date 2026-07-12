@@ -398,7 +398,7 @@ class AdjustmentViewerDialog(QDialog):
         # En mode transparency, filtrer les entrées non supportées (JPEG, BMP…)
         self._skipped_count = 0
         if mode == 'transparency':
-            _SUPPORTED_EXTS = {'.png', '.webp', '.ico'}
+            _SUPPORTED_EXTS = {'.png', '.webp', '.ico', '.avif'}
             supported = [e for e in selected_entries
                          if e.get('extension', '').lower() in _SUPPORTED_EXTS]
             self._skipped_count = len(selected_entries) - len(supported)
@@ -1386,6 +1386,8 @@ class AdjustmentViewerDialog(QDialog):
                     fmt = 'ICO'
                 elif ext == '.webp':
                     fmt = 'WEBP'
+                elif ext == '.avif':
+                    fmt = 'AVIF'
                 else:
                     fmt = 'PNG'
                 img_to_save = work_img if work_img.mode == 'RGBA' else work_img.convert('RGBA')

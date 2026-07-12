@@ -98,6 +98,7 @@ def convert_image_data(entry, target_format, quality):
             "PNG": ".png",
             "JPEG": ".jpg",
             "WEBP": ".webp",
+            "AVIF": ".avif",
             "BMP": ".bmp",
             "TIFF": ".tiff",
             "GIF": ".gif"
@@ -135,6 +136,8 @@ def convert_image_data(entry, target_format, quality):
                 jpeg_kwargs["dpi"] = source_dpi
             converted_img.save(img_bytes, format=target_format, **jpeg_kwargs)
         elif target_format == "WEBP":
+            converted_img.save(img_bytes, format=target_format, quality=quality)
+        elif target_format == "AVIF":
             converted_img.save(img_bytes, format=target_format, quality=quality)
         elif target_format == "GIF":
             if converted_img.mode not in ("P", "L"):

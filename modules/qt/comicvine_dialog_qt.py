@@ -182,19 +182,23 @@ class _MetadataWorker(QThread):
 def show_comicvine_dialog(parent, state, api_key, batch=False, on_done=None,
                           batch_index=None, batch_total=None,
                           shared_search_cache=None, shared_issues_cache=None,
-                          on_next=None, cbz_filepath=None, preselected_series=None):
+                          on_next=None, cbz_filepath=None, preselected_series=None,
+                          on_cancel_batch=None):
     """Ouvre la fenêtre de scraping ComicVine (non-modale).
 
     preselected_series : si fourni (dict {'id', 'name', ...}), la fenêtre
     s'ouvre directement sur la page 2 (liste des issues de cette série),
     sans passer par la recherche par nom.
+    on_cancel_batch : callable() appelé (après confirmation utilisateur) quand
+    le bouton Annuler est utilisé en mode batch pour arrêter tout le lot.
     """
     dlg = _ComicVineDialog(parent, state, api_key, batch=batch, on_done=on_done,
                            batch_index=batch_index, batch_total=batch_total,
                            shared_search_cache=shared_search_cache,
                            shared_issues_cache=shared_issues_cache,
                            on_next=on_next, cbz_filepath=cbz_filepath,
-                           preselected_series=preselected_series)
+                           preselected_series=preselected_series,
+                           on_cancel_batch=on_cancel_batch)
     dlg.show()
     dlg.raise_()
     dlg.activateWindow()
@@ -210,13 +214,15 @@ class _ComicVineDialog(QDialog):
     def __init__(self, parent, state, api_key, batch=False, on_done=None,
                  batch_index=None, batch_total=None,
                  shared_search_cache=None, shared_issues_cache=None,
-                 on_next=None, cbz_filepath=None, preselected_series=None):
+                 on_next=None, cbz_filepath=None, preselected_series=None,
+                 on_cancel_batch=None):
         super().__init__(parent)
         self._state        = state
         self._api_key      = api_key
         self._batch        = batch
         self._on_done      = on_done
         self._on_next      = on_next        # callable() → passe au fichier suivant
+        self._on_cancel_batch = on_cancel_batch  # callable() → arrête tout le lot
         self._batch_index  = batch_index    # int 1-based, ou None
         self._batch_total  = batch_total    # int, ou None
         self._worker  = None
@@ -251,12 +257,12 @@ class _ComicVineDialog(QDialog):
         self._page1.search_requested.connect(lambda t, p: self._do_search(t, p))
         self._page1.series_confirmed.connect(self._go_to_issues)
         self._page1.skip_requested.connect(self._on_skip)
-        self._page1.cancel_requested.connect(self.close)
+        self._page1.cancel_requested.connect(self._on_cancel)
 
         self._page2.back_requested.connect(self._go_to_series)
         self._page2.issue_confirmed.connect(self._apply_metadata)
         self._page2.skip_requested.connect(self._on_skip)
-        self._page2.cancel_requested.connect(self.close)
+        self._page2.cancel_requested.connect(self._on_cancel)
         self._page2.issue_image_requested.connect(self._load_issue_image)
 
         cover_pix = _cover_pixmap_from_state(state)
@@ -325,6 +331,20 @@ class _ComicVineDialog(QDialog):
             self._on_next()
         else:
             self.close()
+
+    def _on_cancel(self):
+        """Bouton Annuler : hors batch, ferme directement. En batch, demande
+        confirmation avant d'arrêter tout le lot (clic fréquent par erreur)."""
+        if not self._batch:
+            self.close()
+            return
+        from modules.qt.batch_metadata_dialog_qt import show_cancel_confirm_dialog
+
+        def _on_confirmed(stop: bool):
+            if stop and self._on_cancel_batch:
+                self._on_cancel_batch()
+
+        show_cancel_confirm_dialog(self, _on_confirmed)
 
     # ── Actions ───────────────────────────────────────────────────────────────
 
@@ -514,8 +534,8 @@ class _ComicVineDialog(QDialog):
         from modules.qt.comicvine_scraper import error_message_fn
         self._page2.show_loading_overlay(False, 0, 0)
         self._page2._btn_ok.setEnabled(True)
-        from PySide6.QtWidgets import QMessageBox
-        QMessageBox.warning(self, _wt("comicvine.menu_label"), error_message_fn(msg)())
+        from modules.qt.dialogs_qt import ErrorDialog
+        ErrorDialog(self, lambda: _wt("comicvine.menu_label"), error_message_fn(msg)).show_nonmodal()
 
     def _write_metadata(self, meta):
         from modules.qt.comic_info import write_comic_metadata_from_scraper

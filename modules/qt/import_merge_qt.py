@@ -20,7 +20,7 @@ from modules.qt.pdf_loading_qt import _MsgDialog
 
 IMAGE_EXTS = (
     '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp',
+    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif',
 )
 
 

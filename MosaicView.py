@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.5.6"
+__version__ = "1.5.7"
 
 import sys
 import os
@@ -655,7 +655,7 @@ class MainWindow(QMainWindow):
             orig_name = entry.get("orig_name", "")
             basename = os.path.basename(orig_name)
             ext = os.path.splitext(basename)[1].lower()
-            if ext not in (".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"):
+            if ext not in (".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".avif"):
                 ext = ".png"
             try:
                 img = _Image.open(_io.BytesIO(raw))
@@ -1000,7 +1000,7 @@ def main():
         _ext = os.path.splitext(_argv_path)[1].lower()
         _COMIC_EXTS = {'.cbz', '.cbr', '.cb7', '.cbt', '.epub', '.pdf',
                        '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                       '.tiff', '.tif', '.ico'}
+                       '.tiff', '.tif', '.ico', '.avif'}
         if _ext == '.mvdb':
             def _open_mvdb():
                 from modules.qt.library_window import open_library_window

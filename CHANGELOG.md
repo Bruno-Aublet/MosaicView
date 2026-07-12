@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.7] - 2026-07-12 - AVIF image support, batch metadata wizard fixes, dependency updates
+
+- Added AVIF as a fully supported image format: it can now be opened, dropped, imported, and loaded from archives instead of being rejected as unsupported; it's correctly preserved (instead of silently turning into PNG/JPEG) when edited through any tool or included in batch/merge conversions; and it's now available as a destination format in the "Convert to..." dialog.
+- Fixed web image import silently receiving a reconverted AVIF/WebP copy instead of the original format when the source URL goes through a format-negotiating image CDN (e.g. Optimole): the request used to download the image now declares support for standard formats only, since it was previously reusing the same browser-like headers as the page-fetching requests, which advertise AVIF/WebP support to look like a real browser.
+- The "Cancel" button on the batch metadata import wizard (series and issue selection steps) now asks for confirmation before stopping the whole batch, since it was easy to click by mistake instead of "Skip": it explains that the currently shown file and all remaining files in the batch will not receive metadata, while files already processed keep theirs. Confirming now also properly ends the batch and shows the usual summary window, instead of silently leaving it stuck with no further progress and no summary.
+- Fixed a metadata-fetch error on the issue-selection step (e.g. a network failure right after confirming an issue) being reported through a native blocking dialog that froze the other panel until dismissed, instead of the app's own non-blocking error window used everywhere else.
+- Updated several bundled build/runtime dependencies to their latest version, removed one that was no longer used.
+
 ## [1.5.6] - 2026-07-12 - ComicVine error messages, ComicVine cover comparison, dead tooltip cleanup, contact email obfuscation, security hardening
 
 - ComicVine metadata errors (invalid API key, content not found, subscriber-only content, rate limit reached, and other API-side errors) now show a clear, translated message explaining what went wrong instead of a raw untranslated technical error. Previously every kind of ComicVine API failure was reported with the same generic, English-only message. For the rare error codes not covered by a dedicated translated message, the raw text ComicVine sends back is now sanitized before display so it can not be misread as HTML by the message label.

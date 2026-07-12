@@ -346,6 +346,7 @@ class _BatchMetadataOrchestrator:
             shared_search_cache=self._search_cache,
             shared_issues_cache=self._issues_cache,
             on_next=self._on_skip,
+            on_cancel_batch=self.cancel,
         )
 
     def _on_load_done_next(self, cbz_filepath, state):
@@ -378,6 +379,18 @@ class _BatchMetadataOrchestrator:
         self._lock_nav_buttons(True)
         self._reset_dialog()
         self._load_and_open(first=False)
+
+    def cancel(self):
+        """Arrêt anticipé du batch (bouton Annuler confirmé) : le fichier
+        courant et les suivants ne recevront pas de métadonnées, mais ceux
+        déjà traités restent acquis. Parque les workers en cours puis affiche
+        le résumé, comme une fin de batch normale."""
+        if self._pending_timer is not None:
+            self._pending_timer.stop()
+            self._pending_timer = None
+        self._retire_current_worker()
+        self._retire_save_worker()
+        self._show_summary()
 
     def _rescue_dlg_workers(self, dlg):
         """Détache les workers internes du dialog et garde les références vivantes."""
@@ -597,7 +610,7 @@ class _BatchMetadataOrchestrator:
                 all_names = zf.namelist()
                 cover_name = next(
                     (n for n in sorted(all_names, key=_natural_sort_key)
-                     if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif'))),
+                     if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.avif'))),
                     None
                 )
                 # Couverture uniquement
@@ -655,7 +668,7 @@ class _BatchMetadataOrchestrator:
             with rarfile.RarFile(filepath) as rf:
                 all_names = sorted(
                     n for n in rf.namelist()
-                    if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'))
+                    if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif'))
                 )
             if all_names:
                 with rarfile.RarFile(filepath) as rf:
@@ -679,7 +692,7 @@ class _BatchMetadataOrchestrator:
                 img_members = sorted(
                     (m for m in tf.getmembers()
                      if m.isfile() and m.name.lower().endswith(
-                         ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'))),
+                         ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif'))),
                     key=lambda m: m.name
                 )
                 if img_members:
@@ -702,7 +715,7 @@ class _BatchMetadataOrchestrator:
         elif ext == '.cb7':
             from modules.qt.archive_loader import _list_7z_files, _read_7z_file
             all_names = sorted(n for n in _list_7z_files(filepath)
-                               if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')))
+                               if n.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif')))
             # On ne charge que la couverture (1ère image) — la conversion complète
             # se fera dans _save_state_for_file via re-extraction
             if all_names:
@@ -816,7 +829,7 @@ class _BatchMetadataOrchestrator:
                         import rarfile
                         with rarfile.RarFile(cbr_manifest["_cbr_path"]) as rf:
                             for name in sorted(rf.namelist()):
-                                if name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')):
+                                if name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif')):
                                     zf.writestr(name, rf.read(name))
 
                     elif cbt_manifest:
@@ -826,7 +839,7 @@ class _BatchMetadataOrchestrator:
                             for m in sorted(tf.getmembers(), key=lambda x: x.name):
                                 if not m.isfile():
                                     continue
-                                if not m.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')):
+                                if not m.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif')):
                                     continue
                                 data = tf.extractfile(m).read()
                                 if data:
@@ -1054,6 +1067,105 @@ def _show_metadata_summary(parent, data: dict):
     dlg.show()
     dlg.raise_()
     dlg.activateWindow()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Confirmation d'arrêt du batch (bouton Annuler cliqué pendant le traitement)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class _CancelConfirmDialog(QDialog):
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setModal(False)
+        self.setFixedWidth(420)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(8)
+
+        self._msg_lbl = QLabel()
+        self._msg_lbl.setWordWrap(True)
+        self._msg_lbl.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._msg_lbl)
+
+        layout.addSpacing(8)
+
+        sep = QFrame()
+        sep.setFrameShape(QFrame.HLine)
+        sep.setFrameShadow(QFrame.Sunken)
+        layout.addWidget(sep)
+
+        layout.addSpacing(4)
+
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+        self._continue_btn = QPushButton()
+        self._continue_btn.setFixedWidth(140)
+        self._continue_btn.setDefault(True)
+        self._continue_btn.clicked.connect(self._on_continue)
+        self._stop_btn = QPushButton()
+        self._stop_btn.setFixedWidth(140)
+        self._stop_btn.clicked.connect(self._on_stop)
+        btn_row.addWidget(self._continue_btn)
+        btn_row.addSpacing(16)
+        btn_row.addWidget(self._stop_btn)
+        btn_row.addStretch()
+        layout.addLayout(btn_row)
+
+        self.stopped = False
+        self.rejected.connect(self._on_continue)
+        self._retranslate()
+        _connect_lang(self, lambda _: self._retranslate())
+        self._continue_btn.setFocus()
+
+    def _retranslate(self):
+        theme = get_current_theme()
+        self.setStyleSheet(
+            f"QDialog {{ background: {theme['bg']}; color: {theme['text']}; }}"
+            f"QFrame[frameShape='4'] {{ color: {theme['separator']}; }}"
+        )
+        font = _get_current_font(10)
+        btn_style = (
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 4px 8px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+
+        self.setWindowTitle(_wt("dialogs.batch_metadata.cancel_confirm_title"))
+        self._msg_lbl.setText(_("dialogs.batch_metadata.cancel_confirm_message"))
+        self._msg_lbl.setFont(font)
+
+        self._continue_btn.setText(_("buttons.continue"))
+        self._continue_btn.setFont(font)
+        self._continue_btn.setStyleSheet(btn_style)
+        self._stop_btn.setText(_("dialogs.batch_metadata.cancel_confirm_stop_button"))
+        self._stop_btn.setFont(font)
+        self._stop_btn.setStyleSheet(btn_style)
+
+    def _on_continue(self):
+        self.stopped = False
+        self.accept()
+
+    def _on_stop(self):
+        self.stopped = True
+        self.accept()
+
+
+def show_cancel_confirm_dialog(parent, on_result):
+    """Affiche la confirmation d'arrêt du batch.
+
+    on_result : callable(stop: bool) appelé une fois l'utilisateur répondu
+    (stop=True si le batch doit être arrêté, False pour continuer).
+    """
+    from modules.qt.dialogs_qt import position_dialog_on_parent
+    dlg = _CancelConfirmDialog(parent)
+    dlg.finished.connect(lambda _: on_result(dlg.stopped))
+    position_dialog_on_parent(dlg, parent)
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
+    return dlg
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

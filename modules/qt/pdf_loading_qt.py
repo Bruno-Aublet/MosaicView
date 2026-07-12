@@ -31,7 +31,7 @@ except ImportError:
 
 IMAGE_EXTS = (
     '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp',
+    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif',
 )
 
 

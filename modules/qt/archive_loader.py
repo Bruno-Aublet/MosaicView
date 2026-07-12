@@ -111,7 +111,7 @@ from modules.qt.archive_type_detector import detect_archive_type
 
 IMAGE_EXTS = (
     '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp',
+    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif',
 )
 
 _TYPE_TO_EXT = {

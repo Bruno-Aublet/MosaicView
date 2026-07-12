@@ -429,7 +429,7 @@ class _PreviewWorker(QThread):
             import zipfile, tarfile, io
             ext = os.path.splitext(self.abs_path)[1].lower()
             img = None
-            _IMG = ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp')
+            _IMG = ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.avif')
 
             if ext in ('.cbz', '.zip'):
                 with zipfile.ZipFile(self.abs_path, 'r') as zf:

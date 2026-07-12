@@ -30,7 +30,7 @@ import modules.qt.state as _state_module
 
 IMAGE_EXTS = (
     '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp',
+    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif',
 )
 
 _USER_AGENT = (
@@ -46,6 +46,16 @@ _USER_AGENT = (
 _BROWSER_HEADERS = {
     'User-Agent':      _USER_AGENT,
     'Accept':          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+}
+
+# Variante utilisée pour les requêtes dont on sait déjà qu'elles ciblent une
+# image (pas une page HTML) : n'annonce pas le support AVIF/WebP dans Accept,
+# pour que les CDN à négociation de format (ex. Optimole) renvoient le format
+# d'origine (ex. JPEG) plutôt qu'une reconversion.
+_IMAGE_HEADERS = {
+    'User-Agent':      _USER_AGENT,
+    'Accept':          'image/png,image/jpeg,image/gif,image/bmp,image/tiff,*/*;q=0.8',
     'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
 }
 
@@ -152,7 +162,7 @@ class _DownloadWorker(QThread):
         has_comics_open = state.current_file is not None
         new_entries     = []
         downloaded      = 0
-        headers         = dict(_BROWSER_HEADERS)
+        headers         = dict(_IMAGE_HEADERS)
 
         for idx, img_url in enumerate(self._image_urls):
             if self._cancel_flag[0]:
@@ -343,7 +353,7 @@ def _extract_single_img_src(html_fragment: str, base_url: str) -> str | None:
 
 _IMAGE_URL_EXTS = (
     '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.svg',
+    '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.svg', '.avif',
 )
 
 

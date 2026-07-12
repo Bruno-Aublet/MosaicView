@@ -70,8 +70,8 @@ def estimate_compression_rate(entry):
     """Estime le taux de compression pour les images JPG/JPEG/WEBP"""
     ext = entry.get("extension", "").lower()
 
-    # Ne fonctionne que pour JPG, JPEG et WEBP
-    if ext not in [".jpg", ".jpeg", ".webp"]:
+    # Ne fonctionne que pour JPG, JPEG, WEBP et AVIF
+    if ext not in [".jpg", ".jpeg", ".webp", ".avif"]:
         return None
 
     try:
@@ -726,6 +726,17 @@ def save_image_to_bytes(entry):
             entry["img"].save(img_bytes, format='WEBP', quality=original_quality)
     elif ext == ".gif":
         entry["img"].save(img_bytes, format='GIF')
+    elif ext == ".avif":
+        # AVIF : détecte la qualité originale
+        original_quality = 95
+        if entry.get("bytes"):
+            original_quality = detect_jpeg_quality(entry["bytes"])
+
+        # Sauvegarde AVIF avec DPI si disponible
+        if dpi_value:
+            entry["img"].save(img_bytes, format='AVIF', quality=original_quality, dpi=(dpi_value, dpi_value))
+        else:
+            entry["img"].save(img_bytes, format='AVIF', quality=original_quality)
     else:
         # Format par défaut : PNG pour les autres formats
         if dpi_value:

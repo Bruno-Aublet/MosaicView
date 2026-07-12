@@ -44,7 +44,7 @@ except ImportError:
     PDF_AVAILABLE = False
 
 # Extensions d'images supportées
-image_exts = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp')
+image_exts = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -882,7 +882,7 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                                         ext_l = os.path.splitext(file_name)[1].lower()
                                         fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG",
                                                    ".webp": "WEBP", ".bmp": "BMP", ".tiff": "TIFF",
-                                                   ".tif": "TIFF", ".gif": "GIF"}
+                                                   ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
                                         out_fmt = fmt_map.get(ext_l, "JPEG")
                                         tmp.save(buf, format=out_fmt,
                                                  **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))
@@ -1180,7 +1180,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
     renamed_cbr       = [0]
     renamed_cbt       = [0]
 
-    image_exts = ('.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.tif', '.gif')
+    image_exts = ('.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.tif', '.gif', '.avif')
 
     signals.update_filename.connect(prog.set_filename)
     signals.update_progress.connect(prog.set_progress)
@@ -1274,7 +1274,7 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                                     ext_l = os.path.splitext(file_name)[1].lower()
                                     fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG",
                                                ".webp": "WEBP", ".bmp": "BMP", ".tiff": "TIFF",
-                                               ".tif": "TIFF", ".gif": "GIF"}
+                                               ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
                                     out_fmt = fmt_map.get(ext_l, "JPEG")
                                     tmp.save(buf, format=out_fmt,
                                              **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))
@@ -1573,7 +1573,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
     renamed_cbr       = [0]
     renamed_cb7       = [0]
 
-    image_exts = ('.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.tif', '.gif')
+    image_exts = ('.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.tif', '.gif', '.avif')
 
     signals.update_filename.connect(prog.set_filename)
     signals.update_progress.connect(prog.set_progress)
@@ -1669,7 +1669,7 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                                         ext_l = os.path.splitext(member.name)[1].lower()
                                         fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG",
                                                    ".webp": "WEBP", ".bmp": "BMP", ".tiff": "TIFF",
-                                                   ".tif": "TIFF", ".gif": "GIF"}
+                                                   ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
                                         out_fmt = fmt_map.get(ext_l, "JPEG")
                                         tmp.save(buf, format=out_fmt,
                                                  **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))
@@ -2310,7 +2310,7 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                     tmp = tmp.convert("RGB")
                     buf = io.BytesIO()
                     fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG", ".webp": "WEBP",
-                               ".bmp": "BMP", ".tiff": "TIFF", ".tif": "TIFF", ".gif": "GIF"}
+                               ".bmp": "BMP", ".tiff": "TIFF", ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
                     out_fmt = fmt_map.get(ext_lower, "JPEG")
                     tmp.save(buf, format=out_fmt,
                              **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))
@@ -2494,7 +2494,7 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                             tmp = tmp.convert("RGB")
                             buf = io.BytesIO()
                             fmt_map = {".jpg": "JPEG", ".jpeg": "JPEG", ".png": "PNG", ".webp": "WEBP",
-                                       ".bmp": "BMP", ".tiff": "TIFF", ".tif": "TIFF", ".gif": "GIF"}
+                                       ".bmp": "BMP", ".tiff": "TIFF", ".tif": "TIFF", ".gif": "GIF", ".avif": "AVIF"}
                             out_fmt = fmt_map.get(ext_lower, "JPEG")
                             tmp.save(buf, format=out_fmt,
                                      **({"quality": 100, "optimize": True} if out_fmt == "JPEG" else {}))

@@ -57,7 +57,7 @@ CBR, CB7, CBT and PDF files are always exported as CBZ after editing. This is a 
 
 MosaicView also detects misnamed archives (e.g. a CBR file saved with a `.cbz` extension) and offers to rename them automatically.
 
-MosaicView also accepts loose image files (dragged individually or as a folder), in the following formats: JPG, PNG, GIF, WebP, BMP, TIFF, ICO, JFIF.
+MosaicView also accepts loose image files (dragged individually or as a folder), in the following formats: JPG, PNG, GIF, WebP, AVIF, BMP, TIFF, ICO, JFIF.
 
 ---
 

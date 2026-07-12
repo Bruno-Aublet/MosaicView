@@ -144,9 +144,9 @@ class AdjustmentsDialog(QDialog):
         self._has_transparent  = False
         for e in selected_entries:
             ext = e.get("extension", "").lower()
-            if ext in (".jpg", ".jpeg", ".webp"):
+            if ext in (".jpg", ".jpeg", ".webp", ".avif"):
                 self._has_compressible = True
-            if ext in (".png", ".webp", ".ico"):
+            if ext in (".png", ".webp", ".ico", ".avif"):
                 self._has_transparent = True
             if e.get("bytes"):
                 q = _detect_jpeg_quality(e["bytes"])

@@ -1240,7 +1240,7 @@ class TextViewerDialog(QDialog):
         orig_mode = entry.get('_orig_mode', 'RGBA')
         out_img   = pil_img
         if orig_mode not in ('RGBA', 'LA', 'P') and \
-                entry.get('extension', '').lower() not in ('.png', '.webp'):
+                entry.get('extension', '').lower() not in ('.png', '.webp', '.avif'):
             bg = Image.new('RGB', out_img.size, (255, 255, 255))
             bg.paste(out_img, mask=out_img.split()[3])
             out_img = bg

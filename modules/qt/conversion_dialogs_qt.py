@@ -461,6 +461,7 @@ class _ConvertFormatDialog(QDialog):
         ("dialogs.convert.format_png",          "PNG"),
         ("dialogs.convert.format_jpg",          "JPEG"),
         ("dialogs.convert.format_webp",         "WEBP"),
+        ("dialogs.convert.format_avif",         "AVIF"),
         ("dialogs.convert.format_bmp",          "BMP"),
         ("dialogs.convert.format_tiff",         "TIFF"),
         ("dialogs.convert.format_gif_static",   "GIF_STATIC"),
@@ -548,7 +549,7 @@ class _ConvertFormatDialog(QDialog):
         target_format = self._chosen_format
         self.close()
 
-        if target_format in ("JPEG", "WEBP"):
+        if target_format in ("JPEG", "WEBP", "AVIF"):
             show_quality_dialog(self.parent(), target_format,
                                 self._selected_entries, self._callbacks)
         elif target_format == "GIF_ANIMATED":

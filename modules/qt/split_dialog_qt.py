@@ -308,7 +308,7 @@ def split_page(parent, callbacks):
         if output_format == "JPG":
             output_format = "JPEG"
 
-        image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif"}
+        image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif", ".avif"}
         new_entries = []
 
         if direction == "horizontal":

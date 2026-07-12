@@ -205,7 +205,6 @@ except:
 
 a = Analysis(
     ['MosaicView.py'],
-    pathex=['.venv/Lib/site-packages'],
     binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,
@@ -213,9 +212,10 @@ a = Analysis(
     hooksconfig={},
     runtime_hooks=[],
     excludes=[
-        'tkinter', 'tkinterdnd2', 'PIL.ImageTk', 'PIL._tkinter_finder',
+        'tkinter', 'PIL.ImageTk', 'PIL._tkinter_finder',
         'pandas', 'matplotlib', 'scipy', 'IPython', 'notebook', 'pytest',
         'pkg_resources', 'setuptools', 'jaraco',
+        'numpy.f2py.tests', 'send2trash.mac',
         # PySide6 — modules non utilisés
         'PySide6.Qt3DAnimation', 'PySide6.Qt3DCore', 'PySide6.Qt3DExtras',
         'PySide6.Qt3DInput', 'PySide6.Qt3DLogic', 'PySide6.Qt3DRender',

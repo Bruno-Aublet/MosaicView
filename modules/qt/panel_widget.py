@@ -1046,7 +1046,7 @@ class PanelWidget(QWidget):
         from modules.qt.archive_loader import _natural_sort_key
 
         IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                      '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp')
+                      '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')
         ANNEX_EXTS = ('.nfo', '.txt', '.xml')
 
         st = self._state

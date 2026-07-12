@@ -214,7 +214,7 @@ def paste_from_system_clipboard(parent, load_files_callback, save_state, render_
                 from modules.qt.entries import create_entry
 
                 IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                              '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp')
+                              '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')
 
                 img = ImageGrab.grabclipboard()
                 if img:

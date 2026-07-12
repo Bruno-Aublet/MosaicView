@@ -828,6 +828,7 @@ class MergeDialog(QDialog):
             ".webp": ("WEBP", ".webp"),
             ".bmp": ("BMP", ".bmp"),
             ".tiff": ("TIFF", ".tiff"), ".tif": ("TIFF", ".tiff"),
+            ".avif": ("AVIF", ".avif"),
         }
         if len(source_extensions) == 1:
             save_format, out_ext = ext_to_format.get(source_extensions.pop(), ("PNG", ".png"))
@@ -855,7 +856,7 @@ class MergeDialog(QDialog):
             save_kwargs["dpi"] = source_dpi
         merged_img.save(img_bytes, format=save_format, **save_kwargs)
 
-        image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif"}
+        image_exts = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff", ".tif", ".avif"}
         new_entry = create_entry(collage_name, img_bytes.getvalue(), image_exts)
         new_entry["img"] = merged_img
 

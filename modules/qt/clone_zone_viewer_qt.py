@@ -978,7 +978,7 @@ class CloneZoneViewerDialog(QDialog):
         # Convertit l'image de travail dans le mode du format d'origine
         orig_mode = self._entry.get('_orig_mode', 'RGBA')
         out_img = self._work_img
-        if orig_mode not in ('RGBA', 'LA', 'P') and not self._entry.get('extension', '').lower() in ('.png', '.webp'):
+        if orig_mode not in ('RGBA', 'LA', 'P') and not self._entry.get('extension', '').lower() in ('.png', '.webp', '.avif'):
             # Format sans alpha : aplatit sur blanc
             bg = Image.new('RGB', out_img.size, (255, 255, 255))
             bg.paste(out_img, mask=out_img.split()[3])
