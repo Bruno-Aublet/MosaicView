@@ -694,7 +694,7 @@
     "language_label": "Ngôn ngữ:",
     "directory_tooltip": "Thư mục: {name}\n{count} tệp\nKích thước tổng: {size} MB",
     "folder_up_tooltip": "Nhấp đúp để đi lên\nmột cấp",
-    "status_bar": "{dirs} thư mục  |  {files} tệp ({total_size})  |  {selected} đã chọn ({selected_size})",
+    "status_bar": "{dirs} thư mục     {files} tệp ({total_size})     {selected} đã chọn ({selected_size})",
     "pdf_converting": "Đang chuyển đổi {total} trang thành hình ảnh ở {dpi} DPI...",
     "pdf_converting_no_change": "Đang trích xuất {total} trang mà không sửa đổi...",
     "print_progress": "Đang chuẩn bị in...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Lỗi nội bộ trong yêu cầu gửi tới ComicVine (định dạng phản hồi không hợp lệ).",
     "error_api_filter": "Lỗi nội bộ trong tiêu chí tìm kiếm gửi tới ComicVine.",
     "error_api_subscriber_only": "Nội dung ComicVine này chỉ dành cho người đăng ký.",
-    "error_api_rate_limit": "Đã đạt giới hạn yêu cầu ComicVine. Hãy đợi vài phút trước khi thử lại."
+    "error_api_rate_limit": "Đã đạt giới hạn yêu cầu ComicVine. Hãy đợi vài phút trước khi thử lại.",
+    "cover_first_issue_label": "Bộ truyện đã chọn"
   },
   "bookmark": {
     "popup_title": "Dấu trang",

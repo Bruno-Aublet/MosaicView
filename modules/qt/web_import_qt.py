@@ -6,7 +6,6 @@ Règles UI Qt : thème, langue à la volée, police courante.
 
 import io
 import os
-import time
 from urllib.parse import urljoin, urlparse
 
 from PIL import Image
@@ -459,41 +458,6 @@ def download_and_add_web_images(canvas, image_urls: list[str], page_title: str,
     if not image_urls:
         return
     WebDownloadController(canvas, image_urls, page_title, callbacks)
-
-
-def process_web_image(image_data: bytes, suggested_filename: str | None,
-                      callbacks: dict, parent_widget=None) -> None:
-    """Traite une image droppée depuis le web (données binaires) et l'ajoute à la mosaïque."""
-    state = _state_module.state
-
-    try:
-        img = Image.open(io.BytesIO(image_data))
-
-        if suggested_filename:
-            base_name  = os.path.splitext(suggested_filename)[0]
-            img_format = img.format.lower() if img.format else 'png'
-            filename   = f"{base_name}.{img_format}"
-        else:
-            timestamp  = time.strftime("%Y%m%d_%H%M%S")
-            img_format = img.format.lower() if img.format else 'png'
-            filename   = f"web_image_{timestamp}.{img_format}"
-
-        has_comics_open = state.current_file is not None
-        entry = {
-            "orig_name": ("NEW-" + filename) if (has_comics_open or state.images_data) else filename,
-            "data":      image_data,
-            "is_image":  True,
-        }
-
-        _add_entries_to_mosaic([entry], callbacks)
-
-    except Exception as e:
-        ErrorDialog(
-            parent_widget,
-            lambda: _wt("errors.title"),
-            lambda err=e: f"{_('web.import_web_invalid_url')}\n\n{err}",
-            play_sound=True,
-        ).show_nonmodal()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

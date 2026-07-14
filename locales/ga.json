@@ -694,7 +694,7 @@
     "language_label": "Teanga:",
     "directory_tooltip": "Fillteán: {name}\n{count} comhad\nMéid iomlán: {size} MB",
     "folder_up_tooltip": "Déclic chun dul suas leibhéal amháin\nsa struchtúr fillteán",
-    "status_bar": "{dirs} fillteán  |  {files} comhad ({total_size})  |  {selected} roghnaithe ({selected_size})",
+    "status_bar": "{dirs} fillteán     {files} comhad ({total_size})     {selected} roghnaithe ({selected_size})",
     "pdf_converting": "Ag tiontú {total} leathanach go híomhánna ag {dpi} DPI...",
     "pdf_converting_no_change": "Ag eastóscadh {total} leathanach gan mhodhnú...",
     "print_progress": "Ag ullmhú don phriontáil...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Earráid inmheánach san iarratas a seoladh chuig ComicVine (formáid freagra neamhbhailí).",
     "error_api_filter": "Earráid inmheánach sna critéir chuardaigh a seoladh chuig ComicVine.",
     "error_api_subscriber_only": "Tá an t-ábhar ComicVine seo do shíntiúsóirí amháin.",
-    "error_api_rate_limit": "Baineadh amach teorainn iarratas ComicVine. Fan cúpla nóiméad sula dtriaileann tú arís."
+    "error_api_rate_limit": "Baineadh amach teorainn iarratas ComicVine. Fan cúpla nóiméad sula dtriaileann tú arís.",
+    "cover_first_issue_label": "An tsraith roghnaithe"
   },
   "bookmark": {
     "popup_title": "Leabharmharc",

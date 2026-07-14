@@ -694,7 +694,7 @@
     "language_label": "Dil:",
     "directory_tooltip": "Klasör: {name}\n{count} dosya\nToplam boyut: {size} MB",
     "folder_up_tooltip": "Ağaçta bir seviye yukarı\nçıkmak için çift tıklayın",
-    "status_bar": "{dirs} klasör  |  {files} dosya ({total_size})  |  {selected} seçili ({selected_size})",
+    "status_bar": "{dirs} klasör     {files} dosya ({total_size})     {selected} seçili ({selected_size})",
     "pdf_converting": "{total} sayfa {dpi} DPI'de görüntülere dönüştürülüyor...",
     "pdf_converting_no_change": "{total} sayfa değişiklik olmadan çıkarılıyor...",
     "print_progress": "Yazdırma hazırlanıyor...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "ComicVine'a gönderilen istekte iç hata (geçersiz yanıt biçimi).",
     "error_api_filter": "ComicVine'a gönderilen arama kriterlerinde iç hata.",
     "error_api_subscriber_only": "Bu ComicVine içeriği yalnızca abonelere yöneliktir.",
-    "error_api_rate_limit": "ComicVine istek sınırına ulaşıldı. Tekrar denemeden önce birkaç dakika bekleyin."
+    "error_api_rate_limit": "ComicVine istek sınırına ulaşıldı. Tekrar denemeden önce birkaç dakika bekleyin.",
+    "cover_first_issue_label": "Seçilen seri"
   },
   "bookmark": {
     "popup_title": "Yer imi",

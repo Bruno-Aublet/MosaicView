@@ -694,7 +694,7 @@
     "language_label": "Limbă:",
     "directory_tooltip": "Dosar: {name}\n{count} fișier/fișiere\nDimensiune totală: {size} MB",
     "folder_up_tooltip": "Dublu clic pentru a urca\nun nivel în arborele de dosare",
-    "status_bar": "{dirs} dosar(e)  |  {files} fișier(e) ({total_size})  |  {selected} selectat(e) ({selected_size})",
+    "status_bar": "{dirs} dosar(e)     {files} fișier(e) ({total_size})     {selected} selectat(e) ({selected_size})",
     "pdf_converting": "Conversie {total} pagini în imagini la {dpi} DPI...",
     "pdf_converting_no_change": "Extragere {total} pagini fără modificare...",
     "print_progress": "Pregătire pentru imprimare...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Eroare internă în cererea trimisă către ComicVine (format de răspuns nevalid).",
     "error_api_filter": "Eroare internă în criteriile de căutare trimise către ComicVine.",
     "error_api_subscriber_only": "Acest conținut ComicVine este disponibil doar pentru abonați.",
-    "error_api_rate_limit": "Limita de cereri ComicVine a fost atinsă. Așteptați câteva minute înainte de a reîncerca."
+    "error_api_rate_limit": "Limita de cereri ComicVine a fost atinsă. Așteptați câteva minute înainte de a reîncerca.",
+    "cover_first_issue_label": "Seria selectată"
   },
   "bookmark": {
     "popup_title": "Marcaj",

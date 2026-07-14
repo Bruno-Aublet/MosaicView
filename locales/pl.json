@@ -694,7 +694,7 @@
     "language_label": "Język:",
     "directory_tooltip": "Katalog: {name}\n{count} plik(ów)\nŁączny rozmiar: {size} MB",
     "folder_up_tooltip": "Kliknij dwukrotnie, aby przejść\no poziom wyżej w strukturze",
-    "status_bar": "{dirs} folder(ów)  |  {files} plik(ów) ({total_size})  |  {selected} zaznaczonych ({selected_size})",
+    "status_bar": "{dirs} folder(ów)     {files} plik(ów) ({total_size})     {selected} zaznaczonych ({selected_size})",
     "pdf_converting": "Konwersja {total} stron na obrazy przy {dpi} DPI...",
     "pdf_converting_no_change": "Wyodrębnianie {total} stron bez modyfikacji...",
     "print_progress": "Przygotowywanie do druku...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Błąd wewnętrzny w żądaniu wysłanym do ComicVine (nieprawidłowy format odpowiedzi).",
     "error_api_filter": "Błąd wewnętrzny w kryteriach wyszukiwania wysłanych do ComicVine.",
     "error_api_subscriber_only": "Ta zawartość ComicVine jest dostępna tylko dla subskrybentów.",
-    "error_api_rate_limit": "Osiągnięto limit żądań ComicVine. Poczekaj kilka minut przed ponowną próbą."
+    "error_api_rate_limit": "Osiągnięto limit żądań ComicVine. Poczekaj kilka minut przed ponowną próbą.",
+    "cover_first_issue_label": "Wybrana seria"
   },
   "bookmark": {
     "popup_title": "Zakładka",

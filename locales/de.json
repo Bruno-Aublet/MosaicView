@@ -694,7 +694,7 @@
     "language_label": "Sprache:",
     "directory_tooltip": "Ordner: {name}\n{count} Datei(en)\nGesamtgröße: {size} MB",
     "folder_up_tooltip": "Doppelklicken, um eine Ebene\nim Ordnerbaum nach oben zu gehen",
-    "status_bar": "{dirs} Ordner  |  {files} Datei(en) ({total_size})  |  {selected} ausgewählt ({selected_size})",
+    "status_bar": "{dirs} Ordner     {files} Datei(en) ({total_size})     {selected} ausgewählt ({selected_size})",
     "pdf_converting": "{total} Seiten werden in Bilder mit {dpi} DPI konvertiert...",
     "pdf_converting_no_change": "{total} Seiten werden ohne Änderung extrahiert...",
     "print_progress": "Druckvorbereitung...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Interner Fehler bei der an ComicVine gesendeten Anfrage (ungültiges Antwortformat).",
     "error_api_filter": "Interner Fehler in den an ComicVine gesendeten Suchkriterien.",
     "error_api_subscriber_only": "Dieser ComicVine-Inhalt ist nur für Abonnenten.",
-    "error_api_rate_limit": "ComicVine-Anfragelimit erreicht. Warten Sie einige Minuten, bevor Sie es erneut versuchen."
+    "error_api_rate_limit": "ComicVine-Anfragelimit erreicht. Warten Sie einige Minuten, bevor Sie es erneut versuchen.",
+    "cover_first_issue_label": "Ausgewählte Serie"
   },
   "bookmark": {
     "popup_title": "Lesezeichen",

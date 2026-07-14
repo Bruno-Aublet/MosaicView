@@ -694,7 +694,7 @@
     "language_label": "Hol:",
     "directory_tooltip": "vo': {name}\n{count} De'(mey)\ntInghach naQ: {size} Mo",
     "folder_up_tooltip": "cha'logh yIbuS 'ej\nwa' chen Daq yIchegh",
-    "status_bar": "{dirs} De'wI'  |  {files} De' ({total_size})  |  {selected} wIvlu'pu' ({selected_size})",
+    "status_bar": "{dirs} De'wI'     {files} De' ({total_size})     {selected} wIvlu'pu' ({selected_size})",
     "pdf_converting": "{total} 'echlet {dpi} DPI nIvbogh mIw...",
     "pdf_converting_no_change": "{total} 'echlet choH pagh...",
     "print_progress": "Qonlu' chuqmeH ghuH...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "ComicVine Daq ngeHta' poQmoHwI' Sech'a' mISmoH (jang mIw Qapbe').",
     "error_api_filter": "ComicVine Daq ngeHta' nej mIw Sech'a' mISmoH.",
     "error_api_subscriber_only": "ComicVine ghItlhvam neH lo'wI' choHmoHwI'pu'vaD.",
-    "error_api_rate_limit": "ComicVine poQmoHwI' HeS chevlu'pu'. puS tup polqu' pa' yIqIp."
+    "error_api_rate_limit": "ComicVine poQmoHwI' HeS chevlu'pu'. puS tup polqu' pa' yIqIp.",
+    "cover_first_issue_label": "wIvbogh tetlh"
   },
   "bookmark": {
     "popup_title": "ghItlh",

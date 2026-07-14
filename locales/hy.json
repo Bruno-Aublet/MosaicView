@@ -694,7 +694,7 @@
     "language_label": "Լեզու՝",
     "directory_tooltip": "Թղթապանակ՝ {name}\n{count} ֆայլ(եր)\nՁնդհանուր չափ՝ {size} ՄԲ",
     "folder_up_tooltip": "Կրկնակի սեղմեք վերադառնալու\nմեկ մակարդակ վերև",
-    "status_bar": "{dirs} պանակ(ներ)  |  {files} ֆայլ(եր) ({total_size})  |  {selected} ընտրված ({selected_size})",
+    "status_bar": "{dirs} պանակ(ներ)     {files} ֆայլ(եր) ({total_size})     {selected} ընտրված ({selected_size})",
     "pdf_converting": "{total} էջերի փոխակերպում պատկերների {dpi} DPI-ով...",
     "pdf_converting_no_change": "{total} էջերի արտահանում առանց փոփոխության...",
     "print_progress": "Տպագրության նախապատրաստում...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Ներքին սխալ ComicVine-ին ուղարկված հարցումում (պատասխանի ձևաչափն անվավեր է)։",
     "error_api_filter": "Ներքին սխալ ComicVine-ին ուղարկված որոնման չափանիշներում։",
     "error_api_subscriber_only": "Այս ComicVine բովանդակությունը հասանելի է միայն բաժանորդներին։",
-    "error_api_rate_limit": "ComicVine հարցումների սահմանաչափը սպառված է։ Սպասեք մի քանի րոպե, նախքան նորից փորձելը։"
+    "error_api_rate_limit": "ComicVine հարցումների սահմանաչափը սպառված է։ Սպասեք մի քանի րոպե, նախքան նորից փորձելը։",
+    "cover_first_issue_label": "Ընտրված շարք"
   },
   "bookmark": {
     "popup_title": "Էջանիշ",

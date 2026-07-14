@@ -680,7 +680,7 @@
   "labels": {
     "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
     "thumb_size": "Thumbnail size",
-    "status_bar": "{dirs} folder(s)  |  {files} file(s) ({total_size})  |  {selected} selected ({selected_size})",
+    "status_bar": "{dirs} folder(s)     {files} file(s) ({total_size})     {selected} selected ({selected_size})",
     "loading": "Please wait, loading...\n{percent}%",
     "resizing": "Please wait, resizing...\n{percent}%",
     "converting": "Please wait, converting...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Internal error in the request sent to ComicVine (invalid response format).",
     "error_api_filter": "Internal error in the search criteria sent to ComicVine.",
     "error_api_subscriber_only": "This ComicVine content is for subscribers only.",
-    "error_api_rate_limit": "ComicVine request limit reached. Wait a few minutes before trying again."
+    "error_api_rate_limit": "ComicVine request limit reached. Wait a few minutes before trying again.",
+    "cover_first_issue_label": "Selected series"
   },
   "bookmark": {
     "popup_title": "Bookmark",

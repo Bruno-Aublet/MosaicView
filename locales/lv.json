@@ -694,7 +694,7 @@
     "language_label": "Valoda:",
     "directory_tooltip": "Mape: {name}\n{count} fails(-i)\nKopējais izmērs: {size} MB",
     "folder_up_tooltip": "Veiciet dubultklikšķi, lai\npārietu vienu līmeni augstāk",
-    "status_bar": "{dirs} mape(s)  |  {files} fails(i) ({total_size})  |  {selected} atlasīts(i) ({selected_size})",
+    "status_bar": "{dirs} mape(s)     {files} fails(i) ({total_size})     {selected} atlasīts(i) ({selected_size})",
     "pdf_converting": "Konvertē {total} lappuses uz attēliem pie {dpi} DPI...",
     "pdf_converting_no_change": "Ekstraktē {total} lappuses bez modificēšanas...",
     "print_progress": "Sagatavošanās drukāšanai...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Iekšēja kļūda pieprasījumā, kas nosūtīts uz ComicVine (nederīgs atbildes formāts).",
     "error_api_filter": "Iekšēja kļūda meklēšanas kritērijos, kas nosūtīti uz ComicVine.",
     "error_api_subscriber_only": "Šis ComicVine saturs ir paredzēts tikai abonentiem.",
-    "error_api_rate_limit": "Sasniegts ComicVine pieprasījumu limits. Uzgaidiet dažas minūtes pirms atkārtotas mēģināšanas."
+    "error_api_rate_limit": "Sasniegts ComicVine pieprasījumu limits. Uzgaidiet dažas minūtes pirms atkārtotas mēģināšanas.",
+    "cover_first_issue_label": "Izvēlētā sērija"
   },
   "bookmark": {
     "popup_title": "Grāmatzīme",

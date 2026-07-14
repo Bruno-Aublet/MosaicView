@@ -694,7 +694,7 @@
     "language_label": "語言:",
     "directory_tooltip": "資料夾:{name}\n{count} 個檔案\n總大小:{size} MB",
     "folder_up_tooltip": "按兩下返回\n上一層目錄",
-    "status_bar": "{dirs} 個資料夾  |  {files} 個檔案 ({total_size})  |  {selected} 個已選 ({selected_size})",
+    "status_bar": "{dirs} 個資料夾     {files} 個檔案 ({total_size})     {selected} 個已選 ({selected_size})",
     "pdf_converting": "正在將{total}頁轉換為{dpi} DPI的圖像...",
     "pdf_converting_no_change": "正在提取{total}頁而不修改...",
     "print_progress": "準備列印中...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "傳送至 ComicVine 的請求發生內部錯誤（回應格式無效）。",
     "error_api_filter": "傳送至 ComicVine 的搜尋條件發生內部錯誤。",
     "error_api_subscriber_only": "此 ComicVine 內容僅限訂閱者使用。",
-    "error_api_rate_limit": "已達到 ComicVine 請求限制，請稍候幾分鐘後再試一次。"
+    "error_api_rate_limit": "已達到 ComicVine 請求限制，請稍候幾分鐘後再試一次。",
+    "cover_first_issue_label": "已選系列"
   },
   "bookmark": {
     "popup_title": "書籤",

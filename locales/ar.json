@@ -694,7 +694,7 @@
     "language_label": "اللغة:",
     "directory_tooltip": "مجلد: {name}\n{count} ملف\nالحجم الإجمالي: {size} ميغابايت",
     "folder_up_tooltip": "انقر مرتين للصعود\nمستوى واحد في التسلسل الهرمي",
-    "status_bar": "{dirs} مجلد(ات)   |   {files} ملف(ات)  ({total_size})  |   {selected} محدد(ة) ({selected_size})",
+    "status_bar": "{dirs} مجلد(ات)     {files} ملف(ات) ({total_size})     {selected} محدد(ة) ({selected_size})",
     "pdf_converting": "تحويل {total} صفحة إلى صور بدقة {dpi} نقطة في البوصة...",
     "pdf_converting_no_change": "استخراج {total} صفحة بدون تعديل...",
     "print_progress": "جارٍ التحضير للطباعة...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "خطأ داخلي في الطلب المرسل إلى ComicVine (تنسيق استجابة غير صالح).",
     "error_api_filter": "خطأ داخلي في معايير البحث المرسلة إلى ComicVine.",
     "error_api_subscriber_only": "هذا المحتوى من ComicVine مخصص للمشتركين فقط.",
-    "error_api_rate_limit": "تم بلوغ حد طلبات ComicVine. انتظر بضع دقائق قبل المحاولة مرة أخرى."
+    "error_api_rate_limit": "تم بلوغ حد طلبات ComicVine. انتظر بضع دقائق قبل المحاولة مرة أخرى.",
+    "cover_first_issue_label": "السلسلة المحددة"
   },
   "bookmark": {
     "popup_title": "إشارة مرجعية",

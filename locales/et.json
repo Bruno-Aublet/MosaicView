@@ -694,7 +694,7 @@
     "language_label": "Keel:",
     "directory_tooltip": "Kaust: {name}\n{count} fail(i)\nKogumaht: {size} MB",
     "folder_up_tooltip": "Topeltklõps, et liikuda\nüks tase ülespoole puustruktuuris",
-    "status_bar": "{dirs} kaust(a)  |  {files} fail(i) ({total_size})  |  {selected} valitud ({selected_size})",
+    "status_bar": "{dirs} kaust(a)     {files} fail(i) ({total_size})     {selected} valitud ({selected_size})",
     "pdf_converting": "{total} lehekülge konverteeritakse piltideks {dpi} DPI-ga...",
     "pdf_converting_no_change": "{total} lehekülge ekstraktitakse muutmata...",
     "print_progress": "Printimise ettevalmistamine...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Sisemine viga ComicVine'ile saadetud päringus (kehtetu vastuse vorming).",
     "error_api_filter": "Sisemine viga ComicVine'ile saadetud otsingukriteeriumides.",
     "error_api_subscriber_only": "See ComicVine'i sisu on ainult tellijatele.",
-    "error_api_rate_limit": "ComicVine'i päringute limiit on saavutatud. Oodake enne uuesti proovimist mõni minut."
+    "error_api_rate_limit": "ComicVine'i päringute limiit on saavutatud. Oodake enne uuesti proovimist mõni minut.",
+    "cover_first_issue_label": "Valitud sari"
   },
   "bookmark": {
     "popup_title": "Järjehoidja",

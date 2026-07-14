@@ -694,7 +694,7 @@
     "language_label": "Kieli:",
     "directory_tooltip": "Kansio: {name}\n{count} tiedosto(a)\nKokonaiskoko: {size} Mt",
     "folder_up_tooltip": "Kaksoisnapsauta noustaksesi\ntasoa ylöspäin kansiorakenteessa",
-    "status_bar": "{dirs} kansio(ta)  |  {files} tiedosto(a) ({total_size})  |  {selected} valittu(a) ({selected_size})",
+    "status_bar": "{dirs} kansio(ta)     {files} tiedosto(a) ({total_size})     {selected} valittu(a) ({selected_size})",
     "pdf_converting": "Muunnetaan {total} sivua kuviksi {dpi} DPI:llä...",
     "pdf_converting_no_change": "Puretaan {total} sivua muuttamatta...",
     "print_progress": "Valmistellaan tulostusta...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Sisäinen virhe ComicVineen lähetetyssä pyynnössä (virheellinen vastausmuoto).",
     "error_api_filter": "Sisäinen virhe ComicVineen lähetetyissä hakuehdoissa.",
     "error_api_subscriber_only": "Tämä ComicVine-sisältö on vain tilaajille.",
-    "error_api_rate_limit": "ComicVine-pyyntöraja saavutettu. Odota muutama minuutti ennen uutta yritystä."
+    "error_api_rate_limit": "ComicVine-pyyntöraja saavutettu. Odota muutama minuutti ennen uutta yritystä.",
+    "cover_first_issue_label": "Valittu sarja"
   },
   "bookmark": {
     "popup_title": "Kirjanmerkki",

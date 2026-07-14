@@ -694,7 +694,7 @@
     "language_label": "மொழி:",
     "directory_tooltip": "கோப்புறை: {name}\n{count} கோப்புகள்\nமொத்த அளவு: {size} MB",
     "folder_up_tooltip": "படிநிலையில் ஒரு நிலை\nமேலே செல்ல இருமுறை கிளிக் செய்யவும்",
-    "status_bar": "{dirs} கோப்புறை(கள்)  |  {files} கோப்பு(கள்) ({total_size})  |  {selected} தேர்ந்தெடுக்கப்பட்டது ({selected_size})",
+    "status_bar": "{dirs} கோப்புறை(கள்)     {files} கோப்பு(கள்) ({total_size})     {selected} தேர்ந்தெடுக்கப்பட்டது ({selected_size})",
     "pdf_converting": "{total} பக்கங்களை {dpi} DPI இல் படங்களாக மாற்றுகிறது...",
     "pdf_converting_no_change": "{total} பக்கங்களை மாற்றம் இல்லாமல் பிரித்தெடுக்கிறது...",
     "print_progress": "அச்சிட தயாராகிறது...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "ComicVine க்கு அனுப்பப்பட்ட கோரிக்கையில் உள் பிழை (தவறான பதில் வடிவம்).",
     "error_api_filter": "ComicVine க்கு அனுப்பப்பட்ட தேடல் அளவுகோல்களில் உள் பிழை.",
     "error_api_subscriber_only": "இந்த ComicVine உள்ளடக்கம் சந்தாதாரர்களுக்கு மட்டுமே.",
-    "error_api_rate_limit": "ComicVine கோரிக்கை வரம்பை எட்டிவிட்டது. மீண்டும் முயற்சிக்கும் முன் சில நிமிடங்கள் காத்திருக்கவும்."
+    "error_api_rate_limit": "ComicVine கோரிக்கை வரம்பை எட்டிவிட்டது. மீண்டும் முயற்சிக்கும் முன் சில நிமிடங்கள் காத்திருக்கவும்.",
+    "cover_first_issue_label": "தேர்ந்தெடுக்கப்பட்ட தொடர்"
   },
   "bookmark": {
     "popup_title": "புக்மார்க்",

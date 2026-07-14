@@ -133,6 +133,30 @@ class _IssuesWorker(QThread):
             self.error.emit(error_to_signal_payload(e))
 
 
+class _FirstIssueWorker(QThread):
+    """Récupère uniquement le tout premier issue (ordre API, pas forcément le
+    numéro 1) d'une série, pour l'aperçu de couverture en page 1."""
+    finished = Signal(dict)
+    error    = Signal(str)
+
+    def __init__(self, api_key, series_id):
+        super().__init__()
+        self._api_key   = api_key
+        self._series_id = series_id
+
+    def run(self):
+        try:
+            from modules.qt.comicvine_scraper import get_series_issues
+            results, _total = get_series_issues(self._api_key, self._series_id, page=1)
+            if results:
+                self.finished.emit(results[0])
+            else:
+                self.error.emit("No issues found")
+        except Exception as e:
+            from modules.qt.comicvine_scraper import error_to_signal_payload
+            self.error.emit(error_to_signal_payload(e))
+
+
 class _ImageWorker(QThread):
     finished = Signal(bytes)
     error    = Signal(str)
@@ -227,6 +251,7 @@ class _ComicVineDialog(QDialog):
         self._batch_total  = batch_total    # int, ou None
         self._worker  = None
         self._image_worker = None
+        self._first_issue_worker = None
         self._selected_series = None
         self._preselected_series = preselected_series
         # Caches : partagés si fournis, sinon locaux
@@ -256,6 +281,7 @@ class _ComicVineDialog(QDialog):
         # Connexions inter-pages
         self._page1.search_requested.connect(lambda t, p: self._do_search(t, p))
         self._page1.series_confirmed.connect(self._go_to_issues)
+        self._page1.series_selection_changed.connect(self._load_first_issue_cover)
         self._page1.skip_requested.connect(self._on_skip)
         self._page1.cancel_requested.connect(self._on_cancel)
 
@@ -375,6 +401,8 @@ class _ComicVineDialog(QDialog):
         self._selected_series = series
         self._issues_had_done = False
         self._page2.clear_issue_cover()
+        self._park_running_worker(getattr(self, '_first_issue_worker', None))
+        self._park_running_worker(getattr(self, '_first_issue_image_worker', None))
         self._stack.setCurrentIndex(1)
 
         series_id = series["id"]
@@ -413,6 +441,42 @@ class _ComicVineDialog(QDialog):
 
     def _go_to_series(self):
         self._stack.setCurrentIndex(0)
+
+    def _load_first_issue_cover(self, series):
+        """Affiche la couverture du 1er épisode (ordre API) de la série dont
+        la ligne vient d'être sélectionnée en page 1. Protégé contre les
+        clics rapides d'une série à l'autre via _park_running_worker, comme
+        _load_issue_image en page 2."""
+        self._park_running_worker(getattr(self, '_first_issue_worker', None))
+        self._page1.clear_first_issue_cover()
+
+        series_id = series["id"]
+        if series_id in self._issues_cache:
+            issues = self._issues_cache[series_id]
+            if issues:
+                url = issues[0].get("image_url")
+                if url:
+                    self._load_first_issue_image(url)
+            return
+
+        worker = _FirstIssueWorker(self._api_key, series_id)
+        worker.finished.connect(lambda iss, sid=series_id: self._on_first_issue_done(sid, iss))
+        worker.error.connect(lambda _msg: None)
+        worker.start()
+        self._first_issue_worker = worker
+
+    def _on_first_issue_done(self, series_id, issue):
+        # La série encore sélectionnée peut avoir changé depuis le lancement
+        # de la requête : n'affiche que si c'est toujours la série courante.
+        if not self._selected_series_row_matches(series_id):
+            return
+        url = issue.get("image_url")
+        if url:
+            self._load_first_issue_image(url)
+
+    def _selected_series_row_matches(self, series_id):
+        series = self._page1._get_series_at_current_row()
+        return bool(series) and series.get("id") == series_id
 
     @staticmethod
     def _clean_filename_for_search(fname):
@@ -478,7 +542,7 @@ class _ComicVineDialog(QDialog):
         _ImageWorker/_MetadataWorker redéfinissent `finished` en Signal custom,
         qui masque QThread.finished natif et est émis AVANT la fin réelle du run.
         isRunning() ne repasse à False qu'une fois run() retourné : test fiable."""
-        if worker is None:
+        if worker is None or worker in _ComicVineDialog._dying_workers:
             return
         # Détache les slots UI : la donnée téléchargée par ce worker est périmée
         for sig in ('finished', 'error'):
@@ -504,6 +568,18 @@ class _ComicVineDialog(QDialog):
 
     def _on_issue_image_done(self, data):
         self._page2.set_issue_cover(_bytes_to_pixmap(data))
+
+    def _load_first_issue_image(self, url):
+        if not url:
+            return
+        self._park_running_worker(getattr(self, '_first_issue_image_worker', None))
+        self._first_issue_image_worker = _ImageWorker(url)
+        self._first_issue_image_worker.finished.connect(self._on_first_issue_image_done)
+        self._first_issue_image_worker.error.connect(lambda _: None)
+        self._first_issue_image_worker.start()
+
+    def _on_first_issue_image_done(self, data):
+        self._page1.set_first_issue_cover(_bytes_to_pixmap(data))
 
     def _apply_metadata(self, issue):
         self._page2._btn_ok.setEnabled(False)
@@ -551,7 +627,9 @@ class _ComicVineDialog(QDialog):
         # fenêtre ne détruise un QThread qui tourne (même cause que le crash au
         # changement d'issue). _park_running_worker détache les slots et garde la
         # référence vivante jusqu'à la fin réelle du thread (purge par isRunning).
-        for w in (getattr(self, '_worker', None), getattr(self, '_image_worker', None)):
+        for w in (getattr(self, '_worker', None), getattr(self, '_image_worker', None),
+                  getattr(self, '_first_issue_worker', None),
+                  getattr(self, '_first_issue_image_worker', None)):
             self._park_running_worker(w)
 
 
@@ -563,6 +641,7 @@ class _Page1Series(QWidget):
     series_confirmed = Signal(dict)
     skip_requested   = Signal()
     cancel_requested = Signal()
+    series_selection_changed = Signal(dict)   # série dont la ligne vient d'être sélectionnée
 
     def __init__(self, parent=None, batch=False):
         super().__init__(parent)
@@ -582,18 +661,57 @@ class _Page1Series(QWidget):
         main.setContentsMargins(12, 12, 12, 12)
         main.setSpacing(12)
 
-        # Couverture gauche + nom de fichier
+        # Colonne gauche : deux blocs encadrés (comme en page 2)
         left = QVBoxLayout()
-        left.setSpacing(4)
+        left.setSpacing(8)
+
+        # Bloc « couverture du fichier » : titre au-dessus, couverture, nom du
+        # fichier — encadré pour le distinguer du bloc série sélectionnée.
+        self._file_block = QFrame()
+        self._file_block.setObjectName("cvFileBlock")
+        file_block_lay = QVBoxLayout(self._file_block)
+        file_block_lay.setContentsMargins(6, 6, 6, 6)
+        file_block_lay.setSpacing(6)
+
+        self._file_cover_title = QLabel()
+        self._file_cover_title.setWordWrap(True)
+        self._file_cover_title.setAlignment(Qt.AlignCenter)
+        file_block_lay.addWidget(self._file_cover_title)
+
         self._cover_lbl = QLabel()
-        self._cover_lbl.setFixedSize(200, 280)
+        self._cover_lbl.setFixedSize(170, 238)
         self._cover_lbl.setAlignment(Qt.AlignCenter)
-        left.addWidget(self._cover_lbl)
+        file_block_lay.addWidget(self._cover_lbl, 0, Qt.AlignHCenter)
+
         self._filename_lbl = QLabel()
         self._filename_lbl.setWordWrap(True)
         self._filename_lbl.setAlignment(Qt.AlignCenter)
         self._filename_lbl.setFixedWidth(200)
-        left.addWidget(self._filename_lbl)
+        file_block_lay.addWidget(self._filename_lbl, 0, Qt.AlignHCenter)
+
+        left.addWidget(self._file_block)
+
+        # Bloc « couverture du 1er épisode de la série sélectionnée » :
+        # couverture, puis titre en dessous (même agencement que le bloc
+        # issue de la page 2).
+        self._first_issue_block = QFrame()
+        self._first_issue_block.setObjectName("cvFirstIssueBlock")
+        fi_block_lay = QVBoxLayout(self._first_issue_block)
+        fi_block_lay.setContentsMargins(6, 6, 6, 6)
+        fi_block_lay.setSpacing(6)
+
+        self._first_issue_cover_lbl = QLabel()
+        self._first_issue_cover_lbl.setFixedSize(170, 238)
+        self._first_issue_cover_lbl.setAlignment(Qt.AlignCenter)
+        fi_block_lay.addWidget(self._first_issue_cover_lbl, 0, Qt.AlignHCenter)
+
+        self._first_issue_cover_title = QLabel()
+        self._first_issue_cover_title.setWordWrap(True)
+        self._first_issue_cover_title.setAlignment(Qt.AlignCenter)
+        fi_block_lay.addWidget(self._first_issue_cover_title)
+
+        left.addWidget(self._first_issue_block)
+
         left.addStretch()
         main.addLayout(left, 0)
 
@@ -651,6 +769,8 @@ class _Page1Series(QWidget):
         self._table.verticalHeader().setVisible(False)
         self._table.horizontalHeader().setStretchLastSection(True)
         self._table.setAlternatingRowColors(True)
+        self._table.currentItemChanged.connect(
+            lambda cur, _prev: self._on_row_changed(self._table.currentRow()))
         self._table.doubleClicked.connect(self._on_ok_clicked)
         tbl_stack.addWidget(self._table)
 
@@ -703,9 +823,23 @@ class _Page1Series(QWidget):
         alt   = theme.get("toolbar_bg", bg)
 
         self.setStyleSheet(f"QWidget {{ background: {bg}; color: {fg}; }}")
-        self._cover_lbl.setStyleSheet(f"background: {alt}; border: 1px solid {sep};")
+        cover_style = f"background: {alt}; border: 1px solid {sep};"
+        self._cover_lbl.setStyleSheet(cover_style)
+        self._first_issue_cover_lbl.setStyleSheet(cover_style)
         self._filename_lbl.setFont(font9)
         self._filename_lbl.setStyleSheet(f"color: {fg}; background: transparent;")
+
+        # Cadres des deux blocs couverture (sélecteur par objectName : le style
+        # ne doit pas cascader sur les QLabel enfants)
+        block_style = f"border: 1px solid {sep}; border-radius: 4px;"
+        self._file_block.setStyleSheet(f"QFrame#cvFileBlock {{ {block_style} }}")
+        self._first_issue_block.setStyleSheet(f"QFrame#cvFirstIssueBlock {{ {block_style} }}")
+        title_style = f"color: {fg}; background: transparent; border: none;"
+        for lbl in (self._file_cover_title, self._first_issue_cover_title):
+            lbl.setFont(_get_current_font(9, bold=True))
+            lbl.setStyleSheet(title_style)
+        self._file_cover_title.setText(_("comicvine.cover_file_label"))
+        self._first_issue_cover_title.setText(_("comicvine.cover_first_issue_label"))
 
         if batch_counter:
             info = f"{_('comicvine.info_single')}  —  {batch_counter}"
@@ -785,12 +919,23 @@ class _Page1Series(QWidget):
     def set_cover(self, pix):
         if pix:
             self._cover_lbl.setPixmap(
-                pix.scaled(200, 280, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                pix.scaled(170, 238, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
             self._cover_lbl.setText("—")
 
     def set_filename(self, filename: str):
         self._filename_lbl.setText(filename)
+
+    def set_first_issue_cover(self, pix):
+        if pix:
+            self._first_issue_cover_lbl.setPixmap(
+                pix.scaled(170, 238, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        else:
+            self._first_issue_cover_lbl.setText("—")
+
+    def clear_first_issue_cover(self):
+        self._first_issue_cover_lbl.clear()
+        self._first_issue_cover_lbl.setText("—")
 
     def set_search_term(self, term):
         self._search_input.setText(term)
@@ -832,6 +977,7 @@ class _Page1Series(QWidget):
         self._total         = total
         self._current_page  = page
         self._current_terms = terms
+        self.clear_first_issue_cover()
 
         self._table.setSortingEnabled(False)
         self._table.setRowCount(0)
@@ -915,17 +1061,27 @@ class _Page1Series(QWidget):
             self._total = 0
             self.search_requested.emit(term, 1)
 
-    def _on_ok_clicked(self):
+    def _get_series_at_current_row(self):
         row = self._table.currentRow()
         if row < 0:
-            return
+            return None
         item = self._table.item(row, 0)
         if item is None:
-            return
+            return None
         idx = item.data(_DATA_ROLE)
         if idx is None or idx >= len(self._series_data):
-            return
-        self.series_confirmed.emit(self._series_data[idx])
+            return None
+        return self._series_data[idx]
+
+    def _on_row_changed(self, _row):
+        series = self._get_series_at_current_row()
+        if series:
+            self.series_selection_changed.emit(series)
+
+    def _on_ok_clicked(self):
+        series = self._get_series_at_current_row()
+        if series:
+            self.series_confirmed.emit(series)
 
 
 # ── Page 2 : Choix de l'issue ─────────────────────────────────────────────────

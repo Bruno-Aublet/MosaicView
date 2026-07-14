@@ -10,9 +10,9 @@ Les items désactivés sont grisés. Les menus sont reconstruits à chaque ouver
 import json
 import os
 
-from PySide6.QtWidgets import QMenuBar, QMenu
-from PySide6.QtGui import QAction
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QMenuBar, QMenu, QToolButton, QStyle
+from PySide6.QtGui import QAction, QIcon
+from PySide6.QtCore import Qt, QObject, QEvent
 
 from modules.qt.localization import _ as _translate
 from modules.qt import state as _state_module
@@ -547,6 +547,44 @@ def _populate_about_menu(menu: QMenu, callbacks: dict):
     _add_action(lic_menu, _("labels.license_tengwar_full"), callbacks.get("show_full_tengwar_license"))
 
 
+class _MenuBarExtButtonRepositioner(QObject):
+    """Recolle le bouton d'extension natif (…) juste après le dernier menu
+    visible, au lieu du bord droit où Qt le replace en dur à chaque
+    updateGeometries() — d'où l'event filter : chaque déplacement imposé par
+    Qt est immédiatement corrigé (le move() correctif redéclenche le filtre,
+    qui recalcule la même position et ne bouge plus : pas de récursion)."""
+
+    def __init__(self, menubar: QMenuBar, ext_btn: QToolButton):
+        super().__init__(menubar)
+        self._mb = menubar
+        self._btn = ext_btn
+
+    def eventFilter(self, obj, event):
+        if event.type() in (QEvent.Move, QEvent.Resize, QEvent.Show):
+            self._reposition()
+        return False
+
+    def _reposition(self):
+        mb, btn = self._mb, self._btn
+        if not btn.isVisible():
+            return
+        # Réplique le calcul de visibilité de QMenuBarPrivate::updateGeometries :
+        # un menu est replié si son rect dépasse la zone utile (largeur de la
+        # barre moins la marge de panneau et la largeur du bouton d'extension).
+        hmargin = mb.style().pixelMetric(QStyle.PM_MenuBarPanelWidth, None, mb)
+        limit = mb.width() - 1 - hmargin - btn.width()
+        last_right = -1
+        for act in mb.actions():
+            r = mb.actionGeometry(act)
+            if r.isValid() and r.right() <= limit:
+                last_right = max(last_right, r.right())
+        if last_right < 0:
+            return  # aucun menu visible : laisser la position choisie par Qt
+        x = min(last_right + 2, limit + 1)
+        if btn.x() != x:
+            btn.move(x, btn.y())
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Point d'entrée
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -612,5 +650,20 @@ def build_menubar(window, callbacks: dict, menubar: "QMenuBar | None" = None) ->
     mb.addAction(minimap_action)
     # Expose un callable pour mettre à jour le chevron sans passer par triggered
     mb._update_minimap_chevron = lambda: minimap_action.setText("»" if get_minimap_visible() else "«")
+
+    # ── Bouton d'extension natif de la QMenuBar (repli des menus quand la barre
+    # est trop étroite) : Qt y dessine une flèche « » » qui se confond avec les
+    # chevrons colonne d'icônes / minimap ci-dessus → on la remplace par « … ».
+    ext_btn = mb.findChild(QToolButton, "qt_menubar_ext_button")
+    if ext_btn is not None:
+        ext_btn.setIcon(QIcon())
+        ext_btn.setToolButtonStyle(Qt.ToolButtonTextOnly)
+        ext_btn.setText("…")
+        ext_btn.setFont(font)
+        # build_menubar est rejouée à chaque changement de langue sur la même
+        # QMenuBar : n'installer le repositionneur qu'une seule fois.
+        if getattr(mb, "_ext_btn_repositioner", None) is None:
+            mb._ext_btn_repositioner = _MenuBarExtButtonRepositioner(mb, ext_btn)
+            ext_btn.installEventFilter(mb._ext_btn_repositioner)
 
     return mb

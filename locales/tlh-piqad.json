@@ -694,7 +694,7 @@
     "language_label": ":",
     "directory_tooltip": ": {name}\n{count} ()\nh : {size} M",
     "folder_up_tooltip": "  \n   ",
-    "status_bar": "{dirs}   |  {files}  ({total_size})  |  {selected}  ({selected_size})",
+    "status_bar": "{dirs}      {files}  ({total_size})     {selected}  ({selected_size})",
     "pdf_converting": "{total}  {dpi} DPI  ...",
     "pdf_converting_no_change": "{total}   ...",
     "print_progress": "  ...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "ComicVine      (  ).",
     "error_api_filter": "ComicVine      .",
     "error_api_subscriber_only": "ComicVine    .",
-    "error_api_rate_limit": "ComicVine   .     ."
+    "error_api_rate_limit": "ComicVine   .     .",
+    "cover_first_issue_label": " "
   },
   "bookmark": {
     "popup_title": "",

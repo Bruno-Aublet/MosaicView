@@ -694,7 +694,7 @@
     "language_label": "Lambë:",
     "directory_tooltip": "Aldassë: {name}\n{count} parma(r)\nAnwa ilya: {size} Mo",
     "folder_up_tooltip": "Attëa-naucë an navë\nerya tár mi tarassë",
-    "status_bar": "{dirs} sambë  |  {files} parma ({total_size})  |  {selected} harna ({selected_size})",
+    "status_bar": "{dirs} sambë     {files} parma ({total_size})     {selected} harna ({selected_size})",
     "pdf_converting": "{total} parma nauva {dpi} DPI cemende...",
     "pdf_converting_no_change": "{total} parma lesta moita ala...",
     "print_progress": "Ataquenta tecë...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Úcarie mí-ré i cesta yána ComicVine-nna (loica quétië-canta).",
     "error_api_filter": "Úcarie mí-ré i céstalië nótë yána ComicVine-nna.",
     "error_api_subscriber_only": "Sina ComicVine enyalië ná ho i estelehtar erinqua.",
-    "error_api_rate_limit": "I ComicVine cestë telwa antuvë. Câ minutili nó ata-cestien."
+    "error_api_rate_limit": "I ComicVine cestë telwa antuvë. Câ minutili nó ata-cestien.",
+    "cover_first_issue_label": "Lindelë cilina"
   },
   "bookmark": {
     "popup_title": "Lambetengwe",

@@ -694,7 +694,7 @@
     "language_label": "언어:",
     "directory_tooltip": "폴더: {name}\n{count}개의 파일\n전체 크기: {size} MB",
     "folder_up_tooltip": "더블 클릭하여\n상위 디렉터리로 이동",
-    "status_bar": "{dirs} 폴더  |  {files} 파일 ({total_size})  |  {selected} 선택됨 ({selected_size})",
+    "status_bar": "{dirs} 폴더     {files} 파일 ({total_size})     {selected} 선택됨 ({selected_size})",
     "pdf_converting": "{total}페이지를 {dpi} DPI 이미지로 변환 중...",
     "pdf_converting_no_change": "{total}페이지를 수정 없이 추출 중...",
     "print_progress": "인쇄 준비 중...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "ComicVine으로 전송된 요청에 내부 오류가 발생했습니다 (잘못된 응답 형식).",
     "error_api_filter": "ComicVine으로 전송된 검색 조건에 내부 오류가 발생했습니다.",
     "error_api_subscriber_only": "이 ComicVine 콘텐츠는 구독자 전용입니다.",
-    "error_api_rate_limit": "ComicVine 요청 한도에 도달했습니다. 몇 분 후 다시 시도하세요."
+    "error_api_rate_limit": "ComicVine 요청 한도에 도달했습니다. 몇 분 후 다시 시도하세요.",
+    "cover_first_issue_label": "선택한 시리즈"
   },
   "bookmark": {
     "popup_title": "북마크",

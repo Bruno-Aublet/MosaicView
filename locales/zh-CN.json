@@ -694,7 +694,7 @@
     "language_label": "语言:",
     "directory_tooltip": "文件夹:{name}\n{count} 个文件\n总大小:{size} MB",
     "folder_up_tooltip": "双击返回\n上一级目录",
-    "status_bar": "{dirs} 个文件夹  |  {files} 个文件 ({total_size})  |  {selected} 个已选 ({selected_size})",
+    "status_bar": "{dirs} 个文件夹     {files} 个文件 ({total_size})     {selected} 个已选 ({selected_size})",
     "pdf_converting": "正在将{total}页转换为{dpi} DPI的图像...",
     "pdf_converting_no_change": "正在提取{total}页而不修改...",
     "print_progress": "准备打印中...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "发送到 ComicVine 的请求内部出错（响应格式无效）。",
     "error_api_filter": "发送到 ComicVine 的搜索条件内部出错。",
     "error_api_subscriber_only": "此 ComicVine 内容仅限订阅者使用。",
-    "error_api_rate_limit": "已达到 ComicVine 请求限制，请等待几分钟后重试。"
+    "error_api_rate_limit": "已达到 ComicVine 请求限制，请等待几分钟后重试。",
+    "cover_first_issue_label": "已选系列"
   },
   "bookmark": {
     "popup_title": "书签",

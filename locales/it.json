@@ -694,7 +694,7 @@
     "language_label": "Lingua:",
     "directory_tooltip": "Cartella: {name}\n{count} file\nDimensione totale: {size} MB",
     "folder_up_tooltip": "Doppio clic per salire\ndi un livello nella struttura",
-    "status_bar": "{dirs} cartella(e)  |  {files} file ({total_size})  |  {selected} selezionato/i ({selected_size})",
+    "status_bar": "{dirs} cartella(e)     {files} file ({total_size})     {selected} selezionato/i ({selected_size})",
     "pdf_converting": "Conversione di {total} pagine in immagini a {dpi} DPI...",
     "pdf_converting_no_change": "Estrazione di {total} pagine senza modifiche...",
     "print_progress": "Preparazione della stampa...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Errore interno nella richiesta inviata a ComicVine (formato risposta non valido).",
     "error_api_filter": "Errore interno nei criteri di ricerca inviati a ComicVine.",
     "error_api_subscriber_only": "Questo contenuto ComicVine è riservato agli abbonati.",
-    "error_api_rate_limit": "Limite di richieste ComicVine raggiunto. Attendi qualche minuto prima di riprovare."
+    "error_api_rate_limit": "Limite di richieste ComicVine raggiunto. Attendi qualche minuto prima di riprovare.",
+    "cover_first_issue_label": "Serie selezionata"
   },
   "bookmark": {
     "popup_title": "Segnalibro",

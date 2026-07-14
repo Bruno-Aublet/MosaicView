@@ -694,7 +694,7 @@
     "language_label": "Sprog:",
     "directory_tooltip": "Mappe: {name}\n{count} fil(er)\nSamlet størrelse: {size} MB",
     "folder_up_tooltip": "Dobbeltklik for at gå\net niveau op i strukturen",
-    "status_bar": "{dirs} mappe(r)  |  {files} fil(er) ({total_size})  |  {selected} valgt(e) ({selected_size})",
+    "status_bar": "{dirs} mappe(r)     {files} fil(er) ({total_size})     {selected} valgt(e) ({selected_size})",
     "pdf_converting": "Konverterer {total} sider til billeder ved {dpi} DPI...",
     "pdf_converting_no_change": "Udtrækker {total} sider uden ændring...",
     "print_progress": "Forberedelse til udskrivning...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Intern fejl i anmodningen sendt til ComicVine (ugyldigt svarformat).",
     "error_api_filter": "Intern fejl i søgekriterierne sendt til ComicVine.",
     "error_api_subscriber_only": "Dette ComicVine-indhold er kun for abonnenter.",
-    "error_api_rate_limit": "ComicVine-anmodningsgrænsen er nået. Vent et par minutter, før du prøver igen."
+    "error_api_rate_limit": "ComicVine-anmodningsgrænsen er nået. Vent et par minutter, før du prøver igen.",
+    "cover_first_issue_label": "Valgt serie"
   },
   "bookmark": {
     "popup_title": "Bogmærke",

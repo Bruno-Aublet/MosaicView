@@ -694,7 +694,7 @@
     "language_label": "Γλώσσα:",
     "directory_tooltip": "Φάκελος: {name}\n{count} αρχείο/α\nΣυνολικό μέγεθος: {size} MB",
     "folder_up_tooltip": "Κάντε διπλό κλικ για να ανέβετε\nένα επίπεδο στην ιεραρχία",
-    "status_bar": "{dirs} φάκελος/οι  |  {files} αρχείο/α ({total_size})  |  {selected} επιλεγμένα ({selected_size})",
+    "status_bar": "{dirs} φάκελος/οι     {files} αρχείο/α ({total_size})     {selected} επιλεγμένα ({selected_size})",
     "pdf_converting": "Μετατροπή {total} σελίδων σε εικόνες στα {dpi} DPI...",
     "pdf_converting_no_change": "Εξαγωγή {total} σελίδων χωρίς τροποποίηση...",
     "print_progress": "Προετοιμασία για εκτύπωση...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Εσωτερικό σφάλμα στο αίτημα που στάλθηκε στο ComicVine (μη έγκυρη μορφή απόκρισης).",
     "error_api_filter": "Εσωτερικό σφάλμα στα κριτήρια αναζήτησης που στάλθηκαν στο ComicVine.",
     "error_api_subscriber_only": "Αυτό το περιεχόμενο ComicVine είναι μόνο για συνδρομητές.",
-    "error_api_rate_limit": "Το όριο αιτημάτων ComicVine έχει εξαντληθεί. Περιμένετε λίγα λεπτά πριν δοκιμάσετε ξανά."
+    "error_api_rate_limit": "Το όριο αιτημάτων ComicVine έχει εξαντληθεί. Περιμένετε λίγα λεπτά πριν δοκιμάσετε ξανά.",
+    "cover_first_issue_label": "Επιλεγμένη σειρά"
   },
   "bookmark": {
     "popup_title": "Σελιδοδείκτης",

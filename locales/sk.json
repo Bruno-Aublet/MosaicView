@@ -694,7 +694,7 @@
     "language_label": "Jazyk:",
     "directory_tooltip": "Priečinok: {name}\n{count} súbor/-y/-ov\nCelková veľkosť: {size} MB",
     "folder_up_tooltip": "Dvojité kliknutie pre návrat\no úroveň vyššie v štruktúre",
-    "status_bar": "{dirs} priečinok(ov)  |  {files} súbor(ov) ({total_size})  |  {selected} vybraných ({selected_size})",
+    "status_bar": "{dirs} priečinok(ov)     {files} súbor(ov) ({total_size})     {selected} vybraných ({selected_size})",
     "pdf_converting": "Konverzia {total} strán na obrázky pri {dpi} DPI...",
     "pdf_converting_no_change": "Extrakcia {total} strán bez úprav...",
     "print_progress": "Príprava tlače...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Interná chyba v požiadavke odoslanej na ComicVine (neplatný formát odpovede).",
     "error_api_filter": "Interná chyba vo vyhľadávacích kritériách odoslaných na ComicVine.",
     "error_api_subscriber_only": "Tento obsah ComicVine je určený iba pre predplatiteľov.",
-    "error_api_rate_limit": "Dosiahnutý limit požiadaviek ComicVine. Pred ďalším pokusom počkajte niekoľko minút."
+    "error_api_rate_limit": "Dosiahnutý limit požiadaviek ComicVine. Pred ďalším pokusom počkajte niekoľko minút.",
+    "cover_first_issue_label": "Vybraná séria"
   },
   "bookmark": {
     "popup_title": "Záložka",

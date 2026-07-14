@@ -694,7 +694,7 @@
     "language_label": "Jezik:",
     "directory_tooltip": "Mapa: {name}\n{count} datotek\nSkupna velikost: {size} MB",
     "folder_up_tooltip": "Dvakrat kliknite za pomik\nnavzgor v strukturi map",
-    "status_bar": "{dirs} mapa(e)  |  {files} datoteka(e) ({total_size})  |  {selected} izbrano ({selected_size})",
+    "status_bar": "{dirs} mapa(e)     {files} datoteka(e) ({total_size})     {selected} izbrano ({selected_size})",
     "pdf_converting": "Pretvarjanje {total} strani v slike pri {dpi} DPI...",
     "pdf_converting_no_change": "Ekstrahiranje {total} strani brez sprememb...",
     "print_progress": "Priprava na tiskanje...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Notranja napaka v zahtevi, poslani na ComicVine (neveljavna oblika odgovora).",
     "error_api_filter": "Notranja napaka v iskalnih merilih, poslanih na ComicVine.",
     "error_api_subscriber_only": "Ta vsebina ComicVine je namenjena samo naročnikom.",
-    "error_api_rate_limit": "Dosežena je omejitev zahtev ComicVine. Počakajte nekaj minut, preden poskusite znova."
+    "error_api_rate_limit": "Dosežena je omejitev zahtev ComicVine. Počakajte nekaj minut, preden poskusite znova.",
+    "cover_first_issue_label": "Izbrana zbirka"
   },
   "bookmark": {
     "popup_title": "Zaznamek",

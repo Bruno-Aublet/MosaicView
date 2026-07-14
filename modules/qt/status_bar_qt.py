@@ -8,7 +8,7 @@ contrairement à QMainWindow.setStatusBar() qui s'étend sur toute la largeur.
 
 import os
 
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QSizePolicy
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QImage, qGray, qAlpha
 
@@ -24,13 +24,13 @@ _DUPLICATE_INDICATOR_PIXMAP_GRAY: QPixmap | None = None
 
 
 def _get_duplicate_indicator_pixmap(grayed: bool) -> QPixmap:
-    """Version réduite du badge orange de doublon (mosaic_canvas._get_duplicate_pixmap),
+    """Version réduite du badge orange de doublon (mosaic_canvas._get_duplicate_pixmap_wide_margin),
     grisée quand aucun doublon n'est présent."""
     global _DUPLICATE_INDICATOR_PIXMAP, _DUPLICATE_INDICATOR_PIXMAP_GRAY
     if grayed:
         if _DUPLICATE_INDICATOR_PIXMAP_GRAY is None:
-            from modules.qt.mosaic_canvas import _get_duplicate_pixmap
-            src = _get_duplicate_pixmap()
+            from modules.qt.mosaic_canvas import _get_duplicate_pixmap_wide_margin
+            src = _get_duplicate_pixmap_wide_margin()
             img = src.toImage().convertToFormat(QImage.Format_ARGB32)
             for y in range(img.height()):
                 for x in range(img.width()):
@@ -40,8 +40,8 @@ def _get_duplicate_indicator_pixmap(grayed: bool) -> QPixmap:
             _DUPLICATE_INDICATOR_PIXMAP_GRAY = QPixmap.fromImage(img)
         return _DUPLICATE_INDICATOR_PIXMAP_GRAY
     if _DUPLICATE_INDICATOR_PIXMAP is None:
-        from modules.qt.mosaic_canvas import _get_duplicate_pixmap
-        _DUPLICATE_INDICATOR_PIXMAP = _get_duplicate_pixmap()
+        from modules.qt.mosaic_canvas import _get_duplicate_pixmap_wide_margin
+        _DUPLICATE_INDICATOR_PIXMAP = _get_duplicate_pixmap_wide_margin()
     return _DUPLICATE_INDICATOR_PIXMAP
 
 
@@ -87,13 +87,23 @@ class StatusBar(QWidget):
 
         self._label = QLabel("")
         self._label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        # Sans ceci, un QLabel réclame comme largeur minimale celle de son
+        # texte complet (setMinimumWidth(0) seul ne suffit pas : la sizePolicy
+        # par défaut fait que Qt utilise quand même le sizeHint basé sur le
+        # texte dans le calcul du minimum du layout), empêchant tout le
+        # panneau (donc la colonne d'icônes à côté) de rétrécir en dessous de
+        # cette largeur — alors que ce label a justement le stretch du layout
+        # pour absorber l'espace disponible et peut légitimement être
+        # compressé/tronqué quand la place manque.
+        self._label.setMinimumWidth(0)
+        self._label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
         layout.addWidget(self._label, 1)
 
         self._renumber_indicator = _ClickableLabel()
         self._renumber_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         layout.addWidget(self._renumber_indicator, 0)
 
-        self._indicator_sep = QLabel("|")
+        self._indicator_sep = QLabel(" ")
         self._indicator_sep.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._indicator_sep, 0)
 
@@ -101,7 +111,7 @@ class StatusBar(QWidget):
         self._zip_indicator.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         layout.addWidget(self._zip_indicator, 0)
 
-        self._duplicate_sep = QLabel("|")
+        self._duplicate_sep = QLabel(" ")
         self._duplicate_sep.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._duplicate_sep, 0)
 

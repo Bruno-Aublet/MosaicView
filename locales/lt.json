@@ -694,7 +694,7 @@
     "language_label": "Kalba:",
     "directory_tooltip": "Aplankas: {name}\n{count} failas(-ai)\nBendra dydis: {size} MB",
     "folder_up_tooltip": "Dukart spustelėkite, kad\ngrįžtumėte aukštyn katalogo medyje",
-    "status_bar": "{dirs} aplankas/ai  |  {files} failas/ai ({total_size})  |  {selected} pasirinkta ({selected_size})",
+    "status_bar": "{dirs} aplankas/ai     {files} failas/ai ({total_size})     {selected} pasirinkta ({selected_size})",
     "pdf_converting": "Konvertuojami {total} puslapiai į vaizdus {dpi} DPI...",
     "pdf_converting_no_change": "Ekstraktuojami {total} puslapiai be keitimo...",
     "print_progress": "Pasiruošimas spausdinimui...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Vidinė klaida užklausoje, siųstoje į ComicVine (netinkamas atsakymo formatas).",
     "error_api_filter": "Vidinė klaida paieškos kriterijuose, siųstuose į ComicVine.",
     "error_api_subscriber_only": "Šis ComicVine turinys skirtas tik prenumeratoriams.",
-    "error_api_rate_limit": "Pasiekta ComicVine užklausų riba. Prieš bandydami dar kartą, palaukite kelias minutes."
+    "error_api_rate_limit": "Pasiekta ComicVine užklausų riba. Prieš bandydami dar kartą, palaukite kelias minutes.",
+    "cover_first_issue_label": "Pasirinkta serija"
   },
   "bookmark": {
     "popup_title": "Žymė",

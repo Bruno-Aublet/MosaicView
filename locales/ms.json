@@ -694,7 +694,7 @@
     "language_label": "Bahasa:",
     "directory_tooltip": "Folder: {name}\n{count} fail\nSaiz keseluruhan: {size} MB",
     "folder_up_tooltip": "Klik dua kali untuk naik\nsatu tahap dalam hierarki",
-    "status_bar": "{dirs} folder  |  {files} fail ({total_size})  |  {selected} dipilih ({selected_size})",
+    "status_bar": "{dirs} folder     {files} fail ({total_size})     {selected} dipilih ({selected_size})",
     "pdf_converting": "Menukar {total} halaman kepada imej pada {dpi} DPI...",
     "pdf_converting_no_change": "Mengekstrak {total} halaman tanpa pengubahsuaian...",
     "print_progress": "Menyediakan untuk mencetak...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Ralat dalaman dalam permintaan yang dihantar ke ComicVine (format respons tidak sah).",
     "error_api_filter": "Ralat dalaman dalam kriteria carian yang dihantar ke ComicVine.",
     "error_api_subscriber_only": "Kandungan ComicVine ini hanya untuk pelanggan.",
-    "error_api_rate_limit": "Had permintaan ComicVine dicapai. Tunggu beberapa minit sebelum mencuba lagi."
+    "error_api_rate_limit": "Had permintaan ComicVine dicapai. Tunggu beberapa minit sebelum mencuba lagi.",
+    "cover_first_issue_label": "Siri yang dipilih"
   },
   "bookmark": {
     "popup_title": "Penanda buku",

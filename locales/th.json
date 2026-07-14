@@ -694,7 +694,7 @@
     "language_label": "ภาษา:",
     "directory_tooltip": "โฟลเดอร์: {name}\n{count} ไฟล์\nขนาดรวม: {size} MB",
     "folder_up_tooltip": "ดับเบิลคลิกเพื่อขึ้นไป\nระดับที่สูงขึ้น",
-    "status_bar": "{dirs} โฟลเดอร์  |  {files} ไฟล์ ({total_size})  |  {selected} เลือกแล้ว ({selected_size})",
+    "status_bar": "{dirs} โฟลเดอร์     {files} ไฟล์ ({total_size})     {selected} เลือกแล้ว ({selected_size})",
     "pdf_converting": "กำลังแปลง {total} หน้าเป็นรูปภาพที่ {dpi} DPI...",
     "pdf_converting_no_change": "กำลังแยก {total} หน้าโดยไม่แก้ไข...",
     "print_progress": "กำลังเตรียมการพิมพ์...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "ข้อผิดพลาดภายในในคำขอที่ส่งไปยัง ComicVine (รูปแบบการตอบกลับไม่ถูกต้อง)",
     "error_api_filter": "ข้อผิดพลาดภายในในเกณฑ์การค้นหาที่ส่งไปยัง ComicVine",
     "error_api_subscriber_only": "เนื้อหา ComicVine นี้สำหรับสมาชิกเท่านั้น",
-    "error_api_rate_limit": "ถึงขีดจำกัดคำขอ ComicVine แล้ว โปรดรอสักครู่ก่อนลองอีกครั้ง"
+    "error_api_rate_limit": "ถึงขีดจำกัดคำขอ ComicVine แล้ว โปรดรอสักครู่ก่อนลองอีกครั้ง",
+    "cover_first_issue_label": "ซีรีส์ที่เลือก"
   },
   "bookmark": {
     "popup_title": "ที่คั่นหนังสือ",

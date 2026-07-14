@@ -694,7 +694,7 @@
     "language_label": "Мова:",
     "directory_tooltip": "Папка: {name}\nФайлів: {count}\nЗагальний розмір: {size} МБ",
     "folder_up_tooltip": "Подвійний клік для переходу\nна рівень вище в ієрархії",
-    "status_bar": "{dirs} тека(и)  |  {files} файл(ів) ({total_size})  |  {selected} вибрано ({selected_size})",
+    "status_bar": "{dirs} тека(и)     {files} файл(ів) ({total_size})     {selected} вибрано ({selected_size})",
     "pdf_converting": "Конвертація {total} сторінок у зображення з {dpi} DPI...",
     "pdf_converting_no_change": "Витягування {total} сторінок без змін...",
     "print_progress": "Підготовка до друку...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Внутрішня помилка в запиті, надісланому до ComicVine (недійсний формат відповіді).",
     "error_api_filter": "Внутрішня помилка в критеріях пошуку, надісланих до ComicVine.",
     "error_api_subscriber_only": "Цей вміст ComicVine доступний лише для передплатників.",
-    "error_api_rate_limit": "Досягнуто ліміту запитів ComicVine. Зачекайте кілька хвилин, перш ніж спробувати знову."
+    "error_api_rate_limit": "Досягнуто ліміту запитів ComicVine. Зачекайте кілька хвилин, перш ніж спробувати знову.",
+    "cover_first_issue_label": "Обрана серія"
   },
   "bookmark": {
     "popup_title": "Закладка",

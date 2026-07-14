@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.5.7"
+__version__ = "1.5.8"
 
 import sys
 import os
@@ -465,12 +465,36 @@ class MainWindow(QMainWindow):
             if total > 0:
                 s1 = int(total * ratio)
                 self._panels_splitter.setSizes([s1, total - s1])
+            p2 = self._panel2
+            p2._update_splitter_constraints(p2._icon_toolbar._size_index)
             if saved_w2:
-                p2 = self._panel2
-                p2._update_splitter_constraints(p2._icon_toolbar._size_index)
-                total2 = p2._splitter.width()
-                p2._splitter.setSizes([saved_w2, max(0, total2 - saved_w2)])
-                p2._icon_toolbar.adapt_cols_to_width(saved_w2)
+                if p2._sidebar_visible:
+                    total2 = p2._splitter.width()
+                    p2._splitter.setSizes([saved_w2, max(0, total2 - saved_w2)])
+                else:
+                    # Colonne rabattue : ne pas toucher au splitter (widget
+                    # caché), mais semer la largeur mémorisée pour que la
+                    # prochaine réouverture la restaure.
+                    p2._saved_sidebar_width = saved_w2
+            # Ne pas adapter la grille d'icônes si la colonne est cachée : la
+            # largeur lue serait périmée et la grille serait peuplée avec un
+            # mauvais nombre de colonnes, dont le minimum (icônes à taille
+            # fixe) fausserait ensuite la largeur de réouverture de la colonne.
+            if p2._sidebar_visible:
+                p2._icon_toolbar.adapt_cols_to_width(p2._left_panel.width())
+            if abs(ratio - 0.5) < 1e-6:
+                # setSizes() seul reste bloqué sur l'ancien ratio quand la
+                # cible est exactement 50/50 ; un vrai double-clic sur le
+                # séparateur (mécanisme fiable, cf. _EqualSplitterHandle),
+                # lui, fonctionne toujours.
+                handle = self._panels_splitter.handle(1)
+                from PySide6.QtGui import QMouseEvent
+                from PySide6.QtCore import QPointF
+                local_pos = QPointF(handle.rect().center())
+                global_pos = QPointF(handle.mapToGlobal(handle.rect().center()))
+                ev = QMouseEvent(QMouseEvent.Type.MouseButtonDblClick, local_pos, global_pos,
+                                  Qt.MouseButton.LeftButton, Qt.MouseButton.LeftButton, Qt.KeyboardModifier.NoModifier)
+                QApplication.instance().sendEvent(handle, ev)
         QTimer.singleShot(50, _apply_ratio)
 
         # Sauvegarde le ratio à chaque déplacement du séparateur
@@ -756,10 +780,6 @@ class MainWindow(QMainWindow):
         from modules.qt.file_close_qt import on_window_close
         from modules.qt.session_restore_qt import save_session
         from modules.qt.temp_files import cleanup_all_temp_files
-
-        # Sauvegarde le ratio du splitter inter-panneaux si split actif
-        if self._split_active:
-            self._save_split_ratio()
 
         from modules.qt import state as _state_module
 

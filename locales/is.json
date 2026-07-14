@@ -694,7 +694,7 @@
     "language_label": "Tungumál:",
     "directory_tooltip": "Mappa: {name}\n{count} skrá(r)\nHeildarstærð: {size} MB",
     "folder_up_tooltip": "Tvísmelltu til að fara upp\num eitt stig í möppustrúktúr",
-    "status_bar": "{dirs} mappa/möppur  |  {files} skrá(r) ({total_size})  |  {selected} valið ({selected_size})",
+    "status_bar": "{dirs} mappa/möppur     {files} skrá(r) ({total_size})     {selected} valið ({selected_size})",
     "pdf_converting": "Umbreyti {total} síðum í myndir við {dpi} DPI...",
     "pdf_converting_no_change": "Útdráttur {total} síðna án breytinga...",
     "print_progress": "Undirbý fyrir prentun...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Innri villa í fyrirspurninni sem send var til ComicVine (ógilt svarssnið).",
     "error_api_filter": "Innri villa í leitarskilyrðum sem send voru til ComicVine.",
     "error_api_subscriber_only": "Þetta ComicVine efni er eingöngu fyrir áskrifendur.",
-    "error_api_rate_limit": "Hámarki ComicVine fyrirspurna náð. Bíddu í nokkrar mínútur áður en þú reynir aftur."
+    "error_api_rate_limit": "Hámarki ComicVine fyrirspurna náð. Bíddu í nokkrar mínútur áður en þú reynir aftur.",
+    "cover_first_issue_label": "Valin sería"
   },
   "bookmark": {
     "popup_title": "Bókamerki",

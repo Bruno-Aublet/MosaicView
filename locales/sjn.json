@@ -694,7 +694,7 @@
     "language_label": "Lamm:",
     "directory_tooltip": "Gorvâr: {name}\n{count} bâr\nMeir pen: {size} Mo",
     "folder_up_tooltip": "Edeb-ganad na remiad\ner andeb mi thirgalas",
-    "status_bar": "{dirs} thafn  |  {files} parf ({total_size})  |  {selected} edhellen ({selected_size})",
+    "status_bar": "{dirs} thafn     {files} parf ({total_size})     {selected} edhellen ({selected_size})",
     "pdf_converting": "{total} echuir angol {dpi} DPI band...",
     "pdf_converting_no_change": "{total} echuir estol boda ú...",
     "print_progress": "Estare tequo...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Ú-mad i mbedhil annen na ComicVine (ú-mhaer i dhangad).",
     "error_api_filter": "Ú-mad i cened-echil annen na ComicVine.",
     "error_api_subscriber_only": "I nedh ComicVine hen ú-hâd nallon estelien.",
-    "error_api_rate_limit": "I lend ComicVine dagannen. Dartho i vinuid nu ad-genediad."
+    "error_api_rate_limit": "I lend ComicVine dagannen. Dartho i vinuid nu ad-genediad.",
+    "cover_first_issue_label": "Lú i dhelegol"
   },
   "bookmark": {
     "popup_title": "Bethleg",

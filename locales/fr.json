@@ -680,7 +680,7 @@
   "labels": {
     "copyright": "© 2025-2026 Bruno Aublet\nGNU GPL v3",
     "thumb_size": "Taille vignettes",
-    "status_bar": "{dirs} répertoire(s)  |  {files} fichier(s) ({total_size})  |  {selected} sélectionné(s) ({selected_size})",
+    "status_bar": "{dirs} répertoire(s)     {files} fichier(s) ({total_size})     {selected} sélectionné(s) ({selected_size})",
     "empty_canvas_line1": "Déposez ici un ou plusieurs fichiers CBZ/CBR/CB7/CBT/PDF ou vos images",
     "empty_canvas_line2": "Une fois un fichier ouvert, vous pouvez continuer à en déposer d'autres",
     "loading": "Patientez, chargement en cours...\n{percent}%",
@@ -1746,6 +1746,7 @@
     "col_issue_title": "Titre",
     "cover_file_label": "Couverture du fichier",
     "cover_comicvine_label": "Couverture ComicVine",
+    "cover_first_issue_label": "Série sélectionnée",
     "btn_skip": "Ignorer",
     "btn_back": "Retour",
     "info_single": "Cette fonction récupère les métadonnées de la BD actuellement ouverte. Pour traiter plusieurs fichiers d’affilée, utilisez le traitement par lot (déposez un dossier sur la fenêtre).",

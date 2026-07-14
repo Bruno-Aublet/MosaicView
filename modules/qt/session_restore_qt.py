@@ -28,6 +28,17 @@ def restore_session(win):
         apply_theme(app, win._canvas, win._left_panel, win._tab_bar, render=False)
         win._active_panel._update_status_bar()
 
+        # Sidebar repliée et minimap affichée — appliqué AVANT show() : sinon
+        # le premier calcul de layout au show() se base sur la colonne
+        # d'icônes encore ouverte par défaut, imposant un minimumSize plus
+        # large que la géométrie sauvegardée et forçant la fenêtre à
+        # s'agrandir au-delà de la taille demandée juste en dessous.
+        if cfg.get_sidebar_collapsed():
+            # _sidebar_visible démarre à True → _toggle_sidebar le passe à False
+            win._toggle_sidebar()
+        if cfg.get_minimap_visible():
+            win._panel._toggle_minimap()
+
         # Affichage : maximized, normal ou plein écran
         from PySide6.QtCore import Qt
         if cfg.get_maximized() and not win.isFullScreen():
@@ -40,23 +51,26 @@ def restore_session(win):
             from modules.qt.toggle_theme_qt import _set_titlebar_dark
             QTimer.singleShot(200, lambda: _set_titlebar_dark(win, True, force_repaint=True))
 
-        # Sidebar repliée
-        if cfg.get_sidebar_collapsed():
-            # _sidebar_visible démarre à True → _toggle_sidebar le passe à False
-            win._toggle_sidebar()
-
-        # Minimap affichée (cachée par défaut → _minimap_visible démarre à False)
-        if cfg.get_minimap_visible():
-            win._panel._toggle_minimap()
-
         # Largeur de la colonne d'icônes
         saved_w = cfg.get_buttons_column_width()
         panel = win._panel
-        if saved_w and hasattr(panel, "_splitter"):
+        if hasattr(panel, "_splitter"):
             panel._update_splitter_constraints(panel._icon_toolbar._size_index)
-            total = panel._splitter.width()
-            panel._splitter.setSizes([saved_w, max(0, total - saved_w)])
-            panel._icon_toolbar.adapt_cols_to_width(saved_w)
+            if saved_w:
+                if panel._sidebar_visible:
+                    total = panel._splitter.width()
+                    panel._splitter.setSizes([saved_w, max(0, total - saved_w)])
+                else:
+                    # Colonne rabattue au démarrage : ne pas toucher au splitter
+                    # (widget caché), mais semer la largeur mémorisée pour que
+                    # la prochaine réouverture la restaure.
+                    panel._saved_sidebar_width = saved_w
+            # Ne pas adapter la grille d'icônes si la colonne est cachée : la
+            # largeur lue serait périmée et la grille serait peuplée avec un
+            # mauvais nombre de colonnes, dont le minimum (icônes à taille
+            # fixe) fausserait ensuite la largeur de réouverture de la colonne.
+            if panel._sidebar_visible:
+                panel._icon_toolbar.adapt_cols_to_width(panel._left_panel.width())
 
     QTimer.singleShot(50, _restore)
 
@@ -84,14 +98,23 @@ def save_session(win):
         cfg.set_window_size(geo.width(), geo.height())
         cfg.set_window_position(geo.x(), geo.y())
 
-    # Largeur de la colonne d'icônes — panneau 1
+    # Largeur de la colonne d'icônes — tous les panneaux. Si la colonne est
+    # rabattue au moment de la fermeture, sa largeur physique vaut 0 : on
+    # sauvegarde alors la largeur mémorisée au rabattement (_saved_sidebar_width),
+    # sinon la largeur choisie par l'utilisateur serait perdue d'une session à
+    # l'autre et la colonne rouvrirait à sa largeur par défaut.
     panel = win._panel
     if hasattr(panel, "_splitter"):
-        cfg.set_buttons_column_width(panel._splitter.sizes()[0])
-    # Largeur de la colonne d'icônes — panneau 2
+        w1 = panel._splitter.sizes()[0]
+        if not panel._sidebar_visible:
+            w1 = getattr(panel, "_saved_sidebar_width", 0) or 0
+        cfg.set_buttons_column_width(w1)
     panel2 = getattr(win, "_panel2", None)
     if panel2 is not None and hasattr(panel2, "_splitter"):
-        cfg.set_buttons_column_width_panel2(panel2._splitter.sizes()[0])
+        w2 = panel2._splitter.sizes()[0]
+        if not panel2._sidebar_visible:
+            w2 = getattr(panel2, "_saved_sidebar_width", 0) or 0
+        cfg.set_buttons_column_width_panel2(w2)
 
 
 def reset_to_defaults(win):
@@ -108,27 +131,33 @@ def reset_to_defaults(win):
         win.showNormal()
         cfg.set_fullscreen(False)
 
+    # Rabattre la colonne d'icônes et cacher la minimap si visibles — tous les
+    # panneaux. Fait AVANT le resize de la fenêtre plus bas : ces deux éléments
+    # imposent une largeur minimale à leur panel qui remonte jusqu'à la
+    # MainWindow et bride silencieusement le resize() à cette largeur minimale
+    # au lieu de default_width, ce qui fausserait ensuite le calcul du ratio 50/50.
+    for p in win._all_panels():
+        if p._sidebar_visible:
+            p._toggle_sidebar()
+        if p._minimap_visible:
+            p._toggle_minimap()
+
     # Taille et position par défaut
     default_width, default_height = 1240, 830
     screen = win.screen().availableGeometry()
     x = (screen.width() - default_width) // 2
     y = max(0, (screen.height() - default_height) // 2 - 40)
+    # Libère toute contrainte de largeur minimale héritée (colonnes d'icônes /
+    # minimap encore prises en compte dans le minimumSizeHint mis en cache par
+    # Qt malgré leur masquage juste au-dessus) — sinon resize() ci-dessous est
+    # silencieusement bridé à cette largeur minimale au lieu de default_width.
+    win.setMinimumSize(0, 0)
     win.resize(default_width, default_height)
     win.move(x, y)
 
     # Mode clair si mode sombre actif
     if win._state.dark_mode:
         win._toggle_theme()
-
-    # Rabattre la colonne d'icônes si elle est visible — tous les panneaux
-    for p in win._all_panels():
-        if p._sidebar_visible:
-            p._toggle_sidebar()
-
-    # Cacher la minimap si elle est visible — tous les panneaux
-    for p in win._all_panels():
-        if p._minimap_visible:
-            p._toggle_minimap()
 
     # Taille des icônes et vignettes — tous les panneaux
     panels = [win._panel]
@@ -154,13 +183,9 @@ def reset_to_defaults(win):
         win._on_language_change(system_lang)
         cfg.set_language(None, save=False)
 
-    # Ratio split inter-panneaux : remettre à 50/50
-    if getattr(win, '_split_active', False):
-        total = win._panels_splitter.width()
-        win._panels_splitter.setSizes([total // 2, total - total // 2])
-        cfg.set_split_ratio(0.5)
-
-    # Largeur colonne d'icônes : remettre à la valeur par défaut — tous les panneaux
+    # Largeur colonne d'icônes : remettre à la valeur par défaut — tous les
+    # panneaux. La colonne reste repliée (rabattue plus haut) ; sa largeur par
+    # défaut ne sera visible qu'à la prochaine réouverture.
     from modules.qt.icon_toolbar_qt import ICON_SIZE_LEVELS, ICON_PAD
     icon_sz, cols = ICON_SIZE_LEVELS[0]  # taille maximale des icônes = index 0
     default_col_w = max(cols * (icon_sz + ICON_PAD) + 2 * ICON_PAD + 4, 210)
@@ -179,6 +204,29 @@ def reset_to_defaults(win):
         p._renumber_config().set_renumber_mode(1)
         p._zip_compression_config().set_zip_compression_level(0)
         p._update_status_bar()
+
+    # Ratio split inter-panneaux : remettre à 50/50.
+    # QSplitter.setSizes() seul se révèle ignoré à ce stade du reset (le
+    # splitter garde ses proportions précédentes) ; un vrai double-clic
+    # utilisateur sur le séparateur, lui, fonctionne toujours. On simule donc
+    # cet événement souris sur le handle du splitter, en différé pour laisser
+    # le reste du reset (icônes, sidebar) terminer son propre layout d'abord.
+    # cfg.set_split_ratio(0.5) est écrit APRÈS ce double-clic simulé, pas avant :
+    # celui-ci déplace le splitter et émet splitterMoved → _save_split_ratio,
+    # qui réécrirait sinon la config avec une valeur recalculée depuis les
+    # tailles réelles (potentiellement 0.5 ± un arrondi entier) juste après.
+    if getattr(win, '_split_active', False):
+        def _center_split():
+            splitter = win._panels_splitter
+            handle = splitter.handle(1)
+            from PySide6.QtGui import QMouseEvent
+            from PySide6.QtCore import QPointF, Qt as _Qt
+            from PySide6.QtWidgets import QApplication as _QApp
+            ev = QMouseEvent(QMouseEvent.Type.MouseButtonDblClick, QPointF(handle.rect().center()),
+                              _Qt.MouseButton.LeftButton, _Qt.MouseButton.LeftButton, _Qt.KeyboardModifier.NoModifier)
+            _QApp.sendEvent(handle, ev)
+            cfg.set_split_ratio(0.5)
+        QTimer.singleShot(50, _center_split)
 
     # Sauvegarder
     cfg.set_window_size(default_width, default_height, save=False)

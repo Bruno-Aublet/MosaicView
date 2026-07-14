@@ -381,6 +381,12 @@ class PanelWidget(QWidget):
         self._splitter.setSizes([initial_w, self._splitter.width() - initial_w])
 
     def _update_splitter_constraints(self, size_index: int):
+        # Si la colonne est masquée, ne pas lui imposer de largeur min/max :
+        # ces contraintes resteraient sur _left_panel (même invisible) et
+        # continueraient de peser sur le minimumSizeHint() de tout le panneau,
+        # empêchant la fenêtre/le splitter parent d'atteindre leur taille cible.
+        if not self._sidebar_visible:
+            return
         from modules.qt.icon_toolbar_qt import ICON_SIZE_LEVELS, ICON_PAD
         icon_sz, cols = ICON_SIZE_LEVELS[size_index]
         cell_w = icon_sz + ICON_PAD
@@ -403,14 +409,43 @@ class PanelWidget(QWidget):
     def _on_splitter_moved(self, _pos: int, _index: int):
         self._icon_toolbar.adapt_cols_to_width(self._left_panel.width())
 
+    def minimumSizeHint(self):
+        # Ce panneau (colonne d'icônes + zone centrale) vit dans le splitter
+        # inter-panneaux (_panels_splitter) aux côtés de l'autre panneau. Sans
+        # ceci, Qt calcule le minimum réel du contenu (ex. la colonne d'icônes
+        # qui vient de s'agrandir) et le remonte à _panels_splitter, qui doit
+        # alors "voler" de la place au panneau voisin en poussant le
+        # séparateur central — alors que ce changement de largeur de colonne
+        # doit rester interne à ce panneau (rognant sur son propre canvas).
+        # On plafonne donc la largeur minimale annoncée à la largeur physique
+        # actuelle du panneau, sauf tant qu'il n'en a pas encore une (avant le
+        # tout premier affichage).
+        hint = super().minimumSizeHint()
+        cur_w = self.width()
+        if cur_w > 0 and hint.width() > cur_w:
+            from PySide6.QtCore import QSize
+            return QSize(cur_w, hint.height())
+        return hint
+
     def _build_center_panel(self) -> QWidget:
-        from PySide6.QtWidgets import QMenuBar
+        from PySide6.QtWidgets import QMenuBar, QSizePolicy
         panel  = QWidget()
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         self._menubar = QMenuBar(panel)
+        # La politique horizontale par défaut de QMenuBar (MinimumExpanding)
+        # n'a pas le flag Shrink : le layout utilise alors son sizeHint()
+        # (largeur de TOUS les menus dépliés) comme minimum incompressible,
+        # au lieu de son minimumSizeHint() réel. Conséquence : le panneau ne
+        # peut jamais rétrécir en dessous de la menubar dépliée, la menubar ne
+        # reçoit jamais de resizeEvent plus étroit, et son mécanisme natif de
+        # repli en chevron (») ne se déclenche jamais pendant un glissement
+        # manuel du séparateur colonne/canvas. Preferred (Grow+Shrink) rend le
+        # rétrécissement possible et laisse le repli natif faire son travail.
+        self._menubar.setSizePolicy(QSizePolicy.Preferred,
+                                    self._menubar.sizePolicy().verticalPolicy())
         layout.addWidget(self._menubar)
 
         self._tab_bar = TabBar(tooltip_parent=panel)
@@ -2137,6 +2172,75 @@ class PanelWidget(QWidget):
     def _toggle_sidebar(self):
         self._sidebar_visible = not self._sidebar_visible
         self._left_panel.setVisible(self._sidebar_visible)
+        # Un QSplitter ne retire pas de son calcul de minimumSizeHint un enfant
+        # caché (contrairement à un QVBoxLayout/QHBoxLayout classique) : sans
+        # ceci, la largeur minimale imposée par _update_splitter_constraints
+        # continuerait de peser sur la fenêtre entière même colonne repliée.
+        if self._sidebar_visible:
+            # Restaure la largeur que CE panneau avait donnée à sa colonne
+            # avant de la rabattre (le rabattement l'efface via setSizes([0,…])
+            # plus bas) ; au premier affichage de la session, repli sur la
+            # largeur sauvegardée en config propre à ce panneau. Sans ça, la
+            # colonne réapparaît à sa largeur minimale (ou à une géométrie
+            # périmée héritée d'un autre état).
+            saved_w = getattr(self, "_saved_sidebar_width", 0)
+            if not saved_w:
+                cfg = get_config_manager()
+                if self._is_primary:
+                    saved_w = cfg.get_buttons_column_width() or 0
+                else:
+                    saved_w = cfg.get_buttons_column_width_panel2() or 0
+            if not saved_w:
+                # Premier affichage, aucune largeur mémorisée ni en config :
+                # même largeur par défaut qu'à la construction du panneau.
+                from modules.qt.icon_toolbar_qt import ICON_SIZE_LEVELS, ICON_PAD
+                icon_sz, cols = ICON_SIZE_LEVELS[self._icon_toolbar._size_index]
+                saved_w = max(cols * (icon_sz + ICON_PAD) + 2 * ICON_PAD + 4, 210)
+            # Poser les contraintes min/max explicites AVANT setSizes : au
+            # rabattement le minimum explicite de _left_panel a été remis à 0,
+            # et sans minimum explicite le splitter retombe sur le
+            # minimumSizeHint naturel du contenu (ex. 204px pour la rangée
+            # réglette+combo langue), qui clamperait le setSizes ci-dessous.
+            if hasattr(self, "_update_splitter_constraints"):
+                self._update_splitter_constraints(self._icon_toolbar._size_index)
+            if saved_w > 0 and hasattr(self, "_splitter"):
+                # Adapter la grille d'icônes à la largeur cible AVANT setSizes :
+                # les icônes ont une taille fixe, donc une grille peuplée avec
+                # trop de colonnes (calculées sur une largeur périmée pendant
+                # que la colonne était cachée) impose un minimumSizeHint que le
+                # splitter refuse de violer — setSizes serait alors clampé à ce
+                # minimum au lieu de la largeur demandée.
+                if hasattr(self, "_icon_toolbar"):
+                    self._icon_toolbar.adapt_cols_to_width(saved_w)
+                self._left_panel.updateGeometry()
+                total = self._splitter.width()
+                self._splitter.setSizes([saved_w, max(0, total - saved_w)])
+        else:
+            # Mémorise la largeur courante de la colonne avant de l'effacer,
+            # pour pouvoir la restaurer telle quelle à la réouverture.
+            if hasattr(self, "_splitter"):
+                sizes = self._splitter.sizes()
+                if sizes and sizes[0] > 0:
+                    self._saved_sidebar_width = sizes[0]
+            self._left_panel.setMinimumWidth(0)
+            self._left_panel.setMaximumWidth(16777215)
+            # Libérer les contraintes ci-dessus ne suffit pas : le splitter
+            # interne garde la géométrie physique déjà attribuée à la colonne
+            # (ex. 134px) tant qu'on ne lui redemande pas explicitement de
+            # redistribuer l'espace vers le canvas — sinon cette largeur figée
+            # continue de peser sur le minimumSizeHint() de tout le panneau,
+            # y compris une fois la colonne masquée.
+            if hasattr(self, "_splitter"):
+                total = self._splitter.width()
+                self._splitter.setSizes([0, total])
+            # Qt met en cache le minimumSizeHint() du QHBoxLayout racine du
+            # panneau et ne le recalcule pas automatiquement quand une
+            # contrainte d'un enfant change après coup — sans ceci, le
+            # panneau entier (et donc la fenêtre/le splitter inter-panneaux)
+            # continuerait de réserver l'ancienne largeur minimale.
+            self._left_panel.updateGeometry()
+            self._splitter.updateGeometry() if hasattr(self, "_splitter") else None
+            self.updateGeometry()
         update = getattr(self._menubar, "_update_sidebar_chevron", None)
         if update:
             update()

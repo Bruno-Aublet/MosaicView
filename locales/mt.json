@@ -694,7 +694,7 @@
     "language_label": "Lingwa:",
     "directory_tooltip": "Folder: {name}\n{count} fajl/fajls\nDaqs totali: {size} MB",
     "folder_up_tooltip": "Ikklikkja darbtejn biex telgħa\nlivell wieħed fl-alberu tad-direttorji",
-    "status_bar": "{dirs} folder(s)  |  {files} fajl(s) ({total_size})  |  {selected} magħżul(a) ({selected_size})",
+    "status_bar": "{dirs} folder(s)     {files} fajl(s) ({total_size})     {selected} magħżul(a) ({selected_size})",
     "pdf_converting": "Qed jikkonverti {total} paġni f'immaġini b'{dpi} DPI...",
     "pdf_converting_no_change": "Qed jestrai {total} paġni mingħajr modifika...",
     "print_progress": "Tħejjija għall-istampar...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Żball intern fit-talba mibgħuta lil ComicVine (format ta' tweġiba invalidu).",
     "error_api_filter": "Żball intern fil-kriterji tat-tfittxija mibgħuta lil ComicVine.",
     "error_api_subscriber_only": "Dan il-kontenut ComicVine huwa biss għall-abbonati.",
-    "error_api_rate_limit": "Il-limitu ta' talbiet ComicVine intlaħaq. Stenna ftit minuti qabel terġa' tipprova."
+    "error_api_rate_limit": "Il-limitu ta' talbiet ComicVine intlaħaq. Stenna ftit minuti qabel terġa' tipprova.",
+    "cover_first_issue_label": "Serje magħżula"
   },
   "bookmark": {
     "popup_title": "Bookmark",

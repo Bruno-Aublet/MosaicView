@@ -694,7 +694,7 @@
     "language_label": "Nyelv:",
     "directory_tooltip": "Mappa: {name}\n{count} fájl\nTeljes méret: {size} MB",
     "folder_up_tooltip": "Dupla kattintással felfelé léphet\na könyvtárszerkezetben",
-    "status_bar": "{dirs} mappa  |  {files} fájl ({total_size})  |  {selected} kiválasztva ({selected_size})",
+    "status_bar": "{dirs} mappa     {files} fájl ({total_size})     {selected} kiválasztva ({selected_size})",
     "pdf_converting": "{total} oldal konvertálása képekké {dpi} DPI-n...",
     "pdf_converting_no_change": "{total} oldal kinyerése módosítás nélkül...",
     "print_progress": "Nyomtatás előkészítése...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Belső hiba a ComicVine-nak küldött kérésben (érvénytelen válaszformátum).",
     "error_api_filter": "Belső hiba a ComicVine-nak küldött keresési feltételekben.",
     "error_api_subscriber_only": "Ez a ComicVine-tartalom csak előfizetők számára érhető el.",
-    "error_api_rate_limit": "Elérte a ComicVine kéréskorlátot. Várjon néhány percet, mielőtt újra próbálkozna."
+    "error_api_rate_limit": "Elérte a ComicVine kéréskorlátot. Várjon néhány percet, mielőtt újra próbálkozna.",
+    "cover_first_issue_label": "Kiválasztott sorozat"
   },
   "bookmark": {
     "popup_title": "Könyvjelző",

@@ -112,6 +112,9 @@ ICON_SIZE_LEVELS = [
     (64, 4),
     (48, 5),
 ]
+# Facteurs d'échelle du footer (réglette vignettes + combo langue), alignés sur
+# ICON_SIZE_LEVELS. Adoucis (pas strictement proportionnels) pour rester lisibles.
+FOOTER_SCALE_LEVELS = [1.0, 0.8, 0.65]
 ICON_PAD = 6
 
 _ACTIVATION_RULES = {
@@ -648,6 +651,7 @@ class ThumbSizeSlider(QWidget):
         self._on_change = on_change
         self._visible = True  # réservé pour l'option future de masquage
         self._theme = theme
+        self._scale = 1.0  # facteur d'échelle suivant le palier d'icônes (1.0 = max)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(6, 4, 6, 4)
@@ -684,31 +688,34 @@ class ThumbSizeSlider(QWidget):
         handle_bg  = "#888888" if is_dark else "#e8e8e8"
         handle_hov = "#aaaaaa" if is_dark else "#d0d0d0"
         text_color = "#dddddd" if is_dark else "#000000"
+        slider_h    = round(20 * self._scale)
+        handle_w    = max(8, round(12 * self._scale))
+        page_margin = max(0, (slider_h - 4) // 2)
         self._label.setStyleSheet(f"color: {text_color};")
         self._slider.setStyleSheet(f"""
             QSlider::groove:horizontal {{
-                height: 20px;
+                height: {slider_h}px;
                 margin: 0px;
                 background: transparent;
                 border: none;
             }}
             QSlider::sub-page:horizontal {{
                 height: 4px;
-                margin: 8px 0px;
+                margin: {page_margin}px 0px;
                 background: {groove_bg};
                 border: 1px solid {groove_bd};
                 border-radius: 1px;
             }}
             QSlider::add-page:horizontal {{
                 height: 4px;
-                margin: 8px 0px;
+                margin: {page_margin}px 0px;
                 background: {groove_bg};
                 border: 1px solid {groove_bd};
                 border-radius: 1px;
             }}
             QSlider::handle:horizontal {{
-                width: 12px;
-                height: 20px;
+                width: {handle_w}px;
+                height: {slider_h}px;
                 margin: 0px;
                 background: {handle_bg};
                 border: 1px solid {groove_bd};
@@ -727,6 +734,22 @@ class ThumbSizeSlider(QWidget):
     def set_theme(self, theme: str):
         self._apply_theme(theme)
 
+    def _font_size(self) -> int:
+        """Taille de police du label selon l'échelle courante (7 → 6 → 5)."""
+        return max(5, round(7 * self._scale))
+
+    def set_scale(self, factor: float):
+        """Réduit la réglette en même temps que les icônes de la toolbar (1.0 = taille max)."""
+        if factor == self._scale:
+            return
+        self._scale = factor
+        from modules.qt.font_manager_qt import get_current_font
+        self._label.setFixedWidth(round(90 * factor))
+        self._label.setFont(get_current_font(self._font_size()))
+        self._slider.setFixedWidth(round(90 * factor))
+        self._slider.setFixedHeight(round(20 * factor))
+        self._apply_theme(self._theme)
+
     def _emit_change(self, value: int):
         if self._on_change:
             self._on_change(value)
@@ -742,7 +765,7 @@ class ThumbSizeSlider(QWidget):
     def update_language(self):
         from modules.qt.font_manager_qt import get_current_font
         self._label.setText(_("labels.thumb_size"))
-        self._label.setFont(get_current_font(7))
+        self._label.setFont(get_current_font(self._font_size()))
 
 
 class _ThumbSlider(QSlider):
@@ -816,6 +839,7 @@ class _LangCombo(QComboBox):
         super().__init__(parent)
         self._from_hook = False
         self._toolbar: "IconToolbarQt | None" = None
+        self._scale = 1.0  # facteur d'échelle suivant le palier d'icônes (1.0 = max)
         global _wheel_hook_singleton
         from modules.qt.wheel_hook import WheelHook
         if _wheel_hook_singleton is None:
@@ -917,6 +941,10 @@ class _LangCombo(QComboBox):
         if idx >= 0:
             font = self.itemData(idx, Qt.FontRole)
             if font:
+                from PySide6.QtGui import QFont as _QFont
+                font = _QFont(font)
+                if self._scale != 1.0 and font.pointSizeF() > 0:
+                    font.setPointSizeF(max(5.0, font.pointSizeF() * self._scale))
                 opt.font = font
                 painter.setFont(font)
         painter.drawComplexControl(QStyle.CC_ComboBox, opt)
@@ -940,6 +968,7 @@ class LanguageComboWidget(QWidget):
         self._theme        = theme
         self._updating     = False
         self._current_code = current_code
+        self._scale        = 1.0  # facteur d'échelle suivant le palier d'icônes (1.0 = max)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(6, 2, 6, 4)
@@ -947,6 +976,8 @@ class LanguageComboWidget(QWidget):
 
         self._combo = _LangCombo()
         self._combo.setMinimumWidth(90)
+        from PySide6.QtGui import QFont as _QFont
+        self._base_font = _QFont(self._combo.font())
         self._combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self._combo.setFocusPolicy(Qt.WheelFocus)
         from modules.qt.font_manager_qt import get_font_manager
@@ -1020,12 +1051,13 @@ class LanguageComboWidget(QWidget):
         bg   = "#3a3a3a" if is_dark else "#ffffff"
         text = "#dddddd" if is_dark else "#000000"
         border = "#555555" if is_dark else "#aaaaaa"
+        pad_h = max(2, round(4 * self._scale))
         self._combo.setStyleSheet(f"""
             QComboBox {{
                 background-color: {bg};
                 color: {text};
                 border: 1px solid {border};
-                padding: 1px 4px;
+                padding: 1px {pad_h}px;
             }}
             QComboBox:focus {{
                 border: 1px solid #888;
@@ -1041,6 +1073,27 @@ class LanguageComboWidget(QWidget):
     def set_theme(self, theme: str):
         self._apply_theme(theme)
         self._update_current_role(self._current_code)
+
+    def set_scale(self, factor: float):
+        """Réduit le combo en même temps que les icônes de la toolbar (1.0 = taille max).
+        La liste déroulante, elle, garde sa taille normale (lisibilité)."""
+        if factor == self._scale:
+            return
+        self._scale = factor
+        self._combo._scale = factor
+        self._combo.setMinimumWidth(round(90 * factor))
+        from PySide6.QtGui import QFont as _QFont
+        font = _QFont(self._base_font)
+        if factor != 1.0:
+            if self._base_font.pointSizeF() > 0:
+                font.setPointSizeF(max(5.0, self._base_font.pointSizeF() * factor))
+            elif self._base_font.pixelSize() > 0:
+                font.setPixelSize(max(7, round(self._base_font.pixelSize() * factor)))
+        self._combo.setFont(font)
+        self._combo.view().setFont(self._base_font)
+        self._apply_theme(self._theme)
+        self._combo.updateGeometry()
+        self._combo.update()
 
 
 # ── Fenêtre de configuration de la barre d'icônes ────────────────────────────
@@ -1518,6 +1571,7 @@ class IconToolbarQt(QWidget):
         self._thumb_size_slider.setVisible(self._show_thumb_slider)
         self._lang_combo.setVisible(self._show_lang_combo)
         slider_lang_row.setVisible(self._show_thumb_slider or self._show_lang_combo)
+        self._apply_footer_scale()
 
         main_layout.addWidget(slider_lang_row)
 
@@ -1807,6 +1861,12 @@ class IconToolbarQt(QWidget):
         focus_was_in_toolbar = False
         focused_btn_minus = fw is self._btn_minus
         focused_btn_plus  = fw is self._btn_plus
+        # Widget focusé capturé par icon_id (pas par référence directe) : si une
+        # autre reconstruction de la grille survient avant l'exécution du
+        # QTimer.singleShot différé plus bas, l'IconLabel d'origine peut déjà être
+        # détruit côté C++ (deleteLater) — icon_id reste valide, on re-résout le
+        # widget courant au moment du tir.
+        focused_icon_id = fw.icon_id if isinstance(fw, IconLabel) else None
         w = fw
         while w is not None:
             if w is self:
@@ -1815,20 +1875,37 @@ class IconToolbarQt(QWidget):
             w = w.parent()
         self._populate_grid()
         self._update_size_buttons()
+        self._apply_footer_scale()
         if focus_was_in_toolbar:
             if focused_btn_minus and not self._btn_minus.isEnabled():
                 QTimer.singleShot(0, self._btn_cfg.setFocus)
             elif focused_btn_plus and not self._btn_plus.isEnabled():
                 QTimer.singleShot(0, self._btn_cfg.setFocus)
+            elif focused_icon_id is not None:
+                QTimer.singleShot(0, lambda: self._focus_icon_by_id(focused_icon_id))
             else:
                 QTimer.singleShot(0, fw.setFocus)
         cb = self._callbacks.get("on_icon_size_changed")
         if cb:
             cb(self._size_index)
 
+    def _focus_icon_by_id(self, icon_id: str):
+        """Redonne le focus à l'icône icon_id si elle existe encore dans la grille actuelle."""
+        lbl = self._icon_widgets.get(icon_id)
+        if lbl is not None:
+            lbl.setFocus()
+
     def _update_size_buttons(self):
         self._btn_minus.setEnabled(self._size_index < len(ICON_SIZE_LEVELS) - 1)
         self._btn_plus.setEnabled(self._size_index > 0)
+
+    def _apply_footer_scale(self):
+        """Aligne la taille de la réglette vignettes et du combo langue sur le palier d'icônes."""
+        factor = FOOTER_SCALE_LEVELS[min(self._size_index, len(FOOTER_SCALE_LEVELS) - 1)]
+        if hasattr(self, "_thumb_size_slider"):
+            self._thumb_size_slider.set_scale(factor)
+        if hasattr(self, "_lang_combo"):
+            self._lang_combo.set_scale(factor)
 
     def adapt_cols_to_width(self, available_width: int):
         """Recalcule _cols selon la largeur disponible et re-peuple si nécessaire.

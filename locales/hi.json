@@ -694,7 +694,7 @@
     "language_label": "भाषा:",
     "directory_tooltip": "फ़ोल्डर: {name}\n{count} फ़ाइल(ें)\nकुल आकार: {size} MB",
     "folder_up_tooltip": "ऊपरी स्तर पर जाने के लिए\nडबल-क्लिक करें",
-    "status_bar": "{dirs} फ़ोल्डर  |  {files} फ़ाइल(ें) ({total_size})  |  {selected} चयनित ({selected_size})",
+    "status_bar": "{dirs} फ़ोल्डर     {files} फ़ाइल(ें) ({total_size})     {selected} चयनित ({selected_size})",
     "pdf_converting": "{total} पृष्ठों को {dpi} DPI पर छवियों में परिवर्तित किया जा रहा है...",
     "pdf_converting_no_change": "{total} पृष्ठों को बिना संशोधन के निकाला जा रहा है...",
     "print_progress": "प्रिंटिंग की तैयारी हो रही है...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "ComicVine को भेजे गए अनुरोध में आंतरिक त्रुटि (अमान्य प्रतिक्रिया प्रारूप)।",
     "error_api_filter": "ComicVine को भेजे गए खोज मापदंडों में आंतरिक त्रुटि।",
     "error_api_subscriber_only": "यह ComicVine सामग्री केवल सदस्यों के लिए है।",
-    "error_api_rate_limit": "ComicVine अनुरोध सीमा तक पहुँच गई। पुनः प्रयास करने से पहले कुछ मिनट प्रतीक्षा करें।"
+    "error_api_rate_limit": "ComicVine अनुरोध सीमा तक पहुँच गई। पुनः प्रयास करने से पहले कुछ मिनट प्रतीक्षा करें।",
+    "cover_first_issue_label": "चयनित श्रृंखला"
   },
   "bookmark": {
     "popup_title": "बुकमार्क",

@@ -694,7 +694,7 @@
     "language_label": "Språk:",
     "directory_tooltip": "Mapp: {name}\n{count} fil(er)\nTotal storlek: {size} MB",
     "folder_up_tooltip": "Dubbelklicka för att gå upp\nen nivå i mappstrukturen",
-    "status_bar": "{dirs} mapp(ar)  |  {files} fil(er) ({total_size})  |  {selected} vald(a) ({selected_size})",
+    "status_bar": "{dirs} mapp(ar)     {files} fil(er) ({total_size})     {selected} vald(a) ({selected_size})",
     "pdf_converting": "Konverterar {total} sidor till bilder vid {dpi} DPI...",
     "pdf_converting_no_change": "Extraherar {total} sidor utan ändring...",
     "print_progress": "Förbereder utskrift...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Internt fel i begäran som skickades till ComicVine (ogiltigt svarsformat).",
     "error_api_filter": "Internt fel i sökkriterierna som skickades till ComicVine.",
     "error_api_subscriber_only": "Detta ComicVine-innehåll är endast för prenumeranter.",
-    "error_api_rate_limit": "Gränsen för ComicVine-förfrågningar har nåtts. Vänta några minuter innan du försöker igen."
+    "error_api_rate_limit": "Gränsen för ComicVine-förfrågningar har nåtts. Vänta några minuter innan du försöker igen.",
+    "cover_first_issue_label": "Vald serie"
   },
   "bookmark": {
     "popup_title": "Bokmärke",

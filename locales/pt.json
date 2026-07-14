@@ -694,7 +694,7 @@
     "language_label": "Idioma:",
     "directory_tooltip": "Pasta: {name}\n{count} ficheiro(s)\nTamanho total: {size} MB",
     "folder_up_tooltip": "Duplo clique para subir\num nível na árvore de pastas",
-    "status_bar": "{dirs} pasta(s)  |  {files} ficheiro(s) ({total_size})  |  {selected} selecionado(s) ({selected_size})",
+    "status_bar": "{dirs} pasta(s)     {files} ficheiro(s) ({total_size})     {selected} selecionado(s) ({selected_size})",
     "pdf_converting": "Convertendo {total} páginas em imagens a {dpi} DPI...",
     "pdf_converting_no_change": "Extraindo {total} páginas sem modificação...",
     "print_progress": "Preparando impressão...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Erro interno na solicitação enviada ao ComicVine (formato de resposta inválido).",
     "error_api_filter": "Erro interno nos critérios de pesquisa enviados ao ComicVine.",
     "error_api_subscriber_only": "Este conteúdo do ComicVine é exclusivo para assinantes.",
-    "error_api_rate_limit": "Limite de solicitações do ComicVine atingido. Aguarde alguns minutos antes de tentar novamente."
+    "error_api_rate_limit": "Limite de solicitações do ComicVine atingido. Aguarde alguns minutos antes de tentar novamente.",
+    "cover_first_issue_label": "Série selecionada"
   },
   "bookmark": {
     "popup_title": "Marcador",

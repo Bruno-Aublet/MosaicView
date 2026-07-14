@@ -694,7 +694,7 @@
     "language_label": "Taal:",
     "directory_tooltip": "Map: {name}\n{count} bestand(en)\nTotale grootte: {size} MB",
     "folder_up_tooltip": "Dubbelklik om een niveau\nomhoog te gaan in de mappenstructuur",
-    "status_bar": "{dirs} map(pen)  |  {files} bestand(en) ({total_size})  |  {selected} geselecteerd ({selected_size})",
+    "status_bar": "{dirs} map(pen)     {files} bestand(en) ({total_size})     {selected} geselecteerd ({selected_size})",
     "pdf_converting": "{total} pagina's converteren naar afbeeldingen op {dpi} DPI...",
     "pdf_converting_no_change": "{total} pagina's extraheren zonder wijziging...",
     "print_progress": "Voorbereiden voor afdrukken...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Interne fout in het verzoek naar ComicVine (ongeldig antwoordformaat).",
     "error_api_filter": "Interne fout in de zoekcriteria die naar ComicVine zijn verzonden.",
     "error_api_subscriber_only": "Deze ComicVine-inhoud is alleen voor abonnees.",
-    "error_api_rate_limit": "Limiet van ComicVine-aanvragen bereikt. Wacht enkele minuten voordat u het opnieuw probeert."
+    "error_api_rate_limit": "Limiet van ComicVine-aanvragen bereikt. Wacht enkele minuten voordat u het opnieuw probeert.",
+    "cover_first_issue_label": "Geselecteerde reeks"
   },
   "bookmark": {
     "popup_title": "Bladwijzer",

@@ -694,7 +694,7 @@
     "language_label": "Jezik:",
     "directory_tooltip": "Mapa: {name}\n{count} datoteka\nUkupna veličina: {size} MB",
     "folder_up_tooltip": "Dvaput kliknite za povratak\nna prethodnu razinu",
-    "status_bar": "{dirs} mapa(e)  |  {files} datoteka(e) ({total_size})  |  {selected} odabrano ({selected_size})",
+    "status_bar": "{dirs} mapa(e)     {files} datoteka(e) ({total_size})     {selected} odabrano ({selected_size})",
     "pdf_converting": "Pretvaranje {total} stranica u slike pri {dpi} DPI...",
     "pdf_converting_no_change": "Izvlačenje {total} stranica bez izmjene...",
     "print_progress": "Priprema za ispis...\n{percent}%",
@@ -1594,7 +1594,8 @@
     "error_api_jsonp": "Interna pogreška u zahtjevu poslanom na ComicVine (nevažeći format odgovora).",
     "error_api_filter": "Interna pogreška u kriterijima pretraživanja poslanim na ComicVine.",
     "error_api_subscriber_only": "Ovaj ComicVine sadržaj namijenjen je samo pretplatnicima.",
-    "error_api_rate_limit": "Dosegnut je limit zahtjeva ComicVinea. Pričekajte nekoliko minuta prije ponovnog pokušaja."
+    "error_api_rate_limit": "Dosegnut je limit zahtjeva ComicVinea. Pričekajte nekoliko minuta prije ponovnog pokušaja.",
+    "cover_first_issue_label": "Odabrana serija"
   },
   "bookmark": {
     "popup_title": "Oznaka",

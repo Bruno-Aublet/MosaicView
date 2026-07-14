@@ -25,9 +25,19 @@ html.light .hero { background: #fafaf8; }
 .cell { aspect-ratio: 3/4; border-radius: 2px; background: #232323; overflow: hidden; opacity: 0; transition: opacity 0.35s; }
 html.light .cell { background: #e8e7e0; }
 .cell.visible { opacity: 1; }
-.cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.flying { position: fixed; border-radius: 2px; overflow: hidden; z-index: 999; pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5); border: 2px solid #E8872A; }
+.cell img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 0.25s; }
+.cell.ghost img { filter: grayscale(1) opacity(0.45); }
+.flying { position: absolute; border-radius: 2px; overflow: hidden; z-index: 999; pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5); border: 2px solid #E8872A; }
 .flying img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Couche de glissement : les clones de la cascade restent clippés aux limites de la grille */
+.slide-clip { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 5; }
+.slide { position: absolute; border-radius: 2px; overflow: hidden; pointer-events: none; }
+.slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Marqueur d'insertion : ligne verticale rouge + triangles, comme dans la mosaïque de l'appli */
+.drop-marker { position: absolute; width: 3px; background: #dc1e1e; z-index: 1000; pointer-events: none; opacity: 0; transition: opacity 0.15s; }
+.drop-marker::before, .drop-marker::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; }
+.drop-marker::before { top: -7px; border-top: 7px solid #dc1e1e; }
+.drop-marker::after { bottom: -7px; border-bottom: 7px solid #dc1e1e; }
 
 .badge { display: inline-block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 4px 12px; border-radius: 2px; margin-bottom: 20px; }
 h1 { font-family: Georgia, serif; font-size: clamp(42px, 8vw, 72px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 20px; color: var(--text); }
@@ -256,7 +266,7 @@ html[lang="tlh-piqad"] #toggle-btn {
   <div class="mosaic-wrap">
     <div class="mosaic-grid" id="mosaic"></div>
   </div>
-  <div class="badge" id="version-badge">v1.5.7 &middot; Windows</div>
+  <div class="badge" id="version-badge">v1.5.8 &middot; Windows</div>
   <h1>Mosaic<span>View</span></h1>
   <p class="hero-sub" data-i18n="hero_sub">Un éditeur de BD numériques.</p>
   <div class="cta-group">
@@ -4877,7 +4887,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "tlh-piqad": {
-    "badge": "v1.5.7 · Windows",
+    "badge": "v1.5.8 · Windows",
     "hero_sub": " kk  . CBZ, CBR, CB7  PF  , ,   –  .",
     "btn_download": " –  ",
     "btn_source": "  →",
@@ -4982,7 +4992,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "qya-tengwar": {
-    "badge": "v1.5.7 · Windows",
+    "badge": "v1.5.8 · Windows",
     "hero_sub": "  : ⸱ ⸱     CBZ⸱ CBR⸱ CB7  PDF     :",
     "btn_download": "    ",
     "btn_source": "  →",
@@ -5087,7 +5097,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "sjn-tengwar": {
-    "badge": "v1.5.7 · Windows",
+    "badge": "v1.5.8 · Windows",
     "hero_sub": "  : ⸱ ⸱      CBZ⸱ CBR⸱ CB7  PDF     :",
     "btn_download": "     ",
     "btn_source": "  →",
@@ -5286,7 +5296,7 @@ const GRID_SIZE = 24;
 function pad(n) { return String(n).padStart(2, '0'); }
 
 // Version is embedded at build time
-document.getElementById('version-badge').textContent = 'v1.5.7 · Windows';
+document.getElementById('version-badge').textContent = 'v1.5.8 · Windows';
 
 // ── dual panel thumbnails ──────────────────────────────────────
 const panelLeft = document.getElementById('panel-left');
@@ -5312,7 +5322,13 @@ for (let i = 0; i < GRID_SIZE; i++) {
 }
 
 const order = [];
-function getCellRect(idx) { return cellEls[idx].getBoundingClientRect(); }
+const wrapEl = mosaic.parentElement; // .mosaic-wrap — les clones y sont ancrés en absolute pour suivre le scroll
+// Position d'une cellule relative à .mosaic-wrap
+function getCellPos(idx) {
+  const r = cellEls[idx].getBoundingClientRect();
+  const w = wrapEl.getBoundingClientRect();
+  return { left: r.left - w.left, top: r.top - w.top, right: r.right - w.left, width: r.width, height: r.height };
+}
 
 function fillPhase() {
   let i = 0;
@@ -5332,12 +5348,31 @@ function startMoveLoop() { if (!animating) doOneMove(); }
 
 function doOneMove() {
   animating = true;
+  const FLY = 500, HOLD = 500, SLIDE = 300;
   const src = Math.floor(Math.random() * GRID_SIZE);
-  let dst;
-  do { dst = Math.floor(Math.random() * GRID_SIZE); } while (dst === src);
-  const srcRect = getCellRect(src);
-  const dstRect = getCellRect(dst);
+  // ins = index d'insertion (0…GRID_SIZE) ; src et src+1 seraient des no-ops
+  let ins;
+  do { ins = Math.floor(Math.random() * (GRID_SIZE + 1)); } while (ins === src || ins === src + 1);
+  const finalIdx = ins > src ? ins - 1 : ins;
+  const srcRect = getCellPos(src);
   const srcPageNum = order[src];
+
+  // Position du marqueur d'insertion : bord gauche de la cellule ins (ou bord droit de la dernière)
+  const HALF_GAP = 1.5;
+  let markerX, rowTop, cellH;
+  if (ins < GRID_SIZE) {
+    const r = getCellPos(ins);
+    markerX = r.left - HALF_GAP; rowTop = r.top; cellH = r.height;
+  } else {
+    const r = getCellPos(GRID_SIZE - 1);
+    markerX = r.right + HALF_GAP; rowTop = r.top; cellH = r.height;
+  }
+  const marker = document.createElement('div');
+  marker.className = 'drop-marker';
+  marker.style.left = (markerX - 1.5) + 'px';
+  marker.style.top = (rowTop + 7) + 'px';
+  marker.style.height = (cellH - 14) + 'px';
+  wrapEl.appendChild(marker);
 
   // Clone volant
   const flying = document.createElement('div');
@@ -5351,53 +5386,115 @@ function doOneMove() {
   flyImg.src = BASE + pad(srcPageNum) + '.jpg';
   flyImg.alt = '';
   flying.appendChild(flyImg);
-  document.body.appendChild(flying);
+  wrapEl.appendChild(flying);
 
-  // Masquer la cellule source (le clone la remplace visuellement)
-  cellEls[src].style.opacity = '0';
+  // La page source reste visible en grisé à son emplacement d'origine
+  cellEls[src].classList.add('ghost');
 
-  // Mettre à jour order
-  order.splice(src, 1);
-  const insertAt = dst > src ? dst - 1 : dst;
-  order.splice(insertAt, 0, srcPageNum);
-
-  // Précharger toutes les nouvelles images en cache avant de swapper les src
-  // Quand elles sont toutes prêtes, on fait le swap instantané (sans flash)
-  const DURATION = 500;
-  const indicesToUpdate = [];
-  for (let i = 0; i < GRID_SIZE; i++) {
-    if (i !== src) indicesToUpdate.push(i);
-  }
-  let loaded = 0;
-  const doSwap = () => {
-    indicesToUpdate.forEach(i => {
-      cellEls[i].querySelector('img').src = BASE + pad(order[i]) + '.jpg';
-    });
-  };
-  // Précharger en parallèle; swapper dès que tout est prêt OU après 120ms max
-  let swapped = false;
-  const swapOnce = () => { if (!swapped) { swapped = true; doSwap(); } };
-  setTimeout(swapOnce, 120);
-  indicesToUpdate.forEach(i => {
-    const preload = new Image();
-    preload.onload = () => { loaded++; if (loaded === indicesToUpdate.length) swapOnce(); };
-    preload.src = BASE + pad(order[i]) + '.jpg';
-  });
-
-  // Animer le clone vers la destination
+  // Vol du clone vers le point d'insertion, marqueur visible pendant le vol
   requestAnimationFrame(() => { requestAnimationFrame(() => {
-    flying.style.transition = `left ${DURATION}ms cubic-bezier(0.4,0,0.2,1), top ${DURATION}ms cubic-bezier(0.4,0,0.2,1), opacity 0.15s`;
-    flying.style.left = dstRect.left + 'px';
-    flying.style.top = dstRect.top + 'px';
+    flying.style.transition = `left ${FLY}ms cubic-bezier(0.4,0,0.2,1), top ${FLY}ms cubic-bezier(0.4,0,0.2,1), opacity 0.15s`;
+    flying.style.left = (markerX - srcRect.width / 2) + 'px';
+    flying.style.top = rowTop + 'px';
+    marker.style.opacity = '1';
   }); });
 
-  // Fin : réafficher la cellule source, effacer le clone
-  setTimeout(() => {
-    cellEls[src].querySelector('img').src = BASE + pad(order[src]) + '.jpg';
-    cellEls[src].style.opacity = '1';
-    flying.style.opacity = '0';
-    setTimeout(() => { flying.remove(); animating = false; setTimeout(doOneMove, 900); }, 200);
-  }, DURATION + 100);
+  // Drop après le vol + délai de lecture du marqueur
+  setTimeout(dropPhase, FLY + HOLD);
+
+  function dropPhase() {
+    // Le marqueur et la version grisée disparaissent
+    marker.style.opacity = '0';
+    setTimeout(() => marker.remove(), 160);
+    cellEls[src].classList.remove('ghost');
+    cellEls[src].querySelector('img').style.opacity = '0';
+
+    // Pages entre src et ins : glissement en cascade d'une case vers le trou.
+    // Les clones vivent dans une couche clippée aux limites de la grille : une page
+    // qui change de rangée sort par le bord et rentre par le bord opposé (reflow),
+    // elle ne survole jamais la grille en diagonale.
+    const movers = [];
+    if (ins > src) {
+      for (let i = src + 1; i < ins; i++) movers.push({ from: i, to: i - 1 });
+    } else {
+      for (let i = src - 1; i >= ins; i--) movers.push({ from: i, to: i + 1 });
+    }
+    const stagger = Math.min(30, 240 / Math.max(movers.length, 1));
+    const COLS = 6, GAP = 3;
+    const clip = document.createElement('div');
+    clip.className = 'slide-clip';
+    wrapEl.appendChild(clip);
+
+    function makeSlide(pageNum, x, y, w, h) {
+      const c = document.createElement('div');
+      c.className = 'slide';
+      c.style.width = w + 'px';
+      c.style.height = h + 'px';
+      c.style.left = x + 'px';
+      c.style.top = y + 'px';
+      const im = document.createElement('img');
+      im.src = BASE + pad(pageNum) + '.jpg';
+      im.alt = '';
+      c.appendChild(im);
+      clip.appendChild(c);
+      return c;
+    }
+    function slideTo(c, x, y, delay) {
+      setTimeout(() => {
+        c.style.transition = `left ${SLIDE}ms ease, top ${SLIDE}ms ease`;
+        c.style.left = x + 'px';
+        c.style.top = y + 'px';
+      }, delay);
+    }
+
+    movers.forEach((m, k) => {
+      const fr = getCellPos(m.from);
+      const tr = getCellPos(m.to);
+      const fx = fr.left, fy = fr.top;
+      const tx = tr.left, ty = tr.top;
+      const w = fr.width, h = fr.height;
+      const pageNum = order[m.from];
+      cellEls[m.from].querySelector('img').style.opacity = '0';
+      const delay = 20 + k * stagger;
+      if (Math.floor(m.from / COLS) === Math.floor(m.to / COLS)) {
+        // Même rangée : simple glissement d'une case
+        slideTo(makeSlide(pageNum, fx, fy, w, h), tx, ty, delay);
+      } else if (m.to < m.from) {
+        // Remonte en fin de rangée précédente : sortie par la gauche, entrée par la droite
+        slideTo(makeSlide(pageNum, fx, fy, w, h), fx - w - GAP, fy, delay);
+        slideTo(makeSlide(pageNum, tx + w + GAP, ty, w, h), tx, ty, delay);
+      } else {
+        // Descend en début de rangée suivante : sortie par la droite, entrée par la gauche
+        slideTo(makeSlide(pageNum, fx, fy, w, h), fx + w + GAP, fy, delay);
+        slideTo(makeSlide(pageNum, tx - w - GAP, ty, w, h), tx, ty, delay);
+      }
+    });
+
+    // Le clone volant s'installe dans sa cellule d'arrivée
+    const finalRect = getCellPos(finalIdx);
+    flying.style.transition = `left ${SLIDE}ms ease, top ${SLIDE}ms ease, opacity 0.15s`;
+    flying.style.left = finalRect.left + 'px';
+    flying.style.top = finalRect.top + 'px';
+
+    // Mettre à jour order
+    order.splice(src, 1);
+    order.splice(finalIdx, 0, srcPageNum);
+
+    // Commit : les cellules affichent le nouvel ordre (images déjà en cache), puis nettoyage
+    const settleTime = SLIDE + 20 + stagger * movers.length + 60;
+    setTimeout(() => {
+      for (let i = 0; i < GRID_SIZE; i++) {
+        const im = cellEls[i].querySelector('img');
+        im.src = BASE + pad(order[i]) + '.jpg';
+        im.style.opacity = '';
+      }
+      requestAnimationFrame(() => { requestAnimationFrame(() => {
+        clip.remove();
+        flying.style.opacity = '0';
+        setTimeout(() => { flying.remove(); animating = false; setTimeout(doOneMove, 900); }, 200);
+      }); });
+    }, settleTime);
+  }
 }
 
 // ── init ───────────────────────────────────────────────────────

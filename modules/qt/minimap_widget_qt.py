@@ -21,7 +21,7 @@ from PySide6.QtGui import QPainter, QColor, QPen
 from modules.qt.state import get_current_theme
 from modules.qt.mosaic_canvas import (
     ThumbnailItem, DirItem, PAD_X, PAD_Y, LABEL_H, _get_pixmap_for_size,
-    _get_bookmark_pixmap, _get_duplicate_pixmap, SEL_OUTLINE,
+    _get_bookmark_pixmap, _get_duplicate_pixmap_wide_margin, SEL_OUTLINE,
 )
 
 _MINI_PAD = 4
@@ -242,7 +242,7 @@ class MinimapWidget(QWidget):
                 painter.setOpacity(1.0)
 
         if entry.get("_is_duplicate"):
-            dup_px = _get_duplicate_pixmap()
+            dup_px = _get_duplicate_pixmap_wide_margin()
             if dup_px and not dup_px.isNull():
                 dup_size = max(6, mini_w // 2)
                 scaled_dup = dup_px.scaled(dup_size, dup_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)

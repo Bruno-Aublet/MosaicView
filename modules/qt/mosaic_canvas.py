@@ -171,31 +171,34 @@ def _get_bookmark_pixmap() -> QPixmap | None:
     return _BOOKMARK_PIXMAP
 
 
-# ── Icône badge doublon (pastille orange dessinée, pas de fichier) ───────────
+# ── Icône badge doublon (chargée depuis icons/) ──────────────────────────────
+# Deux variantes avec marge différente autour du dessin : "8" (marge réduite,
+# dessin plus grand) pour la mosaïque où le badge est affiché assez grand ;
+# "20" (marge plus large, dessin plus petit) pour la minimap et la barre de
+# statut où le badge est affiché en très petite taille et doit rester lisible.
 _DUPLICATE_PIXMAP: QPixmap | None = None
-DUPLICATE_BADGE_COLOR = QColor("#FF9800")
+_DUPLICATE_PIXMAP_WIDE_MARGIN: QPixmap | None = None
 
 def _get_duplicate_pixmap() -> QPixmap:
-    """Pastille pleine orange avec symbole de copie (deux carrés superposés)."""
+    """Pastille orange avec pages superposées (marge 8%), pour la mosaïque."""
     global _DUPLICATE_PIXMAP
     if _DUPLICATE_PIXMAP is None:
-        size = 64
-        px = QPixmap(size, size)
-        px.fill(Qt.transparent)
-        painter = QPainter(px)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setPen(Qt.NoPen)
-        painter.setBrush(QBrush(DUPLICATE_BADGE_COLOR))
-        painter.drawEllipse(0, 0, size, size)
-
-        painter.setPen(QPen(QColor("white"), 4))
-        painter.setBrush(Qt.NoBrush)
-        painter.drawRect(18, 22, 22, 26)
-        painter.drawRect(26, 14, 22, 26)
-
-        painter.end()
-        _DUPLICATE_PIXMAP = px
+        import os as _os
+        icon_path = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.dirname(
+            _os.path.abspath(__file__)))), "icons", "Duplicates 8.png")
+        _DUPLICATE_PIXMAP = QPixmap(icon_path)
     return _DUPLICATE_PIXMAP
+
+def _get_duplicate_pixmap_wide_margin() -> QPixmap:
+    """Pastille orange avec pages superposées (marge 20%), pour la minimap
+    et la barre de statut, affichées en très petite taille."""
+    global _DUPLICATE_PIXMAP_WIDE_MARGIN
+    if _DUPLICATE_PIXMAP_WIDE_MARGIN is None:
+        import os as _os
+        icon_path = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.dirname(
+            _os.path.abspath(__file__)))), "icons", "Duplicates 20.png")
+        _DUPLICATE_PIXMAP_WIDE_MARGIN = QPixmap(icon_path)
+    return _DUPLICATE_PIXMAP_WIDE_MARGIN
 
 
 # ── Conversion PIL → QImage (thread-safe) et PIL → QPixmap (thread UI) ────────
