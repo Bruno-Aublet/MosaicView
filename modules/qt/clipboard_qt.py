@@ -58,8 +58,6 @@ def copy_archive_to_clipboard(parent):
         ).show()
 
     except Exception as e:
-        import traceback
-        traceback.print_exc()
         from modules.qt.dialogs_qt import ErrorDialog
         ErrorDialog(
             parent,
@@ -85,8 +83,7 @@ def copy_to_system_clipboard(get_temp_dir_func, parent=None):
     try:
         import win32clipboard
         import win32con
-    except ImportError as e:
-        print(f"pywin32 non disponible : {e}")
+    except ImportError:
         return
 
     try:
@@ -143,8 +140,7 @@ def copy_to_system_clipboard(get_temp_dir_func, parent=None):
             _warn_unsafe_paths_skipped(parent, skipped)
 
     except Exception:
-        import traceback
-        traceback.print_exc()
+        pass
 
 
 def _warn_unsafe_paths_skipped(parent, skipped):
@@ -246,8 +242,6 @@ def paste_from_system_clipboard(parent, load_files_callback, save_state, render_
             win32clipboard.CloseClipboard()
 
     except Exception as e:
-        import traceback
-        traceback.print_exc()
         MsgDialog(parent,
                   "messages.errors.paste_failed.title",
                   "messages.errors.paste_failed.message",

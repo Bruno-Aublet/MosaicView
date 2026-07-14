@@ -18,8 +18,7 @@ def _dpapi_encrypt(plaintext: str) -> str:
             plaintext.encode('utf-8'), None, None, None, None, 0
         )
         return base64.b64encode(encrypted).decode('ascii')
-    except Exception as e:
-        print(f"DPAPI chiffrement échoué : {e}")
+    except Exception:
         return ''
 
 
@@ -106,8 +105,8 @@ class ConfigManager:
                     # Merge avec les valeurs par défaut pour gérer les nouvelles clés
                     self.config = {**self.DEFAULT_CONFIG, **loaded_config}
                     return True
-        except Exception as e:
-            print(f"Erreur lors du chargement de la configuration : {e}")
+        except Exception:
+            pass
         return False
 
     def save_config(self):
@@ -121,8 +120,7 @@ class ConfigManager:
             with open(self.config_file, 'w', encoding='utf-8') as f:
                 json.dump(self.config, f, indent=2, ensure_ascii=False)
             return True
-        except Exception as e:
-            print(f"Erreur lors de la sauvegarde de la configuration : {e}")
+        except Exception:
             return False
 
     # ===== Getters =====
@@ -348,7 +346,6 @@ class ConfigManager:
             True si la sauvegarde a réussi
         """
         if size not in ['small', 'normal', 'large']:
-            print(f"Taille de vignette invalide : {size}")
             return False
         return self.set('thumbnail_size', size, save)
 
@@ -522,8 +519,8 @@ class ConfigManager:
             if os.path.exists(self._icon_toolbar_config_file):
                 with open(self._icon_toolbar_config_file, 'r', encoding='utf-8') as f:
                     return json.load(f)
-        except Exception as e:
-            print(f"Erreur lecture icon_toolbar config : {e}")
+        except Exception:
+            pass
         return {}
 
     def _write_icon_toolbar_config(self, data):
@@ -532,8 +529,7 @@ class ConfigManager:
             with open(self._icon_toolbar_config_file, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
             return True
-        except Exception as e:
-            print(f"Erreur sauvegarde icon_toolbar config : {e}")
+        except Exception:
             return False
 
     def get_icon_toolbar_layout(self):

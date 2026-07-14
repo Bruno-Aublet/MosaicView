@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.5.8"
+__version__ = "1.5.9"
 
 import sys
 import os
@@ -433,18 +433,27 @@ class MainWindow(QMainWindow):
     def _open_split(self):
         if self._split_active:
             return
-        self._panel2 = PanelWidget(
-            app_ref      = self._app_ref,
-            main_window  = self,
-            language_list = self._language_list,
-            loc          = self._loc,
-            font_manager = self._font_manager,
-            is_primary   = False,
-        )
-        self._frame2 = self._wrap_in_frame(self._panel2)
-        self._panels_splitter.addWidget(self._frame2)
-        self._panels_splitter.setStretchFactor(0, 1)
-        self._panels_splitter.setStretchFactor(1, 1)
+        # Le panneau 2 n'est créé qu'une seule fois puis conservé caché entre
+        # deux splits (voir commentaire dans _close_split) : détruire son arbre
+        # Qt déclenche une invalidation shiboken en chaîne sur des wrappers du
+        # panneau 1 (items du canvas, menus) et corrompt le QSplitter (access
+        # violation à la ré-insertion).
+        first_open = self._panel2 is None
+        if first_open:
+            self._panel2 = PanelWidget(
+                app_ref      = self._app_ref,
+                main_window  = self,
+                language_list = self._language_list,
+                loc          = self._loc,
+                font_manager = self._font_manager,
+                is_primary   = False,
+            )
+            self._frame2 = self._wrap_in_frame(self._panel2)
+            self._panels_splitter.addWidget(self._frame2)
+            self._panels_splitter.setStretchFactor(0, 1)
+            self._panels_splitter.setStretchFactor(1, 1)
+        else:
+            self._frame2.show()
 
         # Synchronise dark_mode du nouveau panneau depuis la config (source de vérité au démarrage)
         self._panel2._state.dark_mode = get_config_manager().get_dark_mode()
@@ -497,8 +506,10 @@ class MainWindow(QMainWindow):
                 QApplication.instance().sendEvent(handle, ev)
         QTimer.singleShot(50, _apply_ratio)
 
-        # Sauvegarde le ratio à chaque déplacement du séparateur
-        self._panels_splitter.splitterMoved.connect(self._save_split_ratio)
+        # Sauvegarde le ratio à chaque déplacement du séparateur (une seule
+        # connexion : le panneau 2 n'est créé qu'une fois)
+        if first_open:
+            self._panels_splitter.splitterMoved.connect(self._save_split_ratio)
 
         self._split_active = True
         self._active_panel = self._panel
@@ -509,26 +520,27 @@ class MainWindow(QMainWindow):
         self._frame1.mousePressEvent = lambda _e: self._set_active_panel(self._panel)
         self._frame2.mousePressEvent = lambda _e: self._set_active_panel(self._panel2)
 
-        # Disposition des icônes panel2 : restaurer depuis config panel2 si elle existe,
-        # sinon hériter de panel1 (première ouverture)
-        tb1 = self._panel._icon_toolbar
-        tb2 = self._panel2._icon_toolbar
-        if cfg.get_icon_toolbar_layout_panel2() is None:
-            tb2.apply_layout(tb1._layout, tb1._show_thumb_slider, tb1._show_lang_combo)
-        # Taille : hériter de panel1 seulement si panel2 n'a jamais été configuré
-        # (icon_size_index_panel2 == 0 par défaut, ambigu → on hérite si panel1 ≠ 0)
-        if cfg.get_icon_size_index_panel2() == 0 and tb1._size_index != 0:
-            tb2.set_size_index(tb1._size_index)
+        if first_open:
+            # Disposition des icônes panel2 : restaurer depuis config panel2 si elle existe,
+            # sinon hériter de panel1 (première ouverture)
+            tb1 = self._panel._icon_toolbar
+            tb2 = self._panel2._icon_toolbar
+            if cfg.get_icon_toolbar_layout_panel2() is None:
+                tb2.apply_layout(tb1._layout, tb1._show_thumb_slider, tb1._show_lang_combo)
+            # Taille : hériter de panel1 seulement si panel2 n'a jamais été configuré
+            # (icon_size_index_panel2 == 0 par défaut, ambigu → on hérite si panel1 ≠ 0)
+            if cfg.get_icon_size_index_panel2() == 0 and tb1._size_index != 0:
+                tb2.set_size_index(tb1._size_index)
 
-        # Sidebar panel2 : restaurer état depuis config
-        if cfg.get_sidebar_collapsed_panel2():
-            self._panel2._sidebar_visible = False
-            self._panel2._left_panel.setVisible(False)
+            # Sidebar panel2 : restaurer état depuis config
+            if cfg.get_sidebar_collapsed_panel2():
+                self._panel2._sidebar_visible = False
+                self._panel2._left_panel.setVisible(False)
 
-        # Minimap panel2 : restaurer état depuis config
-        if cfg.get_minimap_visible_panel2():
-            self._panel2._minimap_visible = True
-            self._panel2._minimap_panel.setVisible(True)
+            # Minimap panel2 : restaurer état depuis config
+            if cfg.get_minimap_visible_panel2():
+                self._panel2._minimap_visible = True
+                self._panel2._minimap_panel.setVisible(True)
 
         cfg.set_split_active(True)
         self._panel._refresh_toolbar_states()
@@ -539,11 +551,23 @@ class MainWindow(QMainWindow):
         if not self._split_active or self._panel2 is None:
             return
 
-        # Confirmation si panel2 a une archive ouverte
+        # Confirmation si panel2 a une archive ouverte. close_file peut ouvrir
+        # un dialog non-modal et rendre la main aussitôt : la suite de la
+        # fermeture (_finish_close_split) ne s'exécute qu'une fois le fichier
+        # réellement fermé, via on_closed — et jamais si l'utilisateur annule.
         st2 = self._panel2._state
         if st2.images_data or st2.modified:
             from modules.qt.file_close_qt import close_file
-            close_file(self, state=st2, **self._panel2._file_close_args())
+            close_file(self._panel2, state=st2, on_closed=self._finish_close_split,
+                       **self._panel2._file_close_args())
+            return
+        self._finish_close_split()
+
+    def _finish_close_split(self):
+        """Seconde moitié de _close_split, appelée après la fermeture effective
+        du fichier de panel2 (immédiate ou différée par le dialog de confirmation)."""
+        if not self._split_active or self._panel2 is None:
+            return
 
         # Sauvegarde le ratio
         self._save_split_ratio()
@@ -551,23 +575,17 @@ class MainWindow(QMainWindow):
         # Annule le chargement en cours dans panel2 (déconnecte les signaux)
         self._panel2._loader.cancel()
 
-        # Redirige le wheel hook vers le combo de panel1 avant de détruire panel2
-        from modules.qt.icon_toolbar_qt import _wheel_hook_singleton
-        if _wheel_hook_singleton is not None:
-            try:
-                combo1 = self._panel._icon_toolbar._lang_combo._combo
-                _wheel_hook_singleton._target = combo1
-            except AttributeError:
-                pass
+        # Masque le panneau 2 SANS le détruire ; il sera réutilisé au prochain
+        # split. Détruire son arbre Qt (setParent(None) et/ou deleteLater)
+        # déclenche une invalidation shiboken en chaîne qui tue des wrappers
+        # Python du panneau 1 (items texte du canvas, menus) alors que leurs
+        # objets C++ sont vivants (texte figé, RuntimeError sur les menus), et
+        # laisse le QSplitter dans un état qui finit en access violation à la
+        # ré-insertion. Le hook molette ignore de lui-même un combo caché
+        # (isVisible() False) et les mises à jour langue/thème continuent de
+        # s'appliquer au panneau caché via _all_panels().
+        self._frame2.hide()
 
-        # Déconnecte les signaux globaux de panel2 avant destruction
-        self._panel2.cleanup()
-
-        # Supprime frame2 + panel2
-        self._frame2.setParent(None)
-        self._frame2.deleteLater()
-        self._frame2 = None
-        self._panel2 = None
         self._split_active = False
         self._active_panel = self._panel
         self._set_frame_active(self._frame1, False)
@@ -876,6 +894,9 @@ class MainWindow(QMainWindow):
 # ═══════════════════════════════════════════════════════════════════════════════
 def main():
     import os
+    import faulthandler
+    if sys.stderr is not None:
+        faulthandler.enable()  # DEBUG: pile Python en cas de crash natif
     os.environ["QT_LOGGING_RULES"] = "qt.text.font.db=false"
 
     app = QApplication(sys.argv)

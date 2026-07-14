@@ -95,8 +95,7 @@ def extract_images_from_html(url: str, html_content: str) -> list[str]:
                 absolute_urls.append(absolute_url)
 
         return absolute_urls
-    except Exception as e:
-        print(f"Erreur lors de l'extraction des images HTML : {e}")
+    except Exception:
         return []
 
 
@@ -397,11 +396,9 @@ class _ResolveWorker(QThread):
                 self.resolved.emit(image_urls, page_title)
 
         except urllib.error.HTTPError as e:
-            print(f"[web_import] _ResolveWorker error: {e}")
             kind = "forbidden" if e.code == 403 else "network"
             self.error_occurred.emit(kind, str(e))
         except Exception as e:
-            print(f"[web_import] _ResolveWorker error: {e}")
             self.error_occurred.emit("network", str(e))
 
 

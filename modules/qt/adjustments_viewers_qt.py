@@ -1084,8 +1084,8 @@ class AdjustmentViewerDialog(QDialog):
             # Zoom label
             self._zoom_lbl.setText(f"{int(self._img_widget.zoom_level() * 100)}%")
 
-        except Exception as e:
-            print(f"[adjustments_viewers_qt] display_image : {e}")
+        except Exception:
+            pass
 
     def _apply_levels_preview(self, img):
         """Applique uniquement les niveaux (pipettes) pour la prévisualisation."""
@@ -1407,8 +1407,8 @@ class AdjustmentViewerDialog(QDialog):
                     update_page_entries_in_xml_data(state, [(_pidx, entry)])
 
                 applied = True
-            except Exception as e:
-                print(f"[adjustments_viewers_qt] transparence apply : {e}")
+            except Exception:
+                pass
 
         if applied:
             state.modified = True
@@ -1463,8 +1463,8 @@ class AdjustmentViewerDialog(QDialog):
             else:
                 self._settings['white_point'] = lum
             self._display_image()
-        except Exception as e:
-            print(f"[adjustments_viewers_qt] pipette click : {e}")
+        except Exception:
+            pass
 
     def _handle_transp_click(self, pos_in_widget):
         """Convertit les coordonnées écran → image et applique la transparence."""

@@ -140,8 +140,8 @@ class LocalizationManager:
                 data = json.load(f)
             with self._cache_lock:
                 self._translations_cache[lang_code] = data
-        except Exception as e:
-            print(f"Erreur lors du chargement de {lang_code}.json: {e}")
+        except Exception:
+            pass
 
     def _preload_remaining(self, skip_lang):
         """Charge en arrière-plan tous les fichiers de traduction sauf skip_lang."""
@@ -178,8 +178,8 @@ class LocalizationManager:
                 # Vérifie si la langue est supportée
                 if lang_code in self.AVAILABLE_LANGUAGES:
                     return lang_code
-        except Exception as e:
-            print(f"Erreur lors de la détection de la langue système : {e}")
+        except Exception:
+            pass
 
         # Retourne la langue par défaut si la détection échoue
         return self.DEFAULT_LANGUAGE
@@ -261,7 +261,6 @@ class LocalizationManager:
             return True
 
         # Fallback ultime
-        print(f"Langue {lang_code} non trouvée en cache, utilisation de la langue par défaut")
         if lang_code != self.DEFAULT_LANGUAGE and default_cached is not None:
             self.translations = default_cached
             self.current_language = self.DEFAULT_LANGUAGE
@@ -280,7 +279,6 @@ class LocalizationManager:
             True si le changement a réussi, False sinon
         """
         if lang_code not in self.AVAILABLE_LANGUAGES:
-            print(f"Langue non supportée : {lang_code}")
             return False
 
         # Charge la nouvelle langue
@@ -319,12 +317,10 @@ class LocalizationManager:
                 value = value[key]
             else:
                 # Clé non trouvée, retourne le chemin comme fallback
-                print(f"Traduction non trouvée : {key_path}")
                 return key_path
 
         # Si la valeur est un dictionnaire, retourne la clé (structure incomplète)
         if isinstance(value, dict):
-            print(f"Chemin de traduction incomplet : {key_path}")
             return key_path
 
         # Normalise les séquences \n littérales en vrais sauts de ligne
@@ -335,8 +331,7 @@ class LocalizationManager:
         if kwargs:
             try:
                 return value.format(**kwargs)
-            except KeyError as e:
-                print(f"Paramètre manquant pour la traduction '{key_path}': {e}")
+            except KeyError:
                 return value
 
         return value

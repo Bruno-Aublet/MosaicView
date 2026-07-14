@@ -718,8 +718,8 @@ class CloneZoneViewerDialog(QDialog):
             img = Image.open(io.BytesIO(self._entry['bytes']))
             self._work_img = img.convert('RGBA')
             self._checker_bg = self._make_checker(self._work_img.width, self._work_img.height)
-        except Exception as e:
-            print(f"[clone_zone_viewer_qt] load_work_image : {e}")
+        except Exception:
+            pass
 
     @staticmethod
     def _make_checker(w, h, tile=12):
@@ -751,8 +751,8 @@ class CloneZoneViewerDialog(QDialog):
             else:
                 self._img_widget.update_pixmap(pixmap)
             self._zoom_lbl.setText(f"{int(self._img_widget.zoom_level() * 100)}%")
-        except Exception as e:
-            print(f"[clone_zone_viewer_qt] display_image : {e}")
+        except Exception:
+            pass
 
     @staticmethod
     def _work_img_to_pixmap(rgba_img, checker_bg):
@@ -939,10 +939,8 @@ class CloneZoneViewerDialog(QDialog):
             if render:
                 render()
 
-        except Exception as e:
-            import traceback
-            print(f"[clone_zone_viewer_qt] paint_end : {e}")
-            traceback.print_exc()
+        except Exception:
+            pass
 
         self._bytes_before_stroke = None
         self._stroke_dirty = False
@@ -1049,8 +1047,8 @@ class CloneZoneViewerDialog(QDialog):
             if render:
                 render()
 
-        except Exception as e:
-            print(f"[clone_zone_viewer_qt] undo : {e}")
+        except Exception:
+            pass
 
     def _redo(self):
         if not self._redo_stack:
@@ -1099,8 +1097,8 @@ class CloneZoneViewerDialog(QDialog):
             if render:
                 render()
 
-        except Exception as e:
-            print(f"[clone_zone_viewer_qt] redo : {e}")
+        except Exception:
+            pass
 
     def _update_undo_redo_buttons(self):
         self._undo_btn.setEnabled(bool(self._bytes_history))

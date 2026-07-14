@@ -59,9 +59,8 @@ class _TransformWorker(QThread):
                 return
             try:
                 self._operation(entry, self._state)
-            except Exception as e:
-                import traceback
-                traceback.print_exc()
+            except Exception:
+                pass
             # Vérifier le flag après l'opération (qui peut être longue) :
             # si _cancel() a été appelé pendant l'opération, on arrête sans invalider le thumbnail
             # (la restauration d'état via undo se charge de remettre les bytes d'origine).

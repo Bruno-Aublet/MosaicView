@@ -89,8 +89,8 @@ def _open_path(path):
             os.startfile(path)
         else:
             QDesktopServices.openUrl(QUrl.fromLocalFile(path))
-    except Exception as e:
-        print(f"Erreur ouverture : {e}")
+    except Exception:
+        pass
 
 
 def _pil_to_qpixmap(img, w, h, callbacks):
@@ -588,8 +588,8 @@ class _PdfSummaryDialog(QDialog):
                     is_permanent=self._data.get("is_permanent", False),
                     safe_delete_file=self._data.get("safe_delete_file"),
                 )
-            except Exception as e:
-                print(f"Erreur pdf_unlock_qt : {e}")
+            except Exception:
+                pass
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -952,8 +952,8 @@ def _run_cbr_conversion(parent, cbr_files, directory, directories, callbacks, is
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
                             lf.write(f"  - {err}\n")
-            except Exception as log_err:
-                print(f"Erreur log : {log_err}")
+            except Exception:
+                pass
                 log_path = None
 
         summary_data = {
@@ -1344,8 +1344,8 @@ def _run_cb7_conversion(parent, cb7_files, directory, directories, callbacks, is
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
                             lf.write(f"  - {err}\n")
-            except Exception as log_err:
-                print(f"Erreur log : {log_err}")
+            except Exception:
+                pass
                 log_path = None
 
         summary_data = {
@@ -1739,8 +1739,8 @@ def _run_cbt_conversion(parent, cbt_files, directory, directories, callbacks, is
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
                             lf.write(f"  - {err}\n")
-            except Exception as log_err:
-                print(f"Erreur log : {log_err}")
+            except Exception:
+                pass
                 log_path = None
 
         summary_data = {
@@ -2004,8 +2004,8 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                     lf.write(f"{'='*60}\n\n")
                     for err in conversion_errors:
                         lf.write(f"  - {err}\n")
-            except Exception as log_err:
-                print(f"Erreur log : {log_err}")
+            except Exception:
+                pass
                 log_path = None
 
         summary_data = {
@@ -2372,8 +2372,8 @@ def _run_img_conversion(parent, img_files, directory, directories, callbacks, is
                     lf.write(f"{'='*60}\n\n")
                     for err in conversion_errors:
                         lf.write(f"  - {err}\n")
-            except Exception as log_err:
-                print(f"Erreur log : {log_err}")
+            except Exception:
+                pass
                 log_path = None
 
         summary_data = {
@@ -2551,8 +2551,8 @@ def _run_imgs_to_single_cbz(parent, img_files, directory, callbacks, is_permanen
                     lf.write(f"{'='*60}\n\n")
                     for err in conversion_errors:
                         lf.write(f"  - {err}\n")
-            except Exception as log_err:
-                print(f"Erreur log : {log_err}")
+            except Exception:
+                pass
                 log_path = None
 
         summary_data = {
@@ -2820,8 +2820,8 @@ def _run_recompress(parent, archive_files, directory, directories, callbacks, le
                         lf.write(f"{'='*60}\n\n")
                         for err in conversion_errors:
                             lf.write(f"  - {err}\n")
-            except Exception as log_err:
-                print(f"Erreur log : {log_err}")
+            except Exception:
+                pass
                 log_path = None
 
         summary_data = {

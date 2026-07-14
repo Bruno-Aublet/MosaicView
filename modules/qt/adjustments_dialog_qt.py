@@ -1138,8 +1138,8 @@ class AdjustmentsDialog(QDialog):
             pix = _pil_to_qpixmap(result, max_size=300, is_bw=is_bw)
             self._preview_pixmap_ref = pix
             self._preview_lbl.setPixmap(pix)
-        except Exception as e:
-            print(f"[adjustments_dialog_qt] aperçu : {e}")
+        except Exception:
+            pass
 
     # ─────────────────────────────────────────────────────────────────────────
     # Actions

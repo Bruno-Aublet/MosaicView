@@ -579,8 +579,8 @@ class StraightenViewerDialog(QDialog):
             self._prev_btn.setEnabled(self._current_idx > 0)
             self._next_btn.setEnabled(self._current_idx < n - 1)
             self._zoom_lbl.setText(f"{int(self._img_widget.zoom_level() * 100)}%")
-        except Exception as e:
-            print(f"[straighten_viewer_qt] display_image : {e}")
+        except Exception:
+            pass
 
     @staticmethod
     def _pil_to_pixmap(img):
@@ -712,10 +712,8 @@ class StraightenViewerDialog(QDialog):
             if render:
                 render()
 
-        except Exception as e:
-            import traceback
-            print(f"[straighten_viewer_qt] apply : {e}")
-            traceback.print_exc()
+        except Exception:
+            pass
 
     # ── Undo / Redo (historique interne de la visionneuse) ────────────────────
 
@@ -774,8 +772,8 @@ class StraightenViewerDialog(QDialog):
             if render:
                 render()
 
-        except Exception as e:
-            print(f"[straighten_viewer_qt] undo : {e}")
+        except Exception:
+            pass
 
     def _redo(self):
         """Refait la dernière rotation annulée : restaure les bytes après rotation."""
@@ -832,8 +830,8 @@ class StraightenViewerDialog(QDialog):
             if render:
                 render()
 
-        except Exception as e:
-            print(f"[straighten_viewer_qt] redo : {e}")
+        except Exception:
+            pass
 
     def _update_undo_redo_buttons(self):
         idx = self._current_idx

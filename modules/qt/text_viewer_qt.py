@@ -923,8 +923,7 @@ class TextViewerDialog(QDialog):
             img = Image.open(io.BytesIO(entry['bytes']))
             self._work_img   = img.convert('RGBA')
             self._checker_bg = _make_checker(self._work_img.width, self._work_img.height)
-        except Exception as e:
-            print(f"[text_viewer_qt] load_work_image : {e}")
+        except Exception:
             self._work_img   = None
             self._checker_bg = None
 
@@ -942,8 +941,8 @@ class TextViewerDialog(QDialog):
             self._prev_btn.setEnabled(self._current_idx > 0)
             self._next_btn.setEnabled(self._current_idx < n - 1)
             self._zoom_lbl.setText(f"{int(self._img_widget.zoom_level() * 100)}%")
-        except Exception as e:
-            print(f"[text_viewer_qt] display_image : {e}")
+        except Exception:
+            pass
 
     # ── Rendu final — tous les blocs → PIL ───────────────────────────────────
 
@@ -1228,10 +1227,8 @@ class TextViewerDialog(QDialog):
             if render:
                 render()
 
-        except Exception as e:
-            import traceback
-            print(f"[text_viewer_qt] apply_text : {e}")
-            traceback.print_exc()
+        except Exception:
+            pass
 
     def _commit_image(self, pil_img, entry, state):
         from modules.qt.entries import save_image_to_bytes
@@ -1318,8 +1315,8 @@ class TextViewerDialog(QDialog):
 
             if render:
                 render()
-        except Exception as e:
-            print(f"[text_viewer_qt] undo : {e}")
+        except Exception:
+            pass
 
     def _redo(self):
         ov = self._active_overlay()
@@ -1377,8 +1374,8 @@ class TextViewerDialog(QDialog):
 
             if render:
                 render()
-        except Exception as e:
-            print(f"[text_viewer_qt] redo : {e}")
+        except Exception:
+            pass
 
     def _update_undo_redo_buttons(self):
         idx = self._current_idx

@@ -86,8 +86,8 @@ def _open_file_location(filepath):
             subprocess.Popen(["explorer", "/select,", os.path.abspath(filepath)])
         else:
             QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.dirname(filepath)))
-    except Exception as e:
-        print(f"Erreur ouverture explorateur : {e}")
+    except Exception:
+        pass
 
 
 def _open_folder(folder):
@@ -97,8 +97,8 @@ def _open_folder(folder):
             os.startfile(folder)
         else:
             QDesktopServices.openUrl(QUrl.fromLocalFile(folder))
-    except Exception as e:
-        print(f"Erreur ouverture dossier : {e}")
+    except Exception:
+        pass
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

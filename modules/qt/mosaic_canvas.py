@@ -1122,6 +1122,15 @@ class MosaicCanvas(QGraphicsView):
         """Centre les 3 lignes verticalement dans la vue (en coordonnées de scène)."""
         if not self._empty_items:
             return
+        from shiboken6 import isValid
+        if not all(isValid(it) for it in self._empty_items):
+            # Wrappers invalidés (ex. invalidation shiboken en chaîne si l'arbre
+            # Qt d'un autre panneau est détruit) : reconstruire proprement le
+            # message — render_mosaic fait scene.clear(), ce qui purge aussi les
+            # items C++ zombies restés dans la scène.
+            self._empty_items.clear()
+            self.render_mosaic()
+            return
         vp_w = self.viewport().width()
         margin = 40
         text_w = max(100, vp_w - margin * 2)
@@ -1567,8 +1576,8 @@ class MosaicCanvas(QGraphicsView):
                     with open(fpath, "wb") as f:
                         f.write(data)
                     urls.append(QUrl.fromLocalFile(fpath))
-            except Exception as e:
-                print(f"[drag-out] erreur export temp : {e}")
+            except Exception:
+                pass
         if urls:
             mime.setUrls(urls)
 

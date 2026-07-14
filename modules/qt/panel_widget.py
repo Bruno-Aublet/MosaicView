@@ -1195,8 +1195,8 @@ class PanelWidget(QWidget):
             config_path = get_config_manager().get_config_file_path()
             if os.path.exists(config_path):
                 self._safe_delete_file(config_path)
-        except Exception as e:
-            print(f"Erreur suppression fichier de configuration : {e}")
+        except Exception:
+            pass
         _WarnDialog(
             self._guide_or_self(),
             "messages.info.history_cleared.title",
@@ -1215,8 +1215,8 @@ class PanelWidget(QWidget):
                                 shutil.rmtree(item_path)
                         except Exception:
                             pass
-        except Exception as e:
-            print(f"Erreur suppression fichiers presse-papiers : {e}")
+        except Exception:
+            pass
         _WarnDialog(
             self._guide_or_self(),
             "messages.info.history_cleared.title",
@@ -1227,8 +1227,8 @@ class PanelWidget(QWidget):
         temp_dir = os.path.join(os.path.realpath(tempfile.gettempdir()), "MosaicViewTemp")
         try:
             subprocess.Popen(["explorer", temp_dir])
-        except Exception as e:
-            print(f"Erreur ouverture dossier temporaire : {e}")
+        except Exception:
+            pass
 
     # ──────────────────────────────────────────────────────────────────────────
     # Renumérotation
@@ -1645,6 +1645,7 @@ class PanelWidget(QWidget):
             "render_mosaic":      self._render_mosaic,
             "update_button_text": self._refresh_toolbar_states,
             "clear_selection":    self._canvas._clear_selection_and_emit,
+            "renumber_no_save":   self._renumber_no_save,
             "state":              self._state,
         }
 
@@ -1950,6 +1951,12 @@ class PanelWidget(QWidget):
             self._tab_bar.cleanup()
         if hasattr(self, "_metadata_tab"):
             self._metadata_tab.cleanup()
+        if hasattr(self, "_menubar"):
+            # Coupe les connexions aboutToShow des QMenu avant que deleteLater()
+            # ne détruise le C++ sous-jacent : sinon un aboutToShow déjà en file
+            # d'attente Qt se déclenche sur un menu à moitié détruit
+            # (RuntimeError: Internal C++ object already deleted).
+            self._menubar.clear()
 
     # ──────────────────────────────────────────────────────────────────────────
     # Drag & drop inter-panneaux

@@ -1424,8 +1424,7 @@ class ImageViewer(QDialog):
             self._canvas.clear_crop()
             self.display_image()
 
-        except Exception as e:
-            import traceback; traceback.print_exc()
+        except Exception:
             dlg = MsgDialog(self, "messages.errors.crop_failed.title",
                             "messages.errors.crop_failed.title")
             dlg.show_nonmodal()

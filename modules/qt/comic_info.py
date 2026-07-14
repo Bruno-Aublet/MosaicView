@@ -8,8 +8,6 @@ import xml.etree.ElementTree as ET
 try:
     from defusedxml.ElementTree import fromstring as _safe_fromstring
 except ImportError:
-    print("AVERTISSEMENT : defusedxml absent — parsing XML sans protection XXE "
-          "(pip install defusedxml)")
     _safe_fromstring = ET.fromstring
 
 try:
@@ -138,8 +136,7 @@ def parse_comic_info_xml(xml_data):
                 metadata['pages'] = pages
 
         return metadata
-    except Exception as e:
-        print(f"Erreur lors du parsing de ComicInfo.xml: {e}")
+    except Exception:
         return None
 
 
@@ -413,8 +410,7 @@ def update_page_count_in_xml_data(state, new_page_count):
 
         return True
 
-    except Exception as e:
-        print(f"Erreur lors de la mise à jour du nombre de pages dans ComicInfo.xml: {e}")
+    except Exception:
         return False
 
 
@@ -514,8 +510,8 @@ def sync_pages_in_xml_data(state, emit_signal=True):
             from modules.qt.metadata_signal import metadata_signal
             metadata_signal.emit()
 
-    except Exception as e:
-        print(f"[comic_info] sync_pages_in_xml_data : {e}")
+    except Exception:
+        pass
 
 
 def build_page_attrs_map(state):
@@ -643,5 +639,5 @@ def update_page_entries_in_xml_data(state, entries_with_idx, emit_signal=True):
                 from modules.qt.metadata_signal import metadata_pages_signal
                 metadata_pages_signal.emit()
 
-    except Exception as e:
-        print(f"[comic_info] update_page_entries_in_xml_data : {e}")
+    except Exception:
+        pass

@@ -290,10 +290,8 @@ def apply_image_adjustments(selected_entries, settings, callbacks=None):
             entry['qt_pixmap_large'] = None
             entry['qt_qimage_large'] = None
             entry['_hash'] = None
-        except Exception as e:
-            import traceback
-            print(f"[adjustments_processing_qt] {entry.get('orig_name','?')} : {e}")
-            traceback.print_exc()
+        except Exception:
+            pass
 
     state.modified = True
 

@@ -266,11 +266,9 @@ def create_entry_from_file(filepath, image_exts):
     try:
         # Vérifie que le fichier existe et est accessible
         if not os.path.exists(filepath):
-            print(f"Fichier introuvable : {filepath}")
             return None
 
         if not os.path.isfile(filepath):
-            print(f"Chemin n'est pas un fichier : {filepath}")
             return None
 
         # Limite la taille des fichiers à 500 Mo pour éviter les problèmes de mémoire
@@ -286,10 +284,8 @@ def create_entry_from_file(filepath, image_exts):
     except FileTooLargeError:
         raise
     except PermissionError:
-        print(f"Permission refusée pour {filepath}")
         return None
-    except Exception as e:
-        print(f"Erreur lors du chargement de {filepath} : {e}")
+    except Exception:
         return None
 
 
@@ -511,8 +507,7 @@ def ensure_image_loaded(entry):
             img.close()
 
         return entry["img"]
-    except Exception as e:
-        print(f"Erreur lors du chargement lazy de l'image {entry.get('orig_name', 'inconnue')} : {e}")
+    except Exception:
         entry["img"] = None
         entry["is_corrupted"] = True
         return None
@@ -570,8 +565,7 @@ def get_gif_frame(entry, frame_idx):
         img.close()
 
         return frame
-    except Exception as e:
-        print(f"Erreur lors du chargement de la frame {frame_idx} du GIF {entry.get('orig_name', 'inconnu')} : {e}")
+    except Exception:
         return None
 
 
@@ -606,8 +600,7 @@ def get_image_metadata(entry):
         # Ferme l'image immédiatement pour libérer les ressources
         img.close()
         return metadata
-    except Exception as e:
-        print(f"Erreur lecture métadonnées {entry.get('orig_name', 'inconnue')} : {e}")
+    except Exception:
         return None
 
 

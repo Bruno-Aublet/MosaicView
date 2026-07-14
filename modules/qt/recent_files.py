@@ -14,8 +14,8 @@ def add_to_recent_files(filepath):
     """Ajoute un fichier à la liste des fichiers récents."""
     try:
         get_config_manager().add_recent_file(filepath, max_files=MAX_RECENT_FILES)
-    except Exception as e:
-        print(f"Erreur lors de l'ajout du fichier récent : {e}")
+    except Exception:
+        pass
 
 
 def remove_from_recent_files(filepath):
@@ -26,21 +26,21 @@ def remove_from_recent_files(filepath):
         if filepath in recent:
             recent.remove(filepath)
             cfg.set_recent_files(recent)
-    except Exception as e:
-        print(f"Erreur lors de la suppression du fichier récent : {e}")
+    except Exception:
+        pass
 
 
 def clear_recent_files():
     """Efface l'historique des fichiers récents."""
     try:
         get_config_manager().set_recent_files([])
-    except Exception as e:
-        print(f"Erreur lors de l'effacement des fichiers récents : {e}")
+    except Exception:
+        pass
 
 
 def init_recent_files():
     """Nettoie les fichiers récents inexistants au démarrage."""
     try:
         get_config_manager().clean_recent_files()
-    except Exception as e:
-        print(f"Erreur lors du nettoyage des fichiers récents : {e}")
+    except Exception:
+        pass

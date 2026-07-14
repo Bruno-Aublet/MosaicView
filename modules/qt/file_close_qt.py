@@ -408,13 +408,18 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
 def close_file(parent, canvas, create_cbz_cb, apply_new_names_cb,
                refresh_title, refresh_toolbar, refresh_tabs,
                refresh_status, refresh_menubar,
-               state=None):
+               state=None, on_closed=None):
     """
     Ferme le fichier courant avec confirmation si modifié.
     Si un dialog de confirmation est nécessaire, il est affiché de façon non-modale
     et la suite est gérée par callbacks.
     Retourne True si la fermeture peut se faire immédiatement (pas de dialog),
     False si un dialog non-modal a été ouvert (la suite se fait en async).
+
+    on_closed : callable() optionnel, appelé une fois la fermeture effective
+    (immédiatement en synchrone, ou après la réponse de l'utilisateur si un
+    dialog a été ouvert). N'est PAS appelé si l'utilisateur annule — l'appelant
+    qui fournit on_closed ne doit donc rien enchaîner après cet appel.
     """
     if state is None:
         state = _state_module.state
@@ -423,6 +428,8 @@ def close_file(parent, canvas, create_cbz_cb, apply_new_names_cb,
         force_close_file(canvas, refresh_title, refresh_toolbar,
                          refresh_tabs, refresh_status, refresh_menubar,
                          state=state)
+        if on_closed is not None:
+            on_closed()
 
     # ── Pas d'archive, images présentes ──────────────────────────────────────
     if not state.current_file and state.images_data:
@@ -446,6 +453,8 @@ def close_file(parent, canvas, create_cbz_cb, apply_new_names_cb,
 
     # ── Pas d'archive, pas d'images ──────────────────────────────────────────
     if not state.current_file and not state.images_data:
+        if on_closed is not None:
+            on_closed()
         return True
 
     # ── Archive présente ──────────────────────────────────────────────────────
@@ -500,21 +509,21 @@ def on_window_close(main_window, canvas, create_cbz_cb, apply_new_names_cb,
         if had_archive:
             try:
                 cleanup_temp_cb()
-            except Exception as e:
-                print(f"Erreur nettoyage temp files : {e}")
+            except Exception:
+                pass
             return False
 
         save_session_cb()
         try:
             cleanup_temp_cb()
-        except Exception as e:
-            print(f"Erreur nettoyage temp files : {e}")
+        except Exception:
+            pass
         return True
 
     # Canvas vide → ferme l'application
     save_session_cb()
     try:
         cleanup_temp_cb()
-    except Exception as e:
-        print(f"Erreur nettoyage temp files : {e}")
+    except Exception:
+        pass
     return True

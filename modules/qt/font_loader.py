@@ -34,8 +34,7 @@ def load_custom_font_windows(font_path):
         AddFontResourceEx.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.LPVOID]
         AddFontResourceEx.restype = ctypes.c_int
         return AddFontResourceEx(font_path, 0x10, 0) > 0
-    except Exception as e:
-        print(f"Erreur chargement police {font_path}: {e}")
+    except Exception:
         return False
 
 

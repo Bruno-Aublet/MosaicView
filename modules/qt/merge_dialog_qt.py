@@ -11,8 +11,8 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QButtonGroup, QRadioButton, QScrollArea, QWidget, QSizePolicy,
 )
-from PySide6.QtCore import Qt, QPoint, QRect, Signal
-from PySide6.QtGui import QPixmap, QImage, QPainter, QPen, QColor
+from PySide6.QtCore import Qt, QPoint, QRect, Signal, QTimer
+from PySide6.QtGui import QPixmap, QImage, QPainter, QPen, QColor, QCursor
 
 from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
@@ -238,6 +238,12 @@ THUMB_W = 80
 THUMB_H = 106
 SNAP_DIST = 15
 
+AUTOSCROLL_MARGIN = 30   # px, zone proche du bord du viewport qui déclenche l'autoscroll
+AUTOSCROLL_STEP = 12     # px par tick de timer
+AUTOSCROLL_INTERVAL = 16  # ms entre chaque tick (~60 fps)
+
+PREVIEW_SRC_MAX = 400   # px, résolution des images réduites utilisées pour l'aperçu du bas
+
 
 def _pil_to_qpixmap(img: Image.Image) -> QPixmap:
     """Convertit une image PIL en QPixmap."""
@@ -264,12 +270,21 @@ class MiniMosaicCanvas(QWidget):
 
         self._drag_idx = None
         self._drag_offset = QPoint()
+        self._last_drag_pos = QPoint()
 
         self._load_thumbs()
         self._init_positions()
 
         # Callback appelé quand les positions changent (pour maj prévisualisation)
         self.positions_changed = None
+
+        # Autoscroll pendant le drag : renseigné par MergeDialog après construction
+        self._scroll_area = None
+        self._autoscroll_dx = 0
+        self._autoscroll_dy = 0
+        self._autoscroll_timer = QTimer(self)
+        self._autoscroll_timer.setInterval(AUTOSCROLL_INTERVAL)
+        self._autoscroll_timer.timeout.connect(self._on_autoscroll_tick)
 
     def _load_thumbs(self):
         self._thumbs = []
@@ -287,7 +302,7 @@ class MiniMosaicCanvas(QWidget):
             })
 
     def _init_positions(self):
-        cols = 3
+        cols = 4
         spacing_x = THUMB_W + 40
         spacing_y = THUMB_H + 40
         start_x = 60
@@ -365,6 +380,11 @@ class MiniMosaicCanvas(QWidget):
         if self._drag_idx is None:
             return
         pos = event.position().toPoint()
+        self._last_drag_pos = pos
+        self._apply_drag_position(pos)
+        self._update_autoscroll(pos)
+
+    def _apply_drag_position(self, pos):
         idx = self._drag_idx
         th = self._thumbs[idx]
 
@@ -485,7 +505,66 @@ class MiniMosaicCanvas(QWidget):
         if event.button() == Qt.LeftButton:
             self._drag_idx = None
             self._snap_lines = []
+            self._stop_autoscroll()
             self.update()
+
+    # ── Autoscroll pendant le drag ────────────────────────────────────────────
+
+    def _update_autoscroll(self, pos):
+        """Détermine la vitesse d'autoscroll selon la proximité de pos aux bords
+        du viewport visible du QScrollArea, et démarre/arrête le timer."""
+        if self._scroll_area is None:
+            return
+        viewport = self._scroll_area.viewport()
+        # pos est en coordonnées du canvas ; on le convertit en coordonnées viewport
+        # en passant par les coordonnées globales (self.mapTo exigerait que self
+        # soit un ancêtre de viewport, alors que c'est l'inverse ici).
+        pos_in_viewport = viewport.mapFromGlobal(self.mapToGlobal(pos))
+        rect = viewport.rect()
+
+        dx = 0
+        dy = 0
+        if pos_in_viewport.x() < AUTOSCROLL_MARGIN:
+            dx = -AUTOSCROLL_STEP
+        elif pos_in_viewport.x() > rect.width() - AUTOSCROLL_MARGIN:
+            dx = AUTOSCROLL_STEP
+        if pos_in_viewport.y() < AUTOSCROLL_MARGIN:
+            dy = -AUTOSCROLL_STEP
+        elif pos_in_viewport.y() > rect.height() - AUTOSCROLL_MARGIN:
+            dy = AUTOSCROLL_STEP
+
+        self._autoscroll_dx = dx
+        self._autoscroll_dy = dy
+
+        if dx or dy:
+            if not self._autoscroll_timer.isActive():
+                self._autoscroll_timer.start()
+        else:
+            self._stop_autoscroll()
+
+    def _stop_autoscroll(self):
+        self._autoscroll_timer.stop()
+        self._autoscroll_dx = 0
+        self._autoscroll_dy = 0
+
+    def _on_autoscroll_tick(self):
+        if self._scroll_area is None or self._drag_idx is None:
+            self._stop_autoscroll()
+            return
+        hbar = self._scroll_area.horizontalScrollBar()
+        vbar = self._scroll_area.verticalScrollBar()
+        if self._autoscroll_dx:
+            hbar.setValue(hbar.value() + self._autoscroll_dx)
+        if self._autoscroll_dy:
+            vbar.setValue(vbar.value() + self._autoscroll_dy)
+
+        # Le scroll a changé l'origine du canvas sous le curseur (resté immobile
+        # à l'écran) : on relit sa vraie position système et on la remappe dans
+        # le repère du canvas, pour rejouer EXACTEMENT le même calcul (snap
+        # compris) que mouseMoveEvent, plutôt que de translater la vignette à la main.
+        pos = self.mapFromGlobal(QCursor.pos())
+        self._last_drag_pos = pos
+        self._apply_drag_position(pos)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -672,12 +751,21 @@ class MergeDialog(QDialog):
             if idx < len(self._state.images_data) and self._state.images_data[idx]["is_image"]
         ]
         self._canvas = MiniMosaicCanvas(self, selected_entries)
-        self._canvas.positions_changed = self._update_preview
+        self._canvas.positions_changed = self._schedule_preview_update
+
+        # Debounce : la recomposition de preview redimensionne les images sources
+        # en pleine résolution (coûteux), donc on ne la relance qu'une fois le
+        # déplacement stabilisé plutôt qu'à chaque pixel de mouseMoveEvent.
+        self._preview_timer = QTimer(self)
+        self._preview_timer.setSingleShot(True)
+        self._preview_timer.setInterval(150)
+        self._preview_timer.timeout.connect(self._update_preview)
 
         scroll = QScrollArea()
         scroll.setWidget(self._canvas)
         scroll.setWidgetResizable(True)
         layout.addWidget(scroll, stretch=3)
+        self._canvas._scroll_area = scroll
 
         # Séparateur + prévisualisation
         sep = QWidget()
@@ -750,36 +838,48 @@ class MergeDialog(QDialog):
         self._cancel_btn.setText(_("buttons.cancel"))
         self._cancel_btn.setFont(font)
 
+    def _schedule_preview_update(self):
+        self._preview_timer.start()
+
     def _update_preview(self):
-        """Compose une prévisualisation basse résolution depuis les positions courantes."""
+        """Compose une prévisualisation en réutilisant le vrai algorithme d'assemblage
+        (merge_images_2d) sur des images réduites, pour que les proportions entre
+        images de tailles très différentes (ex. un join précédent) restent fidèles
+        au résultat final, contrairement au placement libre du canvas du haut."""
         positions = self._canvas.get_positions_data()
         if not positions:
             return
 
-        thumbs = []
+        imgs = []
         for pos in positions:
             img = ensure_image_loaded(pos["entry"])
             if img is None:
                 return
-            t = img.copy()
-            t.thumbnail((THUMB_W, THUMB_H))
-            thumbs.append({"img": t, "x": pos["x"], "y": pos["y"],
-                           "w": t.width, "h": t.height})
+            imgs.append(img)
 
-        min_x = int(min(d["x"] - d["w"] // 2 for d in thumbs))
-        min_y = int(min(d["y"] - d["h"] // 2 for d in thumbs))
-        max_x = int(max(d["x"] + d["w"] // 2 for d in thumbs))
-        max_y = int(max(d["y"] + d["h"] // 2 for d in thumbs))
-        total_w = max_x - min_x
-        total_h = max_y - min_y
-        if total_w <= 0 or total_h <= 0:
+        # Un seul facteur d'échelle commun à toutes les images, basé sur la plus
+        # grande dimension parmi toutes les sources : un thumbnail() individuel
+        # par image casserait la cohérence des largeurs/hauteurs relatives entre
+        # elles dès que leurs ratios diffèrent (ex. une page issue d'un join
+        # précédent, bien plus haute que large que les pages normales).
+        largest_dim = max(max(img.size) for img in imgs)
+        scale = min(1.0, PREVIEW_SRC_MAX / largest_dim)
+
+        preview_positions = []
+        for pos, img in zip(positions, imgs):
+            t = img.resize(
+                (max(1, round(img.width * scale)), max(1, round(img.height * scale))),
+                Image.Resampling.LANCZOS,
+            )
+            preview_positions.append({
+                "entry": {"img": t},
+                "x": pos["x"],
+                "y": pos["y"],
+            })
+
+        preview = merge_images_2d(preview_positions, ask_adjustment_func=None)
+        if preview is None:
             return
-
-        preview = Image.new("RGB", (total_w, total_h), (200, 200, 200))
-        for d in thumbs:
-            px = int(d["x"]) - d["w"] // 2 - min_x
-            py = int(d["y"]) - d["h"] // 2 - min_y
-            preview.paste(d["img"], (px, py))
 
         preview.thumbnail((300, 200))
         pixmap = _pil_to_qpixmap(preview)
@@ -872,6 +972,10 @@ class MergeDialog(QDialog):
             "messages.questions.delete_source_files.message",
         )
 
+        # Position de la 1ère page du join, capturée avant toute modification de state.
+        first_join_idx = min(state.selected_indices)
+        renumber_mode = getattr(state, "renumber_mode", 1)
+
         def _after_delete_choice(result):
             if result == YesNoCancelDialog.CANCEL:
                 # Rien à défaire — on n'a pas encore modifié state
@@ -882,30 +986,52 @@ class MergeDialog(QDialog):
             # Sauvegarde l'état AVANT modification (point de retour pour undo)
             _save_state_data(state, force=True)
 
-            # Insère en tête de mosaïque
-            state.images_data.insert(0, new_entry)
-            state.modified = True
-            state.needs_renumbering = True
-
-            if result == YesNoCancelDialog.YES:
+            if renumber_mode == 0:
+                # Renumérotation désactivée : comportement historique, la page
+                # rejoint la tête de mosaïque sous son nom Collage_xxx.
+                insert_idx = 0
+                state.images_data.insert(insert_idx, new_entry)
+            elif result == YesNoCancelDialog.YES:
+                # Sources supprimées : le join prend l'emplacement de la 1ère
+                # page du join une fois les autres pages sélectionnées retirées.
                 indices_to_remove = sorted(state.selected_indices, reverse=True)
                 for idx in indices_to_remove:
-                    adjusted = idx + 1
-                    if adjusted < len(state.images_data):
-                        state.images_data.pop(adjusted)
+                    if idx != first_join_idx:
+                        state.images_data.pop(idx)
+                insert_idx = first_join_idx
+                state.images_data[insert_idx] = new_entry
+            else:
+                # Sources conservées : le join s'intercale juste avant la 1ère
+                # page du join, qui reste inchangée.
+                insert_idx = first_join_idx
+                state.images_data.insert(insert_idx, new_entry)
+
+            state.modified = True
+            state.needs_renumbering = True
 
             from modules.qt.comic_info import sync_pages_in_xml_data
             sync_pages_in_xml_data(state)
 
-            # Déselectionne tout et sélectionne la nouvelle image
+            # Déselectionne tout ; la nouvelle image sera sélectionnée dans _finish,
+            # une fois la renumérotation (si déclenchée) terminée.
             self._callbacks["clear_selection"]()
-            state.selected_indices.add(0)
 
-            # Sauvegarde l'état APRÈS modification (point de retour pour redo)
-            _save_state_data(state, force=True)
+            def _finish():
+                # Recherchée par identité d'objet (pas par insert_idx figé) car la
+                # renumérotation ne réordonne pas la liste aujourd'hui, mais pourrait le faire.
+                for i, e in enumerate(state.images_data):
+                    if e is new_entry:
+                        state.selected_indices.add(i)
+                        break
+                # Sauvegarde l'état APRÈS modification (point de retour pour redo)
+                _save_state_data(state, force=True)
+                self._callbacks["render_mosaic"]()
+                self._callbacks["update_button_text"]()
 
-            self._callbacks["render_mosaic"]()
-            self._callbacks["update_button_text"]()
+            if renumber_mode != 0:
+                self._callbacks["renumber_no_save"](on_done=_finish)
+            else:
+                _finish()
 
         ync.ask_async(_after_delete_choice)
 

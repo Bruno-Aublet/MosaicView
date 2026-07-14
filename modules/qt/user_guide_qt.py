@@ -156,8 +156,8 @@ class _LinkText(QTextBrowser):
                     subprocess.Popen(["explorer", path])
                 else:
                     subprocess.Popen(["explorer", "/select,", path])
-            except Exception as e:
-                print(f"Erreur ouverture explorateur : {e}")
+            except Exception:
+                pass
         else:
             QDesktopServices.openUrl(url)
 
@@ -436,8 +436,8 @@ def export_tengwar_fonts(parent_widget):
                 if copied_count == 0:
                     first_file = dest
                 copied_count += 1
-            except Exception as e:
-                print(f"Erreur copie {font_file}: {e}")
+            except Exception:
+                pass
     if copied_count > 0:
         _show_success_dialog(
             parent_widget,
@@ -476,8 +476,8 @@ def export_wilhelm_scream(parent_widget):
                 if copied_count == 0:
                     first_file = dest
                 copied_count += 1
-            except Exception as e:
-                print(f"Erreur copie {sound_file}: {e}")
+            except Exception:
+                pass
     if copied_count > 0:
         _show_success_dialog(
             parent_widget,
@@ -523,8 +523,8 @@ def save_all_icons(parent_widget):
                 if copied_count == 0:
                     first_file = dest
                 copied_count += 1
-            except Exception as e:
-                print(f"Erreur copie {filename}: {e}")
+            except Exception:
+                pass
     if copied_count > 0:
         _show_success_dialog(
             parent_widget,

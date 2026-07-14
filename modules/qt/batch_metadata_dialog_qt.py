@@ -569,8 +569,7 @@ class _BatchMetadataOrchestrator:
                     lf.write(f"\n{'='*60}\nError details:\n{'='*60}\n\n")
                     for fname, msg in self._errors:
                         lf.write(f"  - {fname}: {msg}\n")
-            except Exception as e:
-                print(f"[batch] erreur log: {e}")
+            except Exception:
                 log_path = None
 
         summary_data = {
@@ -654,8 +653,8 @@ class _BatchMetadataOrchestrator:
             try:
                 images_data = self._extract_non_cbz(orig_filepath, ext)
                 new_state.images_data = images_data
-            except Exception as e:
-                print(f"Erreur extraction {orig_filepath}: {e}")
+            except Exception:
+                pass
 
         return cbz_filepath, new_state
 
@@ -907,8 +906,7 @@ class _BatchMetadataOrchestrator:
                     pass
                 raise
 
-        except Exception as e:
-            print(f"Erreur sauvegarde {filepath}: {e}")
+        except Exception:
             return
 
         # Supprimer l'original non-CBZ
@@ -942,8 +940,8 @@ class _BatchMetadataOrchestrator:
                         op.pFrom  = orig + "\0\0"
                         op.fFlags = 0x0040   # FOF_ALLOWUNDO → corbeille
                         shell32.SHFileOperationW(ctypes.byref(op))
-            except Exception as e:
-                print(f"Erreur suppression {orig}: {e}")
+            except Exception:
+                pass
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
