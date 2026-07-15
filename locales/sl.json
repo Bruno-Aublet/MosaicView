@@ -74,7 +74,8 @@
     "title": "Pregledovalnik",
     "mode_single": "Ena stran  [D]",
     "mode_double": "Dvojna stran  [D]",
-    "mode_continuous": "Neprekinjeni način  [D]"
+    "mode_continuous": "Neprekinjeni način  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Naslednja stran (→)",
       "zoom_in": "Povečaj + (Ctrl+Plus)",
       "zoom_out": "Pomanjšaj - (Ctrl+Minus)",
-      "zoom_reset": "Ponastavi povečavo (Ctrl+0)",
+      "zoom_reset": "Prilagodi oknu (Ctrl+0)",
+      "zoom_100": "Povečava 100 % (Ctrl+1)",
       "reading_mode_double": "Spremeni način branja (D) → Dvojne strani",
       "reading_mode_continuous": "Spremeni način branja (D) → Neprekinjene dvojne strani",
       "reading_mode_single": "Spremeni način branja (D) → Enojne strani",
       "fullscreen_exit": "Zapusti celozaslonski način (F11)",
       "fullscreen": "Celozaslonski način (F11)",
       "close_viewer": "Zapri pregledovalnik (ESC)",
-      "delete_bookmark": "Izbriši zaznamek"
+      "delete_bookmark": "Izbriši zaznamek",
+      "reading_mode_webtoon": "Spremeni način branja (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Poškodovana slika - Zamenjaj",
@@ -1222,7 +1225,9 @@
       "window_title": "Podvojitve",
       "no_duplicates": "Ni zaznanih podvojitev.",
       "group_title": "Skupina {num}: {count} enakih strani",
-      "delete_selection": "Izbriši izbor"
+      "delete_selection": "Izbriši izbor",
+      "select_group": "Izberi skupino",
+      "deselect_group": "Prekliči izbor skupine"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Splošcenje map",
     "flatten_content": "Če vaš arhiv vsebuje podmape, uporabite 'Splošči mape', da prenesete vse slike na isto raven.",
     "viewer": "Pregledovalnik",
-    "viewer_content": "Dvakrat kliknite na stran za odprtje pregledovalnika:\n• Tipki ← → : navigacija med stranmi\n• Tipka D: preklapljanje med 3 načini branja\n  - Enojne strani: ena stran naenkrat\n  - Dvojne strani: stran 1 sama, nato 2-3, 4-5 itd.\n  - Neprekinjene dvojne strani: stran 1 sama, nato 2-3, 3-4, 4-5 itd.\n• Miškin kolešček: hitra navigacija\n• Ctrl+kolešček ali Ctrl+Plus/Minus: povečava\n• Ctrl+0: ponastavi povečavo\n• Tipka F11: celozaslonski način\n• Dvakrat kliknite: preklopi celozaslonski način\n• Tipka Esc: prekliči okvir za obrezovanje / zapusti pregledovalnik\n• Zaznamek: samodejno shrani trenutno stran ob zaprtju pregledovalnika (razen prve in zadnje strani). Na ustrezni sličici v mozaiku se prikaže rdeč trak. Ob naslednjem odpiranju sporočilo predlaga vrnitev na to stran. Samodejno se izbriše na zadnji strani ali ročno z desnim klikom v pregledovalniku.",
+    "viewer_content": "Dvokliknite na stran, da odprete pregledovalnik:\n• Tipke ← →: navigacija med stranmi\n• Tipka D: preklapljanje med 4 načini branja\n  - Ena stran: ena stran naenkrat\n  - Dvojne strani: stran 1 sama, nato 2-3, 4-5 itd.\n  - Neprekinjene dvojne strani: stran 1 sama, nato 2-3, 3-4, 4-5 itd.\n  - Webtoon: za navpične slike (spletni stripi), širina omejena na 900px zaradi berljivosti; kolesce miške pomika stran navpično, ob vrhu/dnu pa preklopi stran\n• Kolesce miške: hitra navigacija (navpično pomikanje po strani v načinu Webtoon)\n• Ctrl+kolesce ali Ctrl+plus/minus: povečava (do 1000 % dejanske velikosti slike)\n• Ctrl+0: prilagodi povečavo oknu\n• Ctrl+1: povečava na 100 % (dejanska velikost slikovnih pik slike)\n• Desni klik + vlečenje: premakni prikazano sliko, ko presega okno\n• Tipka F11: celozaslonski način\n• Dvoklik: preklop celozaslonskega načina\n• Tipka Esc: prekliči okvir obrezovanja / zapusti pregledovalnik\n• Zaznamek: samodejno shrani trenutno stran ob zapiranju pregledovalnika (razen prve in zadnje strani). Na ustrezni sličici v mozaiku se prikaže rdeč trak. Ob naslednjem odpiranju sporočilo predlaga vrnitev na to stran. Samodejno izbrisano na zadnji strani ali ročno z desnim klikom v pregledovalniku.",
     "join_pages": "Združevanje strani",
     "join_pages_content": "Izberite več zaporednih strani, desni klik → 'Združi izbrane strani' za združevanje strani vodoravno ali navpično. Format nastale slike ustreza formatu izvornih strani, če so vse enake, sicer privzeto PNG. Izbrali boste lahko, ali izbrišete ali obdržite izvirne strani.\n\nMesto nove strani v mozaiku:\n• Aktivni način preštevilčenja (samodejni ali ročni): stran prevzame mesto prve združene strani (njeno mesto, če so izvorne strani izbrisane, ali tik pred njo, če so ohranjene), in sproži preštevilčenje.\n• Izklopljen način preštevilčenja: stran se doda na začetek mozaika pod imenom \"Združeno_xxx\".",
     "split_pages": "Razdelitev strani",
@@ -1310,7 +1315,7 @@
     "crop": "Obrezovanje v pregledovalniku",
     "crop_content": "V pregledovalniku narišite pravokotnik na sliki, da določite območje obrezave:\n• Narišite pravokotnik z miško\n• Spremenite velikost s potegom robov ali kotov\n• Kliknite 'Potrdi obrezavo' za uporabo\n• Obrezava se uporabi na trenutni sliki\n• Tipka Esc: prekliči okvir za obrezovanje",
     "shortcuts": "Bližnjice na tipkovnici",
-    "shortcuts_content": "• Ctrl+Z: Razveljavi zadnje dejanje\n• Ctrl+Y: Uveljavi razveljavljeno dejanje\n• Ctrl+A: Izberi vse strani\n• Ctrl+I: Obrni izbiro\n• Ctrl+C: Kopiraj izbrane strani\n• Ctrl+X: Izreži izbrane strani\n• Ctrl+V: Prilepi strani\n• Delete: Izbriši izbrane strani\n• Ctrl+kolesce miške: Povečaj / zmanjšaj velikost sličic\n• Ctrl+Alt+T: Izvozi vse prikazane sličice iz mozaika\n• F5: Posodobi prikaz mozaika\n• F11: Preklopi celozaslonski način (izhod s F11 ali ESC)",
+    "shortcuts_content": "• Ctrl+Z: Razveljavi zadnje dejanje\n• Ctrl+Y: Ponovi razveljavljeno dejanje\n• Ctrl+A: Izberi vse strani\n• Ctrl+I: Obrni izbor\n• Ctrl+C: Kopiraj izbrane strani\n• Ctrl+X: Izreži izbrane strani\n• Ctrl+V: Prilepi strani\n• Del: Izbriši izbrane strani\n• Ctrl+kolesce miške: Povečava (pregledovalnik) / velikost sličic (mozaik) / velikost ikon (stolpec ikon)\n• Ctrl+0 (pregledovalnik): Prilagodi povečavo oknu\n• Ctrl+1 (pregledovalnik): Povečava na 100 % (dejanska velikost slike)\n• Desni klik + vlečenje (pregledovalnik): Premakni prikazano sliko\n• Ctrl+Alt+T: Izvozi vse prikazane sličice iz mozaika\n• F5: Posodobi prikaz mozaika\n• F11: Preklopi celozaslonski način (izhod z F11 ali ESC)",
     "dark_mode": "Temni način",
     "dark_mode_content": "Kliknite gumb sonce/luna za preklop med svetlo in temno temo.",
     "sort": "Razvrščanje strani",

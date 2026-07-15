@@ -105,14 +105,23 @@ def estimate_compression_rate(entry):
 
 
 def _make_checkerboard_pil(w: int, h: int, tile: int = 8) -> Image.Image:
-    """Génère une image PIL damier RGBA (gris clair / gris foncé)."""
+    """Génère une image PIL damier RGBA (gris clair / gris foncé).
+
+    Construit un motif de base (2x2 cases) puis le répète par collage de blocs
+    entiers plutôt que pixel par pixel : une boucle Python pixel par pixel sur
+    une grande image (ex. une page verticale de webtoon) prend plusieurs
+    secondes, contre quelques dizaines de ms avec ce tuilage.
+    """
     light = (200, 200, 200, 255)
     dark  = (160, 160, 160, 255)
+    pattern = Image.new('RGBA', (tile * 2, tile * 2), light)
+    pattern.paste(Image.new('RGBA', (tile, tile), dark), (tile, 0))
+    pattern.paste(Image.new('RGBA', (tile, tile), dark), (0, tile))
     bg = Image.new('RGBA', (w, h))
-    pixels = bg.load()
-    for y in range(h):
-        for x in range(w):
-            pixels[x, y] = light if ((x // tile) + (y // tile)) % 2 == 0 else dark
+    pw, ph = pattern.size
+    for y in range(0, h, ph):
+        for x in range(0, w, pw):
+            bg.paste(pattern, (x, y))
     return bg
 
 

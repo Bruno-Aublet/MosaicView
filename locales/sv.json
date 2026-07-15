@@ -74,7 +74,8 @@
     "title": "Visare",
     "mode_single": "Enkel sida  [D]",
     "mode_double": "Dubbelsida  [D]",
-    "mode_continuous": "Kontinuerligt läge  [D]"
+    "mode_continuous": "Kontinuerligt läge  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Nästa sida (→)",
       "zoom_in": "Zooma in (Ctrl+Plus)",
       "zoom_out": "Zooma ut (Ctrl+Minus)",
-      "zoom_reset": "Återställ zoom (Ctrl+0)",
+      "zoom_reset": "Anpassa till fönster (Ctrl+0)",
+      "zoom_100": "Zoom 100% (Ctrl+1)",
       "reading_mode_double": "Byt läsläge (D) → Dubbelsidor",
       "reading_mode_continuous": "Byt läsläge (D) → Kontinuerliga dubbelsidor",
       "reading_mode_single": "Byt läsläge (D) → Enkel sida",
       "fullscreen_exit": "Avsluta helskärm (F11)",
       "fullscreen": "Helskärm (F11)",
       "close_viewer": "Stäng visaren (ESC)",
-      "delete_bookmark": "Radera bokmärke"
+      "delete_bookmark": "Radera bokmärke",
+      "reading_mode_webtoon": "Byt läsläge (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Skadad bild - Ersätt",
@@ -1222,7 +1225,9 @@
       "window_title": "Dubbletter",
       "no_duplicates": "Inga dubbletter hittades.",
       "group_title": "Grupp {num}: {count} identiska sidor",
-      "delete_selection": "Ta bort markering"
+      "delete_selection": "Ta bort markering",
+      "select_group": "Markera gruppen",
+      "deselect_group": "Avmarkera gruppen"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Platta till mappar",
     "flatten_content": "Om ditt arkiv innehåller undermappar, använd 'Platta till mappar' för att flytta alla bilder till samma nivå.",
     "viewer": "Visare",
-    "viewer_content": "Dubbelklicka på en sida för att öppna visaren:\n• Tangenterna ← → : navigera mellan sidor\n• Tangent D: växla mellan 3 läslägen\n  - Enkel sida: en sida åt gången\n  - Dubbelsidor: sida 1 ensam, sedan 2-3, 4-5, etc.\n  - Kontinuerliga dubbelsidor: sida 1 ensam, sedan 2-3, 3-4, 4-5, etc.\n• Mushjul: snabb navigering\n• Ctrl+Mushjul eller Ctrl+Plus/Minus: zoom\n• Ctrl+0: återställ zoom\n• Tangent F11: helskärm\n• Dubbelklick: växla helskärm\n• Tangent Esc: avbryt beskärningsram / stäng visaren\n• Bokmärke: sparar automatiskt den aktuella sidan när visningsprogrammet stängs (utom första och sista sidan). Ett rött band visas på den motsvarande miniatyrbilden i mosaiken. Vid nästa öppning föreslår ett meddelande att återvända till den här sidan. Tas bort automatiskt på sista sidan eller manuellt via högerklick i visningsprogrammet.",
+    "viewer_content": "Dubbelklicka på en sida för att öppna visaren:\n• Piltangenter ← →: navigering mellan sidor\n• Tangent D: växla mellan 4 läslägen\n  - Enkelsida: en sida i taget\n  - Dubbelsidor: sida 1 ensam, sedan 2-3, 4-5 osv.\n  - Kontinuerliga dubbelsidor: sida 1 ensam, sedan 2-3, 3-4, 4-5 osv.\n  - Webtoon: för vertikala bilder (webcomics), bredden begränsad till 900px för att förbli läsbar; mushjulet rullar vertikalt inom sidan och byter sida vid övre/nedre kanten\n• Mushjul: snabb navigering (vertikal rullning inom sidan i Webtoon-läge)\n• Ctrl+hjul eller Ctrl+plus/minus: zoom (upp till 1000 % av bildens verkliga storlek)\n• Ctrl+0: anpassa zoom till fönstret\n• Ctrl+1: zoom till 100 % (bildens verkliga pixelstorlek)\n• Högerklicka + dra: flytta den visade bilden när den överskrider fönstret\n• Tangent F11: helskärm\n• Dubbelklick: växla helskärm\n• Esc-tangent: avbryt beskärningsram / lämna visaren\n• Bokmärke: sparar automatiskt aktuell sida när visaren stängs (utom första och sista sidan). Ett rött band visas på motsvarande miniatyrbild i mosaiken. Vid nästa öppning föreslår ett meddelande att gå tillbaka till denna sida. Tas bort automatiskt på sista sidan, eller manuellt via högerklick i visaren.",
     "join_pages": "Sammanfoga sidor",
     "join_pages_content": "Välj flera på varandra följande sidor, högerklicka → 'Sammanfoga valda sidor' för att sammanfoga sidorna horisontellt eller vertikalt. Formatet på den producerade bilden motsvarar källsidornas format om de alla är identiska, annars PNG som standard. Du kommer att kunna välja om du vill ta bort eller behålla originalsidorna.\n\nPlacering av den nya sidan i mosaiken:\n• Aktivt omnumreringsläge (automatiskt eller manuellt): sidan tar platsen för den första sammanfogade sidan (dess plats, om källsidorna tas bort, eller precis före den, om de behålls), och utlöser en omnumrering.\n• AV-läge för omnumrering: sidan läggs till längst fram i mosaiken under namnet \"Sammanfogad_xxx\".",
     "split_pages": "Dela sidor",
@@ -1310,7 +1315,7 @@
     "crop": "Beskärning i visaren",
     "crop_content": "I visaren, rita en rektangel på bilden för att definiera ett beskärningsområde:\n• Rita rektangeln med musen\n• Ändra storlek genom att dra i kanterna eller hörnen\n• Klicka på 'Godkänn beskärning' för att tillämpa\n• Beskärningen tillämpas på den aktuella bilden\n• Tangent Esc: avbryt beskärningsram",
     "shortcuts": "Kortkommandon",
-    "shortcuts_content": "• Ctrl+Z: Ångra senaste åtgärden\n• Ctrl+Y: Gör om ångrad åtgärd\n• Ctrl+A: Markera alla sidor\n• Ctrl+I: Invertera markering\n• Ctrl+C: Kopiera markerade sidor\n• Ctrl+X: Klipp ut markerade sidor\n• Ctrl+V: Klistra in sidor\n• Delete: Ta bort markerade sidor\n• Ctrl+mushjul: Öka / minska miniatyrstorleken\n• Ctrl+Alt+T: Exportera alla visade miniatyrer från mosaiken\n• F5: Uppdatera mosaikvisningen\n• F11: Växla helskärm (avsluta med F11 eller ESC)",
+    "shortcuts_content": "• Ctrl+Z: Ångra senaste åtgärden\n• Ctrl+Y: Gör om ångrad åtgärd\n• Ctrl+A: Markera alla sidor\n• Ctrl+I: Invertera markering\n• Ctrl+C: Kopiera markerade sidor\n• Ctrl+X: Klipp ut markerade sidor\n• Ctrl+V: Klistra in sidor\n• Del: Ta bort markerade sidor\n• Ctrl+mushjul: Zoom (visare) / miniatyrstorlek (mosaik) / ikonstorlek (ikonkolumn)\n• Ctrl+0 (visare): Anpassa zoom till fönstret\n• Ctrl+1 (visare): Zoom till 100 % (bildens verkliga storlek)\n• Högerklicka + dra (visare): Flytta den visade bilden\n• Ctrl+Alt+T: Exportera alla visade miniatyrer från mosaiken\n• F5: Uppdatera mosaikvyn\n• F11: Växla helskärm (avsluta med F11 eller ESC)",
     "dark_mode": "Mörkt läge",
     "dark_mode_content": "Klicka på sol/måne-knappen för att växla mellan ljust och mörkt tema.",
     "sort": "Sortera sidor",

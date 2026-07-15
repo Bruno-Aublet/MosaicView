@@ -74,7 +74,8 @@
     "title": "Penampil",
     "mode_single": "Halaman tunggal  [D]",
     "mode_double": "Halaman ganda  [D]",
-    "mode_continuous": "Mode berkelanjutan  [D]"
+    "mode_continuous": "Mode berkelanjutan  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Halaman berikutnya (→)",
       "zoom_in": "Perbesar (Ctrl+Plus)",
       "zoom_out": "Perkecil (Ctrl+Minus)",
-      "zoom_reset": "Reset zoom (Ctrl+0)",
+      "zoom_reset": "Sesuaikan ke jendela (Ctrl+0)",
+      "zoom_100": "Zoom 100% (Ctrl+1)",
       "reading_mode_double": "Ubah mode baca (D) → Halaman ganda",
       "reading_mode_continuous": "Ubah mode baca (D) → Halaman ganda berkelanjutan",
       "reading_mode_single": "Ubah mode baca (D) → Halaman tunggal",
       "fullscreen_exit": "Keluar layar penuh (F11)",
       "fullscreen": "Layar penuh (F11)",
       "close_viewer": "Tutup penampil (ESC)",
-      "delete_bookmark": "Hapus penanda"
+      "delete_bookmark": "Hapus penanda",
+      "reading_mode_webtoon": "Ubah mode baca (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Gambar rusak - Ganti",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplikat",
       "no_duplicates": "Tidak ada duplikat yang terdeteksi.",
       "group_title": "Grup {num}: {count} halaman identik",
-      "delete_selection": "Hapus pilihan"
+      "delete_selection": "Hapus pilihan",
+      "select_group": "Pilih grup",
+      "deselect_group": "Batalkan pilihan grup"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Ratakan direktori",
     "flatten_content": "Jika arsip Anda berisi sub-folder, gunakan 'Ratakan direktori' untuk membawa semua gambar ke tingkat yang sama.",
     "viewer": "Penampil",
-    "viewer_content": "Klik dua kali pada halaman untuk membuka penampil:\n• Tombol ← →: navigasi antar halaman\n• Tombol D: beralih antara 3 mode baca\n  - Halaman tunggal: satu halaman sekaligus\n  - Halaman ganda: halaman 1 sendiri, lalu 2-3, 4-5, dll.\n  - Halaman ganda berkelanjutan: halaman 1 sendiri, lalu 2-3, 3-4, 4-5, dll.\n• Roda mouse: navigasi cepat\n• Ctrl+Roda atau Ctrl+Plus/Minus: zoom\n• Ctrl+0: reset zoom\n• Tombol F11: layar penuh\n• Klik dua kali: toggle layar penuh\n• Tombol Esc: batalkan bingkai pangkas / tutup penampil\n• Penanda: secara otomatis menyimpan halaman saat ini saat menutup penampil (kecuali halaman pertama dan terakhir). Pita merah muncul pada thumbnail yang sesuai di mosaik. Saat dibuka berikutnya, sebuah pesan menyarankan untuk kembali ke halaman ini. Dihapus otomatis di halaman terakhir, atau secara manual melalui klik kanan di penampil.",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka penampil:\n• Tombol ← →: navigasi antar halaman\n• Tombol D: beralih antara 4 mode baca\n  - Halaman tunggal: satu halaman pada satu waktu\n  - Halaman ganda: halaman 1 sendiri, lalu 2-3, 4-5, dst.\n  - Halaman ganda berkelanjutan: halaman 1 sendiri, lalu 2-3, 3-4, 4-5, dst.\n  - Webtoon: untuk gambar vertikal (webcomic), lebar dibatasi 900px agar tetap mudah dibaca; roda mouse menggulir vertikal di dalam halaman, lalu berpindah halaman saat mencapai atas/bawah\n• Roda mouse: navigasi cepat (gulir vertikal di dalam halaman pada mode Webtoon)\n• Ctrl+roda atau Ctrl+Plus/Minus: zoom (hingga 1000% dari ukuran asli gambar)\n• Ctrl+0: sesuaikan zoom ke jendela\n• Ctrl+1: zoom ke 100% (ukuran piksel asli gambar)\n• Klik kanan + seret: geser gambar yang ditampilkan saat melebihi jendela\n• Tombol F11: layar penuh\n• Klik dua kali: alihkan layar penuh\n• Tombol Esc: batalkan bingkai pemotongan / keluar dari penampil\n• Penanda halaman: secara otomatis menyimpan halaman saat ini saat menutup penampil (kecuali halaman pertama dan terakhir). Pita merah muncul pada thumbnail yang sesuai di mosaik. Saat dibuka kembali, pesan menyarankan untuk kembali ke halaman ini. Dihapus secara otomatis pada halaman terakhir, atau secara manual melalui klik kanan di penampil.",
     "join_pages": "Gabungkan halaman",
     "join_pages_content": "Pilih beberapa halaman berurutan, klik kanan → 'Gabungkan halaman terpilih' untuk menggabungkan halaman secara horizontal atau vertikal. Format gambar yang dihasilkan sesuai dengan format halaman sumber jika semuanya identik, jika tidak PNG secara default. Anda akan dapat memilih untuk menghapus atau menyimpan halaman asli.\n\nLokasi halaman baru di mosaik:\n• Mode penomoran ulang aktif (otomatis atau manual): halaman mengambil tempat halaman pertama yang digabungkan (tempatnya, jika halaman sumber dihapus, atau tepat sebelumnya, jika dipertahankan), dan memicu penomoran ulang.\n• Mode penomoran ulang MATI: halaman ditambahkan di depan mosaik dengan nama \"Gabungan_xxx\".",
     "split_pages": "Pisahkan halaman",
@@ -1310,7 +1315,7 @@
     "crop": "Pemotongan di penampil",
     "crop_content": "Di penampil, gambar persegi panjang pada gambar untuk mendefinisikan area pemotongan:\n• Gambar persegi panjang dengan mouse\n• Ubah ukurannya dengan menarik tepi atau sudut\n• Klik 'Konfirmasi pemotongan' untuk menerapkan\n• Pemotongan diterapkan pada gambar saat ini\n• Tombol Esc: batalkan bingkai pangkas",
     "shortcuts": "Pintasan keyboard",
-    "shortcuts_content": "• Ctrl+Z: Batalkan tindakan terakhir\n• Ctrl+Y: Ulangi tindakan yang dibatalkan\n• Ctrl+A: Pilih semua halaman\n• Ctrl+I: Balik pilihan\n• Ctrl+C: Salin halaman yang dipilih\n• Ctrl+X: Potong halaman yang dipilih\n• Ctrl+V: Tempel halaman\n• Delete: Hapus halaman yang dipilih\n• Ctrl+gulir mouse: Perbesar / perkecil ukuran gambar kecil\n• Ctrl+Alt+T: Ekspor semua gambar kecil yang ditampilkan di mosaik\n• F5: Perbarui tampilan mosaik\n• F11: Beralih layar penuh (keluar dengan F11 atau ESC)",
+    "shortcuts_content": "• Ctrl+Z: Batalkan tindakan terakhir\n• Ctrl+Y: Ulangi tindakan yang dibatalkan\n• Ctrl+A: Pilih semua halaman\n• Ctrl+I: Balikkan pilihan\n• Ctrl+C: Salin halaman yang dipilih\n• Ctrl+X: Potong halaman yang dipilih\n• Ctrl+V: Tempel halaman\n• Del: Hapus halaman yang dipilih\n• Ctrl+roda mouse: Zoom (penampil) / ukuran thumbnail (mosaik) / ukuran ikon (kolom ikon)\n• Ctrl+0 (penampil): Sesuaikan zoom ke jendela\n• Ctrl+1 (penampil): Zoom ke 100% (ukuran asli gambar)\n• Klik kanan + seret (penampil): Geser gambar yang ditampilkan\n• Ctrl+Alt+T: Ekspor semua thumbnail yang ditampilkan dari mosaik\n• F5: Perbarui tampilan mosaik\n• F11: Alihkan layar penuh (keluar dengan F11 atau ESC)",
     "dark_mode": "Mode gelap",
     "dark_mode_content": "Klik tombol matahari/bulan untuk beralih antara tema terang dan gelap.",
     "sort": "Urutkan halaman",

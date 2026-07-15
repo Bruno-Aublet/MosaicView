@@ -74,7 +74,8 @@
     "title": "Centuva",
     "mode_single": "Minya lambë  [D]",
     "mode_double": "Yúyo lambë  [D]",
-    "mode_continuous": "Lúmequenta lambë  [D]"
+    "mode_continuous": "Lúmequenta lambë  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Arimelda parma (→)",
       "zoom_in": "Tyalië + (Ctrl+Plus)",
       "zoom_out": "Tyalië - (Ctrl+Moins)",
-      "zoom_reset": "Rinyë tyalië (Ctrl+0)",
+      "zoom_reset": "Panya tyalië ammen (Ctrl+0)",
+      "zoom_100": "Tyalië 100% (Ctrl+1)",
       "reading_mode_double": "Návë nottië (D) → Attëa parmar",
       "reading_mode_continuous": "Návë nottië (D) → Attëa parmar vórimar",
       "reading_mode_single": "Návë nottië (D) → Parma erya",
       "fullscreen_exit": "Elda larca cénë (F11)",
       "fullscreen": "Larca cénë (F11)",
       "close_viewer": "Hanta i centuva (ESC)",
-      "delete_bookmark": "Lahta i·lambetengwe"
+      "delete_bookmark": "Lahta i·lambetengwe",
+      "reading_mode_webtoon": "Návë nottië (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Fána russë - Envinyata",
@@ -1222,7 +1225,9 @@
       "window_title": "Atta-parmar",
       "no_duplicates": "Atta-parmar lá hirne.",
       "group_title": "Ohtë {num}: {count} parmar ve ata",
-      "delete_selection": "Nas i cille"
+      "delete_selection": "Nas i cille",
+      "select_group": "Cilmë i·ohtë",
+      "deselect_group": "Avalcilmë i·ohtë"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Lanya i aldasseli",
     "flatten_content": "Ai raincelma lyéva harya aldasseli, nota 'Lanya i aldasseli' an horya illi fánar at anwa erë.",
     "viewer": "Centuva",
-    "viewer_content": "Attëa-naucë parma an panya i centuva:\n• Macar ← → : návië enda i parmar\n• Macil D : návë enda neldë nottier\n  - Parma erya: parma erya tambë\n  - Parmar attëar: parma 1 erë, san 2-3, 4-5, etc.\n  - Parmar attëar vórimar: parma 1 erë, san 2-3, 3-4, 4-5, etc.\n• Corma númenno: návië árië\n• Ctrl+Corma maldë Ctrl+Plus/Moins: tyalië\n• Ctrl+0: rinyë tyalië\n• Macil F11: larca cénë\n• Attëa-naucë: návë larca cénë\n• Macil Échap: avatyaro i napanorwa / elda i centuva\n• Quantalë: automaivë carda ya cuv' i hísar vihtanë (sív' i minya ar i telda carda). Carnë telco orëa i parma i mósaikessë. I nev' apantaina, parma-quetë mapa i yestuvantë i carda senna. Autamaivë nortaina i telda cardassë yan i handa nurtainë vihtanessë.",
+    "viewer_content": "Tyalë atta ata-nyérëa parma i-panya tyalië:\n• Tencelli ← →: telien imbe parmar\n• Tencel D: vista imbe 4 nótielë\n  - Parma erya: parma minya lú illumë\n  - Attëa parmar: parma 1 erinqua, tá 2-3, 4-5, ar hyaner\n  - Attëa parmar vórimar: parma 1 erinqua, tá 2-3, 3-4, 4-5, ar hyaner\n  - Webtoon: parmalis tyelpëva (webcomics), lenya nu 900px an tenna hanya; cirya lelehta ulya tyelpëo mir parma, tá vistëa parma nurtallo/telcollo\n• Cirya lelehta: telien lintë (ulya tyelpëo mir parma Webtoon-nótesse)\n• Ctrl+Cirya ar Ctrl+Ar/Únë: tyalië (tenna 1000% mí handa nelet emman)\n• Ctrl+0: Panya tyalië ammen\n• Ctrl+1: tyalië 100% (handa pixel nelet emman)\n• Faila ledya ar hate: hehta i emma tanwa írë ammen lá\n• Tencel F11: minya cemen\n• Atta-nyérëa: vista minya cemen\n• Tencel Esc: Avahaila i tanwa cirta / auta i tyalë\n• Parma-tanwa: hepë auta i parma sina írë i tyalë auta (apa minya ar métima parma). Carnë landa cenima mí parmavorn handa fánar. Ilya nyérë i tyalë, quetta hyara nauva enta parma. Nurta métima parmasse, egor faila ledya i tyalë.",
     "join_pages": "Oacë parmar",
     "join_pages_content": "Cilë lië pitya i hilyala, formë telpina → 'Oantëa cílina pitya' oantëasë pitya i tereva hya i tana. I tanwa emma i nauva véla i cenima pitya emma qui ilyar tá ve, hya PNG i minya norma. Nauva cilë avatyar hya sávë i yára pitya.\n\nI vinya pitya sata mí i emmavaina:\n• Vala rinwë norma (cenima hya mahtaina): i pitya camë i sata minya oantëa pitya (i sata, qui i yára pitya avatyaina, hya nó tanen, qui sávëa), ar antëa rinwë.\n• Úma rinwë norma: i pitya antaina mi i yesta i emmavaina nossë \"Oacëa_xxx\".",
     "split_pages": "Rahta parmar",
@@ -1310,7 +1315,7 @@
     "crop": "Píta mi centuva",
     "crop_content": "Mi centuva, tirë cantalë i fánassë an hacë nómë pítaivë:\n• Tirë i cantalë as númenno\n• Renvinyata anwa as horya i cantar maldë corniéli\n• Naucë 'Manta i píta' an tér\n• I píta tërcëa at fána anwa\n• Macil Échap: avatyaro i napanorwa",
     "shortcuts": "Tengwi árië",
-    "shortcuts_content": "• Ctrl+Z: Nurta i návë yára\n• Ctrl+Y: Ata-carë i návë nurtaina\n• Ctrl+A: Cilë illi i parmar\n• Ctrl+I: Hwinya i orthelë\n• Ctrl+C: Samna i parmar cilyar\n• Ctrl+X: Cesta i parmar cilyar\n• Ctrl+V: Pata i parmar\n• Suppr: Nauta i parmar cilyar\n• Ctrl+cirya masto: Alta / pitya i tanwe nelehta\n• Ctrl+Alt+T: Anta ilya tanwe cendaina mi mosaic\n• F5: Envinyata i cenda en mosaic\n• F11: Hahta írima lanwa (auta F11 mal ESC)",
+    "shortcuts_content": "• Ctrl+Z: Nurta métima carë\n• Ctrl+Y: Ata-carë nurtëa carë\n• Ctrl+A: Cilië ilya parma\n• Ctrl+I: Vista i cilië\n• Ctrl+C: Samna cilina parmar\n• Ctrl+X: Risto cilina parmar\n• Ctrl+V: Pata parmar\n• Del: Nauta cilina parmar\n• Ctrl+Cirya lelehta: Tyalië (tyalë) / handa fána (parmavorn) / handa tanwa (tanwa lestë)\n• Ctrl+0 (tyalë): Panya tyalië ammen\n• Ctrl+1 (tyalë): Tyalië 100% (handa nelet emman)\n• Faila ledya ar hate (tyalë): Hehta i emma tanwa\n• Ctrl+Alt+T: Anta ilya fána cenima o parmavorn\n• F5: Enyalë i cendë parmavorn\n• F11: Vista minya cemen (auta F11 ar ESC)",
     "dark_mode": "Nottië morna",
     "dark_mode_content": "Pitya i anar/isil qanta yo vanya atta morna ar lusta temen.",
     "sort": "Núta i parmar",

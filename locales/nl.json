@@ -74,7 +74,8 @@
     "title": "Viewer",
     "mode_single": "Enkele pagina  [D]",
     "mode_double": "Dubbele pagina  [D]",
-    "mode_continuous": "Continue modus  [D]"
+    "mode_continuous": "Continue modus  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Volgende pagina (→)",
       "zoom_in": "Inzoomen (Ctrl+Plus)",
       "zoom_out": "Uitzoomen (Ctrl+Min)",
-      "zoom_reset": "Zoom resetten (Ctrl+0)",
+      "zoom_reset": "Aanpassen aan venster (Ctrl+0)",
+      "zoom_100": "Zoom 100% (Ctrl+1)",
       "reading_mode_double": "Leesmodus wijzigen (D) → Dubbele pagina's",
       "reading_mode_continuous": "Leesmodus wijzigen (D) → Continue dubbele pagina's",
       "reading_mode_single": "Leesmodus wijzigen (D) → Enkele pagina",
       "fullscreen_exit": "Volledig scherm verlaten (F11)",
       "fullscreen": "Volledig scherm (F11)",
       "close_viewer": "Viewer sluiten (ESC)",
-      "delete_bookmark": "Bladwijzer verwijderen"
+      "delete_bookmark": "Bladwijzer verwijderen",
+      "reading_mode_webtoon": "Leesmodus wijzigen (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Beschadigde afbeelding - Vervangen",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplicaten",
       "no_duplicates": "Geen duplicaten gevonden.",
       "group_title": "Groep {num}: {count} identieke pagina's",
-      "delete_selection": "Selectie verwijderen"
+      "delete_selection": "Selectie verwijderen",
+      "select_group": "Groep selecteren",
+      "deselect_group": "Groepselectie opheffen"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Mappen afvlakken",
     "flatten_content": "Als uw archief submappen bevat, gebruik dan 'Mappen afvlakken' om alle afbeeldingen naar hetzelfde niveau te brengen.",
     "viewer": "Viewer",
-    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Pijltoetsen ← → : navigatie tussen pagina's\n• Toets D: schakelen tussen 3 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, daarna 2-3, 4-5, etc.\n  - Continue dubbele pagina's: pagina 1 alleen, daarna 2-3, 3-4, 4-5, etc.\n• Muiswiel: snelle navigatie\n• Ctrl+Wiel of Ctrl+Plus/Min: zoomen\n• Ctrl+0: zoom resetten\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm in-/uitschakelen\n• Esc-toets: bijsnijkader annuleren / viewer sluiten\n• Bladwijzer: slaat de huidige pagina automatisch op bij het sluiten van de viewer (behalve de eerste en laatste pagina). Een rood lint verschijnt op de bijbehorende miniatuur in het mozaïek. Bij de volgende opening stelt een bericht voor om naar deze pagina terug te keren. Automatisch verwijderd op de laatste pagina of handmatig via rechtermuisklik in de viewer.",
+    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Toetsen ← →: navigeren tussen pagina's\n• Toets D: schakelen tussen 4 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, dan 2-3, 4-5, enz.\n  - Doorlopende dubbele pagina's: pagina 1 alleen, dan 2-3, 3-4, 4-5, enz.\n  - Webtoon: voor verticale afbeeldingen (webcomics), breedte beperkt tot 900px om leesbaar te blijven; het muiswiel scrolt verticaal binnen de pagina en wisselt van pagina zodra boven-/onderkant is bereikt\n• Muiswiel: snelle navigatie (verticaal scrollen binnen de pagina in Webtoon-modus)\n• Ctrl+wiel of Ctrl+Plus/Min: zoomen (tot 1000% van de werkelijke afbeeldingsgrootte)\n• Ctrl+0: zoom aanpassen aan venster\n• Ctrl+1: zoom naar 100% (werkelijke pixelgrootte van de afbeelding)\n• Rechtsklik + slepen: de weergegeven afbeelding verplaatsen wanneer deze het venster overschrijdt\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm schakelen\n• Esc-toets: bijsnijkader annuleren / viewer verlaten\n• Bladwijzer: slaat automatisch de huidige pagina op bij het sluiten van de viewer (behalve de eerste en laatste pagina). Er verschijnt een rood lint op de bijbehorende miniatuur in de mozaïek. Bij de volgende keer openen stelt een bericht voor om terug te keren naar deze pagina. Wordt automatisch verwijderd op de laatste pagina, of handmatig via rechtsklik in de viewer.",
     "join_pages": "Pagina's samenvoegen",
     "join_pages_content": "Selecteer meerdere opeenvolgende pagina's, rechtsklik → 'Geselecteerde pagina's samenvoegen' om de pagina's horizontaal of verticaal samen te voegen. Het formaat van de geproduceerde afbeelding komt overeen met dat van de bronpagina's als ze allemaal identiek zijn, anders standaard PNG. U kunt kiezen of u de originele pagina's wilt verwijderen of behouden.\n\nPlaats van de nieuwe pagina in de mozaïek:\n• Actieve hernummeringsmodus (automatisch of handmatig): de pagina neemt de plaats in van de eerste samengevoegde pagina (haar plaats, als de bronpagina's worden verwijderd, of vlak ervoor, als ze worden behouden), en activeert een hernummering.\n• UIT-modus voor hernummering: de pagina wordt vooraan de mozaïek toegevoegd onder de naam \"Samenvoeging_xxx\".",
     "split_pages": "Pagina's splitsen",
@@ -1310,7 +1315,7 @@
     "crop": "Bijsnijden in de viewer",
     "crop_content": "Teken in de viewer een rechthoek op de afbeelding om een bijsnijdgebied te definiëren:\n• Teken de rechthoek met de muis\n• Pas de grootte aan door aan de randen of hoeken te trekken\n• Klik op 'Bijsnijden valideren' om toe te passen\n• Het bijsnijden wordt toegepast op de huidige afbeelding\n• Esc-toets: bijsnijkader annuleren",
     "shortcuts": "Sneltoetsen",
-    "shortcuts_content": "• Ctrl+Z: Laatste actie ongedaan maken\n• Ctrl+Y: Ongedaan gemaakte actie opnieuw uitvoeren\n• Ctrl+A: Alle pagina's selecteren\n• Ctrl+I: Selectie omkeren\n• Ctrl+C: Geselecteerde pagina's kopiëren\n• Ctrl+X: Geselecteerde pagina's knippen\n• Ctrl+V: Pagina's plakken\n• Del: Geselecteerde pagina's verwijderen\n• Ctrl+muiswiel: Miniatuurgrootte vergroten / verkleinen\n• Ctrl+Alt+T: Alle weergegeven miniaturen uit de mozaïek exporteren\n• F5: Mozaïekweergave bijwerken\n• F11: Volledig scherm in-/uitschakelen (afsluiten met F11 of ESC)",
+    "shortcuts_content": "• Ctrl+Z: Laatste actie ongedaan maken\n• Ctrl+Y: Ongedaan gemaakte actie opnieuw uitvoeren\n• Ctrl+A: Alle pagina's selecteren\n• Ctrl+I: Selectie omkeren\n• Ctrl+C: Geselecteerde pagina's kopiëren\n• Ctrl+X: Geselecteerde pagina's knippen\n• Ctrl+V: Pagina's plakken\n• Del: Geselecteerde pagina's verwijderen\n• Ctrl+muiswiel: Zoom (viewer) / miniatuurgrootte (mozaïek) / pictogramgrootte (pictogramkolom)\n• Ctrl+0 (viewer): Zoom aanpassen aan venster\n• Ctrl+1 (viewer): Zoom naar 100% (werkelijke afbeeldingsgrootte)\n• Rechtsklik + slepen (viewer): De weergegeven afbeelding verplaatsen\n• Ctrl+Alt+T: Alle weergegeven miniaturen uit de mozaïek exporteren\n• F5: Mozaïekweergave bijwerken\n• F11: Volledig scherm schakelen (afsluiten met F11 of ESC)",
     "dark_mode": "Donkere modus",
     "dark_mode_content": "Klik op de zon/maan-knop om te schakelen tussen licht en donker thema.",
     "sort": "Pagina's sorteren",

@@ -74,7 +74,8 @@
     "title": "Žiūryklė",
     "mode_single": "Vienas puslapis  [D]",
     "mode_double": "Dvigubas puslapis  [D]",
-    "mode_continuous": "Nepertraukiamas režimas  [D]"
+    "mode_continuous": "Nepertraukiamas režimas  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Kitas puslapis (→)",
       "zoom_in": "Priartinti (Ctrl+Plius)",
       "zoom_out": "Nutolinti (Ctrl+Minus)",
-      "zoom_reset": "Atstatyti mastelį (Ctrl+0)",
+      "zoom_reset": "Pritaikyti langui (Ctrl+0)",
+      "zoom_100": "Mastelis 100% (Ctrl+1)",
       "reading_mode_double": "Keisti skaitymo režimą (D) → Dvigubi puslapiai",
       "reading_mode_continuous": "Keisti skaitymo režimą (D) → Dvigubi puslapiai nuosekliai",
       "reading_mode_single": "Keisti skaitymo režimą (D) → Vienas puslapis",
       "fullscreen_exit": "Išeiti iš viso ekrano (F11)",
       "fullscreen": "Visas ekranas (F11)",
       "close_viewer": "Uždaryti žiūryklę (ESC)",
-      "delete_bookmark": "Ištrinti žymę"
+      "delete_bookmark": "Ištrinti žymę",
+      "reading_mode_webtoon": "Keisti skaitymo režimą (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Sugadintas vaizdas - Pakeisti",
@@ -1222,7 +1225,9 @@
       "window_title": "Dublikatai",
       "no_duplicates": "Dublikatų nerasta.",
       "group_title": "{num} grupė: {count} identiški puslapiai",
-      "delete_selection": "Ištrinti pasirinkimą"
+      "delete_selection": "Ištrinti pasirinkimą",
+      "select_group": "Pasirinkti grupę",
+      "deselect_group": "Panaikinti grupės pasirinkimą"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Aplankų išlyginimas",
     "flatten_content": "Jei jūsų archyve yra poaplankai, naudokite 'Išlyginti aplankus', kad visus vaizdus perkeltumėte į tą patį lygį.",
     "viewer": "Žiūryklė",
-    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte žiūryklę:\n• Klavišai ← → : naršymas tarp puslapių\n• Klavišas D : perjungti tarp 3 skaitymo režimų\n  - Vienas puslapis: po vieną puslapį\n  - Dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 4-5 ir t.t.\n  - Dvigubi puslapiai nuosekliai: 1 puslapis vienas, tada 2-3, 3-4, 4-5 ir t.t.\n• Pelės ratukas: greitas naršymas\n• Ctrl+Ratukas arba Ctrl+Plius/Minus: mastelis\n• Ctrl+0 : atstatyti mastelį\n• Klavišas F11 : visas ekranas\n• Dukart spustelėti: perjungti visą ekraną\n• Klavišas Esc : atšaukti apkarpymo rėmelį / uždaryti žiūryklę\n• Žyma: automatiškai išsaugo dabartinį puslapį, kai uždaromas peržiūros įrankis (išskyrus pirmą ir paskutinį puslapį). Mozaikoje ant atitinkamos miniatiūros pasirodo raudona juostelė. Kitą kartą atidarant, pranešimas siūlo grįžti į šį puslapį. Automatiškai ištrinamas paskutiniame puslapyje arba rankiniu būdu dešiniuoju pelės mygtuku peržiūros įrankyje.",
+    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte peržiūros priemonę:\n• Klavišai ← →: navigacija tarp puslapių\n• Klavišas D: perjungimas tarp 4 skaitymo režimų\n  - Vienas puslapis: vienas puslapis vienu metu\n  - Dvigubi puslapiai: 1 puslapis atskirai, tada 2-3, 4-5 ir t. t.\n  - Tęstiniai dvigubi puslapiai: 1 puslapis atskirai, tada 2-3, 3-4, 4-5 ir t. t.\n  - Webtoon: vertikaliems paveikslėliams (webcomics), plotis apribotas iki 900px, kad išliktų įskaitomas; pelės ratukas slenka vertikaliai puslapyje, o pasiekus viršų/apačią pakeičia puslapį\n• Pelės ratukas: greita navigacija (vertikalus slinkimas puslapyje Webtoon režimu)\n• Ctrl+ratukas arba Ctrl+plius/minus: mastelio keitimas (iki 1000 % tikrojo vaizdo dydžio)\n• Ctrl+0: pritaikyti mastelį langui\n• Ctrl+1: mastelis 100 % (tikrasis vaizdo pikselių dydis)\n• Dešiniuoju mygtuku spustelėti + tempti: perkelti rodomą vaizdą, kai jis viršija langą\n• Klavišas F11: visas ekranas\n• Dukart spustelėti: perjungti visą ekraną\n• Esc klavišas: atšaukti apkarpymo rėmelį / išeiti iš peržiūros priemonės\n• Žymė: automatiškai išsaugo dabartinį puslapį uždarant peržiūros priemonę (išskyrus pirmą ir paskutinį puslapį). Atitinkamoje mozaikos miniatiūroje rodoma raudona juostelė. Kitą kartą atidarius, pranešimas siūlo grįžti į šį puslapį. Automatiškai ištrinama paskutiniame puslapyje arba rankiniu būdu dešiniuoju pelės mygtuku peržiūros priemonėje.",
     "join_pages": "Puslapių sujungimas",
     "join_pages_content": "Pasirinkite kelis iš eilės einančius puslapius, dešiniuoju pelės klavišu spustelėkite → 'Sujungti pasirinktus puslapius', kad sujungtumėte puslapius horizontaliai arba vertikaliai. Sukurto vaizdo formatas atitinka šaltinio puslapių formatą, jei jie visi identiški, priešingu atveju pagal numatytuosius nustatymus PNG. Galėsite pasirinkti, ar ištrinti, ar palikti originalius puslapius.\n\nNaujo puslapio vieta mozaikoje:\n• Aktyvus numeravimo iš naujo režimas (automatinis arba rankinis): puslapis užima pirmo sujungto puslapio vietą (jo vietą, jei šaltinio puslapiai ištrinami, arba tiesiai prieš jį, jei jie paliekami), ir suaktyvina numeravimą iš naujo.\n• IŠJUNGTAS numeravimo iš naujo režimas: puslapis pridedamas mozaikos pradžioje pavadinimu \"Sujungimas_xxx\".",
     "split_pages": "Puslapių padalinimas",
@@ -1310,7 +1315,7 @@
     "crop": "Apkarpymas žiūryklėje",
     "crop_content": "Žiūryklėje nubrėžkite stačiakampį ant vaizdo, kad apibrėžtumėte apkarpymo zoną:\n• Nubrėžkite stačiakampį pele\n• Keiskite jo dydį traukdami kraštus ar kampus\n• Spustelėkite 'Patvirtinti apkarpymą', kad pritaikytumėte\n• Apkarpymas pritaikomas dabartiniam vaizdui\n• Klavišas Esc : atšaukti apkarpymo rėmelį",
     "shortcuts": "Klaviatūros spartieji klavišai",
-    "shortcuts_content": "• Ctrl+Z : Atšaukti paskutinį veiksmą\n• Ctrl+Y : Grąžinti atšauktą veiksmą\n• Ctrl+A : Pažymėti visus puslapius\n• Ctrl+I: Apversti pasirinkimą\n• Ctrl+C : Kopijuoti pasirinktus puslapius\n• Ctrl+X : Iškirpti pasirinktus puslapius\n• Ctrl+V : Įkliuoti puslapius\n• Delete : Ištrinti pasirinktus puslapius\n• Ctrl+pelės ratukas : Padidinti / sumažinti miniatiūrų dydį\n• Ctrl+Alt+T : Eksportuoti visas mozaikoje rodomas miniatiūras\n• F5: Atnaujinti mozaikos vaizdą\n• F11: Perjungti viso ekrano režimą (išeiti su F11 arba ESC)",
+    "shortcuts_content": "• Ctrl+Z: Anuliuoti paskutinį veiksmą\n• Ctrl+Y: Grąžinti anuliuotą veiksmą\n• Ctrl+A: Pasirinkti visus puslapius\n• Ctrl+I: Invertuoti pasirinkimą\n• Ctrl+C: Kopijuoti pasirinktus puslapius\n• Ctrl+X: Iškirpti pasirinktus puslapius\n• Ctrl+V: Įklijuoti puslapius\n• Naikinti: Ištrinti pasirinktus puslapius\n• Ctrl+pelės ratukas: Mastelis (peržiūros priemonė) / miniatiūros dydis (mozaika) / piktogramos dydis (piktogramų stulpelis)\n• Ctrl+0 (peržiūros priemonė): Pritaikyti mastelį langui\n• Ctrl+1 (peržiūros priemonė): Mastelis 100 % (tikrasis vaizdo dydis)\n• Dešiniuoju mygtuku spustelėti + tempti (peržiūros priemonė): Perkelti rodomą vaizdą\n• Ctrl+Alt+T: Eksportuoti visas mozaikoje rodomas miniatiūras\n• F5: Atnaujinti mozaikos rodinį\n• F11: Perjungti visą ekraną (išeiti F11 arba ESC)",
     "dark_mode": "Tamsi tema",
     "dark_mode_content": "Spustelėkite saulės/mėnulio mygtuką, kad perjungtumėte tarp šviesios ir tamsios temos.",
     "sort": "Puslapių rūšiavimas",

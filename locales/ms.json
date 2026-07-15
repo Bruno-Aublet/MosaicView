@@ -74,7 +74,8 @@
     "title": "Penonton",
     "mode_single": "Halaman tunggal  [D]",
     "mode_double": "Halaman berganda  [D]",
-    "mode_continuous": "Mod berterusan  [D]"
+    "mode_continuous": "Mod berterusan  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Halaman seterusnya (→)",
       "zoom_in": "Zum + (Ctrl+Plus)",
       "zoom_out": "Zum - (Ctrl+Minus)",
-      "zoom_reset": "Set semula zum (Ctrl+0)",
+      "zoom_reset": "Sesuaikan ke tetingkap (Ctrl+0)",
+      "zoom_100": "Zum 100% (Ctrl+1)",
       "reading_mode_double": "Tukar mod bacaan (D) → Halaman berganda",
       "reading_mode_continuous": "Tukar mod bacaan (D) → Halaman berganda berterusan",
       "reading_mode_single": "Tukar mod bacaan (D) → Halaman tunggal",
       "fullscreen_exit": "Keluar skrin penuh (F11)",
       "fullscreen": "Skrin penuh (F11)",
       "close_viewer": "Tutup penonton (ESC)",
-      "delete_bookmark": "Padam penanda buku"
+      "delete_bookmark": "Padam penanda buku",
+      "reading_mode_webtoon": "Tukar mod bacaan (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Imej rosak - Ganti",
@@ -1222,7 +1225,9 @@
       "window_title": "Pendua",
       "no_duplicates": "Tiada pendua dikesan.",
       "group_title": "Kumpulan {num}: {count} halaman serupa",
-      "delete_selection": "Padam pilihan"
+      "delete_selection": "Padam pilihan",
+      "select_group": "Pilih kumpulan",
+      "deselect_group": "Nyahpilih kumpulan"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Meratakan direktori",
     "flatten_content": "Jika arkib anda mengandungi subfolder, gunakan 'Ratakan direktori' untuk membawa semua imej ke tahap yang sama.",
     "viewer": "Penonton",
-    "viewer_content": "Klik dua kali pada halaman untuk membuka penonton:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: beralih antara 3 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berganda: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berganda berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n• Roda tetikus: navigasi pantas\n• Ctrl+Roda atau Ctrl+Plus/Minus: zum\n• Ctrl+0: set semula zum\n• Kekunci F11: skrin penuh\n• Klik dua kali: tukar skrin penuh\n• Kekunci Esc: batalkan bingkai pangkas / keluar dari penonton\n• Penanda halaman: menyimpan halaman semasa secara automatik apabila menutup pemapar (kecuali halaman pertama dan terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Pada pembukaan seterusnya, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir atau secara manual melalui klik kanan dalam pemapar.",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka pemapar:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: tukar antara 4 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berganda: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berganda berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n  - Webtoon: untuk imej menegak (webcomic), lebar dihadkan kepada 900px supaya kekal mudah dibaca; roda tetikus menatal menegak dalam halaman, kemudian menukar halaman apabila sampai ke atas/bawah\n• Roda tetikus: navigasi pantas (tatalan menegak dalam halaman dalam mod Webtoon)\n• Ctrl+roda atau Ctrl+Plus/Minus: zum (sehingga 1000% daripada saiz sebenar imej)\n• Ctrl+0: sesuaikan zum ke tetingkap\n• Ctrl+1: zum ke 100% (saiz piksel sebenar imej)\n• Klik kanan + seret: gerakkan imej yang dipaparkan apabila melebihi tetingkap\n• Kekunci F11: skrin penuh\n• Klik dua kali: togol skrin penuh\n• Kekunci Esc: batal bingkai pemotongan / keluar dari pemapar\n• Penanda halaman: secara automatik menyimpan halaman semasa apabila menutup pemapar (kecuali halaman pertama dan terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Semasa dibuka semula, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir, atau secara manual melalui klik kanan dalam pemapar.",
     "join_pages": "Mencantum halaman",
     "join_pages_content": "Pilih beberapa halaman berturut-turut, klik kanan → 'Cantumkan halaman terpilih' untuk mencantumkan halaman secara mendatar atau menegak. Format imej yang dihasilkan sepadan dengan format halaman sumber jika semuanya sama, jika tidak PNG secara lalai. Anda akan dapat memilih untuk memadam atau mengekalkan halaman asal.\n\nLokasi halaman baharu dalam mozek:\n• Mod penomboran semula aktif (automatik atau manual): halaman mengambil tempat halaman pertama yang dicantumkan (tempatnya, jika halaman sumber dipadam, atau tepat sebelumnya, jika dikekalkan), dan mencetuskan penomboran semula.\n• Mod penomboran semula OFF: halaman ditambah di hadapan mozek dengan nama \"Cantuman_xxx\".",
     "split_pages": "Memisahkan halaman",
@@ -1310,7 +1315,7 @@
     "crop": "Pangkasan dalam penonton",
     "crop_content": "Dalam penonton, lukis segi empat tepat pada imej untuk menentukan kawasan pangkasan:\n• Lukis segi empat tepat dengan tetikus\n• Ubah saiznya dengan menarik tepi atau penjuru\n• Klik 'Sahkan pangkasan' untuk menggunakan\n• Pangkasan digunakan pada imej semasa\n• Kekunci Esc: batalkan bingkai pangkas",
     "shortcuts": "Pintasan papan kekunci",
-    "shortcuts_content": "• Ctrl+Z: Buat asal tindakan terakhir\n• Ctrl+Y: Buat semula tindakan yang dibatalkan\n• Ctrl+A: Pilih semua halaman\n• Ctrl+I: Songsangkan pilihan\n• Ctrl+C: Salin halaman terpilih\n• Ctrl+X: Potong halaman terpilih\n• Ctrl+V: Tampal halaman\n• Del: Padam halaman terpilih\n• Ctrl+roda tetikus: Besarkan / kecilkan saiz lakaran kecil\n• Ctrl+Alt+T: Eksport semua lakaran kecil yang dipaparkan dalam mozek\n• F5: Kemas kini paparan mozek\n• F11: Tukar skrin penuh (keluar dengan F11 atau ESC)",
+    "shortcuts_content": "• Ctrl+Z: Buat asal tindakan terakhir\n• Ctrl+Y: Buat semula tindakan yang dibuat asal\n• Ctrl+A: Pilih semua halaman\n• Ctrl+I: Songsangkan pilihan\n• Ctrl+C: Salin halaman yang dipilih\n• Ctrl+X: Potong halaman yang dipilih\n• Ctrl+V: Tampal halaman\n• Del: Padam halaman yang dipilih\n• Ctrl+roda tetikus: Zum (pemapar) / saiz lakaran kecil (mozek) / saiz ikon (lajur ikon)\n• Ctrl+0 (pemapar): Sesuaikan zum ke tetingkap\n• Ctrl+1 (pemapar): Zum ke 100% (saiz sebenar imej)\n• Klik kanan + seret (pemapar): Gerakkan imej yang dipaparkan\n• Ctrl+Alt+T: Eksport semua lakaran kecil yang dipaparkan daripada mozek\n• F5: Kemas kini paparan mozek\n• F11: Togol skrin penuh (keluar dengan F11 atau ESC)",
     "dark_mode": "Mod gelap",
     "dark_mode_content": "Klik butang matahari/bulan untuk bertukar antara tema terang dan gelap.",
     "sort": "Mengisih halaman",

@@ -1892,7 +1892,13 @@ class PanelWidget(QWidget):
         QTimer.singleShot(0, lambda: _center_on_widget(dlg, self))
 
     def _close_bookmark_popup(self):
-        """Ferme la pop-up marque-page si elle est encore ouverte (ex: fermeture du comics)."""
+        """Ferme la pop-up marque-page si elle est encore ouverte (ex: fermeture du comics).
+
+        Réinitialise aussi le garde-fou _bookmark_popup_shown_for : le fichier est
+        fermé, donc une réouverture ultérieure (même fichier) doit pouvoir reproposer
+        le popup au lieu d'être bloquée comme un simple rechargement de mosaïque.
+        """
+        self._bookmark_popup_shown_for = None
         dlg = getattr(self, "_bookmark_popup", None)
         if dlg is not None:
             try:

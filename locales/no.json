@@ -74,7 +74,8 @@
     "title": "Fremviser",
     "mode_single": "Enkeltside  [D]",
     "mode_double": "Dobbeltside  [D]",
-    "mode_continuous": "Kontinuerlig modus  [D]"
+    "mode_continuous": "Kontinuerlig modus  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Neste side (→)",
       "zoom_in": "Zoom + (Ctrl+Plus)",
       "zoom_out": "Zoom - (Ctrl+Minus)",
-      "zoom_reset": "Tilbakestill zoom (Ctrl+0)",
+      "zoom_reset": "Tilpass til vindu (Ctrl+0)",
+      "zoom_100": "Zoom 100% (Ctrl+1)",
       "reading_mode_double": "Bytt lesemodus (D) → Doble sider",
       "reading_mode_continuous": "Bytt lesemodus (D) → Kontinuerlige doble sider",
       "reading_mode_single": "Bytt lesemodus (D) → Enkeltside",
       "fullscreen_exit": "Avslutt fullskjerm (F11)",
       "fullscreen": "Fullskjerm (F11)",
       "close_viewer": "Lukk fremviseren (ESC)",
-      "delete_bookmark": "Slett bokmerke"
+      "delete_bookmark": "Slett bokmerke",
+      "reading_mode_webtoon": "Bytt lesemodus (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Korrupt bilde - Erstatt",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplikater",
       "no_duplicates": "Ingen duplikater oppdaget.",
       "group_title": "Gruppe {num}: {count} identiske sider",
-      "delete_selection": "Slett utvalg"
+      "delete_selection": "Slett utvalg",
+      "select_group": "Velg gruppen",
+      "deselect_group": "Fjern valg av gruppen"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Flat ut mapper",
     "flatten_content": "Hvis arkivet ditt inneholder undermapper, bruk 'Flat ut mapper' for å bringe alle bildene til samme nivå.",
     "viewer": "Fremviser",
-    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← → : navigering mellom sider\n• Tast D : bytt mellom 3 lesemodi\n  - Enkeltside: én side om gangen\n  - Doble sider: side 1 alene, deretter 2-3, 4-5, osv.\n  - Kontinuerlige doble sider: side 1 alene, deretter 2-3, 3-4, 4-5, osv.\n• Musehjul: rask navigering\n• Ctrl+Musehjul eller Ctrl+Plus/Minus: zoom\n• Ctrl+0: tilbakestill zoom\n• Tast F11: fullskjerm\n• Dobbeltklikk: bytt fullskjerm\n• Tast Esc: avbryt beskjæringsramme / avslutt fremviseren\n• Bokmerke: lagrer automatisk den gjeldende siden når visningsprogrammet lukkes (unntatt første og siste side). Et rødt bånd vises på den tilsvarende miniatyrbildet i mosaikken. Ved neste åpning foreslår en melding å gå tilbake til denne siden. Slettes automatisk på siste side eller manuelt via høyreklikk i visningsprogrammet.",
+    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← →: navigering mellom sider\n• Tast D: bytte mellom 4 lesemodus\n  - Enkeltside: én side om gangen\n  - Dobbeltsider: side 1 alene, deretter 2-3, 4-5 osv.\n  - Kontinuerlige dobbeltsider: side 1 alene, deretter 2-3, 3-4, 4-5 osv.\n  - Webtoon: for loddrette bilder (webcomics), bredden er begrenset til 900px for å holde det lesbart; musehjulet ruller loddrett i siden, og bytter side når topp/bunn er nådd\n• Musehjul: rask navigering (loddrett rulling i siden i Webtoon-modus)\n• Ctrl+hjul eller Ctrl+Pluss/Minus: zoom (opptil 1000 % av bildets faktiske størrelse)\n• Ctrl+0: tilpass zoom til vinduet\n• Ctrl+1: zoom til 100 % (bildets faktiske pikselstørrelse)\n• Høyreklikk + dra: flytt det viste bildet når det overskrider vinduet\n• Tast F11: fullskjerm\n• Dobbeltklikk: veksle fullskjerm\n• Esc-tast: avbryt beskjæringsramme / avslutt fremviseren\n• Bokmerke: lagrer automatisk gjeldende side når fremviseren lukkes (unntatt første og siste side). Et rødt bånd vises på det tilsvarende miniatyrbildet i mosaikken. Ved neste åpning foreslår en melding å gå tilbake til denne siden. Slettes automatisk på siste side, eller manuelt via høyreklikk i fremviseren.",
     "join_pages": "Slå sammen sider",
     "join_pages_content": "Velg flere påfølgende sider, høyreklikk → 'Slå sammen valgte sider' for å slå sammen sidene horisontalt eller vertikalt. Formatet på det resulterende bildet samsvarer med kildesidenes format hvis de alle er identiske, ellers PNG som standard. Du vil kunne velge om du vil slette eller beholde de originale sidene.\n\nPlassering av den nye siden i mosaikken:\n• Aktiv omnummereringsmodus (automatisk eller manuell): siden tar plassen til den første sammenslåtte siden (dens plass, hvis kildesidene slettes, eller rett foran den, hvis de beholdes), og utløser en omnummerering.\n• AV-modus for omnummerering: siden legges til fremst i mosaikken under navnet \"Sammenslåing_xxx\".",
     "split_pages": "Del sider",
@@ -1310,7 +1315,7 @@
     "crop": "Beskjæring i fremviseren",
     "crop_content": "I fremviseren, tegn et rektangel på bildet for å definere et beskjæringsområde:\n• Tegn rektangelet med musen\n• Endre størrelse ved å dra i kantene eller hjørnene\n• Klikk på 'Bekreft beskjæring' for å bruke\n• Beskjæringen brukes på det gjeldende bildet\n• Tast Esc: avbryt beskjæringsramme",
     "shortcuts": "Tastatursnarveier",
-    "shortcuts_content": "• Ctrl+Z: Angre siste handling\n• Ctrl+Y: Gjør om angret handling\n• Ctrl+A: Velg alle sider\n• Ctrl+I: Inverter markering\n• Ctrl+C: Kopier valgte sider\n• Ctrl+X: Klipp ut valgte sider\n• Ctrl+V: Lim inn sider\n• Del: Slett valgte sider\n• Ctrl+musehjul: Øk / reduser miniatyrstørrelsen\n• Ctrl+Alt+T: Eksporter alle viste miniatyrer fra mosaikken\n• F5: Oppdater mosaikvisningen\n• F11: Bytt fullskjerm (avslutt med F11 eller ESC)",
+    "shortcuts_content": "• Ctrl+Z: Angre siste handling\n• Ctrl+Y: Gjør om angret handling\n• Ctrl+A: Velg alle sider\n• Ctrl+I: Inverter utvalg\n• Ctrl+C: Kopier valgte sider\n• Ctrl+X: Klipp ut valgte sider\n• Ctrl+V: Lim inn sider\n• Del: Slett valgte sider\n• Ctrl+musehjul: Zoom (fremviser) / miniatyrstørrelse (mosaikk) / ikonstørrelse (ikonkolonne)\n• Ctrl+0 (fremviser): Tilpass zoom til vinduet\n• Ctrl+1 (fremviser): Zoom til 100 % (faktisk bildestørrelse)\n• Høyreklikk + dra (fremviser): Flytt det viste bildet\n• Ctrl+Alt+T: Eksporter alle viste miniatyrbilder fra mosaikken\n• F5: Oppdater visningen av mosaikken\n• F11: Veksle fullskjerm (avslutt med F11 eller ESC)",
     "dark_mode": "Mørkt tema",
     "dark_mode_content": "Klikk på sol/måne-knappen for å bytte mellom lyst og mørkt tema.",
     "sort": "Sorter sider",

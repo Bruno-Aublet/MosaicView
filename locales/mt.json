@@ -74,7 +74,8 @@
     "title": "Visualizzatur",
     "mode_single": "Paġna waħda  [D]",
     "mode_double": "Paġna doppja  [D]",
-    "mode_continuous": "Mod kontinwu  [D]"
+    "mode_continuous": "Mod kontinwu  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Paġna li jmiss (→)",
       "zoom_in": "Zoom + (Ctrl+Plus)",
       "zoom_out": "Zoom - (Ctrl+Minus)",
-      "zoom_reset": "Irrisettja l-zoom (Ctrl+0)",
+      "zoom_reset": "Adatta mat-tieqa (Ctrl+0)",
+      "zoom_100": "Zoom 100% (Ctrl+1)",
       "reading_mode_double": "Ibdel il-modalità tal-qari (D) → Paġni doppji",
       "reading_mode_continuous": "Ibdel il-modalità tal-qari (D) → Paġni doppji kontinwi",
       "reading_mode_single": "Ibdel il-modalità tal-qari (D) → Paġna waħda",
       "fullscreen_exit": "Oħroġ mill-iskrin sħiħ (F11)",
       "fullscreen": "Iskrin sħiħ (F11)",
       "close_viewer": "Agħlaq il-visualizzatur (ESC)",
-      "delete_bookmark": "Ħassar il-bookmark"
+      "delete_bookmark": "Ħassar il-bookmark",
+      "reading_mode_webtoon": "Ibdel il-modalità tal-qari (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Immaġni korrotta - Ibdel",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplikati",
       "no_duplicates": "L-ebda duplikat ma nstab.",
       "group_title": "Grupp {num}: {count} paġni identiċi",
-      "delete_selection": "Ħassar l-għażla"
+      "delete_selection": "Ħassar l-għażla",
+      "select_group": "Agħżel il-grupp",
+      "deselect_group": "Neħħi l-għażla tal-grupp"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Saħħan id-direttorji",
     "flatten_content": "Jekk l-arkivju tiegħek fih sottofolders, uża 'Saħħan id-direttorji' biex tġib l-immaġini kollha fl-istess livell.",
     "viewer": "Visualizzatur",
-    "viewer_content": "Ikklikkja darbtejn fuq paġna biex tiftaħ il-visualizzatur:\n• Buttuni ← →: navigazzjoni bejn il-paġni\n• Buttuna D: ibdel bejn 3 modalitajiet ta' qari\n  - Paġna waħda: paġna waħda kull darba\n  - Paġni doppji: paġna 1 waħedha, imbagħad 2-3, 4-5, eċċ.\n  - Paġni doppji kontinwi: paġna 1 waħedha, imbagħad 2-3, 3-4, 4-5, eċċ.\n• Rota tal-maws: navigazzjoni veloċi\n• Ctrl+Rota jew Ctrl+Plus/Minus: zoom\n• Ctrl+0: irrisettja l-zoom\n• Buttuna F11: iskrin sħiħ\n• Ikklikkja darbtejn: ibdel l-iskrin sħiħ\n• Buttuna Esc: ikkanċella l-kwadru tal-qtugħ / oħroġ mill-visualizzatur\n• Bukmark: jaħżen awtomatikament il-paġna attwali meta tagħlaq il-viewer (ħlief l-ewwel u l-aħħar paġna). Faxxa ħamra tidher fuq it-thumbnail korrispondenti fil-mużajk. Fl-apertura li jmiss, messaġġ jissuġġerixxi li terġa' lura għal din il-paġna. Jitħassar awtomatikament fl-aħħar paġna jew manwalment permezz ta' klikk tal-lemin fil-viewer.",
+    "viewer_content": "Ikklikkja darbtejn fuq paġna biex tiftaħ il-viewer:\n• Tastieri ← →: navigazzjoni bejn il-paġni\n• Tast D: aqleb bejn 4 modi ta' qari\n  - Paġna waħda: paġna waħda kull darba\n  - Paġni doppji: paġna 1 waħedha, imbagħad 2-3, 4-5, eċċ.\n  - Paġni doppji kontinwi: paġna 1 waħedha, imbagħad 2-3, 3-4, 4-5, eċċ.\n  - Webtoon: għal stampi vertikali (webcomics), il-wisa' limitat għal 900px biex tibqa' leġġibbli; ir-rota tal-maws tiskrollja vertikalment fil-paġna, u tibdel il-paġna meta tilħaq il-quċċata/il-qiegħ\n• Rota tal-maws: navigazzjoni rapida (skroll vertikali fil-paġna fil-modalità Webtoon)\n• Ctrl+rota jew Ctrl+Plus/Minus: zoom (sa 1000% tad-daqs reali tal-immaġni)\n• Ctrl+0: adatta z-zoom mat-tieqa\n• Ctrl+1: zoom għal 100% (id-daqs reali tal-pixels tal-immaġni)\n• Klikk tal-lemin + iġbed: iċċaqlaq l-immaġni murija meta taqbeż it-tieqa\n• Tast F11: skrin sħiħ\n• Klikk doppju: aqleb skrin sħiħ\n• Tast Esc: ikkanċella l-qafas tal-qtugħ / oħroġ mill-viewer\n• Bookmark: jissejvja awtomatikament il-paġna kurrenti meta jingħalaq il-viewer (ħlief l-ewwel u l-aħħar paġna). Tidher tejp aħmar fuq it-thumbnail korrispondenti fil-mosajk. Meta terġa' tinfetaħ, messaġġ jissuġġerixxi li terġa' lura għal din il-paġna. Titħassar awtomatikament fl-aħħar paġna, jew manwalment permezz ta' klikk tal-lemin fil-viewer.",
     "join_pages": "Waħħad il-paġni",
     "join_pages_content": "Agħżel diversi paġni konsekuttivi, klikkja bil-lemin → 'Għaqqad il-paġni magħżula' biex tgħaqqad il-paġni orizzontalment jew vertikalment. Il-format tal-immaġni prodotta jaqbel ma' dak tal-paġni sors jekk ilkoll identiċi, jekk le PNG b'mod awtomatiku. Tkun tista' tagħżel jekk tħassarx jew iżżomm il-paġni oriġinali.\n\nPost il-paġna l-ġdida fil-mosajk:\n• Modalità ta' numerazzjoni mill-ġdid attiva (awtomatika jew manwali): il-paġna tieħu post l-ewwel paġna magħquda (postha, jekk il-paġni sors jitħassru, jew eżatt qabilha, jekk jinżammu), u tqajjem numerazzjoni mill-ġdid.\n• Modalità OFF ta' numerazzjoni mill-ġdid: il-paġna tiżdied fil-quddiem tal-mosajk taħt l-isem \"Magħqud_xxx\".",
     "split_pages": "Aqsam il-paġni",
@@ -1310,7 +1315,7 @@
     "crop": "Qtugħ fil-visualizzatur",
     "crop_content": "Fil-visualizzatur, iddisinja rettangolu fuq l-immaġni biex tiddefinixxi żona ta' qtugħ:\n• Iddisinja r-rettangolu bil-maws\n• Ibdel id-daqs tiegħu billi tiġbed it-truf jew l-angoli\n• Ikklikkja fuq 'Ikkonferma l-qtugħ' biex tapplika\n• Il-qtugħ jiġi applikat għall-immaġni kurrenti\n• Buttuna Esc: ikkanċella l-kwadru tal-qtugħ",
     "shortcuts": "Skurtajjiet tat-tastiera",
-    "shortcuts_content": "• Ctrl+Z: Annulla l-aħħar azzjoni\n• Ctrl+Y: Erġa' agħmel l-azzjoni annullata\n• Ctrl+A: Agħżel il-paġni kollha\n• Ctrl+I: Inverti l-għażla\n• Ctrl+C: Kopja l-paġni magħżula\n• Ctrl+X: Aqta' l-paġni magħżula\n• Ctrl+V: Waħħal il-paġni\n• Del: Ħassar il-paġni magħżula\n• Ctrl+rota tal-maws: Żid / naqqas id-daqs tal-minjaturi\n• Ctrl+Alt+T: Esporta l-minjaturi kollha murija fil-mużajk\n• F5: Aġġorna l-wiri tal-mużajk\n• F11: Ibdel skrin sħiħa (oħroġ b'F11 jew ESC)",
+    "shortcuts_content": "• Ctrl+Z: Ħassar l-aħħar azzjoni\n• Ctrl+Y: Erġa' agħmel l-azzjoni mħassra\n• Ctrl+A: Agħżel il-paġni kollha\n• Ctrl+I: Aqleb l-għażla\n• Ctrl+C: Ikkopja l-paġni magħżula\n• Ctrl+X: Aqta' l-paġni magħżula\n• Ctrl+V: Waħħal il-paġni\n• Del: Ħassar il-paġni magħżula\n• Ctrl+rota tal-maws: Zoom (viewer) / daqs tat-thumbnail (mosajk) / daqs tal-ikona (kolonna tal-ikoni)\n• Ctrl+0 (viewer): Adatta z-zoom mat-tieqa\n• Ctrl+1 (viewer): Zoom għal 100% (daqs reali tal-immaġni)\n• Klikk tal-lemin + iġbed (viewer): Iċċaqlaq l-immaġni murija\n• Ctrl+Alt+T: Esporta t-thumbnails kollha murija mill-mosajk\n• F5: Aġġorna l-wiri tal-mosajk\n• F11: Aqleb skrin sħiħ (oħroġ b'F11 jew ESC)",
     "dark_mode": "Modalità skura",
     "dark_mode_content": "Ikklikkja fuq il-buttuna tax-xemx/qamar biex tibdel bejn tema ċara u mudlama.",
     "sort": "Issortja l-paġni",

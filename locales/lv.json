@@ -74,7 +74,8 @@
     "title": "Skatītājs",
     "mode_single": "Viena lapa  [D]",
     "mode_double": "Dubultā lapa  [D]",
-    "mode_continuous": "Nepārtrauktais režīms  [D]"
+    "mode_continuous": "Nepārtrauktais režīms  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Nākamā lappuse (→)",
       "zoom_in": "Tuvināt (Ctrl+Plus)",
       "zoom_out": "Tālināt (Ctrl+Mīnuss)",
-      "zoom_reset": "Atiestatīt tuvināšanu (Ctrl+0)",
+      "zoom_reset": "Pielāgot logam (Ctrl+0)",
+      "zoom_100": "Tālummaiņa 100% (Ctrl+1)",
       "reading_mode_double": "Mainīt lasīšanas režīmu (D) → Dubultlappuses",
       "reading_mode_continuous": "Mainīt lasīšanas režīmu (D) → Nepārtrauktas dubultlappuses",
       "reading_mode_single": "Mainīt lasīšanas režīmu (D) → Viena lappuse",
       "fullscreen_exit": "Iziet no pilnekrāna (F11)",
       "fullscreen": "Pilnekrāns (F11)",
       "close_viewer": "Aizvērt skatītāju (ESC)",
-      "delete_bookmark": "Dzēst grāmatzīmi"
+      "delete_bookmark": "Dzēst grāmatzīmi",
+      "reading_mode_webtoon": "Mainīt lasīšanas režīmu (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Bojāts attēls - Aizstāt",
@@ -1222,7 +1225,9 @@
       "window_title": "Dublikāti",
       "no_duplicates": "Dublikāti nav atrasti.",
       "group_title": "{num}. grupa: {count} identiskas lapas",
-      "delete_selection": "Dzēst atlasi"
+      "delete_selection": "Dzēst atlasi",
+      "select_group": "Atlasīt grupu",
+      "deselect_group": "Noņemt grupas atlasi"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Mapju izlīdzināšana",
     "flatten_content": "Ja jūsu arhīvs satur apakšmapes, izmantojiet 'Izlīdzināt mapes', lai pārvietotu visus attēlus uz vienu līmeni.",
     "viewer": "Skatītājs",
-    "viewer_content": "Veiciet dubultklikšķi uz lappuses, lai atvērtu skatītāju:\n• Taustiņi ← → : navigācija starp lappusēm\n• Taustiņš D: pārslēgties starp 3 lasīšanas režīmiem\n  - Viena lappuse: pa vienai lappusei\n  - Dubultlappuses: 1. lappuse viena, pēc tam 2-3, 4-5 utt.\n  - Nepārtrauktas dubultlappuses: 1. lappuse viena, pēc tam 2-3, 3-4, 4-5 utt.\n• Peles ritenītis: ātra navigācija\n• Ctrl+ritenītis vai Ctrl+Plus/Mīnuss: tuvināšana\n• Ctrl+0: atiestatīt tuvināšanu\n• Taustiņš F11: pilnekrāna režīms\n• Dubultklikšķis: pārslēgt pilnekrāna režīmu\n• Taustiņš Escape: atcelt apgriešanas rāmi / iziet no skatītāja\n• Grāmatzīme: automātiski saglabā pašreizējo lapu, aizverot skatītāju (izņemot pirmo un pēdējo lapu). Uz atbilstošā sīktēla mozaīkā parādās sarkana lente. Nākamreiz atverot, ziņojums piedāvā atgriezties šajā lapā. Automātiski dzēsta pēdējā lapā vai manuāli ar peles labo taustiņu skatītājā.",
+    "viewer_content": "Veiciet dubultklikšķi uz lapas, lai atvērtu skatītāju:\n• Taustiņi ← →: navigācija starp lapām\n• Taustiņš D: pārslēgšanās starp 4 lasīšanas režīmiem\n  - Viena lapa: viena lapa vienlaikus\n  - Dubultās lapas: 1. lapa atsevišķi, tad 2-3, 4-5 utt.\n  - Nepārtrauktas dubultās lapas: 1. lapa atsevišķi, tad 2-3, 3-4, 4-5 utt.\n  - Webtoon: vertikāliem attēliem (tīmekļa komiksi), platums ierobežots līdz 900px, lai saglabātu salasāmību; peles ritenītis ritina lapu vertikāli, sasniedzot augšu/apakšu, notiek lappuses maiņa\n• Peles ritenītis: ātra navigācija (vertikāla ritināšana lapā Webtoon režīmā)\n• Ctrl+ritenītis vai Ctrl+plus/mīnus: tālummaiņa (līdz 1000% no attēla reālā izmēra)\n• Ctrl+0: pielāgot tālummaiņu logam\n• Ctrl+1: tālummaiņa 100% (attēla reālais pikseļu izmērs)\n• Labais klikšķis + vilkšana: pārvietot parādīto attēlu, kad tas pārsniedz logu\n• Taustiņš F11: pilnekrāna režīms\n• Dubultklikšķis: pārslēgt pilnekrāna režīmu\n• Esc taustiņš: atcelt apgriešanas rāmi / iziet no skatītāja\n• Grāmatzīme: automātiski saglabā pašreizējo lapu, aizverot skatītāju (izņemot pirmo un pēdējo lapu). Atbilstošajā mozaīkas sīktēlā parādās sarkana lente. Nākamajā atvēršanas reizē ziņojums iesaka atgriezties šajā lapā. Automātiski izdzēsts pēdējā lapā vai manuāli ar labo klikšķi skatītājā.",
     "join_pages": "Lappušu savienošana",
     "join_pages_content": "Atlasiet vairākas secīgas lapas, ar labo peles pogu noklikšķiniet → 'Apvienot atlasītās lapas', lai apvienotu lapas horizontāli vai vertikāli. Iegūtā attēla formāts atbilst avota lapu formātam, ja tās visas ir identiskas, pretējā gadījumā pēc noklusējuma PNG. Jūs varēsiet izvēlēties, vai dzēst vai saglabāt oriģinālās lapas.\n\nJaunās lapas vieta mozaīkā:\n• Aktīvs pārnumurēšanas režīms (automātisks vai manuāls): lapa ieņem pirmās apvienotās lapas vietu (tās vietu, ja avota lapas tiek dzēstas, vai tieši pirms tās, ja tās tiek saglabātas), un aktivizē pārnumurēšanu.\n• IZSLĒGTS pārnumurēšanas režīms: lapa tiek pievienota mozaīkas sākumā ar nosaukumu \"Savienotais_xxx\".",
     "split_pages": "Lappušu sadalīšana",
@@ -1310,7 +1315,7 @@
     "crop": "Apgriešana skatītājā",
     "crop_content": "Skatītājā uzzīmējiet taisnstūri uz attēla, lai definētu apgriešanas zonu:\n• Uzzīmējiet taisnstūri ar peli\n• Mainiet tā izmēru, velkot malas vai stūrus\n• Noklikšķiniet uz 'Apstiprināt apgriešanu', lai lietotu\n• Apgriešana tiek lietota pašreizējam attēlam\n• Taustiņš Escape: atcelt apgriešanas rāmi",
     "shortcuts": "Īsinājumtaustiņi",
-    "shortcuts_content": "• Ctrl+Z: Atsaukt pēdējo darbību\n• Ctrl+Y: Atcelt atsaukšanu\n• Ctrl+A: Atlasīt visas lappuses\n• Ctrl+I: Apgriezt izvēli\n• Ctrl+C: Kopēt atlasītās lappuses\n• Ctrl+X: Izgriezt atlasītās lappuses\n• Ctrl+V: Ielīmēt lappuses\n• Delete: Dzēst atlasītās lappuses\n• Ctrl+peles ritenītis: Palielināt / samazināt sīktēlu izmēru\n• Ctrl+Alt+T: Eksportēt visas mozaīkā redzamās sīktēlus\n• F5: Atjaunināt mozāīkas attēlojumu\n• F11: Pārslēgt pilnekrāna režīmu (iziet ar F11 vai ESC)",
+    "shortcuts_content": "• Ctrl+Z: Atsaukt pēdējo darbību\n• Ctrl+Y: Atkārtot atsaukto darbību\n• Ctrl+A: Atlasīt visas lapas\n• Ctrl+I: Apvērst atlasi\n• Ctrl+C: Kopēt atlasītās lapas\n• Ctrl+X: Izgriezt atlasītās lapas\n• Ctrl+V: Ielīmēt lapas\n• Del: Dzēst atlasītās lapas\n• Ctrl+peles ritenītis: Tālummaiņa (skatītājs) / sīktēla izmērs (mozaīka) / ikonas izmērs (ikonu kolonna)\n• Ctrl+0 (skatītājs): Pielāgot tālummaiņu logam\n• Ctrl+1 (skatītājs): Tālummaiņa 100% (attēla reālais izmērs)\n• Labais klikšķis + vilkšana (skatītājs): Pārvietot parādīto attēlu\n• Ctrl+Alt+T: Eksportēt visus mozaīkā parādītos sīktēlus\n• F5: Atjaunināt mozaīkas skatu\n• F11: Pārslēgt pilnekrāna režīmu (iziet ar F11 vai ESC)",
     "dark_mode": "Tumšais režīms",
     "dark_mode_content": "Noklikšķiniet uz saules/mēness pogas, lai pārslēgtos starp gaišo un tumšo motīvu.",
     "sort": "Lappušu kārtošana",

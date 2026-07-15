@@ -170,7 +170,20 @@ class _ImageScrollWidget(QWidget):
         self.set_zoom(self._zoom + delta)
 
     def reset_zoom(self):
+        """Zoom à 100% (taille réelle des pixels de l'image)."""
         self._zoom = 1.0
+        self._offset = QPoint(0, 0)
+        self.update()
+        if self.on_zoom_changed:
+            self.on_zoom_changed(self._zoom)
+
+    def fit_to_window(self):
+        """Ajuste le zoom pour que l'image tienne entièrement dans la fenêtre."""
+        if not self._pixmap or self._pixmap.width() <= 0 or self._pixmap.height() <= 0:
+            return
+        w = max(1, self.width())
+        h = max(1, self.height())
+        self._zoom = max(0.1, min(10.0, min(w / self._pixmap.width(), h / self._pixmap.height())))
         self._offset = QPoint(0, 0)
         self.update()
         if self.on_zoom_changed:
@@ -439,7 +452,10 @@ class AdjustmentViewerDialog(QDialog):
 
         # Raccourcis clavier
         QShortcut(QKeySequence("F11"), self).activated.connect(self.toggle_fullscreen)
-        QShortcut(QKeySequence("Ctrl+0"), self).activated.connect(self._img_widget.reset_zoom)
+        QShortcut(QKeySequence("Ctrl++"), self).activated.connect(lambda: self._adjust_zoom(0.15))
+        QShortcut(QKeySequence("Ctrl+-"), self).activated.connect(lambda: self._adjust_zoom(-0.15))
+        QShortcut(QKeySequence("Ctrl+0"), self).activated.connect(self._img_widget.fit_to_window)
+        QShortcut(QKeySequence("Ctrl+1"), self).activated.connect(self._img_widget.reset_zoom)
         if mode == 'levels':
             QShortcut(QKeySequence("Ctrl+Z"), self).activated.connect(self._levels_undo)
             QShortcut(QKeySequence("Ctrl+Y"), self).activated.connect(self._levels_redo)

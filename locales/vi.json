@@ -74,7 +74,8 @@
     "title": "Trình xem",
     "mode_single": "Trang đơn  [D]",
     "mode_double": "Trang đôi  [D]",
-    "mode_continuous": "Chế độ liên tục  [D]"
+    "mode_continuous": "Chế độ liên tục  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Trang sau (→)",
       "zoom_in": "Phóng to (Ctrl+Plus)",
       "zoom_out": "Thu nhỏ (Ctrl+Minus)",
-      "zoom_reset": "Đặt lại zoom (Ctrl+0)",
+      "zoom_reset": "Vừa với cửa sổ (Ctrl+0)",
+      "zoom_100": "Thu phóng 100% (Ctrl+1)",
       "reading_mode_double": "Đổi chế độ đọc (D) → Hai trang",
       "reading_mode_continuous": "Đổi chế độ đọc (D) → Hai trang liên tục",
       "reading_mode_single": "Đổi chế độ đọc (D) → Một trang",
       "fullscreen_exit": "Thoát toàn màn hình (F11)",
       "fullscreen": "Toàn màn hình (F11)",
       "close_viewer": "Đóng trình xem (ESC)",
-      "delete_bookmark": "Xóa dấu trang"
+      "delete_bookmark": "Xóa dấu trang",
+      "reading_mode_webtoon": "Đổi chế độ đọc (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Ảnh hỏng - Thay thế",
@@ -1222,7 +1225,9 @@
       "window_title": "Trùng lặp",
       "no_duplicates": "Không phát hiện trang trùng lặp.",
       "group_title": "Nhóm {num}: {count} trang giống hệt nhau",
-      "delete_selection": "Xóa mục đã chọn"
+      "delete_selection": "Xóa mục đã chọn",
+      "select_group": "Chọn nhóm",
+      "deselect_group": "Bỏ chọn nhóm"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Làm phẳng thư mục",
     "flatten_content": "Nếu kho lưu trữ của bạn chứa thư mục con, hãy sử dụng 'Làm phẳng thư mục' để đưa tất cả ảnh về cùng một cấp.",
     "viewer": "Trình xem",
-    "viewer_content": "Nhấp đúp vào trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 3 chế độ đọc\n  - Một trang: một trang tại một thời điểm\n  - Hai trang: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Hai trang liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n• Con lăn chuột: điều hướng nhanh\n• Ctrl+Con lăn hoặc Ctrl+Plus/Minus: zoom\n• Ctrl+0: đặt lại zoom\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy khung cắt / đóng trình xem\n• Dấu trang: tự động lưu trang hiện tại khi đóng trình xem (ngoại trừ trang đầu và trang cuối). Một dải băng đỏ xuất hiện trên hình thu nhỏ tương ứng trong khảm. Lần mở tiếp theo, một thông báo gợi ý quay lại trang này. Tự động xóa ở trang cuối hoặc thủ công bằng cách nhấp chuột phải trong trình xem.",
+    "viewer_content": "Nhấp đúp vào một trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 4 chế độ đọc\n  - Trang đơn: từng trang một\n  - Trang đôi: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Trang đôi liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n  - Webtoon: dành cho ảnh dọc (webcomic), chiều rộng giới hạn 900px để dễ đọc; con lăn chuột cuộn dọc trong trang, rồi chuyển trang khi đến đầu/cuối\n• Con lăn chuột: điều hướng nhanh (cuộn dọc trong trang ở chế độ Webtoon)\n• Ctrl+con lăn hoặc Ctrl+Cộng/Trừ: thu phóng (lên đến 1000% kích thước thực của hình ảnh)\n• Ctrl+0: điều chỉnh thu phóng vừa với cửa sổ\n• Ctrl+1: thu phóng thành 100% (kích thước pixel thực của hình ảnh)\n• Nhấp chuột phải + kéo: di chuyển hình ảnh hiển thị khi vượt quá cửa sổ\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy khung cắt / thoát trình xem\n• Đánh dấu trang: tự động lưu trang hiện tại khi đóng trình xem (trừ trang đầu và trang cuối). Một dải ruy băng đỏ xuất hiện trên hình thu nhỏ tương ứng trong khảm. Khi mở lại lần sau, một thông báo đề nghị quay lại trang này. Tự động xóa ở trang cuối cùng, hoặc thủ công bằng cách nhấp chuột phải trong trình xem.",
     "join_pages": "Ghép trang",
     "join_pages_content": "Chọn nhiều trang liên tiếp, nhấp chuột phải → 'Ghép các trang đã chọn' để ghép các trang theo chiều ngang hoặc chiều dọc. Định dạng của hình ảnh được tạo ra tương ứng với định dạng của các trang nguồn nếu chúng đều giống nhau, nếu không thì mặc định là PNG. Bạn sẽ có thể chọn xóa hoặc giữ lại các trang gốc.\n\nVị trí của trang mới trong bản khảm:\n• Chế độ đánh số lại đang hoạt động (tự động hoặc thủ công): trang sẽ chiếm vị trí của trang đầu tiên được ghép (vị trí của nó, nếu các trang nguồn bị xóa, hoặc ngay trước nó, nếu chúng được giữ lại), và kích hoạt việc đánh số lại.\n• Chế độ đánh số lại TẮT: trang được thêm vào phía trước bản khảm với tên \"Ghép_xxx\".",
     "split_pages": "Tách trang",
@@ -1310,7 +1315,7 @@
     "crop": "Cắt trong trình xem",
     "crop_content": "Trong trình xem, vẽ hình chữ nhật trên ảnh để xác định vùng cắt:\n• Vẽ hình chữ nhật bằng chuột\n• Thay đổi kích thước bằng cách kéo cạnh hoặc góc\n• Nhấp 'Xác nhận cắt' để áp dụng\n• Cắt được áp dụng cho ảnh hiện tại\n• Phím Esc: hủy khung cắt",
     "shortcuts": "Phím tắt",
-    "shortcuts_content": "• Ctrl+Z: Hoàn tác thao tác cuối cùng\n• Ctrl+Y: Làm lại thao tác đã hoàn tác\n• Ctrl+A: Chọn tất cả trang\n• Ctrl+I: Đảo ngược lựa chọn\n• Ctrl+C: Sao chép trang đã chọn\n• Ctrl+X: Cắt trang đã chọn\n• Ctrl+V: Dán trang\n• Delete: Xóa trang đã chọn\n• Ctrl+con lăn chuột: Tăng / giảm kích thước ảnh thu nhỏ\n• Ctrl+Alt+T: Xuất tất cả ảnh thu nhỏ hiển thị trong khảm\n• F5: Cập nhật hiển thị khảm\n• F11: Chuyển đổi toàn màn hình (thoát bằng F11 hoặc ESC)",
+    "shortcuts_content": "• Ctrl+Z: Hoàn tác hành động cuối cùng\n• Ctrl+Y: Làm lại hành động đã hoàn tác\n• Ctrl+A: Chọn tất cả các trang\n• Ctrl+I: Đảo ngược lựa chọn\n• Ctrl+C: Sao chép các trang đã chọn\n• Ctrl+X: Cắt các trang đã chọn\n• Ctrl+V: Dán các trang\n• Del: Xóa các trang đã chọn\n• Ctrl+con lăn chuột: Thu phóng (trình xem) / kích thước hình thu nhỏ (khảm) / kích thước biểu tượng (cột biểu tượng)\n• Ctrl+0 (trình xem): Điều chỉnh thu phóng vừa với cửa sổ\n• Ctrl+1 (trình xem): Thu phóng thành 100% (kích thước thực của hình ảnh)\n• Nhấp chuột phải + kéo (trình xem): Di chuyển hình ảnh hiển thị\n• Ctrl+Alt+T: Xuất tất cả hình thu nhỏ đang hiển thị từ khảm\n• F5: Cập nhật hiển thị khảm\n• F11: Chuyển đổi toàn màn hình (thoát bằng F11 hoặc ESC)",
     "dark_mode": "Chế độ tối",
     "dark_mode_content": "Nhấp vào nút mặt trời/mặt trăng để chuyển đổi giữa chủ đề sáng và tối.",
     "sort": "Sắp xếp trang",

@@ -74,7 +74,8 @@
     "title": "Vaatur",
     "mode_single": "Üksik leht  [D]",
     "mode_double": "Kahekordne leht  [D]",
-    "mode_continuous": "Pidev režiim  [D]"
+    "mode_continuous": "Pidev režiim  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Järgmine lehekülg (→)",
       "zoom_in": "Suurenda + (Ctrl+Plus)",
       "zoom_out": "Vähenda - (Ctrl+Miinus)",
-      "zoom_reset": "Lähtesta suum (Ctrl+0)",
+      "zoom_reset": "Sobita aknasse (Ctrl+0)",
+      "zoom_100": "Suurendus 100% (Ctrl+1)",
       "reading_mode_double": "Muuda lugemisrežiimi (D) → Kahekordsed leheküljed",
       "reading_mode_continuous": "Muuda lugemisrežiimi (D) → Pidevad kahekordsed leheküljed",
       "reading_mode_single": "Muuda lugemisrežiimi (D) → Üksik lehekülg",
       "fullscreen_exit": "Välju täisekraanist (F11)",
       "fullscreen": "Täisekraan (F11)",
       "close_viewer": "Sulge vaatur (ESC)",
-      "delete_bookmark": "Kustuta järjehoidja"
+      "delete_bookmark": "Kustuta järjehoidja",
+      "reading_mode_webtoon": "Muuda lugemisrežiimi (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Rikutud pilt - Asenda",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplikaadid",
       "no_duplicates": "Duplikaate ei leitud.",
       "group_title": "Rühm {num}: {count} identset lehekülge",
-      "delete_selection": "Kustuta valik"
+      "delete_selection": "Kustuta valik",
+      "select_group": "Vali rühm",
+      "deselect_group": "Tühista rühma valik"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Kataloogide lamestamine",
     "flatten_content": "Kui teie arhiiv sisaldab alamkaustu, kasutage 'Lamesta kataloogid', et tuua kõik pildid samale tasandile.",
     "viewer": "Vaatur",
-    "viewer_content": "Topeltklõpsake leheküljel, et avada vaatur:\n• Nooled ← → : navigeerimine lehekülgede vahel\n• Klahv D: vahelduvad 3 lugemisrežiimi\n  - Üksik lehekülg: üks lehekülg korraga\n  - Kahekordsed leheküljed: lehekülg 1 üksinda, seejärel 2-3, 4-5 jne\n  - Pidevad kahekordsed leheküljed: lehekülg 1 üksinda, seejärel 2-3, 3-4, 4-5 jne\n• Hiireratas: kiire navigeerimine\n• Ctrl+Ratas või Ctrl+Pluss/Miinus: suum\n• Ctrl+0: lähtesta suum\n• Klahv F11: täisekraan\n• Topeltklõps: lülitu täisekraani\n• Klahv Esc: tühista kärpimisraam / sulge vaatur\n• Järjehoidja: salvestab automaatselt praeguse lehe vaataja sulgemisel (välja arvatud esimene ja viimane leht). Mosaiigiaknas ilmub vastava pisipildi peale punane lint. Järgmisel avamisel pakub teade naasta sellele lehele. Kustutatakse automaatselt viimasel lehel või käsitsi parema hiireklõpsuga vaatajas.",
+    "viewer_content": "Vaataja avamiseks tehke lehel topeltklõps:\n• Klahvid ← →: liikumine lehtede vahel\n• Klahv D: lülitumine 4 lugemisrežiimi vahel\n  - Üksik leht: üks leht korraga\n  - Topeltlehed: leht 1 eraldi, seejärel 2-3, 4-5 jne\n  - Pidevad topeltlehed: leht 1 eraldi, seejärel 2-3, 3-4, 4-5 jne\n  - Webtoon: vertikaalsete piltide jaoks (veebikoomiksid), laius piiratud 900 pikslini loetavuse huvides; hiireratas kerib lehe sees vertikaalselt, üla-/alaservas jõudmisel vahetub leht\n• Hiireratas: kiire liikumine (Webtoon-režiimis vertikaalne kerimine lehe sees)\n• Ctrl+ratas või Ctrl+pluss/miinus: suum (kuni 1000% pildi tegelikust suurusest)\n• Ctrl+0: sobita suum aknasse\n• Ctrl+1: suum 100% (pildi tegelik pikslisuurus)\n• Paremklõps + lohistamine: kuvatava pildi liigutamine, kui see ületab akna\n• Klahv F11: täisekraan\n• Topeltklõps: täisekraani lülitamine\n• Esc-klahv: tühista kärpimisraam / välju vaatajast\n• Järjehoidja: salvestab automaatselt praeguse lehe vaataja sulgemisel (v.a esimene ja viimane leht). Mosaiigis vastaval pisipildil kuvatakse punane lint. Järgmisel avamisel soovitab teade sellele lehele naasta. Kustutatakse automaatselt viimasel lehel või käsitsi paremklõpsuga vaatajas.",
     "join_pages": "Lehekülgede ühendamine",
     "join_pages_content": "Valige mitu järjestikust lehte, paremklõps → 'Ühenda valitud lehed', et ühendada lehed horisontaalselt või vertikaalselt. Väljundpildi formaat vastab lähtelehtede formaadile, kui need on kõik identsed, vastasel juhul vaikimisi PNG. Saate valida, kas kustutada või säilitada originaallehed.\n\nUue lehe asukoht mosaiigis:\n• Aktiivne ümbernummerdamise režiim (automaatne või käsitsi): leht võtab üle esimese ühendatud lehe koha (selle koha, kui lähtelehed kustutatakse, või vahetult enne seda, kui need säilitatakse), ja käivitab ümbernummerdamise.\n• VÄLJAS ümbernummerdamise režiim: leht lisatakse mosaiigi algusesse nimega \"Liitmine_xxx\".",
     "split_pages": "Lehekülgede tükeldamine",
@@ -1310,7 +1315,7 @@
     "crop": "Kärpimine vaaturis",
     "crop_content": "Vaaturis joonistage pildile ristkülik, et määrata kärbimisala:\n• Joonistage ristkülik hiirega\n• Muutke selle suurust, tõmmates servi või nurki\n• Klõpsake 'Kinnita kärpimine', et rakendada\n• Kärpimine rakendatakse praegusele pildile\n• Klahv Esc: tühista kärpimisraam",
     "shortcuts": "Kiirklahvid",
-    "shortcuts_content": "• Ctrl+Z: Võta tagasi viimane tegevus\n• Ctrl+Y: Tee uuesti tühistatud tegevus\n• Ctrl+A: Vali kõik leheküljed\n• Ctrl+I: Pööra valik ümber\n• Ctrl+C: Kopeeri valitud leheküljed\n• Ctrl+X: Lõika valitud leheküljed\n• Ctrl+V: Kleebi leheküljed\n• Delete: Kustuta valitud leheküljed\n• Ctrl+hiirerull: Suurenda / vähenda pisipiltide suurust\n• Ctrl+Alt+T: Ekspordi kõik mosaiigil kuvatavad pisipildid\n• F5: Värskenda mosaiigi kuvamist\n• F11: Lülita täisekraanile (välju F11 või ESC-ga)",
+    "shortcuts_content": "• Ctrl+Z: Tühista viimane toiming\n• Ctrl+Y: Tee tühistatud toiming uuesti\n• Ctrl+A: Vali kõik lehed\n• Ctrl+I: Pööra valik ümber\n• Ctrl+C: Kopeeri valitud lehed\n• Ctrl+X: Lõika valitud lehed\n• Ctrl+V: Kleebi lehed\n• Del: Kustuta valitud lehed\n• Ctrl+hiireratas: Suum (vaataja) / pisipildi suurus (mosaiik) / ikooni suurus (ikoonitulp)\n• Ctrl+0 (vaataja): Sobita suum aknasse\n• Ctrl+1 (vaataja): Suum 100% (pildi tegelik suurus)\n• Paremklõps + lohistamine (vaataja): Kuvatava pildi liigutamine\n• Ctrl+Alt+T: Ekspordi kõik mosaiigis kuvatud pisipildid\n• F5: Värskenda mosaiigi kuva\n• F11: Lülita täisekraani (välju F11 või ESC abil)",
     "dark_mode": "Tume režiim",
     "dark_mode_content": "Klõpsake päikese/kuu nupul, et lülituda heleda ja tumeda teema vahel.",
     "sort": "Lehekülgede sorteerimine",

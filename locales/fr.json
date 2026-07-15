@@ -74,7 +74,8 @@
     "title": "Visionneuse",
     "mode_single": "Page simple  [D]",
     "mode_double": "Double page  [D]",
-    "mode_continuous": "Mode continu  [D]"
+    "mode_continuous": "Mode continu  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,9 +83,11 @@
       "next_page": "Page suivante (→)",
       "zoom_in": "Zoom + (Ctrl+Plus)",
       "zoom_out": "Zoom - (Ctrl+Moins)",
-      "zoom_reset": "Réinitialiser le zoom (Ctrl+0)",
+      "zoom_reset": "Ajuster à la fenêtre (Ctrl+0)",
+      "zoom_100": "Zoom 100% (Ctrl+1)",
       "reading_mode_double": "Changer mode de lecture (D) → Double pages",
       "reading_mode_continuous": "Changer mode de lecture (D) → Double pages continues",
+      "reading_mode_webtoon": "Changer mode de lecture (D) → Webtoon",
       "reading_mode_single": "Changer mode de lecture (D) → Page simple",
       "fullscreen_exit": "Quitter le plein écran (F11)",
       "fullscreen": "Plein écran (F11)",
@@ -737,7 +740,9 @@
       "window_title": "Doublons",
       "no_duplicates": "Aucun doublon détecté.",
       "group_title": "Groupe {num} : {count} pages identiques",
-      "delete_selection": "Supprimer la sélection"
+      "delete_selection": "Supprimer la sélection",
+      "select_group": "Sélectionner le groupe",
+      "deselect_group": "Désélectionner le groupe"
     },
     "convert": {
       "window_title": "Conversion d'images",
@@ -1302,7 +1307,7 @@
     "flatten": "Aplatir les répertoires",
     "flatten_content": "Si votre archive contient des sous-dossiers, utilisez 'Aplatir les répertoires' pour ramener toutes les images au même niveau.",
     "viewer": "Visionneuse",
-    "viewer_content": "Double-cliquez sur une page pour ouvrir la visionneuse :\n• Touches ← → : navigation entre les pages\n• Touche D : basculer entre 3 modes de lecture\n  - Page simple : une page à la fois\n  - Double pages : page 1 seule, puis 2-3, 4-5, etc.\n  - Double pages continues : page 1 seule, puis 2-3, 3-4, 4-5, etc.\n• Molette de la souris : navigation rapide\n• Ctrl+Molette ou Ctrl+Plus/Moins : zoom\n• Ctrl+0 : réinitialiser le zoom\n• Touche F11 : plein écran\n• Double-clic : basculer plein écran\n• Touche Échap : annuler le cadre de découpe / quitter la visionneuse\n• Marque-page : mémorise automatiquement la page courante à la fermeture (sauf première/dernière page). Un ruban rouge s'affiche sur la vignette correspondante dans la mosaïque. À la réouverture, un message propose de reprendre à cette page. Suppression automatique à la dernière page, ou manuelle via clic droit dans la visionneuse.",
+    "viewer_content": "Double-cliquez sur une page pour ouvrir la visionneuse :\n• Touches ← → : navigation entre les pages\n• Touche D : basculer entre 4 modes de lecture\n  - Page simple : une page à la fois\n  - Double pages : page 1 seule, puis 2-3, 4-5, etc.\n  - Double pages continues : page 1 seule, puis 2-3, 3-4, 4-5, etc.\n  - Webtoon : pour les images verticales (webcomics), largeur limitée à 900px pour rester lisible ; la molette scrolle verticalement dans la page, puis change de page une fois en haut/bas\n• Molette de la souris : navigation rapide (scroll vertical dans la page en mode Webtoon)\n• Ctrl+Molette ou Ctrl+Plus/Moins : zoom (jusqu'à 1000% de la taille réelle de l'image)\n• Ctrl+0 : ajuster le zoom à la taille de la fenêtre\n• Ctrl+1 : zoom à 100% (taille réelle des pixels de l'image)\n• Clic droit + glisser : déplacer l'image affichée (pan) quand elle dépasse de la fenêtre\n• Touche F11 : plein écran\n• Double-clic : basculer plein écran\n• Touche Échap : annuler le cadre de découpe / quitter la visionneuse\n• Marque-page : mémorise automatiquement la page courante à la fermeture (sauf première/dernière page). Un ruban rouge s'affiche sur la vignette correspondante dans la mosaïque. À la réouverture, un message propose de reprendre à cette page. Suppression automatique à la dernière page, ou manuelle via clic droit dans la visionneuse.",
     "join_pages": "Joindre des pages",
     "join_pages_content": "Sélectionnez plusieurs pages consécutives, clic droit → 'Joindre les pages sélectionnées' pour joindre les pages horizontalement ou verticalement. Le format de l'image produite correspond à celui des pages sources si elles sont toutes identiques, sinon PNG par défaut. Vous pourrez choisir de supprimer ou conserver les pages d'origine.\n\nEmplacement de la nouvelle page dans la mosaïque :\n• Mode de renumérotation actif (auto ou manuel) : la page rejoint l'emplacement de la première page jointe (à sa place si les sources sont supprimées, juste avant sinon), et déclenche une renumérotation.\n• Mode de renumérotation OFF : la page est ajoutée en tête de mosaïque sous le nom \"Collage_xxx\".",
     "split_pages": "Scinder des pages",
@@ -1310,7 +1315,7 @@
     "crop": "Recadrage dans la visionneuse",
     "crop_content": "Dans la visionneuse, tracez un rectangle sur l'image pour définir une zone de recadrage :\n• Tracez le rectangle avec la souris\n• Redimensionnez-le en tirant sur les bords ou coins\n• Cliquez sur 'Valider le recadrage' pour appliquer\n• Le recadrage est appliqué à l'image actuelle\n• Touche Échap : annuler le cadre de découpe",
     "shortcuts": "Raccourcis clavier",
-    "shortcuts_content": "• Ctrl+Z : Annuler la dernière action\n• Ctrl+Y : Rétablir l'action annulée\n• Ctrl+A : Sélectionner toutes les pages\n• Ctrl+I : Inverser la sélection\n• Ctrl+C : Copier les pages sélectionnées\n• Ctrl+X : Couper les pages sélectionnées\n• Ctrl+V : Coller les pages\n• Suppr : Supprimer les pages sélectionnées\n• Ctrl+molette : Agrandir / réduire la taille des vignettes\n• Ctrl+Alt+T : Exporter toutes les vignettes affichées dans la mosaïque\n• F5 : Mettre à jour l'affichage de la mosaïque\n• F11 : Basculer en plein écran (quitter avec F11 ou ESC)",
+    "shortcuts_content": "• Ctrl+Z : Annuler la dernière action\n• Ctrl+Y : Rétablir l'action annulée\n• Ctrl+A : Sélectionner toutes les pages\n• Ctrl+I : Inverser la sélection\n• Ctrl+C : Copier les pages sélectionnées\n• Ctrl+X : Couper les pages sélectionnées\n• Ctrl+V : Coller les pages\n• Suppr : Supprimer les pages sélectionnées\n• Ctrl+molette : Zoom (visionneuse) / taille des vignettes (mosaïque) / taille des icônes (colonne d'icônes)\n• Ctrl+0 (visionneuse) : Ajuster le zoom à la fenêtre\n• Ctrl+1 (visionneuse) : Zoom à 100% (taille réelle de l'image)\n• Clic droit + glisser (visionneuse) : Déplacer l'image affichée (pan)\n• Ctrl+Alt+T : Exporter toutes les vignettes affichées dans la mosaïque\n• F5 : Mettre à jour l'affichage de la mosaïque\n• F11 : Basculer en plein écran (quitter avec F11 ou ESC)",
     "dark_mode": "Mode sombre",
     "dark_mode_content": "Cliquez sur le bouton ☀/🌙 pour basculer entre thème clair et thème sombre.",
     "sort": "Trier les pages",

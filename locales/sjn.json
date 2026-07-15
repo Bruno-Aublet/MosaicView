@@ -74,7 +74,8 @@
     "title": "Harthad",
     "mode_single": "Pân nîn  [D]",
     "mode_double": "Pân edwen  [D]",
-    "mode_continuous": "Côr bân  [D]"
+    "mode_continuous": "Côr bân  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Tell minui (→)",
       "zoom_in": "Megil + (Ctrl+Mas)",
       "zoom_out": "Megil - (Ctrl+Lim)",
-      "zoom_reset": "Adnortho i megil (Ctrl+0)",
+      "zoom_reset": "Adnortho i megil na chad (Ctrl+0)",
+      "zoom_100": "Megil 100% (Ctrl+1)",
       "reading_mode_double": "Goheno i bâd rlinn (D) → Telleir edeb",
       "reading_mode_continuous": "Goheno i bâd rlinn (D) → Telleir edeb tadol",
       "reading_mode_single": "Goheno i bâd rlinn (D) → Tell er",
       "fullscreen_exit": "Avego i lain pen (F11)",
       "fullscreen": "Lain pen (F11)",
       "close_viewer": "Tegi i harthad (ESC)",
-      "delete_bookmark": "Tolo i·bethleg"
+      "delete_bookmark": "Tolo i·bethleg",
+      "reading_mode_webtoon": "Goheno i bâd rlinn (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Randir orthel - Gohedo",
@@ -1222,7 +1225,9 @@
       "window_title": "Athrenilath",
       "no_duplicates": "Ú-hannen athrenilath.",
       "group_title": "Raid {num}: {count} pagath sui ben",
-      "delete_selection": "Aut i thûl"
+      "delete_selection": "Aut i thûl",
+      "select_group": "Egleri i raid",
+      "deselect_group": "Avelego i raid"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Pelthaedi i gorvaraid",
     "flatten_content": "Pe i târ gerir and-gorvaraid, breitho 'Pelthaedi i gorvaraid' na brestegi nel i rendir na i andeb er.",
     "viewer": "Harthad",
-    "viewer_content": "Edeb-gano ben tell na edro i harthad:\n• Tungil ← →: tírad immi telleir\n• Tungol D: misto immi ner bâd rlinn\n  - Tell er: er tell sui lû\n  - Telleir edeb: tell er erui, sui ben 2-3, 4-5, etc.\n  - Telleir edeb tadol: tell er erui, sui ben 2-3, 3-4, 4-5, etc.\n• Rodel i lhaw: tírad lim\n• Ctrl+Rodel pedo Ctrl+Mas/Lim: megil\n• Ctrl+0: adnortho i megil\n• Tungol F11: lain pen\n• Edeb-ganad: misto lain pen\n• Tungol Échap: awartha i thammas / avego i harthad\n• Tîr-lam: auto-berian i lô sí ned daered i thinnar (ú-bar i minuial ar i methuial lô). Rhibin caran ceðir or i lant thinnaren i faelas. Ned i aphadon egored, peth aphadon i rad na i lô sí. Auto-thinnathren ned i methuial lô egor perin ned clikk-ban ned i thinnar.",
+    "viewer_content": "Naru i tell na chad na laD chu':\n• Nótharon ← →: goheno rlinn telleir\n• Nótharon D: goheno pân 4 laD cham\n  - Tell er: tell ú ah ú\n  - Telleir edeb: tell 1 er, ab 2-3, 4-5, ath\n  - Telleir edeb tadol: tell 1 er, ab 2-3, 3-4, 4-5, ath\n  - Webtoon: an rendir tîr (webcomics), lath annui na 900px an gonad legib; roth megil belga tîr mi tell, ab goheno tell ne dâr/nu\n• Roth megil: goheno lim (belga tîr mi tell na laD cham Webtoon)\n• Ctrl+Roth egor Ctrl+Ah/Del: megil (adel 1000% i haered chent randir)\n• Ctrl+0: Adnortho i megil na chad\n• Ctrl+1: megil 100% (i haered pixel chent randir)\n• Nedhoro ledin egor tochenno: goheno i randir echui ir dartha vell chad\n• Nótharon F11: bâd rlinn\n• Nedhoro pân: goheno bâd rlinn\n• Nótharon Esc: Deleb i faen dregol / govano na laD chu'\n• Tavor: hebeno lim i tell si dartha ir govano na laD chu' (egor pen tell erui a minui). Faen caran nuion na randir vinn i mîw. Ir echui adarthannen, i sadron suila govediad na tell hen. Delebannen lim na tell minui, egor pân nedhoro ledin na laD chu'.",
     "join_pages": "Antha telleir",
     "join_pages_content": "Cíla lain bess i chuina, rîn i lîw a chuin → 'Modh bess cílina' na chuina bess sennas egor thennas. I celvad emma venna i chened o bess maded, qui pân genediar; egor PNG i modh hen pen. Cael cíla deleb egor gennad i bess hen.\n\nI tâl e bess vinui vi i emmadraith:\n• Modh athnimherad angerthad (angerthad egor mhaethen): i bess cael i tâl e minui chuina bess (i thâl, qui i bess hen deleb, egor athan nu, qui gennir), ar tortha athnimherad.\n• Modh athnimherad diestannen: i bess anta vi i minui i emmadraith an eneth \"Annediad_xxx\".",
     "split_pages": "Dagro telleir",
@@ -1310,7 +1315,7 @@
     "crop": "Orchad mi harthad",
     "crop_content": "Mi harthad, tiro sell ben i randir na meril dôl orchad:\n• Tiro i sell nu lhaw\n• Admerio hen nu tírad ben i remair pedo i berain\n• Gano ben 'Orchal i orchad' na hertha\n• I orchad heren na randir sui sír\n• Tungol Échap: awartha i thammas",
     "shortcuts": "Tírbuidain tungol",
-    "shortcuts_content": "• Ctrl+Z: Avedui i orthor minui\n• Ctrl+Y: Adrevedui i orthor awartha\n• Ctrl+A: Egleri nel i telleir\n• Ctrl+I: Thervia i orthel\n• Ctrl+C: Honom i telleir thelegin\n• Ctrl+X: Risto i telleir thelegin\n• Ctrl+V: Pado i telleir\n• Suppr: Deleb i telleir thelegin\n• Ctrl+tolog lU: Anta / neitho i lanw en tanwe\n• Ctrl+Alt+T: Anno bo telleir thelin pannen na mossag\n• F5: Edro adannen i thîr en mossag\n• F11: Tir pân-sgrîn (abed lín F11 or ESC)",
+    "shortcuts_content": "• Ctrl+Z: Avedui i amarth erui\n• Ctrl+Y: Adrevedui i amarth Avedui\n• Ctrl+A: Cíla pân telleir\n• Ctrl+I: Adel i cíla\n• Ctrl+C: Honom i telleir cílannen\n• Ctrl+X: Risto i telleir cílannen\n• Ctrl+V: Pado i telleir\n• Del: Deleb i telleir cílannen\n• Ctrl+Roth megil: Megil (laD chu') / haered nîw (mîw) / haered randir (taur randir)\n• Ctrl+0 (laD chu'): Adnortho i megil na chad\n• Ctrl+1 (laD chu'): Megil 100% (i haered chent randir)\n• Nedhoro ledin egor tochenno (laD chu'): Goheno i randir echui\n• Ctrl+Alt+T: Racho pân nîw echui o'n mîw\n• F5: Adannenno i tírad mîw\n• F11: Goheno bâd rlinn (govano gin F11 egor ESC)",
     "dark_mode": "Bâd doll",
     "dark_mode_content": "Pitha i cannas anor/ithil ned thelia calen a morn thent.",
     "sort": "Nestegi i telleir",

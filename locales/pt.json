@@ -74,7 +74,8 @@
     "title": "Visualizador",
     "mode_single": "Página simples  [D]",
     "mode_double": "Página dupla  [D]",
-    "mode_continuous": "Modo contínuo  [D]"
+    "mode_continuous": "Modo contínuo  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Página seguinte (→)",
       "zoom_in": "Zoom + (Ctrl+Mais)",
       "zoom_out": "Zoom - (Ctrl+Menos)",
-      "zoom_reset": "Reiniciar zoom (Ctrl+0)",
+      "zoom_reset": "Ajustar à janela (Ctrl+0)",
+      "zoom_100": "Zoom 100% (Ctrl+1)",
       "reading_mode_double": "Mudar modo de leitura (D) → Páginas duplas",
       "reading_mode_continuous": "Mudar modo de leitura (D) → Páginas duplas contínuas",
       "reading_mode_single": "Mudar modo de leitura (D) → Página única",
       "fullscreen_exit": "Sair do ecrã inteiro (F11)",
       "fullscreen": "Ecrã inteiro (F11)",
       "close_viewer": "Fechar visualizador (ESC)",
-      "delete_bookmark": "Apagar marcador"
+      "delete_bookmark": "Apagar marcador",
+      "reading_mode_webtoon": "Mudar modo de leitura (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Imagem corrompida - Substituir",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplicados",
       "no_duplicates": "Nenhum duplicado detetado.",
       "group_title": "Grupo {num}: {count} páginas idênticas",
-      "delete_selection": "Eliminar seleção"
+      "delete_selection": "Eliminar seleção",
+      "select_group": "Selecionar grupo",
+      "deselect_group": "Cancelar seleção do grupo"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Nivelar as pastas",
     "flatten_content": "Se o seu arquivo contém subpastas, use 'Nivelar pastas' para trazer todas as imagens ao mesmo nível.",
     "viewer": "Visualizador",
-    "viewer_content": "Faça duplo clique numa página para abrir o visualizador:\n• Teclas ← →: navegação entre páginas\n• Tecla D: alternar entre 3 modos de leitura\n  - Página única: uma página de cada vez\n  - Páginas duplas: página 1 sozinha, depois 2-3, 4-5, etc.\n  - Páginas duplas contínuas: página 1 sozinha, depois 2-3, 3-4, 4-5, etc.\n• Roda do rato: navegação rápida\n• Ctrl+Roda ou Ctrl+Mais/Menos: zoom\n• Ctrl+0: reiniciar zoom\n• Tecla F11: ecrã inteiro\n• Duplo clique: alternar ecrã inteiro\n• Tecla Esc: cancelar o quadro de recorte / sair do visualizador\n• Marcador: guarda automaticamente a página atual ao fechar o visualizador (exceto a primeira e a última página). Uma fita vermelha aparece na miniatura correspondente no mosaico. Na próxima abertura, uma mensagem sugere voltar a esta página. Eliminado automaticamente na última página ou manualmente com o botão direito do rato no visualizador.",
+    "viewer_content": "Clique duas vezes numa página para abrir o visualizador:\n• Teclas ← →: navegação entre páginas\n• Tecla D: alternar entre 4 modos de leitura\n  - Página única: uma página de cada vez\n  - Páginas duplas: página 1 sozinha, depois 2-3, 4-5, etc.\n  - Páginas duplas contínuas: página 1 sozinha, depois 2-3, 3-4, 4-5, etc.\n  - Webtoon: para imagens verticais (webcomics), largura limitada a 900px para manter a legibilidade; a roda do rato desloca verticalmente dentro da página e muda de página ao atingir o topo/fundo\n• Roda do rato: navegação rápida (deslocamento vertical dentro da página no modo Webtoon)\n• Ctrl+Roda ou Ctrl+Mais/Menos: zoom (até 1000% do tamanho real da imagem)\n• Ctrl+0: ajustar o zoom à janela\n• Ctrl+1: zoom para 100% (tamanho real dos pixels da imagem)\n• Clique direito + arrastar: mover a imagem exibida quando excede a janela\n• Tecla F11: ecrã inteiro\n• Duplo clique: alternar ecrã inteiro\n• Tecla Esc: cancelar o quadro de recorte / sair do visualizador\n• Marcador: guarda automaticamente a página atual ao fechar o visualizador (exceto a primeira e a última página). Aparece uma fita vermelha na miniatura correspondente no mosaico. Na próxima abertura, uma mensagem sugere voltar a esta página. Eliminado automaticamente na última página, ou manualmente através de clique direito no visualizador.",
     "join_pages": "Unir páginas",
     "join_pages_content": "Selecione várias páginas consecutivas, clique com o botão direito → 'Unir páginas selecionadas' para unir as páginas horizontal ou verticalmente. O formato da imagem produzida corresponde ao das páginas de origem se todas forem idênticas, caso contrário PNG por defeito. Poderá escolher eliminar ou manter as páginas originais.\n\nLocalização da nova página no mosaico:\n• Modo de renumeração ativo (automático ou manual): a página ocupa o lugar da primeira página unida (o seu lugar, se as páginas de origem forem eliminadas, ou imediatamente antes, se forem mantidas), e desencadeia uma renumeração.\n• Modo de renumeração OFF: a página é adicionada no início do mosaico com o nome \"União_xxx\".",
     "split_pages": "Dividir páginas",
@@ -1310,7 +1315,7 @@
     "crop": "Corte no visualizador",
     "crop_content": "No visualizador, trace um retângulo na imagem para definir uma área de corte:\n• Trace o retângulo com o rato\n• Redimensione-o puxando as margens ou cantos\n• Clique em 'Validar corte' para aplicar\n• O corte é aplicado à imagem atual\n• Tecla Esc: cancelar o quadro de recorte",
     "shortcuts": "Atalhos de teclado",
-    "shortcuts_content": "• Ctrl+Z: Desfazer última ação\n• Ctrl+Y: Refazer ação desfeita\n• Ctrl+A: Selecionar todas as páginas\n• Ctrl+I: Inverter seleção\n• Ctrl+C: Copiar páginas selecionadas\n• Ctrl+X: Cortar páginas selecionadas\n• Ctrl+V: Colar páginas\n• Del: Eliminar páginas selecionadas\n• Ctrl+roda do rato: Aumentar / diminuir o tamanho das miniaturas\n• Ctrl+Alt+T: Exportar todas as miniaturas exibidas no mosaico\n• F5: Atualizar a exibição do mosaico\n• F11: Alternar tela cheia (sair com F11 ou ESC)",
+    "shortcuts_content": "• Ctrl+Z: Desfazer a última ação\n• Ctrl+Y: Refazer a ação desfeita\n• Ctrl+A: Selecionar todas as páginas\n• Ctrl+I: Inverter seleção\n• Ctrl+C: Copiar páginas selecionadas\n• Ctrl+X: Cortar páginas selecionadas\n• Ctrl+V: Colar páginas\n• Del: Eliminar páginas selecionadas\n• Ctrl+roda do rato: Zoom (visualizador) / tamanho das miniaturas (mosaico) / tamanho dos ícones (coluna de ícones)\n• Ctrl+0 (visualizador): Ajustar o zoom à janela\n• Ctrl+1 (visualizador): Zoom para 100% (tamanho real da imagem)\n• Clique direito + arrastar (visualizador): Mover a imagem exibida\n• Ctrl+Alt+T: Exportar todas as miniaturas exibidas do mosaico\n• F5: Atualizar a visualização do mosaico\n• F11: Alternar ecrã inteiro (sair com F11 ou ESC)",
     "dark_mode": "Modo escuro",
     "dark_mode_content": "Clique no botão sol/lua para alternar entre temas claro e escuro.",
     "sort": "Ordenar as páginas",

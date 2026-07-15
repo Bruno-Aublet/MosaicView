@@ -74,7 +74,8 @@
     "title": "Prohlížeč",
     "mode_single": "Jedna stránka  [D]",
     "mode_double": "Dvojitá stránka  [D]",
-    "mode_continuous": "Plynulý režim  [D]"
+    "mode_continuous": "Plynulý režim  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Další stránka (→)",
       "zoom_in": "Přiblížit (Ctrl+Plus)",
       "zoom_out": "Oddálit (Ctrl+Mínus)",
-      "zoom_reset": "Obnovit přiblížení (Ctrl+0)",
+      "zoom_reset": "Přizpůsobit oknu (Ctrl+0)",
+      "zoom_100": "Zvětšení 100 % (Ctrl+1)",
       "reading_mode_double": "Změnit režim čtení (D) → Dvě stránky",
       "reading_mode_continuous": "Změnit režim čtení (D) → Průběžné dvě stránky",
       "reading_mode_single": "Změnit režim čtení (D) → Jedna stránka",
       "fullscreen_exit": "Ukončit celou obrazovku (F11)",
       "fullscreen": "Celá obrazovka (F11)",
       "close_viewer": "Zavřít prohlížeč (ESC)",
-      "delete_bookmark": "Smazat záložku"
+      "delete_bookmark": "Smazat záložku",
+      "reading_mode_webtoon": "Změnit režim čtení (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Poškozený obrázek - Nahradit",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplicity",
       "no_duplicates": "Nebyly nalezeny žádné duplicity.",
       "group_title": "Skupina {num}: {count} shodných stránek",
-      "delete_selection": "Odstranit výběr"
+      "delete_selection": "Odstranit výběr",
+      "select_group": "Vybrat skupinu",
+      "deselect_group": "Zrušit výběr skupiny"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Sloučení adresářů",
     "flatten_content": "Pokud váš archiv obsahuje podadresáře, použijte 'Sloučit adresáře' pro přesunutí všech obrázků na stejnou úroveň.",
     "viewer": "Prohlížeč",
-    "viewer_content": "Dvojklikem na stránku otevřete prohlížeč:\n• Klávesy ← →: navigace mezi stránkami\n• Klávesa D: přepínání mezi 3 režimy čtení\n  - Jedna stránka: jedna stránka najednou\n  - Dvě stránky: stránka 1 samostatně, pak 2-3, 4-5 atd.\n  - Průběžné dvě stránky: stránka 1 samostatně, pak 2-3, 3-4, 4-5 atd.\n• Kolečko myši: rychlá navigace\n• Ctrl+Kolečko nebo Ctrl+Plus/Mínus: přiblížení\n• Ctrl+0: obnovit přiblížení\n• Klávesa F11: celá obrazovka\n• Dvojklik: přepnout celou obrazovku\n• Klávesa Esc: zrušit rámeček výřezu / ukončit prohlížeč\n• Záložka: automaticky ukládá aktuální stránku při zavření prohlížeče (kromě první a poslední stránky). Na odpovídající miniatuře v mozaice se zobrazí červená stuha. Při dalším otevření se zobrazí zpráva s nabídkou návratu na tuto stránku. Záložka se automaticky odstraní při dosažení poslední stránky nebo ručně přes pravé tlačítko myši v prohlížeči.",
+    "viewer_content": "Dvojklikem na stránku otevřete prohlížeč:\n• Klávesy ← →: navigace mezi stránkami\n• Klávesa D: přepínání mezi 4 režimy čtení\n  - Jedna stránka: vždy jedna stránka\n  - Dvojstránky: stránka 1 samostatně, poté 2-3, 4-5 atd.\n  - Souvislé dvojstránky: stránka 1 samostatně, poté 2-3, 3-4, 4-5 atd.\n  - Webtoon: pro svislé obrázky (webkomiksy), šířka omezena na 900 px kvůli čitelnosti; kolečko myši posouvá stránku svisle, po dosažení horního/dolního okraje přepne stránku\n• Kolečko myši: rychlá navigace (svislé posouvání ve stránce v režimu Webtoon)\n• Ctrl+kolečko nebo Ctrl+plus/mínus: přiblížení (až 1000 % skutečné velikosti obrázku)\n• Ctrl+0: přizpůsobit přiblížení oknu\n• Ctrl+1: přiblížení na 100 % (skutečná velikost pixelů obrázku)\n• Pravé tlačítko + tažení: posun zobrazeného obrázku, když přesahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojklik: přepnutí celé obrazovky\n• Klávesa Esc: zrušit rámeček oříznutí / opustit prohlížeč\n• Záložka: automaticky uloží aktuální stránku při zavření prohlížeče (kromě první a poslední stránky). Na odpovídající miniatuře v mozaice se zobrazí červená stužka. Při dalším otevření zpráva navrhne návrat na tuto stránku. Automaticky se smaže na poslední stránce, nebo ručně přes pravé tlačítko v prohlížeči.",
     "join_pages": "Spojení stránek",
     "join_pages_content": "Vyberte několik po sobě jdoucích stránek, klepněte pravým tlačítkem → 'Spojit vybrané stránky' pro spojení stránek vodorovně nebo svisle. Formát výsledného obrázku odpovídá formátu zdrojových stránek, pokud jsou všechny stejné, jinak výchozím formátem je PNG. Budete si moci vybrat, zda smazat nebo zachovat původní stránky.\n\nUmístění nové stránky v mozaice:\n• Aktivní režim přečíslování (automatický nebo ruční): stránka zaujme místo první spojené stránky (její místo, pokud jsou zdrojové stránky smazány, nebo přímo před ní, pokud jsou zachovány), a spustí přečíslování.\n• Vypnutý režim přečíslování: stránka se přidá na začátek mozaiky pod názvem \"Spojeno_xxx\".",
     "split_pages": "Rozdělení stránek",
@@ -1310,7 +1315,7 @@
     "crop": "Ořez v prohlížeči",
     "crop_content": "V prohlížeči nakreslete obdélník na obrázek pro definování oblasti ořezu:\n• Nakreslete obdélník myší\n• Změňte jeho velikost tažením okrajů nebo rohů\n• Klikněte na 'Potvrdit ořez' pro použití\n• Ořez je aplikován na aktuální obrázek\n• Klávesa Esc: zrušit rámeček výřezu",
     "shortcuts": "Klávesové zkratky",
-    "shortcuts_content": "• Ctrl+Z: Zpět poslední akce\n• Ctrl+Y: Znovu zrušenou akci\n• Ctrl+A: Vybrat všechny stránky\n• Ctrl+I: Invertovat výběr\n• Ctrl+C: Kopírovat vybrané stránky\n• Ctrl+X: Vyjmout vybrané stránky\n• Ctrl+V: Vložit stránky\n• Delete: Smazat vybrané stránky\n• Ctrl+kolečko myši: Zvětšit / zmenšit velikost miniatur\n• Ctrl+Alt+T: Exportovat všechny zobrazené miniatury z mozaiky\n• F5: Aktualizovat zobrazení mozaiky\n• F11: Přepnout celou obrazovku (ukončit pomocí F11 nebo ESC)",
+    "shortcuts_content": "• Ctrl+Z: Zpět poslední akci\n• Ctrl+Y: Znovu zrušenou akci\n• Ctrl+A: Vybrat všechny stránky\n• Ctrl+I: Invertovat výběr\n• Ctrl+C: Kopírovat vybrané stránky\n• Ctrl+X: Vyjmout vybrané stránky\n• Ctrl+V: Vložit stránky\n• Del: Odstranit vybrané stránky\n• Ctrl+kolečko myši: Přiblížení (prohlížeč) / velikost miniatur (mozaika) / velikost ikon (sloupec ikon)\n• Ctrl+0 (prohlížeč): Přizpůsobit přiblížení oknu\n• Ctrl+1 (prohlížeč): Přiblížení na 100 % (skutečná velikost obrázku)\n• Pravé tlačítko + tažení (prohlížeč): Posun zobrazeného obrázku\n• Ctrl+Alt+T: Exportovat všechny zobrazené miniatury z mozaiky\n• F5: Aktualizovat zobrazení mozaiky\n• F11: Přepnout celou obrazovku (ukončit F11 nebo ESC)",
     "dark_mode": "Tmavý režim",
     "dark_mode_content": "Klikněte na tlačítko slunce/měsíc pro přepínání mezi světlým a tmavým motivem.",
     "sort": "Řazení stránek",

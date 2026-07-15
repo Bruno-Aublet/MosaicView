@@ -74,7 +74,8 @@
     "title": "leghwI'",
     "mode_single": "wa' nugh  [D]",
     "mode_double": "cha' nugh  [D]",
-    "mode_continuous": "tlhIngan mIw  [D]"
+    "mode_continuous": "tlhIngan mIw  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "ghItlh veb (→)",
       "zoom_in": "tIn ngo' + (Ctrl+Plus)",
       "zoom_out": "tIn puS - (Ctrl+Minus)",
-      "zoom_reset": "tIn ngo' chu'moH (Ctrl+0)",
+      "zoom_reset": "SIbogh tIn choHmoH (Ctrl+0)",
+      "zoom_100": "tIn 100% (Ctrl+1)",
       "reading_mode_double": "laD cham choHmoH (D) → cha' ghItlhmey",
       "reading_mode_continuous": "laD cham choHmoH (D) → cha' ghItlhmey taH",
       "reading_mode_single": "laD cham choHmoH (D) → ghItlh wa'",
       "fullscreen_exit": "Hoch SIrgh mej (F11)",
       "fullscreen": "Hoch SIrgh (F11)",
       "close_viewer": "leghwI' SoQmoH (ESC)",
-      "delete_bookmark": "ghItlh lughomHa'"
+      "delete_bookmark": "ghItlh lughomHa'",
+      "reading_mode_webtoon": "laD cham choHmoH (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ cha'nob Qaw'lu' - latlh cha'nob lo'",
@@ -1222,7 +1225,9 @@
       "window_title": "chovmey cha'logh",
       "no_duplicates": "chov cha'logh tu'lu'be'.",
       "group_title": "veS {num}: {count} chovmey rap",
-      "delete_selection": "wIvlu'bogh teq"
+      "delete_selection": "wIvlu'bogh teq",
+      "select_group": "veS Hoch yIwIv",
+      "deselect_group": "veS yIwIvHa'"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "vo'mey chuHmoH",
     "flatten_content": "per vo' puSmey tu'lu'chugh, 'vo'mey chuHmoH' lo' 'ej Hoch cha'nobmey wa' chen Daq yIvIH.",
     "viewer": "leghwI'",
-    "viewer_content": "ghItlh cha'logh yIbuS 'ej leghwI' yIpoS:\n• qItmey ← → : ghItlhmey jotmeH\n• qIt D : wej laD chamey cha'DIch choH\n  - ghItlh wa': ghItlh wa' neH\n  - cha' ghItlhmey: ghItlh wa' neH, ghItlhmey cha'-wej, loS-vagh, latlh\n  - cha' ghItlhmey taH: ghItlh wa' neH, cha'-wej, wej-loS, loS-vagh, latlh\n• ghom jojmey: jotmeH nom\n• Ctrl+ghom pagh Ctrl+Plus/Minus: tIn ngo'\n• Ctrl+0: tIn ngo' chu'moH\n• qIt F11: Hoch SIrgh\n• cha'logh buS: Hoch SIrgh choH\n• qIt Échap: pe'meH mIvvo' bIHarghaH / leghwI' mej\n• bukmarka: pa'meH tu'lu' laDmeH 'avwI' SoQmoHDI' (wa'DIch paq'or Qav je lulajlu'be'). HIDjolev Doq tu'lu' mosaiq ngoq Doch HIDjolev. latlh bIghHa', paq'or nov chu' chu'lu'DI', pa' chegh. Qav paq'or pa' moj pagh 'avwI' qech pat HIch 'oSbogh.",
+    "viewer_content": "ghItlh yIchu'chu' 'e' laD chu'moH:\n• ← → mIw: ghItlh choHmoH\n• D nagh: laD cham loS choHmoH\n  - ghItlh wa': wa' ghItlh poH Hoch\n  - cha' ghItlhmey: ghItlh wa' neH, vaj 2-3, 4-5, latlh\n  - cha' ghItlhmey taH: ghItlh wa' neH, vaj 2-3, 3-4, 4-5, latlh\n  - Webtoon: cha'nobmey tIng (webcomics) DoS, laD meH 900px chuq neH; Sut yopwaH ghItlh tIng nagh, 'ej Dung joq bIng bIng ghItlh choHmoH\n• Sut yopwaH: ghItlh choHmoH tlhoy (Webtoon mIw Daq ghItlh tIng nagh)\n• Ctrl+Sut pagh Ctrl+chap/pav: tIn choHmoH (nItebHom chIch 1000% tIn ngo')\n• Ctrl+0: SIbogh tIn choHmoH\n• Ctrl+1: tIn 100% (nItebHom pIxel tIn)\n• nIH nagh yIchu' 'ej yIteq: nItebHom cha'lu'pu' teq nuq SIbogh Doj\n• F11 nagh: Hoch bang\n• cha'logh yIchu': Hoch bang choHmoH\n• Esc nagh: qeq pIw choHmoH lujmoH / laD chu' mej\n• marmey: laD chu' SoQmoH ghItlh DaH (wa' je Hoch ghItlh chIch). Doch Doq tu'lu' vaj ghItlh nItebHom veb. reH poSmoHlaHbe' vaj mu' jang ghItlh ghoS. Hoch ghItlh rar tlhoS, pagh nIH nagh laD chu'.",
     "join_pages": "ghItlhmey qIpmoH",
     "join_pages_content": "chaH pIm mInDu' choH, nIH jIH → 'wIv mInDu' qIp' qIp mInDu' Hop joq poH. cha' rurmey chaw'moH De'wI' mInDu' Suv rur, pagh PNG rar. DaSov yIchoH pagh yIpol mInDu'.\n\nmIw De' vinya mInD Daq emmavaina:\n• vIqraq mIw lo' (nIH jIH joq mahtaina): mInD tlhap Daq wa'DIch qIp mInD (Daq, mInDu' choHlu'DI', pagh Daq pa' choHlu'DI'be'), 'ej vIqraq chu'.\n• vIqraq mIw qIl: mInD lan Daq po' emmavaina pong \"qIp_xxx\".",
     "split_pages": "ghItlhmey mobmoH",
@@ -1310,7 +1315,7 @@
     "crop": "leghwI' Daq pe'meH",
     "crop_content": "leghwI' Daq cha'nob Dung latlhmey yor yIchenmoH 'ej pe'meH Daq yIchoH:\n• latlhmey yor ghom lo' yIchenmoH\n• tInghach choH 'ej tIHmey pagh vI'mey yIvIH\n• 'pe'meH lo'laH' yIbuS 'ej lo'\n• pe'meH cha'nob DaH lo'lu'\n• qIt Échap: pe'meH mIvvo' bIHarghaH",
     "shortcuts": "qItmey nom",
-    "shortcuts_content": "• Ctrl+Z: vang bov qIl\n• Ctrl+Y: vang qIllu'bogh vI'ang\n• Ctrl+A: ghItlhmey Hoch wIv\n• Ctrl+I: wIvghach tam\n• Ctrl+C: ghItlhmey wIvlu'bogh lulegh\n• Ctrl+X: ghItlhmey wIvlu'bogh pe'\n• Ctrl+V: ghItlhmey lan\n• Suppr: ghItlhmey wIvlu'bogh HoHmoH\n• Ctrl+ghom rutlh: mach cha'nob rav lachcha' rIvlaHchugh\n• Ctrl+Alt+T: mIllogh De' Hoch cha'nob mach 'ang'e' chIch\n• F5: chu'qa' mIllogh HaSta\n• F11: Hoch beQ choH (F11 pagh ESC lo' mej)",
+    "shortcuts_content": "• Ctrl+Z: qaStaHvIS vangHa'\n• Ctrl+Y: vangHa'pu' vI'ang\n• Ctrl+A: Hoch ghItlh wIv\n• Ctrl+I: wIv tlhab\n• Ctrl+C: ghItlh wIvta' chelmoH\n• Ctrl+X: ghItlh wIvta' pej\n• Ctrl+V: ghItlh lan\n• Del: ghItlh wIvta' HoHmoH\n• Ctrl+Sut yopwaH: tIn choHmoH (laD chu') / mach nItebHom (mIw) / mach cha'nob (raQ cha'nob)\n• Ctrl+0 (laD chu'): SIbogh tIn choHmoH\n• Ctrl+1 (laD chu'): tIn 100% (nItebHom tIn)\n• nIH nagh yIchu' 'ej yIteq (laD chu'): nItebHom teq\n• Ctrl+Alt+T: mIw nItebHom Hoch teq\n• F5: mIw legh chu'\n• F11: Hoch bang choHmoH (F11 pagh ESC mej)",
     "dark_mode": "Hurgh cham",
     "dark_mode_content": "pemjep/maS qawHaq click wov 'ej Qub theme jIH.",
     "sort": "ghItlhmey qIp",

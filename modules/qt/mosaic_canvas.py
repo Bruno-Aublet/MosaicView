@@ -995,13 +995,46 @@ class MosaicCanvas(QGraphicsView):
     # ──────────────────────────────────────────────────────────────────────────
     # Rendu de la mosaïque (équivalent render_mosaic)
     # ──────────────────────────────────────────────────────────────────────────
+    def _teardown_scene_items(self):
+        """Détruit les items de la scène un par un, de façon synchrone et contrôlée.
+
+        Ne JAMAIS remplacer par un simple scene.clear() sur une scène peuplée :
+        la destruction C++ de masse (des centaines d'items + leurs enfants, puis
+        recréation immédiate aux mêmes adresses mémoire) corrompt la table interne
+        de shiboken (BindingManager::releaseWrapper) quand elle s'entrelace avec le
+        dispatch d'événements souris → access violation différée (crash constaté
+        sur suppressions de doublons + undo/redo + souris, shiboken 6.10/6.11).
+        Ici : on libère d'abord les wrappers Python des enfants, puis removeItem()
+        rend l'ownership de chaque item au wrapper Python, dont la libération
+        détruit le C++ immédiatement, un item à la fois, à un instant maîtrisé.
+        """
+        for it in self._items:
+            if isinstance(it, ThumbnailItem):
+                it._name_text_item = None
+                it._ext_item = None
+                it._name_edit = None
+                it._proxy_name = None
+            try:
+                self._scene.removeItem(it)
+            except RuntimeError:
+                pass  # item C++ déjà détruit
+        self._items.clear()
+
+        for lst in (self._empty_items, self._drop_indicator_items):
+            for it in lst:
+                try:
+                    self._scene.removeItem(it)
+                except RuntimeError:
+                    pass
+            lst.clear()
+
+        # Filet de sécurité pour tout item restant non suivi par les listes
+        # (la scène est normalement déjà vide à ce stade).
+        self._scene.clear()
+
     def render_mosaic(self):
         """Reconstruit la scène à partir de state.images_data (via get_visible_entries_qt)."""
-        # Vider les listes AVANT scene.clear() pour éviter les dangling C++ pointers
-        self._empty_items.clear()
-        self._items.clear()
-        self._drop_indicator_items.clear()
-        self._scene.clear()
+        self._teardown_scene_items()
 
         st = self._state
         if st is None or not st.images_data:

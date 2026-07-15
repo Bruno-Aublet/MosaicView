@@ -74,7 +74,8 @@
     "title": "Preglednik",
     "mode_single": "Jedna stranica  [D]",
     "mode_double": "Dvostruka stranica  [D]",
-    "mode_continuous": "Kontinuirani način  [D]"
+    "mode_continuous": "Kontinuirani način  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Sljedeća stranica (→)",
       "zoom_in": "Povećaj + (Ctrl+Plus)",
       "zoom_out": "Smanji - (Ctrl+Minus)",
-      "zoom_reset": "Resetiraj povećanje (Ctrl+0)",
+      "zoom_reset": "Prilagodi prozoru (Ctrl+0)",
+      "zoom_100": "Zumiranje 100% (Ctrl+1)",
       "reading_mode_double": "Promijeni način čitanja (D) → Dvostruke stranice",
       "reading_mode_continuous": "Promijeni način čitanja (D) → Kontinuirane dvostruke stranice",
       "reading_mode_single": "Promijeni način čitanja (D) → Jednostruka stranica",
       "fullscreen_exit": "Izađi iz cijelog zaslona (F11)",
       "fullscreen": "Cijeli zaslon (F11)",
       "close_viewer": "Zatvori preglednik (ESC)",
-      "delete_bookmark": "Obriši oznaku"
+      "delete_bookmark": "Obriši oznaku",
+      "reading_mode_webtoon": "Promijeni način čitanja (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Oštećena slika - Zamijeni",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplikati",
       "no_duplicates": "Nisu pronađeni duplikati.",
       "group_title": "Skupina {num}: {count} identičnih stranica",
-      "delete_selection": "Izbriši odabir"
+      "delete_selection": "Izbriši odabir",
+      "select_group": "Odaberi skupinu",
+      "deselect_group": "Poništi odabir skupine"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Ravnanje mapa",
     "flatten_content": "Ako vaša arhiva sadrži podmape, koristite 'Ravnaj mape' za premještanje svih slika na istu razinu.",
     "viewer": "Preglednik",
-    "viewer_content": "Dvaput kliknite na stranicu za otvaranje preglednika:\n• Tipke ← → : navigacija između stranica\n• Tipka D : prebacivanje između 3 načina čitanja\n  - Jednostruka stranica: po jedna stranica\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5, itd.\n  - Kontinuirane dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5, itd.\n• Kotačić miša: brza navigacija\n• Ctrl+kotačić ili Ctrl+Plus/Minus: povećanje\n• Ctrl+0: resetiranje povećanja\n• Tipka F11: cijeli zaslon\n• Dvostruki klik: prebacivanje cijelog zaslona\n• Tipka Escape: otkaz okvira za obrezivanje / izlaz iz preglednika\n• Oznaka: automatski sprema trenutnu stranicu pri zatvaranju preglednika (osim prve i zadnje stranice). Crvena vrpca pojavljuje se na odgovarajućoj sličici u mozaiku. Sljedeći put kad se otvori, poruka predlaže povratak na tu stranicu. Automatski se briše na zadnjoj stranici ili ručno desnim klikom u pregledniku.",
+    "viewer_content": "Dvaput kliknite na stranicu da otvorite preglednik:\n• Tipke ← →: navigacija između stranica\n• Tipka D: prebacivanje između 4 načina čitanja\n  - Jedna stranica: jedna stranica odjednom\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5 itd.\n  - Kontinuirane dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5 itd.\n  - Webtoon: za okomite slike (web-stripovi), širina ograničena na 900px radi čitljivosti; kotačić miša pomiče stranicu okomito, a pri vrhu/dnu mijenja stranicu\n• Kotačić miša: brza navigacija (okomito pomicanje unutar stranice u načinu Webtoon)\n• Ctrl+kotačić ili Ctrl+plus/minus: zumiranje (do 1000% stvarne veličine slike)\n• Ctrl+0: prilagodi zumiranje prozoru\n• Ctrl+1: zumiranje na 100% (stvarna veličina piksela slike)\n• Desni klik + povlačenje: pomicanje prikazane slike kada premašuje prozor\n• Tipka F11: puni zaslon\n• Dvostruki klik: prebacivanje punog zaslona\n• Tipka Esc: otkaži okvir za izrezivanje / izlaz iz preglednika\n• Knjižna oznaka: automatski sprema trenutnu stranicu pri zatvaranju preglednika (osim prve i zadnje stranice). Crvena vrpca prikazuje se na odgovarajućoj sličici u mozaiku. Pri sljedećem otvaranju, poruka predlaže povratak na tu stranicu. Automatski se briše na zadnjoj stranici, ili ručno desnim klikom u pregledniku.",
     "join_pages": "Spajanje stranica",
     "join_pages_content": "Odaberite nekoliko uzastopnih stranica, desni klik → 'Spoji odabrane stranice' za spajanje stranica vodoravno ili okomito. Format proizvedene slike odgovara formatu izvornih stranica ako su sve identične, inače PNG prema zadanim postavkama. Moći ćete odabrati brisanje ili zadržavanje izvornih stranica.\n\nPoložaj nove stranice u mozaiku:\n• Aktivni način ponovnog numeriranja (automatski ili ručni): stranica zauzima mjesto prve spojene stranice (njezino mjesto, ako se izvorne stranice izbrišu, ili točno prije nje, ako se zadrže), i pokreće ponovno numeriranje.\n• ISKLJUČENI način ponovnog numeriranja: stranica se dodaje na početak mozaika pod nazivom \"Spojeno_xxx\".",
     "split_pages": "Dijeljenje stranica",
@@ -1310,7 +1315,7 @@
     "crop": "Izrezivanje u pregledniku",
     "crop_content": "U pregledniku, nacrtajte pravokutnik na slici za definiranje područja izrezivanja:\n• Nacrtajte pravokutnik mišem\n• Promijenite veličinu povlačenjem rubova ili kutova\n• Kliknite 'Potvrdi izrez' za primjenu\n• Izrezivanje se primjenjuje na trenutnu sliku\n• Tipka Escape: otkaz okvira za obrezivanje",
     "shortcuts": "Prečaci tipkovnice",
-    "shortcuts_content": "• Ctrl+Z: Poništi posljednju radnju\n• Ctrl+Y: Ponovi poništenu radnju\n• Ctrl+A: Odaberi sve stranice\n• Ctrl+I: Invertiraj odabir\n• Ctrl+C: Kopiraj odabrane stranice\n• Ctrl+X: Izreži odabrane stranice\n• Ctrl+V: Zalijepi stranice\n• Delete: Izbriši odabrane stranice\n• Ctrl+kotačić miša: Povećaj / smanji veličinu sličica\n• Ctrl+Alt+T: Izvezi sve prikazane sličice iz mozaika\n• F5: Ažuriraj prikaz mozaika\n• F11: Prebacivanje cijelog zaslona (izlaz s F11 ili ESC)",
+    "shortcuts_content": "• Ctrl+Z: Poništi zadnju radnju\n• Ctrl+Y: Ponovi poništenu radnju\n• Ctrl+A: Odaberi sve stranice\n• Ctrl+I: Obrni odabir\n• Ctrl+C: Kopiraj odabrane stranice\n• Ctrl+X: Izreži odabrane stranice\n• Ctrl+V: Zalijepi stranice\n• Del: Izbriši odabrane stranice\n• Ctrl+kotačić miša: Zumiranje (preglednik) / veličina sličica (mozaik) / veličina ikona (stupac ikona)\n• Ctrl+0 (preglednik): Prilagodi zumiranje prozoru\n• Ctrl+1 (preglednik): Zumiranje na 100% (stvarna veličina slike)\n• Desni klik + povlačenje (preglednik): Pomicanje prikazane slike\n• Ctrl+Alt+T: Izvezi sve prikazane sličice iz mozaika\n• F5: Ažuriraj prikaz mozaika\n• F11: Prebaci puni zaslon (izlaz s F11 ili ESC)",
     "dark_mode": "Tamni način",
     "dark_mode_content": "Kliknite gumb sunce/mjesec za prebacivanje između svijetle i tamne teme.",
     "sort": "Sortiranje stranica",

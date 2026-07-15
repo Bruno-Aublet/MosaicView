@@ -74,7 +74,8 @@
     "title": "Néző",
     "mode_single": "Egy oldal  [D]",
     "mode_double": "Dupla oldal  [D]",
-    "mode_continuous": "Folyamatos mód  [D]"
+    "mode_continuous": "Folyamatos mód  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Következő oldal (→)",
       "zoom_in": "Nagyítás (Ctrl+Plus)",
       "zoom_out": "Kicsinyítés (Ctrl+Mínusz)",
-      "zoom_reset": "Nagyítás visszaállítása (Ctrl+0)",
+      "zoom_reset": "Igazítás az ablakhoz (Ctrl+0)",
+      "zoom_100": "Nagyítás 100% (Ctrl+1)",
       "reading_mode_double": "Olvasási mód váltása (D) → Dupla oldal",
       "reading_mode_continuous": "Olvasási mód váltása (D) → Folyamatos dupla oldal",
       "reading_mode_single": "Olvasási mód váltása (D) → Egyszerű oldal",
       "fullscreen_exit": "Kilépés a teljes képernyőből (F11)",
       "fullscreen": "Teljes képernyő (F11)",
       "close_viewer": "Néző bezárása (ESC)",
-      "delete_bookmark": "Könyvjelző törlése"
+      "delete_bookmark": "Könyvjelző törlése",
+      "reading_mode_webtoon": "Olvasási mód váltása (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Sérült kép - Csere",
@@ -1222,7 +1225,9 @@
       "window_title": "Ismétlődések",
       "no_duplicates": "Nem található ismétlődés.",
       "group_title": "{num}. csoport: {count} azonos oldal",
-      "delete_selection": "Kijelölés törlése"
+      "delete_selection": "Kijelölés törlése",
+      "select_group": "Csoport kijelölése",
+      "deselect_group": "Csoport kijelölésének megszüntetése"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Könyvtárak egyengetése",
     "flatten_content": "Ha az archívum almappákat tartalmaz, használja a 'Mappák egyengetése' funkciót az összes kép ugyanarra a szintre hozásához.",
     "viewer": "Néző",
-    "viewer_content": "Dupla kattintással nyissa meg a nézőt:\n• ← → billentyűk: navigáció az oldalak között\n• D billentyű: váltás 3 olvasási mód között\n  - Egyszerű oldal: egyszerre egy oldal\n  - Dupla oldal: 1. oldal egyedül, majd 2-3, 4-5, stb.\n  - Folyamatos dupla oldal: 1. oldal egyedül, majd 2-3, 3-4, 4-5, stb.\n• Egérgörgő: gyors navigáció\n• Ctrl+Görgő vagy Ctrl+Plus/Mínusz: nagyítás\n• Ctrl+0: nagyítás visszaállítása\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: vágási keret megszakítása / kilépés a nézőből\n• Könyvjelző: automatikusan menti az aktuális oldalt a megjelenítő bezárásakor (az első és az utolsó oldal kivételével). Egy piros szalag jelenik meg a mozaik megfelelő bélyegképén. A következő megnyitáskor egy üzenet javasolja, hogy térjen vissza erre az oldalra. Az utolsó oldalon automatikusan törlődik, vagy manuálisan a jobb gombbal kattintva a megjelenítőben.",
+    "viewer_content": "Kattintson duplán egy oldalra a megjelenítő megnyitásához:\n• ← → billentyűk: navigáció az oldalak között\n• D billentyű: váltás 4 olvasási mód között\n  - Egyetlen oldal: egyszerre egy oldal\n  - Dupla oldalak: 1. oldal egyedül, majd 2-3, 4-5 stb.\n  - Folyamatos dupla oldalak: 1. oldal egyedül, majd 2-3, 3-4, 4-5 stb.\n  - Webtoon: függőleges képekhez (webképregények), a szélesség 900px-re korlátozva az olvashatóság érdekében; az egérgörgő az oldalon belül függőlegesen görget, majd a tetején/alján oldalt vált\n• Egérgörgő: gyors navigáció (függőleges görgetés az oldalon belül Webtoon módban)\n• Ctrl+görgő vagy Ctrl+plusz/mínusz: nagyítás (a kép valós méretének akár 1000%-áig)\n• Ctrl+0: nagyítás igazítása az ablakhoz\n• Ctrl+1: nagyítás 100%-ra (a kép valós pixelmérete)\n• Jobb klikk + húzás: a megjelenített kép mozgatása, ha meghaladja az ablakot\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: vágási keret törlése / kilépés a megjelenítőből\n• Könyvjelző: automatikusan menti az aktuális oldalt a megjelenítő bezárásakor (az első és utolsó oldal kivételével). Piros szalag jelenik meg a mozaik megfelelő bélyegképén. Következő megnyitáskor egy üzenet javasolja a visszatérést erre az oldalra. Az utolsó oldalon automatikusan törlődik, vagy manuálisan jobb kattintással a megjelenítőben.",
     "join_pages": "Oldalak egyesítése",
     "join_pages_content": "Válasszon ki több egymást követő oldalt, jobb kattintás → 'Kijelölt oldalak egyesítése' az oldalak vízszintes vagy függőleges egyesítéséhez. A létrehozott kép formátuma megegyezik a forrásoldalakéval, ha azok mindegyike azonos, egyébként alapértelmezés szerint PNG. Választhat, hogy törli vagy megtartja az eredeti oldalakat.\n\nAz új oldal helye a mozaikban:\n• Aktív újraszámozási mód (automatikus vagy kézi): az oldal átveszi az első egyesített oldal helyét (annak helyét, ha a forrásoldalak törlődnek, vagy közvetlenül előtte, ha megmaradnak), és újraszámozást indít el.\n• KI újraszámozási mód: az oldal a mozaik elejéhez kerül \"Egyesítés_xxx\" néven.",
     "split_pages": "Oldalak felosztása",
@@ -1310,7 +1315,7 @@
     "crop": "Vágás a nézőben",
     "crop_content": "A nézőben rajzoljon egy téglalapot a képre a vágási terület meghatározásához:\n• Rajzolja meg a téglalapot az egérrel\n• Méretezze át a szélek vagy sarkok húzásával\n• Kattintson a 'Vágás jóváhagyása' gombra az alkalmazáshoz\n• A vágás az aktuális képre lesz alkalmazva\n• Esc billentyű: vágási keret megszakítása",
     "shortcuts": "Billentyűparancsok",
-    "shortcuts_content": "• Ctrl+Z: Utolsó művelet visszavonása\n• Ctrl+Y: Visszavont művelet újra\n• Ctrl+A: Összes oldal kijelölése\n• Ctrl+I: Kijelölés megfordítása\n• Ctrl+C: Kijelölt oldalak másolása\n• Ctrl+X: Kijelölt oldalak kivágása\n• Ctrl+V: Oldalak beillesztése\n• Del: Kijelölt oldalak törlése\n• Ctrl+egérgörgő: Bélyegkép méretének növelése / csökkentése\n• Ctrl+Alt+T: A mozaikban megjelenített összes bélyegkép exportálása\n• F5: Mozaik megjelenítésének frissítése\n• F11: Teljes képernyő váltása (kilépés F11-gyel vagy ESC-vel)",
+    "shortcuts_content": "• Ctrl+Z: Utolsó művelet visszavonása\n• Ctrl+Y: Visszavont művelet újra elvégzése\n• Ctrl+A: Összes oldal kijelölése\n• Ctrl+I: Kijelölés megfordítása\n• Ctrl+C: Kijelölt oldalak másolása\n• Ctrl+X: Kijelölt oldalak kivágása\n• Ctrl+V: Oldalak beillesztése\n• Del: Kijelölt oldalak törlése\n• Ctrl+egérgörgő: Nagyítás (megjelenítő) / bélyegkép mérete (mozaik) / ikon mérete (ikonoszlop)\n• Ctrl+0 (megjelenítő): Nagyítás igazítása az ablakhoz\n• Ctrl+1 (megjelenítő): Nagyítás 100%-ra (valós képméret)\n• Jobb klikk + húzás (megjelenítő): A megjelenített kép mozgatása\n• Ctrl+Alt+T: Az összes megjelenített bélyegkép exportálása a mozaikból\n• F5: Mozaik megjelenítésének frissítése\n• F11: Teljes képernyő váltása (kilépés F11 vagy ESC billentyűvel)",
     "dark_mode": "Sötét mód",
     "dark_mode_content": "Kattintson a nap/hold gombra a világos és sötét téma közötti váltáshoz.",
     "sort": "Oldalak rendezése",

@@ -1134,6 +1134,10 @@ def save_selection_as_cbz(parent, callbacks: dict):
                         entry = state.images_data[idx]
                         if entry["bytes"] is not None and not entry.get("is_dir"):
                             zf.writestr(entry["orig_name"], entry["bytes"])
+            from modules.qt import recent_files as _recent_files_module
+            _recent_files_module.add_to_recent_files(filepath)
+            if hasattr(parent, "_main_window") and hasattr(parent._main_window, "_sync_recent_menus"):
+                parent._main_window._sync_recent_menus()
             InfoDialogClickablePath(parent,
                                     "messages.info.selection_saved.title",
                                     "messages.info.selection_saved.message",
@@ -1320,6 +1324,10 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
         state.current_file = filepath
         state.modified = False
         state.zip_compression_state = "stored" if comp_level <= 0 else "deflated"
+        from modules.qt import recent_files as _recent_files_module
+        _recent_files_module.add_to_recent_files(filepath)
+        if hasattr(parent, "_main_window") and hasattr(parent._main_window, "_sync_recent_menus"):
+            parent._main_window._sync_recent_menus()
         if hasattr(parent, "_update_status_bar"):
             parent._update_status_bar()
         if callbacks.get("update_button_text"):

@@ -74,7 +74,8 @@
     "title": "Katselin",
     "mode_single": "Yksittäinen sivu  [D]",
     "mode_double": "Kaksoissivu  [D]",
-    "mode_continuous": "Jatkuva tila  [D]"
+    "mode_continuous": "Jatkuva tila  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Seuraava sivu (→)",
       "zoom_in": "Lähennä (Ctrl+Plus)",
       "zoom_out": "Loitonna (Ctrl+Miinus)",
-      "zoom_reset": "Nollaa zoomaus (Ctrl+0)",
+      "zoom_reset": "Sovita ikkunaan (Ctrl+0)",
+      "zoom_100": "Zoomaus 100% (Ctrl+1)",
       "reading_mode_double": "Vaihda lukutilaa (D) → Kaksisivuinen",
       "reading_mode_continuous": "Vaihda lukutilaa (D) → Jatkuva kaksisivuinen",
       "reading_mode_single": "Vaihda lukutilaa (D) → Yksittäinen sivu",
       "fullscreen_exit": "Poistu koko näytöstä (F11)",
       "fullscreen": "Koko näyttö (F11)",
       "close_viewer": "Sulje katselin (ESC)",
-      "delete_bookmark": "Poista kirjanmerkki"
+      "delete_bookmark": "Poista kirjanmerkki",
+      "reading_mode_webtoon": "Vaihda lukutilaa (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Vioittunut kuva - Korvaa",
@@ -1222,7 +1225,9 @@
       "window_title": "Kaksoiskappaleet",
       "no_duplicates": "Kaksoiskappaleita ei löytynyt.",
       "group_title": "Ryhmä {num}: {count} samanlaista sivua",
-      "delete_selection": "Poista valinta"
+      "delete_selection": "Poista valinta",
+      "select_group": "Valitse ryhmä",
+      "deselect_group": "Poista ryhmän valinta"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Hakemistojen tasoitus",
     "flatten_content": "Jos arkistosi sisältää alikansioita, käytä 'Tasoita hakemistot' tuodaksesi kaikki kuvat samalle tasolle.",
     "viewer": "Katselin",
-    "viewer_content": "Kaksoisnapsauta sivua avataksesi katselimen:\n• Nuolinäppäimet ← → : navigointi sivujen välillä\n• D-näppäin : vaihda 3 lukutilan välillä\n  - Yksittäinen sivu: yksi sivu kerrallaan\n  - Kaksisivuinen: sivu 1 yksin, sitten 2-3, 4-5, jne.\n  - Jatkuva kaksisivuinen: sivu 1 yksin, sitten 2-3, 3-4, 4-5, jne.\n• Hiiren rulla: nopea navigointi\n• Ctrl+Rulla tai Ctrl+Plus/Miinus: zoomaus\n• Ctrl+0: nollaa zoomaus\n• F- tai F11-näppäin: koko näyttö\n• Kaksoisnapsautus: vaihda koko näyttöön\n• Esc-näppäin: peruuta rajausruutu / poistu katselimesta\n• Kirjanmerkki: tallentaa automaattisesti nykyisen sivun katseluohjelman sulkemisen yhteydessä (paitsi ensimmäinen ja viimeinen sivu). Punainen nauha ilmestyy vastaavan pikkukuvan päälle mosaiikissa. Seuraavalla avauskerralla viesti ehdottaa palaamista tälle sivulle. Poistetaan automaattisesti viimeisellä sivulla tai manuaalisesti hiiren oikealla painikkeella katseluohjelmassa.",
+    "viewer_content": "Avaa katselin kaksoisnapsauttamalla sivua:\n• Näppäimet ← →: siirtyminen sivujen välillä\n• Näppäin D: vaihda 4 lukutilan välillä\n  - Yksi sivu: yksi sivu kerrallaan\n  - Kaksoissivut: sivu 1 yksin, sitten 2-3, 4-5 jne.\n  - Jatkuvat kaksoissivut: sivu 1 yksin, sitten 2-3, 3-4, 4-5 jne.\n  - Webtoon: pystysuuntaisille kuville (webcomicsit), leveys rajattu 900 pikseliin luettavuuden vuoksi; hiiren rulla vierittää sivua pystysuunnassa ja vaihtaa sivua ylä-/alareunassa\n• Hiiren rulla: nopea siirtyminen (pystyvieritys sivulla Webtoon-tilassa)\n• Ctrl+rulla tai Ctrl+plus/miinus: zoomaus (jopa 1000 % kuvan todellisesta koosta)\n• Ctrl+0: sovita zoomaus ikkunaan\n• Ctrl+1: zoomaus 100 % (kuvan todellinen pikselikoko)\n• Oikea painike + veto: näytetyn kuvan siirtäminen, kun se ylittää ikkunan\n• Näppäin F11: koko näyttö\n• Kaksoisnapsautus: koko näytön vaihto\n• Esc-näppäin: peruuta rajauskehys / poistu katselimesta\n• Kirjanmerkki: tallentaa automaattisesti nykyisen sivun katselinta suljettaessa (paitsi ensimmäinen ja viimeinen sivu). Punainen nauha näkyy vastaavassa pienoiskuvassa mosaiikissa. Seuraavalla avauskerralla viesti ehdottaa paluuta tälle sivulle. Poistetaan automaattisesti viimeisellä sivulla tai manuaalisesti oikealla painikkeella katselimessa.",
     "join_pages": "Sivujen yhdistäminen",
     "join_pages_content": "Valitse useita peräkkäisiä sivuja, napsauta hiiren oikealla painikkeella → 'Yhdistä valitut sivut' yhdistääksesi sivut vaaka- tai pystysuunnassa. Tuotetun kuvan muoto vastaa lähdesivujen muotoa, jos ne ovat kaikki identtisiä, muutoin oletuksena PNG. Voit valita, poistetaanko vai säilytetäänkö alkuperäiset sivut.\n\nUuden sivun sijainti mosaiikissa:\n• Aktiivinen uudelleennumerointitila (automaattinen tai manuaalinen): sivu ottaa ensimmäisen yhdistetyn sivun paikan (sen paikan, jos lähdesivut poistetaan, tai juuri sitä ennen, jos ne säilytetään), ja käynnistää uudelleennumeroinnin.\n• POIS-tila uudelleennumeroinnille: sivu lisätään mosaiikin alkuun nimellä \"Yhdistetty_xxx\".",
     "split_pages": "Sivujen jakaminen",
@@ -1310,7 +1315,7 @@
     "crop": "Rajaus katselimessa",
     "crop_content": "Katselimessa piirrä suorakulmio kuvan päälle määritelläksesi rajausalueen:\n• Piirrä suorakulmio hiirellä\n• Muuta kokoa vetämällä reunoista tai kulmista\n• Napsauta 'Vahvista rajaus' käyttääksesi\n• Rajaus kohdistetaan nykyiseen kuvaan\n• Esc-näppäin: peruuta rajausruutu",
     "shortcuts": "Pikanäppäimet",
-    "shortcuts_content": "• Ctrl+Z: Kumoa viimeisin toiminto\n• Ctrl+Y: Tee uudelleen kumottu toiminto\n• Ctrl+A: Valitse kaikki sivut\n• Ctrl+I: Käännä valinta\n• Ctrl+C: Kopioi valitut sivut\n• Ctrl+X: Leikkaa valitut sivut\n• Ctrl+V: Liitä sivut\n• Delete: Poista valitut sivut\n• Ctrl+hiiren rulla: Suurenna / pienennä pikkukuvien kokoa\n• Ctrl+Alt+T: Vie kaikki mosaiikissa näkyvät pikkukuvat\n• F5: Päivitä mosaiikkinäkymä\n• F11: Vaihda koko näyttöä (poistu F11:llä tai ESC:llä)",
+    "shortcuts_content": "• Ctrl+Z: Kumoa viimeisin toiminto\n• Ctrl+Y: Tee kumottu toiminto uudelleen\n• Ctrl+A: Valitse kaikki sivut\n• Ctrl+I: Käänna valinta\n• Ctrl+C: Kopioi valitut sivut\n• Ctrl+X: Leikkaa valitut sivut\n• Ctrl+V: Liitä sivut\n• Del: Poista valitut sivut\n• Ctrl+hiiren rulla: Zoomaus (katselin) / pienoiskuvan koko (mosaiikki) / kuvakkeen koko (kuvakesarake)\n• Ctrl+0 (katselin): Sovita zoomaus ikkunaan\n• Ctrl+1 (katselin): Zoomaus 100 % (kuvan todellinen koko)\n• Oikea painike + veto (katselin): Näytetyn kuvan siirtäminen\n• Ctrl+Alt+T: Vie kaikki mosaiikissa näytetyt pienoiskuvat\n• F5: Päivitä mosaiikin näkymä\n• F11: Vaihda koko näyttö (poistu F11:llä tai ESC:llä)",
     "dark_mode": "Tumma tila",
     "dark_mode_content": "Napsauta aurinko/kuu-painiketta vaihtaaksesi vaalean ja tumman teeman välillä.",
     "sort": "Sivujen järjestäminen",

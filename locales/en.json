@@ -74,7 +74,8 @@
     "title": "Viewer",
     "mode_single": "Single page  [D]",
     "mode_double": "Double page  [D]",
-    "mode_continuous": "Continuous mode  [D]"
+    "mode_continuous": "Continuous mode  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Next page (→)",
       "zoom_in": "Zoom in (Ctrl+Plus)",
       "zoom_out": "Zoom out (Ctrl+Minus)",
-      "zoom_reset": "Reset zoom (Ctrl+0)",
+      "zoom_reset": "Fit to window (Ctrl+0)",
+      "zoom_100": "Zoom 100% (Ctrl+1)",
       "reading_mode_double": "Change reading mode (D) → Double pages",
       "reading_mode_continuous": "Change reading mode (D) → Continuous double pages",
       "reading_mode_single": "Change reading mode (D) → Single page",
       "fullscreen_exit": "Exit fullscreen (F11)",
       "fullscreen": "Fullscreen (F11)",
       "close_viewer": "Close viewer (ESC)",
-      "delete_bookmark": "Clear bookmark"
+      "delete_bookmark": "Clear bookmark",
+      "reading_mode_webtoon": "Change reading mode (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Corrupted image - Replace",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplicates",
       "no_duplicates": "No duplicates detected.",
       "group_title": "Group {num}: {count} identical pages",
-      "delete_selection": "Delete selection"
+      "delete_selection": "Delete selection",
+      "select_group": "Select group",
+      "deselect_group": "Deselect group"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Flattening directories",
     "flatten_content": "If your archive contains subdirectories, use 'Flatten directories' to bring all images to the same level.",
     "viewer": "Viewer",
-    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 3 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n• Mouse wheel: quick navigation\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom\n• Ctrl+0: reset zoom\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel crop frame / exit viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer.",
+    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 4 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n  - Webtoon: for vertical images (webcomics), width capped at 900px to stay readable; the mouse wheel scrolls vertically within the page, then turns the page once at the top/bottom\n• Mouse wheel: quick navigation (vertical scroll within the page in Webtoon mode)\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom (up to 1000% of the image's real size)\n• Ctrl+0: fit zoom to the window\n• Ctrl+1: zoom to 100% (real pixel size of the image)\n• Right-click + drag: pan the displayed image when it exceeds the window\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel crop frame / exit viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer.",
     "join_pages": "Joining pages",
     "join_pages_content": "Select multiple consecutive pages, right-click → 'Join selected pages' to join pages horizontally or vertically. The output image format matches the source pages' format if they are all identical, otherwise PNG by default. You'll be able to choose whether to delete or keep the original pages.\n\nWhere the new page lands in the mosaic:\n• Active renumbering mode (auto or manual): the page takes the place of the first joined page (its place, if source pages are deleted, or right before it, if they're kept), and triggers a renumbering.\n• OFF renumbering mode: the page is added at the front of the mosaic under the name \"Merged_xxx\".",
     "split_pages": "Splitting pages",
@@ -1310,7 +1315,7 @@
     "crop": "Cropping in the viewer",
     "crop_content": "In the viewer, draw a rectangle on the image to define a crop area:\n• Draw the rectangle with the mouse\n• Resize it by dragging the edges or corners\n• Click 'Validate crop' to apply\n• The crop is applied to the current image\n• Esc key: cancel crop frame",
     "shortcuts": "Keyboard shortcuts",
-    "shortcuts_content": "• Ctrl+Z: Undo last action\n• Ctrl+Y: Redo undone action\n• Ctrl+A: Select all pages\n• Ctrl+I: Invert selection\n• Ctrl+C: Copy selected pages\n• Ctrl+X: Cut selected pages\n• Ctrl+V: Paste pages\n• Del: Delete selected pages\n• Ctrl+scroll wheel: Increase / decrease thumbnail size\n• Ctrl+Alt+T: Export all displayed thumbnails from the mosaic\n• F5: Update the mosaic display\n• F11: Toggle fullscreen (exit with F11 or ESC)",
+    "shortcuts_content": "• Ctrl+Z: Undo last action\n• Ctrl+Y: Redo undone action\n• Ctrl+A: Select all pages\n• Ctrl+I: Invert selection\n• Ctrl+C: Copy selected pages\n• Ctrl+X: Cut selected pages\n• Ctrl+V: Paste pages\n• Del: Delete selected pages\n• Ctrl+scroll wheel: Zoom (viewer) / thumbnail size (mosaic) / icon size (icon column)\n• Ctrl+0 (viewer): Fit zoom to window\n• Ctrl+1 (viewer): Zoom to 100% (real image size)\n• Right-click + drag (viewer): Pan the displayed image\n• Ctrl+Alt+T: Export all displayed thumbnails from the mosaic\n• F5: Update the mosaic display\n• F11: Toggle fullscreen (exit with F11 or ESC)",
     "dark_mode": "Dark mode",
     "dark_mode_content": "Click the sun/moon button to switch between light and dark themes.",
     "sort": "Sorting pages",

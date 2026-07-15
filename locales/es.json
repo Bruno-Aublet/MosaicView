@@ -74,7 +74,8 @@
     "title": "Visor",
     "mode_single": "Página simple  [D]",
     "mode_double": "Doble página  [D]",
-    "mode_continuous": "Modo continuo  [D]"
+    "mode_continuous": "Modo continuo  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Página siguiente (→)",
       "zoom_in": "Zoom + (Ctrl+Más)",
       "zoom_out": "Zoom - (Ctrl+Menos)",
-      "zoom_reset": "Restablecer zoom (Ctrl+0)",
+      "zoom_reset": "Ajustar a la ventana (Ctrl+0)",
+      "zoom_100": "Zoom 100% (Ctrl+1)",
       "reading_mode_double": "Cambiar modo de lectura (D) → Páginas dobles",
       "reading_mode_continuous": "Cambiar modo de lectura (D) → Páginas dobles continuas",
       "reading_mode_single": "Cambiar modo de lectura (D) → Página simple",
       "fullscreen_exit": "Salir de pantalla completa (F11)",
       "fullscreen": "Pantalla completa (F11)",
       "close_viewer": "Cerrar visor (ESC)",
-      "delete_bookmark": "Borrar marcador"
+      "delete_bookmark": "Borrar marcador",
+      "reading_mode_webtoon": "Cambiar modo de lectura (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Imagen corrupta - Reemplazar",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplicados",
       "no_duplicates": "No se han detectado duplicados.",
       "group_title": "Grupo {num}: {count} páginas idénticas",
-      "delete_selection": "Eliminar selección"
+      "delete_selection": "Eliminar selección",
+      "select_group": "Seleccionar grupo",
+      "deselect_group": "Deseleccionar grupo"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Aplanar directorios",
     "flatten_content": "Si su archivo contiene subcarpetas, use 'Aplanar directorios' para llevar todas las imágenes al mismo nivel.",
     "viewer": "Visor",
-    "viewer_content": "Haga doble clic en una página para abrir el visor:\n• Teclas ← →: navegación entre páginas\n• Tecla D: cambiar entre 3 modos de lectura\n  - Página simple: una página a la vez\n  - Páginas dobles: página 1 sola, luego 2-3, 4-5, etc.\n  - Páginas dobles continuas: página 1 sola, luego 2-3, 3-4, 4-5, etc.\n• Rueda del ratón: navegación rápida\n• Ctrl+Rueda o Ctrl+Más/Menos: zoom\n• Ctrl+0: restablecer zoom\n• Tecla F11: pantalla completa\n• Doble clic: alternar pantalla completa\n• Tecla Esc: cancelar el marco de recorte / salir del visor\n• Marcador: guarda automáticamente la página actual al cerrar el visor (excepto la primera y la última página). Una cinta roja aparece en la miniatura correspondiente en el mosaico. Al volver a abrir, un mensaje sugiere regresar a esa página. Se elimina automáticamente en la última página o manualmente con clic derecho en el visor.",
+    "viewer_content": "Haga doble clic en una página para abrir el visor:\n• Teclas ← →: navegación entre páginas\n• Tecla D: alternar entre 4 modos de lectura\n  - Página simple: una página a la vez\n  - Páginas dobles: página 1 sola, luego 2-3, 4-5, etc.\n  - Páginas dobles continuas: página 1 sola, luego 2-3, 3-4, 4-5, etc.\n  - Webtoon: para imágenes verticales (webcómics), ancho limitado a 900px para mantener la legibilidad; la rueda del ratón desplaza verticalmente dentro de la página y cambia de página al llegar arriba/abajo\n• Rueda del ratón: navegación rápida (desplazamiento vertical dentro de la página en modo Webtoon)\n• Ctrl+Rueda o Ctrl+Más/Menos: zoom (hasta el 1000% del tamaño real de la imagen)\n• Ctrl+0: ajustar el zoom a la ventana\n• Ctrl+1: zoom al 100% (tamaño real en píxeles de la imagen)\n• Clic derecho + arrastrar: desplazar la imagen mostrada cuando excede la ventana\n• Tecla F11: pantalla completa\n• Doble clic: alternar pantalla completa\n• Tecla Esc: cancelar el marco de recorte / salir del visor\n• Marcador: guarda automáticamente la página actual al cerrar el visor (excepto la primera y última página). Aparece una cinta roja en la miniatura correspondiente en el mosaico. Al reabrir, un mensaje sugiere volver a esta página. Se elimina automáticamente en la última página, o manualmente mediante clic derecho en el visor.",
     "join_pages": "Unir páginas",
     "join_pages_content": "Seleccione varias páginas consecutivas, clic derecho → 'Unir páginas seleccionadas' para unir las páginas horizontal o verticalmente. El formato de la imagen producida corresponde al de las páginas de origen si todas son idénticas; en caso contrario, PNG por defecto. Podrá elegir eliminar o conservar las páginas originales.\n\nUbicación de la nueva página en el mosaico:\n• Modo de renumeración activo (automático o manual): la página ocupa el lugar de la primera página unida (su lugar, si se eliminan las páginas de origen, o justo antes, si se conservan), y desencadena una renumeración.\n• Modo de renumeración OFF: la página se añade al principio del mosaico con el nombre \"Fusionado_xxx\".",
     "split_pages": "Dividir páginas",
@@ -1310,7 +1315,7 @@
     "crop": "Recorte en el visor",
     "crop_content": "En el visor, dibuje un rectángulo en la imagen para definir un área de recorte:\n• Dibuje el rectángulo con el ratón\n• Cambie su tamaño tirando de los bordes o esquinas\n• Haga clic en 'Validar recorte' para aplicar\n• El recorte se aplica a la imagen actual\n• Tecla Esc: cancelar el marco de recorte",
     "shortcuts": "Atajos de teclado",
-    "shortcuts_content": "• Ctrl+Z: Deshacer última acción\n• Ctrl+Y: Rehacer acción deshecha\n• Ctrl+A: Seleccionar todas las páginas\n• Ctrl+I: Invertir selección\n• Ctrl+C: Copiar páginas seleccionadas\n• Ctrl+X: Cortar páginas seleccionadas\n• Ctrl+V: Pegar páginas\n• Supr: Eliminar páginas seleccionadas\n• Ctrl+rueda del ratón: Aumentar / reducir el tamaño de las miniaturas\n• Ctrl+Alt+T: Exportar todas las miniaturas mostradas en el mosaico\n• F5: Actualizar la vista del mosaico\n• F11: Alternar pantalla completa (salir con F11 o ESC)",
+    "shortcuts_content": "• Ctrl+Z: Deshacer la última acción\n• Ctrl+Y: Rehacer la acción deshecha\n• Ctrl+A: Seleccionar todas las páginas\n• Ctrl+I: Invertir selección\n• Ctrl+C: Copiar páginas seleccionadas\n• Ctrl+X: Cortar páginas seleccionadas\n• Ctrl+V: Pegar páginas\n• Supr: Eliminar páginas seleccionadas\n• Ctrl+rueda del ratón: Zoom (visor) / tamaño de miniaturas (mosaico) / tamaño de iconos (columna de iconos)\n• Ctrl+0 (visor): Ajustar el zoom a la ventana\n• Ctrl+1 (visor): Zoom al 100% (tamaño real de la imagen)\n• Clic derecho + arrastrar (visor): Desplazar la imagen mostrada\n• Ctrl+Alt+T: Exportar todas las miniaturas mostradas del mosaico\n• F5: Actualizar la visualización del mosaico\n• F11: Alternar pantalla completa (salir con F11 o ESC)",
     "dark_mode": "Modo oscuro",
     "dark_mode_content": "Haz clic en el botón sol/luna para cambiar entre temas claro y oscuro.",
     "sort": "Ordenar páginas",

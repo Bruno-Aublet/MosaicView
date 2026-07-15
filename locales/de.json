@@ -74,7 +74,8 @@
     "title": "Viewer",
     "mode_single": "Einzelseite  [D]",
     "mode_double": "Doppelseite  [D]",
-    "mode_continuous": "Fortlaufender Modus  [D]"
+    "mode_continuous": "Fortlaufender Modus  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Nächste Seite (→)",
       "zoom_in": "Zoom + (Strg+Plus)",
       "zoom_out": "Zoom - (Strg+Minus)",
-      "zoom_reset": "Zoom zurücksetzen (Strg+0)",
+      "zoom_reset": "An Fenster anpassen (Ctrl+0)",
+      "zoom_100": "Zoom 100% (Ctrl+1)",
       "reading_mode_double": "Lesemodus ändern (D) → Doppelseiten",
       "reading_mode_continuous": "Lesemodus ändern (D) → Fortlaufende Doppelseiten",
       "reading_mode_single": "Lesemodus ändern (D) → Einzelseite",
       "fullscreen_exit": "Vollbild beenden (F11)",
       "fullscreen": "Vollbild (F11)",
       "close_viewer": "Viewer schließen (ESC)",
-      "delete_bookmark": "Lesezeichen löschen"
+      "delete_bookmark": "Lesezeichen löschen",
+      "reading_mode_webtoon": "Lesemodus ändern (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Beschädigtes Bild - Ersetzen",
@@ -1222,7 +1225,9 @@
       "window_title": "Duplikate",
       "no_duplicates": "Keine Duplikate gefunden.",
       "group_title": "Gruppe {num}: {count} identische Seiten",
-      "delete_selection": "Auswahl löschen"
+      "delete_selection": "Auswahl löschen",
+      "select_group": "Gruppe auswählen",
+      "deselect_group": "Gruppenauswahl aufheben"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Verzeichnisse abflachen",
     "flatten_content": "Wenn Ihr Archiv Unterordner enthält, verwenden Sie 'Verzeichnisse abflachen', um alle Bilder auf die gleiche Ebene zu bringen.",
     "viewer": "Viewer",
-    "viewer_content": "Doppelklicken Sie auf eine Seite, um den Viewer zu öffnen:\n• Tasten ← →: Navigation zwischen Seiten\n• Taste D: Zwischen 3 Lesemodi wechseln\n  - Einzelseite: eine Seite auf einmal\n  - Doppelseiten: Seite 1 allein, dann 2-3, 4-5 usw.\n  - Fortlaufende Doppelseiten: Seite 1 allein, dann 2-3, 3-4, 4-5 usw.\n• Mausrad: Schnelle Navigation\n• Strg+Rad oder Strg+Plus/Minus: Zoom\n• Strg+0: Zoom zurücksetzen\n• Taste F11: Vollbild\n• Doppelklick: Vollbild umschalten\n• Taste Esc: Zuschneiderahmen abbrechen / Viewer verlassen\n• Lesezeichen: speichert die aktuelle Seite beim Schließen des Betrachters automatisch (außer der ersten und letzten Seite). Ein rotes Band erscheint auf der entsprechenden Miniaturansicht im Mosaik. Beim erneuten Öffnen schlägt eine Meldung vor, zu dieser Seite zurückzukehren. Wird automatisch bei der letzten Seite entfernt oder manuell per Rechtsklick im Betrachter.",
+    "viewer_content": "Doppelklicken Sie auf eine Seite, um den Viewer zu öffnen:\n• Tasten ← →: Navigation zwischen den Seiten\n• Taste D: zwischen 4 Lesemodi wechseln\n  - Einzelseite: eine Seite nach der anderen\n  - Doppelseiten: Seite 1 allein, dann 2-3, 4-5 usw.\n  - Fortlaufende Doppelseiten: Seite 1 allein, dann 2-3, 3-4, 4-5 usw.\n  - Webtoon: für vertikale Bilder (Webcomics), Breite auf 900 px begrenzt, um lesbar zu bleiben; das Mausrad scrollt vertikal in der Seite, am oberen/unteren Rand wechselt es die Seite\n• Mausrad: schnelle Navigation (vertikales Scrollen in der Seite im Webtoon-Modus)\n• Strg+Rad oder Strg+Plus/Minus: Zoom (bis zu 1000% der tatsächlichen Bildgröße)\n• Strg+0: Zoom an Fenster anpassen\n• Strg+1: Zoom auf 100% (tatsächliche Pixelgröße des Bildes)\n• Rechtsklick + Ziehen: das angezeigte Bild verschieben, wenn es das Fenster überschreitet\n• Taste F11: Vollbild\n• Doppelklick: Vollbild umschalten\n• Esc-Taste: Zuschneiderahmen abbrechen / Viewer verlassen\n• Lesezeichen: speichert automatisch die aktuelle Seite beim Schließen des Viewers (außer erste und letzte Seite). Ein rotes Band erscheint auf der entsprechenden Miniaturansicht im Mosaik. Beim nächsten Öffnen schlägt eine Meldung vor, zu dieser Seite zurückzukehren. Wird auf der letzten Seite automatisch gelöscht oder manuell per Rechtsklick im Viewer.",
     "join_pages": "Seiten verbinden",
     "join_pages_content": "Wählen Sie mehrere aufeinanderfolgende Seiten aus, Rechtsklick → 'Ausgewählte Seiten zusammenführen', um die Seiten horizontal oder vertikal zusammenzuführen. Das Format des erzeugten Bildes entspricht dem der Quellseiten, wenn sie alle identisch sind, andernfalls standardmäßig PNG. Sie können wählen, ob die ursprünglichen Seiten gelöscht oder beibehalten werden sollen.\n\nPosition der neuen Seite in der Mosaik:\n• Aktiver Umnummerierungsmodus (automatisch oder manuell): Die Seite nimmt den Platz der ersten zusammengeführten Seite ein (ihren Platz, wenn die Quellseiten gelöscht werden, oder direkt davor, wenn sie beibehalten werden), und löst eine Umnummerierung aus.\n• AUS-Modus für Umnummerierung: Die Seite wird am Anfang der Mosaik unter dem Namen \"Zusammengeführt_xxx\" hinzugefügt.",
     "split_pages": "Seiten teilen",
@@ -1310,7 +1315,7 @@
     "crop": "Zuschneiden im Viewer",
     "crop_content": "Zeichnen Sie im Viewer ein Rechteck auf das Bild, um einen Zuschneidebereich zu definieren:\n• Zeichnen Sie das Rechteck mit der Maus\n• Ändern Sie die Größe durch Ziehen der Kanten oder Ecken\n• Klicken Sie auf 'Zuschnitt bestätigen' zum Anwenden\n• Der Zuschnitt wird auf das aktuelle Bild angewendet\n• Taste Esc: Zuschneiderahmen abbrechen",
     "shortcuts": "Tastenkombinationen",
-    "shortcuts_content": "• Strg+Z: Letzte Aktion rückgängig machen\n• Strg+Y: Rückgängig gemachte Aktion wiederherstellen\n• Strg+A: Alle Seiten auswählen\n• Strg+I: Auswahl umkehren\n• Strg+C: Ausgewählte Seiten kopieren\n• Strg+X: Ausgewählte Seiten ausschneiden\n• Strg+V: Seiten einfügen\n• Entf: Ausgewählte Seiten löschen\n• Strg+Mausrad: Miniaturgröße vergrößern / verkleinern\n• Strg+Alt+T: Alle angezeigten Miniaturansichten aus der Mosaikansicht exportieren\n• F5: Mosaikanzeige aktualisieren\n• F11: Vollbild umschalten (Beenden mit F11 oder ESC)",
+    "shortcuts_content": "• Strg+Z: Letzte Aktion rückgängig machen\n• Strg+Y: Rückgängig gemachte Aktion wiederherstellen\n• Strg+A: Alle Seiten auswählen\n• Strg+I: Auswahl umkehren\n• Strg+C: Ausgewählte Seiten kopieren\n• Strg+X: Ausgewählte Seiten ausschneiden\n• Strg+V: Seiten einfügen\n• Entf: Ausgewählte Seiten löschen\n• Strg+Mausrad: Zoom (Viewer) / Miniaturgröße (Mosaik) / Symbolgröße (Symbolspalte)\n• Strg+0 (Viewer): Zoom an Fenster anpassen\n• Strg+1 (Viewer): Zoom auf 100% (tatsächliche Bildgröße)\n• Rechtsklick + Ziehen (Viewer): Angezeigtes Bild verschieben\n• Strg+Alt+T: Alle angezeigten Miniaturansichten aus dem Mosaik exportieren\n• F5: Mosaikansicht aktualisieren\n• F11: Vollbild umschalten (beenden mit F11 oder ESC)",
     "dark_mode": "Dunkler Modus",
     "dark_mode_content": "Klicken Sie auf die Sonne-/Mond-Schaltfläche, um zwischen hellem und dunklem Design zu wechseln.",
     "sort": "Seiten sortieren",

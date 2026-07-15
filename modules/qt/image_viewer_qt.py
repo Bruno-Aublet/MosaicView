@@ -112,6 +112,10 @@ class _ViewerCanvas(QLabel):
         self._pan_start: QPoint | None = None
         self._is_panning = False
 
+        # Décalage de pan persistant (relatif au centrage), conservé entre les zooms
+        self.pan_offset_x = 0
+        self.pan_offset_y = 0
+
         # Gestion double-clic
         self._last_click_time = 0.0
         self._double_click_delay = 0.3
@@ -143,6 +147,8 @@ class _ViewerCanvas(QLabel):
         self._resize_mode = None
         self._resize_original_rect = None
         self._drag_start_pos = None
+        self.pan_offset_x = 0
+        self.pan_offset_y = 0
         self._hide_validate_btn()
         self.update()
 
@@ -203,15 +209,22 @@ class _ViewerCanvas(QLabel):
 
     def paintEvent(self, event):
         from PySide6.QtGui import QPainter, QPen, QColor
+        from PySide6.QtCore import QRectF
         painter = QPainter(self)
 
         # Fond noir
         painter.fillRect(self.rect(), QColor("black"))
 
-        # Image centrée
+        # Image centrée : le pixmap est stocké à sa résolution source (jamais
+        # redimensionné en PIL pour le zoom) — c'est Qt qui l'étire à l'affichage
+        # via drawPixmap(rect cible), beaucoup plus rapide qu'un resize() PIL
+        # répété à chaque cran de molette.
         pm = getattr(self, '_current_pixmap', None)
         if pm and not pm.isNull():
-            painter.drawPixmap(self.display_offset_x, self.display_offset_y, pm)
+            painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+            target = QRectF(self.display_offset_x, self.display_offset_y,
+                             self.display_width, self.display_height)
+            painter.drawPixmap(target, pm, QRectF(pm.rect()))
 
         # Rubber-band rouge
         if self.has_crop:
@@ -222,6 +235,21 @@ class _ViewerCanvas(QLabel):
             x2 = int(max(self._crop_start.x(), self._crop_end.x()))
             y2 = int(max(self._crop_start.y(), self._crop_end.y()))
             painter.drawRect(x1, y1, x2 - x1, y2 - y1)
+
+        # Barre de progression verticale (mode Webtoon uniquement) : indique la
+        # position de scroll dans une page qui dépasse de la fenêtre en hauteur.
+        if self._viewer.page_mode == "webtoon" and self.display_height > self.height():
+            track_w = 4
+            track_x = self.width() - track_w - 4
+            track_h = self.height()
+            painter.fillRect(track_x, 0, track_w, track_h, QColor(255, 255, 255, 40))
+            visible_ratio = min(1.0, self.height() / self.display_height)
+            thumb_h = max(20, int(track_h * visible_ratio))
+            scroll_range = self.display_height - self.height()
+            scroll_pos = -self.display_offset_y
+            progress = 0.0 if scroll_range <= 0 else max(0.0, min(1.0, scroll_pos / scroll_range))
+            thumb_y = int((track_h - thumb_h) * progress)
+            painter.fillRect(track_x, thumb_y, track_w, thumb_h, QColor(255, 255, 255, 160))
 
         painter.end()
 
@@ -305,6 +333,8 @@ class _ViewerCanvas(QLabel):
                 self.setCursor(Qt.SizeAllCursor)
                 self.display_offset_x += delta.x()
                 self.display_offset_y += delta.y()
+                self.pan_offset_x += delta.x()
+                self.pan_offset_y += delta.y()
                 self._pan_start = event.position().toPoint()
                 self.update()
             return
@@ -531,7 +561,13 @@ class ImageViewer(QDialog):
         image_viewer_refs.append(self)
 
         # ── État ──────────────────────────────────────────────────────────────
+        # zoom_level : échelle réelle par rapport à la taille native de l'image
+        # (1.0 = 100% = 1 pixel image = 1 pixel écran). Initialisé au premier
+        # affichage pour correspondre à l'ajustement automatique à la fenêtre.
         self.zoom_level      = 1.0
+        self._zoom_initialized = False
+        self._manual_zoom = False
+        self._webtoon_bound_scrolls = 0
         self.page_mode       = "double"
         self.is_fullscreen   = False
         self._validating_crop = False
@@ -601,7 +637,8 @@ class ImageViewer(QDialog):
         QShortcut(QKeySequence("Ctrl+Y"),          self).activated.connect(self._redo_and_refresh)
         QShortcut(QKeySequence("Ctrl++"),          self).activated.connect(lambda: self.adjust_zoom(0.1))
         QShortcut(QKeySequence("Ctrl+-"),          self).activated.connect(lambda: self.adjust_zoom(-0.1))
-        QShortcut(QKeySequence("Ctrl+0"),          self).activated.connect(self.reset_zoom)
+        QShortcut(QKeySequence("Ctrl+0"),          self).activated.connect(self.fit_zoom_to_window)
+        QShortcut(QKeySequence("Ctrl+1"),          self).activated.connect(self.reset_zoom)
 
         # ── Signal langue ─────────────────────────────────────────────────────
         from modules.qt.language_signal import language_signal
@@ -612,6 +649,11 @@ class ImageViewer(QDialog):
         self._center_parent = parent
         self._retranslate()
         self.display_image()
+        # Le canvas n'a pas encore sa taille réelle à la construction (valeur par
+        # défaut Qt) : le fit calculé ci-dessus est donc approximatif. On force un
+        # recalcul unique une fois la fenêtre affichée à sa taille définitive.
+        from PySide6.QtCore import QTimer as _QTimer
+        _QTimer.singleShot(0, self._recompute_initial_fit)
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -660,6 +702,19 @@ class ImageViewer(QDialog):
     def _redisplay_with_pan(self):
         """Redessine l'image en tenant compte du décalage de pan."""
         self.display_image(keep_crop_rect=True)
+
+    def _recompute_initial_fit(self):
+        """Le zoom initial calculé dans __init__ utilise une taille de canvas
+        provisoire (la fenêtre n'a pas encore sa taille réelle à la construction).
+        Recalcule une seule fois le fit avec la taille définitive, sauf si
+        l'utilisateur a déjà zoomé manuellement entre-temps."""
+        if self._manual_zoom:
+            return
+        self._zoom_initialized = False
+        self.display_image(keep_crop_rect=True)
+        self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
+        self._zoom_label.adjustSize()
+        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
 
     # ── Resize de la fenêtre ─────────────────────────────────────────────────
 
@@ -841,6 +896,8 @@ class ImageViewer(QDialog):
                 new_pos = current_pos + delta
             new_pos = max(0, min(new_pos, len(img_indices) - 1))
             self.current_idx = img_indices[new_pos]
+            if self.page_mode == "webtoon":
+                self._canvas.pan_offset_y = 0
             self._check_clear_bookmark_on_last_page(img_indices, new_pos)
             self.display_image()
         except ValueError:
@@ -869,30 +926,87 @@ class ImageViewer(QDialog):
             if on_bm:
                 on_bm(None)
 
+    WEBTOON_PAGE_TURN_THRESHOLD = 360  # ~3 crans de molette standard (120 par cran)
+
     def _on_wheel(self, event):
         mods = event.modifiers()
         delta = event.angleDelta().y()
         if mods & Qt.ControlModifier:
             self.adjust_zoom(0.1 if delta > 0 else -0.1)
+        elif self.page_mode == "webtoon":
+            self._on_webtoon_wheel(delta)
         else:
             step = 2 if self.page_mode == "double" else 1
             self.navigate(-step if delta > 0 else step)
 
+    def _on_webtoon_wheel(self, delta: int):
+        """Molette en mode webtoon : scroll vertical dans la page ; une fois en
+        butée (haut ou bas), accumule l'intensité des crans de molette
+        supplémentaires dans le même sens jusqu'à un seuil, puis change de page
+        (évite un changement de page accidentel). L'accumulation se fait sur la
+        magnitude du delta (pas le nombre d'événements) car une molette à
+        défilement fin envoie beaucoup plus d'événements qu'une molette
+        standard pour un même geste physique.
+
+        Un scroll rapide peut envoyer un seul événement avec un delta énorme
+        (plusieurs dizaines de crans agrégés) qui dépasse d'un coup la distance
+        restante jusqu'à la butée : la partie du delta qui "déborde" au-delà de
+        la butée est reportée dans l'accumulation dès ce même événement, sinon
+        ce geste ne compte pour rien et l'utilisateur doit recommencer 3 crans
+        supplémentaires une fois déjà en butée (ressenti de blocage)."""
+        ch = self._canvas.height()
+        min_offset = min(0, ch - self._canvas.display_height)
+        max_offset = 0
+        pan_y = self._canvas.pan_offset_y
+        new_offset = pan_y + delta
+
+        if delta > 0:
+            overflow = max(0, new_offset - max_offset)
+        else:
+            overflow = max(0, min_offset - new_offset)
+
+        if overflow > 0:
+            self._webtoon_bound_scrolls += overflow
+            if self._webtoon_bound_scrolls >= self.WEBTOON_PAGE_TURN_THRESHOLD:
+                self._webtoon_bound_scrolls = 0
+                self.navigate(-1 if delta > 0 else 1)
+                return
+        else:
+            self._webtoon_bound_scrolls = 0
+
+        clamped = max(min_offset, min(max_offset, new_offset))
+        moved = clamped - pan_y
+        self._canvas.pan_offset_y = clamped
+        self._canvas.display_offset_y += moved
+        self._canvas.update()
+
     # ── Zoom ──────────────────────────────────────────────────────────────────
 
     def adjust_zoom(self, delta: float):
-        self.zoom_level = max(0.1, min(5.0, self.zoom_level + delta))
+        self._manual_zoom = True
+        self.zoom_level = max(0.1, min(10.0, self.zoom_level + delta))
         self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
         self._zoom_label.adjustSize()
         self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
         self.display_image(keep_crop_rect=True)
 
     def reset_zoom(self):
+        """Ctrl+1 : zoom à 100% (taille réelle des pixels de l'image)."""
+        self._manual_zoom = True
         self.zoom_level = 1.0
         self._zoom_label.setText("100%")
         self._zoom_label.adjustSize()
         self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
         self.display_image(keep_crop_rect=True)
+
+    def fit_zoom_to_window(self):
+        """Ctrl+0 : recalcule le zoom pour ajuster la page actuelle à la fenêtre."""
+        self._manual_zoom = True
+        self._zoom_initialized = False
+        self.display_image(keep_crop_rect=True)
+        self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
+        self._zoom_label.adjustSize()
+        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
 
     # ── Plein écran ───────────────────────────────────────────────────────────
 
@@ -923,8 +1037,10 @@ class ImageViewer(QDialog):
             text = _("viewer.mode_single")
         elif self.page_mode == "double":
             text = _("viewer.mode_double")
-        else:
+        elif self.page_mode == "continuous":
             text = _("viewer.mode_continuous")
+        else:
+            text = _("viewer.mode_webtoon")
         self._mode_label.setText(text)
         self._mode_label.adjustSize()
         self._mode_label.move(10, 10)
@@ -935,8 +1051,15 @@ class ImageViewer(QDialog):
             self.page_mode = "double"
         elif self.page_mode == "double":
             self.page_mode = "continuous"
+        elif self.page_mode == "continuous":
+            self.page_mode = "webtoon"
         else:
             self.page_mode = "single"
+        if self.page_mode == "webtoon":
+            self._canvas.pan_offset_y = 0
+            self._webtoon_bound_scrolls = 0
+            if not self._manual_zoom:
+                self._zoom_initialized = False
         self._update_mode_label()
         self.display_image(keep_crop_rect=True)
 
@@ -1014,13 +1137,16 @@ class ImageViewer(QDialog):
         menu.addSeparator()
         menu.addAction(_("context_menu.viewer.zoom_in"),    lambda: self.adjust_zoom(0.1))
         menu.addAction(_("context_menu.viewer.zoom_out"),   lambda: self.adjust_zoom(-0.1))
-        menu.addAction(_("context_menu.viewer.zoom_reset"), self.reset_zoom)
+        menu.addAction(_("context_menu.viewer.zoom_reset"), self.fit_zoom_to_window)
+        menu.addAction(_("context_menu.viewer.zoom_100"),   self.reset_zoom)
         menu.addSeparator()
 
         if self.page_mode == "single":
             mode_label = _("context_menu.viewer.reading_mode_double")
         elif self.page_mode == "double":
             mode_label = _("context_menu.viewer.reading_mode_continuous")
+        elif self.page_mode == "continuous":
+            mode_label = _("context_menu.viewer.reading_mode_webtoon")
         else:
             mode_label = _("context_menu.viewer.reading_mode_single")
         menu.addAction(mode_label, self.toggle_double_page)
@@ -1081,17 +1207,19 @@ class ImageViewer(QDialog):
         if cw <= 1: cw = 800
         if ch <= 1: ch = 540
         fw, fh = frame.size
-        ratio = min(cw / fw, ch / fh)
-        final_w = int(fw * ratio * self.zoom_level)
-        final_h = int(fh * ratio * self.zoom_level)
-        frame = frame.resize((final_w, final_h), Image.Resampling.LANCZOS)
+        final_w = max(1, int(fw * self.zoom_level))
+        final_h = max(1, int(fh * self.zoom_level))
+        # Pixmap stocké à la résolution native de la frame, étiré par Qt à l'affichage.
         frame_has_alpha = (frame.mode in ('RGBA', 'LA') or
                            (frame.mode == 'P' and 'transparency' in frame.info))
         if frame_has_alpha:
             frame = _compose_on_checkerboard(frame)
         pixmap = _pil_to_qpixmap(frame)
-        offset_x = (cw - final_w) // 2
-        offset_y = (ch - final_h) // 2
+        offset_x = (cw - final_w) // 2 + self._canvas.pan_offset_x
+        if self.page_mode == "webtoon":
+            offset_y = self._canvas.pan_offset_y
+        else:
+            offset_y = (ch - final_h) // 2 + self._canvas.pan_offset_y
         self._canvas.set_pixmap_and_geometry(pixmap, offset_x, offset_y, final_w, final_h)
         self.gif_current_frame = (self.gif_current_frame + 1) % frame_count
         self._schedule_gif_frame()
@@ -1162,6 +1290,8 @@ class ImageViewer(QDialog):
         else:
             self._display_single_page(self.current_idx, viewer_w, viewer_h)
 
+    WEBTOON_MAX_WIDTH_PX = 900
+
     def _display_single_page(self, idx: int, viewer_w: int, viewer_h: int):
         state = self.callbacks.get('state') or _state_module.state
         entry = state.images_data[idx]
@@ -1193,10 +1323,16 @@ class ImageViewer(QDialog):
         has_alpha = (img.mode in ('RGBA', 'LA') or
                      (img.mode == 'P' and 'transparency' in img.info))
         img_w, img_h = img.size
-        ratio = min(viewer_w / img_w, viewer_h / img_h)
-        final_w = int(img_w * ratio * self.zoom_level)
-        final_h = int(img_h * ratio * self.zoom_level)
-        img = img.resize((final_w, final_h), Image.Resampling.LANCZOS)
+        if not self._zoom_initialized:
+            if self.page_mode == "webtoon":
+                self.zoom_level = min(self.WEBTOON_MAX_WIDTH_PX, viewer_w) / img_w
+            else:
+                self.zoom_level = min(viewer_w / img_w, viewer_h / img_h)
+            self._zoom_initialized = True
+        final_w = max(1, int(img_w * self.zoom_level))
+        final_h = max(1, int(img_h * self.zoom_level))
+        # Le pixmap est stocké à la résolution source : c'est Qt qui l'étire à
+        # l'affichage (voir _ViewerCanvas.paintEvent), pas un resize() PIL ici.
         if has_alpha:
             img = _compose_on_checkerboard(img)
         pixmap = _pil_to_qpixmap(img)
@@ -1205,8 +1341,11 @@ class ImageViewer(QDialog):
         ch = self._canvas.height()
         if cw <= 1: cw = viewer_w
         if ch <= 1: ch = viewer_h
-        offset_x = (cw - final_w) // 2
-        offset_y = (ch - final_h) // 2
+        offset_x = (cw - final_w) // 2 + self._canvas.pan_offset_x
+        if self.page_mode == "webtoon":
+            offset_y = self._canvas.pan_offset_y
+        else:
+            offset_y = (ch - final_h) // 2 + self._canvas.pan_offset_y
 
         self._canvas.set_pixmap_and_geometry(pixmap, offset_x, offset_y, final_w, final_h)
 
@@ -1285,11 +1424,13 @@ class ImageViewer(QDialog):
             combined.paste(left_img,  (0,  0))
             combined.paste(right_img, (lw, 0))
 
-        ratio   = min(viewer_w / combined_w, viewer_h / max_h)
-        final_w = int(combined_w * ratio * self.zoom_level)
-        final_h = int(max_h     * ratio * self.zoom_level)
+        if not self._zoom_initialized:
+            self.zoom_level = min(viewer_w / combined_w, viewer_h / max_h)
+            self._zoom_initialized = True
+        final_w = max(1, int(combined_w * self.zoom_level))
+        final_h = max(1, int(max_h     * self.zoom_level))
 
-        combined = combined.resize((final_w, final_h), Image.Resampling.LANCZOS)
+        # Pixmap stocké à la résolution combinée native, étiré par Qt à l'affichage.
         if has_alpha:
             combined = _compose_on_checkerboard(combined)
         pixmap = _pil_to_qpixmap(combined)
@@ -1298,8 +1439,8 @@ class ImageViewer(QDialog):
         ch = self._canvas.height()
         if cw <= 1: cw = viewer_w
         if ch <= 1: ch = viewer_h
-        offset_x = (cw - final_w) // 2
-        offset_y = (ch - final_h) // 2
+        offset_x = (cw - final_w) // 2 + self._canvas.pan_offset_x
+        offset_y = (ch - final_h) // 2 + self._canvas.pan_offset_y
 
         self._canvas.set_pixmap_and_geometry(pixmap, offset_x, offset_y, final_w, final_h)
 
@@ -1360,13 +1501,6 @@ class ImageViewer(QDialog):
                 dlg.show_nonmodal()
                 return
 
-            cw = self._canvas.width()
-            ch = self._canvas.height()
-            viewer_w = cw - 20
-            viewer_h = ch - 20
-            if viewer_w <= 1: viewer_w = 780
-            if viewer_h <= 1: viewer_h = 540
-
             c = self._canvas
             crop_x1 = c._crop_start.x() - c.display_offset_x
             crop_y1 = c._crop_start.y() - c.display_offset_y
@@ -1379,8 +1513,7 @@ class ImageViewer(QDialog):
             crop_y2 = max(0, min(crop_y2, c.display_height))
 
             img_w, img_h = original_img.size
-            ratio = min(viewer_w / img_w, viewer_h / img_h)
-            zoom_ratio = ratio * self.zoom_level
+            zoom_ratio = self.zoom_level
 
             orig_x1 = int(crop_x1 / zoom_ratio)
             orig_y1 = int(crop_y1 / zoom_ratio)

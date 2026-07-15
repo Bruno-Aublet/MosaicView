@@ -165,7 +165,7 @@ class _DuplicatesWindow(QDialog):
         btn_row.addStretch()
         layout.addLayout(btn_row)
 
-        self._checkboxes = []  # list[(QCheckBox, real_idx)]
+        self._checkboxes = []  # list[(QCheckBox, real_idx, entry)]
         self._rebuild_list()
 
         from modules.qt.language_signal import language_signal
@@ -188,6 +188,11 @@ class _DuplicatesWindow(QDialog):
     # ── Construction de la liste ─────────────────────────────────────────────────
 
     def _rebuild_list(self):
+        # Cases cochées mémorisées par identité d'objet entry (jamais par position :
+        # les real_idx se décalent après une suppression, une entrée héritant de la
+        # position d'une autre serait cochée à tort → risque de suppression non voulue)
+        previously_checked = {id(entry) for chk, real_idx, entry in self._checkboxes if chk.isChecked()}
+
         for i in reversed(range(self._list_layout.count())):
             item = self._list_layout.itemAt(i)
             w = item.widget()
@@ -205,8 +210,14 @@ class _DuplicatesWindow(QDialog):
         for group_num, group in enumerate(groups, start=1):
             self._list_layout.addWidget(self._build_group_widget(group_num, group, show_path))
 
+        if previously_checked:
+            for chk, real_idx, entry in self._checkboxes:
+                if id(entry) in previously_checked:
+                    chk.setChecked(True)
+
         self._list_layout.addStretch(1)
         self._retranslate()
+        self._update_delete_button_state()
 
     def _build_group_widget(self, group_num: int, group: list, show_path: bool) -> QWidget:
         from modules.qt.mosaic_canvas import _get_pixmap_for_size
@@ -223,6 +234,26 @@ class _DuplicatesWindow(QDialog):
         title.setStyleSheet("font-weight: bold;")
         v.addWidget(title)
 
+        # Boutons Sélectionner/Désélectionner le groupe — méthodes liées + sender()
+        # uniquement : pas de lambda capturant des widgets du frame (une lambda
+        # retenue par la connexion C++ d'un bouton enfant créerait un cycle Python
+        # qui retarde la destruction du frame détaché au rebuild jusqu'au GC).
+        buttons_row = QHBoxLayout()
+        buttons_row.setSpacing(8)
+
+        btn_select = QPushButton()
+        btn_select.setProperty("group_role", "select_group")
+        btn_select.clicked.connect(self._on_group_select_clicked)
+        buttons_row.addWidget(btn_select)
+
+        btn_deselect = QPushButton()
+        btn_deselect.setProperty("group_role", "deselect_group")
+        btn_deselect.clicked.connect(self._on_group_deselect_clicked)
+        buttons_row.addWidget(btn_deselect)
+
+        buttons_row.addStretch(1)
+        v.addLayout(buttons_row)
+
         for real_idx, entry in group:
             row = QHBoxLayout()
             row.setSpacing(8)
@@ -238,12 +269,37 @@ class _DuplicatesWindow(QDialog):
                 import os
                 name = os.path.basename(name)
             chk = QCheckBox(name)
+            chk.stateChanged.connect(self._update_delete_button_state)
             row.addWidget(chk, stretch=1)
 
-            self._checkboxes.append((chk, real_idx))
+            self._checkboxes.append((chk, real_idx, entry))
             v.addLayout(row)
 
         return container
+
+    def _on_group_select_clicked(self):
+        self._set_group_checked_from_sender(True)
+
+    def _on_group_deselect_clicked(self):
+        self._set_group_checked_from_sender(False)
+
+    def _set_group_checked_from_sender(self, checked: bool):
+        """Retrouve le QFrame de groupe du bouton cliqué via sender(), et coche/décoche
+        ses checkboxes. Aucune référence capturée à la construction (voir commentaire
+        dans _build_group_widget)."""
+        btn = self.sender()
+        if btn is None:
+            return
+        container = btn.parent()
+        if container is None:
+            return
+        for chk in container.findChildren(QCheckBox):
+            chk.setChecked(checked)
+        self._update_delete_button_state()
+
+    def _update_delete_button_state(self, _checkstate=None):
+        has_selection = any(chk.isChecked() for chk, _real_idx, _entry in self._checkboxes)
+        self._btn_delete.setEnabled(has_selection)
 
     # ── Traduction + thème ─────────────────────────────────────────────────────
 
@@ -263,6 +319,21 @@ class _DuplicatesWindow(QDialog):
         self._lbl_empty.setFont(font)
         self._lbl_empty.setStyleSheet(f"color: {theme['text']};")
 
+        alt = theme.get("toolbar_bg", theme["bg"])
+        sep = theme.get("separator", "#aaaaaa")
+        disabled = theme.get("disabled", "#888888")
+        btn_style = (
+            f"QPushButton {{ background: {alt}; color: {theme['text']}; "
+            f"border: 1px solid {sep}; padding: 6px 16px; }} "
+            f"QPushButton:hover {{ background: {sep}; }} "
+            f"QPushButton:disabled {{ color: {disabled}; }}"
+        )
+        group_btn_style = (
+            f"QPushButton {{ background: {alt}; color: {theme['text']}; "
+            f"border: 1px solid {sep}; padding: 3px 8px; }} "
+            f"QPushButton:hover {{ background: {sep}; }}"
+        )
+
         for i in range(self._list_layout.count()):
             item = self._list_layout.itemAt(i)
             container = item.widget()
@@ -280,14 +351,17 @@ class _DuplicatesWindow(QDialog):
             for child in container.findChildren(QCheckBox):
                 child.setFont(font)
                 child.setStyleSheet(f"color: {theme['text']};")
+            for child in container.findChildren(QPushButton):
+                role = child.property("group_role")
+                if role == "select_group":
+                    child.setText(_("dialogs.duplicates.select_group"))
+                elif role == "deselect_group":
+                    child.setText(_("dialogs.duplicates.deselect_group"))
+                else:
+                    continue
+                child.setFont(font)
+                child.setStyleSheet(group_btn_style)
 
-        alt = theme.get("toolbar_bg", theme["bg"])
-        sep = theme.get("separator", "#aaaaaa")
-        btn_style = (
-            f"QPushButton {{ background: {alt}; color: {theme['text']}; "
-            f"border: 1px solid {sep}; padding: 6px 16px; }} "
-            f"QPushButton:hover {{ background: {sep}; }}"
-        )
         self._btn_delete.setText(_("dialogs.duplicates.delete_selection"))
         self._btn_delete.setFont(font)
         self._btn_delete.setStyleSheet(btn_style)
@@ -298,7 +372,7 @@ class _DuplicatesWindow(QDialog):
     # ── Actions ────────────────────────────────────────────────────────────────
 
     def _on_delete_clicked(self):
-        indices = [real_idx for chk, real_idx in self._checkboxes if chk.isChecked()]
+        indices = [real_idx for chk, real_idx, _entry in self._checkboxes if chk.isChecked()]
         if not indices:
             return
 

@@ -159,6 +159,7 @@ class StatusBar(QWidget):
         self._duplicate_sep.setFont(font9)
 
         theme = get_current_theme()
+        self._label.setStyleSheet(f"color: {theme.get('text', '#000000')};")
         self._renumber_indicator.setStyleSheet(f"color: {theme.get('text', '#000000')};")
         self._indicator_sep.setStyleSheet(f"color: {theme.get('separator', '#aaaaaa')};")
         self._zip_indicator.setStyleSheet(f"color: {theme.get('text', '#000000')};")

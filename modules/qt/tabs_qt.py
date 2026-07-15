@@ -16,8 +16,8 @@ from PySide6.QtWidgets import (
     QFrame, QVBoxLayout, QSizePolicy, QMenu,
     QTableView, QAbstractItemView,
 )
-from PySide6.QtCore import Qt, Signal, QThread
-from PySide6.QtGui import QPainter, QColor, QPen, QGuiApplication, QStandardItemModel, QStandardItem, QFont
+from PySide6.QtCore import Qt, Signal, QThread, QAbstractTableModel, QModelIndex
+from PySide6.QtGui import QPainter, QColor, QPen, QGuiApplication, QFont
 
 from modules.qt import state as _state_module
 from modules.qt.state import get_current_theme
@@ -313,10 +313,83 @@ class TabBar(QWidget):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# Modèle table pur Python pour l'onglet Pages
+# ═══════════════════════════════════════════════════════════════════════════════
+class _PagesTableModel(QAbstractTableModel):
+    """Modèle du tableau Pages — données pures, UN SEUL wrapper Qt.
+
+    NE PAS revenir à QStandardItemModel ici : des centaines de QStandardItem
+    wrappés Python, créés puis détruits à chaque rafraîchissement de l'onglet
+    (chaque suppression/undo/redo), corrompent la table de bindings de shiboken
+    quand ça s'entrelace avec le churn d'items de la mosaïque → access violation
+    différée dans BindingManager::releaseWrapper (crash diagnostiqué par pile
+    native, shiboken 6.10/6.11, juillet 2026).
+    rows : [[(valeur, clé_de_tri|None) × 5], ...] (préparées par _PagesModelBuilder).
+    """
+
+    def __init__(self, rows, headers, parent=None):
+        super().__init__(parent)
+        self._rows = rows
+        self._headers = list(headers)
+
+    def rowCount(self, parent=QModelIndex()):
+        return 0 if parent.isValid() else len(self._rows)
+
+    def columnCount(self, parent=QModelIndex()):
+        return 0 if parent.isValid() else len(self._headers)
+
+    def data(self, index, role=Qt.DisplayRole):
+        if not index.isValid():
+            return None
+        if role == Qt.DisplayRole:
+            return str(self._rows[index.row()][index.column()][0])
+        if role == Qt.UserRole:
+            return self._rows[index.row()][index.column()][1]
+        if role == Qt.FontRole:
+            # Évalué à chaque paint : suit la police courante (langues CSUR
+            # klingon/tengwar incluses) sans dépendre d'un setFont statique.
+            return _get_current_font(9)
+        return None
+
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if orientation == Qt.Horizontal:
+            if role == Qt.DisplayRole and 0 <= section < len(self._headers):
+                return self._headers[section]
+            if role == Qt.FontRole:
+                return _get_current_font(9)
+        return None
+
+    def set_headers(self, headers):
+        """Retraduction des en-têtes à la volée (appelé par _restyle)."""
+        self._headers = list(headers)
+        if self._headers:
+            self.headerDataChanged.emit(Qt.Horizontal, 0, len(self._headers) - 1)
+
+    def sort(self, column, order=Qt.AscendingOrder):
+        self.layoutAboutToBeChanged.emit()
+
+        def _key(row):
+            sort_val = row[column][1]
+            return sort_val if sort_val is not None else str(row[column][0])
+
+        self._rows.sort(key=_key, reverse=(order == Qt.DescendingOrder))
+        self.layoutChanged.emit()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # Thread de construction du modèle Pages
 # ═══════════════════════════════════════════════════════════════════════════════
 class _PagesModelBuilder(QThread):
-    done = Signal(object)  # émet QStandardItemModel
+    done = Signal(object)  # émet une liste de lignes [(valeur, sort_val|None) × 5]
+
+    # NE JAMAIS créer de QStandardItemModel/QStandardItem dans ce thread : les
+    # wrappers Qt créés hors du thread principal, puis détruits sur le thread
+    # principal pendant que celui-ci crée/détruit massivement d'autres objets Qt
+    # (render_mosaic), corrompent la table de bindings de shiboken → access
+    # violation différée dans BindingManager::releaseWrapper (crash constaté sur
+    # suppressions de doublons + undo/redo, shiboken 6.10/6.11, juillet 2026).
+    # Ce thread ne prépare que des données pures (str/int) ; les objets Qt sont
+    # construits dans _on_pages_model_ready, sur le thread principal.
 
     def __init__(self, pages):
         super().__init__()
@@ -329,9 +402,8 @@ class _PagesModelBuilder(QThread):
 
     def run(self):
         from modules.qt.utils import format_file_size
-        from PySide6.QtCore import Qt as _Qt
-        model = QStandardItemModel(len(self._pages), 5)
-        for row, page in enumerate(self._pages):
+        rows = []
+        for page in self._pages:
             if self._cancelled:
                 return
             size_raw = page.get('ImageSize', '')
@@ -342,19 +414,15 @@ class _PagesModelBuilder(QThread):
                 size_int = None
                 size_str = size_raw
 
-            def _item(val, sort_val=None):
-                it = QStandardItem(str(val))
-                if sort_val is not None:
-                    it.setData(sort_val, _Qt.UserRole)
-                return it
-
-            model.setItem(row, 0, _item(page.get('Image', ''),    int(page.get('Image', 0) or 0)))
-            model.setItem(row, 1, _item(page.get('Type', '')))
-            model.setItem(row, 2, _item(page.get('ImageWidth', ''),  int(page.get('ImageWidth', 0) or 0)))
-            model.setItem(row, 3, _item(page.get('ImageHeight', ''), int(page.get('ImageHeight', 0) or 0)))
-            model.setItem(row, 4, _item(size_str, size_int if size_int is not None else 0))
+            rows.append([
+                (page.get('Image', ''),       int(page.get('Image', 0) or 0)),
+                (page.get('Type', ''),        None),
+                (page.get('ImageWidth', ''),  int(page.get('ImageWidth', 0) or 0)),
+                (page.get('ImageHeight', ''), int(page.get('ImageHeight', 0) or 0)),
+                (size_str,                    size_int if size_int is not None else 0),
+            ])
         if not self._cancelled:
-            self.done.emit(model)
+            self.done.emit(rows)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -635,10 +703,14 @@ class MetadataTab(QScrollArea):
                 _("metadata.pages_col_height"),
                 _("metadata.pages_col_size"),
             ]
+            # Police du tableau et des en-têtes réappliquée systématiquement
+            # (règle projet : jamais un setFont unique à la création pour un
+            # widget dont le texte change de langue — polices CSUR illisibles sinon)
+            self._pages_table.setFont(_get_current_font(9))
+            self._pages_table.horizontalHeader().setFont(_get_current_font(9))
             model = self._pages_table.model()
-            if model:
-                for i, label in enumerate(col_keys):
-                    model.setHorizontalHeaderItem(i, QStandardItem(label))
+            if isinstance(model, _PagesTableModel):
+                model.set_headers(col_keys)
 
     # ── Construction de la section Pages avec QTableView ─────────────────────
     def _build_pages_section(self, pages, bold_font):
@@ -687,8 +759,10 @@ class MetadataTab(QScrollArea):
         self._pages_builder.done.connect(self._on_pages_model_ready)
         self._pages_builder.start()
 
-    def _on_pages_model_ready(self, model):
-        """Reçu depuis le thread builder — assigne le modèle au tableau (thread UI)."""
+    def _on_pages_model_ready(self, rows):
+        """Reçu depuis le thread builder — construit le modèle depuis les données
+        pures et l'assigne au tableau (voir commentaire de _PagesTableModel :
+        aucun QStandardItem, un seul wrapper Qt pour tout le tableau)."""
         if self._pages_table is not None:
             col_keys = [
                 _("metadata.pages_col_image"),
@@ -697,15 +771,26 @@ class MetadataTab(QScrollArea):
                 _("metadata.pages_col_height"),
                 _("metadata.pages_col_size"),
             ]
-            for i, label in enumerate(col_keys):
-                model.setHorizontalHeaderItem(i, QStandardItem(label))
-            model.setSortRole(Qt.UserRole)
+            old_model = self._pages_table.model()
+            model = _PagesTableModel(rows, col_keys, parent=self._pages_table)
             self._pages_table.setModel(model)
+            if old_model is not None:
+                # Libération synchrone de l'ancien modèle (un seul wrapper Qt,
+                # destruction sans danger) — évite l'accumulation d'enfants sur la table.
+                old_model.setParent(None)
             # Ajuste la hauteur du tableau pour afficher toutes les lignes sans scrollbar
             header_h = self._pages_table.horizontalHeader().height()
             row_h    = self._pages_table.verticalHeader().defaultSectionSize()
             self._pages_table.setFixedHeight(header_h + row_h * model.rowCount() + 2)
         if self._pages_builder is not None:
+            # wait() OBLIGATOIRE avant deleteLater : done est émis à la dernière
+            # ligne de run(), donc le thread tourne encore pendant quelques µs
+            # quand ce slot s'exécute. deleteLater sans wait() peut détruire le
+            # QThread pendant qu'il tourne → corruption mémoire silencieuse qui
+            # détone plus tard n'importe où (même famille de crash que le
+            # téléchargement de couvertures ComicVine, v1.5.6). Quasi instantané
+            # ici puisque run() se termine juste après l'émission.
+            self._pages_builder.wait()
             self._pages_builder.deleteLater()
         self._pages_builder = None
         self._restyle()

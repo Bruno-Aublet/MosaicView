@@ -74,7 +74,8 @@
     "title": "Amharcóir",
     "mode_single": "Leathanach amháin  [D]",
     "mode_double": "Leathanach dúbailte  [D]",
-    "mode_continuous": "Mód leanúnach  [D]"
+    "mode_continuous": "Mód leanúnach  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Ar aghaidh (→)",
       "zoom_in": "Zúmáil isteach (Ctrl+Plus)",
       "zoom_out": "Zúmáil amach (Ctrl+Mionús)",
-      "zoom_reset": "Athshocraigh zúmáil (Ctrl+0)",
+      "zoom_reset": "Oiriúnaigh don fhuinneog (Ctrl+0)",
+      "zoom_100": "Zúmáil 100% (Ctrl+1)",
       "reading_mode_double": "Athraigh mód léitheoireachta (D) → Leathanaigh dhúbailte",
       "reading_mode_continuous": "Athraigh mód léitheoireachta (D) → Leathanaigh dhúbailte leanúnacha",
       "reading_mode_single": "Athraigh mód léitheoireachta (D) → Leathanach singil",
       "fullscreen_exit": "Fág lánscáileán (F11)",
       "fullscreen": "Lánscáileán (F11)",
       "close_viewer": "Dún an t-amharcóir (ESC)",
-      "delete_bookmark": "Scrios leabharmharc"
+      "delete_bookmark": "Scrios leabharmharc",
+      "reading_mode_webtoon": "Athraigh mód léitheoireachta (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Íomhá truaillithe - Ionadaigh",
@@ -1222,7 +1225,9 @@
       "window_title": "Dúblacha",
       "no_duplicates": "Níor aimsíodh aon dhúblach.",
       "group_title": "Grúpa {num}: {count} leathanach comhionann",
-      "delete_selection": "Scrios an roghnú"
+      "delete_selection": "Scrios an roghnú",
+      "select_group": "Roghnaigh an grúpa",
+      "deselect_group": "Díroghnaigh an grúpa"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Comhadlanna a chomhréiteach",
     "flatten_content": "Má tá fochomhadlanna i do chartlann, úsáid 'Comhréitigh fillteáin' chun na híomhánna go léir a thabhairt chuig an leibhéal céanna.",
     "viewer": "Amharcóir",
-    "viewer_content": "Déclic ar leathanach le hamharcóir a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: malartú idir 3 mhód léitheoireachta\n  - Leathanach singil: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 ina aonar, ansin 2-3, 4-5, srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 ina aonar, ansin 2-3, 3-4, 4-5, srl.\n• Roth luiche: nascleanúint tapa\n• Ctrl+Roth nó Ctrl+Plus/Mionús: zúmáil\n• Ctrl+0: athshocraigh zúmáil\n• Eochair F11: lánscáileán\n• Déclic: scoránaigh lánscáileán\n• Eochair Esc: cealaigh fráma barrthuanaithe / fág an t-amharcóir\n• Leabharmharc: sábhálann sé an leathanach reatha go huathoibríoch nuair a dhúntar an breathnadóir (ach amháin an chéad leathanach agus an leathanach deireanach). Feictear ribín dearg ar an mionsamhail chomhfhreagrach sa mhóisáic. Ar an gcéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriostar go huathoibríoch ar an leathanach deireanach nó de láimh trí chliceáil deas san breathnadóir.",
+    "viewer_content": "Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: aistrigh idir 4 mhód léitheoireachta\n  - Leathanach amháin: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 amháin, ansin 2-3, 4-5, srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 amháin, ansin 2-3, 3-4, 4-5, srl.\n  - Webtoon: le haghaidh íomhánna ingearacha (greannáin ghréasáin), leithead teoranta go 900px chun a bheith inléite; scrollaíonn roth na luiche go hingearach laistigh den leathanach, ansin athraíonn sé leathanach nuair a shroicheann sé an barr/bun\n• Roth na luiche: nascleanúint tapa (scrollú ingearach laistigh den leathanach i mód Webtoon)\n• Ctrl+roth nó Ctrl+Móide/Lúide: zúmáil (suas le 1000% de mhéid iarbhír na híomhá)\n• Ctrl+0: oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1: zúmáil go 100% (méid iarbhír picteilíní na híomhá)\n• Deaschliceáil + tarraing: bog an íomhá arna taispeáint nuair a sháraíonn sí an fhuinneog\n• Eochair F11: lánscáileán\n• Cliceáil faoi dhó: athraigh lánscáileán\n• Eochair Esc: cealaigh an fráma bearrtha / scoir an t-amharcán\n• Leabharmharc: sábhálann sé go huathoibríoch an leathanach reatha nuair a dhúntar an t-amharcán (seachas an chéad agus an leathanach deiridh). Taispeántar ribín dearg ar an mionsamhail chomhfhreagrach sa mósáic. Ag an gcéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriostar go huathoibríoch ar an leathanach deiridh, nó de láimh trí dheaschliceáil san amharcán.",
     "join_pages": "Leathanaigh a cheangal",
     "join_pages_content": "Roghnaigh roinnt leathanach as a chéile, deaschliceáil → 'Ceangail na leathanaigh roghnaithe' chun na leathanaigh a cheangal go cothrománach nó go hingearach. Meaitseálann formáid na híomhá a tháirgtear le formáid na leathanach foinseach má tá siad go léir comhionann, mura hea PNG mar réamhshocrú. Beidh tú in ann na leathanaigh bhunaidh a scriosadh nó a choinneáil.\n\nSuíomh an leathanaigh nua sa mósáic:\n• Mód athuimhrithe gníomhach (uathoibríoch nó de láimh): glacann an leathanach áit an chéad leathanaigh a ceanglaíodh (a áit, má scriostar na leathanaigh foinseacha, nó díreach roimhe, má choinnítear iad), agus spreagann sé athuimhriú.\n• Mód athuimhrithe AS: cuirtear an leathanach le tosach an mósáic faoin ainm \"Ceangal_xxx\".",
     "split_pages": "Leathanaigh a roinnt",
@@ -1310,7 +1315,7 @@
     "crop": "Bearradh san amharcóir",
     "crop_content": "San amharcóir, tarraing dronuilleog ar an íomhá le limistéar bearrtha a shainiú:\n• Tarraing an dronuilleog leis an luch\n• Athraigh méid é trí tharraingt ar na himill nó na coirnéil\n• Cliceáil ar 'Deimhnigh an bearradh' le cur i bhfeidhm\n• Cuirtear an bearradh i bhfeidhm ar an íomhá reatha\n• Eochair Esc: cealaigh fráma barrthuanaithe",
     "shortcuts": "Aicearraí méarchláir",
-    "shortcuts_content": "• Ctrl+Z: Cealaigh an gníomh deireanach\n• Ctrl+Y: Athdhéan an gníomh cealaithe\n• Ctrl+A: Roghnaigh gach leathanach\n• Ctrl+I: Inbhéartaigh roghnú\n• Ctrl+C: Cóipeáil leathanaigh roghnaithe\n• Ctrl+X: Gearr leathanaigh roghnaithe\n• Ctrl+V: Greamaigh leathanaigh\n• Delete: Scrios leathanaigh roghnaithe\n• Ctrl+roth luiche: Méadaigh / laghdaigh méid na mionsamhlacha\n• Ctrl+Alt+T: Easpórtáil gach mionsamhail atá ar taispeáint sa mhósáic\n• F5: Nuashonraigh taispéáint an mhósáic\n• F11: Scoránaigh lánscáileán (scoir le F11 nó ESC)",
+    "shortcuts_content": "• Ctrl+Z: Cealaigh an gníomh deireanach\n• Ctrl+Y: Athdhéan an gníomh cealaithe\n• Ctrl+A: Roghnaigh gach leathanach\n• Ctrl+I: Aisiompaigh an roghnú\n• Ctrl+C: Cóipeáil na leathanaigh roghnaithe\n• Ctrl+X: Gearr na leathanaigh roghnaithe\n• Ctrl+V: Greamaigh leathanaigh\n• Del: Scrios na leathanaigh roghnaithe\n• Ctrl+roth na luiche: Zúmáil (amharcán) / méid mionsamhlacha (mósáic) / méid deilbhíní (colún deilbhíní)\n• Ctrl+0 (amharcán): Oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1 (amharcán): Zúmáil go 100% (méid iarbhír na híomhá)\n• Deaschliceáil + tarraing (amharcán): Bog an íomhá arna taispeáint\n• Ctrl+Alt+T: Easpórtáil gach mionsamhail arna taispeáint ón mósáic\n• F5: Nuashonraigh taispeáint an mósáic\n• F11: Athraigh lánscáileán (scoir le F11 nó ESC)",
     "dark_mode": "Mód dorcha",
     "dark_mode_content": "Cliceáil ar an gcnaipe grian/gealach chun malartú idir téamaí éadrom agus dorcha.",
     "sort": "Leathanaigh a shórtáil",

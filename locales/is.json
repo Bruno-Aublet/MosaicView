@@ -74,7 +74,8 @@
     "title": "Skoðari",
     "mode_single": "Stök síða  [D]",
     "mode_double": "Tvöföld síða  [D]",
-    "mode_continuous": "Samfelldur hamur  [D]"
+    "mode_continuous": "Samfelldur hamur  [D]",
+    "mode_webtoon": "Webtoon  [D]"
   },
   "context_menu": {
     "viewer": {
@@ -82,14 +83,16 @@
       "next_page": "Næsta síða (→)",
       "zoom_in": "Auka aðdrátt (Ctrl+Plus)",
       "zoom_out": "Minnka aðdrátt (Ctrl+Mínus)",
-      "zoom_reset": "Endurstilla aðdrátt (Ctrl+0)",
+      "zoom_reset": "Passa í glugga (Ctrl+0)",
+      "zoom_100": "Aðdráttur 100% (Ctrl+1)",
       "reading_mode_double": "Breyta lestrarham (D) → Tvöfaldar síður",
       "reading_mode_continuous": "Breyta lestrarham (D) → Samfelldar tvöfaldar síður",
       "reading_mode_single": "Breyta lestrarham (D) → Stök síða",
       "fullscreen_exit": "Hætta í heilskjá (F11)",
       "fullscreen": "Heilskjár (F11)",
       "close_viewer": "Loka skoðara (ESC)",
-      "delete_bookmark": "Eyða bókamerkinu"
+      "delete_bookmark": "Eyða bókamerkinu",
+      "reading_mode_webtoon": "Breyta lestrarham (D) → Webtoon"
     },
     "image": {
       "corrupted_replace": "⚠️ Skemmd mynd - Skipta út",
@@ -1222,7 +1225,9 @@
       "window_title": "Tvítekningar",
       "no_duplicates": "Engar tvítekningar fundust.",
       "group_title": "Hópur {num}: {count} eins síður",
-      "delete_selection": "Eyða vali"
+      "delete_selection": "Eyða vali",
+      "select_group": "Velja hópinn",
+      "deselect_group": "Afvelja hópinn"
     }
   },
   "tooltip": {
@@ -1302,7 +1307,7 @@
     "flatten": "Fletja möppur",
     "flatten_content": "Ef safnskráin þín inniheldur undirmöppur skaltu nota 'Fletja möppur' til að færa allar myndir á sama stig.",
     "viewer": "Skoðarinn",
-    "viewer_content": "Tvísmelltu á síðu til að opna skoðarann:\n• Lyklar ← → : flakk milli síðna\n• Lykill D : skipta á milli 3 lestrarhamna\n  - Stök síða: ein síða í einu\n  - Tvöfaldar síður: síða 1 ein, síðan 2-3, 4-5, o.s.frv.\n  - Samfelldar tvöfaldar síður: síða 1 ein, síðan 2-3, 3-4, 4-5, o.s.frv.\n• Músarhjól: hraður flakk\n• Ctrl+Hjól eða Ctrl+Plús/Mínus: aðdráttur\n• Ctrl+0: endurstilla aðdrátt\n• Lykill F11: heilskjár\n• Tvísmella: skipta um heilskjá\n• ESC lykill: hætta við skurðaramma / loka skoðara\n• Bókamerki: vistar sjálfkrafa núverandi síðu þegar lesarinn er lokaður (nema fyrsta og síðasta síðu). Rautt borði birtist á samsvarandi smámynd í mósaíkinu. Við næstu opnun leggur skilaboð til að fara aftur á þessa síðu. Eytt sjálfkrafa á síðustu síðu eða handvirkt með hægri smelli í lesaranum.",
+    "viewer_content": "Tvísmelltu á síðu til að opna skoðarann:\n• Örvatakkar ← →: flakk milli síðna\n• D takki: skipta milli 4 lestrarstillinga\n  - Ein síða: ein síða í einu\n  - Tvöfaldar síður: síða 1 ein, síðan 2-3, 4-5 o.s.frv.\n  - Samfelldar tvöfaldar síður: síða 1 ein, síðan 2-3, 3-4, 4-5 o.s.frv.\n  - Webtoon: fyrir lóðréttar myndir (vefteiknimyndasögur), breidd takmörkuð við 900px til að halda læsileika; músarhjólið skrunar lóðrétt innan síðunnar og skiptir um síðu þegar efri/neðri brún næst\n• Músarhjól: hröð leiðsögn (lóðrétt skrun innan síðu í Webtoon-ham)\n• Ctrl+hjól eða Ctrl+plús/mínus: aðdráttur (allt að 1000% af raunverulegri stærð myndarinnar)\n• Ctrl+0: laga aðdrátt að glugganum\n• Ctrl+1: aðdráttur í 100% (raunveruleg pixlastærð myndarinnar)\n• Hægrismella + draga: færa sýnda mynd þegar hún fer yfir gluggann\n• F11 takki: heilskjár\n• Tvísmella: skipta um heilskjá\n• Esc takki: hætta við skurðarramma / fara úr skoðaranum\n• Bókamerki: vistar sjálfkrafa núverandi síðu þegar skoðarinn er lokaður (nema fyrstu og síðustu síðu). Rautt band birtist á samsvarandi smámynd í mósaíkinu. Við næstu opnun stingur skilaboð upp á að fara aftur á þessa síðu. Eytt sjálfkrafa á síðustu síðu, eða handvirkt með hægrismelli í skoðaranum.",
     "join_pages": "Sameina síður",
     "join_pages_content": "Veldu nokkrar samliggjandi síður, hægrismelltu → 'Sameina valdar síður' til að sameina síðurnar lárétt eða lóðrétt. Snið útmyndarinnar samsvarar sniði upprunasíðnanna ef þær eru allar eins, annars PNG sjálfgefið. Þú getur valið hvort eyða á upprunalegu síðunum eða halda þeim.\n\nStaðsetning nýju síðunnar í mósaíkinni:\n• Virk endurnúmerunarstilling (sjálfvirk eða handvirk): síðan tekur sæti fyrstu sameinuðu síðunnar (sæti hennar, ef upprunasíður eru eyddar, eða rétt á undan henni, ef þær eru varðveittar), og kveikir á endurnúmerun.\n• SLÖKKT endurnúmerunarstilling: síðunni er bætt fremst í mósaíkina undir nafninu \"Sameining_xxx\".",
     "split_pages": "Skipta síðum",
@@ -1310,7 +1315,7 @@
     "crop": "Skurður í skoðaranum",
     "crop_content": "Í skoðaranum teiknarðu rétthyrning á myndina til að skilgreina skurðsvæði:\n• Teiknaðu rétthyrninginn með músinni\n• Breyttu stærð hans með því að draga í brúnir eða horn\n• Smelltu á 'Staðfesta skurð' til að virkja\n• Skurðurinn er virkjaður á núverandi mynd\n• ESC lykill: hætta við skurðaramma",
     "shortcuts": "Flýtilyklar",
-    "shortcuts_content": "• Ctrl+Z: Afturkalla síðustu aðgerð\n• Ctrl+Y: Endurtaka afturkallaða aðgerð\n• Ctrl+A: Velja allar síður\n• Ctrl+I: Snúa við vali\n• Ctrl+C: Afrita valdar síður\n• Ctrl+X: Klippa valdar síður\n• Ctrl+V: Líma síður\n• Delete: Eyða völdum síðum\n• Ctrl+músarhjól: Stækka / minnka stærð smámynda\n• Ctrl+Alt+T: Flytja út allar sýndar smámyndir úr mósaíkinni\n• F5: Uppfæra mósaíkskjáinn\n• F11: Skipta um allan skjáinn (hætta með F11 eða ESC)",
+    "shortcuts_content": "• Ctrl+Z: Afturkalla síðustu aðgerð\n• Ctrl+Y: Endurtaka afturkallaða aðgerð\n• Ctrl+A: Velja allar síður\n• Ctrl+I: Snúa við vali\n• Ctrl+C: Afrita valdar síður\n• Ctrl+X: Klippa valdar síður\n• Ctrl+V: Líma síður\n• Del: Eyða völdum síðum\n• Ctrl+músarhjól: Aðdráttur (skoðari) / smámyndastærð (mósaík) / táknmyndastærð (táknmyndadálkur)\n• Ctrl+0 (skoðari): Laga aðdrátt að glugganum\n• Ctrl+1 (skoðari): Aðdráttur í 100% (raunveruleg myndastærð)\n• Hægrismella + draga (skoðari): Færa sýnda mynd\n• Ctrl+Alt+T: Flytja út allar sýndar smámyndir úr mósaíkinu\n• F5: Uppfæra sýn mósaíksins\n• F11: Skipta um heilskjá (hætta með F11 eða ESC)",
     "dark_mode": "Dökkt þema",
     "dark_mode_content": "Smelltu á sól/tungl-hnappinn til að skipta á milli ljóss og dökks þema.",
     "sort": "Raða síðum",

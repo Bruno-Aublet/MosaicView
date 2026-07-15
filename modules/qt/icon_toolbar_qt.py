@@ -1494,6 +1494,7 @@ class IconToolbarQt(QWidget):
         self._grid_layout = self._grid_widget._layout_grid
         scroll_area.setWidget(self._grid_widget)
         self._scroll_area = scroll_area
+        scroll_area.viewport().installEventFilter(self)
         main_layout.addWidget(scroll_area, stretch=1)
 
         # Séparateur
@@ -1832,6 +1833,17 @@ class IconToolbarQt(QWidget):
             except Exception:
                 pass
         btn.setText({"BTN_-.png": "−", "BTN_+.png": "+", "BTN_Control.png": "⚙"}.get(filename, "?"))
+
+    def eventFilter(self, obj, event):
+        if obj is self._scroll_area.viewport() and event.type() == QEvent.Wheel:
+            if event.modifiers() & Qt.ControlModifier:
+                if event.angleDelta().y() > 0:
+                    self._increase_icon_size()
+                else:
+                    self._decrease_icon_size()
+                event.accept()
+                return True
+        return super().eventFilter(obj, event)
 
     def _decrease_icon_size(self):
         if self._size_index < len(ICON_SIZE_LEVELS) - 1:
