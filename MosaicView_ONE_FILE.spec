@@ -134,10 +134,12 @@ _pil_datas    = [(s, d) for s, d in tmp_ret[0] if 'ImageTk' not in s]
 _pil_binaries = [(s, d) for s, d in tmp_ret[1] if 'ImageTk' not in s]
 datas += _pil_datas; binaries += _pil_binaries; hiddenimports += tmp_ret[2]
 
-# PySide6 — collecte ciblée sur les 3 modules utilisés uniquement
+# PySide6 — collecte ciblée sur les modules utilisés uniquement
+# (QtNetwork : requis par le mécanisme single instance, single_instance_qt.py)
 import os as _os
 
-_qt_used = ['PySide6.QtCore', 'PySide6.QtGui', 'PySide6.QtWidgets', 'PySide6.QtPrintSupport']
+_qt_used = ['PySide6.QtCore', 'PySide6.QtGui', 'PySide6.QtWidgets', 'PySide6.QtPrintSupport',
+            'PySide6.QtNetwork']
 for _mod in _qt_used:
     try:
         _r = collect_all(_mod)
@@ -152,7 +154,7 @@ try:
     _ps6_dir = _os.path.dirname(_ps6.__file__)
     _qt_core_dlls = [
         'pyside6.abi3.dll', 'Qt6Core.dll', 'Qt6Gui.dll', 'Qt6Widgets.dll',
-        'Qt6PrintSupport.dll', 'Qt6DBus.dll',
+        'Qt6PrintSupport.dll', 'Qt6DBus.dll', 'Qt6Network.dll',
         'msvcp140.dll', 'msvcp140_1.dll', 'msvcp140_2.dll',
         'msvcp140_codecvt_ids.dll', 'concrt140.dll', 'vcruntime140.dll',
         'vcruntime140_1.dll', 'opengl32sw.dll',
@@ -223,7 +225,7 @@ a = Analysis(
         'PySide6.QtBluetooth', 'PySide6.QtCharts', 'PySide6.QtConcurrent',
         'PySide6.QtDataVisualization', 'PySide6.QtDesigner',
         'PySide6.QtHelp', 'PySide6.QtLocation', 'PySide6.QtMultimedia',
-        'PySide6.QtMultimediaWidgets', 'PySide6.QtNetwork', 'PySide6.QtNetworkAuth',
+        'PySide6.QtMultimediaWidgets', 'PySide6.QtNetworkAuth',
         'PySide6.QtNfc', 'PySide6.QtOpenGL', 'PySide6.QtOpenGLWidgets',
         'PySide6.QtPositioning', 'PySide6.QtQml', 'PySide6.QtQuick',
         'PySide6.QtQuick3D', 'PySide6.QtQuickControls2', 'PySide6.QtQuickWidgets',

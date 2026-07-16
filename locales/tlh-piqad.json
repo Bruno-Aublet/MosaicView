@@ -117,14 +117,6 @@
       "redo": " (Ctrl+Y)",
       "renumber_auto": "   (  )",
       "renumber_simple": "   ( )",
-      "sort_submenu": " ",
-      "sort_name": " ",
-      "sort_type": " ",
-      "sort_size": " ",
-      "sort_width": " ",
-      "sort_height": " ",
-      "sort_resolution": " ",
-      "sort_dpi": "DPI ",
       "create_cbz": "CBZ  ",
       "save_as": " ...",
       "close_file": " ",
@@ -165,7 +157,6 @@
       "increase_thumbs": "  h ",
       "theme_dark": "  ",
       "theme_light": "  ",
-      "sort_submenu": " ",
       "undo": " (Ctrl+Z)",
       "redo": " (Ctrl+Y)",
       "create_cbz": "CBZ  ",
@@ -1377,7 +1368,9 @@
     "wilhelm_scream": "Wih ",
     "wilhelm_scream_content": "  ,  , Wih   .        .   , Wikidi  ( )  : https://en.wikipedia.org/wiki/Wilhelm_scream\nMosaicView      WAV f   .",
     "wilhelm_scream_save": " ",
-    "wilhelm_scream_save_success": "{count}   :"
+    "wilhelm_scream_save_success": "{count}   :",
+    "config_single_instance_note": "MosaicView   .   (:    Windows Explorer ) MosaicView  ,     .     ,       .",
+    "config_registry_note": "Windows Explorer  \"  X\"     , MosaicView-   Windows    .        : MosaicView          Windows- .      ,   ,      :     MosaicView      , Windows \"  X\"   .    MosaicView ,       ."
   },
   "misc": {
     "file_word": "",

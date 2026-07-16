@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.5.10"
+__version__ = "1.6.1"
 
 import sys
 import os
@@ -903,6 +903,19 @@ def main():
     app.setApplicationName("MosaicView")
     app.setStyle("Fusion")
 
+    # ── Single instance : si MosaicView tourne déjà, on lui transmet notre
+    # éventuel fichier (association Windows) et on quitte immédiatement ──────
+    from modules.qt.single_instance_qt import (try_forward_to_running_instance,
+                                               start_single_instance_server)
+    _argv_path = sys.argv[1] if len(sys.argv) > 1 else None
+    if try_forward_to_running_instance(_argv_path or ""):
+        sys.exit(0)
+
+    # ── Déclaration silencieuse dans le registre (liste « Ouvrir avec ») ────
+    # Exécutée seulement par l'instance qui reste réellement ouverte.
+    from modules.qt.app_registration_qt import ensure_app_registered
+    ensure_app_registered()
+
 
     app.setStyleSheet("""
         QMainWindow { background: #f5f5f5; }
@@ -1036,21 +1049,34 @@ def main():
             QTimer.singleShot(0, _close_menu)
 
     # ── Ouverture via association de fichier Windows ───────────────────────
-    _argv_path = sys.argv[1] if len(sys.argv) > 1 else None
-    if _argv_path and os.path.isfile(_argv_path):
-        _ext = os.path.splitext(_argv_path)[1].lower()
-        _COMIC_EXTS = {'.cbz', '.cbr', '.cb7', '.cbt', '.epub', '.pdf',
-                       '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
-                       '.tiff', '.tif', '.ico', '.avif'}
+    _COMIC_EXTS = {'.cbz', '.cbr', '.cb7', '.cbt', '.epub', '.pdf',
+                   '.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
+                   '.tiff', '.tif', '.ico', '.avif'}
+
+    def _open_associated_path(path):
+        if not path or not os.path.isfile(path):
+            return
+        _ext = os.path.splitext(path)[1].lower()
         if _ext == '.mvdb':
-            def _open_mvdb():
-                from modules.qt.library_window import open_library_window
-                lib = open_library_window(parent_panel=win._panel)
-                if lib:
-                    lib._action_open_db(_argv_path)
-            QTimer.singleShot(200, _open_mvdb)
+            from modules.qt.library_window import open_library_window
+            lib = open_library_window(parent_panel=win._panel)
+            if lib:
+                lib._action_open_db(path)
         elif _ext in _COMIC_EXTS:
-            QTimer.singleShot(200, lambda: win._panel._load_files([_argv_path]))
+            win._panel._load_files([path])
+
+    def _on_forwarded_path(path):
+        # Lancement redirigé par une seconde instance : remonte la fenêtre
+        # principale au premier plan puis ouvre le fichier transmis (si any)
+        win.setWindowState((win.windowState() & ~Qt.WindowMinimized) | Qt.WindowActive)
+        win.show()
+        win.raise_()
+        win.activateWindow()
+        _open_associated_path(path)
+    start_single_instance_server(_on_forwarded_path)
+
+    if _argv_path and os.path.isfile(_argv_path):
+        QTimer.singleShot(200, lambda: _open_associated_path(_argv_path))
 
     sys.exit(app.exec())
 

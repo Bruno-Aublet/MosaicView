@@ -4,7 +4,7 @@
 
 🌐 [https://bruno-aublet.github.io/MosaicView/](https://bruno-aublet.github.io/MosaicView/)
 
-**MosaicView** is a desktop application for editing digital comics files — CBZ, CBR, CB7 and PDF — without ever having to open or extract them manually.
+**MosaicView** is a desktop application for editing digital comics files — CBZ, CBR, CB7, CBT and PDF — without ever having to open or extract them manually.
 
 **This is NOT a reader, although it has a viewer. It is an editing tool for comic archives.**
 
@@ -165,6 +165,14 @@ The library lets you catalogue and search your entire digital comics collection.
 - **Drag and drop into the mosaic** — selected entries can be dragged straight from the library table onto a panel: a single file opens it, multiple files merge them, exactly like dropping files from Windows Explorer.
 - **Edit metadata** — comics that already have a ComicInfo.xml can be edited directly from the library without opening the file first.
 - **Export** — the "Export results" button saves the current table to an Excel file (*.xlsx).
+
+---
+
+## Windows integration
+
+MosaicView only ever runs as a single instance. If you double-click a comic file or a MosaicView library while the app is already open, it won't launch a second window. The file simply opens in the instance that's already running, which is brought to the front.
+
+MosaicView also registers itself with Windows so it shows up in the "Open with" list for comic archives and images, under the name "MosaicView". This just makes it available as a choice ; setting it as the default application for a file type is still done the usual Windows way (right-click a file → "Open with" → "Choose another app" → check "Always use this app").
 
 ---
 

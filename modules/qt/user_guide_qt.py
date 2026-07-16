@@ -51,6 +51,27 @@ def unregister_child_reopen():
 _section_collapsed_state: dict[int, bool] = {}
 
 
+def _split_language_paragraphs(full: str, url_piqad: str, url_tengwar: str):
+    """Classe les paragraphes de help.language_content par position : avant le
+    paragraphe des URLs → texte normal, paragraphe contenant les URLs → polices,
+    après les URLs → attribution (italique). Le repère par contenu ("Claude" in
+    para) ne fonctionne pas pour sjn-tengwar/qya-tengwar où tout le texte, noms
+    propres compris, est transcrit en glyphes tengwar — seules les URLs restent
+    en caractères latins dans toutes les langues."""
+    paragraphs = full.split("\n\n")
+    regular, fonts_parts, italic_parts = [], [], []
+    seen_fonts = False
+    for para in paragraphs:
+        if url_piqad in para or url_tengwar in para:
+            fonts_parts.append(para)
+            seen_fonts = True
+        elif seen_fonts:
+            italic_parts.append(para)
+        else:
+            regular.append(para)
+    return regular, fonts_parts, italic_parts
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Widgets helpers
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -551,7 +572,7 @@ class _HelpDialog(QDialog):
         self._callbacks = callbacks
 
         self.setWindowTitle(_wt("help.title"))
-        self.resize(680, 600)
+        self.resize(720, 600)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
         self.setWindowFlags(self.windowFlags() | Qt.Window)
@@ -725,15 +746,7 @@ class _HelpDialog(QDialog):
 
         content_text = _("help.language_content")
         full = content_text.replace("{url_piqad}", url_piqad).replace("{url_tengwar}", url_tengwar)
-        paragraphs = full.split("\n\n")
-        regular, fonts_parts, italic_parts = [], [], []
-        for para in paragraphs:
-            if url_piqad in para or url_tengwar in para:
-                fonts_parts.append(para)
-            elif "Claude" in para:
-                italic_parts.append(para)
-            else:
-                regular.append(para)
+        regular, fonts_parts, italic_parts = _split_language_paragraphs(full, url_piqad, url_tengwar)
 
         if regular:
             regular_w = _SelectableText("\n\n".join(regular))
@@ -772,6 +785,14 @@ class _HelpDialog(QDialog):
         config_fname = ".mosaicview_config.json"
         config_path  = os.path.join(temp_dir, config_fname)
 
+        si_note = _SelectableText(_("help.config_single_instance_note"))
+        si_note.setContentsMargins(20, 0, 20, 0)
+        section.add_widget(si_note)
+
+        reg_note = _SelectableText(_("help.config_registry_note"))
+        reg_note.setContentsMargins(20, 10, 20, 10)
+        section.add_widget(reg_note)
+
         config_text = _("help.config_files_content").replace("{temp_dir}", temp_dir)
         html = _text_with_explorer_links_html(
             config_text,
@@ -807,6 +828,8 @@ class _HelpDialog(QDialog):
             "clip_note": clip_note,
             "clip_btn": clip_btn,
             "log_note": log_note,
+            "si_note": si_note,
+            "reg_note": reg_note,
             "temp_dir": temp_dir,
             "config_fname": config_fname,
             "config_path": config_path,
@@ -936,15 +959,7 @@ class _HelpDialog(QDialog):
         url_tengwar = sw["url_tengwar"]
         content_text = _("help.language_content")
         full = content_text.replace("{url_piqad}", url_piqad).replace("{url_tengwar}", url_tengwar)
-        paragraphs = full.split("\n\n")
-        regular, fonts_parts, italic_parts = [], [], []
-        for para in paragraphs:
-            if url_piqad in para or url_tengwar in para:
-                fonts_parts.append(para)
-            elif "Claude" in para:
-                italic_parts.append(para)
-            else:
-                regular.append(para)
+        regular, fonts_parts, italic_parts = _split_language_paragraphs(full, url_piqad, url_tengwar)
 
         if sw.get("regular_w") and regular:
             sw["regular_w"].retranslate("\n\n".join(regular))
@@ -985,6 +1000,8 @@ class _HelpDialog(QDialog):
         sw["lw"].retranslate(html)
         sw["clip_note"].retranslate(_("help.config_clipboard_note"))
         sw["log_note"].retranslate(_("help.config_log_note"))
+        sw["si_note"].retranslate(_("help.config_single_instance_note"))
+        sw["reg_note"].retranslate(_("help.config_registry_note"))
         # Boutons de la ligne config
         theme = get_current_theme()
         btn_style = (
