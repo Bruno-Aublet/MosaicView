@@ -232,6 +232,10 @@ class MinimapWidget(QWidget):
         if not entry:
             return
 
+        if entry.get("is_corrupted"):
+            painter.setPen(QPen(QColor(200, 0, 0), 2))
+            painter.drawRect(QRectF(x - 1, y - 1, mini_w + 2, mini_h + 2))
+
         if entry.get("_is_bookmarked"):
             bm_px = _get_bookmark_pixmap()
             if bm_px and not bm_px.isNull():

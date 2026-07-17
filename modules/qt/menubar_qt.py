@@ -523,9 +523,12 @@ def _populate_about_menu(menu: QMenu, callbacks: dict):
     _add_action(menu, _("mail.copy_address"),       callbacks.get("copy_mail_address"))
     menu.addSeparator()
 
+    _add_action(menu, _("help.config_clear_config"),      callbacks.get("clear_config_file"))
+    _add_action(menu, _("help.config_open_config_folder"),callbacks.get("open_config_folder"))
+    menu.addSeparator()
+
     _add_action(menu, _("help.config_clear_temp"),      callbacks.get("clear_temp_files"))
     _add_action(menu, _("help.config_clear_recent"),    callbacks.get("clear_recent_files_about"))
-    _add_action(menu, _("help.config_clear_config"),    callbacks.get("clear_config_file"))
     _add_action(menu, _("help.config_clear_clipboard"), callbacks.get("clear_clipboard_files"))
     _add_action(menu, _("help.config_open_temp_folder"),callbacks.get("open_temp_folder"))
     menu.addSeparator()

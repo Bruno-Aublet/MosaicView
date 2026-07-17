@@ -1,0 +1,4 @@
+# Dépendances de développement uniquement (tests).
+# Ne PAS ajouter à requirements.txt ni aux hiddenimports PyInstaller :
+# pytest est déjà dans excludes= des .spec (MosaicView_ONE_DIR.spec / MosaicView_ONE_FILE.spec).
+pytest>=8.0

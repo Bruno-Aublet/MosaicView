@@ -705,6 +705,7 @@ class _LibraryTable(QTableWidget):
 
 
 _EMPTY_ROLE = Qt.UserRole + 1   # 'text' | 'num' | None
+_SORT_VALUE_ROLE = Qt.UserRole + 2   # valeur numérique brute (float) pour tri des colonnes _NUM_FIELDS
 
 
 class _EmptyDelegate(QStyledItemDelegate):
@@ -733,8 +734,21 @@ class _EmptyDelegate(QStyledItemDelegate):
 
 
 class _TableItem(QTableWidgetItem):
-    """QTableWidgetItem qui trie les valeurs vides toujours en dernier."""
+    """QTableWidgetItem qui trie les valeurs vides toujours en dernier.
+    Si _SORT_VALUE_ROLE est renseigné (colonnes _NUM_FIELDS), trie numériquement
+    sur cette valeur brute plutôt que sur le texte affiché (ex. "11" avant "110",
+    pas l'inverse ; nécessaire aussi pour file_size dont le texte affiché est
+    formaté en Ko/Mo/Go)."""
     def __lt__(self, other):
+        my_num    = self.data(_SORT_VALUE_ROLE)
+        other_num = other.data(_SORT_VALUE_ROLE) if isinstance(other, _TableItem) else None
+        if my_num is not None or other_num is not None:
+            if my_num is None:
+                return False
+            if other_num is None:
+                return True
+            return my_num < other_num
+
         my_val    = self.text()
         other_val = other.text()
         if not my_val and other_val:
@@ -2102,6 +2116,12 @@ class LibraryWindow(QWidget):
                 item.setTextAlignment(Qt.AlignCenter)
             item.setData(Qt.UserRole, row_id)
             return item
+        sort_val = None
+        if col in _NUM_FIELDS and val not in (None, ''):
+            try:
+                sort_val = float(val)
+            except (TypeError, ValueError):
+                sort_val = None
         if col == 'file_size' and val:
             from modules.qt.utils import format_file_size
             val = format_file_size(int(val))
@@ -2118,6 +2138,8 @@ class LibraryWindow(QWidget):
             item.setData(_EMPTY_ROLE, 'num')
         else:
             item = _TableItem(str_val)
+        if sort_val is not None:
+            item.setData(_SORT_VALUE_ROLE, sort_val)
         item.setData(Qt.UserRole, row_id)
         return item
 

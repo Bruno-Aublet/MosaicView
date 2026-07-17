@@ -804,7 +804,8 @@ class LibraryDB:
         if where_sql:
             where_sql = 'WHERE ' + where_sql
 
-        order_col = order_by if order_by in self._SEARCHABLE else 'series'
+        order_field = order_by if order_by in self._SEARCHABLE else 'series'
+        order_col = f"CAST({order_field} AS INTEGER)" if order_field in self._INT_CAST_FIELDS else order_field
         direction = 'ASC' if order_asc else 'DESC'
 
         # NULL en dernier quelle que soit la direction
@@ -888,7 +889,8 @@ class LibraryDB:
                 parts.append(clause if j == 0 else f"{link} {clause}")
             group_sqls.append(f"({' '.join(parts)})")
         where_sql = ('WHERE ' + ' AND '.join(group_sqls)) if group_sqls else ''
-        order_col = order_by if order_by in self._SEARCHABLE else 'series'
+        order_field = order_by if order_by in self._SEARCHABLE else 'series'
+        order_col = f"CAST({order_field} AS INTEGER)" if order_field in self._INT_CAST_FIELDS else order_field
         direction = 'ASC' if order_asc else 'DESC'
         null_order = 'NULLS LAST' if order_asc else 'NULLS FIRST'
         sql = f"SELECT * FROM comics {where_sql} ORDER BY {order_col} {direction} {null_order}"

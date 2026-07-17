@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.6.1"
+__version__ = "1.6.2"
 
 import sys
 import os
@@ -981,8 +981,9 @@ def main():
             _splash.show()
             app.processEvents()
 
-    from modules.qt.temp_files import cleanup_stale_mei_dirs
+    from modules.qt.temp_files import cleanup_stale_mei_dirs, cleanup_legacy_root_clipboard_dirs
     cleanup_stale_mei_dirs()
+    cleanup_legacy_root_clipboard_dirs()
 
     win = MainWindow()
     win._app_ref        = app

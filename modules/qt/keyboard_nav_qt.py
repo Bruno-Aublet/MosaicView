@@ -5,12 +5,10 @@ Navigation clavier TAB entre zones pour MosaicView Qt.
 Usage dans MainWindow :
     from modules.qt.keyboard_nav_qt import ZoneTabNavigator
     self._tab_nav = ZoneTabNavigator(
-        left_panel   = self._left_panel,
-        menubar      = self._menubar,
-        tab_bar      = self._tab_bar,
-        canvas       = self._canvas,
-        icon_toolbar = self._icon_toolbar,
-        state        = self._state,
+        get_active_panel = lambda: self._active_panel,
+        get_other_panel  = lambda: (self._panel2 if self._active_panel is self._panel else self._panel)
+                                   if self._split_active else None,
+        set_active_panel = self._set_active_panel,
     )
     # Dans focusNextPrevChild :
     return self._tab_nav.focus_next_prev(next_)

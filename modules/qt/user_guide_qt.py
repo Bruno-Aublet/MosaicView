@@ -648,6 +648,7 @@ class _HelpDialog(QDialog):
             ("help.other",                "help.other_content"),
             ("help.nfo_editor",           "help.nfo_editor_content"),
             ("help.language",             "LANGUAGE_SECTION"),
+            ("help.config_dir",           "CONFIG_DIR_SECTION"),
             ("help.config_files",         "CONFIG_SECTION"),
             ("help.icons",                "ICONS_SECTION"),
             ("help.split_ui",             "help.split_ui_content"),
@@ -682,6 +683,8 @@ class _HelpDialog(QDialog):
                 sw = self._build_metadata_section(section)
             elif content_key == "LANGUAGE_SECTION":
                 sw = self._build_language_section(section)
+            elif content_key == "CONFIG_DIR_SECTION":
+                sw = self._build_config_dir_section(section)
             elif content_key == "CONFIG_SECTION":
                 sw = self._build_config_section(section)
             elif content_key == "ICONS_SECTION":
@@ -780,10 +783,10 @@ class _HelpDialog(QDialog):
             "url_tengwar": url_tengwar,
         }
 
-    def _build_config_section(self, section: _CollapsibleSection) -> dict:
-        temp_dir     = os.path.join(os.path.realpath(tempfile.gettempdir()), "MosaicViewTemp")
+    def _build_config_dir_section(self, section: _CollapsibleSection) -> dict:
+        config_dir   = os.path.join(os.path.realpath(os.environ["APPDATA"]), "MosaicView")
         config_fname = ".mosaicview_config.json"
-        config_path  = os.path.join(temp_dir, config_fname)
+        config_path  = os.path.join(config_dir, config_fname)
 
         si_note = _SelectableText(_("help.config_single_instance_note"))
         si_note.setContentsMargins(20, 0, 20, 0)
@@ -793,10 +796,38 @@ class _HelpDialog(QDialog):
         reg_note.setContentsMargins(20, 10, 20, 10)
         section.add_widget(reg_note)
 
+        config_text = _("help.config_dir_content").replace("{config_dir}", config_dir)
+        html = _text_with_explorer_links_html(
+            config_text,
+            [(config_dir, config_dir), (config_fname, config_path)],
+            None,
+        )
+        lw = _LinkText(html)
+        lw.setContentsMargins(20, 0, 20, 5)
+        section.add_widget(lw)
+
+        clear_btn = section.add_button(
+            _("help.config_clear_config"),
+            self._callbacks.get("clear_config_file", lambda: None),
+        )
+
+        return {
+            "lw": lw,
+            "clear_btn": clear_btn,
+            "si_note": si_note,
+            "reg_note": reg_note,
+            "config_dir": config_dir,
+            "config_fname": config_fname,
+            "config_path": config_path,
+        }
+
+    def _build_config_section(self, section: _CollapsibleSection) -> dict:
+        temp_dir     = os.path.join(os.path.realpath(tempfile.gettempdir()), "MosaicViewTemp")
+
         config_text = _("help.config_files_content").replace("{temp_dir}", temp_dir)
         html = _text_with_explorer_links_html(
             config_text,
-            [(temp_dir, temp_dir), (config_fname, config_path)],
+            [(temp_dir, temp_dir)],
             None,
         )
         lw = _LinkText(html)
@@ -806,7 +837,6 @@ class _HelpDialog(QDialog):
         btns_row = section.add_buttons_row([
             (_("help.config_clear_temp"),   self._callbacks.get("clear_temp_files_with_message", lambda: None)),
             (_("help.config_clear_recent"), self._callbacks.get("clear_recent_files",            lambda: None)),
-            (_("help.config_clear_config"), self._callbacks.get("clear_config_file",             lambda: None)),
         ])
 
         clip_note = _SelectableText(_("help.config_clipboard_note"))
@@ -828,11 +858,7 @@ class _HelpDialog(QDialog):
             "clip_note": clip_note,
             "clip_btn": clip_btn,
             "log_note": log_note,
-            "si_note": si_note,
-            "reg_note": reg_note,
             "temp_dir": temp_dir,
-            "config_fname": config_fname,
-            "config_path": config_path,
         }
 
     def _build_icons_section(self, section: _CollapsibleSection) -> dict:
@@ -941,6 +967,8 @@ class _HelpDialog(QDialog):
                 sw["lw"].retranslate(self._metadata_html(sw["url_scraper"]))
             elif title_key == "help.language":
                 self._retranslate_language_section(sw)
+            elif title_key == "help.config_dir":
+                self._retranslate_config_dir_section(sw)
             elif title_key == "help.config_files":
                 self._retranslate_config_section(sw)
             elif title_key == "help.icons":
@@ -987,21 +1015,39 @@ class _HelpDialog(QDialog):
                 btn.setFont(_get_current_font(10))
                 btn.setStyleSheet(btn_style)
 
-    def _retranslate_config_section(self, sw: dict):
-        temp_dir     = sw["temp_dir"]
+    def _retranslate_config_dir_section(self, sw: dict):
+        config_dir   = sw["config_dir"]
         config_fname = sw["config_fname"]
         config_path  = sw["config_path"]
+        sw["si_note"].retranslate(_("help.config_single_instance_note"))
+        sw["reg_note"].retranslate(_("help.config_registry_note"))
+        config_text  = _("help.config_dir_content").replace("{config_dir}", config_dir)
+        html = _text_with_explorer_links_html(
+            config_text,
+            [(config_dir, config_dir), (config_fname, config_path)],
+            None,
+        )
+        sw["lw"].retranslate(html)
+        sw["clear_btn"].setText(_("help.config_clear_config"))
+        sw["clear_btn"].setFont(_get_current_font(10))
+        theme = get_current_theme()
+        sw["clear_btn"].setStyleSheet(
+            f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
+            f"border: 1px solid #aaaaaa; padding: 3px 10px; }} "
+            f"QPushButton:hover {{ background: {theme['separator']}; }}"
+        )
+
+    def _retranslate_config_section(self, sw: dict):
+        temp_dir     = sw["temp_dir"]
         config_text  = _("help.config_files_content").replace("{temp_dir}", temp_dir)
         html = _text_with_explorer_links_html(
             config_text,
-            [(temp_dir, temp_dir), (config_fname, config_path)],
+            [(temp_dir, temp_dir)],
             None,
         )
         sw["lw"].retranslate(html)
         sw["clip_note"].retranslate(_("help.config_clipboard_note"))
         sw["log_note"].retranslate(_("help.config_log_note"))
-        sw["si_note"].retranslate(_("help.config_single_instance_note"))
-        sw["reg_note"].retranslate(_("help.config_registry_note"))
         # Boutons de la ligne config
         theme = get_current_theme()
         btn_style = (
@@ -1010,7 +1056,7 @@ class _HelpDialog(QDialog):
             f"QPushButton:hover {{ background: {theme['separator']}; }}"
         )
         btns = [b for b in sw["btns_row"].findChildren(QPushButton)]
-        keys = ["help.config_clear_temp", "help.config_clear_recent", "help.config_clear_config"]
+        keys = ["help.config_clear_temp", "help.config_clear_recent"]
         for btn, key in zip(btns, keys):
             btn.setText(_(key))
             btn.setFont(_get_current_font(10))

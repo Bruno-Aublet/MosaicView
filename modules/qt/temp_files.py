@@ -45,6 +45,32 @@ def cleanup_stale_mei_dirs():
             pass
 
 
+def cleanup_legacy_root_clipboard_dirs():
+    """
+    Supprime les dossiers `clipboard_*` laissés à la racine de `%TEMP%` par les
+    versions antérieures au correctif de `PanelWidget._get_temp_dir()`, qui les
+    écrivait hors de `MosaicViewTemp` et donc hors de portée de tout nettoyage
+    automatique. Sans condition d'âge : leur seule présence ici prouve qu'ils
+    sont orphelins, plus aucune version ne peut encore les créer à cet endroit.
+    """
+    temp_base = tempfile.gettempdir()
+    try:
+        entries = os.listdir(temp_base)
+    except Exception:
+        return
+
+    for name in entries:
+        if not name.startswith("clipboard_"):
+            continue
+        path = os.path.join(temp_base, name)
+        if not os.path.isdir(path):
+            continue
+        try:
+            shutil.rmtree(path, ignore_errors=True)
+        except Exception:
+            pass
+
+
 def get_mosaicview_temp_dir():
     """Retourne le chemin du répertoire temporaire centralisé de MosaicView."""
     temp_base = tempfile.gettempdir()
@@ -61,13 +87,10 @@ def cleanup_all_temp_files(keep_logs=False):
         mosaicview_temp = os.path.join(temp_base, "MosaicViewTemp")
 
         if os.path.exists(mosaicview_temp):
-            config_filename = ".mosaicview_config.json"
             clipboard_max_age = 12 * 60 * 60
             current_time = time.time()
 
             for item in os.listdir(mosaicview_temp):
-                if item == config_filename:
-                    continue
                 if keep_logs and (item.startswith("Log_pdftocbz_") or item.startswith("Log_cbrtocbz_") or item.startswith("Log_imgtocbz_")) and item.endswith(".txt"):
                     continue
 

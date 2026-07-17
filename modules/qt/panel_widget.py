@@ -745,7 +745,8 @@ class PanelWidget(QWidget):
             os.remove(filepath)
 
     def _get_temp_dir(self) -> str:
-        return os.path.realpath(tempfile.gettempdir())
+        from modules.qt.temp_files import get_mosaicview_temp_dir
+        return get_mosaicview_temp_dir()
 
     def _update_save_button(self):
         pass
@@ -1227,6 +1228,13 @@ class PanelWidget(QWidget):
         temp_dir = os.path.join(os.path.realpath(tempfile.gettempdir()), "MosaicViewTemp")
         try:
             subprocess.Popen(["explorer", temp_dir])
+        except Exception:
+            pass
+
+    def _open_config_folder(self):
+        config_dir = get_config_manager().config_dir
+        try:
+            subprocess.Popen(["explorer", config_dir])
         except Exception:
             pass
 

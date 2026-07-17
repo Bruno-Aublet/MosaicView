@@ -193,6 +193,8 @@ PySide6, Pillow, numpy, rarfile, PyMuPDF, packaging, openpyxl, pywin32, send2tra
 - **7-Zip** (for CB7 support): place `7z.exe` and `7z.dll` in the `7zip/` folder
   → Download from [7-zip.org](https://www.7-zip.org/)
 
+- Development-only dependency (install with `pip install -r requirements-dev.txt`): `pytest`, used to run the test suite (see [Tests](#tests) below). Not required to run the application itself, and never bundled into the compiled executables.
+
 ---
 
 ## Download
@@ -212,6 +214,31 @@ python MosaicView.py
 ```
 
 Two PyInstaller spec files are included for building a standalone executable (see the ONE DIR / ONE FILE difference above): build with `pyinstaller MosaicView_ONE_DIR.spec` or `pyinstaller MosaicView_ONE_FILE.spec`.
+
+---
+
+## Tests
+
+The [tests/](tests/) folder contains a [pytest](https://pytest.org/) suite covering the pure, Qt-free logic modules (metadata parsing, page renumbering, sorting, image merging, the library database, configuration persistence...), plus a static check ensuring no window in the application is ever modal (a hard architectural requirement — see [CLAUDE.md](CLAUDE.md)).
+
+Run the full suite with:
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest tests
+```
+
+Or open [run_tests.py](run_tests.py) in VSCode and click ▶️ Run.
+
+---
+
+## Developer documentation (Claude Code skills)
+
+This repository ships its own living documentation: **83 [Claude Code](https://claude.com/claude-code) skills** in [.claude/skills/](.claude/skills/), plus the project instructions in [CLAUDE.md](CLAUDE.md). Each skill is a per-feature development guide: where the feature's code lives, what it does, when it runs, how to modify it without breaking the project's mandatory patterns (non-modal dialogs everywhere, live language switching, theming, undo/redo...), and the pitfalls already encountered and solved. `CLAUDE.md` is the index that ties the skills together and states the non-negotiable architecture and UI rules. Skill content only loads on demand, so this count doesn't add context overhead to a session — only each skill's short description is kept in context until it's actually invoked.
+
+If you clone or fork this project and open it with Claude Code, all of this is picked up automatically. Without Claude, the skills are still worth reading as plain architecture documentation, organized by feature.
+
+⚠️ **This documentation is written in French.** Claude Code exploits it regardless of the language you use to interact with it; human readers can run it through any machine translator.
 
 ---
 

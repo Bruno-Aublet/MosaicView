@@ -6,6 +6,7 @@ Gère tous les paramètres de l'application dans un fichier JSON unique
 import base64
 import json
 import os
+import shutil
 import sys
 import tempfile
 
@@ -68,12 +69,11 @@ class ConfigManager:
 
         Args:
             config_dir: Répertoire où est stocké le fichier de configuration (optionnel)
-                       Si None, utilise le répertoire MosaicViewTemp
+                       Si None, utilise %APPDATA%\\MosaicView
         """
         if config_dir is None:
-            # Utilise le répertoire temporaire MosaicViewTemp
-            temp_base = tempfile.gettempdir()
-            config_dir = os.path.join(temp_base, "MosaicViewTemp")
+            # Utilise %APPDATA%\MosaicView (config persistante, distincte des fichiers temporaires)
+            config_dir = os.path.join(os.environ["APPDATA"], "MosaicView")
 
             # Crée le répertoire s'il n'existe pas
             if not os.path.exists(config_dir):
@@ -81,6 +81,11 @@ class ConfigManager:
 
         self.config_dir = config_dir
         self.config_file = os.path.join(self.config_dir, self.CONFIG_FILENAME)
+
+        # Migration depuis l'ancien emplacement (%TEMP%\MosaicViewTemp) : déplace les
+        # fichiers de config existants s'ils n'ont pas déjà été migrés.
+        self._migrate_from_temp()
+
         self.config = self.DEFAULT_CONFIG.copy()
 
         # Charge la configuration existante
@@ -90,6 +95,22 @@ class ConfigManager:
         # - Créer le fichier s'il n'existe pas
         # - Mettre à jour avec les nouvelles clés si la config a été chargée
         self.save_config()
+
+    def _migrate_from_temp(self):
+        """Déplace (pas copie) la config existante de %TEMP%\\MosaicViewTemp vers
+        %APPDATA%\\MosaicView si elle n'a pas encore été migrée. Sans effet si le
+        fichier cible existe déjà ou si l'ancien fichier est absent."""
+        if os.path.exists(self.config_file):
+            return
+        old_dir = os.path.join(tempfile.gettempdir(), "MosaicViewTemp")
+        for filename in (self.CONFIG_FILENAME, ".mosaicview_icon_toolbar.json"):
+            old_path = os.path.join(old_dir, filename)
+            new_path = os.path.join(self.config_dir, filename)
+            if os.path.exists(old_path) and not os.path.exists(new_path):
+                try:
+                    shutil.move(old_path, new_path)
+                except Exception:
+                    pass
 
     def load_config(self):
         """
@@ -487,16 +508,6 @@ class ConfigManager:
         return self.set('comicvine_api_key', encrypted, save)
 
     # ===== Méthodes utilitaires =====
-
-    def reset_to_defaults(self):
-        """
-        Réinitialise tous les paramètres aux valeurs par défaut
-
-        Returns:
-            True si la sauvegarde a réussi
-        """
-        self.config = self.DEFAULT_CONFIG.copy()
-        return self.save_config()
 
     def get_config_file_path(self):
         """

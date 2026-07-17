@@ -15,11 +15,14 @@ BACKUP SCRIPT PRINCIPAL (old)/
 # Environnement virtuel Python
 .venv/
 
-# Notes de l'assistant Claude (spécifiques à cette machine)
-.claude/
-CLAUDE.md
+# Notes personnelles (spécifiques à cette machine)
 idees_ajustements.txt
 idees.txt
+prompt.txt
+
+# Claude Code — état local uniquement (les skills et CLAUDE.md sont versionnés)
+.claude/settings.local.json
+.claude/skills/verify-translation/progress.json
 
 # Fichiers compilés Python
 __pycache__/
@@ -42,6 +45,4 @@ desktop.ini
 # Outils de développement internes
 conversion_tools/
 glaemscribe_js/
-tools/
-commande de compil.txt
-Pour pousser vers GitHub.txt
+RELEASE.txt
