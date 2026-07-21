@@ -1100,6 +1100,12 @@
     "license": {
       "window_title": "MosaicView - License"
     },
+    "distillat": {
+      "window_title": "Shameless plug",
+      "title": "Have you heard of Distillat?",
+      "body": "Book 8 of your favorite saga just came out, and you're dying to read it. Except book 7 was 4 years ago, and your memories are a bit fuzzy: who were those secondary characters again? And what happened at the end?\n\nIf this sounds familiar, Distillat is for you. Simply drop your EPUB or PDF file into the designated area: you get a summary, character sheets, and an analysis of the work, ready to view or export to PDF.\n\nThe application relies on Gemini 3.5 Flash's free tier.",
+      "download_intro": "You can download the application here:"
+    },
     "replace_corrupted_image": {
       "title": "Replace corrupted image",
       "filter_images": "Images (*.png *.jpg *.jpeg *.gif *.webp *.bmp *.tiff *.tif *.ico *.jfif *.pjpeg *.pjp)",
@@ -1515,7 +1521,8 @@
     "show_changelog": "Changelog",
     "webpage": "Web page",
     "zip_compression": "Default ZIP compression",
-    "show_duplicates": "Manage duplicates"
+    "show_duplicates": "Manage duplicates",
+    "show_distillat": "Shameless plug"
   },
   "updates": {
     "dialog_title": "Updates",

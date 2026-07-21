@@ -1136,6 +1136,12 @@
     "license": {
       "window_title": "MosaicView - Licence"
     },
+    "distillat": {
+      "window_title": "Publicité éhontée",
+      "title": "Connaissez-vous Distillat ?",
+      "body": "Le tome 8 de votre saga préférée vient de sortir, et vous mourez d'envie de le lire. Sauf que le tome 7, c'était il y a 4 ans, et vos souvenirs sont un peu flous : qui étaient déjà ces personnages secondaires ? Et il se passait quoi, à la fin ?\n\nSi cette situation vous parle, Distillat est fait pour vous. Déposez simplement votre fichier EPUB ou PDF dans la zone prévue à cet effet : vous obtenez un résumé, des fiches de personnages et une analyse de l'oeuvre, prêts à consulter ou à exporter en PDF.\n\nL'application s'appuie sur le palier gratuit de Gemini 3.5 Flash.",
+      "download_intro": "Vous pouvez télécharger l'application ici :"
+    },
     "see_log": "VOIR LE LOG",
     "batch_cb7": {
       "select_directory_title": "Sélectionner le répertoire contenant les fichiers CB7",
@@ -1679,7 +1685,8 @@
     "batch_cb7_to_cbz": "CB7 → CBZ",
     "batch_cbt_to_cbz": "CBT → CBZ",
     "webpage": "Page web",
-    "zip_compression": "Compression ZIP par défaut"
+    "zip_compression": "Compression ZIP par défaut",
+    "show_distillat": "Publicité éhontée"
   },
   "bookmark": {
     "popup_title": "Marque-page",

@@ -1219,6 +1219,12 @@
       "delete_selection": "Kustuta valik",
       "select_group": "Vali rühm",
       "deselect_group": "Tühista rühma valik"
+    },
+    "distillat": {
+      "window_title": "Häbematu reklaam",
+      "title": "Kas tunnete Distillat'i?",
+      "body": "Teie lemmiksaaga 8. köide ilmus just ning te ei jaksa oodata, et seda lugeda. Ainult et 7. köide ilmus 4 aastat tagasi ja teie mälestused on veidi hägused: kes need kõrvaltegelased jälle olid? Ja mis lõpuks juhtus?\n\nKui see olukord tundub tuttav, on Distillat loodud teie jaoks. Lohistage lihtsalt oma EPUB- või PDF-fail selleks ette nähtud alale: saate kokkuvõtte, tegelaskaardid ja teose analüüsi, mis on valmis vaatamiseks või PDF-ina eksportimiseks.\n\nRakendus tugineb Gemini 3.5 Flash tasuta tasemele.",
+      "download_intro": "Rakenduse saate alla laadida siit:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Muudatuste logi",
     "webpage": "Veebileht",
     "zip_compression": "Vaikimisi ZIP-pakkimine",
-    "show_duplicates": "Halda duplikaate"
+    "show_duplicates": "Halda duplikaate",
+    "show_distillat": "Häbematu reklaam"
   },
   "updates": {
     "dialog_title": "Uuendused",

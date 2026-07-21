@@ -1219,6 +1219,12 @@
       "delete_selection": "選択項目を削除",
       "select_group": "グループを選択",
       "deselect_group": "グループの選択を解除"
+    },
+    "distillat": {
+      "window_title": "図々しい宣伝",
+      "title": "Distillatをご存知ですか？",
+      "body": "お気に入りのサーガの第8巻がちょうど発売され、読みたくてたまりません。でも第7巻を読んだのは4年前で、記憶が少し曖昧になっています。あの脇役たちは誰だったっけ？結末はどうなったんだっけ？\n\nこの状況に心当たりがあるなら、Distillatはあなたのためのアプリです。EPUBまたはPDFファイルを所定のエリアにドロップするだけで、要約、キャラクターシート、作品の分析が得られ、閲覧やPDFへのエクスポートがすぐにできます。\n\nこのアプリケーションはGemini 3.5 Flashの無料プランを利用しています。",
+      "download_intro": "アプリケーションはこちらからダウンロードできます："
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "更新履歴",
     "webpage": "ウェブページ",
     "zip_compression": "デフォルトのZIP圧縮",
-    "show_duplicates": "重複ページの管理"
+    "show_duplicates": "重複ページの管理",
+    "show_distillat": "図々しい宣伝"
   },
   "updates": {
     "dialog_title": "アップデート",

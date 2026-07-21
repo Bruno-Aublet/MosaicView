@@ -1219,6 +1219,12 @@
       "delete_selection": "Poista valinta",
       "select_group": "Valitse ryhmä",
       "deselect_group": "Poista ryhmän valinta"
+    },
+    "distillat": {
+      "window_title": "Häpeämätön mainos",
+      "title": "Tunnetko Distillatin?",
+      "body": "Suosikkisaagasi osa 8 juuri ilmestyi, ja kuolet halusta lukea sen. Paitsi että osa 7 ilmestyi 4 vuotta sitten, ja muistosi ovat hieman hataria: keitä ne sivuhenkilöt taas olivatkaan? Ja mitä lopussa tapahtui?\n\nJos tämä tilanne kuulostaa tutulta, Distillat on tehty juuri sinulle. Pudota vain EPUB- tai PDF-tiedostosi sille varattuun alueeseen: saat yhteenvedon, henkilökortit ja teoksen analyysin, valmiina tarkasteltavaksi tai vietäväksi PDF-muotoon.\n\nSovellus perustuu Gemini 3.5 Flashin ilmaiseen tasoon.",
+      "download_intro": "Voit ladata sovelluksen täältä:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Muutosloki",
     "webpage": "Verkkosivu",
     "zip_compression": "Oletus-ZIP-pakkaus",
-    "show_duplicates": "Hallitse kaksoiskappaleita"
+    "show_duplicates": "Hallitse kaksoiskappaleita",
+    "show_distillat": "Häpeämätön mainos"
   },
   "updates": {
     "dialog_title": "Päivitykset",

@@ -1219,6 +1219,12 @@
       "delete_selection": "Xóa mục đã chọn",
       "select_group": "Chọn nhóm",
       "deselect_group": "Bỏ chọn nhóm"
+    },
+    "distillat": {
+      "window_title": "Quảng cáo trơ trẽn",
+      "title": "Bạn có biết Distillat không?",
+      "body": "Tập 8 của bộ truyện yêu thích của bạn vừa mới ra mắt, và bạn nóng lòng muốn đọc nó. Chỉ có điều tập 7 là từ 4 năm trước, và ký ức của bạn hơi mơ hồ: những nhân vật phụ đó là ai nhỉ? Và chuyện gì đã xảy ra ở đoạn kết?\n\nNếu tình huống này nghe quen thuộc, Distillat được tạo ra dành cho bạn. Chỉ cần thả tệp EPUB hoặc PDF của bạn vào khu vực được chỉ định: bạn sẽ nhận được bản tóm tắt, thẻ nhân vật và phân tích tác phẩm, sẵn sàng để xem hoặc xuất ra PDF.\n\nỨng dụng dựa trên gói miễn phí của Gemini 3.5 Flash.",
+      "download_intro": "Bạn có thể tải ứng dụng tại đây:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Nhật ký thay đổi",
     "webpage": "Trang web",
     "zip_compression": "Nén ZIP mặc định",
-    "show_duplicates": "Quản lý trang trùng lặp"
+    "show_duplicates": "Quản lý trang trùng lặp",
+    "show_distillat": "Quảng cáo trơ trẽn"
   },
   "updates": {
     "dialog_title": "Cập nhật",

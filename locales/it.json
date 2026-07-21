@@ -1219,6 +1219,12 @@
       "delete_selection": "Elimina selezione",
       "select_group": "Seleziona gruppo",
       "deselect_group": "Deseleziona gruppo"
+    },
+    "distillat": {
+      "window_title": "Pubblicità sfacciata",
+      "title": "Conosci Distillat?",
+      "body": "Il tomo 8 della tua saga preferita è appena uscito, e non vedi l'ora di leggerlo. Peccato che il tomo 7 risalga a 4 anni fa, e i tuoi ricordi siano un po' confusi: chi erano già quei personaggi secondari? E cosa succedeva alla fine?\n\nSe questa situazione ti suona familiare, Distillat è fatto per te. Basta trascinare il tuo file EPUB o PDF nell'area prevista: ottieni un riassunto, schede dei personaggi e un'analisi dell'opera, pronti da consultare o esportare in PDF.\n\nL'applicazione si basa sul livello gratuito di Gemini 3.5 Flash.",
+      "download_intro": "Puoi scaricare l'applicazione qui:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Registro delle modifiche",
     "webpage": "Pagina web",
     "zip_compression": "Compressione ZIP predefinita",
-    "show_duplicates": "Gestisci duplicati"
+    "show_duplicates": "Gestisci duplicati",
+    "show_distillat": "Pubblicità sfacciata"
   },
   "updates": {
     "dialog_title": "Aggiornamenti",

@@ -1219,6 +1219,12 @@
       "delete_selection": "删除所选内容",
       "select_group": "选择该组",
       "deselect_group": "取消选择该组"
+    },
+    "distillat": {
+      "window_title": "厚脸皮广告",
+      "title": "你知道Distillat吗？",
+      "body": "你最喜欢的系列的第8卷刚刚发行,你迫不及待想读它。只是第7卷是4年前的事了,你的记忆有点模糊:那些配角都是谁来着？结局又发生了什么？\n\n如果这种情况听起来很熟悉,那么Distillat就是为你而生的。只需将你的EPUB或PDF文件拖放到指定区域:你就能获得摘要、人物卡片和作品分析,随时可查阅或导出为PDF。\n\n该应用程序基于Gemini 3.5 Flash的免费套餐。",
+      "download_intro": "你可以在这里下载该应用程序："
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "更新日志",
     "webpage": "网页",
     "zip_compression": "默认 ZIP 压缩",
-    "show_duplicates": "管理重复页面"
+    "show_duplicates": "管理重复页面",
+    "show_distillat": "厚脸皮广告"
   },
   "updates": {
     "dialog_title": "更新",

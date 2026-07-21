@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.6.3] - 2026-07-21 - "Shameless plug" window for Distillat, About menu fixes
+
+- Added a "Shameless plug" entry to the About menu (menu bar and right-click menu), opening a new window presenting [Distillat](https://github.com/Bruno-Aublet/Distillat), a companion application by the same author that summarizes EPUB/PDF books, with character sheets and analysis, and a direct download link.
+- Fixed the "Save pIqaD font" / "Save tengwar fonts" / "Save all icons" entries in the About menu bar doing nothing when clicked: their callbacks were not wired up. Also added the three entries to the right-click About submenu, which was missing them entirely compared to the menu bar.
+
 ## [1.6.2] - 2026-07-17 - Configuration file moved to %APPDATA%, Claude Code skills published in the repository, pytest test suite, minimap corrupted-page badge fix, Library numeric sorting fixes
 
 - MosaicView's configuration file (`.mosaicview_config.json` — window geometry, theme, language, recent files, bookmarks, encrypted ComicVine API key, and every other setting) used to live in `%TEMP%\MosaicViewTemp`, alongside genuinely temporary files. Since Windows periodically clears the temp folder (Disk Cleanup, Storage Sense), this could silently wipe out all of the above, bookmarks included, without warning. It now lives in `%APPDATA%\MosaicView`, a location Windows never clears automatically. Existing configuration files are migrated automatically (moved, not copied) the first time this version runs — nothing to do manually. The help window's "Configuration and temporary files" section has been split into two separate sections, "Configuration files" and "Temporary files", each with its own explanation and its own clickable link to the right folder; the menu bar and right-click menu now group the configuration-related commands together (with a new "Open configuration folder" entry) separately from the temporary-files commands.

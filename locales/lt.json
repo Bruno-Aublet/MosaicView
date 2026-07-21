@@ -1219,6 +1219,12 @@
       "delete_selection": "Ištrinti pasirinkimą",
       "select_group": "Pasirinkti grupę",
       "deselect_group": "Panaikinti grupės pasirinkimą"
+    },
+    "distillat": {
+      "window_title": "Begėdiška reklama",
+      "title": "Ar žinote Distillat?",
+      "body": "Ką tik išleistas jūsų mėgstamiausios sagos 8-asis tomas, ir jūs mirtinai norite jį perskaityti. Tik va 7-asis tomas buvo prieš 4 metus, ir jūsų prisiminimai šiek tiek neaiškūs: kas gi buvo tie antraeiliai veikėjai? Ir kas atsitiko pabaigoje?\n\nJei ši situacija jums pažįstama, Distillat sukurtas būtent jums. Tiesiog nutempkite savo EPUB ar PDF failą į tam skirtą sritį: gausite santrauką, veikėjų korteles ir kūrinio analizę, paruoštus peržiūrai ar eksportui į PDF.\n\nProgramėlė remiasi nemokamu Gemini 3.5 Flash lygiu.",
+      "download_intro": "Programėlę galite atsisiųsti čia:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Pakeitimų žurnalas",
     "webpage": "Tinklalapis",
     "zip_compression": "Numatytasis ZIP suspaudimas",
-    "show_duplicates": "Tvarkyti dublikatus"
+    "show_duplicates": "Tvarkyti dublikatus",
+    "show_distillat": "Begėdiška reklama"
   },
   "updates": {
     "dialog_title": "Atnaujinimai",

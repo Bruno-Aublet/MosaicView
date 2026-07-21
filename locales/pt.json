@@ -1219,6 +1219,12 @@
       "delete_selection": "Eliminar seleção",
       "select_group": "Selecionar grupo",
       "deselect_group": "Cancelar seleção do grupo"
+    },
+    "distillat": {
+      "window_title": "Publicidade descarada",
+      "title": "Conhece o Distillat?",
+      "body": "O tomo 8 da sua saga preferida acabou de sair, e você está morrendo de vontade de o ler. Só que o tomo 7 foi há 4 anos, e as suas memórias estão um pouco confusas: quem eram mesmo aquelas personagens secundárias? E o que acontecia no final?\n\nSe esta situação lhe soa familiar, o Distillat foi feito para si. Basta largar o seu ficheiro EPUB ou PDF na área prevista para o efeito: obtém um resumo, fichas de personagens e uma análise da obra, prontos a consultar ou a exportar em PDF.\n\nA aplicação baseia-se no nível gratuito do Gemini 3.5 Flash.",
+      "download_intro": "Pode transferir a aplicação aqui:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Registo de alterações",
     "webpage": "Página web",
     "zip_compression": "Compressão ZIP predefinida",
-    "show_duplicates": "Gerir duplicados"
+    "show_duplicates": "Gerir duplicados",
+    "show_distillat": "Publicidade descarada"
   },
   "updates": {
     "dialog_title": "Atualizações",

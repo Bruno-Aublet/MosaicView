@@ -926,6 +926,18 @@ class PanelWidget(QWidget):
     def _show_donation_dialog(self):
         self._main_window._show_donation_dialog()
 
+    def _show_distillat_dialog(self):
+        self._main_window._show_distillat_dialog()
+
+    def _export_piqad_font(self):
+        self._main_window._export_piqad_font()
+
+    def _export_tengwar_fonts(self):
+        self._main_window._export_tengwar_fonts()
+
+    def _save_all_icons(self):
+        self._main_window._save_all_icons()
+
     def _copy_mail_address(self):
         self._main_window._copy_mail_address()
 

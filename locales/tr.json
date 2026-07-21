@@ -1219,6 +1219,12 @@
       "delete_selection": "Seçimi sil",
       "select_group": "Grubu seç",
       "deselect_group": "Grup seçimini kaldır"
+    },
+    "distillat": {
+      "window_title": "Yüzsüz reklam",
+      "title": "Distillat'ı biliyor musunuz?",
+      "body": "Favori destanınızın 8. cildi az önce çıktı ve onu okumak için can atıyorsunuz. Ama 7. cilt 4 yıl önceydi ve anılarınız biraz bulanık: o yan karakterler kimdi? Ve sonunda ne olmuştu?\n\nBu durum size tanıdık geliyorsa, Distillat tam size göre. EPUB veya PDF dosyanızı bunun için ayrılan alana bırakmanız yeterli: bir özet, karakter kartları ve esere dair bir analiz elde edersiniz, incelemeye veya PDF olarak dışa aktarmaya hazır.\n\nUygulama, Gemini 3.5 Flash'ın ücretsiz katmanına dayanmaktadır.",
+      "download_intro": "Uygulamayı buradan indirebilirsiniz:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Değişiklik Günlüğü",
     "webpage": "Web sayfası",
     "zip_compression": "Varsayılan ZIP sıkıştırma",
-    "show_duplicates": "Yinelenenleri yönet"
+    "show_duplicates": "Yinelenenleri yönet",
+    "show_distillat": "Yüzsüz reklam"
   },
   "updates": {
     "dialog_title": "Güncellemeler",

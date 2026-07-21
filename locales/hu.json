@@ -1219,6 +1219,12 @@
       "delete_selection": "Kijelölés törlése",
       "select_group": "Csoport kijelölése",
       "deselect_group": "Csoport kijelölésének megszüntetése"
+    },
+    "distillat": {
+      "window_title": "Szégyentelen reklám",
+      "title": "Ismeri a Distillat-ot?",
+      "body": "Kedvenc sagájának 8. kötete most jelent meg, és alig várja, hogy elolvassa. Csakhogy a 7. kötet 4 éve jelent meg, és az emlékei kissé homályosak: kik is voltak azok a mellékszereplők? És mi történt a végén?\n\nHa ez a helyzet ismerősnek tűnik, a Distillat önnek készült. Egyszerűen húzza be az EPUB vagy PDF fájlját az erre kijelölt területre: összefoglalót, karakterlapokat és a mű elemzését kapja, megtekintésre vagy PDF-be exportálásra készen.\n\nAz alkalmazás a Gemini 3.5 Flash ingyenes szintjére támaszkodik.",
+      "download_intro": "Az alkalmazást itt töltheti le:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Változásnapló",
     "webpage": "Weboldal",
     "zip_compression": "Alapértelmezett ZIP tömörítés",
-    "show_duplicates": "Ismétlődések kezelése"
+    "show_duplicates": "Ismétlődések kezelése",
+    "show_distillat": "Szégyentelen reklám"
   },
   "updates": {
     "dialog_title": "Frissítések",

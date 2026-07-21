@@ -1219,6 +1219,12 @@
       "delete_selection": "Șterge selecția",
       "select_group": "Selectează grupul",
       "deselect_group": "Deselectează grupul"
+    },
+    "distillat": {
+      "window_title": "Publicitate neobrăzată",
+      "title": "Cunoașteți Distillat?",
+      "body": "Volumul 8 din saga voastră preferată tocmai a apărut, și abia așteptați să-l citiți. Doar că volumul 7 a fost acum 4 ani, iar amintirile voastre sunt cam neclare: cine erau acele personaje secundare? Și ce se întâmpla la final?\n\nDacă această situație vă sună cunoscut, Distillat este făcut pentru voi. Pur și simplu plasați fișierul EPUB sau PDF în zona prevăzută pentru asta: obțineți un rezumat, fișe de personaje și o analiză a operei, gata de consultat sau exportat în PDF.\n\nAplicația se bazează pe nivelul gratuit al Gemini 3.5 Flash.",
+      "download_intro": "Puteți descărca aplicația aici:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Jurnal de modificări",
     "webpage": "Pagină web",
     "zip_compression": "Compresie ZIP implicită",
-    "show_duplicates": "Gestionează duplicatele"
+    "show_duplicates": "Gestionează duplicatele",
+    "show_distillat": "Publicitate neobrăzată"
   },
   "updates": {
     "dialog_title": "Actualizări",

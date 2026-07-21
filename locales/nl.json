@@ -1219,6 +1219,12 @@
       "delete_selection": "Selectie verwijderen",
       "select_group": "Groep selecteren",
       "deselect_group": "Groepselectie opheffen"
+    },
+    "distillat": {
+      "window_title": "Schaamteloze reclame",
+      "title": "Kent u Distillat al?",
+      "body": "Deel 8 van uw favoriete saga is net uitgekomen, en u kunt niet wachten om het te lezen. Alleen was deel 7 4 jaar geleden, en uw herinneringen zijn een beetje vaag: wie waren die bijfiguren ook alweer? En wat gebeurde er aan het einde?\n\nAls deze situatie u bekend voorkomt, is Distillat voor u gemaakt. Sleep gewoon uw EPUB- of PDF-bestand naar het daarvoor bestemde gebied: u krijgt een samenvatting, personagekaarten en een analyse van het werk, klaar om te bekijken of te exporteren naar PDF.\n\nDe applicatie maakt gebruik van het gratis niveau van Gemini 3.5 Flash.",
+      "download_intro": "U kunt de applicatie hier downloaden:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Wijzigingenlog",
     "webpage": "Webpagina",
     "zip_compression": "Standaard ZIP-compressie",
-    "show_duplicates": "Duplicaten beheren"
+    "show_duplicates": "Duplicaten beheren",
+    "show_distillat": "Schaamteloze reclame"
   },
   "updates": {
     "dialog_title": "Updates",

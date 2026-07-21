@@ -1219,6 +1219,12 @@
       "delete_selection": "Aut i thûl",
       "select_group": "Egleri i raid",
       "deselect_group": "Avelego i raid"
+    },
+    "distillat": {
+      "window_title": "Trenarad dhíreb",
+      "title": "Istog Distillat?",
+      "body": "Anann i-oer 8 e·lú Lúlen achenio, a nallog gwannen le legi hen. Dan i-oer 7 oe ereb 4 in-idhrinn, a lû·lín gwathog: man edir i-Quetar erchín hen? A man erui bant i-methed?\n\nAe i-tham hen les fael, Distillat naur na le. Sada ambar EPUB pehn PDF lín na theri sad; toged Hannas, cardh e-Quetar a nothrannath e-goleb, lain adorthad pehn sadatha be PDF.\n\nI-tham hen Sadatha ah lam laid e-Gemini 3.5 Flash.",
+      "download_intro": "Le sadatha i tham hen sí:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Amarth Chîn",
     "webpage": "Lam vëa",
     "zip_compression": "Modh cened ZIP hen pen",
-    "show_duplicates": "Dartha i athrenilath"
+    "show_duplicates": "Dartha i athrenilath",
+    "show_distillat": "Trenarad dhíreb"
   },
   "updates": {
     "dialog_title": "Gwanath thîn",

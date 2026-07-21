@@ -1219,6 +1219,12 @@
       "delete_selection": "Odstrániť výber",
       "select_group": "Vybrať skupinu",
       "deselect_group": "Zrušiť výber skupiny"
+    },
+    "distillat": {
+      "window_title": "Nehanebná reklama",
+      "title": "Poznáte Distillat?",
+      "body": "Ôsmy diel vašej obľúbenej ságy práve vyšiel a vy sa neviete dočkať, kým si ho prečítate. Lenže siedmy diel bol pred 4 rokmi a vaše spomienky sú trochu hmlisté: kto to vlastne boli tí vedľajší postavy? A čo sa stalo na konci?\n\nAk vám táto situácia znie povedome, Distillat je tu pre vás. Stačí presunúť váš súbor EPUB alebo PDF do vyhradenej oblasti: získate zhrnutie, karty postáv a analýzu diela, pripravené na prezeranie alebo export do PDF.\n\nAplikácia využíva bezplatnú úroveň Gemini 3.5 Flash.",
+      "download_intro": "Aplikáciu si môžete stiahnuť tu:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Zoznam zmien",
     "webpage": "Webová stránka",
     "zip_compression": "Predvolená kompresia ZIP",
-    "show_duplicates": "Spravovať duplicity"
+    "show_duplicates": "Spravovať duplicity",
+    "show_distillat": "Nehanebná reklama"
   },
   "updates": {
     "dialog_title": "Aktualizácie",

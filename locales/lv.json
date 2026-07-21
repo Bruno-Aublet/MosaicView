@@ -1219,6 +1219,12 @@
       "delete_selection": "Dzēst atlasi",
       "select_group": "Atlasīt grupu",
       "deselect_group": "Noņemt grupas atlasi"
+    },
+    "distillat": {
+      "window_title": "Nekaunīga reklāma",
+      "title": "Vai pazīstat Distillat?",
+      "body": "Jūsu iecienītākās sāgas 8. sējums tikko iznācis, un jūs nemaz nevarat sagaidīt to izlasīt. Tikai vai 7. sējums bija pirms 4 gadiem, un jūsu atmiņas ir mazliet miglainas: kas gan bija tie sekundārie varoņi? Un kas notika beigās?\n\nJa šī situācija jums šķiet pazīstama, Distillat ir radīts tieši jums. Vienkārši ievelciet savu EPUB vai PDF failu tam paredzētajā zonā: jūs iegūstat kopsavilkumu, varoņu kartītes un darba analīzi, gatavus apskatei vai eksportēšanai PDF formātā.\n\nLietotne balstās uz Gemini 3.5 Flash bezmaksas līmeni.",
+      "download_intro": "Lietotni varat lejupielādēt šeit:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Izmaiņu žurnāls",
     "webpage": "Tīmekļa lapa",
     "zip_compression": "Noklusējuma ZIP saspiešana",
-    "show_duplicates": "Pārvaldīt dublikātus"
+    "show_duplicates": "Pārvaldīt dublikātus",
+    "show_distillat": "Nekaunīga reklāma"
   },
   "updates": {
     "dialog_title": "Atjauninājumi",

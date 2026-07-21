@@ -1219,6 +1219,12 @@
       "delete_selection": "Izbriši odabir",
       "select_group": "Odaberi skupinu",
       "deselect_group": "Poništi odabir skupine"
+    },
+    "distillat": {
+      "window_title": "Bestidna reklama",
+      "title": "Poznajete li Distillat?",
+      "body": "Upravo je izašao 8. svezak vaše omiljene sage, a vi jedva čekate da ga pročitate. Samo što je 7. svezak izašao prije 4 godine, a vaša su sjećanja pomalo mutna: tko su uopće bili ti sporedni likovi? I što se dogodilo na kraju?\n\nAko vam ova situacija zvuči poznato, Distillat je stvoren za vas. Jednostavno ubacite svoju EPUB ili PDF datoteku u za to predviđeno područje: dobivate sažetak, kartice likova i analizu djela, spremne za pregled ili izvoz u PDF.\n\nAplikacija se oslanja na besplatnu razinu Gemini 3.5 Flash.",
+      "download_intro": "Aplikaciju možete preuzeti ovdje:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Popis promjena",
     "webpage": "Web stranica",
     "zip_compression": "Zadana ZIP kompresija",
-    "show_duplicates": "Upravljanje duplikatima"
+    "show_duplicates": "Upravljanje duplikatima",
+    "show_distillat": "Bestidna reklama"
   },
   "updates": {
     "dialog_title": "Ažuriranja",

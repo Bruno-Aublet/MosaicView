@@ -1219,6 +1219,12 @@
       "delete_selection": "선택 항목 삭제",
       "select_group": "그룹 선택",
       "deselect_group": "그룹 선택 해제"
+    },
+    "distillat": {
+      "window_title": "뻔뻔한 광고",
+      "title": "Distillat를 아시나요?",
+      "body": "좋아하는 시리즈의 8권이 방금 출간되어 당장 읽고 싶어 죽겠습니다. 그런데 7권을 읽은 게 4년 전이라 기억이 좀 흐릿합니다. 그 조연들이 누구였더라? 그리고 결말에서 무슨 일이 있었더라?\n\n이런 상황이 낯익다면 Distillat이 바로 당신을 위한 앱입니다. EPUB 또는 PDF 파일을 지정된 영역에 놓기만 하면 요약, 캐릭터 카드, 작품 분석을 얻을 수 있으며, 바로 확인하거나 PDF로 내보낼 수 있습니다.\n\n이 애플리케이션은 Gemini 3.5 Flash의 무료 등급을 사용합니다.",
+      "download_intro": "여기에서 애플리케이션을 다운로드할 수 있습니다:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "변경 로그",
     "webpage": "웹 페이지",
     "zip_compression": "기본 ZIP 압축",
-    "show_duplicates": "중복 페이지 관리"
+    "show_duplicates": "중복 페이지 관리",
+    "show_distillat": "뻔뻔한 광고"
   },
   "updates": {
     "dialog_title": "업데이트",

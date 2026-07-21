@@ -1219,6 +1219,12 @@
       "delete_selection": "Nas i cille",
       "select_group": "Cilmë i·ohtë",
       "deselect_group": "Avalcilmë i·ohtë"
+    },
+    "distillat": {
+      "window_title": "Alcarwendë",
+      "title": "Istatyë Distillat?",
+      "body": "Parma 8 melda liéva anwavë etelehta, ar merilyë hostatyë sa. Mal parma 7 nasse 4 loar yá, ar enyalielyar ná ita lumbë: man enger i Quetar hyarni? Ar man martanë métimes?\n\nLoicë sina istaina ná lelyë, Distillat carna elyen. Sadyëa parmalya EPUB pahtas PDF minna i nómë órë carna: caltalyë parmë, Quetaron parmar, ar cenya i molwenna, valea cenna hya hosta parma PDF.\n\nI tamma harya i lára nostalë Gemini 3.5 Flash.",
+      "download_intro": "Sina tamma hostaityëlyë:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Quenta Cendelëva",
     "webpage": "Quenta vëa",
     "zip_compression": "Tereva nutta ZIP",
-    "show_duplicates": "Nurta i atta-parmar"
+    "show_duplicates": "Nurta i atta-parmar",
+    "show_distillat": "Alcarwendë"
   },
   "updates": {
     "dialog_title": "Vinya quettar",

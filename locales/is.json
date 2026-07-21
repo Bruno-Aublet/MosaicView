@@ -1219,6 +1219,12 @@
       "delete_selection": "Eyða vali",
       "select_group": "Velja hópinn",
       "deselect_group": "Afvelja hópinn"
+    },
+    "distillat": {
+      "window_title": "Blygðunarlaus auglýsing",
+      "title": "Þekkir þú Distillat?",
+      "body": "Bindi 8 af uppáhalds sögunni þinni er nýkomið út, og þú getur ekki beðið eftir að lesa það. Nema hvað bindi 7 kom út fyrir 4 árum, og minningar þínar eru svolítið óskýrar: hverjir voru þessar aukapersónur aftur? Og hvað gerðist í lokin?\n\nEf þessar aðstæður hljóma kunnuglega, þá er Distillat gert fyrir þig. Slepptu einfaldlega EPUB- eða PDF-skránni þinni á tilgreint svæði: þú færð samantekt, persónuspjöld og greiningu á verkinu, tilbúið til skoðunar eða útflutnings í PDF.\n\nForritið byggir á ókeypis stigi Gemini 3.5 Flash.",
+      "download_intro": "Þú getur sótt forritið hér:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Breytingaskrá",
     "webpage": "Vefsíða",
     "zip_compression": "Sjálfgefin ZIP-þjöppun",
-    "show_duplicates": "Stjórna tvíteknum"
+    "show_duplicates": "Stjórna tvíteknum",
+    "show_distillat": "Blygðunarlaus auglýsing"
   },
   "updates": {
     "dialog_title": "Uppfærslur",

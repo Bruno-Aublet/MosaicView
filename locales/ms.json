@@ -1219,6 +1219,12 @@
       "delete_selection": "Padam pilihan",
       "select_group": "Pilih kumpulan",
       "deselect_group": "Nyahpilih kumpulan"
+    },
+    "distillat": {
+      "window_title": "Iklan tidak malu",
+      "title": "Tahukah anda tentang Distillat?",
+      "body": "Jilid 8 saga kegemaran anda baru sahaja terbit, dan anda tidak sabar untuk membacanya. Cuma jilid 7 telah terbit 4 tahun lalu, dan ingatan anda agak kabur: siapakah watak-watak sampingan itu tadi? Dan apa yang berlaku pada akhirnya?\n\nJika situasi ini kedengaran biasa bagi anda, Distillat dicipta untuk anda. Cuma jatuhkan fail EPUB atau PDF anda ke kawasan yang disediakan: anda akan mendapat ringkasan, kad watak dan analisis karya, sedia untuk dilihat atau dieksport ke PDF.\n\nAplikasi ini bergantung kepada peringkat percuma Gemini 3.5 Flash.",
+      "download_intro": "Anda boleh memuat turun aplikasi di sini:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Log Perubahan",
     "webpage": "Laman web",
     "zip_compression": "Mampatan ZIP lalai",
-    "show_duplicates": "Urus pendua"
+    "show_duplicates": "Urus pendua",
+    "show_distillat": "Iklan tidak malu"
   },
   "updates": {
     "dialog_title": "Kemas Kini",

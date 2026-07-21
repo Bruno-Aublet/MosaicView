@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.6.2"
+__version__ = "1.6.3"
 
 import sys
 import os
@@ -644,6 +644,22 @@ class MainWindow(QMainWindow):
     def _show_donation_dialog(self):
         from modules.qt.donation_dialog_qt import show_donation_dialog_qt
         self._donation_dlg = show_donation_dialog_qt(self._active_panel)
+
+    def _show_distillat_dialog(self):
+        from modules.qt.distillat_dialog_qt import show_distillat_dialog_qt
+        self._distillat_dlg = show_distillat_dialog_qt(self._active_panel)
+
+    def _export_piqad_font(self):
+        from modules.qt.user_guide_qt import export_piqad_font
+        export_piqad_font(self._active_panel)
+
+    def _export_tengwar_fonts(self):
+        from modules.qt.user_guide_qt import export_tengwar_fonts
+        export_tengwar_fonts(self._active_panel)
+
+    def _save_all_icons(self):
+        from modules.qt.user_guide_qt import save_all_icons
+        save_all_icons(self._active_panel)
 
     def _copy_mail_address(self):
         from PySide6.QtWidgets import QApplication

@@ -1219,6 +1219,12 @@
       "delete_selection": "Ħassar l-għażla",
       "select_group": "Agħżel il-grupp",
       "deselect_group": "Neħħi l-għażla tal-grupp"
+    },
+    "distillat": {
+      "window_title": "Reklam bla mistħija",
+      "title": "Taf b'Distillat?",
+      "body": "Il-volum 8 tas-saga favorita tiegħek għadu kif ħareġ, u qed tmut bix-xewqa li taqrah. Biss il-volum 7 kien 4 snin ilu, u l-memorji tiegħek huma ftit imċajpra: min kienu dawk il-karattri sekondarji? U x'kien ġara fl-aħħar?\n\nJekk din is-sitwazzjoni tinstema' familjari, Distillat sar għalik. Sempliċement niżżel il-fajl EPUB jew PDF tiegħek fiż-żona maħsuba għal dan: tikseb sommarju, karti tal-karattri u analiżi tax-xogħol, lesti biex tarahom jew tesportahom f'PDF.\n\nL-applikazzjoni tiddependi fuq il-livell b'xejn ta' Gemini 3.5 Flash.",
+      "download_intro": "Tista' tniżżel l-applikazzjoni hawn:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Reġistru tal-Bidliet",
     "webpage": "Paġna tal-web",
     "zip_compression": "Kompressjoni ZIP prestabbilita",
-    "show_duplicates": "Immaniġġja d-duplikati"
+    "show_duplicates": "Immaniġġja d-duplikati",
+    "show_distillat": "Reklam bla mistħija"
   },
   "updates": {
     "dialog_title": "Aġġornamenti",

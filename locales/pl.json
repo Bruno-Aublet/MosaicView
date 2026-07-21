@@ -1219,6 +1219,12 @@
       "delete_selection": "Usuń zaznaczenie",
       "select_group": "Zaznacz grupę",
       "deselect_group": "Odznacz grupę"
+    },
+    "distillat": {
+      "window_title": "Bezwstydna reklama",
+      "title": "Czy znasz Distillat?",
+      "body": "Tom 8 twojej ulubionej sagi właśnie się ukazał, a ty umierasz z chęci, by go przeczytać. Tylko że tom 7 był 4 lata temu, a twoje wspomnienia są nieco mgliste: kim byli ci drugoplanowi bohaterowie? I co się stało na końcu?\n\nJeśli ta sytuacja brzmi znajomo, Distillat jest stworzony dla ciebie. Wystarczy upuścić plik EPUB lub PDF w przewidzianym do tego obszarze: otrzymujesz streszczenie, karty postaci i analizę dzieła, gotowe do przejrzenia lub eksportu do PDF.\n\nAplikacja opiera się na darmowym poziomie Gemini 3.5 Flash.",
+      "download_intro": "Aplikację możesz pobrać tutaj:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Dziennik zmian",
     "webpage": "Strona internetowa",
     "zip_compression": "Domyślna kompresja ZIP",
-    "show_duplicates": "Zarządzaj duplikatami"
+    "show_duplicates": "Zarządzaj duplikatami",
+    "show_distillat": "Bezwstydna reklama"
   },
   "updates": {
     "dialog_title": "Aktualizacje",

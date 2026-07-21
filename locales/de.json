@@ -1219,6 +1219,12 @@
       "delete_selection": "Auswahl löschen",
       "select_group": "Gruppe auswählen",
       "deselect_group": "Gruppenauswahl aufheben"
+    },
+    "distillat": {
+      "window_title": "Schamlose Werbung",
+      "title": "Kennen Sie Distillat?",
+      "body": "Band 8 Ihrer Lieblingssaga ist gerade erschienen, und Sie können es kaum erwarten, ihn zu lesen. Nur dass Band 7 vor 4 Jahren erschien und Ihre Erinnerungen etwas verschwommen sind: Wer waren noch mal diese Nebenfiguren? Und was ist am Ende passiert?\n\nWenn Ihnen diese Situation bekannt vorkommt, ist Distillat genau das Richtige für Sie. Legen Sie einfach Ihre EPUB- oder PDF-Datei in den dafür vorgesehenen Bereich: Sie erhalten eine Zusammenfassung, Charakterbögen und eine Analyse des Werks, bereit zum Ansehen oder Exportieren als PDF.\n\nDie Anwendung nutzt die kostenlose Stufe von Gemini 3.5 Flash.",
+      "download_intro": "Sie können die Anwendung hier herunterladen:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Changelog",
     "webpage": "Webseite",
     "zip_compression": "Standard-ZIP-Komprimierung",
-    "show_duplicates": "Duplikate verwalten"
+    "show_duplicates": "Duplikate verwalten",
+    "show_distillat": "Schamlose Werbung"
   },
   "updates": {
     "dialog_title": "Updates",

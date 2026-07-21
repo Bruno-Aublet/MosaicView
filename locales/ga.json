@@ -1219,6 +1219,12 @@
       "delete_selection": "Scrios an roghnú",
       "select_group": "Roghnaigh an grúpa",
       "deselect_group": "Díroghnaigh an grúpa"
+    },
+    "distillat": {
+      "window_title": "Fógraíocht dhánach",
+      "title": "An bhfuil aithne agat ar Distillat?",
+      "body": "Tá imleabhar 8 de do shaga is fearr leat díreach tar éis teacht amach, agus tá fonn ort é a léamh. Ach amháin gur 4 bliana ó shin a bhí imleabhar 7 ann, agus tá do chuimhní beagán doiléir: cé hiad na carachtair thánaisteacha sin arís? Agus cad a tharla ag an deireadh?\n\nMás rud é go bhfuil an cás seo aithnidiúil duit, tá Distillat déanta duit. Ná déan ach do chomhad EPUB nó PDF a scaoileadh sa limistéar atá ceaptha dó sin: gheobhaidh tú achoimre, cártaí carachtair agus anailís ar an saothar, réidh le breathnú orthu nó le honnmhairiú go PDF.\n\nBraitheann an feidhmchlár ar leibhéal saor in aisce Gemini 3.5 Flash.",
+      "download_intro": "Is féidir leat an feidhmchlár a íoslódáil anseo:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Loga Athruithe",
     "webpage": "Leathanach gréasáin",
     "zip_compression": "Comhbhrú réamhshocraithe ZIP",
-    "show_duplicates": "Bainistigh dúblacha"
+    "show_duplicates": "Bainistigh dúblacha",
+    "show_distillat": "Fógraíocht dhánach"
   },
   "updates": {
     "dialog_title": "Nuashonruithe",

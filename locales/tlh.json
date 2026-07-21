@@ -1219,6 +1219,12 @@
       "delete_selection": "wIvlu'bogh teq",
       "select_group": "veS Hoch yIwIv",
       "deselect_group": "veS yIwIvHa'"
+    },
+    "distillat": {
+      "window_title": "tuQ'eghjaj",
+      "title": "Distillat DalaD'a'?",
+      "body": "tetlh parmaqqay lIj chorghDIch DIchmoHlu'pu' 'ej DaSaHchu'meH DalaDbe'law'. 'ach parmaqqay lIj SochDIch loS DIS ret DIchmoHlu'pu', 'ej qawHaqlIj tlhoy pIm: nuvpu' Do' 'Iv nuchugh? pa' Qav vaS nuq qaSpu'?\n\nDaSov 'e' DaSovchugh, Distillat qaboghmoH. EPUB pagh PDF De'wI'lIj yIchagh tIH'eghmoHtaHbogh; ja'ghach mach, nuvpu' De' je vum lup, laDlu'meH pagh PDF Do' HeSlu'meH.\n\nGemini 3.5 Flash lo'be'bogh nap lo'lu'.",
+      "download_intro": "naDev vum lo'lu'meH chellu'lu'laH:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "mI' SeHlaw",
     "webpage": "QoQ De'wI' Daq",
     "zip_compression": "rar mIw rar tlhIngan",
-    "show_duplicates": "ra' chovmey cha'logh"
+    "show_duplicates": "ra' chovmey cha'logh",
+    "show_distillat": "tuQ'eghjaj"
   },
   "updates": {
     "dialog_title": "chu' De'",

@@ -1219,6 +1219,12 @@
       "delete_selection": "刪除所選內容",
       "select_group": "選取該組",
       "deselect_group": "取消選取該組"
+    },
+    "distillat": {
+      "window_title": "厚臉皮廣告",
+      "title": "你知道Distillat嗎？",
+      "body": "你最喜歡的系列第8卷剛剛發行,你迫不及待想讀它。只是第7卷是4年前的事了,你的記憶有點模糊:那些配角都是誰來著？結局又發生了什麼？\n\n如果這種情況聽起來很熟悉,那麼Distillat就是為你而生的。只需將你的EPUB或PDF檔案拖放到指定區域:你就能獲得摘要、人物卡片和作品分析,隨時可查閱或匯出為PDF。\n\n該應用程式基於Gemini 3.5 Flash的免費方案。",
+      "download_intro": "你可以在這裡下載該應用程式："
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "更新日誌",
     "webpage": "網頁",
     "zip_compression": "預設 ZIP 壓縮",
-    "show_duplicates": "管理重複頁面"
+    "show_duplicates": "管理重複頁面",
+    "show_distillat": "厚臉皮廣告"
   },
   "updates": {
     "dialog_title": "更新",

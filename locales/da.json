@@ -1219,6 +1219,12 @@
       "delete_selection": "Slet markering",
       "select_group": "Vælg gruppen",
       "deselect_group": "Fravælg gruppen"
+    },
+    "distillat": {
+      "window_title": "Skamløs reklame",
+      "title": "Kender du Distillat?",
+      "body": "Bind 8 af din yndlingssaga er lige udkommet, og du brænder efter at læse den. Men bind 7 var for 4 år siden, og dine minder er lidt tågede: hvem var egentlig disse bipersoner? Og hvad skete der til sidst?\n\nHvis denne situation lyder bekendt, er Distillat lavet til dig. Du skal blot lægge din EPUB- eller PDF-fil i det dertil beregnede område: du får et resumé, karakterark og en analyse af værket, klar til at læse eller eksportere til PDF.\n\nApplikationen bygger på den gratis version af Gemini 3.5 Flash.",
+      "download_intro": "Du kan downloade applikationen her:"
     }
   },
   "tooltip": {
@@ -1515,7 +1521,8 @@
     "show_changelog": "Changelog",
     "webpage": "Webside",
     "zip_compression": "Standard ZIP-komprimering",
-    "show_duplicates": "Administrer dubletter"
+    "show_duplicates": "Administrer dubletter",
+    "show_distillat": "Skamløs reklame"
   },
   "updates": {
     "dialog_title": "Opdateringer",

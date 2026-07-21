@@ -686,6 +686,7 @@ def _build_about_submenu(parent, callbacks: dict) -> QMenu:
     submenu.addAction(_("donation.menu_label"),   callbacks.get("show_donation_dialog"))
     submenu.addAction(_("mail.menu_label"),        callbacks.get("open_mail"))
     submenu.addAction(_("mail.copy_address"),      callbacks.get("copy_mail_address"))
+    submenu.addAction(_("menu.show_distillat"),   callbacks.get("show_distillat_dialog"))
     submenu.addSeparator()
     submenu.addAction(_("help.config_clear_config"),        callbacks['clear_config_file'])
     submenu.addAction(_("help.config_open_config_folder"),  callbacks['open_config_folder'])
@@ -695,6 +696,12 @@ def _build_about_submenu(parent, callbacks: dict) -> QMenu:
     submenu.addAction(_("help.config_clear_clipboard"),   callbacks['clear_clipboard_files'])
     submenu.addAction(_("help.config_open_temp_folder"),  callbacks['open_temp_folder'])
     submenu.addSeparator()
+
+    submenu.addAction(_("menu.export_piqad_font"),    callbacks.get("export_piqad_font"))
+    submenu.addAction(_("menu.export_tengwar_fonts"), callbacks.get("export_tengwar_fonts"))
+    submenu.addAction(_("help.icons_save_all"),       callbacks.get("save_all_icons"))
+    submenu.addSeparator()
+
     submenu.addAction("© Bruno Aublet 2025-2026",         callbacks['show_license_dialog'])
 
     lic_menu = _make_menu(submenu)
