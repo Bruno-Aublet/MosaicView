@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.6.3"
+__version__ = "1.6.4"
 
 import sys
 import os
@@ -478,8 +478,16 @@ class MainWindow(QMainWindow):
             p2._update_splitter_constraints(p2._icon_toolbar._size_index)
             if saved_w2:
                 if p2._sidebar_visible:
+                    # Clamper à min/max courants : une largeur sauvegardée avec
+                    # une taille d'icône différente peut dépasser le maximum
+                    # actuel — sans ça, le splitter place son séparateur à
+                    # clamped_w2 alors que _left_panel refuse de dépasser
+                    # maximumWidth(), laissant un espace vide entre la colonne
+                    # et le séparateur.
+                    clamped_w2 = max(p2._left_panel.minimumWidth(),
+                                      min(saved_w2, p2._left_panel.maximumWidth()))
                     total2 = p2._splitter.width()
-                    p2._splitter.setSizes([saved_w2, max(0, total2 - saved_w2)])
+                    p2._splitter.setSizes([clamped_w2, max(0, total2 - clamped_w2)])
                 else:
                     # Colonne rabattue : ne pas toucher au splitter (widget
                     # caché), mais semer la largeur mémorisée pour que la

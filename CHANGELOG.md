@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.6.4] - 2026-08-01 - Split-view icon column width restore fix
+
+- Fixed a gap appearing between the icon column and the splitter handle in either panel (most visibly the second one, in split view) after restarting the application: the icon column's width, as saved from a previous session, could exceed the maximum width allowed for the current icon size, so the splitter's handle ended up positioned further right than the column itself was allowed to render, leaving an empty gap between them. The restored width is now clamped to the column's current minimum/maximum before being applied.
+
 ## [1.6.3] - 2026-07-21 - "Shameless plug" window for Distillat, About menu fixes
 
 - Added a "Shameless plug" entry to the About menu (menu bar and right-click menu), opening a new window presenting [Distillat](https://github.com/Bruno-Aublet/Distillat), a companion application by the same author that summarizes EPUB/PDF books, with character sheets and analysis, and a direct download link.

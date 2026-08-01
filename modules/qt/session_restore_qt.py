@@ -58,6 +58,14 @@ def restore_session(win):
             panel._update_splitter_constraints(panel._icon_toolbar._size_index)
             if saved_w:
                 if panel._sidebar_visible:
+                    # Clamper à min/max courants : une largeur sauvegardée avec
+                    # une taille d'icône différente peut dépasser le maximum
+                    # actuel — sans ça, le splitter place son séparateur à
+                    # saved_w alors que _left_panel refuse de dépasser
+                    # maximumWidth(), laissant un espace vide entre la colonne
+                    # et le séparateur.
+                    saved_w = max(panel._left_panel.minimumWidth(),
+                                  min(saved_w, panel._left_panel.maximumWidth()))
                     total = panel._splitter.width()
                     panel._splitter.setSizes([saved_w, max(0, total - saved_w)])
                 else:
