@@ -1224,6 +1224,7 @@
       "window_title": "Publicidad descarada",
       "title": "¿Conoces Distillat?",
       "body": "El tomo 8 de tu saga favorita acaba de salir, y te mueres de ganas de leerlo. Solo que el tomo 7 fue hace 4 años, y tus recuerdos son un poco confusos: ¿quiénes eran esos personajes secundarios? ¿Y qué pasaba al final?\n\nSi esta situación te suena, Distillat está hecho para ti. Simplemente suelta tu archivo EPUB o PDF en la zona prevista para ello: obtienes un resumen, fichas de personajes y un análisis de la obra, listos para consultar o exportar a PDF.\n\nLa aplicación se basa en el nivel gratuito de Gemini 3.5 Flash.",
+      "landing_intro": "Página de presentación:",
       "download_intro": "Puedes descargar la aplicación aquí:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Licencia UnRAR",
     "config_clear_clipboard": "Borrar archivos del portapapeles",
     "config_clipboard_note": "Excepcion: Los archivos temporales utilizados por el portapapeles de Windows (archivos clipboard_XXXXX) se conservan durante 12 horas despues de copiarlos, para que pueda pegarlos incluso despues de cerrar la aplicacion. Despues de 12 horas, se eliminan automaticamente.",
-    "config_log_note": "Las conversiones por lotes (PDF a CBZ y CBR a CBZ) crean un archivo de registro en caso de error. Estos archivos (Log_pdftocbz_.txt y Log_cbrtocbz_.txt) se conservan incluso despues de cerrar la aplicacion, para poder consultarlos posteriormente. Solo se eliminan mediante el boton \"Eliminar archivos temporales\" de arriba.",
+    "config_log_note": "Las conversiones por lotes (PDF a CBZ y CBR a CBZ) crean un archivo de registro cuando se produce un error. Estos archivos (Log_pdftocbz_.txt y Log_cbrtocbz_.txt) se conservan incluso después de cerrar la aplicación, para poder consultarlos posteriormente. Solo se eliminan con el botón «Borrar archivos temporales» de arriba. Un archivo Log_scan.txt registra de la misma manera cada digitalización (escáner utilizado, parámetros, resultado o error), útil para diagnosticar un problema con su escáner.",
     "config_clipboard_cleared": "Los archivos del portapapeles se han borrado correctamente.",
     "adjust_images": "Ajuste de imágenes",
     "adjust_images_content": "Esta función le permite retocar sus imágenes directamente en MosaicView. Puede modificar el brillo, el contraste, la nitidez, los niveles, la saturación, aplicar efectos (blanco y negro, sepia, inversión de colores), ajustar la calidad de compresión, eliminar colores, aplicar transparencia o convertir a distintas profundidades de color. Algunos ajustes disponen de un visor dedicado que permite ver el resultado en resolución completa antes de aplicar. Una miniatura muestra el resultado en tiempo real en la ventana principal.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} archivo(s) de audio guardado(s) en:",
     "config_single_instance_note": "MosaicView nunca se abre por duplicado. Si abre un archivo (por ejemplo, haciendo doble clic en el Explorador) mientras la aplicación ya está abierta, no aparece una segunda ventana: el archivo simplemente se abre en la ventana ya existente, que pasa automáticamente a primer plano. Para que esto funcione, MosaicView se registra ante Windows en cada inicio (ver más abajo).",
     "config_registry_note": "Para poder aparecer en el menú \"Abrir con\" del Explorador de Windows, MosaicView escribe algunos datos en el registro de Windows al iniciarse. Esta inscripción se limita a lo estrictamente necesario: indica a Windows dónde se encuentra MosaicView y qué tipos de archivo puede abrir. Se realiza únicamente en la parte del registro reservada a su cuenta de usuario, nunca en la parte del sistema, y no modifica ninguna asociación de archivos: elegir MosaicView como aplicación predeterminada para un tipo de archivo sigue siendo una decisión que solo usted puede tomar, mediante el propio menú \"Abrir con\" de Windows. Si elimina MosaicView de su disco, esta información simplemente queda inactiva y sin efecto.",
-    "config_dir_content": "MosaicView crea un archivo llamado .mosaicview_config.json. Este archivo contiene los ajustes de la aplicación (ventana, tema, idioma, modo de renumeración…), la lista de cómics y bases de datos abiertos recientemente, tus marcadores y tu clave API de ComicVine (cifrada). Se encuentra en la carpeta {config_dir} y se conserva de una sesión a otra: a diferencia de los archivos temporales, nunca se elimina automáticamente, ni por MosaicView ni por Windows.\nPuedes eliminarlo manualmente yendo a la carpeta {config_dir}, o haciendo clic en el botón de abajo. Se volverá a crear con los valores predeterminados la próxima vez que se inicie la aplicación."
+    "config_dir_content": "MosaicView crea un archivo llamado .mosaicview_config.json. Este archivo contiene los ajustes de la aplicación (ventana, tema, idioma, modo de renumeración…), la lista de cómics y bases de datos abiertos recientemente, tus marcadores y tu clave API de ComicVine (cifrada). Se encuentra en la carpeta {config_dir} y se conserva de una sesión a otra: a diferencia de los archivos temporales, nunca se elimina automáticamente, ni por MosaicView ni por Windows.\nPuedes eliminarlo manualmente yendo a la carpeta {config_dir}, o haciendo clic en el botón de abajo. Se volverá a crear con los valores predeterminados la próxima vez que se inicie la aplicación.",
+    "scan": "Escanear una imagen",
+    "scan_content": "• Haga clic en el botón «Escanear» (columna de iconos, menú Archivo, o clic derecho sobre el mosaico) para abrir la ventana de escaneo. MosaicView controla directamente su escáner (mediante WIA, el sistema de escaneo de Windows): seleccione el dispositivo, la resolución (DPI), el modo de color (color / escala de grises / blanco y negro) y luego haga clic en «Escanear». Un escáner debe estar conectado, encendido y con su controlador instalado en Windows para aparecer en la lista.\n• Solo se admite el escaneo de página completa, ya que la aplicación ya cuenta con todo lo necesario para retocar la imagen después del escaneo.\n• La imagen escaneada se añade automáticamente al mosaico, a continuación de las páginas ya presentes. Después puede recortarla, enderezarla, ajustar sus colores, etc., como cualquier otra página del mosaico\n• Esta función controla el escáner directamente, sin pasar por el software del fabricante ni mostrar su propia ventana de configuración.\n• Como un escáner físico solo puede ser controlado por una conexión a la vez, la digitalización solo es posible en un panel a la vez: si hay una ventana de digitalización abierta o un escaneo en curso en un panel, el botón «Escanear» permanece deshabilitado en el otro panel hasta que termine la operación."
   },
   "misc": {
     "file_word": "archivo",
@@ -1900,5 +1903,35 @@
     "error_not_found": "No se encontraron datos para este número en ComicVine.",
     "update_done_title": "Metadatos actualizados",
     "update_done_message": "Los metadatos se han actualizado correctamente."
+  },
+  "scan": {
+    "dialog_title": "Escanear una imagen",
+    "button": "Escanear",
+    "tooltip": "Escanear una imagen desde un escáner y añadirla al mosaico",
+    "device_label": "Escáner:",
+    "searching_devices": "Buscando escáneres...",
+    "no_devices_found": "No se detectó ningún escáner. Compruebe que está conectado, encendido y que su controlador está instalado.",
+    "resolution_label": "Resolución:",
+    "color_mode_label": "Modo de color:",
+    "color_mode_color": "Color",
+    "color_mode_grayscale": "Escala de grises",
+    "color_mode_bw": "Blanco y negro",
+    "scan_button": "Escanear",
+    "progress_scanning": "Escaneando...",
+    "error_wia_unavailable": "No se puede acceder al sistema de escaneo de Windows. Compruebe que hay un controlador de escáner instalado en este ordenador.",
+    "error_enumeration_failed": "Se produjo un error al buscar los escáneres disponibles.",
+    "error_device_unreachable": "El escáner seleccionado ya no está accesible. Compruebe que sigue conectado y encendido.",
+    "error_no_scan_item": "Este escáner no ofrece ninguna fuente de escaneo utilizable.",
+    "error_no_paper": "No se detectó papel. Coloque un documento en el escáner e inténtelo de nuevo.",
+    "error_transfer_failed": "El escáner no respondió correctamente y el escaneo falló. Inténtelo de nuevo o revise el escáner.",
+    "error_invalid_image": "La imagen recibida del escáner no es válida o está dañada.",
+    "send_log_link": "Enviar el registro de escaneo por correo",
+    "no_log_yet": "Aún no se ha realizado ninguna digitalización: no hay ningún registro que enviar.",
+    "mail_body_hint": "Pulse Ctrl+V, o haga clic derecho y luego Pegar, para enviar el registro de escaneo que se acaba de copiar.",
+    "checking_capabilities": "Comprobando las capacidades del escáner...",
+    "escl_fallback_hint": "Si el controlador del fabricante no responde, Windows a veces puede escanear directamente.",
+    "escl_fallback_button": "Probar con el controlador genérico de Windows",
+    "open_log": "Abrir el registro de escaneo",
+    "reveal_log": "Mostrar el registro de escaneo en el Explorador"
   }
 }

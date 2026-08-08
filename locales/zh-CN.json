@@ -1224,6 +1224,7 @@
       "window_title": "厚脸皮广告",
       "title": "你知道Distillat吗？",
       "body": "你最喜欢的系列的第8卷刚刚发行,你迫不及待想读它。只是第7卷是4年前的事了,你的记忆有点模糊:那些配角都是谁来着？结局又发生了什么？\n\n如果这种情况听起来很熟悉,那么Distillat就是为你而生的。只需将你的EPUB或PDF文件拖放到指定区域:你就能获得摘要、人物卡片和作品分析,随时可查阅或导出为PDF。\n\n该应用程序基于Gemini 3.5 Flash的免费套餐。",
+      "landing_intro": "展示页面:",
       "download_intro": "你可以在这里下载该应用程序："
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR 许可证",
     "config_clear_clipboard": "清除剪贴板文件",
     "config_clipboard_note": "例外：Windows剪贴板使用的临时文件（clipboard_XXXXX文件）在复制后会保留12小时，因此即使关闭应用程序后您也可以粘贴它们。12小时后，它们会被自动删除。",
-    "config_log_note": "批量转换（PDF转CBZ和CBR转CBZ）在出现错误时会创建日志文件。这些文件（Log_pdftocbz_.txt和Log_cbrtocbz_.txt）即使在关闭应用程序后也会保留，以便日后查看。它们仅通过上方的\"删除临时文件\"按钮删除。",
+    "config_log_note": "批量转换（PDF转CBZ和CBR转CBZ）在发生错误时会创建日志文件。这些文件（Log_pdftocbz_.txt和Log_cbrtocbz_.txt）即使在关闭应用程序后也会保留，以便日后查阅。它们只能通过上方的「清除临时文件」按钮删除。Log_scan.txt文件以同样的方式记录每次扫描（使用的扫描仪、参数、结果或错误）——有助于诊断扫描仪的问题。",
     "config_clipboard_cleared": "剪贴板文件已成功清除。",
     "adjust_images": "图像调整",
     "adjust_images_content": "此功能允许您直接在 MosaicView 中修饰图像。您可以调整亮度、对比度、锐度、色阶、饱和度，应用效果（黑白、棕褐色、颜色反转），调整压缩质量，删除颜色，应用透明度或转换为不同的颜色深度。某些设置具有专用查看器，可在应用前以全分辨率查看结果。主窗口中的缩略图预览实时显示结果。",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "已将{count}个音频文件保存至:",
     "config_single_instance_note": "MosaicView 绝不会重复启动。如果您在应用程序已经打开的情况下打开一个文件（例如在资源管理器中双击该文件），不会出现第二个窗口：该文件会直接在已经打开的窗口中打开，该窗口会自动切换到最前面。 为此，MosaicView 会在每次启动时向 Windows 注册自身（见下文）。",
     "config_registry_note": "为了能够显示在 Windows 资源管理器的“打开方式”菜单中，MosaicView 会在启动时向 Windows 注册表写入少量信息。这项登记仅限于严格必需的内容：它告诉 Windows MosaicView 的位置以及它能够打开哪些类型的文件。此操作仅在为您的用户帐户保留的注册表部分中进行，绝不涉及系统部分，也不会更改任何文件关联：将 MosaicView 选为某类文件的默认应用程序，依然是只有您自己才能做出的选择，途径是 Windows 自身的“打开方式”菜单。如果您从磁盘中删除 MosaicView，这些信息会自动失效，不再产生任何作用。",
-    "config_dir_content": "MosaicView 会创建一个名为 .mosaicview_config.json 的文件。该文件包含应用程序的设置（窗口、主题、语言、重新编号模式等）、最近打开的漫画和数据库列表、您的书签以及您的 ComicVine API 密钥（已加密）。它位于 {config_dir} 文件夹中，并在各次会话之间保留：与临时文件不同，MosaicView 和 Windows 都不会自动删除它。\n您可以通过前往 {config_dir} 文件夹，或点击下方的按钮来手动删除它。下次启动应用程序时，它将以默认值重新创建。"
+    "config_dir_content": "MosaicView 会创建一个名为 .mosaicview_config.json 的文件。该文件包含应用程序的设置（窗口、主题、语言、重新编号模式等）、最近打开的漫画和数据库列表、您的书签以及您的 ComicVine API 密钥（已加密）。它位于 {config_dir} 文件夹中，并在各次会话之间保留：与临时文件不同，MosaicView 和 Windows 都不会自动删除它。\n您可以通过前往 {config_dir} 文件夹，或点击下方的按钮来手动删除它。下次启动应用程序时，它将以默认值重新创建。",
+    "scan": "扫描图像",
+    "scan_content": "• 点击\"扫描\"按钮（图标栏、文件菜单，或在马赛克上右键点击）以打开扫描窗口。MosaicView 直接控制您的扫描仪（通过 WIA，即 Windows 的扫描系统）：选择设备、分辨率（DPI）、颜色模式（彩色 / 灰度 / 黑白），然后点击\"扫描\"。扫描仪必须已连接、已开机，并且其驱动程序已在 Windows 上安装，才能出现在列表中。\n• 仅支持整页扫描，因为应用程序已具备扫描后编辑图像所需的一切功能。\n• 扫描的图像会自动添加到马赛克中，位于已有页面之后。之后您可以像马赛克中的任何其他页面一样对其进行裁剪、校正、调整颜色等操作\n• 此功能直接控制扫描仪，无需通过制造商的软件，也不会显示其自带的配置窗口。\n• 由于物理扫描仪一次只能由一个连接控制, 因此一次只能在一个面板中进行扫描: 如果一个面板中打开了扫描窗口或正在进行扫描, 另一个面板中的“扫描”按钮将保持灰显, 直到该操作完成。"
   },
   "misc": {
     "file_word": "文件",
@@ -1900,5 +1903,35 @@
     "error_not_found": "在 ComicVine 上未找到该期号的数据。",
     "update_done_title": "元数据已更新",
     "update_done_message": "元数据已成功更新。"
+  },
+  "scan": {
+    "dialog_title": "扫描图像",
+    "button": "扫描",
+    "tooltip": "从扫描仪扫描图像并添加到马赛克中",
+    "device_label": "扫描仪:",
+    "searching_devices": "正在搜索扫描仪...",
+    "no_devices_found": "未检测到扫描仪。请检查扫描仪是否已连接、已开机，以及驱动程序是否已安装。",
+    "resolution_label": "分辨率:",
+    "color_mode_label": "颜色模式:",
+    "color_mode_color": "彩色",
+    "color_mode_grayscale": "灰度",
+    "color_mode_bw": "黑白",
+    "scan_button": "扫描",
+    "progress_scanning": "正在扫描...",
+    "error_wia_unavailable": "无法访问Windows扫描系统。请检查此计算机是否已安装扫描仪驱动程序。",
+    "error_enumeration_failed": "搜索可用扫描仪时发生错误。",
+    "error_device_unreachable": "所选扫描仪已无法访问。请检查其是否仍处于连接和开机状态。",
+    "error_no_scan_item": "此扫描仪未提供可用的扫描来源。",
+    "error_no_paper": "未检测到纸张。请将文档放入扫描仪后重试。",
+    "error_transfer_failed": "扫描仪未正确响应，扫描失败。请重试或检查扫描仪。",
+    "error_invalid_image": "从扫描仪接收到的图像无效或已损坏。",
+    "send_log_link": "通过邮件发送扫描日志",
+    "no_log_yet": "尚未进行任何扫描：目前没有可发送的日志。",
+    "mail_body_hint": "按Ctrl+V，或右键点击后选择粘贴，以发送刚刚复制的扫描日志。",
+    "checking_capabilities": "正在检查扫描仪功能...",
+    "escl_fallback_hint": "如果制造商的驱动程序没有响应, Windows 有时可以直接扫描。",
+    "escl_fallback_button": "尝试使用 Windows 通用驱动程序",
+    "open_log": "打开扫描日志",
+    "reveal_log": "在资源管理器中显示扫描日志"
   }
 }

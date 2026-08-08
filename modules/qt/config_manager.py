@@ -61,6 +61,7 @@ class ConfigManager:
         'recent_dbs':   [],  # Liste des bases de données récemment ouvertes (max 10)
         'use_icon_toolbar': False,  # TEMPORAIRE (dev) — barre d'icônes active
         'comicvine_api_key': '',    # Clé API ComicVine (chiffrée DPAPI, base64)
+        'scan_capabilities': {},    # {device_id: {"resolutions": [...], "color_modes": [...], "max_width", "max_height"}} — cache par scanner, voir skill scan
     }
 
     def __init__(self, config_dir=None):
@@ -691,6 +692,30 @@ class ConfigManager:
     def has_any_bookmark(self) -> bool:
         """Retourne True si au moins un marque-page existe."""
         return bool(self.get_bookmarks())
+
+    # ── Capacités de scanner (cache) ─────────────────────────────────────────
+
+    def get_all_scan_capabilities(self) -> dict:
+        """Retourne le dict {device_id: caps} de tous les scanners connus."""
+        return self.config.get('scan_capabilities', {})
+
+    def get_scan_capabilities(self, device_id: str) -> dict | None:
+        """Retourne les capacités mémorisées pour device_id (dict avec
+        "resolutions"/"color_modes"/"max_width"/"max_height"), ou None si ce
+        device n'a jamais été interrogé avec succès. Voir skill scan."""
+        return self.get_all_scan_capabilities().get(device_id)
+
+    def set_scan_capabilities(self, device_id: str, caps: dict, save: bool = True):
+        """Mémorise les capacités interrogées pour device_id — évite de
+        réinterroger le scanner à chaque ouverture de ScanDialog pour un
+        device déjà connu (voir skill scan)."""
+        all_caps = self.get_all_scan_capabilities().copy()
+        all_caps[device_id] = caps
+        return self.set('scan_capabilities', all_caps, save)
+
+    def clear_scan_capabilities(self, save: bool = True):
+        """Supprime le cache de capacités de tous les scanners."""
+        return self.set('scan_capabilities', {}, save)
 
 
 class Panel2Config:

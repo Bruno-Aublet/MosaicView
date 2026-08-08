@@ -88,6 +88,11 @@ def _populate_file_menu(menu: QMenu, callbacks: dict):
     menu.addSeparator()
 
     _add_action(menu, _("web.import_web_button"), callbacks.get("show_web_import_dialog"))
+    scan_available = callbacks.get("scan_available", lambda: True)()
+    _add_action(menu, _("scan.button"), callbacks.get("show_scan_dialog"), enabled=scan_available)
+    scan_log_exists = callbacks.get("scan_log_exists", lambda: False)()
+    _add_action(menu, _("scan.open_log"), callbacks.get("open_scan_log"), enabled=scan_log_exists)
+    _add_action(menu, _("scan.reveal_log"), callbacks.get("reveal_scan_log"), enabled=scan_log_exists)
     menu.addSeparator()
     _add_action(menu, _("nfo.menu_item"), callbacks.get("show_nfo_dialog"),
                 enabled=bool(st.images_data))

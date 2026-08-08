@@ -1224,6 +1224,7 @@
       "window_title": "Schaamteloze reclame",
       "title": "Kent u Distillat al?",
       "body": "Deel 8 van uw favoriete saga is net uitgekomen, en u kunt niet wachten om het te lezen. Alleen was deel 7 4 jaar geleden, en uw herinneringen zijn een beetje vaag: wie waren die bijfiguren ook alweer? En wat gebeurde er aan het einde?\n\nAls deze situatie u bekend voorkomt, is Distillat voor u gemaakt. Sleep gewoon uw EPUB- of PDF-bestand naar het daarvoor bestemde gebied: u krijgt een samenvatting, personagekaarten en een analyse van het werk, klaar om te bekijken of te exporteren naar PDF.\n\nDe applicatie maakt gebruik van het gratis niveau van Gemini 3.5 Flash.",
+      "landing_intro": "Presentatiepagina:",
       "download_intro": "U kunt de applicatie hier downloaden:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR-licentie",
     "config_clear_clipboard": "Klembordbestanden wissen",
     "config_clipboard_note": "Uitzondering: Tijdelijke bestanden die door het Windows-klembord worden gebruikt (clipboard_XXXXX-bestanden) worden 12 uur na het kopiëren bewaard, zodat u ze kunt plakken, zelfs nadat u de toepassing hebt gesloten. Na 12 uur worden ze automatisch verwijderd.",
-    "config_log_note": "De batchconversies (PDF naar CBZ en CBR naar CBZ) maken een logbestand aan bij fouten. Deze bestanden (Log_pdftocbz_.txt en Log_cbrtocbz_.txt) worden bewaard, zelfs na het sluiten van de toepassing, zodat ze later geraadpleegd kunnen worden. Ze worden alleen verwijderd via de knop \"Tijdelijke bestanden verwijderen\" hierboven.",
+    "config_log_note": "Batchconversies (PDF naar CBZ en CBR naar CBZ) maken bij een fout een logbestand aan. Deze bestanden (Log_pdftocbz_.txt en Log_cbrtocbz_.txt) blijven ook na het sluiten van de toepassing bewaard, zodat ze later geraadpleegd kunnen worden. Ze worden alleen verwijderd via de knop \"Tijdelijke bestanden wissen\" hierboven. Een bestand Log_scan.txt registreert op dezelfde manier elke scan (gebruikte scanner, instellingen, resultaat of fout) — nuttig om een probleem met uw scanner te diagnosticeren.",
     "config_clipboard_cleared": "Klembordbestanden zijn met succes gewist.",
     "adjust_images": "Afbeeldingsaanpassing",
     "adjust_images_content": "Met deze functie kunt u uw afbeeldingen rechtstreeks in MosaicView retoucheren. U kunt helderheid, contrast, scherpte, niveaus en verzadiging aanpassen, effecten toepassen (zwart-wit, sepia, kleurinversie), de compressiekwaliteit instellen, kleuren verwijderen, transparantie toepassen of naar verschillende kleurdiepten converteren. Sommige instellingen hebben een speciale viewer waarmee u het resultaat in volledige resolutie kunt bekijken vóór toepassing. Een miniatuurweergave toont het resultaat in realtime in het hoofdvenster.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} audiobestand(en) opgeslagen in:",
     "config_single_instance_note": "MosaicView wordt nooit dubbel geopend. Als u een bestand opent (bijvoorbeeld door erop te dubbelklikken in Verkenner) terwijl de toepassing al open is, verschijnt er geen tweede venster: het bestand wordt gewoon geopend in het reeds bestaande venster, dat automatisch naar de voorgrond komt. Om dit te laten werken, registreert MosaicView zich bij Windows bij elke start (zie hieronder).",
     "config_registry_note": "Om te kunnen verschijnen in het \"Openen met\"-menu van Verkenner schrijft MosaicView bij het opstarten enkele gegevens naar het Windows-register. Deze registratie blijft tot het strikt noodzakelijke beperkt: ze vertelt Windows waar MosaicView zich bevindt en welke bestandstypen het kan openen. Ze gebeurt uitsluitend in het deel van het register dat voor uw gebruikersaccount is gereserveerd, nooit in het systeemdeel, en wijzigt geen enkele bestandskoppeling: MosaicView als standaardtoepassing voor een bestandstype instellen blijft een keuze die alleen u kunt maken, via het eigen \"Openen met\"-menu van Windows. Als u MosaicView van uw schijf verwijdert, worden deze gegevens gewoon inactief en zonder effect.",
-    "config_dir_content": "MosaicView maakt een bestand aan met de naam .mosaicview_config.json. Dit bestand bevat de instellingen van de applicatie (venster, thema, taal, hernummeringsmodus…), de lijst met recent geopende strips en databases, uw bladwijzers en uw ComicVine API-sleutel (versleuteld). Het bevindt zich in de map {config_dir} en blijft bewaard van sessie tot sessie: in tegenstelling tot tijdelijke bestanden wordt het nooit automatisch verwijderd, noch door MosaicView, noch door Windows.\nU kunt het handmatig verwijderen door naar de map {config_dir} te gaan, of door op de knop hieronder te klikken. Het wordt opnieuw aangemaakt met de standaardwaarden bij de volgende start van de applicatie."
+    "config_dir_content": "MosaicView maakt een bestand aan met de naam .mosaicview_config.json. Dit bestand bevat de instellingen van de applicatie (venster, thema, taal, hernummeringsmodus…), de lijst met recent geopende strips en databases, uw bladwijzers en uw ComicVine API-sleutel (versleuteld). Het bevindt zich in de map {config_dir} en blijft bewaard van sessie tot sessie: in tegenstelling tot tijdelijke bestanden wordt het nooit automatisch verwijderd, noch door MosaicView, noch door Windows.\nU kunt het handmatig verwijderen door naar de map {config_dir} te gaan, of door op de knop hieronder te klikken. Het wordt opnieuw aangemaakt met de standaardwaarden bij de volgende start van de applicatie.",
+    "scan": "Een afbeelding scannen",
+    "scan_content": "• Klik op de knop 'Scannen' (pictogramkolom, menu Bestand of rechtsklik op de mozaïek) om het scanvenster te openen. MosaicView bestuurt uw scanner rechtstreeks (via WIA, het scansysteem van Windows): selecteer het apparaat, de resolutie (DPI), de kleurmodus (kleur / grijstinten / zwart-wit) en klik vervolgens op 'Scannen'. Een scanner moet aangesloten en ingeschakeld zijn en het stuurprogramma moet op Windows zijn geïnstalleerd om in de lijst te verschijnen.\n• Alleen het scannen van een volledige pagina wordt ondersteund, aangezien de toepassing al alles heeft wat nodig is om de afbeelding na het scannen te bewerken.\n• De gescande afbeelding wordt automatisch toegevoegd aan de mozaïek, na de reeds aanwezige pagina's. U kunt deze vervolgens bijsnijden, recht zetten, de kleuren aanpassen enz., zoals elke andere pagina van de mozaïek\n• Deze functie bestuurt de scanner rechtstreeks, zonder gebruik te maken van de software van de fabrikant of diens eigen configuratievenster weer te geven.\n• Omdat een fysieke scanner slechts door één verbinding tegelijk kan worden aangestuurd, is scannen maar in één paneel tegelijk mogelijk: als in een paneel een scanvenster open staat of een scan bezig is, blijft de knop “Scannen” in het andere paneel grijs totdat de bewerking is voltooid."
   },
   "misc": {
     "file_word": "bestand",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Geen gegevens gevonden voor dit nummer op ComicVine.",
     "update_done_title": "Metagegevens bijgewerkt",
     "update_done_message": "De metagegevens zijn succesvol bijgewerkt."
+  },
+  "scan": {
+    "dialog_title": "Een afbeelding scannen",
+    "button": "Scannen",
+    "tooltip": "Een afbeelding scannen vanaf een scanner en toevoegen aan de mozaïek",
+    "device_label": "Scanner:",
+    "searching_devices": "Scanners zoeken...",
+    "no_devices_found": "Er is geen scanner gedetecteerd. Controleer of deze is aangesloten, ingeschakeld en of het stuurprogramma is geïnstalleerd.",
+    "resolution_label": "Resolutie:",
+    "color_mode_label": "Kleurmodus:",
+    "color_mode_color": "Kleur",
+    "color_mode_grayscale": "Grijstinten",
+    "color_mode_bw": "Zwart-wit",
+    "scan_button": "Scannen",
+    "progress_scanning": "Bezig met scannen...",
+    "error_wia_unavailable": "Geen toegang tot het Windows-scansysteem. Controleer of er een scannerstuurprogramma op deze computer is geïnstalleerd.",
+    "error_enumeration_failed": "Er is een fout opgetreden bij het zoeken naar beschikbare scanners.",
+    "error_device_unreachable": "De geselecteerde scanner is niet meer bereikbaar. Controleer of deze nog is aangesloten en ingeschakeld.",
+    "error_no_scan_item": "Deze scanner biedt geen bruikbare scanbron.",
+    "error_no_paper": "Geen papier gedetecteerd. Plaats een document op de scanner en probeer het opnieuw.",
+    "error_transfer_failed": "De scanner reageerde niet correct en het scannen is mislukt. Probeer het opnieuw of controleer de scanner.",
+    "error_invalid_image": "De ontvangen afbeelding van de scanner is ongeldig of beschadigd.",
+    "send_log_link": "Scanlogboek per e-mail verzenden",
+    "no_log_yet": "Er is nog geen scan uitgevoerd: er is nog geen logboek om te verzenden.",
+    "mail_body_hint": "Druk op Ctrl+V, of klik met de rechtermuisknop en kies Plakken, om het zojuist gekopieerde scanlogboek te verzenden.",
+    "checking_capabilities": "Scannermogelijkheden controleren...",
+    "escl_fallback_hint": "Als het stuurprogramma van de fabrikant niet reageert, kan Windows soms rechtstreeks scannen.",
+    "escl_fallback_button": "Proberen met het generieke Windows-stuurprogramma",
+    "open_log": "Scanlogboek openen",
+    "reveal_log": "Scanlogboek weergeven in Verkenner"
   }
 }

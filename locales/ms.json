@@ -1224,6 +1224,7 @@
       "window_title": "Iklan tidak malu",
       "title": "Tahukah anda tentang Distillat?",
       "body": "Jilid 8 saga kegemaran anda baru sahaja terbit, dan anda tidak sabar untuk membacanya. Cuma jilid 7 telah terbit 4 tahun lalu, dan ingatan anda agak kabur: siapakah watak-watak sampingan itu tadi? Dan apa yang berlaku pada akhirnya?\n\nJika situasi ini kedengaran biasa bagi anda, Distillat dicipta untuk anda. Cuma jatuhkan fail EPUB atau PDF anda ke kawasan yang disediakan: anda akan mendapat ringkasan, kad watak dan analisis karya, sedia untuk dilihat atau dieksport ke PDF.\n\nAplikasi ini bergantung kepada peringkat percuma Gemini 3.5 Flash.",
+      "landing_intro": "Halaman pembentangan:",
       "download_intro": "Anda boleh memuat turun aplikasi di sini:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Lesen UnRAR",
     "config_clear_clipboard": "Kosongkan fail papan keratan",
     "config_clipboard_note": "Pengecualian: Fail sementara yang digunakan oleh papan keratan Windows (fail clipboard_XXXXX) disimpan selama 12 jam selepas menyalin, supaya anda boleh menampalnya walaupun selepas menutup aplikasi. Selepas 12 jam, fail tersebut akan dipadam secara automatik.",
-    "config_log_note": "Penukaran kelompok (PDF ke CBZ dan CBR ke CBZ) mencipta fail log apabila ralat berlaku. Fail-fail ini (Log_pdftocbz_.txt dan Log_cbrtocbz_.txt) disimpan walaupun selepas menutup aplikasi, supaya boleh disemak kemudian. Fail tersebut hanya dipadam melalui butang \"Padam fail sementara\" di atas.",
+    "config_log_note": "Penukaran kelompok (PDF kepada CBZ dan CBR kepada CBZ) mencipta fail log apabila ralat berlaku. Fail-fail ini (Log_pdftocbz_.txt dan Log_cbrtocbz_.txt) disimpan walaupun selepas aplikasi ditutup, supaya boleh disemak kemudian. Fail-fail ini hanya dialih keluar melalui butang \"Kosongkan fail sementara\" di atas. Fail Log_scan.txt merekod dengan cara yang sama setiap imbasan (pengimbas yang digunakan, tetapan, hasil atau ralat) — berguna untuk mendiagnosis masalah dengan pengimbas anda.",
     "config_clipboard_cleared": "Fail papan keratan telah berjaya dikosongkan.",
     "adjust_images": "Pelarasan imej",
     "adjust_images_content": "Fungsi ini membolehkan anda menyentuh semula imej anda terus dalam MosaicView. Anda boleh mengubah kecerahan, kontras, ketajaman, aras, ketepuan, menerapkan kesan (hitam putih, sepia, penyongsangan warna), melaraskan kualiti mampatan, mengalih warna, menerapkan ketelusan atau menukar kepada kedalaman warna yang berbeza. Sesetengah tetapan mempunyai penonton khusus yang membolehkan anda melihat hasilnya dalam resolusi penuh sebelum menggunakannya. Pratonton lakaran kecil menunjukkan hasilnya dalam masa nyata di tetingkap utama.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} fail audio disimpan di:",
     "config_single_instance_note": "MosaicView tidak pernah dilancarkan dua kali. Jika anda membuka fail (contohnya dengan mengklik dua kali padanya dalam Explorer) semasa aplikasi sudah dibuka, tiada tetingkap kedua akan muncul: fail itu hanya dibuka dalam tetingkap yang sudah wujud, yang akan dibawa ke hadapan secara automatik. Untuk ini berfungsi, MosaicView mendaftarkan dirinya dengan Windows pada setiap kali dilancarkan (lihat di bawah).",
     "config_registry_note": "Untuk dapat muncul dalam menu \"Buka dengan\" Windows Explorer, MosaicView menulis beberapa maklumat ke dalam registri Windows semasa dilancarkan. Pendaftaran ini terhad kepada perkara yang benar-benar diperlukan sahaja: ia memberitahu Windows di mana MosaicView berada dan jenis fail yang boleh dibukanya. Ini hanya dilakukan dalam bahagian registri yang dikhaskan untuk akaun pengguna anda, tidak pernah dalam bahagian sistem, dan tidak mengubah sebarang perkaitan fail: memilih MosaicView sebagai aplikasi lalai untuk sesuatu jenis fail kekal sebagai pilihan yang hanya anda boleh buat, melalui menu \"Buka dengan\" Windows sendiri. Jika anda mengeluarkan MosaicView daripada cakera anda, maklumat ini akan menjadi tidak aktif dan tiada kesan.",
-    "config_dir_content": "MosaicView mencipta fail bernama .mosaicview_config.json. Fail ini mengandungi tetapan aplikasi (tetingkap, tema, bahasa, mod penomboran semula…), senarai komik dan pangkalan data yang baru dibuka, penanda halaman anda, dan kunci API ComicVine anda (disulitkan). Ia terletak dalam folder {config_dir} dan disimpan dari satu sesi ke sesi seterusnya: tidak seperti fail sementara, ia tidak pernah dipadamkan secara automatik, sama ada oleh MosaicView atau Windows.\nAnda boleh memadamkannya secara manual dengan pergi ke folder {config_dir}, atau dengan mengklik butang di bawah. Ia akan dicipta semula dengan nilai lalai pada kali seterusnya aplikasi dimulakan."
+    "config_dir_content": "MosaicView mencipta fail bernama .mosaicview_config.json. Fail ini mengandungi tetapan aplikasi (tetingkap, tema, bahasa, mod penomboran semula…), senarai komik dan pangkalan data yang baru dibuka, penanda halaman anda, dan kunci API ComicVine anda (disulitkan). Ia terletak dalam folder {config_dir} dan disimpan dari satu sesi ke sesi seterusnya: tidak seperti fail sementara, ia tidak pernah dipadamkan secara automatik, sama ada oleh MosaicView atau Windows.\nAnda boleh memadamkannya secara manual dengan pergi ke folder {config_dir}, atau dengan mengklik butang di bawah. Ia akan dicipta semula dengan nilai lalai pada kali seterusnya aplikasi dimulakan.",
+    "scan": "Imbas satu imej",
+    "scan_content": "• Klik butang \"Imbas\" (lajur ikon, menu Fail, atau klik kanan pada mozek) untuk membuka tetingkap pengimbasan. MosaicView mengawal pengimbas anda secara langsung (melalui WIA, sistem pengimbasan Windows): pilih peranti, resolusi (DPI), mod warna (warna / skala kelabu / hitam putih), kemudian klik \"Imbas\". Pengimbas mesti disambungkan, dihidupkan, dan pemacunya dipasang pada Windows untuk muncul dalam senarai.\n• Hanya pengimbasan halaman penuh disokong, kerana aplikasi sudah mempunyai semua yang diperlukan untuk menyunting imej selepas pengimbasan.\n• Imej yang diimbas secara automatik ditambah ke mozek, selepas halaman yang sudah ada. Anda kemudian boleh memangkasnya, meluruskannya, melaraskan warnanya dll. seperti mana-mana halaman mozek yang lain\n• Ciri ini mengawal pengimbas secara langsung, tanpa melalui perisian pengeluar atau memaparkan tetingkap konfigurasinya sendiri.\n• Oleh kerana pengimbas fizikal hanya boleh dikawal oleh satu sambungan pada satu masa, pengimbasan hanya boleh dilakukan dalam satu panel pada satu masa: jika tetingkap pengimbasan dibuka atau pengimbasan sedang berjalan dalam satu panel, butang \"Imbas\" kekal kelabu dalam panel yang lain sehingga operasi selesai."
   },
   "misc": {
     "file_word": "fail",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Tiada data dijumpai untuk isu ini di ComicVine.",
     "update_done_title": "Metadata dikemas kini",
     "update_done_message": "Metadata berjaya dikemas kini."
+  },
+  "scan": {
+    "dialog_title": "Imbas satu imej",
+    "button": "Imbas",
+    "tooltip": "Imbas imej daripada pengimbas dan tambahkannya ke mozek",
+    "device_label": "Pengimbas:",
+    "searching_devices": "Mencari pengimbas...",
+    "no_devices_found": "Tiada pengimbas dikesan. Semak sama ada ia disambungkan, dihidupkan, dan pemacunya dipasang.",
+    "resolution_label": "Resolusi:",
+    "color_mode_label": "Mod warna:",
+    "color_mode_color": "Warna",
+    "color_mode_grayscale": "Skala kelabu",
+    "color_mode_bw": "Hitam putih",
+    "scan_button": "Imbas",
+    "progress_scanning": "Sedang mengimbas...",
+    "error_wia_unavailable": "Tidak dapat mengakses sistem pengimbasan Windows. Semak sama ada pemacu pengimbas dipasang pada komputer ini.",
+    "error_enumeration_failed": "Ralat berlaku semasa mencari pengimbas yang tersedia.",
+    "error_device_unreachable": "Pengimbas yang dipilih tidak lagi boleh diakses. Semak sama ada ia masih disambungkan dan dihidupkan.",
+    "error_no_scan_item": "Pengimbas ini tidak menawarkan sebarang sumber imbasan yang boleh digunakan.",
+    "error_no_paper": "Tiada kertas dikesan. Letakkan dokumen pada pengimbas dan cuba lagi.",
+    "error_transfer_failed": "Pengimbas tidak bertindak balas dengan betul dan imbasan gagal. Cuba lagi atau semak pengimbas.",
+    "error_invalid_image": "Imej yang diterima daripada pengimbas tidak sah atau rosak.",
+    "send_log_link": "Hantar log imbasan melalui e-mel",
+    "no_log_yet": "Belum ada imbasan dilakukan: belum ada log untuk dihantar.",
+    "mail_body_hint": "Tekan Ctrl+V, atau klik kanan kemudian pilih Tampal, untuk menghantar log imbasan yang baru sahaja disalin.",
+    "checking_capabilities": "Menyemak keupayaan pengimbas...",
+    "escl_fallback_hint": "Jika pemacu pengeluar tidak bertindak balas, Windows kadangkala boleh mengimbas secara terus.",
+    "escl_fallback_button": "Cuba dengan pemacu generik Windows",
+    "open_log": "Buka log imbasan",
+    "reveal_log": "Tunjukkan log imbasan dalam Explorer"
   }
 }

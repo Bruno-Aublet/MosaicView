@@ -1224,6 +1224,7 @@
       "window_title": "Publicidade descarada",
       "title": "Conhece o Distillat?",
       "body": "O tomo 8 da sua saga preferida acabou de sair, e você está morrendo de vontade de o ler. Só que o tomo 7 foi há 4 anos, e as suas memórias estão um pouco confusas: quem eram mesmo aquelas personagens secundárias? E o que acontecia no final?\n\nSe esta situação lhe soa familiar, o Distillat foi feito para si. Basta largar o seu ficheiro EPUB ou PDF na área prevista para o efeito: obtém um resumo, fichas de personagens e uma análise da obra, prontos a consultar ou a exportar em PDF.\n\nA aplicação baseia-se no nível gratuito do Gemini 3.5 Flash.",
+      "landing_intro": "Página de apresentação:",
       "download_intro": "Pode transferir a aplicação aqui:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Licença UnRAR",
     "config_clear_clipboard": "Limpar arquivos da área de transferência",
     "config_clipboard_note": "Exceção: Os arquivos temporários usados pela área de transferência do Windows (arquivos clipboard_XXXXX) são mantidos por 12 horas após a cópia, para que você possa colá-los mesmo depois de fechar o aplicativo. Após 12 horas, eles são excluídos automaticamente.",
-    "config_log_note": "As conversoes em lote (PDF para CBZ e CBR para CBZ) criam um arquivo de registro em caso de erro. Esses arquivos (Log_pdftocbz_.txt e Log_cbrtocbz_.txt) sao mantidos mesmo apos o fechamento do aplicativo, para que possam ser consultados posteriormente. Eles so sao excluidos pelo botao \"Excluir arquivos temporarios\" acima.",
+    "config_log_note": "As conversões em lote (PDF para CBZ e CBR para CBZ) criam um ficheiro de registo em caso de erro. Estes ficheiros (Log_pdftocbz_.txt e Log_cbrtocbz_.txt) são mantidos mesmo após fechar a aplicação, para poderem ser consultados posteriormente. Só são removidos através do botão \"Limpar ficheiros temporários\" acima. Um ficheiro Log_scan.txt regista da mesma forma cada digitalização (scanner utilizado, parâmetros, resultado ou erro) — útil para diagnosticar um problema com o seu scanner.",
     "config_clipboard_cleared": "Os arquivos da área de transferência foram limpos com sucesso.",
     "adjust_images": "Ajuste de imagens",
     "adjust_images_content": "Esta função permite-lhe retocar as suas imagens diretamente no MosaicView. Pode modificar o brilho, o contraste, a nitidez, os níveis, a saturação, aplicar efeitos (preto e branco, sépia, inversão de cores), ajustar a qualidade de compressão, remover cores, aplicar transparência ou converter para diferentes profundidades de cor. Algumas definições dispõem de um visualizador dedicado que permite ver o resultado em resolução completa antes de aplicar. Uma miniatura mostra o resultado em tempo real na janela principal.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} ficheiro(s) áudio guardado(s) em:",
     "config_single_instance_note": "O MosaicView nunca é aberto em duplicado. Se abrir um ficheiro (por duplo clique no Explorador, por exemplo) enquanto a aplicação já está aberta, não aparece uma segunda janela: o ficheiro simplesmente abre na janela já existente, que passa automaticamente para primeiro plano. Para que isto funcione, o MosaicView regista-se junto do Windows em cada arranque (ver abaixo).",
     "config_registry_note": "Para poder aparecer no menu \"Abrir com\" do Explorador do Windows, o MosaicView inscreve algumas informações no registo do Windows ao iniciar. Esta inscrição limita-se ao estritamente necessário: indica ao Windows onde se encontra o MosaicView e que tipos de ficheiro este consegue abrir. É feita apenas na parte do registo reservada à sua conta de utilizador, nunca na parte do sistema, e não altera nenhuma associação de ficheiros: escolher o MosaicView como aplicação predefinida para um tipo de ficheiro continua a ser uma escolha que só você pode fazer, através do próprio menu \"Abrir com\" do Windows. Se remover o MosaicView do seu disco, esta informação torna-se simplesmente inativa e sem efeito.",
-    "config_dir_content": "O MosaicView cria um ficheiro chamado .mosaicview_config.json. Este ficheiro contém as definições da aplicação (janela, tema, idioma, modo de renumeração…), a lista de banda desenhada e bases de dados abertas recentemente, os seus marcadores e a sua chave API do ComicVine (encriptada). Encontra-se na pasta {config_dir} e é mantido de sessão para sessão: ao contrário dos ficheiros temporários, nunca é apagado automaticamente, nem pelo MosaicView nem pelo Windows.\nPode apagá-lo manualmente acedendo à pasta {config_dir}, ou clicando no botão abaixo. Será recriado com os valores predefinidos no próximo arranque da aplicação."
+    "config_dir_content": "O MosaicView cria um ficheiro chamado .mosaicview_config.json. Este ficheiro contém as definições da aplicação (janela, tema, idioma, modo de renumeração…), a lista de banda desenhada e bases de dados abertas recentemente, os seus marcadores e a sua chave API do ComicVine (encriptada). Encontra-se na pasta {config_dir} e é mantido de sessão para sessão: ao contrário dos ficheiros temporários, nunca é apagado automaticamente, nem pelo MosaicView nem pelo Windows.\nPode apagá-lo manualmente acedendo à pasta {config_dir}, ou clicando no botão abaixo. Será recriado com os valores predefinidos no próximo arranque da aplicação.",
+    "scan": "Digitalizar uma imagem",
+    "scan_content": "• Clique no botão «Digitalizar» (coluna de ícones, menu Ficheiro, ou clique direito no mosaico) para abrir a janela de digitalização. O MosaicView controla diretamente o seu scanner (através do WIA, o sistema de digitalização do Windows): selecione o dispositivo, a resolução (DPI), o modo de cor (cor / tons de cinzento / preto e branco) e clique em «Digitalizar». Um scanner tem de estar ligado, ativo e com o respetivo controlador instalado no Windows para aparecer na lista.\n• Apenas é suportada a digitalização de página inteira, uma vez que a aplicação já dispõe de tudo o que é necessário para retocar a imagem após a digitalização.\n• A imagem digitalizada é automaticamente adicionada ao mosaico, a seguir às páginas já existentes. Pode depois recortá-la, endireitá-la, ajustar as suas cores, etc., como qualquer outra página do mosaico\n• Esta funcionalidade controla o scanner diretamente, sem passar pelo software do fabricante nem mostrar a sua própria janela de configuração.\n• Como um scanner físico só pode ser controlado por uma ligação de cada vez, a digitalização só é possível num painel de cada vez: se uma janela de digitalização estiver aberta ou uma digitalização estiver em curso num painel, o botão «Digitalizar» permanece desativado no outro painel até ao fim da operação."
   },
   "misc": {
     "file_word": "ficheiro",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Não foram encontrados dados para este número no ComicVine.",
     "update_done_title": "Metadados atualizados",
     "update_done_message": "Os metadados foram atualizados com sucesso."
+  },
+  "scan": {
+    "dialog_title": "Digitalizar uma imagem",
+    "button": "Digitalizar",
+    "tooltip": "Digitalizar uma imagem a partir de um scanner e adicioná-la ao mosaico",
+    "device_label": "Scanner:",
+    "searching_devices": "A procurar scanners...",
+    "no_devices_found": "Nenhum scanner foi detetado. Verifique se está ligado, ativo e se o respetivo controlador está instalado.",
+    "resolution_label": "Resolução:",
+    "color_mode_label": "Modo de cor:",
+    "color_mode_color": "Cor",
+    "color_mode_grayscale": "Tons de cinzento",
+    "color_mode_bw": "Preto e branco",
+    "scan_button": "Digitalizar",
+    "progress_scanning": "A digitalizar...",
+    "error_wia_unavailable": "Não é possível aceder ao sistema de digitalização do Windows. Verifique se há um controlador de scanner instalado neste computador.",
+    "error_enumeration_failed": "Ocorreu um erro ao procurar os scanners disponíveis.",
+    "error_device_unreachable": "O scanner selecionado já não está acessível. Verifique se continua ligado e ativo.",
+    "error_no_scan_item": "Este scanner não oferece nenhuma fonte de digitalização utilizável.",
+    "error_no_paper": "Nenhum papel detetado. Coloque um documento no scanner e tente novamente.",
+    "error_transfer_failed": "O scanner não respondeu corretamente e a digitalização falhou. Tente novamente ou verifique o scanner.",
+    "error_invalid_image": "A imagem recebida do scanner é inválida ou está danificada.",
+    "send_log_link": "Enviar o registo de digitalização por email",
+    "no_log_yet": "Ainda não foi efetuada nenhuma digitalização: ainda não há nenhum registo para enviar.",
+    "mail_body_hint": "Prima Ctrl+V, ou clique com o botão direito e depois Colar, para enviar o registo de digitalização que acabou de ser copiado.",
+    "checking_capabilities": "A verificar as capacidades do scanner...",
+    "escl_fallback_hint": "Se o driver do fabricante não responder, o Windows por vezes consegue digitalizar diretamente.",
+    "escl_fallback_button": "Tentar com o driver genérico do Windows",
+    "open_log": "Abrir o registo de digitalização",
+    "reveal_log": "Mostrar o registo de digitalização no Explorador"
   }
 }

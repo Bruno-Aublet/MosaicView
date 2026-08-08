@@ -1224,6 +1224,7 @@
       "window_title": "Begėdiška reklama",
       "title": "Ar žinote Distillat?",
       "body": "Ką tik išleistas jūsų mėgstamiausios sagos 8-asis tomas, ir jūs mirtinai norite jį perskaityti. Tik va 7-asis tomas buvo prieš 4 metus, ir jūsų prisiminimai šiek tiek neaiškūs: kas gi buvo tie antraeiliai veikėjai? Ir kas atsitiko pabaigoje?\n\nJei ši situacija jums pažįstama, Distillat sukurtas būtent jums. Tiesiog nutempkite savo EPUB ar PDF failą į tam skirtą sritį: gausite santrauką, veikėjų korteles ir kūrinio analizę, paruoštus peržiūrai ar eksportui į PDF.\n\nProgramėlė remiasi nemokamu Gemini 3.5 Flash lygiu.",
+      "landing_intro": "Pristatymo puslapis:",
       "download_intro": "Programėlę galite atsisiųsti čia:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR licencija",
     "config_clear_clipboard": "Išvalyti iškarpinės failus",
     "config_clipboard_note": "Išimtis: Laikini failai, kuriuos naudoja Windows iškarpinė (clipboard_XXXXX failai), saugomi 12 valandų po kopijavimo, kad galėtumėte juos įklijuoti net uždarius programą. Po 12 valandų jie automatiškai ištrinami.",
-    "config_log_note": "Paketinis konvertavimas (PDF i CBZ ir CBR i CBZ) sukuria registracijos faila ivykus klaidoms. Sie failai (Log_pdftocbz_.txt ir Log_cbrtocbz_.txt) issaugomi net uzdarius programa, kad juos butu galima peržiureti veliau. Jie istrinami tik auksciau esanciu mygtuku \"Istrinti laikinus failus\".",
+    "config_log_note": "Paketiniai konvertavimai (PDF į CBZ ir CBR į CBZ) klaidos atveju sukuria žurnalo failą. Šie failai (Log_pdftocbz_.txt ir Log_cbrtocbz_.txt) išsaugomi net uždarius programą, kad juos būtų galima peržiūrėti vėliau. Jie pašalinami tik naudojant aukščiau esantį mygtuką „Išvalyti laikinuosius failus“. Failas Log_scan.txt taip pat registruoja kiekvieną skenavimą (naudotas skaitytuvas, nustatymai, rezultatas arba klaida) — naudinga diagnozuojant skaitytuvo problemą.",
     "config_clipboard_cleared": "Iškarpinės failai sėkmingai išvalyti.",
     "adjust_images": "Vaizdų koregavimas",
     "adjust_images_content": "Ši funkcija leidžia retušuoti vaizdus tiesiogiai MosaicView. Galite keisti ryškumą, kontrastą, ryškumą, lygius, sodrumą, taikyti efektus (juodai baltas, sepija, spalvų inversija), reguliuoti glaudinimo kokybę, šalinti spalvas, taikyti skaidrumą arba konvertuoti į skirtingas spalvų gylius. Kai kuriems nustatymams yra skirtas peržiūros įrankis, leidžiantis pamatyti rezultatą visu skiriamumu prieš taikymą. Miniatiūros peržiūra rodo rezultatą realiuoju laiku pagrindiniame lange.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} garso failas(-ai) išsaugoti:",
     "config_single_instance_note": "MosaicView niekada nepaleidžiamas du kartus. Jei atidarote failą (pavyzdžiui, dukart spustelėję jį naršyklėje), kol programa jau atidaryta, antras langas nepasirodo: failas tiesiog atidaromas jau esančiame lange, kuris automatiškai perkeliamas į priekinį planą. Kad tai veiktų, MosaicView kaskart paleidus prisiregistruoja sistemoje Windows (žr. toliau).",
     "config_registry_note": "Kad galėtų atsirasti Windows naršyklės meniu \"Atverti su\", MosaicView paleidimo metu įrašo kelis duomenis į Windows registrą. Šis įrašas apsiriboja būtiniausiu minimumu: jis praneša Windows, kur yra MosaicView ir kokius failų tipus jis gali atverti. Tai atliekama tik jūsų naudotojo paskyrai skirtoje registro dalyje, niekada sisteminėje dalyje, ir nekeičia jokių failų sąsajų: MosaicView pasirinkimas numatytąja programa tam tikram failo tipui išlieka sprendimu, kurį galite priimti tik jūs, per patį Windows meniu \"Atverti su\". Jei pašalinate MosaicView iš disko, ši informacija tiesiog tampa neaktyvi ir neturinti jokio poveikio.",
-    "config_dir_content": "MosaicView sukuria failą pavadinimu .mosaicview_config.json. Šiame faile saugomi programos nustatymai (langas, tema, kalba, pernumeravimo režimas…), neseniai atidarytų komiksų ir duomenų bazių sąrašas, jūsų žymos ir jūsų ComicVine API raktas (šifruotas). Jis yra aplanke {config_dir} ir išsaugomas nuo sesijos iki sesijos: skirtingai nei laikinieji failai, jo niekada automatiškai neištrina nei MosaicView, nei Windows.\nGalite jį ištrinti rankiniu būdu, eidami į aplanką {config_dir}, arba spustelėdami toliau esantį mygtuką. Jis bus sukurtas iš naujo su numatytosiomis reikšmėmis kitą kartą paleidus programą."
+    "config_dir_content": "MosaicView sukuria failą pavadinimu .mosaicview_config.json. Šiame faile saugomi programos nustatymai (langas, tema, kalba, pernumeravimo režimas…), neseniai atidarytų komiksų ir duomenų bazių sąrašas, jūsų žymos ir jūsų ComicVine API raktas (šifruotas). Jis yra aplanke {config_dir} ir išsaugomas nuo sesijos iki sesijos: skirtingai nei laikinieji failai, jo niekada automatiškai neištrina nei MosaicView, nei Windows.\nGalite jį ištrinti rankiniu būdu, eidami į aplanką {config_dir}, arba spustelėdami toliau esantį mygtuką. Jis bus sukurtas iš naujo su numatytosiomis reikšmėmis kitą kartą paleidus programą.",
+    "scan": "Nuskaityti vaizdą",
+    "scan_content": "• Spustelėkite mygtuką „Nuskaityti“ (piktogramų stulpelis, meniu Failas arba dešiniuoju pelės mygtuku spustelėję mozaiką), kad atidarytumėte nuskaitymo langą. „MosaicView“ tiesiogiai valdo jūsų skaitytuvą (naudodama WIA, „Windows“ nuskaitymo sistemą): pasirinkite įrenginį, skiriamąją gebą (DPI), spalvų režimą (spalvota / pilkos spalvos atspalviai / nespalvota), tada spustelėkite „Nuskaityti“. Kad skaitytuvas atsirastų sąraše, jis turi būti prijungtas, įjungtas, o jo tvarkyklė – įdiegta sistemoje „Windows“.\n• Palaikomas tik viso puslapio nuskaitymas, nes programa jau turi viską, kas reikalinga vaizdo redagavimui po nuskaitymo.\n• Nuskaitytas vaizdas automatiškai pridedamas prie mozaikos, po jau esamų puslapių. Vėliau galite jį apkirpti, ištiesinti, koreguoti spalvas ir pan., kaip ir bet kurį kitą mozaikos puslapį\n• Ši funkcija tiesiogiai valdo skaitytuvą, nenaudodama gamintojo programinės įrangos ir nerodydama jo paties konfigūracijos lango.\n• Kadangi fizinį skenerį vienu metu gali valdyti tik vienas ryšys, skenuoti galima tik viename skydelyje vienu metu: jei viename skydelyje atidarytas skenavimo langas arba vyksta skenavimas, mygtukas „Skenuoti“ kitame skydelyje lieka pilkas, kol operacija bus baigta."
   },
   "misc": {
     "file_word": "failas",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Šiam numeriui ComicVine svetainėje duomenų nerasta.",
     "update_done_title": "Metaduomenys atnaujinti",
     "update_done_message": "Metaduomenys sėkmingai atnaujinti."
+  },
+  "scan": {
+    "dialog_title": "Nuskaityti vaizdą",
+    "button": "Nuskaityti",
+    "tooltip": "Nuskaitykite vaizdą iš skaitytuvo ir pridėkite jį prie mozaikos",
+    "device_label": "Skaitytuvas:",
+    "searching_devices": "Ieškoma skaitytuvų...",
+    "no_devices_found": "Skaitytuvas neaptiktas. Patikrinkite, ar jis prijungtas, įjungtas ir ar įdiegta jo tvarkyklė.",
+    "resolution_label": "Skiriamoji geba:",
+    "color_mode_label": "Spalvų režimas:",
+    "color_mode_color": "Spalvota",
+    "color_mode_grayscale": "Pilkos spalvos atspalviai",
+    "color_mode_bw": "Nespalvota",
+    "scan_button": "Nuskaityti",
+    "progress_scanning": "Vyksta nuskaitymas...",
+    "error_wia_unavailable": "Nepavyksta pasiekti „Windows“ nuskaitymo sistemos. Patikrinkite, ar šiame kompiuteryje įdiegta skaitytuvo tvarkyklė.",
+    "error_enumeration_failed": "Ieškant prieinamų skaitytuvų įvyko klaida.",
+    "error_device_unreachable": "Pasirinktas skaitytuvas nebepasiekiamas. Patikrinkite, ar jis vis dar prijungtas ir įjungtas.",
+    "error_no_scan_item": "Šis skaitytuvas nesiūlo jokio tinkamo nuskaitymo šaltinio.",
+    "error_no_paper": "Popierius neaptiktas. Įdėkite dokumentą į skaitytuvą ir bandykite dar kartą.",
+    "error_transfer_failed": "Skaitytuvas atsakė netinkamai ir nuskaitymas nepavyko. Bandykite dar kartą arba patikrinkite skaitytuvą.",
+    "error_invalid_image": "Iš skaitytuvo gautas vaizdas yra netinkamas arba pažeistas.",
+    "send_log_link": "Siųsti skenavimo žurnalą el. paštu",
+    "no_log_yet": "Skenavimas dar neatliktas: dar nėra žurnalo, kurį būtų galima siųsti.",
+    "mail_body_hint": "Paspauskite Ctrl+V arba spustelėkite dešiniuoju pelės mygtuku ir pasirinkite Įklijuoti, kad išsiųstumėte ką tik nukopijuotą skenavimo žurnalą.",
+    "checking_capabilities": "Tikrinamos skaitytuvo galimybės...",
+    "escl_fallback_hint": "Jei gamintojo tvarkyklė neatsako, „Windows“ kartais gali nuskaityti tiesiogiai.",
+    "escl_fallback_button": "Bandyti su bendrine „Windows“ tvarkykle",
+    "open_log": "Atverti nuskaitymo žurnalą",
+    "reveal_log": "Rodyti nuskaitymo žurnalą naršyklėje „Explorer“"
   }
 }

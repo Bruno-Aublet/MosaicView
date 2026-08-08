@@ -1224,6 +1224,7 @@
       "window_title": "厚臉皮廣告",
       "title": "你知道Distillat嗎？",
       "body": "你最喜歡的系列第8卷剛剛發行,你迫不及待想讀它。只是第7卷是4年前的事了,你的記憶有點模糊:那些配角都是誰來著？結局又發生了什麼？\n\n如果這種情況聽起來很熟悉,那麼Distillat就是為你而生的。只需將你的EPUB或PDF檔案拖放到指定區域:你就能獲得摘要、人物卡片和作品分析,隨時可查閱或匯出為PDF。\n\n該應用程式基於Gemini 3.5 Flash的免費方案。",
+      "landing_intro": "展示頁面：",
       "download_intro": "你可以在這裡下載該應用程式："
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR 授權",
     "config_clear_clipboard": "清除剪貼簿檔案",
     "config_clipboard_note": "例外：Windows剪貼簿使用的暫存檔案（clipboard_XXXXX檔案）在複製後會保留12小時，因此即使關閉應用程式後您也可以貼上它們。12小時後，它們會被自動刪除。",
-    "config_log_note": "批次轉換（PDF轉CBZ和CBR轉CBZ）在發生錯誤時會建立日誌檔案。這些檔案（Log_pdftocbz_.txt和Log_cbrtocbz_.txt）即使在關閉應用程式後也會保留，以便日後查看。它們僅透過上方的\"刪除暫存檔案\"按鈕刪除。",
+    "config_log_note": "批次轉換（PDF轉CBZ和CBR轉CBZ）在發生錯誤時會建立日誌檔案。這些檔案（Log_pdftocbz_.txt和Log_cbrtocbz_.txt）即使在關閉應用程式後也會保留，以便日後查閱。它們只能透過上方的「清除暫存檔案」按鈕刪除。Log_scan.txt檔案以同樣的方式記錄每次掃描（使用的掃描器、參數、結果或錯誤）——有助於診斷掃描器的問題。",
     "config_clipboard_cleared": "剪貼簿檔案已成功清除。",
     "adjust_images": "圖像調整",
     "adjust_images_content": "此功能允許您直接在 MosaicView 中修飾圖像。您可以調整亮度、對比度、銳度、色階、飽和度，套用效果（黑白、棕褐色、色彩反轉），調整壓縮品質，刪除色彩，套用透明度或轉換為不同的色彩深度。某些設定具有專用檢視器，可在套用前以全解析度查看結果。主視窗中的縮圖預覽即時顯示結果。",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "已將{count}個音訊檔案儲存至:",
     "config_single_instance_note": "MosaicView 絕不會重複啟動。如果您在應用程式已經開啟的情況下開啟一個檔案（例如在檔案總管中雙擊該檔案），不會出現第二個視窗：該檔案會直接在已經開啟的視窗中開啟，該視窗會自動切換到最前面。 為此，MosaicView 會在每次啟動時向 Windows 註冊自身（見下文）。",
     "config_registry_note": "為了能夠顯示在 Windows 檔案總管的「開啟方式」選單中，MosaicView 會在啟動時向 Windows 登錄檔寫入少量資訊。這項登記僅限於嚴格必要的內容：它告訴 Windows MosaicView 的位置以及它能夠開啟哪些類型的檔案。此操作僅在為您的使用者帳戶保留的登錄檔部分中進行，絕不涉及系統部分，也不會更改任何檔案關聯：將 MosaicView 選為某類檔案的預設應用程式，依然是只有您自己才能做出的選擇，途徑是 Windows 自身的「開啟方式」選單。如果您從磁碟中移除 MosaicView，這些資訊會自動失效，不再產生任何作用。",
-    "config_dir_content": "MosaicView 會建立一個名為 .mosaicview_config.json 的檔案。此檔案包含應用程式的設定（視窗、主題、語言、重新編號模式等）、最近開啟的漫畫和資料庫清單、您的書籤以及您的 ComicVine API 金鑰（已加密）。它位於 {config_dir} 資料夾中，並在各個工作階段之間保留：與暫存檔案不同，MosaicView 和 Windows 都不會自動刪除它。\n您可以透過前往 {config_dir} 資料夾，或按一下下方的按鈕來手動刪除它。下次啟動應用程式時，它將以預設值重新建立。"
+    "config_dir_content": "MosaicView 會建立一個名為 .mosaicview_config.json 的檔案。此檔案包含應用程式的設定（視窗、主題、語言、重新編號模式等）、最近開啟的漫畫和資料庫清單、您的書籤以及您的 ComicVine API 金鑰（已加密）。它位於 {config_dir} 資料夾中，並在各個工作階段之間保留：與暫存檔案不同，MosaicView 和 Windows 都不會自動刪除它。\n您可以透過前往 {config_dir} 資料夾，或按一下下方的按鈕來手動刪除它。下次啟動應用程式時，它將以預設值重新建立。",
+    "scan": "掃描圖像",
+    "scan_content": "• 點擊「掃描」按鈕（圖示欄、檔案選單，或在馬賽克上按右鍵）以開啟掃描視窗。MosaicView 直接控制您的掃描器（透過 WIA，即 Windows 的掃描系統）：選擇裝置、解析度（DPI）、色彩模式（彩色 / 灰階 / 黑白），然後點擊「掃描」。掃描器必須已連接、已開機，且其驅動程式已在 Windows 上安裝，才能出現在清單中。\n• 僅支援整頁掃描，因為應用程式已具備掃描後編輯圖像所需的一切功能。\n• 掃描的圖像會自動加入馬賽克中，位於已有頁面之後。之後您可以像馬賽克中的任何其他頁面一樣對其進行裁切、校正、調整色彩等操作\n• 此功能直接控制掃描器，無需透過製造商的軟體，也不會顯示其自帶的設定視窗。\n• 由於實體掃描器一次只能由一個連線控制, 因此一次只能在一個面板中進行掃描: 如果一個面板中開啟了掃描視窗或正在掃描, 另一個面板中的「掃描」按鈕會保持灰顯, 直到該操作完成。"
   },
   "misc": {
     "file_word": "檔案",
@@ -1900,5 +1903,35 @@
     "error_not_found": "在 ComicVine 上未找到該期號的資料。",
     "update_done_title": "中繼資料已更新",
     "update_done_message": "中繼資料已成功更新。"
+  },
+  "scan": {
+    "dialog_title": "掃描圖像",
+    "button": "掃描",
+    "tooltip": "從掃描器掃描圖像並加入馬賽克",
+    "device_label": "掃描器:",
+    "searching_devices": "正在搜尋掃描器...",
+    "no_devices_found": "未偵測到掃描器。請檢查掃描器是否已連接、已開機，以及驅動程式是否已安裝。",
+    "resolution_label": "解析度:",
+    "color_mode_label": "色彩模式:",
+    "color_mode_color": "彩色",
+    "color_mode_grayscale": "灰階",
+    "color_mode_bw": "黑白",
+    "scan_button": "掃描",
+    "progress_scanning": "掃描中...",
+    "error_wia_unavailable": "無法存取Windows掃描系統。請檢查此電腦是否已安裝掃描器驅動程式。",
+    "error_enumeration_failed": "搜尋可用掃描器時發生錯誤。",
+    "error_device_unreachable": "所選掃描器已無法存取。請檢查其是否仍處於連接與開機狀態。",
+    "error_no_scan_item": "此掃描器未提供可用的掃描來源。",
+    "error_no_paper": "未偵測到紙張。請將文件放入掃描器後再試一次。",
+    "error_transfer_failed": "掃描器未正確回應，掃描失敗。請再試一次或檢查掃描器。",
+    "error_invalid_image": "從掃描器接收到的圖像無效或已損毀。",
+    "send_log_link": "透過郵件傳送掃描日誌",
+    "no_log_yet": "尚未進行任何掃描：目前沒有可傳送的日誌。",
+    "mail_body_hint": "按Ctrl+V，或按右鍵後選擇貼上，以傳送剛剛複製的掃描日誌。",
+    "checking_capabilities": "正在檢查掃描器功能...",
+    "escl_fallback_hint": "如果製造商的驅動程式沒有回應, Windows 有時可以直接掃描。",
+    "escl_fallback_button": "嘗試使用 Windows 通用驅動程式",
+    "open_log": "開啟掃描記錄",
+    "reveal_log": "在檔案總管中顯示掃描記錄"
   }
 }

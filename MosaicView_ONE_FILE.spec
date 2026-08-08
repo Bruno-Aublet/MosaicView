@@ -111,11 +111,14 @@ hiddenimports = [
     'modules.qt.printing_qt',
     'modules.qt.donation_dialog_qt',
     'modules.qt.panel_widget',
+    'modules.qt.scan_wia',
+    'modules.qt.scan_dialog_qt',
 
     # Optionnels
     'fitz',
     'rarfile',
     'win32clipboard', 'win32print', 'win32ui', 'win32con', 'win32crypt',
+    'win32com', 'win32com.client', 'win32com.client.dynamic', 'pythoncom',
     'numpy', 'tifffile', 'olefile', 'defusedxml',
 ]
 

@@ -1104,6 +1104,7 @@
       "window_title": "Shameless plug",
       "title": "Have you heard of Distillat?",
       "body": "Book 8 of your favorite saga just came out, and you're dying to read it. Except book 7 was 4 years ago, and your memories are a bit fuzzy: who were those secondary characters again? And what happened at the end?\n\nIf this sounds familiar, Distillat is for you. Simply drop your EPUB or PDF file into the designated area: you get a summary, character sheets, and an analysis of the work, ready to view or export to PDF.\n\nThe application relies on Gemini 3.5 Flash's free tier.",
+      "landing_intro": "Presentation page:",
       "download_intro": "You can download the application here:"
     },
     "replace_corrupted_image": {
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR License",
     "config_clear_clipboard": "Clear clipboard files",
     "config_clipboard_note": "Exception: Temporary files used by the Windows clipboard (clipboard_XXXXX files) are kept for 12 hours after copying, so you can paste them even after closing the application. After 12 hours, they are automatically deleted.",
-    "config_log_note": "Batch conversions (PDF to CBZ and CBR to CBZ) create a log file when errors occur. These files (Log_pdftocbz_.txt and Log_cbrtocbz_.txt) are kept even after closing the application, so they can be reviewed later. They are only deleted by the \"Delete temporary files\" button above.",
+    "config_log_note": "Batch conversions (PDF to CBZ and CBR to CBZ) create a log file when an error occurs. These files (Log_pdftocbz_.txt and Log_cbrtocbz_.txt) are kept even after closing the application, so they can be reviewed later. They are only removed by the \"Clear temporary files\" button above. A Log_scan.txt file records every scan the same way (scanner used, settings, result or error) — useful for diagnosing a problem with your scanner.",
     "config_clipboard_cleared": "Clipboard files have been successfully cleared.",
     "adjust_images": "Image Adjustment",
     "adjust_images_content": "This function allows you to retouch your images directly in MosaicView. You can adjust brightness, contrast, sharpness, levels, saturation, apply effects (black and white, sepia, color inversion), adjust compression quality, remove colors, apply transparency or convert to different color depths. Some settings have a dedicated viewer allowing you to see the result in full resolution before applying. A thumbnail preview shows the result in real time in the main window.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} audio file(s) saved to:",
     "config_single_instance_note": "MosaicView never launches twice. If you open a file (by double-clicking it in Explorer, for example) while the application is already running, no second window appears: the file simply opens in the window that's already open, which is automatically brought to the front. For this to work, MosaicView registers itself with Windows on every launch (see below).",
     "config_registry_note": "To be able to appear in the Windows Explorer \"Open with\" menu, MosaicView writes a small amount of information to the Windows registry when it starts. This is kept to the strict minimum: it tells Windows where MosaicView is located and which file types it can open. It is only written to the part of the registry reserved for your user account, never the system-wide part, and it does not change any file association: choosing MosaicView as the default application for a file type remains a choice only you can make, through Windows' own \"Open with\" menu. If you remove MosaicView from your disk, this information simply becomes inactive and has no effect.",
-    "config_dir_content": "MosaicView creates a file named .mosaicview_config.json. This file contains the application's settings (window, theme, language, renumbering mode…), the list of recently opened comics and databases, your bookmarks, and your ComicVine API key (encrypted). It is located in the {config_dir} folder and is kept from one session to the next: unlike temporary files, it is never automatically deleted, neither by MosaicView nor by Windows.\nYou can delete it manually by going to the {config_dir} folder, or by clicking the button below. It will be recreated with default values the next time the application starts."
+    "config_dir_content": "MosaicView creates a file named .mosaicview_config.json. This file contains the application's settings (window, theme, language, renumbering mode…), the list of recently opened comics and databases, your bookmarks, and your ComicVine API key (encrypted). It is located in the {config_dir} folder and is kept from one session to the next: unlike temporary files, it is never automatically deleted, neither by MosaicView nor by Windows.\nYou can delete it manually by going to the {config_dir} folder, or by clicking the button below. It will be recreated with default values the next time the application starts.",
+    "scan": "Scan an image",
+    "scan_content": "• Click the “Scan” button (icon column, File menu, or right-click on the mosaic) to open the scanning window. MosaicView drives your scanner directly (via WIA, the Windows scanning system): select the device, the resolution (DPI), the color mode (color / grayscale / black and white), then click “Scan”. A scanner must be plugged in, powered on, and its driver installed on Windows to appear in the list.\n• Only full-page scanning is supported, as the application already has everything needed for image editing after the scan.\n• The scanned image is automatically added to the mosaic, after the pages already present. You can then crop it, straighten it, adjust its colors, etc. like any other page in the mosaic\n• This feature drives the scanner directly, without going through the manufacturer's software or displaying its own configuration window.\n• Since a physical scanner can only be driven by one connection at a time, scanning is only possible in one panel at a time: if a scan window is open or a scan is in progress in one panel, the \"Scan\" button stays grayed out in the other panel until the operation finishes."
   },
   "misc": {
     "file_word": "file",
@@ -1900,5 +1903,35 @@
     "error_not_found": "No data found for this issue on ComicVine.",
     "update_done_title": "Metadata updated",
     "update_done_message": "The metadata was updated successfully."
+  },
+  "scan": {
+    "dialog_title": "Scan an image",
+    "button": "Scan",
+    "tooltip": "Scan an image from a scanner and add it to the mosaic",
+    "device_label": "Scanner:",
+    "searching_devices": "Searching for scanners...",
+    "no_devices_found": "No scanner was detected. Check that it is plugged in, powered on, and that its driver is installed.",
+    "resolution_label": "Resolution:",
+    "color_mode_label": "Color mode:",
+    "color_mode_color": "Color",
+    "color_mode_grayscale": "Grayscale",
+    "color_mode_bw": "Black and white",
+    "scan_button": "Scan",
+    "progress_scanning": "Scanning...",
+    "error_wia_unavailable": "Unable to access the Windows scanning system. Check that a scanner driver is installed on this computer.",
+    "error_enumeration_failed": "An error occurred while searching for available scanners.",
+    "error_device_unreachable": "The selected scanner is no longer accessible. Check that it is still plugged in and powered on.",
+    "error_no_scan_item": "This scanner does not offer any usable scanning source.",
+    "error_no_paper": "No paper detected. Place a document on the scanner and try again.",
+    "error_transfer_failed": "The scanner did not respond correctly and the scan failed. Try again, or check the scanner.",
+    "error_invalid_image": "The image received from the scanner is invalid or damaged.",
+    "send_log_link": "Send the scan log by email",
+    "no_log_yet": "No scan has been performed yet: there is no log to send.",
+    "mail_body_hint": "Press Ctrl+V, or right-click then Paste, to send the scan log that was just copied.",
+    "checking_capabilities": "Checking scanner capabilities...",
+    "escl_fallback_hint": "If the manufacturer's driver does not respond, Windows can sometimes scan directly.",
+    "escl_fallback_button": "Try with the generic Windows driver",
+    "open_log": "Open scan log",
+    "reveal_log": "Show scan log in Explorer"
   }
 }

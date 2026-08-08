@@ -93,6 +93,8 @@ def cleanup_all_temp_files(keep_logs=False):
             for item in os.listdir(mosaicview_temp):
                 if keep_logs and (item.startswith("Log_pdftocbz_") or item.startswith("Log_cbrtocbz_") or item.startswith("Log_imgtocbz_")) and item.endswith(".txt"):
                     continue
+                if keep_logs and item == "Log_scan.txt":
+                    continue
 
                 item_path = os.path.join(mosaicview_temp, item)
 

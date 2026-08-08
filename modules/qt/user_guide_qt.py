@@ -625,6 +625,7 @@ class _HelpDialog(QDialog):
         self._SECTIONS = [
             ("",                          "help.intro"),
             ("help.open_files",           "help.open_files_content"),
+            ("help.scan",                 "help.scan_content"),
             ("help.mosaic",               "help.mosaic_content"),
             ("help.icon_toolbar",         "help.icon_toolbar_content"),
             ("help.manipulation",         "help.manipulation_content"),

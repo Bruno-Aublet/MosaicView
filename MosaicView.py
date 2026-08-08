@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.6.4"
+__version__ = "1.7.0"
 
 import sys
 import os
@@ -199,6 +199,12 @@ class MainWindow(QMainWindow):
         self._split_active = False
         self._active_panel = self._panel
 
+        # Numérisation en cours dans l'un des panneaux (fenêtre de réglages
+        # ouverte OU acquisition/repli ESCL en cours) — voir skill scan,
+        # section "Un seul scan à la fois entre les deux panneaux". None si
+        # aucun scan en cours, sinon le PanelWidget concerné.
+        self._scan_active_panel = None
+
         # ── Raccourcis clavier globaux ────────────────────────────────────────
         from PySide6.QtCore import Qt as _Qt
         QShortcut(QKeySequence("Ctrl+O"), self).activated.connect(lambda: self._active_panel._open_file_dialog())
@@ -298,6 +304,24 @@ class MainWindow(QMainWindow):
         if self._panel2 is not None:
             panels.append(self._panel2)
         return panels
+
+    def _set_scan_active(self, panel, active: bool) -> None:
+        """Pose/lève le flag "un scan est en cours" (fenêtre de réglages ouverte
+        OU acquisition/repli ESCL en cours) et grise/dégrise en conséquence
+        l'icône, l'entrée du menu Fichier et l'entrée du menu contextuel
+        "Numériser" dans les AUTRES panneaux — un seul scan à la fois entre les
+        deux panneaux, pour éviter deux connexions COM/WIA concurrentes sur le
+        même scanner physique (voir skill scan). Rien à faire sur le panneau
+        qui scanne lui-même : sa propre fenêtre de scan se ferme d'elle-même
+        avant/pendant l'acquisition, pas besoin de se griser soi-même."""
+        from modules.qt.menubar_qt import build_menubar
+        self._scan_active_panel = panel if active else None
+        for p in self._all_panels():
+            if p is panel:
+                continue
+            if p._icon_toolbar is not None:
+                p._icon_toolbar.refresh_states()
+            build_menubar(p, p._build_menubar_callbacks(), p._menubar)
 
     def _sync_recent_menus(self):
         """Reconstruit la menubar de tous les panneaux après un changement de fichiers récents."""

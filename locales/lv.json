@@ -1224,6 +1224,7 @@
       "window_title": "Nekaunīga reklāma",
       "title": "Vai pazīstat Distillat?",
       "body": "Jūsu iecienītākās sāgas 8. sējums tikko iznācis, un jūs nemaz nevarat sagaidīt to izlasīt. Tikai vai 7. sējums bija pirms 4 gadiem, un jūsu atmiņas ir mazliet miglainas: kas gan bija tie sekundārie varoņi? Un kas notika beigās?\n\nJa šī situācija jums šķiet pazīstama, Distillat ir radīts tieši jums. Vienkārši ievelciet savu EPUB vai PDF failu tam paredzētajā zonā: jūs iegūstat kopsavilkumu, varoņu kartītes un darba analīzi, gatavus apskatei vai eksportēšanai PDF formātā.\n\nLietotne balstās uz Gemini 3.5 Flash bezmaksas līmeni.",
+      "landing_intro": "Prezentācijas lapa:",
       "download_intro": "Lietotni varat lejupielādēt šeit:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR licence",
     "config_clear_clipboard": "Notīrīt starpliktuvē saglabātos failus",
     "config_clipboard_note": "Izņēmums: Pagaidu faili, ko izmanto Windows starliktuves (clipboard_XXXXX faili), tiek saglabāti 12 stundas pēc kopēšanas, lai jūs varētu tos ielīmēt pat pēc lietojumprogrammas aizvēršanas. Pēc 12 stundām tie tiek automātiski dzēsti.",
-    "config_log_note": "Pakešu konvertešana (PDF uz CBZ un CBR uz CBZ) izveido žurnala failu, ja rodas kludas. Šie faili (Log_pdftocbz_.txt un Log_cbrtocbz_.txt) tiek saglabati ari pec lietojumprogrammas aizvešanas, lai tos varetu parskaitit velak. Tie tiek dzesti tikai ar augstakesoša poga \"Dzest pagaidu failus\".",
+    "config_log_note": "Pakešu konversijas (PDF uz CBZ un CBR uz CBZ) kļūdas gadījumā izveido žurnāla failu. Šie faili (Log_pdftocbz_.txt un Log_cbrtocbz_.txt) tiek saglabāti arī pēc lietotnes aizvēršanas, lai tos varētu vēlāk apskatīt. Tie tiek noņemti tikai ar iepriekš redzamo pogu „Notīrīt pagaidu failus”. Fails Log_scan.txt tāpat reģistrē katru skenēšanu (izmantotais skeneris, iestatījumi, rezultāts vai kļūda) — noderīgi, lai diagnosticētu problēmu ar skeneri.",
     "config_clipboard_cleared": "Starpliktuvē saglabātie faili ir veiksmīgi notīrīti.",
     "adjust_images": "Attēlu pielāgošana",
     "adjust_images_content": "Šī funkcija ļauj retušēt attēlus tieši MosaicView. Varat mainīt spilgtumu, kontrastu, asumu, līmeņus, piesātinājumu, pielietot efektus (melnbalts, sepija, krāsu inversija), regulēt saspiešanas kvalitāti, noņemt krāsas, pielietot caurspīdīgumu vai konvertēt dažādos krāsu dziļumos. Dažiem iestatījumiem ir īpašs skatītājs, kas ļauj redzēt rezultātu pilnā izšķirtspējā pirms pielietošanas. Miniatūras priekšskatījums rāda rezultātu reāllaikā galvenajā logā.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} audio fails(-i) saglabāts(-i):",
     "config_single_instance_note": "MosaicView nekad neatveras divreiz. Ja atverat failu (piemēram, veicot dubultklikšķi pārlūkā), kamēr lietotne jau ir atvērta, otrs logs neparādās: fails vienkārši atveras jau esošajā logā, kas automātiski tiek pārcelts priekšplānā. Lai tas darbotos, MosaicView katru reizi palaižot reģistrējas pie Windows (skatiet zemāk).",
     "config_registry_note": "Lai varētu parādīties Windows pārlūka izvēlnē \"Atvērt ar\", MosaicView palaišanas brīdī ieraksta dažas ziņas Windows reģistrā. Šis ieraksts aprobežojas ar absolūtu minimumu: tas informē Windows, kur atrodas MosaicView un kādus failu tipus tas var atvērt. Tas tiek veikts tikai jūsu lietotāja kontam paredzētajā reģistra daļā, nekad sistēmas daļā, un nemaina nevienu failu saistību: MosaicView izvēle par noklusējuma lietotni kādam faila tipam joprojām ir izvēle, ko varat izdarīt tikai jūs pats, izmantojot pašu Windows izvēlni \"Atvērt ar\". Ja izdzēšat MosaicView no diska, šī informācija vienkārši kļūst neaktīva un bez ietekmes.",
-    "config_dir_content": "MosaicView izveido failu ar nosaukumu .mosaicview_config.json. Šajā failā ir saglabāti lietotnes iestatījumi (logs, tēma, valoda, pārnumurēšanas režīms…), nesen atvērto komiksu un datubāzu saraksts, jūsu grāmatzīmes un jūsu ComicVine API atslēga (šifrēta). Tas atrodas mapē {config_dir} un tiek saglabāts no vienas sesijas uz otru: atšķirībā no pagaidu failiem, to nekad automātiski nedzēš ne MosaicView, ne Windows.\nJūs varat to izdzēst manuāli, dodoties uz mapi {config_dir}, vai noklikšķinot uz pogas zemāk. Tas tiks atjaunots ar noklusējuma vērtībām nākamreiz palaižot lietotni."
+    "config_dir_content": "MosaicView izveido failu ar nosaukumu .mosaicview_config.json. Šajā failā ir saglabāti lietotnes iestatījumi (logs, tēma, valoda, pārnumurēšanas režīms…), nesen atvērto komiksu un datubāzu saraksts, jūsu grāmatzīmes un jūsu ComicVine API atslēga (šifrēta). Tas atrodas mapē {config_dir} un tiek saglabāts no vienas sesijas uz otru: atšķirībā no pagaidu failiem, to nekad automātiski nedzēš ne MosaicView, ne Windows.\nJūs varat to izdzēst manuāli, dodoties uz mapi {config_dir}, vai noklikšķinot uz pogas zemāk. Tas tiks atjaunots ar noklusējuma vērtībām nākamreiz palaižot lietotni.",
+    "scan": "Skenēt attēlu",
+    "scan_content": "• Noklikšķiniet uz pogas „Skenēt” (ikonu kolonna, izvēlne Fails vai peles labais klikšķis uz mozaīkas), lai atvērtu skenēšanas logu. MosaicView tieši vada jūsu skeneri (izmantojot WIA, Windows skenēšanas sistēmu): izvēlieties ierīci, izšķirtspēju (DPI), krāsu režīmu (krāsains / pelēktoņu / melnbalts) un pēc tam noklikšķiniet uz „Skenēt”. Lai skeneris parādītos sarakstā, tam jābūt pievienotam, ieslēgtam un tā draiverim jābūt instalētam Windows sistēmā.\n• Tiek atbalstīta tikai visas lapas skenēšana, jo lietotnei jau ir viss nepieciešamais attēla rediģēšanai pēc skenēšanas.\n• Skenētais attēls automātiski tiek pievienots mozaīkai, aiz jau esošajām lapām. Pēc tam to var apgriezt, iztaisnot, pielāgot krāsas utt., tāpat kā jebkuru citu mozaīkas lapu\n• Šī funkcija tieši vada skeneri, neizmantojot ražotāja programmatūru un neparādot tā paša konfigurācijas logu.\n• Tā kā fizisku skeneri vienlaikus var vadīt tikai viens savienojums, skenēšana ir iespējama tikai vienā panelī vienlaikus: ja vienā panelī ir atvērts skenēšanas logs vai notiek skenēšana, poga „Skenēt” otrā panelī paliek pelēka, līdz darbība tiek pabeigta."
   },
   "misc": {
     "file_word": "fails",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Šim numuram ComicVine vietnē dati nav atrasti.",
     "update_done_title": "Metadati atjaunināti",
     "update_done_message": "Metadati veiksmīgi atjaunināti."
+  },
+  "scan": {
+    "dialog_title": "Skenēt attēlu",
+    "button": "Skenēt",
+    "tooltip": "Skenējiet attēlu no skenera un pievienojiet to mozaīkai",
+    "device_label": "Skeneris:",
+    "searching_devices": "Notiek skeneru meklēšana...",
+    "no_devices_found": "Neviens skeneris netika atrasts. Pārbaudiet, vai tas ir pievienots, ieslēgts un vai ir instalēts tā draiveris.",
+    "resolution_label": "Izšķirtspēja:",
+    "color_mode_label": "Krāsu režīms:",
+    "color_mode_color": "Krāsains",
+    "color_mode_grayscale": "Pelēktoņu",
+    "color_mode_bw": "Melnbalts",
+    "scan_button": "Skenēt",
+    "progress_scanning": "Notiek skenēšana...",
+    "error_wia_unavailable": "Nevar piekļūt Windows skenēšanas sistēmai. Pārbaudiet, vai šajā datorā ir instalēts skenera draiveris.",
+    "error_enumeration_failed": "Meklējot pieejamos skenerus, radās kļūda.",
+    "error_device_unreachable": "Izvēlētais skeneris vairs nav pieejams. Pārbaudiet, vai tas joprojām ir pievienots un ieslēgts.",
+    "error_no_scan_item": "Šis skeneris nepiedāvā izmantojamu skenēšanas avotu.",
+    "error_no_paper": "Papīrs nav atrasts. Novietojiet dokumentu uz skenera un mēģiniet vēlreiz.",
+    "error_transfer_failed": "Skeneris pareizi neatbildēja, un skenēšana neizdevās. Mēģiniet vēlreiz vai pārbaudiet skeneri.",
+    "error_invalid_image": "No skenera saņemtais attēls ir nederīgs vai bojāts.",
+    "send_log_link": "Nosūtīt skenēšanas žurnālu pa e-pastu",
+    "no_log_yet": "Skenēšana vēl nav veikta: vēl nav žurnāla, ko nosūtīt.",
+    "mail_body_hint": "Nospiediet Ctrl+V vai noklikšķiniet ar peles labo pogu un pēc tam Ielīmēt, lai nosūtītu tikko nokopēto skenēšanas žurnālu.",
+    "checking_capabilities": "Tiek pārbaudītas skenera iespējas...",
+    "escl_fallback_hint": "Ja ražotāja draiveris nereaģē, Windows dažkārt var skenēt tieši.",
+    "escl_fallback_button": "Mēģināt ar vispārīgo Windows draiveri",
+    "open_log": "Atvērt skenēšanas žurnālu",
+    "reveal_log": "Rādīt skenēšanas žurnālu pārlūkā Explorer"
   }
 }

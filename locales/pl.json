@@ -1224,6 +1224,7 @@
       "window_title": "Bezwstydna reklama",
       "title": "Czy znasz Distillat?",
       "body": "Tom 8 twojej ulubionej sagi właśnie się ukazał, a ty umierasz z chęci, by go przeczytać. Tylko że tom 7 był 4 lata temu, a twoje wspomnienia są nieco mgliste: kim byli ci drugoplanowi bohaterowie? I co się stało na końcu?\n\nJeśli ta sytuacja brzmi znajomo, Distillat jest stworzony dla ciebie. Wystarczy upuścić plik EPUB lub PDF w przewidzianym do tego obszarze: otrzymujesz streszczenie, karty postaci i analizę dzieła, gotowe do przejrzenia lub eksportu do PDF.\n\nAplikacja opiera się na darmowym poziomie Gemini 3.5 Flash.",
+      "landing_intro": "Strona prezentacji:",
       "download_intro": "Aplikację możesz pobrać tutaj:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Licencja UnRAR",
     "config_clear_clipboard": "Wyczyść pliki schowka",
     "config_clipboard_note": "Wyjątek: Pliki tymczasowe używane przez schowek Windows (pliki clipboard_XXXXX) są przechowywane przez 12 godzin po skopiowaniu, dzięki czemu można je wkleić nawet po zamknięciu aplikacji. Po 12 godzinach są automatycznie usuwane.",
-    "config_log_note": "Konwersje wsadowe (PDF do CBZ i CBR do CBZ) tworza plik dziennika w przypadku bledow. Pliki te (Log_pdftocbz_.txt i Log_cbrtocbz_.txt) sa zachowywane nawet po zamknieciu aplikacji, aby mozna bylo je pozniej przejrzec. Sa usuwane wylacznie przyciskiem \"Usun pliki tymczasowe\" powyzej.",
+    "config_log_note": "Konwersje wsadowe (PDF na CBZ i CBR na CBZ) tworzą plik dziennika w przypadku błędu. Te pliki (Log_pdftocbz_.txt i Log_cbrtocbz_.txt) są zachowywane nawet po zamknięciu aplikacji, aby można je było później przejrzeć. Są usuwane wyłącznie za pomocą przycisku „Wyczyść pliki tymczasowe” powyżej. Plik Log_scan.txt rejestruje w ten sam sposób każde skanowanie (użyty skaner, ustawienia, wynik lub błąd) — przydatny do diagnozowania problemu ze skanerem.",
     "config_clipboard_cleared": "Pliki schowka zostały pomyślnie wyczyszczone.",
     "adjust_images": "Regulacja obrazów",
     "adjust_images_content": "Ta funkcja umożliwia retuszowanie obrazów bezpośrednio w MosaicView. Można modyfikować jasność, kontrast, ostrość, poziomy, nasycenie, stosować efekty (czarno-biały, sepia, inwersja kolorów), regulować jakość kompresji, usuwać kolory, stosować przezroczystość lub konwertować do różnych głębi kolorów. Niektóre ustawienia mają dedykowany podgląd umożliwiający wyświetlenie wyniku w pełnej rozdzielczości przed zastosowaniem. Miniaturka pokazuje wynik w czasie rzeczywistym w oknie głównym.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} plik(i) audio zapisane w:",
     "config_single_instance_note": "MosaicView nigdy nie uruchamia się podwójnie. Jeśli otworzysz plik (np. klikając go dwukrotnie w Eksploratorze) w czasie, gdy aplikacja jest już otwarta, nie pojawi się drugie okno: plik zostanie po prostu otwarty w już istniejącym oknie, które automatycznie przejdzie na pierwszy plan. Aby to działało, MosaicView rejestruje się w systemie Windows przy każdym uruchomieniu (patrz poniżej).",
     "config_registry_note": "Aby móc pojawić się w menu \"Otwórz za pomocą\" Eksploratora Windows, MosaicView zapisuje przy uruchomieniu kilka informacji w rejestrze Windows. Ten wpis ogranicza się do niezbędnego minimum: informuje Windows, gdzie znajduje się MosaicView i jakie typy plików potrafi otwierać. Jest zapisywany wyłącznie w części rejestru zarezerwowanej dla Twojego konta użytkownika, nigdy w części systemowej, i nie zmienia żadnych skojarzeń plików: wybór MosaicView jako domyślnej aplikacji dla danego typu pliku pozostaje decyzją, którą możesz podjąć wyłącznie Ty, poprzez menu \"Otwórz za pomocą\" samego Windows. Jeśli usuniesz MosaicView z dysku, te informacje po prostu staną się nieaktywne i nie będą miały żadnego znaczenia.",
-    "config_dir_content": "MosaicView tworzy plik o nazwie .mosaicview_config.json. Plik ten zawiera ustawienia aplikacji (okno, motyw, język, tryb ponownej numeracji…), listę ostatnio otwartych komiksów i baz danych, zakładki oraz klucz API ComicVine (zaszyfrowany). Znajduje się on w folderze {config_dir} i jest zachowywany między sesjami: w przeciwieństwie do plików tymczasowych nigdy nie jest automatycznie usuwany, ani przez MosaicView, ani przez Windows.\nMożesz go usunąć ręcznie, przechodząc do folderu {config_dir}, lub klikając przycisk poniżej. Zostanie on odtworzony z wartościami domyślnymi przy następnym uruchomieniu aplikacji."
+    "config_dir_content": "MosaicView tworzy plik o nazwie .mosaicview_config.json. Plik ten zawiera ustawienia aplikacji (okno, motyw, język, tryb ponownej numeracji…), listę ostatnio otwartych komiksów i baz danych, zakładki oraz klucz API ComicVine (zaszyfrowany). Znajduje się on w folderze {config_dir} i jest zachowywany między sesjami: w przeciwieństwie do plików tymczasowych nigdy nie jest automatycznie usuwany, ani przez MosaicView, ani przez Windows.\nMożesz go usunąć ręcznie, przechodząc do folderu {config_dir}, lub klikając przycisk poniżej. Zostanie on odtworzony z wartościami domyślnymi przy następnym uruchomieniu aplikacji.",
+    "scan": "Zeskanuj obraz",
+    "scan_content": "• Kliknij przycisk „Skanuj” (kolumna ikon, menu Plik lub prawy przycisk myszy na mozaice), aby otworzyć okno skanowania. MosaicView steruje skanerem bezpośrednio (za pomocą WIA, systemu skanowania Windows): wybierz urządzenie, rozdzielczość (DPI), tryb koloru (kolor / skala szarości / czarno-białe), a następnie kliknij „Skanuj”. Aby skaner pojawił się na liście, musi być podłączony, włączony, a jego sterownik zainstalowany w systemie Windows.\n• Obsługiwane jest tylko skanowanie całej strony, ponieważ aplikacja dysponuje już wszystkim, co potrzebne do retuszu obrazu po zeskanowaniu.\n• Zeskanowany obraz jest automatycznie dodawany do mozaiki, po już istniejących stronach. Możesz go następnie przyciąć, wyprostować, dostosować kolory itd., tak jak każdą inną stronę mozaiki\n• Ta funkcja steruje skanerem bezpośrednio, bez użycia oprogramowania producenta i bez wyświetlania jego własnego okna konfiguracji.\n• Ponieważ fizyczny skaner może być obsługiwany tylko przez jedno połączenie naraz, skanowanie jest możliwe tylko w jednym panelu naraz: jeśli w jednym panelu otwarte jest okno skanowania lub trwa skanowanie, przycisk „Skanuj” pozostaje wyszarzony w drugim panelu aż do zakończenia operacji."
   },
   "misc": {
     "file_word": "plik",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Nie znaleziono danych dla tego numeru na ComicVine.",
     "update_done_title": "Metadane zaktualizowane",
     "update_done_message": "Metadane zostały pomyślnie zaktualizowane."
+  },
+  "scan": {
+    "dialog_title": "Skanuj obraz",
+    "button": "Skanuj",
+    "tooltip": "Zeskanuj obraz ze skanera i dodaj go do mozaiki",
+    "device_label": "Skaner:",
+    "searching_devices": "Wyszukiwanie skanerów...",
+    "no_devices_found": "Nie wykryto żadnego skanera. Sprawdź, czy jest podłączony, włączony i czy jego sterownik jest zainstalowany.",
+    "resolution_label": "Rozdzielczość:",
+    "color_mode_label": "Tryb koloru:",
+    "color_mode_color": "Kolor",
+    "color_mode_grayscale": "Skala szarości",
+    "color_mode_bw": "Czarno-białe",
+    "scan_button": "Skanuj",
+    "progress_scanning": "Skanowanie w toku...",
+    "error_wia_unavailable": "Nie można uzyskać dostępu do systemu skanowania Windows. Sprawdź, czy na tym komputerze zainstalowano sterownik skanera.",
+    "error_enumeration_failed": "Wystąpił błąd podczas wyszukiwania dostępnych skanerów.",
+    "error_device_unreachable": "Wybrany skaner nie jest już dostępny. Sprawdź, czy nadal jest podłączony i włączony.",
+    "error_no_scan_item": "Ten skaner nie oferuje żadnego użytecznego źródła skanowania.",
+    "error_no_paper": "Nie wykryto papieru. Umieść dokument na skanerze i spróbuj ponownie.",
+    "error_transfer_failed": "Skaner nie odpowiedział poprawnie i skanowanie nie powiodło się. Spróbuj ponownie lub sprawdź skaner.",
+    "error_invalid_image": "Obraz otrzymany ze skanera jest nieprawidłowy lub uszkodzony.",
+    "send_log_link": "Wyślij dziennik skanowania e-mailem",
+    "no_log_yet": "Nie wykonano jeszcze żadnego skanowania: nie ma jeszcze dziennika do wysłania.",
+    "mail_body_hint": "Naciśnij Ctrl+V lub kliknij prawym przyciskiem myszy, a następnie Wklej, aby wysłać właśnie skopiowany dziennik skanowania.",
+    "checking_capabilities": "Sprawdzanie możliwości skanera...",
+    "escl_fallback_hint": "Jeśli sterownik producenta nie odpowiada, Windows może czasem skanować bezpośrednio.",
+    "escl_fallback_button": "Spróbuj z ogólnym sterownikiem Windows",
+    "open_log": "Otwórz dziennik skanowania",
+    "reveal_log": "Pokaż dziennik skanowania w Eksploratorze"
   }
 }

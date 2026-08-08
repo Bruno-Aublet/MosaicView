@@ -273,10 +273,11 @@ class ErrorDialog(QDialog):
         ErrorDialog(parent, lambda: _wt("key.title"), lambda: _("key.msg")).exec()
     """
 
-    def __init__(self, parent, title, message, play_sound=False):
+    def __init__(self, parent, title, message, play_sound=False, ok_text_key: str = "buttons.ok"):
         super().__init__(parent)
         self._title_fn   = title   if callable(title)   else (lambda t=title:   t)
         self._message_fn = message if callable(message) else (lambda m=message: m)
+        self._ok_text_key = ok_text_key
         self._center_parent = parent
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
@@ -344,7 +345,7 @@ class ErrorDialog(QDialog):
         )
         self.setWindowTitle(self._title_fn())
         self._lbl.setText(self._message_fn())
-        self._btn_ok.setText(_("buttons.ok"))
+        self._btn_ok.setText(_(self._ok_text_key))
 
     def _apply_font(self):
         try:

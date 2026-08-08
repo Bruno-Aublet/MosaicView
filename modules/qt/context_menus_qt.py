@@ -102,6 +102,16 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     menu.addSeparator()
 
     menu.addAction(_("web.import_web_button"), callbacks['show_web_import_dialog'])
+    if callbacks.get("scan_available", lambda: True)():
+        menu.addAction(_("scan.button"), callbacks['show_scan_dialog'])
+    else:
+        _add_disabled(menu, _("scan.button"))
+    if callbacks.get("scan_log_exists", lambda: False)():
+        menu.addAction(_("scan.open_log"), callbacks['open_scan_log'])
+        menu.addAction(_("scan.reveal_log"), callbacks['reveal_scan_log'])
+    else:
+        _add_disabled(menu, _("scan.open_log"))
+        _add_disabled(menu, _("scan.reveal_log"))
 
     menu.addSeparator()
 

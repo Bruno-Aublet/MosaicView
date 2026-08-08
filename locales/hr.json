@@ -1224,6 +1224,7 @@
       "window_title": "Bestidna reklama",
       "title": "Poznajete li Distillat?",
       "body": "Upravo je izašao 8. svezak vaše omiljene sage, a vi jedva čekate da ga pročitate. Samo što je 7. svezak izašao prije 4 godine, a vaša su sjećanja pomalo mutna: tko su uopće bili ti sporedni likovi? I što se dogodilo na kraju?\n\nAko vam ova situacija zvuči poznato, Distillat je stvoren za vas. Jednostavno ubacite svoju EPUB ili PDF datoteku u za to predviđeno područje: dobivate sažetak, kartice likova i analizu djela, spremne za pregled ili izvoz u PDF.\n\nAplikacija se oslanja na besplatnu razinu Gemini 3.5 Flash.",
+      "landing_intro": "Prezentacijska stranica:",
       "download_intro": "Aplikaciju možete preuzeti ovdje:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR licenca",
     "config_clear_clipboard": "Obriši datoteke meduspravilišta",
     "config_clipboard_note": "Iznimka: Privremene datoteke koje koristi Windows meduspravljište (datoteke clipboard_XXXXX) čuvaju se 12 sati nakon kopiranja, kako biste ih mogli zalijepiti čak i nakon zatvaranja aplikacije. Nakon 12 sati automatski se brišu.",
-    "config_log_note": "Skupne pretvorbe (PDF u CBZ i CBR u CBZ) stvaraju datoteku dnevnika u slucaju pogreske. Te datoteke (Log_pdftocbz_.txt i Log_cbrtocbz_.txt) se cuvaju cak i nakon zatvaranja aplikacije, kako bi se mogle pregledati kasnije. Brisu se iskljucivo gumbom \"Izbrisi privremene datoteke\" iznad.",
+    "config_log_note": "Skupne konverzije (PDF u CBZ i CBR u CBZ) izrađuju datoteku zapisnika u slučaju pogreške. Te datoteke (Log_pdftocbz_.txt i Log_cbrtocbz_.txt) čuvaju se i nakon zatvaranja aplikacije kako bi se kasnije mogle pregledati. Uklanjaju se samo pomoću gumba \"Izbriši privremene datoteke\" iznad. Datoteka Log_scan.txt na isti način bilježi svako skeniranje (korišteni skener, postavke, rezultat ili pogreška) — korisno za dijagnosticiranje problema sa skenerom.",
     "config_clipboard_cleared": "Datoteke meduspravilišta uspješno su obrisane.",
     "adjust_images": "Prilagodba slika",
     "adjust_images_content": "Ova funkcija omogućuje vam retuširanje slika izravno u MosaicView. Možete mijenjati svjetlinu, kontrast, oštrinu, razine, zasićenost, primjenjivati efekte (crno-bijelo, sepija, inverzija boja), podešavati kvalitetu kompresije, uklanjati boje, primjenjivati prozirnost ili pretvarati u različite dubine boja. Neke postavke imaju namjenski preglednik koji omogućuje pregled rezultata u punoj razlučivosti prije primjene. Sličica prikazuje rezultat u stvarnom vremenu u glavnom prozoru.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} zvučna datoteka spremljena u:",
     "config_single_instance_note": "MosaicView se nikada ne pokreće dvostruko. Ako otvorite datoteku (na primjer dvostrukim klikom u Exploreru) dok je aplikacija već otvorena, ne pojavljuje se drugi prozor: datoteka se jednostavno otvara u već postojećem prozoru, koji se automatski vraća u prvi plan. Kako bi to funkcioniralo, MosaicView se prijavljuje kod Windowsa pri svakom pokretanju (vidi dolje).",
     "config_registry_note": "Kako bi se mogao pojaviti u izborniku \"Otvori pomoću\" u Windows Exploreru, MosaicView pri pokretanju zapisuje nekoliko podataka u Windows registar. Taj se zapis ograničava na nužni minimum: obavještava Windows gdje se MosaicView nalazi i koje vrste datoteka može otvoriti. Provodi se isključivo u dijelu registra rezerviranom za vaš korisnički račun, nikada u sistemskom dijelu, i ne mijenja nikakve asocijacije datoteka: odabir MosaicViewa kao zadane aplikacije za određenu vrstu datoteke ostaje odluka koju možete donijeti samo vi, putem samog izbornika \"Otvori pomoću\" sustava Windows. Ako uklonite MosaicView s diska, ti podaci jednostavno postaju neaktivni i bez učinka.",
-    "config_dir_content": "MosaicView stvara datoteku pod nazivom .mosaicview_config.json. Ova datoteka sadrži postavke aplikacije (prozor, tema, jezik, način ponovnog numeriranja…), popis nedavno otvorenih stripova i baza podataka, vaše oznake i vaš ComicVine API ključ (šifrirano). Nalazi se u mapi {config_dir} i čuva se od sesije do sesije: za razliku od privremenih datoteka, nju nikada automatski ne briše ni MosaicView ni Windows.\nMožete je ručno izbrisati odlaskom u mapu {config_dir} ili klikom na gumb ispod. Bit će ponovno stvorena sa zadanim vrijednostima prilikom sljedećeg pokretanja aplikacije."
+    "config_dir_content": "MosaicView stvara datoteku pod nazivom .mosaicview_config.json. Ova datoteka sadrži postavke aplikacije (prozor, tema, jezik, način ponovnog numeriranja…), popis nedavno otvorenih stripova i baza podataka, vaše oznake i vaš ComicVine API ključ (šifrirano). Nalazi se u mapi {config_dir} i čuva se od sesije do sesije: za razliku od privremenih datoteka, nju nikada automatski ne briše ni MosaicView ni Windows.\nMožete je ručno izbrisati odlaskom u mapu {config_dir} ili klikom na gumb ispod. Bit će ponovno stvorena sa zadanim vrijednostima prilikom sljedećeg pokretanja aplikacije.",
+    "scan": "Skeniraj sliku",
+    "scan_content": "• Kliknite gumb „Skeniraj” (stupac ikona, izbornik Datoteka ili desni klik na mozaik) da biste otvorili prozor za skeniranje. MosaicView izravno upravlja vašim skenerom (putem WIA, sustava za skeniranje sustava Windows): odaberite uređaj, rezoluciju (DPI), način boje (boja / sivi tonovi / crno-bijelo), a zatim kliknite „Skeniraj”. Skener mora biti priključen, uključen i s instaliranim upravljačkim programom u sustavu Windows kako bi se pojavio na popisu.\n• Podržano je samo skeniranje cijele stranice jer aplikacija već ima sve potrebno za obradu slike nakon skeniranja.\n• Skenirana slika automatski se dodaje mozaiku, nakon već postojećih stranica. Zatim je možete izrezati, poravnati, prilagoditi boje itd. kao i bilo koju drugu stranicu mozaika\n• Ova značajka izravno upravlja skenerom, bez korištenja softvera proizvođača ili prikazivanja njegovog vlastitog prozora za konfiguraciju.\n• Budući da fizičkim skenerom u svakom trenutku može upravljati samo jedna veza, skeniranje je moguće samo u jednom panelu odjednom: ako je u jednom panelu otvoren prozor za skeniranje ili je skeniranje u tijeku, gumb „Skeniraj” ostaje siv u drugom panelu do završetka operacije."
   },
   "misc": {
     "file_word": "datoteka",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Za ovaj broj nisu pronađeni podaci na ComicVineu.",
     "update_done_title": "Metapodaci ažurirani",
     "update_done_message": "Metapodaci su uspješno ažurirani."
+  },
+  "scan": {
+    "dialog_title": "Skeniraj sliku",
+    "button": "Skeniraj",
+    "tooltip": "Skenirajte sliku sa skenera i dodajte je u mozaik",
+    "device_label": "Skener:",
+    "searching_devices": "Pretraživanje skenera...",
+    "no_devices_found": "Nije otkriven nijedan skener. Provjerite je li priključen, uključen i je li instaliran njegov upravljački program.",
+    "resolution_label": "Rezolucija:",
+    "color_mode_label": "Način boje:",
+    "color_mode_color": "Boja",
+    "color_mode_grayscale": "Sivi tonovi",
+    "color_mode_bw": "Crno-bijelo",
+    "scan_button": "Skeniraj",
+    "progress_scanning": "Skeniranje u tijeku...",
+    "error_wia_unavailable": "Nije moguć pristup Windows sustavu za skeniranje. Provjerite je li na ovom računalu instaliran upravljački program skenera.",
+    "error_enumeration_failed": "Došlo je do pogreške prilikom pretraživanja dostupnih skenera.",
+    "error_device_unreachable": "Odabrani skener više nije dostupan. Provjerite je li i dalje priključen i uključen.",
+    "error_no_scan_item": "Ovaj skener ne nudi upotrebljiv izvor skeniranja.",
+    "error_no_paper": "Nije otkriven papir. Stavite dokument na skener i pokušajte ponovno.",
+    "error_transfer_failed": "Skener nije ispravno odgovorio i skeniranje nije uspjelo. Pokušajte ponovno ili provjerite skener.",
+    "error_invalid_image": "Slika primljena sa skenera nije valjana ili je oštećena.",
+    "send_log_link": "Pošalji zapisnik skeniranja e-poštom",
+    "no_log_yet": "Skeniranje još nije izvršeno: još nema zapisnika za slanje.",
+    "mail_body_hint": "Pritisnite Ctrl+V ili kliknite desnom tipkom miša i zatim Zalijepi kako biste poslali upravo kopirani zapisnik skeniranja.",
+    "checking_capabilities": "Provjera mogućnosti skenera...",
+    "escl_fallback_hint": "Ako upravljački program proizvođača ne reagira, Windows ponekad može skenirati izravno.",
+    "escl_fallback_button": "Pokušaj s generičkim Windows upravljačkim programom",
+    "open_log": "Otvori zapisnik skeniranja",
+    "reveal_log": "Prikaži zapisnik skeniranja u Exploreru"
   }
 }

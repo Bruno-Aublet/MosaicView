@@ -1224,6 +1224,7 @@
       "window_title": "Nestydatá reklama",
       "title": "Znáte Distillat?",
       "body": "Osmý díl vaší oblíbené ságy právě vyšel a vy se nemůžete dočkat, až si ho přečtete. Jenže sedmý díl vyšel před 4 lety a vaše vzpomínky jsou trochu mlhavé: kdo to vlastně byli ti vedlejší postavy? A co se stalo na konci?\n\nPokud vám tato situace zní povědomě, Distillat je tu pro vás. Stačí přetáhnout váš soubor EPUB nebo PDF do vyhrazené oblasti: získáte shrnutí, karty postav a analýzu díla, připravené k prohlížení nebo exportu do PDF.\n\nAplikace využívá bezplatnou úroveň Gemini 3.5 Flash.",
+      "landing_intro": "Prezentační stránka:",
       "download_intro": "Aplikaci si můžete stáhnout zde:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Licence UnRAR",
     "config_clear_clipboard": "Vymazat soubory schranky",
     "config_clipboard_note": "Vyjimka: Docasne soubory pouzivane schrankou Windows (soubory clipboard_XXXXX) jsou uchovavany 12 hodin po kopirovani, takze je muzete vkladat i po zavreni aplikace. Po 12 hodinach jsou automaticky odstraneny.",
-    "config_log_note": "Davkove konverze (PDF do CBZ a CBR do CBZ) vytvori soubor protokolu v pripade chyby. Tyto soubory (Log_pdftocbz_.txt a Log_cbrtocbz_.txt) jsou zachovany i po zavreni aplikace, aby je bylo mozne pozdeji prostudovat. Jsou smazany pouze tlacitkem \"Smazat docasne soubory\" vyse.",
+    "config_log_note": "Dávkové konverze (PDF na CBZ a CBR na CBZ) vytvoří v případě chyby soubor protokolu. Tyto soubory (Log_pdftocbz_.txt a Log_cbrtocbz_.txt) zůstávají zachovány i po zavření aplikace, aby je bylo možné later prohlédnout. Odstraňují se pouze pomocí tlačítka „Vymazat dočasné soubory“ výše. Soubor Log_scan.txt zaznamenává stejným způsobem každé skenování (použitý skener, nastavení, výsledek nebo chyba) — užitečné pro diagnostiku problému se skenerem.",
     "config_clipboard_cleared": "Soubory schranky byly uspesne vymazany.",
     "adjust_images": "Úprava obrázků",
     "adjust_images_content": "Tato funkce umožňuje retušovat obrázky přímo v MosaicView. Můžete upravit jas, kontrast, ostrost, úrovně, sytost, použít efekty (černobílý, sépia, inverze barev), upravit kvalitu komprese, odstranit barvy, použít průhlednost nebo převést do různých barevných hloubek. Některá nastavení mají vyhrazený prohlížeč umožňující vidět výsledek v plném rozlišení před použitím. Miniaturní náhled zobrazuje výsledek v reálném čase v hlavním okně.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} zvukový(é) soubor(y) uloženy do:",
     "config_single_instance_note": "MosaicView se nikdy nespustí dvakrát. Pokud otevřete soubor (například poklepáním v Průzkumníku), zatímco je aplikace již spuštěná, druhé okno se neobjeví: soubor se jednoduše otevře v již existujícím okně, které se automaticky přepne do popředí. Aby to fungovalo, MosaicView se při každém spuštění registruje u Windows (viz níže).",
     "config_registry_note": "Aby se MosaicView mohl zobrazovat v nabídce \"Otevřít pomocí\" Průzkumníku Windows, zapisuje při spuštění několik informací do registru Windows. Tento zápis se omezuje na naprosté minimum: sděluje Windows, kde se MosaicView nachází a jaké typy souborů umí otevřít. Provádí se pouze v části registru vyhrazené vašemu uživatelskému účtu, nikdy v systémové části, a nemění žádné asociace souborů: volba MosaicView jako výchozí aplikace pro daný typ souboru zůstává rozhodnutím, které můžete učinit pouze vy, prostřednictvím vlastní nabídky \"Otevřít pomocí\" systému Windows. Pokud MosaicView odstraníte z disku, tyto informace se jednoduše stanou neaktivními a bez účinku.",
-    "config_dir_content": "MosaicView vytváří soubor s názvem .mosaicview_config.json. Tento soubor obsahuje nastavení aplikace (okno, motiv, jazyk, režim přečíslování…), seznam nedávno otevřených komiksů a databází, vaše záložky a váš API klíč ComicVine (šifrovaný). Nachází se ve složce {config_dir} a je zachován mezi jednotlivými relacemi: na rozdíl od dočasných souborů jej nikdy automaticky nemaže ani MosaicView, ani Windows.\nMůžete jej ručně smazat přechodem do složky {config_dir} nebo kliknutím na tlačítko níže. Při příštím spuštění aplikace bude znovu vytvořen s výchozími hodnotami."
+    "config_dir_content": "MosaicView vytváří soubor s názvem .mosaicview_config.json. Tento soubor obsahuje nastavení aplikace (okno, motiv, jazyk, režim přečíslování…), seznam nedávno otevřených komiksů a databází, vaše záložky a váš API klíč ComicVine (šifrovaný). Nachází se ve složce {config_dir} a je zachován mezi jednotlivými relacemi: na rozdíl od dočasných souborů jej nikdy automaticky nemaže ani MosaicView, ani Windows.\nMůžete jej ručně smazat přechodem do složky {config_dir} nebo kliknutím na tlačítko níže. Při příštím spuštění aplikace bude znovu vytvořen s výchozími hodnotami.",
+    "scan": "Naskenovat obrázek",
+    "scan_content": "• Klikněte na tlačítko „Skenovat“ (sloupec ikon, nabídka Soubor nebo pravé tlačítko myši na mozaice) a otevřete okno skenování. MosaicView řídí váš skener přímo (přes WIA, skenovací systém Windows): vyberte zařízení, rozlišení (DPI), barevný režim (barevně / odstíny šedi / černobíle) a poté klikněte na „Skenovat“. Aby se skener zobrazil v seznamu, musí být připojen, zapnutý a musí mít nainstalovaný ovladač ve Windows.\n• Podporováno je pouze skenování celé stránky, protože aplikace již disponuje vším potřebným pro úpravy obrázku po naskenování.\n• Naskenovaný obrázek se automaticky přidá do mozaiky, za již existující stránky. Poté jej můžete oříznout, narovnat, upravit barvy atd. jako kteroukoli jinou stránku mozaiky\n• Tato funkce řídí skener přímo, bez použití softwaru výrobce a bez zobrazení jeho vlastního konfiguračního okna.\n• Protože fyzický skener může být ovládán vždy jen jedním připojením, je skenování možné vždy jen v jednom panelu: pokud je v jednom panelu otevřeno okno skenování nebo probíhá skenování, zůstává tlačítko „Skenovat“ v druhém panelu šedé až do dokončení operace."
   },
   "misc": {
     "file_word": "soubor",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Pro toto číslo nebyla na ComicVine nalezena žádná data.",
     "update_done_title": "Metadata aktualizována",
     "update_done_message": "Metadata byla úspěšně aktualizována."
+  },
+  "scan": {
+    "dialog_title": "Naskenovat obrázek",
+    "button": "Skenovat",
+    "tooltip": "Naskenovat obrázek ze skeneru a přidat jej do mozaiky",
+    "device_label": "Skener:",
+    "searching_devices": "Hledání skenerů...",
+    "no_devices_found": "Nebyl detekován žádný skener. Zkontrolujte, zda je připojen, zapnutý a zda je nainstalován jeho ovladač.",
+    "resolution_label": "Rozlišení:",
+    "color_mode_label": "Barevný režim:",
+    "color_mode_color": "Barevně",
+    "color_mode_grayscale": "Odstíny šedi",
+    "color_mode_bw": "Černobíle",
+    "scan_button": "Skenovat",
+    "progress_scanning": "Probíhá skenování...",
+    "error_wia_unavailable": "Nelze získat přístup ke skenovacímu systému Windows. Zkontrolujte, zda je v tomto počítači nainstalován ovladač skeneru.",
+    "error_enumeration_failed": "Při vyhledávání dostupných skenerů došlo k chybě.",
+    "error_device_unreachable": "Vybraný skener již není dostupný. Zkontrolujte, zda je stále připojen a zapnutý.",
+    "error_no_scan_item": "Tento skener nenabízí žádný použitelný zdroj skenování.",
+    "error_no_paper": "Nebyl zjištěn žádný papír. Vložte dokument do skeneru a zkuste to znovu.",
+    "error_transfer_failed": "Skener neodpověděl správně a skenování se nezdařilo. Zkuste to znovu nebo zkontrolujte skener.",
+    "error_invalid_image": "Obrázek přijatý ze skeneru je neplatný nebo poškozený.",
+    "send_log_link": "Odeslat protokol skenování e-mailem",
+    "no_log_yet": "Zatím nebylo provedeno žádné skenování: zatím není žádný protokol k odeslání.",
+    "mail_body_hint": "Stiskněte Ctrl+V nebo klikněte pravým tlačítkem a poté Vložit, chcete-li odeslat právě zkopírovaný protokol skenování.",
+    "checking_capabilities": "Kontrola možností skeneru...",
+    "escl_fallback_hint": "Pokud ovladač výrobce neodpovídá, Windows může někdy skenovat přímo.",
+    "escl_fallback_button": "Zkusit s obecným ovladačem Windows",
+    "open_log": "Otevřít protokol skenování",
+    "reveal_log": "Zobrazit protokol skenování v Průzkumníkovi"
   }
 }

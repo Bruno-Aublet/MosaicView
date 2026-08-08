@@ -1224,6 +1224,7 @@
       "window_title": "tuQ'eghjaj",
       "title": "Distillat DalaD'a'?",
       "body": "tetlh parmaqqay lIj chorghDIch DIchmoHlu'pu' 'ej DaSaHchu'meH DalaDbe'law'. 'ach parmaqqay lIj SochDIch loS DIS ret DIchmoHlu'pu', 'ej qawHaqlIj tlhoy pIm: nuvpu' Do' 'Iv nuchugh? pa' Qav vaS nuq qaSpu'?\n\nDaSov 'e' DaSovchugh, Distillat qaboghmoH. EPUB pagh PDF De'wI'lIj yIchagh tIH'eghmoHtaHbogh; ja'ghach mach, nuvpu' De' je vum lup, laDlu'meH pagh PDF Do' HeSlu'meH.\n\nGemini 3.5 Flash lo'be'bogh nap lo'lu'.",
+      "landing_intro": "naDev De'wI'vam Dalegh:",
       "download_intro": "naDev vum lo'lu'meH chellu'lu'laH:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR Segh",
     "config_clear_clipboard": "ghItlhmeH De tetlh teq",
     "config_clipboard_note": "pagh: Windows ghItlhmeH De tetlh lo'lu'bogh poH De (clipboard_XXXXX De tetlh) 12 rep chen, vaj De tetlh lInglaH DaneH'a' programa' Dachavta'DI' je. 12 rep pagh, De tetlh teq.",
-    "config_log_note": "ngoq choH (PDF choH CBZ CBR choH CBZ je) Qagh lutu'chugh Qagh ghItlh chen. ghItlh De (Log_pdftocbz_.txt Log_cbrtocbz_.txt je) taH qaSpa' programa' SoQmoH. \"poH De teq\" laDmeH patlh neH luteqlu'.",
+    "config_log_note": "chuqmeH leghwI'mey (PDF CBZ, CBR CBZ) Qagh chempu'DI' De'wI' chenmoHlu'. De'wI'mey (Log_pdftocbz_.txt Log_cbrtocbz_.txt) pol taHtaHvIS software SoQ. \"vaghwI' De'mey pol\" chab lo'lu'DI' neH mevlu'. Log_scan.txt De'wI' rur Hoch leghwI' (leghwI' lo'lu'bogh, chenmoHghach, DIchDaq pagh Qagh) chenmoHlu' — QaQ leghwI' Qagh nej.",
     "config_clipboard_cleared": "ghItlhmeH De tetlh teqlu'ta'.",
     "adjust_images": "Ngogh chut",
     "adjust_images_content": "Hoch mIllogh tI'laH DIvI' MosaicView. wov, Hurgh, tIn, gham, poch, SuqlaH (qIj-chIS, sepya, rIt je), compression tI', rIt teq, wovmoH, pagh rar yIqaD. vaj Viewer tu'lu' 'ej rar qabDaq legh. mIlloghHom leghlaH reH.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} De' chelmoH ghItlhlu':",
     "config_single_instance_note": "MosaicView chIch cha'logh Sujqu'be'. De'wI' poSmoHlu' (mIw: rap ghIt cha'logh Windows Explorer Daq) MosaicView poS DaHjaj, chu' pa' cha'DIch pIn'a' pIH'eghbe'. De'wI' pIn'a' ghajbogh poSlu'pu'DI' poSlu', 'ej pIn'a' vetlh maghmeH chuqDaq quv chu'. Vaj vangmeH, MosaicView Windows-Daq ngo'Daq lanlu' Hoch poH poS (bIng yIlegh).",
     "config_registry_note": "Windows Explorer QaghmeH \"lo' Daq X\" tetlh Daq legh 'e' chavmeH, MosaicView-vaD De' puS Windows ngo'Daq lanlu' poS DaHjaj. De' lanlu'bogh vaj mach law' poQlu'bogh mach puS: MosaicView nuq Daq 'oH je nuq De'wI' Segh poSlaH 'e' Windows-vaD ja'. lo'wI' po' rurbogh ngo'Daq neH lanlu', pa'be' rurbogh ngo'Daq, 'ej lo'wI' De'wI' bIng lanlaHbe' vay': De'wI' Segh nIvbogh vaj MosaicView pIH'eghmeH ratlhtaH lo'wI' neH ghaj wIvghach, Windows \"lo' Daq X\" tetlh lo'meH neH. yav ngo' Daq MosaicView teqDI', De' vam pIH'eghbe' 'ej pagh chaw' ngeH.",
-    "config_dir_content": "MosaicView De'wI' pong .mosaicview_config.json chenmoH. De'wI' vam MosaicView-vaD choH tetlh (val Sor, Segh, Hol, De'wI' chu' mIw), 'ej ngo'Daq poSmoHlu'pu'bogh cha'nob tetlh je De'wI' Segh tetlh, ghItlh lughomHa'lIj, 'ej ComicVine API buqlIj (buq'eghmoHta') ghaj. {config_dir} chabal tetlh Daq tu'lu', 'ej poH nap Hoch rar: De'mey qawHaq rurbe', pagh MosaicView pagh Windows De'wI' vam teqbe' rurbogh.\n{config_dir} chabal tetlh Daq DaghoSDI', pagh bIng tab yIchu'DI', De'wI' vam SIbI' teqlaH SoH. MosaicView chotlh DaHjaj De'wI' vam chu' choHmey ghajbogh chenmoHta'lu'."
+    "config_dir_content": "MosaicView De'wI' pong .mosaicview_config.json chenmoH. De'wI' vam MosaicView-vaD choH tetlh (val Sor, Segh, Hol, De'wI' chu' mIw), 'ej ngo'Daq poSmoHlu'pu'bogh cha'nob tetlh je De'wI' Segh tetlh, ghItlh lughomHa'lIj, 'ej ComicVine API buqlIj (buq'eghmoHta') ghaj. {config_dir} chabal tetlh Daq tu'lu', 'ej poH nap Hoch rar: De'mey qawHaq rurbe', pagh MosaicView pagh Windows De'wI' vam teqbe' rurbogh.\n{config_dir} chabal tetlh Daq DaghoSDI', pagh bIng tab yIchu'DI', De'wI' vam SIbI' teqlaH SoH. MosaicView chotlh DaHjaj De'wI' vam chu' choHmey ghajbogh chenmoHta'lu'.",
+    "scan": "nab leghwI'vam",
+    "scan_content": "• leghwI' nab yIghoS 'e' yImuv (yer nagh, Qab qet, pagh nIH mosaic Daq) 'ej leghwI'vam yIlo'. MosaicView leghwI'lIj yIghoStaH (Windows leghwI' De'wI' chenmoHwI', WIA po'wI'): leghwI' yIwIv, chenmoHghach (DPI) yIwIv, rItlh Segh (rItlh / Hurgh chIS / qIj chIS) yIwIv, 'ej \"legh\" yIchu'. leghwI' tetlhDaq chaw'meH, lan'a', HIvje'lu''a', De'wI' chenmoHwI' pol'a'.\n• nab HoS neH leghlu'. lo'laHghach Hoch cha'nob choHmeH leghlu'pu'DIchvo' MosaicView-Daq tu'lu'.\n• leghlu'pu'bogh cha'nob mosaic Daq lanlu' rar, ghItlhmey tu'lu'bogh mevDaq. chaq DaneHchugh, cha'nob yIchIl, yIto', rItlh yIchoH latlh ghItlh rur.\n• lo'laHghachvam leghwI' yIghoStaH, De'wI' chenmoHwI' latlh Segh lo'be' 'ej lan'a' Sovbe' chaw' pol'wI'.\n• wa' ghom neH leghwI' yIghoStaH laH, vaj wa' ghom neH leghlu'. ghom wa'DIch leghwI' nab poSchugh pagh leghlu'chugh, ghom cha'DIch \"legh\" chu' Qatlho'be' nab mevpu'DIchvo'."
   },
   "misc": {
     "file_word": "De'",
@@ -1900,5 +1903,35 @@
     "error_not_found": "buy'vam De' ComicVine bogh Sutlhbe'lu'.",
     "update_done_title": "De' chu'ta'",
     "update_done_message": "De' chu'ta' malja'."
+  },
+  "scan": {
+    "dialog_title": "nab leghwI'vam",
+    "button": "legh",
+    "tooltip": "leghwI'vo' nab yIghoS 'ej mosaic Daq yIlan",
+    "device_label": "leghwI':",
+    "searching_devices": "leghwI'mey nej...",
+    "no_devices_found": "leghwI' tu'lu'be'. yIlegh 'oH lan'a', 'oH HIvje'lu''a', De'wI' chenmoHwI' pol'a'.",
+    "resolution_label": "chenmoHghach:",
+    "color_mode_label": "rItlh Segh:",
+    "color_mode_color": "rItlh",
+    "color_mode_grayscale": "Hurgh chIS",
+    "color_mode_bw": "qIj chIS neH",
+    "scan_button": "legh",
+    "progress_scanning": "leghtaH...",
+    "error_wia_unavailable": "Windows leghwI' De'wI' chenmoHwI' vIlo'laHbe'. yIlegh De'wI' chenmoHwI' leghwI' pol'a' rur computer.",
+    "error_enumeration_failed": "leghwI'mey nejtaHvIS Qagh chempu'.",
+    "error_device_unreachable": "leghwI' wIvpu'bogh vIlo'laHbe'. yIlegh 'oH lan'a', 'oH HIvje'lu''a'.",
+    "error_no_scan_item": "leghwI'vam lo'laHbogh mIw tu'lu'be'.",
+    "error_no_paper": "ngoQ tu'lu'be'. leghwI' Daq ngoQ yIlan 'ej yIqet.",
+    "error_transfer_failed": "leghwI' pIm'a' jangbe' 'ej leghghach chIl. yIqet joq leghwI' yIlegh.",
+    "error_invalid_image": "leghwI'vo' cha'nob Suqlu'pu'bogh QaQbe' pagh ghIQ.",
+    "send_log_link": "leghwI' De'wI' yIngeH QIn lo'",
+    "no_log_yet": "leghlu'pu'be' wa'DIch. De'wI' ngeHlu'meH pagh tu'lu'.",
+    "mail_body_hint": "Ctrl+V yIchu', pagh nIH bIQeq 'ej lan yIwIv, leghwI' De'wI' Dalanpu'bogh ngeHmeH.",
+    "checking_capabilities": "leghwI' lo'laHghach QaghtaH...",
+    "escl_fallback_hint": "leghwI' chenmoHwI' De'wI' chenmoHwI' jangbe'chugh, Windows leghlaH pIm'a' rap.",
+    "escl_fallback_button": "Windows Hoch De'wI' chenmoHwI' yIlo'",
+    "open_log": "leghwI' De'wI' yIpoSmoH",
+    "reveal_log": "Explorer-Daq leghwI' De'wI' yIcha'"
   }
 }

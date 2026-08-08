@@ -1224,6 +1224,7 @@
       "window_title": "Nesramen oglas",
       "title": "Poznate Distillat?",
       "body": "Osmi zvezek vaše najljubše sage je pravkar izšel, in komaj čakate, da ga preberete. Le da je bil sedmi zvezek pred 4 leti, in vaši spomini so nekoliko zamegljeni: kdo so bili že ti stranski liki? In kaj se je zgodilo na koncu?\n\nČe vam ta situacija zveni znano, je Distillat ustvarjen za vas. Preprosto povlecite svojo datoteko EPUB ali PDF na za to predvideno območje: dobite povzetek, kartice likov in analizo dela, pripravljene za ogled ali izvoz v PDF.\n\nAplikacija temelji na brezplačni ravni Gemini 3.5 Flash.",
+      "landing_intro": "Predstavitvena stran:",
       "download_intro": "Aplikacijo lahko prenesete tukaj:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Licenca UnRAR",
     "config_clear_clipboard": "Počisti datoteke odložišča",
     "config_clipboard_note": "Izjema: Začasne datoteke, ki jih uporablja odložišče Windows (datoteke clipboard_XXXXX), se hranijo 12 ur po kopiranju, tako da jih lahko prilepite tudi po zaprtju aplikacije. Po 12 urah se samodejno izbrišejo.",
-    "config_log_note": "Paketne pretvorbe (PDF v CBZ in CBR v CBZ) ustvarijo dnevniško datoteko ob napakah. Te datoteke (Log_pdftocbz_.txt in Log_cbrtocbz_.txt) se ohranijo tudi po zaprtju aplikacije, da jih je mogoce pregledati pozneje. Izbrišejo se samo z gumbom \"Izbriši začasne datoteke\" zgoraj.",
+    "config_log_note": "Paketne pretvorbe (PDF v CBZ in CBR v CBZ) v primeru napake ustvarijo dnevniško datoteko. Te datoteke (Log_pdftocbz_.txt in Log_cbrtocbz_.txt) so ohranjene tudi po zaprtju aplikacije, da jih je mogoče pozneje pregledati. Odstranijo se samo z gumbom »Izbriši začasne datoteke« zgoraj. Datoteka Log_scan.txt na enak način beleži vsako skeniranje (uporabljeni skener, nastavitve, rezultat ali napaka) — uporabno za diagnosticiranje težave s skenerjem.",
     "config_clipboard_cleared": "Datoteke odložišča so bile uspešno počiščene.",
     "adjust_images": "Prilagajanje slik",
     "adjust_images_content": "Ta funkcija vam omogoča retuširanje slik neposredno v MosaicView. Lahko spremenite svetlost, kontrast, ostrino, ravni, nasičenost, uporabite učinke (črno-belo, sepija, inverzija barv), prilagodite kakovost stiskanja, odstranite barve, uporabite prosojnost ali pretvorite v različne barvne globine. Nekatere nastavitve imajo namenski pregledovalnik, ki vam omogoča ogled rezultata v polni ločljivosti pred uporabo. Predogled sličice prikazuje rezultat v realnem času v glavnem oknu.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} zvočna datoteka shranjena v:",
     "config_single_instance_note": "MosaicView se nikoli ne zažene dvakrat. Če odprete datoteko (na primer z dvoklikom v Raziskovalcu), medtem ko je aplikacija že odprta, se drugo okno ne prikaže: datoteka se preprosto odpre v že obstoječem oknu, ki samodejno preide v ospredje. Da bi to delovalo, se MosaicView ob vsakem zagonu prijavi pri sistemu Windows (glejte spodaj).",
     "config_registry_note": "Da bi se lahko prikazal v meniju \"Odpri z\" v Raziskovalcu Windows, MosaicView ob zagonu zapiše nekaj podatkov v register Windows. Ta zapis je omejen na nujno potrebno: sistemu Windows sporoči, kje se MosaicView nahaja in katere vrste datotek zna odpreti. Izveden je izključno v delu registra, rezerviranem za vaš uporabniški račun, nikoli v sistemskem delu, in ne spreminja nobenih povezav datotek: izbira MosaicView kot privzete aplikacije za določeno vrsto datoteke ostaja odločitev, ki jo lahko sprejmete samo vi, prek lastnega menija \"Odpri z\" sistema Windows. Če MosaicView odstranite z diska, ti podatki preprosto postanejo neaktivni in brez učinka.",
-    "config_dir_content": "MosaicView ustvari datoteko z imenom .mosaicview_config.json. Ta datoteka vsebuje nastavitve aplikacije (okno, tema, jezik, način ponovnega oštevilčenja…), seznam nedavno odprtih stripov in podatkovnih zbirk, vaše zaznamke in vaš ComicVine API ključ (šifriran). Nahaja se v mapi {config_dir} in se ohrani od seje do seje: za razliko od začasnih datotek je nikoli samodejno ne izbriše ne MosaicView ne Windows.\nRočno jo lahko izbrišete tako, da odprete mapo {config_dir} ali kliknete spodnji gumb. Ob naslednjem zagonu aplikacije bo znova ustvarjena s privzetimi vrednostmi."
+    "config_dir_content": "MosaicView ustvari datoteko z imenom .mosaicview_config.json. Ta datoteka vsebuje nastavitve aplikacije (okno, tema, jezik, način ponovnega oštevilčenja…), seznam nedavno odprtih stripov in podatkovnih zbirk, vaše zaznamke in vaš ComicVine API ključ (šifriran). Nahaja se v mapi {config_dir} in se ohrani od seje do seje: za razliko od začasnih datotek je nikoli samodejno ne izbriše ne MosaicView ne Windows.\nRočno jo lahko izbrišete tako, da odprete mapo {config_dir} ali kliknete spodnji gumb. Ob naslednjem zagonu aplikacije bo znova ustvarjena s privzetimi vrednostmi.",
+    "scan": "Skeniraj sliko",
+    "scan_content": "• Kliknite gumb »Skeniraj« (stolpec ikon, meni Datoteka ali desni klik na mozaik), da odprete okno za skeniranje. MosaicView neposredno upravlja vaš optični bralnik (prek WIA, sistema za skeniranje v Windows): izberite napravo, ločljivost (DPI), barvni način (barvno / sivinsko / črno-belo) in nato kliknite »Skeniraj«. Da se optični bralnik prikaže na seznamu, mora biti priključen, vklopljen in imeti nameščen gonilnik v sistemu Windows.\n• Podprto je samo skeniranje cele strani, saj ima aplikacija že vse potrebno za urejanje slike po skeniranju.\n• Skenirana slika se samodejno doda mozaiku, za že obstoječimi stranmi. Nato jo lahko obrežete, poravnate, prilagodite njene barve itd., kot katero koli drugo stran mozaika\n• Ta funkcija neposredno upravlja optični bralnik, brez uporabe programske opreme proizvajalca ali prikaza njegovega lastnega konfiguracijskega okna.\n• Ker lahko fizični skener hkrati upravlja samo ena povezava, je skeniranje mogoče samo v enem podoknu naenkrat: če je v enem podoknu odprto okno za skeniranje ali poteka skeniranje, gumb »Skeniraj« v drugem podoknu ostane siv do konca opravila."
   },
   "misc": {
     "file_word": "datoteka",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Za to številko na ComicVine ni bilo najdenih podatkov.",
     "update_done_title": "Metapodatki posodobljeni",
     "update_done_message": "Metapodatki so bili uspešno posodobljeni."
+  },
+  "scan": {
+    "dialog_title": "Skeniraj sliko",
+    "button": "Skeniraj",
+    "tooltip": "Skenirajte sliko s optičnega bralnika in jo dodajte v mozaik",
+    "device_label": "Optični bralnik:",
+    "searching_devices": "Iskanje optičnih bralnikov...",
+    "no_devices_found": "Zaznan ni bil noben optični bralnik. Preverite, ali je priključen, vklopljen in ali je nameščen njegov gonilnik.",
+    "resolution_label": "Ločljivost:",
+    "color_mode_label": "Barvni način:",
+    "color_mode_color": "Barvno",
+    "color_mode_grayscale": "Sivinsko",
+    "color_mode_bw": "Črno-belo",
+    "scan_button": "Skeniraj",
+    "progress_scanning": "Skeniranje poteka...",
+    "error_wia_unavailable": "Dostop do sistema za optično branje v Windows ni mogoč. Preverite, ali je na tem računalniku nameščen gonilnik optičnega bralnika.",
+    "error_enumeration_failed": "Med iskanjem razpoložljivih optičnih bralnikov je prišlo do napake.",
+    "error_device_unreachable": "Izbrani optični bralnik ni več dosegljiv. Preverite, ali je še vedno priključen in vklopljen.",
+    "error_no_scan_item": "Ta optični bralnik ne ponuja uporabnega vira za skeniranje.",
+    "error_no_paper": "Papir ni zaznan. Na optični bralnik položite dokument in poskusite znova.",
+    "error_transfer_failed": "Optični bralnik se ni odzval pravilno in skeniranje ni uspelo. Poskusite znova ali preverite optični bralnik.",
+    "error_invalid_image": "Slika, prejeta z optičnega bralnika, ni veljavna ali je poškodovana.",
+    "send_log_link": "Pošlji dnevnik skeniranja po e-pošti",
+    "no_log_yet": "Skeniranje še ni bilo izvedeno: še ni dnevnika za pošiljanje.",
+    "mail_body_hint": "Pritisnite Ctrl+V ali z desno tipko miške kliknite in nato izberite Prilepi, da pošljete pravkar kopirani dnevnik skeniranja.",
+    "checking_capabilities": "Preverjanje zmožnosti optičnega bralnika...",
+    "escl_fallback_hint": "Če gonilnik proizvajalca ne odgovori, lahko Windows včasih optično bere neposredno.",
+    "escl_fallback_button": "Poskusi s splošnim gonilnikom Windows",
+    "open_log": "Odpri dnevnik optičnega branja",
+    "reveal_log": "Prikaži dnevnik optičnega branja v Raziskovalcu"
   }
 }

@@ -14,6 +14,7 @@ from modules.qt.dialogs_qt import position_dialog_on_parent, _center_on_widget
 from modules.qt.utils import open_url, setup_link_label_context_menu
 
 _DISTILLAT_URL = "https://github.com/Bruno-Aublet/Distillat/releases/latest"
+_DISTILLAT_LANDING_URL = "https://bruno-aublet.github.io/Distillat/"
 
 
 def show_distillat_dialog_qt(parent):
@@ -27,7 +28,7 @@ class _DistillatDialog(QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.resize(480, 420)
+        self.resize(480, 470)
         self.setModal(False)
         self.setWindowModality(Qt.NonModal)
         self._center_parent = parent
@@ -60,6 +61,18 @@ class _DistillatDialog(QDialog):
         from modules.qt.utils import setup_selectable_label_context_menu
         setup_selectable_label_context_menu(self._body_lbl)
         layout.addWidget(self._body_lbl)
+
+        self._landing_lbl = QLabel()
+        self._landing_lbl.setAlignment(Qt.AlignCenter)
+        self._landing_lbl.setWordWrap(True)
+        layout.addWidget(self._landing_lbl)
+
+        self._landing_link_lbl = QLabel()
+        self._landing_link_lbl.setAlignment(Qt.AlignCenter)
+        self._landing_link_lbl.setOpenExternalLinks(False)
+        self._landing_link_lbl.linkActivated.connect(open_url)
+        setup_link_label_context_menu(self._landing_link_lbl, lambda: _DISTILLAT_LANDING_URL)
+        layout.addWidget(self._landing_link_lbl)
 
         self._download_lbl = QLabel()
         self._download_lbl.setAlignment(Qt.AlignCenter)
@@ -125,6 +138,16 @@ class _DistillatDialog(QDialog):
         self._body_lbl.setText(_("dialogs.distillat.body"))
         self._body_lbl.setFont(font_body)
         self._body_lbl.setStyleSheet(f"color: {theme['text']}; background: transparent;")
+
+        self._landing_lbl.setText(_("dialogs.distillat.landing_intro"))
+        self._landing_lbl.setFont(font_body)
+        self._landing_lbl.setStyleSheet(f"color: {theme['text']}; background: transparent;")
+
+        self._landing_link_lbl.setText(
+            f'<a href="{_DISTILLAT_LANDING_URL}" style="color:{link_color};">{_DISTILLAT_LANDING_URL}</a>'
+        )
+        self._landing_link_lbl.setFont(font_link)
+        self._landing_link_lbl.setStyleSheet("background: transparent;")
 
         self._download_lbl.setText(_("dialogs.distillat.download_intro"))
         self._download_lbl.setFont(font_body)

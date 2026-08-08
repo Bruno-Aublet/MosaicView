@@ -1224,6 +1224,7 @@
       "window_title": "Reklam bla mistħija",
       "title": "Taf b'Distillat?",
       "body": "Il-volum 8 tas-saga favorita tiegħek għadu kif ħareġ, u qed tmut bix-xewqa li taqrah. Biss il-volum 7 kien 4 snin ilu, u l-memorji tiegħek huma ftit imċajpra: min kienu dawk il-karattri sekondarji? U x'kien ġara fl-aħħar?\n\nJekk din is-sitwazzjoni tinstema' familjari, Distillat sar għalik. Sempliċement niżżel il-fajl EPUB jew PDF tiegħek fiż-żona maħsuba għal dan: tikseb sommarju, karti tal-karattri u analiżi tax-xogħol, lesti biex tarahom jew tesportahom f'PDF.\n\nL-applikazzjoni tiddependi fuq il-livell b'xejn ta' Gemini 3.5 Flash.",
+      "landing_intro": "Paġna ta' preżentazzjoni:",
       "download_intro": "Tista' tniżżel l-applikazzjoni hawn:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Liċenza UnRAR",
     "config_clear_clipboard": "Neħħi fajls tal-clipboard",
     "config_clipboard_note": "Eċċezzjoni: Il-fajls temporanji użati mill-clipboard ta' Windows (fajls clipboard_XXXXX) jinżammu għal 12-il siegħa wara li jkunu kkupjati, biex tkun tista' twaħħalhom anke wara li tagħlaq l-applikazzjoni. Wara 12-il siegħa, jitħassru awtomatikament.",
-    "config_log_note": "Il-konverzjonijiet bl-ingross (PDF ghal CBZ u CBR ghal CBZ) johloqu fajl ta' log meta jsehhu erruri. Dawn il-fajls (Log_pdftocbz_.txt u Log_cbrtocbz_.txt) jinzammu anke wara li taghlaq l-applikazzjoni, biex ikunu jistghu jigi konsultati aktar tard. Jithassru biss bil-buttuna \"Hassar il-fajls temporanji\" hawn fuq.",
+    "config_log_note": "Il-konverżjonijiet bil-massa (PDF għal CBZ u CBR għal CBZ) joħolqu fajl ġurnal jekk isseħħ żball. Dawn il-fajls (Log_pdftocbz_.txt u Log_cbrtocbz_.txt) jinżammu anke wara li tingħalaq l-applikazzjoni, sabiex ikunu jistgħu jiġu kkonsultati aktar tard. Jitneħħew biss permezz tal-buttuna \"Naddaf il-fajls temporanji\" hawn fuq. Fajl Log_scan.txt jirreġistra bl-istess mod kull skennjar (skener użat, settings, riżultat jew żball) — utli biex tiddijanjostika problema bl-iskener tiegħek.",
     "config_clipboard_cleared": "Il-fajls tal-clipboard tneħħew b'suċċess.",
     "adjust_images": "Aġġustament tal-immaġini",
     "adjust_images_content": "Din il-funzjoni tippermettik li tirritokka l-immaġnijiet tiegħek direttament f'MosaicView. Tista' timmodifika d-dawl, il-kuntrast, l-isħuħija, il-livelli, is-saturation, tapplika effetti (iswed u abjad, sepja, inversjoni tal-kuluri), taġġusta l-kwalità tal-kompressjoni, tneħħi l-kuluri, tapplika trasparenza jew tikkonverti f'depthjiet tal-kulur differenti. Xi settings għandhom viewer dedikat li jippermettilek tara r-riżultat f'riżoluzzjoni sħiħa qabel ma tapplika. Anteprima ta' miniatura turi r-riżultat f'ħin reali fit-tieqa prinċipali.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} fajl(s) awdjo ssejvjati f':",
     "config_single_instance_note": "MosaicView qatt ma jinfetaħ darbtejn. Jekk tiftaħ fajl (per eżempju billi tikklikkja darbtejn fuqu fl-Explorer) waqt li l-applikazzjoni tkun diġà miftuħa, ma tidhirx tieqa oħra: il-fajl sempliċement jinfetaħ fit-tieqa li diġà tkun miftuħa, li tiġi awtomatikament fuq quddiem. Biex dan jaħdem, MosaicView jirreġistra ruħu ma' Windows kull darba li jitnieda (ara hawn taħt).",
     "config_registry_note": "Biex ikun jista' jidher fil-menu \"Iftaħ b'\" tal-Windows Explorer, MosaicView jikteb ftit informazzjoni fir-reġistru ta' Windows meta jitnieda. Din ir-reġistrazzjoni tibqa' limitata għall-minimu strett: tgħid lil Windows fejn jinsab MosaicView u liema tipi ta' fajls jista' jiftaħ. Issir biss fil-parti tar-reġistru riżervata għall-kont tal-utent tiegħek, qatt fil-parti tas-sistema, u ma tibdel l-ebda assoċjazzjoni ta' fajls: l-għażla ta' MosaicView bħala l-applikazzjoni prestabbilita għal tip ta' fajl tibqa' għażla li tista' tagħmel int biss, permezz tal-menu \"Iftaħ b'\" ta' Windows stess. Jekk tneħħi MosaicView mid-diska tiegħek, din l-informazzjoni sempliċement issir inattiva u bla effett.",
-    "config_dir_content": "MosaicView joħloq fajl imsemmi .mosaicview_config.json. Dan il-fajl fih l-issettjar tal-applikazzjoni (tieqa, tema, lingwa, modalità ta' rinumerazzjoni…), il-lista tal-kotba tal-istrixxi u l-bażijiet tad-dejta miftuħa dan l-aħħar, is-sinjali tal-paġni tiegħek, u ċ-ċavetta API ComicVine tiegħek (ikkriptata). Jinsab fil-folder {config_dir} u jinżamm minn sessjoni għal oħra: b'differenza mill-fajls temporanji, qatt ma jitħassar awtomatikament, la minn MosaicView u lanqas minn Windows.\nTista' tħassru manwalment billi tmur fil-folder {config_dir}, jew billi tikklikkja l-buttuna hawn taħt. Se jinħoloq mill-ġdid bil-valuri default id-darba li jmiss li tinbeda l-applikazzjoni."
+    "config_dir_content": "MosaicView joħloq fajl imsemmi .mosaicview_config.json. Dan il-fajl fih l-issettjar tal-applikazzjoni (tieqa, tema, lingwa, modalità ta' rinumerazzjoni…), il-lista tal-kotba tal-istrixxi u l-bażijiet tad-dejta miftuħa dan l-aħħar, is-sinjali tal-paġni tiegħek, u ċ-ċavetta API ComicVine tiegħek (ikkriptata). Jinsab fil-folder {config_dir} u jinżamm minn sessjoni għal oħra: b'differenza mill-fajls temporanji, qatt ma jitħassar awtomatikament, la minn MosaicView u lanqas minn Windows.\nTista' tħassru manwalment billi tmur fil-folder {config_dir}, jew billi tikklikkja l-buttuna hawn taħt. Se jinħoloq mill-ġdid bil-valuri default id-darba li jmiss li tinbeda l-applikazzjoni.",
+    "scan": "Skennja immaġni",
+    "scan_content": "• Ikklikkja l-buttuna \"Skennja\" (kolonna tal-ikoni, menu Fajl, jew klikk bil-lemin fuq il-mosajk) biex tiftaħ it-tieqa tal-iskennjar. MosaicView jimmaniġġja l-iskener tiegħek direttament (permezz ta' WIA, is-sistema ta' skennjar ta' Windows): agħżel it-tagħmir, ir-riżoluzzjoni (DPI), il-modalità tal-kulur (kulur / skala griża / iswed u abjad), imbagħad ikklikkja \"Skennja\". Skener irid ikun imqabbad, mixgħul, u s-sewwieq tiegħu installat fuq Windows biex jidher fil-lista.\n• Hu appoġġjat biss l-iskennjar ta' paġna sħiħa, peress li l-applikazzjoni diġà għandha kollox meħtieġ għall-editjar tal-immaġni wara l-iskennjar.\n• L-immaġni skennjata tiżdied awtomatikament mal-mosajk, wara l-paġni li diġà jeżistu. Imbagħad tista' taqtagħha, tiddrittaha, taġġusta l-kuluri tagħha, eċċ. bħal kwalunkwe paġna oħra tal-mosajk\n• Din il-funzjoni timmaniġġja l-iskener direttament, mingħajr ma tgħaddi mis-softwer tal-manifattur jew turi t-tieqa ta' konfigurazzjoni tiegħu stess.\n• Peress li skener fiżiku jista' jiġi kkontrollat biss minn konnessjoni waħda kull darba, l-iskennjar huwa possibbli biss f'panel wieħed kull darba: jekk tieqa tal-iskennjar tkun miftuħa jew skennjar ikun għaddej f'panel wieħed, il-buttuna \"Skennja\" tibqa' griża fil-panel l-ieħor sakemm l-operazzjoni tispiċċa."
   },
   "misc": {
     "file_word": "fajl",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Ma nstabet ebda dejta għal din il-ħarġa fuq ComicVine.",
     "update_done_title": "Metadata aġġornata",
     "update_done_message": "Il-metadata ġiet aġġornata b'suċċess."
+  },
+  "scan": {
+    "dialog_title": "Skennja immaġni",
+    "button": "Skennja",
+    "tooltip": "Skennja immaġni minn skener u żidha mal-mosajk",
+    "device_label": "Skener:",
+    "searching_devices": "Qed ifittex skeners...",
+    "no_devices_found": "L-ebda skener ma nstab. Iċċekkja li huwa mqabbad, mixgħul, u li s-sewwieq tiegħu huwa installat.",
+    "resolution_label": "Riżoluzzjoni:",
+    "color_mode_label": "Modalità tal-kulur:",
+    "color_mode_color": "Kulur",
+    "color_mode_grayscale": "Skala griża",
+    "color_mode_bw": "Iswed u abjad",
+    "scan_button": "Skennja",
+    "progress_scanning": "Skennjar għaddej...",
+    "error_wia_unavailable": "Ma jistax jiġi aċċessat is-sistema ta' skennjar ta' Windows. Iċċekkja li sewwieq tal-iskener huwa installat fuq dan il-kompjuter.",
+    "error_enumeration_failed": "Seħħ żball waqt it-tfittxija għal skeners disponibbli.",
+    "error_device_unreachable": "L-iskener magħżul m'għadux aċċessibbli. Iċċekkja li għadu mqabbad u mixgħul.",
+    "error_no_scan_item": "Dan l-iskener ma joffri l-ebda sors ta' skennjar utilizzabbli.",
+    "error_no_paper": "L-ebda karta ma nstabet. Poġġi dokument fuq l-iskener u erġa' pprova.",
+    "error_transfer_failed": "L-iskener ma weġibx tajjeb u l-iskennjar falla. Erġa' pprova jew iċċekkja l-iskener.",
+    "error_invalid_image": "L-immaġni riċevuta mill-iskener mhijiex valida jew hija korrotta.",
+    "send_log_link": "Ibgħat il-ġurnal tal-iskennjar bl-email",
+    "no_log_yet": "L-ebda skennjar ma sar s'issa: għad m'hemm l-ebda ġurnal x'jintbagħat.",
+    "mail_body_hint": "Agħfas Ctrl+V, jew ikklikkja bil-lemin u mbagħad Waħħal, biex tibgħat il-ġurnal tal-iskennjar li għadu kif ġie kkupjat.",
+    "checking_capabilities": "Qed jiġu vverifikati l-kapaċitajiet tal-iskener...",
+    "escl_fallback_hint": "Jekk id-driver tal-manifattur ma jwieġibx, Windows kultant tista' tiskennja direttament.",
+    "escl_fallback_button": "Ipprova bid-driver ġeneriku ta' Windows",
+    "open_log": "Iftaħ il-log tal-iskennjar",
+    "reveal_log": "Uri l-log tal-iskennjar fl-Explorer"
   }
 }

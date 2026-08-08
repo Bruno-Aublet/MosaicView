@@ -1224,6 +1224,7 @@
       "window_title": "Häbematu reklaam",
       "title": "Kas tunnete Distillat'i?",
       "body": "Teie lemmiksaaga 8. köide ilmus just ning te ei jaksa oodata, et seda lugeda. Ainult et 7. köide ilmus 4 aastat tagasi ja teie mälestused on veidi hägused: kes need kõrvaltegelased jälle olid? Ja mis lõpuks juhtus?\n\nKui see olukord tundub tuttav, on Distillat loodud teie jaoks. Lohistage lihtsalt oma EPUB- või PDF-fail selleks ette nähtud alale: saate kokkuvõtte, tegelaskaardid ja teose analüüsi, mis on valmis vaatamiseks või PDF-ina eksportimiseks.\n\nRakendus tugineb Gemini 3.5 Flash tasuta tasemele.",
+      "landing_intro": "Tutvustuslehekülg:",
       "download_intro": "Rakenduse saate alla laadida siit:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR litsents",
     "config_clear_clipboard": "Kustuta loikelaua failid",
     "config_clipboard_note": "Erand: Windows loikelaua kasutatavad ajutised failid (clipboard_XXXXX failid) sailivad 12 tundi parast kopeerimist, nii et saate neid kleepida isegi parast rakenduse sulgemist. Parast 12 tundi need kustutatakse automaatselt.",
-    "config_log_note": "Pakettkonversioonid (PDF CBZ-ks ja CBR CBZ-ks) loovad vea korral logifaili. Need failid (Log_pdftocbz_.txt ja Log_cbrtocbz_.txt) sailivad ka parast rakenduse sulgemist, et neid saaks hiljem ule vaadata. Need kustutatakse ainult ulaloleva nupu \"Kustuta ajutised failid\" abil.",
+    "config_log_note": "Hulgiteisendused (PDF-ist CBZ-ks ja CBR-ist CBZ-ks) loovad vea korral logifaili. Need failid (Log_pdftocbz_.txt ja Log_cbrtocbz_.txt) säilivad ka pärast rakenduse sulgemist, et neid saaks hiljem vaadata. Need eemaldatakse ainult ülalpool oleva nupuga „Tühjenda ajutised failid”. Fail Log_scan.txt salvestab samamoodi iga skannimise (kasutatud skanner, sätted, tulemus või viga) — kasulik skanneriga seotud probleemi diagnoosimiseks.",
     "config_clipboard_cleared": "Loikelaua failid on edukalt kustutatud.",
     "adjust_images": "Piltide reguleerimine",
     "adjust_images_content": "See funktsioon võimaldab teil oma pilte otse MosaicView'is retušeerida. Saate muuta heledust, kontrasti, teravust, tasemeid, küllastust, rakendada efekte (must-valge, seepia, värvide ümberpööramine), reguleerida tihenduskvaliteeti, eemaldada värve, rakendada läbipaistvust või teisendada erinevatesse värvisügavustesse. Mõnel seadistusel on eraldi vaatur, mis võimaldab näha tulemust täielikus eraldusvõimes enne rakendamist. Pisipildi eelvaade näitab tulemust reaalajas põhiaknas.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} helifail(i) salvestatud kausta:",
     "config_single_instance_note": "MosaicView ei käivitu kunagi topelt. Kui avate faili (näiteks topeltklõpsuga Windows Exploreris), samal ajal kui rakendus on juba avatud, ei ilmu teist akent: fail avatakse lihtsalt juba olemasolevas aknas, mis tuuakse automaatselt esiplaanile. Selle toimimiseks registreerib MosaicView end Windowsis igal käivitamisel (vt allpool).",
     "config_registry_note": "Selleks et kuvada end Windows Exploreri menüüs \"Ava rakendusega\", kirjutab MosaicView käivitumisel mõned andmed Windowsi registrisse. See kirje piirdub hädavajalikuga: see teatab Windowsile, kus MosaicView asub ja milliseid failitüüpe see suudab avada. See tehakse ainult teie kasutajakontole reserveeritud registriosas, mitte kunagi süsteemi osas, ega muuda ühtegi failiseost: MosaicView valimine failitüübi vaikerakenduseks jääb otsuseks, mille saate teha ainult teie, Windowsi enda \"Ava rakendusega\" menüü kaudu. Kui eemaldate MosaicView oma kettalt, muutub see teave lihtsalt mõjutuks.",
-    "config_dir_content": "MosaicView loob faili nimega .mosaicview_config.json. See fail sisaldab rakenduse seadeid (aken, teema, keel, ümbernummerdamise režiim…), hiljuti avatud koomiksite ja andmebaaside loendit, teie järjehoidjaid ning teie ComicVine'i API-võtit (krüpteeritud). See asub kaustas {config_dir} ja säilib seansside vahel: erinevalt ajutistest failidest ei kustuta ei MosaicView ega Windows seda kunagi automaatselt.\nSaate selle käsitsi kustutada, minnes kausta {config_dir}, või klõpsates allolevat nuppu. See luuakse vaikeväärtustega uuesti rakenduse järgmisel käivitamisel."
+    "config_dir_content": "MosaicView loob faili nimega .mosaicview_config.json. See fail sisaldab rakenduse seadeid (aken, teema, keel, ümbernummerdamise režiim…), hiljuti avatud koomiksite ja andmebaaside loendit, teie järjehoidjaid ning teie ComicVine'i API-võtit (krüpteeritud). See asub kaustas {config_dir} ja säilib seansside vahel: erinevalt ajutistest failidest ei kustuta ei MosaicView ega Windows seda kunagi automaatselt.\nSaate selle käsitsi kustutada, minnes kausta {config_dir}, või klõpsates allolevat nuppu. See luuakse vaikeväärtustega uuesti rakenduse järgmisel käivitamisel.",
+    "scan": "Skaneeri pilt",
+    "scan_content": "• Klõpsake nuppu „Skaneeri” (ikoonitulp, menüü Fail või paremklõps mosaiigil), et avada skaneerimisaken. MosaicView juhib teie skannerit otse (WIA, Windowsi skaneerimissüsteemi kaudu): valige seade, eraldusvõime (DPI), värvirežiim (värviline / halltoonid / must-valge) ja klõpsake seejärel „Skaneeri”. Loendis kuvamiseks peab skanner olema ühendatud, sisse lülitatud ja selle draiver peab olema Windowsis installitud.\n• Toetatud on ainult kogu lehe skaneerimine, kuna rakendusel on juba kõik vajalik pildi töötlemiseks pärast skaneerimist.\n• Skaneeritud pilt lisatakse automaatselt mosaiigile, juba olemasolevate lehtede järele. Seejärel saate seda kärpida, sirgeks lüüa, värve kohandada jne, nagu iga teist mosaiigi lehte\n• See funktsioon juhib skannerit otse, ilma tootja tarkvara kasutamata või selle enda seadistusakent kuvamata.\n• Kuna füüsilist skannerit saab korraga juhtida ainult üks ühendus, on skannimine võimalik korraga ainult ühes paneelis: kui ühes paneelis on skannimisaken avatud või käib skannimine, jääb nupp „Skanni” teises paneelis halliks kuni toimingu lõppemiseni."
   },
   "misc": {
     "file_word": "fail",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Selle numbri kohta ei leitud ComicVine'ist andmeid.",
     "update_done_title": "Metaandmed uuendatud",
     "update_done_message": "Metaandmed on edukalt uuendatud."
+  },
+  "scan": {
+    "dialog_title": "Skaneeri pilt",
+    "button": "Skaneeri",
+    "tooltip": "Skaneerige pilt skannerist ja lisage see mosaiigile",
+    "device_label": "Skanner:",
+    "searching_devices": "Skannerite otsimine...",
+    "no_devices_found": "Skannerit ei tuvastatud. Kontrollige, kas see on ühendatud, sisse lülitatud ja kas selle draiver on installitud.",
+    "resolution_label": "Eraldusvõime:",
+    "color_mode_label": "Värvirežiim:",
+    "color_mode_color": "Värviline",
+    "color_mode_grayscale": "Halltoonid",
+    "color_mode_bw": "Must-valge",
+    "scan_button": "Skaneeri",
+    "progress_scanning": "Skaneerimine käib...",
+    "error_wia_unavailable": "Windowsi skaneerimissüsteemile ei pääse ligi. Kontrollige, kas selles arvutis on installitud skanneri draiver.",
+    "error_enumeration_failed": "Saadaolevate skannerite otsimisel ilmnes viga.",
+    "error_device_unreachable": "Valitud skanner ei ole enam ligipääsetav. Kontrollige, kas see on endiselt ühendatud ja sisse lülitatud.",
+    "error_no_scan_item": "See skanner ei paku ühtegi kasutatavat skaneerimisallikat.",
+    "error_no_paper": "Paberit ei tuvastatud. Asetage dokument skannerisse ja proovige uuesti.",
+    "error_transfer_failed": "Skanner ei vastanud õigesti ja skaneerimine ebaõnnestus. Proovige uuesti või kontrollige skannerit.",
+    "error_invalid_image": "Skannerist saadud pilt on kehtetu või kahjustatud.",
+    "send_log_link": "Saada skannimislogi e-postiga",
+    "no_log_yet": "Skannimist pole veel tehtud: saatmiseks pole veel logi.",
+    "mail_body_hint": "Vajutage Ctrl+V või klõpsake paremklõpsuga ja seejärel Kleebi, et saata äsja kopeeritud skannimislogi.",
+    "checking_capabilities": "Skanneri võimaluste kontrollimine...",
+    "escl_fallback_hint": "Kui tootja draiver ei vasta, saab Windows mõnikord skannida otse.",
+    "escl_fallback_button": "Proovi Windowsi üldise draiveriga",
+    "open_log": "Ava skannimislogi",
+    "reveal_log": "Näita skannimislogi Exploreris"
   }
 }

@@ -1224,6 +1224,7 @@
       "window_title": "Häpeämätön mainos",
       "title": "Tunnetko Distillatin?",
       "body": "Suosikkisaagasi osa 8 juuri ilmestyi, ja kuolet halusta lukea sen. Paitsi että osa 7 ilmestyi 4 vuotta sitten, ja muistosi ovat hieman hataria: keitä ne sivuhenkilöt taas olivatkaan? Ja mitä lopussa tapahtui?\n\nJos tämä tilanne kuulostaa tutulta, Distillat on tehty juuri sinulle. Pudota vain EPUB- tai PDF-tiedostosi sille varattuun alueeseen: saat yhteenvedon, henkilökortit ja teoksen analyysin, valmiina tarkasteltavaksi tai vietäväksi PDF-muotoon.\n\nSovellus perustuu Gemini 3.5 Flashin ilmaiseen tasoon.",
+      "landing_intro": "Esittelysivu:",
       "download_intro": "Voit ladata sovelluksen täältä:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR-lisenssi",
     "config_clear_clipboard": "Tyhjenna leikepoydan tiedostot",
     "config_clipboard_note": "Poikkeus: Windows-leikepoydan kaytt amat valikaikaiset tiedostot (clipboard_XXXXX-tiedostot) sailytetaan 12 tuntia kopioinnin jalkeen, jotta voit liittaa ne myos sovelluksen sulkemisen jalkeen. 12 tunnin jalkeen ne poistetaan automaattisesti.",
-    "config_log_note": "Erakonversiot (PDF CBZ:ksi ja CBR CBZ:ksi) luovat lokitiedoston virheiden ilmetessa. Nama tiedostot (Log_pdftocbz_.txt ja Log_cbrtocbz_.txt) sailytetaan myos sovelluksen sulkemisen jalkeen, jotta ne voidaan tarkistaa myohemmin. Ne poistetaan ainoastaan yllaolevan \"Poista valikaikaiset tiedostot\" -painikkeen avulla.",
+    "config_log_note": "Erä­muunnokset (PDF CBZ:ksi ja CBR CBZ:ksi) luovat virheen sattuessa lokitiedoston. Nämä tiedostot (Log_pdftocbz_.txt ja Log_cbrtocbz_.txt) säilyvät myös sovelluksen sulkemisen jälkeen, jotta niitä voi tarkastella myöhemmin. Ne poistetaan vain yllä olevalla ”Tyhjennä väliaikaiset tiedostot” -painikkeella. Log_scan.txt-tiedosto tallentaa samalla tavalla jokaisen skannauksen (käytetty skanneri, asetukset, tulos tai virhe) — hyödyllinen skanneriin liittyvän ongelman diagnosoinnissa.",
     "config_clipboard_cleared": "Leikepoydan tiedostot on tyhjennetty onnistuneesti.",
     "adjust_images": "Kuvien säätö",
     "adjust_images_content": "Tämän toiminnon avulla voit muokata kuvia suoraan MosaicView'ssa. Voit säätää kirkkautta, kontrastia, terävyyttä, tasoja ja kylläisyyttä, soveltaa tehosteita (mustavalkoinen, seepia, värien kääntäminen), säätää pakkauslaatua, poistaa värejä, soveltaa läpinäkyvyyttä tai muuntaa eri värisyvyyksiin. Joillakin asetuksilla on oma katselin, jolla voit nähdä tuloksen täydessä resoluutiossa ennen käyttöä. Pienoiskuvan esikatselu näyttää tuloksen reaaliajassa pääikkunassa.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} äänitiedosto(a) tallennettu kansioon:",
     "config_single_instance_note": "MosaicView ei koskaan käynnisty kahteen kertaan. Jos avaat tiedoston (esimerkiksi kaksoisnapsauttamalla sitä Resurssienhallinnassa) sovelluksen ollessa jo auki, toista ikkunaa ei ilmesty: tiedosto avautuu yksinkertaisesti jo avoinna olevaan ikkunaan, joka tuodaan automaattisesti etualalle. Jotta tämä toimisi, MosaicView rekisteröityy Windowsiin joka käynnistyksellä (katso alla).",
     "config_registry_note": "Jotta MosaicView voisi näkyä Resurssienhallinnan \"Avaa sovelluksella\" -valikossa, se kirjoittaa käynnistyessään muutamia tietoja Windowsin rekisteriin. Tämä merkintä rajoittuu välttämättömään: se kertoo Windowsille, missä MosaicView sijaitsee ja millaisia tiedostotyyppejä se osaa avata. Se tehdään ainoastaan käyttäjätilillesi varattuun rekisterin osaan, ei koskaan järjestelmän osaan, eikä se muuta mitään tiedostoliitoksia: MosaicView'n valitseminen oletussovellukseksi tietylle tiedostotyypille on edelleen valinta, jonka voit tehdä vain sinä itse, Windowsin oman \"Avaa sovelluksella\" -valikon kautta. Jos poistat MosaicView'n levyltäsi, nämä tiedot muuttuvat yksinkertaisesti passiivisiksi eikä niillä ole enää vaikutusta.",
-    "config_dir_content": "MosaicView luo tiedoston nimeltä .mosaicview_config.json. Tämä tiedosto sisältää sovelluksen asetukset (ikkuna, teema, kieli, uudelleennumerointitila…), luettelon äskettäin avatuista sarjakuvista ja tietokannoista, kirjanmerkkisi sekä ComicVine-API-avaimesi (salattuna). Se sijaitsee kansiossa {config_dir} ja säilyy istunnosta toiseen: toisin kuin väliaikaiset tiedostot, sitä ei koskaan poisteta automaattisesti, ei MosaicView'n eikä Windowsin toimesta.\nVoit poistaa sen manuaalisesti siirtymällä kansioon {config_dir} tai napsauttamalla alla olevaa painiketta. Se luodaan uudelleen oletusarvoilla seuraavan kerran, kun sovellus käynnistetään."
+    "config_dir_content": "MosaicView luo tiedoston nimeltä .mosaicview_config.json. Tämä tiedosto sisältää sovelluksen asetukset (ikkuna, teema, kieli, uudelleennumerointitila…), luettelon äskettäin avatuista sarjakuvista ja tietokannoista, kirjanmerkkisi sekä ComicVine-API-avaimesi (salattuna). Se sijaitsee kansiossa {config_dir} ja säilyy istunnosta toiseen: toisin kuin väliaikaiset tiedostot, sitä ei koskaan poisteta automaattisesti, ei MosaicView'n eikä Windowsin toimesta.\nVoit poistaa sen manuaalisesti siirtymällä kansioon {config_dir} tai napsauttamalla alla olevaa painiketta. Se luodaan uudelleen oletusarvoilla seuraavan kerran, kun sovellus käynnistetään.",
+    "scan": "Skannaa kuva",
+    "scan_content": "• Napsauta „Skannaa”-painiketta (kuvakesarake, Tiedosto-valikko tai hiiren oikea painike mosaiikissa) avataksesi skannausikkunan. MosaicView ohjaa skanneriasi suoraan (WIA:n, Windowsin skannausjärjestelmän, kautta): valitse laite, tarkkuus (DPI), väritila (väri / harmaasävy / mustavalkoinen) ja napsauta sitten „Skannaa”. Skannerin täytyy olla kytkettynä, päällä ja sen ohjaimen asennettuna Windowsiin, jotta se näkyy luettelossa.\n• Vain koko sivun skannaus on tuettu, sillä sovelluksessa on jo kaikki tarvittava kuvan muokkaamiseen skannauksen jälkeen.\n• Skannattu kuva lisätään automaattisesti mosaiikkiin jo olemassa olevien sivujen jälkeen. Voit sen jälkeen rajata sitä, suoristaa sen, säätää sen värejä jne. kuten mitä tahansa muuta mosaiikin sivua\n• Tämä toiminto ohjaa skanneria suoraan, käyttämättä valmistajan ohjelmistoa tai näyttämättä sen omaa asetusikkunaa.\n• Koska fyysistä skanneria voi ohjata kerrallaan vain yksi yhteys, skannaus on mahdollista vain yhdessä paneelissa kerrallaan: jos skannausikkuna on auki tai skannaus on käynnissä toisessa paneelissa, ”Skannaa”-painike pysyy harmaana toisessa paneelissa, kunnes toimenpide on valmis."
   },
   "misc": {
     "file_word": "tiedosto",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Tälle numerolle ei löytynyt tietoja ComicVinestä.",
     "update_done_title": "Metatiedot päivitetty",
     "update_done_message": "Metatiedot päivitettiin onnistuneesti."
+  },
+  "scan": {
+    "dialog_title": "Skannaa kuva",
+    "button": "Skannaa",
+    "tooltip": "Skannaa kuva skannerista ja lisää se mosaiikkiin",
+    "device_label": "Skanneri:",
+    "searching_devices": "Etsitään skannereita...",
+    "no_devices_found": "Skanneria ei havaittu. Tarkista, että se on kytketty, päällä ja että sen ohjain on asennettu.",
+    "resolution_label": "Tarkkuus:",
+    "color_mode_label": "Väritila:",
+    "color_mode_color": "Väri",
+    "color_mode_grayscale": "Harmaasävy",
+    "color_mode_bw": "Mustavalkoinen",
+    "scan_button": "Skannaa",
+    "progress_scanning": "Skannataan...",
+    "error_wia_unavailable": "Windowsin skannausjärjestelmää ei voi käyttää. Tarkista, että tähän tietokoneeseen on asennettu skanneriohjain.",
+    "error_enumeration_failed": "Käytettävissä olevien skannerien haussa tapahtui virhe.",
+    "error_device_unreachable": "Valittu skanneri ei ole enää käytettävissä. Tarkista, että se on edelleen kytkettynä ja päällä.",
+    "error_no_scan_item": "Tämä skanneri ei tarjoa käytettävää skannauslähdettä.",
+    "error_no_paper": "Paperia ei havaittu. Aseta asiakirja skanneriin ja yritä uudelleen.",
+    "error_transfer_failed": "Skanneri ei vastannut oikein ja skannaus epäonnistui. Yritä uudelleen tai tarkista skanneri.",
+    "error_invalid_image": "Skannerilta saatu kuva on virheellinen tai vioittunut.",
+    "send_log_link": "Lähetä skannauksen loki sähköpostitse",
+    "no_log_yet": "Yhtään skannausta ei ole vielä tehty: lähetettävää lokia ei vielä ole.",
+    "mail_body_hint": "Paina Ctrl+V tai napsauta hiiren oikealla painikkeella ja valitse Liitä lähettääksesi juuri kopioidun skannauslokin.",
+    "checking_capabilities": "Tarkistetaan skannerin ominaisuuksia...",
+    "escl_fallback_hint": "Jos valmistajan ajuri ei vastaa, Windows voi joskus skannata suoraan.",
+    "escl_fallback_button": "Yritä Windowsin yleisellä ajurilla",
+    "open_log": "Avaa skannauksen loki",
+    "reveal_log": "Näytä skannauksen loki Resurssienhallinnassa"
   }
 }

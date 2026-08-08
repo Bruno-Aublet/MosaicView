@@ -1224,6 +1224,7 @@
       "window_title": "Quảng cáo trơ trẽn",
       "title": "Bạn có biết Distillat không?",
       "body": "Tập 8 của bộ truyện yêu thích của bạn vừa mới ra mắt, và bạn nóng lòng muốn đọc nó. Chỉ có điều tập 7 là từ 4 năm trước, và ký ức của bạn hơi mơ hồ: những nhân vật phụ đó là ai nhỉ? Và chuyện gì đã xảy ra ở đoạn kết?\n\nNếu tình huống này nghe quen thuộc, Distillat được tạo ra dành cho bạn. Chỉ cần thả tệp EPUB hoặc PDF của bạn vào khu vực được chỉ định: bạn sẽ nhận được bản tóm tắt, thẻ nhân vật và phân tích tác phẩm, sẵn sàng để xem hoặc xuất ra PDF.\n\nỨng dụng dựa trên gói miễn phí của Gemini 3.5 Flash.",
+      "landing_intro": "Trang giới thiệu:",
       "download_intro": "Bạn có thể tải ứng dụng tại đây:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Giấy phép UnRAR",
     "config_clear_clipboard": "Xóa các tệp clipboard",
     "config_clipboard_note": "Ngoại lệ: Các tệp tạm thời được sử dụng bởi clipboard Windows (tệp clipboard_XXXXX) được giữ trong 12 giờ sau khi sao chép, để bạn có thể dán chúng ngay cả sau khi đóng ứng dụng. Sau 12 giờ, chúng sẽ tự động bị xóa.",
-    "config_log_note": "Cac chuyen doi hang loat (PDF sang CBZ va CBR sang CBZ) tao mot tap tin nhat ky khi xay ra loi. Cac tap tin nay (Log_pdftocbz_.txt va Log_cbrtocbz_.txt) duoc giu lai ngay ca sau khi dong ung dung, de co the xem lai sau. Chung chi bi xoa bang nut \"Xoa cac tap tin tam thoi\" o phia tren.",
+    "config_log_note": "Các chuyển đổi hàng loạt (PDF sang CBZ và CBR sang CBZ) tạo ra một tệp nhật ký khi xảy ra lỗi. Các tệp này (Log_pdftocbz_.txt và Log_cbrtocbz_.txt) được giữ lại ngay cả sau khi đóng ứng dụng, để có thể xem lại sau này. Chúng chỉ bị xóa bằng nút \"Xóa tệp tạm\" ở trên. Một tệp Log_scan.txt ghi lại theo cách tương tự mỗi lần quét (máy quét được sử dụng, cài đặt, kết quả hoặc lỗi) — hữu ích để chẩn đoán sự cố với máy quét của bạn.",
     "config_clipboard_cleared": "Các tệp clipboard đã được xóa thành công.",
     "adjust_images": "Điều chỉnh hình ảnh",
     "adjust_images_content": "Chức năng này cho phép bạn chỉnh sửa hình ảnh trực tiếp trong MosaicView. Bạn có thể điều chỉnh độ sáng, độ tương phản, độ sắc nét, mức độ, độ bão hòa, áp dụng hiệu ứng (đen trắng, sepia, đảo màu), điều chỉnh chất lượng nén, xóa màu, áp dụng độ trong suốt hoặc chuyển đổi sang các độ sâu màu khác nhau. Một số cài đặt có trình xem chuyên dụng cho phép xem kết quả ở độ phân giải đầy đủ trước khi áp dụng. Bản xem trước thu nhỏ hiển thị kết quả theo thời gian thực trong cửa sổ chính.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "Đã lưu {count} tệp âm thanh vào:",
     "config_single_instance_note": "MosaicView không bao giờ khởi chạy hai lần. Nếu bạn mở một tệp (ví dụ bằng cách nhấp đúp vào tệp đó trong Explorer) trong khi ứng dụng đã mở sẵn, sẽ không có cửa sổ thứ hai xuất hiện: tệp sẽ đơn giản được mở trong cửa sổ đã có sẵn, cửa sổ này sẽ tự động được đưa lên phía trước. Để điều này hoạt động, MosaicView tự đăng ký với Windows mỗi khi khởi chạy (xem bên dưới).",
     "config_registry_note": "Để có thể xuất hiện trong menu \"Mở bằng\" của Windows Explorer, MosaicView ghi một số thông tin vào registry của Windows khi khởi động. Việc ghi này chỉ giới hạn ở mức tối thiểu cần thiết: nó cho Windows biết MosaicView nằm ở đâu và có thể mở những loại tệp nào. Việc này chỉ được thực hiện trong phần registry dành riêng cho tài khoản người dùng của bạn, không bao giờ ở phần hệ thống, và không thay đổi bất kỳ liên kết tệp nào: việc chọn MosaicView làm ứng dụng mặc định cho một loại tệp vẫn là lựa chọn mà chỉ bạn mới có thể thực hiện, thông qua chính menu \"Mở bằng\" của Windows. Nếu bạn gỡ MosaicView khỏi ổ đĩa của mình, thông tin này đơn giản sẽ trở nên vô hiệu và không còn tác dụng.",
-    "config_dir_content": "MosaicView tạo một tệp có tên .mosaicview_config.json. Tệp này chứa các thiết lập của ứng dụng (cửa sổ, giao diện, ngôn ngữ, chế độ đánh số lại…), danh sách truyện tranh và cơ sở dữ liệu đã mở gần đây, dấu trang của bạn và khóa API ComicVine của bạn (đã mã hóa). Tệp này nằm trong thư mục {config_dir} và được giữ lại qua các phiên: không giống như các tệp tạm thời, tệp này không bao giờ bị xóa tự động, dù bởi MosaicView hay Windows.\nBạn có thể xóa thủ công bằng cách vào thư mục {config_dir}, hoặc bằng cách nhấp vào nút bên dưới. Tệp sẽ được tạo lại với các giá trị mặc định vào lần khởi động ứng dụng tiếp theo."
+    "config_dir_content": "MosaicView tạo một tệp có tên .mosaicview_config.json. Tệp này chứa các thiết lập của ứng dụng (cửa sổ, giao diện, ngôn ngữ, chế độ đánh số lại…), danh sách truyện tranh và cơ sở dữ liệu đã mở gần đây, dấu trang của bạn và khóa API ComicVine của bạn (đã mã hóa). Tệp này nằm trong thư mục {config_dir} và được giữ lại qua các phiên: không giống như các tệp tạm thời, tệp này không bao giờ bị xóa tự động, dù bởi MosaicView hay Windows.\nBạn có thể xóa thủ công bằng cách vào thư mục {config_dir}, hoặc bằng cách nhấp vào nút bên dưới. Tệp sẽ được tạo lại với các giá trị mặc định vào lần khởi động ứng dụng tiếp theo.",
+    "scan": "Quét một hình ảnh",
+    "scan_content": "• Nhấp vào nút \"Quét\" (cột biểu tượng, menu Tệp, hoặc nhấp chuột phải trên bức khảm) để mở cửa sổ quét. MosaicView điều khiển trực tiếp máy quét của bạn (thông qua WIA, hệ thống quét của Windows): chọn thiết bị, độ phân giải (DPI), chế độ màu (màu / thang xám / đen trắng), sau đó nhấp vào \"Quét\". Máy quét phải được cắm điện, bật nguồn và đã cài đặt trình điều khiển trên Windows để xuất hiện trong danh sách.\n• Chỉ hỗ trợ quét toàn trang, vì ứng dụng đã có mọi thứ cần thiết để chỉnh sửa hình ảnh sau khi quét.\n• Hình ảnh đã quét được tự động thêm vào bức khảm, sau các trang đã có sẵn. Sau đó bạn có thể cắt, làm thẳng, điều chỉnh màu sắc, v.v. như bất kỳ trang nào khác của bức khảm\n• Tính năng này điều khiển trực tiếp máy quét, không thông qua phần mềm của nhà sản xuất cũng không hiển thị cửa sổ cấu hình riêng của nó.\n• Vì máy quét vật lý chỉ có thể được điều khiển bởi một kết nối tại một thời điểm, việc quét chỉ có thể thực hiện trên một khung cùng lúc: nếu cửa sổ quét đang mở hoặc đang quét trong một khung, nút \"Quét\" vẫn bị mờ ở khung còn lại cho đến khi thao tác hoàn tất."
   },
   "misc": {
     "file_word": "tệp",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Không tìm thấy dữ liệu cho số này trên ComicVine.",
     "update_done_title": "Đã cập nhật siêu dữ liệu",
     "update_done_message": "Siêu dữ liệu đã được cập nhật thành công."
+  },
+  "scan": {
+    "dialog_title": "Quét một hình ảnh",
+    "button": "Quét",
+    "tooltip": "Quét một hình ảnh từ máy quét và thêm vào bức khảm",
+    "device_label": "Máy quét:",
+    "searching_devices": "Đang tìm máy quét...",
+    "no_devices_found": "Không phát hiện máy quét nào. Kiểm tra xem máy đã được cắm điện, bật nguồn và đã cài đặt trình điều khiển chưa.",
+    "resolution_label": "Độ phân giải:",
+    "color_mode_label": "Chế độ màu:",
+    "color_mode_color": "Màu",
+    "color_mode_grayscale": "Thang xám",
+    "color_mode_bw": "Đen trắng",
+    "scan_button": "Quét",
+    "progress_scanning": "Đang quét...",
+    "error_wia_unavailable": "Không thể truy cập hệ thống quét của Windows. Kiểm tra xem trình điều khiển máy quét đã được cài đặt trên máy tính này chưa.",
+    "error_enumeration_failed": "Đã xảy ra lỗi khi tìm kiếm các máy quét khả dụng.",
+    "error_device_unreachable": "Máy quét đã chọn không còn khả dụng. Kiểm tra xem máy vẫn được cắm điện và bật nguồn hay không.",
+    "error_no_scan_item": "Máy quét này không cung cấp nguồn quét khả dụng nào.",
+    "error_no_paper": "Không phát hiện giấy. Đặt tài liệu vào máy quét rồi thử lại.",
+    "error_transfer_failed": "Máy quét không phản hồi đúng cách và việc quét đã thất bại. Hãy thử lại hoặc kiểm tra máy quét.",
+    "error_invalid_image": "Hình ảnh nhận được từ máy quét không hợp lệ hoặc bị hỏng.",
+    "send_log_link": "Gửi nhật ký quét qua email",
+    "no_log_yet": "Chưa có bản quét nào được thực hiện: chưa có nhật ký nào để gửi.",
+    "mail_body_hint": "Nhấn Ctrl+V, hoặc nhấp chuột phải rồi chọn Dán, để gửi nhật ký quét vừa được sao chép.",
+    "checking_capabilities": "Đang kiểm tra khả năng của máy quét...",
+    "escl_fallback_hint": "Nếu trình điều khiển của nhà sản xuất không phản hồi, đôi khi Windows có thể quét trực tiếp.",
+    "escl_fallback_button": "Thử với trình điều khiển chung của Windows",
+    "open_log": "Mở nhật ký quét",
+    "reveal_log": "Hiển thị nhật ký quét trong Explorer"
   }
 }

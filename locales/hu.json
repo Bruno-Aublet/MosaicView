@@ -1224,6 +1224,7 @@
       "window_title": "Szégyentelen reklám",
       "title": "Ismeri a Distillat-ot?",
       "body": "Kedvenc sagájának 8. kötete most jelent meg, és alig várja, hogy elolvassa. Csakhogy a 7. kötet 4 éve jelent meg, és az emlékei kissé homályosak: kik is voltak azok a mellékszereplők? És mi történt a végén?\n\nHa ez a helyzet ismerősnek tűnik, a Distillat önnek készült. Egyszerűen húzza be az EPUB vagy PDF fájlját az erre kijelölt területre: összefoglalót, karakterlapokat és a mű elemzését kapja, megtekintésre vagy PDF-be exportálásra készen.\n\nAz alkalmazás a Gemini 3.5 Flash ingyenes szintjére támaszkodik.",
+      "landing_intro": "Bemutatóoldal:",
       "download_intro": "Az alkalmazást itt töltheti le:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR licenc",
     "config_clear_clipboard": "Vágólap fájlok törlése",
     "config_clipboard_note": "Kivétel: A Windows vágólap által használt ideiglenes fájlok (clipboard_XXXXX fájlok) a másolás után 12 órán át megmaradnak, így akkor is beilleszthetők, ha bezárta az alkalmazást. 12 óra után automatikusan törlődnek.",
-    "config_log_note": "A kötegelt konverziók (PDF CBZ-vé és CBR CBZ-vé) hibanapló fájlt hoznak létre hiba esetén. Ezek a fájlok (Log_pdftocbz_.txt és Log_cbrtocbz_.txt) az alkalmazás bezárása után is megmaradnak, hogy később áttekinthetők legyenek. Csak a fenti \"Ideiglenes fájlok törlése\" gombbal törölhetők.",
+    "config_log_note": "A kötegelt konverziók (PDF-ből CBZ-be és CBR-ből CBZ-be) hiba esetén naplófájlt hoznak létre. Ezek a fájlok (Log_pdftocbz_.txt és Log_cbrtocbz_.txt) az alkalmazás bezárása után is megmaradnak, hogy később megtekinthetők legyenek. Csak a fenti „Ideiglenes fájlok törlése” gombbal távolíthatók el. A Log_scan.txt fájl ugyanígy rögzít minden beolvasást (használt szkenner, beállítások, eredmény vagy hiba) — hasznos a szkennerrel kapcsolatos probléma diagnosztizálásához.",
     "config_clipboard_cleared": "A vágólap fájlok sikeresen törölve lettek.",
     "adjust_images": "Képbeállítás",
     "adjust_images_content": "Ez a funkció lehetővé teszi a képek közvetlen retusálását a MosaicView-ban. Módosíthatja a fényerőt, a kontrasztot, az élességet, a szinteket, a telítettséget, effektusokat alkalmazhat (fekete-fehér, szépia, színinverzió), beállíthatja a tömörítés minőségét, eltávolíthatja a színeket, alkalmazhat átlátszóságot vagy különböző színmélységekre konvertálhat. Egyes beállításokhoz dedikált megjelenítő tartozik, amely lehetővé teszi az eredmény megtekintését teljes felbontásban az alkalmazás előtt. Egy bélyegkép valós időben mutatja az eredményt a főablakban.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} hangfájl mentve ide:",
     "config_single_instance_note": "A MosaicView soha nem indul el kétszer. Ha megnyit egy fájlt (például duplán rákattintva a Fájlkezelőben), miközben az alkalmazás már fut, nem jelenik meg egy második ablak: a fájl egyszerűen a már megnyitott ablakban nyílik meg, amely automatikusan előtérbe kerül. Ahhoz, hogy ez működjön, a MosaicView minden indításkor regisztrálja magát a Windowsnál (lásd lent).",
     "config_registry_note": "Ahhoz, hogy megjelenhessen a Windows Intéző \"Megnyitás ezzel\" menüjében, a MosaicView indításkor néhány információt ír be a Windows rendszerleíró adatbázisába. Ez a bejegyzés a szükséges minimumra korlátozódik: közli a Windows-szal, hogy hol található a MosaicView, és milyen fájltípusokat tud megnyitni. Ez kizárólag a felhasználói fiókja számára fenntartott részben történik, soha a rendszerszintű részben, és nem módosít semmilyen fájltársítást: a MosaicView alapértelmezett alkalmazásként való kiválasztása egy fájltípushoz továbbra is olyan döntés, amelyet csak Ön hozhat meg, a Windows saját \"Megnyitás ezzel\" menüjén keresztül. Ha eltávolítja a MosaicView-t a lemezéről, ez az információ egyszerűen inaktívvá válik, és nincs többé hatása.",
-    "config_dir_content": "A MosaicView létrehoz egy .mosaicview_config.json nevű fájlt. Ez a fájl tartalmazza az alkalmazás beállításait (ablak, téma, nyelv, újraszámozási mód…), a nemrég megnyitott képregények és adatbázisok listáját, a könyvjelzőket és a ComicVine API-kulcsot (titkosítva). A {config_dir} mappában található, és munkamenetről munkamenetre megmarad: a ideiglenes fájlokkal ellentétben sem a MosaicView, sem a Windows nem törli automatikusan.\nManuálisan törölheti a {config_dir} mappába lépve, vagy az alábbi gombra kattintva. Az alkalmazás következő indításakor alapértelmezett értékekkel újra létrejön."
+    "config_dir_content": "A MosaicView létrehoz egy .mosaicview_config.json nevű fájlt. Ez a fájl tartalmazza az alkalmazás beállításait (ablak, téma, nyelv, újraszámozási mód…), a nemrég megnyitott képregények és adatbázisok listáját, a könyvjelzőket és a ComicVine API-kulcsot (titkosítva). A {config_dir} mappában található, és munkamenetről munkamenetre megmarad: a ideiglenes fájlokkal ellentétben sem a MosaicView, sem a Windows nem törli automatikusan.\nManuálisan törölheti a {config_dir} mappába lépve, vagy az alábbi gombra kattintva. Az alkalmazás következő indításakor alapértelmezett értékekkel újra létrejön.",
+    "scan": "Kép beolvasása",
+    "scan_content": "• Kattintson a „Beolvasás” gombra (ikonoszlop, Fájl menü, vagy jobb kattintás a mozaikon) a beolvasási ablak megnyitásához. A MosaicView közvetlenül vezérli a szkennert (a WIA-n, a Windows beolvasó rendszerén keresztül): válassza ki az eszközt, a felbontást (DPI), a színmódot (színes / szürkeárnyalatos / fekete-fehér), majd kattintson a „Beolvasás” gombra. A listában való megjelenéshez a szkennernek csatlakoztatva, bekapcsolva kell lennie, illesztőprogramjának pedig telepítve kell lennie a Windows rendszeren.\n• Csak a teljes oldal beolvasása támogatott, mivel az alkalmazás már rendelkezik mindennel, ami a kép beolvasás utáni szerkesztéséhez szükséges.\n• A beolvasott kép automatikusan hozzáadódik a mozaikhoz, a már meglévő oldalak után. Ezután körbevághatja, kiegyenesítheti, színeit módosíthatja stb., mint a mozaik bármely más oldalát\n• Ez a funkció közvetlenül vezérli a szkennert, a gyártó szoftverének használata vagy annak saját beállítási ablakának megjelenítése nélkül.\n• Mivel egy fizikai szkennert egyszerre csak egy kapcsolat vezérelhet, a szkennelés egyszerre csak az egyik panelen lehetséges: ha az egyik panelen nyitva van a szkennelési ablak vagy folyamatban van a szkennelés, a „Szkennelés” gomb a másik panelen szürkén marad a művelet befejezéséig."
   },
   "misc": {
     "file_word": "fájl",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Ehhez a számhoz nem található adat a ComicVine-on.",
     "update_done_title": "Metaadatok frissítve",
     "update_done_message": "A metaadatok sikeresen frissültek."
+  },
+  "scan": {
+    "dialog_title": "Kép beolvasása",
+    "button": "Beolvasás",
+    "tooltip": "Kép beolvasása szkennerről és hozzáadása a mozaikhoz",
+    "device_label": "Szkenner:",
+    "searching_devices": "Szkennerek keresése...",
+    "no_devices_found": "Nem található szkenner. Ellenőrizze, hogy csatlakoztatva van-e, be van-e kapcsolva, és telepítve van-e a meghajtója.",
+    "resolution_label": "Felbontás:",
+    "color_mode_label": "Színmód:",
+    "color_mode_color": "Színes",
+    "color_mode_grayscale": "Szürkeárnyalatos",
+    "color_mode_bw": "Fekete-fehér",
+    "scan_button": "Beolvasás",
+    "progress_scanning": "Beolvasás folyamatban...",
+    "error_wia_unavailable": "Nem sikerül elérni a Windows beolvasó rendszerét. Ellenőrizze, hogy telepítve van-e a szkenner illesztőprogramja a számítógépen.",
+    "error_enumeration_failed": "Hiba történt az elérhető szkennerek keresésekor.",
+    "error_device_unreachable": "A kiválasztott szkenner már nem érhető el. Ellenőrizze, hogy még mindig csatlakoztatva és bekapcsolva van-e.",
+    "error_no_scan_item": "Ez a szkenner nem kínál használható beolvasási forrást.",
+    "error_no_paper": "Nem található papír. Helyezzen egy dokumentumot a szkennerre, és próbálja újra.",
+    "error_transfer_failed": "A szkenner nem válaszolt megfelelően, és a beolvasás sikertelen volt. Próbálja újra, vagy ellenőrizze a szkennert.",
+    "error_invalid_image": "A szkennertől kapott kép érvénytelen vagy sérült.",
+    "send_log_link": "Beolvasási napló küldése e-mailben",
+    "no_log_yet": "Még nem történt beolvasás: még nincs elküldhető napló.",
+    "mail_body_hint": "Nyomja meg a Ctrl+V billentyűkombinációt, vagy kattintson a jobb gombbal, majd válassza a Beillesztés lehetőséget az imént másolt beolvasási napló elküldéséhez.",
+    "checking_capabilities": "A szkenner képességeinek ellenőrzése...",
+    "escl_fallback_hint": "Ha a gyártó illesztőprogramja nem válaszol, a Windows néha közvetlenül is tud szkennelni.",
+    "escl_fallback_button": "Kísérlet a Windows általános illesztőprogramjával",
+    "open_log": "Szkennelési napló megnyitása",
+    "reveal_log": "Szkennelési napló megjelenítése a Intézőben"
   }
 }

@@ -1224,6 +1224,7 @@
       "window_title": "Iklan tanpa malu",
       "title": "Sudah tahu Distillat?",
       "body": "Jilid 8 dari saga favorit Anda baru saja terbit, dan Anda tidak sabar untuk membacanya. Hanya saja jilid 7 terbit 4 tahun lalu, dan ingatan Anda agak kabur: siapa lagi karakter-karakter pendukung itu? Dan apa yang terjadi di akhir cerita?\n\nJika situasi ini terdengar familiar, Distillat dibuat untuk Anda. Cukup jatuhkan file EPUB atau PDF Anda ke area yang disediakan: Anda mendapatkan ringkasan, kartu karakter, dan analisis karya, siap untuk dilihat atau diekspor ke PDF.\n\nAplikasi ini mengandalkan tingkat gratis Gemini 3.5 Flash.",
+      "landing_intro": "Halaman presentasi:",
       "download_intro": "Anda dapat mengunduh aplikasi di sini:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Lisensi UnRAR",
     "config_clear_clipboard": "Hapus file clipboard",
     "config_clipboard_note": "Pengecualian: File sementara yang digunakan oleh clipboard Windows (file clipboard_XXXXX) disimpan selama 12 jam setelah menyalin, sehingga Anda dapat menempelkannya bahkan setelah menutup aplikasi. Setelah 12 jam, file tersebut akan dihapus secara otomatis.",
-    "config_log_note": "Konversi batch (PDF ke CBZ dan CBR ke CBZ) membuat file log saat terjadi kesalahan. File-file ini (Log_pdftocbz_.txt dan Log_cbrtocbz_.txt) disimpan bahkan setelah menutup aplikasi, sehingga dapat ditinjau kemudian. File tersebut hanya dihapus melalui tombol \"Hapus file sementara\" di atas.",
+    "config_log_note": "Konversi massal (PDF ke CBZ dan CBR ke CBZ) membuat file log jika terjadi kesalahan. File-file ini (Log_pdftocbz_.txt dan Log_cbrtocbz_.txt) tetap disimpan bahkan setelah aplikasi ditutup, agar dapat ditinjau kembali nanti. File tersebut hanya dihapus melalui tombol \"Hapus berkas sementara\" di atas. File Log_scan.txt mencatat setiap pemindaian dengan cara yang sama (pemindai yang digunakan, pengaturan, hasil atau kesalahan) — berguna untuk mendiagnosis masalah dengan pemindai Anda.",
     "config_clipboard_cleared": "File clipboard telah berhasil dihapus.",
     "adjust_images": "Penyesuaian gambar",
     "adjust_images_content": "Fungsi ini memungkinkan Anda menyentuh ulang gambar langsung di MosaicView. Anda dapat mengubah kecerahan, kontras, ketajaman, level, saturasi, menerapkan efek (hitam putih, sepia, inversi warna), menyesuaikan kualitas kompresi, menghapus warna, menerapkan transparansi, atau mengonversi ke kedalaman warna yang berbeda. Beberapa pengaturan memiliki penampil khusus yang memungkinkan Anda melihat hasilnya dalam resolusi penuh sebelum diterapkan. Pratinjau miniatur menampilkan hasilnya secara real time di jendela utama.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} berkas audio disimpan di:",
     "config_single_instance_note": "MosaicView tidak pernah terbuka dua kali. Jika Anda membuka berkas (misalnya dengan mengeklik dua kali di Explorer) saat aplikasi sudah terbuka, tidak akan muncul jendela kedua: berkas tersebut cukup dibuka di jendela yang sudah ada, yang akan otomatis dibawa ke depan. Agar hal ini berfungsi, MosaicView mendaftarkan dirinya ke Windows setiap kali dijalankan (lihat di bawah).",
     "config_registry_note": "Agar dapat muncul di menu \"Buka dengan\" Windows Explorer, MosaicView menuliskan sedikit informasi ke registry Windows saat dijalankan. Pencatatan ini terbatas pada hal yang benar-benar diperlukan: memberi tahu Windows di mana MosaicView berada dan jenis berkas apa saja yang dapat dibukanya. Ini hanya dilakukan pada bagian registry yang dikhususkan untuk akun pengguna Anda, tidak pernah pada bagian sistem, dan tidak mengubah asosiasi berkas apa pun: memilih MosaicView sebagai aplikasi bawaan untuk suatu jenis berkas tetap menjadi pilihan yang hanya dapat Anda buat sendiri, melalui menu \"Buka dengan\" milik Windows sendiri. Jika Anda menghapus MosaicView dari disk Anda, informasi ini akan menjadi tidak aktif dan tidak berpengaruh sama sekali.",
-    "config_dir_content": "MosaicView membuat file bernama .mosaicview_config.json. File ini berisi pengaturan aplikasi (jendela, tema, bahasa, mode penomoran ulang…), daftar komik dan basis data yang baru dibuka, bookmark Anda, dan kunci API ComicVine Anda (terenkripsi). File ini terletak di folder {config_dir} dan tetap tersimpan dari satu sesi ke sesi berikutnya: tidak seperti file sementara, file ini tidak pernah dihapus secara otomatis, baik oleh MosaicView maupun Windows.\nAnda dapat menghapusnya secara manual dengan membuka folder {config_dir}, atau dengan mengklik tombol di bawah ini. File ini akan dibuat ulang dengan nilai default saat aplikasi berikutnya kali dijalankan."
+    "config_dir_content": "MosaicView membuat file bernama .mosaicview_config.json. File ini berisi pengaturan aplikasi (jendela, tema, bahasa, mode penomoran ulang…), daftar komik dan basis data yang baru dibuka, bookmark Anda, dan kunci API ComicVine Anda (terenkripsi). File ini terletak di folder {config_dir} dan tetap tersimpan dari satu sesi ke sesi berikutnya: tidak seperti file sementara, file ini tidak pernah dihapus secara otomatis, baik oleh MosaicView maupun Windows.\nAnda dapat menghapusnya secara manual dengan membuka folder {config_dir}, atau dengan mengklik tombol di bawah ini. File ini akan dibuat ulang dengan nilai default saat aplikasi berikutnya kali dijalankan.",
+    "scan": "Pindai gambar",
+    "scan_content": "• Klik tombol \"Pindai\" (kolom ikon, menu Berkas, atau klik kanan pada mosaik) untuk membuka jendela pemindaian. MosaicView mengendalikan pemindai Anda secara langsung (melalui WIA, sistem pemindaian Windows): pilih perangkat, resolusi (DPI), mode warna (warna / skala abu-abu / hitam putih), lalu klik \"Pindai\". Pemindai harus tersambung, dinyalakan, dan drivernya terpasang di Windows agar muncul dalam daftar.\n• Hanya pemindaian satu halaman penuh yang didukung, karena aplikasi sudah memiliki semua yang diperlukan untuk mengedit gambar setelah pemindaian.\n• Gambar yang dipindai secara otomatis ditambahkan ke mosaik, setelah halaman yang sudah ada. Anda kemudian dapat memotong, meluruskan, menyesuaikan warnanya, dll. seperti halaman mosaik lainnya\n• Fitur ini mengendalikan pemindai secara langsung, tanpa melalui perangkat lunak produsen atau menampilkan jendela konfigurasinya sendiri.\n• Karena pemindai fisik hanya dapat dikendalikan oleh satu koneksi dalam satu waktu, pemindaian hanya dapat dilakukan pada satu panel dalam satu waktu: jika jendela pemindaian terbuka atau pemindaian sedang berlangsung di satu panel, tombol \"Pindai\" tetap berwarna abu-abu di panel lainnya hingga operasi selesai."
   },
   "misc": {
     "file_word": "file",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Tidak ada data yang ditemukan untuk nomor ini di ComicVine.",
     "update_done_title": "Metadata diperbarui",
     "update_done_message": "Metadata berhasil diperbarui."
+  },
+  "scan": {
+    "dialog_title": "Pindai gambar",
+    "button": "Pindai",
+    "tooltip": "Pindai gambar dari pemindai dan tambahkan ke mosaik",
+    "device_label": "Pemindai:",
+    "searching_devices": "Mencari pemindai...",
+    "no_devices_found": "Tidak ada pemindai yang terdeteksi. Periksa apakah sudah tersambung, dinyalakan, dan drivernya sudah terpasang.",
+    "resolution_label": "Resolusi:",
+    "color_mode_label": "Mode warna:",
+    "color_mode_color": "Warna",
+    "color_mode_grayscale": "Skala abu-abu",
+    "color_mode_bw": "Hitam putih",
+    "scan_button": "Pindai",
+    "progress_scanning": "Memindai...",
+    "error_wia_unavailable": "Tidak dapat mengakses sistem pemindaian Windows. Periksa apakah driver pemindai sudah terpasang di komputer ini.",
+    "error_enumeration_failed": "Terjadi kesalahan saat mencari pemindai yang tersedia.",
+    "error_device_unreachable": "Pemindai yang dipilih tidak lagi dapat diakses. Periksa apakah masih tersambung dan menyala.",
+    "error_no_scan_item": "Pemindai ini tidak menawarkan sumber pemindaian yang dapat digunakan.",
+    "error_no_paper": "Tidak ada kertas terdeteksi. Letakkan dokumen pada pemindai lalu coba lagi.",
+    "error_transfer_failed": "Pemindai tidak merespons dengan benar dan pemindaian gagal. Coba lagi atau periksa pemindai.",
+    "error_invalid_image": "Gambar yang diterima dari pemindai tidak valid atau rusak.",
+    "send_log_link": "Kirim log pemindaian melalui email",
+    "no_log_yet": "Belum ada pemindaian yang dilakukan: belum ada log untuk dikirim.",
+    "mail_body_hint": "Tekan Ctrl+V, atau klik kanan lalu pilih Tempel, untuk mengirim log pemindaian yang baru saja disalin.",
+    "checking_capabilities": "Memeriksa kemampuan pemindai...",
+    "escl_fallback_hint": "Jika driver pabrikan tidak merespons, Windows terkadang dapat memindai secara langsung.",
+    "escl_fallback_button": "Coba dengan driver generik Windows",
+    "open_log": "Buka log pemindaian",
+    "reveal_log": "Tampilkan log pemindaian di Explorer"
   }
 }

@@ -52,6 +52,7 @@ Avant d'improviser une procédure ou de la reconstruire depuis zéro, vérifier 
 - **`license-window`** — la fenêtre de licence
 - **`window-title`** — le titre de la fenêtre principale
 - **`web-import`** — import d'images depuis le web
+- **`scan`** — numérisation d'images depuis un scanner physique (WIA)
 - **`drag-and-drop`** — le drag & drop de la mosaïque
 - **`clipboard`** — copier/couper/coller système (Ctrl+C/X/V)
 - **`minimap`** — la minimap latérale

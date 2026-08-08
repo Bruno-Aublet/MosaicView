@@ -1224,6 +1224,7 @@
       "window_title": "Publicitate neobrăzată",
       "title": "Cunoașteți Distillat?",
       "body": "Volumul 8 din saga voastră preferată tocmai a apărut, și abia așteptați să-l citiți. Doar că volumul 7 a fost acum 4 ani, iar amintirile voastre sunt cam neclare: cine erau acele personaje secundare? Și ce se întâmpla la final?\n\nDacă această situație vă sună cunoscut, Distillat este făcut pentru voi. Pur și simplu plasați fișierul EPUB sau PDF în zona prevăzută pentru asta: obțineți un rezumat, fișe de personaje și o analiză a operei, gata de consultat sau exportat în PDF.\n\nAplicația se bazează pe nivelul gratuit al Gemini 3.5 Flash.",
+      "landing_intro": "Pagina de prezentare:",
       "download_intro": "Puteți descărca aplicația aici:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Licența UnRAR",
     "config_clear_clipboard": "Șterge fișierele din clipboard",
     "config_clipboard_note": "Excepție: Fișierele temporare utilizate de clipboard-ul Windows (fișiere clipboard_XXXXX) sunt păstrate 12 ore după copiere, astfel încât să le puteți lipi chiar și după închiderea aplicației. După 12 ore, acestea sunt șterse automat.",
-    "config_log_note": "Conversiile in lot (PDF in CBZ si CBR in CBZ) creeaza un fisier jurnal in caz de eroare. Aceste fisiere (Log_pdftocbz_.txt si Log_cbrtocbz_.txt) sunt pastrate chiar si dupa inchiderea aplicatiei, pentru a putea fi consultate ulterior. Ele sunt sterse doar prin butonul \"Sterge fisierele temporare\" de mai sus.",
+    "config_log_note": "Conversiile în lot (PDF în CBZ și CBR în CBZ) creează un fișier jurnal în caz de eroare. Aceste fișiere (Log_pdftocbz_.txt și Log_cbrtocbz_.txt) sunt păstrate chiar și după închiderea aplicației, pentru a putea fi consultate ulterior. Sunt eliminate doar prin butonul „Șterge fișierele temporare” de mai sus. Un fișier Log_scan.txt înregistrează în același mod fiecare scanare (scanerul utilizat, parametrii, rezultatul sau eroarea) — util pentru diagnosticarea unei probleme cu scanerul dumneavoastră.",
     "config_clipboard_cleared": "Fișierele din clipboard au fost șterse cu succes.",
     "adjust_images": "Ajustarea imaginilor",
     "adjust_images_content": "Această funcție vă permite să retușați imaginile direct în MosaicView. Puteți modifica luminozitatea, contrastul, claritatea, nivelurile, saturația, să aplicați efecte (alb-negru, sepia, inversarea culorilor), să ajustați calitatea compresiei, să eliminați culori, să aplicați transparență sau să convertiți la diferite adâncimi de culoare. Unele setări dispun de un vizualizator dedicat care vă permite să vedeți rezultatul la rezoluție completă înainte de aplicare. O previzualizare miniaturală arată rezultatul în timp real în fereastra principală.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} fișier(e) audio salvat(e) în:",
     "config_single_instance_note": "MosaicView nu se lansează niciodată de două ori. Dacă deschideți un fișier (de exemplu, printr-un dublu clic în Explorer) în timp ce aplicația este deja deschisă, nu apare o a doua fereastră: fișierul se deschide pur și simplu în fereastra deja existentă, care trece automat în prim-plan. Pentru ca acest lucru să funcționeze, MosaicView se înregistrează la Windows de fiecare dată când este lansat (vezi mai jos).",
     "config_registry_note": "Pentru a putea apărea în meniul \"Deschidere cu\" al Explorer-ului Windows, MosaicView înscrie câteva informații în registrul Windows la pornire. Această înscriere se limitează la strictul necesar: îi indică lui Windows unde se află MosaicView și ce tipuri de fișiere poate deschide. Este realizată exclusiv în partea registrului rezervată contului dumneavoastră de utilizator, niciodată în partea de sistem, și nu modifică nicio asociere de fișiere: alegerea MosaicView ca aplicație implicită pentru un tip de fișier rămâne o decizie pe care numai dumneavoastră o puteți lua, prin propriul meniu \"Deschidere cu\" al Windows. Dacă eliminați MosaicView de pe disc, aceste informații devin pur și simplu inactive și fără efect.",
-    "config_dir_content": "MosaicView creează un fișier numit .mosaicview_config.json. Acest fișier conține setările aplicației (fereastră, temă, limbă, mod de renumerotare…), lista benzilor desenate și a bazelor de date deschise recent, marcajele dvs. și cheia API ComicVine (criptată). Se află în folderul {config_dir} și este păstrat de la o sesiune la alta: spre deosebire de fișierele temporare, nu este niciodată șters automat, nici de MosaicView, nici de Windows.\nÎl puteți șterge manual accesând folderul {config_dir}, sau făcând clic pe butonul de mai jos. Va fi recreat cu valorile implicite la următoarea pornire a aplicației."
+    "config_dir_content": "MosaicView creează un fișier numit .mosaicview_config.json. Acest fișier conține setările aplicației (fereastră, temă, limbă, mod de renumerotare…), lista benzilor desenate și a bazelor de date deschise recent, marcajele dvs. și cheia API ComicVine (criptată). Se află în folderul {config_dir} și este păstrat de la o sesiune la alta: spre deosebire de fișierele temporare, nu este niciodată șters automat, nici de MosaicView, nici de Windows.\nÎl puteți șterge manual accesând folderul {config_dir}, sau făcând clic pe butonul de mai jos. Va fi recreat cu valorile implicite la următoarea pornire a aplicației.",
+    "scan": "Scanați o imagine",
+    "scan_content": "• Faceți clic pe butonul „Scanare” (coloana de pictograme, meniul Fișier sau clic dreapta pe mozaic) pentru a deschide fereastra de scanare. MosaicView controlează direct scanerul dvs. (prin WIA, sistemul de scanare Windows): selectați dispozitivul, rezoluția (DPI), modul de culoare (culoare / tonuri de gri / alb-negru), apoi faceți clic pe „Scanare”. Un scaner trebuie să fie conectat, pornit și driverul său instalat pe Windows pentru a apărea în listă.\n• Este acceptată doar scanarea paginii întregi, aplicația dispunând deja de tot ce este necesar pentru retușarea imaginii după scanare.\n• Imaginea scanată este adăugată automat la mozaic, după paginile deja existente. O puteți apoi decupa, îndrepta, ajusta culorile etc., ca orice altă pagină a mozaicului\n• Această funcție controlează scanerul direct, fără a trece prin software-ul producătorului și fără a afișa propria fereastră de configurare a acestuia.\n• Deoarece un scaner fizic poate fi controlat doar de o singură conexiune la un moment dat, scanarea este posibilă doar într-un singur panou la un moment dat: dacă o fereastră de scanare este deschisă sau o scanare este în curs într-un panou, butonul „Scanează” rămâne dezactivat în celălalt panou până la finalizarea operațiunii."
   },
   "misc": {
     "file_word": "fișier",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Nu au fost găsite date pentru acest număr pe ComicVine.",
     "update_done_title": "Metadatele au fost actualizate",
     "update_done_message": "Metadatele au fost actualizate cu succes."
+  },
+  "scan": {
+    "dialog_title": "Scanați o imagine",
+    "button": "Scanare",
+    "tooltip": "Scanați o imagine de la un scaner și adăugați-o la mozaic",
+    "device_label": "Scaner:",
+    "searching_devices": "Se caută scanere...",
+    "no_devices_found": "Nu a fost detectat niciun scaner. Verificați dacă este conectat, pornit și dacă driverul său este instalat.",
+    "resolution_label": "Rezoluție:",
+    "color_mode_label": "Mod de culoare:",
+    "color_mode_color": "Culoare",
+    "color_mode_grayscale": "Tonuri de gri",
+    "color_mode_bw": "Alb-negru",
+    "scan_button": "Scanare",
+    "progress_scanning": "Se scanează...",
+    "error_wia_unavailable": "Nu se poate accesa sistemul de scanare Windows. Verificați dacă un driver de scaner este instalat pe acest computer.",
+    "error_enumeration_failed": "A apărut o eroare la căutarea scanerelor disponibile.",
+    "error_device_unreachable": "Scanerul selectat nu mai este accesibil. Verificați dacă este încă conectat și pornit.",
+    "error_no_scan_item": "Acest scaner nu oferă nicio sursă de scanare utilizabilă.",
+    "error_no_paper": "Nu a fost detectată hârtie. Așezați un document pe scaner și încercați din nou.",
+    "error_transfer_failed": "Scanerul nu a răspuns corect, iar scanarea a eșuat. Încercați din nou sau verificați scanerul.",
+    "error_invalid_image": "Imaginea primită de la scaner este nevalidă sau deteriorată.",
+    "send_log_link": "Trimiteți jurnalul de scanare prin e-mail",
+    "no_log_yet": "Nu a fost efectuată încă nicio scanare: nu există încă niciun jurnal de trimis.",
+    "mail_body_hint": "Apăsați Ctrl+V, sau faceți clic dreapta apoi Lipire, pentru a trimite jurnalul de scanare care tocmai a fost copiat.",
+    "checking_capabilities": "Se verifică capacitățile scanerului...",
+    "escl_fallback_hint": "Dacă driverul producătorului nu răspunde, Windows poate uneori scana direct.",
+    "escl_fallback_button": "Încearcă cu driverul generic Windows",
+    "open_log": "Deschide jurnalul de scanare",
+    "reveal_log": "Afișează jurnalul de scanare în Explorer"
   }
 }

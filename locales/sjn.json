@@ -1224,6 +1224,7 @@
       "window_title": "Trenarad dhíreb",
       "title": "Istog Distillat?",
       "body": "Anann i-oer 8 e·lú Lúlen achenio, a nallog gwannen le legi hen. Dan i-oer 7 oe ereb 4 in-idhrinn, a lû·lín gwathog: man edir i-Quetar erchín hen? A man erui bant i-methed?\n\nAe i-tham hen les fael, Distillat naur na le. Sada ambar EPUB pehn PDF lín na theri sad; toged Hannas, cardh e-Quetar a nothrannath e-goleb, lain adorthad pehn sadatha be PDF.\n\nI-tham hen Sadatha ah lam laid e-Gemini 3.5 Flash.",
+      "landing_intro": "Tiro i-tham hen sí:",
       "download_intro": "Le sadatha i tham hen sí:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR Taflen",
     "config_clear_clipboard": "Deri edhellen i gîl prestannen",
     "config_clipboard_note": "Awarth: I gîl hannathel prestannen be Windows (gîl clipboard_XXXXX) caedant 12 lû ab i lost, an le în pastiel i theled ab i thaur. Ab 12 lû, reviar awarth.",
-    "config_log_note": "I prestannath eryd (PDF na CBZ a CBR na CBZ) crear gîl gladhad an i raeg telin. I gîl sen (Log_pdftocbz_.txt a Log_cbrtocbz_.txt) garant ir ab abad i theled, an telin ceniel ad. Reviar pan be i thalion \"Dago i gîl hannathel\" or bo.",
+    "config_log_note": "I ambar-vellad (PDF vin CBZ a CBR vin CBZ) chenatha ambar hena in Ú-mae martha. Ambar hin (Log_pdftocbz_.txt a Log_cbrtocbz_.txt) tegil needh apa i vosaic dhannen, an cened adh. Delthannen erui thand \"Dele ambar berain\" nuin. Ambar Log_scan.txt cenatha sui Chenatha bain (Chenor lostannen, pae, tulu egor Ú-mae) — anna genediad Chenor lîn.",
     "config_clipboard_cleared": "I gîl prestannen derianent awarth.",
     "adjust_images": "Adlanna i bain",
     "adjust_images_content": "I chîr hen anna le adfaeda i randirain lín needig vi MosaicView. Cael le athreidio i galas, i thregad, i vain, i lend, i annedil, cemmen effeithau (morn a gwen, sepia, dulu i galassath), athreidio i chaun cened, dilio i galassath, cemmen anwedh egor athrenna na lend galas eraid. Le annon i lû istol dîn i·dhilifel na cened i tregad na lend veleg nu chemmed. Adlan mân-lun tíra i tregad vi lû annedin ned i fennas veleg.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} lend adeniannen an:",
     "config_single_instance_note": "MosaicView pen echui 'wain edwen. Ir echedi ambar (be aphada' o Explorer, thaid) i ammar rast echui, u aphad edwen ú-adwenna: ambar echui vain nan rast rast, ar rast na tira hamma. Aden hen echui, MosaicView harn nan Golover Windows aden pân echui (tir nu).",
     "config_registry_note": "Aden aphada rast \"Echo bo\" o Windows Explorer, MosaicView tecil harn nothrannath nan Golover Windows na echui — parf redhui i pêd Windows man ammar rast a MosaicView ar man rueil ambar aphada. Tecil hen ú-vedui nan gerthad annen. Tecil vain nan haran Golover annen aden i cont adan, pen nan haran nell, ar ú-aphel man harn ambar-thand: tirad MosaicView mal rast rael aden rueil ambar rast ratha gerthad ir naug pêd, be rast \"Echo bo\" o Windows sui. Ir dhelib MosaicView nan taur lín, harn hen echui gwath ar pen tirith.",
-    "config_dir_content": "MosaicView tecil parf henna .mosaicview_config.json. Parf hen harya wîv nan i·chaes (aphada, thind, phith, i·nírad i·na echedi orchad…), i·lû i·pheirith â i·pharfath pantannen aphada, i·gerthadin lín, ar i·têw API ComicVine lín (parch). Caeda vi i·taur {config_dir} ar tira caita rast am rast: â-veren beirain, ú-echui vain, mal MosaicView mal Windows.\nAnnad hen naug teqi im i·taur {config_dir}, mal nedhoro i·nern nu. Adertha am i·chaes chu i·nírad hîn aden i·harfuil vain a MosaicView echui."
+    "config_dir_content": "MosaicView tecil parf henna .mosaicview_config.json. Parf hen harya wîv nan i·chaes (aphada, thind, phith, i·nírad i·na echedi orchad…), i·lû i·pheirith â i·pharfath pantannen aphada, i·gerthadin lín, ar i·têw API ComicVine lín (parch). Caeda vi i·taur {config_dir} ar tira caita rast am rast: â-veren beirain, ú-echui vain, mal MosaicView mal Windows.\nAnnad hen naug teqi im i·taur {config_dir}, mal nedhoro i·nern nu. Adertha am i·chaes chu i·nírad hîn aden i·harfuil vain a MosaicView echui.",
+    "scan": "Cenatha randir",
+    "scan_content": "• Podo an chîn \"Ceno\" (i thand genoer, i lend Ambar, egor podo dhelig vo i vosaic) an athrado i host Chenatha. MosaicView cenatha i Chenor lîn erui (thand WIA, thand cened Windows): mede i genor, i ninnas (DPI), i chalich (chalich / lith-mith / morn a nimp), a podo \"Ceno\". I genor tolel, vaded, a i thand dînen anann Windows an tolthad vo i lest.\n• Randir eno na chenatha ceniannen, an i chest anna erin hain chenatha an gwaith randir.\n• I randir cenannen anna vo i vosaic dad, apa i genoer ceniannen. Danno cenatha, tirio, egor faeg i venel, sui genor benn i vosaic.\n• I chest hen cenatha i genor erui, ú-erin i harn i chenor egor tolthad i thand dínen.\n• Ir i chenor dínen ú-erin cenatha ben unin luith erui, i chenatha erin ben paned erui: ir i host chenatha panno egor chenatha ceria vi paned, i chîn \"Ceno\" dâd ú-erin vi paned hen tenna i chest bo."
   },
   "misc": {
     "file_word": "bâr",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Ú-hirnen pathron ben rîf hen na ComicVine.",
     "update_done_title": "I pathron thandant",
     "update_done_message": "I pathron thanniel vaer."
+  },
+  "scan": {
+    "dialog_title": "Cenatha randir",
+    "button": "Ceno",
+    "tooltip": "Ceno randir o Chenor a hodo vo i vosaic",
+    "device_label": "Cenor:",
+    "searching_devices": "Cerin cened i genoer...",
+    "no_devices_found": "Ú-hirnen genor. Athrado i tholiel, i vaded, a i thand ambar dînen.",
+    "resolution_label": "Ninnas:",
+    "color_mode_label": "Faen chalich:",
+    "color_mode_color": "Chalich",
+    "color_mode_grayscale": "Lith-mith",
+    "color_mode_bw": "Morn a Nimp",
+    "scan_button": "Ceno",
+    "progress_scanning": "Cenatha...",
+    "error_wia_unavailable": "Ú-athradannen i thand cened Windows. Athrado i thand Chenor dînen vo i falch hen.",
+    "error_enumeration_failed": "Ú-vaded ceriannen an cened i chenoer ceniannen.",
+    "error_device_unreachable": "Ú-athradannen na i genor wilthen. Athrado i tholiel a i vaded dad.",
+    "error_no_scan_item": "Genorhen ú-anna randir cened.",
+    "error_no_paper": "Ú-hirnen parf. Danno ambar vo i genor a drasto adh.",
+    "error_transfer_failed": "Ú-jangannen i genor mae a i cened firn. Drasto adh, egor athrado i genor.",
+    "error_invalid_image": "I randir Sadien o i genor ú-faen egor rasta.",
+    "send_log_link": "Danna ambar Chenatha bo lith",
+    "no_log_yet": "Ú-cenannen randir. Ú-anna ambar an dannad.",
+    "mail_body_hint": "Podo Ctrl+V, egor podo dhelig a mede Panno, an dannad i ambar Chenatha thennin cendol.",
+    "checking_capabilities": "Genediad eirith i genor...",
+    "escl_fallback_hint": "Ir i thand chenor ú-jangatha, Windows athradatha cened dínen ivenin.",
+    "escl_fallback_button": "Athrado thand Windows velui",
+    "open_log": "Edro ambar Chenatha",
+    "reveal_log": "Cheno ambar Chenatha mi Explorer"
   }
 }

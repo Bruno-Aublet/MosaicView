@@ -1224,6 +1224,7 @@
       "window_title": "Skamlös reklam",
       "title": "Känner du till Distillat?",
       "body": "Del 8 av din favoritsaga har precis kommit ut, och du längtar efter att läsa den. Fast del 7 var för 4 år sedan, och dina minnen är lite suddiga: vilka var de där bikaraktärerna igen? Och vad hände på slutet?\n\nOm den här situationen känns bekant är Distillat gjort för dig. Släpp bara din EPUB- eller PDF-fil i det avsedda området: du får en sammanfattning, karaktärskort och en analys av verket, redo att läsas eller exporteras till PDF.\n\nApplikationen bygger på den kostnadsfria nivån av Gemini 3.5 Flash.",
+      "landing_intro": "Presentationssida:",
       "download_intro": "Du kan ladda ner applikationen här:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR-licens",
     "config_clear_clipboard": "Rensa urklippsfiler",
     "config_clipboard_note": "Undantag: Tillfälliga filer som används av Windows urklipp (clipboard_XXXXX-filer) sparas i 12 timmar efter kopiering, så att du kan klistra in dem även efter att ha stängt programmet. Efter 12 timmar raderas de automatiskt.",
-    "config_log_note": "Batchkonverteringar (PDF till CBZ och CBR till CBZ) skapar en loggfil vid fel. Dessa filer (Log_pdftocbz_.txt och Log_cbrtocbz_.txt) sparas aven efter att programmet stangts, sa att de kan granskas senare. De raderas bara med knappen \"Radera tillfalliga filer\" ovan.",
+    "config_log_note": "Batchkonverteringar (PDF till CBZ och CBR till CBZ) skapar en loggfil om ett fel uppstår. Dessa filer (Log_pdftocbz_.txt och Log_cbrtocbz_.txt) sparas även efter att programmet stängts, så att de kan granskas senare. De tas endast bort via knappen \"Rensa tillfälliga filer\" ovan. En fil med namnet Log_scan.txt registrerar på samma sätt varje skanning (använd skanner, inställningar, resultat eller fel) — användbart för att diagnostisera ett problem med din skanner.",
     "config_clipboard_cleared": "Urklippsfiler har rensats.",
     "adjust_images": "Bildjustering",
     "adjust_images_content": "Med den här funktionen kan du retuschera dina bilder direkt i MosaicView. Du kan justera ljusstyrka, kontrast, skärpa, nivåer, mättnad, tillämpa effekter (svartvitt, sepia, färginversion), justera komprimeringskvalitet, ta bort färger, tillämpa genomskinlighet eller konvertera till olika färgdjup. Vissa inställningar har en dedikerad visare som låter dig se resultatet i full upplösning innan du tillämpar det. En miniatyrförhandsgranskning visar resultatet i realtid i huvudfönstret.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} ljudfil(er) sparade i:",
     "config_single_instance_note": "MosaicView startar aldrig dubbelt. Om du öppnar en fil (till exempel genom att dubbelklicka på den i Utforskaren) medan programmet redan är öppet visas inget andra fönster: filen öppnas helt enkelt i det redan öppna fönstret, som automatiskt förs fram. För att detta ska fungera registrerar sig MosaicView hos Windows vid varje start (se nedan).",
     "config_registry_note": "För att kunna visas i Utforskarens meny \"Öppna med\" skriver MosaicView vid start några uppgifter till Windows-registret. Denna registrering begränsas till det absolut nödvändigaste: den talar om för Windows var MosaicView finns och vilka filtyper det kan öppna. Den görs enbart i den del av registret som är reserverad för ditt användarkonto, aldrig i systemdelen, och ändrar inga filassociationer: att välja MosaicView som standardprogram för en filtyp förblir ett val som endast du kan göra, via Windows egen meny \"Öppna med\". Om du tar bort MosaicView från din disk blir denna information helt enkelt inaktiv och utan verkan.",
-    "config_dir_content": "MosaicView skapar en fil som heter .mosaicview_config.json. Denna fil innehåller programmets inställningar (fönster, tema, språk, omnumreringsläge…), listan över nyligen öppnade serietidningar och databaser, dina bokmärken och din ComicVine API-nyckel (krypterad). Den finns i mappen {config_dir} och bevaras från session till session: till skillnad från de tillfälliga filerna raderas den aldrig automatiskt, varken av MosaicView eller Windows.\nDu kan radera den manuellt genom att gå till mappen {config_dir}, eller genom att klicka på knappen nedan. Den återskapas med standardvärden nästa gång programmet startas."
+    "config_dir_content": "MosaicView skapar en fil som heter .mosaicview_config.json. Denna fil innehåller programmets inställningar (fönster, tema, språk, omnumreringsläge…), listan över nyligen öppnade serietidningar och databaser, dina bokmärken och din ComicVine API-nyckel (krypterad). Den finns i mappen {config_dir} och bevaras från session till session: till skillnad från de tillfälliga filerna raderas den aldrig automatiskt, varken av MosaicView eller Windows.\nDu kan radera den manuellt genom att gå till mappen {config_dir}, eller genom att klicka på knappen nedan. Den återskapas med standardvärden nästa gång programmet startas.",
+    "scan": "Skanna en bild",
+    "scan_content": "• Klicka på knappen ”Skanna” (ikonkolumnen, menyn Arkiv eller högerklick på mosaiken) för att öppna skanningsfönstret. MosaicView styr din skanner direkt (via WIA, Windows skanningssystem): välj enhet, upplösning (DPI), färgläge (färg / gråskala / svartvitt) och klicka sedan på ”Skanna”. En skanner måste vara ansluten, påslagen och dess drivrutin installerad i Windows för att visas i listan.\n• Endast skanning av hela sidan stöds, eftersom applikationen redan har allt som behövs för bildredigering efter skanningen.\n• Den skannade bilden läggs automatiskt till i mosaiken, efter de sidor som redan finns. Du kan sedan beskära den, räta ut den, justera dess färger osv. som vilken annan sida som helst i mosaiken\n• Den här funktionen styr skannern direkt, utan att gå via tillverkarens programvara eller visa dess egna konfigurationsfönster.\n• Eftersom en fysisk skanner bara kan styras av en anslutning åt gången är skanning bara möjlig i en panel åt gången: om ett skanningsfönster är öppet eller en skanning pågår i en panel förblir knappen ”Skanna” gråmarkerad i den andra panelen tills åtgärden är klar."
   },
   "misc": {
     "file_word": "fil",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Ingen data hittades för detta nummer på ComicVine.",
     "update_done_title": "Metadata uppdaterade",
     "update_done_message": "Metadata har uppdaterats."
+  },
+  "scan": {
+    "dialog_title": "Skanna en bild",
+    "button": "Skanna",
+    "tooltip": "Skanna en bild från en skanner och lägg till den i mosaiken",
+    "device_label": "Skanner:",
+    "searching_devices": "Söker efter skannrar...",
+    "no_devices_found": "Ingen skanner upptäcktes. Kontrollera att den är ansluten, påslagen och att drivrutinen är installerad.",
+    "resolution_label": "Upplösning:",
+    "color_mode_label": "Färgläge:",
+    "color_mode_color": "Färg",
+    "color_mode_grayscale": "Gråskala",
+    "color_mode_bw": "Svartvitt",
+    "scan_button": "Skanna",
+    "progress_scanning": "Skannar...",
+    "error_wia_unavailable": "Det går inte att komma åt Windows skanningssystem. Kontrollera att en skannerdrivrutin är installerad på den här datorn.",
+    "error_enumeration_failed": "Ett fel uppstod vid sökning efter tillgängliga skannrar.",
+    "error_device_unreachable": "Den valda skannern är inte längre tillgänglig. Kontrollera att den fortfarande är ansluten och påslagen.",
+    "error_no_scan_item": "Den här skannern erbjuder ingen användbar skanningskälla.",
+    "error_no_paper": "Inget papper upptäcktes. Lägg ett dokument på skannern och försök igen.",
+    "error_transfer_failed": "Skannern svarade inte korrekt och skanningen misslyckades. Försök igen eller kontrollera skannern.",
+    "error_invalid_image": "Bilden som togs emot från skannern är ogiltig eller skadad.",
+    "send_log_link": "Skicka skanningsloggen via e-post",
+    "no_log_yet": "Ingen skanning har ännu utförts: det finns ännu ingen logg att skicka.",
+    "mail_body_hint": "Tryck på Ctrl+V, eller högerklicka och välj Klistra in, för att skicka den skanningslogg som just kopierades.",
+    "checking_capabilities": "Kontrollerar skannerns funktioner...",
+    "escl_fallback_hint": "Om tillverkarens drivrutin inte svarar kan Windows ibland skanna direkt.",
+    "escl_fallback_button": "Försök med Windows generiska drivrutin",
+    "open_log": "Öppna skanningsloggen",
+    "reveal_log": "Visa skanningsloggen i Utforskaren"
   }
 }

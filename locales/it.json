@@ -1224,6 +1224,7 @@
       "window_title": "Pubblicità sfacciata",
       "title": "Conosci Distillat?",
       "body": "Il tomo 8 della tua saga preferita è appena uscito, e non vedi l'ora di leggerlo. Peccato che il tomo 7 risalga a 4 anni fa, e i tuoi ricordi siano un po' confusi: chi erano già quei personaggi secondari? E cosa succedeva alla fine?\n\nSe questa situazione ti suona familiare, Distillat è fatto per te. Basta trascinare il tuo file EPUB o PDF nell'area prevista: ottieni un riassunto, schede dei personaggi e un'analisi dell'opera, pronti da consultare o esportare in PDF.\n\nL'applicazione si basa sul livello gratuito di Gemini 3.5 Flash.",
+      "landing_intro": "Pagina di presentazione:",
       "download_intro": "Puoi scaricare l'applicazione qui:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Licenza UnRAR",
     "config_clear_clipboard": "Cancella file degli appunti",
     "config_clipboard_note": "Eccezione: I file temporanei utilizzati dagli appunti di Windows (file clipboard_XXXXX) vengono conservati per 12 ore dopo la copia, in modo da poterli incollare anche dopo aver chiuso l'applicazione. Dopo 12 ore vengono eliminati automaticamente.",
-    "config_log_note": "Le conversioni in serie (PDF in CBZ e CBR in CBZ) creano un file di registro in caso di errore. Questi file (Log_pdftocbz_.txt e Log_cbrtocbz_.txt) vengono conservati anche dopo la chiusura dell'applicazione, in modo da poterli consultare successivamente. Vengono eliminati solo tramite il pulsante \"Elimina file temporanei\" qui sopra.",
+    "config_log_note": "Le conversioni in blocco (PDF in CBZ e CBR in CBZ) creano un file di registro in caso di errore. Questi file (Log_pdftocbz_.txt e Log_cbrtocbz_.txt) vengono conservati anche dopo la chiusura dell'applicazione, per poter essere consultati successivamente. Vengono eliminati solo tramite il pulsante \"Cancella file temporanei\" qui sopra. Un file Log_scan.txt registra allo stesso modo ogni scansione (scanner utilizzato, parametri, risultato o errore) — utile per diagnosticare un problema con il tuo scanner.",
     "config_clipboard_cleared": "I file degli appunti sono stati cancellati con successo.",
     "adjust_images": "Regolazione immagini",
     "adjust_images_content": "Questa funzione consente di ritoccare le immagini direttamente in MosaicView. È possibile modificare luminosità, contrasto, nitidezza, livelli, saturazione, applicare effetti (bianco e nero, seppia, inversione colori), regolare la qualità di compressione, rimuovere colori, applicare trasparenza o convertire in diverse profondità di colore. Alcune impostazioni dispongono di un visualizzatore dedicato che permette di vedere il risultato in piena risoluzione prima di applicarlo. Un'anteprima in miniatura mostra il risultato in tempo reale nella finestra principale.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} file audio salvati in:",
     "config_single_instance_note": "MosaicView non si avvia mai due volte. Se aprite un file (ad esempio con un doppio clic in Esplora risorse) mentre l'applicazione è già aperta, non compare una seconda finestra: il file si apre semplicemente nella finestra già esistente, che torna automaticamente in primo piano. Perché questo funzioni, MosaicView si registra presso Windows a ogni avvio (vedi sotto).",
     "config_registry_note": "Per poter comparire nel menu \"Apri con\" di Esplora risorse di Windows, all'avvio MosaicView scrive alcune informazioni nel registro di Windows. Questa registrazione si limita allo stretto necessario: indica a Windows dove si trova MosaicView e quali tipi di file è in grado di aprire. Viene effettuata esclusivamente nella parte del registro riservata al vostro account utente, mai in quella di sistema, e non modifica alcuna associazione di file: scegliere MosaicView come applicazione predefinita per un tipo di file resta una decisione che solo voi potete prendere, tramite il menu \"Apri con\" di Windows. Se rimuovete MosaicView dal disco, queste informazioni diventano semplicemente inattive e senza effetto.",
-    "config_dir_content": "MosaicView crea un file denominato .mosaicview_config.json. Questo file contiene le impostazioni dell'applicazione (finestra, tema, lingua, modalità di rinumerazione…), l'elenco dei fumetti e dei database aperti di recente, i tuoi segnalibri e la tua chiave API di ComicVine (crittografata). Si trova nella cartella {config_dir} ed è conservato da una sessione all'altra: a differenza dei file temporanei, non viene mai eliminato automaticamente, né da MosaicView né da Windows.\nPuoi eliminarlo manualmente accedendo alla cartella {config_dir}, oppure facendo clic sul pulsante qui sotto. Verrà ricreato con i valori predefiniti al successivo avvio dell'applicazione."
+    "config_dir_content": "MosaicView crea un file denominato .mosaicview_config.json. Questo file contiene le impostazioni dell'applicazione (finestra, tema, lingua, modalità di rinumerazione…), l'elenco dei fumetti e dei database aperti di recente, i tuoi segnalibri e la tua chiave API di ComicVine (crittografata). Si trova nella cartella {config_dir} ed è conservato da una sessione all'altra: a differenza dei file temporanei, non viene mai eliminato automaticamente, né da MosaicView né da Windows.\nPuoi eliminarlo manualmente accedendo alla cartella {config_dir}, oppure facendo clic sul pulsante qui sotto. Verrà ricreato con i valori predefiniti al successivo avvio dell'applicazione.",
+    "scan": "Scansionare un'immagine",
+    "scan_content": "• Fai clic sul pulsante «Scansiona» (colonna delle icone, menu File, o clic destro sul mosaico) per aprire la finestra di scansione. MosaicView pilota direttamente lo scanner (tramite WIA, il sistema di scansione di Windows): seleziona il dispositivo, la risoluzione (DPI), la modalità colore (colore / scala di grigi / bianco e nero), quindi fai clic su «Scansiona». Uno scanner deve essere collegato, acceso e con il driver installato su Windows per comparire nell'elenco.\n• È supportata solo la scansione a pagina intera, poiché l'applicazione dispone già di tutto il necessario per ritoccare l'immagine dopo la scansione.\n• L'immagine scansionata viene aggiunta automaticamente al mosaico, dopo le pagine già presenti. Puoi quindi ritagliarla, raddrizzarla, regolarne i colori, ecc. come qualsiasi altra pagina del mosaico\n• Questa funzione pilota lo scanner direttamente, senza passare dal software del produttore né mostrare la sua finestra di configurazione.\n• Poiché uno scanner fisico può essere controllato da una sola connessione alla volta, la scansione è possibile in un solo pannello per volta: se in un pannello è aperta una finestra di scansione o è in corso una scansione, il pulsante «Scansiona» rimane disattivato nell'altro pannello fino al termine dell'operazione."
   },
   "misc": {
     "file_word": "file",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Nessun dato trovato per questo numero su ComicVine.",
     "update_done_title": "Metadati aggiornati",
     "update_done_message": "I metadati sono stati aggiornati con successo."
+  },
+  "scan": {
+    "dialog_title": "Scansiona un'immagine",
+    "button": "Scansiona",
+    "tooltip": "Scansiona un'immagine da uno scanner e aggiungila al mosaico",
+    "device_label": "Scanner:",
+    "searching_devices": "Ricerca degli scanner...",
+    "no_devices_found": "Nessuno scanner rilevato. Verifica che sia collegato, acceso e che il driver sia installato.",
+    "resolution_label": "Risoluzione:",
+    "color_mode_label": "Modalità colore:",
+    "color_mode_color": "Colore",
+    "color_mode_grayscale": "Scala di grigi",
+    "color_mode_bw": "Bianco e nero",
+    "scan_button": "Scansiona",
+    "progress_scanning": "Scansione in corso...",
+    "error_wia_unavailable": "Impossibile accedere al sistema di scansione di Windows. Verifica che un driver dello scanner sia installato su questo computer.",
+    "error_enumeration_failed": "Si è verificato un errore durante la ricerca degli scanner disponibili.",
+    "error_device_unreachable": "Lo scanner selezionato non è più accessibile. Verifica che sia ancora collegato e acceso.",
+    "error_no_scan_item": "Questo scanner non offre alcuna sorgente di scansione utilizzabile.",
+    "error_no_paper": "Nessun foglio rilevato. Posiziona un documento sullo scanner e riprova.",
+    "error_transfer_failed": "Lo scanner non ha risposto correttamente e la scansione è fallita. Riprova oppure controlla lo scanner.",
+    "error_invalid_image": "L'immagine ricevuta dallo scanner non è valida o è danneggiata.",
+    "send_log_link": "Invia il registro di scansione via email",
+    "no_log_yet": "Non è ancora stata effettuata alcuna scansione: non c'è ancora nessun registro da inviare.",
+    "mail_body_hint": "Premi Ctrl+V, oppure fai clic destro e poi Incolla, per inviare il registro di scansione appena copiato.",
+    "checking_capabilities": "Verifica delle funzionalità dello scanner...",
+    "escl_fallback_hint": "Se il driver del produttore non risponde, Windows a volte può scansionare direttamente.",
+    "escl_fallback_button": "Prova con il driver generico di Windows",
+    "open_log": "Apri il registro di scansione",
+    "reveal_log": "Mostra il registro di scansione in Esplora risorse"
   }
 }

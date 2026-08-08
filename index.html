@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; font-src 'self' data:; img-src 'self' https://raw.githubusercontent.com; connect-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MosaicView est un éditeur de BD numériques gratuit et multilingue pour Windows : lisez et modifiez vos CBZ, CBR, CB7, CBT, PDF et EPUB, retouchez vos pages en mosaïque, gérez votre bibliothèque et vos métadonnées ComicVine. / MosaicView is a free, multilingual digital comics editor for Windows: read and edit your CBZ, CBR, CB7, CBT, PDF and EPUB files, retouch pages in the mosaic grid, manage your library and ComicVine metadata.">
+<meta name="keywords" content="éditeur CBZ, lecteur CBR, éditeur bande dessinée numérique, gestionnaire de bibliothèque BD, métadonnées ComicVine, application multilingue, CBZ editor, CBR reader, digital comic book editor, comic library manager, multilingual app, Windows comic reader, CBT, EPUB">
 <title>MosaicView – Digital Comics Editor</title>
 <link rel="icon" type="image/x-icon" href="icons/MosaicView.ico">
 <style>
@@ -266,7 +268,7 @@ html[lang="tlh-piqad"] #toggle-btn {
   <div class="mosaic-wrap">
     <div class="mosaic-grid" id="mosaic"></div>
   </div>
-  <div class="badge" id="version-badge">v1.6.4 &middot; Windows</div>
+  <div class="badge" id="version-badge">v1.7.0 &middot; Windows</div>
   <h1>Mosaic<span>View</span></h1>
   <p class="hero-sub" data-i18n="hero_sub">Un éditeur de BD numériques.</p>
   <div class="cta-group">
@@ -4887,7 +4889,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "tlh-piqad": {
-    "badge": "v1.6.4 · Windows",
+    "badge": "v1.7.0 · Windows",
     "hero_sub": " kk  . CBZ, CBR, CB7  PF  , ,   –  .",
     "btn_download": " –  ",
     "btn_source": "  →",
@@ -4992,7 +4994,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "qya-tengwar": {
-    "badge": "v1.6.4 · Windows",
+    "badge": "v1.7.0 · Windows",
     "hero_sub": "  : ⸱ ⸱     CBZ⸱ CBR⸱ CB7  PDF     :",
     "btn_download": "    ",
     "btn_source": "  →",
@@ -5097,7 +5099,7 @@ const translations = {
     "footer_changelog": "Changelog"
   },
   "sjn-tengwar": {
-    "badge": "v1.6.4 · Windows",
+    "badge": "v1.7.0 · Windows",
     "hero_sub": "  : ⸱ ⸱      CBZ⸱ CBR⸱ CB7  PDF     :",
     "btn_download": "     ",
     "btn_source": "  →",
@@ -5296,7 +5298,7 @@ const GRID_SIZE = 24;
 function pad(n) { return String(n).padStart(2, '0'); }
 
 // Version is embedded at build time
-document.getElementById('version-badge').textContent = 'v1.6.4 · Windows';
+document.getElementById('version-badge').textContent = 'v1.7.0 · Windows';
 
 // ── dual panel thumbnails ──────────────────────────────────────
 const panelLeft = document.getElementById('panel-left');

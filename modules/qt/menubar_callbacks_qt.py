@@ -25,6 +25,12 @@ from modules.qt.straighten_viewer_qt   import show_straighten_viewer as _show_st
 from modules.qt.clone_zone_viewer_qt   import show_clone_zone_viewer as _show_clone_zone_viewer_qt
 from modules.qt.text_viewer_qt         import show_text_viewer as _show_text_viewer_qt
 from modules.qt.web_import_qt          import show_web_import_dialog as _show_web_import_dialog
+from modules.qt.scan_dialog_qt         import (
+    show_scan_dialog as _show_scan_dialog,
+    open_scan_log    as _open_scan_log,
+    reveal_scan_log  as _reveal_scan_log,
+)
+from modules.qt.scan_wia               import scan_log_exists as _scan_log_exists
 from modules.qt.printing_qt            import (
     PRINT_AVAILABLE,
     print_selection as _print_selection_qt,
@@ -39,6 +45,12 @@ def build_menubar_callbacks(mw) -> dict:
     n'est introduite car on reçoit l'objet par paramètre.
     """
     st = mw._state
+    # mw est toujours le PanelWidget (primaire ou secondaire, voir
+    # icon_toolbar_qt.build_icon_toolbar) — mw._main_window donne accès à
+    # MainWindow, qui porte l'état partagé entre panneaux (_scan_active_panel,
+    # voir MainWindow._set_scan_active).
+    top_window = mw._main_window
+    this_panel = mw
     return {
         # ── Fichier ───────────────────────────────────────────────────────────
         "open_file":                mw._open_file_dialog,
@@ -47,6 +59,11 @@ def build_menubar_callbacks(mw) -> dict:
         "open_recent_file":         mw._open_recent_file,
         "clear_recent_files":       mw._clear_recent_files,
         "show_web_import_dialog":   lambda: _show_web_import_dialog(mw, mw._canvas, mw._web_import_callbacks()),
+        "show_scan_dialog":         lambda: _show_scan_dialog(mw, mw._canvas, mw._web_import_callbacks()),
+        "scan_available":          lambda: top_window._scan_active_panel in (None, this_panel),
+        "open_scan_log":            _open_scan_log,
+        "reveal_scan_log":          _reveal_scan_log,
+        "scan_log_exists":          _scan_log_exists,
         "show_nfo_dialog":          mw._show_nfo_dialog,
         "fetch_metadata":           mw._fetch_metadata,
         "change_apikey":            mw._change_apikey,

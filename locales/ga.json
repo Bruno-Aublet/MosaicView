@@ -1224,6 +1224,7 @@
       "window_title": "Fógraíocht dhánach",
       "title": "An bhfuil aithne agat ar Distillat?",
       "body": "Tá imleabhar 8 de do shaga is fearr leat díreach tar éis teacht amach, agus tá fonn ort é a léamh. Ach amháin gur 4 bliana ó shin a bhí imleabhar 7 ann, agus tá do chuimhní beagán doiléir: cé hiad na carachtair thánaisteacha sin arís? Agus cad a tharla ag an deireadh?\n\nMás rud é go bhfuil an cás seo aithnidiúil duit, tá Distillat déanta duit. Ná déan ach do chomhad EPUB nó PDF a scaoileadh sa limistéar atá ceaptha dó sin: gheobhaidh tú achoimre, cártaí carachtair agus anailís ar an saothar, réidh le breathnú orthu nó le honnmhairiú go PDF.\n\nBraitheann an feidhmchlár ar leibhéal saor in aisce Gemini 3.5 Flash.",
+      "landing_intro": "Leathanach cur i láthair:",
       "download_intro": "Is féidir leat an feidhmchlár a íoslódáil anseo:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "Ceadúnas UnRAR",
     "config_clear_clipboard": "Glan comhaid an ghearrthaisce",
     "config_clipboard_note": "Eisceacht: Coinnítear comhaid shealadacha a úsáideann gearrthaisce Windows (comhaid clipboard_XXXXX) ar feadh 12 uair an chloig tar éis cóipeála, ionas gur féidir leat iad a ghreamú fiú tar éis an feidhmchlár a dhúnadh. Tar éis 12 uair an chloig, scriostar go huathoibríoch iad.",
-    "config_log_note": "Cruthaionn na tiontuithe baise (PDF go CBZ agus CBR go CBZ) comhad logala nuair a tharlaionn earraidi. Coinnítear na comhaid seo (Log_pdftocbz_.txt agus Log_cbrtocbz_.txt) fiu tar eis an feidhmchlar a dhunadh, ionas gur feidir iad a athbhreithniu nios deanai. Ni scriostar iad ach amhain leis an gcnaipe \"Scrios comhaid shealadacha\" thuas.",
+    "config_log_note": "Cruthaíonn comhshóite baisc (PDF go CBZ agus CBR go CBZ) comhad loga nuair a tharlaíonn earráid. Coinnítear na comhaid seo (Log_pdftocbz_.txt agus Log_cbrtocbz_.txt) fiú tar éis an feidhmchlár a dhúnadh, ionas gur féidir iad a athbhreithniú níos déanaí. Ní bhaintear iad ach amháin tríd an gcnaipe \"Glan comhaid shealadacha\" thuas. Taifeadann comhad Log_scan.txt gach scanadh ar an mbealach céanna (an scanóir a úsáideadh, socruithe, toradh nó earráid) — úsáideach chun fadhb le do scanóir a dhiagnóisiú.",
     "config_clipboard_cleared": "Glanadh comhaid an ghearrthaisce go rathúil.",
     "adjust_images": "Coigeartú íomhánna",
     "adjust_images_content": "Ligeann an fheidhm seo duit do chuid íomhánna a athchumadh go díreach in MosaicView. Is féidir leat gile, codarsnacht, géire, leibhéil, sáithiú a athrú, éifeachtaí a chur i bhfeidhm (dubh agus bán, séipia, inbhéartú dathanna), cáilíocht comhbhrú a choigeartú, dathanna a bhaint, trédhearcacht a chur i bhfeidhm nó tiontú go doimhneachtaí datha éagsúla. Tá breathnadóir tiomnaithe ag roinnt socruithe a ligeann duit an toradh a fheiceáil i gcomhréir iomlán roimh chur i bhfeidhm. Léiríonn réamhamharc mionlothar an toradh i bhfíor-am san phríomhfhuinneog.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} comhad fuaime sábháilte i:",
     "config_single_instance_note": "Ní osclaítear MosaicView faoi dhó riamh. Má osclaíonn tú comhad (trí chliceáil faoi dhó air san Explorer, mar shampla) agus an feidhmchlár oscailte cheana féin, ní thaispeánfar dara fuinneog: osclaítear an comhad go simplí san fhuinneog atá ann cheana, a thagann chun tosaigh go huathoibríoch. Chun go n-oibreoidh sé seo, cláraíonn MosaicView é féin le Windows gach uair a sheoltar é (féach thíos).",
     "config_registry_note": "Chun go bhféadfadh sé bheith le feiceáil i roghchlár \"Oscail le\" Windows Explorer, scríobhann MosaicView roinnt faisnéise i gclár Windows nuair a osclaítear é. Coimeádtar an clárú seo chomh híseal agus is féidir: insíonn sé do Windows cá bhfuil MosaicView agus na cineálacha comhad ar féidir leis a oscailt. Ní dhéantar é ach amháin sa chuid den chlár atá coimeádta do do chuntas úsáideora, riamh sa chuid chórais, agus ní athraíonn sé aon nasc comhaid: fanann sé fós mar rogha nach féidir ach leatsa a dhéanamh, tríd an roghchlár \"Oscail le\" atá ag Windows féin, MosaicView a roghnú mar an feidhmchlár réamhshocraithe do chineál comhaid. Má bhaineann tú MosaicView de do dhiosca, ní bheidh aon éifeacht ag an bhfaisnéis seo a thuilleadh.",
-    "config_dir_content": "Cruthaíonn MosaicView comhad darb ainm .mosaicview_config.json. Tá socruithe an fheidhmchláir sa chomhad seo (fuinneog, téama, teanga, modh athuimhrithe…), liosta na leabhar grinn agus na mbunachar sonraí a osclaíodh le déanaí, do leabharmharcanna, agus d'eochair API ComicVine (criptithe). Tá sé lonnaithe san fhillteán {config_dir} agus coimeádtar é ó sheisiún go seisiún: murab ionann agus na comhaid shealadacha, ní scriostar go huathoibríoch é riamh, ná ag MosaicView ná ag Windows.\nIs féidir leat é a scriosadh de láimh tríd an bhfillteán {config_dir} a oscailt, nó tríd an gcnaipe thíos a chliceáil. Athchruthófar é leis na luachanna réamhshocraithe an chéad uair eile a thosóidh an feidhmchlár."
+    "config_dir_content": "Cruthaíonn MosaicView comhad darb ainm .mosaicview_config.json. Tá socruithe an fheidhmchláir sa chomhad seo (fuinneog, téama, teanga, modh athuimhrithe…), liosta na leabhar grinn agus na mbunachar sonraí a osclaíodh le déanaí, do leabharmharcanna, agus d'eochair API ComicVine (criptithe). Tá sé lonnaithe san fhillteán {config_dir} agus coimeádtar é ó sheisiún go seisiún: murab ionann agus na comhaid shealadacha, ní scriostar go huathoibríoch é riamh, ná ag MosaicView ná ag Windows.\nIs féidir leat é a scriosadh de láimh tríd an bhfillteán {config_dir} a oscailt, nó tríd an gcnaipe thíos a chliceáil. Athchruthófar é leis na luachanna réamhshocraithe an chéad uair eile a thosóidh an feidhmchlár.",
+    "scan": "Scan íomhá",
+    "scan_content": "• Cliceáil an cnaipe \"Scan\" (colún na ndeilbhíní, roghchlár Comhad, nó deaschliceáil ar an mósáic) chun an fhuinneog scanta a oscailt. Rialaíonn MosaicView do scanóir go díreach (trí WIA, córas scanta Windows): roghnaigh an gléas, an taifeach (DPI), an modh datha (dath / liathscála / dubh agus bán), ansin cliceáil \"Scan\". Ní mór scanóir a bheith plugáilte isteach, ar siúl, agus a thiománaí suiteáilte ar Windows chun é a fheiceáil sa liosta.\n• Ní thacaítear ach le scanadh leathanaigh iomláin, ós rud é go bhfuil gach rud is gá cheana féin ag an bhfeidhmchlár chun íomhá a chur in eagar tar éis an scanta.\n• Cuirtear an íomhá scanta leis an mósáic go huathoibríoch, tar éis na leathanach atá ann cheana. Is féidir leat ansin í a bhearradh, a dhíriú, a dhathanna a choigeartú, srl. cosúil le haon leathanach eile den mósáic\n• Rialaíonn an ghné seo an scanóir go díreach, gan dul trí bhogearraí an mhonaróra ná a fhuinneog cumraíochta féin a thaispeáint.\n• Ós rud é nach féidir ach le nasc amháin scanóir fisiceach a rialú ag am ar bith, ní féidir scanadh a dhéanamh ach i bpainéal amháin ag an am: má tá fuinneog scanta oscailte nó scanadh ar siúl i bpainéal amháin, fanann an cnaipe \"Scan\" liathchóirithe sa phainéal eile go dtí go gcríochnaítear an oibríocht."
   },
   "misc": {
     "file_word": "comhad",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Níor aimsíodh aon sonraí don eagrán seo ar ComicVine.",
     "update_done_title": "Meiteashonraí nuashonraithe",
     "update_done_message": "D'éirigh leis na meiteashonraí a nuashonrú."
+  },
+  "scan": {
+    "dialog_title": "Scan íomhá",
+    "button": "Scan",
+    "tooltip": "Scan íomhá ó scanóir agus cuir leis an mósáic é",
+    "device_label": "Scanóir:",
+    "searching_devices": "Ag cuardach scanóirí...",
+    "no_devices_found": "Níor braitheadh aon scanóir. Seiceáil an bhfuil sé plugáilte isteach, ar siúl, agus an bhfuil a thiománaí suiteáilte.",
+    "resolution_label": "Taifeach:",
+    "color_mode_label": "Modh datha:",
+    "color_mode_color": "Dath",
+    "color_mode_grayscale": "Liathscála",
+    "color_mode_bw": "Dubh agus bán",
+    "scan_button": "Scan",
+    "progress_scanning": "Ag scanadh...",
+    "error_wia_unavailable": "Ní féidir teacht ar chóras scanta Windows. Seiceáil an bhfuil tiománaí scanóra suiteáilte ar an ríomhaire seo.",
+    "error_enumeration_failed": "Tharla earráid agus cuardach á dhéanamh ar scanóirí atá ar fáil.",
+    "error_device_unreachable": "Níl an scanóir roghnaithe inrochtana a thuilleadh. Seiceáil an bhfuil sé plugáilte isteach agus ar siúl fós.",
+    "error_no_scan_item": "Ní thairgeann an scanóir seo aon fhoinse scanta inúsáidte.",
+    "error_no_paper": "Níor braitheadh páipéar. Cuir doiciméad ar an scanóir agus bain triail eile as.",
+    "error_transfer_failed": "Níor fhreagair an scanóir i gceart agus theip ar an scanadh. Bain triail eile as nó seiceáil an scanóir.",
+    "error_invalid_image": "Tá an íomhá a fuarthas ón scanóir neamhbhailí nó truaillithe.",
+    "send_log_link": "Seol logchomhad an scanaithe trí ríomhphost",
+    "no_log_yet": "Níor rinneadh aon scanadh fós: níl aon logchomhad ann fós le seoladh.",
+    "mail_body_hint": "Brúigh Ctrl+V, nó cliceáil ar dheis agus ansin Greamaigh, chun logchomhad an scanaithe a cóipeáladh anois díreach a sheoladh.",
+    "checking_capabilities": "Ag seiceáil cumas an scanóra...",
+    "escl_fallback_hint": "Mura bhfreagraíonn tiománaí an mhonaróra, is féidir le Windows uaireanta scanadh a dhéanamh go díreach.",
+    "escl_fallback_button": "Bain triail as tiománaí ginearálta Windows",
+    "open_log": "Oscail logchomhad an scanta",
+    "reveal_log": "Taispeáin logchomhad an scanta san Explorer"
   }
 }

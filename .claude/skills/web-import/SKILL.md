@@ -7,6 +7,8 @@ description: Localiser ou modifier l'import d'images depuis le web (saisie manue
 
 Télécharge une ou plusieurs images depuis Internet (une image directe, ou toutes les images `<img>` d'une page HTML) et les ajoute à la mosaïque. Trois façons d'y arriver, toutes convergent vers les mêmes fonctions de résolution/téléchargement.
 
+Autre source d'image externe avec une architecture proche (worker `QThread`, overlay de progression, ajout à la mosaïque) : voir skill `scan` (numérisation depuis un scanner physique via WIA), qui réutilise directement `_web_import_callbacks()` de `panel_widget.py`.
+
 ## Fichier unique — `modules/qt/web_import_qt.py`
 
 Tout vit dans ce seul fichier (~670 lignes) :

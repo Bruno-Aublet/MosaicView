@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0] - 2026-08-08 - Scan images directly from a scanner, Distillat presentation link, website SEO metadata
+
+- Added the ability to scan an image directly from a connected scanner and add it straight to the mosaic, without going through a third-party scanning application first. Available from the icon column, the File menu, and the canvas right-click menu ("Scan"). The scan dialog lets you pick the scanner (auto-detected via Windows' WIA — Windows Image Acquisition — system), the resolution (DPI), and the color mode (color / grayscale / black and white); the scanned page is then added to the mosaic like any other, ready for cropping, straightening, color adjustments, etc. Only full-page scanning is supported for now (no manual scan-area selection). A new "Scan an image" section was added to the help window, right after "Opening files". The scan runs entirely in the background (a dedicated thread, with the same red "Scanning..." overlay used elsewhere in the app), never blocking either panel, and never shows the scanner manufacturer's own configuration window. Tested and working on a HP ENVY 4520; other scanner models may run into errors, since WIA driver behavior varies significantly between manufacturers.
+- REPOSITORY ONLY: Added a new Claude Code skill (`scan`, 84 total) documenting the scanning feature above.
+- Added a link to [Distillat's presentation page](https://bruno-aublet.github.io/Distillat/) in the "Shameless plug" window, above the existing download link.
+- Added search engine metadata (description, keywords) to the website's landing page.
+
 ## [1.6.4] - 2026-08-01 - Split-view icon column width restore fix
 
 - Fixed a gap appearing between the icon column and the splitter handle in either panel (most visibly the second one, in split view) after restarting the application: the icon column's width, as saved from a previous session, could exceed the maximum width allowed for the current icon size, so the splitter's handle ended up positioned further right than the column itself was allowed to render, leaving an empty gap between them. The restored width is now clamped to the column's current minimum/maximum before being applied.

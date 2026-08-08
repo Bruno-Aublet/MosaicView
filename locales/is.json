@@ -1224,6 +1224,7 @@
       "window_title": "Blygðunarlaus auglýsing",
       "title": "Þekkir þú Distillat?",
       "body": "Bindi 8 af uppáhalds sögunni þinni er nýkomið út, og þú getur ekki beðið eftir að lesa það. Nema hvað bindi 7 kom út fyrir 4 árum, og minningar þínar eru svolítið óskýrar: hverjir voru þessar aukapersónur aftur? Og hvað gerðist í lokin?\n\nEf þessar aðstæður hljóma kunnuglega, þá er Distillat gert fyrir þig. Slepptu einfaldlega EPUB- eða PDF-skránni þinni á tilgreint svæði: þú færð samantekt, persónuspjöld og greiningu á verkinu, tilbúið til skoðunar eða útflutnings í PDF.\n\nForritið byggir á ókeypis stigi Gemini 3.5 Flash.",
+      "landing_intro": "Kynningarsíða:",
       "download_intro": "Þú getur sótt forritið hér:"
     }
   },
@@ -1352,7 +1353,7 @@
     "license_unrar": "UnRAR leyfi",
     "config_clear_clipboard": "Hreinsa klippiborðsskrár",
     "config_clipboard_note": "Undantekning: Tímabundnar skrár sem klippiborð Windows notar (clipboard_XXXXX skrár) eru geymdar í 12 klukkustundir eftir afritun, svo þú getir límt þær jafnvel eftir að hafa lokað forritinu. Eftir 12 klukkustundir eru þær sjálfkrafa eyddar.",
-    "config_log_note": "Lotvidskipti (PDF i CBZ og CBR i CBZ) bua til atviksskra vidh villum. Thessar skrar (Log_pdftocbz_.txt og Log_cbrtocbz_.txt) eru geymdar jafnvel eftir lokun forritsins, svo haegt se ad skodha thaer sidhar. Thaer eru eingongu eyddar medh hnappnum \"Eydha timabundnum skram\" her ad ofan.",
+    "config_log_note": "Runuumbreytingar (PDF í CBZ og CBR í CBZ) búa til annálsskrá ef villa kemur upp. Þessar skrár (Log_pdftocbz_.txt og Log_cbrtocbz_.txt) eru varðveittar jafnvel eftir að forritinu er lokað, svo hægt sé að skoða þær síðar. Þær eru einungis fjarlægðar með hnappinum \"Hreinsa tímabundnar skrár\" hér að ofan. Skrá sem heitir Log_scan.txt skráir á sama hátt hverja skönnun (skanni sem notaður var, stillingar, niðurstaða eða villa) — gagnlegt til að greina vandamál með skannann þinn.",
     "config_clipboard_cleared": "Klippiborðsskrár hafa verið hreinsaðar.",
     "adjust_images": "Myndaaðlögun",
     "adjust_images_content": "Þessi aðgerð gerir þér kleift að fara yfir myndir þínar beint í MosaicView. Þú getur breytt birtustig, birtumun, skarpni, þrepa, mettun, beitt áhrifum (svart-hvítt, sepia, litasnúningur), stillt gæði þjöppunar, fjarlægt liti, beitt gegnsæi eða umskráð í mismunandi litadýpi. Sumar stillingar hafa sérsniðinn skoðara sem gerir þér kleift að sjá niðurstöðuna í fullri upplausn áður en þú notar hana. Smælingur sýnir niðurstöðuna í rauntíma í aðalglugga.",
@@ -1379,7 +1380,9 @@
     "wilhelm_scream_save_success": "{count} hljóðskrá(r) vistaðar í:",
     "config_single_instance_note": "MosaicView opnast aldrei tvöfalt. Ef þú opnar skrá (til dæmis með tvísmelli í Explorer) meðan forritið er þegar opið, birtist enginn annar gluggi: skráin opnast einfaldlega í þeim glugga sem þegar er opinn og kemur sjálfkrafa fram. Til að þetta virki skráir MosaicView sig hjá Windows í hvert sinn sem það er ræst (sjá hér fyrir neðan).",
     "config_registry_note": "Til að geta birst í \"Opna með\" valmynd Windows Explorer skráir MosaicView nokkrar upplýsingar í Windows-skráasafnið (registry) við ræsingu. Þessi skráning takmarkast við það allra nauðsynlegasta: hún segir Windows hvar MosaicView er staðsett og hvers konar skrár það getur opnað. Hún fer eingöngu fram í þeim hluta skráasafnsins sem er frátekinn fyrir notandaaðganginn þinn, aldrei í kerfishlutanum, og breytir engum skráartengingum: að velja MosaicView sem sjálfgefið forrit fyrir tiltekna skráartegund er áfram val sem aðeins þú getur tekið, í gegnum \"Opna með\" valmynd Windows sjálfs. Ef þú fjarlægir MosaicView af disknum þínum verða þessar upplýsingar einfaldlega óvirkar og áhrifalausar.",
-    "config_dir_content": "MosaicView býr til skrá sem heitir .mosaicview_config.json. Þessi skrá inniheldur stillingar forritsins (glugga, þema, tungumál, endurnúmerunarham…), lista yfir nýlega opnaða myndasögur og gagnagrunna, bókamerkin þín og ComicVine API-lykilinn þinn (dulkóðaðan). Hún er staðsett í möppunni {config_dir} og varðveitist milli lota: ólíkt bráðabirgðaskrám er henni aldrei sjálfkrafa eytt, hvorki af MosaicView né Windows.\nÞú getur eytt henni handvirkt með því að fara í möppuna {config_dir}, eða með því að smella á hnappinn hér fyrir neðan. Hún verður endurgerð með sjálfgefnum gildum næst þegar forritið er ræst."
+    "config_dir_content": "MosaicView býr til skrá sem heitir .mosaicview_config.json. Þessi skrá inniheldur stillingar forritsins (glugga, þema, tungumál, endurnúmerunarham…), lista yfir nýlega opnaða myndasögur og gagnagrunna, bókamerkin þín og ComicVine API-lykilinn þinn (dulkóðaðan). Hún er staðsett í möppunni {config_dir} og varðveitist milli lota: ólíkt bráðabirgðaskrám er henni aldrei sjálfkrafa eytt, hvorki af MosaicView né Windows.\nÞú getur eytt henni handvirkt með því að fara í möppuna {config_dir}, eða með því að smella á hnappinn hér fyrir neðan. Hún verður endurgerð með sjálfgefnum gildum næst þegar forritið er ræst.",
+    "scan": "Skanna mynd",
+    "scan_content": "• Smelltu á hnappinn „Skanna“ (táknmyndadálkur, valmyndin Skrá eða hægrismelltu á mósaíkið) til að opna skönnunargluggann. MosaicView stjórnar skannanum þínum beint (í gegnum WIA, skönnunarkerfi Windows): veldu tækið, upplausnina (DPI), litastillingu (litur / gráskali / svarthvítt) og smelltu síðan á „Skanna“. Skanni verður að vera tengdur, kveikt á honum og rekillinn uppsettur í Windows til að hann birtist á listanum.\n• Aðeins er stutt við skönnun heillar síðu, þar sem forritið hefur nú þegar allt sem þarf til myndvinnslu eftir skönnun.\n• Skannaða myndin bætist sjálfkrafa við mósaíkið, á eftir þeim síðum sem þegar eru til staðar. Þú getur síðan skorið hana til, rétt hana af, stillt liti hennar o.s.frv. eins og hverja aðra síðu í mósaíkinu\n• Þessi eiginleiki stjórnar skannanum beint, án þess að fara í gegnum hugbúnað framleiðandans eða sýna hans eigin stillingaglugga.\n• Þar sem aðeins ein tenging getur stjórnað eðlislægum skanna í einu, er skönnun aðeins möguleg í einum spjaldhluta í einu: ef skönnunargluggi er opinn eða skönnun í gangi í einum spjaldhluta, helst hnappurinn „Skanna“ grár í hinum spjaldhlutanum þar til aðgerðinni er lokið."
   },
   "misc": {
     "file_word": "skrá",
@@ -1900,5 +1903,35 @@
     "error_not_found": "Engin gögn fundust fyrir þessa tölu á ComicVine.",
     "update_done_title": "Lýsigögn uppfærð",
     "update_done_message": "Lýsigögnin voru uppfærð með góðum árangri."
+  },
+  "scan": {
+    "dialog_title": "Skanna mynd",
+    "button": "Skanna",
+    "tooltip": "Skannaðu mynd frá skanna og bættu henni við mósaíkið",
+    "device_label": "Skanni:",
+    "searching_devices": "Leita að skönnum...",
+    "no_devices_found": "Enginn skanni fannst. Athugaðu hvort hann sé tengdur, kveikt sé á honum og að rekillinn sé uppsettur.",
+    "resolution_label": "Upplausn:",
+    "color_mode_label": "Litastilling:",
+    "color_mode_color": "Litur",
+    "color_mode_grayscale": "Gráskali",
+    "color_mode_bw": "Svarthvítt",
+    "scan_button": "Skanna",
+    "progress_scanning": "Skönnun í gangi...",
+    "error_wia_unavailable": "Ekki tekst að tengjast skönnunarkerfi Windows. Athugaðu hvort skannarekill sé uppsettur á þessari tölvu.",
+    "error_enumeration_failed": "Villa kom upp við leit að tiltækum skönnum.",
+    "error_device_unreachable": "Valdi skanninn er ekki lengur tiltækur. Athugaðu hvort hann sé enn tengdur og kveikt sé á honum.",
+    "error_no_scan_item": "Þessi skanni býður ekki upp á nothæfa skönnunarlind.",
+    "error_no_paper": "Ekkert pappír fannst. Settu skjal á skannann og reyndu aftur.",
+    "error_transfer_failed": "Skanninn svaraði ekki rétt og skönnunin mistókst. Reyndu aftur eða athugaðu skannann.",
+    "error_invalid_image": "Myndin sem barst frá skannanum er ógild eða skemmd.",
+    "send_log_link": "Senda skönnunarannál í tölvupósti",
+    "no_log_yet": "Engin skönnun hefur enn verið framkvæmd: enginn annáll er tiltækur til sendingar.",
+    "mail_body_hint": "Ýttu á Ctrl+V, eða hægrismelltu og veldu Líma, til að senda skönnunarannálinn sem var að afrita.",
+    "checking_capabilities": "Athuga eiginleika skannans...",
+    "escl_fallback_hint": "Ef rekill framleiðanda svarar ekki getur Windows stundum skannað beint.",
+    "escl_fallback_button": "Prófa með almennum Windows-rekli",
+    "open_log": "Opna skönnunarannál",
+    "reveal_log": "Sýna skönnunarannál í Skráasafni"
   }
 }

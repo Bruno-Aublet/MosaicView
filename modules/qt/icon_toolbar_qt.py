@@ -46,6 +46,7 @@ ICON_DEFINITIONS = [
     {"id": "redo",                "tooltip_key": None,                            "png": "BTN_Batch_Redo.png"},
     {"id": "flatten_directories", "tooltip_key": None,                            "png": "BTN_Flatten_Directory.png"},
     {"id": "web_import",          "tooltip_key": "web.import_web_tooltip",        "png": "BTN_Web_Import.png"},
+    {"id": "scan_import",         "tooltip_key": "scan.tooltip",                  "png": "BTN_Scanner.png"},
     {"id": "create_nfo",          "tooltip_key": "nfo.tooltip",                   "png": "BTN_nfo.png"},
     {"id": "delete_selected",     "tooltip_key": None,                            "png": "BTN_Delete.png"},
     # --- PRESSE-PAPIERS ---
@@ -156,6 +157,7 @@ _ACTIVATION_RULES = {
                                        and sg["renumber_mode"]() != 0,
     "sort":                lambda sg: sg["has_images"](),
     "web_import":          None,
+    "scan_import":         lambda sg: sg["scan_available"](),
     "create_nfo":          lambda sg: sg["has_images"](),
     "open_library":        None,
     "open_mail":           None,
@@ -287,6 +289,9 @@ class IconLabel(QLabel):
                     self._pending_tooltip = True  # bloque hideText dans leaveEvent
             elif self.icon_id == "open_mail":
                 self._toolbar._show_mail_context_menu(event.globalPosition().toPoint())
+            elif self.icon_id == "scan_import":
+                from modules.qt.scan_dialog_qt import show_scan_log_context_menu
+                show_scan_log_context_menu(self._toolbar, event.globalPosition().toPoint())
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.RightButton:
@@ -1998,6 +2003,7 @@ class IconToolbarQt(QWidget):
         "redo":                "buttons.redo",
         "flatten_directories": "buttons.flatten_dirs",
         "web_import":          "web.import_web_button",
+        "scan_import":         "scan.button",
         "delete_selected":     "buttons.delete_selected",
         "copy_selected":       "buttons.copy",
         "cut_selected":        "buttons.cut",
@@ -2098,6 +2104,13 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         cb = build_menubar_callbacks(mw)
     else:
         cb = mw._build_menubar_callbacks()
+    # mw est toujours le PanelWidget lui-même, primaire ou secondaire (voir
+    # PanelWidget._build_icon_toolbar : is_primary ne change que la
+    # construction des callbacks, jamais l'objet mw passé ici) — mw._main_window
+    # donne accès à MainWindow, qui porte l'état partagé entre panneaux
+    # (_scan_active_panel, voir MainWindow._set_scan_active).
+    this_panel = mw
+    top_window = mw._main_window
 
     state_getters = {
         "has_file":              lambda: st.current_file is not None,
@@ -2127,6 +2140,11 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
             if st.selected_indices else False
         ),
         "split_active":          lambda: mw._split_active,
+        # Un scan en cours dans L'AUTRE panneau (fenêtre de réglages ouverte OU
+        # acquisition/repli ESCL en cours) bloque le déclenchement d'un second
+        # scan ici — un seul scan à la fois entre les deux panneaux, voir
+        # MainWindow._set_scan_active() et skill scan.
+        "scan_available":        lambda: top_window._scan_active_panel in (None, this_panel),
     }
 
     toolbar_callbacks = {
@@ -2148,6 +2166,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "redo":                  cb["redo_action"],
         "flatten_directories":   cb["flatten_directories"],
         "web_import":            cb["show_web_import_dialog"],
+        "scan_import":           cb["show_scan_dialog"],
         "create_nfo":            cb["show_nfo_dialog"],
         "fetch_metadata":        cb["fetch_metadata"],
         "edit_comicinfo":        cb["edit_comicinfo"],
