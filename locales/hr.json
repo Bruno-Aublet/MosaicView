@@ -130,9 +130,10 @@
       "adjustments": "Svjetlina, kontrast, boje...",
       "refresh_mosaic": "Osvježi mozaik (F5)",
       "create_ico": "Stvori .ico datoteku",
-      "straighten": "Ispravi sliku...",
       "clone_zone": "Kloniranje zone...",
-      "text": "Dodaj tekst..."
+      "text": "Dodaj tekst...",
+      "straighten_manual": "Ručno ispravi sliku...",
+      "straighten_auto": "Automatski ispravi sliku"
     },
     "canvas_no_file": {
       "open": "Otvori CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Zatvori aplikaciju",
-      "reset": "Resetiranje aplikacije:\n• puni zaslon → prozor\n• veličina i položaj prozora\n• tamni način → svijetli\n• bočna traka → vidljiva / zadana širina\n• minikarta → skrivena\n• veličina ikona i sličica → normalna\n• veličina fonta → zadana\n• jezik → automatsko otkrivanje\n• podjela prozora → 50 / 50\n• ponovno numeriranje → automatsko\n• ZIP kompresija → nema",
+      "reset": "Resetiranje aplikacije:\n• puni zaslon → prozor\n• veličina i položaj prozora\n• tamni način → svijetli\n• bočna traka → vidljiva / zadana širina\n• minikarta → skrivena\n• veličina ikona i sličica → normalna\n• veličina fonta → zadana\n• jezik → automatsko otkrivanje\n• podjela prozora → 50 / 50\n• ponovno numeriranje → automatsko\n• automatsko ispravljanje → ručno\n• ZIP kompresija → nema",
       "reset_label": "Resetiraj aplikaciju"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Br: Jedn.",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Automatsko ispravljanje u tijeku...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Upravo je izašao 8. svezak vaše omiljene sage, a vi jedva čekate da ga pročitate. Samo što je 7. svezak izašao prije 4 godine, a vaša su sjećanja pomalo mutna: tko su uopće bili ti sporedni likovi? I što se dogodilo na kraju?\n\nAko vam ova situacija zvuči poznato, Distillat je stvoren za vas. Jednostavno ubacite svoju EPUB ili PDF datoteku u za to predviđeno područje: dobivate sažetak, kartice likova i analizu djela, spremne za pregled ili izvoz u PDF.\n\nAplikacija se oslanja na besplatnu razinu Gemini 3.5 Flash.",
       "landing_intro": "Prezentacijska stranica:",
       "download_intro": "Aplikaciju možete preuzeti ovdje:"
+    },
+    "deskew_summary": {
+      "title": "Automatsko ispravljanje",
+      "message": "{success} slika(e) uspješno ispravljena/e.",
+      "message_errors": "{success} slika(e) uspješno ispravljena/e.\n{failed} neuspjelo (nije pronađen pouzdan nagib) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Ova datoteka nije komprimirana.\nKliknite za njezino komprimiranje na zadanoj razini ({level}).\nDesni klik za promjenu zadane razine.",
     "duplicate_image": "DUPLICIRANA STRANICA",
     "duplicate_indicator": "U ovoj datoteci otkrivene su duplicirane stranice.\nKliknite za otvaranje prozora za upravljanje duplikatima.",
-    "duplicate_indicator_none": "Nisu pronađeni duplikati"
+    "duplicate_indicator_none": "Nisu pronađeni duplikati",
+    "straighten_mode_0": "Ručni način rada (nacrtajte referentnu liniju)\nDesni klik za promjenu načina rada",
+    "straighten_mode_1": "Automatski način rada (otkrivanje nagiba)\nDesni klik za promjenu načina rada"
   },
   "help": {
     "title": "MosaicView - Upute za korištenje",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Kako bi se mogao pojaviti u izborniku \"Otvori pomoću\" u Windows Exploreru, MosaicView pri pokretanju zapisuje nekoliko podataka u Windows registar. Taj se zapis ograničava na nužni minimum: obavještava Windows gdje se MosaicView nalazi i koje vrste datoteka može otvoriti. Provodi se isključivo u dijelu registra rezerviranom za vaš korisnički račun, nikada u sistemskom dijelu, i ne mijenja nikakve asocijacije datoteka: odabir MosaicViewa kao zadane aplikacije za određenu vrstu datoteke ostaje odluka koju možete donijeti samo vi, putem samog izbornika \"Otvori pomoću\" sustava Windows. Ako uklonite MosaicView s diska, ti podaci jednostavno postaju neaktivni i bez učinka.",
     "config_dir_content": "MosaicView stvara datoteku pod nazivom .mosaicview_config.json. Ova datoteka sadrži postavke aplikacije (prozor, tema, jezik, način ponovnog numeriranja…), popis nedavno otvorenih stripova i baza podataka, vaše oznake i vaš ComicVine API ključ (šifrirano). Nalazi se u mapi {config_dir} i čuva se od sesije do sesije: za razliku od privremenih datoteka, nju nikada automatski ne briše ni MosaicView ni Windows.\nMožete je ručno izbrisati odlaskom u mapu {config_dir} ili klikom na gumb ispod. Bit će ponovno stvorena sa zadanim vrijednostima prilikom sljedećeg pokretanja aplikacije.",
     "scan": "Skeniraj sliku",
-    "scan_content": "• Kliknite gumb „Skeniraj” (stupac ikona, izbornik Datoteka ili desni klik na mozaik) da biste otvorili prozor za skeniranje. MosaicView izravno upravlja vašim skenerom (putem WIA, sustava za skeniranje sustava Windows): odaberite uređaj, rezoluciju (DPI), način boje (boja / sivi tonovi / crno-bijelo), a zatim kliknite „Skeniraj”. Skener mora biti priključen, uključen i s instaliranim upravljačkim programom u sustavu Windows kako bi se pojavio na popisu.\n• Podržano je samo skeniranje cijele stranice jer aplikacija već ima sve potrebno za obradu slike nakon skeniranja.\n• Skenirana slika automatski se dodaje mozaiku, nakon već postojećih stranica. Zatim je možete izrezati, poravnati, prilagoditi boje itd. kao i bilo koju drugu stranicu mozaika\n• Ova značajka izravno upravlja skenerom, bez korištenja softvera proizvođača ili prikazivanja njegovog vlastitog prozora za konfiguraciju.\n• Budući da fizičkim skenerom u svakom trenutku može upravljati samo jedna veza, skeniranje je moguće samo u jednom panelu odjednom: ako je u jednom panelu otvoren prozor za skeniranje ili je skeniranje u tijeku, gumb „Skeniraj” ostaje siv u drugom panelu do završetka operacije."
+    "scan_content": "• Kliknite gumb „Skeniraj” (stupac ikona, izbornik Datoteka ili desni klik na mozaik) da biste otvorili prozor za skeniranje. MosaicView izravno upravlja vašim skenerom (putem WIA, sustava za skeniranje sustava Windows): odaberite uređaj, rezoluciju (DPI), način boje (boja / sivi tonovi / crno-bijelo), a zatim kliknite „Skeniraj”. Skener mora biti priključen, uključen i s instaliranim upravljačkim programom u sustavu Windows kako bi se pojavio na popisu.\n• Posljednje korišteni skener, razlučivost i odabrani way boja se pamte i automatski ponovno predlažu prilikom sljedećeg skeniranja.\n• Nudi se samo skeniranje cijele stranice i izvoz u JPG, budući da aplikacija već ima sve potrebno za naknadnu obradu i konverziju slike.\n• Skenirana slika automatski se dodaje mozaiku, nakon već postojećih stranica. Zatim je možete izrezati, poravnati, prilagoditi boje itd. kao i bilo koju drugu stranicu mozaika\n• Ova značajka izravno upravlja skenerom, bez korištenja softvera proizvođača ili prikazivanja njegovog vlastitog prozora za konfiguraciju.\n• Budući da fizičkim skenerom u svakom trenutku može upravljati samo jedna veza, skeniranje je moguće samo u jednom panelu odjednom: ako je u jednom panelu otvoren prozor za skeniranje ili je skeniranje u tijeku, gumb „Skeniraj” ostaje siv u drugom panelu do završetka operacije.",
+    "straighten": "Ispravi stranicu",
+    "straighten_content": "Dva načina za ispravljanje nakrivljenog skena, dostupna iz stupca ikona (desni klik na ikonu \"Ispravi\" za promjenu načina rada), izbornika Slike ili desnim klikom na mozaik:\n• Ručno ispravljanje: otvara namjenski preglednik u kojem crtate ravnu liniju na onome što bi trebalo biti vodoravno ili okomito na slici; kut ispravka izračunava se automatski i primjenjuje na sliku, s ručkama za fino podešavanje linije.\n• Automatsko ispravljanje: samo otkriva nagib (bez crtanja) i izravno ispravlja odabranu stranicu ili stranice; prazni kutovi nastali rotacijom ispunjavaju se bijelom bojom. Radi na više stranica odjednom. Prozor sažetka prikazuje broj uspješno ispravljenih stranica i navodi one za koje nije otkriven pouzdan nagib."
   },
   "misc": {
     "file_word": "datoteka",

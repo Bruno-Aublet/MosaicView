@@ -130,9 +130,10 @@
       "adjustments": "Jas, kontrast, barvy...",
       "refresh_mosaic": "Obnovit mozaiku (F5)",
       "create_ico": "Vytvořit soubor .ico",
-      "straighten": "Narovnat obrázek...",
       "clone_zone": "Klonování oblasti...",
-      "text": "Přidat text..."
+      "text": "Přidat text...",
+      "straighten_manual": "Narovnat obrázek ručně...",
+      "straighten_auto": "Narovnat obrázek automaticky"
     },
     "canvas_no_file": {
       "open": "Otevřít CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Zavřít aplikaci",
-      "reset": "Resetovat aplikaci:\n• celá obrazovka → okno\n• velikost a poloha okna\n• tmavý režim → světlý\n• postranní panel → viditelný / výchozí šířka\n• minimapa → skrytá\n• velikost ikon a miniatur → normální\n• velikost písma → výchozí\n• jazyk → automatická detekce\n• rozdělení okna → 50 / 50\n• přečíslování → automatické\n• komprese ZIP → žádná",
+      "reset": "Resetovat aplikaci:\n• celá obrazovka → okno\n• velikost a poloha okna\n• tmavý režim → světlý\n• postranní panel → viditelný / výchozí šířka\n• minimapa → skrytá\n• velikost ikon a miniatur → normální\n• velikost písma → výchozí\n• jazyk → automatická detekce\n• rozdělení okna → 50 / 50\n• přečíslování → automatické\n• automatické narovnání → ruční\n• komprese ZIP → žádná",
       "reset_label": "Resetovat aplikaci"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Čís: Jedn.",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Probíhá automatické narovnání...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Osmý díl vaší oblíbené ságy právě vyšel a vy se nemůžete dočkat, až si ho přečtete. Jenže sedmý díl vyšel před 4 lety a vaše vzpomínky jsou trochu mlhavé: kdo to vlastně byli ti vedlejší postavy? A co se stalo na konci?\n\nPokud vám tato situace zní povědomě, Distillat je tu pro vás. Stačí přetáhnout váš soubor EPUB nebo PDF do vyhrazené oblasti: získáte shrnutí, karty postav a analýzu díla, připravené k prohlížení nebo exportu do PDF.\n\nAplikace využívá bezplatnou úroveň Gemini 3.5 Flash.",
       "landing_intro": "Prezentační stránka:",
       "download_intro": "Aplikaci si můžete stáhnout zde:"
+    },
+    "deskew_summary": {
+      "title": "Automatické narovnání",
+      "message": "{success} obrázek(ů) úspěšně narovnáno.",
+      "message_errors": "{success} obrázek(ů) úspěšně narovnáno.\n{failed} neúspěšných (nebyl zjištěn spolehlivý sklon) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Tento soubor není komprimovaný.\nKlikněte pro jeho kompresi na výchozí úrovni ({level}).\nKlikněte pravým tlačítkem pro změnu výchozí úrovně.",
     "duplicate_image": "DUPLICITNÍ STRÁNKA",
     "duplicate_indicator": "V tomto souboru byly zjištěny duplicitní stránky.\nKliknutím otevřete okno pro správu duplicit.",
-    "duplicate_indicator_none": "Nebyly zjištěny žádné duplicity"
+    "duplicate_indicator_none": "Nebyly zjištěny žádné duplicity",
+    "straighten_mode_0": "Ruční režim (nakreslete referenční čáru)\nPravým tlačítkem změníte režim",
+    "straighten_mode_1": "Automatický režim (detekce zkosení)\nPravým tlačítkem změníte režim"
   },
   "help": {
     "title": "MosaicView - Nápověda",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Aby se MosaicView mohl zobrazovat v nabídce \"Otevřít pomocí\" Průzkumníku Windows, zapisuje při spuštění několik informací do registru Windows. Tento zápis se omezuje na naprosté minimum: sděluje Windows, kde se MosaicView nachází a jaké typy souborů umí otevřít. Provádí se pouze v části registru vyhrazené vašemu uživatelskému účtu, nikdy v systémové části, a nemění žádné asociace souborů: volba MosaicView jako výchozí aplikace pro daný typ souboru zůstává rozhodnutím, které můžete učinit pouze vy, prostřednictvím vlastní nabídky \"Otevřít pomocí\" systému Windows. Pokud MosaicView odstraníte z disku, tyto informace se jednoduše stanou neaktivními a bez účinku.",
     "config_dir_content": "MosaicView vytváří soubor s názvem .mosaicview_config.json. Tento soubor obsahuje nastavení aplikace (okno, motiv, jazyk, režim přečíslování…), seznam nedávno otevřených komiksů a databází, vaše záložky a váš API klíč ComicVine (šifrovaný). Nachází se ve složce {config_dir} a je zachován mezi jednotlivými relacemi: na rozdíl od dočasných souborů jej nikdy automaticky nemaže ani MosaicView, ani Windows.\nMůžete jej ručně smazat přechodem do složky {config_dir} nebo kliknutím na tlačítko níže. Při příštím spuštění aplikace bude znovu vytvořen s výchozími hodnotami.",
     "scan": "Naskenovat obrázek",
-    "scan_content": "• Klikněte na tlačítko „Skenovat“ (sloupec ikon, nabídka Soubor nebo pravé tlačítko myši na mozaice) a otevřete okno skenování. MosaicView řídí váš skener přímo (přes WIA, skenovací systém Windows): vyberte zařízení, rozlišení (DPI), barevný režim (barevně / odstíny šedi / černobíle) a poté klikněte na „Skenovat“. Aby se skener zobrazil v seznamu, musí být připojen, zapnutý a musí mít nainstalovaný ovladač ve Windows.\n• Podporováno je pouze skenování celé stránky, protože aplikace již disponuje vším potřebným pro úpravy obrázku po naskenování.\n• Naskenovaný obrázek se automaticky přidá do mozaiky, za již existující stránky. Poté jej můžete oříznout, narovnat, upravit barvy atd. jako kteroukoli jinou stránku mozaiky\n• Tato funkce řídí skener přímo, bez použití softwaru výrobce a bez zobrazení jeho vlastního konfiguračního okna.\n• Protože fyzický skener může být ovládán vždy jen jedním připojením, je skenování možné vždy jen v jednom panelu: pokud je v jednom panelu otevřeno okno skenování nebo probíhá skenování, zůstává tlačítko „Skenovat“ v druhém panelu šedé až do dokončení operace."
+    "scan_content": "• Klikněte na tlačítko „Skenovat“ (sloupec ikon, nabídka Soubor nebo pravé tlačítko myši na mozaice) a otevřete okno skenování. MosaicView řídí váš skener přímo (přes WIA, skenovací systém Windows): vyberte zařízení, rozlišení (DPI), barevný režim (barevně / odstíny šedi / černobíle) a poté klikněte na „Skenovat“. Aby se skener zobrazil v seznamu, musí být připojen, zapnutý a musí mít nainstalovaný ovladač ve Windows.\n• Naposledy použitý skener, rozlišení a zvolený barevný režim se zapamatují a při příštím skenování se automaticky znovu nabídnou.\n• Nabízeno je pouze skenování celé strany a export do JPG, protože aplikace už má vše potřebné pro následné retušování a konverzi obrázku.\n• Naskenovaný obrázek se automaticky přidá do mozaiky, za již existující stránky. Poté jej můžete oříznout, narovnat, upravit barvy atd. jako kteroukoli jinou stránku mozaiky\n• Tato funkce řídí skener přímo, bez použití softwaru výrobce a bez zobrazení jeho vlastního konfiguračního okna.\n• Protože fyzický skener může být ovládán vždy jen jedním připojením, je skenování možné vždy jen v jednom panelu: pokud je v jednom panelu otevřeno okno skenování nebo probíhá skenování, zůstává tlačítko „Skenovat“ v druhém panelu šedé až do dokončení operace.",
+    "straighten": "Narovnat stránku",
+    "straighten_content": "Dva způsoby opravy nakloněného skenu, dostupné ze sloupce ikon (klikněte pravým tlačítkem na ikonu „Narovnat“ pro přepnutí režimu), z nabídky Obrázky nebo pravým tlačítkem na mozaiku:\n• Ruční narovnání: otevře dedikovaný prohlížeč, kde nakreslíte přímku na to, co by mělo být na obrázku vodorovné nebo svislé; úhel korekce se vypočítá automaticky a použije se na obrázek, s úchyty pro jemné doladění čáry.\n• Automatické narovnání: samo zjistí naklonění (bez kreslení čehokoli) a přímo narovná vybranou stránku či stránky; prázdné rohy vzniklé otočením se vyplní bíle. Funguje na více stránkách najednou. Souhrnné okno zobrazí počet úspěšně narovnaných stránek a vypíše ty, u kterých se nepodařilo zjistit spolehlivý sklon."
   },
   "misc": {
     "file_word": "soubor",

@@ -130,9 +130,10 @@
       "adjustments": "Ryškumas, kontrastas, spalvos...",
       "refresh_mosaic": "Atnaujinti mozaiką (F5)",
       "create_ico": "Sukurti .ico failą",
-      "straighten": "Ištiesinti vaizdą...",
       "clone_zone": "Klonuoti zoną...",
-      "text": "Pridėti tekstą..."
+      "text": "Pridėti tekstą...",
+      "straighten_manual": "Ištiesinti vaizdą rankiniu būdu...",
+      "straighten_auto": "Ištiesinti vaizdą automatiškai"
     },
     "canvas_no_file": {
       "open": "Atidaryti CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Uždaryti programą",
-      "reset": "Programos atstatymas:\n• visas ekranas → langas\n• lango dydis ir padėtis\n• tamsus režimas → šviesus\n• šoninis skydelis → matomas / numatytasis plotis\n• mini žemėlapis → paslėptas\n• piktogramų ir miniatiūrų dydis → normalus\n• šrifto dydis → numatytasis\n• kalba → automatinis aptikimas\n• lango padalijimas → 50 / 50\n• pernumeravimas → automatinis\n• ZIP suspaudimas → jokio",
+      "reset": "Programos atstatymas:\n• visas ekranas → langas\n• lango dydis ir padėtis\n• tamsus režimas → šviesus\n• šoninis skydelis → matomas / numatytasis plotis\n• mini žemėlapis → paslėptas\n• piktogramų ir miniatiūrų dydis → normalus\n• šrifto dydis → numatytasis\n• kalba → automatinis aptikimas\n• lango padalijimas → 50 / 50\n• pernumeravimas → automatinis\n• automatinis ištiesinimas → rankinis\n• ZIP suspaudimas → jokio",
       "reset_label": "Iš naujo nustatyti programą"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Paprasta",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Vyksta automatinis ištiesinimas...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Ką tik išleistas jūsų mėgstamiausios sagos 8-asis tomas, ir jūs mirtinai norite jį perskaityti. Tik va 7-asis tomas buvo prieš 4 metus, ir jūsų prisiminimai šiek tiek neaiškūs: kas gi buvo tie antraeiliai veikėjai? Ir kas atsitiko pabaigoje?\n\nJei ši situacija jums pažįstama, Distillat sukurtas būtent jums. Tiesiog nutempkite savo EPUB ar PDF failą į tam skirtą sritį: gausite santrauką, veikėjų korteles ir kūrinio analizę, paruoštus peržiūrai ar eksportui į PDF.\n\nProgramėlė remiasi nemokamu Gemini 3.5 Flash lygiu.",
       "landing_intro": "Pristatymo puslapis:",
       "download_intro": "Programėlę galite atsisiųsti čia:"
+    },
+    "deskew_summary": {
+      "title": "Automatinis ištiesinimas",
+      "message": "{success} vaizdas(-ai) sėkmingai ištiesinti.",
+      "message_errors": "{success} vaizdas(-ai) sėkmingai ištiesinti.\n{failed} nepavyko (nerastas patikimas nuolydis) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Šis failas nesuspaustas.\nSpustelėkite, kad jį suspaustumėte numatytuoju lygiu ({level}).\nSpustelėkite dešiniuoju pelės klavišu, kad pakeistumėte numatytąjį lygį.",
     "duplicate_image": "DUBLIKUOTAS PUSLAPIS",
     "duplicate_indicator": "Šiame faile aptikti dubliuoti puslapiai.\nSpustelėkite, kad atidarytumėte dublikatų valdymo langą.",
-    "duplicate_indicator_none": "Dublikatų neaptikta"
+    "duplicate_indicator_none": "Dublikatų neaptikta",
+    "straighten_mode_0": "Rankinis režimas (nubrėžkite atskaitos liniją)\nSpustelėkite dešiniuoju pele mygtuku, kad pakeistumėte režimą",
+    "straighten_mode_1": "Automatinis režimas (nuolydžio aptikimas)\nSpustelėkite dešiniuoju pele mygtuku, kad pakeistumėte režimą"
   },
   "help": {
     "title": "MosaicView - Naudojimo instrukcija",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Kad galėtų atsirasti Windows naršyklės meniu \"Atverti su\", MosaicView paleidimo metu įrašo kelis duomenis į Windows registrą. Šis įrašas apsiriboja būtiniausiu minimumu: jis praneša Windows, kur yra MosaicView ir kokius failų tipus jis gali atverti. Tai atliekama tik jūsų naudotojo paskyrai skirtoje registro dalyje, niekada sisteminėje dalyje, ir nekeičia jokių failų sąsajų: MosaicView pasirinkimas numatytąja programa tam tikram failo tipui išlieka sprendimu, kurį galite priimti tik jūs, per patį Windows meniu \"Atverti su\". Jei pašalinate MosaicView iš disko, ši informacija tiesiog tampa neaktyvi ir neturinti jokio poveikio.",
     "config_dir_content": "MosaicView sukuria failą pavadinimu .mosaicview_config.json. Šiame faile saugomi programos nustatymai (langas, tema, kalba, pernumeravimo režimas…), neseniai atidarytų komiksų ir duomenų bazių sąrašas, jūsų žymos ir jūsų ComicVine API raktas (šifruotas). Jis yra aplanke {config_dir} ir išsaugomas nuo sesijos iki sesijos: skirtingai nei laikinieji failai, jo niekada automatiškai neištrina nei MosaicView, nei Windows.\nGalite jį ištrinti rankiniu būdu, eidami į aplanką {config_dir}, arba spustelėdami toliau esantį mygtuką. Jis bus sukurtas iš naujo su numatytosiomis reikšmėmis kitą kartą paleidus programą.",
     "scan": "Nuskaityti vaizdą",
-    "scan_content": "• Spustelėkite mygtuką „Nuskaityti“ (piktogramų stulpelis, meniu Failas arba dešiniuoju pelės mygtuku spustelėję mozaiką), kad atidarytumėte nuskaitymo langą. „MosaicView“ tiesiogiai valdo jūsų skaitytuvą (naudodama WIA, „Windows“ nuskaitymo sistemą): pasirinkite įrenginį, skiriamąją gebą (DPI), spalvų režimą (spalvota / pilkos spalvos atspalviai / nespalvota), tada spustelėkite „Nuskaityti“. Kad skaitytuvas atsirastų sąraše, jis turi būti prijungtas, įjungtas, o jo tvarkyklė – įdiegta sistemoje „Windows“.\n• Palaikomas tik viso puslapio nuskaitymas, nes programa jau turi viską, kas reikalinga vaizdo redagavimui po nuskaitymo.\n• Nuskaitytas vaizdas automatiškai pridedamas prie mozaikos, po jau esamų puslapių. Vėliau galite jį apkirpti, ištiesinti, koreguoti spalvas ir pan., kaip ir bet kurį kitą mozaikos puslapį\n• Ši funkcija tiesiogiai valdo skaitytuvą, nenaudodama gamintojo programinės įrangos ir nerodydama jo paties konfigūracijos lango.\n• Kadangi fizinį skenerį vienu metu gali valdyti tik vienas ryšys, skenuoti galima tik viename skydelyje vienu metu: jei viename skydelyje atidarytas skenavimo langas arba vyksta skenavimas, mygtukas „Skenuoti“ kitame skydelyje lieka pilkas, kol operacija bus baigta."
+    "scan_content": "• Spustelėkite mygtuką „Nuskaityti“ (piktogramų stulpelis, meniu Failas arba dešiniuoju pelės mygtuku spustelėję mozaiką), kad atidarytumėte nuskaitymo langą. „MosaicView“ tiesiogiai valdo jūsų skaitytuvą (naudodama WIA, „Windows“ nuskaitymo sistemą): pasirinkite įrenginį, skiriamąją gebą (DPI), spalvų režimą (spalvota / pilkos spalvos atspalviai / nespalvota), tada spustelėkite „Nuskaityti“. Kad skaitytuvas atsirastų sąraše, jis turi būti prijungtas, įjungtas, o jo tvarkyklė – įdiegta sistemoje „Windows“.\n• Paskutinis naudotas skeneris, raiška ir pasirinktas spalvų režimas įsimenami ir automatiškai pasiūlomi vėl kito skenavimo metu.\n• Siūlomas tik viso puslapio skenavimas ir eksportavimas JPG formatu, nes programoje jau yra viskas, kas reikalinga tolesniam vaizdo retušavimui ir formato konvertavimui.\n• Nuskaitytas vaizdas automatiškai pridedamas prie mozaikos, po jau esamų puslapių. Vėliau galite jį apkirpti, ištiesinti, koreguoti spalvas ir pan., kaip ir bet kurį kitą mozaikos puslapį\n• Ši funkcija tiesiogiai valdo skaitytuvą, nenaudodama gamintojo programinės įrangos ir nerodydama jo paties konfigūracijos lango.\n• Kadangi fizinį skenerį vienu metu gali valdyti tik vienas ryšys, skenuoti galima tik viename skydelyje vienu metu: jei viename skydelyje atidarytas skenavimo langas arba vyksta skenavimas, mygtukas „Skenuoti“ kitame skydelyje lieka pilkas, kol operacija bus baigta.",
+    "straighten": "Ištiesinti puslapį",
+    "straighten_content": "Du būdai ištaisyti kreivą skenavimą, pasiekiami iš piktogramų stulpelio (spustelėkite dešiniuoju pelės mygtuku piktogramą „Ištiesinti“, kad pakeistumėte režimą), meniu Vaizdai arba spustelėję dešiniuoju pelės mygtuku mozaiką:\n• Rankinis ištiesinimas: atveria specialią peržiūros priemonę, kurioje nubrėžiate tiesią liniją ant to, kas paveikslėlyje turėtų būti horizontalu ar vertikalu; korekcijos kampas apskaičiuojamas automatiškai ir pritaikomas paveikslėliui, su rankenėlėmis linijai tiksliai suderinti.\n• Automatinis ištiesinimas: pats aptinka nuolydį (nieko nereikia brėžti) ir tiesiogiai ištiesina pasirinktą puslapį ar puslapius; dėl pasukimo atsiradę tušti kampai užpildomi baltai. Veikia su keliais puslapiais vienu metu. Suvestinės lange rodomas sėkmingai ištiesintų puslapių skaičius ir išvardijami tie, kuriems nepavyko aptikti patikimo nuolydžio."
   },
   "misc": {
     "file_word": "failas",

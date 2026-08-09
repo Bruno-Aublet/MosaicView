@@ -130,9 +130,10 @@
       "adjustments": "Parlaklık, kontrast, renkler...",
       "refresh_mosaic": "Mozaiği yenile (F5)",
       "create_ico": ".ico dosyası oluştur",
-      "straighten": "Görüntüyü düzelt...",
       "clone_zone": "Bölgeyi klonla...",
-      "text": "Metin ekle..."
+      "text": "Metin ekle...",
+      "straighten_manual": "Görüntüyü manuel olarak düzelt...",
+      "straighten_auto": "Görüntüyü otomatik olarak düzelt"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF Aç",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Uygulamayı kapat",
-      "reset": "Uygulamayı sıfırla:\n• tam ekran → pencere modu\n• pencere boyutu ve konumu\n• karanlık mod → aydınlık\n• kenar çubuğu → görünür / varsayılan genişlik\n• küçük harita → gizli\n• simge ve küçük resim boyutu → normal\n• yazı tipi boyutu → varsayılan\n• dil → otomatik algılama\n• pencere bölünmesi → 50 / 50\n• yeniden numaralandırma → otomatik\n• ZIP sıkıştırma → yok",
+      "reset": "Uygulamayı sıfırla:\n• tam ekran → pencere modu\n• pencere boyutu ve konumu\n• karanlık mod → aydınlık\n• kenar çubuğu → görünür / varsayılan genişlik\n• küçük harita → gizli\n• simge ve küçük resim boyutu → normal\n• yazı tipi boyutu → varsayılan\n• dil → otomatik algılama\n• pencere bölünmesi → 50 / 50\n• yeniden numaralandırma → otomatik\n• otomatik düzeltme → manuel\n• ZIP sıkıştırma → yok",
       "reset_label": "Uygulamayı sıfırla"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Basit",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Otomatik düzeltme devam ediyor...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Favori destanınızın 8. cildi az önce çıktı ve onu okumak için can atıyorsunuz. Ama 7. cilt 4 yıl önceydi ve anılarınız biraz bulanık: o yan karakterler kimdi? Ve sonunda ne olmuştu?\n\nBu durum size tanıdık geliyorsa, Distillat tam size göre. EPUB veya PDF dosyanızı bunun için ayrılan alana bırakmanız yeterli: bir özet, karakter kartları ve esere dair bir analiz elde edersiniz, incelemeye veya PDF olarak dışa aktarmaya hazır.\n\nUygulama, Gemini 3.5 Flash'ın ücretsiz katmanına dayanmaktadır.",
       "landing_intro": "Tanıtım sayfası:",
       "download_intro": "Uygulamayı buradan indirebilirsiniz:"
+    },
+    "deskew_summary": {
+      "title": "Otomatik düzeltme",
+      "message": "{success} görüntü başarıyla düzeltildi.",
+      "message_errors": "{success} görüntü başarıyla düzeltildi.\n{failed} başarısız oldu (güvenilir bir eğim algılanamadı) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Bu dosya sıkıştırılmamış.\nVarsayılan seviyede ({level}) sıkıştırmak için tıklayın.\nVarsayılan seviyeyi değiştirmek için sağ tıklayın.",
     "duplicate_image": "YİNELENEN SAYFA",
     "duplicate_indicator": "Bu dosyada yinelenen sayfalar tespit edildi.\nYinelenen sayfa yönetimi penceresini açmak için tıklayın.",
-    "duplicate_indicator_none": "Yineleme tespit edilmedi"
+    "duplicate_indicator_none": "Yineleme tespit edilmedi",
+    "straighten_mode_0": "Manuel mod (bir referans çizgisi çizin)\nModu değiştirmek için sağ tıklayın",
+    "straighten_mode_1": "Otomatik mod (eğim algılama)\nModu değiştirmek için sağ tıklayın"
   },
   "help": {
     "title": "MosaicView - Kullanım Kılavuzu",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Windows Gezgini'ndeki \"Birlikte aç\" menüsünde görünebilmek için MosaicView, başlatıldığında Windows kayıt defterine birkaç bilgi yazar. Bu kayıt kesinlikle gerekli olanla sınırlıdır: Windows'a MosaicView'ın nerede olduğunu ve hangi dosya türlerini açabildiğini bildirir. Yalnızca kullanıcı hesabınıza ayrılmış kayıt defteri bölümünde yapılır, asla sistem bölümünde yapılmaz ve hiçbir dosya ilişkilendirmesini değiştirmez: bir dosya türü için varsayılan uygulama olarak MosaicView'ı seçmek, yalnızca sizin Windows'un kendi \"Birlikte aç\" menüsü aracılığıyla verebileceğiniz bir karar olmaya devam eder. MosaicView'ı diskinizden kaldırırsanız, bu bilgiler basitçe etkisiz hale gelir ve hiçbir etkisi kalmaz.",
     "config_dir_content": "MosaicView, .mosaicview_config.json adlı bir dosya oluşturur. Bu dosya, uygulama ayarlarını (pencere, tema, dil, yeniden numaralandırma modu…), son açılan çizgi roman ve veritabanlarının listesini, yer imlerinizi ve ComicVine API anahtarınızı (şifrelenmiş) içerir. {config_dir} klasöründe bulunur ve oturumdan oturuma korunur: geçici dosyaların aksine, ne MosaicView ne de Windows tarafından hiçbir zaman otomatik olarak silinmez.\n{config_dir} klasörüne giderek veya aşağıdaki düğmeye tıklayarak manuel olarak silebilirsiniz. Uygulama bir sonraki başlatıldığında varsayılan değerlerle yeniden oluşturulacaktır.",
     "scan": "Bir görüntü tara",
-    "scan_content": "• Tarama penceresini açmak için \"Tara\" düğmesine (simge sütunu, Dosya menüsü veya mozaik üzerinde sağ tıklama) tıklayın. MosaicView tarayıcınızı doğrudan yönetir (Windows'un tarama sistemi olan WIA aracılığıyla): cihazı, çözünürlüğü (DPI), renk modunu (renkli / gri tonlama / siyah beyaz) seçin, ardından \"Tara\" düğmesine tıklayın. Bir tarayıcının listede görünmesi için bağlı, açık olması ve sürücüsünün Windows'a yüklenmiş olması gerekir.\n• Uygulama tarama sonrası görüntü düzenleme için gereken her şeye zaten sahip olduğundan, yalnızca tam sayfa tarama desteklenir.\n• Taranan görüntü, mevcut sayfaların ardından otomatik olarak mozaiğe eklenir. Ardından, mozaiğin diğer sayfaları gibi onu kırpabilir, düzeltebilir, renklerini ayarlayabilirsiniz vb.\n• Bu özellik, üretici yazılımını kullanmadan veya kendi yapılandırma penceresini göstermeden tarayıcıyı doğrudan yönetir.\n• Fiziksel bir tarayıcı aynı anda yalnızca tek bir bağlantı tarafından kontrol edilebildiğinden, tarama işlemi yalnızca tek bir panelde mümkündür: bir panelde tarama penceresi açıksa veya tarama devam ediyorsa, işlem tamamlanana kadar diğer paneldeki \"Tara\" düğmesi gri kalır."
+    "scan_content": "• Tarama penceresini açmak için \"Tara\" düğmesine (simge sütunu, Dosya menüsü veya mozaik üzerinde sağ tıklama) tıklayın. MosaicView tarayıcınızı doğrudan yönetir (Windows'un tarama sistemi olan WIA aracılığıyla): cihazı, çözünürlüğü (DPI), renk modunu (renkli / gri tonlama / siyah beyaz) seçin, ardından \"Tara\" düğmesine tıklayın. Bir tarayıcının listede görünmesi için bağlı, açık olması ve sürücüsünün Windows'a yüklenmiş olması gerekir.\n• Son kullanılan tarayıcı, çözünürlük ve seçilen renk modu hatırlanır ve bir sonraki taramada otomatik olarak yeniden önerilir.\n• Yalnızca tam sayfa tarama ve JPG olarak dışa aktarma sunulur, çünkü uygulama daha sonraki görüntü rötuşu ve format dönüştürme için gereken her şeye zaten sahiptir.\n• Taranan görüntü, mevcut sayfaların ardından otomatik olarak mozaiğe eklenir. Ardından, mozaiğin diğer sayfaları gibi onu kırpabilir, düzeltebilir, renklerini ayarlayabilirsiniz vb.\n• Bu özellik, üretici yazılımını kullanmadan veya kendi yapılandırma penceresini göstermeden tarayıcıyı doğrudan yönetir.\n• Fiziksel bir tarayıcı aynı anda yalnızca tek bir bağlantı tarafından kontrol edilebildiğinden, tarama işlemi yalnızca tek bir panelde mümkündür: bir panelde tarama penceresi açıksa veya tarama devam ediyorsa, işlem tamamlanana kadar diğer paneldeki \"Tara\" düğmesi gri kalır.",
+    "straighten": "Bir sayfayı düzelt",
+    "straighten_content": "Eğri bir taramayı düzeltmenin iki yolu, simge sütunundan (modu değiştirmek için \"Düzelt\" simgesine sağ tıklayın), Görüntüler menüsünden veya mozaiğe sağ tıklayarak erişilebilir:\n• Manuel düzeltme: görüntüde yatay veya dikey olması gereken şeyin üzerine düz bir çizgi çizdiğiniz özel bir görüntüleyici açar; düzeltme açısı otomatik olarak hesaplanır ve görüntüye uygulanır, çizgiyi hassas ayarlamak için tutamaçlarla birlikte.\n• Otomatik düzeltme: hiçbir şey çizmeden eğimi kendisi tespit eder ve seçili sayfayı/sayfaları doğrudan düzeltir; döndürme sonucu oluşan boş köşeler beyazla doldurulur. Aynı anda birden fazla sayfada çalışır. Bir özet penceresi başarıyla düzeltilen sayfa sayısını gösterir ve güvenilir bir eğim tespit edilemeyenleri listeler."
   },
   "misc": {
     "file_word": "dosya",

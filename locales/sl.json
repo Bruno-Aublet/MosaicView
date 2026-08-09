@@ -130,9 +130,10 @@
       "adjustments": "Svetlost, kontrast, barve...",
       "refresh_mosaic": "Osveži mozaik (F5)",
       "create_ico": "Ustvari datoteko .ico",
-      "straighten": "Poravnaj sliko...",
       "clone_zone": "Kloniranje cone...",
-      "text": "Dodaj besedilo..."
+      "text": "Dodaj besedilo...",
+      "straighten_manual": "Ročno poravnaj sliko...",
+      "straighten_auto": "Samodejno poravnaj sliko"
     },
     "canvas_no_file": {
       "open": "Odpri CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Zapri aplikacijo",
-      "reset": "Ponastavitev aplikacije:\n• celozaslonski način → okno\n• velikost in položaj okna\n• temni način → svetli\n• stranska vrstica → vidna / privzeta širina\n• mini zemljevid → skrit\n• velikost ikon in sličic → normalna\n• velikost pisave → privzeta\n• jezik → samodejno zaznavanje\n• delitev okna → 50 / 50\n• ponovno oštevilčenje → samodejno\n• stiskanje ZIP → brez",
+      "reset": "Ponastavitev aplikacije:\n• celozaslonski način → okno\n• velikost in položaj okna\n• temni način → svetli\n• stranska vrstica → vidna / privzeta širina\n• mini zemljevid → skrit\n• velikost ikon in sličic → normalna\n• velikost pisave → privzeta\n• jezik → samodejno zaznavanje\n• delitev okna → 50 / 50\n• ponovno oštevilčenje → samodejno\n• samodejno poravnavanje → ročno\n• stiskanje ZIP → brez",
       "reset_label": "Ponastavi aplikacijo"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Št: Prosto",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Samodejno poravnavanje poteka...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Osmi zvezek vaše najljubše sage je pravkar izšel, in komaj čakate, da ga preberete. Le da je bil sedmi zvezek pred 4 leti, in vaši spomini so nekoliko zamegljeni: kdo so bili že ti stranski liki? In kaj se je zgodilo na koncu?\n\nČe vam ta situacija zveni znano, je Distillat ustvarjen za vas. Preprosto povlecite svojo datoteko EPUB ali PDF na za to predvideno območje: dobite povzetek, kartice likov in analizo dela, pripravljene za ogled ali izvoz v PDF.\n\nAplikacija temelji na brezplačni ravni Gemini 3.5 Flash.",
       "landing_intro": "Predstavitvena stran:",
       "download_intro": "Aplikacijo lahko prenesete tukaj:"
+    },
+    "deskew_summary": {
+      "title": "Samodejno poravnavanje",
+      "message": "{success} slika(e) uspešno poravnana(e).",
+      "message_errors": "{success} slika(e) uspešno poravnana(e).\n{failed} neuspešnih (ni bilo zaznanega zanesljivega nagiba) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Ta datoteka ni stisnjena.\nKliknite za stiskanje na privzeto raven ({level}).\nDesni klik za spremembo privzete ravni.",
     "duplicate_image": "PODVOJENA STRAN",
     "duplicate_indicator": "V tej datoteki so bile zaznane podvojene strani.\nKliknite za odprtje okna za upravljanje podvojenih strani.",
-    "duplicate_indicator_none": "Podvojitve niso zaznane"
+    "duplicate_indicator_none": "Podvojitve niso zaznane",
+    "straighten_mode_0": "Ročni način (nariši referenčno črto)\nDesni klik za spremembo načina",
+    "straighten_mode_1": "Samodejni način (zaznavanje nagiba)\nDesni klik za spremembo načina"
   },
   "help": {
     "title": "MosaicView - Navodila za uporabo",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Da bi se lahko prikazal v meniju \"Odpri z\" v Raziskovalcu Windows, MosaicView ob zagonu zapiše nekaj podatkov v register Windows. Ta zapis je omejen na nujno potrebno: sistemu Windows sporoči, kje se MosaicView nahaja in katere vrste datotek zna odpreti. Izveden je izključno v delu registra, rezerviranem za vaš uporabniški račun, nikoli v sistemskem delu, in ne spreminja nobenih povezav datotek: izbira MosaicView kot privzete aplikacije za določeno vrsto datoteke ostaja odločitev, ki jo lahko sprejmete samo vi, prek lastnega menija \"Odpri z\" sistema Windows. Če MosaicView odstranite z diska, ti podatki preprosto postanejo neaktivni in brez učinka.",
     "config_dir_content": "MosaicView ustvari datoteko z imenom .mosaicview_config.json. Ta datoteka vsebuje nastavitve aplikacije (okno, tema, jezik, način ponovnega oštevilčenja…), seznam nedavno odprtih stripov in podatkovnih zbirk, vaše zaznamke in vaš ComicVine API ključ (šifriran). Nahaja se v mapi {config_dir} in se ohrani od seje do seje: za razliko od začasnih datotek je nikoli samodejno ne izbriše ne MosaicView ne Windows.\nRočno jo lahko izbrišete tako, da odprete mapo {config_dir} ali kliknete spodnji gumb. Ob naslednjem zagonu aplikacije bo znova ustvarjena s privzetimi vrednostmi.",
     "scan": "Skeniraj sliko",
-    "scan_content": "• Kliknite gumb »Skeniraj« (stolpec ikon, meni Datoteka ali desni klik na mozaik), da odprete okno za skeniranje. MosaicView neposredno upravlja vaš optični bralnik (prek WIA, sistema za skeniranje v Windows): izberite napravo, ločljivost (DPI), barvni način (barvno / sivinsko / črno-belo) in nato kliknite »Skeniraj«. Da se optični bralnik prikaže na seznamu, mora biti priključen, vklopljen in imeti nameščen gonilnik v sistemu Windows.\n• Podprto je samo skeniranje cele strani, saj ima aplikacija že vse potrebno za urejanje slike po skeniranju.\n• Skenirana slika se samodejno doda mozaiku, za že obstoječimi stranmi. Nato jo lahko obrežete, poravnate, prilagodite njene barve itd., kot katero koli drugo stran mozaika\n• Ta funkcija neposredno upravlja optični bralnik, brez uporabe programske opreme proizvajalca ali prikaza njegovega lastnega konfiguracijskega okna.\n• Ker lahko fizični skener hkrati upravlja samo ena povezava, je skeniranje mogoče samo v enem podoknu naenkrat: če je v enem podoknu odprto okno za skeniranje ali poteka skeniranje, gumb »Skeniraj« v drugem podoknu ostane siv do konca opravila."
+    "scan_content": "• Kliknite gumb »Skeniraj« (stolpec ikon, meni Datoteka ali desni klik na mozaik), da odprete okno za skeniranje. MosaicView neposredno upravlja vaš optični bralnik (prek WIA, sistema za skeniranje v Windows): izberite napravo, ločljivost (DPI), barvni način (barvno / sivinsko / črno-belo) in nato kliknite »Skeniraj«. Da se optični bralnik prikaže na seznamu, mora biti priključen, vklopljen in imeti nameščen gonilnik v sistemu Windows.\n• Nazadnje uporabljeni skener, ločljivost in izbrani barvni način si aplikacija zapomni in ju samodejno znova predlaga ob naslednjem skeniranju.\n• Na voljo sta samo skeniranje cele strani in izvoz v JPG, saj ima aplikacija že vse potrebno za naknadno retuširanje in pretvorbo slike.\n• Skenirana slika se samodejno doda mozaiku, za že obstoječimi stranmi. Nato jo lahko obrežete, poravnate, prilagodite njene barve itd., kot katero koli drugo stran mozaika\n• Ta funkcija neposredno upravlja optični bralnik, brez uporabe programske opreme proizvajalca ali prikaza njegovega lastnega konfiguracijskega okna.\n• Ker lahko fizični skener hkrati upravlja samo ena povezava, je skeniranje mogoče samo v enem podoknu naenkrat: če je v enem podoknu odprto okno za skeniranje ali poteka skeniranje, gumb »Skeniraj« v drugem podoknu ostane siv do konca opravila.",
+    "straighten": "Poravnaj stran",
+    "straighten_content": "Dva načina za popravljanje poševnega skena, dostopna iz stolpca ikon (desni klik na ikono \"Poravnaj\" za preklop načina), menija Slike ali z desnim klikom na mozaik:\n• Ročna poravnava: odpre namenski pregledovalnik, v katerem narišete ravno črto na tisto, kar naj bi bilo na sliki vodoravno ali navpično; kot popravka se izračuna samodejno in uporabi za sliko, z ročicami za natančno prilagoditev črte.\n• Samodejna poravnava: sama zazna nagib (brez risanja) in neposredno poravna izbrano stran ali strani; prazni koti, ki nastanejo zaradi vrtenja, se zapolnijo z belo. Deluje na več straneh hkrati. Okno s povzetkom prikaže število uspešno poravnanih strani in navede tiste, za katere ni bilo mogoče zaznati zanesljivega nagiba."
   },
   "misc": {
     "file_word": "datoteka",

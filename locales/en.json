@@ -130,9 +130,10 @@
       "adjustments": "Brightness, contrast, colors...",
       "refresh_mosaic": "Refresh mosaic (F5)",
       "create_ico": "Create .ico file",
-      "straighten": "Straighten image...",
       "clone_zone": "Clone Zone...",
-      "text": "Add text..."
+      "text": "Add text...",
+      "straighten_manual": "Straighten the image manually...",
+      "straighten_auto": "Straighten the image automatically"
     },
     "canvas_no_file": {
       "open": "Open CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Quit application",
-      "reset": "Reset the application:\n• fullscreen → windowed\n• window size and position\n• dark mode → light\n• sidebar → visible / default width\n• minimap → hidden\n• icon and thumbnail size → normal\n• font size → default\n• language → automatic detection\n• window split → 50 / 50\n• renumbering → auto\n• ZIP compression → none",
+      "reset": "Reset the application:\n• fullscreen → windowed\n• window size and position\n• dark mode → light\n• sidebar → visible / default width\n• minimap → hidden\n• icon and thumbnail size → normal\n• font size → default\n• language → automatic detection\n• window split → 50 / 50\n• renumbering → auto\n• automatic straightening → manual\n• ZIP compression → none",
       "reset_label": "Reset application"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Simple",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Automatic straightening in progress...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "delete_selection": "Delete selection",
       "select_group": "Select group",
       "deselect_group": "Deselect group"
+    },
+    "deskew_summary": {
+      "title": "Automatic straightening",
+      "message": "{success} image(s) straightened successfully.",
+      "message_errors": "{success} image(s) straightened successfully.\n{failed} failed (no reliable skew detected) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "This file is not compressed.\nClick to compress it at the default level ({level}).\nRight-click to change the default level.",
     "duplicate_image": "DUPLICATE PAGE",
     "duplicate_indicator": "Duplicate pages were detected in this file.\nClick to open the duplicate pages management window.",
-    "duplicate_indicator_none": "No duplicate detected"
+    "duplicate_indicator_none": "No duplicate detected",
+    "straighten_mode_0": "Manual mode (draw a reference line)\nRight-click to change mode",
+    "straighten_mode_1": "Automatic mode (skew detection)\nRight-click to change mode"
   },
   "help": {
     "title": "MosaicView - User Manual",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "To be able to appear in the Windows Explorer \"Open with\" menu, MosaicView writes a small amount of information to the Windows registry when it starts. This is kept to the strict minimum: it tells Windows where MosaicView is located and which file types it can open. It is only written to the part of the registry reserved for your user account, never the system-wide part, and it does not change any file association: choosing MosaicView as the default application for a file type remains a choice only you can make, through Windows' own \"Open with\" menu. If you remove MosaicView from your disk, this information simply becomes inactive and has no effect.",
     "config_dir_content": "MosaicView creates a file named .mosaicview_config.json. This file contains the application's settings (window, theme, language, renumbering mode…), the list of recently opened comics and databases, your bookmarks, and your ComicVine API key (encrypted). It is located in the {config_dir} folder and is kept from one session to the next: unlike temporary files, it is never automatically deleted, neither by MosaicView nor by Windows.\nYou can delete it manually by going to the {config_dir} folder, or by clicking the button below. It will be recreated with default values the next time the application starts.",
     "scan": "Scan an image",
-    "scan_content": "• Click the “Scan” button (icon column, File menu, or right-click on the mosaic) to open the scanning window. MosaicView drives your scanner directly (via WIA, the Windows scanning system): select the device, the resolution (DPI), the color mode (color / grayscale / black and white), then click “Scan”. A scanner must be plugged in, powered on, and its driver installed on Windows to appear in the list.\n• Only full-page scanning is supported, as the application already has everything needed for image editing after the scan.\n• The scanned image is automatically added to the mosaic, after the pages already present. You can then crop it, straighten it, adjust its colors, etc. like any other page in the mosaic\n• This feature drives the scanner directly, without going through the manufacturer's software or displaying its own configuration window.\n• Since a physical scanner can only be driven by one connection at a time, scanning is only possible in one panel at a time: if a scan window is open or a scan is in progress in one panel, the \"Scan\" button stays grayed out in the other panel until the operation finishes."
+    "scan_content": "• Click the “Scan” button (icon column, File menu, or right-click on the mosaic) to open the scanning window. MosaicView drives your scanner directly (via WIA, the Windows scanning system): select the device, the resolution (DPI), the color mode (color / grayscale / black and white), then click “Scan”. A scanner must be plugged in, powered on, and its driver installed on Windows to appear in the list.\n• The last scanner used, resolution, and color mode you chose are remembered and automatically proposed again the next time you scan.\n• Only full-page scanning and exporting as JPG are offered, as the application already has everything needed for image editing and format conversion afterwards.\n• The scanned image is automatically added to the mosaic, after the pages already present. You can then crop it, straighten it, adjust its colors, etc. like any other page in the mosaic\n• This feature drives the scanner directly, without going through the manufacturer's software or displaying its own configuration window.\n• Since a physical scanner can only be driven by one connection at a time, scanning is only possible in one panel at a time: if a scan window is open or a scan is in progress in one panel, the \"Scan\" button stays grayed out in the other panel until the operation finishes.",
+    "straighten": "Straighten a page",
+    "straighten_content": "Two ways to correct a crooked scan, available from the icon column (right-click the \"Straighten\" icon to switch mode), the Images menu, or right-clicking the mosaic:\n• Manual straightening: opens a dedicated viewer where you draw a straight line on what should be horizontal or vertical in the image; the correction angle is calculated automatically and applied to the image, with draggable handles to fine-tune the line.\n• Automatic straightening: detects the skew on its own (no line to draw) and straightens the selected page(s) directly; empty corners created by the rotation are filled in white. Works on several pages at once. A summary window shows how many pages were straightened successfully and lists the ones where no reliable skew could be detected."
   },
   "misc": {
     "file_word": "file",

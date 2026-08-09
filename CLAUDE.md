@@ -16,7 +16,7 @@ Avant d'improviser une procédure ou de la reconstruire depuis zéro, vérifier 
 - **`undo-redo`** — le système Annuler/Refaire
 - **`apply-image-operation`** — pattern obligatoire pour tout changement de `entry['bytes']`
 - **`rotate-flip`** — rotation 90° et miroir de la mosaïque
-- **`page-straighten`** — redressement d'image (rotation libre)
+- **`page-straighten`** — redressement d'image, manuel (rotation libre) ou automatique (deskew, détection d'inclinaison par transformée de Hough)
 - **`add-text-to-image`** — ajout de texte riche sur une image
 - **`clone-zone`** — tampon de clonage
 - **`page-resize`** — redimensionnement des pages, détection des pages multiples

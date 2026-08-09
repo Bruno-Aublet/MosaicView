@@ -130,9 +130,10 @@
       "adjustments": "Calima, contrasta, culini...",
       "refresh_mosaic": "Envinyata i mosaic (F5)",
       "create_ico": "Carë .ico quetta",
-      "straighten": "Lempina lómë...",
       "clone_zone": "Óre fëa lúmequenta...",
-      "text": "Yanta quetta..."
+      "text": "Yanta quetta...",
+      "straighten_manual": "Lempina tanna i mal...",
+      "straighten_auto": "Lempina tanna autómatavë"
     },
     "canvas_no_file": {
       "open": "Panya CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "apa falasse",
-      "reset": "Penia i tamma:\n• quanta tanna → telwa\n• quantesse ar telpë i coivierwa\n• morna forma → calima\n• telwa tanna → cenuva / senya tessë\n• pityanwendë → núna\n• quantesse i tanwion ar parmalar → senya\n• quantesse i fëa → senya\n• lambë → hlaruva autómatica\n• telwa perya → 50 / 50\n• envinyanótë → autómata\n• ZIP pusta → alwa",
+      "reset": "Penia i tamma:\n• quanta tanna → telwa\n• quantesse ar telpë i coivierwa\n• morna forma → calima\n• telwa tanna → cenuva / senya tessë\n• pityanwendë → núna\n• quantesse i tanwion ar parmalar → senya\n• quantesse i fëa → senya\n• lambë → hlaruva autómatica\n• telwa perya → 50 / 50\n• envinyanótë → autómata\n• autómata lempina → norma\n• ZIP pusta → alwa",
       "reset_label": "Restanya i sambë"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Riq: Nenwa",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Autómata lempina...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Parma 8 melda liéva anwavë etelehta, ar merilyë hostatyë sa. Mal parma 7 nasse 4 loar yá, ar enyalielyar ná ita lumbë: man enger i Quetar hyarni? Ar man martanë métimes?\n\nLoicë sina istaina ná lelyë, Distillat carna elyen. Sadyëa parmalya EPUB pahtas PDF minna i nómë órë carna: caltalyë parmë, Quetaron parmar, ar cenya i molwenna, valea cenna hya hosta parma PDF.\n\nI tamma harya i lára nostalë Gemini 3.5 Flash.",
       "landing_intro": "Cenna i tamma sina sí:",
       "download_intro": "Sina tamma hostaityëlyë:"
+    },
+    "deskew_summary": {
+      "title": "Autómata Lempina",
+      "message": "{success} emma(li) lempinë alcarissë.",
+      "message_errors": "{success} emma(li) lempinë alcarissë.\n{failed} ú-cárë (úna cendo hirna) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Sina lestassë úva nuttala.\nFormë nutta sa i tereva ({level}).\nFormë telpina i tereva.",
     "duplicate_image": "ATTA-PARMA",
     "duplicate_indicator": "Atta-parmar hirne mi parma sina.\nFormë latya i atta-parmaron menta.",
-    "duplicate_indicator_none": "Atta-parmar lá hirne"
+    "duplicate_indicator_none": "Atta-parmar lá hirne",
+    "straighten_mode_0": "Norma lé (teke minë tanna cendëo)\nForma hya tyalie quetie",
+    "straighten_mode_1": "Autómata lé (cenna i cendo)\nForma hya tyalie quetie"
   },
   "help": {
     "title": "MosaicView - Nottië návaren",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Nauva véla i Windows Explorer \"Latya as\" listaryassë, MosaicView teca aiquë nótë i Ondócola Windows-o íre entuia — parma-nótë ya quetë Windows-en masse ná MosaicView ar mana parma nostar latyalyë. Tecë sina lá saila nostë. Tecë ná linta i Ondócola lestassë ya ná i ranta lyo, lá i ranta ambaressëo, ar lá véla mana parma-quenta: cilë MosaicView i tamma minya parma nostëo autëa cilë ya elyë erinqua polë carë, tanen i Windows \"Latya as\" listaryanna. Qui autë MosaicView tyaulyanna, sina nótë nauva ú-carila ar ú-menta.",
     "config_dir_content": "MosaicView carë tengwa estaina .mosaicview_config.json. Tengwa sina harya i tulcar i tammo (fenda, cólë, lambë, ata-nótima vestë…), i lestë i harandion parmar ar rangwar i entuinar apa, i lambetengwi lyo, ar i API parma ComicVine lyo (rehtaina). Caita mi i alda {config_dir} ar vahaila oa lestello lestenna: lá ve i raxëar parmar, i tengwa sina úva autëa, i·tammo hyana Windows.\nPolil auta sina carë túëo mí i alda {config_dir}, hya cilë i tamma nu. Nauva ata-carina as i tulcar minya lestë i lestenna i tammo entuia.",
     "scan": "Cenilë emma",
-    "scan_content": "• Pusta i \"Cenila\" tanwa (cenilion yando, i Parma nomessë, ar pusta faila i vosaicessë) yesta i cenilë windo. MosaicView cenila i cenil lelya (WIA nossenen, Windowo cenilë nossë): cilë i harma, i calmë (DPI), i ninqe lië (ninqe / sindë / morë ar ninquë), ar pusta \"Cenila\". I cenil ná lantea, naina, ar i harma parma hepis Windowessë an tencelë lestassë.\n• Emma yando cenilëa, an i tamna ëar ilya i mereva emma norna apa cenilë.\n• I emma cenilëa anna i vosaicenna vinta, apa i sómëa parmar. Ela pole cilë, sinta, ar quernë ninqion, ve exë vosaic parma.\n• Vinta hína cenila i cenil, uas mahtëa i carmo harma allo ar uas anta insa windo.\n• An i véra cenil pole ná lelyaina min sam' er, cenilë pole ná er windonna er lú: qui cenilë windo panta ëa egor cenilë martëa windo, i \"Cenila\" tanwa mahta insë windonna tenna i carmë tyeltëa."
+    "scan_content": "• Pusta i \"Cenila\" tanwa (cenilion yando, i Parma nomessë, ar pusta faila i vosaicessë) yesta i cenilë windo. MosaicView cenila i cenil lelya (WIA nossenen, Windowo cenilë nossë): cilë i harma, i calmë (DPI), i ninqe lië (ninqe / sindë / morë ar ninquë), ar pusta \"Cenila\". I cenil ná lantea, naina, ar i harma parma hepis Windowessë an tencelë lestassë.\n• I cenil récina metëmë, i calmë, ar i ninqe lië cilina hepinar, ar antinar enó automatikwa i mettë cenilelenna.\n• Erya i cenilë windo ar i essë JPG tanwa antinar, an i tamna ëar ilya i mereva emma tyalië ar vistië apa cenilë.\n• I emma cenilëa anna i vosaicenna vinta, apa i sómëa parmar. Ela pole cilë, sinta, ar quernë ninqion, ve exë vosaic parma.\n• Vinta hína cenila i cenil, uas mahtëa i carmo harma allo ar uas anta insa windo.\n• An i véra cenil pole ná lelyaina min sam' er, cenilë pole ná er windonna er lú: qui cenilë windo panta ëa egor cenilë martëa windo, i \"Cenila\" tanwa mahta insë windonna tenna i carmë tyeltëa.",
+    "straighten": "Lempina emma",
+    "straighten_content": "Atta lé an lempina emma, hirna as i tanwion nomessë (forma hya tyalie i 'Lempina' tanwë an vista i lé), i aicassë Emmaron, hya forma hya tyalie i mápessë:\n• Norma lempina: latya minë cenaquétala nómë yassë tekë tanna cendëo tanna i má naa hyapaxëa hya orta i emmassë; i cendo cenaina naa nótina autómatavë ar carna i emmanna, as macilli an tunca i tanna.\n• Autómata lempina: cenna i cendo erya (álo teke) ar lempina rincë i emma hya emmalí cillë; i núra rembina carainë ninqua enyalëo antaina ninquessë. Yesta leperya emmalínen. Minya fenda tanwë manen ranyalí emmali lempinë alcarissë ar nótë i úner cendo hirna."
   },
   "misc": {
     "file_word": "parma",

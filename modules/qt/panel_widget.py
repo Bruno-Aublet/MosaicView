@@ -269,6 +269,7 @@ class PanelWidget(QWidget):
         # accèdent à _state_module.state, ex. recent_files, undo_redo_qt…)
         _state_module.state = self._state
         self._state.renumber_mode = self._renumber_config().get_renumber_mode()
+        self._state.straighten_mode = self._renumber_config().get_straighten_mode()
 
         # ── Fichiers récents ──────────────────────────────────────────────────
         _recent_files_module.init_recent_files()
@@ -1387,6 +1388,24 @@ class PanelWidget(QWidget):
         self._update_status_bar()
         self._refresh_toolbar_states()
 
+    def _straighten_btn_action(self):
+        """Clic gauche sur l'icône straighten : ouvre le redressement manuel
+        (mode 0) ou lance le redressement automatique (mode 1)."""
+        mode = getattr(self._state, "straighten_mode", 0)
+        if mode == 1:
+            from modules.qt.deskew_qt import deskew_selected_qt
+            deskew_selected_qt(self._deskew_callbacks())
+        else:
+            from modules.qt.straighten_viewer_qt import show_straighten_viewer
+            show_straighten_viewer(self, self._straighten_callbacks())
+
+    def _toggle_straighten_mode(self):
+        current = getattr(self._state, "straighten_mode", 0)
+        new_mode = 1 - current
+        self._state.straighten_mode = new_mode
+        self._renumber_config().set_straighten_mode(new_mode)
+        self._refresh_toolbar_states()
+
     def _sort_images(self, sort_method: str):
         from modules.qt.sorting_qt import sort_images_qt
         sort_images_qt(sort_method, self.save_state, self._render_mosaic, self._refresh_toolbar_states, self._state)
@@ -1619,6 +1638,18 @@ class PanelWidget(QWidget):
             "render_mosaic":      _with_state(self._canvas.render_mosaic),
             "update_button_text": self._refresh_toolbar_states,
             "state":              panel_state,
+        }
+
+    def _deskew_callbacks(self) -> dict:
+        return {
+            "parent":             self,
+            "save_state":         self.save_state,
+            "render_mosaic":      self._render_mosaic,
+            "update_button_text": self._refresh_toolbar_states,
+            "refresh_status":     self._update_status_bar,
+            "canvas":             self._canvas,
+            "state":              self._state,
+            "rollback":           lambda: _rollback_to_current_state_qt(self._state, *self._undo_redo_callbacks()),
         }
 
     def _clone_zone_callbacks(self) -> dict:

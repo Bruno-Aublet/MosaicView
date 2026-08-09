@@ -130,9 +130,10 @@
       "adjustments": "Heledus, kontrast, värvid...",
       "refresh_mosaic": "Värskenda mosaiiki (F5)",
       "create_ico": "Loo .ico fail",
-      "straighten": "Sirgest pilt...",
       "clone_zone": "Klooni tsoon...",
-      "text": "Lisa tekst..."
+      "text": "Lisa tekst...",
+      "straighten_manual": "Sirgesta pilt käsitsi...",
+      "straighten_auto": "Sirgesta pilt automaatselt"
     },
     "canvas_no_file": {
       "open": "Ava CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Sulge rakendus",
-      "reset": "Rakenduse lähtestamine:\n• täisekraan → aken\n• akna suurus ja asukoht\n• tume režiim → hele\n• külgriba → nähtav / vaikelaius\n• minikaart → peidetud\n• ikoonide ja pisipiltide suurus → tavaline\n• kirja suurus → vaikimisi\n• keel → automaatne tuvastamine\n• akna jagamine → 50 / 50\n• ümbernummerdamine → automaatne\n• ZIP-tihendus → puudub",
+      "reset": "Rakenduse lähtestamine:\n• täisekraan → aken\n• akna suurus ja asukoht\n• tume režiim → hele\n• külgriba → nähtav / vaikelaius\n• minikaart → peidetud\n• ikoonide ja pisipiltide suurus → tavaline\n• kirja suurus → vaikimisi\n• keel → automaatne tuvastamine\n• akna jagamine → 50 / 50\n• ümbernummerdamine → automaatne\n• automaatne sirgestamine → käsitsi\n• ZIP-tihendus → puudub",
       "reset_label": "Lähtesta rakendus"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Lihtne",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Automaatne sirgestamine käib...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Teie lemmiksaaga 8. köide ilmus just ning te ei jaksa oodata, et seda lugeda. Ainult et 7. köide ilmus 4 aastat tagasi ja teie mälestused on veidi hägused: kes need kõrvaltegelased jälle olid? Ja mis lõpuks juhtus?\n\nKui see olukord tundub tuttav, on Distillat loodud teie jaoks. Lohistage lihtsalt oma EPUB- või PDF-fail selleks ette nähtud alale: saate kokkuvõtte, tegelaskaardid ja teose analüüsi, mis on valmis vaatamiseks või PDF-ina eksportimiseks.\n\nRakendus tugineb Gemini 3.5 Flash tasuta tasemele.",
       "landing_intro": "Tutvustuslehekülg:",
       "download_intro": "Rakenduse saate alla laadida siit:"
+    },
+    "deskew_summary": {
+      "title": "Automaatne sirgestamine",
+      "message": "{success} pilt/pildid sirgestatud edukalt.",
+      "message_errors": "{success} pilt/pildid sirgestatud edukalt.\n{failed} ebaõnnestus(id) (usaldusväärset kallet ei tuvastatud) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "See fail ei ole pakitud.\nKlõpsake selle pakkimiseks vaiketasemel ({level}).\nParemklõps vaiketaseme muutmiseks.",
     "duplicate_image": "DUBLEERITUD LEHEKÜLG",
     "duplicate_indicator": "Selles failis tuvastati dubleerivad leheküljed.\nKlõpsake dubleerivate lehekülgede haldamise akna avamiseks.",
-    "duplicate_indicator_none": "Duplikaate ei tuvastatud"
+    "duplicate_indicator_none": "Duplikaate ei tuvastatud",
+    "straighten_mode_0": "Käsitsirežiim (joonista võrdlusjoon)\nRežiimi vahetamiseks paremklõpsake",
+    "straighten_mode_1": "Automaatne režiim (kaldenurga tuvastamine)\nRežiimi vahetamiseks paremklõpsake"
   },
   "help": {
     "title": "MosaicView - Kasutusjuhend",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Selleks et kuvada end Windows Exploreri menüüs \"Ava rakendusega\", kirjutab MosaicView käivitumisel mõned andmed Windowsi registrisse. See kirje piirdub hädavajalikuga: see teatab Windowsile, kus MosaicView asub ja milliseid failitüüpe see suudab avada. See tehakse ainult teie kasutajakontole reserveeritud registriosas, mitte kunagi süsteemi osas, ega muuda ühtegi failiseost: MosaicView valimine failitüübi vaikerakenduseks jääb otsuseks, mille saate teha ainult teie, Windowsi enda \"Ava rakendusega\" menüü kaudu. Kui eemaldate MosaicView oma kettalt, muutub see teave lihtsalt mõjutuks.",
     "config_dir_content": "MosaicView loob faili nimega .mosaicview_config.json. See fail sisaldab rakenduse seadeid (aken, teema, keel, ümbernummerdamise režiim…), hiljuti avatud koomiksite ja andmebaaside loendit, teie järjehoidjaid ning teie ComicVine'i API-võtit (krüpteeritud). See asub kaustas {config_dir} ja säilib seansside vahel: erinevalt ajutistest failidest ei kustuta ei MosaicView ega Windows seda kunagi automaatselt.\nSaate selle käsitsi kustutada, minnes kausta {config_dir}, või klõpsates allolevat nuppu. See luuakse vaikeväärtustega uuesti rakenduse järgmisel käivitamisel.",
     "scan": "Skaneeri pilt",
-    "scan_content": "• Klõpsake nuppu „Skaneeri” (ikoonitulp, menüü Fail või paremklõps mosaiigil), et avada skaneerimisaken. MosaicView juhib teie skannerit otse (WIA, Windowsi skaneerimissüsteemi kaudu): valige seade, eraldusvõime (DPI), värvirežiim (värviline / halltoonid / must-valge) ja klõpsake seejärel „Skaneeri”. Loendis kuvamiseks peab skanner olema ühendatud, sisse lülitatud ja selle draiver peab olema Windowsis installitud.\n• Toetatud on ainult kogu lehe skaneerimine, kuna rakendusel on juba kõik vajalik pildi töötlemiseks pärast skaneerimist.\n• Skaneeritud pilt lisatakse automaatselt mosaiigile, juba olemasolevate lehtede järele. Seejärel saate seda kärpida, sirgeks lüüa, värve kohandada jne, nagu iga teist mosaiigi lehte\n• See funktsioon juhib skannerit otse, ilma tootja tarkvara kasutamata või selle enda seadistusakent kuvamata.\n• Kuna füüsilist skannerit saab korraga juhtida ainult üks ühendus, on skannimine võimalik korraga ainult ühes paneelis: kui ühes paneelis on skannimisaken avatud või käib skannimine, jääb nupp „Skanni” teises paneelis halliks kuni toimingu lõppemiseni."
+    "scan_content": "• Klõpsake nuppu „Skaneeri” (ikoonitulp, menüü Fail või paremklõps mosaiigil), et avada skaneerimisaken. MosaicView juhib teie skannerit otse (WIA, Windowsi skaneerimissüsteemi kaudu): valige seade, eraldusvõime (DPI), värvirežiim (värviline / halltoonid / must-valge) ja klõpsake seejärel „Skaneeri”. Loendis kuvamiseks peab skanner olema ühendatud, sisse lülitatud ja selle draiver peab olema Windowsis installitud.\n• Viimati kasutatud skänner, eraldusvõime ja valitud värvirežiim jäetakse meelde ning pakutakse järgmisel skannimisel automaatselt uuesti.\n• Pakutakse ainult täislehe skannimist ja JPG-vormingus eksportimist, kuna rakendusel on juba olemas kõik vajalik pildi hilisemaks töötlemiseks ja vormingu teisendamiseks.\n• Skaneeritud pilt lisatakse automaatselt mosaiigile, juba olemasolevate lehtede järele. Seejärel saate seda kärpida, sirgeks lüüa, värve kohandada jne, nagu iga teist mosaiigi lehte\n• See funktsioon juhib skannerit otse, ilma tootja tarkvara kasutamata või selle enda seadistusakent kuvamata.\n• Kuna füüsilist skannerit saab korraga juhtida ainult üks ühendus, on skannimine võimalik korraga ainult ühes paneelis: kui ühes paneelis on skannimisaken avatud või käib skannimine, jääb nupp „Skanni” teises paneelis halliks kuni toimingu lõppemiseni.",
+    "straighten": "Sirgesta leht",
+    "straighten_content": "Kaks võimalust viltuse skaneeringu parandamiseks, mis on saadaval ikoonisambast (paremklõps ikoonil „Sirgesta“ režiimi vahetamiseks), menüüst Pildid või paremklõpsuga mosaiigil:\n• Käsitsi sirgestamine: avab spetsiaalse vaaturi, kus joonistate sirgjoone sellele, mis peaks pildil olema horisontaalne või vertikaalne; korrektsiooninurk arvutatakse automaatselt ja rakendatakse pildile, koos pidemetega joone täpseks häälestamiseks.\n• Automaatne sirgestamine: tuvastab kalde iseseisvalt (ilma midagi joonistamata) ja sirgestab otse valitud lehe(d); pöördest tekkinud tühjad nurgad täidetakse valgega. Töötab korraga mitme lehega. Kokkuvõtteaken näitab, mitu lehte sirgestati edukalt, ja loetleb need, mille puhul usaldusväärset kallet ei tuvastatud."
   },
   "misc": {
     "file_word": "fail",

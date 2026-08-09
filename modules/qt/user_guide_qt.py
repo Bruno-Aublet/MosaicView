@@ -634,6 +634,7 @@ class _HelpDialog(QDialog):
             ("help.flatten",              "help.flatten_content"),
             ("help.viewer",               "help.viewer_content"),
             ("help.crop",                 "help.crop_content"),
+            ("help.straighten",           "help.straighten_content"),
             ("help.resize_pages",         "help.resize_pages_content"),
             ("help.join_pages",           "help.join_pages_content"),
             ("help.split_pages",          "help.split_pages_content"),

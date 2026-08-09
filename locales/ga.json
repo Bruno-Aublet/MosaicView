@@ -130,9 +130,10 @@
       "adjustments": "Gile, codarsnacht, dathanna...",
       "refresh_mosaic": "Athnuaigh an mósáic (F5)",
       "create_ico": "Cruthaigh comhad .ico",
-      "straighten": "Díriú íomhá...",
       "clone_zone": "Crios a chlónáil...",
-      "text": "Cuir téacs leis..."
+      "text": "Cuir téacs leis...",
+      "straighten_manual": "Dírigh an íomhá de láimh...",
+      "straighten_auto": "Dírigh an íomhá go huathoibríoch"
     },
     "canvas_no_file": {
       "open": "Oscail CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Dún an feidhmchlár",
-      "reset": "An feidhmchlár a athshocrú:\n• lánscáileán → fuinneogach\n• méid agus suíomh na fuinneoige\n• mód dorcha → geal\n• barra taoibh → infheicthe / leithead réamhshocraithe\n• mionléarscáil → i bhfolach\n• méid na ndeilbhíní agus na mionsamhlacha → gnáth\n• méid cló → réamhshocraithe\n• teanga → braite uathoibríoch\n• roinnt na fuinneoige → 50 / 50\n• athuimhriú → uathoibríoch\n• comhbhrú ZIP → dada",
+      "reset": "An feidhmchlár a athshocrú:\n• lánscáileán → fuinneogach\n• méid agus suíomh na fuinneoige\n• mód dorcha → geal\n• barra taoibh → infheicthe / leithead réamhshocraithe\n• mionléarscáil → i bhfolach\n• méid na ndeilbhíní agus na mionsamhlacha → gnáth\n• méid cló → réamhshocraithe\n• teanga → braite uathoibríoch\n• roinnt na fuinneoige → 50 / 50\n• athuimhriú → uathoibríoch\n• dírúchán uathoibríoch → láimhe\n• comhbhrú ZIP → dada",
       "reset_label": "Athshocraigh an feidhmchlár"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Uimh: Simplí",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Dírúchán uathoibríoch ar siúl...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Tá imleabhar 8 de do shaga is fearr leat díreach tar éis teacht amach, agus tá fonn ort é a léamh. Ach amháin gur 4 bliana ó shin a bhí imleabhar 7 ann, agus tá do chuimhní beagán doiléir: cé hiad na carachtair thánaisteacha sin arís? Agus cad a tharla ag an deireadh?\n\nMás rud é go bhfuil an cás seo aithnidiúil duit, tá Distillat déanta duit. Ná déan ach do chomhad EPUB nó PDF a scaoileadh sa limistéar atá ceaptha dó sin: gheobhaidh tú achoimre, cártaí carachtair agus anailís ar an saothar, réidh le breathnú orthu nó le honnmhairiú go PDF.\n\nBraitheann an feidhmchlár ar leibhéal saor in aisce Gemini 3.5 Flash.",
       "landing_intro": "Leathanach cur i láthair:",
       "download_intro": "Is féidir leat an feidhmchlár a íoslódáil anseo:"
+    },
+    "deskew_summary": {
+      "title": "Dírúchán uathoibríoch",
+      "message": "{success} íomhá(nna) dírithe go rathúil.",
+      "message_errors": "{success} íomhá(nna) dírithe go rathúil.\n{failed} teipthe (níor braitheadh fiaradh iontaofa) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Níl an comhad seo comhbhrúite.\nCliceáil chun é a chomhbhrú ag an leibhéal réamhshocraithe ({level}).\nDeaschliceáil chun an leibhéal réamhshocraithe a athrú.",
     "duplicate_image": "LEATHANACH DÚBLACH",
     "duplicate_indicator": "Braitheadh leathanaigh dhúblacha sa chomhad seo.\nCliceáil chun an fhuinneog bhainistíochta dúblach a oscailt.",
-    "duplicate_indicator_none": "Níor braitheadh aon dhúblach"
+    "duplicate_indicator_none": "Níor braitheadh aon dhúblach",
+    "straighten_mode_0": "Modh láimhe (tarraing líne tagartha)\nDeaschliceáil chun modh a athrú",
+    "straighten_mode_1": "Modh uathoibríoch (braite fiaradh)\nDeaschliceáil chun modh a athrú"
   },
   "help": {
     "title": "MosaicView - Treoir",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Chun go bhféadfadh sé bheith le feiceáil i roghchlár \"Oscail le\" Windows Explorer, scríobhann MosaicView roinnt faisnéise i gclár Windows nuair a osclaítear é. Coimeádtar an clárú seo chomh híseal agus is féidir: insíonn sé do Windows cá bhfuil MosaicView agus na cineálacha comhad ar féidir leis a oscailt. Ní dhéantar é ach amháin sa chuid den chlár atá coimeádta do do chuntas úsáideora, riamh sa chuid chórais, agus ní athraíonn sé aon nasc comhaid: fanann sé fós mar rogha nach féidir ach leatsa a dhéanamh, tríd an roghchlár \"Oscail le\" atá ag Windows féin, MosaicView a roghnú mar an feidhmchlár réamhshocraithe do chineál comhaid. Má bhaineann tú MosaicView de do dhiosca, ní bheidh aon éifeacht ag an bhfaisnéis seo a thuilleadh.",
     "config_dir_content": "Cruthaíonn MosaicView comhad darb ainm .mosaicview_config.json. Tá socruithe an fheidhmchláir sa chomhad seo (fuinneog, téama, teanga, modh athuimhrithe…), liosta na leabhar grinn agus na mbunachar sonraí a osclaíodh le déanaí, do leabharmharcanna, agus d'eochair API ComicVine (criptithe). Tá sé lonnaithe san fhillteán {config_dir} agus coimeádtar é ó sheisiún go seisiún: murab ionann agus na comhaid shealadacha, ní scriostar go huathoibríoch é riamh, ná ag MosaicView ná ag Windows.\nIs féidir leat é a scriosadh de láimh tríd an bhfillteán {config_dir} a oscailt, nó tríd an gcnaipe thíos a chliceáil. Athchruthófar é leis na luachanna réamhshocraithe an chéad uair eile a thosóidh an feidhmchlár.",
     "scan": "Scan íomhá",
-    "scan_content": "• Cliceáil an cnaipe \"Scan\" (colún na ndeilbhíní, roghchlár Comhad, nó deaschliceáil ar an mósáic) chun an fhuinneog scanta a oscailt. Rialaíonn MosaicView do scanóir go díreach (trí WIA, córas scanta Windows): roghnaigh an gléas, an taifeach (DPI), an modh datha (dath / liathscála / dubh agus bán), ansin cliceáil \"Scan\". Ní mór scanóir a bheith plugáilte isteach, ar siúl, agus a thiománaí suiteáilte ar Windows chun é a fheiceáil sa liosta.\n• Ní thacaítear ach le scanadh leathanaigh iomláin, ós rud é go bhfuil gach rud is gá cheana féin ag an bhfeidhmchlár chun íomhá a chur in eagar tar éis an scanta.\n• Cuirtear an íomhá scanta leis an mósáic go huathoibríoch, tar éis na leathanach atá ann cheana. Is féidir leat ansin í a bhearradh, a dhíriú, a dhathanna a choigeartú, srl. cosúil le haon leathanach eile den mósáic\n• Rialaíonn an ghné seo an scanóir go díreach, gan dul trí bhogearraí an mhonaróra ná a fhuinneog cumraíochta féin a thaispeáint.\n• Ós rud é nach féidir ach le nasc amháin scanóir fisiceach a rialú ag am ar bith, ní féidir scanadh a dhéanamh ach i bpainéal amháin ag an am: má tá fuinneog scanta oscailte nó scanadh ar siúl i bpainéal amháin, fanann an cnaipe \"Scan\" liathchóirithe sa phainéal eile go dtí go gcríochnaítear an oibríocht."
+    "scan_content": "• Cliceáil an cnaipe \"Scan\" (colún na ndeilbhíní, roghchlár Comhad, nó deaschliceáil ar an mósáic) chun an fhuinneog scanta a oscailt. Rialaíonn MosaicView do scanóir go díreach (trí WIA, córas scanta Windows): roghnaigh an gléas, an taifeach (DPI), an modh datha (dath / liathscála / dubh agus bán), ansin cliceáil \"Scan\". Ní mór scanóir a bheith plugáilte isteach, ar siúl, agus a thiománaí suiteáilte ar Windows chun é a fheiceáil sa liosta.\n• Cuimhnítear ar an scanóir, an taifeach agus an modh datha a úsáideadh go deireanach, agus moltar iad go huathoibríoch arís an chéad uair eile a scanálann tú.\n• Ní chuirtear ar fáil ach scanadh leathanaigh iomláin agus easpórtáil mar JPG, ós rud é go bhfuil gach a bhfuil ag teastáil ag an bhfeidhmchlár cheana féin chun an íomhá a mhionathrú agus a thiontú ina dhiaidh sin.\n• Cuirtear an íomhá scanta leis an mósáic go huathoibríoch, tar éis na leathanach atá ann cheana. Is féidir leat ansin í a bhearradh, a dhíriú, a dhathanna a choigeartú, srl. cosúil le haon leathanach eile den mósáic\n• Rialaíonn an ghné seo an scanóir go díreach, gan dul trí bhogearraí an mhonaróra ná a fhuinneog cumraíochta féin a thaispeáint.\n• Ós rud é nach féidir ach le nasc amháin scanóir fisiceach a rialú ag am ar bith, ní féidir scanadh a dhéanamh ach i bpainéal amháin ag an am: má tá fuinneog scanta oscailte nó scanadh ar siúl i bpainéal amháin, fanann an cnaipe \"Scan\" liathchóirithe sa phainéal eile go dtí go gcríochnaítear an oibríocht.",
+    "straighten": "Dírigh leathanach",
+    "straighten_content": "Dhá bhealach chun scanadh fiar a cheartú, ar fáil ón gcolún deilbhíní (deaschliceáil ar an deilbhín \"Dírigh\" chun modh a athrú), roghchlár na nÍomhánna, nó deaschliceáil ar an mósáic:\n• Díriú de láimh: osclaíonn amharcán tiomnaithe ina dtarraingíonn tú líne dhíreach ar an méid ba chóir a bheith cothrománach nó ingearach san íomhá; ríomhtar an uillinn cheartúcháin go huathoibríoch agus cuirtear i bhfeidhm ar an íomhá í, le lámha chun an líne a mhionchoigeartú.\n• Díriú uathoibríoch: braitheann sé an fiaradh leis féin (gan aon rud a tharraingt) agus dírítear an leathanach nó na leathanaigh roghnaithe go díreach; líontar na coirnéil fholmha a chruthaíonn an rothlú i mbán. Oibríonn sé ar roinnt leathanach ag an am céanna. Taispeánann fuinneog achoimre líon na leathanach a dírithe go rathúil agus liostaíonn sí iad siúd nár braitheadh fiaradh iontaofa dóibh."
   },
   "misc": {
     "file_word": "comhad",

@@ -130,9 +130,10 @@
       "adjustments": "Galad, gwahan, cuil...",
       "refresh_mosaic": "Edro i mosaic (F5)",
       "create_ico": "Bâd .ico parf",
-      "straighten": "Trenarna tâl...",
       "clone_zone": "Glawar i·dôl...",
-      "text": "Ennas peth..."
+      "text": "Ennas peth...",
+      "straighten_manual": "Trenarna tâl si pân...",
+      "straighten_auto": "Trenarna tâl auto-hired"
     },
     "canvas_no_file": {
       "open": "Edro CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "haryalë falasse",
-      "reset": "Adferio i·chair:\n• pân-sgrîn → fennas\n• meir a thaled i fennas\n• bâd doll → calan\n• vuidain → gweladwy / lled dadwar\n• fánfap → dolen\n• meir eiconau a nirn-randirain → dadwar\n• meir têw → dadwar\n• lam → cannad auto\n• pennad i fennas → 50 / 50\n• ednodiad → auto\n• cened ZIP → law",
+      "reset": "Adferio i·chair:\n• pân-sgrîn → fennas\n• meir a thaled i fennas\n• bâd doll → calan\n• vuidain → gweladwy / lled dadwar\n• fánfap → dolen\n• meir eiconau a nirn-randirain → dadwar\n• meir têw → dadwar\n• lam → cannad auto\n• pennad i fennas → 50 / 50\n• ednodiad → auto\n• Trenarn auto-hired → dad-benn\n• cened ZIP → law",
       "reset_label": "Adlanna i govannas"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Nim: Sain",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Trenarn auto-hired ah:\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Anann i-oer 8 e·lú Lúlen achenio, a nallog gwannen le legi hen. Dan i-oer 7 oe ereb 4 in-idhrinn, a lû·lín gwathog: man edir i-Quetar erchín hen? A man erui bant i-methed?\n\nAe i-tham hen les fael, Distillat naur na le. Sada ambar EPUB pehn PDF lín na theri sad; toged Hannas, cardh e-Quetar a nothrannath e-goleb, lain adorthad pehn sadatha be PDF.\n\nI-tham hen Sadatha ah lam laid e-Gemini 3.5 Flash.",
       "landing_intro": "Tiro i-tham hen sí:",
       "download_intro": "Le sadatha i tham hen sí:"
+    },
+    "deskew_summary": {
+      "title": "Trenarn Auto-hired",
+      "message": "{success} randir Trenarnannen vaeth.",
+      "message_errors": "{success} randir Trenarnannen vaeth.\n{failed} pennen (ú-cenir chair veleg) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "I bess hen ú cened.\nRîn a gened venna na i modh hen pen ({level}).\nRîn a chuiniath i modh hen pen.",
     "duplicate_image": "TELL ATHRENIL",
     "duplicate_indicator": "Pagath athrenil hirnen vi i filê hen.\nRîn a edro i chenneth athrenilath.",
-    "duplicate_indicator_none": "Ú-hannen athrenilath"
+    "duplicate_indicator_none": "Ú-hannen athrenilath",
+    "straighten_mode_0": "Modh dad-benn (tegitha lath eglerol)\nDago daerageb nan gweth dangwethad",
+    "straighten_mode_1": "Modh auto-hired (cened i chair)\nDago daerageb nan gweth dangwethad"
   },
   "help": {
     "title": "MosaicView - Bâd thuriol",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Aden aphada rast \"Echo bo\" o Windows Explorer, MosaicView tecil harn nothrannath nan Golover Windows na echui — parf redhui i pêd Windows man ammar rast a MosaicView ar man rueil ambar aphada. Tecil hen ú-vedui nan gerthad annen. Tecil vain nan haran Golover annen aden i cont adan, pen nan haran nell, ar ú-aphel man harn ambar-thand: tirad MosaicView mal rast rael aden rueil ambar rast ratha gerthad ir naug pêd, be rast \"Echo bo\" o Windows sui. Ir dhelib MosaicView nan taur lín, harn hen echui gwath ar pen tirith.",
     "config_dir_content": "MosaicView tecil parf henna .mosaicview_config.json. Parf hen harya wîv nan i·chaes (aphada, thind, phith, i·nírad i·na echedi orchad…), i·lû i·pheirith â i·pharfath pantannen aphada, i·gerthadin lín, ar i·têw API ComicVine lín (parch). Caeda vi i·taur {config_dir} ar tira caita rast am rast: â-veren beirain, ú-echui vain, mal MosaicView mal Windows.\nAnnad hen naug teqi im i·taur {config_dir}, mal nedhoro i·nern nu. Adertha am i·chaes chu i·nírad hîn aden i·harfuil vain a MosaicView echui.",
     "scan": "Cenatha randir",
-    "scan_content": "• Podo an chîn \"Ceno\" (i thand genoer, i lend Ambar, egor podo dhelig vo i vosaic) an athrado i host Chenatha. MosaicView cenatha i Chenor lîn erui (thand WIA, thand cened Windows): mede i genor, i ninnas (DPI), i chalich (chalich / lith-mith / morn a nimp), a podo \"Ceno\". I genor tolel, vaded, a i thand dînen anann Windows an tolthad vo i lest.\n• Randir eno na chenatha ceniannen, an i chest anna erin hain chenatha an gwaith randir.\n• I randir cenannen anna vo i vosaic dad, apa i genoer ceniannen. Danno cenatha, tirio, egor faeg i venel, sui genor benn i vosaic.\n• I chest hen cenatha i genor erui, ú-erin i harn i chenor egor tolthad i thand dínen.\n• Ir i chenor dínen ú-erin cenatha ben unin luith erui, i chenatha erin ben paned erui: ir i host chenatha panno egor chenatha ceria vi paned, i chîn \"Ceno\" dâd ú-erin vi paned hen tenna i chest bo."
+    "scan_content": "• Podo an chîn \"Ceno\" (i thand genoer, i lend Ambar, egor podo dhelig vo i vosaic) an athrado i host Chenatha. MosaicView cenatha i Chenor lîn erui (thand WIA, thand cened Windows): mede i genor, i ninnas (DPI), i chalich (chalich / lith-mith / morn a nimp), a podo \"Ceno\". I genor tolel, vaded, a i thand dînen anann Windows an tolthad vo i lest.\n• I genor cheniannen thent, i ninnas, a i chalich haeðent tirin, a podin ennas nedh vosaic pathad.\n• I chenatha nedh vosaic pathad a i thelthad an JPG erui podannen, an i chest anna erin hain chenatha egor faeg i thand randir apa.\n• I randir cenannen anna vo i vosaic dad, apa i genoer ceniannen. Danno cenatha, tirio, egor faeg i venel, sui genor benn i vosaic.\n• I chest hen cenatha i genor erui, ú-erin i harn i chenor egor tolthad i thand dínen.\n• Ir i chenor dínen ú-erin cenatha ben unin luith erui, i chenatha erin ben paned erui: ir i host chenatha panno egor chenatha ceria vi paned, i chîn \"Ceno\" dâd ú-erin vi paned hen tenna i chest bo.",
+    "straighten": "Trenarna randir",
+    "straighten_content": "Tad thail an trenarna randir gwathui, gwestannen na i vagol eiconau (dago daerageb ben i eicon 'Trenarna' an gweth dangwethad), i lend Randirain, egor dago daerageb ben i chair:\n• Trenarn dad-benn: latha bân dad-benn ias tegitha lath eglerol ben ass i pân ortheri egor pendrad vi i randir; i chair dangwethad hain ithil auto ah cened ben i randir, si lain an athrenna i lath.\n• Trenarn auto-hired: cened i chair sen erui (ú-thegitha), a trenarna bân i randir/randirain gwestannen; i chegin cuil iannen ben i gwethad hain linnannen gwen. Man i lû ah pân randirain hâd. Er fenestra crist tiro i nifred randirain trenarnannen vaeth a i lend re ú-cenir chair veleg."
   },
   "misc": {
     "file_word": "bâr",

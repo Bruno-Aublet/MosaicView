@@ -130,9 +130,10 @@
       "adjustments": "Brillo, contraste, colores...",
       "refresh_mosaic": "Actualizar el mosaico (F5)",
       "create_ico": "Crear archivo .ico",
-      "straighten": "Enderezar imagen...",
       "clone_zone": "Clonar zona...",
-      "text": "Añadir texto..."
+      "text": "Añadir texto...",
+      "straighten_manual": "Enderezar la imagen manualmente...",
+      "straighten_auto": "Enderezar la imagen automáticamente"
     },
     "canvas_no_file": {
       "open": "Abrir CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Cerrar la aplicación",
-      "reset": "Restablecer la aplicación:\n• pantalla completa → ventana\n• tamaño y posición de la ventana\n• modo oscuro → claro\n• barra lateral → visible / ancho predeterminado\n• minimapa → oculto\n• tamaño de iconos y miniaturas → normal\n• tamaño de fuente → predeterminado\n• idioma → detección automática\n• división de la ventana → 50 / 50\n• renumeración → automática\n• compresión ZIP → ninguna",
+      "reset": "Restablecer la aplicación:\n• pantalla completa → ventana\n• tamaño y posición de la ventana\n• modo oscuro → claro\n• barra lateral → visible / ancho predeterminado\n• minimapa → oculto\n• tamaño de iconos y miniaturas → normal\n• tamaño de fuente → predeterminado\n• idioma → detección automática\n• división de la ventana → 50 / 50\n• renumeración → automática\n• enderezado automático → manual\n• compresión ZIP → ninguna",
       "reset_label": "Restablecer la aplicación"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Simple",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Enderezado automático en curso...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "El tomo 8 de tu saga favorita acaba de salir, y te mueres de ganas de leerlo. Solo que el tomo 7 fue hace 4 años, y tus recuerdos son un poco confusos: ¿quiénes eran esos personajes secundarios? ¿Y qué pasaba al final?\n\nSi esta situación te suena, Distillat está hecho para ti. Simplemente suelta tu archivo EPUB o PDF en la zona prevista para ello: obtienes un resumen, fichas de personajes y un análisis de la obra, listos para consultar o exportar a PDF.\n\nLa aplicación se basa en el nivel gratuito de Gemini 3.5 Flash.",
       "landing_intro": "Página de presentación:",
       "download_intro": "Puedes descargar la aplicación aquí:"
+    },
+    "deskew_summary": {
+      "title": "Enderezado automático",
+      "message": "{success} imagen(es) enderezada(s) con éxito.",
+      "message_errors": "{success} imagen(es) enderezada(s) con éxito.\n{failed} fallida(s) (no se detectó una inclinación fiable) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Este archivo no está comprimido.\nHaga clic para comprimirlo con el nivel predeterminado ({level}).\nClic derecho para cambiar el nivel predeterminado.",
     "duplicate_image": "PÁGINA DUPLICADA",
     "duplicate_indicator": "Se detectaron páginas duplicadas en este archivo.\nHaga clic para abrir la ventana de gestión de duplicados.",
-    "duplicate_indicator_none": "No se detectaron duplicados"
+    "duplicate_indicator_none": "No se detectaron duplicados",
+    "straighten_mode_0": "Modo manual (trazar una línea de referencia)\nClic derecho para cambiar de modo",
+    "straighten_mode_1": "Modo automático (detección de inclinación)\nClic derecho para cambiar de modo"
   },
   "help": {
     "title": "MosaicView - Manual de usuario",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Para poder aparecer en el menú \"Abrir con\" del Explorador de Windows, MosaicView escribe algunos datos en el registro de Windows al iniciarse. Esta inscripción se limita a lo estrictamente necesario: indica a Windows dónde se encuentra MosaicView y qué tipos de archivo puede abrir. Se realiza únicamente en la parte del registro reservada a su cuenta de usuario, nunca en la parte del sistema, y no modifica ninguna asociación de archivos: elegir MosaicView como aplicación predeterminada para un tipo de archivo sigue siendo una decisión que solo usted puede tomar, mediante el propio menú \"Abrir con\" de Windows. Si elimina MosaicView de su disco, esta información simplemente queda inactiva y sin efecto.",
     "config_dir_content": "MosaicView crea un archivo llamado .mosaicview_config.json. Este archivo contiene los ajustes de la aplicación (ventana, tema, idioma, modo de renumeración…), la lista de cómics y bases de datos abiertos recientemente, tus marcadores y tu clave API de ComicVine (cifrada). Se encuentra en la carpeta {config_dir} y se conserva de una sesión a otra: a diferencia de los archivos temporales, nunca se elimina automáticamente, ni por MosaicView ni por Windows.\nPuedes eliminarlo manualmente yendo a la carpeta {config_dir}, o haciendo clic en el botón de abajo. Se volverá a crear con los valores predeterminados la próxima vez que se inicie la aplicación.",
     "scan": "Escanear una imagen",
-    "scan_content": "• Haga clic en el botón «Escanear» (columna de iconos, menú Archivo, o clic derecho sobre el mosaico) para abrir la ventana de escaneo. MosaicView controla directamente su escáner (mediante WIA, el sistema de escaneo de Windows): seleccione el dispositivo, la resolución (DPI), el modo de color (color / escala de grises / blanco y negro) y luego haga clic en «Escanear». Un escáner debe estar conectado, encendido y con su controlador instalado en Windows para aparecer en la lista.\n• Solo se admite el escaneo de página completa, ya que la aplicación ya cuenta con todo lo necesario para retocar la imagen después del escaneo.\n• La imagen escaneada se añade automáticamente al mosaico, a continuación de las páginas ya presentes. Después puede recortarla, enderezarla, ajustar sus colores, etc., como cualquier otra página del mosaico\n• Esta función controla el escáner directamente, sin pasar por el software del fabricante ni mostrar su propia ventana de configuración.\n• Como un escáner físico solo puede ser controlado por una conexión a la vez, la digitalización solo es posible en un panel a la vez: si hay una ventana de digitalización abierta o un escaneo en curso en un panel, el botón «Escanear» permanece deshabilitado en el otro panel hasta que termine la operación."
+    "scan_content": "• Haga clic en el botón «Escanear» (columna de iconos, menú Archivo, o clic derecho sobre el mosaico) para abrir la ventana de escaneo. MosaicView controla directamente su escáner (mediante WIA, el sistema de escaneo de Windows): seleccione el dispositivo, la resolución (DPI), el modo de color (color / escala de grises / blanco y negro) y luego haga clic en «Escanear». Un escáner debe estar conectado, encendido y con su controlador instalado en Windows para aparecer en la lista.\n• El último escáner utilizado, la resolución y el modo de color elegidos se recuerdan y se proponen automáticamente de nuevo en el próximo escaneo.\n• Solo se ofrecen el escaneo de página completa y la exportación en JPG, ya que la aplicación ya dispone de todo lo necesario para retocar y convertir la imagen después.\n• La imagen escaneada se añade automáticamente al mosaico, a continuación de las páginas ya presentes. Después puede recortarla, enderezarla, ajustar sus colores, etc., como cualquier otra página del mosaico\n• Esta función controla el escáner directamente, sin pasar por el software del fabricante ni mostrar su propia ventana de configuración.\n• Como un escáner físico solo puede ser controlado por una conexión a la vez, la digitalización solo es posible en un panel a la vez: si hay una ventana de digitalización abierta o un escaneo en curso en un panel, el botón «Escanear» permanece deshabilitado en el otro panel hasta que termine la operación.",
+    "straighten": "Enderezar una página",
+    "straighten_content": "Dos métodos para corregir un escaneo torcido, disponibles desde la columna de iconos (clic derecho en el icono «Enderezar» para cambiar de modo), el menú Imágenes, o clic derecho en el mosaico:\n• Enderezado manual: abre un visor dedicado donde traza una línea recta sobre lo que debería ser horizontal o vertical en la imagen; el ángulo de corrección se calcula automáticamente y se aplica a la imagen, con controladores para ajustar la línea con precisión.\n• Enderezado automático: detecta la inclinación por sí solo (sin trazar nada) y endereza directamente la página o páginas seleccionadas; las esquinas vacías creadas por la rotación se rellenan en blanco. Funciona con varias páginas a la vez. Una ventana de resumen muestra cuántas páginas se enderezaron con éxito y enumera aquellas para las que no se pudo detectar una inclinación fiable."
   },
   "misc": {
     "file_word": "archivo",

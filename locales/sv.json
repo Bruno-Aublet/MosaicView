@@ -130,9 +130,10 @@
       "adjustments": "Ljusstyrka, kontrast, färger...",
       "refresh_mosaic": "Uppdatera mosaiken (F5)",
       "create_ico": "Skapa .ico-fil",
-      "straighten": "Räta upp bild...",
       "clone_zone": "Klona zon...",
-      "text": "Lägg till text..."
+      "text": "Lägg till text...",
+      "straighten_manual": "Räta bilden manuellt...",
+      "straighten_auto": "Räta bilden automatiskt"
     },
     "canvas_no_file": {
       "open": "Öppna CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Stäng programmet",
-      "reset": "Återställ programmet:\n• helskärm → fönster\n• fönsterstorlek och -position\n• mörkt läge → ljust\n• sidofält → synligt / standardbredd\n• minikarta → dold\n• ikon- och miniatyrstorlek → normal\n• teckenstorlek → standard\n• språk → automatisk identifiering\n• fönsterdelning → 50 / 50\n• omnumrering → automatisk\n• ZIP-komprimering → ingen",
+      "reset": "Återställ programmet:\n• helskärm → fönster\n• fönsterstorlek och -position\n• mörkt läge → ljust\n• sidofält → synligt / standardbredd\n• minikarta → dold\n• ikon- och miniatyrstorlek → normal\n• teckenstorlek → standard\n• språk → automatisk identifiering\n• fönsterdelning → 50 / 50\n• omnumrering → automatisk\n• automatisk rätning → manuell\n• ZIP-komprimering → ingen",
       "reset_label": "Återställ programmet"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Enkel",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Automatisk rätning pågår...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Del 8 av din favoritsaga har precis kommit ut, och du längtar efter att läsa den. Fast del 7 var för 4 år sedan, och dina minnen är lite suddiga: vilka var de där bikaraktärerna igen? Och vad hände på slutet?\n\nOm den här situationen känns bekant är Distillat gjort för dig. Släpp bara din EPUB- eller PDF-fil i det avsedda området: du får en sammanfattning, karaktärskort och en analys av verket, redo att läsas eller exporteras till PDF.\n\nApplikationen bygger på den kostnadsfria nivån av Gemini 3.5 Flash.",
       "landing_intro": "Presentationssida:",
       "download_intro": "Du kan ladda ner applikationen här:"
+    },
+    "deskew_summary": {
+      "title": "Automatisk rätning",
+      "message": "{success} bild(er) rätade framgångsrikt.",
+      "message_errors": "{success} bild(er) rätade framgångsrikt.\n{failed} misslyckades (ingen tillförlitlig lutning upptäcktes) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Den här filen är inte komprimerad.\nKlicka för att komprimera den med standardnivån ({level}).\nHögerklicka för att ändra standardnivån.",
     "duplicate_image": "DUBBLETTSIDA",
     "duplicate_indicator": "Duplicerade sidor upptäcktes i den här filen.\nKlicka för att öppna fönstret för hantering av dubbletter.",
-    "duplicate_indicator_none": "Inga dubbletter hittades"
+    "duplicate_indicator_none": "Inga dubbletter hittades",
+    "straighten_mode_0": "Manuellt läge (rita en referenslinje)\nHögerklicka för att byta läge",
+    "straighten_mode_1": "Automatiskt läge (lutningsdetektering)\nHögerklicka för att byta läge"
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "För att kunna visas i Utforskarens meny \"Öppna med\" skriver MosaicView vid start några uppgifter till Windows-registret. Denna registrering begränsas till det absolut nödvändigaste: den talar om för Windows var MosaicView finns och vilka filtyper det kan öppna. Den görs enbart i den del av registret som är reserverad för ditt användarkonto, aldrig i systemdelen, och ändrar inga filassociationer: att välja MosaicView som standardprogram för en filtyp förblir ett val som endast du kan göra, via Windows egen meny \"Öppna med\". Om du tar bort MosaicView från din disk blir denna information helt enkelt inaktiv och utan verkan.",
     "config_dir_content": "MosaicView skapar en fil som heter .mosaicview_config.json. Denna fil innehåller programmets inställningar (fönster, tema, språk, omnumreringsläge…), listan över nyligen öppnade serietidningar och databaser, dina bokmärken och din ComicVine API-nyckel (krypterad). Den finns i mappen {config_dir} och bevaras från session till session: till skillnad från de tillfälliga filerna raderas den aldrig automatiskt, varken av MosaicView eller Windows.\nDu kan radera den manuellt genom att gå till mappen {config_dir}, eller genom att klicka på knappen nedan. Den återskapas med standardvärden nästa gång programmet startas.",
     "scan": "Skanna en bild",
-    "scan_content": "• Klicka på knappen ”Skanna” (ikonkolumnen, menyn Arkiv eller högerklick på mosaiken) för att öppna skanningsfönstret. MosaicView styr din skanner direkt (via WIA, Windows skanningssystem): välj enhet, upplösning (DPI), färgläge (färg / gråskala / svartvitt) och klicka sedan på ”Skanna”. En skanner måste vara ansluten, påslagen och dess drivrutin installerad i Windows för att visas i listan.\n• Endast skanning av hela sidan stöds, eftersom applikationen redan har allt som behövs för bildredigering efter skanningen.\n• Den skannade bilden läggs automatiskt till i mosaiken, efter de sidor som redan finns. Du kan sedan beskära den, räta ut den, justera dess färger osv. som vilken annan sida som helst i mosaiken\n• Den här funktionen styr skannern direkt, utan att gå via tillverkarens programvara eller visa dess egna konfigurationsfönster.\n• Eftersom en fysisk skanner bara kan styras av en anslutning åt gången är skanning bara möjlig i en panel åt gången: om ett skanningsfönster är öppet eller en skanning pågår i en panel förblir knappen ”Skanna” gråmarkerad i den andra panelen tills åtgärden är klar."
+    "scan_content": "• Klicka på knappen ”Skanna” (ikonkolumnen, menyn Arkiv eller högerklick på mosaiken) för att öppna skanningsfönstret. MosaicView styr din skanner direkt (via WIA, Windows skanningssystem): välj enhet, upplösning (DPI), färgläge (färg / gråskala / svartvitt) och klicka sedan på ”Skanna”. En skanner måste vara ansluten, påslagen och dess drivrutin installerad i Windows för att visas i listan.\n• Den senast använda skannern, upplösningen och det valda färgläget memoreras och föreslås automatiskt igen vid nästa skanning.\n• Endast helsidesskanning och export som JPG erbjuds, eftersom programmet redan har allt som behövs för bildretuschering och formatkonvertering efteråt.\n• Den skannade bilden läggs automatiskt till i mosaiken, efter de sidor som redan finns. Du kan sedan beskära den, räta ut den, justera dess färger osv. som vilken annan sida som helst i mosaiken\n• Den här funktionen styr skannern direkt, utan att gå via tillverkarens programvara eller visa dess egna konfigurationsfönster.\n• Eftersom en fysisk skanner bara kan styras av en anslutning åt gången är skanning bara möjlig i en panel åt gången: om ett skanningsfönster är öppet eller en skanning pågår i en panel förblir knappen ”Skanna” gråmarkerad i den andra panelen tills åtgärden är klar.",
+    "straighten": "Räta en sida",
+    "straighten_content": "Två metoder för att korrigera en skev skanning, tillgängliga från ikonkolumnen (högerklicka på ikonen \"Räta\" för att byta läge), menyn Bilder, eller högerklicka på mosaiken:\n• Manuell rätning: öppnar en särskild visning där du ritar en rak linje på det som borde vara horisontellt eller vertikalt i bilden; korrigeringsvinkeln beräknas automatiskt och appliceras på bilden, med handtag för att finjustera linjen.\n• Automatisk rätning: upptäcker lutningen på egen hand (utan att rita något) och rätar direkt den eller de valda sidorna; tomma hörn som skapas av rotationen fylls i vitt. Fungerar på flera sidor samtidigt. Ett sammanfattningsfönster visar hur många sidor som rätades framgångsrikt och listar de där ingen tillförlitlig lutning kunde upptäckas."
   },
   "misc": {
     "file_word": "fil",

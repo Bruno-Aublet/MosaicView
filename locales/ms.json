@@ -130,9 +130,10 @@
       "adjustments": "Kecerahan, kontras, warna...",
       "refresh_mosaic": "Muat semula mozek (F5)",
       "create_ico": "Buat fail .ico",
-      "straighten": "Luruskan imej...",
       "clone_zone": "Klon zon...",
-      "text": "Tambah teks..."
+      "text": "Tambah teks...",
+      "straighten_manual": "Luruskan imej secara manual...",
+      "straighten_auto": "Luruskan imej secara automatik"
     },
     "canvas_no_file": {
       "open": "Buka CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Tutup aplikasi",
-      "reset": "Tetapkan semula aplikasi:\n• skrin penuh → tetingkap\n• saiz dan kedudukan tetingkap\n• mod gelap → cerah\n• bar sisi → kelihatan / lebar lalai\n• peta mini → tersembunyi\n• saiz ikon dan lakaran kecil → biasa\n• saiz fon → lalai\n• bahasa → pengesanan automatik\n• pembahagian tetingkap → 50 / 50\n• penomboran semula → automatik\n• mampatan ZIP → tiada",
+      "reset": "Tetapkan semula aplikasi:\n• skrin penuh → tetingkap\n• saiz dan kedudukan tetingkap\n• mod gelap → cerah\n• bar sisi → kelihatan / lebar lalai\n• peta mini → tersembunyi\n• saiz ikon dan lakaran kecil → biasa\n• saiz fon → lalai\n• bahasa → pengesanan automatik\n• pembahagian tetingkap → 50 / 50\n• penomboran semula → automatik\n• pelurusan automatik → manual\n• mampatan ZIP → tiada",
       "reset_label": "Set semula aplikasi"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Ringkas",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Pelurusan automatik sedang berjalan...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Jilid 8 saga kegemaran anda baru sahaja terbit, dan anda tidak sabar untuk membacanya. Cuma jilid 7 telah terbit 4 tahun lalu, dan ingatan anda agak kabur: siapakah watak-watak sampingan itu tadi? Dan apa yang berlaku pada akhirnya?\n\nJika situasi ini kedengaran biasa bagi anda, Distillat dicipta untuk anda. Cuma jatuhkan fail EPUB atau PDF anda ke kawasan yang disediakan: anda akan mendapat ringkasan, kad watak dan analisis karya, sedia untuk dilihat atau dieksport ke PDF.\n\nAplikasi ini bergantung kepada peringkat percuma Gemini 3.5 Flash.",
       "landing_intro": "Halaman pembentangan:",
       "download_intro": "Anda boleh memuat turun aplikasi di sini:"
+    },
+    "deskew_summary": {
+      "title": "Pelurusan automatik",
+      "message": "{success} imej berjaya diluruskan.",
+      "message_errors": "{success} imej berjaya diluruskan.\n{failed} gagal (tiada kecondongan yang boleh dipercayai dikesan) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Fail ini tidak dimampatkan.\nKlik untuk memampatkannya pada tahap lalai ({level}).\nKlik kanan untuk menukar tahap lalai.",
     "duplicate_image": "HALAMAN PENDUA",
     "duplicate_indicator": "Halaman pendua dikesan dalam fail ini.\nKlik untuk membuka tetingkap pengurusan halaman pendua.",
-    "duplicate_indicator_none": "Tiada pendua dikesan"
+    "duplicate_indicator_none": "Tiada pendua dikesan",
+    "straighten_mode_0": "Mod manual (lukis garis rujukan)\nKlik kanan untuk menukar mod",
+    "straighten_mode_1": "Mod automatik (pengesanan kecondongan)\nKlik kanan untuk menukar mod"
   },
   "help": {
     "title": "MosaicView - Manual Pengguna",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Untuk dapat muncul dalam menu \"Buka dengan\" Windows Explorer, MosaicView menulis beberapa maklumat ke dalam registri Windows semasa dilancarkan. Pendaftaran ini terhad kepada perkara yang benar-benar diperlukan sahaja: ia memberitahu Windows di mana MosaicView berada dan jenis fail yang boleh dibukanya. Ini hanya dilakukan dalam bahagian registri yang dikhaskan untuk akaun pengguna anda, tidak pernah dalam bahagian sistem, dan tidak mengubah sebarang perkaitan fail: memilih MosaicView sebagai aplikasi lalai untuk sesuatu jenis fail kekal sebagai pilihan yang hanya anda boleh buat, melalui menu \"Buka dengan\" Windows sendiri. Jika anda mengeluarkan MosaicView daripada cakera anda, maklumat ini akan menjadi tidak aktif dan tiada kesan.",
     "config_dir_content": "MosaicView mencipta fail bernama .mosaicview_config.json. Fail ini mengandungi tetapan aplikasi (tetingkap, tema, bahasa, mod penomboran semula…), senarai komik dan pangkalan data yang baru dibuka, penanda halaman anda, dan kunci API ComicVine anda (disulitkan). Ia terletak dalam folder {config_dir} dan disimpan dari satu sesi ke sesi seterusnya: tidak seperti fail sementara, ia tidak pernah dipadamkan secara automatik, sama ada oleh MosaicView atau Windows.\nAnda boleh memadamkannya secara manual dengan pergi ke folder {config_dir}, atau dengan mengklik butang di bawah. Ia akan dicipta semula dengan nilai lalai pada kali seterusnya aplikasi dimulakan.",
     "scan": "Imbas satu imej",
-    "scan_content": "• Klik butang \"Imbas\" (lajur ikon, menu Fail, atau klik kanan pada mozek) untuk membuka tetingkap pengimbasan. MosaicView mengawal pengimbas anda secara langsung (melalui WIA, sistem pengimbasan Windows): pilih peranti, resolusi (DPI), mod warna (warna / skala kelabu / hitam putih), kemudian klik \"Imbas\". Pengimbas mesti disambungkan, dihidupkan, dan pemacunya dipasang pada Windows untuk muncul dalam senarai.\n• Hanya pengimbasan halaman penuh disokong, kerana aplikasi sudah mempunyai semua yang diperlukan untuk menyunting imej selepas pengimbasan.\n• Imej yang diimbas secara automatik ditambah ke mozek, selepas halaman yang sudah ada. Anda kemudian boleh memangkasnya, meluruskannya, melaraskan warnanya dll. seperti mana-mana halaman mozek yang lain\n• Ciri ini mengawal pengimbas secara langsung, tanpa melalui perisian pengeluar atau memaparkan tetingkap konfigurasinya sendiri.\n• Oleh kerana pengimbas fizikal hanya boleh dikawal oleh satu sambungan pada satu masa, pengimbasan hanya boleh dilakukan dalam satu panel pada satu masa: jika tetingkap pengimbasan dibuka atau pengimbasan sedang berjalan dalam satu panel, butang \"Imbas\" kekal kelabu dalam panel yang lain sehingga operasi selesai."
+    "scan_content": "• Klik butang \"Imbas\" (lajur ikon, menu Fail, atau klik kanan pada mozek) untuk membuka tetingkap pengimbasan. MosaicView mengawal pengimbas anda secara langsung (melalui WIA, sistem pengimbasan Windows): pilih peranti, resolusi (DPI), mod warna (warna / skala kelabu / hitam putih), kemudian klik \"Imbas\". Pengimbas mesti disambungkan, dihidupkan, dan pemacunya dipasang pada Windows untuk muncul dalam senarai.\n• Pengimbas, resolusi dan mod warna terakhir yang dipilih akan diingati dan dicadangkan semula secara automatik pada imbasan seterusnya.\n• Hanya pengimbasan satu muka surat penuh dan eksport ke JPG yang ditawarkan, kerana aplikasi sudah mempunyai semua yang diperlukan untuk suntingan dan penukaran format imej selepas itu.\n• Imej yang diimbas secara automatik ditambah ke mozek, selepas halaman yang sudah ada. Anda kemudian boleh memangkasnya, meluruskannya, melaraskan warnanya dll. seperti mana-mana halaman mozek yang lain\n• Ciri ini mengawal pengimbas secara langsung, tanpa melalui perisian pengeluar atau memaparkan tetingkap konfigurasinya sendiri.\n• Oleh kerana pengimbas fizikal hanya boleh dikawal oleh satu sambungan pada satu masa, pengimbasan hanya boleh dilakukan dalam satu panel pada satu masa: jika tetingkap pengimbasan dibuka atau pengimbasan sedang berjalan dalam satu panel, butang \"Imbas\" kekal kelabu dalam panel yang lain sehingga operasi selesai.",
+    "straighten": "Luruskan halaman",
+    "straighten_content": "Dua kaedah untuk membetulkan imbasan yang senget, boleh diakses dari lajur ikon (klik kanan ikon \"Luruskan\" untuk menukar mod), menu Imej, atau klik kanan pada mozek:\n• Pelurusan manual: membuka pemapar khusus di mana anda melukis garis lurus pada apa yang sepatutnya mendatar atau menegak dalam imej; sudut pembetulan dikira secara automatik dan digunakan pada imej, dengan pemegang untuk menala garis dengan tepat.\n• Pelurusan automatik: mengesan kecondongan dengan sendirinya (tanpa melukis apa-apa) dan terus meluruskan halaman yang dipilih; sudut kosong yang dicipta oleh putaran diisi dengan putih. Berfungsi pada beberapa halaman sekali gus. Tetingkap ringkasan menunjukkan bilangan halaman yang berjaya diluruskan dan menyenaraikan yang tiada kecondongan boleh dipercayai dikesan."
   },
   "misc": {
     "file_word": "fail",

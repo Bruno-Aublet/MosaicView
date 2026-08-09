@@ -421,10 +421,12 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
     else:
         _add_disabled(menu, _("dialogs.adjustments.window_title"))
 
-    if bool(st.images_data):
-        menu.addAction(_("context_menu.image.straighten"), callbacks['show_straighten_viewer'])
+    if has_image_selection:
+        menu.addAction(_("context_menu.image.straighten_manual"), callbacks['show_straighten_viewer'])
+        menu.addAction(_("context_menu.image.straighten_auto"), callbacks['deskew_selected'])
     else:
-        _add_disabled(menu, _("context_menu.image.straighten"))
+        _add_disabled(menu, _("context_menu.image.straighten_manual"))
+        _add_disabled(menu, _("context_menu.image.straighten_auto"))
 
     if bool(st.images_data):
         menu.addAction(_("context_menu.image.clone_zone"), callbacks['show_clone_zone_viewer'])

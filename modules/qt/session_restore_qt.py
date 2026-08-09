@@ -206,12 +206,16 @@ def reset_to_defaults(win):
     cfg.set_buttons_column_width(default_col_w, save=False)
     cfg.set_buttons_column_width_panel2(default_col_w, save=False)
 
-    # Mode de renumérotation et taux de compression ZIP par défaut — tous les panneaux
+    # Mode de renumérotation, mode de redressement et taux de compression ZIP
+    # par défaut — tous les panneaux
     for p in win._all_panels():
         p._state.renumber_mode = 1
         p._renumber_config().set_renumber_mode(1)
+        p._state.straighten_mode = 0
+        p._renumber_config().set_straighten_mode(0)
         p._zip_compression_config().set_zip_compression_level(0)
         p._update_status_bar()
+        p._refresh_toolbar_states()
 
     # Ratio split inter-panneaux : remettre à 50/50.
     # QSplitter.setSizes() seul se révèle ignoré à ce stade du reset (le

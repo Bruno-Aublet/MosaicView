@@ -192,6 +192,7 @@ def apply_app_theme(app):
     from modules.qt.icon_toolbar_qt import _IconConfigDialog
     from modules.qt.panel_widget import _BookmarkPopup
     from modules.qt.library_window import LibraryWindow
+    from modules.qt.deskew_qt import _DeskewSummaryDialog
     from PySide6.QtWidgets import QApplication
 
     # Barre de titre Windows — DWM immédiat, WM_NCACTIVATE après le prochain cycle événementiel
@@ -209,7 +210,7 @@ def apply_app_theme(app):
                                 _ComicVineDialog, _ApiKeyDialog,
                                 _NfoDialog, _UpdateDialog, _HelpDialog,
                                 _DonationDialog, _IconConfigDialog, _BookmarkPopup,
-                                LibraryWindow)):
+                                LibraryWindow, _DeskewSummaryDialog)):
             widget._retranslate()
 
 

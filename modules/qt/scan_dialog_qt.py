@@ -541,6 +541,15 @@ class ScanDialog(QDialog):
         self._devices   = []       # [{"id", "name"}, ...]
         self._center_parent = parent
 
+        # Dernier device/dpi/mode couleur choisis (session précédente), voir
+        # skill scan. Lu une seule fois ici ; réappliqué au device (dans
+        # _on_devices_listed) et au mode couleur (juste ci-dessous — les
+        # radios sont construits immédiatement et self._radio_color est
+        # coché par défaut, donc la préférence doit être appliquée dès la
+        # construction, pas seulement quand les capacités arrivent).
+        from modules.qt.config_manager import get_config_manager
+        self._last_settings = get_config_manager().get_scan_last_settings()
+
         # Un seul scan à la fois entre les deux panneaux (voir skill scan) :
         # posé dès l'ouverture de cette fenêtre de réglages, levé soit ici en
         # cas d'annulation (_on_close_no_scan, jamais lancé de scan), soit par
@@ -603,6 +612,15 @@ class ScanDialog(QDialog):
             self._color_group.addButton(rb)
             rb.setProperty("_scan_color_mode", mode)
             color_row.addWidget(rb)
+        # Réapplique le dernier mode couleur choisi (session précédente) —
+        # sera de nouveau ajusté dans _on_caps_ready si ce mode n'est pas
+        # supporté par le device réellement sélectionné.
+        last_color_mode = self._last_settings.get("color_mode")
+        if last_color_mode:
+            for rb in (self._radio_color, self._radio_grayscale, self._radio_bw):
+                if rb.property("_scan_color_mode") == last_color_mode:
+                    rb.setChecked(True)
+                    break
         color_row.addStretch()
         layout.addLayout(color_row)
 
@@ -735,6 +753,17 @@ class ScanDialog(QDialog):
         for d in devices:
             self._combo_device.addItem(d["name"], d["id"])
         self._set_controls_enabled(True)
+
+        # Représélectionne le dernier device utilisé (session précédente) s'il
+        # est toujours présent dans la liste actuelle — sinon garde l'index 0
+        # par défaut (device débranché/renommé entre deux sessions).
+        last_device_id = self._last_settings.get("device_id")
+        if last_device_id:
+            for i, d in enumerate(devices):
+                if d["id"] == last_device_id:
+                    self._combo_device.setCurrentIndex(i)
+                    break
+
         # Connecté seulement maintenant (pas dans __init__) : les addItem()
         # ci-dessus déclencheraient sinon currentIndexChanged pour chaque
         # device ajouté, avant même que la liste ne soit complète.
@@ -841,7 +870,11 @@ class ScanDialog(QDialog):
         self._combo_resolution.clear()
         for dpi in _RESOLUTION_CHOICES:
             self._combo_resolution.addItem(f"{dpi} DPI", dpi)
-        self._combo_resolution.setCurrentIndex(_RESOLUTION_CHOICES.index(_DEFAULT_DPI))
+        # Reprend le dernier DPI choisi (session précédente) s'il est proposé
+        # par cette liste de repli, sinon _DEFAULT_DPI comme avant.
+        last_dpi = self._last_settings.get("dpi")
+        default_dpi = last_dpi if last_dpi in _RESOLUTION_CHOICES else _DEFAULT_DPI
+        self._combo_resolution.setCurrentIndex(_RESOLUTION_CHOICES.index(default_dpi))
         self._combo_resolution.setEnabled(True)
 
     def _on_caps_ready(self, caps: dict, worker=None, from_cache: bool = False, device_id: str | None = None):
@@ -868,12 +901,14 @@ class ScanDialog(QDialog):
         resolutions = caps.get("resolutions") or _RESOLUTION_CHOICES
         for dpi in resolutions:
             self._combo_resolution.addItem(f"{dpi} DPI", dpi)
-        # Reproduit le même choix qu'avant si toujours proposé, sinon la valeur
-        # la plus proche — pas de retour silencieux au premier de la liste.
+        # Reproduit le même choix qu'avant si toujours proposé, sinon retombe
+        # sur le dernier DPI choisi en session précédente (si connu), sinon la
+        # valeur la plus proche — pas de retour silencieux au premier de la liste.
         if current_dpi in resolutions:
             self._combo_resolution.setCurrentIndex(resolutions.index(current_dpi))
         else:
-            closest = min(resolutions, key=lambda v: abs(v - (current_dpi or _DEFAULT_DPI)))
+            target_dpi = current_dpi or self._last_settings.get("dpi") or _DEFAULT_DPI
+            closest = min(resolutions, key=lambda v: abs(v - target_dpi))
             self._combo_resolution.setCurrentIndex(resolutions.index(closest))
         self._combo_resolution.blockSignals(False)
         self._combo_resolution.setEnabled(True)
@@ -927,6 +962,12 @@ class ScanDialog(QDialog):
             "color_mode": color_mode,
             "x_pos": None, "y_pos": None, "width": None, "height": None,
         }
+
+        # Mémorise ce choix pour la prochaine ouverture de ScanDialog (voir
+        # skill scan) — device, dpi et mode couleur, pas seulement les
+        # capacités du device comme le cache existant.
+        from modules.qt.config_manager import get_config_manager
+        get_config_manager().set_scan_last_settings(device_id, dpi, color_mode)
 
         dialog_parent = self.parent()
         self._scan_launched = True

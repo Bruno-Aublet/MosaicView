@@ -130,9 +130,10 @@
       "adjustments": "Spilgtums, kontrasts, krāsas...",
       "refresh_mosaic": "Atsvaidzināt mozaīku (F5)",
       "create_ico": "Izveidot .ico failu",
-      "straighten": "Iztaisnot attēlu...",
       "clone_zone": "Klonēt zonu...",
-      "text": "Pievienot tekstu..."
+      "text": "Pievienot tekstu...",
+      "straighten_manual": "Iztaisnot attēlu manuāli...",
+      "straighten_auto": "Iztaisnot attēlu automātiski"
     },
     "canvas_no_file": {
       "open": "Atvērt CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Aizvērt lietojumprogrammu",
-      "reset": "Lietotnes atiestatīšana:\n• pilnekrāns → logs\n• loga izmērs un pozīcija\n• tumšais režīms → gaišs\n• sānjosla → redzama / noklusējuma platums\n• minikarte → paslēpta\n• ikonu un sīkattēlu izmērs → normāls\n• fonta izmērs → noklusējuma\n• valoda → automātiskā noteikšana\n• loga sadalīšana → 50 / 50\n• pārnumurēšana → automātiska\n• ZIP saspiešana → nav",
+      "reset": "Lietotnes atiestatīšana:\n• pilnekrāns → logs\n• loga izmērs un pozīcija\n• tumšais režīms → gaišs\n• sānjosla → redzama / noklusējuma platums\n• minikarte → paslēpta\n• ikonu un sīkattēlu izmērs → normāls\n• fonta izmērs → noklusējuma\n• valoda → automātiskā noteikšana\n• loga sadalīšana → 50 / 50\n• pārnumurēšana → automātiska\n• automātiska iztaisnošana → manuāla\n• ZIP saspiešana → nav",
       "reset_label": "Atiestatīt lietotni"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Vienk.",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Notiek automātiska iztaisnošana...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Jūsu iecienītākās sāgas 8. sējums tikko iznācis, un jūs nemaz nevarat sagaidīt to izlasīt. Tikai vai 7. sējums bija pirms 4 gadiem, un jūsu atmiņas ir mazliet miglainas: kas gan bija tie sekundārie varoņi? Un kas notika beigās?\n\nJa šī situācija jums šķiet pazīstama, Distillat ir radīts tieši jums. Vienkārši ievelciet savu EPUB vai PDF failu tam paredzētajā zonā: jūs iegūstat kopsavilkumu, varoņu kartītes un darba analīzi, gatavus apskatei vai eksportēšanai PDF formātā.\n\nLietotne balstās uz Gemini 3.5 Flash bezmaksas līmeni.",
       "landing_intro": "Prezentācijas lapa:",
       "download_intro": "Lietotni varat lejupielādēt šeit:"
+    },
+    "deskew_summary": {
+      "title": "Automātiska iztaisnošana",
+      "message": "{success} attēls(-i) veiksmīgi iztaisnots(-i).",
+      "message_errors": "{success} attēls(-i) veiksmīgi iztaisnots(-i).\n{failed} neizdevās (uzticams slīpums nav konstatēts) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Šis fails nav saspiests.\nNoklikšķiniet, lai to saspiestu noklusējuma līmenī ({level}).\nNoklikšķiniet ar labo peles pogu, lai mainītu noklusējuma līmeni.",
     "duplicate_image": "DUBLĒTA LAPA",
     "duplicate_indicator": "Šajā failā tika konstatētas dublētas lapas.\nNoklikšķiniet, lai atvērtu dublikātu pārvaldības logu.",
-    "duplicate_indicator_none": "Dublikāti nav konstatēti"
+    "duplicate_indicator_none": "Dublikāti nav konstatēti",
+    "straighten_mode_0": "Manuālais režīms (uzzīmējiet atsauces līniju)\nAr peles labo pogu nomainiet režīmu",
+    "straighten_mode_1": "Automātiskais režīms (slīpuma noteikšana)\nAr peles labo pogu nomainiet režīmu"
   },
   "help": {
     "title": "MosaicView - Lietošanas instrukcija",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Lai varētu parādīties Windows pārlūka izvēlnē \"Atvērt ar\", MosaicView palaišanas brīdī ieraksta dažas ziņas Windows reģistrā. Šis ieraksts aprobežojas ar absolūtu minimumu: tas informē Windows, kur atrodas MosaicView un kādus failu tipus tas var atvērt. Tas tiek veikts tikai jūsu lietotāja kontam paredzētajā reģistra daļā, nekad sistēmas daļā, un nemaina nevienu failu saistību: MosaicView izvēle par noklusējuma lietotni kādam faila tipam joprojām ir izvēle, ko varat izdarīt tikai jūs pats, izmantojot pašu Windows izvēlni \"Atvērt ar\". Ja izdzēšat MosaicView no diska, šī informācija vienkārši kļūst neaktīva un bez ietekmes.",
     "config_dir_content": "MosaicView izveido failu ar nosaukumu .mosaicview_config.json. Šajā failā ir saglabāti lietotnes iestatījumi (logs, tēma, valoda, pārnumurēšanas režīms…), nesen atvērto komiksu un datubāzu saraksts, jūsu grāmatzīmes un jūsu ComicVine API atslēga (šifrēta). Tas atrodas mapē {config_dir} un tiek saglabāts no vienas sesijas uz otru: atšķirībā no pagaidu failiem, to nekad automātiski nedzēš ne MosaicView, ne Windows.\nJūs varat to izdzēst manuāli, dodoties uz mapi {config_dir}, vai noklikšķinot uz pogas zemāk. Tas tiks atjaunots ar noklusējuma vērtībām nākamreiz palaižot lietotni.",
     "scan": "Skenēt attēlu",
-    "scan_content": "• Noklikšķiniet uz pogas „Skenēt” (ikonu kolonna, izvēlne Fails vai peles labais klikšķis uz mozaīkas), lai atvērtu skenēšanas logu. MosaicView tieši vada jūsu skeneri (izmantojot WIA, Windows skenēšanas sistēmu): izvēlieties ierīci, izšķirtspēju (DPI), krāsu režīmu (krāsains / pelēktoņu / melnbalts) un pēc tam noklikšķiniet uz „Skenēt”. Lai skeneris parādītos sarakstā, tam jābūt pievienotam, ieslēgtam un tā draiverim jābūt instalētam Windows sistēmā.\n• Tiek atbalstīta tikai visas lapas skenēšana, jo lietotnei jau ir viss nepieciešamais attēla rediģēšanai pēc skenēšanas.\n• Skenētais attēls automātiski tiek pievienots mozaīkai, aiz jau esošajām lapām. Pēc tam to var apgriezt, iztaisnot, pielāgot krāsas utt., tāpat kā jebkuru citu mozaīkas lapu\n• Šī funkcija tieši vada skeneri, neizmantojot ražotāja programmatūru un neparādot tā paša konfigurācijas logu.\n• Tā kā fizisku skeneri vienlaikus var vadīt tikai viens savienojums, skenēšana ir iespējama tikai vienā panelī vienlaikus: ja vienā panelī ir atvērts skenēšanas logs vai notiek skenēšana, poga „Skenēt” otrā panelī paliek pelēka, līdz darbība tiek pabeigta."
+    "scan_content": "• Noklikšķiniet uz pogas „Skenēt” (ikonu kolonna, izvēlne Fails vai peles labais klikšķis uz mozaīkas), lai atvērtu skenēšanas logu. MosaicView tieši vada jūsu skeneri (izmantojot WIA, Windows skenēšanas sistēmu): izvēlieties ierīci, izšķirtspēju (DPI), krāsu režīmu (krāsains / pelēktoņu / melnbalts) un pēc tam noklikšķiniet uz „Skenēt”. Lai skeneris parādītos sarakstā, tam jābūt pievienotam, ieslēgtam un tā draiverim jābūt instalētam Windows sistēmā.\n• Pēdējais izmantotais skeneris, izšķirtspēja un izvēlētais krāsu režīms tiek atcerēts un automātiski piedāvāts atkārtoti nākamajā skenēšanas reizē.\n• Tiek piedāvāta tikai pilnas lapas skenēšana un eksportēšana JPG formātā, jo lietotnei jau ir viss nepieciešamais attēla vēlākai apstrādei un formāta konvertēšanai.\n• Skenētais attēls automātiski tiek pievienots mozaīkai, aiz jau esošajām lapām. Pēc tam to var apgriezt, iztaisnot, pielāgot krāsas utt., tāpat kā jebkuru citu mozaīkas lapu\n• Šī funkcija tieši vada skeneri, neizmantojot ražotāja programmatūru un neparādot tā paša konfigurācijas logu.\n• Tā kā fizisku skeneri vienlaikus var vadīt tikai viens savienojums, skenēšana ir iespējama tikai vienā panelī vienlaikus: ja vienā panelī ir atvērts skenēšanas logs vai notiek skenēšana, poga „Skenēt” otrā panelī paliek pelēka, līdz darbība tiek pabeigta.",
+    "straighten": "Iztaisnot lapu",
+    "straighten_content": "Divi veidi, kā izlabot slīpu skenējumu, pieejami no ikonu kolonnas (ar peles labo pogu noklikšķiniet uz ikonas „Iztaisnot“, lai pārslēgtu režīmu), izvēlnes Attēli vai ar peles labo pogu noklikšķinot uz mozaīkas:\n• Manuāla iztaisnošana: atver īpašu skatītāju, kurā uzzīmējat taisnu līniju uz to, kam attēlā vajadzētu būt horizontālam vai vertikālam; korekcijas leņķis tiek aprēķināts automātiski un pielietots attēlam, ar turekļiem, lai precīzi pielāgotu līniju.\n• Automātiska iztaisnošana: pati atklāj slīpumu (nekas nav jāzīmē) un tieši iztaisno atlasīto lapu vai lapas; tukšie stūri, kas radušies pagriežot, tiek aizpildīti baltā krāsā. Darbojas ar vairākām lapām vienlaikus. Kopsavilkuma logs parāda, cik lapas veiksmīgi iztaisnotas, un uzskaita tās, kurām neizdevās konstatēt uzticamu slīpumu."
   },
   "misc": {
     "file_word": "fails",

@@ -62,6 +62,7 @@ class ConfigManager:
         'use_icon_toolbar': False,  # TEMPORAIRE (dev) — barre d'icônes active
         'comicvine_api_key': '',    # Clé API ComicVine (chiffrée DPAPI, base64)
         'scan_capabilities': {},    # {device_id: {"resolutions": [...], "color_modes": [...], "max_width", "max_height"}} — cache par scanner, voir skill scan
+        'scan_last_settings': {},   # {"device_id", "dpi", "color_mode"} — dernier choix utilisateur dans ScanDialog, voir skill scan
     }
 
     def __init__(self, config_dir=None):
@@ -588,6 +589,14 @@ class ConfigManager:
         """Persiste le mode de renumérotation."""
         return self.set('renumber_mode', int(mode))
 
+    def get_straighten_mode(self):
+        """Retourne le mode de redressement persisté (0=manuel, 1=automatique)."""
+        return int(self.config.get('straighten_mode', 0))
+
+    def set_straighten_mode(self, mode):
+        """Persiste le mode de redressement."""
+        return self.set('straighten_mode', int(mode))
+
     def get_zip_compression_level(self):
         """Retourne le niveau de compression ZIP par défaut à l'enregistrement (0-9, défaut 0=store)."""
         return int(self.config.get('zip_compression_level', 0))
@@ -651,6 +660,14 @@ class ConfigManager:
     def set_renumber_mode_panel2(self, mode):
         """Persiste le mode de renumérotation du panneau 2."""
         return self.set('renumber_mode_panel2', int(mode))
+
+    def get_straighten_mode_panel2(self):
+        """Retourne le mode de redressement persisté du panneau 2 (0=manuel, 1=automatique)."""
+        return int(self.config.get('straighten_mode_panel2', 0))
+
+    def set_straighten_mode_panel2(self, mode):
+        """Persiste le mode de redressement du panneau 2."""
+        return self.set('straighten_mode_panel2', int(mode))
 
     def get_zip_compression_level_panel2(self):
         """Retourne le niveau de compression ZIP par défaut du panneau 2 (0-9, défaut 0=store)."""
@@ -717,6 +734,24 @@ class ConfigManager:
         """Supprime le cache de capacités de tous les scanners."""
         return self.set('scan_capabilities', {}, save)
 
+    # ── Derniers réglages de scan choisis ────────────────────────────────────
+
+    def get_scan_last_settings(self) -> dict:
+        """Retourne le dernier device/dpi/mode couleur choisis dans ScanDialog
+        ({"device_id", "dpi", "color_mode"}), ou {} si jamais scanné. Voir
+        skill scan."""
+        return self.config.get('scan_last_settings', {})
+
+    def set_scan_last_settings(self, device_id: str, dpi: int, color_mode: str, save: bool = True):
+        """Mémorise le device/dpi/mode couleur choisis au dernier lancement de
+        scan, pour les représélectionner à la prochaine ouverture de
+        ScanDialog (voir skill scan)."""
+        return self.set('scan_last_settings', {
+            "device_id": device_id,
+            "dpi": dpi,
+            "color_mode": color_mode,
+        }, save)
+
 
 class Panel2Config:
     """Wrapper autour de ConfigManager qui lit/écrit les clés dédiées au panneau 2.
@@ -755,6 +790,12 @@ class Panel2Config:
 
     def set_renumber_mode(self, mode):
         return self._cfg.set_renumber_mode_panel2(mode)
+
+    def get_straighten_mode(self):
+        return self._cfg.get_straighten_mode_panel2()
+
+    def set_straighten_mode(self, mode):
+        return self._cfg.set_straighten_mode_panel2(mode)
 
     def get_zip_compression_level(self):
         return self._cfg.get_zip_compression_level_panel2()

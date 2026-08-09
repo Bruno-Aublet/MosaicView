@@ -130,9 +130,10 @@
       "adjustments": "Helderheid, contrast, kleuren...",
       "refresh_mosaic": "Mozaïek vernieuwen (F5)",
       "create_ico": ".ico-bestand aanmaken",
-      "straighten": "Afbeelding rechtzetten...",
       "clone_zone": "Zone klonen...",
-      "text": "Tekst toevoegen..."
+      "text": "Tekst toevoegen...",
+      "straighten_manual": "Afbeelding handmatig rechtzetten...",
+      "straighten_auto": "Afbeelding automatisch rechtzetten"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF openen",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Applicatie sluiten",
-      "reset": "Toepassing opnieuw instellen:\n• volledig scherm → venster\n• venstergrootte en -positie\n• donkere modus → licht\n• zijbalk → zichtbaar / standaardbreedte\n• minimap → verborgen\n• pictogram- en miniatuurgrootte → normaal\n• lettergrootte → standaard\n• taal → automatische detectie\n• vensterverdeling → 50 / 50\n• hernummering → automatisch\n• ZIP-compressie → geen",
+      "reset": "Toepassing opnieuw instellen:\n• volledig scherm → venster\n• venstergrootte en -positie\n• donkere modus → licht\n• zijbalk → zichtbaar / standaardbreedte\n• minimap → verborgen\n• pictogram- en miniatuurgrootte → normaal\n• lettergrootte → standaard\n• taal → automatische detectie\n• vensterverdeling → 50 / 50\n• hernummering → automatisch\n• automatisch rechtzetten → handmatig\n• ZIP-compressie → geen",
       "reset_label": "Toepassing resetten"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Eenvoudig",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Automatisch rechtzetten bezig...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Deel 8 van uw favoriete saga is net uitgekomen, en u kunt niet wachten om het te lezen. Alleen was deel 7 4 jaar geleden, en uw herinneringen zijn een beetje vaag: wie waren die bijfiguren ook alweer? En wat gebeurde er aan het einde?\n\nAls deze situatie u bekend voorkomt, is Distillat voor u gemaakt. Sleep gewoon uw EPUB- of PDF-bestand naar het daarvoor bestemde gebied: u krijgt een samenvatting, personagekaarten en een analyse van het werk, klaar om te bekijken of te exporteren naar PDF.\n\nDe applicatie maakt gebruik van het gratis niveau van Gemini 3.5 Flash.",
       "landing_intro": "Presentatiepagina:",
       "download_intro": "U kunt de applicatie hier downloaden:"
+    },
+    "deskew_summary": {
+      "title": "Automatisch rechtzetten",
+      "message": "{success} afbeelding(en) succesvol rechtgezet.",
+      "message_errors": "{success} afbeelding(en) succesvol rechtgezet.\n{failed} mislukt (geen betrouwbare scheefstand gedetecteerd) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Dit bestand is niet gecomprimeerd.\nKlik om het te comprimeren op het standaardniveau ({level}).\nRechtsklikken om het standaardniveau te wijzigen.",
     "duplicate_image": "DUBBELE PAGINA",
     "duplicate_indicator": "Er zijn dubbele pagina's gevonden in dit bestand.\nKlik om het venster voor het beheren van duplicaten te openen.",
-    "duplicate_indicator_none": "Geen duplicaten gevonden"
+    "duplicate_indicator_none": "Geen duplicaten gevonden",
+    "straighten_mode_0": "Handmatige modus (teken een referentielijn)\nRechtsklik om van modus te wisselen",
+    "straighten_mode_1": "Automatische modus (scheefstand detecteren)\nRechtsklik om van modus te wisselen"
   },
   "help": {
     "title": "MosaicView - Gebruiksaanwijzing",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Om te kunnen verschijnen in het \"Openen met\"-menu van Verkenner schrijft MosaicView bij het opstarten enkele gegevens naar het Windows-register. Deze registratie blijft tot het strikt noodzakelijke beperkt: ze vertelt Windows waar MosaicView zich bevindt en welke bestandstypen het kan openen. Ze gebeurt uitsluitend in het deel van het register dat voor uw gebruikersaccount is gereserveerd, nooit in het systeemdeel, en wijzigt geen enkele bestandskoppeling: MosaicView als standaardtoepassing voor een bestandstype instellen blijft een keuze die alleen u kunt maken, via het eigen \"Openen met\"-menu van Windows. Als u MosaicView van uw schijf verwijdert, worden deze gegevens gewoon inactief en zonder effect.",
     "config_dir_content": "MosaicView maakt een bestand aan met de naam .mosaicview_config.json. Dit bestand bevat de instellingen van de applicatie (venster, thema, taal, hernummeringsmodus…), de lijst met recent geopende strips en databases, uw bladwijzers en uw ComicVine API-sleutel (versleuteld). Het bevindt zich in de map {config_dir} en blijft bewaard van sessie tot sessie: in tegenstelling tot tijdelijke bestanden wordt het nooit automatisch verwijderd, noch door MosaicView, noch door Windows.\nU kunt het handmatig verwijderen door naar de map {config_dir} te gaan, of door op de knop hieronder te klikken. Het wordt opnieuw aangemaakt met de standaardwaarden bij de volgende start van de applicatie.",
     "scan": "Een afbeelding scannen",
-    "scan_content": "• Klik op de knop 'Scannen' (pictogramkolom, menu Bestand of rechtsklik op de mozaïek) om het scanvenster te openen. MosaicView bestuurt uw scanner rechtstreeks (via WIA, het scansysteem van Windows): selecteer het apparaat, de resolutie (DPI), de kleurmodus (kleur / grijstinten / zwart-wit) en klik vervolgens op 'Scannen'. Een scanner moet aangesloten en ingeschakeld zijn en het stuurprogramma moet op Windows zijn geïnstalleerd om in de lijst te verschijnen.\n• Alleen het scannen van een volledige pagina wordt ondersteund, aangezien de toepassing al alles heeft wat nodig is om de afbeelding na het scannen te bewerken.\n• De gescande afbeelding wordt automatisch toegevoegd aan de mozaïek, na de reeds aanwezige pagina's. U kunt deze vervolgens bijsnijden, recht zetten, de kleuren aanpassen enz., zoals elke andere pagina van de mozaïek\n• Deze functie bestuurt de scanner rechtstreeks, zonder gebruik te maken van de software van de fabrikant of diens eigen configuratievenster weer te geven.\n• Omdat een fysieke scanner slechts door één verbinding tegelijk kan worden aangestuurd, is scannen maar in één paneel tegelijk mogelijk: als in een paneel een scanvenster open staat of een scan bezig is, blijft de knop “Scannen” in het andere paneel grijs totdat de bewerking is voltooid."
+    "scan_content": "• Klik op de knop 'Scannen' (pictogramkolom, menu Bestand of rechtsklik op de mozaïek) om het scanvenster te openen. MosaicView bestuurt uw scanner rechtstreeks (via WIA, het scansysteem van Windows): selecteer het apparaat, de resolutie (DPI), de kleurmodus (kleur / grijstinten / zwart-wit) en klik vervolgens op 'Scannen'. Een scanner moet aangesloten en ingeschakeld zijn en het stuurprogramma moet op Windows zijn geïnstalleerd om in de lijst te verschijnen.\n• De laatst gebruikte scanner, resolutie en gekozen kleurmodus worden onthouden en bij de volgende scan automatisch opnieuw voorgesteld.\n• Alleen volledige paginascans en export als JPG worden aangeboden, aangezien de toepassing al alles heeft wat nodig is om de afbeelding daarna te bewerken en te converteren.\n• De gescande afbeelding wordt automatisch toegevoegd aan de mozaïek, na de reeds aanwezige pagina's. U kunt deze vervolgens bijsnijden, recht zetten, de kleuren aanpassen enz., zoals elke andere pagina van de mozaïek\n• Deze functie bestuurt de scanner rechtstreeks, zonder gebruik te maken van de software van de fabrikant of diens eigen configuratievenster weer te geven.\n• Omdat een fysieke scanner slechts door één verbinding tegelijk kan worden aangestuurd, is scannen maar in één paneel tegelijk mogelijk: als in een paneel een scanvenster open staat of een scan bezig is, blijft de knop “Scannen” in het andere paneel grijs totdat de bewerking is voltooid.",
+    "straighten": "Pagina rechtzetten",
+    "straighten_content": "Twee methoden om een scheve scan te corrigeren, beschikbaar via de pictogramkolom (rechtsklik op het pictogram \"Rechtzetten\" om van modus te wisselen), het menu Afbeeldingen, of rechtsklik op de mozaïek:\n• Handmatig rechtzetten: opent een speciale viewer waarin u een rechte lijn tekent op wat horizontaal of verticaal zou moeten zijn in de afbeelding; de correctiehoek wordt automatisch berekend en toegepast op de afbeelding, met handvatten om de lijn nauwkeurig af te stellen.\n• Automatisch rechtzetten: detecteert de scheefstand zelfstandig (zonder iets te tekenen) en zet de geselecteerde pagina('s) direct recht; lege hoeken die door de rotatie ontstaan worden wit opgevuld. Werkt op meerdere pagina's tegelijk. Een overzichtsvenster toont hoeveel pagina's succesvol zijn rechtgezet en somt op welke geen betrouwbare scheefstand kon worden gedetecteerd."
   },
   "misc": {
     "file_word": "bestand",

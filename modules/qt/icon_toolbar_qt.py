@@ -143,7 +143,7 @@ _ACTIVATION_RULES = {
     "resize":              lambda sg: sg["has_selected_images"](),
     "adjustments":         lambda sg: sg["has_selected_images"](),
     "crop":                lambda sg: sg["single_image_selected"](),
-    "straighten":          lambda sg: sg["has_images"](),
+    "straighten":          lambda sg: sg["has_selected_images"](),
     "clone_zone":          lambda sg: sg["has_images"](),
     "text":                lambda sg: sg["has_images"](),
     "create_ico":          lambda sg: sg["single_image_selected"](),
@@ -242,6 +242,15 @@ class IconLabel(QLabel):
             mode = tb._state_getters.get("renumber_mode", lambda: 1)()
             tb.show_tooltip(self._format_tooltip(_(f"tooltip.renumber_btn_{mode}")))
             return
+        if self.icon_id == "straighten":
+            # Toujours actif au survol, même grisé sans sélection : le clic droit
+            # (bascule manuel/automatique) doit rester disponible et le tooltip visible.
+            c = IconToolbarQt._hover_color
+            self.setStyleSheet(f"background: {c}; border-radius: 4px;")
+            tb = self._toolbar
+            mode = tb._state_getters.get("straighten_mode", lambda: 0)()
+            tb.show_tooltip(self._format_tooltip(_(f"tooltip.straighten_mode_{mode}")))
+            return
         if self._active:
             c = IconToolbarQt._hover_color
             self.setStyleSheet(f"background: {c}; border-radius: 4px;")
@@ -287,6 +296,11 @@ class IconLabel(QLabel):
                 if cb:
                     cb()
                     self._pending_tooltip = True  # bloque hideText dans leaveEvent
+            elif self.icon_id == "straighten":
+                cb = self._toolbar._callbacks.get("toggle_straighten_mode")
+                if cb:
+                    cb()
+                    self._pending_tooltip = True  # bloque hideText dans leaveEvent
             elif self.icon_id == "open_mail":
                 self._toolbar._show_mail_context_menu(event.globalPosition().toPoint())
             elif self.icon_id == "scan_import":
@@ -299,6 +313,10 @@ class IconLabel(QLabel):
                 self._pending_tooltip = None
                 mode = self._toolbar._state_getters.get("renumber_mode", lambda: 1)()
                 self._toolbar.show_tooltip(self._format_tooltip(_(f"tooltip.renumber_btn_{mode}")))
+            if self.icon_id == "straighten" and self._pending_tooltip:
+                self._pending_tooltip = None
+                mode = self._toolbar._state_getters.get("straighten_mode", lambda: 0)()
+                self._toolbar.show_tooltip(self._format_tooltip(_(f"tooltip.straighten_mode_{mode}")))
         if event.button() == Qt.LeftButton:
             if self._drag_start is not None:
                 delta = (event.position().toPoint() - self._drag_start).manhattanLength()
@@ -2130,6 +2148,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         ),
         "needs_renumbering":     lambda: bool(getattr(st, "needs_renumbering", False)),
         "renumber_mode":         lambda: getattr(st, "renumber_mode", 1),
+        "straighten_mode":       lambda: getattr(st, "straighten_mode", 0),
         "print_available":       lambda: PRINT_AVAILABLE,
         "single_image_selected": lambda: (
             len(st.selected_indices) == 1 and bool(st.selected_indices) and
@@ -2176,6 +2195,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "paste":                 cb["paste_ctrl_v"],
         "renumber":              mw._renumber_btn_action,
         "toggle_renumber_mode":  mw._toggle_renumber_mode,
+        "toggle_straighten_mode": mw._toggle_straighten_mode,
         "rotate_left":           cb["rotate_selected_left"],
         "rotate_right":          cb["rotate_selected_right"],
         "flip_horizontal":       cb["flip_selected_horizontal"],
@@ -2183,7 +2203,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "convert":               cb["convert_selected_images"],
         "resize":                cb["reduce_selected_images_size"],
         "adjustments":           cb["show_image_adjustments_dialog"],
-        "straighten":            cb["show_straighten_viewer"],
+        "straighten":            cb["straighten"],
         "clone_zone":            cb["show_clone_zone_viewer"],
         "text":                  cb["show_text_viewer"],
         "crop":                  cb["crop_selected_image"],

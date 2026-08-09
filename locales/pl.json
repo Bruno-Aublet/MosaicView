@@ -130,9 +130,10 @@
       "adjustments": "Jasność, kontrast, kolory...",
       "refresh_mosaic": "Odśwież mozaikę (F5)",
       "create_ico": "Utwórz plik .ico",
-      "straighten": "Wyprostuj obraz...",
       "clone_zone": "Klonowanie strefy...",
-      "text": "Dodaj tekst..."
+      "text": "Dodaj tekst...",
+      "straighten_manual": "Wyprostuj obraz ręcznie...",
+      "straighten_auto": "Wyprostuj obraz automatycznie"
     },
     "canvas_no_file": {
       "open": "Otwórz CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Zamknij aplikację",
-      "reset": "Resetuj aplikację:\n• pełny ekran → okno\n• rozmiar i pozycja okna\n• tryb ciemny → jasny\n• pasek boczny → widoczny / domyślna szerokość\n• minimapa → ukryta\n• rozmiar ikon i miniatur → normalny\n• rozmiar czcionki → domyślny\n• język → automatyczne wykrywanie\n• podział okna → 50 / 50\n• ponowna numeracja → automatyczna\n• kompresja ZIP → brak",
+      "reset": "Resetuj aplikację:\n• pełny ekran → okno\n• rozmiar i pozycja okna\n• tryb ciemny → jasny\n• pasek boczny → widoczny / domyślna szerokość\n• minimapa → ukryta\n• rozmiar ikon i miniatur → normalny\n• rozmiar czcionki → domyślny\n• język → automatyczne wykrywanie\n• podział okna → 50 / 50\n• ponowna numeracja → automatyczna\n• automatyczne prostowanie → ręczne\n• kompresja ZIP → brak",
       "reset_label": "Resetuj aplikację"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Prosty",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Trwa automatyczne prostowanie...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Tom 8 twojej ulubionej sagi właśnie się ukazał, a ty umierasz z chęci, by go przeczytać. Tylko że tom 7 był 4 lata temu, a twoje wspomnienia są nieco mgliste: kim byli ci drugoplanowi bohaterowie? I co się stało na końcu?\n\nJeśli ta sytuacja brzmi znajomo, Distillat jest stworzony dla ciebie. Wystarczy upuścić plik EPUB lub PDF w przewidzianym do tego obszarze: otrzymujesz streszczenie, karty postaci i analizę dzieła, gotowe do przejrzenia lub eksportu do PDF.\n\nAplikacja opiera się na darmowym poziomie Gemini 3.5 Flash.",
       "landing_intro": "Strona prezentacji:",
       "download_intro": "Aplikację możesz pobrać tutaj:"
+    },
+    "deskew_summary": {
+      "title": "Automatyczne prostowanie",
+      "message": "{success} obraz(y) pomyślnie wyprostowane.",
+      "message_errors": "{success} obraz(y) pomyślnie wyprostowane.\n{failed} nieudanych (nie wykryto wiarygodnego przekrzywienia) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Ten plik nie jest skompresowany.\nKliknij, aby skompresować go na poziomie domyślnym ({level}).\nKliknij prawym przyciskiem, aby zmienić poziom domyślny.",
     "duplicate_image": "ZDUPLIKOWANA STRONA",
     "duplicate_indicator": "W tym pliku wykryto zduplikowane strony.\nKliknij, aby otworzyć okno zarządzania duplikatami.",
-    "duplicate_indicator_none": "Nie wykryto duplikatów"
+    "duplicate_indicator_none": "Nie wykryto duplikatów",
+    "straighten_mode_0": "Tryb ręczny (narysuj linię odniesienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
+    "straighten_mode_1": "Tryb automatyczny (wykrywanie przekrzywienia)\nKliknij prawym przyciskiem, aby zmienić tryb"
   },
   "help": {
     "title": "MosaicView - Instrukcja obsługi",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Aby móc pojawić się w menu \"Otwórz za pomocą\" Eksploratora Windows, MosaicView zapisuje przy uruchomieniu kilka informacji w rejestrze Windows. Ten wpis ogranicza się do niezbędnego minimum: informuje Windows, gdzie znajduje się MosaicView i jakie typy plików potrafi otwierać. Jest zapisywany wyłącznie w części rejestru zarezerwowanej dla Twojego konta użytkownika, nigdy w części systemowej, i nie zmienia żadnych skojarzeń plików: wybór MosaicView jako domyślnej aplikacji dla danego typu pliku pozostaje decyzją, którą możesz podjąć wyłącznie Ty, poprzez menu \"Otwórz za pomocą\" samego Windows. Jeśli usuniesz MosaicView z dysku, te informacje po prostu staną się nieaktywne i nie będą miały żadnego znaczenia.",
     "config_dir_content": "MosaicView tworzy plik o nazwie .mosaicview_config.json. Plik ten zawiera ustawienia aplikacji (okno, motyw, język, tryb ponownej numeracji…), listę ostatnio otwartych komiksów i baz danych, zakładki oraz klucz API ComicVine (zaszyfrowany). Znajduje się on w folderze {config_dir} i jest zachowywany między sesjami: w przeciwieństwie do plików tymczasowych nigdy nie jest automatycznie usuwany, ani przez MosaicView, ani przez Windows.\nMożesz go usunąć ręcznie, przechodząc do folderu {config_dir}, lub klikając przycisk poniżej. Zostanie on odtworzony z wartościami domyślnymi przy następnym uruchomieniu aplikacji.",
     "scan": "Zeskanuj obraz",
-    "scan_content": "• Kliknij przycisk „Skanuj” (kolumna ikon, menu Plik lub prawy przycisk myszy na mozaice), aby otworzyć okno skanowania. MosaicView steruje skanerem bezpośrednio (za pomocą WIA, systemu skanowania Windows): wybierz urządzenie, rozdzielczość (DPI), tryb koloru (kolor / skala szarości / czarno-białe), a następnie kliknij „Skanuj”. Aby skaner pojawił się na liście, musi być podłączony, włączony, a jego sterownik zainstalowany w systemie Windows.\n• Obsługiwane jest tylko skanowanie całej strony, ponieważ aplikacja dysponuje już wszystkim, co potrzebne do retuszu obrazu po zeskanowaniu.\n• Zeskanowany obraz jest automatycznie dodawany do mozaiki, po już istniejących stronach. Możesz go następnie przyciąć, wyprostować, dostosować kolory itd., tak jak każdą inną stronę mozaiki\n• Ta funkcja steruje skanerem bezpośrednio, bez użycia oprogramowania producenta i bez wyświetlania jego własnego okna konfiguracji.\n• Ponieważ fizyczny skaner może być obsługiwany tylko przez jedno połączenie naraz, skanowanie jest możliwe tylko w jednym panelu naraz: jeśli w jednym panelu otwarte jest okno skanowania lub trwa skanowanie, przycisk „Skanuj” pozostaje wyszarzony w drugim panelu aż do zakończenia operacji."
+    "scan_content": "• Kliknij przycisk „Skanuj” (kolumna ikon, menu Plik lub prawy przycisk myszy na mozaice), aby otworzyć okno skanowania. MosaicView steruje skanerem bezpośrednio (za pomocą WIA, systemu skanowania Windows): wybierz urządzenie, rozdzielczość (DPI), tryb koloru (kolor / skala szarości / czarno-białe), a następnie kliknij „Skanuj”. Aby skaner pojawił się na liście, musi być podłączony, włączony, a jego sterownik zainstalowany w systemie Windows.\n• Ostatnio używany skaner, rozdzielczość i wybrany tryb koloru są zapamiętywane i automatycznie proponowane ponownie przy kolejnym skanowaniu.\n• Oferowane jest wyłącznie skanowanie całej strony i eksport do formatu JPG, ponieważ aplikacja ma już wszystko, co potrzebne do retuszu i konwersji obrazu później.\n• Zeskanowany obraz jest automatycznie dodawany do mozaiki, po już istniejących stronach. Możesz go następnie przyciąć, wyprostować, dostosować kolory itd., tak jak każdą inną stronę mozaiki\n• Ta funkcja steruje skanerem bezpośrednio, bez użycia oprogramowania producenta i bez wyświetlania jego własnego okna konfiguracji.\n• Ponieważ fizyczny skaner może być obsługiwany tylko przez jedno połączenie naraz, skanowanie jest możliwe tylko w jednym panelu naraz: jeśli w jednym panelu otwarte jest okno skanowania lub trwa skanowanie, przycisk „Skanuj” pozostaje wyszarzony w drugim panelu aż do zakończenia operacji.",
+    "straighten": "Wyprostuj stronę",
+    "straighten_content": "Dwa sposoby na poprawienie przekrzywionego skanu, dostępne z kolumny ikon (kliknij prawym przyciskiem myszy ikonę „Wyprostuj”, aby zmienić tryb), menu Obrazy lub kliknięcie prawym przyciskiem myszy na mozaice:\n• Ręczne prostowanie: otwiera dedykowaną przeglądarkę, w której rysujesz prostą linię na tym, co powinno być poziome lub pionowe na obrazie; kąt korekty jest obliczany automatycznie i stosowany do obrazu, z uchwytami do precyzyjnego dostrojenia linii.\n• Automatyczne prostowanie: samodzielnie wykrywa przekrzywienie (bez rysowania czegokolwiek) i bezpośrednio prostuje wybraną stronę lub strony; puste narożniki powstałe w wyniku obrotu są wypełniane bielą. Działa na wielu stronach jednocześnie. Okno podsumowania pokazuje liczbę pomyślnie wyprostowanych stron i wymienia te, dla których nie wykryto wiarygodnego przekrzywienia."
   },
   "misc": {
     "file_word": "plik",

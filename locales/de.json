@@ -130,9 +130,10 @@
       "adjustments": "Helligkeit, Kontrast, Farben...",
       "refresh_mosaic": "Mosaik aktualisieren (F5)",
       "create_ico": ".ico-Datei erstellen",
-      "straighten": "Bild ausrichten...",
       "clone_zone": "Bereich klonen...",
-      "text": "Text hinzufügen..."
+      "text": "Text hinzufügen...",
+      "straighten_manual": "Bild manuell begradigen...",
+      "straighten_auto": "Bild automatisch begradigen"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF öffnen",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Anwendung schließen",
-      "reset": "Anwendung zurücksetzen:\n• Vollbild → Fenstermodus\n• Fenstergröße und -position\n• Dunkelmodus → Hell\n• Seitenleiste → sichtbar / Standardbreite\n• Minimap → ausgeblendet\n• Symbol- und Miniaturansichtgröße → Normal\n• Schriftgröße → Standard\n• Sprache → automatische Erkennung\n• Fensteraufteilung → 50 / 50\n• Neunummerierung → automatisch\n• ZIP-Komprimierung → keine",
+      "reset": "Anwendung zurücksetzen:\n• Vollbild → Fenstermodus\n• Fenstergröße und -position\n• Dunkelmodus → Hell\n• Seitenleiste → sichtbar / Standardbreite\n• Minimap → ausgeblendet\n• Symbol- und Miniaturansichtgröße → Normal\n• Schriftgröße → Standard\n• Sprache → automatische Erkennung\n• Fensteraufteilung → 50 / 50\n• Neunummerierung → automatisch\n• automatische Begradigung → manuell\n• ZIP-Komprimierung → keine",
       "reset_label": "Anwendung zurücksetzen"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Einfach",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Automatische Begradigung läuft...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Band 8 Ihrer Lieblingssaga ist gerade erschienen, und Sie können es kaum erwarten, ihn zu lesen. Nur dass Band 7 vor 4 Jahren erschien und Ihre Erinnerungen etwas verschwommen sind: Wer waren noch mal diese Nebenfiguren? Und was ist am Ende passiert?\n\nWenn Ihnen diese Situation bekannt vorkommt, ist Distillat genau das Richtige für Sie. Legen Sie einfach Ihre EPUB- oder PDF-Datei in den dafür vorgesehenen Bereich: Sie erhalten eine Zusammenfassung, Charakterbögen und eine Analyse des Werks, bereit zum Ansehen oder Exportieren als PDF.\n\nDie Anwendung nutzt die kostenlose Stufe von Gemini 3.5 Flash.",
       "landing_intro": "Präsentationsseite:",
       "download_intro": "Sie können die Anwendung hier herunterladen:"
+    },
+    "deskew_summary": {
+      "title": "Automatische Begradigung",
+      "message": "{success} Bild(er) erfolgreich begradigt.",
+      "message_errors": "{success} Bild(er) erfolgreich begradigt.\n{failed} fehlgeschlagen (keine zuverlässige Schräglage erkannt) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Diese Datei ist nicht komprimiert.\nKlicken, um sie mit der Standardstufe ({level}) zu komprimieren.\nRechtsklick, um die Standardstufe zu ändern.",
     "duplicate_image": "DOPPELTE SEITE",
     "duplicate_indicator": "In dieser Datei wurden doppelte Seiten erkannt.\nKlicken Sie, um das Fenster zur Verwaltung von Duplikaten zu öffnen.",
-    "duplicate_indicator_none": "Keine Duplikate erkannt"
+    "duplicate_indicator_none": "Keine Duplikate erkannt",
+    "straighten_mode_0": "Manueller Modus (Referenzlinie zeichnen)\nRechtsklick zum Wechseln des Modus",
+    "straighten_mode_1": "Automatischer Modus (Schräglage erkennen)\nRechtsklick zum Wechseln des Modus"
   },
   "help": {
     "title": "MosaicView - Benutzerhandbuch",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Damit MosaicView im \"Öffnen mit\"-Menü des Windows-Explorers erscheinen kann, trägt es beim Start einige Informationen in die Windows-Registrierung ein. Diese Eintragung beschränkt sich auf das Nötigste: Sie teilt Windows mit, wo sich MosaicView befindet und welche Dateitypen es öffnen kann. Sie erfolgt ausschließlich in dem Teil der Registrierung, der Ihrem Benutzerkonto vorbehalten ist, niemals im systemweiten Teil, und ändert keine Dateizuordnung: MosaicView als Standardanwendung für einen Dateityp festzulegen, bleibt eine Entscheidung, die nur Sie über das \"Öffnen mit\"-Menü von Windows treffen können. Wenn Sie MosaicView von Ihrer Festplatte entfernen, werden diese Informationen einfach inaktiv und wirkungslos.",
     "config_dir_content": "MosaicView erstellt eine Datei namens .mosaicview_config.json. Diese Datei enthält die Anwendungseinstellungen (Fenster, Design, Sprache, Umnummerierungsmodus…), die Liste der zuletzt geöffneten Comics und Datenbanken, Ihre Lesezeichen und Ihren ComicVine-API-Schlüssel (verschlüsselt). Sie befindet sich im Ordner {config_dir} und bleibt über Sitzungen hinweg erhalten: Im Gegensatz zu den temporären Dateien wird sie weder von MosaicView noch von Windows automatisch gelöscht.\nSie können sie manuell löschen, indem Sie zum Ordner {config_dir} navigieren oder auf die Schaltfläche unten klicken. Sie wird beim nächsten Start der Anwendung mit den Standardwerten neu erstellt.",
     "scan": "Ein Bild scannen",
-    "scan_content": "• Klicken Sie auf die Schaltfläche „Scannen“ (Symbolspalte, Menü Datei oder Rechtsklick auf die Mosaik), um das Scanfenster zu öffnen. MosaicView steuert Ihren Scanner direkt (über WIA, das Windows-Scansystem): Wählen Sie das Gerät, die Auflösung (DPI), den Farbmodus (Farbe / Graustufen / Schwarzweiß) und klicken Sie dann auf „Scannen“. Ein Scanner muss angeschlossen, eingeschaltet und sein Treiber unter Windows installiert sein, um in der Liste zu erscheinen.\n• Es wird nur das Scannen der gesamten Seite unterstützt, da die Anwendung bereits alles Nötige für die Bildbearbeitung nach dem Scannen bietet.\n• Das gescannte Bild wird automatisch zur Mosaik hinzugefügt, nach den bereits vorhandenen Seiten. Sie können es anschließend zuschneiden, begradigen, seine Farben anpassen usw., wie jede andere Seite der Mosaik\n• Diese Funktion steuert den Scanner direkt, ohne die Software des Herstellers zu verwenden oder dessen eigenes Konfigurationsfenster anzuzeigen.\n• Da ein physischer Scanner immer nur von einer Verbindung gleichzeitig gesteuert werden kann, ist das Scannen nur in jeweils einem Bereich möglich: Wenn in einem Bereich ein Scanfenster geöffnet ist oder ein Scan läuft, bleibt die Schaltfläche „Scannen“ im anderen Bereich bis zum Abschluss des Vorgangs ausgegraut."
+    "scan_content": "• Klicken Sie auf die Schaltfläche „Scannen“ (Symbolspalte, Menü Datei oder Rechtsklick auf die Mosaik), um das Scanfenster zu öffnen. MosaicView steuert Ihren Scanner direkt (über WIA, das Windows-Scansystem): Wählen Sie das Gerät, die Auflösung (DPI), den Farbmodus (Farbe / Graustufen / Schwarzweiß) und klicken Sie dann auf „Scannen“. Ein Scanner muss angeschlossen, eingeschaltet und sein Treiber unter Windows installiert sein, um in der Liste zu erscheinen.\n• Der zuletzt verwendete Scanner, die Auflösung und der gewählte Farbmodus werden gespeichert und beim nächsten Scan automatisch wieder vorgeschlagen.\n• Es wird nur die Vollseiten-Scan- und JPG-Exportfunktion angeboten, da die Anwendung bereits alles Nötige für Bildbearbeitung und Formatkonvertierung danach mitbringt.\n• Das gescannte Bild wird automatisch zur Mosaik hinzugefügt, nach den bereits vorhandenen Seiten. Sie können es anschließend zuschneiden, begradigen, seine Farben anpassen usw., wie jede andere Seite der Mosaik\n• Diese Funktion steuert den Scanner direkt, ohne die Software des Herstellers zu verwenden oder dessen eigenes Konfigurationsfenster anzuzeigen.\n• Da ein physischer Scanner immer nur von einer Verbindung gleichzeitig gesteuert werden kann, ist das Scannen nur in jeweils einem Bereich möglich: Wenn in einem Bereich ein Scanfenster geöffnet ist oder ein Scan läuft, bleibt die Schaltfläche „Scannen“ im anderen Bereich bis zum Abschluss des Vorgangs ausgegraut.",
+    "straighten": "Seite begradigen",
+    "straighten_content": "Zwei Methoden, um einen schräg gescannten Scan zu korrigieren, erreichbar über die Symbolspalte (Rechtsklick auf das Symbol „Begradigen“, um den Modus zu wechseln), das Menü Bilder oder Rechtsklick auf die Mosaik:\n• Manuelle Begradigung: öffnet einen eigenen Betrachter, in dem Sie eine gerade Linie auf das ziehen, was im Bild horizontal oder vertikal sein sollte; der Korrekturwinkel wird automatisch berechnet und auf das Bild angewendet, mit Griffpunkten zur Feinabstimmung der Linie.\n• Automatische Begradigung: erkennt die Schräglage von selbst (ohne etwas zu zeichnen) und begradigt direkt die ausgewählte(n) Seite(n); durch die Drehung entstehende leere Ecken werden weiß aufgefüllt. Funktioniert für mehrere Seiten gleichzeitig. Ein Zusammenfassungsfenster zeigt die Anzahl der erfolgreich begradigten Seiten und listet diejenigen auf, bei denen keine zuverlässige Schräglage erkannt werden konnte."
   },
   "misc": {
     "file_word": "Datei",

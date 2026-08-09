@@ -130,9 +130,10 @@
       "adjustments": "Luminożità, kontrast, kuluri...",
       "refresh_mosaic": "Aġġorna l-mużajk (F5)",
       "create_ico": "Oħloq fajl .ico",
-      "straighten": "Sewwi l-immaġni...",
       "clone_zone": "Ikklona żona...",
-      "text": "Żid test..."
+      "text": "Żid test...",
+      "straighten_manual": "Iddritta l-immaġni manwalment...",
+      "straighten_auto": "Iddritta l-immaġni awtomatikament"
     },
     "canvas_no_file": {
       "open": "Iftaħ CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Agħlaq l-applikazzjoni",
-      "reset": "Irresettar l-applikazzjoni:\n• skrin sħiħ → tieqa\n• daqs u pożizzjoni tat-tieqa\n• modalità skura → ċara\n• barra laterali → viżibbli / wisa' default\n• minimappa → moħbija\n• daqs tal-ikoni u tal-minjaturi → normali\n• daqs tal-font → default\n• lingwa → detezzjoni awtomatika\n• qsim tat-tieqa → 50 / 50\n• numerazzjoni mill-ġdid → awtomatika\n• kompressjoni ZIP → xejn",
+      "reset": "Irresettar l-applikazzjoni:\n• skrin sħiħ → tieqa\n• daqs u pożizzjoni tat-tieqa\n• modalità skura → ċara\n• barra laterali → viżibbli / wisa' default\n• minimappa → moħbija\n• daqs tal-ikoni u tal-minjaturi → normali\n• daqs tal-font → default\n• lingwa → detezzjoni awtomatika\n• qsim tat-tieqa → 50 / 50\n• numerazzjoni mill-ġdid → awtomatika\n• tiddirizzar awtomatiku → manwali\n• kompressjoni ZIP → xejn",
       "reset_label": "Irrisettja l-applikazzjoni"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Sempliċi",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Tiddirizzar awtomatiku għaddej...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Il-volum 8 tas-saga favorita tiegħek għadu kif ħareġ, u qed tmut bix-xewqa li taqrah. Biss il-volum 7 kien 4 snin ilu, u l-memorji tiegħek huma ftit imċajpra: min kienu dawk il-karattri sekondarji? U x'kien ġara fl-aħħar?\n\nJekk din is-sitwazzjoni tinstema' familjari, Distillat sar għalik. Sempliċement niżżel il-fajl EPUB jew PDF tiegħek fiż-żona maħsuba għal dan: tikseb sommarju, karti tal-karattri u analiżi tax-xogħol, lesti biex tarahom jew tesportahom f'PDF.\n\nL-applikazzjoni tiddependi fuq il-livell b'xejn ta' Gemini 3.5 Flash.",
       "landing_intro": "Paġna ta' preżentazzjoni:",
       "download_intro": "Tista' tniżżel l-applikazzjoni hawn:"
+    },
+    "deskew_summary": {
+      "title": "Tiddirizzar awtomatiku",
+      "message": "{success} immaġni ddritjata/i b'suċċess.",
+      "message_errors": "{success} immaġni ddritjata/i b'suċċess.\n{failed} falliet (ma nstab l-ebda xengil affidabbli) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Dan il-fajl mhux ikkumpressat.\nIkklikkja biex tikkomprimih fil-livell prestabbilit ({level}).\nKlikkja bil-lemin biex tibdel il-livell prestabbilit.",
     "duplicate_image": "PAĠNA DUPLIKATA",
     "duplicate_indicator": "Instabu paġni duplikati f'dan il-fajl.\nIkklikkja biex tiftaħ it-tieqa tal-ġestjoni tad-duplikati.",
-    "duplicate_indicator_none": "L-ebda duplikat ma nstab"
+    "duplicate_indicator_none": "L-ebda duplikat ma nstab",
+    "straighten_mode_0": "Modalità manwali (iġbed linja ta' referenza)\nIkklikkja bil-lemin biex tibdel il-modalità",
+    "straighten_mode_1": "Modalità awtomatika (skoperta ta' xengil)\nIkklikkja bil-lemin biex tibdel il-modalità"
   },
   "help": {
     "title": "MosaicView - Manwal tal-utent",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Biex ikun jista' jidher fil-menu \"Iftaħ b'\" tal-Windows Explorer, MosaicView jikteb ftit informazzjoni fir-reġistru ta' Windows meta jitnieda. Din ir-reġistrazzjoni tibqa' limitata għall-minimu strett: tgħid lil Windows fejn jinsab MosaicView u liema tipi ta' fajls jista' jiftaħ. Issir biss fil-parti tar-reġistru riżervata għall-kont tal-utent tiegħek, qatt fil-parti tas-sistema, u ma tibdel l-ebda assoċjazzjoni ta' fajls: l-għażla ta' MosaicView bħala l-applikazzjoni prestabbilita għal tip ta' fajl tibqa' għażla li tista' tagħmel int biss, permezz tal-menu \"Iftaħ b'\" ta' Windows stess. Jekk tneħħi MosaicView mid-diska tiegħek, din l-informazzjoni sempliċement issir inattiva u bla effett.",
     "config_dir_content": "MosaicView joħloq fajl imsemmi .mosaicview_config.json. Dan il-fajl fih l-issettjar tal-applikazzjoni (tieqa, tema, lingwa, modalità ta' rinumerazzjoni…), il-lista tal-kotba tal-istrixxi u l-bażijiet tad-dejta miftuħa dan l-aħħar, is-sinjali tal-paġni tiegħek, u ċ-ċavetta API ComicVine tiegħek (ikkriptata). Jinsab fil-folder {config_dir} u jinżamm minn sessjoni għal oħra: b'differenza mill-fajls temporanji, qatt ma jitħassar awtomatikament, la minn MosaicView u lanqas minn Windows.\nTista' tħassru manwalment billi tmur fil-folder {config_dir}, jew billi tikklikkja l-buttuna hawn taħt. Se jinħoloq mill-ġdid bil-valuri default id-darba li jmiss li tinbeda l-applikazzjoni.",
     "scan": "Skennja immaġni",
-    "scan_content": "• Ikklikkja l-buttuna \"Skennja\" (kolonna tal-ikoni, menu Fajl, jew klikk bil-lemin fuq il-mosajk) biex tiftaħ it-tieqa tal-iskennjar. MosaicView jimmaniġġja l-iskener tiegħek direttament (permezz ta' WIA, is-sistema ta' skennjar ta' Windows): agħżel it-tagħmir, ir-riżoluzzjoni (DPI), il-modalità tal-kulur (kulur / skala griża / iswed u abjad), imbagħad ikklikkja \"Skennja\". Skener irid ikun imqabbad, mixgħul, u s-sewwieq tiegħu installat fuq Windows biex jidher fil-lista.\n• Hu appoġġjat biss l-iskennjar ta' paġna sħiħa, peress li l-applikazzjoni diġà għandha kollox meħtieġ għall-editjar tal-immaġni wara l-iskennjar.\n• L-immaġni skennjata tiżdied awtomatikament mal-mosajk, wara l-paġni li diġà jeżistu. Imbagħad tista' taqtagħha, tiddrittaha, taġġusta l-kuluri tagħha, eċċ. bħal kwalunkwe paġna oħra tal-mosajk\n• Din il-funzjoni timmaniġġja l-iskener direttament, mingħajr ma tgħaddi mis-softwer tal-manifattur jew turi t-tieqa ta' konfigurazzjoni tiegħu stess.\n• Peress li skener fiżiku jista' jiġi kkontrollat biss minn konnessjoni waħda kull darba, l-iskennjar huwa possibbli biss f'panel wieħed kull darba: jekk tieqa tal-iskennjar tkun miftuħa jew skennjar ikun għaddej f'panel wieħed, il-buttuna \"Skennja\" tibqa' griża fil-panel l-ieħor sakemm l-operazzjoni tispiċċa."
+    "scan_content": "• Ikklikkja l-buttuna \"Skennja\" (kolonna tal-ikoni, menu Fajl, jew klikk bil-lemin fuq il-mosajk) biex tiftaħ it-tieqa tal-iskennjar. MosaicView jimmaniġġja l-iskener tiegħek direttament (permezz ta' WIA, is-sistema ta' skennjar ta' Windows): agħżel it-tagħmir, ir-riżoluzzjoni (DPI), il-modalità tal-kulur (kulur / skala griża / iswed u abjad), imbagħad ikklikkja \"Skennja\". Skener irid ikun imqabbad, mixgħul, u s-sewwieq tiegħu installat fuq Windows biex jidher fil-lista.\n• L-iskener, ir-riżoluzzjoni u l-mod tal-kulur użati l-aħħar jiġu mfakkra u proposti awtomatikament mill-ġdid fl-iskennjar li jmiss.\n• Jiġu offruti biss l-iskennjar ta' paġna sħiħa u l-esportazzjoni bħala JPG, peress li l-applikazzjoni diġà għandha kulma jinħtieġ għar-ritokkar u l-konverżjoni tal-format tal-immaġni wara.\n• L-immaġni skennjata tiżdied awtomatikament mal-mosajk, wara l-paġni li diġà jeżistu. Imbagħad tista' taqtagħha, tiddrittaha, taġġusta l-kuluri tagħha, eċċ. bħal kwalunkwe paġna oħra tal-mosajk\n• Din il-funzjoni timmaniġġja l-iskener direttament, mingħajr ma tgħaddi mis-softwer tal-manifattur jew turi t-tieqa ta' konfigurazzjoni tiegħu stess.\n• Peress li skener fiżiku jista' jiġi kkontrollat biss minn konnessjoni waħda kull darba, l-iskennjar huwa possibbli biss f'panel wieħed kull darba: jekk tieqa tal-iskennjar tkun miftuħa jew skennjar ikun għaddej f'panel wieħed, il-buttuna \"Skennja\" tibqa' griża fil-panel l-ieħor sakemm l-operazzjoni tispiċċa.",
+    "straighten": "Iddritta paġna",
+    "straighten_content": "Żewġ metodi biex tikkoreġi skan mgħawweġ, aċċessibbli mill-kolonna tal-ikoni (ikklikkja bil-lemin fuq l-ikona \"Iddritta\" biex tibdel il-modalità), il-menu Immaġnijiet, jew billi tikklikkja bil-lemin fuq il-mosajk:\n• Iddirizzar manwali: jiftaħ visur dedikat fejn tiġbed linja dritta fuq dak li għandu jkun orizzontali jew vertikali fl-immaġni; l-angolu ta' korrezzjoni jiġi kkalkulat awtomatikament u applikat għall-immaġni, b'manki biex tirfina l-linja.\n• Iddirizzar awtomatiku: jikxef l-inklinazzjoni waħdu (mingħajr ma tiġbed xejn) u jiddritta direttament il-paġna jew il-paġni magħżula; l-irkna vojta maħluqa mid-dawrien jimtlew bil-bajda. Jaħdem fuq bosta paġni f'daqqa. Tieqa ta' sommarju turi kemm-il paġna ġiet iddritjata b'suċċess u telenka dawk li għalihom ma nstabet l-ebda inklinazzjoni affidabbli."
   },
   "misc": {
     "file_word": "fajl",

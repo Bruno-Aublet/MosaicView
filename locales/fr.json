@@ -130,9 +130,10 @@
       "save_to_folder": "Exporter les pages sélectionnées",
       "adjustments": "Luminosité, contraste, couleurs...",
       "refresh_mosaic": "Rafraîchir la mosaïque (F5)",
-      "straighten": "Redresser l'image...",
       "clone_zone": "Clonage de zone...",
-      "text": "Ajouter du texte..."
+      "text": "Ajouter du texte...",
+      "straighten_manual": "Redresser l'image manuellement...",
+      "straighten_auto": "Redresser l'image automatiquement"
     },
     "canvas_no_file": {
       "open": "Ouvrir CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Fermer l'application",
-      "reset": "Réinitialiser l'application :\n• plein écran → fenêtré\n• taille et position de la fenêtre\n• mode sombre → clair\n• barre latérale → visible / largeur par défaut\n• minimap → cachée\n• taille des icônes et vignettes → normale\n• taille de police → par défaut\n• langue → détection automatique\n• partage de la fenêtre → 50 / 50\n• renumérotation → auto\n• compression ZIP → aucune",
+      "reset": "Réinitialiser l'application :\n• plein écran → fenêtré\n• taille et position de la fenêtre\n• mode sombre → clair\n• barre latérale → visible / largeur par défaut\n• minimap → cachée\n• taille des icônes et vignettes → normale\n• taille de police → par défaut\n• langue → détection automatique\n• partage de la fenêtre → 50 / 50\n• renumérotation → auto\n• redressage automatique → manuel\n• compression ZIP → aucune",
       "reset_label": "Réinitialiser l'application"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Simple",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Redressage automatique en cours...\n{percent}%"
   },
   "dialogs": {
     "duplicates": {
@@ -1226,6 +1228,11 @@
       "copy": "Copier le lien",
       "open_location": "Ouvrir l'emplacement",
       "copy_path": "Copier le chemin"
+    },
+    "deskew_summary": {
+      "title": "Redressage automatique",
+      "message": "{success} image(s) redressée(s) avec succès.",
+      "message_errors": "{success} image(s) redressée(s) avec succès.\n{failed} échec(s) (aucune inclinaison fiable détectée) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_noop": "Ce fichier n'est pas compressé.\nClic droit pour modifier le taux par défaut.",
     "zip_indicator_stored_action": "Ce fichier n'est pas compressé.\nCliquez pour le compresser au taux par défaut ({level}).\nClic droit pour modifier le taux par défaut.",
     "duplicate_indicator": "Des doublons de pages ont été détectées dans ce fichier.\nCliquez pour ouvrir la fenêtre de gestion des doublons.",
-    "duplicate_indicator_none": "Pas de doublon détecté"
+    "duplicate_indicator_none": "Pas de doublon détecté",
+    "straighten_mode_0": "Mode manuel (tracer une ligne de référence)\nClic droit pour changer de mode",
+    "straighten_mode_1": "Mode automatique (détection d'inclinaison)\nClic droit pour changer de mode"
   },
   "help": {
     "title": "MosaicView - Mode d'emploi",
@@ -1297,7 +1306,7 @@
     "open_files": "Ouvrir des fichiers",
     "open_files_content": "• Cliquez sur le bouton 'Ouvrir un fichier' ou glissez-déposez directement un fichier dans la fenêtre\n• Formats supportés : CBZ, CBR, CB7, CBT, PDF, images (JPG, PNG, WEBP, BMP, TIFF, GIF, ICO). Les fichiers EPUB peuvent aussi etre ouverts, mais seules leurs images seront extraites (le texte est ignoré). Note : les extensions affichées en rouge (WEBP, TIFF, GIF, ICO…) signalent des formats potentiellement incompatibles avec d’anciens lecteurs CBZ/CBR. Ces fichiers sont néanmoins traités normalement par MosaicView.\n• PDF chiffré (mot de passe requis à l’ouverture) : le fichier ne peut pas être importé, un message d’erreur s’affiche.\n• PDF protégé contre les modifications (owner password) : les pages sont importées normalement. MosaicView propose d’enregistrer une copie déverrouillée du fichier dans le même répertoire.\n• Détection des pages en double : à l'ouverture d'une archive, les pages strictement identiques (erreur de scan ou de fusion) sont automatiquement signalées par une pastille orange sur leur vignette. La commande « Gérer les doublons » (menu Édition, clic droit sur la mosaïque, ou clic droit sur une vignette) ouvre une fenêtre listant les groupes de pages identiques, avec une case à cocher par page pour supprimer les copies en trop.",
     "scan": "Numériser une image",
-    "scan_content": "• Cliquez sur le bouton « Numériser » (colonne d'icônes, menu Fichier, ou clic droit sur la mosaïque) pour ouvrir la fenêtre de numérisation. MosaicView pilote directement votre scanner (via WIA, le système de numérisation de Windows) : sélectionnez l'appareil, la résolution (DPI), le mode couleur (couleur / niveaux de gris / noir et blanc), puis cliquez sur « Scanner ». Un scanner doit être branché, allumé, et son pilote installé sous Windows pour apparaître dans la liste.\n• Seule la numérisation pleine page est supportée, l'application disposant de tout ce qui est nécessaire aux retouches d'images après le scan.\n• L'image numérisée est automatiquement ajoutée à la mosaïque, à la suite des pages déjà présentes. Vous pouvez ensuite la recadrer, la redresser, ajuster ses couleurs, etc. comme n'importe quelle autre page de la mosaïque\n• Cette fonctionnalité pilote le scanner directement, sans passer par le logiciel du fabricant ni afficher sa fenêtre de configuration propre.\n• Comme un seul scanner physique ne peut être piloté que par une connexion à la fois, la numérisation n'est possible que dans un seul panneau à la fois : si une fenêtre de numérisation est ouverte ou qu'un scan est en cours dans un panneau, le bouton « Numériser » reste grisé dans l'autre jusqu'à la fin de l'opération.",
+    "scan_content": "• Cliquez sur le bouton « Numériser » (colonne d'icônes, menu Fichier, ou clic droit sur la mosaïque) pour ouvrir la fenêtre de numérisation. MosaicView pilote directement votre scanner (via WIA, le système de numérisation de Windows) : sélectionnez l'appareil, la résolution (DPI), le mode couleur (couleur / niveaux de gris / noir et blanc), puis cliquez sur « Scanner ». Un scanner doit être branché, allumé, et son pilote installé sous Windows pour apparaître dans la liste.\n• Le dernier scanner utilisé, la résolution et le mode couleur choisis sont mémorisés et proposés à nouveau automatiquement à la prochaine numérisation.\n• Seule la numérisation pleine page et en JPG est proposée, l'application disposant de tout ce qu'il faut pour les retouches et conversions d'image ensuite.\n• L'image numérisée est automatiquement ajoutée à la mosaïque, à la suite des pages déjà présentes. Vous pouvez ensuite la recadrer, la redresser, ajuster ses couleurs, etc. comme n'importe quelle autre page de la mosaïque\n• Cette fonctionnalité pilote le scanner directement, sans passer par le logiciel du fabricant ni afficher sa fenêtre de configuration propre.\n• Comme un seul scanner physique ne peut être piloté que par une connexion à la fois, la numérisation n'est possible que dans un seul panneau à la fois : si une fenêtre de numérisation est ouverte ou qu'un scan est en cours dans un panneau, le bouton « Numériser » reste grisé dans l'autre jusqu'à la fin de l'opération.",
     "mosaic": "La mosaïque",
     "mosaic_content": "La mosaïque affiche toutes les pages de votre BD sous forme de vignettes. Vous pouvez :\n• Réorganiser les pages par glisser-déposer (la renumérotation des pages sera automatique, et se fera selon le mode de renumérotation actif)\n• Sélectionner plusieurs pages (Ctrl+clic ou Maj+clic)\n• Ajuster la taille des vignettes avec la réglette ou Ctrl+molette\n• Renommer les fichiers manuellement en cliquant sur leur nom\n• Glisser-déposer des fichiers BD (CBZ/CBR/PDF) depuis l'explorateur Windows directement dans une autre BD ouverte pour fusionner leur contenu\n• Exporter toutes les vignettes affichées dans un dossier de votre choix (commande cachée, accessible uniquement par le raccourci Ctrl+Alt+T)\n• Afficher une minimap : un panneau optionnel à droite de la mosaïque montrant un aperçu miniature de toutes les pages, avec un rectangle indiquant la zone actuellement visible. Cliquez ou faites-le glisser pour naviguer directement dans la BD. Activable depuis le menu Système ou le clic droit sur la mosaïque.",
     "manipulation": "Manipulation des pages",
@@ -1382,7 +1391,9 @@
     "library": "Bibliothèque",
     "library_content": "La bibliothèque vous permet de cataloguer et retrouver facilement vos BD numériques. Elle fonctionne en lisant les métadonnées contenues dans chacun de vos fichiers (titre, série, auteurs, éditeur…) et en les rassemblant dans un fichier de bibliothèque unique (*.mvdb).\n\nPour créer une bibliothèque, utilisez le menu Bibliothèque → Nouvelle base de données, ou déposez un ou plusieurs dossiers dans la mosaïque et choisissez \"Créer une bibliothèque à partir du(des) dossier(s)\". MosaicView parcourt alors vos répertoires et indexe automatiquement tous les fichiers compatibles.\n\nUne fois la bibliothèque ouverte, vous pouvez filtrer vos BD par série, auteur, année, éditeur, etc., en combinant autant de critères que nécessaire. Un double-clic ouvre le fichier dans MosaicView. Les résultats peuvent être exportés au format Excel (*.xlsx).",
     "zip_compression": "Compression ZIP",
-    "zip_compression_content": "MosaicView permet de choisir le taux de compression ZIP appliqué à chaque enregistrement d'un CBZ, accessible via l'indicateur dans la barre de statut, le menu Système, ou le menu contextuel (clic droit sur le canvas).\n\nLe taux par défaut est 0 (aucune compression) : les images d'une BD sont déjà compressées par leur propre format (JPEG, PNG, WebP...), donc compresser l'archive ZIP par-dessus n'apporte aucun gain de place, mais ralentit nettement l'enregistrement et la lecture. Il est possible de modifier ce taux, mais c'est déconseillé, sauf besoin spécifique.\n\nL'indicateur dans la barre de statut affiche l'état réel de compression du fichier ouvert : « 0 » si le fichier n'est pas compressé, « 1 » s'il est compressé (le format ZIP ne permet pas de connaître le taux d'origine exact), ou « -- » si le fichier n'est pas un CBZ. Un clic gauche sur l'indicateur propose de réenregistrer le fichier (ou de le convertir en CBZ) au taux par défaut, quand cela a un sens. Un clic droit ouvre la fenêtre de réglage du taux par défaut."
+    "zip_compression_content": "MosaicView permet de choisir le taux de compression ZIP appliqué à chaque enregistrement d'un CBZ, accessible via l'indicateur dans la barre de statut, le menu Système, ou le menu contextuel (clic droit sur le canvas).\n\nLe taux par défaut est 0 (aucune compression) : les images d'une BD sont déjà compressées par leur propre format (JPEG, PNG, WebP...), donc compresser l'archive ZIP par-dessus n'apporte aucun gain de place, mais ralentit nettement l'enregistrement et la lecture. Il est possible de modifier ce taux, mais c'est déconseillé, sauf besoin spécifique.\n\nL'indicateur dans la barre de statut affiche l'état réel de compression du fichier ouvert : « 0 » si le fichier n'est pas compressé, « 1 » s'il est compressé (le format ZIP ne permet pas de connaître le taux d'origine exact), ou « -- » si le fichier n'est pas un CBZ. Un clic gauche sur l'indicateur propose de réenregistrer le fichier (ou de le convertir en CBZ) au taux par défaut, quand cela a un sens. Un clic droit ouvre la fenêtre de réglage du taux par défaut.",
+    "straighten": "Redresser une page",
+    "straighten_content": "Deux méthodes pour corriger l'inclinaison d'un scan de travers, accessibles depuis la colonne d'icônes (clic droit sur l'icône « Redresser » pour basculer entre les deux modes), le menu Images, ou le clic droit sur la mosaïque :\n• Redressement manuel : ouvre une visionneuse dédiée où vous tracez une ligne droite sur ce qui devrait être horizontal ou vertical dans l'image ; l'angle de correction est calculé automatiquement et appliqué à l'image, avec des poignées pour affiner le tracé.\n• Redressement automatique : détecte l'inclinaison tout seul (sans rien tracer) et redresse directement la ou les pages sélectionnées ; les coins vides créés par la rotation sont comblés en blanc. Fonctionne sur plusieurs pages à la fois. Une fenêtre de résumé indique le nombre de pages redressées avec succès et liste celles pour lesquelles aucune inclinaison fiable n'a pu être détectée."
   },
   "misc": {
     "file_word": "fichier",

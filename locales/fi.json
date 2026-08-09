@@ -130,9 +130,10 @@
       "adjustments": "Kirkkaus, kontrasti, värit...",
       "refresh_mosaic": "Päivitä mosaiikki (F5)",
       "create_ico": "Luo .ico-tiedosto",
-      "straighten": "Oikaise kuva...",
       "clone_zone": "Kloonaa alue...",
-      "text": "Lisää teksti..."
+      "text": "Lisää teksti...",
+      "straighten_manual": "Suorista kuva manuaalisesti...",
+      "straighten_auto": "Suorista kuva automaattisesti"
     },
     "canvas_no_file": {
       "open": "Avaa CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Sulje sovellus",
-      "reset": "Palauta sovellus:\n• koko näyttö → ikkuna\n• ikkunan koko ja sijainti\n• tumma tila → vaalea\n• sivupalkki → näkyvissä / oletusleveys\n• pienoiskartta → piilotettu\n• kuvake- ja pikkukuvakoko → normaali\n• fonttikoko → oletus\n• kieli → automaattinen tunnistus\n• ikkunan jako → 50 / 50\n• uudelleennumerointi → automaattinen\n• ZIP-pakkaus → ei mitään",
+      "reset": "Palauta sovellus:\n• koko näyttö → ikkuna\n• ikkunan koko ja sijainti\n• tumma tila → vaalea\n• sivupalkki → näkyvissä / oletusleveys\n• pienoiskartta → piilotettu\n• kuvake- ja pikkukuvakoko → normaali\n• fonttikoko → oletus\n• kieli → automaattinen tunnistus\n• ikkunan jako → 50 / 50\n• uudelleennumerointi → automaattinen\n• automaattinen suoristus → manuaalinen\n• ZIP-pakkaus → ei mitään",
       "reset_label": "Palauta sovellus"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Yksink.",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Automaattinen suoristus käynnissä...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Suosikkisaagasi osa 8 juuri ilmestyi, ja kuolet halusta lukea sen. Paitsi että osa 7 ilmestyi 4 vuotta sitten, ja muistosi ovat hieman hataria: keitä ne sivuhenkilöt taas olivatkaan? Ja mitä lopussa tapahtui?\n\nJos tämä tilanne kuulostaa tutulta, Distillat on tehty juuri sinulle. Pudota vain EPUB- tai PDF-tiedostosi sille varattuun alueeseen: saat yhteenvedon, henkilökortit ja teoksen analyysin, valmiina tarkasteltavaksi tai vietäväksi PDF-muotoon.\n\nSovellus perustuu Gemini 3.5 Flashin ilmaiseen tasoon.",
       "landing_intro": "Esittelysivu:",
       "download_intro": "Voit ladata sovelluksen täältä:"
+    },
+    "deskew_summary": {
+      "title": "Automaattinen suoristus",
+      "message": "{success} kuva(a) suoristettu onnistuneesti.",
+      "message_errors": "{success} kuva(a) suoristettu onnistuneesti.\n{failed} epäonnistui (luotettavaa kaltevuutta ei havaittu) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Tätä tiedostoa ei ole pakattu.\nNapsauta pakataksesi sen oletustasolla ({level}).\nNapsauta hiiren oikealla painikkeella muuttaaksesi oletustasoa.",
     "duplicate_image": "KAKSOISKAPPALE",
     "duplicate_indicator": "Tästä tiedostosta löytyi kaksoiskappaleina olevia sivuja.\nAvaa kaksoiskappaleiden hallintaikkuna napsauttamalla.",
-    "duplicate_indicator_none": "Kaksoiskappaleita ei havaittu"
+    "duplicate_indicator_none": "Kaksoiskappaleita ei havaittu",
+    "straighten_mode_0": "Manuaalitila (piirrä vertailuviiva)\nVaihda tilaa napsauttamalla hiiren oikeaa painiketta",
+    "straighten_mode_1": "Automaattitila (kaltevuuden tunnistus)\nVaihda tilaa napsauttamalla hiiren oikeaa painiketta"
   },
   "help": {
     "title": "MosaicView - Käyttöohje",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Jotta MosaicView voisi näkyä Resurssienhallinnan \"Avaa sovelluksella\" -valikossa, se kirjoittaa käynnistyessään muutamia tietoja Windowsin rekisteriin. Tämä merkintä rajoittuu välttämättömään: se kertoo Windowsille, missä MosaicView sijaitsee ja millaisia tiedostotyyppejä se osaa avata. Se tehdään ainoastaan käyttäjätilillesi varattuun rekisterin osaan, ei koskaan järjestelmän osaan, eikä se muuta mitään tiedostoliitoksia: MosaicView'n valitseminen oletussovellukseksi tietylle tiedostotyypille on edelleen valinta, jonka voit tehdä vain sinä itse, Windowsin oman \"Avaa sovelluksella\" -valikon kautta. Jos poistat MosaicView'n levyltäsi, nämä tiedot muuttuvat yksinkertaisesti passiivisiksi eikä niillä ole enää vaikutusta.",
     "config_dir_content": "MosaicView luo tiedoston nimeltä .mosaicview_config.json. Tämä tiedosto sisältää sovelluksen asetukset (ikkuna, teema, kieli, uudelleennumerointitila…), luettelon äskettäin avatuista sarjakuvista ja tietokannoista, kirjanmerkkisi sekä ComicVine-API-avaimesi (salattuna). Se sijaitsee kansiossa {config_dir} ja säilyy istunnosta toiseen: toisin kuin väliaikaiset tiedostot, sitä ei koskaan poisteta automaattisesti, ei MosaicView'n eikä Windowsin toimesta.\nVoit poistaa sen manuaalisesti siirtymällä kansioon {config_dir} tai napsauttamalla alla olevaa painiketta. Se luodaan uudelleen oletusarvoilla seuraavan kerran, kun sovellus käynnistetään.",
     "scan": "Skannaa kuva",
-    "scan_content": "• Napsauta „Skannaa”-painiketta (kuvakesarake, Tiedosto-valikko tai hiiren oikea painike mosaiikissa) avataksesi skannausikkunan. MosaicView ohjaa skanneriasi suoraan (WIA:n, Windowsin skannausjärjestelmän, kautta): valitse laite, tarkkuus (DPI), väritila (väri / harmaasävy / mustavalkoinen) ja napsauta sitten „Skannaa”. Skannerin täytyy olla kytkettynä, päällä ja sen ohjaimen asennettuna Windowsiin, jotta se näkyy luettelossa.\n• Vain koko sivun skannaus on tuettu, sillä sovelluksessa on jo kaikki tarvittava kuvan muokkaamiseen skannauksen jälkeen.\n• Skannattu kuva lisätään automaattisesti mosaiikkiin jo olemassa olevien sivujen jälkeen. Voit sen jälkeen rajata sitä, suoristaa sen, säätää sen värejä jne. kuten mitä tahansa muuta mosaiikin sivua\n• Tämä toiminto ohjaa skanneria suoraan, käyttämättä valmistajan ohjelmistoa tai näyttämättä sen omaa asetusikkunaa.\n• Koska fyysistä skanneria voi ohjata kerrallaan vain yksi yhteys, skannaus on mahdollista vain yhdessä paneelissa kerrallaan: jos skannausikkuna on auki tai skannaus on käynnissä toisessa paneelissa, ”Skannaa”-painike pysyy harmaana toisessa paneelissa, kunnes toimenpide on valmis."
+    "scan_content": "• Napsauta „Skannaa”-painiketta (kuvakesarake, Tiedosto-valikko tai hiiren oikea painike mosaiikissa) avataksesi skannausikkunan. MosaicView ohjaa skanneriasi suoraan (WIA:n, Windowsin skannausjärjestelmän, kautta): valitse laite, tarkkuus (DPI), väritila (väri / harmaasävy / mustavalkoinen) ja napsauta sitten „Skannaa”. Skannerin täytyy olla kytkettynä, päällä ja sen ohjaimen asennettuna Windowsiin, jotta se näkyy luettelossa.\n• Viimeksi käytetty skanneri, tarkkuus ja valittu väritila muistetaan ja ehdotetaan automaattisesti uudelleen seuraavalla skannauskerralla.\n• Tarjolla on vain koko sivun skannaus ja vienti JPG-muodossa, sillä sovelluksessa on jo kaikki tarvittava kuvan jälkikäsittelyyn ja muodon muuntamiseen.\n• Skannattu kuva lisätään automaattisesti mosaiikkiin jo olemassa olevien sivujen jälkeen. Voit sen jälkeen rajata sitä, suoristaa sen, säätää sen värejä jne. kuten mitä tahansa muuta mosaiikin sivua\n• Tämä toiminto ohjaa skanneria suoraan, käyttämättä valmistajan ohjelmistoa tai näyttämättä sen omaa asetusikkunaa.\n• Koska fyysistä skanneria voi ohjata kerrallaan vain yksi yhteys, skannaus on mahdollista vain yhdessä paneelissa kerrallaan: jos skannausikkuna on auki tai skannaus on käynnissä toisessa paneelissa, ”Skannaa”-painike pysyy harmaana toisessa paneelissa, kunnes toimenpide on valmis.",
+    "straighten": "Suorista sivu",
+    "straighten_content": "Kaksi tapaa korjata vino skannaus, käytettävissä kuvakepalkista (napsauta hiiren oikealla painikkeella \"Suorista\"-kuvaketta vaihtaaksesi tilaa), Kuvat-valikosta tai napsauttamalla mosaiikkia hiiren oikealla painikkeella:\n• Manuaalinen suoristus: avaa erillisen katselimen, jossa piirrät suoran viivan sille, mikä kuvassa pitäisi olla vaaka- tai pystysuoraa; korjauskulma lasketaan automaattisesti ja sovelletaan kuvaan, kahvoilla viivan hienosäätöä varten.\n• Automaattinen suoristus: tunnistaa kaltevuuden itse (ilman piirtämistä) ja suoristaa suoraan valitun sivun tai sivut; kierrosta syntyvät tyhjät kulmat täytetään valkoisella. Toimii useille sivuille kerralla. Yhteenvetoikkuna näyttää, kuinka monta sivua suoristettiin onnistuneesti, ja luettelee ne, joiden luotettavaa kaltevuutta ei löytynyt."
   },
   "misc": {
     "file_word": "tiedosto",

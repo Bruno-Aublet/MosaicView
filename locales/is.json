@@ -130,9 +130,10 @@
       "adjustments": "Birtustig, andstæða, litir...",
       "refresh_mosaic": "Endurglæða mósaík (F5)",
       "create_ico": "Búa til .ico skrá",
-      "straighten": "Rétta mynd...",
       "clone_zone": "Klóna svæði...",
-      "text": "Bæta við texta..."
+      "text": "Bæta við texta...",
+      "straighten_manual": "Rétta myndina handvirkt...",
+      "straighten_auto": "Rétta myndina sjálfkrafa"
     },
     "canvas_no_file": {
       "open": "Opna CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Loka forriti",
-      "reset": "Endurstilling forritsins:\n• skjáfylling → gluggastilling\n• stærð og staðsetning glugga\n• dökkt þema → ljóst\n• hliðarslá → sýnileg / sjálfgefin breidd\n• smákort → falið\n• stærð tákna og smámynda → venjuleg\n• leturstærð → sjálfgefin\n• tungumál → sjálfvirk greining\n• skipting glugga → 50 / 50\n• endurnúmerun → sjálfvirk\n• ZIP-þjöppun → engin",
+      "reset": "Endurstilling forritsins:\n• skjáfylling → gluggastilling\n• stærð og staðsetning glugga\n• dökkt þema → ljóst\n• hliðarslá → sýnileg / sjálfgefin breidd\n• smákort → falið\n• stærð tákna og smámynda → venjuleg\n• leturstærð → sjálfgefin\n• tungumál → sjálfvirk greining\n• skipting glugga → 50 / 50\n• endurnúmerun → sjálfvirk\n• sjálfvirk rétting → handvirk\n• ZIP-þjöppun → engin",
       "reset_label": "Endurstilla forritið"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Núm: Einf.",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Sjálfvirk rétting í gangi...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Bindi 8 af uppáhalds sögunni þinni er nýkomið út, og þú getur ekki beðið eftir að lesa það. Nema hvað bindi 7 kom út fyrir 4 árum, og minningar þínar eru svolítið óskýrar: hverjir voru þessar aukapersónur aftur? Og hvað gerðist í lokin?\n\nEf þessar aðstæður hljóma kunnuglega, þá er Distillat gert fyrir þig. Slepptu einfaldlega EPUB- eða PDF-skránni þinni á tilgreint svæði: þú færð samantekt, persónuspjöld og greiningu á verkinu, tilbúið til skoðunar eða útflutnings í PDF.\n\nForritið byggir á ókeypis stigi Gemini 3.5 Flash.",
       "landing_intro": "Kynningarsíða:",
       "download_intro": "Þú getur sótt forritið hér:"
+    },
+    "deskew_summary": {
+      "title": "Sjálfvirk rétting",
+      "message": "{success} mynd(ir) réttar með góðum árangri.",
+      "message_errors": "{success} mynd(ir) réttar með góðum árangri.\n{failed} mistókst (enginn áreiðanlegur halli fannst) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Þessi skrá er ekki þjöppuð.\nSmelltu til að þjappa hana á sjálfgefnu stigi ({level}).\nHægrismelltu til að breyta sjálfgefnu stigi.",
     "duplicate_image": "TVÍTEKIN SÍÐA",
     "duplicate_indicator": "Tvítekin blaðsíður fundust í þessari skrá.\nSmelltu til að opna gluggann fyrir stjórnun tvítekinna blaðsíðna.",
-    "duplicate_indicator_none": "Engin tvítekning fannst"
+    "duplicate_indicator_none": "Engin tvítekning fannst",
+    "straighten_mode_0": "Handvirk stilling (teiknaðu viðmiðunarlínu)\nHægrismelltu til að skipta um stillingu",
+    "straighten_mode_1": "Sjálfvirk stilling (halli greindur)\nHægrismelltu til að skipta um stillingu"
   },
   "help": {
     "title": "MosaicView - Notkunarleiðbeiningar",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Til að geta birst í \"Opna með\" valmynd Windows Explorer skráir MosaicView nokkrar upplýsingar í Windows-skráasafnið (registry) við ræsingu. Þessi skráning takmarkast við það allra nauðsynlegasta: hún segir Windows hvar MosaicView er staðsett og hvers konar skrár það getur opnað. Hún fer eingöngu fram í þeim hluta skráasafnsins sem er frátekinn fyrir notandaaðganginn þinn, aldrei í kerfishlutanum, og breytir engum skráartengingum: að velja MosaicView sem sjálfgefið forrit fyrir tiltekna skráartegund er áfram val sem aðeins þú getur tekið, í gegnum \"Opna með\" valmynd Windows sjálfs. Ef þú fjarlægir MosaicView af disknum þínum verða þessar upplýsingar einfaldlega óvirkar og áhrifalausar.",
     "config_dir_content": "MosaicView býr til skrá sem heitir .mosaicview_config.json. Þessi skrá inniheldur stillingar forritsins (glugga, þema, tungumál, endurnúmerunarham…), lista yfir nýlega opnaða myndasögur og gagnagrunna, bókamerkin þín og ComicVine API-lykilinn þinn (dulkóðaðan). Hún er staðsett í möppunni {config_dir} og varðveitist milli lota: ólíkt bráðabirgðaskrám er henni aldrei sjálfkrafa eytt, hvorki af MosaicView né Windows.\nÞú getur eytt henni handvirkt með því að fara í möppuna {config_dir}, eða með því að smella á hnappinn hér fyrir neðan. Hún verður endurgerð með sjálfgefnum gildum næst þegar forritið er ræst.",
     "scan": "Skanna mynd",
-    "scan_content": "• Smelltu á hnappinn „Skanna“ (táknmyndadálkur, valmyndin Skrá eða hægrismelltu á mósaíkið) til að opna skönnunargluggann. MosaicView stjórnar skannanum þínum beint (í gegnum WIA, skönnunarkerfi Windows): veldu tækið, upplausnina (DPI), litastillingu (litur / gráskali / svarthvítt) og smelltu síðan á „Skanna“. Skanni verður að vera tengdur, kveikt á honum og rekillinn uppsettur í Windows til að hann birtist á listanum.\n• Aðeins er stutt við skönnun heillar síðu, þar sem forritið hefur nú þegar allt sem þarf til myndvinnslu eftir skönnun.\n• Skannaða myndin bætist sjálfkrafa við mósaíkið, á eftir þeim síðum sem þegar eru til staðar. Þú getur síðan skorið hana til, rétt hana af, stillt liti hennar o.s.frv. eins og hverja aðra síðu í mósaíkinu\n• Þessi eiginleiki stjórnar skannanum beint, án þess að fara í gegnum hugbúnað framleiðandans eða sýna hans eigin stillingaglugga.\n• Þar sem aðeins ein tenging getur stjórnað eðlislægum skanna í einu, er skönnun aðeins möguleg í einum spjaldhluta í einu: ef skönnunargluggi er opinn eða skönnun í gangi í einum spjaldhluta, helst hnappurinn „Skanna“ grár í hinum spjaldhlutanum þar til aðgerðinni er lokið."
+    "scan_content": "• Smelltu á hnappinn „Skanna“ (táknmyndadálkur, valmyndin Skrá eða hægrismelltu á mósaíkið) til að opna skönnunargluggann. MosaicView stjórnar skannanum þínum beint (í gegnum WIA, skönnunarkerfi Windows): veldu tækið, upplausnina (DPI), litastillingu (litur / gráskali / svarthvítt) og smelltu síðan á „Skanna“. Skanni verður að vera tengdur, kveikt á honum og rekillinn uppsettur í Windows til að hann birtist á listanum.\n• Síðasti skanninn sem notaður var, upplausnin og valinn litahamur eru vistuð og stungið sjálfkrafa upp á þeim aftur í næstu skönnun.\n• Aðeins heilsíðuskönnun og útflutningur sem JPG er í boði, þar sem forritið hefur nú þegar allt sem þarf til að lagfæra og umbreyta myndinni á eftir.\n• Skannaða myndin bætist sjálfkrafa við mósaíkið, á eftir þeim síðum sem þegar eru til staðar. Þú getur síðan skorið hana til, rétt hana af, stillt liti hennar o.s.frv. eins og hverja aðra síðu í mósaíkinu\n• Þessi eiginleiki stjórnar skannanum beint, án þess að fara í gegnum hugbúnað framleiðandans eða sýna hans eigin stillingaglugga.\n• Þar sem aðeins ein tenging getur stjórnað eðlislægum skanna í einu, er skönnun aðeins möguleg í einum spjaldhluta í einu: ef skönnunargluggi er opinn eða skönnun í gangi í einum spjaldhluta, helst hnappurinn „Skanna“ grár í hinum spjaldhlutanum þar til aðgerðinni er lokið.",
+    "straighten": "Rétta síðu",
+    "straighten_content": "Tvær leiðir til að leiðrétta skakka skönnun, aðgengilegar úr táknadálki (hægrismelltu á \"Rétta\" táknið til að skipta um stillingu), Myndir valmyndinni, eða með því að hægrismella á mósaíkið:\n• Handvirk rétting: opnar sérstakan skoðara þar sem þú teiknar beina línu á það sem ætti að vera lárétt eða lóðrétt í myndinni; leiðréttingarhornið er reiknað sjálfkrafa og notað á myndina, með höldum til að fínstilla línuna.\n• Sjálfvirk rétting: greinir hallann sjálf (án þess að teikna neitt) og réttar beint valdar síðu(r); tóm horn sem myndast við snúninginn eru fyllt hvítu. Virkar á margar síður í einu. Samantektargluggi sýnir hversu margar síður voru réttar með góðum árangri og telur upp þær sem enginn áreiðanlegur halli fannst fyrir."
   },
   "misc": {
     "file_word": "skrá",

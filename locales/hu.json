@@ -130,9 +130,10 @@
       "adjustments": "Fényerő, kontraszt, színek...",
       "refresh_mosaic": "Mozaik frissítése (F5)",
       "create_ico": ".ico fájl létrehozása",
-      "straighten": "Kép egyenesítése...",
       "clone_zone": "Zóna klónozása...",
-      "text": "Szöveg hozzáadása..."
+      "text": "Szöveg hozzáadása...",
+      "straighten_manual": "Kép kézi kiegyenesítése...",
+      "straighten_auto": "Kép automatikus kiegyenesítése"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF megnyitása",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Alkalmazás bezárása",
-      "reset": "Az alkalmazás visszaállítása:\n• teljes képernyő → ablakos\n• ablakméret és -pozíció\n• sötét mód → világos\n• oldalsáv → látható / alapértelmezett szélesség\n• minitérkép → rejtett\n• ikon- és bélyegképméret → normál\n• betűméret → alapértelmezett\n• nyelv → automatikus felismerés\n• ablakfelosztás → 50 / 50\n• átszámozás → automatikus\n• ZIP-tömörítés → nincs",
+      "reset": "Az alkalmazás visszaállítása:\n• teljes képernyő → ablakos\n• ablakméret és -pozíció\n• sötét mód → világos\n• oldalsáv → látható / alapértelmezett szélesség\n• minitérkép → rejtett\n• ikon- és bélyegképméret → normál\n• betűméret → alapértelmezett\n• nyelv → automatikus felismerés\n• ablakfelosztás → 50 / 50\n• átszámozás → automatikus\n• automatikus kiegyenesítés → kézi\n• ZIP-tömörítés → nincs",
       "reset_label": "Alkalmazás alaphelyzetbe állítása"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Szám: Egysz.",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Automatikus kiegyenesítés folyamatban...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Kedvenc sagájának 8. kötete most jelent meg, és alig várja, hogy elolvassa. Csakhogy a 7. kötet 4 éve jelent meg, és az emlékei kissé homályosak: kik is voltak azok a mellékszereplők? És mi történt a végén?\n\nHa ez a helyzet ismerősnek tűnik, a Distillat önnek készült. Egyszerűen húzza be az EPUB vagy PDF fájlját az erre kijelölt területre: összefoglalót, karakterlapokat és a mű elemzését kapja, megtekintésre vagy PDF-be exportálásra készen.\n\nAz alkalmazás a Gemini 3.5 Flash ingyenes szintjére támaszkodik.",
       "landing_intro": "Bemutatóoldal:",
       "download_intro": "Az alkalmazást itt töltheti le:"
+    },
+    "deskew_summary": {
+      "title": "Automatikus kiegyenesítés",
+      "message": "{success} kép sikeresen kiegyenesítve.",
+      "message_errors": "{success} kép sikeresen kiegyenesítve.\n{failed} sikertelen (nem észlelhető megbízható dőlés) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Ez a fájl nincs tömörítve.\nKattintson a tömörítéshez az alapértelmezett szinten ({level}).\nJobb kattintás az alapértelmezett szint módosításához.",
     "duplicate_image": "ISMÉTLŐDŐ OLDAL",
     "duplicate_indicator": "Duplikált oldalakat találtunk ebben a fájlban.\nKattintson a duplikátumkezelő ablak megnyitásához.",
-    "duplicate_indicator_none": "Nincs duplikátum"
+    "duplicate_indicator_none": "Nincs duplikátum",
+    "straighten_mode_0": "Kézi mód (rajzoljon egy referenciavonalat)\nJobb kattintás a mód váltásához",
+    "straighten_mode_1": "Automatikus mód (dőlésszög észlelése)\nJobb kattintás a mód váltásához"
   },
   "help": {
     "title": "MosaicView - Útmutató",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Ahhoz, hogy megjelenhessen a Windows Intéző \"Megnyitás ezzel\" menüjében, a MosaicView indításkor néhány információt ír be a Windows rendszerleíró adatbázisába. Ez a bejegyzés a szükséges minimumra korlátozódik: közli a Windows-szal, hogy hol található a MosaicView, és milyen fájltípusokat tud megnyitni. Ez kizárólag a felhasználói fiókja számára fenntartott részben történik, soha a rendszerszintű részben, és nem módosít semmilyen fájltársítást: a MosaicView alapértelmezett alkalmazásként való kiválasztása egy fájltípushoz továbbra is olyan döntés, amelyet csak Ön hozhat meg, a Windows saját \"Megnyitás ezzel\" menüjén keresztül. Ha eltávolítja a MosaicView-t a lemezéről, ez az információ egyszerűen inaktívvá válik, és nincs többé hatása.",
     "config_dir_content": "A MosaicView létrehoz egy .mosaicview_config.json nevű fájlt. Ez a fájl tartalmazza az alkalmazás beállításait (ablak, téma, nyelv, újraszámozási mód…), a nemrég megnyitott képregények és adatbázisok listáját, a könyvjelzőket és a ComicVine API-kulcsot (titkosítva). A {config_dir} mappában található, és munkamenetről munkamenetre megmarad: a ideiglenes fájlokkal ellentétben sem a MosaicView, sem a Windows nem törli automatikusan.\nManuálisan törölheti a {config_dir} mappába lépve, vagy az alábbi gombra kattintva. Az alkalmazás következő indításakor alapértelmezett értékekkel újra létrejön.",
     "scan": "Kép beolvasása",
-    "scan_content": "• Kattintson a „Beolvasás” gombra (ikonoszlop, Fájl menü, vagy jobb kattintás a mozaikon) a beolvasási ablak megnyitásához. A MosaicView közvetlenül vezérli a szkennert (a WIA-n, a Windows beolvasó rendszerén keresztül): válassza ki az eszközt, a felbontást (DPI), a színmódot (színes / szürkeárnyalatos / fekete-fehér), majd kattintson a „Beolvasás” gombra. A listában való megjelenéshez a szkennernek csatlakoztatva, bekapcsolva kell lennie, illesztőprogramjának pedig telepítve kell lennie a Windows rendszeren.\n• Csak a teljes oldal beolvasása támogatott, mivel az alkalmazás már rendelkezik mindennel, ami a kép beolvasás utáni szerkesztéséhez szükséges.\n• A beolvasott kép automatikusan hozzáadódik a mozaikhoz, a már meglévő oldalak után. Ezután körbevághatja, kiegyenesítheti, színeit módosíthatja stb., mint a mozaik bármely más oldalát\n• Ez a funkció közvetlenül vezérli a szkennert, a gyártó szoftverének használata vagy annak saját beállítási ablakának megjelenítése nélkül.\n• Mivel egy fizikai szkennert egyszerre csak egy kapcsolat vezérelhet, a szkennelés egyszerre csak az egyik panelen lehetséges: ha az egyik panelen nyitva van a szkennelési ablak vagy folyamatban van a szkennelés, a „Szkennelés” gomb a másik panelen szürkén marad a művelet befejezéséig."
+    "scan_content": "• Kattintson a „Beolvasás” gombra (ikonoszlop, Fájl menü, vagy jobb kattintás a mozaikon) a beolvasási ablak megnyitásához. A MosaicView közvetlenül vezérli a szkennert (a WIA-n, a Windows beolvasó rendszerén keresztül): válassza ki az eszközt, a felbontást (DPI), a színmódot (színes / szürkeárnyalatos / fekete-fehér), majd kattintson a „Beolvasás” gombra. A listában való megjelenéshez a szkennernek csatlakoztatva, bekapcsolva kell lennie, illesztőprogramjának pedig telepítve kell lennie a Windows rendszeren.\n• A legutóbb használt szkenner, a felbontás és a kiválasztott színmód megjegyzésre kerül, és a következő szkennelésnél automatikusan újra felajánlásra kerül.\n• Csak a teljes oldalas szkennelés és a JPG formátumú exportálás érhető el, mivel az alkalmazás már rendelkezik mindennel, ami a képek utólagos retusálásához és formátumkonvertálásához szükséges.\n• A beolvasott kép automatikusan hozzáadódik a mozaikhoz, a már meglévő oldalak után. Ezután körbevághatja, kiegyenesítheti, színeit módosíthatja stb., mint a mozaik bármely más oldalát\n• Ez a funkció közvetlenül vezérli a szkennert, a gyártó szoftverének használata vagy annak saját beállítási ablakának megjelenítése nélkül.\n• Mivel egy fizikai szkennert egyszerre csak egy kapcsolat vezérelhet, a szkennelés egyszerre csak az egyik panelen lehetséges: ha az egyik panelen nyitva van a szkennelési ablak vagy folyamatban van a szkennelés, a „Szkennelés” gomb a másik panelen szürkén marad a művelet befejezéséig.",
+    "straighten": "Oldal kiegyenesítése",
+    "straighten_content": "Két módszer egy ferde beolvasás javítására, elérhető az ikonoszlopból (jobb kattintás a „Kiegyenesítés” ikonra a mód váltásához), a Képek menüből, vagy a mozaikra jobb kattintással:\n• Kézi kiegyenesítés: megnyit egy dedikált nézegetőt, ahol egy egyenes vonalat rajzol arra, aminek vízszintesnek vagy függőlegesnek kellene lennie a képen; a korrekciós szöget automatikusan kiszámítja és alkalmazza a képre, a vonal finomhangolásához fogantyúkkal.\n• Automatikus kiegyenesítés: önmagától érzékeli a dőlést (semmit sem kell rajzolni), és közvetlenül kiegyenesíti a kijelölt oldal(aka)t; a forgatás által létrehozott üres sarkokat fehérrel tölti ki. Egyszerre több oldalon is működik. Egy összegző ablak megmutatja, hány oldal lett sikeresen kiegyenesítve, és felsorolja azokat, amelyeknél nem sikerült megbízható dőlést észlelni."
   },
   "misc": {
     "file_word": "fájl",

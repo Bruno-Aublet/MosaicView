@@ -130,9 +130,10 @@
       "adjustments": "Jas, kontrast, farby...",
       "refresh_mosaic": "Obnoviť mozaiku (F5)",
       "create_ico": "Vytvoriť súbor .ico",
-      "straighten": "Vyrovnať obrázok...",
       "clone_zone": "Klonovanie oblasti...",
-      "text": "Pridať text..."
+      "text": "Pridať text...",
+      "straighten_manual": "Vyrovnať obrázok ručne...",
+      "straighten_auto": "Vyrovnať obrázok automaticky"
     },
     "canvas_no_file": {
       "open": "Otvoriť CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Zavrieť aplikáciu",
-      "reset": "Resetovať aplikáciu:\n• celá obrazovka → okno\n• veľkosť a poloha okna\n• tmavý režim → svetlý\n• bočný panel → viditeľný / predvolená šírka\n• minimapa → skrytá\n• veľkosť ikon a miniatúr → normálna\n• veľkosť písma → predvolená\n• jazyk → automatická detekcia\n• rozdelenie okna → 50 / 50\n• prečíslovanie → automatické\n• ZIP kompresia → žiadna",
+      "reset": "Resetovať aplikáciu:\n• celá obrazovka → okno\n• veľkosť a poloha okna\n• tmavý režim → svetlý\n• bočný panel → viditeľný / predvolená šírka\n• minimapa → skrytá\n• veľkosť ikon a miniatúr → normálna\n• veľkosť písma → predvolená\n• jazyk → automatická detekcia\n• rozdelenie okna → 50 / 50\n• prečíslovanie → automatické\n• automatické vyrovnanie → ručné\n• ZIP kompresia → žiadna",
       "reset_label": "Resetovať aplikáciu"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Čís: Jedn.",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Prebieha automatické vyrovnanie...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Ôsmy diel vašej obľúbenej ságy práve vyšiel a vy sa neviete dočkať, kým si ho prečítate. Lenže siedmy diel bol pred 4 rokmi a vaše spomienky sú trochu hmlisté: kto to vlastne boli tí vedľajší postavy? A čo sa stalo na konci?\n\nAk vám táto situácia znie povedome, Distillat je tu pre vás. Stačí presunúť váš súbor EPUB alebo PDF do vyhradenej oblasti: získate zhrnutie, karty postáv a analýzu diela, pripravené na prezeranie alebo export do PDF.\n\nAplikácia využíva bezplatnú úroveň Gemini 3.5 Flash.",
       "landing_intro": "Prezentačná stránka:",
       "download_intro": "Aplikáciu si môžete stiahnuť tu:"
+    },
+    "deskew_summary": {
+      "title": "Automatické vyrovnanie",
+      "message": "{success} obrázok(ov) úspešne vyrovnaných.",
+      "message_errors": "{success} obrázok(ov) úspešne vyrovnaných.\n{failed} neúspešných (nebol zistený spoľahlivý sklon) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Tento súbor nie je komprimovaný.\nKliknutím ho komprimujete na predvolenej úrovni ({level}).\nKliknutím pravým tlačidlom zmeníte predvolenú úroveň.",
     "duplicate_image": "DUPLICITNÁ STRÁNKA",
     "duplicate_indicator": "V tomto súbore boli zistené duplicitné stránky.\nKliknutím otvorte okno na správu duplicít.",
-    "duplicate_indicator_none": "Neboli zistené žiadne duplicity"
+    "duplicate_indicator_none": "Neboli zistené žiadne duplicity",
+    "straighten_mode_0": "Ručný režim (nakreslite referenčnú čiaru)\nPravým tlačidlom zmeníte režim",
+    "straighten_mode_1": "Automatický režim (detekcia sklonu)\nPravým tlačidlom zmeníte režim"
   },
   "help": {
     "title": "MosaicView - Návod na používanie",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Aby sa MosaicView mohol zobrazovať v ponuke \"Otvoriť pomocou\" Prieskumníka Windows, zapisuje pri spustení niekoľko informácií do databázy Registry systému Windows. Tento zápis sa obmedzuje na nevyhnutné minimum: oznamuje systému Windows, kde sa MosaicView nachádza a aké typy súborov dokáže otvoriť. Vykonáva sa iba v časti databázy Registry vyhradenej pre váš používateľský účet, nikdy v systémovej časti, a nemení žiadne asociácie súborov: voľba MosaicView ako predvolenej aplikácie pre daný typ súboru zostáva rozhodnutím, ktoré môžete urobiť iba vy, prostredníctvom vlastnej ponuky \"Otvoriť pomocou\" systému Windows. Ak MosaicView odstránite z disku, tieto informácie sa jednoducho stanú neaktívnymi a bez účinku.",
     "config_dir_content": "MosaicView vytvára súbor s názvom .mosaicview_config.json. Tento súbor obsahuje nastavenia aplikácie (okno, téma, jazyk, režim prečíslovania…), zoznam nedávno otvorených komiksov a databáz, vaše záložky a váš API kľúč ComicVine (šifrovaný). Nachádza sa v priečinku {config_dir} a je zachovaný medzi jednotlivými reláciami: na rozdiel od dočasných súborov ho nikdy automaticky nevymaže ani MosaicView, ani Windows.\nMôžete ho ručne odstrániť prechodom do priečinka {config_dir}, alebo kliknutím na tlačidlo nižšie. Pri ďalšom spustení aplikácie bude znovu vytvorený s predvolenými hodnotami.",
     "scan": "Naskenovať obrázok",
-    "scan_content": "• Kliknite na tlačidlo „Skenovať“ (stĺpec ikon, ponuka Súbor alebo pravé tlačidlo myši na mozaike) a otvorte okno skenovania. MosaicView riadi váš skener priamo (cez WIA, skenovací systém Windows): vyberte zariadenie, rozlíšenie (DPI), farebný režim (farebne / odtiene sivej / čiernobielo) a potom kliknite na „Skenovať“. Aby sa skener zobrazil v zozname, musí byť pripojený, zapnutý a musí mať nainštalovaný ovládač vo Windows.\n• Podporované je iba skenovanie celej strany, keďže aplikácia už disponuje všetkým potrebným na úpravu obrázka po naskenovaní.\n• Naskenovaný obrázok sa automaticky pridá do mozaiky, za už existujúce strany. Následne ho môžete orezať, narovnať, upraviť jeho farby atď. ako ktorúkoľvek inú stranu mozaiky\n• Táto funkcia riadi skener priamo, bez použitia softvéru výrobcu a bez zobrazenia jeho vlastného konfiguračného okna.\n• Keďže fyzický skener môže byť ovládaný vždy len jedným pripojením, skenovanie je možné vždy len v jednom paneli: ak je v jednom paneli otvorené okno skenovania alebo prebieha skenovanie, tlačidlo „Skenovať“ zostáva v druhom paneli sivé až do dokončenia operácie."
+    "scan_content": "• Kliknite na tlačidlo „Skenovať“ (stĺpec ikon, ponuka Súbor alebo pravé tlačidlo myši na mozaike) a otvorte okno skenovania. MosaicView riadi váš skener priamo (cez WIA, skenovací systém Windows): vyberte zariadenie, rozlíšenie (DPI), farebný režim (farebne / odtiene sivej / čiernobielo) a potom kliknite na „Skenovať“. Aby sa skener zobrazil v zozname, musí byť pripojený, zapnutý a musí mať nainštalovaný ovládač vo Windows.\n• Naposledy použitý skener, rozlíšenie a zvolený farebný režim sa zapamätajú a pri nasledujúcom skenovaní sa automaticky znova ponúknu.\n• Ponúkané je iba skenovanie celého listu a export do JPG, keďže aplikácia už má všetko potrebné na následné retušovanie a konverziu obrázka.\n• Naskenovaný obrázok sa automaticky pridá do mozaiky, za už existujúce strany. Následne ho môžete orezať, narovnať, upraviť jeho farby atď. ako ktorúkoľvek inú stranu mozaiky\n• Táto funkcia riadi skener priamo, bez použitia softvéru výrobcu a bez zobrazenia jeho vlastného konfiguračného okna.\n• Keďže fyzický skener môže byť ovládaný vždy len jedným pripojením, skenovanie je možné vždy len v jednom paneli: ak je v jednom paneli otvorené okno skenovania alebo prebieha skenovanie, tlačidlo „Skenovať“ zostáva v druhom paneli sivé až do dokončenia operácie.",
+    "straighten": "Vyrovnať stránku",
+    "straighten_content": "Dva spôsoby opravy nakloneného skenu, dostupné zo stĺpca ikon (kliknite pravým tlačidlom myši na ikonu „Vyrovnať“ na zmenu režimu), z ponuky Obrázky alebo kliknutím pravým tlačidlom myši na mozaiku:\n• Ručné vyrovnanie: otvorí špecializovaný prehliadač, kde nakreslíte priamku na to, čo by malo byť na obrázku vodorovné alebo zvislé; uhol korekcie sa vypočíta automaticky a použije sa na obrázok, s úchytmi na jemné doladenie čiary.\n• Automatické vyrovnanie: samo zistí sklon (bez kreslenia) a priamo vyrovná vybranú stránku alebo stránky; prázdne rohy vzniknuté otočením sa vyplnia bielou. Funguje na viacerých stránkach naraz. Súhrnné okno zobrazuje počet úspešne vyrovnaných stránok a vypíše tie, pri ktorých sa nepodarilo zistiť spoľahlivý sklon."
   },
   "misc": {
     "file_word": "súbor",

@@ -130,9 +130,10 @@
       "adjustments": "Kecerahan, kontras, warna...",
       "refresh_mosaic": "Segarkan mosaik (F5)",
       "create_ico": "Buat file .ico",
-      "straighten": "Luruskan gambar...",
       "clone_zone": "Klon zona...",
-      "text": "Tambah teks..."
+      "text": "Tambah teks...",
+      "straighten_manual": "Luruskan gambar secara manual...",
+      "straighten_auto": "Luruskan gambar secara otomatis"
     },
     "canvas_no_file": {
       "open": "Buka CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Tutup aplikasi",
-      "reset": "Reset aplikasi:\n• layar penuh → jendela\n• ukuran dan posisi jendela\n• mode gelap → terang\n• bilah samping → terlihat / lebar default\n• minimap → tersembunyi\n• ukuran ikon dan thumbnail → normal\n• ukuran font → default\n• bahasa → deteksi otomatis\n• pembagian jendela → 50 / 50\n• penomoran ulang → otomatis\n• kompresi ZIP → tidak ada",
+      "reset": "Reset aplikasi:\n• layar penuh → jendela\n• ukuran dan posisi jendela\n• mode gelap → terang\n• bilah samping → terlihat / lebar default\n• minimap → tersembunyi\n• ukuran ikon dan thumbnail → normal\n• ukuran font → default\n• bahasa → deteksi otomatis\n• pembagian jendela → 50 / 50\n• penomoran ulang → otomatis\n• pelurusan otomatis → manual\n• kompresi ZIP → tidak ada",
       "reset_label": "Reset aplikasi"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Sederhana",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Pelurusan otomatis sedang berlangsung...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Jilid 8 dari saga favorit Anda baru saja terbit, dan Anda tidak sabar untuk membacanya. Hanya saja jilid 7 terbit 4 tahun lalu, dan ingatan Anda agak kabur: siapa lagi karakter-karakter pendukung itu? Dan apa yang terjadi di akhir cerita?\n\nJika situasi ini terdengar familiar, Distillat dibuat untuk Anda. Cukup jatuhkan file EPUB atau PDF Anda ke area yang disediakan: Anda mendapatkan ringkasan, kartu karakter, dan analisis karya, siap untuk dilihat atau diekspor ke PDF.\n\nAplikasi ini mengandalkan tingkat gratis Gemini 3.5 Flash.",
       "landing_intro": "Halaman presentasi:",
       "download_intro": "Anda dapat mengunduh aplikasi di sini:"
+    },
+    "deskew_summary": {
+      "title": "Pelurusan otomatis",
+      "message": "{success} gambar berhasil diluruskan.",
+      "message_errors": "{success} gambar berhasil diluruskan.\n{failed} gagal (tidak ada kemiringan yang dapat diandalkan terdeteksi) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "File ini tidak dikompresi.\nKlik untuk mengompresinya pada tingkat default ({level}).\nKlik kanan untuk mengubah tingkat default.",
     "duplicate_image": "HALAMAN DUPLIKAT",
     "duplicate_indicator": "Halaman duplikat terdeteksi dalam file ini.\nKlik untuk membuka jendela pengelolaan halaman duplikat.",
-    "duplicate_indicator_none": "Tidak ada duplikat terdeteksi"
+    "duplicate_indicator_none": "Tidak ada duplikat terdeteksi",
+    "straighten_mode_0": "Mode manual (gambar garis referensi)\nKlik kanan untuk mengganti mode",
+    "straighten_mode_1": "Mode otomatis (deteksi kemiringan)\nKlik kanan untuk mengganti mode"
   },
   "help": {
     "title": "MosaicView - Panduan Penggunaan",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Agar dapat muncul di menu \"Buka dengan\" Windows Explorer, MosaicView menuliskan sedikit informasi ke registry Windows saat dijalankan. Pencatatan ini terbatas pada hal yang benar-benar diperlukan: memberi tahu Windows di mana MosaicView berada dan jenis berkas apa saja yang dapat dibukanya. Ini hanya dilakukan pada bagian registry yang dikhususkan untuk akun pengguna Anda, tidak pernah pada bagian sistem, dan tidak mengubah asosiasi berkas apa pun: memilih MosaicView sebagai aplikasi bawaan untuk suatu jenis berkas tetap menjadi pilihan yang hanya dapat Anda buat sendiri, melalui menu \"Buka dengan\" milik Windows sendiri. Jika Anda menghapus MosaicView dari disk Anda, informasi ini akan menjadi tidak aktif dan tidak berpengaruh sama sekali.",
     "config_dir_content": "MosaicView membuat file bernama .mosaicview_config.json. File ini berisi pengaturan aplikasi (jendela, tema, bahasa, mode penomoran ulang…), daftar komik dan basis data yang baru dibuka, bookmark Anda, dan kunci API ComicVine Anda (terenkripsi). File ini terletak di folder {config_dir} dan tetap tersimpan dari satu sesi ke sesi berikutnya: tidak seperti file sementara, file ini tidak pernah dihapus secara otomatis, baik oleh MosaicView maupun Windows.\nAnda dapat menghapusnya secara manual dengan membuka folder {config_dir}, atau dengan mengklik tombol di bawah ini. File ini akan dibuat ulang dengan nilai default saat aplikasi berikutnya kali dijalankan.",
     "scan": "Pindai gambar",
-    "scan_content": "• Klik tombol \"Pindai\" (kolom ikon, menu Berkas, atau klik kanan pada mosaik) untuk membuka jendela pemindaian. MosaicView mengendalikan pemindai Anda secara langsung (melalui WIA, sistem pemindaian Windows): pilih perangkat, resolusi (DPI), mode warna (warna / skala abu-abu / hitam putih), lalu klik \"Pindai\". Pemindai harus tersambung, dinyalakan, dan drivernya terpasang di Windows agar muncul dalam daftar.\n• Hanya pemindaian satu halaman penuh yang didukung, karena aplikasi sudah memiliki semua yang diperlukan untuk mengedit gambar setelah pemindaian.\n• Gambar yang dipindai secara otomatis ditambahkan ke mosaik, setelah halaman yang sudah ada. Anda kemudian dapat memotong, meluruskan, menyesuaikan warnanya, dll. seperti halaman mosaik lainnya\n• Fitur ini mengendalikan pemindai secara langsung, tanpa melalui perangkat lunak produsen atau menampilkan jendela konfigurasinya sendiri.\n• Karena pemindai fisik hanya dapat dikendalikan oleh satu koneksi dalam satu waktu, pemindaian hanya dapat dilakukan pada satu panel dalam satu waktu: jika jendela pemindaian terbuka atau pemindaian sedang berlangsung di satu panel, tombol \"Pindai\" tetap berwarna abu-abu di panel lainnya hingga operasi selesai."
+    "scan_content": "• Klik tombol \"Pindai\" (kolom ikon, menu Berkas, atau klik kanan pada mosaik) untuk membuka jendela pemindaian. MosaicView mengendalikan pemindai Anda secara langsung (melalui WIA, sistem pemindaian Windows): pilih perangkat, resolusi (DPI), mode warna (warna / skala abu-abu / hitam putih), lalu klik \"Pindai\". Pemindai harus tersambung, dinyalakan, dan drivernya terpasang di Windows agar muncul dalam daftar.\n• Pemindai, resolusi, dan mode warna terakhir yang dipilih akan diingat dan diusulkan kembali secara otomatis pada pemindaian berikutnya.\n• Hanya pemindaian satu halaman penuh dan ekspor ke JPG yang ditawarkan, karena aplikasi sudah memiliki semua yang diperlukan untuk penyuntingan dan konversi format gambar setelahnya.\n• Gambar yang dipindai secara otomatis ditambahkan ke mosaik, setelah halaman yang sudah ada. Anda kemudian dapat memotong, meluruskan, menyesuaikan warnanya, dll. seperti halaman mosaik lainnya\n• Fitur ini mengendalikan pemindai secara langsung, tanpa melalui perangkat lunak produsen atau menampilkan jendela konfigurasinya sendiri.\n• Karena pemindai fisik hanya dapat dikendalikan oleh satu koneksi dalam satu waktu, pemindaian hanya dapat dilakukan pada satu panel dalam satu waktu: jika jendela pemindaian terbuka atau pemindaian sedang berlangsung di satu panel, tombol \"Pindai\" tetap berwarna abu-abu di panel lainnya hingga operasi selesai.",
+    "straighten": "Luruskan halaman",
+    "straighten_content": "Dua cara untuk memperbaiki pemindaian yang miring, tersedia dari kolom ikon (klik kanan ikon \"Luruskan\" untuk mengganti mode), menu Gambar, atau klik kanan pada mosaik:\n• Pelurusan manual: membuka penampil khusus tempat Anda menggambar garis lurus pada bagian yang seharusnya horizontal atau vertikal pada gambar; sudut koreksi dihitung secara otomatis dan diterapkan pada gambar, dengan gagang untuk menyempurnakan garis.\n• Pelurusan otomatis: mendeteksi kemiringan secara mandiri (tanpa perlu menggambar apa pun) dan meluruskan langsung halaman yang dipilih; sudut kosong yang tercipta akibat rotasi diisi dengan warna putih. Bekerja pada beberapa halaman sekaligus. Jendela ringkasan menunjukkan berapa banyak halaman yang berhasil diluruskan dan mencantumkan yang tidak dapat dideteksi kemiringannya secara andal."
   },
   "misc": {
     "file_word": "file",

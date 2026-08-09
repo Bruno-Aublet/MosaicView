@@ -118,7 +118,7 @@ hiddenimports = [
     'rarfile',
     'win32clipboard', 'win32print', 'win32ui', 'win32con', 'win32crypt',
     'win32com', 'win32com.client', 'win32com.client.dynamic', 'pythoncom',
-    'numpy', 'tifffile', 'olefile', 'defusedxml',
+    'numpy', 'tifffile', 'olefile', 'defusedxml', 'cv2',
 ]
 
 tmp_ret = collect_all('numpy')
@@ -128,6 +128,11 @@ datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 import glob as _glob
 _numpy_libs = _glob.glob('.venv/Lib/site-packages/numpy.libs/*.dll')
 binaries += [(_dll, 'numpy.libs') for _dll in _numpy_libs]
+
+# opencv-python (module cv2) — deskew automatique (modules/qt/deskew.py) ;
+# comme numpy/PIL, collect_all récupère ses binaires natifs (.pyd/.dll)
+tmp_ret = collect_all('cv2')
+datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
 
 tmp_ret = collect_all('PIL')

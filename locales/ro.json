@@ -130,9 +130,10 @@
       "adjustments": "Luminozitate, contrast, culori...",
       "refresh_mosaic": "Reîmprospătează mozaicul (F5)",
       "create_ico": "Creează fișier .ico",
-      "straighten": "Îndreptați imaginea...",
       "clone_zone": "Clonare zonă...",
-      "text": "Adaugă text..."
+      "text": "Adaugă text...",
+      "straighten_manual": "Îndreaptă imaginea manual...",
+      "straighten_auto": "Îndreaptă imaginea automat"
     },
     "canvas_no_file": {
       "open": "Deschide CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Închide aplicația",
-      "reset": "Resetați aplicația:\n• ecran complet → fereastră\n• dimensiunea și poziția ferestrei\n• mod întunecat → luminos\n• bara laterală → vizibilă / lățime implicită\n• minimapă → ascunsă\n• dimensiunea pictogramelor și miniaturilor → normală\n• dimensiunea fontului → implicită\n• limbă → detectare automată\n• împărțirea ferestrei → 50 / 50\n• renumerotare → automată\n• compresie ZIP → niciuna",
+      "reset": "Resetați aplicația:\n• ecran complet → fereastră\n• dimensiunea și poziția ferestrei\n• mod întunecat → luminos\n• bara laterală → vizibilă / lățime implicită\n• minimapă → ascunsă\n• dimensiunea pictogramelor și miniaturilor → normală\n• dimensiunea fontului → implicită\n• limbă → detectare automată\n• împărțirea ferestrei → 50 / 50\n• renumerotare → automată\n• îndreptare automată → manual\n• compresie ZIP → niciuna",
       "reset_label": "Resetează aplicația"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Simplu",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Îndreptare automată în curs...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Volumul 8 din saga voastră preferată tocmai a apărut, și abia așteptați să-l citiți. Doar că volumul 7 a fost acum 4 ani, iar amintirile voastre sunt cam neclare: cine erau acele personaje secundare? Și ce se întâmpla la final?\n\nDacă această situație vă sună cunoscut, Distillat este făcut pentru voi. Pur și simplu plasați fișierul EPUB sau PDF în zona prevăzută pentru asta: obțineți un rezumat, fișe de personaje și o analiză a operei, gata de consultat sau exportat în PDF.\n\nAplicația se bazează pe nivelul gratuit al Gemini 3.5 Flash.",
       "landing_intro": "Pagina de prezentare:",
       "download_intro": "Puteți descărca aplicația aici:"
+    },
+    "deskew_summary": {
+      "title": "Îndreptare automată",
+      "message": "{success} imagine(i) îndreptată(e) cu succes.",
+      "message_errors": "{success} imagine(i) îndreptată(e) cu succes.\n{failed} eșuată(e) (nu s-a detectat o înclinare fiabilă) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Acest fișier nu este comprimat.\nFaceți clic pentru a-l comprima la nivelul implicit ({level}).\nClic dreapta pentru a schimba nivelul implicit.",
     "duplicate_image": "PAGINĂ DUPLICAT",
     "duplicate_indicator": "Au fost detectate pagini duplicate în acest fișier.\nFaceți clic pentru a deschide fereastra de gestionare a duplicatelor.",
-    "duplicate_indicator_none": "Niciun duplicat detectat"
+    "duplicate_indicator_none": "Niciun duplicat detectat",
+    "straighten_mode_0": "Mod manual (trasați o linie de referință)\nClic dreapta pentru a schimba modul",
+    "straighten_mode_1": "Mod automat (detectare înclinare)\nClic dreapta pentru a schimba modul"
   },
   "help": {
     "title": "MosaicView - Manual utilizator",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Pentru a putea apărea în meniul \"Deschidere cu\" al Explorer-ului Windows, MosaicView înscrie câteva informații în registrul Windows la pornire. Această înscriere se limitează la strictul necesar: îi indică lui Windows unde se află MosaicView și ce tipuri de fișiere poate deschide. Este realizată exclusiv în partea registrului rezervată contului dumneavoastră de utilizator, niciodată în partea de sistem, și nu modifică nicio asociere de fișiere: alegerea MosaicView ca aplicație implicită pentru un tip de fișier rămâne o decizie pe care numai dumneavoastră o puteți lua, prin propriul meniu \"Deschidere cu\" al Windows. Dacă eliminați MosaicView de pe disc, aceste informații devin pur și simplu inactive și fără efect.",
     "config_dir_content": "MosaicView creează un fișier numit .mosaicview_config.json. Acest fișier conține setările aplicației (fereastră, temă, limbă, mod de renumerotare…), lista benzilor desenate și a bazelor de date deschise recent, marcajele dvs. și cheia API ComicVine (criptată). Se află în folderul {config_dir} și este păstrat de la o sesiune la alta: spre deosebire de fișierele temporare, nu este niciodată șters automat, nici de MosaicView, nici de Windows.\nÎl puteți șterge manual accesând folderul {config_dir}, sau făcând clic pe butonul de mai jos. Va fi recreat cu valorile implicite la următoarea pornire a aplicației.",
     "scan": "Scanați o imagine",
-    "scan_content": "• Faceți clic pe butonul „Scanare” (coloana de pictograme, meniul Fișier sau clic dreapta pe mozaic) pentru a deschide fereastra de scanare. MosaicView controlează direct scanerul dvs. (prin WIA, sistemul de scanare Windows): selectați dispozitivul, rezoluția (DPI), modul de culoare (culoare / tonuri de gri / alb-negru), apoi faceți clic pe „Scanare”. Un scaner trebuie să fie conectat, pornit și driverul său instalat pe Windows pentru a apărea în listă.\n• Este acceptată doar scanarea paginii întregi, aplicația dispunând deja de tot ce este necesar pentru retușarea imaginii după scanare.\n• Imaginea scanată este adăugată automat la mozaic, după paginile deja existente. O puteți apoi decupa, îndrepta, ajusta culorile etc., ca orice altă pagină a mozaicului\n• Această funcție controlează scanerul direct, fără a trece prin software-ul producătorului și fără a afișa propria fereastră de configurare a acestuia.\n• Deoarece un scaner fizic poate fi controlat doar de o singură conexiune la un moment dat, scanarea este posibilă doar într-un singur panou la un moment dat: dacă o fereastră de scanare este deschisă sau o scanare este în curs într-un panou, butonul „Scanează” rămâne dezactivat în celălalt panou până la finalizarea operațiunii."
+    "scan_content": "• Faceți clic pe butonul „Scanare” (coloana de pictograme, meniul Fișier sau clic dreapta pe mozaic) pentru a deschide fereastra de scanare. MosaicView controlează direct scanerul dvs. (prin WIA, sistemul de scanare Windows): selectați dispozitivul, rezoluția (DPI), modul de culoare (culoare / tonuri de gri / alb-negru), apoi faceți clic pe „Scanare”. Un scaner trebuie să fie conectat, pornit și driverul său instalat pe Windows pentru a apărea în listă.\n• Ultimul scaner utilizat, rezoluția și modul de culoare alese sunt memorate și propuse automat din nou la următoarea scanare.\n• Sunt oferite doar scanarea paginii complete și exportul în JPG, întrucât aplicația are deja tot ce este necesar pentru retușarea și conversia imaginii ulterior.\n• Imaginea scanată este adăugată automat la mozaic, după paginile deja existente. O puteți apoi decupa, îndrepta, ajusta culorile etc., ca orice altă pagină a mozaicului\n• Această funcție controlează scanerul direct, fără a trece prin software-ul producătorului și fără a afișa propria fereastră de configurare a acestuia.\n• Deoarece un scaner fizic poate fi controlat doar de o singură conexiune la un moment dat, scanarea este posibilă doar într-un singur panou la un moment dat: dacă o fereastră de scanare este deschisă sau o scanare este în curs într-un panou, butonul „Scanează” rămâne dezactivat în celălalt panou până la finalizarea operațiunii.",
+    "straighten": "Îndreptați o pagină",
+    "straighten_content": "Două metode pentru a corecta o scanare înclinată, accesibile din coloana de pictograme (clic dreapta pe pictograma „Îndreptare” pentru a schimba modul), meniul Imagini sau clic dreapta pe mozaic:\n• Îndreptare manuală: deschide un vizualizator dedicat în care trasați o linie dreaptă pe ceea ce ar trebui să fie orizontal sau vertical în imagine; unghiul de corecție este calculat automat și aplicat imaginii, cu mânere pentru a regla fin linia.\n• Îndreptare automată: detectează înclinarea singură (fără a trasa nimic) și îndreaptă direct pagina sau paginile selectate; colțurile goale create de rotație sunt umplute cu alb. Funcționează pe mai multe pagini simultan. O fereastră de rezumat arată câte pagini au fost îndreptate cu succes și le enumeră pe cele pentru care nu s-a putut detecta o înclinare fiabilă."
   },
   "misc": {
     "file_word": "fișier",

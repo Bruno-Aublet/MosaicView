@@ -130,9 +130,10 @@
       "adjustments": "wov'a', mI', nguv...",
       "refresh_mosaic": "chu'Ha' mosaic (F5)",
       "create_ico": "chenmoH .ico nav",
-      "straighten": "nIt chenmoH mIllogh...",
       "clone_zone": "Daq tIng...",
-      "text": "mu' yIchel..."
+      "text": "mu' yIchel...",
+      "straighten_manual": "nIt chenmoH mIllogh SIbI'be'...",
+      "straighten_auto": "nIt chenmoH mIllogh chu'moH"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF poSmoH",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "qawHaq mevmoH",
-      "reset": "chu' qa' paq:\n• Hoch wovbe' → SIrgh\n• wanlIj HoS je 'otlh\n• Hurgh mIw → wov\n• DoQ tIq → leghlaH / motlh chuq\n• mach De' chart → So'lu'pu'\n• boQwI' pIq mach mIl'oD HoS → motlh\n• HoS mu' → motlh\n• Hol → chu'moH SeH\n• SIrgh peD → 50 / 50\n• chu' mI' → chu'moH\n• ZIP nIch → pagh",
+      "reset": "chu' qa' paq:\n• Hoch wovbe' → SIrgh\n• wanlIj HoS je 'otlh\n• Hurgh mIw → wov\n• DoQ tIq → leghlaH / motlh chuq\n• mach De' chart → So'lu'pu'\n• boQwI' pIq mach mIl'oD HoS → motlh\n• HoS mu' → motlh\n• Hol → chu'moH SeH\n• SIrgh peD → 50 / 50\n• chu' mI' → chu'moH\n• nIt chenmoH chu'moH → SIbI'be'\n• ZIP nIch → pagh",
       "reset_label": "chu' qawHaq"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "vIq: porgh",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "nIt chenmoH chu'moH...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "tetlh parmaqqay lIj chorghDIch DIchmoHlu'pu' 'ej DaSaHchu'meH DalaDbe'law'. 'ach parmaqqay lIj SochDIch loS DIS ret DIchmoHlu'pu', 'ej qawHaqlIj tlhoy pIm: nuvpu' Do' 'Iv nuchugh? pa' Qav vaS nuq qaSpu'?\n\nDaSov 'e' DaSovchugh, Distillat qaboghmoH. EPUB pagh PDF De'wI'lIj yIchagh tIH'eghmoHtaHbogh; ja'ghach mach, nuvpu' De' je vum lup, laDlu'meH pagh PDF Do' HeSlu'meH.\n\nGemini 3.5 Flash lo'be'bogh nap lo'lu'.",
       "landing_intro": "naDev De'wI'vam Dalegh:",
       "download_intro": "naDev vum lo'lu'meH chellu'lu'laH:"
+    },
+    "deskew_summary": {
+      "title": "nIt chenmoH chu'moH",
+      "message": "mIllogh {success} nIt chenmoHlu' Qapla'.",
+      "message_errors": "mIllogh {success} nIt chenmoHlu' Qapla'.\n{failed} luj (pagh 'IH lo' Qu' tu'lu') :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "De'wI' rarbe'.\nnIH jIH rar mIw rar ({level}) lo'.\nnIH jIH mIw rar chu' DaH.",
     "duplicate_image": "chov cha'logh",
     "duplicate_indicator": "De'vam Daq chovmey cha'logh tu'lu'.\nnIH jIH ra' chovmey cha'logh yIper.",
-    "duplicate_indicator_none": "chov cha'logh tu'lu'be'"
+    "duplicate_indicator_none": "chov cha'logh tu'lu'be'",
+    "straighten_mode_0": "mIw SIbI'be' (van De' cha' 'ej ngo')\nnIH Qap mIw choHmeH",
+    "straighten_mode_1": "mIw chu'moH ('IH lo' Qu' chenmoH)\nnIH Qap mIw choHmeH"
   },
   "help": {
     "title": "MosaicView - lo'laHghach QIjmeH",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Windows Explorer QaghmeH \"lo' Daq X\" tetlh Daq legh 'e' chavmeH, MosaicView-vaD De' puS Windows ngo'Daq lanlu' poS DaHjaj. De' lanlu'bogh vaj mach law' poQlu'bogh mach puS: MosaicView nuq Daq 'oH je nuq De'wI' Segh poSlaH 'e' Windows-vaD ja'. lo'wI' po' rurbogh ngo'Daq neH lanlu', pa'be' rurbogh ngo'Daq, 'ej lo'wI' De'wI' bIng lanlaHbe' vay': De'wI' Segh nIvbogh vaj MosaicView pIH'eghmeH ratlhtaH lo'wI' neH ghaj wIvghach, Windows \"lo' Daq X\" tetlh lo'meH neH. yav ngo' Daq MosaicView teqDI', De' vam pIH'eghbe' 'ej pagh chaw' ngeH.",
     "config_dir_content": "MosaicView De'wI' pong .mosaicview_config.json chenmoH. De'wI' vam MosaicView-vaD choH tetlh (val Sor, Segh, Hol, De'wI' chu' mIw), 'ej ngo'Daq poSmoHlu'pu'bogh cha'nob tetlh je De'wI' Segh tetlh, ghItlh lughomHa'lIj, 'ej ComicVine API buqlIj (buq'eghmoHta') ghaj. {config_dir} chabal tetlh Daq tu'lu', 'ej poH nap Hoch rar: De'mey qawHaq rurbe', pagh MosaicView pagh Windows De'wI' vam teqbe' rurbogh.\n{config_dir} chabal tetlh Daq DaghoSDI', pagh bIng tab yIchu'DI', De'wI' vam SIbI' teqlaH SoH. MosaicView chotlh DaHjaj De'wI' vam chu' choHmey ghajbogh chenmoHta'lu'.",
     "scan": "nab leghwI'vam",
-    "scan_content": "• leghwI' nab yIghoS 'e' yImuv (yer nagh, Qab qet, pagh nIH mosaic Daq) 'ej leghwI'vam yIlo'. MosaicView leghwI'lIj yIghoStaH (Windows leghwI' De'wI' chenmoHwI', WIA po'wI'): leghwI' yIwIv, chenmoHghach (DPI) yIwIv, rItlh Segh (rItlh / Hurgh chIS / qIj chIS) yIwIv, 'ej \"legh\" yIchu'. leghwI' tetlhDaq chaw'meH, lan'a', HIvje'lu''a', De'wI' chenmoHwI' pol'a'.\n• nab HoS neH leghlu'. lo'laHghach Hoch cha'nob choHmeH leghlu'pu'DIchvo' MosaicView-Daq tu'lu'.\n• leghlu'pu'bogh cha'nob mosaic Daq lanlu' rar, ghItlhmey tu'lu'bogh mevDaq. chaq DaneHchugh, cha'nob yIchIl, yIto', rItlh yIchoH latlh ghItlh rur.\n• lo'laHghachvam leghwI' yIghoStaH, De'wI' chenmoHwI' latlh Segh lo'be' 'ej lan'a' Sovbe' chaw' pol'wI'.\n• wa' ghom neH leghwI' yIghoStaH laH, vaj wa' ghom neH leghlu'. ghom wa'DIch leghwI' nab poSchugh pagh leghlu'chugh, ghom cha'DIch \"legh\" chu' Qatlho'be' nab mevpu'DIchvo'."
+    "scan_content": "• leghwI' nab yIghoS 'e' yImuv (yer nagh, Qab qet, pagh nIH mosaic Daq) 'ej leghwI'vam yIlo'. MosaicView leghwI'lIj yIghoStaH (Windows leghwI' De'wI' chenmoHwI', WIA po'wI'): leghwI' yIwIv, chenmoHghach (DPI) yIwIv, rItlh Segh (rItlh / Hurgh chIS / qIj chIS) yIwIv, 'ej \"legh\" yIchu'. leghwI' tetlhDaq chaw'meH, lan'a', HIvje'lu''a', De'wI' chenmoHwI' pol'a'.\n• leghwI' 'ampu'bogh, chenmoHghach, rItlh Segh je pol; nab cha'DIch qaSDI', chaH nobtaHqu' 'e' pol.\n• nab HoS neH je JPG ghurmoHlu' neH leghlu'. lo'laHghach Hoch cha'nob choHmeH je Segh choHmeH leghlu'pu'DIchvo' MosaicView-Daq tu'lu'.\n• leghlu'pu'bogh cha'nob mosaic Daq lanlu' rar, ghItlhmey tu'lu'bogh mevDaq. chaq DaneHchugh, cha'nob yIchIl, yIto', rItlh yIchoH latlh ghItlh rur.\n• lo'laHghachvam leghwI' yIghoStaH, De'wI' chenmoHwI' latlh Segh lo'be' 'ej lan'a' Sovbe' chaw' pol'wI'.\n• wa' ghom neH leghwI' yIghoStaH laH, vaj wa' ghom neH leghlu'. ghom wa'DIch leghwI' nab poSchugh pagh leghlu'chugh, ghom cha'DIch \"legh\" chu' Qatlho'be' nab mevpu'DIchvo'.",
+    "straighten": "nIt chenmoH mIllogh",
+    "straighten_content": "cha' mIw nIt chenmoH mIllogh SaHmeH, chart nav cha'nob (nIH Qap 'nIt chenmoH' chart moHmeH mIw choH), mIllogh chart, pagh cha'nob nIH Qap:\n• SIbI'be' mIw: chu'wI' choHlu' Daq van De' cha' 'ej ngo' Sam DichHa' ghap mIllogh; choHmeH ben Do'Ha' chenmoH 'ej mIllogh chenmoH, 'ej De' cha' pab yIchoH.\n• chu'moH mIw: DichHa' Sam 'e' chIch (pagh van) 'ej mIllogh wIv chenmoH mIw; chuv ghom vIH lo' chIS. law' mIllogh nIH Qap. wa' pIvghor Sor tu'lu' mIllogh Qapla' 'ej pagh 'IH lo' Qu' luj."
   },
   "misc": {
     "file_word": "De'",

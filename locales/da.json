@@ -130,9 +130,10 @@
       "adjustments": "Lysstyrke, kontrast, farver...",
       "refresh_mosaic": "Opdater mosaikken (F5)",
       "create_ico": "Opret .ico-fil",
-      "straighten": "Ret billede op...",
       "clone_zone": "Kloning af zone...",
-      "text": "Tilføj tekst..."
+      "text": "Tilføj tekst...",
+      "straighten_manual": "Ret billedet manuelt...",
+      "straighten_auto": "Ret billedet automatisk"
     },
     "canvas_no_file": {
       "open": "Åbn CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Luk applikationen",
-      "reset": "Nulstil applikationen:\n• fuld skærm → vindue\n• vinduesstørrelse og -position\n• mørk tilstand → lys\n• sidebjælke → synlig / standardbredde\n• minikort → skjult\n• ikon- og miniaturestørrelse → normal\n• skriftstørrelse → standard\n• sprog → automatisk registrering\n• opdeling af vinduet → 50 / 50\n• omnummerering → automatisk\n• ZIP-komprimering → ingen",
+      "reset": "Nulstil applikationen:\n• fuld skærm → vindue\n• vinduesstørrelse og -position\n• mørk tilstand → lys\n• sidebjælke → synlig / standardbredde\n• minikort → skjult\n• ikon- og miniaturestørrelse → normal\n• skriftstørrelse → standard\n• sprog → automatisk registrering\n• opdeling af vinduet → 50 / 50\n• omnummerering → automatisk\n• automatisk retning → manuel\n• ZIP-komprimering → ingen",
       "reset_label": "Nulstil programmet"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Simpel",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Automatisk retning i gang...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Bind 8 af din yndlingssaga er lige udkommet, og du brænder efter at læse den. Men bind 7 var for 4 år siden, og dine minder er lidt tågede: hvem var egentlig disse bipersoner? Og hvad skete der til sidst?\n\nHvis denne situation lyder bekendt, er Distillat lavet til dig. Du skal blot lægge din EPUB- eller PDF-fil i det dertil beregnede område: du får et resumé, karakterark og en analyse af værket, klar til at læse eller eksportere til PDF.\n\nApplikationen bygger på den gratis version af Gemini 3.5 Flash.",
       "landing_intro": "Præsentationsside:",
       "download_intro": "Du kan downloade applikationen her:"
+    },
+    "deskew_summary": {
+      "title": "Automatisk retning",
+      "message": "{success} billede(r) rettet med succes.",
+      "message_errors": "{success} billede(r) rettet med succes.\n{failed} fejlet (ingen pålidelig hældning fundet) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Denne fil er ikke komprimeret.\nKlik for at komprimere den med standardniveauet ({level}).\nHøjreklik for at ændre standardniveauet.",
     "duplicate_image": "DUPLIKERET SIDE",
     "duplicate_indicator": "Der er fundet duplikerede sider i denne fil.\nKlik for at åbne vinduet til håndtering af duplikater.",
-    "duplicate_indicator_none": "Ingen duplikater fundet"
+    "duplicate_indicator_none": "Ingen duplikater fundet",
+    "straighten_mode_0": "Manuel tilstand (tegn en referencelinje)\nHøjreklik for at skifte tilstand",
+    "straighten_mode_1": "Automatisk tilstand (registrering af hældning)\nHøjreklik for at skifte tilstand"
   },
   "help": {
     "title": "MosaicView - Brugervejledning",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "For at kunne fremstå i Stifinders menu \"Åbn med\" skriver MosaicView ved opstart nogle få oplysninger til Windows-registreringsdatabasen. Denne registrering begrænser sig til det strengt nødvendige: den fortæller Windows, hvor MosaicView befinder sig, og hvilke filtyper det kan åbne. Den foretages udelukkende i den del af registreringsdatabasen, der er reserveret til din brugerkonto, aldrig i systemdelen, og ændrer ingen filtilknytninger: at vælge MosaicView som standardprogram for en filtype er fortsat et valg, du alene kan træffe, via Windows' egen \"Åbn med\"-menu. Hvis du fjerner MosaicView fra din disk, bliver disse oplysninger blot inaktive og uden virkning.",
     "config_dir_content": "MosaicView opretter en fil med navnet .mosaicview_config.json. Denne fil indeholder programmets indstillinger (vindue, tema, sprog, omnummereringstilstand…), listen over nyligt åbnede tegneserier og databaser, dine bogmærker og din ComicVine API-nøgle (krypteret). Den findes i mappen {config_dir} og bevares fra session til session: i modsætning til de midlertidige filer bliver den aldrig slettet automatisk, hverken af MosaicView eller Windows.\nDu kan slette den manuelt ved at gå til mappen {config_dir}, eller ved at klikke på knappen nedenfor. Den genskabes med standardværdierne, næste gang programmet startes.",
     "scan": "Scan et billede",
-    "scan_content": "• Klik på knappen \"Scan\" (ikonkolonnen, menuen Filer eller højreklik på mosaikken) for at åbne scanningsvinduet. MosaicView styrer din scanner direkte (via WIA, Windows' scanningssystem): vælg enheden, opløsningen (DPI), farvetilstanden (farve / gråtoner / sort-hvid), og klik derefter på \"Scan\". En scanner skal være tilsluttet, tændt, og dens driver skal være installeret i Windows for at blive vist på listen.\n• Kun scanning af hele siden understøttes, da programmet allerede har alt, hvad der er nødvendigt til billedredigering efter scanningen.\n• Det scannede billede tilføjes automatisk til mosaikken, efter de allerede eksisterende sider. Du kan derefter beskære det, rette det ud, justere farverne osv., ligesom enhver anden side i mosaikken\n• Denne funktion styrer scanneren direkte, uden at gå via producentens software eller vise dens eget konfigurationsvindue.\n• Da en fysisk scanner kun kan styres af én forbindelse ad gangen, er scanning kun mulig i ét panel ad gangen: hvis et scanningsvindue er åbent, eller en scanning er i gang i det ene panel, forbliver knappen \"Scan\" grået ud i det andet panel, indtil handlingen er afsluttet."
+    "scan_content": "• Klik på knappen \"Scan\" (ikonkolonnen, menuen Filer eller højreklik på mosaikken) for at åbne scanningsvinduet. MosaicView styrer din scanner direkte (via WIA, Windows' scanningssystem): vælg enheden, opløsningen (DPI), farvetilstanden (farve / gråtoner / sort-hvid), og klik derefter på \"Scan\". En scanner skal være tilsluttet, tændt, og dens driver skal være installeret i Windows for at blive vist på listen.\n• Den senest anvendte scanner, opløsning og valgte farvetilstand huskes og foreslås automatisk igen ved næste scanning.\n• Kun fuldsidesscanning og eksport som JPG tilbydes, da applikationen allerede har alt hvad der skal bruges til billedretouchering og formatkonvertering bagefter.\n• Det scannede billede tilføjes automatisk til mosaikken, efter de allerede eksisterende sider. Du kan derefter beskære det, rette det ud, justere farverne osv., ligesom enhver anden side i mosaikken\n• Denne funktion styrer scanneren direkte, uden at gå via producentens software eller vise dens eget konfigurationsvindue.\n• Da en fysisk scanner kun kan styres af én forbindelse ad gangen, er scanning kun mulig i ét panel ad gangen: hvis et scanningsvindue er åbent, eller en scanning er i gang i det ene panel, forbliver knappen \"Scan\" grået ud i det andet panel, indtil handlingen er afsluttet.",
+    "straighten": "Ret en side",
+    "straighten_content": "To metoder til at rette en skæv scanning, tilgængelige fra ikonkolonnen (højreklik på ikonet \"Ret\" for at skifte tilstand), menuen Billeder eller ved højreklik på mosaikken:\n• Manuel retning: åbner en dedikeret visning, hvor du tegner en lige linje på det, der skal være vandret eller lodret på billedet; korrektionsvinklen beregnes automatisk og anvendes på billedet, med håndtag til finjustering af linjen.\n• Automatisk retning: registrerer hældningen af sig selv (uden at tegne noget) og retter direkte den eller de valgte sider; tomme hjørner skabt af rotationen udfyldes med hvidt. Virker på flere sider ad gangen. Et opsummeringsvindue viser antallet af sider, der er rettet med succes, og lister dem, hvor ingen pålidelig hældning kunne registreres."
   },
   "misc": {
     "file_word": "fil",

@@ -130,9 +130,10 @@
       "adjustments": "Luminosità, contrasto, colori...",
       "refresh_mosaic": "Aggiorna il mosaico (F5)",
       "create_ico": "Crea file .ico",
-      "straighten": "Raddrizza immagine...",
       "clone_zone": "Clona zona...",
-      "text": "Aggiungi testo..."
+      "text": "Aggiungi testo...",
+      "straighten_manual": "Raddrizza l'immagine manualmente...",
+      "straighten_auto": "Raddrizza l'immagine automaticamente"
     },
     "canvas_no_file": {
       "open": "Apri CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Chiudi applicazione",
-      "reset": "Reimposta l'applicazione:\n• schermo intero → finestra\n• dimensione e posizione della finestra\n• modalità scura → chiara\n• barra laterale → visibile / larghezza predefinita\n• minimappa → nascosta\n• dimensione icone e miniature → normale\n• dimensione carattere → predefinita\n• lingua → rilevamento automatico\n• divisione della finestra → 50 / 50\n• rinumerazione → automatica\n• compressione ZIP → nessuna",
+      "reset": "Reimposta l'applicazione:\n• schermo intero → finestra\n• dimensione e posizione della finestra\n• modalità scura → chiara\n• barra laterale → visibile / larghezza predefinita\n• minimappa → nascosta\n• dimensione icone e miniature → normale\n• dimensione carattere → predefinita\n• lingua → rilevamento automatico\n• divisione della finestra → 50 / 50\n• rinumerazione → automatica\n• raddrizzamento automatico → manuale\n• compressione ZIP → nessuna",
       "reset_label": "Ripristina l'applicazione"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Num: Semplice",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Raddrizzamento automatico in corso...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Il tomo 8 della tua saga preferita è appena uscito, e non vedi l'ora di leggerlo. Peccato che il tomo 7 risalga a 4 anni fa, e i tuoi ricordi siano un po' confusi: chi erano già quei personaggi secondari? E cosa succedeva alla fine?\n\nSe questa situazione ti suona familiare, Distillat è fatto per te. Basta trascinare il tuo file EPUB o PDF nell'area prevista: ottieni un riassunto, schede dei personaggi e un'analisi dell'opera, pronti da consultare o esportare in PDF.\n\nL'applicazione si basa sul livello gratuito di Gemini 3.5 Flash.",
       "landing_intro": "Pagina di presentazione:",
       "download_intro": "Puoi scaricare l'applicazione qui:"
+    },
+    "deskew_summary": {
+      "title": "Raddrizzamento automatico",
+      "message": "{success} immagine/i raddrizzata/e con successo.",
+      "message_errors": "{success} immagine/i raddrizzata/e con successo.\n{failed} fallita/e (nessuna inclinazione affidabile rilevata) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Questo file non è compresso.\nClic per comprimerlo al livello predefinito ({level}).\nClic destro per modificare il livello predefinito.",
     "duplicate_image": "PAGINA DUPLICATA",
     "duplicate_indicator": "Sono state rilevate pagine duplicate in questo file.\nFai clic per aprire la finestra di gestione dei duplicati.",
-    "duplicate_indicator_none": "Nessun duplicato rilevato"
+    "duplicate_indicator_none": "Nessun duplicato rilevato",
+    "straighten_mode_0": "Modalità manuale (traccia una linea di riferimento)\nClic destro per cambiare modalità",
+    "straighten_mode_1": "Modalità automatica (rilevamento inclinazione)\nClic destro per cambiare modalità"
   },
   "help": {
     "title": "MosaicView - Manuale utente",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Per poter comparire nel menu \"Apri con\" di Esplora risorse di Windows, all'avvio MosaicView scrive alcune informazioni nel registro di Windows. Questa registrazione si limita allo stretto necessario: indica a Windows dove si trova MosaicView e quali tipi di file è in grado di aprire. Viene effettuata esclusivamente nella parte del registro riservata al vostro account utente, mai in quella di sistema, e non modifica alcuna associazione di file: scegliere MosaicView come applicazione predefinita per un tipo di file resta una decisione che solo voi potete prendere, tramite il menu \"Apri con\" di Windows. Se rimuovete MosaicView dal disco, queste informazioni diventano semplicemente inattive e senza effetto.",
     "config_dir_content": "MosaicView crea un file denominato .mosaicview_config.json. Questo file contiene le impostazioni dell'applicazione (finestra, tema, lingua, modalità di rinumerazione…), l'elenco dei fumetti e dei database aperti di recente, i tuoi segnalibri e la tua chiave API di ComicVine (crittografata). Si trova nella cartella {config_dir} ed è conservato da una sessione all'altra: a differenza dei file temporanei, non viene mai eliminato automaticamente, né da MosaicView né da Windows.\nPuoi eliminarlo manualmente accedendo alla cartella {config_dir}, oppure facendo clic sul pulsante qui sotto. Verrà ricreato con i valori predefiniti al successivo avvio dell'applicazione.",
     "scan": "Scansionare un'immagine",
-    "scan_content": "• Fai clic sul pulsante «Scansiona» (colonna delle icone, menu File, o clic destro sul mosaico) per aprire la finestra di scansione. MosaicView pilota direttamente lo scanner (tramite WIA, il sistema di scansione di Windows): seleziona il dispositivo, la risoluzione (DPI), la modalità colore (colore / scala di grigi / bianco e nero), quindi fai clic su «Scansiona». Uno scanner deve essere collegato, acceso e con il driver installato su Windows per comparire nell'elenco.\n• È supportata solo la scansione a pagina intera, poiché l'applicazione dispone già di tutto il necessario per ritoccare l'immagine dopo la scansione.\n• L'immagine scansionata viene aggiunta automaticamente al mosaico, dopo le pagine già presenti. Puoi quindi ritagliarla, raddrizzarla, regolarne i colori, ecc. come qualsiasi altra pagina del mosaico\n• Questa funzione pilota lo scanner direttamente, senza passare dal software del produttore né mostrare la sua finestra di configurazione.\n• Poiché uno scanner fisico può essere controllato da una sola connessione alla volta, la scansione è possibile in un solo pannello per volta: se in un pannello è aperta una finestra di scansione o è in corso una scansione, il pulsante «Scansiona» rimane disattivato nell'altro pannello fino al termine dell'operazione."
+    "scan_content": "• Fai clic sul pulsante «Scansiona» (colonna delle icone, menu File, o clic destro sul mosaico) per aprire la finestra di scansione. MosaicView pilota direttamente lo scanner (tramite WIA, il sistema di scansione di Windows): seleziona il dispositivo, la risoluzione (DPI), la modalità colore (colore / scala di grigi / bianco e nero), quindi fai clic su «Scansiona». Uno scanner deve essere collegato, acceso e con il driver installato su Windows per comparire nell'elenco.\n• L'ultimo scanner utilizzato, la risoluzione e la modalità colore scelti vengono memorizzati e riproposti automaticamente alla prossima scansione.\n• Vengono offerti solo la scansione a pagina intera e l'esportazione in JPG, poiché l'applicazione dispone già di tutto il necessario per la ritocco e la conversione dell'immagine in seguito.\n• L'immagine scansionata viene aggiunta automaticamente al mosaico, dopo le pagine già presenti. Puoi quindi ritagliarla, raddrizzarla, regolarne i colori, ecc. come qualsiasi altra pagina del mosaico\n• Questa funzione pilota lo scanner direttamente, senza passare dal software del produttore né mostrare la sua finestra di configurazione.\n• Poiché uno scanner fisico può essere controllato da una sola connessione alla volta, la scansione è possibile in un solo pannello per volta: se in un pannello è aperta una finestra di scansione o è in corso una scansione, il pulsante «Scansiona» rimane disattivato nell'altro pannello fino al termine dell'operazione.",
+    "straighten": "Raddrizza una pagina",
+    "straighten_content": "Due metodi per correggere una scansione storta, disponibili dalla colonna delle icone (clic destro sull'icona \"Raddrizza\" per cambiare modalità), dal menu Immagini, o con clic destro sul mosaico:\n• Raddrizzamento manuale: apre un visualizzatore dedicato in cui si traccia una linea retta su ciò che dovrebbe essere orizzontale o verticale nell'immagine; l'angolo di correzione viene calcolato automaticamente e applicato all'immagine, con maniglie per regolare con precisione la linea.\n• Raddrizzamento automatico: rileva da solo l'inclinazione (senza tracciare nulla) e raddrizza direttamente la pagina o le pagine selezionate; gli angoli vuoti creati dalla rotazione vengono riempiti di bianco. Funziona su più pagine contemporaneamente. Una finestra di riepilogo mostra quante pagine sono state raddrizzate con successo ed elenca quelle per cui non è stata rilevata un'inclinazione affidabile."
   },
   "misc": {
     "file_word": "file",

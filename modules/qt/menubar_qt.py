@@ -204,8 +204,10 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
                 enabled=has_img_sel)
     _add_action(menu, _("dialogs.adjustments.window_title"), callbacks.get("show_image_adjustments_dialog"),
                 enabled=has_img_sel)
-    _add_action(menu, _("context_menu.image.straighten"), callbacks.get("show_straighten_viewer"),
-                enabled=bool(st.images_data))
+    _add_action(menu, _("context_menu.image.straighten_manual"), callbacks.get("show_straighten_viewer"),
+                enabled=has_img_sel)
+    _add_action(menu, _("context_menu.image.straighten_auto"), callbacks.get("deskew_selected"),
+                enabled=has_img_sel)
     _add_action(menu, _("context_menu.image.clone_zone"), callbacks.get("show_clone_zone_viewer"),
                 enabled=bool(st.images_data))
     _add_action(menu, _("context_menu.image.text"), callbacks.get("show_text_viewer"),

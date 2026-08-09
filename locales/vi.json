@@ -130,9 +130,10 @@
       "adjustments": "Độ sáng, độ tương phản, màu sắc...",
       "refresh_mosaic": "Làm mới bảng ghép (F5)",
       "create_ico": "Tạo tệp .ico",
-      "straighten": "Chỉnh thẳng ảnh...",
       "clone_zone": "Nhân bản vùng...",
-      "text": "Thêm văn bản..."
+      "text": "Thêm văn bản...",
+      "straighten_manual": "Làm thẳng ảnh thủ công...",
+      "straighten_auto": "Làm thẳng ảnh tự động"
     },
     "canvas_no_file": {
       "open": "Mở CBZ/CBR/CB7/CBT/PDF",
@@ -174,7 +175,7 @@
     },
     "canvas": {
       "quit": "Đóng ứng dụng",
-      "reset": "Đặt lại ứng dụng:\n• toàn màn hình → cửa sổ\n• kích thước và vị trí cửa sổ\n• chế độ tối → sáng\n• thanh bên → hiển thị / chiều rộng mặc định\n• bản đồ thu nhỏ → đã ẩn\n• kích thước biểu tượng và hình thu nhỏ → bình thường\n• cỡ chữ → mặc định\n• ngôn ngữ → tự động phát hiện\n• chia cửa sổ → 50 / 50\n• đánh số lại → tự động\n• nén ZIP → không",
+      "reset": "Đặt lại ứng dụng:\n• toàn màn hình → cửa sổ\n• kích thước và vị trí cửa sổ\n• chế độ tối → sáng\n• thanh bên → hiển thị / chiều rộng mặc định\n• bản đồ thu nhỏ → đã ẩn\n• kích thước biểu tượng và hình thu nhỏ → bình thường\n• cỡ chữ → mặc định\n• ngôn ngữ → tự động phát hiện\n• chia cửa sổ → 50 / 50\n• đánh số lại → tự động\n• làm thẳng tự động → thủ công\n• nén ZIP → không",
       "reset_label": "Đặt lại ứng dụng"
     },
     "font_size": {
@@ -724,7 +725,8 @@
     "renumber_indicator_simple": "Số: Đơn giản",
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
-    "zip_indicator_na": "ZIP: --"
+    "zip_indicator_na": "ZIP: --",
+    "deskewing": "Đang làm thẳng tự động...\n{percent}%"
   },
   "dialogs": {
     "convert": {
@@ -1226,6 +1228,11 @@
       "body": "Tập 8 của bộ truyện yêu thích của bạn vừa mới ra mắt, và bạn nóng lòng muốn đọc nó. Chỉ có điều tập 7 là từ 4 năm trước, và ký ức của bạn hơi mơ hồ: những nhân vật phụ đó là ai nhỉ? Và chuyện gì đã xảy ra ở đoạn kết?\n\nNếu tình huống này nghe quen thuộc, Distillat được tạo ra dành cho bạn. Chỉ cần thả tệp EPUB hoặc PDF của bạn vào khu vực được chỉ định: bạn sẽ nhận được bản tóm tắt, thẻ nhân vật và phân tích tác phẩm, sẵn sàng để xem hoặc xuất ra PDF.\n\nỨng dụng dựa trên gói miễn phí của Gemini 3.5 Flash.",
       "landing_intro": "Trang giới thiệu:",
       "download_intro": "Bạn có thể tải ứng dụng tại đây:"
+    },
+    "deskew_summary": {
+      "title": "Làm thẳng tự động",
+      "message": "Đã làm thẳng thành công {success} ảnh.",
+      "message_errors": "Đã làm thẳng thành công {success} ảnh.\n{failed} thất bại (không phát hiện được độ nghiêng đáng tin cậy) :"
     }
   },
   "tooltip": {
@@ -1289,7 +1296,9 @@
     "zip_indicator_stored_action": "Tệp này không được nén.\nNhấp để nén ở mức mặc định ({level}).\nNhấp chuột phải để thay đổi mức mặc định.",
     "duplicate_image": "TRANG TRÙNG LẶP",
     "duplicate_indicator": "Đã phát hiện các trang trùng lặp trong tệp này.\nNhấp để mở cửa sổ quản lý trang trùng lặp.",
-    "duplicate_indicator_none": "Không phát hiện trùng lặp"
+    "duplicate_indicator_none": "Không phát hiện trùng lặp",
+    "straighten_mode_0": "Chế độ thủ công (vẽ một đường tham chiếu)\nNhấp chuột phải để đổi chế độ",
+    "straighten_mode_1": "Chế độ tự động (phát hiện độ nghiêng)\nNhấp chuột phải để đổi chế độ"
   },
   "help": {
     "title": "MosaicView - Hướng dẫn sử dụng",
@@ -1382,7 +1391,9 @@
     "config_registry_note": "Để có thể xuất hiện trong menu \"Mở bằng\" của Windows Explorer, MosaicView ghi một số thông tin vào registry của Windows khi khởi động. Việc ghi này chỉ giới hạn ở mức tối thiểu cần thiết: nó cho Windows biết MosaicView nằm ở đâu và có thể mở những loại tệp nào. Việc này chỉ được thực hiện trong phần registry dành riêng cho tài khoản người dùng của bạn, không bao giờ ở phần hệ thống, và không thay đổi bất kỳ liên kết tệp nào: việc chọn MosaicView làm ứng dụng mặc định cho một loại tệp vẫn là lựa chọn mà chỉ bạn mới có thể thực hiện, thông qua chính menu \"Mở bằng\" của Windows. Nếu bạn gỡ MosaicView khỏi ổ đĩa của mình, thông tin này đơn giản sẽ trở nên vô hiệu và không còn tác dụng.",
     "config_dir_content": "MosaicView tạo một tệp có tên .mosaicview_config.json. Tệp này chứa các thiết lập của ứng dụng (cửa sổ, giao diện, ngôn ngữ, chế độ đánh số lại…), danh sách truyện tranh và cơ sở dữ liệu đã mở gần đây, dấu trang của bạn và khóa API ComicVine của bạn (đã mã hóa). Tệp này nằm trong thư mục {config_dir} và được giữ lại qua các phiên: không giống như các tệp tạm thời, tệp này không bao giờ bị xóa tự động, dù bởi MosaicView hay Windows.\nBạn có thể xóa thủ công bằng cách vào thư mục {config_dir}, hoặc bằng cách nhấp vào nút bên dưới. Tệp sẽ được tạo lại với các giá trị mặc định vào lần khởi động ứng dụng tiếp theo.",
     "scan": "Quét một hình ảnh",
-    "scan_content": "• Nhấp vào nút \"Quét\" (cột biểu tượng, menu Tệp, hoặc nhấp chuột phải trên bức khảm) để mở cửa sổ quét. MosaicView điều khiển trực tiếp máy quét của bạn (thông qua WIA, hệ thống quét của Windows): chọn thiết bị, độ phân giải (DPI), chế độ màu (màu / thang xám / đen trắng), sau đó nhấp vào \"Quét\". Máy quét phải được cắm điện, bật nguồn và đã cài đặt trình điều khiển trên Windows để xuất hiện trong danh sách.\n• Chỉ hỗ trợ quét toàn trang, vì ứng dụng đã có mọi thứ cần thiết để chỉnh sửa hình ảnh sau khi quét.\n• Hình ảnh đã quét được tự động thêm vào bức khảm, sau các trang đã có sẵn. Sau đó bạn có thể cắt, làm thẳng, điều chỉnh màu sắc, v.v. như bất kỳ trang nào khác của bức khảm\n• Tính năng này điều khiển trực tiếp máy quét, không thông qua phần mềm của nhà sản xuất cũng không hiển thị cửa sổ cấu hình riêng của nó.\n• Vì máy quét vật lý chỉ có thể được điều khiển bởi một kết nối tại một thời điểm, việc quét chỉ có thể thực hiện trên một khung cùng lúc: nếu cửa sổ quét đang mở hoặc đang quét trong một khung, nút \"Quét\" vẫn bị mờ ở khung còn lại cho đến khi thao tác hoàn tất."
+    "scan_content": "• Nhấp vào nút \"Quét\" (cột biểu tượng, menu Tệp, hoặc nhấp chuột phải trên bức khảm) để mở cửa sổ quét. MosaicView điều khiển trực tiếp máy quét của bạn (thông qua WIA, hệ thống quét của Windows): chọn thiết bị, độ phân giải (DPI), chế độ màu (màu / thang xám / đen trắng), sau đó nhấp vào \"Quét\". Máy quét phải được cắm điện, bật nguồn và đã cài đặt trình điều khiển trên Windows để xuất hiện trong danh sách.\n• Máy quét, độ phân giải và chế độ màu đã chọn lần cuối sẽ được ghi nhớ và tự động đề xuất lại vào lần quét tiếp theo.\n• Chỉ hỗ trợ quét toàn trang và xuất ra định dạng JPG, vì ứng dụng đã có sẵn mọi thứ cần thiết để chỉnh sửa và chuyển đổi định dạng ảnh sau đó.\n• Hình ảnh đã quét được tự động thêm vào bức khảm, sau các trang đã có sẵn. Sau đó bạn có thể cắt, làm thẳng, điều chỉnh màu sắc, v.v. như bất kỳ trang nào khác của bức khảm\n• Tính năng này điều khiển trực tiếp máy quét, không thông qua phần mềm của nhà sản xuất cũng không hiển thị cửa sổ cấu hình riêng của nó.\n• Vì máy quét vật lý chỉ có thể được điều khiển bởi một kết nối tại một thời điểm, việc quét chỉ có thể thực hiện trên một khung cùng lúc: nếu cửa sổ quét đang mở hoặc đang quét trong một khung, nút \"Quét\" vẫn bị mờ ở khung còn lại cho đến khi thao tác hoàn tất.",
+    "straighten": "Làm thẳng một trang",
+    "straighten_content": "Hai cách để sửa bản quét bị lệch, có sẵn từ cột biểu tượng (nhấp chuột phải vào biểu tượng \"Làm thẳng\" để chuyển đổi chế độ), menu Hình ảnh, hoặc nhấp chuột phải vào bố cục:\n• Làm thẳng thủ công: mở một trình xem chuyên dụng nơi bạn vẽ một đường thẳng lên phần cần phải nằm ngang hoặc thẳng đứng trong hình ảnh; góc hiệu chỉnh được tính toán tự động và áp dụng cho hình ảnh, với các tay cầm để tinh chỉnh đường thẳng.\n• Làm thẳng tự động: tự phát hiện độ nghiêng (không cần vẽ gì cả) và làm thẳng trực tiếp trang hoặc các trang đã chọn; các góc trống được tạo ra do xoay sẽ được tô màu trắng. Hoạt động trên nhiều trang cùng lúc. Một cửa sổ tóm tắt hiển thị số trang đã làm thẳng thành công và liệt kê những trang không phát hiện được độ nghiêng đáng tin cậy."
   },
   "misc": {
     "file_word": "tệp",
