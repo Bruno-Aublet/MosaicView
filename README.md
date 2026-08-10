@@ -20,7 +20,7 @@ I'd love to hear from you: what works, what doesn't, what's missing, what's conf
 
 - **Bug reports** → [GitHub Issues](https://github.com/Bruno-Aublet/MosaicView/issues)
 - **Ideas, suggestions, general feedback** → [GitHub Discussions](https://github.com/Bruno-Aublet/MosaicView/discussions)
-- **Anything else** <img src="icons/mail.png" width="16"> → [mosaicview1969@gmail.com](mailto:mosaicview1969@gmail.com?subject=MosaicView)
+- **Anything else** <img src="icons/mail.png" width="16"> → <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#111;&#115;&#97;&#105;&#99;&#118;&#105;&#101;&#119;&#49;&#57;&#54;&#57;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;&#63;&#115;&#117;&#98;&#106;&#101;&#99;&#116;&#61;&#77;&#111;&#115;&#97;&#105;&#99;&#86;&#105;&#101;&#119;">Contact</a>
 
 ---
 
@@ -263,4 +263,4 @@ License files are included in the `unrar/` and `7zip/` folders. All third-party 
 
 ## Contact
 
-**Bruno Aublet** — [GitHub](https://github.com/Bruno-Aublet) — <img src="icons/mail.png" width="16"> [mosaicview1969@gmail.com](mailto:mosaicview1969@gmail.com)
+**Bruno Aublet** — [GitHub](https://github.com/Bruno-Aublet) — <img src="icons/mail.png" width="16"> <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#111;&#115;&#97;&#105;&#99;&#118;&#105;&#101;&#119;&#49;&#57;&#54;&#57;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">Contact</a>

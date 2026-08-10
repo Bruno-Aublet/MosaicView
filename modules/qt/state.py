@@ -26,40 +26,18 @@ class AppState:
             "start_y": 0,
             "moved": False
         }
-        self.highlight_rect = None
 
         # Sélection
         self.selected_indices = set()
-        self.selection_rects = {}
-
-        # Sélection par cadre (rubber band)
-        self.rubber_band = {
-            "active": False,
-            "start_x": 0,
-            "start_y": 0,
-            "rect_id": None
-        }
-
 
         # Historique Annuler/Refaire
         self.history = []
         self.history_index = -1
 
         # UI State
-        self.loading_label = None
-        self.loading_bind_id = None
-        self.loading_percent = 0  # Pourcentage de chargement actuel
-        self.resizing_label = None
-        self.resizing_bind_id = None
-        self.resizing_percent = 0
         self.converting = False  # Flag pour bloquer les événements pendant la conversion
-        self.converting_label = None
-        self.converting_bind_id = None
-        self.converting_percent = 0
         self.saving_label = None  # Label de progression de sauvegarde CBZ
         self.saving_percent = 0  # Pourcentage de sauvegarde actuel
-        self.print_preparing_label = None
-        self.resize_after_id = None
         self.is_rendering = False
         self.last_canvas_width = 0
         self.active_viewers = 0
@@ -72,7 +50,6 @@ class AppState:
         self.tooltip = None  # Info-bulle pour le taux de compression
         self.dark_mode = False  # Thème sombre activé ou non
         self.is_fullscreen = False  # Mode plein écran activé ou non
-        self.empty_canvas_text = None  # Texte d'aide sur le canvas vide (2 lignes)
 
         # Tri
         self.current_sort_method = None  # Méthode de tri actuelle (None, "name", "type", "weight", etc.)
@@ -80,7 +57,6 @@ class AppState:
 
         # Navigation clavier
         self.focused_index = None  # Index de la miniature ayant le focus clavier
-        self.focus_rect = None  # Rectangle visuel du focus
 
         # Répertoire de la première image (pour mode images seules)
         self.first_image_dir = None  # Répertoire d'où provient la première image
@@ -95,12 +71,11 @@ class AppState:
         self.visual_to_real = {}   # visual_idx → real_idx (None si répertoire virtuel)
         # visual_idx du dossier virtuel actuellement "sélectionné" (cadre bleu), ou None
         self.selected_dir_visual_idx = None
-        self.selected_dir_rect = None  # id du rectangle canvas
 
         # Compteur de fusions
         self.merge_counter = 0  # Nombre de comics fusionnés (pour les préfixes NEW01-, NEW02-, etc.)
 
-# Instance globale de l'état (sera créée après l'initialisation de root)
+# Instance globale de l'état (créée à l'initialisation de PanelWidget)
 state = None
 
 # Liste globale des dialogues actifs (pour mise à jour de la langue à la volée)

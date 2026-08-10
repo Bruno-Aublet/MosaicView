@@ -2003,7 +2003,8 @@ class IconToolbarQt(QWidget):
         action = menu.addAction(_("mail.copy_address"))
         chosen = menu.exec(global_pos)
         if chosen == action:
-            QApplication.clipboard().setText("mosaicview1969@gmail.com")
+            from modules.qt.utils import get_support_email
+            QApplication.clipboard().setText(get_support_email())
 
     # ── Noms d'affichage ──────────────────────────────────────────────────────
 
@@ -2116,6 +2117,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
     """
     from modules.qt.config_manager import get_config_manager
     from modules.qt.menubar_callbacks_qt import build_menubar_callbacks
+    from modules.qt.utils import get_support_email
 
     st = mw._state
     if is_primary:
@@ -2214,7 +2216,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "print_all":             lambda: _print_all(mw, mw._canvas, st),
         "sort":                  mw._show_sort_menu,
         "open_library":          lambda: __import__('modules.qt.library_window', fromlist=['open_library_window']).open_library_window(mw._left_panel),
-        "open_mail":             lambda: webbrowser.open("mailto:mosaicview1969@gmail.com?subject=MosaicView"),
+        "open_mail":             lambda: webbrowser.open(f"mailto:{get_support_email()}?subject=MosaicView"),
         "donation":              mw._show_donation_dialog,
         "show_license_dialog":   mw._show_license_dialog,
         "show_full_gpl_license": mw._show_full_gpl_license,

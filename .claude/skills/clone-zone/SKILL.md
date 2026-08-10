@@ -82,6 +82,8 @@ Différence par rapport aux deux autres visionneuses d'édition : `show_clone_zo
 
 Vocabulaire commun aux 5 visionneuses (skill `viewers`) : `Ctrl++`/`Ctrl+-`, `Ctrl+0` (fit), `Ctrl+1` (reset 100%), `F11` (plein écran), molette, clic droit maintenu (pan). Particularité propre à ce fichier : le curseur en forme de **cible** (`_make_crosshair_cursor`) est reconstruit dynamiquement à chaque changement de zoom **et** de taille de pinceau (`_rebuild_crosshair_cursor`), puisque son rayon visuel à l'écran dépend des deux (`brush_radius * zoom / 2`) — un curseur non reconstruit après un changement de zoom afficherait une taille de pinceau trompeuse par rapport à la zone réellement peinte.
 
+Le marqueur visuel de la source (`_source_widget_pt`, dérivé de `_source_pt` en coordonnées image via `_image_to_widget`) est resynchronisé par `_recalc_source_widget_pt()`, appelée après pan (`mouseMoveEvent`), après chaque zoom (`set_zoom`/`reset_zoom`/`fit_to_window`), et — depuis le correctif 2026-08 (v1.7.2) — après un redimensionnement de la fenêtre (`resizeEvent`, ajouté à `_CloneImageWidget` juste avant `wheelEvent`). **Avant ce correctif**, seuls pan et zoom étaient couverts : redimensionner la fenêtre du tampon de clonage laissait la cible rouge/blanche affichée au mauvais endroit par rapport à l'image, sans affecter la position réelle de `_source_pt` (donc le clonage restait correct au pixel près, seul l'indicateur visuel dérivait). Voir le même correctif appliqué la même session à `page-crop` (pan) et `page-straighten` (pan + zoom + resize, qui n'avait aucun mécanisme de coordonnées image avant).
+
 ## Fond damier (transparence)
 
 `_make_checker`/`_work_img_to_pixmap` — implémentation **encore une fois indépendante** (troisième copie du même algorithme après celles de `AdjustmentViewerDialog` et `text_viewer_qt.py`, voir skill `add-text-to-image`) ; aucune des trois n'appelle une fonction partagée. Une correction visuelle du damier faite dans un fichier ne se propage à aucun des deux autres.
@@ -108,6 +110,7 @@ Vocabulaire commun aux 5 visionneuses (skill `viewers`) : `Ctrl++`/`Ctrl+-`, `Ct
 - **Undo/redo au niveau du stroke entier, pas du point peint** — un stroke long (glisser la souris longtemps sans relâcher) ne peut être annulé qu'en un seul bloc, jamais point par point.
 - **Fond damier dupliqué une troisième fois** — ni partagé avec `AdjustmentViewerDialog` ni avec `text_viewer_qt.py`.
 - **Curseur cible à reconstruire à chaque changement de zoom ET de taille de pinceau** — omission facile si un nouveau contrôle de vue ou de taille de pinceau est ajouté sans repasser par `_rebuild_crosshair_cursor`.
+- **Marqueur de source à resynchroniser après pan, zoom, ET redimensionnement** — les trois appellent `_recalc_source_widget_pt()` (le troisième cas, `resizeEvent`, a été ajouté en 2026-08/v1.7.2 ; absent avant, voir section "Zoom, pan, plein écran"). Tout nouveau chemin qui modifie `_offset`/`_zoom`/la taille du widget sans repasser par cette méthode réintroduirait une désynchronisation du même ordre.
 - **Aucune section dédiée dans le mode d'emploi.**
 
 ## Références croisées

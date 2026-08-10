@@ -34,7 +34,9 @@ Ce choix (plutôt que de garder les actions vivantes et juste basculer `setEnabl
 | `_populate_metadata_menu` | ComicVine | Récupérer métadonnées (`comicvine-metadata-fetch`), import en lot (`batch-metadata-import`), créer/modifier ComicInfo.xml (`comicinfo-metadata-editor`), clé API, liens externes |
 | `_populate_library_menu` | Bibliothèque | Ouvrir la fenêtre, bases récentes (sous-menu), sous-menu Base de données dynamique — voir "Piège menu Bibliothèque" ci-dessous (skill `library`) |
 | `_populate_system_menu` | Système | Sous-menu Langues (`_populate_language_menu`, voir ci-dessous), taille des vignettes, thème (`dark-mode`), taille de police, compression ZIP (`zip-compression`), mode d'emploi (`user-guide`), plein écran (F11), reset config, split-view (`panels`) |
-| `_populate_about_menu` | À propos | Site web/GitHub/MAJ, changelog, don, mail, config (effacer/ouvrir dossier), temp (`temp-files`), export polices pIqaD/Tengwar (`fonts`), licences (sous-menu) |
+| `_populate_about_menu` | À propos | Site web/GitHub/MAJ, changelog, don, mail (adresse jamais en dur, voir `get_support_email()` ci-dessous), config (effacer/ouvrir dossier), temp (`temp-files`), export polices pIqaD/Tengwar (`fonts`), licences (sous-menu) |
+
+**Adresse mail de contact** : `open_mail` (dans `build_menubar_callbacks`, `menubar_callbacks_qt.py`) ouvre un lien `mailto:` construit via `get_support_email()` (`modules/qt/utils.py`), jamais une adresse en dur — la fonction reconstruit `mosaicview1969@gmail.com` à partir de morceaux séparés pour ne pas apparaître en clair dans le repo public (cible de scraping). Même fonction réutilisée par `icon-toolbar` et `scan`.
 
 `_populate_language_menu` (appelée par `_populate_system_menu`, pas montée en menu de premier niveau elle-même) reproduit la logique des langues fictives : sépare "Langues réelles"/"Langues fictives" (en-têtes non cliquables, `setEnabled(False)`), coche (✓) la langue courante, applique la police pIqaD/Tengwar par item (`_LangComboDelegate`-like, voir skill `fonts`) pour les 3 langues CSUR concernées.
 

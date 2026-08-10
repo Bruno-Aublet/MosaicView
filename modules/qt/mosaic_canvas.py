@@ -248,15 +248,21 @@ def _get_pixmap_for_size(entry: dict, tw: int, th: int) -> QPixmap:
     """Retourne un QPixmap à la taille (tw, th).
     Convertit qt_qimage_large → qt_pixmap_large (instantané, thread UI), puis scale Qt.
     """
-    # 1. S'assurer qu'on a un qt_pixmap_large
+    # 1. S'assurer qu'on a un qt_pixmap_large, toujours à la résolution de référence
+    # THUMB_SIZES[2] (la plus grande) — jamais à la taille (tw, th) demandée ici, sinon
+    # un appel pendant le chargement (avant que le worker background n'ait rempli
+    # qt_qimage_large) fige le cache à une résolution basse, et un futur agrandissement
+    # upscale ce pixmap déjà réduit (flou).
     if not entry.get("qt_pixmap_large"):
+        ref_w, ref_h = THUMB_SIZES[2]
         # Cas normal : qt_qimage_large précalculé dans le thread background
         qimg = entry.get("qt_qimage_large")
         if qimg is not None:
             entry["qt_pixmap_large"] = QPixmap.fromImage(qimg)
             entry["qt_qimage_large"] = None  # libère la QImage, QPixmap suffit
         else:
-            # Fallback : pas de QImage précalculée (entrée ajoutée par drop, etc.)
+            # Fallback : pas de QImage précalculée (entrée ajoutée par drop, worker pas
+            # encore passé, etc.) — toujours construire à la résolution de référence.
             if entry.get("is_image") and not entry.get("is_corrupted"):
                 raw = entry.get("bytes")
                 if raw:
@@ -266,7 +272,7 @@ def _get_pixmap_for_size(entry: dict, tw: int, th: int) -> QPixmap:
                         img = _Image.open(_io.BytesIO(raw))
                         has_alpha = (img.mode in ('RGBA', 'LA') or
                                      (img.mode == 'P' and 'transparency' in img.info))
-                        thumb = create_centered_thumbnail(img, tw, th, checkerboard=has_alpha)
+                        thumb = create_centered_thumbnail(img, ref_w, ref_h, checkerboard=has_alpha)
                         entry["qt_pixmap_large"] = _pil_to_qpixmap(thumb)
                     except Exception:
                         pass
@@ -274,7 +280,7 @@ def _get_pixmap_for_size(entry: dict, tw: int, th: int) -> QPixmap:
                 icon_pil = get_icon_pil_for_entry(entry)
                 if icon_pil is not None:
                     try:
-                        thumb = create_centered_thumbnail(icon_pil, tw, th)
+                        thumb = create_centered_thumbnail(icon_pil, ref_w, ref_h)
                         entry["qt_pixmap_large"] = _pil_to_qpixmap(thumb)
                     except Exception:
                         pass

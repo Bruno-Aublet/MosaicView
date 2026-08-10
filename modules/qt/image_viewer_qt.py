@@ -331,12 +331,15 @@ class _ViewerCanvas(QLabel):
             if abs(delta.x()) > 5 or abs(delta.y()) > 5:
                 self._is_panning = True
                 self.setCursor(Qt.SizeAllCursor)
-                self.display_offset_x += delta.x()
-                self.display_offset_y += delta.y()
                 self.pan_offset_x += delta.x()
                 self.pan_offset_y += delta.y()
                 self._pan_start = event.position().toPoint()
-                self.update()
+                if self.has_crop:
+                    self._viewer.display_image(keep_crop_rect=True)
+                else:
+                    self.display_offset_x += delta.x()
+                    self.display_offset_y += delta.y()
+                    self.update()
             return
 
         if not (event.buttons() & Qt.LeftButton):

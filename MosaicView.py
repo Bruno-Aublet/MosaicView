@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.7.1"
+__version__ = "1.7.2"
 
 import sys
 import os
@@ -695,7 +695,8 @@ class MainWindow(QMainWindow):
 
     def _copy_mail_address(self):
         from PySide6.QtWidgets import QApplication
-        QApplication.clipboard().setText("mosaicview1969@gmail.com")
+        from modules.qt.utils import get_support_email
+        QApplication.clipboard().setText(get_support_email())
 
     def _show_full_gpl_license(self):
         from modules.qt.license_dialog_qt import show_full_license_window_qt

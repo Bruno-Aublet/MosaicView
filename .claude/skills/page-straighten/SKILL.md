@@ -33,12 +33,16 @@ Tout le mécanisme (widget image custom + fenêtre + logique de calcul d'angle +
 
 ### Le widget image — tracé et édition du trait
 
-Le trait de référence est stocké en coordonnées **widget** (`_line_start`/`_line_end`, des `QPoint`), converti en coordonnées **image** seulement au moment de la notification (`_widget_to_image`, tient compte du zoom et du centrage).
+Le trait de référence est stocké à **deux niveaux** (`_sync_line_from_image`, `straighten_viewer_qt.py`) :
+- `_line_img_start`/`_line_img_end` — coordonnées **image**, stables, figées à chaque fin de tracé/déplacement de poignée dans `_notify_line()` via `_widget_to_image`. C'est la source de vérité persistante.
+- `_line_start`/`_line_end` — coordonnées **widget** (`QPoint`), dérivées des précédentes via `_image_to_widget` (l'inverse de `_widget_to_image`), utilisées uniquement pour le dessin (`paintEvent`) et la détection de poignée (`_hit_handle`). Recalculées par `_sync_line_from_image()`, appelée systématiquement en tête de `paintEvent` (donc à chaque pan, zoom, **et** redimensionnement de la fenêtre puisque Qt réinvoque `paintEvent` dans les trois cas), plus explicitement dans `mouseMoveEvent` (pan) et `set_zoom`/`reset_zoom`/`fit_to_window` (redondant avec l'appel dans `paintEvent` mais inoffensif, idempotent).
+
+**Piège corrigé (2026-08, v1.7.2)** : avant ce mécanisme à deux niveaux, `_line_start`/`_line_end` étaient les seules coordonnées stockées (en widget uniquement), jamais recalculées après un pan ou un zoom — seul `mousePressEvent`/`mouseMoveEvent`/`mouseReleaseEvent` les modifiait. Résultat : paner (clic droit maintenu) ou zoomer (molette) déplaçait l'image affichée sans jamais retoucher le trait, qui restait visuellement figé à l'ancien endroit — trait et image se désynchronisaient au premier pan/zoom suivant un tracé. Voir aussi le même piège corrigé la même session dans `page-crop` (rectangle de recadrage) et `clone-zone` (marqueur de source, cas du redimensionnement uniquement).
 
 - **Premier tracé** : clic-gauche + glisser dessine un trait rouge de 2px entre le point de départ et le point courant (`mousePressEvent`/`mouseMoveEvent`/`mouseReleaseEvent`).
 - **Poignées de réglage** : chaque extrémité du trait affiche un cercle rouge à contour blanc (`_HANDLE_RADIUS = 7`, zone de clic élargie `_HANDLE_HIT = 12` pour faciliter la prise). Un clic sur une poignée existante permet de la redéplacer (`_dragging_handle`) au lieu de retracer un nouveau trait — utile pour affiner la précision après un premier tracé approximatif.
-- À chaque relâchement de clic gauche (fin de tracé **ou** fin de déplacement d'une poignée), `_notify_line()` recalcule l'angle et invoque le callback `on_line_drawn` — l'angle est donc **toujours recalculé en direct** après un ajustement de poignée, pas seulement après le tout premier tracé.
-- Changer de page (`_prev_image`/`_next_image`) appelle `clear_line()` — le trait ne survit jamais au changement d'image affichée, chaque page repart d'un tracé vide.
+- À chaque relâchement de clic gauche (fin de tracé **ou** fin de déplacement d'une poignée), `_notify_line()` fige `_line_img_start`/`_line_img_end` puis recalcule l'angle et invoque le callback `on_line_drawn` — l'angle est donc **toujours recalculé en direct** après un ajustement de poignée, pas seulement après le tout premier tracé.
+- Changer de page (`_prev_image`/`_next_image`) appelle `clear_line()` — le trait (widget **et** image) ne survit jamais au changement d'image affichée, chaque page repart d'un tracé vide.
 
 ### Calcul de l'angle — `_on_line_drawn` (`straighten_viewer_qt.py:630`)
 
@@ -165,6 +169,7 @@ Vocabulaire fictif réutilisé pour "redresser" (jamais réinventé) : sindarin 
 
 ### Manuel
 - **Deux systèmes d'undo/redo empilés** (global de l'appli + interne à la fenêtre) — voir section dédiée ; un bug de undo/redo signalé sur cette fenêtre spécifiquement doit être diagnostiqué en tenant compte des deux avant de supposer qu'un seul est en cause.
+- **Trait stocké à deux niveaux (image stable + widget dérivé)** depuis le correctif 2026-08 (v1.7.2) — voir section "Le widget image" ; toute modification qui réintroduirait un stockage widget-only sans passer par `_sync_line_from_image()` romprait la synchronisation au pan/zoom/resize.
 - **`BICUBIC` explicite, sans `fillcolor`** — contrairement à `rotate_entry_data` (skill `rotate-flip`, aucun `resample`) et contrairement au deskew automatique (`fillcolor="white"`).
 - **Premier `save_state()` sans `force=True`, second avec** — ordre inverse de ce qu'on pourrait supposer par symétrie.
 - **Le trait ne survit jamais à un changement de page** — comportement voulu.

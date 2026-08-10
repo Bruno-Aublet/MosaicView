@@ -87,6 +87,19 @@ x = self._offset.x() + (self.width() - w) // 2
 ```
 **Piège déjà rencontré** (visionneuse principale uniquement, avant le fix de 2026-07) : si le calcul d'offset ignore le pan et repart du centrage pur à chaque zoom, l'image se recentre à chaque cran de molette. Vérifier ce pattern avant de toucher au calcul d'offset dans n'importe laquelle des 5 fenêtres.
 
+### Piège transversal — overlays interactifs qui se désynchronisent de l'image au pan/zoom/resize
+
+Trois des cinq visionneuses dessinent un **overlay superposé positionné** en plus de l'image elle-même : le rectangle de recadrage (`page-crop`), le trait de référence du redressement manuel (`page-straighten`), le marqueur de source du tampon de clonage (`clone-zone`). Dans les trois cas, l'overlay est interactif (tracé/déplacé à la souris) donc naturellement défini au départ en **coordonnées widget** — mais si ces coordonnées ne sont jamais reconverties après un pan, un zoom, ou un redimensionnement de la fenêtre, l'overlay reste figé à sa position écran pendant que l'image glisse/zoome/se recentre dessous, donnant l'impression qu'il "ne suit pas" l'image.
+
+**Correctif systématique (2026-08, v1.7.2)** sur les trois fenêtres concernées : stocker la position de l'overlay en coordonnées **image** (stables, indépendantes de l'affichage) en plus des coordonnées widget dérivées pour le dessin, et **reconvertir explicitement à chaque pan, zoom, et redimensionnement** — pas seulement au tracé initial. Avant ce correctif, seul `page-crop` avait un mécanisme de persistance (`crop_rel_*`, coordonnées relatives 0-1) mais il n'était déclenché qu'au zoom, pas au pan ; `clone-zone` avait déjà tout sauf le cas du redimensionnement ; `page-straighten` n'avait aucun mécanisme de coordonnées stables et était affecté par les trois (pan, zoom, resize).
+
+**Si un nouvel overlay interactif est ajouté à une de ces fenêtres (ou une 6e visionneuse créée)**, vérifier explicitement les trois cas avant de considérer la fonctionnalité terminée :
+1. **Pan** (clic droit maintenu) — l'overlay doit se redessiner à jour à chaque `mouseMoveEvent` de pan, pas seulement au relâchement.
+2. **Zoom** (molette, `Ctrl+Plus`/`Ctrl+Minus`, `Ctrl+0`, `Ctrl+1`) — reconversion après tout changement de `_zoom`/`zoom_level`.
+3. **Redimensionnement de la fenêtre** — cas le plus facile à oublier (pas de `resizeEvent` par défaut sur `QWidget`) ; le plus sûr est de faire la reconversion en tête de `paintEvent` lui-même (Qt le rappelle automatiquement dans les trois cas ci-dessus), comme fait `straighten_viewer_qt.py` depuis ce correctif, plutôt que de dupliquer l'appel dans chaque handler séparément.
+
+Voir le détail spécifique à chaque fenêtre dans les skills `page-crop`, `page-straighten`, `clone-zone` (sections "Pièges connus" de chacun).
+
 ## Raccourcis clavier zoom — communs aux 5, à garder synchronisés
 
 Chaque fenêtre câble ces raccourcis indépendamment (pas de table de raccourcis partagée) :

@@ -14,6 +14,7 @@ Tout vit dans ce seul fichier :
 - **`DEFAULT_LAYOUT`** (ligne ~103) : sous-ensemble d'ids d'`ICON_DEFINITIONS`, dans l'ordre, affiché par défaut pour un nouveau profil (avant toute personnalisation utilisateur).
 - **`_ACTIVATION_RULES`** (ligne ~120) : dict `id → callable(state_getters) -> bool | None`. `None` = toujours actif (jamais grisé).
 - **`class IconLabel(QLabel)`** (ligne ~190) : une icône. Survol, focus clavier, clic gauche (déclenche l'action), clic droit (spécial `renumber`/`open_mail`), drag & drop.
+  - Clic droit sur `open_mail` → `_show_mail_context_menu()` (ligne ~2001, menu "copier l'adresse") ; clic gauche → callback `open_mail` de `toolbar_callbacks` (`build_icon_toolbar`, ouvre le client mail). Les deux passent par `get_support_email()` (`modules/qt/utils.py`), jamais l'adresse en dur — reconstruite à partir de morceaux séparés pour ne pas apparaître en clair dans le repo public (cible de scraping). Même fonction réutilisée par les skills `menu-bar` et `scan`.
 - **`class IconGrid(QWidget)`** (ligne ~480) : le `QGridLayout` conteneur, gère la logique de drop (calcul de l'index d'insertion, indicateur visuel rouge).
 - **`class ThumbSizeSlider`** / **`class LanguageComboWidget`** (ligne ~639 / ~957) : les deux widgets du footer, sous les boutons `[−][⚙][+]`.
 - **`class _IconConfigDialog(QDialog)`** (ligne ~1101) : fenêtre non-modale de configuration (icônes actives ↔ masquées, checkboxes réglette/combo).

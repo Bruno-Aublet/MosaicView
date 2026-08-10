@@ -745,7 +745,6 @@ def perform_conversion(parent, target_format, quality, selected_entries, callbac
         worker_ref[0] = None
         _hide()
         state.converting = False
-        state.converting_percent = 0
         state.modified = True
 
         if converted == 0:

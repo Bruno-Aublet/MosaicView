@@ -8,6 +8,7 @@ Usage :
 """
 
 import webbrowser as _webbrowser
+from modules.qt.utils import get_support_email
 from modules.qt.update_checker_qt import check_for_updates_qt as _check_for_updates_qt
 from modules.qt.recent_files import get_recent_files as _get_recent_files
 from modules.qt.undo_redo import can_undo, can_redo
@@ -177,7 +178,7 @@ def build_menubar_callbacks(mw) -> dict:
         "open_config_folder":       mw._open_config_folder,
         "open_webpage":             lambda: _webbrowser.open("https://bruno-aublet.github.io/MosaicView/"),
         "open_github":              lambda: _webbrowser.open("https://github.com/Bruno-Aublet/MosaicView"),
-        "open_mail":                lambda: _webbrowser.open("mailto:mosaicview1969@gmail.com?subject=MosaicView"),
+        "open_mail":                lambda: _webbrowser.open(f"mailto:{get_support_email()}?subject=MosaicView"),
         "check_for_updates":        lambda: _check_for_updates_qt(mw),
         "show_changelog":           mw._show_changelog,
         "show_donation_dialog":      mw._show_donation_dialog,

@@ -98,18 +98,34 @@ class _ImageLoadWorker(QThread):
     finished  = Signal(list)   # new_entries
     cancelled = Signal()
 
-    def __init__(self, files_to_add: list, already_open: bool, image_exts: tuple):
+    def __init__(self, files_to_add: list, already_open: bool, image_exts: tuple,
+                 existing_names: set = None):
         super().__init__()
         self._files      = files_to_add
         self._already_open = already_open
         self._image_exts = image_exts
         self._cancelled  = threading.Event()
+        # Si fourni (cas du collage Ctrl+V), une collision de nom avec une
+        # entrée déjà présente est résolue par un suffixe "-COPY"/"-COPYn"
+        # au lieu du préfixe générique "NEW-", pour garder la copie à côté
+        # de sa source dans le tri alphanumérique de la mosaïque.
+        self._existing_names = existing_names
+
+    def _copy_suffixed_name(self, filename: str, taken_names: set) -> str:
+        base, ext = os.path.splitext(filename)
+        candidate = f"{base}-COPY{ext}"
+        n = 2
+        while candidate in taken_names:
+            candidate = f"{base}-COPY{n}{ext}"
+            n += 1
+        return candidate
 
     def run(self):
         from modules.qt.entries import create_entry_from_file, create_entries_from_tiff, FileTooLargeError
         new_entries  = []
         errors       = []
         total        = len(self._files)
+        taken_names  = set(self._existing_names) if self._existing_names is not None else None
 
         for idx, filepath in enumerate(self._files):
             if self._cancelled.is_set():
@@ -120,10 +136,14 @@ class _ImageLoadWorker(QThread):
                 try:
                     entries = create_entries_from_tiff(
                         filepath, self._image_exts,
-                        add_prefix=self._already_open,
+                        add_prefix=self._already_open if taken_names is None else False,
                     )
                     for e in entries:
                         e["source_archive"] = "loose"
+                        if taken_names is not None and e["orig_name"] in taken_names:
+                            e["orig_name"] = self._copy_suffixed_name(e["orig_name"], taken_names)
+                        if taken_names is not None:
+                            taken_names.add(e["orig_name"])
                     new_entries.extend(entries)
                 except FileTooLargeError as e:
                     errors.append(('too_large', e.filename, e.size_str))
@@ -133,7 +153,11 @@ class _ImageLoadWorker(QThread):
                 try:
                     entry = create_entry_from_file(filepath, self._image_exts)
                     if entry:
-                        if self._already_open:
+                        if taken_names is not None:
+                            if entry["orig_name"] in taken_names:
+                                entry["orig_name"] = self._copy_suffixed_name(entry["orig_name"], taken_names)
+                            taken_names.add(entry["orig_name"])
+                        elif self._already_open:
                             entry["orig_name"] = "NEW-" + entry["orig_name"]
                         entry["source_archive"] = "loose"
                         new_entries.append(entry)
@@ -984,7 +1008,8 @@ class PanelWidget(QWidget):
             cfg.set('last_open_dir', os.path.dirname(os.path.abspath(paths[0])))
             self._load_files(paths)
 
-    def _start_image_load(self, files: list, already_open: bool, image_exts: tuple, st):
+    def _start_image_load(self, files: list, already_open: bool, image_exts: tuple, st,
+                           existing_names: set = None):
         from modules.qt.archive_loader import _natural_sort_key
         from modules.qt.canvas_overlay_qt import show_canvas_text as _show_ct, hide_canvas_text as _hide_ct
         from modules.qt.web_import_qt import _show_cancel_item
@@ -1020,7 +1045,7 @@ class PanelWidget(QWidget):
             _hide()
             self._canvas.render_mosaic()
 
-        worker = _ImageLoadWorker(files, already_open, image_exts)
+        worker = _ImageLoadWorker(files, already_open, image_exts, existing_names=existing_names)
         self._image_worker = worker
 
         def on_progress(pct):
@@ -1090,7 +1115,7 @@ class PanelWidget(QWidget):
         from modules.qt.file_close_qt import close_file
         close_file(self, state=self._state, **self._file_close_args())
 
-    def _load_files(self, paths: list, from_drop: bool = False):
+    def _load_files(self, paths: list, from_drop: bool = False, rename_collisions_as_copy: bool = False):
         self._library_window = None
         from modules.qt.archive_loader import _natural_sort_key
 
@@ -1138,7 +1163,11 @@ class PanelWidget(QWidget):
                 self._loader.load(cbz_sorted)
 
         if image_files or annex_files:
-            self._start_image_load(image_files + annex_files, already_open, IMAGE_EXTS, st)
+            existing_names = None
+            if rename_collisions_as_copy:
+                existing_names = {e["orig_name"] for e in st.images_data}
+            self._start_image_load(image_files + annex_files, already_open, IMAGE_EXTS, st,
+                                    existing_names=existing_names)
 
     def _show_dpi_dialog_for_merge(self, filepath: str):
         from modules.qt.pdf_loading_qt import DpiDialog, import_and_merge_pdf
@@ -1850,7 +1879,7 @@ class PanelWidget(QWidget):
         from modules.qt.archive_loader import _natural_sort_key
         paste_from_system_clipboard(
             parent=self,
-            load_files_callback=self._load_files,
+            load_files_callback=lambda paths: self._load_files(paths, rename_collisions_as_copy=True),
             save_state=self.save_state,
             render_mosaic=self._canvas.render_mosaic,
             clear_selection=self._canvas._clear_selection_and_emit,
@@ -2199,14 +2228,13 @@ class PanelWidget(QWidget):
         if save:
             size_names = ['small', 'normal', 'large']
             get_config_manager().set_thumbnail_size(size_names[index])
-        if not getattr(st, 'loading_label', None):
-            prev = _state_module.state
-            _state_module.state = st
-            try:
-                self._canvas.render_mosaic()
-            finally:
-                _state_module.state = prev
-            self._canvas.viewport().repaint()
+        prev = _state_module.state
+        _state_module.state = st
+        try:
+            self._canvas.render_mosaic()
+        finally:
+            _state_module.state = prev
+        self._canvas.viewport().repaint()
 
     def _decrease_thumb_size(self):
         st = self._state

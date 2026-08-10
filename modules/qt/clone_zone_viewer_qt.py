@@ -344,6 +344,10 @@ class _CloneImageWidget(QWidget):
         oy = max(-max_oy, min(max_oy, self._offset.y()))
         self._offset = QPoint(ox, oy)
 
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._recalc_source_widget_pt()
+
     # ── Événements souris ─────────────────────────────────────────────────────
 
     def wheelEvent(self, event):

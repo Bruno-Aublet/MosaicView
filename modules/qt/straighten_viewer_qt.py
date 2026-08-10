@@ -91,10 +91,14 @@ class _StraightenImageWidget(QWidget):
         self._pan_start = None
         self._pixmap = None
 
-        # Trait de référence (coordonnées widget)
+        # Trait de référence (coordonnées widget, valables uniquement pour la frame courante)
         self._line_start = None
         self._line_end   = None
         self._drawing    = False        # tracé initial en cours
+
+        # Trait de référence en coordonnées image (stables entre pan/zoom)
+        self._line_img_start = None
+        self._line_img_end   = None
 
         # Déplacement d'un point existant
         self._dragging_handle = None    # None | 'start' | 'end'
@@ -112,6 +116,8 @@ class _StraightenImageWidget(QWidget):
         self._pixmap = pixmap
         self._line_start = None
         self._line_end   = None
+        self._line_img_start = None
+        self._line_img_end   = None
         self._drawing    = False
         self._dragging_handle = None
         if reset_offset:
@@ -121,6 +127,8 @@ class _StraightenImageWidget(QWidget):
     def clear_line(self):
         self._line_start = None
         self._line_end   = None
+        self._line_img_start = None
+        self._line_img_end   = None
         self._drawing    = False
         self._dragging_handle = None
         self.update()
@@ -130,6 +138,7 @@ class _StraightenImageWidget(QWidget):
 
     def set_zoom(self, z):
         self._zoom = max(0.1, min(10.0, z))
+        self._sync_line_from_image()
         self.update()
         if self.on_zoom_changed:
             self.on_zoom_changed(self._zoom)
@@ -141,6 +150,7 @@ class _StraightenImageWidget(QWidget):
         """Zoom à 100% (taille réelle des pixels de l'image)."""
         self._zoom = 1.0
         self._offset = QPoint(0, 0)
+        self._sync_line_from_image()
         self.update()
         if self.on_zoom_changed:
             self.on_zoom_changed(self._zoom)
@@ -153,6 +163,7 @@ class _StraightenImageWidget(QWidget):
         h = max(1, self.height())
         self._zoom = max(0.1, min(10.0, min(w / self._pixmap.width(), h / self._pixmap.height())))
         self._offset = QPoint(0, 0)
+        self._sync_line_from_image()
         self.update()
         if self.on_zoom_changed:
             self.on_zoom_changed(self._zoom)
@@ -162,6 +173,7 @@ class _StraightenImageWidget(QWidget):
     def paintEvent(self, event):
         if not self._pixmap:
             return
+        self._sync_line_from_image()
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
@@ -243,6 +255,7 @@ class _StraightenImageWidget(QWidget):
             self._offset   += diff
             self._pan_start = pos
             self._clamp_offset()
+            self._sync_line_from_image()
             self.update()
         elif self._dragging_handle is not None:
             if self._dragging_handle == 'start':
@@ -284,13 +297,16 @@ class _StraightenImageWidget(QWidget):
             event.accept()
 
     def _notify_line(self):
-        """Calcule les coordonnées image et appelle on_line_drawn si le trait est valide."""
+        """Fige les coordonnées image du trait, et appelle on_line_drawn si le trait est valide."""
+        if self._line_start is not None and self._line_end is not None:
+            self._line_img_start = self._widget_to_image(self._line_start)
+            self._line_img_end   = self._widget_to_image(self._line_end)
         if (self.on_line_drawn
                 and self._line_start is not None
                 and self._line_end is not None
                 and self._line_start != self._line_end):
-            ix1, iy1 = self._widget_to_image(self._line_start)
-            ix2, iy2 = self._widget_to_image(self._line_end)
+            ix1, iy1 = self._line_img_start
+            ix2, iy2 = self._line_img_end
             self.on_line_drawn(ix1, iy1, ix2, iy2)
 
     # ── Coordonnées ──────────────────────────────────────────────────────────
@@ -305,6 +321,21 @@ class _StraightenImageWidget(QWidget):
         ix = int((pt.x() - ox) / self._zoom)
         iy = int((pt.y() - oy) / self._zoom)
         return ix, iy
+
+    def _image_to_widget(self, ix, iy):
+        w  = int(self._pixmap.width()  * self._zoom)
+        h  = int(self._pixmap.height() * self._zoom)
+        ox = self._offset.x() + (self.width()  - w) // 2
+        oy = self._offset.y() + (self.height() - h) // 2
+        return QPoint(int(ox + ix * self._zoom), int(oy + iy * self._zoom))
+
+    def _sync_line_from_image(self):
+        """Recalcule _line_start/_line_end (widget) depuis _line_img_start/_line_img_end
+        après un pan ou un zoom, pour garder le trait collé à l'image."""
+        if not self._pixmap or self._line_img_start is None or self._line_img_end is None:
+            return
+        self._line_start = self._image_to_widget(*self._line_img_start)
+        self._line_end   = self._image_to_widget(*self._line_img_end)
 
     def _clamp_offset(self):
         if not self._pixmap:

@@ -332,6 +332,15 @@ def _copy_to_clipboard(text):
     QApplication.clipboard().setText(text)
 
 
+def get_support_email() -> str:
+    """Adresse mail de contact MosaicView, reconstruite à partir de morceaux
+    séparés pour ne pas apparaître en clair dans le code source (repo public,
+    cible facile pour les robots de scraping d'adresses mail)."""
+    user = "mosaicview" + "1969"
+    domain = "gmail" + "." + "com"
+    return f"{user}@{domain}"
+
+
 def format_file_size(size_bytes):
     """
     Convertit une taille en octets en format lisible (o, Ko, Mo, Go, To).

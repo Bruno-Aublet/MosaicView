@@ -413,9 +413,11 @@ def _send_scan_log_by_mail(parent) -> None:
         ).show_nonmodal()
         return
 
+    from modules.qt.utils import get_support_email
+
     _copy_to_clipboard(content)
     body = urllib.parse.quote(_wt("scan.mail_body_hint") + "\n\n")
-    webbrowser.open(f"mailto:mosaicview1969@gmail.com?subject=MosaicView%20-%20Scan%20log&body={body}")
+    webbrowser.open(f"mailto:{get_support_email()}?subject=MosaicView%20-%20Scan%20log&body={body}")
 
 
 def _show_scan_error_with_log_link(
