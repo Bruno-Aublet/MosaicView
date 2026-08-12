@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "CBT-tiedostojen\n erämuunnos CBZ:ksi",
     "batch_metadata": "Metatietojen erätuonti",
     "batch_library": "Luo kirjasto kansiosta/kansioista",
-    "batch_recompress": "Pakkaa CBZ-tiedostot uudelleen oletustasolle"
+    "batch_recompress": "Pakkaa CBZ-tiedostot uudelleen oletustasolle",
+    "validate_straighten": "Vahvista suoristus",
+    "validate_text": "Käytä tekstiä"
   },
   "tabs": {
     "mosaic": "Mosaïque",
@@ -75,7 +77,16 @@
     "mode_single": "Yksittäinen sivu  [D]",
     "mode_double": "Kaksoissivu  [D]",
     "mode_continuous": "Jatkuva tila  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Rajaus",
+    "toolbar_undo_tooltip": "Kumoa (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Tee uudelleen (Ctrl+Y)",
+    "unvalidated_work_title": "Vahvistamaton työ",
+    "unvalidated_work_message": "Sinulla on yksi tai useampi vahvistamaton kesken oleva työ. Haluatko varmasti sulkea katselimen? Tämä työ menetetään.",
+    "toolbar_straighten_tooltip": "Suoristus",
+    "toolbar_crop_instruction": "Piirrä suorakulmio säilytettävän alueen ympärille ja vahvista",
+    "toolbar_clone_tooltip": "Kloonaus",
+    "toolbar_text_tooltip": "Teksti"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Avaaminen estetty",
         "message": "Tätä tiedostoa ei avattu: {ext}-tiedostot voivat suorittaa koodia tietokoneellasi.\nJos luotat siihen, pura se ja avaa se manuaalisesti."
+      },
+      "no_straighten_line": {
+        "title": "Viivaa ei ole piirretty",
+        "message": "Piirrä ensin apuviiva."
+      },
+      "no_skew_detected": {
+        "title": "Vinoutta ei havaittu",
+        "message": "Tältä sivulta ei havaittu luotettavaa vinoutta."
+      },
+      "no_text_block": {
+        "title": "Ei tekstiä",
+        "message": "Kirjoita ensin tekstiä ainakin yhteen lohkoon."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Kohdeasemalla ei ole tarpeeksi levytilaa.\nTarvitaan: {needed}\nSaatavilla: {free}"
       },
-      "no_wilhelm_scream_found": "Äänitiedostoa ei löytynyt."
+      "no_wilhelm_scream_found": "Äänitiedostoa ei löytynyt.",
+      "straighten_failed": {
+        "title": "Virhe",
+        "message": "Kuvaa ei voitu suoristaa: {error}"
+      },
+      "clone_failed": {
+        "title": "Virhe",
+        "message": "Kloonausta ei voitu käyttää: {error}"
+      },
+      "text_failed": {
+        "title": "Virhe",
+        "message": "Tekstiä ei voitu käyttää: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "KATSO LOKI",
     "straighten_viewer": {
-      "title": "Oikaisu",
-      "instruction": "Piirrä suora viiva siihen, mikä kuvan pitäisi olla vaakasuora (tai pystysuora)"
+      "instruction": "Piirrä suora viiva siihen, mikä kuvan pitäisi olla vaakasuora (tai pystysuora)",
+      "angle_label": "Kulma:"
     },
     "clone_zone_viewer": {
       "title": "Alueen kloonaus",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Koko :"
     },
     "text_viewer": {
-      "title": "Lisää teksti",
       "instruction": "Napsauta kohtaa, johon haluat lisätä tekstin  •  Ctrl+nuolet: siirrä tekstiä piksel kerrallaan",
       "size_label": "Koko:",
       "color_label": "Väri:",
       "bold_btn": "L",
       "italic_btn": "K",
       "underline_btn": "A",
-      "apply_btn": "Käytä teksti",
       "pick_color_title": "Valitse tekstin väri"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automaattinen suoristus",
       "message": "{success} kuva(a) suoristettu onnistuneesti.",
       "message_errors": "{success} kuva(a) suoristettu onnistuneesti.\n{failed} epäonnistui (luotettavaa kaltevuutta ei havaittu) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Perusvärit:",
+      "hex_label": "Heksadesimaali:",
+      "red_label": "Punainen:",
+      "green_label": "Vihreä:",
+      "blue_label": "Sininen:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

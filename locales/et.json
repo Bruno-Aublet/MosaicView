@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "CBT-failide\n pakett-teisendus CBZ-ks",
     "batch_metadata": "Metaandmete hulkimport",
     "batch_library": "Loo kaust(adest) teek",
-    "batch_recompress": "Pakkige CBZ-failid uuesti vaiketasemele"
+    "batch_recompress": "Pakkige CBZ-failid uuesti vaiketasemele",
+    "validate_straighten": "Kinnita sirgestamine",
+    "validate_text": "Rakenda tekst"
   },
   "tabs": {
     "mosaic": "Mosaiik",
@@ -75,7 +77,16 @@
     "mode_single": "Üksik leht  [D]",
     "mode_double": "Kahekordne leht  [D]",
     "mode_continuous": "Pidev režiim  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Kärpimine",
+    "toolbar_undo_tooltip": "Võta tagasi (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Tee uuesti (Ctrl+Y)",
+    "unvalidated_work_title": "Kinnitamata töö",
+    "unvalidated_work_message": "Teil on üks või mitu pooleliolevat kinnitamata tööd. Kas olete kindel, et soovite pildivaaturi sulgeda? See töö läheb kaotsi.",
+    "toolbar_straighten_tooltip": "Sirgestamine",
+    "toolbar_crop_instruction": "Joonistage ristkülik säilitatava ala ümber ja kinnitage",
+    "toolbar_clone_tooltip": "Kloonimine",
+    "toolbar_text_tooltip": "Tekst"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Avamine blokeeritud",
         "message": "Seda faili ei avatud: {ext}-failid võivad teie arvutis koodi käivitada.\nKui usaldate seda, pakkige see lahti ja avage käsitsi."
+      },
+      "no_straighten_line": {
+        "title": "Joont pole joonistatud",
+        "message": "Palun joonistage esmalt viitejoon."
+      },
+      "no_skew_detected": {
+        "title": "Kallet ei tuvastatud",
+        "message": "Sellel lehel ei tuvastatud usaldusväärset kallet."
+      },
+      "no_text_block": {
+        "title": "Teksti pole sisestatud",
+        "message": "Sisestage kõigepealt tekst vähemalt ühte plokki."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Sihtkettale ei jätku kettaruumi.\nVajalik: {needed}\nSaadaval: {free}"
       },
-      "no_wilhelm_scream_found": "Helifaili ei leitud."
+      "no_wilhelm_scream_found": "Helifaili ei leitud.",
+      "straighten_failed": {
+        "title": "Viga",
+        "message": "Pilti ei õnnestunud sirgestada: {error}"
+      },
+      "clone_failed": {
+        "title": "Viga",
+        "message": "Kloonimist ei õnnestunud rakendada: {error}"
+      },
+      "text_failed": {
+        "title": "Viga",
+        "message": "Teksti rakendamine ebaõnnestus: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "VAATA LOGI",
     "straighten_viewer": {
-      "title": "Sirgestamine",
-      "instruction": "Joonistage sirge joon sellele, mis peaks pildil olema horisontaalne (või vertikaalne)"
+      "instruction": "Joonistage sirge joon sellele, mis peaks pildil olema horisontaalne (või vertikaalne)",
+      "angle_label": "Nurk:"
     },
     "clone_zone_viewer": {
       "title": "Tsooni kloonimine",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Suurus :"
     },
     "text_viewer": {
-      "title": "Lisa tekst",
       "instruction": "Klõpsake, kuhu soovite teksti lisada  •  Ctrl+nooled: liiguta teksti pikseli kaupa",
       "size_label": "Suurus:",
       "color_label": "Värv:",
       "bold_btn": "R",
       "italic_btn": "K",
       "underline_btn": "A",
-      "apply_btn": "Rakenda tekst",
       "pick_color_title": "Valige teksti värv"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automaatne sirgestamine",
       "message": "{success} pilt/pildid sirgestatud edukalt.",
       "message_errors": "{success} pilt/pildid sirgestatud edukalt.\n{failed} ebaõnnestus(id) (usaldusväärset kallet ei tuvastatud) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Põhivärvid:",
+      "hex_label": "Kuueteistkümnend:",
+      "red_label": "Punane:",
+      "green_label": "Roheline:",
+      "blue_label": "Sinine:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

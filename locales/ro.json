@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Conversie în lot\n a fișierelor CBT la CBZ",
     "batch_metadata": "Import în masă a metadatelor",
     "batch_library": "Creați o bibliotecă din dosar(e)",
-    "batch_recompress": "Recomprimați fișierele CBZ la nivelul implicit"
+    "batch_recompress": "Recomprimați fișierele CBZ la nivelul implicit",
+    "validate_straighten": "Confirmă îndreptarea",
+    "validate_text": "Aplică textul"
   },
   "tabs": {
     "mosaic": "Mozaic",
@@ -75,7 +77,16 @@
     "mode_single": "Pagină simplă  [D]",
     "mode_double": "Pagină dublă  [D]",
     "mode_continuous": "Mod continuu  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Decupare",
+    "toolbar_undo_tooltip": "Anulare (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Refacere (Ctrl+Y)",
+    "unvalidated_work_title": "Lucrare nevalidată",
+    "unvalidated_work_message": "Aveți una sau mai multe lucrări în curs nevalidate. Sigur doriți să închideți vizualizatorul? Această lucrare se va pierde.",
+    "toolbar_straighten_tooltip": "Îndreptare",
+    "toolbar_crop_instruction": "Desenați un dreptunghi în jurul zonei de păstrat, apoi confirmați",
+    "toolbar_clone_tooltip": "Clonare",
+    "toolbar_text_tooltip": "Text"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Deschidere blocată",
         "message": "Acest fișier nu a fost deschis: fișierele {ext} pot executa cod pe computerul dvs.\nDacă aveți încredere în el, extrageți-l și deschideți-l manual."
+      },
+      "no_straighten_line": {
+        "title": "Nicio linie trasată",
+        "message": "Trasați mai întâi o linie de referință."
+      },
+      "no_skew_detected": {
+        "title": "Nicio înclinare detectată",
+        "message": "Nu a fost detectată nicio înclinare fiabilă pe această pagină."
+      },
+      "no_text_block": {
+        "title": "Niciun text",
+        "message": "Introduceți mai întâi text în cel puțin un bloc."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Spațiu insuficient pe discul de destinație.\nNecesar: {needed}\nDisponibil: {free}"
       },
-      "no_wilhelm_scream_found": "Fișierul audio nu a fost găsit."
+      "no_wilhelm_scream_found": "Fișierul audio nu a fost găsit.",
+      "straighten_failed": {
+        "title": "Eroare",
+        "message": "Imaginea nu a putut fi îndreptată: {error}"
+      },
+      "clone_failed": {
+        "title": "Eroare",
+        "message": "Clonarea nu a putut fi aplicată: {error}"
+      },
+      "text_failed": {
+        "title": "Eroare",
+        "message": "Textul nu a putut fi aplicat: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "VEZI LOG",
     "straighten_viewer": {
-      "title": "Îndreptare",
-      "instruction": "Trasați o linie dreaptă pe ceea ce trebuie să fie orizontal (sau vertical) în imagine"
+      "instruction": "Trasați o linie dreaptă pe ceea ce trebuie să fie orizontal (sau vertical) în imagine",
+      "angle_label": "Unghi:"
     },
     "clone_zone_viewer": {
       "title": "Clonare zonă",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Dimensiune :"
     },
     "text_viewer": {
-      "title": "Inserare text",
       "instruction": "Faceți clic unde doriți să inserați textul  •  Ctrl+săgeți: mutați textul cu un pixel",
       "size_label": "Dimensiune:",
       "color_label": "Culoare:",
       "bold_btn": "î",
       "italic_btn": "I",
       "underline_btn": "S",
-      "apply_btn": "Aplică textul",
       "pick_color_title": "Alegeți culoarea textului"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Îndreptare automată",
       "message": "{success} imagine(i) îndreptată(e) cu succes.",
       "message_errors": "{success} imagine(i) îndreptată(e) cu succes.\n{failed} eșuată(e) (nu s-a detectat o înclinare fiabilă) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Culori de bază:",
+      "hex_label": "Hexazecimal:",
+      "red_label": "Roșu:",
+      "green_label": "Verde:",
+      "blue_label": "Albastru:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

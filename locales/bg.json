@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Групово конвертиране\n на CBT файлове в CBZ",
     "batch_metadata": "Пакетно импортиране на метаданни",
     "batch_library": "Създаване на библиотека от папка(ите)",
-    "batch_recompress": "Прекомпресиране на CBZ файлове на ниво по подразбиране"
+    "batch_recompress": "Прекомпресиране на CBZ файлове на ниво по подразбиране",
+    "validate_straighten": "Потвърди изправянето",
+    "validate_text": "Приложи текста"
   },
   "tabs": {
     "mosaic": "Мозайка",
@@ -75,7 +77,16 @@
     "mode_single": "Единична страница  [D]",
     "mode_double": "Двойна страница  [D]",
     "mode_continuous": "Непрекъснат режим  [D]",
-    "mode_webtoon": "Уебтуун  [D]"
+    "mode_webtoon": "Уебтуун  [D]",
+    "toolbar_crop_tooltip": "Изрязване",
+    "toolbar_undo_tooltip": "Отмяна (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Повторение (Ctrl+Y)",
+    "unvalidated_work_title": "Непотвърдена работа",
+    "unvalidated_work_message": "Имате една или повече незавършени операции, които не са потвърдени. Сигурни ли сте, че искате да затворите визуализатора? Тази работа ще бъде загубена.",
+    "toolbar_straighten_tooltip": "Изправяне",
+    "toolbar_crop_instruction": "Начертайте правоъгълник около зоната за запазване, после потвърдете",
+    "toolbar_clone_tooltip": "Клониране",
+    "toolbar_text_tooltip": "Текст"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Отварянето е блокирано",
         "message": "Този файл не беше отворен: файловете {ext} могат да изпълняват код на компютъра ви.\nАко му се доверявате, извлечете го и го отворете ръчно."
+      },
+      "no_straighten_line": {
+        "title": "Няма начертана линия",
+        "message": "Моля, начертайте първо референтна линия."
+      },
+      "no_skew_detected": {
+        "title": "Не е открит наклон",
+        "message": "На тази страница не беше открит надежден наклон."
+      },
+      "no_text_block": {
+        "title": "Няма въведен текст",
+        "message": "Моля, въведете текст поне в един блок първо."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Недостатъчно място на диска на местоназначението.\nНеобходимо: {needed}\nНалично: {free}"
       },
-      "no_wilhelm_scream_found": "Звуковият файл не е намерен."
+      "no_wilhelm_scream_found": "Звуковият файл не е намерен.",
+      "straighten_failed": {
+        "title": "Грешка",
+        "message": "Изображението не можа да бъде изправено: {error}"
+      },
+      "clone_failed": {
+        "title": "Грешка",
+        "message": "Клонирането не бе приложено: {error}"
+      },
+      "text_failed": {
+        "title": "Грешка",
+        "message": "Неуспешно прилагане на текста: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "ВИЖ ЖУРНАЛА",
     "straighten_viewer": {
-      "title": "Изправяне",
-      "instruction": "Начертайте права линия върху това, което трябва да е хоризонтално (или вертикално) в изображението"
+      "instruction": "Начертайте права линия върху това, което трябва да е хоризонтално (или вертикално) в изображението",
+      "angle_label": "Ъгъл:"
     },
     "clone_zone_viewer": {
       "title": "Клониране на зона",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Размер :"
     },
     "text_viewer": {
-      "title": "Вмъкване на текст",
       "instruction": "Кликнете, за да поставите текст  •  Ctrl+стрелки: преместване с пиксел",
       "size_label": "Размер:",
       "color_label": "Цвят:",
       "bold_btn": "Ч",
       "italic_btn": "К",
       "underline_btn": "П",
-      "apply_btn": "Приложи текста",
       "pick_color_title": "Избор на цвят на текста"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Автоматично изправяне",
       "message": "{success} изображение(я) изправени успешно.",
       "message_errors": "{success} изображение(я) изправени успешно.\n{failed} неуспешни (не е открит надежден наклон) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Основни цветове:",
+      "hex_label": "Шестнадесетичен:",
+      "red_label": "Червено:",
+      "green_label": "Зелено:",
+      "blue_label": "Синьо:",
+      "alpha_label": "Алфа:"
     }
   },
   "tooltip": {

@@ -7,7 +7,7 @@ description: Localiser ou modifier la rotation 90° gauche/droite et le miroir h
 
 Quatre transformations géométriques appliquées aux images **sélectionnées** dans la mosaïque : **rotation gauche** (90° anti-horaire), **rotation droite** (90° horaire), **miroir horizontal** (gauche-droite) et **miroir vertical** (haut-bas). Les 4 partagent la même infrastructure (mêmes fichiers, même worker thread, même pattern d'invalidation), d'où un seul skill plutôt que quatre.
 
-Distinct de la rotation libre du **redressement** (`straighten_viewer_qt.py`, angle arbitraire calculé à partir d'une ligne tracée par l'utilisateur) — voir skill `page-straighten`. Aucun code n'est partagé entre les deux mécanismes.
+Distinct de la rotation libre du **redressement** (`straighten_tool_qt.py`, angle arbitraire calculé à partir d'une ligne tracée par l'utilisateur) — voir skill `page-straighten`. Aucun code n'est partagé entre les deux mécanismes.
 
 ## Les deux fonctions métier — `modules/qt/image_ops.py`
 
@@ -86,8 +86,8 @@ Clés dans `locales/fr.json` : `context_menu.image.rotate_right`/`rotate_left` (
 
 - `apply-image-operation` — pattern général d'invalidation de cache/undo-redo pour toute fonction qui touche `entry['bytes']` ; rotation/miroir en est une variante particulière (voir section "Orchestration" ci-dessus pour les écarts précis). Le skill `apply-image-operation` référence déjà ce fichier comme exemple de la variante (B) d'invalidation partielle.
 - `undo-redo` — mécanique interne d'historique/snapshot/rollback utilisée par `save_state`/`rollback` ; explique pourquoi `entry["img"]`/`entry["bytes"]` ne doivent jamais être mutés en place.
-- `page-straighten` — la rotation **libre** (angle arbitraire) du redressement (`straighten_viewer_qt.py`), un mécanisme totalement séparé qui ne partage aucun code avec ce skill malgré le mot "rotation" en commun ; comparer les deux sections "Application"/"Orchestration" pour les différences de `resample`/invalidation de cache/undo.
-- `viewers` — la fenêtre de redressement (`StraightenViewerDialog`) est l'une des 5 visionneuses plein-écran du projet ; voir aussi skill `page-straighten` pour le mécanisme de calcul d'angle lui-même.
+- `page-straighten` — la rotation **libre** (angle arbitraire) du redressement (`straighten_tool_qt.py`), un mécanisme totalement séparé qui ne partage aucun code avec ce skill malgré le mot "rotation" en commun ; comparer les deux sections "Application"/"Orchestration" pour les différences de `resample`/invalidation de cache/undo.
+- `viewers` — le redressement manuel est un outil de la barre d'outils flottante de la visionneuse principale (plus de fenêtre dédiée) ; voir aussi skill `page-straighten` pour le mécanisme de calcul d'angle lui-même.
 - `icon-toolbar` — boutons `rotate_left`/`rotate_right` de la colonne d'icônes, leur activation contextuelle et leurs tooltips.
 - `qt-context-menus` — sous-menu "Rotation" du clic droit.
 - `qt-tooltips` — tooltips des boutons de rotation dans la colonne d'icônes.

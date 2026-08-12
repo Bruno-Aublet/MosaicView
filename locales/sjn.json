@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Lotë cant CBT\n faifin na CBZ",
     "batch_metadata": "Govad bronad i nedh-ambar",
     "batch_library": "Caro i·thambe o·i·taur(in)",
-    "batch_recompress": "Athrenna cened CBZ na i modh hen pen"
+    "batch_recompress": "Athrenna cened CBZ na i modh hen pen",
+    "validate_straighten": "Orchal i Drenarn",
+    "validate_text": "Bâd parth"
   },
   "tabs": {
     "mosaic": "Mosaig",
@@ -75,7 +77,16 @@
     "mode_single": "Pân nîn  [D]",
     "mode_double": "Pân edwen  [D]",
     "mode_continuous": "Côr bân  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Orchad",
+    "toolbar_undo_tooltip": "Avedui (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Adrevedui (Ctrl+Y)",
+    "unvalidated_work_title": "Orchad ú-orthannen",
+    "unvalidated_work_message": "Orchad ú-orthannen. Anwa merithach thelio i harthad? Orchad ú-garen a gosta.",
+    "toolbar_straighten_tooltip": "Trenarn",
+    "toolbar_crop_instruction": "Anno, tirio sell o orchad; ah orchal.",
+    "toolbar_clone_tooltip": "Glawar",
+    "toolbar_text_tooltip": "Parth"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Edro hollen",
         "message": "I barf hen ú-edrannen: pelir birf {ext} cared úgerth vi 'aud lín.\nAe estelig han, togo han ed a edro han na gam lín."
+      },
+      "no_straighten_line": {
+        "title": "Ú-thelegol",
+        "message": "Anno, tirio sell o drenarn sui ben."
+      },
+      "no_skew_detected": {
+        "title": "Ú-cenir chair veleg",
+        "message": "Ú-cenir chair veleg vi randir hen."
+      },
+      "no_text_block": {
+        "title": "Ú-thelegol",
+        "message": "Anno, tirio parth sui ben."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Ú-boe lô pân i 'raw vorn.\nDînen: {needed}\nGalad: {free}"
       },
-      "no_wilhelm_scream_found": "Lend úin nen."
+      "no_wilhelm_scream_found": "Lend úin nen.",
+      "straighten_failed": {
+        "title": "Aew",
+        "message": "Ú-eston trenarn i randir: {error}"
+      },
+      "clone_failed": {
+        "title": "Aew",
+        "message": "Ú-eston glawar i randir: {error}"
+      },
+      "text_failed": {
+        "title": "Aew",
+        "message": "Ú-eston parth i randir: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "GWELAD LOG",
     "straighten_viewer": {
-      "title": "Trenarn",
-      "instruction": "Tolo trenarn vi i phith i pedim ortheri (egor pendrad) in tâl"
+      "instruction": "Tolo trenarn vi i phith i pedim ortheri (egor pendrad) in tâl",
+      "angle_label": "Naith:"
     },
     "clone_zone_viewer": {
       "title": "Glawar i·dôl",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Daur :"
     },
     "text_viewer": {
-      "title": "Pedo Parth",
       "instruction": "Tiro na thar i parth  •  Ctrl+hair: muda parth pixel an pixel",
       "size_label": "Egor:",
       "color_label": "Calen:",
       "bold_btn": "T",
       "italic_btn": "I",
       "underline_btn": "N",
-      "apply_btn": "Bâd parth",
       "pick_color_title": "Egor calen i parth"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Trenarn Auto-hired",
       "message": "{success} randir Trenarnannen vaeth.",
       "message_errors": "{success} randir Trenarnannen vaeth.\n{failed} pennen (ú-cenir chair veleg) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Cilo:",
+      "hex_label": "Hexadecimal:",
+      "red_label": "Caran:",
+      "green_label": "Calen:",
+      "blue_label": "Luin:",
+      "alpha_label": "Alpha:"
     }
   },
   "tooltip": {

@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Konverżjoni batch\n ta' fajls CBT għal CBZ",
     "batch_metadata": "Importazzjoni tal-metadejta bin-numru",
     "batch_library": "Oħloq librerija mill-folder(s)",
-    "batch_recompress": "Ikkomprimi mill-ġdid il-fajls CBZ fil-livell prestabbilit"
+    "batch_recompress": "Ikkomprimi mill-ġdid il-fajls CBZ fil-livell prestabbilit",
+    "validate_straighten": "Ikkonferma d-drittar",
+    "validate_text": "Applika t-test"
   },
   "tabs": {
     "mosaic": "Mużajk",
@@ -75,7 +77,16 @@
     "mode_single": "Paġna waħda  [D]",
     "mode_double": "Paġna doppja  [D]",
     "mode_continuous": "Mod kontinwu  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Qtugħ",
+    "toolbar_undo_tooltip": "Ħassar (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Erġa' agħmel (Ctrl+Y)",
+    "unvalidated_work_title": "Xogħol mhux ivvalidat",
+    "unvalidated_work_message": "Għandek xogħol wieħed jew aktar għaddej li mhuwiex ivvalidat. Int ċert li trid tagħlaq il-viewer? Dan ix-xogħol jintilef.",
+    "toolbar_straighten_tooltip": "Iddritta",
+    "toolbar_crop_instruction": "Iġbed rettangolu madwar iż-żona li trid iżżomm, imbagħad ikkonferma",
+    "toolbar_clone_tooltip": "Klonazzjoni",
+    "toolbar_text_tooltip": "Test"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Il-ftuħ ġie mblukkat",
         "message": "Dan il-fajl ma nfetaħx: il-fajls {ext} jistgħu jħaddmu kodiċi fuq il-kompjuter tiegħek.\nJekk tafdah, oħorġu mill-arkivju u iftħu manwalment."
+      },
+      "no_straighten_line": {
+        "title": "L-ebda linja miġbuda",
+        "message": "Jekk jogħġbok iġbed linja ta' referenza l-ewwel."
+      },
+      "no_skew_detected": {
+        "title": "L-ebda tinjib misjub",
+        "message": "Ma nstab l-ebda tinjib affidabbli f'din il-paġna."
+      },
+      "no_text_block": {
+        "title": "Ebda test",
+        "message": "Jekk jogħġbok daħħal test f'mill-inqas blokk wieħed l-ewwel."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Mhux biżżejjed spazju fid-disk fuq id-drive tad-destinazzjoni.\nMeħtieġ: {needed}\nDisponibbli: {free}"
       },
-      "no_wilhelm_scream_found": "Fajl awdjo ma nstabx."
+      "no_wilhelm_scream_found": "Fajl awdjo ma nstabx.",
+      "straighten_failed": {
+        "title": "Żball",
+        "message": "Ma setgħetx tiġi ddritjata l-immaġni: {error}"
+      },
+      "clone_failed": {
+        "title": "Żball",
+        "message": "Ma setgħetx tiġi applikata l-klonazzjoni: {error}"
+      },
+      "text_failed": {
+        "title": "Żball",
+        "message": "Ma setax jiġi applikat it-test: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "ARA L-LOG",
     "straighten_viewer": {
-      "title": "Sewwi",
-      "instruction": "Itfa' linja dritta fuq dak li għandu jkun orizzontali (jew vertikali) fl-immaġni"
+      "instruction": "Itfa' linja dritta fuq dak li għandu jkun orizzontali (jew vertikali) fl-immaġni",
+      "angle_label": "Angolu:"
     },
     "clone_zone_viewer": {
       "title": "Klonazzjoni ta' żona",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Daqs :"
     },
     "text_viewer": {
-      "title": "Daħħal Test",
       "instruction": "Ikklikkja fejn trid tiddaħħal it-test  •  Ctrl+vleġeġ: mexxi t-test pixel b'pixel",
       "size_label": "Daqs:",
       "color_label": "Kulur:",
       "bold_btn": "G",
       "italic_btn": "I",
       "underline_btn": "S",
-      "apply_btn": "Applika t-test",
       "pick_color_title": "Agħżel il-kulur tat-test"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Tiddirizzar awtomatiku",
       "message": "{success} immaġni ddritjata/i b'suċċess.",
       "message_errors": "{success} immaġni ddritjata/i b'suċċess.\n{failed} falliet (ma nstab l-ebda xengil affidabbli) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Kuluri bażiċi:",
+      "hex_label": "Eżadeċimali:",
+      "red_label": "Aħmar:",
+      "green_label": "Aħdar:",
+      "blue_label": "Blu:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Tiontú baisc\n comhaid CBT go CBZ",
     "batch_metadata": "Iompórtáil meiteashonraí ina bhaisce",
     "batch_library": "Cruthaigh leabharlann ón gcomhad(comhaid)",
-    "batch_recompress": "Athchomhbhrúigh comhaid CBZ ag an leibhéal réamhshocraithe"
+    "batch_recompress": "Athchomhbhrúigh comhaid CBZ ag an leibhéal réamhshocraithe",
+    "validate_straighten": "Deimhnigh an díriú",
+    "validate_text": "Cuir téacs i bhfeidhm"
   },
   "tabs": {
     "mosaic": "Mósáic",
@@ -75,7 +77,16 @@
     "mode_single": "Leathanach amháin  [D]",
     "mode_double": "Leathanach dúbailte  [D]",
     "mode_continuous": "Mód leanúnach  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Bearradh",
+    "toolbar_undo_tooltip": "Cealaigh (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Athdhéan (Ctrl+Y)",
+    "unvalidated_work_title": "Obair neamhdheimhnithe",
+    "unvalidated_work_message": "Tá obair amháin nó níos mó agat atá ar siúl agus nach bhfuil deimhnithe. An bhfuil tú cinnte gur mian leat an t-amharcán a dhúnadh? Caillfear an obair seo.",
+    "toolbar_straighten_tooltip": "Dírigh",
+    "toolbar_crop_instruction": "Tarraing dronuilleog timpeall an réimse le coinneáil, ansin deimhnigh",
+    "toolbar_clone_tooltip": "Clónáil",
+    "toolbar_text_tooltip": "Téacs"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Oscailt blocáilte",
         "message": "Níor osclaíodh an comhad seo: is féidir le comhaid {ext} cód a rith ar do ríomhaire.\nMá tá muinín agat as, bain amach é agus oscail de láimh é."
+      },
+      "no_straighten_line": {
+        "title": "Níor tarraingíodh líne",
+        "message": "Tarraing líne thagartha ar dtús le do thoil."
+      },
+      "no_skew_detected": {
+        "title": "Níor braitheadh aon fhiar",
+        "message": "Níor braitheadh aon fhiar iontaofa ar an leathanach seo."
+      },
+      "no_text_block": {
+        "title": "Gan téacs",
+        "message": "Cuir téacs isteach i mbloc amháin ar a laghad ar dtús."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Níl go leor spáis diosca ar an gceann scríbe.\nDe dhíth: {needed}\nAr fáil: {free}"
       },
-      "no_wilhelm_scream_found": "Comhad fuaime gan aimsiú."
+      "no_wilhelm_scream_found": "Comhad fuaime gan aimsiú.",
+      "straighten_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an íomhá a dhíriú: {error}"
+      },
+      "clone_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an clónáil a chur i bhfeidhm: {error}"
+      },
+      "text_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an téacs a chur i bhfeidhm: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "FÉACH AR AN LOG",
     "straighten_viewer": {
-      "title": "Díriú",
-      "instruction": "Tarraing líne dhíreach ar a bhfuil le bheith cothrománach (nó ingearach) san íomhá"
+      "instruction": "Tarraing líne dhíreach ar a bhfuil le bheith cothrománach (nó ingearach) san íomhá",
+      "angle_label": "Uillinn:"
     },
     "clone_zone_viewer": {
       "title": "Clónáil Criosanna",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Méid :"
     },
     "text_viewer": {
-      "title": "Cuir téacs isteach",
       "instruction": "Cliceáil áit ar mhaith leat an téacs a chur  •  Ctrl+saigheada: bog téacs pixel ar phixel",
       "size_label": "Méid:",
       "color_label": "Dath:",
       "bold_btn": "T",
       "italic_btn": "I",
       "underline_btn": "F",
-      "apply_btn": "Cuir an téacs i bhfeidhm",
       "pick_color_title": "Roghnaigh dath an téacs"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Dírúchán uathoibríoch",
       "message": "{success} íomhá(nna) dírithe go rathúil.",
       "message_errors": "{success} íomhá(nna) dírithe go rathúil.\n{failed} teipthe (níor braitheadh fiaradh iontaofa) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Dathanna bunúsacha:",
+      "hex_label": "Heicsidheachúlach:",
+      "red_label": "Dearg:",
+      "green_label": "Glas:",
+      "blue_label": "Gorm:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

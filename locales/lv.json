@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "CBT failu pakešu\n konvertēšana uz CBZ",
     "batch_metadata": "Metadatu lielapjoma imports",
     "batch_library": "Izveidot bibliotēku no mapes(-ēm)",
-    "batch_recompress": "Saspiest CBZ failus atkārtoti noklusējuma līmenī"
+    "batch_recompress": "Saspiest CBZ failus atkārtoti noklusējuma līmenī",
+    "validate_straighten": "Apstiprināt iztaisnošanu",
+    "validate_text": "Piemērot tekstu"
   },
   "tabs": {
     "mosaic": "Mozaīka",
@@ -75,7 +77,16 @@
     "mode_single": "Viena lapa  [D]",
     "mode_double": "Dubultā lapa  [D]",
     "mode_continuous": "Nepārtrauktais režīms  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Apgriešana",
+    "toolbar_undo_tooltip": "Atsaukt (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Atkārtot (Ctrl+Y)",
+    "unvalidated_work_title": "Neapstiprināts darbs",
+    "unvalidated_work_message": "Jums ir viens vai vairāki nepabeigti neapstiprināti darbi. Vai tiešām vēlaties aizvērt skatītāju? Šis darbs tiks zaudēts.",
+    "toolbar_straighten_tooltip": "Iztaisnošana",
+    "toolbar_crop_instruction": "Novelciet taisnstūri ap saglabājamo zonu un pēc tam apstipriniet",
+    "toolbar_clone_tooltip": "Klonēšana",
+    "toolbar_text_tooltip": "Teksts"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Atvēršana bloķēta",
         "message": "Šis fails netika atvērts: {ext} faili var izpildīt kodu jūsu datorā.\nJa uzticaties tam, izvelciet to un atveriet manuāli."
+      },
+      "no_straighten_line": {
+        "title": "Nav novilkta līnija",
+        "message": "Lūdzu, vispirms novelciet atsauces līniju."
+      },
+      "no_skew_detected": {
+        "title": "Slīpums nav noteikts",
+        "message": "Šajā lapā netika konstatēts uzticams slīpums."
+      },
+      "no_text_block": {
+        "title": "Nav teksta",
+        "message": "Vispirms ievadiet tekstu vismaz vienā blokā."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Galamērķa diskā nav pietiekami daudz vietas.\nNepieciešams: {needed}\nPieejams: {free}"
       },
-      "no_wilhelm_scream_found": "Audio fails nav atrasts."
+      "no_wilhelm_scream_found": "Audio fails nav atrasts.",
+      "straighten_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās iztaisnot attēlu: {error}"
+      },
+      "clone_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās pielietot klonēšanu: {error}"
+      },
+      "text_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās piemērot tekstu: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "SKATĪT ŽURNĀLU",
     "straighten_viewer": {
-      "title": "Iztaisnošana",
-      "instruction": "Uzzīmējiet taisnu līniju uz tā, kam attēlā vajadzētu būt horizontālam (vai vertikālam)"
+      "instruction": "Uzzīmējiet taisnu līniju uz tā, kam attēlā vajadzētu būt horizontālam (vai vertikālam)",
+      "angle_label": "Leņķis:"
     },
     "clone_zone_viewer": {
       "title": "Zonas klonēšana",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Izmērs :"
     },
     "text_viewer": {
-      "title": "Ievietot tekstu",
       "instruction": "Noklikšķiniet tur, kur vēlaties ievietot tekstu  •  Ctrl+bultiņas: pārvietot tekstu pa pikselim",
       "size_label": "Izmērs:",
       "color_label": "Krāsa:",
       "bold_btn": "T",
       "italic_btn": "K",
       "underline_btn": "P",
-      "apply_btn": "Lietot tekstu",
       "pick_color_title": "Izvēlieties teksta krāsu"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automātiska iztaisnošana",
       "message": "{success} attēls(-i) veiksmīgi iztaisnots(-i).",
       "message_errors": "{success} attēls(-i) veiksmīgi iztaisnots(-i).\n{failed} neizdevās (uzticams slīpums nav konstatēts) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Pamatkrāsas:",
+      "hex_label": "Heksadecimāls:",
+      "red_label": "Sarkans:",
+      "green_label": "Zaļš:",
+      "blue_label": "Zils:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

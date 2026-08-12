@@ -1,127 +1,156 @@
 ---
 name: clone-zone
-description: Localiser ou modifier le tampon de clonage (Ctrl+clic pour définir la zone source, peinture au clic maintenu pour dupliquer des pixels). Utiliser dès qu'une tâche touche à clone_zone_viewer_qt.py, CloneZoneViewerDialog, ou au bouton/menu "Clonage de zone".
+description: Localiser ou modifier le tampon de clonage (Ctrl+clic pour définir la zone source, peinture au clic maintenu pour dupliquer des pixels), outil "clone" de la barre d'outils flottante de la visionneuse principale. Utiliser dès qu'une tâche touche à clone_tool_qt.py, CloneCanvasMixin, CloneViewerMixin, _CloneOptionsPanel, ou au bouton/menu "Clonage de zone".
 ---
 
 # Tampon de clonage — MosaicView
 
-Fenêtre plein-écran dédiée reproduisant un outil de retouche classique (façon Photoshop/GIMP) : l'utilisateur définit une **zone source** par Ctrl+clic, puis peint au clic gauche maintenu pour copier des pixels de cette zone source vers l'endroit peint, avec un pinceau circulaire de taille réglable. Usage typique : effacer un artefact de scan, une tache, un texte parasite, en le recouvrant avec une texture voisine plausible.
+Outil de retouche classique (façon Photoshop/GIMP), intégré directement dans la **visionneuse principale de lecture** (`ImageViewer`, `modules/qt/image_viewer_qt.py`), pas une fenêtre séparée — l'utilisateur définit une **zone source** par Ctrl+clic, puis peint au clic gauche maintenu pour copier des pixels de cette zone source vers l'endroit peint, avec un pinceau circulaire de taille réglable. Usage typique : effacer un artefact de scan, une tache, un texte parasite, en le recouvrant avec une texture voisine plausible.
 
-Distinct de `page-straighten` (rotation) et `add-text-to-image` (texte superposé) — architecture proche (fenêtre non-modale, undo/redo interne empilé sur l'historique global, skill `viewers`) mais **aucun code partagé**, chaque visionneuse étant une implémentation autonome (voir skill `viewers`, avertissement général).
+**Ancienne fenêtre dédiée `CloneZoneViewerDialog`/`clone_zone_viewer_qt.py` entièrement supprimée** (v1.7.3+, 3e outil migré dans la fusion progressive des visionneuses — voir skill `viewers`). Tout le mécanisme (calcul de décalage source/destination, tamponnage PIL, undo/redo par stroke) a été porté à l'identique dans le nouveau module.
 
-## Fichier unique — `modules/qt/clone_zone_viewer_qt.py`
+Distinct de `page-straighten` (rotation) et `add-text-to-image` (texte superposé) — même chantier de fusion (crop/straighten/clone déjà migrés, texte pas encore) mais **aucun code partagé**, chaque outil ayant son propre module.
 
-Tout le mécanisme (widget image + calcul de décalage source/destination + tamponnage PIL + fenêtre + undo/redo) tient dans un seul fichier (~1244 lignes) :
+## Module dédié — `modules/qt/clone_tool_qt.py`
 
-- **`_CloneImageWidget`** (`QWidget`) — affiche l'image, gère zoom/pan, détecte Ctrl+clic (définition de la source) et le glisser du clic gauche (peinture), dessine le marqueur visuel de la source (cible rouge).
-- **`CloneZoneViewerDialog`** (`QDialog`) — la fenêtre complète : toolbar zoom, zone image, barre du bas (mode source, taille du pinceau, Undo/Redo/Fermer). Contient toute la logique de calcul du tamponnage (`_apply_stamp`) et de gestion du "stroke" (un coup de pinceau, du clic au relâchement).
-- **`show_clone_zone_viewer(parent, callbacks)`** — point d'entrée public.
+Tout le mécanisme (état/interactions souris + commit dans l'historique + panneau de réglages + rendu pur) tient dans ce seul module, conformément à la règle CLAUDE.md "ne jamais migrer le code d'un outil dans `image_viewer_qt.py`" :
 
-**Particularité structurelle par rapport aux deux autres visionneuses d'édition (`page-straighten`, `add-text-to-image`) : pas de navigation entre pages.** `CloneZoneViewerDialog.__init__(self, parent, entry, callbacks)` reçoit une **seule** entrée (`entry`, pas `selected_entries`/`start_index`) — aucune flèche ◀/▶, aucun compteur `n / total` dans la toolbar. Pour retoucher une autre page, l'utilisateur doit fermer la fenêtre et la rouvrir sur l'image suivante.
+- **`CloneCanvasMixin`** (hérité par `_ViewerCanvas`, `image_viewer_qt.py`) — état du tampon (`_clone_source_img` en coordonnées **image**, `_clone_marker_widget`/`_clone_live_marker_widget` dérivées pour le dessin), dessin du marqueur cible (`paint_clone_marker`, appelée depuis `_ViewerCanvas.paintEvent`), gestion souris (`clone_mouse_press`/`clone_mouse_move`/`clone_mouse_release`, délégation depuis les handlers réels de `_ViewerCanvas`), curseur en croix (`clone_update_cursor`).
+- **`CloneViewerMixin`** (hérité par `ImageViewer`) — peinture effective (`_on_clone_paint_stroke`, `_clone_apply_stamp`), aperçu pendant le stroke (`_clone_refresh_display`), commit final (`_on_clone_paint_end`).
+- **`_CloneOptionsPanel`** (`QWidget`) — panneau flottant de réglages (mode source, taille du tampon), affiché sous la barre d'outils quand l'outil est actif.
+- **`make_clone_checker`/`make_clone_crosshair_cursor`** — fonctions de rendu pures (damier d'aperçu, curseur en forme de cible), reprises telles quelles de l'ancienne fenêtre.
+- **Ce qui reste dans `image_viewer_qt.py`** : rien de spécifique au clonage (contrairement au crop/straighten qui partagent le bouton "Valider" flottant) — voir section suivante, cet outil n'a justement pas besoin de ce bouton.
+
+**Particularité structurelle héritée de l'ancienne fenêtre : pas de navigation entre pages dédiée.** Comme avant, le clonage s'applique à la page actuellement affichée dans la visionneuse — la navigation se fait via les flèches/molette habituelles de `ImageViewer`, pas une liste filtrée séparée.
+
+## Différence fondamentale avec crop/straighten : pas de validation différée
+
+Contrairement au crop/straighten (l'utilisateur trace, ajuste, puis valide une seule fois via un bouton "Valider" ou un double-clic), **le clonage peint en continu** : chaque coup de tampon (stroke, du clic au relâchement) modifie déjà l'image et devient sa propre entrée d'historique dès le relâchement du clic. Accepté explicitement par l'utilisateur que l'historique soit verbeux — *"il correspond à la réalité de ce que fait l'utilisateur"*. Conséquences directes :
+
+- **Pas de bouton "Valider"** pour cet outil — `_VALIDATE_KEYS` (`image_viewer_qt.py`, partagé crop/straighten) n'a pas d'entrée `"clone"`.
+- **Pas de persistance de travail non validé par page** — contrairement à `_crop_by_page`/`_straighten_by_page` (dicts définis dans `ImageViewer.__init__`), il n'existe pas de `_clone_by_page` équivalent : chaque stroke est déjà commité (bytes + `save_state()`) à son relâchement, il n'y a donc rien "en attente" à faire survivre à un changement de page. Seule la position de la source Ctrl+cliquée est réinitialisée à chaque changement de page (`navigate()` appelle `canvas.clear_clone_source()`).
+- **Pas de variante grise "conservée mais désélectionnée"** (contrairement au rectangle de crop ou au trait de redressage, qui restent affichés en gris quand l'outil est désélectionné) — désélectionner l'outil clone efface simplement la source (`_ViewerToolbar.set_active_tool` appelle `canvas.clear_clone_source()` en quittant l'outil).
+- **Aucune contribution à `_has_unvalidated_work()`** (`image_viewer_qt.py`) — fermer la visionneuse ou l'application pendant qu'on est sur l'outil clone ne déclenche jamais l'avertissement "travail non validé", précisément parce qu'il n'y a jamais de travail en attente pour cet outil.
+- **Touche Échap** : efface juste la source Ctrl+cliquée (`_on_escape`, `image_viewer_qt.py`) — rien d'autre à annuler.
 
 ## Les deux modes de source — "fixe" vs "relative"
 
-Réglables via deux `QRadioButton` dans la barre du bas (`_radio_fixed`/`_radio_relative`, `set_mode('fixed'|'relative')` sur le widget). Contrôlent le comportement de la source **entre deux strokes**, pas pendant un même stroke — pendant un stroke en cours, les deux modes utilisent exactement le même calcul de décalage constant (`_get_effective_source`, voir section suivante) :
+Réglables via deux boutons texte checkable dans `_CloneOptionsPanel` (`_radio_fixed`/`_radio_relative`, `set_clone_mode('fixed'|'relative')` sur le canvas). Contrôlent le comportement de la source **entre deux strokes**, pas pendant un même stroke — pendant un stroke en cours, les deux modes utilisent exactement le même calcul de décalage constant (`_get_effective_clone_source`, voir section suivante) :
 
 - **Mode fixe** (défaut) : chaque nouveau stroke repart du **même point source** Ctrl+cliqué à l'origine, quel que soit le nombre de coups de pinceau donnés depuis. Utile pour dupliquer répétitivement le même motif à plusieurs endroits.
-- **Mode relatif** : le point source **avance** d'un stroke à l'autre, du même déplacement que celui effectué par le stroke précédent (calculé en fin de stroke dans `_on_paint_end`, `ddx`/`ddy` = déplacement destination cumulé, appliqué à la source). Utile pour "étirer" une texture continue sur une plus grande zone sans que la source ne finisse par chevaucher une zone déjà modifiée par un stroke antérieur.
+- **Mode relatif** : le point source **avance** d'un stroke à l'autre, du même déplacement que celui effectué par le stroke précédent (calculé en fin de stroke dans `_on_clone_paint_end`, `ddx`/`ddy` = déplacement destination cumulé, appliqué à la source). Utile pour "étirer" une texture continue sur une plus grande zone sans que la source ne finisse par chevaucher une zone déjà modifiée par un stroke antérieur.
 
-## Calcul du décalage source/destination — `_get_effective_source` (`clone_zone_viewer_qt.py:866`)
+## Calcul du décalage source/destination — `_get_effective_clone_source` (`CloneCanvasMixin`)
 
 Le cœur géométrique du mécanisme, commun aux deux modes pendant un stroke : au premier point peint d'un stroke, `dx`/`dy` = source initiale moins destination initiale (un décalage constant). Chaque point suivant du même stroke applique ce même décalage à sa propre destination — la source "suit" le pinceau à distance fixe, comme un tampon physique qu'on traînerait sur la page.
 
-## Application d'un coup de pinceau — `_apply_stamp` (`clone_zone_viewer_qt.py:876`)
+## Application d'un coup de pinceau — `_clone_apply_stamp` (`CloneViewerMixin`)
 
-Copie un disque de pixels du "snapshot" vers l'image de travail (`_work_img`), entièrement en PIL natif (crop/paste, pas de boucle Python pixel par pixel) :
+Copie un disque de pixels du "snapshot" vers l'image de travail (`_clone_work_img`), entièrement en PIL natif (crop/paste, pas de boucle Python pixel par pixel) :
 
 1. `r = (brush_radius - 1) / 2` — le réglage utilisateur est un **diamètre** en pixels image, converti en demi-rayon flottant pour le calcul du disque.
 2. Bounding box de destination clampée aux limites de l'image (`d_left`/`d_top`/`d_right`/`d_bottom`), bounding box source correspondante calculée par le même décalage, elle aussi clampée si elle déborderait de l'image (`sc_left`/`sc_top`/`sc_right`/`sc_bottom`) — un stroke proche du bord ne plante pas, il copie simplement moins de pixels que le disque complet.
 3. **Masque circulaire** (`PIL.ImageDraw.ellipse`) appliqué au collage (`dst.paste(src_crop, ..., mask=mask)`) pour un pinceau rond plutôt qu'un carré — sauf cas particulier `diamètre == 1` (`r == 0.0`) où un seul pixel est collé sans masque, optimisation qui évite de construire un masque 1×1 inutile.
-4. Un seul point du snapshot est lu par appel — l'**interpolation** entre deux positions de la souris (mouvement rapide) est gérée en amont, dans `_CloneImageWidget.mouseMoveEvent`, pas ici (voir section suivante).
+4. Un seul point du snapshot est lu par appel — l'**interpolation** entre deux positions de la souris (mouvement rapide) est gérée en amont, dans `CloneCanvasMixin.clone_mouse_move`, pas ici (voir section suivante).
+5. **Piège de type corrigé lors de la migration** : `dest_x`/`dest_y`/`src_x`/`src_y` peuvent être des `float` (coordonnées image dérivées d'une division par le zoom, `_clone_widget_to_image`) — contrairement à l'ancienne `clone_zone_viewer_qt.py` où `_widget_to_image` castait déjà en `int` à la source. `PIL.Image.new`/`crop`/`paste` exigent des entiers ; le cast (`int(round(...))`) se fait au bord de la géométrie source (`s_left`/`s_top`), pas plus tôt — `dest_x`/`dest_y` non arrondis restent utiles pour le calcul du masque circulaire, qui doit rester précis au pixel près. Sans ce cast explicite, `Image.new('L', (pw, ph), 0)` lève `TypeError: 'float' object cannot be interpreted as an integer`.
 
 ## Le "snapshot" — pourquoi lire une image figée pendant le stroke
 
-**Point le plus subtil du fichier.** Au tout premier point peint d'un stroke (`_on_paint_stroke`, `if not self._stroke_dirty`), le code décide d'où lire les pixels sources pendant tout le reste du stroke :
+**Point le plus subtil du fichier.** Au tout premier point peint d'un stroke (`_on_clone_paint_stroke`, `if not self._clone_stroke_dirty`), le code décide d'où lire les pixels sources pendant tout le reste du stroke :
 
-- **Mode fixe** : `self._stroke_snapshot = self._work_img.copy()` — une **copie figée** de l'image au tout début du stroke. Sans ce gel, peindre progressivement vers la source finirait par copier des pixels déjà modifiés par ce même stroke (un tampon qui "mange sa propre queue"), produisant un artefact de bavure. La source, en mode fixe, ne bouge jamais pendant un stroke donné, donc la figer une fois au début est correct et évite une copie à chaque point peint.
-- **Mode relatif** : `self._stroke_snapshot = self._work_img` — une **référence directe**, pas de copie. Le commentaire du code explicite pourquoi c'est sûr ici : la source se déplace *avec* le pinceau à un décalage constant, elle ne peut donc jamais chevaucher la destination courante pendant le même stroke (sauf si l'utilisateur définit volontairement une source très proche de la destination).
+- **Mode fixe** : `self._clone_stroke_snapshot = self._clone_work_img.copy()` — une **copie figée** de l'image au tout début du stroke. Sans ce gel, peindre progressivement vers la source finirait par copier des pixels déjà modifiés par ce même stroke (un tampon qui "mange sa propre queue"), produisant un artefact de bavure. La source, en mode fixe, ne bouge jamais pendant un stroke donné, donc la figer une fois au début est correct et évite une copie à chaque point peint.
+- **Mode relatif** : `self._clone_stroke_snapshot = self._clone_work_img` — une **référence directe**, pas de copie. La source se déplace *avec* le pinceau à un décalage constant, elle ne peut donc jamais chevaucher la destination courante pendant le même stroke (sauf si l'utilisateur définit volontairement une source très proche de la destination).
 
 Une modification de ce fichier qui changerait la logique de décalage doit impérativement revalider cette hypothèse ("la source ne rattrape jamais la destination en mode relatif") avant de supprimer la copie du mode fixe ou de la réutiliser telle quelle pour le mode relatif.
 
-## Interpolation pendant un mouvement rapide — `_CloneImageWidget.mouseMoveEvent`
+## `_clone_work_img` — image de travail séparée de `entry['bytes']`
 
-Si la souris se déplace plus vite qu'un pas de `max(1, zoom * brush_radius * 0.5)` pixels widget entre deux événements de mouvement, le code interpole plusieurs points intermédiaires (`steps = dist / step`) et appelle `on_paint_stroke` pour chacun — sans ça, un mouvement rapide laisserait des trous non peints entre deux positions successives de la souris (le pinceau "sauterait" plutôt que de tracer un trait continu).
+Contrairement au crop/straighten (qui lisent `ensure_image_loaded(entry)` et appliquent leur opération en une fois), le clonage a besoin d'une image de travail intermédiaire (`self._clone_work_img`, copie PIL RGBA) qui existe **seulement pendant un stroke** :
+- Chargée depuis `entry['bytes']` au tout premier point du stroke (`_on_clone_paint_stroke`).
+- Modifiée en place à chaque point peint (`_clone_apply_stamp`).
+- Affichée directement via `_clone_refresh_display()` — **sans repasser par `entry['bytes']`/`ensure_image_loaded`/`display_image()`**, recharger et réencoder l'image à chaque frame serait beaucoup trop coûteux pour un simple aperçu.
+- Commitée dans `entry['bytes']` (via `save_image_to_bytes`) seulement au relâchement du clic (`_on_clone_paint_end`), puis remise à `None`.
 
-## Throttle d'affichage — `_display_timer`, ~30 fps
+**`_orig_mode`** (mode PIL d'origine avant conversion RGBA, pour aplatir correctement sur blanc en sortie si le format ne supporte pas l'alpha) posé une seule fois sur `entry` au premier stroke si absent — ne jamais utiliser un défaut `'RGBA'` arbitraire, une image sans alpha d'origine (JPEG) doit rester aplatie en sortie.
 
-`_on_paint_stroke` ne rafraîchit le pixmap affiché (`_display_image`) que si au moins 33 ms se sont écoulées depuis le dernier rafraîchissement (`QElapsedTimer`) — l'image de travail PIL, elle, est modifiée à **chaque** point peint sans throttle (le tamponnage réel n'est jamais retardé, seul l'affichage l'est). `_on_paint_end` force un dernier rafraîchissement immédiat en fin de stroke pour rattraper un point que le throttle aurait sauté. Sans ce throttle, un stroke rapide avec un gros pinceau recomposerait le damier de transparence et reconvertirait toute l'image en `QPixmap` à chaque point peint individuel, bien plus vite que l'écran ne peut afficher — coûteux pour un gain visuel nul.
+## Interpolation pendant un mouvement rapide — `CloneCanvasMixin.clone_mouse_move`
 
-## Undo/redo — un stroke entier, pas un point peint
+Si la souris se déplace plus vite qu'un pas de `max(1, zoom * brush_radius * 0.5)` pixels widget entre deux événements de mouvement, le code interpole plusieurs points intermédiaires (`steps = dist / step`) et appelle `_on_clone_paint_stroke` pour chacun — sans ça, un mouvement rapide laisserait des trous non peints entre deux positions successives de la souris (le pinceau "sauterait" plutôt que de tracer un trait continu).
 
-Comme `page-straighten`, deux niveaux empilés (historique interne + historique global de l'appli, skill `undo-redo`) — mais l'unité d'undo est **le stroke entier** (tout un coup de pinceau, du clic au relâchement), pas chaque point peint individuellement :
+## Throttle d'affichage — `_clone_display_timer`, ~30 fps
 
-- `_bytes_before_stroke` est capturé une seule fois, à la **première** application du stroke (`if not self._stroke_dirty`) — tous les points peints ensuite dans le même stroke ne créent aucun point d'historique intermédiaire.
-- `_on_paint_end` (relâchement du clic) commit l'image finale (`_commit_work_image`) et empile `_bytes_before_stroke` dans `self._bytes_history` — c'est **le seul moment** où un point undo est réellement créé pour ce stroke.
-- Contrairement à `page-straighten`/`add-text-to-image`, pas de tuple `(bytes, snapshot_blocs)` à restaurer en plus des bytes — un undo/redo ici recharge simplement `_work_img` depuis les `bytes` restaurés (`_load_work_image`) et **restaure le marqueur visuel de la source** (`_img_widget._source_pt`) puisque celui-ci n'est pas capturé dans l'historique et pourrait sinon désynchroniser l'affichage de la cible rouge par rapport à ce que l'utilisateur avait défini.
+`_on_clone_paint_stroke` ne rafraîchit le pixmap affiché (`_clone_refresh_display`) que si au moins 33 ms se sont écoulées depuis le dernier rafraîchissement (`QElapsedTimer`) — l'image de travail PIL, elle, est modifiée à **chaque** point peint sans throttle (le tamponnage réel n'est jamais retardé, seul l'affichage l'est). `_on_clone_paint_end` appelle `_clone_refresh_display()` une dernière fois en début de commit pour rattraper un point que le throttle aurait sauté. Sans ce throttle, un stroke rapide avec un gros pinceau recomposerait le damier de transparence et reconvertirait toute l'image en `QPixmap` à chaque point peint individuel, bien plus vite que l'écran ne peut afficher — coûteux pour un gain visuel nul.
+
+## Undo/redo — un stroke entier, unifié avec le panneau
+
+**Changement majeur par rapport à l'ancienne fenêtre** : il n'y a plus qu'**un seul** mécanisme d'historique, celui du panneau (`callbacks['save_state']`, skill `undo-redo`), piloté par les boutons Undo/Redo de `_ViewerToolbar` (partagés avec crop et straighten). `_on_clone_paint_end()` fait `save_state()` avant de committer les bytes, puis `save_state(force=True)` après — même pattern que `perform_crop()`/`perform_straighten()`. L'ancienne `CloneZoneViewerDialog` empilait deux systèmes (historique global de l'appli + `self._bytes_history`/`self._redo_stack` internes à la fenêtre) — ce second système a disparu avec la fenêtre elle-même.
+
+L'unité d'undo reste **le stroke entier** (tout un coup de pinceau, du clic au relâchement), pas chaque point peint individuellement — `_clone_stroke_dirty` n'est posé qu'une fois par stroke, et `_on_clone_paint_end` ne committe qu'au relâchement.
+
+**Piège pour toute nouvelle opération de cet outil** : `self._toolbar.refresh_undo_redo_state()` doit être rappelée après tout nouveau `save_state()`, sinon les icônes Undo/Redo de la barre restent dans un état obsolète (déjà fait dans `_on_clone_paint_end`).
 
 ## Points d'entrée UI
 
-Trois, identiques dans leur structure à `page-straighten`/`add-text-to-image`, conditionnés uniquement à la présence d'images (`has_images`) — pas besoin de sélection, `show_clone_zone_viewer` gère le choix de la page :
+Trois, identiques dans leur structure à ceux de `page-crop`/`page-straighten` (conditionnés uniquement à la présence d'images, `has_images` — pas besoin de sélection) :
 
-1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `context_menus_qt.py:420`, clé `context_menu.image.clone_zone`.
-2. **Barre de menu** — `menubar_qt.py:204`, même clé.
-3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"clone_zone"` (`icon_toolbar_qt.py:66`, icône `BTN_Clone_Zone.png`, activé si `has_images`), tooltip `tooltip.clone_zone` (skill `qt-tooltips`).
+1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `context_menus_qt.py`, clé `context_menu.image.clone_zone`, callback `show_clone_zone_viewer`.
+2. **Barre de menu** — `menubar_qt.py`, même clé/callback.
+3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"clone_zone"` (`icon_toolbar_qt.py`, icône `BTN_Clone_Zone.png`, activé si `has_images`), tooltip `tooltip.clone_zone` (skill `qt-tooltips`).
 
-Callbacks (`PanelWidget._clone_zone_callbacks()`, `panel_widget.py:1612`) : `save_state`, `render_mosaic`, `update_button_text`, `state` — même structure que `page-straighten`.
+**Depuis v1.7.3**, la clé de callback `"show_clone_zone_viewer"` (`menubar_callbacks_qt.py`) pointe vers `PanelWidget._clone_selected_image` (nouvelle méthode, ouvre la visionneuse principale avec `initial_tool="clone"`) au lieu de l'ancienne fonction `show_clone_zone_viewer()` du fichier supprimé — le nom de la clé de callback est resté inchangé pour ne pas devoir toucher `context_menus_qt.py`/`menubar_qt.py`, seule sa cible a changé (même schéma que pour le redressement, voir skill `page-straighten`).
 
-## Sélection de la page — pas de liste navigable
-
-Différence par rapport aux deux autres visionneuses d'édition : `show_clone_zone_viewer` (`clone_zone_viewer_qt.py:1196`) choisit **une seule** entrée avant d'ouvrir la fenêtre (pas une liste complète navigable) — la première image sélectionnée valide s'il y en a une, sinon la première image de la mosaïque. Comme les autres, exclut les images corrompues et capture `entry['_orig_mode']` une seule fois pour la reconversion de sortie.
+`PanelWidget._clone_selected_image()` (`panel_widget.py`) reproduit la logique de secours de l'ancienne `show_clone_zone_viewer` : si une sélection existe, ouvre sur la **première image sélectionnée valide** ; sinon, ouvre sur la première image de la mosaïque. En pratique ce cas de repli n'est plus atteignable via les 3 points d'entrée UI standards (tous exigent `has_images()` en amont, moins strict que `has_selected_images()` — contrairement au crop qui refuse une sélection vide/multiple, le clonage n'exige aucune sélection). **`_clone_zone_callbacks()`** (qui construisait un dict spécifique pour l'ancienne fenêtre) a été supprimé, devenu mort — le clonage réutilise le même dict de callbacks que n'importe quel autre outil de la visionneuse (`_image_viewer_callbacks()`).
 
 ## Zoom, pan, plein écran
 
-Vocabulaire commun aux 5 visionneuses (skill `viewers`) : `Ctrl++`/`Ctrl+-`, `Ctrl+0` (fit), `Ctrl+1` (reset 100%), `F11` (plein écran), molette, clic droit maintenu (pan). Particularité propre à ce fichier : le curseur en forme de **cible** (`_make_crosshair_cursor`) est reconstruit dynamiquement à chaque changement de zoom **et** de taille de pinceau (`_rebuild_crosshair_cursor`), puisque son rayon visuel à l'écran dépend des deux (`brush_radius * zoom / 2`) — un curseur non reconstruit après un changement de zoom afficherait une taille de pinceau trompeuse par rapport à la zone réellement peinte.
+Vocabulaire commun aux visionneuses du projet (skill `viewers`) : `Ctrl++`/`Ctrl+-`, `Ctrl+0` (fit), `Ctrl+1` (reset 100%), `F11` (plein écran), molette, clic droit maintenu (pan) — toujours actif quel que soit l'outil sélectionné, **y compris pendant l'utilisation du clonage** : le clic droit reste réservé au pan, jamais réquisitionné par l'outil (contrairement à Ctrl+clic, qui définit la source — ce n'est pas un clic droit, donc pas de conflit).
 
-Le marqueur visuel de la source (`_source_widget_pt`, dérivé de `_source_pt` en coordonnées image via `_image_to_widget`) est resynchronisé par `_recalc_source_widget_pt()`, appelée après pan (`mouseMoveEvent`), après chaque zoom (`set_zoom`/`reset_zoom`/`fit_to_window`), et — depuis le correctif 2026-08 (v1.7.2) — après un redimensionnement de la fenêtre (`resizeEvent`, ajouté à `_CloneImageWidget` juste avant `wheelEvent`). **Avant ce correctif**, seuls pan et zoom étaient couverts : redimensionner la fenêtre du tampon de clonage laissait la cible rouge/blanche affichée au mauvais endroit par rapport à l'image, sans affecter la position réelle de `_source_pt` (donc le clonage restait correct au pixel près, seul l'indicateur visuel dérivait). Voir le même correctif appliqué la même session à `page-crop` (pan) et `page-straighten` (pan + zoom + resize, qui n'avait aucun mécanisme de coordonnées image avant).
+Particularité propre à cet outil : le curseur en forme de **cible** (`make_clone_crosshair_cursor`) est reconstruit dynamiquement à chaque survol avec Ctrl enfoncé (`clone_update_cursor`), pas seulement à la première fois — le rayon écran dépend du zoom courant, qui peut avoir changé (molette, Ctrl+0/1/+/-) depuis la dernière construction. Un curseur non reconstruit après un changement de zoom afficherait une taille de pinceau trompeuse par rapport à la zone réellement peinte.
+
+Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_source_img` en coordonnées image via `_clone_image_to_widget`) est resynchronisé systématiquement en tête de `paint_clone_marker` (appelée depuis `_ViewerCanvas.paintEvent`, donc à chaque pan/zoom/redimensionnement puisque Qt réinvoque `paintEvent` dans les trois cas) — voir skill `viewers`, section "Piège transversal — overlays interactifs qui se désynchronisent de l'image au pan/zoom/resize".
 
 ## Fond damier (transparence)
 
-`_make_checker`/`_work_img_to_pixmap` — implémentation **encore une fois indépendante** (troisième copie du même algorithme après celles de `AdjustmentViewerDialog` et `text_viewer_qt.py`, voir skill `add-text-to-image`) ; aucune des trois n'appelle une fonction partagée. Une correction visuelle du damier faite dans un fichier ne se propage à aucun des deux autres.
+`make_clone_checker`/`_clone_refresh_display` — implémentation **indépendante** (encore une copie du même algorithme après celle de `AdjustmentViewerDialog`) ; aucune des deux n'appelle une fonction partagée. Une correction visuelle du damier faite dans un fichier ne se propage pas à l'autre. Distinct de `_compose_on_checkerboard`/`entries.py::_make_checkerboard_pil` (affichage normal hors stroke) — tuile plus fine (12px) et composition RGB directe sans repasser par le pipeline d'affichage standard.
 
 ## Traductions
 
-`locales/fr.json`, section `clone_zone_viewer` (ligne 1048) : `title` (`"Clonage de Zone"`, résolu via `_wt()` — règle UI n°7), `instruction` (`"Ctrl+clic : définir la source  •  Clic gauche : peindre la zone clonée"`), `mode_label`/`mode_fixed`/`mode_relative`, `brush_size_label`. Clé séparée `context_menu.image.clone_zone` pour les menus, `tooltip.clone_zone` pour la colonne d'icônes. Voir skill `add-translation`.
+`locales/fr.json`, section `clone_zone_viewer` : `title` (non résolue nulle part depuis la suppression de l'ancienne `QDialog` — orpheline mais pas retirée, à vérifier si elle est encore utilisée avant de la supprimer), `instruction` (réutilisée en tooltip enrichi de l'icône Clonage de la barre d'outils, voir skill `viewers`), `mode_label`/`mode_fixed`/`mode_relative`, `brush_size_label` — toutes réutilisées telles quelles par `_CloneOptionsPanel`. Nouvelles clés v1.7.3+ : `viewer.toolbar_clone_tooltip`, `messages.errors.clone_failed.title`/`.message` — propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR), calquées sur le vocabulaire déjà attesté pour "clonage" dans `dialogs.clone_zone_viewer` de chaque fichier fictif (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) plutôt qu'improvisées. Clé séparée `context_menu.image.clone_zone` pour les menus, `tooltip.clone_zone` pour la colonne d'icônes. Voir skill `add-translation`.
 
-**Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `page-straighten` et `add-text-to-image`, les 3 visionneuses d'édition d'image partagent ce manque (skill `user-guide`).
+**Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `page-straighten` et `add-text-to-image`, ces visionneuses/outils d'édition d'image partagent ce manque (skill `user-guide`).
 
 ## Comment étendre
 
-- **Changer la forme du pinceau** (actuellement toujours circulaire) : uniquement `_apply_stamp`, remplacer le masque `ImageDraw.ellipse` par une autre forme — attention à conserver le cas particulier `diamètre == 1` qui contourne le masque.
-- **Ajouter un troisième mode de source** : suivre le pattern de `_get_effective_source`/la bascule `if self._img_widget._mode == 'fixed': ... else: ...` dans `_on_paint_end` — les deux points d'extension sont `_get_effective_source` (calcul pendant un stroke) et la fin de `_on_paint_end` (mise à jour de la source entre deux strokes).
-- **Ajuster la fréquence du throttle d'affichage** (actuellement ~30 fps, `_display_interval_ms = 33`) : une seule constante dans `__init__`.
-- **Ajouter la navigation entre pages** (absente aujourd'hui, contrairement aux deux autres visionneuses d'édition) : nécessiterait de répliquer le pattern `selected_entries`/`_current_idx`/`_prev_image`/`_next_image` de `page-straighten`/`add-text-to-image` — changement structurel notable, à ne pas entreprendre sans confirmation explicite (l'absence de navigation ici pourrait être un choix délibéré, le clonage étant une opération plus longue/minutieuse par page que redresser ou ajouter un texte).
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `CloneZoneViewerDialog` (non-modale déjà en place, `_wt()` pour le titre déjà en place).
+- **Changer la forme du pinceau** (actuellement toujours circulaire) : uniquement `_clone_apply_stamp` (`CloneViewerMixin`), remplacer le masque `ImageDraw.ellipse` par une autre forme — attention à conserver le cas particulier `diamètre == 1` qui contourne le masque.
+- **Ajouter un troisième mode de source** : suivre le pattern de `_get_effective_clone_source`/la bascule `if canvas._clone_mode == 'fixed': ... else: ...` dans `_on_clone_paint_end` — les deux points d'extension sont `_get_effective_clone_source` (calcul pendant un stroke) et la fin de `_on_clone_paint_end` (mise à jour de la source entre deux strokes).
+- **Ajuster la fréquence du throttle d'affichage** (actuellement ~30 fps) : la constante `33` (ms) est en dur dans `_on_clone_paint_stroke`, à extraire en attribut de classe si elle doit devenir configurable.
+- **Ajouter une persistance de travail non validé par page** (n'existe pas aujourd'hui, contrairement au crop/straighten) : changement structurel qui contredirait la décision actée ("chaque stroke est déjà commité, rien à faire survivre") — à ne pas entreprendre sans confirmation explicite, ce serait un changement de philosophie de l'outil, pas juste une extension.
+- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md — la barre d'outils/le panneau flottant suivent déjà thème dynamique, retraduction, `OverlayTooltip`.
 
 ## Pièges connus
 
-- **Pas de navigation entre pages** — contrairement à `page-straighten`/`add-text-to-image`, cette fenêtre ne traite qu'une seule entrée `entry` passée à la construction ; ne pas supposer l'existence d'un `_current_idx`/`selected_entries` en copiant du code depuis les deux autres visionneuses.
+- **Pas de fenêtre/classe dédiée** — contrairement à `add-text-to-image`, le clonage vit dans `modules/qt/clone_tool_qt.py` (`CloneCanvasMixin`/`CloneViewerMixin`, hérités par `_ViewerCanvas`/`ImageViewer`), partagé avec toute la logique d'affichage/zoom/pan/pagination de la visionneuse principale.
+- **Coordonnées `float` non castées avant construction du masque PIL** — bug rencontré et corrigé lors de la migration (`TypeError: 'float' object cannot be interpreted as an integer` dans `Image.new`), voir section `_clone_apply_stamp` ; caster `s_left`/`s_top` en `int(round(...))`, jamais plus tôt (`dest_x`/`dest_y` doivent rester précis pour le masque circulaire).
 - **Snapshot figé en mode fixe, référence directe en mode relatif** — une modification de la logique de décalage doit revalider que "la source ne rattrape jamais la destination en mode relatif" avant de réutiliser la référence directe ailleurs ; voir section dédiée.
-- **Le marqueur de source n'est pas dans l'historique undo/redo** — restauré manuellement après chaque `_undo`/`_redo` (`_img_widget._source_pt` réassigné), pas capturé dans les bytes ni dans un snapshot séparé comme le sont les blocs de texte de `add-text-to-image`.
+- **`_clone_work_img` distinct de `entry['bytes']`** — ne pas essayer de "simplifier" en appliquant chaque point directement sur `entry['bytes']`/`ensure_image_loaded` : recharger/réencoder à chaque point peint tuerait les performances (voir section dédiée).
 - **Undo/redo au niveau du stroke entier, pas du point peint** — un stroke long (glisser la souris longtemps sans relâcher) ne peut être annulé qu'en un seul bloc, jamais point par point.
-- **Fond damier dupliqué une troisième fois** — ni partagé avec `AdjustmentViewerDialog` ni avec `text_viewer_qt.py`.
-- **Curseur cible à reconstruire à chaque changement de zoom ET de taille de pinceau** — omission facile si un nouveau contrôle de vue ou de taille de pinceau est ajouté sans repasser par `_rebuild_crosshair_cursor`.
-- **Marqueur de source à resynchroniser après pan, zoom, ET redimensionnement** — les trois appellent `_recalc_source_widget_pt()` (le troisième cas, `resizeEvent`, a été ajouté en 2026-08/v1.7.2 ; absent avant, voir section "Zoom, pan, plein écran"). Tout nouveau chemin qui modifie `_offset`/`_zoom`/la taille du widget sans repasser par cette méthode réintroduirait une désynchronisation du même ordre.
+- **Fond damier dupliqué** — pas partagé avec `AdjustmentViewerDialog`.
+- **Curseur cible à reconstruire à chaque survol Ctrl enfoncé** — pas seulement à la première fois, le rayon écran dépend du zoom courant.
+- **Marqueur de source à resynchroniser après pan, zoom, ET redimensionnement** — géré en tête de `paint_clone_marker`, appelée automatiquement par Qt via `paintEvent` dans les trois cas ; ne pas dupliquer l'appel dans chaque handler séparément.
+- **`_VALIDATE_KEYS` n'a pas d'entrée `"clone"`** — ne pas en ajouter une par réflexe en copiant le pattern crop/straighten : cet outil n'a jamais besoin du bouton "Valider" flottant, l'application est immédiate.
 - **Aucune section dédiée dans le mode d'emploi.**
 
 ## Références croisées
 
-- `page-straighten` — architecture la plus proche (fenêtre d'édition non-modale, undo/redo interne empilé sur l'historique global, invalidation complète des caches) ; principale différence structurelle : pas de navigation entre pages ici.
-- `add-text-to-image` — même famille de visionneuses ; troisième implémentation indépendante du fond damier de transparence après celle-ci et celle de `AdjustmentViewerDialog`.
-- `viewers` — la 5ᵉ visionneuse plein-écran du projet, vocabulaire zoom/pan/plein-écran commun mais implémentation non partagée.
-- `apply-image-operation` — pattern général suivi ici en variante (A) complète (comme `page-straighten`/`add-text-to-image`).
-- `undo-redo` — mécanique de l'historique global de l'appli, niveau externe de l'empilement à deux niveaux ici (pas trois, contrairement à `add-text-to-image`).
+- `page-straighten` — architecture la plus proche dans le projet (outil migré dans son propre module, undo/redo unifié avec le panneau, plus de fenêtre dédiée) ; comparer les deux pour la différence de philosophie de validation (une opération validée une fois vs peinture continue commitée en continu).
+- `page-crop` — même famille d'outils migrés, partage le bouton "Valider" flottant avec `page-straighten` mais pas avec le clonage (qui n'en a pas besoin).
+- `add-text-to-image` — dernière visionneuse annexe encore séparée (pas encore migrée) ; troisième implémentation indépendante du fond damier de transparence après celle-ci et celle de `AdjustmentViewerDialog`.
+- `viewers` — architecture générale de la fusion progressive des visionneuses (barre d'outils, règle des modules séparés, sections spécifiques au clonage) ; vocabulaire zoom/pan/plein-écran commun mais implémentation non partagée.
+- `apply-image-operation` — pattern général de modification de `entry['bytes']`, suivi ici en variante (A) complète.
+- `undo-redo` — mécanique de l'historique global de l'appli, unique niveau depuis la migration (plus d'historique interne séparé).
 - `icon-toolbar` — bouton "clone_zone" de la colonne d'icônes.
 - `qt-context-menus` — entrée du menu contextuel clic droit.
-- `qt-tooltips` — tooltip du bouton colonne d'icônes.
+- `qt-tooltips` — tooltip du bouton colonne d'icônes et tooltip enrichi de l'icône de la barre d'outils de la visionneuse (`OverlayTooltip`, jamais `setToolTip()` natif).
 - `comicinfo-metadata-editor` — mise à jour des attributs de page dans `ComicInfo.xml` après un stroke.
+- `add-translation` — procédure complète de traduction, vocabulaire fictif "clonage" déjà établi (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) et réutilisé pour les nouvelles clés de la barre d'outils.
 - `user-guide` — absence actuelle de section dédiée, à vérifier si une tâche touche à ce fichier.

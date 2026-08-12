@@ -18,7 +18,7 @@ if save_state:
 
 **Il n'existe pas de fonction utilitaire centralisée** — chaque module invalide les caches inline. Deux variantes existent dans le code actuel, préférer la variante complète (A) pour toute nouvelle fonction :
 
-**A. Invalidation complète** (`adjustments_processing_qt.py`, `clone_zone_viewer_qt.py`, `straighten_viewer_qt.py`, `text_viewer_qt.py`) :
+**A. Invalidation complète** (`adjustments_processing_qt.py`, `crop_tool_qt.py`, `straighten_tool_qt.py`, `clone_tool_qt.py`, `text_tool_qt.py`) :
 ```python
 entry['bytes'] = <nouveaux bytes>
 entry['img'] = None
@@ -71,9 +71,9 @@ Découvert lors de l'implémentation des ajustements d'image Qt (2026-03-14). Pl
 - `rotate-flip` — exemple de la variante (B) d'invalidation partielle : `rotate_entry_data`/`flip_entry_data` (`image_ops.py`) n'invalident que `large_thumb_pil`/`_hash`, `qt_pixmap_large`/`qt_qimage_large` étant invalidés séparément par le worker qui orchestre le traitement par lot ; pas de `force=True` explicite sur son `save_state()` initial non plus, contrairement au pattern recommandé ici.
 - `page-straighten` — exemple de la variante (A) complète (contrairement à `rotate-flip`), avec en plus un second historique undo/redo interne à la fenêtre qui s'empile par-dessus le `save_state`/`force=True` standard documenté ici.
 - `add-text-to-image` — même variante (A) complète, avec un troisième niveau d'historique (undo de frappe Qt natif par bloc) en plus des deux niveaux de `page-straighten`.
-- `clone-zone` — même variante (A) complète, avec une unité d'undo au niveau du stroke entier (un coup de pinceau) plutôt que par point peint.
 - `page-resize` — variante intermédiaire propre à ce fichier : invalidation de cache proche de (B) mais avec un précalcul explicite de la vignette Qt dans le thread worker (`build_qimage_for_entry`), et une annulation en cours de lot qui restaure les bytes manuellement plutôt que via `rollback_to_current_state_qt`.
 - `page-crop` — variante (A) complète, avec la même optimisation `build_qimage_for_entry` que `page-resize` mais exécutée en synchrone (pas de worker QThread) ; les deux appels à `save_state` omettent `force=True`, contrairement au pattern recommandé ici.
+- `clone-zone` — le clonage (3e outil migré dans la visionneuse principale) suit un pattern distinct : pas de bouton "Valider", chaque coup de pinceau (stroke) relâché est directement `save_state()`/`save_state(force=True)` et devient sa propre entrée d'historique — pas d'unité d'undo "par point peint" ni d'historique interne séparé comme l'avait l'ancienne fenêtre dédiée (supprimée).
 - `create-ico` — ne suit pas ce pattern du tout : aucun `save_state` avant modification, entrée construite manuellement plutôt que via `create_entry()`, car il s'agit d'un **ajout** de nouvelle entrée (le `.ico` généré) plutôt que d'une modification de `entry['bytes']` existant.
 - `animated-gif` — même famille de cas hors pattern : ajout d'une nouvelle entrée (le GIF assemblé), un seul `save_state` après, mais réutilise `create_entry()` contrairement à `create-ico`.
 - `nfo-editor` — hors périmètre direct (pas d'image, pas de cache vignette) mais utile en contraste : la mutation en place de `entry['bytes']` y est correcte pour du texte, contrairement à la règle stricte documentée ici pour les images.

@@ -77,7 +77,7 @@ Callbacks (`PanelWidget._ico_callbacks()`, `panel_widget.py:1466`) : seulement `
 
 `locales/fr.json`, section `ico_creator` (ligne 1067) : `title` (résolu via `_wt()`, règle UI n°7), tous les libellés des deux phases (`btn_validate_crop`/`btn_validate_no_crop`/`btn_cancel`/`btn_transparency`/`btn_back_to_crop`/`btn_validate_final`/`tolerance_label`/`info_message`), `success_title`/`success_message`, et **`save_blocked_title`/`save_blocked_message`** pour le garde-fou de `_check_no_ico` (logiquement rattachées à cette section malgré leur usage dans un fichier différent). `overwrite_title`/`overwrite_message` existent aussi dans cette section mais ne sont référencées nulle part dans `ico_creator_qt.py` ni `file_operations_qt.py` au moment de la rédaction de ce skill — à vérifier avant de les considérer comme mortes ou comme appelées depuis un chemin non trouvé par la recherche. Voir skill `add-translation`.
 
-**A une section dans le mode d'emploi** (`user_guide_qt.py:640`, clé `help.create_icon`/`help.create_icon_content`) — comme `page-resize`/`page-crop`, contrairement à `page-straighten`/`add-text-to-image`/`clone-zone` (skill `user-guide`).
+**A une section dans le mode d'emploi** (`user_guide_qt.py:640`, clé `help.create_icon`/`help.create_icon_content`) — comme `page-resize`/`page-crop`, contrairement à `add-text-to-image` (skill `user-guide`).
 
 ## Comment étendre
 

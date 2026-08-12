@@ -32,6 +32,8 @@
     "split_button": "Scinder",
     "join_button": "Commencer",
     "validate_crop": "Valider la découpe",
+    "validate_straighten": "Valider le redressement",
+    "validate_text": "Appliquer le texte",
     "ok": "OK",
     "close": "Fermer",
     "apply_and_save": "Appliquer les modifications et sauvegarder le fichier",
@@ -75,7 +77,16 @@
     "mode_single": "Page simple  [D]",
     "mode_double": "Double page  [D]",
     "mode_continuous": "Mode continu  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Recadrage",
+    "toolbar_crop_instruction": "Dessinez un rectangle sur la zone à conserver, puis validez",
+    "toolbar_straighten_tooltip": "Redressage",
+    "toolbar_clone_tooltip": "Clonage",
+    "toolbar_text_tooltip": "Texte",
+    "toolbar_undo_tooltip": "Annuler (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Refaire (Ctrl+Y)",
+    "unvalidated_work_title": "Travail non validé",
+    "unvalidated_work_message": "Vous avez un ou plusieurs travaux non validés en cours. Êtes-vous certain de vouloir fermer la visionneuse ? Ce travail sera perdu."
   },
   "context_menu": {
     "viewer": {
@@ -265,6 +276,18 @@
         "title": "Pas de sélection",
         "message": "Veuillez dessiner un rectangle de découpe d'abord."
       },
+      "no_straighten_line": {
+        "title": "Pas de trait tracé",
+        "message": "Veuillez tracer un trait de référence d'abord."
+      },
+      "no_skew_detected": {
+        "title": "Aucune inclinaison détectée",
+        "message": "Aucune inclinaison fiable n'a été détectée sur cette page."
+      },
+      "no_text_block": {
+        "title": "Pas de texte saisi",
+        "message": "Veuillez saisir du texte dans au moins un bloc d'abord."
+      },
       "cannot_open_file": {
         "title": "Impossible d'ouvrir le fichier",
         "message": "Impossible de charger le fichier."
@@ -396,6 +419,18 @@
       "crop_failed": {
         "title": "Erreur",
         "message": "Impossible de recadrer l'image : {error}"
+      },
+      "straighten_failed": {
+        "title": "Erreur",
+        "message": "Impossible de redresser l'image : {error}"
+      },
+      "clone_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer le clonage : {error}"
+      },
+      "text_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer le texte : {error}"
       },
       "load_image_failed": {
         "title": "Erreur",
@@ -1044,8 +1079,8 @@
       "white_pipette_tooltip": "Cliquez sur un pixel qui devrait être totalement blanc. Attention : il est facile d'en faire trop !"
     },
     "straighten_viewer": {
-      "title": "Redresser",
-      "instruction": "Tracez une ligne droite sur ce qui doit être horizontal (ou vertical) dans l'image"
+      "instruction": "Tracez une ligne droite sur ce qui doit être horizontal (ou vertical) dans l'image",
+      "angle_label": "Angle :"
     },
     "clone_zone_viewer": {
       "title": "Clonage de Zone",
@@ -1056,15 +1091,21 @@
       "brush_size_label": "Taille :"
     },
     "text_viewer": {
-      "title": "Insertion de texte",
       "instruction": "Cliquez à l'endroit où vous souhaitez insérer le texte  •  Ctrl+flèches : déplacer le texte au pixel près",
       "size_label": "Taille :",
       "color_label": "Couleur :",
       "bold_btn": "G",
       "italic_btn": "I",
       "underline_btn": "S",
-      "apply_btn": "Appliquer le texte",
       "pick_color_title": "Choisir la couleur du texte"
+    },
+    "color_picker": {
+      "basic_colors_label": "Couleurs de base :",
+      "hex_label": "Hexadécimal :",
+      "red_label": "Rouge :",
+      "green_label": "Vert :",
+      "blue_label": "Bleu :",
+      "alpha_label": "Alpha :"
     },
     "ico_creator": {
       "title": "Créer une icône .ico",

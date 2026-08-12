@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "CBT De'wI'mey\n nav CBZ ngor tay'",
     "batch_metadata": "paq SeHtaHbogh DIl tlheghHom",
     "batch_library": "DaqDaq paqmey je chenmoH",
-    "batch_recompress": "rar mIw rar tlhIngan CBZ De'wI'"
+    "batch_recompress": "rar mIw rar tlhIngan CBZ De'wI'",
+    "validate_straighten": "nIt chenmoHmeH lo'laH",
+    "validate_text": "lo' mu'mey"
   },
   "tabs": {
     "mosaic": "Hur'",
@@ -75,7 +77,16 @@
     "mode_single": "wa' nugh  [D]",
     "mode_double": "cha' nugh  [D]",
     "mode_continuous": "tlhIngan mIw  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "pe'meH",
+    "toolbar_undo_tooltip": "vangHa' (Ctrl+Z)",
+    "toolbar_redo_tooltip": "vI'ang (Ctrl+Y)",
+    "unvalidated_work_title": "vum ngaSlu'be'",
+    "unvalidated_work_message": "vum ngaSlu'be' tu'lu'. leghwI' SoQmoH DaneH'a'? vum ngaSlu'be' 'ej chIllu'.",
+    "toolbar_straighten_tooltip": "nIt chenmoH",
+    "toolbar_crop_instruction": "pe'meH latlhmey wa'DIch yIchenmoH; lo'laH.",
+    "toolbar_clone_tooltip": "tIngmeH",
+    "toolbar_text_tooltip": "mu'mey"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "poSmoHlu'be'",
         "message": "De'wI' ngaSwI'vam poSmoHlu'be': De'wI'lIjDaq ngoq luchu'laH {ext} De'wI' ngaSwI'mey.\nDavoqchugh, yItlhap 'ej yIpoSmoH."
+      },
+      "no_straighten_line": {
+        "title": "wIv tu'be'lu'",
+        "message": "nIt chenmoHmeH wa'DIch yIchenmoH."
+      },
+      "no_skew_detected": {
+        "title": "'IH lo' Qu' tu'lu'be'",
+        "message": "mIllogh 'IH lo' Qu' tu'lu'be'."
+      },
+      "no_text_block": {
+        "title": "wIv tu'be'lu'",
+        "message": "mu'mey wa'DIch yIchenmoH."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Huj Dochvetlh, Duj'e' yIlo' 'ej bID ngo'bogh lo'laHbe'.\npoQ: {needed}\ntu'lu': {free}"
       },
-      "no_wilhelm_scream_found": "De' chelmoH tu'be'lu'."
+      "no_wilhelm_scream_found": "De' chelmoH tu'be'lu'.",
+      "straighten_failed": {
+        "title": "Qagh",
+        "message": "cha'nob nIt chenmoHlaHbe': {error}"
+      },
+      "clone_failed": {
+        "title": "Qagh",
+        "message": "cha'nob tInglaHbe': {error}"
+      },
+      "text_failed": {
+        "title": "Qagh",
+        "message": "cha'nob mu'mey lo'laHbe': {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -685,7 +720,7 @@
     "pdf_import_progress": "PDF lel DaH...\n{percent}%",
     "pdf_opening": "PDF De' poS...",
     "pdf_page": "ghItlh {current} / {total}",
-    "warning_close": "yIghuH! choHmey ngaSlu'be' 'ej geQ!",
+    "warning_close": "yIghuH! choHmey ngaSlu'be' 'ej chIllu'!",
     "language_label": "Hol:",
     "directory_tooltip": "vo': {name}\n{count} De'(mey)\ntInghach naQ: {size} Mo",
     "folder_up_tooltip": "cha'logh yIbuS 'ej\nwa' chen Daq yIchegh",
@@ -735,7 +770,7 @@
       "word_image": "cha'nob",
       "word_images": "cha'nobmey",
       "info": "cham Daq yIwIv:",
-      "format_png": "PNG (geQ tu'be'lu')",
+      "format_png": "PNG (chIlghach tu'be'lu')",
       "format_jpg": "JPEG (puS chenmoHlu')",
       "format_webp": "WEBP (chu')",
       "format_avif": "AVIF (chu' law')",
@@ -835,8 +870,8 @@
     },
     "close_warning": {
       "title": "yIghuH!",
-      "message": "choHmey ngaSlu'be' 'ej geQ!",
-      "btn_close_lose": "De' SoQmoH 'ej choHmey geQ",
+      "message": "choHmey ngaSlu'be' 'ej chIllu'!",
+      "btn_close_lose": "De' SoQmoH 'ej choHmey chIllu'",
       "btn_save_cbz": "choHmey lo' 'ej De' ngaS",
       "btn_create_cbz": "choHmey lo' 'ej CBZ De' chenmoH",
       "btn_cancel": "qIl 'ej Hur' Daq chegh"
@@ -1109,8 +1144,8 @@
     },
     "see_log": "legh log",
     "straighten_viewer": {
-      "title": "nIt chenmoH",
-      "instruction": "nIt lut yIDan: yoHbogh Doch tIq Sov vIneH — tay'taH (pagh nIHta')"
+      "instruction": "nIt lut yIDan: yoHbogh Doch tIq Sov vIneH — tay'taH (pagh nIHta')",
+      "angle_label": "jom:"
     },
     "clone_zone_viewer": {
       "title": "Daq tIngmeH Qu'",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Huj :"
     },
     "text_viewer": {
-      "title": "nav mu'mey",
       "instruction": "chev Daq Danej nav mu'mey  •  Ctrl+chev: nav mu'mey wa' pel'aD",
       "size_label": "miH:",
       "color_label": "rItlh:",
       "bold_btn": "H",
       "italic_btn": "S",
       "underline_btn": "D",
-      "apply_btn": "lo' mu'mey",
       "pick_color_title": "wIv mu'mey rItlh"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "nIt chenmoH chu'moH",
       "message": "mIllogh {success} nIt chenmoHlu' Qapla'.",
       "message_errors": "mIllogh {success} nIt chenmoHlu' Qapla'.\n{failed} luj (pagh 'IH lo' Qu' tu'lu') :"
+    },
+    "color_picker": {
+      "basic_colors_label": "rItlhmey:",
+      "hex_label": "Hexadecimal:",
+      "red_label": "Doq:",
+      "green_label": "SuD:",
+      "blue_label": "SuD cha'DIch:",
+      "alpha_label": "Alpha:"
     }
   },
   "tooltip": {

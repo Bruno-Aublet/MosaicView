@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "CBT 파일\n CBZ로 일괄 변환",
     "batch_metadata": "메타데이터 일괄 가져오기",
     "batch_library": "폴더에서 라이브러리 만들기",
-    "batch_recompress": "CBZ 파일을 기본 수준으로 다시 압축"
+    "batch_recompress": "CBZ 파일을 기본 수준으로 다시 압축",
+    "validate_straighten": "기울기 보정 확인",
+    "validate_text": "텍스트 적용"
   },
   "tabs": {
     "mosaic": "모자이크",
@@ -75,7 +77,16 @@
     "mode_single": "단일 페이지  [D]",
     "mode_double": "이중 페이지  [D]",
     "mode_continuous": "연속 모드  [D]",
-    "mode_webtoon": "웹툰  [D]"
+    "mode_webtoon": "웹툰  [D]",
+    "toolbar_crop_tooltip": "자르기",
+    "toolbar_undo_tooltip": "실행 취소 (Ctrl+Z)",
+    "toolbar_redo_tooltip": "다시 실행 (Ctrl+Y)",
+    "unvalidated_work_title": "확정되지 않은 작업",
+    "unvalidated_work_message": "확정되지 않은 작업이 하나 이상 있습니다. 뷰어를 닫으시겠습니까? 이 작업은 손실됩니다.",
+    "toolbar_straighten_tooltip": "기울기 보정",
+    "toolbar_crop_instruction": "유지할 영역 주위에 사각형을 그린 다음 확인하세요",
+    "toolbar_clone_tooltip": "복제",
+    "toolbar_text_tooltip": "텍스트"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "열기 차단됨",
         "message": "이 파일은 열리지 않았습니다. {ext} 파일은 컴퓨터에서 코드를 실행할 수 있습니다.\n신뢰할 수 있는 파일이라면 압축을 풀어 직접 여세요."
+      },
+      "no_straighten_line": {
+        "title": "그려진 선이 없습니다",
+        "message": "먼저 기준선을 그려 주세요."
+      },
+      "no_skew_detected": {
+        "title": "기울기가 감지되지 않았습니다",
+        "message": "이 페이지에서 신뢰할 수 있는 기울기가 감지되지 않았습니다."
+      },
+      "no_text_block": {
+        "title": "입력된 텍스트 없음",
+        "message": "먼저 최소 하나의 블록에 텍스트를 입력하세요."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "대상 드라이브에 디스크 공간이 부족합니다.\n필요: {needed}\n사용 가능: {free}"
       },
-      "no_wilhelm_scream_found": "오디오 파일을 찾을 수 없습니다."
+      "no_wilhelm_scream_found": "오디오 파일을 찾을 수 없습니다.",
+      "straighten_failed": {
+        "title": "오류",
+        "message": "이미지를 보정할 수 없습니다: {error}"
+      },
+      "clone_failed": {
+        "title": "오류",
+        "message": "복제를 적용할 수 없습니다: {error}"
+      },
+      "text_failed": {
+        "title": "오류",
+        "message": "텍스트를 적용할 수 없습니다: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "로그 보기",
     "straighten_viewer": {
-      "title": "기울기 보정",
-      "instruction": "이미지에서 수평(또는 수직)이어야 하는 부분에 직선을 그으세요"
+      "instruction": "이미지에서 수평(또는 수직)이어야 하는 부분에 직선을 그으세요",
+      "angle_label": "각도:"
     },
     "clone_zone_viewer": {
       "title": "영역 복제",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "크기 :"
     },
     "text_viewer": {
-      "title": "텍스트 삽입",
       "instruction": "텍스트를 삽입할 위치를 클릭하세요  •  Ctrl+화살표: 픽셀 단위로 텍스트 이동",
       "size_label": "크기:",
       "color_label": "색상:",
       "bold_btn": "굵",
       "italic_btn": "기",
       "underline_btn": "밑",
-      "apply_btn": "텍스트 적용",
       "pick_color_title": "텍스트 색상 선택"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "자동 보정",
       "message": "{success}개의 이미지가 성공적으로 보정되었습니다.",
       "message_errors": "{success}개의 이미지가 성공적으로 보정되었습니다.\n{failed}개 실패 (신뢰할 수 있는 기울기를 감지하지 못함) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "기본 색상:",
+      "hex_label": "16진수:",
+      "red_label": "빨강:",
+      "green_label": "초록:",
+      "blue_label": "파랑:",
+      "alpha_label": "알파:"
     }
   },
   "tooltip": {

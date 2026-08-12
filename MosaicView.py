@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.7.2"
+__version__ = "1.7.3"
 
 import sys
 import os
@@ -811,6 +811,27 @@ class MainWindow(QMainWindow):
         if getattr(self, '_close_event_handled', False):
             event.accept()
             return
+
+        # Une visionneuse avec du travail d'outil non validé (crop/straighten/
+        # clone, voir idees.txt #3) doit être traitée AVANT de fermer le
+        # fichier auquel elle se rapporte : sinon force_close_file() vide
+        # state.images_data pendant que la fermeture de la fenêtre principale
+        # se poursuit, et le dialogue de confirmation de la visionneuse
+        # n'apparaît qu'après coup, sur une BD déjà fermée (signalé par
+        # l'utilisateur en conditions réelles). On délègue à .close() de la
+        # visionneuse elle-même : son propre closeEvent affiche déjà le bon
+        # dialogue (ConfirmYNDialog, viewer.unvalidated_work_*) — pas de
+        # nouveau message à créer ici, juste amener la visionneuse au premier
+        # plan et bloquer la fermeture de l'appli tant qu'elle n'a pas statué.
+        from modules.qt.image_viewer_qt import image_viewer_refs
+        for _viewer in list(image_viewer_refs):
+            if _viewer._has_unvalidated_work():
+                event.ignore()
+                _viewer.show()
+                _viewer.raise_()
+                _viewer.activateWindow()
+                _viewer.close()
+                return
 
         # Avertissement si une DB est ouverte
         try:

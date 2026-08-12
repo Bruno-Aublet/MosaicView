@@ -5,26 +5,34 @@ Reproduit à l'identique le comportement de modules/image_viewer.py (tkinter).
 """
 
 import io
-import time
 
 from PIL import Image
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QPushButton,
-    QScrollArea, QSizePolicy, QMenu,
+    QScrollArea, QSizePolicy, QMenu, QFrame, QDoubleSpinBox,
 )
-from PySide6.QtCore import Qt, QTimer, QPoint
-from PySide6.QtGui import QPixmap, QImage, QKeySequence, QShortcut, QCursor
+from PySide6.QtCore import Qt, QTimer, QPoint, QElapsedTimer
+from PySide6.QtGui import QPixmap, QImage, QKeySequence, QShortcut
 
 from modules.qt import state as _state_module
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.entries import (
-    ensure_image_loaded, free_image_memory, get_gif_frame, save_image_to_bytes,
+    ensure_image_loaded, free_image_memory, get_gif_frame,
 )
-from modules.qt.dialogs_qt import MsgDialog
+from modules.qt.dialogs_qt import MsgDialog, ConfirmYNDialog
 from modules.qt.page_detection import compute_reference_ratio
+# Outils de la barre d'outils flottante — code dans leur propre module,
+# jamais dans ce fichier (CLAUDE.md, fusion des visionneuses idees.txt #3).
+from modules.qt.crop_tool_qt import CropCanvasMixin, CropViewerMixin
+from modules.qt.straighten_tool_qt import StraightenCanvasMixin, StraightenViewerMixin
+from modules.qt.clone_tool_qt import CloneCanvasMixin, CloneViewerMixin
+from modules.qt.text_tool_qt import TextCanvasMixin, TextViewerMixin
+# La barre d'outils elle-même (composant transversal, pas un outil) — même
+# principe de séparation, voir viewer_toolbar_qt.py.
+from modules.qt.viewer_toolbar_qt import _ViewerToolbar
 
 # Liste globale des visionneuses ouvertes (pour mise à jour de langue)
 image_viewer_refs = []
@@ -55,7 +63,7 @@ def _compose_on_checkerboard(img: Image.Image, tile: int = 16) -> Image.Image:
 # Canvas de visionneuse (zone noire avec image centrée + rubber-band crop)
 # ─────────────────────────────────────────────────────────────────────────────
 
-class _ViewerCanvas(QLabel):
+class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, TextCanvasMixin, QLabel):
     """
     QLabel utilisé comme zone d'affichage de l'image.
     Gère :
@@ -64,14 +72,6 @@ class _ViewerCanvas(QLabel):
       - pan clic-droit
       - double-clic plein écran / validation crop
     """
-
-    _CURSORS = {
-        'tl': Qt.SizeFDiagCursor, 'br': Qt.SizeFDiagCursor,
-        'tr': Qt.SizeBDiagCursor, 'bl': Qt.SizeBDiagCursor,
-        'left': Qt.SizeHorCursor, 'right': Qt.SizeHorCursor,
-        'top': Qt.SizeVerCursor,  'bottom': Qt.SizeVerCursor,
-        'move': Qt.SizeAllCursor,
-    }
 
     def sizeHint(self):
         from PySide6.QtCore import QSize
@@ -91,22 +91,11 @@ class _ViewerCanvas(QLabel):
         self.setMouseTracking(True)
         self.setFocusPolicy(Qt.NoFocus)
 
-        # État rubber-band
-        self._crop_start: QPoint | None = None
-        self._crop_end:   QPoint | None = None
-        self._rubber_band_active = False
-
         # Infos image affichée (pour conversion coordonnées → image originale)
         self.display_offset_x = 0
         self.display_offset_y = 0
         self.display_width    = 0
         self.display_height   = 0
-
-        # Coordonnées relatives (0-1) persistantes entre zooms
-        self.crop_rel_x1: float | None = None
-        self.crop_rel_y1: float | None = None
-        self.crop_rel_x2: float | None = None
-        self.crop_rel_y2: float | None = None
 
         # Pan clic-droit
         self._pan_start: QPoint | None = None
@@ -116,61 +105,85 @@ class _ViewerCanvas(QLabel):
         self.pan_offset_x = 0
         self.pan_offset_y = 0
 
-        # Gestion double-clic
-        self._last_click_time = 0.0
-        self._double_click_delay = 0.3
-        self._waiting_for_double_click = False
+        # Ignoré transitoirement après un double-clic (validation crop OU
+        # bascule plein écran général — voir mouseDoubleClickEvent) pour
+        # éviter qu'un clic résiduel ne déclenche un nouveau geste.
         self._ignore_crop_events = False
 
-        # Resize/move mode pour les bords/coins/intérieur du rectangle
-        self._resize_mode: str | None = None
-        self._resize_original_rect: tuple | None = None
-        self._drag_start_pos: QPoint | None = None
+        # État de l'outil "crop" (voir crop_tool_qt.py::CropCanvasMixin,
+        # hérité par cette classe — CLAUDE.md : ne jamais migrer le code d'un
+        # outil dans image_viewer_qt.py).
+        self._init_crop_state()
 
-        # Bouton Valider (flottant)
+        # Bouton Valider (flottant, partagé crop + straighten — texte selon l'outil actif)
         self._validate_btn: QPushButton | None = None
         self._validate_btn_visible = False
+        self._validate_btn_connected_tool: str | None = None
 
-    # ── Propriétés crop ──────────────────────────────────────────────────────
+        # État de l'outil "straighten" manuel (voir straighten_tool_qt.py::
+        # StraightenCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # jamais migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_straighten_state()
 
-    @property
-    def has_crop(self) -> bool:
-        return self._crop_start is not None and self._crop_end is not None
+        # État de l'outil "clone" (voir clone_tool_qt.py::CloneCanvasMixin,
+        # hérité par cette classe — CLAUDE.md : ne jamais migrer le code d'un
+        # outil dans image_viewer_qt.py).
+        self._init_clone_state()
 
-    def clear_crop(self):
-        self._crop_start = None
-        self._crop_end   = None
-        self.crop_rel_x1 = None
-        self.crop_rel_y1 = None
-        self.crop_rel_x2 = None
-        self.crop_rel_y2 = None
-        self._resize_mode = None
-        self._resize_original_rect = None
-        self._drag_start_pos = None
-        self.pan_offset_x = 0
-        self.pan_offset_y = 0
-        self._hide_validate_btn()
-        self.update()
+        # État de l'outil "text" (voir text_tool_qt.py::TextCanvasMixin,
+        # hérité par cette classe — CLAUDE.md : ne jamais migrer le code d'un
+        # outil dans image_viewer_qt.py).
+        self._init_text_state()
 
-    # ── Bouton Valider ───────────────────────────────────────────────────────
+    # Méthodes de l'outil "crop" (has_crop, clear_crop, _get_resize_mode...)
+    # fournies par CropCanvasMixin (crop_tool_qt.py), de l'outil "straighten"
+    # manuel (has_line, clear_line, set_line_end_from_angle...) fournies par
+    # StraightenCanvasMixin (straighten_tool_qt.py), et de l'outil "clone"
+    # (clear_clone_source, set_clone_mode, set_clone_brush_radius...) fournies
+    # par CloneCanvasMixin (clone_tool_qt.py), héritées par cette classe.
+
+    # ── Bouton Valider (partagé crop + straighten) ───────────────────────────
+    # Le texte et l'action dépendent de l'outil actif au moment de l'affichage
+    # (self._viewer._toolbar.active_tool) — un seul bouton flottant réutilisé
+    # par les deux outils plutôt qu'un par outil.
+
+    _VALIDATE_KEYS = {
+        "crop": "buttons.validate_crop",
+        "straighten": "buttons.validate_straighten",
+        "text": "buttons.validate_text",
+    }
 
     def _ensure_validate_btn(self):
         if self._validate_btn is None:
             theme = get_current_theme()
             font = _get_current_font(12, bold=True)
-            self._validate_btn = QPushButton(_("buttons.validate_crop"), self)
+            self._validate_btn = QPushButton(self)
             self._validate_btn.setFont(font)
             self._validate_btn.setStyleSheet(
                 f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
                 f"border: 1px solid #aaaaaa; padding: 6px 12px; }}"
                 f"QPushButton:hover {{ background: {theme['separator']}; }}"
             )
-            self._validate_btn.clicked.connect(self._viewer.validate_crop)
             self._validate_btn.setFixedWidth(200)
 
     def _show_validate_btn(self):
         self._ensure_validate_btn()
         w = self._validate_btn
+        tool = self._viewer._toolbar.active_tool
+        key = self._VALIDATE_KEYS.get(tool)
+        if key is None:
+            return
+        if self._validate_btn_connected_tool != tool:
+            if self._validate_btn_connected_tool is not None:
+                w.clicked.disconnect()
+            if tool == "crop":
+                w.clicked.connect(self._viewer.validate_crop)
+            elif tool == "text":
+                w.clicked.connect(self._viewer.validate_text)
+            else:
+                w.clicked.connect(self._viewer.validate_straighten)
+            self._validate_btn_connected_tool = tool
+        w.setText(_(key))
         # Positionné en bas au centre
         bw = w.sizeHint().width()
         bh = w.sizeHint().height()
@@ -187,8 +200,11 @@ class _ViewerCanvas(QLabel):
         self._validate_btn_visible = False
 
     def retranslate_validate_btn(self):
-        if self._validate_btn is not None:
-            self._validate_btn.setText(_("buttons.validate_crop"))
+        if self._validate_btn is not None and self._validate_btn_visible:
+            tool = self._viewer._toolbar.active_tool
+            key = self._VALIDATE_KEYS.get(tool)
+            if key is not None:
+                self._validate_btn.setText(_(key))
             font = _get_current_font(12, bold=True)
             self._validate_btn.setFont(font)
 
@@ -226,15 +242,17 @@ class _ViewerCanvas(QLabel):
                              self.display_width, self.display_height)
             painter.drawPixmap(target, pm, QRectF(pm.rect()))
 
-        # Rubber-band rouge
-        if self.has_crop:
-            pen = QPen(QColor("red"), 2)
-            painter.setPen(pen)
-            x1 = int(min(self._crop_start.x(), self._crop_end.x()))
-            y1 = int(min(self._crop_start.y(), self._crop_end.y()))
-            x2 = int(max(self._crop_start.x(), self._crop_end.x()))
-            y2 = int(max(self._crop_start.y(), self._crop_end.y()))
-            painter.drawRect(x1, y1, x2 - x1, y2 - y1)
+        # Rubber-band de recadrage (outil "crop", voir crop_tool_qt.py::
+        # CropCanvasMixin.paint_crop_rect).
+        self.paint_crop_rect(painter)
+
+        # Trait de redressage manuel (outil "straighten", voir
+        # straighten_tool_qt.py::StraightenCanvasMixin.paint_straighten_line).
+        self.paint_straighten_line(painter)
+
+        # Marqueur de source du tampon de clonage (outil "clone", voir
+        # clone_tool_qt.py::CloneCanvasMixin.paint_clone_marker).
+        self.paint_clone_marker(painter)
 
         # Barre de progression verticale (mode Webtoon uniquement) : indique la
         # position de scroll dans une page qui dépasse de la fenêtre en hauteur.
@@ -289,42 +307,27 @@ class _ViewerCanvas(QLabel):
         if self._ignore_crop_events:
             return
 
-        pos = event.position().toPoint()
-        current_time = time.time()
-        time_since = current_time - self._last_click_time
-
-        # Deuxième clic rapide → probablement double-clic, ignorer
-        if 0.001 < time_since < self._double_click_delay:
+        active_tool = self._viewer._toolbar.active_tool
+        if active_tool == "straighten":
+            self.straighten_mouse_press(event)
             return
 
-        self._last_click_time = current_time
-
-        # Vérifie resize/move mode
-        resize_mode = self._get_resize_mode(pos)
-        if resize_mode:
-            self._resize_mode = resize_mode
-            self._resize_original_rect = (
-                self._crop_start.x(), self._crop_start.y(),
-                self._crop_end.x(),   self._crop_end.y()
-            )
-            self._drag_start_pos = pos
-            self._waiting_for_double_click = False
+        if active_tool == "clone":
+            self.clone_mouse_press(event)
             return
 
-        # Rectangle complet existant → attendre double-clic
-        if self.has_crop:
-            self._waiting_for_double_click = True
+        if active_tool == "text":
+            self.text_mouse_press(event)
             return
 
-        # Nouveau rectangle
-        self._hide_validate_btn()
-        self._crop_start = pos
-        self._crop_end   = None
-        self._resize_mode = None
-        self._waiting_for_double_click = False
-        self.update()
+        if active_tool != "crop":
+            return
+
+        self.crop_mouse_press(event)
 
     def mouseMoveEvent(self, event):
+        self._viewer._toolbar.on_canvas_mouse_move(int(event.position().y()), self.height())
+
         # Pan clic-droit
         if event.buttons() & Qt.RightButton and self._pan_start is not None:
             delta = event.position().toPoint() - self._pan_start
@@ -334,7 +337,7 @@ class _ViewerCanvas(QLabel):
                 self.pan_offset_x += delta.x()
                 self.pan_offset_y += delta.y()
                 self._pan_start = event.position().toPoint()
-                if self.has_crop:
+                if self.has_crop or self.has_text_blocks:
                     self._viewer.display_image(keep_crop_rect=True)
                 else:
                     self.display_offset_x += delta.x()
@@ -342,53 +345,48 @@ class _ViewerCanvas(QLabel):
                     self.update()
             return
 
+        active_tool = self._viewer._toolbar.active_tool
+
         if not (event.buttons() & Qt.LeftButton):
-            # Mise à jour du curseur selon la position sur le cadre
-            if self.has_crop:
-                mode = self._get_resize_mode(event.position().toPoint())
-                self.setCursor(QCursor(self._CURSORS.get(mode, Qt.ArrowCursor)))
+            # Mise à jour du curseur selon la position sur le cadre (uniquement si
+            # l'outil crop est actif : un rectangle conservé mais désélectionné
+            # n'est ni redimensionnable ni déplaçable, voir set_active_tool)
+            if self.has_crop and active_tool == "crop":
+                self.crop_update_cursor(event)
+            elif self.has_line and active_tool == "straighten":
+                self.straighten_update_cursor(event)
+            elif active_tool == "clone":
+                self.clone_update_cursor(event)
+            elif active_tool == "text":
+                self.text_update_cursor(event)
             else:
                 self.setCursor(Qt.ArrowCursor)
             return
+
+        if active_tool == "straighten":
+            if self._ignore_crop_events:
+                return
+            self.straighten_mouse_move(event)
+            return
+
+        if active_tool == "clone":
+            if self._ignore_crop_events:
+                return
+            self.clone_mouse_move(event)
+            return
+
+        if active_tool == "text":
+            if self._ignore_crop_events:
+                return
+            self.text_mouse_move(event)
+            return
+
         if self._ignore_crop_events:
             return
-        if self._crop_start is None:
+        if active_tool != "crop":
             return
 
-        pos = event.position().toPoint()
-        distance = ((pos.x() - self._crop_start.x())**2 +
-                    (pos.y() - self._crop_start.y())**2) ** 0.5
-
-        # Drag en attente de double-clic
-        if self._waiting_for_double_click:
-            if distance >= 15:
-                self._waiting_for_double_click = False
-                self._hide_validate_btn()
-            else:
-                return
-
-        if self._resize_mode and self._resize_original_rect:
-            ox1, oy1, ox2, oy2 = self._resize_original_rect
-            x1, y1, x2, y2 = ox1, oy1, ox2, oy2
-            rm = self._resize_mode
-            if rm == 'move' and self._drag_start_pos is not None:
-                dx = pos.x() - self._drag_start_pos.x()
-                dy = pos.y() - self._drag_start_pos.y()
-                x1, y1, x2, y2 = ox1 + dx, oy1 + dy, ox2 + dx, oy2 + dy
-            elif rm == 'tl':   x1, y1 = pos.x(), pos.y()
-            elif rm == 'tr': x2, y1 = pos.x(), pos.y()
-            elif rm == 'bl': x1, y2 = pos.x(), pos.y()
-            elif rm == 'br': x2, y2 = pos.x(), pos.y()
-            elif rm == 'left':   x1 = pos.x()
-            elif rm == 'right':  x2 = pos.x()
-            elif rm == 'top':    y1 = pos.y()
-            elif rm == 'bottom': y2 = pos.y()
-            self._crop_start = QPoint(x1, y1)
-            self._crop_end   = QPoint(x2, y2)
-        elif distance >= 15 or self._crop_end is not None:
-            self._crop_end = pos
-
-        self.update()
+        self.crop_mouse_move(event)
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.RightButton:
@@ -404,86 +402,19 @@ class _ViewerCanvas(QLabel):
         if self._ignore_crop_events:
             return
 
-        pos = event.position().toPoint()
-
-        if self._waiting_for_double_click:
-            QTimer.singleShot(500, lambda: setattr(self, '_waiting_for_double_click', False))
+        if self._viewer._toolbar.active_tool == "straighten":
+            self.straighten_mouse_release(event)
             return
 
-        if self._crop_start is None:
+        if self._viewer._toolbar.active_tool == "clone":
+            self.clone_mouse_release(event)
             return
 
-        distance = ((pos.x() - self._crop_start.x())**2 +
-                    (pos.y() - self._crop_start.y())**2) ** 0.5
-
-        if self._resize_mode and self._resize_original_rect:
-            ox1, oy1, ox2, oy2 = self._resize_original_rect
-            x1, y1, x2, y2 = ox1, oy1, ox2, oy2
-            rm = self._resize_mode
-            if rm == 'move' and self._drag_start_pos is not None:
-                dx = pos.x() - self._drag_start_pos.x()
-                dy = pos.y() - self._drag_start_pos.y()
-                x1, y1, x2, y2 = ox1 + dx, oy1 + dy, ox2 + dx, oy2 + dy
-            elif rm == 'tl':   x1, y1 = pos.x(), pos.y()
-            elif rm == 'tr': x2, y1 = pos.x(), pos.y()
-            elif rm == 'bl': x1, y2 = pos.x(), pos.y()
-            elif rm == 'br': x2, y2 = pos.x(), pos.y()
-            elif rm == 'left':   x1 = pos.x()
-            elif rm == 'right':  x2 = pos.x()
-            elif rm == 'top':    y1 = pos.y()
-            elif rm == 'bottom': y2 = pos.y()
-            self._resize_mode = None
-            self._resize_original_rect = None
-            self._drag_start_pos = None
-            self._crop_start = QPoint(min(x1, x2), min(y1, y2))
-            self._crop_end   = QPoint(max(x1, x2), max(y1, y2))
-
-        elif distance < 15 and self._crop_end is None:
-            # Simple clic sans drag → rien à faire
-            self._crop_start = None
-            self.update()
-            return
-        else:
-            if self._crop_end is None:
-                self._crop_end = pos
-
-        # Normalise
-        x1 = min(self._crop_start.x(), self._crop_end.x())
-        y1 = min(self._crop_start.y(), self._crop_end.y())
-        x2 = max(self._crop_start.x(), self._crop_end.x())
-        y2 = max(self._crop_start.y(), self._crop_end.y())
-
-        if abs(x2 - x1) < 10 or abs(y2 - y1) < 10:
-            self._crop_start = None
-            self._crop_end   = None
-            self.update()
+        if self._viewer._toolbar.active_tool == "text":
+            self.text_mouse_release(event)
             return
 
-        self._crop_start = QPoint(x1, y1)
-        self._crop_end   = QPoint(x2, y2)
-
-        # Coordonnées relatives
-        if self.display_width > 0 and self.display_height > 0:
-            self.crop_rel_x1 = (x1 - self.display_offset_x) / self.display_width
-            self.crop_rel_y1 = (y1 - self.display_offset_y) / self.display_height
-            self.crop_rel_x2 = (x2 - self.display_offset_x) / self.display_width
-            self.crop_rel_y2 = (y2 - self.display_offset_y) / self.display_height
-
-        # En mode double page avec rectangle tracé → passe en simple page
-        if self._viewer.page_mode != "single" and self.has_crop:
-            if self._viewer.displayed_left_idx is not None and self._viewer.displayed_right_idx is not None:
-                center_x = self.width() / 2
-                rect_cx = (x1 + x2) / 2
-                if rect_cx < center_x:
-                    self._viewer.current_idx = self._viewer.displayed_left_idx
-                else:
-                    self._viewer.current_idx = self._viewer.displayed_right_idx
-            self._viewer.page_mode = "single"
-            self._viewer.display_image(keep_crop_rect=True)
-            return
-
-        self.update()
-        self._show_validate_btn()
+        self.crop_mouse_release(event)
 
     def mouseDoubleClickEvent(self, event):
         if event.button() != Qt.LeftButton:
@@ -493,7 +424,7 @@ class _ViewerCanvas(QLabel):
 
         pos = event.position().toPoint()
 
-        if self.has_crop:
+        if self.has_crop and self._viewer._toolbar.active_tool == "crop":
             x1 = min(self._crop_start.x(), self._crop_end.x())
             y1 = min(self._crop_start.y(), self._crop_end.y())
             x2 = max(self._crop_start.x(), self._crop_end.x())
@@ -520,13 +451,46 @@ class _ViewerCanvas(QLabel):
         super().resizeEvent(event)
         if self._validate_btn_visible and self._validate_btn is not None:
             self._show_validate_btn()
+        if self._viewer._toolbar.isVisible():
+            self._viewer._toolbar.reposition()
+        angle_panel = self._viewer._toolbar._angle_panel
+        if angle_panel.isVisible():
+            angle_panel.reposition()
+        clone_panel = self._viewer._toolbar._clone_panel
+        if clone_panel.isVisible():
+            clone_panel.reposition()
+        text_panel = self._viewer._toolbar._text_panel
+        if text_panel.isVisible():
+            text_panel.reposition()
+        if self.has_text_blocks:
+            self.reposition_text_blocks()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Barre d'outils flottante (fusion progressive des visionneuses — idees.txt #3)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _floating_options_panel_style(theme, class_name: str) -> str:
+    """Style de fond commun aux panneaux flottants d'options (angle de
+    redressage, réglages du tampon de clonage) : contrairement à
+    _ViewerToolbar (dont les icônes se détachent d'elles-mêmes par leur
+    contraste propre), ces panneaux n'ont que du texte/contrôles fins — sans
+    bordure marquée, ils se fondent visuellement dans une image de fond claire
+    ou blanche (signalé par l'utilisateur en conditions réelles). Fond franc
+    dédié (pas toolbar_bg, trop proche d'un fond de page clair/blanc typique
+    d'une BD) + bordure nette dans la couleur de texte du thème."""
+    panel_bg = "#3a3a3a" if _state_module.state.dark_mode else "#f0f0f0"
+    return (
+        f"{class_name} {{ background: {panel_bg}; border: 1px solid {theme['text']}; "
+        f"border-radius: 6px; }}"
+    )
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Visionneuse principale
 # ─────────────────────────────────────────────────────────────────────────────
 
-class ImageViewer(QDialog):
+class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, TextViewerMixin, QDialog):
     """
     Visionneuse d'images Qt.
     Reproduit à l'identique ImageViewer (tkinter) :
@@ -541,10 +505,12 @@ class ImageViewer(QDialog):
       - Undo/Redo Ctrl+Z / Ctrl+Y
     """
 
-    def __init__(self, parent, start_idx: int, callbacks: dict | None = None):
+    def __init__(self, parent, start_idx: int, callbacks: dict | None = None,
+                 initial_tool: str | None = None):
         super().__init__(parent)
         self.callbacks = callbacks or {}
         state = self.callbacks.get('state') or _state_module.state
+        self._initial_tool = initial_tool
 
         self.setWindowTitle(_wt("viewer.title"))
         self.resize(800, 600)
@@ -562,6 +528,33 @@ class ImageViewer(QDialog):
         self.current_idx   = start_idx
         state.active_viewers += 1
         image_viewer_refs.append(self)
+
+        # Rectangles de crop en cours, conservés par page (idees.txt #3, partie B :
+        # un travail d'outil non validé survit à un changement de page). Clé = index
+        # de page, valeur = (crop_rel_x1, crop_rel_y1, crop_rel_x2, crop_rel_y2).
+        # Volatile : jamais persisté sur disque, perdu à la fermeture de la visionneuse.
+        self._crop_by_page: dict[int, tuple[float, float, float, float]] = {}
+
+        # Traits de redressage en cours, conservés par page — même principe que
+        # _crop_by_page. Clé = index de page, valeur = ((ix1, iy1), (ix2, iy2))
+        # en coordonnées image (stables, indépendantes du zoom/pan).
+        self._straighten_by_page: dict[int, tuple[tuple[float, float], tuple[float, float]]] = {}
+
+        # État de l'outil "clone" — PAS de dict par page comme crop/straighten :
+        # contrairement à eux, un coup de tampon est déjà appliqué et commité
+        # (bytes + save_state) dès son relâchement, il n'y a donc rien "en
+        # attente de validation" à faire survivre à un changement de page (voir
+        # idees.txt #3, discussion du 3e outil migré). Seule la position de la
+        # source Ctrl+cliquée est un état d'outil volatile, réinitialisée à
+        # chaque changement de page (voir navigate()). Voir clone_tool_qt.py::
+        # CloneViewerMixin, hérité par cette classe.
+        self._init_clone_viewer_state()
+
+        # Blocs de texte en cours, conservés par page — même principe que
+        # _crop_by_page/_straighten_by_page, mais valeur = liste de blocs
+        # (ix, iy, html) au lieu d'une seule géométrie. Volatile : jamais
+        # persisté sur disque, perdu à la fermeture de la visionneuse.
+        self._text_blocks_by_page: dict[int, list[tuple[int, int, str]]] = {}
 
         # ── État ──────────────────────────────────────────────────────────────
         # zoom_level : échelle réelle par rapport à la taille native de l'image
@@ -589,7 +582,7 @@ class ImageViewer(QDialog):
         # Resize debounce
         self._resize_timer = QTimer(self)
         self._resize_timer.setSingleShot(True)
-        self._resize_timer.timeout.connect(lambda: self.display_image(keep_crop_rect=True))
+        self._resize_timer.timeout.connect(self._on_resize_debounced)
         self._last_w = 0
         self._last_h = 0
 
@@ -606,6 +599,11 @@ class ImageViewer(QDialog):
         # Canvas de visionneuse
         self._canvas = _ViewerCanvas(self)
         root_layout.addWidget(self._canvas, stretch=1)
+
+        # Barre d'outils flottante (fusion progressive des visionneuses, idees.txt #3)
+        self._toolbar = _ViewerToolbar(self)
+        if self._initial_tool in ("crop", "straighten", "clone", "text"):
+            self._toolbar.set_active_tool(self._initial_tool)
 
         # Label du nom en bas
         self._name_label = QLabel()
@@ -630,8 +628,15 @@ class ImageViewer(QDialog):
         self._mode_label.adjustSize()
 
         # ── Raccourcis clavier ────────────────────────────────────────────────
-        QShortcut(QKeySequence(Qt.Key_Left),       self).activated.connect(lambda: self.navigate(-1))
-        QShortcut(QKeySequence(Qt.Key_Right),      self).activated.connect(lambda: self.navigate(1))
+        # Left/Right naviguent de page — mais un bloc de texte en édition (outil
+        # "text", idees.txt #3) utilise aussi les flèches simples pour déplacer
+        # le curseur dans le texte : sans ce garde, ces deux QShortcut (contexte
+        # par défaut Qt.WindowShortcut, actif même si un QTextEdit enfant a le
+        # focus) intercepteraient la flèche avant qu'elle n'atteigne l'overlay.
+        QShortcut(QKeySequence(Qt.Key_Left),       self).activated.connect(
+            lambda: None if self._text_block_has_focus() else self.navigate(-1))
+        QShortcut(QKeySequence(Qt.Key_Right),      self).activated.connect(
+            lambda: None if self._text_block_has_focus() else self.navigate(1))
         QShortcut(QKeySequence(Qt.Key_Escape),     self).activated.connect(self._on_escape)
         QShortcut(QKeySequence(Qt.Key_F11),        self).activated.connect(self.toggle_fullscreen)
 
@@ -648,6 +653,7 @@ class ImageViewer(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self._closed = False
+        self._close_confirmed = False
 
         self._center_parent = parent
         self._retranslate()
@@ -700,6 +706,9 @@ class ImageViewer(QDialog):
 
         self._canvas.retranslate_validate_btn()
 
+        self._toolbar._apply_theme()
+        self._toolbar.retranslate()
+
     # ── Redisplay avec pan ────────────────────────────────────────────────────
 
     def _redisplay_with_pan(self):
@@ -721,6 +730,17 @@ class ImageViewer(QDialog):
 
     # ── Resize de la fenêtre ─────────────────────────────────────────────────
 
+    def _on_resize_debounced(self):
+        """Tant qu'aucun zoom manuel n'a été fait, le fit-to-window doit rester
+        valable quelle que soit la taille de la fenêtre (plein écran, maximisée,
+        etc.) : on force le recalcul du zoom avant de redessiner."""
+        if not self._manual_zoom:
+            self._zoom_initialized = False
+        self.display_image(keep_crop_rect=True)
+        self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
+        self._zoom_label.adjustSize()
+        self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         w, h = self.width(), self.height()
@@ -733,10 +753,42 @@ class ImageViewer(QDialog):
 
     # ── Fermeture ─────────────────────────────────────────────────────────────
 
+    def _has_unvalidated_work(self) -> bool:
+        """Travail d'outil non validé sur au moins une page (idees.txt #3, partie B) :
+        le rectangle/trait/blocs de la page actuellement affichée ne sont pas
+        encore dans _crop_by_page/_straighten_by_page/_text_blocks_by_page (ils
+        n'y entrent qu'au moment de changer de page), donc toutes les sources
+        doivent être vérifiées."""
+        if self._canvas.crop_rel_x1 is not None:
+            return True
+        if self._crop_by_page:
+            return True
+        if self._canvas._line_img_start is not None:
+            return True
+        if self._straighten_by_page:
+            return True
+        if self._canvas.has_text_blocks:
+            return True
+        return bool(self._text_blocks_by_page)
+
     def closeEvent(self, event):
         if self._closed:
             super().closeEvent(event)
             return
+
+        if self._has_unvalidated_work() and not self._close_confirmed:
+            event.ignore()
+            dlg = ConfirmYNDialog(
+                self,
+                lambda: _wt("viewer.unvalidated_work_title"),
+                lambda: _("viewer.unvalidated_work_message"),
+            )
+            dlg.result_signal.connect(self._on_close_confirmed)
+            dlg.show()
+            dlg.raise_()
+            dlg.activateWindow()
+            return
+
         self._closed = True
 
         state = self.callbacks.get('state') or _state_module.state
@@ -761,6 +813,11 @@ class ImageViewer(QDialog):
             pass
 
         super().closeEvent(event)
+
+    def _on_close_confirmed(self, confirmed: bool):
+        if confirmed:
+            self._close_confirmed = True
+            self.close()
 
     def _save_bookmark(self, state):
         """Sauvegarde la page courante comme marque-page (sauf page 0 et dernière page)."""
@@ -898,14 +955,31 @@ class ImageViewer(QDialog):
             else:
                 new_pos = current_pos + delta
             new_pos = max(0, min(new_pos, len(img_indices) - 1))
+            self._save_crop_for_current_page()
+            self._save_straighten_for_current_page()
+            self._save_text_for_current_page()
             self.current_idx = img_indices[new_pos]
             if self.page_mode == "webtoon":
                 self._canvas.pan_offset_y = 0
             self._check_clear_bookmark_on_last_page(img_indices, new_pos)
-            self.display_image()
+            self._restore_crop_for_page(self.current_idx)
+            self._restore_straighten_for_page(self.current_idx)
+            self._restore_text_for_page(self.current_idx)
+            # Pas de persistance par page pour le clonage (voir idees.txt #3,
+            # discussion du 3e outil migré) : la source Ctrl+cliquée est
+            # simplement effacée, aucun travail en attente à restaurer.
+            self._canvas.clear_clone_source()
+            self.display_image(keep_crop_rect=True)
         except ValueError:
+            self._save_crop_for_current_page()
+            self._save_straighten_for_current_page()
+            self._save_text_for_current_page()
             self.current_idx = img_indices[0]
-            self.display_image()
+            self._restore_crop_for_page(self.current_idx)
+            self._restore_straighten_for_page(self.current_idx)
+            self._restore_text_for_page(self.current_idx)
+            self._canvas.clear_clone_source()
+            self.display_image(keep_crop_rect=True)
 
     def _check_clear_bookmark_on_last_page(self, img_indices, current_pos):
         """Efface le marque-page si la dernière page est maintenant visible."""
@@ -1003,8 +1077,10 @@ class ImageViewer(QDialog):
         self.display_image(keep_crop_rect=True)
 
     def fit_zoom_to_window(self):
-        """Ctrl+0 : recalcule le zoom pour ajuster la page actuelle à la fenêtre."""
-        self._manual_zoom = True
+        """Ctrl+0 : recalcule le zoom pour ajuster la page actuelle à la fenêtre.
+        Repasse en mode auto-fit (contrairement aux vrais zooms manuels) : un
+        redimensionnement ultérieur de la fenêtre continuera à réajuster le zoom."""
+        self._manual_zoom = False
         self._zoom_initialized = False
         self.display_image(keep_crop_rect=True)
         self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
@@ -1028,6 +1104,8 @@ class ImageViewer(QDialog):
             self.showFullScreen()
             self.is_fullscreen = True
             self._name_label.setStyleSheet("color: white; background: black;")
+        if not self._manual_zoom:
+            self._zoom_initialized = False
         self.display_image(keep_crop_rect=True)
 
     # ── Mode de lecture ───────────────────────────────────────────────────────
@@ -1088,6 +1166,7 @@ class ImageViewer(QDialog):
             entry = state.images_data[self.current_idx]
             entry["img"] = None
         self.display_image()
+        self._toolbar.refresh_undo_redo_state()
 
     # ── Touches clavier ───────────────────────────────────────────────────────
 
@@ -1097,11 +1176,35 @@ class ImageViewer(QDialog):
         else:
             super().keyPressEvent(event)
 
+    # ── Outil texte : focus clavier ──────────────────────────────────────────
+
+    def _text_block_has_focus(self) -> bool:
+        """True si un bloc de texte a actuellement le focus clavier — les
+        raccourcis Left/Right de navigation doivent alors céder la priorité au
+        déplacement du curseur natif de QTextEdit (voir __init__)."""
+        block = self._canvas._text_active_block()
+        return block is not None and block.overlay.isVisible() and block.overlay.hasFocus()
+
     # ── Échap ─────────────────────────────────────────────────────────────────
 
     def _on_escape(self):
         if self._canvas.has_crop or self._canvas._crop_start is not None:
             self._canvas.clear_crop()
+            self._crop_by_page.pop(self.current_idx, None)
+        elif self._canvas.has_line or self._canvas._line_start is not None:
+            self._canvas.clear_line()
+            self._toolbar._angle_panel.reset()
+            self._straighten_by_page.pop(self.current_idx, None)
+        elif self._canvas._clone_source_img is not None:
+            # Efface la source Ctrl+cliquée — rien d'autre à annuler pour cet
+            # outil (voir idees.txt #3, le clonage n'a pas de "travail en
+            # attente de validation" : chaque coup de tampon est déjà commité).
+            self._canvas.clear_clone_source()
+        elif self._canvas.has_text_blocks:
+            self._canvas.clear_text_blocks()
+            self._toolbar._text_panel.set_visible_for_tool(self._toolbar.active_tool)
+            self._canvas._hide_validate_btn()
+            self._text_blocks_by_page.pop(self.current_idx, None)
         elif self.is_fullscreen:
             self.toggle_fullscreen()
         else:
@@ -1240,6 +1343,8 @@ class ImageViewer(QDialog):
 
         if not keep_crop_rect:
             self._canvas.clear_crop()
+            self._canvas.clear_line()
+            self._toolbar._angle_panel.reset()
 
         img_indices = self.get_image_indices()
         if not img_indices:
@@ -1361,7 +1466,34 @@ class ImageViewer(QDialog):
             self._canvas._crop_start = QPoint(x1, y1)
             self._canvas._crop_end   = QPoint(x2, y2)
             self._canvas.update()
-            self._canvas._show_validate_btn()
+            # Bouton Valider affiché seulement si l'outil crop est réellement actif
+            # (un crop restauré sur une page pendant que l'outil est désélectionné
+            # reste visible en gris mais non actionnable, voir _ViewerToolbar).
+            if self._toolbar.active_tool == "crop":
+                self._canvas._show_validate_btn()
+            else:
+                self._canvas._hide_validate_btn()
+
+        # Redessine le trait de redressage si un trait est mémorisé pour cette page
+        if self._canvas.has_line:
+            self._canvas._sync_line_from_image()
+            self._canvas.update()
+            if self._toolbar.active_tool == "straighten":
+                self._canvas._show_validate_btn()
+                self._toolbar._angle_panel.set_visible_for_tool("straighten")
+            else:
+                self._canvas._hide_validate_btn()
+                self._toolbar._angle_panel.hide()
+
+        # Repositionne les blocs de texte de cette page (widgets Qt enfants du
+        # canvas, pas un simple dessin — doivent suivre offset_x/y/zoom comme
+        # le fait paint_crop_rect/paint_straighten_line pour leurs overlays).
+        if self._canvas.has_text_blocks:
+            self._canvas.reposition_text_blocks()
+            if self._toolbar.active_tool == "text":
+                self._canvas._show_validate_btn()
+            else:
+                self._canvas._hide_validate_btn()
 
         # Nom de fichier
         img_indices = self.get_image_indices()
@@ -1475,107 +1607,22 @@ class ImageViewer(QDialog):
         if self.is_fullscreen:
             self._name_label.hide()
 
-    # ── Recadrage ─────────────────────────────────────────────────────────────
-
-    def validate_crop(self):
-        if not self._canvas.has_crop:
-            dlg = MsgDialog(
-                self,
-                "messages.warnings.no_crop_selection.title",
-                "messages.warnings.no_crop_selection.message",
-            )
-            dlg.show_nonmodal()
-            return
-        self.perform_crop()
-
-    def perform_crop(self):
-        state = self.callbacks.get('state') or _state_module.state
-        save_state      = self.callbacks.get("save_state")
-        render_mosaic   = self.callbacks.get("render_mosaic")
-        update_btn      = self.callbacks.get("update_button_text")
-        canvas          = self.callbacks.get("canvas")
-
-        try:
-            entry = state.images_data[self.current_idx]
-            original_img = ensure_image_loaded(entry)
-            if original_img is None:
-                dlg = MsgDialog(self, "messages.errors.crop_failed.title",
-                                "messages.errors.crop_failed.title")
-                dlg.show_nonmodal()
-                return
-
-            c = self._canvas
-            crop_x1 = c._crop_start.x() - c.display_offset_x
-            crop_y1 = c._crop_start.y() - c.display_offset_y
-            crop_x2 = c._crop_end.x()   - c.display_offset_x
-            crop_y2 = c._crop_end.y()   - c.display_offset_y
-
-            crop_x1 = max(0, min(crop_x1, c.display_width))
-            crop_y1 = max(0, min(crop_y1, c.display_height))
-            crop_x2 = max(0, min(crop_x2, c.display_width))
-            crop_y2 = max(0, min(crop_y2, c.display_height))
-
-            img_w, img_h = original_img.size
-            zoom_ratio = self.zoom_level
-
-            orig_x1 = int(crop_x1 / zoom_ratio)
-            orig_y1 = int(crop_y1 / zoom_ratio)
-            orig_x2 = int(crop_x2 / zoom_ratio)
-            orig_y2 = int(crop_y2 / zoom_ratio)
-
-            if orig_x2 <= orig_x1 or orig_y2 <= orig_y1:
-                dlg = MsgDialog(self, "messages.errors.crop_invalid.title",
-                                "messages.errors.crop_invalid.message")
-                dlg.show_nonmodal()
-                return
-
-            if save_state:
-                save_state()
-
-            cropped = original_img.crop((orig_x1, orig_y1, orig_x2, orig_y2))
-            entry["img"]   = cropped
-            entry["bytes"] = save_image_to_bytes(entry)
-            entry["large_thumb_pil"] = None
-            entry["qt_pixmap_large"] = None
-            entry["qt_qimage_large"] = None
-            entry["_hash"] = None
-            state.modified = True
-
-            from modules.qt.comic_info import get_page_image_index, update_page_entries_in_xml_data
-            _pidx = get_page_image_index(state, entry)
-            if _pidx is not None:
-                update_page_entries_in_xml_data(state, [(_pidx, entry)])
-            if save_state:
-                save_state()
-            real_idx = entry.get("_real_idx")
-            if canvas is not None and real_idx is not None:
-                from modules.qt.mosaic_canvas import build_qimage_for_entry
-                build_qimage_for_entry(entry)
-                canvas.refresh_thumbnail(real_idx)
-                canvas.refresh_duplicate_overlay()
-            elif render_mosaic:
-                render_mosaic()
-            if update_btn:
-                update_btn()
-            self._canvas.clear_crop()
-            self.display_image()
-
-        except Exception:
-            dlg = MsgDialog(self, "messages.errors.crop_failed.title",
-                            "messages.errors.crop_failed.title")
-            dlg.show_nonmodal()
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fonction publique d'ouverture
 # ─────────────────────────────────────────────────────────────────────────────
 
-def open_image_viewer(parent, idx: int, callbacks: dict):
-    """Ouvre la visionneuse sur l'image d'index idx."""
+def open_image_viewer(parent, idx: int, callbacks: dict, initial_tool: str | None = None):
+    """Ouvre la visionneuse sur l'image d'index idx.
+
+    initial_tool : "crop" ou "straighten" pour présélectionner un outil de la
+    barre d'outils flottante à l'ouverture (ex. commande "Recadrer" du menu
+    contextuel/barre de menus/colonne d'icônes) ; None (défaut) = aucun outil
+    présélectionné."""
     state = (callbacks or {}).get('state') or _state_module.state
     if not state.images_data[idx]["is_image"] or state.images_data[idx].get("is_corrupted"):
         return
-    viewer = ImageViewer(parent, idx, callbacks=callbacks)
+    viewer = ImageViewer(parent, idx, callbacks=callbacks, initial_tool=initial_tool)
     viewer.show()
 
 
@@ -1586,6 +1633,23 @@ def update_image_viewer_if_open():
             if viewer and viewer.isVisible():
                 viewer.setWindowTitle(_wt("viewer.title"))
                 viewer._retranslate()
+        except Exception:
+            if viewer in image_viewer_refs:
+                image_viewer_refs.remove(viewer)
+
+
+def refresh_image_viewers_after_external_undo_redo(state):
+    """Rafraîchit l'affichage de toute visionneuse ouverte sur `state` après un
+    undo/redo déclenché HORS de la visionneuse (icône Undo/Redo de la colonne
+    verticale, barre de menus, Ctrl+Z/Ctrl+Y du panneau) — un seul historique
+    partagé (state.history, undo/redo unifié, voir idees.txt #3), mais sans cet
+    appel la visionneuse continue d'afficher l'ancienne image : son propre
+    ImageViewer._undo_and_refresh()/_refresh_after_undo_redo() n'est jamais
+    déclenché puisque le clic n'a pas eu lieu sur SA propre icône Undo/Redo."""
+    for viewer in image_viewer_refs[:]:
+        try:
+            if viewer and viewer.isVisible() and viewer.callbacks.get('state') is state:
+                viewer._refresh_after_undo_redo()
         except Exception:
             if viewer in image_viewer_refs:
                 image_viewer_refs.remove(viewer)

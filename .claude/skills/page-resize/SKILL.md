@@ -79,7 +79,7 @@ Contrairement à `rotate-flip` qui utilise `rollback_to_current_state_qt` (skill
 
 ## Points d'entrée UI
 
-Trois, tous nécessitant une sélection non vide (contrairement à `page-straighten`/`add-text-to-image`/`clone-zone` qui n'en ont pas besoin) :
+Trois, tous nécessitant une sélection non vide (contrairement à `add-text-to-image`, ou aux outils crop/redressement/clonage de la visionneuse principale — skills `page-crop`/`page-straighten`/`clone-zone` — qui n'en ont pas besoin) :
 
 1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `context_menus_qt.py:405`, clé `context_menu.image.reduce_size`.
 2. **Barre de menu** — `menubar_qt.py:198`, même clé.
@@ -93,7 +93,7 @@ Callbacks (`PanelWidget._resize_callbacks()`, `panel_widget.py:1563`) : `save_st
 
 `locales/fr.json`, section `reduce_size` (ligne 893) : `window_title` (résolu via `_wt()`, règle UI n°7), tous les libellés de la fenêtre principale, `multi_page_width`/`multi_page_width_tooltip` pour la checkbox de détection automatique. Section `outliers` (ligne 929) séparée pour la fenêtre secondaire : `title`, `message`, `width`/`height`, `unusual`, `skip`/`keep`. Voir skill `add-translation`.
 
-**Contrairement à `page-straighten`, `add-text-to-image` et `clone-zone`, cette fonctionnalité a bien une section dans le mode d'emploi** (`user_guide_qt.py:636`, clé `help.resize_pages`/`help.resize_pages_content`) — à maintenir à jour si le comportement de la détection multi-page ou de `OutlierDialog` change (skill `user-guide`).
+**Contrairement à `add-text-to-image`, cette fonctionnalité a bien une section dans le mode d'emploi** (`user_guide_qt.py:636`, clé `help.resize_pages`/`help.resize_pages_content`) — à maintenir à jour si le comportement de la détection multi-page ou de `OutlierDialog` change (skill `user-guide`).
 
 ## Comment étendre
 

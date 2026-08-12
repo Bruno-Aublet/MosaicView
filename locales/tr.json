@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "CBT dosyalarının\n CBZ'ye toplu dönüştürülmesi",
     "batch_metadata": "Toplu meta veri içe aktarımı",
     "batch_library": "Klasör(ler)den kitaplık oluştur",
-    "batch_recompress": "CBZ dosyalarını varsayılan seviyede yeniden sıkıştır"
+    "batch_recompress": "CBZ dosyalarını varsayılan seviyede yeniden sıkıştır",
+    "validate_straighten": "Düzeltmeyi onayla",
+    "validate_text": "Metni uygula"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -75,7 +77,16 @@
     "mode_single": "Tek sayfa  [D]",
     "mode_double": "Çift sayfa  [D]",
     "mode_continuous": "Sürekli mod  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Kırpma",
+    "toolbar_undo_tooltip": "Geri al (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Yinele (Ctrl+Y)",
+    "unvalidated_work_title": "Onaylanmamış çalışma",
+    "unvalidated_work_message": "Devam eden bir veya daha fazla onaylanmamış çalışmanız var. Görüntüleyiciyi kapatmak istediğinizden emin misiniz? Bu çalışma kaybolacak.",
+    "toolbar_straighten_tooltip": "Düzeltme",
+    "toolbar_crop_instruction": "Korunacak alanın etrafına bir dikdörtgen çizin, ardından onaylayın",
+    "toolbar_clone_tooltip": "Klonlama",
+    "toolbar_text_tooltip": "Metin"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Açma engellendi",
         "message": "Bu dosya açılmadı: {ext} dosyaları bilgisayarınızda kod çalıştırabilir.\nOna güveniyorsanız, dosyayı çıkarıp elle açın."
+      },
+      "no_straighten_line": {
+        "title": "Çizilmiş bir çizgi yok",
+        "message": "Lütfen önce bir referans çizgisi çizin."
+      },
+      "no_skew_detected": {
+        "title": "Eğim algılanmadı",
+        "message": "Bu sayfada güvenilir bir eğim algılanmadı."
+      },
+      "no_text_block": {
+        "title": "Metin girilmedi",
+        "message": "Lütfen önce en az bir bloğa metin girin."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Hedef sürücüde yeterli disk alanı yok.\nGerekli: {needed}\nKullanılabilir: {free}"
       },
-      "no_wilhelm_scream_found": "Ses dosyası bulunamadı."
+      "no_wilhelm_scream_found": "Ses dosyası bulunamadı.",
+      "straighten_failed": {
+        "title": "Hata",
+        "message": "Görüntü düzeltilemedi: {error}"
+      },
+      "clone_failed": {
+        "title": "Hata",
+        "message": "Klonlama uygulanamadı: {error}"
+      },
+      "text_failed": {
+        "title": "Hata",
+        "message": "Metin uygulanamadı: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "GÜNLÜĞÜ GÖR",
     "straighten_viewer": {
-      "title": "Düzelt",
-      "instruction": "Görüntüde yatay (veya dikey) olması gereken şeyin üzerine düz bir çizgi çizin"
+      "instruction": "Görüntüde yatay (veya dikey) olması gereken şeyin üzerine düz bir çizgi çizin",
+      "angle_label": "Açı:"
     },
     "clone_zone_viewer": {
       "title": "Bölge klonlama",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Boyut :"
     },
     "text_viewer": {
-      "title": "Metin Ekle",
       "instruction": "Metin eklemek istediğiniz yere tıklayın  •  Ctrl+oklar: metni piksel piksel taşı",
       "size_label": "Boyut:",
       "color_label": "Renk:",
       "bold_btn": "K",
       "italic_btn": "İ",
       "underline_btn": "A",
-      "apply_btn": "Metni Uygula",
       "pick_color_title": "Metin rengini seçin"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Otomatik düzeltme",
       "message": "{success} görüntü başarıyla düzeltildi.",
       "message_errors": "{success} görüntü başarıyla düzeltildi.\n{failed} başarısız oldu (güvenilir bir eğim algılanamadı) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Temel renkler:",
+      "hex_label": "Onaltılık:",
+      "red_label": "Kırmızı:",
+      "green_label": "Yeşil:",
+      "blue_label": "Mavi:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

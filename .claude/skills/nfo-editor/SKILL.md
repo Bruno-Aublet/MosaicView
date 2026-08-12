@@ -76,7 +76,7 @@ Contrairement aux autres skills d'édition d'image, **aucun menu ni bouton n'ouv
 
 ## Menu contextuel interne au champ de texte
 
-`_setup_text_context_menu`/`_show_text_menu` (`nfo_dialog_qt.py:241`) — menu clic droit **custom** sur le `QTextEdit` (Copier/Couper/Coller/Sélectionner tout, activation conditionnelle selon présence d'une sélection ou du presse-papiers), suivant la règle UI n°6 du CLAUDE.md (jamais le menu natif Qt). Implémentation **locale à ce fichier**, pas via le helper générique `setup_textedit_context_menu` (`modules/qt/utils.py`) que d'autres fichiers du projet réutilisent (ex. `text_viewer_qt.py`, `animated_gif_dialog_qt.py` pour leurs propres `QTextEdit`) — à harmoniser si une refonte de ce dialogue est un jour demandée, mais fonctionnellement équivalent en l'état.
+`_setup_text_context_menu`/`_show_text_menu` (`nfo_dialog_qt.py:241`) — menu clic droit **custom** sur le `QTextEdit` (Copier/Couper/Coller/Sélectionner tout, activation conditionnelle selon présence d'une sélection ou du presse-papiers), suivant la règle UI n°6 du CLAUDE.md (jamais le menu natif Qt). Implémentation **locale à ce fichier**, pas via le helper générique `setup_textedit_context_menu` (`modules/qt/utils.py`) que d'autres fichiers du projet réutilisent (ex. `text_tool_qt.py`, `animated_gif_dialog_qt.py` pour leurs propres `QTextEdit`) — à harmoniser si une refonte de ce dialogue est un jour demandée, mais fonctionnellement équivalent en l'état.
 
 ## Raccourci Home/End personnalisé — `eventFilter`
 

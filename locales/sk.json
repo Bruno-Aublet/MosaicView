@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Hromadná konverzia\n CBT súborov na CBZ",
     "batch_metadata": "Hromadný import metadát",
     "batch_library": "Vytvoriť knižnicu z priečinka(ov)",
-    "batch_recompress": "Znovu komprimovať súbory CBZ na predvolenú úroveň"
+    "batch_recompress": "Znovu komprimovať súbory CBZ na predvolenú úroveň",
+    "validate_straighten": "Potvrdiť vyrovnanie",
+    "validate_text": "Použiť text"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -75,7 +77,16 @@
     "mode_single": "Jedna stránka  [D]",
     "mode_double": "Dvojitá stránka  [D]",
     "mode_continuous": "Plynulý režim  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Orezanie",
+    "toolbar_undo_tooltip": "Späť (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Znova (Ctrl+Y)",
+    "unvalidated_work_title": "Nepotvrdená práca",
+    "unvalidated_work_message": "Máte jednu alebo viac nepotvrdených prebiehajúcich prác. Naozaj chcete zavrieť prehliadač? Táto práca sa stratí.",
+    "toolbar_straighten_tooltip": "Vyrovnanie",
+    "toolbar_crop_instruction": "Nakreslite obdĺžnik okolo oblasti, ktorú chcete zachovať, a potom potvrďte",
+    "toolbar_clone_tooltip": "Klonovanie",
+    "toolbar_text_tooltip": "Text"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Otvorenie zablokované",
         "message": "Tento súbor nebol otvorený: súbory {ext} môžu v počítači spúšťať kód.\nAk mu dôverujete, rozbaľte ho a otvorte ručne."
+      },
+      "no_straighten_line": {
+        "title": "Nie je nakreslená žiadna čiara",
+        "message": "Najprv nakreslite referenčnú čiaru."
+      },
+      "no_skew_detected": {
+        "title": "Nezistil sa žiadny sklon",
+        "message": "Na tejto stránke sa nezistil žiadny spoľahlivý sklon."
+      },
+      "no_text_block": {
+        "title": "Žiadny text",
+        "message": "Najprv zadajte text aspoň do jedného bloku."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Na cieľovom disku nie je dostatok miesta.\nPotrebné: {needed}\nDostupné: {free}"
       },
-      "no_wilhelm_scream_found": "Zvukový súbor sa nenašiel."
+      "no_wilhelm_scream_found": "Zvukový súbor sa nenašiel.",
+      "straighten_failed": {
+        "title": "Chyba",
+        "message": "Obrázok sa nepodarilo vyrovnať: {error}"
+      },
+      "clone_failed": {
+        "title": "Chyba",
+        "message": "Klonovanie sa nepodarilo použiť: {error}"
+      },
+      "text_failed": {
+        "title": "Chyba",
+        "message": "Text sa nepodarilo použiť: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "ZOBRAZIŤ LOG",
     "straighten_viewer": {
-      "title": "Vyrovnanie",
-      "instruction": "Nakreslite priamu čiaru na to, čo má byť na obrázku vodorovné (alebo zvislé)"
+      "instruction": "Nakreslite priamu čiaru na to, čo má byť na obrázku vodorovné (alebo zvislé)",
+      "angle_label": "Uhol:"
     },
     "clone_zone_viewer": {
       "title": "Klonovanie oblasti",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Veľkosť :"
     },
     "text_viewer": {
-      "title": "Vloženie textu",
       "instruction": "Kliknite tam, kde chcete vložiť text  •  Ctrl+šípky: presun textu o pixel",
       "size_label": "Veľkosť:",
       "color_label": "Farba:",
       "bold_btn": "T",
       "italic_btn": "K",
       "underline_btn": "P",
-      "apply_btn": "Použiť text",
       "pick_color_title": "Vyberte farbu textu"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatické vyrovnanie",
       "message": "{success} obrázok(ov) úspešne vyrovnaných.",
       "message_errors": "{success} obrázok(ov) úspešne vyrovnaných.\n{failed} neúspešných (nebol zistený spoľahlivý sklon) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Základné farby:",
+      "hex_label": "Hexadecimálne:",
+      "red_label": "Červená:",
+      "green_label": "Zelená:",
+      "blue_label": "Modrá:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

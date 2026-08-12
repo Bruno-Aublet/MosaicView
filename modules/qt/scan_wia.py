@@ -14,8 +14,7 @@ import io
 
 
 _LOG_FILENAME = "Log_scan.txt"
-_LOG_MAX_SESSIONS = 30  # une "session" = un clic sur "Numériser" (bloc "Scan started")
-_LOG_SESSION_MARKER = "— Scan started"
+_LOG_MAX_SESSIONS = 30  # une "session" = un bloc de premier niveau (recherche, capacités ou scan)
 
 
 def get_scan_log_path() -> str:
@@ -70,11 +69,18 @@ def _environment_info() -> str:
 
 
 def _prune_scan_log(log_path: str) -> None:
-    """Tronque Log_scan.txt pour ne garder que les _LOG_MAX_SESSIONS sessions
-    de scan les plus récentes (une session = un clic sur "Numériser", repéré
-    par _LOG_SESSION_MARKER dans un bloc "Scan started"). Appelée juste avant
-    l'écriture d'un nouveau bloc "Scan started" — pas à chaque écriture, pour
-    ne pas relire/réécrire tout le fichier à chaque ligne de détail.
+    """Tronque Log_scan.txt pour ne garder que les _LOG_MAX_SESSIONS blocs de
+    premier niveau les plus récents — un bloc = une recherche de scanner
+    ("— Devices detected"), une requête de capacités ("— Capabilities query
+    started") ou un scan ("— Scan started"), chacun introduit par le séparateur
+    de 60 "=". Appelée juste avant l'écriture d'un nouveau bloc de premier
+    niveau — pas à chaque écriture, pour ne pas relire/réécrire tout le fichier
+    à chaque ligne de détail.
+
+    Compter tous les types de bloc (pas seulement "Scan started") est
+    nécessaire pour borner le fichier même pour un utilisateur qui ne parvient
+    jamais à lancer de scan effectif (scanner introuvable) — sinon ces blocs
+    s'accumuleraient indéfiniment, hors de portée de la purge.
 
     Best-effort, comme _log_scan_event() : toute erreur est avalée silencieusement,
     la purge n'est qu'un nettoyage de confort, jamais une condition du scan lui-même.
@@ -88,22 +94,75 @@ def _prune_scan_log(log_path: str) -> None:
 
         # Découpe en blocs sur le séparateur de 60 "=" (garde le séparateur en
         # tête de chaque bloc suivant, pour reconstruire le fichier à l'identique).
+        # Le tout premier élément est soit vide, soit un préambule orphelin
+        # (ex. lignes "MosaicView vX.Y.Z" sans bloc) — jamais un bloc à compter.
         separator = "=" * 60
         blocks = content.split(separator)
-        session_block_indices = [i for i, b in enumerate(blocks) if _LOG_SESSION_MARKER in b]
-        if len(session_block_indices) <= _LOG_MAX_SESSIONS:
+        block_indices = list(range(1, len(blocks)))
+        if len(block_indices) <= _LOG_MAX_SESSIONS:
             return
 
-        # Le préambule (avant le premier séparateur, ex. lignes "MosaicView vX.Y.Z"
-        # orphelines) est jeté avec les vieux blocs qu'il précédait — il ne décrit
-        # que la session qu'on est en train de supprimer, pas celles gardées.
-        first_kept_index = session_block_indices[-_LOG_MAX_SESSIONS]
+        first_kept_index = block_indices[-_LOG_MAX_SESSIONS]
         kept = separator + separator.join(blocks[first_kept_index:])
 
         with open(log_path, "w", encoding="utf-8") as f:
             f.write(kept)
     except Exception:
         pass
+
+
+def _recent_duplicate_event(marker: str, dedup_key: str, within_seconds: float = 60.0) -> bool:
+    """True si le dernier bloc du log contenant `marker` a le même contenu que
+    `dedup_key` (comparaison hors horodatage) et date de moins de `within_seconds`.
+
+    Sert à éviter qu'un utilisateur qui clique plusieurs fois de suite sur
+    "Rechercher scanner" sans résultat ne remplisse le log d'entrées identiques
+    — ces blocs ne passent pas par _prune_scan_log (qui ne compte que les
+    sessions de scan effectif), rien d'autre ne les borne.
+
+    Best-effort, comme le reste du logging : toute erreur => pas de doublon détecté,
+    on écrit (mieux vaut une ligne en trop qu'un rapport utilisateur perdu).
+    """
+    try:
+        from datetime import datetime
+        import os
+        from modules.qt.temp_files import get_mosaicview_temp_dir
+
+        log_path = os.path.join(get_mosaicview_temp_dir(), _LOG_FILENAME)
+        if not os.path.exists(log_path):
+            return False
+        with open(log_path, encoding="utf-8") as f:
+            content = f.read()
+
+        separator = "=" * 60
+        blocks = content.split(separator)
+        marker_blocks = [b for b in blocks if marker in b]
+        if not marker_blocks:
+            return False
+        last_block = marker_blocks[-1]
+
+        import re
+        # Isole la ligne d'en-tête ("YYYY-MM-DD HH:MM:SS marker (...)"): elle porte
+        # l'horodatage de référence du bloc et n'est jamais comparée telle quelle
+        # (elle varie forcément d'un événement à l'autre). Le reste du bloc (lignes
+        # de détail, chacune préfixée "[YYYY-MM-DD HH:MM:SS.mmm] ") est dépréfixé
+        # puis comparé tel quel à dedup_key.
+        header_match = re.search(
+            r"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) " + re.escape(marker) + r".*$",
+            last_block, flags=re.MULTILINE,
+        )
+        if not header_match:
+            return False
+        last_ts = datetime.strptime(header_match.group(1), "%Y-%m-%d %H:%M:%S")
+
+        remainder = last_block[header_match.end():].lstrip("\n")
+        remainder = re.sub(r"^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}\] ", "", remainder, flags=re.MULTILINE)
+        if remainder.strip() != dedup_key.strip():
+            return False
+
+        return (datetime.now() - last_ts).total_seconds() < within_seconds
+    except Exception:
+        return False
 
 
 def _log_scan_event(text: str, with_version: bool = False) -> None:
@@ -265,13 +324,35 @@ def list_scanner_devices() -> list[dict]:
         devices = []
         selection_note = "no device of any type"
 
+    marker = "— Devices detected"
     if all_seen:
+        body = f"{chr(10).join(all_seen)}\n"
+    else:
+        # Aucun device WIA énuméré du tout : distinct d'un device trouvé puis
+        # écarté (other_devices non retenus) — ici DeviceInfos est vide, ce
+        # qui peut être normal (rien de branché) ou révéler un vrai problème
+        # (pilote/réseau/Windows) signalé par un utilisateur qui s'attend à
+        # voir son scanner. On garde le bloc complet (horodatage +
+        # _environment_info()) : ce contexte est ce qui permet de distinguer
+        # les deux cas après coup, sans pouvoir redemander à l'utilisateur.
+        body = "  (no device enumerated)\n"
+    # Clé de comparaison stable (sans horodatage, sans la ligne d'en-tête qui
+    # varie forcément) : identifie un événement comme "le même résultat" pour
+    # la dédup, indépendamment de quand il a eu lieu.
+    dedup_key = f"  {_environment_info()}\n{body}"
+    if not _recent_duplicate_event(marker, dedup_key):
         from datetime import datetime
+        try:
+            from modules.qt.temp_files import get_mosaicview_temp_dir
+            import os
+            _prune_scan_log(os.path.join(get_mosaicview_temp_dir(), _LOG_FILENAME))
+        except Exception:
+            pass
         _log_scan_event(
             f"\n{'=' * 60}\n"
-            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} — Devices detected ({selection_note}):\n"
+            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {marker} ({selection_note}):\n"
             f"  {_environment_info()}\n"
-            f"{chr(10).join(all_seen)}\n",
+            f"{body}",
             with_version=True,
         )
 
@@ -484,6 +565,13 @@ def get_device_capabilities(device_id: str) -> dict:
     """
     from datetime import datetime
     started_at = datetime.now()
+
+    try:
+        from modules.qt.temp_files import get_mosaicview_temp_dir
+        import os
+        _prune_scan_log(os.path.join(get_mosaicview_temp_dir(), _LOG_FILENAME))
+    except Exception:
+        pass
 
     _log_scan_event(
         f"\n{'=' * 60}\n"

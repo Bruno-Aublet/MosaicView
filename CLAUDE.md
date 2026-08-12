@@ -18,7 +18,7 @@ Avant d'improviser une procédure ou de la reconstruire depuis zéro, vérifier 
 - **`rotate-flip`** — rotation 90° et miroir de la mosaïque
 - **`page-straighten`** — redressement d'image, manuel (rotation libre) ou automatique (deskew, détection d'inclinaison par transformée de Hough)
 - **`add-text-to-image`** — ajout de texte riche sur une image
-- **`clone-zone`** — tampon de clonage
+- **`clone-zone`** — tampon de clonage dans la visionneuse principale
 - **`page-resize`** — redimensionnement des pages, détection des pages multiples
 - **`page-crop`** — recadrage dans la visionneuse principale
 - **`create-ico`** — création de fichiers `.ico` multi-résolution
@@ -139,6 +139,7 @@ Pour tout dialog de type "fermer sans sauvegarder" (ex. `CloseWithoutSaveDialog`
 
 ## Règles générales de collaboration
 
+- **Fusion des visionneuses (idees.txt #3) — NE JAMAIS migrer le code d'un outil dans `image_viewer_qt.py`.** Chaque outil migré (crop, redressage, clonage, et les futurs — texte, ajustements) doit avoir sa logique dans son propre module séparé (ex. `crop_tool_qt.py`, `straighten_tool_qt.py`, `clone_tool_qt.py`) — `image_viewer_qt.py` orchestre/appelle ces modules (état minimal de branchement, délégation), mais ne contient JAMAIS leur implémentation (calculs, gestion des événements souris propres à l'outil, rendu de l'overlay, panneaux flottants d'options). **Why** : consigne expresse de l'utilisateur donnée dès le début de ce chantier — sans cette séparation, `image_viewer_qt.py` grossit à chaque outil migré et devient ingérable une fois tous les outils fusionnés. **Règle absolue, sans exception, à respecter dès la prochaine intervention sur ce chantier** : avant de toucher à ce chantier, vérifier explicitement que le code de l'outil en cours de migration/modification vit bien dans son propre module et pas dans `image_viewer_qt.py` — si ce n'est pas le cas (dette existante), le signaler et proposer une extraction avant de continuer, ne jamais l'aggraver en ajoutant davantage de code d'outil dans ce fichier.
 - **NE JAMAIS changer le format de fichier** (JPG→PNG, etc.) sans permission explicite.
 - **Interdiction absolue d'utiliser l'outil AskUserQuestion (questions à choix multiples).** Poser les questions directement en texte libre dans la réponse et attendre la réponse de l'utilisateur en texte libre, jamais via ce mécanisme de choix.
 - **Ne jamais créer de nouveau fichier mémoire (auto memory) sans accord explicite de l'utilisateur.** Demander avant d'écrire quoi que ce soit dans le répertoire de mémoire persistante du projet (`.claude/projects/<slug-du-projet>/memory/` dans le profil utilisateur), y compris pour un bug/pattern qui semble évident à retenir.

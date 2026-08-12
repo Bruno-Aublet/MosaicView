@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Skupna konverzija\n CBT datoteka u CBZ",
     "batch_metadata": "Skupni uvoz metapodataka",
     "batch_library": "Stvori biblioteku iz mape(a)",
-    "batch_recompress": "Ponovno komprimiraj CBZ datoteke na zadanu razinu"
+    "batch_recompress": "Ponovno komprimiraj CBZ datoteke na zadanu razinu",
+    "validate_straighten": "Potvrdi ravnanje",
+    "validate_text": "Primijeni tekst"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -75,7 +77,16 @@
     "mode_single": "Jedna stranica  [D]",
     "mode_double": "Dvostruka stranica  [D]",
     "mode_continuous": "Kontinuirani način  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Izrezivanje",
+    "toolbar_undo_tooltip": "Poništi (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Ponovi (Ctrl+Y)",
+    "unvalidated_work_title": "Nepotvrđeni rad",
+    "unvalidated_work_message": "Imate jedan ili više nepotvrđenih radova u tijeku. Jeste li sigurni da želite zatvoriti preglednik? Taj će rad biti izgubljen.",
+    "toolbar_straighten_tooltip": "Ravnanje",
+    "toolbar_crop_instruction": "Nacrtajte pravokutnik oko područja koje želite zadržati, zatim potvrdite",
+    "toolbar_clone_tooltip": "Kloniranje",
+    "toolbar_text_tooltip": "Tekst"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Otvaranje blokirano",
         "message": "Ova datoteka nije otvorena: datoteke {ext} mogu izvršavati kod na vašem računalu.\nAko joj vjerujete, raspakirajte je i otvorite ručno."
+      },
+      "no_straighten_line": {
+        "title": "Nije nacrtana linija",
+        "message": "Molimo prvo nacrtajte referentnu liniju."
+      },
+      "no_skew_detected": {
+        "title": "Nije otkriven nagib",
+        "message": "Na ovoj stranici nije otkriven pouzdan nagib."
+      },
+      "no_text_block": {
+        "title": "Nema teksta",
+        "message": "Prvo unesite tekst u barem jedan blok."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Nema dovoljno prostora na odredišnom disku.\nPotrebno: {needed}\nDostupno: {free}"
       },
-      "no_wilhelm_scream_found": "Zvučna datoteka nije pronađena."
+      "no_wilhelm_scream_found": "Zvučna datoteka nije pronađena.",
+      "straighten_failed": {
+        "title": "Pogreška",
+        "message": "Slika se nije mogla poravnati: {error}"
+      },
+      "clone_failed": {
+        "title": "Pogreška",
+        "message": "Kloniranje nije moguće primijeniti: {error}"
+      },
+      "text_failed": {
+        "title": "Pogreška",
+        "message": "Tekst nije moguće primijeniti: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "POGLEDAJ LOG",
     "straighten_viewer": {
-      "title": "Ispravljanje",
-      "instruction": "Nacrtajte ravnu liniju na onome što treba biti vodoravno (ili okomito) na slici"
+      "instruction": "Nacrtajte ravnu liniju na onome što treba biti vodoravno (ili okomito) na slici",
+      "angle_label": "Kut:"
     },
     "clone_zone_viewer": {
       "title": "Kloniranje zone",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Veličina :"
     },
     "text_viewer": {
-      "title": "Umetanje teksta",
       "instruction": "Kliknite gdje želite umetnuti tekst  •  Ctrl+strelice: pomicanje teksta za piksel",
       "size_label": "Veličina:",
       "color_label": "Boja:",
       "bold_btn": "M",
       "italic_btn": "K",
       "underline_btn": "P",
-      "apply_btn": "Primijeni tekst",
       "pick_color_title": "Odaberite boju teksta"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatsko ispravljanje",
       "message": "{success} slika(e) uspješno ispravljena/e.",
       "message_errors": "{success} slika(e) uspješno ispravljena/e.\n{failed} neuspjelo (nije pronađen pouzdan nagib) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Osnovne boje:",
+      "hex_label": "Heksadecimalno:",
+      "red_label": "Crvena:",
+      "green_label": "Zelena:",
+      "blue_label": "Plava:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

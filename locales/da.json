@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Massekonvertering\n af CBT-filer til CBZ",
     "batch_metadata": "Masseimport af metadata",
     "batch_library": "Opret et bibliotek fra mappe(r)",
-    "batch_recompress": "Genkomprimer CBZ-filer til standardniveau"
+    "batch_recompress": "Genkomprimer CBZ-filer til standardniveau",
+    "validate_straighten": "Bekræft retning",
+    "validate_text": "Anvend tekst"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -75,7 +77,16 @@
     "mode_single": "Enkeltside  [D]",
     "mode_double": "Dobbeltside  [D]",
     "mode_continuous": "Kontinuerlig tilstand  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Beskæring",
+    "toolbar_undo_tooltip": "Fortryd (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Gentag (Ctrl+Y)",
+    "unvalidated_work_title": "Ikke-bekræftet arbejde",
+    "unvalidated_work_message": "Du har et eller flere igangværende arbejder, der ikke er bekræftet. Er du sikker på, at du vil lukke fremviseren? Dette arbejde vil gå tabt.",
+    "toolbar_straighten_tooltip": "Retning",
+    "toolbar_crop_instruction": "Tegn et rektangel omkring det område, der skal bevares, og bekræft derefter",
+    "toolbar_clone_tooltip": "Kloning",
+    "toolbar_text_tooltip": "Tekst"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Åbning blokeret",
         "message": "Denne fil blev ikke åbnet: {ext}-filer kan køre kode på din computer.\nHvis du stoler på den, skal du udpakke den og åbne den manuelt."
+      },
+      "no_straighten_line": {
+        "title": "Ingen linje tegnet",
+        "message": "Tegn venligst en referencelinje først."
+      },
+      "no_skew_detected": {
+        "title": "Ingen skævhed registreret",
+        "message": "Der blev ikke registreret nogen pålidelig skævhed på denne side."
+      },
+      "no_text_block": {
+        "title": "Ingen tekst",
+        "message": "Indtast venligst tekst i mindst én blok først."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Ikke nok plads på destinationsdisken.\nNødvendigt: {needed}\nTilgængeligt: {free}"
       },
-      "no_wilhelm_scream_found": "Lydfil ikke fundet."
+      "no_wilhelm_scream_found": "Lydfil ikke fundet.",
+      "straighten_failed": {
+        "title": "Fejl",
+        "message": "Kunne ikke rette billedet: {error}"
+      },
+      "clone_failed": {
+        "title": "Fejl",
+        "message": "Kunne ikke anvende kloning: {error}"
+      },
+      "text_failed": {
+        "title": "Fejl",
+        "message": "Kunne ikke anvende teksten: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "SE LOG",
     "straighten_viewer": {
-      "title": "Ret op",
-      "instruction": "Tegn en lige linje på det, der skal være vandret (eller lodret) i billedet"
+      "instruction": "Tegn en lige linje på det, der skal være vandret (eller lodret) i billedet",
+      "angle_label": "Vinkel:"
     },
     "clone_zone_viewer": {
       "title": "Kloning af zone",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Størrelse :"
     },
     "text_viewer": {
-      "title": "Indsæt tekst",
       "instruction": "Klik for at placere tekst  •  Ctrl+pile: flyt tekst præcist",
       "size_label": "Størrelse:",
       "color_label": "Farve:",
       "bold_btn": "F",
       "italic_btn": "K",
       "underline_btn": "U",
-      "apply_btn": "Anvend tekst",
       "pick_color_title": "Vælg tekstfarve"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatisk retning",
       "message": "{success} billede(r) rettet med succes.",
       "message_errors": "{success} billede(r) rettet med succes.\n{failed} fejlet (ingen pålidelig hældning fundet) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Grundfarver:",
+      "hex_label": "Hexadecimal:",
+      "red_label": "Rød:",
+      "green_label": "Grøn:",
+      "blue_label": "Blå:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

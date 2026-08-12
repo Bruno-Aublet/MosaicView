@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Μαζική μετατροπή\n αρχείων CBT σε CBZ",
     "batch_metadata": "Μαζική εισαγωγή μεταδεδομένων",
     "batch_library": "Δημιουργία βιβλιοθήκης από τον/τους φάκελο(ους)",
-    "batch_recompress": "Επανασυμπίεση αρχείων CBZ στο προεπιλεγμένο επίπεδο"
+    "batch_recompress": "Επανασυμπίεση αρχείων CBZ στο προεπιλεγμένο επίπεδο",
+    "validate_straighten": "Επιβεβαίωση ισιώματος",
+    "validate_text": "Εφαρμογή κειμένου"
   },
   "tabs": {
     "mosaic": "Μωσαϊκό",
@@ -75,7 +77,16 @@
     "mode_single": "Μία σελίδα  [D]",
     "mode_double": "Διπλή σελίδα  [D]",
     "mode_continuous": "Συνεχής λειτουργία  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Περικοπή",
+    "toolbar_undo_tooltip": "Αναίρεση (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Επανάληψη (Ctrl+Y)",
+    "unvalidated_work_title": "Μη επικυρωμένη εργασία",
+    "unvalidated_work_message": "Έχετε μία ή περισσότερες εργασίες σε εξέλιξη που δεν έχουν επικυρωθεί. Είστε βέβαιοι ότι θέλετε να κλείσετε το πρόγραμμα προβολής; Αυτή η εργασία θα χαθεί.",
+    "toolbar_straighten_tooltip": "Ισίωμα",
+    "toolbar_crop_instruction": "Σχεδιάστε ένα ορθογώνιο γύρω από την περιοχή που θα διατηρηθεί και επιβεβαιώστε",
+    "toolbar_clone_tooltip": "Κλωνοποίηση",
+    "toolbar_text_tooltip": "Κείμενο"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Το άνοιγμα αποκλείστηκε",
         "message": "Αυτό το αρχείο δεν ανοίχτηκε: τα αρχεία {ext} μπορούν να εκτελέσουν κώδικα στον υπολογιστή σας.\nΑν το εμπιστεύεστε, εξαγάγετέ το και ανοίξτε το χειροκίνητα."
+      },
+      "no_straighten_line": {
+        "title": "Δεν έχει σχεδιαστεί γραμμή",
+        "message": "Παρακαλώ σχεδιάστε πρώτα μια γραμμή αναφοράς."
+      },
+      "no_skew_detected": {
+        "title": "Δεν εντοπίστηκε κλίση",
+        "message": "Δεν εντοπίστηκε αξιόπιστη κλίση σε αυτήν τη σελίδα."
+      },
+      "no_text_block": {
+        "title": "Δεν υπάρχει κείμενο",
+        "message": "Πληκτρολογήστε πρώτα κείμενο σε τουλάχιστον ένα μπλοκ."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Ανεπαρκής χώρος στο δίσκο προορισμού.\nΑπαιτούμενο: {needed}\nΔιαθέσιμο: {free}"
       },
-      "no_wilhelm_scream_found": "Το αρχείο ήχου δεν βρέθηκε."
+      "no_wilhelm_scream_found": "Το αρχείο ήχου δεν βρέθηκε.",
+      "straighten_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η ισιοποίηση της εικόνας: {error}"
+      },
+      "clone_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η εφαρμογή της κλωνοποίησης: {error}"
+      },
+      "text_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η εφαρμογή του κειμένου: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "ΔΕΙΤΕ ΤΟ LOG",
     "straighten_viewer": {
-      "title": "Ευθυγράμμιση",
-      "instruction": "Σχεδιάστε μια ευθεία γραμμή πάνω σε αυτό που πρέπει να είναι οριζόντιο (ή κατακόρυφο) στην εικόνα"
+      "instruction": "Σχεδιάστε μια ευθεία γραμμή πάνω σε αυτό που πρέπει να είναι οριζόντιο (ή κατακόρυφο) στην εικόνα",
+      "angle_label": "Γωνία:"
     },
     "clone_zone_viewer": {
       "title": "Κλωνοποίηση ζώνης",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Μέγεθος :"
     },
     "text_viewer": {
-      "title": "Εισαγωγή κειμένου",
       "instruction": "Κάντε κλικ για να τοποθετήσετε κείμενο  •  Ctrl+βέλη: μετακίνηση κειμένου ανά pixel",
       "size_label": "Μέγεθος:",
       "color_label": "Χρώμα:",
       "bold_btn": "Ε",
       "italic_btn": "Π",
       "underline_btn": "Υ",
-      "apply_btn": "Εφαρμογή κειμένου",
       "pick_color_title": "Επιλέξτε χρώμα κειμένου"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Αυτόματο ίσιωμα",
       "message": "{success} εικόνα(ες) ισιώθηκαν με επιτυχία.",
       "message_errors": "{success} εικόνα(ες) ισιώθηκαν με επιτυχία.\n{failed} απέτυχαν (δεν εντοπίστηκε αξιόπιστη κλίση) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Βασικά χρώματα:",
+      "hex_label": "Δεκαεξαδικό:",
+      "red_label": "Κόκκινο:",
+      "green_label": "Πράσινο:",
+      "blue_label": "Μπλε:",
+      "alpha_label": "Άλφα:"
     }
   },
   "tooltip": {

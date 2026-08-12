@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Conversión por lotes\n de archivos CBT a CBZ",
     "batch_metadata": "Importación de metadatos en lote",
     "batch_library": "Crear una biblioteca a partir de la(s) carpeta(s)",
-    "batch_recompress": "Recomprimir archivos CBZ al nivel predeterminado"
+    "batch_recompress": "Recomprimir archivos CBZ al nivel predeterminado",
+    "validate_straighten": "Validar enderezado",
+    "validate_text": "Aplicar texto"
   },
   "tabs": {
     "mosaic": "Mosaico",
@@ -75,7 +77,16 @@
     "mode_single": "Página simple  [D]",
     "mode_double": "Doble página  [D]",
     "mode_continuous": "Modo continuo  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Recorte",
+    "toolbar_undo_tooltip": "Deshacer (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Rehacer (Ctrl+Y)",
+    "unvalidated_work_title": "Trabajo no validado",
+    "unvalidated_work_message": "Tiene uno o varios trabajos en curso sin validar. ¿Está seguro de que desea cerrar el visor? Este trabajo se perderá.",
+    "toolbar_straighten_tooltip": "Enderezar",
+    "toolbar_crop_instruction": "Dibuje un rectángulo alrededor de la zona a conservar y confirme",
+    "toolbar_clone_tooltip": "Clonado",
+    "toolbar_text_tooltip": "Texto"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Apertura bloqueada",
         "message": "Este archivo no se ha abierto: los archivos {ext} pueden ejecutar código en su equipo.\nSi confía en él, extráigalo y ábralo manualmente."
+      },
+      "no_straighten_line": {
+        "title": "Ninguna línea trazada",
+        "message": "Por favor, trace primero una línea de referencia."
+      },
+      "no_skew_detected": {
+        "title": "No se detectó inclinación",
+        "message": "No se detectó ninguna inclinación fiable en esta página."
+      },
+      "no_text_block": {
+        "title": "Sin texto",
+        "message": "Introduzca texto en al menos un bloque primero."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Espacio en disco insuficiente en la unidad de destino.\nNecesario: {needed}\nDisponible: {free}"
       },
-      "no_wilhelm_scream_found": "Archivo de audio no encontrado."
+      "no_wilhelm_scream_found": "Archivo de audio no encontrado.",
+      "straighten_failed": {
+        "title": "Error",
+        "message": "No se pudo enderezar la imagen: {error}"
+      },
+      "clone_failed": {
+        "title": "Error",
+        "message": "No se pudo aplicar la clonación: {error}"
+      },
+      "text_failed": {
+        "title": "Error",
+        "message": "No se pudo aplicar el texto: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "VER LOG",
     "straighten_viewer": {
-      "title": "Enderezar",
-      "instruction": "Trace una línea recta sobre lo que debe ser horizontal (o vertical) en la imagen"
+      "instruction": "Trace una línea recta sobre lo que debe ser horizontal (o vertical) en la imagen",
+      "angle_label": "Ángulo:"
     },
     "clone_zone_viewer": {
       "title": "Clonación de zona",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Tamaño :"
     },
     "text_viewer": {
-      "title": "Insertar texto",
       "instruction": "Haga clic donde quiera insertar el texto  •  Ctrl+flechas: mover texto con precisión de píxel",
       "size_label": "Tamaño:",
       "color_label": "Color:",
       "bold_btn": "N",
       "italic_btn": "C",
       "underline_btn": "S",
-      "apply_btn": "Aplicar texto",
       "pick_color_title": "Elegir color del texto"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Enderezado automático",
       "message": "{success} imagen(es) enderezada(s) con éxito.",
       "message_errors": "{success} imagen(es) enderezada(s) con éxito.\n{failed} fallida(s) (no se detectó una inclinación fiable) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Colores básicos:",
+      "hex_label": "Hexadecimal:",
+      "red_label": "Rojo:",
+      "green_label": "Verde:",
+      "blue_label": "Azul:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

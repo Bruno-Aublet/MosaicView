@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Masinis CBT failų\n konvertavimas į CBZ",
     "batch_metadata": "Masinis metaduomenų importas",
     "batch_library": "Sukurti biblioteką iš aplanko(-ų)",
-    "batch_recompress": "Iš naujo suspausti CBZ failus numatytuoju lygiu"
+    "batch_recompress": "Iš naujo suspausti CBZ failus numatytuoju lygiu",
+    "validate_straighten": "Patvirtinti ištiesinimą",
+    "validate_text": "Taikyti tekstą"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -75,7 +77,16 @@
     "mode_single": "Vienas puslapis  [D]",
     "mode_double": "Dvigubas puslapis  [D]",
     "mode_continuous": "Nepertraukiamas režimas  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Apkarpymas",
+    "toolbar_undo_tooltip": "Anuliuoti (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Pakartoti (Ctrl+Y)",
+    "unvalidated_work_title": "Nepatvirtintas darbas",
+    "unvalidated_work_message": "Turite vieną ar daugiau nepatvirtintų darbų. Ar tikrai norite uždaryti peržiūros priemonę? Šis darbas bus prarastas.",
+    "toolbar_straighten_tooltip": "Ištiesinimas",
+    "toolbar_crop_instruction": "Nubrėžkite stačiakampį aplink sritį, kurią norite išsaugoti, tada patvirtinkite",
+    "toolbar_clone_tooltip": "Klonavimas",
+    "toolbar_text_tooltip": "Tekstas"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Atidarymas užblokuotas",
         "message": "Šis failas nebuvo atidarytas: {ext} failai gali vykdyti kodą jūsų kompiuteryje.\nJei juo pasitikite, išskleiskite jį ir atidarykite rankiniu būdu."
+      },
+      "no_straighten_line": {
+        "title": "Linija nenubrėžta",
+        "message": "Pirmiausia nubrėžkite atskaitos liniją."
+      },
+      "no_skew_detected": {
+        "title": "Polinkis neaptiktas",
+        "message": "Šiame puslapyje nepatikimo polinkio neaptikta."
+      },
+      "no_text_block": {
+        "title": "Nėra teksto",
+        "message": "Pirmiausia įveskite tekstą bent viename bloke."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Trūksta vietos diske paskirties diske.\nReikalinga: {needed}\nYra: {free}"
       },
-      "no_wilhelm_scream_found": "Garso failas nerastas."
+      "no_wilhelm_scream_found": "Garso failas nerastas.",
+      "straighten_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko ištiesinti vaizdo: {error}"
+      },
+      "clone_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti klonavimo: {error}"
+      },
+      "text_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti teksto: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "ŽIŪRĖTI ŽURNALĄ",
     "straighten_viewer": {
-      "title": "Ištiesinimas",
-      "instruction": "Nubrėžkite tiesią liniją ant to, kas turėtų būti horizontalu (arba vertikalu) paveikslėlyje"
+      "instruction": "Nubrėžkite tiesią liniją ant to, kas turėtų būti horizontalu (arba vertikalu) paveikslėlyje",
+      "angle_label": "Kampas:"
     },
     "clone_zone_viewer": {
       "title": "Zonos klonavimas",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Dydis :"
     },
     "text_viewer": {
-      "title": "Įterpti tekstą",
       "instruction": "Spustelėkite, kur norite įterpti tekstą  •  Ctrl+rodyklės: perkelti tekstą pikseliu",
       "size_label": "Dydis:",
       "color_label": "Spalva:",
       "bold_btn": "P",
       "italic_btn": "K",
       "underline_btn": "U",
-      "apply_btn": "Taikyti tekstą",
       "pick_color_title": "Pasirinkite teksto spalvą"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatinis ištiesinimas",
       "message": "{success} vaizdas(-ai) sėkmingai ištiesinti.",
       "message_errors": "{success} vaizdas(-ai) sėkmingai ištiesinti.\n{failed} nepavyko (nerastas patikimas nuolydis) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Pagrindinės spalvos:",
+      "hex_label": "Šešioliktainis:",
+      "red_label": "Raudona:",
+      "green_label": "Žalia:",
+      "blue_label": "Mėlyna:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

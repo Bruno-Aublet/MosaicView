@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Пакетне перетворення\n файлів CBT у CBZ",
     "batch_metadata": "Пакетне імпортування метаданих",
     "batch_library": "Створити бібліотеку з папки(папок)",
-    "batch_recompress": "Повторне стиснення файлів CBZ до рівня за замовчуванням"
+    "batch_recompress": "Повторне стиснення файлів CBZ до рівня за замовчуванням",
+    "validate_straighten": "Підтвердити вирівнювання",
+    "validate_text": "Застосувати текст"
   },
   "tabs": {
     "mosaic": "Мозаїка",
@@ -75,7 +77,16 @@
     "mode_single": "Одна сторінка  [D]",
     "mode_double": "Подвійна сторінка  [D]",
     "mode_continuous": "Безперервний режим  [D]",
-    "mode_webtoon": "Вебтун  [D]"
+    "mode_webtoon": "Вебтун  [D]",
+    "toolbar_crop_tooltip": "Обрізання",
+    "toolbar_undo_tooltip": "Скасувати (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Повторити (Ctrl+Y)",
+    "unvalidated_work_title": "Непідтверджена робота",
+    "unvalidated_work_message": "У вас є одна або декілька незавершених робіт, які не підтверджено. Ви впевнені, що хочете закрити переглядач? Ця робота буде втрачена.",
+    "toolbar_straighten_tooltip": "Вирівнювання",
+    "toolbar_crop_instruction": "Намалюйте прямокутник навколо ділянки, яку потрібно зберегти, потім підтвердьте",
+    "toolbar_clone_tooltip": "Клонування",
+    "toolbar_text_tooltip": "Текст"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Відкриття заблоковано",
         "message": "Цей файл не було відкрито: файли {ext} можуть виконувати код на вашому комп'ютері.\nЯкщо ви йому довіряєте, витягніть його та відкрийте вручну."
+      },
+      "no_straighten_line": {
+        "title": "Лінію не намальовано",
+        "message": "Спочатку намалюйте опорну лінію."
+      },
+      "no_skew_detected": {
+        "title": "Нахил не виявлено",
+        "message": "На цій сторінці не виявлено надійного нахилу."
+      },
+      "no_text_block": {
+        "title": "Текст не введено",
+        "message": "Спочатку введіть текст принаймні в один блок."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Недостатньо місця на цільовому диску.\nПотрібно: {needed}\nДоступно: {free}"
       },
-      "no_wilhelm_scream_found": "Аудіофайл не знайдено."
+      "no_wilhelm_scream_found": "Аудіофайл не знайдено.",
+      "straighten_failed": {
+        "title": "Помилка",
+        "message": "Не вдалося вирівняти зображення: {error}"
+      },
+      "clone_failed": {
+        "title": "Помилка",
+        "message": "Не вдалося застосувати клонування: {error}"
+      },
+      "text_failed": {
+        "title": "Помилка",
+        "message": "Не вдалося застосувати текст: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "ДИВИТИСЯ ЛОГ",
     "straighten_viewer": {
-      "title": "Вирівнювання",
-      "instruction": "Намалюйте пряму лінію на тому, що має бути горизонтальним (або вертикальним) на зображенні"
+      "instruction": "Намалюйте пряму лінію на тому, що має бути горизонтальним (або вертикальним) на зображенні",
+      "angle_label": "Кут:"
     },
     "clone_zone_viewer": {
       "title": "Клонування зони",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Розмір :"
     },
     "text_viewer": {
-      "title": "Вставити текст",
       "instruction": "Натисніть там, де хочете вставити текст  •  Ctrl+стрілки: переміщення тексту на піксель",
       "size_label": "Розмір:",
       "color_label": "Колір:",
       "bold_btn": "Ж",
       "italic_btn": "К",
       "underline_btn": "П",
-      "apply_btn": "Застосувати текст",
       "pick_color_title": "Виберіть колір тексту"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Автоматичне вирівнювання",
       "message": "{success} зображення успішно вирівняно.",
       "message_errors": "{success} зображення успішно вирівняно.\n{failed} не вдалося (не виявлено надійного нахилу) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Основні кольори:",
+      "hex_label": "Шістнадцятковий:",
+      "red_label": "Червоний:",
+      "green_label": "Зелений:",
+      "blue_label": "Синій:",
+      "alpha_label": "Альфа:"
     }
   },
   "tooltip": {

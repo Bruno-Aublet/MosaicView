@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Konwersja wsadowa\n plików CBT do CBZ",
     "batch_metadata": "Hurtowy import metadanych",
     "batch_library": "Utwórz bibliotekę z folderu(ów)",
-    "batch_recompress": "Skompresuj ponownie pliki CBZ na poziomie domyślnym"
+    "batch_recompress": "Skompresuj ponownie pliki CBZ na poziomie domyślnym",
+    "validate_straighten": "Zatwierdź prostowanie",
+    "validate_text": "Zastosuj tekst"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -75,7 +77,16 @@
     "mode_single": "Pojedyncza strona  [D]",
     "mode_double": "Podwójna strona  [D]",
     "mode_continuous": "Tryb ciągły  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Przycinanie",
+    "toolbar_undo_tooltip": "Cofnij (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Ponów (Ctrl+Y)",
+    "unvalidated_work_title": "Niezatwierdzona praca",
+    "unvalidated_work_message": "Masz jedną lub więcej niezatwierdzonych prac w toku. Czy na pewno chcesz zamknąć przeglądarkę? Ta praca zostanie utracona.",
+    "toolbar_straighten_tooltip": "Prostowanie",
+    "toolbar_crop_instruction": "Narysuj prostokąt wokół obszaru do zachowania, a następnie zatwierdź",
+    "toolbar_clone_tooltip": "Klonowanie",
+    "toolbar_text_tooltip": "Tekst"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Otwieranie zablokowane",
         "message": "Ten plik nie został otwarty: pliki {ext} mogą wykonywać kod na komputerze.\nJeśli mu ufasz, wypakuj go i otwórz ręcznie."
+      },
+      "no_straighten_line": {
+        "title": "Nie narysowano linii",
+        "message": "Najpierw narysuj linię odniesienia."
+      },
+      "no_skew_detected": {
+        "title": "Nie wykryto przekrzywienia",
+        "message": "Na tej stronie nie wykryto wiarygodnego przekrzywienia."
+      },
+      "no_text_block": {
+        "title": "Brak tekstu",
+        "message": "Najpierw wpisz tekst w co najmniej jednym bloku."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Brak miejsca na dysku docelowym.\nWymagane: {needed}\nDostępne: {free}"
       },
-      "no_wilhelm_scream_found": "Nie znaleziono pliku audio."
+      "no_wilhelm_scream_found": "Nie znaleziono pliku audio.",
+      "straighten_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się wyprostować obrazu: {error}"
+      },
+      "clone_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się zastosować klonowania: {error}"
+      },
+      "text_failed": {
+        "title": "Błąd",
+        "message": "Nie można zastosować tekstu: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "ZOBACZ LOG",
     "straighten_viewer": {
-      "title": "Wyprostuj",
-      "instruction": "Narysuj prostą linię na tym, co powinno być poziome (lub pionowe) na obrazie"
+      "instruction": "Narysuj prostą linię na tym, co powinno być poziome (lub pionowe) na obrazie",
+      "angle_label": "Kąt:"
     },
     "clone_zone_viewer": {
       "title": "Klonowanie strefy",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Rozmiar :"
     },
     "text_viewer": {
-      "title": "Wstaw tekst",
       "instruction": "Kliknij tam, gdzie chcesz wstawić tekst  •  Ctrl+strzałki: przesuń tekst o piksel",
       "size_label": "Rozmiar:",
       "color_label": "Kolor:",
       "bold_btn": "T",
       "italic_btn": "K",
       "underline_btn": "P",
-      "apply_btn": "Zastosuj tekst",
       "pick_color_title": "Wybierz kolor tekstu"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatyczne prostowanie",
       "message": "{success} obraz(y) pomyślnie wyprostowane.",
       "message_errors": "{success} obraz(y) pomyślnie wyprostowane.\n{failed} nieudanych (nie wykryto wiarygodnego przekrzywienia) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Kolory podstawowe:",
+      "hex_label": "Szesnastkowy:",
+      "red_label": "Czerwony:",
+      "green_label": "Zielony:",
+      "blue_label": "Niebieski:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

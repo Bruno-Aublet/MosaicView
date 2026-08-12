@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Konversi massal\n file CBT ke CBZ",
     "batch_metadata": "Impor metadata sekaligus",
     "batch_library": "Buat perpustakaan dari folder",
-    "batch_recompress": "Kompres ulang file CBZ ke tingkat default"
+    "batch_recompress": "Kompres ulang file CBZ ke tingkat default",
+    "validate_straighten": "Konfirmasi pelurusan",
+    "validate_text": "Terapkan teks"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -75,7 +77,16 @@
     "mode_single": "Halaman tunggal  [D]",
     "mode_double": "Halaman ganda  [D]",
     "mode_continuous": "Mode berkelanjutan  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Pangkas",
+    "toolbar_undo_tooltip": "Urungkan (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Ulangi (Ctrl+Y)",
+    "unvalidated_work_title": "Pekerjaan belum divalidasi",
+    "unvalidated_work_message": "Anda memiliki satu atau beberapa pekerjaan yang sedang berlangsung dan belum divalidasi. Anda yakin ingin menutup penampil? Pekerjaan ini akan hilang.",
+    "toolbar_straighten_tooltip": "Luruskan",
+    "toolbar_crop_instruction": "Gambar persegi panjang di sekitar area yang akan disimpan, lalu konfirmasi",
+    "toolbar_clone_tooltip": "Kloning",
+    "toolbar_text_tooltip": "Teks"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Pembukaan diblokir",
         "message": "Berkas ini tidak dibuka: berkas {ext} dapat menjalankan kode di komputer Anda.\nJika Anda memercayainya, ekstrak dan buka secara manual."
+      },
+      "no_straighten_line": {
+        "title": "Tidak ada garis yang digambar",
+        "message": "Silakan gambar garis referensi terlebih dahulu."
+      },
+      "no_skew_detected": {
+        "title": "Tidak ada kemiringan terdeteksi",
+        "message": "Tidak ada kemiringan yang dapat diandalkan terdeteksi pada halaman ini."
+      },
+      "no_text_block": {
+        "title": "Tidak ada teks",
+        "message": "Silakan masukkan teks pada setidaknya satu blok terlebih dahulu."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Ruang disk tidak cukup di drive tujuan.\nDiperlukan: {needed}\nTersedia: {free}"
       },
-      "no_wilhelm_scream_found": "Berkas audio tidak ditemukan."
+      "no_wilhelm_scream_found": "Berkas audio tidak ditemukan.",
+      "straighten_failed": {
+        "title": "Kesalahan",
+        "message": "Gambar tidak dapat diluruskan: {error}"
+      },
+      "clone_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menerapkan kloning: {error}"
+      },
+      "text_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menerapkan teks: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "LIHAT LOG",
     "straighten_viewer": {
-      "title": "Luruskan",
-      "instruction": "Gambar garis lurus pada apa yang harus horizontal (atau vertikal) dalam gambar"
+      "instruction": "Gambar garis lurus pada apa yang harus horizontal (atau vertikal) dalam gambar",
+      "angle_label": "Sudut:"
     },
     "clone_zone_viewer": {
       "title": "Kloning zona",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Ukuran :"
     },
     "text_viewer": {
-      "title": "Sisipkan Teks",
       "instruction": "Klik di tempat yang ingin Anda sisipkan teks  •  Ctrl+panah: gerakkan teks per piksel",
       "size_label": "Ukuran:",
       "color_label": "Warna:",
       "bold_btn": "T",
       "italic_btn": "M",
       "underline_btn": "G",
-      "apply_btn": "Terapkan Teks",
       "pick_color_title": "Pilih warna teks"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Pelurusan otomatis",
       "message": "{success} gambar berhasil diluruskan.",
       "message_errors": "{success} gambar berhasil diluruskan.\n{failed} gagal (tidak ada kemiringan yang dapat diandalkan terdeteksi) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Warna dasar:",
+      "hex_label": "Heksadesimal:",
+      "red_label": "Merah:",
+      "green_label": "Hijau:",
+      "blue_label": "Biru:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

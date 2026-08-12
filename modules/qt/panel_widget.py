@@ -1419,14 +1419,90 @@ class PanelWidget(QWidget):
 
     def _straighten_btn_action(self):
         """Clic gauche sur l'icône straighten : ouvre le redressement manuel
-        (mode 0) ou lance le redressement automatique (mode 1)."""
+        (mode 0, dans la visionneuse principale avec l'outil Redressage
+        présélectionné) ou lance le redressement automatique (mode 1)."""
         mode = getattr(self._state, "straighten_mode", 0)
         if mode == 1:
             from modules.qt.deskew_qt import deskew_selected_qt
             deskew_selected_qt(self._deskew_callbacks())
         else:
-            from modules.qt.straighten_viewer_qt import show_straighten_viewer
-            show_straighten_viewer(self, self._straighten_callbacks())
+            self._straighten_selected_image()
+
+    def _straighten_selected_image(self):
+        """Ouvre la visionneuse principale sur la première image sélectionnée
+        valide avec l'outil Redressage présélectionné (sinon la première image
+        de la mosaïque) — même logique de secours que l'ancien
+        show_straighten_viewer, en pratique toujours appelée avec une
+        sélection valide (has_selected_images() gate déjà les 3 points
+        d'entrée en amont)."""
+        state = self._state
+        image_indices = [
+            i for i, e in enumerate(state.images_data)
+            if e.get('is_image') and not e.get('is_corrupted')
+        ]
+        if not image_indices:
+            return
+        idx = image_indices[0]
+        if state.selected_indices:
+            selected_valid = {
+                i for i in state.selected_indices
+                if i < len(state.images_data)
+                and state.images_data[i].get('is_image')
+                and not state.images_data[i].get('is_corrupted')
+            }
+            if selected_valid:
+                idx = min(selected_valid)
+        self._open_image_viewer(idx, initial_tool="straighten")
+
+    def _clone_selected_image(self):
+        """Ouvre la visionneuse principale sur la première image sélectionnée
+        valide avec l'outil Clonage présélectionné (sinon la première image
+        de la mosaïque) — même logique de secours que l'ancien
+        show_clone_zone_viewer (clone_zone_viewer_qt.py, supprimé), reproduite
+        à l'identique de _straighten_selected_image ci-dessus."""
+        state = self._state
+        image_indices = [
+            i for i, e in enumerate(state.images_data)
+            if e.get('is_image') and not e.get('is_corrupted')
+        ]
+        if not image_indices:
+            return
+        idx = image_indices[0]
+        if state.selected_indices:
+            selected_valid = {
+                i for i in state.selected_indices
+                if i < len(state.images_data)
+                and state.images_data[i].get('is_image')
+                and not state.images_data[i].get('is_corrupted')
+            }
+            if selected_valid:
+                idx = min(selected_valid)
+        self._open_image_viewer(idx, initial_tool="clone")
+
+    def _text_selected_image(self):
+        """Ouvre la visionneuse principale sur la première image sélectionnée
+        valide avec l'outil Texte présélectionné (sinon la première image de
+        la mosaïque) — même logique de secours que l'ancien show_text_viewer
+        (text_viewer_qt.py, supprimé), reproduite à l'identique de
+        _straighten_selected_image/_clone_selected_image ci-dessus."""
+        state = self._state
+        image_indices = [
+            i for i, e in enumerate(state.images_data)
+            if e.get('is_image') and not e.get('is_corrupted')
+        ]
+        if not image_indices:
+            return
+        idx = image_indices[0]
+        if state.selected_indices:
+            selected_valid = {
+                i for i in state.selected_indices
+                if i < len(state.images_data)
+                and state.images_data[i].get('is_image')
+                and not state.images_data[i].get('is_corrupted')
+            }
+            if selected_valid:
+                idx = min(selected_valid)
+        self._open_image_viewer(idx, initial_tool="text")
 
     def _toggle_straighten_mode(self):
         current = getattr(self._state, "straighten_mode", 0)
@@ -1434,6 +1510,26 @@ class PanelWidget(QWidget):
         self._state.straighten_mode = new_mode
         self._renumber_config().set_straighten_mode(new_mode)
         self._refresh_toolbar_states()
+        self._refresh_open_image_viewers()
+
+    def _set_straighten_mode(self, mode: int):
+        """Persiste le mode manuel/auto sans le basculer (déjà fait par
+        l'appelant) — utilisé par la barre d'outils de la visionneuse
+        principale, dont le clic droit sur l'icône Redressage bascule
+        directement state.straighten_mode avant d'appeler ce callback."""
+        self._renumber_config().set_straighten_mode(mode)
+        self._refresh_toolbar_states()
+        self._refresh_open_image_viewers()
+
+    @staticmethod
+    def _refresh_open_image_viewers():
+        """Rafraîchit le tooltip mode manuel/auto de la barre d'outils de
+        toute visionneuse principale déjà ouverte (autre panneau en
+        split-view, ou celle qui vient elle-même de déclencher le
+        changement) — sans ça, un changement de mode fait depuis la colonne
+        d'icônes laisserait le tooltip de la visionneuse figé sur l'ancien
+        mode jusqu'au prochain changement de langue/thème."""
+        _update_image_viewer_if_open()
 
     def _sort_images(self, sort_method: str):
         from modules.qt.sorting_qt import sort_images_qt
@@ -1579,6 +1675,7 @@ class PanelWidget(QWidget):
             "state":              self._state,
             "canvas":             self._canvas,
             "on_bookmark_changed": self._on_bookmark_changed,
+            "set_straighten_mode": self._set_straighten_mode,
         }
 
     def _on_bookmark_changed(self, bookmarked_real_idx: int | None):
@@ -1588,8 +1685,8 @@ class PanelWidget(QWidget):
             entry["_is_bookmarked"] = (i == bookmarked_real_idx)
         self._canvas.refresh_bookmark_overlay(bookmarked_real_idx)
 
-    def _open_image_viewer(self, idx: int):
-        _open_image_viewer_qt(self, idx, self._image_viewer_callbacks())
+    def _open_image_viewer(self, idx: int, initial_tool: str | None = None):
+        _open_image_viewer_qt(self, idx, self._image_viewer_callbacks(), initial_tool=initial_tool)
 
     def _crop_selected_image(self):
         state = self._state
@@ -1607,7 +1704,7 @@ class PanelWidget(QWidget):
             _WarnDialog(self, "messages.warnings.invalid_selection_crop.title",
                         "messages.warnings.invalid_selection_crop.message").show_nonmodal()
             return
-        self._open_image_viewer(idx)
+        self._open_image_viewer(idx, initial_tool="crop")
 
     def _image_transforms_callbacks(self) -> dict:
         return {
@@ -1650,25 +1747,6 @@ class PanelWidget(QWidget):
             "state":              panel_state,
         }
 
-    def _straighten_callbacks(self) -> dict:
-        from modules.qt import state as _state_module
-        panel_state = self._state
-        def _with_state(fn):
-            def _wrapped(*a, **kw):
-                _prev = _state_module.state
-                _state_module.state = panel_state
-                try:
-                    return fn(*a, **kw)
-                finally:
-                    _state_module.state = _prev
-            return _wrapped
-        return {
-            "save_state":         _with_state(self.save_state),
-            "render_mosaic":      _with_state(self._canvas.render_mosaic),
-            "update_button_text": self._refresh_toolbar_states,
-            "state":              panel_state,
-        }
-
     def _deskew_callbacks(self) -> dict:
         return {
             "parent":             self,
@@ -1679,44 +1757,6 @@ class PanelWidget(QWidget):
             "canvas":             self._canvas,
             "state":              self._state,
             "rollback":           lambda: _rollback_to_current_state_qt(self._state, *self._undo_redo_callbacks()),
-        }
-
-    def _clone_zone_callbacks(self) -> dict:
-        from modules.qt import state as _state_module
-        panel_state = self._state
-        def _with_state(fn):
-            def _wrapped(*a, **kw):
-                _prev = _state_module.state
-                _state_module.state = panel_state
-                try:
-                    return fn(*a, **kw)
-                finally:
-                    _state_module.state = _prev
-            return _wrapped
-        return {
-            "save_state":         _with_state(self.save_state),
-            "render_mosaic":      _with_state(self._canvas.render_mosaic),
-            "update_button_text": self._refresh_toolbar_states,
-            "state":              panel_state,
-        }
-
-    def _text_viewer_callbacks(self) -> dict:
-        from modules.qt import state as _state_module
-        panel_state = self._state
-        def _with_state(fn):
-            def _wrapped(*a, **kw):
-                _prev = _state_module.state
-                _state_module.state = panel_state
-                try:
-                    return fn(*a, **kw)
-                finally:
-                    _state_module.state = _prev
-            return _wrapped
-        return {
-            "save_state":         _with_state(self.save_state),
-            "render_mosaic":      _with_state(self._canvas.render_mosaic),
-            "update_button_text": self._refresh_toolbar_states,
-            "state":              panel_state,
         }
 
     def _merge_callbacks(self) -> dict:
@@ -1731,9 +1771,20 @@ class PanelWidget(QWidget):
 
     def _undo_action(self):
         _undo_action_qt(self._state, *self._undo_redo_callbacks())
+        self._refresh_open_image_viewers()
 
     def _redo_action(self):
         _redo_action_qt(self._state, *self._undo_redo_callbacks())
+        self._refresh_open_image_viewers()
+
+    def _refresh_open_image_viewers(self):
+        """Après un undo/redo déclenché hors de la visionneuse (icône colonne,
+        menu, Ctrl+Z/Ctrl+Y du panneau) : rafraîchit l'affichage de toute
+        visionneuse déjà ouverte sur ce panneau, dont l'image affichée vient
+        de changer sous ses pieds (un seul historique partagé — voir
+        idees.txt #3, undo/redo unifié)."""
+        from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
+        refresh_image_viewers_after_external_undo_redo(self._state)
 
     def _delete_selected_qt(self):
         from modules.qt.comic_info import has_comic_info_entry

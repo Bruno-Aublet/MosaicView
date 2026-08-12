@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "CBT ֆայլերի\n խմբաքանակային փոխարկում CBZ",
     "batch_metadata": "Մետատվյալների խմբային ներմուծում",
     "batch_library": "Ստեղծել գրադարան թղթապանակ(ներ)ից",
-    "batch_recompress": "Կրկին սեղմել CBZ ֆայլերը լռելյայն մակարդակում"
+    "batch_recompress": "Կրկին սեղմել CBZ ֆայլերը լռելյայն մակարդակում",
+    "validate_straighten": "Հաստատել ուղղումը",
+    "validate_text": "Կիրառել տեքստը"
   },
   "tabs": {
     "mosaic": "Մոզաիկա",
@@ -75,7 +77,16 @@
     "mode_single": "Մեկ էջ  [D]",
     "mode_double": "Կրկնակի էջ  [D]",
     "mode_continuous": "Շարունակական ռեժիմ  [D]",
-    "mode_webtoon": "Վեբթուն  [D]"
+    "mode_webtoon": "Վեբթուն  [D]",
+    "toolbar_crop_tooltip": "Կտրում",
+    "toolbar_undo_tooltip": "Հետարկել (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Կրկնել (Ctrl+Y)",
+    "unvalidated_work_title": "Չհաստատված աշխատանք",
+    "unvalidated_work_message": "Դուք ունեք մեկ կամ մի քանի ընթացիկ չհաստատված աշխատանք։ Համոզվա՞ծ եք, որ ցանկանում եք փակել դիտիչը։ Այս աշխատանքը կկորչի։",
+    "toolbar_straighten_tooltip": "Ուղղում",
+    "toolbar_crop_instruction": "Գծագրեք ուղղանկյուն պահպանվող տարածքի շուրջ, ապա հաստատեք",
+    "toolbar_clone_tooltip": "Կլոնավորում",
+    "toolbar_text_tooltip": "Տեքստ"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Բացումն արգելափակված է",
         "message": "Այս ֆայլը չի բացվել, քանի որ {ext} ֆայլերը կարող են կոդ գործարկել ձեր համակարգչում։\nԵթե վստահում եք դրան, դուրս բերեք այն և բացեք ձեռքով։"
+      },
+      "no_straighten_line": {
+        "title": "Գիծ չի գծագրվել",
+        "message": "Խնդրում ենք նախ գծագրել հղման գիծ։"
+      },
+      "no_skew_detected": {
+        "title": "Թեքություն չի հայտնաբերվել",
+        "message": "Այս էջում հուսալի թեքություն չի հայտնաբերվել։"
+      },
+      "no_text_block": {
+        "title": "Տեքստ չկա",
+        "message": "Նախ մուտքագրեք տեքստ առնվազն մեկ բլոկում։"
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Նպատակային սկավառակի վրա բավարար տարածք չկա։\nՀարկավոր է՝ {needed}\nՀասանելի է՝ {free}"
       },
-      "no_wilhelm_scream_found": "Ձայնային ֆայլը չի գտնվել։"
+      "no_wilhelm_scream_found": "Ձայնային ֆայլը չի գտնվել։",
+      "straighten_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չեղավ ուղղել պատկերը՝ {error}"
+      },
+      "clone_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ կիրառել կլոնավորումը՝ {error}"
+      },
+      "text_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ կիրառել տեքստը՝ {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "ՏԵՍՆԵԼ ԼՈԳԸ",
     "straighten_viewer": {
-      "title": "Ուղղում",
-      "instruction": "Գծեք ուղիղ գիծ այն բանի վրա, ինչը պետք է լինի հորիզոնական (կամ ուղղաձիգ) պատկերում"
+      "instruction": "Գծեք ուղիղ գիծ այն բանի վրա, ինչը պետք է լինի հորիզոնական (կամ ուղղաձիգ) պատկերում",
+      "angle_label": "Անկյուն՝"
     },
     "clone_zone_viewer": {
       "title": "Գոտու կրկնօրինակում",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Չափ :"
     },
     "text_viewer": {
-      "title": "Տեքստ տեղադրել",
       "instruction": "Սեղմեք այն վայրը, որտեղ ցանկանում եք տեղադրել տեքստը  •  Ctrl+սլաքներ: տեղաշարժ պիքսելներով",
       "size_label": "Չափ:",
       "color_label": "Գույն:",
       "bold_btn": "Բ",
       "italic_btn": "Թ",
       "underline_btn": "Շ",
-      "apply_btn": "Կիրառել տեքստը",
       "pick_color_title": "Ընտրեք տեքստի գույնը"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Ավտոմատ ուղղում",
       "message": "{success} պատկեր(ներ) հաջողությամբ ուղղվել են։",
       "message_errors": "{success} պատկեր(ներ) հաջողությամբ ուղղվել են։\n{failed} ձախողվել են (հուսալի թեքություն չի հայտնաբերվել) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Հիմնական գույներ.",
+      "hex_label": "Տասնվեցական.",
+      "red_label": "Կարմիր.",
+      "green_label": "Կանաչ.",
+      "blue_label": "Կապույտ.",
+      "alpha_label": "Ալֆա."
     }
   },
   "tooltip": {

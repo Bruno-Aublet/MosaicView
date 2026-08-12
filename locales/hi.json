@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "CBT फ़ाइलों का\n CBZ में बैच रूपांतरण",
     "batch_metadata": "मेटाडेटा का बैच आयात",
     "batch_library": "फ़ोल्डर(ों) से एक लाइब्रेरी बनाएं",
-    "batch_recompress": "CBZ फ़ाइलों को डिफ़ॉल्ट स्तर पर पुनः संपीड़ित करें"
+    "batch_recompress": "CBZ फ़ाइलों को डिफ़ॉल्ट स्तर पर पुनः संपीड़ित करें",
+    "validate_straighten": "सीधा करना सत्यापित करें",
+    "validate_text": "पाठ लागू करें"
   },
   "tabs": {
     "mosaic": "मोज़ेक",
@@ -75,7 +77,16 @@
     "mode_single": "एकल पृष्ठ  [D]",
     "mode_double": "दोहरा पृष्ठ  [D]",
     "mode_continuous": "निरंतर मोड  [D]",
-    "mode_webtoon": "वेबटून  [D]"
+    "mode_webtoon": "वेबटून  [D]",
+    "toolbar_crop_tooltip": "क्रॉप करें",
+    "toolbar_undo_tooltip": "पूर्ववत करें (Ctrl+Z)",
+    "toolbar_redo_tooltip": "फिर से करें (Ctrl+Y)",
+    "unvalidated_work_title": "अपुष्ट कार्य",
+    "unvalidated_work_message": "आपके पास एक या अधिक अपुष्ट कार्य प्रगति में हैं। क्या आप वाकई व्यूअर बंद करना चाहते हैं? यह कार्य खो जाएगा।",
+    "toolbar_straighten_tooltip": "सीधा करें",
+    "toolbar_crop_instruction": "रखी जाने वाली जगह के चारों ओर एक आयत बनाएं, फिर पुष्टि करें",
+    "toolbar_clone_tooltip": "क्लोनिंग",
+    "toolbar_text_tooltip": "पाठ"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "खोलना अवरुद्ध",
         "message": "यह फ़ाइल नहीं खोली गई: {ext} फ़ाइलें आपके कंप्यूटर पर कोड चला सकती हैं।\nयदि आपको इस पर भरोसा है, तो इसे निकालें और मैन्युअल रूप से खोलें।"
+      },
+      "no_straighten_line": {
+        "title": "कोई रेखा नहीं खींची गई",
+        "message": "कृपया पहले एक संदर्भ रेखा खींचें।"
+      },
+      "no_skew_detected": {
+        "title": "कोई झुकाव नहीं मिला",
+        "message": "इस पृष्ठ पर कोई विश्वसनीय झुकाव नहीं मिला।"
+      },
+      "no_text_block": {
+        "title": "कोई पाठ नहीं",
+        "message": "कृपया पहले कम से कम एक ब्लॉक में पाठ दर्ज करें।"
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "गंतव्य ड्राइव पर पर्याप्त डिस्क स्थान नहीं है।\nआवश्यक: {needed}\nउपलब्ध: {free}"
       },
-      "no_wilhelm_scream_found": "ऑडियो फ़ाइल नहीं मिली।"
+      "no_wilhelm_scream_found": "ऑडियो फ़ाइल नहीं मिली।",
+      "straighten_failed": {
+        "title": "त्रुटि",
+        "message": "छवि को सीधा नहीं किया जा सका: {error}"
+      },
+      "clone_failed": {
+        "title": "त्रुटि",
+        "message": "क्लोनिंग लागू करने में असमर्थ: {error}"
+      },
+      "text_failed": {
+        "title": "त्रुटि",
+        "message": "पाठ लागू नहीं किया जा सका: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "लॉग देखें",
     "straighten_viewer": {
-      "title": "सीधा करें",
-      "instruction": "चित्र में जो क्षैतिज (या ऊर्ध्वाधर) होना चाहिए उस पर एक सीधी रेखा खींचें"
+      "instruction": "चित्र में जो क्षैतिज (या ऊर्ध्वाधर) होना चाहिए उस पर एक सीधी रेखा खींचें",
+      "angle_label": "कोण:"
     },
     "clone_zone_viewer": {
       "title": "ज़ोन क्लोनिंग",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "आकार :"
     },
     "text_viewer": {
-      "title": "पाठ डालें",
       "instruction": "जहाँ पाठ डालना हो वहाँ क्लिक करें  •  Ctrl+तीर: पाठ को पिक्सेल दर पिक्सेल खिसकाएँ",
       "size_label": "आकार:",
       "color_label": "रंग:",
       "bold_btn": "ग",
       "italic_btn": "त",
       "underline_btn": "र",
-      "apply_btn": "पाठ लागू करें",
       "pick_color_title": "पाठ का रंग चुनें"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "स्वचालित सीधा करना",
       "message": "{success} छवि(याँ) सफलतापूर्वक सीधी की गईं।",
       "message_errors": "{success} छवि(याँ) सफलतापूर्वक सीधी की गईं।\n{failed} विफल (कोई विश्वसनीय झुकाव नहीं मिला) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "मूल रंग:",
+      "hex_label": "हेक्साडेसिमल:",
+      "red_label": "लाल:",
+      "green_label": "हरा:",
+      "blue_label": "नीला:",
+      "alpha_label": "अल्फा:"
     }
   },
   "tooltip": {

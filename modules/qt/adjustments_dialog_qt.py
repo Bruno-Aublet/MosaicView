@@ -916,6 +916,7 @@ class AdjustmentsDialog(QDialog):
             rb.setStyleSheet(radio_style)
         self._preview_lbl.setStyleSheet(
             f"background: {theme['canvas_bg']}; border: 1px solid {theme['separator']};")
+        self._overlay_tip.apply_theme()
 
     # ─────────────────────────────────────────────────────────────────────────
     # Handlers de changement de valeur

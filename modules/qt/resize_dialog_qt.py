@@ -1040,6 +1040,8 @@ class ResizeDialog(QDialog):
         self._cancel_btn.setFont(font_small)
         self._cancel_btn.setStyleSheet(btn_style)
 
+        self._overlay_tip.apply_theme()
+
     # ── Action OK ─────────────────────────────────────────────────────────────
 
     def _on_ok(self):

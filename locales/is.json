@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Lotuvinna CBT-skráa\n í CBZ",
     "batch_metadata": "Lotuinnflutningur lýsigagna",
     "batch_library": "Búa til bókasafn úr möppu(m)",
-    "batch_recompress": "Endurþjappa CBZ-skrár á sjálfgefið stig"
+    "batch_recompress": "Endurþjappa CBZ-skrár á sjálfgefið stig",
+    "validate_straighten": "Staðfesta réttingu",
+    "validate_text": "Nota texta"
   },
   "tabs": {
     "mosaic": "Mósaík",
@@ -75,7 +77,16 @@
     "mode_single": "Stök síða  [D]",
     "mode_double": "Tvöföld síða  [D]",
     "mode_continuous": "Samfelldur hamur  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Skerðing",
+    "toolbar_undo_tooltip": "Afturkalla (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Endurtaka (Ctrl+Y)",
+    "unvalidated_work_title": "Óstaðfest vinna",
+    "unvalidated_work_message": "Þú ert með eina eða fleiri óstaðfestar vinnur í gangi. Ertu viss um að þú viljir loka skoðaranum? Þessi vinna mun tapast.",
+    "toolbar_straighten_tooltip": "Rétta af",
+    "toolbar_crop_instruction": "Teiknaðu rétthyrning utan um svæðið sem á að halda, staðfestu síðan",
+    "toolbar_clone_tooltip": "Klónun",
+    "toolbar_text_tooltip": "Texti"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Lokað á opnun",
         "message": "Þessi skrá var ekki opnuð: {ext}-skrár geta keyrt kóða á tölvunni þinni.\nEf þú treystir henni skaltu draga hana út og opna hana handvirkt."
+      },
+      "no_straighten_line": {
+        "title": "Engin lína dregin",
+        "message": "Vinsamlegast teiknaðu viðmiðunarlínu fyrst."
+      },
+      "no_skew_detected": {
+        "title": "Engin halli greindist",
+        "message": "Enginn áreiðanlegur halli greindist á þessari síðu."
+      },
+      "no_text_block": {
+        "title": "Enginn texti",
+        "message": "Sláðu fyrst inn texta í að minnsta kosti einn blokk."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Ekki nægt diskpláss á viðtökudrifi.\nÞarf: {needed}\nTiltækt: {free}"
       },
-      "no_wilhelm_scream_found": "Hljóðskrá fannst ekki."
+      "no_wilhelm_scream_found": "Hljóðskrá fannst ekki.",
+      "straighten_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að rétta myndina af: {error}"
+      },
+      "clone_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að beita klónun: {error}"
+      },
+      "text_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að nota textann: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "SKOÐA LOG",
     "straighten_viewer": {
-      "title": "Rétta",
-      "instruction": "Teiknaðu beinan línu á það sem á að vera lárétt (eða lóðrétt) á myndinni"
+      "instruction": "Teiknaðu beinan línu á það sem á að vera lárétt (eða lóðrétt) á myndinni",
+      "angle_label": "Horn:"
     },
     "clone_zone_viewer": {
       "title": "Klónun svæðis",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Stærð :"
     },
     "text_viewer": {
-      "title": "Setja inn texta",
       "instruction": "Smelltu þar sem þú vilt setja inn texta  •  Ctrl+örvar: færa texta píxel fyrir píxel",
       "size_label": "Stærð:",
       "color_label": "Litur:",
       "bold_btn": "F",
       "italic_btn": "Sk",
       "underline_btn": "U",
-      "apply_btn": "Nota texta",
       "pick_color_title": "Veldu textalitur"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Sjálfvirk rétting",
       "message": "{success} mynd(ir) réttar með góðum árangri.",
       "message_errors": "{success} mynd(ir) réttar með góðum árangri.\n{failed} mistókst (enginn áreiðanlegur halli fannst) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Grunnlitir:",
+      "hex_label": "Sextándakerfi:",
+      "red_label": "Rautt:",
+      "green_label": "Grænt:",
+      "blue_label": "Blátt:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

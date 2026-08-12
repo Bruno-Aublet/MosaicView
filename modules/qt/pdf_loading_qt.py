@@ -152,6 +152,7 @@ class DpiDialog(QDialog):
         self._btn_cancel.setText(_("buttons.cancel"))
         self._btn_cancel.setFont(font)
         self._btn_cancel.setStyleSheet(btn_style)
+        self._overlay_tip.apply_theme()
         if hasattr(self, '_rb_original'):
             self._update_original_tooltip()
 

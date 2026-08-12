@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Lotë canta CBT\n fílion na CBZ",
     "batch_metadata": "Quenta sambië i hanwa",
     "batch_library": "Carë i·parmavorn ve i·tarmar",
-    "batch_recompress": "Ata nutta CBZ lestar i tereva"
+    "batch_recompress": "Ata nutta CBZ lestar i tereva",
+    "validate_straighten": "Manta i Lempina",
+    "validate_text": "Carë tecië"
   },
   "tabs": {
     "mosaic": "Mossaica",
@@ -75,7 +77,16 @@
     "mode_single": "Minya lambë  [D]",
     "mode_double": "Yúyo lambë  [D]",
     "mode_continuous": "Lúmequenta lambë  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Píta",
+    "toolbar_undo_tooltip": "Nurta (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Ata-carë (Ctrl+Y)",
+    "unvalidated_work_title": "Píta útecenta",
+    "unvalidated_work_message": "Píta útecenta. Ma anwa merë pustë i centuva? Píta vanwa nauva.",
+    "toolbar_straighten_tooltip": "Lempina",
+    "toolbar_crop_instruction": "Tirë cantalë pëtalë yesta; ta manta.",
+    "toolbar_clone_tooltip": "Lúmequenta",
+    "toolbar_text_tooltip": "Tecië"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Latya tápina",
         "message": "Sina parma lá latyaina né: polir parmar {ext} tyarë ulco mi tammalya.\nQui estelyal sa, á mapa sa ettë ar á latya sa mályanen."
+      },
+      "no_straighten_line": {
+        "title": "Úma cilmë",
+        "message": "Tirë cantalë lempinalë yesta."
+      },
+      "no_skew_detected": {
+        "title": "Úna cendo hirna",
+        "message": "Úna cendo hirna mi emma sina."
+      },
+      "no_text_block": {
+        "title": "Úma cilmë",
+        "message": "Tirë cantalë tecielë yesta."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Lá ná mára roimbe i andon ve i andon cendelë.\nMerya: {needed}\nLerta: {free}"
       },
-      "no_wilhelm_scream_found": "Lámë-parma lá hirna."
+      "no_wilhelm_scream_found": "Lámë-parma lá hirna.",
+      "straighten_failed": {
+        "title": "Russë",
+        "message": "Úma lempina i fána: {error}"
+      },
+      "clone_failed": {
+        "title": "Russë",
+        "message": "Úma lúmequenta i fána: {error}"
+      },
+      "text_failed": {
+        "title": "Russë",
+        "message": "Úma tecië i fána: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "CENA LOG",
     "straighten_viewer": {
-      "title": "Lempina",
-      "instruction": "Tanwa lempina te i má naa ea lemba (hya ortanna) i lómë"
+      "instruction": "Tanwa lempina te i má naa ea lemba (hya ortanna) i lómë",
+      "angle_label": "Rembë:"
     },
     "clone_zone_viewer": {
       "title": "Óre fëa lúmequenta",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Quantë :"
     },
     "text_viewer": {
-      "title": "Tengwesta Quenta",
-      "instruction": "Teca i nómë ya meril quenta  •  Ctrl+rambor: morna quenta",
+      "instruction": "Teca i nómë ya meril tecië  •  Ctrl+rambor: morna tecië",
       "size_label": "Rimbe:",
       "color_label": "Falma:",
       "bold_btn": "T",
       "italic_btn": "C",
       "underline_btn": "N",
-      "apply_btn": "Carë quenta",
       "pick_color_title": "Sece falma quento"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Autómata Lempina",
       "message": "{success} emma(li) lempinë alcarissë.",
       "message_errors": "{success} emma(li) lempinë alcarissë.\n{failed} ú-cárë (úna cendo hirna) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Cilë:",
+      "hex_label": "Hexadecimal:",
+      "red_label": "Carnë:",
+      "green_label": "Laica:",
+      "blue_label": "Luinë:",
+      "alpha_label": "Alpha:"
     }
   },
   "tooltip": {

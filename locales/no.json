@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Massekonvertering\n av CBT-filer til CBZ",
     "batch_metadata": "Masseimport av metadata",
     "batch_library": "Opprett et bibliotek fra mappe(r)",
-    "batch_recompress": "Komprimer CBZ-filer på nytt til standardnivå"
+    "batch_recompress": "Komprimer CBZ-filer på nytt til standardnivå",
+    "validate_straighten": "Bekreft opprettingen",
+    "validate_text": "Bruk tekst"
   },
   "tabs": {
     "mosaic": "Mosaikk",
@@ -75,7 +77,16 @@
     "mode_single": "Enkeltside  [D]",
     "mode_double": "Dobbeltside  [D]",
     "mode_continuous": "Kontinuerlig modus  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Beskjæring",
+    "toolbar_undo_tooltip": "Angre (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Gjør om (Ctrl+Y)",
+    "unvalidated_work_title": "Ikke-bekreftet arbeid",
+    "unvalidated_work_message": "Du har ett eller flere pågående arbeider som ikke er bekreftet. Er du sikker på at du vil lukke visningen? Dette arbeidet vil gå tapt.",
+    "toolbar_straighten_tooltip": "Rett opp",
+    "toolbar_crop_instruction": "Tegn et rektangel rundt området som skal beholdes, og bekreft deretter",
+    "toolbar_clone_tooltip": "Kloning",
+    "toolbar_text_tooltip": "Tekst"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Åpning blokkert",
         "message": "Denne filen ble ikke åpnet: {ext}-filer kan kjøre kode på datamaskinen din.\nHvis du stoler på den, pakk den ut og åpne den manuelt."
+      },
+      "no_straighten_line": {
+        "title": "Ingen linje tegnet",
+        "message": "Tegn først en referanselinje."
+      },
+      "no_skew_detected": {
+        "title": "Ingen skjevhet oppdaget",
+        "message": "Ingen pålitelig skjevhet ble oppdaget på denne siden."
+      },
+      "no_text_block": {
+        "title": "Ingen tekst",
+        "message": "Skriv inn tekst i minst én blokk først."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Ikke nok diskplass på måldisken.\nNødvendig: {needed}\nTilgjengelig: {free}"
       },
-      "no_wilhelm_scream_found": "Lydfil ikke funnet."
+      "no_wilhelm_scream_found": "Lydfil ikke funnet.",
+      "straighten_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke rette opp bildet: {error}"
+      },
+      "clone_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke kloning: {error}"
+      },
+      "text_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke teksten: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "SE LOG",
     "straighten_viewer": {
-      "title": "Rette opp",
-      "instruction": "Tegn en rett linje på det som skal være horisontalt (eller vertikalt) i bildet"
+      "instruction": "Tegn en rett linje på det som skal være horisontalt (eller vertikalt) i bildet",
+      "angle_label": "Vinkel:"
     },
     "clone_zone_viewer": {
       "title": "Kloning av sone",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Størrelse :"
     },
     "text_viewer": {
-      "title": "Sett inn tekst",
       "instruction": "Klikk der du vil sette inn tekst  •  Ctrl+piler: flytt tekst nøyaktig",
       "size_label": "Størrelse:",
       "color_label": "Farge:",
       "bold_btn": "F",
       "italic_btn": "K",
       "underline_btn": "U",
-      "apply_btn": "Bruk tekst",
       "pick_color_title": "Velg tekstfarge"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatisk retting",
       "message": "{success} bilde(r) rettet med hell.",
       "message_errors": "{success} bilde(r) rettet med hell.\n{failed} mislyktes (ingen pålitelig helning oppdaget) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Grunnfarger:",
+      "hex_label": "Heksadesimal:",
+      "red_label": "Rød:",
+      "green_label": "Grønn:",
+      "blue_label": "Blå:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Batchconversie van\n CBT-bestanden naar CBZ",
     "batch_metadata": "Metadata bulkimport",
     "batch_library": "Maak een bibliotheek van de map(pen)",
-    "batch_recompress": "CBZ-bestanden opnieuw comprimeren op standaardniveau"
+    "batch_recompress": "CBZ-bestanden opnieuw comprimeren op standaardniveau",
+    "validate_straighten": "Rechtzetten bevestigen",
+    "validate_text": "Tekst toepassen"
   },
   "tabs": {
     "mosaic": "Mozaïek",
@@ -75,7 +77,16 @@
     "mode_single": "Enkele pagina  [D]",
     "mode_double": "Dubbele pagina  [D]",
     "mode_continuous": "Continue modus  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Bijsnijden",
+    "toolbar_undo_tooltip": "Ongedaan maken (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Opnieuw (Ctrl+Y)",
+    "unvalidated_work_title": "Niet-gevalideerd werk",
+    "unvalidated_work_message": "U heeft een of meer lopende, niet-gevalideerde werkzaamheden. Weet u zeker dat u de viewer wilt sluiten? Dit werk gaat verloren.",
+    "toolbar_straighten_tooltip": "Rechtzetten",
+    "toolbar_crop_instruction": "Teken een rechthoek rond het te behouden gebied en bevestig",
+    "toolbar_clone_tooltip": "Klonen",
+    "toolbar_text_tooltip": "Tekst"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Openen geblokkeerd",
         "message": "Dit bestand is niet geopend: {ext}-bestanden kunnen code op uw computer uitvoeren.\nAls u het vertrouwt, pak het dan uit en open het handmatig."
+      },
+      "no_straighten_line": {
+        "title": "Geen lijn getekend",
+        "message": "Teken eerst een referentielijn."
+      },
+      "no_skew_detected": {
+        "title": "Geen scheefstand gedetecteerd",
+        "message": "Er is geen betrouwbare scheefstand gedetecteerd op deze pagina."
+      },
+      "no_text_block": {
+        "title": "Geen tekst",
+        "message": "Voer eerst tekst in bij ten minste één blok."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Onvoldoende schijfruimte op het doelstation.\nVereist: {needed}\nBeschikbaar: {free}"
       },
-      "no_wilhelm_scream_found": "Audiobestand niet gevonden."
+      "no_wilhelm_scream_found": "Audiobestand niet gevonden.",
+      "straighten_failed": {
+        "title": "Fout",
+        "message": "Kon de afbeelding niet rechtzetten: {error}"
+      },
+      "clone_failed": {
+        "title": "Fout",
+        "message": "Klonen kon niet worden toegepast: {error}"
+      },
+      "text_failed": {
+        "title": "Fout",
+        "message": "Kan de tekst niet toepassen: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "LOG BEKIJKEN",
     "straighten_viewer": {
-      "title": "Rechtzetten",
-      "instruction": "Teken een rechte lijn op wat horizontaal (of verticaal) moet zijn in de afbeelding"
+      "instruction": "Teken een rechte lijn op wat horizontaal (of verticaal) moet zijn in de afbeelding",
+      "angle_label": "Hoek:"
     },
     "clone_zone_viewer": {
       "title": "Zone klonen",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Grootte :"
     },
     "text_viewer": {
-      "title": "Tekst invoegen",
       "instruction": "Klik waar u tekst wilt invoegen  •  Ctrl+pijlen: tekst pixelnauwkeurig verplaatsen",
       "size_label": "Grootte:",
       "color_label": "Kleur:",
       "bold_btn": "V",
       "italic_btn": "C",
       "underline_btn": "O",
-      "apply_btn": "Tekst toepassen",
       "pick_color_title": "Kies tekstkleur"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatisch rechtzetten",
       "message": "{success} afbeelding(en) succesvol rechtgezet.",
       "message_errors": "{success} afbeelding(en) succesvol rechtgezet.\n{failed} mislukt (geen betrouwbare scheefstand gedetecteerd) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Basiskleuren:",
+      "hex_label": "Hexadecimaal:",
+      "red_label": "Rood:",
+      "green_label": "Groen:",
+      "blue_label": "Blauw:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

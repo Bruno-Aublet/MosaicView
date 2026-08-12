@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Conversione batch\n di file CBT in CBZ",
     "batch_metadata": "Importazione batch di metadati",
     "batch_library": "Crea una libreria dalla/e cartella/e",
-    "batch_recompress": "Ricomprimere i file CBZ al livello predefinito"
+    "batch_recompress": "Ricomprimere i file CBZ al livello predefinito",
+    "validate_straighten": "Convalida raddrizzamento",
+    "validate_text": "Applica testo"
   },
   "tabs": {
     "mosaic": "Mosaico",
@@ -75,7 +77,16 @@
     "mode_single": "Pagina singola  [D]",
     "mode_double": "Doppia pagina  [D]",
     "mode_continuous": "Modalità continua  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Ritaglio",
+    "toolbar_undo_tooltip": "Annulla (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Ripristina (Ctrl+Y)",
+    "unvalidated_work_title": "Lavoro non convalidato",
+    "unvalidated_work_message": "Hai uno o più lavori in corso non convalidati. Sei sicuro di voler chiudere il visualizzatore? Questo lavoro andrà perso.",
+    "toolbar_straighten_tooltip": "Raddrizza",
+    "toolbar_crop_instruction": "Disegna un rettangolo attorno alla zona da conservare, poi conferma",
+    "toolbar_clone_tooltip": "Clonazione",
+    "toolbar_text_tooltip": "Testo"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Apertura bloccata",
         "message": "Questo file non è stato aperto: i file {ext} possono eseguire codice sul computer.\nSe ritieni che sia affidabile, estrailo e aprilo manualmente."
+      },
+      "no_straighten_line": {
+        "title": "Nessuna linea tracciata",
+        "message": "Traccia prima una linea di riferimento."
+      },
+      "no_skew_detected": {
+        "title": "Nessuna inclinazione rilevata",
+        "message": "Nessuna inclinazione affidabile è stata rilevata su questa pagina."
+      },
+      "no_text_block": {
+        "title": "Nessun testo",
+        "message": "Inserire prima del testo in almeno un blocco."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Spazio su disco insufficiente sull'unità di destinazione.\nNecessario: {needed}\nDisponibile: {free}"
       },
-      "no_wilhelm_scream_found": "File audio non trovato."
+      "no_wilhelm_scream_found": "File audio non trovato.",
+      "straighten_failed": {
+        "title": "Errore",
+        "message": "Impossibile raddrizzare l'immagine: {error}"
+      },
+      "clone_failed": {
+        "title": "Errore",
+        "message": "Impossibile applicare la clonazione: {error}"
+      },
+      "text_failed": {
+        "title": "Errore",
+        "message": "Impossibile applicare il testo: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "VEDI LOG",
     "straighten_viewer": {
-      "title": "Raddrizza",
-      "instruction": "Tracciate una linea retta su ciò che deve essere orizzontale (o verticale) nell'immagine"
+      "instruction": "Tracciate una linea retta su ciò che deve essere orizzontale (o verticale) nell'immagine",
+      "angle_label": "Angolo:"
     },
     "clone_zone_viewer": {
       "title": "Clonazione di zona",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Dimensione :"
     },
     "text_viewer": {
-      "title": "Inserisci testo",
       "instruction": "Fai clic dove vuoi inserire il testo  •  Ctrl+frecce: sposta il testo di un pixel alla volta",
       "size_label": "Dimensione:",
       "color_label": "Colore:",
       "bold_btn": "G",
       "italic_btn": "C",
       "underline_btn": "S",
-      "apply_btn": "Applica testo",
       "pick_color_title": "Scegli il colore del testo"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Raddrizzamento automatico",
       "message": "{success} immagine/i raddrizzata/e con successo.",
       "message_errors": "{success} immagine/i raddrizzata/e con successo.\n{failed} fallita/e (nessuna inclinazione affidabile rilevata) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Colori di base:",
+      "hex_label": "Esadecimale:",
+      "red_label": "Rosso:",
+      "green_label": "Verde:",
+      "blue_label": "Blu:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

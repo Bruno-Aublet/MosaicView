@@ -1,126 +1,151 @@
 ---
 name: add-text-to-image
-description: Localiser ou modifier l'ajout de texte sur une image (blocs de texte riche superposés, positionnables, aplatis sur l'image PIL à l'application). Utiliser dès qu'une tâche touche à text_viewer_qt.py, TextViewerDialog, ou au bouton/menu "Insertion de texte".
+description: Localiser ou modifier l'ajout de texte sur une image (blocs de texte riche superposés, positionnables, aplatis sur l'image PIL à l'application). Utiliser dès qu'une tâche touche à text_tool_qt.py, l'outil "text" de la barre d'outils flottante de la visionneuse principale, ou le bouton/menu "Insertion de texte".
 ---
 
 # Ajout de texte sur une image — MosaicView
 
-Fenêtre plein-écran dédiée où l'utilisateur clique sur l'image pour placer un ou plusieurs **blocs de texte riche** (police, taille, gras/italique/souligné, couleur avec alpha) superposés en transparence par-dessus l'image, déplaçables librement, puis "aplatis" (rendus définitivement) dans les pixels de l'image PIL au clic sur "Appliquer le texte". Usage typique : ajouter une bulle de traduction, un titre, une légende ou une correction de texte directement sur une page scannée.
+4e outil migré (v1.7.3) dans la barre d'outils flottante de la visionneuse principale (`ImageViewer`, `image_viewer_qt.py`), après crop/straighten/clone — voir skill `viewers` (section "Fusion progressive") pour l'architecture générale en mixins et les décisions transversales. L'utilisateur clique sur l'image pour placer un ou plusieurs **blocs de texte riche** (police, taille, gras/italique/souligné, couleur avec alpha) superposés en transparence par-dessus l'image, déplaçables librement, puis "aplatis" (rendus définitivement) dans les pixels de l'image PIL au clic sur "Valider". Usage typique : ajouter une bulle de traduction, un titre, une légende ou une correction de texte directement sur une page scannée.
 
-Distinct des visionneuses de redressement (`page-straighten`) et de tampon de clonage (couvertes par le skill `viewers`) — architecture similaire (fenêtre page par page avec undo/redo interne) mais aucun code partagé, chaque fichier étant une implémentation autonome (voir skill `viewers`, avertissement général sur les 5 visionneuses).
+**L'ancienne fenêtre dédiée `TextViewerDialog`/`text_viewer_qt.py` a été entièrement supprimée** (v1.7.3, après migration complète et confirmation utilisateur) — plus aucune référence, plus d'historique interne séparé par fenêtre. Tout vit désormais dans `modules/qt/text_tool_qt.py`.
 
-## Fichier unique — `modules/qt/text_viewer_qt.py`
+## Fichier unique — `modules/qt/text_tool_qt.py`
 
-Tout le mécanisme tient dans un seul fichier (~1534 lignes, le plus long des 5 visionneuses en raison de la richesse de l'éditeur de texte) :
+Comme `crop_tool_qt.py`/`straighten_tool_qt.py`/`clone_tool_qt.py`, deux mixins hérités par les deux classes centrales de `image_viewer_qt.py` (`class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, TextCanvasMixin, QLabel)` / `class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, TextViewerMixin, QDialog)`) — voir skill `viewers` pour la règle architecturale absolue (jamais de code d'outil dans `image_viewer_qt.py`).
 
-- **`_RichTextOverlay`** (`QTextEdit`) — un bloc de texte individuel, transparent, superposé sur l'image. Auto-redimensionné à son contenu (`_adjust_size`), bordure pointillée bleue (actif) ou grise (inactif) pour le distinguer visuellement, undo/redo **de frappe** natif Qt (`document().undo()/redo()`, indépendant des deux autres historiques du fichier — voir section undo/redo).
-- **`_TextBlock`** — associe un `_RichTextOverlay` à sa position en coordonnées **image** (`img_pos`, pas coordonnées widget — reste correct quel que soit le zoom/pan courant). Expose `html()`/`plain_text()`/`is_empty()`.
-- **`_TextImageWidget`** (`QWidget`) — affiche l'image sur fond damier (transparence) et héberge N blocs comme enfants Qt ; gère zoom/pan, placement au clic, drag & drop des blocs existants, activation (un seul bloc "actif" à la fois).
-- **`TextViewerDialog`** (`QDialog`) — la fenêtre complète : toolbar navigation/zoom, barre d'options rich text (police/taille/gras/italique/souligné/couleur), zone image, barre du bas (Undo/Redo/Appliquer/Fermer).
-- **`show_text_viewer(parent, callbacks)`** — point d'entrée public.
+- **`_ColorPickerDialog`** (`QDialog`) + `_ColorSwatch`/`_HueSatSquare`/`_ValueSlider` — sélecteur de couleur maison, voir section dédiée plus bas.
+- **`_RichTextOverlay`** (`QTextEdit`) — un bloc de texte individuel, transparent, superposé sur `_ViewerCanvas`. Auto-redimensionné à son contenu (`_adjust_size`), bordure pointillée bleue (actif/éditable) ou grise (figé, outil désélectionné). Signaux `content_changed`/`block_move(dx,dy)`/`activated`.
+- **`_TextBlock`** — associe un `_RichTextOverlay` à sa position en coordonnées **image** (`img_pos`, stable indépendamment du zoom/pan), plus `display_scale` (zoom au moment de l'édition) et `top_y_offset_img` (décalage vertical figé une seule fois — voir section positionnement).
+- **`_TextOptionsPanel`** (`QWidget`) — panneau flottant de formatage (police/taille/gras/italique/souligné/couleur), même mécanisme que `_StraightenAnglePanel`/`_CloneOptionsPanel` (skill `viewers`), instancié dans `_ViewerToolbar.__init__` (`viewer_toolbar_qt.py`) et accessible via `self._toolbar._text_panel`.
+- **`TextCanvasMixin`** — état + interactions souris, hérité par `_ViewerCanvas`.
+- **`TextViewerMixin`** — rendu final, validation, persistance par page, hérité par `ImageViewer`.
 
-## Placer, déplacer, activer un bloc — `_TextImageWidget`
+## Placer, déplacer, activer un bloc — `TextCanvasMixin`
 
-- **Nouveau bloc** : clic gauche sur une zone vide de l'image → `place_text` émis → `TextViewerDialog._on_place_text` crée le bloc via `add_block()`, lui applique le format courant (police/taille/couleur des contrôles de la barre d'options, voir `_apply_default_format_to_block`) et lui donne le focus clavier immédiatement.
-- **Plusieurs blocs peuvent coexister simultanément** sur la même image (pas de limite) — chacun avec sa position, son contenu et son formatage propre.
-- **Un seul bloc "actif" à la fois** (`_active_block`) : bordure bleue vs grise, seul celui-ci reçoit les changements de format des contrôles de la barre d'options (police/taille/gras/italique/souligné/couleur — voir `_active_overlay`). Cliquer sur un bloc existant l'active ; cliquer sur une zone vide en crée un nouveau qui devient actif automatiquement.
-- **Déplacement d'un bloc existant** : glisser-déposer à la souris (seuil de 16 px² avant de basculer en mode drag, `mouseMoveEvent`, évite qu'un simple clic pour placer le curseur texte soit interprété comme un déplacement), ou **Ctrl+flèches** au clavier quand l'overlay a le focus — déplacement au pixel image près (`block_move` signal, `_on_block_move_signal`).
-- **Détection du bloc sous la souris** (`_block_at`) : parcourt les blocs en ordre **inverse** (le dernier ajouté a priorité en cas de chevauchement), avec une marge de tolérance de 4px autour du rectangle réel de l'overlay.
-- Les blocs ne sont **jamais sauvegardés séparément** — ce sont des widgets Qt éphémères qui n'existent que tant que la fenêtre de texte est ouverte sur cette page ; changer de page (`_prev_image`/`_next_image`) les détruit tous (`_clear_blocks` → `clear_blocks()` → `deleteLater()` sur chaque overlay).
+- **Nouveau bloc** : `text_mouse_press` (appelé depuis `_ViewerCanvas.mousePressEvent` quand `active_tool == "text"`) — clic sur une zone vide → `add_text_block(ix, iy)` crée l'overlay, lui applique le format par défaut des contrôles courants (`_TextOptionsPanel.apply_default_format_to_block`) puis l'active et lui donne le focus. **Ordre d'appel critique** : format appliqué + `overlay.show()` **avant** `_text_activate_block()` — l'inverse provoquait un access violation natif (currentCharFormat() sur un QTextEdit encore caché).
+- **Plusieurs blocs peuvent coexister** sur la même page (pas de limite), chacun avec sa position/contenu/formatage propre, stockés dans `_ViewerCanvas._text_blocks` (liste).
+- **Un seul bloc "actif" à la fois** (`_text_active_block_ref`) : bordure bleue vs grise, seul lui reçoit les changements de format de `_TextOptionsPanel`. Cliquer sur un bloc existant l'active ; cliquer sur une zone vide en crée un nouveau qui devient actif.
+- **Bloc vide abandonné retiré automatiquement** : si un clic (sur un bloc existant ou une zone vide) survient pendant qu'un bloc actif est resté vide (`is_empty()`), il est supprimé via `_remove_block()` avant de traiter le nouveau clic — évite l'accumulation de `_RichTextOverlay` fantômes qui déstabilisait Qt (cause racine des access violations lors d'un changement rapide de zone de frappe, voir section pièges).
+- **Déplacement d'un bloc existant** : glisser-déposer à la souris (seuil de 16 px² avant bascule en mode drag, `text_mouse_move`/`text_mouse_press`), ou **Ctrl+flèches** au clavier quand l'overlay a le focus (`_RichTextOverlay.keyPressEvent` → signal `block_move` → `_on_text_block_move_signal`).
+- **Détection du bloc sous la souris** (`_text_block_at`) : parcourt `_text_blocks` en ordre **inverse** (le dernier ajouté a priorité en cas de chevauchement), marge de tolérance 4px.
+- **Clic hors image** : coordonnées bornées via `_clamp_to_image` avant `add_text_block` — un bloc n'est jamais créé à une position aberrante hors des limites de l'image.
+- **Désélection de l'outil "text"** (icône re-cliquée, ou un autre outil activé) : les blocs **ne sont pas effacés** (même principe que le rectangle de crop conservé en gris) — `_text_set_frozen(True)` les fige (`overlay.setReadOnly(True)`, plus de focus possible, bordure grise). Resélectionner l'outil les rend à nouveau éditables.
 
-## Formatage du texte
+## Formatage — `_TextOptionsPanel`
 
-Barre d'options rich text (`_opt`, sous la toolbar navigation) : `QFontComboBox` (police), `QSpinBox` (taille, 6 à 500), 3 boutons bascule (gras/italique/souligné, avec police système utilisée pour l'aspect visuel des boutons eux-mêmes via `font-weight`/`font-style`/`text-decoration` dans leur stylesheet), bouton couleur (ouvre `QColorDialog` avec canal alpha activé — un texte peut donc être semi-transparent).
+Panneau flottant sous `_ViewerToolbar`, visible **uniquement** quand `active_tool == "text"` **et** qu'un bloc est actif (`set_visible_for_tool`, appelé depuis `_ViewerToolbar.set_active_tool` et `_on_text_block_activated`) — un outil sélectionné sans bloc actif n'affiche pas la barre de formatage. Contrôles : `QFontComboBox`, `QSpinBox` (taille 6-500), 3 `QPushButton` checkable (gras/italique/souligné), bouton couleur carré ouvrant `_ColorPickerDialog`.
 
-- **Appliquer un format** passe toujours par `apply_char_format(fmt)` sur l'overlay actif (`_RichTextOverlay`) — fusionne (`mergeCharFormat`) le nouveau format dans la sélection/position courante du curseur, ne remplace pas le format entier du bloc. Chaque changement de contrôle (police/taille/gras/etc.) redonne ensuite le focus à l'overlay (`ov.setFocus()`) pour que la frappe continue immédiatement après.
-- **Synchronisation inverse** (`_sync_format_controls_from_block`) : quand le curseur se déplace dans un bloc ou qu'un bloc devient actif, les contrôles de la barre d'options se recalent sur le format du texte sous le curseur — protégée par le flag `_ignore_format_signals` pour éviter une boucle infinie (mettre à jour un contrôle déclenche normalement son signal, qui tenterait de réappliquer un format, qui redéclencherait une synchro...).
-- **Piège sur un document vide** : `setCurrentCharFormat` seul ne suffit pas pour qu'un bloc tout juste créé (aucun caractère tapé) utilise la bonne police — il faut aussi `document().setDefaultFont(...)` (voir `_apply_default_format_to_block`, commentaire explicite dans le code sur ce point).
+- **Appliquer un format** passe par `_RichTextOverlay.apply_char_format(fmt)` (`mergeCharFormat` sur la sélection/position courante), puis redonne le focus à l'overlay pour que la frappe continue.
+- **Synchronisation inverse** (`sync_from_block`) : différée via un **timer unique coalescé** (`request_sync`/`_run_pending_sync`, `QTimer(singleShot=True)`) plutôt que des `QTimer.singleShot()` empilés — `content_changed`/`activated` sont émis en pleine réentrance d'un événement Qt natif (frappe, changement de focus), et une resynchronisation immédiate ou des callbacks empilés sur un état périmé provoquaient des access violations natifs (voir section pièges). Garde `hasFocus()` avant `fmt.fontFamily()` — le seul appel identifié comme cause de crash en cas de changement de focus pendant que le callback était en vol.
+- **Taille de police — deux échelles** : la spinbox affiche une taille **logique** (voulue en pixels sur l'image finale) ; le document Qt affiché à l'écran utilise cette taille × `block.display_scale` (zoom courant, pour rester lisible pendant l'édition à n'importe quel niveau de zoom). `_text_render_all_blocks` divise par ce même facteur au rendu final. **`display_scale` est reposé au zoom courant à chaque changement de taille** (`_on_font_size_changed`), pas figé à la création — seul `top_y_offset_img` (position) est figé une fois pour toutes, pas `display_scale` (taille).
 
-## Rendu final — `_render_all_blocks` (`text_viewer_qt.py:966`)
+## Sélecteur de couleur maison — `_ColorPickerDialog`
 
-Convertit chaque bloc actif (non vide) en image PIL et le colle sur une copie de l'image de travail, **dans l'ordre où les blocs ont été ajoutés** à `_blocks` (pas d'ordre de superposition modifiable manuellement) :
+**`QColorDialog` a été abandonné** après plusieurs tentatives infructueuses de le rendre lisible en mode sombre (ses widgets internes sont peints nativement par l'OS ou cassés par le moteur `QStyleSheetStyle` du stylesheet global de l'appli) — remplacé par une fenêtre 100% maison qui suit `get_current_theme()` comme n'importe quelle autre fenêtre du projet. Non-modale (`setModal(False)`, résultat via signal `color_picked`).
 
-1. Pour chaque bloc non vide : clone le `QTextDocument` de l'overlay (`document().clone()`), le rend dans un `QImage` ARGB32 transparent de la taille exacte du texte (`doc.drawContents`), convertit en PIL via `Image.frombytes('RGBA', ..., 'raw', 'BGRA')` — **ordre de canaux `BGRA`, pas `RGBA`**, spécifique au format mémoire natif de `QImage.Format_ARGB32` sur cette plateforme ; une erreur d'ordre de canaux ici inverserait rouge et bleu silencieusement.
-2. Colle (`img.paste(text_pil, (px, py), text_pil)`, alpha du texte comme masque) sur l'image de travail à la position du bloc, **bornée à `[0, largeur-1]`/`[0, hauteur-1]`** (`px`/`py` clampés) — un bloc dont l'ancre a été déplacée hors des limites de l'image ne provoque pas d'erreur, mais peut être partiellement ou totalement hors cadre après collage.
-3. Un bloc vide (`is_empty()` — seulement des espaces/rien tapé) est **silencieusement ignoré**, pas ajouté au rendu.
+- **`_HueSatSquare`** : nuancier 2D (teinte 0-359° en abscisse, saturation 0-255 en ordonnée), dégradé peint à pleine luminosité, curseur = cercle blanc/noir.
+- **`_ValueSlider`** : barre verticale de luminosité (V du HSV), dégradé noir→teinte pleine.
+- **Grille de 16 couleurs de base** (`_BASIC_COLORS`, `_ColorSwatch`), champ hexadécimal, 4 curseurs+spinbox R/V/B/Alpha.
+- **Piège corrigé — clic sur le nuancier restait noir** : la couleur initiale (`#000000`, texte par défaut) a `value()=0` en HSV ; `_ValueSlider._val` héritait de 0, donc `QColor.fromHsv(h, s, 0)` restait toujours noir quelle que soit la teinte cliquée. `_on_hue_sat_changed` force `val=255` si la valeur courante est `<= 0`.
+- **Piège corrigé — bandes noires derrière les labels** : dès qu'un stylesheet est actif sur le `QDialog` parent, un `QLabel` dont le style ne pose que `color` (pas de fond) retombe sur un fond opaque par défaut du moteur `QStyleSheetStyle` — chaque label doit explicitement poser `background: transparent;` dans son propre stylesheet.
+- **Piège corrigé — spinbox R/V/B/Alpha restaient noires malgré un style posé** : un style `QLineEdit { ... }` ne cible que les vrais `QLineEdit` (comme le champ hexadécimal) — un `QSpinBox` est une classe différente même s'il héberge un `QLineEdit` interne. Style `QSpinBox { ... }` séparé et explicite nécessaire.
+- **Piège corrigé — carré de couleur active empiétait sur le texte du dessous** : `QLabel` de taille fixe (`setFixedSize`) avec seulement `background` en stylesheet peut voir sa taille ignorée en présence d'un stylesheet actif sur un ancêtre — nécessite `setAttribute(Qt.WA_StyledBackground, True)`.
+- **Piège corrigé — fenêtre qui flashe à une position puis se déplace, mal centrée** : `adjustSize()` doit être appelé **avant** `position_dialog_on_parent(dlg, self._viewer)` (pas dans `showEvent`) — sans ça `dialog.height()` vaut encore une hauteur par défaut minime au moment du calcul de centrage. Centrée sur `self._viewer` (`ImageViewer`, la visionneuse), pas sur `self` (`_TextOptionsPanel`, petit panneau flottant qui donnerait une position peu pertinente).
+- Traductions : `dialogs.text_viewer.pick_color_title` (titre, via `_wt()`), section `dialogs.color_picker.*` (`basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`), propagées aux 45 langues.
 
-## Application — `_apply_text` (`text_viewer_qt.py:1206`)
+## Positionnement — point cliqué = début horizontal, centre vertical figé
 
-Comme `page-straighten`, entièrement synchrone (pas de worker QThread, une seule image à la fois) :
+Décision explicite de l'utilisateur après plusieurs itérations ratées (centrage horizontal essayé puis abandonné — dérive pendant la frappe, largeur de wrap mal calculée) :
 
-1. `save_state()` (undo global, sans `force=True`) avant modification.
-2. `composed = self._render_all_blocks()` puis `_commit_image(composed, entry, state)`.
-3. **`_commit_image`** : gère la conversion de mode source — si le mode d'origine de l'image (`entry['_orig_mode']`, capturé à l'ouverture de la fenêtre, voir plus bas) n'a pas de canal alpha **et** que le format de fichier ne supporte pas la transparence (extension hors `.png`/`.webp`/`.avif`), aplatit le résultat RGBA sur un fond blanc opaque avant sauvegarde — évite qu'une image JPEG d'origine se retrouve avec un canal alpha invalide à l'export. Puis invalidation complète des caches (variante A du skill `apply-image-operation` : `img`/`_thumbnail`/`large_thumb_pil`/`qt_pixmap_large`/`qt_qimage_large`/`_hash`), synchronisation `ComicInfo.xml` (skill `comicinfo-metadata-editor`), `state.modified = True`.
-4. Second `save_state(force=True)` après modification (redo).
-5. Snapshot enregistré dans l'historique interne (voir section suivante), pile de redo interne vidée, tous les blocs de la page effacés (le texte est maintenant fusionné dans les pixels — il n'existe plus en tant que bloc éditable), image rechargée depuis les nouveaux bytes.
+- **Horizontal** : `block.img_pos` est le bord **gauche** du texte (le point cliqué = début de la ligne, comme dans n'importe quel éditeur), jamais recentré.
+- **Vertical** : le point cliqué reste le **centre vertical** du bloc, mais **tel qu'il était au moment du placement initial** — `_TextBlock.top_y_offset_img`, calculé une seule fois (`(overlay.height() / 2) / display_scale_à_la_création`, en pixels **image**) et **jamais recalculé** ensuite, ni à l'écran (`_text_reposition_block`) ni au rendu final (`_text_render_all_blocks`). Recalculer ce décalage avec la hauteur courante (après plusieurs lignes tapées) faisait dériver le bloc de plus en plus loin du point cliqué à mesure que le texte s'allongeait — bug corrigé en figeant la valeur une fois pour toutes et en la persistant (`_save_text_for_current_page`/`_restore_text_for_page`).
+- **Largeur de wrap** (`_RichTextOverlay.set_max_width`) : recalculée à chaque repositionnement (`_text_reposition_block`) comme la distance entre le point cliqué et le **bord droit réel de l'image** (`display_offset_x + display_width`), pas du canvas — le texte revient à la ligne en l'atteignant.
+- **`WrapAnywhere`** (pas `WordWrap`) : un mot unique très long (texte de test sans espaces) continuait sinon indéfiniment sur une seule ligne sans jamais revenir à la ligne.
+- **Calcul de largeur** : `doc.idealWidth()` (largeur réellement nécessaire au contenu), **pas** `doc.documentLayout().documentSize().width()` qui retourne toujours `textWidth` une fois celui-ci fixé, pas la largeur du contenu — utiliser l'un à la place de l'autre inversait le sens du wrap automatique.
 
-**`entry['_orig_mode']`** est calculé une seule fois à l'ouverture de la fenêtre pour toutes les pages (`show_text_viewer`, boucle sur `image_entries`, seulement si la clé n'existe pas encore) — pas recalculé après une première application de texte sur une page, puisque `_commit_image` ne le modifie jamais.
+## Rendu final — `TextViewerMixin._text_render_all_blocks`
 
-## Undo/redo — trois systèmes, pas deux
+Convertit chaque bloc non vide en image PIL et le colle sur une copie de l'image de travail, dans l'ordre de `_ViewerCanvas._text_blocks` (ordre d'ajout, pas modifiable manuellement) :
 
-Encore plus stratifié que `page-straighten` (qui n'en a que deux) :
+1. Clone le `QTextDocument` de l'overlay, repose la même largeur de wrap que celle vue à l'écran (`block.overlay._max_width`) — sinon le rendu ignorerait le retour à la ligne automatique et produirait un texte débordant incohérent avec ce qui a été validé visuellement.
+2. Dézoome les tailles de police (`scale = 1.0 / block.display_scale`) pour retrouver la taille logique voulue par l'utilisateur, indépendamment du zoom courant au moment de l'édition.
+3. Rend dans un `QImage` ARGB32 transparent puis convertit en PIL via `Image.frombytes('RGBA', ..., 'raw', 'BGRA')` — **ordre de canaux `BGRA`, pas `RGBA`**, spécifique au format mémoire natif de `QImage.Format_ARGB32` ; une erreur d'ordre ici inverserait rouge et bleu silencieusement.
+4. Position = `img_pos.x()` / `img_pos.y() - top_y_offset_img` (valeur **figée**, jamais recalculée ici), bornée `[0, largeur-1]`/`[0, hauteur-1]` avant `img.paste(text_pil, (px, py), text_pil)`.
+5. Un bloc vide (`is_empty()`) est silencieusement ignoré.
 
-1. **Undo natif de frappe Qt**, interne à chaque `_RichTextOverlay` (`document().undo()/redo()`) — pile de `QTextDocument`, gère les modifications de caractères tant qu'un bloc n'a pas encore été "appliqué". `Ctrl+Z`/`Ctrl+Y` de la fenêtre les détournent **en priorité** vers ce niveau quand un overlay a actuellement le focus clavier (`_undo`/`_redo`, test `ov.hasFocus()` en tout premier) — l'utilisateur tapant dans un bloc s'attend à annuler sa frappe, pas une application précédente.
-2. **Historique interne à la fenêtre**, par page (`self._histories`/`self._redo_stacks`, dict `idx → [(bytes_avant, snapshot_blocs), ...]`) — snapshot = liste de `(ix, iy, html)` pour reconstituer l'état des blocs (mais **note : le code ne restaure actuellement pas visuellement les blocs depuis ce snapshot** après un undo/redo, seuls les `bytes` de l'image sont restaurés et les blocs sont effacés — le `snapshot_before`/`snapshot_current` est capturé et stocké mais jamais relu ; à vérifier avant de supposer qu'annuler fait réapparaître les blocs éditables).
-3. **Historique global de l'appli** (`callbacks['save_state']`, skill `undo-redo`) — comme dans `page-straighten`, chaque `_apply_text`/`_undo`/`_redo` interne pousse aussi un point dans cet historique global.
+## Validation — `TextViewerMixin.perform_text`/`validate_text`
 
-Ce triple empilement reprend exactement le pattern de `page-straighten` (deux niveaux) avec un niveau supplémentaire ajouté en amont (undo de frappe). Un bug de undo/redo signalé sur cette fenêtre doit être diagnostiqué en identifiant lequel des trois niveaux est concerné.
+Entièrement synchrone (pas de worker QThread), suit le pattern (A) complet du skill `apply-image-operation`, undo/redo **unifié** avec l'historique global du panneau (pas d'historique interne séparé, contrairement à l'ancienne fenêtre) :
+
+1. `validate_text()` (branché sur le bouton "Valider" flottant partagé, `_VALIDATE_KEYS["text"] = "buttons.validate_text"`, skill `viewers`) — si aucun bloc non vide, `MsgDialog` d'avertissement (`messages.warnings.no_text_block`) et arrêt ; sinon `perform_text()`.
+2. `save_state()` (undo global, sans `force=True`) avant modification.
+3. `composed = self._text_render_all_blocks(base_img)` puis conversion de mode source si nécessaire (`entry['_orig_mode']`, capturé une seule fois à la première application de texte sur la page — pas à l'ouverture de la visionneuse) : si le mode d'origine n'a pas de canal alpha **et** que le format de fichier ne le supporte pas (hors `.png`/`.webp`/`.avif`), aplatit sur fond blanc opaque avant sauvegarde.
+4. Invalidation complète des caches (variante A du skill `apply-image-operation`), synchronisation `ComicInfo.xml` (skill `comicinfo-metadata-editor`), `state.modified = True`, `save_state(force=True)` après modification.
+5. `self._canvas.clear_text_blocks()` (tous les blocs de la page détruits, le texte est maintenant fusionné dans les pixels), `_text_blocks_by_page.pop(current_idx)`, `display_image()`, `self._toolbar.refresh_undo_redo_state()`.
+
+## Undo/redo — unifié, pas de système séparé
+
+Contrairement à l'ancienne `text_viewer_qt.py` (trois systèmes empilés), l'outil migré n'a que **deux** niveaux :
+
+1. **Undo natif de frappe Qt**, local à chaque `_RichTextOverlay` tant qu'il a le focus (`document().undo()/redo()`, détourné via `Ctrl+Z`/`Ctrl+Y` dans `_RichTextOverlay.keyPressEvent`) — comportement standard de `QTextEdit`, pas un système ajouté. Concerne uniquement la frappe non encore validée.
+2. **Historique global de l'appli** (`callbacks['save_state']`, skill `undo-redo`) — un seul point créé à la validation (clic sur "Valider"), comme crop/straighten/clone. Décision explicite (`idees.txt` #3, discussion de conception) : pas de point d'historique à chaque frappe.
+
+Plus d'historique interne par page à la `ImageViewer` — l'ancienne `text_viewer_qt.py` en avait un (snapshot jamais relu de toute façon). La persistance du travail **non validé** (blocs en cours d'édition, changement de page) passe entièrement par `_text_blocks_by_page`, pas par un niveau d'undo.
+
+## Persistance par page — `_text_blocks_by_page`
+
+`ImageViewer._text_blocks_by_page: dict[int, list[tuple]]`, défini dans `__init__` comme `_crop_by_page`/`_straighten_by_page` (skill `viewers`), mais liste de N blocs par page au lieu d'une seule géométrie :
+
+- **`_save_text_for_current_page()`** (`TextViewerMixin`) : appelée dans `navigate()` avant de changer `current_idx` — mémorise pour chaque bloc `(img_x, img_y, html, display_scale, top_y_offset_img)`. `display_scale` et `top_y_offset_img` doivent être conservés tels quels (pas recalculés) : le HTML sérialisé contient des tailles de police déjà mises à l'échelle de ce facteur, et le décalage vertical doit rester la valeur figée au tout premier placement.
+- **`_restore_text_for_page(idx)`** : `clear_text_blocks()` puis recrée un `_TextBlock` par entrée sauvegardée via `add_text_block()`, **écrase ensuite** `display_scale`/`top_y_offset_img` avec les valeurs sauvegardées (`add_text_block` les repose par défaut au zoom courant / à la hauteur du widget encore vide — il faut les remplacer par les vraies valeurs d'origine), `overlay.setHtml(html)`, puis repositionne. Les blocs restaurés sont figés (`_text_set_frozen`) si l'outil "text" n'est pas l'outil actif au moment du retour sur la page.
+- Contribue à `_has_unvalidated_work()` (skill `viewers`, confirmation de fermeture) au même titre que `_crop_by_page`/`_straighten_by_page`.
+- **Limitation connue partagée avec crop/straighten** (skill `viewers`) : pas redessiné en mode double page (`_display_double_page` ne redessine aucun overlay).
+
+## Pièges connus (access violations natifs, tous corrigés)
+
+Trois crashs distincts rencontrés et corrigés en conditions réelles, tous diagnostiqués par prints avant correction (voir historique du chantier) :
+
+1. **Premier clic de placement** : `_text_activate_block()` appelée avant que l'overlay soit formaté/affiché → `currentCharFormat()` sur un `QTextEdit` encore caché plantait Qt nativement. Fix : format + `show()` **avant** activation (voir `add_text_block`).
+2. **Pendant la frappe** : `content_changed` émis synchrone depuis `keyPressEvent`, resynchroniser `_TextOptionsPanel` immédiatement en pleine réentrance plantait. Fix : différé via `request_sync`/timer unique coalescé.
+3. **Changement rapide de zone de frappe** : cause racine = accumulation de blocs vides jamais nettoyés, chacun avec son focus/timer en vol — terrain instable pour Qt. Fix réel : `_remove_block()` du bloc actif vide avant tout nouveau clic (`text_mouse_press`), **pas** seulement la garde `hasFocus()` sur `fmt.fontFamily()` (qui protège un symptôme différent, plus mineur, du même type de crash).
+
+**Si un nouveau crash Qt natif (access violation, pas d'exception Python) apparaît sur cet outil** : vérifier en premier si des blocs vides s'accumulent, puis si un callback différé peut s'exécuter sur un `QTextCharFormat`/overlay déjà périmé — ce sont les deux causes déjà rencontrées ici, avant d'explorer une piste nouvelle.
 
 ## Points d'entrée UI
 
-Trois, identiques dans leur structure à ceux de `page-straighten`, conditionnés uniquement à la présence d'images (`has_images`/`bool(state.images_data)`) — pas besoin de sélection :
+Trois, recâblés vers le nouvel outil migré, conditionnés à la présence d'images (`has_images`) :
 
-1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `context_menus_qt.py:425`, clé `context_menu.image.text`.
-2. **Barre de menu** — `menubar_qt.py:206`, même clé.
-3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"text"` (`icon_toolbar_qt.py:67`, icône `BTN_Text.png`, activé si `has_images`), tooltip `tooltip.text` (skill `qt-tooltips`).
+1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — clé `context_menu.image.text`.
+2. **Barre de menu** — même clé, callback `"show_text_viewer"`/`"text"` dans `menubar_callbacks_qt.py`, tous deux pointés vers `mw._text_selected_image`.
+3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"text"`, icône `BTN_Text.png`, tooltip `tooltip.text`/`viewer.toolbar_text_tooltip` (skill `qt-tooltips`).
 
-Callbacks (`PanelWidget._text_viewer_callbacks()`, `panel_widget.py:1631`) : `save_state`, `render_mosaic`, `update_button_text`, `state` — structure identique au dict de `page-straighten` (pas de `rollback`, pas de worker à annuler).
+`PanelWidget._text_selected_image()` (`panel_widget.py`) : ouvre `ImageViewer(..., initial_tool="text")` — première image sélectionnée si une sélection valide existe, sinon première image de la mosaïque, images corrompues exclues (même logique que `_straighten_selected_image`/`_clone_selected_image`). Remplace l'ancienne `_text_viewer_callbacks()`, retirée (devenue morte).
 
-## Sélection de la page de départ
-
-Même logique que `page-straighten` (`show_text_viewer`, `text_viewer_qt.py:1490`) : ouvre sur **toutes** les images valides de la mosaïque (navigables ◀/▶), démarre sur la première image sélectionnée si une sélection existe, sinon sur la première image de la mosaïque ; images corrompues exclues.
-
-## Zoom, pan, plein écran
-
-Vocabulaire commun aux 5 visionneuses (skill `viewers`) : `Ctrl++`/`Ctrl+-`, `Ctrl+0` (fit), `Ctrl+1` (reset 100%), `F11` (plein écran), molette, clic droit maintenu (pan). Particularité propre à ce fichier : **repositionner tous les blocs** (`reposition_all()`) doit être appelé après **tout** changement de zoom/pan/redimensionnement de fenêtre — sans ça les overlays resteraient à leurs anciennes coordonnées widget alors que l'image a bougé sous eux. Vérifier que tout nouveau code touchant au zoom/pan de `_TextImageWidget` appelle bien `reposition_all()`, comme le fait déjà chaque méthode existante (`set_zoom`, `reset_zoom`, `fit_to_window`, `resizeEvent`).
-
-## Fond damier (transparence)
-
-`_make_checker`/`_compose_on_checker` génèrent un damier gris clair/gris foncé (tuiles de 12px) et composent l'image RGBA dessus avant affichage — pattern similaire à `compose_checkerboard` de `AdjustmentViewerDialog` (skill `viewers`, `adjust-transparency`) mais **implémentation indépendante dans ce fichier**, pas un appel à la fonction partagée. Une modification de l'apparence du damier dans un fichier ne se propage pas à l'autre.
+4e icône de `_ViewerToolbar` (`viewer_toolbar_qt.py`) : `BTN_Text.png`, `tool_id="text"`, tooltip enrichi (`viewer.toolbar_text_tooltip` + `dialogs.text_viewer.instruction` sur une seconde ligne).
 
 ## Traductions
 
-`locales/fr.json`, section `text_viewer` (ligne 1056) : `title` (`"Insertion de texte"`, résolu via `_wt()` pour le titre de fenêtre — règle UI n°7), `instruction` (`"Cliquez à l'endroit où vous souhaitez insérer le texte  •  Ctrl+flèches : déplacer le texte au pixel près"`), `size_label`/`color_label`, `bold_btn`/`italic_btn`/`underline_btn` (labels courts "G"/"I"/"S", pas d'icônes), `apply_btn`, `pick_color_title`. Clé séparée `context_menu.image.text` pour les menus, `tooltip.text` pour la colonne d'icônes. Voir skill `add-translation`.
+`locales/*.json` : section `dialogs.text_viewer` — `instruction`, `size_label`/`color_label`, `bold_btn`/`italic_btn`/`underline_btn` (labels courts "G"/"I"/"S"), `pick_color_title` (via `_wt()`). Section `dialogs.color_picker` (6 clés, ajoutées v1.7.3 pour `_ColorPickerDialog`) : `basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`. `buttons.validate_text` (bouton flottant). `viewer.toolbar_text_tooltip` (icône barre d'outils). `context_menu.image.text`/`tooltip.text` (menu contextuel/colonne d'icônes, inchangées). `messages.warnings.no_text_block`/`messages.errors.text_failed` (validation). Toutes propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR) — voir skill `add-translation`.
 
-**Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `page-straighten`, à signaler si une tâche touche à la documentation utilisateur (skill `user-guide`).
+**Clés mortes retirées** (ancienne fenêtre supprimée) : `dialogs.text_viewer.title`, `dialogs.text_viewer.apply_btn`.
+
+**Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que les 3 autres outils migrés, à signaler si une tâche touche à la documentation utilisateur (skill `user-guide`).
 
 ## Comment étendre
 
-- **Changer l'ordre de superposition des blocs** (actuellement : ordre d'ajout, non modifiable) : `_render_all_blocks` boucle sur `self._img_widget.blocks()` dans l'ordre de la liste `_blocks` — un réordonnancement nécessiterait soit un contrôle UI dédié (glisser dans une liste, raccourci "envoyer au premier/dernier plan"), soit un tri par un critère explicite avant la boucle.
-- **Restaurer visuellement les blocs après un undo/redo interne** (actuellement non fait, voir section undo/redo) : le snapshot `(ix, iy, html)` existe déjà dans `_histories`/`_redo_stacks`, il faudrait recréer des `_TextBlock`/`_RichTextOverlay` depuis ce snapshot dans `_undo`/`_redo` au lieu de `_clear_blocks()` — ne pas le faire sans confirmation explicite, ce silence pourrait être un choix délibéré (l'application "fige" le texte, pas de raison de le rendre à nouveau éditable après coup) plutôt qu'un oubli.
-- **Ajouter un nouvel attribut de formatage** (ex. interlignage, alignement) : nouveau contrôle dans la barre d'options (`_build_ui`, section "barre d'options rich text"), nouveau handler `_on_xxx_changed` suivant le pattern des 3 boutons bascule existants (vérifie `_ignore_format_signals`, construit un `QTextCharFormat`/`QTextBlockFormat` selon l'attribut, appelle `apply_char_format` ou l'équivalent bloc, redonne le focus), et l'ajouter à `_sync_format_controls_from_block` pour la synchronisation inverse.
-- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `TextViewerDialog` (non-modale déjà en place, `_wt()` pour le titre déjà en place).
-
-## Pièges connus
-
-- **Trois systèmes d'undo/redo empilés** (frappe Qt native → historique interne fenêtre → historique global appli) — voir section dédiée ; diagnostiquer lequel est en cause avant de corriger un bug de undo signalé sur cette fenêtre.
-- **Le snapshot de blocs stocké dans l'historique interne n'est jamais relu** — un undo restaure les `bytes` de l'image mais efface les blocs plutôt que de les recréer depuis le snapshot capturé ; ne pas supposer que l'undo "ramène" le texte éditable.
-- **Ordre de canaux `BGRA`, pas `RGBA`**, dans la conversion `QImage` → PIL de `_render_all_blocks` — spécifique au format mémoire de `QImage.Format_ARGB32`, à reproduire exactement si ce bloc de code est dupliqué ailleurs.
-- **Position d'un bloc non bornée avant collage, seulement au moment du collage** (`px`/`py` clampés dans `_render_all_blocks`, pas au moment du drag) — un bloc peut être déplacé visuellement hors de l'image dans l'éditeur sans avertissement, sa position réelle n'est corrigée qu'au rendu final.
-- **`setCurrentCharFormat` seul ne suffit pas sur un document vide** — toujours accompagner de `document().setDefaultFont(...)` pour qu'un bloc fraîchement créé sans texte tapé utilise la bonne police dès la première frappe.
-- **`reposition_all()` doit suivre tout changement de zoom/pan/taille** — omission facile si un nouveau contrôle de vue est ajouté sans repasser par les méthodes existantes de `_TextImageWidget`.
-- **Fond damier dupliqué, pas partagé** avec `AdjustmentViewerDialog`/`compose_checkerboard` — une correction visuelle du damier faite dans un fichier ne s'applique pas automatiquement à l'autre.
-- **Aucune section dédiée dans le mode d'emploi.**
+- **Changer l'ordre de superposition des blocs** (actuellement : ordre d'ajout) : `_text_render_all_blocks` boucle sur `self._canvas._text_blocks` dans l'ordre de la liste — nécessiterait un contrôle UI dédié ou un tri explicite avant la boucle.
+- **Ajouter un nouvel attribut de formatage** (ex. interlignage, alignement) : nouveau contrôle dans `_TextOptionsPanel.__init__`, nouveau handler `_on_xxx_changed` suivant le pattern des 3 boutons bascule existants (garde `_ignore_format_signals`, construit un `QTextCharFormat`/`QTextBlockFormat`, appelle `apply_char_format` ou l'équivalent bloc, redonne le focus), l'ajouter à `sync_from_block` pour la synchronisation inverse et à `apply_default_format_to_block` pour le format initial d'un bloc neuf.
+- Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `_ColorPickerDialog` (non-modale, thème, retraduction, `_wt()` pour le titre — déjà en place).
 
 ## Références croisées
 
-- `page-straighten` — architecture la plus proche dans le projet (fenêtre page par page, undo/redo interne empilé sur l'historique global, `BICUBIC`/rendu synchrone) ; comparer les deux pour les différences de complexité (un seul angle de rotation vs N blocs de texte riche indépendants) et le niveau d'historique supplémentaire ici (undo de frappe Qt natif).
-- `clone-zone` — même famille de visionneuses d'édition (undo/redo interne + damier de transparence, chacun avec sa propre implémentation indépendante) ; sans navigation entre pages contrairement à celle-ci.
-- `viewers` — la 5ᵉ visionneuse plein-écran du projet, vocabulaire zoom/pan/plein-écran commun mais implémentation non partagée ; section `AdjustmentViewerDialog`/`compose_checkerboard` pour l'autre implémentation (indépendante) du fond damier de transparence.
-- `apply-image-operation` — pattern général suivi ici en variante (A) complète (comme `page-straighten`, contrairement à `rotate-flip`).
-- `undo-redo` — mécanique de l'historique global de l'appli, le niveau le plus externe des trois empilés ici.
+- `viewers` — architecture générale de la fusion progressive (mixins CanvasMixin/ViewerMixin, `_ViewerToolbar`, bouton "Valider" partagé, undo/redo unifié, persistance par page, piège overlays interactifs pan/zoom/resize) ; ce skill-ci ne documente que ce qui est spécifique à l'outil texte.
+- `page-crop`, `page-straighten`, `clone-zone` — les 3 autres outils migrés, même pattern de mixins, à comparer pour la complexité relative (crop/straighten = une seule géométrie par page, clone = pas de persistance, texte = N blocs persistés).
+- `apply-image-operation` — pattern général d'invalidation de caches suivi ici en variante (A) complète.
+- `undo-redo` — mécanique de l'historique global de l'appli, seul niveau externe restant (plus d'historique interne séparé).
 - `icon-toolbar` — bouton "text" de la colonne d'icônes.
 - `qt-context-menus` — entrée du menu contextuel clic droit.
-- `qt-tooltips` — tooltip du bouton colonne d'icônes.
-- `comicinfo-metadata-editor` — mise à jour des dimensions/attributs de page dans `ComicInfo.xml` après application du texte.
+- `qt-tooltips` — tooltips de l'icône colonne d'icônes et de l'icône de la barre d'outils flottante (`OverlayTooltip` uniquement).
+- `comicinfo-metadata-editor` — mise à jour des dimensions/attributs de page dans `ComicInfo.xml` après validation.
+- `add-translation` — méthode de propagation des clés `dialogs.color_picker.*` aux 45 langues.
 - `user-guide` — absence actuelle de section dédiée, à vérifier si une tâche touche à ce fichier.

@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Batchkonvertering\n av CBT-filer till CBZ",
     "batch_metadata": "Batchimport av metadata",
     "batch_library": "Skapa ett bibliotek från mapp(ar)",
-    "batch_recompress": "Komprimera om CBZ-filer till standardnivå"
+    "batch_recompress": "Komprimera om CBZ-filer till standardnivå",
+    "validate_straighten": "Bekräfta uppriktning",
+    "validate_text": "Använd text"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -75,7 +77,16 @@
     "mode_single": "Enkel sida  [D]",
     "mode_double": "Dubbelsida  [D]",
     "mode_continuous": "Kontinuerligt läge  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Beskärning",
+    "toolbar_undo_tooltip": "Ångra (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Gör om (Ctrl+Y)",
+    "unvalidated_work_title": "Obekräftat arbete",
+    "unvalidated_work_message": "Du har ett eller flera pågående arbeten som inte har bekräftats. Är du säker på att du vill stänga visaren? Detta arbete går förlorat.",
+    "toolbar_straighten_tooltip": "Räta upp",
+    "toolbar_crop_instruction": "Rita en rektangel runt området som ska behållas och bekräfta sedan",
+    "toolbar_clone_tooltip": "Kloning",
+    "toolbar_text_tooltip": "Text"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Öppning blockerad",
         "message": "Den här filen öppnades inte: {ext}-filer kan köra kod på din dator.\nOm du litar på den, extrahera den och öppna den manuellt."
+      },
+      "no_straighten_line": {
+        "title": "Ingen linje ritad",
+        "message": "Rita först en referenslinje."
+      },
+      "no_skew_detected": {
+        "title": "Ingen skevhet upptäckt",
+        "message": "Ingen tillförlitlig skevhet upptäcktes på den här sidan."
+      },
+      "no_text_block": {
+        "title": "Ingen text",
+        "message": "Ange text i minst ett block först."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Inte tillräckligt med diskutrymme på måldisken.\nBehövs: {needed}\nTillgängligt: {free}"
       },
-      "no_wilhelm_scream_found": "Ljudfilen hittades inte."
+      "no_wilhelm_scream_found": "Ljudfilen hittades inte.",
+      "straighten_failed": {
+        "title": "Fel",
+        "message": "Det gick inte att räta upp bilden: {error}"
+      },
+      "clone_failed": {
+        "title": "Fel",
+        "message": "Det gick inte att tillämpa kloning: {error}"
+      },
+      "text_failed": {
+        "title": "Fel",
+        "message": "Kunde inte använda texten: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "SE LOG",
     "straighten_viewer": {
-      "title": "Räta upp",
-      "instruction": "Rita en rak linje på det som ska vara horisontellt (eller vertikalt) i bilden"
+      "instruction": "Rita en rak linje på det som ska vara horisontellt (eller vertikalt) i bilden",
+      "angle_label": "Vinkel:"
     },
     "clone_zone_viewer": {
       "title": "Kloning av zon",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Storlek :"
     },
     "text_viewer": {
-      "title": "Infoga text",
       "instruction": "Klicka där du vill infoga text  •  Ctrl+pilar: flytta text pixelexakt",
       "size_label": "Storlek:",
       "color_label": "Färg:",
       "bold_btn": "F",
       "italic_btn": "K",
       "underline_btn": "U",
-      "apply_btn": "Tillämpa text",
       "pick_color_title": "Välj textfärg"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatisk rätning",
       "message": "{success} bild(er) rätade framgångsrikt.",
       "message_errors": "{success} bild(er) rätade framgångsrikt.\n{failed} misslyckades (ingen tillförlitlig lutning upptäcktes) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Grundfärger:",
+      "hex_label": "Hexadecimal:",
+      "red_label": "Röd:",
+      "green_label": "Grön:",
+      "blue_label": "Blå:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

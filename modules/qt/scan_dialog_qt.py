@@ -420,6 +420,47 @@ def _send_scan_log_by_mail(parent) -> None:
     webbrowser.open(f"mailto:{get_support_email()}?subject=MosaicView%20-%20Scan%20log&body={body}")
 
 
+def _add_send_log_link(dlg) -> None:
+    """Ajoute le lien discret d'envoi du journal de scan (voir
+    _send_scan_log_by_mail) à un QDialog déjà construit avec un layout
+    vertical se terminant par dlg._btn_ok — pattern partagé par InfoDialog et
+    ErrorDialog dans ce module. Inséré juste avant le bouton, comme dans
+    _show_scan_error_with_log_link.
+
+    Gère elle-même la retraduction (langue) et la déconnexion à la fermeture
+    du dialogue, indépendamment du _lang_handler propre au dialogue — voir
+    règle UI n°2 du CLAUDE.md (jamais de texte figé qui ne survit pas à un
+    changement de langue pendant que la fenêtre reste ouverte)."""
+    layout = dlg.layout()
+    insert_at = layout.indexOf(dlg._btn_ok)
+
+    from modules.qt.language_signal import language_signal
+
+    lbl = QLabel(dlg)
+    lbl.setAlignment(Qt.AlignCenter)
+    lbl.setCursor(Qt.PointingHandCursor)
+    lbl.mousePressEvent = lambda e: _send_scan_log_by_mail(dlg) if e.button() == Qt.LeftButton else None
+
+    def _retranslate_link(*_a):
+        theme = get_current_theme()
+        lbl.setText(_("scan.send_log_link"))
+        lbl.setFont(_get_current_font(8))
+        lbl.setStyleSheet(f"color: {theme['disabled']}; text-decoration: underline; background: transparent;")
+
+    _retranslate_link()
+
+    def _disconnect_link():
+        try:
+            language_signal.changed.disconnect(_retranslate_link)
+        except RuntimeError:
+            pass
+
+    language_signal.changed.connect(_retranslate_link)
+    dlg.finished.connect(_disconnect_link)
+
+    layout.insertWidget(insert_at, lbl, alignment=Qt.AlignCenter)
+
+
 def _show_scan_error_with_log_link(
     parent, message_key: str, play_sound: bool = False,
     escl_candidate: dict | None = None, on_retry_escl=None,
@@ -745,11 +786,13 @@ class ScanDialog(QDialog):
         self._devices = devices
         self._combo_device.clear()
         if not devices:
-            InfoDialog(
+            dlg = InfoDialog(
                 self.parent(),
                 lambda: _wt("scan.dialog_title"),
                 lambda: _("scan.no_devices_found"),
-            ).show_nonmodal()
+            )
+            _add_send_log_link(dlg)
+            dlg.show_nonmodal()
             self.close()
             return
         for d in devices:

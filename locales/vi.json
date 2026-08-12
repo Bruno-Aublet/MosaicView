@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Chuyển đổi hàng loạt\n tệp CBT sang CBZ",
     "batch_metadata": "Nhập siêu dữ liệu hàng loạt",
     "batch_library": "Tạo thư viện từ thư mục",
-    "batch_recompress": "Nén lại tệp CBZ ở mức mặc định"
+    "batch_recompress": "Nén lại tệp CBZ ở mức mặc định",
+    "validate_straighten": "Xác nhận làm thẳng",
+    "validate_text": "Áp dụng văn bản"
   },
   "tabs": {
     "mosaic": "Mosaic",
@@ -75,7 +77,16 @@
     "mode_single": "Trang đơn  [D]",
     "mode_double": "Trang đôi  [D]",
     "mode_continuous": "Chế độ liên tục  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Cắt xén",
+    "toolbar_undo_tooltip": "Hoàn tác (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Làm lại (Ctrl+Y)",
+    "unvalidated_work_title": "Công việc chưa xác nhận",
+    "unvalidated_work_message": "Bạn có một hoặc nhiều công việc đang thực hiện chưa được xác nhận. Bạn có chắc chắn muốn đóng trình xem không? Công việc này sẽ bị mất.",
+    "toolbar_straighten_tooltip": "Làm thẳng",
+    "toolbar_crop_instruction": "Vẽ một hình chữ nhật quanh vùng cần giữ lại, sau đó xác nhận",
+    "toolbar_clone_tooltip": "Nhân bản",
+    "toolbar_text_tooltip": "Văn bản"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Đã chặn mở",
         "message": "Tệp này chưa được mở: các tệp {ext} có thể chạy mã trên máy tính của bạn.\nNếu bạn tin tưởng tệp này, hãy giải nén và mở thủ công."
+      },
+      "no_straighten_line": {
+        "title": "Chưa vẽ đường nào",
+        "message": "Vui lòng vẽ đường tham chiếu trước."
+      },
+      "no_skew_detected": {
+        "title": "Không phát hiện độ nghiêng",
+        "message": "Không phát hiện độ nghiêng đáng tin cậy nào trên trang này."
+      },
+      "no_text_block": {
+        "title": "Chưa nhập văn bản",
+        "message": "Vui lòng nhập văn bản vào ít nhất một khối trước."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Không đủ dung lượng đĩa trên ổ đĩa đích.\nCần: {needed}\nKhả dụng: {free}"
       },
-      "no_wilhelm_scream_found": "Không tìm thấy tệp âm thanh."
+      "no_wilhelm_scream_found": "Không tìm thấy tệp âm thanh.",
+      "straighten_failed": {
+        "title": "Lỗi",
+        "message": "Không thể làm thẳng hình ảnh: {error}"
+      },
+      "clone_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng nhân bản: {error}"
+      },
+      "text_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng văn bản: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "XEM LOG",
     "straighten_viewer": {
-      "title": "Chỉnh thẳng",
-      "instruction": "Vẽ một đường thẳng lên phần phải nằm ngang (hoặc thẳng đứng) trong ảnh"
+      "instruction": "Vẽ một đường thẳng lên phần phải nằm ngang (hoặc thẳng đứng) trong ảnh",
+      "angle_label": "Góc:"
     },
     "clone_zone_viewer": {
       "title": "Nhân bản vùng",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Kích thước :"
     },
     "text_viewer": {
-      "title": "Chèn văn bản",
       "instruction": "Nhấp vào nơi bạn muốn chèn văn bản  •  Ctrl+mũi tên: di chuyển văn bản từng pixel",
       "size_label": "Kích thước:",
       "color_label": "Màu sắc:",
       "bold_btn": "Đ",
       "italic_btn": "N",
       "underline_btn": "G",
-      "apply_btn": "Áp dụng văn bản",
       "pick_color_title": "Chọn màu văn bản"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Làm thẳng tự động",
       "message": "Đã làm thẳng thành công {success} ảnh.",
       "message_errors": "Đã làm thẳng thành công {success} ảnh.\n{failed} thất bại (không phát hiện được độ nghiêng đáng tin cậy) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Màu cơ bản:",
+      "hex_label": "Thập lục phân:",
+      "red_label": "Đỏ:",
+      "green_label": "Lục:",
+      "blue_label": "Lam:",
+      "alpha_label": "Alpha:"
     }
   },
   "tooltip": {

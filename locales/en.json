@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Batch conversion\n of CBT files to CBZ",
     "batch_metadata": "Batch metadata import",
     "batch_library": "Create a library from the folder(s)",
-    "batch_recompress": "Recompress CBZ files at default level"
+    "batch_recompress": "Recompress CBZ files at default level",
+    "validate_straighten": "Validate straightening",
+    "validate_text": "Apply text"
   },
   "tabs": {
     "mosaic": "Mosaic",
@@ -75,7 +77,16 @@
     "mode_single": "Single page  [D]",
     "mode_double": "Double page  [D]",
     "mode_continuous": "Continuous mode  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Crop",
+    "toolbar_undo_tooltip": "Undo (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Redo (Ctrl+Y)",
+    "unvalidated_work_title": "Unvalidated work",
+    "unvalidated_work_message": "You have one or more unvalidated work in progress. Are you sure you want to close the viewer? This work will be lost.",
+    "toolbar_straighten_tooltip": "Straighten",
+    "toolbar_crop_instruction": "Draw a rectangle around the area to keep, then confirm",
+    "toolbar_clone_tooltip": "Cloning",
+    "toolbar_text_tooltip": "Text"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Opening blocked",
         "message": "This file was not opened: {ext} files can run code on your computer.\nIf you trust it, extract it and open it manually."
+      },
+      "no_straighten_line": {
+        "title": "No line drawn",
+        "message": "Please draw a reference line first."
+      },
+      "no_skew_detected": {
+        "title": "No skew detected",
+        "message": "No reliable skew was detected on this page."
+      },
+      "no_text_block": {
+        "title": "No text entered",
+        "message": "Please enter text in at least one block first."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Not enough disk space on the destination drive.\nNeeded: {needed}\nAvailable: {free}"
       },
-      "no_wilhelm_scream_found": "Audio file not found."
+      "no_wilhelm_scream_found": "Audio file not found.",
+      "straighten_failed": {
+        "title": "Error",
+        "message": "Could not straighten the image: {error}"
+      },
+      "clone_failed": {
+        "title": "Error",
+        "message": "Unable to apply cloning: {error}"
+      },
+      "text_failed": {
+        "title": "Error",
+        "message": "Cannot apply text: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1116,8 +1151,8 @@
     },
     "see_log": "SEE LOG",
     "straighten_viewer": {
-      "title": "Straighten",
-      "instruction": "Draw a straight line on what should be horizontal (or vertical) in the image"
+      "instruction": "Draw a straight line on what should be horizontal (or vertical) in the image",
+      "angle_label": "Angle:"
     },
     "clone_zone_viewer": {
       "title": "Clone Zone",
@@ -1128,14 +1163,12 @@
       "brush_size_label": "Size :"
     },
     "text_viewer": {
-      "title": "Insert Text",
       "instruction": "Click where you want to insert text  •  Ctrl+arrows: move text one pixel at a time",
       "size_label": "Size:",
       "color_label": "Color:",
       "bold_btn": "B",
       "italic_btn": "I",
       "underline_btn": "U",
-      "apply_btn": "Apply Text",
       "pick_color_title": "Choose text color"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatic straightening",
       "message": "{success} image(s) straightened successfully.",
       "message_errors": "{success} image(s) straightened successfully.\n{failed} failed (no reliable skew detected) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Basic colors:",
+      "hex_label": "Hexadecimal:",
+      "red_label": "Red:",
+      "green_label": "Green:",
+      "blue_label": "Blue:",
+      "alpha_label": "Alpha:"
     }
   },
   "tooltip": {

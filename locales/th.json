@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "แปลงไฟล์ CBT\n เป็น CBZ แบบกลุ่ม",
     "batch_metadata": "นำเข้าเมทาดาทาเป็นชุด",
     "batch_library": "สร้างคลังจากโฟลเดอร์",
-    "batch_recompress": "บีบอัด CBZ ใหม่ที่ระดับเริ่มต้น"
+    "batch_recompress": "บีบอัด CBZ ใหม่ที่ระดับเริ่มต้น",
+    "validate_straighten": "ยืนยันการปรับให้ตรง",
+    "validate_text": "ใช้ข้อความ"
   },
   "tabs": {
     "mosaic": "โมเสก",
@@ -75,7 +77,16 @@
     "mode_single": "หน้าเดียว  [D]",
     "mode_double": "หน้าคู่  [D]",
     "mode_continuous": "โหมดต่อเนื่อง  [D]",
-    "mode_webtoon": "เว็บตูน  [D]"
+    "mode_webtoon": "เว็บตูน  [D]",
+    "toolbar_crop_tooltip": "ครอบตัด",
+    "toolbar_undo_tooltip": "เลิกทำ (Ctrl+Z)",
+    "toolbar_redo_tooltip": "ทำซ้ำ (Ctrl+Y)",
+    "unvalidated_work_title": "งานที่ยังไม่ได้ยืนยัน",
+    "unvalidated_work_message": "คุณมีงานที่กำลังดำเนินการอยู่หนึ่งรายการขึ้นไปที่ยังไม่ได้ยืนยัน คุณแน่ใจหรือไม่ว่าต้องการปิดตัวแสดงภาพ งานนี้จะสูญหาย",
+    "toolbar_straighten_tooltip": "ปรับให้ตรง",
+    "toolbar_crop_instruction": "วาดสี่เหลี่ยมล้อมรอบพื้นที่ที่ต้องการเก็บไว้ แล้วยืนยัน",
+    "toolbar_clone_tooltip": "การโคลน",
+    "toolbar_text_tooltip": "ข้อความ"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "การเปิดถูกบล็อก",
         "message": "ไฟล์นี้ไม่ได้ถูกเปิด: ไฟล์ {ext} สามารถรันโค้ดบนคอมพิวเตอร์ของคุณได้\nหากคุณเชื่อถือไฟล์นี้ ให้แตกไฟล์และเปิดด้วยตนเอง"
+      },
+      "no_straighten_line": {
+        "title": "ไม่มีการวาดเส้น",
+        "message": "โปรดวาดเส้นอ้างอิงก่อน"
+      },
+      "no_skew_detected": {
+        "title": "ไม่พบความเอียง",
+        "message": "ไม่พบความเอียงที่เชื่อถือได้ในหน้านี้"
+      },
+      "no_text_block": {
+        "title": "ไม่มีข้อความ",
+        "message": "โปรดป้อนข้อความอย่างน้อยหนึ่งบล็อกก่อน"
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "พื้นที่ดิสก์ในไดรฟ์ปลายทางไม่เพียงพอ\nต้องการ: {needed}\nมีอยู่: {free}"
       },
-      "no_wilhelm_scream_found": "ไม่พบไฟล์เสียง"
+      "no_wilhelm_scream_found": "ไม่พบไฟล์เสียง",
+      "straighten_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถปรับภาพให้ตรงได้: {error}"
+      },
+      "clone_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถใช้การโคลนได้: {error}"
+      },
+      "text_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถใช้ข้อความได้: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "ดูบันทึก",
     "straighten_viewer": {
-      "title": "ปรับตรง",
-      "instruction": "วาดเส้นตรงบนสิ่งที่ควรเป็นแนวนอน (หรือแนวตั้ง) ในภาพ"
+      "instruction": "วาดเส้นตรงบนสิ่งที่ควรเป็นแนวนอน (หรือแนวตั้ง) ในภาพ",
+      "angle_label": "มุม:"
     },
     "clone_zone_viewer": {
       "title": "การโคลนโซน",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "ขนาด :"
     },
     "text_viewer": {
-      "title": "แทรกข้อความ",
       "instruction": "คลิกที่ตำแหน่งที่ต้องการแทรกข้อความ  •  Ctrl+ลูกศร: ย้ายข้อความทีละพิกเซล",
       "size_label": "ขนาด:",
       "color_label": "สี:",
       "bold_btn": "ต",
       "italic_btn": "เอ",
       "underline_btn": "ข",
-      "apply_btn": "ใช้ข้อความ",
       "pick_color_title": "เลือกสีข้อความ"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "การปรับภาพให้ตรงอัตโนมัติ",
       "message": "ปรับภาพให้ตรงสำเร็จ {success} ภาพ",
       "message_errors": "ปรับภาพให้ตรงสำเร็จ {success} ภาพ\nล้มเหลว {failed} ภาพ (ไม่พบความเอียงที่เชื่อถือได้) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "สีพื้นฐาน:",
+      "hex_label": "เลขฐานสิบหก:",
+      "red_label": "แดง:",
+      "green_label": "เขียว:",
+      "blue_label": "น้ำเงิน:",
+      "alpha_label": "อัลฟา:"
     }
   },
   "tooltip": {

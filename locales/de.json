@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Stapelkonvertierung\n von CBT-Dateien zu CBZ",
     "batch_metadata": "Metadaten-Stapelimport",
     "batch_library": "Bibliothek aus dem/den Ordner(n) erstellen",
-    "batch_recompress": "CBZ-Dateien auf Standardstufe neu komprimieren"
+    "batch_recompress": "CBZ-Dateien auf Standardstufe neu komprimieren",
+    "validate_straighten": "Begradigung bestätigen",
+    "validate_text": "Text anwenden"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -75,7 +77,16 @@
     "mode_single": "Einzelseite  [D]",
     "mode_double": "Doppelseite  [D]",
     "mode_continuous": "Fortlaufender Modus  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Zuschneiden",
+    "toolbar_undo_tooltip": "Rückgängig (Strg+Z)",
+    "toolbar_redo_tooltip": "Wiederholen (Strg+Y)",
+    "unvalidated_work_title": "Nicht bestätigte Arbeit",
+    "unvalidated_work_message": "Sie haben eine oder mehrere laufende, nicht bestätigte Arbeiten. Möchten Sie den Betrachter wirklich schließen? Diese Arbeit geht verloren.",
+    "toolbar_straighten_tooltip": "Begradigung",
+    "toolbar_crop_instruction": "Zeichnen Sie ein Rechteck um den zu behaltenden Bereich und bestätigen Sie",
+    "toolbar_clone_tooltip": "Klonen",
+    "toolbar_text_tooltip": "Text"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Öffnen blockiert",
         "message": "Diese Datei wurde nicht geöffnet: {ext}-Dateien können Code auf Ihrem Computer ausführen.\nWenn Sie ihr vertrauen, extrahieren Sie sie und öffnen Sie sie manuell."
+      },
+      "no_straighten_line": {
+        "title": "Keine Linie gezeichnet",
+        "message": "Bitte zeichnen Sie zuerst eine Referenzlinie."
+      },
+      "no_skew_detected": {
+        "title": "Keine Neigung erkannt",
+        "message": "Auf dieser Seite wurde keine zuverlässige Neigung erkannt."
+      },
+      "no_text_block": {
+        "title": "Kein Text",
+        "message": "Bitte geben Sie zuerst Text in mindestens einen Block ein."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Nicht genug Speicherplatz auf dem Zieldatenträger.\nBenötigt: {needed}\nVerfügbar: {free}"
       },
-      "no_wilhelm_scream_found": "Audiodatei nicht gefunden."
+      "no_wilhelm_scream_found": "Audiodatei nicht gefunden.",
+      "straighten_failed": {
+        "title": "Fehler",
+        "message": "Bild konnte nicht begradigt werden: {error}"
+      },
+      "clone_failed": {
+        "title": "Fehler",
+        "message": "Klonen konnte nicht angewendet werden: {error}"
+      },
+      "text_failed": {
+        "title": "Fehler",
+        "message": "Text konnte nicht angewendet werden: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "LOG ANZEIGEN",
     "straighten_viewer": {
-      "title": "Ausrichten",
-      "instruction": "Zeichnen Sie eine gerade Linie auf das, was im Bild horizontal (oder vertikal) sein soll"
+      "instruction": "Zeichnen Sie eine gerade Linie auf das, was im Bild horizontal (oder vertikal) sein soll",
+      "angle_label": "Winkel:"
     },
     "clone_zone_viewer": {
       "title": "Bereich klonen",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Größe :"
     },
     "text_viewer": {
-      "title": "Text einfügen",
       "instruction": "Klicken Sie, um Text zu platzieren  •  Ctrl+Pfeile: Text pixelgenau verschieben",
       "size_label": "Größe:",
       "color_label": "Farbe:",
       "bold_btn": "F",
       "italic_btn": "K",
       "underline_btn": "U",
-      "apply_btn": "Text anwenden",
       "pick_color_title": "Textfarbe auswählen"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatische Begradigung",
       "message": "{success} Bild(er) erfolgreich begradigt.",
       "message_errors": "{success} Bild(er) erfolgreich begradigt.\n{failed} fehlgeschlagen (keine zuverlässige Schräglage erkannt) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Grundfarben:",
+      "hex_label": "Hexadezimal:",
+      "red_label": "Rot:",
+      "green_label": "Grün:",
+      "blue_label": "Blau:",
+      "alpha_label": "Alpha:"
     }
   },
   "tooltip": {

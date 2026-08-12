@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "تحويل دفعي\n لملفات CBT إلى CBZ",
     "batch_metadata": "استيراد البيانات الوصفية دفعةً",
     "batch_library": "إنشاء مكتبة من المجلد(ات)",
-    "batch_recompress": "إعادة ضغط ملفات CBZ بالمستوى الافتراضي"
+    "batch_recompress": "إعادة ضغط ملفات CBZ بالمستوى الافتراضي",
+    "validate_straighten": "تأكيد التقويم",
+    "validate_text": "تطبيق النص"
   },
   "tabs": {
     "mosaic": "الفسيفساء",
@@ -75,7 +77,16 @@
     "mode_single": "صفحة واحدة  [D]",
     "mode_double": "صفحة مزدوجة  [D]",
     "mode_continuous": "وضع مستمر  [D]",
-    "mode_webtoon": "ويبتون  [D]"
+    "mode_webtoon": "ويبتون  [D]",
+    "toolbar_crop_tooltip": "اقتصاص",
+    "toolbar_undo_tooltip": "تراجع (Ctrl+Z)",
+    "toolbar_redo_tooltip": "إعادة (Ctrl+Y)",
+    "unvalidated_work_title": "عمل غير مؤكد",
+    "unvalidated_work_message": "لديك عمل واحد أو أكثر قيد التنفيذ لم يتم تأكيده. هل أنت متأكد من إغلاق العارض؟ سيُفقد هذا العمل.",
+    "toolbar_straighten_tooltip": "تقويم",
+    "toolbar_crop_instruction": "ارسم مستطيلاً حول المنطقة المراد الاحتفاظ بها، ثم أكّد",
+    "toolbar_clone_tooltip": "الاستنساخ",
+    "toolbar_text_tooltip": "نص"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "تم حظر الفتح",
         "message": "لم يتم فتح هذا الملف: يمكن لملفات {ext} تشغيل تعليمات برمجية على جهازك.\nإذا كنت تثق به، فاستخرجه وافتحه يدويًا."
+      },
+      "no_straighten_line": {
+        "title": "لا يوجد خط مرسوم",
+        "message": "يرجى رسم خط مرجعي أولاً."
+      },
+      "no_skew_detected": {
+        "title": "لم يتم اكتشاف أي ميل",
+        "message": "لم يتم اكتشاف أي ميل موثوق في هذه الصفحة."
+      },
+      "no_text_block": {
+        "title": "لا يوجد نص",
+        "message": "يرجى إدخال نص في كتلة واحدة على الأقل أولاً."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "مساحة القرص غير كافية على القرص الهدف.\nالمطلوب: {needed}\nالمتاح: {free}"
       },
-      "no_wilhelm_scream_found": "ملف الصوت غير موجود."
+      "no_wilhelm_scream_found": "ملف الصوت غير موجود.",
+      "straighten_failed": {
+        "title": "خطأ",
+        "message": "تعذر تقويم الصورة: {error}"
+      },
+      "clone_failed": {
+        "title": "خطأ",
+        "message": "تعذر تطبيق الاستنساخ: {error}"
+      },
+      "text_failed": {
+        "title": "خطأ",
+        "message": "تعذر تطبيق النص: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "انظر السجل",
     "straighten_viewer": {
-      "title": "تقويم",
-      "instruction": "ارسم خطاً مستقيماً على ما يجب أن يكون أفقياً (أو رأسياً) في الصورة"
+      "instruction": "ارسم خطاً مستقيماً على ما يجب أن يكون أفقياً (أو رأسياً) في الصورة",
+      "angle_label": "الزاوية:"
     },
     "clone_zone_viewer": {
       "title": "استنساخ المنطقة",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "الحجم :"
     },
     "text_viewer": {
-      "title": "إدراج نص",
       "instruction": "انقر حيث تريد إدراج النص  •  Ctrl+الأسهم: تحريك النص بدقة بكسل",
       "size_label": "الحجم:",
       "color_label": "اللون:",
       "bold_btn": "غ",
       "italic_btn": "م",
       "underline_btn": "ت",
-      "apply_btn": "تطبيق النص",
       "pick_color_title": "اختر لون النص"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "التسوية التلقائية",
       "message": "تم تسوية {success} صورة بنجاح.",
       "message_errors": "تم تسوية {success} صورة بنجاح.\n{failed} فشل (لم يتم اكتشاف ميل موثوق) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "الألوان الأساسية:",
+      "hex_label": "سداسي عشري:",
+      "red_label": "أحمر:",
+      "green_label": "أخضر:",
+      "blue_label": "أزرق:",
+      "alpha_label": "ألفا:"
     }
   },
   "tooltip": {

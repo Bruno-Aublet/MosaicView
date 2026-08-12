@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "  CBT\n   CBZ",
     "batch_metadata": "   -",
     "batch_library": "  ()",
-    "batch_recompress": "  CBZ     "
+    "batch_recompress": "  CBZ     ",
+    "validate_straighten": "  ",
+    "validate_text": " "
   },
   "tabs": {
     "mosaic": "",
@@ -75,7 +77,16 @@
     "mode_single": "   []",
     "mode_double": "   []",
     "mode_continuous": "   []",
-    "mode_webtoon": "Webtoon  []"
+    "mode_webtoon": "Webtoon  []",
+    "toolbar_crop_tooltip": "",
+    "toolbar_undo_tooltip": " (Ctrl+Z)",
+    "toolbar_redo_tooltip": " (Ctrl+Y)",
+    "unvalidated_work_title": " -",
+    "unvalidated_work_message": " -.     ?  -  .",
+    "toolbar_straighten_tooltip": "",
+    "toolbar_crop_instruction": ",    ;  .",
+    "toolbar_clone_tooltip": "",
+    "toolbar_text_tooltip": ""
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": " ",
         "message": "   -:   {ext}     .\n  ,         ."
+      },
+      "no_straighten_line": {
+        "title": "-",
+        "message": ",      ."
+      },
+      "no_skew_detected": {
+        "title": "-  ",
+        "message": "-     ."
+      },
+      "no_text_block": {
+        "title": "-",
+        "message": ",    ."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "-     .\n: {needed}\n: {free}"
       },
-      "no_wilhelm_scream_found": "  ."
+      "no_wilhelm_scream_found": "  .",
+      "straighten_failed": {
+        "title": "",
+        "message": "-   : {error}"
+      },
+      "clone_failed": {
+        "title": "",
+        "message": "-   : {error}"
+      },
+      "text_failed": {
+        "title": "",
+        "message": "-   : {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": " ",
     "straighten_viewer": {
-      "title": "",
-      "instruction": "        ( )  "
+      "instruction": "        ( )  ",
+      "angle_label": ":"
     },
     "clone_zone_viewer": {
       "title": " ",
@@ -1121,14 +1156,12 @@
       "brush_size_label": " :"
     },
     "text_viewer": {
-      "title": " ",
       "instruction": "      •  Ctrl+h:   pixel  pixel",
       "size_label": ":",
       "color_label": ":",
       "bold_btn": "",
       "italic_btn": "",
       "underline_btn": "",
-      "apply_btn": " ",
       "pick_color_title": "   "
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": " -",
       "message": "{success}   .",
       "message_errors": "{success}   .\n{failed}  (-  ) :"
+    },
+    "color_picker": {
+      "basic_colors_label": ":",
+      "hex_label": ":",
+      "red_label": ":",
+      "green_label": ":",
+      "blue_label": ":",
+      "alpha_label": ":"
     }
   },
   "tooltip": {

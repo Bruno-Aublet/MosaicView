@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "批次將 CBT\n 檔案轉換為 CBZ",
     "batch_metadata": "批次匯入中繼資料",
     "batch_library": "從資料夾建立資料庫",
-    "batch_recompress": "以預設等級重新壓縮 CBZ 檔案"
+    "batch_recompress": "以預設等級重新壓縮 CBZ 檔案",
+    "validate_straighten": "確認校正",
+    "validate_text": "套用文字"
   },
   "tabs": {
     "mosaic": "縮圖",
@@ -75,7 +77,16 @@
     "mode_single": "單頁  [D]",
     "mode_double": "雙頁  [D]",
     "mode_continuous": "連續模式  [D]",
-    "mode_webtoon": "條漫  [D]"
+    "mode_webtoon": "條漫  [D]",
+    "toolbar_crop_tooltip": "裁切",
+    "toolbar_undo_tooltip": "復原 (Ctrl+Z)",
+    "toolbar_redo_tooltip": "重做 (Ctrl+Y)",
+    "unvalidated_work_title": "未確認的操作",
+    "unvalidated_work_message": "您有一項或多項正在進行且尚未確認的操作。確定要關閉檢視器嗎？這些操作將會遺失。",
+    "toolbar_straighten_tooltip": "校正",
+    "toolbar_crop_instruction": "在要保留的區域周圍畫一個矩形，然後確認",
+    "toolbar_clone_tooltip": "克隆",
+    "toolbar_text_tooltip": "文字"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "已封鎖開啟",
         "message": "此檔案未被開啟: {ext} 檔案可能在您的電腦上執行程式碼。\n如果您信任它，請將其解壓縮後手動開啟。"
+      },
+      "no_straighten_line": {
+        "title": "未繪製線條",
+        "message": "請先繪製一條參考線。"
+      },
+      "no_skew_detected": {
+        "title": "未偵測到傾斜",
+        "message": "未在此頁面上偵測到可靠的傾斜。"
+      },
+      "no_text_block": {
+        "title": "尚未輸入文字",
+        "message": "請先在至少一個區塊輸入文字。"
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "目標磁碟機的磁碟空間不足。\n需要: {needed}\n可用: {free}"
       },
-      "no_wilhelm_scream_found": "找不到音訊檔案。"
+      "no_wilhelm_scream_found": "找不到音訊檔案。",
+      "straighten_failed": {
+        "title": "錯誤",
+        "message": "無法校正圖像: {error}"
+      },
+      "clone_failed": {
+        "title": "錯誤",
+        "message": "無法套用克隆：{error}"
+      },
+      "text_failed": {
+        "title": "錯誤",
+        "message": "無法套用文字：{error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "查看日誌",
     "straighten_viewer": {
-      "title": "矯正",
-      "instruction": "在圖像中應為水平（或垂直）的部分畫一條直線"
+      "instruction": "在圖像中應為水平（或垂直）的部分畫一條直線",
+      "angle_label": "角度:"
     },
     "clone_zone_viewer": {
       "title": "區域克隆",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "大小 :"
     },
     "text_viewer": {
-      "title": "插入文字",
       "instruction": "點擊要插入文字的位置  •  Ctrl+方向鍵:逐像素移動文字",
       "size_label": "大小:",
       "color_label": "顏色:",
       "bold_btn": "粗",
       "italic_btn": "斜",
       "underline_btn": "底",
-      "apply_btn": "套用文字",
       "pick_color_title": "選擇文字顏色"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "自動校正",
       "message": "已成功校正 {success} 張影像。",
       "message_errors": "已成功校正 {success} 張影像。\n{failed} 張失敗（未偵測到可靠的傾斜）:"
+    },
+    "color_picker": {
+      "basic_colors_label": "基本顏色：",
+      "hex_label": "十六進位：",
+      "red_label": "紅：",
+      "green_label": "綠：",
+      "blue_label": "藍：",
+      "alpha_label": "透明度："
     }
   },
   "tooltip": {

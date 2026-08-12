@@ -18,6 +18,10 @@ This is my first application, and I hope you’ll like it. I have absolutely no 
 
 I'd love to hear from you: what works, what doesn't, what's missing, what's confusing. This project only gets better with real feedback from real users.
 
+Translations were done by AI and are naturally error-prone, so any help spotting and fixing mistakes is very welcome. Don't hesitate to tell me what's wrong.
+
+I obviously haven't been able to test the scan feature with every scanner out there. If it fails with yours, please get in touch and/or send me the logs. The app will guide you through sending them.
+
 - **Bug reports** → [GitHub Issues](https://github.com/Bruno-Aublet/MosaicView/issues)
 - **Ideas, suggestions, general feedback** → [GitHub Discussions](https://github.com/Bruno-Aublet/MosaicView/discussions)
 - **Anything else** <img src="icons/mail.png" width="16"> → <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#109;&#111;&#115;&#97;&#105;&#99;&#118;&#105;&#101;&#119;&#49;&#57;&#54;&#57;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;&#63;&#115;&#117;&#98;&#106;&#101;&#99;&#116;&#61;&#77;&#111;&#115;&#97;&#105;&#99;&#86;&#105;&#101;&#119;">Contact</a>
@@ -185,7 +189,7 @@ MosaicView also registers itself with Windows so it shows up in the "Open with" 
 - Dependencies (install with `pip install -r requirements.txt`):
 
 ```
-PySide6, Pillow, numpy, rarfile, PyMuPDF, packaging, openpyxl, pywin32, send2trash, defusedxml
+PySide6, Pillow, numpy, opencv-python, rarfile, PyMuPDF, packaging, openpyxl, pywin32, send2trash, defusedxml
 ```
 
 - **UnRAR** (for CBR support): place `UnRAR.exe` in the `unrar/` folder

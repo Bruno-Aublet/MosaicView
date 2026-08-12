@@ -59,7 +59,7 @@ Callback `replace_corrupted_image` appelé avec `next(iter(st.selected_indices))
 
 Une entrée corrompue est systématiquement filtrée hors de la plupart des opérations qui listent des "images valides" à travers le projet — grep `is_corrupted` pour la liste exhaustive à jour plutôt que d'en supposer une ici, mais notamment :
 - **Détection de doublons** (`duplicate_detection_qt.py:31`) — exclue du calcul (`not entry.get("is_image") or entry.get("is_corrupted")`).
-- **Sélection de départ des visionneuses d'édition** (`page-straighten`, `add-text-to-image`, `clone-zone`) — chacune filtre `image_entries` avec `not e.get('is_corrupted')` avant d'ouvrir sa fenêtre.
+- **Sélection de départ des visionneuses d'édition** (crop/redressement/clonage dans la visionneuse principale — skills `page-crop`/`page-straighten`/`clone-zone` — et `add-text-to-image`) — chacune filtre `image_entries` avec `not e.get('is_corrupted')` avant d'ouvrir/présélectionner.
 - **`ensure_image_loaded`** — court-circuite immédiatement sur une entrée déjà marquée corrompue, jamais de nouvelle tentative de décodage.
 
 ## Traductions
@@ -91,7 +91,7 @@ Une entrée corrompue est systématiquement filtrée hors de la plupart des opé
 - `qt-tooltips` — tooltip dédié `get_tooltip_text`, seule documentation utilisateur du mécanisme de remplacement actuellement.
 - `qt-context-menus` — les deux actions du menu contextuel (remplacer/supprimer), désactivées hors sélection unique corrompue.
 - `undo-redo` — pattern standard à deux `save_state`/`force=True` suivi par le remplacement, cohérent avec une modification en place (contrairement aux créateurs de nouvelle entrée `create-ico`/`animated-gif`/`page-split`/`nfo-editor`).
-- `page-straighten` / `add-text-to-image` / `clone-zone` — filtrent chacune les entrées corrompues de leur liste de pages navigables au démarrage.
+- `page-crop` / `page-straighten` / `clone-zone` / `add-text-to-image` — filtrent chacune les entrées corrompues de leur liste de pages navigables au démarrage.
 - `mosaic-thumbnails` — cadre rouge dessiné dans `ThumbnailItem.paint()`, icône dédiée dans `get_icon_pil_for_entry`.
 - `minimap` — même cadre rouge repris à l'échelle réduite dans `_paint_overlays()`.
 - `user-guide` — absence actuelle de section dédiée.

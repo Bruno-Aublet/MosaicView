@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "CBTファイルの\n CBZへの一括変換",
     "batch_metadata": "メタデータの一括インポート",
     "batch_library": "フォルダからライブラリを作成",
-    "batch_recompress": "CBZファイルをデフォルトレベルで再圧縮"
+    "batch_recompress": "CBZファイルをデフォルトレベルで再圧縮",
+    "validate_straighten": "傾き補正を確定",
+    "validate_text": "テキストを適用"
   },
   "tabs": {
     "mosaic": "モザイク",
@@ -75,7 +77,16 @@
     "mode_single": "シングルページ  [D]",
     "mode_double": "ダブルページ  [D]",
     "mode_continuous": "連続モード  [D]",
-    "mode_webtoon": "ウェブトゥーン  [D]"
+    "mode_webtoon": "ウェブトゥーン  [D]",
+    "toolbar_crop_tooltip": "トリミング",
+    "toolbar_undo_tooltip": "元に戻す (Ctrl+Z)",
+    "toolbar_redo_tooltip": "やり直す (Ctrl+Y)",
+    "unvalidated_work_title": "未確定の作業",
+    "unvalidated_work_message": "確定していない作業が1つ以上あります。ビューアを閉じてもよろしいですか？この作業は失われます。",
+    "toolbar_straighten_tooltip": "傾き補正",
+    "toolbar_crop_instruction": "保持する範囲を囲む長方形を描いてから確定してください",
+    "toolbar_clone_tooltip": "クローン",
+    "toolbar_text_tooltip": "テキスト"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "開くのをブロックしました",
         "message": "このファイルは開かれませんでした。{ext} ファイルはコンピューター上でコードを実行するおそれがあります。\n信頼できる場合は、ファイルを取り出して手動で開いてください。"
+      },
+      "no_straighten_line": {
+        "title": "線が描画されていません",
+        "message": "先に基準線を描いてください。"
+      },
+      "no_skew_detected": {
+        "title": "傾きが検出されませんでした",
+        "message": "このページで信頼できる傾きは検出されませんでした。"
+      },
+      "no_text_block": {
+        "title": "テキストが未入力です",
+        "message": "まず、少なくとも1つのブロックにテキストを入力してください。"
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "転送先ドライブの空き容量が不足しています。\n必要: {needed}\n空き容量: {free}"
       },
-      "no_wilhelm_scream_found": "音声ファイルが見つかりません。"
+      "no_wilhelm_scream_found": "音声ファイルが見つかりません。",
+      "straighten_failed": {
+        "title": "エラー",
+        "message": "画像を補正できませんでした: {error}"
+      },
+      "clone_failed": {
+        "title": "エラー",
+        "message": "クローンを適用できませんでした: {error}"
+      },
+      "text_failed": {
+        "title": "エラー",
+        "message": "テキストを適用できませんでした: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "ログを見る",
     "straighten_viewer": {
-      "title": "傾き補正",
-      "instruction": "画像の中で水平（または垂直）であるべき部分に直線を引いてください"
+      "instruction": "画像の中で水平（または垂直）であるべき部分に直線を引いてください",
+      "angle_label": "角度："
     },
     "clone_zone_viewer": {
       "title": "ゾーンのクローン",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "サイズ :"
     },
     "text_viewer": {
-      "title": "テキストを挿入",
       "instruction": "テキストを挿入する場所をクリックしてください  •  Ctrl+矢印: テキストを1ピクセル単位で移動",
       "size_label": "サイズ:",
       "color_label": "色:",
       "bold_btn": "太",
       "italic_btn": "斜",
       "underline_btn": "下",
-      "apply_btn": "テキストを適用",
       "pick_color_title": "テキストの色を選択"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "自動補正",
       "message": "{success} 枚の画像を正常に補正しました。",
       "message_errors": "{success} 枚の画像を正常に補正しました。\n{failed} 枚失敗（信頼できる傾きが検出されませんでした）："
+    },
+    "color_picker": {
+      "basic_colors_label": "基本色:",
+      "hex_label": "16進数:",
+      "red_label": "赤:",
+      "green_label": "緑:",
+      "blue_label": "青:",
+      "alpha_label": "アルファ:"
     }
   },
   "tooltip": {

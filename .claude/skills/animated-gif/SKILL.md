@@ -86,7 +86,7 @@ Callbacks (`PanelWidget._animated_gif_callbacks()`, `panel_widget.py:1478`) : `s
 
 `locales/fr.json`, section `gif_animated` (ligne 763) : `window_title` (`_wt()`, règle UI n°7), `images_title`/`params_title`, `frame_delay_label`/`fps_slow`/`fps_normal`, `loop_label`/`loop_info`, `disposal_label`/`disposal_0`-`disposal_3`, `optimize`, `metadata_title`/`metadata_dimensions`/`metadata_frames`/`metadata_duration`/`metadata_fps`/`metadata_palette`/`metadata_size`, `comment_label`, `creating_progress`/`creating_normalizing`/`creating_quantizing`/`creating_saving` (textes de progression). Clés séparées : `context_menu.image.edit_animated_gif`, `dialogs.convert.format_gif_animated` (dialogue de conversion), `messages.warnings.no_images_for_gif`/`no_valid_images`, `messages.errors.gif_creation_failed`, `buttons.create_gif`. Voir skill `add-translation`.
 
-**Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `page-straighten`/`add-text-to-image`/`clone-zone` (skill `user-guide`).
+**Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `add-text-to-image` (skill `user-guide`).
 
 ## Comment étendre
 

@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "批量将 CBT\n 文件转换为 CBZ",
     "batch_metadata": "批量导入元数据",
     "batch_library": "从文件夹创建库",
-    "batch_recompress": "以默认级别重新压缩 CBZ 文件"
+    "batch_recompress": "以默认级别重新压缩 CBZ 文件",
+    "validate_straighten": "确认校正",
+    "validate_text": "应用文本"
   },
   "tabs": {
     "mosaic": "缩略图",
@@ -75,7 +77,16 @@
     "mode_single": "单页  [D]",
     "mode_double": "双页  [D]",
     "mode_continuous": "连续模式  [D]",
-    "mode_webtoon": "条漫  [D]"
+    "mode_webtoon": "条漫  [D]",
+    "toolbar_crop_tooltip": "裁剪",
+    "toolbar_undo_tooltip": "撤销 (Ctrl+Z)",
+    "toolbar_redo_tooltip": "重做 (Ctrl+Y)",
+    "unvalidated_work_title": "未确认的操作",
+    "unvalidated_work_message": "您有一项或多项正在进行且尚未确认的操作。确定要关闭查看器吗？这些操作将会丢失。",
+    "toolbar_straighten_tooltip": "校正",
+    "toolbar_crop_instruction": "在要保留的区域周围画一个矩形，然后确认",
+    "toolbar_clone_tooltip": "克隆",
+    "toolbar_text_tooltip": "文本"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "已阻止打开",
         "message": "此文件未被打开: {ext} 文件可能在您的计算机上执行代码。\n如果您信任它，请将其提取后手动打开。"
+      },
+      "no_straighten_line": {
+        "title": "未绘制线条",
+        "message": "请先绘制一条参考线。"
+      },
+      "no_skew_detected": {
+        "title": "未检测到倾斜",
+        "message": "未在此页面上检测到可靠的倾斜。"
+      },
+      "no_text_block": {
+        "title": "未输入文本",
+        "message": "请先在至少一个文本块中输入文本。"
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "目标驱动器磁盘空间不足。\n需要: {needed}\n可用: {free}"
       },
-      "no_wilhelm_scream_found": "未找到音频文件。"
+      "no_wilhelm_scream_found": "未找到音频文件。",
+      "straighten_failed": {
+        "title": "错误",
+        "message": "无法校正图像: {error}"
+      },
+      "clone_failed": {
+        "title": "错误",
+        "message": "无法应用克隆：{error}"
+      },
+      "text_failed": {
+        "title": "错误",
+        "message": "无法应用文本：{error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "查看日志",
     "straighten_viewer": {
-      "title": "矫正",
-      "instruction": "在图像中应为水平（或垂直）的部分画一条直线"
+      "instruction": "在图像中应为水平（或垂直）的部分画一条直线",
+      "angle_label": "角度:"
     },
     "clone_zone_viewer": {
       "title": "区域克隆",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "大小 :"
     },
     "text_viewer": {
-      "title": "插入文字",
       "instruction": "点击要插入文字的位置  •  Ctrl+方向键:逐像素移动文字",
       "size_label": "大小:",
       "color_label": "颜色:",
       "bold_btn": "粗",
       "italic_btn": "斜",
       "underline_btn": "下",
-      "apply_btn": "应用文字",
       "pick_color_title": "选择文字颜色"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "自动校正",
       "message": "已成功校正 {success} 张图像。",
       "message_errors": "已成功校正 {success} 张图像。\n{failed} 张失败（未检测到可靠的倾斜）:"
+    },
+    "color_picker": {
+      "basic_colors_label": "基本颜色：",
+      "hex_label": "十六进制：",
+      "red_label": "红：",
+      "green_label": "绿：",
+      "blue_label": "蓝：",
+      "alpha_label": "透明度："
     }
   },
   "tooltip": {

@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "Conversão em lote\n de ficheiros CBT para CBZ",
     "batch_metadata": "Importação de metadados em lote",
     "batch_library": "Criar uma biblioteca a partir da(s) pasta(s)",
-    "batch_recompress": "Recomprimir ficheiros CBZ ao nível predefinido"
+    "batch_recompress": "Recomprimir ficheiros CBZ ao nível predefinido",
+    "validate_straighten": "Validar endireitamento",
+    "validate_text": "Aplicar texto"
   },
   "tabs": {
     "mosaic": "Mosaico",
@@ -75,7 +77,16 @@
     "mode_single": "Página simples  [D]",
     "mode_double": "Página dupla  [D]",
     "mode_continuous": "Modo contínuo  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Recorte",
+    "toolbar_undo_tooltip": "Desfazer (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Refazer (Ctrl+Y)",
+    "unvalidated_work_title": "Trabalho não validado",
+    "unvalidated_work_message": "Você tem um ou mais trabalhos em curso não validados. Tem certeza de que deseja fechar o visualizador? Esse trabalho será perdido.",
+    "toolbar_straighten_tooltip": "Endireitar",
+    "toolbar_crop_instruction": "Desenhe um retângulo em torno da área a manter e confirme",
+    "toolbar_clone_tooltip": "Clonagem",
+    "toolbar_text_tooltip": "Texto"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Abertura bloqueada",
         "message": "Este ficheiro não foi aberto: os ficheiros {ext} podem executar código no seu computador.\nSe confiar nele, extraia-o e abra-o manualmente."
+      },
+      "no_straighten_line": {
+        "title": "Nenhuma linha traçada",
+        "message": "Trace primeiro uma linha de referência."
+      },
+      "no_skew_detected": {
+        "title": "Nenhuma inclinação detetada",
+        "message": "Não foi detetada nenhuma inclinação fiável nesta página."
+      },
+      "no_text_block": {
+        "title": "Sem texto",
+        "message": "Introduza primeiro texto em pelo menos um bloco."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Espaço em disco insuficiente na unidade de destino.\nNecessário: {needed}\nDisponível: {free}"
       },
-      "no_wilhelm_scream_found": "Ficheiro áudio não encontrado."
+      "no_wilhelm_scream_found": "Ficheiro áudio não encontrado.",
+      "straighten_failed": {
+        "title": "Erro",
+        "message": "Não foi possível endireitar a imagem: {error}"
+      },
+      "clone_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar a clonagem: {error}"
+      },
+      "text_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar o texto: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "VER LOG",
     "straighten_viewer": {
-      "title": "Endireitar",
-      "instruction": "Desenhe uma linha reta no que deve ser horizontal (ou vertical) na imagem"
+      "instruction": "Desenhe uma linha reta no que deve ser horizontal (ou vertical) na imagem",
+      "angle_label": "Ângulo:"
     },
     "clone_zone_viewer": {
       "title": "Clonagem de zona",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Tamanho :"
     },
     "text_viewer": {
-      "title": "Inserir texto",
       "instruction": "Clique onde deseja inserir o texto  •  Ctrl+setas: mover o texto pixel a pixel",
       "size_label": "Tamanho:",
       "color_label": "Cor:",
       "bold_btn": "N",
       "italic_btn": "I",
       "underline_btn": "S",
-      "apply_btn": "Aplicar texto",
       "pick_color_title": "Escolha a cor do texto"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Endireitamento automático",
       "message": "{success} imagem(ns) endireitada(s) com sucesso.",
       "message_errors": "{success} imagem(ns) endireitada(s) com sucesso.\n{failed} falhada(s) (nenhuma inclinação fiável detetada) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Cores básicas:",
+      "hex_label": "Hexadecimal:",
+      "red_label": "Vermelho:",
+      "green_label": "Verde:",
+      "blue_label": "Azul:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {

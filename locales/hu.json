@@ -64,7 +64,9 @@
     "batch_cbt_to_cbz": "CBT fájlok kötegelt\n konvertálása CBZ-vé",
     "batch_metadata": "Metaadatok tömeges importálása",
     "batch_library": "Könyvtár létrehozása a mappá(k)ból",
-    "batch_recompress": "CBZ fájlok újratömörítése alapértelmezett szinten"
+    "batch_recompress": "CBZ fájlok újratömörítése alapértelmezett szinten",
+    "validate_straighten": "Kiegyenesítés jóváhagyása",
+    "validate_text": "Szöveg alkalmazása"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -75,7 +77,16 @@
     "mode_single": "Egy oldal  [D]",
     "mode_double": "Dupla oldal  [D]",
     "mode_continuous": "Folyamatos mód  [D]",
-    "mode_webtoon": "Webtoon  [D]"
+    "mode_webtoon": "Webtoon  [D]",
+    "toolbar_crop_tooltip": "Vágás",
+    "toolbar_undo_tooltip": "Visszavonás (Ctrl+Z)",
+    "toolbar_redo_tooltip": "Ismétlés (Ctrl+Y)",
+    "unvalidated_work_title": "Nem véglegesített munka",
+    "unvalidated_work_message": "Egy vagy több nem véglegesített folyamatban lévő munkája van. Biztosan bezárja a megjelenítőt? Ez a munka elveszik.",
+    "toolbar_straighten_tooltip": "Kiegyenesítés",
+    "toolbar_crop_instruction": "Rajzoljon téglalapot a megtartandó terület köré, majd hagyja jóvá",
+    "toolbar_clone_tooltip": "Klónozás",
+    "toolbar_text_tooltip": "Szöveg"
   },
   "context_menu": {
     "viewer": {
@@ -354,6 +365,18 @@
       "executable_file_open": {
         "title": "Megnyitás letiltva",
         "message": "Ez a fájl nem lett megnyitva: a(z) {ext} fájlok kódot futtathatnak a számítógépén.\nHa megbízik benne, csomagolja ki és nyissa meg kézzel."
+      },
+      "no_straighten_line": {
+        "title": "Nincs vonal rajzolva",
+        "message": "Kérjük, először rajzoljon egy referenciavonalat."
+      },
+      "no_skew_detected": {
+        "title": "Nem észlelhető dőlés",
+        "message": "Ezen az oldalon nem észlelt megbízható dőlést."
+      },
+      "no_text_block": {
+        "title": "Nincs szöveg",
+        "message": "Először írjon szöveget legalább egy blokkba."
       }
     },
     "errors": {
@@ -498,7 +521,19 @@
       "disk_full": {
         "message": "Nincs elegendő lemezterület a célmeghajtón.\nSzükséges: {needed}\nElérhető: {free}"
       },
-      "no_wilhelm_scream_found": "A hangfájl nem található."
+      "no_wilhelm_scream_found": "A hangfájl nem található.",
+      "straighten_failed": {
+        "title": "Hiba",
+        "message": "A kép kiegyenesítése nem sikerült: {error}"
+      },
+      "clone_failed": {
+        "title": "Hiba",
+        "message": "A klónozás nem alkalmazható: {error}"
+      },
+      "text_failed": {
+        "title": "Hiba",
+        "message": "A szöveg alkalmazása sikertelen: {error}"
+      }
     },
     "info": {
       "gif_created": {
@@ -1109,8 +1144,8 @@
     },
     "see_log": "LOG MEGTEKINTÉSE",
     "straighten_viewer": {
-      "title": "Egyenesítés",
-      "instruction": "Rajzoljon egy egyenes vonalat arra, aminek a képen vízszintesnek (vagy függőlegesnek) kell lennie"
+      "instruction": "Rajzoljon egy egyenes vonalat arra, aminek a képen vízszintesnek (vagy függőlegesnek) kell lennie",
+      "angle_label": "Szög:"
     },
     "clone_zone_viewer": {
       "title": "Zóna klónozása",
@@ -1121,14 +1156,12 @@
       "brush_size_label": "Méret :"
     },
     "text_viewer": {
-      "title": "Szöveg beszúrása",
       "instruction": "Kattintson oda, ahova szöveget szeretne beilleszteni  •  Ctrl+nyilak: szöveg mozgatása pixelenként",
       "size_label": "Méret:",
       "color_label": "Szín:",
       "bold_btn": "F",
       "italic_btn": "D",
       "underline_btn": "A",
-      "apply_btn": "Szöveg alkalmazása",
       "pick_color_title": "Válasszon szövegszínt"
     },
     "batch_cb7": {
@@ -1233,6 +1266,14 @@
       "title": "Automatikus kiegyenesítés",
       "message": "{success} kép sikeresen kiegyenesítve.",
       "message_errors": "{success} kép sikeresen kiegyenesítve.\n{failed} sikertelen (nem észlelhető megbízható dőlés) :"
+    },
+    "color_picker": {
+      "basic_colors_label": "Alapszínek:",
+      "hex_label": "Hexadecimális:",
+      "red_label": "Piros:",
+      "green_label": "Zöld:",
+      "blue_label": "Kék:",
+      "alpha_label": "Alfa:"
     }
   },
   "tooltip": {
