@@ -672,7 +672,7 @@ class _SavingOverlay:
 # Vérifications pré-sauvegarde (portées de file_operations.py)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _validate_filenames_qt(parent, render_mosaic, on_done):
+def _validate_filenames_qt(parent, render_mosaic, on_done, state=None):
     """
     Valide les noms de fichiers (caractères interdits, etc.). NON modal.
     Appelle on_done(True) si on peut continuer, on_done(False) si annulation.
@@ -683,7 +683,8 @@ def _validate_filenames_qt(parent, render_mosaic, on_done):
     à has_subdirectory_structure (basée sur orig_name, pas sur la présence d'entrées
     is_dir).
     """
-    state = _state_module.state
+    if state is None:
+        state = _state_module.state
     invalid_chars = '<>:"|?*'
     has_subdirs = any(
         '/' in e.get("orig_name", "") and not e.get("is_dir")
@@ -777,7 +778,7 @@ def _validate_filenames_qt(parent, render_mosaic, on_done):
     ).ask_async(_on_reply)
 
 
-def _auto_update_page_count_qt():
+def _auto_update_page_count_qt(state=None):
     """
     Met à jour silencieusement PageCount dans le ComicInfo.xml si le nombre de pages a changé.
     Appelé automatiquement avant chaque sauvegarde.
@@ -785,7 +786,8 @@ def _auto_update_page_count_qt():
     Ceci couvre les cas résiduels (modifications sans changement de liste).
     """
     from modules.qt.comic_info import update_page_count_in_xml_data
-    state = _state_module.state
+    if state is None:
+        state = _state_module.state
     if not state.comic_metadata or not state.original_page_count:
         return
     current_count = len([e for e in state.images_data if e.get("is_image") and not e.get("is_dir")])
@@ -816,20 +818,22 @@ def _run_validation_chain(steps, on_all_passed):
     _run(0)
 
 
-def _has_animated_gifs():
+def _has_animated_gifs(state=None):
     """Retourne True si la liste d'images contient au moins un GIF animé."""
-    for entry in _state_module.state.images_data:
+    if state is None:
+        state = _state_module.state
+    for entry in state.images_data:
         if entry.get("extension", "").lower() == ".gif" and entry.get("is_animated_gif"):
             return True
     return False
 
 
-def _check_animated_gifs_qt(parent, on_done):
+def _check_animated_gifs_qt(parent, on_done, state=None):
     """
     Vérifie la présence de GIFs animés et affiche l'avertissement. NON modal.
     Appelle on_done(True) si on peut continuer, on_done(False) si annulation.
     """
-    if not _has_animated_gifs():
+    if not _has_animated_gifs(state):
         on_done(True)
         return
     from modules.qt.dialogs_qt import ConfirmDialog
@@ -840,12 +844,12 @@ def _check_animated_gifs_qt(parent, on_done):
     ).ask_async(on_done)
 
 
-def _handle_duplicate_filenames_qt(parent, renumber_func, on_done, entries_to_check=None):
+def _handle_duplicate_filenames_qt(parent, renumber_func, on_done, entries_to_check=None, state=None):
     """
     Vérifie les doublons et affiche le dialogue si nécessaire. NON modal.
     Appelle on_done(True) pour continuer, on_done(False) pour annuler.
     """
-    has_duplicates, duplicate_names = detect_duplicate_filenames_for_save(entries_to_check)
+    has_duplicates, duplicate_names = detect_duplicate_filenames_for_save(entries_to_check, state)
     if not has_duplicates:
         on_done(True)
         return
@@ -996,7 +1000,7 @@ def save_as_cbz(parent, canvas, callbacks: dict):
     if not _check_no_video(parent):
         return
 
-    _auto_update_page_count_qt()
+    _auto_update_page_count_qt(state)
 
     render_mosaic = callbacks.get("render_mosaic", lambda: None)
     renumber_func = callbacks.get("renumber_btn_action")
@@ -1070,9 +1074,9 @@ def save_as_cbz(parent, canvas, callbacks: dict):
 
     _run_validation_chain(
         [
-            lambda done: _validate_filenames_qt(parent, render_mosaic, done),
-            lambda done: _check_animated_gifs_qt(parent, done),
-            lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done),
+            lambda done: _validate_filenames_qt(parent, render_mosaic, done, state),
+            lambda done: _check_animated_gifs_qt(parent, done, state),
+            lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done, state=state),
         ],
         on_all_passed=_on_validated,
     )
@@ -1152,6 +1156,7 @@ def save_selection_as_cbz(parent, callbacks: dict):
         parent, renumber_func,
         lambda ok: _on_validated() if ok else None,
         entries_to_check=selected_entries,
+        state=state,
     )
 
 
@@ -1248,6 +1253,7 @@ def save_selection_to_folder(parent, callbacks: dict):
         parent, renumber_func,
         lambda ok: _on_validated() if ok else None,
         entries_to_check=selected_entries,
+        state=state,
     )
 
 
@@ -1269,7 +1275,7 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
     if not _check_no_video(parent):
         return
 
-    _auto_update_page_count_qt()
+    _auto_update_page_count_qt(state)
 
     # Applique les noms modifiés (depuis les NameEdit Qt)
     for entry in state.images_data:
@@ -1344,9 +1350,9 @@ def create_cbz_from_images(parent, canvas, callbacks: dict):
 
     _run_validation_chain(
         [
-            lambda done: _validate_filenames_qt(parent, render_mosaic, done),
-            lambda done: _check_animated_gifs_qt(parent, done),
-            lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done),
+            lambda done: _validate_filenames_qt(parent, render_mosaic, done, state),
+            lambda done: _check_animated_gifs_qt(parent, done, state),
+            lambda done: _handle_duplicate_filenames_qt(parent, renumber_func, done, state=state),
         ],
         on_all_passed=_on_validated,
     )
@@ -1383,7 +1389,7 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
     if not _check_no_video(parent):
         return _done(False)
 
-    _auto_update_page_count_qt()
+    _auto_update_page_count_qt(state)
 
     # Applique les noms depuis les NameEdit Qt
     for entry in state.images_data:
@@ -1422,8 +1428,8 @@ def apply_new_names(parent, canvas, callbacks: dict, on_complete=None):
 
     _run_validation_chain(
         [
-            lambda d: _validate_filenames_qt(parent, render_mosaic, d),
-            lambda d: _check_animated_gifs_qt(parent, d),
+            lambda d: _validate_filenames_qt(parent, render_mosaic, d, state),
+            lambda d: _check_animated_gifs_qt(parent, d, state),
         ],
         on_all_passed=_on_validated,
     )

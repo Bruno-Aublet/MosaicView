@@ -44,8 +44,20 @@ def _reload_thumb_qt(entry: dict, tw: int, th: int):
     """Invalide les caches de vignettes pour une entrée — seront reconstruits depuis bytes au prochain paint().
 
     N'est appelé que si les bytes ont changé.
-    """
+
+    qt_qimage_large DOIT être invalidé ici comme qt_pixmap_large : certains
+    outils (ex. adjustments_tool_qt.py::perform_sharpness) appellent
+    build_qimage_for_entry(entry) en synchrone juste après avoir écrit de
+    nouveaux bytes, ce qui peuple qt_qimage_large avec le résultat de CETTE
+    opération précise. Si un undo restaure ensuite des bytes plus anciens
+    sans vider qt_qimage_large, _get_pixmap_for_size() (mosaic_canvas.py) le
+    retrouve encore rempli et reconstruit qt_pixmap_large à partir de cette
+    QImage périmée au lieu de relire les bytes restaurés — la vignette reste
+    alors figée sur l'état d'avant le undo indéfiniment, aucun repaint
+    (même forcé) ne peut corriger un cache dont la SOURCE est fausse.
+    Diagnostiqué le 2026-08-14."""
     entry["qt_pixmap_large"] = None
+    entry["qt_qimage_large"] = None
     entry["large_thumb_pil"] = None
     entry["_hash"] = None
 
@@ -100,6 +112,13 @@ def restore_state_qt(state,
 
     new_images_data = []
 
+    # Entrées dont les bytes changent réellement pendant cette restauration —
+    # pour forcer leur repaint immédiat après render_mosaic_cb() (voir plus
+    # bas), sans attendre le prochain repaint naturel de la vue (peut être
+    # différé si la fenêtre principale n'est pas active, ex. undo/redo
+    # déclenché depuis la visionneuse — diagnostiqué 2026-08-14).
+    changed_entries = []
+
     for entry_data in target_entries:
         if not isinstance(entry_data, dict):
             # Ancien format tuple — ne devrait pas arriver en Qt, mais on gère
@@ -114,6 +133,7 @@ def restore_state_qt(state,
                 if saved_bytes is not None and entry["is_image"]:
                     entry["bytes"] = saved_bytes[:]
                     _reload_thumb_qt(entry, tw, th)
+                    changed_entries.append(entry)
                 new_images_data.append(entry)
                 del entries_by_id[entry_id]
             continue
@@ -134,6 +154,7 @@ def restore_state_qt(state,
 
                 if bytes_changed:
                     _reload_thumb_qt(entry, tw, th)
+                    changed_entries.append(entry)
 
             del entries_by_id[original_id]
         else:
@@ -205,6 +226,23 @@ def restore_state_qt(state,
 
     # En Qt, render_mosaic() recrée tous les items (pas d'optimisation rename_only)
     render_mosaic_cb()
+
+    # Force le repaint immédiat des vignettes dont les bytes ont réellement
+    # changé pendant cette restauration (ex. undo/redo d'un ajustement
+    # sharpness) — sans ça, quand la fenêtre principale n'est pas la fenêtre
+    # active (visionneuse ouverte par-dessus), Qt peut différer le repaint
+    # naturel de la mosaïque. entry["_real_idx"] n'est fiable qu'APRÈS
+    # render_mosaic_cb() (assigné par ThumbnailItem.__init__), d'où la lecture
+    # ici plutôt que pendant la boucle de restauration plus haut. Cible
+    # uniquement ces items précis (pas toute la mosaïque), y compris pour
+    # plusieurs pages modifiées en une seule opération d'historique (ex. un
+    # futur traitement par lot). Voir mosaic_canvas.py::refresh_thumbnails_visual.
+    if changed_entries:
+        real_indices = [e["_real_idx"] for e in changed_entries if e.get("_real_idx") is not None]
+        if real_indices and hasattr(render_mosaic_cb, "__self__"):
+            canvas = render_mosaic_cb.__self__
+            if hasattr(canvas, "refresh_thumbnails_visual"):
+                canvas.refresh_thumbnails_visual(real_indices)
 
     refresh_toolbar_cb()
 

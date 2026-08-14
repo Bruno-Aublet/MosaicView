@@ -91,15 +91,9 @@ L'unité d'undo reste **le stroke entier** (tout un coup de pinceau, du clic au 
 
 ## Points d'entrée UI
 
-Trois, identiques dans leur structure à ceux de `page-crop`/`page-straighten` (conditionnés uniquement à la présence d'images, `has_images` — pas besoin de sélection) :
+**Un seul point d'entrée depuis le 2026-08-14** : directement dans la visionneuse principale déjà ouverte, en sélectionnant l'icône Clonage dans la barre d'outils flottante. Il n'existe plus de point d'entrée dédié depuis la mosaïque qui ouvrirait directement la visionneuse avec cet outil présélectionné.
 
-1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `context_menus_qt.py`, clé `context_menu.image.clone_zone`, callback `show_clone_zone_viewer`.
-2. **Barre de menu** — `menubar_qt.py`, même clé/callback.
-3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"clone_zone"` (`icon_toolbar_qt.py`, icône `BTN_Clone_Zone.png`, activé si `has_images`), tooltip `tooltip.clone_zone` (skill `qt-tooltips`).
-
-**Depuis v1.7.3**, la clé de callback `"show_clone_zone_viewer"` (`menubar_callbacks_qt.py`) pointe vers `PanelWidget._clone_selected_image` (nouvelle méthode, ouvre la visionneuse principale avec `initial_tool="clone"`) au lieu de l'ancienne fonction `show_clone_zone_viewer()` du fichier supprimé — le nom de la clé de callback est resté inchangé pour ne pas devoir toucher `context_menus_qt.py`/`menubar_qt.py`, seule sa cible a changé (même schéma que pour le redressement, voir skill `page-straighten`).
-
-`PanelWidget._clone_selected_image()` (`panel_widget.py`) reproduit la logique de secours de l'ancienne `show_clone_zone_viewer` : si une sélection existe, ouvre sur la **première image sélectionnée valide** ; sinon, ouvre sur la première image de la mosaïque. En pratique ce cas de repli n'est plus atteignable via les 3 points d'entrée UI standards (tous exigent `has_images()` en amont, moins strict que `has_selected_images()` — contrairement au crop qui refuse une sélection vide/multiple, le clonage n'exige aucune sélection). **`_clone_zone_callbacks()`** (qui construisait un dict spécifique pour l'ancienne fenêtre) a été supprimé, devenu mort — le clonage réutilise le même dict de callbacks que n'importe quel autre outil de la visionneuse (`_image_viewer_callbacks()`).
+**Nettoyage du 2026-08-14** (`idees.txt` #3, "NETTOYAGE DES COMMANDES REDONDANTES") : le menu contextuel (`context_menu.image.clone_zone`), l'entrée équivalente de la barre de menu, le bouton `"clone_zone"` de la colonne d'icônes (`icon_toolbar_qt.py`) et son tooltip `tooltip.clone_zone`, ainsi que la méthode `PanelWidget._clone_selected_image()` (`panel_widget.py`, callback `"show_clone_zone_viewer"`) qui les orchestrait — tous supprimés. Ce nettoyage est intervenu après celui de `page-crop`/`page-straighten` (même mécanique, mêmes trois points d'entrée retirés).
 
 ## Zoom, pan, plein écran
 
@@ -115,7 +109,9 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 
 ## Traductions
 
-`locales/fr.json`, section `clone_zone_viewer` : `title` (non résolue nulle part depuis la suppression de l'ancienne `QDialog` — orpheline mais pas retirée, à vérifier si elle est encore utilisée avant de la supprimer), `instruction` (réutilisée en tooltip enrichi de l'icône Clonage de la barre d'outils, voir skill `viewers`), `mode_label`/`mode_fixed`/`mode_relative`, `brush_size_label` — toutes réutilisées telles quelles par `_CloneOptionsPanel`. Nouvelles clés v1.7.3+ : `viewer.toolbar_clone_tooltip`, `messages.errors.clone_failed.title`/`.message` — propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR), calquées sur le vocabulaire déjà attesté pour "clonage" dans `dialogs.clone_zone_viewer` de chaque fichier fictif (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) plutôt qu'improvisées. Clé séparée `context_menu.image.clone_zone` pour les menus, `tooltip.clone_zone` pour la colonne d'icônes. Voir skill `add-translation`.
+`locales/fr.json`, section `clone_zone_viewer` : `title` (non résolue nulle part depuis la suppression de l'ancienne `QDialog` — orpheline mais pas retirée, à vérifier si elle est encore utilisée avant de la supprimer), `instruction` (réutilisée en tooltip enrichi de l'icône Clonage de la barre d'outils, voir skill `viewers`), `mode_label`/`mode_fixed`/`mode_relative`, `brush_size_label` — toutes réutilisées telles quelles par `_CloneOptionsPanel`. Clés v1.7.3+ : `viewer.toolbar_clone_tooltip`, `messages.errors.clone_failed.title`/`.message` — propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR), calquées sur le vocabulaire déjà attesté pour "clonage" dans `dialogs.clone_zone_viewer` de chaque fichier fictif (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) plutôt qu'improvisées. Voir skill `add-translation`.
+
+**Clés mortes retirées le 2026-08-14** (ancien point d'entrée mosaïque supprimé) : `context_menu.image.clone_zone`, `tooltip.clone_zone`.
 
 **Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `page-straighten` et `add-text-to-image`, ces visionneuses/outils d'édition d'image partagent ce manque (skill `user-guide`).
 
@@ -139,18 +135,16 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 - **Marqueur de source à resynchroniser après pan, zoom, ET redimensionnement** — géré en tête de `paint_clone_marker`, appelée automatiquement par Qt via `paintEvent` dans les trois cas ; ne pas dupliquer l'appel dans chaque handler séparément.
 - **`_VALIDATE_KEYS` n'a pas d'entrée `"clone"`** — ne pas en ajouter une par réflexe en copiant le pattern crop/straighten : cet outil n'a jamais besoin du bouton "Valider" flottant, l'application est immédiate.
 - **Aucune section dédiée dans le mode d'emploi.**
+- **Plus de point d'entrée depuis la mosaïque** (menu contextuel, barre de menu, colonne d'icônes) depuis le 2026-08-14 — ne pas chercher `PanelWidget._clone_selected_image()`, elle a été supprimée avec ses 3 points d'appel ; le clonage ne s'atteint plus que depuis l'intérieur de la visionneuse déjà ouverte.
 
 ## Références croisées
 
 - `page-straighten` — architecture la plus proche dans le projet (outil migré dans son propre module, undo/redo unifié avec le panneau, plus de fenêtre dédiée) ; comparer les deux pour la différence de philosophie de validation (une opération validée une fois vs peinture continue commitée en continu).
-- `page-crop` — même famille d'outils migrés, partage le bouton "Valider" flottant avec `page-straighten` mais pas avec le clonage (qui n'en a pas besoin).
-- `add-text-to-image` — dernière visionneuse annexe encore séparée (pas encore migrée) ; troisième implémentation indépendante du fond damier de transparence après celle-ci et celle de `AdjustmentViewerDialog`.
+- `page-crop` — même famille d'outils migrés, partage le bouton "Valider" flottant avec `page-straighten` mais pas avec le clonage (qui n'en a pas besoin) ; même nettoyage des points d'entrée mosaïque le 2026-08-14.
+- `add-text-to-image` — dernier outil migré ; troisième implémentation indépendante du fond damier de transparence après celle-ci et celle de `AdjustmentViewerDialog`.
 - `viewers` — architecture générale de la fusion progressive des visionneuses (barre d'outils, règle des modules séparés, sections spécifiques au clonage) ; vocabulaire zoom/pan/plein-écran commun mais implémentation non partagée.
 - `apply-image-operation` — pattern général de modification de `entry['bytes']`, suivi ici en variante (A) complète.
 - `undo-redo` — mécanique de l'historique global de l'appli, unique niveau depuis la migration (plus d'historique interne séparé).
-- `icon-toolbar` — bouton "clone_zone" de la colonne d'icônes.
-- `qt-context-menus` — entrée du menu contextuel clic droit.
-- `qt-tooltips` — tooltip du bouton colonne d'icônes et tooltip enrichi de l'icône de la barre d'outils de la visionneuse (`OverlayTooltip`, jamais `setToolTip()` natif).
 - `comicinfo-metadata-editor` — mise à jour des attributs de page dans `ComicInfo.xml` après un stroke.
 - `add-translation` — procédure complète de traduction, vocabulaire fictif "clonage" déjà établi (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) et réutilisé pour les nouvelles clés de la barre d'outils.
 - `user-guide` — absence actuelle de section dédiée, à vérifier si une tâche touche à ce fichier.

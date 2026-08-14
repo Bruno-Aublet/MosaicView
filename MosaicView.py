@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.7.3"
+__version__ = "1.7.4"
 
 import sys
 import os
@@ -333,8 +333,10 @@ class MainWindow(QMainWindow):
         """Change la langue et met à jour l'UI de tous les panneaux."""
         if not self._loc.change_language(lang_code):
             return
+        from modules.qt import state as _state_module
         from modules.qt.menubar_qt import build_menubar
         for p in self._all_panels():
+            _state_module.state = p._state
             build_menubar(p, p._build_menubar_callbacks(), p._menubar)
             p._refresh_title()
             p._update_status_bar()
@@ -345,7 +347,6 @@ class MainWindow(QMainWindow):
                 p._canvas.render_mosaic()
             else:
                 p._canvas.update_name_fonts()
-        from modules.qt import state as _state_module
         _state_module.state = self._active_panel._state
         from modules.qt.language_signal import language_signal
         language_signal.emit(lang_code)

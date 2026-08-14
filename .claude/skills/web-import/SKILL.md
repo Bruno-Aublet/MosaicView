@@ -5,20 +5,23 @@ description: Localiser ou modifier l'import d'images depuis le web (saisie manue
 
 # Import web — MosaicView
 
-Télécharge une ou plusieurs images depuis Internet (une image directe, ou toutes les images `<img>` d'une page HTML) et les ajoute à la mosaïque. Trois façons d'y arriver, toutes convergent vers les mêmes fonctions de résolution/téléchargement.
+Télécharge une ou plusieurs images depuis Internet (une image directe, ou toutes les images d'une page HTML — statiques ou générées par JavaScript) et les ajoute à la mosaïque. Trois façons d'y arriver, toutes convergent vers les mêmes fonctions de résolution/téléchargement.
 
 Autre source d'image externe avec une architecture proche (worker `QThread`, overlay de progression, ajout à la mosaïque) : voir skill `scan` (numérisation depuis un scanner physique via WIA), qui réutilise directement `_web_import_callbacks()` de `panel_widget.py`.
 
 ## Fichier unique — `modules/qt/web_import_qt.py`
 
-Tout vit dans ce seul fichier (~670 lignes) :
+Tout vit dans ce seul fichier (~880 lignes) :
 - **`WebImportDialog`** — fenêtre de saisie manuelle d'une URL (menu Fichier).
-- **`_resolve_and_download()`** — résolution asynchrone d'une URL (image directe ou page HTML), point d'entrée commun au drop de lien et au drop de fichier `.url`/`.webloc`.
-- **`_ResolveWorker`** (`QThread`) — télécharge la page/l'image pour déterminer son type (HEAD implicite via GET + `Content-Type`), sans bloquer l'UI.
-- **`_DownloadWorker`** (`QThread`) — télécharge effectivement chaque image trouvée.
+- **`_resolve_and_download()`** — résolution asynchrone d'une URL (image directe ou page HTML), point d'entrée commun aux trois flux (saisie manuelle incluse depuis 2026-08-14 — voir plus bas).
+- **`_ResolveWorker`** (`QThread`) — télécharge la page/l'image pour déterminer son type (GET + `Content-Type`), extrait les URLs d'images si c'est une page HTML, sans bloquer l'UI.
+- **`_DownloadWorker`** (`QThread`) — télécharge effectivement chaque image trouvée, avec retry sur échec réseau transitoire.
 - **`WebDownloadController`** — orchestre `_DownloadWorker` + l'overlay de progression sur le canvas (texte rouge + bouton Annuler, même pattern visuel que le chargement d'archive).
-- **`extract_images_from_html()`** / **`_extract_single_img_src()`** — parsing HTML pour extraire des URLs d'images (page entière vs un seul `<img>` ciblé).
+- **`extract_images_from_html()`** — parsing HTML statique pour extraire les `<img src="...">` déjà présents dans le HTML brut.
+- **`extract_images_from_js_loops()`** — extraction complémentaire des images générées par JavaScript via des boucles (voir section dédiée plus bas).
+- **`_extract_single_img_src()`** — extraction ciblée d'un seul `<img>` depuis un fragment HTML (drop navigateur).
 - **`_add_entries_to_mosaic()`** — point de sortie commun : ajoute les entrées téléchargées à `state.images_data` et rafraîchit la mosaïque.
+- **`_suppress_empty_hint()`** / **`_restore_empty_hint()`** — masquent/restaurent le message d'accueil du canvas pendant l'import (voir section dédiée).
 
 ## Les trois points d'entrée
 
@@ -28,9 +31,7 @@ Menu Fichier > "Importer depuis le web" (`menubar_qt.py:90`, aussi menu contextu
 
 - Fenêtre non-modale simple : un champ `QLineEdit` + OK/Annuler.
 - `_process_url()` (appelé par Entrée ou OK) : normalise l'URL saisie (`https://` ajouté automatiquement si l'utilisateur a tapé juste `example.com`, détecté via présence d'un `.` et absence d'espace), rejette si toujours pas `http(s)://` après normalisation.
-- **Différence notable avec les deux autres flux** : ce chemin fait le téléchargement de résolution **de façon synchrone** dans `_process_url()` (un seul `urllib.request.urlopen` bloquant, `timeout=10`) — pas de `_ResolveWorker` ici. La fenêtre se ferme (`self.close()`) **avant** cet appel bloquant, donc l'UI ne gèle que brièvement pendant la résolution, avant que le téléchargement des images individuelles (lui, en thread) ne prenne le relais via `download_and_add_web_images`.
-- Résultat `Content-Type` contient `image` → téléchargement direct de cette seule image. Sinon → parsing HTML (`extract_images_from_html`) et téléchargement de toutes les images trouvées.
-- Aucune image trouvée ou image invalide → `InfoDialog` (`web.web_copy_paste_message`), pas une erreur bloquante.
+- **Depuis 2026-08-14, ce flux ne fait plus rien lui-même en matière de réseau** : la fenêtre se ferme (`self.close()`) puis délègue directement à `_resolve_and_download()`, exactement comme le drop de lien/fichier raccourci (flux 2 et 3) — les trois points d'entrée convergent maintenant vers la même résolution asynchrone. Avant cette date, ce flux faisait un `urllib.request.urlopen` bloquant en synchrone dans `_process_url()` ; ça a été retiré au profit d'une résolution unique et cohérente (nécessaire pour bénéficier de `extract_images_from_js_loops()` sur ce chemin aussi).
 
 ### 2. Drop d'un lien depuis un navigateur — `mosaic_canvas.py::dropEvent`
 
@@ -52,14 +53,44 @@ Distinct du drop de lien : ici c'est un **fichier local** (`toLocalFile()` non v
 
 ## Résolution asynchrone — `_resolve_and_download()` / `_ResolveWorker`
 
-Point de convergence des flux 2 et 3 (pas du flux 1, qui résout de façon synchrone comme noté plus haut) :
+Point de convergence unique des trois flux depuis 2026-08-14 :
 
 1. **Court-circuit rapide** : `_url_looks_like_image(url)` vérifie l'extension de l'URL (liste `_IMAGE_URL_EXTS`, inclut `.svg` contrairement à `IMAGE_EXTS` du reste du projet — SVG n'est pas rendu par MosaicView mais l'URL est reconnue comme "probablement une image" avant téléchargement). Si oui → téléchargement direct sans passer par le worker de résolution, l'URL de la page est déjà connue comme étant l'image elle-même.
 2. Sinon → `_ResolveWorker` (thread) fait un GET complet (pas de vrai HEAD — certains serveurs répondent différemment ou refusent HEAD) avec les en-têtes navigateur complets (`_BROWSER_HEADERS`), lit `Content-Type` :
-   - Contient `image` → une seule image (`resolved.emit([url], page_title)`).
-   - Sinon → parse le HTML reçu (`extract_images_from_html`) et retourne toutes les URLs d'images trouvées.
+   - Contient `image` → une seule image (`resolved_image.emit(url, page_title)`).
+   - Sinon → union de `extract_images_from_html()` (HTML statique) et `extract_images_from_js_loops()` (boucles JS, voir section dédiée), émise via `resolved_html.emit(image_urls, page_title)`.
 3. Erreur réseau : `HTTPError` avec code 403 → traité spécifiquement (`kind="forbidden"`, message dédié `web.web_drop_forbidden_*` — un site avec protection anti-bot type Cloudflare rejette souvent une requête sans les bons en-têtes) ; toute autre erreur → message générique `web.web_drop_error_*`.
 4. **Garde-vie du worker** : référence stockée dans `canvas._resolve_workers` (liste, attribut dynamique sur le canvas) jusqu'à la fin du thread — même famille de piège anti-GC documentée pour d'autres workers du projet (voir skill `comicvine-metadata-fetch`, section workers Qt, et `archive-image-loading`, section `_orphan_workers`).
+5. **Overlay + masquage du message d'accueil** : `_resolve_and_download()` affiche un overlay rouge `web.web_analyzing_page` ("Analyse de la page en cours...") dès le lancement, et appelle `_suppress_empty_hint(canvas)` — voir section dédiée plus bas. Sans cet overlay immédiat, l'attente du GET réseau laisserait le canvas visuellement vide, perçu comme un freeze par l'utilisateur.
+
+## Extraction des images générées par JavaScript — `extract_images_from_js_loops()`
+
+**Ajouté le 2026-08-14** suite à un bug découvert sur le site officiel de MosaicView lui-même : sa page d'accueil (`index.html`) construit ses vignettes de démonstration (mosaïque animée + aperçus des deux panneaux) entièrement en JavaScript, sans jamais écrire de balise `<img src="...">` statique dans le HTML servi — `extract_images_from_html()` seule n'y trouvait donc que 3 images (les icônes) sur 36.
+
+**Approche retenue : analyse purement textuelle du `<script>`, sans jamais exécuter le JavaScript.** Une première tentative avec un rendu réel via `QWebEnginePage` (Chromium headless) a été essayée et abandonnée — elle capturait un instantané figé du DOM à un instant arbitraire, ne voyait jamais toutes les images d'une animation en boucle qui ne les affiche jamais toutes simultanément, et un simple délai d'attente plus long n'y changeait rien (le compte plafonnait, quel que soit le temps d'observation). Le vrai constat : les chemins d'images sont des **littéraux déjà présents dans le texte du script** — inutile d'exécuter quoi que ce soit pour les connaître, il suffit de les lire.
+
+Deux formes de boucle reconnues (`_JS_FOR_LOOP_RE` et `_JS_RECURSIVE_LOOP_RE`) :
+- **Vrai `for`** : `for (let i = A; i <[=] B; i++) { ... elt.src = EXPR; ... }`.
+- **Boucle simulée par récursion + `setTimeout`** (animations de remplissage échelonné) : `let VAR = START; function NAME() { if (VAR >= END) { ...; return; } ...elt.src = EXPR...; VAR++; ...setTimeout(NAME, délai); }` — pattern rencontré sur le site officiel (`fillOne()`), où le vrai `for` ne crée que les balises `<img>` vides, remplies plus tard par cette fonction récursive.
+
+Pour chaque boucle trouvée, `process_body()` (fonction interne) :
+1. Repère toute expression `.src = EXPR;` dans le corps de la boucle (`_find_matching_brace()` — comptage d'accolades pour délimiter le corps, suffisant pour du JS non minifié).
+2. Vérifie que `EXPR` est **intégralement** couverte par `_JS_CONCAT_TERM_RE` (littéraux `'...'`/`"..."`, identifiants nus, ou appels à un argument type `pad(i)`) — si un segment de l'expression n'est pas reconnu (ex. `pad(order[i])`, un accès de tableau dont le contenu n'existe qu'à l'exécution), l'expression entière est **rejetée**, jamais traitée partiellement : mieux vaut ne pas générer d'URL que d'en générer une tronquée/fausse.
+3. Pour chaque valeur de la variable de boucle sur son intervalle, résout chaque terme via `_resolve_js_number()` (littéral, constante `const`/`let`/`var` numérique déjà capturée par `_JS_CONST_NUM_RE`, constante string via `_JS_CONST_STR_RE`, ou la variable de boucle elle-même avec un éventuel `+N`/`-N`) et les fonctions de padding simples (`function pad(n) { return String(n).padStart(W, 'C'); }`, capturées par `_JS_PAD_FN_RE`) — reconstruit littéralement le chemin, résolu en URL absolue via `urljoin`.
+
+**Piège corrigé pendant le développement** : la variable de boucle (`i`) doit primer sur toute "constante" numérique globale de même nom — `for (let i = 0; ...)` matche accidentellement aussi le pattern générique de déclaration `let NAME = NUM;` utilisé pour capturer les constantes, ce qui polluait la résolution si l'ordre de priorité n'était pas explicite dans `_resolve_js_number()`.
+
+**Limite assumée** : ce parseur ne peut reconstruire que ce que le JavaScript référence explicitement dans son texte. Sur le site officiel, le script ne référence que `GRID_SIZE=24` images numérotées + 9 "Fantastic 09" par panneau (soit 33 après dédoublonnage des chevauchements + 3 icônes = 36 trouvées) — le dossier réel `Thumbnails/` du serveur contient en fait 72 fichiers (36+36), mais les 36 non référencés par le JS ne sont simplement jamais visibles depuis la page, donc hors du périmètre de ce que "importer depuis cette page" peut raisonnablement signifier.
+
+## Message d'accueil du canvas pendant l'import — `_suppress_empty_hint()` / `_restore_empty_hint()`
+
+**Ajouté le 2026-08-14.** Sans ce mécanisme, l'overlay rouge de progression (`show_canvas_text`, voir skill `canvas-overlay-progress`) se centre verticalement au même endroit que le message d'accueil "Déposez ici..." de `mosaic_canvas.py` (`_show_empty_message`/`_center_empty_items`) quand le canvas est vide (aucun comic ouvert) — les deux textes se chevauchent visuellement.
+
+Réutilise le pattern déjà établi ailleurs dans le projet (`panel_widget.py`/`scan_dialog_qt.py`) : l'attribut dynamique `canvas._loading` (positionné à `True`, il empêche `render_mosaic()` de recréer le message d'accueil) :
+
+- **`_suppress_empty_hint(canvas)`** : `canvas._loading = True` + supprime immédiatement les items déjà affichés dans la scène (`canvas._empty_items`) — nécessaire car `_loading=True` empêche seulement la *recréation* future du message, pas la suppression de celui déjà présent. Appelé au tout début de `_resolve_and_download()` et dans `WebDownloadController.__init__()` (couvre aussi le cas image directe, qui saute la phase de résolution).
+- **`_restore_empty_hint(canvas, callbacks)`** : `canvas._loading = False` + appelle `render_mosaic()` pour réafficher immédiatement le message si le canvas est resté vide. Appelé sur tout chemin d'échec (aucune image trouvée, erreur réseau/403, téléchargement totalement infructueux).
+- Le chemin de succès (`_add_entries_to_mosaic()`) remet aussi `canvas._loading = False` directement (nécessaire — sinon `_loading` resterait bloqué à `True` indéfiniment après un import réussi, empêchant le message de réapparaître si l'utilisateur vide le canvas plus tard).
 
 ## En-têtes HTTP — pourquoi deux jeux différents
 
@@ -69,7 +100,9 @@ Point de convergence des flux 2 et 3 (pas du flux 1, qui résout de façon synch
 
 ## Téléchargement effectif — `_DownloadWorker`
 
-- Pour chaque URL d'image : téléchargement (`urllib.request`, timeout 10s), validation via PIL (`Image.open` + `img.verify()`) — une URL qui prétendait être une image mais ne l'est pas est silencieusement ignorée (`except: pass`), pas d'erreur bloquante par image individuelle.
+- Pour chaque URL d'image : **encodage du path** via `urllib.parse.quote` avant la requête (`quote(parsed_img_url.path)`, `safe='/'` implicite) — corrige un bug où une URL contenant un espace ou un accent non encodé (ex. `Fantastic 09 01.jpg`) faisait lever `InvalidURL` par `urllib.request` et échouait systématiquement, alors qu'un vrai navigateur encode ces caractères automatiquement.
+- **Retry sur échec réseau transitoire** (`_DOWNLOAD_MAX_RETRIES=2` tentatives supplémentaires, `_DOWNLOAD_RETRY_DELAY_S=1.0` seconde entre chaque) — ajouté le 2026-08-14 après avoir observé un `503 Service Unavailable` ponctuel sur une seule image d'un lot de 36 (charge côté GitHub Pages). Pas de retry sur un échec de validation PIL (image invalide) — retenter le même contenu corrompu ne changerait rien. Le flag d'annulation est revérifié après la boucle de retry pour ne pas continuer si l'utilisateur a cliqué "Annuler" pendant l'attente.
+- Téléchargement (`urllib.request`, timeout 10s), validation via PIL (`Image.open` + `img.verify()`) — une URL qui prétendait être une image mais ne l'est pas est silencieusement ignorée (`except: pass`), pas d'erreur bloquante par image individuelle.
 - **Correction d'extension** : si le format réel détecté par PIL (`img.format`) diffère de l'extension déduite du nom de fichier dans l'URL, le nom est corrigé (ex. une image servie en `.jpg` mais réellement WebP devient `image.webp`) — même logique de cohérence que la détection de type d'archive (voir skill `archive-image-loading`, `detect_archive_type`), mais ici au niveau image individuelle plutôt qu'archive entière.
 - **Nom de fichier** : dérivé du chemin de l'URL (`os.path.basename`) si présent et avec extension, sinon généré (`{page_title}_{idx+1:03d}.jpg`) — `page_title` vient du domaine de la page source (`urlparse(url).netloc`, `www.` retiré).
 - **Préfixe `NEW-`** : ajouté si un comic est déjà ouvert (`state.current_file is not None`) OU si `state.images_data` contient déjà des entrées OU si d'autres entrées ont déjà été ajoutées **dans ce même lot** de téléchargement (`new_entries` non vide) — même convention que les autres chemins d'ajout après-coup (voir skill `archive-image-loading`, section chargement d'images isolées).
@@ -78,12 +111,12 @@ Point de convergence des flux 2 et 3 (pas du flux 1, qui résout de façon synch
 
 ## Interaction avec la mosaïque et les panneaux — `_add_entries_to_mosaic()`
 
-Point de sortie commun à `WebDownloadController._on_finished` (flux drop/résolution asynchrone) et à `WebImportDialog._process_url` (flux saisie manuelle) :
+Point de sortie unique de `WebDownloadController._on_finished` (les trois flux convergent maintenant tous vers le téléchargement asynchrone, voir plus haut) :
 
 1. Si `state.images_data` est vide (aucun comic ouvert), crée un point undo (`save_state()`) **avant** d'ajouter — cohérent avec le pattern des autres chemins d'ajout après-coup (voir skill `archive-image-loading`, `_ImageLoadWorker`/`_start_image_load`).
 2. `state.images_data.extend(entries)` puis retri par tri naturel (`_natural_sort_key`, importé depuis `archive_loader.py` — **pas dupliqué**, un seul point de tri naturel dans tout le projet).
 3. `state.modified = True`, `state.needs_renumbering = True` si au moins une image est présente (voir skill `renumbering` pour ce que ce flag active/désactive — pas de déclenchement automatique de renumérotation ici, juste l'activation du bouton).
-4. `clear_selection()`, `render_mosaic()`, rafraîchissement des boutons/toolbar via les callbacks fournis.
+4. `canvas._loading = False` (voir section message d'accueil ci-dessus), `clear_selection()`, `render_mosaic()`, rafraîchissement des boutons/toolbar via les callbacks fournis.
 
 **Dict `callbacks`** (contrat entre ce module et le panneau appelant, voir `PanelWidget._web_import_callbacks()`, `panel_widget.py:1486`) : `state`, `save_state`, `render_mosaic`, `update_button_text`, `update_create_cbz_button`, `clear_selection` — même style de contrat que `_get_batch_callbacks()` documenté dans le skill `batch-processing`, mais plus petit et spécifique à ce module. Toujours passer par cette méthode plutôt que de construire le dict à la main dans un nouveau call-site.
 
@@ -93,13 +126,16 @@ Point de sortie commun à `WebDownloadController._on_finished` (flux drop/résol
 
 - **Ajouter une nouvelle source de drop reconnue** (ex. un format de raccourci supplémentaire) : suivre le pattern `.url`/`.webloc` dans `PanelWidget._handle_dropped_paths()` — parser le fichier pour en extraire une URL `http(s)`, puis appeler `_resolve_and_download()` avec cette URL, exactement comme les deux cas existants.
 - **Changer la détection "URL qui ressemble à une image"** : uniquement `_url_looks_like_image()`/`_IMAGE_URL_EXTS` — attention, cette liste diffère volontairement de `IMAGE_EXTS` (inclut `.svg`), ne pas les fusionner sans vérifier l'impact.
-- **Changer le comportement anti-bot** (en-têtes, gestion 403) : `_BROWSER_HEADERS`/`_classify` dans `_ResolveWorker.run()` — un site qui bloque encore malgré ces en-têtes n'a pas de contournement supplémentaire prévu (pas de rotation de User-Agent, pas de proxy).
+- **Changer le comportement anti-bot** (en-têtes, gestion 403) : `_BROWSER_HEADERS` dans `_ResolveWorker.run()` — un site qui bloque encore malgré ces en-têtes n'a pas de contournement supplémentaire prévu (pas de rotation de User-Agent, pas de proxy).
+- **Étendre `extract_images_from_js_loops()` à un nouveau pattern JS** : ajouter une nouvelle regex de détection de boucle (sur le modèle de `_JS_FOR_LOOP_RE`/`_JS_RECURSIVE_LOOP_RE`) puis appeler `process_body()` avec `(loop_var, start, end, body)` — la logique de résolution des expressions (`_JS_CONCAT_TERM_RE`, `_resolve_js_number()`) est déjà partagée et n'a normalement pas besoin d'être dupliquée. Rester strict sur le rejet des expressions partiellement reconnues (ne jamais générer une URL tronquée).
+- **Ajuster les paramètres de retry réseau** : `_DOWNLOAD_MAX_RETRIES`/`_DOWNLOAD_RETRY_DELAY_S` en tête de la section `_DownloadWorker`.
 - Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `WebImportDialog` (non-modale déjà en place, `_wt()` pour le titre déjà en place).
 
 ## Pièges connus
 
-- **Ne pas confondre les trois mécanismes de résolution** : saisie manuelle = synchrone dans `_process_url` ; drop de lien/fichier raccourci = asynchrone via `_ResolveWorker`/`_resolve_and_download`. Un bug de blocage UI signalé sur l'un ne se reproduit pas forcément sur l'autre.
 - **`canvas._resolve_workers` est un attribut dynamique**, pas déclaré dans `__init__` de `MosaicCanvas` — créé à la volée par `getattr(canvas, '_resolve_workers', [])` au premier appel. Ne pas supposer qu'il existe avant tout appel à `_resolve_and_download`.
 - **Le drop de lien depuis un navigateur peut porter plusieurs représentations MIME simultanément** (`hasUrls()` ET `hasHtml()`) — toujours préférer le fragment HTML pour cibler l'image exacte quand disponible, ne pas se contenter de `web_urls[0]` par simplicité si `mime.hasHtml()` est vrai.
 - **Un `.url`/`.webloc` sans URL valide à l'intérieur retombe silencieusement dans `regular_paths`** — pas un message d'erreur dédié, le fichier suit le chemin normal de chargement et échouera probablement avec un message générique "format non supporté" (voir skill `archive-image-loading`).
-- **Le worker de téléchargement (`_DownloadWorker`) n'émet aucune erreur par image individuelle** — une image qui échoue (404, format invalide) est juste absente du résultat final ; seul `no_images` (aucune image téléchargée sur tout le lot) déclenche un message utilisateur.
+- **Le worker de téléchargement (`_DownloadWorker`) n'émet aucune erreur par image individuelle** — une image qui échoue après épuisement des retries (404, format invalide, panne serveur prolongée) est juste absente du résultat final ; seul `no_images` (aucune image téléchargée sur tout le lot) déclenche un message utilisateur.
+- **`extract_images_from_js_loops()` ne peut pas deviner ce que le JavaScript ne référence pas explicitement** — un dossier serveur peut contenir plus de fichiers que ce que le script charge réellement (voir section dédiée, cas du site officiel : 72 fichiers sur disque, 36 référencés et récupérables). Ce n'est pas un bug à corriger, c'est une limite structurelle de l'analyse statique face à du contenu qui n'existe que côté serveur.
+- **Ne jamais tenter de rendu JS réel (`QWebEnginePage`/Chromium headless) pour ce module** — approche déjà essayée et abandonnée (voir section `extract_images_from_js_loops`) : un instantané du DOM, même différé ou ré-échantillonné dans le temps, ne peut pas capturer une animation qui ne montre jamais toutes ses images simultanément, et ça introduit une dépendance/latence lourde pour un problème qui se résout entièrement par lecture statique du texte du script.

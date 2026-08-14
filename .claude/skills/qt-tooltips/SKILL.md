@@ -66,6 +66,12 @@ self._overlay_tip.track(self._multi_page_cb, _tip_html())
 ```
 Si le texte peut changer (langue, valeur dynamique), rappeler `set_tracked_html(...)` dans `_retranslate()` — même règle que tout texte affiché (voir CLAUDE.md, retraduction à la volée).
 
+**Piège — `set_tracked_html()` ne rafraîchit pas un tooltip déjà affiché à l'écran** : il ne fait que remplacer le texte stocké pour le widget ; le nouveau contenu n'apparaît qu'au prochain `Enter`/`MouseMove` détecté sur ce widget. Si le texte peut changer **sans que la souris bouge** — typiquement une icône bi-mode dont le tooltip dépend d'un état basculé par clic droit pendant que le curseur reste immobile dessus (ex. `_ViewerToolbar._update_straighten_tooltip`/`_update_sharpness_tooltip`, `viewer_toolbar_qt.py`, skill `viewers`) — l'ancien texte reste visible tant que l'utilisateur ne bouge pas la souris, ce qui est trompeur juste après le clic. Corrigé (v1.7.3+) par `force_refresh_visible(widget)` : réaffiche immédiatement le tooltip avec son texte à jour si et seulement s'il est déjà visible sur ce widget précis (no-op sinon). À appeler juste après `set_tracked_html(...)` dans tout handler de bascule d'état déclenché par un clic (pas un survol) :
+```python
+self._overlay_tip.set_tracked_html(tip, self._buttons["sharpness"])
+self._overlay_tip.force_refresh_visible(self._buttons["sharpness"])
+```
+
 ### 3. Cellules tronquées d'un `QTableWidget`
 
 `_CellTooltipFilter` (même fichier) : n'affiche l'overlay que si le texte de la cellule dépasse la largeur de colonne. S'installe sur le viewport de la table, pas sur la table elle-même — voir les usages existants pour le pattern d'installation exact avant d'en ajouter un nouveau.

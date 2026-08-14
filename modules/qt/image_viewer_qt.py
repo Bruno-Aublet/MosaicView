@@ -30,6 +30,10 @@ from modules.qt.crop_tool_qt import CropCanvasMixin, CropViewerMixin
 from modules.qt.straighten_tool_qt import StraightenCanvasMixin, StraightenViewerMixin
 from modules.qt.clone_tool_qt import CloneCanvasMixin, CloneViewerMixin
 from modules.qt.text_tool_qt import TextCanvasMixin, TextViewerMixin
+from modules.qt.adjustments_tool_qt import AdjustmentsCanvasMixin, AdjustmentsViewerMixin
+from modules.qt.brightness_tool_qt import BrightnessCanvasMixin, BrightnessViewerMixin
+from modules.qt.saturation_tool_qt import SaturationCanvasMixin, SaturationViewerMixin
+from modules.qt.remove_colors_tool_qt import RemoveColorsCanvasMixin, RemoveColorsViewerMixin
 # La barre d'outils elle-même (composant transversal, pas un outil) — même
 # principe de séparation, voir viewer_toolbar_qt.py.
 from modules.qt.viewer_toolbar_qt import _ViewerToolbar
@@ -63,7 +67,9 @@ def _compose_on_checkerboard(img: Image.Image, tile: int = 16) -> Image.Image:
 # Canvas de visionneuse (zone noire avec image centrée + rubber-band crop)
 # ─────────────────────────────────────────────────────────────────────────────
 
-class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, TextCanvasMixin, QLabel):
+class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, TextCanvasMixin,
+                     AdjustmentsCanvasMixin, BrightnessCanvasMixin, SaturationCanvasMixin,
+                     RemoveColorsCanvasMixin, QLabel):
     """
     QLabel utilisé comme zone d'affichage de l'image.
     Gère :
@@ -134,6 +140,26 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         # hérité par cette classe — CLAUDE.md : ne jamais migrer le code d'un
         # outil dans image_viewer_qt.py).
         self._init_text_state()
+
+        # État de l'outil "sharpness" (voir adjustments_tool_qt.py::
+        # AdjustmentsCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # jamais migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_adjustments_state()
+
+        # État de l'outil "brightness" (voir brightness_tool_qt.py::
+        # BrightnessCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # jamais migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_brightness_state()
+
+        # État de l'outil "saturation" (voir saturation_tool_qt.py::
+        # SaturationCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # jamais migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_saturation_state()
+
+        # État de l'outil "remove_colors" (voir remove_colors_tool_qt.py::
+        # RemoveColorsCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # jamais migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_remove_colors_state()
 
     # Méthodes de l'outil "crop" (has_crop, clear_crop, _get_resize_mode...)
     # fournies par CropCanvasMixin (crop_tool_qt.py), de l'outil "straighten"
@@ -296,6 +322,19 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
     # ── Événements souris ────────────────────────────────────────────────────
 
     def mousePressEvent(self, event):
+        # Vole explicitement le focus clavier à tout widget flottant de la
+        # barre d'outils actuellement en édition (ex. QSpinBox de netteté) :
+        # ce canvas a setFocusPolicy(Qt.NoFocus) (raccourcis clavier gérés
+        # par QShortcut au niveau fenêtre, pas par le focus du canvas), donc
+        # sans cet appel explicite, aucun clic dans la zone de lecture ne
+        # peut jamais faire perdre le focus à un widget flottant — celui-ci
+        # le garde indéfiniment jusqu'à ce que la fenêtre entière perde
+        # l'activation (diagnostiqué 2026-08-14 : QSpinBox.hasFocus() restait
+        # True après un clic canvas, seul un Alt+Tab vers une autre appli
+        # déclenchait le FocusOut). setFocus() sur un widget NoFocus reste
+        # possible par appel programmatique explicite (contrairement à un
+        # focus par clic natif, bloqué par la policy).
+        self.setFocus(Qt.MouseFocusReason)
         if event.button() == Qt.RightButton:
             self._pan_start = event.position().toPoint()
             self._is_panning = False
@@ -462,6 +501,21 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         text_panel = self._viewer._toolbar._text_panel
         if text_panel.isVisible():
             text_panel.reposition()
+        sharpness_panel = self._viewer._toolbar._sharpness_panel
+        if sharpness_panel.isVisible():
+            sharpness_panel.reposition()
+        unsharp_panel = self._viewer._toolbar._unsharp_panel
+        if unsharp_panel.isVisible():
+            unsharp_panel.reposition()
+        brightness_panel = self._viewer._toolbar._brightness_panel
+        if brightness_panel.isVisible():
+            brightness_panel.reposition()
+        saturation_panel = self._viewer._toolbar._saturation_panel
+        if saturation_panel.isVisible():
+            saturation_panel.reposition()
+        remove_colors_panel = self._viewer._toolbar._remove_colors_panel
+        if remove_colors_panel.isVisible():
+            remove_colors_panel.reposition()
         if self.has_text_blocks:
             self.reposition_text_blocks()
 
@@ -490,7 +544,9 @@ def _floating_options_panel_style(theme, class_name: str) -> str:
 # Visionneuse principale
 # ─────────────────────────────────────────────────────────────────────────────
 
-class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, TextViewerMixin, QDialog):
+class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, TextViewerMixin,
+                   AdjustmentsViewerMixin, BrightnessViewerMixin, SaturationViewerMixin,
+                   RemoveColorsViewerMixin, QDialog):
     """
     Visionneuse d'images Qt.
     Reproduit à l'identique ImageViewer (tkinter) :
@@ -556,6 +612,23 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         # persisté sur disque, perdu à la fermeture de la visionneuse.
         self._text_blocks_by_page: dict[int, list[tuple[int, int, str]]] = {}
 
+        # Preview PIL des outils "sharpness"/"unsharp" (5e outil migré) ET
+        # "brightness" (6e outil migré), PARTAGÉ entre les trois (un seul
+        # outil actif à la fois dans la barre, voir adjustments_tool_qt.py::
+        # _update_unsharp_preview et brightness_tool_qt.py::
+        # _update_brightness_preview) — PAS de dict par page comme
+        # crop/straighten/texte : contrairement à eux, un réglage non validé
+        # ne survit pas à un changement de page (idees.txt #3, décision
+        # explicite du 2026-08-14). Consommé par _display_single_page à la
+        # place de ensure_image_loaded(entry) quand non None. Voir
+        # adjustments_tool_qt.py::AdjustmentsViewerMixin et
+        # brightness_tool_qt.py::BrightnessViewerMixin. La correspondance
+        # valeur commitée <-> point d'historique vit sur state (pas ici), voir
+        # state.py::sharpness_value_by_history_index /
+        # brightness_value_by_history_index — elle doit survivre à la
+        # fermeture de cette fenêtre, contrairement au preview lui-même.
+        self._sharpness_preview_img = None
+
         # ── État ──────────────────────────────────────────────────────────────
         # zoom_level : échelle réelle par rapport à la taille native de l'image
         # (1.0 = 100% = 1 pixel image = 1 pixel écran). Initialisé au premier
@@ -604,6 +677,23 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         self._toolbar = _ViewerToolbar(self)
         if self._initial_tool in ("crop", "straighten", "clone", "text"):
             self._toolbar.set_active_tool(self._initial_tool)
+        # Synchronise le slider/spinbox de netteté sur la valeur déjà commitée
+        # pour cette page à ce point d'historique, si applicable (ex. fermer
+        # la visionneuse après un ajustement puis la rouvrir sur la même page
+        # doit réafficher la valeur, pas repartir de 0 — voir state.py::
+        # sharpness_value_by_history_index et _reset_sharpness_preview).
+        self._reset_sharpness_preview()
+        # Idem pour la luminosité/contraste (voir state.py::
+        # brightness_value_by_history_index et _reset_brightness_preview).
+        self._reset_brightness_preview()
+        # Idem pour la saturation (voir saturation_tool_qt.py::
+        # _reset_saturation_preview) — remet toujours le slider à 0, pas de
+        # resynchronisation sur une valeur commitée (voir sa docstring).
+        self._reset_saturation_preview()
+        # Idem pour la suppression des couleurs (voir remove_colors_tool_qt.py::
+        # _reset_remove_colors_preview) — remet toujours le slider à 0, même
+        # principe que saturation.
+        self._reset_remove_colors_preview()
 
         # Label du nom en bas
         self._name_label = QLabel()
@@ -969,6 +1059,15 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             # discussion du 3e outil migré) : la source Ctrl+cliquée est
             # simplement effacée, aucun travail en attente à restaurer.
             self._canvas.clear_clone_source()
+            # Idem pour la netteté (5e outil migré, idees.txt #3) et la
+            # luminosité/contraste (6e outil migré) : pas de persistance par
+            # page — le relâchement du slider commit déjà tout, donc changer
+            # de page ne peut qu'annuler un preview visuel abandonné en plein
+            # drag (avant relâchement).
+            self._reset_sharpness_preview()
+            self._reset_brightness_preview()
+            self._reset_saturation_preview()
+            self._reset_remove_colors_preview()
             self.display_image(keep_crop_rect=True)
         except ValueError:
             self._save_crop_for_current_page()
@@ -978,6 +1077,10 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             self._restore_crop_for_page(self.current_idx)
             self._restore_straighten_for_page(self.current_idx)
             self._restore_text_for_page(self.current_idx)
+            self._reset_sharpness_preview()
+            self._reset_brightness_preview()
+            self._reset_saturation_preview()
+            self._reset_remove_colors_preview()
             self._canvas.clear_clone_source()
             self.display_image(keep_crop_rect=True)
 
@@ -1165,6 +1268,19 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         if 0 <= self.current_idx < len(state.images_data):
             entry = state.images_data[self.current_idx]
             entry["img"] = None
+        # Le slider/spinbox de netteté reste sur la dernière valeur appliquée
+        # après un commit (voir perform_sharpness), donc un undo/redo doit le
+        # resynchroniser explicitement sur (page courante, history_index
+        # courant) — voir _reset_sharpness_preview, qui retrouve la valeur
+        # dans state.sharpness_value_by_history_index (survit même à une
+        # fermeture/réouverture de la visionneuse, voir state.py) ou remet à
+        # 0 si aucun commit sharpness ne correspond à ce point précis. Même
+        # principe pour la luminosité/contraste (state.
+        # brightness_value_by_history_index, _reset_brightness_preview).
+        self._reset_sharpness_preview()
+        self._reset_brightness_preview()
+        self._reset_saturation_preview()
+        self._reset_remove_colors_preview()
         self.display_image()
         self._toolbar.refresh_undo_redo_state()
 
@@ -1205,6 +1321,17 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             self._toolbar._text_panel.set_visible_for_tool(self._toolbar.active_tool)
             self._canvas._hide_validate_btn()
             self._text_blocks_by_page.pop(self.current_idx, None)
+        elif self._sharpness_preview_img is not None:
+            # Champ de preview PARTAGÉ entre sharpness/unsharp/brightness/
+            # saturation/remove_colors (un seul outil actif à la fois) — un
+            # seul des reset a un effet réel selon l'outil actuellement actif
+            # dans la barre, les autres sont des no-op silencieux (retrouvent
+            # (0,0)/0 et redéfinissent déjà self._sharpness_preview_img à
+            # None, sans dégât).
+            self._reset_sharpness_preview()
+            self._reset_brightness_preview()
+            self._reset_saturation_preview()
+            self._reset_remove_colors_preview()
         elif self.is_fullscreen:
             self.toggle_fullscreen()
         else:
@@ -1406,7 +1533,18 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         if not entry["is_image"]:
             return
 
-        img = ensure_image_loaded(entry)
+        # Preview live des outils "sharpness"/"unsharp"/"brightness"/
+        # "saturation"/"remove_colors" (non appliqué à entry['bytes'], champ
+        # partagé — un seul actif à la fois) : uniquement pour la page
+        # réellement affichée, voir adjustments_tool_qt.py::
+        # AdjustmentsViewerMixin._update_sharpness_preview,
+        # brightness_tool_qt.py::BrightnessViewerMixin._update_brightness_preview,
+        # saturation_tool_qt.py::SaturationViewerMixin._update_saturation_preview
+        # et remove_colors_tool_qt.py::RemoveColorsViewerMixin._update_remove_colors_preview.
+        if self._sharpness_preview_img is not None and idx == self.current_idx:
+            img = self._sharpness_preview_img
+        else:
+            img = ensure_image_loaded(entry)
         if img is None:
             return
 

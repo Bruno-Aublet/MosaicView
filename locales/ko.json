@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "기울기 보정",
     "toolbar_crop_instruction": "유지할 영역 주위에 사각형을 그린 다음 확인하세요",
     "toolbar_clone_tooltip": "복제",
-    "toolbar_text_tooltip": "텍스트"
+    "toolbar_text_tooltip": "텍스트",
+    "toolbar_sharpness_tooltip": "선명도",
+    "toolbar_unsharp_tooltip": "적응형 선명도",
+    "sharpness_panel_label": "선명도:",
+    "unsharp_radius_label": "반경:",
+    "unsharp_percent_label": "강도:",
+    "unsharp_threshold_label": "임계값:",
+    "toolbar_brightness_tooltip": "밝기 및 대비",
+    "toolbar_brightness_instruction": "슬라이더를 조정하면 놓는 순간 변경 사항이 적용됩니다",
+    "brightness_panel_label": "밝기:",
+    "contrast_panel_label": "대비:",
+    "toolbar_saturation_tooltip": "채도",
+    "toolbar_saturation_instruction": "슬라이더를 조정하면 놓는 순간 변경 사항이 적용됩니다",
+    "saturation_panel_label": "채도 :",
+    "toolbar_remove_colors_tooltip": "색상 제거",
+    "toolbar_remove_colors_instruction": "슬라이더를 조정하면 놓는 순간 변경 사항이 적용됩니다",
+    "remove_colors_panel_label": "강도 :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "밝기, 대비, 색상...",
       "refresh_mosaic": "모자이크 새로고침 (F5)",
       "create_ico": ".ico 파일 만들기",
-      "clone_zone": "영역 복제...",
-      "text": "텍스트 추가...",
-      "straighten_manual": "이미지를 수동으로 보정...",
       "straighten_auto": "이미지를 자동으로 보정"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "무시된 파일"
-      },
-      "no_selection_crop": {
-        "title": "선택 없음",
-        "message": "자를 이미지를 선택하세요."
-      },
-      "multi_selection_crop": {
-        "title": "다중 선택",
-        "message": "한 번에 하나의 이미지만 자를 수 있습니다.\n하나의 이미지를 선택하세요."
-      },
-      "invalid_selection_crop": {
-        "title": "잘못된 선택",
-        "message": "이미지만 자를 수 있습니다."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "기능을 사용할 수 없음",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "오류",
         "message": "텍스트를 적용할 수 없습니다: {error}"
+      },
+      "sharpness_failed": {
+        "title": "오류",
+        "message": "선명도를 적용할 수 없습니다: {error}"
+      },
+      "unsharp_failed": {
+        "title": "오류",
+        "message": "적응형 선명도를 적용할 수 없습니다: {error}"
+      },
+      "brightness_failed": {
+        "title": "오류",
+        "message": "밝기/대비를 적용할 수 없습니다: {error}"
+      },
+      "saturation_failed": {
+        "title": "오류",
+        "message": "채도를 적용할 수 없습니다: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "오류",
+        "message": "색상 제거를 적용할 수 없습니다: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "이미지",
       "apply_button": "적용",
       "color_depth_section": "색 심도",
-      "brightness_contrast_section": "밝기 및 대비",
       "compression_section": "압축",
       "effects_section": "효과",
       "sharpness_section": "선명도",
@@ -968,11 +988,8 @@
       "depth_24bit": "24비트 (RGB - 색상)",
       "depth_8bit": "8 bit (PNG paleteu / JPEG hoeksaek)",
       "depth_1bit": "1비트 (흑백)",
-      "brightness_label": "밝기: {value}",
-      "contrast_label": "대비: {value}",
       "compression_enable": "재압축 활성화",
       "compression_quality_label": "품질 : {value}/100",
-      "sharpness_label": "선명도: {value}",
       "effect_none": "효과 없음",
       "effect_grayscale": "회색조",
       "effect_sepia": "세피아",
@@ -991,8 +1008,6 @@
       "preview_section": "미리보기",
       "effect_invert": "색상 반전",
       "preview_warning": "미리보기는 최종 결과와 다를 수 있습니다",
-      "effect_remove_colors": "색상 제거",
-      "remove_colors_intensity_label": "강도 : {value}",
       "image_mode_section": "이미지 모드",
       "image_mode_rgb": "RGB (색상)",
       "image_mode_rgba": "RGBA (색상 + 투명도)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (인쇄)",
       "image_mode_1": "1 (순수 흑백)",
       "image_mode_p": "P (256색 팔레트)",
-      "saturation_section": "채도",
-      "saturation_label": "채도 : {value}",
-      "saturation_viewer_title": "채도 조정",
       "transparency_section": "투명도",
       "transparency_info": "투명도는 PNG, WebP, ICO 및 AVIF 이미지에만 적용됩니다",
       "transparency_type_label": "유형 :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "전체 투명도 : 클릭한 색상과 가까운 색상을 가진 이미지의 모든 픽셀에 영향을 줍니다",
       "transparency_apply": "적용",
       "transparency_skipped_warning": "{count} 이미지 건너뜀 — 형식이 투명도와 호환되지 않습니다. 포함하려면 먼저 PNG로 변환하세요.",
-      "unsharp_section": "적응형 선명도",
-      "unsharp_radius_label": "반경: {value}",
-      "unsharp_percent_label": "강도: {value} %",
-      "unsharp_threshold_label": "임계값: {value}",
-      "unsharp_viewer_title": "적응형 선명도",
       "auto_levels_tooltip": "각 페이지를 분석하고 대비를 극대화하기 위해 흑백 레벨을 자동으로 조정합니다.\n페이지별로 선택하려면 뷰어를 사용하세요.",
       "transparency_unsaved_title": "적용되지 않은 변경사항",
       "transparency_unsaved_message": "현재 변경사항이 이미지에 적용되지 않았습니다. 어떻게 하시겠습니까?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "흰점 스포이트",
       "black_pipette_tooltip": "완전히 검은색이어야 하는 픽셀을 클릭하세요. 주의: 과하게 하기 쉽습니다!",
       "white_pipette_tooltip": "완전히 흰색이어야 하는 픽셀을 클릭하세요. 주의: 과하게 하기 쉽습니다!"
-    },
-    "sharpness_viewer": {
-      "title": "선명도 조정"
-    },
-    "brightness_viewer": {
-      "title": "밝기 및 대비 조정"
     },
     "compression_viewer": {
       "title": "압축 조정"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "아이콘 크기 늘리기",
     "source_loose": "단독 이미지",
     "source_web": "웹 이미지",
-    "straighten": "이미지 기울기 보정",
-    "clone_zone": "영역 복제",
-    "text": "텍스트 추가",
+    "straighten": "이미지를 자동으로 똑바로 세우기",
     "batch_cb7_to_cbz": "폴더와 하위 폴더의 모든 CB7 파일을\nCBZ로 변환합니다.",
     "batch_cb7_permanent_delete": "경고 : 이 옵션을 선택하면 변환 후\n원본 CB7 파일이 영구적으로 삭제되며\n복구할 수 없습니다.\n백업이 있는지 확인하세요.",
     "batch_cbt_to_cbz": "폴더와 하위 폴더의 모든 CBT 파일을\nCBZ로 변환합니다.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "이 파일에서 중복된 페이지가 감지되었습니다.\n클릭하면 중복 페이지 관리 창이 열립니다.",
     "duplicate_indicator_none": "중복이 감지되지 않았습니다",
     "straighten_mode_0": "수동 모드 (기준선 그리기)\n모드를 변경하려면 오른쪽 클릭",
-    "straighten_mode_1": "자동 모드 (기울기 감지)\n모드를 변경하려면 오른쪽 클릭"
+    "straighten_mode_1": "자동 모드 (기울기 감지)\n모드를 변경하려면 오른쪽 클릭",
+    "sharpness_mode_0": "이미지의 디테일을 강화하거나 부드럽게 합니다\n적응형 선명도로 전환하려면 우클릭하세요",
+    "sharpness_mode_1": "균일한 영역은 유지하면서 윤곽선을 강조합니다\n단순 선명도로 전환하려면 우클릭하세요"
   },
   "help": {
     "title": "MosaicView - 사용 방법",
@@ -1506,6 +1507,7 @@
     "relative_path": "상대 경로"
   },
   "web": {
+    "web_analyzing_page": "페이지 분석 중...",
     "web_download_progress": "다운로드 중: {downloaded}/{total} 이미지...",
     "web_download_cancel": "취소",
     "web_no_images": "이미지 없음",

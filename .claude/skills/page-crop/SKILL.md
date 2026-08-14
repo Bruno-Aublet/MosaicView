@@ -68,16 +68,17 @@ Depuis v1.7.3, le crop est le premier outil intégré à la nouvelle barre d'out
 
 ## Points d'entrée UI
 
-Deux façons d'atteindre le crop, structurellement différentes des autres skills d'édition d'image :
+**Un seul point d'entrée depuis le 2026-08-14** : directement dans la visionneuse principale déjà ouverte (double-clic sur une vignette, ou tout autre chemin d'ouverture, skill `viewers`), en sélectionnant l'icône Recadrage dans la barre d'outils flottante puis en traçant un rectangle avec la souris. Il n'existe plus de point d'entrée dédié depuis la mosaïque qui ouvrirait directement la visionneuse avec cet outil présélectionné.
 
-1. **`crop_selected_image`** (`PanelWidget._crop_selected_image()`, `panel_widget.py`) — accessible depuis le menu contextuel (`context_menus_qt.py`, clé `context_menu.image.crop`), la barre de menu (`menubar_qt.py`) et la colonne d'icônes (`icon_toolbar_qt.py`, bouton id `"crop"`, icône `BTN_Crop.png`, **pas de tooltip dédié** comme `page-resize` — utilise le libellé `context_menu.image.crop`, activé seulement si `single_image_selected()`). Ce callback **ne fait pas le crop lui-même** : il valide la sélection (exactement une image, garde-fous `no_selection_crop`/`multi_selection_crop`/`invalid_selection_crop`) puis **ouvre la visionneuse principale** sur cette image, avec l'outil Recadrage **présélectionné** dans la barre d'outils flottante depuis v1.7.3 (`self._open_image_viewer(idx, initial_tool="crop")` → `open_image_viewer(..., initial_tool="crop")` → `ImageViewer(..., initial_tool="crop")`, voir skill `viewers`) — l'utilisateur trace ensuite le rectangle lui-même, mais n'a plus besoin de cliquer d'abord sur l'icône de la barre.
-2. **Directement dans la visionneuse déjà ouverte** — aucun bouton ni menu n'est nécessaire une fois `ImageViewer` affichée : tracer un rectangle avec la souris est le seul déclencheur, qu'on ait ouvert la visionneuse via le crop, un double-clic sur une vignette, ou tout autre chemin (skill `viewers`).
+**Nettoyage du 2026-08-14** (`idees.txt` #3, "NETTOYAGE DES COMMANDES REDONDANTES") : `context_menu.image.crop` (menu contextuel), l'entrée équivalente de la barre de menu, le bouton `"crop"` de la colonne d'icônes (`icon_toolbar_qt.py`), et la méthode `PanelWidget._crop_selected_image()` (`panel_widget.py`) qui les orchestrait — tous supprimés, devenus orphelins une fois le crop entièrement intégré à la visionneuse. Les clés de traduction `messages.warnings.no_selection_crop`/`multi_selection_crop`/`invalid_selection_crop` (gardes-fous de sélection propres à cet ancien point d'entrée) ont été retirées avec lui.
 
 Callbacks utilisés par `perform_crop` (`self.callbacks`, transmis à la construction de `ImageViewer`) : `state`, `save_state`, `render_mosaic`, `update_button_text`, `canvas` — pas de `refresh_status` ni `rollback`, contrairement à `rotate-flip`/`page-resize`.
 
 ## Traductions
 
-`locales/fr.json` : `buttons.validate_crop` (`"Valider la découpe"`, texte du bouton flottant, réutilisé nulle part ailleurs — distinct de `dialogs.ico_creator.btn_validate_crop` qui sert un mécanisme différent), `context_menu.image.crop` (`"Recadrer"`, menus + tooltip icône), messages d'erreur `messages.warnings.no_selection_crop`/`multi_selection_crop`/`invalid_selection_crop`/`no_crop_selection`, `messages.errors.crop_invalid`/`crop_failed`. Voir skill `add-translation`.
+`locales/fr.json` : `buttons.validate_crop` (`"Valider la découpe"`, texte du bouton flottant, réutilisé nulle part ailleurs — distinct de `dialogs.ico_creator.btn_validate_crop` qui sert un mécanisme différent), `messages.errors.crop_invalid`/`crop_failed`. Voir skill `add-translation`.
+
+**Clés mortes retirées le 2026-08-14** (ancien point d'entrée mosaïque supprimé) : `context_menu.image.crop`, `messages.warnings.no_selection_crop`/`multi_selection_crop`/`invalid_selection_crop`/`no_crop_selection`.
 
 **A une section dans le mode d'emploi** (`user_guide_qt.py:635`, clé `help.crop`/`help.crop_content`) — comme `page-resize`, contrairement à `add-text-to-image` (skill `user-guide`).
 
@@ -97,8 +98,8 @@ Callbacks utilisés par `perform_crop` (`self.callbacks`, transmis à la constru
 - **Basculement automatique en mode simple page** dès qu'un rectangle est validé en mode double page — le crop ne s'applique jamais à deux pages simultanément, toujours résolu à une seule.
 - **Le double-clic a un double sens contextuel** (valider le crop à l'intérieur du rectangle, basculer le plein écran ailleurs) — `_ignore_crop_events` protège contre une réinterprétation des événements souris résiduels, mais toute modification de cette zone doit revalider les deux comportements.
 - **Clé de message d'erreur dupliquée** (`crop_failed.title` au lieu de `.message`) dans `perform_crop` — bug préexistant, ne pas le reproduire ailleurs par copier-coller.
-- **`crop_selected_image` n'exécute pas le crop** — il ouvre seulement la visionneuse ; ne pas chercher la logique de recadrage à cet endroit du code.
 - **Ne pas confondre avec le crop de `ico_creator_qt.py`** — mécanisme entièrement séparé pour la création de fichiers `.ico`, traductions `dialogs.ico_creator.btn_validate_crop`/`btn_validate_no_crop`/`btn_back_to_crop`, hors périmètre de ce skill.
+- **Plus de point d'entrée depuis la mosaïque** (menu contextuel, barre de menu, colonne d'icônes) depuis le 2026-08-14 — ne pas chercher `PanelWidget._crop_selected_image()`, elle a été supprimée avec ses 3 points d'appel ; le crop ne s'atteint plus que depuis l'intérieur de la visionneuse déjà ouverte.
 
 ## Références croisées
 
@@ -106,8 +107,6 @@ Callbacks utilisés par `perform_crop` (`self.callbacks`, transmis à la constru
 - `apply-image-operation` — pattern général d'invalidation de cache ; `perform_crop` suit la variante (A) complète mais s'écarte du pattern `force=True` recommandé aux deux appels de `save_state`.
 - `page-straighten` / `page-resize` — autres exemples documentés d'écarts au pattern `force=True` standard de `save_state` ; `page-straighten` suit désormais exactement le même pattern que `perform_crop` (deux `save_state()` sans `force=True`) depuis sa migration dans la visionneuse principale.
 - `page-resize` — même optimisation de précalcul explicite de la vignette Qt (`build_qimage_for_entry`) avant `refresh_thumbnail`.
-- `icon-toolbar` — bouton "crop" de la colonne d'icônes (sans tooltip dédié, comme "resize").
-- `qt-context-menus` — entrée du menu contextuel clic droit.
 - `comicinfo-metadata-editor` — mise à jour des attributs de page dans `ComicInfo.xml` après recadrage.
 - `user-guide` — section `help.crop` existante, à maintenir à jour.
 - `create-ico` — cadre rouge interactif très similaire en interaction (poignées, curseurs, coordonnées relatives persistantes) mais implémentation indépendante (`_CropCanvas`, phase A de `IcoCreatorDialog`), avec une contrainte supplémentaire : le cadre y est toujours forcé carré.

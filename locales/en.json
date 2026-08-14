@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Straighten",
     "toolbar_crop_instruction": "Draw a rectangle around the area to keep, then confirm",
     "toolbar_clone_tooltip": "Cloning",
-    "toolbar_text_tooltip": "Text"
+    "toolbar_text_tooltip": "Text",
+    "toolbar_sharpness_tooltip": "Sharpness",
+    "toolbar_unsharp_tooltip": "Adaptive sharpness",
+    "sharpness_panel_label": "Sharpness:",
+    "unsharp_radius_label": "Radius:",
+    "unsharp_percent_label": "Amount:",
+    "unsharp_threshold_label": "Threshold:",
+    "toolbar_brightness_tooltip": "Brightness and contrast",
+    "toolbar_brightness_instruction": "Adjust the sliders, the change applies on release",
+    "brightness_panel_label": "Brightness:",
+    "contrast_panel_label": "Contrast:",
+    "toolbar_saturation_tooltip": "Saturation",
+    "toolbar_saturation_instruction": "Adjust the slider, the change applies on release",
+    "saturation_panel_label": "Saturation :",
+    "toolbar_remove_colors_tooltip": "Color removal",
+    "toolbar_remove_colors_instruction": "Adjust the slider, the change applies on release",
+    "remove_colors_panel_label": "Intensity :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Brightness, contrast, colors...",
       "refresh_mosaic": "Refresh mosaic (F5)",
       "create_ico": "Create .ico file",
-      "clone_zone": "Clone Zone...",
-      "text": "Add text...",
-      "straighten_manual": "Straighten the image manually...",
       "straighten_auto": "Straighten the image automatically"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Files ignored"
-      },
-      "no_selection_crop": {
-        "title": "No selection",
-        "message": "Please select an image to crop."
-      },
-      "multi_selection_crop": {
-        "title": "Multiple selection",
-        "message": "You can only crop one image at a time.\nPlease select a single image."
-      },
-      "invalid_selection_crop": {
-        "title": "Invalid selection",
-        "message": "Only images can be cropped."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Function not available",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Error",
         "message": "Cannot apply text: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Error",
+        "message": "Could not apply sharpness: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Error",
+        "message": "Could not apply adaptive sharpness: {error}"
+      },
+      "brightness_failed": {
+        "title": "Error",
+        "message": "Could not apply brightness/contrast: {error}"
+      },
+      "saturation_failed": {
+        "title": "Error",
+        "message": "Could not apply saturation: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Error",
+        "message": "Could not apply color removal: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "images",
       "apply_button": "Apply",
       "color_depth_section": "Color Depth",
-      "brightness_contrast_section": "Brightness and Contrast",
       "compression_section": "Compression",
       "effects_section": "Effects",
       "sharpness_section": "Sharpness",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bits (RGB - colors)",
       "depth_8bit": "8 bits (PNG palette / JPEG grayscale)",
       "depth_1bit": "1 bit (black and white)",
-      "brightness_label": "Brightness: {value}",
-      "contrast_label": "Contrast: {value}",
       "compression_enable": "Enable recompression",
       "compression_quality_label": "Quality : {value}/100",
-      "sharpness_label": "Sharpness: {value}",
       "effect_none": "No effect",
       "effect_grayscale": "Grayscale",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Preview",
       "effect_invert": "Color inversion",
       "preview_warning": "Preview may differ from final result",
-      "effect_remove_colors": "Color removal",
-      "remove_colors_intensity_label": "Intensity : {value}",
       "image_mode_section": "Image mode",
       "image_mode_rgb": "RGB (colors)",
       "image_mode_rgba": "RGBA (colors + transparency)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (print)",
       "image_mode_1": "1 (pure black and white)",
       "image_mode_p": "P (256-color palette)",
-      "saturation_section": "Saturation",
-      "saturation_label": "Saturation : {value}",
-      "saturation_viewer_title": "Saturation adjustment",
       "transparency_section": "Transparency",
       "transparency_info": "Transparency applies only to PNG, WebP, ICO and AVIF images",
       "transparency_type_label": "Type :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Global transparency : affects all pixels in the image whose color is close to the clicked one",
       "transparency_apply": "Apply",
       "transparency_skipped_warning": "{count} image(s) skipped — format not compatible with transparency. To include them, convert them to PNG first.",
-      "unsharp_section": "Adaptive sharpness",
-      "unsharp_radius_label": "Radius: {value}",
-      "unsharp_percent_label": "Amount: {value}%",
-      "unsharp_threshold_label": "Threshold: {value}",
-      "unsharp_viewer_title": "Adaptive sharpness",
       "auto_levels_tooltip": "Analyses each page and automatically adjusts the black and white levels to maximise contrast.\nTo choose page by page, use the viewer.",
       "transparency_unsaved_title": "Unapplied changes",
       "transparency_unsaved_message": "The current changes have not been applied to the image. What would you like to do?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "White point eyedropper",
       "black_pipette_tooltip": "Click on a pixel that should be completely black. Caution: it's easy to overdo it!",
       "white_pipette_tooltip": "Click on a pixel that should be completely white. Caution: it's easy to overdo it!"
-    },
-    "sharpness_viewer": {
-      "title": "Sharpness Adjustment"
-    },
-    "brightness_viewer": {
-      "title": "Brightness and Contrast Adjustment"
     },
     "compression_viewer": {
       "title": "Compression Adjustment"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Increase icon size",
     "source_loose": "Loose image",
     "source_web": "Web image",
-    "straighten": "Straighten image",
-    "clone_zone": "Clone Zone",
-    "text": "Add text",
+    "straighten": "Straighten image automatically",
     "batch_cb7_to_cbz": "Converts all CB7 files in a directory\nand its subdirectories to CBZ.",
     "batch_cb7_permanent_delete": "WARNING : if this option is checked,\nthe original CB7 files will be permanently\ndeleted after conversion with no possibility\nof recovery. Make sure you have a backup.",
     "batch_cbt_to_cbz": "Converts all CBT files in a directory\nand its subdirectories to CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Duplicate pages were detected in this file.\nClick to open the duplicate pages management window.",
     "duplicate_indicator_none": "No duplicate detected",
     "straighten_mode_0": "Manual mode (draw a reference line)\nRight-click to change mode",
-    "straighten_mode_1": "Automatic mode (skew detection)\nRight-click to change mode"
+    "straighten_mode_1": "Automatic mode (skew detection)\nRight-click to change mode",
+    "sharpness_mode_0": "Enhances or softens the image details\nRight-click to switch to adaptive sharpness",
+    "sharpness_mode_1": "Accentuates edges while sparing flat areas\nRight-click to switch to simple sharpness"
   },
   "help": {
     "title": "MosaicView - User Manual",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relative path"
   },
   "web": {
+    "web_analyzing_page": "Analyzing page...",
     "web_download_progress": "Downloading: {downloaded}/{total} images...",
     "web_download_cancel": "Cancel",
     "web_no_images": "No images",

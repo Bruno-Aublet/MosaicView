@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Dírigh",
     "toolbar_crop_instruction": "Tarraing dronuilleog timpeall an réimse le coinneáil, ansin deimhnigh",
     "toolbar_clone_tooltip": "Clónáil",
-    "toolbar_text_tooltip": "Téacs"
+    "toolbar_text_tooltip": "Téacs",
+    "toolbar_sharpness_tooltip": "Géire",
+    "toolbar_unsharp_tooltip": "Géire oiriúnaitheach",
+    "sharpness_panel_label": "Géire:",
+    "unsharp_radius_label": "Ga:",
+    "unsharp_percent_label": "Déine:",
+    "unsharp_threshold_label": "Tairseach:",
+    "toolbar_brightness_tooltip": "Gile agus codarsnacht",
+    "toolbar_brightness_instruction": "Coigeartaigh na sleamhnáin, cuirtear an coigeartú i bhfeidhm nuair a scaoiltear é",
+    "brightness_panel_label": "Gile:",
+    "contrast_panel_label": "Codarsnacht:",
+    "toolbar_saturation_tooltip": "Sáithiú",
+    "toolbar_saturation_instruction": "Coigeartaigh an sleamhnán, cuirtear an coigeartú i bhfeidhm nuair a scaoiltear é",
+    "saturation_panel_label": "Sáithiú :",
+    "toolbar_remove_colors_tooltip": "Baint dathanna",
+    "toolbar_remove_colors_instruction": "Coigeartaigh an sleamhnán, cuirtear an coigeartú i bhfeidhm nuair a scaoiltear é",
+    "remove_colors_panel_label": "Déine :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Gile, codarsnacht, dathanna...",
       "refresh_mosaic": "Athnuaigh an mósáic (F5)",
       "create_ico": "Cruthaigh comhad .ico",
-      "clone_zone": "Crios a chlónáil...",
-      "text": "Cuir téacs leis...",
-      "straighten_manual": "Dírigh an íomhá de láimh...",
       "straighten_auto": "Dírigh an íomhá go huathoibríoch"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Comhaid imithe i léig"
-      },
-      "no_selection_crop": {
-        "title": "Gan roghnúchán",
-        "message": "Le do thoil roghnaigh íomhá le bearradh."
-      },
-      "multi_selection_crop": {
-        "title": "Ilroghnúchán",
-        "message": "Ní féidir ach íomhá amháin a bhearradh ag an am céanna.\nLe do thoil roghnaigh íomhá amháin."
-      },
-      "invalid_selection_crop": {
-        "title": "Roghnúchán neamhbhailí",
-        "message": "Ní féidir ach íomhánna a bhearradh."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Feidhm gan fáil",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Earráid",
         "message": "Níorbh fhéidir an téacs a chur i bhfeidhm: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an ghéire a chur i bhfeidhm: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an ghéire oiriúnaitheach a chur i bhfeidhm: {error}"
+      },
+      "brightness_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir gile/codarsnacht a chur i bhfeidhm: {error}"
+      },
+      "saturation_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an sáithiú a chur i bhfeidhm: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir baint na ndathanna a chur i bhfeidhm: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "iomhanna",
       "apply_button": "Cuir i bhfeidhm",
       "color_depth_section": "Doimhneacht datha",
-      "brightness_contrast_section": "Gile agus codarsnacht",
       "compression_section": "Comhbhrú",
       "effects_section": "Éifeachtaí",
       "sharpness_section": "Géire",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 giotán (RGB - dathanna)",
       "depth_8bit": "8 giotan (pailteid PNG / scalaí liatha JPEG)",
       "depth_1bit": "1 ghiotán (dubh agus bán)",
-      "brightness_label": "Gile: {value}",
-      "contrast_label": "Codarsnacht: {value}",
       "compression_enable": "Cumasaigh athchomhbhrú",
       "compression_quality_label": "Cáilíocht : {value}/100",
-      "sharpness_label": "Géire: {value}",
       "effect_none": "Gan éifeacht",
       "effect_grayscale": "Tóin liatha",
       "effect_sepia": "Séipea",
@@ -991,8 +1008,6 @@
       "preview_section": "Réamhamharc",
       "effect_invert": "Inbhéartú datha",
       "preview_warning": "D'fhéadfadh réamhamharc difriocht a bheith leis an toradh deiridh",
-      "effect_remove_colors": "Baint dathanna",
-      "remove_colors_intensity_label": "Déine : {value}",
       "image_mode_section": "Mód íomhá",
       "image_mode_rgb": "RGB (dathanna)",
       "image_mode_rgba": "RGBA (dathanna + trédhearcacht)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (priontáil)",
       "image_mode_1": "1 (dubh agus bán íon)",
       "image_mode_p": "P (pailit 256 dath)",
-      "saturation_section": "Sáithiú",
-      "saturation_label": "Sáithiú : {value}",
-      "saturation_viewer_title": "Coigeartú sáithithe",
       "transparency_section": "Trédhearcacht",
       "transparency_info": "Ní bhaineann trédhearcacht ach le híomhánna PNG, WebP, ICO agus AVIF",
       "transparency_type_label": "Cineál :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Trédhearcacht dhomhanda : téann i bhfeidhm ar gach picséal san íomhá a bhfuil a dhath cosúil leis an gceann cliceáilte",
       "transparency_apply": "Cuir i bhfeidhm",
       "transparency_skipped_warning": "{count} íomhá(nna) fágtha ar lár — formáid neamh-chomhoiriúnach le trédhearcacht. Chun iad a áireamh, tiontaigh go PNG ar dtús iad.",
-      "unsharp_section": "Géire oiriúnach",
-      "unsharp_radius_label": "Ga: {value}",
-      "unsharp_percent_label": "Déine: {value} %",
-      "unsharp_threshold_label": "Tairseach: {value}",
-      "unsharp_viewer_title": "Géire oiriúnach",
       "auto_levels_tooltip": "Déanann sé anailís ar gach leathanach agus coigeartaíonn sé leibhéil na dubhe agus na báine go huathoibríoch chun an codarsnacht a uasmhéadú.\nChun roghnú leathanach ar leathanach, úsáid an breathnóir.",
       "transparency_unsaved_title": "Athruithe gan cur i bhfeidhm",
       "transparency_unsaved_message": "Níor cuireadh na hathruithe reatha i bhfeidhm ar an íomhá. Cad ba mhaith leat a dhéanamh?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Drioploir pointe ban",
       "black_pipette_tooltip": "Cliceáil ar phicteilín ba cheart a bheith dubh ar fad. Aire: tá sé éasca dul thar fóir!",
       "white_pipette_tooltip": "Cliceáil ar phicteilín ba cheart a bheith bán ar fad. Aire: tá sé éasca dul thar fóir!"
-    },
-    "sharpness_viewer": {
-      "title": "Coigeartú Géire"
-    },
-    "brightness_viewer": {
-      "title": "Coigeartú Gile agus Codarsnachta"
     },
     "compression_viewer": {
       "title": "Coigeartú Comhbhrúite"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Méadaigh méid na ndeilbhíní",
     "source_loose": "Íomhá scaoilte",
     "source_web": "Íomhá gréasáin",
-    "straighten": "Díriú íomhá",
-    "clone_zone": "Crios a chlónáil",
-    "text": "Cuir téacs leis",
+    "straighten": "Dírigh an íomhá go huathoibríoch",
     "batch_cb7_to_cbz": "Tiontaíonn sé gach comhad CB7 in eolaire\nagus a fho-eolairí go CBZ.",
     "batch_cb7_permanent_delete": "RABHADH : má roghnaítear an rogha seo,\nscriosfar na comhaid CB7 bunaidh go buan\ntar éis an tiontaithe gan féidearthacht aisghabhála.\nCinntigh go bhfuil cúltaca agat.",
     "batch_cbt_to_cbz": "Tiontaíonn sé gach comhad CBT in eolaire\nagus a fho-eolairí go CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Braitheadh leathanaigh dhúblacha sa chomhad seo.\nCliceáil chun an fhuinneog bhainistíochta dúblach a oscailt.",
     "duplicate_indicator_none": "Níor braitheadh aon dhúblach",
     "straighten_mode_0": "Modh láimhe (tarraing líne tagartha)\nDeaschliceáil chun modh a athrú",
-    "straighten_mode_1": "Modh uathoibríoch (braite fiaradh)\nDeaschliceáil chun modh a athrú"
+    "straighten_mode_1": "Modh uathoibríoch (braite fiaradh)\nDeaschliceáil chun modh a athrú",
+    "sharpness_mode_0": "Neartaíonn nó boga sonraí na híomhá\nDeaschliceáil chun aistriú go géire oiriúnaitheach",
+    "sharpness_mode_1": "Cuireann sé béim ar imlínte agus na réimsí comhionanna á spáráil\nDeaschliceáil chun aistriú go géire shimplí"
   },
   "help": {
     "title": "MosaicView - Treoir",
@@ -1506,6 +1507,7 @@
     "relative_path": "Cosán coibhneasta"
   },
   "web": {
+    "web_analyzing_page": "Á anailísiú ar an leathanach...",
     "web_download_progress": "Ag íoslódáil: {downloaded}/{total} íomhá...",
     "web_download_cancel": "Cealaigh",
     "web_no_images": "Gan íomhánna",

@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Ισίωμα",
     "toolbar_crop_instruction": "Σχεδιάστε ένα ορθογώνιο γύρω από την περιοχή που θα διατηρηθεί και επιβεβαιώστε",
     "toolbar_clone_tooltip": "Κλωνοποίηση",
-    "toolbar_text_tooltip": "Κείμενο"
+    "toolbar_text_tooltip": "Κείμενο",
+    "toolbar_sharpness_tooltip": "Ευκρίνεια",
+    "toolbar_unsharp_tooltip": "Προσαρμοστική ευκρίνεια",
+    "sharpness_panel_label": "Ευκρίνεια:",
+    "unsharp_radius_label": "Ακτίνα:",
+    "unsharp_percent_label": "Ένταση:",
+    "unsharp_threshold_label": "Κατώφλι:",
+    "toolbar_brightness_tooltip": "Φωτεινότητα και αντίθεση",
+    "toolbar_brightness_instruction": "Ρυθμίστε τους ολισθητές, η προσαρμογή εφαρμόζεται στην απελευθέρωση",
+    "brightness_panel_label": "Lamprotita:",
+    "contrast_panel_label": "Antithesi:",
+    "toolbar_saturation_tooltip": "Κορεσμός",
+    "toolbar_saturation_instruction": "Ρυθμίστε τον ολισθητή, η προσαρμογή εφαρμόζεται στην απελευθέρωση",
+    "saturation_panel_label": "Κορεσμός :",
+    "toolbar_remove_colors_tooltip": "Αφαίρεση χρωμάτων",
+    "toolbar_remove_colors_instruction": "Ρυθμίστε τον ολισθητή, η προσαρμογή εφαρμόζεται στην απελευθέρωση",
+    "remove_colors_panel_label": "Ένταση :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Φωτεινότητα, αντίθεση, χρώματα...",
       "refresh_mosaic": "Ανανέωση μωσαϊκού (F5)",
       "create_ico": "Δημιουργία αρχείου .ico",
-      "clone_zone": "Κλωνοποίηση ζώνης...",
-      "text": "Προσθήκη κειμένου...",
-      "straighten_manual": "Χειροκίνητη ισιώμα εικόνας...",
       "straighten_auto": "Αυτόματο ίσιωμα εικόνας"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Αρχεία που αγνοήθηκαν"
-      },
-      "no_selection_crop": {
-        "title": "Καμία επιλογή",
-        "message": "Παρακαλώ επιλέξτε μια εικόνα για περικοπή."
-      },
-      "multi_selection_crop": {
-        "title": "Πολλαπλή επιλογή",
-        "message": "Μπορείτε να περικόψετε μόνο μία εικόνα τη φορά.\nΠαρακαλώ επιλέξτε μόνο μία εικόνα."
-      },
-      "invalid_selection_crop": {
-        "title": "Μη έγκυρη επιλογή",
-        "message": "Μόνο εικόνες μπορούν να περικοπούν."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Μη διαθέσιμη λειτουργία",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Σφάλμα",
         "message": "Δεν ήταν δυνατή η εφαρμογή του κειμένου: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η εφαρμογή της ευκρίνειας: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η εφαρμογή της προσαρμοστικής ευκρίνειας: {error}"
+      },
+      "brightness_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η εφαρμογή φωτεινότητας/αντίθεσης: {error}"
+      },
+      "saturation_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η εφαρμογή του κορεσμού: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η εφαρμογή της αφαίρεσης χρωμάτων: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "eikones",
       "apply_button": "Epharmogi",
       "color_depth_section": "Vathos chromatos",
-      "brightness_contrast_section": "Lamprotita kai antiθesi",
       "compression_section": "Sympiesי",
       "effects_section": "Efarmoge",
       "sharpness_section": "Oksytita",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bits (RGB - chromata)",
       "depth_8bit": "8 bit (paleta PNG / apostaseis tou gkrizou JPEG)",
       "depth_1bit": "1 bit (mayroprosopos)",
-      "brightness_label": "Lamprotita: {value}",
-      "contrast_label": "Antithesi: {value}",
       "compression_enable": "Energopoiisi episyenesis",
       "compression_quality_label": "Ποιότητα : {value}/100",
-      "sharpness_label": "Oksytita: {value}",
       "effect_none": "Kanena efarmogi",
       "effect_grayscale": "Apostaseis tou gkrizou",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Προεπισκόπηση",
       "effect_invert": "Αντιστροφή χρωμάτων",
       "preview_warning": "Η προεπισκόπηση μπορεί να διαφέρει από το τελικό αποτέλεσμα",
-      "effect_remove_colors": "Αφαίρεση χρωμάτων",
-      "remove_colors_intensity_label": "Ένταση : {value}",
       "image_mode_section": "Λειτουργία εικόνας",
       "image_mode_rgb": "RGB (χρώματα)",
       "image_mode_rgba": "RGBA (χρώματα + διαφάνεια)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (εκτύπωση)",
       "image_mode_1": "1 (καθαρό ασπρόμαυρο)",
       "image_mode_p": "P (παλέτα 256 χρωμάτων)",
-      "saturation_section": "Κορεσμός",
-      "saturation_label": "Κορεσμός : {value}",
-      "saturation_viewer_title": "Ρύθμιση κορεσμού",
       "transparency_section": "Διαφάνεια",
       "transparency_info": "Η διαφάνεια ισχύει μόνο για εικόνες PNG, WebP, ICO και AVIF",
       "transparency_type_label": "Τύπος :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Καθολική διαφάνεια : επηρεάζει όλα τα pixels της εικόνας που έχουν παρόμοιο χρώμα με αυτό που κλικάρατε",
       "transparency_apply": "Εφαρμογή",
       "transparency_skipped_warning": "{count} εικόνα(ες) παρακάμφθηκε(αν) — η μορφή δεν είναι συμβατή με τη διαφάνεια. Για να τις συμπεριλάβετε, μετατρέψτε τις πρώτα σε PNG.",
-      "unsharp_section": "Προσαρμοστική ευκρίνεια",
-      "unsharp_radius_label": "Ακτίνα: {value}",
-      "unsharp_percent_label": "Ένταση: {value} %",
-      "unsharp_threshold_label": "Κατώφλι: {value}",
-      "unsharp_viewer_title": "Προσαρμοστική ευκρίνεια",
       "auto_levels_tooltip": "Αναλύει κάθε σελίδα και ρυθμίζει αυτόματα τα επίπεδα μαύρου και λευκού για μέγιστη αντίθεση.\nΓια επιλογή σελίδα προς σελίδα, χρησιμοποιήστε τον προβολέα.",
       "transparency_unsaved_title": "Μη εφαρμοσμένες αλλαγές",
       "transparency_unsaved_message": "Οι τρέχουσες αλλαγές δεν έχουν εφαρμοστεί στην εικόνα. Τι θέλετε να κάνετε;",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Πιπέτα λευκού σημείου",
       "black_pipette_tooltip": "Κάντε κλικ σε ένα εικονοστοιχείο που θα έπρεπε να είναι εντελώς μαύρο. Προσοχή: είναι εύκολο να το παρακάνετε!",
       "white_pipette_tooltip": "Κάντε κλικ σε ένα εικονοστοιχείο που θα έπρεπε να είναι εντελώς λευκό. Προσοχή: είναι εύκολο να το παρακάνετε!"
-    },
-    "sharpness_viewer": {
-      "title": "Ρύθμιση ευκρίνειας"
-    },
-    "brightness_viewer": {
-      "title": "Ρύθμιση φωτεινότητας και αντίθεσης"
     },
     "compression_viewer": {
       "title": "Ρύθμιση συμπίεσης"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Αύξηση μεγέθους εικονιδίων",
     "source_loose": "Ελεύθερη εικόνα",
     "source_web": "Εικόνα ιστού",
-    "straighten": "Ευθυγράμμιση εικόνας",
-    "clone_zone": "Κλωνοποίηση ζώνης",
-    "text": "Προσθήκη κειμένου",
+    "straighten": "Αυτόματη ευθυγράμμιση εικόνας",
     "batch_cb7_to_cbz": "Μετατρέπει όλα τα αρχεία CB7 σε έναν\nφάκελο και τους υποφακέλους του σε CBZ.",
     "batch_cb7_permanent_delete": "ΠΡΟΕΙΔΟΠΟΙΗΣΗ : εάν επιλεγεί αυτή η επιλογή,\nτα αρχικά αρχεία CB7 θα διαγραφούν μόνιμα\nμετά τη μετατροπή χωρίς δυνατότητα ανάκτησης.\nΒεβαιωθείτε ότι έχετε αντίγραφο ασφαλείας.",
     "batch_cbt_to_cbz": "Μετατρέπει όλα τα αρχεία CBT σε έναν\nφάκελο και τους υποφακέλους του σε CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Εντοπίστηκαν διπλότυπες σελίδες σε αυτό το αρχείο.\nΚάντε κλικ για να ανοίξετε το παράθυρο διαχείρισης διπλότυπων.",
     "duplicate_indicator_none": "Δεν εντοπίστηκαν διπλότυπα",
     "straighten_mode_0": "Χειροκίνητη λειτουργία (σχεδιάστε μια γραμμή αναφοράς)\nΔεξί κλικ για αλλαγή λειτουργίας",
-    "straighten_mode_1": "Αυτόματη λειτουργία (ανίχνευση κλίσης)\nΔεξί κλικ για αλλαγή λειτουργίας"
+    "straighten_mode_1": "Αυτόματη λειτουργία (ανίχνευση κλίσης)\nΔεξί κλικ για αλλαγή λειτουργίας",
+    "sharpness_mode_0": "Ενισχύει ή απαλύνει τις λεπτομέρειες της εικόνας\nΔεξί κλικ για εναλλαγή σε προσαρμοστική ευκρίνεια",
+    "sharpness_mode_1": "Τονίζει τα περιγράμματα χωρίς να επηρεάζει τις ομοιόμορφες περιοχές\nΔεξί κλικ για εναλλαγή σε απλή ευκρίνεια"
   },
   "help": {
     "title": "MosaicView - Οδηγίες χρήσης",
@@ -1506,6 +1507,7 @@
     "relative_path": "Σχετική διαδρομή"
   },
   "web": {
+    "web_analyzing_page": "Ανάλυση σελίδας...",
     "web_download_progress": "Λήψη: {downloaded}/{total} εικόνες...",
     "web_download_cancel": "Ακύρωση",
     "web_no_images": "Χωρίς εικόνες",

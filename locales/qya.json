@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Lempina",
     "toolbar_crop_instruction": "Tirë cantalë pëtalë yesta; ta manta.",
     "toolbar_clone_tooltip": "Lúmequenta",
-    "toolbar_text_tooltip": "Tecië"
+    "toolbar_text_tooltip": "Tecië",
+    "toolbar_sharpness_tooltip": "Laica",
+    "toolbar_unsharp_tooltip": "Laica Curwë",
+    "sharpness_panel_label": "Laica:",
+    "unsharp_radius_label": "Rauta:",
+    "unsharp_percent_label": "Moia:",
+    "unsharp_threshold_label": "Telpe:",
+    "toolbar_brightness_tooltip": "Cala ar Racca",
+    "toolbar_brightness_instruction": "Tanë i telcor; carë ná lehta.",
+    "brightness_panel_label": "Cala:",
+    "contrast_panel_label": "Racca:",
+    "toolbar_saturation_tooltip": "Cuivëa",
+    "toolbar_saturation_instruction": "Tanë i telco; carë ná lehta.",
+    "saturation_panel_label": "Cuivëa :",
+    "toolbar_remove_colors_tooltip": "Culienen faireva",
+    "toolbar_remove_colors_instruction": "Tanë i telco; carë ná lehta.",
+    "remove_colors_panel_label": "Alcar :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Calima, contrasta, culini...",
       "refresh_mosaic": "Envinyata i mosaic (F5)",
       "create_ico": "Carë .ico quetta",
-      "clone_zone": "Óre fëa lúmequenta...",
-      "text": "Yanta quetta...",
-      "straighten_manual": "Lempina tanna i mal...",
       "straighten_auto": "Lempina tanna autómatavë"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Parmar avanyar"
-      },
-      "no_selection_crop": {
-        "title": "Úma cilmë",
-        "message": "Cilë erya fána an píta."
-      },
-      "multi_selection_crop": {
-        "title": "Cilmë rimba",
-        "message": "Lá mauya píta rimbeli fánali.\nCilë erya fána tambë."
-      },
-      "invalid_selection_crop": {
-        "title": "Cilmë úvëa",
-        "message": "Tambë fánar mai pítastar."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Návë úvëa",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Russë",
         "message": "Úma tecië i fána: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Russë",
+        "message": "Úma laica i fána: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Russë",
+        "message": "Úma laica Curwë i fána: {error}"
+      },
+      "brightness_failed": {
+        "title": "Russë",
+        "message": "Úma laica i cala/racca: {error}"
+      },
+      "saturation_failed": {
+        "title": "Russë",
+        "message": "Úma laica i cuivëa: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Russë",
+        "message": "Úma laica i culienen faireva: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "fánar",
       "apply_button": "Cara",
       "color_depth_section": "Culuva nu",
-      "brightness_contrast_section": "Cala ar racca",
       "compression_section": "Pucta",
       "effects_section": "Carmar",
       "sharpness_section": "Laica",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 quetta (RGB - culini)",
       "depth_8bit": "8 quetta (PNG palma / JPEG mista harma)",
       "depth_1bit": "1 quetta (morna ar lossea)",
-      "brightness_label": "Cala: {value}",
-      "contrast_label": "Racca: {value}",
       "compression_enable": "Polda atapucta",
       "compression_quality_label": "Qualitë : {value}/100",
-      "sharpness_label": "Laica: {value}",
       "effect_none": "Ua carma",
       "effect_grayscale": "Mista",
       "effect_sepia": "Varne",
@@ -991,8 +1008,6 @@
       "preview_section": "Tíralya",
       "effect_invert": "Culuina vilya",
       "preview_warning": "I nurtaina polë virya i yesta tyara",
-      "effect_remove_colors": "Culienen faireva",
-      "remove_colors_intensity_label": "Alcar : {value}",
       "image_mode_section": "Canta i ondonya",
       "image_mode_rgb": "RGB (quessir)",
       "image_mode_rgba": "RGBA (quessir + tercenya)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (tecil)",
       "image_mode_1": "1 (mori ar losse aica)",
       "image_mode_p": "P (256 quessir palan)",
-      "saturation_section": "Cuivëa",
-      "saturation_label": "Cuivëa : {value}",
-      "saturation_viewer_title": "Cuivëa canwa",
       "transparency_section": "Calima",
       "transparency_info": "Calima ná apsenë PNG, WebP, ICO ar AVIF i caimë",
       "transparency_type_label": "Quetta :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Calima ilúvëa : apsenë ilya quesseli i caimessë ya quessë nó i tecaina",
       "transparency_apply": "Carë",
       "transparency_skipped_warning": "{count} i-picture(i) passenwa — i-format umir coivie alasse. Nan tulien, esta converte nan PNG.",
-      "unsharp_section": "Adaptative telpina",
-      "unsharp_radius_label": "Rauta: {value}",
-      "unsharp_percent_label": "Moia: {value} %",
-      "unsharp_threshold_label": "Telpe: {value}",
-      "unsharp_viewer_title": "Adaptative telpina",
       "auto_levels_tooltip": "Cenin quanta parma ar autómatavë cemë morë ar ninquë rambor an úmea canwa.\nCen parma mi parma, anta vistar.",
       "transparency_unsaved_title": "Carmir umbar únotë",
       "transparency_unsaved_message": "I carmir sí umbar únotë i cuilë andavë. Manen meril carë?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Ninque pica stillor",
       "black_pipette_tooltip": "Apsa i pixel minya ná ná morë ramba. Etelehta: naiquë ná malya hácina!",
       "white_pipette_tooltip": "Apsa i pixel minya ná ná ninquë ramba. Etelehta: naiquë ná malya hácina!"
-    },
-    "sharpness_viewer": {
-      "title": "Tereva nasta"
-    },
-    "brightness_viewer": {
-      "title": "Kála ar tinco nasta"
     },
     "compression_viewer": {
       "title": "Rimba nasta"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Alta icon formar",
     "source_loose": "Cálë verya",
     "source_web": "Cálë verë",
-    "straighten": "Lempina lómë",
-    "clone_zone": "Óre fëa lúmequenta",
-    "text": "Forma quetta",
+    "straighten": "Lempina i emma autómatavë",
     "batch_cb7_to_cbz": "Canta ilyë CB7 fíli i mápessë\nar nu-mápissen na CBZ.",
     "batch_cb7_permanent_delete": "VÁQUETË : cé sina tant' is i CB7 fíli\nhehtuvanë tennoio ar cantuvaina\nan lá nótë or rucë.",
     "batch_cbt_to_cbz": "Canta ilyë CBT fíli i mápessë\nar nu-mápissen na CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Atta-parmar hirne mi parma sina.\nFormë latya i atta-parmaron menta.",
     "duplicate_indicator_none": "Atta-parmar lá hirne",
     "straighten_mode_0": "Norma lé (teke minë tanna cendëo)\nForma hya tyalie quetie",
-    "straighten_mode_1": "Autómata lé (cenna i cendo)\nForma hya tyalie quetie"
+    "straighten_mode_1": "Autómata lé (cenna i cendo)\nForma hya tyalie quetie",
+    "sharpness_mode_0": "Ortanë hya milya i emma\nForma hya tyalie i laica Curwë",
+    "sharpness_mode_1": "Tereva i rembë an vanya nostalë\nForma hya tyalie i laica þinta"
   },
   "help": {
     "title": "MosaicView - Nottië návaren",
@@ -1506,6 +1507,7 @@
     "relative_path": "Tiëlë coivierwa"
   },
   "web": {
+    "web_analyzing_page": "Catë, Terma...",
     "web_download_progress": "Tecë: {downloaded}/{total} parmë...",
     "web_download_cancel": "Avaquet",
     "web_no_images": "Úparmë",

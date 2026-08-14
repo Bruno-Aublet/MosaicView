@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "ปรับให้ตรง",
     "toolbar_crop_instruction": "วาดสี่เหลี่ยมล้อมรอบพื้นที่ที่ต้องการเก็บไว้ แล้วยืนยัน",
     "toolbar_clone_tooltip": "การโคลน",
-    "toolbar_text_tooltip": "ข้อความ"
+    "toolbar_text_tooltip": "ข้อความ",
+    "toolbar_sharpness_tooltip": "ความคมชัด",
+    "toolbar_unsharp_tooltip": "ความคมชัดแบบปรับตัว",
+    "sharpness_panel_label": "ความคมชัด:",
+    "unsharp_radius_label": "รัศมี:",
+    "unsharp_percent_label": "ความเข้ม:",
+    "unsharp_threshold_label": "ค่าขีดแบ่ง:",
+    "toolbar_brightness_tooltip": "ความสว่างและคอนทราสต์",
+    "toolbar_brightness_instruction": "ปรับแถบเลื่อน การปรับจะมีผลเมื่อปล่อยเมาส์",
+    "brightness_panel_label": "ความสว่าง:",
+    "contrast_panel_label": "ความคมชัด:",
+    "toolbar_saturation_tooltip": "ความอิ่มตัว",
+    "toolbar_saturation_instruction": "ปรับแถบเลื่อน การปรับจะมีผลเมื่อปล่อยเมาส์",
+    "saturation_panel_label": "ความอิ่มตัว :",
+    "toolbar_remove_colors_tooltip": "การลบสี",
+    "toolbar_remove_colors_instruction": "ปรับแถบเลื่อน การปรับจะมีผลเมื่อปล่อยเมาส์",
+    "remove_colors_panel_label": "ความเข้ม :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "ความสว่าง คอนทราสต์ สี...",
       "refresh_mosaic": "รีเฟรชโมเสก (F5)",
       "create_ico": "สร้างไฟล์ .ico",
-      "clone_zone": "โคลนโซน...",
-      "text": "เพิ่มข้อความ...",
-      "straighten_manual": "ปรับภาพให้ตรงด้วยตนเอง...",
       "straighten_auto": "ปรับภาพให้ตรงอัตโนมัติ"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "ไฟล์ที่ถูกละเว้น"
-      },
-      "no_selection_crop": {
-        "title": "ไม่มีการเลือก",
-        "message": "กรุณาเลือกภาพที่ต้องการครอป"
-      },
-      "multi_selection_crop": {
-        "title": "เลือกหลายรายการ",
-        "message": "คุณสามารถครอปได้ทีละภาพเท่านั้น\nกรุณาเลือกภาพเดียว"
-      },
-      "invalid_selection_crop": {
-        "title": "การเลือกไม่ถูกต้อง",
-        "message": "สามารถครอปได้เฉพาะภาพเท่านั้น"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "ฟีเจอร์ไม่พร้อมใช้งาน",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "ข้อผิดพลาด",
         "message": "ไม่สามารถใช้ข้อความได้: {error}"
+      },
+      "sharpness_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถใช้ความคมชัดได้: {error}"
+      },
+      "unsharp_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถใช้ความคมชัดแบบปรับตัวได้: {error}"
+      },
+      "brightness_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถปรับความสว่าง/คอนทราสต์ได้: {error}"
+      },
+      "saturation_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถปรับความอิ่มตัวได้: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถปรับการลบสีได้: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "ภาพ",
       "apply_button": "นำไปใช้",
       "color_depth_section": "ความลึกของสี",
-      "brightness_contrast_section": "ความสว่างและความคมชัด",
       "compression_section": "การบีบอัด",
       "effects_section": "เอฟเฟกต์",
       "sharpness_section": "ความคมชัด",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 บิต (RGB - สี)",
       "depth_8bit": "8 bit (paleteu PNG / radab sii thaw JPEG)",
       "depth_1bit": "1 บิต (ขาวดำ)",
-      "brightness_label": "ความสว่าง: {value}",
-      "contrast_label": "ความคมชัด: {value}",
       "compression_enable": "เปิดใช้งานการบีบอัดใหม่",
       "compression_quality_label": "คุณภาพ : {value}/100",
-      "sharpness_label": "ความคมชัด: {value}",
       "effect_none": "ไม่มีเอฟเฟกต์",
       "effect_grayscale": "ระดับสีเทา",
       "effect_sepia": "สีซีเปีย",
@@ -991,8 +1008,6 @@
       "preview_section": "แสดงตัวอย่าง",
       "effect_invert": "การกลับสี",
       "preview_warning": "การแสดงตัวอย่างอาจแตกต่างจากผลลัพธ์สุดท้าย",
-      "effect_remove_colors": "การลบสี",
-      "remove_colors_intensity_label": "ความเข้ม : {value}",
       "image_mode_section": "โหมดภาพ",
       "image_mode_rgb": "RGB (สี)",
       "image_mode_rgba": "RGBA (สี + ความโปร่งใส)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (พิมพ์)",
       "image_mode_1": "1 (ขาวดำบริสุทธิ์)",
       "image_mode_p": "P (พาล็ต 256 สี)",
-      "saturation_section": "ความอิ่มตัว",
-      "saturation_label": "ความอิ่มตัว : {value}",
-      "saturation_viewer_title": "การปรับความอิ่มตัว",
       "transparency_section": "ความโปร่งใส",
       "transparency_info": "ความโปร่งใสใช้ได้เฉพาะกับภาพ PNG, WebP, ICO และ AVIF เท่านั้น",
       "transparency_type_label": "ประเภท :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "ความโปร่งใสทั่วทั้งภาพ : ส่งผลต่อพิกเซลทั้งหมดในภาพที่มีสีใกล้เคียงกับที่คลิก",
       "transparency_apply": "ใช้งาน",
       "transparency_skipped_warning": "{count} ภาพถูกข้าม — รูปแบบไม่รองรับความโปร่งใส หากต้องการรวมไว้ ให้แปลงเป็น PNG ก่อน",
-      "unsharp_section": "ความคมชัดแบบปรับตัว",
-      "unsharp_radius_label": "รัศมี: {value}",
-      "unsharp_percent_label": "ความเข้ม: {value} %",
-      "unsharp_threshold_label": "ค่าขีดแบ่ง: {value}",
-      "unsharp_viewer_title": "ความคมชัดแบบปรับตัว",
       "auto_levels_tooltip": "วิเคราะห์แต่ละหน้าและปรับระดับสีดำและสีขาวโดยอัตโนมัติเพื่อเพิ่มความคมชัดสูงสุด\nหากต้องการเลือกทีละหน้า ให้ใช้ตัวแสดง",
       "transparency_unsaved_title": "การเปลี่ยนแปลงที่ยังไม่ได้ใช้",
       "transparency_unsaved_message": "การเปลี่ยนแปลงปัจจุบันยังไม่ได้ถูกนำไปใช้กับภาพ คุณต้องการทำอะไร?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "หลอดดูดจุดขาว",
       "black_pipette_tooltip": "คลิกที่พิกเซลที่ควรจะเป็นสีดำสนิท ระวัง: ทำมากเกินไปได้ง่าย!",
       "white_pipette_tooltip": "คลิกที่พิกเซลที่ควรจะเป็นสีขาวสนิท ระวัง: ทำมากเกินไปได้ง่าย!"
-    },
-    "sharpness_viewer": {
-      "title": "การปรับความคมชัด"
-    },
-    "brightness_viewer": {
-      "title": "การปรับความสว่างและความคมชัด"
     },
     "compression_viewer": {
       "title": "การปรับการบีบอัด"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "เพิ่มขนาดไอคอน",
     "source_loose": "ภาพอิสระ",
     "source_web": "ภาพเว็บ",
-    "straighten": "ปรับภาพให้ตรง",
-    "clone_zone": "โคลนโซน",
-    "text": "เพิ่มข้อความ",
+    "straighten": "จัดภาพให้ตรงโดยอัตโนมัติ",
     "batch_cb7_to_cbz": "แปลงไฟล์ CB7 ทั้งหมดในโฟลเดอร์\nและโฟลเดอร์ย่อยเป็น CBZ",
     "batch_cb7_permanent_delete": "คำเตือน : หากเลือกตัวเลือกนี้\nไฟล์ CB7 ต้นฉบับจะถูกลบอย่างถาวรหลังการแปลง\nโดยไม่สามารถกู้คืนได้\nกรุณาตรวจสอบว่ามีไฟล์สำรองข้อมูล",
     "batch_cbt_to_cbz": "แปลงไฟล์ CBT ทั้งหมดในโฟลเดอร์\nและโฟลเดอร์ย่อยเป็น CBZ",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "ตรวจพบหน้าที่ซ้ำกันในไฟล์นี้\nคลิกเพื่อเปิดหน้าต่างจัดการหน้าที่ซ้ำกัน",
     "duplicate_indicator_none": "ไม่พบรายการซ้ำ",
     "straighten_mode_0": "โหมดกำหนดเอง (วาดเส้นอ้างอิง)\nคลิกขวาเพื่อเปลี่ยนโหมด",
-    "straighten_mode_1": "โหมดอัตโนมัติ (ตรวจจับความเอียง)\nคลิกขวาเพื่อเปลี่ยนโหมด"
+    "straighten_mode_1": "โหมดอัตโนมัติ (ตรวจจับความเอียง)\nคลิกขวาเพื่อเปลี่ยนโหมด",
+    "sharpness_mode_0": "เพิ่มหรือลดรายละเอียดของภาพ\nคลิกขวาเพื่อสลับไปใช้ความคมชัดแบบปรับตัว",
+    "sharpness_mode_1": "เน้นขอบภาพโดยไม่กระทบพื้นที่เรียบ\nคลิกขวาเพื่อสลับไปใช้ความคมชัดแบบธรรมดา"
   },
   "help": {
     "title": "MosaicView - คู่มือการใช้งาน",
@@ -1506,6 +1507,7 @@
     "relative_path": "เส้นทางสัมพัทธ์"
   },
   "web": {
+    "web_analyzing_page": "กำลังวิเคราะห์หน้าเว็บ...",
     "web_download_progress": "กำลังดาวน์โหลด: {downloaded}/{total} รูปภาพ...",
     "web_download_cancel": "ยกเลิก",
     "web_no_images": "ไม่มีรูปภาพ",

@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Suoristus",
     "toolbar_crop_instruction": "Piirrä suorakulmio säilytettävän alueen ympärille ja vahvista",
     "toolbar_clone_tooltip": "Kloonaus",
-    "toolbar_text_tooltip": "Teksti"
+    "toolbar_text_tooltip": "Teksti",
+    "toolbar_sharpness_tooltip": "Terävyys",
+    "toolbar_unsharp_tooltip": "Mukautuva terävyys",
+    "sharpness_panel_label": "Terävyys:",
+    "unsharp_radius_label": "Säde:",
+    "unsharp_percent_label": "Voimakkuus:",
+    "unsharp_threshold_label": "Kynnys:",
+    "toolbar_brightness_tooltip": "Kirkkaus ja kontrasti",
+    "toolbar_brightness_instruction": "Säädä liukusäätimiä, muutos tulee voimaan vapautettaessa",
+    "brightness_panel_label": "Kirkkaus:",
+    "contrast_panel_label": "Kontrasti:",
+    "toolbar_saturation_tooltip": "Värikylläisyys",
+    "toolbar_saturation_instruction": "Säädä liukusäädintä, muutos tulee voimaan vapautettaessa",
+    "saturation_panel_label": "Värikylläisyys :",
+    "toolbar_remove_colors_tooltip": "Värien poisto",
+    "toolbar_remove_colors_instruction": "Säädä liukusäädintä, muutos tulee voimaan vapautettaessa",
+    "remove_colors_panel_label": "Intensiteetti :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Kirkkaus, kontrasti, värit...",
       "refresh_mosaic": "Päivitä mosaiikki (F5)",
       "create_ico": "Luo .ico-tiedosto",
-      "clone_zone": "Kloonaa alue...",
-      "text": "Lisää teksti...",
-      "straighten_manual": "Suorista kuva manuaalisesti...",
       "straighten_auto": "Suorista kuva automaattisesti"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Tiedostot ohitettu"
-      },
-      "no_selection_crop": {
-        "title": "Ei valintaa",
-        "message": "Valitse rajattava kuva."
-      },
-      "multi_selection_crop": {
-        "title": "Useita valittuja",
-        "message": "Voit rajata vain yhden kuvan kerrallaan.\nValitse vain yksi kuva."
-      },
-      "invalid_selection_crop": {
-        "title": "Virheellinen valinta",
-        "message": "Vain kuvia voidaan rajata."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Toiminto ei käytettävissä",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Virhe",
         "message": "Tekstiä ei voitu käyttää: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Virhe",
+        "message": "Terävyyttä ei voitu käyttää: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Virhe",
+        "message": "Mukautuvaa terävyyttä ei voitu käyttää: {error}"
+      },
+      "brightness_failed": {
+        "title": "Virhe",
+        "message": "Kirkkautta/kontrastia ei voitu käyttää: {error}"
+      },
+      "saturation_failed": {
+        "title": "Virhe",
+        "message": "Värikylläisyyttä ei voitu käyttää: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Virhe",
+        "message": "Värien poistoa ei voitu käyttää: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "kuvaa",
       "apply_button": "Kayta",
       "color_depth_section": "Varisyvyys",
-      "brightness_contrast_section": "Kirkkaus ja kontrasti",
       "compression_section": "Pakkaus",
       "effects_section": "Tehosteet",
       "sharpness_section": "Terävyys",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bittia (RGB - varit)",
       "depth_8bit": "8 bittia (PNG-paletti / JPEG-harmaasavyt)",
       "depth_1bit": "1 bitti (mustavalkoinen)",
-      "brightness_label": "Kirkkaus: {value}",
-      "contrast_label": "Kontrasti: {value}",
       "compression_enable": "Ota kayttoon uudelleenpakkaus",
       "compression_quality_label": "Laatu : {value}/100",
-      "sharpness_label": "Teravyys: {value}",
       "effect_none": "Ei tehostetta",
       "effect_grayscale": "Harmaasavyt",
       "effect_sepia": "Seepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Esikatselu",
       "effect_invert": "Värien kääntö",
       "preview_warning": "Esikatselu voi poiketa lopullisesta tuloksesta",
-      "effect_remove_colors": "Värien poisto",
-      "remove_colors_intensity_label": "Intensiteetti : {value}",
       "image_mode_section": "Kuvatila",
       "image_mode_rgb": "RGB (värit)",
       "image_mode_rgba": "RGBA (värit + läpinäkyvyys)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (tulostus)",
       "image_mode_1": "1 (puhdas mustavalkoinen)",
       "image_mode_p": "P (256 värin paletti)",
-      "saturation_section": "Värikylläisyys",
-      "saturation_label": "Värikylläisyys : {value}",
-      "saturation_viewer_title": "Värikylläisyyden säätö",
       "transparency_section": "Läpinäkyvyys",
       "transparency_info": "Läpinäkyvyys koskee vain PNG-, WebP-, ICO- ja AVIF-kuvia",
       "transparency_type_label": "Tyyppi :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Yleinen läpinäkyvyys : vaikuttaa kaikkiin kuvan pikseleihin, joiden väri on lähellä napsautettua",
       "transparency_apply": "Käytä",
       "transparency_skipped_warning": "{count} kuva(a) ohitettu — muoto ei ole yhteensopiva läpinäkyvyyden kanssa. Sisällyttääksesi ne, muunna ne ensin PNG-muotoon.",
-      "unsharp_section": "Adaptiivinen terävyys",
-      "unsharp_radius_label": "Säde: {value}",
-      "unsharp_percent_label": "Voimakkuus: {value} %",
-      "unsharp_threshold_label": "Kynnys: {value}",
-      "unsharp_viewer_title": "Adaptiivinen terävyys",
       "auto_levels_tooltip": "Analysoi jokaisen sivun ja säätää automaattisesti mustan ja valkoisen tasot kontrastin maksimoimiseksi.\nValitaksesi sivu sivulta käytä katseluohjelmaa.",
       "transparency_unsaved_title": "Soveltamattomat muutokset",
       "transparency_unsaved_message": "Nykyisiä muutoksia ei ole sovellettu kuvaan. Mitä haluat tehdä?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Valkoisen pisteen tippa",
       "black_pipette_tooltip": "Napsauta pikseliä, jonka pitäisi olla täysin musta. Varoitus: on helppo liioitella!",
       "white_pipette_tooltip": "Napsauta pikseliä, jonka pitäisi olla täysin valkoinen. Varoitus: on helppo liioitella!"
-    },
-    "sharpness_viewer": {
-      "title": "Terävyyden säätö"
-    },
-    "brightness_viewer": {
-      "title": "Kirkkauden ja kontrastin säätö"
     },
     "compression_viewer": {
       "title": "Pakkauksen säätö"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Suurenna kuvakkeiden kokoa",
     "source_loose": "Irrallinen kuva",
     "source_web": "Verkkokuva",
-    "straighten": "Oikaise kuva",
-    "clone_zone": "Kloonaa alue",
-    "text": "Lisää tekstiä",
+    "straighten": "Suorista kuva automaattisesti",
     "batch_cb7_to_cbz": "Muuntaa kaikki CB7-tiedostot kansiossa\nja sen alikansioissa CBZ:ksi.",
     "batch_cb7_permanent_delete": "VAROITUS : jos tämä asetus on valittu,\nalkuperäiset CB7-tiedostot poistetaan\npysyvästi muunnoksen jälkeen ilman\npalautusmahdollisuutta. Varmista, että sinulla on varmuuskopio.",
     "batch_cbt_to_cbz": "Muuntaa kaikki CBT-tiedostot kansiossa\nja sen alikansioissa CBZ:ksi.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Tästä tiedostosta löytyi kaksoiskappaleina olevia sivuja.\nAvaa kaksoiskappaleiden hallintaikkuna napsauttamalla.",
     "duplicate_indicator_none": "Kaksoiskappaleita ei havaittu",
     "straighten_mode_0": "Manuaalitila (piirrä vertailuviiva)\nVaihda tilaa napsauttamalla hiiren oikeaa painiketta",
-    "straighten_mode_1": "Automaattitila (kaltevuuden tunnistus)\nVaihda tilaa napsauttamalla hiiren oikeaa painiketta"
+    "straighten_mode_1": "Automaattitila (kaltevuuden tunnistus)\nVaihda tilaa napsauttamalla hiiren oikeaa painiketta",
+    "sharpness_mode_0": "Vahvistaa tai pehmentää kuvan yksityiskohtia\nOikea napsautus vaihtaa mukautuvaan terävyyteen",
+    "sharpness_mode_1": "Korostaa ääriviivoja säästäen tasaiset alueet\nOikea napsautus vaihtaa yksinkertaiseen terävyyteen"
   },
   "help": {
     "title": "MosaicView - Käyttöohje",
@@ -1506,6 +1507,7 @@
     "relative_path": "Suhteellinen polku"
   },
   "web": {
+    "web_analyzing_page": "Analysoidaan sivua...",
     "web_download_progress": "Lataus: {downloaded}/{total} kuvaa...",
     "web_download_cancel": "Peruuta",
     "web_no_images": "Ei kuvia",

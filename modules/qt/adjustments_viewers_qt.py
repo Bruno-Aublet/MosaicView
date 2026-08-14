@@ -5,14 +5,19 @@ Reproduit le comportement de la classe LevelsViewer de Modules_OLD/adjustments_d
 sans aucune référence à tkinter.
 
 Modes supportés :
-  'sharpness'      — réglette netteté -100..+100
-  'brightness'     — réglettes luminosité + contraste -100..+100
   'compression'    — réglette qualité 1..100
-  'remove_colors'  — réglette intensité 0..100
-  'saturation'     — réglette saturation -100..+100
-  'unsharp'        — 3 réglettes Unsharp Mask (radius, percent, threshold)
   'levels'         — pipettes point noir / point blanc
   'transparency'   — clic pour rendre transparent (flood fill ou global)
+
+Les modes 'unsharp' (Unsharp Mask), 'brightness' (luminosité/contraste),
+'saturation' et 'remove_colors' ont été entièrement retirés (respectivement
+2026-08-14, 2026-08-14, 2026-08-14 et 2026-08-14) : ces fonctionnalités
+vivent désormais uniquement dans la barre d'outils flottante de la
+visionneuse principale (icône bi-mode sharpness/unsharp, icône brightness,
+icône saturation, icône remove_colors ; idees.txt #3, voir
+modules/qt/adjustments_tool_qt.py, modules/qt/brightness_tool_qt.py,
+modules/qt/saturation_tool_qt.py, modules/qt/remove_colors_tool_qt.py et
+skill viewers).
 
 Classe publique :
   AdjustmentViewerDialog(parent, selected_entries, settings, mode,
@@ -388,8 +393,7 @@ class AdjustmentViewerDialog(QDialog):
     Paramètres :
       selected_entries  : liste des images sélectionnées (dicts avec 'bytes')
       settings          : dict des réglages courants (partagé avec le dialog parent)
-      mode              : 'sharpness' | 'brightness' | 'compression' |
-                          'remove_colors' | 'saturation' | 'levels'
+      mode              : 'compression' | 'levels' | 'transparency'
       on_close_callback : appelé après Apply (pour rafraîchir le dialog parent)
       on_cancel_callback: appelé lors de Cancel/Escape (pour restaurer les valeurs)
       callbacks         : dict MosaicView (save_state, render_mosaic)
@@ -823,45 +827,7 @@ class AdjustmentViewerDialog(QDialog):
     def _build_mode_controls(self, layout, parent_widget, theme, font_tb):
         """Ajoute les contrôles spécifiques au mode dans la toolbar."""
 
-        if self._mode == 'sharpness':
-            self._sharp_lbl = QLabel()
-            self._sharp_lbl.setFont(font_tb)
-            layout.addWidget(self._sharp_lbl)
-
-            self._sharp_slider = FocusSlider(Qt.Orientation.Horizontal)
-            self._sharp_slider.setRange(-100, 100)
-            self._sharp_slider.setValue(self._settings.get('sharpness', 0))
-            self._sharp_slider.setFixedWidth(300)
-            self._sharp_slider.setStyleSheet(_slider_style(theme))
-            self._sharp_slider.valueChanged.connect(self._on_sharpness_changed)
-            layout.addWidget(self._sharp_slider)
-
-        elif self._mode == 'brightness':
-            self._bright_lbl = QLabel()
-            self._bright_lbl.setFont(font_tb)
-            layout.addWidget(self._bright_lbl)
-
-            self._bright_slider = FocusSlider(Qt.Orientation.Horizontal)
-            self._bright_slider.setRange(-100, 100)
-            self._bright_slider.setValue(self._settings.get('brightness', 0))
-            self._bright_slider.setFixedWidth(200)
-            self._bright_slider.setStyleSheet(_slider_style(theme))
-            self._bright_slider.valueChanged.connect(self._on_brightness_changed)
-            layout.addWidget(self._bright_slider)
-
-            self._contrast_lbl = QLabel()
-            self._contrast_lbl.setFont(font_tb)
-            layout.addWidget(self._contrast_lbl)
-
-            self._contrast_slider = FocusSlider(Qt.Orientation.Horizontal)
-            self._contrast_slider.setRange(-100, 100)
-            self._contrast_slider.setValue(self._settings.get('contrast', 0))
-            self._contrast_slider.setFixedWidth(200)
-            self._contrast_slider.setStyleSheet(_slider_style(theme))
-            self._contrast_slider.valueChanged.connect(self._on_contrast_changed)
-            layout.addWidget(self._contrast_slider)
-
-        elif self._mode == 'compression':
+        if self._mode == 'compression':
             self._comp_lbl = QLabel()
             self._comp_lbl.setFont(font_tb)
             layout.addWidget(self._comp_lbl)
@@ -874,69 +840,6 @@ class AdjustmentViewerDialog(QDialog):
             self._comp_slider.valueChanged.connect(self._on_compression_changed)
             layout.addWidget(self._comp_slider)
 
-        elif self._mode == 'remove_colors':
-            self._remove_lbl = QLabel()
-            self._remove_lbl.setFont(font_tb)
-            layout.addWidget(self._remove_lbl)
-
-            self._remove_slider = FocusSlider(Qt.Orientation.Horizontal)
-            self._remove_slider.setRange(0, 100)
-            self._remove_slider.setValue(self._settings.get('remove_colors_intensity', 0))
-            self._remove_slider.setFixedWidth(300)
-            self._remove_slider.setStyleSheet(_slider_style(theme))
-            self._remove_slider.valueChanged.connect(self._on_remove_colors_changed)
-            layout.addWidget(self._remove_slider)
-
-        elif self._mode == 'saturation':
-            self._sat_lbl = QLabel()
-            self._sat_lbl.setFont(font_tb)
-            layout.addWidget(self._sat_lbl)
-
-            self._sat_slider = FocusSlider(Qt.Orientation.Horizontal)
-            self._sat_slider.setRange(-100, 100)
-            self._sat_slider.setValue(self._settings.get('saturation', 0))
-            self._sat_slider.setFixedWidth(300)
-            self._sat_slider.setStyleSheet(_slider_style(theme))
-            self._sat_slider.valueChanged.connect(self._on_saturation_changed)
-            layout.addWidget(self._sat_slider)
-
-        elif self._mode == 'unsharp':
-            self._unsharp_radius_lbl = QLabel()
-            self._unsharp_radius_lbl.setFont(font_tb)
-            layout.addWidget(self._unsharp_radius_lbl)
-
-            self._unsharp_radius_slider = FocusSlider(Qt.Orientation.Horizontal)
-            self._unsharp_radius_slider.setRange(5, 50)
-            self._unsharp_radius_slider.setValue(int(self._settings.get('unsharp_radius', 2.0) * 10))
-            self._unsharp_radius_slider.setFixedWidth(120)
-            self._unsharp_radius_slider.setStyleSheet(_slider_style(theme))
-            self._unsharp_radius_slider.valueChanged.connect(self._on_unsharp_radius_changed)
-            layout.addWidget(self._unsharp_radius_slider)
-
-            self._unsharp_percent_lbl = QLabel()
-            self._unsharp_percent_lbl.setFont(font_tb)
-            layout.addWidget(self._unsharp_percent_lbl)
-
-            self._unsharp_percent_slider = FocusSlider(Qt.Orientation.Horizontal)
-            self._unsharp_percent_slider.setRange(0, 200)
-            self._unsharp_percent_slider.setValue(self._settings.get('unsharp_percent', 0))
-            self._unsharp_percent_slider.setFixedWidth(150)
-            self._unsharp_percent_slider.setStyleSheet(_slider_style(theme))
-            self._unsharp_percent_slider.valueChanged.connect(self._on_unsharp_percent_changed)
-            layout.addWidget(self._unsharp_percent_slider)
-
-            self._unsharp_threshold_lbl = QLabel()
-            self._unsharp_threshold_lbl.setFont(font_tb)
-            layout.addWidget(self._unsharp_threshold_lbl)
-
-            self._unsharp_threshold_slider = FocusSlider(Qt.Orientation.Horizontal)
-            self._unsharp_threshold_slider.setRange(0, 30)
-            self._unsharp_threshold_slider.setValue(self._settings.get('unsharp_threshold', 3))
-            self._unsharp_threshold_slider.setFixedWidth(100)
-            self._unsharp_threshold_slider.setStyleSheet(_slider_style(theme))
-            self._unsharp_threshold_slider.valueChanged.connect(self._on_unsharp_threshold_changed)
-            layout.addWidget(self._unsharp_threshold_slider)
-
         elif self._mode == 'transparency':
             # Toolbar : instruction seulement
             self._transp_instr_lbl = QLabel()
@@ -947,58 +850,10 @@ class AdjustmentViewerDialog(QDialog):
 
     # ── Callbacks sliders ─────────────────────────────────────────────────────
 
-    def _on_sharpness_changed(self, val):
-        self._settings['sharpness'] = val
-        self._sharp_lbl.setText(
-            _("dialogs.adjustments.sharpness_label", value=val))
-        self._display_image()
-
-    def _on_brightness_changed(self, val):
-        self._settings['brightness'] = val
-        self._bright_lbl.setText(
-            _("dialogs.adjustments.brightness_label", value=val))
-        self._display_image()
-
-    def _on_contrast_changed(self, val):
-        self._settings['contrast'] = val
-        self._contrast_lbl.setText(
-            _("dialogs.adjustments.contrast_label", value=val))
-        self._display_image()
-
     def _on_compression_changed(self, val):
         self._settings['compression_quality'] = val
         self._comp_lbl.setText(
             _("dialogs.adjustments.compression_quality_label", value=val))
-        self._display_image()
-
-    def _on_remove_colors_changed(self, val):
-        self._settings['remove_colors_intensity'] = val
-        self._remove_lbl.setText(
-            _("dialogs.adjustments.remove_colors_intensity_label", value=val))
-        self._display_image()
-
-    def _on_saturation_changed(self, val):
-        self._settings['saturation'] = val
-        self._sat_lbl.setText(
-            _("dialogs.adjustments.saturation_label", value=val))
-        self._display_image()
-
-    def _on_unsharp_radius_changed(self, val):
-        self._settings['unsharp_radius'] = round(val / 10.0, 1)
-        self._unsharp_radius_lbl.setText(
-            _("dialogs.adjustments.unsharp_radius_label", value=self._settings['unsharp_radius']))
-        self._display_image()
-
-    def _on_unsharp_percent_changed(self, val):
-        self._settings['unsharp_percent'] = val
-        self._unsharp_percent_lbl.setText(
-            _("dialogs.adjustments.unsharp_percent_label", value=val))
-        self._display_image()
-
-    def _on_unsharp_threshold_changed(self, val):
-        self._settings['unsharp_threshold'] = val
-        self._unsharp_threshold_lbl.setText(
-            _("dialogs.adjustments.unsharp_threshold_label", value=val))
         self._display_image()
 
     def _on_transp_type_changed(self, val):
@@ -1553,16 +1408,7 @@ class AdjustmentViewerDialog(QDialog):
 
     def _reset_mode_slider(self):
         """Remet le curseur du mode à zéro après application."""
-        if self._mode == 'sharpness':
-            self._settings['sharpness'] = 0
-        elif self._mode == 'brightness':
-            self._settings['brightness'] = 0
-            self._settings['contrast'] = 0
-        elif self._mode == 'saturation':
-            self._settings['saturation'] = 0
-        elif self._mode == 'unsharp':
-            self._settings['unsharp_percent'] = 0
-        # compression et remove_colors : pas de remise à zéro
+        # compression : pas de remise à zéro
 
     def _cancel(self):
         if not self._confirmed_close and self._has_unapplied_transparency():
@@ -1576,12 +1422,7 @@ class AdjustmentViewerDialog(QDialog):
 
     def _get_title_key(self):
         return {
-            'sharpness':     "dialogs.sharpness_viewer.title",
-            'brightness':    "dialogs.brightness_viewer.title",
             'compression':   "dialogs.compression_viewer.title",
-            'remove_colors': "dialogs.adjustments.effect_remove_colors",
-            'saturation':    "dialogs.adjustments.saturation_viewer_title",
-            'unsharp':       "dialogs.adjustments.unsharp_viewer_title",
             'levels':        "dialogs.levels_viewer.title",
             'transparency':  "dialogs.adjustments.transparency_viewer_title",
         }.get(self._mode, "dialogs.levels_viewer.title")
@@ -1611,21 +1452,8 @@ class AdjustmentViewerDialog(QDialog):
         if self._apply_all_btn:
             self._apply_all_btn.setStyleSheet(_btn_style(theme))
         # Sliders de la toolbar (selon le mode)
-        if self._mode == 'sharpness':
-            self._sharp_slider.setStyleSheet(_slider_style(theme))
-        elif self._mode == 'brightness':
-            self._bright_slider.setStyleSheet(_slider_style(theme))
-            self._contrast_slider.setStyleSheet(_slider_style(theme))
-        elif self._mode == 'compression':
+        if self._mode == 'compression':
             self._comp_slider.setStyleSheet(_slider_style(theme))
-        elif self._mode == 'remove_colors':
-            self._remove_slider.setStyleSheet(_slider_style(theme))
-        elif self._mode == 'saturation':
-            self._sat_slider.setStyleSheet(_slider_style(theme))
-        elif self._mode == 'unsharp':
-            self._unsharp_radius_slider.setStyleSheet(_slider_style(theme))
-            self._unsharp_percent_slider.setStyleSheet(_slider_style(theme))
-            self._unsharp_threshold_slider.setStyleSheet(_slider_style(theme))
         elif self._mode == 'levels':
             self._bot_sep2.setStyleSheet(f"color: {theme['separator']};")
             self._bot_sep3.setStyleSheet(f"color: {theme['separator']};")
@@ -1655,48 +1483,11 @@ class AdjustmentViewerDialog(QDialog):
             self._warning_lbl.setFont(font)
 
         # Labels toolbar selon mode
-        if self._mode == 'sharpness':
-            val = self._settings.get('sharpness', 0)
-            self._sharp_lbl.setText(
-                _("dialogs.adjustments.sharpness_label", value=val))
-            self._sharp_lbl.setFont(font)
-        elif self._mode == 'brightness':
-            self._bright_lbl.setText(
-                _("dialogs.adjustments.brightness_label",
-                  value=self._settings.get('brightness', 0)))
-            self._bright_lbl.setFont(font)
-            self._contrast_lbl.setText(
-                _("dialogs.adjustments.contrast_label",
-                  value=self._settings.get('contrast', 0)))
-            self._contrast_lbl.setFont(font)
-        elif self._mode == 'compression':
+        if self._mode == 'compression':
             self._comp_lbl.setText(
                 _("dialogs.adjustments.compression_quality_label",
                   value=self._settings.get('compression_quality', 100)))
             self._comp_lbl.setFont(font)
-        elif self._mode == 'remove_colors':
-            self._remove_lbl.setText(
-                _("dialogs.adjustments.remove_colors_intensity_label",
-                  value=self._settings.get('remove_colors_intensity', 0)))
-            self._remove_lbl.setFont(font)
-        elif self._mode == 'saturation':
-            self._sat_lbl.setText(
-                _("dialogs.adjustments.saturation_label",
-                  value=self._settings.get('saturation', 0)))
-            self._sat_lbl.setFont(font)
-        elif self._mode == 'unsharp':
-            self._unsharp_radius_lbl.setText(
-                _("dialogs.adjustments.unsharp_radius_label",
-                  value=self._settings.get('unsharp_radius', 2.0)))
-            self._unsharp_radius_lbl.setFont(font)
-            self._unsharp_percent_lbl.setText(
-                _("dialogs.adjustments.unsharp_percent_label",
-                  value=self._settings.get('unsharp_percent', 0)))
-            self._unsharp_percent_lbl.setFont(font)
-            self._unsharp_threshold_lbl.setText(
-                _("dialogs.adjustments.unsharp_threshold_label",
-                  value=self._settings.get('unsharp_threshold', 3)))
-            self._unsharp_threshold_lbl.setFont(font)
 
         # Boutons toolbar
         self._prev_btn.setFont(_get_current_font(12))

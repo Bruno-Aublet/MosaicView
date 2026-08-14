@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Rechtzetten",
     "toolbar_crop_instruction": "Teken een rechthoek rond het te behouden gebied en bevestig",
     "toolbar_clone_tooltip": "Klonen",
-    "toolbar_text_tooltip": "Tekst"
+    "toolbar_text_tooltip": "Tekst",
+    "toolbar_sharpness_tooltip": "Scherpte",
+    "toolbar_unsharp_tooltip": "Adaptieve scherpte",
+    "sharpness_panel_label": "Scherpte:",
+    "unsharp_radius_label": "Straal:",
+    "unsharp_percent_label": "Intensiteit:",
+    "unsharp_threshold_label": "Drempelwaarde:",
+    "toolbar_brightness_tooltip": "Helderheid en contrast",
+    "toolbar_brightness_instruction": "Pas de schuifregelaars aan, de wijziging wordt toegepast bij loslaten",
+    "brightness_panel_label": "Helderheid:",
+    "contrast_panel_label": "Contrast:",
+    "toolbar_saturation_tooltip": "Verzadiging",
+    "toolbar_saturation_instruction": "Pas de schuifregelaar aan, de wijziging wordt toegepast bij loslaten",
+    "saturation_panel_label": "Verzadiging :",
+    "toolbar_remove_colors_tooltip": "Kleurverwijdering",
+    "toolbar_remove_colors_instruction": "Pas de schuifregelaar aan, de wijziging wordt toegepast bij loslaten",
+    "remove_colors_panel_label": "Intensiteit :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Helderheid, contrast, kleuren...",
       "refresh_mosaic": "Mozaïek vernieuwen (F5)",
       "create_ico": ".ico-bestand aanmaken",
-      "clone_zone": "Zone klonen...",
-      "text": "Tekst toevoegen...",
-      "straighten_manual": "Afbeelding handmatig rechtzetten...",
       "straighten_auto": "Afbeelding automatisch rechtzetten"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Genegeerde bestanden"
-      },
-      "no_selection_crop": {
-        "title": "Geen selectie",
-        "message": "Selecteer een afbeelding om bij te snijden."
-      },
-      "multi_selection_crop": {
-        "title": "Meerdere selecties",
-        "message": "U kunt slechts één afbeelding tegelijk bijsnijden.\nSelecteer één enkele afbeelding."
-      },
-      "invalid_selection_crop": {
-        "title": "Ongeldige selectie",
-        "message": "Alleen afbeeldingen kunnen worden bijgesneden."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Functie niet beschikbaar",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Fout",
         "message": "Kan de tekst niet toepassen: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Fout",
+        "message": "Kon scherpte niet toepassen: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Fout",
+        "message": "Kon adaptieve scherpte niet toepassen: {error}"
+      },
+      "brightness_failed": {
+        "title": "Fout",
+        "message": "Kon helderheid/contrast niet toepassen: {error}"
+      },
+      "saturation_failed": {
+        "title": "Fout",
+        "message": "Kon verzadiging niet toepassen: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Fout",
+        "message": "Kon kleurverwijdering niet toepassen: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "afbeeldingen",
       "apply_button": "Toepassen",
       "color_depth_section": "Kleurdiepte",
-      "brightness_contrast_section": "Helderheid en contrast",
       "compression_section": "Compressie",
       "effects_section": "Effecten",
       "sharpness_section": "Scherpte",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bits (RGB - kleuren)",
       "depth_8bit": "8 bits (PNG-palet / JPEG-grijswaarden)",
       "depth_1bit": "1 bit (zwart en wit)",
-      "brightness_label": "Helderheid: {value}",
-      "contrast_label": "Contrast: {value}",
       "compression_enable": "Hercompressie inschakelen",
       "compression_quality_label": "Kwaliteit : {value}/100",
-      "sharpness_label": "Scherpte: {value}",
       "effect_none": "Geen effect",
       "effect_grayscale": "Grijstinten",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Voorbeeld",
       "effect_invert": "Kleurinversie",
       "preview_warning": "Voorbeeld kan afwijken van het eindresultaat",
-      "effect_remove_colors": "Kleurverwijdering",
-      "remove_colors_intensity_label": "Intensiteit : {value}",
       "image_mode_section": "Beeldmodus",
       "image_mode_rgb": "RGB (kleuren)",
       "image_mode_rgba": "RGBA (kleuren + transparantie)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (drukwerk)",
       "image_mode_1": "1 (puur zwart-wit)",
       "image_mode_p": "P (256-kleurenpalet)",
-      "saturation_section": "Verzadiging",
-      "saturation_label": "Verzadiging : {value}",
-      "saturation_viewer_title": "Verzadigingsaanpassing",
       "transparency_section": "Transparantie",
       "transparency_info": "Transparantie is alleen van toepassing op PNG-, WebP-, ICO- en AVIF-afbeeldingen",
       "transparency_type_label": "Type :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Globale transparantie : beïnvloedt alle pixels in de afbeelding waarvan de kleur lijkt op de aangeklikte",
       "transparency_apply": "Toepassen",
       "transparency_skipped_warning": "{count} afbeelding(en) overgeslagen — formaat niet compatibel met transparantie. Converteer ze eerst naar PNG om ze op te nemen.",
-      "unsharp_section": "Adaptieve scherpte",
-      "unsharp_radius_label": "Straal: {value}",
-      "unsharp_percent_label": "Intensiteit: {value} %",
-      "unsharp_threshold_label": "Drempelwaarde: {value}",
-      "unsharp_viewer_title": "Adaptieve scherpte",
       "auto_levels_tooltip": "Analyseert elke pagina en past automatisch de zwart- en witniveaus aan om het contrast te maximaliseren.\nGebruik de viewer om pagina voor pagina te kiezen.",
       "transparency_unsaved_title": "Niet toegepaste wijzigingen",
       "transparency_unsaved_message": "De huidige wijzigingen zijn nog niet op de afbeelding toegepast. Wat wilt u doen?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Witpunt pipet",
       "black_pipette_tooltip": "Klik op een pixel die volledig zwart zou moeten zijn. Let op: het is gemakkelijk om te ver te gaan!",
       "white_pipette_tooltip": "Klik op een pixel die volledig wit zou moeten zijn. Let op: het is gemakkelijk om te ver te gaan!"
-    },
-    "sharpness_viewer": {
-      "title": "Scherpte-aanpassing"
-    },
-    "brightness_viewer": {
-      "title": "Helderheid- en contrastaanpassing"
     },
     "compression_viewer": {
       "title": "Compressieaanpassing"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Pictogramgrootte vergroten",
     "source_loose": "Los beeld",
     "source_web": "Webafbeelding",
-    "straighten": "Afbeelding rechtzetten",
-    "clone_zone": "Zone klonen",
-    "text": "Tekst toevoegen",
+    "straighten": "Afbeelding automatisch rechtzetten",
     "batch_cb7_to_cbz": "Converteert alle CB7-bestanden in een map\nen de submappen ervan naar CBZ.",
     "batch_cb7_permanent_delete": "WAARSCHUWING : als deze optie is aangevinkt,\nworden de originele CB7-bestanden na de\nconversie permanent verwijderd zonder\nmogelijkheid tot herstel.\nZorg dat u een back-up heeft.",
     "batch_cbt_to_cbz": "Converteert alle CBT-bestanden in een map\nen de submappen ervan naar CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Er zijn dubbele pagina's gevonden in dit bestand.\nKlik om het venster voor het beheren van duplicaten te openen.",
     "duplicate_indicator_none": "Geen duplicaten gevonden",
     "straighten_mode_0": "Handmatige modus (teken een referentielijn)\nRechtsklik om van modus te wisselen",
-    "straighten_mode_1": "Automatische modus (scheefstand detecteren)\nRechtsklik om van modus te wisselen"
+    "straighten_mode_1": "Automatische modus (scheefstand detecteren)\nRechtsklik om van modus te wisselen",
+    "sharpness_mode_0": "Versterkt of verzacht de details van de afbeelding\nRechtsklikken om over te schakelen naar adaptieve scherpte",
+    "sharpness_mode_1": "Benadrukt contouren met behoud van vlakke gebieden\nRechtsklikken om over te schakelen naar eenvoudige scherpte"
   },
   "help": {
     "title": "MosaicView - Gebruiksaanwijzing",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relatief pad"
   },
   "web": {
+    "web_analyzing_page": "Pagina wordt geanalyseerd...",
     "web_download_progress": "Downloaden: {downloaded}/{total} afbeeldingen...",
     "web_download_cancel": "Annuleren",
     "web_no_images": "Geen afbeeldingen",

@@ -351,7 +351,7 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     if state is None:
         state = _state_module.state
 
-    invalidate_pixmap_cache()
+    invalidate_pixmap_cache(state)
 
     # Libère les images PIL en mémoire (images_data + all_entries sans doublon)
     all_entries_to_clean = list(state.images_data)

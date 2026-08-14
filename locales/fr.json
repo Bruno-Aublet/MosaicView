@@ -81,8 +81,24 @@
     "toolbar_crop_tooltip": "Recadrage",
     "toolbar_crop_instruction": "Dessinez un rectangle sur la zone à conserver, puis validez",
     "toolbar_straighten_tooltip": "Redressage",
+    "toolbar_sharpness_tooltip": "Netteté",
+    "toolbar_unsharp_tooltip": "Netteté adaptative",
+    "sharpness_panel_label": "Netteté :",
+    "unsharp_radius_label": "Rayon :",
+    "unsharp_percent_label": "Intensité :",
+    "unsharp_threshold_label": "Seuil :",
     "toolbar_clone_tooltip": "Clonage",
     "toolbar_text_tooltip": "Texte",
+    "toolbar_brightness_tooltip": "Luminosité et contraste",
+    "toolbar_brightness_instruction": "Réglez les curseurs, l'ajustement s'applique au relâchement",
+    "brightness_panel_label": "Luminosité :",
+    "contrast_panel_label": "Contraste :",
+    "toolbar_saturation_tooltip": "Saturation",
+    "toolbar_saturation_instruction": "Réglez le curseur, l'ajustement s'applique au relâchement",
+    "saturation_panel_label": "Saturation :",
+    "toolbar_remove_colors_tooltip": "Suppression des couleurs",
+    "toolbar_remove_colors_instruction": "Réglez le curseur, l'ajustement s'applique au relâchement",
+    "remove_colors_panel_label": "Intensité :",
     "toolbar_undo_tooltip": "Annuler (Ctrl+Z)",
     "toolbar_redo_tooltip": "Refaire (Ctrl+Y)",
     "unvalidated_work_title": "Travail non validé",
@@ -141,9 +157,6 @@
       "save_to_folder": "Exporter les pages sélectionnées",
       "adjustments": "Luminosité, contraste, couleurs...",
       "refresh_mosaic": "Rafraîchir la mosaïque (F5)",
-      "clone_zone": "Clonage de zone...",
-      "text": "Ajouter du texte...",
-      "straighten_manual": "Redresser l'image manuellement...",
       "straighten_auto": "Redresser l'image automatiquement"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Fichiers ignorés"
-      },
-      "no_selection_crop": {
-        "title": "Aucune sélection",
-        "message": "Veuillez sélectionner une image à recadrer."
-      },
-      "multi_selection_crop": {
-        "title": "Sélection multiple",
-        "message": "Vous ne pouvez recadrer qu'une seule image à la fois.\nVeuillez sélectionner une seule image."
-      },
-      "invalid_selection_crop": {
-        "title": "Sélection invalide",
-        "message": "Seules les images peuvent être recadrées."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Fonction non disponible",
@@ -423,6 +424,26 @@
       "straighten_failed": {
         "title": "Erreur",
         "message": "Impossible de redresser l'image : {error}"
+      },
+      "sharpness_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer la netteté : {error}"
+      },
+      "unsharp_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer la netteté adaptative : {error}"
+      },
+      "brightness_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer la luminosité/contraste : {error}"
+      },
+      "saturation_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer la saturation : {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer la suppression des couleurs : {error}"
       },
       "clone_failed": {
         "title": "Erreur",
@@ -998,7 +1019,6 @@
       "apply_button": "Appliquer",
       "reset_button": "Réinitialiser",
       "color_depth_section": "Profondeur de couleur",
-      "brightness_contrast_section": "Luminosité et contraste",
       "compression_section": "Compression",
       "compression_info": "La compression s'applique uniquement aux images JPG, WebP et AVIF",
       "preview_section": "Aperçu",
@@ -1010,11 +1030,8 @@
       "depth_24bit": "24 bits (RGB - couleurs)",
       "depth_8bit": "8 bits (palette PNG / niveaux de gris JPEG)",
       "depth_1bit": "1 bit (noir et blanc)",
-      "brightness_label": "Luminosité : {value}",
-      "contrast_label": "Contraste : {value}",
       "compression_enable": "Activer la recompression",
       "compression_quality_label": "Qualité : {value}/100",
-      "sharpness_label": "Netteté : {value}",
       "effect_none": "Aucun effet",
       "effect_grayscale": "Noir et blanc",
       "effect_sepia": "Sépia",
@@ -1029,9 +1046,7 @@
       "open_viewer_button": "Ajuster avec la visionneuse (recommandé)",
       "open_viewer_button_simple": "Ajuster avec la visionneuse",
       "effect_invert": "Inversion de couleurs",
-      "effect_remove_colors": "Suppression des couleurs",
       "preview_warning": "L'aperçu peut différer du rendu final",
-      "remove_colors_intensity_label": "Intensité : {value}",
       "image_mode_section": "Mode d'image",
       "image_mode_rgb": "RGB (couleurs)",
       "image_mode_rgba": "RGBA (couleurs + transparence)",
@@ -1040,9 +1055,6 @@
       "image_mode_cmyk": "CMYK (impression)",
       "image_mode_1": "1 (noir et blanc pur)",
       "image_mode_p": "P (palette 256 couleurs)",
-      "saturation_section": "Saturation",
-      "saturation_label": "Saturation : {value}",
-      "saturation_viewer_title": "Ajustement de la saturation",
       "transparency_section": "Transparence",
       "transparency_info": "La transparence s'applique uniquement aux images PNG, WebP, ICO et AVIF",
       "transparency_type_label": "Type :",
@@ -1057,11 +1069,6 @@
       "transparency_type_global_tooltip": "Transparence globale : affecte tous les pixels de l'image dont la couleur est proche de celle cliquée",
       "transparency_apply": "Appliquer",
       "transparency_skipped_warning": "{count} image(s) ignorée(s) — format incompatible avec la transparence. Pour les inclure, convertissez-les d'abord en PNG.",
-      "unsharp_section": "Netteté adaptative",
-      "unsharp_radius_label": "Rayon : {value}",
-      "unsharp_percent_label": "Intensité : {value} %",
-      "unsharp_threshold_label": "Seuil : {value}",
-      "unsharp_viewer_title": "Netteté adaptative",
       "auto_levels_tooltip": "Analyse chaque page et ajuste automatiquement les niveaux de noir et de blanc pour maximiser le contraste.\nPour choisir page par page, utilisez la visionneuse.",
       "transparency_unsaved_title": "Modifications non appliquées",
       "transparency_unsaved_message": "Les modifications en cours n'ont pas été appliquées à l'image. Que souhaitez-vous faire ?",
@@ -1123,12 +1130,6 @@
       "overwrite_message": "Le fichier {filename} existe déjà. L'écraser ?",
       "save_blocked_title": "Sauvegarde impossible",
       "save_blocked_message": "Cette archive contient un ou plusieurs fichiers .ico qui ne sont pas des images de bande dessinée. La sauvegarde est désactivée tant que ces fichiers sont présents dans la mosaïque.\nPour réactiver la sauvegarde, supprimez-les de la mosaïque (touche Suppr) ou coupez-les (Ctrl+X) pour les coller ailleurs."
-    },
-    "sharpness_viewer": {
-      "title": "Ajustement de la netteté"
-    },
-    "brightness_viewer": {
-      "title": "Ajustement de la luminosité et du contraste"
     },
     "compression_viewer": {
       "title": "Ajustement de la compression"
@@ -1319,9 +1320,7 @@
     "icon_toolbar_size_increase": "Augmenter la taille des icônes",
     "source_loose": "Image libre",
     "source_web": "Image web",
-    "straighten": "Redresser l'image",
-    "clone_zone": "Clonage de zone",
-    "text": "Ajouter du texte",
+    "straighten": "Redresser l'image automatiquement",
     "batch_cb7_to_cbz": "Convertit en CBZ tous les fichiers CB7 contenus\ndans un répertoire et ses sous-répertoires.",
     "batch_cb7_permanent_delete": "ATTENTION : si cette option est cochée,\nles fichiers CB7 originaux seront définitivement\nsupprimés après leur conversion, sans possibilité\nde récupération. Assurez-vous de disposer\nd'une sauvegarde si nécessaire.",
     "batch_cbt_to_cbz": "Convertit en CBZ tous les fichiers CBT contenus\ndans un répertoire et ses sous-répertoires.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Des doublons de pages ont été détectées dans ce fichier.\nCliquez pour ouvrir la fenêtre de gestion des doublons.",
     "duplicate_indicator_none": "Pas de doublon détecté",
     "straighten_mode_0": "Mode manuel (tracer une ligne de référence)\nClic droit pour changer de mode",
-    "straighten_mode_1": "Mode automatique (détection d'inclinaison)\nClic droit pour changer de mode"
+    "straighten_mode_1": "Mode automatique (détection d'inclinaison)\nClic droit pour changer de mode",
+    "sharpness_mode_0": "Renforce ou adoucit les détails de l'image\nClic droit pour passer en netteté adaptative",
+    "sharpness_mode_1": "Accentue les contours en épargnant les zones unies\nClic droit pour passer en netteté simple"
   },
   "help": {
     "title": "MosaicView - Mode d'emploi",
@@ -1670,6 +1671,7 @@
     "cell_not_set_num": "N/R"
   },
   "web": {
+    "web_analyzing_page": "Analyse de la page en cours...",
     "web_download_progress": "Téléchargement : {downloaded}/{total} images...",
     "web_download_cancel": "Annuler",
     "web_no_images": "Aucune image",

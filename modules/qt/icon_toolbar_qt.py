@@ -62,10 +62,7 @@ ICON_DEFINITIONS = [
     {"id": "convert",             "tooltip_key": None,                            "png": "BTN_Convert.png"},
     {"id": "resize",              "tooltip_key": None,                            "png": "BTN_Resize.png"},
     {"id": "adjustments",         "tooltip_key": None,                            "png": "BTN_Adjustments.png"},
-    {"id": "crop",                "tooltip_key": None,                            "png": "BTN_Crop.png"},
     {"id": "straighten",          "tooltip_key": "tooltip.straighten",            "png": "BTN_Straighten.png"},
-    {"id": "clone_zone",          "tooltip_key": "tooltip.clone_zone",            "png": "BTN_Clone_Zone.png"},
-    {"id": "text",                "tooltip_key": "tooltip.text",                  "png": "BTN_Text.png"},
     {"id": "create_ico",          "tooltip_key": None,                            "png": "BTN_ICO.png"},
     # --- ASSEMBLAGE ---
     {"id": "join_pages",          "tooltip_key": "buttons.join_pages",            "png": "BTN_Join.png"},
@@ -142,10 +139,7 @@ _ACTIVATION_RULES = {
     "convert":             lambda sg: sg["has_selected_images"](),
     "resize":              lambda sg: sg["has_selected_images"](),
     "adjustments":         lambda sg: sg["has_selected_images"](),
-    "crop":                lambda sg: sg["single_image_selected"](),
     "straighten":          lambda sg: sg["has_selected_images"](),
-    "clone_zone":          lambda sg: sg["has_images"](),
-    "text":                lambda sg: sg["has_images"](),
     "create_ico":          lambda sg: sg["single_image_selected"](),
     "join_pages":          lambda sg: sg["has_selected_images"]() and sg["selection_count"]() >= 2,
     "split_page":          lambda sg: sg["has_selected_images"]() and sg["selection_count"]() == 1,
@@ -242,15 +236,6 @@ class IconLabel(QLabel):
             mode = tb._state_getters.get("renumber_mode", lambda: 1)()
             tb.show_tooltip(self._format_tooltip(_(f"tooltip.renumber_btn_{mode}")))
             return
-        if self.icon_id == "straighten":
-            # Toujours actif au survol, même grisé sans sélection : le clic droit
-            # (bascule manuel/automatique) doit rester disponible et le tooltip visible.
-            c = IconToolbarQt._hover_color
-            self.setStyleSheet(f"background: {c}; border-radius: 4px;")
-            tb = self._toolbar
-            mode = tb._state_getters.get("straighten_mode", lambda: 0)()
-            tb.show_tooltip(self._format_tooltip(_(f"tooltip.straighten_mode_{mode}")))
-            return
         if self._active:
             c = IconToolbarQt._hover_color
             self.setStyleSheet(f"background: {c}; border-radius: 4px;")
@@ -296,11 +281,6 @@ class IconLabel(QLabel):
                 if cb:
                     cb()
                     self._pending_tooltip = True  # bloque hideText dans leaveEvent
-            elif self.icon_id == "straighten":
-                cb = self._toolbar._callbacks.get("toggle_straighten_mode")
-                if cb:
-                    cb()
-                    self._pending_tooltip = True  # bloque hideText dans leaveEvent
             elif self.icon_id == "open_mail":
                 self._toolbar._show_mail_context_menu(event.globalPosition().toPoint())
             elif self.icon_id == "scan_import":
@@ -313,10 +293,6 @@ class IconLabel(QLabel):
                 self._pending_tooltip = None
                 mode = self._toolbar._state_getters.get("renumber_mode", lambda: 1)()
                 self._toolbar.show_tooltip(self._format_tooltip(_(f"tooltip.renumber_btn_{mode}")))
-            if self.icon_id == "straighten" and self._pending_tooltip:
-                self._pending_tooltip = None
-                mode = self._toolbar._state_getters.get("straighten_mode", lambda: 0)()
-                self._toolbar.show_tooltip(self._format_tooltip(_(f"tooltip.straighten_mode_{mode}")))
         if event.button() == Qt.LeftButton:
             if self._drag_start is not None:
                 delta = (event.position().toPoint() - self._drag_start).manhattanLength()
@@ -697,10 +673,10 @@ class ThumbSizeSlider(QWidget):
         self._slider.setTickPosition(QSlider.NoTicks)
         self._slider.setFixedWidth(90)
         self._slider.setFixedHeight(20)
-        self._slider.valueChanged.connect(self._emit_change)
         layout.addWidget(self._slider, alignment=Qt.AlignLeft)
 
         self._slider.setValue(initial_index)
+        self._slider.valueChanged.connect(self._emit_change)
         self._apply_theme(theme)
 
     def _apply_theme(self, theme: str):
@@ -1129,6 +1105,7 @@ class _IconConfigDialog(QDialog):
 
     def __init__(self, toolbar: "IconToolbarQt"):
         super().__init__(toolbar)
+        self.setWindowFlags(Qt.Window)
         self._toolbar = toolbar
         self._photo_cache: dict = {}
 
@@ -1220,12 +1197,6 @@ class _IconConfigDialog(QDialog):
         self._lang_handler = lambda _: self._retranslate()
         language_signal.changed.connect(self._lang_handler)
         self.finished.connect(self._on_close)
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        if not event.spontaneous():
-            from modules.qt.dialogs_qt import _center_on_widget
-            QTimer.singleShot(0, lambda: _center_on_widget(self, self._toolbar))
 
     def _on_close(self):
         from modules.qt.language_signal import language_signal
@@ -2034,7 +2005,6 @@ class IconToolbarQt(QWidget):
         "convert":             "buttons.convert",
         "resize":              "buttons.reduce_size",
         "adjustments":         "buttons.adjustments",
-        "crop":                "context_menu.image.crop",
         "create_ico":          "context_menu.image.create_ico",
         "join_pages":          "buttons.join_pages",
         "split_page":          "buttons.split_page",
@@ -2052,8 +2022,6 @@ class IconToolbarQt(QWidget):
         "increase_font_size":  "tooltip.font_increase_button",
         "reset_to_defaults":   "context_menu.canvas.reset_label",
         "straighten":          "tooltip.straighten",
-        "clone_zone":          "tooltip.clone_zone",
-        "text":                "tooltip.text",
         "create_nfo":          "nfo.menu_item",
         "fetch_metadata":      "comicvine.tooltip",
         "edit_comicinfo":      "comicinfo.icon_label",
@@ -2072,7 +2040,13 @@ class IconToolbarQt(QWidget):
     # ── Fenêtre de configuration ───────────────────────────────────────────────
 
     def _open_config_window(self):
+        from modules.qt.dialogs_qt import position_dialog_on_parent
+        from modules.qt.panel_widget import PanelWidget
         dlg = _IconConfigDialog(self)
+        panel = self
+        while panel is not None and not isinstance(panel, PanelWidget):
+            panel = panel.parentWidget()
+        position_dialog_on_parent(dlg, panel or self)
         dlg.show()
         dlg.raise_()
         dlg.activateWindow()
@@ -2150,7 +2124,6 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         ),
         "needs_renumbering":     lambda: bool(getattr(st, "needs_renumbering", False)),
         "renumber_mode":         lambda: getattr(st, "renumber_mode", 1),
-        "straighten_mode":       lambda: getattr(st, "straighten_mode", 0),
         "print_available":       lambda: PRINT_AVAILABLE,
         "single_image_selected": lambda: (
             len(st.selected_indices) == 1 and bool(st.selected_indices) and
@@ -2197,7 +2170,6 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "paste":                 cb["paste_ctrl_v"],
         "renumber":              mw._renumber_btn_action,
         "toggle_renumber_mode":  mw._toggle_renumber_mode,
-        "toggle_straighten_mode": mw._toggle_straighten_mode,
         "rotate_left":           cb["rotate_selected_left"],
         "rotate_right":          cb["rotate_selected_right"],
         "flip_horizontal":       cb["flip_selected_horizontal"],
@@ -2205,10 +2177,7 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "convert":               cb["convert_selected_images"],
         "resize":                cb["reduce_selected_images_size"],
         "adjustments":           cb["show_image_adjustments_dialog"],
-        "straighten":            cb["straighten"],
-        "clone_zone":            cb["show_clone_zone_viewer"],
-        "text":                  cb["show_text_viewer"],
-        "crop":                  cb["crop_selected_image"],
+        "straighten":            cb["deskew_selected"],
         "create_ico":            cb["create_ico_from_selected"],
         "join_pages":            cb["open_merge_window"],
         "split_page":            cb["split_page"],

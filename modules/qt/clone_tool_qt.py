@@ -163,6 +163,7 @@ class _CloneOptionsPanel(QWidget):
         # Sans cet attribut, un QWidget nu n'applique jamais le "background"
         # d'une stylesheet (contrairement à QLabel/QPushButton).
         self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setMouseTracking(True)
         self._viewer = viewer
 
         layout = QHBoxLayout(self)
@@ -297,6 +298,16 @@ class _CloneOptionsPanel(QWidget):
         x = (canvas.width() - self.width()) // 2
         y = 8 + self._viewer._toolbar.height() + 6
         self.move(max(0, x), y)
+
+    def enterEvent(self, event):
+        # Suspend le timer d'auto-masquage de la barre (dont ce panneau suit
+        # désormais la visibilité, idees.txt #3 décision 2026-08-14) tant que
+        # la souris reste sur ce panneau — pas seulement redémarré à chaque
+        # mouvement, complètement arrêté (voir _ViewerToolbar.pause_hide).
+        self._viewer._toolbar.pause_hide()
+
+    def leaveEvent(self, event):
+        self._viewer._toolbar.resume_hide()
 
     # ── Réglages ─────────────────────────────────────────────────────────────
 

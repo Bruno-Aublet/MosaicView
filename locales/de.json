@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Begradigung",
     "toolbar_crop_instruction": "Zeichnen Sie ein Rechteck um den zu behaltenden Bereich und bestätigen Sie",
     "toolbar_clone_tooltip": "Klonen",
-    "toolbar_text_tooltip": "Text"
+    "toolbar_text_tooltip": "Text",
+    "toolbar_sharpness_tooltip": "Schärfe",
+    "toolbar_unsharp_tooltip": "Adaptive Schärfe",
+    "sharpness_panel_label": "Schärfe:",
+    "unsharp_radius_label": "Radius:",
+    "unsharp_percent_label": "Stärke:",
+    "unsharp_threshold_label": "Schwellenwert:",
+    "toolbar_brightness_tooltip": "Helligkeit und Kontrast",
+    "toolbar_brightness_instruction": "Regler einstellen, die Anpassung wird beim Loslassen übernommen",
+    "brightness_panel_label": "Helligkeit:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Sättigung",
+    "toolbar_saturation_instruction": "Regler einstellen, die Anpassung wird beim Loslassen übernommen",
+    "saturation_panel_label": "Sättigung :",
+    "toolbar_remove_colors_tooltip": "Farbentfernung",
+    "toolbar_remove_colors_instruction": "Regler einstellen, die Anpassung wird beim Loslassen übernommen",
+    "remove_colors_panel_label": "Intensität :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Helligkeit, Kontrast, Farben...",
       "refresh_mosaic": "Mosaik aktualisieren (F5)",
       "create_ico": ".ico-Datei erstellen",
-      "clone_zone": "Bereich klonen...",
-      "text": "Text hinzufügen...",
-      "straighten_manual": "Bild manuell begradigen...",
       "straighten_auto": "Bild automatisch begradigen"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Dateien ignoriert"
-      },
-      "no_selection_crop": {
-        "title": "Keine Auswahl",
-        "message": "Bitte wählen Sie ein Bild zum Zuschneiden aus."
-      },
-      "multi_selection_crop": {
-        "title": "Mehrfachauswahl",
-        "message": "Sie können nur ein Bild auf einmal zuschneiden.\nBitte wählen Sie nur ein Bild aus."
-      },
-      "invalid_selection_crop": {
-        "title": "Ungültige Auswahl",
-        "message": "Nur Bilder können zugeschnitten werden."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funktion nicht verfügbar",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Fehler",
         "message": "Text konnte nicht angewendet werden: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Fehler",
+        "message": "Die Schärfe konnte nicht angewendet werden: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Fehler",
+        "message": "Die adaptive Schärfe konnte nicht angewendet werden: {error}"
+      },
+      "brightness_failed": {
+        "title": "Fehler",
+        "message": "Helligkeit/Kontrast konnte nicht angewendet werden: {error}"
+      },
+      "saturation_failed": {
+        "title": "Fehler",
+        "message": "Die Sättigung konnte nicht angewendet werden: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Fehler",
+        "message": "Die Farbentfernung konnte nicht angewendet werden: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "Bilder",
       "apply_button": "Anwenden",
       "color_depth_section": "Farbtiefe",
-      "brightness_contrast_section": "Helligkeit und Kontrast",
       "compression_section": "Komprimierung",
       "effects_section": "Effekte",
       "sharpness_section": "Scharfe",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 Bit (RGB - Farben)",
       "depth_8bit": "8 Bit (PNG-Palette / JPEG-Graustufen)",
       "depth_1bit": "1 Bit (Schwarz und Weiss)",
-      "brightness_label": "Helligkeit: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Neukomprimierung aktivieren",
       "compression_quality_label": "Qualität : {value}/100",
-      "sharpness_label": "Scharfe: {value}",
       "effect_none": "Kein Effekt",
       "effect_grayscale": "Graustufen",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Vorschau",
       "effect_invert": "Farbumkehr",
       "preview_warning": "Vorschau kann vom Endergebnis abweichen",
-      "effect_remove_colors": "Farbentfernung",
-      "remove_colors_intensity_label": "Intensität : {value}",
       "image_mode_section": "Bildmodus",
       "image_mode_rgb": "RGB (Farben)",
       "image_mode_rgba": "RGBA (Farben + Transparenz)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (Druck)",
       "image_mode_1": "1 (reines Schwarz-Weiß)",
       "image_mode_p": "P (256-Farben-Palette)",
-      "saturation_section": "Sättigung",
-      "saturation_label": "Sättigung : {value}",
-      "saturation_viewer_title": "Sättigungsanpassung",
       "transparency_section": "Transparenz",
       "transparency_info": "Transparenz gilt nur für PNG-, WebP-, ICO- und AVIF-Bilder",
       "transparency_type_label": "Typ :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Globale Transparenz : betrifft alle Pixel im Bild, deren Farbe der geklickten ähnelt",
       "transparency_apply": "Anwenden",
       "transparency_skipped_warning": "{count} Bild(er) übersprungen — Format nicht kompatibel mit Transparenz. Um sie einzuschließen, konvertieren Sie sie zuerst in PNG.",
-      "unsharp_section": "Adaptive Schärfe",
-      "unsharp_radius_label": "Radius: {value}",
-      "unsharp_percent_label": "Stärke: {value} %",
-      "unsharp_threshold_label": "Schwellenwert: {value}",
-      "unsharp_viewer_title": "Adaptive Schärfe",
       "auto_levels_tooltip": "Analysiert jede Seite und passt die Schwarz- und Weißpegel automatisch an, um den Kontrast zu maximieren.\nUm Seite für Seite auszuwählen, verwenden Sie den Viewer.",
       "transparency_unsaved_title": "Nicht angewendete Änderungen",
       "transparency_unsaved_message": "Die aktuellen Änderungen wurden noch nicht auf das Bild angewendet. Was möchten Sie tun?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Weißpunkt-Pipette",
       "black_pipette_tooltip": "Klicken Sie auf ein Pixel, das vollständig schwarz sein sollte. Achtung: Man kann leicht übertreiben!",
       "white_pipette_tooltip": "Klicken Sie auf ein Pixel, das vollständig weiß sein sollte. Achtung: Man kann leicht übertreiben!"
-    },
-    "sharpness_viewer": {
-      "title": "Schärfeeinstellung"
-    },
-    "brightness_viewer": {
-      "title": "Helligkeits- und Kontrasteinstellung"
     },
     "compression_viewer": {
       "title": "Kompressionseinstellung"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Symbolgröße vergrößern",
     "source_loose": "Freies Bild",
     "source_web": "Webbild",
-    "straighten": "Bild ausrichten",
-    "clone_zone": "Bereich klonen",
-    "text": "Text hinzufügen",
+    "straighten": "Bild automatisch begradigen",
     "batch_cb7_to_cbz": "Konvertiert alle CB7-Dateien in einem Ordner\nund seinen Unterordnern zu CBZ.",
     "batch_cb7_permanent_delete": "ACHTUNG : wenn diese Option aktiviert ist,\nwerden die originalen CB7-Dateien nach der\nKonvertierung dauerhaft gelöscht ohne\nWiederherstellungsmöglichkeit.\nStellen Sie sicher, dass Sie ein Backup haben.",
     "batch_cbt_to_cbz": "Konvertiert alle CBT-Dateien in einem Ordner\nund seinen Unterordnern zu CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "In dieser Datei wurden doppelte Seiten erkannt.\nKlicken Sie, um das Fenster zur Verwaltung von Duplikaten zu öffnen.",
     "duplicate_indicator_none": "Keine Duplikate erkannt",
     "straighten_mode_0": "Manueller Modus (Referenzlinie zeichnen)\nRechtsklick zum Wechseln des Modus",
-    "straighten_mode_1": "Automatischer Modus (Schräglage erkennen)\nRechtsklick zum Wechseln des Modus"
+    "straighten_mode_1": "Automatischer Modus (Schräglage erkennen)\nRechtsklick zum Wechseln des Modus",
+    "sharpness_mode_0": "Verstärkt oder mildert die Bilddetails\nRechtsklick, um zur adaptiven Schärfe zu wechseln",
+    "sharpness_mode_1": "Betont Konturen und schont einheitliche Flächen\nRechtsklick, um zur einfachen Schärfe zu wechseln"
   },
   "help": {
     "title": "MosaicView - Benutzerhandbuch",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relativer Pfad"
   },
   "web": {
+    "web_analyzing_page": "Seite wird analysiert...",
     "web_download_progress": "Download: {downloaded}/{total} Bilder...",
     "web_download_cancel": "Abbrechen",
     "web_no_images": "Keine Bilder",

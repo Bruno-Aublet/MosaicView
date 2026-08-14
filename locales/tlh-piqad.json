@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": " ",
     "toolbar_crop_instruction": "   ; .",
     "toolbar_clone_tooltip": "",
-    "toolbar_text_tooltip": ""
+    "toolbar_text_tooltip": "",
+    "toolbar_sharpness_tooltip": "",
+    "toolbar_unsharp_tooltip": " ",
+    "sharpness_panel_label": ":",
+    "unsharp_radius_label": ":",
+    "unsharp_percent_label": ":",
+    "unsharp_threshold_label": ":",
+    "toolbar_brightness_tooltip": "  ",
+    "toolbar_brightness_instruction": ";  .",
+    "brightness_panel_label": ":",
+    "contrast_panel_label": ":",
+    "toolbar_saturation_tooltip": "",
+    "toolbar_saturation_instruction": ";  .",
+    "saturation_panel_label": " :",
+    "toolbar_remove_colors_tooltip": " ",
+    "toolbar_remove_colors_instruction": ";  .",
+    "remove_colors_panel_label": " :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": ", , ...",
       "refresh_mosaic": " sic (F5)",
       "create_ico": " .ico ",
-      "clone_zone": " ...",
-      "text": " ...",
-      "straighten_manual": "   ...",
       "straighten_auto": "   "
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": " "
-      },
-      "no_selection_crop": {
-        "title": " ",
-        "message": "  ."
-      },
-      "multi_selection_crop": {
-        "title": " ",
-        "message": "   .\n   ."
-      },
-      "invalid_selection_crop": {
-        "title": " ",
-        "message": "  ."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": " ",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "",
         "message": "  : {error}"
+      },
+      "sharpness_failed": {
+        "title": "",
+        "message": "  : {error}"
+      },
+      "unsharp_failed": {
+        "title": "",
+        "message": "   : {error}"
+      },
+      "brightness_failed": {
+        "title": "",
+        "message": "    : {error}"
+      },
+      "saturation_failed": {
+        "title": "",
+        "message": "  : {error}"
+      },
+      "remove_colors_failed": {
+        "title": "",
+        "message": "   : {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "",
       "apply_button": "",
       "color_depth_section": " ",
-      "brightness_contrast_section": "  ",
       "compression_section": "",
       "effects_section": "",
       "sharpness_section": "",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 i (RGB - )",
       "depth_8bit": "8 i (PNG   / JPEG  )",
       "depth_1bit": "1 i (  )",
-      "brightness_label": ": {value}",
-      "contrast_label": ": {value}",
       "compression_enable": "  ",
       "compression_quality_label": " : {value}/100",
-      "sharpness_label": ": {value}",
       "effect_none": " ",
       "effect_grayscale": "",
       "effect_sepia": "",
@@ -991,8 +1008,6 @@
       "preview_section": "",
       "effect_invert": "Ng ",
       "preview_warning": "     ",
-      "effect_remove_colors": " ",
-      "remove_colors_intensity_label": " : {value}",
       "image_mode_section": " ",
       "image_mode_rgb": "RGB ()",
       "image_mode_rgba": "RGBA ( + )",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK ()",
       "image_mode_1": "1 (  )",
       "image_mode_p": "P (256  )",
-      "saturation_section": "",
-      "saturation_label": " : {value}",
-      "saturation_viewer_title": " ",
       "transparency_section": "",
       "transparency_info": "   PNG, WP, ICO  AVIF ",
       "transparency_type_label": " :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "  :  pixel     ",
       "transparency_apply": "",
       "transparency_skipped_warning": "{count}  ()  —   .  , PNG- .",
-      "unsharp_section": "  ",
-      "unsharp_radius_label": ": {value}",
-      "unsharp_percent_label": ": {value} %",
-      "unsharp_threshold_label": ": {value}",
-      "unsharp_viewer_title": "  ",
       "auto_levels_tooltip": "          .\n     , i .",
       "transparency_unsaved_title": "   ",
       "transparency_unsaved_message": "      .  ?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "   ",
       "black_pipette_tooltip": "    . :  !",
       "white_pipette_tooltip": "    . :  !"
-    },
-    "sharpness_viewer": {
-      "title": " "
-    },
-    "brightness_viewer": {
-      "title": " "
     },
     "compression_viewer": {
       "title": " "
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "icon  ",
     "source_loose": " ",
     "source_web": " ",
-    "straighten": "  ",
-    "clone_zone": " ",
-    "text": " ",
+    "straighten": "   ",
     "batch_cb7_to_cbz": " CB7   \n CBZ  .",
     "batch_cb7_permanent_delete": " :   \nCB7   \n   .",
     "batch_cbt_to_cbz": " CBT   \n CBZ  .",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "    .\n     .",
     "duplicate_indicator_none": "  ",
     "straighten_mode_0": "  (    )\n   ",
-    "straighten_mode_1": "  (   )\n   "
+    "straighten_mode_1": "  (   )\n   ",
+    "sharpness_mode_0": "    \n    ",
+    "sharpness_mode_1": "       \n   "
   },
   "help": {
     "title": "MosaicView -  ",
@@ -1506,6 +1507,7 @@
     "relative_path": " "
   },
   "web": {
+    "web_analyzing_page": ",  ...",
     "web_download_progress": ": {downloaded}/{total} ...",
     "web_download_cancel": "",
     "web_no_images": " ",

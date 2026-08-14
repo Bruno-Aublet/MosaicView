@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Iztaisnošana",
     "toolbar_crop_instruction": "Novelciet taisnstūri ap saglabājamo zonu un pēc tam apstipriniet",
     "toolbar_clone_tooltip": "Klonēšana",
-    "toolbar_text_tooltip": "Teksts"
+    "toolbar_text_tooltip": "Teksts",
+    "toolbar_sharpness_tooltip": "Asums",
+    "toolbar_unsharp_tooltip": "Adaptīvs asums",
+    "sharpness_panel_label": "Asums:",
+    "unsharp_radius_label": "Rādiuss:",
+    "unsharp_percent_label": "Intensitāte:",
+    "unsharp_threshold_label": "Slieksnis:",
+    "toolbar_brightness_tooltip": "Spilgtums un kontrasts",
+    "toolbar_brightness_instruction": "Pielāgojiet slīdņus, izmaiņas stājas spēkā, atlaižot",
+    "brightness_panel_label": "Gaisma:",
+    "contrast_panel_label": "Kontrasts:",
+    "toolbar_saturation_tooltip": "Piesātinājums",
+    "toolbar_saturation_instruction": "Pielāgojiet slīdni, izmaiņas stājas spēkā, atlaižot",
+    "saturation_panel_label": "Piesātinājums :",
+    "toolbar_remove_colors_tooltip": "Krāsu noņemšana",
+    "toolbar_remove_colors_instruction": "Pielāgojiet slīdni, izmaiņas stājas spēkā, atlaižot",
+    "remove_colors_panel_label": "Intensitāte :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Spilgtums, kontrasts, krāsas...",
       "refresh_mosaic": "Atsvaidzināt mozaīku (F5)",
       "create_ico": "Izveidot .ico failu",
-      "clone_zone": "Klonēt zonu...",
-      "text": "Pievienot tekstu...",
-      "straighten_manual": "Iztaisnot attēlu manuāli...",
       "straighten_auto": "Iztaisnot attēlu automātiski"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Faili ignorēti"
-      },
-      "no_selection_crop": {
-        "title": "Nav atlases",
-        "message": "Lūdzu, atlasiet attēlu, ko apgriezt."
-      },
-      "multi_selection_crop": {
-        "title": "Vairāku vienumu atlase",
-        "message": "Vienlaikus var apgriezt tikai vienu attēlu.\nLūdzu, atlasiet tikai vienu attēlu."
-      },
-      "invalid_selection_crop": {
-        "title": "Nederīga atlase",
-        "message": "Var apgriezt tikai attēlus."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcija nav pieejama",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Kļūda",
         "message": "Neizdevās piemērot tekstu: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās lietot asumu: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās lietot adaptīvo asumu: {error}"
+      },
+      "brightness_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās lietot spilgtumu/kontrastu: {error}"
+      },
+      "saturation_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās lietot piesātinājumu: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās lietot krāsu noņemšanu: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "atteli",
       "apply_button": "Lietot",
       "color_depth_section": "Krasu dziļums",
-      "brightness_contrast_section": "Gaisma un kontrasts",
       "compression_section": "Saspiesana",
       "effects_section": "Efekti",
       "sharpness_section": "Asums",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 biti (RGB - krasas)",
       "depth_8bit": "8 biti (PNG palete / JPEG peleko toņi)",
       "depth_1bit": "1 bits (melnbalts)",
-      "brightness_label": "Gaisma: {value}",
-      "contrast_label": "Kontrasts: {value}",
       "compression_enable": "Iespejot atkartotu saspiesanu",
       "compression_quality_label": "Kvalitāte : {value}/100",
-      "sharpness_label": "Asums: {value}",
       "effect_none": "Nav efekta",
       "effect_grayscale": "Peleku tonusi",
       "effect_sepia": "Sepija",
@@ -991,8 +1008,6 @@
       "preview_section": "Priekšskatījums",
       "effect_invert": "Krāsu inversija",
       "preview_warning": "Priekšskatījums var atšķirties no galīgā rezultāta",
-      "effect_remove_colors": "Krāsu noņemšana",
-      "remove_colors_intensity_label": "Intensitāte : {value}",
       "image_mode_section": "Attēla režīms",
       "image_mode_rgb": "RGB (krāsas)",
       "image_mode_rgba": "RGBA (krāsas + caurspīdīgums)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (druka)",
       "image_mode_1": "1 (tīri melnbalts)",
       "image_mode_p": "P (256 krāsu palete)",
-      "saturation_section": "Piesātinājums",
-      "saturation_label": "Piesātinājums : {value}",
-      "saturation_viewer_title": "Piesātinājuma pielāgošana",
       "transparency_section": "Caurspīdīgums",
       "transparency_info": "Caurspīdīgums attiecas tikai uz PNG, WebP, ICO un AVIF attēliem",
       "transparency_type_label": "Veids :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Globāls caurspīdīgums : ietekmē visus attēla pikseļus, kuru krāsa ir tuva noklikšķinātajai",
       "transparency_apply": "Lietot",
       "transparency_skipped_warning": "{count} attēls(-i) izlaists(-i) — formāts nav saderīgs ar caurspīdīgumu. Lai tos iekļautu, vispirms pārveidojiet PNG formātā.",
-      "unsharp_section": "Adaptīvais asums",
-      "unsharp_radius_label": "Rādiuss: {value}",
-      "unsharp_percent_label": "Intensitāte: {value} %",
-      "unsharp_threshold_label": "Slieksnis: {value}",
-      "unsharp_viewer_title": "Adaptīvais asums",
       "auto_levels_tooltip": "Analizē katru lapu un automātiski pielāgo melnā un baltā līmeņus, lai maksimizētu kontrastu.\nLai izvēlētos lapu pēc lapas, izmantojiet skatītāju.",
       "transparency_unsaved_title": "Nepielietotās izmaiņas",
       "transparency_unsaved_message": "Pašreizējās izmaiņas nav pielietotas attēlam. Ko vēlaties darīt?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Balta punkta pipete",
       "black_pipette_tooltip": "Noklikšķiniet uz pikseļa, kam vajadzētu būt pilnīgi melnam. Uzmanību: ir viegli pārspīlēt!",
       "white_pipette_tooltip": "Noklikšķiniet uz pikseļa, kam vajadzētu būt pilnīgi baltam. Uzmanību: ir viegli pārspīlēt!"
-    },
-    "sharpness_viewer": {
-      "title": "Asuma pielāgošana"
-    },
-    "brightness_viewer": {
-      "title": "Spilgtuma un kontrasta pielāgošana"
     },
     "compression_viewer": {
       "title": "Saspiešanas pielāgošana"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Palielināt ikonu izmēru",
     "source_loose": "Brīvs attēls",
     "source_web": "Tīmekļa attēls",
-    "straighten": "Iztaisnot attēlu",
-    "clone_zone": "Klonēt zonu",
-    "text": "Pievienot tekstu",
+    "straighten": "Automātiski iztaisnot attēlu",
     "batch_cb7_to_cbz": "Konvertē visus CB7 failus mapē\nun tās apakšmapēs uz CBZ.",
     "batch_cb7_permanent_delete": "BRĪDINĀJUMS : ja šī opcija ir atzīmēta,\nsākotnējie CB7 faili tiks neatgriezeniski dzēsti\npēc konvertēšanas bez atkopšanas iespējas.\nPārliecinieties, ka jums ir dublējumkopija.",
     "batch_cbt_to_cbz": "Konvertē visus CBT failus mapē\nun tās apakšmapēs uz CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Šajā failā tika konstatētas dublētas lapas.\nNoklikšķiniet, lai atvērtu dublikātu pārvaldības logu.",
     "duplicate_indicator_none": "Dublikāti nav konstatēti",
     "straighten_mode_0": "Manuālais režīms (uzzīmējiet atsauces līniju)\nAr peles labo pogu nomainiet režīmu",
-    "straighten_mode_1": "Automātiskais režīms (slīpuma noteikšana)\nAr peles labo pogu nomainiet režīmu"
+    "straighten_mode_1": "Automātiskais režīms (slīpuma noteikšana)\nAr peles labo pogu nomainiet režīmu",
+    "sharpness_mode_0": "Pastiprina vai mīkstina attēla detaļas\nNoklikšķiniet ar labo peles pogu, lai pārslēgtos uz adaptīvo asumu",
+    "sharpness_mode_1": "Izceļ kontūras, saudzējot vienlaidu laukumus\nNoklikšķiniet ar labo peles pogu, lai pārslēgtos uz vienkāršo asumu"
   },
   "help": {
     "title": "MosaicView - Lietošanas instrukcija",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relatīvais ceļš"
   },
   "web": {
+    "web_analyzing_page": "Lapas analizēšana...",
     "web_download_progress": "Lejupielāde: {downloaded}/{total} attēli...",
     "web_download_cancel": "Atcelt",
     "web_no_images": "Nav attēlu",

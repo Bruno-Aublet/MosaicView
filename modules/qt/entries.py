@@ -139,11 +139,19 @@ def create_centered_thumbnail(img, thumb_w, thumb_h, background_color=None, chec
     if img_thumb.mode != 'RGBA':
         img_thumb = img_thumb.convert('RGBA')
 
+    # Fond transparent — le bg du canvas sera visible derrière
+    background = Image.new('RGBA', (thumb_w, thumb_h), (0, 0, 0, 0))
+
     if checkerboard:
-        background = _make_checkerboard_pil(thumb_w, thumb_h)
-    else:
-        # Fond transparent — le bg du canvas sera visible derrière
-        background = Image.new('RGBA', (thumb_w, thumb_h), (0, 0, 0, 0))
+        # Le damier ne doit couvrir que le rectangle réel occupé par l'image
+        # redimensionnée, pas tout le cadre thumb_w x thumb_h — sinon la
+        # transparence "déborde" hors du contour de l'image (ex. icône carrée
+        # dans un cadre de vignette rectangulaire). On peint donc le damier en
+        # plein sur ce seul rectangle (collage sans masque), puis l'image vient
+        # se poser par-dessus avec son propre alpha comme masque : le damier
+        # reste visible uniquement là où l'image est réellement transparente.
+        checker = _make_checkerboard_pil(img_thumb.width, img_thumb.height)
+        background.paste(checker, (x_offset, y_offset))
 
     # Colle l'image redimensionnée au centre du fond
     background.paste(img_thumb, (x_offset, y_offset), img_thumb)

@@ -55,6 +55,7 @@ class ConfigManager:
         'window_size': {'width': 1240, 'height': 780},  # Taille par défaut
         'dark_mode': False,  # Mode clair par défaut
         'thumbnail_size': 'normal',  # Taille normale par défaut ('small', 'normal', 'large')
+        'thumbnail_size_panel2': 'normal',  # Idem, distincte pour le panel2
         'font_size_offset': 0,  # Offset additif pour la taille de police (0 = taille par défaut)
         'buttons_column_width': 220,  # Largeur de la colonne de boutons (par défaut 220px)
         'recent_files': [],  # Liste des fichiers récemment ouverts (max 10)
@@ -207,6 +208,15 @@ class ConfigManager:
             'small', 'normal' ou 'large'
         """
         return self.config.get('thumbnail_size', self.DEFAULT_CONFIG['thumbnail_size'])
+
+    def get_thumbnail_size_panel2(self):
+        """
+        Récupère la taille des vignettes du panel2
+
+        Returns:
+            'small', 'normal' ou 'large'
+        """
+        return self.config.get('thumbnail_size_panel2', self.DEFAULT_CONFIG['thumbnail_size_panel2'])
 
     def get_font_size_offset(self):
         """
@@ -371,6 +381,21 @@ class ConfigManager:
         if size not in ['small', 'normal', 'large']:
             return False
         return self.set('thumbnail_size', size, save)
+
+    def set_thumbnail_size_panel2(self, size, save=True):
+        """
+        Définit la taille des vignettes du panel2
+
+        Args:
+            size: 'small', 'normal' ou 'large'
+            save: Si True, sauvegarde immédiatement
+
+        Returns:
+            True si la sauvegarde a réussi
+        """
+        if size not in ['small', 'normal', 'large']:
+            return False
+        return self.set('thumbnail_size_panel2', size, save)
 
     def set_font_size_offset(self, offset, save=True):
         """
@@ -597,6 +622,14 @@ class ConfigManager:
         """Persiste le mode de redressement."""
         return self.set('straighten_mode', int(mode))
 
+    def get_sharpness_mode(self):
+        """Retourne le mode de netteté persisté de la visionneuse (0=sharpness, 1=unsharp)."""
+        return int(self.config.get('sharpness_mode', 0))
+
+    def set_sharpness_mode(self, mode):
+        """Persiste le mode de netteté de la visionneuse."""
+        return self.set('sharpness_mode', int(mode))
+
     def get_zip_compression_level(self):
         """Retourne le niveau de compression ZIP par défaut à l'enregistrement (0-9, défaut 0=store)."""
         return int(self.config.get('zip_compression_level', 0))
@@ -668,6 +701,14 @@ class ConfigManager:
     def set_straighten_mode_panel2(self, mode):
         """Persiste le mode de redressement du panneau 2."""
         return self.set('straighten_mode_panel2', int(mode))
+
+    def get_sharpness_mode_panel2(self):
+        """Retourne le mode de netteté persisté de la visionneuse du panneau 2 (0=sharpness, 1=unsharp)."""
+        return int(self.config.get('sharpness_mode_panel2', 0))
+
+    def set_sharpness_mode_panel2(self, mode):
+        """Persiste le mode de netteté de la visionneuse du panneau 2."""
+        return self.set('sharpness_mode_panel2', int(mode))
 
     def get_zip_compression_level_panel2(self):
         """Retourne le niveau de compression ZIP par défaut du panneau 2 (0-9, défaut 0=store)."""
@@ -797,11 +838,23 @@ class Panel2Config:
     def set_straighten_mode(self, mode):
         return self._cfg.set_straighten_mode_panel2(mode)
 
+    def get_sharpness_mode(self):
+        return self._cfg.get_sharpness_mode_panel2()
+
+    def set_sharpness_mode(self, mode):
+        return self._cfg.set_sharpness_mode_panel2(mode)
+
     def get_zip_compression_level(self):
         return self._cfg.get_zip_compression_level_panel2()
 
     def set_zip_compression_level(self, level):
         return self._cfg.set_zip_compression_level_panel2(level)
+
+    def get_thumbnail_size(self):
+        return self._cfg.get_thumbnail_size_panel2()
+
+    def set_thumbnail_size(self, size, save=True):
+        return self._cfg.set_thumbnail_size_panel2(size, save)
 
 
 # Instance globale du gestionnaire de configuration

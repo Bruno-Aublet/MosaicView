@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "सीधा करें",
     "toolbar_crop_instruction": "रखी जाने वाली जगह के चारों ओर एक आयत बनाएं, फिर पुष्टि करें",
     "toolbar_clone_tooltip": "क्लोनिंग",
-    "toolbar_text_tooltip": "पाठ"
+    "toolbar_text_tooltip": "पाठ",
+    "toolbar_sharpness_tooltip": "तीक्ष्णता",
+    "toolbar_unsharp_tooltip": "अनुकूली तीक्ष्णता",
+    "sharpness_panel_label": "तीक्ष्णता:",
+    "unsharp_radius_label": "त्रिज्या:",
+    "unsharp_percent_label": "तीव्रता:",
+    "unsharp_threshold_label": "सीमा:",
+    "toolbar_brightness_tooltip": "चमक और कंट्रास्ट",
+    "toolbar_brightness_instruction": "स्लाइडर समायोजित करें, छोड़ने पर समायोजन लागू होता है",
+    "brightness_panel_label": "चमक:",
+    "contrast_panel_label": "कंट्रास्ट:",
+    "toolbar_saturation_tooltip": "संतृप्ति",
+    "toolbar_saturation_instruction": "स्लाइडर समायोजित करें, छोड़ने पर समायोजन लागू होता है",
+    "saturation_panel_label": "संतृप्ति :",
+    "toolbar_remove_colors_tooltip": "रंग हटाना",
+    "toolbar_remove_colors_instruction": "स्लाइडर समायोजित करें, छोड़ने पर समायोजन लागू होता है",
+    "remove_colors_panel_label": "तीव्रता :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "चमक, कंट्रास्ट, रंग...",
       "refresh_mosaic": "मोज़ेक ताज़ा करें (F5)",
       "create_ico": ".ico फ़ाइल बनाएं",
-      "clone_zone": "ज़ोन क्लोन करें...",
-      "text": "पाठ जोड़ें...",
-      "straighten_manual": "छवि को मैन्युअल रूप से सीधा करें...",
       "straighten_auto": "छवि को स्वचालित रूप से सीधा करें"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "अनदेखी की गई फ़ाइलें"
-      },
-      "no_selection_crop": {
-        "title": "कोई चयन नहीं",
-        "message": "कृपया क्रॉप करने के लिए एक छवि चुनें।"
-      },
-      "multi_selection_crop": {
-        "title": "एकाधिक चयन",
-        "message": "आप एक समय में केवल एक छवि क्रॉप कर सकते हैं।\nकृपया एक छवि चुनें।"
-      },
-      "invalid_selection_crop": {
-        "title": "अमान्य चयन",
-        "message": "केवल छवियां क्रॉप की जा सकती हैं।"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "सुविधा उपलब्ध नहीं है",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "त्रुटि",
         "message": "पाठ लागू नहीं किया जा सका: {error}"
+      },
+      "sharpness_failed": {
+        "title": "त्रुटि",
+        "message": "तीक्ष्णता लागू नहीं की जा सकी: {error}"
+      },
+      "unsharp_failed": {
+        "title": "त्रुटि",
+        "message": "अनुकूली तीक्ष्णता लागू नहीं की जा सकी: {error}"
+      },
+      "brightness_failed": {
+        "title": "त्रुटि",
+        "message": "चमक/कंट्रास्ट लागू नहीं हो सका: {error}"
+      },
+      "saturation_failed": {
+        "title": "त्रुटि",
+        "message": "संतृप्ति लागू नहीं की जा सकी: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "त्रुटि",
+        "message": "रंग हटाना लागू नहीं किया जा सका: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "छवियाँ",
       "apply_button": "लागू करें",
       "color_depth_section": "रंग गहराई",
-      "brightness_contrast_section": "चमक और कंट्रास्ट",
       "compression_section": "संपीड़न",
       "effects_section": "प्रभाव",
       "sharpness_section": "तीक्ष्णता",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 बिट (RGB - रंग)",
       "depth_8bit": "8 bit (PNG paleteu / JPEG gre-skelu)",
       "depth_1bit": "1 बिट (काला और सफेद)",
-      "brightness_label": "चमक: {value}",
-      "contrast_label": "कंट्रास्ट: {value}",
       "compression_enable": "पुनः संपीड़न सक्षम करें",
       "compression_quality_label": "गुणवत्ता : {value}/100",
-      "sharpness_label": "तीक्ष्णता: {value}",
       "effect_none": "कोई प्रभाव नहीं",
       "effect_grayscale": "ग्रेस्केल",
       "effect_sepia": "सेपिया",
@@ -991,8 +1008,6 @@
       "preview_section": "पूर्वावलोकन",
       "effect_invert": "रंग उलटाव",
       "preview_warning": "पूर्वावलोकन अंतिम परिणाम से भिन्न हो सकता है",
-      "effect_remove_colors": "रंग हटाना",
-      "remove_colors_intensity_label": "तीव्रता : {value}",
       "image_mode_section": "चित्र मोड",
       "image_mode_rgb": "RGB (रंग)",
       "image_mode_rgba": "RGBA (रंग + पारदर्शिता)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (मुद्रण)",
       "image_mode_1": "1 (शुद्ध काला-सेफ़ेद)",
       "image_mode_p": "P (256 रंगों का पैलेट)",
-      "saturation_section": "संतृप्ति",
-      "saturation_label": "संतृप्ति : {value}",
-      "saturation_viewer_title": "संतृप्ति समायोजन",
       "transparency_section": "पारदर्शिता",
       "transparency_info": "पारदर्शिता केवल PNG, WebP, ICO और AVIF छवियों पर लागू होती है",
       "transparency_type_label": "प्रकार :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "वैश्विक पारदर्शिता : छवि के सभी पिक्सेल जिनका रंग क्लिक किए गए रंग के समान है उन्हें प्रभावित करता है",
       "transparency_apply": "लागू करें",
       "transparency_skipped_warning": "{count} छवि(यां) छोड़ी गई — प्रारूप पारदर्शिता के साथ असंगत है। उन्हें शामिल करने के लिए पहले PNG में बदलें।",
-      "unsharp_section": "अनुकूली तीक्ष्णता",
-      "unsharp_radius_label": "त्रिज्या: {value}",
-      "unsharp_percent_label": "तीव्रता: {value} %",
-      "unsharp_threshold_label": "सीमा: {value}",
-      "unsharp_viewer_title": "अनुकूली तीक्ष्णता",
       "auto_levels_tooltip": "प्रत्येक पृष्ठ का विश्लेषण करता है और कंट्रास्ट को अधिकतम करने के लिए काले और सफ़ेद स्तरों को स्वचालित रूप से समायोजित करता है।\nपृष्ठ दर पृष्ठ चुनने के लिए, व्यूअर का उपयोग करें।",
       "transparency_unsaved_title": "अलागू परिवर्तन",
       "transparency_unsaved_message": "वर्तमान परिवर्तन छवि पर लागू नहीं किए गए हैं। आप क्या करना चाहते हैं?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "सफेद बिंदु आईड्रॉपर",
       "black_pipette_tooltip": "एक पिक्सेल पर क्लिक करें जो पूरी तरह से काला होना चाहिए। सावधान: इसे ज़्यादा करना आसान है!",
       "white_pipette_tooltip": "एक पिक्सेल पर क्लिक करें जो पूरी तरह से सफेद होना चाहिए। सावधान: इसे ज़्यादा करना आसान है!"
-    },
-    "sharpness_viewer": {
-      "title": "तीक्ष्णता समायोजन"
-    },
-    "brightness_viewer": {
-      "title": "चमक और कंट्रास्ट समायोजन"
     },
     "compression_viewer": {
       "title": "संपीड़न समायोजन"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "आइकन का आकार बढ़ाएं",
     "source_loose": "मुक्त छवि",
     "source_web": "वेब छवि",
-    "straighten": "छवि सीधी करें",
-    "clone_zone": "ज़ोन क्लोन करें",
-    "text": "पाठ जोड़ें",
+    "straighten": "छवि को स्वचालित रूप से सीधा करें",
     "batch_cb7_to_cbz": "किसी फ़ोल्डर और उसके उपफ़ोल्डरों में\nसभी CB7 फ़ाइलों को CBZ में बदलता है।",
     "batch_cb7_permanent_delete": "चेतावनी : यदि यह विकल्प चुना गया है,\nतो मूल CB7 फ़ाइलें रूपांतरण के बाद\nस्थायी रूप से हटा दी जाएंगी।\nसुनिश्चित करें कि आपके पास बैकअप है।",
     "batch_cbt_to_cbz": "किसी फ़ोल्डर और उसके उपफ़ोल्डरों में\nसभी CBT फ़ाइलों को CBZ में बदलता है।",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "इस फ़ाइल में डुप्लिकेट पेज मिले हैं।\nडुप्लिकेट पेज प्रबंधन विंडो खोलने के लिए क्लिक करें।",
     "duplicate_indicator_none": "कोई डुप्लिकेट नहीं मिला",
     "straighten_mode_0": "मैनुअल मोड (एक संदर्भ रेखा खींचें)\nमोड बदलने के लिए राइट-क्लिक करें",
-    "straighten_mode_1": "स्वचालित मोड (झुकाव का पता लगाना)\nमोड बदलने के लिए राइट-क्लिक करें"
+    "straighten_mode_1": "स्वचालित मोड (झुकाव का पता लगाना)\nमोड बदलने के लिए राइट-क्लिक करें",
+    "sharpness_mode_0": "छवि के विवरण को बढ़ाता या मुलायम करता है\nअनुकूली तीक्ष्णता पर जाने के लिए राइट-क्लिक करें",
+    "sharpness_mode_1": "समतल क्षेत्रों को बख्शते हुए किनारों को उभारता है\nसाधारण तीक्ष्णता पर जाने के लिए राइट-क्लिक करें"
   },
   "help": {
     "title": "MosaicView - उपयोग निर्देश",
@@ -1506,6 +1507,7 @@
     "relative_path": "सापेक्ष पथ"
   },
   "web": {
+    "web_analyzing_page": "पेज का विश्लेषण हो रहा है...",
     "web_download_progress": "डाउनलोड हो रहा है: {downloaded}/{total} छवियाँ...",
     "web_download_cancel": "रद्द करें",
     "web_no_images": "कोई छवि नहीं",

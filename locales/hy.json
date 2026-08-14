@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Ուղղում",
     "toolbar_crop_instruction": "Գծագրեք ուղղանկյուն պահպանվող տարածքի շուրջ, ապա հաստատեք",
     "toolbar_clone_tooltip": "Կլոնավորում",
-    "toolbar_text_tooltip": "Տեքստ"
+    "toolbar_text_tooltip": "Տեքստ",
+    "toolbar_sharpness_tooltip": "Սրություն",
+    "toolbar_unsharp_tooltip": "Հարմարվողական սրություն",
+    "sharpness_panel_label": "Սրություն՝",
+    "unsharp_radius_label": "Շառավիղ:",
+    "unsharp_percent_label": "Ինտենսիվություն:",
+    "unsharp_threshold_label": "Շեմ:",
+    "toolbar_brightness_tooltip": "Պայծառություն և կոնտրաստ",
+    "toolbar_brightness_instruction": "Կարգավորեք սահիչները, ճշգրտումը կիրառվում է բաց թողնելիս",
+    "brightness_panel_label": "Lusavorut'yun:",
+    "contrast_panel_label": "Hanrangnerkut'yun:",
+    "toolbar_saturation_tooltip": "Հագեցվածություն",
+    "toolbar_saturation_instruction": "Կարգավորեք սահիչը, ճշգրտումը կիրառվում է բաց թողնելիս",
+    "saturation_panel_label": "Հագեցվածություն :",
+    "toolbar_remove_colors_tooltip": "Գույների հեռացում",
+    "toolbar_remove_colors_instruction": "Կարգավորեք սահիչը, ճշգրտումը կիրառվում է բաց թողնելիս",
+    "remove_colors_panel_label": "Ինտենսիվություն :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Parevorutyun, kontrast, guynery...",
       "refresh_mosaic": "Թարմացնել խճանկարը (F5)",
       "create_ico": "Ստեղծել .ico ֆայլ",
-      "clone_zone": "Գոտու կրկնօրինակում...",
-      "text": "Ավելացնել տեքստ...",
-      "straighten_manual": "Ուղղել պատկերը ձեռքով...",
       "straighten_auto": "Ուղղել պատկերը ավտոմատ կերպով"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Ֆայլերը անտեսված են"
-      },
-      "no_selection_crop": {
-        "title": "Ընտրություն չկա",
-        "message": "Խնդրում ենք ընտրել պատկեր կտրատման համար։"
-      },
-      "multi_selection_crop": {
-        "title": "Բազմակի ընտրություն",
-        "message": "Կարող եք կտրատել միայն մեկ պատկեր միանգամից։\nԽնդրում ենք ընտրել միայն մեկ պատկեր։"
-      },
-      "invalid_selection_crop": {
-        "title": "Անվավեր ընտրություն",
-        "message": "Կտրատել կարելի է միայն պատկերները։"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Գործառույթը հասանելի չէ",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Սխալ",
         "message": "Հնարավոր չէ կիրառել տեքստը՝ {error}"
+      },
+      "sharpness_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ կիրառել սրությունը՝ {error}"
+      },
+      "unsharp_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ կիրառել հարմարվողական սրությունը՝ {error}"
+      },
+      "brightness_failed": {
+        "title": "Սխալ",
+        "message": "Չհաջողվեց կիրառել պայծառությունը/կոնտրաստը՝ {error}"
+      },
+      "saturation_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ կիրառել հագեցվածությունը՝ {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Սխալ",
+        "message": "Հնարավոր չէ կիրառել գույների հեռացումը՝ {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "patkerner",
       "apply_button": "Kirarkel",
       "color_depth_section": "Guyneri khorut'yun",
-      "brightness_contrast_section": "Lusavorut'yun yev hanrangnerkut'yun",
       "compression_section": "S'mp'vac'um",
       "effects_section": "Azdecut'yunner",
       "sharpness_section": "Surut'yun",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bit (RGB - guynere)",
       "depth_8bit": "8 bit (PNG palitra / JPEG gris mijavayr)",
       "depth_1bit": "1 bit (sev u spitak)",
-      "brightness_label": "Lusavorut'yun: {value}",
-      "contrast_label": "Hanrangnerkut'yun: {value}",
       "compression_enable": "Miacnel vkrayakan s'mp'vac'um",
       "compression_quality_label": "Որակ : {value}/100",
-      "sharpness_label": "Surut'yun: {value}",
       "effect_none": "Azdecut'yun ch'ka",
       "effect_grayscale": "Gris mijavayr",
       "effect_sepia": "Sepiya",
@@ -991,8 +1008,6 @@
       "preview_section": "Նախադիտում",
       "effect_invert": "Գույների շրջում",
       "preview_warning": "Նախադիտումը կարող է տարբերվել վերջնական արդյունքից",
-      "effect_remove_colors": "Գույների հեռացում",
-      "remove_colors_intensity_label": "Ինտենսիվություն : {value}",
       "image_mode_section": "Պատկերի ռեժիմ",
       "image_mode_rgb": "RGB (գույներ)",
       "image_mode_rgba": "RGBA (գույներ + թափանցիկություն)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (տպագրություն)",
       "image_mode_1": "1 (մաքուր սև-սպիտակ)",
       "image_mode_p": "P (256 գույնի ներկապալիտա)",
-      "saturation_section": "Հագեցվածություն",
-      "saturation_label": "Հագեցվածություն : {value}",
-      "saturation_viewer_title": "Հագեցվածության կարգավորում",
       "transparency_section": "Թափանցիկություն",
       "transparency_info": "Թափանցիկությունը կիրառվում է միայն PNG, WebP, ICO և AVIF պատկերների վրա",
       "transparency_type_label": "Տեսակ :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Գլոբալ թափանցիկություն . ազդում է պատկերի բոլոր պիքսելների վրա, որոնց գույնը մոտ է կտտացված գույնին",
       "transparency_apply": "Կիրառել",
       "transparency_skipped_warning": "{count} պատկեր(ներ) բաց թողնված — ձևաչափը անհամատեղելի է թափանցիկության հետ: Ընդգրկելու համար նախ փոխարկեք PNG-ի:",
-      "unsharp_section": "Հարմարվողական սրություն",
-      "unsharp_radius_label": "Շառավիղ: {value}",
-      "unsharp_percent_label": "Ինտենսիվություն: {value} %",
-      "unsharp_threshold_label": "Շեմ: {value}",
-      "unsharp_viewer_title": "Հարմարվողական սրություն",
       "auto_levels_tooltip": "Վերլուծում է յուրաքանչյուր էջ և ավտոմատ կերպով կարգաբերում է սևի ու սպիտակի մակարդակները՝ կոնտրաստը առավելագույնի հասցնելու համար։\nԷջ առ էջ ընտրելու համար օգտագործեք դիտիչը։",
       "transparency_unsaved_title": "Չկիրառված փոփոխություններ",
       "transparency_unsaved_message": "Ընթացիկ փոփոխությունները չեն կիրառվել պատկերի վրա: Ի՞նչ եք ուզում անել:",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Սպիտակ կետի կաթիլաչափ",
       "black_pipette_tooltip": "Սեղմեք պիքսելի վրա, որը պետք է լինի լիովին սև: Զգուշություն՝ հեշտ է չափազանցնել:",
       "white_pipette_tooltip": "Սեղմեք պիքսելի վրա, որը պետք է լինի լիովին սպիտակ: Զգուշություն՝ հեշտ է չափազանցնել:"
-    },
-    "sharpness_viewer": {
-      "title": "Սրության կարգավորում"
-    },
-    "brightness_viewer": {
-      "title": "Պայծառության և հակադրության կարգավորում"
     },
     "compression_viewer": {
       "title": "Սեղմման կարգավորում"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Մեծացնել պատկերակների չափը",
     "source_loose": "Ազատ պատկեր",
     "source_web": "Վեբ պատկեր",
-    "straighten": "Ուղղել պատկերը",
-    "clone_zone": "Գոտու կրկնօրինակում",
-    "text": "Ավելացնել տեքստ",
+    "straighten": "Ուղղել պատկերը ինքնաշխատ եղանակով",
     "batch_cb7_to_cbz": "Փոխարկում է թղթապանակի և դրա\nենթաթղթապանակների բոլոր CB7 ֆայլերը CBZ-ի:",
     "batch_cb7_permanent_delete": "ՈՒՇԱԴՐՈՒԹՅՈՒՆ : եթե այս ընտրանքը նշված է,\nբնօրինակ CB7 ֆայլերը կջնջվեն մշտապես\nփոխարկումից հետո՝ վերականգնման\nհնարավորությամբ: Համոզվեք, որ ունեք կրկնօրինակ:",
     "batch_cbt_to_cbz": "Փոխարկում է թղթապանակի և դրա\nենթաթղթապանակների բոլոր CBT ֆայլերը CBZ-ի:",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Այս ֆայլում հայտնաբերվել են կրկնվող էջեր.\nՍեղմեք՝ կրկնվող էջերի կառավարման պատուհանը բացելու համար։",
     "duplicate_indicator_none": "Կրկնօրինակներ չեն հայտնաբերվել",
     "straighten_mode_0": "Ձեռքով ռեժիմ (գծեք հղման գիծ)\nԱջ սեղմեք ռեժիմը փոխելու համար",
-    "straighten_mode_1": "Ավտոմատ ռեժիմ (թեքության հայտնաբերում)\nԱջ սեղմեք ռեժիմը փոխելու համար"
+    "straighten_mode_1": "Ավտոմատ ռեժիմ (թեքության հայտնաբերում)\nԱջ սեղմեք ռեժիմը փոխելու համար",
+    "sharpness_mode_0": "Ուժեղացնում կամ մեղմացնում է պատկերի մանրամասները\nԱջ սեղմեք՝ հարմարվողական սրության անցնելու համար",
+    "sharpness_mode_1": "Ընդգծում է եզրագծերը՝ խնայելով միատարր հատվածները\nԱջ սեղմեք՝ պարզ սրության անցնելու համար"
   },
   "help": {
     "title": "MosaicView - Օգտագործման ուղեցույց",
@@ -1506,6 +1507,7 @@
     "relative_path": "Հարաբերական ուղի"
   },
   "web": {
+    "web_analyzing_page": "Էջի վերլուծություն...",
     "web_download_progress": "Ներբեռնում՝ {downloaded}/{total} պատկեր...",
     "web_download_cancel": "Չեղարկել",
     "web_no_images": "Պատկերներ չկան",

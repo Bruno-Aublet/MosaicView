@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Ištiesinimas",
     "toolbar_crop_instruction": "Nubrėžkite stačiakampį aplink sritį, kurią norite išsaugoti, tada patvirtinkite",
     "toolbar_clone_tooltip": "Klonavimas",
-    "toolbar_text_tooltip": "Tekstas"
+    "toolbar_text_tooltip": "Tekstas",
+    "toolbar_sharpness_tooltip": "Ryškumas",
+    "toolbar_unsharp_tooltip": "Adaptyvusis ryškumas",
+    "sharpness_panel_label": "Ryškumas:",
+    "unsharp_radius_label": "Spindulys:",
+    "unsharp_percent_label": "Intensyvumas:",
+    "unsharp_threshold_label": "Slenkstis:",
+    "toolbar_brightness_tooltip": "Ryškumas ir kontrastas",
+    "toolbar_brightness_instruction": "Reguliuokite šliaužiklius, pakeitimas pritaikomas atleidus",
+    "brightness_panel_label": "Skaistis:",
+    "contrast_panel_label": "Kontrastas:",
+    "toolbar_saturation_tooltip": "Sodrumas",
+    "toolbar_saturation_instruction": "Reguliuokite šliaužiklį, pakeitimas pritaikomas atleidus",
+    "saturation_panel_label": "Sodrumas :",
+    "toolbar_remove_colors_tooltip": "Spalvų pašalinimas",
+    "toolbar_remove_colors_instruction": "Reguliuokite šliaužiklį, pakeitimas pritaikomas atleidus",
+    "remove_colors_panel_label": "Intensyvumas :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Ryškumas, kontrastas, spalvos...",
       "refresh_mosaic": "Atnaujinti mozaiką (F5)",
       "create_ico": "Sukurti .ico failą",
-      "clone_zone": "Klonuoti zoną...",
-      "text": "Pridėti tekstą...",
-      "straighten_manual": "Ištiesinti vaizdą rankiniu būdu...",
       "straighten_auto": "Ištiesinti vaizdą automatiškai"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Failai ignoruoti"
-      },
-      "no_selection_crop": {
-        "title": "Nieko nepasirinkta",
-        "message": "Pasirinkite vaizdą apkarpymui."
-      },
-      "multi_selection_crop": {
-        "title": "Pasirinkta keletas",
-        "message": "Vienu metu galite apkarpyti tik vieną vaizdą.\nPasirinkite tik vieną vaizdą."
-      },
-      "invalid_selection_crop": {
-        "title": "Netinkamas pasirinkimas",
-        "message": "Apkarpyti galima tik vaizdus."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcija nepasiekiama",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Klaida",
         "message": "Nepavyko pritaikyti teksto: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti ryškumo: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti adaptyviojo ryškumo: {error}"
+      },
+      "brightness_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti ryškumo / kontrasto: {error}"
+      },
+      "saturation_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti sodrumo: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti spalvų pašalinimo: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "vaizdu",
       "apply_button": "Taikyti",
       "color_depth_section": "Spalvu gyl is",
-      "brightness_contrast_section": "Skaistis ir kontrastas",
       "compression_section": "Glaudinimas",
       "effects_section": "Efektai",
       "sharpness_section": "Astrumas",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bitai (RGB - spalvos)",
       "depth_8bit": "8 bitai (PNG palete / JPEG pilkos spalvos)",
       "depth_1bit": "1 bitas (juoda-balta)",
-      "brightness_label": "Skaistis: {value}",
-      "contrast_label": "Kontrastas: {value}",
       "compression_enable": "Ijungti pakartotini glaudinima",
       "compression_quality_label": "Kokybė : {value}/100",
-      "sharpness_label": "Astrumas: {value}",
       "effect_none": "Be efekto",
       "effect_grayscale": "Pilku atspalviai",
       "effect_sepia": "Sepija",
@@ -991,8 +1008,6 @@
       "preview_section": "Peržiūra",
       "effect_invert": "Spalvų inversija",
       "preview_warning": "Peržiūra gali skirtis nuo galutinio rezultato",
-      "effect_remove_colors": "Spalvų pašalinimas",
-      "remove_colors_intensity_label": "Intensyvumas : {value}",
       "image_mode_section": "Vaizdo režimas",
       "image_mode_rgb": "RGB (spalvos)",
       "image_mode_rgba": "RGBA (spalvos + skaidrumas)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (spausdinimas)",
       "image_mode_1": "1 (gryna juodai balta)",
       "image_mode_p": "P (256 spalvų paletė)",
-      "saturation_section": "Sodrumas",
-      "saturation_label": "Sodrumas : {value}",
-      "saturation_viewer_title": "Sodrumo reguliavimas",
       "transparency_section": "Skaidrumas",
       "transparency_info": "Skaidrumas taikomas tik PNG, WebP, ICO ir AVIF vaizdams",
       "transparency_type_label": "Tipas :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Globalus skaidrumas : veikia visus vaizdo pikselius, kurių spalva artima spustelėtai",
       "transparency_apply": "Taikyti",
       "transparency_skipped_warning": "{count} vaizdas(-ai) praleista(-i) — formatas nesuderinamas su skaidrumu. Norėdami juos įtraukti, pirmiausia konvertuokite į PNG.",
-      "unsharp_section": "Adaptyvus ryškumas",
-      "unsharp_radius_label": "Spindulys: {value}",
-      "unsharp_percent_label": "Intensyvumas: {value} %",
-      "unsharp_threshold_label": "Slenkstis: {value}",
-      "unsharp_viewer_title": "Adaptyvus ryškumas",
       "auto_levels_tooltip": "Analizuoja kiekvieną puslapį ir automatiškai reguliuoja juodos ir baltos spalvos lygius, kad maksimaliai padidintų kontrastą.\nNorėdami pasirinkti puslapį po puslapio, naudokite peržiūros priemonę.",
       "transparency_unsaved_title": "Nepritaikyti pakeitimai",
       "transparency_unsaved_message": "Dabartiniai pakeitimai nebuvo pritaikyti paveikslėliui. Ką norite daryti?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Balto taško lašintuvas",
       "black_pipette_tooltip": "Spustelėkite pikselį, kuris turėtų būti visiškai juodas. Dėmesio: lengva persistengti!",
       "white_pipette_tooltip": "Spustelėkite pikselį, kuris turėtų būti visiškai baltas. Dėmesio: lengva persistengti!"
-    },
-    "sharpness_viewer": {
-      "title": "Aštumo reguliavimas"
-    },
-    "brightness_viewer": {
-      "title": "Ryškumo ir kontrasto reguliavimas"
     },
     "compression_viewer": {
       "title": "Glaudinimo reguliavimas"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Padidinti piktogramų dydį",
     "source_loose": "Laisvas vaizdas",
     "source_web": "Žiniatinklio vaizdas",
-    "straighten": "Ištiesinti vaizdą",
-    "clone_zone": "Klonuoti zoną",
-    "text": "Pridėti tekstą",
+    "straighten": "Automatiškai ištiesinti vaizdą",
     "batch_cb7_to_cbz": "Konvertuoja visus CB7 failus kataloge\nir jo pakatalogiuose į CBZ.",
     "batch_cb7_permanent_delete": "DĖMESIO : jei ši parinktis pažymėta,\noriginalūs CB7 failai bus visam laikui ištrinti\npo konvertavimo be galimybės atkurti.\nĮsitikinkite, kad turite atsarginę kopiją.",
     "batch_cbt_to_cbz": "Konvertuoja visus CBT failus kataloge\nir jo pakatalogiuose į CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Šiame faile aptikti dubliuoti puslapiai.\nSpustelėkite, kad atidarytumėte dublikatų valdymo langą.",
     "duplicate_indicator_none": "Dublikatų neaptikta",
     "straighten_mode_0": "Rankinis režimas (nubrėžkite atskaitos liniją)\nSpustelėkite dešiniuoju pele mygtuku, kad pakeistumėte režimą",
-    "straighten_mode_1": "Automatinis režimas (nuolydžio aptikimas)\nSpustelėkite dešiniuoju pele mygtuku, kad pakeistumėte režimą"
+    "straighten_mode_1": "Automatinis režimas (nuolydžio aptikimas)\nSpustelėkite dešiniuoju pele mygtuku, kad pakeistumėte režimą",
+    "sharpness_mode_0": "Sustiprina arba suminkština vaizdo detales\nSpustelėkite dešiniuoju pelės mygtuku, kad perjungtumėte į adaptyvųjį ryškumą",
+    "sharpness_mode_1": "Pabrėžia kontūrus tausodama vienalytes sritis\nSpustelėkite dešiniuoju pelės mygtuku, kad perjungtumėte į paprastą ryškumą"
   },
   "help": {
     "title": "MosaicView - Naudojimo instrukcija",
@@ -1506,6 +1507,7 @@
     "relative_path": "Santykinis kelias"
   },
   "web": {
+    "web_analyzing_page": "Puslapio analizė...",
     "web_download_progress": "Atsisiunčiama: {downloaded}/{total} paveikslėliai...",
     "web_download_cancel": "Atšaukti",
     "web_no_images": "Nėra paveikslėlių",

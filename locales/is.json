@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Rétta af",
     "toolbar_crop_instruction": "Teiknaðu rétthyrning utan um svæðið sem á að halda, staðfestu síðan",
     "toolbar_clone_tooltip": "Klónun",
-    "toolbar_text_tooltip": "Texti"
+    "toolbar_text_tooltip": "Texti",
+    "toolbar_sharpness_tooltip": "Skerpa",
+    "toolbar_unsharp_tooltip": "Aðlögunarhæf skerpa",
+    "sharpness_panel_label": "Skerpa:",
+    "unsharp_radius_label": "Radíus:",
+    "unsharp_percent_label": "Styrkur:",
+    "unsharp_threshold_label": "Þröskuldur:",
+    "toolbar_brightness_tooltip": "Birtustig og birtuskil",
+    "toolbar_brightness_instruction": "Stilltu sleðana, breytingin tekur gildi þegar sleppt er",
+    "brightness_panel_label": "Birtustig:",
+    "contrast_panel_label": "Birtuskil:",
+    "toolbar_saturation_tooltip": "Mettun",
+    "toolbar_saturation_instruction": "Stilltu sleðann, breytingin tekur gildi þegar sleppt er",
+    "saturation_panel_label": "Mettun :",
+    "toolbar_remove_colors_tooltip": "Fjarlæging lita",
+    "toolbar_remove_colors_instruction": "Stilltu sleðann, breytingin tekur gildi þegar sleppt er",
+    "remove_colors_panel_label": "Styrkur :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Birtustig, andstæða, litir...",
       "refresh_mosaic": "Endurglæða mósaík (F5)",
       "create_ico": "Búa til .ico skrá",
-      "clone_zone": "Klóna svæði...",
-      "text": "Bæta við texta...",
-      "straighten_manual": "Rétta myndina handvirkt...",
       "straighten_auto": "Rétta myndina sjálfkrafa"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Skrám hunsuð"
-      },
-      "no_selection_crop": {
-        "title": "Ekkert valið",
-        "message": "Vinsamlegast veldu mynd til að skera af."
-      },
-      "multi_selection_crop": {
-        "title": "Margfalt val",
-        "message": "Þú getur aðeins skorið af einni mynd í einu.\nVinsamlegast veldu aðeins eina mynd."
-      },
-      "invalid_selection_crop": {
-        "title": "Ógilt val",
-        "message": "Aðeins er hægt að skera af myndir."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Aðgerð ekki tiltæk",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Villa",
         "message": "Ekki tókst að nota textann: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að beita skerpu: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að beita aðlögunarhæfri skerpu: {error}"
+      },
+      "brightness_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að beita birtustigi/birtuskilum: {error}"
+      },
+      "saturation_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að beita mettun: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að beita fjarlægingu lita: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "myndir",
       "apply_button": "Beita",
       "color_depth_section": "Litadýpt",
-      "brightness_contrast_section": "Birtustig og birtuskil",
       "compression_section": "Þjöppun",
       "effects_section": "Áhrif",
       "sharpness_section": "Skarpheiti",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bitar (RGB - litir)",
       "depth_8bit": "8 bitar (PNG litaspjald / JPEG graskali)",
       "depth_1bit": "1 biti (svart og hvítt)",
-      "brightness_label": "Birtustig: {value}",
-      "contrast_label": "Birtuskil: {value}",
       "compression_enable": "Virkja endurþjöppun",
       "compression_quality_label": "Gæði : {value}/100",
-      "sharpness_label": "Skarpheiti: {value}",
       "effect_none": "Engin áhrif",
       "effect_grayscale": "Grátónar",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Forskoðun",
       "effect_invert": "Litaviðsnúningur",
       "preview_warning": "Forskoðun getur verið frábrugðin lokaútkomunni",
-      "effect_remove_colors": "Fjarlæging lita",
-      "remove_colors_intensity_label": "Styrkur : {value}",
       "image_mode_section": "Myndastilling",
       "image_mode_rgb": "RGB (litir)",
       "image_mode_rgba": "RGBA (litir + gagnsæi)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (prentun)",
       "image_mode_1": "1 (hreint svarthvítt)",
       "image_mode_p": "P (256 lita litaspjald)",
-      "saturation_section": "Mettun",
-      "saturation_label": "Mettun : {value}",
-      "saturation_viewer_title": "Stillingar á mettun",
       "transparency_section": "Gegnsæi",
       "transparency_info": "Gegnsæi á aðeins við PNG, WebP, ICO og AVIF myndir",
       "transparency_type_label": "Tegund :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Altækt gegnsæi : hefur áhrif á alla pixla myndarinnar sem hafa lit líkan þeim smellta",
       "transparency_apply": "Nota",
       "transparency_skipped_warning": "{count} mynd(ir) sleppt — snið er ekki samhæft við gegnsæi. Til að hafa þær með skaltu umbreyta þeim í PNG fyrst.",
-      "unsharp_section": "Aðlæg skýrleiki",
-      "unsharp_radius_label": "Radíus: {value}",
-      "unsharp_percent_label": "Styrkur: {value} %",
-      "unsharp_threshold_label": "Þröskuldur: {value}",
-      "unsharp_viewer_title": "Aðlæg skýrleiki",
       "auto_levels_tooltip": "Greinir hverja síðu og stillir sjálfkrafa svart- og hvítgildistig til að hámarka skerpu.\nTil að velja síðu fyrir síðu skaltu nota skoðarann.",
       "transparency_unsaved_title": "Ónotuðar breytingar",
       "transparency_unsaved_message": "Núverandi breytingar hafa ekki verið notaðar á myndina. Hvað viltu gera?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Hvit punkts dropi",
       "black_pipette_tooltip": "Smelltu á pixla sem ætti að vera alveg svartur. Aðvörun: það er auðvelt að fara of langt!",
       "white_pipette_tooltip": "Smelltu á pixla sem ætti að vera alveg hvítur. Aðvörun: það er auðvelt að fara of langt!"
-    },
-    "sharpness_viewer": {
-      "title": "Skerpustilling"
-    },
-    "brightness_viewer": {
-      "title": "Birtustilling og skerpu"
     },
     "compression_viewer": {
       "title": "Þjöppunarstilling"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Stækka stærð tákna",
     "source_loose": "Lausmynd",
     "source_web": "Vefmynd",
-    "straighten": "Rétta mynd",
-    "clone_zone": "Klóna svæði",
-    "text": "Bæta við texta",
+    "straighten": "Rétta myndina sjálfkrafa",
     "batch_cb7_to_cbz": "Umbreytir öllum CB7-skrám í möppu\nog undirmöppum hennar í CBZ.",
     "batch_cb7_permanent_delete": "VIÐVÖRUN : ef þessi valkostur er valinn,\nverða upprunalegar CB7-skrár eytt varanlega\neftir umbreytingu án endurheimtumöguleika.\nGakktu úr skugga um að þú hafir öryggisafrit.",
     "batch_cbt_to_cbz": "Umbreytir öllum CBT-skrám í möppu\nog undirmöppum hennar í CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Tvítekin blaðsíður fundust í þessari skrá.\nSmelltu til að opna gluggann fyrir stjórnun tvítekinna blaðsíðna.",
     "duplicate_indicator_none": "Engin tvítekning fannst",
     "straighten_mode_0": "Handvirk stilling (teiknaðu viðmiðunarlínu)\nHægrismelltu til að skipta um stillingu",
-    "straighten_mode_1": "Sjálfvirk stilling (halli greindur)\nHægrismelltu til að skipta um stillingu"
+    "straighten_mode_1": "Sjálfvirk stilling (halli greindur)\nHægrismelltu til að skipta um stillingu",
+    "sharpness_mode_0": "Styrkir eða mýkir smáatriði myndarinnar\nHægrismelltu til að skipta yfir í aðlögunarhæfa skerpu",
+    "sharpness_mode_1": "Undirstrikar útlínur án þess að hafa áhrif á jöfn svæði\nHægrismelltu til að skipta yfir í einfalda skerpu"
   },
   "help": {
     "title": "MosaicView - Notkunarleiðbeiningar",
@@ -1506,6 +1507,7 @@
     "relative_path": "Hlutfallsleg slóð"
   },
   "web": {
+    "web_analyzing_page": "Greini síðu...",
     "web_download_progress": "Niðurhal: {downloaded}/{total} myndir...",
     "web_download_cancel": "Hætta við",
     "web_no_images": "Engar myndir",

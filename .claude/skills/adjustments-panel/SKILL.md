@@ -5,7 +5,7 @@ description: Localiser ou modifier le panneau "Ajustements d'image" de MosaicVie
 
 # Panneau "Ajustements d'image" — MosaicView
 
-Ce skill couvre le **panneau/dialog lui-même** (structure, aperçu, flux d'application) — pas les fonctions d'ajustement individuelles. Pour la logique PIL d'une fonction précise (formule, plage de valeurs, cas limites), voir les skills dédiés : `adjust-color-depth`, `adjust-compression`, `adjust-sharpness` (netteté + netteté adaptative), `adjust-brightness-contrast`, `adjust-levels`, `adjust-transparency`, `adjust-image-mode`, `adjust-remove-colors`, `adjust-saturation`, `adjust-effects`.
+Ce skill couvre le **panneau/dialog lui-même** (structure, aperçu, flux d'application) — pas les fonctions d'ajustement individuelles. Pour la logique PIL d'une fonction précise (formule, plage de valeurs, cas limites), voir les skills dédiés : `adjust-color-depth`, `adjust-compression`, `adjust-levels`, `adjust-transparency`, `adjust-image-mode`, `adjust-effects`. Netteté/netteté adaptative (`adjust-sharpness`), luminosité/contraste (`adjust-brightness-contrast`), saturation (`adjust-saturation`) et suppression des couleurs (`adjust-remove-colors`) ne font plus partie de ce panneau — elles ont migré dans la barre d'outils de la visionneuse principale (skill `viewers`).
 
 ## Où — fichiers concernés
 
@@ -30,9 +30,9 @@ Le point d'entrée refuse d'ouvrir (affiche un `MsgDialog` non-modal) si `state.
 
 `AdjustmentsDialog` est un `QDialog` non-modal (`Qt.Window` + `setModal(False)`), construit par `_build_ui()` en 3 colonnes dans une `QScrollArea` :
 
-- **Colonne gauche** (`_build_left_column`) : Profondeur de couleur, Compression, Netteté, Netteté adaptative, Transparence
-- **Colonne droite** (`_build_right_column`) : Luminosité et contraste, Niveaux noir/blanc, Mode d'image
-- **Colonne aperçu** (`_build_preview_column`, largeur fixe 330px) : Aperçu, Suppression des couleurs, Saturation, Effets
+- **Colonne gauche** (`_build_left_column`) : Profondeur de couleur, Compression, Transparence — Netteté et Netteté adaptative ont été entièrement retirées de ce panneau (2026-08-14, skill `adjust-sharpness`), elles vivent désormais uniquement dans la barre d'outils de la visionneuse principale
+- **Colonne droite** (`_build_right_column`) : Niveaux noir/blanc, Mode d'image — Luminosité et contraste ont aussi été entièrement retirées de ce panneau (2026-08-14, skill `adjust-brightness-contrast`), même destination
+- **Colonne aperçu** (`_build_preview_column`, largeur fixe 330px) : Aperçu, Effets — la Saturation et la Suppression des couleurs ont elles aussi été entièrement retirées de ce panneau (2026-08-14, skills `adjust-saturation`/`adjust-remove-colors`), même destination que netteté/luminosité-contraste
 
 Le placement dans une colonne donnée est **purement une question de mise en page** (équilibrer visuellement les 3 colonnes) — aucune relation avec un regroupement logique des traitements. Ne pas supposer qu'une section appartient "logiquement" à une colonne : `_grp_effects` par exemple est construit dans `_build_left_column` puis physiquement déplacé (`layout.addWidget(self._grp_effects)`) dans `_build_preview_column` — grep `self._grp_<section>` pour retrouver où un groupe donné est réellement instancié vs affiché si la disposition doit changer.
 
@@ -63,11 +63,11 @@ Pipeline de rendu de l'aperçu :
 
 ## `_get_settings()` — le contrat entre UI et traitement
 
-Un seul dict, une seule fonction, utilisée à l'identique pour l'aperçu ET l'application réelle (voir `apply_adjustments()` / `apply_image_adjustments()` dans `adjustments_processing_qt.py`) — **toute nouvelle section du panneau doit ajouter sa valeur ici**, sinon elle sera visible dans l'UI mais invisible pour le rendu et l'application. Clés actuelles : `color_depth`, `brightness`, `contrast`, `compression_quality`, `initial_quality`, `effect`, `sharpness`, `threshold`, `black_point`, `gamma`, `white_point`, `remove_colors_intensity`, `saturation`, `image_mode`, `original_ext`, `transparency_type`, `transparency_tolerance`, `unsharp_radius`, `unsharp_percent`, `unsharp_threshold`.
+Un seul dict, une seule fonction, utilisée à l'identique pour l'aperçu ET l'application réelle (voir `apply_adjustments()` / `apply_image_adjustments()` dans `adjustments_processing_qt.py`) — **toute nouvelle section du panneau doit ajouter sa valeur ici**, sinon elle sera visible dans l'UI mais invisible pour le rendu et l'application. Clés actuelles : `color_depth`, `compression_quality`, `initial_quality`, `effect`, `threshold`, `black_point`, `gamma`, `white_point`, `image_mode`, `original_ext`, `transparency_type`, `transparency_tolerance`. **`sharpness`/`unsharp_radius`/`unsharp_percent`/`unsharp_threshold` (skill `adjust-sharpness`), `brightness`/`contrast` (skill `adjust-brightness-contrast`), `saturation` (skill `adjust-saturation`) et `remove_colors_intensity` (skill `adjust-remove-colors`) ne font plus partie de ce dict** depuis le retrait des sections correspondantes — `apply_adjustments()` continue de les accepter (valeurs par défaut neutres si absentes), mais c'est désormais `adjustments_tool_qt.py`/`brightness_tool_qt.py`/`saturation_tool_qt.py`/`remove_colors_tool_qt.py` qui les fournissent, jamais ce panneau.
 
 ## Le bouton "Ajuster avec la visionneuse" (`_open_viewer(mode)`)
 
-Chaque section (sauf Profondeur de couleur, Mode d'image, Effets — pas de mode viewer dédié) a un bouton qui ouvre `AdjustmentViewerDialog` en plein écran pour affiner le réglage sur l'image à pleine résolution/zoom, plutôt que sur la vignette 300×300 de l'aperçu. Voir skill `viewers` (section "Les 8 modes de `AdjustmentViewerDialog`") pour le détail complet de cette fenêtre — ce skill ne couvre que l'échange de données entre le panneau et elle :
+Chaque section restante (sauf Profondeur de couleur, Mode d'image, Effets — pas de mode viewer dédié) a un bouton qui ouvre `AdjustmentViewerDialog` en plein écran pour affiner le réglage sur l'image à pleine résolution/zoom, plutôt que sur la vignette 300×300 de l'aperçu. Voir skill `viewers` (section "Les modes restants de `AdjustmentViewerDialog`") pour le détail complet de cette fenêtre — ce skill ne couvre que l'échange de données entre le panneau et elle :
 
 - `_open_viewer(mode)` capture un **snapshot** de `_get_settings()` et le passe par référence à `AdjustmentViewerDialog` — le viewer **mute ce même dict** au fil des réglages (pas de copie de retour explicite).
 - `on_close` (callback appelé quand le viewer ferme via son bouton "Appliquer") relit les valeurs modifiées du dict `settings` et les réinjecte une à une dans les attributs `self._xxx` + les sliders du panneau (avec `blockSignals(True)` le temps de la resynchronisation, pour éviter une cascade de `_update_preview()`), puis referme le viewer et rafraîchit l'aperçu du panneau — **le viewer n'applique jamais lui-même aux bytes réels dans ce chemin**, il ne fait que proposer des valeurs qui remontent au panneau parent, qui applique au clic sur "Appliquer" du panneau principal.
@@ -97,7 +97,7 @@ Cas **plusieurs images** : le panneau boucle lui-même sur `self._selected_entri
 - `undo-redo` — mécanisme d'historique sous-jacent à `save_state`.
 - `panels` — callbacks par panneau (`_with_state`), pourquoi le dialog reste agnostique de panel1/panel2.
 - `comicinfo-metadata-editor` — `update_page_entries_in_xml_data()` est appelé après application pour resynchroniser les balises `<Page>` du `ComicInfo.xml` des entrées modifiées.
-- Skills par fonction : `adjust-color-depth`, `adjust-compression`, `adjust-sharpness`, `adjust-brightness-contrast`, `adjust-levels`, `adjust-transparency`, `adjust-image-mode`, `adjust-remove-colors`, `adjust-saturation`, `adjust-effects`.
+- Skills par fonction : `adjust-color-depth`, `adjust-compression`, `adjust-levels`, `adjust-transparency`, `adjust-image-mode`, `adjust-effects` (`adjust-sharpness`, `adjust-brightness-contrast`, `adjust-saturation` et `adjust-remove-colors` n'en font plus partie, voir plus haut).
 
 ## Avant de modifier ce panneau
 

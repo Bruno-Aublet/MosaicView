@@ -230,12 +230,13 @@ class _CorruptedImagesDialog(QDialog):
         self.activateWindow()
 
 
-def _detect_corrupted_qt(win):
+def _detect_corrupted_qt(win, state=None):
     """
     Version Qt de detect_corrupted_images (sans tkinter).
     Affiche un dialogue si des images corrompues sont trouvées.
     """
-    state = _state_module.state
+    if state is None:
+        state = _state_module.state
     if not state:
         return
 
@@ -1084,7 +1085,7 @@ class ArchiveLoader(QObject):
         self.loading_finished.emit()
 
         # Détecte les images corrompues (comme l'original)
-        _detect_corrupted_qt(self._win)
+        _detect_corrupted_qt(self._win, self._state)
 
         if errors:
             dlg = _MessageDialog(self._win, "messages.warnings.files_ignored.title", "\n".join(errors[:20]))

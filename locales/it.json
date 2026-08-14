@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Raddrizza",
     "toolbar_crop_instruction": "Disegna un rettangolo attorno alla zona da conservare, poi conferma",
     "toolbar_clone_tooltip": "Clonazione",
-    "toolbar_text_tooltip": "Testo"
+    "toolbar_text_tooltip": "Testo",
+    "toolbar_sharpness_tooltip": "Nitidezza",
+    "toolbar_unsharp_tooltip": "Nitidezza adattiva",
+    "sharpness_panel_label": "Nitidezza:",
+    "unsharp_radius_label": "Raggio:",
+    "unsharp_percent_label": "Intensità:",
+    "unsharp_threshold_label": "Soglia:",
+    "toolbar_brightness_tooltip": "Luminosità e contrasto",
+    "toolbar_brightness_instruction": "Regola i cursori, la modifica si applica al rilascio",
+    "brightness_panel_label": "Luminosita:",
+    "contrast_panel_label": "Contrasto:",
+    "toolbar_saturation_tooltip": "Saturazione",
+    "toolbar_saturation_instruction": "Regola il cursore, la modifica si applica al rilascio",
+    "saturation_panel_label": "Saturazione :",
+    "toolbar_remove_colors_tooltip": "Rimozione dei colori",
+    "toolbar_remove_colors_instruction": "Regola il cursore, la modifica si applica al rilascio",
+    "remove_colors_panel_label": "Intensità :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Luminosità, contrasto, colori...",
       "refresh_mosaic": "Aggiorna il mosaico (F5)",
       "create_ico": "Crea file .ico",
-      "clone_zone": "Clona zona...",
-      "text": "Aggiungi testo...",
-      "straighten_manual": "Raddrizza l'immagine manualmente...",
       "straighten_auto": "Raddrizza l'immagine automaticamente"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "File ignorati"
-      },
-      "no_selection_crop": {
-        "title": "Nessuna selezione",
-        "message": "Seleziona un'immagine da ritagliare."
-      },
-      "multi_selection_crop": {
-        "title": "Selezione multipla",
-        "message": "Puoi ritagliare solo un'immagine alla volta.\nSeleziona una singola immagine."
-      },
-      "invalid_selection_crop": {
-        "title": "Selezione non valida",
-        "message": "Solo le immagini possono essere ritagliate."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funzione non disponibile",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Errore",
         "message": "Impossibile applicare il testo: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Errore",
+        "message": "Impossibile applicare la nitidezza: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Errore",
+        "message": "Impossibile applicare la nitidezza adattiva: {error}"
+      },
+      "brightness_failed": {
+        "title": "Errore",
+        "message": "Impossibile applicare luminosità/contrasto: {error}"
+      },
+      "saturation_failed": {
+        "title": "Errore",
+        "message": "Impossibile applicare la saturazione: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Errore",
+        "message": "Impossibile applicare la rimozione dei colori: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "immagini",
       "apply_button": "Applica",
       "color_depth_section": "Profondita colore",
-      "brightness_contrast_section": "Luminosita e contrasto",
       "compression_section": "Compressione",
       "effects_section": "Effetti",
       "sharpness_section": "Nitidezza",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bit (RGB - colori)",
       "depth_8bit": "8 bit (tavolozza PNG / scala di grigi JPEG)",
       "depth_1bit": "1 bit (bianco e nero)",
-      "brightness_label": "Luminosita: {value}",
-      "contrast_label": "Contrasto: {value}",
       "compression_enable": "Abilita ricompressione",
       "compression_quality_label": "Qualità : {value}/100",
-      "sharpness_label": "Nitidezza: {value}",
       "effect_none": "Nessun effetto",
       "effect_grayscale": "Scala di grigi",
       "effect_sepia": "Seppia",
@@ -991,8 +1008,6 @@
       "preview_section": "Anteprima",
       "effect_invert": "Inversione colori",
       "preview_warning": "L'anteprima può differire dal risultato finale",
-      "effect_remove_colors": "Rimozione dei colori",
-      "remove_colors_intensity_label": "Intensità : {value}",
       "image_mode_section": "Modalità immagine",
       "image_mode_rgb": "RGB (colori)",
       "image_mode_rgba": "RGBA (colori + trasparenza)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (stampa)",
       "image_mode_1": "1 (bianco e nero puro)",
       "image_mode_p": "P (tavolozza 256 colori)",
-      "saturation_section": "Saturazione",
-      "saturation_label": "Saturazione : {value}",
-      "saturation_viewer_title": "Regolazione della saturazione",
       "transparency_section": "Trasparenza",
       "transparency_info": "La trasparenza si applica solo alle immagini PNG, WebP, ICO e AVIF",
       "transparency_type_label": "Tipo :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Trasparenza globale : interessa tutti i pixel dell'immagine il cui colore è vicino a quello cliccato",
       "transparency_apply": "Applica",
       "transparency_skipped_warning": "{count} immagine/i ignorata/e — formato non compatibile con la trasparenza. Per includerle, convertirle prima in PNG.",
-      "unsharp_section": "Nitidezza adattiva",
-      "unsharp_radius_label": "Raggio: {value}",
-      "unsharp_percent_label": "Intensità: {value} %",
-      "unsharp_threshold_label": "Soglia: {value}",
-      "unsharp_viewer_title": "Nitidezza adattiva",
       "auto_levels_tooltip": "Analizza ogni pagina e regola automaticamente i livelli di nero e bianco per massimizzare il contrasto.\nPer scegliere pagina per pagina, utilizzare il visualizzatore.",
       "transparency_unsaved_title": "Modifiche non applicate",
       "transparency_unsaved_message": "Le modifiche correnti non sono state applicate all'immagine. Cosa vuoi fare?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Contagocce punto bianco",
       "black_pipette_tooltip": "Fare clic su un pixel che dovrebbe essere completamente nero. Attenzione: è facile esagerare!",
       "white_pipette_tooltip": "Fare clic su un pixel che dovrebbe essere completamente bianco. Attenzione: è facile esagerare!"
-    },
-    "sharpness_viewer": {
-      "title": "Regolazione della nitidezza"
-    },
-    "brightness_viewer": {
-      "title": "Regolazione di luminosità e contrasto"
     },
     "compression_viewer": {
       "title": "Regolazione della compressione"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Aumenta dimensione icone",
     "source_loose": "Immagine libera",
     "source_web": "Immagine web",
-    "straighten": "Raddrizza immagine",
-    "clone_zone": "Clona zona",
-    "text": "Aggiungi testo",
+    "straighten": "Raddrizza l'immagine automaticamente",
     "batch_cb7_to_cbz": "Converte tutti i file CB7 in una cartella\ne nelle sue sottocartelle in CBZ.",
     "batch_cb7_permanent_delete": "ATTENZIONE : se questa opzione è selezionata,\ni file CB7 originali verranno eliminati\ndefinitivamente dopo la conversione senza\npossibilità di recupero.\nAssicurarsi di avere un backup.",
     "batch_cbt_to_cbz": "Converte tutti i file CBT in una cartella\ne nelle sue sottocartelle in CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Sono state rilevate pagine duplicate in questo file.\nFai clic per aprire la finestra di gestione dei duplicati.",
     "duplicate_indicator_none": "Nessun duplicato rilevato",
     "straighten_mode_0": "Modalità manuale (traccia una linea di riferimento)\nClic destro per cambiare modalità",
-    "straighten_mode_1": "Modalità automatica (rilevamento inclinazione)\nClic destro per cambiare modalità"
+    "straighten_mode_1": "Modalità automatica (rilevamento inclinazione)\nClic destro per cambiare modalità",
+    "sharpness_mode_0": "Rafforza o attenua i dettagli dell'immagine\nClic destro per passare alla nitidezza adattiva",
+    "sharpness_mode_1": "Accentua i contorni risparmiando le zone uniformi\nClic destro per passare alla nitidezza semplice"
   },
   "help": {
     "title": "MosaicView - Manuale utente",
@@ -1506,6 +1507,7 @@
     "relative_path": "Percorso relativo"
   },
   "web": {
+    "web_analyzing_page": "Analisi della pagina in corso...",
     "web_download_progress": "Download: {downloaded}/{total} immagini...",
     "web_download_cancel": "Annulla",
     "web_no_images": "Nessuna immagine",

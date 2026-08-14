@@ -68,7 +68,7 @@ def _add_submenu(menu: QMenu, label: str, enabled: bool = True) -> QMenu:
 # ═══════════════════════════════════════════════════════════════════════════════
 def _populate_file_menu(menu: QMenu, callbacks: dict):
     menu.clear()
-    st = _state_module.state
+    st = callbacks.get('state') or _state_module.state
 
     _add_action(menu, _("menu.file_open"), callbacks.get("open_file"))
 
@@ -142,7 +142,7 @@ def _populate_file_menu(menu: QMenu, callbacks: dict):
 
 def _populate_edit_menu(menu: QMenu, callbacks: dict):
     menu.clear()
-    st = _state_module.state
+    st = callbacks.get('state') or _state_module.state
 
     has_images = bool(st.images_data)
     has_sel    = bool(st.selected_indices)
@@ -179,7 +179,7 @@ def _populate_edit_menu(menu: QMenu, callbacks: dict):
 
 def _populate_images_menu(menu: QMenu, callbacks: dict):
     menu.clear()
-    st = _state_module.state
+    st = callbacks.get('state') or _state_module.state
 
     has_img_sel = bool(st.selected_indices) and any(
         st.images_data[i].get("is_image", False)
@@ -204,22 +204,14 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
                 enabled=has_img_sel)
     _add_action(menu, _("dialogs.adjustments.window_title"), callbacks.get("show_image_adjustments_dialog"),
                 enabled=has_img_sel)
-    _add_action(menu, _("context_menu.image.straighten_manual"), callbacks.get("show_straighten_viewer"),
-                enabled=has_img_sel)
     _add_action(menu, _("context_menu.image.straighten_auto"), callbacks.get("deskew_selected"),
                 enabled=has_img_sel)
-    _add_action(menu, _("context_menu.image.clone_zone"), callbacks.get("show_clone_zone_viewer"),
-                enabled=bool(st.images_data))
-    _add_action(menu, _("context_menu.image.text"), callbacks.get("show_text_viewer"),
-                enabled=bool(st.images_data))
     menu.addSeparator()
 
     _add_action(menu, _("context_menu.image.convert"), callbacks.get("convert_selected_images"),
                 enabled=has_img_sel)
     menu.addSeparator()
 
-    _add_action(menu, _("context_menu.image.crop"),  callbacks.get("crop_selected_image"),
-                enabled=single_sel and not is_corrupted)
     _add_action(menu, _("context_menu.image.join"),  callbacks.get("open_merge_window"),
                 enabled=multi_sel)
     _add_action(menu, _("context_menu.image.split"), callbacks.get("split_page"),
@@ -246,7 +238,7 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
 
 def _populate_archives_menu(menu: QMenu, callbacks: dict):
     menu.clear()
-    st = _state_module.state
+    st = callbacks.get('state') or _state_module.state
 
     has_images = bool(st.images_data)
     has_subdir = has_images and "has_subdirectory_structure" in callbacks and callbacks["has_subdirectory_structure"]()
@@ -355,7 +347,7 @@ def _populate_language_menu(menu: QMenu, callbacks: dict):
 
 def _populate_metadata_menu(menu: QMenu, callbacks: dict):
     menu.clear()
-    st = _state_module.state
+    st = callbacks.get('state') or _state_module.state
     has_file = bool(st.current_file)
     canvas_empty = not st.current_file and not st.images_data
     _add_action(menu, _("comicvine.tooltip"), callbacks.get("fetch_metadata"), enabled=has_file)

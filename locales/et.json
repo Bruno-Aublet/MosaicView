@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Sirgestamine",
     "toolbar_crop_instruction": "Joonistage ristkülik säilitatava ala ümber ja kinnitage",
     "toolbar_clone_tooltip": "Kloonimine",
-    "toolbar_text_tooltip": "Tekst"
+    "toolbar_text_tooltip": "Tekst",
+    "toolbar_sharpness_tooltip": "Teravus",
+    "toolbar_unsharp_tooltip": "Adaptiivne teravus",
+    "sharpness_panel_label": "Teravus:",
+    "unsharp_radius_label": "Raadius:",
+    "unsharp_percent_label": "Intensiivsus:",
+    "unsharp_threshold_label": "Lävi:",
+    "toolbar_brightness_tooltip": "Heledus ja kontrastsus",
+    "toolbar_brightness_instruction": "Reguleerige liugureid, muudatus rakendub vabastamisel",
+    "brightness_panel_label": "Heledus:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Küllastus",
+    "toolbar_saturation_instruction": "Reguleerige liugurit, muudatus rakendub vabastamisel",
+    "saturation_panel_label": "Küllastus :",
+    "toolbar_remove_colors_tooltip": "Värvide eemaldamine",
+    "toolbar_remove_colors_instruction": "Reguleerige liugurit, muudatus rakendub vabastamisel",
+    "remove_colors_panel_label": "Intensiivsus :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Heledus, kontrast, värvid...",
       "refresh_mosaic": "Värskenda mosaiiki (F5)",
       "create_ico": "Loo .ico fail",
-      "clone_zone": "Klooni tsoon...",
-      "text": "Lisa tekst...",
-      "straighten_manual": "Sirgesta pilt käsitsi...",
       "straighten_auto": "Sirgesta pilt automaatselt"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Failid ignoreeritud"
-      },
-      "no_selection_crop": {
-        "title": "Valik puudub",
-        "message": "Palun valige kärbitav pilt."
-      },
-      "multi_selection_crop": {
-        "title": "Mitu valikut",
-        "message": "Saate korraga kärpida ainult ühte pilti.\nPalun valige üks pilt."
-      },
-      "invalid_selection_crop": {
-        "title": "Kehtetu valik",
-        "message": "Kärpida saab ainult pilte."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funktsioon pole saadaval",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Viga",
         "message": "Teksti rakendamine ebaõnnestus: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Viga",
+        "message": "Teravust ei õnnestunud rakendada: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Viga",
+        "message": "Adaptiivset teravust ei õnnestunud rakendada: {error}"
+      },
+      "brightness_failed": {
+        "title": "Viga",
+        "message": "Heleduse/kontrastsuse rakendamine ebaõnnestus: {error}"
+      },
+      "saturation_failed": {
+        "title": "Viga",
+        "message": "Küllastust ei õnnestunud rakendada: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Viga",
+        "message": "Värvide eemaldamist ei õnnestunud rakendada: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "pilti",
       "apply_button": "Rakenda",
       "color_depth_section": "Varvisugavus",
-      "brightness_contrast_section": "Heledus ja kontrast",
       "compression_section": "Tihendamine",
       "effects_section": "Efektid",
       "sharpness_section": "Teravus",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bitti (RGB - varvid)",
       "depth_8bit": "8 bitti (PNG-palett / JPEG hallitoonid)",
       "depth_1bit": "1 bitt (must-valge)",
-      "brightness_label": "Heledus: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Luba uuesti tihendamine",
       "compression_quality_label": "Kvaliteet : {value}/100",
-      "sharpness_label": "Teravus: {value}",
       "effect_none": "Efekt puudub",
       "effect_grayscale": "Halltoonid",
       "effect_sepia": "Seepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Eelvaade",
       "effect_invert": "Värvide inversioon",
       "preview_warning": "Eelvaade võib erineda lõpptulemusest",
-      "effect_remove_colors": "Värvide eemaldamine",
-      "remove_colors_intensity_label": "Intensiivsus : {value}",
       "image_mode_section": "Pildirežiim",
       "image_mode_rgb": "RGB (värvid)",
       "image_mode_rgba": "RGBA (värvid + läbipaistvus)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (trükk)",
       "image_mode_1": "1 (puhas mustvalge)",
       "image_mode_p": "P (256 värvi palett)",
-      "saturation_section": "Küllastus",
-      "saturation_label": "Küllastus : {value}",
-      "saturation_viewer_title": "Küllastuse reguleerimine",
       "transparency_section": "Läbipaistvus",
       "transparency_info": "Läbipaistvus kehtib ainult PNG, WebP, ICO ja AVIF piltidele",
       "transparency_type_label": "Tüüp :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Globaalne läbipaistvus : mõjutab kõiki pildi piksleid, mille värv on klikitud värvile lähedane",
       "transparency_apply": "Rakenda",
       "transparency_skipped_warning": "{count} pilt(i) vahele jäetud — formaat ei ühildu läbipaistvusega. Nende kaasamiseks teisendage need esmalt PNG-sse.",
-      "unsharp_section": "Adaptiivne teravus",
-      "unsharp_radius_label": "Raadius: {value}",
-      "unsharp_percent_label": "Intensiivsus: {value} %",
-      "unsharp_threshold_label": "Lävi: {value}",
-      "unsharp_viewer_title": "Adaptiivne teravus",
       "auto_levels_tooltip": "Analüüsib iga lehekülge ja reguleerib automaatselt musta ja valge tasemeid, et maksimeerida kontrasti.\nLehe kaupa valimiseks kasutage vaaturit.",
       "transparency_unsaved_title": "Rakendamata muudatused",
       "transparency_unsaved_message": "Praegused muudatused ei ole pildile rakendatud. Mida soovite teha?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Valge punkti pipett",
       "black_pipette_tooltip": "Klõpsake pikslil, mis peaks olema täiesti must. Ettevaatust: on lihtne liialdada!",
       "white_pipette_tooltip": "Klõpsake pikslil, mis peaks olema täiesti valge. Ettevaatust: on lihtne liialdada!"
-    },
-    "sharpness_viewer": {
-      "title": "Teravuse reguleerimine"
-    },
-    "brightness_viewer": {
-      "title": "Heleduse ja kontrasti reguleerimine"
     },
     "compression_viewer": {
       "title": "Tihenduse reguleerimine"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Suurenda ikoonide suurust",
     "source_loose": "Vaba pilt",
     "source_web": "Veebipilt",
-    "straighten": "Sirgest pilt",
-    "clone_zone": "Klooni tsoon",
-    "text": "Lisa tekst",
+    "straighten": "Sirgesta pilt automaatselt",
     "batch_cb7_to_cbz": "Teisendab kõik CB7-failid kaustas\nja selle alamkaustades CBZ-ks.",
     "batch_cb7_permanent_delete": "HOIATUS : kui see valik on märgitud,\nkustutatakse originaalsed CB7-failid\npärast teisendamist jäädavalt ilma\ntaastamisvõimaluseta. Veenduge, et teil on varukoopia.",
     "batch_cbt_to_cbz": "Teisendab kõik CBT-failid kaustas\nja selle alamkaustades CBZ-ks.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Selles failis tuvastati dubleerivad leheküljed.\nKlõpsake dubleerivate lehekülgede haldamise akna avamiseks.",
     "duplicate_indicator_none": "Duplikaate ei tuvastatud",
     "straighten_mode_0": "Käsitsirežiim (joonista võrdlusjoon)\nRežiimi vahetamiseks paremklõpsake",
-    "straighten_mode_1": "Automaatne režiim (kaldenurga tuvastamine)\nRežiimi vahetamiseks paremklõpsake"
+    "straighten_mode_1": "Automaatne režiim (kaldenurga tuvastamine)\nRežiimi vahetamiseks paremklõpsake",
+    "sharpness_mode_0": "Tugevdab või pehmendab pildi detaile\nParemklõps lülitumiseks adaptiivsele teravusele",
+    "sharpness_mode_1": "Rõhutab kontuure, säästes ühtlasi alasid\nParemklõps lülitumiseks lihtsale teravusele"
   },
   "help": {
     "title": "MosaicView - Kasutusjuhend",
@@ -1506,6 +1507,7 @@
     "relative_path": "Suhteline tee"
   },
   "web": {
+    "web_analyzing_page": "Lehe analüüsimine...",
     "web_download_progress": "Allalaadimine: {downloaded}/{total} pilti...",
     "web_download_cancel": "Tühista",
     "web_no_images": "Pole pilte",

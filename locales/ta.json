@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "நேராக்கு",
     "toolbar_crop_instruction": "வைத்திருக்க வேண்டிய பகுதியைச் சுற்றி ஒரு செவ்வகத்தை வரைந்து, பின்னர் உறுதிப்படுத்தவும்",
     "toolbar_clone_tooltip": "குளோனிங்",
-    "toolbar_text_tooltip": "உரை"
+    "toolbar_text_tooltip": "உரை",
+    "toolbar_sharpness_tooltip": "கூர்மை",
+    "toolbar_unsharp_tooltip": "தகவமைப்பு கூர்மை",
+    "sharpness_panel_label": "கூர்மை:",
+    "unsharp_radius_label": "ஆரம்:",
+    "unsharp_percent_label": "தீவிரம்:",
+    "unsharp_threshold_label": "வரம்பு:",
+    "toolbar_brightness_tooltip": "பிரகாசம் மற்றும் மாறுபாடு",
+    "toolbar_brightness_instruction": "நழுவிகளை சரிசெய்யவும், விடும்போது மாற்றம் பயன்படுத்தப்படும்",
+    "brightness_panel_label": "பிரகாசம்:",
+    "contrast_panel_label": "மாறுபாடு:",
+    "toolbar_saturation_tooltip": "நிறைவு",
+    "toolbar_saturation_instruction": "நழுவியை சரிசெய்யவும், விடும்போது மாற்றம் பயன்படுத்தப்படும்",
+    "saturation_panel_label": "நிறைவு :",
+    "toolbar_remove_colors_tooltip": "நிறங்களை நீக்குதல்",
+    "toolbar_remove_colors_instruction": "நழுவியை சரிசெய்யவும், விடும்போது மாற்றம் பயன்படுத்தப்படும்",
+    "remove_colors_panel_label": "தீவிரம் :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "பிரகாசம், மாறுபாடு, நிறங்கள்...",
       "refresh_mosaic": "மொசைக்கைப் புதுப்பிக்கவும் (F5)",
       "create_ico": ".ico கோப்பை உருவாக்கு",
-      "clone_zone": "மண்டலத்தை குளோன் செய்...",
-      "text": "உரையைச் சேர்க்கவும்...",
-      "straighten_manual": "படத்தை கைமுறையாக நேராக்கு...",
       "straighten_auto": "படத்தை தானாக நேராக்கு"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "கோப்புகள் புறக்கணிக்கப்பட்டன"
-      },
-      "no_selection_crop": {
-        "title": "தேர்வு இல்லை",
-        "message": "வெட்ட படத்தைத் தேர்ந்தெடுக்கவும்."
-      },
-      "multi_selection_crop": {
-        "title": "பல தேர்வுகள்",
-        "message": "ஒரு நேரத்தில் ஒரு படத்தை மட்டுமே வெட்ட முடியும்.\nதயவுசெய்து ஒரு படத்தை மட்டும் தேர்ந்தெடுக்கவும்."
-      },
-      "invalid_selection_crop": {
-        "title": "தவறான தேர்வு",
-        "message": "படங்களை மட்டுமே வெட்ட முடியும்."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "செயல்பாடு கிடைக்கவில்லை",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "பிழை",
         "message": "உரையைப் பயன்படுத்த முடியவில்லை: {error}"
+      },
+      "sharpness_failed": {
+        "title": "பிழை",
+        "message": "கூர்மையைப் பயன்படுத்த முடியவில்லை: {error}"
+      },
+      "unsharp_failed": {
+        "title": "பிழை",
+        "message": "தகவமைப்பு கூர்மையைப் பயன்படுத்த முடியவில்லை: {error}"
+      },
+      "brightness_failed": {
+        "title": "பிழை",
+        "message": "பிரகாசம்/மாறுபாட்டைப் பயன்படுத்த முடியவில்லை: {error}"
+      },
+      "saturation_failed": {
+        "title": "பிழை",
+        "message": "நிறைவை பயன்படுத்த முடியவில்லை: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "பிழை",
+        "message": "நிறங்களை நீக்குதலை பயன்படுத்த முடியவில்லை: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "படங்கள்",
       "apply_button": "பயன்படுத்து",
       "color_depth_section": "நிற ஆழம்",
-      "brightness_contrast_section": "பிரகாசம் மற்றும் மாறுபாடு",
       "compression_section": "சுருக்கம்",
       "effects_section": "விளைவுகள்",
       "sharpness_section": "கூர்மை",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 பிட்கள் (RGB - நிறங்கள்)",
       "depth_8bit": "8 பிட்கள் (PNG நிறத்தட்டு / JPEG சாம்பல் அளவுகோல்)",
       "depth_1bit": "1 பிட் (கருப்பு மற்றும் வெள்ளை)",
-      "brightness_label": "பிரகாசம்: {value}",
-      "contrast_label": "மாறுபாடு: {value}",
       "compression_enable": "மீண்டும் சுருக்கத்தை இயக்கு",
       "compression_quality_label": "தரம் : {value}/100",
-      "sharpness_label": "கூர்மை: {value}",
       "effect_none": "எந்த விளைவும் இல்லை",
       "effect_grayscale": "சாம்பல் நிற படிகள்",
       "effect_sepia": "செபியா",
@@ -991,8 +1008,6 @@
       "preview_section": "முன்னோட்டம்",
       "effect_invert": "நிற தலைகீழ்",
       "preview_warning": "முன்னோட்டம் இறுதி முடிவிலிருந்து வேறுபடலாம்",
-      "effect_remove_colors": "நிறங்களை நீக்குதல்",
-      "remove_colors_intensity_label": "தீவிரம் : {value}",
       "image_mode_section": "பட நிலை",
       "image_mode_rgb": "RGB (நிறங்கள்)",
       "image_mode_rgba": "RGBA (நிறங்கள் + ஒளிப்புத்தன்மை)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (அச்சு)",
       "image_mode_1": "1 (தூய கருப்பு-வெள்ளை)",
       "image_mode_p": "P (256 நிற தட்டு)",
-      "saturation_section": "நிறைவு",
-      "saturation_label": "நிறைவு : {value}",
-      "saturation_viewer_title": "நிறைவு சரிசெய்தல்",
       "transparency_section": "வெளிப்படைத்தன்மை",
       "transparency_info": "வெளிப்படைத்தன்மை PNG, WebP, ICO மற்றும் AVIF படங்களுக்கு மட்டுமே பொருந்தும்",
       "transparency_type_label": "வகை :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "உலகளாவிய வெளிப்படைத்தன்மை : கிளிக் செய்த நிறத்திற்கு நெருக்கமான நிறம் கொண்ட படத்தின் அனைத்து பிக்செல்களையும் பாதிக்கிறது",
       "transparency_apply": "பயன்படுத்து",
       "transparency_skipped_warning": "{count} படம்(படங்கள்) தவிர்க்கப்பட்டது — வடிவம் வெளிப்படையுடன் இணக்கமற்றது. சேர்க்க முதலில் PNG ஆக மாற்றவும்.",
-      "unsharp_section": "தகவமைப்பு கூர்மை",
-      "unsharp_radius_label": "ஆரம்: {value}",
-      "unsharp_percent_label": "தீவிரம்: {value} %",
-      "unsharp_threshold_label": "வரம்பு: {value}",
-      "unsharp_viewer_title": "தகவமைப்பு கூர்மை",
       "auto_levels_tooltip": "ஒவ்வொரு பக்கத்தையும் பகுப்பாய்வு செய்து, வேற்றுமையை அதிகரிக்க கறுப்பு மற்றும் வெள்ளை நிலைகளை தானாக சரிசெய்கிறது.\nபக்கம் பக்கமாக தேர்ந்தெடுக்க, பார்வையாளரைப் பயன்படுத்தவும்.",
       "transparency_unsaved_title": "பயன்படுத்தப்படாத மாற்றங்கள்",
       "transparency_unsaved_message": "தற்போதைய மாற்றங்கள் படத்தில் பயன்படுத்தப்படவில்லை. நீங்கள் என்ன செய்ய விரும்புகிறீர்கள்?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "வெள்ளை புள்ளி சொட்டுவான்",
       "black_pipette_tooltip": "முற்றிலும் கருப்பாக இருக்க வேண்டிய பிக்சலை கிளிக் செய்யவும். எச்சரிக்கை: அதிகமாக செய்வது எளிது!",
       "white_pipette_tooltip": "முற்றிலும் வெள்ளையாக இருக்க வேண்டிய பிக்சலை கிளிக் செய்யவும். எச்சரிக்கை: அதிகமாக செய்வது எளிது!"
-    },
-    "sharpness_viewer": {
-      "title": "கூர்மை சரிசெய்தல்"
-    },
-    "brightness_viewer": {
-      "title": "ஒளிர்வு மற்றும் மாறுபாடு சரிசெய்தல்"
     },
     "compression_viewer": {
       "title": "சுருக்க சரிசெய்தல்"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "சின்னங்களின் அளவை அதிகரிக்கவும்",
     "source_loose": "தனி படம்",
     "source_web": "வலை படம்",
-    "straighten": "படத்தை நேர்படுத்து",
-    "clone_zone": "மண்டலத்தை குளோன் செய்",
-    "text": "உரையை சேர்க்கவும்",
+    "straighten": "படத்தை தானாகவே நேராக்கு",
     "batch_cb7_to_cbz": "ஒரு கோப்புறை மற்றும் அதன் துணை கோப்புறைகளில்\nஉள்ள அனைத்து CB7 கோப்புகளையும் CBZ ஆக மாற்றுகிறது.",
     "batch_cb7_permanent_delete": "எச்சரிக்கை : இந்த விருப்பம் தேர்ந்தெடுக்கப்பட்டால்,\nமாற்றத்திற்கு பிறகு அசல் CB7 கோப்புகள்\nமீட்டெடுக்க முடியாமல் நிரந்தரமாக நீக்கப்படும்.\nதயவுசெய்து காப்புப்பிரதி இருப்பதை உறுதிசெய்யவும்.",
     "batch_cbt_to_cbz": "ஒரு கோப்புறை மற்றும் அதன் துணை கோப்புறைகளில்\nஉள்ள அனைத்து CBT கோப்புகளையும் CBZ ஆக மாற்றுகிறது.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "இந்தக் கோப்பில் நகல் பக்கங்கள் கண்டறியப்பட்டன.\nநகல் பக்க மேலாண்மை சாளரத்தைத் திறக்க கிளிக் செய்யவும்.",
     "duplicate_indicator_none": "நகல் எதுவும் கண்டறியப்படவில்லை",
     "straighten_mode_0": "கைமுறை பயன்முறை (குறிப்பு கோட்டை வரையவும்)\nபயன்முறையை மாற்ற வலது கிளிக் செய்யவும்",
-    "straighten_mode_1": "தானியங்கி பயன்முறை (சாய்வு கண்டறிதல்)\nபயன்முறையை மாற்ற வலது கிளிக் செய்யவும்"
+    "straighten_mode_1": "தானியங்கி பயன்முறை (சாய்வு கண்டறிதல்)\nபயன்முறையை மாற்ற வலது கிளிக் செய்யவும்",
+    "sharpness_mode_0": "படத்தின் விவரங்களை மேம்படுத்துகிறது அல்லது மென்மையாக்குகிறது\nதகவமைப்பு கூர்மைக்கு மாற வலது கிளிக் செய்யவும்",
+    "sharpness_mode_1": "சீரான பகுதிகளைப் பாதுகாத்து விளிம்புகளை உயர்த்துகிறது\nஎளிய கூர்மைக்கு மாற வலது கிளிக் செய்யவும்"
   },
   "help": {
     "title": "MosaicView - பயன்பாட்டு கையேடு",
@@ -1506,6 +1507,7 @@
     "relative_path": "தொடர்பு பாதை"
   },
   "web": {
+    "web_analyzing_page": "பக்கம் பகுப்பாய்வு செய்யப்படுகிறது...",
     "web_download_progress": "பதிவிறக்குகிறது: {downloaded}/{total} படங்கள்...",
     "web_download_cancel": "ரத்துசெய்",
     "web_no_images": "படங்கள் இல்லை",

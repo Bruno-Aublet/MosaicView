@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "校正",
     "toolbar_crop_instruction": "在要保留的区域周围画一个矩形，然后确认",
     "toolbar_clone_tooltip": "克隆",
-    "toolbar_text_tooltip": "文本"
+    "toolbar_text_tooltip": "文本",
+    "toolbar_sharpness_tooltip": "锐化",
+    "toolbar_unsharp_tooltip": "自适应锐化",
+    "sharpness_panel_label": "锐化：",
+    "unsharp_radius_label": "半径:",
+    "unsharp_percent_label": "强度:",
+    "unsharp_threshold_label": "阈值:",
+    "toolbar_brightness_tooltip": "亮度和对比度",
+    "toolbar_brightness_instruction": "调整滑块，松开后应用调整",
+    "brightness_panel_label": "亮度:",
+    "contrast_panel_label": "对比度:",
+    "toolbar_saturation_tooltip": "饱和度",
+    "toolbar_saturation_instruction": "调整滑块，松开后应用调整",
+    "saturation_panel_label": "饱和度 :",
+    "toolbar_remove_colors_tooltip": "去除颜色",
+    "toolbar_remove_colors_instruction": "调整滑块，松开后应用调整",
+    "remove_colors_panel_label": "强度 :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "亮度、对比度、颜色...",
       "refresh_mosaic": "刷新拼图 (F5)",
       "create_ico": "创建 .ico 文件",
-      "clone_zone": "克隆区域...",
-      "text": "添加文字...",
-      "straighten_manual": "手动校正图像...",
       "straighten_auto": "自动校正图像"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "文件已忽略"
-      },
-      "no_selection_crop": {
-        "title": "未选择",
-        "message": "请选择要裁剪的图像。"
-      },
-      "multi_selection_crop": {
-        "title": "多个选择",
-        "message": "一次只能裁剪一个图像。\n请选择单个图像。"
-      },
-      "invalid_selection_crop": {
-        "title": "无效选择",
-        "message": "只能裁剪图像。"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "功能不可用",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "错误",
         "message": "无法应用文本：{error}"
+      },
+      "sharpness_failed": {
+        "title": "错误",
+        "message": "无法应用锐化：{error}"
+      },
+      "unsharp_failed": {
+        "title": "错误",
+        "message": "无法应用自适应锐化：{error}"
+      },
+      "brightness_failed": {
+        "title": "错误",
+        "message": "无法应用亮度/对比度: {error}"
+      },
+      "saturation_failed": {
+        "title": "错误",
+        "message": "无法应用饱和度：{error}"
+      },
+      "remove_colors_failed": {
+        "title": "错误",
+        "message": "无法应用去除颜色：{error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "图像",
       "apply_button": "应用",
       "color_depth_section": "色彩深度",
-      "brightness_contrast_section": "亮度和对比度",
       "compression_section": "压缩",
       "effects_section": "效果",
       "sharpness_section": "锐度",
@@ -968,11 +988,8 @@
       "depth_24bit": "24位 (RGB - 颜色)",
       "depth_8bit": "8 wei (PNG diaoseban / JPEG huidu)",
       "depth_1bit": "1位 (黑白)",
-      "brightness_label": "亮度: {value}",
-      "contrast_label": "对比度: {value}",
       "compression_enable": "启用重新压缩",
       "compression_quality_label": "质量 : {value}/100",
-      "sharpness_label": "锐度: {value}",
       "effect_none": "无效果",
       "effect_grayscale": "灰度",
       "effect_sepia": "棕褐色",
@@ -991,8 +1008,6 @@
       "preview_section": "预览",
       "effect_invert": "颜色反转",
       "preview_warning": "预览可能与最终结果不同",
-      "effect_remove_colors": "去除颜色",
-      "remove_colors_intensity_label": "强度 : {value}",
       "image_mode_section": "图像模式",
       "image_mode_rgb": "RGB (彩色)",
       "image_mode_rgba": "RGBA (彩色 + 透明度)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (印刷)",
       "image_mode_1": "1 (纯黑白)",
       "image_mode_p": "P (256色调色板)",
-      "saturation_section": "饱和度",
-      "saturation_label": "饱和度 : {value}",
-      "saturation_viewer_title": "饱和度调整",
       "transparency_section": "透明度",
       "transparency_info": "透明度仅适用于 PNG、WebP、ICO 和 AVIF 图像",
       "transparency_type_label": "类型 :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "全局透明度 : 影响图像中所有颜色与点击颜色相近的像素",
       "transparency_apply": "应用",
       "transparency_skipped_warning": "{count} 张图像已跳过 — 格式与透明度不兼容。如需包含，请先转换为 PNG。",
-      "unsharp_section": "自适应锐化",
-      "unsharp_radius_label": "半径: {value}",
-      "unsharp_percent_label": "强度: {value}%",
-      "unsharp_threshold_label": "阈值: {value}",
-      "unsharp_viewer_title": "自适应锐化",
       "auto_levels_tooltip": "分析每一页并自动调整黑白色阶以最大化对比度。\n若要逐页选择，请使用查看器。",
       "transparency_unsaved_title": "未应用的更改",
       "transparency_unsaved_message": "当前更改尚未应用到图像。您希望怎么做?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "白点吸管",
       "black_pipette_tooltip": "点击应该完全黑色的像素。注意：很容易做过头！",
       "white_pipette_tooltip": "点击应该完全白色的像素。注意：很容易做过头！"
-    },
-    "sharpness_viewer": {
-      "title": "清晰度调整"
-    },
-    "brightness_viewer": {
-      "title": "亮度和对比度调整"
     },
     "compression_viewer": {
       "title": "压缩调整"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "增大图标尺寸",
     "source_loose": "独立图片",
     "source_web": "网络图片",
-    "straighten": "矫正图像",
-    "clone_zone": "克隆区域",
-    "text": "添加文字",
+    "straighten": "自动校正图像",
     "batch_cb7_to_cbz": "将目录及其子目录中的所有\nCB7 文件转换为 CBZ。",
     "batch_cb7_permanent_delete": "警告：如果勾选此选项，\n原始 CB7 文件将在转换后被永久删除，\n无法恢复。请确保已有备份。",
     "batch_cbt_to_cbz": "将目录及其子目录中的所有\nCBT 文件转换为 CBZ。",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "在此文件中检测到重复页面.\n点击打开重复页面管理窗口.",
     "duplicate_indicator_none": "未检测到重复项",
     "straighten_mode_0": "手动模式（绘制参考线）\n右键单击以切换模式",
-    "straighten_mode_1": "自动模式（倾斜检测）\n右键单击以切换模式"
+    "straighten_mode_1": "自动模式（倾斜检测）\n右键单击以切换模式",
+    "sharpness_mode_0": "增强或柔化图像细节\n右键点击切换到自适应锐化",
+    "sharpness_mode_1": "在保留平坦区域的同时强化边缘\n右键点击切换到简单锐化"
   },
   "help": {
     "title": "MosaicView - 使用说明",
@@ -1506,6 +1507,7 @@
     "relative_path": "相对路径"
   },
   "web": {
+    "web_analyzing_page": "正在分析页面...",
     "web_download_progress": "下载中：{downloaded}/{total} 张图片...",
     "web_download_cancel": "取消",
     "web_no_images": "无图片",

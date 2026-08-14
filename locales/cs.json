@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Narovnání",
     "toolbar_crop_instruction": "Nakreslete obdélník kolem oblasti, kterou chcete zachovat, a potvrďte",
     "toolbar_clone_tooltip": "Klonování",
-    "toolbar_text_tooltip": "Text"
+    "toolbar_text_tooltip": "Text",
+    "toolbar_sharpness_tooltip": "Ostrost",
+    "toolbar_unsharp_tooltip": "Adaptivní ostrost",
+    "sharpness_panel_label": "Ostrost:",
+    "unsharp_radius_label": "Poloměr:",
+    "unsharp_percent_label": "Intenzita:",
+    "unsharp_threshold_label": "Práh:",
+    "toolbar_brightness_tooltip": "Jas a kontrast",
+    "toolbar_brightness_instruction": "Upravte posuvníky, úprava se použije při uvolnění",
+    "brightness_panel_label": "Jas:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Sytost",
+    "toolbar_saturation_instruction": "Upravte posuvník, úprava se použije při uvolnění",
+    "saturation_panel_label": "Sytost :",
+    "toolbar_remove_colors_tooltip": "Odstranění barev",
+    "toolbar_remove_colors_instruction": "Upravte posuvník, úprava se použije při uvolnění",
+    "remove_colors_panel_label": "Intenzita :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Jas, kontrast, barvy...",
       "refresh_mosaic": "Obnovit mozaiku (F5)",
       "create_ico": "Vytvořit soubor .ico",
-      "clone_zone": "Klonování oblasti...",
-      "text": "Přidat text...",
-      "straighten_manual": "Narovnat obrázek ručně...",
       "straighten_auto": "Narovnat obrázek automaticky"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Soubory ignorovány"
-      },
-      "no_selection_crop": {
-        "title": "Žádný výběr",
-        "message": "Vyberte obrázek k oříznutí."
-      },
-      "multi_selection_crop": {
-        "title": "Vícenásobný výběr",
-        "message": "Můžete oříznout pouze jeden obrázek najednou.\nVyberte pouze jeden obrázek."
-      },
-      "invalid_selection_crop": {
-        "title": "Neplatný výběr",
-        "message": "Oříznout lze pouze obrázky."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkce nedostupná",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Chyba",
         "message": "Text se nepodařilo použít: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Chyba",
+        "message": "Ostrost se nepodařilo použít: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Chyba",
+        "message": "Adaptivní ostrost se nepodařilo použít: {error}"
+      },
+      "brightness_failed": {
+        "title": "Chyba",
+        "message": "Jas/kontrast se nepodařilo použít: {error}"
+      },
+      "saturation_failed": {
+        "title": "Chyba",
+        "message": "Sytost se nepodařilo použít: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Chyba",
+        "message": "Odstranění barev se nepodařilo použít: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "obrazy",
       "apply_button": "Pouzit",
       "color_depth_section": "Barevna hloubka",
-      "brightness_contrast_section": "Jas a kontrast",
       "compression_section": "Komprese",
       "effects_section": "Efekty",
       "sharpness_section": "Ostrost",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bitu (RGB - barvy)",
       "depth_8bit": "8 bitu (paleta PNG / stupne sedi JPEG)",
       "depth_1bit": "1 bit (cernobily)",
-      "brightness_label": "Jas: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Povolit znovu kompresi",
       "compression_quality_label": "Kvalita : {value}/100",
-      "sharpness_label": "Ostrost: {value}",
       "effect_none": "Zadny efekt",
       "effect_grayscale": "Odstiny sedi",
       "effect_sepia": "Sepie",
@@ -991,8 +1008,6 @@
       "preview_section": "Náhled",
       "effect_invert": "Inverze barev",
       "preview_warning": "Náhled se může lišit od konečného výsledku",
-      "effect_remove_colors": "Odstranění barev",
-      "remove_colors_intensity_label": "Intenzita : {value}",
       "image_mode_section": "Režim obrazu",
       "image_mode_rgb": "RGB (barvy)",
       "image_mode_rgba": "RGBA (barvy + průhlednost)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (tisk)",
       "image_mode_1": "1 (čistě černobílý)",
       "image_mode_p": "P (paleta 256 barev)",
-      "saturation_section": "Sytost",
-      "saturation_label": "Sytost : {value}",
-      "saturation_viewer_title": "Nastavení sytosti",
       "transparency_section": "Průhlednost",
       "transparency_info": "Průhlednost se vztahuje pouze na obrázky PNG, WebP, ICO a AVIF",
       "transparency_type_label": "Typ :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Globální průhlednost : ovlivní všechny pixely v obrázku, jejichž barva se blíží kliknuté",
       "transparency_apply": "Použít",
       "transparency_skipped_warning": "{count} obrázek/ů přeskočen(o) — formát není kompatibilní s průhledností. Chcete-li je zahrnout, nejprve je převeďte do PNG.",
-      "unsharp_section": "Adaptivní ostrost",
-      "unsharp_radius_label": "Poloměr: {value}",
-      "unsharp_percent_label": "Intenzita: {value} %",
-      "unsharp_threshold_label": "Práh: {value}",
-      "unsharp_viewer_title": "Adaptivní ostrost",
       "auto_levels_tooltip": "Analyzuje každou stránku a automaticky upraví úrovně černé a bílé pro maximální kontrast.\nPro výběr stránku po stránce použijte prohlížeč.",
       "transparency_unsaved_title": "Nepoužité změny",
       "transparency_unsaved_message": "Aktuální úpravy nebyly na obrázek použity. Co chcete udělat?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Pipeta bileho bodu",
       "black_pipette_tooltip": "Klikněte na pixel, který by měl být zcela černý. Pozor: je snadné to přehnat!",
       "white_pipette_tooltip": "Klikněte na pixel, který by měl být zcela bílý. Pozor: je snadné to přehnat!"
-    },
-    "sharpness_viewer": {
-      "title": "Úprava ostrosti"
-    },
-    "brightness_viewer": {
-      "title": "Úprava jasu a kontrastu"
     },
     "compression_viewer": {
       "title": "Úprava komprese"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Zvětšit velikost ikon",
     "source_loose": "Volný obrázek",
     "source_web": "Webový obrázek",
-    "straighten": "Narovnat obrázek",
-    "clone_zone": "Klonování oblasti",
-    "text": "Přidat text",
+    "straighten": "Automaticky narovnat obrázek",
     "batch_cb7_to_cbz": "Převede všechny soubory CB7 v adresáři\na jeho podadresářích na CBZ.",
     "batch_cb7_permanent_delete": "UPOZORNĚNÍ : pokud je tato možnost zaškrtnuta,\npůvodní soubory CB7 budou trvale smazány\npo konverzi bez možnosti obnovení.\nUjistěte se, že máte zálohu.",
     "batch_cbt_to_cbz": "Převede všechny soubory CBT v adresáři\na jeho podadresářích na CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "V tomto souboru byly zjištěny duplicitní stránky.\nKliknutím otevřete okno pro správu duplicit.",
     "duplicate_indicator_none": "Nebyly zjištěny žádné duplicity",
     "straighten_mode_0": "Ruční režim (nakreslete referenční čáru)\nPravým tlačítkem změníte režim",
-    "straighten_mode_1": "Automatický režim (detekce zkosení)\nPravým tlačítkem změníte režim"
+    "straighten_mode_1": "Automatický režim (detekce zkosení)\nPravým tlačítkem změníte režim",
+    "sharpness_mode_0": "Zvýrazní nebo změkčí detaily obrázku\nKlikněte pravým tlačítkem pro přepnutí na adaptivní ostrost",
+    "sharpness_mode_1": "Zvýrazní obrysy a šetří jednolité plochy\nKlikněte pravým tlačítkem pro přepnutí na jednoduchou ostrost"
   },
   "help": {
     "title": "MosaicView - Nápověda",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relativní cesta"
   },
   "web": {
+    "web_analyzing_page": "Analyzuje se stránka...",
     "web_download_progress": "Stahování: {downloaded}/{total} obrázků...",
     "web_download_cancel": "Zrušit",
     "web_no_images": "Žádné obrázky",

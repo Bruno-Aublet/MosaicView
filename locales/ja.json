@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "傾き補正",
     "toolbar_crop_instruction": "保持する範囲を囲む長方形を描いてから確定してください",
     "toolbar_clone_tooltip": "クローン",
-    "toolbar_text_tooltip": "テキスト"
+    "toolbar_text_tooltip": "テキスト",
+    "toolbar_sharpness_tooltip": "シャープネス",
+    "toolbar_unsharp_tooltip": "アダプティブシャープネス",
+    "sharpness_panel_label": "シャープネス：",
+    "unsharp_radius_label": "ラジウス:",
+    "unsharp_percent_label": "強度:",
+    "unsharp_threshold_label": "しきい値:",
+    "toolbar_brightness_tooltip": "明るさとコントラスト",
+    "toolbar_brightness_instruction": "スライダーを調整すると、離した時点で変更が適用されます",
+    "brightness_panel_label": "明るさ:",
+    "contrast_panel_label": "コントラスト:",
+    "toolbar_saturation_tooltip": "彩度",
+    "toolbar_saturation_instruction": "スライダーを調整すると、離した時点で変更が適用されます",
+    "saturation_panel_label": "彩度 :",
+    "toolbar_remove_colors_tooltip": "色の除去",
+    "toolbar_remove_colors_instruction": "スライダーを調整すると、離した時点で変更が適用されます",
+    "remove_colors_panel_label": "強度 :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "明るさ、コントラスト、色...",
       "refresh_mosaic": "モザイクを更新 (F5)",
       "create_ico": ".icoファイルを作成",
-      "clone_zone": "ゾーンをクローン...",
-      "text": "テキストを追加...",
-      "straighten_manual": "画像を手動で補正...",
       "straighten_auto": "画像を自動で補正"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "無視されたファイル"
-      },
-      "no_selection_crop": {
-        "title": "選択なし",
-        "message": "トリミングする画像を選択してください。"
-      },
-      "multi_selection_crop": {
-        "title": "複数選択",
-        "message": "一度に1つの画像のみトリミングできます。\n1つの画像を選択してください。"
-      },
-      "invalid_selection_crop": {
-        "title": "無効な選択",
-        "message": "画像のみトリミングできます。"
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "機能が利用できません",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "エラー",
         "message": "テキストを適用できませんでした: {error}"
+      },
+      "sharpness_failed": {
+        "title": "エラー",
+        "message": "シャープネスを適用できませんでした: {error}"
+      },
+      "unsharp_failed": {
+        "title": "エラー",
+        "message": "アダプティブシャープネスを適用できませんでした: {error}"
+      },
+      "brightness_failed": {
+        "title": "エラー",
+        "message": "明るさ・コントラストを適用できませんでした: {error}"
+      },
+      "saturation_failed": {
+        "title": "エラー",
+        "message": "彩度を適用できませんでした: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "エラー",
+        "message": "色の除去を適用できませんでした: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "枚の画像",
       "apply_button": "適用",
       "color_depth_section": "色深度",
-      "brightness_contrast_section": "明るさとコントラスト",
       "compression_section": "圧縮",
       "effects_section": "エフェクト",
       "sharpness_section": "シャープネス",
@@ -968,11 +988,8 @@
       "depth_24bit": "24ビット（RGB - 色）",
       "depth_8bit": "8 bitto (PNG pareto / JPEG gureisukeru)",
       "depth_1bit": "1ビット（白黒）",
-      "brightness_label": "明るさ: {value}",
-      "contrast_label": "コントラスト: {value}",
       "compression_enable": "再圧縮を有効にする",
       "compression_quality_label": "品質 : {value}/100",
-      "sharpness_label": "シャープネス: {value}",
       "effect_none": "エフェクトなし",
       "effect_grayscale": "グレースケール",
       "effect_sepia": "セピア",
@@ -991,8 +1008,6 @@
       "preview_section": "プレビュー",
       "effect_invert": "色反転",
       "preview_warning": "プレビューは最終結果と異なる場合があります",
-      "effect_remove_colors": "色の除去",
-      "remove_colors_intensity_label": "強度 : {value}",
       "image_mode_section": "画像モード",
       "image_mode_rgb": "RGB (カラー)",
       "image_mode_rgba": "RGBA (カラー + 透明度)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (印刷)",
       "image_mode_1": "1 (純粋な白黒)",
       "image_mode_p": "P (256色パレット)",
-      "saturation_section": "彩度",
-      "saturation_label": "彩度 : {value}",
-      "saturation_viewer_title": "彩度の調整",
       "transparency_section": "透明度",
       "transparency_info": "透明度はPNG、WebP、ICO、AVIF画像にのみ適用されます",
       "transparency_type_label": "種類 :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "グローバル透明度 : クリックした色に近い色を持つ画像内のすべてのピクセルに影響します",
       "transparency_apply": "適用",
       "transparency_skipped_warning": "{count} 枚の画像がスキップされました — 形式が透明度に対応していません。含めるには、まず PNG に変換してください。",
-      "unsharp_section": "アダプティブシャープネス",
-      "unsharp_radius_label": "ラジウス: {value}",
-      "unsharp_percent_label": "強度: {value} %",
-      "unsharp_threshold_label": "しきい値: {value}",
-      "unsharp_viewer_title": "アダプティブシャープネス",
       "auto_levels_tooltip": "各ページを分析し、コントラストを最大化するために黒と白のレベルを自動的に調整します。\nページごとに選択するには、ビューアを使用してください。",
       "transparency_unsaved_title": "未適用の変更",
       "transparency_unsaved_message": "現在の変更は画像に適用されていません。どうしますか？",
@@ -1038,12 +1045,6 @@
       "white_pipette": "白点スポイト",
       "black_pipette_tooltip": "完全に黒であるべきピクセルをクリックしてください。注意：やりすぎやすいです！",
       "white_pipette_tooltip": "完全に白であるべきピクセルをクリックしてください。注意：やりすぎやすいです！"
-    },
-    "sharpness_viewer": {
-      "title": "シャープネス調整"
-    },
-    "brightness_viewer": {
-      "title": "明るさとコントラストの調整"
     },
     "compression_viewer": {
       "title": "圧縮調整"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "アイコンサイズを拡大",
     "source_loose": "単独画像",
     "source_web": "Web画像",
-    "straighten": "画像を傾き補正",
-    "clone_zone": "ゾーンをクローン",
-    "text": "テキストを追加",
+    "straighten": "画像を自動的に補正",
     "batch_cb7_to_cbz": "フォルダとそのサブフォルダ内のすべての\nCB7ファイルをCBZに変換します。",
     "batch_cb7_permanent_delete": "警告：このオプションをオンにすると、\n変換後に元のCB7ファイルが完全に削除され、\n復元できません。\nバックアップがあることを確認してください。",
     "batch_cbt_to_cbz": "フォルダとそのサブフォルダ内のすべての\nCBTファイルをCBZに変換します。",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "このファイルに重複したページが検出されました。\nクリックすると重複ページの管理ウィンドウが開きます。",
     "duplicate_indicator_none": "重複は検出されませんでした",
     "straighten_mode_0": "手動モード（基準線を描画）\n右クリックでモードを切り替え",
-    "straighten_mode_1": "自動モード（傾き検出）\n右クリックでモードを切り替え"
+    "straighten_mode_1": "自動モード（傾き検出）\n右クリックでモードを切り替え",
+    "sharpness_mode_0": "画像のディテールを強調または和らげます\n右クリックでアダプティブシャープネスに切り替え",
+    "sharpness_mode_1": "均一な領域を保ちながら輪郭を強調します\n右クリックでシンプルなシャープネスに切り替え"
   },
   "help": {
     "title": "MosaicView - 使用方法",
@@ -1506,6 +1507,7 @@
     "relative_path": "相対パス"
   },
   "web": {
+    "web_analyzing_page": "ページを解析中...",
     "web_download_progress": "ダウンロード中: {downloaded}/{total} 画像...",
     "web_download_cancel": "キャンセル",
     "web_no_images": "画像なし",

@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Rett opp",
     "toolbar_crop_instruction": "Tegn et rektangel rundt området som skal beholdes, og bekreft deretter",
     "toolbar_clone_tooltip": "Kloning",
-    "toolbar_text_tooltip": "Tekst"
+    "toolbar_text_tooltip": "Tekst",
+    "toolbar_sharpness_tooltip": "Skarphet",
+    "toolbar_unsharp_tooltip": "Adaptiv skarphet",
+    "sharpness_panel_label": "Skarphet:",
+    "unsharp_radius_label": "Radius:",
+    "unsharp_percent_label": "Intensitet:",
+    "unsharp_threshold_label": "Terskel:",
+    "toolbar_brightness_tooltip": "Lysstyrke og kontrast",
+    "toolbar_brightness_instruction": "Juster glidebryterne, endringen brukes ved slipp",
+    "brightness_panel_label": "Lysstyrke:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Metning",
+    "toolbar_saturation_instruction": "Juster glidebryteren, endringen brukes ved slipp",
+    "saturation_panel_label": "Metning :",
+    "toolbar_remove_colors_tooltip": "Fjerning av farger",
+    "toolbar_remove_colors_instruction": "Juster glidebryteren, endringen brukes ved slipp",
+    "remove_colors_panel_label": "Intensitet :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Lysstyrke, kontrast, farger...",
       "refresh_mosaic": "Oppdater mosaikken (F5)",
       "create_ico": "Opprett .ico-fil",
-      "clone_zone": "Klon sone...",
-      "text": "Legg til tekst...",
-      "straighten_manual": "Rett bildet manuelt...",
       "straighten_auto": "Rett bildet automatisk"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Filer ignorert"
-      },
-      "no_selection_crop": {
-        "title": "Ingen valg",
-        "message": "Vennligst velg et bilde som skal beskjæres."
-      },
-      "multi_selection_crop": {
-        "title": "Flere valgte",
-        "message": "Du kan bare beskjære ett bilde om gangen.\nVennligst velg kun ett bilde."
-      },
-      "invalid_selection_crop": {
-        "title": "Ugyldig valg",
-        "message": "Bare bilder kan beskjæres."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funksjon ikke tilgjengelig",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Feil",
         "message": "Kunne ikke bruke teksten: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke skarphet: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke adaptiv skarphet: {error}"
+      },
+      "brightness_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke lysstyrke/kontrast: {error}"
+      },
+      "saturation_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke metning: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke fjerning av farger: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "bilder",
       "apply_button": "Bruk",
       "color_depth_section": "Fargedybde",
-      "brightness_contrast_section": "Lysstyrke og kontrast",
       "compression_section": "Komprimering",
       "effects_section": "Effekter",
       "sharpness_section": "Skarphet",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bits (RGB - farger)",
       "depth_8bit": "8 bit (PNG-palett / JPEG-gratoneskala)",
       "depth_1bit": "1 bit (sort og hvit)",
-      "brightness_label": "Lysstyrke: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Aktiver rekomprimering",
       "compression_quality_label": "Kvalitet : {value}/100",
-      "sharpness_label": "Skarphet: {value}",
       "effect_none": "Ingen effekt",
       "effect_grayscale": "Graatoner",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Forhåndsvisning",
       "effect_invert": "Fargeinversjon",
       "preview_warning": "Forhåndsvisning kan avvike fra sluttresultatet",
-      "effect_remove_colors": "Fjerning av farger",
-      "remove_colors_intensity_label": "Intensitet : {value}",
       "image_mode_section": "Bildemodus",
       "image_mode_rgb": "RGB (farger)",
       "image_mode_rgba": "RGBA (farger + gjennomsiktighet)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (trykk)",
       "image_mode_1": "1 (rent svart-hvitt)",
       "image_mode_p": "P (256-fargepalett)",
-      "saturation_section": "Metning",
-      "saturation_label": "Metning : {value}",
-      "saturation_viewer_title": "Justering av metning",
       "transparency_section": "Gjennomsiktighet",
       "transparency_info": "Gjennomsiktighet gjelder bare for PNG-, WebP-, ICO- og AVIF-bilder",
       "transparency_type_label": "Type :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Global gjennomsiktighet : påvirker alle piksler i bildet hvis farge ligner den klikkede",
       "transparency_apply": "Bruk",
       "transparency_skipped_warning": "{count} bilde(r) hoppet over — formatet er ikke kompatibelt med gjennomsiktighet. For å inkludere dem, konverter dem til PNG først.",
-      "unsharp_section": "Adaptiv skarphet",
-      "unsharp_radius_label": "Radius: {value}",
-      "unsharp_percent_label": "Intensitet: {value} %",
-      "unsharp_threshold_label": "Terskel: {value}",
-      "unsharp_viewer_title": "Adaptiv skarphet",
       "auto_levels_tooltip": "Analyserer hver side og justerer automatisk svart- og hvitnivåene for å maksimere kontrasten.\nBruk visningsprogrammet for å velge side for side.",
       "transparency_unsaved_title": "Ubrukte endringer",
       "transparency_unsaved_message": "De gjeldende endringene er ikke blitt brukt på bildet. Hva vil du gjøre?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Hvit punkt pipette",
       "black_pipette_tooltip": "Klikk på en piksel som burde være helt svart. Advarsel: det er lett å overdrive!",
       "white_pipette_tooltip": "Klikk på en piksel som burde være helt hvit. Advarsel: det er lett å overdrive!"
-    },
-    "sharpness_viewer": {
-      "title": "Skarphetsjustering"
-    },
-    "brightness_viewer": {
-      "title": "Lysstyrkejustering og kontrastjustering"
     },
     "compression_viewer": {
       "title": "Komprimeringsjustering"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Øk ikonstørrelse",
     "source_loose": "Løst bilde",
     "source_web": "Webbilde",
-    "straighten": "Rette opp bilde",
-    "clone_zone": "Klon sone",
-    "text": "Legg til tekst",
+    "straighten": "Rett bildet automatisk",
     "batch_cb7_to_cbz": "Konverterer alle CB7-filer i en mappe\nog dens undermapper til CBZ.",
     "batch_cb7_permanent_delete": "ADVARSEL : hvis dette alternativet er valgt,\nslettes de originale CB7-filene permanent\netter konvertering uten mulighet for gjenoppretting.\nSørg for at du har en sikkerhetskopi.",
     "batch_cbt_to_cbz": "Konverterer alle CBT-filer i en mappe\nog dens undermapper til CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Det ble oppdaget dupliserte sider i denne filen.\nKlikk for å åpne vinduet for administrasjon av duplikater.",
     "duplicate_indicator_none": "Ingen duplikater oppdaget",
     "straighten_mode_0": "Manuell modus (tegn en referanselinje)\nHøyreklikk for å bytte modus",
-    "straighten_mode_1": "Automatisk modus (registrering av helning)\nHøyreklikk for å bytte modus"
+    "straighten_mode_1": "Automatisk modus (registrering av helning)\nHøyreklikk for å bytte modus",
+    "sharpness_mode_0": "Forsterker eller mykner bildedetaljene\nHøyreklikk for å bytte til adaptiv skarphet",
+    "sharpness_mode_1": "Fremhever konturer og skåner jevne områder\nHøyreklikk for å bytte til enkel skarphet"
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relativ bane"
   },
   "web": {
+    "web_analyzing_page": "Analyserer siden...",
     "web_download_progress": "Laster ned: {downloaded}/{total} bilder...",
     "web_download_cancel": "Avbryt",
     "web_no_images": "Ingen bilder",

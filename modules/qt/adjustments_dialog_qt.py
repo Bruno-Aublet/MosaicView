@@ -118,7 +118,15 @@ def _pil_to_qpixmap(img, max_size=300, is_bw=False):
 # ─────────────────────────────────────────────────────────────────────────────
 
 class AdjustmentsDialog(QDialog):
-    """Fenêtre d'ajustements d'images (luminosité, contraste, niveaux, etc.)."""
+    """Fenêtre d'ajustements d'images (niveaux, compression, etc.).
+
+    La luminosité/contraste, la netteté (simple + adaptative), la saturation
+    et la suppression des couleurs ont été entièrement retirées de ce panneau
+    (idees.txt #3, fusion progressive des visionneuses) : elles vivent
+    désormais uniquement dans la barre d'outils flottante de la visionneuse
+    principale — voir modules/qt/brightness_tool_qt.py,
+    modules/qt/adjustments_tool_qt.py, modules/qt/saturation_tool_qt.py,
+    modules/qt/remove_colors_tool_qt.py et skill viewers."""
 
     def __init__(self, parent, selected_entries, callbacks=None):
         super().__init__(parent)
@@ -166,22 +174,14 @@ class AdjustmentsDialog(QDialog):
 
         # ── Variables d'état (valeurs courantes des réglages) ─────────────────
         self._color_depth   = 'unchanged'
-        self._brightness    = 0
-        self._contrast      = 0
         self._comp_quality  = initial_quality
         self._initial_quality = initial_quality
         self._effect        = 'none'
-        self._sharpness     = 0
         self._threshold     = 128
         self._black_point   = 0
         self._gamma         = 1.0
         self._white_point   = 255
-        self._remove_int       = 0
-        self._saturation       = 0
         self._image_mode       = 'unchanged'
-        self._unsharp_radius   = 2.0
-        self._unsharp_percent  = 0
-        self._unsharp_threshold = 3
         self._original_ext  = selected_entries[0].get('extension', '').lower() if selected_entries else ''
 
         # Sauvegarde avant "Auto" (pour que Annuler puisse restaurer)
@@ -369,78 +369,6 @@ class AdjustmentsDialog(QDialog):
 
         layout.addWidget(self._grp_comp)
 
-        # Section 3 : Netteté
-        self._grp_sharp = QGroupBox()
-        self._grp_sharp.setStyleSheet(_groupbox_style(theme))
-        sharp_layout = QVBoxLayout(self._grp_sharp)
-        sharp_layout.setContentsMargins(8, 12, 8, 8)
-        sharp_layout.setSpacing(4)
-
-        self._sharp_val_lbl = QLabel()
-        self._sharp_val_lbl.setFont(_get_current_font(9))
-        sharp_layout.addWidget(self._sharp_val_lbl)
-
-        self._sharp_slider = FocusSlider(Qt.Horizontal)
-        self._sharp_slider.setRange(-100, 100)
-        self._sharp_slider.setValue(0)
-        self._sharp_slider.setStyleSheet(_slider_style(theme))
-        self._sharp_slider.valueChanged.connect(self._on_sharp_changed)
-        sharp_layout.addWidget(self._sharp_slider)
-
-        self._btn_sharp_viewer = QPushButton()
-        self._btn_sharp_viewer.setFont(_get_current_font(9))
-        self._btn_sharp_viewer.setStyleSheet(_btn_style(theme))
-        self._btn_sharp_viewer.clicked.connect(lambda: self._open_viewer('sharpness'))
-        sharp_layout.addWidget(self._btn_sharp_viewer, alignment=Qt.AlignCenter)
-        layout.addWidget(self._grp_sharp)
-
-        # Section 3b : Netteté adaptative (Unsharp Mask)
-        self._grp_unsharp = QGroupBox()
-        self._grp_unsharp.setStyleSheet(_groupbox_style(theme))
-        unsharp_layout = QVBoxLayout(self._grp_unsharp)
-        unsharp_layout.setContentsMargins(8, 12, 8, 8)
-        unsharp_layout.setSpacing(4)
-
-        self._unsharp_radius_lbl = QLabel()
-        self._unsharp_radius_lbl.setFont(_get_current_font(9))
-        unsharp_layout.addWidget(self._unsharp_radius_lbl)
-
-        self._unsharp_radius_slider = FocusSlider(Qt.Horizontal)
-        self._unsharp_radius_slider.setRange(5, 50)   # ×0.1 → 0.5 à 5.0
-        self._unsharp_radius_slider.setValue(20)       # défaut 2.0
-        self._unsharp_radius_slider.setStyleSheet(_slider_style(theme))
-        self._unsharp_radius_slider.valueChanged.connect(self._on_unsharp_radius_changed)
-        unsharp_layout.addWidget(self._unsharp_radius_slider)
-
-        self._unsharp_percent_lbl = QLabel()
-        self._unsharp_percent_lbl.setFont(_get_current_font(9))
-        unsharp_layout.addWidget(self._unsharp_percent_lbl)
-
-        self._unsharp_percent_slider = FocusSlider(Qt.Horizontal)
-        self._unsharp_percent_slider.setRange(0, 200)
-        self._unsharp_percent_slider.setValue(0)
-        self._unsharp_percent_slider.setStyleSheet(_slider_style(theme))
-        self._unsharp_percent_slider.valueChanged.connect(self._on_unsharp_percent_changed)
-        unsharp_layout.addWidget(self._unsharp_percent_slider)
-
-        self._unsharp_threshold_lbl = QLabel()
-        self._unsharp_threshold_lbl.setFont(_get_current_font(9))
-        unsharp_layout.addWidget(self._unsharp_threshold_lbl)
-
-        self._unsharp_threshold_slider = FocusSlider(Qt.Horizontal)
-        self._unsharp_threshold_slider.setRange(0, 30)
-        self._unsharp_threshold_slider.setValue(3)
-        self._unsharp_threshold_slider.setStyleSheet(_slider_style(theme))
-        self._unsharp_threshold_slider.valueChanged.connect(self._on_unsharp_threshold_changed)
-        unsharp_layout.addWidget(self._unsharp_threshold_slider)
-
-        self._btn_unsharp_viewer = QPushButton()
-        self._btn_unsharp_viewer.setFont(_get_current_font(9))
-        self._btn_unsharp_viewer.setStyleSheet(_btn_style(theme))
-        self._btn_unsharp_viewer.clicked.connect(lambda: self._open_viewer('unsharp'))
-        unsharp_layout.addWidget(self._btn_unsharp_viewer, alignment=Qt.AlignCenter)
-        layout.addWidget(self._grp_unsharp)
-
         # Section 4 : Effets
         self._grp_effects = QGroupBox()
         self._grp_effects.setStyleSheet(_groupbox_style(theme))
@@ -501,42 +429,6 @@ class AdjustmentsDialog(QDialog):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(24)
         layout.setAlignment(Qt.AlignTop)
-
-        # Section 5 : Luminosité / Contraste
-        self._grp_bc = QGroupBox()
-        self._grp_bc.setStyleSheet(_groupbox_style(theme))
-        bc_layout = QVBoxLayout(self._grp_bc)
-        bc_layout.setContentsMargins(8, 12, 8, 8)
-        bc_layout.setSpacing(4)
-
-        self._bright_val_lbl = QLabel()
-        self._bright_val_lbl.setFont(_get_current_font(9))
-        bc_layout.addWidget(self._bright_val_lbl)
-
-        self._bright_slider = FocusSlider(Qt.Horizontal)
-        self._bright_slider.setRange(-100, 100)
-        self._bright_slider.setValue(0)
-        self._bright_slider.setStyleSheet(_slider_style(theme))
-        self._bright_slider.valueChanged.connect(self._on_bright_changed)
-        bc_layout.addWidget(self._bright_slider)
-
-        self._contrast_val_lbl = QLabel()
-        self._contrast_val_lbl.setFont(_get_current_font(9))
-        bc_layout.addWidget(self._contrast_val_lbl)
-
-        self._contrast_slider = FocusSlider(Qt.Horizontal)
-        self._contrast_slider.setRange(-100, 100)
-        self._contrast_slider.setValue(0)
-        self._contrast_slider.setStyleSheet(_slider_style(theme))
-        self._contrast_slider.valueChanged.connect(self._on_contrast_changed)
-        bc_layout.addWidget(self._contrast_slider)
-
-        self._btn_bright_viewer = QPushButton()
-        self._btn_bright_viewer.setFont(_get_current_font(9))
-        self._btn_bright_viewer.setStyleSheet(_btn_style(theme))
-        self._btn_bright_viewer.clicked.connect(lambda: self._open_viewer('brightness'))
-        bc_layout.addWidget(self._btn_bright_viewer, alignment=Qt.AlignCenter)
-        layout.addWidget(self._grp_bc)
 
         # Section 6 : Niveaux
         self._grp_levels = QGroupBox()
@@ -672,56 +564,6 @@ class AdjustmentsDialog(QDialog):
         prev_layout.addWidget(self._preview_warn_lbl)
         layout.addWidget(self._grp_preview)
 
-        # Section suppression des couleurs
-        self._grp_remove_colors = QGroupBox()
-        self._grp_remove_colors.setStyleSheet(_groupbox_style(theme))
-        rc_layout = QVBoxLayout(self._grp_remove_colors)
-        rc_layout.setContentsMargins(8, 12, 8, 8)
-        rc_layout.setSpacing(4)
-
-        self._remove_colors_val_lbl = QLabel()
-        self._remove_colors_val_lbl.setFont(_get_current_font(9))
-        rc_layout.addWidget(self._remove_colors_val_lbl)
-
-        self._remove_colors_slider = FocusSlider(Qt.Horizontal)
-        self._remove_colors_slider.setRange(0, 100)
-        self._remove_colors_slider.setValue(0)
-        self._remove_colors_slider.setStyleSheet(_slider_style(theme))
-        self._remove_colors_slider.valueChanged.connect(self._on_remove_colors_changed)
-        rc_layout.addWidget(self._remove_colors_slider)
-
-        self._btn_remove_colors_viewer = QPushButton()
-        self._btn_remove_colors_viewer.setFont(_get_current_font(9))
-        self._btn_remove_colors_viewer.setStyleSheet(_btn_style(theme))
-        self._btn_remove_colors_viewer.clicked.connect(lambda: self._open_viewer('remove_colors'))
-        rc_layout.addWidget(self._btn_remove_colors_viewer, alignment=Qt.AlignCenter)
-        layout.addWidget(self._grp_remove_colors)
-
-        # Section saturation (déplacée ici depuis colonne droite)
-        self._grp_sat = QGroupBox()
-        self._grp_sat.setStyleSheet(_groupbox_style(theme))
-        sat_layout = QVBoxLayout(self._grp_sat)
-        sat_layout.setContentsMargins(8, 12, 8, 8)
-        sat_layout.setSpacing(4)
-
-        self._sat_val_lbl = QLabel()
-        self._sat_val_lbl.setFont(_get_current_font(9))
-        sat_layout.addWidget(self._sat_val_lbl)
-
-        self._sat_slider = FocusSlider(Qt.Horizontal)
-        self._sat_slider.setRange(-100, 100)
-        self._sat_slider.setValue(0)
-        self._sat_slider.setStyleSheet(_slider_style(theme))
-        self._sat_slider.valueChanged.connect(self._on_sat_changed)
-        sat_layout.addWidget(self._sat_slider)
-
-        self._btn_sat_viewer = QPushButton()
-        self._btn_sat_viewer.setFont(_get_current_font(9))
-        self._btn_sat_viewer.setStyleSheet(_btn_style(theme))
-        self._btn_sat_viewer.clicked.connect(lambda: self._open_viewer('saturation'))
-        sat_layout.addWidget(self._btn_sat_viewer, alignment=Qt.AlignCenter)
-        layout.addWidget(self._grp_sat)
-
         # Section Effets (déplacée depuis colonne gauche)
         layout.addWidget(self._grp_effects)
 
@@ -757,20 +599,6 @@ class AdjustmentsDialog(QDialog):
             _("dialogs.adjustments.compression_quality_label", value=self._comp_quality))
         self._btn_comp_viewer.setText(_("dialogs.adjustments.open_viewer_button_simple"))
 
-        self._grp_sharp.setTitle(_("dialogs.adjustments.sharpness_section"))
-        self._sharp_val_lbl.setText(
-            _("dialogs.adjustments.sharpness_label", value=self._sharpness))
-        self._btn_sharp_viewer.setText(_("dialogs.adjustments.open_viewer_button_simple"))
-
-        self._grp_unsharp.setTitle(_("dialogs.adjustments.unsharp_section"))
-        self._unsharp_radius_lbl.setText(
-            _("dialogs.adjustments.unsharp_radius_label", value=self._unsharp_radius))
-        self._unsharp_percent_lbl.setText(
-            _("dialogs.adjustments.unsharp_percent_label", value=self._unsharp_percent))
-        self._unsharp_threshold_lbl.setText(
-            _("dialogs.adjustments.unsharp_threshold_label", value=self._unsharp_threshold))
-        self._btn_unsharp_viewer.setText(_("dialogs.adjustments.open_viewer_button_simple"))
-
         self._grp_effects.setTitle(_("dialogs.adjustments.effects_section"))
         effect_labels = {
             'none':      _("dialogs.adjustments.effect_none"),
@@ -786,13 +614,6 @@ class AdjustmentsDialog(QDialog):
         self._btn_transp_viewer.setText(_("dialogs.adjustments.open_viewer_button_simple"))
 
         # Colonne droite
-        self._grp_bc.setTitle(_("dialogs.adjustments.brightness_contrast_section"))
-        self._bright_val_lbl.setText(
-            _("dialogs.adjustments.brightness_label", value=self._brightness))
-        self._contrast_val_lbl.setText(
-            _("dialogs.adjustments.contrast_label", value=self._contrast))
-        self._btn_bright_viewer.setText(_("dialogs.adjustments.open_viewer_button_simple"))
-
         self._grp_levels.setTitle(_("dialogs.adjustments.levels_section"))
         self._threshold_lbl.setText(
             _("dialogs.adjustments.levels_threshold") + f" : {self._threshold}")
@@ -809,19 +630,9 @@ class AdjustmentsDialog(QDialog):
         self._overlay_tip.set_tracked_html(tip_html, self._btn_auto_levels)
         self._btn_levels_viewer.setText(_("dialogs.adjustments.open_viewer_button"))
 
-        self._grp_sat.setTitle(_("dialogs.adjustments.saturation_section"))
-        self._sat_val_lbl.setText(
-            _("dialogs.adjustments.saturation_label", value=self._saturation))
-        self._btn_sat_viewer.setText(_("dialogs.adjustments.open_viewer_button_simple"))
-
         # Colonne aperçu
         self._grp_preview.setTitle(_("dialogs.adjustments.preview_section"))
         self._preview_warn_lbl.setText(_("dialogs.adjustments.preview_warning"))
-
-        self._grp_remove_colors.setTitle(_("dialogs.adjustments.effect_remove_colors"))
-        self._remove_colors_val_lbl.setText(
-            _("dialogs.adjustments.remove_colors_intensity_label", value=self._remove_int))
-        self._btn_remove_colors_viewer.setText(_("dialogs.adjustments.open_viewer_button_simple"))
 
         self._grp_image_mode.setTitle(_("dialogs.adjustments.image_mode_section"))
         mode_labels = {
@@ -849,13 +660,9 @@ class AdjustmentsDialog(QDialog):
         font9 = _get_current_font(9)
         font8 = _get_current_font(8)
         font11 = _get_current_font(11)
-        for lbl in (self._comp_val_lbl, self._sharp_val_lbl,
-                    self._bright_val_lbl, self._contrast_val_lbl,
+        for lbl in (self._comp_val_lbl,
                     self._threshold_lbl, self._black_pt_lbl, self._gamma_lbl,
-                    self._white_pt_lbl, self._sat_val_lbl,
-                    self._remove_colors_val_lbl,
-                    self._unsharp_radius_lbl, self._unsharp_percent_lbl,
-                    self._unsharp_threshold_lbl):
+                    self._white_pt_lbl):
             lbl.setFont(font9)
         for lbl in (self._comp_info_lbl, self._transp_info_lbl, self._preview_warn_lbl):
             lbl.setFont(font8)
@@ -863,10 +670,9 @@ class AdjustmentsDialog(QDialog):
             btn.setFont(font11)
         self._progress_lbl.setFont(font11)
         self._progress_lbl.setStyleSheet("color: #cc0000; font-weight: bold;")
-        for btn in (self._btn_comp_viewer, self._btn_sharp_viewer, self._btn_unsharp_viewer,
-                    self._btn_transp_viewer, self._btn_bright_viewer,
-                    self._btn_auto_levels, self._btn_levels_viewer,
-                    self._btn_sat_viewer, self._btn_remove_colors_viewer):
+        for btn in (self._btn_comp_viewer,
+                    self._btn_transp_viewer,
+                    self._btn_auto_levels, self._btn_levels_viewer):
             btn.setFont(font9)
         for rb in list(self._depth_radios.values()) + list(self._effect_radios.values()) + list(self._mode_radios.values()):
             rb.setFont(font9)
@@ -883,10 +689,10 @@ class AdjustmentsDialog(QDialog):
             f"QWidget#scroll_content {{ background: {theme['bg']}; }}"
         )
         grp_style = _groupbox_style(theme)
-        for grp in (self._grp_depth, self._grp_comp, self._grp_sharp, self._grp_unsharp,
-                    self._grp_effects, self._grp_transp, self._grp_bc,
-                    self._grp_levels, self._grp_sat, self._grp_preview,
-                    self._grp_remove_colors, self._grp_image_mode):
+        for grp in (self._grp_depth, self._grp_comp,
+                    self._grp_effects, self._grp_transp,
+                    self._grp_levels, self._grp_preview,
+                    self._grp_image_mode):
             grp.setStyleSheet(grp_style)
             _set_groupbox_font(grp)
         # Désactivés en gris
@@ -897,17 +703,12 @@ class AdjustmentsDialog(QDialog):
             self._grp_transp.setStyleSheet(grp_style.replace(
                 f"color: {theme['text']}", "color: #888888"))
         slider_style = _slider_style(theme)
-        for sl in (self._comp_slider, self._sharp_slider, self._bright_slider,
-                   self._contrast_slider, self._threshold_slider,
-                   self._black_pt_slider, self._gamma_slider, self._white_pt_slider,
-                   self._sat_slider, self._remove_colors_slider,
-                   self._unsharp_radius_slider, self._unsharp_percent_slider,
-                   self._unsharp_threshold_slider):
+        for sl in (self._comp_slider, self._threshold_slider,
+                   self._black_pt_slider, self._gamma_slider, self._white_pt_slider):
             sl.setStyleSheet(slider_style)
         btn_style = _btn_style(theme)
-        for btn in (self._btn_comp_viewer, self._btn_sharp_viewer, self._btn_unsharp_viewer,
-                    self._btn_bright_viewer, self._btn_auto_levels, self._btn_levels_viewer,
-                    self._btn_sat_viewer, self._btn_remove_colors_viewer,
+        for btn in (self._btn_comp_viewer,
+                    self._btn_auto_levels, self._btn_levels_viewer,
                     self._btn_transp_viewer, self._btn_reset, self._btn_apply,
                     self._btn_cancel):
             btn.setStyleSheet(btn_style)
@@ -961,26 +762,8 @@ class AdjustmentsDialog(QDialog):
             _("dialogs.adjustments.compression_quality_label", value=val))
         self._update_preview()
 
-    def _on_sharp_changed(self, val):
-        self._sharpness = val
-        self._sharp_val_lbl.setText(
-            _("dialogs.adjustments.sharpness_label", value=val))
-        self._update_preview()
-
     def _on_effect_changed(self, key):
         self._effect = key
-        self._update_preview()
-
-    def _on_bright_changed(self, val):
-        self._brightness = val
-        self._bright_val_lbl.setText(
-            _("dialogs.adjustments.brightness_label", value=val))
-        self._update_preview()
-
-    def _on_contrast_changed(self, val):
-        self._contrast = val
-        self._contrast_val_lbl.setText(
-            _("dialogs.adjustments.contrast_label", value=val))
         self._update_preview()
 
     def _on_threshold_changed(self, val):
@@ -1005,36 +788,6 @@ class AdjustmentsDialog(QDialog):
         self._white_point = val
         self._white_pt_lbl.setText(
             _("dialogs.adjustments.white_point_label", value=val))
-        self._update_preview()
-
-    def _on_sat_changed(self, val):
-        self._saturation = val
-        self._sat_val_lbl.setText(
-            _("dialogs.adjustments.saturation_label", value=val))
-        self._update_preview()
-
-    def _on_remove_colors_changed(self, val):
-        self._remove_int = val
-        self._remove_colors_val_lbl.setText(
-            _("dialogs.adjustments.remove_colors_intensity_label", value=val))
-        self._update_preview()
-
-    def _on_unsharp_radius_changed(self, val):
-        self._unsharp_radius = round(val / 10.0, 1)
-        self._unsharp_radius_lbl.setText(
-            _("dialogs.adjustments.unsharp_radius_label", value=self._unsharp_radius))
-        self._update_preview()
-
-    def _on_unsharp_percent_changed(self, val):
-        self._unsharp_percent = val
-        self._unsharp_percent_lbl.setText(
-            _("dialogs.adjustments.unsharp_percent_label", value=val))
-        self._update_preview()
-
-    def _on_unsharp_threshold_changed(self, val):
-        self._unsharp_threshold = val
-        self._unsharp_threshold_lbl.setText(
-            _("dialogs.adjustments.unsharp_threshold_label", value=val))
         self._update_preview()
 
     def _on_image_mode_changed(self, key):
@@ -1090,25 +843,17 @@ class AdjustmentsDialog(QDialog):
     def _get_settings(self):
         return {
             'color_depth':            self._color_depth,
-            'brightness':             self._brightness,
-            'contrast':               self._contrast,
             'compression_quality':    self._comp_quality,
             'initial_quality':        self._initial_quality,
             'effect':                 self._effect,
-            'sharpness':              self._sharpness,
             'threshold':              self._threshold,
             'black_point':            self._black_point,
             'gamma':                  self._gamma,
             'white_point':            self._white_point,
-            'remove_colors_intensity': self._remove_int,
-            'saturation':             self._saturation,
             'image_mode':             self._image_mode,
             'original_ext':           self._original_ext,
             'transparency_type':      'flood',
             'transparency_tolerance': 30,
-            'unsharp_radius':         self._unsharp_radius,
-            'unsharp_percent':        self._unsharp_percent,
-            'unsharp_threshold':      self._unsharp_threshold,
         }
 
     def _update_preview(self):
@@ -1149,54 +894,30 @@ class AdjustmentsDialog(QDialog):
     def _on_reset(self):
         """Réinitialise tous les contrôles à leurs valeurs par défaut."""
         # Bloque les signaux le temps de la réinitialisation (évite N rafraîchissements)
-        for sl in (self._comp_slider, self._sharp_slider, self._bright_slider,
-                   self._contrast_slider, self._threshold_slider,
-                   self._black_pt_slider, self._gamma_slider, self._white_pt_slider,
-                   self._sat_slider, self._remove_colors_slider,
-                   self._unsharp_radius_slider, self._unsharp_percent_slider,
-                   self._unsharp_threshold_slider):
+        for sl in (self._comp_slider, self._threshold_slider,
+                   self._black_pt_slider, self._gamma_slider, self._white_pt_slider):
             sl.blockSignals(True)
 
         self._color_depth        = 'unchanged'
-        self._brightness         = 0
-        self._contrast           = 0
         self._comp_quality       = self._initial_quality
         self._effect             = 'none'
-        self._sharpness          = 0
         self._threshold          = 128
         self._black_point        = 0
         self._gamma              = 1.0
         self._white_point        = 255
-        self._remove_int         = 0
-        self._saturation         = 0
         self._image_mode         = 'unchanged'
-        self._unsharp_radius     = 2.0
-        self._unsharp_percent    = 0
-        self._unsharp_threshold  = 3
 
         self._depth_radios['unchanged'].setChecked(True)
         self._effect_radios['none'].setChecked(True)
         self._mode_radios['unchanged'].setChecked(True)
 
         self._comp_slider.setValue(self._initial_quality)
-        self._sharp_slider.setValue(0)
-        self._bright_slider.setValue(0)
-        self._contrast_slider.setValue(0)
         self._threshold_slider.setValue(128)
         self._black_pt_slider.setValue(0)
         self._gamma_slider.setValue(100)
         self._white_pt_slider.setValue(255)
-        self._sat_slider.setValue(0)
-        self._remove_colors_slider.setValue(0)
-        self._unsharp_radius_slider.setValue(20)
-        self._unsharp_percent_slider.setValue(0)
-        self._unsharp_threshold_slider.setValue(3)
-        for sl in (self._comp_slider, self._sharp_slider, self._bright_slider,
-                   self._contrast_slider, self._threshold_slider,
-                   self._black_pt_slider, self._gamma_slider, self._white_pt_slider,
-                   self._sat_slider, self._remove_colors_slider,
-                   self._unsharp_radius_slider, self._unsharp_percent_slider,
-                   self._unsharp_threshold_slider):
+        for sl in (self._comp_slider, self._threshold_slider,
+                   self._black_pt_slider, self._gamma_slider, self._white_pt_slider):
             sl.blockSignals(False)
 
         self._retranslate()
@@ -1304,46 +1025,22 @@ class AdjustmentsDialog(QDialog):
         def on_close():
             """Synchronise les sliders du dialog avec les valeurs modifiées dans le viewer."""
             # Bloque les signaux pour éviter N rafraîchissements
-            for sl in (self._comp_slider, self._sharp_slider, self._bright_slider,
-                       self._contrast_slider, self._black_pt_slider,
-                       self._gamma_slider, self._white_pt_slider,
-                       self._sat_slider, self._remove_colors_slider,
-                       self._unsharp_radius_slider, self._unsharp_percent_slider,
-                       self._unsharp_threshold_slider):
+            for sl in (self._comp_slider, self._black_pt_slider,
+                       self._gamma_slider, self._white_pt_slider):
                 sl.blockSignals(True)
 
-            self._sharpness         = settings.get('sharpness', 0)
-            self._brightness        = settings.get('brightness', 0)
-            self._contrast          = settings.get('contrast', 0)
             self._comp_quality      = settings.get('compression_quality', self._initial_quality)
-            self._remove_int        = settings.get('remove_colors_intensity', 0)
-            self._saturation        = settings.get('saturation', 0)
             self._black_point       = settings.get('black_point', 0)
             self._white_point       = settings.get('white_point', 255)
             self._gamma             = settings.get('gamma', 1.0)
-            self._unsharp_radius    = settings.get('unsharp_radius', 2.0)
-            self._unsharp_percent   = settings.get('unsharp_percent', 0)
-            self._unsharp_threshold = settings.get('unsharp_threshold', 3)
 
-            self._sharp_slider.setValue(self._sharpness)
-            self._bright_slider.setValue(self._brightness)
-            self._contrast_slider.setValue(self._contrast)
             self._comp_slider.setValue(self._comp_quality)
-            self._sat_slider.setValue(self._saturation)
-            self._remove_colors_slider.setValue(self._remove_int)
             self._black_pt_slider.setValue(self._black_point)
             self._white_pt_slider.setValue(self._white_point)
             self._gamma_slider.setValue(int(self._gamma * 100))
-            self._unsharp_radius_slider.setValue(int(self._unsharp_radius * 10))
-            self._unsharp_percent_slider.setValue(self._unsharp_percent)
-            self._unsharp_threshold_slider.setValue(self._unsharp_threshold)
 
-            for sl in (self._comp_slider, self._sharp_slider, self._bright_slider,
-                       self._contrast_slider, self._black_pt_slider,
-                       self._gamma_slider, self._white_pt_slider,
-                       self._sat_slider, self._remove_colors_slider,
-                       self._unsharp_radius_slider, self._unsharp_percent_slider,
-                       self._unsharp_threshold_slider):
+            for sl in (self._comp_slider, self._black_pt_slider,
+                       self._gamma_slider, self._white_pt_slider):
                 sl.blockSignals(False)
 
             self._retranslate()

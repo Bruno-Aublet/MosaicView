@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Poravnava",
     "toolbar_crop_instruction": "Narišite pravokotnik okoli območja, ki ga želite obdržati, nato potrdite",
     "toolbar_clone_tooltip": "Kloniranje",
-    "toolbar_text_tooltip": "Besedilo"
+    "toolbar_text_tooltip": "Besedilo",
+    "toolbar_sharpness_tooltip": "Ostrina",
+    "toolbar_unsharp_tooltip": "Prilagodljiva ostrina",
+    "sharpness_panel_label": "Ostrina:",
+    "unsharp_radius_label": "Polmer:",
+    "unsharp_percent_label": "Intenziteta:",
+    "unsharp_threshold_label": "Prag:",
+    "toolbar_brightness_tooltip": "Svetlost in kontrast",
+    "toolbar_brightness_instruction": "Prilagodite drsnike, prilagoditev se uveljavi ob spustitvi",
+    "brightness_panel_label": "Svetlost:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Nasičenost",
+    "toolbar_saturation_instruction": "Prilagodite drsnik, prilagoditev se uveljavi ob spustitvi",
+    "saturation_panel_label": "Nasičenost :",
+    "toolbar_remove_colors_tooltip": "Odstranjevanje barv",
+    "toolbar_remove_colors_instruction": "Prilagodite drsnik, prilagoditev se uveljavi ob spustitvi",
+    "remove_colors_panel_label": "Intenzivnost :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Svetlost, kontrast, barve...",
       "refresh_mosaic": "Osveži mozaik (F5)",
       "create_ico": "Ustvari datoteko .ico",
-      "clone_zone": "Kloniranje cone...",
-      "text": "Dodaj besedilo...",
-      "straighten_manual": "Ročno poravnaj sliko...",
       "straighten_auto": "Samodejno poravnaj sliko"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Prezrte datoteke"
-      },
-      "no_selection_crop": {
-        "title": "Ni izbora",
-        "message": "Izberite sliko za obrezavo."
-      },
-      "multi_selection_crop": {
-        "title": "Večkratni izbor",
-        "message": "Lahko obrežete samo eno sliko naenkrat.\nIzberite samo eno sliko."
-      },
-      "invalid_selection_crop": {
-        "title": "Neveljaven izbor",
-        "message": "Obrezati je mogoče samo slike."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcija ni na voljo",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Napaka",
         "message": "Besedila ni bilo mogoče uporabiti: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Napaka",
+        "message": "Ostrine ni bilo mogoče uporabiti: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Napaka",
+        "message": "Prilagodljive ostrine ni bilo mogoče uporabiti: {error}"
+      },
+      "brightness_failed": {
+        "title": "Napaka",
+        "message": "Svetlosti/kontrasta ni bilo mogoče uporabiti: {error}"
+      },
+      "saturation_failed": {
+        "title": "Napaka",
+        "message": "Nasičenosti ni bilo mogoče uporabiti: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Napaka",
+        "message": "Odstranjevanja barv ni bilo mogoče uporabiti: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "slike",
       "apply_button": "Uporabi",
       "color_depth_section": "Globina barve",
-      "brightness_contrast_section": "Svetlost in kontrast",
       "compression_section": "Stiskanje",
       "effects_section": "Učinki",
       "sharpness_section": "Ostrina",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bitov (RGB - barve)",
       "depth_8bit": "8 bitov (paleta PNG / sivinskih odtenkov JPEG)",
       "depth_1bit": "1 bit (črno-belo)",
-      "brightness_label": "Svetlost: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Omogoči ponovno stiskanje",
       "compression_quality_label": "Kakovost : {value}/100",
-      "sharpness_label": "Ostrina: {value}",
       "effect_none": "Brez učinka",
       "effect_grayscale": "Odtenki sive",
       "effect_sepia": "Sepija",
@@ -991,8 +1008,6 @@
       "preview_section": "Predogled",
       "effect_invert": "Inverzija barv",
       "preview_warning": "Predogled se lahko razlikuje od končnega rezultata",
-      "effect_remove_colors": "Odstranjevanje barv",
-      "remove_colors_intensity_label": "Intenzivnost : {value}",
       "image_mode_section": "Način slike",
       "image_mode_rgb": "RGB (barve)",
       "image_mode_rgba": "RGBA (barve + prosojnost)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (tisk)",
       "image_mode_1": "1 (čisto črno-belo)",
       "image_mode_p": "P (paleta 256 barv)",
-      "saturation_section": "Nasičenost",
-      "saturation_label": "Nasičenost : {value}",
-      "saturation_viewer_title": "Nastavitev nasičenosti",
       "transparency_section": "Prosojnost",
       "transparency_info": "Prosojnost velja samo za slike PNG, WebP, ICO in AVIF",
       "transparency_type_label": "Vrsta :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Globalna prosojnost : vpliva na vse piksle slike, katerih barva je blizu klikane",
       "transparency_apply": "Uporabi",
       "transparency_skipped_warning": "{count} slika(e) preskočena(e) — format ni združljiv s prosojnostjo. Če jih želite vključiti, jih najprej pretvorite v PNG.",
-      "unsharp_section": "Adaptivna ostrina",
-      "unsharp_radius_label": "Polmer: {value}",
-      "unsharp_percent_label": "Intenziteta: {value} %",
-      "unsharp_threshold_label": "Prag: {value}",
-      "unsharp_viewer_title": "Adaptivna ostrina",
       "auto_levels_tooltip": "Analizira vsako stran in samodejno prilagodi ravni črne in bele za maksimalni kontrast.\nZa izbiro stran po stran uporabite pregledovalnik.",
       "transparency_unsaved_title": "Neuporabljene spremembe",
       "transparency_unsaved_message": "Trenutne spremembe niso bile uporabljene na sliki. Kaj želite storiti?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Pipeta bele tocke",
       "black_pipette_tooltip": "Kliknite na piksel, ki bi moral biti popolnoma črn. Pozor: lahko pretiravate!",
       "white_pipette_tooltip": "Kliknite na piksel, ki bi moral biti popolnoma bel. Pozor: lahko pretiravate!"
-    },
-    "sharpness_viewer": {
-      "title": "Prilagoditev ostrine"
-    },
-    "brightness_viewer": {
-      "title": "Prilagoditev svetlosti in kontrasta"
     },
     "compression_viewer": {
       "title": "Prilagoditev stiskanja"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Povečaj velikost ikon",
     "source_loose": "Prosta slika",
     "source_web": "Spletna slika",
-    "straighten": "Poravnaj sliko",
-    "clone_zone": "Kloniranje cone",
-    "text": "Dodaj besedilo",
+    "straighten": "Samodejno poravnaj sliko",
     "batch_cb7_to_cbz": "Pretvori vse datoteke CB7 v mapi\nin njenih podmapah v CBZ.",
     "batch_cb7_permanent_delete": "OPOZORILO : če je ta možnost označena,\nbodo izvirne datoteke CB7 trajno izbrisane\npo pretvorbi brez možnosti obnovitve.\nPrepričajte se, da imate varnostno kopijo.",
     "batch_cbt_to_cbz": "Pretvori vse datoteke CBT v mapi\nin njenih podmapah v CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "V tej datoteki so bile zaznane podvojene strani.\nKliknite za odprtje okna za upravljanje podvojenih strani.",
     "duplicate_indicator_none": "Podvojitve niso zaznane",
     "straighten_mode_0": "Ročni način (nariši referenčno črto)\nDesni klik za spremembo načina",
-    "straighten_mode_1": "Samodejni način (zaznavanje nagiba)\nDesni klik za spremembo načina"
+    "straighten_mode_1": "Samodejni način (zaznavanje nagiba)\nDesni klik za spremembo načina",
+    "sharpness_mode_0": "Okrepi ali omehča podrobnosti slike\nDesni klik za preklop na prilagodljivo ostrino",
+    "sharpness_mode_1": "Poudari obrise in ohrani enotna območja\nDesni klik za preklop na enostavno ostrino"
   },
   "help": {
     "title": "MosaicView - Navodila za uporabo",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relativna pot"
   },
   "web": {
+    "web_analyzing_page": "Analiziranje strani...",
     "web_download_progress": "Prenos: {downloaded}/{total} slik...",
     "web_download_cancel": "Prekliči",
     "web_no_images": "Ni slik",

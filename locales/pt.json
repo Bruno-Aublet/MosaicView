@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Endireitar",
     "toolbar_crop_instruction": "Desenhe um retângulo em torno da área a manter e confirme",
     "toolbar_clone_tooltip": "Clonagem",
-    "toolbar_text_tooltip": "Texto"
+    "toolbar_text_tooltip": "Texto",
+    "toolbar_sharpness_tooltip": "Nitidez",
+    "toolbar_unsharp_tooltip": "Nitidez adaptativa",
+    "sharpness_panel_label": "Nitidez:",
+    "unsharp_radius_label": "Raio:",
+    "unsharp_percent_label": "Intensidade:",
+    "unsharp_threshold_label": "Limiar:",
+    "toolbar_brightness_tooltip": "Brilho e contraste",
+    "toolbar_brightness_instruction": "Ajuste os controlos deslizantes, o ajuste aplica-se ao soltar",
+    "brightness_panel_label": "Brilho:",
+    "contrast_panel_label": "Contraste:",
+    "toolbar_saturation_tooltip": "Saturação",
+    "toolbar_saturation_instruction": "Ajuste o controlo deslizante, o ajuste aplica-se ao soltar",
+    "saturation_panel_label": "Saturação :",
+    "toolbar_remove_colors_tooltip": "Remoção de cores",
+    "toolbar_remove_colors_instruction": "Ajuste o controlo deslizante, o ajuste aplica-se ao soltar",
+    "remove_colors_panel_label": "Intensidade :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Brilho, contraste, cores...",
       "refresh_mosaic": "Atualizar o mosaico (F5)",
       "create_ico": "Criar arquivo .ico",
-      "clone_zone": "Clonar zona...",
-      "text": "Adicionar texto...",
-      "straighten_manual": "Endireitar a imagem manualmente...",
       "straighten_auto": "Endireitar a imagem automaticamente"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Ficheiros ignorados"
-      },
-      "no_selection_crop": {
-        "title": "Nenhuma seleção",
-        "message": "Selecione uma imagem para cortar."
-      },
-      "multi_selection_crop": {
-        "title": "Seleção múltipla",
-        "message": "Só pode cortar uma imagem de cada vez.\nSelecione apenas uma imagem."
-      },
-      "invalid_selection_crop": {
-        "title": "Seleção inválida",
-        "message": "Apenas imagens podem ser cortadas."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Função não disponível",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Erro",
         "message": "Não foi possível aplicar o texto: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar a nitidez: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar a nitidez adaptativa: {error}"
+      },
+      "brightness_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar o brilho/contraste: {error}"
+      },
+      "saturation_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar a saturação: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar a remoção de cores: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "imagens",
       "apply_button": "Aplicar",
       "color_depth_section": "Profundidade de cor",
-      "brightness_contrast_section": "Brilho e contraste",
       "compression_section": "Compressao",
       "effects_section": "Efeitos",
       "sharpness_section": "Nitidez",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bits (RGB - cores)",
       "depth_8bit": "8 bits (paleta PNG / escala de cinza JPEG)",
       "depth_1bit": "1 bit (preto e branco)",
-      "brightness_label": "Brilho: {value}",
-      "contrast_label": "Contraste: {value}",
       "compression_enable": "Ativar recompressao",
       "compression_quality_label": "Qualidade : {value}/100",
-      "sharpness_label": "Nitidez: {value}",
       "effect_none": "Sem efeito",
       "effect_grayscale": "Tons de cinza",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Pré-visualização",
       "effect_invert": "Inversão de cores",
       "preview_warning": "A visualização pode diferir do resultado final",
-      "effect_remove_colors": "Remoção de cores",
-      "remove_colors_intensity_label": "Intensidade : {value}",
       "image_mode_section": "Modo de imagem",
       "image_mode_rgb": "RGB (cores)",
       "image_mode_rgba": "RGBA (cores + transparência)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (impressão)",
       "image_mode_1": "1 (preto e branco puro)",
       "image_mode_p": "P (paleta de 256 cores)",
-      "saturation_section": "Saturação",
-      "saturation_label": "Saturação : {value}",
-      "saturation_viewer_title": "Ajuste de saturação",
       "transparency_section": "Transparência",
       "transparency_info": "A transparência aplica-se apenas a imagens PNG, WebP, ICO e AVIF",
       "transparency_type_label": "Tipo :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Transparência global : afeta todos os pixels da imagem cuja cor está próxima da clicada",
       "transparency_apply": "Aplicar",
       "transparency_skipped_warning": "{count} imagem(ns) ignorada(s) — formato incompatível com a transparência. Para incluí-las, converta-as primeiro para PNG.",
-      "unsharp_section": "Nitidez adaptativa",
-      "unsharp_radius_label": "Raio: {value}",
-      "unsharp_percent_label": "Intensidade: {value} %",
-      "unsharp_threshold_label": "Limiar: {value}",
-      "unsharp_viewer_title": "Nitidez adaptativa",
       "auto_levels_tooltip": "Analisa cada página e ajusta automaticamente os níveis de preto e branco para maximizar o contraste.\nPara escolher página por página, utilize o visualizador.",
       "transparency_unsaved_title": "Alterações não aplicadas",
       "transparency_unsaved_message": "As alterações atuais não foram aplicadas à imagem. O que deseja fazer?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Conta-gotas de ponto branco",
       "black_pipette_tooltip": "Clique em um pixel que deveria ser totalmente preto. Cuidado: é fácil exagerar!",
       "white_pipette_tooltip": "Clique em um pixel que deveria ser totalmente branco. Cuidado: é fácil exagerar!"
-    },
-    "sharpness_viewer": {
-      "title": "Ajuste de nitidez"
-    },
-    "brightness_viewer": {
-      "title": "Ajuste de brilho e contraste"
     },
     "compression_viewer": {
       "title": "Ajuste de compressão"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Aumentar tamanho dos ícones",
     "source_loose": "Imagem solta",
     "source_web": "Imagem web",
-    "straighten": "Endireitar imagem",
-    "clone_zone": "Clonar zona",
-    "text": "Adicionar texto",
+    "straighten": "Endireitar a imagem automaticamente",
     "batch_cb7_to_cbz": "Converte todos os ficheiros CB7 numa pasta\ne nas suas subpastas para CBZ.",
     "batch_cb7_permanent_delete": "ATENÇÃO : se esta opção estiver marcada,\nos ficheiros CB7 originais serão eliminados\npermanentemente após a conversão sem\npossibilidade de recuperação.\nCertifique-se de ter uma cópia de segurança.",
     "batch_cbt_to_cbz": "Converte todos os ficheiros CBT numa pasta\ne nas suas subpastas para CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Foram detetadas páginas duplicadas neste ficheiro.\nClique para abrir a janela de gestão de duplicados.",
     "duplicate_indicator_none": "Nenhum duplicado detetado",
     "straighten_mode_0": "Modo manual (desenhe uma linha de referência)\nClique com o botão direito para mudar de modo",
-    "straighten_mode_1": "Modo automático (deteção de inclinação)\nClique com o botão direito para mudar de modo"
+    "straighten_mode_1": "Modo automático (deteção de inclinação)\nClique com o botão direito para mudar de modo",
+    "sharpness_mode_0": "Reforça ou suaviza os detalhes da imagem\nClique com o botão direito para mudar para a nitidez adaptativa",
+    "sharpness_mode_1": "Acentua os contornos preservando as zonas uniformes\nClique com o botão direito para mudar para a nitidez simples"
   },
   "help": {
     "title": "MosaicView - Manual do utilizador",
@@ -1506,6 +1507,7 @@
     "relative_path": "Caminho relativo"
   },
   "web": {
+    "web_analyzing_page": "A analisar a página...",
     "web_download_progress": "Baixando: {downloaded}/{total} imagens...",
     "web_download_cancel": "Cancelar",
     "web_no_images": "Sem imagens",

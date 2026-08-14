@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Prostowanie",
     "toolbar_crop_instruction": "Narysuj prostokąt wokół obszaru do zachowania, a następnie zatwierdź",
     "toolbar_clone_tooltip": "Klonowanie",
-    "toolbar_text_tooltip": "Tekst"
+    "toolbar_text_tooltip": "Tekst",
+    "toolbar_sharpness_tooltip": "Ostrość",
+    "toolbar_unsharp_tooltip": "Ostrość adaptacyjna",
+    "sharpness_panel_label": "Ostrość:",
+    "unsharp_radius_label": "Promień:",
+    "unsharp_percent_label": "Intensywność:",
+    "unsharp_threshold_label": "Próg:",
+    "toolbar_brightness_tooltip": "Jasność i kontrast",
+    "toolbar_brightness_instruction": "Dostosuj suwaki, zmiana zostanie zastosowana po zwolnieniu",
+    "brightness_panel_label": "Jasnosc:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Nasycenie",
+    "toolbar_saturation_instruction": "Dostosuj suwak, zmiana zostanie zastosowana po zwolnieniu",
+    "saturation_panel_label": "Nasycenie :",
+    "toolbar_remove_colors_tooltip": "Usuwanie kolorów",
+    "toolbar_remove_colors_instruction": "Dostosuj suwak, zmiana zostanie zastosowana po zwolnieniu",
+    "remove_colors_panel_label": "Intensywność :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Jasność, kontrast, kolory...",
       "refresh_mosaic": "Odśwież mozaikę (F5)",
       "create_ico": "Utwórz plik .ico",
-      "clone_zone": "Klonowanie strefy...",
-      "text": "Dodaj tekst...",
-      "straighten_manual": "Wyprostuj obraz ręcznie...",
       "straighten_auto": "Wyprostuj obraz automatycznie"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Pliki zignorowane"
-      },
-      "no_selection_crop": {
-        "title": "Brak zaznaczenia",
-        "message": "Proszę zaznaczyć obraz do kadrowania."
-      },
-      "multi_selection_crop": {
-        "title": "Zaznaczono wiele",
-        "message": "Można kadrować tylko jeden obraz naraz.\nProszę zaznaczyć pojedynczy obraz."
-      },
-      "invalid_selection_crop": {
-        "title": "Nieprawidłowe zaznaczenie",
-        "message": "Tylko obrazy mogą być kadrowane."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcja niedostępna",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Błąd",
         "message": "Nie można zastosować tekstu: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się zastosować ostrości: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się zastosować ostrości adaptacyjnej: {error}"
+      },
+      "brightness_failed": {
+        "title": "Błąd",
+        "message": "Nie można zastosować jasności/kontrastu: {error}"
+      },
+      "saturation_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się zastosować nasycenia: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się zastosować usuwania kolorów: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "obrazy",
       "apply_button": "Zastosuj",
       "color_depth_section": "Glebia koloru",
-      "brightness_contrast_section": "Jasnosc i kontrast",
       "compression_section": "Kompresja",
       "effects_section": "Efekty",
       "sharpness_section": "Ostrosc",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bity (RGB - kolory)",
       "depth_8bit": "8 bitow (paleta PNG / skala szarosci JPEG)",
       "depth_1bit": "1 bit (czarno-bialy)",
-      "brightness_label": "Jasnosc: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Wlacz ponowna kompresje",
       "compression_quality_label": "Jakość : {value}/100",
-      "sharpness_label": "Ostrosc: {value}",
       "effect_none": "Brak efektu",
       "effect_grayscale": "Odcienie szarosci",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Podgląd",
       "effect_invert": "Inwersja kolorów",
       "preview_warning": "Podgląd może różnić się od wyniku końcowego",
-      "effect_remove_colors": "Usuwanie kolorów",
-      "remove_colors_intensity_label": "Intensywność : {value}",
       "image_mode_section": "Tryb obrazu",
       "image_mode_rgb": "RGB (kolory)",
       "image_mode_rgba": "RGBA (kolory + przezroczystość)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (druk)",
       "image_mode_1": "1 (czysty czarno-biały)",
       "image_mode_p": "P (paleta 256 kolorów)",
-      "saturation_section": "Nasycenie",
-      "saturation_label": "Nasycenie : {value}",
-      "saturation_viewer_title": "Regulacja nasycenia",
       "transparency_section": "Przezroczystość",
       "transparency_info": "Przezroczystość dotyczy tylko obrazów PNG, WebP, ICO i AVIF",
       "transparency_type_label": "Typ :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Globalna przezroczystość : wpływa na wszystkie piksele obrazu, których kolor jest zbliżony do klikniętego",
       "transparency_apply": "Zastosuj",
       "transparency_skipped_warning": "{count} obraz(y/ów) pominięto — format niekompatybilny z przezroczystością. Aby je uwzględnić, najpierw przekonwertuj je do PNG.",
-      "unsharp_section": "Adaptywna ostrość",
-      "unsharp_radius_label": "Promień: {value}",
-      "unsharp_percent_label": "Intensywność: {value} %",
-      "unsharp_threshold_label": "Próg: {value}",
-      "unsharp_viewer_title": "Adaptywna ostrość",
       "auto_levels_tooltip": "Analizuje każdą stronę i automatycznie dostosowuje poziomy czerni i bieli, aby zmaksymalizować kontrast.\nAby wybrać strona po stronie, użyj przeglądarki.",
       "transparency_unsaved_title": "Niezastosowane zmiany",
       "transparency_unsaved_message": "Bieżące zmiany nie zostały zastosowane do obrazu. Co chcesz zrobić?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Pipeta punktu białego",
       "black_pipette_tooltip": "Kliknij na piksel, który powinien być całkowicie czarny. Uwaga: łatwo przesadzić!",
       "white_pipette_tooltip": "Kliknij na piksel, który powinien być całkowicie biały. Uwaga: łatwo przesadzić!"
-    },
-    "sharpness_viewer": {
-      "title": "Regulacja ostrości"
-    },
-    "brightness_viewer": {
-      "title": "Regulacja jasności i kontrastu"
     },
     "compression_viewer": {
       "title": "Regulacja kompresji"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Zwiększ rozmiar ikon",
     "source_loose": "Luźny obraz",
     "source_web": "Obraz z sieci",
-    "straighten": "Wyprostuj obraz",
-    "clone_zone": "Klonowanie strefy",
-    "text": "Dodaj tekst",
+    "straighten": "Automatycznie wyprostuj obraz",
     "batch_cb7_to_cbz": "Konwertuje wszystkie pliki CB7 w katalogu\ni jego podkatalogach do formatu CBZ.",
     "batch_cb7_permanent_delete": "UWAGA : jeśli ta opcja jest zaznaczona,\noryginalne pliki CB7 zostaną trwale usunięte\npo konwersji bez możliwości odzyskania.\nUpewnij się, że masz kopię zapasową.",
     "batch_cbt_to_cbz": "Konwertuje wszystkie pliki CBT w katalogu\ni jego podkatalogach do formatu CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "W tym pliku wykryto zduplikowane strony.\nKliknij, aby otworzyć okno zarządzania duplikatami.",
     "duplicate_indicator_none": "Nie wykryto duplikatów",
     "straighten_mode_0": "Tryb ręczny (narysuj linię odniesienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
-    "straighten_mode_1": "Tryb automatyczny (wykrywanie przekrzywienia)\nKliknij prawym przyciskiem, aby zmienić tryb"
+    "straighten_mode_1": "Tryb automatyczny (wykrywanie przekrzywienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
+    "sharpness_mode_0": "Wzmacnia lub łagodzi szczegóły obrazu\nKliknij prawym przyciskiem, aby przełączyć na ostrość adaptacyjną",
+    "sharpness_mode_1": "Podkreśla kontury, oszczędzając jednolite obszary\nKliknij prawym przyciskiem, aby przełączyć na zwykłą ostrość"
   },
   "help": {
     "title": "MosaicView - Instrukcja obsługi",
@@ -1506,6 +1507,7 @@
     "relative_path": "Ścieżka względna"
   },
   "web": {
+    "web_analyzing_page": "Analizowanie strony...",
     "web_download_progress": "Pobieranie: {downloaded}/{total} obrazów...",
     "web_download_cancel": "Anuluj",
     "web_no_images": "Brak obrazów",

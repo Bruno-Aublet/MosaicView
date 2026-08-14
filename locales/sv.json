@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Räta upp",
     "toolbar_crop_instruction": "Rita en rektangel runt området som ska behållas och bekräfta sedan",
     "toolbar_clone_tooltip": "Kloning",
-    "toolbar_text_tooltip": "Text"
+    "toolbar_text_tooltip": "Text",
+    "toolbar_sharpness_tooltip": "Skärpa",
+    "toolbar_unsharp_tooltip": "Adaptiv skärpa",
+    "sharpness_panel_label": "Skärpa:",
+    "unsharp_radius_label": "Radie:",
+    "unsharp_percent_label": "Intensitet:",
+    "unsharp_threshold_label": "Tröskel:",
+    "toolbar_brightness_tooltip": "Ljusstyrka och kontrast",
+    "toolbar_brightness_instruction": "Justera reglagen, ändringen tillämpas vid släpp",
+    "brightness_panel_label": "Ljusstyrka:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Mättnad",
+    "toolbar_saturation_instruction": "Justera reglaget, ändringen tillämpas vid släpp",
+    "saturation_panel_label": "Mättnad :",
+    "toolbar_remove_colors_tooltip": "Borttagning av färger",
+    "toolbar_remove_colors_instruction": "Justera reglaget, ändringen tillämpas vid släpp",
+    "remove_colors_panel_label": "Intensitet :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Ljusstyrka, kontrast, färger...",
       "refresh_mosaic": "Uppdatera mosaiken (F5)",
       "create_ico": "Skapa .ico-fil",
-      "clone_zone": "Klona zon...",
-      "text": "Lägg till text...",
-      "straighten_manual": "Räta bilden manuellt...",
       "straighten_auto": "Räta bilden automatiskt"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Filer ignorerade"
-      },
-      "no_selection_crop": {
-        "title": "Ingen markering",
-        "message": "Vänligen markera en bild att beskära."
-      },
-      "multi_selection_crop": {
-        "title": "Flera markeringar",
-        "message": "Du kan bara beskära en bild åt gången.\nVänligen markera endast en bild."
-      },
-      "invalid_selection_crop": {
-        "title": "Ogiltig markering",
-        "message": "Endast bilder kan beskäras."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funktion ej tillgänglig",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Fel",
         "message": "Kunde inte använda texten: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Fel",
+        "message": "Det gick inte att tillämpa skärpan: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Fel",
+        "message": "Det gick inte att tillämpa adaptiv skärpa: {error}"
+      },
+      "brightness_failed": {
+        "title": "Fel",
+        "message": "Det gick inte att tillämpa ljusstyrka/kontrast: {error}"
+      },
+      "saturation_failed": {
+        "title": "Fel",
+        "message": "Det gick inte att tillämpa mättnaden: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Fel",
+        "message": "Det gick inte att tillämpa borttagning av färger: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "bilder",
       "apply_button": "Tillamma",
       "color_depth_section": "Fargdjup",
-      "brightness_contrast_section": "Ljusstyrka och kontrast",
       "compression_section": "Komprimering",
       "effects_section": "Effekter",
       "sharpness_section": "Skarphet",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bitar (RGB - farger)",
       "depth_8bit": "8 bitar (PNG-palett / JPEG-graskalor)",
       "depth_1bit": "1 bit (svart och vit)",
-      "brightness_label": "Ljusstyrka: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Aktivera omkompr imering",
       "compression_quality_label": "Kvalitet : {value}/100",
-      "sharpness_label": "Skarphet: {value}",
       "effect_none": "Ingen effekt",
       "effect_grayscale": "Graatoner",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Förhandsgranskning",
       "effect_invert": "Färginversion",
       "preview_warning": "Förhandsvisning kan skilja sig från slutresultatet",
-      "effect_remove_colors": "Borttagning av färger",
-      "remove_colors_intensity_label": "Intensitet : {value}",
       "image_mode_section": "Bildläge",
       "image_mode_rgb": "RGB (färger)",
       "image_mode_rgba": "RGBA (färger + transparens)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (tryck)",
       "image_mode_1": "1 (rent svartvitt)",
       "image_mode_p": "P (256-färgspalett)",
-      "saturation_section": "Mättnad",
-      "saturation_label": "Mättnad : {value}",
-      "saturation_viewer_title": "Justering av mättnad",
       "transparency_section": "Genomskinlighet",
       "transparency_info": "Genomskinlighet gäller endast PNG-, WebP-, ICO- och AVIF-bilder",
       "transparency_type_label": "Typ :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Global genomskinlighet : påverkar alla pixlar i bilden vars färg liknar den klickade",
       "transparency_apply": "Tillämpa",
       "transparency_skipped_warning": "{count} bild(er) hoppades över — formatet är inte kompatibelt med transparens. För att inkludera dem, konvertera dem först till PNG.",
-      "unsharp_section": "Adaptiv skärpa",
-      "unsharp_radius_label": "Radie: {value}",
-      "unsharp_percent_label": "Intensitet: {value} %",
-      "unsharp_threshold_label": "Tröskel: {value}",
-      "unsharp_viewer_title": "Adaptiv skärpa",
       "auto_levels_tooltip": "Analyserar varje sida och justerar automatiskt svart- och vitnivåerna för att maximera kontrasten.\nAnvänd visningsprogrammet för att välja sida för sida.",
       "transparency_unsaved_title": "Ej tillämpade ändringar",
       "transparency_unsaved_message": "De aktuella ändringarna har inte tillämpats på bilden. Vad vill du göra?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Vit punkt pipett",
       "black_pipette_tooltip": "Klicka på en pixel som borde vara helt svart. Varning: det är lätt att överdriva!",
       "white_pipette_tooltip": "Klicka på en pixel som borde vara helt vit. Varning: det är lätt att överdriva!"
-    },
-    "sharpness_viewer": {
-      "title": "Skärpejustering"
-    },
-    "brightness_viewer": {
-      "title": "Ljusstyrke- och kontrastjustering"
     },
     "compression_viewer": {
       "title": "Komprimeringsjustering"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Öka ikonstorlek",
     "source_loose": "Lösbild",
     "source_web": "Webbbild",
-    "straighten": "Räta upp bild",
-    "clone_zone": "Klona zon",
-    "text": "Lägg till text",
+    "straighten": "Räta ut bilden automatiskt",
     "batch_cb7_to_cbz": "Konverterar alla CB7-filer i en mapp\noch dess undermappar till CBZ.",
     "batch_cb7_permanent_delete": "VARNING : om detta alternativ är markerat\nkommer de ursprungliga CB7-filerna att\nraderas permanent efter konverteringen utan\nmöjlighet till återställning.\nKontrollera att du har en säkerhetskopia.",
     "batch_cbt_to_cbz": "Konverterar alla CBT-filer i en mapp\noch dess undermappar till CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Duplicerade sidor upptäcktes i den här filen.\nKlicka för att öppna fönstret för hantering av dubbletter.",
     "duplicate_indicator_none": "Inga dubbletter hittades",
     "straighten_mode_0": "Manuellt läge (rita en referenslinje)\nHögerklicka för att byta läge",
-    "straighten_mode_1": "Automatiskt läge (lutningsdetektering)\nHögerklicka för att byta läge"
+    "straighten_mode_1": "Automatiskt läge (lutningsdetektering)\nHögerklicka för att byta läge",
+    "sharpness_mode_0": "Förstärker eller mjukar upp bildens detaljer\nHögerklicka för att växla till adaptiv skärpa",
+    "sharpness_mode_1": "Framhäver konturer och skonar enhetliga ytor\nHögerklicka för att växla till enkel skärpa"
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relativ sökväg"
   },
   "web": {
+    "web_analyzing_page": "Analyserar sidan...",
     "web_download_progress": "Laddar ner: {downloaded}/{total} bilder...",
     "web_download_cancel": "Avbryt",
     "web_no_images": "Inga bilder",

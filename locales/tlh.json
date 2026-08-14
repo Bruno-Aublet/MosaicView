@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "nIt chenmoH",
     "toolbar_crop_instruction": "pe'meH latlhmey wa'DIch yIchenmoH; lo'laH.",
     "toolbar_clone_tooltip": "tIngmeH",
-    "toolbar_text_tooltip": "mu'mey"
+    "toolbar_text_tooltip": "mu'mey",
+    "toolbar_sharpness_tooltip": "pe'vIl",
+    "toolbar_unsharp_tooltip": "pe'vIl mach",
+    "sharpness_panel_label": "pe'vIl:",
+    "unsharp_radius_label": "ro'mey:",
+    "unsharp_percent_label": "HurDagh:",
+    "unsharp_threshold_label": "mI'moH:",
+    "toolbar_brightness_tooltip": "wov'a' 'ej mI'",
+    "toolbar_brightness_instruction": "yIchenmoHmoH; lo'laHtaH ghormeH.",
+    "brightness_panel_label": "wov'a':",
+    "contrast_panel_label": "mI':",
+    "toolbar_saturation_tooltip": "ngaSpu'",
+    "toolbar_saturation_instruction": "yIchenmoHmoH; lo'laHtaH ghormeH.",
+    "saturation_panel_label": "ngaSpu' :",
+    "toolbar_remove_colors_tooltip": "nguv teqHa'",
+    "toolbar_remove_colors_instruction": "yIchenmoHmoH; lo'laHtaH ghormeH.",
+    "remove_colors_panel_label": "HoS :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "wov'a', mI', nguv...",
       "refresh_mosaic": "chu'Ha' mosaic (F5)",
       "create_ico": "chenmoH .ico nav",
-      "clone_zone": "Daq tIng...",
-      "text": "mu' yIchel...",
-      "straighten_manual": "nIt chenmoH mIllogh SIbI'be'...",
       "straighten_auto": "nIt chenmoH mIllogh chu'moH"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "De'mey poQbe'lu'"
-      },
-      "no_selection_crop": {
-        "title": "pagh wIv",
-        "message": "cha'nob pe'meH DawIvnIS."
-      },
-      "multi_selection_crop": {
-        "title": "law' wIv",
-        "message": "cha'nob wa' neH DapelaH.\ncha'nob wa' neH yIwIv."
-      },
-      "invalid_selection_crop": {
-        "title": "wIv lugh'be'",
-        "message": "cha'nobmey neH pe'lu'laH."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "lo'laHghach tu'be'lu'",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Qagh",
         "message": "cha'nob mu'mey lo'laHbe': {error}"
+      },
+      "sharpness_failed": {
+        "title": "Qagh",
+        "message": "cha'nob pe'vIl lo'laHbe': {error}"
+      },
+      "unsharp_failed": {
+        "title": "Qagh",
+        "message": "cha'nob pe'vIl mach lo'laHbe': {error}"
+      },
+      "brightness_failed": {
+        "title": "Qagh",
+        "message": "cha'nob wov'a' mI' je lo'laHbe': {error}"
+      },
+      "saturation_failed": {
+        "title": "Qagh",
+        "message": "cha'nob ngaSpu' lo'laHbe': {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Qagh",
+        "message": "cha'nob nguv teqHa' lo'laHbe': {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "cha'nobmey",
       "apply_button": "lo'",
       "color_depth_section": "nguv teblu'bogh",
-      "brightness_contrast_section": "wov'a' je mI'",
       "compression_section": "tamchu'",
       "effects_section": "qaSmoHwI'",
       "sharpness_section": "pe'vIl",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bit (RGB - nguv)",
       "depth_8bit": "8 bit (PNG nguv patlh / JPEG ghIr'a' qoja')",
       "depth_1bit": "1 bit (qIj chIS je)",
-      "brightness_label": "wov'a': {value}",
-      "contrast_label": "mI': {value}",
       "compression_enable": "tamchu' chu' lIng",
       "compression_quality_label": "tej : {value}/100",
-      "sharpness_label": "pe'vIl: {value}",
       "effect_none": "pagh qaSmoHwI'",
       "effect_grayscale": "ghIr'a'",
       "effect_sepia": "Doqqu'",
@@ -991,8 +1008,6 @@
       "preview_section": "legh",
       "effect_invert": "Nguv jat",
       "preview_warning": "cha' ghaH ngogh 'ej vIH qaStaHvIS",
-      "effect_remove_colors": "nguv teqHa'",
-      "remove_colors_intensity_label": "HoS : {value}",
       "image_mode_section": "mIllogh moj",
       "image_mode_rgb": "RGB (rItlh)",
       "image_mode_rgba": "RGBA (rItlh + Such)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (ghItlh)",
       "image_mode_1": "1 (qIj chIS nIt)",
       "image_mode_p": "P (256 rItlh naQ)",
-      "saturation_section": "ngaSpu'",
-      "saturation_label": "ngaSpu' : {value}",
-      "saturation_viewer_title": "ngaSpu' nIHwI'",
       "transparency_section": "wovmoH",
       "transparency_info": "wovmoH neH lo'lu' PNG, WebP, ICO je AVIF mIllogh",
       "transparency_type_label": "moj :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Hoch wovmoH : Hoch pixelpu' mIllogh DIch wovbe' rIt qanlu'bogh",
       "transparency_apply": "lo'",
       "transparency_skipped_warning": "{count} nagh beq(mey) lIngta' — ghantoH mI'mey qob. chel DaneHchugh, PNG-Daq tI'ol.",
-      "unsharp_section": "HurDagh 'ugh mI'",
-      "unsharp_radius_label": "ro'mey: {value}",
-      "unsharp_percent_label": "HurDagh: {value} %",
-      "unsharp_threshold_label": "mI'moH: {value}",
-      "unsharp_viewer_title": "HurDagh 'ugh mI'",
       "auto_levels_tooltip": "Soj Hoch nav je chenmoH qaStaHvIS SuD wov rap je qIb.\nnav je nav wIv DaneH chugh, viewer yIlo'.",
       "transparency_unsaved_title": "lIngwI' qImroH pagh chenmoHlu'pu'",
       "transparency_unsaved_message": "DaH lIngwI' qImroH tu'lu' 'ach pagh chenmoHlu'pu'. nuq DaneH?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "chIS DochwIj wIv jan",
       "black_pipette_tooltip": "qIbDaq yIQIch 'e' chIm qaq. yIghuS: law' qaD!",
       "white_pipette_tooltip": "cheng'eghDaq yIQIch 'e' chIm qaq. yIghuS: law' qaD!"
-    },
-    "sharpness_viewer": {
-      "title": "nguv choH"
-    },
-    "brightness_viewer": {
-      "title": "wovmoHwI' choH"
     },
     "compression_viewer": {
       "title": "nargh choH"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "icon tIn nap",
     "source_loose": "mIllogh motlh",
     "source_web": "mIllogh Internet",
-    "straighten": "nIt chenmoH mIllogh",
-    "clone_zone": "Daq tIng",
-    "text": "ghItlh yIchel",
+    "straighten": "nIt chenmoH mIllogh chu'moH",
     "batch_cb7_to_cbz": "Daqvo' CB7 De'wI'mey naQ ngorlu'\nnav CBZ je DaqHommey.",
     "batch_cb7_permanent_delete": "yIQaH : De'wI'mey mejHa'meH qaw\nCB7 De'wI'mey ngor vanDI'\nvaj ngor lojmIt vIpoQ.",
     "batch_cbt_to_cbz": "Daqvo' CBT De'wI'mey naQ ngorlu'\nnav CBZ je DaqHommey.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "De'vam Daq chovmey cha'logh tu'lu'.\nnIH jIH ra' chovmey cha'logh yIper.",
     "duplicate_indicator_none": "chov cha'logh tu'lu'be'",
     "straighten_mode_0": "mIw SIbI'be' (van De' cha' 'ej ngo')\nnIH Qap mIw choHmeH",
-    "straighten_mode_1": "mIw chu'moH ('IH lo' Qu' chenmoH)\nnIH Qap mIw choHmeH"
+    "straighten_mode_1": "mIw chu'moH ('IH lo' Qu' chenmoH)\nnIH Qap mIw choHmeH",
+    "sharpness_mode_0": "cha'nob mIllogh chenqu' pagh tomqu'\nnIH Qap pe'vIl mach choHmeH",
+    "sharpness_mode_1": "beQ Daqmey pol 'ej mIllogh chenmoHbogh nagh chenmoH\nnIH Qap pe'vIl choHmeH"
   },
   "help": {
     "title": "MosaicView - lo'laHghach QIjmeH",
@@ -1506,6 +1507,7 @@
     "relative_path": "He'So' He"
   },
   "web": {
+    "web_analyzing_page": "yIloS, web Daq...",
     "web_download_progress": "law': {downloaded}/{total} mIllogh...",
     "web_download_cancel": "qIl",
     "web_no_images": "mIllogh pagh",

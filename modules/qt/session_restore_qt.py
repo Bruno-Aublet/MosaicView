@@ -178,6 +178,7 @@ def reset_to_defaults(win):
         if p._state.current_thumb_size != 1:
             p._apply_thumb_size(1, save=False)
             p._icon_toolbar.set_thumb_size_index(1)
+        p._thumb_size_config().set_thumbnail_size('normal', save=False)
 
     # Taille de police à 0
     if cfg.get_font_size_offset() != 0:
@@ -213,9 +214,18 @@ def reset_to_defaults(win):
         p._renumber_config().set_renumber_mode(1)
         p._state.straighten_mode = 0
         p._renumber_config().set_straighten_mode(0)
+        p._state.sharpness_mode = 0
+        p._renumber_config().set_sharpness_mode(0)
         p._zip_compression_config().set_zip_compression_level(0)
         p._update_status_bar()
         p._refresh_toolbar_states()
+        # _refresh_toolbar_states() ne rafraîchit que la colonne d'icônes
+        # verticale — sans cet appel, l'icône bi-mode straighten/sharpness
+        # d'une visionneuse principale déjà ouverte (tooltip + icône affichée
+        # pour sharpness) resterait figée sur l'ancien mode malgré le reset
+        # de state.straighten_mode/sharpness_mode ci-dessus (bug préexistant
+        # pour straighten, corrigé ici en même temps que sharpness, 2026-08-14).
+        p._refresh_open_image_viewers()
 
     # Ratio split inter-panneaux : remettre à 50/50.
     # QSplitter.setSizes() seul se révèle ignoré à ce stade du reset (le

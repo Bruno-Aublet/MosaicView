@@ -6,11 +6,11 @@ Règles UI Qt : thème, langue à la volée, police courante.
 
 import io
 import os
-from urllib.parse import urljoin, urlparse
+from urllib.parse import quote, urljoin, urlparse
 
 from PIL import Image
 
-from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtCore import Qt, QThread, QTimer, Signal
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (
 from modules.qt.localization import _, _wt
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.dialogs_qt import ErrorDialog, InfoDialog
+from modules.qt.dialogs_qt import ErrorDialog
 from modules.qt.canvas_overlay_qt import show_canvas_text as _show_canvas_text, hide_canvas_text as _hide_canvas_text
 from modules.qt.archive_loader import _natural_sort_key
 from modules.qt.entries import create_entry
@@ -100,6 +100,178 @@ def extract_images_from_html(url: str, html_content: str) -> list[str]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# Extraction des images générées par JS via boucle for + concaténation de
+# chaînes (ex. site officiel de MosaicView : `BASE + pad(i) + '.jpg'` pour
+# i = 1..GRID_SIZE). Analyse purement textuelle du <script> reçu, sans exécuter
+# le JS ni ouvrir de navigateur headless — les chemins générés par ce genre de
+# pattern sont des littéraux déjà présents dans le code source de la page.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+import re as _re
+
+_JS_CONST_NUM_RE = _re.compile(r'\b(?:const|let|var)\s+(\w+)\s*=\s*(\d+)\s*;')
+_JS_CONST_STR_RE = _re.compile(r'''\b(?:const|let|var)\s+(\w+)\s*=\s*(?:'([^']*)'|"([^"]*)")\s*;''')
+_JS_PAD_FN_RE = _re.compile(
+    r'function\s+(\w+)\s*\(\s*\w+\s*\)\s*\{\s*return\s+String\([^)]*\)\.padStart\(\s*(\d+)\s*,\s*[\'"]([^\'"]*)[\'"]\s*\)'
+)
+_JS_FOR_LOOP_RE = _re.compile(
+    r'for\s*\(\s*(?:let|var)\s+(\w+)\s*=\s*(\w+)\s*;\s*\w+\s*(<=?)\s*(\w+)\s*;\s*\w+\+\+\s*\)\s*\{'
+)
+# Boucle simulée par récursion + setTimeout (ex. remplissage échelonné d'une
+# animation) : `let VAR = START; ... function NAME() { if (VAR >= END) {...
+# return;} ...corps...; VAR++; ...setTimeout(NAME, ...); }`
+_JS_RECURSIVE_LOOP_RE = _re.compile(
+    r'(?:let|var)\s+(\w+)\s*=\s*(\w+)\s*;\s*'
+    r'function\s+\w+\s*\(\s*\)\s*\{\s*'
+    r'if\s*\(\s*\1\s*>=\s*(\w+)\s*\)\s*\{[^}]*\}\s*'
+)
+# Segment de concaténation : suite de (littéral '...'/"...", identifiant nu, ou
+# appel de fonction à un argument) reliés par des '+', typiquement affecté à
+# .src — ex. BASE + pad(i) + '.jpg'  ou  BASE + 'Fantastic 09 ' + pad(i) + '.jpg'
+_JS_CONCAT_TERM_RE = _re.compile(
+    r'''(?:'([^']*)'|"([^"]*)"|(\w+)\(\s*([\w+\-\s]*?)\s*\)|(\w+))\s*(?:\+|$)'''
+)
+
+
+def _resolve_js_number(token: str, consts: dict, loop_var: str | None, loop_val: int | None):
+    """Résout un token numérique JS simple : littéral, constante connue, variable
+    de boucle courante (éventuellement 'i + 1' / 'i - 1'), sinon None."""
+    token = token.strip()
+    if token.lstrip('-').isdigit():
+        return int(token)
+    # La variable de boucle courante prime sur une éventuelle "constante" globale
+    # de même nom (ex. `for (let i = 0; ...)` matche aussi le pattern générique
+    # de déclaration `let NAME = NUM;`, ce qui pollue `consts['i']`).
+    if loop_var is not None and loop_val is not None:
+        if token == loop_var:
+            return loop_val
+        m = _re.fullmatch(rf'{_re.escape(loop_var)}\s*([+\-])\s*(\d+)', token)
+        if m:
+            sign, amount = m.group(1), int(m.group(2))
+            return loop_val + int(amount) if sign == '+' else loop_val - int(amount)
+    if token in consts:
+        return consts[token]
+    return None
+
+
+def _find_matching_brace(text: str, open_brace_pos: int) -> int:
+    """Retourne l'index juste après l'accolade fermante correspondant à
+    l'accolade ouvrante située juste avant open_brace_pos (comptage simple,
+    suffisant pour du JS non minifié)."""
+    depth = 1
+    pos = open_brace_pos
+    while pos < len(text) and depth > 0:
+        ch = text[pos]
+        if ch == '{':
+            depth += 1
+        elif ch == '}':
+            depth -= 1
+        pos += 1
+    return pos
+
+
+def extract_images_from_js_loops(url: str, html_content: str) -> list[str]:
+    """Reconstruit les URLs d'images générées par un pattern JS courant :
+    une boucle (vrai `for`, ou boucle simulée par récursion + setTimeout) qui
+    affecte `elt.src = A + B + ... + pad(i) + '.ext'` (ou variantes sans pad),
+    en résolvant chaque itération littéralement, sans jamais exécuter le script."""
+    try:
+        consts = {}
+        for m in _JS_CONST_NUM_RE.finditer(html_content):
+            consts[m.group(1)] = int(m.group(2))
+
+        str_consts = {}
+        for m in _JS_CONST_STR_RE.finditer(html_content):
+            str_consts[m.group(1)] = m.group(2) if m.group(2) is not None else m.group(3)
+
+        pad_fns = {}
+        for m in _JS_PAD_FN_RE.finditer(html_content):
+            fn_name, width, fill = m.group(1), int(m.group(2)), m.group(3)
+            pad_fns[fn_name] = (width, fill)
+
+        found_urls = []
+        seen = set()
+
+        def process_body(loop_var: str, start: int, end: int, body: str):
+            # Toute expression affectée à .src à l'intérieur du corps
+            for src_m in _re.finditer(r'\.src\s*=\s*([^;]+);', body):
+                expr = src_m.group(1).strip()
+
+                # L'expression doit être intégralement couverte par la regex de
+                # termes de concaténation (pas de segment ignoré/tronqué, ex.
+                # `pad(order[i])` — accès de tableau non résoluble statiquement)
+                # sinon on ne devine pas un résultat partiel : on ignore toute
+                # l'expression plutôt que de produire une URL fausse/tronquée.
+                covered = ''.join(m.group(0) for m in _JS_CONCAT_TERM_RE.finditer(expr))
+                if _re.sub(r'\s+', '', covered) != _re.sub(r'\s+', '', expr):
+                    continue
+
+                for i in range(start, end + 1):
+                    parts = []
+                    ok = True
+                    for term_m in _JS_CONCAT_TERM_RE.finditer(expr):
+                        lit_s, lit_d, fn_name, fn_arg, ident = term_m.groups()
+                        if lit_s is not None:
+                            parts.append(lit_s)
+                        elif lit_d is not None:
+                            parts.append(lit_d)
+                        elif fn_name is not None:
+                            if fn_name not in pad_fns:
+                                ok = False
+                                break
+                            n = _resolve_js_number(fn_arg, consts, loop_var, i)
+                            if n is None:
+                                ok = False
+                                break
+                            width, fill = pad_fns[fn_name]
+                            parts.append(str(n).rjust(width, fill or '0'))
+                        elif ident is not None:
+                            if ident == loop_var:
+                                parts.append(str(i))
+                            elif ident in str_consts:
+                                parts.append(str_consts[ident])
+                            elif ident in consts:
+                                parts.append(str(consts[ident]))
+                            else:
+                                ok = False
+                                break
+                    if not ok or not parts:
+                        continue
+                    path = ''.join(parts)
+                    abs_url = urljoin(url, path)
+                    if abs_url.startswith(('http://', 'https://')) and abs_url not in seen:
+                        seen.add(abs_url)
+                        found_urls.append(abs_url)
+
+        # Vrais `for (let i = A; i <[=] B; i++) { ... }`
+        for loop_m in _JS_FOR_LOOP_RE.finditer(html_content):
+            loop_var, start_tok, cmp_op, end_tok = loop_m.groups()
+            start = _resolve_js_number(start_tok, consts, None, None)
+            end = _resolve_js_number(end_tok, consts, None, None)
+            if start is None or end is None:
+                continue
+            if cmp_op == '<':
+                end -= 1
+            body_end = _find_matching_brace(html_content, loop_m.end())
+            process_body(loop_var, start, end, html_content[loop_m.end():body_end])
+
+        # Boucles simulées par récursion + setTimeout (ex. remplissage échelonné)
+        for loop_m in _JS_RECURSIVE_LOOP_RE.finditer(html_content):
+            loop_var, start_tok, end_tok = loop_m.groups()
+            start = _resolve_js_number(start_tok, consts, None, None)
+            end = _resolve_js_number(end_tok, consts, None, None)
+            if start is None or end is None:
+                continue
+            end -= 1  # condition d'arrêt observée : `if (VAR >= END)`, donc VAR va de start à END-1
+            body_end = _find_matching_brace(html_content, loop_m.end())
+            process_body(loop_var, start, end, html_content[loop_m.end():body_end])
+
+        return found_urls
+    except Exception:
+        return []
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # Item cliquable pour le bouton annuler (sous-classe QGraphicsTextItem)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -140,6 +312,9 @@ def _show_cancel_item(canvas, text: str, item_holder: list, on_click, anchor_lbl
 # Worker thread de téléchargement
 # ═══════════════════════════════════════════════════════════════════════════════
 
+_DOWNLOAD_MAX_RETRIES   = 2    # tentatives supplémentaires après l'échec initial
+_DOWNLOAD_RETRY_DELAY_S = 1.0  # délai entre deux tentatives
+
 class _DownloadWorker(QThread):
     """Télécharge les images dans un thread séparé."""
 
@@ -154,6 +329,7 @@ class _DownloadWorker(QThread):
         self._cancel_flag = cancel_flag  # [False] — modifiable depuis le thread principal
 
     def run(self):
+        import time
         import urllib.request
 
         state           = _state_module.state
@@ -169,9 +345,32 @@ class _DownloadWorker(QThread):
             self.progress.emit(downloaded, len(self._image_urls))
 
             try:
-                req = urllib.request.Request(img_url, headers=headers)
-                with urllib.request.urlopen(req, timeout=10) as response:
-                    image_data = response.read()
+                # Encoder le path (espaces, accents...) sans re-encoder un %XX déjà présent
+                parsed_img_url = urlparse(img_url)
+                request_url = parsed_img_url._replace(path=quote(parsed_img_url.path)).geturl()
+                req = urllib.request.Request(request_url, headers=headers)
+
+                # Retry sur échec réseau transitoire (ex. 503 ponctuel côté
+                # serveur) — pas de retry sur une image invalide (PIL), qui ne
+                # se corrigera pas en réessayant le même contenu.
+                image_data = None
+                last_network_err = None
+                for attempt in range(_DOWNLOAD_MAX_RETRIES + 1):
+                    if self._cancel_flag[0]:
+                        break
+                    try:
+                        with urllib.request.urlopen(req, timeout=10) as response:
+                            image_data = response.read()
+                        break
+                    except Exception as e:
+                        last_network_err = e
+                        if attempt < _DOWNLOAD_MAX_RETRIES:
+                            time.sleep(_DOWNLOAD_RETRY_DELAY_S)
+
+                if self._cancel_flag[0]:
+                    break
+                if image_data is None:
+                    raise last_network_err
 
                 try:
                     img = Image.open(io.BytesIO(image_data))
@@ -232,6 +431,7 @@ class WebDownloadController:
         self._item_holder        = [None]  # texte de progression (canvas_overlay_qt)
         self._cancel_item_holder = [None]  # bouton annuler (_CancelTextItem)
 
+        _suppress_empty_hint(canvas)
         self._update_overlay(0, len(image_urls))
 
         self._worker = _DownloadWorker(image_urls, page_title, self._cancel_flag)
@@ -270,7 +470,9 @@ class WebDownloadController:
     def _on_finished(self, new_entries: list):
         self._hide_overlay()
         if new_entries:
-            _add_entries_to_mosaic(new_entries, self._callbacks)
+            _add_entries_to_mosaic(self._canvas, new_entries, self._callbacks)
+        else:
+            _restore_empty_hint(self._canvas, self._callbacks)
 
     def _on_no_images(self):
         if not self._cancel_flag[0]:
@@ -285,7 +487,32 @@ class WebDownloadController:
 # Helpers partagés
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _add_entries_to_mosaic(entries: list, callbacks: dict) -> None:
+def _suppress_empty_hint(canvas) -> None:
+    """Empêche/efface le message d'accueil ('Déposez ici...') pendant qu'un
+    overlay rouge de progression est actif sur un canvas potentiellement vide —
+    sinon les deux textes centrés se chevauchent visuellement. Même pattern que
+    panel_widget.py pour le chargement d'archive (canvas._loading)."""
+    canvas._loading = True
+    empty_items = getattr(canvas, '_empty_items', None)
+    if not empty_items:
+        return
+    from shiboken6 import isValid
+    for it in empty_items:
+        if isValid(it) and it.scene() is canvas.scene():
+            canvas.scene().removeItem(it)
+    empty_items.clear()
+
+
+def _restore_empty_hint(canvas, callbacks: dict) -> None:
+    """Réactive l'affichage normal du message d'accueil et le réaffiche
+    immédiatement si le canvas est resté vide (échec total de l'import)."""
+    canvas._loading = False
+    render_mosaic = callbacks.get('render_mosaic')
+    if render_mosaic is not None:
+        render_mosaic()
+
+
+def _add_entries_to_mosaic(canvas, entries: list, callbacks: dict) -> None:
     state = callbacks.get('state') or _state_module.state
 
     save_state            = callbacks['save_state']
@@ -303,6 +530,8 @@ def _add_entries_to_mosaic(entries: list, callbacks: dict) -> None:
 
     if any(e.get("is_image", False) for e in state.images_data):
         state.needs_renumbering = True
+
+    canvas._loading = False
 
     clear_selection()
     render_mosaic()
@@ -362,9 +591,12 @@ def _url_looks_like_image(url: str) -> bool:
 
 
 class _ResolveWorker(QThread):
-    """Résout une URL (HEAD ou GET) dans un thread, puis lance le téléchargement."""
+    """Résout une URL (GET) dans un thread : détecte si c'est une image directe,
+    sinon extrait les URLs d'images de la page (HTML statique + boucles JS de
+    génération de chemins, voir extract_images_from_js_loops)."""
 
-    resolved       = Signal(list, str)   # (image_urls, page_title)
+    resolved_image = Signal(str, str)    # (url, page_title) — Content-Type image
+    resolved_html  = Signal(list, str)   # (image_urls, page_title)
     error_occurred = Signal(str, str)    # (kind, detail)  kind: "forbidden" | "network"
 
     def __init__(self, url: str):
@@ -386,14 +618,19 @@ class _ResolveWorker(QThread):
                 content_type = response.headers.get('Content-Type', '').lower()
 
             if 'image' in content_type:
-                self.resolved.emit([url], page_title)
+                self.resolved_image.emit(url, page_title)
             else:
                 try:
                     html_content = content.decode('utf-8', errors='ignore')
                 except Exception:
                     html_content = content.decode('latin-1', errors='ignore')
+
                 image_urls = extract_images_from_html(url, html_content)
-                self.resolved.emit(image_urls, page_title)
+                for u in extract_images_from_js_loops(url, html_content):
+                    if u not in image_urls:
+                        image_urls.append(u)
+
+                self.resolved_html.emit(image_urls, page_title)
 
         except urllib.error.HTTPError as e:
             kind = "forbidden" if e.code == 403 else "network"
@@ -417,13 +654,32 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
         download_and_add_web_images(canvas, [url], page_title, callbacks)
         return
 
+    # Overlay affiché dès le début : la résolution (GET + extraction) laisserait
+    # sinon le canvas visuellement vide et donnerait l'impression d'un freeze.
+    # Le message d'accueil ('Déposez ici...') est masqué pendant ce temps pour
+    # ne pas se chevaucher visuellement avec le texte rouge de progression
+    # (download_and_add_web_images/WebDownloadController le masque aussi pour
+    # le cas image directe, qui saute cette fonction).
+    _suppress_empty_hint(canvas)
+    analyzing_item_holder = [None]
+    _show_canvas_text(canvas, _("web.web_analyzing_page"), analyzing_item_holder)
+
+    def _hide_analyzing_overlay():
+        _hide_canvas_text(canvas, analyzing_item_holder)
+
     # Résolution asynchrone (GET dans un thread)
     worker = _ResolveWorker(url)
 
-    def _on_resolved(image_urls, pt):
+    def _on_resolved_image(u, pt):
+        _hide_analyzing_overlay()
+        download_and_add_web_images(canvas, [u], pt, callbacks)
+
+    def _on_resolved_html(image_urls, pt):
+        _hide_analyzing_overlay()
         if image_urls:
             download_and_add_web_images(canvas, image_urls, pt, callbacks)
         else:
+            _restore_empty_hint(canvas, callbacks)
             ErrorDialog(
                 dialog_parent,
                 lambda: _wt("web.web_drop_no_images_title"),
@@ -431,6 +687,8 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
             ).show_nonmodal()
 
     def _on_error(kind, detail):
+        _hide_analyzing_overlay()
+        _restore_empty_hint(canvas, callbacks)
         title_key   = "web.web_drop_forbidden_title" if kind == "forbidden" else "web.web_drop_error_title"
         message_key = "web.web_drop_forbidden_message" if kind == "forbidden" else "web.web_drop_error_message"
         ErrorDialog(
@@ -439,7 +697,8 @@ def _resolve_and_download(canvas, url: str, callbacks: dict, parent=None) -> Non
             lambda: _(message_key),
         ).show_nonmodal()
 
-    worker.resolved.connect(_on_resolved)
+    worker.resolved_image.connect(_on_resolved_image)
+    worker.resolved_html.connect(_on_resolved_html)
     worker.error_occurred.connect(_on_error)
     # Garde une référence pour éviter le GC avant la fin du thread
     canvas._resolve_workers = getattr(canvas, '_resolve_workers', [])
@@ -587,8 +846,6 @@ class WebImportDialog(QDialog):
     # ── Traitement de l'URL ───────────────────────────────────────────────────
 
     def _process_url(self):
-        import urllib.request
-
         url = self._entry_url.text().strip()
         if not url:
             return
@@ -605,56 +862,15 @@ class WebImportDialog(QDialog):
             ).show_nonmodal()
             return
 
-        self.close()  # ferme la fenêtre avant de lancer le téléchargement
+        canvas    = self._canvas
+        callbacks = self._callbacks
+        parent    = self.parent()
+        self.close()  # ferme la fenêtre avant de lancer la résolution/téléchargement
 
-        try:
-            headers = dict(_BROWSER_HEADERS)
-            req = urllib.request.Request(url, headers=headers)
-
-            with urllib.request.urlopen(req, timeout=10) as response:
-                content      = response.read()
-                content_type = response.headers.get('Content-Type', '').lower()
-
-            parsed_url = urlparse(url)
-            page_title = parsed_url.netloc.replace('www.', '')
-
-            if 'image' in content_type:
-                try:
-                    img = Image.open(io.BytesIO(content))
-                    img.verify()
-                    download_and_add_web_images(self._canvas, [url], page_title,
-                                               self._callbacks)
-                except Exception:
-                    InfoDialog(
-                        self.parent(),
-                        lambda: _wt("web.web_drag_drop_title"),
-                        lambda: _("web.web_copy_paste_message"),
-                    ).show_nonmodal()
-            else:
-                try:
-                    html_content = content.decode('utf-8', errors='ignore')
-                except Exception:
-                    html_content = content.decode('latin-1', errors='ignore')
-
-                image_urls = extract_images_from_html(url, html_content)
-
-                if image_urls:
-                    download_and_add_web_images(self._canvas, image_urls, page_title,
-                                               self._callbacks)
-                else:
-                    InfoDialog(
-                        self.parent(),
-                        lambda: _wt("web.web_drag_drop_title"),
-                        lambda: _("web.web_copy_paste_message"),
-                    ).show_nonmodal()
-
-        except Exception as e:
-            ErrorDialog(
-                self.parent(),
-                lambda: _wt("web.import_web_dialog_title"),
-                lambda err=e: f"{_('web.import_web_invalid_url')}\n\n{err}",
-                play_sound=True,
-            ).show_nonmodal()
+        # Résolution asynchrone (GET + extraction JS statique si HTML) — même
+        # chemin que le drop de lien, pour que les pages générant leurs images
+        # en JavaScript (ex. le site officiel de MosaicView) soient gérées.
+        _resolve_and_download(canvas, url, callbacks, parent=parent)
 
 
 def show_web_import_dialog(parent, canvas, callbacks: dict) -> None:

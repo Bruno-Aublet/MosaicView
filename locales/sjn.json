@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Trenarn",
     "toolbar_crop_instruction": "Anno, tirio sell o orchad; ah orchal.",
     "toolbar_clone_tooltip": "Glawar",
-    "toolbar_text_tooltip": "Parth"
+    "toolbar_text_tooltip": "Parth",
+    "toolbar_sharpness_tooltip": "Laeg",
+    "toolbar_unsharp_tooltip": "Laeg Curu",
+    "sharpness_panel_label": "Laeg:",
+    "unsharp_radius_label": "Raew:",
+    "unsharp_percent_label": "Balan:",
+    "unsharp_threshold_label": "Tiria:",
+    "toolbar_brightness_tooltip": "Galad a Glass",
+    "toolbar_brightness_instruction": "Anno na cordas; caro na dhannad.",
+    "brightness_panel_label": "Galad:",
+    "contrast_panel_label": "Glass:",
+    "toolbar_saturation_tooltip": "Gwathren",
+    "toolbar_saturation_instruction": "Anno na chorda; caro na dhannad.",
+    "saturation_panel_label": "Gwathren :",
+    "toolbar_remove_colors_tooltip": "Calad hethro",
+    "toolbar_remove_colors_instruction": "Anno na chorda; caro na dhannad.",
+    "remove_colors_panel_label": "Thîr :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Galad, gwahan, cuil...",
       "refresh_mosaic": "Edro i mosaic (F5)",
       "create_ico": "Bâd .ico parf",
-      "clone_zone": "Glawar i·dôl...",
-      "text": "Ennas peth...",
-      "straighten_manual": "Trenarna tâl si pân...",
       "straighten_auto": "Trenarna tâl auto-hired"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Beirain awartha"
-      },
-      "no_selection_crop": {
-        "title": "Ú-thelegol",
-        "message": "Anno, eglerio randir na horchad."
-      },
-      "multi_selection_crop": {
-        "title": "Thelegol erui",
-        "message": "Úchebin orchad ach er randir sui lû.\nAnno, eglerio er randir."
-      },
-      "invalid_selection_crop": {
-        "title": "Thelegol ú-orchal",
-        "message": "Rendir erui chenin orthada."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Orthor ú-erib",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Aew",
         "message": "Ú-eston parth i randir: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Aew",
+        "message": "Ú-eston laeg i randir: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Aew",
+        "message": "Ú-eston laeg Curu i randir: {error}"
+      },
+      "brightness_failed": {
+        "title": "Aew",
+        "message": "Ú-eston laeg i ngalad/glass: {error}"
+      },
+      "saturation_failed": {
+        "title": "Aew",
+        "message": "Ú-eston laeg i wathren: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Aew",
+        "message": "Ú-eston laeg i chalad hethro: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "rendir",
       "apply_button": "Ortho",
       "color_depth_section": "Nûd i culu",
-      "brightness_contrast_section": "Galad a glass",
       "compression_section": "Thingol",
       "effects_section": "Goeliannath",
       "sharpness_section": "Laeg",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 parf (RGB - cuil)",
       "depth_8bit": "8 parf (PNG palad / JPEG thind mith)",
       "depth_1bit": "1 parf (morn a nimp)",
-      "brightness_label": "Galad: {value}",
-      "contrast_label": "Glass: {value}",
       "compression_enable": "Ortheri edinor athingol",
       "compression_quality_label": "Caun : {value}/100",
-      "sharpness_label": "Laeg: {value}",
       "effect_none": "Ú goeliannath",
       "effect_grayscale": "Mith",
       "effect_sepia": "Baran",
@@ -991,8 +1008,6 @@
       "preview_section": "Tirnen",
       "effect_invert": "Certh i-thîn",
       "preview_warning": "I prestannen dar peded ned i daer ben",
-      "effect_remove_colors": "Calad hethro",
-      "remove_colors_intensity_label": "Thîr : {value}",
       "image_mode_section": "Gwedh i ven",
       "image_mode_rgb": "RGB (lith)",
       "image_mode_rgba": "RGBA (lith + helch)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (parf)",
       "image_mode_1": "1 (morn a nim laeg)",
       "image_mode_p": "P (256 lith balan)",
-      "saturation_section": "Gwathren",
-      "saturation_label": "Gwathren : {value}",
-      "saturation_viewer_title": "Prestanneth gwathren",
       "transparency_section": "Rhimp",
       "transparency_info": "Rhimp pên i randir PNG, WebP, ICO a AVIF",
       "transparency_type_label": "Dôl :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Rhimp govaded : pên ar holl bixeli i randir a maen agos ir pixsel a nedhorod",
       "transparency_apply": "Orthertha",
       "transparency_skipped_warning": "{count} randir(rin) ortheri — i-thîr ui veleth vâr. An boe chebin, esta deri nan PNG.",
-      "unsharp_section": "Telpina adannen",
-      "unsharp_radius_label": "Raew: {value}",
-      "unsharp_percent_label": "Balan: {value} %",
-      "unsharp_threshold_label": "Tiria: {value}",
-      "unsharp_viewer_title": "Telpina adannen",
       "auto_levels_tooltip": "Cenir pob peth ah athrenna i lend morn a gwen an tregad i thregad veleg.\nMi eglerio peth ha peth, na i lû istol.",
       "transparency_unsaved_title": "Cenedhin erui",
       "transparency_unsaved_message": "Pedich henion ú-ortherthant i gûl. Manen nidh careg?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Nimp pica stiliant",
       "black_pipette_tooltip": "Pedo i pixel min bí baw morn gwathra. Aníro: sui ú-vant achaded!",
       "white_pipette_tooltip": "Pedo i pixel min bí baw ninn gwathra. Aníro: sui ú-vant achaded!"
-    },
-    "sharpness_viewer": {
-      "title": "Laeg nestadren"
-    },
-    "brightness_viewer": {
-      "title": "Gîl ar thîl nestadren"
     },
     "compression_viewer": {
       "title": "Prestanneth nestadren"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Cressa gwened icon",
     "source_loose": "Cân forn",
     "source_web": "Cân gwael",
-    "straighten": "Trenarna tâl",
-    "clone_zone": "Glawar i·dôl",
-    "text": "Boe peth",
+    "straighten": "Trenarna i randir auto-hired",
     "batch_cb7_to_cbz": "Cant ilyë CB7 faif i randir\nar nu-randirissen na CBZ.",
     "batch_cb7_permanent_delete": "VÁQUETË : cé sina tant' is i CB7 faif\nhehtuvanë tennoio ar cantuvaina\nan lá nóta or rucë.",
     "batch_cbt_to_cbz": "Cant ilyë CBT faif i randir\nar nu-randirissen na CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Pagath athrenil hirnen vi i filê hen.\nRîn a edro i chenneth athrenilath.",
     "duplicate_indicator_none": "Ú-hannen athrenilath",
     "straighten_mode_0": "Modh dad-benn (tegitha lath eglerol)\nDago daerageb nan gweth dangwethad",
-    "straighten_mode_1": "Modh auto-hired (cened i chair)\nDago daerageb nan gweth dangwethad"
+    "straighten_mode_1": "Modh auto-hired (cened i chair)\nDago daerageb nan gweth dangwethad",
+    "sharpness_mode_0": "Ortha egor laed randir\nDago daerageb nan laeg Curu",
+    "sharpness_mode_1": "Egleria randir dan pêd i randir dulu\nDago daerageb nan laeg thent"
   },
   "help": {
     "title": "MosaicView - Bâd thuriol",
@@ -1506,6 +1507,7 @@
     "relative_path": "Hent rathron"
   },
   "web": {
+    "web_analyzing_page": "Anno daro, i had...",
     "web_download_progress": "Tectha: {downloaded}/{total} randir...",
     "web_download_cancel": "Haedh",
     "web_no_images": "Ú-randir",

@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Iddritta",
     "toolbar_crop_instruction": "Iġbed rettangolu madwar iż-żona li trid iżżomm, imbagħad ikkonferma",
     "toolbar_clone_tooltip": "Klonazzjoni",
-    "toolbar_text_tooltip": "Test"
+    "toolbar_text_tooltip": "Test",
+    "toolbar_sharpness_tooltip": "Ħidra",
+    "toolbar_unsharp_tooltip": "Ħidra adattiva",
+    "sharpness_panel_label": "Ħidra:",
+    "unsharp_radius_label": "Raġġ:",
+    "unsharp_percent_label": "Intensità:",
+    "unsharp_threshold_label": "Limitu:",
+    "toolbar_brightness_tooltip": "Luminożità u kuntrast",
+    "toolbar_brightness_instruction": "Aġġusta l-iscrollers, l-aġġustament japplika mar-rilaxx",
+    "brightness_panel_label": "Luminożità:",
+    "contrast_panel_label": "Kuntrast:",
+    "toolbar_saturation_tooltip": "Saturazzjoni",
+    "toolbar_saturation_instruction": "Aġġusta l-iscroller, l-aġġustament japplika mar-rilaxx",
+    "saturation_panel_label": "Saturazzjoni :",
+    "toolbar_remove_colors_tooltip": "Neħħija tal-kuluri",
+    "toolbar_remove_colors_instruction": "Aġġusta l-iscroller, l-aġġustament japplika mar-rilaxx",
+    "remove_colors_panel_label": "Intensità :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Luminożità, kontrast, kuluri...",
       "refresh_mosaic": "Aġġorna l-mużajk (F5)",
       "create_ico": "Oħloq fajl .ico",
-      "clone_zone": "Ikklona żona...",
-      "text": "Żid test...",
-      "straighten_manual": "Iddritta l-immaġni manwalment...",
       "straighten_auto": "Iddritta l-immaġni awtomatikament"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Fajls injorati"
-      },
-      "no_selection_crop": {
-        "title": "Ebda selezzjoni",
-        "message": "Jekk jogħġbok agħżel immaġni biex taqtagħha."
-      },
-      "multi_selection_crop": {
-        "title": "Selezzjoni multipla",
-        "message": "Tista' taqta' immaġni waħda biss kull darba.\nJekk jogħġbok agħżel immaġni waħda."
-      },
-      "invalid_selection_crop": {
-        "title": "Selezzjoni invalida",
-        "message": "L-immaġini biss jistgħu jitqatgħu."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funzjoni mhux disponibbli",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Żball",
         "message": "Ma setax jiġi applikat it-test: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Żball",
+        "message": "Ma setax jiġi applikat il-ħidra: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Żball",
+        "message": "Ma setax jiġi applikat il-ħidra adattiva: {error}"
+      },
+      "brightness_failed": {
+        "title": "Żball",
+        "message": "Ma stax jiġi applikat il-luminożità/kuntrast: {error}"
+      },
+      "saturation_failed": {
+        "title": "Żball",
+        "message": "Ma setax jiġi applikat is-saturazzjoni: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Żball",
+        "message": "Ma setgħetx tiġi applikata n-neħħija tal-kuluri: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "immaġinijiet",
       "apply_button": "Applika",
       "color_depth_section": "Fond tal-kulur",
-      "brightness_contrast_section": "Luminożità u kuntrast",
       "compression_section": "Kompressjoni",
       "effects_section": "Effetti",
       "sharpness_section": "Nitidezza",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bits (RGB - kuluri)",
       "depth_8bit": "8 bits (paletta PNG / skala griża JPEG)",
       "depth_1bit": "1 bit (iswed u abjad)",
-      "brightness_label": "Luminożità: {value}",
-      "contrast_label": "Kuntrast: {value}",
       "compression_enable": "Attiva kompressjoni mill-ġdid",
       "compression_quality_label": "Kwalità : {value}/100",
-      "sharpness_label": "Nitidezza: {value}",
       "effect_none": "L-ebda effett",
       "effect_grayscale": "Tonalitajiet griż",
       "effect_sepia": "Sepja",
@@ -991,8 +1008,6 @@
       "preview_section": "Dehra minn qabel",
       "effect_invert": "Inverżjoni tal-kulur",
       "preview_warning": "Il-previżjoni tista' tkun differenti mir-riżultat finali",
-      "effect_remove_colors": "Neħħija tal-kuluri",
-      "remove_colors_intensity_label": "Intensità : {value}",
       "image_mode_section": "Modalità tal-immaġni",
       "image_mode_rgb": "RGB (kuluri)",
       "image_mode_rgba": "RGBA (kuluri + trasparenza)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (stampar)",
       "image_mode_1": "1 (iswed u abjad pur)",
       "image_mode_p": "P (paletta ta’ 256 kulur)",
-      "saturation_section": "Saturazzjoni",
-      "saturation_label": "Saturazzjoni : {value}",
-      "saturation_viewer_title": "Aġġustament tas-saturazzjoni",
       "transparency_section": "Trasparenza",
       "transparency_info": "It-trasparenza tapplika biss għal immaġnijiet PNG, WebP, ICO u AVIF",
       "transparency_type_label": "Tip :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Trasparenza globali : taffettwa l-pixils kollha tal-immaġni li l-kulur tagħhom huwa simili għal dak ikklikkjat",
       "transparency_apply": "Applika",
       "transparency_skipped_warning": "{count} immaġni(jiet) mqabeż — il-format mhux kompatibbli mat-trasparenza. Biex tinkludi hom, ikkonverthom f'PNG l-ewwel.",
-      "unsharp_section": "Tidqiq adattiv",
-      "unsharp_radius_label": "Raġġ: {value}",
-      "unsharp_percent_label": "Intensità: {value} %",
-      "unsharp_threshold_label": "Limitu: {value}",
-      "unsharp_viewer_title": "Tidqiq adattiv",
       "auto_levels_tooltip": "Janalizza kull paġna u jaġġusta awtomatikament il-livelli tal-iswed u l-abjad biex jimmassimizza l-kuntrast.\nBiex tagħżel paġna b'paġna, uża l-viewer.",
       "transparency_unsaved_title": "Bidliet mhux applikati",
       "transparency_unsaved_message": "Il-bidliet attwali ma ġewx applikati fuq l-immaġni. X'trid tagħmel?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Qattara tal-punt abjad",
       "black_pipette_tooltip": "Ikklikkja fuq pixel li għandu jkun kompletament iswed. Attenzjoni: huwa faċli li tesaġera!",
       "white_pipette_tooltip": "Ikklikkja fuq pixel li għandu jkun kompletament abjad. Attenzjoni: huwa faċli li tesaġera!"
-    },
-    "sharpness_viewer": {
-      "title": "Aġġustament tal-Ħeddieda"
-    },
-    "brightness_viewer": {
-      "title": "Aġġustament tad-Dawl u l-Kuntrast"
     },
     "compression_viewer": {
       "title": "Aġġustament tal-Kompressjoni"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Żid id-daqs tal-ikoni",
     "source_loose": "Immaġni ħielsa",
     "source_web": "Immaġni web",
-    "straighten": "Sewwi l-immaġni",
-    "clone_zone": "Ikklona żona",
-    "text": "Żid test",
+    "straighten": "Iddritta l-immaġini awtomatikament",
     "batch_cb7_to_cbz": "Tikkonverti l-fajls CB7 kollha f'direttorju\nu s-sottodirektorji tiegħu għal CBZ.",
     "batch_cb7_permanent_delete": "TWISSIJA : jekk din l-għażla hija mmarkata,\nil-fajls CB7 oriġinali jitħassru b'mod permanenti\nwara l-konverżjoni mingħajr possibilità ta' rkupru.\nIkkonferma li għandek backup.",
     "batch_cbt_to_cbz": "Tikkonverti l-fajls CBT kollha f'direttorju\nu s-sottodirektorji tiegħu għal CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Instabu paġni duplikati f'dan il-fajl.\nIkklikkja biex tiftaħ it-tieqa tal-ġestjoni tad-duplikati.",
     "duplicate_indicator_none": "L-ebda duplikat ma nstab",
     "straighten_mode_0": "Modalità manwali (iġbed linja ta' referenza)\nIkklikkja bil-lemin biex tibdel il-modalità",
-    "straighten_mode_1": "Modalità awtomatika (skoperta ta' xengil)\nIkklikkja bil-lemin biex tibdel il-modalità"
+    "straighten_mode_1": "Modalità awtomatika (skoperta ta' xengil)\nIkklikkja bil-lemin biex tibdel il-modalità",
+    "sharpness_mode_0": "Issaħħaħ jew tirħi d-dettalji tal-immaġini\nIklikkja bil-lemin biex taqleb għall-ħidra adattiva",
+    "sharpness_mode_1": "Tenfasizza l-konturi filwaqt li tħares iż-żoni uniformi\nIklikkja bil-lemin biex taqleb għall-ħidra sempliċi"
   },
   "help": {
     "title": "MosaicView - Manwal tal-utent",
@@ -1506,6 +1507,7 @@
     "relative_path": "Triq relattiva"
   },
   "web": {
+    "web_analyzing_page": "Qed jiġi analizzat il-paġna...",
     "web_download_progress": "Tniżżil: {downloaded}/{total} stampi...",
     "web_download_cancel": "Ikkanċella",
     "web_no_images": "L-ebda stampa",

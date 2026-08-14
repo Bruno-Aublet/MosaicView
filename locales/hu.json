@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Kiegyenesítés",
     "toolbar_crop_instruction": "Rajzoljon téglalapot a megtartandó terület köré, majd hagyja jóvá",
     "toolbar_clone_tooltip": "Klónozás",
-    "toolbar_text_tooltip": "Szöveg"
+    "toolbar_text_tooltip": "Szöveg",
+    "toolbar_sharpness_tooltip": "Élesség",
+    "toolbar_unsharp_tooltip": "Adaptív élesség",
+    "sharpness_panel_label": "Élesség:",
+    "unsharp_radius_label": "Sugár:",
+    "unsharp_percent_label": "Erősség:",
+    "unsharp_threshold_label": "Küszöb:",
+    "toolbar_brightness_tooltip": "Fényerő és kontraszt",
+    "toolbar_brightness_instruction": "Állítsa be a csúszkákat, a módosítás elengedéskor lép érvénybe",
+    "brightness_panel_label": "Fenyfokozat:",
+    "contrast_panel_label": "Kontraszt:",
+    "toolbar_saturation_tooltip": "Telítettség",
+    "toolbar_saturation_instruction": "Állítsa be a csúszkát, a módosítás elengedéskor lép érvénybe",
+    "saturation_panel_label": "Telítettség :",
+    "toolbar_remove_colors_tooltip": "Színek eltávolítása",
+    "toolbar_remove_colors_instruction": "Állítsa be a csúszkát, a módosítás elengedéskor lép érvénybe",
+    "remove_colors_panel_label": "Intenzitás :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Fényerő, kontraszt, színek...",
       "refresh_mosaic": "Mozaik frissítése (F5)",
       "create_ico": ".ico fájl létrehozása",
-      "clone_zone": "Zóna klónozása...",
-      "text": "Szöveg hozzáadása...",
-      "straighten_manual": "Kép kézi kiegyenesítése...",
       "straighten_auto": "Kép automatikus kiegyenesítése"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Figyelmen kívül hagyott fájlok"
-      },
-      "no_selection_crop": {
-        "title": "Nincs kijelölés",
-        "message": "Kérjük, jelöljön ki egy képet a vágáshoz."
-      },
-      "multi_selection_crop": {
-        "title": "Többszörös kijelölés",
-        "message": "Egyszerre csak egy képet vághat.\nKérjük, jelöljön ki csak egy képet."
-      },
-      "invalid_selection_crop": {
-        "title": "Érvénytelen kijelölés",
-        "message": "Csak képeket lehet vágni."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkció nem elérhető",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Hiba",
         "message": "A szöveg alkalmazása sikertelen: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Hiba",
+        "message": "Az élesség nem alkalmazható: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Hiba",
+        "message": "Az adaptív élesség nem alkalmazható: {error}"
+      },
+      "brightness_failed": {
+        "title": "Hiba",
+        "message": "A fényerőt/kontrasztot nem sikerült alkalmazni: {error}"
+      },
+      "saturation_failed": {
+        "title": "Hiba",
+        "message": "A telítettség nem alkalmazható: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Hiba",
+        "message": "A színek eltávolítása nem alkalmazható: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "kepek",
       "apply_button": "Alkalmazas",
       "color_depth_section": "Szinmelyseg",
-      "brightness_contrast_section": "Fenyfokozat es kontraszt",
       "compression_section": "Tomorities",
       "effects_section": "Effektusok",
       "sharpness_section": "Elesseg",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bit (RGB - szinek)",
       "depth_8bit": "8 bit (PNG paletta / JPEG szurkearnyalatok)",
       "depth_1bit": "1 bit (fekete-feher)",
-      "brightness_label": "Fenyfokozat: {value}",
-      "contrast_label": "Kontraszt: {value}",
       "compression_enable": "Ujratomorites engedlyezese",
       "compression_quality_label": "Minőség : {value}/100",
-      "sharpness_label": "Elesseg: {value}",
       "effect_none": "Nincs effektus",
       "effect_grayscale": "Szurkearnyalat",
       "effect_sepia": "Szepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Előnézet",
       "effect_invert": "Színinverzió",
       "preview_warning": "Az előnézet eltérhet a végleges eredménytől",
-      "effect_remove_colors": "Színek eltávolítása",
-      "remove_colors_intensity_label": "Intenzitás : {value}",
       "image_mode_section": "Képmód",
       "image_mode_rgb": "RGB (színek)",
       "image_mode_rgba": "RGBA (színek + átlátszóság)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (nyomtatás)",
       "image_mode_1": "1 (tiszta fekete-fehér)",
       "image_mode_p": "P (256 színű paletta)",
-      "saturation_section": "Telítettség",
-      "saturation_label": "Telítettség : {value}",
-      "saturation_viewer_title": "Telítettség beállítása",
       "transparency_section": "Átlátszóság",
       "transparency_info": "Az átlátszóság csak PNG, WebP, ICO és AVIF képekre vonatkozik",
       "transparency_type_label": "Típus :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Globális átlátszóság : a kép összes pixelét érinti, amelynek színe közel van a kattintott színhez",
       "transparency_apply": "Alkalmaz",
       "transparency_skipped_warning": "{count} kép(ek) kihagyva — formátum nem kompatibilis az átlátszósággal. A bevonáshoz először konvertálja PNG formátumba.",
-      "unsharp_section": "Adaptív élesség",
-      "unsharp_radius_label": "Sugár: {value}",
-      "unsharp_percent_label": "Erősség: {value} %",
-      "unsharp_threshold_label": "Küszöb: {value}",
-      "unsharp_viewer_title": "Adaptív élesség",
       "auto_levels_tooltip": "Elemzi az egyes oldalakat, és automatikusan beállítja a fekete és fehér szinteket a kontraszt maximalizálása érdekében.\nOldalankénti választáshoz használja a megjelenítőt.",
       "transparency_unsaved_title": "Nem alkalmazott változtatások",
       "transparency_unsaved_message": "A jelenlegi módosítások még nem lettek alkalmazva a képen. Mit szeretne tenni?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Feher pont pipetta",
       "black_pipette_tooltip": "Kattintson egy pixelre, amelynek teljesen feketének kellene lennie. Figyelem: könnyű túllőni a célon!",
       "white_pipette_tooltip": "Kattintson egy pixelre, amelynek teljesen fehérnek kellene lennie. Figyelem: könnyű túllőni a célon!"
-    },
-    "sharpness_viewer": {
-      "title": "Élesség beállítása"
-    },
-    "brightness_viewer": {
-      "title": "Fényerő és kontraszt beállítása"
     },
     "compression_viewer": {
       "title": "Tömörítés beállítása"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Ikonméret növelése",
     "source_loose": "Szabad kép",
     "source_web": "Webes kép",
-    "straighten": "Kép egyenesítése",
-    "clone_zone": "Zóna klónozása",
-    "text": "Szöveg hozzáadása",
+    "straighten": "Kép automatikus kiegyenesítése",
     "batch_cb7_to_cbz": "A mappában és almappáiban lévő összes\nCB7 fájlt CBZ formátumba konvertálja.",
     "batch_cb7_permanent_delete": "FIGYELEM : ha ez a beállítás be van jelölve,\naz eredeti CB7 fájlok véglegesen törlésre kerülnek\na konvertálás után visszaállítás lehetősége nélkül.\nGyőződjön meg arról, hogy van biztonsági másolata.",
     "batch_cbt_to_cbz": "A mappában és almappáiban lévő összes\nCBT fájlt CBZ formátumba konvertálja.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Duplikált oldalakat találtunk ebben a fájlban.\nKattintson a duplikátumkezelő ablak megnyitásához.",
     "duplicate_indicator_none": "Nincs duplikátum",
     "straighten_mode_0": "Kézi mód (rajzoljon egy referenciavonalat)\nJobb kattintás a mód váltásához",
-    "straighten_mode_1": "Automatikus mód (dőlésszög észlelése)\nJobb kattintás a mód váltásához"
+    "straighten_mode_1": "Automatikus mód (dőlésszög észlelése)\nJobb kattintás a mód váltásához",
+    "sharpness_mode_0": "Erősíti vagy lágyítja a kép részleteit\nJobb kattintás az adaptív élességre váltáshoz",
+    "sharpness_mode_1": "Kiemeli a körvonalakat, kímélve az egységes felületeket\nJobb kattintás az egyszerű élességre váltáshoz"
   },
   "help": {
     "title": "MosaicView - Útmutató",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relatív útvonal"
   },
   "web": {
+    "web_analyzing_page": "Oldal elemzése...",
     "web_download_progress": "Letöltés: {downloaded}/{total} kép...",
     "web_download_cancel": "Mégsem",
     "web_no_images": "Nincsenek képek",

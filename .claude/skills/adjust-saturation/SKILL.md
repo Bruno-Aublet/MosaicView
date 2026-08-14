@@ -1,18 +1,17 @@
 ---
 name: adjust-saturation
-description: Localiser ou modifier la fonction "Saturation" du panneau Ajustements d'image. Utiliser dès qu'une tâche touche à settings['saturation'], ImageEnhance.Color, ou à la réglette de saturation.
+description: Localiser ou modifier la fonction "Saturation" (formule PIL), migrée dans la barre d'outils de la visionneuse principale (saturation_tool_qt.py). Utiliser dès qu'une tâche touche à settings['saturation'], ImageEnhance.Color, ou à la réglette de saturation.
 ---
 
 # Ajustement "Saturation" — MosaicView
 
-Section réglette du panneau Ajustements d'image (colonne aperçu, 3e section). Pour l'orchestration générale du panneau, voir skill `adjustments-panel`.
+**Migrée dans la barre d'outils de la visionneuse principale (v1.7.4, 2026-08-14, 4e mode d'ajustement migré)** : l'ancienne section du panneau Ajustements classique (`adjustments_dialog_qt.py`, groupe `_grp_sat`) et le mode `'saturation'` de l'ancienne visionneuse annexe (`adjustments_viewers_qt.py`) ont été **entièrement retirés**. La saturation ne vit désormais que dans `modules/qt/saturation_tool_qt.py` (icône `BTN_Saturation.png` de `_ViewerToolbar`, panneau flottant `_SaturationOptionsPanel`) — voir skill `viewers`, section "Le cas de la saturation", pour l'UI/le flux complet (preview live, commit au relâchement, slider qui reste sur la valeur appliquée — corrigé le 2026-08-14, il revenait initialement à 0 par erreur). Ce skill-ci ne couvre que la formule PIL, inchangée.
 
 ## Où
 
-- UI : `adjustments_dialog_qt.py::_build_preview_column()`, groupe `self._grp_sat` / `self._sat_slider` (range -100..+100, défaut 0)
-- Handler : `_on_sat_changed(val)` → `self._saturation = val` → `_update_preview()`
-- Traitement : `adjustments_processing_qt.py::apply_adjustments()`, bloc luminosité/contraste/netteté/saturation (tout début de fonction, dernier des 4)
-- Visionneuse dédiée : mode `'saturation'`
+- UI : `saturation_tool_qt.py::_SaturationOptionsPanel` (réglette -100..+100, défaut 0) dans la barre d'outils de `image_viewer_qt.py::ImageViewer`
+- Commit : `saturation_tool_qt.py::SaturationViewerMixin.perform_saturation()`
+- Traitement : `adjustments_processing_qt.py::apply_adjustments()`, bloc luminosité/contraste/netteté/saturation (tout début de fonction, dernier des 4) — moteur de calcul inchangé, partagé, appelé désormais par `saturation_tool_qt.py` au lieu du panneau classique
 
 ## Formule
 
@@ -28,10 +27,10 @@ Ce bloc s'exécute avant tous les autres traitements du pipeline (netteté adapt
 
 ## Modifier cette fonction
 
-Formule et bornes uniquement dans ce bloc de `apply_adjustments()`. Bornes de slider à répliquer identiquement dans `adjustments_dialog_qt.py::_sat_slider` et `adjustments_viewers_qt.py::_sat_slider` (mode `'saturation'`) si elles changent.
+Formule et bornes uniquement dans ce bloc de `apply_adjustments()`. Bornes de slider à répliquer dans `saturation_tool_qt.py::_SaturationOptionsPanel._RANGE_MIN/_RANGE_MAX` si elles changent.
 
 ## Références croisées
 
-- `adjustments-panel` — structure générale, `_get_settings()`.
-- `viewers` — mode `'saturation'` de `AdjustmentViewerDialog`.
+- `viewers` — section "Le cas de la saturation" : UI de la barre d'outils, preview live, commit, `state.saturation_value_by_history_index`.
+- `apply-image-operation` — pattern suivi par `perform_saturation()` pour committer dans `entry['bytes']`.
 - `adjust-effects` — l'effet "Noir et blanc" convertit réellement le mode PIL en niveaux de gris, contrairement à une désaturation à -100 qui reste en RGB.

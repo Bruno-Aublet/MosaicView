@@ -34,6 +34,64 @@ class AppState:
         self.history = []
         self.history_index = -1
 
+        # Valeur de netteté commitée par la visionneuse (outil "sharpness" de
+        # la barre d'outils flottante, idees.txt #3), indexée par
+        # history_index APRÈS le commit — clé = (image_idx, history_index),
+        # valeur = int. Sur state (pas sur ImageViewer) pour survivre à une
+        # fermeture/réouverture de la visionneuse : l'historique undo/redo
+        # lui-même (history/history_index ci-dessus) vit tant que le fichier
+        # reste ouvert, indépendamment des fenêtres de visionneuse ouvertes
+        # dessus — cette correspondance doit suivre la même durée de vie pour
+        # qu'un undo/redo qui retombe sur ce point après une réouverture
+        # affiche encore la bonne valeur sur le slider/spinbox. Voir
+        # modules/qt/adjustments_tool_qt.py::AdjustmentsViewerMixin.
+        self.sharpness_value_by_history_index: dict[tuple[int, int], int] = {}
+
+        # Réglages de netteté adaptative (Unsharp Mask) commités par la
+        # visionneuse (outil "sharpness" en mode unsharp de la barre d'outils
+        # flottante, idees.txt #3), indexés par history_index APRÈS le commit
+        # — même principe et même durée de vie que sharpness_value_by_
+        # history_index ci-dessus, mais un tuple (radius, percent, threshold)
+        # au lieu d'un int puisque l'Unsharp Mask a 3 réglettes indépendantes.
+        # Voir modules/qt/adjustments_tool_qt.py::AdjustmentsViewerMixin.
+        self.unsharp_value_by_history_index: dict[tuple[int, int], tuple[float, int, int]] = {}
+
+        # Réglages de luminosité/contraste commités par la visionneuse (outil
+        # "brightness" de la barre d'outils flottante, idees.txt #3), indexés
+        # par history_index APRÈS le commit — même principe et même durée de
+        # vie que sharpness_value_by_history_index ci-dessus, mais un tuple
+        # (brightness, contrast) au lieu d'un int puisque ce mode a 2
+        # réglettes indépendantes dans un seul panneau (pas de bi-mode,
+        # contrairement à sharpness/unsharp). Voir
+        # modules/qt/brightness_tool_qt.py::BrightnessViewerMixin.
+        self.brightness_value_by_history_index: dict[tuple[int, int], tuple[int, int]] = {}
+
+        # Valeur de saturation commitée par la visionneuse (outil "saturation"
+        # de la barre d'outils flottante, idees.txt #3), indexée par
+        # history_index APRÈS le commit — même principe et même durée de vie
+        # que sharpness_value_by_history_index ci-dessus. Contrairement à
+        # sharpness, jamais relue pour resynchroniser le slider (voir
+        # modules/qt/saturation_tool_qt.py::_reset_saturation_preview) : le
+        # slider revient toujours à 0 après un commit de saturation, ce dict
+        # sert uniquement de trace pour un éventuel usage futur (undo/redo ne
+        # s'appuie pas dessus pour cet outil, contrairement à sharpness/
+        # brightness). Voir modules/qt/saturation_tool_qt.py::SaturationViewerMixin.
+        self.saturation_value_by_history_index: dict[tuple[int, int], int] = {}
+
+        # Valeur de suppression des couleurs commitée par la visionneuse
+        # (outil "remove_colors" de la barre d'outils flottante, idees.txt
+        # #3), indexée par history_index APRÈS le commit — même principe et
+        # même durée de vie que sharpness_value_by_history_index ci-dessus.
+        # Contrairement à sharpness, jamais relue pour resynchroniser le
+        # slider (voir modules/qt/remove_colors_tool_qt.py::
+        # _reset_remove_colors_preview) : le slider revient toujours à 0
+        # après un commit, ce dict sert uniquement de trace pour un éventuel
+        # usage futur (undo/redo ne s'appuie pas dessus pour cet outil,
+        # contrairement à sharpness/brightness) — même principe que
+        # saturation_value_by_history_index. Voir
+        # modules/qt/remove_colors_tool_qt.py::RemoveColorsViewerMixin.
+        self.remove_colors_value_by_history_index: dict[tuple[int, int], int] = {}
+
         # UI State
         self.converting = False  # Flag pour bloquer les événements pendant la conversion
         self.saving_label = None  # Label de progression de sauvegarde CBZ

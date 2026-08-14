@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Retning",
     "toolbar_crop_instruction": "Tegn et rektangel omkring det område, der skal bevares, og bekræft derefter",
     "toolbar_clone_tooltip": "Kloning",
-    "toolbar_text_tooltip": "Tekst"
+    "toolbar_text_tooltip": "Tekst",
+    "toolbar_sharpness_tooltip": "Skarphed",
+    "toolbar_unsharp_tooltip": "Adaptiv skarphed",
+    "sharpness_panel_label": "Skarphed:",
+    "unsharp_radius_label": "Radius:",
+    "unsharp_percent_label": "Intensitet:",
+    "unsharp_threshold_label": "Tærskel:",
+    "toolbar_brightness_tooltip": "Lysstyrke og kontrast",
+    "toolbar_brightness_instruction": "Justér skyderne, justeringen anvendes ved slip",
+    "brightness_panel_label": "Lysstyrke:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Mætning",
+    "toolbar_saturation_instruction": "Justér skyderen, justeringen anvendes ved slip",
+    "saturation_panel_label": "Mætning :",
+    "toolbar_remove_colors_tooltip": "Fjernelse af farver",
+    "toolbar_remove_colors_instruction": "Justér skyderen, justeringen anvendes ved slip",
+    "remove_colors_panel_label": "Intensitet :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Lysstyrke, kontrast, farver...",
       "refresh_mosaic": "Opdater mosaikken (F5)",
       "create_ico": "Opret .ico-fil",
-      "clone_zone": "Kloning af zone...",
-      "text": "Tilføj tekst...",
-      "straighten_manual": "Ret billedet manuelt...",
       "straighten_auto": "Ret billedet automatisk"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Filer ignoreret"
-      },
-      "no_selection_crop": {
-        "title": "Ingen markering",
-        "message": "Vælg venligst et billede, der skal beskæres."
-      },
-      "multi_selection_crop": {
-        "title": "Flere markeringer",
-        "message": "Du kan kun beskære et billede ad gangen.\nVælg venligst kun et billede."
-      },
-      "invalid_selection_crop": {
-        "title": "Ugyldig markering",
-        "message": "Kun billeder kan beskæres."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funktion ikke tilgængelig",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Fejl",
         "message": "Kunne ikke anvende teksten: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Fejl",
+        "message": "Kunne ikke anvende skarphed: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Fejl",
+        "message": "Kunne ikke anvende adaptiv skarphed: {error}"
+      },
+      "brightness_failed": {
+        "title": "Fejl",
+        "message": "Kunne ikke anvende lysstyrke/kontrast: {error}"
+      },
+      "saturation_failed": {
+        "title": "Fejl",
+        "message": "Kunne ikke anvende mætning: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Fejl",
+        "message": "Kunne ikke anvende fjernelse af farver: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "billeder",
       "apply_button": "Anvend",
       "color_depth_section": "Farvedybde",
-      "brightness_contrast_section": "Lysstyrke og kontrast",
       "compression_section": "Komprimering",
       "effects_section": "Effekter",
       "sharpness_section": "Skarphed",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bits (RGB - farver)",
       "depth_8bit": "8 bit (PNG-palet / JPEG-gratoneskala)",
       "depth_1bit": "1 bit (sort og hvid)",
-      "brightness_label": "Lysstyrke: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Aktiver rekomprimering",
       "compression_quality_label": "Kvalitet : {value}/100",
-      "sharpness_label": "Skarphed: {value}",
       "effect_none": "Ingen effekt",
       "effect_grayscale": "Graatone",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Forhåndsvisning",
       "effect_invert": "Farveinversion",
       "preview_warning": "Forhåndsvisning kan afvige fra det endelige resultat",
-      "effect_remove_colors": "Fjernelse af farver",
-      "remove_colors_intensity_label": "Intensitet : {value}",
       "image_mode_section": "Billedtilstand",
       "image_mode_rgb": "RGB (farver)",
       "image_mode_rgba": "RGBA (farver + gennemsigtighed)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (tryk)",
       "image_mode_1": "1 (rent sort-hvid)",
       "image_mode_p": "P (256-farvepalet)",
-      "saturation_section": "Mætning",
-      "saturation_label": "Mætning : {value}",
-      "saturation_viewer_title": "Justering af mætning",
       "transparency_section": "Gennemsigtighed",
       "transparency_info": "Gennemsigtighed gælder kun for PNG-, WebP-, ICO- og AVIF-billeder",
       "transparency_type_label": "Type :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Global gennemsigtighed : påvirker alle pixels i billedet, hvis farve ligner den klikkede",
       "transparency_apply": "Anvend",
       "transparency_skipped_warning": "{count} billede(r) sprunget over — formatet er ikke kompatibelt med gennemsigtighed. For at medtage dem skal du først konvertere dem til PNG.",
-      "unsharp_section": "Adaptiv skarphed",
-      "unsharp_radius_label": "Radius: {value}",
-      "unsharp_percent_label": "Intensitet: {value} %",
-      "unsharp_threshold_label": "Tærskel: {value}",
-      "unsharp_viewer_title": "Adaptiv skarphed",
       "auto_levels_tooltip": "Analyserer hver side og justerer automatisk niveauerne for sort og hvid for at maksimere kontrasten.\nBrug fremviseren til at vælge side for side.",
       "transparency_unsaved_title": "Ikke-anvendte ændringer",
       "transparency_unsaved_message": "De aktuelle ændringer er ikke blevet anvendt på billedet. Hvad vil du gøre?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Hvid punkt pipette",
       "black_pipette_tooltip": "Klik på en pixel, der burde være helt sort. Forsigtig: det er let at overdrive!",
       "white_pipette_tooltip": "Klik på en pixel, der burde være helt hvid. Forsigtig: det er let at overdrive!"
-    },
-    "sharpness_viewer": {
-      "title": "Skarphedsjustering"
-    },
-    "brightness_viewer": {
-      "title": "Lysstyrkejustering og kontrastjustering"
     },
     "compression_viewer": {
       "title": "Komprimeringsjustering"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Forstør ikonstørrelse",
     "source_loose": "Løst billede",
     "source_web": "Webbillede",
-    "straighten": "Ret billede op",
-    "clone_zone": "Kloning af zone",
-    "text": "Tilføj tekst",
+    "straighten": "Ret billedet automatisk",
     "batch_cb7_to_cbz": "Konverterer alle CB7-filer i en mappe\nog dens undermapper til CBZ.",
     "batch_cb7_permanent_delete": "ADVARSEL : hvis denne indstilling er valgt,\nslettes de originale CB7-filer permanent\nefter konvertering uden mulighed for gendannelse.\nSørg for at have en sikkerhedskopi.",
     "batch_cbt_to_cbz": "Konverterer alle CBT-filer i en mappe\nog dens undermapper til CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Der er fundet duplikerede sider i denne fil.\nKlik for at åbne vinduet til håndtering af duplikater.",
     "duplicate_indicator_none": "Ingen duplikater fundet",
     "straighten_mode_0": "Manuel tilstand (tegn en referencelinje)\nHøjreklik for at skifte tilstand",
-    "straighten_mode_1": "Automatisk tilstand (registrering af hældning)\nHøjreklik for at skifte tilstand"
+    "straighten_mode_1": "Automatisk tilstand (registrering af hældning)\nHøjreklik for at skifte tilstand",
+    "sharpness_mode_0": "Forstærker eller blødgør billedets detaljer\nHøjreklik for at skifte til adaptiv skarphed",
+    "sharpness_mode_1": "Fremhæver konturer og skåner ensfarvede områder\nHøjreklik for at skifte til enkel skarphed"
   },
   "help": {
     "title": "MosaicView - Brugervejledning",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relativ sti"
   },
   "web": {
+    "web_analyzing_page": "Analyserer siden...",
     "web_download_progress": "Downloader: {downloaded}/{total} billeder...",
     "web_download_cancel": "Annuller",
     "web_no_images": "Ingen billeder",

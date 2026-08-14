@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Îndreptare",
     "toolbar_crop_instruction": "Desenați un dreptunghi în jurul zonei de păstrat, apoi confirmați",
     "toolbar_clone_tooltip": "Clonare",
-    "toolbar_text_tooltip": "Text"
+    "toolbar_text_tooltip": "Text",
+    "toolbar_sharpness_tooltip": "Claritate",
+    "toolbar_unsharp_tooltip": "Claritate adaptivă",
+    "sharpness_panel_label": "Claritate:",
+    "unsharp_radius_label": "Rază:",
+    "unsharp_percent_label": "Intensitate:",
+    "unsharp_threshold_label": "Prag:",
+    "toolbar_brightness_tooltip": "Luminozitate și contrast",
+    "toolbar_brightness_instruction": "Reglați cursoarele, ajustarea se aplică la eliberare",
+    "brightness_panel_label": "Luminozitate:",
+    "contrast_panel_label": "Contrast:",
+    "toolbar_saturation_tooltip": "Saturație",
+    "toolbar_saturation_instruction": "Reglați cursorul, ajustarea se aplică la eliberare",
+    "saturation_panel_label": "Saturație :",
+    "toolbar_remove_colors_tooltip": "Eliminarea culorilor",
+    "toolbar_remove_colors_instruction": "Reglați cursorul, ajustarea se aplică la eliberare",
+    "remove_colors_panel_label": "Intensitate :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Luminozitate, contrast, culori...",
       "refresh_mosaic": "Reîmprospătează mozaicul (F5)",
       "create_ico": "Creează fișier .ico",
-      "clone_zone": "Clonare zonă...",
-      "text": "Adaugă text...",
-      "straighten_manual": "Îndreaptă imaginea manual...",
       "straighten_auto": "Îndreaptă imaginea automat"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Fișiere ignorate"
-      },
-      "no_selection_crop": {
-        "title": "Nicio selecție",
-        "message": "Selectați o imagine de decupat."
-      },
-      "multi_selection_crop": {
-        "title": "Selecție multiplă",
-        "message": "Puteți decupa doar o singură imagine odată.\nSelectați o singură imagine."
-      },
-      "invalid_selection_crop": {
-        "title": "Selecție invalidă",
-        "message": "Doar imaginile pot fi decupate."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funcție nedisponibilă",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Eroare",
         "message": "Textul nu a putut fi aplicat: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Eroare",
+        "message": "Claritatea nu a putut fi aplicată: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Eroare",
+        "message": "Claritatea adaptivă nu a putut fi aplicată: {error}"
+      },
+      "brightness_failed": {
+        "title": "Eroare",
+        "message": "Nu s-a putut aplica luminozitatea/contrastul: {error}"
+      },
+      "saturation_failed": {
+        "title": "Eroare",
+        "message": "Nu s-a putut aplica saturația: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Eroare",
+        "message": "Nu s-a putut aplica eliminarea culorilor: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "imagini",
       "apply_button": "Aplica",
       "color_depth_section": "Adancime culoare",
-      "brightness_contrast_section": "Luminozitate si contrast",
       "compression_section": "Compresie",
       "effects_section": "Efecte",
       "sharpness_section": "Claritate",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 biti (RGB - culori)",
       "depth_8bit": "8 biti (paleta PNG / tonuri de gri JPEG)",
       "depth_1bit": "1 bit (alb-negru)",
-      "brightness_label": "Luminozitate: {value}",
-      "contrast_label": "Contrast: {value}",
       "compression_enable": "Activeaza recompresie",
       "compression_quality_label": "Calitate : {value}/100",
-      "sharpness_label": "Claritate: {value}",
       "effect_none": "Fara efect",
       "effect_grayscale": "Tonuri de gri",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Previzualizare",
       "effect_invert": "Inversarea culorilor",
       "preview_warning": "Previzualizarea poate diferi de rezultatul final",
-      "effect_remove_colors": "Eliminarea culorilor",
-      "remove_colors_intensity_label": "Intensitate : {value}",
       "image_mode_section": "Mod imagine",
       "image_mode_rgb": "RGB (culori)",
       "image_mode_rgba": "RGBA (culori + transparență)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (tipărire)",
       "image_mode_1": "1 (alb-negru pur)",
       "image_mode_p": "P (paletă de 256 culori)",
-      "saturation_section": "Saturație",
-      "saturation_label": "Saturație : {value}",
-      "saturation_viewer_title": "Ajustarea saturației",
       "transparency_section": "Transparență",
       "transparency_info": "Transparența se aplică doar imaginilor PNG, WebP, ICO și AVIF",
       "transparency_type_label": "Tip :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Transparență globală : afectează toți pixelii din imagine a căror culoare este apropiată de cea apăsată",
       "transparency_apply": "Aplică",
       "transparency_skipped_warning": "{count} imagine(i) ignorată(e) — format incompatibil cu transparența. Pentru a le include, convertiți-le mai întâi în PNG.",
-      "unsharp_section": "Claritate adaptivă",
-      "unsharp_radius_label": "Rază: {value}",
-      "unsharp_percent_label": "Intensitate: {value} %",
-      "unsharp_threshold_label": "Prag: {value}",
-      "unsharp_viewer_title": "Claritate adaptivă",
       "auto_levels_tooltip": "Analizează fiecare pagină și reglează automat nivelurile de negru și alb pentru a maximiza contrastul.\nPentru a alege pagină cu pagină, utilizați vizualizatorul.",
       "transparency_unsaved_title": "Modificări neaplicate",
       "transparency_unsaved_message": "Modificările curente nu au fost aplicate imaginii. Ce doriți să faceți?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Pipeta punct alb",
       "black_pipette_tooltip": "Faceți clic pe un pixel care ar trebui să fie complet negru. Atenție: este ușor să exagerați!",
       "white_pipette_tooltip": "Faceți clic pe un pixel care ar trebui să fie complet alb. Atenție: este ușor să exagerați!"
-    },
-    "sharpness_viewer": {
-      "title": "Reglarea clarității"
-    },
-    "brightness_viewer": {
-      "title": "Reglarea luminozității și contrastului"
     },
     "compression_viewer": {
       "title": "Reglarea compresiei"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Măriți dimensiunea pictogramelor",
     "source_loose": "Imagine liberă",
     "source_web": "Imagine web",
-    "straighten": "Îndreptați imaginea",
-    "clone_zone": "Clonare zonă",
-    "text": "Adăugați text",
+    "straighten": "Îndreaptă imaginea automat",
     "batch_cb7_to_cbz": "Convertește toate fișierele CB7 dintr-un\ndirector și subdirectoarele sale la CBZ.",
     "batch_cb7_permanent_delete": "ATENȚIE : dacă această opțiune este bifată,\nfișierele CB7 originale vor fi șterse permanent\ndupă conversie fără posibilitate de recuperare.\nAsigurați-vă că aveți o copie de rezervă.",
     "batch_cbt_to_cbz": "Convertește toate fișierele CBT dintr-un\ndirector și subdirectoarele sale la CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Au fost detectate pagini duplicate în acest fișier.\nFaceți clic pentru a deschide fereastra de gestionare a duplicatelor.",
     "duplicate_indicator_none": "Niciun duplicat detectat",
     "straighten_mode_0": "Mod manual (trasați o linie de referință)\nClic dreapta pentru a schimba modul",
-    "straighten_mode_1": "Mod automat (detectare înclinare)\nClic dreapta pentru a schimba modul"
+    "straighten_mode_1": "Mod automat (detectare înclinare)\nClic dreapta pentru a schimba modul",
+    "sharpness_mode_0": "Accentuează sau atenuează detaliile imaginii\nClic dreapta pentru a comuta la claritatea adaptivă",
+    "sharpness_mode_1": "Accentuează contururile cruțând zonele uniforme\nClic dreapta pentru a comuta la claritatea simplă"
   },
   "help": {
     "title": "MosaicView - Manual utilizator",
@@ -1506,6 +1507,7 @@
     "relative_path": "Cale relativă"
   },
   "web": {
+    "web_analyzing_page": "Se analizează pagina...",
     "web_download_progress": "Descărcare: {downloaded}/{total} imagini...",
     "web_download_cancel": "Anulare",
     "web_no_images": "Fără imagini",

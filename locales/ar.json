@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "تقويم",
     "toolbar_crop_instruction": "ارسم مستطيلاً حول المنطقة المراد الاحتفاظ بها، ثم أكّد",
     "toolbar_clone_tooltip": "الاستنساخ",
-    "toolbar_text_tooltip": "نص"
+    "toolbar_text_tooltip": "نص",
+    "toolbar_sharpness_tooltip": "الحدة",
+    "toolbar_unsharp_tooltip": "الحدة التكيفية",
+    "sharpness_panel_label": "الحدة:",
+    "unsharp_radius_label": "نصف القطر:",
+    "unsharp_percent_label": "الشدة:",
+    "unsharp_threshold_label": "العتبة:",
+    "toolbar_brightness_tooltip": "السطوع والتباين",
+    "toolbar_brightness_instruction": "اضبط أشرطة التمرير، يُطبَّق التعديل عند التحرير",
+    "brightness_panel_label": "السطوع:",
+    "contrast_panel_label": "التباين:",
+    "toolbar_saturation_tooltip": "التشبع",
+    "toolbar_saturation_instruction": "اضبط شريط التمرير، يُطبَّق التعديل عند التحرير",
+    "saturation_panel_label": "التشبع :",
+    "toolbar_remove_colors_tooltip": "إزالة الألوان",
+    "toolbar_remove_colors_instruction": "اضبط شريط التمرير، يُطبَّق التعديل عند التحرير",
+    "remove_colors_panel_label": "الكثافة :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "السطوع والتباين والألوان...",
       "refresh_mosaic": "تحديث الفسيفساء (F5)",
       "create_ico": "إنشاء ملف .ico",
-      "clone_zone": "استنساخ المنطقة...",
-      "text": "إضافة نص...",
-      "straighten_manual": "تسوية الصورة يدويًا...",
       "straighten_auto": "تسوية الصورة تلقائيًا"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "ملفات تم تجاهلها"
-      },
-      "no_selection_crop": {
-        "title": "لا يوجد تحديد",
-        "message": "يرجى تحديد صورة للقص."
-      },
-      "multi_selection_crop": {
-        "title": "تحديد متعدد",
-        "message": "يمكنك قص صورة واحدة فقط في كل مرة.\nيرجى تحديد صورة واحدة."
-      },
-      "invalid_selection_crop": {
-        "title": "تحديد غير صالح",
-        "message": "يمكن قص الصور فقط."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "الوظيفة غير متاحة",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "خطأ",
         "message": "تعذر تطبيق النص: {error}"
+      },
+      "sharpness_failed": {
+        "title": "خطأ",
+        "message": "تعذر تطبيق الحدة: {error}"
+      },
+      "unsharp_failed": {
+        "title": "خطأ",
+        "message": "تعذر تطبيق الحدة التكيفية: {error}"
+      },
+      "brightness_failed": {
+        "title": "خطأ",
+        "message": "تعذّر تطبيق السطوع/التباين: {error}"
+      },
+      "saturation_failed": {
+        "title": "خطأ",
+        "message": "تعذّر تطبيق التشبع: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "خطأ",
+        "message": "تعذّر تطبيق إزالة الألوان: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "صور",
       "apply_button": "تطبيق",
       "color_depth_section": "عمق اللون",
-      "brightness_contrast_section": "السطوع والتباين",
       "compression_section": "الضغط",
       "effects_section": "التأثيرات",
       "sharpness_section": "الحدة",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 بت (RGB - ألوان)",
       "depth_8bit": "8 bit (luhat PNG / tadaris ramadi JPEG)",
       "depth_1bit": "1 بت (أبيض وأسود)",
-      "brightness_label": "السطوع: {value}",
-      "contrast_label": "التباين: {value}",
       "compression_enable": "تمكين إعادة الضغط",
       "compression_quality_label": "جودة: {value}/100",
-      "sharpness_label": "الحدة: {value}",
       "effect_none": "بدون تأثير",
       "effect_grayscale": "تدرج رمادي",
       "effect_sepia": "بني داكن",
@@ -991,8 +1008,6 @@
       "preview_section": "معاينة",
       "effect_invert": "عكس الألوان",
       "preview_warning": "قد تختلف المعاينة عن النتيجة النهائية",
-      "effect_remove_colors": "إزالة الألوان",
-      "remove_colors_intensity_label": "الكثافة : {value}",
       "image_mode_section": "وضع الصورة",
       "image_mode_rgb": "RGB (ألوان)",
       "image_mode_rgba": "RGBA (ألوان + شفافية)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (طباعة)",
       "image_mode_1": "1 (أسود وأبيض نقي)",
       "image_mode_p": "P (لوحة 256 لون)",
-      "saturation_section": "التشبع",
-      "saturation_label": "التشبع : {value}",
-      "saturation_viewer_title": "ضبط التشبع",
       "transparency_section": "الشفافية",
       "transparency_info": "الشفافية تنطبق فقط على صور PNG وWebP وICO وAVIF",
       "transparency_type_label": "النوع :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "شفافية شاملة : تؤثر على جميع بكسلات الصورة ذات اللون القريب من المنقور",
       "transparency_apply": "تطبيق",
       "transparency_skipped_warning": "{count} صورة (صور) متجاهلة — الصيغة غير متوافقة مع الشفافية. لتضمينها، حوّلها أولاً إلى PNG.",
-      "unsharp_section": "الحدة التكيفية",
-      "unsharp_radius_label": "نصف القطر: {value}",
-      "unsharp_percent_label": "الشدة: {value} %",
-      "unsharp_threshold_label": "العتبة: {value}",
-      "unsharp_viewer_title": "الحدة التكيفية",
       "auto_levels_tooltip": "يحلل كل صفحة ويضبط مستويات السواد والبياض تلقائيًا لتعظيم التباين.\nللاختيار صفحة بصفحة، استخدم العارض.",
       "transparency_unsaved_title": "تغييرات غير مطبقة",
       "transparency_unsaved_message": "لم يتم تطبيق التعديلات الحالية على الصورة. ماذا تريد أن تفعل؟",
@@ -1038,12 +1045,6 @@
       "white_pipette": "قطارة النقطة البيضاء",
       "black_pipette_tooltip": "انقر على بكسل يجب أن يكون أسود تماماً. تحذير: من السهل المبالغة!",
       "white_pipette_tooltip": "انقر على بكسل يجب أن يكون أبيض تماماً. تحذير: من السهل المبالغة!"
-    },
-    "sharpness_viewer": {
-      "title": "ضبط الحدة"
-    },
-    "brightness_viewer": {
-      "title": "ضبط السطوع والتباين"
     },
     "compression_viewer": {
       "title": "ضبط الضغط"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "تكبير حجم الأيقونات",
     "source_loose": "صورة مستقلة",
     "source_web": "صورة من الويب",
-    "straighten": "تقويم الصورة",
-    "clone_zone": "استنساخ المنطقة",
-    "text": "إضافة نص",
+    "straighten": "تقويم الصورة تلقائيًا",
     "batch_cb7_to_cbz": "يحوّل جميع ملفات CB7 الموجودة في\nمجلد وجميع مجلداته الفرعية إلى CBZ.",
     "batch_cb7_permanent_delete": "تحذير : إذا تم تحديد هذا الخيار،\nسيتم حذف ملفات CB7 الأصلية نهائياً\nبعد التحويل دون إمكانية الاسترداد.\nتأكد من وجود نسخة احتياطية إذا لزم الأمر.",
     "batch_cbt_to_cbz": "يحوّل جميع ملفات CBT الموجودة في\nمجلد وجميع مجلداته الفرعية إلى CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "تم اكتشاف صفحات مكررة في هذا الملف.\nانقر لفتح نافذة إدارة الصفحات المكررة.",
     "duplicate_indicator_none": "لم يتم اكتشاف أي تكرار",
     "straighten_mode_0": "الوضع اليدوي (رسم خط مرجعي)\nانقر بزر الفأرة الأيمن لتغيير الوضع",
-    "straighten_mode_1": "الوضع التلقائي (كشف الميل)\nانقر بزر الفأرة الأيمن لتغيير الوضع"
+    "straighten_mode_1": "الوضع التلقائي (كشف الميل)\nانقر بزر الفأرة الأيمن لتغيير الوضع",
+    "sharpness_mode_0": "يعزز أو يخفف تفاصيل الصورة\nانقر بالزر الأيمن للتبديل إلى الحدة التكيفية",
+    "sharpness_mode_1": "يبرز الحواف مع الحفاظ على المناطق الموحدة\nانقر بالزر الأيمن للتبديل إلى الحدة البسيطة"
   },
   "help": {
     "title": "MosaicView - دليل الاستخدام",
@@ -1506,6 +1507,7 @@
     "relative_path": "المسار النسبي"
   },
   "web": {
+    "web_analyzing_page": "جارٍ تحليل الصفحة...",
     "web_download_progress": "تحميل: {downloaded}/{total} صورة...",
     "web_download_cancel": "إلغاء",
     "web_no_images": "لا توجد صور",

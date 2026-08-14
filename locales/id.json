@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Luruskan",
     "toolbar_crop_instruction": "Gambar persegi panjang di sekitar area yang akan disimpan, lalu konfirmasi",
     "toolbar_clone_tooltip": "Kloning",
-    "toolbar_text_tooltip": "Teks"
+    "toolbar_text_tooltip": "Teks",
+    "toolbar_sharpness_tooltip": "Ketajaman",
+    "toolbar_unsharp_tooltip": "Ketajaman adaptif",
+    "sharpness_panel_label": "Ketajaman:",
+    "unsharp_radius_label": "Radius:",
+    "unsharp_percent_label": "Intensitas:",
+    "unsharp_threshold_label": "Ambang batas:",
+    "toolbar_brightness_tooltip": "Kecerahan dan kontras",
+    "toolbar_brightness_instruction": "Sesuaikan penggeser, penyesuaian diterapkan saat dilepas",
+    "brightness_panel_label": "Kecerahan:",
+    "contrast_panel_label": "Kontras:",
+    "toolbar_saturation_tooltip": "Saturasi",
+    "toolbar_saturation_instruction": "Sesuaikan penggeser, penyesuaian diterapkan saat dilepas",
+    "saturation_panel_label": "Saturasi :",
+    "toolbar_remove_colors_tooltip": "Penghapusan warna",
+    "toolbar_remove_colors_instruction": "Sesuaikan penggeser, penyesuaian diterapkan saat dilepas",
+    "remove_colors_panel_label": "Intensitas :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Kecerahan, kontras, warna...",
       "refresh_mosaic": "Segarkan mosaik (F5)",
       "create_ico": "Buat file .ico",
-      "clone_zone": "Klon zona...",
-      "text": "Tambah teks...",
-      "straighten_manual": "Luruskan gambar secara manual...",
       "straighten_auto": "Luruskan gambar secara otomatis"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "File diabaikan"
-      },
-      "no_selection_crop": {
-        "title": "Tidak ada pilihan",
-        "message": "Silakan pilih gambar untuk dipotong."
-      },
-      "multi_selection_crop": {
-        "title": "Pilihan ganda",
-        "message": "Anda hanya bisa memotong satu gambar sekaligus.\nSilakan pilih satu gambar."
-      },
-      "invalid_selection_crop": {
-        "title": "Pilihan tidak valid",
-        "message": "Hanya gambar yang bisa dipotong."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Fitur tidak tersedia",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Kesalahan",
         "message": "Tidak dapat menerapkan teks: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menerapkan ketajaman: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menerapkan ketajaman adaptif: {error}"
+      },
+      "brightness_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menerapkan kecerahan/kontras: {error}"
+      },
+      "saturation_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menerapkan saturasi: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menerapkan penghapusan warna: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "gambar",
       "apply_button": "Terapkan",
       "color_depth_section": "Kedalaman warna",
-      "brightness_contrast_section": "Kecerahan dan kontras",
       "compression_section": "Kompresi",
       "effects_section": "Efek",
       "sharpness_section": "Ketajaman",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bit (RGB - warna)",
       "depth_8bit": "8 bit (palet PNG / skala abu-abu JPEG)",
       "depth_1bit": "1 bit (hitam putih)",
-      "brightness_label": "Kecerahan: {value}",
-      "contrast_label": "Kontras: {value}",
       "compression_enable": "Aktifkan kompresi ulang",
       "compression_quality_label": "Kualitas : {value}/100",
-      "sharpness_label": "Ketajaman: {value}",
       "effect_none": "Tanpa efek",
       "effect_grayscale": "Skala abu-abu",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Pratinjau",
       "effect_invert": "Inversi warna",
       "preview_warning": "Pratinjau dapat berbeda dari hasil akhir",
-      "effect_remove_colors": "Penghapusan warna",
-      "remove_colors_intensity_label": "Intensitas : {value}",
       "image_mode_section": "Mode gambar",
       "image_mode_rgb": "RGB (warna)",
       "image_mode_rgba": "RGBA (warna + transparansi)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (cetak)",
       "image_mode_1": "1 (hitam-putih murni)",
       "image_mode_p": "P (palet 256 warna)",
-      "saturation_section": "Saturasi",
-      "saturation_label": "Saturasi : {value}",
-      "saturation_viewer_title": "Penyesuaian saturasi",
       "transparency_section": "Transparansi",
       "transparency_info": "Transparansi hanya berlaku untuk gambar PNG, WebP, ICO, dan AVIF",
       "transparency_type_label": "Jenis :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Transparansi global : memengaruhi semua piksel gambar yang warnanya mendekati warna yang diklik",
       "transparency_apply": "Terapkan",
       "transparency_skipped_warning": "{count} gambar dilewati — format tidak kompatibel dengan transparansi. Untuk menyertakannya, konversi terlebih dahulu ke PNG.",
-      "unsharp_section": "Ketajaman adaptif",
-      "unsharp_radius_label": "Radius: {value}",
-      "unsharp_percent_label": "Intensitas: {value} %",
-      "unsharp_threshold_label": "Ambang batas: {value}",
-      "unsharp_viewer_title": "Ketajaman adaptif",
       "auto_levels_tooltip": "Menganalisis setiap halaman dan secara otomatis menyesuaikan tingkat hitam dan putih untuk memaksimalkan kontras.\nUntuk memilih halaman per halaman, gunakan penampil.",
       "transparency_unsaved_title": "Perubahan belum diterapkan",
       "transparency_unsaved_message": "Perubahan saat ini belum diterapkan pada gambar. Apa yang ingin Anda lakukan?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Penetes titik putih",
       "black_pipette_tooltip": "Klik pada piksel yang seharusnya benar-benar hitam. Perhatian: mudah berlebihan!",
       "white_pipette_tooltip": "Klik pada piksel yang seharusnya benar-benar putih. Perhatian: mudah berlebihan!"
-    },
-    "sharpness_viewer": {
-      "title": "Penyesuaian Ketajaman"
-    },
-    "brightness_viewer": {
-      "title": "Penyesuaian Kecerahan dan Kontras"
     },
     "compression_viewer": {
       "title": "Penyesuaian Kompresi"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Perbesar ukuran ikon",
     "source_loose": "Gambar lepas",
     "source_web": "Gambar web",
-    "straighten": "Luruskan gambar",
-    "clone_zone": "Klon zona",
-    "text": "Tambahkan teks",
+    "straighten": "Luruskan gambar secara otomatis",
     "batch_cb7_to_cbz": "Mengonversi semua file CB7 di sebuah\ndirektori dan subdirektorinya ke CBZ.",
     "batch_cb7_permanent_delete": "PERINGATAN : jika opsi ini dicentang,\nfile CB7 asli akan dihapus secara permanen\nsetelah konversi tanpa kemungkinan pemulihan.\nPastikan Anda memiliki cadangan.",
     "batch_cbt_to_cbz": "Mengonversi semua file CBT di sebuah\ndirektori dan subdirektorinya ke CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Halaman duplikat terdeteksi dalam file ini.\nKlik untuk membuka jendela pengelolaan halaman duplikat.",
     "duplicate_indicator_none": "Tidak ada duplikat terdeteksi",
     "straighten_mode_0": "Mode manual (gambar garis referensi)\nKlik kanan untuk mengganti mode",
-    "straighten_mode_1": "Mode otomatis (deteksi kemiringan)\nKlik kanan untuk mengganti mode"
+    "straighten_mode_1": "Mode otomatis (deteksi kemiringan)\nKlik kanan untuk mengganti mode",
+    "sharpness_mode_0": "Memperkuat atau melembutkan detail gambar\nKlik kanan untuk beralih ke ketajaman adaptif",
+    "sharpness_mode_1": "Menonjolkan tepi sambil menjaga area yang rata\nKlik kanan untuk beralih ke ketajaman sederhana"
   },
   "help": {
     "title": "MosaicView - Panduan Penggunaan",
@@ -1506,6 +1507,7 @@
     "relative_path": "Jalur relatif"
   },
   "web": {
+    "web_analyzing_page": "Menganalisis halaman...",
     "web_download_progress": "Mengunduh: {downloaded}/{total} gambar...",
     "web_download_cancel": "Batal",
     "web_no_images": "Tidak ada gambar",

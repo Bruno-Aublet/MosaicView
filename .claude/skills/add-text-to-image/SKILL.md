@@ -113,21 +113,15 @@ Trois crashs distincts rencontrés et corrigés en conditions réelles, tous dia
 
 ## Points d'entrée UI
 
-Trois, recâblés vers le nouvel outil migré, conditionnés à la présence d'images (`has_images`) :
+**Un seul point d'entrée depuis le 2026-08-14** : directement dans la visionneuse principale déjà ouverte, en sélectionnant l'icône Texte dans la barre d'outils flottante (`_ViewerToolbar`, `viewer_toolbar_qt.py` : `BTN_Text.png`, `tool_id="text"`, tooltip enrichi `viewer.toolbar_text_tooltip` + `dialogs.text_viewer.instruction` sur une seconde ligne). Il n'existe plus de point d'entrée dédié depuis la mosaïque qui ouvrirait directement la visionneuse avec cet outil présélectionné.
 
-1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — clé `context_menu.image.text`.
-2. **Barre de menu** — même clé, callback `"show_text_viewer"`/`"text"` dans `menubar_callbacks_qt.py`, tous deux pointés vers `mw._text_selected_image`.
-3. **Colonne d'icônes** (skill `icon-toolbar`) — bouton id `"text"`, icône `BTN_Text.png`, tooltip `tooltip.text`/`viewer.toolbar_text_tooltip` (skill `qt-tooltips`).
-
-`PanelWidget._text_selected_image()` (`panel_widget.py`) : ouvre `ImageViewer(..., initial_tool="text")` — première image sélectionnée si une sélection valide existe, sinon première image de la mosaïque, images corrompues exclues (même logique que `_straighten_selected_image`/`_clone_selected_image`). Remplace l'ancienne `_text_viewer_callbacks()`, retirée (devenue morte).
-
-4e icône de `_ViewerToolbar` (`viewer_toolbar_qt.py`) : `BTN_Text.png`, `tool_id="text"`, tooltip enrichi (`viewer.toolbar_text_tooltip` + `dialogs.text_viewer.instruction` sur une seconde ligne).
+**Nettoyage du 2026-08-14** (`idees.txt` #3, "NETTOYAGE DES COMMANDES REDONDANTES") : le menu contextuel (`context_menu.image.text`), l'entrée équivalente de la barre de menu (callback `"show_text_viewer"`/`"text"`), le bouton `"text"` de la colonne d'icônes (`icon_toolbar_qt.py`) et son tooltip `tooltip.text`, ainsi que la méthode `PanelWidget._text_selected_image()` (`panel_widget.py`) qui les orchestrait — tous supprimés. Même nettoyage que pour `page-crop`/`page-straighten`/`clone-zone`, dernier des 4 outils migrés à en bénéficier.
 
 ## Traductions
 
-`locales/*.json` : section `dialogs.text_viewer` — `instruction`, `size_label`/`color_label`, `bold_btn`/`italic_btn`/`underline_btn` (labels courts "G"/"I"/"S"), `pick_color_title` (via `_wt()`). Section `dialogs.color_picker` (6 clés, ajoutées v1.7.3 pour `_ColorPickerDialog`) : `basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`. `buttons.validate_text` (bouton flottant). `viewer.toolbar_text_tooltip` (icône barre d'outils). `context_menu.image.text`/`tooltip.text` (menu contextuel/colonne d'icônes, inchangées). `messages.warnings.no_text_block`/`messages.errors.text_failed` (validation). Toutes propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR) — voir skill `add-translation`.
+`locales/*.json` : section `dialogs.text_viewer` — `instruction`, `size_label`/`color_label`, `bold_btn`/`italic_btn`/`underline_btn` (labels courts "G"/"I"/"S"), `pick_color_title` (via `_wt()`). Section `dialogs.color_picker` (6 clés, ajoutées v1.7.3 pour `_ColorPickerDialog`) : `basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`. `buttons.validate_text` (bouton flottant). `viewer.toolbar_text_tooltip` (icône barre d'outils). `messages.warnings.no_text_block`/`messages.errors.text_failed` (validation). Toutes propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR) — voir skill `add-translation`.
 
-**Clés mortes retirées** (ancienne fenêtre supprimée) : `dialogs.text_viewer.title`, `dialogs.text_viewer.apply_btn`.
+**Clés mortes retirées** (ancienne fenêtre supprimée) : `dialogs.text_viewer.title`, `dialogs.text_viewer.apply_btn`. **Retirées le 2026-08-14** (ancien point d'entrée mosaïque supprimé) : `context_menu.image.text`, `tooltip.text`.
 
 **Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que les 3 autres outils migrés, à signaler si une tâche touche à la documentation utilisateur (skill `user-guide`).
 
@@ -137,15 +131,16 @@ Trois, recâblés vers le nouvel outil migré, conditionnés à la présence d'i
 - **Ajouter un nouvel attribut de formatage** (ex. interlignage, alignement) : nouveau contrôle dans `_TextOptionsPanel.__init__`, nouveau handler `_on_xxx_changed` suivant le pattern des 3 boutons bascule existants (garde `_ignore_format_signals`, construit un `QTextCharFormat`/`QTextBlockFormat`, appelle `apply_char_format` ou l'équivalent bloc, redonne le focus), l'ajouter à `sync_from_block` pour la synchronisation inverse et à `apply_default_format_to_block` pour le format initial d'un bloc neuf.
 - Respecter les 8 règles UI Qt obligatoires du CLAUDE.md pour `_ColorPickerDialog` (non-modale, thème, retraduction, `_wt()` pour le titre — déjà en place).
 
+## Pièges connus (complément)
+
+- **Plus de point d'entrée depuis la mosaïque** (menu contextuel, barre de menu, colonne d'icônes) depuis le 2026-08-14 — ne pas chercher `PanelWidget._text_selected_image()`, elle a été supprimée avec ses 3 points d'appel ; l'outil texte ne s'atteint plus que depuis l'intérieur de la visionneuse déjà ouverte.
+
 ## Références croisées
 
 - `viewers` — architecture générale de la fusion progressive (mixins CanvasMixin/ViewerMixin, `_ViewerToolbar`, bouton "Valider" partagé, undo/redo unifié, persistance par page, piège overlays interactifs pan/zoom/resize) ; ce skill-ci ne documente que ce qui est spécifique à l'outil texte.
-- `page-crop`, `page-straighten`, `clone-zone` — les 3 autres outils migrés, même pattern de mixins, à comparer pour la complexité relative (crop/straighten = une seule géométrie par page, clone = pas de persistance, texte = N blocs persistés).
+- `page-crop`, `page-straighten`, `clone-zone` — les 3 autres outils migrés, même pattern de mixins, à comparer pour la complexité relative (crop/straighten = une seule géométrie par page, clone = pas de persistance, texte = N blocs persistés) ; même nettoyage des points d'entrée mosaïque le 2026-08-14.
 - `apply-image-operation` — pattern général d'invalidation de caches suivi ici en variante (A) complète.
 - `undo-redo` — mécanique de l'historique global de l'appli, seul niveau externe restant (plus d'historique interne séparé).
-- `icon-toolbar` — bouton "text" de la colonne d'icônes.
-- `qt-context-menus` — entrée du menu contextuel clic droit.
-- `qt-tooltips` — tooltips de l'icône colonne d'icônes et de l'icône de la barre d'outils flottante (`OverlayTooltip` uniquement).
 - `comicinfo-metadata-editor` — mise à jour des dimensions/attributs de page dans `ComicInfo.xml` après validation.
 - `add-translation` — méthode de propagation des clés `dialogs.color_picker.*` aux 45 langues.
 - `user-guide` — absence actuelle de section dédiée, à vérifier si une tâche touche à ce fichier.

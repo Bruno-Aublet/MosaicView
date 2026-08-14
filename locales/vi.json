@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Làm thẳng",
     "toolbar_crop_instruction": "Vẽ một hình chữ nhật quanh vùng cần giữ lại, sau đó xác nhận",
     "toolbar_clone_tooltip": "Nhân bản",
-    "toolbar_text_tooltip": "Văn bản"
+    "toolbar_text_tooltip": "Văn bản",
+    "toolbar_sharpness_tooltip": "Độ nét",
+    "toolbar_unsharp_tooltip": "Độ nét thích ứng",
+    "sharpness_panel_label": "Độ nét:",
+    "unsharp_radius_label": "Bán kính:",
+    "unsharp_percent_label": "Cường độ:",
+    "unsharp_threshold_label": "Ngưỡng:",
+    "toolbar_brightness_tooltip": "Độ sáng và độ tương phản",
+    "toolbar_brightness_instruction": "Điều chỉnh thanh trượt, thay đổi được áp dụng khi thả ra",
+    "brightness_panel_label": "Độ sáng:",
+    "contrast_panel_label": "Độ tương phản:",
+    "toolbar_saturation_tooltip": "Độ bão hòa",
+    "toolbar_saturation_instruction": "Điều chỉnh thanh trượt, thay đổi được áp dụng khi thả ra",
+    "saturation_panel_label": "Độ bão hòa :",
+    "toolbar_remove_colors_tooltip": "Loại bỏ màu sắc",
+    "toolbar_remove_colors_instruction": "Điều chỉnh thanh trượt, thay đổi được áp dụng khi thả ra",
+    "remove_colors_panel_label": "Cường độ :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Độ sáng, độ tương phản, màu sắc...",
       "refresh_mosaic": "Làm mới bảng ghép (F5)",
       "create_ico": "Tạo tệp .ico",
-      "clone_zone": "Nhân bản vùng...",
-      "text": "Thêm văn bản...",
-      "straighten_manual": "Làm thẳng ảnh thủ công...",
       "straighten_auto": "Làm thẳng ảnh tự động"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Tệp bị bỏ qua"
-      },
-      "no_selection_crop": {
-        "title": "Không có lựa chọn",
-        "message": "Vui lòng chọn một ảnh để cắt."
-      },
-      "multi_selection_crop": {
-        "title": "Chọn nhiều",
-        "message": "Bạn chỉ có thể cắt một ảnh tại một thời điểm.\nVui lòng chọn một ảnh."
-      },
-      "invalid_selection_crop": {
-        "title": "Lựa chọn không hợp lệ",
-        "message": "Chỉ có thể cắt ảnh."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Tính năng không khả dụng",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Lỗi",
         "message": "Không thể áp dụng văn bản: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng độ nét: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng độ nét thích ứng: {error}"
+      },
+      "brightness_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng độ sáng/độ tương phản: {error}"
+      },
+      "saturation_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng độ bão hòa: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng loại bỏ màu sắc: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "hình ảnh",
       "apply_button": "Áp dụng",
       "color_depth_section": "Độ sâu màu",
-      "brightness_contrast_section": "Độ sáng và độ tương phản",
       "compression_section": "Nén",
       "effects_section": "Hiệu ứng",
       "sharpness_section": "Độ sắc nét",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bit (RGB - màu)",
       "depth_8bit": "8 bit (bang mau PNG / thang mau xam JPEG)",
       "depth_1bit": "1 bit (đen trắng)",
-      "brightness_label": "Độ sáng: {value}",
-      "contrast_label": "Độ tương phản: {value}",
       "compression_enable": "Bật nén lại",
       "compression_quality_label": "Chất lượng : {value}/100",
-      "sharpness_label": "Độ sắc nét: {value}",
       "effect_none": "Không hiệu ứng",
       "effect_grayscale": "Thang độ xám",
       "effect_sepia": "Màu nâu cổ điển",
@@ -991,8 +1008,6 @@
       "preview_section": "Xem trước",
       "effect_invert": "Đảo ngược màu",
       "preview_warning": "Bản xem trước có thể khác với kết quả cuối cùng",
-      "effect_remove_colors": "Loại bỏ màu sắc",
-      "remove_colors_intensity_label": "Cường độ : {value}",
       "image_mode_section": "Chế độ ảnh",
       "image_mode_rgb": "RGB (màu sắc)",
       "image_mode_rgba": "RGBA (màu sắc + trong suốt)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (in ấn)",
       "image_mode_1": "1 (đen trắng thuần)",
       "image_mode_p": "P (bảng 256 màu)",
-      "saturation_section": "Độ bão hòa",
-      "saturation_label": "Độ bão hòa : {value}",
-      "saturation_viewer_title": "Điều chỉnh độ bão hòa",
       "transparency_section": "Độ trong suốt",
       "transparency_info": "Độ trong suốt chỉ áp dụng cho ảnh PNG, WebP, ICO và AVIF",
       "transparency_type_label": "Loại :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Độ trong suốt toàn cục : ảnh hưởng đến tất cả pixel trong ảnh có màu gần với màu được nhấp",
       "transparency_apply": "Áp dụng",
       "transparency_skipped_warning": "{count} hình ảnh bị bỏ qua — định dạng không tương thích với độ trong suốt. Để đưa vào, hãy chuyển đổi sang PNG trước.",
-      "unsharp_section": "Độ sắc nét thích ứng",
-      "unsharp_radius_label": "Bán kính: {value}",
-      "unsharp_percent_label": "Cường độ: {value} %",
-      "unsharp_threshold_label": "Ngưỡng: {value}",
-      "unsharp_viewer_title": "Độ sắc nét thích ứng",
       "auto_levels_tooltip": "Phân tích từng trang và tự động điều chỉnh mức độ đen trắng để tối đa hóa độ tương phản.\nĐể chọn từng trang, hãy sử dụng trình xem.",
       "transparency_unsaved_title": "Thay doi chua duoc ap dung",
       "transparency_unsaved_message": "Cac thay doi hien tai chua duoc ap dung vao anh. Ban muon lam gi?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Ong hut diem trang",
       "black_pipette_tooltip": "Nhấp vào một pixel phải hoàn toàn đen. Cảnh báo: dễ làm quá đà!",
       "white_pipette_tooltip": "Nhấp vào một pixel phải hoàn toàn trắng. Cảnh báo: dễ làm quá đà!"
-    },
-    "sharpness_viewer": {
-      "title": "Điều chỉnh độ sắc nét"
-    },
-    "brightness_viewer": {
-      "title": "Điều chỉnh độ sáng và độ tương phản"
     },
     "compression_viewer": {
       "title": "Điều chỉnh nén"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Tăng kích thước biểu tượng",
     "source_loose": "Ảnh rời",
     "source_web": "Ảnh web",
-    "straighten": "Chỉnh thẳng ảnh",
-    "clone_zone": "Nhân bản vùng",
-    "text": "Thêm văn bản",
+    "straighten": "Làm thẳng hình ảnh tự động",
     "batch_cb7_to_cbz": "Chuyển đổi tất cả tệp CB7 trong thư mục\nvà các thư mục con sang CBZ.",
     "batch_cb7_permanent_delete": "CẢNH BÁO : nếu tùy chọn này được chọn,\ncác tệp CB7 gốc sẽ bị xóa vĩnh viễn\nsau khi chuyển đổi mà không thể khôi phục.\nHãy đảm bảo bạn có bản sao lưu.",
     "batch_cbt_to_cbz": "Chuyển đổi tất cả tệp CBT trong thư mục\nvà các thư mục con sang CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Đã phát hiện các trang trùng lặp trong tệp này.\nNhấp để mở cửa sổ quản lý trang trùng lặp.",
     "duplicate_indicator_none": "Không phát hiện trùng lặp",
     "straighten_mode_0": "Chế độ thủ công (vẽ một đường tham chiếu)\nNhấp chuột phải để đổi chế độ",
-    "straighten_mode_1": "Chế độ tự động (phát hiện độ nghiêng)\nNhấp chuột phải để đổi chế độ"
+    "straighten_mode_1": "Chế độ tự động (phát hiện độ nghiêng)\nNhấp chuột phải để đổi chế độ",
+    "sharpness_mode_0": "Tăng cường hoặc làm mềm chi tiết của hình ảnh\nNhấp chuột phải để chuyển sang độ nét thích ứng",
+    "sharpness_mode_1": "Làm nổi bật đường viền trong khi giữ nguyên vùng phẳng\nNhấp chuột phải để chuyển sang độ nét đơn giản"
   },
   "help": {
     "title": "MosaicView - Hướng dẫn sử dụng",
@@ -1506,6 +1507,7 @@
     "relative_path": "Đường dẫn tương đối"
   },
   "web": {
+    "web_analyzing_page": "Đang phân tích trang...",
     "web_download_progress": "Đang tải: {downloaded}/{total} hình ảnh...",
     "web_download_cancel": "Hủy",
     "web_no_images": "Không có hình ảnh",

@@ -47,7 +47,7 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     Menu clic droit sur une zone vide du canvas.
     Reproduit fidèlement context_menus.show_canvas_context_menu().
     """
-    state = _state_module.state
+    state = parent._state
 
     menu = _make_menu(parent)
 
@@ -367,7 +367,7 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
     Menu clic droit sur une vignette.
     Reproduit fidèlement context_menus.show_context_menu().
     """
-    state = _state_module.state
+    state = parent._state
 
     # Sélectionne l'élément si pas déjà sélectionné
     if real_idx not in state.selected_indices:
@@ -422,21 +422,9 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
         _add_disabled(menu, _("dialogs.adjustments.window_title"))
 
     if has_image_selection:
-        menu.addAction(_("context_menu.image.straighten_manual"), callbacks['show_straighten_viewer'])
         menu.addAction(_("context_menu.image.straighten_auto"), callbacks['deskew_selected'])
     else:
-        _add_disabled(menu, _("context_menu.image.straighten_manual"))
         _add_disabled(menu, _("context_menu.image.straighten_auto"))
-
-    if bool(st.images_data):
-        menu.addAction(_("context_menu.image.clone_zone"), callbacks['show_clone_zone_viewer'])
-    else:
-        _add_disabled(menu, _("context_menu.image.clone_zone"))
-
-    if bool(st.images_data):
-        menu.addAction(_("context_menu.image.text"), callbacks['show_text_viewer'])
-    else:
-        _add_disabled(menu, _("context_menu.image.text"))
 
     menu.addSeparator()
 
@@ -446,11 +434,6 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
         _add_disabled(menu, _("context_menu.image.convert"))
 
     menu.addSeparator()
-
-    if single_image_selection and not is_corrupted:
-        menu.addAction(_("context_menu.image.crop"), callbacks['crop_selected_image'])
-    else:
-        _add_disabled(menu, _("context_menu.image.crop"))
 
     if multi_image_selection:
         menu.addAction(_("context_menu.image.join"), callbacks['open_merge_window'])

@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Düzeltme",
     "toolbar_crop_instruction": "Korunacak alanın etrafına bir dikdörtgen çizin, ardından onaylayın",
     "toolbar_clone_tooltip": "Klonlama",
-    "toolbar_text_tooltip": "Metin"
+    "toolbar_text_tooltip": "Metin",
+    "toolbar_sharpness_tooltip": "Netlik",
+    "toolbar_unsharp_tooltip": "Uyarlanabilir netlik",
+    "sharpness_panel_label": "Netlik:",
+    "unsharp_radius_label": "Yarıçap:",
+    "unsharp_percent_label": "Yoğunluk:",
+    "unsharp_threshold_label": "Eşik:",
+    "toolbar_brightness_tooltip": "Parlaklık ve kontrast",
+    "toolbar_brightness_instruction": "Kaydırıcıları ayarlayın, ayar bırakıldığında uygulanır",
+    "brightness_panel_label": "Parlaklik:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Doygunluk",
+    "toolbar_saturation_instruction": "Kaydırıcıyı ayarlayın, ayar bırakıldığında uygulanır",
+    "saturation_panel_label": "Doygunluk :",
+    "toolbar_remove_colors_tooltip": "Renk kaldırma",
+    "toolbar_remove_colors_instruction": "Kaydırıcıyı ayarlayın, ayar bırakıldığında uygulanır",
+    "remove_colors_panel_label": "Yoğunluk :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Parlaklık, kontrast, renkler...",
       "refresh_mosaic": "Mozaiği yenile (F5)",
       "create_ico": ".ico dosyası oluştur",
-      "clone_zone": "Bölgeyi klonla...",
-      "text": "Metin ekle...",
-      "straighten_manual": "Görüntüyü manuel olarak düzelt...",
       "straighten_auto": "Görüntüyü otomatik olarak düzelt"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Dosyalar yok sayıldı"
-      },
-      "no_selection_crop": {
-        "title": "Seçim yok",
-        "message": "Lütfen kırpılacak bir görüntü seçin."
-      },
-      "multi_selection_crop": {
-        "title": "Çoklu seçim",
-        "message": "Aynı anda yalnızca bir görüntü kırpabilirsiniz.\nLütfen tek bir görüntü seçin."
-      },
-      "invalid_selection_crop": {
-        "title": "Geçersiz seçim",
-        "message": "Yalnızca görüntüler kırpılabilir."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "İşlev kullanılamıyor",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Hata",
         "message": "Metin uygulanamadı: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Hata",
+        "message": "Netlik uygulanamadı: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Hata",
+        "message": "Uyarlanabilir netlik uygulanamadı: {error}"
+      },
+      "brightness_failed": {
+        "title": "Hata",
+        "message": "Parlaklık/kontrast uygulanamadı: {error}"
+      },
+      "saturation_failed": {
+        "title": "Hata",
+        "message": "Doygunluk uygulanamadı: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Hata",
+        "message": "Renk kaldırma uygulanamadı: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "goruntu",
       "apply_button": "Uygula",
       "color_depth_section": "Renk derinligi",
-      "brightness_contrast_section": "Parlaklik ve kontrast",
       "compression_section": "Sikistirma",
       "effects_section": "Efektler",
       "sharpness_section": "Keskinlik",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bit (RGB - renkler)",
       "depth_8bit": "8 bit (PNG paleti / JPEG gri tonlari)",
       "depth_1bit": "1 bit (siyah ve beyaz)",
-      "brightness_label": "Parlaklik: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Yeniden sikistirmayi etkinlestir",
       "compression_quality_label": "Kalite : {value}/100",
-      "sharpness_label": "Keskinlik: {value}",
       "effect_none": "Efekt yok",
       "effect_grayscale": "Gri tonlari",
       "effect_sepia": "Sepya",
@@ -991,8 +1008,6 @@
       "preview_section": "Önizleme",
       "effect_invert": "Renk tersine çevirme",
       "preview_warning": "Önizleme nihai sonuçtan farklı olabilir",
-      "effect_remove_colors": "Renk kaldırma",
-      "remove_colors_intensity_label": "Yoğunluk : {value}",
       "image_mode_section": "Görüntü modu",
       "image_mode_rgb": "RGB (renkler)",
       "image_mode_rgba": "RGBA (renkler + saydamlık)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (baskı)",
       "image_mode_1": "1 (saf siyah-beyaz)",
       "image_mode_p": "P (256 renk paleti)",
-      "saturation_section": "Doygunluk",
-      "saturation_label": "Doygunluk : {value}",
-      "saturation_viewer_title": "Doygunluk ayarı",
       "transparency_section": "Şeffaflık",
       "transparency_info": "Şeffaflık yalnızca PNG, WebP, ICO ve AVIF görüntülerine uygulanır",
       "transparency_type_label": "Tür :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Genel şeffaflık : görüntüdeki tıklanan renge yakın tüm pikselleri etkiler",
       "transparency_apply": "Uygula",
       "transparency_skipped_warning": "{count} görüntü atlandı — format saydamlıkla uyumlu değil. Dahil etmek için önce PNG'ye dönüştürün.",
-      "unsharp_section": "Uyarlamalı keskinlik",
-      "unsharp_radius_label": "Yarıçap: {value}",
-      "unsharp_percent_label": "Yoğunluk: {value} %",
-      "unsharp_threshold_label": "Eşik: {value}",
-      "unsharp_viewer_title": "Uyarlamalı keskinlik",
       "auto_levels_tooltip": "Her sayfayı analiz eder ve kontrastı en üst düzeye çıkarmak için siyah ve beyaz düzeylerini otomatik olarak ayarlar.\nSayfa sayfa seçmek için görüntüleyiciyi kullanın.",
       "transparency_unsaved_title": "Uygulanmamis degisiklikler",
       "transparency_unsaved_message": "Mevcut degisiklikler goruntüye uygulanmadi. Ne yapmak istersiniz?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Beyaz nokta damlalık",
       "black_pipette_tooltip": "Tamamen siyah olması gereken bir piksele tıklayın. Dikkat: aşırıya kaçmak kolaydır!",
       "white_pipette_tooltip": "Tamamen beyaz olması gereken bir piksele tıklayın. Dikkat: aşırıya kaçmak kolaydır!"
-    },
-    "sharpness_viewer": {
-      "title": "Keskinlik Ayarı"
-    },
-    "brightness_viewer": {
-      "title": "Parlaklık ve Kontrast Ayarı"
     },
     "compression_viewer": {
       "title": "Sıkıştırma Ayarı"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Simge boyutunu büyüt",
     "source_loose": "Bağımsız görsel",
     "source_web": "Web görseli",
-    "straighten": "Görüntüyü düzelt",
-    "clone_zone": "Bölgeyi klonla",
-    "text": "Metin ekle",
+    "straighten": "Görüntüyü otomatik olarak düzelt",
     "batch_cb7_to_cbz": "Bir klasördeki ve alt klasörlerindeki\ntüm CB7 dosyalarını CBZ'ye dönüştürür.",
     "batch_cb7_permanent_delete": "UYARI : bu seçenek işaretlenirse,\norijinal CB7 dosyaları dönüştürme sonrasında\ngeri alma imkânı olmaksızın kalıcı olarak silinir.\nYedek kopyanız olduğundan emin olun.",
     "batch_cbt_to_cbz": "Bir klasördeki ve alt klasörlerindeki\ntüm CBT dosyalarını CBZ'ye dönüştürür.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Bu dosyada yinelenen sayfalar tespit edildi.\nYinelenen sayfa yönetimi penceresini açmak için tıklayın.",
     "duplicate_indicator_none": "Yineleme tespit edilmedi",
     "straighten_mode_0": "Manuel mod (bir referans çizgisi çizin)\nModu değiştirmek için sağ tıklayın",
-    "straighten_mode_1": "Otomatik mod (eğim algılama)\nModu değiştirmek için sağ tıklayın"
+    "straighten_mode_1": "Otomatik mod (eğim algılama)\nModu değiştirmek için sağ tıklayın",
+    "sharpness_mode_0": "Görüntünün ayrıntılarını güçlendirir veya yumuşatır\nUyarlanabilir netliğe geçmek için sağ tıklayın",
+    "sharpness_mode_1": "Düz alanları koruyarak kenarları belirginleştirir\nBasit netliğe geçmek için sağ tıklayın"
   },
   "help": {
     "title": "MosaicView - Kullanım Kılavuzu",
@@ -1506,6 +1507,7 @@
     "relative_path": "Göreli yol"
   },
   "web": {
+    "web_analyzing_page": "Sayfa analiz ediliyor...",
     "web_download_progress": "İndiriliyor: {downloaded}/{total} resim...",
     "web_download_cancel": "İptal",
     "web_no_images": "Resim yok",

@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Luruskan",
     "toolbar_crop_instruction": "Lukis segi empat tepat sekeliling kawasan yang hendak dikekalkan, kemudian sahkan",
     "toolbar_clone_tooltip": "Pengklonan",
-    "toolbar_text_tooltip": "Teks"
+    "toolbar_text_tooltip": "Teks",
+    "toolbar_sharpness_tooltip": "Ketajaman",
+    "toolbar_unsharp_tooltip": "Ketajaman adaptif",
+    "sharpness_panel_label": "Ketajaman:",
+    "unsharp_radius_label": "Jejari:",
+    "unsharp_percent_label": "Keamatan:",
+    "unsharp_threshold_label": "Ambang:",
+    "toolbar_brightness_tooltip": "Kecerahan dan kontras",
+    "toolbar_brightness_instruction": "Laraskan gelangsar, pelarasan digunakan apabila dilepaskan",
+    "brightness_panel_label": "Kecerahan:",
+    "contrast_panel_label": "Kontras:",
+    "toolbar_saturation_tooltip": "Ketepuan",
+    "toolbar_saturation_instruction": "Laraskan gelangsar, pelarasan digunakan apabila dilepaskan",
+    "saturation_panel_label": "Ketepuan :",
+    "toolbar_remove_colors_tooltip": "Penyingkiran warna",
+    "toolbar_remove_colors_instruction": "Laraskan gelangsar, pelarasan digunakan apabila dilepaskan",
+    "remove_colors_panel_label": "Keamatan :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Kecerahan, kontras, warna...",
       "refresh_mosaic": "Muat semula mozek (F5)",
       "create_ico": "Buat fail .ico",
-      "clone_zone": "Klon zon...",
-      "text": "Tambah teks...",
-      "straighten_manual": "Luruskan imej secara manual...",
       "straighten_auto": "Luruskan imej secara automatik"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Fail diabaikan"
-      },
-      "no_selection_crop": {
-        "title": "Tiada pilihan",
-        "message": "Sila pilih imej untuk dipangkas."
-      },
-      "multi_selection_crop": {
-        "title": "Pilihan berbilang",
-        "message": "Anda hanya boleh memangkas satu imej pada satu masa.\nSila pilih satu imej sahaja."
-      },
-      "invalid_selection_crop": {
-        "title": "Pilihan tidak sah",
-        "message": "Hanya imej boleh dipangkas."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Fungsi tidak tersedia",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Ralat",
         "message": "Tidak dapat menggunakan teks: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Ralat",
+        "message": "Tidak dapat menggunakan ketajaman: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Ralat",
+        "message": "Tidak dapat menggunakan ketajaman adaptif: {error}"
+      },
+      "brightness_failed": {
+        "title": "Ralat",
+        "message": "Tidak dapat menggunakan kecerahan/kontras: {error}"
+      },
+      "saturation_failed": {
+        "title": "Ralat",
+        "message": "Tidak dapat menggunakan ketepuan: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Ralat",
+        "message": "Tidak dapat menggunakan penyingkiran warna: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "imej",
       "apply_button": "Guna",
       "color_depth_section": "Kedalaman warna",
-      "brightness_contrast_section": "Kecerahan dan kontras",
       "compression_section": "Mampatan",
       "effects_section": "Kesan",
       "sharpness_section": "Ketajaman",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bit (RGB - warna)",
       "depth_8bit": "8 bit (palet PNG / skala kelabu JPEG)",
       "depth_1bit": "1 bit (hitam dan putih)",
-      "brightness_label": "Kecerahan: {value}",
-      "contrast_label": "Kontras: {value}",
       "compression_enable": "Dayakan mampatan semula",
       "compression_quality_label": "Kualiti : {value}/100",
-      "sharpness_label": "Ketajaman: {value}",
       "effect_none": "Tiada kesan",
       "effect_grayscale": "Ton kelabu",
       "effect_sepia": "Sepia",
@@ -991,8 +1008,6 @@
       "preview_section": "Pratonton",
       "effect_invert": "Penyongsangan warna",
       "preview_warning": "Pratonton mungkin berbeza daripada hasil akhir",
-      "effect_remove_colors": "Penyingkiran warna",
-      "remove_colors_intensity_label": "Keamatan : {value}",
       "image_mode_section": "Mod imej",
       "image_mode_rgb": "RGB (warna)",
       "image_mode_rgba": "RGBA (warna + ketelusan)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (cetakan)",
       "image_mode_1": "1 (hitam-putih tulen)",
       "image_mode_p": "P (palet 256 warna)",
-      "saturation_section": "Ketepuan",
-      "saturation_label": "Ketepuan : {value}",
-      "saturation_viewer_title": "Pelarasan ketepuan",
       "transparency_section": "Ketelusan",
       "transparency_info": "Ketelusan hanya terpakai pada imej PNG, WebP, ICO dan AVIF",
       "transparency_type_label": "Jenis :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Ketelusan global : mempengaruhi semua piksel imej yang warnanya hampir sama dengan yang diklik",
       "transparency_apply": "Guna",
       "transparency_skipped_warning": "{count} imej dilangkau — format tidak serasi dengan ketelusan. Untuk menyertakannya, tukarkan ke PNG terlebih dahulu.",
-      "unsharp_section": "Ketajaman adaptif",
-      "unsharp_radius_label": "Jejari: {value}",
-      "unsharp_percent_label": "Keamatan: {value} %",
-      "unsharp_threshold_label": "Ambang: {value}",
-      "unsharp_viewer_title": "Ketajaman adaptif",
       "auto_levels_tooltip": "Menganalisis setiap halaman dan menyesuaikan tahap hitam dan putih secara automatik untuk memaksimumkan kontras.\nUntuk memilih halaman demi halaman, gunakan penampil.",
       "transparency_unsaved_title": "Perubahan belum digunakan",
       "transparency_unsaved_message": "Perubahan semasa belum digunakan pada imej. Apa yang anda ingin lakukan?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Picagari titik putih",
       "black_pipette_tooltip": "Klik pada piksel yang sepatutnya hitam sepenuhnya. Awas: mudah melampau!",
       "white_pipette_tooltip": "Klik pada piksel yang sepatutnya putih sepenuhnya. Awas: mudah melampau!"
-    },
-    "sharpness_viewer": {
-      "title": "Pelarasan Ketajaman"
-    },
-    "brightness_viewer": {
-      "title": "Pelarasan Kecerahan dan Kontras"
     },
     "compression_viewer": {
       "title": "Pelarasan Mampatan"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Besarkan saiz ikon",
     "source_loose": "Imej bebas",
     "source_web": "Imej web",
-    "straighten": "Luruskan imej",
-    "clone_zone": "Klon zon",
-    "text": "Tambah teks",
+    "straighten": "Luruskan imej secara automatik",
     "batch_cb7_to_cbz": "Menukar semua fail CB7 dalam direktori\ndan subdirektorinya kepada CBZ.",
     "batch_cb7_permanent_delete": "AMARAN : jika pilihan ini ditanda,\nfail CB7 asal akan dipadamkan secara kekal\nselepas penukaran tanpa kemungkinan pemulihan.\nPastikan anda mempunyai sandaran.",
     "batch_cbt_to_cbz": "Menukar semua fail CBT dalam direktori\ndan subdirektorinya kepada CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "Halaman pendua dikesan dalam fail ini.\nKlik untuk membuka tetingkap pengurusan halaman pendua.",
     "duplicate_indicator_none": "Tiada pendua dikesan",
     "straighten_mode_0": "Mod manual (lukis garis rujukan)\nKlik kanan untuk menukar mod",
-    "straighten_mode_1": "Mod automatik (pengesanan kecondongan)\nKlik kanan untuk menukar mod"
+    "straighten_mode_1": "Mod automatik (pengesanan kecondongan)\nKlik kanan untuk menukar mod",
+    "sharpness_mode_0": "Meningkatkan atau melembutkan perincian imej\nKlik kanan untuk bertukar kepada ketajaman adaptif",
+    "sharpness_mode_1": "Menonjolkan tepi sambil mengekalkan kawasan rata\nKlik kanan untuk bertukar kepada ketajaman ringkas"
   },
   "help": {
     "title": "MosaicView - Manual Pengguna",
@@ -1506,6 +1507,7 @@
     "relative_path": "Laluan relatif"
   },
   "web": {
+    "web_analyzing_page": "Menganalisis halaman...",
     "web_download_progress": "Memuat turun: {downloaded}/{total} imej...",
     "web_download_cancel": "Batal",
     "web_no_images": "Tiada imej",

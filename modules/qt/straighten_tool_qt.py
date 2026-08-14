@@ -59,6 +59,7 @@ class _StraightenAnglePanel(QWidget):
         # restait invisible malgré le style posé dans _apply_theme (signalé
         # par l'utilisateur en conditions réelles).
         self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setMouseTracking(True)
         self._viewer = viewer
         self._angle_category: str | None = None
         self._angle_vertical_sign = 1
@@ -116,6 +117,16 @@ class _StraightenAnglePanel(QWidget):
         x = (canvas.width() - self.width()) // 2
         y = 8 + self._viewer._toolbar.height() + 6
         self.move(max(0, x), y)
+
+    def enterEvent(self, event):
+        # Suspend le timer d'auto-masquage de la barre (dont ce panneau suit
+        # désormais la visibilité, idees.txt #3 décision 2026-08-14) tant que
+        # la souris reste sur ce panneau — pas seulement redémarré à chaque
+        # mouvement, complètement arrêté (voir _ViewerToolbar.pause_hide).
+        self._viewer._toolbar.pause_hide()
+
+    def leaveEvent(self, event):
+        self._viewer._toolbar.resume_hide()
 
     # ── Ligne tracée / éditée ────────────────────────────────────────────────
 

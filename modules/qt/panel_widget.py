@@ -294,6 +294,7 @@ class PanelWidget(QWidget):
         _state_module.state = self._state
         self._state.renumber_mode = self._renumber_config().get_renumber_mode()
         self._state.straighten_mode = self._renumber_config().get_straighten_mode()
+        self._state.sharpness_mode = self._renumber_config().get_sharpness_mode()
 
         # ── Fichiers récents ──────────────────────────────────────────────────
         _recent_files_module.init_recent_files()
@@ -691,6 +692,11 @@ class PanelWidget(QWidget):
                         _state_module.state = panel_state
             return _wrapped
         wrapped = {k: (_wrap(v) if callable(v) else v) for k, v in raw.items()}
+        # State explicite du panneau propriétaire de ces callbacks — à préférer au
+        # singleton _state_module.state (voir commentaire du wrapper ci-dessus :
+        # ce dernier n'est correct que de façon synchrone, jamais dans un callback
+        # Qt asynchrone comme menu.aboutToShow).
+        wrapped["state"] = panel_state
         # Injecte la version disponible si une mise à jour a été détectée
         latest = getattr(self._main_window, "_update_latest", None)
         if latest:
@@ -1093,7 +1099,7 @@ class PanelWidget(QWidget):
 
     def _render_mosaic_invalidating(self):
         from modules.qt.mosaic_canvas import invalidate_pixmap_cache
-        invalidate_pixmap_cache()
+        invalidate_pixmap_cache(self._state)
         self._canvas.render_mosaic()
 
     def _file_close_args(self) -> dict:
@@ -1417,101 +1423,6 @@ class PanelWidget(QWidget):
         self._update_status_bar()
         self._refresh_toolbar_states()
 
-    def _straighten_btn_action(self):
-        """Clic gauche sur l'icône straighten : ouvre le redressement manuel
-        (mode 0, dans la visionneuse principale avec l'outil Redressage
-        présélectionné) ou lance le redressement automatique (mode 1)."""
-        mode = getattr(self._state, "straighten_mode", 0)
-        if mode == 1:
-            from modules.qt.deskew_qt import deskew_selected_qt
-            deskew_selected_qt(self._deskew_callbacks())
-        else:
-            self._straighten_selected_image()
-
-    def _straighten_selected_image(self):
-        """Ouvre la visionneuse principale sur la première image sélectionnée
-        valide avec l'outil Redressage présélectionné (sinon la première image
-        de la mosaïque) — même logique de secours que l'ancien
-        show_straighten_viewer, en pratique toujours appelée avec une
-        sélection valide (has_selected_images() gate déjà les 3 points
-        d'entrée en amont)."""
-        state = self._state
-        image_indices = [
-            i for i, e in enumerate(state.images_data)
-            if e.get('is_image') and not e.get('is_corrupted')
-        ]
-        if not image_indices:
-            return
-        idx = image_indices[0]
-        if state.selected_indices:
-            selected_valid = {
-                i for i in state.selected_indices
-                if i < len(state.images_data)
-                and state.images_data[i].get('is_image')
-                and not state.images_data[i].get('is_corrupted')
-            }
-            if selected_valid:
-                idx = min(selected_valid)
-        self._open_image_viewer(idx, initial_tool="straighten")
-
-    def _clone_selected_image(self):
-        """Ouvre la visionneuse principale sur la première image sélectionnée
-        valide avec l'outil Clonage présélectionné (sinon la première image
-        de la mosaïque) — même logique de secours que l'ancien
-        show_clone_zone_viewer (clone_zone_viewer_qt.py, supprimé), reproduite
-        à l'identique de _straighten_selected_image ci-dessus."""
-        state = self._state
-        image_indices = [
-            i for i, e in enumerate(state.images_data)
-            if e.get('is_image') and not e.get('is_corrupted')
-        ]
-        if not image_indices:
-            return
-        idx = image_indices[0]
-        if state.selected_indices:
-            selected_valid = {
-                i for i in state.selected_indices
-                if i < len(state.images_data)
-                and state.images_data[i].get('is_image')
-                and not state.images_data[i].get('is_corrupted')
-            }
-            if selected_valid:
-                idx = min(selected_valid)
-        self._open_image_viewer(idx, initial_tool="clone")
-
-    def _text_selected_image(self):
-        """Ouvre la visionneuse principale sur la première image sélectionnée
-        valide avec l'outil Texte présélectionné (sinon la première image de
-        la mosaïque) — même logique de secours que l'ancien show_text_viewer
-        (text_viewer_qt.py, supprimé), reproduite à l'identique de
-        _straighten_selected_image/_clone_selected_image ci-dessus."""
-        state = self._state
-        image_indices = [
-            i for i, e in enumerate(state.images_data)
-            if e.get('is_image') and not e.get('is_corrupted')
-        ]
-        if not image_indices:
-            return
-        idx = image_indices[0]
-        if state.selected_indices:
-            selected_valid = {
-                i for i in state.selected_indices
-                if i < len(state.images_data)
-                and state.images_data[i].get('is_image')
-                and not state.images_data[i].get('is_corrupted')
-            }
-            if selected_valid:
-                idx = min(selected_valid)
-        self._open_image_viewer(idx, initial_tool="text")
-
-    def _toggle_straighten_mode(self):
-        current = getattr(self._state, "straighten_mode", 0)
-        new_mode = 1 - current
-        self._state.straighten_mode = new_mode
-        self._renumber_config().set_straighten_mode(new_mode)
-        self._refresh_toolbar_states()
-        self._refresh_open_image_viewers()
-
     def _set_straighten_mode(self, mode: int):
         """Persiste le mode manuel/auto sans le basculer (déjà fait par
         l'appelant) — utilisé par la barre d'outils de la visionneuse
@@ -1519,6 +1430,17 @@ class PanelWidget(QWidget):
         directement state.straighten_mode avant d'appeler ce callback."""
         self._renumber_config().set_straighten_mode(mode)
         self._refresh_toolbar_states()
+        self._refresh_open_image_viewers()
+
+    def _set_sharpness_mode(self, mode: int):
+        """Persiste le mode netteté simple/adaptative sans le basculer (déjà
+        fait par l'appelant) — utilisé par la barre d'outils de la visionneuse
+        principale, dont le clic droit sur l'icône Netteté bascule directement
+        state.sharpness_mode avant d'appeler ce callback. Pas de bouton
+        équivalent dans la colonne d'icônes verticale (contrairement au
+        redressement) : pas de _refresh_toolbar_states() nécessaire, seule la
+        synchronisation entre visionneuses ouvertes (split-view) est utile."""
+        self._renumber_config().set_sharpness_mode(mode)
         self._refresh_open_image_viewers()
 
     @staticmethod
@@ -1676,6 +1598,7 @@ class PanelWidget(QWidget):
             "canvas":             self._canvas,
             "on_bookmark_changed": self._on_bookmark_changed,
             "set_straighten_mode": self._set_straighten_mode,
+            "set_sharpness_mode": self._set_sharpness_mode,
         }
 
     def _on_bookmark_changed(self, bookmarked_real_idx: int | None):
@@ -1687,24 +1610,6 @@ class PanelWidget(QWidget):
 
     def _open_image_viewer(self, idx: int, initial_tool: str | None = None):
         _open_image_viewer_qt(self, idx, self._image_viewer_callbacks(), initial_tool=initial_tool)
-
-    def _crop_selected_image(self):
-        state = self._state
-        if not state.selected_indices:
-            _WarnDialog(self, "messages.warnings.no_selection_crop.title",
-                        "messages.warnings.no_selection_crop.message").show_nonmodal()
-            return
-        if len(state.selected_indices) > 1:
-            _WarnDialog(self, "messages.warnings.multi_selection_crop.title",
-                        "messages.warnings.multi_selection_crop.message").show_nonmodal()
-            return
-        idx = list(state.selected_indices)[0]
-        entry = state.images_data[idx]
-        if not entry["is_image"]:
-            _WarnDialog(self, "messages.warnings.invalid_selection_crop.title",
-                        "messages.warnings.invalid_selection_crop.message").show_nonmodal()
-            return
-        self._open_image_viewer(idx, initial_tool="crop")
 
     def _image_transforms_callbacks(self) -> dict:
         return {
@@ -2259,9 +2164,16 @@ class PanelWidget(QWidget):
     # Taille des vignettes
     # ──────────────────────────────────────────────────────────────────────────
 
+    def _thumb_size_config(self):
+        """Retourne l'objet config approprié (ConfigManager ou Panel2Config) selon le panneau,
+        pour que panel1 et panel2 gardent chacun leur propre taille de vignettes."""
+        if self._is_primary:
+            return get_config_manager()
+        from modules.qt.config_manager import Panel2Config
+        return Panel2Config(get_config_manager())
+
     def _init_thumb_size(self):
-        cfg = get_config_manager()
-        saved = cfg.get_thumbnail_size()
+        saved = self._thumb_size_config().get_thumbnail_size()
         size_names_to_index = {'small': 0, 'normal': 1, 'large': 2}
         index = size_names_to_index.get(saved, 1)
         self._apply_thumb_size(index, save=False)
@@ -2278,7 +2190,7 @@ class PanelWidget(QWidget):
         st.padding_x = 15 if index == 0 else 5
         if save:
             size_names = ['small', 'normal', 'large']
-            get_config_manager().set_thumbnail_size(size_names[index])
+            self._thumb_size_config().set_thumbnail_size(size_names[index])
         prev = _state_module.state
         _state_module.state = st
         try:

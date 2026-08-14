@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Ravnanje",
     "toolbar_crop_instruction": "Nacrtajte pravokutnik oko područja koje želite zadržati, zatim potvrdite",
     "toolbar_clone_tooltip": "Kloniranje",
-    "toolbar_text_tooltip": "Tekst"
+    "toolbar_text_tooltip": "Tekst",
+    "toolbar_sharpness_tooltip": "Oštrina",
+    "toolbar_unsharp_tooltip": "Prilagodljiva oštrina",
+    "sharpness_panel_label": "Oštrina:",
+    "unsharp_radius_label": "Polumjer:",
+    "unsharp_percent_label": "Intenzitet:",
+    "unsharp_threshold_label": "Prag:",
+    "toolbar_brightness_tooltip": "Svjetlina i kontrast",
+    "toolbar_brightness_instruction": "Prilagodite klizače, prilagodba se primjenjuje pri otpuštanju",
+    "brightness_panel_label": "Svjetlina:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Zasićenost",
+    "toolbar_saturation_instruction": "Prilagodite klizač, prilagodba se primjenjuje pri otpuštanju",
+    "saturation_panel_label": "Zasićenost :",
+    "toolbar_remove_colors_tooltip": "Uklanjanje boja",
+    "toolbar_remove_colors_instruction": "Prilagodite klizač, prilagodba se primjenjuje pri otpuštanju",
+    "remove_colors_panel_label": "Intenzitet :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Svjetlina, kontrast, boje...",
       "refresh_mosaic": "Osvježi mozaik (F5)",
       "create_ico": "Stvori .ico datoteku",
-      "clone_zone": "Kloniranje zone...",
-      "text": "Dodaj tekst...",
-      "straighten_manual": "Ručno ispravi sliku...",
       "straighten_auto": "Automatski ispravi sliku"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Datoteke zanemarene"
-      },
-      "no_selection_crop": {
-        "title": "Nema odabira",
-        "message": "Molimo odaberite sliku za izrezivanje."
-      },
-      "multi_selection_crop": {
-        "title": "Višestruki odabir",
-        "message": "Možete izrezati samo jednu sliku istovremeno.\nMolimo odaberite samo jednu sliku."
-      },
-      "invalid_selection_crop": {
-        "title": "Nevažeći odabir",
-        "message": "Mogu se izrezati samo slike."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Funkcija nije dostupna",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Pogreška",
         "message": "Tekst nije moguće primijeniti: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Pogreška",
+        "message": "Oštrinu nije bilo moguće primijeniti: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Pogreška",
+        "message": "Prilagodljivu oštrinu nije bilo moguće primijeniti: {error}"
+      },
+      "brightness_failed": {
+        "title": "Pogreška",
+        "message": "Svjetlinu/kontrast nije bilo moguće primijeniti: {error}"
+      },
+      "saturation_failed": {
+        "title": "Pogreška",
+        "message": "Zasićenost nije bilo moguće primijeniti: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Pogreška",
+        "message": "Uklanjanje boja nije bilo moguće primijeniti: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "slike",
       "apply_button": "Primijeni",
       "color_depth_section": "Dubina boje",
-      "brightness_contrast_section": "Svjetlina i kontrast",
       "compression_section": "Kompresija",
       "effects_section": "Efekti",
       "sharpness_section": "Ostrina",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bita (RGB - boje)",
       "depth_8bit": "8 bita (paleta PNG / sive nijanse JPEG)",
       "depth_1bit": "1 bit (crno-bijelo)",
-      "brightness_label": "Svjetlina: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Omoguci ponovnu kompresiju",
       "compression_quality_label": "Kvaliteta : {value}/100",
-      "sharpness_label": "Ostrina: {value}",
       "effect_none": "Bez efekta",
       "effect_grayscale": "Nijanse sive",
       "effect_sepia": "Sepija",
@@ -991,8 +1008,6 @@
       "preview_section": "Pregled",
       "effect_invert": "Inverzija boja",
       "preview_warning": "Pretpregled se može razlikovati od konačnog rezultata",
-      "effect_remove_colors": "Uklanjanje boja",
-      "remove_colors_intensity_label": "Intenzitet : {value}",
       "image_mode_section": "Način slike",
       "image_mode_rgb": "RGB (boje)",
       "image_mode_rgba": "RGBA (boje + prozirnost)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (tisak)",
       "image_mode_1": "1 (čisti crno-bijeli)",
       "image_mode_p": "P (paleta od 256 boja)",
-      "saturation_section": "Zasićenost",
-      "saturation_label": "Zasićenost : {value}",
-      "saturation_viewer_title": "Prilagodba zasićenosti",
       "transparency_section": "Prozirnost",
       "transparency_info": "Prozirnost se primjenjuje samo na PNG, WebP, ICO i AVIF slike",
       "transparency_type_label": "Vrsta :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Globalna prozirnost : utječe na sve piksele slike čija je boja bliska klikanoj",
       "transparency_apply": "Primijeni",
       "transparency_skipped_warning": "{count} slika(e) preskočena(e) — format nije kompatibilan s prozirnosti. Da biste ih uključili, prvo ih pretvorite u PNG.",
-      "unsharp_section": "Adaptivna oštrina",
-      "unsharp_radius_label": "Polumjer: {value}",
-      "unsharp_percent_label": "Intenzitet: {value} %",
-      "unsharp_threshold_label": "Prag: {value}",
-      "unsharp_viewer_title": "Adaptivna oštrina",
       "auto_levels_tooltip": "Analizira svaku stranicu i automatski prilagođava razine crne i bijele radi maksimalnog kontrasta.\nZa odabir stranice po stranicu koristite preglednik.",
       "transparency_unsaved_title": "Neprimijenjene promjene",
       "transparency_unsaved_message": "Trenutne promjene nisu primijenjene na sliku. Što želite učiniti?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Pipeta bijele tocke",
       "black_pipette_tooltip": "Kliknite na piksel koji bi trebao biti potpuno crn. Oprez: lako je pretjerati!",
       "white_pipette_tooltip": "Kliknite na piksel koji bi trebao biti potpuno bijel. Oprez: lako je pretjerati!"
-    },
-    "sharpness_viewer": {
-      "title": "Podešavanje oštrine"
-    },
-    "brightness_viewer": {
-      "title": "Podešavanje svjetline i kontrasta"
     },
     "compression_viewer": {
       "title": "Podešavanje kompresije"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Povećaj veličinu ikona",
     "source_loose": "Slobodna slika",
     "source_web": "Web slika",
-    "straighten": "Ispravi sliku",
-    "clone_zone": "Kloniranje zone",
-    "text": "Dodaj tekst",
+    "straighten": "Automatski izravnaj sliku",
     "batch_cb7_to_cbz": "Konvertira sve CB7 datoteke u mapi\ni njezinim podmapama u CBZ.",
     "batch_cb7_permanent_delete": "UPOZORENJE : ako je ova opcija označena,\noriginalne CB7 datoteke bit će trajno obrisane\nnakon konverzije bez mogućnosti oporavka.\nUvjerite se da imate sigurnosnu kopiju.",
     "batch_cbt_to_cbz": "Konvertira sve CBT datoteke u mapi\ni njezinim podmapama u CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "U ovoj datoteci otkrivene su duplicirane stranice.\nKliknite za otvaranje prozora za upravljanje duplikatima.",
     "duplicate_indicator_none": "Nisu pronađeni duplikati",
     "straighten_mode_0": "Ručni način rada (nacrtajte referentnu liniju)\nDesni klik za promjenu načina rada",
-    "straighten_mode_1": "Automatski način rada (otkrivanje nagiba)\nDesni klik za promjenu načina rada"
+    "straighten_mode_1": "Automatski način rada (otkrivanje nagiba)\nDesni klik za promjenu načina rada",
+    "sharpness_mode_0": "Pojačava ili ublažava detalje slike\nDesni klik za prebacivanje na prilagodljivu oštrinu",
+    "sharpness_mode_1": "Naglašava obrise štedeći ujednačena područja\nDesni klik za prebacivanje na jednostavnu oštrinu"
   },
   "help": {
     "title": "MosaicView - Upute za korištenje",
@@ -1506,6 +1507,7 @@
     "relative_path": "Relativna putanja"
   },
   "web": {
+    "web_analyzing_page": "Analiziranje stranice...",
     "web_download_progress": "Preuzimanje: {downloaded}/{total} slika...",
     "web_download_cancel": "Odustani",
     "web_no_images": "Nema slika",

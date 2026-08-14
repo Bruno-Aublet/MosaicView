@@ -120,11 +120,29 @@ class OverlayTooltip:
             self._tracked_widgets.append(widget)
 
     def set_tracked_html(self, html: str, widget=None):
-        """Met à jour le texte d'un widget précis, ou de tous si widget=None."""
+        """Met à jour le texte d'un widget précis, ou de tous si widget=None.
+
+        Ne rafraîchit PAS un tooltip déjà affiché à l'écran — le nouveau texte
+        ne sera visible qu'au prochain Enter/MouseMove sur le widget. Si le
+        tooltip peut changer sans mouvement de souris (ex. bascule bi-mode par
+        clic droit sur l'icône déjà survolée), appeler force_refresh_visible()
+        juste après pour forcer le réaffichage immédiat."""
         if widget is not None:
             self._tracker.set_widget_html(widget, html)
         else:
             self._tracker.set_html(html)
+
+    def force_refresh_visible(self, widget):
+        """Si le tooltip est actuellement affiché ET suit ce widget précis,
+        le réaffiche immédiatement avec son texte à jour — sans ça, un texte
+        mis à jour par set_tracked_html() pendant que le curseur reste
+        parfaitement immobile sur le widget (ex. juste après un clic droit)
+        ne se rafraîchit qu'au prochain mouvement de souris détecté."""
+        if not self._label.isVisible():
+            return
+        html = self._tracker._html_map.get(widget, self._tracker._default_html)
+        if html:
+            self.show_tooltip(html)
 
     def untrack(self, widget):
         """Retire le suivi sur widget."""

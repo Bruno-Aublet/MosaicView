@@ -138,20 +138,51 @@ def get_visible_entries_qt(state) -> list[dict]:
 
     return visible
 
+# Résolution du state réellement propriétaire d'un item de scène.
+#
+# modules.qt.state.state est un pointeur GLOBAL unique, réassigné temporairement
+# vers le state du panneau actif à chaque opération (pattern historique, présent
+# avant le split-view). En split-view, deux MosaicCanvas coexistent, chacun avec
+# son propre AppState (self._state) — mais les items de scène (ThumbnailItem,
+# DirItem) n'avaient jusqu'ici aucun moyen de lire directement le state de LEUR
+# canvas : ils passaient par ce pointeur global, correct uniquement si l'appelant
+# a pris soin de le pointer sur le bon panneau au bon moment. Un oubli ou un
+# mauvais ordre (ex. le state global réassigné sur le panneau inactif juste avant
+# qu'un resize/relayout se déclenche sur le panneau actif) fait lire à un item la
+# taille de vignette (thumb_w/thumb_h) d'un AUTRE panneau — cadre de sélection et
+# grille visuellement corrompus. Diagnostiqué le 2026-08-14 (changement de langue
+# pendant l'ouverture du dropdown de langue en split-view).
+#
+# Fix : quand une scene est fournie, retrouver le state via son/ses view(s)
+# (MosaicCanvas est un QGraphicsView, scene.views() les retourne) plutôt que de
+# lire le pointeur global. Fallback sur le global si scene est None ou n'a pas
+# encore de vue attachée (ex. pendant la construction d'un item, avant addItem).
+def _resolve_state(scene=None):
+    if scene is not None:
+        try:
+            views = scene.views()
+        except RuntimeError:
+            views = []
+        for v in views:
+            st = getattr(v, "_state", None)
+            if st is not None:
+                return st
+    return _state_module.state
+
 # Accesseurs dynamiques — lisent state.thumb_w/h si disponible, sinon valeurs par défaut
-def _tw() -> int:
-    st = _state_module.state
+def _tw(scene=None) -> int:
+    st = _resolve_state(scene)
     return st.thumb_w if st and hasattr(st, 'thumb_w') else 150
 
-def _th() -> int:
-    st = _state_module.state
+def _th(scene=None) -> int:
+    st = _resolve_state(scene)
     return st.thumb_h if st and hasattr(st, 'thumb_h') else 200
 
-def _cw() -> int:
-    return _tw() + PAD_X * 2
+def _cw(scene=None) -> int:
+    return _tw(scene) + PAD_X * 2
 
-def _ch() -> int:
-    return _th() + PAD_Y * 2 + LABEL_H
+def _ch(scene=None) -> int:
+    return _th(scene) + PAD_Y * 2 + LABEL_H
 
 SEL_OUTLINE = QColor(0, 0, 255)       # bleu pur — identique à outline="blue" tkinter
 FOCUS_COLOR = QColor(128, 128, 128)   # gris — identique à outline="gray" tkinter
@@ -295,9 +326,9 @@ def _get_pixmap_for_size(entry: dict, tw: int, th: int) -> QPixmap:
         return large_pm
     return large_pm.scaled(tw, th, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
-def invalidate_pixmap_cache():
+def invalidate_pixmap_cache(state=None):
     """Efface qt_pixmap_large et qt_qimage_large des entries (appeler lors d'un nouveau chargement)."""
-    st = _state_module.state
+    st = state if state is not None else _state_module.state
     if st and hasattr(st, "images_data"):
         for entry in st.images_data:
             entry.pop("qt_pixmap_large", None)
@@ -316,12 +347,13 @@ class DirItem(QGraphicsItem):
     - Cadre bleu de sélection (set_selected)
     - Cadre orange pointillé de focus (set_focused)
     """
-    def __init__(self, entry: dict, visual_idx: int):
+    def __init__(self, entry: dict, visual_idx: int, scene: 'QGraphicsScene' = None):
         super().__init__()
         self.entry      = entry
         self.visual_idx = visual_idx
         self._selected  = False
         self._focused   = False
+        self._scene     = scene
 
         self._pixmap    = self._build_pixmap()
         self._label     = self._build_label()
@@ -331,7 +363,7 @@ class DirItem(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsSelectable, False)
 
     def _build_pixmap(self) -> QPixmap:
-        tw, th = _tw(), _th()
+        tw, th = _tw(self._scene), _th(self._scene)
         icon_pil = get_icon_pil_for_entry(self.entry)
         if icon_pil is not None:
             try:
@@ -350,10 +382,11 @@ class DirItem(QGraphicsItem):
         return name.rstrip("/").split("/")[-1]  # dernier segment du chemin
 
     def boundingRect(self) -> QRectF:
-        return QRectF(-4, -4, _tw() + 8, _th() + LABEL_H + 8)
+        tw, th = _tw(self._scene), _th(self._scene)
+        return QRectF(-4, -4, tw + 8, th + LABEL_H + 8)
 
     def paint(self, painter: QPainter, option, widget=None):
-        tw, th = _tw(), _th()
+        tw, th = _tw(self._scene), _th(self._scene)
 
         painter.drawPixmap(0, 0, self._pixmap)
 
@@ -396,7 +429,7 @@ class DirItem(QGraphicsItem):
         from modules.qt.tooltips_qt import get_directory_tooltip_text, get_folder_up_tooltip_text
         if self.entry.get("is_parent_dir"):
             return get_folder_up_tooltip_text()
-        return get_directory_tooltip_text(_state_module.state, self.entry.get("orig_name", ""))
+        return get_directory_tooltip_text(_resolve_state(self._scene), self.entry.get("orig_name", ""))
 
     def _canvas(self):
         views = self.scene().views() if self.scene() else []
@@ -498,8 +531,9 @@ class NameEdit(QTextEdit):
             self._entry["orig_name"] = content
         else:
             self._entry["orig_name"] = content + ext
-        if _state_module.state:
-            _state_module.state.modified = True
+        st = _resolve_state(self._scene)
+        if st:
+            st.modified = True
         if self._update:
             self._update()
         # setAlignment pendant textChanged crashe Qt — différer hors du signal
@@ -613,11 +647,11 @@ class ThumbnailItem(QGraphicsItem):
 
     # ── Construction pixmap ────────────────────────────────────────────────────
     def _build_pixmap(self, entry: dict) -> QPixmap:
-        return _get_pixmap_for_size(entry, _tw(), _th())
+        return _get_pixmap_for_size(entry, _tw(self._scene), _th(self._scene))
 
     def attach_proxy(self, scene):
         """Crée les QGraphicsTextItem nom + extension (légers, pas de QTextEdit)."""
-        tw, th = _tw(), _th()
+        tw, th = _tw(self._scene), _th(self._scene)
         font8  = _get_current_font(8)
         theme  = get_current_theme()
 
@@ -661,7 +695,7 @@ class ThumbnailItem(QGraphicsItem):
         """Remplace le QGraphicsTextItem par un NameEdit éditable."""
         if self._name_edit is not None:
             return  # déjà actif
-        tw, th = _tw(), _th()
+        tw, th = _tw(self._scene), _th(self._scene)
 
         self._name_text_item.setVisible(False)
 
@@ -697,7 +731,7 @@ class ThumbnailItem(QGraphicsItem):
         if self._ext_item is not None:
             ext_h    = self._ext_item.boundingRect().height()
             offset_y = (self._name_line_h - ext_h) / 2
-            self._ext_item.setPos(self._name_x + self._name_w + 2, _th() + 2 + offset_y)
+            self._ext_item.setPos(self._name_x + self._name_w + 2, _th(self._scene) + 2 + offset_y)
 
         # Détruit proxy + NameEdit
         if self._proxy_name is not None:
@@ -714,11 +748,12 @@ class ThumbnailItem(QGraphicsItem):
 
     # ── Géométrie ──────────────────────────────────────────────────────────────
     def boundingRect(self) -> QRectF:
-        return QRectF(-4, -4, _tw() + 8, _th() + LABEL_H + 8)
+        tw, th = _tw(self._scene), _th(self._scene)
+        return QRectF(-4, -4, tw + 8, th + LABEL_H + 8)
 
     # ── Rendu ──────────────────────────────────────────────────────────────────
     def paint(self, painter: QPainter, option, widget=None):
-        tw, th = _tw(), _th()
+        tw, th = _tw(self._scene), _th(self._scene)
         is_corrupted = self.entry.get("is_corrupted", False)
 
         painter.drawPixmap(0, 0, self._pixmap)
@@ -795,7 +830,7 @@ class ThumbnailItem(QGraphicsItem):
         """Retourne True si la position (coords locales) est dans la zone du nom."""
         if not hasattr(self, '_name_x'):
             return False
-        th = _th()
+        th = _th(self._scene)
         line_h = self._name_line_h if hasattr(self, '_name_line_h') else 20
         return (self._name_x <= pos.x() <= self._name_x + self._name_w
                 and th + 4 <= pos.y() <= th + 4 + line_h)
@@ -935,7 +970,7 @@ class MosaicCanvas(QGraphicsView):
         font8 = _get_current_font(8)
         fm = QFontMetrics(font8)
         line_h = fm.lineSpacing() + 4
-        th = _th()
+        th = _th(self._scene)
         for item in self._items:
             if isinstance(item, ThumbnailItem):
                 if item._name_text_item is not None:
@@ -1070,12 +1105,12 @@ class MosaicCanvas(QGraphicsView):
         for visual_idx, entry in enumerate(visible):
             col = visual_idx % cols
             row = visual_idx // cols
-            x   = col * _cw() + PAD_X
-            y   = row * _ch() + PAD_Y
+            x   = col * _cw(self._scene) + PAD_X
+            y   = row * _ch(self._scene) + PAD_Y
 
             if entry.get("is_dir") or entry.get("is_parent_dir"):
                 # Dossier virtuel ou icône ".."
-                item = DirItem(entry, visual_idx)
+                item = DirItem(entry, visual_idx, self._scene)
                 item.setPos(x, y)
                 self._scene.addItem(item)
                 self._items.append(item)
@@ -1103,6 +1138,41 @@ class MosaicCanvas(QGraphicsView):
 
         self._scene.setSceneRect(self._scene.itemsBoundingRect().adjusted(-5, -5, PAD_X, PAD_Y))
         self.status_changed.emit()
+
+    def refresh_thumbnails_visual(self, real_indices):
+        """Force le repaint immédiat des vignettes précises données par
+        real_indices (indices dans state.images_data), sans attendre le
+        prochain repaint naturel de la vue.
+
+        Nécessaire après un undo/redo (voir undo_redo_qt.py::restore_state_qt) :
+        quand la fenêtre principale n'est pas la fenêtre active (ex.
+        visionneuse ouverte par-dessus, undo/redo déclenché depuis elle), Qt
+        ne priorise pas le redessin de cette mosaïque non active — les items
+        sont bien à jour en mémoire (qt_pixmap_large déjà invalidé/reconstruit
+        par render_mosaic()) mais restent visuellement périmés à l'écran
+        jusqu'à un futur repaint naturel (d'où l'impression qu'"il faut
+        plusieurs undo/redo" pour voir la mise à jour). Diagnostiqué le
+        2026-08-14.
+
+        Cible UNIQUEMENT les items concernés (pas self.viewport().update()
+        global) : sur un comics de 1500 pages, ne redessine que les quelques
+        vignettes réellement modifiées par CETTE opération d'historique, pas
+        tout le viewport visible — demande explicite de l'utilisateur."""
+        real_indices = set(real_indices)
+        if not real_indices:
+            return
+        for item in self._items:
+            if isinstance(item, ThumbnailItem) and item.real_idx in real_indices:
+                # item.update() seul marque la zone sale côté scène, mais ne
+                # suffit pas à garantir un repaint effectif à l'écran quand la
+                # fenêtre top-level n'est pas active (ex. visionneuse ouverte
+                # par-dessus) — confirmé par diagnostic 2026-08-14 : le
+                # matching et l'appel avaient lieu, sans effet visuel. On
+                # force donc explicitement le viewport sur le rectangle
+                # (converti scène → viewport) de CET item précis, pas tout le
+                # viewport — coût borné à cette seule vignette.
+                rect = self.mapFromScene(item.sceneBoundingRect()).boundingRect()
+                self.viewport().repaint(rect)
 
     def _apply_theme_bg(self):
         """Applique la couleur de fond du canvas selon le thème (identique à l'original)."""
@@ -1192,7 +1262,7 @@ class MosaicCanvas(QGraphicsView):
 
     def _cols(self) -> int:
         w = self.viewport().width()
-        return max(1, w // _cw())
+        return max(1, w // _cw(self._scene))
 
     def _reorder_items_after_drop(self):
         """
@@ -1225,7 +1295,7 @@ class MosaicCanvas(QGraphicsView):
             # Repositionne
             col = real_idx % cols
             row = real_idx // cols
-            item.setPos(col * _cw() + PAD_X, row * _ch() + PAD_Y)
+            item.setPos(col * _cw(self._scene) + PAD_X, row * _ch(self._scene) + PAD_Y)
             # Sélection
             item.set_selected(real_idx in st.selected_indices)
             new_items.append(item)
@@ -1255,7 +1325,7 @@ class MosaicCanvas(QGraphicsView):
         for item in self._items:
             col = item.visual_idx % cols
             row = item.visual_idx // cols
-            item.setPos(col * _cw() + PAD_X, row * _ch() + PAD_Y)
+            item.setPos(col * _cw(self._scene) + PAD_X, row * _ch(self._scene) + PAD_Y)
         if self._items:
             self._scene.setSceneRect(self._scene.itemsBoundingRect().adjusted(-5, -5, PAD_X, PAD_Y))
 
@@ -1683,7 +1753,7 @@ class MosaicCanvas(QGraphicsView):
     def _calc_insert_visual(self, scene_pos: QPointF) -> int:
         """Calcule la position d'insertion (visual_idx) selon la position de la souris."""
         cols = self._cols()
-        cw, ch = _cw(), _ch()
+        cw, ch = _cw(self._scene), _ch(self._scene)
         x = scene_pos.x() - PAD_X
         y = scene_pos.y() - PAD_Y
         col = int(x // cw)
@@ -1721,14 +1791,14 @@ class MosaicCanvas(QGraphicsView):
             if self._items:
                 last = self._items[-1]
                 p = last.pos()
-                x = p.x() + _tw()
+                x = p.x() + _tw(self._scene)
                 y = p.y()
             else:
                 x, y = PAD_X, PAD_Y
 
         s = 9  # demi-largeur des triangles (identique à _ARROW_SIZE = 9 de drag_drop.py)
         y1 = y
-        y2 = y + _th()
+        y2 = y + _th(self._scene)
         pen  = QPen(DROP_COLOR, 1)
         brush = QBrush(DROP_COLOR)
 

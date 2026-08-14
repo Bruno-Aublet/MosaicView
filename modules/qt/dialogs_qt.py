@@ -710,9 +710,10 @@ class ConfirmYNDialog(QDialog):
 # Helpers utilitaires
 # ─────────────────────────────────────────────────────────────────────────────
 
-def detect_duplicate_filenames_for_save(entries_to_check=None):
+def detect_duplicate_filenames_for_save(entries_to_check=None, state=None):
     """Vérifie s'il y a des doublons de noms de fichiers dans les images."""
-    state = _state_module.state
+    if state is None:
+        state = _state_module.state
     if entries_to_check is None:
         entries_to_check = [e for e in state.images_data if e["is_image"] and not e.get("is_dir")]
 

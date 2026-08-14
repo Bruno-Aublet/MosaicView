@@ -86,7 +86,23 @@
     "toolbar_straighten_tooltip": "Изправяне",
     "toolbar_crop_instruction": "Начертайте правоъгълник около зоната за запазване, после потвърдете",
     "toolbar_clone_tooltip": "Клониране",
-    "toolbar_text_tooltip": "Текст"
+    "toolbar_text_tooltip": "Текст",
+    "toolbar_sharpness_tooltip": "Рязкост",
+    "toolbar_unsharp_tooltip": "Адаптивна рязкост",
+    "sharpness_panel_label": "Рязкост:",
+    "unsharp_radius_label": "Радиус:",
+    "unsharp_percent_label": "Интензивност:",
+    "unsharp_threshold_label": "Праг:",
+    "toolbar_brightness_tooltip": "Яркост и контраст",
+    "toolbar_brightness_instruction": "Регулирайте плъзгачите, настройката се прилага при отпускане",
+    "brightness_panel_label": "Yarckost:",
+    "contrast_panel_label": "Kontrast:",
+    "toolbar_saturation_tooltip": "Наситеност",
+    "toolbar_saturation_instruction": "Регулирайте плъзгача, настройката се прилага при отпускане",
+    "saturation_panel_label": "Наситеност :",
+    "toolbar_remove_colors_tooltip": "Премахване на цветовете",
+    "toolbar_remove_colors_instruction": "Регулирайте плъзгача, настройката се прилага при отпускане",
+    "remove_colors_panel_label": "Интензивност :"
   },
   "context_menu": {
     "viewer": {
@@ -141,9 +157,6 @@
       "adjustments": "Яркост, контраст, цветове...",
       "refresh_mosaic": "Опресняване на мозайката (F5)",
       "create_ico": "Създаване на .ico файл",
-      "clone_zone": "Клониране на зона...",
-      "text": "Добавяне на текст...",
-      "straighten_manual": "Изправяне на изображението ръчно...",
       "straighten_auto": "Автоматично изправяне на изображението"
     },
     "canvas_no_file": {
@@ -215,18 +228,6 @@
       },
       "files_ignored": {
         "title": "Игнорирани файлове"
-      },
-      "no_selection_crop": {
-        "title": "Няма селекция",
-        "message": "Моля, изберете изображение за изрязване."
-      },
-      "multi_selection_crop": {
-        "title": "Множествена селекция",
-        "message": "Можете да изрязвате само едно изображение наведнъж.\nМоля, изберете само едно изображение."
-      },
-      "invalid_selection_crop": {
-        "title": "Невалидна селекция",
-        "message": "Само изображения могат да бъдат изрязани."
       },
       "drag_drop_disabled_in_subdirectory": {
         "title": "Функция не е налична",
@@ -533,6 +534,26 @@
       "text_failed": {
         "title": "Грешка",
         "message": "Неуспешно прилагане на текста: {error}"
+      },
+      "sharpness_failed": {
+        "title": "Грешка",
+        "message": "Рязкостта не можа да бъде приложена: {error}"
+      },
+      "unsharp_failed": {
+        "title": "Грешка",
+        "message": "Адаптивната рязкост не можа да бъде приложена: {error}"
+      },
+      "brightness_failed": {
+        "title": "Грешка",
+        "message": "Яркостта/контрастът не можаха да бъдат приложени: {error}"
+      },
+      "saturation_failed": {
+        "title": "Грешка",
+        "message": "Наситеността не можа да бъде приложена: {error}"
+      },
+      "remove_colors_failed": {
+        "title": "Грешка",
+        "message": "Премахването на цветовете не можа да бъде приложено: {error}"
       }
     },
     "info": {
@@ -958,7 +979,6 @@
       "word_images": "izobrazheniya",
       "apply_button": "Prilozhete",
       "color_depth_section": "Dublochina na tsvetat",
-      "brightness_contrast_section": "Yarckost i kontrast",
       "compression_section": "Kompresiya",
       "effects_section": "Efekti",
       "sharpness_section": "Ostrota",
@@ -968,11 +988,8 @@
       "depth_24bit": "24 bita (RGB - tsvetove)",
       "depth_8bit": "8 bita (paleta PNG / niansa na sivoto JPEG)",
       "depth_1bit": "1 bit (cherno-byalo)",
-      "brightness_label": "Yarckost: {value}",
-      "contrast_label": "Kontrast: {value}",
       "compression_enable": "Aktivirayte prekompresiya",
       "compression_quality_label": "Качество : {value}/100",
-      "sharpness_label": "Ostrota: {value}",
       "effect_none": "Bez efekt",
       "effect_grayscale": "Otsenki na sivoto",
       "effect_sepia": "Sepiya",
@@ -991,8 +1008,6 @@
       "preview_section": "Преглед",
       "effect_invert": "Инверсия на цветовете",
       "preview_warning": "Визуализацията може да се различава от крайния резултат",
-      "effect_remove_colors": "Премахване на цветовете",
-      "remove_colors_intensity_label": "Интензивност : {value}",
       "image_mode_section": "Режим на изображението",
       "image_mode_rgb": "RGB (цветове)",
       "image_mode_rgba": "RGBA (цветове + прозрачност)",
@@ -1001,9 +1016,6 @@
       "image_mode_cmyk": "CMYK (печат)",
       "image_mode_1": "1 (чисто черно-бяло)",
       "image_mode_p": "P (палитра от 256 цвята)",
-      "saturation_section": "Наситеност",
-      "saturation_label": "Наситеност : {value}",
-      "saturation_viewer_title": "Настройка на наситеността",
       "transparency_section": "Прозрачност",
       "transparency_info": "Прозрачността се прилага само към PNG, WebP, ICO и AVIF изображения",
       "transparency_type_label": "Тип :",
@@ -1018,11 +1030,6 @@
       "transparency_type_global_tooltip": "Глобална прозрачност : засяга всички пиксели в изображението с цвят близък до избрания",
       "transparency_apply": "Приложи",
       "transparency_skipped_warning": "{count} изображение(ия) пропуснато(и) — форматът не е съвместим с прозрачността. За да ги включите, конвертирайте ги първо в PNG.",
-      "unsharp_section": "Адаптивна острота",
-      "unsharp_radius_label": "Радиус: {value}",
-      "unsharp_percent_label": "Интензивност: {value} %",
-      "unsharp_threshold_label": "Праг: {value}",
-      "unsharp_viewer_title": "Адаптивна острота",
       "auto_levels_tooltip": "Анализира всяка страница и автоматично регулира нивата на черно и бяло за максимален контраст.\nЗа избор страница по страница използвайте визуализатора.",
       "transparency_unsaved_title": "Неприложени промени",
       "transparency_unsaved_message": "Текущите промени не са приложени към изображението. Какво искате да направите?",
@@ -1038,12 +1045,6 @@
       "white_pipette": "Пипета за бяла точка",
       "black_pipette_tooltip": "Щракнете върху пиксел, който трябва да бъде напълно черен. Внимание: лесно е да прекалите!",
       "white_pipette_tooltip": "Щракнете върху пиксел, който трябва да бъде напълно бял. Внимание: лесно е да прекалите!"
-    },
-    "sharpness_viewer": {
-      "title": "Настройка на рязкостта"
-    },
-    "brightness_viewer": {
-      "title": "Настройка на яркостта и контраста"
     },
     "compression_viewer": {
       "title": "Настройка на компресията"
@@ -1318,9 +1319,7 @@
     "icon_toolbar_size_increase": "Увеличаване размера на иконите",
     "source_loose": "Свободно изображение",
     "source_web": "Уеб изображение",
-    "straighten": "Изправяне на изображението",
-    "clone_zone": "Клониране на зона",
-    "text": "Добавяне на текст",
+    "straighten": "Изправяне на изображението автоматично",
     "batch_cb7_to_cbz": "Конвертира всички CB7 файлове в\nдиректория и нейните поддиректории в CBZ.",
     "batch_cb7_permanent_delete": "ВНИМАНИЕ : ако тази опция е отметната,\nоригиналните CB7 файлове ще бъдат\nокончателно изтрити след конвертирането.\nУверете се, че имате резервно копие.",
     "batch_cbt_to_cbz": "Конвертира всички CBT файлове в\nдиректория и нейните поддиректории в CBZ.",
@@ -1339,7 +1338,9 @@
     "duplicate_indicator": "В този файл бяха открити дублирани страници.\nЩракнете, за да отворите прозореца за управление на дубликатите.",
     "duplicate_indicator_none": "Не са открити дубликати",
     "straighten_mode_0": "Ръчен режим (начертайте референтна линия)\nДесен клик за смяна на режима",
-    "straighten_mode_1": "Автоматичен режим (откриване на наклон)\nДесен клик за смяна на режима"
+    "straighten_mode_1": "Автоматичен режим (откриване на наклон)\nДесен клик за смяна на режима",
+    "sharpness_mode_0": "Усилва или омекотява детайлите на изображението\nДесен клик за преминаване към адаптивна рязкост",
+    "sharpness_mode_1": "Подчертава контурите, като запазва еднородните зони\nДесен клик за преминаване към обикновена рязкост"
   },
   "help": {
     "title": "MosaicView - Ръководство за употреба",
@@ -1506,6 +1507,7 @@
     "relative_path": "Относителен път"
   },
   "web": {
+    "web_analyzing_page": "Анализиране на страницата...",
     "web_download_progress": "Изтегляне: {downloaded}/{total} изображения...",
     "web_download_cancel": "Отказ",
     "web_no_images": "Няма изображения",
