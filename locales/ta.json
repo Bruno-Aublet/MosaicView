@@ -66,7 +66,14 @@
     "batch_library": "கோப்புறை(களி)லிருந்து நூலகம் உருவாக்கு",
     "batch_recompress": "CBZ கோப்புகளை இயல்புநிலையில் மீண்டும் சுருக்கவும்",
     "validate_straighten": "நேராக்கலை உறுதிசெய்",
-    "validate_text": "உரையைப் பயன்படுத்து"
+    "validate_text": "உரையைப் பயன்படுத்து",
+    "validate_shapes": "வடிவங்களைப் பயன்படுத்து",
+    "validate_transparency": "வெளிப்படைத்தன்மையை உறுதிப்படுத்து",
+    "cancel_crop": "வெட்டலை ரத்துசெய்",
+    "cancel_straighten": "நேராக்கலை ரத்துசெய்",
+    "cancel_text": "உரையை ரத்துசெய்",
+    "cancel_shapes": "வடிவங்களை ரத்துசெய்",
+    "cancel_transparency": "வெளிப்படைத்தன்மையை ரத்துசெய்"
   },
   "tabs": {
     "mosaic": "மொசைக்",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "நிறைவு :",
     "toolbar_remove_colors_tooltip": "நிறங்களை நீக்குதல்",
     "toolbar_remove_colors_instruction": "நழுவியை சரிசெய்யவும், விடும்போது மாற்றம் பயன்படுத்தப்படும்",
-    "remove_colors_panel_label": "தீவிரம் :"
+    "remove_colors_panel_label": "தீவிரம் :",
+    "toolbar_compression_tooltip": "அமுக்கம்",
+    "toolbar_compression_instruction": "சரிசெய்தியை சரிசெய்யவும், விடும்போது சரிசெய்தல் பயன்படுத்தப்படும்",
+    "toolbar_compression_disabled": "JPG, WEBP மற்றும் AVIF படங்களுக்கு மட்டுமே கிடைக்கும்",
+    "compression_panel_label": "தரம் :",
+    "toolbar_levels_tooltip": "நிலைகள்",
+    "toolbar_levels_instruction": "சொட்டுகள் அல்லது சரிசெய்திகள், விடும்போது/கிளிக் செய்யும்போது சரிசெய்தல் பயன்படுத்தப்படும்",
+    "levels_gamma_panel_label": "காமா :",
+    "levels_threshold_panel_label": "வரம்பு :",
+    "levels_black_panel_label": "கருப்பு புள்ளி :",
+    "levels_white_panel_label": "வெள்ளை புள்ளி :",
+    "levels_black_slider_tooltip": "இந்த மதிப்பை விட இருண்ட அனைத்து பிக்சல்களும் முழுமையாக கருப்பாக மாறும்",
+    "levels_gamma_slider_tooltip": "கருப்பு அல்லது வெள்ளையை பாதிக்காமல் நடுத்தர டோன்களை வெளிச்சமாக்கும் அல்லது இருளாக்கும்",
+    "levels_white_slider_tooltip": "இந்த மதிப்பை விட வெளிச்சமான அனைத்து பிக்சல்களும் முழுமையாக வெள்ளையாக மாறும்",
+    "levels_threshold_slider_tooltip": "இந்த வரம்பின் அடிப்படையில் படத்தை தூய கருப்பு வெள்ளையாக மாற்றுகிறது",
+    "levels_auto_tooltip": "காட்டப்படும் பக்கத்தை பகுப்பாய்வு செய்து, மாறுபாட்டை அதிகரிக்க கருப்பு மற்றும் வெள்ளை புள்ளிகளை தானாக சரிசெய்கிறது",
+    "toolbar_shapes_tooltip": "வடிவங்கள்",
+    "toolbar_shapes_instruction": "ஒரு வடிவத்தை வரைய இழுக்கவும், அளவை மாற்ற கைப்பிடிகள், நகர்த்த அம்புக்குறி விசைகள்",
+    "shape_type_ellipse": "நீள்வட்டம்",
+    "shape_type_rectangle": "செவ்வகம்",
+    "shape_type_rounded_rectangle": "வட்டமான மூலைகள் கொண்ட செவ்வகம்",
+    "shape_type_line": "கோடு",
+    "shape_type_arrow": "அம்பு",
+    "shape_thickness_label": "தடிமன்:",
+    "shape_color_label": "நிறம்:",
+    "shape_color_tooltip": "கோடு மற்றும் நிரப்புதலின் நிறத்தைத் தேர்ந்தெடுக்கவும்",
+    "shape_fill_enabled_label": "நிரப்புதல்",
+    "shape_pipette_tooltip": "காட்டப்படும் பக்கத்திலிருந்து நிறத்தை எடுக்கவும்",
+    "toolbar_transparency_tooltip": "வெளிப்படைத்தன்மை",
+    "toolbar_transparency_instruction": "வெளிப்படையாக்க வேண்டிய நிறத்தைக் கிளிக் செய்யவும்",
+    "toolbar_transparency_disabled": "PNG, WebP, ICO மற்றும் AVIF படங்களுக்கு மட்டுமே கிடைக்கும்",
+    "transparency_flood_panel_label": "பகுதி",
+    "transparency_global_panel_label": "முழுமையான",
+    "transparency_tolerance_panel_label": "சகிப்புத்தன்மை:",
+    "transparency_type_slider_tooltip": "பகுதி: கிளிக் செய்த பிக்சலைச் சுற்றியுள்ள ஒரே நிற பகுதியை வெளிப்படையாக்கும். முழுமையான: கிளிக் செய்த நிறத்திற்கு அருகிலுள்ள படத்தின் அனைத்து பிக்சல்களையும் பாதிக்கும்",
+    "transparency_tolerance_slider_tooltip": "கிளிக் செய்த பிக்சலைச் சுற்றி ஏற்றுக்கொள்ளப்படும் அதிகபட்ச நிற தூரம்"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "உரை இல்லை",
         "message": "முதலில் குறைந்தது ஒரு தொகுதியில் உரையை உள்ளிடவும்."
+      },
+      "no_shape": {
+        "title": "எந்த வடிவமும் வரையப்படவில்லை",
+        "message": "முதலில் குறைந்தது ஒரு வடிவத்தையாவது வரையவும்."
+      },
+      "no_transparency_work": {
+        "title": "வெளிப்படைத்தன்மை எதுவும் பயன்படுத்தப்படவில்லை",
+        "message": "முதலில் வெளிப்படையாக்க வேண்டிய நிறத்தைக் கிளிக் செய்யவும்."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "பிழை",
         "message": "நிறங்களை நீக்குதலை பயன்படுத்த முடியவில்லை: {error}"
+      },
+      "compression_failed": {
+        "title": "பிழை",
+        "message": "அமுக்கத்தை பயன்படுத்த முடியவில்லை: {error}"
+      },
+      "levels_failed": {
+        "title": "பிழை",
+        "message": "நிலைகளை பயன்படுத்த முடியவில்லை: {error}"
+      },
+      "shapes_failed": {
+        "title": "பிழை",
+        "message": "வடிவங்களைப் பயன்படுத்த முடியவில்லை: {error}"
+      },
+      "transparency_failed": {
+        "title": "பிழை",
+        "message": "வெளிப்படைத்தன்மையைப் பயன்படுத்த முடியவில்லை."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "படங்கள்",
       "apply_button": "பயன்படுத்து",
       "color_depth_section": "நிற ஆழம்",
-      "compression_section": "சுருக்கம்",
       "effects_section": "விளைவுகள்",
       "sharpness_section": "கூர்மை",
-      "levels_section": "கருப்பு/வெள்ளை நிலைகள்",
       "depth_unchanged": "மாற்ற வேண்டாம்",
       "depth_32bit": "32 பிட்கள் (RGBA - நிறங்கள் + ஒளிபுகும் தன்மை)",
       "depth_24bit": "24 பிட்கள் (RGB - நிறங்கள்)",
       "depth_8bit": "8 பிட்கள் (PNG நிறத்தட்டு / JPEG சாம்பல் அளவுகோல்)",
       "depth_1bit": "1 பிட் (கருப்பு மற்றும் வெள்ளை)",
       "compression_enable": "மீண்டும் சுருக்கத்தை இயக்கு",
-      "compression_quality_label": "தரம் : {value}/100",
       "effect_none": "எந்த விளைவும் இல்லை",
       "effect_grayscale": "சாம்பல் நிற படிகள்",
       "effect_sepia": "செபியா",
-      "levels_none": "எந்த சரிசெய்தலும் இல்லை",
-      "levels_threshold": "வரம்பு (தூய கருப்பு அல்லது வெள்ளை)",
-      "levels_advanced": "மேம்பட்ட நிலைகள் (நிழல்கள்/நடுத்தர டோன்கள்/சிறப்பம்சங்கள்)",
-      "threshold_label": "வரம்பு: {value}",
-      "black_point_label": "கருப்பு புள்ளி: {value}",
-      "gamma_label": "காமா (நடுத்தர டோன்கள்): {value}",
-      "white_point_label": "வெள்ளை புள்ளி: {value}",
       "auto_levels_button": "தானியங்கி சரிசெய்தல்",
-      "open_viewer_button": "காட்சியாளருடன் சரிசெய்யவும் (பரிந்துரைக்கப்படுகிறது)",
-      "compression_info": "சுருக்கம் JPG, WebP மற்றும் AVIF படங்களுக்கு மட்டுமே பொருந்தும்",
-      "open_viewer_button_simple": "காட்சியாளருடன் சரிசெய்யவும்",
       "reset_button": "மீட்டமை",
       "preview_section": "முன்னோட்டம்",
       "effect_invert": "நிற தலைகீழ்",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (சலேடை நிறத்திற்கள் + ஒளிப்புத்தன்மை)",
       "image_mode_cmyk": "CMYK (அச்சு)",
       "image_mode_1": "1 (தூய கருப்பு-வெள்ளை)",
-      "image_mode_p": "P (256 நிற தட்டு)",
-      "transparency_section": "வெளிப்படைத்தன்மை",
-      "transparency_info": "வெளிப்படைத்தன்மை PNG, WebP, ICO மற்றும் AVIF படங்களுக்கு மட்டுமே பொருந்தும்",
-      "transparency_type_label": "வகை :",
-      "transparency_type_flood": "மண்டலம்",
-      "transparency_type_global": "உலகளாவிய",
-      "transparency_tolerance_label": "சகிப்புத்தன்மை :",
-      "transparency_viewer_title": "வெளிப்படைத்தன்மை சரிசெய்தல்",
-      "transparency_click_instruction": "வெளிப்படையாக்க வேண்டிய நிறத்தை கிளிக் செய்யவும்",
-      "transparency_undo": "கடைசி கிளிக்கை மீட்டெடுக்கவும்",
-      "transparency_redo": "மீண்டும் செய்",
-      "transparency_type_flood_tooltip": "Flood fill : கிளிக் செய்த பிக்செலைச் சுற்றியுள்ள சீரான நிறப் பகுதியை வெளிப்படையாக்குகிறது",
-      "transparency_type_global_tooltip": "உலகளாவிய வெளிப்படைத்தன்மை : கிளிக் செய்த நிறத்திற்கு நெருக்கமான நிறம் கொண்ட படத்தின் அனைத்து பிக்செல்களையும் பாதிக்கிறது",
-      "transparency_apply": "பயன்படுத்து",
-      "transparency_skipped_warning": "{count} படம்(படங்கள்) தவிர்க்கப்பட்டது — வடிவம் வெளிப்படையுடன் இணக்கமற்றது. சேர்க்க முதலில் PNG ஆக மாற்றவும்.",
-      "auto_levels_tooltip": "ஒவ்வொரு பக்கத்தையும் பகுப்பாய்வு செய்து, வேற்றுமையை அதிகரிக்க கறுப்பு மற்றும் வெள்ளை நிலைகளை தானாக சரிசெய்கிறது.\nபக்கம் பக்கமாக தேர்ந்தெடுக்க, பார்வையாளரைப் பயன்படுத்தவும்.",
-      "transparency_unsaved_title": "பயன்படுத்தப்படாத மாற்றங்கள்",
-      "transparency_unsaved_message": "தற்போதைய மாற்றங்கள் படத்தில் பயன்படுத்தப்படவில்லை. நீங்கள் என்ன செய்ய விரும்புகிறீர்கள்?",
-      "transparency_unsaved_discard": "பயன்படுத்தாமல் மூடு",
-      "transparency_unsaved_apply": "பயன்படுத்தி மூடு",
-      "transparency_unsaved_cancel": "ரத்து செய்"
+      "image_mode_p": "P (256 நிற தட்டு)"
     },
     "levels_viewer": {
-      "title": "சொட்டுக் கருவியுடன் நிலைகளை சரிசெய்தல்",
-      "apply_current": "இந்த பக்கத்திற்கு பயன்படுத்து",
-      "apply_all": "அனைத்து தேர்ந்தெடுக்கப்பட்ட பக்கங்களுக்கும் பயன்படுத்து",
       "black_pipette": "கருப்பு புள்ளி சொட்டுவான்",
       "white_pipette": "வெள்ளை புள்ளி சொட்டுவான்",
       "black_pipette_tooltip": "முற்றிலும் கருப்பாக இருக்க வேண்டிய பிக்சலை கிளிக் செய்யவும். எச்சரிக்கை: அதிகமாக செய்வது எளிது!",
       "white_pipette_tooltip": "முற்றிலும் வெள்ளையாக இருக்க வேண்டிய பிக்சலை கிளிக் செய்யவும். எச்சரிக்கை: அதிகமாக செய்வது எளிது!"
-    },
-    "compression_viewer": {
-      "title": "சுருக்க சரிசெய்தல்"
     },
     "outliers": {
       "title": "அசாதாரண பரிமாணங்கள் கொண்ட பக்கங்கள்",

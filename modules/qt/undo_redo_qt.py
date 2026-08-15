@@ -46,7 +46,7 @@ def _reload_thumb_qt(entry: dict, tw: int, th: int):
     N'est appelé que si les bytes ont changé.
 
     qt_qimage_large DOIT être invalidé ici comme qt_pixmap_large : certains
-    outils (ex. adjustments_tool_qt.py::perform_sharpness) appellent
+    outils (ex. sharpness_tool_qt.py::perform_sharpness) appellent
     build_qimage_for_entry(entry) en synchrone juste après avoir écrit de
     nouveaux bytes, ce qui peuple qt_qimage_large avec le résultat de CETTE
     opération précise. Si un undo restaure ensuite des bytes plus anciens

@@ -66,7 +66,14 @@
     "batch_library": "  ()",
     "batch_recompress": "  CBZ     ",
     "validate_straighten": "  ",
-    "validate_text": " "
+    "validate_text": " ",
+    "validate_shapes": "  ",
+    "validate_transparency": "  ",
+    "cancel_crop": "  ",
+    "cancel_straighten": "  ",
+    "cancel_text": "  ",
+    "cancel_shapes": "  ",
+    "cancel_transparency": "  "
   },
   "tabs": {
     "mosaic": "",
@@ -102,7 +109,42 @@
     "saturation_panel_label": " :",
     "toolbar_remove_colors_tooltip": " ",
     "toolbar_remove_colors_instruction": "  ;   .",
-    "remove_colors_panel_label": " :"
+    "remove_colors_panel_label": " :",
+    "toolbar_compression_tooltip": "",
+    "toolbar_compression_instruction": "  ,     ",
+    "toolbar_compression_disabled": "   JPG, WEBP  AVIF ",
+    "compression_panel_label": " :",
+    "toolbar_levels_tooltip": "",
+    "toolbar_levels_instruction": "   ;   .",
+    "levels_gamma_panel_label": " :",
+    "levels_threshold_panel_label": " :",
+    "levels_black_panel_label": "  :",
+    "levels_white_panel_label": "  :",
+    "levels_black_slider_tooltip": "        - .",
+    "levels_gamma_slider_tooltip": "    ; -   .",
+    "levels_white_slider_tooltip": "        - .",
+    "levels_threshold_slider_tooltip": "          .",
+    "levels_auto_tooltip": "    ;          .",
+    "toolbar_shapes_tooltip": "",
+    "toolbar_shapes_instruction": "   ;    ,    ",
+    "shape_type_ellipse": " ",
+    "shape_type_rectangle": "",
+    "shape_type_rounded_rectangle": "  ",
+    "shape_type_line": "",
+    "shape_type_arrow": " ",
+    "shape_thickness_label": " :",
+    "shape_color_label": " :",
+    "shape_color_tooltip": "        ",
+    "shape_fill_enabled_label": " ",
+    "shape_pipette_tooltip": "     ",
+    "toolbar_transparency_tooltip": "",
+    "toolbar_transparency_instruction": "     ",
+    "toolbar_transparency_disabled": "   PNG, , ICO  AVIF ",
+    "transparency_flood_panel_label": "",
+    "transparency_global_panel_label": "",
+    "transparency_tolerance_panel_label": " :",
+    "transparency_type_slider_tooltip": " :          .  :             ",
+    "transparency_tolerance_slider_tooltip": "           "
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "-",
         "message": ",    ."
+      },
+      "no_shape": {
+        "title": "-",
+        "message": ",    ."
+      },
+      "no_transparency_work": {
+        "title": "- ",
+        "message": ",       ."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "",
         "message": "-    : {error}"
+      },
+      "compression_failed": {
+        "title": "",
+        "message": "-  : {error}"
+      },
+      "levels_failed": {
+        "title": "",
+        "message": "   : {error}"
+      },
+      "shapes_failed": {
+        "title": "",
+        "message": "-   : {error}"
+      },
+      "transparency_failed": {
+        "title": "",
+        "message": "-  ."
       }
     },
     "info": {
@@ -979,75 +1045,36 @@
       "word_images": "",
       "apply_button": "",
       "color_depth_section": "  ",
-      "compression_section": "",
       "effects_section": "",
       "sharpness_section": "",
-      "levels_section": "   ",
       "depth_unchanged": " ",
       "depth_32bit": "32  ( -   )",
       "depth_24bit": "24  ( - )",
       "depth_8bit": "8  (PNG  / JPEG  )",
       "depth_1bit": "1  (  )",
       "compression_enable": "  ",
-      "compression_quality_label": " : {value}/100",
       "effect_none": " ",
       "effect_grayscale": "",
       "effect_sepia": "",
-      "levels_none": " ",
-      "levels_threshold": " (   )",
-      "levels_advanced": "  (//)",
-      "threshold_label": ": {value}",
-      "black_point_label": " : {value}",
-      "gamma_label": " (): {value}",
-      "white_point_label": " : {value}",
       "auto_levels_button": " ",
-      "open_viewer_button": "    ()",
-      "compression_info": "    ,   AVIF  ",
-      "open_viewer_button_simple": "  ",
       "reset_button": "",
       "preview_section": "",
       "effect_invert": " -",
       "preview_warning": "       ",
       "image_mode_section": "  ",
-      "image_mode_rgb": " ()",
-      "image_mode_rgba": " ( + )",
+      "image_mode_rgb": " ()",
+      "image_mode_rgba": " ( + )",
       "image_mode_l": " ( )",
       "image_mode_la": " (  + )",
       "image_mode_cmyk": " ()",
       "image_mode_1": "1 (   )",
-      "image_mode_p": " (256  )",
-      "transparency_section": "",
-      "transparency_info": "    PNG, , ICO  AVIF",
-      "transparency_type_label": " :",
-      "transparency_type_flood": "",
-      "transparency_type_global": "",
-      "transparency_tolerance_label": " :",
-      "transparency_viewer_title": " ",
-      "transparency_click_instruction": "     ",
-      "transparency_undo": "   ",
-      "transparency_redo": "",
-      "transparency_type_flood_tooltip": " :           (  )",
-      "transparency_type_global_tooltip": "  :             ",
-      "transparency_apply": "",
-      "transparency_skipped_warning": "{count} ()  — -   .   ,    PNG.",
-      "auto_levels_tooltip": "              .\n    ,    .",
-      "transparency_unsaved_title": " ",
-      "transparency_unsaved_message": "  -  .   ?",
-      "transparency_unsaved_discard": " -",
-      "transparency_unsaved_apply": "  ",
-      "transparency_unsaved_cancel": ""
+      "image_mode_p": " (256  )"
     },
     "levels_viewer": {
-      "title": "   ",
-      "apply_current": "   ",
-      "apply_all": "    ",
       "black_pipette": "  ",
       "white_pipette": "  ",
       "black_pipette_tooltip": "  pixel     . :  - !",
       "white_pipette_tooltip": "  pixel     . :  - !"
-    },
-    "compression_viewer": {
-      "title": " "
     },
     "outliers": {
       "title": "   ",
@@ -1163,7 +1190,7 @@
       "bold_btn": "",
       "italic_btn": "",
       "underline_btn": "",
-      "pick_color_title": "   "
+      "pick_color_title": "   "
     },
     "batch_cb7": {
       "select_directory_title": "    CB7 ",

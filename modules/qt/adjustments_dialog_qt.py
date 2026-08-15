@@ -25,17 +25,14 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QPixmap, QImage, QIcon
 
 from modules.qt.localization import _, _wt
-from modules.qt.utils import FocusSlider
 from modules.qt.state import get_current_theme
 from modules.qt import state as _state_module
 from modules.qt.font_loader import resource_path
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.dialogs_qt import MsgDialog
 from modules.qt.adjustments_processing_qt import (
-    detect_jpeg_quality    as _detect_jpeg_quality,
     apply_adjustments      as _apply_adjustments,
     apply_image_adjustments as _apply_image_adjustments,
-    compute_auto_levels    as _compute_auto_levels,
 )
 
 
@@ -82,16 +79,6 @@ def _set_groupbox_font(grp):
     grp.setFont(f)
 
 
-def _slider_style(theme):
-    return (
-        f"QSlider::groove:horizontal {{ height: 4px; background: {theme['separator']}; "
-        f"border-radius: 2px; }} "
-        f"QSlider::handle:horizontal {{ background: {theme['text']}; width: 12px; height: 12px; "
-        f"border-radius: 6px; margin: -4px 0; }} "
-        f"QSlider::handle:horizontal:disabled {{ background: #888888; }}"
-    )
-
-
 def _radio_style(theme):
     disabled = theme.get('disabled', '#aaaaaa')
     return (f"QRadioButton {{ color: {theme['text']}; }} "
@@ -118,15 +105,18 @@ def _pil_to_qpixmap(img, max_size=300, is_bw=False):
 # ─────────────────────────────────────────────────────────────────────────────
 
 class AdjustmentsDialog(QDialog):
-    """Fenêtre d'ajustements d'images (niveaux, compression, etc.).
+    """Fenêtre d'ajustements d'images (profondeur de couleur, effets,
+    mode d'image).
 
-    La luminosité/contraste, la netteté (simple + adaptative), la saturation
-    et la suppression des couleurs ont été entièrement retirées de ce panneau
-    (idees.txt #3, fusion progressive des visionneuses) : elles vivent
-    désormais uniquement dans la barre d'outils flottante de la visionneuse
-    principale — voir modules/qt/brightness_tool_qt.py,
-    modules/qt/adjustments_tool_qt.py, modules/qt/saturation_tool_qt.py,
-    modules/qt/remove_colors_tool_qt.py et skill viewers."""
+    La luminosité/contraste, la netteté (simple + adaptative), la saturation,
+    la suppression des couleurs, la compression, les niveaux noir/blanc et la
+    transparence ont été entièrement retirées de ce panneau (idees.txt #3,
+    fusion progressive des visionneuses) : elles vivent désormais uniquement
+    dans la barre d'outils flottante de la visionneuse principale — voir
+    modules/qt/brightness_tool_qt.py, modules/qt/sharpness_tool_qt.py,
+    modules/qt/saturation_tool_qt.py, modules/qt/remove_colors_tool_qt.py,
+    modules/qt/compression_tool_qt.py, modules/qt/levels_tool_qt.py,
+    modules/qt/transparency_tool_qt.py et skill viewers."""
 
     def __init__(self, parent, selected_entries, callbacks=None):
         super().__init__(parent)
@@ -146,24 +136,6 @@ class AdjustmentsDialog(QDialog):
 
         self.resize(1020, 900)
 
-        # ── Détection qualité JPEG ────────────────────────────────────────────
-        jpeg_qualities = []
-        self._has_compressible = False
-        self._has_transparent  = False
-        for e in selected_entries:
-            ext = e.get("extension", "").lower()
-            if ext in (".jpg", ".jpeg", ".webp", ".avif"):
-                self._has_compressible = True
-            if ext in (".png", ".webp", ".ico", ".avif"):
-                self._has_transparent = True
-            if e.get("bytes"):
-                q = _detect_jpeg_quality(e["bytes"])
-                if q is not None:
-                    jpeg_qualities.append(q)
-
-        jpeg_qualities.sort()
-        initial_quality = jpeg_qualities[len(jpeg_qualities) // 2] if jpeg_qualities else 85
-
         # ── Image d'aperçu originale ──────────────────────────────────────────
         self._original_preview_img = None
         if selected_entries and selected_entries[0].get("bytes"):
@@ -174,19 +146,9 @@ class AdjustmentsDialog(QDialog):
 
         # ── Variables d'état (valeurs courantes des réglages) ─────────────────
         self._color_depth   = 'unchanged'
-        self._comp_quality  = initial_quality
-        self._initial_quality = initial_quality
         self._effect        = 'none'
-        self._threshold     = 128
-        self._black_point   = 0
-        self._gamma         = 1.0
-        self._white_point   = 255
         self._image_mode       = 'unchanged'
         self._original_ext  = selected_entries[0].get('extension', '').lower() if selected_entries else ''
-
-        # Sauvegarde avant "Auto" (pour que Annuler puisse restaurer)
-        self._pre_auto_black_point = None
-        self._pre_auto_white_point = None
 
         # Flag d'annulation pendant le traitement multi-images
         self._cancel_requested = False
@@ -329,46 +291,6 @@ class AdjustmentsDialog(QDialog):
         self._depth_radios['unchanged'].setChecked(True)
         layout.addWidget(self._grp_depth)
 
-        # Section 2 : Compression
-        self._grp_comp = QGroupBox()
-        self._grp_comp.setStyleSheet(_groupbox_style(theme))
-        comp_layout = QVBoxLayout(self._grp_comp)
-        comp_layout.setContentsMargins(8, 12, 8, 8)
-        comp_layout.setSpacing(4)
-
-        self._comp_info_lbl = QLabel()
-        self._comp_info_lbl.setFont(_get_current_font(8))
-        self._comp_info_lbl.setWordWrap(True)
-        self._comp_info_lbl.setAlignment(Qt.AlignCenter)
-        self._comp_info_lbl.setStyleSheet(f"color: #888888; font-style: italic;")
-        comp_layout.addWidget(self._comp_info_lbl)
-
-        self._comp_val_lbl = QLabel()
-        self._comp_val_lbl.setFont(_get_current_font(9))
-        comp_layout.addWidget(self._comp_val_lbl)
-
-        self._comp_slider = FocusSlider(Qt.Horizontal)
-        self._comp_slider.setRange(1, 100)
-        self._comp_slider.setValue(self._comp_quality)
-        self._comp_slider.setStyleSheet(_slider_style(theme))
-        self._comp_slider.valueChanged.connect(self._on_comp_changed)
-        comp_layout.addWidget(self._comp_slider)
-
-        self._btn_comp_viewer = QPushButton()
-        self._btn_comp_viewer.setFont(_get_current_font(9))
-        self._btn_comp_viewer.setStyleSheet(_btn_style(theme))
-        self._btn_comp_viewer.clicked.connect(lambda: self._open_viewer('compression'))
-        comp_layout.addWidget(self._btn_comp_viewer, alignment=Qt.AlignCenter)
-
-        if not self._has_compressible:
-            self._comp_val_lbl.setEnabled(False)
-            self._comp_slider.setEnabled(False)
-            self._btn_comp_viewer.setEnabled(False)
-            self._grp_comp.setStyleSheet(
-                _groupbox_style(theme).replace(f"color: {theme['text']}", "color: #888888"))
-
-        layout.addWidget(self._grp_comp)
-
         # Section 4 : Effets
         self._grp_effects = QGroupBox()
         self._grp_effects.setStyleSheet(_groupbox_style(theme))
@@ -390,32 +312,6 @@ class AdjustmentsDialog(QDialog):
         self._effect_radios['none'].setChecked(True)
         # _grp_effects ajouté dans la colonne aperçu (3ème colonne)
 
-        # Section 5 : Transparence
-        self._grp_transp = QGroupBox()
-        self._grp_transp.setStyleSheet(_groupbox_style(theme))
-        transp_layout = QVBoxLayout(self._grp_transp)
-        transp_layout.setContentsMargins(8, 12, 8, 8)
-        transp_layout.setSpacing(4)
-
-        self._transp_info_lbl = QLabel()
-        self._transp_info_lbl.setFont(_get_current_font(8))
-        self._transp_info_lbl.setWordWrap(True)
-        self._transp_info_lbl.setAlignment(Qt.AlignCenter)
-        self._transp_info_lbl.setStyleSheet("color: #888888; font-style: italic;")
-        transp_layout.addWidget(self._transp_info_lbl)
-
-        self._btn_transp_viewer = QPushButton()
-        self._btn_transp_viewer.setFont(_get_current_font(9))
-        self._btn_transp_viewer.setStyleSheet(_btn_style(theme))
-        self._btn_transp_viewer.clicked.connect(lambda: self._open_viewer('transparency'))
-        transp_layout.addWidget(self._btn_transp_viewer, alignment=Qt.AlignCenter)
-
-        if not self._has_transparent:
-            self._btn_transp_viewer.setEnabled(False)
-            self._grp_transp.setStyleSheet(
-                _groupbox_style(theme).replace(f"color: {theme['text']}", "color: #888888"))
-
-        layout.addWidget(self._grp_transp)
         layout.addStretch()
         return w
 
@@ -429,82 +325,6 @@ class AdjustmentsDialog(QDialog):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(24)
         layout.setAlignment(Qt.AlignTop)
-
-        # Section 6 : Niveaux
-        self._grp_levels = QGroupBox()
-        self._grp_levels.setStyleSheet(_groupbox_style(theme))
-        lev_layout = QVBoxLayout(self._grp_levels)
-        lev_layout.setContentsMargins(8, 12, 8, 10)
-        lev_layout.setSpacing(6)
-
-        # Seuil
-        self._threshold_lbl = QLabel()
-        self._threshold_lbl.setFont(_get_current_font(9))
-        lev_layout.addWidget(self._threshold_lbl)
-
-        self._threshold_slider = FocusSlider(Qt.Horizontal)
-        self._threshold_slider.setRange(0, 255)
-        self._threshold_slider.setValue(128)
-        self._threshold_slider.setStyleSheet(_slider_style(theme))
-        self._threshold_slider.valueChanged.connect(self._on_threshold_changed)
-        lev_layout.addWidget(self._threshold_slider)
-
-        sep = QFrame()
-        sep.setFrameShape(QFrame.HLine)
-        sep.setStyleSheet(f"color: {theme['separator']};")
-        lev_layout.addWidget(sep)
-
-        # Point noir
-        self._black_pt_lbl = QLabel()
-        self._black_pt_lbl.setFont(_get_current_font(9))
-        lev_layout.addWidget(self._black_pt_lbl)
-
-        self._black_pt_slider = FocusSlider(Qt.Horizontal)
-        self._black_pt_slider.setRange(0, 255)
-        self._black_pt_slider.setValue(0)
-        self._black_pt_slider.setStyleSheet(_slider_style(theme))
-        self._black_pt_slider.valueChanged.connect(self._on_black_pt_changed)
-        lev_layout.addWidget(self._black_pt_slider)
-        lev_layout.addSpacing(6)
-
-        # Gamma
-        self._gamma_lbl = QLabel()
-        self._gamma_lbl.setFont(_get_current_font(9))
-        lev_layout.addWidget(self._gamma_lbl)
-
-        self._gamma_slider = FocusSlider(Qt.Horizontal)
-        self._gamma_slider.setRange(10, 300)   # ×0.01 → 0.10 à 3.00
-        self._gamma_slider.setValue(100)
-        self._gamma_slider.setStyleSheet(_slider_style(theme))
-        self._gamma_slider.valueChanged.connect(self._on_gamma_changed)
-        lev_layout.addWidget(self._gamma_slider)
-        lev_layout.addSpacing(6)
-
-        # Point blanc
-        self._white_pt_lbl = QLabel()
-        self._white_pt_lbl.setFont(_get_current_font(9))
-        lev_layout.addWidget(self._white_pt_lbl)
-
-        self._white_pt_slider = FocusSlider(Qt.Horizontal)
-        self._white_pt_slider.setRange(0, 255)
-        self._white_pt_slider.setValue(255)
-        self._white_pt_slider.setStyleSheet(_slider_style(theme))
-        self._white_pt_slider.valueChanged.connect(self._on_white_pt_changed)
-        lev_layout.addWidget(self._white_pt_slider)
-
-        self._btn_auto_levels = QPushButton()
-        self._btn_auto_levels.setFont(_get_current_font(9))
-        self._btn_auto_levels.setStyleSheet(_btn_style(theme))
-        self._btn_auto_levels.clicked.connect(self._on_auto_levels)
-        lev_layout.addWidget(self._btn_auto_levels, alignment=Qt.AlignCenter)
-        self._overlay_tip.track(self._btn_auto_levels)
-
-        self._btn_levels_viewer = QPushButton()
-        self._btn_levels_viewer.setFont(_get_current_font(9))
-        self._btn_levels_viewer.setStyleSheet(_btn_style(theme))
-        self._btn_levels_viewer.clicked.connect(lambda: self._open_viewer('levels'))
-        lev_layout.addWidget(self._btn_levels_viewer, alignment=Qt.AlignCenter)
-        layout.addWidget(self._grp_levels)
 
         # Section mode d'image (déplacée ici depuis colonne aperçu)
         self._grp_image_mode = QGroupBox()
@@ -593,12 +413,6 @@ class AdjustmentsDialog(QDialog):
         for key, rb in self._depth_radios.items():
             rb.setText(depth_labels[key])
 
-        self._grp_comp.setTitle(_("dialogs.adjustments.compression_section"))
-        self._comp_info_lbl.setText(_("dialogs.adjustments.compression_info"))
-        self._comp_val_lbl.setText(
-            _("dialogs.adjustments.compression_quality_label", value=self._comp_quality))
-        self._btn_comp_viewer.setText(_("dialogs.adjustments.open_viewer_button_simple"))
-
         self._grp_effects.setTitle(_("dialogs.adjustments.effects_section"))
         effect_labels = {
             'none':      _("dialogs.adjustments.effect_none"),
@@ -608,27 +422,6 @@ class AdjustmentsDialog(QDialog):
         }
         for key, rb in self._effect_radios.items():
             rb.setText(effect_labels[key])
-
-        self._grp_transp.setTitle(_("dialogs.adjustments.transparency_section"))
-        self._transp_info_lbl.setText(_("dialogs.adjustments.transparency_info"))
-        self._btn_transp_viewer.setText(_("dialogs.adjustments.open_viewer_button_simple"))
-
-        # Colonne droite
-        self._grp_levels.setTitle(_("dialogs.adjustments.levels_section"))
-        self._threshold_lbl.setText(
-            _("dialogs.adjustments.levels_threshold") + f" : {self._threshold}")
-        self._black_pt_lbl.setText(
-            _("dialogs.adjustments.black_point_label", value=self._black_point))
-        self._gamma_lbl.setText(
-            _("dialogs.adjustments.gamma_label", value=round(self._gamma, 2)))
-        self._white_pt_lbl.setText(
-            _("dialogs.adjustments.white_point_label", value=self._white_point))
-        self._btn_auto_levels.setText(_("dialogs.adjustments.auto_levels_button"))
-        import html as _html
-        tip_text = _("dialogs.adjustments.auto_levels_tooltip")
-        tip_html = f'<table style="max-width:340px;white-space:normal;"><tr><td>{_html.escape(tip_text).replace(chr(10), "<br>")}</td></tr></table>'
-        self._overlay_tip.set_tracked_html(tip_html, self._btn_auto_levels)
-        self._btn_levels_viewer.setText(_("dialogs.adjustments.open_viewer_button"))
 
         # Colonne aperçu
         self._grp_preview.setTitle(_("dialogs.adjustments.preview_section"))
@@ -660,20 +453,11 @@ class AdjustmentsDialog(QDialog):
         font9 = _get_current_font(9)
         font8 = _get_current_font(8)
         font11 = _get_current_font(11)
-        for lbl in (self._comp_val_lbl,
-                    self._threshold_lbl, self._black_pt_lbl, self._gamma_lbl,
-                    self._white_pt_lbl):
-            lbl.setFont(font9)
-        for lbl in (self._comp_info_lbl, self._transp_info_lbl, self._preview_warn_lbl):
-            lbl.setFont(font8)
+        self._preview_warn_lbl.setFont(font8)
         for btn in (self._btn_reset, self._btn_apply, self._btn_cancel):
             btn.setFont(font11)
         self._progress_lbl.setFont(font11)
         self._progress_lbl.setStyleSheet("color: #cc0000; font-weight: bold;")
-        for btn in (self._btn_comp_viewer,
-                    self._btn_transp_viewer,
-                    self._btn_auto_levels, self._btn_levels_viewer):
-            btn.setFont(font9)
         for rb in list(self._depth_radios.values()) + list(self._effect_radios.values()) + list(self._mode_radios.values()):
             rb.setFont(font9)
 
@@ -689,27 +473,13 @@ class AdjustmentsDialog(QDialog):
             f"QWidget#scroll_content {{ background: {theme['bg']}; }}"
         )
         grp_style = _groupbox_style(theme)
-        for grp in (self._grp_depth, self._grp_comp,
-                    self._grp_effects, self._grp_transp,
-                    self._grp_levels, self._grp_preview,
-                    self._grp_image_mode):
+        for grp in (self._grp_depth,
+                    self._grp_effects,
+                    self._grp_preview, self._grp_image_mode):
             grp.setStyleSheet(grp_style)
             _set_groupbox_font(grp)
-        # Désactivés en gris
-        if not self._has_compressible:
-            self._grp_comp.setStyleSheet(grp_style.replace(
-                f"color: {theme['text']}", "color: #888888"))
-        if not self._has_transparent:
-            self._grp_transp.setStyleSheet(grp_style.replace(
-                f"color: {theme['text']}", "color: #888888"))
-        slider_style = _slider_style(theme)
-        for sl in (self._comp_slider, self._threshold_slider,
-                   self._black_pt_slider, self._gamma_slider, self._white_pt_slider):
-            sl.setStyleSheet(slider_style)
         btn_style = _btn_style(theme)
-        for btn in (self._btn_comp_viewer,
-                    self._btn_auto_levels, self._btn_levels_viewer,
-                    self._btn_transp_viewer, self._btn_reset, self._btn_apply,
+        for btn in (self._btn_reset, self._btn_apply,
                     self._btn_cancel):
             btn.setStyleSheet(btn_style)
         radio_style = _radio_style(theme)
@@ -756,85 +526,13 @@ class AdjustmentsDialog(QDialog):
         self._color_depth = key
         self._update_preview()
 
-    def _on_comp_changed(self, val):
-        self._comp_quality = val
-        self._comp_val_lbl.setText(
-            _("dialogs.adjustments.compression_quality_label", value=val))
-        self._update_preview()
-
     def _on_effect_changed(self, key):
         self._effect = key
-        self._update_preview()
-
-    def _on_threshold_changed(self, val):
-        self._threshold = val
-        self._threshold_lbl.setText(
-            _("dialogs.adjustments.levels_threshold") + f" : {val}")
-        self._update_preview()
-
-    def _on_black_pt_changed(self, val):
-        self._black_point = val
-        self._black_pt_lbl.setText(
-            _("dialogs.adjustments.black_point_label", value=val))
-        self._update_preview()
-
-    def _on_gamma_changed(self, val):
-        self._gamma = round(val / 100.0, 2)
-        self._gamma_lbl.setText(
-            _("dialogs.adjustments.gamma_label", value=self._gamma))
-        self._update_preview()
-
-    def _on_white_pt_changed(self, val):
-        self._white_point = val
-        self._white_pt_lbl.setText(
-            _("dialogs.adjustments.white_point_label", value=val))
         self._update_preview()
 
     def _on_image_mode_changed(self, key):
         self._image_mode = key
         self._update_preview()
-
-    def _on_auto_levels(self):
-        """Calcule les points noir/blanc sur la page d'aperçu et met à jour les sliders."""
-        if self._original_preview_img is None:
-            return
-        # Sauvegarde pour restauration par "Annuler"
-        self._pre_auto_black_point = self._black_point
-        self._pre_auto_white_point = self._white_point
-
-        buf = io.BytesIO()
-        self._original_preview_img.save(buf, format='PNG')
-        black_val, white_val = _compute_auto_levels(buf.getvalue())
-
-        self._black_pt_slider.blockSignals(True)
-        self._white_pt_slider.blockSignals(True)
-        self._black_point = black_val
-        self._white_point = white_val
-        self._black_pt_slider.setValue(black_val)
-        self._white_pt_slider.setValue(white_val)
-        self._black_pt_slider.blockSignals(False)
-        self._white_pt_slider.blockSignals(False)
-
-        self._black_pt_lbl.setText(
-            _("dialogs.adjustments.black_point_label", value=black_val))
-        self._white_pt_lbl.setText(
-            _("dialogs.adjustments.white_point_label", value=white_val))
-        self._update_preview()
-
-    def reject(self):
-        """Annuler : restaure les niveaux si 'Auto' avait été cliqué."""
-        if self._pre_auto_black_point is not None:
-            self._black_pt_slider.blockSignals(True)
-            self._white_pt_slider.blockSignals(True)
-            self._black_point = self._pre_auto_black_point
-            self._white_point = self._pre_auto_white_point
-            self._black_pt_slider.setValue(self._pre_auto_black_point)
-            self._white_pt_slider.setValue(self._pre_auto_white_point)
-            self._black_pt_slider.blockSignals(False)
-            self._white_pt_slider.blockSignals(False)
-            self._pre_auto_black_point = None
-            self._pre_auto_white_point = None
-        super().reject()
 
     # ─────────────────────────────────────────────────────────────────────────
     # Aperçu
@@ -842,18 +540,10 @@ class AdjustmentsDialog(QDialog):
 
     def _get_settings(self):
         return {
-            'color_depth':            self._color_depth,
-            'compression_quality':    self._comp_quality,
-            'initial_quality':        self._initial_quality,
-            'effect':                 self._effect,
-            'threshold':              self._threshold,
-            'black_point':            self._black_point,
-            'gamma':                  self._gamma,
-            'white_point':            self._white_point,
-            'image_mode':             self._image_mode,
-            'original_ext':           self._original_ext,
-            'transparency_type':      'flood',
-            'transparency_tolerance': 30,
+            'color_depth':  self._color_depth,
+            'effect':       self._effect,
+            'image_mode':   self._image_mode,
+            'original_ext': self._original_ext,
         }
 
     def _update_preview(self):
@@ -893,32 +583,13 @@ class AdjustmentsDialog(QDialog):
 
     def _on_reset(self):
         """Réinitialise tous les contrôles à leurs valeurs par défaut."""
-        # Bloque les signaux le temps de la réinitialisation (évite N rafraîchissements)
-        for sl in (self._comp_slider, self._threshold_slider,
-                   self._black_pt_slider, self._gamma_slider, self._white_pt_slider):
-            sl.blockSignals(True)
-
         self._color_depth        = 'unchanged'
-        self._comp_quality       = self._initial_quality
         self._effect             = 'none'
-        self._threshold          = 128
-        self._black_point        = 0
-        self._gamma              = 1.0
-        self._white_point        = 255
         self._image_mode         = 'unchanged'
 
         self._depth_radios['unchanged'].setChecked(True)
         self._effect_radios['none'].setChecked(True)
         self._mode_radios['unchanged'].setChecked(True)
-
-        self._comp_slider.setValue(self._initial_quality)
-        self._threshold_slider.setValue(128)
-        self._black_pt_slider.setValue(0)
-        self._gamma_slider.setValue(100)
-        self._white_pt_slider.setValue(255)
-        for sl in (self._comp_slider, self._threshold_slider,
-                   self._black_pt_slider, self._gamma_slider, self._white_pt_slider):
-            sl.blockSignals(False)
 
         self._retranslate()
         self._update_preview()
@@ -959,31 +630,14 @@ class AdjustmentsDialog(QDialog):
                              for e in self._selected_entries}
             processed = []
 
-            if self._pre_auto_black_point is not None:
-                # Auto cliqué + plusieurs pages : calcul individuel par page
-                base_settings = self._get_settings()
-                for i, entry in enumerate(self._selected_entries, 1):
-                    if self._cancel_requested:
-                        break
-                    if not entry.get('bytes'):
-                        continue
-                    self._progress_lbl.setText(_("labels.adjusting", current=i, total=n))
-                    QApplication.processEvents()
-                    page_settings = dict(base_settings)
-                    bp, wp = _compute_auto_levels(entry['bytes'])
-                    page_settings['black_point'] = bp
-                    page_settings['white_point'] = wp
-                    _apply_image_adjustments([entry], page_settings, callbacks=callbacks_no_save)
-                    processed.append(entry)
-            else:
-                for i, entry in enumerate(self._selected_entries, 1):
-                    if self._cancel_requested:
-                        break
-                    self._progress_lbl.setText(_("labels.adjusting", current=i, total=n))
-                    QApplication.processEvents()
-                    _apply_image_adjustments([entry], self._get_settings(),
-                                             callbacks=callbacks_no_save)
-                    processed.append(entry)
+            for i, entry in enumerate(self._selected_entries, 1):
+                if self._cancel_requested:
+                    break
+                self._progress_lbl.setText(_("labels.adjusting", current=i, total=n))
+                QApplication.processEvents()
+                _apply_image_adjustments([entry], self._get_settings(),
+                                         callbacks=callbacks_no_save)
+                processed.append(entry)
 
             if self._cancel_requested:
                 # Restaurer les bytes et thumbnails des images déjà modifiées
@@ -1014,54 +668,6 @@ class AdjustmentsDialog(QDialog):
 
         self._progress_lbl.setVisible(False)
         self.close()
-
-    def _open_viewer(self, mode):
-        """Ouvre la visionneuse plein écran pour le mode donné."""
-        from modules.qt.adjustments_viewers_qt import AdjustmentViewerDialog
-
-        # Snapshot des settings courants (le viewer va les modifier)
-        settings = self._get_settings()
-
-        def on_close():
-            """Synchronise les sliders du dialog avec les valeurs modifiées dans le viewer."""
-            # Bloque les signaux pour éviter N rafraîchissements
-            for sl in (self._comp_slider, self._black_pt_slider,
-                       self._gamma_slider, self._white_pt_slider):
-                sl.blockSignals(True)
-
-            self._comp_quality      = settings.get('compression_quality', self._initial_quality)
-            self._black_point       = settings.get('black_point', 0)
-            self._white_point       = settings.get('white_point', 255)
-            self._gamma             = settings.get('gamma', 1.0)
-
-            self._comp_slider.setValue(self._comp_quality)
-            self._black_pt_slider.setValue(self._black_point)
-            self._white_pt_slider.setValue(self._white_point)
-            self._gamma_slider.setValue(int(self._gamma * 100))
-
-            for sl in (self._comp_slider, self._black_pt_slider,
-                       self._gamma_slider, self._white_pt_slider):
-                sl.blockSignals(False)
-
-            self._retranslate()
-            self._update_preview()
-            self.close()
-
-        def on_cancel():
-            """Annulation : remet les settings au snapshot initial (sans modification)."""
-            pass  # le viewer n'a pas encore appliqué → pas de rollback nécessaire
-
-        viewer = AdjustmentViewerDialog(
-            self, self._selected_entries, settings, mode,
-            on_close_callback=on_close,
-            on_cancel_callback=on_cancel,
-            callbacks=self._callbacks,
-        )
-        from modules.qt.dialogs_qt import position_dialog_on_parent
-        position_dialog_on_parent(viewer, self)
-        viewer.show()
-        viewer.raise_()
-        viewer.activateWindow()
 
 
 # ─────────────────────────────────────────────────────────────────────────────

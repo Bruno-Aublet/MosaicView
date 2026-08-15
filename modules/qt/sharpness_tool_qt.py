@@ -1,12 +1,12 @@
 """
-modules/qt/adjustments_tool_qt.py — Outil "netteté" (sharpness) de la barre
+modules/qt/sharpness_tool_qt.py — Outil "netteté" (sharpness) de la barre
 d'outils flottante de la visionneuse principale (image_viewer_qt.py).
 
 Fusion progressive des visionneuses (idees.txt #3, 5e outil migré, premier des
 8 modes d'ajustement) : ce module contient toute la logique propre à l'outil
-"sharpness" — état + preview live (mixin AdjustmentsCanvasMixin, hérité par
+"sharpness" — état + preview live (mixin SharpnessCanvasMixin, hérité par
 _ViewerCanvas), commit de l'ajustement dans l'historique du panneau (mixin
-AdjustmentsViewerMixin, hérité par ImageViewer), et le panneau flottant de la
+SharpnessViewerMixin, hérité par ImageViewer), et le panneau flottant de la
 réglette (_SharpnessOptionsPanel). image_viewer_qt.py ne fait qu'hériter de ces
 deux mixins et brancher l'icône de la barre d'outils — voir CLAUDE.md règle
 "ne jamais migrer le code d'un outil dans image_viewer_qt.py".
@@ -14,7 +14,7 @@ deux mixins et brancher l'icône de la barre d'outils — voir CLAUDE.md règle
 Contrairement au crop/straighten/clone/texte, cet outil n'a AUCUN overlay
 interactif ni geste souris sur le canvas : c'est une réglette avec preview
 temps réel (comme AdjustmentViewerDialog::_display_image en mode 'sharpness').
-AdjustmentsCanvasMixin reste donc volontairement minimal (pas de mousePress/
+SharpnessCanvasMixin reste donc volontairement minimal (pas de mousePress/
 Move/Release à gérer, pas de paint_* à appeler depuis paintEvent).
 
 PAS de bouton "Valider" pour cet outil (décision explicite, 2026-08-14,
@@ -40,7 +40,7 @@ dans viewer_toolbar_qt.py.
 
 Le mode unsharp (1) est implémenté sur le même principe que sharpness :
 _UnsharpOptionsPanel (3 réglettes radius/percent/threshold au lieu d'une
-seule) + AdjustmentsViewerMixin._update_unsharp_preview()/perform_unsharp()/
+seule) + SharpnessViewerMixin._update_unsharp_preview()/perform_unsharp()/
 _reset_unsharp_preview(), mêmes points de commit (sliderReleased/
 editingFinished), même réutilisation de apply_adjustments()/
 apply_image_adjustments() (unsharp_radius/unsharp_percent/unsharp_threshold
@@ -74,7 +74,7 @@ class _SharpnessOptionsPanel(QWidget):
     pour permettre un réglage fin ou une saisie manuelle au clavier. Pendant
     le déplacement du slider (valueChanged) ou la frappe dans la spinbox :
     preview PIL live sans toucher entry['bytes']. Commit réel via
-    AdjustmentsViewerMixin.perform_sharpness() au relâchement du slider
+    SharpnessViewerMixin.perform_sharpness() au relâchement du slider
     (sliderReleased) OU à la perte de focus/validation de la spinbox
     (editingFinished) — puis les deux reviennent à 0. Pas de bouton "Valider"
     pour cet outil (voir docstring de module).
@@ -167,6 +167,17 @@ class _SharpnessOptionsPanel(QWidget):
         x = (canvas.width() - self.width()) // 2
         y = 8 + self._viewer._toolbar.height() + 6
         self.move(max(0, x), y)
+
+    def mousePressEvent(self, event):
+        # Piège corrigé (2026-08-15, découvert sur le panneau de
+        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
+        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
+        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
+        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        event.accept()
+
+    def mouseReleaseEvent(self, event):
+        event.accept()
 
     def enterEvent(self, event):
         self._viewer._toolbar.pause_hide()
@@ -407,6 +418,17 @@ class _UnsharpOptionsPanel(QWidget):
         y = 8 + self._viewer._toolbar.height() + 6
         self.move(max(0, x), y)
 
+    def mousePressEvent(self, event):
+        # Piège corrigé (2026-08-15, découvert sur le panneau de
+        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
+        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
+        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
+        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        event.accept()
+
+    def mouseReleaseEvent(self, event):
+        event.accept()
+
     def enterEvent(self, event):
         self._viewer._toolbar.pause_hide()
 
@@ -509,7 +531,7 @@ class _UnsharpOptionsPanel(QWidget):
 # Mixin canvas — état de l'outil (hérité par _ViewerCanvas)
 # ─────────────────────────────────────────────────────────────────────────────
 
-class AdjustmentsCanvasMixin:
+class SharpnessCanvasMixin:
     """Hérité par _ViewerCanvas (image_viewer_qt.py) en plus de QLabel : ajoute
     l'état minimal de l'outil "sharpness" au canvas de la visionneuse, sans
     que son code vive dans image_viewer_qt.py.
@@ -530,11 +552,11 @@ class AdjustmentsCanvasMixin:
 # Mixin viewer — preview live + commit dans l'historique du panneau (hérité par ImageViewer)
 # ─────────────────────────────────────────────────────────────────────────────
 
-class AdjustmentsViewerMixin:
+class SharpnessViewerMixin:
     """Hérité par ImageViewer (image_viewer_qt.py) en plus de QDialog : ajoute
     la logique de l'outil "sharpness" au viewer, sans que son code vive dans
     image_viewer_qt.py. Suppose que l'hôte a déjà self._canvas
-    (_ViewerCanvas, avec AdjustmentsCanvasMixin), self.callbacks,
+    (_ViewerCanvas, avec SharpnessCanvasMixin), self.callbacks,
     self.current_idx, self._toolbar (avec _sharpness_panel).
     """
 
@@ -632,7 +654,16 @@ class AdjustmentsViewerMixin:
                 update_btn()
 
             self._sharpness_preview_img = None
-            self.display_image()
+            # keep_crop_rect=True : pas pour préserver un crop (il n'y en a
+            # jamais pendant un ajustement de netteté), mais pour éviter
+            # l'effet de bord de display_image() sans ce flag, qui appelle
+            # inconditionnellement _canvas.clear_crop() — lequel remet aussi
+            # pan_offset_x/y à 0 (crop_tool_qt.py::clear_crop, pensé pour
+            # recentrer la vue quand on abandonne un crop). Sans ce flag, tout
+            # commit après un zoom+pan recentrait l'image sous les pieds de
+            # l'utilisateur (bug diagnostiqué sur levels, 2026-08-15, même
+            # cause ici — voir levels_tool_qt.py::perform_levels).
+            self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
 
         except Exception as e:
@@ -750,7 +781,16 @@ class AdjustmentsViewerMixin:
                 update_btn()
 
             self._sharpness_preview_img = None
-            self.display_image()
+            # keep_crop_rect=True : pas pour préserver un crop (il n'y en a
+            # jamais pendant un ajustement de netteté adaptative), mais pour
+            # éviter l'effet de bord de display_image() sans ce flag, qui
+            # appelle inconditionnellement _canvas.clear_crop() — lequel remet
+            # aussi pan_offset_x/y à 0 (crop_tool_qt.py::clear_crop, pensé
+            # pour recentrer la vue quand on abandonne un crop). Sans ce flag,
+            # tout commit après un zoom+pan recentrait l'image sous les pieds
+            # de l'utilisateur (bug diagnostiqué sur levels, 2026-08-15, même
+            # cause ici — voir levels_tool_qt.py::perform_levels).
+            self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
 
         except Exception as e:

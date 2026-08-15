@@ -66,7 +66,14 @@
     "batch_library": "Creați o bibliotecă din dosar(e)",
     "batch_recompress": "Recomprimați fișierele CBZ la nivelul implicit",
     "validate_straighten": "Confirmă îndreptarea",
-    "validate_text": "Aplică textul"
+    "validate_text": "Aplică textul",
+    "validate_shapes": "Confirmă formele",
+    "validate_transparency": "Confirmă transparența",
+    "cancel_crop": "Anulează decuparea",
+    "cancel_straighten": "Anulează îndreptarea",
+    "cancel_text": "Anulează textul",
+    "cancel_shapes": "Anulează formele",
+    "cancel_transparency": "Anulează transparența"
   },
   "tabs": {
     "mosaic": "Mozaic",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Saturație :",
     "toolbar_remove_colors_tooltip": "Eliminarea culorilor",
     "toolbar_remove_colors_instruction": "Reglați cursorul, ajustarea se aplică la eliberare",
-    "remove_colors_panel_label": "Intensitate :"
+    "remove_colors_panel_label": "Intensitate :",
+    "toolbar_compression_tooltip": "Compresie",
+    "toolbar_compression_instruction": "Ajustați cursorul, ajustarea se aplică la eliberare",
+    "toolbar_compression_disabled": "Disponibil doar pentru imagini JPG, WEBP și AVIF",
+    "compression_panel_label": "Calitate :",
+    "toolbar_levels_tooltip": "Niveluri",
+    "toolbar_levels_instruction": "Pipete sau cursoare, ajustarea se aplica la eliberare/clic",
+    "levels_gamma_panel_label": "Gama :",
+    "levels_threshold_panel_label": "Prag :",
+    "levels_black_panel_label": "Punct negru :",
+    "levels_white_panel_label": "Punct alb :",
+    "levels_black_slider_tooltip": "Toti pixelii mai intunecati decat aceasta valoare devin complet negri",
+    "levels_gamma_slider_tooltip": "Deschide sau intuneca tonurile medii, fara a afecta negrul sau albul",
+    "levels_white_slider_tooltip": "Toti pixelii mai deschisi decat aceasta valoare devin complet albi",
+    "levels_threshold_slider_tooltip": "Transforma imaginea in alb-negru pur pe baza acestui prag",
+    "levels_auto_tooltip": "Analizeaza pagina afisata si ajusteaza automat punctele de negru si alb pentru a maximiza contrastul",
+    "toolbar_shapes_tooltip": "Forme",
+    "toolbar_shapes_instruction": "Trageți pentru a desena o formă, mânere pentru redimensionare, săgeți pentru deplasare",
+    "shape_type_ellipse": "Elipsă",
+    "shape_type_rectangle": "Dreptunghi",
+    "shape_type_rounded_rectangle": "Dreptunghi cu colțuri rotunjite",
+    "shape_type_line": "Linie",
+    "shape_type_arrow": "Săgeată",
+    "shape_thickness_label": "Grosime:",
+    "shape_color_label": "Culoare:",
+    "shape_color_tooltip": "Alegeți culoarea conturului și a umplerii",
+    "shape_fill_enabled_label": "Umplere",
+    "shape_pipette_tooltip": "Preluați o culoare de pe pagina afișată",
+    "toolbar_transparency_tooltip": "Transparență",
+    "toolbar_transparency_instruction": "Faceți clic pe culoarea care va deveni transparentă",
+    "toolbar_transparency_disabled": "Disponibil doar pentru imagini PNG, WebP, ICO și AVIF",
+    "transparency_flood_panel_label": "Zonă",
+    "transparency_global_panel_label": "Global",
+    "transparency_tolerance_panel_label": "Toleranță:",
+    "transparency_type_slider_tooltip": "Zonă: face transparentă zona de culoare uniformă din jurul pixelului apăsat. Global: afectează toți pixelii imaginii a căror culoare este apropiată de cea apăsată",
+    "transparency_tolerance_slider_tooltip": "Distanța maximă de culoare acceptată în jurul pixelului apăsat"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Niciun text",
         "message": "Introduceți mai întâi text în cel puțin un bloc."
+      },
+      "no_shape": {
+        "title": "Nicio formă desenată",
+        "message": "Vă rugăm să desenați mai întâi cel puțin o formă."
+      },
+      "no_transparency_work": {
+        "title": "Nicio transparență aplicată",
+        "message": "Faceți mai întâi clic pe o culoare pentru a o face transparentă."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Eroare",
         "message": "Nu s-a putut aplica eliminarea culorilor: {error}"
+      },
+      "compression_failed": {
+        "title": "Eroare",
+        "message": "Nu s-a putut aplica compresia: {error}"
+      },
+      "levels_failed": {
+        "title": "Eroare",
+        "message": "Nu s-au putut aplica nivelurile: {error}"
+      },
+      "shapes_failed": {
+        "title": "Eroare",
+        "message": "Formele nu au putut fi aplicate: {error}"
+      },
+      "transparency_failed": {
+        "title": "Eroare",
+        "message": "Transparența nu a putut fi aplicată."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "imagini",
       "apply_button": "Aplica",
       "color_depth_section": "Adancime culoare",
-      "compression_section": "Compresie",
       "effects_section": "Efecte",
       "sharpness_section": "Claritate",
-      "levels_section": "Niveluri negru/alb",
       "depth_unchanged": "Nu modifica",
       "depth_32bit": "32 biti (RGBA - culori + transparenta)",
       "depth_24bit": "24 biti (RGB - culori)",
       "depth_8bit": "8 biti (paleta PNG / tonuri de gri JPEG)",
       "depth_1bit": "1 bit (alb-negru)",
       "compression_enable": "Activeaza recompresie",
-      "compression_quality_label": "Calitate : {value}/100",
       "effect_none": "Fara efect",
       "effect_grayscale": "Tonuri de gri",
       "effect_sepia": "Sepia",
-      "levels_none": "Fara ajustare",
-      "levels_threshold": "Prag (negru sau alb pur)",
-      "levels_advanced": "Niveluri avansate (umbre/tonuri medii/lumini)",
-      "threshold_label": "Prag: {value}",
-      "black_point_label": "Punct negru: {value}",
-      "gamma_label": "Gamma (tonuri medii): {value}",
-      "white_point_label": "Punct alb: {value}",
       "auto_levels_button": "Ajustare automată",
-      "open_viewer_button": "Ajustează cu vizualizatorul (recomandat)",
-      "compression_info": "Compresia se aplică doar imaginilor JPG, WebP și AVIF",
-      "open_viewer_button_simple": "Ajustați cu vizualizatorul",
       "reset_button": "Resetare",
       "preview_section": "Previzualizare",
       "effect_invert": "Inversarea culorilor",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (tonuri de gri + transparență)",
       "image_mode_cmyk": "CMYK (tipărire)",
       "image_mode_1": "1 (alb-negru pur)",
-      "image_mode_p": "P (paletă de 256 culori)",
-      "transparency_section": "Transparență",
-      "transparency_info": "Transparența se aplică doar imaginilor PNG, WebP, ICO și AVIF",
-      "transparency_type_label": "Tip :",
-      "transparency_type_flood": "Zonă",
-      "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Toleranță :",
-      "transparency_viewer_title": "Ajustarea transparenței",
-      "transparency_click_instruction": "Faceți clic pe culoarea pe care doriți să o faceți transparentă",
-      "transparency_undo": "Anulați ultimul clic",
-      "transparency_redo": "Refaceți",
-      "transparency_type_flood_tooltip": "Flood fill : face transparentă zona de culoare uniformă din jurul pixelului apăsat",
-      "transparency_type_global_tooltip": "Transparență globală : afectează toți pixelii din imagine a căror culoare este apropiată de cea apăsată",
-      "transparency_apply": "Aplică",
-      "transparency_skipped_warning": "{count} imagine(i) ignorată(e) — format incompatibil cu transparența. Pentru a le include, convertiți-le mai întâi în PNG.",
-      "auto_levels_tooltip": "Analizează fiecare pagină și reglează automat nivelurile de negru și alb pentru a maximiza contrastul.\nPentru a alege pagină cu pagină, utilizați vizualizatorul.",
-      "transparency_unsaved_title": "Modificări neaplicate",
-      "transparency_unsaved_message": "Modificările curente nu au fost aplicate imaginii. Ce doriți să faceți?",
-      "transparency_unsaved_discard": "Închide fără a aplica",
-      "transparency_unsaved_apply": "Aplică și închide",
-      "transparency_unsaved_cancel": "Anulare"
+      "image_mode_p": "P (paletă de 256 culori)"
     },
     "levels_viewer": {
-      "title": "Ajustarea nivelurilor cu picurator",
-      "apply_current": "Aplica la aceasta pagina",
-      "apply_all": "Aplicați la toate paginile selectate",
       "black_pipette": "Pipeta punct negru",
       "white_pipette": "Pipeta punct alb",
       "black_pipette_tooltip": "Faceți clic pe un pixel care ar trebui să fie complet negru. Atenție: este ușor să exagerați!",
       "white_pipette_tooltip": "Faceți clic pe un pixel care ar trebui să fie complet alb. Atenție: este ușor să exagerați!"
-    },
-    "compression_viewer": {
-      "title": "Reglarea compresiei"
     },
     "outliers": {
       "title": "Pagini cu dimensiuni neobișnuite",

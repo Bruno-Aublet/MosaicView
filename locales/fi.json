@@ -66,7 +66,14 @@
     "batch_library": "Luo kirjasto kansiosta/kansioista",
     "batch_recompress": "Pakkaa CBZ-tiedostot uudelleen oletustasolle",
     "validate_straighten": "Vahvista suoristus",
-    "validate_text": "Käytä tekstiä"
+    "validate_text": "Käytä tekstiä",
+    "validate_shapes": "Vahvista muodot",
+    "validate_transparency": "Vahvista läpinäkyvyys",
+    "cancel_crop": "Peruuta rajaus",
+    "cancel_straighten": "Peruuta suoristus",
+    "cancel_text": "Peruuta teksti",
+    "cancel_shapes": "Peruuta muodot",
+    "cancel_transparency": "Peruuta läpinäkyvyys"
   },
   "tabs": {
     "mosaic": "Mosaïque",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Värikylläisyys :",
     "toolbar_remove_colors_tooltip": "Värien poisto",
     "toolbar_remove_colors_instruction": "Säädä liukusäädintä, muutos tulee voimaan vapautettaessa",
-    "remove_colors_panel_label": "Intensiteetti :"
+    "remove_colors_panel_label": "Intensiteetti :",
+    "toolbar_compression_tooltip": "Pakkaus",
+    "toolbar_compression_instruction": "Säädä liukusäädintä, muutos tulee voimaan vapautettaessa",
+    "toolbar_compression_disabled": "Käytettävissä vain JPG-, WEBP- ja AVIF-kuville",
+    "compression_panel_label": "Laatu :",
+    "toolbar_levels_tooltip": "Tasot",
+    "toolbar_levels_instruction": "Pipetit tai liukusaatimet, muutos tulee voimaan vapautettaessa/napsautettaessa",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Kynnysarvo :",
+    "levels_black_panel_label": "Musta piste :",
+    "levels_white_panel_label": "Valkoinen piste :",
+    "levels_black_slider_tooltip": "Kaikki tata arvoa tummemmat pikselit muuttuvat taysin mustiksi",
+    "levels_gamma_slider_tooltip": "Vaalentaa tai tummentaa vaalisavyja vaikuttamatta mustaan tai valkoiseen",
+    "levels_white_slider_tooltip": "Kaikki tata arvoa vaaleammat pikselit muuttuvat taysin valkoisiksi",
+    "levels_threshold_slider_tooltip": "Muuttaa kuvan puhtaan mustavalkoiseksi taman kynnysarvon perusteella",
+    "levels_auto_tooltip": "Analysoi nayteta sivun ja saataa automaattisesti musta- ja valkopisteen kontrastin maksimoimiseksi",
+    "toolbar_shapes_tooltip": "Muodot",
+    "toolbar_shapes_instruction": "Vedä piirtääksesi muodon, kahvat koon muuttamiseen, nuolinäppäimet siirtämiseen",
+    "shape_type_ellipse": "Ellipsi",
+    "shape_type_rectangle": "Suorakulmio",
+    "shape_type_rounded_rectangle": "Pyöristetty suorakulmio",
+    "shape_type_line": "Viiva",
+    "shape_type_arrow": "Nuoli",
+    "shape_thickness_label": "Paksuus:",
+    "shape_color_label": "Väri:",
+    "shape_color_tooltip": "Valitse ääriviivan ja täytön väri",
+    "shape_fill_enabled_label": "Täyttö",
+    "shape_pipette_tooltip": "Poimi väri näytetyltä sivulta",
+    "toolbar_transparency_tooltip": "Läpinäkyvyys",
+    "toolbar_transparency_instruction": "Napsauta väriä, josta tulee läpinäkyvä",
+    "toolbar_transparency_disabled": "Käytettävissä vain PNG-, WebP-, ICO- ja AVIF-kuville",
+    "transparency_flood_panel_label": "Alue",
+    "transparency_global_panel_label": "Yleinen",
+    "transparency_tolerance_panel_label": "Toleranssi:",
+    "transparency_type_slider_tooltip": "Alue: tekee napsautetun pikselin ympärillä olevasta yhtenäisestä väristä läpinäkyvän. Yleinen: vaikuttaa kaikkiin kuvan pikseleihin, joiden väri on lähellä napsautettua",
+    "transparency_tolerance_slider_tooltip": "Suurin hyväksytty väriero napsautetun pikselin ympärillä"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Ei tekstiä",
         "message": "Kirjoita ensin tekstiä ainakin yhteen lohkoon."
+      },
+      "no_shape": {
+        "title": "Ei piirrettyä muotoa",
+        "message": "Piirrä ensin vähintään yksi muoto."
+      },
+      "no_transparency_work": {
+        "title": "Läpinäkyvyyttä ei sovellettu",
+        "message": "Napsauta ensin väriä, josta tulee läpinäkyvä."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Virhe",
         "message": "Värien poistoa ei voitu käyttää: {error}"
+      },
+      "compression_failed": {
+        "title": "Virhe",
+        "message": "Pakkausta ei voitu käyttää: {error}"
+      },
+      "levels_failed": {
+        "title": "Virhe",
+        "message": "Tasoja ei voitu ottaa kayttoon: {error}"
+      },
+      "shapes_failed": {
+        "title": "Virhe",
+        "message": "Muotoja ei voitu käyttää: {error}"
+      },
+      "transparency_failed": {
+        "title": "Virhe",
+        "message": "Läpinäkyvyyttä ei voitu soveltaa."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "kuvaa",
       "apply_button": "Kayta",
       "color_depth_section": "Varisyvyys",
-      "compression_section": "Pakkaus",
       "effects_section": "Tehosteet",
       "sharpness_section": "Terävyys",
-      "levels_section": "Musta/valkoinen tasot",
       "depth_unchanged": "Ala muuta",
       "depth_32bit": "32 bittia (RGBA - varit + lapinakyvyys)",
       "depth_24bit": "24 bittia (RGB - varit)",
       "depth_8bit": "8 bittia (PNG-paletti / JPEG-harmaasavyt)",
       "depth_1bit": "1 bitti (mustavalkoinen)",
       "compression_enable": "Ota kayttoon uudelleenpakkaus",
-      "compression_quality_label": "Laatu : {value}/100",
       "effect_none": "Ei tehostetta",
       "effect_grayscale": "Harmaasavyt",
       "effect_sepia": "Seepia",
-      "levels_none": "Ei saatoa",
-      "levels_threshold": "Kynnysarvo (puhdas musta tai valkoinen)",
-      "levels_advanced": "Edistyneet tasot (varjot/keskisavyt/valot)",
-      "threshold_label": "Kynnysarvo: {value}",
-      "black_point_label": "Musta piste: {value}",
-      "gamma_label": "Gamma (keskisavyt): {value}",
-      "white_point_label": "Valkoinen piste: {value}",
       "auto_levels_button": "Automaattinen säätö",
-      "open_viewer_button": "Säädä katseluohjelmalla (suositeltu)",
-      "compression_info": "Pakkaus koskee vain JPG-, WebP- ja AVIF-kuvia",
-      "open_viewer_button_simple": "Säädä katseluohjelmalla",
       "reset_button": "Nollaa",
       "preview_section": "Esikatselu",
       "effect_invert": "Värien kääntö",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (harmaasävyt + läpinäkyvyys)",
       "image_mode_cmyk": "CMYK (tulostus)",
       "image_mode_1": "1 (puhdas mustavalkoinen)",
-      "image_mode_p": "P (256 värin paletti)",
-      "transparency_section": "Läpinäkyvyys",
-      "transparency_info": "Läpinäkyvyys koskee vain PNG-, WebP-, ICO- ja AVIF-kuvia",
-      "transparency_type_label": "Tyyppi :",
-      "transparency_type_flood": "Alue",
-      "transparency_type_global": "Yleinen",
-      "transparency_tolerance_label": "Toleranssi :",
-      "transparency_viewer_title": "Läpinäkyvyyden säätö",
-      "transparency_click_instruction": "Napsauta väriä, jonka haluat tehdä läpinäkyväksi",
-      "transparency_undo": "Kumoa viimeisin napsautus",
-      "transparency_redo": "Tee uudelleen",
-      "transparency_type_flood_tooltip": "Flood fill : tekee napsautetun pikselin ympärillä olevan yhtenäisen värialueen läpinäkyväksi",
-      "transparency_type_global_tooltip": "Yleinen läpinäkyvyys : vaikuttaa kaikkiin kuvan pikseleihin, joiden väri on lähellä napsautettua",
-      "transparency_apply": "Käytä",
-      "transparency_skipped_warning": "{count} kuva(a) ohitettu — muoto ei ole yhteensopiva läpinäkyvyyden kanssa. Sisällyttääksesi ne, muunna ne ensin PNG-muotoon.",
-      "auto_levels_tooltip": "Analysoi jokaisen sivun ja säätää automaattisesti mustan ja valkoisen tasot kontrastin maksimoimiseksi.\nValitaksesi sivu sivulta käytä katseluohjelmaa.",
-      "transparency_unsaved_title": "Soveltamattomat muutokset",
-      "transparency_unsaved_message": "Nykyisiä muutoksia ei ole sovellettu kuvaan. Mitä haluat tehdä?",
-      "transparency_unsaved_discard": "Sulje soveltamatta",
-      "transparency_unsaved_apply": "Sovella ja sulje",
-      "transparency_unsaved_cancel": "Peruuta"
+      "image_mode_p": "P (256 värin paletti)"
     },
     "levels_viewer": {
-      "title": "Tasosaato tiputintyokalulla",
-      "apply_current": "Kayta talle sivulle",
-      "apply_all": "Käytä kaikkiin valittuihin sivuihin",
       "black_pipette": "Mustan pisteen tippa",
       "white_pipette": "Valkoisen pisteen tippa",
       "black_pipette_tooltip": "Napsauta pikseliä, jonka pitäisi olla täysin musta. Varoitus: on helppo liioitella!",
       "white_pipette_tooltip": "Napsauta pikseliä, jonka pitäisi olla täysin valkoinen. Varoitus: on helppo liioitella!"
-    },
-    "compression_viewer": {
-      "title": "Pakkauksen säätö"
     },
     "outliers": {
       "title": "Sivut epätavallisilla mitoilla",

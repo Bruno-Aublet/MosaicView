@@ -66,7 +66,14 @@
     "batch_library": "Opprett et bibliotek fra mappe(r)",
     "batch_recompress": "Komprimer CBZ-filer på nytt til standardnivå",
     "validate_straighten": "Bekreft opprettingen",
-    "validate_text": "Bruk tekst"
+    "validate_text": "Bruk tekst",
+    "validate_shapes": "Bekreft formene",
+    "validate_transparency": "Bekreft gjennomsiktighet",
+    "cancel_crop": "Avbryt beskjæring",
+    "cancel_straighten": "Avbryt retting",
+    "cancel_text": "Avbryt tekst",
+    "cancel_shapes": "Avbryt former",
+    "cancel_transparency": "Avbryt gjennomsiktighet"
   },
   "tabs": {
     "mosaic": "Mosaikk",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Metning :",
     "toolbar_remove_colors_tooltip": "Fjerning av farger",
     "toolbar_remove_colors_instruction": "Juster glidebryteren, endringen brukes ved slipp",
-    "remove_colors_panel_label": "Intensitet :"
+    "remove_colors_panel_label": "Intensitet :",
+    "toolbar_compression_tooltip": "Komprimering",
+    "toolbar_compression_instruction": "Juster glidebryteren, justeringen brukes når du slipper",
+    "toolbar_compression_disabled": "Kun tilgjengelig for JPG-, WEBP- og AVIF-bilder",
+    "compression_panel_label": "Kvalitet :",
+    "toolbar_levels_tooltip": "Nivaer",
+    "toolbar_levels_instruction": "Pipetter eller glidebrytere, justeringen brukes ved slipp/klikk",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Terskel :",
+    "levels_black_panel_label": "Sortpunkt :",
+    "levels_white_panel_label": "Hvitpunkt :",
+    "levels_black_slider_tooltip": "Alle piksler morkere enn denne verdien blir helt svarte",
+    "levels_gamma_slider_tooltip": "Lysner eller morkner mellomtoner, uten a pavirke svart eller hvitt",
+    "levels_white_slider_tooltip": "Alle piksler lysere enn denne verdien blir helt hvite",
+    "levels_threshold_slider_tooltip": "Konverterer bildet til rent svart-hvitt basert pa denne terskelen",
+    "levels_auto_tooltip": "Analyserer den viste siden og justerer automatisk svart- og hvitpunktene for a maksimere kontrasten",
+    "toolbar_shapes_tooltip": "Former",
+    "toolbar_shapes_instruction": "Dra for å tegne en form, håndtak for å endre størrelse, piltaster for å flytte",
+    "shape_type_ellipse": "Ellipse",
+    "shape_type_rectangle": "Rektangel",
+    "shape_type_rounded_rectangle": "Rektangel med avrundede hjørner",
+    "shape_type_line": "Linje",
+    "shape_type_arrow": "Pil",
+    "shape_thickness_label": "Tykkelse:",
+    "shape_color_label": "Farge:",
+    "shape_color_tooltip": "Velg farge på strek og fyll",
+    "shape_fill_enabled_label": "Fyll",
+    "shape_pipette_tooltip": "Hent en farge fra den viste siden",
+    "toolbar_transparency_tooltip": "Gjennomsiktighet",
+    "toolbar_transparency_instruction": "Klikk på fargen som skal gjøres gjennomsiktig",
+    "toolbar_transparency_disabled": "Kun tilgjengelig for PNG-, WebP-, ICO- og AVIF-bilder",
+    "transparency_flood_panel_label": "Område",
+    "transparency_global_panel_label": "Globalt",
+    "transparency_tolerance_panel_label": "Toleranse:",
+    "transparency_type_slider_tooltip": "Område: gjør det ensfargede området rundt den klikkede pikselen gjennomsiktig. Globalt: påvirker alle piksler i bildet med farge nær den klikkede",
+    "transparency_tolerance_slider_tooltip": "Maksimal godtatt fargeavstand rundt den klikkede pikselen"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Ingen tekst",
         "message": "Skriv inn tekst i minst én blokk først."
+      },
+      "no_shape": {
+        "title": "Ingen form tegnet",
+        "message": "Tegn minst én form først."
+      },
+      "no_transparency_work": {
+        "title": "Ingen gjennomsiktighet brukt",
+        "message": "Klikk først på en farge som skal gjøres gjennomsiktig."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Feil",
         "message": "Kunne ikke bruke fjerning av farger: {error}"
+      },
+      "compression_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke komprimering: {error}"
+      },
+      "levels_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke nivaer: {error}"
+      },
+      "shapes_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke formene: {error}"
+      },
+      "transparency_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke gjennomsiktighet."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "bilder",
       "apply_button": "Bruk",
       "color_depth_section": "Fargedybde",
-      "compression_section": "Komprimering",
       "effects_section": "Effekter",
       "sharpness_section": "Skarphet",
-      "levels_section": "Sort/hvit-nivaer",
       "depth_unchanged": "Ikke endre",
       "depth_32bit": "32 bits (RGBA - farger + gjennomsiktighet)",
       "depth_24bit": "24 bits (RGB - farger)",
       "depth_8bit": "8 bit (PNG-palett / JPEG-gratoneskala)",
       "depth_1bit": "1 bit (sort og hvit)",
       "compression_enable": "Aktiver rekomprimering",
-      "compression_quality_label": "Kvalitet : {value}/100",
       "effect_none": "Ingen effekt",
       "effect_grayscale": "Graatoner",
       "effect_sepia": "Sepia",
-      "levels_none": "Ingen justering",
-      "levels_threshold": "Terskel (ren sort eller hvit)",
-      "levels_advanced": "Avanserte nivaer (skygger/mellomtoner/lys)",
-      "threshold_label": "Terskel: {value}",
-      "black_point_label": "Sortpunkt: {value}",
-      "gamma_label": "Gamma (mellomtoner): {value}",
-      "white_point_label": "Hvitpunkt: {value}",
       "auto_levels_button": "Automatisk justering",
-      "open_viewer_button": "Juster med visningsprogrammet (anbefalt)",
-      "compression_info": "Komprimering gjelder bare for JPG-, WebP- og AVIF-bilder",
-      "open_viewer_button_simple": "Juster med visningsprogram",
       "reset_button": "Tilbakestill",
       "preview_section": "Forhåndsvisning",
       "effect_invert": "Fargeinversjon",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (gråtoner + gjennomsiktighet)",
       "image_mode_cmyk": "CMYK (trykk)",
       "image_mode_1": "1 (rent svart-hvitt)",
-      "image_mode_p": "P (256-fargepalett)",
-      "transparency_section": "Gjennomsiktighet",
-      "transparency_info": "Gjennomsiktighet gjelder bare for PNG-, WebP-, ICO- og AVIF-bilder",
-      "transparency_type_label": "Type :",
-      "transparency_type_flood": "Område",
-      "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Toleranse :",
-      "transparency_viewer_title": "Justering av gjennomsiktighet",
-      "transparency_click_instruction": "Klikk på fargen som skal gjøres gjennomsiktig",
-      "transparency_undo": "Angre siste klikk",
-      "transparency_redo": "Gjenta",
-      "transparency_type_flood_tooltip": "Flood fill : gjør det ensartede fargeområdet rundt det klikkede pixelet gjennomsiktig",
-      "transparency_type_global_tooltip": "Global gjennomsiktighet : påvirker alle piksler i bildet hvis farge ligner den klikkede",
-      "transparency_apply": "Bruk",
-      "transparency_skipped_warning": "{count} bilde(r) hoppet over — formatet er ikke kompatibelt med gjennomsiktighet. For å inkludere dem, konverter dem til PNG først.",
-      "auto_levels_tooltip": "Analyserer hver side og justerer automatisk svart- og hvitnivåene for å maksimere kontrasten.\nBruk visningsprogrammet for å velge side for side.",
-      "transparency_unsaved_title": "Ubrukte endringer",
-      "transparency_unsaved_message": "De gjeldende endringene er ikke blitt brukt på bildet. Hva vil du gjøre?",
-      "transparency_unsaved_discard": "Lukk uten å bruke",
-      "transparency_unsaved_apply": "Bruk og lukk",
-      "transparency_unsaved_cancel": "Avbryt"
+      "image_mode_p": "P (256-fargepalett)"
     },
     "levels_viewer": {
-      "title": "Nivajustering med pipette",
-      "apply_current": "Bruk pa denne siden",
-      "apply_all": "Bruk på alle valgte sider",
       "black_pipette": "Svart punkt pipette",
       "white_pipette": "Hvit punkt pipette",
       "black_pipette_tooltip": "Klikk på en piksel som burde være helt svart. Advarsel: det er lett å overdrive!",
       "white_pipette_tooltip": "Klikk på en piksel som burde være helt hvit. Advarsel: det er lett å overdrive!"
-    },
-    "compression_viewer": {
-      "title": "Komprimeringsjustering"
     },
     "outliers": {
       "title": "Sider med uvanlige dimensjoner",

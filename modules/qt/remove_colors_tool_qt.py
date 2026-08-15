@@ -17,7 +17,7 @@ Même famille de pattern que brightness (brightness_tool_qt.py) : une seule
 réglette, PAS de bi-mode, slider/spinbox reste sur la valeur commitée après
 relâchement (ne revient PAS à 0 — comportement aligné sur brightness le
 2026-08-14, après correction du même écart sur saturation, jugé erroné).
-Module dédié séparé, pas ajouté dans adjustments_tool_qt.py. Seule différence
+Module dédié séparé, pas ajouté dans sharpness_tool_qt.py. Seule différence
 de bornes : réglette 0..100 (pas -100..+100 comme saturation/sharpness) —
 reprend exactement la plage de l'ancien panneau Ajustements classique
 (settings['remove_colors_intensity'], section et panneau annexe retirés le
@@ -29,7 +29,7 @@ interactif ni geste souris sur le canvas : c'est une réglette avec preview
 temps réel (comme AdjustmentViewerDialog::_display_image en mode
 'remove_colors'). RemoveColorsCanvasMixin reste donc volontairement minimal
 (pas de mousePress/Move/Release à gérer, pas de paint_* à appeler depuis
-paintEvent) — même raison que AdjustmentsCanvasMixin (sharpness),
+paintEvent) — même raison que SharpnessCanvasMixin (sharpness),
 BrightnessCanvasMixin et SaturationCanvasMixin.
 
 PAS de bouton "Valider" pour cet outil (même principe que sharpness/unsharp/
@@ -44,7 +44,7 @@ ImageViewer._has_unvalidated_work(), pas de _remove_colors_by_page, pas de
 persistance/reset spécifique au changement de page au-delà de la remise à
 zéro du slider lui-même.
 
-self._sharpness_preview_img (ImageViewer, défini dans adjustments_tool_qt.py)
+self._sharpness_preview_img (ImageViewer, défini dans sharpness_tool_qt.py)
 est RÉUTILISÉ tel quel comme champ de preview partagé pour ce mode aussi —
 un seul outil actif à la fois dans la barre, donc jamais besoin d'un preview
 sharpness/unsharp/brightness/saturation ET remove_colors simultané. Pas de
@@ -166,6 +166,17 @@ class _RemoveColorsOptionsPanel(QWidget):
         y = 8 + self._viewer._toolbar.height() + 6
         self.move(max(0, x), y)
 
+    def mousePressEvent(self, event):
+        # Piège corrigé (2026-08-15, découvert sur le panneau de
+        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
+        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
+        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
+        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        event.accept()
+
+    def mouseReleaseEvent(self, event):
+        event.accept()
+
     def enterEvent(self, event):
         self._viewer._toolbar.pause_hide()
 
@@ -241,7 +252,7 @@ class RemoveColorsCanvasMixin:
     intercepter — le réglage se fait entièrement via la réglette du panneau
     flottant (_RemoveColorsOptionsPanel), le preview via le pixmap affiché
     normalement par ImageViewer.display_image() — même principe que
-    AdjustmentsCanvasMixin (sharpness), BrightnessCanvasMixin et
+    SharpnessCanvasMixin (sharpness), BrightnessCanvasMixin et
     SaturationCanvasMixin.
     """
 
@@ -350,7 +361,16 @@ class RemoveColorsViewerMixin:
                 update_btn()
 
             self._sharpness_preview_img = None
-            self.display_image()
+            # keep_crop_rect=True : pas pour préserver un crop (il n'y en a
+            # jamais pendant une suppression de couleurs), mais pour éviter
+            # l'effet de bord de display_image() sans ce flag, qui appelle
+            # inconditionnellement _canvas.clear_crop() — lequel remet aussi
+            # pan_offset_x/y à 0 (crop_tool_qt.py::clear_crop, pensé pour
+            # recentrer la vue quand on abandonne un crop). Sans ce flag, tout
+            # commit après un zoom+pan recentrait l'image sous les pieds de
+            # l'utilisateur (bug diagnostiqué sur levels, 2026-08-15, même
+            # cause ici — voir levels_tool_qt.py::perform_levels).
+            self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             # Le slider NE revient PAS à 0 après commit (voir docstring de
             # perform_remove_colors) — reste sur la valeur qui vient d'être

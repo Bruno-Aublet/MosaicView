@@ -66,7 +66,14 @@
     "batch_library": "Maak een bibliotheek van de map(pen)",
     "batch_recompress": "CBZ-bestanden opnieuw comprimeren op standaardniveau",
     "validate_straighten": "Rechtzetten bevestigen",
-    "validate_text": "Tekst toepassen"
+    "validate_text": "Tekst toepassen",
+    "validate_shapes": "Vormen toepassen",
+    "validate_transparency": "Transparantie bevestigen",
+    "cancel_crop": "Bijsnijden annuleren",
+    "cancel_straighten": "Rechttrekken annuleren",
+    "cancel_text": "Tekst annuleren",
+    "cancel_shapes": "Vormen annuleren",
+    "cancel_transparency": "Transparantie annuleren"
   },
   "tabs": {
     "mosaic": "Mozaïek",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Verzadiging :",
     "toolbar_remove_colors_tooltip": "Kleurverwijdering",
     "toolbar_remove_colors_instruction": "Pas de schuifregelaar aan, de wijziging wordt toegepast bij loslaten",
-    "remove_colors_panel_label": "Intensiteit :"
+    "remove_colors_panel_label": "Intensiteit :",
+    "toolbar_compression_tooltip": "Compressie",
+    "toolbar_compression_instruction": "Pas de schuifregelaar aan, de aanpassing wordt toegepast bij loslaten",
+    "toolbar_compression_disabled": "Alleen beschikbaar voor JPG-, WEBP- en AVIF-afbeeldingen",
+    "compression_panel_label": "Kwaliteit :",
+    "toolbar_levels_tooltip": "Niveaus",
+    "toolbar_levels_instruction": "Pipetten of schuifregelaars, de aanpassing wordt toegepast bij loslaten/klikken",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Drempel :",
+    "levels_black_panel_label": "Zwartpunt :",
+    "levels_white_panel_label": "Witpunt :",
+    "levels_black_slider_tooltip": "Alle pixels donkerder dan deze waarde worden volledig zwart",
+    "levels_gamma_slider_tooltip": "Maakt middentonen lichter of donkerder, zonder zwart of wit te beinvloeden",
+    "levels_white_slider_tooltip": "Alle pixels lichter dan deze waarde worden volledig wit",
+    "levels_threshold_slider_tooltip": "Zet de afbeelding om in puur zwart-wit op basis van deze drempel",
+    "levels_auto_tooltip": "Analyseert de weergegeven pagina en past het zwart- en witpunt automatisch aan om het contrast te maximaliseren",
+    "toolbar_shapes_tooltip": "Vormen",
+    "toolbar_shapes_instruction": "Sleep om een vorm te tekenen, handvatten om te schalen, pijltjes om te verplaatsen",
+    "shape_type_ellipse": "Ellips",
+    "shape_type_rectangle": "Rechthoek",
+    "shape_type_rounded_rectangle": "Rechthoek met afgeronde hoeken",
+    "shape_type_line": "Lijn",
+    "shape_type_arrow": "Pijl",
+    "shape_thickness_label": "Dikte:",
+    "shape_color_label": "Kleur:",
+    "shape_color_tooltip": "Kies de kleur van lijn en vulling",
+    "shape_fill_enabled_label": "Vulling",
+    "shape_pipette_tooltip": "Kleur van de weergegeven pagina overnemen",
+    "toolbar_transparency_tooltip": "Transparantie",
+    "toolbar_transparency_instruction": "Klik op de kleur die transparant moet worden",
+    "toolbar_transparency_disabled": "Alleen beschikbaar voor PNG-, WebP-, ICO- en AVIF-afbeeldingen",
+    "transparency_flood_panel_label": "Zone",
+    "transparency_global_panel_label": "Algemeen",
+    "transparency_tolerance_panel_label": "Tolerantie:",
+    "transparency_type_slider_tooltip": "Zone: maakt de effen kleurzone rond de aangeklikte pixel transparant. Algemeen: beïnvloedt alle pixels van de afbeelding waarvan de kleur dicht bij de aangeklikte ligt",
+    "transparency_tolerance_slider_tooltip": "Maximaal geaccepteerde kleurafstand rond de aangeklikte pixel"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Geen tekst",
         "message": "Voer eerst tekst in bij ten minste één blok."
+      },
+      "no_shape": {
+        "title": "Geen vorm getekend",
+        "message": "Teken eerst ten minste één vorm."
+      },
+      "no_transparency_work": {
+        "title": "Geen transparantie toegepast",
+        "message": "Klik eerst op een kleur die transparant moet worden."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Fout",
         "message": "Kon kleurverwijdering niet toepassen: {error}"
+      },
+      "compression_failed": {
+        "title": "Fout",
+        "message": "Kon compressie niet toepassen: {error}"
+      },
+      "levels_failed": {
+        "title": "Fout",
+        "message": "Kan niveaus niet toepassen: {error}"
+      },
+      "shapes_failed": {
+        "title": "Fout",
+        "message": "De vormen konden niet worden toegepast: {error}"
+      },
+      "transparency_failed": {
+        "title": "Fout",
+        "message": "Transparantie kon niet worden toegepast."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "afbeeldingen",
       "apply_button": "Toepassen",
       "color_depth_section": "Kleurdiepte",
-      "compression_section": "Compressie",
       "effects_section": "Effecten",
       "sharpness_section": "Scherpte",
-      "levels_section": "Zwart/wit-niveaus",
       "depth_unchanged": "Niet wijzigen",
       "depth_32bit": "32 bits (RGBA - kleuren + transparantie)",
       "depth_24bit": "24 bits (RGB - kleuren)",
       "depth_8bit": "8 bits (PNG-palet / JPEG-grijswaarden)",
       "depth_1bit": "1 bit (zwart en wit)",
       "compression_enable": "Hercompressie inschakelen",
-      "compression_quality_label": "Kwaliteit : {value}/100",
       "effect_none": "Geen effect",
       "effect_grayscale": "Grijstinten",
       "effect_sepia": "Sepia",
-      "levels_none": "Geen aanpassing",
-      "levels_threshold": "Drempel (zuiver zwart of wit)",
-      "levels_advanced": "Geavanceerde niveaus (schaduwen/middentonen/hooglichten)",
-      "threshold_label": "Drempel: {value}",
-      "black_point_label": "Zwartpunt: {value}",
-      "gamma_label": "Gamma (middentonen): {value}",
-      "white_point_label": "Witpunt: {value}",
       "auto_levels_button": "Automatische aanpassing",
-      "open_viewer_button": "Aanpassen met de viewer (aanbevolen)",
-      "compression_info": "Compressie is alleen van toepassing op JPG-, WebP- en AVIF-afbeeldingen",
-      "open_viewer_button_simple": "Aanpassen met viewer",
       "reset_button": "Resetten",
       "preview_section": "Voorbeeld",
       "effect_invert": "Kleurinversie",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (grijstinten + transparantie)",
       "image_mode_cmyk": "CMYK (drukwerk)",
       "image_mode_1": "1 (puur zwart-wit)",
-      "image_mode_p": "P (256-kleurenpalet)",
-      "transparency_section": "Transparantie",
-      "transparency_info": "Transparantie is alleen van toepassing op PNG-, WebP-, ICO- en AVIF-afbeeldingen",
-      "transparency_type_label": "Type :",
-      "transparency_type_flood": "Zone",
-      "transparency_type_global": "Globaal",
-      "transparency_tolerance_label": "Tolerantie :",
-      "transparency_viewer_title": "Transparantie aanpassen",
-      "transparency_click_instruction": "Klik op de kleur die transparant moet worden",
-      "transparency_undo": "Laatste klik ongedaan maken",
-      "transparency_redo": "Opnieuw",
-      "transparency_type_flood_tooltip": "Flood fill : maakt het eenkleurige gebied rond het aangeklikte pixel transparant",
-      "transparency_type_global_tooltip": "Globale transparantie : beïnvloedt alle pixels in de afbeelding waarvan de kleur lijkt op de aangeklikte",
-      "transparency_apply": "Toepassen",
-      "transparency_skipped_warning": "{count} afbeelding(en) overgeslagen — formaat niet compatibel met transparantie. Converteer ze eerst naar PNG om ze op te nemen.",
-      "auto_levels_tooltip": "Analyseert elke pagina en past automatisch de zwart- en witniveaus aan om het contrast te maximaliseren.\nGebruik de viewer om pagina voor pagina te kiezen.",
-      "transparency_unsaved_title": "Niet toegepaste wijzigingen",
-      "transparency_unsaved_message": "De huidige wijzigingen zijn nog niet op de afbeelding toegepast. Wat wilt u doen?",
-      "transparency_unsaved_discard": "Sluiten zonder toe te passen",
-      "transparency_unsaved_apply": "Toepassen en sluiten",
-      "transparency_unsaved_cancel": "Annuleren"
+      "image_mode_p": "P (256-kleurenpalet)"
     },
     "levels_viewer": {
-      "title": "Niveaus aanpassen met pipetten",
-      "apply_current": "Toepassen op deze pagina",
-      "apply_all": "Toepassen op alle geselecteerde pagina's",
       "black_pipette": "Zwartpunt pipet",
       "white_pipette": "Witpunt pipet",
       "black_pipette_tooltip": "Klik op een pixel die volledig zwart zou moeten zijn. Let op: het is gemakkelijk om te ver te gaan!",
       "white_pipette_tooltip": "Klik op een pixel die volledig wit zou moeten zijn. Let op: het is gemakkelijk om te ver te gaan!"
-    },
-    "compression_viewer": {
-      "title": "Compressieaanpassing"
     },
     "outliers": {
       "title": "Pagina's met ongebruikelijke afmetingen",

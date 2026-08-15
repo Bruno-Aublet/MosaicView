@@ -44,7 +44,7 @@ class AppState:
         # dessus — cette correspondance doit suivre la même durée de vie pour
         # qu'un undo/redo qui retombe sur ce point après une réouverture
         # affiche encore la bonne valeur sur le slider/spinbox. Voir
-        # modules/qt/adjustments_tool_qt.py::AdjustmentsViewerMixin.
+        # modules/qt/sharpness_tool_qt.py::SharpnessViewerMixin.
         self.sharpness_value_by_history_index: dict[tuple[int, int], int] = {}
 
         # Réglages de netteté adaptative (Unsharp Mask) commités par la
@@ -53,7 +53,7 @@ class AppState:
         # — même principe et même durée de vie que sharpness_value_by_
         # history_index ci-dessus, mais un tuple (radius, percent, threshold)
         # au lieu d'un int puisque l'Unsharp Mask a 3 réglettes indépendantes.
-        # Voir modules/qt/adjustments_tool_qt.py::AdjustmentsViewerMixin.
+        # Voir modules/qt/sharpness_tool_qt.py::SharpnessViewerMixin.
         self.unsharp_value_by_history_index: dict[tuple[int, int], tuple[float, int, int]] = {}
 
         # Réglages de luminosité/contraste commités par la visionneuse (outil
@@ -91,6 +91,31 @@ class AppState:
         # saturation_value_by_history_index. Voir
         # modules/qt/remove_colors_tool_qt.py::RemoveColorsViewerMixin.
         self.remove_colors_value_by_history_index: dict[tuple[int, int], int] = {}
+
+        # Qualité JPEG cible commitée par la visionneuse (outil "compression"
+        # de la barre d'outils flottante, idees.txt #3), indexée par
+        # history_index APRÈS le commit — même principe et même durée de vie
+        # que sharpness_value_by_history_index ci-dessus. Contrairement à
+        # saturation/remove_colors, RELUE pour resynchroniser le slider (comme
+        # sharpness/brightness) : le slider ne revient PAS à une valeur fixe
+        # après un commit, mais à la qualité JPEG RÉELLE de l'image après
+        # recompression (detect_jpeg_quality(entry['bytes']), voir
+        # modules/qt/compression_tool_qt.py::_reset_compression_preview) — ce
+        # dict mémorise cette valeur détectée pour ne pas avoir à rouvrir/
+        # redécoder les bytes à chaque resynchronisation.
+        self.compression_value_by_history_index: dict[tuple[int, int], int] = {}
+
+        # Réglages de niveaux noir/blanc commités par la visionneuse (outil
+        # "levels" de la barre d'outils flottante, idees.txt #3), indexés par
+        # history_index APRÈS le commit — même principe et même durée de vie
+        # que sharpness_value_by_history_index ci-dessus, mais un tuple
+        # (threshold, black_point, gamma, white_point) puisque ce mode a 4
+        # contrôles indépendants (2 sliders + gamma + seuil, plus 2 pipettes
+        # qui écrivent dans black_point/white_point sans valeur propre). RELUE
+        # pour resynchroniser les 4 contrôles (comme sharpness/brightness/
+        # compression) : ils restent sur la dernière valeur commitée, pas une
+        # valeur fixe. Voir modules/qt/levels_tool_qt.py::LevelsViewerMixin.
+        self.levels_value_by_history_index: dict[tuple[int, int], tuple[int, int, float, int]] = {}
 
         # UI State
         self.converting = False  # Flag pour bloquer les événements pendant la conversion

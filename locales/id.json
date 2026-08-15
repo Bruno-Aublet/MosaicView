@@ -66,7 +66,14 @@
     "batch_library": "Buat perpustakaan dari folder",
     "batch_recompress": "Kompres ulang file CBZ ke tingkat default",
     "validate_straighten": "Konfirmasi pelurusan",
-    "validate_text": "Terapkan teks"
+    "validate_text": "Terapkan teks",
+    "validate_shapes": "Terapkan bentuk",
+    "validate_transparency": "Terapkan transparansi",
+    "cancel_crop": "Batalkan pemangkasan",
+    "cancel_straighten": "Batalkan pelurusan",
+    "cancel_text": "Batalkan teks",
+    "cancel_shapes": "Batalkan bentuk",
+    "cancel_transparency": "Batalkan transparansi"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Saturasi :",
     "toolbar_remove_colors_tooltip": "Penghapusan warna",
     "toolbar_remove_colors_instruction": "Sesuaikan penggeser, penyesuaian diterapkan saat dilepas",
-    "remove_colors_panel_label": "Intensitas :"
+    "remove_colors_panel_label": "Intensitas :",
+    "toolbar_compression_tooltip": "Kompresi",
+    "toolbar_compression_instruction": "Sesuaikan penggeser, penyesuaian diterapkan saat dilepaskan",
+    "toolbar_compression_disabled": "Hanya tersedia untuk gambar JPG, WEBP, dan AVIF",
+    "compression_panel_label": "Kualitas :",
+    "toolbar_levels_tooltip": "Level",
+    "toolbar_levels_instruction": "Pipet atau penggeser, penyesuaian berlaku saat dilepas/diklik",
+    "levels_gamma_panel_label": "Gama :",
+    "levels_threshold_panel_label": "Ambang :",
+    "levels_black_panel_label": "Titik hitam :",
+    "levels_white_panel_label": "Titik putih :",
+    "levels_black_slider_tooltip": "Semua piksel yang lebih gelap dari nilai ini menjadi hitam sepenuhnya",
+    "levels_gamma_slider_tooltip": "Mencerahkan atau menggelapkan tona tengah, tanpa memengaruhi hitam atau putih",
+    "levels_white_slider_tooltip": "Semua piksel yang lebih terang dari nilai ini menjadi putih sepenuhnya",
+    "levels_threshold_slider_tooltip": "Mengubah gambar menjadi hitam putih murni berdasarkan ambang ini",
+    "levels_auto_tooltip": "Menganalisis halaman yang ditampilkan dan menyesuaikan titik hitam dan putih secara otomatis untuk memaksimalkan kontras",
+    "toolbar_shapes_tooltip": "Bentuk",
+    "toolbar_shapes_instruction": "Seret untuk menggambar bentuk, pegangan untuk mengubah ukuran, panah untuk memindahkan",
+    "shape_type_ellipse": "Elips",
+    "shape_type_rectangle": "Persegi panjang",
+    "shape_type_rounded_rectangle": "Persegi panjang sudut membulat",
+    "shape_type_line": "Garis",
+    "shape_type_arrow": "Panah",
+    "shape_thickness_label": "Ketebalan:",
+    "shape_color_label": "Warna:",
+    "shape_color_tooltip": "Pilih warna garis tepi dan isian",
+    "shape_fill_enabled_label": "Isian",
+    "shape_pipette_tooltip": "Ambil warna dari halaman yang ditampilkan",
+    "toolbar_transparency_tooltip": "Transparansi",
+    "toolbar_transparency_instruction": "Klik warna yang ingin dibuat transparan",
+    "toolbar_transparency_disabled": "Hanya tersedia untuk gambar PNG, WebP, ICO, dan AVIF",
+    "transparency_flood_panel_label": "Area",
+    "transparency_global_panel_label": "Global",
+    "transparency_tolerance_panel_label": "Toleransi:",
+    "transparency_type_slider_tooltip": "Area: membuat zona warna seragam di sekitar piksel yang diklik menjadi transparan. Global: memengaruhi semua piksel gambar yang warnanya mendekati warna yang diklik",
+    "transparency_tolerance_slider_tooltip": "Jarak warna maksimum yang diterima di sekitar piksel yang diklik"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Tidak ada teks",
         "message": "Silakan masukkan teks pada setidaknya satu blok terlebih dahulu."
+      },
+      "no_shape": {
+        "title": "Belum ada bentuk yang digambar",
+        "message": "Gambarlah setidaknya satu bentuk terlebih dahulu."
+      },
+      "no_transparency_work": {
+        "title": "Tidak ada transparansi yang diterapkan",
+        "message": "Silakan klik warna yang ingin dibuat transparan terlebih dahulu."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Kesalahan",
         "message": "Tidak dapat menerapkan penghapusan warna: {error}"
+      },
+      "compression_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menerapkan kompresi: {error}"
+      },
+      "levels_failed": {
+        "title": "Kesalahan",
+        "message": "Tidak dapat menerapkan level: {error}"
+      },
+      "shapes_failed": {
+        "title": "Kesalahan",
+        "message": "Bentuk tidak dapat diterapkan: {error}"
+      },
+      "transparency_failed": {
+        "title": "Kesalahan",
+        "message": "Transparansi tidak dapat diterapkan."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "gambar",
       "apply_button": "Terapkan",
       "color_depth_section": "Kedalaman warna",
-      "compression_section": "Kompresi",
       "effects_section": "Efek",
       "sharpness_section": "Ketajaman",
-      "levels_section": "Tingkat hitam/putih",
       "depth_unchanged": "Jangan ubah",
       "depth_32bit": "32 bit (RGBA - warna + transparansi)",
       "depth_24bit": "24 bit (RGB - warna)",
       "depth_8bit": "8 bit (palet PNG / skala abu-abu JPEG)",
       "depth_1bit": "1 bit (hitam putih)",
       "compression_enable": "Aktifkan kompresi ulang",
-      "compression_quality_label": "Kualitas : {value}/100",
       "effect_none": "Tanpa efek",
       "effect_grayscale": "Skala abu-abu",
       "effect_sepia": "Sepia",
-      "levels_none": "Tanpa penyesuaian",
-      "levels_threshold": "Ambang batas (hitam atau putih murni)",
-      "levels_advanced": "Tingkat lanjutan (bayangan/nada menengah/sorotan)",
-      "threshold_label": "Ambang batas: {value}",
-      "black_point_label": "Titik hitam: {value}",
-      "gamma_label": "Gamma (nada menengah): {value}",
-      "white_point_label": "Titik putih: {value}",
       "auto_levels_button": "Penyesuaian otomatis",
-      "open_viewer_button": "Sesuaikan dengan penampil (disarankan)",
-      "compression_info": "Kompresi hanya berlaku untuk gambar JPG, WebP, dan AVIF",
-      "open_viewer_button_simple": "Sesuaikan dengan penampil",
       "reset_button": "Atur ulang",
       "preview_section": "Pratinjau",
       "effect_invert": "Inversi warna",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (skala abu-abu + transparansi)",
       "image_mode_cmyk": "CMYK (cetak)",
       "image_mode_1": "1 (hitam-putih murni)",
-      "image_mode_p": "P (palet 256 warna)",
-      "transparency_section": "Transparansi",
-      "transparency_info": "Transparansi hanya berlaku untuk gambar PNG, WebP, ICO, dan AVIF",
-      "transparency_type_label": "Jenis :",
-      "transparency_type_flood": "Zona",
-      "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Toleransi :",
-      "transparency_viewer_title": "Penyesuaian transparansi",
-      "transparency_click_instruction": "Klik pada warna yang ingin dijadikan transparan",
-      "transparency_undo": "Batalkan klik terakhir",
-      "transparency_redo": "Ulangi",
-      "transparency_type_flood_tooltip": "Flood fill : membuat area warna seragam di sekitar piksel yang diklik menjadi transparan",
-      "transparency_type_global_tooltip": "Transparansi global : memengaruhi semua piksel gambar yang warnanya mendekati warna yang diklik",
-      "transparency_apply": "Terapkan",
-      "transparency_skipped_warning": "{count} gambar dilewati — format tidak kompatibel dengan transparansi. Untuk menyertakannya, konversi terlebih dahulu ke PNG.",
-      "auto_levels_tooltip": "Menganalisis setiap halaman dan secara otomatis menyesuaikan tingkat hitam dan putih untuk memaksimalkan kontras.\nUntuk memilih halaman per halaman, gunakan penampil.",
-      "transparency_unsaved_title": "Perubahan belum diterapkan",
-      "transparency_unsaved_message": "Perubahan saat ini belum diterapkan pada gambar. Apa yang ingin Anda lakukan?",
-      "transparency_unsaved_discard": "Tutup tanpa menerapkan",
-      "transparency_unsaved_apply": "Terapkan dan tutup",
-      "transparency_unsaved_cancel": "Batal"
+      "image_mode_p": "P (palet 256 warna)"
     },
     "levels_viewer": {
-      "title": "Penyesuaian level dengan pipet",
-      "apply_current": "Terapkan ke halaman ini",
-      "apply_all": "Terapkan ke semua halaman yang dipilih",
       "black_pipette": "Penetes titik hitam",
       "white_pipette": "Penetes titik putih",
       "black_pipette_tooltip": "Klik pada piksel yang seharusnya benar-benar hitam. Perhatian: mudah berlebihan!",
       "white_pipette_tooltip": "Klik pada piksel yang seharusnya benar-benar putih. Perhatian: mudah berlebihan!"
-    },
-    "compression_viewer": {
-      "title": "Penyesuaian Kompresi"
     },
     "outliers": {
       "title": "Halaman dengan dimensi tidak biasa",

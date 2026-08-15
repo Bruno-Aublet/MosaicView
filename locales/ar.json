@@ -66,7 +66,14 @@
     "batch_library": "إنشاء مكتبة من المجلد(ات)",
     "batch_recompress": "إعادة ضغط ملفات CBZ بالمستوى الافتراضي",
     "validate_straighten": "تأكيد التقويم",
-    "validate_text": "تطبيق النص"
+    "validate_text": "تطبيق النص",
+    "validate_shapes": "تأكيد الأشكال",
+    "validate_transparency": "تثبيت الشفافية",
+    "cancel_crop": "إلغاء القص",
+    "cancel_straighten": "إلغاء التسوية",
+    "cancel_text": "إلغاء النص",
+    "cancel_shapes": "إلغاء الأشكال",
+    "cancel_transparency": "إلغاء الشفافية"
   },
   "tabs": {
     "mosaic": "الفسيفساء",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "التشبع :",
     "toolbar_remove_colors_tooltip": "إزالة الألوان",
     "toolbar_remove_colors_instruction": "اضبط شريط التمرير، يُطبَّق التعديل عند التحرير",
-    "remove_colors_panel_label": "الكثافة :"
+    "remove_colors_panel_label": "الكثافة :",
+    "toolbar_compression_tooltip": "الضغط",
+    "toolbar_compression_instruction": "اضبط المؤشر، يُطبَّق التعديل عند التحرير",
+    "toolbar_compression_disabled": "متاح فقط لصور JPG وWEBP وAVIF",
+    "compression_panel_label": "جودة:",
+    "toolbar_levels_tooltip": "المستويات",
+    "toolbar_levels_instruction": "القطارات أو المؤشرات، يُطبّق التعديل عند التحرير/النقر",
+    "levels_gamma_panel_label": "جاما:",
+    "levels_threshold_panel_label": "العتبة:",
+    "levels_black_panel_label": "نقطة السواد :",
+    "levels_white_panel_label": "نقطة البياض :",
+    "levels_black_slider_tooltip": "كل البكسلات الأغمق من هذه القيمة تصبح سوداء تماماً",
+    "levels_gamma_slider_tooltip": "يفتح أو يعتم الدرجات المتوسطة، دون التأثير على الأسود أو الأبيض",
+    "levels_white_slider_tooltip": "كل البكسلات الأفتح من هذه القيمة تصبح بيضاء تماماً",
+    "levels_threshold_slider_tooltip": "يحوّل الصورة إلى أبيض وأسود خالص وفق هذه العتبة",
+    "levels_auto_tooltip": "يحلّل الصفحة المعروضة ويضبط نقطتَي الأسود والأبيض تلقائياً لتعظيم التباين",
+    "toolbar_shapes_tooltip": "أشكال",
+    "toolbar_shapes_instruction": "اسحب لرسم شكل، استخدم المقابض لتغيير الحجم، والأسهم للتحريك",
+    "shape_type_ellipse": "بيضاوي",
+    "shape_type_rectangle": "مستطيل",
+    "shape_type_rounded_rectangle": "مستطيل بزوايا مستديرة",
+    "shape_type_line": "خط",
+    "shape_type_arrow": "سهم",
+    "shape_thickness_label": "السماكة:",
+    "shape_color_label": "اللون:",
+    "shape_color_tooltip": "اختيار لون الحد والتعبئة",
+    "shape_fill_enabled_label": "تعبئة",
+    "shape_pipette_tooltip": "التقاط لون من الصفحة المعروضة",
+    "toolbar_transparency_tooltip": "الشفافية",
+    "toolbar_transparency_instruction": "انقر على اللون المراد جعله شفافًا",
+    "toolbar_transparency_disabled": "متاح فقط لصور PNG وWebP وICO وAVIF",
+    "transparency_flood_panel_label": "منطقة",
+    "transparency_global_panel_label": "عام",
+    "transparency_tolerance_panel_label": "التفاوت:",
+    "transparency_type_slider_tooltip": "منطقة: يجعل شفافة المنطقة ذات اللون الموحد حول البكسل المنقور عليه. عام: يؤثر على كل بكسلات الصورة التي لونها قريب من اللون المنقور عليه",
+    "transparency_tolerance_slider_tooltip": "أقصى مسافة لونية مقبولة حول البكسل المنقور عليه"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "لا يوجد نص",
         "message": "يرجى إدخال نص في كتلة واحدة على الأقل أولاً."
+      },
+      "no_shape": {
+        "title": "لا يوجد شكل مرسوم",
+        "message": "يرجى رسم شكل واحد على الأقل أولاً."
+      },
+      "no_transparency_work": {
+        "title": "لم يتم تطبيق أي شفافية",
+        "message": "يرجى النقر على لون لجعله شفافًا أولاً."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "خطأ",
         "message": "تعذّر تطبيق إزالة الألوان: {error}"
+      },
+      "compression_failed": {
+        "title": "خطأ",
+        "message": "تعذّر تطبيق الضغط: {error}"
+      },
+      "levels_failed": {
+        "title": "خطأ",
+        "message": "تعذّر تطبيق المستويات: {error}"
+      },
+      "shapes_failed": {
+        "title": "خطأ",
+        "message": "تعذر تطبيق الأشكال: {error}"
+      },
+      "transparency_failed": {
+        "title": "خطأ",
+        "message": "تعذر تطبيق الشفافية."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "صور",
       "apply_button": "تطبيق",
       "color_depth_section": "عمق اللون",
-      "compression_section": "الضغط",
       "effects_section": "التأثيرات",
       "sharpness_section": "الحدة",
-      "levels_section": "مستويات الأسود/الأبيض",
       "depth_unchanged": "لا تغيير",
       "depth_32bit": "32 بت (RGBA - ألوان + شفافية)",
       "depth_24bit": "24 بت (RGB - ألوان)",
       "depth_8bit": "8 bit (luhat PNG / tadaris ramadi JPEG)",
       "depth_1bit": "1 بت (أبيض وأسود)",
       "compression_enable": "تمكين إعادة الضغط",
-      "compression_quality_label": "جودة: {value}/100",
       "effect_none": "بدون تأثير",
       "effect_grayscale": "تدرج رمادي",
       "effect_sepia": "بني داكن",
-      "levels_none": "بدون تعديل",
-      "levels_threshold": "العتبة (أسود أو أبيض نقي)",
-      "levels_advanced": "مستويات متقدمة (ظلال/نغمات متوسطة/إبرازات)",
-      "threshold_label": "العتبة: {value}",
-      "black_point_label": "نقطة السواد: {value}",
-      "gamma_label": "جاما (نغمات متوسطة): {value}",
-      "white_point_label": "نقطة البياض: {value}",
       "auto_levels_button": "ضبط تلقائي",
-      "open_viewer_button": "ضبط باستخدام العارض (موصى به)",
-      "compression_info": "يتم تطبيق الضغط على صور JPG وWebP وAVIF فقط",
-      "open_viewer_button_simple": "ضبط باستخدام العارض",
       "reset_button": "إعادة تعيين",
       "preview_section": "معاينة",
       "effect_invert": "عكس الألوان",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (تدرجات الرمادي + شفافية)",
       "image_mode_cmyk": "CMYK (طباعة)",
       "image_mode_1": "1 (أسود وأبيض نقي)",
-      "image_mode_p": "P (لوحة 256 لون)",
-      "transparency_section": "الشفافية",
-      "transparency_info": "الشفافية تنطبق فقط على صور PNG وWebP وICO وAVIF",
-      "transparency_type_label": "النوع :",
-      "transparency_type_flood": "منطقة",
-      "transparency_type_global": "شامل",
-      "transparency_tolerance_label": "التسامح :",
-      "transparency_viewer_title": "ضبط الشفافية",
-      "transparency_click_instruction": "انقر على اللون لجعله شفافاً",
-      "transparency_undo": "تراجع عن آخر نقرة",
-      "transparency_redo": "إعادة",
-      "transparency_type_flood_tooltip": "Flood fill : يجعل منطقة اللون المتجانس حول البكسل المنقور شفافة",
-      "transparency_type_global_tooltip": "شفافية شاملة : تؤثر على جميع بكسلات الصورة ذات اللون القريب من المنقور",
-      "transparency_apply": "تطبيق",
-      "transparency_skipped_warning": "{count} صورة (صور) متجاهلة — الصيغة غير متوافقة مع الشفافية. لتضمينها، حوّلها أولاً إلى PNG.",
-      "auto_levels_tooltip": "يحلل كل صفحة ويضبط مستويات السواد والبياض تلقائيًا لتعظيم التباين.\nللاختيار صفحة بصفحة، استخدم العارض.",
-      "transparency_unsaved_title": "تغييرات غير مطبقة",
-      "transparency_unsaved_message": "لم يتم تطبيق التعديلات الحالية على الصورة. ماذا تريد أن تفعل؟",
-      "transparency_unsaved_discard": "الإغلاق بدون تطبيق",
-      "transparency_unsaved_apply": "تطبيق وإغلاق",
-      "transparency_unsaved_cancel": "إلغاء"
+      "image_mode_p": "P (لوحة 256 لون)"
     },
     "levels_viewer": {
-      "title": "ضبط المستويات باستخدام القطارة",
-      "apply_current": "تطبيق على هذه الصفحة",
-      "apply_all": "تطبيق على جميع الصفحات المحددة",
       "black_pipette": "قطارة النقطة السوداء",
       "white_pipette": "قطارة النقطة البيضاء",
       "black_pipette_tooltip": "انقر على بكسل يجب أن يكون أسود تماماً. تحذير: من السهل المبالغة!",
       "white_pipette_tooltip": "انقر على بكسل يجب أن يكون أبيض تماماً. تحذير: من السهل المبالغة!"
-    },
-    "compression_viewer": {
-      "title": "ضبط الضغط"
     },
     "outliers": {
       "title": "صفحات ذات أبعاد غير عادية",

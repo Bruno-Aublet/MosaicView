@@ -5,15 +5,16 @@ description: Localiser ou modifier le panneau "Ajustements d'image" de MosaicVie
 
 # Panneau "Ajustements d'image" — MosaicView
 
-Ce skill couvre le **panneau/dialog lui-même** (structure, aperçu, flux d'application) — pas les fonctions d'ajustement individuelles. Pour la logique PIL d'une fonction précise (formule, plage de valeurs, cas limites), voir les skills dédiés : `adjust-color-depth`, `adjust-compression`, `adjust-levels`, `adjust-transparency`, `adjust-image-mode`, `adjust-effects`. Netteté/netteté adaptative (`adjust-sharpness`), luminosité/contraste (`adjust-brightness-contrast`), saturation (`adjust-saturation`) et suppression des couleurs (`adjust-remove-colors`) ne font plus partie de ce panneau — elles ont migré dans la barre d'outils de la visionneuse principale (skill `viewers`).
+Ce skill couvre le **panneau/dialog lui-même** (structure, aperçu, flux d'application) — pas les fonctions d'ajustement individuelles. **Plus aucune fenêtre annexe ni bouton "Ajuster avec la visionneuse" désormais** (2026-08-16) : le panneau ne contient plus que 3 sections, chacune purement locale à ce dialog — Profondeur de couleur (`adjust-color-depth`), Effets (`adjust-effects`), Mode d'image (`adjust-image-mode`). Les 8 autres réglages qui vivaient ici (netteté/netteté adaptative, luminosité/contraste, saturation, suppression des couleurs, compression, niveaux noir/blanc, transparence) ont tous migré, un par un, dans la barre d'outils de la visionneuse principale (skill `viewers`) — leurs skills dédiés (`adjust-sharpness`, `adjust-brightness-contrast`, `adjust-saturation`, `adjust-remove-colors`, `adjust-compression`, `adjust-levels`, `adjust-transparency`) documentent leur logique PIL, mais plus rien de leur UI ne concerne ce fichier.
+
+**CES 3 SECTIONS RESTANTES ONT ELLES AUSSI VOCATION À MIGRER** (confirmé explicitement par l'utilisateur le 2026-08-16, voir `idees.txt` point 3 et skill `viewers` section "3 fonctions restantes") — ce panneau n'est pas un état stable définitif, c'est ce qu'il reste du chantier de fusion des visionneuses (idees.txt #3) avant qu'il ne soit réellement clos. Une fois ces 3 fonctions migrées, `AdjustmentsDialog`/`adjustments_dialog_qt.py` pourra disparaître entièrement à son tour. Aucune UI cible n'est encore tranchée pour cette dernière étape (panneau flottant à radios vs autre approche, pertinence d'un preview live, une icône par fonction ou un regroupement) — ne pas l'improviser, voir `idees.txt` pour les points ouverts.
 
 ## Où — fichiers concernés
 
 | Fichier | Rôle |
 |---|---|
 | `modules/qt/adjustments_dialog_qt.py` | Le panneau lui-même : classe `AdjustmentsDialog`, point d'entrée public `show_image_adjustments_dialog(parent, callbacks)` |
-| `modules/qt/adjustments_processing_qt.py` | Logique PIL pure (sans Qt) : `apply_adjustments()` (aperçu ET application réelle), `apply_image_adjustments()` (écrit dans `entry['bytes']`), `compute_auto_levels()`, `detect_jpeg_quality()` |
-| `modules/qt/adjustments_viewers_qt.py` | La visionneuse plein écran ouverte par chaque bouton "Ajuster avec la visionneuse" — voir skill `viewers`, section `AdjustmentViewerDialog` |
+| `modules/qt/adjustments_processing_qt.py` | Logique PIL pure (sans Qt) : `apply_adjustments()` (aperçu ET application réelle), `apply_image_adjustments()` (écrit dans `entry['bytes']`), `compute_auto_levels()`, `detect_jpeg_quality()` — ces deux dernières restent le moteur de calcul partagé des outils `levels_tool_qt.py`/`compression_tool_qt.py` de la barre, bien que leur UI n'ait plus rien à voir avec ce panneau |
 
 ## Quand — points d'entrée
 
@@ -30,22 +31,19 @@ Le point d'entrée refuse d'ouvrir (affiche un `MsgDialog` non-modal) si `state.
 
 `AdjustmentsDialog` est un `QDialog` non-modal (`Qt.Window` + `setModal(False)`), construit par `_build_ui()` en 3 colonnes dans une `QScrollArea` :
 
-- **Colonne gauche** (`_build_left_column`) : Profondeur de couleur, Compression, Transparence — Netteté et Netteté adaptative ont été entièrement retirées de ce panneau (2026-08-14, skill `adjust-sharpness`), elles vivent désormais uniquement dans la barre d'outils de la visionneuse principale
-- **Colonne droite** (`_build_right_column`) : Niveaux noir/blanc, Mode d'image — Luminosité et contraste ont aussi été entièrement retirées de ce panneau (2026-08-14, skill `adjust-brightness-contrast`), même destination
-- **Colonne aperçu** (`_build_preview_column`, largeur fixe 330px) : Aperçu, Effets — la Saturation et la Suppression des couleurs ont elles aussi été entièrement retirées de ce panneau (2026-08-14, skills `adjust-saturation`/`adjust-remove-colors`), même destination que netteté/luminosité-contraste
+- **Colonne gauche** (`_build_left_column`) : Profondeur de couleur seule désormais — Netteté et Netteté adaptative ont été entièrement retirées de ce panneau (2026-08-14, skill `adjust-sharpness`), Compression aussi (2026-08-15, skill `adjust-compression`), Transparence enfin (2026-08-16, skill `adjust-transparency`, dernière des 8 sections d'ajustement à migrer), toutes vivent désormais uniquement dans la barre d'outils de la visionneuse principale. Profondeur de couleur elle-même a vocation à migrer à son tour — voir plus haut.
+- **Colonne droite** (`_build_right_column`) : Mode d'image seul désormais — Luminosité et contraste ont été entièrement retirées de ce panneau (2026-08-14, skill `adjust-brightness-contrast`), Niveaux noir/blanc aussi (2026-08-15, skill `adjust-levels`), même destination
+- **Colonne aperçu** (`_build_preview_column`, largeur fixe 330px) : Aperçu, Effets — la Saturation et la Suppression des couleurs ont elles aussi été entièrement retirées de ce panneau (2026-08-14, skills `adjust-saturation`/`adjust-remove-colors`), même destination que netteté/luminosité-contraste/niveaux/transparence
 
 Le placement dans une colonne donnée est **purement une question de mise en page** (équilibrer visuellement les 3 colonnes) — aucune relation avec un regroupement logique des traitements. Ne pas supposer qu'une section appartient "logiquement" à une colonne : `_grp_effects` par exemple est construit dans `_build_left_column` puis physiquement déplacé (`layout.addWidget(self._grp_effects)`) dans `_build_preview_column` — grep `self._grp_<section>` pour retrouver où un groupe donné est réellement instancié vs affiché si la disposition doit changer.
 
-Chaque section est un `QGroupBox` avec son propre style thème (`_groupbox_style`), sa police (`_set_groupbox_font`), et pour la plupart un bouton "Ajuster avec la visionneuse" (`_open_viewer(mode)`, voir section dédiée plus bas). Les sections "Profondeur de couleur", "Mode d'image" et "Effets" sont des groupes de `QRadioButton` (`QButtonGroup`) plutôt que des réglettes.
+Chaque section est un `QGroupBox` avec son propre style thème (`_groupbox_style`), sa police (`_set_groupbox_font`). **Plus aucune section n'a de bouton "Ajuster avec la visionneuse"** depuis le retrait de Transparence (2026-08-16, dernière section à en avoir un) — `_open_viewer(mode)` a été supprimée avec elle, voir section dédiée plus bas. Les 3 sections restantes ("Profondeur de couleur", "Mode d'image", "Effets") sont toutes des groupes de `QRadioButton` (`QButtonGroup`) plutôt que des réglettes.
 
 ### Désactivation intelligente selon le mode PIL courant
 
 `_disable_current_mode_radios()` (appelé une fois à la construction) désactive le radio "Profondeur de couleur" et "Mode d'image" correspondant au mode PIL **déjà courant** des images sélectionnées, mais seulement si **toutes** les images sélectionnées partagent exactement le même mode PIL (`len(modes) == 1`). Objectif : empêcher de choisir une option qui ne changerait rien. Table de correspondance mode PIL → clé UI : `PIL_TO_DEPTH`/`PIL_TO_MODE` en début de méthode.
 
-### Sections grisées selon le format d'origine
-
-- **Compression** : n'a de sens que pour JPEG/WebP/AVIF (`_has_compressible`, détecté sur l'extension de chaque entrée). Si aucune image sélectionnée n'est compressible, toute la section est grisée (slider + bouton visionneuse désactivés, style de titre passé en gris).
-- **Transparence** : n'a de sens que pour PNG/WebP/ICO/AVIF (`_has_transparent`). Section grisée si aucune image sélectionnée n'a de format supportant la transparence — voir aussi skill `adjust-transparency` pour le filtrage supplémentaire fait côté visionneuse.
+**Plus aucune section grisée selon le format d'origine** depuis le retrait de Transparence (2026-08-16, seule section de ce panneau dont la disponibilité dépendait du format — `_has_transparent` a été retiré avec elle). L'équivalent existe désormais côté barre d'outils de la visionneuse (icône `transparency` grisée selon le format de la page affichée, skill `adjust-transparency`), mécanisme entièrement séparé de celui-ci.
 
 ## L'aperçu (colonne droite, 300×300)
 
@@ -63,21 +61,16 @@ Pipeline de rendu de l'aperçu :
 
 ## `_get_settings()` — le contrat entre UI et traitement
 
-Un seul dict, une seule fonction, utilisée à l'identique pour l'aperçu ET l'application réelle (voir `apply_adjustments()` / `apply_image_adjustments()` dans `adjustments_processing_qt.py`) — **toute nouvelle section du panneau doit ajouter sa valeur ici**, sinon elle sera visible dans l'UI mais invisible pour le rendu et l'application. Clés actuelles : `color_depth`, `compression_quality`, `initial_quality`, `effect`, `threshold`, `black_point`, `gamma`, `white_point`, `image_mode`, `original_ext`, `transparency_type`, `transparency_tolerance`. **`sharpness`/`unsharp_radius`/`unsharp_percent`/`unsharp_threshold` (skill `adjust-sharpness`), `brightness`/`contrast` (skill `adjust-brightness-contrast`), `saturation` (skill `adjust-saturation`) et `remove_colors_intensity` (skill `adjust-remove-colors`) ne font plus partie de ce dict** depuis le retrait des sections correspondantes — `apply_adjustments()` continue de les accepter (valeurs par défaut neutres si absentes), mais c'est désormais `adjustments_tool_qt.py`/`brightness_tool_qt.py`/`saturation_tool_qt.py`/`remove_colors_tool_qt.py` qui les fournissent, jamais ce panneau.
+Un seul dict, une seule fonction, utilisée à l'identique pour l'aperçu ET l'application réelle (voir `apply_adjustments()` / `apply_image_adjustments()` dans `adjustments_processing_qt.py`) — **toute nouvelle section du panneau doit ajouter sa valeur ici**, sinon elle sera visible dans l'UI mais invisible pour le rendu et l'application. Clés actuelles : `color_depth`, `effect`, `image_mode`, `original_ext` — les 3 sections restantes de ce panneau. **`sharpness`/`unsharp_radius`/`unsharp_percent`/`unsharp_threshold` (skill `adjust-sharpness`), `brightness`/`contrast` (skill `adjust-brightness-contrast`), `saturation` (skill `adjust-saturation`), `remove_colors_intensity` (skill `adjust-remove-colors`), `compression_quality`/`initial_quality` (skill `adjust-compression`), `threshold`/`black_point`/`gamma`/`white_point` (skill `adjust-levels`) et `transparency_type`/`transparency_tolerance` (skill `adjust-transparency`, dernières clés retirées, 2026-08-16) ne font plus partie de ce dict** depuis le retrait des sections correspondantes — `apply_adjustments()` continue d'accepter les premières (valeurs par défaut neutres si absentes) mais n'a jamais eu besoin de traiter les 2 dernières (la transparence a toujours eu son propre chemin d'application, jamais celui-ci) ; ces clés sont désormais fournies par `sharpness_tool_qt.py`/`brightness_tool_qt.py`/`saturation_tool_qt.py`/`remove_colors_tool_qt.py`/`compression_tool_qt.py`/`levels_tool_qt.py`/`transparency_tool_qt.py`, jamais ce panneau.
 
-## Le bouton "Ajuster avec la visionneuse" (`_open_viewer(mode)`)
+## `_open_viewer(mode)` — SUPPRIMÉ (2026-08-16)
 
-Chaque section restante (sauf Profondeur de couleur, Mode d'image, Effets — pas de mode viewer dédié) a un bouton qui ouvre `AdjustmentViewerDialog` en plein écran pour affiner le réglage sur l'image à pleine résolution/zoom, plutôt que sur la vignette 300×300 de l'aperçu. Voir skill `viewers` (section "Les modes restants de `AdjustmentViewerDialog`") pour le détail complet de cette fenêtre — ce skill ne couvre que l'échange de données entre le panneau et elle :
-
-- `_open_viewer(mode)` capture un **snapshot** de `_get_settings()` et le passe par référence à `AdjustmentViewerDialog` — le viewer **mute ce même dict** au fil des réglages (pas de copie de retour explicite).
-- `on_close` (callback appelé quand le viewer ferme via son bouton "Appliquer") relit les valeurs modifiées du dict `settings` et les réinjecte une à une dans les attributs `self._xxx` + les sliders du panneau (avec `blockSignals(True)` le temps de la resynchronisation, pour éviter une cascade de `_update_preview()`), puis referme le viewer et rafraîchit l'aperçu du panneau — **le viewer n'applique jamais lui-même aux bytes réels dans ce chemin**, il ne fait que proposer des valeurs qui remontent au panneau parent, qui applique au clic sur "Appliquer" du panneau principal.
-- `on_cancel` est un no-op pour tous les modes sauf transparence (voir skill `adjust-transparency` — la transparence a un flux d'application propre, séparé du reste, car elle modifie les pixels directement plutôt que de produire des paramètres numériques).
-- Le mode `levels` a un flux différent : voir skill `adjust-levels`.
+Ce panneau ouvrait autrefois `AdjustmentViewerDialog` en plein écran (bouton "Ajuster avec la visionneuse") pour affiner un réglage sur l'image à pleine résolution/zoom plutôt que sur la vignette 300×300 de l'aperçu. La dernière section à en disposer était Transparence — une fois migrée dans la barre d'outils de la visionneuse principale (2026-08-16, skill `adjust-transparency`), plus aucune section de ce panneau n'a de mode viewer dédié, et `_open_viewer()` a été supprimée avec elle. `AdjustmentViewerDialog`/`adjustments_viewers_qt.py` n'existe plus du tout — voir skill `viewers`.
 
 ## Le flux Appliquer / Réinitialiser / Annuler
 
 - **Réinitialiser** (`_on_reset`) : remet tous les attributs internes et tous les widgets à leurs valeurs par défaut (bloque les signaux le temps de l'opération pour éviter N rafraîchissements d'aperçu), puis un seul `_retranslate()` + `_update_preview()` final.
-- **Annuler** (`_on_cancel` / `reject()`) : ferme sans rien appliquer. Cas particulier — si le bouton "Ajustement automatique" (niveaux) a été cliqué, `reject()` restaure les valeurs de point noir/blanc d'avant le clic (`_pre_auto_black_point`/`_pre_auto_white_point`), pour qu'Annuler annule vraiment tout, y compris l'auto-niveaux. Si un traitement multi-image est en cours (`_progress_lbl` visible), le clic sur Annuler ne ferme pas immédiatement — il positionne `_cancel_requested = True`, lu par la boucle d'application au prochain tour (voir plus bas).
+- **Annuler** (`_on_cancel` / `reject()`) : ferme sans rien appliquer. Si un traitement multi-image est en cours (`_progress_lbl` visible), le clic sur Annuler ne ferme pas immédiatement — il positionne `_cancel_requested = True`, lu par la boucle d'application au prochain tour (voir plus bas). **Le cas particulier "Ajustement automatique" (niveaux) a disparu avec la section elle-même** (2026-08-15, skill `adjust-levels`) — `reject()` n'a plus rien à restaurer.
 - **Appliquer** (`_on_apply`) : voir section suivante.
 
 ### Application réelle — image unique vs multi-image
@@ -88,16 +81,16 @@ Cas **plusieurs images** : le panneau boucle lui-même sur `self._selected_entri
 
 **Annulation en cours de lot** : si `_cancel_requested` devient `True` pendant la boucle (clic sur "Annuler" pendant le traitement), la boucle s'arrête, et les entrées déjà traitées (`processed`) sont **restaurées** à partir d'un snapshot pris avant tout traitement (`orig_bytes`/`orig_thumbs`, capturé avant le premier appel — donc avant tout `save_state`, pour ne jamais polluer la pile undo d'un lot annulé). Aucun `save_state` n'a lieu dans ce chemin — la fenêtre reste ouverte, rien n'est historisé.
 
-**Cas spécial "Ajustement automatique" + multi-image** : si `_pre_auto_black_point` n'est pas `None` (le bouton Auto a été cliqué dans le panneau, pas dans le viewer), chaque image du lot reçoit son **propre** calcul de point noir/blanc via `compute_auto_levels(entry['bytes'])` individuellement, plutôt que les valeurs figées de l'aperçu — voir skill `adjust-levels`.
+**Le cas spécial "Ajustement automatique" + multi-image a disparu avec la section Niveaux** (2026-08-15) — l'outil "niveaux" de la visionneuse (skill `adjust-levels`) n'agit que sur la page affichée, jamais sur un lot ; ce panneau n'a donc plus besoin de ce branchement.
 
 ## Références croisées
 
-- `viewers` — la fenêtre `AdjustmentViewerDialog` ouverte par chaque bouton "Ajuster avec la visionneuse", et les 4 autres visionneuses plein écran de l'application.
+- `viewers` — la visionneuse principale et sa barre d'outils, où vivent désormais les 8 modes d'ajustement qui ont quitté ce panneau, plus les 4 autres outils "macro" qui n'ont jamais fait partie de ce panneau (crop/straighten/clone/texte) et l'outil "formes" (neuf).
 - `apply-image-operation` — le pattern générique (undo/redo + invalidation caches) que `apply_image_adjustments()` respecte.
 - `undo-redo` — mécanisme d'historique sous-jacent à `save_state`.
 - `panels` — callbacks par panneau (`_with_state`), pourquoi le dialog reste agnostique de panel1/panel2.
 - `comicinfo-metadata-editor` — `update_page_entries_in_xml_data()` est appelé après application pour resynchroniser les balises `<Page>` du `ComicInfo.xml` des entrées modifiées.
-- Skills par fonction : `adjust-color-depth`, `adjust-compression`, `adjust-levels`, `adjust-transparency`, `adjust-image-mode`, `adjust-effects` (`adjust-sharpness`, `adjust-brightness-contrast`, `adjust-saturation` et `adjust-remove-colors` n'en font plus partie, voir plus haut).
+- Skills par fonction : `adjust-color-depth`, `adjust-image-mode`, `adjust-effects` — les 3 seules sections restées dans ce panneau. `adjust-sharpness`, `adjust-brightness-contrast`, `adjust-saturation`, `adjust-remove-colors`, `adjust-compression`, `adjust-levels` et `adjust-transparency` documentent la logique PIL de 7 outils qui ont tous quitté ce panneau pour la barre d'outils de la visionneuse (skill `viewers`).
 
 ## Avant de modifier ce panneau
 

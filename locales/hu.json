@@ -66,7 +66,14 @@
     "batch_library": "Könyvtár létrehozása a mappá(k)ból",
     "batch_recompress": "CBZ fájlok újratömörítése alapértelmezett szinten",
     "validate_straighten": "Kiegyenesítés jóváhagyása",
-    "validate_text": "Szöveg alkalmazása"
+    "validate_text": "Szöveg alkalmazása",
+    "validate_shapes": "Alakzatok alkalmazása",
+    "validate_transparency": "Átlátszóság megerősítése",
+    "cancel_crop": "Vágás megszakítása",
+    "cancel_straighten": "Egyenesítés megszakítása",
+    "cancel_text": "Szöveg megszakítása",
+    "cancel_shapes": "Alakzatok megszakítása",
+    "cancel_transparency": "Átlátszóság megszakítása"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Telítettség :",
     "toolbar_remove_colors_tooltip": "Színek eltávolítása",
     "toolbar_remove_colors_instruction": "Állítsa be a csúszkát, a módosítás elengedéskor lép érvénybe",
-    "remove_colors_panel_label": "Intenzitás :"
+    "remove_colors_panel_label": "Intenzitás :",
+    "toolbar_compression_tooltip": "Tömörítés",
+    "toolbar_compression_instruction": "Állítsa be a csúszkát, a módosítás elengedéskor lép érvénybe",
+    "toolbar_compression_disabled": "Csak JPG, WEBP és AVIF képekhez érhető el",
+    "compression_panel_label": "Minőség :",
+    "toolbar_levels_tooltip": "Szintek",
+    "toolbar_levels_instruction": "Pipettak vagy csuszkak, a modositas elengedeskor/kattintaskor lep ervenybe",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Kuszobertek :",
+    "levels_black_panel_label": "Fekete pont :",
+    "levels_white_panel_label": "Feher pont :",
+    "levels_black_slider_tooltip": "Az ennel az erteknel sotetebb pixelek teljesen feketek lesznek",
+    "levels_gamma_slider_tooltip": "Vilagositja vagy sotetiti a kozeptonusokat, a fekete es feher erintese nelkul",
+    "levels_white_slider_tooltip": "Az ennel az erteknel vilagosabb pixelek teljesen feherek lesznek",
+    "levels_threshold_slider_tooltip": "A kepet tiszta fekete-feherre alakitja e kuszobertek alapjan",
+    "levels_auto_tooltip": "Elemzi a megjelenitett oldalt es automatikusan beallitja a fekete es feher pontokat a kontraszt maximalizalasahoz",
+    "toolbar_shapes_tooltip": "Alakzatok",
+    "toolbar_shapes_instruction": "Húzza az alakzat megrajzolásához, fogantyúk az átméretezéshez, nyilak a mozgatáshoz",
+    "shape_type_ellipse": "Ellipszis",
+    "shape_type_rectangle": "Téglalap",
+    "shape_type_rounded_rectangle": "Lekerekített sarkú téglalap",
+    "shape_type_line": "Vonal",
+    "shape_type_arrow": "Nyíl",
+    "shape_thickness_label": "Vastagság:",
+    "shape_color_label": "Szín:",
+    "shape_color_tooltip": "Válassza ki a kontúr és a kitöltés színét",
+    "shape_fill_enabled_label": "Kitöltés",
+    "shape_pipette_tooltip": "Szín kiválasztása a megjelenített oldalról",
+    "toolbar_transparency_tooltip": "Átlátszóság",
+    "toolbar_transparency_instruction": "Kattintson az átlátszóvá teendő színre",
+    "toolbar_transparency_disabled": "Csak PNG, WebP, ICO és AVIF képekhez érhető el",
+    "transparency_flood_panel_label": "Terület",
+    "transparency_global_panel_label": "Globális",
+    "transparency_tolerance_panel_label": "Tűrés:",
+    "transparency_type_slider_tooltip": "Terület: átlátszóvá teszi a kattintott képpont körüli egységes színterületet. Globális: a kép összes olyan képpontjára hat, amelynek színe közel áll a kattintotthoz",
+    "transparency_tolerance_slider_tooltip": "A kattintott képpont körül elfogadott maximális színtávolság"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Nincs szöveg",
         "message": "Először írjon szöveget legalább egy blokkba."
+      },
+      "no_shape": {
+        "title": "Nincs rajzolt alakzat",
+        "message": "Kérjük, előbb rajzoljon legalább egy alakzatot."
+      },
+      "no_transparency_work": {
+        "title": "Nincs alkalmazott átlátszóság",
+        "message": "Kattintson először egy színre, amelyet átlátszóvá szeretne tenni."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Hiba",
         "message": "A színek eltávolítása nem alkalmazható: {error}"
+      },
+      "compression_failed": {
+        "title": "Hiba",
+        "message": "A tömörítés nem alkalmazható: {error}"
+      },
+      "levels_failed": {
+        "title": "Hiba",
+        "message": "A szintek alkalmazasa sikertelen: {error}"
+      },
+      "shapes_failed": {
+        "title": "Hiba",
+        "message": "Az alakzatokat nem sikerült alkalmazni: {error}"
+      },
+      "transparency_failed": {
+        "title": "Hiba",
+        "message": "Az átlátszóságot nem sikerült alkalmazni."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "kepek",
       "apply_button": "Alkalmazas",
       "color_depth_section": "Szinmelyseg",
-      "compression_section": "Tomorities",
       "effects_section": "Effektusok",
       "sharpness_section": "Elesseg",
-      "levels_section": "Fekete/feher szintek",
       "depth_unchanged": "Ne modositsa",
       "depth_32bit": "32 bit (RGBA - szinek + atlatszoossag)",
       "depth_24bit": "24 bit (RGB - szinek)",
       "depth_8bit": "8 bit (PNG paletta / JPEG szurkearnyalatok)",
       "depth_1bit": "1 bit (fekete-feher)",
       "compression_enable": "Ujratomorites engedlyezese",
-      "compression_quality_label": "Minőség : {value}/100",
       "effect_none": "Nincs effektus",
       "effect_grayscale": "Szurkearnyalat",
       "effect_sepia": "Szepia",
-      "levels_none": "Nincs beallitas",
-      "levels_threshold": "Kuszoberttek (tiszta fekete vagy feher)",
-      "levels_advanced": "Halado szintek (arnyek/kozeptonusok/fenyfokek)",
-      "threshold_label": "Kuszoberttek: {value}",
-      "black_point_label": "Fekete pont: {value}",
-      "gamma_label": "Gamma (kozeptonusok): {value}",
-      "white_point_label": "Feher pont: {value}",
       "auto_levels_button": "Automatikus beállítás",
-      "open_viewer_button": "Beállítás a megjelenítővel (ajánlott)",
-      "compression_info": "A tömörítés csak JPG, WebP és AVIF képekre vonatkozik",
-      "open_viewer_button_simple": "Beállítás nézegetővel",
       "reset_button": "Visszaállítás",
       "preview_section": "Előnézet",
       "effect_invert": "Színinverzió",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (szürkeárnyalatok + átlátszóság)",
       "image_mode_cmyk": "CMYK (nyomtatás)",
       "image_mode_1": "1 (tiszta fekete-fehér)",
-      "image_mode_p": "P (256 színű paletta)",
-      "transparency_section": "Átlátszóság",
-      "transparency_info": "Az átlátszóság csak PNG, WebP, ICO és AVIF képekre vonatkozik",
-      "transparency_type_label": "Típus :",
-      "transparency_type_flood": "Zóna",
-      "transparency_type_global": "Globális",
-      "transparency_tolerance_label": "Tűrés :",
-      "transparency_viewer_title": "Átlátszóság beállítása",
-      "transparency_click_instruction": "Kattintson arra a színre, amelyet átlátszóvá szeretne tenni",
-      "transparency_undo": "Utolsó kattintás visszavonása",
-      "transparency_redo": "Újra",
-      "transparency_type_flood_tooltip": "Flood fill : az egyenletes színű területet az átkattintott pixel körül átlátszóvá teszi",
-      "transparency_type_global_tooltip": "Globális átlátszóság : a kép összes pixelét érinti, amelynek színe közel van a kattintott színhez",
-      "transparency_apply": "Alkalmaz",
-      "transparency_skipped_warning": "{count} kép(ek) kihagyva — formátum nem kompatibilis az átlátszósággal. A bevonáshoz először konvertálja PNG formátumba.",
-      "auto_levels_tooltip": "Elemzi az egyes oldalakat, és automatikusan beállítja a fekete és fehér szinteket a kontraszt maximalizálása érdekében.\nOldalankénti választáshoz használja a megjelenítőt.",
-      "transparency_unsaved_title": "Nem alkalmazott változtatások",
-      "transparency_unsaved_message": "A jelenlegi módosítások még nem lettek alkalmazva a képen. Mit szeretne tenni?",
-      "transparency_unsaved_discard": "Bezárás alkalmazás nélkül",
-      "transparency_unsaved_apply": "Alkalmaz és bezár",
-      "transparency_unsaved_cancel": "Mégse"
+      "image_mode_p": "P (256 színű paletta)"
     },
     "levels_viewer": {
-      "title": "Szintbeallitas cseppentővel",
-      "apply_current": "Alkalmazas erre az oldalra",
-      "apply_all": "Alkalmaz az összes kiválasztott oldalra",
       "black_pipette": "Fekete pont pipetta",
       "white_pipette": "Feher pont pipetta",
       "black_pipette_tooltip": "Kattintson egy pixelre, amelynek teljesen feketének kellene lennie. Figyelem: könnyű túllőni a célon!",
       "white_pipette_tooltip": "Kattintson egy pixelre, amelynek teljesen fehérnek kellene lennie. Figyelem: könnyű túllőni a célon!"
-    },
-    "compression_viewer": {
-      "title": "Tömörítés beállítása"
     },
     "outliers": {
       "title": "Szokatlan méretű oldalak",

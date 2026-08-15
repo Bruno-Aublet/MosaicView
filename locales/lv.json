@@ -66,7 +66,14 @@
     "batch_library": "Izveidot bibliotēku no mapes(-ēm)",
     "batch_recompress": "Saspiest CBZ failus atkārtoti noklusējuma līmenī",
     "validate_straighten": "Apstiprināt iztaisnošanu",
-    "validate_text": "Piemērot tekstu"
+    "validate_text": "Piemērot tekstu",
+    "validate_shapes": "Apstiprināt formas",
+    "validate_transparency": "Apstiprināt caurspīdīgumu",
+    "cancel_crop": "Atcelt apgriešanu",
+    "cancel_straighten": "Atcelt iztaisnošanu",
+    "cancel_text": "Atcelt tekstu",
+    "cancel_shapes": "Atcelt formas",
+    "cancel_transparency": "Atcelt caurspīdīgumu"
   },
   "tabs": {
     "mosaic": "Mozaīka",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Piesātinājums :",
     "toolbar_remove_colors_tooltip": "Krāsu noņemšana",
     "toolbar_remove_colors_instruction": "Pielāgojiet slīdni, izmaiņas stājas spēkā, atlaižot",
-    "remove_colors_panel_label": "Intensitāte :"
+    "remove_colors_panel_label": "Intensitāte :",
+    "toolbar_compression_tooltip": "Saspiešana",
+    "toolbar_compression_instruction": "Pielāgojiet slīdni, pielāgojums tiek piemērots atlaižot",
+    "toolbar_compression_disabled": "Pieejams tikai JPG, WEBP un AVIF attēliem",
+    "compression_panel_label": "Kvalitāte :",
+    "toolbar_levels_tooltip": "Limeni",
+    "toolbar_levels_instruction": "Pipetes vai slidbultas, pielagojums tiek piemerots atlaizot/noklikskinot",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Slieksnis :",
+    "levels_black_panel_label": "Melns punkts :",
+    "levels_white_panel_label": "Balts punkts :",
+    "levels_black_slider_tooltip": "Visi pikseli, kas tumsaki par so vertibu, kluust pilnigi melni",
+    "levels_gamma_slider_tooltip": "Padara videjos tonus gaisakus vai tumsakus, neietekmejot melno vai balto",
+    "levels_white_slider_tooltip": "Visi pikseli, kas gaisaki par so vertibu, kluust pilnigi balti",
+    "levels_threshold_slider_tooltip": "Parveido attelu par tiru melnbaltu, pamatojoties uz so sliekshni",
+    "levels_auto_tooltip": "Analize redzamo lapu un automatiski pielago melno un balto punktu, lai maksimalizetu kontrastu",
+    "toolbar_shapes_tooltip": "Formas",
+    "toolbar_shapes_instruction": "Velciet, lai zīmētu formu, turi izmēra maiņai, bultiņas pārvietošanai",
+    "shape_type_ellipse": "Elipse",
+    "shape_type_rectangle": "Taisnstūris",
+    "shape_type_rounded_rectangle": "Taisnstūris ar noapaļotiem stūriem",
+    "shape_type_line": "Līnija",
+    "shape_type_arrow": "Bulta",
+    "shape_thickness_label": "Biezums:",
+    "shape_color_label": "Krāsa:",
+    "shape_color_tooltip": "Izvēlēties kontūras un aizpildījuma krāsu",
+    "shape_fill_enabled_label": "Aizpildījums",
+    "shape_pipette_tooltip": "Paņemt krāsu no attēlotās lapas",
+    "toolbar_transparency_tooltip": "Caurspīdīgums",
+    "toolbar_transparency_instruction": "Noklikšķiniet uz krāsas, kuru padarīt caurspīdīgu",
+    "toolbar_transparency_disabled": "Pieejams tikai PNG, WebP, ICO un AVIF attēliem",
+    "transparency_flood_panel_label": "Zona",
+    "transparency_global_panel_label": "Globāli",
+    "transparency_tolerance_panel_label": "Tolerance:",
+    "transparency_type_slider_tooltip": "Zona: padara caurspīdīgu vienmērīgo krāsas zonu ap noklikšķināto pikseli. Globāli: ietekmē visus attēla pikseļus, kuru krāsa ir tuva noklikšķinātajai",
+    "transparency_tolerance_slider_tooltip": "Maksimālais pieņemtais krāsas attālums ap noklikšķināto pikseli"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Nav teksta",
         "message": "Vispirms ievadiet tekstu vismaz vienā blokā."
+      },
+      "no_shape": {
+        "title": "Nav uzzīmētas formas",
+        "message": "Vispirms uzzīmējiet vismaz vienu formu."
+      },
+      "no_transparency_work": {
+        "title": "Caurspīdīgums nav piemērots",
+        "message": "Vispirms noklikšķiniet uz krāsas, kuru padarīt caurspīdīgu."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Kļūda",
         "message": "Neizdevās lietot krāsu noņemšanu: {error}"
+      },
+      "compression_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās lietot saspiešanu: {error}"
+      },
+      "levels_failed": {
+        "title": "Kluda",
+        "message": "Neizdevas piemerot limenus: {error}"
+      },
+      "shapes_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās piemērot formas: {error}"
+      },
+      "transparency_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās piemērot caurspīdīgumu."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "atteli",
       "apply_button": "Lietot",
       "color_depth_section": "Krasu dziļums",
-      "compression_section": "Saspiesana",
       "effects_section": "Efekti",
       "sharpness_section": "Asums",
-      "levels_section": "Melns/balts limeni",
       "depth_unchanged": "Nemainit",
       "depth_32bit": "32 biti (RGBA - krasas + caurspidugums)",
       "depth_24bit": "24 biti (RGB - krasas)",
       "depth_8bit": "8 biti (PNG palete / JPEG peleko toņi)",
       "depth_1bit": "1 bits (melnbalts)",
       "compression_enable": "Iespejot atkartotu saspiesanu",
-      "compression_quality_label": "Kvalitāte : {value}/100",
       "effect_none": "Nav efekta",
       "effect_grayscale": "Peleku tonusi",
       "effect_sepia": "Sepija",
-      "levels_none": "Nav pielaguojuma",
-      "levels_threshold": "Slieksnis (tirs melns vai balts)",
-      "levels_advanced": "Papildu limeni (enas/videjie toni/gaisma)",
-      "threshold_label": "Slieksnis: {value}",
-      "black_point_label": "Melns punkts: {value}",
-      "gamma_label": "Gamma (videjie toni): {value}",
-      "white_point_label": "Balts punkts: {value}",
       "auto_levels_button": "Automātiska pielāgošana",
-      "open_viewer_button": "Pielāgot ar skatītāju (ieteicams)",
-      "compression_info": "Saspiešana attiecas tikai uz JPG, WebP un AVIF attēliem",
-      "open_viewer_button_simple": "Pielāgot ar skatītāju",
       "reset_button": "Atiestatīt",
       "preview_section": "Priekšskatījums",
       "effect_invert": "Krāsu inversija",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (pelēkā gamma + caurspīdīgums)",
       "image_mode_cmyk": "CMYK (druka)",
       "image_mode_1": "1 (tīri melnbalts)",
-      "image_mode_p": "P (256 krāsu palete)",
-      "transparency_section": "Caurspīdīgums",
-      "transparency_info": "Caurspīdīgums attiecas tikai uz PNG, WebP, ICO un AVIF attēliem",
-      "transparency_type_label": "Veids :",
-      "transparency_type_flood": "Zona",
-      "transparency_type_global": "Globāls",
-      "transparency_tolerance_label": "Tolerance :",
-      "transparency_viewer_title": "Caurspīdīguma regulēšana",
-      "transparency_click_instruction": "Noklikšķiniet uz krāsas, kuru vēlaties padarīt caurspīdīgu",
-      "transparency_undo": "Atsaukt pēdējo klikšķi",
-      "transparency_redo": "Atkārtot",
-      "transparency_type_flood_tooltip": "Flood fill : padara caurspīdīgu vienkrāsaino laukumu ap noklikšķināto pikseļu",
-      "transparency_type_global_tooltip": "Globāls caurspīdīgums : ietekmē visus attēla pikseļus, kuru krāsa ir tuva noklikšķinātajai",
-      "transparency_apply": "Lietot",
-      "transparency_skipped_warning": "{count} attēls(-i) izlaists(-i) — formāts nav saderīgs ar caurspīdīgumu. Lai tos iekļautu, vispirms pārveidojiet PNG formātā.",
-      "auto_levels_tooltip": "Analizē katru lapu un automātiski pielāgo melnā un baltā līmeņus, lai maksimizētu kontrastu.\nLai izvēlētos lapu pēc lapas, izmantojiet skatītāju.",
-      "transparency_unsaved_title": "Nepielietotās izmaiņas",
-      "transparency_unsaved_message": "Pašreizējās izmaiņas nav pielietotas attēlam. Ko vēlaties darīt?",
-      "transparency_unsaved_discard": "Aizvērt bez pielietošanas",
-      "transparency_unsaved_apply": "Pielietot un aizvērt",
-      "transparency_unsaved_cancel": "Atcelt"
+      "image_mode_p": "P (256 krāsu palete)"
     },
     "levels_viewer": {
-      "title": "Līmeņu pielāgošana ar pipeti",
-      "apply_current": "Lietot šai lapai",
-      "apply_all": "Lietot visām atlasītajām lapām",
       "black_pipette": "Melna punkta pipete",
       "white_pipette": "Balta punkta pipete",
       "black_pipette_tooltip": "Noklikšķiniet uz pikseļa, kam vajadzētu būt pilnīgi melnam. Uzmanību: ir viegli pārspīlēt!",
       "white_pipette_tooltip": "Noklikšķiniet uz pikseļa, kam vajadzētu būt pilnīgi baltam. Uzmanību: ir viegli pārspīlēt!"
-    },
-    "compression_viewer": {
-      "title": "Saspiešanas pielāgošana"
     },
     "outliers": {
       "title": "Lapas ar neparastiem izmēriem",

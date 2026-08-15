@@ -66,7 +66,14 @@
     "batch_library": "Tạo thư viện từ thư mục",
     "batch_recompress": "Nén lại tệp CBZ ở mức mặc định",
     "validate_straighten": "Xác nhận làm thẳng",
-    "validate_text": "Áp dụng văn bản"
+    "validate_text": "Áp dụng văn bản",
+    "validate_shapes": "Áp dụng hình dạng",
+    "validate_transparency": "Áp dụng độ trong suốt",
+    "cancel_crop": "Hủy cắt xén",
+    "cancel_straighten": "Hủy làm thẳng",
+    "cancel_text": "Hủy văn bản",
+    "cancel_shapes": "Hủy hình dạng",
+    "cancel_transparency": "Hủy độ trong suốt"
   },
   "tabs": {
     "mosaic": "Mosaic",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Độ bão hòa :",
     "toolbar_remove_colors_tooltip": "Loại bỏ màu sắc",
     "toolbar_remove_colors_instruction": "Điều chỉnh thanh trượt, thay đổi được áp dụng khi thả ra",
-    "remove_colors_panel_label": "Cường độ :"
+    "remove_colors_panel_label": "Cường độ :",
+    "toolbar_compression_tooltip": "Nén",
+    "toolbar_compression_instruction": "Điều chỉnh thanh trượt, thay đổi được áp dụng khi thả ra",
+    "toolbar_compression_disabled": "Chỉ khả dụng cho ảnh JPG, WEBP và AVIF",
+    "compression_panel_label": "Chất lượng :",
+    "toolbar_levels_tooltip": "Mức",
+    "toolbar_levels_instruction": "Ống nhỏ giọt hoặc thanh trượt, thay đổi được áp dụng khi thả ra/nhấp chuột",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Ngưỡng :",
+    "levels_black_panel_label": "Điểm đen :",
+    "levels_white_panel_label": "Điểm trắng :",
+    "levels_black_slider_tooltip": "Tất cả điểm ảnh tối hơn giá trị này sẽ trở thành đen hoàn toàn",
+    "levels_gamma_slider_tooltip": "Làm sáng hoặc tối tông trung gian, không ảnh hưởng đến đen hoặc trắng",
+    "levels_white_slider_tooltip": "Tất cả điểm ảnh sáng hơn giá trị này sẽ trở thành trắng hoàn toàn",
+    "levels_threshold_slider_tooltip": "Chuyển ảnh thành đen trắng thuần dựa trên ngưỡng này",
+    "levels_auto_tooltip": "Phân tích trang đang hiển thị và tự động điều chỉnh điểm đen và điểm trắng để tối đa hóa độ tương phản",
+    "toolbar_shapes_tooltip": "Hình dạng",
+    "toolbar_shapes_instruction": "Kéo để vẽ hình, tay cầm để đổi kích thước, phím mũi tên để di chuyển",
+    "shape_type_ellipse": "Hình elip",
+    "shape_type_rectangle": "Hình chữ nhật",
+    "shape_type_rounded_rectangle": "Hình chữ nhật bo góc",
+    "shape_type_line": "Đường thẳng",
+    "shape_type_arrow": "Mũi tên",
+    "shape_thickness_label": "Độ dày:",
+    "shape_color_label": "Màu:",
+    "shape_color_tooltip": "Chọn màu đường viền và màu tô",
+    "shape_fill_enabled_label": "Tô màu",
+    "shape_pipette_tooltip": "Lấy màu từ trang đang hiển thị",
+    "toolbar_transparency_tooltip": "Độ trong suốt",
+    "toolbar_transparency_instruction": "Nhấp vào màu muốn làm trong suốt",
+    "toolbar_transparency_disabled": "Chỉ khả dụng cho ảnh PNG, WebP, ICO và AVIF",
+    "transparency_flood_panel_label": "Vùng",
+    "transparency_global_panel_label": "Toàn bộ",
+    "transparency_tolerance_panel_label": "Dung sai:",
+    "transparency_type_slider_tooltip": "Vùng: làm trong suốt vùng màu đồng nhất xung quanh điểm ảnh đã nhấp. Toàn bộ: ảnh hưởng đến mọi điểm ảnh của hình có màu gần với màu đã nhấp",
+    "transparency_tolerance_slider_tooltip": "Khoảng cách màu tối đa được chấp nhận xung quanh điểm ảnh đã nhấp"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Chưa nhập văn bản",
         "message": "Vui lòng nhập văn bản vào ít nhất một khối trước."
+      },
+      "no_shape": {
+        "title": "Chưa vẽ hình nào",
+        "message": "Vui lòng vẽ ít nhất một hình trước."
+      },
+      "no_transparency_work": {
+        "title": "Chưa áp dụng độ trong suốt",
+        "message": "Vui lòng nhấp vào một màu để làm trong suốt trước."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Lỗi",
         "message": "Không thể áp dụng loại bỏ màu sắc: {error}"
+      },
+      "compression_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng nén: {error}"
+      },
+      "levels_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng mức: {error}"
+      },
+      "shapes_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng các hình: {error}"
+      },
+      "transparency_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng độ trong suốt."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "hình ảnh",
       "apply_button": "Áp dụng",
       "color_depth_section": "Độ sâu màu",
-      "compression_section": "Nén",
       "effects_section": "Hiệu ứng",
       "sharpness_section": "Độ sắc nét",
-      "levels_section": "Mức độ đen/trắng",
       "depth_unchanged": "Không thay đổi",
       "depth_32bit": "32 bit (RGBA - màu + độ trong suốt)",
       "depth_24bit": "24 bit (RGB - màu)",
       "depth_8bit": "8 bit (bang mau PNG / thang mau xam JPEG)",
       "depth_1bit": "1 bit (đen trắng)",
       "compression_enable": "Bật nén lại",
-      "compression_quality_label": "Chất lượng : {value}/100",
       "effect_none": "Không hiệu ứng",
       "effect_grayscale": "Thang độ xám",
       "effect_sepia": "Màu nâu cổ điển",
-      "levels_none": "Không điều chỉnh",
-      "levels_threshold": "Ngưỡng (đen hoặc trắng thuần khiết)",
-      "levels_advanced": "Mức độ nâng cao (bóng/tông giữa/sáng)",
-      "threshold_label": "Ngưỡng: {value}",
-      "black_point_label": "Điểm đen: {value}",
-      "gamma_label": "Gamma (tông giữa): {value}",
-      "white_point_label": "Điểm trắng: {value}",
       "auto_levels_button": "Điều chỉnh tự động",
-      "open_viewer_button": "Điều chỉnh bằng trình xem (được đề xuất)",
-      "compression_info": "Nén chỉ áp dụng cho hình ảnh JPG, WebP và AVIF",
-      "open_viewer_button_simple": "Điều chỉnh bằng trình xem",
       "reset_button": "Đặt lại",
       "preview_section": "Xem trước",
       "effect_invert": "Đảo ngược màu",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (thang xám + trong suốt)",
       "image_mode_cmyk": "CMYK (in ấn)",
       "image_mode_1": "1 (đen trắng thuần)",
-      "image_mode_p": "P (bảng 256 màu)",
-      "transparency_section": "Độ trong suốt",
-      "transparency_info": "Độ trong suốt chỉ áp dụng cho ảnh PNG, WebP, ICO và AVIF",
-      "transparency_type_label": "Loại :",
-      "transparency_type_flood": "Vùng",
-      "transparency_type_global": "Toàn cục",
-      "transparency_tolerance_label": "Dung sai :",
-      "transparency_viewer_title": "Điều chỉnh độ trong suốt",
-      "transparency_click_instruction": "Nhấp vào màu cần làm trong suốt",
-      "transparency_undo": "Hoàn tác lần nhấp cuối",
-      "transparency_redo": "Làm lại",
-      "transparency_type_flood_tooltip": "Flood fill : làm trong suốt vùng màu đồng nhất xung quanh pixel được nhấp",
-      "transparency_type_global_tooltip": "Độ trong suốt toàn cục : ảnh hưởng đến tất cả pixel trong ảnh có màu gần với màu được nhấp",
-      "transparency_apply": "Áp dụng",
-      "transparency_skipped_warning": "{count} hình ảnh bị bỏ qua — định dạng không tương thích với độ trong suốt. Để đưa vào, hãy chuyển đổi sang PNG trước.",
-      "auto_levels_tooltip": "Phân tích từng trang và tự động điều chỉnh mức độ đen trắng để tối đa hóa độ tương phản.\nĐể chọn từng trang, hãy sử dụng trình xem.",
-      "transparency_unsaved_title": "Thay doi chua duoc ap dung",
-      "transparency_unsaved_message": "Cac thay doi hien tai chua duoc ap dung vao anh. Ban muon lam gi?",
-      "transparency_unsaved_discard": "Dong ma khong ap dung",
-      "transparency_unsaved_apply": "Ap dung va dong",
-      "transparency_unsaved_cancel": "Huy"
+      "image_mode_p": "P (bảng 256 màu)"
     },
     "levels_viewer": {
-      "title": "Dieu chinh muc bang cong cu hut mau",
-      "apply_current": "Ap dung cho trang nay",
-      "apply_all": "Áp dụng cho tất cả các trang đã chọn",
       "black_pipette": "Ong hut diem den",
       "white_pipette": "Ong hut diem trang",
       "black_pipette_tooltip": "Nhấp vào một pixel phải hoàn toàn đen. Cảnh báo: dễ làm quá đà!",
       "white_pipette_tooltip": "Nhấp vào một pixel phải hoàn toàn trắng. Cảnh báo: dễ làm quá đà!"
-    },
-    "compression_viewer": {
-      "title": "Điều chỉnh nén"
     },
     "outliers": {
       "title": "Trang có kích thước bất thường",

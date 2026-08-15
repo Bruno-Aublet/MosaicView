@@ -34,6 +34,13 @@
     "validate_crop": "Valider la découpe",
     "validate_straighten": "Valider le redressement",
     "validate_text": "Appliquer le texte",
+    "validate_shapes": "Valider les formes",
+    "validate_transparency": "Valider la transparence",
+    "cancel_crop": "Annuler la découpe",
+    "cancel_straighten": "Annuler le redressement",
+    "cancel_text": "Annuler le texte",
+    "cancel_shapes": "Annuler les formes",
+    "cancel_transparency": "Annuler la transparence",
     "ok": "OK",
     "close": "Fermer",
     "apply_and_save": "Appliquer les modifications et sauvegarder le fichier",
@@ -99,6 +106,41 @@
     "toolbar_remove_colors_tooltip": "Suppression des couleurs",
     "toolbar_remove_colors_instruction": "Réglez le curseur, l'ajustement s'applique au relâchement",
     "remove_colors_panel_label": "Intensité :",
+    "toolbar_compression_tooltip": "Compression",
+    "toolbar_compression_instruction": "Réglez le curseur, l'ajustement s'applique au relâchement",
+    "toolbar_compression_disabled": "Disponible uniquement pour les images JPG, WEBP et AVIF",
+    "compression_panel_label": "Qualité :",
+    "toolbar_levels_tooltip": "Niveaux",
+    "toolbar_levels_instruction": "Pipettes ou curseurs, l'ajustement s'applique au relâchement/clic",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Seuil :",
+    "levels_black_panel_label": "Point noir :",
+    "levels_white_panel_label": "Point blanc :",
+    "levels_black_slider_tooltip": "Tous les pixels plus sombres que cette valeur deviennent totalement noirs",
+    "levels_gamma_slider_tooltip": "Éclaircit ou assombrit les tons moyens, sans toucher au noir ni au blanc",
+    "levels_white_slider_tooltip": "Tous les pixels plus clairs que cette valeur deviennent totalement blancs",
+    "levels_threshold_slider_tooltip": "Binarise l'image : chaque pixel devient soit totalement noir, soit totalement blanc, selon ce seuil",
+    "levels_auto_tooltip": "Analyse la page affichée et ajuste automatiquement les points noir et blanc pour maximiser le contraste",
+    "toolbar_shapes_tooltip": "Formes",
+    "toolbar_shapes_instruction": "Cliquez-glissez pour tracer une forme, poignées pour redimensionner, flèches pour déplacer",
+    "shape_type_ellipse": "Ellipse",
+    "shape_type_rectangle": "Rectangle",
+    "shape_type_rounded_rectangle": "Rectangle à coins arrondis",
+    "shape_type_line": "Ligne",
+    "shape_type_arrow": "Flèche",
+    "shape_thickness_label": "Épaisseur :",
+    "shape_color_label": "Couleur :",
+    "shape_color_tooltip": "Choisir la couleur du trait et du remplissage",
+    "shape_fill_enabled_label": "Remplissage",
+    "shape_pipette_tooltip": "Prélever une couleur sur la page affichée",
+    "toolbar_transparency_tooltip": "Transparence",
+    "toolbar_transparency_instruction": "Cliquez sur la couleur à rendre transparente",
+    "toolbar_transparency_disabled": "Disponible uniquement pour les images PNG, WebP, ICO et AVIF",
+    "transparency_flood_panel_label": "Zone",
+    "transparency_global_panel_label": "Global",
+    "transparency_tolerance_panel_label": "Tolérance :",
+    "transparency_type_slider_tooltip": "Zone : rend transparente la zone de couleur uniforme autour du pixel cliqué. Global : affecte tous les pixels de l'image dont la couleur est proche de celle cliquée",
+    "transparency_tolerance_slider_tooltip": "Distance de couleur maximale acceptée autour du pixel cliqué",
     "toolbar_undo_tooltip": "Annuler (Ctrl+Z)",
     "toolbar_redo_tooltip": "Refaire (Ctrl+Y)",
     "unvalidated_work_title": "Travail non validé",
@@ -289,6 +331,14 @@
         "title": "Pas de texte saisi",
         "message": "Veuillez saisir du texte dans au moins un bloc d'abord."
       },
+      "no_shape": {
+        "title": "Aucune forme tracée",
+        "message": "Veuillez tracer au moins une forme d'abord."
+      },
+      "no_transparency_work": {
+        "title": "Aucune transparence appliquée",
+        "message": "Veuillez cliquer sur une couleur à rendre transparente d'abord."
+      },
       "cannot_open_file": {
         "title": "Impossible d'ouvrir le fichier",
         "message": "Impossible de charger le fichier."
@@ -445,6 +495,14 @@
         "title": "Erreur",
         "message": "Impossible d'appliquer la suppression des couleurs : {error}"
       },
+      "compression_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer la compression : {error}"
+      },
+      "levels_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer les niveaux : {error}"
+      },
       "clone_failed": {
         "title": "Erreur",
         "message": "Impossible d'appliquer le clonage : {error}"
@@ -452,6 +510,14 @@
       "text_failed": {
         "title": "Erreur",
         "message": "Impossible d'appliquer le texte : {error}"
+      },
+      "shapes_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer les formes : {error}"
+      },
+      "transparency_failed": {
+        "title": "Erreur",
+        "message": "Impossible d'appliquer la transparence."
       },
       "load_image_failed": {
         "title": "Erreur",
@@ -1019,32 +1085,19 @@
       "apply_button": "Appliquer",
       "reset_button": "Réinitialiser",
       "color_depth_section": "Profondeur de couleur",
-      "compression_section": "Compression",
-      "compression_info": "La compression s'applique uniquement aux images JPG, WebP et AVIF",
       "preview_section": "Aperçu",
       "effects_section": "Effets",
       "sharpness_section": "Netteté",
-      "levels_section": "Niveaux noir/blanc",
       "depth_unchanged": "Ne pas modifier",
       "depth_32bit": "32 bits (RGBA - couleurs + transparence)",
       "depth_24bit": "24 bits (RGB - couleurs)",
       "depth_8bit": "8 bits (palette PNG / niveaux de gris JPEG)",
       "depth_1bit": "1 bit (noir et blanc)",
       "compression_enable": "Activer la recompression",
-      "compression_quality_label": "Qualité : {value}/100",
       "effect_none": "Aucun effet",
       "effect_grayscale": "Noir et blanc",
       "effect_sepia": "Sépia",
-      "levels_none": "Aucun ajustement",
-      "levels_threshold": "Seuil (noir ou blanc pur)",
-      "levels_advanced": "Niveaux avancés (ombres/tons moyens/lumières)",
-      "threshold_label": "Seuil : {value}",
-      "black_point_label": "Point noir : {value}",
-      "gamma_label": "Gamma (tons moyens) : {value}",
-      "white_point_label": "Point blanc : {value}",
       "auto_levels_button": "Ajustement automatique",
-      "open_viewer_button": "Ajuster avec la visionneuse (recommandé)",
-      "open_viewer_button_simple": "Ajuster avec la visionneuse",
       "effect_invert": "Inversion de couleurs",
       "preview_warning": "L'aperçu peut différer du rendu final",
       "image_mode_section": "Mode d'image",
@@ -1054,32 +1107,9 @@
       "image_mode_la": "LA (niveaux de gris + transparence)",
       "image_mode_cmyk": "CMYK (impression)",
       "image_mode_1": "1 (noir et blanc pur)",
-      "image_mode_p": "P (palette 256 couleurs)",
-      "transparency_section": "Transparence",
-      "transparency_info": "La transparence s'applique uniquement aux images PNG, WebP, ICO et AVIF",
-      "transparency_type_label": "Type :",
-      "transparency_type_flood": "Zone",
-      "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Tolérance :",
-      "transparency_viewer_title": "Ajustement de la transparence",
-      "transparency_click_instruction": "Cliquez sur la couleur à rendre transparente",
-      "transparency_undo": "Annuler le dernier clic",
-      "transparency_redo": "Rétablir",
-      "transparency_type_flood_tooltip": "Flood fill : rend transparente la zone de couleur uniforme autour du pixel cliqué",
-      "transparency_type_global_tooltip": "Transparence globale : affecte tous les pixels de l'image dont la couleur est proche de celle cliquée",
-      "transparency_apply": "Appliquer",
-      "transparency_skipped_warning": "{count} image(s) ignorée(s) — format incompatible avec la transparence. Pour les inclure, convertissez-les d'abord en PNG.",
-      "auto_levels_tooltip": "Analyse chaque page et ajuste automatiquement les niveaux de noir et de blanc pour maximiser le contraste.\nPour choisir page par page, utilisez la visionneuse.",
-      "transparency_unsaved_title": "Modifications non appliquées",
-      "transparency_unsaved_message": "Les modifications en cours n'ont pas été appliquées à l'image. Que souhaitez-vous faire ?",
-      "transparency_unsaved_discard": "Fermer sans appliquer",
-      "transparency_unsaved_apply": "Appliquer et fermer",
-      "transparency_unsaved_cancel": "Annuler"
+      "image_mode_p": "P (palette 256 couleurs)"
     },
     "levels_viewer": {
-      "title": "Ajustement des niveaux avec pipettes",
-      "apply_current": "Appliquer à cette page",
-      "apply_all": "Appliquer à toutes les pages sélectionnées",
       "black_pipette": "Pipette point noir",
       "white_pipette": "Pipette point blanc",
       "black_pipette_tooltip": "Cliquez sur un pixel qui devrait être totalement noir. Attention : il est facile d'en faire trop !",
@@ -1130,9 +1160,6 @@
       "overwrite_message": "Le fichier {filename} existe déjà. L'écraser ?",
       "save_blocked_title": "Sauvegarde impossible",
       "save_blocked_message": "Cette archive contient un ou plusieurs fichiers .ico qui ne sont pas des images de bande dessinée. La sauvegarde est désactivée tant que ces fichiers sont présents dans la mosaïque.\nPour réactiver la sauvegarde, supprimez-les de la mosaïque (touche Suppr) ou coupez-les (Ctrl+X) pour les coller ailleurs."
-    },
-    "compression_viewer": {
-      "title": "Ajustement de la compression"
     },
     "first_page_multi": {
       "title": "Première page multiple",

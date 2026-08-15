@@ -66,7 +66,14 @@
     "batch_library": "Oħloq librerija mill-folder(s)",
     "batch_recompress": "Ikkomprimi mill-ġdid il-fajls CBZ fil-livell prestabbilit",
     "validate_straighten": "Ikkonferma d-drittar",
-    "validate_text": "Applika t-test"
+    "validate_text": "Applika t-test",
+    "validate_shapes": "Ikkonferma l-forom",
+    "validate_transparency": "Ikkonferma t-trasparenza",
+    "cancel_crop": "Ikkanċella l-qtugħ",
+    "cancel_straighten": "Ikkanċella t-tiswija",
+    "cancel_text": "Ikkanċella t-test",
+    "cancel_shapes": "Ikkanċella l-forom",
+    "cancel_transparency": "Ikkanċella t-trasparenza"
   },
   "tabs": {
     "mosaic": "Mużajk",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Saturazzjoni :",
     "toolbar_remove_colors_tooltip": "Neħħija tal-kuluri",
     "toolbar_remove_colors_instruction": "Aġġusta l-iscroller, l-aġġustament japplika mar-rilaxx",
-    "remove_colors_panel_label": "Intensità :"
+    "remove_colors_panel_label": "Intensità :",
+    "toolbar_compression_tooltip": "Kompressjoni",
+    "toolbar_compression_instruction": "Aġġusta l-iskorra, l-aġġustament japplika mar-rilaxx",
+    "toolbar_compression_disabled": "Disponibbli biss għal stampi JPG, WEBP u AVIF",
+    "compression_panel_label": "Kwalità :",
+    "toolbar_levels_tooltip": "Livelli",
+    "toolbar_levels_instruction": "Dropers jew sliders, l-aggustament japplika mal-hrug/klikk",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Livell ta' limitu :",
+    "levels_black_panel_label": "Punt iswed :",
+    "levels_white_panel_label": "Punt abjad :",
+    "levels_black_slider_tooltip": "Il-pixels kollha eqreb lejn l-iswed minn dan il-valur jsiru iswed kompletament",
+    "levels_gamma_slider_tooltip": "Idawwal jew idallam it-toni tan-nofs, minghajr ma jaffettwa l-iswed jew l-abjad",
+    "levels_white_slider_tooltip": "Il-pixels kollha eqreb lejn l-abjad minn dan il-valur jsiru abjad kompletament",
+    "levels_threshold_slider_tooltip": "Ibiddel l-istampa f'iswed u abjad pur skont dan il-limitu",
+    "levels_auto_tooltip": "Janalizza l-pagna murija u jaggusta awtomatikament il-punti sewda u bajda biex jimmassimizza l-kuntrast",
+    "toolbar_shapes_tooltip": "Forom",
+    "toolbar_shapes_instruction": "Iġbed biex tiddisinja forma, manikuri biex tibdel id-daqs, vleġeġ biex tiċċaqlaq",
+    "shape_type_ellipse": "Ellissi",
+    "shape_type_rectangle": "Rettangolu",
+    "shape_type_rounded_rectangle": "Rettangolu bi rkejjen imqawwsa",
+    "shape_type_line": "Linja",
+    "shape_type_arrow": "Vleġġa",
+    "shape_thickness_label": "Ħxuna:",
+    "shape_color_label": "Kulur:",
+    "shape_color_tooltip": "Agħżel il-kulur tal-kontorn u tal-mili",
+    "shape_fill_enabled_label": "Mili",
+    "shape_pipette_tooltip": "Ħu kulur mill-paġna murija",
+    "toolbar_transparency_tooltip": "Trasparenza",
+    "toolbar_transparency_instruction": "Ikklikkja l-kulur li trid tagħmel trasparenti",
+    "toolbar_transparency_disabled": "Disponibbli biss għal stampi PNG, WebP, ICO u AVIF",
+    "transparency_flood_panel_label": "Żona",
+    "transparency_global_panel_label": "Globali",
+    "transparency_tolerance_panel_label": "Tolleranza:",
+    "transparency_type_slider_tooltip": "Żona: tagħmel trasparenti ż-żona ta' kulur uniformi madwar il-pixel ikklikkjat. Globali: taffettwa l-pixels kollha tal-istampa li l-kulur tagħhom qrib dak ikklikkjat",
+    "transparency_tolerance_slider_tooltip": "Id-distanza massima tal-kulur aċċettata madwar il-pixel ikklikkjat"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Ebda test",
         "message": "Jekk jogħġbok daħħal test f'mill-inqas blokk wieħed l-ewwel."
+      },
+      "no_shape": {
+        "title": "L-ebda forma ma tpittret",
+        "message": "Jekk jogħġbok pitter mill-inqas forma waħda l-ewwel."
+      },
+      "no_transparency_work": {
+        "title": "L-ebda trasparenza ma ġiet applikata",
+        "message": "Jekk jogħġbok ikklikkja l-ewwel fuq kulur biex tagħmlu trasparenti."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Żball",
         "message": "Ma setgħetx tiġi applikata n-neħħija tal-kuluri: {error}"
+      },
+      "compression_failed": {
+        "title": "Żball",
+        "message": "Ma setax jiġi applikat il-kompressjoni: {error}"
+      },
+      "levels_failed": {
+        "title": "Zball",
+        "message": "Ma stax jigi applikat il-livelli: {error}"
+      },
+      "shapes_failed": {
+        "title": "Żball",
+        "message": "Ma setax jiġi applikat il-forom: {error}"
+      },
+      "transparency_failed": {
+        "title": "Żball",
+        "message": "Ma setgħetx tiġi applikata t-trasparenza."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "immaġinijiet",
       "apply_button": "Applika",
       "color_depth_section": "Fond tal-kulur",
-      "compression_section": "Kompressjoni",
       "effects_section": "Effetti",
       "sharpness_section": "Nitidezza",
-      "levels_section": "Livelli iswed/abjad",
       "depth_unchanged": "Tibdilx",
       "depth_32bit": "32 bits (RGBA - kuluri + trasparenza)",
       "depth_24bit": "24 bits (RGB - kuluri)",
       "depth_8bit": "8 bits (paletta PNG / skala griża JPEG)",
       "depth_1bit": "1 bit (iswed u abjad)",
       "compression_enable": "Attiva kompressjoni mill-ġdid",
-      "compression_quality_label": "Kwalità : {value}/100",
       "effect_none": "L-ebda effett",
       "effect_grayscale": "Tonalitajiet griż",
       "effect_sepia": "Sepja",
-      "levels_none": "L-ebda aġġustament",
-      "levels_threshold": "Limitu (iswed jew abjad pur)",
-      "levels_advanced": "Livelli avvanzati (dellijiet/tonijiet medji/dwal)",
-      "threshold_label": "Limitu: {value}",
-      "black_point_label": "Punt iswed: {value}",
-      "gamma_label": "Gamma (tonijiet medji): {value}",
-      "white_point_label": "Punt abjad: {value}",
       "auto_levels_button": "Aġġustament awtomatiku",
-      "open_viewer_button": "Aġġusta bil-viewer (rakkomandat)",
-      "compression_info": "Il-kompressjoni tapplika biss għal immaġini JPG, WebP u AVIF",
-      "open_viewer_button_simple": "Aġġusta bil-viewer",
       "reset_button": "Irrisettja",
       "preview_section": "Dehra minn qabel",
       "effect_invert": "Inverżjoni tal-kulur",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (skala ta’ griż + trasparenza)",
       "image_mode_cmyk": "CMYK (stampar)",
       "image_mode_1": "1 (iswed u abjad pur)",
-      "image_mode_p": "P (paletta ta’ 256 kulur)",
-      "transparency_section": "Trasparenza",
-      "transparency_info": "It-trasparenza tapplika biss għal immaġnijiet PNG, WebP, ICO u AVIF",
-      "transparency_type_label": "Tip :",
-      "transparency_type_flood": "Żona",
-      "transparency_type_global": "Globali",
-      "transparency_tolerance_label": "Tolleranza :",
-      "transparency_viewer_title": "Aġġustament tat-trasparenza",
-      "transparency_click_instruction": "Ikklikkja fuq il-kulur biex tagħmlu trasparenti",
-      "transparency_undo": "Agħmel lura l-aħħar klikk",
-      "transparency_redo": "Erġa' agħmel",
-      "transparency_type_flood_tooltip": "Flood fill : jagħmel trasparenti ż-żona tal-kulur uniformi madwar il-pixel li kklikkjajt",
-      "transparency_type_global_tooltip": "Trasparenza globali : taffettwa l-pixils kollha tal-immaġni li l-kulur tagħhom huwa simili għal dak ikklikkjat",
-      "transparency_apply": "Applika",
-      "transparency_skipped_warning": "{count} immaġni(jiet) mqabeż — il-format mhux kompatibbli mat-trasparenza. Biex tinkludi hom, ikkonverthom f'PNG l-ewwel.",
-      "auto_levels_tooltip": "Janalizza kull paġna u jaġġusta awtomatikament il-livelli tal-iswed u l-abjad biex jimmassimizza l-kuntrast.\nBiex tagħżel paġna b'paġna, uża l-viewer.",
-      "transparency_unsaved_title": "Bidliet mhux applikati",
-      "transparency_unsaved_message": "Il-bidliet attwali ma ġewx applikati fuq l-immaġni. X'trid tagħmel?",
-      "transparency_unsaved_discard": "Agħlaq mingħajr ma tapplika",
-      "transparency_unsaved_apply": "Applika u agħlaq",
-      "transparency_unsaved_cancel": "Ikkanċella"
+      "image_mode_p": "P (paletta ta’ 256 kulur)"
     },
     "levels_viewer": {
-      "title": "Aġġustament tal-livelli bil-qattara",
-      "apply_current": "Applika ghal din il-pagna",
-      "apply_all": "Applika għall-paġni kollha magħżula",
       "black_pipette": "Qattara tal-punt iswed",
       "white_pipette": "Qattara tal-punt abjad",
       "black_pipette_tooltip": "Ikklikkja fuq pixel li għandu jkun kompletament iswed. Attenzjoni: huwa faċli li tesaġera!",
       "white_pipette_tooltip": "Ikklikkja fuq pixel li għandu jkun kompletament abjad. Attenzjoni: huwa faċli li tesaġera!"
-    },
-    "compression_viewer": {
-      "title": "Aġġustament tal-Kompressjoni"
     },
     "outliers": {
       "title": "Paġni b'dimensjonijiet mhux tas-soltu",

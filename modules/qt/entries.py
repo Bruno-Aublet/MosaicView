@@ -747,6 +747,27 @@ def save_image_to_bytes(entry):
             entry["img"].save(img_bytes, format='AVIF', quality=original_quality, dpi=(dpi_value, dpi_value))
         else:
             entry["img"].save(img_bytes, format='AVIF', quality=original_quality)
+    elif ext == ".ico":
+        # ICO : reproduit exactement le jeu de résolutions du fichier
+        # d'origine (16/32/48/64/128/256... selon ce qui était réellement
+        # présent), pas un nombre de tailles arbitraire — PIL redimensionne
+        # lui-même l'image de travail vers chaque taille au moment du save().
+        original_sizes = None
+        if entry.get("bytes"):
+            try:
+                orig_img = Image.open(io.BytesIO(entry["bytes"]))
+                original_sizes = orig_img.info.get("sizes")
+            except Exception:
+                pass
+
+        img_to_save = entry["img"]
+        if img_to_save.mode != "RGBA":
+            img_to_save = img_to_save.convert("RGBA")
+
+        if original_sizes:
+            img_to_save.save(img_bytes, format='ICO', sizes=list(original_sizes))
+        else:
+            img_to_save.save(img_bytes, format='ICO')
     else:
         # Format par défaut : PNG pour les autres formats
         if dpi_value:

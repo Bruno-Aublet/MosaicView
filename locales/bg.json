@@ -66,7 +66,14 @@
     "batch_library": "Създаване на библиотека от папка(ите)",
     "batch_recompress": "Прекомпресиране на CBZ файлове на ниво по подразбиране",
     "validate_straighten": "Потвърди изправянето",
-    "validate_text": "Приложи текста"
+    "validate_text": "Приложи текста",
+    "validate_shapes": "Потвърди фигурите",
+    "validate_transparency": "Прилагане на прозрачност",
+    "cancel_crop": "Отказ на изрязването",
+    "cancel_straighten": "Отказ на изправянето",
+    "cancel_text": "Отказ на текста",
+    "cancel_shapes": "Отказ на фигурите",
+    "cancel_transparency": "Отказ на прозрачността"
   },
   "tabs": {
     "mosaic": "Мозайка",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Наситеност :",
     "toolbar_remove_colors_tooltip": "Премахване на цветовете",
     "toolbar_remove_colors_instruction": "Регулирайте плъзгача, настройката се прилага при отпускане",
-    "remove_colors_panel_label": "Интензивност :"
+    "remove_colors_panel_label": "Интензивност :",
+    "toolbar_compression_tooltip": "Компресия",
+    "toolbar_compression_instruction": "Регулирайте плъзгача, настройката се прилага при отпускане",
+    "toolbar_compression_disabled": "Налично само за изображения JPG, WEBP и AVIF",
+    "compression_panel_label": "Качество :",
+    "toolbar_levels_tooltip": "Nivoa",
+    "toolbar_levels_instruction": "Piperki ili plazgachi, promianata se prilaga pri pusване/shtrakvane",
+    "levels_gamma_panel_label": "Gama :",
+    "levels_threshold_panel_label": "Prag :",
+    "levels_black_panel_label": "Cherna tochka :",
+    "levels_white_panel_label": "Byala tochka :",
+    "levels_black_slider_tooltip": "Vsichki pikseli po-tumni ot tazi stoynost stavat napalno cherni",
+    "levels_gamma_slider_tooltip": "Izsvetlyava ili zatumnyava srednite tonove, bez da zasyaga cherno ili byalo",
+    "levels_white_slider_tooltip": "Vsichki pikseli po-svetli ot tazi stoynost stavat napalno beli",
+    "levels_threshold_slider_tooltip": "Prevrashta izobrazhenieto v chisto cherno-byalo spored tozi prag",
+    "levels_auto_tooltip": "Analizira pokazvanata stranitsa i avtomatichno koriguira cherni i beli tochki, za da maksimizira kontrasta",
+    "toolbar_shapes_tooltip": "Фигури",
+    "toolbar_shapes_instruction": "Плъзнете, за да начертаете фигура, дръжки за преоразмеряване, стрелки за преместване",
+    "shape_type_ellipse": "Елипса",
+    "shape_type_rectangle": "Правоъгълник",
+    "shape_type_rounded_rectangle": "Правоъгълник със заоблени ъгли",
+    "shape_type_line": "Линия",
+    "shape_type_arrow": "Стрелка",
+    "shape_thickness_label": "Дебелина:",
+    "shape_color_label": "Цвят:",
+    "shape_color_tooltip": "Изберете цвят на контура и запълването",
+    "shape_fill_enabled_label": "Запълване",
+    "shape_pipette_tooltip": "Вземане на цвят от показаната страница",
+    "toolbar_transparency_tooltip": "Прозрачност",
+    "toolbar_transparency_instruction": "Щракнете върху цвета, който да стане прозрачен",
+    "toolbar_transparency_disabled": "Налично само за изображения PNG, WebP, ICO и AVIF",
+    "transparency_flood_panel_label": "Зона",
+    "transparency_global_panel_label": "Общо",
+    "transparency_tolerance_panel_label": "Толеранс:",
+    "transparency_type_slider_tooltip": "Зона: прави прозрачна еднородната цветна зона около щракнатия пиксел. Общо: засяга всички пиксели на изображението, чийто цвят е близък до щракнатия",
+    "transparency_tolerance_slider_tooltip": "Максимално допустимо цветово разстояние около щракнатия пиксел"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Няма въведен текст",
         "message": "Моля, въведете текст поне в един блок първо."
+      },
+      "no_shape": {
+        "title": "Няма начертана фигура",
+        "message": "Моля, начертайте поне една фигура първо."
+      },
+      "no_transparency_work": {
+        "title": "Няма приложена прозрачност",
+        "message": "Моля, щракнете първо върху цвят, който да стане прозрачен."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Грешка",
         "message": "Премахването на цветовете не можа да бъде приложено: {error}"
+      },
+      "compression_failed": {
+        "title": "Грешка",
+        "message": "Компресията не можа да бъде приложена: {error}"
+      },
+      "levels_failed": {
+        "title": "Greshka",
+        "message": "Nivoata ne mogat da bydat prilozheni: {error}"
+      },
+      "shapes_failed": {
+        "title": "Грешка",
+        "message": "Фигурите не можаха да бъдат приложени: {error}"
+      },
+      "transparency_failed": {
+        "title": "Грешка",
+        "message": "Прозрачността не можа да бъде приложена."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "izobrazheniya",
       "apply_button": "Prilozhete",
       "color_depth_section": "Dublochina na tsvetat",
-      "compression_section": "Kompresiya",
       "effects_section": "Efekti",
       "sharpness_section": "Ostrota",
-      "levels_section": "Nivа cherno/byalo",
       "depth_unchanged": "Ne promenyayte",
       "depth_32bit": "32 bita (RGBA - tsvetove + prozrachnost)",
       "depth_24bit": "24 bita (RGB - tsvetove)",
       "depth_8bit": "8 bita (paleta PNG / niansa na sivoto JPEG)",
       "depth_1bit": "1 bit (cherno-byalo)",
       "compression_enable": "Aktivirayte prekompresiya",
-      "compression_quality_label": "Качество : {value}/100",
       "effect_none": "Bez efekt",
       "effect_grayscale": "Otsenki na sivoto",
       "effect_sepia": "Sepiya",
-      "levels_none": "Bez nastroyka",
-      "levels_threshold": "Prag (chisto cherno ili byalo)",
-      "levels_advanced": "Razshireni nivа (senki/sredni tonove/svetlini)",
-      "threshold_label": "Prag: {value}",
-      "black_point_label": "Cherna tochka: {value}",
-      "gamma_label": "Gama (sredni tonove): {value}",
-      "white_point_label": "Byala tochka: {value}",
       "auto_levels_button": "Автоматична корекция",
-      "open_viewer_button": "Настройване със зрителя (препоръчително)",
-      "compression_info": "Компресията се прилага само за JPG, WebP и AVIF изображения",
-      "open_viewer_button_simple": "Настройка с визуализатора",
       "reset_button": "Нулиране",
       "preview_section": "Преглед",
       "effect_invert": "Инверсия на цветовете",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (нива на сивото + прозрачност)",
       "image_mode_cmyk": "CMYK (печат)",
       "image_mode_1": "1 (чисто черно-бяло)",
-      "image_mode_p": "P (палитра от 256 цвята)",
-      "transparency_section": "Прозрачност",
-      "transparency_info": "Прозрачността се прилага само към PNG, WebP, ICO и AVIF изображения",
-      "transparency_type_label": "Тип :",
-      "transparency_type_flood": "Зона",
-      "transparency_type_global": "Глобален",
-      "transparency_tolerance_label": "Толеранс :",
-      "transparency_viewer_title": "Настройка на прозрачността",
-      "transparency_click_instruction": "Кликнете върху цвета, за да го направите прозрачен",
-      "transparency_undo": "Отмени последното кликване",
-      "transparency_redo": "Повтори",
-      "transparency_type_flood_tooltip": "Flood fill : прави прозрачна зоната с еднороден цвят около избрания пиксел",
-      "transparency_type_global_tooltip": "Глобална прозрачност : засяга всички пиксели в изображението с цвят близък до избрания",
-      "transparency_apply": "Приложи",
-      "transparency_skipped_warning": "{count} изображение(ия) пропуснато(и) — форматът не е съвместим с прозрачността. За да ги включите, конвертирайте ги първо в PNG.",
-      "auto_levels_tooltip": "Анализира всяка страница и автоматично регулира нивата на черно и бяло за максимален контраст.\nЗа избор страница по страница използвайте визуализатора.",
-      "transparency_unsaved_title": "Неприложени промени",
-      "transparency_unsaved_message": "Текущите промени не са приложени към изображението. Какво искате да направите?",
-      "transparency_unsaved_discard": "Затвори без прилагане",
-      "transparency_unsaved_apply": "Приложи и затвори",
-      "transparency_unsaved_cancel": "Отказ"
+      "image_mode_p": "P (палитра от 256 цвята)"
     },
     "levels_viewer": {
-      "title": "Настройка на нивата с пипета",
-      "apply_current": "Приложи към тази страница",
-      "apply_all": "Приложи към всички избрани страници",
       "black_pipette": "Пипета за черна точка",
       "white_pipette": "Пипета за бяла точка",
       "black_pipette_tooltip": "Щракнете върху пиксел, който трябва да бъде напълно черен. Внимание: лесно е да прекалите!",
       "white_pipette_tooltip": "Щракнете върху пиксел, който трябва да бъде напълно бял. Внимание: лесно е да прекалите!"
-    },
-    "compression_viewer": {
-      "title": "Настройка на компресията"
     },
     "outliers": {
       "title": "Страници с необичайни размери",

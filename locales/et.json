@@ -66,7 +66,14 @@
     "batch_library": "Loo kaust(adest) teek",
     "batch_recompress": "Pakkige CBZ-failid uuesti vaiketasemele",
     "validate_straighten": "Kinnita sirgestamine",
-    "validate_text": "Rakenda tekst"
+    "validate_text": "Rakenda tekst",
+    "validate_shapes": "Kinnita kujundid",
+    "validate_transparency": "Kinnita läbipaistvus",
+    "cancel_crop": "Tühista kärpimine",
+    "cancel_straighten": "Tühista sirgestamine",
+    "cancel_text": "Tühista tekst",
+    "cancel_shapes": "Tühista kujundid",
+    "cancel_transparency": "Tühista läbipaistvus"
   },
   "tabs": {
     "mosaic": "Mosaiik",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Küllastus :",
     "toolbar_remove_colors_tooltip": "Värvide eemaldamine",
     "toolbar_remove_colors_instruction": "Reguleerige liugurit, muudatus rakendub vabastamisel",
-    "remove_colors_panel_label": "Intensiivsus :"
+    "remove_colors_panel_label": "Intensiivsus :",
+    "toolbar_compression_tooltip": "Tihendamine",
+    "toolbar_compression_instruction": "Reguleerige liugurit, muudatus rakendub vabastamisel",
+    "toolbar_compression_disabled": "Saadaval ainult JPG-, WEBP- ja AVIF-piltide jaoks",
+    "compression_panel_label": "Kvaliteet :",
+    "toolbar_levels_tooltip": "Tasemed",
+    "toolbar_levels_instruction": "Pipetid voi liugurid, muudatus rakendub lahtilaskmisel/klopsul",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Lavi :",
+    "levels_black_panel_label": "Must punkt :",
+    "levels_white_panel_label": "Valge punkt :",
+    "levels_black_slider_tooltip": "Koik sellest vaartusest tumedamad pikslid muutuvad taiesti mustaks",
+    "levels_gamma_slider_tooltip": "Muudab keskmised toonid heledamaks voi tumedamaks, mojutamata musta ega valget",
+    "levels_white_slider_tooltip": "Koik sellest vaartusest heledamad pikslid muutuvad taiesti valgeks",
+    "levels_threshold_slider_tooltip": "Muudab pildi selle lavi alusel puhtaks mustvalgeks",
+    "levels_auto_tooltip": "Analuusib kuvatavat lehekulge ja kohandab automaatselt musta ja valge punkti, et maksimeerida kontrastsust",
+    "toolbar_shapes_tooltip": "Kujundid",
+    "toolbar_shapes_instruction": "Lohistage kujundi joonistamiseks, käepidemed suuruse muutmiseks, nooled liigutamiseks",
+    "shape_type_ellipse": "Ellips",
+    "shape_type_rectangle": "Ristkülik",
+    "shape_type_rounded_rectangle": "Ümarnurkne ristkülik",
+    "shape_type_line": "Joon",
+    "shape_type_arrow": "Nool",
+    "shape_thickness_label": "Paksus:",
+    "shape_color_label": "Värv:",
+    "shape_color_tooltip": "Vali joone ja täite värv",
+    "shape_fill_enabled_label": "Täide",
+    "shape_pipette_tooltip": "Värvi valimine kuvatud leheküljelt",
+    "toolbar_transparency_tooltip": "Läbipaistvus",
+    "toolbar_transparency_instruction": "Klõpsake värvil, mis muuta läbipaistvaks",
+    "toolbar_transparency_disabled": "Saadaval ainult PNG-, WebP-, ICO- ja AVIF-piltidele",
+    "transparency_flood_panel_label": "Ala",
+    "transparency_global_panel_label": "Globaalne",
+    "transparency_tolerance_panel_label": "Tolerants:",
+    "transparency_type_slider_tooltip": "Ala: muudab läbipaistvaks klõpsatud piksli ümbruses oleva ühtlase värviala. Globaalne: mõjutab kõiki pildi piksleid, mille värv on klõpsatud värvile lähedane",
+    "transparency_tolerance_slider_tooltip": "Maksimaalne lubatud värvikaugus klõpsatud piksli ümber"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Teksti pole sisestatud",
         "message": "Sisestage kõigepealt tekst vähemalt ühte plokki."
+      },
+      "no_shape": {
+        "title": "Ühtegi kujundit pole joonistatud",
+        "message": "Joonistage kõigepealt vähemalt üks kujund."
+      },
+      "no_transparency_work": {
+        "title": "Läbipaistvust ei rakendatud",
+        "message": "Klõpsake kõigepealt värvil, mis muuta läbipaistvaks."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Viga",
         "message": "Värvide eemaldamist ei õnnestunud rakendada: {error}"
+      },
+      "compression_failed": {
+        "title": "Viga",
+        "message": "Tihendamist ei õnnestunud rakendada: {error}"
+      },
+      "levels_failed": {
+        "title": "Viga",
+        "message": "Tasemeid ei onnestunud rakendada: {error}"
+      },
+      "shapes_failed": {
+        "title": "Viga",
+        "message": "Kujundeid ei õnnestunud rakendada: {error}"
+      },
+      "transparency_failed": {
+        "title": "Viga",
+        "message": "Läbipaistvust ei õnnestunud rakendada."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "pilti",
       "apply_button": "Rakenda",
       "color_depth_section": "Varvisugavus",
-      "compression_section": "Tihendamine",
       "effects_section": "Efektid",
       "sharpness_section": "Teravus",
-      "levels_section": "Must/valge tasemed",
       "depth_unchanged": "Ara muuda",
       "depth_32bit": "32 bitti (RGBA - varvid + labi paistvus)",
       "depth_24bit": "24 bitti (RGB - varvid)",
       "depth_8bit": "8 bitti (PNG-palett / JPEG hallitoonid)",
       "depth_1bit": "1 bitt (must-valge)",
       "compression_enable": "Luba uuesti tihendamine",
-      "compression_quality_label": "Kvaliteet : {value}/100",
       "effect_none": "Efekt puudub",
       "effect_grayscale": "Halltoonid",
       "effect_sepia": "Seepia",
-      "levels_none": "Kohandus puudub",
-      "levels_threshold": "Lavi (puhtalt must voi valge)",
-      "levels_advanced": "Taius tasemed (varjud/keskmised toonid/valgus)",
-      "threshold_label": "Lavi: {value}",
-      "black_point_label": "Must punkt: {value}",
-      "gamma_label": "Gamma (keskmised toonid): {value}",
-      "white_point_label": "Valge punkt: {value}",
       "auto_levels_button": "Automaatne reguleerimine",
-      "open_viewer_button": "Kohanda vaatajaga (soovitatav)",
-      "compression_info": "Tihendamine kehtib ainult JPG, WebP ja AVIF piltidele",
-      "open_viewer_button_simple": "Kohanda vaatajaga",
       "reset_button": "Lähtesta",
       "preview_section": "Eelvaade",
       "effect_invert": "Värvide inversioon",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (halltoonid + läbipaistvus)",
       "image_mode_cmyk": "CMYK (trükk)",
       "image_mode_1": "1 (puhas mustvalge)",
-      "image_mode_p": "P (256 värvi palett)",
-      "transparency_section": "Läbipaistvus",
-      "transparency_info": "Läbipaistvus kehtib ainult PNG, WebP, ICO ja AVIF piltidele",
-      "transparency_type_label": "Tüüp :",
-      "transparency_type_flood": "Tsoon",
-      "transparency_type_global": "Globaalne",
-      "transparency_tolerance_label": "Tolerants :",
-      "transparency_viewer_title": "Läbipaistvuse reguleerimine",
-      "transparency_click_instruction": "Klõpsake värvil, mida soovite läbipaistvaks muuta",
-      "transparency_undo": "Tühista viimane klõps",
-      "transparency_redo": "Tee uuesti",
-      "transparency_type_flood_tooltip": "Flood fill : muudab klikitud piksli ümber ühtlase värviga ala läbipaistvaks",
-      "transparency_type_global_tooltip": "Globaalne läbipaistvus : mõjutab kõiki pildi piksleid, mille värv on klikitud värvile lähedane",
-      "transparency_apply": "Rakenda",
-      "transparency_skipped_warning": "{count} pilt(i) vahele jäetud — formaat ei ühildu läbipaistvusega. Nende kaasamiseks teisendage need esmalt PNG-sse.",
-      "auto_levels_tooltip": "Analüüsib iga lehekülge ja reguleerib automaatselt musta ja valge tasemeid, et maksimeerida kontrasti.\nLehe kaupa valimiseks kasutage vaaturit.",
-      "transparency_unsaved_title": "Rakendamata muudatused",
-      "transparency_unsaved_message": "Praegused muudatused ei ole pildile rakendatud. Mida soovite teha?",
-      "transparency_unsaved_discard": "Sulge rakendamata",
-      "transparency_unsaved_apply": "Rakenda ja sulge",
-      "transparency_unsaved_cancel": "Tühista"
+      "image_mode_p": "P (256 värvi palett)"
     },
     "levels_viewer": {
-      "title": "Tasemete kohandamine tilgutiga",
-      "apply_current": "Rakenda sellele lehele",
-      "apply_all": "Rakenda kõigile valitud lehekülgedele",
       "black_pipette": "Musta punkti pipett",
       "white_pipette": "Valge punkti pipett",
       "black_pipette_tooltip": "Klõpsake pikslil, mis peaks olema täiesti must. Ettevaatust: on lihtne liialdada!",
       "white_pipette_tooltip": "Klõpsake pikslil, mis peaks olema täiesti valge. Ettevaatust: on lihtne liialdada!"
-    },
-    "compression_viewer": {
-      "title": "Tihenduse reguleerimine"
     },
     "outliers": {
       "title": "Lehed ebatavaliste mõõtmetega",

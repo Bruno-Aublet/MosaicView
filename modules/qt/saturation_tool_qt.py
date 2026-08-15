@@ -16,14 +16,14 @@ Même famille de pattern que brightness (brightness_tool_qt.py) : une seule
 réglette, PAS de bi-mode, slider/spinbox reste sur la valeur commitée après
 relâchement (ne revient PAS à 0 — comportement corrigé le 2026-08-14 : le
 retour à 0 d'origine, calqué sur sharpness, était une erreur, jamais
-demandée). Module dédié séparé, pas ajouté dans adjustments_tool_qt.py.
+demandée). Module dédié séparé, pas ajouté dans sharpness_tool_qt.py.
 
 Contrairement au crop/straighten/clone/texte, cet outil n'a AUCUN overlay
 interactif ni geste souris sur le canvas : c'est une réglette avec preview
 temps réel (comme AdjustmentViewerDialog::_display_image en mode
 'saturation'). SaturationCanvasMixin reste donc volontairement minimal (pas de
 mousePress/Move/Release à gérer, pas de paint_* à appeler depuis paintEvent)
-— même raison que AdjustmentsCanvasMixin (sharpness) et BrightnessCanvasMixin.
+— même raison que SharpnessCanvasMixin (sharpness) et BrightnessCanvasMixin.
 
 PAS de bouton "Valider" pour cet outil (même principe que sharpness/unsharp/
 brightness, décision actée idees.txt #3) : le preview PIL n'est visible que
@@ -37,7 +37,7 @@ ImageViewer._has_unvalidated_work(), pas de _saturation_by_page, pas de
 persistance/reset spécifique au changement de page au-delà de la resynchronisation
 du slider sur la dernière valeur commitée.
 
-self._sharpness_preview_img (ImageViewer, défini dans adjustments_tool_qt.py)
+self._sharpness_preview_img (ImageViewer, défini dans sharpness_tool_qt.py)
 est RÉUTILISÉ tel quel comme champ de preview partagé pour ce mode aussi —
 un seul outil actif à la fois dans la barre, donc jamais besoin d'un preview
 sharpness/unsharp/brightness ET saturation simultané. Pas de nouveau champ
@@ -158,6 +158,17 @@ class _SaturationOptionsPanel(QWidget):
         y = 8 + self._viewer._toolbar.height() + 6
         self.move(max(0, x), y)
 
+    def mousePressEvent(self, event):
+        # Piège corrigé (2026-08-15, découvert sur le panneau de
+        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
+        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
+        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
+        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        event.accept()
+
+    def mouseReleaseEvent(self, event):
+        event.accept()
+
     def enterEvent(self, event):
         self._viewer._toolbar.pause_hide()
 
@@ -233,7 +244,7 @@ class SaturationCanvasMixin:
     intercepter — le réglage se fait entièrement via la réglette du panneau
     flottant (_SaturationOptionsPanel), le preview via le pixmap affiché
     normalement par ImageViewer.display_image() — même principe que
-    AdjustmentsCanvasMixin (sharpness) et BrightnessCanvasMixin.
+    SharpnessCanvasMixin (sharpness) et BrightnessCanvasMixin.
     """
 
     def _init_saturation_state(self):
@@ -259,7 +270,7 @@ class SaturationViewerMixin:
     def _update_saturation_preview(self):
         """Régénère le pixmap affiché avec la valeur courante de la réglette,
         SANS toucher entry['bytes'] — même principe que
-        AdjustmentsViewerMixin._update_sharpness_preview(), réutilise la même
+        SharpnessViewerMixin._update_sharpness_preview(), réutilise la même
         fonction de traitement (apply_adjustments) pour ne pas dupliquer la
         formule PIL (ImageEnhance.Color, skill adjust-saturation).
 
@@ -342,7 +353,16 @@ class SaturationViewerMixin:
                 update_btn()
 
             self._sharpness_preview_img = None
-            self.display_image()
+            # keep_crop_rect=True : pas pour préserver un crop (il n'y en a
+            # jamais pendant un ajustement de saturation), mais pour éviter
+            # l'effet de bord de display_image() sans ce flag, qui appelle
+            # inconditionnellement _canvas.clear_crop() — lequel remet aussi
+            # pan_offset_x/y à 0 (crop_tool_qt.py::clear_crop, pensé pour
+            # recentrer la vue quand on abandonne un crop). Sans ce flag, tout
+            # commit après un zoom+pan recentrait l'image sous les pieds de
+            # l'utilisateur (bug diagnostiqué sur levels, 2026-08-15, même
+            # cause ici — voir levels_tool_qt.py::perform_levels).
+            self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             # Le slider NE revient PAS à 0 après commit (voir docstring de
             # perform_saturation) — reste sur la valeur qui vient d'être

@@ -66,7 +66,14 @@
     "batch_library": "Criar uma biblioteca a partir da(s) pasta(s)",
     "batch_recompress": "Recomprimir ficheiros CBZ ao nível predefinido",
     "validate_straighten": "Validar endireitamento",
-    "validate_text": "Aplicar texto"
+    "validate_text": "Aplicar texto",
+    "validate_shapes": "Aplicar as formas",
+    "validate_transparency": "Confirmar transparência",
+    "cancel_crop": "Cancelar recorte",
+    "cancel_straighten": "Cancelar endireitamento",
+    "cancel_text": "Cancelar texto",
+    "cancel_shapes": "Cancelar formas",
+    "cancel_transparency": "Cancelar transparência"
   },
   "tabs": {
     "mosaic": "Mosaico",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Saturação :",
     "toolbar_remove_colors_tooltip": "Remoção de cores",
     "toolbar_remove_colors_instruction": "Ajuste o controlo deslizante, o ajuste aplica-se ao soltar",
-    "remove_colors_panel_label": "Intensidade :"
+    "remove_colors_panel_label": "Intensidade :",
+    "toolbar_compression_tooltip": "Compressão",
+    "toolbar_compression_instruction": "Ajuste o controlo deslizante, o ajuste aplica-se ao soltar",
+    "toolbar_compression_disabled": "Disponível apenas para imagens JPG, WEBP e AVIF",
+    "compression_panel_label": "Qualidade :",
+    "toolbar_levels_tooltip": "Niveis",
+    "toolbar_levels_instruction": "Conta-gotas ou controlos deslizantes, o ajuste aplica-se ao soltar/clicar",
+    "levels_gamma_panel_label": "Gama :",
+    "levels_threshold_panel_label": "Limiar :",
+    "levels_black_panel_label": "Ponto preto :",
+    "levels_white_panel_label": "Ponto branco :",
+    "levels_black_slider_tooltip": "Todos os pixeis mais escuros do que este valor tornam-se totalmente pretos",
+    "levels_gamma_slider_tooltip": "Clareia ou escurece os meios-tons, sem afetar o preto nem o branco",
+    "levels_white_slider_tooltip": "Todos os pixeis mais claros do que este valor tornam-se totalmente brancos",
+    "levels_threshold_slider_tooltip": "Transforma a imagem em preto e branco puros com base neste limiar",
+    "levels_auto_tooltip": "Analisa a pagina apresentada e ajusta automaticamente os pontos preto e branco para maximizar o contraste",
+    "toolbar_shapes_tooltip": "Formas",
+    "toolbar_shapes_instruction": "Arraste para desenhar uma forma, alças para redimensionar, setas para mover",
+    "shape_type_ellipse": "Elipse",
+    "shape_type_rectangle": "Retângulo",
+    "shape_type_rounded_rectangle": "Retângulo de cantos arredondados",
+    "shape_type_line": "Linha",
+    "shape_type_arrow": "Seta",
+    "shape_thickness_label": "Espessura:",
+    "shape_color_label": "Cor:",
+    "shape_color_tooltip": "Escolher a cor do traço e do preenchimento",
+    "shape_fill_enabled_label": "Preenchimento",
+    "shape_pipette_tooltip": "Extrair uma cor da página exibida",
+    "toolbar_transparency_tooltip": "Transparência",
+    "toolbar_transparency_instruction": "Clique na cor que deseja tornar transparente",
+    "toolbar_transparency_disabled": "Disponível apenas para imagens PNG, WebP, ICO e AVIF",
+    "transparency_flood_panel_label": "Zona",
+    "transparency_global_panel_label": "Global",
+    "transparency_tolerance_panel_label": "Tolerância:",
+    "transparency_type_slider_tooltip": "Zona: torna transparente a zona de cor uniforme à volta do pixel clicado. Global: afeta todos os pixels da imagem cuja cor esteja próxima da clicada",
+    "transparency_tolerance_slider_tooltip": "Distância de cor máxima aceite à volta do pixel clicado"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Sem texto",
         "message": "Introduza primeiro texto em pelo menos um bloco."
+      },
+      "no_shape": {
+        "title": "Nenhuma forma desenhada",
+        "message": "Desenhe primeiro pelo menos uma forma."
+      },
+      "no_transparency_work": {
+        "title": "Nenhuma transparência aplicada",
+        "message": "Clique primeiro numa cor para a tornar transparente."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Erro",
         "message": "Não foi possível aplicar a remoção de cores: {error}"
+      },
+      "compression_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar a compressão: {error}"
+      },
+      "levels_failed": {
+        "title": "Erro",
+        "message": "Nao foi possivel aplicar os niveis: {error}"
+      },
+      "shapes_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar as formas: {error}"
+      },
+      "transparency_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar a transparência."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "imagens",
       "apply_button": "Aplicar",
       "color_depth_section": "Profundidade de cor",
-      "compression_section": "Compressao",
       "effects_section": "Efeitos",
       "sharpness_section": "Nitidez",
-      "levels_section": "Niveis preto/branco",
       "depth_unchanged": "Nao modificar",
       "depth_32bit": "32 bits (RGBA - cores + transparencia)",
       "depth_24bit": "24 bits (RGB - cores)",
       "depth_8bit": "8 bits (paleta PNG / escala de cinza JPEG)",
       "depth_1bit": "1 bit (preto e branco)",
       "compression_enable": "Ativar recompressao",
-      "compression_quality_label": "Qualidade : {value}/100",
       "effect_none": "Sem efeito",
       "effect_grayscale": "Tons de cinza",
       "effect_sepia": "Sepia",
-      "levels_none": "Sem ajuste",
-      "levels_threshold": "Limiar (preto ou branco puro)",
-      "levels_advanced": "Niveis avancados (sombras/tons medios/luzes)",
-      "threshold_label": "Limiar: {value}",
-      "black_point_label": "Ponto preto: {value}",
-      "gamma_label": "Gamma (tons medios): {value}",
-      "white_point_label": "Ponto branco: {value}",
       "auto_levels_button": "Ajuste automático",
-      "open_viewer_button": "Ajustar com o visualizador (recomendado)",
-      "compression_info": "A compressão aplica-se apenas a imagens JPG, WebP e AVIF",
-      "open_viewer_button_simple": "Ajustar com o visualizador",
       "reset_button": "Redefinir",
       "preview_section": "Pré-visualização",
       "effect_invert": "Inversão de cores",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (escala de cinza + transparência)",
       "image_mode_cmyk": "CMYK (impressão)",
       "image_mode_1": "1 (preto e branco puro)",
-      "image_mode_p": "P (paleta de 256 cores)",
-      "transparency_section": "Transparência",
-      "transparency_info": "A transparência aplica-se apenas a imagens PNG, WebP, ICO e AVIF",
-      "transparency_type_label": "Tipo :",
-      "transparency_type_flood": "Zona",
-      "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Tolerância :",
-      "transparency_viewer_title": "Ajuste de transparência",
-      "transparency_click_instruction": "Clique na cor que deseja tornar transparente",
-      "transparency_undo": "Desfazer último clique",
-      "transparency_redo": "Refazer",
-      "transparency_type_flood_tooltip": "Flood fill : torna transparente a área de cor uniforme em torno do pixel clicado",
-      "transparency_type_global_tooltip": "Transparência global : afeta todos os pixels da imagem cuja cor está próxima da clicada",
-      "transparency_apply": "Aplicar",
-      "transparency_skipped_warning": "{count} imagem(ns) ignorada(s) — formato incompatível com a transparência. Para incluí-las, converta-as primeiro para PNG.",
-      "auto_levels_tooltip": "Analisa cada página e ajusta automaticamente os níveis de preto e branco para maximizar o contraste.\nPara escolher página por página, utilize o visualizador.",
-      "transparency_unsaved_title": "Alterações não aplicadas",
-      "transparency_unsaved_message": "As alterações atuais não foram aplicadas à imagem. O que deseja fazer?",
-      "transparency_unsaved_discard": "Fechar sem aplicar",
-      "transparency_unsaved_apply": "Aplicar e fechar",
-      "transparency_unsaved_cancel": "Cancelar"
+      "image_mode_p": "P (paleta de 256 cores)"
     },
     "levels_viewer": {
-      "title": "Ajuste de niveis com conta-gotas",
-      "apply_current": "Aplicar a esta pagina",
-      "apply_all": "Aplicar a todas as páginas selecionadas",
       "black_pipette": "Conta-gotas de ponto preto",
       "white_pipette": "Conta-gotas de ponto branco",
       "black_pipette_tooltip": "Clique em um pixel que deveria ser totalmente preto. Cuidado: é fácil exagerar!",
       "white_pipette_tooltip": "Clique em um pixel que deveria ser totalmente branco. Cuidado: é fácil exagerar!"
-    },
-    "compression_viewer": {
-      "title": "Ajuste de compressão"
     },
     "outliers": {
       "title": "Páginas com dimensões incomuns",

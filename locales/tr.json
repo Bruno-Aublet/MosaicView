@@ -66,7 +66,14 @@
     "batch_library": "Klasör(ler)den kitaplık oluştur",
     "batch_recompress": "CBZ dosyalarını varsayılan seviyede yeniden sıkıştır",
     "validate_straighten": "Düzeltmeyi onayla",
-    "validate_text": "Metni uygula"
+    "validate_text": "Metni uygula",
+    "validate_shapes": "Şekilleri onayla",
+    "validate_transparency": "Saydamlığı onayla",
+    "cancel_crop": "Kırpmayı iptal et",
+    "cancel_straighten": "Düzleştirmeyi iptal et",
+    "cancel_text": "Metni iptal et",
+    "cancel_shapes": "Şekilleri iptal et",
+    "cancel_transparency": "Saydamlığı iptal et"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Doygunluk :",
     "toolbar_remove_colors_tooltip": "Renk kaldırma",
     "toolbar_remove_colors_instruction": "Kaydırıcıyı ayarlayın, ayar bırakıldığında uygulanır",
-    "remove_colors_panel_label": "Yoğunluk :"
+    "remove_colors_panel_label": "Yoğunluk :",
+    "toolbar_compression_tooltip": "Sıkıştırma",
+    "toolbar_compression_instruction": "Kaydırıcıyı ayarlayın, ayar bırakıldığında uygulanır",
+    "toolbar_compression_disabled": "Yalnızca JPG, WEBP ve AVIF görüntüleri için kullanılabilir",
+    "compression_panel_label": "Kalite :",
+    "toolbar_levels_tooltip": "Seviyeler",
+    "toolbar_levels_instruction": "Damlaliklar veya kaydiricilar, ayar birakildiginda/tiklandiginda uygulanir",
+    "levels_gamma_panel_label": "Gama :",
+    "levels_threshold_panel_label": "Esik :",
+    "levels_black_panel_label": "Siyah nokta :",
+    "levels_white_panel_label": "Beyaz nokta :",
+    "levels_black_slider_tooltip": "Bu degerden daha koyu tum pikseller tamamen siyah olur",
+    "levels_gamma_slider_tooltip": "Siyah veya beyazi etkilemeden orta tonlari acar ya da koyulastirir",
+    "levels_white_slider_tooltip": "Bu degerden daha acik tum pikseller tamamen beyaz olur",
+    "levels_threshold_slider_tooltip": "Bu esige gore goruntuyu saf siyah beyaza donusturur",
+    "levels_auto_tooltip": "Goruntulenen sayfayi analiz eder ve kontrasti en uste cikarmak icin siyah ve beyaz noktalari otomatik ayarlar",
+    "toolbar_shapes_tooltip": "Şekiller",
+    "toolbar_shapes_instruction": "Bir şekil çizmek için sürükleyin, yeniden boyutlandırmak için tutamaçlar, taşımak için ok tuşları",
+    "shape_type_ellipse": "Elips",
+    "shape_type_rectangle": "Dikdörtgen",
+    "shape_type_rounded_rectangle": "Yuvarlak köşeli dikdörtgen",
+    "shape_type_line": "Çizgi",
+    "shape_type_arrow": "Ok",
+    "shape_thickness_label": "Kalınlık:",
+    "shape_color_label": "Renk:",
+    "shape_color_tooltip": "Kontur ve dolgu rengini seçin",
+    "shape_fill_enabled_label": "Dolgu",
+    "shape_pipette_tooltip": "Görüntülenen sayfadan bir renk al",
+    "toolbar_transparency_tooltip": "Saydamlık",
+    "toolbar_transparency_instruction": "Saydam yapılacak rengi tıklayın",
+    "toolbar_transparency_disabled": "Yalnızca PNG, WebP, ICO ve AVIF görüntüleri için kullanılabilir",
+    "transparency_flood_panel_label": "Bölge",
+    "transparency_global_panel_label": "Genel",
+    "transparency_tolerance_panel_label": "Tolerans:",
+    "transparency_type_slider_tooltip": "Bölge: tıklanan pikselin çevresindeki tek renkli bölgeyi saydam yapar. Genel: görüntünün, rengi tıklanana yakın olan tüm piksellerini etkiler",
+    "transparency_tolerance_slider_tooltip": "Tıklanan pikselin çevresinde kabul edilen maksimum renk mesafesi"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Metin girilmedi",
         "message": "Lütfen önce en az bir bloğa metin girin."
+      },
+      "no_shape": {
+        "title": "Çizilmiş şekil yok",
+        "message": "Lütfen önce en az bir şekil çizin."
+      },
+      "no_transparency_work": {
+        "title": "Saydamlık uygulanmadı",
+        "message": "Lütfen önce saydam yapılacak bir rengi tıklayın."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Hata",
         "message": "Renk kaldırma uygulanamadı: {error}"
+      },
+      "compression_failed": {
+        "title": "Hata",
+        "message": "Sıkıştırma uygulanamadı: {error}"
+      },
+      "levels_failed": {
+        "title": "Hata",
+        "message": "Seviyeler uygulanamadi: {error}"
+      },
+      "shapes_failed": {
+        "title": "Hata",
+        "message": "Şekiller uygulanamadı: {error}"
+      },
+      "transparency_failed": {
+        "title": "Hata",
+        "message": "Saydamlık uygulanamadı."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "goruntu",
       "apply_button": "Uygula",
       "color_depth_section": "Renk derinligi",
-      "compression_section": "Sikistirma",
       "effects_section": "Efektler",
       "sharpness_section": "Keskinlik",
-      "levels_section": "Siyah/beyaz seviyeleri",
       "depth_unchanged": "Degistirme",
       "depth_32bit": "32 bit (RGBA - renkler + seffaflik)",
       "depth_24bit": "24 bit (RGB - renkler)",
       "depth_8bit": "8 bit (PNG paleti / JPEG gri tonlari)",
       "depth_1bit": "1 bit (siyah ve beyaz)",
       "compression_enable": "Yeniden sikistirmayi etkinlestir",
-      "compression_quality_label": "Kalite : {value}/100",
       "effect_none": "Efekt yok",
       "effect_grayscale": "Gri tonlari",
       "effect_sepia": "Sepya",
-      "levels_none": "Ayar yok",
-      "levels_threshold": "Esik (saf siyah veya beyaz)",
-      "levels_advanced": "Gelismis seviyeler (golgeler/orta tonlar/parlakliklar)",
-      "threshold_label": "Esik: {value}",
-      "black_point_label": "Siyah nokta: {value}",
-      "gamma_label": "Gama (orta tonlar): {value}",
-      "white_point_label": "Beyaz nokta: {value}",
       "auto_levels_button": "Otomatik ayarlama",
-      "open_viewer_button": "Görüntüleyici ile ayarla (önerilir)",
-      "compression_info": "Sıkıştırma yalnızca JPG, WebP ve AVIF görüntülerine uygulanır",
-      "open_viewer_button_simple": "Görüntüleyici ile ayarla",
       "reset_button": "Sıfırla",
       "preview_section": "Önizleme",
       "effect_invert": "Renk tersine çevirme",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (gri tonları + saydamlık)",
       "image_mode_cmyk": "CMYK (baskı)",
       "image_mode_1": "1 (saf siyah-beyaz)",
-      "image_mode_p": "P (256 renk paleti)",
-      "transparency_section": "Şeffaflık",
-      "transparency_info": "Şeffaflık yalnızca PNG, WebP, ICO ve AVIF görüntülerine uygulanır",
-      "transparency_type_label": "Tür :",
-      "transparency_type_flood": "Bölge",
-      "transparency_type_global": "Genel",
-      "transparency_tolerance_label": "Tolerans :",
-      "transparency_viewer_title": "Şeffaflık ayarı",
-      "transparency_click_instruction": "Şeffaf yapmak istediğiniz renge tıklayın",
-      "transparency_undo": "Son tıklamayı geri al",
-      "transparency_redo": "Yeniden yap",
-      "transparency_type_flood_tooltip": "Flood fill : tıklanan pikselin etrafındaki düzgün renk alanını şeffaf yapar",
-      "transparency_type_global_tooltip": "Genel şeffaflık : görüntüdeki tıklanan renge yakın tüm pikselleri etkiler",
-      "transparency_apply": "Uygula",
-      "transparency_skipped_warning": "{count} görüntü atlandı — format saydamlıkla uyumlu değil. Dahil etmek için önce PNG'ye dönüştürün.",
-      "auto_levels_tooltip": "Her sayfayı analiz eder ve kontrastı en üst düzeye çıkarmak için siyah ve beyaz düzeylerini otomatik olarak ayarlar.\nSayfa sayfa seçmek için görüntüleyiciyi kullanın.",
-      "transparency_unsaved_title": "Uygulanmamis degisiklikler",
-      "transparency_unsaved_message": "Mevcut degisiklikler goruntüye uygulanmadi. Ne yapmak istersiniz?",
-      "transparency_unsaved_discard": "Uygulamadan kapat",
-      "transparency_unsaved_apply": "Uygula ve kapat",
-      "transparency_unsaved_cancel": "Iptal"
+      "image_mode_p": "P (256 renk paleti)"
     },
     "levels_viewer": {
-      "title": "Damlalık ile seviye ayari",
-      "apply_current": "Bu sayfaya uygula",
-      "apply_all": "Seçili tüm sayfalara uygula",
       "black_pipette": "Siyah nokta damlalık",
       "white_pipette": "Beyaz nokta damlalık",
       "black_pipette_tooltip": "Tamamen siyah olması gereken bir piksele tıklayın. Dikkat: aşırıya kaçmak kolaydır!",
       "white_pipette_tooltip": "Tamamen beyaz olması gereken bir piksele tıklayın. Dikkat: aşırıya kaçmak kolaydır!"
-    },
-    "compression_viewer": {
-      "title": "Sıkıştırma Ayarı"
     },
     "outliers": {
       "title": "Olağandışı boyutlara sahip sayfalar",

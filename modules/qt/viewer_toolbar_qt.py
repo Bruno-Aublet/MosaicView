@@ -41,10 +41,14 @@ from modules.qt.overlay_tooltip_qt import OverlayTooltip
 from modules.qt.straighten_tool_qt import _StraightenAnglePanel
 from modules.qt.clone_tool_qt import _CloneOptionsPanel
 from modules.qt.text_tool_qt import _TextOptionsPanel
-from modules.qt.adjustments_tool_qt import _SharpnessOptionsPanel, _UnsharpOptionsPanel
+from modules.qt.sharpness_tool_qt import _SharpnessOptionsPanel, _UnsharpOptionsPanel
 from modules.qt.brightness_tool_qt import _BrightnessOptionsPanel
 from modules.qt.saturation_tool_qt import _SaturationOptionsPanel
 from modules.qt.remove_colors_tool_qt import _RemoveColorsOptionsPanel
+from modules.qt.compression_tool_qt import _CompressionOptionsPanel, is_compressible_entry
+from modules.qt.levels_tool_qt import _LevelsOptionsPanel
+from modules.qt.shapes_tool_qt import _ShapeOptionsPanel
+from modules.qt.transparency_tool_qt import _TransparencyOptionsPanel
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -69,7 +73,15 @@ def _recolor_for_dark(pil_img: Image.Image, rgb_hex: str) -> Image.Image:
 
 class _ToolButton(QLabel):
     """Icône cliquable de la barre d'outils : survol en surbrillance, état actif
-    en surbrillance permanente (distincte du survol), tooltip via OverlayTooltip."""
+    en surbrillance permanente (distincte du survol), tooltip via OverlayTooltip.
+
+    Grisage optionnel (idees.txt #3, outil "compression", 10e outil migré) :
+    contrairement aux outils précédents (toujours applicables quelle que soit
+    la page affichée), la compression n'a de sens que sur une page JPEG/WEBP/
+    AVIF — voir compression_tool_qt.py. set_enabled_state(False) grise
+    l'icône (même algorithme PIL que _ActionButton, réutilisé tel quel) et la
+    rend non cliquable ; le tooltip reste actif dans les deux états (texte
+    différent selon activé/désactivé, géré par l'appelant)."""
 
     def __init__(self, toolbar: "_ViewerToolbar", icon_filename: str, tool_id: str = ""):
         super().__init__()
@@ -77,6 +89,7 @@ class _ToolButton(QLabel):
         self._icon_filename = icon_filename
         self._tool_id = tool_id
         self._active = False
+        self._enabled = True
         self.setFixedSize(36, 36)
         self.setAlignment(Qt.AlignCenter)
         self.setCursor(Qt.PointingHandCursor)
@@ -85,6 +98,7 @@ class _ToolButton(QLabel):
 
     def _load_icon(self):
         from modules.qt.font_loader import resource_path
+        from modules.qt.icon_toolbar_qt import _to_grayscale
         state = _state_module.state
         if self._icon_filename in _DARK_MODE_RECOLOR_ICONS and state.dark_mode:
             # Icône noir plein sans contour/couleur propre, invisible sur le
@@ -98,6 +112,14 @@ class _ToolButton(QLabel):
             theme = get_current_theme()
             recolored = _recolor_for_dark(pil_img, theme['text'])
             pm = _pil_to_qpixmap(recolored)
+        elif not self._enabled:
+            # Même algorithme de grisage que _ActionButton (icon_toolbar_qt.
+            # _to_grayscale), réutilisé tel quel plutôt qu'une simple opacité
+            # Qt — voir docstring de classe.
+            from modules.qt.image_viewer_qt import _pil_to_qpixmap
+            path = resource_path(f'icons/{self._icon_filename}')
+            pil_img = Image.open(path).convert("RGBA")
+            pm = _pil_to_qpixmap(_to_grayscale(pil_img))
         else:
             path = resource_path(f'icons/{self._icon_filename}')
             pm = QPixmap(path)
@@ -120,6 +142,21 @@ class _ToolButton(QLabel):
             self._active = active
             self._apply_style()
 
+    def set_enabled_state(self, enabled: bool):
+        """Grise/dégrise l'icône (voir docstring de classe). Désélectionne
+        l'outil au passage si on le désactive alors qu'il était actif (ex.
+        changement de page vers un format non compressible pendant que
+        l'outil compression est sélectionné) — évite un outil actif mais
+        non cliquable, incohérent visuellement."""
+        if self._enabled == enabled:
+            return
+        self._enabled = enabled
+        if not enabled and self._active:
+            self._toolbar.set_active_tool(None)
+        self._load_icon()
+        self.setCursor(Qt.PointingHandCursor if enabled else Qt.ArrowCursor)
+        self._apply_style()
+
     def _apply_style(self):
         theme = get_current_theme()
         if self._active:
@@ -131,7 +168,7 @@ class _ToolButton(QLabel):
             self.setStyleSheet("background: transparent; border: 2px solid transparent; border-radius: 4px;")
 
     def enterEvent(self, event):
-        if not self._active:
+        if self._enabled and not self._active:
             theme = get_current_theme()
             self.setStyleSheet(
                 f"background: {theme['icon_hover']}; border: 2px solid transparent; border-radius: 4px;"
@@ -141,6 +178,9 @@ class _ToolButton(QLabel):
         self._apply_style()
 
     def mousePressEvent(self, event):
+        if not self._enabled:
+            event.accept()
+            return
         if event.button() == Qt.LeftButton:
             self._toolbar._on_tool_clicked(self)
         elif event.button() == Qt.RightButton:
@@ -280,7 +320,7 @@ class _ViewerToolbar(QWidget):
         # icône par défaut = sharpness ; clic droit bascule vers unsharp et
         # change l'icône affichée (voir _on_tool_right_clicked et
         # _toggle_sharpness_mode). Les deux modes sont pleinement implémentés
-        # (voir adjustments_tool_qt.py::_SharpnessOptionsPanel/_UnsharpOptionsPanel).
+        # (voir sharpness_tool_qt.py::_SharpnessOptionsPanel/_UnsharpOptionsPanel).
         sharpness_btn = _ToolButton(self, "BTN_Sharpness.png", tool_id="sharpness")
         layout.addWidget(sharpness_btn)
         self._buttons["sharpness"] = sharpness_btn
@@ -309,6 +349,49 @@ class _ViewerToolbar(QWidget):
         layout.addWidget(remove_colors_btn)
         self._buttons["remove_colors"] = remove_colors_btn
 
+        # 10e outil migré, 6e des 8 modes d'ajustement (idees.txt #3) : icône
+        # fixe, PAS de bi-mode — une seule réglette (même famille que
+        # saturation/sharpness/remove_colors), MAIS grisée/désactivée quand la
+        # page affichée n'est pas JPEG/WEBP/AVIF (voir compression_tool_qt.py,
+        # _ToolButton.set_enabled_state, et
+        # ImageViewer._refresh_compression_button_state).
+        compression_btn = _ToolButton(self, "BTN_Compression.png", tool_id="compression")
+        layout.addWidget(compression_btn)
+        self._buttons["compression"] = compression_btn
+
+        # 11e outil migré, 7e des 8 modes d'ajustement (idees.txt #3) : icône
+        # fixe, PAS de bi-mode — mais SEUL outil migré avec un vrai geste
+        # souris sur le canvas (2 pipettes), contrairement aux 6 modes
+        # d'ajustement précédents (réglette(s) pure(s)) — voir
+        # levels_tool_qt.py::_LevelsOptionsPanel.
+        levels_btn = _ToolButton(self, "BTN_Levels.png", tool_id="levels")
+        layout.addWidget(levels_btn)
+        self._buttons["levels"] = levels_btn
+
+        # 12e outil migré (idees.txt #3) : icône fixe, PAS de bi-mode —
+        # plusieurs formes coexistantes par page (comme le texte), poignées
+        # de redimensionnement façon crop pour les formes fermées, 2 points
+        # d'extrémité pour ligne/flèche. Bouton "Valider" partagé TOUJOURS
+        # VISIBLE tant que cet outil est actif (vert/actif dès qu'une forme
+        # existe, gris/inactif sinon) — seul outil migré avec ce comportement,
+        # voir image_viewer_qt.py::_ViewerCanvas._ALWAYS_VISIBLE_VALIDATE_TOOLS.
+        shapes_btn = _ToolButton(self, "BTN_Shapes.png", tool_id="shapes")
+        layout.addWidget(shapes_btn)
+        self._buttons["shapes"] = shapes_btn
+
+        # 13e outil migré, 8e ET DERNIER des 8 modes d'ajustement (idees.txt
+        # #3) : icône fixe, PAS de bi-mode — vrai geste souris (pipette,
+        # comme levels), MAIS accumule plusieurs clics avant validation
+        # explicite (bouton "Valider" partagé TOUJOURS VISIBLE, comme crop/
+        # straighten/text/shapes — contrairement à levels), et grisée/
+        # désactivée sur une page qui n'est pas PNG/WEBP/ICO/AVIF (comme
+        # compression) — voir transparency_tool_qt.py::
+        # _TransparencyOptionsPanel. Une fois cet outil validé, plus aucun
+        # mode ne reste dans AdjustmentViewerDialog (skill viewers).
+        transparency_btn = _ToolButton(self, "BTN_Transparency.png", tool_id="transparency")
+        layout.addWidget(transparency_btn)
+        self._buttons["transparency"] = transparency_btn
+
         self._separator = QFrame()
         self._separator.setFrameShape(QFrame.VLine)
         layout.addWidget(self._separator)
@@ -327,6 +410,10 @@ class _ViewerToolbar(QWidget):
         self._overlay_tip.track(brightness_btn)
         self._overlay_tip.track(saturation_btn)
         self._overlay_tip.track(remove_colors_btn)
+        self._overlay_tip.track(compression_btn)
+        self._overlay_tip.track(levels_btn)
+        self._overlay_tip.track(shapes_btn)
+        self._overlay_tip.track(transparency_btn)
         self._overlay_tip.track(self._undo_btn)
         self._overlay_tip.track(self._redo_btn)
 
@@ -368,6 +455,22 @@ class _ViewerToolbar(QWidget):
         # remove_colors uniquement, voir _RemoveColorsOptionsPanel).
         self._remove_colors_panel = _RemoveColorsOptionsPanel(viewer)
 
+        # Panneau flottant de la réglette de compression (outil compression
+        # uniquement, voir _CompressionOptionsPanel).
+        self._compression_panel = _CompressionOptionsPanel(viewer)
+
+        # Panneau flottant des 7 contrôles de niveaux (outil levels
+        # uniquement, voir _LevelsOptionsPanel).
+        self._levels_panel = _LevelsOptionsPanel(viewer)
+
+        # Panneau flottant de sélection de forme/couleurs/épaisseur (outil
+        # shapes uniquement, voir _ShapeOptionsPanel).
+        self._shapes_panel = _ShapeOptionsPanel(viewer)
+
+        # Panneau flottant bascule flood/global + tolérance + pipette (outil
+        # transparency uniquement, voir _TransparencyOptionsPanel).
+        self._transparency_panel = _TransparencyOptionsPanel(viewer)
+
         # Icône sharpness/unsharp synchronisée sur le mode persisté dès
         # l'ouverture (state.sharpness_mode restauré par PanelWidget.__init__
         # depuis la config avant la création de la visionneuse).
@@ -405,6 +508,10 @@ class _ViewerToolbar(QWidget):
         self._brightness_panel._apply_theme()
         self._saturation_panel._apply_theme()
         self._remove_colors_panel._apply_theme()
+        self._compression_panel._apply_theme()
+        self._levels_panel._apply_theme()
+        self._shapes_panel._apply_theme()
+        self._transparency_panel._apply_theme()
         self._overlay_tip.apply_theme()
 
     def retranslate(self):
@@ -449,6 +556,18 @@ class _ViewerToolbar(QWidget):
             f"{_('viewer.toolbar_remove_colors_instruction')}"
         )
         self._overlay_tip.track(self._buttons["remove_colors"], remove_colors_tip)
+        self._update_compression_tooltip()
+        levels_tip = (
+            f"<b>{_('viewer.toolbar_levels_tooltip')}</b><br>"
+            f"{_('viewer.toolbar_levels_instruction')}"
+        )
+        self._overlay_tip.track(self._buttons["levels"], levels_tip)
+        shapes_tip = (
+            f"<b>{_('viewer.toolbar_shapes_tooltip')}</b><br>"
+            f"{_('viewer.toolbar_shapes_instruction')}"
+        )
+        self._overlay_tip.track(self._buttons["shapes"], shapes_tip)
+        self._update_transparency_tooltip()
         self._overlay_tip.track(self._undo_btn, _("viewer.toolbar_undo_tooltip"))
         self._overlay_tip.track(self._redo_btn, _("viewer.toolbar_redo_tooltip"))
         self._angle_panel.retranslate()
@@ -459,6 +578,10 @@ class _ViewerToolbar(QWidget):
         self._brightness_panel.retranslate()
         self._saturation_panel.retranslate()
         self._remove_colors_panel.retranslate()
+        self._compression_panel.retranslate()
+        self._levels_panel.retranslate()
+        self._shapes_panel.retranslate()
+        self._transparency_panel.retranslate()
 
     # ── Undo/Redo ─────────────────────────────────────────────────────────────
 
@@ -490,14 +613,39 @@ class _ViewerToolbar(QWidget):
         # réellement sélectionné (sinon on pourrait valider un travail "en
         # pause" sans le vouloir).
         canvas = self._viewer._canvas
-        if tool_id == "crop" and canvas.has_crop:
-            canvas._show_validate_btn()
-        elif tool_id == "straighten" and canvas.has_line:
-            canvas._show_validate_btn()
-        elif tool_id == "text" and canvas.has_text_blocks:
-            canvas._show_validate_btn()
-        else:
-            canvas._hide_validate_btn()
+        # RÈGLE ABSOLUE, SANS AUCUNE EXCEPTION (idees.txt, décision explicite
+        # utilisateur 2026-08-15 après plusieurs bugs découverts un par un —
+        # text puis levels, tous deux corrigés au cas par cas avant que la
+        # règle ne soit généralisée à TOUS les outils de la barre, y compris
+        # ceux qui n'ont actuellement aucun problème connu, comme crop, ou
+        # aucun geste souris du tout, comme les modes d'ajustement) :
+        # sélectionner N'IMPORTE QUEL outil de cette barre force IMMÉDIATEMENT
+        # le retour en mode simple page, avant tout autre traitement.
+        # Justification (non négociable, mais consignée pour mémoire) : le
+        # mode double/continu affiche un pixmap COMBINÉ de 2 pages, et tout
+        # outil qui lit une position de clic ou une géométrie tracée risque de
+        # la calculer par rapport à cette image combinée puis de l'appliquer
+        # (silencieusement, sans erreur visible) à une seule page — bug déjà
+        # vécu sur le texte (blocs mal positionnés) et les pipettes de niveaux
+        # (couleur prélevée sur le mauvais pixel). Plutôt que d'auditer outil
+        # par outil lequel est concerné et lequel ne l'est pas (risque de
+        # rater un futur cas, ou un outil actuellement inoffensif qui cesse de
+        # l'être après une modification ultérieure), la règle s'applique
+        # uniformément à tous, y compris ceux qui n'y sont pas exposés
+        # aujourd'hui.
+        if tool_id is not None and self._viewer.page_mode != "single":
+            self._viewer.page_mode = "single"
+            self._viewer.display_image(keep_crop_rect=True)
+        # Le bouton "Valider" partagé (crop/straighten/text/shapes) est
+        # affiché/masqué tout à la fin de cette méthode, APRÈS que les
+        # panneaux d'options des 4 outils (_angle_panel/_text_panel/
+        # _shapes_panel — crop n'en a pas) aient été rendus visibles plus bas
+        # — _reveal_validate_btn()/_update_validate_btn_state() calculent la
+        # position à partir de panel.y()/panel.height(), qui ne sont fiables
+        # qu'une fois le panneau effectivement repositionné ; l'appeler ici,
+        # avant, utiliserait des dimensions pas encore à jour (bouton
+        # invisible/mal placé au premier
+        # clic sur l'icône, bug vécu à l'origine sur "shapes" seul).
         self._angle_panel.set_visible_for_tool(tool_id)
         self._clone_panel.set_visible_for_tool(tool_id)
         # Le clonage n'a pas de "travail en attente de validation" à conserver
@@ -549,6 +697,68 @@ class _ViewerToolbar(QWidget):
         # drag — à annuler proprement.
         if previous_tool == "remove_colors" and tool_id != "remove_colors":
             self._viewer._reset_remove_colors_preview()
+        self._compression_panel.set_visible_for_tool(tool_id)
+        # Même principe que sharpness/brightness/saturation/remove_colors
+        # ci-dessus : pas de bouton "Valider" ni de notion de travail non
+        # validé pour la compression (idees.txt #3). En quittant l'outil, il
+        # ne peut donc rester au pire qu'un preview visuel abandonné en plein
+        # drag — à annuler proprement (resynchronise aussi le slider sur la
+        # qualité JPEG réelle courante, voir compression_tool_qt.py).
+        if previous_tool == "compression" and tool_id != "compression":
+            self._viewer._reset_compression_preview()
+        self._levels_panel.set_visible_for_tool(tool_id)
+        # Même principe que sharpness/brightness/saturation/remove_colors/
+        # compression ci-dessus : pas de bouton "Valider" ni de notion de
+        # travail non validé pour les niveaux (idees.txt #3). En quittant
+        # l'outil, il ne peut donc rester au pire qu'un preview visuel
+        # abandonné en plein drag — à annuler proprement (désarme aussi une
+        # pipette restée armée, voir _LevelsOptionsPanel.set_visible_for_tool
+        # qui appelle déjà _deactivate_pipettes()).
+        if previous_tool == "levels" and tool_id != "levels":
+            self._viewer._reset_levels_preview()
+        self._shapes_panel.set_visible_for_tool(tool_id)
+        # Comme crop/straighten/texte : les formes déjà posées sur la page ne
+        # sont pas effacées en désélectionnant l'outil (persistance du travail
+        # non validé), mais deviennent non interactives (plus de sélection/
+        # redimensionnement/déplacement possible tant que l'outil n'est pas
+        # resélectionné) — un tracé EN COURS (pas encore posé), lui, est
+        # annulé : il n'a pas de sens de le laisser "en l'air" une fois
+        # l'outil désélectionné.
+        if previous_tool == "shapes" and tool_id != "shapes":
+            canvas._shape_draw_start = None
+            canvas._shape_draw_end = None
+            canvas._shape_active = None
+            canvas._shape_resize_mode = None
+        self._transparency_panel.set_visible_for_tool(tool_id)
+        # Comme crop/straighten/texte/formes : l'image de travail accumulée
+        # sur la page courante n'est PAS effacée en désélectionnant l'outil
+        # (persistance du travail non validé par page, idees.txt #3, décision
+        # explicite 2026-08-15) — set_visible_for_tool désarme seulement une
+        # pipette restée armée (même principe que _LevelsOptionsPanel).
+        # Bouton "Valider" partagé (crop/straighten/text/shapes/transparency) : affiché
+        # (vert/actif ou gris/inactif selon _validate_tool_has_work) pour ces
+        # 4 outils, masqué pour tout autre — appelé ICI, tout à la fin, une
+        # fois que TOUS les panneaux d'options pertinents (_angle_panel/
+        # _text_panel/_shapes_panel) ont été rendus visibles juste au-dessus
+        # (règle généralisée le 2026-08-15, initialement "shapes" seul — voir
+        # commentaire au point d'appel précédent pour la raison de cet ordre).
+        # set_active_tool() n'est déclenchée que par un clic RÉEL sur une
+        # icône (_on_tool_clicked) — la barre est donc nécessairement déjà
+        # visible à cet instant (on ne peut pas cliquer une icône masquée) :
+        # _reveal_validate_btn()/_conceal_validate_btn() sont donc légitimes
+        # ici, contrairement à un simple rafraîchissement passif (display_image,
+        # tracé en cours), qui utilise _update_validate_btn_state() sans
+        # jamais changer la visibilité — voir sa docstring pour la règle
+        # complète du mécanisme unique.
+        if tool_id in canvas._ALWAYS_VISIBLE_VALIDATE_TOOLS:
+            canvas._reveal_validate_btn()
+            # Bouton "Annuler" jumeau, même condition/mêmes points d'appel
+            # que le bouton "Valider" (2026-08-15, demande explicite
+            # utilisateur) — voir _reveal_cancel_btn/_conceal_cancel_btn.
+            canvas._reveal_cancel_btn()
+        else:
+            canvas._conceal_validate_btn()
+            canvas._conceal_cancel_btn()
         canvas.update()
 
     def _on_tool_clicked(self, btn: "_ToolButton"):
@@ -663,6 +873,47 @@ class _ViewerToolbar(QWidget):
         # affiché jusqu'au prochain MouseMove.
         self._overlay_tip.force_refresh_visible(self._buttons["sharpness"])
 
+    def _update_compression_tooltip(self):
+        """Tooltip à deux états (idees.txt #3, outil "compression") : texte
+        différent selon que l'icône est actuellement activée (page
+        JPEG/WEBP/AVIF) ou grisée (tout autre format) — contrairement aux
+        autres outils de la barre, toujours disponibles. Rappelé par
+        ImageViewer._refresh_compression_button_state() à chaque changement
+        de page, pas seulement à la construction/au changement de langue."""
+        btn = self._buttons["compression"]
+        if btn._enabled:
+            tip = (
+                f"<b>{_('viewer.toolbar_compression_tooltip')}</b><br>"
+                f"{_('viewer.toolbar_compression_instruction')}"
+            )
+        else:
+            tip = (
+                f"<b>{_('viewer.toolbar_compression_tooltip')}</b><br>"
+                f"{_('viewer.toolbar_compression_disabled')}"
+            )
+        self._overlay_tip.set_tracked_html(tip, btn)
+
+    def _update_transparency_tooltip(self):
+        """Tooltip à deux états, même principe que
+        _update_compression_tooltip (idees.txt #3, seul autre outil migré
+        grisable) : texte différent selon que l'icône est actuellement
+        activée (page PNG/WEBP/ICO/AVIF) ou grisée (tout autre format).
+        Rappelé par ImageViewer._refresh_transparency_button_state() à chaque
+        changement de page, pas seulement à la construction/au changement de
+        langue."""
+        btn = self._buttons["transparency"]
+        if btn._enabled:
+            tip = (
+                f"<b>{_('viewer.toolbar_transparency_tooltip')}</b><br>"
+                f"{_('viewer.toolbar_transparency_instruction')}"
+            )
+        else:
+            tip = (
+                f"<b>{_('viewer.toolbar_transparency_tooltip')}</b><br>"
+                f"{_('viewer.toolbar_transparency_disabled')}"
+            )
+        self._overlay_tip.set_tracked_html(tip, btn)
+
     # ── Positionnement / visibilité ──────────────────────────────────────────
 
     def reposition(self):
@@ -691,6 +942,20 @@ class _ViewerToolbar(QWidget):
         self._brightness_panel.set_visible_for_tool(self.active_tool)
         self._saturation_panel.set_visible_for_tool(self.active_tool)
         self._remove_colors_panel.set_visible_for_tool(self.active_tool)
+        self._compression_panel.set_visible_for_tool(self.active_tool)
+        self._levels_panel.set_visible_for_tool(self.active_tool)
+        self._shapes_panel.set_visible_for_tool(self.active_tool)
+        self._transparency_panel.set_visible_for_tool(self.active_tool)
+        # Le bouton "Valider" partagé (crop/straighten/text/shapes/transparency) réapparaît
+        # ICI, et UNIQUEMENT ici (mécanisme unique de réapparition — voir
+        # image_viewer_qt.py::_update_validate_btn_state pour la règle
+        # complète) : _reveal_validate_btn() recalcule son état ET sa position
+        # (sous la barre/son panneau d'options) avant de l'afficher.
+        if self.active_tool in self._viewer._canvas._ALWAYS_VISIBLE_VALIDATE_TOOLS:
+            self._viewer._canvas._reveal_validate_btn()
+            # Bouton "Annuler" jumeau, même condition/mêmes points d'appel
+            # (2026-08-15, demande explicite utilisateur).
+            self._viewer._canvas._reveal_cancel_btn()
         self._hide_timer.start(self.AUTO_HIDE_MS)
 
     def _on_hide_timeout(self):
@@ -707,6 +972,18 @@ class _ViewerToolbar(QWidget):
         self._brightness_panel.hide()
         self._saturation_panel.hide()
         self._remove_colors_panel.hide()
+        self._compression_panel.hide()
+        self._levels_panel.hide()
+        self._shapes_panel.hide()
+        self._transparency_panel.hide()
+        # Le bouton "Valider" partagé disparaît ICI, et UNIQUEMENT ici
+        # (mécanisme unique de masquage, symétrique de show_and_schedule_hide
+        # — voir image_viewer_qt.py::_update_validate_btn_state pour la règle
+        # complète) : sans ce point unique, il pouvait rester affiché à sa
+        # dernière position, flottant seul sans la barre au-dessus.
+        if self.active_tool in self._viewer._canvas._ALWAYS_VISIBLE_VALIDATE_TOOLS:
+            self._viewer._canvas._conceal_validate_btn()
+            self._viewer._canvas._conceal_cancel_btn()
 
     def pause_hide(self):
         """Suspend le décompte du masquage automatique tant que la souris
@@ -758,7 +1035,9 @@ class _ViewerToolbar(QWidget):
         if (self._angle_panel.underMouse() or self._clone_panel.underMouse()
                 or self._text_panel.underMouse() or self._sharpness_panel.underMouse()
                 or self._unsharp_panel.underMouse() or self._brightness_panel.underMouse()
-                or self._saturation_panel.underMouse() or self._remove_colors_panel.underMouse()):
+                or self._saturation_panel.underMouse() or self._remove_colors_panel.underMouse()
+                or self._compression_panel.underMouse() or self._levels_panel.underMouse()
+                or self._shapes_panel.underMouse() or self._transparency_panel.underMouse()):
             return
         in_hover_zone = pos_y <= canvas_height * self.HOVER_ZONE_RATIO
         if in_hover_zone:

@@ -66,7 +66,14 @@
     "batch_library": "Carë i·parmavorn ve i·tarmar",
     "batch_recompress": "Ata nutta CBZ lestar i tereva",
     "validate_straighten": "Manta i Lempina",
-    "validate_text": "Carë tecië"
+    "validate_text": "Carë tecië",
+    "validate_shapes": "Manta i cantalë",
+    "validate_transparency": "Manta i calima",
+    "cancel_crop": "Avahaila i píta",
+    "cancel_straighten": "Avahaila i renta",
+    "cancel_text": "Avahaila i tecë",
+    "cancel_shapes": "Avahaila i cantalë",
+    "cancel_transparency": "Avahaila i calima"
   },
   "tabs": {
     "mosaic": "Mossaica",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Cuivëa :",
     "toolbar_remove_colors_tooltip": "Culienen faireva",
     "toolbar_remove_colors_instruction": "Tanë i telco; carë ná lehta.",
-    "remove_colors_panel_label": "Alcar :"
+    "remove_colors_panel_label": "Alcar :",
+    "toolbar_compression_tooltip": "Nuttalë",
+    "toolbar_compression_instruction": "Panya i telco, i ahyanwë entuluva ómë i telco lehtaina",
+    "toolbar_compression_disabled": "Ëa insë JPG, WEBP ar AVIF emmaron",
+    "compression_panel_label": "Qualitë :",
+    "toolbar_levels_tooltip": "teltanne",
+    "toolbar_levels_instruction": "Cile stillo ar telco; care na lehta.",
+    "levels_gamma_panel_label": "Sundo :",
+    "levels_threshold_panel_label": "Telume :",
+    "levels_black_panel_label": "Morna punta :",
+    "levels_white_panel_label": "Lossea punta :",
+    "levels_black_slider_tooltip": "I pixelli lumbea lá sina nota tuluvar aiquenta morna.",
+    "levels_gamma_slider_tooltip": "Cala ar lumba i endëa lissi, ua panyaina morna ar ninqua.",
+    "levels_white_slider_tooltip": "I pixelli calina lá sina nota tuluvar aiquenta ninqua.",
+    "levels_threshold_slider_tooltip": "Ata-carë i emma na erya morna ar ninqua ve sina telume.",
+    "levels_auto_tooltip": "Yesta i cenina lambe ar panya autómatai i morna ar ninqua puntor an antalëa i mahtale",
+    "toolbar_shapes_tooltip": "Cantalë",
+    "toolbar_shapes_instruction": "Tanë an tirë cantalë; corniéli an renvinyata, lempinar forma an horya",
+    "shape_type_ellipse": "Cantalë landëa",
+    "shape_type_rectangle": "Cantalë",
+    "shape_type_rounded_rectangle": "Cantalë milya corniéli",
+    "shape_type_line": "Lempina",
+    "shape_type_arrow": "Lempina forma",
+    "shape_thickness_label": "Landa :",
+    "shape_color_label": "Quessir :",
+    "shape_color_tooltip": "Cilë i quessir lempina ar quanta",
+    "shape_fill_enabled_label": "Quanta",
+    "shape_pipette_tooltip": "Apsa i quessir i fána tancaina",
+    "toolbar_transparency_tooltip": "Calima",
+    "toolbar_transparency_instruction": "Tecë i quessë i carir calima",
+    "toolbar_transparency_disabled": "Ëa insë PNG, WebP, ICO ar AVIF i caimë",
+    "transparency_flood_panel_label": "Nórë",
+    "transparency_global_panel_label": "Ilúvë",
+    "transparency_tolerance_panel_label": "Apsenna :",
+    "transparency_type_slider_tooltip": "Nórë: carir calima i nórë i quessessë i tecaina. Ilúvë: apsenë ilya quesseli i caimessë ya quessë nó i tecaina",
+    "transparency_tolerance_slider_tooltip": "I orna apsenna nan lá i tecaina quessë"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Úma cilmë",
         "message": "Tirë cantalë tecielë yesta."
+      },
+      "no_shape": {
+        "title": "Úma cilmë",
+        "message": "Tirë cantalë yesta."
+      },
+      "no_transparency_work": {
+        "title": "Úma calima",
+        "message": "Tecë i quessë i carir calima yesta."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Russë",
         "message": "Úma laica i culienen faireva: {error}"
+      },
+      "compression_failed": {
+        "title": "Russë",
+        "message": "Ualë pole panya i nuttalë: {error}"
+      },
+      "levels_failed": {
+        "title": "Urco",
+        "message": "Ua panyaina i teltanne: {error}"
+      },
+      "shapes_failed": {
+        "title": "Russë",
+        "message": "Úma cantalë i fána: {error}"
+      },
+      "transparency_failed": {
+        "title": "Russë",
+        "message": "Úma carë i calima."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "fánar",
       "apply_button": "Cara",
       "color_depth_section": "Culuva nu",
-      "compression_section": "Pucta",
       "effects_section": "Carmar",
       "sharpness_section": "Laica",
-      "levels_section": "Morna ar lossea teltanne",
       "depth_unchanged": "La ontarea",
       "depth_32bit": "32 quetta (RGBA - culini ar faica)",
       "depth_24bit": "24 quetta (RGB - culini)",
       "depth_8bit": "8 quetta (PNG palma / JPEG mista harma)",
       "depth_1bit": "1 quetta (morna ar lossea)",
       "compression_enable": "Polda atapucta",
-      "compression_quality_label": "Qualitë : {value}/100",
       "effect_none": "Ua carma",
       "effect_grayscale": "Mista",
       "effect_sepia": "Varne",
-      "levels_none": "Ua ontarea",
-      "levels_threshold": "Telume (morna po lossea aina)",
-      "levels_advanced": "Anda teltanne (lumbi/menel/calma)",
-      "threshold_label": "Telume: {value}",
-      "black_point_label": "Morna punta: {value}",
-      "gamma_label": "Sundo (menel): {value}",
-      "white_point_label": "Lossea punta: {value}",
       "auto_levels_button": "Automaite mahtaina",
-      "open_viewer_button": "Atarta lë tirmo (verca)",
-      "compression_info": "I nihta ná ten YÚYO, WEBE ar AVIF coivierya",
-      "open_viewer_button_simple": "Atalta as i tíralyanen",
       "reset_button": "Envinyata",
       "preview_section": "Tíralya",
       "effect_invert": "Culuina vilya",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (sindarë + tercenya)",
       "image_mode_cmyk": "CMYK (tecil)",
       "image_mode_1": "1 (mori ar losse aica)",
-      "image_mode_p": "P (256 quessir palan)",
-      "transparency_section": "Calima",
-      "transparency_info": "Calima ná apsenë PNG, WebP, ICO ar AVIF i caimë",
-      "transparency_type_label": "Quetta :",
-      "transparency_type_flood": "Nórë",
-      "transparency_type_global": "Ilúvë",
-      "transparency_tolerance_label": "Apsenna :",
-      "transparency_viewer_title": "Calima cantaina",
-      "transparency_click_instruction": "Tecë i quessë i carir calima",
-      "transparency_undo": "Ava tecë vinya",
-      "transparency_redo": "Ómë",
-      "transparency_type_flood_tooltip": "Flood fill : carir calima i nórë i quessessë i tecaina",
-      "transparency_type_global_tooltip": "Calima ilúvëa : apsenë ilya quesseli i caimessë ya quessë nó i tecaina",
-      "transparency_apply": "Carë",
-      "transparency_skipped_warning": "{count} i-picture(i) passenwa — i-format umir coivie alasse. Nan tulien, esta converte nan PNG.",
-      "auto_levels_tooltip": "Cenin quanta parma ar autómatavë cemë morë ar ninquë rambor an úmea canwa.\nCen parma mi parma, anta vistar.",
-      "transparency_unsaved_title": "Carmir umbar únotë",
-      "transparency_unsaved_message": "I carmir sí umbar únotë i cuilë andavë. Manen meril carë?",
-      "transparency_unsaved_discard": "Patya únotë",
-      "transparency_unsaved_apply": "Nota ar patya",
-      "transparency_unsaved_cancel": "Avatyara"
+      "image_mode_p": "P (256 quessir palan)"
     },
     "levels_viewer": {
-      "title": "Atalta lestaron cene ihtesse",
-      "apply_current": "Care sina parma",
-      "apply_all": "Apsea nár i quenti telir telir",
       "black_pipette": "Morne pica stillor",
       "white_pipette": "Ninque pica stillor",
       "black_pipette_tooltip": "Apsa i pixel minya ná ná morë ramba. Etelehta: naiquë ná malya hácina!",
       "white_pipette_tooltip": "Apsa i pixel minya ná ná ninquë ramba. Etelehta: naiquë ná malya hácina!"
-    },
-    "compression_viewer": {
-      "title": "Rimba nasta"
     },
     "outliers": {
       "title": "Parmar ve unustal leryar",

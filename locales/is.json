@@ -66,7 +66,14 @@
     "batch_library": "Búa til bókasafn úr möppu(m)",
     "batch_recompress": "Endurþjappa CBZ-skrár á sjálfgefið stig",
     "validate_straighten": "Staðfesta réttingu",
-    "validate_text": "Nota texta"
+    "validate_text": "Nota texta",
+    "validate_shapes": "Staðfesta form",
+    "validate_transparency": "Staðfesta gagnsæi",
+    "cancel_crop": "Hætta við skurð",
+    "cancel_straighten": "Hætta við réttingu",
+    "cancel_text": "Hætta við texta",
+    "cancel_shapes": "Hætta við form",
+    "cancel_transparency": "Hætta við gagnsæi"
   },
   "tabs": {
     "mosaic": "Mósaík",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Mettun :",
     "toolbar_remove_colors_tooltip": "Fjarlæging lita",
     "toolbar_remove_colors_instruction": "Stilltu sleðann, breytingin tekur gildi þegar sleppt er",
-    "remove_colors_panel_label": "Styrkur :"
+    "remove_colors_panel_label": "Styrkur :",
+    "toolbar_compression_tooltip": "Þjöppun",
+    "toolbar_compression_instruction": "Stilltu skerjuna, breytingin á sér stað þegar sleppt er",
+    "toolbar_compression_disabled": "Aðeins í boði fyrir JPG-, WEBP- og AVIF-myndir",
+    "compression_panel_label": "Gæði :",
+    "toolbar_levels_tooltip": "Stig",
+    "toolbar_levels_instruction": "Pipettur eda sledar, breytingin tekur gildi vid slepp/smell",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Threskuldur :",
+    "levels_black_panel_label": "Svartur punktur :",
+    "levels_white_panel_label": "Hvítur punktur :",
+    "levels_black_slider_tooltip": "Oll pixlar dekkri en thetta gildi verda algjorlega svort",
+    "levels_gamma_slider_tooltip": "Lysir eda dokkvar midtona, an thess ad hafa ahrif a svart eda hvitt",
+    "levels_white_slider_tooltip": "Oll pixlar ljosari en thetta gildi verda algjorlega hvit",
+    "levels_threshold_slider_tooltip": "Breytir myndinni i hreint svarthvitt byggt a thessum threskuldi",
+    "levels_auto_tooltip": "Greinir birta sidu og stillir sjalfvirkt svart- og hvitpunkta til ad hamarka birtuskil",
+    "toolbar_shapes_tooltip": "Form",
+    "toolbar_shapes_instruction": "Dragðu til að teikna form, handföng til að breyta stærð, örvar til að færa",
+    "shape_type_ellipse": "Sporbaugur",
+    "shape_type_rectangle": "Rétthyrningur",
+    "shape_type_rounded_rectangle": "Rétthyrningur með rúnnuðum hornum",
+    "shape_type_line": "Lína",
+    "shape_type_arrow": "Ör",
+    "shape_thickness_label": "Þykkt:",
+    "shape_color_label": "Litur:",
+    "shape_color_tooltip": "Veldu lit útlínu og fyllingar",
+    "shape_fill_enabled_label": "Fylling",
+    "shape_pipette_tooltip": "Taktu lit af sýndri síðu",
+    "toolbar_transparency_tooltip": "Gagnsæi",
+    "toolbar_transparency_instruction": "Smelltu á litinn sem á að gera gagnsæjan",
+    "toolbar_transparency_disabled": "Aðeins í boði fyrir PNG-, WebP-, ICO- og AVIF-myndir",
+    "transparency_flood_panel_label": "Svæði",
+    "transparency_global_panel_label": "Víðtækt",
+    "transparency_tolerance_panel_label": "Vikmörk:",
+    "transparency_type_slider_tooltip": "Svæði: gerir samlita svæðið í kringum smellta pixilinn gagnsætt. Víðtækt: hefur áhrif á alla pixla myndarinnar sem eru litnálægt smellta litnum",
+    "transparency_tolerance_slider_tooltip": "Hámarks litafjarlægð sem samþykkt er í kringum smellta pixilinn"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Enginn texti",
         "message": "Sláðu fyrst inn texta í að minnsta kosti einn blokk."
+      },
+      "no_shape": {
+        "title": "Ekkert form teiknað",
+        "message": "Vinsamlegast teiknaðu að minnsta kosti eitt form fyrst."
+      },
+      "no_transparency_work": {
+        "title": "Ekkert gagnsæi hefur verið beitt",
+        "message": "Smelltu fyrst á lit sem á að gera gagnsæjan."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Villa",
         "message": "Ekki tókst að beita fjarlægingu lita: {error}"
+      },
+      "compression_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að beita þjöppun: {error}"
+      },
+      "levels_failed": {
+        "title": "Villa",
+        "message": "Ekki tokst ad beita stigum: {error}"
+      },
+      "shapes_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að beita formunum: {error}"
+      },
+      "transparency_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að beita gagnsæi."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "myndir",
       "apply_button": "Beita",
       "color_depth_section": "Litadýpt",
-      "compression_section": "Þjöppun",
       "effects_section": "Áhrif",
       "sharpness_section": "Skarpheiti",
-      "levels_section": "Svart/hvítt stig",
       "depth_unchanged": "Ekki breyta",
       "depth_32bit": "32 bitar (RGBA - litir + gegnsæi)",
       "depth_24bit": "24 bitar (RGB - litir)",
       "depth_8bit": "8 bitar (PNG litaspjald / JPEG graskali)",
       "depth_1bit": "1 biti (svart og hvítt)",
       "compression_enable": "Virkja endurþjöppun",
-      "compression_quality_label": "Gæði : {value}/100",
       "effect_none": "Engin áhrif",
       "effect_grayscale": "Grátónar",
       "effect_sepia": "Sepia",
-      "levels_none": "Engin aðlögun",
-      "levels_threshold": "Þröskuldur (hreint svart eða hvítt)",
-      "levels_advanced": "Ítarleg stig (skuggar/miðtónar/ljós)",
-      "threshold_label": "Þröskuldur: {value}",
-      "black_point_label": "Svartur punktur: {value}",
-      "gamma_label": "Gamma (miðtónar): {value}",
-      "white_point_label": "Hvítur punktur: {value}",
       "auto_levels_button": "Sjálfvirk stilling",
-      "open_viewer_button": "Stilla með skoðaranum (ráðlagt)",
-      "compression_info": "Þjöppun á aðeins við um JPG, WebP og AVIF myndir",
-      "open_viewer_button_simple": "Stilla með skoðara",
       "reset_button": "Endurstilla",
       "preview_section": "Forskoðun",
       "effect_invert": "Litaviðsnúningur",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (grátónar + gagnsæi)",
       "image_mode_cmyk": "CMYK (prentun)",
       "image_mode_1": "1 (hreint svarthvítt)",
-      "image_mode_p": "P (256 lita litaspjald)",
-      "transparency_section": "Gegnsæi",
-      "transparency_info": "Gegnsæi á aðeins við PNG, WebP, ICO og AVIF myndir",
-      "transparency_type_label": "Tegund :",
-      "transparency_type_flood": "Svæði",
-      "transparency_type_global": "Altækt",
-      "transparency_tolerance_label": "Þol :",
-      "transparency_viewer_title": "Stilling gegnsæis",
-      "transparency_click_instruction": "Smelltu á litinn sem á að gera gegnsæjan",
-      "transparency_undo": "Afturkalla síðasta smell",
-      "transparency_redo": "Endurtaka",
-      "transparency_type_flood_tooltip": "Flood fill : gerir svæðið með einlitum lit kringum smellta pixelinn gegnsætt",
-      "transparency_type_global_tooltip": "Altækt gegnsæi : hefur áhrif á alla pixla myndarinnar sem hafa lit líkan þeim smellta",
-      "transparency_apply": "Nota",
-      "transparency_skipped_warning": "{count} mynd(ir) sleppt — snið er ekki samhæft við gegnsæi. Til að hafa þær með skaltu umbreyta þeim í PNG fyrst.",
-      "auto_levels_tooltip": "Greinir hverja síðu og stillir sjálfkrafa svart- og hvítgildistig til að hámarka skerpu.\nTil að velja síðu fyrir síðu skaltu nota skoðarann.",
-      "transparency_unsaved_title": "Ónotuðar breytingar",
-      "transparency_unsaved_message": "Núverandi breytingar hafa ekki verið notaðar á myndina. Hvað viltu gera?",
-      "transparency_unsaved_discard": "Loka án þess að nota",
-      "transparency_unsaved_apply": "Nota og loka",
-      "transparency_unsaved_cancel": "Hætta við"
+      "image_mode_p": "P (256 lita litaspjald)"
     },
     "levels_viewer": {
-      "title": "Stillingar a stigum med dropatoli",
-      "apply_current": "Beita a þessa sidu",
-      "apply_all": "Nota á allar valdar síður",
       "black_pipette": "Svart punkts dropi",
       "white_pipette": "Hvit punkts dropi",
       "black_pipette_tooltip": "Smelltu á pixla sem ætti að vera alveg svartur. Aðvörun: það er auðvelt að fara of langt!",
       "white_pipette_tooltip": "Smelltu á pixla sem ætti að vera alveg hvítur. Aðvörun: það er auðvelt að fara of langt!"
-    },
-    "compression_viewer": {
-      "title": "Þjöppunarstilling"
     },
     "outliers": {
       "title": "Síður með óvenjulegum stærðum",

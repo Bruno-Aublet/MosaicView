@@ -66,7 +66,14 @@
     "batch_library": "Vytvoriť knižnicu z priečinka(ov)",
     "batch_recompress": "Znovu komprimovať súbory CBZ na predvolenú úroveň",
     "validate_straighten": "Potvrdiť vyrovnanie",
-    "validate_text": "Použiť text"
+    "validate_text": "Použiť text",
+    "validate_shapes": "Potvrdiť tvary",
+    "validate_transparency": "Potvrdiť priehľadnosť",
+    "cancel_crop": "Zrušiť orezanie",
+    "cancel_straighten": "Zrušiť narovnanie",
+    "cancel_text": "Zrušiť text",
+    "cancel_shapes": "Zrušiť tvary",
+    "cancel_transparency": "Zrušiť priehľadnosť"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Sýtosť :",
     "toolbar_remove_colors_tooltip": "Odstránenie farieb",
     "toolbar_remove_colors_instruction": "Upravte posuvník, úprava sa použije pri uvoľnení",
-    "remove_colors_panel_label": "Intenzita :"
+    "remove_colors_panel_label": "Intenzita :",
+    "toolbar_compression_tooltip": "Kompresia",
+    "toolbar_compression_instruction": "Upravte posuvník, úprava sa použije pri uvoľnení",
+    "toolbar_compression_disabled": "Dostupné iba pre obrázky JPG, WEBP a AVIF",
+    "compression_panel_label": "Kvalita :",
+    "toolbar_levels_tooltip": "Urovne",
+    "toolbar_levels_instruction": "Kvapkadla alebo posuvniky, uprava sa pouzije po uvolneni/kliknuti",
+    "levels_gamma_panel_label": "Gama :",
+    "levels_threshold_panel_label": "Prah :",
+    "levels_black_panel_label": "Cierny bod :",
+    "levels_white_panel_label": "Biely bod :",
+    "levels_black_slider_tooltip": "Vsetky pixely tmavsie ako tato hodnota sa stanu uplne cierne",
+    "levels_gamma_slider_tooltip": "Zosvetluje alebo stmavuje stredne tony, bez ovplyvnenia ciernej alebo bielej",
+    "levels_white_slider_tooltip": "Vsetky pixely svetlejsie ako tato hodnota sa stanu uplne biele",
+    "levels_threshold_slider_tooltip": "Prevedie obrazok na cistu ciernobielu podla tohto prahu",
+    "levels_auto_tooltip": "Analyzuje zobrazenu stranku a automaticky upravi cierny a biely bod na maximalizaciu kontrastu",
+    "toolbar_shapes_tooltip": "Tvary",
+    "toolbar_shapes_instruction": "Ťahaním nakreslíte tvar, úchyty na zmenu veľkosti, šípky na presun",
+    "shape_type_ellipse": "Elipsa",
+    "shape_type_rectangle": "Obdĺžnik",
+    "shape_type_rounded_rectangle": "Obdĺžnik so zaoblenými rohmi",
+    "shape_type_line": "Čiara",
+    "shape_type_arrow": "Šípka",
+    "shape_thickness_label": "Hrúbka:",
+    "shape_color_label": "Farba:",
+    "shape_color_tooltip": "Vyberte farbu obrysu a výplne",
+    "shape_fill_enabled_label": "Výplň",
+    "shape_pipette_tooltip": "Načítať farbu zo zobrazenej stránky",
+    "toolbar_transparency_tooltip": "Priehľadnosť",
+    "toolbar_transparency_instruction": "Kliknite na farbu, ktorá sa má stať priehľadnou",
+    "toolbar_transparency_disabled": "K dispozícii iba pre obrázky PNG, WebP, ICO a AVIF",
+    "transparency_flood_panel_label": "Oblasť",
+    "transparency_global_panel_label": "Globálne",
+    "transparency_tolerance_panel_label": "Tolerancia:",
+    "transparency_type_slider_tooltip": "Oblasť: spraví priehľadnou súvislú farebnú oblasť okolo kliknutého pixelu. Globálne: ovplyvní všetky pixely obrázka, ktorých farba je blízka kliknutej",
+    "transparency_tolerance_slider_tooltip": "Maximálna prípustná farebná vzdialenosť okolo kliknutého pixelu"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Žiadny text",
         "message": "Najprv zadajte text aspoň do jedného bloku."
+      },
+      "no_shape": {
+        "title": "Nie je nakreslený žiadny tvar",
+        "message": "Najprv nakreslite aspoň jeden tvar."
+      },
+      "no_transparency_work": {
+        "title": "Nebola použitá žiadna priehľadnosť",
+        "message": "Najskôr kliknite na farbu, ktorú chcete urobiť priehľadnou."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Chyba",
         "message": "Odstránenie farieb sa nepodarilo použiť: {error}"
+      },
+      "compression_failed": {
+        "title": "Chyba",
+        "message": "Kompresiu sa nepodarilo použiť: {error}"
+      },
+      "levels_failed": {
+        "title": "Chyba",
+        "message": "Urovne sa nepodarilo pouzit: {error}"
+      },
+      "shapes_failed": {
+        "title": "Chyba",
+        "message": "Tvary sa nepodarilo použiť: {error}"
+      },
+      "transparency_failed": {
+        "title": "Chyba",
+        "message": "Priehľadnosť sa nepodarilo použiť."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "obrazy",
       "apply_button": "Pouzit",
       "color_depth_section": "Farebna hlbka",
-      "compression_section": "Kompresia",
       "effects_section": "Efekty",
       "sharpness_section": "Ostrost",
-      "levels_section": "Urovne cierna/biela",
       "depth_unchanged": "Nezmenit",
       "depth_32bit": "32 bitov (RGBA - farby + priehladnost)",
       "depth_24bit": "24 bitov (RGB - farby)",
       "depth_8bit": "8 bitov (paleta PNG / stupne sedej JPEG)",
       "depth_1bit": "1 bit (ciernobiely)",
       "compression_enable": "Povolit opetovnu kompresiu",
-      "compression_quality_label": "Kvalita : {value}/100",
       "effect_none": "Ziadny efekt",
       "effect_grayscale": "Odtiene sedej",
       "effect_sepia": "Sepia",
-      "levels_none": "Bez upravy",
-      "levels_threshold": "Prah (cista cierna alebo biela)",
-      "levels_advanced": "Pokrocile urovne (tiene/stredne tony/svetla)",
-      "threshold_label": "Prah: {value}",
-      "black_point_label": "Cierny bod: {value}",
-      "gamma_label": "Gama (stredne tony): {value}",
-      "white_point_label": "Biely bod: {value}",
       "auto_levels_button": "Automatické nastavenie",
-      "open_viewer_button": "Upraviť s prehliadačom (odporúčané)",
-      "compression_info": "Kompresia sa vzťahuje len na obrázky JPG, WebP a AVIF",
-      "open_viewer_button_simple": "Upraviť pomocou prehliadača",
       "reset_button": "Resetovať",
       "preview_section": "Náhľad",
       "effect_invert": "Inverzia farieb",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (odtiene sivej + priehľadnosť)",
       "image_mode_cmyk": "CMYK (tlač)",
       "image_mode_1": "1 (čisto čiernobiely)",
-      "image_mode_p": "P (paleta 256 farieb)",
-      "transparency_section": "Priehľadnosť",
-      "transparency_info": "Priehľadnosť sa vzťahuje iba na obrázky PNG, WebP, ICO a AVIF",
-      "transparency_type_label": "Typ :",
-      "transparency_type_flood": "Oblasť",
-      "transparency_type_global": "Globálny",
-      "transparency_tolerance_label": "Tolerancia :",
-      "transparency_viewer_title": "Úprava priehľadnosti",
-      "transparency_click_instruction": "Kliknite na farbu, ktorú chcete zpriesvitniť",
-      "transparency_undo": "Vrátiť posledné kliknutie",
-      "transparency_redo": "Opakovať",
-      "transparency_type_flood_tooltip": "Flood fill : zpriesvitní oblasť s rovnomernou farbou okolo kliknutého pixelu",
-      "transparency_type_global_tooltip": "Globálna priehľadnosť : ovplyvňuje všetky pixely v obrázku, ktorých farba sa blíži kliknutej",
-      "transparency_apply": "Použiť",
-      "transparency_skipped_warning": "{count} obrázok/ov preskočený(ch) — formát nie je kompatibilný s priehľadnosťou. Ak ich chcete zahrnúť, najprv ich konvertujte do PNG.",
-      "auto_levels_tooltip": "Analyzuje každú stránku a automaticky upraví úrovne čiernej a bielej pre maximálny kontrast.\nPre výber stránku po stránke použite prehliadač.",
-      "transparency_unsaved_title": "Nepoužité zmeny",
-      "transparency_unsaved_message": "Aktuálne zmeny neboli na obrázok použité. Čo chcete urobiť?",
-      "transparency_unsaved_discard": "Zavrieť bez použitia",
-      "transparency_unsaved_apply": "Použiť a zavrieť",
-      "transparency_unsaved_cancel": "Zrušiť"
+      "image_mode_p": "P (paleta 256 farieb)"
     },
     "levels_viewer": {
-      "title": "Uprava urovni pomocou kvapkadla",
-      "apply_current": "Pouzit na tuto stranku",
-      "apply_all": "Použiť na všetky vybrané stránky",
       "black_pipette": "Pipeta cierneho bodu",
       "white_pipette": "Pipeta bieleho bodu",
       "black_pipette_tooltip": "Kliknite na pixel, ktorý by mal byť úplne čierny. Pozor: je ľahké to prehnať!",
       "white_pipette_tooltip": "Kliknite na pixel, ktorý by mal byť úplne biely. Pozor: je ľahké to prehnať!"
-    },
-    "compression_viewer": {
-      "title": "Úprava kompresie"
     },
     "outliers": {
       "title": "Stránky s neobvyklými rozmermi",

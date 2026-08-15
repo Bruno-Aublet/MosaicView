@@ -66,7 +66,14 @@
     "batch_library": "Caro i·thambe o·i·taur(in)",
     "batch_recompress": "Athrenna cened CBZ na i modh hen pen",
     "validate_straighten": "Orchal i Drenarn",
-    "validate_text": "Bâd parth"
+    "validate_text": "Bâd parth",
+    "validate_shapes": "Orchal i sell",
+    "validate_transparency": "Orchal i rhimp",
+    "cancel_crop": "Haedh i orchad",
+    "cancel_straighten": "Haedh i thang",
+    "cancel_text": "Haedh i thelio",
+    "cancel_shapes": "Haedh i sell",
+    "cancel_transparency": "Haedh i rhimp"
   },
   "tabs": {
     "mosaic": "Mosaig",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Gwathren :",
     "toolbar_remove_colors_tooltip": "Calad hethro",
     "toolbar_remove_colors_instruction": "Anno na chorda; caro na dhannad.",
-    "remove_colors_panel_label": "Thîr :"
+    "remove_colors_panel_label": "Thîr :",
+    "toolbar_compression_tooltip": "Nudh",
+    "toolbar_compression_instruction": "Aphado i thand, an orthertha revia nu lehtad",
+    "toolbar_compression_disabled": "Anann i randir JPG, WEBP a AVIF eriol",
+    "compression_panel_label": "Caun :",
+    "toolbar_levels_tooltip": "Lin",
+    "toolbar_levels_instruction": "Cher pica pe stiliant; caro na dhannad.",
+    "levels_gamma_panel_label": "Sund :",
+    "levels_threshold_panel_label": "Du :",
+    "levels_black_panel_label": "Peg morn :",
+    "levels_white_panel_label": "Peg nimp :",
+    "levels_black_slider_tooltip": "Ah dernir tolo morn nu ceven hi caro Ú-vant morn.",
+    "levels_gamma_slider_tooltip": "Anno ah caro na menel; ú-agor morn a nimp.",
+    "levels_white_slider_tooltip": "Ah dernir tolo nimp nu ceven hi caro Ú-vant nimp.",
+    "levels_threshold_slider_tooltip": "Aphado i lin peg edwen a peg nimp mi dû ceven.",
+    "levels_auto_tooltip": "Cened i alph in tira; orthertha peg morn a peg nimp an orchared i naered.",
+    "toolbar_shapes_tooltip": "Sell",
+    "toolbar_shapes_instruction": "Tiro an tirio sell; berain an admerio lend, renarn forn an drevedio",
+    "shape_type_ellipse": "Côr landa",
+    "shape_type_rectangle": "Sell",
+    "shape_type_rounded_rectangle": "Sell berain gôr",
+    "shape_type_line": "Renarn",
+    "shape_type_arrow": "Renarn forn",
+    "shape_thickness_label": "Landa :",
+    "shape_color_label": "Chalich :",
+    "shape_color_tooltip": "Ces i chalich i renarn a i chalich bain",
+    "shape_fill_enabled_label": "Chalich bain",
+    "shape_pipette_tooltip": "Pedo i chalich i randir hen",
+    "toolbar_transparency_tooltip": "Rhimp",
+    "toolbar_transparency_instruction": "Nedhoro i maen a veninnen rhimp",
+    "toolbar_transparency_disabled": "Anann i randir PNG, WebP, ICO a AVIF eriol",
+    "transparency_flood_panel_label": "Ambar",
+    "transparency_global_panel_label": "Govaded",
+    "transparency_tolerance_panel_label": "Godreb :",
+    "transparency_type_slider_tooltip": "Ambar : rhimp i maen unig a hollo i pixsel a nedhorod. Govaded : pên ar holl bixeli i randir a maen agos ir pixsel a nedhorod",
+    "transparency_tolerance_slider_tooltip": "I bell vaen bellenc a berian hi hollo i pixsel a nedhorod"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Ú-thelegol",
         "message": "Anno, tirio parth sui ben."
+      },
+      "no_shape": {
+        "title": "Ú-thelegol",
+        "message": "Anno, tirio sell sui ben."
+      },
+      "no_transparency_work": {
+        "title": "Ú-i rhimp",
+        "message": "Anno, nedhoro i maen a veninnen rhimp min."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Aew",
         "message": "Ú-eston laeg i chalad hethro: {error}"
+      },
+      "compression_failed": {
+        "title": "Aew",
+        "message": "Ú-orthannen i nudh: {error}"
+      },
+      "levels_failed": {
+        "title": "Raul",
+        "message": "Ú aphado i lin: {error}"
+      },
+      "shapes_failed": {
+        "title": "Aew",
+        "message": "Ú-eston sell i randir: {error}"
+      },
+      "transparency_failed": {
+        "title": "Aew",
+        "message": "Ú-eston i rhimp."
       }
     },
     "info": {
@@ -979,75 +1045,36 @@
       "word_images": "rendir",
       "apply_button": "Ortho",
       "color_depth_section": "Nûd i culu",
-      "compression_section": "Thingol",
       "effects_section": "Goeliannath",
       "sharpness_section": "Laeg",
-      "levels_section": "Lîn morn a nimp",
       "depth_unchanged": "Avo aðago",
       "depth_32bit": "32 parf (RGBA - cuil a fael)",
       "depth_24bit": "24 parf (RGB - cuil)",
       "depth_8bit": "8 parf (PNG palad / JPEG thind mith)",
       "depth_1bit": "1 parf (morn a nimp)",
       "compression_enable": "Ortheri edinor athingol",
-      "compression_quality_label": "Caun : {value}/100",
       "effect_none": "Ú goeliannath",
       "effect_grayscale": "Mith",
       "effect_sepia": "Baran",
-      "levels_none": "Ú aðagobith",
-      "levels_threshold": "Dû (morn peth nimp pirin)",
-      "levels_advanced": "Lîn orthoben (gwathui/menel/calass)",
-      "threshold_label": "Dû: {value}",
-      "black_point_label": "Peg morn: {value}",
-      "gamma_label": "Sund (menel): {value}",
-      "white_point_label": "Peg nimp: {value}",
       "auto_levels_button": "Cemmed auto",
-      "open_viewer_button": "Tangado chen i thirio (orchal)",
-      "compression_info": "I press peda i YÚYO, WEBE a AVIF baradrim ben",
-      "open_viewer_button_simple": "Orthad in trenarn",
       "reset_button": "Adferia",
       "preview_section": "Tirnen",
       "effect_invert": "Certh i-thîn",
       "preview_warning": "I prestannen dar peded ned i daer ben",
       "image_mode_section": "Gwedh i ven",
-      "image_mode_rgb": "RGB (lith)",
-      "image_mode_rgba": "RGBA (lith + helch)",
+      "image_mode_rgb": "RGB (chalich)",
+      "image_mode_rgba": "RGBA (chalich + helch)",
       "image_mode_l": "L (mith gwaen)",
       "image_mode_la": "LA (mith gwaen + helch)",
       "image_mode_cmyk": "CMYK (parf)",
       "image_mode_1": "1 (morn a nim laeg)",
-      "image_mode_p": "P (256 lith balan)",
-      "transparency_section": "Rhimp",
-      "transparency_info": "Rhimp pên i randir PNG, WebP, ICO a AVIF",
-      "transparency_type_label": "Dôl :",
-      "transparency_type_flood": "Ambar",
-      "transparency_type_global": "Govaded",
-      "transparency_tolerance_label": "Godreb :",
-      "transparency_viewer_title": "Atheg rhimp",
-      "transparency_click_instruction": "Nedhoro i maen a veninnen rhimp",
-      "transparency_undo": "Avedui i nedhorad diwettha",
-      "transparency_redo": "Adrevedui",
-      "transparency_type_flood_tooltip": "Ambar : rhimp i maen unig a hollo i pixsel a nedhorod (dan i thangail)",
-      "transparency_type_global_tooltip": "Rhimp govaded : pên ar holl bixeli i randir a maen agos ir pixsel a nedhorod",
-      "transparency_apply": "Orthertha",
-      "transparency_skipped_warning": "{count} randir(rin) ortheri — i-thîr ui veleth vâr. An boe chebin, esta deri nan PNG.",
-      "auto_levels_tooltip": "Cenir pob peth ah athrenna i lend morn a gwen an tregad i thregad veleg.\nMi eglerio peth ha peth, na i lû istol.",
-      "transparency_unsaved_title": "Cenedhin erui",
-      "transparency_unsaved_message": "Pedich henion ú-ortherthant i gûl. Manen nidh careg?",
-      "transparency_unsaved_discard": "Tolo u-ortherthas",
-      "transparency_unsaved_apply": "Orthertha a tolo",
-      "transparency_unsaved_cancel": "Haedh"
+      "image_mode_p": "P (256 chalich balan)"
     },
     "levels_viewer": {
-      "title": "Adleg levain ah ithes",
-      "apply_current": "Hedo ar chen parf",
-      "apply_all": "Aphado anain echuidh pain enair",
       "black_pipette": "Morn pica stiliant",
       "white_pipette": "Nimp pica stiliant",
       "black_pipette_tooltip": "Pedo i pixel min bí baw morn gwathra. Aníro: sui ú-vant achaded!",
       "white_pipette_tooltip": "Pedo i pixel min bí baw ninn gwathra. Aníro: sui ú-vant achaded!"
-    },
-    "compression_viewer": {
-      "title": "Prestanneth nestadren"
     },
     "outliers": {
       "title": "Tîr chen edregyrn annui",
@@ -1163,7 +1190,7 @@
       "bold_btn": "T",
       "italic_btn": "I",
       "underline_btn": "N",
-      "pick_color_title": "Egor calen i parth"
+      "pick_color_title": "Ces i chalich parth"
     },
     "batch_cb7": {
       "select_directory_title": "Egor i randir o CB7 faif",

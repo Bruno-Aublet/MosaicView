@@ -66,7 +66,14 @@
     "batch_library": "Δημιουργία βιβλιοθήκης από τον/τους φάκελο(ους)",
     "batch_recompress": "Επανασυμπίεση αρχείων CBZ στο προεπιλεγμένο επίπεδο",
     "validate_straighten": "Επιβεβαίωση ισιώματος",
-    "validate_text": "Εφαρμογή κειμένου"
+    "validate_text": "Εφαρμογή κειμένου",
+    "validate_shapes": "Επιβεβαίωση σχημάτων",
+    "validate_transparency": "Επιβεβαίωση διαφάνειας",
+    "cancel_crop": "Ακύρωση περικοπής",
+    "cancel_straighten": "Ακύρωση ισιώματος",
+    "cancel_text": "Ακύρωση κειμένου",
+    "cancel_shapes": "Ακύρωση σχημάτων",
+    "cancel_transparency": "Ακύρωση διαφάνειας"
   },
   "tabs": {
     "mosaic": "Μωσαϊκό",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Κορεσμός :",
     "toolbar_remove_colors_tooltip": "Αφαίρεση χρωμάτων",
     "toolbar_remove_colors_instruction": "Ρυθμίστε τον ολισθητή, η προσαρμογή εφαρμόζεται στην απελευθέρωση",
-    "remove_colors_panel_label": "Ένταση :"
+    "remove_colors_panel_label": "Ένταση :",
+    "toolbar_compression_tooltip": "Συμπίεση",
+    "toolbar_compression_instruction": "Ρυθμίστε τον ολισθητή, η προσαρμογή εφαρμόζεται κατά την απελευθέρωση",
+    "toolbar_compression_disabled": "Διαθέσιμο μόνο για εικόνες JPG, WEBP και AVIF",
+    "compression_panel_label": "Ποιότητα :",
+    "toolbar_levels_tooltip": "Epipeda",
+    "toolbar_levels_instruction": "Stagonometra i olisthites, i prosarmogi efarmozetai kata tin apeleftherosi/to klik",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Orio :",
+    "levels_black_panel_label": "Simio mayrou :",
+    "levels_white_panel_label": "Simio lefkou :",
+    "levels_black_slider_tooltip": "Ola ta pixel pio skoura apo afti tin timi ginontai entelos mavra",
+    "levels_gamma_slider_tooltip": "Fotizei i skotinievei tous mesous tonous, choris na epireazei to mavro i to lefko",
+    "levels_white_slider_tooltip": "Ola ta pixel pio fota apo afti tin timi ginontai entelos lefka",
+    "levels_threshold_slider_tooltip": "Metatrepei tin eikona se katharo asprómavro me vasi afto to orio",
+    "levels_auto_tooltip": "Analyei tin emfanizomeni selida kai prosarmozei aftomata ta simeia mavrou kai lefkou gia na megistopoiisei tin antithesi",
+    "toolbar_shapes_tooltip": "Σχήματα",
+    "toolbar_shapes_instruction": "Σύρετε για να σχεδιάσετε ένα σχήμα, λαβές για αλλαγή μεγέθους, βέλη για μετακίνηση",
+    "shape_type_ellipse": "Έλλειψη",
+    "shape_type_rectangle": "Ορθογώνιο",
+    "shape_type_rounded_rectangle": "Ορθογώνιο με στρογγυλεμένες γωνίες",
+    "shape_type_line": "Γραμμή",
+    "shape_type_arrow": "Βέλος",
+    "shape_thickness_label": "Πάχος:",
+    "shape_color_label": "Χρώμα:",
+    "shape_color_tooltip": "Επιλογή χρώματος περιγράμματος και γεμίσματος",
+    "shape_fill_enabled_label": "Γέμισμα",
+    "shape_pipette_tooltip": "Λήψη χρώματος από την εμφανιζόμενη σελίδα",
+    "toolbar_transparency_tooltip": "Διαφάνεια",
+    "toolbar_transparency_instruction": "Κάντε κλικ στο χρώμα που θέλετε να γίνει διάφανο",
+    "toolbar_transparency_disabled": "Διαθέσιμο μόνο για εικόνες PNG, WebP, ICO και AVIF",
+    "transparency_flood_panel_label": "Περιοχή",
+    "transparency_global_panel_label": "Καθολικά",
+    "transparency_tolerance_panel_label": "Ανοχή:",
+    "transparency_type_slider_tooltip": "Περιοχή: κάνει διάφανη την ομοιόμορφη χρωματική περιοχή γύρω από το εικονοστοιχείο που κάνατε κλικ. Καθολικά: επηρεάζει όλα τα εικονοστοιχεία της εικόνας των οποίων το χρώμα είναι κοντά σε αυτό που κάνατε κλικ",
+    "transparency_tolerance_slider_tooltip": "Μέγιστη αποδεκτή χρωματική απόσταση γύρω από το εικονοστοιχείο που κάνατε κλικ"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Δεν υπάρχει κείμενο",
         "message": "Πληκτρολογήστε πρώτα κείμενο σε τουλάχιστον ένα μπλοκ."
+      },
+      "no_shape": {
+        "title": "Δεν έχει σχεδιαστεί σχήμα",
+        "message": "Σχεδιάστε πρώτα τουλάχιστον ένα σχήμα."
+      },
+      "no_transparency_work": {
+        "title": "Δεν εφαρμόστηκε διαφάνεια",
+        "message": "Κάντε πρώτα κλικ σε ένα χρώμα για να το κάνετε διάφανο."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Σφάλμα",
         "message": "Δεν ήταν δυνατή η εφαρμογή της αφαίρεσης χρωμάτων: {error}"
+      },
+      "compression_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η εφαρμογή της συμπίεσης: {error}"
+      },
+      "levels_failed": {
+        "title": "Sfalma",
+        "message": "Adynati i efarmogi ton epipedon: {error}"
+      },
+      "shapes_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η εφαρμογή των σχημάτων: {error}"
+      },
+      "transparency_failed": {
+        "title": "Σφάλμα",
+        "message": "Δεν ήταν δυνατή η εφαρμογή διαφάνειας."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "eikones",
       "apply_button": "Epharmogi",
       "color_depth_section": "Vathos chromatos",
-      "compression_section": "Sympiesי",
       "effects_section": "Efarmoge",
       "sharpness_section": "Oksytita",
-      "levels_section": "Epipeda mayrou/lefkou",
       "depth_unchanged": "Min allaxi",
       "depth_32bit": "32 bits (RGBA - chromata + diafaneia)",
       "depth_24bit": "24 bits (RGB - chromata)",
       "depth_8bit": "8 bit (paleta PNG / apostaseis tou gkrizou JPEG)",
       "depth_1bit": "1 bit (mayroprosopos)",
       "compression_enable": "Energopoiisi episyenesis",
-      "compression_quality_label": "Ποιότητα : {value}/100",
       "effect_none": "Kanena efarmogi",
       "effect_grayscale": "Apostaseis tou gkrizou",
       "effect_sepia": "Sepia",
-      "levels_none": "Kamia rithmisi",
-      "levels_threshold": "Orio (katharo mayro i lefko)",
-      "levels_advanced": "Proigmena epipeda (skies/mesoi tonoi/fota)",
-      "threshold_label": "Orio: {value}",
-      "black_point_label": "Simio mayrou: {value}",
-      "gamma_label": "Gamma (mesoi tonoi): {value}",
-      "white_point_label": "Simio lefkou: {value}",
       "auto_levels_button": "Αυτόματη ρύθμιση",
-      "open_viewer_button": "Προσαρμογή με το πρόγραμμα προβολής (συνιστάται)",
-      "compression_info": "Η συμπίεση εφαρμόζεται μόνο σε εικόνες JPG, WebP και AVIF",
-      "open_viewer_button_simple": "Προσαρμογή με την προβολή",
       "reset_button": "Επαναφορά",
       "preview_section": "Προεπισκόπηση",
       "effect_invert": "Αντιστροφή χρωμάτων",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (διαβαθμίσεις του γκρι + διαφάνεια)",
       "image_mode_cmyk": "CMYK (εκτύπωση)",
       "image_mode_1": "1 (καθαρό ασπρόμαυρο)",
-      "image_mode_p": "P (παλέτα 256 χρωμάτων)",
-      "transparency_section": "Διαφάνεια",
-      "transparency_info": "Η διαφάνεια ισχύει μόνο για εικόνες PNG, WebP, ICO και AVIF",
-      "transparency_type_label": "Τύπος :",
-      "transparency_type_flood": "Ζώνη",
-      "transparency_type_global": "Καθολικό",
-      "transparency_tolerance_label": "Ανοχή :",
-      "transparency_viewer_title": "Ρύθμιση διαφάνειας",
-      "transparency_click_instruction": "Κάντε κλικ στο χρώμα που θέλετε να γίνει διαφανές",
-      "transparency_undo": "Αναίρεση τελευταίου κλικ",
-      "transparency_redo": "Επανάληψη",
-      "transparency_type_flood_tooltip": "Flood fill : κάνει διαφανή την ομοιόχρωμη περιοχή γύρω από το pixel που κλικάρατε",
-      "transparency_type_global_tooltip": "Καθολική διαφάνεια : επηρεάζει όλα τα pixels της εικόνας που έχουν παρόμοιο χρώμα με αυτό που κλικάρατε",
-      "transparency_apply": "Εφαρμογή",
-      "transparency_skipped_warning": "{count} εικόνα(ες) παρακάμφθηκε(αν) — η μορφή δεν είναι συμβατή με τη διαφάνεια. Για να τις συμπεριλάβετε, μετατρέψτε τις πρώτα σε PNG.",
-      "auto_levels_tooltip": "Αναλύει κάθε σελίδα και ρυθμίζει αυτόματα τα επίπεδα μαύρου και λευκού για μέγιστη αντίθεση.\nΓια επιλογή σελίδα προς σελίδα, χρησιμοποιήστε τον προβολέα.",
-      "transparency_unsaved_title": "Μη εφαρμοσμένες αλλαγές",
-      "transparency_unsaved_message": "Οι τρέχουσες αλλαγές δεν έχουν εφαρμοστεί στην εικόνα. Τι θέλετε να κάνετε;",
-      "transparency_unsaved_discard": "Κλείσιμο χωρίς εφαρμογή",
-      "transparency_unsaved_apply": "Εφαρμογή και κλείσιμο",
-      "transparency_unsaved_cancel": "Ακύρωση"
+      "image_mode_p": "P (παλέτα 256 χρωμάτων)"
     },
     "levels_viewer": {
-      "title": "Προσαρμογή επιπέδων με σταγονόμετρο",
-      "apply_current": "Εφαρμογή σε αυτή τη σελίδα",
-      "apply_all": "Εφαρμογή σε όλες τις επιλεγμένες σελίδες",
       "black_pipette": "Πιπέτα μαύρου σημείου",
       "white_pipette": "Πιπέτα λευκού σημείου",
       "black_pipette_tooltip": "Κάντε κλικ σε ένα εικονοστοιχείο που θα έπρεπε να είναι εντελώς μαύρο. Προσοχή: είναι εύκολο να το παρακάνετε!",
       "white_pipette_tooltip": "Κάντε κλικ σε ένα εικονοστοιχείο που θα έπρεπε να είναι εντελώς λευκό. Προσοχή: είναι εύκολο να το παρακάνετε!"
-    },
-    "compression_viewer": {
-      "title": "Ρύθμιση συμπίεσης"
     },
     "outliers": {
       "title": "Σελίδες με ασυνήθιστες διαστάσεις",

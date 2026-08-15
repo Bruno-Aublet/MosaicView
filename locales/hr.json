@@ -66,7 +66,14 @@
     "batch_library": "Stvori biblioteku iz mape(a)",
     "batch_recompress": "Ponovno komprimiraj CBZ datoteke na zadanu razinu",
     "validate_straighten": "Potvrdi ravnanje",
-    "validate_text": "Primijeni tekst"
+    "validate_text": "Primijeni tekst",
+    "validate_shapes": "Potvrdi oblike",
+    "validate_transparency": "Potvrdi prozirnost",
+    "cancel_crop": "Otkaži izrezivanje",
+    "cancel_straighten": "Otkaži ispravljanje",
+    "cancel_text": "Otkaži tekst",
+    "cancel_shapes": "Otkaži oblike",
+    "cancel_transparency": "Otkaži prozirnost"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Zasićenost :",
     "toolbar_remove_colors_tooltip": "Uklanjanje boja",
     "toolbar_remove_colors_instruction": "Prilagodite klizač, prilagodba se primjenjuje pri otpuštanju",
-    "remove_colors_panel_label": "Intenzitet :"
+    "remove_colors_panel_label": "Intenzitet :",
+    "toolbar_compression_tooltip": "Sažimanje",
+    "toolbar_compression_instruction": "Podesite klizač, prilagodba se primjenjuje pri otpuštanju",
+    "toolbar_compression_disabled": "Dostupno samo za JPG, WEBP i AVIF slike",
+    "compression_panel_label": "Kvaliteta :",
+    "toolbar_levels_tooltip": "Razine",
+    "toolbar_levels_instruction": "Pipete ili klizaci, prilagodba se primjenjuje pri otpustanju/kliku",
+    "levels_gamma_panel_label": "Gama :",
+    "levels_threshold_panel_label": "Prag :",
+    "levels_black_panel_label": "Crna tocka :",
+    "levels_white_panel_label": "Bijela tocka :",
+    "levels_black_slider_tooltip": "Svi pikseli tamniji od ove vrijednosti postaju potpuno crni",
+    "levels_gamma_slider_tooltip": "Posvjetljuje ili zatamnjuje srednje tonove, bez utjecaja na crnu ili bijelu",
+    "levels_white_slider_tooltip": "Svi pikseli svjetliji od ove vrijednosti postaju potpuno bijeli",
+    "levels_threshold_slider_tooltip": "Pretvara sliku u cisto crno-bijelo na temelju ovog praga",
+    "levels_auto_tooltip": "Analizira prikazanu stranicu i automatski prilagodava crnu i bijelu tocku radi maksimiziranja kontrasta",
+    "toolbar_shapes_tooltip": "Oblici",
+    "toolbar_shapes_instruction": "Povucite za crtanje oblika, ručke za promjenu veličine, strelice za pomicanje",
+    "shape_type_ellipse": "Elipsa",
+    "shape_type_rectangle": "Pravokutnik",
+    "shape_type_rounded_rectangle": "Pravokutnik zaobljenih kutova",
+    "shape_type_line": "Linija",
+    "shape_type_arrow": "Strelica",
+    "shape_thickness_label": "Debljina:",
+    "shape_color_label": "Boja:",
+    "shape_color_tooltip": "Odaberite boju obrisa i ispune",
+    "shape_fill_enabled_label": "Ispuna",
+    "shape_pipette_tooltip": "Uzmi boju s prikazane stranice",
+    "toolbar_transparency_tooltip": "Prozirnost",
+    "toolbar_transparency_instruction": "Kliknite boju koju želite učiniti prozirnom",
+    "toolbar_transparency_disabled": "Dostupno samo za slike PNG, WebP, ICO i AVIF",
+    "transparency_flood_panel_label": "Područje",
+    "transparency_global_panel_label": "Globalno",
+    "transparency_tolerance_panel_label": "Tolerancija:",
+    "transparency_type_slider_tooltip": "Područje: čini prozirnim jedinstveno obojeno područje oko kliknutog piksela. Globalno: utječe na sve piksele slike čija je boja bliska kliknutoj",
+    "transparency_tolerance_slider_tooltip": "Maksimalna prihvaćena udaljenost boje oko kliknutog piksela"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Nema teksta",
         "message": "Prvo unesite tekst u barem jedan blok."
+      },
+      "no_shape": {
+        "title": "Nema nacrtanog oblika",
+        "message": "Najprije nacrtajte barem jedan oblik."
+      },
+      "no_transparency_work": {
+        "title": "Nije primijenjena prozirnost",
+        "message": "Najprije kliknite boju koju želite učiniti prozirnom."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Pogreška",
         "message": "Uklanjanje boja nije bilo moguće primijeniti: {error}"
+      },
+      "compression_failed": {
+        "title": "Pogreška",
+        "message": "Sažimanje nije bilo moguće primijeniti: {error}"
+      },
+      "levels_failed": {
+        "title": "Greska",
+        "message": "Razine nije moguce primijeniti: {error}"
+      },
+      "shapes_failed": {
+        "title": "Pogreška",
+        "message": "Oblici nisu mogli biti primijenjeni: {error}"
+      },
+      "transparency_failed": {
+        "title": "Pogreška",
+        "message": "Prozirnost nije bilo moguće primijeniti."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "slike",
       "apply_button": "Primijeni",
       "color_depth_section": "Dubina boje",
-      "compression_section": "Kompresija",
       "effects_section": "Efekti",
       "sharpness_section": "Ostrina",
-      "levels_section": "Razine crno/bijelo",
       "depth_unchanged": "Ne mijenjaj",
       "depth_32bit": "32 bita (RGBA - boje + prozirnost)",
       "depth_24bit": "24 bita (RGB - boje)",
       "depth_8bit": "8 bita (paleta PNG / sive nijanse JPEG)",
       "depth_1bit": "1 bit (crno-bijelo)",
       "compression_enable": "Omoguci ponovnu kompresiju",
-      "compression_quality_label": "Kvaliteta : {value}/100",
       "effect_none": "Bez efekta",
       "effect_grayscale": "Nijanse sive",
       "effect_sepia": "Sepija",
-      "levels_none": "Bez prilagodbe",
-      "levels_threshold": "Prag (cista crna ili bijela)",
-      "levels_advanced": "Napredne razine (sjenke/srednji tonovi/svjetlina)",
-      "threshold_label": "Prag: {value}",
-      "black_point_label": "Crna tocka: {value}",
-      "gamma_label": "Gama (srednji tonovi): {value}",
-      "white_point_label": "Bijela tocka: {value}",
       "auto_levels_button": "Automatsko podešavanje",
-      "open_viewer_button": "Prilagodi s preglednikom (preporučeno)",
-      "compression_info": "Kompresija se primjenjuje samo na JPG, WebP i AVIF slike",
-      "open_viewer_button_simple": "Prilagodi s preglednikom",
       "reset_button": "Resetiraj",
       "preview_section": "Pregled",
       "effect_invert": "Inverzija boja",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (nijanse sive + prozirnost)",
       "image_mode_cmyk": "CMYK (tisak)",
       "image_mode_1": "1 (čisti crno-bijeli)",
-      "image_mode_p": "P (paleta od 256 boja)",
-      "transparency_section": "Prozirnost",
-      "transparency_info": "Prozirnost se primjenjuje samo na PNG, WebP, ICO i AVIF slike",
-      "transparency_type_label": "Vrsta :",
-      "transparency_type_flood": "Zona",
-      "transparency_type_global": "Globalno",
-      "transparency_tolerance_label": "Tolerancija :",
-      "transparency_viewer_title": "Podešavanje prozirnosti",
-      "transparency_click_instruction": "Kliknite na boju koju želite učiniti prozirnom",
-      "transparency_undo": "Poništi posljednji klik",
-      "transparency_redo": "Ponovi",
-      "transparency_type_flood_tooltip": "Flood fill : čini prozirnim područje s jednolikim bojom oko kliknutog piksela",
-      "transparency_type_global_tooltip": "Globalna prozirnost : utječe na sve piksele slike čija je boja bliska klikanoj",
-      "transparency_apply": "Primijeni",
-      "transparency_skipped_warning": "{count} slika(e) preskočena(e) — format nije kompatibilan s prozirnosti. Da biste ih uključili, prvo ih pretvorite u PNG.",
-      "auto_levels_tooltip": "Analizira svaku stranicu i automatski prilagođava razine crne i bijele radi maksimalnog kontrasta.\nZa odabir stranice po stranicu koristite preglednik.",
-      "transparency_unsaved_title": "Neprimijenjene promjene",
-      "transparency_unsaved_message": "Trenutne promjene nisu primijenjene na sliku. Što želite učiniti?",
-      "transparency_unsaved_discard": "Zatvori bez primjene",
-      "transparency_unsaved_apply": "Primijeni i zatvori",
-      "transparency_unsaved_cancel": "Odustani"
+      "image_mode_p": "P (paleta od 256 boja)"
     },
     "levels_viewer": {
-      "title": "Prilagodba razina s kapaljicom",
-      "apply_current": "Primijeni na ovu stranicu",
-      "apply_all": "Primijeni na sve odabrane stranice",
       "black_pipette": "Pipeta crne tocke",
       "white_pipette": "Pipeta bijele tocke",
       "black_pipette_tooltip": "Kliknite na piksel koji bi trebao biti potpuno crn. Oprez: lako je pretjerati!",
       "white_pipette_tooltip": "Kliknite na piksel koji bi trebao biti potpuno bijel. Oprez: lako je pretjerati!"
-    },
-    "compression_viewer": {
-      "title": "Podešavanje kompresije"
     },
     "outliers": {
       "title": "Stranice s neobičnim dimenzijama",

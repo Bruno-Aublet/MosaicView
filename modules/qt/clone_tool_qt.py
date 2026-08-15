@@ -299,6 +299,17 @@ class _CloneOptionsPanel(QWidget):
         y = 8 + self._viewer._toolbar.height() + 6
         self.move(max(0, x), y)
 
+    def mousePressEvent(self, event):
+        # Piège corrigé (2026-08-15, découvert sur le panneau de
+        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
+        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
+        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
+        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        event.accept()
+
+    def mouseReleaseEvent(self, event):
+        event.accept()
+
     def enterEvent(self, event):
         # Suspend le timer d'auto-masquage de la barre (dont ce panneau suit
         # désormais la visibilité, idees.txt #3 décision 2026-08-14) tant que

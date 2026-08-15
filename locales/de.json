@@ -66,7 +66,14 @@
     "batch_library": "Bibliothek aus dem/den Ordner(n) erstellen",
     "batch_recompress": "CBZ-Dateien auf Standardstufe neu komprimieren",
     "validate_straighten": "Begradigung bestätigen",
-    "validate_text": "Text anwenden"
+    "validate_text": "Text anwenden",
+    "validate_shapes": "Formen übernehmen",
+    "validate_transparency": "Transparenz bestätigen",
+    "cancel_crop": "Zuschnitt abbrechen",
+    "cancel_straighten": "Begradigung abbrechen",
+    "cancel_text": "Text abbrechen",
+    "cancel_shapes": "Formen abbrechen",
+    "cancel_transparency": "Transparenz abbrechen"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Sättigung :",
     "toolbar_remove_colors_tooltip": "Farbentfernung",
     "toolbar_remove_colors_instruction": "Regler einstellen, die Anpassung wird beim Loslassen übernommen",
-    "remove_colors_panel_label": "Intensität :"
+    "remove_colors_panel_label": "Intensität :",
+    "toolbar_compression_tooltip": "Komprimierung",
+    "toolbar_compression_instruction": "Regler einstellen, die Anpassung wird beim Loslassen angewendet",
+    "toolbar_compression_disabled": "Nur für JPG-, WEBP- und AVIF-Bilder verfügbar",
+    "compression_panel_label": "Qualität :",
+    "toolbar_levels_tooltip": "Tonwerte",
+    "toolbar_levels_instruction": "Pipetten oder Regler, die Anpassung wird beim Loslassen/Klicken angewendet",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Schwellenwert :",
+    "levels_black_panel_label": "Schwarzpunkt :",
+    "levels_white_panel_label": "Weisspunkt :",
+    "levels_black_slider_tooltip": "Alle Pixel, die dunkler als dieser Wert sind, werden vollstaendig schwarz",
+    "levels_gamma_slider_tooltip": "Hellt oder verdunkelt die Mitteltoene, ohne Schwarz oder Weiss zu veraendern",
+    "levels_white_slider_tooltip": "Alle Pixel, die heller als dieser Wert sind, werden vollstaendig weiss",
+    "levels_threshold_slider_tooltip": "Wandelt das Bild anhand dieses Schwellenwerts in reines Schwarz-Weiss um",
+    "levels_auto_tooltip": "Analysiert die angezeigte Seite und passt Schwarz- und Weisspunkt automatisch an, um den Kontrast zu maximieren",
+    "toolbar_shapes_tooltip": "Formen",
+    "toolbar_shapes_instruction": "Ziehen zum Zeichnen einer Form, Griffe zum Skalieren, Pfeiltasten zum Verschieben",
+    "shape_type_ellipse": "Ellipse",
+    "shape_type_rectangle": "Rechteck",
+    "shape_type_rounded_rectangle": "Rechteck mit abgerundeten Ecken",
+    "shape_type_line": "Linie",
+    "shape_type_arrow": "Pfeil",
+    "shape_thickness_label": "Strichstärke:",
+    "shape_color_label": "Farbe:",
+    "shape_color_tooltip": "Farbe für Kontur und Füllung wählen",
+    "shape_fill_enabled_label": "Füllung",
+    "shape_pipette_tooltip": "Farbe von der angezeigten Seite aufnehmen",
+    "toolbar_transparency_tooltip": "Transparenz",
+    "toolbar_transparency_instruction": "Klicken Sie auf die Farbe, die transparent werden soll",
+    "toolbar_transparency_disabled": "Nur für PNG-, WebP-, ICO- und AVIF-Bilder verfügbar",
+    "transparency_flood_panel_label": "Bereich",
+    "transparency_global_panel_label": "Global",
+    "transparency_tolerance_panel_label": "Toleranz:",
+    "transparency_type_slider_tooltip": "Bereich: macht den einheitlich farbigen Bereich um das angeklickte Pixel transparent. Global: betrifft alle Pixel des Bildes, deren Farbe der angeklickten Farbe ähnelt",
+    "transparency_tolerance_slider_tooltip": "Maximal akzeptierter Farbabstand um das angeklickte Pixel"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Kein Text",
         "message": "Bitte geben Sie zuerst Text in mindestens einen Block ein."
+      },
+      "no_shape": {
+        "title": "Keine Form gezeichnet",
+        "message": "Bitte zeichnen Sie zuerst mindestens eine Form."
+      },
+      "no_transparency_work": {
+        "title": "Keine Transparenz angewendet",
+        "message": "Bitte klicken Sie zuerst auf eine Farbe, die transparent werden soll."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Fehler",
         "message": "Die Farbentfernung konnte nicht angewendet werden: {error}"
+      },
+      "compression_failed": {
+        "title": "Fehler",
+        "message": "Die Komprimierung konnte nicht angewendet werden: {error}"
+      },
+      "levels_failed": {
+        "title": "Fehler",
+        "message": "Tonwertkorrektur konnte nicht angewendet werden: {error}"
+      },
+      "shapes_failed": {
+        "title": "Fehler",
+        "message": "Die Formen konnten nicht angewendet werden: {error}"
+      },
+      "transparency_failed": {
+        "title": "Fehler",
+        "message": "Transparenz konnte nicht angewendet werden."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "Bilder",
       "apply_button": "Anwenden",
       "color_depth_section": "Farbtiefe",
-      "compression_section": "Komprimierung",
       "effects_section": "Effekte",
       "sharpness_section": "Scharfe",
-      "levels_section": "Schwarz/Weiss-Stufen",
       "depth_unchanged": "Nicht andern",
       "depth_32bit": "32 Bit (RGBA - Farben + Transparenz)",
       "depth_24bit": "24 Bit (RGB - Farben)",
       "depth_8bit": "8 Bit (PNG-Palette / JPEG-Graustufen)",
       "depth_1bit": "1 Bit (Schwarz und Weiss)",
       "compression_enable": "Neukomprimierung aktivieren",
-      "compression_quality_label": "Qualität : {value}/100",
       "effect_none": "Kein Effekt",
       "effect_grayscale": "Graustufen",
       "effect_sepia": "Sepia",
-      "levels_none": "Keine Anpassung",
-      "levels_threshold": "Schwellenwert (reines Schwarz oder Weiss)",
-      "levels_advanced": "Erweiterte Stufen (Schatten/Mitteltone/Lichter)",
-      "threshold_label": "Schwellenwert: {value}",
-      "black_point_label": "Schwarzpunkt: {value}",
-      "gamma_label": "Gamma (Mitteltone): {value}",
-      "white_point_label": "Weisspunkt: {value}",
       "auto_levels_button": "Automatische Anpassung",
-      "open_viewer_button": "Mit dem Betrachter anpassen (empfohlen)",
-      "compression_info": "Die Komprimierung gilt nur für JPG-, WebP- und AVIF-Bilder",
-      "open_viewer_button_simple": "Mit Viewer anpassen",
       "reset_button": "Zurücksetzen",
       "preview_section": "Vorschau",
       "effect_invert": "Farbumkehr",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (Graustufen + Transparenz)",
       "image_mode_cmyk": "CMYK (Druck)",
       "image_mode_1": "1 (reines Schwarz-Weiß)",
-      "image_mode_p": "P (256-Farben-Palette)",
-      "transparency_section": "Transparenz",
-      "transparency_info": "Transparenz gilt nur für PNG-, WebP-, ICO- und AVIF-Bilder",
-      "transparency_type_label": "Typ :",
-      "transparency_type_flood": "Bereich",
-      "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Toleranz :",
-      "transparency_viewer_title": "Transparenz anpassen",
-      "transparency_click_instruction": "Klicken Sie auf die Farbe, die transparent werden soll",
-      "transparency_undo": "Letzten Klick rückgängig machen",
-      "transparency_redo": "Wiederholen",
-      "transparency_type_flood_tooltip": "Flood fill : macht den gleichfarbigen Bereich um den geklickten Pixel transparent",
-      "transparency_type_global_tooltip": "Globale Transparenz : betrifft alle Pixel im Bild, deren Farbe der geklickten ähnelt",
-      "transparency_apply": "Anwenden",
-      "transparency_skipped_warning": "{count} Bild(er) übersprungen — Format nicht kompatibel mit Transparenz. Um sie einzuschließen, konvertieren Sie sie zuerst in PNG.",
-      "auto_levels_tooltip": "Analysiert jede Seite und passt die Schwarz- und Weißpegel automatisch an, um den Kontrast zu maximieren.\nUm Seite für Seite auszuwählen, verwenden Sie den Viewer.",
-      "transparency_unsaved_title": "Nicht angewendete Änderungen",
-      "transparency_unsaved_message": "Die aktuellen Änderungen wurden noch nicht auf das Bild angewendet. Was möchten Sie tun?",
-      "transparency_unsaved_discard": "Schließen ohne Anwenden",
-      "transparency_unsaved_apply": "Anwenden und schließen",
-      "transparency_unsaved_cancel": "Abbrechen"
+      "image_mode_p": "P (256-Farben-Palette)"
     },
     "levels_viewer": {
-      "title": "Ebenenanpassung mit Pipetten",
-      "apply_current": "Auf diese Seite anwenden",
-      "apply_all": "Auf alle ausgewählten Seiten anwenden",
       "black_pipette": "Schwarzpunkt-Pipette",
       "white_pipette": "Weißpunkt-Pipette",
       "black_pipette_tooltip": "Klicken Sie auf ein Pixel, das vollständig schwarz sein sollte. Achtung: Man kann leicht übertreiben!",
       "white_pipette_tooltip": "Klicken Sie auf ein Pixel, das vollständig weiß sein sollte. Achtung: Man kann leicht übertreiben!"
-    },
-    "compression_viewer": {
-      "title": "Kompressionseinstellung"
     },
     "outliers": {
       "title": "Seiten mit ungewöhnlichen Abmessungen",

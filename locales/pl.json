@@ -66,7 +66,14 @@
     "batch_library": "Utwórz bibliotekę z folderu(ów)",
     "batch_recompress": "Skompresuj ponownie pliki CBZ na poziomie domyślnym",
     "validate_straighten": "Zatwierdź prostowanie",
-    "validate_text": "Zastosuj tekst"
+    "validate_text": "Zastosuj tekst",
+    "validate_shapes": "Zatwierdź kształty",
+    "validate_transparency": "Zatwierdź przezroczystość",
+    "cancel_crop": "Anuluj kadrowanie",
+    "cancel_straighten": "Anuluj prostowanie",
+    "cancel_text": "Anuluj tekst",
+    "cancel_shapes": "Anuluj kształty",
+    "cancel_transparency": "Anuluj przezroczystość"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Nasycenie :",
     "toolbar_remove_colors_tooltip": "Usuwanie kolorów",
     "toolbar_remove_colors_instruction": "Dostosuj suwak, zmiana zostanie zastosowana po zwolnieniu",
-    "remove_colors_panel_label": "Intensywność :"
+    "remove_colors_panel_label": "Intensywność :",
+    "toolbar_compression_tooltip": "Kompresja",
+    "toolbar_compression_instruction": "Dostosuj suwak, zmiana zostanie zastosowana po zwolnieniu",
+    "toolbar_compression_disabled": "Dostępne tylko dla obrazów JPG, WEBP i AVIF",
+    "compression_panel_label": "Jakość :",
+    "toolbar_levels_tooltip": "Poziomy",
+    "toolbar_levels_instruction": "Pipety lub suwaki, zmiana zostanie zastosowana po zwolnieniu/kliknieciu",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Prog :",
+    "levels_black_panel_label": "Punkt czerni :",
+    "levels_white_panel_label": "Punkt bieli :",
+    "levels_black_slider_tooltip": "Wszystkie piksele ciemniejsze niz ta wartosc staja sie calkowicie czarne",
+    "levels_gamma_slider_tooltip": "Rozjasnia lub przyciemnia tony posrednie, nie wplywajac na czern ani biel",
+    "levels_white_slider_tooltip": "Wszystkie piksele jasniejsze niz ta wartosc staja sie calkowicie biale",
+    "levels_threshold_slider_tooltip": "Zamienia obraz na czysta czern i biel na podstawie tego progu",
+    "levels_auto_tooltip": "Analizuje wyswietlana strone i automatycznie dostosowuje punkty czerni i bieli, aby zmaksymalizowac kontrast",
+    "toolbar_shapes_tooltip": "Kształty",
+    "toolbar_shapes_instruction": "Przeciągnij, aby narysować kształt, uchwyty do zmiany rozmiaru, strzałki do przesuwania",
+    "shape_type_ellipse": "Elipsa",
+    "shape_type_rectangle": "Prostokąt",
+    "shape_type_rounded_rectangle": "Prostokąt o zaokrąglonych rogach",
+    "shape_type_line": "Linia",
+    "shape_type_arrow": "Strzałka",
+    "shape_thickness_label": "Grubość:",
+    "shape_color_label": "Kolor:",
+    "shape_color_tooltip": "Wybierz kolor konturu i wypełnienia",
+    "shape_fill_enabled_label": "Wypełnienie",
+    "shape_pipette_tooltip": "Pobierz kolor z wyświetlanej strony",
+    "toolbar_transparency_tooltip": "Przezroczystość",
+    "toolbar_transparency_instruction": "Kliknij kolor, który ma stać się przezroczysty",
+    "toolbar_transparency_disabled": "Dostępne tylko dla obrazów PNG, WebP, ICO i AVIF",
+    "transparency_flood_panel_label": "Obszar",
+    "transparency_global_panel_label": "Globalnie",
+    "transparency_tolerance_panel_label": "Tolerancja:",
+    "transparency_type_slider_tooltip": "Obszar: sprawia, że jednolity kolorystycznie obszar wokół klikniętego piksela staje się przezroczysty. Globalnie: dotyczy wszystkich pikseli obrazu, których kolor jest zbliżony do klikniętego",
+    "transparency_tolerance_slider_tooltip": "Maksymalna akceptowana odległość koloru wokół klikniętego piksela"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Brak tekstu",
         "message": "Najpierw wpisz tekst w co najmniej jednym bloku."
+      },
+      "no_shape": {
+        "title": "Nie narysowano żadnego kształtu",
+        "message": "Najpierw narysuj co najmniej jeden kształt."
+      },
+      "no_transparency_work": {
+        "title": "Nie zastosowano przezroczystości",
+        "message": "Najpierw kliknij kolor, który ma stać się przezroczysty."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Błąd",
         "message": "Nie udało się zastosować usuwania kolorów: {error}"
+      },
+      "compression_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się zastosować kompresji: {error}"
+      },
+      "levels_failed": {
+        "title": "Blad",
+        "message": "Nie mozna zastosowac poziomow: {error}"
+      },
+      "shapes_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się zastosować kształtów: {error}"
+      },
+      "transparency_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się zastosować przezroczystości."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "obrazy",
       "apply_button": "Zastosuj",
       "color_depth_section": "Glebia koloru",
-      "compression_section": "Kompresja",
       "effects_section": "Efekty",
       "sharpness_section": "Ostrosc",
-      "levels_section": "Poziomy czerni/bieli",
       "depth_unchanged": "Nie zmieniaj",
       "depth_32bit": "32 bity (RGBA - kolory + przezroczystosc)",
       "depth_24bit": "24 bity (RGB - kolory)",
       "depth_8bit": "8 bitow (paleta PNG / skala szarosci JPEG)",
       "depth_1bit": "1 bit (czarno-bialy)",
       "compression_enable": "Wlacz ponowna kompresje",
-      "compression_quality_label": "Jakość : {value}/100",
       "effect_none": "Brak efektu",
       "effect_grayscale": "Odcienie szarosci",
       "effect_sepia": "Sepia",
-      "levels_none": "Bez dostosowania",
-      "levels_threshold": "Prog (czysty czarny lub bialy)",
-      "levels_advanced": "Zaawansowane poziomy (cienie/polcienie/swiatla)",
-      "threshold_label": "Prog: {value}",
-      "black_point_label": "Punkt czerni: {value}",
-      "gamma_label": "Gamma (polcienie): {value}",
-      "white_point_label": "Punkt bieli: {value}",
       "auto_levels_button": "Automatyczna regulacja",
-      "open_viewer_button": "Dostosuj za pomocą przeglądarki (zalecane)",
-      "compression_info": "Kompresja dotyczy tylko obrazów JPG, WebP i AVIF",
-      "open_viewer_button_simple": "Dostosuj za pomocą przeglądarki",
       "reset_button": "Zresetuj",
       "preview_section": "Podgląd",
       "effect_invert": "Inwersja kolorów",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (skala szarości + przezroczystość)",
       "image_mode_cmyk": "CMYK (druk)",
       "image_mode_1": "1 (czysty czarno-biały)",
-      "image_mode_p": "P (paleta 256 kolorów)",
-      "transparency_section": "Przezroczystość",
-      "transparency_info": "Przezroczystość dotyczy tylko obrazów PNG, WebP, ICO i AVIF",
-      "transparency_type_label": "Typ :",
-      "transparency_type_flood": "Strefa",
-      "transparency_type_global": "Globalny",
-      "transparency_tolerance_label": "Tolerancja :",
-      "transparency_viewer_title": "Regulacja przezroczystości",
-      "transparency_click_instruction": "Kliknij kolor, który ma stać się przezroczysty",
-      "transparency_undo": "Cofnij ostatnie kliknięcie",
-      "transparency_redo": "Ponów",
-      "transparency_type_flood_tooltip": "Flood fill : sprawia, że jednolity obszar koloru wokół klikniętego piksela staje się przezroczysty",
-      "transparency_type_global_tooltip": "Globalna przezroczystość : wpływa na wszystkie piksele obrazu, których kolor jest zbliżony do klikniętego",
-      "transparency_apply": "Zastosuj",
-      "transparency_skipped_warning": "{count} obraz(y/ów) pominięto — format niekompatybilny z przezroczystością. Aby je uwzględnić, najpierw przekonwertuj je do PNG.",
-      "auto_levels_tooltip": "Analizuje każdą stronę i automatycznie dostosowuje poziomy czerni i bieli, aby zmaksymalizować kontrast.\nAby wybrać strona po stronie, użyj przeglądarki.",
-      "transparency_unsaved_title": "Niezastosowane zmiany",
-      "transparency_unsaved_message": "Bieżące zmiany nie zostały zastosowane do obrazu. Co chcesz zrobić?",
-      "transparency_unsaved_discard": "Zamknij bez zastosowania",
-      "transparency_unsaved_apply": "Zastosuj i zamknij",
-      "transparency_unsaved_cancel": "Anuluj"
+      "image_mode_p": "P (paleta 256 kolorów)"
     },
     "levels_viewer": {
-      "title": "Dostosowanie poziomow za pomoca pipety",
-      "apply_current": "Zastosuj do tej strony",
-      "apply_all": "Zastosuj do wszystkich wybranych stron",
       "black_pipette": "Pipeta punktu czarnego",
       "white_pipette": "Pipeta punktu białego",
       "black_pipette_tooltip": "Kliknij na piksel, który powinien być całkowicie czarny. Uwaga: łatwo przesadzić!",
       "white_pipette_tooltip": "Kliknij na piksel, który powinien być całkowicie biały. Uwaga: łatwo przesadzić!"
-    },
-    "compression_viewer": {
-      "title": "Regulacja kompresji"
     },
     "outliers": {
       "title": "Strony o nietypowych wymiarach",

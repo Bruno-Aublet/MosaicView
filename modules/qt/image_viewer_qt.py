@@ -30,10 +30,18 @@ from modules.qt.crop_tool_qt import CropCanvasMixin, CropViewerMixin
 from modules.qt.straighten_tool_qt import StraightenCanvasMixin, StraightenViewerMixin
 from modules.qt.clone_tool_qt import CloneCanvasMixin, CloneViewerMixin
 from modules.qt.text_tool_qt import TextCanvasMixin, TextViewerMixin
-from modules.qt.adjustments_tool_qt import AdjustmentsCanvasMixin, AdjustmentsViewerMixin
+from modules.qt.sharpness_tool_qt import SharpnessCanvasMixin, SharpnessViewerMixin
 from modules.qt.brightness_tool_qt import BrightnessCanvasMixin, BrightnessViewerMixin
 from modules.qt.saturation_tool_qt import SaturationCanvasMixin, SaturationViewerMixin
 from modules.qt.remove_colors_tool_qt import RemoveColorsCanvasMixin, RemoveColorsViewerMixin
+from modules.qt.compression_tool_qt import (
+    CompressionCanvasMixin, CompressionViewerMixin, is_compressible_entry,
+)
+from modules.qt.levels_tool_qt import LevelsCanvasMixin, LevelsViewerMixin
+from modules.qt.shapes_tool_qt import ShapeCanvasMixin, ShapeViewerMixin
+from modules.qt.transparency_tool_qt import (
+    TransparencyCanvasMixin, TransparencyViewerMixin, is_transparency_supported_entry,
+)
 # La barre d'outils elle-même (composant transversal, pas un outil) — même
 # principe de séparation, voir viewer_toolbar_qt.py.
 from modules.qt.viewer_toolbar_qt import _ViewerToolbar
@@ -63,13 +71,93 @@ def _compose_on_checkerboard(img: Image.Image, tile: int = 16) -> Image.Image:
     return bg
 
 
+class _ValidateButton(QPushButton):
+    """Bouton "Valider" flottant partagé (crop/straighten/text/shapes) — même
+    pattern enterEvent/leaveEvent que les panneaux d'options flottants
+    (ex. _ShapeOptionsPanel dans shapes_tool_qt.py) : survoler le bouton doit
+    suspendre le décompte d'auto-masquage de la barre (idees.txt #3, demande
+    explicite utilisateur 2026-08-15 — "il doit aussi être invalidé lorsqu'il
+    est sur le bouton"), sinon la barre ET ce bouton pouvaient disparaître
+    sous le curseur pendant qu'on visait le clic. leaveEvent différé à 0ms
+    (QTimer.singleShot) pour absorber les faux `Leave` transitoires déjà
+    documentés pour les panneaux (skill viewers, piège slider en drag actif)."""
+
+    def __init__(self, viewer: "ImageViewer", parent=None):
+        super().__init__(parent)
+        self._viewer = viewer
+
+    def enterEvent(self, event):
+        self._viewer._toolbar.pause_hide()
+        # Piège corrigé (2026-08-15, découvert sur l'outil transparency) : le
+        # curseur pipette posé sur _ViewerCanvas (outils levels/transparency)
+        # restait affiché par-dessus ce bouton, alors qu'il est un widget
+        # flottant enfant du canvas — même correctif que les panneaux
+        # d'options flottants (voir enterEvent de _TransparencyOptionsPanel/
+        # _LevelsOptionsPanel).
+        from PySide6.QtCore import Qt as _Qt
+        self.setCursor(_Qt.ArrowCursor)
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        from PySide6.QtCore import QTimer as _QTimer
+        _QTimer.singleShot(0, self._check_really_left)
+        super().leaveEvent(event)
+
+    def _check_really_left(self):
+        from PySide6.QtGui import QCursor as _QCursor
+        really_left = not self.rect().contains(self.mapFromGlobal(_QCursor.pos()))
+        if really_left:
+            self._viewer._toolbar.resume_hide()
+            # setCursor(ArrowCursor) posé dans enterEvent ne s'applique qu'à
+            # ce bouton — aucun reset à faire ici pour le canvas : Qt
+            # réaffiche de lui-même le curseur déjà posé dessus dès que la
+            # souris repasse physiquement au-dessus.
+            self.unsetCursor()
+
+
+class _CancelButton(QPushButton):
+    """Bouton "Annuler" flottant partagé (crop/straighten/text/shapes/
+    transparency, 2026-08-15, demande explicite utilisateur) — jumeau du
+    bouton "Valider" (_ValidateButton), placé à sa droite : même widget que
+    lui à un geste près, annule TOUT le travail non validé de l'outil actif
+    d'un coup (_ImageViewer._cancel_tool_work, même code que le bouton
+    "Annuler" et la touche Échap). Même pattern enterEvent/leaveEvent
+    (suspend le décompte d'auto-masquage de la barre au survol, reset du
+    curseur pipette pour levels/transparency, leaveEvent différé à 0ms pour
+    absorber les faux `Leave` transitoires) — voir _ValidateButton pour le
+    détail de chaque piège déjà corrigé, reproduit ici à l'identique."""
+
+    def __init__(self, viewer: "ImageViewer", parent=None):
+        super().__init__(parent)
+        self._viewer = viewer
+
+    def enterEvent(self, event):
+        self._viewer._toolbar.pause_hide()
+        from PySide6.QtCore import Qt as _Qt
+        self.setCursor(_Qt.ArrowCursor)
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        from PySide6.QtCore import QTimer as _QTimer
+        _QTimer.singleShot(0, self._check_really_left)
+        super().leaveEvent(event)
+
+    def _check_really_left(self):
+        from PySide6.QtGui import QCursor as _QCursor
+        really_left = not self.rect().contains(self.mapFromGlobal(_QCursor.pos()))
+        if really_left:
+            self._viewer._toolbar.resume_hide()
+            self.unsetCursor()
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Canvas de visionneuse (zone noire avec image centrée + rubber-band crop)
 # ─────────────────────────────────────────────────────────────────────────────
 
 class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, TextCanvasMixin,
-                     AdjustmentsCanvasMixin, BrightnessCanvasMixin, SaturationCanvasMixin,
-                     RemoveColorsCanvasMixin, QLabel):
+                     SharpnessCanvasMixin, BrightnessCanvasMixin, SaturationCanvasMixin,
+                     RemoveColorsCanvasMixin, CompressionCanvasMixin, LevelsCanvasMixin,
+                     ShapeCanvasMixin, TransparencyCanvasMixin, QLabel):
     """
     QLabel utilisé comme zone d'affichage de l'image.
     Gère :
@@ -126,6 +214,13 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         self._validate_btn_visible = False
         self._validate_btn_connected_tool: str | None = None
 
+        # Bouton Annuler (flottant, partagé crop/straighten/text/shapes/
+        # transparency — même pattern que le bouton Valider, placé à sa
+        # droite, voir _ensure_cancel_btn/_update_cancel_btn_state).
+        self._cancel_btn: QPushButton | None = None
+        self._cancel_btn_visible = False
+        self._cancel_btn_connected_tool: str | None = None
+
         # État de l'outil "straighten" manuel (voir straighten_tool_qt.py::
         # StraightenCanvasMixin, hérité par cette classe — CLAUDE.md : ne
         # jamais migrer le code d'un outil dans image_viewer_qt.py).
@@ -141,8 +236,8 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         # outil dans image_viewer_qt.py).
         self._init_text_state()
 
-        # État de l'outil "sharpness" (voir adjustments_tool_qt.py::
-        # AdjustmentsCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # État de l'outil "sharpness" (voir sharpness_tool_qt.py::
+        # SharpnessCanvasMixin, hérité par cette classe — CLAUDE.md : ne
         # jamais migrer le code d'un outil dans image_viewer_qt.py).
         self._init_adjustments_state()
 
@@ -161,6 +256,26 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         # jamais migrer le code d'un outil dans image_viewer_qt.py).
         self._init_remove_colors_state()
 
+        # État de l'outil "compression" (voir compression_tool_qt.py::
+        # CompressionCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # jamais migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_compression_state()
+
+        # État de l'outil "levels" (voir levels_tool_qt.py::LevelsCanvasMixin,
+        # hérité par cette classe — CLAUDE.md : ne jamais migrer le code d'un
+        # outil dans image_viewer_qt.py).
+        self._init_levels_state()
+
+        # État de l'outil "shapes" (voir shapes_tool_qt.py::ShapeCanvasMixin,
+        # hérité par cette classe — CLAUDE.md : ne jamais migrer le code d'un
+        # outil dans image_viewer_qt.py).
+        self._init_shape_state()
+
+        # État de l'outil "transparency" (voir transparency_tool_qt.py::
+        # TransparencyCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # jamais migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_transparency_state()
+
     # Méthodes de l'outil "crop" (has_crop, clear_crop, _get_resize_mode...)
     # fournies par CropCanvasMixin (crop_tool_qt.py), de l'outil "straighten"
     # manuel (has_line, clear_line, set_line_end_from_angle...) fournies par
@@ -177,22 +292,96 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         "crop": "buttons.validate_crop",
         "straighten": "buttons.validate_straighten",
         "text": "buttons.validate_text",
+        "shapes": "buttons.validate_shapes",
+        "transparency": "buttons.validate_transparency",
     }
+
+    # Bouton "Annuler" partagé (2026-08-15, demande explicite utilisateur) :
+    # même liste d'outils que le bouton "Valider" — un outil ne peut avoir
+    # l'un sans l'autre, les deux sont strictement jumeaux. Écart de largeur
+    # entre les deux boutons flottants (px), voir _update_validate_btn_state.
+    _CANCEL_KEYS = {
+        "crop": "buttons.cancel_crop",
+        "straighten": "buttons.cancel_straighten",
+        "text": "buttons.cancel_text",
+        "shapes": "buttons.cancel_shapes",
+        "transparency": "buttons.cancel_transparency",
+    }
+    _CANCEL_BTN_GAP = 10
+
+    # Outils dont le bouton "Valider" reste TOUJOURS VISIBLE tant qu'ils sont
+    # actifs (grisé/inactif tant que rien à valider, vert/actif sinon) —
+    # généralisé depuis le comportement introduit pour "shapes" seul (décision
+    # explicite utilisateur, 2026-08-15) ; "transparency" rejoint ce groupe
+    # (13e outil migré, seul autre outil migré à accumuler un travail non
+    # validé sur plusieurs gestes avant validation, comme crop/straighten/
+    # text/shapes — contrairement à levels, voir transparency_tool_qt.py).
+    _ALWAYS_VISIBLE_VALIDATE_TOOLS = {"crop", "straighten", "text", "shapes", "transparency"}
+
+    def _validate_tool_has_work(self, tool: str) -> bool:
+        """True s'il y a quelque chose à valider pour cet outil sur la page
+        courante — pilote l'état vert/actif vs gris/inactif du bouton
+        "Valider" partagé (voir _show_validate_btn)."""
+        if tool == "crop":
+            return self.has_crop
+        if tool == "straighten":
+            return self.has_line
+        if tool == "text":
+            return self.has_text_blocks
+        if tool == "shapes":
+            return self.has_shapes
+        if tool == "transparency":
+            return self._viewer.current_idx in self._viewer._transp_work_img_by_page
+        return True
 
     def _ensure_validate_btn(self):
         if self._validate_btn is None:
             theme = get_current_theme()
             font = _get_current_font(12, bold=True)
-            self._validate_btn = QPushButton(self)
+            self._validate_btn = _ValidateButton(self._viewer, self)
             self._validate_btn.setFont(font)
-            self._validate_btn.setStyleSheet(
+            self._validate_btn_style_normal = (
                 f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
                 f"border: 1px solid #aaaaaa; padding: 6px 12px; }}"
                 f"QPushButton:hover {{ background: {theme['separator']}; }}"
             )
+            self._validate_btn_style_green = (
+                f"QPushButton {{ background: #2e7d32; color: #ffffff; "
+                f"border: 1px solid #1b5e20; padding: 6px 12px; }}"
+                f"QPushButton:hover {{ background: #388e3c; }}"
+            )
+            self._validate_btn_style_disabled = (
+                f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['separator']}; "
+                f"border: 1px solid {theme['separator']}; padding: 6px 12px; }}"
+            )
+            self._validate_btn.setStyleSheet(self._validate_btn_style_normal)
             self._validate_btn.setFixedWidth(200)
 
-    def _show_validate_btn(self):
+    def _update_validate_btn_state(self):
+        """Recalcule TOUT l'état du bouton "Valider" partagé — texte,
+        connexion du clic, police, couleur vert/gris, position — SANS jamais
+        toucher à sa visibilité (`.show()`/`.hide()`). Appelable sans risque
+        depuis n'importe quel point du code qui modifie l'outil actif ou le
+        travail en attente (display_image, set_active_tool, les handlers
+        souris de crop/straighten/text/shapes...), que la barre soit
+        actuellement visible ou masquée : c'est une simple mise à jour de
+        données, jamais un déclencheur d'affichage.
+
+        RÈGLE ARCHITECTURALE ABSOLUE (2026-08-15, décision explicite et
+        répétée de l'utilisateur) : il ne doit y avoir qu'UN SEUL mécanisme
+        qui décide de la visibilité de ce bouton — `_ViewerToolbar.
+        show_and_schedule_hide()` (le fait apparaître) et `_on_hide_timeout()`
+        (le fait disparaître), tous deux dans viewer_toolbar_qt.py. Aucune
+        autre fonction de ce fichier n'appelle jamais `.show()`/`.hide()` sur
+        ce bouton — seuls ces deux points du mécanisme d'auto-masquage de la
+        barre le font, via les méthodes dédiées `_reveal_validate_btn()`/
+        `_conceal_validate_btn()` plus bas. Avant cette séparation, une seule
+        fonction (`_show_validate_btn`) mélangeait mise à jour d'état ET
+        affichage, appelée depuis 15+ endroits différents — chacun de ces
+        appels était un point de réapparition potentiel indépendant, ce qui a
+        provoqué plusieurs bugs vécus (bouton flottant seul, sans la barre
+        au-dessus, après l'auto-masquage). Ne JAMAIS réintroduire un appel à
+        `.show()` sur ce bouton en dehors de `_reveal_validate_btn()`."""
         self._ensure_validate_btn()
         w = self._validate_btn
         tool = self._viewer._toolbar.active_tool
@@ -206,21 +395,95 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
                 w.clicked.connect(self._viewer.validate_crop)
             elif tool == "text":
                 w.clicked.connect(self._viewer.validate_text)
+            elif tool == "shapes":
+                w.clicked.connect(self._viewer.validate_shapes)
+            elif tool == "transparency":
+                w.clicked.connect(self._viewer.validate_transparency)
             else:
                 w.clicked.connect(self._viewer.validate_straighten)
             self._validate_btn_connected_tool = tool
         w.setText(_(key))
-        # Positionné en bas au centre
+        # Réappliquer la police à CHAQUE mise à jour (pas seulement à la
+        # création dans _ensure_validate_btn) — piège CLAUDE.md "retraduction
+        # dynamique" : un setText() seul garde l'ancienne police (latine),
+        # illisible pour les langues CSUR (pIqaD/Tengwar).
+        w.setFont(_get_current_font(12, bold=True))
+
+        if tool in self._ALWAYS_VISIBLE_VALIDATE_TOOLS:
+            has_work = self._validate_tool_has_work(tool)
+            # setEnabled(False) plutôt qu'un simple style "grisé" ferait
+            # perdre à Qt tout enterEvent/leaveEvent sur ce bouton (un widget
+            # désactivé ne reçoit plus les événements souris, ils remontent
+            # au parent) — piège corrigé (2026-08-16, signalé utilisateur) :
+            # le curseur restait celui de l'outil actif (pipette de levels/
+            # transparency, ou simplement le curseur du canvas) même survolé
+            # au-dessus du bouton. Le bouton reste donc TOUJOURS setEnabled
+            # (True) et cliquable même "gris" — chaque validate_* gère déjà
+            # le cas "rien à valider" avec son propre MsgDialog
+            # d'avertissement (voir crop_tool_qt.py::validate_crop et
+            # équivalents), donc un clic sur un bouton gris n'est jamais
+            # dangereux, seulement redondant avec ce garde-fou déjà en place.
+            w.setEnabled(True)
+            w.setStyleSheet(
+                self._validate_btn_style_green if has_work
+                else self._validate_btn_style_disabled)
+        else:
+            w.setEnabled(True)
+            w.setStyleSheet(self._validate_btn_style_normal)
+
         bw = w.sizeHint().width()
         bh = w.sizeHint().height()
-        x = (self.width() - bw) // 2
-        y = int(self.height() * 0.92) - bh // 2
+        # Positionné SOUS la barre d'outils + son panneau d'options s'il en a
+        # un (retour utilisateur explicite, généralisé aux outils à bouton
+        # "Valider" partagé le 2026-08-15 — initialement introduit pour
+        # "shapes" seul, puis "transparency" à son tour) : plus de position
+        # "bas d'écran" pour aucun de ces outils. Crop n'a pas de panneau
+        # d'options flottant dédié (rien à régler à part le rectangle
+        # lui-même) — retombe directement sur la barre elle-même, comme le
+        # ferait n'importe quel outil dont le panneau n'est pas visible.
+        toolbar = self._viewer._toolbar
+        panel = {
+            "crop": None,
+            "straighten": toolbar._angle_panel,
+            "text": toolbar._text_panel,
+            "shapes": toolbar._shapes_panel,
+            "transparency": toolbar._transparency_panel,
+        }.get(tool)
+        if panel is not None and panel.isVisible():
+            panel_bottom = panel.y() + panel.height()
+        else:
+            panel_bottom = toolbar.y() + toolbar.height()
+        y = panel_bottom + 6
+        # Centré avec le bouton "Annuler" placé juste à sa droite (2026-08-15,
+        # demande explicite utilisateur) : x calculé sur la largeur du COUPLE
+        # des deux boutons (avec un espacement _CANCEL_BTN_GAP entre eux), pas
+        # sur ce seul bouton — sinon le couple ne serait plus centré sous la
+        # barre. cw/ch = 0 si le bouton Annuler n'existe pas encore (avant sa
+        # toute première construction) ou si l'outil actif n'en a pas besoin.
+        cbw = self._cancel_btn.sizeHint().width() if self._cancel_btn is not None else 0
+        gap = self._CANCEL_BTN_GAP if cbw else 0
+        total_w = bw + gap + cbw
+        x = (self.width() - total_w) // 2
         w.setGeometry(x, y, bw, bh)
+
+    def _reveal_validate_btn(self):
+        """SEUL point du code autorisé à afficher ce bouton — appelé
+        UNIQUEMENT par _ViewerToolbar.show_and_schedule_hide() (mécanisme
+        unique de réapparition, voir docstring de _update_validate_btn_state).
+        Recalcule l'état à jour puis affiche, si l'outil actif en a besoin."""
+        tool = self._viewer._toolbar.active_tool
+        if self._VALIDATE_KEYS.get(tool) is None:
+            return
+        self._update_validate_btn_state()
+        w = self._validate_btn
         w.show()
         w.raise_()
         self._validate_btn_visible = True
 
-    def _hide_validate_btn(self):
+    def _conceal_validate_btn(self):
+        """SEUL point du code autorisé à masquer ce bouton — appelé
+        UNIQUEMENT par _ViewerToolbar._on_hide_timeout() (mécanisme unique de
+        masquage, symétrique de _reveal_validate_btn)."""
         if self._validate_btn is not None:
             self._validate_btn.hide()
         self._validate_btn_visible = False
@@ -233,6 +496,110 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
                 self._validate_btn.setText(_(key))
             font = _get_current_font(12, bold=True)
             self._validate_btn.setFont(font)
+
+    # ── Bouton Annuler (partagé crop/straighten/text/shapes/transparency) ────
+    # Jumeau du bouton "Valider" ci-dessus, placé à sa droite — même
+    # mécanisme unique de réapparition/masquage (_reveal_cancel_btn/
+    # _conceal_cancel_btn, appelés UNIQUEMENT par _ViewerToolbar.
+    # show_and_schedule_hide()/_on_hide_timeout(), jamais ailleurs — voir la
+    # docstring de _update_validate_btn_state pour la règle complète, elle
+    # s'applique ici de façon strictement identique). Rouge/actif dès qu'il y
+    # a quelque chose à annuler (_validate_tool_has_work, même test que le
+    # bouton Valider — ce qui peut être validé peut être annulé, rien de
+    # plus), gris/inactif sinon.
+
+    def _ensure_cancel_btn(self):
+        if self._cancel_btn is None:
+            theme = get_current_theme()
+            font = _get_current_font(12, bold=True)
+            self._cancel_btn = _CancelButton(self._viewer, self)
+            self._cancel_btn.setFont(font)
+            self._cancel_btn_style_red = (
+                f"QPushButton {{ background: #c62828; color: #ffffff; "
+                f"border: 1px solid #8e0000; padding: 6px 12px; }}"
+                f"QPushButton:hover {{ background: #d32f2f; }}"
+            )
+            self._cancel_btn_style_disabled = (
+                f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['separator']}; "
+                f"border: 1px solid {theme['separator']}; padding: 6px 12px; }}"
+            )
+            self._cancel_btn.setStyleSheet(self._cancel_btn_style_disabled)
+            self._cancel_btn.clicked.connect(
+                lambda: self._viewer._cancel_tool_work(self._viewer._toolbar.active_tool))
+
+    def _update_cancel_btn_state(self):
+        """Jumeau de _update_validate_btn_state ci-dessus — mêmes garanties
+        (ne touche jamais à .show()/.hide(), appelable sans risque depuis
+        n'importe quel point de mise à jour). Le clic est connecté UNE SEULE
+        FOIS dans _ensure_cancel_btn (pas reconnecté à chaque outil comme le
+        bouton Valider) : contrairement à validate_crop/validate_straighten/
+        etc. (une méthode dédiée par outil), _cancel_tool_work(tool) est déjà
+        une seule fonction paramétrée par l'outil actif — rien à reconnecter
+        au changement d'outil."""
+        self._ensure_cancel_btn()
+        self._ensure_validate_btn()
+        w = self._cancel_btn
+        tool = self._viewer._toolbar.active_tool
+        key = self._CANCEL_KEYS.get(tool)
+        if key is None:
+            return
+        w.setText(_(key))
+        w.setFont(_get_current_font(12, bold=True))
+
+        has_work = self._validate_tool_has_work(tool)
+        # setEnabled(False) ferait perdre enterEvent/leaveEvent — même piège
+        # et même correctif que le bouton "Valider" (2026-08-16, voir
+        # _update_validate_btn_state). Le clic sur un bouton "gris" retombe
+        # simplement sur _cancel_tool_work(tool), un no-op naturel puisqu'il
+        # n'y a alors rien à effacer (clear_crop() sur un crop déjà vide,
+        # etc.) — pas besoin d'un garde-fou supplémentaire comme pour Valider.
+        w.setEnabled(True)
+        w.setStyleSheet(
+            self._cancel_btn_style_red if has_work
+            else self._cancel_btn_style_disabled)
+
+        # Positionné à droite du bouton "Valider", même ligne — recalcule
+        # aussi la position du bouton "Valider" au passage (son x dépend de
+        # la largeur du couple des deux boutons, voir
+        # _update_validate_btn_state) pour rester centré maintenant que ce
+        # bouton existe.
+        self._update_validate_btn_state()
+        v = self._validate_btn
+        cbw = w.sizeHint().width()
+        cbh = w.sizeHint().height()
+        x = v.x() + v.width() + self._CANCEL_BTN_GAP
+        y = v.y()
+        w.setGeometry(x, y, cbw, cbh)
+
+    def _reveal_cancel_btn(self):
+        """SEUL point du code autorisé à afficher ce bouton — appelé
+        UNIQUEMENT par _ViewerToolbar.show_and_schedule_hide(), jumeau exact
+        de _reveal_validate_btn."""
+        tool = self._viewer._toolbar.active_tool
+        if self._CANCEL_KEYS.get(tool) is None:
+            return
+        self._update_cancel_btn_state()
+        w = self._cancel_btn
+        w.show()
+        w.raise_()
+        self._cancel_btn_visible = True
+
+    def _conceal_cancel_btn(self):
+        """SEUL point du code autorisé à masquer ce bouton — appelé
+        UNIQUEMENT par _ViewerToolbar._on_hide_timeout(), jumeau exact de
+        _conceal_validate_btn."""
+        if self._cancel_btn is not None:
+            self._cancel_btn.hide()
+        self._cancel_btn_visible = False
+
+    def retranslate_cancel_btn(self):
+        if self._cancel_btn is not None and self._cancel_btn_visible:
+            tool = self._viewer._toolbar.active_tool
+            key = self._CANCEL_KEYS.get(tool)
+            if key is not None:
+                self._cancel_btn.setText(_(key))
+            font = _get_current_font(12, bold=True)
+            self._cancel_btn.setFont(font)
 
     # ── Affichage du pixmap ──────────────────────────────────────────────────
 
@@ -279,6 +646,9 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         # Marqueur de source du tampon de clonage (outil "clone", voir
         # clone_tool_qt.py::CloneCanvasMixin.paint_clone_marker).
         self.paint_clone_marker(painter)
+
+        # Formes (outil "shapes", voir shapes_tool_qt.py::ShapeCanvasMixin.paint_shapes).
+        self.paint_shapes(painter)
 
         # Barre de progression verticale (mode Webtoon uniquement) : indique la
         # position de scroll dans une page qui dépasse de la fenêtre en hauteur.
@@ -359,6 +729,22 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
             self.text_mouse_press(event)
             return
 
+        if active_tool == "levels":
+            self.levels_pipette_click(event)
+            return
+
+        if active_tool == "shapes":
+            shapes_panel = self._viewer._toolbar._shapes_panel
+            if shapes_panel.pipette_active:
+                self.shapes_pipette_click(event)
+            else:
+                self.shape_mouse_press(event)
+            return
+
+        if active_tool == "transparency":
+            self.transparency_pipette_click(event)
+            return
+
         if active_tool != "crop":
             return
 
@@ -376,7 +762,7 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
                 self.pan_offset_x += delta.x()
                 self.pan_offset_y += delta.y()
                 self._pan_start = event.position().toPoint()
-                if self.has_crop or self.has_text_blocks:
+                if self.has_crop or self.has_text_blocks or self.has_shapes:
                     self._viewer.display_image(keep_crop_rect=True)
                 else:
                     self.display_offset_x += delta.x()
@@ -398,6 +784,19 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
                 self.clone_update_cursor(event)
             elif active_tool == "text":
                 self.text_update_cursor(event)
+            elif active_tool == "levels":
+                # Curseur pipette déjà posé par _LevelsOptionsPanel au clic sur
+                # le bouton pipette (voir _on_black/white_pipette_clicked) —
+                # ne pas l'écraser ici, contrairement aux autres outils qui
+                # recalculent leur curseur à chaque mouvement.
+                pass
+            elif active_tool == "transparency":
+                # Même principe que levels ci-dessus : curseur pipette déjà
+                # posé par _TransparencyOptionsPanel au clic sur son bouton
+                # pipette (voir _on_pipette_clicked) — ne pas l'écraser ici.
+                pass
+            elif active_tool == "shapes":
+                self.shape_update_cursor(event)
             else:
                 self.setCursor(Qt.ArrowCursor)
             return
@@ -420,6 +819,12 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
             self.text_mouse_move(event)
             return
 
+        if active_tool == "shapes":
+            if self._ignore_crop_events:
+                return
+            self.shape_mouse_move(event)
+            return
+
         if self._ignore_crop_events:
             return
         if active_tool != "crop":
@@ -429,7 +834,30 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.RightButton:
-            self.setCursor(Qt.ArrowCursor)
+            # Restaure le curseur pipette si l'outil "levels" est actif avec
+            # une pipette armée (bug vécu 2026-08-15) : sans ce cas, un pan
+            # (clic droit maintenu) pendant qu'une pipette est armée écrasait
+            # inconditionnellement le curseur avec ArrowCursor au relâchement,
+            # faisant "disparaître" visuellement la pipette alors que
+            # panel.active_pipette restait bien armé côté état (le clic
+            # suivant sur l'image continuait de fonctionner comme un clic
+            # pipette, seul le curseur affiché était trompeur).
+            levels_panel = self._viewer._toolbar._levels_panel
+            if (self._viewer._toolbar.active_tool == "levels"
+                    and levels_panel.active_pipette == "black"):
+                self.setCursor(levels_panel._cursor_black or Qt.CrossCursor)
+            elif (self._viewer._toolbar.active_tool == "levels"
+                    and levels_panel.active_pipette == "white"):
+                self.setCursor(levels_panel._cursor_white or Qt.CrossCursor)
+            elif self._viewer._toolbar.active_tool == "transparency":
+                # Même piège que la pipette de niveaux ci-dessus, corrigé de
+                # la même façon (2026-08-15) — pas de notion d'"armement" ici
+                # (pas de bouton pipette, contrairement à levels) : le
+                # curseur pipette est simplement celui de l'outil actif.
+                panel = self._viewer._toolbar._transparency_panel
+                self.setCursor(panel._cursor_pipette or Qt.CrossCursor)
+            else:
+                self.setCursor(Qt.ArrowCursor)
             if not self._is_panning:
                 self._viewer._show_context_menu(event.globalPosition().toPoint())
             self._pan_start  = None
@@ -451,6 +879,10 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
 
         if self._viewer._toolbar.active_tool == "text":
             self.text_mouse_release(event)
+            return
+
+        if self._viewer._toolbar.active_tool == "shapes":
+            self.shape_mouse_release(event)
             return
 
         self.crop_mouse_release(event)
@@ -489,7 +921,12 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
     def resizeEvent(self, event):
         super().resizeEvent(event)
         if self._validate_btn_visible and self._validate_btn is not None:
-            self._show_validate_btn()
+            # Le bouton est déjà visible — recalcule seulement sa position
+            # (la fenêtre vient de changer de taille), ne touche pas à sa
+            # visibilité (mécanisme unique, voir _update_validate_btn_state).
+            self._update_validate_btn_state()
+        if self._cancel_btn_visible and self._cancel_btn is not None:
+            self._update_cancel_btn_state()
         if self._viewer._toolbar.isVisible():
             self._viewer._toolbar.reposition()
         angle_panel = self._viewer._toolbar._angle_panel
@@ -516,6 +953,18 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         remove_colors_panel = self._viewer._toolbar._remove_colors_panel
         if remove_colors_panel.isVisible():
             remove_colors_panel.reposition()
+        compression_panel = self._viewer._toolbar._compression_panel
+        if compression_panel.isVisible():
+            compression_panel.reposition()
+        levels_panel = self._viewer._toolbar._levels_panel
+        if levels_panel.isVisible():
+            levels_panel.reposition()
+        shapes_panel = self._viewer._toolbar._shapes_panel
+        if shapes_panel.isVisible():
+            shapes_panel.reposition()
+        transparency_panel = self._viewer._toolbar._transparency_panel
+        if transparency_panel.isVisible():
+            transparency_panel.reposition()
         if self.has_text_blocks:
             self.reposition_text_blocks()
 
@@ -545,8 +994,9 @@ def _floating_options_panel_style(theme, class_name: str) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 
 class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, TextViewerMixin,
-                   AdjustmentsViewerMixin, BrightnessViewerMixin, SaturationViewerMixin,
-                   RemoveColorsViewerMixin, QDialog):
+                   SharpnessViewerMixin, BrightnessViewerMixin, SaturationViewerMixin,
+                   RemoveColorsViewerMixin, CompressionViewerMixin, LevelsViewerMixin,
+                   ShapeViewerMixin, TransparencyViewerMixin, QDialog):
     """
     Visionneuse d'images Qt.
     Reproduit à l'identique ImageViewer (tkinter) :
@@ -612,16 +1062,33 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         # persisté sur disque, perdu à la fermeture de la visionneuse.
         self._text_blocks_by_page: dict[int, list[tuple[int, int, str]]] = {}
 
+        # Formes en cours, conservées par page — même principe que
+        # _text_blocks_by_page (liste de N formes par page, pas une seule
+        # géométrie). Voir shapes_tool_qt.py::ShapeViewerMixin. Volatile :
+        # jamais persisté sur disque, perdu à la fermeture de la visionneuse.
+        self._shapes_by_page: dict[int, list[tuple]] = {}
+
+        # Images de travail RGBA en cours pour l'outil "transparency"
+        # (13e outil migré, 8e et dernier mode d'ajustement), conservées par
+        # page — même principe que _shapes_by_page/_text_blocks_by_page, mais
+        # valeur = image PIL RGBA accumulée (pas une géométrie) : contrairement
+        # à levels (commit immédiat par clic), plusieurs clics pipette
+        # s'accumulent avant validation explicite (bouton "Valider" partagé),
+        # décision utilisateur 2026-08-15. Voir transparency_tool_qt.py::
+        # TransparencyViewerMixin. Volatile : jamais persisté sur disque,
+        # perdu à la fermeture de la visionneuse.
+        self._transp_work_img_by_page: dict[int, "Image.Image"] = {}
+
         # Preview PIL des outils "sharpness"/"unsharp" (5e outil migré) ET
         # "brightness" (6e outil migré), PARTAGÉ entre les trois (un seul
-        # outil actif à la fois dans la barre, voir adjustments_tool_qt.py::
+        # outil actif à la fois dans la barre, voir sharpness_tool_qt.py::
         # _update_unsharp_preview et brightness_tool_qt.py::
         # _update_brightness_preview) — PAS de dict par page comme
         # crop/straighten/texte : contrairement à eux, un réglage non validé
         # ne survit pas à un changement de page (idees.txt #3, décision
         # explicite du 2026-08-14). Consommé par _display_single_page à la
         # place de ensure_image_loaded(entry) quand non None. Voir
-        # adjustments_tool_qt.py::AdjustmentsViewerMixin et
+        # sharpness_tool_qt.py::SharpnessViewerMixin et
         # brightness_tool_qt.py::BrightnessViewerMixin. La correspondance
         # valeur commitée <-> point d'historique vit sur state (pas ici), voir
         # state.py::sharpness_value_by_history_index /
@@ -694,6 +1161,25 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         # _reset_remove_colors_preview) — remet toujours le slider à 0, même
         # principe que saturation.
         self._reset_remove_colors_preview()
+        # Idem pour la compression (voir compression_tool_qt.py::
+        # _reset_compression_preview) — resynchronise sur la qualité JPEG
+        # RÉELLE de la page affichée (detect_jpeg_quality), pas une valeur
+        # fixe. Grise aussi l'icône si la page n'est pas JPEG/WEBP/AVIF (voir
+        # _refresh_compression_button_state, propre à cet outil).
+        self._reset_compression_preview()
+        self._refresh_compression_button_state()
+        # Idem pour les niveaux (voir levels_tool_qt.py::
+        # _reset_levels_preview) — resynchronise sur les 4 valeurs commitées
+        # pour cette page à ce point d'historique, ou les valeurs neutres.
+        self._reset_levels_preview()
+        # Idem pour la transparence (13e outil migré, voir
+        # transparency_tool_qt.py::TransparencyViewerMixin) — resynchronise
+        # sur l'image de travail déjà en cours pour cette page, s'il y en a
+        # une. Grise aussi l'icône si la page n'est pas PNG/WEBP/ICO/AVIF
+        # (voir _refresh_transparency_button_state, même principe que
+        # compression).
+        self._restore_transparency_for_page(self.current_idx)
+        self._refresh_transparency_button_state()
 
         # Label du nom en bas
         self._name_label = QLabel()
@@ -723,11 +1209,29 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         # le curseur dans le texte : sans ce garde, ces deux QShortcut (contexte
         # par défaut Qt.WindowShortcut, actif même si un QTextEdit enfant a le
         # focus) intercepteraient la flèche avant qu'elle n'atteigne l'overlay.
+        # Même principe pour l'outil "shapes" : une forme sélectionnée se
+        # déplace au clavier (flèches seules, pas de widget de saisie en
+        # concurrence — voir shapes_tool_qt.py::ShapeCanvasMixin.shape_key_press),
+        # priorité sur la navigation de page tant qu'une forme est active.
         QShortcut(QKeySequence(Qt.Key_Left),       self).activated.connect(
-            lambda: None if self._text_block_has_focus() else self.navigate(-1))
+            lambda: None if self._shape_key_nav(Qt.Key_Left) or self._text_block_has_focus()
+            else self.navigate(-1))
         QShortcut(QKeySequence(Qt.Key_Right),      self).activated.connect(
-            lambda: None if self._text_block_has_focus() else self.navigate(1))
+            lambda: None if self._shape_key_nav(Qt.Key_Right) or self._text_block_has_focus()
+            else self.navigate(1))
+        QShortcut(QKeySequence(Qt.Key_Up),         self).activated.connect(
+            lambda: self._shape_key_nav(Qt.Key_Up))
+        QShortcut(QKeySequence(Qt.Key_Down),       self).activated.connect(
+            lambda: self._shape_key_nav(Qt.Key_Down))
         QShortcut(QKeySequence(Qt.Key_Escape),     self).activated.connect(self._on_escape)
+        # Suppr/Del : efface le tracé de forme en cours (pas encore posé) s'il
+        # y en a un, sinon la forme SÉLECTIONNÉE (pas toutes, contrairement à
+        # Échap sans tracé en cours — voir _on_escape) — comportement standard
+        # attendu de cette touche dans un éditeur graphique, demande explicite
+        # utilisateur ("suppr ou del doit en faire autant" qu'Échap pour le
+        # tracé en cours).
+        QShortcut(QKeySequence(Qt.Key_Delete),     self).activated.connect(self._on_shape_delete_key)
+        QShortcut(QKeySequence(Qt.Key_Backspace),  self).activated.connect(self._on_shape_delete_key)
         QShortcut(QKeySequence(Qt.Key_F11),        self).activated.connect(self.toggle_fullscreen)
 
         QShortcut(QKeySequence("Ctrl+Z"),          self).activated.connect(self._undo_and_refresh)
@@ -795,6 +1299,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         self._play_pause_btn.setStyleSheet(btn_style)
 
         self._canvas.retranslate_validate_btn()
+        self._canvas.retranslate_cancel_btn()
 
         self._toolbar._apply_theme()
         self._toolbar.retranslate()
@@ -859,7 +1364,18 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             return True
         if self._canvas.has_text_blocks:
             return True
-        return bool(self._text_blocks_by_page)
+        if self._text_blocks_by_page:
+            return True
+        if self._canvas.has_shapes:
+            return True
+        if self._shapes_by_page:
+            return True
+        # Contrairement au crop/straighten/texte/formes (état vivant dans le
+        # canvas de la page COURANTE, pas encore transféré dans son dict par
+        # page), l'image de travail de transparency est déjà indexée par
+        # page dès le premier clic pipette (voir transparency_tool_qt.py) —
+        # une seule vérification suffit, pas de doublon canvas+dict à tester.
+        return bool(self._transp_work_img_by_page)
 
     def closeEvent(self, event):
         if self._closed:
@@ -1048,6 +1564,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             self._save_crop_for_current_page()
             self._save_straighten_for_current_page()
             self._save_text_for_current_page()
+            self._save_shapes_for_current_page()
             self.current_idx = img_indices[new_pos]
             if self.page_mode == "webtoon":
                 self._canvas.pan_offset_y = 0
@@ -1055,6 +1572,8 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             self._restore_crop_for_page(self.current_idx)
             self._restore_straighten_for_page(self.current_idx)
             self._restore_text_for_page(self.current_idx)
+            self._restore_shapes_for_page(self.current_idx)
+            self._restore_transparency_for_page(self.current_idx)
             # Pas de persistance par page pour le clonage (voir idees.txt #3,
             # discussion du 3e outil migré) : la source Ctrl+cliquée est
             # simplement effacée, aucun travail en attente à restaurer.
@@ -1068,19 +1587,30 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             self._reset_brightness_preview()
             self._reset_saturation_preview()
             self._reset_remove_colors_preview()
+            self._reset_compression_preview()
+            self._refresh_compression_button_state()
+            self._reset_levels_preview()
+            self._refresh_transparency_button_state()
             self.display_image(keep_crop_rect=True)
         except ValueError:
             self._save_crop_for_current_page()
             self._save_straighten_for_current_page()
             self._save_text_for_current_page()
+            self._save_shapes_for_current_page()
             self.current_idx = img_indices[0]
             self._restore_crop_for_page(self.current_idx)
             self._restore_straighten_for_page(self.current_idx)
             self._restore_text_for_page(self.current_idx)
+            self._restore_shapes_for_page(self.current_idx)
+            self._restore_transparency_for_page(self.current_idx)
             self._reset_sharpness_preview()
             self._reset_brightness_preview()
             self._reset_saturation_preview()
             self._reset_remove_colors_preview()
+            self._reset_compression_preview()
+            self._refresh_compression_button_state()
+            self._reset_levels_preview()
+            self._refresh_transparency_button_state()
             self._canvas.clear_clone_source()
             self.display_image(keep_crop_rect=True)
 
@@ -1250,16 +1780,40 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
     # ── Undo/Redo ─────────────────────────────────────────────────────────────
 
     def _undo_and_refresh(self):
+        if self._block_undo_redo_for_unvalidated_work():
+            return
         fn = self.callbacks.get("undo_action")
         if fn:
             fn()
         self._refresh_after_undo_redo()
 
     def _redo_and_refresh(self):
+        if self._block_undo_redo_for_unvalidated_work():
+            return
         fn = self.callbacks.get("redo_action")
         if fn:
             fn()
         self._refresh_after_undo_redo()
+
+    def _block_undo_redo_for_unvalidated_work(self) -> bool:
+        """True si Ctrl+Z/Ctrl+Y (et les boutons undo/redo de la barre,
+        _on_undo_clicked/_on_redo_clicked dans viewer_toolbar_qt.py, qui
+        passent tous les deux par _undo_and_refresh/_redo_and_refresh) doivent
+        être bloqués — trou de conception découvert le 2026-08-15 (transparency,
+        13e outil migré) : l'historique undo/redo unique de l'appli
+        (state.history) n'a jamais eu connaissance du travail non validé
+        propre à un outil de cette barre (crop/straighten/text/shapes/
+        transparency, voir _has_unvalidated_work) — un Ctrl+Z pendant qu'un
+        tel travail existe restaure entry['bytes'] à un état antérieur SOUS
+        un travail qui, lui, référence encore l'ancien entry['bytes'] (le
+        plus dangereux : l'image de travail RGBA de transparency, capturée
+        une seule fois au premier clic pipette et jamais réactualisée) —
+        valider ensuite écraserait le undo avec une donnée périmée,
+        silencieusement. No-op silencieux (pas de MsgDialog) tant qu'il reste
+        du travail non validé — même principe qu'un Ctrl+Z sans rien à
+        annuler ailleurs dans l'appli : aucune action possible, donc aucun
+        effet, sans avertissement."""
+        return self._has_unvalidated_work()
 
     def _refresh_after_undo_redo(self):
         """Rafraîchit la visionneuse après undo/redo en invalidant le cache image."""
@@ -1281,8 +1835,52 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         self._reset_brightness_preview()
         self._reset_saturation_preview()
         self._reset_remove_colors_preview()
+        self._reset_compression_preview()
+        self._refresh_compression_button_state()
+        self._reset_levels_preview()
+        # L'image de travail de transparency, elle, ne doit PAS être annulée
+        # par un undo/redo (contrairement aux previews des autres modes) :
+        # c'est un travail non validé, indépendant de l'historique undo/redo
+        # (même principe que _crop_by_page/_shapes_by_page, qui survivent
+        # eux aussi à un undo/redo) — seul le bouton grisable est à
+        # rafraîchir ici, le format de la page ayant pu changer.
+        self._refresh_transparency_button_state()
         self.display_image()
         self._toolbar.refresh_undo_redo_state()
+
+    def _refresh_compression_button_state(self):
+        """Grise/dégrise l'icône "compression" de la barre selon le format de
+        la page COURANTE (idees.txt #3, seul outil migré à ce jour dont la
+        disponibilité dépend du format de fichier) — appelé à l'ouverture de
+        la visionneuse, à chaque changement de page (navigate) et après
+        undo/redo, jamais à la construction seule (le format peut changer
+        d'une page à l'autre). Rafraîchit aussi le tooltip (texte différent
+        activé/désactivé, voir viewer_toolbar_qt.py::
+        _update_compression_tooltip)."""
+        state = self.callbacks.get('state') or _state_module.state
+        if not (0 <= self.current_idx < len(state.images_data)):
+            return
+        entry = state.images_data[self.current_idx]
+        self._toolbar._buttons["compression"].set_enabled_state(is_compressible_entry(entry))
+        self._toolbar._update_compression_tooltip()
+
+    def _refresh_transparency_button_state(self):
+        """Grise/dégrise l'icône "transparency" de la barre selon le format
+        de la page COURANTE (13e outil migré, 2e outil migré dont la
+        disponibilité dépend du format de fichier après compression) —
+        appelé à l'ouverture de la visionneuse, à chaque changement de page
+        (navigate) et après undo/redo, jamais à la construction seule (le
+        format peut changer d'une page à l'autre). Rafraîchit aussi le
+        tooltip (texte différent activé/désactivé, même principe que
+        compression, voir viewer_toolbar_qt.py::
+        _update_transparency_tooltip)."""
+        state = self.callbacks.get('state') or _state_module.state
+        if not (0 <= self.current_idx < len(state.images_data)):
+            return
+        entry = state.images_data[self.current_idx]
+        self._toolbar._buttons["transparency"].set_enabled_state(
+            is_transparency_supported_entry(entry))
+        self._toolbar._update_transparency_tooltip()
 
     # ── Touches clavier ───────────────────────────────────────────────────────
 
@@ -1301,16 +1899,74 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         block = self._canvas._text_active_block()
         return block is not None and block.overlay.isVisible() and block.overlay.hasFocus()
 
+    # ── Outil formes : déplacement clavier ────────────────────────────────────
+
+    def _shape_key_nav(self, key) -> bool:
+        """Déplace d'1px la forme sélectionnée si l'outil "shapes" est actif
+        et qu'une forme est sélectionnée — retourne True si la touche a été
+        consommée par ce déplacement (les QShortcut Left/Right cèdent alors
+        la priorité à la navigation de page, voir __init__)."""
+        if self._toolbar.active_tool != "shapes" or self._canvas._shape_active is None:
+            return False
+        shape = self._canvas._shape_active
+        dx = dy = 0
+        if key == Qt.Key_Left:    dx = -1
+        elif key == Qt.Key_Right: dx = 1
+        elif key == Qt.Key_Up:    dy = -1
+        elif key == Qt.Key_Down:  dy = 1
+        else:
+            return False
+        shape.ix1 += dx; shape.iy1 += dy
+        shape.ix2 += dx; shape.iy2 += dy
+        self._canvas.update()
+        self._on_shapes_content_changed()
+        return True
+
+    # ── Bouton "Annuler" partagé (crop/straighten/text/shapes/transparency) ────
+
+    def _cancel_tool_work(self, tool: str):
+        """Annule TOUT le travail non validé de l'outil `tool` d'un coup —
+        même geste que le clic sur le bouton "Annuler" flottant (2026-08-15,
+        décision explicite utilisateur : bouton partagé, symétrique du
+        bouton "Valider", pour les 5 outils qui en ont un). Réutilise le
+        même code que les branches correspondantes de _on_escape, mais
+        indexé directement par `tool` (l'outil réellement actif) plutôt que
+        par une détection en cascade — _on_escape doit rester tel quel car
+        Échap a une logique de priorité entre outils (crop avant straighten
+        avant clone...) qui n'a pas de sens ici : ce bouton n'agit que sur
+        l'outil actuellement sélectionné dans la barre, jamais un autre."""
+        if tool == "crop":
+            self._canvas.clear_crop()
+            self._crop_by_page.pop(self.current_idx, None)
+        elif tool == "straighten":
+            self._canvas.clear_line()
+            self._toolbar._angle_panel.reset()
+            self._straighten_by_page.pop(self.current_idx, None)
+        elif tool == "text":
+            self._canvas.clear_text_blocks()
+            self._toolbar._text_panel.set_visible_for_tool(self._toolbar.active_tool)
+            self._text_blocks_by_page.pop(self.current_idx, None)
+        elif tool == "shapes":
+            self._canvas.clear_shapes()
+            self._shapes_by_page.pop(self.current_idx, None)
+            self._on_shapes_content_changed()
+        elif tool == "transparency":
+            self._clear_transparency_work()  # rafraîchit déjà _update_validate_btn_state()
+        self._canvas._update_validate_btn_state()
+        self._canvas._update_cancel_btn_state()
+
     # ── Échap ─────────────────────────────────────────────────────────────────
 
     def _on_escape(self):
         if self._canvas.has_crop or self._canvas._crop_start is not None:
             self._canvas.clear_crop()
             self._crop_by_page.pop(self.current_idx, None)
+            self._canvas._update_cancel_btn_state()
         elif self._canvas.has_line or self._canvas._line_start is not None:
             self._canvas.clear_line()
             self._toolbar._angle_panel.reset()
             self._straighten_by_page.pop(self.current_idx, None)
+            self._canvas._update_cancel_btn_state()
         elif self._canvas._clone_source_img is not None:
             # Efface la source Ctrl+cliquée — rien d'autre à annuler pour cet
             # outil (voir idees.txt #3, le clonage n'a pas de "travail en
@@ -1319,23 +1975,89 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         elif self._canvas.has_text_blocks:
             self._canvas.clear_text_blocks()
             self._toolbar._text_panel.set_visible_for_tool(self._toolbar.active_tool)
-            self._canvas._hide_validate_btn()
+            # Recalcule seulement l'ÉTAT du bouton (repasse en gris,
+            # has_text_blocks vient de redevenir faux) — ne touche jamais à sa
+            # visibilité (mécanisme unique, voir _update_validate_btn_state).
+            self._canvas._update_validate_btn_state()
+            self._canvas._update_cancel_btn_state()
             self._text_blocks_by_page.pop(self.current_idx, None)
+        elif self._canvas._shape_draw_start is not None:
+            # Tracé de forme en cours (pas encore posée) : annule seulement
+            # ce tracé, ne touche pas aux formes déjà posées sur la page.
+            self._canvas._shape_draw_start = None
+            self._canvas._shape_draw_end = None
+            self._canvas.update()
+        elif self._canvas.has_shapes:
+            self._canvas.clear_shapes()
+            self._shapes_by_page.pop(self.current_idx, None)
+            self._on_shapes_content_changed()
+            self._canvas._update_cancel_btn_state()
+        elif self.current_idx in self._transp_work_img_by_page:
+            # Travail de transparency en attente sur la page courante — testé
+            # AVANT le bloc self._sharpness_preview_img ci-dessous : ce champ
+            # de preview partagé est aussi utilisé par transparency (voir
+            # _update_transparency_preview), donc sans cette priorité le
+            # travail accumulé serait ignoré par le reset générique (qui ne
+            # touche pas à _transp_work_img_by_page) au lieu d'être
+            # entièrement annulé (idees.txt #3, décision explicite 2026-08-15 :
+            # Échap/Suppr annule TOUT le travail en attente d'un coup, pas un
+            # undo clic par clic — voir _clear_transparency_work).
+            self._clear_transparency_work()
+            self._canvas._update_cancel_btn_state()
         elif self._sharpness_preview_img is not None:
             # Champ de preview PARTAGÉ entre sharpness/unsharp/brightness/
-            # saturation/remove_colors (un seul outil actif à la fois) — un
-            # seul des reset a un effet réel selon l'outil actuellement actif
-            # dans la barre, les autres sont des no-op silencieux (retrouvent
-            # (0,0)/0 et redéfinissent déjà self._sharpness_preview_img à
-            # None, sans dégât).
+            # saturation/remove_colors/compression/levels (un seul outil actif
+            # à la fois) — un seul des reset a un effet réel selon l'outil
+            # actuellement actif dans la barre, les autres sont des no-op
+            # silencieux (retrouvent (0,0)/0/valeur détectée et redéfinissent
+            # déjà self._sharpness_preview_img à None, sans dégât).
             self._reset_sharpness_preview()
             self._reset_brightness_preview()
             self._reset_saturation_preview()
             self._reset_remove_colors_preview()
+            self._reset_compression_preview()
+            self._reset_levels_preview()
+        elif self._toolbar._levels_panel.active_pipette is not None:
+            # Pipette armée mais aucun clic effectué (pas de preview en cours
+            # au sens des sliders) — Échap la désarme simplement, comme les
+            # autres outils annulent leur geste en cours.
+            self._toolbar._levels_panel._deactivate_pipettes()
         elif self.is_fullscreen:
             self.toggle_fullscreen()
         else:
             self.close()
+
+    def _on_shape_delete_key(self):
+        """Suppr/Del : sur l'outil "shapes", efface le tracé en cours s'il y
+        en a un (même geste qu'Échap dans ce cas précis), sinon UNIQUEMENT la
+        forme actuellement sélectionnée (pas toutes les formes de la page,
+        contrairement à Échap sans tracé en cours — voir _on_escape) :
+        comportement standard d'une touche Suppr dans un éditeur graphique.
+        Sur l'outil "transparency" (idees.txt #3, décision explicite
+        2026-08-15) : annule TOUT le travail en attente d'un coup, même
+        geste qu'Échap pour cet outil (pas de notion de "sélection" à
+        effacer individuellement comme pour les formes). No-op si aucun de
+        ces deux outils n'est actif ou si rien n'est à effacer, pour ne
+        jamais interférer avec un Suppr destiné à un autre widget (ex. une
+        spinbox en cours de frappe)."""
+        if self._toolbar.active_tool == "transparency":
+            if self.current_idx in self._transp_work_img_by_page:
+                self._clear_transparency_work()
+            return
+        if self._toolbar.active_tool != "shapes":
+            return
+        canvas = self._canvas
+        if canvas._shape_draw_start is not None:
+            canvas._shape_draw_start = None
+            canvas._shape_draw_end = None
+            canvas.update()
+            return
+        active = canvas._shape_active
+        if active is not None and active in canvas._shapes:
+            canvas._shapes.remove(active)
+            canvas._shape_active = None
+            canvas.update()
+            self._on_shapes_content_changed()
 
     # ── Marque-page ───────────────────────────────────────────────────────────
 
@@ -1534,13 +2256,15 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             return
 
         # Preview live des outils "sharpness"/"unsharp"/"brightness"/
-        # "saturation"/"remove_colors" (non appliqué à entry['bytes'], champ
-        # partagé — un seul actif à la fois) : uniquement pour la page
-        # réellement affichée, voir adjustments_tool_qt.py::
-        # AdjustmentsViewerMixin._update_sharpness_preview,
+        # "saturation"/"remove_colors"/"compression"/"levels" (non appliqué à
+        # entry['bytes'], champ partagé — un seul actif à la fois) :
+        # uniquement pour la page réellement affichée, voir
+        # sharpness_tool_qt.py::SharpnessViewerMixin._update_sharpness_preview,
         # brightness_tool_qt.py::BrightnessViewerMixin._update_brightness_preview,
-        # saturation_tool_qt.py::SaturationViewerMixin._update_saturation_preview
-        # et remove_colors_tool_qt.py::RemoveColorsViewerMixin._update_remove_colors_preview.
+        # saturation_tool_qt.py::SaturationViewerMixin._update_saturation_preview,
+        # remove_colors_tool_qt.py::RemoveColorsViewerMixin._update_remove_colors_preview,
+        # compression_tool_qt.py::CompressionViewerMixin._update_compression_preview
+        # et levels_tool_qt.py::LevelsViewerMixin._update_levels_preview.
         if self._sharpness_preview_img is not None and idx == self.current_idx:
             img = self._sharpness_preview_img
         else:
@@ -1604,34 +2328,32 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             self._canvas._crop_start = QPoint(x1, y1)
             self._canvas._crop_end   = QPoint(x2, y2)
             self._canvas.update()
-            # Bouton Valider affiché seulement si l'outil crop est réellement actif
-            # (un crop restauré sur une page pendant que l'outil est désélectionné
-            # reste visible en gris mais non actionnable, voir _ViewerToolbar).
-            if self._toolbar.active_tool == "crop":
-                self._canvas._show_validate_btn()
-            else:
-                self._canvas._hide_validate_btn()
+            # Recalcule seulement l'ÉTAT du bouton (texte/couleur/position),
+            # jamais sa visibilité — voir _update_validate_btn_state, seul
+            # mécanisme de visibilité = _ViewerToolbar.show_and_schedule_hide/
+            # _on_hide_timeout. Si l'outil actif n'est pas crop,
+            # _update_validate_btn_state() elle-même ne fait rien (key is None) :
+            # pas besoin d'un appel "hide" séparé ici. Bouton "Annuler" jumeau
+            # rafraîchi juste à côté (même condition, même raisonnement).
+            self._canvas._update_validate_btn_state()
+            self._canvas._update_cancel_btn_state()
 
         # Redessine le trait de redressage si un trait est mémorisé pour cette page
         if self._canvas.has_line:
             self._canvas._sync_line_from_image()
             self._canvas.update()
-            if self._toolbar.active_tool == "straighten":
-                self._canvas._show_validate_btn()
-                self._toolbar._angle_panel.set_visible_for_tool("straighten")
-            else:
-                self._canvas._hide_validate_btn()
-                self._toolbar._angle_panel.hide()
+            self._canvas._update_validate_btn_state()
+            self._canvas._update_cancel_btn_state()
+            self._toolbar._angle_panel.set_visible_for_tool(
+                "straighten" if self._toolbar.active_tool == "straighten" else None)
 
         # Repositionne les blocs de texte de cette page (widgets Qt enfants du
         # canvas, pas un simple dessin — doivent suivre offset_x/y/zoom comme
         # le fait paint_crop_rect/paint_straighten_line pour leurs overlays).
         if self._canvas.has_text_blocks:
             self._canvas.reposition_text_blocks()
-            if self._toolbar.active_tool == "text":
-                self._canvas._show_validate_btn()
-            else:
-                self._canvas._hide_validate_btn()
+            self._canvas._update_validate_btn_state()
+            self._canvas._update_cancel_btn_state()
 
         # Nom de fichier
         img_indices = self.get_image_indices()

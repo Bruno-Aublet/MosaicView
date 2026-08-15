@@ -66,7 +66,14 @@
     "batch_library": "สร้างคลังจากโฟลเดอร์",
     "batch_recompress": "บีบอัด CBZ ใหม่ที่ระดับเริ่มต้น",
     "validate_straighten": "ยืนยันการปรับให้ตรง",
-    "validate_text": "ใช้ข้อความ"
+    "validate_text": "ใช้ข้อความ",
+    "validate_shapes": "ยืนยันรูปทรง",
+    "validate_transparency": "ยืนยันความโปร่งใส",
+    "cancel_crop": "ยกเลิกการครอบตัด",
+    "cancel_straighten": "ยกเลิกการทำให้ตรง",
+    "cancel_text": "ยกเลิกข้อความ",
+    "cancel_shapes": "ยกเลิกรูปทรง",
+    "cancel_transparency": "ยกเลิกความโปร่งใส"
   },
   "tabs": {
     "mosaic": "โมเสก",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "ความอิ่มตัว :",
     "toolbar_remove_colors_tooltip": "การลบสี",
     "toolbar_remove_colors_instruction": "ปรับแถบเลื่อน การปรับจะมีผลเมื่อปล่อยเมาส์",
-    "remove_colors_panel_label": "ความเข้ม :"
+    "remove_colors_panel_label": "ความเข้ม :",
+    "toolbar_compression_tooltip": "การบีบอัด",
+    "toolbar_compression_instruction": "ปรับแถบเลื่อน การปรับจะมีผลเมื่อปล่อย",
+    "toolbar_compression_disabled": "ใช้ได้เฉพาะกับภาพ JPG, WEBP และ AVIF เท่านั้น",
+    "compression_panel_label": "คุณภาพ :",
+    "toolbar_levels_tooltip": "ระดับสี",
+    "toolbar_levels_instruction": "หลอดหยดหรือแถบเลื่อน การปรับจะมีผลเมื่อปล่อย/คลิก",
+    "levels_gamma_panel_label": "แกมมา :",
+    "levels_threshold_panel_label": "เกณฑ์ :",
+    "levels_black_panel_label": "จุดดำ :",
+    "levels_white_panel_label": "จุดขาว :",
+    "levels_black_slider_tooltip": "พิกเซลทั้งหมดที่เข้มกว่าค่านี้จะกลายเป็นสีดำสนิท",
+    "levels_gamma_slider_tooltip": "ทำให้โทนกลางสว่างขึ้นหรือมืดลง โดยไม่กระทบสีดำหรือสีขาว",
+    "levels_white_slider_tooltip": "พิกเซลทั้งหมดที่สว่างกว่าค่านี้จะกลายเป็นสีขาวสนิท",
+    "levels_threshold_slider_tooltip": "แปลงภาพเป็นขาวดำล้วนตามเกณฑ์นี้",
+    "levels_auto_tooltip": "วิเคราะห์หน้าที่แสดงอยู่และปรับจุดดำและจุดขาวโดยอัตโนมัติเพื่อเพิ่มความคมชัดสูงสุด",
+    "toolbar_shapes_tooltip": "รูปทรง",
+    "toolbar_shapes_instruction": "ลากเพื่อวาดรูปทรง จุดจับเพื่อปรับขนาด ปุ่มลูกศรเพื่อย้าย",
+    "shape_type_ellipse": "วงรี",
+    "shape_type_rectangle": "สี่เหลี่ยมผืนผ้า",
+    "shape_type_rounded_rectangle": "สี่เหลี่ยมผืนผ้ามุมโค้ง",
+    "shape_type_line": "เส้นตรง",
+    "shape_type_arrow": "ลูกศร",
+    "shape_thickness_label": "ความหนา:",
+    "shape_color_label": "สี:",
+    "shape_color_tooltip": "เลือกสีของเส้นขอบและสีเติม",
+    "shape_fill_enabled_label": "เติมสี",
+    "shape_pipette_tooltip": "ดึงสีจากหน้าที่แสดงอยู่",
+    "toolbar_transparency_tooltip": "ความโปร่งใส",
+    "toolbar_transparency_instruction": "คลิกสีที่ต้องการทำให้โปร่งใส",
+    "toolbar_transparency_disabled": "ใช้ได้เฉพาะกับภาพ PNG, WebP, ICO และ AVIF เท่านั้น",
+    "transparency_flood_panel_label": "พื้นที่",
+    "transparency_global_panel_label": "ทั้งหมด",
+    "transparency_tolerance_panel_label": "ค่าความคลาดเคลื่อน:",
+    "transparency_type_slider_tooltip": "พื้นที่: ทำให้บริเวณสีเดียวกันรอบพิกเซลที่คลิกโปร่งใส ทั้งหมด: มีผลต่อพิกเซลทั้งหมดของภาพที่มีสีใกล้เคียงกับสีที่คลิก",
+    "transparency_tolerance_slider_tooltip": "ระยะห่างของสีสูงสุดที่ยอมรับได้รอบพิกเซลที่คลิก"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "ไม่มีข้อความ",
         "message": "โปรดป้อนข้อความอย่างน้อยหนึ่งบล็อกก่อน"
+      },
+      "no_shape": {
+        "title": "ยังไม่มีรูปทรงที่วาด",
+        "message": "กรุณาวาดรูปทรงอย่างน้อยหนึ่งรูปก่อน"
+      },
+      "no_transparency_work": {
+        "title": "ยังไม่ได้ใช้ความโปร่งใส",
+        "message": "โปรดคลิกสีที่ต้องการทำให้โปร่งใสก่อน"
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "ข้อผิดพลาด",
         "message": "ไม่สามารถปรับการลบสีได้: {error}"
+      },
+      "compression_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถใช้การบีบอัดได้: {error}"
+      },
+      "levels_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถปรับระดับสีได้: {error}"
+      },
+      "shapes_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถใช้รูปทรงได้: {error}"
+      },
+      "transparency_failed": {
+        "title": "ข้อผิดพลาด",
+        "message": "ไม่สามารถใช้ความโปร่งใสได้"
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "ภาพ",
       "apply_button": "นำไปใช้",
       "color_depth_section": "ความลึกของสี",
-      "compression_section": "การบีบอัด",
       "effects_section": "เอฟเฟกต์",
       "sharpness_section": "ความคมชัด",
-      "levels_section": "ระดับสีดำ/ขาว",
       "depth_unchanged": "ไม่เปลี่ยนแปลง",
       "depth_32bit": "32 บิต (RGBA - สี + ความโปร่งใส)",
       "depth_24bit": "24 บิต (RGB - สี)",
       "depth_8bit": "8 bit (paleteu PNG / radab sii thaw JPEG)",
       "depth_1bit": "1 บิต (ขาวดำ)",
       "compression_enable": "เปิดใช้งานการบีบอัดใหม่",
-      "compression_quality_label": "คุณภาพ : {value}/100",
       "effect_none": "ไม่มีเอฟเฟกต์",
       "effect_grayscale": "ระดับสีเทา",
       "effect_sepia": "สีซีเปีย",
-      "levels_none": "ไม่มีการปรับ",
-      "levels_threshold": "เกณฑ์ (ดำหรือขาวล้วน)",
-      "levels_advanced": "ระดับขั้นสูง (เงา/โทนกลาง/ไฮไลท์)",
-      "threshold_label": "เกณฑ์: {value}",
-      "black_point_label": "จุดดำ: {value}",
-      "gamma_label": "แกมมา (โทนกลาง): {value}",
-      "white_point_label": "จุดขาว: {value}",
       "auto_levels_button": "การปรับอัตโนมัติ",
-      "open_viewer_button": "ปรับด้วยตัวแสดง (แนะนำ)",
-      "compression_info": "การบีบอัดใช้ได้เฉพาะกับภาพ JPG, WebP และ AVIF เท่านั้น",
-      "open_viewer_button_simple": "ปรับด้วยโปรแกรมดู",
       "reset_button": "รีเซ็ต",
       "preview_section": "แสดงตัวอย่าง",
       "effect_invert": "การกลับสี",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (ระดับเทา + ความโปร่งใส)",
       "image_mode_cmyk": "CMYK (พิมพ์)",
       "image_mode_1": "1 (ขาวดำบริสุทธิ์)",
-      "image_mode_p": "P (พาล็ต 256 สี)",
-      "transparency_section": "ความโปร่งใส",
-      "transparency_info": "ความโปร่งใสใช้ได้เฉพาะกับภาพ PNG, WebP, ICO และ AVIF เท่านั้น",
-      "transparency_type_label": "ประเภท :",
-      "transparency_type_flood": "โซน",
-      "transparency_type_global": "ทั่วทั้งภาพ",
-      "transparency_tolerance_label": "ค่าความคลาดเคลื่อน :",
-      "transparency_viewer_title": "ปรับความโปร่งใส",
-      "transparency_click_instruction": "คลิกที่สีที่ต้องการทำให้โปร่งใส",
-      "transparency_undo": "เลิกทำการคลิกล่าสุด",
-      "transparency_redo": "ทำซ้ำ",
-      "transparency_type_flood_tooltip": "Flood fill : ทำให้บริเวณสีสม่ำเสมอรอบพิกเซลที่คลิกโปร่งใส",
-      "transparency_type_global_tooltip": "ความโปร่งใสทั่วทั้งภาพ : ส่งผลต่อพิกเซลทั้งหมดในภาพที่มีสีใกล้เคียงกับที่คลิก",
-      "transparency_apply": "ใช้งาน",
-      "transparency_skipped_warning": "{count} ภาพถูกข้าม — รูปแบบไม่รองรับความโปร่งใส หากต้องการรวมไว้ ให้แปลงเป็น PNG ก่อน",
-      "auto_levels_tooltip": "วิเคราะห์แต่ละหน้าและปรับระดับสีดำและสีขาวโดยอัตโนมัติเพื่อเพิ่มความคมชัดสูงสุด\nหากต้องการเลือกทีละหน้า ให้ใช้ตัวแสดง",
-      "transparency_unsaved_title": "การเปลี่ยนแปลงที่ยังไม่ได้ใช้",
-      "transparency_unsaved_message": "การเปลี่ยนแปลงปัจจุบันยังไม่ได้ถูกนำไปใช้กับภาพ คุณต้องการทำอะไร?",
-      "transparency_unsaved_discard": "ปิดโดยไม่ใช้",
-      "transparency_unsaved_apply": "ใช้และปิด",
-      "transparency_unsaved_cancel": "ยกเลิก"
+      "image_mode_p": "P (พาล็ต 256 สี)"
     },
     "levels_viewer": {
-      "title": "ปรับระดับด้วยหลอดดูดสี",
-      "apply_current": "ใช้กับหน้านี้",
-      "apply_all": "ใช้กับทุกหน้าที่เลือก",
       "black_pipette": "หลอดดูดจุดดำ",
       "white_pipette": "หลอดดูดจุดขาว",
       "black_pipette_tooltip": "คลิกที่พิกเซลที่ควรจะเป็นสีดำสนิท ระวัง: ทำมากเกินไปได้ง่าย!",
       "white_pipette_tooltip": "คลิกที่พิกเซลที่ควรจะเป็นสีขาวสนิท ระวัง: ทำมากเกินไปได้ง่าย!"
-    },
-    "compression_viewer": {
-      "title": "การปรับการบีบอัด"
     },
     "outliers": {
       "title": "หน้าที่มีขนาดผิดปกติ",

@@ -66,7 +66,14 @@
     "batch_library": "Buat perpustakaan daripada folder",
     "batch_recompress": "Mampatkan semula fail CBZ pada tahap lalai",
     "validate_straighten": "Sahkan pelurusan",
-    "validate_text": "Guna pakai teks"
+    "validate_text": "Guna pakai teks",
+    "validate_shapes": "Sahkan bentuk",
+    "validate_transparency": "Sahkan ketelusan",
+    "cancel_crop": "Batal pemotongan",
+    "cancel_straighten": "Batal pelurusan",
+    "cancel_text": "Batal teks",
+    "cancel_shapes": "Batal bentuk",
+    "cancel_transparency": "Batal ketelusan"
   },
   "tabs": {
     "mosaic": "Mozek",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Ketepuan :",
     "toolbar_remove_colors_tooltip": "Penyingkiran warna",
     "toolbar_remove_colors_instruction": "Laraskan gelangsar, pelarasan digunakan apabila dilepaskan",
-    "remove_colors_panel_label": "Keamatan :"
+    "remove_colors_panel_label": "Keamatan :",
+    "toolbar_compression_tooltip": "Pemampatan",
+    "toolbar_compression_instruction": "Laraskan gelangsar, pelarasan digunakan apabila dilepaskan",
+    "toolbar_compression_disabled": "Hanya tersedia untuk imej JPG, WEBP dan AVIF",
+    "compression_panel_label": "Kualiti :",
+    "toolbar_levels_tooltip": "Aras",
+    "toolbar_levels_instruction": "Penitis atau pelungsur, pelarasan digunakan semasa lepas/klik",
+    "levels_gamma_panel_label": "Gama :",
+    "levels_threshold_panel_label": "Ambang :",
+    "levels_black_panel_label": "Titik hitam :",
+    "levels_white_panel_label": "Titik putih :",
+    "levels_black_slider_tooltip": "Semua piksel lebih gelap daripada nilai ini menjadi hitam sepenuhnya",
+    "levels_gamma_slider_tooltip": "Mencerahkan atau menggelapkan ton pertengahan, tanpa menjejaskan hitam atau putih",
+    "levels_white_slider_tooltip": "Semua piksel lebih cerah daripada nilai ini menjadi putih sepenuhnya",
+    "levels_threshold_slider_tooltip": "Menukar imej kepada hitam putih tulen berdasarkan ambang ini",
+    "levels_auto_tooltip": "Menganalisis halaman yang dipaparkan dan melaraskan titik hitam dan putih secara automatik untuk memaksimumkan kontras",
+    "toolbar_shapes_tooltip": "Bentuk",
+    "toolbar_shapes_instruction": "Seret untuk melukis bentuk, pemegang untuk mengubah saiz, anak panah untuk mengalihkan",
+    "shape_type_ellipse": "Elips",
+    "shape_type_rectangle": "Segi empat tepat",
+    "shape_type_rounded_rectangle": "Segi empat tepat bucu bulat",
+    "shape_type_line": "Garis",
+    "shape_type_arrow": "Anak panah",
+    "shape_thickness_label": "Ketebalan:",
+    "shape_color_label": "Warna:",
+    "shape_color_tooltip": "Pilih warna garis luar dan isian",
+    "shape_fill_enabled_label": "Isian",
+    "shape_pipette_tooltip": "Ambil warna daripada halaman yang dipaparkan",
+    "toolbar_transparency_tooltip": "Ketelusan",
+    "toolbar_transparency_instruction": "Klik warna yang hendak dijadikan telus",
+    "toolbar_transparency_disabled": "Hanya tersedia untuk imej PNG, WebP, ICO dan AVIF",
+    "transparency_flood_panel_label": "Kawasan",
+    "transparency_global_panel_label": "Global",
+    "transparency_tolerance_panel_label": "Toleransi:",
+    "transparency_type_slider_tooltip": "Kawasan: menjadikan zon warna seragam di sekeliling piksel yang diklik telus. Global: menjejaskan semua piksel imej yang warnanya hampir dengan yang diklik",
+    "transparency_tolerance_slider_tooltip": "Jarak warna maksimum yang diterima di sekeliling piksel yang diklik"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Tiada teks",
         "message": "Sila masukkan teks dalam sekurang-kurangnya satu blok dahulu."
+      },
+      "no_shape": {
+        "title": "Tiada bentuk dilukis",
+        "message": "Sila lukis sekurang-kurangnya satu bentuk dahulu."
+      },
+      "no_transparency_work": {
+        "title": "Tiada ketelusan digunakan",
+        "message": "Sila klik warna yang hendak dijadikan telus dahulu."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Ralat",
         "message": "Tidak dapat menggunakan penyingkiran warna: {error}"
+      },
+      "compression_failed": {
+        "title": "Ralat",
+        "message": "Tidak dapat menggunakan pemampatan: {error}"
+      },
+      "levels_failed": {
+        "title": "Ralat",
+        "message": "Tidak dapat menerapkan aras: {error}"
+      },
+      "shapes_failed": {
+        "title": "Ralat",
+        "message": "Bentuk tidak dapat digunakan: {error}"
+      },
+      "transparency_failed": {
+        "title": "Ralat",
+        "message": "Ketelusan tidak dapat digunakan."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "imej",
       "apply_button": "Guna",
       "color_depth_section": "Kedalaman warna",
-      "compression_section": "Mampatan",
       "effects_section": "Kesan",
       "sharpness_section": "Ketajaman",
-      "levels_section": "Aras hitam/putih",
       "depth_unchanged": "Jangan ubah",
       "depth_32bit": "32 bit (RGBA - warna + ketelusan)",
       "depth_24bit": "24 bit (RGB - warna)",
       "depth_8bit": "8 bit (palet PNG / skala kelabu JPEG)",
       "depth_1bit": "1 bit (hitam dan putih)",
       "compression_enable": "Dayakan mampatan semula",
-      "compression_quality_label": "Kualiti : {value}/100",
       "effect_none": "Tiada kesan",
       "effect_grayscale": "Ton kelabu",
       "effect_sepia": "Sepia",
-      "levels_none": "Tiada pelarasan",
-      "levels_threshold": "Ambang (hitam atau putih tulen)",
-      "levels_advanced": "Aras lanjutan (bayang/ton sederhana/cahaya)",
-      "threshold_label": "Ambang: {value}",
-      "black_point_label": "Titik hitam: {value}",
-      "gamma_label": "Gamma (ton sederhana): {value}",
-      "white_point_label": "Titik putih: {value}",
       "auto_levels_button": "Pelarasan automatik",
-      "open_viewer_button": "Laraskan dengan pemapar (disyorkan)",
-      "compression_info": "Mampatan hanya terpakai untuk imej JPG, WebP dan AVIF",
-      "open_viewer_button_simple": "Laraskan dengan pemapar",
       "reset_button": "Tetapkan semula",
       "preview_section": "Pratonton",
       "effect_invert": "Penyongsangan warna",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (skala kelabu + ketelusan)",
       "image_mode_cmyk": "CMYK (cetakan)",
       "image_mode_1": "1 (hitam-putih tulen)",
-      "image_mode_p": "P (palet 256 warna)",
-      "transparency_section": "Ketelusan",
-      "transparency_info": "Ketelusan hanya terpakai pada imej PNG, WebP, ICO dan AVIF",
-      "transparency_type_label": "Jenis :",
-      "transparency_type_flood": "Zon",
-      "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Toleransi :",
-      "transparency_viewer_title": "Pelarasan ketelusan",
-      "transparency_click_instruction": "Klik pada warna yang ingin dijadikan telus",
-      "transparency_undo": "Batal klik terakhir",
-      "transparency_redo": "Buat semula",
-      "transparency_type_flood_tooltip": "Flood fill : menjadikan kawasan warna seragam di sekitar piksel yang diklik telus",
-      "transparency_type_global_tooltip": "Ketelusan global : mempengaruhi semua piksel imej yang warnanya hampir sama dengan yang diklik",
-      "transparency_apply": "Guna",
-      "transparency_skipped_warning": "{count} imej dilangkau — format tidak serasi dengan ketelusan. Untuk menyertakannya, tukarkan ke PNG terlebih dahulu.",
-      "auto_levels_tooltip": "Menganalisis setiap halaman dan menyesuaikan tahap hitam dan putih secara automatik untuk memaksimumkan kontras.\nUntuk memilih halaman demi halaman, gunakan penampil.",
-      "transparency_unsaved_title": "Perubahan belum digunakan",
-      "transparency_unsaved_message": "Perubahan semasa belum digunakan pada imej. Apa yang anda ingin lakukan?",
-      "transparency_unsaved_discard": "Tutup tanpa menggunakan",
-      "transparency_unsaved_apply": "Gunakan dan tutup",
-      "transparency_unsaved_cancel": "Batal"
+      "image_mode_p": "P (palet 256 warna)"
     },
     "levels_viewer": {
-      "title": "Pelarasan tahap dengan penitis",
-      "apply_current": "Gunakan pada halaman ini",
-      "apply_all": "Gunakan pada semua halaman yang dipilih",
       "black_pipette": "Picagari titik hitam",
       "white_pipette": "Picagari titik putih",
       "black_pipette_tooltip": "Klik pada piksel yang sepatutnya hitam sepenuhnya. Awas: mudah melampau!",
       "white_pipette_tooltip": "Klik pada piksel yang sepatutnya putih sepenuhnya. Awas: mudah melampau!"
-    },
-    "compression_viewer": {
-      "title": "Pelarasan Mampatan"
     },
     "outliers": {
       "title": "Halaman dengan dimensi luar biasa",

@@ -66,7 +66,14 @@
     "batch_library": "फ़ोल्डर(ों) से एक लाइब्रेरी बनाएं",
     "batch_recompress": "CBZ फ़ाइलों को डिफ़ॉल्ट स्तर पर पुनः संपीड़ित करें",
     "validate_straighten": "सीधा करना सत्यापित करें",
-    "validate_text": "पाठ लागू करें"
+    "validate_text": "पाठ लागू करें",
+    "validate_shapes": "आकृतियाँ लागू करें",
+    "validate_transparency": "पारदर्शिता लागू करें",
+    "cancel_crop": "क्रॉप रद्द करें",
+    "cancel_straighten": "सीधा करना रद्द करें",
+    "cancel_text": "टेक्स्ट रद्द करें",
+    "cancel_shapes": "आकृतियाँ रद्द करें",
+    "cancel_transparency": "पारदर्शिता रद्द करें"
   },
   "tabs": {
     "mosaic": "मोज़ेक",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "संतृप्ति :",
     "toolbar_remove_colors_tooltip": "रंग हटाना",
     "toolbar_remove_colors_instruction": "स्लाइडर समायोजित करें, छोड़ने पर समायोजन लागू होता है",
-    "remove_colors_panel_label": "तीव्रता :"
+    "remove_colors_panel_label": "तीव्रता :",
+    "toolbar_compression_tooltip": "संपीड़न",
+    "toolbar_compression_instruction": "स्लाइडर समायोजित करें, छोड़ने पर समायोजन लागू होता है",
+    "toolbar_compression_disabled": "केवल JPG, WEBP और AVIF छवियों के लिए उपलब्ध",
+    "compression_panel_label": "गुणवत्ता :",
+    "toolbar_levels_tooltip": "स्तर",
+    "toolbar_levels_instruction": "आईड्रॉपर या स्लाइडर, छोड़ने/क्लिक करने पर समायोजन लागू होता है",
+    "levels_gamma_panel_label": "गामा :",
+    "levels_threshold_panel_label": "सीमा :",
+    "levels_black_panel_label": "काला बिंदु :",
+    "levels_white_panel_label": "सफेद बिंदु :",
+    "levels_black_slider_tooltip": "इस मान से गहरे सभी पिक्सेल पूरी तरह काले हो जाते हैं",
+    "levels_gamma_slider_tooltip": "काले या सफेद को प्रभावित किए बिना मध्यम टोन को हल्का या गहरा करता है",
+    "levels_white_slider_tooltip": "इस मान से हल्के सभी पिक्सेल पूरी तरह सफेद हो जाते हैं",
+    "levels_threshold_slider_tooltip": "इस सीमा के आधार पर छवि को शुद्ध काले और सफेद में बदल देता है",
+    "levels_auto_tooltip": "प्रदर्शित पृष्ठ का विश्लेषण करता है और कंट्रास्ट को अधिकतम करने के लिए काले और सफेद बिंदुओं को स्वचालित रूप से समायोजित करता है",
+    "toolbar_shapes_tooltip": "आकृतियाँ",
+    "toolbar_shapes_instruction": "आकृति खींचने के लिए खींचें, आकार बदलने के लिए हैंडल, स्थानांतरित करने के लिए तीर कुंजियाँ",
+    "shape_type_ellipse": "दीर्घवृत्त",
+    "shape_type_rectangle": "आयत",
+    "shape_type_rounded_rectangle": "गोल कोनों वाला आयत",
+    "shape_type_line": "रेखा",
+    "shape_type_arrow": "तीर",
+    "shape_thickness_label": "मोटाई:",
+    "shape_color_label": "रंग:",
+    "shape_color_tooltip": "रेखा और भराव का रंग चुनें",
+    "shape_fill_enabled_label": "भराव",
+    "shape_pipette_tooltip": "प्रदर्शित पृष्ठ से रंग चुनें",
+    "toolbar_transparency_tooltip": "पारदर्शिता",
+    "toolbar_transparency_instruction": "जिस रंग को पारदर्शी बनाना है उस पर क्लिक करें",
+    "toolbar_transparency_disabled": "केवल PNG, WebP, ICO और AVIF छवियों के लिए उपलब्ध",
+    "transparency_flood_panel_label": "क्षेत्र",
+    "transparency_global_panel_label": "वैश्विक",
+    "transparency_tolerance_panel_label": "सहनशीलता:",
+    "transparency_type_slider_tooltip": "क्षेत्र: क्लिक किए गए पिक्सेल के आसपास के एकसमान रंग क्षेत्र को पारदर्शी बनाता है। वैश्विक: छवि के उन सभी पिक्सेलों को प्रभावित करता है जिनका रंग क्लिक किए गए रंग के करीब है",
+    "transparency_tolerance_slider_tooltip": "क्लिक किए गए पिक्सेल के आसपास स्वीकृत अधिकतम रंग दूरी"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "कोई पाठ नहीं",
         "message": "कृपया पहले कम से कम एक ब्लॉक में पाठ दर्ज करें।"
+      },
+      "no_shape": {
+        "title": "कोई आकृति नहीं खींची गई",
+        "message": "कृपया पहले कम से कम एक आकृति बनाएँ।"
+      },
+      "no_transparency_work": {
+        "title": "कोई पारदर्शिता लागू नहीं की गई",
+        "message": "कृपया पहले किसी रंग को पारदर्शी बनाने के लिए क्लिक करें।"
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "त्रुटि",
         "message": "रंग हटाना लागू नहीं किया जा सका: {error}"
+      },
+      "compression_failed": {
+        "title": "त्रुटि",
+        "message": "संपीड़न लागू नहीं की जा सकी: {error}"
+      },
+      "levels_failed": {
+        "title": "त्रुटि",
+        "message": "स्तर लागू नहीं किए जा सके: {error}"
+      },
+      "shapes_failed": {
+        "title": "त्रुटि",
+        "message": "आकृतियाँ लागू नहीं की जा सकीं: {error}"
+      },
+      "transparency_failed": {
+        "title": "त्रुटि",
+        "message": "पारदर्शिता लागू नहीं की जा सकी।"
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "छवियाँ",
       "apply_button": "लागू करें",
       "color_depth_section": "रंग गहराई",
-      "compression_section": "संपीड़न",
       "effects_section": "प्रभाव",
       "sharpness_section": "तीक्ष्णता",
-      "levels_section": "काला/सफेद स्तर",
       "depth_unchanged": "परिवर्तन न करें",
       "depth_32bit": "32 बिट (RGBA - रंग + पारदर्शिता)",
       "depth_24bit": "24 बिट (RGB - रंग)",
       "depth_8bit": "8 bit (PNG paleteu / JPEG gre-skelu)",
       "depth_1bit": "1 बिट (काला और सफेद)",
       "compression_enable": "पुनः संपीड़न सक्षम करें",
-      "compression_quality_label": "गुणवत्ता : {value}/100",
       "effect_none": "कोई प्रभाव नहीं",
       "effect_grayscale": "ग्रेस्केल",
       "effect_sepia": "सेपिया",
-      "levels_none": "कोई समायोजन नहीं",
-      "levels_threshold": "सीमा (शुद्ध काला या सफेद)",
-      "levels_advanced": "उन्नत स्तर (छाया/मध्य टोन/हाइलाइट)",
-      "threshold_label": "सीमा: {value}",
-      "black_point_label": "काला बिंदु: {value}",
-      "gamma_label": "गामा (मध्य टोन): {value}",
-      "white_point_label": "सफेद बिंदु: {value}",
       "auto_levels_button": "स्वचालित समायोजन",
-      "open_viewer_button": "व्यूअर के साथ समायोजित करें (अनुशंसित)",
-      "compression_info": "संपीड़न केवल JPG, WebP और AVIF छवियों पर लागू होता है",
-      "open_viewer_button_simple": "व्यूअर के साथ समायोजित करें",
       "reset_button": "रीसेट करें",
       "preview_section": "पूर्वावलोकन",
       "effect_invert": "रंग उलटाव",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (धूसर छायाएँ + पारदर्शिता)",
       "image_mode_cmyk": "CMYK (मुद्रण)",
       "image_mode_1": "1 (शुद्ध काला-सेफ़ेद)",
-      "image_mode_p": "P (256 रंगों का पैलेट)",
-      "transparency_section": "पारदर्शिता",
-      "transparency_info": "पारदर्शिता केवल PNG, WebP, ICO और AVIF छवियों पर लागू होती है",
-      "transparency_type_label": "प्रकार :",
-      "transparency_type_flood": "क्षेत्र",
-      "transparency_type_global": "वैश्विक",
-      "transparency_tolerance_label": "सहनशीलता :",
-      "transparency_viewer_title": "पारदर्शिता समायोजन",
-      "transparency_click_instruction": "उस रंग पर क्लिक करें जिसे पारदर्शी बनाना है",
-      "transparency_undo": "अंतिम क्लिक पूर्ववत करें",
-      "transparency_redo": "फिर से करें",
-      "transparency_type_flood_tooltip": "Flood fill : क्लिक किए गए पिक्सेल के आसपास के एकरंगी क्षेत्र को पारदर्शी बनाता है",
-      "transparency_type_global_tooltip": "वैश्विक पारदर्शिता : छवि के सभी पिक्सेल जिनका रंग क्लिक किए गए रंग के समान है उन्हें प्रभावित करता है",
-      "transparency_apply": "लागू करें",
-      "transparency_skipped_warning": "{count} छवि(यां) छोड़ी गई — प्रारूप पारदर्शिता के साथ असंगत है। उन्हें शामिल करने के लिए पहले PNG में बदलें।",
-      "auto_levels_tooltip": "प्रत्येक पृष्ठ का विश्लेषण करता है और कंट्रास्ट को अधिकतम करने के लिए काले और सफ़ेद स्तरों को स्वचालित रूप से समायोजित करता है।\nपृष्ठ दर पृष्ठ चुनने के लिए, व्यूअर का उपयोग करें।",
-      "transparency_unsaved_title": "अलागू परिवर्तन",
-      "transparency_unsaved_message": "वर्तमान परिवर्तन छवि पर लागू नहीं किए गए हैं। आप क्या करना चाहते हैं?",
-      "transparency_unsaved_discard": "लागू किए बिना बंद करें",
-      "transparency_unsaved_apply": "लागू करें और बंद करें",
-      "transparency_unsaved_cancel": "रद्द करें"
+      "image_mode_p": "P (256 रंगों का पैलेट)"
     },
     "levels_viewer": {
-      "title": "आईड्रॉपर के साथ स्तर समायोजन",
-      "apply_current": "इस पृष्ठ पर लागू करें",
-      "apply_all": "सभी चयनित पृष्ठों पर लागू करें",
       "black_pipette": "काला बिंदु आईड्रॉपर",
       "white_pipette": "सफेद बिंदु आईड्रॉपर",
       "black_pipette_tooltip": "एक पिक्सेल पर क्लिक करें जो पूरी तरह से काला होना चाहिए। सावधान: इसे ज़्यादा करना आसान है!",
       "white_pipette_tooltip": "एक पिक्सेल पर क्लिक करें जो पूरी तरह से सफेद होना चाहिए। सावधान: इसे ज़्यादा करना आसान है!"
-    },
-    "compression_viewer": {
-      "title": "संपीड़न समायोजन"
     },
     "outliers": {
       "title": "असामान्य आयामों वाले पृष्ठ",

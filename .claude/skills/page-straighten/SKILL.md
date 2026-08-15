@@ -30,7 +30,7 @@ Plus de fichier ni de classe dédiés à une fenêtre séparée : le trait de r�
 - **`StraightenViewerMixin`** (`straighten_tool_qt.py`, hérité par `ImageViewer`) — `validate_straighten()`/`perform_straighten()` (validation et application réelle de la rotation en pixels PIL), `perform_auto_straighten()`, `_save_straighten_for_current_page()`/`_restore_straighten_for_page()`.
 - **`_StraightenAnglePanel`** (`straighten_tool_qt.py`) — panneau flottant contenant la spinbox d'angle, visible sous la barre d'outils (`viewer_toolbar_qt.py::_ViewerToolbar`) quand l'outil est actif et qu'un trait existe.
 - **`modules/qt/straighten_geometry.py`** — module module-level séparé, sans dépendance Qt, contenant `line_to_correction()` (calcul d'angle), extrait de l'ancienne `straighten_viewer_qt.py` avant sa suppression pour rester réutilisable, importé par `straighten_tool_qt.py`.
-- **Ce qui reste dans `image_viewer_qt.py`** : le bouton "Valider" flottant (partagé avec le crop, `_VALIDATE_KEYS`), `_straighten_by_page` (dict de persistance, défini dans `ImageViewer.__init__`) — voir skill `viewers` pour la liste complète des points de couplage transversaux qui ne peuvent pas appartenir à un seul module d'outil.
+- **Ce qui reste dans `image_viewer_qt.py`** : le bouton "Valider" flottant (partagé avec crop/texte/formes, `_VALIDATE_KEYS`, TOUJOURS VISIBLE tant que l'outil straighten est actif depuis le 2026-08-15 — voir skill `viewers`), `_straighten_by_page` (dict de persistance, défini dans `ImageViewer.__init__`) — voir skill `viewers` pour la liste complète des points de couplage transversaux qui ne peuvent pas appartenir à un seul module d'outil.
 
 ### Le canvas — tracé et édition du trait
 

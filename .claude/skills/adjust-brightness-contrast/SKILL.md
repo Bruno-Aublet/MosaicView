@@ -24,7 +24,7 @@ Wrappers directs de `PIL.ImageEnhance` — mapping linéaire `[-100, 100] → [0
 
 **Historique** : ce réglage vivait à l'origine dans le panneau Ajustements classique (`adjustments_dialog_qt.py`, section `_grp_bc`, sliders `_bright_slider`/`_contrast_slider`) et dans `AdjustmentViewerDialog` (`adjustments_viewers_qt.py`, mode `'brightness'`). Il a migré vers la barre d'outils flottante de la visionneuse principale (skill `viewers`, section "Le cas de la luminosité/contraste") et **l'ancien panneau/visionneuse ont été entièrement retirés**, pas seulement redirigés (voir CHANGELOG.md [1.7.4]). Ces attributs/mode n'existent donc plus nulle part dans le code actuel — ne pas les chercher ni les recréer.
 
-- Module : `modules/qt/brightness_tool_qt.py` (dédié, pas dans `adjustments_tool_qt.py` — voir CLAUDE.md, chaque outil migré a son propre module).
+- Module : `modules/qt/brightness_tool_qt.py` (dédié, pas dans `sharpness_tool_qt.py` — voir CLAUDE.md, chaque outil migré a son propre module).
 - Une seule icône dans la barre, **pas de bi-mode** (contrairement à sharpness/unsharp) : `BTN_Brightness.png`, fixe.
 - Panneau flottant unique `_BrightnessOptionsPanel` : les 2 réglettes luminosité + contraste empilées verticalement dans le même panneau (reprend la disposition de l'ancien panneau Ajustements classique, `_grp_bc`, plutôt qu'une disposition horizontale inédite).
 - Réutilise `apply_adjustments()`/`apply_image_adjustments()` (`adjustments_processing_qt.py`) sans dupliquer la formule — même fonction qu'utilisait l'ancien panneau.

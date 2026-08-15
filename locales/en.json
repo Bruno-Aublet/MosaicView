@@ -66,7 +66,14 @@
     "batch_library": "Create a library from the folder(s)",
     "batch_recompress": "Recompress CBZ files at default level",
     "validate_straighten": "Validate straightening",
-    "validate_text": "Apply text"
+    "validate_text": "Apply text",
+    "validate_shapes": "Apply shapes",
+    "validate_transparency": "Apply transparency",
+    "cancel_crop": "Cancel crop",
+    "cancel_straighten": "Cancel straighten",
+    "cancel_text": "Cancel text",
+    "cancel_shapes": "Cancel shapes",
+    "cancel_transparency": "Cancel transparency"
   },
   "tabs": {
     "mosaic": "Mosaic",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Saturation :",
     "toolbar_remove_colors_tooltip": "Color removal",
     "toolbar_remove_colors_instruction": "Adjust the slider, the change applies on release",
-    "remove_colors_panel_label": "Intensity :"
+    "remove_colors_panel_label": "Intensity :",
+    "toolbar_compression_tooltip": "Compression",
+    "toolbar_compression_instruction": "Adjust the slider, the change applies on release",
+    "toolbar_compression_disabled": "Only available for JPG, WEBP, and AVIF images",
+    "compression_panel_label": "Quality :",
+    "toolbar_levels_tooltip": "Levels",
+    "toolbar_levels_instruction": "Eyedroppers or sliders, the adjustment applies on release/click",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Threshold :",
+    "levels_black_panel_label": "Black point :",
+    "levels_white_panel_label": "White point :",
+    "levels_black_slider_tooltip": "All pixels darker than this value become fully black",
+    "levels_gamma_slider_tooltip": "Lightens or darkens midtones, without affecting black or white",
+    "levels_white_slider_tooltip": "All pixels lighter than this value become fully white",
+    "levels_threshold_slider_tooltip": "Turns the image into pure black and white pixels based on this threshold",
+    "levels_auto_tooltip": "Analyses the displayed page and automatically adjusts the black and white points to maximise contrast",
+    "toolbar_shapes_tooltip": "Shapes",
+    "toolbar_shapes_instruction": "Drag to draw a shape, handles to resize, arrow keys to move",
+    "shape_type_ellipse": "Ellipse",
+    "shape_type_rectangle": "Rectangle",
+    "shape_type_rounded_rectangle": "Rounded rectangle",
+    "shape_type_line": "Line",
+    "shape_type_arrow": "Arrow",
+    "shape_thickness_label": "Thickness:",
+    "shape_color_label": "Color:",
+    "shape_color_tooltip": "Choose the stroke and fill color",
+    "shape_fill_enabled_label": "Fill",
+    "shape_pipette_tooltip": "Pick a color from the displayed page",
+    "toolbar_transparency_tooltip": "Transparency",
+    "toolbar_transparency_instruction": "Click the color to make transparent",
+    "toolbar_transparency_disabled": "Only available for PNG, WebP, ICO and AVIF images",
+    "transparency_flood_panel_label": "Area",
+    "transparency_global_panel_label": "Global",
+    "transparency_tolerance_panel_label": "Tolerance:",
+    "transparency_type_slider_tooltip": "Area: makes the uniform color zone around the clicked pixel transparent. Global: affects every pixel of the image whose color is close to the clicked one",
+    "transparency_tolerance_slider_tooltip": "Maximum accepted color distance around the clicked pixel"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "No text entered",
         "message": "Please enter text in at least one block first."
+      },
+      "no_shape": {
+        "title": "No shape drawn",
+        "message": "Please draw at least one shape first."
+      },
+      "no_transparency_work": {
+        "title": "No transparency applied",
+        "message": "Please click a color to make transparent first."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Error",
         "message": "Could not apply color removal: {error}"
+      },
+      "compression_failed": {
+        "title": "Error",
+        "message": "Could not apply compression: {error}"
+      },
+      "levels_failed": {
+        "title": "Error",
+        "message": "Unable to apply levels: {error}"
+      },
+      "shapes_failed": {
+        "title": "Error",
+        "message": "Could not apply the shapes: {error}"
+      },
+      "transparency_failed": {
+        "title": "Error",
+        "message": "Could not apply transparency."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "images",
       "apply_button": "Apply",
       "color_depth_section": "Color Depth",
-      "compression_section": "Compression",
       "effects_section": "Effects",
       "sharpness_section": "Sharpness",
-      "levels_section": "Black/White Levels",
       "depth_unchanged": "Do not change",
       "depth_32bit": "32 bits (RGBA - colors + transparency)",
       "depth_24bit": "24 bits (RGB - colors)",
       "depth_8bit": "8 bits (PNG palette / JPEG grayscale)",
       "depth_1bit": "1 bit (black and white)",
       "compression_enable": "Enable recompression",
-      "compression_quality_label": "Quality : {value}/100",
       "effect_none": "No effect",
       "effect_grayscale": "Grayscale",
       "effect_sepia": "Sepia",
-      "levels_none": "No adjustment",
-      "levels_threshold": "Threshold (pure black or white)",
-      "levels_advanced": "Advanced levels (shadows/midtones/highlights)",
-      "threshold_label": "Threshold: {value}",
-      "black_point_label": "Black point: {value}",
-      "gamma_label": "Gamma (midtones): {value}",
-      "white_point_label": "White point: {value}",
       "auto_levels_button": "Auto adjustment",
-      "open_viewer_button": "Adjust with the viewer (recommended)",
-      "compression_info": "Compression applies only to JPG, WebP and AVIF images",
-      "open_viewer_button_simple": "Adjust with viewer",
       "reset_button": "Reset",
       "preview_section": "Preview",
       "effect_invert": "Color inversion",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (grayscale + transparency)",
       "image_mode_cmyk": "CMYK (print)",
       "image_mode_1": "1 (pure black and white)",
-      "image_mode_p": "P (256-color palette)",
-      "transparency_section": "Transparency",
-      "transparency_info": "Transparency applies only to PNG, WebP, ICO and AVIF images",
-      "transparency_type_label": "Type :",
-      "transparency_type_flood": "Zone",
-      "transparency_type_global": "Global",
-      "transparency_tolerance_label": "Tolerance :",
-      "transparency_viewer_title": "Transparency adjustment",
-      "transparency_click_instruction": "Click on the color to make it transparent",
-      "transparency_undo": "Undo last click",
-      "transparency_redo": "Redo",
-      "transparency_type_flood_tooltip": "Flood fill : makes the uniform color area around the clicked pixel transparent",
-      "transparency_type_global_tooltip": "Global transparency : affects all pixels in the image whose color is close to the clicked one",
-      "transparency_apply": "Apply",
-      "transparency_skipped_warning": "{count} image(s) skipped — format not compatible with transparency. To include them, convert them to PNG first.",
-      "auto_levels_tooltip": "Analyses each page and automatically adjusts the black and white levels to maximise contrast.\nTo choose page by page, use the viewer.",
-      "transparency_unsaved_title": "Unapplied changes",
-      "transparency_unsaved_message": "The current changes have not been applied to the image. What would you like to do?",
-      "transparency_unsaved_discard": "Close without applying",
-      "transparency_unsaved_apply": "Apply and close",
-      "transparency_unsaved_cancel": "Cancel"
+      "image_mode_p": "P (256-color palette)"
     },
     "levels_viewer": {
-      "title": "Levels adjustment with eyedroppers",
-      "apply_current": "Apply to this page",
-      "apply_all": "Apply to all selected pages",
       "black_pipette": "Black point eyedropper",
       "white_pipette": "White point eyedropper",
       "black_pipette_tooltip": "Click on a pixel that should be completely black. Caution: it's easy to overdo it!",
       "white_pipette_tooltip": "Click on a pixel that should be completely white. Caution: it's easy to overdo it!"
-    },
-    "compression_viewer": {
-      "title": "Compression Adjustment"
     },
     "outliers": {
       "title": "Pages with unusual dimensions",

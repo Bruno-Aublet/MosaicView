@@ -66,7 +66,14 @@
     "batch_library": "Sukurti biblioteką iš aplanko(-ų)",
     "batch_recompress": "Iš naujo suspausti CBZ failus numatytuoju lygiu",
     "validate_straighten": "Patvirtinti ištiesinimą",
-    "validate_text": "Taikyti tekstą"
+    "validate_text": "Taikyti tekstą",
+    "validate_shapes": "Patvirtinti formas",
+    "validate_transparency": "Patvirtinti skaidrumą",
+    "cancel_crop": "Atšaukti apkirpimą",
+    "cancel_straighten": "Atšaukti ištiesinimą",
+    "cancel_text": "Atšaukti tekstą",
+    "cancel_shapes": "Atšaukti figūras",
+    "cancel_transparency": "Atšaukti skaidrumą"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Sodrumas :",
     "toolbar_remove_colors_tooltip": "Spalvų pašalinimas",
     "toolbar_remove_colors_instruction": "Reguliuokite šliaužiklį, pakeitimas pritaikomas atleidus",
-    "remove_colors_panel_label": "Intensyvumas :"
+    "remove_colors_panel_label": "Intensyvumas :",
+    "toolbar_compression_tooltip": "Suspaudimas",
+    "toolbar_compression_instruction": "Reguliuokite slankiklį, koregavimas pritaikomas atleidus",
+    "toolbar_compression_disabled": "Galima naudoti tik JPG, WEBP ir AVIF vaizdams",
+    "compression_panel_label": "Kokybė :",
+    "toolbar_levels_tooltip": "Lygiai",
+    "toolbar_levels_instruction": "Pipetes arba slankikliai, pakeitimas pritaikomas atleidus/spustelejus",
+    "levels_gamma_panel_label": "Gama :",
+    "levels_threshold_panel_label": "Riba :",
+    "levels_black_panel_label": "Juodas taskas :",
+    "levels_white_panel_label": "Baltas taskas :",
+    "levels_black_slider_tooltip": "Visi tamsesni uz sia reiksme pikseliai tampa visiskai juodi",
+    "levels_gamma_slider_tooltip": "Pasviesina arba patamsina vidutinius tonus, neitakodamas juodos ar baltos spalvos",
+    "levels_white_slider_tooltip": "Visi sviesesni uz sia reiksme pikseliai tampa visiskai balti",
+    "levels_threshold_slider_tooltip": "Paverciam vaizda grynai juodai baltu pagal sia riba",
+    "levels_auto_tooltip": "Analizuoja rodoma puslapi ir automatiskai pakoreguoja juodo ir balto tasku, kad kontrastas butu maksimalus",
+    "toolbar_shapes_tooltip": "Formos",
+    "toolbar_shapes_instruction": "Vilkite, kad nupieštumėte formą, rankenėlės dydžiui keisti, rodyklės perkėlimui",
+    "shape_type_ellipse": "Elipsė",
+    "shape_type_rectangle": "Stačiakampis",
+    "shape_type_rounded_rectangle": "Stačiakampis suapvalintais kampais",
+    "shape_type_line": "Linija",
+    "shape_type_arrow": "Rodyklė",
+    "shape_thickness_label": "Storis:",
+    "shape_color_label": "Spalva:",
+    "shape_color_tooltip": "Pasirinkite kontūro ir užpildo spalvą",
+    "shape_fill_enabled_label": "Užpildas",
+    "shape_pipette_tooltip": "Paimti spalvą iš rodomo puslapio",
+    "toolbar_transparency_tooltip": "Skaidrumas",
+    "toolbar_transparency_instruction": "Spustelėkite spalvą, kurią norite padaryti skaidrią",
+    "toolbar_transparency_disabled": "Galima naudoti tik PNG, WebP, ICO ir AVIF vaizdams",
+    "transparency_flood_panel_label": "Sritis",
+    "transparency_global_panel_label": "Visuotinis",
+    "transparency_tolerance_panel_label": "Tolerancija:",
+    "transparency_type_slider_tooltip": "Sritis: padaro skaidrią vienodos spalvos sritį aplink spustelėtą pikselį. Visuotinis: paveikia visus vaizdo pikselius, kurių spalva artima spustelėtajai",
+    "transparency_tolerance_slider_tooltip": "Didžiausias leistinas spalvos atstumas aplink spustelėtą pikselį"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Nėra teksto",
         "message": "Pirmiausia įveskite tekstą bent viename bloke."
+      },
+      "no_shape": {
+        "title": "Nenupiešta jokia forma",
+        "message": "Pirmiausia nupieškite bent vieną formą."
+      },
+      "no_transparency_work": {
+        "title": "Skaidrumas nepritaikytas",
+        "message": "Pirmiausia spustelėkite spalvą, kurią norite padaryti skaidrią."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Klaida",
         "message": "Nepavyko pritaikyti spalvų pašalinimo: {error}"
+      },
+      "compression_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti suspaudimo: {error}"
+      },
+      "levels_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti lygiu: {error}"
+      },
+      "shapes_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti formų: {error}"
+      },
+      "transparency_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti skaidrumo."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "vaizdu",
       "apply_button": "Taikyti",
       "color_depth_section": "Spalvu gyl is",
-      "compression_section": "Glaudinimas",
       "effects_section": "Efektai",
       "sharpness_section": "Astrumas",
-      "levels_section": "Juodos/baltos lygiai",
       "depth_unchanged": "Nekeisti",
       "depth_32bit": "32 bitai (RGBA - spalvos + permatomumas)",
       "depth_24bit": "24 bitai (RGB - spalvos)",
       "depth_8bit": "8 bitai (PNG palete / JPEG pilkos spalvos)",
       "depth_1bit": "1 bitas (juoda-balta)",
       "compression_enable": "Ijungti pakartotini glaudinima",
-      "compression_quality_label": "Kokybė : {value}/100",
       "effect_none": "Be efekto",
       "effect_grayscale": "Pilku atspalviai",
       "effect_sepia": "Sepija",
-      "levels_none": "Be koregavimo",
-      "levels_threshold": "Slenkstis (gryna juoda arba balta)",
-      "levels_advanced": "Išplestiniai lygiai (seneliai/vidutiniai tonai/sviesuma)",
-      "threshold_label": "Slenkstis: {value}",
-      "black_point_label": "Juodas taskas: {value}",
-      "gamma_label": "Gama (vidutiniai tonai): {value}",
-      "white_point_label": "Baltas taskas: {value}",
       "auto_levels_button": "Automatinis reguliavimas",
-      "open_viewer_button": "Reguliuoti su žiūrykle (rekomenduojama)",
-      "compression_info": "Glaudinimas taikomas tik JPG, WebP ir AVIF vaizdams",
-      "open_viewer_button_simple": "Reguliuoti su žiūrykle",
       "reset_button": "Atstatyti",
       "preview_section": "Peržiūra",
       "effect_invert": "Spalvų inversija",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (pilki tonai + skaidrumas)",
       "image_mode_cmyk": "CMYK (spausdinimas)",
       "image_mode_1": "1 (gryna juodai balta)",
-      "image_mode_p": "P (256 spalvų paletė)",
-      "transparency_section": "Skaidrumas",
-      "transparency_info": "Skaidrumas taikomas tik PNG, WebP, ICO ir AVIF vaizdams",
-      "transparency_type_label": "Tipas :",
-      "transparency_type_flood": "Zona",
-      "transparency_type_global": "Globalus",
-      "transparency_tolerance_label": "Tolerancija :",
-      "transparency_viewer_title": "Skaidrumo reguliavimas",
-      "transparency_click_instruction": "Spustelėkite spalvą, kurią norite padaryti skaidrią",
-      "transparency_undo": "Atšaukti paskutinį paspaudimą",
-      "transparency_redo": "Perdaryti",
-      "transparency_type_flood_tooltip": "Flood fill : daro skaidrią tolygios spalvos sritį aplink spustelėtą pikselį",
-      "transparency_type_global_tooltip": "Globalus skaidrumas : veikia visus vaizdo pikselius, kurių spalva artima spustelėtai",
-      "transparency_apply": "Taikyti",
-      "transparency_skipped_warning": "{count} vaizdas(-ai) praleista(-i) — formatas nesuderinamas su skaidrumu. Norėdami juos įtraukti, pirmiausia konvertuokite į PNG.",
-      "auto_levels_tooltip": "Analizuoja kiekvieną puslapį ir automatiškai reguliuoja juodos ir baltos spalvos lygius, kad maksimaliai padidintų kontrastą.\nNorėdami pasirinkti puslapį po puslapio, naudokite peržiūros priemonę.",
-      "transparency_unsaved_title": "Nepritaikyti pakeitimai",
-      "transparency_unsaved_message": "Dabartiniai pakeitimai nebuvo pritaikyti paveikslėliui. Ką norite daryti?",
-      "transparency_unsaved_discard": "Uždaryti nepritaikius",
-      "transparency_unsaved_apply": "Pritaikyti ir uždaryti",
-      "transparency_unsaved_cancel": "Atšaukti"
+      "image_mode_p": "P (256 spalvų paletė)"
     },
     "levels_viewer": {
-      "title": "Lygio reguliavimas lašintuku",
-      "apply_current": "Taikyti šiam puslapiui",
-      "apply_all": "Taikyti visoms pasirinktoms puslapiams",
       "black_pipette": "Juodo tasko lašintuvas",
       "white_pipette": "Balto taško lašintuvas",
       "black_pipette_tooltip": "Spustelėkite pikselį, kuris turėtų būti visiškai juodas. Dėmesio: lengva persistengti!",
       "white_pipette_tooltip": "Spustelėkite pikselį, kuris turėtų būti visiškai baltas. Dėmesio: lengva persistengti!"
-    },
-    "compression_viewer": {
-      "title": "Glaudinimo reguliavimas"
     },
     "outliers": {
       "title": "Puslapiai su neįprastais matmenimis",

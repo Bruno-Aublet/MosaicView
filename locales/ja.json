@@ -66,7 +66,14 @@
     "batch_library": "フォルダからライブラリを作成",
     "batch_recompress": "CBZファイルをデフォルトレベルで再圧縮",
     "validate_straighten": "傾き補正を確定",
-    "validate_text": "テキストを適用"
+    "validate_text": "テキストを適用",
+    "validate_shapes": "図形を適用",
+    "validate_transparency": "透明化を適用",
+    "cancel_crop": "切り抜きをキャンセル",
+    "cancel_straighten": "傾き補正をキャンセル",
+    "cancel_text": "テキストをキャンセル",
+    "cancel_shapes": "図形をキャンセル",
+    "cancel_transparency": "透明化をキャンセル"
   },
   "tabs": {
     "mosaic": "モザイク",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "彩度 :",
     "toolbar_remove_colors_tooltip": "色の除去",
     "toolbar_remove_colors_instruction": "スライダーを調整すると、離した時点で変更が適用されます",
-    "remove_colors_panel_label": "強度 :"
+    "remove_colors_panel_label": "強度 :",
+    "toolbar_compression_tooltip": "圧縮",
+    "toolbar_compression_instruction": "スライダーを調整すると、離したときに反映されます",
+    "toolbar_compression_disabled": "JPG、WEBP、AVIF画像でのみ使用できます",
+    "compression_panel_label": "品質 :",
+    "toolbar_levels_tooltip": "レベル",
+    "toolbar_levels_instruction": "スポイトするかスライダーを調整すると、離したとき/クリック時に反映されます",
+    "levels_gamma_panel_label": "ガンマ :",
+    "levels_threshold_panel_label": "しきい値 :",
+    "levels_black_panel_label": "黒点 :",
+    "levels_white_panel_label": "白点 :",
+    "levels_black_slider_tooltip": "この値より暗いピクセルはすべて完全な黒になります",
+    "levels_gamma_slider_tooltip": "黒や白に影響を与えずに中間調を明るく/暗くします",
+    "levels_white_slider_tooltip": "この値より明るいピクセルはすべて完全な白になります",
+    "levels_threshold_slider_tooltip": "このしきい値に基づいて画像を純粋な白黒に変換します",
+    "levels_auto_tooltip": "表示中のページを解析し、コントラストを最大化するよう黒点と白点を自動調整します",
+    "toolbar_shapes_tooltip": "図形",
+    "toolbar_shapes_instruction": "ドラッグで図形を描画、ハンドルでサイズ変更、矢印キーで移動",
+    "shape_type_ellipse": "楕円",
+    "shape_type_rectangle": "長方形",
+    "shape_type_rounded_rectangle": "角丸長方形",
+    "shape_type_line": "直線",
+    "shape_type_arrow": "矢印",
+    "shape_thickness_label": "太さ:",
+    "shape_color_label": "色:",
+    "shape_color_tooltip": "線と塗りつぶしの色を選択",
+    "shape_fill_enabled_label": "塗りつぶし",
+    "shape_pipette_tooltip": "表示されているページから色を取得",
+    "toolbar_transparency_tooltip": "透明化",
+    "toolbar_transparency_instruction": "透明にしたい色をクリックしてください",
+    "toolbar_transparency_disabled": "PNG、WebP、ICO、AVIF画像でのみ使用できます",
+    "transparency_flood_panel_label": "範囲",
+    "transparency_global_panel_label": "全体",
+    "transparency_tolerance_panel_label": "許容範囲:",
+    "transparency_type_slider_tooltip": "範囲：クリックしたピクセル周辺の均一な色の領域を透明にします。全体：クリックした色に近い色のすべてのピクセルに影響します",
+    "transparency_tolerance_slider_tooltip": "クリックしたピクセル周辺で許容される最大の色の差"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "テキストが未入力です",
         "message": "まず、少なくとも1つのブロックにテキストを入力してください。"
+      },
+      "no_shape": {
+        "title": "図形が描画されていません",
+        "message": "まず少なくとも1つの図形を描画してください。"
+      },
+      "no_transparency_work": {
+        "title": "透明化が適用されていません",
+        "message": "まず透明にしたい色をクリックしてください。"
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "エラー",
         "message": "色の除去を適用できませんでした: {error}"
+      },
+      "compression_failed": {
+        "title": "エラー",
+        "message": "圧縮を適用できませんでした: {error}"
+      },
+      "levels_failed": {
+        "title": "エラー",
+        "message": "レベルを適用できませんでした: {error}"
+      },
+      "shapes_failed": {
+        "title": "エラー",
+        "message": "図形を適用できませんでした: {error}"
+      },
+      "transparency_failed": {
+        "title": "エラー",
+        "message": "透明化を適用できませんでした。"
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "枚の画像",
       "apply_button": "適用",
       "color_depth_section": "色深度",
-      "compression_section": "圧縮",
       "effects_section": "エフェクト",
       "sharpness_section": "シャープネス",
-      "levels_section": "黒/白レベル",
       "depth_unchanged": "変更しない",
       "depth_32bit": "32ビット（RGBA - 色+透明度）",
       "depth_24bit": "24ビット（RGB - 色）",
       "depth_8bit": "8 bitto (PNG pareto / JPEG gureisukeru)",
       "depth_1bit": "1ビット（白黒）",
       "compression_enable": "再圧縮を有効にする",
-      "compression_quality_label": "品質 : {value}/100",
       "effect_none": "エフェクトなし",
       "effect_grayscale": "グレースケール",
       "effect_sepia": "セピア",
-      "levels_none": "調整なし",
-      "levels_threshold": "しきい値（純粋な黒または白）",
-      "levels_advanced": "高度なレベル（シャドウ/中間調/ハイライト）",
-      "threshold_label": "しきい値: {value}",
-      "black_point_label": "黒点: {value}",
-      "gamma_label": "ガンマ（中間調）: {value}",
-      "white_point_label": "白点: {value}",
       "auto_levels_button": "自動調整",
-      "open_viewer_button": "ビューアで調整 (推奨)",
-      "compression_info": "圧縮はJPG、WebPおよびAVIF画像にのみ適用されます",
-      "open_viewer_button_simple": "ビューアで調整",
       "reset_button": "リセット",
       "preview_section": "プレビュー",
       "effect_invert": "色反転",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (グレースケール + 透明度)",
       "image_mode_cmyk": "CMYK (印刷)",
       "image_mode_1": "1 (純粋な白黒)",
-      "image_mode_p": "P (256色パレット)",
-      "transparency_section": "透明度",
-      "transparency_info": "透明度はPNG、WebP、ICO、AVIF画像にのみ適用されます",
-      "transparency_type_label": "種類 :",
-      "transparency_type_flood": "領域",
-      "transparency_type_global": "全体",
-      "transparency_tolerance_label": "許容値 :",
-      "transparency_viewer_title": "透明度の調整",
-      "transparency_click_instruction": "透明にする色をクリックしてください",
-      "transparency_undo": "最後のクリックを元に戻す",
-      "transparency_redo": "やり直し",
-      "transparency_type_flood_tooltip": "フラッドフィル : クリックしたピクセル周辺の均一な色の領域を透明にします",
-      "transparency_type_global_tooltip": "グローバル透明度 : クリックした色に近い色を持つ画像内のすべてのピクセルに影響します",
-      "transparency_apply": "適用",
-      "transparency_skipped_warning": "{count} 枚の画像がスキップされました — 形式が透明度に対応していません。含めるには、まず PNG に変換してください。",
-      "auto_levels_tooltip": "各ページを分析し、コントラストを最大化するために黒と白のレベルを自動的に調整します。\nページごとに選択するには、ビューアを使用してください。",
-      "transparency_unsaved_title": "未適用の変更",
-      "transparency_unsaved_message": "現在の変更は画像に適用されていません。どうしますか？",
-      "transparency_unsaved_discard": "適用せずに閉じる",
-      "transparency_unsaved_apply": "適用して閉じる",
-      "transparency_unsaved_cancel": "キャンセル"
+      "image_mode_p": "P (256色パレット)"
     },
     "levels_viewer": {
-      "title": "スポイトでレベル調整",
-      "apply_current": "このページに適用",
-      "apply_all": "選択したすべてのページに適用",
       "black_pipette": "黒点スポイト",
       "white_pipette": "白点スポイト",
       "black_pipette_tooltip": "完全に黒であるべきピクセルをクリックしてください。注意：やりすぎやすいです！",
       "white_pipette_tooltip": "完全に白であるべきピクセルをクリックしてください。注意：やりすぎやすいです！"
-    },
-    "compression_viewer": {
-      "title": "圧縮調整"
     },
     "outliers": {
       "title": "異常なサイズのページ",

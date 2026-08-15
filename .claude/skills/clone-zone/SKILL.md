@@ -105,7 +105,7 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 
 ## Fond damier (transparence)
 
-`make_clone_checker`/`_clone_refresh_display` — implémentation **indépendante** (encore une copie du même algorithme après celle de `AdjustmentViewerDialog`) ; aucune des deux n'appelle une fonction partagée. Une correction visuelle du damier faite dans un fichier ne se propage pas à l'autre. Distinct de `_compose_on_checkerboard`/`entries.py::_make_checkerboard_pil` (affichage normal hors stroke) — tuile plus fine (12px) et composition RGB directe sans repasser par le pipeline d'affichage standard.
+`make_clone_checker`/`_clone_refresh_display` — implémentation **indépendante**, sans fonction partagée avec `_compose_on_checkerboard`/`entries.py::_make_checkerboard_pil` (affichage normal hors stroke) — tuile plus fine (12px) et composition RGB directe sans repasser par le pipeline d'affichage standard. Historiquement, une troisième implémentation du même algorithme existait dans `AdjustmentViewerDialog` (`adjustments_viewers_qt.py`, supprimé le 2026-08-16 avec toute la visionneuse annexe d'ajustements) — n'existe plus, ne plus la chercher comme référence de comparaison.
 
 ## Traductions
 
@@ -130,7 +130,7 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 - **Snapshot figé en mode fixe, référence directe en mode relatif** — une modification de la logique de décalage doit revalider que "la source ne rattrape jamais la destination en mode relatif" avant de réutiliser la référence directe ailleurs ; voir section dédiée.
 - **`_clone_work_img` distinct de `entry['bytes']`** — ne pas essayer de "simplifier" en appliquant chaque point directement sur `entry['bytes']`/`ensure_image_loaded` : recharger/réencoder à chaque point peint tuerait les performances (voir section dédiée).
 - **Undo/redo au niveau du stroke entier, pas du point peint** — un stroke long (glisser la souris longtemps sans relâcher) ne peut être annulé qu'en un seul bloc, jamais point par point.
-- **Fond damier dupliqué** — pas partagé avec `AdjustmentViewerDialog`.
+- **Fond damier dupliqué** — implémentation propre à ce fichier, aucune fonction partagée avec le reste du projet.
 - **Curseur cible à reconstruire à chaque survol Ctrl enfoncé** — pas seulement à la première fois, le rayon écran dépend du zoom courant.
 - **Marqueur de source à resynchroniser après pan, zoom, ET redimensionnement** — géré en tête de `paint_clone_marker`, appelée automatiquement par Qt via `paintEvent` dans les trois cas ; ne pas dupliquer l'appel dans chaque handler séparément.
 - **`_VALIDATE_KEYS` n'a pas d'entrée `"clone"`** — ne pas en ajouter une par réflexe en copiant le pattern crop/straighten : cet outil n'a jamais besoin du bouton "Valider" flottant, l'application est immédiate.
@@ -141,7 +141,7 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 
 - `page-straighten` — architecture la plus proche dans le projet (outil migré dans son propre module, undo/redo unifié avec le panneau, plus de fenêtre dédiée) ; comparer les deux pour la différence de philosophie de validation (une opération validée une fois vs peinture continue commitée en continu).
 - `page-crop` — même famille d'outils migrés, partage le bouton "Valider" flottant avec `page-straighten` mais pas avec le clonage (qui n'en a pas besoin) ; même nettoyage des points d'entrée mosaïque le 2026-08-14.
-- `add-text-to-image` — dernier outil migré ; troisième implémentation indépendante du fond damier de transparence après celle-ci et celle de `AdjustmentViewerDialog`.
+- `add-text-to-image` — autre implémentation indépendante du fond damier de transparence, aucune fonction partagée avec celle-ci.
 - `viewers` — architecture générale de la fusion progressive des visionneuses (barre d'outils, règle des modules séparés, sections spécifiques au clonage) ; vocabulaire zoom/pan/plein-écran commun mais implémentation non partagée.
 - `apply-image-operation` — pattern général de modification de `entry['bytes']`, suivi ici en variante (A) complète.
 - `undo-redo` — mécanique de l'historique global de l'appli, unique niveau depuis la migration (plus d'historique interne séparé).

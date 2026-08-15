@@ -66,7 +66,14 @@
     "batch_library": "Створити бібліотеку з папки(папок)",
     "batch_recompress": "Повторне стиснення файлів CBZ до рівня за замовчуванням",
     "validate_straighten": "Підтвердити вирівнювання",
-    "validate_text": "Застосувати текст"
+    "validate_text": "Застосувати текст",
+    "validate_shapes": "Підтвердити фігури",
+    "validate_transparency": "Підтвердити прозорість",
+    "cancel_crop": "Скасувати обрізання",
+    "cancel_straighten": "Скасувати вирівнювання",
+    "cancel_text": "Скасувати текст",
+    "cancel_shapes": "Скасувати фігури",
+    "cancel_transparency": "Скасувати прозорість"
   },
   "tabs": {
     "mosaic": "Мозаїка",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Насиченість :",
     "toolbar_remove_colors_tooltip": "Видалення кольорів",
     "toolbar_remove_colors_instruction": "Налаштуйте повзунок, зміна застосовується після відпускання",
-    "remove_colors_panel_label": "Інтенсивність :"
+    "remove_colors_panel_label": "Інтенсивність :",
+    "toolbar_compression_tooltip": "Стиснення",
+    "toolbar_compression_instruction": "Налаштуйте повзунок, зміна застосовується після відпускання",
+    "toolbar_compression_disabled": "Доступно лише для зображень JPG, WEBP і AVIF",
+    "compression_panel_label": "Якість :",
+    "toolbar_levels_tooltip": "Rivni",
+    "toolbar_levels_instruction": "Pipetky abo povzunky, zmina zastosovuietsia pislia vidpuskannia/klatsannia",
+    "levels_gamma_panel_label": "Gamma :",
+    "levels_threshold_panel_label": "Porih :",
+    "levels_black_panel_label": "Chorna tochka :",
+    "levels_white_panel_label": "Bila tochka :",
+    "levels_black_slider_tooltip": "Usi pikseli temnishi za tse znachennia staiut povnistiu chornymy",
+    "levels_gamma_slider_tooltip": "Osvitliuie abo zatemniuie seredni tony, ne vplyvaiuchy na chorne chy bile",
+    "levels_white_slider_tooltip": "Usi pikseli svitlishi za tse znachennia staiut povnistiu bilymy",
+    "levels_threshold_slider_tooltip": "Peretvoriuie zobrazhennia na chysto chorno-bile na osnovi tsoho porohu",
+    "levels_auto_tooltip": "Analizuie vidobrazhenu storinku i avtomatychno nalashtovuie chornu ta bilu tochky dlia maksymizatsii kontrastu",
+    "toolbar_shapes_tooltip": "Фігури",
+    "toolbar_shapes_instruction": "Перетягніть, щоб намалювати фігуру, маркери для зміни розміру, стрілки для переміщення",
+    "shape_type_ellipse": "Еліпс",
+    "shape_type_rectangle": "Прямокутник",
+    "shape_type_rounded_rectangle": "Прямокутник із заокругленими кутами",
+    "shape_type_line": "Лінія",
+    "shape_type_arrow": "Стрілка",
+    "shape_thickness_label": "Товщина:",
+    "shape_color_label": "Колір:",
+    "shape_color_tooltip": "Виберіть колір контуру та заливки",
+    "shape_fill_enabled_label": "Заливка",
+    "shape_pipette_tooltip": "Взяти колір з відображеної сторінки",
+    "toolbar_transparency_tooltip": "Прозорість",
+    "toolbar_transparency_instruction": "Клацніть колір, який потрібно зробити прозорим",
+    "toolbar_transparency_disabled": "Доступно лише для зображень PNG, WebP, ICO та AVIF",
+    "transparency_flood_panel_label": "Зона",
+    "transparency_global_panel_label": "Загалом",
+    "transparency_tolerance_panel_label": "Допуск:",
+    "transparency_type_slider_tooltip": "Зона: робить прозорою однорідну кольорову зону навколо клацнутого пікселя. Загалом: впливає на всі пікселі зображення, колір яких близький до клацнутого",
+    "transparency_tolerance_slider_tooltip": "Максимальна допустима колірна відстань навколо клацнутого пікселя"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Текст не введено",
         "message": "Спочатку введіть текст принаймні в один блок."
+      },
+      "no_shape": {
+        "title": "Жодної фігури не намальовано",
+        "message": "Спочатку намалюйте принаймні одну фігуру."
+      },
+      "no_transparency_work": {
+        "title": "Прозорість не застосована",
+        "message": "Спочатку клацніть колір, який потрібно зробити прозорим."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Помилка",
         "message": "Не вдалося застосувати видалення кольорів: {error}"
+      },
+      "compression_failed": {
+        "title": "Помилка",
+        "message": "Не вдалося застосувати стиснення: {error}"
+      },
+      "levels_failed": {
+        "title": "Pomylka",
+        "message": "Ne vdalosia zastosuvaty rivni: {error}"
+      },
+      "shapes_failed": {
+        "title": "Помилка",
+        "message": "Не вдалося застосувати фігури: {error}"
+      },
+      "transparency_failed": {
+        "title": "Помилка",
+        "message": "Не вдалося застосувати прозорість."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "zobrazhen",
       "apply_button": "Zastosuvaty",
       "color_depth_section": "Hlybyna koloru",
-      "compression_section": "Stysnennya",
       "effects_section": "Efekty",
       "sharpness_section": "Chitkist",
-      "levels_section": "Rivni chornoho/biloho",
       "depth_unchanged": "Ne zminyuvaty",
       "depth_32bit": "32 bity (RGBA - kolory + prozhorist)",
       "depth_24bit": "24 bity (RGB - kolory)",
       "depth_8bit": "8 bitiv (palitra PNG / vidtinky siroho JPEG)",
       "depth_1bit": "1 bit (chorno-bilyi)",
       "compression_enable": "Uvimknuty povtorne stysnennya",
-      "compression_quality_label": "Якість : {value}/100",
       "effect_none": "Bez efektu",
       "effect_grayscale": "Vidtinky siroho",
       "effect_sepia": "Sepiya",
-      "levels_none": "Bez nalashtuvannya",
-      "levels_threshold": "Porih (chistyi chornyi abo bilyi)",
-      "levels_advanced": "Rozshyreni rivni (tini/seredni tona/svitlo)",
-      "threshold_label": "Porih: {value}",
-      "black_point_label": "Chorna tochka: {value}",
-      "gamma_label": "Gamma (seredni tona): {value}",
-      "white_point_label": "Bila tochka: {value}",
       "auto_levels_button": "Автоматичне налаштування",
-      "open_viewer_button": "Налаштувати за допомогою переглядача (рекомендовано)",
-      "compression_info": "Стиснення застосовується лише до зображень JPG, WebP і AVIF",
-      "open_viewer_button_simple": "Налаштувати за допомогою переглядача",
       "reset_button": "Скинути",
       "preview_section": "Попередній перегляд",
       "effect_invert": "Інверсія кольорів",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (відтінки сірого + прозорість)",
       "image_mode_cmyk": "CMYK (друк)",
       "image_mode_1": "1 (чисто чорно-білий)",
-      "image_mode_p": "P (палітра 256 кольорів)",
-      "transparency_section": "Прозорість",
-      "transparency_info": "Прозорість застосовується лише до зображень PNG, WebP, ICO та AVIF",
-      "transparency_type_label": "Тип :",
-      "transparency_type_flood": "Зона",
-      "transparency_type_global": "Глобальний",
-      "transparency_tolerance_label": "Допуск :",
-      "transparency_viewer_title": "Налаштування прозорості",
-      "transparency_click_instruction": "Натисніть на колір, який потрібно зробити прозорим",
-      "transparency_undo": "Скасувати останнє натискання",
-      "transparency_redo": "Повторити",
-      "transparency_type_flood_tooltip": "Flood fill : робить прозорою рівномірну кольорову зону навколо натиснутого пікселя",
-      "transparency_type_global_tooltip": "Глобальна прозорість : впливає на всі пікселі зображення, колір яких близький до натиснутого",
-      "transparency_apply": "Застосувати",
-      "transparency_skipped_warning": "{count} зображення(нь) пропущено — формат несумісний із прозорістю. Щоб включити їх, спочатку конвертуйте у PNG.",
-      "auto_levels_tooltip": "Аналізує кожну сторінку та автоматично регулює рівні чорного та білого для максимального контрасту.\nЩоб вибирати сторінку за сторінкою, використовуйте переглядач.",
-      "transparency_unsaved_title": "Незастосовані зміни",
-      "transparency_unsaved_message": "Поточні зміни не були застосовані до зображення. Що ви хочете зробити?",
-      "transparency_unsaved_discard": "Закрити без застосування",
-      "transparency_unsaved_apply": "Застосувати і закрити",
-      "transparency_unsaved_cancel": "Скасувати"
+      "image_mode_p": "P (палітра 256 кольорів)"
     },
     "levels_viewer": {
-      "title": "Налаштування рівнів за допомогою піпетки",
-      "apply_current": "Застосувати до цієї сторінки",
-      "apply_all": "Застосувати до всіх вибраних сторінок",
       "black_pipette": "Піпетка чорної точки",
       "white_pipette": "Піпетка білої точки",
       "black_pipette_tooltip": "Клацніть на піксель, який має бути повністю чорним. Увага: легко перестаратися!",
       "white_pipette_tooltip": "Клацніть на піксель, який має бути повністю білим. Увага: легко перестаратися!"
-    },
-    "compression_viewer": {
-      "title": "Налаштування стиснення"
     },
     "outliers": {
       "title": "Сторінки з незвичайними розмірами",

@@ -66,7 +66,14 @@
     "batch_library": "從資料夾建立資料庫",
     "batch_recompress": "以預設等級重新壓縮 CBZ 檔案",
     "validate_straighten": "確認校正",
-    "validate_text": "套用文字"
+    "validate_text": "套用文字",
+    "validate_shapes": "套用形狀",
+    "validate_transparency": "套用透明度",
+    "cancel_crop": "取消裁切",
+    "cancel_straighten": "取消校正",
+    "cancel_text": "取消文字",
+    "cancel_shapes": "取消形狀",
+    "cancel_transparency": "取消透明度"
   },
   "tabs": {
     "mosaic": "縮圖",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "飽和度 :",
     "toolbar_remove_colors_tooltip": "去除顏色",
     "toolbar_remove_colors_instruction": "調整滑桿，放開後套用調整",
-    "remove_colors_panel_label": "強度 :"
+    "remove_colors_panel_label": "強度 :",
+    "toolbar_compression_tooltip": "壓縮",
+    "toolbar_compression_instruction": "調整滑桿,放開後套用調整",
+    "toolbar_compression_disabled": "僅適用於 JPG、WEBP 和 AVIF 影像",
+    "compression_panel_label": "品質 :",
+    "toolbar_levels_tooltip": "色階",
+    "toolbar_levels_instruction": "吸管或滑桿,調整在放開/點擊後應用",
+    "levels_gamma_panel_label": "伽馬 :",
+    "levels_threshold_panel_label": "閥值 :",
+    "levels_black_panel_label": "黑場 :",
+    "levels_white_panel_label": "白場 :",
+    "levels_black_slider_tooltip": "所有比此數值更暗的像素都會變為純黑色",
+    "levels_gamma_slider_tooltip": "調亮或調暗中間調,不影響黑色和白色",
+    "levels_white_slider_tooltip": "所有比此數值更亮的像素都會變為純白色",
+    "levels_threshold_slider_tooltip": "根據此閥值將圖像轉換為純黑白",
+    "levels_auto_tooltip": "分析目前顯示的頁面,自動調整黑場和白場以最大化對比度",
+    "toolbar_shapes_tooltip": "形狀",
+    "toolbar_shapes_instruction": "拖曳以繪製形狀，控點用於調整大小，方向鍵用於移動",
+    "shape_type_ellipse": "橢圓",
+    "shape_type_rectangle": "矩形",
+    "shape_type_rounded_rectangle": "圓角矩形",
+    "shape_type_line": "直線",
+    "shape_type_arrow": "箭頭",
+    "shape_thickness_label": "粗細：",
+    "shape_color_label": "顏色：",
+    "shape_color_tooltip": "選擇筆畫與填色的顏色",
+    "shape_fill_enabled_label": "填色",
+    "shape_pipette_tooltip": "從顯示的頁面中擷取顏色",
+    "toolbar_transparency_tooltip": "透明度",
+    "toolbar_transparency_instruction": "點擊要設為透明的顏色",
+    "toolbar_transparency_disabled": "僅適用於PNG、WebP、ICO和AVIF圖像",
+    "transparency_flood_panel_label": "區域",
+    "transparency_global_panel_label": "全域",
+    "transparency_tolerance_panel_label": "容差:",
+    "transparency_type_slider_tooltip": "區域：使點擊像素周圍顏色一致的區域變透明。全域：影響圖像中顏色接近點擊顏色的所有像素",
+    "transparency_tolerance_slider_tooltip": "點擊像素周圍可接受的最大顏色差異"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "尚未輸入文字",
         "message": "請先在至少一個區塊輸入文字。"
+      },
+      "no_shape": {
+        "title": "尚未繪製任何形狀",
+        "message": "請先至少繪製一個形狀。"
+      },
+      "no_transparency_work": {
+        "title": "未套用任何透明度",
+        "message": "請先點擊要設為透明的顏色。"
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "錯誤",
         "message": "無法套用去除顏色：{error}"
+      },
+      "compression_failed": {
+        "title": "錯誤",
+        "message": "無法套用壓縮：{error}"
+      },
+      "levels_failed": {
+        "title": "錯誤",
+        "message": "無法應用色階: {error}"
+      },
+      "shapes_failed": {
+        "title": "錯誤",
+        "message": "無法套用形狀：{error}"
+      },
+      "transparency_failed": {
+        "title": "錯誤",
+        "message": "無法套用透明度。"
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "圖像",
       "apply_button": "套用",
       "color_depth_section": "色彩深度",
-      "compression_section": "壓縮",
       "effects_section": "效果",
       "sharpness_section": "銳利度",
-      "levels_section": "黑/白色階",
       "depth_unchanged": "不更改",
       "depth_32bit": "32位元 (RGBA - 顏色+透明度)",
       "depth_24bit": "24位元 (RGB - 顏色)",
       "depth_8bit": "8 wei (PNG diaoseban / JPEG huidu)",
       "depth_1bit": "1位元 (黑白)",
       "compression_enable": "啟用重新壓縮",
-      "compression_quality_label": "品質 : {value}/100",
       "effect_none": "無效果",
       "effect_grayscale": "灰階",
       "effect_sepia": "棕褐色",
-      "levels_none": "無調整",
-      "levels_threshold": "閾值 (純黑或純白)",
-      "levels_advanced": "進階色階 (陰影/中間調/亮部)",
-      "threshold_label": "閾值: {value}",
-      "black_point_label": "黑場: {value}",
-      "gamma_label": "伽瑪 (中間調): {value}",
-      "white_point_label": "白場: {value}",
       "auto_levels_button": "自動調整",
-      "open_viewer_button": "使用檢視器調整 (建議)",
-      "compression_info": "壓縮僅適用於JPG、WebP和AVIF圖像",
-      "open_viewer_button_simple": "使用檢視器調整",
       "reset_button": "重置",
       "preview_section": "預覽",
       "effect_invert": "顏色反轉",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (灰階 + 透明度)",
       "image_mode_cmyk": "CMYK (印刷)",
       "image_mode_1": "1 (純黑白)",
-      "image_mode_p": "P (256色調色盤)",
-      "transparency_section": "透明度",
-      "transparency_info": "透明度僅適用於 PNG、WebP、ICO 和 AVIF 圖像",
-      "transparency_type_label": "類型 :",
-      "transparency_type_flood": "區域",
-      "transparency_type_global": "全域",
-      "transparency_tolerance_label": "容差 :",
-      "transparency_viewer_title": "透明度調整",
-      "transparency_click_instruction": "點擊要變為透明的顏色",
-      "transparency_undo": "撤銷上次點擊",
-      "transparency_redo": "重做",
-      "transparency_type_flood_tooltip": "洪水填充 : 使點擊像素周圍的均勻色彩區域變為透明",
-      "transparency_type_global_tooltip": "全域透明度 : 影響圖像中所有顏色與點擊顏色相近的像素",
-      "transparency_apply": "套用",
-      "transparency_skipped_warning": "{count} 張圖像已跳過 — 格式與透明度不相容。如需包含，請先轉換為 PNG。",
-      "auto_levels_tooltip": "分析每一頁並自動調整黑白色階以最大化對比度。\n若要逐頁選擇，請使用檢視器。",
-      "transparency_unsaved_title": "未套用的變更",
-      "transparency_unsaved_message": "目前的變更尚未套用到圖像。您想要怎麼做?",
-      "transparency_unsaved_discard": "關閉而不套用",
-      "transparency_unsaved_apply": "套用並關閉",
-      "transparency_unsaved_cancel": "取消"
+      "image_mode_p": "P (256色調色盤)"
     },
     "levels_viewer": {
-      "title": "使用滴管調整色階",
-      "apply_current": "套用於此頁",
-      "apply_all": "套用至所有選定的頁面",
       "black_pipette": "黑點吸管",
       "white_pipette": "白點吸管",
       "black_pipette_tooltip": "點擊應該完全黑色的像素。注意：很容易做過頭！",
       "white_pipette_tooltip": "點擊應該完全白色的像素。注意：很容易做過頭！"
-    },
-    "compression_viewer": {
-      "title": "壓縮調整"
     },
     "outliers": {
       "title": "尺寸異常的頁面",

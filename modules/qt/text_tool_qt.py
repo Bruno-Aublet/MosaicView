@@ -999,6 +999,17 @@ class _TextOptionsPanel(QWidget):
         y = 8 + self._viewer._toolbar.height() + 6
         self.move(max(0, x), y)
 
+    def mousePressEvent(self, event):
+        # Piège corrigé (2026-08-15, découvert sur le panneau de
+        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
+        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
+        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
+        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        event.accept()
+
+    def mouseReleaseEvent(self, event):
+        event.accept()
+
     def enterEvent(self, event):
         # Suspend le timer d'auto-masquage de la barre (dont ce panneau suit
         # désormais la visibilité, idees.txt #3 décision 2026-08-14) tant que
@@ -1481,7 +1492,8 @@ class TextViewerMixin:
 
     def _on_text_content_changed(self):
         if self._toolbar.active_tool == "text" and self._canvas.has_text_blocks:
-            self._canvas._show_validate_btn()
+            self._canvas._update_validate_btn_state()
+            self._canvas._update_cancel_btn_state()
         # Différé via request_sync (timer unique coalescé côté
         # _TextOptionsPanel, voir son __init__) : content_changed est émis
         # SYNCHRONEMENT depuis _RichTextOverlay.keyPressEvent (via
@@ -1647,7 +1659,14 @@ class TextViewerMixin:
 
             self._canvas.clear_text_blocks()
             self._toolbar._text_panel.set_visible_for_tool(self._toolbar.active_tool)
-            self._canvas._hide_validate_btn()
+            # Recalcule seulement l'ÉTAT du bouton (repasse en gris,
+            # has_text_blocks vient de redevenir faux) — ne touche JAMAIS à sa
+            # visibilité, pilotée uniquement par _ViewerToolbar.
+            # show_and_schedule_hide/_on_hide_timeout (mécanisme unique, voir
+            # image_viewer_qt.py::_update_validate_btn_state). Bouton
+            # "Annuler" jumeau rafraîchi juste à côté (2026-08-15).
+            self._canvas._update_validate_btn_state()
+            self._canvas._update_cancel_btn_state()
             self._text_blocks_by_page.pop(self.current_idx, None)
             self.display_image()
             self._toolbar.refresh_undo_redo_state()

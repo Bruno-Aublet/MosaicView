@@ -104,7 +104,6 @@ hiddenimports = [
     'modules.qt.overlay_tooltip_qt',
     'modules.qt.adjustments_dialog_qt',
     'modules.qt.adjustments_processing_qt',
-    'modules.qt.adjustments_viewers_qt',
     'modules.qt.web_import_qt',
     'modules.qt.keyboard_nav_qt',
     'modules.qt.metadata_signal',

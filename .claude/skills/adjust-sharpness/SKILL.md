@@ -37,20 +37,20 @@ Wrapper direct de `PIL.ImageFilter.UnsharpMask`. Bornes : `unsharp_radius` (0.5-
 
 **Historique** : les deux réglages vivaient à l'origine dans le panneau Ajustements classique (`adjustments_dialog_qt.py`, sections `_grp_sharp`/`_grp_unsharp`) et dans `AdjustmentViewerDialog` (`adjustments_viewers_qt.py`, modes `'sharpness'`/`'unsharp'`). Les deux ont migré vers la barre d'outils flottante de la visionneuse principale (skill `viewers`, section "Le cas de la netteté") en deux passes séparées — sharpness d'abord, puis unsharp — et **l'ancien panneau/visionneuse ont été entièrement retirés à chaque fois**, pas seulement redirigés (voir CHANGELOG.md [1.7.4]). Ces attributs/modes n'existent donc plus nulle part dans le code actuel — ne pas les chercher ni les recréer.
 
-- Module : `modules/qt/adjustments_tool_qt.py`.
+- Module : `modules/qt/sharpness_tool_qt.py`.
 - Icône bi-mode unique dans la barre (`state.sharpness_mode` 0=sharpness/1=unsharp, clic droit pour basculer, icône elle-même changée `BTN_Sharpness.png`/`BTN_Unsharp.png`) — détail complet du mécanisme (preview live, commit auto au relâchement, undo/redo par point d'historique, persistance après changement de page/undo-redo) dans le skill `viewers`, section "Le cas de la netteté". Ce skill-ci ne couvre que la formule PIL et ses bornes, pas l'intégration UI.
 - Panneaux flottants : `_SharpnessOptionsPanel` (1 réglette -100..+100) en mode 0, `_UnsharpOptionsPanel` (3 réglettes radius/percent/threshold, disposition horizontale) en mode 1 — jamais affichés simultanément.
 - Les deux modes réutilisent `apply_adjustments()`/`apply_image_adjustments()` (`adjustments_processing_qt.py`) sans dupliquer la formule — même fonction qu'utilisait l'ancien panneau.
 
 ## Conversion slider → valeur
 
-Le slider radius (`_UnsharpOptionsPanel._radius_slider`, `viewer_toolbar_qt.py`/`adjustments_tool_qt.py`) stocke un entier (`5..50`) divisé par 10 pour obtenir un flottant (`round(val / 10.0, 1)`) — pattern classique pour un `QSlider` (int uniquement) représentant une valeur décimale. Reproduire ce pattern (pas `QDoubleSpinBox`) pour tout nouveau réglage décimal, par cohérence avec `gamma` (skill `adjust-levels`) qui suit le même principe.
+Le slider radius (`_UnsharpOptionsPanel._radius_slider`, `viewer_toolbar_qt.py`/`sharpness_tool_qt.py`) stocke un entier (`5..50`) divisé par 10 pour obtenir un flottant (`round(val / 10.0, 1)`) — pattern classique pour un `QSlider` (int uniquement) représentant une valeur décimale. Reproduire ce pattern (pas `QDoubleSpinBox`) pour tout nouveau réglage décimal, par cohérence avec `gamma` (skill `adjust-levels`) qui suit le même principe.
 
 ## Modifier ces fonctions
 
 - Changer l'intensité/la formule de la netteté simple → bloc `if sharpness != 0` de `apply_adjustments()` (`adjustments_processing_qt.py`).
-- Changer les bornes ou le comportement de l'Unsharp Mask → bloc `if unsharp_percent > 0` de la même fonction, **et** les bornes des sliders dans `_UnsharpOptionsPanel` (`adjustments_tool_qt.py`) — un seul endroit UI à mettre à jour désormais (plus deux dialogs à synchroniser comme du temps de l'ancien panneau).
-- Changer l'apparence/le comportement des panneaux flottants (réglettes, tooltips, positionnement) → `_SharpnessOptionsPanel`/`_UnsharpOptionsPanel` dans `adjustments_tool_qt.py`, voir skill `viewers`.
+- Changer les bornes ou le comportement de l'Unsharp Mask → bloc `if unsharp_percent > 0` de la même fonction, **et** les bornes des sliders dans `_UnsharpOptionsPanel` (`sharpness_tool_qt.py`) — un seul endroit UI à mettre à jour désormais (plus deux dialogs à synchroniser comme du temps de l'ancien panneau).
+- Changer l'apparence/le comportement des panneaux flottants (réglettes, tooltips, positionnement) → `_SharpnessOptionsPanel`/`_UnsharpOptionsPanel` dans `sharpness_tool_qt.py`, voir skill `viewers`.
 
 ## Références croisées
 

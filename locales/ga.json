@@ -66,7 +66,14 @@
     "batch_library": "Cruthaigh leabharlann ón gcomhad(comhaid)",
     "batch_recompress": "Athchomhbhrúigh comhaid CBZ ag an leibhéal réamhshocraithe",
     "validate_straighten": "Deimhnigh an díriú",
-    "validate_text": "Cuir téacs i bhfeidhm"
+    "validate_text": "Cuir téacs i bhfeidhm",
+    "validate_shapes": "Deimhnigh na cruthanna",
+    "validate_transparency": "Deimhnigh trédhearcacht",
+    "cancel_crop": "Cealaigh an bearradh",
+    "cancel_straighten": "Cealaigh an díriú",
+    "cancel_text": "Cealaigh an téacs",
+    "cancel_shapes": "Cealaigh na cruthanna",
+    "cancel_transparency": "Cealaigh an trédhearcacht"
   },
   "tabs": {
     "mosaic": "Mósáic",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "Sáithiú :",
     "toolbar_remove_colors_tooltip": "Baint dathanna",
     "toolbar_remove_colors_instruction": "Coigeartaigh an sleamhnán, cuirtear an coigeartú i bhfeidhm nuair a scaoiltear é",
-    "remove_colors_panel_label": "Déine :"
+    "remove_colors_panel_label": "Déine :",
+    "toolbar_compression_tooltip": "Comhbhrú",
+    "toolbar_compression_instruction": "Coigeartaigh an sleamhnán, cuirtear an coigeartú i bhfeidhm nuair a scaoiltear é",
+    "toolbar_compression_disabled": "Ar fáil do íomhánna JPG, WEBP agus AVIF amháin",
+    "compression_panel_label": "Cáilíocht :",
+    "toolbar_levels_tooltip": "Leibheil",
+    "toolbar_levels_instruction": "Sceithini no sleamhnain, cuirtear an coigeartu i bhfeidhm ar scaoileadh/cliceail",
+    "levels_gamma_panel_label": "Gama :",
+    "levels_threshold_panel_label": "Tairseach :",
+    "levels_black_panel_label": "Pointe dubh :",
+    "levels_white_panel_label": "Pointe bán :",
+    "levels_black_slider_tooltip": "Ta gach picteilin nios duibhe na an luach seo ina bhandubh iomlan",
+    "levels_gamma_slider_tooltip": "Deanann na meantonai nios gile no nios doiche, gan difear a dheanamh don dubh no don ban",
+    "levels_white_slider_tooltip": "Ta gach picteilin nios gile na an luach seo ina bhanbhan iomlan",
+    "levels_threshold_slider_tooltip": "Iompaionn se an iomha ina fiordhubh agus ban bunaithe ar an tairseach seo",
+    "levels_auto_tooltip": "Deanann anailis ar an leathanach a thaispeantar agus coigeartaionn se go huathoibrioch na poinnti dubha agus bana chun an codarsnacht a uasmheadu",
+    "toolbar_shapes_tooltip": "Cruthanna",
+    "toolbar_shapes_instruction": "Tarraing chun cruth a tharraingt, hanla chun méid a athrú, saigheada chun bogadh",
+    "shape_type_ellipse": "Éilips",
+    "shape_type_rectangle": "Dronuilleog",
+    "shape_type_rounded_rectangle": "Dronuilleog le coirnéil chruinne",
+    "shape_type_line": "Líne",
+    "shape_type_arrow": "Saighead",
+    "shape_thickness_label": "Tiúchan:",
+    "shape_color_label": "Dath:",
+    "shape_color_tooltip": "Roghnaigh dath an imlíne agus an líonta",
+    "shape_fill_enabled_label": "Líonadh",
+    "shape_pipette_tooltip": "Bailigh dath ón leathanach a thaispeántar",
+    "toolbar_transparency_tooltip": "Trédhearcacht",
+    "toolbar_transparency_instruction": "Cliceáil ar an dath atá le déanamh trédhearcach",
+    "toolbar_transparency_disabled": "Ar fáil d'íomhánna PNG, WebP, ICO agus AVIF amháin",
+    "transparency_flood_panel_label": "Ceantar",
+    "transparency_global_panel_label": "Domhanda",
+    "transparency_tolerance_panel_label": "Lamháltas:",
+    "transparency_type_slider_tooltip": "Ceantar: déanann sé an crios ilchineálach datha timpeall an phicteilín cliceáilte trédhearcach. Domhanda: téann sé i bhfeidhm ar gach picteilín san íomhá a bhfuil a dath gar don cheann cliceáilte",
+    "transparency_tolerance_slider_tooltip": "An t-uasfhad datha is mó a nglactar leis timpeall an phicteilín cliceáilte"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "Gan téacs",
         "message": "Cuir téacs isteach i mbloc amháin ar a laghad ar dtús."
+      },
+      "no_shape": {
+        "title": "Níl aon chruth tarraingthe",
+        "message": "Tarraing cruth amháin ar a laghad ar dtús."
+      },
+      "no_transparency_work": {
+        "title": "Níor cuireadh aon trédhearcacht i bhfeidhm",
+        "message": "Cliceáil ar dhath le déanamh trédhearcach ar dtús le do thoil."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "Earráid",
         "message": "Níorbh fhéidir baint na ndathanna a chur i bhfeidhm: {error}"
+      },
+      "compression_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an comhbhrú a chur i bhfeidhm: {error}"
+      },
+      "levels_failed": {
+        "title": "Earraid",
+        "message": "Nior baineadh leibheil i bhfeidhm: {error}"
+      },
+      "shapes_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir na cruthanna a chur i bhfeidhm: {error}"
+      },
+      "transparency_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an trédhearcacht a chur i bhfeidhm."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "iomhanna",
       "apply_button": "Cuir i bhfeidhm",
       "color_depth_section": "Doimhneacht datha",
-      "compression_section": "Comhbhrú",
       "effects_section": "Éifeachtaí",
       "sharpness_section": "Géire",
-      "levels_section": "Leibhéil dubh/bán",
       "depth_unchanged": "Ná hathraigh",
       "depth_32bit": "32 giotán (RGBA - dathanna + trédhearcacht)",
       "depth_24bit": "24 giotán (RGB - dathanna)",
       "depth_8bit": "8 giotan (pailteid PNG / scalaí liatha JPEG)",
       "depth_1bit": "1 ghiotán (dubh agus bán)",
       "compression_enable": "Cumasaigh athchomhbhrú",
-      "compression_quality_label": "Cáilíocht : {value}/100",
       "effect_none": "Gan éifeacht",
       "effect_grayscale": "Tóin liatha",
       "effect_sepia": "Séipea",
-      "levels_none": "Gan coigeartú",
-      "levels_threshold": "Tairseach (dubh nó bán glan)",
-      "levels_advanced": "Leibhéil chun cinn (scáileanna/meántóin/soilse)",
-      "threshold_label": "Tairseach: {value}",
-      "black_point_label": "Pointe dubh: {value}",
-      "gamma_label": "Gáma (meántóin): {value}",
-      "white_point_label": "Pointe bán: {value}",
       "auto_levels_button": "Coigeartú uathoibríoch",
-      "open_viewer_button": "Coigeartaigh leis an amharcóir (molta)",
-      "compression_info": "Ní bhaineann comhbhrú ach le híomhánna JPG, WebP agus AVIF",
-      "open_viewer_button_simple": "Coigeartaigh leis an amharcóir",
       "reset_button": "Athshocraigh",
       "preview_section": "Réamhamharc",
       "effect_invert": "Inbhéartú datha",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (scláil liath + trédhearcacht)",
       "image_mode_cmyk": "CMYK (priontáil)",
       "image_mode_1": "1 (dubh agus bán íon)",
-      "image_mode_p": "P (pailit 256 dath)",
-      "transparency_section": "Trédhearcacht",
-      "transparency_info": "Ní bhaineann trédhearcacht ach le híomhánna PNG, WebP, ICO agus AVIF",
-      "transparency_type_label": "Cineál :",
-      "transparency_type_flood": "Crios",
-      "transparency_type_global": "Domhanda",
-      "transparency_tolerance_label": "Lamháil :",
-      "transparency_viewer_title": "Coigeartú trédhearcachta",
-      "transparency_click_instruction": "Cliceáil ar an dath atá le déanamh trédhearcach",
-      "transparency_undo": "Cealaigh an cliceáil deireanach",
-      "transparency_redo": "Athdhéanamh",
-      "transparency_type_flood_tooltip": "Flood fill : déanann sé an ceantar datha aonfhoirmeach timpeall ar an bpicséal cliceáilte trédhearcach",
-      "transparency_type_global_tooltip": "Trédhearcacht dhomhanda : téann i bhfeidhm ar gach picséal san íomhá a bhfuil a dhath cosúil leis an gceann cliceáilte",
-      "transparency_apply": "Cuir i bhfeidhm",
-      "transparency_skipped_warning": "{count} íomhá(nna) fágtha ar lár — formáid neamh-chomhoiriúnach le trédhearcacht. Chun iad a áireamh, tiontaigh go PNG ar dtús iad.",
-      "auto_levels_tooltip": "Déanann sé anailís ar gach leathanach agus coigeartaíonn sé leibhéil na dubhe agus na báine go huathoibríoch chun an codarsnacht a uasmhéadú.\nChun roghnú leathanach ar leathanach, úsáid an breathnóir.",
-      "transparency_unsaved_title": "Athruithe gan cur i bhfeidhm",
-      "transparency_unsaved_message": "Níor cuireadh na hathruithe reatha i bhfeidhm ar an íomhá. Cad ba mhaith leat a dhéanamh?",
-      "transparency_unsaved_discard": "Dún gan cur i bhfeidhm",
-      "transparency_unsaved_apply": "Cuir i bhfeidhm agus dún",
-      "transparency_unsaved_cancel": "Cealaigh"
+      "image_mode_p": "P (pailit 256 dath)"
     },
     "levels_viewer": {
-      "title": "Coigeartu leibheil le droichead",
-      "apply_current": "Cuir i bhfeidhm ar an leathanach seo",
-      "apply_all": "Cuir i bhfeidhm ar gach leathanach roghnaithe",
       "black_pipette": "Drioploir pointe dubh",
       "white_pipette": "Drioploir pointe ban",
       "black_pipette_tooltip": "Cliceáil ar phicteilín ba cheart a bheith dubh ar fad. Aire: tá sé éasca dul thar fóir!",
       "white_pipette_tooltip": "Cliceáil ar phicteilín ba cheart a bheith bán ar fad. Aire: tá sé éasca dul thar fóir!"
-    },
-    "compression_viewer": {
-      "title": "Coigeartú Comhbhrúite"
     },
     "outliers": {
       "title": "Leathanaigh le toisí neamhghnácha",

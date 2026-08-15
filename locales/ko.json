@@ -66,7 +66,14 @@
     "batch_library": "폴더에서 라이브러리 만들기",
     "batch_recompress": "CBZ 파일을 기본 수준으로 다시 압축",
     "validate_straighten": "기울기 보정 확인",
-    "validate_text": "텍스트 적용"
+    "validate_text": "텍스트 적용",
+    "validate_shapes": "도형 적용",
+    "validate_transparency": "투명도 적용",
+    "cancel_crop": "자르기 취소",
+    "cancel_straighten": "수평 맞추기 취소",
+    "cancel_text": "텍스트 취소",
+    "cancel_shapes": "도형 취소",
+    "cancel_transparency": "투명도 취소"
   },
   "tabs": {
     "mosaic": "모자이크",
@@ -102,7 +109,42 @@
     "saturation_panel_label": "채도 :",
     "toolbar_remove_colors_tooltip": "색상 제거",
     "toolbar_remove_colors_instruction": "슬라이더를 조정하면 놓는 순간 변경 사항이 적용됩니다",
-    "remove_colors_panel_label": "강도 :"
+    "remove_colors_panel_label": "강도 :",
+    "toolbar_compression_tooltip": "압축",
+    "toolbar_compression_instruction": "슬라이더를 조정하면 놓을 때 적용됩니다",
+    "toolbar_compression_disabled": "JPG, WEBP, AVIF 이미지에서만 사용할 수 있습니다",
+    "compression_panel_label": "품질 :",
+    "toolbar_levels_tooltip": "레벨",
+    "toolbar_levels_instruction": "스포이트 또는 슬라이더를 조정하면 놓거나 클릭할 때 적용됩니다",
+    "levels_gamma_panel_label": "감마 :",
+    "levels_threshold_panel_label": "임계값 :",
+    "levels_black_panel_label": "검정점 :",
+    "levels_white_panel_label": "흰색점 :",
+    "levels_black_slider_tooltip": "이 값보다 어두운 모든 픽셀이 완전한 검은색이 됩니다",
+    "levels_gamma_slider_tooltip": "검은색과 흰색에는 영향을 주지 않고 중간톤을 밝게 또는 어둡게 합니다",
+    "levels_white_slider_tooltip": "이 값보다 밝은 모든 픽셀이 완전한 흰색이 됩니다",
+    "levels_threshold_slider_tooltip": "이 임계값을 기준으로 이미지를 순수한 흑백으로 변환합니다",
+    "levels_auto_tooltip": "표시된 페이지를 분석하여 대비를 최대화하도록 검정점과 흰점을 자동으로 조정합니다",
+    "toolbar_shapes_tooltip": "도형",
+    "toolbar_shapes_instruction": "드래그하여 도형 그리기, 크기 조절 핸들, 화살표 키로 이동",
+    "shape_type_ellipse": "타원",
+    "shape_type_rectangle": "직사각형",
+    "shape_type_rounded_rectangle": "모서리가 둥근 직사각형",
+    "shape_type_line": "선",
+    "shape_type_arrow": "화살표",
+    "shape_thickness_label": "두께:",
+    "shape_color_label": "색상:",
+    "shape_color_tooltip": "선과 채우기 색상 선택",
+    "shape_fill_enabled_label": "채우기",
+    "shape_pipette_tooltip": "표시된 페이지에서 색상 추출",
+    "toolbar_transparency_tooltip": "투명도",
+    "toolbar_transparency_instruction": "투명하게 만들 색상을 클릭하세요",
+    "toolbar_transparency_disabled": "PNG, WebP, ICO, AVIF 이미지에서만 사용 가능",
+    "transparency_flood_panel_label": "영역",
+    "transparency_global_panel_label": "전체",
+    "transparency_tolerance_panel_label": "허용치:",
+    "transparency_type_slider_tooltip": "영역: 클릭한 픽셀 주변의 단일 색상 영역을 투명하게 만듭니다. 전체: 클릭한 색상과 비슷한 이미지의 모든 픽셀에 영향을 줍니다",
+    "transparency_tolerance_slider_tooltip": "클릭한 픽셀 주변에서 허용되는 최대 색상 차이"
   },
   "context_menu": {
     "viewer": {
@@ -378,6 +420,14 @@
       "no_text_block": {
         "title": "입력된 텍스트 없음",
         "message": "먼저 최소 하나의 블록에 텍스트를 입력하세요."
+      },
+      "no_shape": {
+        "title": "그려진 도형 없음",
+        "message": "먼저 도형을 하나 이상 그려 주세요."
+      },
+      "no_transparency_work": {
+        "title": "적용된 투명도가 없습니다",
+        "message": "먼저 투명하게 만들 색상을 클릭하세요."
       }
     },
     "errors": {
@@ -554,6 +604,22 @@
       "remove_colors_failed": {
         "title": "오류",
         "message": "색상 제거를 적용할 수 없습니다: {error}"
+      },
+      "compression_failed": {
+        "title": "오류",
+        "message": "압축을 적용할 수 없습니다: {error}"
+      },
+      "levels_failed": {
+        "title": "오류",
+        "message": "레벨을 적용할 수 없습니다: {error}"
+      },
+      "shapes_failed": {
+        "title": "오류",
+        "message": "도형을 적용할 수 없습니다: {error}"
+      },
+      "transparency_failed": {
+        "title": "오류",
+        "message": "투명도를 적용할 수 없습니다."
       }
     },
     "info": {
@@ -979,31 +1045,18 @@
       "word_images": "이미지",
       "apply_button": "적용",
       "color_depth_section": "색 심도",
-      "compression_section": "압축",
       "effects_section": "효과",
       "sharpness_section": "선명도",
-      "levels_section": "검정/흰색 레벨",
       "depth_unchanged": "변경하지 않음",
       "depth_32bit": "32비트 (RGBA - 색상 + 투명도)",
       "depth_24bit": "24비트 (RGB - 색상)",
       "depth_8bit": "8 bit (PNG paleteu / JPEG hoeksaek)",
       "depth_1bit": "1비트 (흑백)",
       "compression_enable": "재압축 활성화",
-      "compression_quality_label": "품질 : {value}/100",
       "effect_none": "효과 없음",
       "effect_grayscale": "회색조",
       "effect_sepia": "세피아",
-      "levels_none": "조정 없음",
-      "levels_threshold": "임계값 (순수 검정 또는 흰색)",
-      "levels_advanced": "고급 레벨 (그림자/중간톤/하이라이트)",
-      "threshold_label": "임계값: {value}",
-      "black_point_label": "검정점: {value}",
-      "gamma_label": "감마 (중간톤): {value}",
-      "white_point_label": "흰색점: {value}",
       "auto_levels_button": "자동 조정",
-      "open_viewer_button": "뷰어로 조정 (권장)",
-      "compression_info": "압축은 JPG, WebP 및 AVIF 이미지에만 적용됩니다",
-      "open_viewer_button_simple": "뷰어로 조정",
       "reset_button": "재설정",
       "preview_section": "미리보기",
       "effect_invert": "색상 반전",
@@ -1015,39 +1068,13 @@
       "image_mode_la": "LA (회색조 + 투명도)",
       "image_mode_cmyk": "CMYK (인쇄)",
       "image_mode_1": "1 (순수 흑백)",
-      "image_mode_p": "P (256색 팔레트)",
-      "transparency_section": "투명도",
-      "transparency_info": "투명도는 PNG, WebP, ICO 및 AVIF 이미지에만 적용됩니다",
-      "transparency_type_label": "유형 :",
-      "transparency_type_flood": "영역",
-      "transparency_type_global": "전체",
-      "transparency_tolerance_label": "허용 오차 :",
-      "transparency_viewer_title": "투명도 조정",
-      "transparency_click_instruction": "투명하게 만들 색상을 클릭하세요",
-      "transparency_undo": "마지막 클릭 실행 취소",
-      "transparency_redo": "다시 실행",
-      "transparency_type_flood_tooltip": "플러드 필 : 클릭한 픽셀 주변의 균일한 색상 영역을 투명하게 만듭니다",
-      "transparency_type_global_tooltip": "전체 투명도 : 클릭한 색상과 가까운 색상을 가진 이미지의 모든 픽셀에 영향을 줍니다",
-      "transparency_apply": "적용",
-      "transparency_skipped_warning": "{count} 이미지 건너뜀 — 형식이 투명도와 호환되지 않습니다. 포함하려면 먼저 PNG로 변환하세요.",
-      "auto_levels_tooltip": "각 페이지를 분석하고 대비를 극대화하기 위해 흑백 레벨을 자동으로 조정합니다.\n페이지별로 선택하려면 뷰어를 사용하세요.",
-      "transparency_unsaved_title": "적용되지 않은 변경사항",
-      "transparency_unsaved_message": "현재 변경사항이 이미지에 적용되지 않았습니다. 어떻게 하시겠습니까?",
-      "transparency_unsaved_discard": "적용하지 않고 닫기",
-      "transparency_unsaved_apply": "적용하고 닫기",
-      "transparency_unsaved_cancel": "취소"
+      "image_mode_p": "P (256색 팔레트)"
     },
     "levels_viewer": {
-      "title": "스포이트로 레벨 조정",
-      "apply_current": "이 페이지에 적용",
-      "apply_all": "선택한 모든 페이지에 적용",
       "black_pipette": "검은점 스포이트",
       "white_pipette": "흰점 스포이트",
       "black_pipette_tooltip": "완전히 검은색이어야 하는 픽셀을 클릭하세요. 주의: 과하게 하기 쉽습니다!",
       "white_pipette_tooltip": "완전히 흰색이어야 하는 픽셀을 클릭하세요. 주의: 과하게 하기 쉽습니다!"
-    },
-    "compression_viewer": {
-      "title": "압축 조정"
     },
     "outliers": {
       "title": "비정상적인 크기의 페이지",

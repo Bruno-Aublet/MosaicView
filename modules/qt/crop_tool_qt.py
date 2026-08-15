@@ -31,8 +31,10 @@ class CropCanvasMixin:
     """Hérité par _ViewerCanvas (image_viewer_qt.py) en plus de QLabel : ajoute
     l'état et les méthodes de l'outil "crop" au canvas de la visionneuse, sans
     que leur code vive dans image_viewer_qt.py. Suppose que l'hôte a déjà
-    self._viewer (ImageViewer), self._hide_validate_btn()/_show_validate_btn()
-    (bouton Valider partagé avec straighten, resté dans image_viewer_qt.py),
+    self._viewer (ImageViewer), self._update_validate_btn_state()
+    (bouton Valider partagé avec straighten/text/shapes, resté dans
+    image_viewer_qt.py — visibilité pilotée uniquement par
+    _ViewerToolbar.show_and_schedule_hide/_on_hide_timeout, jamais depuis ici),
     self._ignore_crop_events (partagé avec le double-clic plein écran général,
     resté dans image_viewer_qt.py), et les attributs habituels de
     _ViewerCanvas (display_offset_x/y, display_width/height).
@@ -89,7 +91,13 @@ class CropCanvasMixin:
         self._drag_start_pos = None
         self.pan_offset_x = 0
         self.pan_offset_y = 0
-        self._hide_validate_btn()
+        # Recalcule seulement l'ÉTAT du bouton "Valider" (repasse en gris,
+        # has_crop redevient faux) — ne touche JAMAIS à sa visibilité, pilotée
+        # uniquement par _ViewerToolbar.show_and_schedule_hide/_on_hide_timeout
+        # (mécanisme unique, voir image_viewer_qt.py::_update_validate_btn_state).
+        # Bouton "Annuler" jumeau rafraîchi juste à côté (2026-08-15).
+        self._update_validate_btn_state()
+        self._update_cancel_btn_state()
         self.update()
 
     def _get_resize_mode(self, pos: QPoint) -> str | None:
@@ -160,8 +168,11 @@ class CropCanvasMixin:
             self._waiting_for_double_click = True
             return
 
-        # Nouveau rectangle
-        self._hide_validate_btn()
+        # Nouveau rectangle — recalcule l'état du bouton (repasse en gris,
+        # has_crop redevient faux tant que le tracé n'est pas terminé), voir
+        # clear_crop() pour le détail de la règle.
+        self._update_validate_btn_state()
+        self._update_cancel_btn_state()
         self._crop_start = pos
         self._crop_end   = None
         self._resize_mode = None
@@ -188,7 +199,8 @@ class CropCanvasMixin:
         if self._waiting_for_double_click:
             if distance >= 15:
                 self._waiting_for_double_click = False
-                self._hide_validate_btn()
+                self._update_validate_btn_state()
+                self._update_cancel_btn_state()
             else:
                 return
 
@@ -296,7 +308,8 @@ class CropCanvasMixin:
             return
 
         self.update()
-        self._show_validate_btn()
+        self._update_validate_btn_state()
+        self._update_cancel_btn_state()
 
 
 # ─────────────────────────────────────────────────────────────────────────────

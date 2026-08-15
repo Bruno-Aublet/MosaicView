@@ -118,6 +118,17 @@ class _StraightenAnglePanel(QWidget):
         y = 8 + self._viewer._toolbar.height() + 6
         self.move(max(0, x), y)
 
+    def mousePressEvent(self, event):
+        # Piège corrigé (2026-08-15, découvert sur le panneau de
+        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
+        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
+        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
+        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        event.accept()
+
+    def mouseReleaseEvent(self, event):
+        event.accept()
+
     def enterEvent(self, event):
         # Suspend le timer d'auto-masquage de la barre (dont ce panneau suit
         # désormais la visibilité, idees.txt #3 décision 2026-08-14) tant que
@@ -182,9 +193,11 @@ class StraightenCanvasMixin:
     """Hérité par _ViewerCanvas (image_viewer_qt.py) en plus de QLabel : ajoute
     l'état et les méthodes de l'outil "straighten" manuel au canvas de la
     visionneuse, sans que leur code vive dans image_viewer_qt.py. Suppose que
-    l'hôte a déjà self._viewer (ImageViewer), self._hide_validate_btn()
-    (bouton Valider partagé avec le crop, resté dans image_viewer_qt.py), et
-    les attributs habituels de _ViewerCanvas (display_offset_x/y).
+    l'hôte a déjà self._viewer (ImageViewer), self._update_validate_btn_state()
+    (bouton Valider partagé avec crop/text/shapes, resté dans
+    image_viewer_qt.py — visibilité pilotée uniquement par
+    _ViewerToolbar.show_and_schedule_hide/_on_hide_timeout, jamais depuis ici),
+    et les attributs habituels de _ViewerCanvas (display_offset_x/y).
 
     Coordonnées widget dérivées pour le dessin/l'interaction, coordonnées
     image stables comme source de vérité (survivent au pan/zoom/resize) —
@@ -213,7 +226,13 @@ class StraightenCanvasMixin:
         self._line_img_end = None
         self._line_drawing = False
         self._line_dragging_handle = None
-        self._hide_validate_btn()
+        # Recalcule seulement l'ÉTAT du bouton "Valider" (repasse en gris,
+        # has_line redevient faux) — ne touche JAMAIS à sa visibilité, pilotée
+        # uniquement par _ViewerToolbar.show_and_schedule_hide/_on_hide_timeout
+        # (mécanisme unique, voir image_viewer_qt.py::_update_validate_btn_state).
+        # Bouton "Annuler" jumeau rafraîchi juste à côté (2026-08-15).
+        self._update_validate_btn_state()
+        self._update_cancel_btn_state()
         self.update()
 
     def _line_widget_to_image(self, pt: QPoint) -> tuple:
@@ -341,7 +360,11 @@ class StraightenCanvasMixin:
         if hit:
             self._line_dragging_handle = hit
         else:
-            self._hide_validate_btn()
+            # Nouveau trait — recalcule l'état du bouton (repasse en gris,
+            # has_line redevient faux tant que le tracé n'est pas terminé),
+            # voir clear_line() pour le détail de la règle.
+            self._update_validate_btn_state()
+            self._update_cancel_btn_state()
             self._line_drawing = True
             self._line_start = pos
             self._line_end = pos
@@ -395,10 +418,12 @@ class StraightenViewerMixin:
 
     def _on_straighten_line_drawn(self, ix1, iy1, ix2, iy2):
         """Trait figé (relâchement de la souris) : calcule l'angle, alimente le
-        panneau flottant, active le bouton Valider."""
+        panneau flottant, active le bouton Valider (+ son jumeau Annuler,
+        2026-08-15)."""
         self._toolbar._angle_panel.on_line_drawn(ix1, iy1, ix2, iy2)
         self._toolbar._angle_panel.set_visible_for_tool(self._toolbar.active_tool)
-        self._canvas._show_validate_btn()
+        self._canvas._update_validate_btn_state()
+        self._canvas._update_cancel_btn_state()
 
     def _on_straighten_line_live(self, ix1, iy1, ix2, iy2):
         """Pendant le tracé initial ou le drag d'une poignée : aperçu en direct
