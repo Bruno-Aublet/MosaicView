@@ -519,6 +519,12 @@ class _ShapeOptionsPanel(QWidget):
 
     def enterEvent(self, event):
         self._viewer._toolbar.pause_hide()
+        # Le curseur posé par shape_update_cursor (poignées de
+        # redimensionnement/rotation) ou la pipette (idees.txt #4) est celui
+        # du CANVAS, pas celui de ce panneau — sans ce reset, il restait
+        # affiché par-dessus les contrôles du panneau, même piège corrigé sur
+        # _TransparencyOptionsPanel/_LevelsOptionsPanel.
+        self.setCursor(Qt.ArrowCursor)
 
     def leaveEvent(self, event):
         QTimer.singleShot(0, self._check_really_left)
@@ -527,6 +533,11 @@ class _ShapeOptionsPanel(QWidget):
         really_left = not self.rect().contains(self.mapFromGlobal(QCursor.pos()))
         if really_left:
             self._viewer._toolbar.resume_hide()
+            # setCursor(ArrowCursor) posé dans enterEvent ne s'applique qu'à
+            # ce panneau et ses enfants — aucun reset à faire ici pour le
+            # canvas : Qt réaffiche de lui-même le curseur déjà posé dessus
+            # dès que la souris repasse physiquement au-dessus.
+            self.unsetCursor()
 
     # ── Sélection de forme ───────────────────────────────────────────────────
 

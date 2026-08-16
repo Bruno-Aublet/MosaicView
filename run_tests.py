@@ -18,3 +18,4 @@ if __name__ == "__main__":
 # - La configuration sauvegardée de l'application
 # - Le calcul de la taille des fichiers affichée à l'utilisateur
 # - Le respect de la règle "aucune fenêtre modale" dans toute l'application
+# - L'absence de process PDF partagé entre panneaux/traitements (un process dédié par chargement)

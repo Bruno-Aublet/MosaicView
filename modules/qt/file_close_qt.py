@@ -396,8 +396,11 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     gc.collect()
     gc.collect()  # 2e passe pour les cycles Python/Qt
 
-    from modules.qt.pdf_loading_qt import shutdown_pdf_process
-    shutdown_pdf_process()
+    # Tue uniquement le process PDF dédié à CE panneau — chaque panneau a le sien
+    # depuis la correction du bug "pipe broken" en double chargement PDF simultané.
+    pdf_shutdown_cb = getattr(canvas, '_pdf_shutdown_callback', None)
+    if pdf_shutdown_cb is not None:
+        pdf_shutdown_cb()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

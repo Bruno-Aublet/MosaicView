@@ -25,7 +25,7 @@ Point d'entrée de **toute** donnée qui finit dans `state.images_data` (donc da
 | **Fusion d'archive** | Glisser/ouvrir une archive alors qu'un comic est déjà affiché | Non — ajoute à la suite | `ImportMergeWorker` (`import_merge_qt.py`) |
 | **Ajout d'image(s) isolée(s)** | Fichiers image/`.nfo`/`.txt`/`.xml` ouverts ou droppés (panneau vide **ou** déjà ouvert) | Non si déjà ouvert, sinon initialise | `_ImageLoadWorker` (`panel_widget.py`) |
 
-Le **PDF** est une quatrième famille, avec son propre process séparé préchauffé — hors périmètre de ce skill, voir mémoire `project_pdf_support.md` et skill `batch-processing` (section flux PDF→CBZ) pour l'architecture complète.
+Le **PDF** est une quatrième famille, chargé via un process séparé dédié (un par chargement, jamais partagé) — hors périmètre de ce skill, voir skill `pdf-loading` pour l'architecture complète.
 
 ## Le routeur central — `PanelWidget._load_files()` (`panel_widget.py:1079`)
 

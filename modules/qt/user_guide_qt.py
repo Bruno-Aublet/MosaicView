@@ -34,17 +34,6 @@ from modules.qt.config_manager import get_config_manager
 
 # ── Registre des fenêtres ouvertes (une par panneau) ─────────────────────────
 _help_windows: dict = {}  # id(panel) → _HelpDialog
-_active_child_reopen = None
-
-
-def register_child_reopen(reopen_func):
-    global _active_child_reopen
-    _active_child_reopen = reopen_func
-
-
-def unregister_child_reopen():
-    global _active_child_reopen
-    _active_child_reopen = None
 
 
 # ── État collapse/expand des sections (persistant par session) ────────────────
@@ -903,21 +892,15 @@ class _HelpDialog(QDialog):
 
     def _open_full_gpl(self):
         from modules.qt.license_dialog_qt import show_full_license_window_qt
-        register_child_reopen(self._open_full_gpl)
         show_full_license_window_qt(self)
-        unregister_child_reopen()
 
     def _open_full_unrar(self):
         from modules.qt.license_dialog_qt import show_full_unrar_license_window_qt
-        register_child_reopen(self._open_full_unrar)
         show_full_unrar_license_window_qt(self)
-        unregister_child_reopen()
 
     def _open_full_7zip(self):
         from modules.qt.license_dialog_qt import show_full_7zip_license_window_qt
-        register_child_reopen(self._open_full_7zip)
         show_full_7zip_license_window_qt(self)
-        unregister_child_reopen()
 
     # ── Thème ─────────────────────────────────────────────────────────────────
 
@@ -1172,13 +1155,6 @@ def show_user_guide(parent_widget, callbacks: dict):
     dlg.show()
     dlg.raise_()
     dlg.activateWindow()
-
-
-def update_help_window_if_open(reopen_func=None):
-    """Maintenu pour compatibilité — met à jour toutes les fenêtres ouvertes."""
-    for dlg in list(_help_windows.values()):
-        if dlg.isVisible():
-            dlg._retranslate()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

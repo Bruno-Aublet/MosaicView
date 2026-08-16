@@ -225,7 +225,7 @@ Two PyInstaller spec files are included for building a standalone executable (se
 
 ## Tests
 
-The [tests/](tests/) folder contains a [pytest](https://pytest.org/) suite covering the pure, Qt-free logic modules (metadata parsing, page renumbering, sorting, image merging, the library database, configuration persistence...), plus a static check ensuring no window in the application is ever modal (a hard architectural requirement — see [CLAUDE.md](CLAUDE.md)).
+The [tests/](tests/) folder contains a [pytest](https://pytest.org/) suite covering the pure, Qt-free logic modules (metadata parsing, page renumbering, sorting, image merging, the library database, configuration persistence...), plus static checks enforcing two hard architectural requirements (see [CLAUDE.md](CLAUDE.md)): no window in the application is ever modal, and no PDF loading process is ever shared between the two panels or between a panel and a batch task.
 
 Run the full suite with:
 

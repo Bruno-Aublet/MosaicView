@@ -1855,13 +1855,17 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
     def do_conversion():
         import modules.qt.pdf_loading_qt as _pdfmod
 
+        # Process dédié à ce batch (pas partagé avec les panneaux ni un autre batch) —
+        # créé une fois pour toute la durée du lot, détruit à la fin.
+        batch_process, batch_in_q, batch_out_conn = _pdfmod._spawn_pdf_process()
+
         def _send(msg):
-            _pdfmod._merge_in_q.put(msg)
+            batch_in_q.put(msg)
 
         def _recv(timeout=60):
             """Attend un message du process, retourne None si timeout."""
-            if _pdfmod._merge_out_conn.poll(timeout):
-                return _pdfmod._merge_out_conn.recv()
+            if batch_out_conn.poll(timeout):
+                return batch_out_conn.recv()
             return None
 
         total = len(pdf_files)
@@ -1872,8 +1876,6 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
                 _("dialogs.batch_pdf.converting_progress").format(current=idx + 1, total=total))
             signals.update_page_bar.emit(0.0, "")
 
-            # Assure que le process est vivant, envoie batch_open
-            _pdfmod._ensure_merge_process()
             _send(('batch_open', pdf_path))
 
             # Attend batch_ready
@@ -1977,6 +1979,7 @@ def _run_pdf_conversion(parent, pdf_files, directory, directories, callbacks, is
 
             converted_count[0] += 1
 
+        _pdfmod._kill_pdf_process(batch_process, batch_in_q, batch_out_conn)
         signals.conversion_done.emit()
 
     def on_done():

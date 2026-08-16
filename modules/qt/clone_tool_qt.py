@@ -316,9 +316,29 @@ class _CloneOptionsPanel(QWidget):
         # la souris reste sur ce panneau — pas seulement redémarré à chaque
         # mouvement, complètement arrêté (voir _ViewerToolbar.pause_hide).
         self._viewer._toolbar.pause_hide()
+        # Le curseur en croix (clone_update_cursor) est celui du CANVAS, pas
+        # celui de ce panneau — sans ce reset, il restait affiché par-dessus
+        # les contrôles du panneau (idees.txt #4), voir même piège corrigé sur
+        # _TransparencyOptionsPanel/_LevelsOptionsPanel.
+        self.setCursor(Qt.ArrowCursor)
 
     def leaveEvent(self, event):
-        self._viewer._toolbar.resume_hide()
+        # Revérification différée à 0ms : Qt peut envoyer un Leave en
+        # transitant entre deux widgets enfants même quand la souris reste
+        # visuellement sur le panneau (même piège que _LevelsOptionsPanel).
+        from PySide6.QtCore import QTimer as _QTimer
+        _QTimer.singleShot(0, self._check_really_left)
+
+    def _check_really_left(self):
+        really_left = not self.rect().contains(self.mapFromGlobal(QCursor.pos()))
+        if really_left:
+            self._viewer._toolbar.resume_hide()
+            # setCursor(ArrowCursor) posé dans enterEvent ne s'applique qu'à
+            # ce panneau et ses enfants — aucun reset à faire ici pour le
+            # canvas : Qt réaffiche de lui-même le curseur déjà posé dessus
+            # (le curseur en croix, tant que l'outil "clone" reste actif) dès
+            # que la souris repasse physiquement au-dessus.
+            self.unsetCursor()
 
     # ── Réglages ─────────────────────────────────────────────────────────────
 

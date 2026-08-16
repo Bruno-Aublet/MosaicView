@@ -787,90 +787,56 @@ def _pdf_persistent_process(in_queue, out_queue):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Singleton — process préchauffé créé une fois au démarrage
+# Un process dédié par chargement (pas de singleton partagé entre panneaux) —
+# chaque PdfLoader/PdfMergeWorker crée et détruit son propre process.
+# Un registre faible garde trace des process actifs pour le shutdown global de l'app.
 # ═══════════════════════════════════════════════════════════════════════════════
-_warm_process  = None
-_warm_in_q     = None
-_warm_out_conn = None  # côté réception (Pipe) — lu par le QThread
-_warm_out_q    = None  # gardé pour compatibilité avec le code existant (alias)
+_active_processes: set = set()
 
-def _ensure_warm_process():
-    """Démarre le process préchauffé s'il n'existe pas ou est mort."""
-    global _warm_process, _warm_in_q, _warm_out_conn, _warm_out_q
-    if _warm_process is not None and _warm_process.is_alive():
-        return
+def _spawn_pdf_process():
+    """Crée un process PDF dédié. Retourne (process, in_q, out_conn)."""
     import multiprocessing
     ctx = multiprocessing.get_context('spawn')
-    _warm_in_q = ctx.Queue()
+    in_q = ctx.Queue()
     # Pipe duplex=False : out_send dans le process, out_recv dans le QThread
     out_recv, out_send = ctx.Pipe(duplex=False)
-    _warm_out_conn = out_recv
-    _warm_out_q    = out_recv  # alias pour le code existant
-    _warm_process = ctx.Process(
+    proc = ctx.Process(
         target=_pdf_persistent_process,
-        args=(_warm_in_q, out_send),
+        args=(in_q, out_send),
         daemon=True,
     )
-    _warm_process.start()
+    proc.start()
+    _active_processes.add(proc)
+    return proc, in_q, out_recv
 
-def warmup_pdf_process():
-    """Appeler au démarrage de l'app pour préchauffer le process fitz."""
-    _ensure_warm_process()
+def _kill_pdf_process(proc, in_q, out_conn):
+    """Arrête proprement un process PDF dédié."""
+    if in_q is not None:
+        try:
+            in_q.put(('quit',))
+        except Exception:
+            pass
+    if out_conn is not None:
+        try:
+            out_conn.close()
+        except Exception:
+            pass
+    if proc is not None:
+        proc.join(timeout=2)
+        if proc.is_alive():
+            proc.terminate()
+        _active_processes.discard(proc)
 
 def shutdown_pdf_process():
-    """Appeler à la fermeture de l'app."""
-    global _warm_process, _warm_in_q, _warm_out_conn, _warm_out_q
-    global _merge_process, _merge_in_q, _merge_out_conn
-    for in_q, out_conn, proc in [
-        (_warm_in_q,  _warm_out_conn,  _warm_process),
-        (_merge_in_q, _merge_out_conn, _merge_process),
-    ]:
-        if in_q is not None:
-            try:
-                in_q.put(('quit',))
-            except Exception:
-                pass
-        if out_conn is not None:
-            try:
-                out_conn.close()
-            except Exception:
-                pass
-        if proc is not None:
-            proc.join(timeout=2)
+    """Appeler à la fermeture de l'app — tue tous les process PDF encore actifs."""
+    for proc in list(_active_processes):
+        try:
             if proc.is_alive():
                 proc.terminate()
-    _warm_process  = None
-    _warm_in_q     = None
-    _warm_out_conn = None
-    _warm_out_q    = None
-    _merge_process  = None
-    _merge_in_q     = None
-    _merge_out_conn = None
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# Singleton — process dédié au merge PDF
-# ═══════════════════════════════════════════════════════════════════════════════
-_merge_process  = None
-_merge_in_q     = None
-_merge_out_conn = None
-
-def _ensure_merge_process():
-    """Démarre le process merge s'il n'existe pas ou est mort."""
-    global _merge_process, _merge_in_q, _merge_out_conn
-    if _merge_process is not None and _merge_process.is_alive():
-        return
-    import multiprocessing
-    ctx = multiprocessing.get_context('spawn')
-    _merge_in_q = ctx.Queue()
-    out_recv, out_send = ctx.Pipe(duplex=False)
-    _merge_out_conn = out_recv
-    _merge_process = ctx.Process(
-        target=_pdf_persistent_process,
-        args=(_merge_in_q, out_send),
-        daemon=True,
-    )
-    _merge_process.start()
+                proc.join(timeout=2)
+        except Exception:
+            pass
+        _active_processes.discard(proc)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -884,27 +850,25 @@ class PdfLoadWorker(QThread):
     empty_pdf       = Signal()
     cancelled       = Signal()
 
-    def __init__(self, filepath: str, dpi: int):
+    def __init__(self, filepath: str, dpi: int, process, in_q, out_conn):
         import threading
         super().__init__()
         self._filepath  = filepath
         self._dpi       = dpi
         self._cancelled = threading.Event()
-        self._process   = None
+        self._process   = process
+        self._in_q      = in_q
+        self._out_conn  = out_conn
 
-    @staticmethod
-    def _kill_warm_process():
-        """Tue le process préchauffé et remet les globaux à None."""
-        global _warm_process, _warm_in_q, _warm_out_q
-        if _warm_process and _warm_process.is_alive():
-            _warm_process.terminate()
-            _warm_process.join(timeout=2)
-        _warm_process = None
-        _warm_in_q    = None
-        _warm_out_q   = None
+    def _kill_own_process(self):
+        """Tue le process dédié à ce chargement."""
+        _kill_pdf_process(self._process, self._in_q, self._out_conn)
+        self._process = None
+        self._in_q    = None
+        self._out_conn = None
 
     def run(self):
-        _warm_in_q.put(('run_opened', self._dpi))
+        self._in_q.put(('run_opened', self._dpi))
         self._preopen_fallback_sent = False
 
         temp_entries = []
@@ -913,19 +877,21 @@ class PdfLoadWorker(QThread):
 
         while True:
             if self._cancelled.is_set():
-                self._kill_warm_process()
+                self._kill_own_process()
                 self.cancelled.emit()
                 return
 
-            if not _warm_out_conn.poll(0.05):
-                if _warm_process is None or not _warm_process.is_alive():
+            if not self._out_conn.poll(0.05):
+                if self._process is None or not self._process.is_alive():
+                    self._kill_own_process()
                     self.error.emit("PDF process terminated unexpectedly")
                     return
                 continue
 
             try:
-                msg = _warm_out_conn.recv()
+                msg = self._out_conn.recv()
             except Exception:
+                self._kill_own_process()
                 self.error.emit("PDF pipe broken")
                 return
 
@@ -965,19 +931,23 @@ class PdfLoadWorker(QThread):
                 # (process redémarré entre preopen et run_opened) → fallback run complet
                 if msg[1] == 'No document pre-opened' and not self._preopen_fallback_sent:
                     self._preopen_fallback_sent = True
-                    _warm_in_q.put(('run', self._filepath, self._dpi))
+                    self._in_q.put(('run', self._filepath, self._dpi))
                     continue
+                self._kill_own_process()
                 self.error.emit(msg[1])
                 return
 
             elif kind == 'password_error':
+                self._kill_own_process()
                 self.password_error.emit()
                 return
 
             elif kind == 'empty_pdf':
+                self._kill_own_process()
                 self.empty_pdf.emit()
                 return
 
+        self._kill_own_process()
         import gc
         gc.collect()
         self.finished.emit(temp_entries, is_owner)
@@ -1002,6 +972,22 @@ class PdfLoader:
         self._worker             = None
         self._overlay_holder     = [None]
         self._cancel_item_holder = [None]
+        # Process dédié à ce panneau, créé dans load(), gardé jusqu'à ce que
+        # le PdfLoadWorker s'en empare (start_pdf_loading) ou qu'il soit tué
+        # (annulation, erreur de preopen).
+        self._process  = None
+        self._in_q     = None
+        self._out_conn = None
+
+    def shutdown_own_process(self):
+        """Tue le process PDF dédié à ce panneau, s'il y en a un actif."""
+        if self._process is not None:
+            _kill_pdf_process(self._process, self._in_q, self._out_conn)
+            self._process = None
+            self._in_q    = None
+            self._out_conn = None
+        if self._worker is not None:
+            self._worker._cancelled.set()
 
     def load(self, filepath: str):
         """Reproduit load_pdf : dialogue DPI puis start_pdf_loading."""
@@ -1012,21 +998,23 @@ class PdfLoader:
             ).show_nonmodal()
             return
 
+        # Process dédié à ce chargement (pas de singleton partagé entre panneaux).
         # Lance le preopen AVANT d'afficher le dialogue DPI — fitz.open() se
         # fait pendant que l'utilisateur choisit le DPI, pas après son clic OK
-        _ensure_warm_process()
-        _warm_in_q.put(('preopen', filepath))
+        self._process, self._in_q, self._out_conn = _spawn_pdf_process()
+        self._in_q.put(('preopen', filepath))
 
         # Vide la out_queue dans un thread pendant que le dialogue est affiché.
         # Ça "chauffe" le canal IPC — sans ça, le premier get() dans le QThread
         # peut prendre 1-2s sur Windows (établissement du pipe multiprocessing).
         import threading
         _preopen_result = [None]
+        out_conn = self._out_conn
         def _drain_preopen():
             try:
                 while True:
-                    if _warm_out_conn.poll(5):
-                        msg = _warm_out_conn.recv()
+                    if out_conn.poll(5):
+                        msg = out_conn.recv()
                         if msg[0] == 'preopen_ok':
                             _preopen_result[0] = msg
                             break
@@ -1049,8 +1037,13 @@ class PdfLoader:
 
         def _on_dpi_chosen(selected_dpi):
             if selected_dpi is None:
-                # Annulation : dit au process d'abandonner le doc pré-ouvert
-                _warm_in_q.put(('discard',))
+                # Annulation : dit au process d'abandonner le doc pré-ouvert, puis le tue
+                # (pas de réutilisation possible, plus de singleton préchauffé)
+                try:
+                    self._in_q.put(('discard',))
+                except Exception:
+                    pass
+                self.shutdown_own_process()
                 self._state.current_file = None
                 return
 
@@ -1060,6 +1053,7 @@ class PdfLoader:
             # Si le preopen a échoué, on le gère ici avant de démarrer le worker
             result = _preopen_result[0]
             if result is not None and result[0] == 'password_error':
+                self.shutdown_own_process()
                 self._state.current_file = None
                 _MsgDialog(self._win,
                     "messages.errors.pdf_password_required.title",
@@ -1067,6 +1061,7 @@ class PdfLoader:
                 ).show_nonmodal()
                 return
             if result is not None and result[0] == 'empty_pdf':
+                self.shutdown_own_process()
                 self._state.current_file = None
                 _MsgDialog(self._win,
                     "messages.warnings.empty_pdf.title",
@@ -1074,6 +1069,7 @@ class PdfLoader:
                 ).show_nonmodal()
                 return
             if result is not None and result[0] == 'error':
+                self.shutdown_own_process()
                 self._state.current_file = None
                 _MsgDialog(self._win,
                     "messages.errors.pdf_load_failed.title",
@@ -1155,7 +1151,10 @@ class PdfLoader:
             self._worker.deleteLater()
             self._worker = None
 
-        self._worker = PdfLoadWorker(filepath, dpi)
+        # Transfère le process pré-ouvert (créé dans load()) au worker, qui en devient
+        # seul responsable (kill sur annulation/erreur/fin).
+        self._worker = PdfLoadWorker(filepath, dpi, self._process, self._in_q, self._out_conn)
+        self._process, self._in_q, self._out_conn = None, None, None
 
         # Affiche l'overlay après création du worker (sinon _show_overlay retourne immédiatement)
         self._show_overlay(0, 0, 0, dpi)
@@ -1266,39 +1265,41 @@ class PdfMergeWorker(QThread):
         self._dpi          = dpi
         self._merge_prefix = merge_prefix
         self._cancelled    = threading.Event()
+        self._process      = None
+        self._in_q         = None
+        self._out_conn     = None
 
-    @staticmethod
-    def _kill_merge_process():
-        global _merge_process, _merge_in_q, _merge_out_conn
-        if _merge_process and _merge_process.is_alive():
-            _merge_process.terminate()
-            _merge_process.join(timeout=2)
-        _merge_process  = None
-        _merge_in_q     = None
-        _merge_out_conn = None
+    def _kill_own_process(self):
+        """Tue le process dédié à ce merge."""
+        _kill_pdf_process(self._process, self._in_q, self._out_conn)
+        self._process  = None
+        self._in_q     = None
+        self._out_conn = None
 
     def run(self):
-        _ensure_merge_process()
-        _merge_in_q.put(('run_merge', self._filepath, self._dpi, self._merge_prefix))
+        self._process, self._in_q, self._out_conn = _spawn_pdf_process()
+        self._in_q.put(('run_merge', self._filepath, self._dpi, self._merge_prefix))
 
         new_entries = []
         is_owner    = False
 
         while True:
             if self._cancelled.is_set():
-                self._kill_merge_process()
+                self._kill_own_process()
                 self.cancelled.emit()
                 return
 
-            if not _merge_out_conn.poll(0.05):
-                if _merge_process is None or not _merge_process.is_alive():
+            if not self._out_conn.poll(0.05):
+                if self._process is None or not self._process.is_alive():
+                    self._kill_own_process()
                     self.error.emit("PDF merge process terminated unexpectedly")
                     return
                 continue
 
             try:
-                msg = _merge_out_conn.recv()
+                msg = self._out_conn.recv()
             except Exception:
+                self._kill_own_process()
                 self.error.emit("PDF merge pipe broken")
                 return
 
@@ -1327,17 +1328,21 @@ class PdfMergeWorker(QThread):
                 break
 
             elif kind == 'error':
+                self._kill_own_process()
                 self.error.emit(msg[1])
                 return
 
             elif kind == 'password_error':
+                self._kill_own_process()
                 self.password_error.emit()
                 return
 
             elif kind == 'empty_pdf':
+                self._kill_own_process()
                 self.empty_pdf.emit()
                 return
 
+        self._kill_own_process()
         import gc
         gc.collect()
         self.finished.emit(new_entries, is_owner)

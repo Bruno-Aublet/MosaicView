@@ -99,6 +99,8 @@ Vocabulaire commun aux visionneuses du projet (skill `viewers`) : `Ctrl++`/`Ctrl
 
 Particularité propre à cet outil : le curseur en forme de **cible** (`make_clone_crosshair_cursor`) est reconstruit dynamiquement à chaque survol avec Ctrl enfoncé (`clone_update_cursor`), pas seulement à la première fois — le rayon écran dépend du zoom courant, qui peut avoir changé (molette, Ctrl+0/1/+/-) depuis la dernière construction. Un curseur non reconstruit après un changement de zoom afficherait une taille de pinceau trompeuse par rapport à la zone réellement peinte.
 
+Ce curseur (comme `Qt.CrossCursor` hors Ctrl) est posé sur le **canvas** : `_CloneOptionsPanel.enterEvent`/`_check_really_left` le réinitialisent (`setCursor(Qt.ArrowCursor)`/`unsetCursor()`), sinon il resterait affiché par-dessus le panneau au survol — voir skill `viewers`, section "Piège transversal — le curseur spécifique d'un outil reste affiché par-dessus son propre panneau flottant".
+
 Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_source_img` en coordonnées image via `_clone_image_to_widget`) est resynchronisé systématiquement en tête de `paint_clone_marker` (appelée depuis `_ViewerCanvas.paintEvent`, donc à chaque pan/zoom/redimensionnement puisque Qt réinvoque `paintEvent` dans les trois cas) — voir skill `viewers`, section "Piège transversal — overlays interactifs qui se désynchronisent de l'image au pan/zoom/resize".
 
 ## Fond damier (transparence)
@@ -128,6 +130,7 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 - **Undo/redo au niveau du stroke entier, pas du point peint** — un stroke long (glisser la souris longtemps sans relâcher) ne peut être annulé qu'en un seul bloc, jamais point par point.
 - **Fond damier dupliqué** — implémentation propre à ce fichier, aucune fonction partagée avec le reste du projet.
 - **Curseur cible à reconstruire à chaque survol Ctrl enfoncé** — pas seulement à la première fois, le rayon écran dépend du zoom courant.
+- **Curseur du panneau flottant** — `_CloneOptionsPanel` doit réinitialiser le curseur posé par `clone_update_cursor` sur le canvas (`enterEvent`/`_check_really_left`), sinon il reste affiché par-dessus le panneau au survol.
 - **Marqueur de source à resynchroniser après pan, zoom, ET redimensionnement** — géré en tête de `paint_clone_marker`, appelée automatiquement par Qt via `paintEvent` dans les trois cas ; ne pas dupliquer l'appel dans chaque handler séparément.
 - **`_VALIDATE_KEYS` n'a pas d'entrée `"clone"`** — ne pas en ajouter une par réflexe en copiant le pattern crop/straighten : cet outil n'a jamais besoin du bouton "Valider" flottant, l'application est immédiate.
 - **Aucune section dédiée dans le mode d'emploi.**

@@ -858,35 +858,40 @@ class _BatchMetadataOrchestrator:
                         from modules.qt.archive_loader import _natural_sort_key as _nsk
 
                         pdf_path = pdf_manifest["_pdf_path"]
-                        _pdfmod._ensure_merge_process()
-                        _pdfmod._merge_in_q.put(('run_merge', pdf_path, 0, ""))
+                        # Process dédié à cette écriture (pas partagé avec les panneaux
+                        # ni un autre traitement), détruit systématiquement à la fin.
+                        pdf_process, pdf_in_q, pdf_out_conn = _pdfmod._spawn_pdf_process()
+                        try:
+                            pdf_in_q.put(('run_merge', pdf_path, 0, ""))
 
-                        while True:
-                            if not _pdfmod._merge_out_conn.poll(0.1):
-                                if _pdfmod._merge_process is None or not _pdfmod._merge_process.is_alive():
-                                    raise ValueError("PDF merge process terminated unexpectedly")
-                                continue
-                            msg = _pdfmod._merge_out_conn.recv()
-                            kind = msg[0]
-                            if kind == '_debug':
-                                continue
-                            elif kind == 'total':
-                                pass
-                            elif kind == 'merge_page':
-                                _, filename, img_data, _used_dpi = msg
-                                zf.writestr(filename, img_data)
-                            elif kind == 'progress':
-                                _, percent, _cur, _tot = msg
-                                if progress_cb:
-                                    progress_cb(percent)
-                            elif kind == 'done':
-                                break
-                            elif kind == 'error':
-                                raise ValueError(msg[1])
-                            elif kind == 'password_error':
-                                raise ValueError("PDF protégé par mot de passe")
-                            elif kind == 'empty_pdf':
-                                raise ValueError("PDF vide")
+                            while True:
+                                if not pdf_out_conn.poll(0.1):
+                                    if pdf_process is None or not pdf_process.is_alive():
+                                        raise ValueError("PDF merge process terminated unexpectedly")
+                                    continue
+                                msg = pdf_out_conn.recv()
+                                kind = msg[0]
+                                if kind == '_debug':
+                                    continue
+                                elif kind == 'total':
+                                    pass
+                                elif kind == 'merge_page':
+                                    _, filename, img_data, _used_dpi = msg
+                                    zf.writestr(filename, img_data)
+                                elif kind == 'progress':
+                                    _, percent, _cur, _tot = msg
+                                    if progress_cb:
+                                        progress_cb(percent)
+                                elif kind == 'done':
+                                    break
+                                elif kind == 'error':
+                                    raise ValueError(msg[1])
+                                elif kind == 'password_error':
+                                    raise ValueError("PDF protégé par mot de passe")
+                                elif kind == 'empty_pdf':
+                                    raise ValueError("PDF vide")
+                        finally:
+                            _pdfmod._kill_pdf_process(pdf_process, pdf_in_q, pdf_out_conn)
 
                     else:
                         _write_non_manifest(zf)

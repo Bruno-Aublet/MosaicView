@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.7] - 2026-08-16 - Fixed PDF loading errors in split view, stuck tool cursor in the main viewer, dead code removal
+
+- Fixed loading a PDF failing with an error message when it happened while another PDF-related task was also running — for example opening a PDF in both panels at the same time, canceling a PDF load in one panel while the other was still loading, closing a file in one panel while a PDF was loading in the other, or a PDF batch conversion running alongside a PDF being opened normally. Each of these now runs fully independently of the others.
+- Fixed the mouse cursor staying stuck in its tool shape (e.g. the clone tool's target cursor, or a resize/rotate arrow from the text or shape tools) while hovering over that tool's own floating options panel in the main viewer, instead of turning back into a normal pointer there.
+- REPOSITORY ONLY: Added an automated test guarding against the PDF loading fix above ever regressing.
+- REPOSITORY ONLY: Removed a small amount of dead code left over in the help window's module (`user_guide_qt.py`): an unused mechanism originally meant to let a license sub-window reopen itself, and a function with no remaining callers.
+
 ## [1.7.6] - 2026-08-16 - Color depth, effects, image mode and rotation tools in the main viewer toolbar, image adjustments window removed
 
 - Added a color depth tool to the main viewer's floating toolbar: choose 32-bit, 24-bit, 8-bit, or 1-bit with one click, with an option to restore the page's original depth at any time. The current format is always shown for reference. The old Color Depth section in the image adjustments window has been removed now that this tool lives in the main viewer's toolbar instead.

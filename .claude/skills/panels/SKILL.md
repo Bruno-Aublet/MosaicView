@@ -24,7 +24,7 @@ Chaque `PanelWidget` possède, en propre, sans rien partager avec l'autre pannea
 - **`self._tab_bar`** / **`self._metadata_tab`** — onglets mosaïque/infos (voir skill `tabs`), chacun lié explicitement au `state` de son panneau, jamais au singleton global.
 - **`self._status_bar`** — `StatusBar`.
 - **`self._minimap_panel`** — minimap (voir skill `minimap`).
-- **`self._loader`** / **`self._pdf_loader`** — chargeurs d'archive/PDF, construits avec `self._canvas` et `self._state` (voir skill `archive-image-loading` pour le fonctionnement du chargement lui-même — chaque panneau a sa propre instance, aucun chargement n'est partagé entre panel1/panel2).
+- **`self._loader`** / **`self._pdf_loader`** — chargeurs d'archive/PDF, construits avec `self._canvas` et `self._state` (voir skill `archive-image-loading` pour les archives classiques, skill `pdf-loading` pour le PDF — chaque panneau a sa propre instance et son propre process PDF dédié, aucun chargement n'est partagé entre panel1/panel2).
 - **`self._menubar`** — sa propre `QMenuBar`, construite via `build_menubar(self, self._build_menubar_callbacks(), self._menubar)`.
 - **`self._is_primary`** (bool) — `True` pour panel1, `False` pour panel2. Utilisé pour choisir entre config directe (panel1) et `Panel2Config` (panel2), et pour sauter certaines inits ponctuelles (ex. préchauffage bibliothèque, `QTimer.singleShot(2000, self._prewarm_library)` seulement si primary).
 

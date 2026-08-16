@@ -19,7 +19,7 @@ on_window_close()   ← appelée depuis MosaicView.py::closeEvent (et par mw.clo
 
 Fonction "bas niveau" : ne pose aucune question, exécute directement. Libère la mémoire de **toutes** les entrées (`images_data` + `all_entries` sans doublon, dédupliquées par `id()`) : ferme les objets PIL (`img`, `large_thumb_pil`) puis met `None` sur `bytes`/`img_id`/`qt_pixmap_large`/`qt_qimage_large`. Réinitialise l'état (`current_file`, `images_data`, `all_entries`, `selected_indices`, `comic_metadata`, `_page_attrs_by_entry_id`, `modified`, `needs_renumbering`, `merge_counter`, `zip_compression_state`, `current_directory`) et appelle `reset_history(state)` (voir skill `undo-redo` — l'historique undo/redo ne doit jamais survivre à la fermeture d'un comic).
 
-Deux `gc.collect()` consécutifs (le second pour les cycles de références croisées Python/Qt qu'un seul passage ne détecte pas toujours) puis `shutdown_pdf_process()` (voir skill `pdf-loading`) — la fermeture d'un comic tue systématiquement les process PyMuPDF préchauffés, qu'un PDF ait été impliqué ou non.
+Deux `gc.collect()` consécutifs (le second pour les cycles de références croisées Python/Qt qu'un seul passage ne détecte pas toujours) puis, si le canvas a un `_pdf_shutdown_callback` (câblé par `PanelWidget` vers `PdfLoader.shutdown_own_process`, voir skill `pdf-loading`), appel de ce callback — tue le process PDF dédié à **ce panneau uniquement** s'il y en avait un actif, sans toucher au process d'un éventuel chargement PDF en cours dans l'autre panneau.
 
 ### `close_file()` — décision + dialogue de confirmation
 
@@ -70,7 +70,7 @@ Autrement dit, **la valeur de retour `True`/`False` de `on_window_close` a deux 
 ## Références croisées
 
 - `undo-redo` — `reset_history(state)`, appelé systématiquement dans `force_close_file`.
-- `pdf-loading` — `shutdown_pdf_process()`, appelé systématiquement dans `force_close_file` (que le comic fermé ait été un PDF ou non).
+- `pdf-loading` — `canvas._pdf_shutdown_callback` (→ `PdfLoader.shutdown_own_process`), appelé dans `force_close_file` pour tuer uniquement le process PDF du panneau qui se ferme ; `shutdown_pdf_process()` (global) n'est utilisé qu'à la fermeture de toute l'application, pas ici.
 - `save-export` — `create_cbz_cb`/`apply_new_names_cb`, injectés depuis l'extérieur et appelés depuis les callbacks des dialogues de ce fichier.
 - `session-restore` — `save_session_cb`, appelé par `on_window_close` uniquement quand l'application se ferme réellement (pas quand seul un comic se ferme).
 - `temp-files` — `cleanup_temp_cb`, appelé par `on_window_close` dans les deux branches où une fermeture a eu lieu (comic ou appli).

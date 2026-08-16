@@ -332,6 +332,7 @@ class PanelWidget(QWidget):
 
         from modules.qt.pdf_loading_qt import PdfLoader
         self._pdf_loader = PdfLoader(self, self._canvas, self._state)
+        self._canvas._pdf_shutdown_callback = self._pdf_loader.shutdown_own_process
 
         # Worker pour le chargement d'images individuelles
         self._image_worker        = None

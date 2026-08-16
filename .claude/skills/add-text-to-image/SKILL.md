@@ -54,6 +54,10 @@ Panneau flottant sous `_ViewerToolbar`, visible **uniquement** quand `active_too
 - **Piège corrigé — fenêtre qui flashe à une position puis se déplace, mal centrée** : `adjustSize()` doit être appelé **avant** `position_dialog_on_parent(dlg, self._viewer)` (pas dans `showEvent`) — sans ça `dialog.height()` vaut encore une hauteur par défaut minime au moment du calcul de centrage. Centrée sur `self._viewer` (`ImageViewer`, la visionneuse), pas sur `self` (`_TextOptionsPanel`, petit panneau flottant qui donnerait une position peu pertinente).
 - Traductions : `dialogs.text_viewer.pick_color_title` (titre, via `_wt()`), section `dialogs.color_picker.*` (`basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`), propagées aux 45 langues.
 
+## Curseur du panneau flottant
+
+`text_update_cursor` pose un curseur spécifique sur le **canvas** selon le survol (`SizeAllCursor` sur un bloc déplaçable, curseur de texte sinon). `_TextOptionsPanel.enterEvent`/`_check_really_left` le réinitialisent (`setCursor(Qt.ArrowCursor)`/`unsetCursor()`), sinon il resterait affiché par-dessus les contrôles du panneau au survol — voir skill `viewers`, section "Piège transversal — le curseur spécifique d'un outil reste affiché par-dessus son propre panneau flottant".
+
 ## Positionnement — point cliqué = début horizontal, centre vertical figé
 
 Décision explicite de l'utilisateur après plusieurs itérations ratées (centrage horizontal essayé puis abandonné — dérive pendant la frappe, largeur de wrap mal calculée) :
@@ -133,6 +137,7 @@ Trois crashs distincts rencontrés et corrigés en conditions réelles, tous dia
 ## Pièges connus (complément)
 
 - **Pas de point d'entrée depuis la mosaïque** (menu contextuel, barre de menu, colonne d'icônes) — ne pas chercher `PanelWidget._text_selected_image()`, elle n'existe pas ; l'outil texte ne s'atteint que depuis l'intérieur de la visionneuse déjà ouverte.
+- **Curseur du panneau flottant** — `_TextOptionsPanel` doit réinitialiser le curseur posé par `text_update_cursor` sur le canvas (`enterEvent`/`_check_really_left`), sinon il reste affiché par-dessus le panneau au survol.
 
 ## Références croisées
 

@@ -9,7 +9,7 @@ Architecture :
   - modules/          : modules logique métier inchangés (state, entries, localization…)
 """
 
-__version__ = "1.7.6"
+__version__ = "1.7.7"
 
 import sys
 import os
@@ -1077,10 +1077,9 @@ def main():
     from modules.qt.update_checker_qt import check_for_updates_on_startup
     check_for_updates_on_startup(win)
 
-    # Préchauffage du process fitz en arrière-plan — élimine le délai au 1er PDF
-    # DÉSACTIVÉ : le warmup garde ~670 Mo en RAM au repos ; réactiver si latence perceptible
-    from modules.qt.pdf_loading_qt import warmup_pdf_process, shutdown_pdf_process
-    # warmup_pdf_process()
+    # Filet de sécurité à la fermeture de l'app : tue tout process PDF encore actif
+    # (chaque panneau tue normalement le sien à la fermeture de son fichier)
+    from modules.qt.pdf_loading_qt import shutdown_pdf_process
     app.aboutToQuit.connect(shutdown_pdf_process)
 
     def _cleanup_library():

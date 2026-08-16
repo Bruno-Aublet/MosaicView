@@ -135,9 +135,30 @@ class _StraightenAnglePanel(QWidget):
         # la souris reste sur ce panneau — pas seulement redémarré à chaque
         # mouvement, complètement arrêté (voir _ViewerToolbar.pause_hide).
         self._viewer._toolbar.pause_hide()
+        # Le curseur posé par straighten_update_cursor (SizeAllCursor sur les
+        # poignées, CrossCursor sinon) est celui du CANVAS, pas celui de ce
+        # panneau — sans ce reset, il restait affiché par-dessus la spinbox
+        # (idees.txt #4), même piège corrigé sur
+        # _TransparencyOptionsPanel/_LevelsOptionsPanel.
+        self.setCursor(Qt.ArrowCursor)
 
     def leaveEvent(self, event):
-        self._viewer._toolbar.resume_hide()
+        # Revérification différée à 0ms : Qt peut envoyer un Leave en
+        # transitant entre deux widgets enfants même quand la souris reste
+        # visuellement sur le panneau (même piège que _LevelsOptionsPanel).
+        from PySide6.QtCore import QTimer as _QTimer
+        _QTimer.singleShot(0, self._check_really_left)
+
+    def _check_really_left(self):
+        from PySide6.QtGui import QCursor as _QCursor
+        really_left = not self.rect().contains(self.mapFromGlobal(_QCursor.pos()))
+        if really_left:
+            self._viewer._toolbar.resume_hide()
+            # setCursor(ArrowCursor) posé dans enterEvent ne s'applique qu'à
+            # ce panneau et ses enfants — aucun reset à faire ici pour le
+            # canvas : Qt réaffiche de lui-même le curseur déjà posé dessus
+            # dès que la souris repasse physiquement au-dessus.
+            self.unsetCursor()
 
     # ── Ligne tracée / éditée ────────────────────────────────────────────────
 

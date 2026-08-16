@@ -13,15 +13,21 @@ Distinct du reste du chargement d'archives (CBZ/CBR/CB7/CBT/EPUB, voir skill `ar
 
 `PDF_AVAILABLE` (booléen module-level, `pdf_loading_qt.py`) est déterminé par `try: import fitz except ImportError: PDF_AVAILABLE = False` — PyMuPDF est optionnel. Si absent, `PdfLoader.load()` affiche directement `messages.errors.pymupdf_not_installed` sans tenter quoi que ce soit. Même garde dans `pdf_unlock_qt.py` (`show_pdf_unlock_dialog`/`_save_unlocked` ont leur propre `try: import fitz except ImportError: return`, silencieux).
 
-## Pourquoi un process séparé (et deux, pas un)
+## Pourquoi un process séparé, et un process dédié par chargement
 
 Aucun PDF n'est jamais ouvert avec `fitz` dans le process Qt principal — tout passe par un `multiprocessing.Process` (contexte `'spawn'`), pour isoler un crash éventuel de la lib native `fitz`/MuPDF du process UI (un PDF malformé qui ferait planter `fitz` en C tuerait tout le process Python s'il tournait dans le même process que Qt).
 
-Deux singletons de process distincts, tous deux exécutant la même fonction `_pdf_persistent_process` :
-- **Process de chargement principal** (`_warm_process`/`_ensure_warm_process`) — pour ouvrir un nouveau PDF en remplacement du comic actuel.
-- **Process de merge** (`_merge_process`/`_ensure_merge_process`) — pour fusionner des pages PDF dans un comic déjà ouvert, sans bloquer/interférer avec un chargement principal en cours.
+**Chaque chargement/merge/batch crée et détruit son propre process** — il n'existe **aucun process partagé** entre panneaux, ni entre un panneau et un batch. Fabriques dans `pdf_loading_qt.py` :
+- **`_spawn_pdf_process()`** — crée un process dédié (`multiprocessing.get_context('spawn').Process`, cible `_pdf_persistent_process`, `daemon=True`), l'enregistre dans `_active_processes` (registre faible), retourne `(process, in_q, out_conn)`.
+- **`_kill_pdf_process(proc, in_q, out_conn)`** — arrête proprement un process dédié (`('quit',)`, ferme le pipe, `terminate()` en dernier recours si `join(timeout=2)` échoue), le retire de `_active_processes`.
+- **`shutdown_pdf_process()`** — filet de sécurité global, appelé uniquement à la fermeture de l'app (`aboutToQuit`) : parcourt `_active_processes` et tue tout ce qui reste actif, au cas où un appelant n'aurait pas nettoyé le sien.
 
-`warmup_pdf_process()` est appelée au démarrage de l'app pour préchauffer le process de chargement (pas le process merge, lancé à la demande) — évite le coût de démarrage (`spawn` + réimport de `fitz`) au moment où l'utilisateur ouvre effectivement un PDF. `shutdown_pdf_process()` doit être appelée à la fermeture de l'app : envoie `('quit',)` aux deux, ferme les pipes, `terminate()` en dernier recours si `join(timeout=2)` échoue.
+Chaque appelant est responsable de créer son process au bon moment et de le détruire dès qu'il n'en a plus besoin (fin normale, erreur, ou annulation) :
+- **`PdfLoader`** (une instance par panneau, `panel_widget.py`) — crée son process dans `load()` (au moment du `preopen`), le transfère à `PdfLoadWorker` pour la conversion, et expose `shutdown_own_process()` pour le tuer à tout moment (utilisé par la fermeture de fichier du panneau, voir plus bas).
+- **`PdfMergeWorker`** (`import_and_merge_pdf`) — crée son process au tout début de `run()`.
+- **Batch PDF→CBZ** (`batch_dialogs_qt.py`, skill `batch-pdf-convert`) et **écriture CBZ depuis un PDF pendant l'import de métadonnées en lot** (`batch_metadata_dialog_qt.py`) — chacun crée son propre process dédié à la durée de son propre traitement.
+
+**Ne jamais introduire de singleton de process partagé entre appelants** (ex. un seul process réutilisé par tous les panneaux, ou par un panneau et un batch), même pour "optimiser" en réutilisant un process déjà chaud — deux appelants lisant/tuant le même pipe/process en concurrence produit une erreur "pipe broken" et peut faire perdre le chargement d'un appelant innocent quand l'autre annule ou se ferme. Chaque appelant doit toujours créer et détruire son propre process via `_spawn_pdf_process`/`_kill_pdf_process`.
 
 ## Protocole IPC
 
@@ -57,18 +63,18 @@ Quand l'utilisateur choisit `dialogs.pdf.dpi_original` (DPI=0) plutôt qu'une va
 
 ## Flux de chargement principal (`PdfLoader.load`)
 
-1. `_ensure_warm_process()` puis envoi immédiat de `('preopen', filepath)` — **avant** d'afficher `DpiDialog`. Le parsing du PDF (juste `fitz.open()`, pas la conversion) se fait donc pendant que l'utilisateur regarde le dialogue DPI, pas après son clic OK — gain de perception de vitesse.
-2. Un thread `_drain_preopen` (pas un `QThread`, un `threading.Thread` brut) vide le pipe pendant que le dialogue est affiché — sert à "chauffer" le canal IPC : sans ce thread, le premier `recv()` sur `_warm_out_conn` peut prendre 1-2 secondes sur Windows le temps que le pipe multiprocessing s'établisse réellement, ce qui retarderait visiblement le premier retour de progression.
-3. Au clic OK (`_on_dpi_chosen`) : si `_preopen_result[0]` contient déjà `password_error`/`empty_pdf`/`error`, affiche directement le message correspondant **sans lancer `PdfLoadWorker`** (`_MsgDialog` non-modal). Sinon lance le worker.
-4. `PdfLoadWorker` (QThread) envoie `('run_opened', dpi)`, boucle sur `_warm_out_conn.poll(0.05)`/`.recv()`, traduit chaque message du pipe en signal Qt (`progress`, `finished`, `error`, `password_error`, `empty_pdf`, `cancelled`).
-   - **Fallback automatique** : si le process répond `('error', 'No document pre-opened')` (le process préchauffé est mort et a été redémarré entre le preopen et maintenant), le worker renvoie automatiquement `('run', filepath, dpi)` une seule fois (`_preopen_fallback_sent`, garde anti-boucle) — l'utilisateur ne voit jamais cette resynchronisation.
-5. Annulation (`PdfLoader.cancel()`/`PdfLoadWorker.stop()`) : positionne `threading.Event`, mais surtout **tue et jette le process** (`_kill_warm_process`, `terminate()`) — pas d'arrêt propre possible pendant une conversion en cours (`fitz` bloque le thread Python du process). Le prochain PDF ouvert redémarrera un process depuis zéro (`_ensure_warm_process` le détecte via `is_alive()`).
+1. `_spawn_pdf_process()` crée le process dédié à ce panneau (gardé sur `self._process`/`_in_q`/`_out_conn`), puis envoi immédiat de `('preopen', filepath)` — **avant** d'afficher `DpiDialog`. Le parsing du PDF (juste `fitz.open()`, pas la conversion) se fait donc pendant que l'utilisateur regarde le dialogue DPI, pas après son clic OK — gain de perception de vitesse.
+2. Un thread `_drain_preopen` (pas un `QThread`, un `threading.Thread` brut) vide le pipe pendant que le dialogue est affiché — sert à "chauffer" le canal IPC : sans ce thread, le premier `recv()` sur le pipe peut prendre 1-2 secondes sur Windows le temps que le pipe multiprocessing s'établisse réellement, ce qui retarderait visiblement le premier retour de progression.
+3. Au clic OK (`_on_dpi_chosen`) : si `_preopen_result[0]` contient déjà `password_error`/`empty_pdf`/`error`, tue le process (`shutdown_own_process()`) et affiche directement le message correspondant **sans lancer `PdfLoadWorker`** (`_MsgDialog` non-modal). Sinon transfère le process à `PdfLoadWorker` et lance le worker.
+4. `PdfLoadWorker` (QThread) reçoit le process en paramètre de son constructeur, envoie `('run_opened', dpi)`, boucle sur `self._out_conn.poll(0.05)`/`.recv()`, traduit chaque message du pipe en signal Qt (`progress`, `finished`, `error`, `password_error`, `empty_pdf`, `cancelled`).
+   - **Fallback automatique** : si le process répond `('error', 'No document pre-opened')` (cas normalement impossible puisque le process est dédié à ce chargement et n'est jamais redémarré entre-temps, mais gardé par robustesse), le worker renvoie automatiquement `('run', filepath, dpi)` une seule fois (`_preopen_fallback_sent`, garde anti-boucle) — l'utilisateur ne voit jamais cette resynchronisation.
+5. Fin de chargement (succès, erreur, mot de passe, PDF vide) ou annulation (`PdfLoader.cancel()`/`PdfLoadWorker.stop()`) : le worker **tue systématiquement son propre process** (`_kill_own_process()`, jamais celui d'un autre panneau) — pas d'arrêt propre possible pendant une conversion en cours (`fitz` bloque le thread Python du process), donc `terminate()` dans tous les cas plutôt qu'un arrêt gracieux. Chaque chargement démarre et termine avec un process qui lui est propre, jamais réutilisé pour un chargement suivant.
 
 Chaque page reçue (`('page', page_num, img_data, used_dpi)`) devient une entrée standard via `create_entry()` (voir skill `archive-image-loading`) avec `entry["source"] = "pdf"` et `entry["dpi"] = used_dpi`, puis `build_qimage_for_entry(entry)` est appelée **immédiatement** (pas de lazy-loading pour les pages PDF, contrairement au chargement d'archive classique).
 
 ## Import/fusion dans un comic ouvert (`import_and_merge_pdf`)
 
-Fonction autonome (pas une méthode de `PdfLoader`), pilote `PdfMergeWorker` via le process merge dédié :
+Fonction autonome (pas une méthode de `PdfLoader`), pilote `PdfMergeWorker`, qui crée et détruit son propre process dédié à ce merge (voir "Pourquoi un process séparé" ci-dessus) :
 - Préfixe chaque fichier `NEW{state.merge_counter:02d}-page_XXXX.jpg` (compteur incrémenté à chaque merge, visuellement distinct des pages d'origine).
 - `entry["source_archive"] = <nom du PDF>` sur chaque nouvelle entrée.
 - Tri par nom naturel (`archive_loader._natural_sort_key`) après extension de `state.images_data` — les nouvelles pages s'intercalent selon leur nom, pas forcément à la fin.
@@ -86,23 +92,26 @@ Distinct de la protection par **mot de passe utilisateur** (`doc.needs_pass`, qu
 
 - **Changer la logique de détection DPI** : la même logique existe **en triple** (`_convert`, `_convert_merge`, `batch_convert` dans `_pdf_persistent_process`) — toute correction (ex. ajuster le seuil 300 DPI pour le texte, ou le plafond 2400) doit être répercutée aux 3 endroits, il n'y a pas de fonction commune.
 - **Ajouter une option DPI dans le dialogue** : `DpiDialog._dpi_options` (liste de tuples `(dpi, clé_traduction)`) — ajouter une entrée suffit, le reste du flux (radio button, retraduction, tooltip) suit automatiquement.
-- **Changer le timeout de préchauffage du canal IPC** : `_drain_preopen`, le `.poll(5)` (5 secondes) dans la boucle — augmenter si des PDF volumineux mettent plus de temps à répondre au `preopen`.
+- **Changer le timeout de chauffe du canal IPC** : `_drain_preopen`, le `.poll(5)` (5 secondes) dans la boucle — augmenter si des PDF volumineux mettent plus de temps à répondre au `preopen`.
 - **Ajouter une nouvelle commande au process** (ex. extraction de métadonnées PDF) : ajouter une branche `elif kind == 'ma_commande':` dans la boucle principale de `_pdf_persistent_process`, suivant le pattern existant (toujours répondre par au moins un message, même en cas d'erreur — le worker Qt qui écoute reste bloqué sinon).
+- **Ajouter un nouvel appelant qui a besoin d'un process PDF** (nouveau flux batch, nouvelle fenêtre) : toujours passer par `_spawn_pdf_process()`/`_kill_pdf_process()`, jamais réutiliser le process d'un `PdfLoader` de panneau ou d'un autre appelant — voir "Pourquoi un process séparé" ci-dessus.
 - **Modifier le comportement d'annulation** : `PdfLoader.cancel()`/`PdfMergeWorker` — se rappeler que l'annulation **tue le process** plutôt que de l'interrompre proprement ; un futur besoin d'annulation "propre" (garder le process vivant) demanderait de repenser `_convert`/`_convert_merge` pour vérifier un flag entre chaque page, actuellement absent.
 
 ## Pièges connus
 
 - **Logique de détection DPI dupliquée 3 fois** (`_convert`, `_convert_merge`, `batch_convert`) — voir "Comment modifier". Un bug corrigé dans l'une des trois copies doit être vérifié/répliqué dans les deux autres.
 - **`_orphan_workers` (liste module-level) retient les workers annulés** — `PdfLoader.cancel()` détache le worker (`setParent(None)`) et le pousse dans `_orphan_workers` jusqu'à ce qu'il émette lui-même son signal `finished`/`cancelled`, seul moment où `deleteLater()` est appelé. Sans cette liste, le `QThread` pourrait être détruit par le GC Python pendant que son thread C++ tourne encore (même risque documenté dans le skill `project_qthread_lifecycle`).
-- **Le fallback `run` complet peut se déclencher silencieusement** — si le process préchauffé meurt entre le `preopen` et le clic OK sur le dialogue DPI, l'utilisateur ne voit qu'un léger délai supplémentaire (réouverture complète du PDF), pas d'erreur. Si un bug de lenteur au chargement PDF est signalé de façon intermittente, vérifier si ce chemin de fallback est emprunté.
-- **Annulation = destruction du process, pas interruption propre** — un PDF de plusieurs milliers de pages annulé à 50% ne peut pas reprendre : le prochain chargement redémarre un process frais depuis le début.
+- **Ne jamais partager un process entre appelants** — voir "Pourquoi un process séparé" ci-dessus ; chaque `PdfLoader`/`PdfMergeWorker`/batch doit créer et détruire le sien.
+- **Annulation = destruction du process, pas interruption propre** — un PDF de plusieurs milliers de pages annulé à 50% ne peut pas reprendre : le process est détruit, un futur chargement en créera un nouveau depuis zéro.
 - **`is_owner_protected` réutilise le mot de passe vide** (`doc.authenticate("")`) — un PDF avec un vrai mot de passe utilisateur non vide ne serait de toute façon jamais arrivé jusqu'ici (`doc.needs_pass` l'aurait bloqué plus tôt dans le protocole).
 - **Pas de nettoyage automatique des fichiers `_unlocked`** — écrits à côté de l'original, jamais dans un dossier temporaire ; ne pas les confondre avec les fichiers couverts par le skill `temp-files`.
 
 ## Références croisées
 
 - `archive-image-loading` — `create_entry()`, point de passage obligé pour toute page devenant une entrée `images_data` ; le PDF est le seul format dont le chargement passe par un process séparé plutôt que par `ArchiveLoader`/`LoadWorker`.
-- `batch-pdf-convert` — réutilise le même process préchauffé et le même protocole IPC (`batch_open`/`batch_convert`/`batch_page`) pour la conversion PDF→CBZ en lot ; toute modification du protocole IPC affecte les deux.
+- `batch-pdf-convert` — utilise le même protocole IPC (`batch_open`/`batch_convert`/`batch_page`) et les mêmes fabriques de process (`_spawn_pdf_process`/`_kill_pdf_process`) pour la conversion PDF→CBZ en lot, mais avec son propre process dédié au batch, jamais partagé avec un panneau ; toute modification du protocole IPC affecte les deux.
+- `batch-processing` — `batch_metadata_dialog_qt.py` crée aussi son propre process dédié via ces mêmes fabriques pour écrire un CBZ à partir d'un PDF pendant l'import de métadonnées en lot.
+- `panels` — un `PdfLoader` par `PanelWidget` ; fermer un fichier dans un panneau (`force_close_file`) appelle `canvas._pdf_shutdown_callback` (câblé vers `PdfLoader.shutdown_own_process`), qui ne tue que le process de ce panneau.
 - `canvas-overlay-progress` — overlay de progression + bouton Annuler, utilisé à la fois par `PdfLoader` et `import_and_merge_pdf`.
 - `qt-context-menus` — `setup_path_label_context_menu` sur les liens cliquables de `_PdfUnlockedSuccessDialog`/`InfoDialogClickablePath`-like.
 - `renumbering` — `state.needs_renumbering = True` déclenché après un chargement PDF réussi, puisque les pages PDF n'ont pas de nom de fichier d'origine porteur d'ordre.
