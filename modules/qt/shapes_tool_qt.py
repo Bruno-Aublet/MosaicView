@@ -1325,7 +1325,7 @@ class ShapeViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
-                dlg = MsgDialog(self, "messages.errors.shapes_failed.title",
+                dlg = MsgDialog(self._center_parent, "messages.errors.shapes_failed.title",
                                 "messages.errors.shapes_failed.title")
                 dlg.show_nonmodal()
                 return
@@ -1390,7 +1390,7 @@ class ShapeViewerMixin:
             self._on_shapes_content_changed()
 
         except Exception:
-            dlg = MsgDialog(self, "messages.errors.shapes_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.shapes_failed.title",
                             "messages.errors.shapes_failed.title")
             dlg.show_nonmodal()
 

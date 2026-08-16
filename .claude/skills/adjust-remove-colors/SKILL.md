@@ -13,7 +13,7 @@ Outil de la barre d'outils flottante de la visionneuse principale (9e outil migr
 
 - UI : `modules/qt/remove_colors_tool_qt.py` — `_RemoveColorsOptionsPanel` (panneau flottant, réglette 0-100 + spinbox), `RemoveColorsCanvasMixin`/`RemoveColorsViewerMixin` (mixins hérités par `_ViewerCanvas`/`ImageViewer`, voir skill `viewers`)
 - Handler : `RemoveColorsViewerMixin.perform_remove_colors()` — commit réel au relâchement du slider/perte de focus de la spinbox, réutilise `apply_image_adjustments()`
-- Traitement : `adjustments_processing_qt.py::apply_adjustments()`, bloc `# ── Suppression des couleurs ──` (seul moteur de calcul, partagé, inchangé par la migration)
+- Traitement : `image_processing_qt.py::apply_adjustments()`, bloc `# ── Suppression des couleurs ──` (seul moteur de calcul, partagé, inchangé par la migration)
 - Comportement du slider après commit : reste sur la valeur appliquée (ne revient PAS à 0), même principe que brightness/saturation — voir skill `viewers`.
 
 ## Ce que fait réellement ce réglage

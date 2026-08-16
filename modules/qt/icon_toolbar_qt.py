@@ -61,7 +61,6 @@ ICON_DEFINITIONS = [
     # --- CONVERSION / REDIMENSIONNEMENT / AJUSTEMENTS ---
     {"id": "convert",             "tooltip_key": None,                            "png": "BTN_Convert.png"},
     {"id": "resize",              "tooltip_key": None,                            "png": "BTN_Resize.png"},
-    {"id": "adjustments",         "tooltip_key": None,                            "png": "BTN_Adjustments.png"},
     {"id": "straighten",          "tooltip_key": "tooltip.straighten",            "png": "BTN_Straighten.png"},
     {"id": "create_ico",          "tooltip_key": None,                            "png": "BTN_ICO.png"},
     # --- ASSEMBLAGE ---
@@ -101,7 +100,7 @@ ICON_DEFINITIONS = [
 DEFAULT_LAYOUT = [
     "open_file", "close_file", "apply_save", "delete_selected",
     "undo", "redo", "copy_selected", "cut_selected", "paste",
-    "flatten_directories", "convert", "resize", "adjustments", "renumber",
+    "flatten_directories", "convert", "resize", "renumber",
 ]
 
 # Paliers (px, nb_cols) — identiques à icon_toolbar.py
@@ -138,7 +137,6 @@ _ACTIVATION_RULES = {
     "flip_vertical":       lambda sg: sg["has_selected_images"](),
     "convert":             lambda sg: sg["has_selected_images"](),
     "resize":              lambda sg: sg["has_selected_images"](),
-    "adjustments":         lambda sg: sg["has_selected_images"](),
     "straighten":          lambda sg: sg["has_selected_images"](),
     "create_ico":          lambda sg: sg["single_image_selected"](),
     "join_pages":          lambda sg: sg["has_selected_images"]() and sg["selection_count"]() >= 2,
@@ -2004,7 +2002,6 @@ class IconToolbarQt(QWidget):
         "flip_vertical":       "tooltip.mirror_vertical",
         "convert":             "buttons.convert",
         "resize":              "buttons.reduce_size",
-        "adjustments":         "buttons.adjustments",
         "create_ico":          "context_menu.image.create_ico",
         "join_pages":          "buttons.join_pages",
         "split_page":          "buttons.split_page",
@@ -2176,7 +2173,6 @@ def build_icon_toolbar(mw, *, is_primary=True) -> "IconToolbarQt":
         "flip_vertical":         cb["flip_selected_vertical"],
         "convert":               cb["convert_selected_images"],
         "resize":                cb["reduce_selected_images_size"],
-        "adjustments":           cb["show_image_adjustments_dialog"],
         "straighten":            cb["deskew_selected"],
         "create_ico":            cb["create_ico_from_selected"],
         "join_pages":            cb["open_merge_window"],

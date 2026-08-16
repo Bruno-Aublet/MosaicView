@@ -50,7 +50,6 @@
     "renumber_recommended": "Alasse sina kirya (marta)",
     "ignore_and_save": "Númen na kirya na marta",
     "open_without_rename": "Panya sí essecenta",
-    "adjustments": "Calima,\ncontrasta sív.",
     "batch_cbr_to_cbz": "Rimba yuldar\n CBR tengwi CBZ-nna",
     "batch_pdf_to_cbz": "Yalumea PDF\n parmar CBZ-nna",
     "batch_img_to_cbz": "Rimbe quanta\n lómë i cilvë tengwi CBZ-nna",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Ilúvë",
     "transparency_tolerance_panel_label": "Apsenna :",
     "transparency_type_slider_tooltip": "Nórë: carir calima i nórë i quessessë i tecaina. Ilúvë: apsenë ilya quesseli i caimessë ya quessë nó i tecaina",
-    "transparency_tolerance_slider_tooltip": "I orna apsenna nan lá i tecaina quessë"
+    "transparency_tolerance_slider_tooltip": "I orna apsenna nan lá i tecaina quessë",
+    "toolbar_color_depth_tooltip": "Nótë karneva",
+    "toolbar_color_depth_instruction": "Cil i nótë, ahya tulë sí",
+    "color_depth_panel_restore": "Avahaila i ahya",
+    "color_depth_panel_current_format": "Sina lien ná sí {format}.",
+    "toolbar_effects_tooltip": "Carmar",
+    "toolbar_effects_instruction": "Cile carma, ahya tulë sí",
+    "effects_panel_restore": "Avahaila i ahya",
+    "toolbar_image_mode_tooltip": "Canta i ondonya",
+    "toolbar_image_mode_instruction": "Cile canta, ahya tulë sí",
+    "image_mode_panel_restore": "Avahaila i ahya",
+    "toolbar_rotation_tooltip": "Rondolë",
+    "toolbar_rotation_instruction": "Rondole ar helda i fána hanwa"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Russë",
         "message": "Úma carë i calima."
+      },
+      "color_depth_failed": {
+        "title": "Úcarë",
+        "message": "Lá pollë ahya karneva: {error}"
+      },
+      "effect_failed": {
+        "title": "Úcarë",
+        "message": "Lá pollë ahya i carma: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Úcarë",
+        "message": "Lá pollë ahya i canta: {error}"
+      },
+      "rotation_failed": {
+        "title": "Ácárë",
+        "message": "Lá pollë ahya rondolë: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Atwa esseli i parmar ve nahtaina. Nai na kirya ar alasse\nve marta, sina kirya ar alasse ve kirya na ambar\nparmar (kirya ve númen, parmar ve nahtaina).\n\nNa kirya ve alasse sina na marta kirya."
     },
     "adjustments": {
-      "window_title": "Culini ontarear",
-      "title": "Ontarear {count} {word}",
-      "word_image": "fána",
-      "word_images": "fánar",
-      "apply_button": "Cara",
-      "color_depth_section": "Culuva nu",
-      "effects_section": "Carmar",
-      "sharpness_section": "Laica",
-      "depth_unchanged": "La ontarea",
       "depth_32bit": "32 quetta (RGBA - culini ar faica)",
       "depth_24bit": "24 quetta (RGB - culini)",
       "depth_8bit": "8 quetta (PNG palma / JPEG mista harma)",
       "depth_1bit": "1 quetta (morna ar lossea)",
-      "compression_enable": "Polda atapucta",
-      "effect_none": "Ua carma",
       "effect_grayscale": "Mista",
       "effect_sepia": "Varne",
       "auto_levels_button": "Automaite mahtaina",
-      "reset_button": "Envinyata",
       "preview_section": "Tíralya",
       "effect_invert": "Culuina vilya",
-      "preview_warning": "I nurtaina polë virya i yesta tyara",
-      "image_mode_section": "Canta i ondonya",
       "image_mode_rgb": "RGB (quessir)",
       "image_mode_rgba": "RGBA (quessir + tercenya)",
       "image_mode_l": "L (sindarë)",
@@ -1383,13 +1396,11 @@
     "flatten": "Lanya i aldasseli",
     "flatten_content": "Ai raincelma lyéva harya aldasseli, nota 'Lanya i aldasseli' an horya illi fánar at anwa erë.",
     "viewer": "Centuva",
-    "viewer_content": "Tyalë atta ata-nyérëa parma i-panya tyalië:\n• Tencelli ← →: telien imbe parmar\n• Tencel D: vista imbe 4 nótielë\n  - Parma erya: parma minya lú illumë\n  - Attëa parmar: parma 1 erinqua, tá 2-3, 4-5, ar hyaner\n  - Attëa parmar vórimar: parma 1 erinqua, tá 2-3, 3-4, 4-5, ar hyaner\n  - Webtoon: parmalis tyelpëva (webcomics), lenya nu 900px an tenna hanya; cirya lelehta ulya tyelpëo mir parma, tá vistëa parma nurtallo/telcollo\n• Cirya lelehta: telien lintë (ulya tyelpëo mir parma Webtoon-nótesse)\n• Ctrl+Cirya ar Ctrl+Ar/Únë: tyalië (tenna 1000% mí handa nelet emman)\n• Ctrl+0: Panya tyalië ammen\n• Ctrl+1: tyalië 100% (handa pixel nelet emman)\n• Faila ledya ar hate: hehta i emma tanwa írë ammen lá\n• Tencel F11: minya cemen\n• Atta-nyérëa: vista minya cemen\n• Tencel Esc: Avahaila i tanwa cirta / auta i tyalë\n• Parma-tanwa: hepë auta i parma sina írë i tyalë auta (apa minya ar métima parma). Carnë landa cenima mí parmavorn handa fánar. Ilya nyérë i tyalë, quetta hyara nauva enta parma. Nurta métima parmasse, egor faila ledya i tyalë.",
+    "viewer_content": "Tyalë atta ata-nyérëa parma i-panya tyalië:\n• Tencelli ← →: telien imbe parmar\n• Tencel D: vista imbe 4 nótielë\n  - Parma erya: parma minya lú illumë\n  - Attëa parmar: parma 1 erinqua, tá 2-3, 4-5, ar hyaner\n  - Attëa parmar vórimar: parma 1 erinqua, tá 2-3, 3-4, 4-5, ar hyaner\n  - Webtoon: parmalis tyelpëva (webcomics), lenya nu 900px an tenna hanya; cirya lelehta ulya tyelpëo mir parma, tá vistëa parma nurtallo/telcollo\n• Cirya lelehta: telien lintë (ulya tyelpëo mir parma Webtoon-nótesse)\n• Ctrl+Cirya ar Ctrl+Ar/Únë: tyalië (tenna 1000% mí handa nelet emman)\n• Ctrl+0: Panya tyalië ammen\n• Ctrl+1: tyalië 100% (handa pixel nelet emman)\n• Faila ledya ar hate: hehta i emma tanwa írë ammen lá\n• Tencel F11: minya cemen\n• Atta-nyérëa: vista minya cemen\n• Tencel Esc: Avahaila i sina tecë (píta, lempina, canta…) hya auta i tyalë\n• Parma-tanwa: hepë auta i parma sina írë i tyalë auta (apa minya ar métima parma). Carnë landa cenima mí parmavorn handa fánar. Ilya nyérë i tyalë, quetta hyara nauva enta parma. Nurta métima parmasse, egor faila ledya i tyalë.\n\nTáma-lehta vílima: panya i cirya or i-yúva emman an cena sa (nurtëa sé apa quëalúmi). Nutë tancilë an tulta i véra táma:\n• Píta: hosta canta, tinta sa as i pelli, tér\n• Lempina: hosta lá as i má naa hyapaxëa hya orta; i cendo naa carna autómatavë; nutë tancilë forma an vista lempina autómata (cenna i cendo erya, álo teke)\n• Vilya/cilmë: er nutë vilya hya cilmë i parma\n• Ranyalë: Ctrl+nutë an cilë i tundo, tá ninca as i lelehta tanwa an ata-carë\n• Tecë: nutë an panya tecelëo canta, cilë tengwesta/nelet/karnë\n• Emmali: hosta ellipsi, canta, lá hya pilin, as máli an vista nelet\n\n• Rúcina (naite, calina/parpanwa, ninquelë, hehta karneli, mattéa): i vaeth cenima lá írë quatta\n• Nótielë: vista i more nómë/gamma/ninqua nómë as i rúcini, hya mape karnë ranco mir emma as i tuscar\n• Vistanwa: nutë karnë emmassë an carë sa vistanwa\n• Karnë sangwa, Vistar, Emma nótesse: cilë aphad nutëo formavë tanwesse, carna sí\n\nTérë as i tanwe \"Tér\" írë cena sa, hya Esc an avahaila. Ilya vistalë ná hosta mir i véla Nurta/Ata-carë.",
     "join_pages": "Oacë parmar",
     "join_pages_content": "Cilë lië pitya i hilyala, formë telpina → 'Oantëa cílina pitya' oantëasë pitya i tereva hya i tana. I tanwa emma i nauva véla i cenima pitya emma qui ilyar tá ve, hya PNG i minya norma. Nauva cilë avatyar hya sávë i yára pitya.\n\nI vinya pitya sata mí i emmavaina:\n• Vala rinwë norma (cenima hya mahtaina): i pitya camë i sata minya oantëa pitya (i sata, qui i yára pitya avatyaina, hya nó tanen, qui sávëa), ar antëa rinwë.\n• Úma rinwë norma: i pitya antaina mi i yesta i emmavaina nossë \"Oacëa_xxx\".",
     "split_pages": "Rahta parmar",
     "split_pages_content": "An rahta carcarwassëa parmar attëar:\n• Cilë i parmar an rahta\n• Naucë formenya → 'Rahta i parmar cilyar'\n• Cilë i tárië (tárima maldë tennë)",
-    "crop": "Píta mi centuva",
-    "crop_content": "Mi centuva, tirë cantalë i fánassë an hacë nómë pítaivë:\n• Tirë i cantalë as númenno\n• Renvinyata anwa as horya i cantar maldë corniéli\n• Naucë 'Manta i píta' an tér\n• I píta tërcëa at fána anwa\n• Macil Échap: avatyaro i napanorwa",
     "shortcuts": "Tengwi árië",
     "shortcuts_content": "• Ctrl+Z: Nurta métima carë\n• Ctrl+Y: Ata-carë nurtëa carë\n• Ctrl+A: Cilië ilya parma\n• Ctrl+I: Vista i cilië\n• Ctrl+C: Samna cilina parmar\n• Ctrl+X: Risto cilina parmar\n• Ctrl+V: Pata parmar\n• Del: Nauta cilina parmar\n• Ctrl+Cirya lelehta: Tyalië (tyalë) / handa fána (parmavorn) / handa tanwa (tanwa lestë)\n• Ctrl+0 (tyalë): Panya tyalië ammen\n• Ctrl+1 (tyalë): Tyalië 100% (handa nelet emman)\n• Faila ledya ar hate (tyalë): Hehta i emma tanwa\n• Ctrl+Alt+T: Anta ilya fána cenima o parmavorn\n• F5: Enyalë i cendë parmavorn\n• F11: Vista minya cemen (auta F11 ar ESC)",
     "dark_mode": "Nottië morna",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Auressea: I parmar linyar nauva lindello Windows (parmar clipboard_XXXXX) caitar 12 lúmesse epë i hosta, tana lye nauva pasta te ya epë i cëlentahtie. Epë 12 lúmesse, te vanwava lerta.",
     "config_log_note": "I ohta-vistar (PDF na CBZ ar CBR na CBZ) carë parma yá Ohta martanë. Parmar sina (Log_pdftocbz_.txt ar Log_cbrtocbz_.txt) haryar apa i tamna hostainë, an cenila epëa. Namuvë erë tanwanen \"Avatyar lantea parmar\" ambaressë. Parma Log_scan.txt cenila ilya Cenilë sina lie (cenil yuhtaina, pahtar, camna ar Ohta) — mára cenila i cenil ohtava.",
     "config_clipboard_cleared": "I parmar ar lindello pustaner alassëa.",
-    "adjust_images": "Maitale i lireo",
-    "adjust_images_content": "Sina carë nás ananta vilyar lúmessë MosaicView. Polin muta calina, morenna, raika, sanga, sarda, carë raxa (morwa, sipya, quessë telpë), muta qualindë, ahosta quesseli, care calima ar muta quessë fanyassë. I nórë sanga ná i vilyëa lúmessë i caimë.",
     "create_icon": "Carë i coimas",
     "create_icon_content": "MosaicView lelyar tye care coimas-mapar (.ico) ilya tancavë mosaicossë.\n• Forya tanwi i tancavë → 'Carë i coimas'\n• Tangwë i merima nórë i ceniryssë (i coimas nauva tarincë)\n• Cenë i nixë mauya\n• Varyë: i .ico mapa addë coimas mossë\n• I .ico mapar automarë sarnë ilyë commë vanwi (16×16 ter 256×256)\n• Tennoio i .ico mapa ná mosaicossë, i tancë CBZ tancalanna ná harna, an i ICO commë ú-sarnë tancalnar. Ela i .ico mapa enquerissë (Ctrl+C ar pasta Windowsë), sí antar co ohtë mosaicossë anta varyiëllo.",
     "batch_convert": "Rimba sahta",
@@ -1462,7 +1471,7 @@
     "scan": "Cenilë emma",
     "scan_content": "• Pusta i \"Cenila\" tanwa (cenilion yando, i Parma nomessë, ar pusta faila i vosaicessë) yesta i cenilë windo. MosaicView cenila i cenil lelya (WIA nossenen, Windowo cenilë nossë): cilë i harma, i calmë (DPI), i ninqe lië (ninqe / sindë / morë ar ninquë), ar pusta \"Cenila\". I cenil ná lantea, naina, ar i harma parma hepis Windowessë an tencelë lestassë.\n• I cenil récina metëmë, i calmë, ar i ninqe lië cilina hepinar, ar antinar enó automatikwa i mettë cenilelenna.\n• Erya i cenilë windo ar i essë JPG tanwa antinar, an i tamna ëar ilya i mereva emma tyalië ar vistië apa cenilë.\n• I emma cenilëa anna i vosaicenna vinta, apa i sómëa parmar. Ela pole cilë, sinta, ar quernë ninqion, ve exë vosaic parma.\n• Vinta hína cenila i cenil, uas mahtëa i carmo harma allo ar uas anta insa windo.\n• An i véra cenil pole ná lelyaina min sam' er, cenilë pole ná er windonna er lú: qui cenilë windo panta ëa egor cenilë martëa windo, i \"Cenila\" tanwa mahta insë windonna tenna i carmë tyeltëa.",
     "straighten": "Lempina emma",
-    "straighten_content": "Atta lé an lempina emma, hirna as i tanwion nomessë (forma hya tyalie i 'Lempina' tanwë an vista i lé), i aicassë Emmaron, hya forma hya tyalie i mápessë:\n• Norma lempina: latya minë cenaquétala nómë yassë tekë tanna cendëo tanna i má naa hyapaxëa hya orta i emmassë; i cendo cenaina naa nótina autómatavë ar carna i emmanna, as macilli an tunca i tanna.\n• Autómata lempina: cenna i cendo erya (álo teke) ar lempina rincë i emma hya emmalí cillë; i núra rembina carainë ninqua enyalëo antaina ninquessë. Yesta leperya emmalínen. Minya fenda tanwë manen ranyalí emmali lempinë alcarissë ar nótë i úner cendo hirna."
+    "straighten_content": "Autómata lempina (álo teke) hirna as i tanwion nomessë (forma hya tyalie i 'Lempina' tanwë an vista i lé), i aicassë Emmaron, hya forma hya tyalie i mápessë: cenna i cendo erya (álo teke) ar lempina rincë i emma hya emmalí cillë; i núra rembina carainë ninqua enyalëo antaina ninquessë. Yesta leperya emmalínen. Minya fenda tanwë manen ranyalí emmali lempinë alcarissë ar nótë i úner cendo hirna.\n\nNorma lempina (tekë tanna cendëo) carna i minya centuvassë, cena i lé Centuva."
   },
   "misc": {
     "file_word": "parma",

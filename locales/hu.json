@@ -50,7 +50,6 @@
     "renumber_recommended": "Újraszámozás (ajánlott)",
     "ignore_and_save": "Figyelmen kívül hagy és ment",
     "open_without_rename": "Megnyitás átnevezés nélkül",
-    "adjustments": "Fényerő,\nkontraszt stb.",
     "batch_cbr_to_cbz": "CBR fájlok kötegelt\n konvertálása CBZ-be",
     "batch_pdf_to_cbz": "PDF fájlok kötegelt\n konvertálása CBZ-be",
     "batch_img_to_cbz": "Önálló képek\n kötegelt konvertálása CBZ-be",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Globális",
     "transparency_tolerance_panel_label": "Tűrés:",
     "transparency_type_slider_tooltip": "Terület: átlátszóvá teszi a kattintott képpont körüli egységes színterületet. Globális: a kép összes olyan képpontjára hat, amelynek színe közel áll a kattintotthoz",
-    "transparency_tolerance_slider_tooltip": "A kattintott képpont körül elfogadott maximális színtávolság"
+    "transparency_tolerance_slider_tooltip": "A kattintott képpont körül elfogadott maximális színtávolság",
+    "toolbar_color_depth_tooltip": "Szinmelyseg",
+    "toolbar_color_depth_instruction": "Valasszon melyseget, a modositas azonnal ervenybe lep",
+    "color_depth_panel_restore": "Eredeti visszaallitasa",
+    "color_depth_panel_current_format": "Ez az oldal jelenleg {format} formatumu.",
+    "toolbar_effects_tooltip": "Effektek",
+    "toolbar_effects_instruction": "Válasszon effektet, a módosítás azonnal érvénybe lép",
+    "effects_panel_restore": "Eredeti visszaállítása",
+    "toolbar_image_mode_tooltip": "Képmód",
+    "toolbar_image_mode_instruction": "Válasszon módot, a módosítás azonnal érvénybe lép",
+    "image_mode_panel_restore": "Eredeti visszaállítása",
+    "toolbar_rotation_tooltip": "Forgatás",
+    "toolbar_rotation_instruction": "Forgassa el vagy tükrözze a megjelenített oldalt"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Hiba",
         "message": "Az átlátszóságot nem sikerült alkalmazni."
+      },
+      "color_depth_failed": {
+        "title": "Hiba",
+        "message": "Nem sikerult alkalmazni a szinmelyseget: {error}"
+      },
+      "effect_failed": {
+        "title": "Hiba",
+        "message": "Az effektet nem sikerült alkalmazni: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Hiba",
+        "message": "A képmódot nem sikerült alkalmazni: {error}"
+      },
+      "rotation_failed": {
+        "title": "Hiba",
+        "message": "A forgatás nem alkalmazható: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Azonos fájlneveket észleltünk. Bár a mentés technikailag lehetséges,\nez olvasási problémákat okozhat egyes képregényolvasó alkalmazásokban\n(hiányos megjelenítés, hiányzó oldalak stb.).\n\nJavasoljuk az oldalak újraszámozását mentés előtt."
     },
     "adjustments": {
-      "window_title": "Kep beallitasok",
-      "title": "{count} {word} beallitasai",
-      "word_image": "kep",
-      "word_images": "kepek",
-      "apply_button": "Alkalmazas",
-      "color_depth_section": "Szinmelyseg",
-      "effects_section": "Effektusok",
-      "sharpness_section": "Elesseg",
-      "depth_unchanged": "Ne modositsa",
       "depth_32bit": "32 bit (RGBA - szinek + atlatszoossag)",
       "depth_24bit": "24 bit (RGB - szinek)",
       "depth_8bit": "8 bit (PNG paletta / JPEG szurkearnyalatok)",
       "depth_1bit": "1 bit (fekete-feher)",
-      "compression_enable": "Ujratomorites engedlyezese",
-      "effect_none": "Nincs effektus",
       "effect_grayscale": "Szurkearnyalat",
       "effect_sepia": "Szepia",
       "auto_levels_button": "Automatikus beállítás",
-      "reset_button": "Visszaállítás",
       "preview_section": "Előnézet",
       "effect_invert": "Színinverzió",
-      "preview_warning": "Az előnézet eltérhet a végleges eredménytől",
-      "image_mode_section": "Képmód",
       "image_mode_rgb": "RGB (színek)",
       "image_mode_rgba": "RGBA (színek + átlátszóság)",
       "image_mode_l": "L (szürkeárnyalatok)",
@@ -1383,13 +1396,11 @@
     "flatten": "Könyvtárak egyengetése",
     "flatten_content": "Ha az archívum almappákat tartalmaz, használja a 'Mappák egyengetése' funkciót az összes kép ugyanarra a szintre hozásához.",
     "viewer": "Néző",
-    "viewer_content": "Kattintson duplán egy oldalra a megjelenítő megnyitásához:\n• ← → billentyűk: navigáció az oldalak között\n• D billentyű: váltás 4 olvasási mód között\n  - Egyetlen oldal: egyszerre egy oldal\n  - Dupla oldalak: 1. oldal egyedül, majd 2-3, 4-5 stb.\n  - Folyamatos dupla oldalak: 1. oldal egyedül, majd 2-3, 3-4, 4-5 stb.\n  - Webtoon: függőleges képekhez (webképregények), a szélesség 900px-re korlátozva az olvashatóság érdekében; az egérgörgő az oldalon belül függőlegesen görget, majd a tetején/alján oldalt vált\n• Egérgörgő: gyors navigáció (függőleges görgetés az oldalon belül Webtoon módban)\n• Ctrl+görgő vagy Ctrl+plusz/mínusz: nagyítás (a kép valós méretének akár 1000%-áig)\n• Ctrl+0: nagyítás igazítása az ablakhoz\n• Ctrl+1: nagyítás 100%-ra (a kép valós pixelmérete)\n• Jobb klikk + húzás: a megjelenített kép mozgatása, ha meghaladja az ablakot\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: vágási keret törlése / kilépés a megjelenítőből\n• Könyvjelző: automatikusan menti az aktuális oldalt a megjelenítő bezárásakor (az első és utolsó oldal kivételével). Piros szalag jelenik meg a mozaik megfelelő bélyegképén. Következő megnyitáskor egy üzenet javasolja a visszatérést erre az oldalra. Az utolsó oldalon automatikusan törlődik, vagy manuálisan jobb kattintással a megjelenítőben.",
+    "viewer_content": "Kattintson duplán egy oldalra a megjelenítő megnyitásához:\n• ← → billentyűk: navigálás oldalak között\n• D billentyű: váltás 4 olvasási mód között\n  - Egyoldalas: egyszerre egy oldal\n  - Kettős oldalak: 1. oldal önmagában, majd 2-3, 4-5 stb.\n  - Folyamatos kettős oldalak: 1. oldal önmagában, majd 2-3, 3-4, 4-5 stb.\n  - Webtoon: függőleges képekhez (webcomics), a szélesség 900px-re korlátozva az olvashatóság érdekében; az egérgörgő függőlegesen görgeti az oldalt, majd fent/lent oldalt vált\n• Egérgörgő: gyors navigálás (függőleges görgetés az oldalon Webtoon módban)\n• Ctrl+Görgő vagy Ctrl+Plusz/Mínusz: nagyítás (a kép valós méretének akár 1000%-áig)\n• Ctrl+0: nagyítás igazítása az ablakhoz\n• Ctrl+1: nagyítás 100%-ra (a kép valós pixelmérete)\n• Jobb kattintás + húzás: a megjelenített kép mozgatása (pásztázás), ha meghaladja az ablakot\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: aktuális rajzolás megszakítása (vágás, egyenesítés, alakzat…) vagy kilépés a megjelenítőből\n• Könyvjelző: a megjelenítő bezárásakor automatikusan menti az aktuális oldalt (az első/utolsó oldal kivételével). Piros szalag jelenik meg a megfelelő bélyegképen a mozaikban. Újranyitáskor egy üzenet javasolja a visszatérést erre az oldalra. Automatikusan törlődik az utolsó oldalon, vagy manuálisan jobb kattintással a megjelenítőben.\n\nLebegő eszköztár: vigye az egeret a kép teteje fölé a megjelenítéséhez (néhány másodperc után magától elrejtőzik). Kattintson egy ikonra a megfelelő eszköz aktiválásához:\n• Vágás: rajzoljon egy téglalapot, igazítsa a szélein, hagyja jóvá\n• Egyenesítés: húzzon egy vonalat arra, aminek vízszintesnek/függőlegesnek kellene lennie, a javítás automatikusan alkalmazódik; jobb kattintás az ikonon az automatikus egyenesítésre váltáshoz (magától érzékeli a dőlést, rajzolás nélkül)\n• Forgatás/tükrözés: egy kattintás elforgatja vagy tükrözi az oldalt\n• Klónozás: Ctrl+kattintás a forráspont kiválasztásához, majd fessen lenyomott egérgombbal a duplikáláshoz\n• Szöveg: kattintson egy szövegblokk elhelyezéséhez, válasszon betűtípust/méretet/színt\n• Alakzatok: rajzoljon ellipsziseket, téglalapokat, vonalakat vagy nyilakat, fogantyúkkal az átméretezéshez\n• Csúszkák (élesség, fényerő/kontraszt, telítettség, színek eltávolítása, tömörítés): az eredmény élőben jelenik meg húzás közben\n• Szintek: állítsa be a feketepontot/gammát/fehérpontot a csúszkákkal, vagy vegyen fel egy színt közvetlenül a képről a pipettákkal\n• Átlátszóság: kattintson a kép egy színére, hogy átlátszóvá tegye\n• Színmélység, Effektek, Kép mód: válasszon egy opciót egy rádiógombra kattintva, azonnal alkalmazva\n\nHagyja jóvá a \"Jóváhagyás\" gombbal, amikor megjelenik, vagy Esc a megszakításhoz. Minden módosítás csatlakozik a szokásos Visszavonás/Ismétlés előzményhez.",
     "join_pages": "Oldalak egyesítése",
     "join_pages_content": "Válasszon ki több egymást követő oldalt, jobb kattintás → 'Kijelölt oldalak egyesítése' az oldalak vízszintes vagy függőleges egyesítéséhez. A létrehozott kép formátuma megegyezik a forrásoldalakéval, ha azok mindegyike azonos, egyébként alapértelmezés szerint PNG. Választhat, hogy törli vagy megtartja az eredeti oldalakat.\n\nAz új oldal helye a mozaikban:\n• Aktív újraszámozási mód (automatikus vagy kézi): az oldal átveszi az első egyesített oldal helyét (annak helyét, ha a forrásoldalak törlődnek, vagy közvetlenül előtte, ha megmaradnak), és újraszámozást indít el.\n• KI újraszámozási mód: az oldal a mozaik elejéhez kerül \"Egyesítés_xxx\" néven.",
     "split_pages": "Oldalak felosztása",
     "split_pages_content": "Dupla oldalak automatikus felosztásához:\n• Jelölje ki a felosztandó oldalakat\n• Jobb klikk → 'Kijelölt oldalak felosztása'\n• Válassza ki az irányt (függőleges vagy vízszintes)",
-    "crop": "Vágás a nézőben",
-    "crop_content": "A nézőben rajzoljon egy téglalapot a képre a vágási terület meghatározásához:\n• Rajzolja meg a téglalapot az egérrel\n• Méretezze át a szélek vagy sarkok húzásával\n• Kattintson a 'Vágás jóváhagyása' gombra az alkalmazáshoz\n• A vágás az aktuális képre lesz alkalmazva\n• Esc billentyű: vágási keret megszakítása",
     "shortcuts": "Billentyűparancsok",
     "shortcuts_content": "• Ctrl+Z: Utolsó művelet visszavonása\n• Ctrl+Y: Visszavont művelet újra elvégzése\n• Ctrl+A: Összes oldal kijelölése\n• Ctrl+I: Kijelölés megfordítása\n• Ctrl+C: Kijelölt oldalak másolása\n• Ctrl+X: Kijelölt oldalak kivágása\n• Ctrl+V: Oldalak beillesztése\n• Del: Kijelölt oldalak törlése\n• Ctrl+egérgörgő: Nagyítás (megjelenítő) / bélyegkép mérete (mozaik) / ikon mérete (ikonoszlop)\n• Ctrl+0 (megjelenítő): Nagyítás igazítása az ablakhoz\n• Ctrl+1 (megjelenítő): Nagyítás 100%-ra (valós képméret)\n• Jobb klikk + húzás (megjelenítő): A megjelenített kép mozgatása\n• Ctrl+Alt+T: Az összes megjelenített bélyegkép exportálása a mozaikból\n• F5: Mozaik megjelenítésének frissítése\n• F11: Teljes képernyő váltása (kilépés F11 vagy ESC billentyűvel)",
     "dark_mode": "Sötét mód",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Kivétel: A Windows vágólap által használt ideiglenes fájlok (clipboard_XXXXX fájlok) a másolás után 12 órán át megmaradnak, így akkor is beilleszthetők, ha bezárta az alkalmazást. 12 óra után automatikusan törlődnek.",
     "config_log_note": "A kötegelt konverziók (PDF-ből CBZ-be és CBR-ből CBZ-be) hiba esetén naplófájlt hoznak létre. Ezek a fájlok (Log_pdftocbz_.txt és Log_cbrtocbz_.txt) az alkalmazás bezárása után is megmaradnak, hogy később megtekinthetők legyenek. Csak a fenti „Ideiglenes fájlok törlése” gombbal távolíthatók el. A Log_scan.txt fájl ugyanígy rögzít minden beolvasást (használt szkenner, beállítások, eredmény vagy hiba) — hasznos a szkennerrel kapcsolatos probléma diagnosztizálásához.",
     "config_clipboard_cleared": "A vágólap fájlok sikeresen törölve lettek.",
-    "adjust_images": "Képbeállítás",
-    "adjust_images_content": "Ez a funkció lehetővé teszi a képek közvetlen retusálását a MosaicView-ban. Módosíthatja a fényerőt, a kontrasztot, az élességet, a szinteket, a telítettséget, effektusokat alkalmazhat (fekete-fehér, szépia, színinverzió), beállíthatja a tömörítés minőségét, eltávolíthatja a színeket, alkalmazhat átlátszóságot vagy különböző színmélységekre konvertálhat. Egyes beállításokhoz dedikált megjelenítő tartozik, amely lehetővé teszi az eredmény megtekintését teljes felbontásban az alkalmazás előtt. Egy bélyegkép valós időben mutatja az eredményt a főablakban.",
     "create_icon": "Ikon létrehozása",
     "create_icon_content": "A MosaicView lehetővé teszi ikonfile-ok (.ico) létrehozását a mozaik bármely képéből.\n• Jobb kattintás egy képre → 'Ikon létrehozása'\n• Keretezze be a kívánt területet a megjelenítőben (az ikon kötelezően négyzetes lesz)\n• Szükség esetén állítsa be az átlátszóságot\n• Erősítse meg: a .ico fájl közvetlenül a mozaikhoz adódik\n• A .ico fájlok automatikusan tartalmazzák az összes szabványos felbontást (16×16-tól 256×256-ig)\n• Amíg .ico fájl van a mozaikban, a CBZ archívumba való mentés le van tiltva, mivel az ICO formátumot ezek az archívumok nem támogatják. Exportálja a .ico fájlt külön (Ctrl+C, majd illessze be egy Windows mappába), majd törölje a mozaikból mentés előtt.",
     "batch_convert": "Kötegelt átalakítás",
@@ -1462,7 +1471,7 @@
     "scan": "Kép beolvasása",
     "scan_content": "• Kattintson a „Beolvasás” gombra (ikonoszlop, Fájl menü, vagy jobb kattintás a mozaikon) a beolvasási ablak megnyitásához. A MosaicView közvetlenül vezérli a szkennert (a WIA-n, a Windows beolvasó rendszerén keresztül): válassza ki az eszközt, a felbontást (DPI), a színmódot (színes / szürkeárnyalatos / fekete-fehér), majd kattintson a „Beolvasás” gombra. A listában való megjelenéshez a szkennernek csatlakoztatva, bekapcsolva kell lennie, illesztőprogramjának pedig telepítve kell lennie a Windows rendszeren.\n• A legutóbb használt szkenner, a felbontás és a kiválasztott színmód megjegyzésre kerül, és a következő szkennelésnél automatikusan újra felajánlásra kerül.\n• Csak a teljes oldalas szkennelés és a JPG formátumú exportálás érhető el, mivel az alkalmazás már rendelkezik mindennel, ami a képek utólagos retusálásához és formátumkonvertálásához szükséges.\n• A beolvasott kép automatikusan hozzáadódik a mozaikhoz, a már meglévő oldalak után. Ezután körbevághatja, kiegyenesítheti, színeit módosíthatja stb., mint a mozaik bármely más oldalát\n• Ez a funkció közvetlenül vezérli a szkennert, a gyártó szoftverének használata vagy annak saját beállítási ablakának megjelenítése nélkül.\n• Mivel egy fizikai szkennert egyszerre csak egy kapcsolat vezérelhet, a szkennelés egyszerre csak az egyik panelen lehetséges: ha az egyik panelen nyitva van a szkennelési ablak vagy folyamatban van a szkennelés, a „Szkennelés” gomb a másik panelen szürkén marad a művelet befejezéséig.",
     "straighten": "Oldal kiegyenesítése",
-    "straighten_content": "Két módszer egy ferde beolvasás javítására, elérhető az ikonoszlopból (jobb kattintás a „Kiegyenesítés” ikonra a mód váltásához), a Képek menüből, vagy a mozaikra jobb kattintással:\n• Kézi kiegyenesítés: megnyit egy dedikált nézegetőt, ahol egy egyenes vonalat rajzol arra, aminek vízszintesnek vagy függőlegesnek kellene lennie a képen; a korrekciós szöget automatikusan kiszámítja és alkalmazza a képre, a vonal finomhangolásához fogantyúkkal.\n• Automatikus kiegyenesítés: önmagától érzékeli a dőlést (semmit sem kell rajzolni), és közvetlenül kiegyenesíti a kijelölt oldal(aka)t; a forgatás által létrehozott üres sarkokat fehérrel tölti ki. Egyszerre több oldalon is működik. Egy összegző ablak megmutatja, hány oldal lett sikeresen kiegyenesítve, és felsorolja azokat, amelyeknél nem sikerült megbízható dőlést észlelni."
+    "straighten_content": "Az automatikus egyenesítés (rajzolás nélkül) elérhető az ikonoszlopból (jobb kattintás az „Egyenesítés” ikonra a mód váltásához), a Képek menüből, vagy jobb kattintással a mozaikon: magától érzékeli a dőlést és közvetlenül egyenesíti a kiválasztott oldal(ak)at; a forgatás által létrehozott üres sarkokat fehérrel tölti ki. Több oldalon egyszerre működik. Egy összefoglaló ablak mutatja, hány oldalt sikerült egyenesíteni, és felsorolja azokat, amelyeknél nem sikerült megbízható dőlést érzékelni.\n\nA manuális egyenesítés (referenciavonal rajzolása) a fő megjelenítőből történik, lásd a Megjelenítő szakaszt."
   },
   "misc": {
     "file_word": "fájl",

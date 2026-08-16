@@ -1632,26 +1632,6 @@ class PanelWidget(QWidget):
             "state":              self._state,
         }
 
-    def _adjustments_callbacks(self) -> dict:
-        from modules.qt import state as _state_module
-        panel_state = self._state
-        def _with_state(fn):
-            def _wrapped(*a, **kw):
-                _prev = _state_module.state
-                _state_module.state = panel_state
-                try:
-                    return fn(*a, **kw)
-                finally:
-                    _state_module.state = _prev
-            return _wrapped
-        return {
-            "save_state":         _with_state(self.save_state),
-            "render_mosaic":      _with_state(self._canvas.render_mosaic),
-            "update_button_text": self._refresh_toolbar_states,
-            "canvas":             self._canvas,
-            "state":              panel_state,
-        }
-
     def _deskew_callbacks(self) -> dict:
         return {
             "parent":             self,

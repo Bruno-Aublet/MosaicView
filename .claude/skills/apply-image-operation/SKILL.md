@@ -18,7 +18,7 @@ if save_state:
 
 **Il n'existe pas de fonction utilitaire centralisée** — chaque module invalide les caches inline. Deux variantes existent dans le code actuel, préférer la variante complète (A) pour toute nouvelle fonction :
 
-**A. Invalidation complète** (`adjustments_processing_qt.py`, `crop_tool_qt.py`, `straighten_tool_qt.py`, `clone_tool_qt.py`, `text_tool_qt.py`) :
+**A. Invalidation complète** (`image_processing_qt.py`, `crop_tool_qt.py`, `straighten_tool_qt.py`, `clone_tool_qt.py`, `text_tool_qt.py`) :
 ```python
 entry['bytes'] = <nouveaux bytes>
 entry['img'] = None
@@ -66,8 +66,8 @@ Découvert lors de l'implémentation des ajustements d'image Qt (2026-03-14). Pl
 
 ## Références croisées
 
-- `adjustments-panel` — appelant principal de la variante (A) via `apply_image_adjustments()` (`adjustments_processing_qt.py`), y compris son cas particulier multi-image (boucle avec un seul `save_state`/`save_state(force=True)` avant/après la boucle entière, pas par image).
-- `adjust-transparency` — seul réglage du panneau d'ajustements à appliquer ses propres bytes en dehors de `apply_image_adjustments()` (chemin dédié `_apply_transparency()`), mais qui suit le même pattern d'invalidation de caches.
+- `viewers` — appelant principal de la variante (A) via `apply_image_adjustments()` (`image_processing_qt.py`), utilisée par chaque outil d'ajustement de la barre d'outils de la visionneuse (sharpness, brightness, saturation, remove_colors, compression, levels, color_depth, effects, image_mode) sur la page affichée, un commit par geste.
+- `adjust-transparency` — seul outil de la barre à appliquer ses propres bytes en dehors de `apply_image_adjustments()` (chemin dédié `perform_transparency()`), mais qui suit le même pattern d'invalidation de caches.
 - `rotate-flip` — exemple de la variante (B) d'invalidation partielle : `rotate_entry_data`/`flip_entry_data` (`image_ops.py`) n'invalident que `large_thumb_pil`/`_hash`, `qt_pixmap_large`/`qt_qimage_large` étant invalidés séparément par le worker qui orchestre le traitement par lot ; pas de `force=True` explicite sur son `save_state()` initial non plus, contrairement au pattern recommandé ici.
 - `page-straighten` — exemple de la variante (A) complète (contrairement à `rotate-flip`), avec en plus un second historique undo/redo interne à la fenêtre qui s'empile par-dessus le `save_state`/`force=True` standard documenté ici.
 - `add-text-to-image` — même variante (A) complète, avec un troisième niveau d'historique (undo de frappe Qt natif par bloc) en plus des deux niveaux de `page-straighten`.

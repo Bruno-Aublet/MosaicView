@@ -1,9 +1,14 @@
 """
-modules/qt/adjustments_processing_qt.py — Logique PIL pour les ajustements d'images
+modules/qt/image_processing_qt.py — Logique PIL pour les ajustements d'images
+(renommé depuis adjustments_processing_qt.py le 2026-08-16, voir idees.txt #3 :
+l'ancien nom référençait la fenêtre "Ajustements d'image", disparue le même
+jour, alors que ce fichier n'a jamais contenu de code Qt).
 
-Indépendant de l'UI (pas de Qt). Utilisé par :
-  - adjustments_dialog_qt.py  (prévisualisation + application)
-  - adjustments_viewers_qt.py (prévisualisation temps réel dans les viewers)
+Indépendant de l'UI (pas de Qt). Moteur de calcul partagé par les outils de la
+barre d'outils flottante de la visionneuse principale (viewers, idees.txt #3) —
+sharpness_tool_qt.py, brightness_tool_qt.py, saturation_tool_qt.py,
+remove_colors_tool_qt.py, compression_tool_qt.py, levels_tool_qt.py,
+color_depth_tool_qt.py, effects_tool_qt.py, image_mode_tool_qt.py.
 
 Fonctions publiques :
   detect_jpeg_quality(image_bytes) -> int | None

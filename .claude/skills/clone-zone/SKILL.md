@@ -91,9 +91,7 @@ L'unité d'undo reste **le stroke entier** (tout un coup de pinceau, du clic au 
 
 ## Points d'entrée UI
 
-**Un seul point d'entrée depuis le 2026-08-14** : directement dans la visionneuse principale déjà ouverte, en sélectionnant l'icône Clonage dans la barre d'outils flottante. Il n'existe plus de point d'entrée dédié depuis la mosaïque qui ouvrirait directement la visionneuse avec cet outil présélectionné.
-
-**Nettoyage du 2026-08-14** (`idees.txt` #3, "NETTOYAGE DES COMMANDES REDONDANTES") : le menu contextuel (`context_menu.image.clone_zone`), l'entrée équivalente de la barre de menu, le bouton `"clone_zone"` de la colonne d'icônes (`icon_toolbar_qt.py`) et son tooltip `tooltip.clone_zone`, ainsi que la méthode `PanelWidget._clone_selected_image()` (`panel_widget.py`, callback `"show_clone_zone_viewer"`) qui les orchestrait — tous supprimés. Ce nettoyage est intervenu après celui de `page-crop`/`page-straighten` (même mécanique, mêmes trois points d'entrée retirés).
+**Un seul point d'entrée** : directement dans la visionneuse principale déjà ouverte, en sélectionnant l'icône Clonage dans la barre d'outils flottante. Il n'existe pas de point d'entrée dédié depuis la mosaïque qui ouvrirait directement la visionneuse avec cet outil présélectionné — pas de menu contextuel, pas d'entrée de barre de menu, pas de bouton dans la colonne d'icônes.
 
 ## Zoom, pan, plein écran
 
@@ -105,13 +103,11 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 
 ## Fond damier (transparence)
 
-`make_clone_checker`/`_clone_refresh_display` — implémentation **indépendante**, sans fonction partagée avec `_compose_on_checkerboard`/`entries.py::_make_checkerboard_pil` (affichage normal hors stroke) — tuile plus fine (12px) et composition RGB directe sans repasser par le pipeline d'affichage standard. Historiquement, une troisième implémentation du même algorithme existait dans `AdjustmentViewerDialog` (`adjustments_viewers_qt.py`, supprimé le 2026-08-16 avec toute la visionneuse annexe d'ajustements) — n'existe plus, ne plus la chercher comme référence de comparaison.
+`make_clone_checker`/`_clone_refresh_display` — implémentation **indépendante**, sans fonction partagée avec `_compose_on_checkerboard`/`entries.py::_make_checkerboard_pil` (affichage normal hors stroke) — tuile plus fine (12px) et composition RGB directe sans repasser par le pipeline d'affichage standard.
 
 ## Traductions
 
 `locales/fr.json`, section `clone_zone_viewer` : `title` (non résolue nulle part depuis la suppression de l'ancienne `QDialog` — orpheline mais pas retirée, à vérifier si elle est encore utilisée avant de la supprimer), `instruction` (réutilisée en tooltip enrichi de l'icône Clonage de la barre d'outils, voir skill `viewers`), `mode_label`/`mode_fixed`/`mode_relative`, `brush_size_label` — toutes réutilisées telles quelles par `_CloneOptionsPanel`. Clés v1.7.3+ : `viewer.toolbar_clone_tooltip`, `messages.errors.clone_failed.title`/`.message` — propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR), calquées sur le vocabulaire déjà attesté pour "clonage" dans `dialogs.clone_zone_viewer` de chaque fichier fictif (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) plutôt qu'improvisées. Voir skill `add-translation`.
-
-**Clés mortes retirées le 2026-08-14** (ancien point d'entrée mosaïque supprimé) : `context_menu.image.clone_zone`, `tooltip.clone_zone`.
 
 **Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `page-straighten` et `add-text-to-image`, ces visionneuses/outils d'édition d'image partagent ce manque (skill `user-guide`).
 
@@ -135,12 +131,12 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 - **Marqueur de source à resynchroniser après pan, zoom, ET redimensionnement** — géré en tête de `paint_clone_marker`, appelée automatiquement par Qt via `paintEvent` dans les trois cas ; ne pas dupliquer l'appel dans chaque handler séparément.
 - **`_VALIDATE_KEYS` n'a pas d'entrée `"clone"`** — ne pas en ajouter une par réflexe en copiant le pattern crop/straighten : cet outil n'a jamais besoin du bouton "Valider" flottant, l'application est immédiate.
 - **Aucune section dédiée dans le mode d'emploi.**
-- **Plus de point d'entrée depuis la mosaïque** (menu contextuel, barre de menu, colonne d'icônes) depuis le 2026-08-14 — ne pas chercher `PanelWidget._clone_selected_image()`, elle a été supprimée avec ses 3 points d'appel ; le clonage ne s'atteint plus que depuis l'intérieur de la visionneuse déjà ouverte.
+- **Pas de point d'entrée depuis la mosaïque** (menu contextuel, barre de menu, colonne d'icônes) — ne pas chercher `PanelWidget._clone_selected_image()`, elle n'existe pas ; le clonage ne s'atteint que depuis l'intérieur de la visionneuse déjà ouverte.
 
 ## Références croisées
 
 - `page-straighten` — architecture la plus proche dans le projet (outil migré dans son propre module, undo/redo unifié avec le panneau, plus de fenêtre dédiée) ; comparer les deux pour la différence de philosophie de validation (une opération validée une fois vs peinture continue commitée en continu).
-- `page-crop` — même famille d'outils migrés, partage le bouton "Valider" flottant avec `page-straighten` mais pas avec le clonage (qui n'en a pas besoin) ; même nettoyage des points d'entrée mosaïque le 2026-08-14.
+- `page-crop` — même famille d'outils de la barre, partage le bouton "Valider" flottant avec `page-straighten` mais pas avec le clonage (qui n'en a pas besoin) ; même absence de point d'entrée mosaïque.
 - `add-text-to-image` — autre implémentation indépendante du fond damier de transparence, aucune fonction partagée avec celle-ci.
 - `viewers` — architecture générale de la fusion progressive des visionneuses (barre d'outils, règle des modules séparés, sections spécifiques au clonage) ; vocabulaire zoom/pan/plein-écran commun mais implémentation non partagée.
 - `apply-image-operation` — pattern général de modification de `entry['bytes']`, suivi ici en variante (A) complète.

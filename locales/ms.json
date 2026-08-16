@@ -50,7 +50,6 @@
     "renumber_recommended": "Nombor semula (disyorkan)",
     "ignore_and_save": "Abaikan dan simpan",
     "open_without_rename": "Buka tanpa menamakan semula",
-    "adjustments": "Kecerahan,\nkontras, dll.",
     "batch_cbr_to_cbz": "Penukaran kelompok\n fail CBR ke CBZ",
     "batch_pdf_to_cbz": "Penukaran kelompok\n fail PDF kepada CBZ",
     "batch_img_to_cbz": "Penukaran kelompok\n imej tersendiri ke CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Toleransi:",
     "transparency_type_slider_tooltip": "Kawasan: menjadikan zon warna seragam di sekeliling piksel yang diklik telus. Global: menjejaskan semua piksel imej yang warnanya hampir dengan yang diklik",
-    "transparency_tolerance_slider_tooltip": "Jarak warna maksimum yang diterima di sekeliling piksel yang diklik"
+    "transparency_tolerance_slider_tooltip": "Jarak warna maksimum yang diterima di sekeliling piksel yang diklik",
+    "toolbar_color_depth_tooltip": "Kedalaman warna",
+    "toolbar_color_depth_instruction": "Pilih kedalaman, pelarasan digunakan serta-merta",
+    "color_depth_panel_restore": "Pulihkan asal",
+    "color_depth_panel_current_format": "Halaman ini kini dalam format {format}.",
+    "toolbar_effects_tooltip": "Kesan",
+    "toolbar_effects_instruction": "Pilih kesan, pelarasan digunakan serta-merta",
+    "effects_panel_restore": "Pulihkan asal",
+    "toolbar_image_mode_tooltip": "Mod Imej",
+    "toolbar_image_mode_instruction": "Pilih mod, pelarasan digunakan serta-merta",
+    "image_mode_panel_restore": "Pulihkan asal",
+    "toolbar_rotation_tooltip": "Putaran",
+    "toolbar_rotation_instruction": "Putar atau balikkan halaman yang dipaparkan"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Ralat",
         "message": "Ketelusan tidak dapat digunakan."
+      },
+      "color_depth_failed": {
+        "title": "Ralat",
+        "message": "Tidak dapat menggunakan kedalaman warna: {error}"
+      },
+      "effect_failed": {
+        "title": "Ralat",
+        "message": "Kesan tidak dapat digunakan: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Ralat",
+        "message": "Mod imej tidak dapat digunakan: {error}"
+      },
+      "rotation_failed": {
+        "title": "Ralat",
+        "message": "Putaran tidak dapat digunakan: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Nama fail yang sama telah dikesan. Walaupun penyimpanan secara teknikal\nboleh dilakukan, ini mungkin menyebabkan masalah pembacaan dalam sesetengah\naplikasi pembaca buku komik (paparan tidak lengkap, halaman hilang, dll.).\n\nAdalah disyorkan untuk menomborkan semula halaman sebelum menyimpan."
     },
     "adjustments": {
-      "window_title": "Pelarasan imej",
-      "title": "Pelarasan untuk {count} {word}",
-      "word_image": "imej",
-      "word_images": "imej",
-      "apply_button": "Guna",
-      "color_depth_section": "Kedalaman warna",
-      "effects_section": "Kesan",
-      "sharpness_section": "Ketajaman",
-      "depth_unchanged": "Jangan ubah",
       "depth_32bit": "32 bit (RGBA - warna + ketelusan)",
       "depth_24bit": "24 bit (RGB - warna)",
       "depth_8bit": "8 bit (palet PNG / skala kelabu JPEG)",
       "depth_1bit": "1 bit (hitam dan putih)",
-      "compression_enable": "Dayakan mampatan semula",
-      "effect_none": "Tiada kesan",
       "effect_grayscale": "Ton kelabu",
       "effect_sepia": "Sepia",
       "auto_levels_button": "Pelarasan automatik",
-      "reset_button": "Tetapkan semula",
       "preview_section": "Pratonton",
       "effect_invert": "Penyongsangan warna",
-      "preview_warning": "Pratonton mungkin berbeza daripada hasil akhir",
-      "image_mode_section": "Mod imej",
       "image_mode_rgb": "RGB (warna)",
       "image_mode_rgba": "RGBA (warna + ketelusan)",
       "image_mode_l": "L (skala kelabu)",
@@ -1383,13 +1396,11 @@
     "flatten": "Meratakan direktori",
     "flatten_content": "Jika arkib anda mengandungi subfolder, gunakan 'Ratakan direktori' untuk membawa semua imej ke tahap yang sama.",
     "viewer": "Penonton",
-    "viewer_content": "Klik dua kali pada halaman untuk membuka pemapar:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: tukar antara 4 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berganda: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berganda berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n  - Webtoon: untuk imej menegak (webcomic), lebar dihadkan kepada 900px supaya kekal mudah dibaca; roda tetikus menatal menegak dalam halaman, kemudian menukar halaman apabila sampai ke atas/bawah\n• Roda tetikus: navigasi pantas (tatalan menegak dalam halaman dalam mod Webtoon)\n• Ctrl+roda atau Ctrl+Plus/Minus: zum (sehingga 1000% daripada saiz sebenar imej)\n• Ctrl+0: sesuaikan zum ke tetingkap\n• Ctrl+1: zum ke 100% (saiz piksel sebenar imej)\n• Klik kanan + seret: gerakkan imej yang dipaparkan apabila melebihi tetingkap\n• Kekunci F11: skrin penuh\n• Klik dua kali: togol skrin penuh\n• Kekunci Esc: batal bingkai pemotongan / keluar dari pemapar\n• Penanda halaman: secara automatik menyimpan halaman semasa apabila menutup pemapar (kecuali halaman pertama dan terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Semasa dibuka semula, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir, atau secara manual melalui klik kanan dalam pemapar.",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka pemapar:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: bertukar antara 4 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berkembar: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berkembar berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n  - Webtoon: untuk imej menegak (webcomics), lebar terhad kepada 900px untuk kekal boleh dibaca; roda tetikus menatal secara menegak dalam halaman, kemudian menukar halaman apabila sampai atas/bawah\n• Roda tetikus: navigasi pantas (tatal menegak dalam halaman dalam mod Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zum (sehingga 1000% saiz sebenar imej)\n• Ctrl+0: sesuaikan zum dengan tetingkap\n• Ctrl+1: zum pada 100% (saiz piksel sebenar imej)\n• Klik kanan + seret: gerakkan imej yang dipaparkan (pan) apabila melebihi tetingkap\n• Kekunci F11: skrin penuh\n• Klik dua kali: togol skrin penuh\n• Kekunci Esc: batalkan lukisan semasa (pangkas, luruskan, bentuk…) atau keluar dari pemapar\n• Penanda buku: menyimpan halaman semasa secara automatik apabila pemapar ditutup (kecuali halaman pertama/terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Apabila dibuka semula, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir, atau secara manual melalui klik kanan dalam pemapar.\n\nBar alat terapung: gerakkan tetikus ke atas bahagian atas imej untuk memaparkannya (ia menyembunyikan diri selepas beberapa saat). Klik ikon untuk mengaktifkan alat yang sepadan:\n• Pangkas: lukis segi empat tepat, laraskan melalui tepinya, sahkan\n• Luruskan: lukis garis pada apa yang sepatutnya mendatar/menegak, pembetulan digunakan secara automatik; klik kanan pada ikon untuk bertukar kepada pelurusan automatik (mengesan kecondongan sendiri, tanpa melukis apa-apa)\n• Putaran/cermin: satu klik memutar atau membalikkan halaman\n• Klonan: Ctrl+klik untuk memilih titik sumber, kemudian lukis dengan butang tetikus ditahan untuk menggandakan\n• Teks: klik untuk meletakkan blok teks, pilih fon/saiz/warna\n• Bentuk: lukis elips, segi empat tepat, garis atau anak panah, dengan pemegang untuk mengubah saiz\n• Penggelangsar (ketajaman, kecerahan/kontras, ketepuan, buang warna, mampatan): hasil dipaparkan secara langsung semasa anda menyeret\n• Aras: laraskan titik hitam/gama/titik putih dengan penggelangsar, atau ambil warna terus dari imej dengan pipet\n• Ketelusan: klik warna pada imej untuk menjadikannya lut sinar\n• Kedalaman warna, Kesan, Mod imej: pilih pilihan dengan mengklik butang radio, digunakan serta-merta\n\nSahkan dengan butang \"Sahkan\" apabila ia muncul, atau Esc untuk membatalkan. Setiap perubahan menyertai sejarah Buat asal/Buat semula yang biasa.",
     "join_pages": "Mencantum halaman",
     "join_pages_content": "Pilih beberapa halaman berturut-turut, klik kanan → 'Cantumkan halaman terpilih' untuk mencantumkan halaman secara mendatar atau menegak. Format imej yang dihasilkan sepadan dengan format halaman sumber jika semuanya sama, jika tidak PNG secara lalai. Anda akan dapat memilih untuk memadam atau mengekalkan halaman asal.\n\nLokasi halaman baharu dalam mozek:\n• Mod penomboran semula aktif (automatik atau manual): halaman mengambil tempat halaman pertama yang dicantumkan (tempatnya, jika halaman sumber dipadam, atau tepat sebelumnya, jika dikekalkan), dan mencetuskan penomboran semula.\n• Mod penomboran semula OFF: halaman ditambah di hadapan mozek dengan nama \"Cantuman_xxx\".",
     "split_pages": "Memisahkan halaman",
     "split_pages_content": "Untuk memisahkan halaman berganda secara automatik:\n• Pilih halaman untuk dipisahkan\n• Klik kanan → 'Pisah halaman terpilih'\n• Pilih arah (menegak atau mendatar)",
-    "crop": "Pangkasan dalam penonton",
-    "crop_content": "Dalam penonton, lukis segi empat tepat pada imej untuk menentukan kawasan pangkasan:\n• Lukis segi empat tepat dengan tetikus\n• Ubah saiznya dengan menarik tepi atau penjuru\n• Klik 'Sahkan pangkasan' untuk menggunakan\n• Pangkasan digunakan pada imej semasa\n• Kekunci Esc: batalkan bingkai pangkas",
     "shortcuts": "Pintasan papan kekunci",
     "shortcuts_content": "• Ctrl+Z: Buat asal tindakan terakhir\n• Ctrl+Y: Buat semula tindakan yang dibuat asal\n• Ctrl+A: Pilih semua halaman\n• Ctrl+I: Songsangkan pilihan\n• Ctrl+C: Salin halaman yang dipilih\n• Ctrl+X: Potong halaman yang dipilih\n• Ctrl+V: Tampal halaman\n• Del: Padam halaman yang dipilih\n• Ctrl+roda tetikus: Zum (pemapar) / saiz lakaran kecil (mozek) / saiz ikon (lajur ikon)\n• Ctrl+0 (pemapar): Sesuaikan zum ke tetingkap\n• Ctrl+1 (pemapar): Zum ke 100% (saiz sebenar imej)\n• Klik kanan + seret (pemapar): Gerakkan imej yang dipaparkan\n• Ctrl+Alt+T: Eksport semua lakaran kecil yang dipaparkan daripada mozek\n• F5: Kemas kini paparan mozek\n• F11: Togol skrin penuh (keluar dengan F11 atau ESC)",
     "dark_mode": "Mod gelap",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Pengecualian: Fail sementara yang digunakan oleh papan keratan Windows (fail clipboard_XXXXX) disimpan selama 12 jam selepas menyalin, supaya anda boleh menampalnya walaupun selepas menutup aplikasi. Selepas 12 jam, fail tersebut akan dipadam secara automatik.",
     "config_log_note": "Penukaran kelompok (PDF kepada CBZ dan CBR kepada CBZ) mencipta fail log apabila ralat berlaku. Fail-fail ini (Log_pdftocbz_.txt dan Log_cbrtocbz_.txt) disimpan walaupun selepas aplikasi ditutup, supaya boleh disemak kemudian. Fail-fail ini hanya dialih keluar melalui butang \"Kosongkan fail sementara\" di atas. Fail Log_scan.txt merekod dengan cara yang sama setiap imbasan (pengimbas yang digunakan, tetapan, hasil atau ralat) — berguna untuk mendiagnosis masalah dengan pengimbas anda.",
     "config_clipboard_cleared": "Fail papan keratan telah berjaya dikosongkan.",
-    "adjust_images": "Pelarasan imej",
-    "adjust_images_content": "Fungsi ini membolehkan anda menyentuh semula imej anda terus dalam MosaicView. Anda boleh mengubah kecerahan, kontras, ketajaman, aras, ketepuan, menerapkan kesan (hitam putih, sepia, penyongsangan warna), melaraskan kualiti mampatan, mengalih warna, menerapkan ketelusan atau menukar kepada kedalaman warna yang berbeza. Sesetengah tetapan mempunyai penonton khusus yang membolehkan anda melihat hasilnya dalam resolusi penuh sebelum menggunakannya. Pratonton lakaran kecil menunjukkan hasilnya dalam masa nyata di tetingkap utama.",
     "create_icon": "Cipta ikon",
     "create_icon_content": "MosaicView membolehkan anda mencipta fail ikon (.ico) daripada mana-mana imej dalam mosaik.\n• Klik kanan pada imej → 'Cipta ikon'\n• Bingkaikan kawasan yang dikehendaki dalam penampil (ikon akan berbentuk segi empat sama)\n• Laraskan ketelusan jika perlu\n• Sahkan: fail .ico ditambah terus ke mosaik\n• Fail .ico secara automatik mengandungi semua resolusi piawai (daripada 16×16 hingga 256×256)\n• Selagi terdapat fail .ico dalam mosaik, penyimpanan ke arkib CBZ disekat kerana format ICO tidak disokong oleh arkib tersebut. Eksport fail .ico secara berasingan (Ctrl+C kemudian tampal ke folder Windows), kemudian padamkannya daripada mosaik sebelum menyimpan.",
     "batch_convert": "Penukaran kelompok",
@@ -1462,7 +1471,7 @@
     "scan": "Imbas satu imej",
     "scan_content": "• Klik butang \"Imbas\" (lajur ikon, menu Fail, atau klik kanan pada mozek) untuk membuka tetingkap pengimbasan. MosaicView mengawal pengimbas anda secara langsung (melalui WIA, sistem pengimbasan Windows): pilih peranti, resolusi (DPI), mod warna (warna / skala kelabu / hitam putih), kemudian klik \"Imbas\". Pengimbas mesti disambungkan, dihidupkan, dan pemacunya dipasang pada Windows untuk muncul dalam senarai.\n• Pengimbas, resolusi dan mod warna terakhir yang dipilih akan diingati dan dicadangkan semula secara automatik pada imbasan seterusnya.\n• Hanya pengimbasan satu muka surat penuh dan eksport ke JPG yang ditawarkan, kerana aplikasi sudah mempunyai semua yang diperlukan untuk suntingan dan penukaran format imej selepas itu.\n• Imej yang diimbas secara automatik ditambah ke mozek, selepas halaman yang sudah ada. Anda kemudian boleh memangkasnya, meluruskannya, melaraskan warnanya dll. seperti mana-mana halaman mozek yang lain\n• Ciri ini mengawal pengimbas secara langsung, tanpa melalui perisian pengeluar atau memaparkan tetingkap konfigurasinya sendiri.\n• Oleh kerana pengimbas fizikal hanya boleh dikawal oleh satu sambungan pada satu masa, pengimbasan hanya boleh dilakukan dalam satu panel pada satu masa: jika tetingkap pengimbasan dibuka atau pengimbasan sedang berjalan dalam satu panel, butang \"Imbas\" kekal kelabu dalam panel yang lain sehingga operasi selesai.",
     "straighten": "Luruskan halaman",
-    "straighten_content": "Dua kaedah untuk membetulkan imbasan yang senget, boleh diakses dari lajur ikon (klik kanan ikon \"Luruskan\" untuk menukar mod), menu Imej, atau klik kanan pada mozek:\n• Pelurusan manual: membuka pemapar khusus di mana anda melukis garis lurus pada apa yang sepatutnya mendatar atau menegak dalam imej; sudut pembetulan dikira secara automatik dan digunakan pada imej, dengan pemegang untuk menala garis dengan tepat.\n• Pelurusan automatik: mengesan kecondongan dengan sendirinya (tanpa melukis apa-apa) dan terus meluruskan halaman yang dipilih; sudut kosong yang dicipta oleh putaran diisi dengan putih. Berfungsi pada beberapa halaman sekali gus. Tetingkap ringkasan menunjukkan bilangan halaman yang berjaya diluruskan dan menyenaraikan yang tiada kecondongan boleh dipercayai dikesan."
+    "straighten_content": "Pelurusan automatik (tanpa melukis apa-apa) tersedia dari lajur ikon (klik kanan pada ikon \"Luruskan\" untuk menukar mod), menu Imej, atau klik kanan pada mozek: ia mengesan kecondongan sendiri dan meluruskan halaman yang dipilih secara langsung; sudut kosong yang dicipta oleh putaran diisi dengan putih. Berfungsi pada beberapa halaman serentak. Tetingkap ringkasan menunjukkan berapa banyak halaman berjaya diluruskan dan menyenaraikan yang mana kecondongan yang boleh dipercayai tidak dapat dikesan.\n\nPelurusan manual (melukis garis rujukan) dilakukan dari pemapar utama, lihat bahagian Pemapar."
   },
   "misc": {
     "file_word": "fail",

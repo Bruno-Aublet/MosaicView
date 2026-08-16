@@ -50,7 +50,6 @@
     "renumber_recommended": "Yeniden numaralandır (önerilen)",
     "ignore_and_save": "Yoksay ve kaydet",
     "open_without_rename": "Yeniden adlandırmadan aç",
-    "adjustments": "Parlaklık,\nkontrast vb.",
     "batch_cbr_to_cbz": "CBR dosyalarını\n topluca CBZ'ye dönüştür",
     "batch_pdf_to_cbz": "PDF dosyalarını toplu\n CBZ’ye dönüştürme",
     "batch_img_to_cbz": "Bağımsız resimlerin\n toplu CBZ'ye dönüştürülmesi",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Genel",
     "transparency_tolerance_panel_label": "Tolerans:",
     "transparency_type_slider_tooltip": "Bölge: tıklanan pikselin çevresindeki tek renkli bölgeyi saydam yapar. Genel: görüntünün, rengi tıklanana yakın olan tüm piksellerini etkiler",
-    "transparency_tolerance_slider_tooltip": "Tıklanan pikselin çevresinde kabul edilen maksimum renk mesafesi"
+    "transparency_tolerance_slider_tooltip": "Tıklanan pikselin çevresinde kabul edilen maksimum renk mesafesi",
+    "toolbar_color_depth_tooltip": "Renk derinligi",
+    "toolbar_color_depth_instruction": "Bir derinlik secin, ayarlama hemen uygulanir",
+    "color_depth_panel_restore": "Orijinali geri yukle",
+    "color_depth_panel_current_format": "Bu sayfa su anda {format} biciminde.",
+    "toolbar_effects_tooltip": "Efektler",
+    "toolbar_effects_instruction": "Bir efekt seçin, ayarlama hemen uygulanır",
+    "effects_panel_restore": "Orijinali geri yükle",
+    "toolbar_image_mode_tooltip": "Görüntü Modu",
+    "toolbar_image_mode_instruction": "Bir mod seçin, ayarlama hemen uygulanır",
+    "image_mode_panel_restore": "Orijinali geri yükle",
+    "toolbar_rotation_tooltip": "Döndürme",
+    "toolbar_rotation_instruction": "Görüntülenen sayfayı döndürün veya çevirin"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Hata",
         "message": "Saydamlık uygulanamadı."
+      },
+      "color_depth_failed": {
+        "title": "Hata",
+        "message": "Renk derinligi uygulanamadi: {error}"
+      },
+      "effect_failed": {
+        "title": "Hata",
+        "message": "Efekt uygulanamadı: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Hata",
+        "message": "Görüntü modu uygulanamadı: {error}"
+      },
+      "rotation_failed": {
+        "title": "Hata",
+        "message": "Döndürme uygulanamadı: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Aynı dosya adları tespit edildi. Kaydetme teknik olarak mümkün olsa da,\nbu bazı çizgi roman okuyucu uygulamalarında okuma sorunlarına neden\nolabilir (eksik görüntüleme, eksik sayfalar vb.).\n\nKaydetmeden önce sayfaları yeniden numaralandırmanız önerilir."
     },
     "adjustments": {
-      "window_title": "Goruntu ayarlari",
-      "title": "{count} {word} icin ayarlar",
-      "word_image": "goruntu",
-      "word_images": "goruntu",
-      "apply_button": "Uygula",
-      "color_depth_section": "Renk derinligi",
-      "effects_section": "Efektler",
-      "sharpness_section": "Keskinlik",
-      "depth_unchanged": "Degistirme",
       "depth_32bit": "32 bit (RGBA - renkler + seffaflik)",
       "depth_24bit": "24 bit (RGB - renkler)",
       "depth_8bit": "8 bit (PNG paleti / JPEG gri tonlari)",
       "depth_1bit": "1 bit (siyah ve beyaz)",
-      "compression_enable": "Yeniden sikistirmayi etkinlestir",
-      "effect_none": "Efekt yok",
       "effect_grayscale": "Gri tonlari",
       "effect_sepia": "Sepya",
       "auto_levels_button": "Otomatik ayarlama",
-      "reset_button": "Sıfırla",
       "preview_section": "Önizleme",
       "effect_invert": "Renk tersine çevirme",
-      "preview_warning": "Önizleme nihai sonuçtan farklı olabilir",
-      "image_mode_section": "Görüntü modu",
       "image_mode_rgb": "RGB (renkler)",
       "image_mode_rgba": "RGBA (renkler + saydamlık)",
       "image_mode_l": "L (gri tonları)",
@@ -1383,13 +1396,11 @@
     "flatten": "Dizinleri düzleştirme",
     "flatten_content": "Arşiviniz alt klasörler içeriyorsa, tüm görüntüleri aynı seviyeye getirmek için 'Dizinleri düzleştir' seçeneğini kullanın.",
     "viewer": "Görüntüleyici",
-    "viewer_content": "Görüntüleyiciyi açmak için bir sayfaya çift tıklayın:\n• ← → tuşları: sayfalar arasında gezinme\n• D tuşu: 4 okuma modu arasında geçiş\n  - Tek sayfa: bir seferde bir sayfa\n  - Çift sayfalar: sayfa 1 tek başına, sonra 2-3, 4-5 vb.\n  - Sürekli çift sayfalar: sayfa 1 tek başına, sonra 2-3, 3-4, 4-5 vb.\n  - Webtoon: dikey görseller (webcomics) için, okunabilir kalması için genişlik 900px ile sınırlıdır; fare tekerleği sayfa içinde dikey kaydırır, üste/alta ulaşınca sayfa değişir\n• Fare tekerleği: hızlı gezinme (Webtoon modunda sayfa içinde dikey kaydırma)\n• Ctrl+tekerlek veya Ctrl+Artı/Eksi: yakınlaştırma (görüntünün gerçek boyutunun %1000'ine kadar)\n• Ctrl+0: yakınlaştırmayı pencereye sığdır\n• Ctrl+1: yakınlaştırmayı %100'e ayarla (görüntünün gerçek piksel boyutu)\n• Sağ tıklama + sürükleme: pencereyi aştığında görüntülenen resmi taşı\n• F11 tuşu: tam ekran\n• Çift tıklama: tam ekranı değiştir\n• Esc tuşu: kırpma çerçevesini iptal et / görüntüleyiciden çık\n• Yer imi: görüntüleyici kapatıldığında geçerli sayfayı otomatik olarak kaydeder (ilk ve son sayfa hariç). Mozaikteki ilgili küçük resimde kırmızı bir şerit görünür. Bir sonraki açılışta, bir mesaj bu sayfaya geri dönmeyi önerir. Son sayfada otomatik olarak silinir veya görüntüleyicide sağ tıklayarak manuel olarak silinir.",
+    "viewer_content": "Görüntüleyiciyi açmak için bir sayfaya çift tıklayın:\n• ← → tuşları: sayfalar arasında gezinme\n• D tuşu: 4 okuma modu arasında geçiş\n  - Tek sayfa: seferde bir sayfa\n  - Çift sayfalar: sayfa 1 tek başına, sonra 2-3, 4-5 vb.\n  - Sürekli çift sayfalar: sayfa 1 tek başına, sonra 2-3, 3-4, 4-5 vb.\n  - Webtoon: dikey görüntüler için (webcomics), okunabilirlik için genişlik 900px ile sınırlı; fare tekerleği sayfada dikey kaydırır, sonra üstte/altta sayfa değiştirir\n• Fare tekerleği: hızlı gezinme (Webtoon modunda sayfa içinde dikey kaydırma)\n• Ctrl+Tekerlek veya Ctrl+Artı/Eksi: yakınlaştırma (görüntünün gerçek boyutunun %1000'ine kadar)\n• Ctrl+0: yakınlaştırmayı pencereye uydur\n• Ctrl+1: %100 yakınlaştırma (görüntünün gerçek piksel boyutu)\n• Sağ tık + sürükleme: pencereyi aştığında görüntülenen resmi kaydırma (pan)\n• F11 tuşu: tam ekran\n• Çift tık: tam ekranı aç/kapat\n• Esc tuşu: geçerli çizimi iptal et (kırpma, düzeltme, şekil…) veya görüntüleyiciden çık\n• Yer imi: görüntüleyici kapanırken geçerli sayfayı otomatik olarak kaydeder (ilk/son sayfa hariç). Mozaikte ilgili küçük resimde kırmızı bir kurdele görünür. Yeniden açıldığında, bir mesaj bu sayfaya dönmeyi önerir. Son sayfada otomatik olarak silinir, veya görüntüleyicide sağ tıkla manuel olarak.\n\nYüzen araç çubuğu: görünmesi için fareyi görüntünün üstüne getirin (birkaç saniye sonra kendini gizler). İlgili aracı etkinleştirmek için bir simgeye tıklayın:\n• Kırpma: bir dikdörtgen çizin, kenarlarından ayarlayın, onaylayın\n• Düzeltme: yatay/dikey olması gereken şeyin üzerine bir çizgi çizin, düzeltme otomatik olarak uygulanır; otomatik düzeltmeye geçmek için simgeye sağ tıklayın (hiçbir şey çizmeden eğimi kendi kendine algılar)\n• Döndürme/çevirme: tek tıkla sayfayı döndürür veya çevirir\n• Klonlama: kaynak noktasını seçmek için Ctrl+tık, sonra çoğaltmak için fare düğmesini basılı tutarak boyayın\n• Metin: bir metin bloğu yerleştirmek için tıklayın, yazı tipi/boyut/renk seçin\n• Şekiller: elips, dikdörtgen, çizgi veya ok çizin, yeniden boyutlandırmak için tutamaçlarla\n• Kaydırıcılar (keskinlik, parlaklık/kontrast, doygunluk, renkleri kaldır, sıkıştırma): sürüklerken sonuç canlı olarak gösterilir\n• Seviyeler: kaydırıcılarla siyah nokta/gama/beyaz noktayı ayarlayın, veya damlalıklarla doğrudan görüntüden bir renk alın\n• Saydamlık: saydam yapmak için görüntüdeki bir renge tıklayın\n• Renk derinliği, Efektler, Görüntü modu: bir radyo düğmesine tıklayarak bir seçenek belirleyin, hemen uygulanır\n\nGöründüğünde \"Onayla\" düğmesiyle onaylayın, veya iptal için Esc. Her değişiklik olağan Geri Al/Yinele geçmişine katılır.",
     "join_pages": "Sayfaları birleştirme",
     "join_pages_content": "Birden fazla ardışık sayfa seçin, sağ tıklayın → sayfaları yatay veya dikey olarak birleştirmek için 'Seçili sayfaları birleştir'. Üretilen görüntünün formatı, hepsi aynıysa kaynak sayfaların formatına uyar, aksi takdirde varsayılan olarak PNG olur. Orijinal sayfaları silmeyi veya tutmayı seçebileceksiniz.\n\nYeni sayfanın mozaikte konumu:\n• Aktif yeniden numaralandırma modu (otomatik veya manuel): sayfa, birleştirilen ilk sayfanın yerini alır (kaynak sayfalar silinirse onun yerini, tutulursa hemen öncesini), ve bir yeniden numaralandırma tetikler.\n• KAPALI yeniden numaralandırma modu: sayfa, mozaiğin başına \"Birlestirilmis_xxx\" adı altında eklenir.",
     "split_pages": "Sayfaları bölme",
     "split_pages_content": "Çift sayfaları otomatik olarak bölmek için:\n• Bölünecek sayfaları seçin\n• Sağ tıklayın → 'Seçili sayfaları böl'\n• Yönü seçin (dikey veya yatay)",
-    "crop": "Görüntüleyicide kırpma",
-    "crop_content": "Görüntüleyicide, bir kırpma alanı tanımlamak için görüntü üzerinde bir dikdörtgen çizin:\n• Fare ile dikdörtgeni çizin\n• Kenarları veya köşeleri sürükleyerek yeniden boyutlandırın\n• Uygulamak için 'Kırpmayı onayla' seçeneğine tıklayın\n• Kırpma mevcut görüntüye uygulanır\n• Esc tuşu: kırpma çerçevesini iptal et",
     "shortcuts": "Klavye kısayolları",
     "shortcuts_content": "• Ctrl+Z: Son işlemi geri al\n• Ctrl+Y: Geri alınan işlemi yinele\n• Ctrl+A: Tüm sayfaları seç\n• Ctrl+I: Seçimi ters çevir\n• Ctrl+C: Seçili sayfaları kopyala\n• Ctrl+X: Seçili sayfaları kes\n• Ctrl+V: Sayfaları yapıştır\n• Del: Seçili sayfaları sil\n• Ctrl+fare tekerleği: Yakınlaştırma (görüntüleyici) / küçük resim boyutu (mozaik) / simge boyutu (simge sütunu)\n• Ctrl+0 (görüntüleyici): Yakınlaştırmayı pencereye sığdır\n• Ctrl+1 (görüntüleyici): Yakınlaştırmayı %100'e ayarla (gerçek görüntü boyutu)\n• Sağ tıklama + sürükleme (görüntüleyici): Görüntülenen resmi taşı\n• Ctrl+Alt+T: Mozaikten görüntülenen tüm küçük resimleri dışa aktar\n• F5: Mozaik görünümünü güncelle\n• F11: Tam ekranı değiştir (F11 veya ESC ile çık)",
     "dark_mode": "Koyu mod",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "İstisna: Windows panosu tarafından kullanılan geçici dosyalar (clipboard_XXXXX dosyaları), uygulamayı kapattıktan sonra bile yapıştırabilmeniz için kopyalamadan sonra 12 saat boyunca saklanır. 12 saatten sonra otomatik olarak silinirler.",
     "config_log_note": "Toplu dönüştürmeler (PDF'den CBZ'ye ve CBR'den CBZ'ye) bir hata oluştuğunda bir günlük dosyası oluşturur. Bu dosyalar (Log_pdftocbz_.txt ve Log_cbrtocbz_.txt) uygulama kapatıldıktan sonra bile daha sonra incelenebilmesi için saklanır. Yalnızca yukarıdaki \"Geçici dosyaları temizle\" düğmesiyle kaldırılırlar. Log_scan.txt dosyası aynı şekilde her taramayı (kullanılan tarayıcı, ayarlar, sonuç veya hata) kaydeder — tarayıcınızla ilgili bir sorunu teşhis etmek için kullanışlıdır.",
     "config_clipboard_cleared": "Pano dosyaları başarıyla temizlendi.",
-    "adjust_images": "Görüntü ayarlama",
-    "adjust_images_content": "Bu işlev, görüntülerinizi doğrudan MosaicView'de rötuşlamanıza olanak tanır. Parlaklık, kontrast, keskinlik, düzeyler, doygunluğu değiştirebilir, efektler uygulayabilir (siyah-beyaz, sepya, renk ters çevirme), sıkıştırma kalitesini ayarlayabilir, renkleri kaldırabilir, şeffaflık uygulayabilir veya farklı renk derinliklerine dönüştürebilirsiniz. Bazı ayarlar, uygulamadan önce tam çözünürlükte sonucu görmenizi sağlayan özel bir görüntüleyiciye sahiptir. Ana pencerede küçük resim önizlemesi sonucu gerçek zamanlı olarak gösterir.",
     "create_icon": "Simge oluştur",
     "create_icon_content": "MosaicView, mozaikteki herhangi bir görüntüden simge dosyaları (.ico) oluşturmanıza olanak tanır.\n• Bir görüntüye sağ tıklayın → 'Simge oluştur'\n• Görüntüleyicide istediğiniz alanı çerçeveleyin (simge zorunlu olarak kare olacaktır)\n• Gerekirse şeffaflığı ayarlayın\n• Onaylayın: .ico dosyası doğrudan mozaiğe eklenir\n• .ico dosyaları, tüm standart çözünürlükleri (16×16'dan 256×256'ya kadar) otomatik olarak içerir\n• Mozaikte bir .ico dosyası olduğu sürece, ICO formatı bu arşivler tarafından desteklenmediğinden CBZ arşivine kaydetme engellenir. .ico dosyasını ayrıca dışa aktarın (Ctrl+C ardından bir Windows klasörüne yapıştırın), ardından kaydetmeden önce mozaikten silin.",
     "batch_convert": "Toplu dönüştürme",
@@ -1462,7 +1471,7 @@
     "scan": "Bir görüntü tara",
     "scan_content": "• Tarama penceresini açmak için \"Tara\" düğmesine (simge sütunu, Dosya menüsü veya mozaik üzerinde sağ tıklama) tıklayın. MosaicView tarayıcınızı doğrudan yönetir (Windows'un tarama sistemi olan WIA aracılığıyla): cihazı, çözünürlüğü (DPI), renk modunu (renkli / gri tonlama / siyah beyaz) seçin, ardından \"Tara\" düğmesine tıklayın. Bir tarayıcının listede görünmesi için bağlı, açık olması ve sürücüsünün Windows'a yüklenmiş olması gerekir.\n• Son kullanılan tarayıcı, çözünürlük ve seçilen renk modu hatırlanır ve bir sonraki taramada otomatik olarak yeniden önerilir.\n• Yalnızca tam sayfa tarama ve JPG olarak dışa aktarma sunulur, çünkü uygulama daha sonraki görüntü rötuşu ve format dönüştürme için gereken her şeye zaten sahiptir.\n• Taranan görüntü, mevcut sayfaların ardından otomatik olarak mozaiğe eklenir. Ardından, mozaiğin diğer sayfaları gibi onu kırpabilir, düzeltebilir, renklerini ayarlayabilirsiniz vb.\n• Bu özellik, üretici yazılımını kullanmadan veya kendi yapılandırma penceresini göstermeden tarayıcıyı doğrudan yönetir.\n• Fiziksel bir tarayıcı aynı anda yalnızca tek bir bağlantı tarafından kontrol edilebildiğinden, tarama işlemi yalnızca tek bir panelde mümkündür: bir panelde tarama penceresi açıksa veya tarama devam ediyorsa, işlem tamamlanana kadar diğer paneldeki \"Tara\" düğmesi gri kalır.",
     "straighten": "Bir sayfayı düzelt",
-    "straighten_content": "Eğri bir taramayı düzeltmenin iki yolu, simge sütunundan (modu değiştirmek için \"Düzelt\" simgesine sağ tıklayın), Görüntüler menüsünden veya mozaiğe sağ tıklayarak erişilebilir:\n• Manuel düzeltme: görüntüde yatay veya dikey olması gereken şeyin üzerine düz bir çizgi çizdiğiniz özel bir görüntüleyici açar; düzeltme açısı otomatik olarak hesaplanır ve görüntüye uygulanır, çizgiyi hassas ayarlamak için tutamaçlarla birlikte.\n• Otomatik düzeltme: hiçbir şey çizmeden eğimi kendisi tespit eder ve seçili sayfayı/sayfaları doğrudan düzeltir; döndürme sonucu oluşan boş köşeler beyazla doldurulur. Aynı anda birden fazla sayfada çalışır. Bir özet penceresi başarıyla düzeltilen sayfa sayısını gösterir ve güvenilir bir eğim tespit edilemeyenleri listeler."
+    "straighten_content": "Otomatik düzeltme (hiçbir şey çizmeden) simge sütunundan (moda geçmek için \"Düzelt\" simgesine sağ tıklayın), Görüntüler menüsünden veya mozaiğe sağ tıklayarak kullanılabilir: eğimi kendi kendine algılar ve seçilen sayfayı/sayfaları doğrudan düzeltir; döndürme ile oluşan boş köşeler beyazla doldurulur. Aynı anda birden fazla sayfada çalışır. Bir özet penceresi kaç sayfanın başarıyla düzeltildiğini gösterir ve güvenilir bir eğim algılanamayan sayfaları listeler.\n\nManuel düzeltme (referans çizgisi çizme) ana görüntüleyiciden yapılır, Görüntüleyici bölümüne bakın."
   },
   "misc": {
     "file_word": "dosya",

@@ -791,7 +791,7 @@ class LevelsViewerMixin:
         (image_viewer_qt.py) l'utilise à la place de ensure_image_loaded(entry)
         quand il est défini pour la page courante."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_adjustments
+        from modules.qt.image_processing_qt import apply_adjustments
 
         panel = self._toolbar._levels_panel
         threshold, black_point = panel.threshold, panel.black_point
@@ -819,7 +819,7 @@ class LevelsViewerMixin:
         (voir LevelsCanvasMixin.levels_pipette_click) : commit réel des
         niveaux dans entry['bytes'] (pattern skill apply-image-operation,
         variante A complète) — réutilise apply_image_adjustments()
-        (adjustments_processing_qt.py), déjà utilisée par le panneau
+        (image_processing_qt.py), déjà utilisée par l'ancien panneau
         Ajustements pour "Appliquer à la page courante". Devient sa propre
         entrée d'historique, comme un commit de brightness (pas de bouton
         "Valider" séparé, voir docstring de module).
@@ -832,7 +832,7 @@ class LevelsViewerMixin:
         fois, pas d'un état "absolu" mémorisé) — comportement accepté
         explicitement, cohérent avec brightness/sharpness."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_image_adjustments
+        from modules.qt.image_processing_qt import apply_image_adjustments
         from modules.qt.dialogs_qt import MsgDialog
 
         panel = self._toolbar._levels_panel
@@ -888,7 +888,7 @@ class LevelsViewerMixin:
             self._toolbar.refresh_undo_redo_state()
 
         except Exception as e:
-            dlg = MsgDialog(self, "messages.errors.levels_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.levels_failed.title",
                             "messages.errors.levels_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
@@ -902,7 +902,7 @@ class LevelsViewerMixin:
         sliders correspondants, puis commit immédiatement — même principe que
         le clic pipette (un geste complet, pas de relâchement à attendre)."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import compute_auto_levels
+        from modules.qt.image_processing_qt import compute_auto_levels
         from modules.qt.dialogs_qt import MsgDialog
 
         state = self.callbacks.get('state') or _state_module.state
@@ -916,7 +916,7 @@ class LevelsViewerMixin:
             panel.set_white_point(white_val)
             self.perform_levels()
         except Exception as e:
-            dlg = MsgDialog(self, "messages.errors.levels_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.levels_failed.title",
                             "messages.errors.levels_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()

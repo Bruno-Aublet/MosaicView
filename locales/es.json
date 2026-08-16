@@ -50,7 +50,6 @@
     "renumber_recommended": "Renumerar (recomendado)",
     "ignore_and_save": "Ignorar y guardar",
     "open_without_rename": "Abrir sin renombrar",
-    "adjustments": "Brillo,\ncontraste, etc.",
     "batch_cbr_to_cbz": "Conversión por lotes\n de archivos CBR a CBZ",
     "batch_pdf_to_cbz": "Conversión por lotes\n de archivos PDF a CBZ",
     "batch_img_to_cbz": "Conversión por lotes\n de imágenes aisladas a CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Tolerancia:",
     "transparency_type_slider_tooltip": "Zona: hace transparente la zona de color uniforme alrededor del píxel pulsado. Global: afecta a todos los píxeles de la imagen cuyo color sea cercano al pulsado",
-    "transparency_tolerance_slider_tooltip": "Distancia de color máxima aceptada alrededor del píxel pulsado"
+    "transparency_tolerance_slider_tooltip": "Distancia de color máxima aceptada alrededor del píxel pulsado",
+    "toolbar_color_depth_tooltip": "Profundidad de color",
+    "toolbar_color_depth_instruction": "Elija una profundidad, el ajuste se aplica de inmediato",
+    "color_depth_panel_restore": "Restaurar original",
+    "color_depth_panel_current_format": "Esta pagina esta actualmente en {format}.",
+    "toolbar_effects_tooltip": "Efectos",
+    "toolbar_effects_instruction": "Elija un efecto, el ajuste se aplica inmediatamente",
+    "effects_panel_restore": "Restaurar original",
+    "toolbar_image_mode_tooltip": "Modo de imagen",
+    "toolbar_image_mode_instruction": "Elija un modo, el ajuste se aplica inmediatamente",
+    "image_mode_panel_restore": "Restaurar original",
+    "toolbar_rotation_tooltip": "Rotación",
+    "toolbar_rotation_instruction": "Gire o voltee la página mostrada"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Error",
         "message": "No se pudo aplicar la transparencia."
+      },
+      "color_depth_failed": {
+        "title": "Error",
+        "message": "No se pudo aplicar la profundidad de color: {error}"
+      },
+      "effect_failed": {
+        "title": "Error",
+        "message": "No se pudo aplicar el efecto: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Error",
+        "message": "No se pudo aplicar el modo de imagen: {error}"
+      },
+      "rotation_failed": {
+        "title": "Error",
+        "message": "No se pudo aplicar la rotación: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Se han detectado nombres de archivo idénticos. Aunque guardar es\ntécnicamente posible, esto puede causar problemas de lectura en\nalgunas aplicaciones de lectura de cómics (visualización incompleta,\npáginas faltantes, etc.).\n\nSe recomienda renumerar las páginas antes de guardar."
     },
     "adjustments": {
-      "window_title": "Ajustes de imagen",
-      "title": "Ajustes de {count} {word}",
-      "word_image": "imagen",
-      "word_images": "imagenes",
-      "apply_button": "Aplicar",
-      "color_depth_section": "Profundidad de color",
-      "effects_section": "Efectos",
-      "sharpness_section": "Nitidez",
-      "depth_unchanged": "No modificar",
       "depth_32bit": "32 bits (RGBA - colores + transparencia)",
       "depth_24bit": "24 bits (RGB - colores)",
       "depth_8bit": "8 bits (paleta PNG / escala de grises JPEG)",
       "depth_1bit": "1 bit (blanco y negro)",
-      "compression_enable": "Activar recompresion",
-      "effect_none": "Sin efecto",
       "effect_grayscale": "Escala de grises",
       "effect_sepia": "Sepia",
       "auto_levels_button": "Ajuste automático",
-      "reset_button": "Restablecer",
       "preview_section": "Vista previa",
       "effect_invert": "Inversión de colores",
-      "preview_warning": "La vista previa puede diferir del resultado final",
-      "image_mode_section": "Modo de imagen",
       "image_mode_rgb": "RGB (colores)",
       "image_mode_rgba": "RGBA (colores + transparencia)",
       "image_mode_l": "L (escala de grises)",
@@ -1383,13 +1396,11 @@
     "flatten": "Aplanar directorios",
     "flatten_content": "Si su archivo contiene subcarpetas, use 'Aplanar directorios' para llevar todas las imágenes al mismo nivel.",
     "viewer": "Visor",
-    "viewer_content": "Haga doble clic en una página para abrir el visor:\n• Teclas ← →: navegación entre páginas\n• Tecla D: alternar entre 4 modos de lectura\n  - Página simple: una página a la vez\n  - Páginas dobles: página 1 sola, luego 2-3, 4-5, etc.\n  - Páginas dobles continuas: página 1 sola, luego 2-3, 3-4, 4-5, etc.\n  - Webtoon: para imágenes verticales (webcómics), ancho limitado a 900px para mantener la legibilidad; la rueda del ratón desplaza verticalmente dentro de la página y cambia de página al llegar arriba/abajo\n• Rueda del ratón: navegación rápida (desplazamiento vertical dentro de la página en modo Webtoon)\n• Ctrl+Rueda o Ctrl+Más/Menos: zoom (hasta el 1000% del tamaño real de la imagen)\n• Ctrl+0: ajustar el zoom a la ventana\n• Ctrl+1: zoom al 100% (tamaño real en píxeles de la imagen)\n• Clic derecho + arrastrar: desplazar la imagen mostrada cuando excede la ventana\n• Tecla F11: pantalla completa\n• Doble clic: alternar pantalla completa\n• Tecla Esc: cancelar el marco de recorte / salir del visor\n• Marcador: guarda automáticamente la página actual al cerrar el visor (excepto la primera y última página). Aparece una cinta roja en la miniatura correspondiente en el mosaico. Al reabrir, un mensaje sugiere volver a esta página. Se elimina automáticamente en la última página, o manualmente mediante clic derecho en el visor.",
+    "viewer_content": "Haga doble clic en una página para abrir el visor:\n• Teclas ← →: navegar entre páginas\n• Tecla D: alternar entre 4 modos de lectura\n  - Página simple: una página a la vez\n  - Páginas dobles: página 1 sola, luego 2-3, 4-5, etc.\n  - Páginas dobles continuas: página 1 sola, luego 2-3, 3-4, 4-5, etc.\n  - Webtoon: para imágenes verticales (webcomics), ancho limitado a 900px para mantener la legibilidad; la rueda del ratón desplaza verticalmente la página, luego cambia de página al llegar arriba/abajo\n• Rueda del ratón: navegación rápida (desplazamiento vertical en la página en modo Webtoon)\n• Ctrl+Rueda o Ctrl+Más/Menos: zoom (hasta 1000% del tamaño real de la imagen)\n• Ctrl+0: ajustar el zoom a la ventana\n• Ctrl+1: zoom al 100% (tamaño real de los píxeles de la imagen)\n• Clic derecho + arrastrar: desplazar la imagen mostrada (paneo) cuando sobrepasa la ventana\n• Tecla F11: pantalla completa\n• Doble clic: alternar pantalla completa\n• Tecla Esc: cancelar el trazo en curso (recorte, enderezado, forma…) o salir del visor\n• Marcador: guarda automáticamente la página actual al cerrar el visor (excepto la primera/última página). Aparece una cinta roja en la miniatura correspondiente del mosaico. Al reabrir, un mensaje propone volver a esa página. Se elimina automáticamente en la última página, o manualmente con clic derecho en el visor.\n\nBarra de herramientas flotante: pase el ratón por la parte superior de la imagen para que aparezca (se oculta sola tras unos segundos). Haga clic en un icono para activar la herramienta correspondiente:\n• Recorte: trace un rectángulo, ajústelo por sus bordes, valide\n• Enderezado: trace una línea sobre lo que debería ser horizontal/vertical, la corrección se aplica automáticamente; clic derecho sobre el icono para pasar al enderezado automático (detecta la inclinación solo, sin trazar nada)\n• Rotación/espejo: un clic rota o voltea la página\n• Clonado: Ctrl+clic para elegir el punto de origen, luego pinte manteniendo el clic para duplicar\n• Texto: haga clic para colocar un bloque de texto, elija fuente/tamaño/color\n• Formas: dibuje elipses, rectángulos, líneas o flechas, con asas para redimensionarlas\n• Deslizadores (nitidez, brillo/contraste, saturación, eliminar colores, compresión): el resultado se muestra en vivo mientras arrastra\n• Niveles: ajuste el punto negro/gamma/punto blanco con los deslizadores, o tome un color directamente de la imagen con los cuentagotas\n• Transparencia: haga clic en un color de la imagen para hacerlo transparente\n• Profundidad de color, Efectos, Modo de imagen: elija una opción con un botón de radio, aplicada de inmediato\n\nValide con el botón «Validar» cuando aparezca, o Esc para cancelar. Cada cambio se une al historial habitual de Deshacer/Rehacer.",
     "join_pages": "Unir páginas",
     "join_pages_content": "Seleccione varias páginas consecutivas, clic derecho → 'Unir páginas seleccionadas' para unir las páginas horizontal o verticalmente. El formato de la imagen producida corresponde al de las páginas de origen si todas son idénticas; en caso contrario, PNG por defecto. Podrá elegir eliminar o conservar las páginas originales.\n\nUbicación de la nueva página en el mosaico:\n• Modo de renumeración activo (automático o manual): la página ocupa el lugar de la primera página unida (su lugar, si se eliminan las páginas de origen, o justo antes, si se conservan), y desencadena una renumeración.\n• Modo de renumeración OFF: la página se añade al principio del mosaico con el nombre \"Fusionado_xxx\".",
     "split_pages": "Dividir páginas",
     "split_pages_content": "Para dividir automáticamente páginas dobles:\n• Seleccione las páginas a dividir\n• Clic derecho → 'Dividir páginas seleccionadas'\n• Elija la dirección (vertical u horizontal)",
-    "crop": "Recorte en el visor",
-    "crop_content": "En el visor, dibuje un rectángulo en la imagen para definir un área de recorte:\n• Dibuje el rectángulo con el ratón\n• Cambie su tamaño tirando de los bordes o esquinas\n• Haga clic en 'Validar recorte' para aplicar\n• El recorte se aplica a la imagen actual\n• Tecla Esc: cancelar el marco de recorte",
     "shortcuts": "Atajos de teclado",
     "shortcuts_content": "• Ctrl+Z: Deshacer la última acción\n• Ctrl+Y: Rehacer la acción deshecha\n• Ctrl+A: Seleccionar todas las páginas\n• Ctrl+I: Invertir selección\n• Ctrl+C: Copiar páginas seleccionadas\n• Ctrl+X: Cortar páginas seleccionadas\n• Ctrl+V: Pegar páginas\n• Supr: Eliminar páginas seleccionadas\n• Ctrl+rueda del ratón: Zoom (visor) / tamaño de miniaturas (mosaico) / tamaño de iconos (columna de iconos)\n• Ctrl+0 (visor): Ajustar el zoom a la ventana\n• Ctrl+1 (visor): Zoom al 100% (tamaño real de la imagen)\n• Clic derecho + arrastrar (visor): Desplazar la imagen mostrada\n• Ctrl+Alt+T: Exportar todas las miniaturas mostradas del mosaico\n• F5: Actualizar la visualización del mosaico\n• F11: Alternar pantalla completa (salir con F11 o ESC)",
     "dark_mode": "Modo oscuro",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Excepcion: Los archivos temporales utilizados por el portapapeles de Windows (archivos clipboard_XXXXX) se conservan durante 12 horas despues de copiarlos, para que pueda pegarlos incluso despues de cerrar la aplicacion. Despues de 12 horas, se eliminan automaticamente.",
     "config_log_note": "Las conversiones por lotes (PDF a CBZ y CBR a CBZ) crean un archivo de registro cuando se produce un error. Estos archivos (Log_pdftocbz_.txt y Log_cbrtocbz_.txt) se conservan incluso después de cerrar la aplicación, para poder consultarlos posteriormente. Solo se eliminan con el botón «Borrar archivos temporales» de arriba. Un archivo Log_scan.txt registra de la misma manera cada digitalización (escáner utilizado, parámetros, resultado o error), útil para diagnosticar un problema con su escáner.",
     "config_clipboard_cleared": "Los archivos del portapapeles se han borrado correctamente.",
-    "adjust_images": "Ajuste de imágenes",
-    "adjust_images_content": "Esta función le permite retocar sus imágenes directamente en MosaicView. Puede modificar el brillo, el contraste, la nitidez, los niveles, la saturación, aplicar efectos (blanco y negro, sepia, inversión de colores), ajustar la calidad de compresión, eliminar colores, aplicar transparencia o convertir a distintas profundidades de color. Algunos ajustes disponen de un visor dedicado que permite ver el resultado en resolución completa antes de aplicar. Una miniatura muestra el resultado en tiempo real en la ventana principal.",
     "create_icon": "Crear un icono",
     "create_icon_content": "MosaicView le permite crear archivos de icono (.ico) a partir de cualquier imagen del mosaico.\n• Clic derecho en una imagen → 'Crear un icono'\n• Encuadre la zona deseada en el visor (el icono será obligatoriamente cuadrado)\n• Ajuste la transparencia si es necesario\n• Valide: el archivo .ico se añade directamente al mosaico\n• Los archivos .ico contienen automáticamente todas las resoluciones estándar (de 16×16 a 256×256)\n• Mientras haya un archivo .ico en el mosaico, el guardado en un archivo CBZ está bloqueado, ya que el formato ICO no es compatible con estos archivos. Exporte el archivo .ico por separado (Ctrl+C y pegue en una carpeta de Windows), luego elimínelo del mosaico antes de guardar.",
     "batch_convert": "Conversión por lotes",
@@ -1462,7 +1471,7 @@
     "scan": "Escanear una imagen",
     "scan_content": "• Haga clic en el botón «Escanear» (columna de iconos, menú Archivo, o clic derecho sobre el mosaico) para abrir la ventana de escaneo. MosaicView controla directamente su escáner (mediante WIA, el sistema de escaneo de Windows): seleccione el dispositivo, la resolución (DPI), el modo de color (color / escala de grises / blanco y negro) y luego haga clic en «Escanear». Un escáner debe estar conectado, encendido y con su controlador instalado en Windows para aparecer en la lista.\n• El último escáner utilizado, la resolución y el modo de color elegidos se recuerdan y se proponen automáticamente de nuevo en el próximo escaneo.\n• Solo se ofrecen el escaneo de página completa y la exportación en JPG, ya que la aplicación ya dispone de todo lo necesario para retocar y convertir la imagen después.\n• La imagen escaneada se añade automáticamente al mosaico, a continuación de las páginas ya presentes. Después puede recortarla, enderezarla, ajustar sus colores, etc., como cualquier otra página del mosaico\n• Esta función controla el escáner directamente, sin pasar por el software del fabricante ni mostrar su propia ventana de configuración.\n• Como un escáner físico solo puede ser controlado por una conexión a la vez, la digitalización solo es posible en un panel a la vez: si hay una ventana de digitalización abierta o un escaneo en curso en un panel, el botón «Escanear» permanece deshabilitado en el otro panel hasta que termine la operación.",
     "straighten": "Enderezar una página",
-    "straighten_content": "Dos métodos para corregir un escaneo torcido, disponibles desde la columna de iconos (clic derecho en el icono «Enderezar» para cambiar de modo), el menú Imágenes, o clic derecho en el mosaico:\n• Enderezado manual: abre un visor dedicado donde traza una línea recta sobre lo que debería ser horizontal o vertical en la imagen; el ángulo de corrección se calcula automáticamente y se aplica a la imagen, con controladores para ajustar la línea con precisión.\n• Enderezado automático: detecta la inclinación por sí solo (sin trazar nada) y endereza directamente la página o páginas seleccionadas; las esquinas vacías creadas por la rotación se rellenan en blanco. Funciona con varias páginas a la vez. Una ventana de resumen muestra cuántas páginas se enderezaron con éxito y enumera aquellas para las que no se pudo detectar una inclinación fiable."
+    "straighten_content": "El enderezado automático (sin trazar nada) está disponible desde la columna de iconos (clic derecho en el icono «Enderezar» para cambiar de modo), el menú Imágenes, o clic derecho en el mosaico: detecta la inclinación por sí solo y endereza directamente la(s) página(s) seleccionada(s); las esquinas vacías creadas por la rotación se rellenan en blanco. Funciona con varias páginas a la vez. Una ventana de resumen indica cuántas páginas se enderezaron con éxito y enumera aquellas en las que no se pudo detectar una inclinación fiable.\n\nEl enderezado manual (trazar una línea de referencia) se realiza desde el visor principal, vea la sección Visor."
   },
   "misc": {
     "file_word": "archivo",

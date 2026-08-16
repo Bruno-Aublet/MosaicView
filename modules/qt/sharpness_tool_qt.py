@@ -577,7 +577,7 @@ class SharpnessViewerMixin:
         entry['bytes'] depuis zéro, donc ce cache n'a pas besoin d'être
         cohérent au-delà de l'aperçu affiché."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_adjustments
+        from modules.qt.image_processing_qt import apply_adjustments
 
         value = self._toolbar._sharpness_panel.value
         if value == 0:
@@ -618,7 +618,7 @@ class SharpnessViewerMixin:
         explicitement, cohérent avec le fait qu'aucune valeur "totale"
         fiable n'existe une fois les pixels réellement modifiés."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_image_adjustments
+        from modules.qt.image_processing_qt import apply_image_adjustments
         from modules.qt.dialogs_qt import MsgDialog
 
         panel = self._toolbar._sharpness_panel
@@ -667,7 +667,7 @@ class SharpnessViewerMixin:
             self._toolbar.refresh_undo_redo_state()
 
         except Exception as e:
-            dlg = MsgDialog(self, "messages.errors.sharpness_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.sharpness_failed.title",
                             "messages.errors.sharpness_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
@@ -711,7 +711,7 @@ class SharpnessViewerMixin:
         skill adjust-sharpness) : à percent == 0, pas d'effet visible même si
         radius/threshold ont bougé, comportement PIL attendu, pas un bug."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_adjustments
+        from modules.qt.image_processing_qt import apply_adjustments
 
         panel = self._toolbar._unsharp_panel
         if panel.percent == 0:
@@ -745,7 +745,7 @@ class SharpnessViewerMixin:
         Les réglettes ne reviennent PAS à leurs valeurs par défaut après ce
         commit, même raison que perform_sharpness()."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_image_adjustments
+        from modules.qt.image_processing_qt import apply_image_adjustments
         from modules.qt.dialogs_qt import MsgDialog
 
         panel = self._toolbar._unsharp_panel
@@ -794,7 +794,7 @@ class SharpnessViewerMixin:
             self._toolbar.refresh_undo_redo_state()
 
         except Exception as e:
-            dlg = MsgDialog(self, "messages.errors.unsharp_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.unsharp_failed.title",
                             "messages.errors.unsharp_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()

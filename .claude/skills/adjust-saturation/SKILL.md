@@ -11,7 +11,7 @@ description: Localiser ou modifier la fonction "Saturation" (formule PIL), migr�
 
 - UI : `saturation_tool_qt.py::_SaturationOptionsPanel` (réglette -100..+100, défaut 0) dans la barre d'outils de `image_viewer_qt.py::ImageViewer`
 - Commit : `saturation_tool_qt.py::SaturationViewerMixin.perform_saturation()`
-- Traitement : `adjustments_processing_qt.py::apply_adjustments()`, bloc luminosité/contraste/netteté/saturation (tout début de fonction, dernier des 4) — moteur de calcul inchangé, partagé, appelé désormais par `saturation_tool_qt.py` au lieu du panneau classique
+- Traitement : `image_processing_qt.py::apply_adjustments()`, bloc luminosité/contraste/netteté/saturation (tout début de fonction, dernier des 4) — moteur de calcul inchangé, partagé, appelé désormais par `saturation_tool_qt.py` au lieu du panneau classique
 
 ## Formule
 

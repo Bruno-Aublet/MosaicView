@@ -41,8 +41,6 @@ Beaucoup de modules plus anciens (undo/redo, fichiers récents, `get_current_the
 
 **Piège** : tout nouveau code qui lit `modules.qt.state.state` directement (au lieu de recevoir un `state` explicite en paramètre) doit être appelé alors que le singleton pointe vers le bon panneau. Si ce n'est pas garanti par le call site, préférer passer `self._state` explicitement plutôt que de compter sur le singleton.
 
-**Exemple additionnel de ce pattern de redirection temporaire** : `PanelWidget._adjustments_callbacks()` (`panel_widget.py:1573`, skill `adjustments-panel`) enveloppe `save_state`/`render_mosaic` dans un `_with_state(fn)` local qui bascule `modules.qt.state.state` vers `panel_state` le temps de l'appel puis restaure l'état précédent — même principe que `_build_menubar_callbacks()`, dupliqué localement plutôt que réutilisé, car le panneau d'ajustements construit son propre petit dict de callbacks au lieu de recevoir le contrat complet du menubar.
-
 ## `MainWindow` : orchestration des deux panneaux
 
 Dans `MosaicView.py` :

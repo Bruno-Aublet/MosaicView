@@ -50,7 +50,6 @@
     "renumber_recommended": "Đánh số lại (được khuyến nghị)",
     "ignore_and_save": "Bỏ qua và lưu",
     "open_without_rename": "Mở mà không đổi tên",
-    "adjustments": "Độ sáng,\nđộ tương phản...",
     "batch_cbr_to_cbz": "Chuyển đổi hàng loạt\n tập CBR sang CBZ",
     "batch_pdf_to_cbz": "Chuyển đổi hàng loạt\n tệp PDF sang CBZ",
     "batch_img_to_cbz": "Chuyển đổi hàng loạt\n ảnh độc lập sang CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Toàn bộ",
     "transparency_tolerance_panel_label": "Dung sai:",
     "transparency_type_slider_tooltip": "Vùng: làm trong suốt vùng màu đồng nhất xung quanh điểm ảnh đã nhấp. Toàn bộ: ảnh hưởng đến mọi điểm ảnh của hình có màu gần với màu đã nhấp",
-    "transparency_tolerance_slider_tooltip": "Khoảng cách màu tối đa được chấp nhận xung quanh điểm ảnh đã nhấp"
+    "transparency_tolerance_slider_tooltip": "Khoảng cách màu tối đa được chấp nhận xung quanh điểm ảnh đã nhấp",
+    "toolbar_color_depth_tooltip": "Do sau mau",
+    "toolbar_color_depth_instruction": "Chon do sau, dieu chinh duoc ap dung ngay lap tuc",
+    "color_depth_panel_restore": "Khoi phuc ban goc",
+    "color_depth_panel_current_format": "Trang nay hien dang o dinh dang {format}.",
+    "toolbar_effects_tooltip": "Hiệu ứng",
+    "toolbar_effects_instruction": "Chọn một hiệu ứng, điều chỉnh sẽ được áp dụng ngay lập tức",
+    "effects_panel_restore": "Khôi phục bản gốc",
+    "toolbar_image_mode_tooltip": "Chế độ hình ảnh",
+    "toolbar_image_mode_instruction": "Chọn một chế độ, điều chỉnh sẽ được áp dụng ngay lập tức",
+    "image_mode_panel_restore": "Khôi phục bản gốc",
+    "toolbar_rotation_tooltip": "Xoay",
+    "toolbar_rotation_instruction": "Xoay hoặc lật trang đang hiển thị"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Lỗi",
         "message": "Không thể áp dụng độ trong suốt."
+      },
+      "color_depth_failed": {
+        "title": "Loi",
+        "message": "Khong the ap dung do sau mau: {error}"
+      },
+      "effect_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng hiệu ứng: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng chế độ hình ảnh: {error}"
+      },
+      "rotation_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng xoay: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Đã phát hiện tên tệp giống hệt nhau. Mặc dù lưu về mặt kỹ thuật là có\nthể, điều này có thể gây ra sự cố đọc trong một số ứng dụng đọc truyện\ntranh (hiển thị không đầy đủ, trang bị thiếu, v.v.).\n\nBạn nên đánh số lại các trang trước khi lưu."
     },
     "adjustments": {
-      "window_title": "Điều chỉnh hình ảnh",
-      "title": "Điều chỉnh cho {count} {word}",
-      "word_image": "hình ảnh",
-      "word_images": "hình ảnh",
-      "apply_button": "Áp dụng",
-      "color_depth_section": "Độ sâu màu",
-      "effects_section": "Hiệu ứng",
-      "sharpness_section": "Độ sắc nét",
-      "depth_unchanged": "Không thay đổi",
       "depth_32bit": "32 bit (RGBA - màu + độ trong suốt)",
       "depth_24bit": "24 bit (RGB - màu)",
       "depth_8bit": "8 bit (bang mau PNG / thang mau xam JPEG)",
       "depth_1bit": "1 bit (đen trắng)",
-      "compression_enable": "Bật nén lại",
-      "effect_none": "Không hiệu ứng",
       "effect_grayscale": "Thang độ xám",
       "effect_sepia": "Màu nâu cổ điển",
       "auto_levels_button": "Điều chỉnh tự động",
-      "reset_button": "Đặt lại",
       "preview_section": "Xem trước",
       "effect_invert": "Đảo ngược màu",
-      "preview_warning": "Bản xem trước có thể khác với kết quả cuối cùng",
-      "image_mode_section": "Chế độ ảnh",
       "image_mode_rgb": "RGB (màu sắc)",
       "image_mode_rgba": "RGBA (màu sắc + trong suốt)",
       "image_mode_l": "L (thang xám)",
@@ -1383,13 +1396,11 @@
     "flatten": "Làm phẳng thư mục",
     "flatten_content": "Nếu kho lưu trữ của bạn chứa thư mục con, hãy sử dụng 'Làm phẳng thư mục' để đưa tất cả ảnh về cùng một cấp.",
     "viewer": "Trình xem",
-    "viewer_content": "Nhấp đúp vào một trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 4 chế độ đọc\n  - Trang đơn: từng trang một\n  - Trang đôi: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Trang đôi liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n  - Webtoon: dành cho ảnh dọc (webcomic), chiều rộng giới hạn 900px để dễ đọc; con lăn chuột cuộn dọc trong trang, rồi chuyển trang khi đến đầu/cuối\n• Con lăn chuột: điều hướng nhanh (cuộn dọc trong trang ở chế độ Webtoon)\n• Ctrl+con lăn hoặc Ctrl+Cộng/Trừ: thu phóng (lên đến 1000% kích thước thực của hình ảnh)\n• Ctrl+0: điều chỉnh thu phóng vừa với cửa sổ\n• Ctrl+1: thu phóng thành 100% (kích thước pixel thực của hình ảnh)\n• Nhấp chuột phải + kéo: di chuyển hình ảnh hiển thị khi vượt quá cửa sổ\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy khung cắt / thoát trình xem\n• Đánh dấu trang: tự động lưu trang hiện tại khi đóng trình xem (trừ trang đầu và trang cuối). Một dải ruy băng đỏ xuất hiện trên hình thu nhỏ tương ứng trong khảm. Khi mở lại lần sau, một thông báo đề nghị quay lại trang này. Tự động xóa ở trang cuối cùng, hoặc thủ công bằng cách nhấp chuột phải trong trình xem.",
+    "viewer_content": "Nhấp đúp vào một trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 4 chế độ đọc\n  - Trang đơn: từng trang một\n  - Trang đôi: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Trang đôi liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n  - Webtoon: dành cho hình ảnh dọc (webcomics), chiều rộng giới hạn ở 900px để dễ đọc; con lăn chuột cuộn dọc trong trang, sau đó chuyển trang khi đến đầu/cuối\n• Con lăn chuột: điều hướng nhanh (cuộn dọc trong trang ở chế độ Webtoon)\n• Ctrl+Con lăn hoặc Ctrl+Cộng/Trừ: thu phóng (lên đến 1000% kích thước thực của ảnh)\n• Ctrl+0: điều chỉnh thu phóng vừa cửa sổ\n• Ctrl+1: thu phóng 100% (kích thước pixel thực của ảnh)\n• Nhấp chuột phải + kéo: di chuyển ảnh đang hiển thị (pan) khi nó vượt quá cửa sổ\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy bản vẽ hiện tại (cắt, làm thẳng, hình dạng…) hoặc thoát trình xem\n• Đánh dấu trang: tự động lưu trang hiện tại khi đóng trình xem (trừ trang đầu/cuối). Một dải ruy băng đỏ xuất hiện trên hình thu nhỏ tương ứng trong mosaic. Khi mở lại, một thông báo đề nghị quay lại trang này. Tự động xóa ở trang cuối, hoặc thủ công qua nhấp chuột phải trong trình xem.\n\nThanh công cụ nổi: di chuột lên phần trên của ảnh để hiển thị nó (tự ẩn sau vài giây). Nhấp vào biểu tượng để kích hoạt công cụ tương ứng:\n• Cắt: vẽ hình chữ nhật, điều chỉnh qua các cạnh, xác nhận\n• Làm thẳng: vẽ một đường trên thứ cần phải nằm ngang/dọc, việc điều chỉnh được áp dụng tự động; nhấp chuột phải vào biểu tượng để chuyển sang làm thẳng tự động (tự phát hiện độ nghiêng, không cần vẽ)\n• Xoay/lật: một cú nhấp xoay hoặc lật trang\n• Nhân bản: Ctrl+nhấp để chọn điểm nguồn, sau đó vẽ với nút chuột giữ để nhân đôi\n• Văn bản: nhấp để đặt một khối văn bản, chọn phông chữ/kích thước/màu sắc\n• Hình dạng: vẽ hình elip, hình chữ nhật, đường thẳng hoặc mũi tên, với các tay cầm để thay đổi kích thước\n• Thanh trượt (độ sắc nét, độ sáng/tương phản, độ bão hòa, loại bỏ màu, nén): kết quả hiển thị trực tiếp khi bạn kéo\n• Cấp độ: điều chỉnh điểm đen/gamma/điểm trắng bằng thanh trượt, hoặc lấy màu trực tiếp từ ảnh bằng ống hút màu\n• Độ trong suốt: nhấp vào một màu trên ảnh để làm cho nó trong suốt\n• Độ sâu màu, Hiệu ứng, Chế độ ảnh: chọn một tùy chọn bằng cách nhấp vào nút radio, áp dụng ngay lập tức\n\nXác nhận bằng nút \"Xác nhận\" khi nó xuất hiện, hoặc Esc để hủy. Mỗi thay đổi tham gia vào lịch sử Hoàn tác/Làm lại thông thường.",
     "join_pages": "Ghép trang",
     "join_pages_content": "Chọn nhiều trang liên tiếp, nhấp chuột phải → 'Ghép các trang đã chọn' để ghép các trang theo chiều ngang hoặc chiều dọc. Định dạng của hình ảnh được tạo ra tương ứng với định dạng của các trang nguồn nếu chúng đều giống nhau, nếu không thì mặc định là PNG. Bạn sẽ có thể chọn xóa hoặc giữ lại các trang gốc.\n\nVị trí của trang mới trong bản khảm:\n• Chế độ đánh số lại đang hoạt động (tự động hoặc thủ công): trang sẽ chiếm vị trí của trang đầu tiên được ghép (vị trí của nó, nếu các trang nguồn bị xóa, hoặc ngay trước nó, nếu chúng được giữ lại), và kích hoạt việc đánh số lại.\n• Chế độ đánh số lại TẮT: trang được thêm vào phía trước bản khảm với tên \"Ghép_xxx\".",
     "split_pages": "Tách trang",
     "split_pages_content": "Để tự động chia trang đôi:\n• Chọn các trang cần tách\n• Nhấp chuột phải → 'Tách trang đã chọn'\n• Chọn hướng (dọc hoặc ngang)",
-    "crop": "Cắt trong trình xem",
-    "crop_content": "Trong trình xem, vẽ hình chữ nhật trên ảnh để xác định vùng cắt:\n• Vẽ hình chữ nhật bằng chuột\n• Thay đổi kích thước bằng cách kéo cạnh hoặc góc\n• Nhấp 'Xác nhận cắt' để áp dụng\n• Cắt được áp dụng cho ảnh hiện tại\n• Phím Esc: hủy khung cắt",
     "shortcuts": "Phím tắt",
     "shortcuts_content": "• Ctrl+Z: Hoàn tác hành động cuối cùng\n• Ctrl+Y: Làm lại hành động đã hoàn tác\n• Ctrl+A: Chọn tất cả các trang\n• Ctrl+I: Đảo ngược lựa chọn\n• Ctrl+C: Sao chép các trang đã chọn\n• Ctrl+X: Cắt các trang đã chọn\n• Ctrl+V: Dán các trang\n• Del: Xóa các trang đã chọn\n• Ctrl+con lăn chuột: Thu phóng (trình xem) / kích thước hình thu nhỏ (khảm) / kích thước biểu tượng (cột biểu tượng)\n• Ctrl+0 (trình xem): Điều chỉnh thu phóng vừa với cửa sổ\n• Ctrl+1 (trình xem): Thu phóng thành 100% (kích thước thực của hình ảnh)\n• Nhấp chuột phải + kéo (trình xem): Di chuyển hình ảnh hiển thị\n• Ctrl+Alt+T: Xuất tất cả hình thu nhỏ đang hiển thị từ khảm\n• F5: Cập nhật hiển thị khảm\n• F11: Chuyển đổi toàn màn hình (thoát bằng F11 hoặc ESC)",
     "dark_mode": "Chế độ tối",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Ngoại lệ: Các tệp tạm thời được sử dụng bởi clipboard Windows (tệp clipboard_XXXXX) được giữ trong 12 giờ sau khi sao chép, để bạn có thể dán chúng ngay cả sau khi đóng ứng dụng. Sau 12 giờ, chúng sẽ tự động bị xóa.",
     "config_log_note": "Các chuyển đổi hàng loạt (PDF sang CBZ và CBR sang CBZ) tạo ra một tệp nhật ký khi xảy ra lỗi. Các tệp này (Log_pdftocbz_.txt và Log_cbrtocbz_.txt) được giữ lại ngay cả sau khi đóng ứng dụng, để có thể xem lại sau này. Chúng chỉ bị xóa bằng nút \"Xóa tệp tạm\" ở trên. Một tệp Log_scan.txt ghi lại theo cách tương tự mỗi lần quét (máy quét được sử dụng, cài đặt, kết quả hoặc lỗi) — hữu ích để chẩn đoán sự cố với máy quét của bạn.",
     "config_clipboard_cleared": "Các tệp clipboard đã được xóa thành công.",
-    "adjust_images": "Điều chỉnh hình ảnh",
-    "adjust_images_content": "Chức năng này cho phép bạn chỉnh sửa hình ảnh trực tiếp trong MosaicView. Bạn có thể điều chỉnh độ sáng, độ tương phản, độ sắc nét, mức độ, độ bão hòa, áp dụng hiệu ứng (đen trắng, sepia, đảo màu), điều chỉnh chất lượng nén, xóa màu, áp dụng độ trong suốt hoặc chuyển đổi sang các độ sâu màu khác nhau. Một số cài đặt có trình xem chuyên dụng cho phép xem kết quả ở độ phân giải đầy đủ trước khi áp dụng. Bản xem trước thu nhỏ hiển thị kết quả theo thời gian thực trong cửa sổ chính.",
     "create_icon": "Tạo biểu tượng",
     "create_icon_content": "MosaicView cho phép bạn tạo các tệp biểu tượng (.ico) từ bất kỳ hình ảnh nào trong bảng ghép.\n• Nhấp chuột phải vào hình ảnh → 'Tạo biểu tượng'\n• Đóng khung vùng mong muốn trong trình xem (biểu tượng bắt buộc phải là hình vuông)\n• Điều chỉnh độ trong suốt nếu cần\n• Xác nhận: tệp .ico được thêm trực tiếp vào bảng ghép\n• Các tệp .ico tự động chứa tất cả các độ phân giải tiêu chuẩn (từ 16×16 đến 256×256)\n• Miễn là có tệp .ico trong bảng ghép, việc lưu vào kho lưu trữ CBZ bị chặn vì định dạng ICO không được các kho lưu trữ này hỗ trợ. Xuất tệp .ico riêng biệt (Ctrl+C rồi dán vào thư mục Windows), sau đó xóa nó khỏi bảng ghép trước khi lưu.",
     "batch_convert": "Chuyển đổi hàng loạt",
@@ -1462,7 +1471,7 @@
     "scan": "Quét một hình ảnh",
     "scan_content": "• Nhấp vào nút \"Quét\" (cột biểu tượng, menu Tệp, hoặc nhấp chuột phải trên bức khảm) để mở cửa sổ quét. MosaicView điều khiển trực tiếp máy quét của bạn (thông qua WIA, hệ thống quét của Windows): chọn thiết bị, độ phân giải (DPI), chế độ màu (màu / thang xám / đen trắng), sau đó nhấp vào \"Quét\". Máy quét phải được cắm điện, bật nguồn và đã cài đặt trình điều khiển trên Windows để xuất hiện trong danh sách.\n• Máy quét, độ phân giải và chế độ màu đã chọn lần cuối sẽ được ghi nhớ và tự động đề xuất lại vào lần quét tiếp theo.\n• Chỉ hỗ trợ quét toàn trang và xuất ra định dạng JPG, vì ứng dụng đã có sẵn mọi thứ cần thiết để chỉnh sửa và chuyển đổi định dạng ảnh sau đó.\n• Hình ảnh đã quét được tự động thêm vào bức khảm, sau các trang đã có sẵn. Sau đó bạn có thể cắt, làm thẳng, điều chỉnh màu sắc, v.v. như bất kỳ trang nào khác của bức khảm\n• Tính năng này điều khiển trực tiếp máy quét, không thông qua phần mềm của nhà sản xuất cũng không hiển thị cửa sổ cấu hình riêng của nó.\n• Vì máy quét vật lý chỉ có thể được điều khiển bởi một kết nối tại một thời điểm, việc quét chỉ có thể thực hiện trên một khung cùng lúc: nếu cửa sổ quét đang mở hoặc đang quét trong một khung, nút \"Quét\" vẫn bị mờ ở khung còn lại cho đến khi thao tác hoàn tất.",
     "straighten": "Làm thẳng một trang",
-    "straighten_content": "Hai cách để sửa bản quét bị lệch, có sẵn từ cột biểu tượng (nhấp chuột phải vào biểu tượng \"Làm thẳng\" để chuyển đổi chế độ), menu Hình ảnh, hoặc nhấp chuột phải vào bố cục:\n• Làm thẳng thủ công: mở một trình xem chuyên dụng nơi bạn vẽ một đường thẳng lên phần cần phải nằm ngang hoặc thẳng đứng trong hình ảnh; góc hiệu chỉnh được tính toán tự động và áp dụng cho hình ảnh, với các tay cầm để tinh chỉnh đường thẳng.\n• Làm thẳng tự động: tự phát hiện độ nghiêng (không cần vẽ gì cả) và làm thẳng trực tiếp trang hoặc các trang đã chọn; các góc trống được tạo ra do xoay sẽ được tô màu trắng. Hoạt động trên nhiều trang cùng lúc. Một cửa sổ tóm tắt hiển thị số trang đã làm thẳng thành công và liệt kê những trang không phát hiện được độ nghiêng đáng tin cậy."
+    "straighten_content": "Làm thẳng tự động (không cần vẽ) có sẵn từ cột biểu tượng (nhấp chuột phải vào biểu tượng \"Làm thẳng\" để chuyển chế độ), menu Hình ảnh, hoặc nhấp chuột phải vào mosaic: nó tự phát hiện độ nghiêng và làm thẳng trực tiếp trang được chọn; các góc trống do xoay tạo ra được lấp đầy bằng màu trắng. Hoạt động trên nhiều trang cùng lúc. Một cửa sổ tóm tắt cho biết bao nhiêu trang đã được làm thẳng thành công và liệt kê những trang không thể phát hiện độ nghiêng đáng tin cậy.\n\nLàm thẳng thủ công (vẽ một đường tham chiếu) được thực hiện từ trình xem chính, xem phần Trình xem."
   },
   "misc": {
     "file_word": "tệp",

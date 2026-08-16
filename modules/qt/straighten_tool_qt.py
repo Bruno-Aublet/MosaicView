@@ -462,7 +462,7 @@ class StraightenViewerMixin:
             entry = state.images_data[self.current_idx]
             original_img = ensure_image_loaded(entry)
             if original_img is None:
-                dlg = MsgDialog(self, "messages.errors.straighten_failed.title",
+                dlg = MsgDialog(self._center_parent, "messages.errors.straighten_failed.title",
                                 "messages.errors.straighten_failed.title")
                 dlg.show_nonmodal()
                 return
@@ -504,7 +504,7 @@ class StraightenViewerMixin:
             self._toolbar.refresh_undo_redo_state()
 
         except Exception:
-            dlg = MsgDialog(self, "messages.errors.straighten_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.straighten_failed.title",
                             "messages.errors.straighten_failed.title")
             dlg.show_nonmodal()
 
@@ -533,7 +533,7 @@ class StraightenViewerMixin:
 
             angle = detect_skew_angle(entry)
             if angle is None or abs(angle) < 0.001:
-                dlg = MsgDialog(self, "messages.warnings.no_skew_detected.title",
+                dlg = MsgDialog(self._center_parent, "messages.warnings.no_skew_detected.title",
                                 "messages.warnings.no_skew_detected.message")
                 dlg.show_nonmodal()
                 return
@@ -566,7 +566,7 @@ class StraightenViewerMixin:
             self._toolbar.refresh_undo_redo_state()
 
         except Exception:
-            dlg = MsgDialog(self, "messages.errors.straighten_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.straighten_failed.title",
                             "messages.errors.straighten_failed.title")
             dlg.show_nonmodal()
 

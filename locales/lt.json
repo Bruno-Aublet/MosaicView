@@ -50,7 +50,6 @@
     "renumber_recommended": "Pernumeruoti (rekomenduojama)",
     "ignore_and_save": "Ignoruoti ir išsaugoti",
     "open_without_rename": "Atidaryti be pervadinimo",
-    "adjustments": "Ryškumas,\nkontrastas ir kt.",
     "batch_cbr_to_cbz": "Paketinis CBR failų\n konvertavimas į CBZ",
     "batch_pdf_to_cbz": "Paketinis PDF failų\n konvertavimas į CBZ",
     "batch_img_to_cbz": "Atskirų vaizdų\n paketo konvertavimas į CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Visuotinis",
     "transparency_tolerance_panel_label": "Tolerancija:",
     "transparency_type_slider_tooltip": "Sritis: padaro skaidrią vienodos spalvos sritį aplink spustelėtą pikselį. Visuotinis: paveikia visus vaizdo pikselius, kurių spalva artima spustelėtajai",
-    "transparency_tolerance_slider_tooltip": "Didžiausias leistinas spalvos atstumas aplink spustelėtą pikselį"
+    "transparency_tolerance_slider_tooltip": "Didžiausias leistinas spalvos atstumas aplink spustelėtą pikselį",
+    "toolbar_color_depth_tooltip": "Spalvu gylis",
+    "toolbar_color_depth_instruction": "Pasirinkite gyli, pakeitimas pritaikomas is karto",
+    "color_depth_panel_restore": "Atkurti originala",
+    "color_depth_panel_current_format": "Sis puslapis siuo metu yra {format} formato.",
+    "toolbar_effects_tooltip": "Efektai",
+    "toolbar_effects_instruction": "Pasirinkite efektą, koregavimas pritaikomas iš karto",
+    "effects_panel_restore": "Atkurti originalą",
+    "toolbar_image_mode_tooltip": "Vaizdo režimas",
+    "toolbar_image_mode_instruction": "Pasirinkite režimą, koregavimas pritaikomas iš karto",
+    "image_mode_panel_restore": "Atkurti originalą",
+    "toolbar_rotation_tooltip": "Pasukimas",
+    "toolbar_rotation_instruction": "Pasukite arba apverskite rodomą puslapį"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Klaida",
         "message": "Nepavyko pritaikyti skaidrumo."
+      },
+      "color_depth_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti spalvu gylio: {error}"
+      },
+      "effect_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti efekto: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti vaizdo režimo: {error}"
+      },
+      "rotation_failed": {
+        "title": "Klaida",
+        "message": "Nepavyko pritaikyti pasukimo: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Aptikti identiški failų pavadinimai. Nors išsaugoti techniškai įmanoma,\ntai gali sukelti skaitymo problemų kai kuriose komiksų skaitymo programose\n(nevisiškas vaizdavimas, trūkstami puslapiai ir kt.).\n\nRekomenduojama pernumeruoti puslapius prieš išsaugant."
     },
     "adjustments": {
-      "window_title": "Vaizdo koregavimai",
-      "title": "Koregavimai {count} {word}",
-      "word_image": "vaizdas",
-      "word_images": "vaizdu",
-      "apply_button": "Taikyti",
-      "color_depth_section": "Spalvu gyl is",
-      "effects_section": "Efektai",
-      "sharpness_section": "Astrumas",
-      "depth_unchanged": "Nekeisti",
       "depth_32bit": "32 bitai (RGBA - spalvos + permatomumas)",
       "depth_24bit": "24 bitai (RGB - spalvos)",
       "depth_8bit": "8 bitai (PNG palete / JPEG pilkos spalvos)",
       "depth_1bit": "1 bitas (juoda-balta)",
-      "compression_enable": "Ijungti pakartotini glaudinima",
-      "effect_none": "Be efekto",
       "effect_grayscale": "Pilku atspalviai",
       "effect_sepia": "Sepija",
       "auto_levels_button": "Automatinis reguliavimas",
-      "reset_button": "Atstatyti",
       "preview_section": "Peržiūra",
       "effect_invert": "Spalvų inversija",
-      "preview_warning": "Peržiūra gali skirtis nuo galutinio rezultato",
-      "image_mode_section": "Vaizdo režimas",
       "image_mode_rgb": "RGB (spalvos)",
       "image_mode_rgba": "RGBA (spalvos + skaidrumas)",
       "image_mode_l": "L (pilki tonai)",
@@ -1383,13 +1396,11 @@
     "flatten": "Aplankų išlyginimas",
     "flatten_content": "Jei jūsų archyve yra poaplankai, naudokite 'Išlyginti aplankus', kad visus vaizdus perkeltumėte į tą patį lygį.",
     "viewer": "Žiūryklė",
-    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte peržiūros priemonę:\n• Klavišai ← →: navigacija tarp puslapių\n• Klavišas D: perjungimas tarp 4 skaitymo režimų\n  - Vienas puslapis: vienas puslapis vienu metu\n  - Dvigubi puslapiai: 1 puslapis atskirai, tada 2-3, 4-5 ir t. t.\n  - Tęstiniai dvigubi puslapiai: 1 puslapis atskirai, tada 2-3, 3-4, 4-5 ir t. t.\n  - Webtoon: vertikaliems paveikslėliams (webcomics), plotis apribotas iki 900px, kad išliktų įskaitomas; pelės ratukas slenka vertikaliai puslapyje, o pasiekus viršų/apačią pakeičia puslapį\n• Pelės ratukas: greita navigacija (vertikalus slinkimas puslapyje Webtoon režimu)\n• Ctrl+ratukas arba Ctrl+plius/minus: mastelio keitimas (iki 1000 % tikrojo vaizdo dydžio)\n• Ctrl+0: pritaikyti mastelį langui\n• Ctrl+1: mastelis 100 % (tikrasis vaizdo pikselių dydis)\n• Dešiniuoju mygtuku spustelėti + tempti: perkelti rodomą vaizdą, kai jis viršija langą\n• Klavišas F11: visas ekranas\n• Dukart spustelėti: perjungti visą ekraną\n• Esc klavišas: atšaukti apkarpymo rėmelį / išeiti iš peržiūros priemonės\n• Žymė: automatiškai išsaugo dabartinį puslapį uždarant peržiūros priemonę (išskyrus pirmą ir paskutinį puslapį). Atitinkamoje mozaikos miniatiūroje rodoma raudona juostelė. Kitą kartą atidarius, pranešimas siūlo grįžti į šį puslapį. Automatiškai ištrinama paskutiniame puslapyje arba rankiniu būdu dešiniuoju pelės mygtuku peržiūros priemonėje.",
+    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte peržiūros priemonę:\n• Klavišai ← →: naršymas tarp puslapių\n• Klavišas D: perjungimas tarp 4 skaitymo režimų\n  - Vienas puslapis: po vieną puslapį\n  - Dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 4-5 ir t. t.\n  - Nenutrūkstami dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 3-4, 4-5 ir t. t.\n  - Webtoon: vertikaliems paveikslėliams (webcomics), plotis apribotas iki 900px įskaitomumui; pelės ratukas slenka puslapį vertikaliai, tada pakeičia puslapį viršuje/apačioje\n• Pelės ratukas: greitas naršymas (vertikalus slinkimas puslapyje Webtoon režimu)\n• Ctrl+ratukas arba Ctrl+Plius/Minus: mastelis (iki 1000% tikrojo vaizdo dydžio)\n• Ctrl+0: pritaikyti mastelį prie lango\n• Ctrl+1: mastelis 100% (tikrasis vaizdo pikselių dydis)\n• Dešinysis paspaudimas + tempimas: rodomo vaizdo perkėlimas (slinkimas), kai jis viršija langą\n• Klavišas F11: viso ekrano režimas\n• Dvigubas spustelėjimas: perjungti viso ekrano režimą\n• Klavišas Esc: atšaukti dabartinį piešimą (apkarpymas, ištiesinimas, forma…) arba išeiti iš peržiūros priemonės\n• Žymė: automatiškai išsaugo dabartinį puslapį uždarant peržiūros priemonę (išskyrus pirmą/paskutinį puslapį). Atitinkamoje miniatiūroje mozaikoje pasirodo raudona juostelė. Vėl atidarius, pranešimas siūlo grįžti į šį puslapį. Automatiškai ištrinama paskutiniame puslapyje, arba rankiniu būdu dešiniuoju paspaudimu peržiūros priemonėje.\n\nPlaukiojanti įrankių juosta: užveskite pelę virš vaizdo viršaus, kad ji atsirastų (po kelių sekundžių ji pati pasislepia). Spustelėkite piktogramą, kad suaktyvintumėte atitinkamą įrankį:\n• Apkarpymas: nubrėžkite stačiakampį, sureguliuokite jį per kraštus, patvirtinkite\n• Ištiesinimas: nubrėžkite liniją ant to, kas turėtų būti horizontalu/vertikalu, korekcija pritaikoma automatiškai; dešiniuoju paspaudimu ant piktogramos perjunkite į automatinį ištiesinimą (aptinka pasvirimą pats, nieko nebrėžiant)\n• Sukimas/atspindėjimas: vienas paspaudimas pasuka arba apverčia puslapį\n• Klonavimas: Ctrl+paspaudimas pasirinkti šaltinio tašką, tada tapykite laikydami pelės mygtuką, kad dubliuotumėte\n• Tekstas: spustelėkite, kad įdėtumėte teksto bloką, pasirinkite šriftą/dydį/spalvą\n• Formos: piešite elipses, stačiakampius, linijas ar rodykles, su rankenėlėmis dydžiui keisti\n• Šliaužikliai (ryškumas, šviesumas/kontrastas, sodrumas, spalvų šalinimas, suspaudimas): rezultatas rodomas tiesiogiai tempiant\n• Lygiai: sureguliuokite juodąjį tašką/gama/baltąjį tašką šliaužikliais, arba paimkite spalvą tiesiai iš vaizdo pipetėmis\n• Skaidrumas: spustelėkite spalvą vaizde, kad ji taptų skaidri\n• Spalvų gylis, Efektai, Vaizdo režimas: pasirinkite parinktį spustelėdami pasirinkimo mygtuką, pritaikoma iš karto\n\nPatvirtinkite mygtuku „Patvirtinti“, kai jis pasirodys, arba Esc atšaukimui. Kiekvienas pakeitimas prisijungia prie įprastos Anuliuoti/Pakartoti istorijos.",
     "join_pages": "Puslapių sujungimas",
     "join_pages_content": "Pasirinkite kelis iš eilės einančius puslapius, dešiniuoju pelės klavišu spustelėkite → 'Sujungti pasirinktus puslapius', kad sujungtumėte puslapius horizontaliai arba vertikaliai. Sukurto vaizdo formatas atitinka šaltinio puslapių formatą, jei jie visi identiški, priešingu atveju pagal numatytuosius nustatymus PNG. Galėsite pasirinkti, ar ištrinti, ar palikti originalius puslapius.\n\nNaujo puslapio vieta mozaikoje:\n• Aktyvus numeravimo iš naujo režimas (automatinis arba rankinis): puslapis užima pirmo sujungto puslapio vietą (jo vietą, jei šaltinio puslapiai ištrinami, arba tiesiai prieš jį, jei jie paliekami), ir suaktyvina numeravimą iš naujo.\n• IŠJUNGTAS numeravimo iš naujo režimas: puslapis pridedamas mozaikos pradžioje pavadinimu \"Sujungimas_xxx\".",
     "split_pages": "Puslapių padalinimas",
     "split_pages_content": "Automatiškai padalinti dvigubus puslapius:\n• Pasirinkite puslapius padalinimui\n• Dešinis pelės mygtukas → 'Padalinti pasirinktus puslapius'\n• Pasirinkite kryptį (vertikali arba horizontali)",
-    "crop": "Apkarpymas žiūryklėje",
-    "crop_content": "Žiūryklėje nubrėžkite stačiakampį ant vaizdo, kad apibrėžtumėte apkarpymo zoną:\n• Nubrėžkite stačiakampį pele\n• Keiskite jo dydį traukdami kraštus ar kampus\n• Spustelėkite 'Patvirtinti apkarpymą', kad pritaikytumėte\n• Apkarpymas pritaikomas dabartiniam vaizdui\n• Klavišas Esc : atšaukti apkarpymo rėmelį",
     "shortcuts": "Klaviatūros spartieji klavišai",
     "shortcuts_content": "• Ctrl+Z: Anuliuoti paskutinį veiksmą\n• Ctrl+Y: Grąžinti anuliuotą veiksmą\n• Ctrl+A: Pasirinkti visus puslapius\n• Ctrl+I: Invertuoti pasirinkimą\n• Ctrl+C: Kopijuoti pasirinktus puslapius\n• Ctrl+X: Iškirpti pasirinktus puslapius\n• Ctrl+V: Įklijuoti puslapius\n• Naikinti: Ištrinti pasirinktus puslapius\n• Ctrl+pelės ratukas: Mastelis (peržiūros priemonė) / miniatiūros dydis (mozaika) / piktogramos dydis (piktogramų stulpelis)\n• Ctrl+0 (peržiūros priemonė): Pritaikyti mastelį langui\n• Ctrl+1 (peržiūros priemonė): Mastelis 100 % (tikrasis vaizdo dydis)\n• Dešiniuoju mygtuku spustelėti + tempti (peržiūros priemonė): Perkelti rodomą vaizdą\n• Ctrl+Alt+T: Eksportuoti visas mozaikoje rodomas miniatiūras\n• F5: Atnaujinti mozaikos rodinį\n• F11: Perjungti visą ekraną (išeiti F11 arba ESC)",
     "dark_mode": "Tamsi tema",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Išimtis: Laikini failai, kuriuos naudoja Windows iškarpinė (clipboard_XXXXX failai), saugomi 12 valandų po kopijavimo, kad galėtumėte juos įklijuoti net uždarius programą. Po 12 valandų jie automatiškai ištrinami.",
     "config_log_note": "Paketiniai konvertavimai (PDF į CBZ ir CBR į CBZ) klaidos atveju sukuria žurnalo failą. Šie failai (Log_pdftocbz_.txt ir Log_cbrtocbz_.txt) išsaugomi net uždarius programą, kad juos būtų galima peržiūrėti vėliau. Jie pašalinami tik naudojant aukščiau esantį mygtuką „Išvalyti laikinuosius failus“. Failas Log_scan.txt taip pat registruoja kiekvieną skenavimą (naudotas skaitytuvas, nustatymai, rezultatas arba klaida) — naudinga diagnozuojant skaitytuvo problemą.",
     "config_clipboard_cleared": "Iškarpinės failai sėkmingai išvalyti.",
-    "adjust_images": "Vaizdų koregavimas",
-    "adjust_images_content": "Ši funkcija leidžia retušuoti vaizdus tiesiogiai MosaicView. Galite keisti ryškumą, kontrastą, ryškumą, lygius, sodrumą, taikyti efektus (juodai baltas, sepija, spalvų inversija), reguliuoti glaudinimo kokybę, šalinti spalvas, taikyti skaidrumą arba konvertuoti į skirtingas spalvų gylius. Kai kuriems nustatymams yra skirtas peržiūros įrankis, leidžiantis pamatyti rezultatą visu skiriamumu prieš taikymą. Miniatiūros peržiūra rodo rezultatą realiuoju laiku pagrindiniame lange.",
     "create_icon": "Sukurti piktogramą",
     "create_icon_content": "MosaicView leidžia kurti piktogramų failus (.ico) iš bet kurio mozaikos vaizdo.\n• Dešiniuoju pelės mygtuku spustelėkite vaizdą → 'Sukurti piktogramą'\n• Apibukite norimo vaizdo sritį peržiūros programoje (piktograma būtinai bus kvadratinė)\n• Prireikus sureguliuokite skaidrumą\n• Patvirtinkite: .ico failas pridedamas tiesiogiai į mozaiką\n• .ico failuose automatiškai yra visos standartinės skiriamosios gebos (nuo 16×16 iki 256×256)\n• Kol mozaikoje yra .ico failas, išsaugojimas CBZ archyve yra užblokuotas, nes ICO formatas nepalaikomas šiuose archyvuose. Eksportuokite .ico failą atskirai (Ctrl+C ir įklijuokite į Windows aplanką), tada prieš išsaugodami ištrinkite jį iš mozaikos.",
     "batch_convert": "Paketinis konvertavimas",
@@ -1462,7 +1471,7 @@
     "scan": "Nuskaityti vaizdą",
     "scan_content": "• Spustelėkite mygtuką „Nuskaityti“ (piktogramų stulpelis, meniu Failas arba dešiniuoju pelės mygtuku spustelėję mozaiką), kad atidarytumėte nuskaitymo langą. „MosaicView“ tiesiogiai valdo jūsų skaitytuvą (naudodama WIA, „Windows“ nuskaitymo sistemą): pasirinkite įrenginį, skiriamąją gebą (DPI), spalvų režimą (spalvota / pilkos spalvos atspalviai / nespalvota), tada spustelėkite „Nuskaityti“. Kad skaitytuvas atsirastų sąraše, jis turi būti prijungtas, įjungtas, o jo tvarkyklė – įdiegta sistemoje „Windows“.\n• Paskutinis naudotas skeneris, raiška ir pasirinktas spalvų režimas įsimenami ir automatiškai pasiūlomi vėl kito skenavimo metu.\n• Siūlomas tik viso puslapio skenavimas ir eksportavimas JPG formatu, nes programoje jau yra viskas, kas reikalinga tolesniam vaizdo retušavimui ir formato konvertavimui.\n• Nuskaitytas vaizdas automatiškai pridedamas prie mozaikos, po jau esamų puslapių. Vėliau galite jį apkirpti, ištiesinti, koreguoti spalvas ir pan., kaip ir bet kurį kitą mozaikos puslapį\n• Ši funkcija tiesiogiai valdo skaitytuvą, nenaudodama gamintojo programinės įrangos ir nerodydama jo paties konfigūracijos lango.\n• Kadangi fizinį skenerį vienu metu gali valdyti tik vienas ryšys, skenuoti galima tik viename skydelyje vienu metu: jei viename skydelyje atidarytas skenavimo langas arba vyksta skenavimas, mygtukas „Skenuoti“ kitame skydelyje lieka pilkas, kol operacija bus baigta.",
     "straighten": "Ištiesinti puslapį",
-    "straighten_content": "Du būdai ištaisyti kreivą skenavimą, pasiekiami iš piktogramų stulpelio (spustelėkite dešiniuoju pelės mygtuku piktogramą „Ištiesinti“, kad pakeistumėte režimą), meniu Vaizdai arba spustelėję dešiniuoju pelės mygtuku mozaiką:\n• Rankinis ištiesinimas: atveria specialią peržiūros priemonę, kurioje nubrėžiate tiesią liniją ant to, kas paveikslėlyje turėtų būti horizontalu ar vertikalu; korekcijos kampas apskaičiuojamas automatiškai ir pritaikomas paveikslėliui, su rankenėlėmis linijai tiksliai suderinti.\n• Automatinis ištiesinimas: pats aptinka nuolydį (nieko nereikia brėžti) ir tiesiogiai ištiesina pasirinktą puslapį ar puslapius; dėl pasukimo atsiradę tušti kampai užpildomi baltai. Veikia su keliais puslapiais vienu metu. Suvestinės lange rodomas sėkmingai ištiesintų puslapių skaičius ir išvardijami tie, kuriems nepavyko aptikti patikimo nuolydžio."
+    "straighten_content": "Automatinis ištiesinimas (nieko nebrėžiant) pasiekiamas iš piktogramų stulpelio (spustelėkite dešiniuoju pelės mygtuku piktogramą „Ištiesinti“, kad pakeistumėte režimą), meniu Vaizdai, arba dešiniuoju paspaudimu ant mozaikos: jis pats aptinka pasvirimą ir tiesiogiai ištiesina pasirinktą puslapį (-ius); dėl pasukimo atsiradę tušti kampai užpildomi baltai. Veikia su keliais puslapiais vienu metu. Suvestinės langas rodo, kiek puslapių buvo sėkmingai ištiesinta, ir išvardija tuos, kuriuose nepavyko aptikti patikimo pasvirimo.\n\nRankinis ištiesinimas (atskaitos linijos brėžimas) atliekamas iš pagrindinės peržiūros priemonės, žr. skyrių Peržiūros priemonė."
   },
   "misc": {
     "file_word": "failas",

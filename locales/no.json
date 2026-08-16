@@ -50,7 +50,6 @@
     "renumber_recommended": "Nummerer på nytt (anbefalt)",
     "ignore_and_save": "Ignorer og lagre",
     "open_without_rename": "Åpne uten å gi nytt navn",
-    "adjustments": "Lysstyrke,\nkontrast osv.",
     "batch_cbr_to_cbz": "Batchkonvertering\n av CBR-filer til CBZ",
     "batch_pdf_to_cbz": "Batchkonvertering\n av PDF-filer til CBZ",
     "batch_img_to_cbz": "Massekonvertering\n av enkeltbilder til CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Globalt",
     "transparency_tolerance_panel_label": "Toleranse:",
     "transparency_type_slider_tooltip": "Område: gjør det ensfargede området rundt den klikkede pikselen gjennomsiktig. Globalt: påvirker alle piksler i bildet med farge nær den klikkede",
-    "transparency_tolerance_slider_tooltip": "Maksimal godtatt fargeavstand rundt den klikkede pikselen"
+    "transparency_tolerance_slider_tooltip": "Maksimal godtatt fargeavstand rundt den klikkede pikselen",
+    "toolbar_color_depth_tooltip": "Fargedybde",
+    "toolbar_color_depth_instruction": "Velg en dybde, justeringen brukes umiddelbart",
+    "color_depth_panel_restore": "Gjenopprett original",
+    "color_depth_panel_current_format": "Denne siden er for øyeblikket i {format}.",
+    "toolbar_effects_tooltip": "Effekter",
+    "toolbar_effects_instruction": "Velg en effekt, justeringen brukes umiddelbart",
+    "effects_panel_restore": "Gjenopprett original",
+    "toolbar_image_mode_tooltip": "Bildemodus",
+    "toolbar_image_mode_instruction": "Velg en modus, justeringen brukes umiddelbart",
+    "image_mode_panel_restore": "Gjenopprett original",
+    "toolbar_rotation_tooltip": "Rotasjon",
+    "toolbar_rotation_instruction": "Roter eller speilvend den viste siden"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Feil",
         "message": "Kunne ikke bruke gjennomsiktighet."
+      },
+      "color_depth_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke fargedybde: {error}"
+      },
+      "effect_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke effekten: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke bildemodusen: {error}"
+      },
+      "rotation_failed": {
+        "title": "Feil",
+        "message": "Kunne ikke bruke rotasjonen: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Identiske filnavn har blitt oppdaget. Selv om lagring er teknisk mulig,\nkan dette forårsake leseproblemer i noen tegneserieleserprogrammer\n(ufullstendig visning, manglende sider, osv.).\n\nDet anbefales å nummerere sidene på nytt før lagring."
     },
     "adjustments": {
-      "window_title": "Bildejusteringer",
-      "title": "Justeringer for {count} {word}",
-      "word_image": "bilde",
-      "word_images": "bilder",
-      "apply_button": "Bruk",
-      "color_depth_section": "Fargedybde",
-      "effects_section": "Effekter",
-      "sharpness_section": "Skarphet",
-      "depth_unchanged": "Ikke endre",
       "depth_32bit": "32 bits (RGBA - farger + gjennomsiktighet)",
       "depth_24bit": "24 bits (RGB - farger)",
       "depth_8bit": "8 bit (PNG-palett / JPEG-gratoneskala)",
       "depth_1bit": "1 bit (sort og hvit)",
-      "compression_enable": "Aktiver rekomprimering",
-      "effect_none": "Ingen effekt",
       "effect_grayscale": "Graatoner",
       "effect_sepia": "Sepia",
       "auto_levels_button": "Automatisk justering",
-      "reset_button": "Tilbakestill",
       "preview_section": "Forhåndsvisning",
       "effect_invert": "Fargeinversjon",
-      "preview_warning": "Forhåndsvisning kan avvike fra sluttresultatet",
-      "image_mode_section": "Bildemodus",
       "image_mode_rgb": "RGB (farger)",
       "image_mode_rgba": "RGBA (farger + gjennomsiktighet)",
       "image_mode_l": "L (gråtoner)",
@@ -1383,13 +1396,11 @@
     "flatten": "Flat ut mapper",
     "flatten_content": "Hvis arkivet ditt inneholder undermapper, bruk 'Flat ut mapper' for å bringe alle bildene til samme nivå.",
     "viewer": "Fremviser",
-    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← →: navigering mellom sider\n• Tast D: bytte mellom 4 lesemodus\n  - Enkeltside: én side om gangen\n  - Dobbeltsider: side 1 alene, deretter 2-3, 4-5 osv.\n  - Kontinuerlige dobbeltsider: side 1 alene, deretter 2-3, 3-4, 4-5 osv.\n  - Webtoon: for loddrette bilder (webcomics), bredden er begrenset til 900px for å holde det lesbart; musehjulet ruller loddrett i siden, og bytter side når topp/bunn er nådd\n• Musehjul: rask navigering (loddrett rulling i siden i Webtoon-modus)\n• Ctrl+hjul eller Ctrl+Pluss/Minus: zoom (opptil 1000 % av bildets faktiske størrelse)\n• Ctrl+0: tilpass zoom til vinduet\n• Ctrl+1: zoom til 100 % (bildets faktiske pikselstørrelse)\n• Høyreklikk + dra: flytt det viste bildet når det overskrider vinduet\n• Tast F11: fullskjerm\n• Dobbeltklikk: veksle fullskjerm\n• Esc-tast: avbryt beskjæringsramme / avslutt fremviseren\n• Bokmerke: lagrer automatisk gjeldende side når fremviseren lukkes (unntatt første og siste side). Et rødt bånd vises på det tilsvarende miniatyrbildet i mosaikken. Ved neste åpning foreslår en melding å gå tilbake til denne siden. Slettes automatisk på siste side, eller manuelt via høyreklikk i fremviseren.",
+    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← →: naviger mellom sider\n• Tast D: bytt mellom 4 lesemoduser\n  - Enkeltside: én side om gangen\n  - Dobbeltsider: side 1 alene, deretter 2-3, 4-5 osv.\n  - Løpende dobbeltsider: side 1 alene, deretter 2-3, 3-4, 4-5 osv.\n  - Webtoon: for vertikale bilder (webcomics), bredde begrenset til 900px for å forbli lesbar; musehjulet ruller vertikalt i siden, bytter deretter side ved topp/bunn\n• Musehjul: rask navigasjon (vertikal rulling i siden i Webtoon-modus)\n• Ctrl+Musehjul eller Ctrl+Pluss/Minus: zoom (opptil 1000% av bildets reelle størrelse)\n• Ctrl+0: tilpass zoom til vinduet\n• Ctrl+1: zoom til 100% (bildets reelle pikselstørrelse)\n• Høyreklikk + dra: flytt det viste bildet (panorer) når det overskrider vinduet\n• Tast F11: fullskjerm\n• Dobbeltklikk: veksle fullskjerm\n• Tast Esc: avbryt gjeldende tegning (beskjæring, retting, form…) eller forlat fremviseren\n• Bokmerke: lagrer automatisk gjeldende side ved lukking (unntatt første/siste side). Et rødt bånd vises på den tilsvarende miniatyren i mosaikken. Ved gjenåpning foreslår en melding å gå tilbake til denne siden. Slettes automatisk ved siste side, eller manuelt via høyreklikk i fremviseren.\n\nFlytende verktøylinje: hold musen over toppen av bildet for å vise den (den skjuler seg selv etter noen sekunder). Klikk på et ikon for å aktivere det tilsvarende verktøyet:\n• Beskjæring: tegn et rektangel, juster det via kantene, bekreft\n• Retting: tegn en linje på det som skal være vannrett/loddrett, korreksjonen brukes automatisk; høyreklikk på ikonet for å bytte til automatisk retting (oppdager skjevheten selv, uten å tegne noe)\n• Rotasjon/speiling: ett klikk roterer eller vender siden\n• Kloning: Ctrl+klikk for å velge kildepunktet, mal deretter med museknappen holdt nede for å duplisere\n• Tekst: klikk for å plassere en tekstblokk, velg skrift/størrelse/farge\n• Former: tegn ellipser, rektangler, linjer eller piler, med håndtak for å endre størrelse\n• Glidebrytere (skarphet, lysstyrke/kontrast, metning, fjern farger, komprimering): resultatet vises direkte mens du drar\n• Nivåer: juster svartpunkt/gamma/hvitpunkt med glidebryterne, eller hent en farge direkte fra bildet med pipettene\n• Gjennomsiktighet: klikk på en farge i bildet for å gjøre den gjennomsiktig\n• Fargedybde, Effekter, Bildemodus: velg et alternativ ved å klikke på en radioknapp, brukt umiddelbart\n\nBekreft med knappen «Bekreft» når den vises, eller Esc for å avbryte. Hver endring føyes til den vanlige Angre/Gjør om-historikken.",
     "join_pages": "Slå sammen sider",
     "join_pages_content": "Velg flere påfølgende sider, høyreklikk → 'Slå sammen valgte sider' for å slå sammen sidene horisontalt eller vertikalt. Formatet på det resulterende bildet samsvarer med kildesidenes format hvis de alle er identiske, ellers PNG som standard. Du vil kunne velge om du vil slette eller beholde de originale sidene.\n\nPlassering av den nye siden i mosaikken:\n• Aktiv omnummereringsmodus (automatisk eller manuell): siden tar plassen til den første sammenslåtte siden (dens plass, hvis kildesidene slettes, eller rett foran den, hvis de beholdes), og utløser en omnummerering.\n• AV-modus for omnummerering: siden legges til fremst i mosaikken under navnet \"Sammenslåing_xxx\".",
     "split_pages": "Del sider",
     "split_pages_content": "For å automatisk dele dobbeltsider:\n• Velg sidene som skal deles\n• Høyreklikk → 'Del valgte sider'\n• Velg retning (vertikal eller horisontal)",
-    "crop": "Beskjæring i fremviseren",
-    "crop_content": "I fremviseren, tegn et rektangel på bildet for å definere et beskjæringsområde:\n• Tegn rektangelet med musen\n• Endre størrelse ved å dra i kantene eller hjørnene\n• Klikk på 'Bekreft beskjæring' for å bruke\n• Beskjæringen brukes på det gjeldende bildet\n• Tast Esc: avbryt beskjæringsramme",
     "shortcuts": "Tastatursnarveier",
     "shortcuts_content": "• Ctrl+Z: Angre siste handling\n• Ctrl+Y: Gjør om angret handling\n• Ctrl+A: Velg alle sider\n• Ctrl+I: Inverter utvalg\n• Ctrl+C: Kopier valgte sider\n• Ctrl+X: Klipp ut valgte sider\n• Ctrl+V: Lim inn sider\n• Del: Slett valgte sider\n• Ctrl+musehjul: Zoom (fremviser) / miniatyrstørrelse (mosaikk) / ikonstørrelse (ikonkolonne)\n• Ctrl+0 (fremviser): Tilpass zoom til vinduet\n• Ctrl+1 (fremviser): Zoom til 100 % (faktisk bildestørrelse)\n• Høyreklikk + dra (fremviser): Flytt det viste bildet\n• Ctrl+Alt+T: Eksporter alle viste miniatyrbilder fra mosaikken\n• F5: Oppdater visningen av mosaikken\n• F11: Veksle fullskjerm (avslutt med F11 eller ESC)",
     "dark_mode": "Mørkt tema",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Unntak: Midlertidige filer brukt av Windows utklippstavle (clipboard_XXXXX-filer) beholdes i 12 timer etter kopiering, slik at du kan lime dem inn selv etter å ha lukket programmet. Etter 12 timer slettes de automatisk.",
     "config_log_note": "Batch-konverteringer (PDF til CBZ og CBR til CBZ) oppretter en loggfil ved en feil. Disse filene (Log_pdftocbz_.txt og Log_cbrtocbz_.txt) beholdes selv etter at programmet er lukket, slik at de kan gjennomgås senere. De fjernes kun via knappen «Tøm midlertidige filer» ovenfor. En fil med navnet Log_scan.txt registrerer på samme måte hver skanning (skanner som ble brukt, innstillinger, resultat eller feil) — nyttig for å diagnostisere et problem med skanneren din.",
     "config_clipboard_cleared": "Utklippstavle-filer er slettet.",
-    "adjust_images": "Bildejustering",
-    "adjust_images_content": "Denne funksjonen lar deg retusje bildene dine direkte i MosaicView. Du kan justere lysstyrke, kontrast, skarphet, nivåer, metning, bruke effekter (svart-hvitt, sepia, fargeomvendt), justere komprimeringskvalitet, fjerne farger, bruke gjennomsiktighet eller konvertere til ulike fargedybder. Noen innstillinger har en dedikert visning som lar deg se resultatet i full oppløsning før du bruker det. En miniatyrforhåndsvisning viser resultatet i sanntid i hovedvinduet.",
     "create_icon": "Lag et ikon",
     "create_icon_content": "MosaicView lar deg lage ikonfiler (.ico) fra et hvilket som helst bilde i mosaikken.\n• Høyreklikk på et bilde → 'Lag et ikon'\n• Avgrens ønsket område i visningsprogrammet (ikonet vil obligatorisk være kvadratisk)\n• Juster gjennomsiktighet om nødvendig\n• Bekreft: .ico-filen legges direkte til mosaikken\n• .ico-filer inneholder automatisk alle standardoppløsninger (fra 16×16 til 256×256)\n• Så lenge det er en .ico-fil i mosaikken, er lagring i et CBZ-arkiv blokkert, da ICO-formatet ikke støttes av disse arkivene. Eksporter .ico-filen separat (Ctrl+C og lim inn i en Windows-mappe), slett den deretter fra mosaikken før du lagrer.",
     "batch_convert": "Batchkonvertering",
@@ -1462,7 +1471,7 @@
     "scan": "Skann et bilde",
     "scan_content": "• Klikk på knappen «Skann» (ikonkolonnen, menyen Fil eller høyreklikk på mosaikken) for å åpne skanningsvinduet. MosaicView styrer skanneren din direkte (via WIA, Windows' skannesystem): velg enheten, oppløsningen (DPI), fargemodus (farge / gråtoner / svart-hvitt), og klikk deretter på «Skann». En skanner må være koblet til, slått på, og driveren installert i Windows for å vises i listen.\n• Den sist brukte skanneren, oppløsningen og fargemodusen du valgte, huskes og foreslås automatisk på nytt neste gang du skanner.\n• Kun full-sideskanning og eksport som JPG tilbys, siden applikasjonen allerede har alt som trengs for bilderetusjering og formatkonvertering etterpå.\n• Det skannede bildet legges automatisk til i mosaikken, etter de allerede eksisterende sidene. Du kan deretter beskjære det, rette det opp, justere fargene osv. som enhver annen side i mosaikken\n• Denne funksjonen styrer skanneren direkte, uten å gå via produsentens programvare eller vise dens eget konfigurasjonsvindu.\n• Siden en fysisk skanner bare kan styres av én tilkobling om gangen, er skanning bare mulig i ett panel om gangen: hvis et skannevindu er åpent eller en skanning pågår i det ene panelet, forblir knappen «Skann» grået ut i det andre panelet til operasjonen er fullført.",
     "straighten": "Rett en side",
-    "straighten_content": "To metoder for å korrigere en skjev skanning, tilgjengelig fra ikonkolonnen (høyreklikk på ikonet \"Rett\" for å bytte modus), Bilder-menyen, eller høyreklikk på mosaikken:\n• Manuell retting: åpner en dedikert visning der du tegner en rett linje på det som skal være horisontalt eller vertikalt i bildet; korreksjonsvinkelen beregnes automatisk og brukes på bildet, med håndtak for finjustering av linjen.\n• Automatisk retting: oppdager hellingen selv (uten å tegne noe) og retter direkte den eller de valgte sidene; tomme hjørner skapt av rotasjonen fylles hvitt. Fungerer på flere sider samtidig. Et oppsummeringsvindu viser hvor mange sider som ble rettet, og lister dem der ingen pålitelig helling ble oppdaget."
+    "straighten_content": "Automatisk retting (uten å tegne noe) er tilgjengelig fra ikonkolonnen (høyreklikk på ikonet «Rett» for å bytte modus), menyen Bilder, eller høyreklikk på mosaikken: den oppdager skjevheten selv og retter direkte den/de valgte siden(e); tomme hjørner skapt av rotasjonen fylles med hvitt. Fungerer på flere sider samtidig. Et oppsummeringsvindu viser hvor mange sider som ble rettet vellykket, og lister dem der ingen pålitelig skjevhet kunne oppdages.\n\nManuell retting (tegne en referanselinje) gjøres fra hovedfremviseren, se avsnittet Fremviser."
   },
   "misc": {
     "file_word": "fil",

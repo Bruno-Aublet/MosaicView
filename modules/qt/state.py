@@ -117,6 +117,53 @@ class AppState:
         # valeur fixe. Voir modules/qt/levels_tool_qt.py::LevelsViewerMixin.
         self.levels_value_by_history_index: dict[tuple[int, int], tuple[int, int, float, int]] = {}
 
+        # Snapshot "avant premier changement" par page pour l'outil
+        # "color_depth" de la barre d'outils flottante (idees.txt #3, 1ère
+        # des 3 dernières fonctions migrées) — clé = image_idx, valeur =
+        # bytes d'origine. Contrairement aux dicts *_value_by_history_index
+        # ci-dessus (indexés par (page, history_index), RESYNCHRONISÉS à
+        # chaque changement de page/undo-redo), celui-ci n'est PAS dérivé de
+        # l'historique : il doit survivre à un changement de page ET à un
+        # Ctrl+Z/Ctrl+Y pendant que l'outil est actif (décision explicite
+        # utilisateur, 2026-08-16 — "sinon il y a un risque de confusion pour
+        # l'utilisateur"). Capturé au premier clic sur une profondeur pour
+        # une page donnée, jamais écrasé tant qu'il existe (un enchaînement
+        # 32->24->8 bits garde le TOUT premier snapshot) ; retiré uniquement
+        # quand "Restaurer l'original" est cliqué pour cette page. Sur state
+        # (pas sur ImageViewer) pour la même raison que les dicts ci-dessus :
+        # survivre à une fermeture/réouverture de la visionneuse tant que le
+        # fichier reste ouvert. Voir modules/qt/color_depth_tool_qt.py.
+        self.color_depth_original_bytes_by_page: dict[int, bytes] = {}
+
+        # Même mécanisme que color_depth_original_bytes_by_page ci-dessus,
+        # pour l'outil "effects" de la barre d'outils flottante (idees.txt
+        # #3, 2e des 3 dernières fonctions migrées, cadrée explicitement sur
+        # le même modèle) — clé = image_idx, valeur = bytes d'origine avant
+        # le tout premier changement d'effet de la session. Survit au
+        # changement de page ET à un Ctrl+Z/Ctrl+Y, retiré uniquement par
+        # "Restaurer l'original". Voir modules/qt/effects_tool_qt.py.
+        self.effect_original_bytes_by_page: dict[int, bytes] = {}
+
+        # Écart par rapport à color_depth : le dernier effet appliqué
+        # (grayscale/sepia/invert) ne laisse aucune trace détectable dans le
+        # mode PIL de l'image (contrairement à la profondeur de couleur), donc
+        # ne peut pas être retrouvé après coup en inspectant l'image — mémorisé
+        # explicitement ici. Clé = image_idx, valeur = clé d'effet ('none' si
+        # absent). Retiré (pop) en même temps que l'entrée ci-dessus quand
+        # "Restaurer l'original" est cliqué. Voir modules/qt/effects_tool_qt.py.
+        self.effect_key_by_page: dict[int, str] = {}
+
+        # Même mécanisme que color_depth_original_bytes_by_page ci-dessus,
+        # pour l'outil "image_mode" de la barre d'outils flottante (idees.txt
+        # #3, 3e et DERNIÈRE des fonctions du panneau Ajustements classique
+        # migrées) — clé = image_idx, valeur = bytes d'origine avant le tout
+        # premier changement de mode de la session. Survit au changement de
+        # page ET à un Ctrl+Z/Ctrl+Y, retiré uniquement par "Restaurer
+        # l'original". Contrairement à effect_key_by_page, pas besoin d'un
+        # dict séparé pour le radio verrouillé : le mode réel de l'image le
+        # fait foi (comme color_depth), voir modules/qt/image_mode_tool_qt.py.
+        self.image_mode_original_bytes_by_page: dict[int, bytes] = {}
+
         # UI State
         self.converting = False  # Flag pour bloquer les événements pendant la conversion
         self.saving_label = None  # Label de progression de sauvegarde CBZ

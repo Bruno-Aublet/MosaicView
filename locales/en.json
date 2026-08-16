@@ -50,7 +50,6 @@
     "renumber_recommended": "Renumber (recommended)",
     "ignore_and_save": "Ignore and save",
     "open_without_rename": "Open without renaming",
-    "adjustments": "Brightness,\ncontrast, etc.",
     "batch_cbr_to_cbz": "Batch convert\n CBR files to CBZ",
     "batch_pdf_to_cbz": "Batch convert\n PDF files to CBZ",
     "batch_img_to_cbz": "Batch conversion\n of standalone images to CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Tolerance:",
     "transparency_type_slider_tooltip": "Area: makes the uniform color zone around the clicked pixel transparent. Global: affects every pixel of the image whose color is close to the clicked one",
-    "transparency_tolerance_slider_tooltip": "Maximum accepted color distance around the clicked pixel"
+    "transparency_tolerance_slider_tooltip": "Maximum accepted color distance around the clicked pixel",
+    "toolbar_color_depth_tooltip": "Color Depth",
+    "toolbar_color_depth_instruction": "Choose a depth, the adjustment applies immediately",
+    "color_depth_panel_restore": "Restore original",
+    "color_depth_panel_current_format": "This page is currently in {format}.",
+    "toolbar_effects_tooltip": "Effects",
+    "toolbar_effects_instruction": "Choose an effect, the adjustment applies immediately",
+    "effects_panel_restore": "Restore original",
+    "toolbar_image_mode_tooltip": "Image Mode",
+    "toolbar_image_mode_instruction": "Choose a mode, the adjustment applies immediately",
+    "image_mode_panel_restore": "Restore original",
+    "toolbar_rotation_tooltip": "Rotation",
+    "toolbar_rotation_instruction": "Rotate or flip the displayed page"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Error",
         "message": "Could not apply transparency."
+      },
+      "color_depth_failed": {
+        "title": "Error",
+        "message": "Unable to apply color depth: {error}"
+      },
+      "effect_failed": {
+        "title": "Error",
+        "message": "Unable to apply the effect: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Error",
+        "message": "Unable to apply the image mode: {error}"
+      },
+      "rotation_failed": {
+        "title": "Error",
+        "message": "Could not apply the rotation: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Identical filenames have been detected. Although saving is technically\npossible, this may cause reading issues in some comic book reader\napplications (incomplete display, missing pages, etc.).\n\nIt is recommended to renumber the pages before saving."
     },
     "adjustments": {
-      "window_title": "Image Adjustments",
-      "title": "Adjustments for {count} {word}",
-      "word_image": "image",
-      "word_images": "images",
-      "apply_button": "Apply",
-      "color_depth_section": "Color Depth",
-      "effects_section": "Effects",
-      "sharpness_section": "Sharpness",
-      "depth_unchanged": "Do not change",
       "depth_32bit": "32 bits (RGBA - colors + transparency)",
       "depth_24bit": "24 bits (RGB - colors)",
       "depth_8bit": "8 bits (PNG palette / JPEG grayscale)",
       "depth_1bit": "1 bit (black and white)",
-      "compression_enable": "Enable recompression",
-      "effect_none": "No effect",
       "effect_grayscale": "Grayscale",
       "effect_sepia": "Sepia",
       "auto_levels_button": "Auto adjustment",
-      "reset_button": "Reset",
       "preview_section": "Preview",
       "effect_invert": "Color inversion",
-      "preview_warning": "Preview may differ from final result",
-      "image_mode_section": "Image mode",
       "image_mode_rgb": "RGB (colors)",
       "image_mode_rgba": "RGBA (colors + transparency)",
       "image_mode_l": "L (grayscale)",
@@ -1383,13 +1396,11 @@
     "flatten": "Flattening directories",
     "flatten_content": "If your archive contains subdirectories, use 'Flatten directories' to bring all images to the same level.",
     "viewer": "Viewer",
-    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 4 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n  - Webtoon: for vertical images (webcomics), width capped at 900px to stay readable; the mouse wheel scrolls vertically within the page, then turns the page once at the top/bottom\n• Mouse wheel: quick navigation (vertical scroll within the page in Webtoon mode)\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom (up to 1000% of the image's real size)\n• Ctrl+0: fit zoom to the window\n• Ctrl+1: zoom to 100% (real pixel size of the image)\n• Right-click + drag: pan the displayed image when it exceeds the window\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel crop frame / exit viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer.",
+    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 4 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n  - Webtoon: for vertical images (webcomics), width capped at 900px to stay readable; the mouse wheel scrolls vertically within the page, then turns the page once at the top/bottom\n• Mouse wheel: quick navigation (vertical scroll within the page in Webtoon mode)\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom (up to 1000% of the image's real size)\n• Ctrl+0: fit zoom to the window\n• Ctrl+1: zoom to 100% (real pixel size of the image)\n• Right-click + drag: pan the displayed image when it exceeds the window\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel the current tool's drawing (crop, straighten, shape…) or exit the viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer.\n\nFloating toolbar: hover over the top of the image to reveal it (it hides itself after a few seconds). Click an icon to activate the matching tool:\n• Crop: draw a rectangle, adjust it by its edges, validate\n• Straighten: draw a line on what should be horizontal/vertical, the correction applies automatically; right-click the icon to switch to automatic straightening (detects the skew on its own, no line to draw)\n• Rotate/flip: one click rotates or flips the page\n• Clone: Ctrl+click to set the source point, then paint with the mouse held down to duplicate\n• Text: click to place a text block, choose font/size/color\n• Shapes: draw ellipses, rectangles, lines or arrows, with handles to resize them\n• Sliders (sharpness, brightness/contrast, saturation, remove colors, compression): the result is shown live as you drag\n• Levels: adjust black point/gamma/white point with sliders, or pick a color directly on the image with the eyedroppers\n• Transparency: click a color on the image to make it transparent\n• Color depth, Effects, Image mode: pick an option by clicking a radio button, applied immediately\n\nValidate with the \"Validate\" button when it appears, or Esc to cancel. Every change joins the usual Undo/Redo history.",
     "join_pages": "Joining pages",
     "join_pages_content": "Select multiple consecutive pages, right-click → 'Join selected pages' to join pages horizontally or vertically. The output image format matches the source pages' format if they are all identical, otherwise PNG by default. You'll be able to choose whether to delete or keep the original pages.\n\nWhere the new page lands in the mosaic:\n• Active renumbering mode (auto or manual): the page takes the place of the first joined page (its place, if source pages are deleted, or right before it, if they're kept), and triggers a renumbering.\n• OFF renumbering mode: the page is added at the front of the mosaic under the name \"Merged_xxx\".",
     "split_pages": "Splitting pages",
     "split_pages_content": "To automatically split double pages:\n• Select the pages to split\n• Right-click → 'Split selected pages'\n• Choose the direction (vertical or horizontal)",
-    "crop": "Cropping in the viewer",
-    "crop_content": "In the viewer, draw a rectangle on the image to define a crop area:\n• Draw the rectangle with the mouse\n• Resize it by dragging the edges or corners\n• Click 'Validate crop' to apply\n• The crop is applied to the current image\n• Esc key: cancel crop frame",
     "shortcuts": "Keyboard shortcuts",
     "shortcuts_content": "• Ctrl+Z: Undo last action\n• Ctrl+Y: Redo undone action\n• Ctrl+A: Select all pages\n• Ctrl+I: Invert selection\n• Ctrl+C: Copy selected pages\n• Ctrl+X: Cut selected pages\n• Ctrl+V: Paste pages\n• Del: Delete selected pages\n• Ctrl+scroll wheel: Zoom (viewer) / thumbnail size (mosaic) / icon size (icon column)\n• Ctrl+0 (viewer): Fit zoom to window\n• Ctrl+1 (viewer): Zoom to 100% (real image size)\n• Right-click + drag (viewer): Pan the displayed image\n• Ctrl+Alt+T: Export all displayed thumbnails from the mosaic\n• F5: Update the mosaic display\n• F11: Toggle fullscreen (exit with F11 or ESC)",
     "dark_mode": "Dark mode",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Exception: Temporary files used by the Windows clipboard (clipboard_XXXXX files) are kept for 12 hours after copying, so you can paste them even after closing the application. After 12 hours, they are automatically deleted.",
     "config_log_note": "Batch conversions (PDF to CBZ and CBR to CBZ) create a log file when an error occurs. These files (Log_pdftocbz_.txt and Log_cbrtocbz_.txt) are kept even after closing the application, so they can be reviewed later. They are only removed by the \"Clear temporary files\" button above. A Log_scan.txt file records every scan the same way (scanner used, settings, result or error) — useful for diagnosing a problem with your scanner.",
     "config_clipboard_cleared": "Clipboard files have been successfully cleared.",
-    "adjust_images": "Image Adjustment",
-    "adjust_images_content": "This function allows you to retouch your images directly in MosaicView. You can adjust brightness, contrast, sharpness, levels, saturation, apply effects (black and white, sepia, color inversion), adjust compression quality, remove colors, apply transparency or convert to different color depths. Some settings have a dedicated viewer allowing you to see the result in full resolution before applying. A thumbnail preview shows the result in real time in the main window.",
     "create_icon": "Create an icon",
     "create_icon_content": "MosaicView allows you to create icon files (.ico) from any image in the mosaic.\n• Right-click on an image → 'Create an icon'\n• Frame the desired area in the viewer (the icon will be square)\n• Adjust transparency if needed\n• Confirm: the .ico file is added directly to the mosaic\n• .ico files automatically contain all standard resolutions (from 16×16 to 256×256)\n• As long as a .ico file is present in the mosaic, saving to a CBZ archive is blocked, as the ICO format is not supported by these archives. Export the .ico file separately (Ctrl+C then paste into a Windows folder), then delete it from the mosaic before saving.",
     "batch_convert": "Batch conversion",
@@ -1462,7 +1471,7 @@
     "scan": "Scan an image",
     "scan_content": "• Click the “Scan” button (icon column, File menu, or right-click on the mosaic) to open the scanning window. MosaicView drives your scanner directly (via WIA, the Windows scanning system): select the device, the resolution (DPI), the color mode (color / grayscale / black and white), then click “Scan”. A scanner must be plugged in, powered on, and its driver installed on Windows to appear in the list.\n• The last scanner used, resolution, and color mode you chose are remembered and automatically proposed again the next time you scan.\n• Only full-page scanning and exporting as JPG are offered, as the application already has everything needed for image editing and format conversion afterwards.\n• The scanned image is automatically added to the mosaic, after the pages already present. You can then crop it, straighten it, adjust its colors, etc. like any other page in the mosaic\n• This feature drives the scanner directly, without going through the manufacturer's software or displaying its own configuration window.\n• Since a physical scanner can only be driven by one connection at a time, scanning is only possible in one panel at a time: if a scan window is open or a scan is in progress in one panel, the \"Scan\" button stays grayed out in the other panel until the operation finishes.",
     "straighten": "Straighten a page",
-    "straighten_content": "Two ways to correct a crooked scan, available from the icon column (right-click the \"Straighten\" icon to switch mode), the Images menu, or right-clicking the mosaic:\n• Manual straightening: opens a dedicated viewer where you draw a straight line on what should be horizontal or vertical in the image; the correction angle is calculated automatically and applied to the image, with draggable handles to fine-tune the line.\n• Automatic straightening: detects the skew on its own (no line to draw) and straightens the selected page(s) directly; empty corners created by the rotation are filled in white. Works on several pages at once. A summary window shows how many pages were straightened successfully and lists the ones where no reliable skew could be detected."
+    "straighten_content": "Automatic straightening (no line to draw) is available from the icon column (right-click the \"Straighten\" icon to switch mode), the Images menu, or right-clicking the mosaic: it detects the skew on its own and straightens the selected page(s) directly; empty corners created by the rotation are filled in white. Works on several pages at once. A summary window shows how many pages were straightened successfully and lists the ones where no reliable skew could be detected.\n\nManual straightening (drawing a reference line) is done from the main viewer, see the Viewer section."
   },
   "misc": {
     "file_word": "file",

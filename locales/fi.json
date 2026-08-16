@@ -50,7 +50,6 @@
     "renumber_recommended": "Numeroi uudelleen (suositeltu)",
     "ignore_and_save": "Ohita ja tallenna",
     "open_without_rename": "Avaa ilman uudelleennimeämistä",
-    "adjustments": "Kirkkaus,\nkontrasti jne.",
     "batch_cbr_to_cbz": "CBR-tiedostojen\n erämuunnos CBZ-muotoon",
     "batch_pdf_to_cbz": "PDF-tiedostojen\n erämuunnos CBZ-muotoon",
     "batch_img_to_cbz": "Yksittäisten kuvien\n erämuunnos CBZ:ksi",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Yleinen",
     "transparency_tolerance_panel_label": "Toleranssi:",
     "transparency_type_slider_tooltip": "Alue: tekee napsautetun pikselin ympärillä olevasta yhtenäisestä väristä läpinäkyvän. Yleinen: vaikuttaa kaikkiin kuvan pikseleihin, joiden väri on lähellä napsautettua",
-    "transparency_tolerance_slider_tooltip": "Suurin hyväksytty väriero napsautetun pikselin ympärillä"
+    "transparency_tolerance_slider_tooltip": "Suurin hyväksytty väriero napsautetun pikselin ympärillä",
+    "toolbar_color_depth_tooltip": "Varisyvyys",
+    "toolbar_color_depth_instruction": "Valitse syvyys, muutos tulee voimaan valittomasti",
+    "color_depth_panel_restore": "Palauta alkuperainen",
+    "color_depth_panel_current_format": "Tama sivu on tallä hetkellä muodossa {format}.",
+    "toolbar_effects_tooltip": "Tehosteet",
+    "toolbar_effects_instruction": "Valitse tehoste, säätö tulee voimaan välittömästi",
+    "effects_panel_restore": "Palauta alkuperäinen",
+    "toolbar_image_mode_tooltip": "Kuvatila",
+    "toolbar_image_mode_instruction": "Valitse tila, säätö tulee voimaan välittömästi",
+    "image_mode_panel_restore": "Palauta alkuperäinen",
+    "toolbar_rotation_tooltip": "Kierto",
+    "toolbar_rotation_instruction": "Kierrä tai peilaa näytettyä sivua"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Virhe",
         "message": "Läpinäkyvyyttä ei voitu soveltaa."
+      },
+      "color_depth_failed": {
+        "title": "Virhe",
+        "message": "Varisyvyytta ei voitu ottaa kayttoon: {error}"
+      },
+      "effect_failed": {
+        "title": "Virhe",
+        "message": "Tehostetta ei voitu käyttää: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Virhe",
+        "message": "Kuvatilaa ei voitu käyttää: {error}"
+      },
+      "rotation_failed": {
+        "title": "Virhe",
+        "message": "Kiertoa ei voitu käyttää: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Identtisiä tiedostonimiä on havaittu. Vaikka tallentaminen on teknisesti\nmahdollista, tämä saattaa aiheuttaa lukuongelmia joissakin sarjakuva-\nlukijasovelluksissa (epätäydellinen näyttö, puuttuvat sivut jne).\n\nOn suositeltavaa numeroida sivut uudelleen ennen tallentamista."
     },
     "adjustments": {
-      "window_title": "Kuvan saadot",
-      "title": "Saadot {count} {word}",
-      "word_image": "kuva",
-      "word_images": "kuvaa",
-      "apply_button": "Kayta",
-      "color_depth_section": "Varisyvyys",
-      "effects_section": "Tehosteet",
-      "sharpness_section": "Terävyys",
-      "depth_unchanged": "Ala muuta",
       "depth_32bit": "32 bittia (RGBA - varit + lapinakyvyys)",
       "depth_24bit": "24 bittia (RGB - varit)",
       "depth_8bit": "8 bittia (PNG-paletti / JPEG-harmaasavyt)",
       "depth_1bit": "1 bitti (mustavalkoinen)",
-      "compression_enable": "Ota kayttoon uudelleenpakkaus",
-      "effect_none": "Ei tehostetta",
       "effect_grayscale": "Harmaasavyt",
       "effect_sepia": "Seepia",
       "auto_levels_button": "Automaattinen säätö",
-      "reset_button": "Nollaa",
       "preview_section": "Esikatselu",
       "effect_invert": "Värien kääntö",
-      "preview_warning": "Esikatselu voi poiketa lopullisesta tuloksesta",
-      "image_mode_section": "Kuvatila",
       "image_mode_rgb": "RGB (värit)",
       "image_mode_rgba": "RGBA (värit + läpinäkyvyys)",
       "image_mode_l": "L (harmaasävyt)",
@@ -1383,13 +1396,11 @@
     "flatten": "Hakemistojen tasoitus",
     "flatten_content": "Jos arkistosi sisältää alikansioita, käytä 'Tasoita hakemistot' tuodaksesi kaikki kuvat samalle tasolle.",
     "viewer": "Katselin",
-    "viewer_content": "Avaa katselin kaksoisnapsauttamalla sivua:\n• Näppäimet ← →: siirtyminen sivujen välillä\n• Näppäin D: vaihda 4 lukutilan välillä\n  - Yksi sivu: yksi sivu kerrallaan\n  - Kaksoissivut: sivu 1 yksin, sitten 2-3, 4-5 jne.\n  - Jatkuvat kaksoissivut: sivu 1 yksin, sitten 2-3, 3-4, 4-5 jne.\n  - Webtoon: pystysuuntaisille kuville (webcomicsit), leveys rajattu 900 pikseliin luettavuuden vuoksi; hiiren rulla vierittää sivua pystysuunnassa ja vaihtaa sivua ylä-/alareunassa\n• Hiiren rulla: nopea siirtyminen (pystyvieritys sivulla Webtoon-tilassa)\n• Ctrl+rulla tai Ctrl+plus/miinus: zoomaus (jopa 1000 % kuvan todellisesta koosta)\n• Ctrl+0: sovita zoomaus ikkunaan\n• Ctrl+1: zoomaus 100 % (kuvan todellinen pikselikoko)\n• Oikea painike + veto: näytetyn kuvan siirtäminen, kun se ylittää ikkunan\n• Näppäin F11: koko näyttö\n• Kaksoisnapsautus: koko näytön vaihto\n• Esc-näppäin: peruuta rajauskehys / poistu katselimesta\n• Kirjanmerkki: tallentaa automaattisesti nykyisen sivun katselinta suljettaessa (paitsi ensimmäinen ja viimeinen sivu). Punainen nauha näkyy vastaavassa pienoiskuvassa mosaiikissa. Seuraavalla avauskerralla viesti ehdottaa paluuta tälle sivulle. Poistetaan automaattisesti viimeisellä sivulla tai manuaalisesti oikealla painikkeella katselimessa.",
+    "viewer_content": "Avaa katselin kaksoisnapsauttamalla sivua:\n• Näppäimet ← →: siirry sivujen välillä\n• Näppäin D: vaihda 4 lukutilan välillä\n  - Yksi sivu: yksi sivu kerrallaan\n  - Kaksoissivut: sivu 1 yksin, sitten 2-3, 4-5 jne.\n  - Jatkuvat kaksoissivut: sivu 1 yksin, sitten 2-3, 3-4, 4-5 jne.\n  - Webtoon: pystysuuntaisille kuville (webcomics), leveys rajattu 900px:ään luettavuuden vuoksi; hiiren rulla vierittää sivua pystysuunnassa, vaihtaa sitten sivua ylä-/alareunassa\n• Hiiren rulla: nopea siirtyminen (pystyvieritys sivulla Webtoon-tilassa)\n• Ctrl+rulla tai Ctrl+Plus/Miinus: zoomaus (jopa 1000% kuvan todellisesta koosta)\n• Ctrl+0: sovita zoomaus ikkunaan\n• Ctrl+1: zoomaus 100% (kuvan todellinen pikselikoko)\n• Hiiren oikea painike + veto: siirrä näytettyä kuvaa (panorointi), kun se ylittää ikkunan\n• Näppäin F11: koko näyttö\n• Kaksoisnapsautus: vaihda koko näyttö\n• Näppäin Esc: peruuta käynnissä oleva piirto (rajaus, suoristus, muoto…) tai poistu katselimesta\n• Kirjanmerkki: tallentaa automaattisesti nykyisen sivun katselinta suljettaessa (paitsi ensimmäinen/viimeinen sivu). Punainen nauha näkyy vastaavassa pienoiskuvassa mosaiikissa. Uudelleen avattaessa viesti ehdottaa paluuta tälle sivulle. Poistuu automaattisesti viimeisellä sivulla, tai manuaalisesti hiiren oikealla painikkeella katselimessa.\n\nKelluva työkalurivi: vie hiiri kuvan yläreunan päälle näyttääksesi sen (se piiloutuu itsestään muutaman sekunnin kuluttua). Napsauta kuvaketta aktivoidaksesi vastaavan työkalun:\n• Rajaus: piirrä suorakulmio, säädä sitä reunoista, vahvista\n• Suoristus: piirrä viiva sille, minkä pitäisi olla vaaka-/pystysuora, korjaus tehdään automaattisesti; hiiren oikea painike kuvakkeella vaihtaa automaattiseen suoristukseen (havaitsee kallistuman itse, ilman piirtämistä)\n• Kierto/peilaus: yksi napsautus kiertää tai kääntää sivun\n• Kloonaus: Ctrl+napsautus valitsee lähdekohdan, maalaa sitten hiiren painike pohjassa monistaaksesi\n• Teksti: napsauta asettaaksesi tekstilohkon, valitse fontti/koko/väri\n• Muodot: piirrä ellipsejä, suorakulmioita, viivoja tai nuolia, kahvoilla koon muuttamiseen\n• Liukusäätimet (terävyys, kirkkaus/kontrasti, kylläisyys, värien poisto, pakkaus): tulos näkyy reaaliajassa vetäessäsi\n• Tasot: säädä mustapiste/gamma/valkopiste liukusäätimillä, tai poimi väri suoraan kuvasta pipeteillä\n• Läpinäkyvyys: napsauta kuvan väriä tehdäksesi siitä läpinäkyvän\n• Värisyvyys, Tehosteet, Kuvatila: valitse vaihtoehto napsauttamalla valintanappia, käytössä välittömästi\n\nVahvista \"Vahvista\"-painikkeella sen ilmestyessä, tai Esc peruuttaaksesi. Jokainen muutos liittyy tavalliseen Kumoa/Tee uudelleen -historiaan.",
     "join_pages": "Sivujen yhdistäminen",
     "join_pages_content": "Valitse useita peräkkäisiä sivuja, napsauta hiiren oikealla painikkeella → 'Yhdistä valitut sivut' yhdistääksesi sivut vaaka- tai pystysuunnassa. Tuotetun kuvan muoto vastaa lähdesivujen muotoa, jos ne ovat kaikki identtisiä, muutoin oletuksena PNG. Voit valita, poistetaanko vai säilytetäänkö alkuperäiset sivut.\n\nUuden sivun sijainti mosaiikissa:\n• Aktiivinen uudelleennumerointitila (automaattinen tai manuaalinen): sivu ottaa ensimmäisen yhdistetyn sivun paikan (sen paikan, jos lähdesivut poistetaan, tai juuri sitä ennen, jos ne säilytetään), ja käynnistää uudelleennumeroinnin.\n• POIS-tila uudelleennumeroinnille: sivu lisätään mosaiikin alkuun nimellä \"Yhdistetty_xxx\".",
     "split_pages": "Sivujen jakaminen",
     "split_pages_content": "Jakaaksesi automaattisesti kaksisivuja:\n• Valitse jaettavat sivut\n• Napsauta hiiren oikealla painikkeella → 'Jaa valitut sivut'\n• Valitse suunta (pysty- tai vaakasuuntainen)",
-    "crop": "Rajaus katselimessa",
-    "crop_content": "Katselimessa piirrä suorakulmio kuvan päälle määritelläksesi rajausalueen:\n• Piirrä suorakulmio hiirellä\n• Muuta kokoa vetämällä reunoista tai kulmista\n• Napsauta 'Vahvista rajaus' käyttääksesi\n• Rajaus kohdistetaan nykyiseen kuvaan\n• Esc-näppäin: peruuta rajausruutu",
     "shortcuts": "Pikanäppäimet",
     "shortcuts_content": "• Ctrl+Z: Kumoa viimeisin toiminto\n• Ctrl+Y: Tee kumottu toiminto uudelleen\n• Ctrl+A: Valitse kaikki sivut\n• Ctrl+I: Käänna valinta\n• Ctrl+C: Kopioi valitut sivut\n• Ctrl+X: Leikkaa valitut sivut\n• Ctrl+V: Liitä sivut\n• Del: Poista valitut sivut\n• Ctrl+hiiren rulla: Zoomaus (katselin) / pienoiskuvan koko (mosaiikki) / kuvakkeen koko (kuvakesarake)\n• Ctrl+0 (katselin): Sovita zoomaus ikkunaan\n• Ctrl+1 (katselin): Zoomaus 100 % (kuvan todellinen koko)\n• Oikea painike + veto (katselin): Näytetyn kuvan siirtäminen\n• Ctrl+Alt+T: Vie kaikki mosaiikissa näytetyt pienoiskuvat\n• F5: Päivitä mosaiikin näkymä\n• F11: Vaihda koko näyttö (poistu F11:llä tai ESC:llä)",
     "dark_mode": "Tumma tila",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Poikkeus: Windows-leikepoydan kaytt amat valikaikaiset tiedostot (clipboard_XXXXX-tiedostot) sailytetaan 12 tuntia kopioinnin jalkeen, jotta voit liittaa ne myos sovelluksen sulkemisen jalkeen. 12 tunnin jalkeen ne poistetaan automaattisesti.",
     "config_log_note": "Erä­muunnokset (PDF CBZ:ksi ja CBR CBZ:ksi) luovat virheen sattuessa lokitiedoston. Nämä tiedostot (Log_pdftocbz_.txt ja Log_cbrtocbz_.txt) säilyvät myös sovelluksen sulkemisen jälkeen, jotta niitä voi tarkastella myöhemmin. Ne poistetaan vain yllä olevalla ”Tyhjennä väliaikaiset tiedostot” -painikkeella. Log_scan.txt-tiedosto tallentaa samalla tavalla jokaisen skannauksen (käytetty skanneri, asetukset, tulos tai virhe) — hyödyllinen skanneriin liittyvän ongelman diagnosoinnissa.",
     "config_clipboard_cleared": "Leikepoydan tiedostot on tyhjennetty onnistuneesti.",
-    "adjust_images": "Kuvien säätö",
-    "adjust_images_content": "Tämän toiminnon avulla voit muokata kuvia suoraan MosaicView'ssa. Voit säätää kirkkautta, kontrastia, terävyyttä, tasoja ja kylläisyyttä, soveltaa tehosteita (mustavalkoinen, seepia, värien kääntäminen), säätää pakkauslaatua, poistaa värejä, soveltaa läpinäkyvyyttä tai muuntaa eri värisyvyyksiin. Joillakin asetuksilla on oma katselin, jolla voit nähdä tuloksen täydessä resoluutiossa ennen käyttöä. Pienoiskuvan esikatselu näyttää tuloksen reaaliajassa pääikkunassa.",
     "create_icon": "Luo kuvake",
     "create_icon_content": "MosaicView mahdollistaa kuvacketiedostojen (.ico) luomisen mistä tahansa mosaiikissa olevasta kuvasta.\n• Napsauta kuvaa hiiren oikealla painikkeella → 'Luo kuvake'\n• Rajaa haluamasi alue katseluohjelmassa (kuvake on pakollisesti neliön muotoinen)\n• Säädä läpinäkyvyyttä tarvittaessa\n• Vahvista: .ico-tiedosto lisätään suoraan mosaiikkiin\n• .ico-tiedostot sisältävät automaattisesti kaikki standardiresoluutiot (16×16–256×256)\n• Niin kauan kuin mosaiikissa on .ico-tiedosto, tallennus CBZ-arkistoon on estetty, koska ICO-muotoa ei tueta näissä arkistoissa. Vie .ico-tiedosto erikseen (Ctrl+C ja liitä Windows-kansioon), poista se sitten mosaiikista ennen tallentamista.",
     "batch_convert": "Erämuunnos",
@@ -1462,7 +1471,7 @@
     "scan": "Skannaa kuva",
     "scan_content": "• Napsauta „Skannaa”-painiketta (kuvakesarake, Tiedosto-valikko tai hiiren oikea painike mosaiikissa) avataksesi skannausikkunan. MosaicView ohjaa skanneriasi suoraan (WIA:n, Windowsin skannausjärjestelmän, kautta): valitse laite, tarkkuus (DPI), väritila (väri / harmaasävy / mustavalkoinen) ja napsauta sitten „Skannaa”. Skannerin täytyy olla kytkettynä, päällä ja sen ohjaimen asennettuna Windowsiin, jotta se näkyy luettelossa.\n• Viimeksi käytetty skanneri, tarkkuus ja valittu väritila muistetaan ja ehdotetaan automaattisesti uudelleen seuraavalla skannauskerralla.\n• Tarjolla on vain koko sivun skannaus ja vienti JPG-muodossa, sillä sovelluksessa on jo kaikki tarvittava kuvan jälkikäsittelyyn ja muodon muuntamiseen.\n• Skannattu kuva lisätään automaattisesti mosaiikkiin jo olemassa olevien sivujen jälkeen. Voit sen jälkeen rajata sitä, suoristaa sen, säätää sen värejä jne. kuten mitä tahansa muuta mosaiikin sivua\n• Tämä toiminto ohjaa skanneria suoraan, käyttämättä valmistajan ohjelmistoa tai näyttämättä sen omaa asetusikkunaa.\n• Koska fyysistä skanneria voi ohjata kerrallaan vain yksi yhteys, skannaus on mahdollista vain yhdessä paneelissa kerrallaan: jos skannausikkuna on auki tai skannaus on käynnissä toisessa paneelissa, ”Skannaa”-painike pysyy harmaana toisessa paneelissa, kunnes toimenpide on valmis.",
     "straighten": "Suorista sivu",
-    "straighten_content": "Kaksi tapaa korjata vino skannaus, käytettävissä kuvakepalkista (napsauta hiiren oikealla painikkeella \"Suorista\"-kuvaketta vaihtaaksesi tilaa), Kuvat-valikosta tai napsauttamalla mosaiikkia hiiren oikealla painikkeella:\n• Manuaalinen suoristus: avaa erillisen katselimen, jossa piirrät suoran viivan sille, mikä kuvassa pitäisi olla vaaka- tai pystysuoraa; korjauskulma lasketaan automaattisesti ja sovelletaan kuvaan, kahvoilla viivan hienosäätöä varten.\n• Automaattinen suoristus: tunnistaa kaltevuuden itse (ilman piirtämistä) ja suoristaa suoraan valitun sivun tai sivut; kierrosta syntyvät tyhjät kulmat täytetään valkoisella. Toimii useille sivuille kerralla. Yhteenvetoikkuna näyttää, kuinka monta sivua suoristettiin onnistuneesti, ja luettelee ne, joiden luotettavaa kaltevuutta ei löytynyt."
+    "straighten_content": "Automaattinen suoristus (ilman piirtämistä) on saatavilla kuvakesarakkeesta (napsauta hiiren oikealla painikkeella \"Suorista\"-kuvaketta vaihtaaksesi tilaa), Kuvat-valikosta tai hiiren oikealla painikkeella mosaiikissa: se havaitsee kallistuman itse ja suoristaa suoraan valitun sivun/sivut; kierrosta syntyneet tyhjät kulmat täytetään valkoisella. Toimii useilla sivuilla kerralla. Yhteenvetoikkuna näyttää, kuinka monta sivua suoristettiin onnistuneesti, ja luettelee ne, joissa luotettavaa kallistumaa ei havaittu.\n\nManuaalinen suoristus (viitteellisen viivan piirtäminen) tehdään pääkatselimesta, katso Katselin-osio."
   },
   "misc": {
     "file_word": "tiedosto",

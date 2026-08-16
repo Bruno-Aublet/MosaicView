@@ -52,7 +52,7 @@ L'image de travail RGBA est une copie figée de `entry['bytes']` capturée au pr
 
 ## Application (`perform_transparency`)
 
-Contrairement à l'ancien mode (chemin d'application séparé de `apply_image_adjustments()`), le nouveau reste dans la même veine mais reste indépendant du pipeline générique de `adjustments_processing_qt.py` — il écrit directement l'image de travail dans `entry['bytes']` :
+Contrairement à l'ancien mode (chemin d'application séparé de `apply_image_adjustments()`), le nouveau reste dans la même veine mais reste indépendant du pipeline générique de `image_processing_qt.py` — il écrit directement l'image de travail dans `entry['bytes']` :
 ```python
 entry["img"] = work_img.copy()
 entry["bytes"] = save_image_to_bytes(entry)
@@ -66,7 +66,6 @@ Logique de flood fill / global / tolérance → `apply_transparency_click` dans 
 ## Références croisées
 
 - `viewers` — vue d'ensemble de la barre d'outils, undo/redo unifié, bouton "Valider"/"Annuler" partagé, blindage anti-fuite de clic des panneaux flottants, curseur pipette (pattern repris tel quel de `levels`).
-- `adjustments-panel` — le panneau Ajustements classique restant (profondeur de couleur, effets, mode d'image) ; la section "Transparence" n'y existe plus.
 - `adjust-levels` — seul autre outil migré avec un vrai geste souris (pipette) ; diffère par le commit immédiat sans bouton "Valider", contrairement à celui-ci.
 - `apply-image-operation` — pattern d'invalidation de caches suivi par `perform_transparency`.
 - `undo-redo` — historique global de l'application ; ce mode y contribue désormais une entrée par page validée, plus d'historique local séparé comme l'ancien viewer.

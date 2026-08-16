@@ -22,7 +22,7 @@ de bornes : réglette 0..100 (pas -100..+100 comme saturation/sharpness) —
 reprend exactement la plage de l'ancien panneau Ajustements classique
 (settings['remove_colors_intensity'], section et panneau annexe retirés le
 2026-08-14 une fois cette migration validée — voir apply_adjustments()
-dans adjustments_processing_qt.py, seul moteur de calcul restant, partagé).
+dans image_processing_qt.py, seul moteur de calcul restant, partagé).
 
 Contrairement au crop/straighten/clone/texte, cet outil n'a AUCUN overlay
 interactif ni geste souris sur le canvas : c'est une réglette avec preview
@@ -288,7 +288,7 @@ class RemoveColorsViewerMixin:
         (image_viewer_qt.py) l'utilise à la place de ensure_image_loaded(entry)
         quand il est défini pour la page courante."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_adjustments
+        from modules.qt.image_processing_qt import apply_adjustments
 
         value = self._toolbar._remove_colors_panel.value
         if value == 0:
@@ -312,8 +312,8 @@ class RemoveColorsViewerMixin:
         """Relâchement du slider ou validation de la spinbox : commit réel de
         la suppression des couleurs dans entry['bytes'] (pattern skill
         apply-image-operation, variante A complète) — réutilise
-        apply_image_adjustments() (adjustments_processing_qt.py), déjà
-        utilisée par le panneau Ajustements pour "Appliquer à la page
+        apply_image_adjustments() (image_processing_qt.py), déjà utilisée
+        par l'ancien panneau Ajustements pour "Appliquer à la page
         courante". Devient sa propre entrée d'historique, comme un commit de
         brightness (pas de bouton "Valider" séparé, voir docstring de module).
 
@@ -326,7 +326,7 @@ class RemoveColorsViewerMixin:
         (le calcul repart de entry['bytes'] courant à chaque fois, pas d'un
         état "absolu" mémorisé)."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_image_adjustments
+        from modules.qt.image_processing_qt import apply_image_adjustments
         from modules.qt.dialogs_qt import MsgDialog
 
         panel = self._toolbar._remove_colors_panel
@@ -377,7 +377,7 @@ class RemoveColorsViewerMixin:
             # appliquée, même principe que perform_brightness().
 
         except Exception as e:
-            dlg = MsgDialog(self, "messages.errors.remove_colors_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.remove_colors_failed.title",
                             "messages.errors.remove_colors_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()

@@ -28,7 +28,7 @@ _load_icon). Pas généralisé aux autres icônes de la barre : elles ont déjà
 contraste suffisant par leur propre couleur/contour.
 """
 
-from PIL import Image
+from PIL import Image, ImageEnhance
 
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QFrame, QLabel
 from PySide6.QtCore import Qt, QTimer
@@ -39,6 +39,7 @@ from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.overlay_tooltip_qt import OverlayTooltip
 from modules.qt.straighten_tool_qt import _StraightenAnglePanel
+from modules.qt.rotation_tool_qt import _RotationOptionsPanel
 from modules.qt.clone_tool_qt import _CloneOptionsPanel
 from modules.qt.text_tool_qt import _TextOptionsPanel
 from modules.qt.sharpness_tool_qt import _SharpnessOptionsPanel, _UnsharpOptionsPanel
@@ -49,6 +50,9 @@ from modules.qt.compression_tool_qt import _CompressionOptionsPanel, is_compress
 from modules.qt.levels_tool_qt import _LevelsOptionsPanel
 from modules.qt.shapes_tool_qt import _ShapeOptionsPanel
 from modules.qt.transparency_tool_qt import _TransparencyOptionsPanel
+from modules.qt.color_depth_tool_qt import _ColorDepthOptionsPanel
+from modules.qt.effects_tool_qt import _EffectsOptionsPanel
+from modules.qt.image_mode_tool_qt import _ImageModeOptionsPanel
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -69,6 +73,20 @@ def _recolor_for_dark(pil_img: Image.Image, rgb_hex: str) -> Image.Image:
     color = QColor(rgb_hex)
     solid = Image.new("RGBA", pil_img.size, (color.red(), color.green(), color.blue(), 255))
     return Image.merge("RGBA", (*solid.split()[:3], a))
+
+
+def _brighten_for_dark(pil_img: Image.Image, factor: float = 1.6) -> Image.Image:
+    """Éclaircit les canaux RGB (ImageEnhance.Brightness, même mécanisme que
+    icon_toolbar_qt.py::_to_grayscale) SANS désaturer ni remplacer la teinte —
+    contrairement à _recolor_for_dark (icônes noir plein, une seule couleur de
+    remplacement adaptée), utilisé pour des icônes en deux tons d'une même
+    teinte (ex. BTN_Rotate_Left/Right.png, violet foncé sur fond sombre, peu
+    lisibles en mode sombre) où un simple remplacement uni aplatirait le
+    dessin. Canal alpha conservé tel quel."""
+    r, g, b, a = pil_img.convert("RGBA").split()
+    rgb = Image.merge("RGB", (r, g, b))
+    brightened = ImageEnhance.Brightness(rgb).enhance(factor)
+    return Image.merge("RGBA", (*brightened.split(), a))
 
 
 class _ToolButton(QLabel):
@@ -308,6 +326,17 @@ class _ViewerToolbar(QWidget):
         layout.addWidget(straighten_btn)
         self._buttons["straighten"] = straighten_btn
 
+        # Icône "rotation" (idees.txt #3, ajoutée après la fin du chantier de
+        # fusion des 16 outils) : positionnée entre redressage et clonage
+        # (demande explicite utilisateur). Icône fixe, PAS de bi-mode, PAS de
+        # grisage conditionnel — 4 boutons d'action instantanée dans son
+        # panneau flottant, aucune nouvelle logique métier (réutilise
+        # rotate_entry_data/flip_entry_data telles quelles, voir
+        # rotation_tool_qt.py).
+        rotation_btn = _ToolButton(self, "BTN_Rotation.png", tool_id="rotation")
+        layout.addWidget(rotation_btn)
+        self._buttons["rotation"] = rotation_btn
+
         clone_btn = _ToolButton(self, "BTN_Clone_Zone.png", tool_id="clone")
         layout.addWidget(clone_btn)
         self._buttons["clone"] = clone_btn
@@ -392,6 +421,40 @@ class _ViewerToolbar(QWidget):
         layout.addWidget(transparency_btn)
         self._buttons["transparency"] = transparency_btn
 
+        # 14e outil migré, 1er des 3 dernières fonctions du panneau
+        # Ajustements classique (idees.txt #3, décision explicite utilisateur
+        # 2026-08-16) : icône fixe, PAS de bi-mode, PAS de grisage
+        # conditionnel (contrairement à compression/transparency — la
+        # profondeur de couleur s'applique quel que soit le format source).
+        # Comportement de verrouillage inédit parmi les outils déjà migrés —
+        # voir color_depth_tool_qt.py::_ColorDepthOptionsPanel.
+        color_depth_btn = _ToolButton(self, "BTN_Color_Depth.png", tool_id="color_depth")
+        layout.addWidget(color_depth_btn)
+        self._buttons["color_depth"] = color_depth_btn
+
+        # 15e outil migré, 2e des 3 dernières fonctions du panneau
+        # Ajustements classique (idees.txt #3, cadré explicitement sur le
+        # même modèle que color_depth, décision utilisateur 2026-08-16) :
+        # icône fixe, PAS de bi-mode, PAS de grisage conditionnel. Même
+        # comportement de verrouillage que color_depth, SAUF que le radio
+        # verrouillé est mémorisé par page (state.effect_key_by_page) plutôt
+        # que dérivé du mode PIL réel — voir effects_tool_qt.py.
+        effects_btn = _ToolButton(self, "BTN_Effects.png", tool_id="effects")
+        layout.addWidget(effects_btn)
+        self._buttons["effects"] = effects_btn
+
+        # 16e outil migré, 3e et DERNIÈRE des fonctions du panneau
+        # Ajustements classique (idees.txt #3, cadré explicitement sur le
+        # même modèle que color_depth, décision utilisateur 2026-08-16) :
+        # icône fixe, PAS de bi-mode, PAS de grisage conditionnel. Même
+        # comportement de verrouillage que color_depth (dérivé du mode PIL
+        # réel de l'image, contrairement à effects) — voir
+        # image_mode_tool_qt.py. AdjustmentsDialog/adjustments_dialog_qt.py a
+        # été supprimée en totalité une fois cet outil validé (2026-08-16).
+        image_mode_btn = _ToolButton(self, "BTN_Image_Mode.png", tool_id="image_mode")
+        layout.addWidget(image_mode_btn)
+        self._buttons["image_mode"] = image_mode_btn
+
         self._separator = QFrame()
         self._separator.setFrameShape(QFrame.VLine)
         layout.addWidget(self._separator)
@@ -404,6 +467,7 @@ class _ViewerToolbar(QWidget):
         self._overlay_tip = OverlayTooltip(self.window())
         self._overlay_tip.track(crop_btn)
         self._overlay_tip.track(straighten_btn)
+        self._overlay_tip.track(rotation_btn)
         self._overlay_tip.track(clone_btn)
         self._overlay_tip.track(text_btn)
         self._overlay_tip.track(sharpness_btn)
@@ -414,6 +478,9 @@ class _ViewerToolbar(QWidget):
         self._overlay_tip.track(levels_btn)
         self._overlay_tip.track(shapes_btn)
         self._overlay_tip.track(transparency_btn)
+        self._overlay_tip.track(color_depth_btn)
+        self._overlay_tip.track(effects_btn)
+        self._overlay_tip.track(image_mode_btn)
         self._overlay_tip.track(self._undo_btn)
         self._overlay_tip.track(self._redo_btn)
 
@@ -424,6 +491,10 @@ class _ViewerToolbar(QWidget):
         # Panneau flottant de la spinbox d'angle (outil straighten uniquement,
         # affiché seulement quand un trait existe — voir _StraightenAnglePanel).
         self._angle_panel = _StraightenAnglePanel(viewer)
+
+        # Panneau flottant des 4 boutons de rotation/miroir (outil rotation
+        # uniquement, voir _RotationOptionsPanel).
+        self._rotation_panel = _RotationOptionsPanel(viewer)
 
         # Panneau flottant des réglages du tampon (outil clone uniquement,
         # voir _CloneOptionsPanel).
@@ -471,6 +542,20 @@ class _ViewerToolbar(QWidget):
         # transparency uniquement, voir _TransparencyOptionsPanel).
         self._transparency_panel = _TransparencyOptionsPanel(viewer)
 
+        # Panneau flottant des 5 radios (Restaurer l'original + 4
+        # profondeurs) (outil color_depth uniquement, voir
+        # _ColorDepthOptionsPanel).
+        self._color_depth_panel = _ColorDepthOptionsPanel(viewer)
+
+        # Panneau flottant des 4 radios (Restaurer l'original + Noir et
+        # blanc/Sépia/Inversion) (outil effects uniquement, voir
+        # _EffectsOptionsPanel).
+        self._effects_panel = _EffectsOptionsPanel(viewer)
+
+        # Panneau flottant des 8 radios (Restaurer l'original + les 7 modes)
+        # (outil image_mode uniquement, voir _ImageModeOptionsPanel).
+        self._image_mode_panel = _ImageModeOptionsPanel(viewer)
+
         # Icône sharpness/unsharp synchronisée sur le mode persisté dès
         # l'ouverture (state.sharpness_mode restauré par PanelWidget.__init__
         # depuis la config avant la création de la visionneuse).
@@ -501,6 +586,7 @@ class _ViewerToolbar(QWidget):
         self._undo_btn._apply_style()
         self._redo_btn._apply_style()
         self._angle_panel._apply_theme()
+        self._rotation_panel._apply_theme()
         self._clone_panel._apply_theme()
         self._text_panel._apply_theme()
         self._sharpness_panel._apply_theme()
@@ -512,6 +598,9 @@ class _ViewerToolbar(QWidget):
         self._levels_panel._apply_theme()
         self._shapes_panel._apply_theme()
         self._transparency_panel._apply_theme()
+        self._color_depth_panel._apply_theme()
+        self._effects_panel._apply_theme()
+        self._image_mode_panel._apply_theme()
         self._overlay_tip.apply_theme()
 
     def retranslate(self):
@@ -522,6 +611,11 @@ class _ViewerToolbar(QWidget):
         self._overlay_tip.track(self._buttons["crop"], crop_tip)
         self._overlay_tip.track(self._buttons["straighten"], "")
         self._update_straighten_tooltip()
+        rotation_tip = (
+            f"<b>{_('viewer.toolbar_rotation_tooltip')}</b><br>"
+            f"{_('viewer.toolbar_rotation_instruction')}"
+        )
+        self._overlay_tip.track(self._buttons["rotation"], rotation_tip)
         clone_tip = (
             f"<b>{_('viewer.toolbar_clone_tooltip')}</b><br>"
             f"{_('dialogs.clone_zone_viewer.instruction')}"
@@ -568,9 +662,25 @@ class _ViewerToolbar(QWidget):
         )
         self._overlay_tip.track(self._buttons["shapes"], shapes_tip)
         self._update_transparency_tooltip()
+        color_depth_tip = (
+            f"<b>{_('viewer.toolbar_color_depth_tooltip')}</b><br>"
+            f"{_('viewer.toolbar_color_depth_instruction')}"
+        )
+        self._overlay_tip.track(self._buttons["color_depth"], color_depth_tip)
+        effects_tip = (
+            f"<b>{_('viewer.toolbar_effects_tooltip')}</b><br>"
+            f"{_('viewer.toolbar_effects_instruction')}"
+        )
+        self._overlay_tip.track(self._buttons["effects"], effects_tip)
+        image_mode_tip = (
+            f"<b>{_('viewer.toolbar_image_mode_tooltip')}</b><br>"
+            f"{_('viewer.toolbar_image_mode_instruction')}"
+        )
+        self._overlay_tip.track(self._buttons["image_mode"], image_mode_tip)
         self._overlay_tip.track(self._undo_btn, _("viewer.toolbar_undo_tooltip"))
         self._overlay_tip.track(self._redo_btn, _("viewer.toolbar_redo_tooltip"))
         self._angle_panel.retranslate()
+        self._rotation_panel.retranslate()
         self._clone_panel.retranslate()
         self._text_panel.retranslate()
         self._sharpness_panel.retranslate()
@@ -582,6 +692,9 @@ class _ViewerToolbar(QWidget):
         self._levels_panel.retranslate()
         self._shapes_panel.retranslate()
         self._transparency_panel.retranslate()
+        self._color_depth_panel.retranslate()
+        self._effects_panel.retranslate()
+        self._image_mode_panel.retranslate()
 
     # ── Undo/Redo ─────────────────────────────────────────────────────────────
 
@@ -647,6 +760,7 @@ class _ViewerToolbar(QWidget):
         # invisible/mal placé au premier
         # clic sur l'icône, bug vécu à l'origine sur "shapes" seul).
         self._angle_panel.set_visible_for_tool(tool_id)
+        self._rotation_panel.set_visible_for_tool(tool_id)
         self._clone_panel.set_visible_for_tool(tool_id)
         # Le clonage n'a pas de "travail en attente de validation" à conserver
         # visuellement en gris (chaque coup de tampon est déjà appliqué à
@@ -735,6 +849,26 @@ class _ViewerToolbar(QWidget):
         # (persistance du travail non validé par page, idees.txt #3, décision
         # explicite 2026-08-15) — set_visible_for_tool désarme seulement une
         # pipette restée armée (même principe que _LevelsOptionsPanel).
+        self._color_depth_panel.set_visible_for_tool(tool_id)
+        if tool_id == "color_depth":
+            # Resynchronise le panneau sur l'état RÉEL de la page courante à
+            # chaque sélection de l'outil (idees.txt #3, décision explicite
+            # utilisateur 2026-08-16) : le snapshot/verrouillage survit au
+            # changement d'outil (pas de reset ici, contrairement aux 6
+            # modes preview-slider), seul l'affichage doit être à jour.
+            self._viewer._sync_color_depth_panel()
+        self._effects_panel.set_visible_for_tool(tool_id)
+        if tool_id == "effects":
+            # Même principe que color_depth ci-dessus : le snapshot/état
+            # mémorisé (state.effect_original_bytes_by_page/effect_key_by_page)
+            # survit au changement d'outil, seul l'affichage doit être à jour.
+            self._viewer._sync_effects_panel()
+        self._image_mode_panel.set_visible_for_tool(tool_id)
+        if tool_id == "image_mode":
+            # Même principe que color_depth ci-dessus : le snapshot/
+            # verrouillage survit au changement d'outil, seul l'affichage
+            # doit être à jour.
+            self._viewer._sync_image_mode_panel()
         # Bouton "Valider" partagé (crop/straighten/text/shapes/transparency) : affiché
         # (vert/actif ou gris/inactif selon _validate_tool_has_work) pour ces
         # 4 outils, masqué pour tout autre — appelé ICI, tout à la fin, une
@@ -935,6 +1069,7 @@ class _ViewerToolbar(QWidget):
         # à aucun état de réglage en cours (set_visible_for_tool sait déjà
         # si ce panneau doit être visible pour l'outil actif).
         self._angle_panel.set_visible_for_tool(self.active_tool)
+        self._rotation_panel.set_visible_for_tool(self.active_tool)
         self._clone_panel.set_visible_for_tool(self.active_tool)
         self._text_panel.set_visible_for_tool(self.active_tool)
         self._sharpness_panel.set_visible_for_tool(self.active_tool)
@@ -946,6 +1081,9 @@ class _ViewerToolbar(QWidget):
         self._levels_panel.set_visible_for_tool(self.active_tool)
         self._shapes_panel.set_visible_for_tool(self.active_tool)
         self._transparency_panel.set_visible_for_tool(self.active_tool)
+        self._color_depth_panel.set_visible_for_tool(self.active_tool)
+        self._effects_panel.set_visible_for_tool(self.active_tool)
+        self._image_mode_panel.set_visible_for_tool(self.active_tool)
         # Le bouton "Valider" partagé (crop/straighten/text/shapes/transparency) réapparaît
         # ICI, et UNIQUEMENT ici (mécanisme unique de réapparition — voir
         # image_viewer_qt.py::_update_validate_btn_state pour la règle
@@ -965,6 +1103,7 @@ class _ViewerToolbar(QWidget):
         zone haute (voir show_and_schedule_hide)."""
         self.hide()
         self._angle_panel.hide()
+        self._rotation_panel.hide()
         self._clone_panel.hide()
         self._text_panel.hide()
         self._sharpness_panel.hide()
@@ -976,6 +1115,9 @@ class _ViewerToolbar(QWidget):
         self._levels_panel.hide()
         self._shapes_panel.hide()
         self._transparency_panel.hide()
+        self._color_depth_panel.hide()
+        self._effects_panel.hide()
+        self._image_mode_panel.hide()
         # Le bouton "Valider" partagé disparaît ICI, et UNIQUEMENT ici
         # (mécanisme unique de masquage, symétrique de show_and_schedule_hide
         # — voir image_viewer_qt.py::_update_validate_btn_state pour la règle
@@ -1032,12 +1174,15 @@ class _ViewerToolbar(QWidget):
         # 3s même en restant dessus (diagnostiqué 2026-08-14, logs horodatés).
         # Laisser le panneau gérer entièrement son propre état pendant qu'il
         # a la souris.
-        if (self._angle_panel.underMouse() or self._clone_panel.underMouse()
+        if (self._angle_panel.underMouse() or self._rotation_panel.underMouse()
+                or self._clone_panel.underMouse()
                 or self._text_panel.underMouse() or self._sharpness_panel.underMouse()
                 or self._unsharp_panel.underMouse() or self._brightness_panel.underMouse()
                 or self._saturation_panel.underMouse() or self._remove_colors_panel.underMouse()
                 or self._compression_panel.underMouse() or self._levels_panel.underMouse()
-                or self._shapes_panel.underMouse() or self._transparency_panel.underMouse()):
+                or self._shapes_panel.underMouse() or self._transparency_panel.underMouse()
+                or self._color_depth_panel.underMouse() or self._effects_panel.underMouse()
+                or self._image_mode_panel.underMouse()):
             return
         in_hover_zone = pos_y <= canvas_height * self.HOVER_ZONE_RATIO
         if in_hover_zone:

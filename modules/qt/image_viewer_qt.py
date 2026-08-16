@@ -28,6 +28,7 @@ from modules.qt.page_detection import compute_reference_ratio
 # jamais dans ce fichier (CLAUDE.md, fusion des visionneuses idees.txt #3).
 from modules.qt.crop_tool_qt import CropCanvasMixin, CropViewerMixin
 from modules.qt.straighten_tool_qt import StraightenCanvasMixin, StraightenViewerMixin
+from modules.qt.rotation_tool_qt import RotationCanvasMixin, RotationViewerMixin
 from modules.qt.clone_tool_qt import CloneCanvasMixin, CloneViewerMixin
 from modules.qt.text_tool_qt import TextCanvasMixin, TextViewerMixin
 from modules.qt.sharpness_tool_qt import SharpnessCanvasMixin, SharpnessViewerMixin
@@ -42,6 +43,9 @@ from modules.qt.shapes_tool_qt import ShapeCanvasMixin, ShapeViewerMixin
 from modules.qt.transparency_tool_qt import (
     TransparencyCanvasMixin, TransparencyViewerMixin, is_transparency_supported_entry,
 )
+from modules.qt.color_depth_tool_qt import ColorDepthCanvasMixin, ColorDepthViewerMixin
+from modules.qt.effects_tool_qt import EffectsCanvasMixin, EffectsViewerMixin
+from modules.qt.image_mode_tool_qt import ImageModeCanvasMixin, ImageModeViewerMixin
 # La barre d'outils elle-même (composant transversal, pas un outil) — même
 # principe de séparation, voir viewer_toolbar_qt.py.
 from modules.qt.viewer_toolbar_qt import _ViewerToolbar
@@ -154,10 +158,11 @@ class _CancelButton(QPushButton):
 # Canvas de visionneuse (zone noire avec image centrée + rubber-band crop)
 # ─────────────────────────────────────────────────────────────────────────────
 
-class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, TextCanvasMixin,
-                     SharpnessCanvasMixin, BrightnessCanvasMixin, SaturationCanvasMixin,
+class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin, CloneCanvasMixin,
+                     TextCanvasMixin, SharpnessCanvasMixin, BrightnessCanvasMixin, SaturationCanvasMixin,
                      RemoveColorsCanvasMixin, CompressionCanvasMixin, LevelsCanvasMixin,
-                     ShapeCanvasMixin, TransparencyCanvasMixin, QLabel):
+                     ShapeCanvasMixin, TransparencyCanvasMixin, ColorDepthCanvasMixin,
+                     EffectsCanvasMixin, ImageModeCanvasMixin, QLabel):
     """
     QLabel utilisé comme zone d'affichage de l'image.
     Gère :
@@ -226,6 +231,11 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         # jamais migrer le code d'un outil dans image_viewer_qt.py).
         self._init_straighten_state()
 
+        # État de l'outil "rotation" (voir rotation_tool_qt.py::
+        # RotationCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # jamais migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_rotation_state()
+
         # État de l'outil "clone" (voir clone_tool_qt.py::CloneCanvasMixin,
         # hérité par cette classe — CLAUDE.md : ne jamais migrer le code d'un
         # outil dans image_viewer_qt.py).
@@ -275,6 +285,21 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         # TransparencyCanvasMixin, hérité par cette classe — CLAUDE.md : ne
         # jamais migrer le code d'un outil dans image_viewer_qt.py).
         self._init_transparency_state()
+
+        # État de l'outil "color_depth" (voir color_depth_tool_qt.py::
+        # ColorDepthCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # jamais migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_color_depth_state()
+
+        # État de l'outil "effects" (voir effects_tool_qt.py::
+        # EffectsCanvasMixin, hérité par cette classe — CLAUDE.md : ne jamais
+        # migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_effects_state()
+
+        # État de l'outil "image_mode" (voir image_mode_tool_qt.py::
+        # ImageModeCanvasMixin, hérité par cette classe — CLAUDE.md : ne
+        # jamais migrer le code d'un outil dans image_viewer_qt.py).
+        self._init_image_mode_state()
 
     # Méthodes de l'outil "crop" (has_crop, clear_crop, _get_resize_mode...)
     # fournies par CropCanvasMixin (crop_tool_qt.py), de l'outil "straighten"
@@ -932,6 +957,9 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         angle_panel = self._viewer._toolbar._angle_panel
         if angle_panel.isVisible():
             angle_panel.reposition()
+        rotation_panel = self._viewer._toolbar._rotation_panel
+        if rotation_panel.isVisible():
+            rotation_panel.reposition()
         clone_panel = self._viewer._toolbar._clone_panel
         if clone_panel.isVisible():
             clone_panel.reposition()
@@ -965,6 +993,15 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, CloneCanvasMixin, Te
         transparency_panel = self._viewer._toolbar._transparency_panel
         if transparency_panel.isVisible():
             transparency_panel.reposition()
+        color_depth_panel = self._viewer._toolbar._color_depth_panel
+        if color_depth_panel.isVisible():
+            color_depth_panel.reposition()
+        effects_panel = self._viewer._toolbar._effects_panel
+        if effects_panel.isVisible():
+            effects_panel.reposition()
+        image_mode_panel = self._viewer._toolbar._image_mode_panel
+        if image_mode_panel.isVisible():
+            image_mode_panel.reposition()
         if self.has_text_blocks:
             self.reposition_text_blocks()
 
@@ -993,10 +1030,11 @@ def _floating_options_panel_style(theme, class_name: str) -> str:
 # Visionneuse principale
 # ─────────────────────────────────────────────────────────────────────────────
 
-class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, TextViewerMixin,
-                   SharpnessViewerMixin, BrightnessViewerMixin, SaturationViewerMixin,
+class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, CloneViewerMixin,
+                   TextViewerMixin, SharpnessViewerMixin, BrightnessViewerMixin, SaturationViewerMixin,
                    RemoveColorsViewerMixin, CompressionViewerMixin, LevelsViewerMixin,
-                   ShapeViewerMixin, TransparencyViewerMixin, QDialog):
+                   ShapeViewerMixin, TransparencyViewerMixin, ColorDepthViewerMixin,
+                   EffectsViewerMixin, ImageModeViewerMixin, QDialog):
     """
     Visionneuse d'images Qt.
     Reproduit à l'identique ImageViewer (tkinter) :
@@ -1180,6 +1218,19 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         # compression).
         self._restore_transparency_for_page(self.current_idx)
         self._refresh_transparency_button_state()
+        # Idem pour la profondeur de couleur (14e outil migré, voir
+        # color_depth_tool_qt.py::ColorDepthViewerMixin) — resynchronise le
+        # panneau (radio verrouillé + activation de "Restaurer l'original")
+        # sur l'état déjà accumulé pour cette page, s'il y en a un.
+        self._sync_color_depth_panel()
+        # Idem pour les effets (15e outil migré, voir effects_tool_qt.py::
+        # EffectsViewerMixin) — même principe, sauf que le radio verrouillé
+        # est mémorisé par page plutôt que dérivé du mode PIL réel.
+        self._sync_effects_panel()
+        # Idem pour le mode d'image (16e et DERNIER outil migré, voir
+        # image_mode_tool_qt.py::ImageModeViewerMixin) — même principe que
+        # color_depth (radio verrouillé dérivé du mode PIL réel).
+        self._sync_image_mode_panel()
 
         # Label du nom en bas
         self._name_label = QLabel()
@@ -1591,6 +1642,9 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             self._refresh_compression_button_state()
             self._reset_levels_preview()
             self._refresh_transparency_button_state()
+            self._sync_color_depth_panel()
+            self._sync_effects_panel()
+            self._sync_image_mode_panel()
             self.display_image(keep_crop_rect=True)
         except ValueError:
             self._save_crop_for_current_page()
@@ -1611,6 +1665,9 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
             self._refresh_compression_button_state()
             self._reset_levels_preview()
             self._refresh_transparency_button_state()
+            self._sync_color_depth_panel()
+            self._sync_effects_panel()
+            self._sync_image_mode_panel()
             self._canvas.clear_clone_source()
             self.display_image(keep_crop_rect=True)
 
@@ -1845,6 +1902,22 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, CloneViewerMixin, Text
         # eux aussi à un undo/redo) — seul le bouton grisable est à
         # rafraîchir ici, le format de la page ayant pu changer.
         self._refresh_transparency_button_state()
+        # Le snapshot "avant premier changement" de color_depth (state.
+        # color_depth_original_bytes_by_page), lui, ne doit PAS être vidé par
+        # un undo/redo (décision explicite utilisateur, 2026-08-16 — "sinon
+        # il y a un risque de confusion") : seul le panneau (radio verrouillé/
+        # activation de "Restaurer l'original") est à resynchroniser ici,
+        # dérivé du mode PIL réel de l'image après le undo/redo.
+        self._sync_color_depth_panel()
+        # Même principe pour les effets (state.effect_original_bytes_by_page/
+        # effect_key_by_page) : ni l'un ni l'autre n'est vidé par un
+        # undo/redo, seul le panneau est resynchronisé ici.
+        self._sync_effects_panel()
+        # Même principe pour le mode d'image (state.
+        # image_mode_original_bytes_by_page) : pas vidé par un undo/redo,
+        # seul le panneau (radio verrouillé dérivé du mode PIL réel) est
+        # resynchronisé ici.
+        self._sync_image_mode_panel()
         self.display_image()
         self._toolbar.refresh_undo_redo_state()
 

@@ -5,9 +5,9 @@ description: Localiser ou modifier les fonctions "Netteté" et "Netteté adaptat
 
 # Ajustements "Netteté" et "Netteté adaptative" — MosaicView
 
-Deux réglages distincts mais étroitement liés (tous deux affectent la netteté perçue) — **indépendants dans le code** : deux blocs séparés dans `settings`, appliqués l'un après l'autre par la même fonction de traitement. Partagent un seul et même emplacement UI, bi-mode, dans la barre d'outils flottante de la visionneuse principale (v1.7.4) — plus aucun panneau ni visionneuse dédiés depuis le retrait de l'ancien panneau Ajustements classique pour ces deux réglages (voir section UI plus bas). Pour l'orchestration générale du panneau Ajustements restant (6 autres modes), voir skill `adjustments-panel`.
+Deux réglages distincts mais étroitement liés (tous deux affectent la netteté perçue) — **indépendants dans le code** : deux blocs séparés dans `settings`, appliqués l'un après l'autre par la même fonction de traitement. Partagent un seul et même emplacement UI, bi-mode, dans la barre d'outils flottante de la visionneuse principale (v1.7.4) — plus aucun panneau ni visionneuse dédiés depuis le retrait de l'ancien panneau Ajustements classique pour ces deux réglages (voir section UI plus bas). L'ancien panneau Ajustements classique (`AdjustmentsDialog`) a lui-même été supprimé en totalité le 2026-08-16, une fois ses 3 dernières fonctions (profondeur de couleur, effets, mode d'image) migrées à leur tour — voir skill `viewers`.
 
-## Formule PIL (`adjustments_processing_qt.py::apply_adjustments()`)
+## Formule PIL (`image_processing_qt.py::apply_adjustments()`)
 
 Indépendante de toute UI — seul et unique moteur de calcul, appelé par la barre d'outils de la visionneuse (preview live ET commit réel, voir plus bas).
 
@@ -40,7 +40,7 @@ Wrapper direct de `PIL.ImageFilter.UnsharpMask`. Bornes : `unsharp_radius` (0.5-
 - Module : `modules/qt/sharpness_tool_qt.py`.
 - Icône bi-mode unique dans la barre (`state.sharpness_mode` 0=sharpness/1=unsharp, clic droit pour basculer, icône elle-même changée `BTN_Sharpness.png`/`BTN_Unsharp.png`) — détail complet du mécanisme (preview live, commit auto au relâchement, undo/redo par point d'historique, persistance après changement de page/undo-redo) dans le skill `viewers`, section "Le cas de la netteté". Ce skill-ci ne couvre que la formule PIL et ses bornes, pas l'intégration UI.
 - Panneaux flottants : `_SharpnessOptionsPanel` (1 réglette -100..+100) en mode 0, `_UnsharpOptionsPanel` (3 réglettes radius/percent/threshold, disposition horizontale) en mode 1 — jamais affichés simultanément.
-- Les deux modes réutilisent `apply_adjustments()`/`apply_image_adjustments()` (`adjustments_processing_qt.py`) sans dupliquer la formule — même fonction qu'utilisait l'ancien panneau.
+- Les deux modes réutilisent `apply_adjustments()`/`apply_image_adjustments()` (`image_processing_qt.py`) sans dupliquer la formule — même fonction qu'utilisait l'ancien panneau.
 
 ## Conversion slider → valeur
 
@@ -48,11 +48,10 @@ Le slider radius (`_UnsharpOptionsPanel._radius_slider`, `viewer_toolbar_qt.py`/
 
 ## Modifier ces fonctions
 
-- Changer l'intensité/la formule de la netteté simple → bloc `if sharpness != 0` de `apply_adjustments()` (`adjustments_processing_qt.py`).
+- Changer l'intensité/la formule de la netteté simple → bloc `if sharpness != 0` de `apply_adjustments()` (`image_processing_qt.py`).
 - Changer les bornes ou le comportement de l'Unsharp Mask → bloc `if unsharp_percent > 0` de la même fonction, **et** les bornes des sliders dans `_UnsharpOptionsPanel` (`sharpness_tool_qt.py`) — un seul endroit UI à mettre à jour désormais (plus deux dialogs à synchroniser comme du temps de l'ancien panneau).
 - Changer l'apparence/le comportement des panneaux flottants (réglettes, tooltips, positionnement) → `_SharpnessOptionsPanel`/`_UnsharpOptionsPanel` dans `sharpness_tool_qt.py`, voir skill `viewers`.
 
 ## Références croisées
 
 - `viewers` — intégration complète dans la barre d'outils de la visionneuse principale (icône bi-mode, preview live, commit, undo/redo, persistance) : section "Le cas de la netteté".
-- `adjustments-panel` — structure générale du panneau Ajustements restant (6 modes, sharpness/unsharp n'en font plus partie), `_get_settings()`.

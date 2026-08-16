@@ -50,7 +50,6 @@
     "renumber_recommended": "Přečíslovat (doporučeno)",
     "ignore_and_save": "Ignorovat a uložit",
     "open_without_rename": "Otevřít bez přejmenování",
-    "adjustments": "Jas,\nkontrast atd.",
     "batch_cbr_to_cbz": "Hromadná konverze\n souborů CBR na CBZ",
     "batch_pdf_to_cbz": "Hromadný převod\n souborů PDF do CBZ",
     "batch_img_to_cbz": "Dávková konverze\n samostatných obrázků do CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Globálně",
     "transparency_tolerance_panel_label": "Tolerance:",
     "transparency_type_slider_tooltip": "Oblast: zprůhlední souvislou barevnou oblast kolem klepnutého pixelu. Globálně: ovlivní všechny pixely obrázku, jejichž barva je blízká klepnuté barvě",
-    "transparency_tolerance_slider_tooltip": "Maximální přípustná barevná vzdálenost kolem klepnutého pixelu"
+    "transparency_tolerance_slider_tooltip": "Maximální přípustná barevná vzdálenost kolem klepnutého pixelu",
+    "toolbar_color_depth_tooltip": "Barevna hloubka",
+    "toolbar_color_depth_instruction": "Vyberte hloubku, uprava se pouzije okamzite",
+    "color_depth_panel_restore": "Obnovit original",
+    "color_depth_panel_current_format": "Tato stranka je aktualne ve formatu {format}.",
+    "toolbar_effects_tooltip": "Efekty",
+    "toolbar_effects_instruction": "Vyberte efekt, úprava se použije okamžitě",
+    "effects_panel_restore": "Obnovit originál",
+    "toolbar_image_mode_tooltip": "Režim obrázku",
+    "toolbar_image_mode_instruction": "Vyberte režim, úprava se použije okamžitě",
+    "image_mode_panel_restore": "Obnovit originál",
+    "toolbar_rotation_tooltip": "Otočení",
+    "toolbar_rotation_instruction": "Otočte nebo překlopte zobrazenou stránku"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Chyba",
         "message": "Průhlednost se nepodařilo použít."
+      },
+      "color_depth_failed": {
+        "title": "Chyba",
+        "message": "Nepodarilo se pouzit barevnou hloubku: {error}"
+      },
+      "effect_failed": {
+        "title": "Chyba",
+        "message": "Efekt se nepodařilo použít: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Chyba",
+        "message": "Režim obrázku se nepodařilo použít: {error}"
+      },
+      "rotation_failed": {
+        "title": "Chyba",
+        "message": "Otočení se nepodařilo použít: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Byly zjištěny identické názvy souborů. Ačkoli je uložení technicky\nmožné, může to způsobit problémy při čtení v některých aplikacích\npro komiksy (neúplné zobrazení, chybějící stránky atd.).\n\nDoporučuje se přečíslovat stránky před uložením."
     },
     "adjustments": {
-      "window_title": "Upravy obrazu",
-      "title": "Upravy pro {count} {word}",
-      "word_image": "obraz",
-      "word_images": "obrazy",
-      "apply_button": "Pouzit",
-      "color_depth_section": "Barevna hloubka",
-      "effects_section": "Efekty",
-      "sharpness_section": "Ostrost",
-      "depth_unchanged": "Nezmenit",
       "depth_32bit": "32 bitu (RGBA - barvy + pruhlednost)",
       "depth_24bit": "24 bitu (RGB - barvy)",
       "depth_8bit": "8 bitu (paleta PNG / stupne sedi JPEG)",
       "depth_1bit": "1 bit (cernobily)",
-      "compression_enable": "Povolit znovu kompresi",
-      "effect_none": "Zadny efekt",
       "effect_grayscale": "Odstiny sedi",
       "effect_sepia": "Sepie",
       "auto_levels_button": "Automatická úprava",
-      "reset_button": "Resetovat",
       "preview_section": "Náhled",
       "effect_invert": "Inverze barev",
-      "preview_warning": "Náhled se může lišit od konečného výsledku",
-      "image_mode_section": "Režim obrazu",
       "image_mode_rgb": "RGB (barvy)",
       "image_mode_rgba": "RGBA (barvy + průhlednost)",
       "image_mode_l": "L (šedé tóny)",
@@ -1383,13 +1396,11 @@
     "flatten": "Sloučení adresářů",
     "flatten_content": "Pokud váš archiv obsahuje podadresáře, použijte 'Sloučit adresáře' pro přesunutí všech obrázků na stejnou úroveň.",
     "viewer": "Prohlížeč",
-    "viewer_content": "Dvojklikem na stránku otevřete prohlížeč:\n• Klávesy ← →: navigace mezi stránkami\n• Klávesa D: přepínání mezi 4 režimy čtení\n  - Jedna stránka: vždy jedna stránka\n  - Dvojstránky: stránka 1 samostatně, poté 2-3, 4-5 atd.\n  - Souvislé dvojstránky: stránka 1 samostatně, poté 2-3, 3-4, 4-5 atd.\n  - Webtoon: pro svislé obrázky (webkomiksy), šířka omezena na 900 px kvůli čitelnosti; kolečko myši posouvá stránku svisle, po dosažení horního/dolního okraje přepne stránku\n• Kolečko myši: rychlá navigace (svislé posouvání ve stránce v režimu Webtoon)\n• Ctrl+kolečko nebo Ctrl+plus/mínus: přiblížení (až 1000 % skutečné velikosti obrázku)\n• Ctrl+0: přizpůsobit přiblížení oknu\n• Ctrl+1: přiblížení na 100 % (skutečná velikost pixelů obrázku)\n• Pravé tlačítko + tažení: posun zobrazeného obrázku, když přesahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojklik: přepnutí celé obrazovky\n• Klávesa Esc: zrušit rámeček oříznutí / opustit prohlížeč\n• Záložka: automaticky uloží aktuální stránku při zavření prohlížeče (kromě první a poslední stránky). Na odpovídající miniatuře v mozaice se zobrazí červená stužka. Při dalším otevření zpráva navrhne návrat na tuto stránku. Automaticky se smaže na poslední stránce, nebo ručně přes pravé tlačítko v prohlížeči.",
+    "viewer_content": "Dvojitým kliknutím na stránku otevřete prohlížeč:\n• Klávesy ← →: navigace mezi stránkami\n• Klávesa D: přepínání mezi 4 režimy čtení\n  - Jedna stránka: jedna stránka najednou\n  - Dvojité stránky: strana 1 samostatně, poté 2-3, 4-5 atd.\n  - Nepřetržité dvojité stránky: strana 1 samostatně, poté 2-3, 3-4, 4-5 atd.\n  - Webtoon: pro svislé obrázky (webcomics), šířka omezena na 900px pro zachování čitelnosti; kolečko myši posouvá stránku svisle, poté přepne stránku nahoře/dole\n• Kolečko myši: rychlá navigace (svislé posouvání stránky v režimu Webtoon)\n• Ctrl+kolečko nebo Ctrl+Plus/Mínus: přiblížení (až 1000% skutečné velikosti obrázku)\n• Ctrl+0: přizpůsobit přiblížení oknu\n• Ctrl+1: přiblížení na 100% (skutečná velikost pixelů obrázku)\n• Pravé tlačítko myši + tažení: posun zobrazeného obrázku (posouvání), když přesahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojité kliknutí: přepnout celou obrazovku\n• Klávesa Esc: zrušit aktuální kreslení (oříznutí, narovnání, tvar…) nebo opustit prohlížeč\n• Záložka: automaticky uloží aktuální stránku při zavření prohlížeče (kromě první/poslední stránky). Na odpovídající miniatuře v mozaice se zobrazí červená stuha. Při opětovném otevření zpráva navrhne návrat na tuto stránku. Automaticky smazáno na poslední stránce, nebo ručně pravým kliknutím v prohlížeči.\n\nPlovoucí panel nástrojů: najeďte myší na horní část obrázku, aby se zobrazil (sám se skryje po několika sekundách). Klikněte na ikonu pro aktivaci odpovídajícího nástroje:\n• Oříznutí: nakreslete obdélník, upravte jej za okraje, potvrďte\n• Narovnání: nakreslete čáru na to, co by mělo být vodorovné/svislé, korekce se použije automaticky; pravým kliknutím na ikonu přepnete na automatické narovnání (samo detekuje naklonění, bez kreslení)\n• Otočení/překlopení: jedno kliknutí otočí nebo překlopí stránku\n• Klonování: Ctrl+klik pro výběr zdrojového bodu, poté malujte s podrženým tlačítkem myši pro duplikaci\n• Text: klikněte pro umístění textového bloku, vyberte písmo/velikost/barvu\n• Tvary: kreslete elipsy, obdélníky, čáry nebo šipky, s úchyty pro změnu velikosti\n• Posuvníky (ostrost, jas/kontrast, sytost, odstranění barev, komprese): výsledek se zobrazuje živě během tažení\n• Úrovně: upravte černý bod/gama/bílý bod posuvníky, nebo odeberte barvu přímo z obrázku kapátky\n• Průhlednost: klikněte na barvu na obrázku, aby se stala průhlednou\n• Barevná hloubka, Efekty, Režim obrázku: vyberte možnost kliknutím na přepínač, použito okamžitě\n\nPotvrďte tlačítkem „Potvrdit“, jakmile se zobrazí, nebo Esc pro zrušení. Každá změna se připojí k obvyklé historii Zpět/Znovu.",
     "join_pages": "Spojení stránek",
     "join_pages_content": "Vyberte několik po sobě jdoucích stránek, klepněte pravým tlačítkem → 'Spojit vybrané stránky' pro spojení stránek vodorovně nebo svisle. Formát výsledného obrázku odpovídá formátu zdrojových stránek, pokud jsou všechny stejné, jinak výchozím formátem je PNG. Budete si moci vybrat, zda smazat nebo zachovat původní stránky.\n\nUmístění nové stránky v mozaice:\n• Aktivní režim přečíslování (automatický nebo ruční): stránka zaujme místo první spojené stránky (její místo, pokud jsou zdrojové stránky smazány, nebo přímo před ní, pokud jsou zachovány), a spustí přečíslování.\n• Vypnutý režim přečíslování: stránka se přidá na začátek mozaiky pod názvem \"Spojeno_xxx\".",
     "split_pages": "Rozdělení stránek",
     "split_pages_content": "Pro automatické rozdělení dvoustránek:\n• Vyberte stránky k rozdělení\n• Pravé tlačítko → 'Rozdělit vybrané stránky'\n• Vyberte směr (vertikální nebo horizontální)",
-    "crop": "Ořez v prohlížeči",
-    "crop_content": "V prohlížeči nakreslete obdélník na obrázek pro definování oblasti ořezu:\n• Nakreslete obdélník myší\n• Změňte jeho velikost tažením okrajů nebo rohů\n• Klikněte na 'Potvrdit ořez' pro použití\n• Ořez je aplikován na aktuální obrázek\n• Klávesa Esc: zrušit rámeček výřezu",
     "shortcuts": "Klávesové zkratky",
     "shortcuts_content": "• Ctrl+Z: Zpět poslední akci\n• Ctrl+Y: Znovu zrušenou akci\n• Ctrl+A: Vybrat všechny stránky\n• Ctrl+I: Invertovat výběr\n• Ctrl+C: Kopírovat vybrané stránky\n• Ctrl+X: Vyjmout vybrané stránky\n• Ctrl+V: Vložit stránky\n• Del: Odstranit vybrané stránky\n• Ctrl+kolečko myši: Přiblížení (prohlížeč) / velikost miniatur (mozaika) / velikost ikon (sloupec ikon)\n• Ctrl+0 (prohlížeč): Přizpůsobit přiblížení oknu\n• Ctrl+1 (prohlížeč): Přiblížení na 100 % (skutečná velikost obrázku)\n• Pravé tlačítko + tažení (prohlížeč): Posun zobrazeného obrázku\n• Ctrl+Alt+T: Exportovat všechny zobrazené miniatury z mozaiky\n• F5: Aktualizovat zobrazení mozaiky\n• F11: Přepnout celou obrazovku (ukončit F11 nebo ESC)",
     "dark_mode": "Tmavý režim",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Vyjimka: Docasne soubory pouzivane schrankou Windows (soubory clipboard_XXXXX) jsou uchovavany 12 hodin po kopirovani, takze je muzete vkladat i po zavreni aplikace. Po 12 hodinach jsou automaticky odstraneny.",
     "config_log_note": "Dávkové konverze (PDF na CBZ a CBR na CBZ) vytvoří v případě chyby soubor protokolu. Tyto soubory (Log_pdftocbz_.txt a Log_cbrtocbz_.txt) zůstávají zachovány i po zavření aplikace, aby je bylo možné later prohlédnout. Odstraňují se pouze pomocí tlačítka „Vymazat dočasné soubory“ výše. Soubor Log_scan.txt zaznamenává stejným způsobem každé skenování (použitý skener, nastavení, výsledek nebo chyba) — užitečné pro diagnostiku problému se skenerem.",
     "config_clipboard_cleared": "Soubory schranky byly uspesne vymazany.",
-    "adjust_images": "Úprava obrázků",
-    "adjust_images_content": "Tato funkce umožňuje retušovat obrázky přímo v MosaicView. Můžete upravit jas, kontrast, ostrost, úrovně, sytost, použít efekty (černobílý, sépia, inverze barev), upravit kvalitu komprese, odstranit barvy, použít průhlednost nebo převést do různých barevných hloubek. Některá nastavení mají vyhrazený prohlížeč umožňující vidět výsledek v plném rozlišení před použitím. Miniaturní náhled zobrazuje výsledek v reálném čase v hlavním okně.",
     "create_icon": "Vytvořit ikonu",
     "create_icon_content": "MosaicView umožňuje vytvářet soubory ikon (.ico) z libovolného obrázku v mozaice.\n• Pravý klik na obrázek → 'Vytvořit ikonu'\n• Ohraničte požadovanou oblast v prohlížeči (ikona bude povinně čtvercová)\n• V případě potřeby upravte průhlednost\n• Potvrďte: soubor .ico se přidá přímo do mozaiky\n• Soubory .ico automaticky obsahují všechna standardní rozlišení (od 16×16 do 256×256)\n• Dokud je v mozaice soubor .ico, ukládání do archivu CBZ je blokováno, protože formát ICO není těmito archivy podporován. Exportujte soubor .ico samostatně (Ctrl+C a vložte do složky Windows), poté jej před uložením z mozaiky odstraňte.",
     "batch_convert": "Dávková konverze",
@@ -1462,7 +1471,7 @@
     "scan": "Naskenovat obrázek",
     "scan_content": "• Klikněte na tlačítko „Skenovat“ (sloupec ikon, nabídka Soubor nebo pravé tlačítko myši na mozaice) a otevřete okno skenování. MosaicView řídí váš skener přímo (přes WIA, skenovací systém Windows): vyberte zařízení, rozlišení (DPI), barevný režim (barevně / odstíny šedi / černobíle) a poté klikněte na „Skenovat“. Aby se skener zobrazil v seznamu, musí být připojen, zapnutý a musí mít nainstalovaný ovladač ve Windows.\n• Naposledy použitý skener, rozlišení a zvolený barevný režim se zapamatují a při příštím skenování se automaticky znovu nabídnou.\n• Nabízeno je pouze skenování celé strany a export do JPG, protože aplikace už má vše potřebné pro následné retušování a konverzi obrázku.\n• Naskenovaný obrázek se automaticky přidá do mozaiky, za již existující stránky. Poté jej můžete oříznout, narovnat, upravit barvy atd. jako kteroukoli jinou stránku mozaiky\n• Tato funkce řídí skener přímo, bez použití softwaru výrobce a bez zobrazení jeho vlastního konfiguračního okna.\n• Protože fyzický skener může být ovládán vždy jen jedním připojením, je skenování možné vždy jen v jednom panelu: pokud je v jednom panelu otevřeno okno skenování nebo probíhá skenování, zůstává tlačítko „Skenovat“ v druhém panelu šedé až do dokončení operace.",
     "straighten": "Narovnat stránku",
-    "straighten_content": "Dva způsoby opravy nakloněného skenu, dostupné ze sloupce ikon (klikněte pravým tlačítkem na ikonu „Narovnat“ pro přepnutí režimu), z nabídky Obrázky nebo pravým tlačítkem na mozaiku:\n• Ruční narovnání: otevře dedikovaný prohlížeč, kde nakreslíte přímku na to, co by mělo být na obrázku vodorovné nebo svislé; úhel korekce se vypočítá automaticky a použije se na obrázek, s úchyty pro jemné doladění čáry.\n• Automatické narovnání: samo zjistí naklonění (bez kreslení čehokoli) a přímo narovná vybranou stránku či stránky; prázdné rohy vzniklé otočením se vyplní bíle. Funguje na více stránkách najednou. Souhrnné okno zobrazí počet úspěšně narovnaných stránek a vypíše ty, u kterých se nepodařilo zjistit spolehlivý sklon."
+    "straighten_content": "Automatické narovnání (bez kreslení) je dostupné ze sloupce ikon (klikněte pravým tlačítkem na ikonu „Narovnat“ pro přepnutí režimu), z nabídky Obrázky, nebo pravým kliknutím na mozaiku: samo detekuje naklonění a přímo narovná vybranou stránku/stránky; prázdné rohy vzniklé otočením se vyplní bílou. Funguje na více stránkách najednou. Souhrnné okno zobrazuje, kolik stránek bylo úspěšně narovnáno, a vypisuje ty, u kterých se nepodařilo detekovat spolehlivé naklonění.\n\nRuční narovnání (kreslení referenční čáry) se provádí z hlavního prohlížeče, viz sekce Prohlížeč."
   },
   "misc": {
     "file_word": "soubor",

@@ -86,8 +86,8 @@ COMPRESSIBLE_EXTENSIONS = (".jpg", ".jpeg", ".webp", ".avif")
 
 def is_compressible_entry(entry: dict) -> bool:
     """True si l'extension de l'entrée est compatible avec la simulation de
-    compression JPEG (apply_adjustments, adjustments_processing_qt.py) —
-    même définition que le panneau Ajustements classique."""
+    compression JPEG (apply_adjustments, image_processing_qt.py) —
+    même définition que l'ancien panneau Ajustements classique (supprimé)."""
     ext = entry.get("extension", "").lower()
     return ext in COMPRESSIBLE_EXTENSIONS
 
@@ -317,7 +317,7 @@ class CompressionViewerMixin:
         (image_viewer_qt.py) l'utilise à la place de ensure_image_loaded(entry)
         quand il est défini pour la page courante."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_adjustments
+        from modules.qt.image_processing_qt import apply_adjustments
 
         value = self._toolbar._compression_panel.value
         state = self.callbacks.get('state') or _state_module.state
@@ -340,8 +340,8 @@ class CompressionViewerMixin:
         """Relâchement du slider ou validation de la spinbox : commit réel de
         la compression dans entry['bytes'] (pattern skill
         apply-image-operation, variante A complète) — réutilise
-        apply_image_adjustments() (adjustments_processing_qt.py), déjà
-        utilisée par le panneau Ajustements pour "Appliquer à la page
+        apply_image_adjustments() (image_processing_qt.py), déjà
+        utilisée par l'ancien panneau Ajustements pour "Appliquer à la page
         courante". Devient sa propre entrée d'historique, comme un commit de
         remove_colors (pas de bouton "Valider" séparé, voir docstring de
         module).
@@ -362,7 +362,7 @@ class CompressionViewerMixin:
         entry['bytes'] courant, pas d'un état "absolu" mémorisé) — comportement
         accepté explicitement, cohérent avec sharpness/unsharp/brightness."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_image_adjustments
+        from modules.qt.image_processing_qt import apply_image_adjustments
         from modules.qt.dialogs_qt import MsgDialog
 
         panel = self._toolbar._compression_panel
@@ -414,7 +414,7 @@ class CompressionViewerMixin:
             # appliquée (panel.value déjà à jour, rien à repositionner).
 
         except Exception as e:
-            dlg = MsgDialog(self, "messages.errors.compression_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.compression_failed.title",
                             "messages.errors.compression_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
@@ -436,7 +436,7 @@ class CompressionViewerMixin:
         de l'image telle qu'elle est actuellement, pour partir d'un point de
         départ sensé plutôt que d'un défaut arbitraire comme 100."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import detect_jpeg_quality
+        from modules.qt.image_processing_qt import detect_jpeg_quality
 
         self._sharpness_preview_img = None
         state = self.callbacks.get('state') or _state_module.state

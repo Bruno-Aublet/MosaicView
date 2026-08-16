@@ -1,16 +1,16 @@
 ---
 name: adjust-levels
-description: Localiser ou modifier la logique PIL de la fonction "Niveaux noir/blanc" (seuil, point noir, gamma, point blanc, auto) — moteur de calcul dans adjustments_processing_qt.py, consommé par l'outil "levels" de la barre d'outils de la visionneuse principale. Utiliser dès qu'une tâche touche à settings['threshold']/'black_point'/'gamma'/'white_point'/compute_auto_levels(), ou à la LUT/formule de binarisation elles-mêmes.
+description: Localiser ou modifier la logique PIL de la fonction "Niveaux noir/blanc" (seuil, point noir, gamma, point blanc, auto) — moteur de calcul dans image_processing_qt.py, consommé par l'outil "levels" de la barre d'outils de la visionneuse principale. Utiliser dès qu'une tâche touche à settings['threshold']/'black_point'/'gamma'/'white_point'/compute_auto_levels(), ou à la LUT/formule de binarisation elles-mêmes.
 ---
 
 # Ajustement "Niveaux noir/blanc" — MosaicView
 
-**Migré dans la barre d'outils de la visionneuse principale (v1.7.5, 2026-08-15)** : ni le panneau Ajustements classique (section "Niveaux", groupe `_grp_levels` — 4 sliders + bouton Auto + bouton "Ajuster avec la visionneuse"), ni le mode `'levels'` de `AdjustmentViewerDialog` (pipettes, undo/redo local par page) n'existent plus. Seul point d'entrée désormais : l'icône "Niveaux" (`BTN_Levels.png`) de la barre d'outils flottante de `ImageViewer`, voir skill `viewers` section "Le cas des niveaux" pour l'intégration complète (panneau à 2 lignes/7 contrôles, pipettes, curseur custom, undo/redo unifié). **Ce skill-ci ne couvre que la formule PIL de traitement**, restée inchangée dans `adjustments_processing_qt.py` — c'est le seul moteur de calcul, partagé, dont dépend le nouvel outil.
+**Migré dans la barre d'outils de la visionneuse principale (v1.7.5, 2026-08-15)** : ni le panneau Ajustements classique (section "Niveaux", groupe `_grp_levels` — 4 sliders + bouton Auto + bouton "Ajuster avec la visionneuse"), ni le mode `'levels'` de `AdjustmentViewerDialog` (pipettes, undo/redo local par page) n'existent plus. Seul point d'entrée désormais : l'icône "Niveaux" (`BTN_Levels.png`) de la barre d'outils flottante de `ImageViewer`, voir skill `viewers` section "Le cas des niveaux" pour l'intégration complète (panneau à 2 lignes/7 contrôles, pipettes, curseur custom, undo/redo unifié). **Ce skill-ci ne couvre que la formule PIL de traitement**, restée inchangée dans `image_processing_qt.py` — c'est le seul moteur de calcul, partagé, dont dépend le nouvel outil.
 
 ## Où
 
-- Traitement : `adjustments_processing_qt.py::apply_adjustments()`, blocs `# ── Seuil ──` et `# ── Niveaux avancés ──`
-- Calcul auto : `adjustments_processing_qt.py::compute_auto_levels(image_bytes)`
+- Traitement : `image_processing_qt.py::apply_adjustments()`, blocs `# ── Seuil ──` et `# ── Niveaux avancés ──`
+- Calcul auto : `image_processing_qt.py::compute_auto_levels(image_bytes)`
 - Intégration barre d'outils (UI, pipettes, panneau flottant, undo/redo) : `modules/qt/levels_tool_qt.py` — voir skill `viewers`
 
 ## Seuil (`threshold`) — indépendant des 3 autres
@@ -53,13 +53,12 @@ Comportement de référence identique à l'ancien mode `'levels'` (repris tel qu
 
 ## Modifier cette fonction
 
-- Formule seuil/LUT → blocs correspondants de `apply_adjustments()` (`adjustments_processing_qt.py`) — inchangés depuis la migration, aucune divergence entre l'ancien et le nouveau point d'accès.
+- Formule seuil/LUT → blocs correspondants de `apply_adjustments()` (`image_processing_qt.py`) — inchangés depuis la migration, aucune divergence entre l'ancien et le nouveau point d'accès.
 - Percentiles de l'auto-niveaux → `compute_auto_levels()` (actuellement 1%/99%, codés en dur `int(len(arr) * 0.01)`).
 - Comportement des pipettes/panneau flottant/undo — `levels_tool_qt.py`, voir skill `viewers` section "Le cas des niveaux" pour le détail complet (undo/redo unifié avec l'historique du panneau, plus d'historique local séparé comme l'ancien viewer).
 
 ## Références croisées
 
 - `viewers` — section "Le cas des niveaux" : intégration complète dans la barre d'outils (panneau 2 lignes/7 contrôles, pipettes, curseur custom, undo/redo unifié, pièges corrigés lors de la migration — hotspot du curseur, croix de visée pleine masquant le pixel visé, reset du pan après commit, police CSUR manquante sur 3 boutons).
-- `adjustments-panel` — le panneau Ajustements classique restant (profondeur de couleur, effets, mode d'image — la transparence l'a quitté à son tour le 2026-08-16) ; la section "Niveaux" n'y existe plus.
 - `adjust-brightness-contrast` — objectif visuel proche (assombrir/éclaircir) mais formule `ImageEnhance` distincte, appliquée plus tôt dans le pipeline.
 - `adjust-color-depth` — mode `'1'` (binarisation à seuil fixe 128), à ne pas confondre avec le seuil réglable de cette section.

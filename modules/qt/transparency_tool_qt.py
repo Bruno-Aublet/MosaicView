@@ -644,7 +644,7 @@ class TransparencyViewerMixin:
             self._toolbar.refresh_undo_redo_state()
 
         except Exception:
-            dlg = MsgDialog(self, "messages.errors.transparency_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.transparency_failed.title",
                             "messages.errors.transparency_failed.message")
             dlg.show_nonmodal()
 

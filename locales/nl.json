@@ -50,7 +50,6 @@
     "renumber_recommended": "Opnieuw nummeren (aanbevolen)",
     "ignore_and_save": "Negeren en opslaan",
     "open_without_rename": "Openen zonder hernoemen",
-    "adjustments": "Helderheid,\ncontrast, enz.",
     "batch_cbr_to_cbz": "Batchconversie\n van CBR-bestanden naar CBZ",
     "batch_pdf_to_cbz": "Batchconversie\n van PDF-bestanden naar CBZ",
     "batch_img_to_cbz": "Batchconversie\n van losse afbeeldingen naar CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Algemeen",
     "transparency_tolerance_panel_label": "Tolerantie:",
     "transparency_type_slider_tooltip": "Zone: maakt de effen kleurzone rond de aangeklikte pixel transparant. Algemeen: beïnvloedt alle pixels van de afbeelding waarvan de kleur dicht bij de aangeklikte ligt",
-    "transparency_tolerance_slider_tooltip": "Maximaal geaccepteerde kleurafstand rond de aangeklikte pixel"
+    "transparency_tolerance_slider_tooltip": "Maximaal geaccepteerde kleurafstand rond de aangeklikte pixel",
+    "toolbar_color_depth_tooltip": "Kleurdiepte",
+    "toolbar_color_depth_instruction": "Kies een diepte, de aanpassing wordt onmiddellijk toegepast",
+    "color_depth_panel_restore": "Origineel herstellen",
+    "color_depth_panel_current_format": "Deze pagina is momenteel in {format}.",
+    "toolbar_effects_tooltip": "Effecten",
+    "toolbar_effects_instruction": "Kies een effect, de aanpassing wordt direct toegepast",
+    "effects_panel_restore": "Origineel herstellen",
+    "toolbar_image_mode_tooltip": "Afbeeldingsmodus",
+    "toolbar_image_mode_instruction": "Kies een modus, de aanpassing wordt direct toegepast",
+    "image_mode_panel_restore": "Origineel herstellen",
+    "toolbar_rotation_tooltip": "Rotatie",
+    "toolbar_rotation_instruction": "Draai of spiegel de weergegeven pagina"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Fout",
         "message": "Transparantie kon niet worden toegepast."
+      },
+      "color_depth_failed": {
+        "title": "Fout",
+        "message": "Kan kleurdiepte niet toepassen: {error}"
+      },
+      "effect_failed": {
+        "title": "Fout",
+        "message": "Het effect kon niet worden toegepast: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Fout",
+        "message": "De afbeeldingsmodus kon niet worden toegepast: {error}"
+      },
+      "rotation_failed": {
+        "title": "Fout",
+        "message": "Kon rotatie niet toepassen: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Identieke bestandsnamen zijn gedetecteerd. Hoewel opslaan technisch\nmogelijk is, kan dit leesproblemen veroorzaken in sommige stripboek-\nlezertoepassingen (onvolledige weergave, ontbrekende pagina's, enz.).\n\nHet wordt aanbevolen om de pagina's opnieuw te nummeren voor het opslaan."
     },
     "adjustments": {
-      "window_title": "Afbeeldingsaanpassingen",
-      "title": "Aanpassingen voor {count} {word}",
-      "word_image": "afbeelding",
-      "word_images": "afbeeldingen",
-      "apply_button": "Toepassen",
-      "color_depth_section": "Kleurdiepte",
-      "effects_section": "Effecten",
-      "sharpness_section": "Scherpte",
-      "depth_unchanged": "Niet wijzigen",
       "depth_32bit": "32 bits (RGBA - kleuren + transparantie)",
       "depth_24bit": "24 bits (RGB - kleuren)",
       "depth_8bit": "8 bits (PNG-palet / JPEG-grijswaarden)",
       "depth_1bit": "1 bit (zwart en wit)",
-      "compression_enable": "Hercompressie inschakelen",
-      "effect_none": "Geen effect",
       "effect_grayscale": "Grijstinten",
       "effect_sepia": "Sepia",
       "auto_levels_button": "Automatische aanpassing",
-      "reset_button": "Resetten",
       "preview_section": "Voorbeeld",
       "effect_invert": "Kleurinversie",
-      "preview_warning": "Voorbeeld kan afwijken van het eindresultaat",
-      "image_mode_section": "Beeldmodus",
       "image_mode_rgb": "RGB (kleuren)",
       "image_mode_rgba": "RGBA (kleuren + transparantie)",
       "image_mode_l": "L (grijstinten)",
@@ -1383,13 +1396,11 @@
     "flatten": "Mappen afvlakken",
     "flatten_content": "Als uw archief submappen bevat, gebruik dan 'Mappen afvlakken' om alle afbeeldingen naar hetzelfde niveau te brengen.",
     "viewer": "Viewer",
-    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Toetsen ← →: navigeren tussen pagina's\n• Toets D: schakelen tussen 4 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, dan 2-3, 4-5, enz.\n  - Doorlopende dubbele pagina's: pagina 1 alleen, dan 2-3, 3-4, 4-5, enz.\n  - Webtoon: voor verticale afbeeldingen (webcomics), breedte beperkt tot 900px om leesbaar te blijven; het muiswiel scrolt verticaal binnen de pagina en wisselt van pagina zodra boven-/onderkant is bereikt\n• Muiswiel: snelle navigatie (verticaal scrollen binnen de pagina in Webtoon-modus)\n• Ctrl+wiel of Ctrl+Plus/Min: zoomen (tot 1000% van de werkelijke afbeeldingsgrootte)\n• Ctrl+0: zoom aanpassen aan venster\n• Ctrl+1: zoom naar 100% (werkelijke pixelgrootte van de afbeelding)\n• Rechtsklik + slepen: de weergegeven afbeelding verplaatsen wanneer deze het venster overschrijdt\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm schakelen\n• Esc-toets: bijsnijkader annuleren / viewer verlaten\n• Bladwijzer: slaat automatisch de huidige pagina op bij het sluiten van de viewer (behalve de eerste en laatste pagina). Er verschijnt een rood lint op de bijbehorende miniatuur in de mozaïek. Bij de volgende keer openen stelt een bericht voor om terug te keren naar deze pagina. Wordt automatisch verwijderd op de laatste pagina, of handmatig via rechtsklik in de viewer.",
+    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Toetsen ← →: navigeren tussen pagina's\n• Toets D: schakelen tussen 4 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, dan 2-3, 4-5, enz.\n  - Doorlopende dubbele pagina's: pagina 1 alleen, dan 2-3, 3-4, 4-5, enz.\n  - Webtoon: voor verticale afbeeldingen (webcomics), breedte beperkt tot 900px om leesbaar te blijven; het muiswiel scrollt verticaal in de pagina, wisselt daarna van pagina boven/onder\n• Muiswiel: snel navigeren (verticaal scrollen in de pagina in Webtoon-modus)\n• Ctrl+Muiswiel of Ctrl+Plus/Min: zoomen (tot 1000% van de werkelijke afbeeldingsgrootte)\n• Ctrl+0: zoom aanpassen aan het venster\n• Ctrl+1: zoom op 100% (werkelijke pixelgrootte van de afbeelding)\n• Rechtermuisknop + slepen: de weergegeven afbeelding verplaatsen (pan) wanneer deze het venster overschrijdt\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm in-/uitschakelen\n• Toets Esc: huidige tekening annuleren (bijsnijden, rechttrekken, vorm…) of viewer verlaten\n• Bladwijzer: onthoudt automatisch de huidige pagina bij het sluiten van de viewer (behalve eerste/laatste pagina). Er verschijnt een rood lint op de bijbehorende miniatuur in de mozaïek. Bij het opnieuw openen stelt een bericht voor om verder te gaan bij deze pagina. Automatisch verwijderd bij de laatste pagina, of handmatig via rechtermuisknop in de viewer.\n\nZwevende werkbalk: beweeg de muis naar de bovenkant van de afbeelding om hem te tonen (verdwijnt vanzelf na enkele seconden). Klik op een pictogram om het bijbehorende gereedschap te activeren:\n• Bijsnijden: teken een rechthoek, pas hem aan via de randen, bevestig\n• Rechttrekken: teken een lijn op wat horizontaal/verticaal zou moeten zijn, de correctie wordt automatisch toegepast; rechtermuisknop op het pictogram om over te schakelen naar automatisch rechttrekken (detecteert de scheefstand zelf, zonder iets te tekenen)\n• Draaien/spiegelen: één klik draait of spiegelt de pagina\n• Klonen: Ctrl+klik om het bronpunt te kiezen, schilder daarna met ingedrukte muisknop om te dupliceren\n• Tekst: klik om een tekstblok te plaatsen, kies lettertype/grootte/kleur\n• Vormen: teken ellipsen, rechthoeken, lijnen of pijlen, met handvatten om ze te vergroten/verkleinen\n• Schuifregelaars (scherpte, helderheid/contrast, verzadiging, kleuren verwijderen, compressie): het resultaat wordt live getoond terwijl u sleept\n• Niveaus: pas zwartpunt/gamma/witpunt aan met schuifregelaars, of neem een kleur rechtstreeks van de afbeelding met de pipetten\n• Transparantie: klik op een kleur in de afbeelding om deze transparant te maken\n• Kleurdiepte, Effecten, Afbeeldingsmodus: kies een optie door op een keuzerondje te klikken, direct toegepast\n\nBevestig met de knop \"Bevestigen\" zodra die verschijnt, of Esc om te annuleren. Elke wijziging voegt zich bij de gebruikelijke Ongedaan maken/Opnieuw-geschiedenis.",
     "join_pages": "Pagina's samenvoegen",
     "join_pages_content": "Selecteer meerdere opeenvolgende pagina's, rechtsklik → 'Geselecteerde pagina's samenvoegen' om de pagina's horizontaal of verticaal samen te voegen. Het formaat van de geproduceerde afbeelding komt overeen met dat van de bronpagina's als ze allemaal identiek zijn, anders standaard PNG. U kunt kiezen of u de originele pagina's wilt verwijderen of behouden.\n\nPlaats van de nieuwe pagina in de mozaïek:\n• Actieve hernummeringsmodus (automatisch of handmatig): de pagina neemt de plaats in van de eerste samengevoegde pagina (haar plaats, als de bronpagina's worden verwijderd, of vlak ervoor, als ze worden behouden), en activeert een hernummering.\n• UIT-modus voor hernummering: de pagina wordt vooraan de mozaïek toegevoegd onder de naam \"Samenvoeging_xxx\".",
     "split_pages": "Pagina's splitsen",
     "split_pages_content": "Om dubbele pagina's automatisch te splitsen:\n• Selecteer de te splitsen pagina's\n• Rechtsklik → 'Geselecteerde pagina's splitsen'\n• Kies de richting (verticaal of horizontaal)",
-    "crop": "Bijsnijden in de viewer",
-    "crop_content": "Teken in de viewer een rechthoek op de afbeelding om een bijsnijdgebied te definiëren:\n• Teken de rechthoek met de muis\n• Pas de grootte aan door aan de randen of hoeken te trekken\n• Klik op 'Bijsnijden valideren' om toe te passen\n• Het bijsnijden wordt toegepast op de huidige afbeelding\n• Esc-toets: bijsnijkader annuleren",
     "shortcuts": "Sneltoetsen",
     "shortcuts_content": "• Ctrl+Z: Laatste actie ongedaan maken\n• Ctrl+Y: Ongedaan gemaakte actie opnieuw uitvoeren\n• Ctrl+A: Alle pagina's selecteren\n• Ctrl+I: Selectie omkeren\n• Ctrl+C: Geselecteerde pagina's kopiëren\n• Ctrl+X: Geselecteerde pagina's knippen\n• Ctrl+V: Pagina's plakken\n• Del: Geselecteerde pagina's verwijderen\n• Ctrl+muiswiel: Zoom (viewer) / miniatuurgrootte (mozaïek) / pictogramgrootte (pictogramkolom)\n• Ctrl+0 (viewer): Zoom aanpassen aan venster\n• Ctrl+1 (viewer): Zoom naar 100% (werkelijke afbeeldingsgrootte)\n• Rechtsklik + slepen (viewer): De weergegeven afbeelding verplaatsen\n• Ctrl+Alt+T: Alle weergegeven miniaturen uit de mozaïek exporteren\n• F5: Mozaïekweergave bijwerken\n• F11: Volledig scherm schakelen (afsluiten met F11 of ESC)",
     "dark_mode": "Donkere modus",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Uitzondering: Tijdelijke bestanden die door het Windows-klembord worden gebruikt (clipboard_XXXXX-bestanden) worden 12 uur na het kopiëren bewaard, zodat u ze kunt plakken, zelfs nadat u de toepassing hebt gesloten. Na 12 uur worden ze automatisch verwijderd.",
     "config_log_note": "Batchconversies (PDF naar CBZ en CBR naar CBZ) maken bij een fout een logbestand aan. Deze bestanden (Log_pdftocbz_.txt en Log_cbrtocbz_.txt) blijven ook na het sluiten van de toepassing bewaard, zodat ze later geraadpleegd kunnen worden. Ze worden alleen verwijderd via de knop \"Tijdelijke bestanden wissen\" hierboven. Een bestand Log_scan.txt registreert op dezelfde manier elke scan (gebruikte scanner, instellingen, resultaat of fout) — nuttig om een probleem met uw scanner te diagnosticeren.",
     "config_clipboard_cleared": "Klembordbestanden zijn met succes gewist.",
-    "adjust_images": "Afbeeldingsaanpassing",
-    "adjust_images_content": "Met deze functie kunt u uw afbeeldingen rechtstreeks in MosaicView retoucheren. U kunt helderheid, contrast, scherpte, niveaus en verzadiging aanpassen, effecten toepassen (zwart-wit, sepia, kleurinversie), de compressiekwaliteit instellen, kleuren verwijderen, transparantie toepassen of naar verschillende kleurdiepten converteren. Sommige instellingen hebben een speciale viewer waarmee u het resultaat in volledige resolutie kunt bekijken vóór toepassing. Een miniatuurweergave toont het resultaat in realtime in het hoofdvenster.",
     "create_icon": "Pictogram maken",
     "create_icon_content": "MosaicView stelt u in staat pictogrambestanden (.ico) te maken van elke afbeelding in het mozaïek.\n• Rechtsklik op een afbeelding → 'Pictogram maken'\n• Kader het gewenste gebied in de viewer in (het pictogram zal verplicht vierkant zijn)\n• Pas de transparantie aan indien nodig\n• Bevestig: het .ico-bestand wordt direct aan het mozaïek toegevoegd\n• .ico-bestanden bevatten automatisch alle standaardresoluties (van 16×16 tot 256×256)\n• Zolang er een .ico-bestand in het mozaïek aanwezig is, is opslaan in een CBZ-archief geblokkeerd, omdat het ICO-formaat niet wordt ondersteund door deze archieven. Exporteer het .ico-bestand afzonderlijk (Ctrl+C en plakken in een Windows-map), verwijder het daarna uit het mozaïek vóór het opslaan.",
     "batch_convert": "Batchconversie",
@@ -1462,7 +1471,7 @@
     "scan": "Een afbeelding scannen",
     "scan_content": "• Klik op de knop 'Scannen' (pictogramkolom, menu Bestand of rechtsklik op de mozaïek) om het scanvenster te openen. MosaicView bestuurt uw scanner rechtstreeks (via WIA, het scansysteem van Windows): selecteer het apparaat, de resolutie (DPI), de kleurmodus (kleur / grijstinten / zwart-wit) en klik vervolgens op 'Scannen'. Een scanner moet aangesloten en ingeschakeld zijn en het stuurprogramma moet op Windows zijn geïnstalleerd om in de lijst te verschijnen.\n• De laatst gebruikte scanner, resolutie en gekozen kleurmodus worden onthouden en bij de volgende scan automatisch opnieuw voorgesteld.\n• Alleen volledige paginascans en export als JPG worden aangeboden, aangezien de toepassing al alles heeft wat nodig is om de afbeelding daarna te bewerken en te converteren.\n• De gescande afbeelding wordt automatisch toegevoegd aan de mozaïek, na de reeds aanwezige pagina's. U kunt deze vervolgens bijsnijden, recht zetten, de kleuren aanpassen enz., zoals elke andere pagina van de mozaïek\n• Deze functie bestuurt de scanner rechtstreeks, zonder gebruik te maken van de software van de fabrikant of diens eigen configuratievenster weer te geven.\n• Omdat een fysieke scanner slechts door één verbinding tegelijk kan worden aangestuurd, is scannen maar in één paneel tegelijk mogelijk: als in een paneel een scanvenster open staat of een scan bezig is, blijft de knop “Scannen” in het andere paneel grijs totdat de bewerking is voltooid.",
     "straighten": "Pagina rechtzetten",
-    "straighten_content": "Twee methoden om een scheve scan te corrigeren, beschikbaar via de pictogramkolom (rechtsklik op het pictogram \"Rechtzetten\" om van modus te wisselen), het menu Afbeeldingen, of rechtsklik op de mozaïek:\n• Handmatig rechtzetten: opent een speciale viewer waarin u een rechte lijn tekent op wat horizontaal of verticaal zou moeten zijn in de afbeelding; de correctiehoek wordt automatisch berekend en toegepast op de afbeelding, met handvatten om de lijn nauwkeurig af te stellen.\n• Automatisch rechtzetten: detecteert de scheefstand zelfstandig (zonder iets te tekenen) en zet de geselecteerde pagina('s) direct recht; lege hoeken die door de rotatie ontstaan worden wit opgevuld. Werkt op meerdere pagina's tegelijk. Een overzichtsvenster toont hoeveel pagina's succesvol zijn rechtgezet en somt op welke geen betrouwbare scheefstand kon worden gedetecteerd."
+    "straighten_content": "Automatisch rechttrekken (zonder iets te tekenen) is beschikbaar vanuit de pictogramkolom (rechtermuisknop op het pictogram \"Rechttrekken\" om van modus te wisselen), het menu Afbeeldingen, of rechtermuisknop op de mozaïek: het detecteert de scheefstand zelf en trekt de geselecteerde pagina('s) direct recht; lege hoeken die door de rotatie ontstaan worden wit opgevuld. Werkt op meerdere pagina's tegelijk. Een samenvattingsvenster toont hoeveel pagina's succesvol zijn rechtgetrokken en somt op waar geen betrouwbare scheefstand kon worden gedetecteerd.\n\nHandmatig rechttrekken (een referentielijn tekenen) gebeurt vanuit de hoofdviewer, zie de sectie Viewer."
   },
   "misc": {
     "file_word": "bestand",

@@ -13,7 +13,7 @@ Autre source d'image externe avec une architecture proche (worker `QThread`, ove
 
 Tout vit dans ce seul fichier (~880 lignes) :
 - **`WebImportDialog`** — fenêtre de saisie manuelle d'une URL (menu Fichier).
-- **`_resolve_and_download()`** — résolution asynchrone d'une URL (image directe ou page HTML), point d'entrée commun aux trois flux (saisie manuelle incluse depuis 2026-08-14 — voir plus bas).
+- **`_resolve_and_download()`** — résolution asynchrone d'une URL (image directe ou page HTML), point d'entrée commun aux trois flux (saisie manuelle incluse — voir plus bas).
 - **`_ResolveWorker`** (`QThread`) — télécharge la page/l'image pour déterminer son type (GET + `Content-Type`), extrait les URLs d'images si c'est une page HTML, sans bloquer l'UI.
 - **`_DownloadWorker`** (`QThread`) — télécharge effectivement chaque image trouvée, avec retry sur échec réseau transitoire.
 - **`WebDownloadController`** — orchestre `_DownloadWorker` + l'overlay de progression sur le canvas (texte rouge + bouton Annuler, même pattern visuel que le chargement d'archive).
@@ -31,7 +31,7 @@ Menu Fichier > "Importer depuis le web" (`menubar_qt.py:90`, aussi menu contextu
 
 - Fenêtre non-modale simple : un champ `QLineEdit` + OK/Annuler.
 - `_process_url()` (appelé par Entrée ou OK) : normalise l'URL saisie (`https://` ajouté automatiquement si l'utilisateur a tapé juste `example.com`, détecté via présence d'un `.` et absence d'espace), rejette si toujours pas `http(s)://` après normalisation.
-- **Depuis 2026-08-14, ce flux ne fait plus rien lui-même en matière de réseau** : la fenêtre se ferme (`self.close()`) puis délègue directement à `_resolve_and_download()`, exactement comme le drop de lien/fichier raccourci (flux 2 et 3) — les trois points d'entrée convergent maintenant vers la même résolution asynchrone. Avant cette date, ce flux faisait un `urllib.request.urlopen` bloquant en synchrone dans `_process_url()` ; ça a été retiré au profit d'une résolution unique et cohérente (nécessaire pour bénéficier de `extract_images_from_js_loops()` sur ce chemin aussi).
+- **Ce flux ne fait rien lui-même en matière de réseau** : la fenêtre se ferme (`self.close()`) puis délègue directement à `_resolve_and_download()`, exactement comme le drop de lien/fichier raccourci (flux 2 et 3) — les trois points d'entrée convergent vers la même résolution asynchrone, nécessaire pour bénéficier de `extract_images_from_js_loops()` sur ce chemin aussi.
 
 ### 2. Drop d'un lien depuis un navigateur — `mosaic_canvas.py::dropEvent`
 
@@ -53,7 +53,7 @@ Distinct du drop de lien : ici c'est un **fichier local** (`toLocalFile()` non v
 
 ## Résolution asynchrone — `_resolve_and_download()` / `_ResolveWorker`
 
-Point de convergence unique des trois flux depuis 2026-08-14 :
+Point de convergence unique des trois flux :
 
 1. **Court-circuit rapide** : `_url_looks_like_image(url)` vérifie l'extension de l'URL (liste `_IMAGE_URL_EXTS`, inclut `.svg` contrairement à `IMAGE_EXTS` du reste du projet — SVG n'est pas rendu par MosaicView mais l'URL est reconnue comme "probablement une image" avant téléchargement). Si oui → téléchargement direct sans passer par le worker de résolution, l'URL de la page est déjà connue comme étant l'image elle-même.
 2. Sinon → `_ResolveWorker` (thread) fait un GET complet (pas de vrai HEAD — certains serveurs répondent différemment ou refusent HEAD) avec les en-têtes navigateur complets (`_BROWSER_HEADERS`), lit `Content-Type` :
@@ -65,7 +65,7 @@ Point de convergence unique des trois flux depuis 2026-08-14 :
 
 ## Extraction des images générées par JavaScript — `extract_images_from_js_loops()`
 
-**Ajouté le 2026-08-14** suite à un bug découvert sur le site officiel de MosaicView lui-même : sa page d'accueil (`index.html`) construit ses vignettes de démonstration (mosaïque animée + aperçus des deux panneaux) entièrement en JavaScript, sans jamais écrire de balise `<img src="...">` statique dans le HTML servi — `extract_images_from_html()` seule n'y trouvait donc que 3 images (les icônes) sur 36.
+Nécessaire car le site officiel de MosaicView construit ses vignettes de démonstration de sa page d'accueil (`index.html`, mosaïque animée + aperçus des deux panneaux) entièrement en JavaScript, sans jamais écrire de balise `<img src="...">` statique dans le HTML servi — `extract_images_from_html()` seule n'y trouve que 3 images (les icônes) sur 36.
 
 **Approche retenue : analyse purement textuelle du `<script>`, sans jamais exécuter le JavaScript.** Une première tentative avec un rendu réel via `QWebEnginePage` (Chromium headless) a été essayée et abandonnée — elle capturait un instantané figé du DOM à un instant arbitraire, ne voyait jamais toutes les images d'une animation en boucle qui ne les affiche jamais toutes simultanément, et un simple délai d'attente plus long n'y changeait rien (le compte plafonnait, quel que soit le temps d'observation). Le vrai constat : les chemins d'images sont des **littéraux déjà présents dans le texte du script** — inutile d'exécuter quoi que ce soit pour les connaître, il suffit de les lire.
 
@@ -84,7 +84,7 @@ Pour chaque boucle trouvée, `process_body()` (fonction interne) :
 
 ## Message d'accueil du canvas pendant l'import — `_suppress_empty_hint()` / `_restore_empty_hint()`
 
-**Ajouté le 2026-08-14.** Sans ce mécanisme, l'overlay rouge de progression (`show_canvas_text`, voir skill `canvas-overlay-progress`) se centre verticalement au même endroit que le message d'accueil "Déposez ici..." de `mosaic_canvas.py` (`_show_empty_message`/`_center_empty_items`) quand le canvas est vide (aucun comic ouvert) — les deux textes se chevauchent visuellement.
+Sans ce mécanisme, l'overlay rouge de progression (`show_canvas_text`, voir skill `canvas-overlay-progress`) se centre verticalement au même endroit que le message d'accueil "Déposez ici..." de `mosaic_canvas.py` (`_show_empty_message`/`_center_empty_items`) quand le canvas est vide (aucun comic ouvert) — les deux textes se chevauchent visuellement.
 
 Réutilise le pattern déjà établi ailleurs dans le projet (`panel_widget.py`/`scan_dialog_qt.py`) : l'attribut dynamique `canvas._loading` (positionné à `True`, il empêche `render_mosaic()` de recréer le message d'accueil) :
 
@@ -101,7 +101,7 @@ Réutilise le pattern déjà établi ailleurs dans le projet (`panel_widget.py`/
 ## Téléchargement effectif — `_DownloadWorker`
 
 - Pour chaque URL d'image : **encodage du path** via `urllib.parse.quote` avant la requête (`quote(parsed_img_url.path)`, `safe='/'` implicite) — corrige un bug où une URL contenant un espace ou un accent non encodé (ex. `Fantastic 09 01.jpg`) faisait lever `InvalidURL` par `urllib.request` et échouait systématiquement, alors qu'un vrai navigateur encode ces caractères automatiquement.
-- **Retry sur échec réseau transitoire** (`_DOWNLOAD_MAX_RETRIES=2` tentatives supplémentaires, `_DOWNLOAD_RETRY_DELAY_S=1.0` seconde entre chaque) — ajouté le 2026-08-14 après avoir observé un `503 Service Unavailable` ponctuel sur une seule image d'un lot de 36 (charge côté GitHub Pages). Pas de retry sur un échec de validation PIL (image invalide) — retenter le même contenu corrompu ne changerait rien. Le flag d'annulation est revérifié après la boucle de retry pour ne pas continuer si l'utilisateur a cliqué "Annuler" pendant l'attente.
+- **Retry sur échec réseau transitoire** (`_DOWNLOAD_MAX_RETRIES=2` tentatives supplémentaires, `_DOWNLOAD_RETRY_DELAY_S=1.0` seconde entre chaque) — nécessaire face à un `503 Service Unavailable` ponctuel sur une image isolée d'un gros lot (charge côté serveur). Pas de retry sur un échec de validation PIL (image invalide) — retenter le même contenu corrompu ne changerait rien. Le flag d'annulation est revérifié après la boucle de retry pour ne pas continuer si l'utilisateur a cliqué "Annuler" pendant l'attente.
 - Téléchargement (`urllib.request`, timeout 10s), validation via PIL (`Image.open` + `img.verify()`) — une URL qui prétendait être une image mais ne l'est pas est silencieusement ignorée (`except: pass`), pas d'erreur bloquante par image individuelle.
 - **Correction d'extension** : si le format réel détecté par PIL (`img.format`) diffère de l'extension déduite du nom de fichier dans l'URL, le nom est corrigé (ex. une image servie en `.jpg` mais réellement WebP devient `image.webp`) — même logique de cohérence que la détection de type d'archive (voir skill `archive-image-loading`, `detect_archive_type`), mais ici au niveau image individuelle plutôt qu'archive entière.
 - **Nom de fichier** : dérivé du chemin de l'URL (`os.path.basename`) si présent et avec extension, sinon généré (`{page_title}_{idx+1:03d}.jpg`) — `page_title` vient du domaine de la page source (`urlparse(url).netloc`, `www.` retiré).

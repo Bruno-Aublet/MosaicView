@@ -50,7 +50,6 @@
     "renumber_recommended": "Athuimhrigh (molta)",
     "ignore_and_save": "Déan neamhaird agus sábháil",
     "open_without_rename": "Oscail gan athainmniú",
-    "adjustments": "Gile,\ncodarsnacht srl.",
     "batch_cbr_to_cbz": "Tiontú baisce\n comhad CBR go CBZ",
     "batch_pdf_to_cbz": "Tiontú baiscíoch\n comhad PDF go CBZ",
     "batch_img_to_cbz": "Comhshó baisce\n íomhánna aonair go CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Domhanda",
     "transparency_tolerance_panel_label": "Lamháltas:",
     "transparency_type_slider_tooltip": "Ceantar: déanann sé an crios ilchineálach datha timpeall an phicteilín cliceáilte trédhearcach. Domhanda: téann sé i bhfeidhm ar gach picteilín san íomhá a bhfuil a dath gar don cheann cliceáilte",
-    "transparency_tolerance_slider_tooltip": "An t-uasfhad datha is mó a nglactar leis timpeall an phicteilín cliceáilte"
+    "transparency_tolerance_slider_tooltip": "An t-uasfhad datha is mó a nglactar leis timpeall an phicteilín cliceáilte",
+    "toolbar_color_depth_tooltip": "Doimhneacht datha",
+    "toolbar_color_depth_instruction": "Roghnaigh doimhneacht, cuirtear an coigeartu i bhfeidhm laithreach",
+    "color_depth_panel_restore": "Athchoir an bunleagan",
+    "color_depth_panel_current_format": "Ta an leathanach seo faoi lathair i bhformaid {format}.",
+    "toolbar_effects_tooltip": "Maisíochtaí",
+    "toolbar_effects_instruction": "Roghnaigh maisíocht, cuirtear an coigeartú i bhfeidhm láithreach",
+    "effects_panel_restore": "Athchóirigh an bunleagan",
+    "toolbar_image_mode_tooltip": "Mód Íomhá",
+    "toolbar_image_mode_instruction": "Roghnaigh mód, cuirtear an coigeartú i bhfeidhm láithreach",
+    "image_mode_panel_restore": "Athchóirigh an bunleagan",
+    "toolbar_rotation_tooltip": "Rothlú",
+    "toolbar_rotation_instruction": "Rothlaigh nó smearaigh an leathanach ar taispeáint"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Earráid",
         "message": "Níorbh fhéidir an trédhearcacht a chur i bhfeidhm."
+      },
+      "color_depth_failed": {
+        "title": "Earraid",
+        "message": "Nior bhfeidir doimhneacht datha a chur i bhfeidhm: {error}"
+      },
+      "effect_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an mhaisíocht a chur i bhfeidhm: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an mód íomhá a chur i bhfeidhm: {error}"
+      },
+      "rotation_failed": {
+        "title": "Earráid",
+        "message": "Níorbh fhéidir an rothlú a chur i bhfeidhm: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Aimsíodh ainmneacha comhaid chomhionanna. Cé go bhfuil sábháil\nindéanta go teicniúil, d'fhéadfadh sé seo fadhbanna léitheoireachta\na chruthú i roinnt feidhmchlár léitheora grianghraf (taispeáint\nneamhiomlán, leathanaigh ar iarraidh, srl.).\n\nMoltar na leathanaigh a athuimhriú roimh shábháil."
     },
     "adjustments": {
-      "window_title": "Coigeartuithe iomha",
-      "title": "Coigeartuithe do {count} {word}",
-      "word_image": "iomha",
-      "word_images": "iomhanna",
-      "apply_button": "Cuir i bhfeidhm",
-      "color_depth_section": "Doimhneacht datha",
-      "effects_section": "Éifeachtaí",
-      "sharpness_section": "Géire",
-      "depth_unchanged": "Ná hathraigh",
       "depth_32bit": "32 giotán (RGBA - dathanna + trédhearcacht)",
       "depth_24bit": "24 giotán (RGB - dathanna)",
       "depth_8bit": "8 giotan (pailteid PNG / scalaí liatha JPEG)",
       "depth_1bit": "1 ghiotán (dubh agus bán)",
-      "compression_enable": "Cumasaigh athchomhbhrú",
-      "effect_none": "Gan éifeacht",
       "effect_grayscale": "Tóin liatha",
       "effect_sepia": "Séipea",
       "auto_levels_button": "Coigeartú uathoibríoch",
-      "reset_button": "Athshocraigh",
       "preview_section": "Réamhamharc",
       "effect_invert": "Inbhéartú datha",
-      "preview_warning": "D'fhéadfadh réamhamharc difriocht a bheith leis an toradh deiridh",
-      "image_mode_section": "Mód íomhá",
       "image_mode_rgb": "RGB (dathanna)",
       "image_mode_rgba": "RGBA (dathanna + trédhearcacht)",
       "image_mode_l": "L (scláil liath)",
@@ -1383,13 +1396,11 @@
     "flatten": "Comhadlanna a chomhréiteach",
     "flatten_content": "Má tá fochomhadlanna i do chartlann, úsáid 'Comhréitigh fillteáin' chun na híomhánna go léir a thabhairt chuig an leibhéal céanna.",
     "viewer": "Amharcóir",
-    "viewer_content": "Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: aistrigh idir 4 mhód léitheoireachta\n  - Leathanach amháin: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 amháin, ansin 2-3, 4-5, srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 amháin, ansin 2-3, 3-4, 4-5, srl.\n  - Webtoon: le haghaidh íomhánna ingearacha (greannáin ghréasáin), leithead teoranta go 900px chun a bheith inléite; scrollaíonn roth na luiche go hingearach laistigh den leathanach, ansin athraíonn sé leathanach nuair a shroicheann sé an barr/bun\n• Roth na luiche: nascleanúint tapa (scrollú ingearach laistigh den leathanach i mód Webtoon)\n• Ctrl+roth nó Ctrl+Móide/Lúide: zúmáil (suas le 1000% de mhéid iarbhír na híomhá)\n• Ctrl+0: oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1: zúmáil go 100% (méid iarbhír picteilíní na híomhá)\n• Deaschliceáil + tarraing: bog an íomhá arna taispeáint nuair a sháraíonn sí an fhuinneog\n• Eochair F11: lánscáileán\n• Cliceáil faoi dhó: athraigh lánscáileán\n• Eochair Esc: cealaigh an fráma bearrtha / scoir an t-amharcán\n• Leabharmharc: sábhálann sé go huathoibríoch an leathanach reatha nuair a dhúntar an t-amharcán (seachas an chéad agus an leathanach deiridh). Taispeántar ribín dearg ar an mionsamhail chomhfhreagrach sa mósáic. Ag an gcéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriostar go huathoibríoch ar an leathanach deiridh, nó de láimh trí dheaschliceáil san amharcán.",
+    "viewer_content": "Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: athraigh idir 4 mhodh léitheoireachta\n  - Leathanach singil: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 ina aonar, ansin 2-3, 4-5 srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 ina aonar, ansin 2-3, 3-4, 4-5 srl.\n  - Webtoon: le haghaidh íomhánna ingearacha (webcomics), leithead teoranta go 900px chun inléiteacht a choinneáil; scrollann roth na luiche go hingearach sa leathanach, ansin athraíonn sé leathanach ag an mbarr/bun\n• Roth na luiche: nascleanúint tapa (scrolláil ingearach sa leathanach i modh Webtoon)\n• Ctrl+Roth nó Ctrl+Móide/Lúide: súmáil (suas le 1000% de mhéid fíor na híomhá)\n• Ctrl+0: oiriúnaigh an súmáil don fhuinneog\n• Ctrl+1: súmáil ag 100% (fíormhéid picteilíní na híomhá)\n• Cliceáil dheis + tarraing: bog an íomhá arna taispeáint (pan) nuair a sháraíonn sí an fhuinneog\n• Eochair F11: lánscáileán\n• Cliceáil faoi dhó: athraigh lánscáileán\n• Eochair Esc: cealaigh an líníocht reatha (bearradh, díriú, cruth…) nó fág an t-amharcán\n• Leabharmharc: sábhálann sé an leathanach reatha go huathoibríoch nuair a dhúntar an t-amharcán (seachas an chéad/an leathanach deiridh). Taispeánann ribín dearg ar an mionsamhail chomhfhreagrach sa mósáic. Ar an chéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriosta go huathoibríoch ag an leathanach deiridh, nó de láimh trí chliceáil dheis san amharcán.\n\nBarra uirlisí ar snámh: cuir an luch os cionn bharr na híomhá chun í a thaispeáint (folaíonn sí í féin tar éis cúpla soicind). Cliceáil ar dheilbhín chun an uirlis chomhfhreagrach a ghníomhachtú:\n• Bearradh: tarraing dronuilleog, coigeartaigh í ag na himill, deimhnigh\n• Díriú: tarraing líne ar an rud ba chóir a bheith cothrománach/ingearach, cuirtear an ceartúchán i bhfeidhm go huathoibríoch; cliceáil dheis ar an deilbhín chun athrú go dtí dírithe uathoibríoch (braitheann sé an fiaradh leis féin, gan aon rud a tharraingt)\n• Rothlú/scáthánú: casann nó iompaíonn cliceáil amháin an leathanach\n• Clónáil: Ctrl+cliceáil chun an pointe foinse a roghnú, ansin péinteáil le cnaipe na luiche brúite chun dúbláil\n• Téacs: cliceáil chun bloc téacs a chur, roghnaigh cló/méid/dath\n• Cruthanna: tarraing éilipsí, dronuilleoga, línte nó saigheada, le lámha chun méid a athrú\n• Sleamhnáin (géire, gile/codarsnacht, sáithiú, baint dathanna, comhbhrú): taispeántar an toradh beo agus tú ag tarraingt\n• Leibhéil: coigeartaigh an pointe dubh/gáma/pointe bán leis na sleamhnáin, nó tóg dath díreach ón íomhá leis na braoisc\n• Trédhearcacht: cliceáil ar dhath san íomhá chun é a dhéanamh trédhearcach\n• Doimhneacht datha, Maisíochtaí, Modh íomhá: roghnaigh rogha trí chliceáil ar chnaipe raidió, curtha i bhfeidhm láithreach\n\nDeimhnigh leis an gcnaipe \"Deimhnigh\" nuair a thaispeántar é, nó Esc chun cealú. Ceanglaíonn gach athrú leis an ngnáthstair Cealaigh/Athdhéan.",
     "join_pages": "Leathanaigh a cheangal",
     "join_pages_content": "Roghnaigh roinnt leathanach as a chéile, deaschliceáil → 'Ceangail na leathanaigh roghnaithe' chun na leathanaigh a cheangal go cothrománach nó go hingearach. Meaitseálann formáid na híomhá a tháirgtear le formáid na leathanach foinseach má tá siad go léir comhionann, mura hea PNG mar réamhshocrú. Beidh tú in ann na leathanaigh bhunaidh a scriosadh nó a choinneáil.\n\nSuíomh an leathanaigh nua sa mósáic:\n• Mód athuimhrithe gníomhach (uathoibríoch nó de láimh): glacann an leathanach áit an chéad leathanaigh a ceanglaíodh (a áit, má scriostar na leathanaigh foinseacha, nó díreach roimhe, má choinnítear iad), agus spreagann sé athuimhriú.\n• Mód athuimhrithe AS: cuirtear an leathanach le tosach an mósáic faoin ainm \"Ceangal_xxx\".",
     "split_pages": "Leathanaigh a roinnt",
     "split_pages_content": "Chun leathanaigh dhúbailte a roinnt go huathoibríoch:\n• Roghnaigh na leathanaigh le roinnt\n• Deasclic → 'Roinn leathanaigh roghnaithe'\n• Roghnaigh an treo (ingearach nó cothrománach)",
-    "crop": "Bearradh san amharcóir",
-    "crop_content": "San amharcóir, tarraing dronuilleog ar an íomhá le limistéar bearrtha a shainiú:\n• Tarraing an dronuilleog leis an luch\n• Athraigh méid é trí tharraingt ar na himill nó na coirnéil\n• Cliceáil ar 'Deimhnigh an bearradh' le cur i bhfeidhm\n• Cuirtear an bearradh i bhfeidhm ar an íomhá reatha\n• Eochair Esc: cealaigh fráma barrthuanaithe",
     "shortcuts": "Aicearraí méarchláir",
     "shortcuts_content": "• Ctrl+Z: Cealaigh an gníomh deireanach\n• Ctrl+Y: Athdhéan an gníomh cealaithe\n• Ctrl+A: Roghnaigh gach leathanach\n• Ctrl+I: Aisiompaigh an roghnú\n• Ctrl+C: Cóipeáil na leathanaigh roghnaithe\n• Ctrl+X: Gearr na leathanaigh roghnaithe\n• Ctrl+V: Greamaigh leathanaigh\n• Del: Scrios na leathanaigh roghnaithe\n• Ctrl+roth na luiche: Zúmáil (amharcán) / méid mionsamhlacha (mósáic) / méid deilbhíní (colún deilbhíní)\n• Ctrl+0 (amharcán): Oiriúnaigh an zúmáil don fhuinneog\n• Ctrl+1 (amharcán): Zúmáil go 100% (méid iarbhír na híomhá)\n• Deaschliceáil + tarraing (amharcán): Bog an íomhá arna taispeáint\n• Ctrl+Alt+T: Easpórtáil gach mionsamhail arna taispeáint ón mósáic\n• F5: Nuashonraigh taispeáint an mósáic\n• F11: Athraigh lánscáileán (scoir le F11 nó ESC)",
     "dark_mode": "Mód dorcha",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Eisceacht: Coinnítear comhaid shealadacha a úsáideann gearrthaisce Windows (comhaid clipboard_XXXXX) ar feadh 12 uair an chloig tar éis cóipeála, ionas gur féidir leat iad a ghreamú fiú tar éis an feidhmchlár a dhúnadh. Tar éis 12 uair an chloig, scriostar go huathoibríoch iad.",
     "config_log_note": "Cruthaíonn comhshóite baisc (PDF go CBZ agus CBR go CBZ) comhad loga nuair a tharlaíonn earráid. Coinnítear na comhaid seo (Log_pdftocbz_.txt agus Log_cbrtocbz_.txt) fiú tar éis an feidhmchlár a dhúnadh, ionas gur féidir iad a athbhreithniú níos déanaí. Ní bhaintear iad ach amháin tríd an gcnaipe \"Glan comhaid shealadacha\" thuas. Taifeadann comhad Log_scan.txt gach scanadh ar an mbealach céanna (an scanóir a úsáideadh, socruithe, toradh nó earráid) — úsáideach chun fadhb le do scanóir a dhiagnóisiú.",
     "config_clipboard_cleared": "Glanadh comhaid an ghearrthaisce go rathúil.",
-    "adjust_images": "Coigeartú íomhánna",
-    "adjust_images_content": "Ligeann an fheidhm seo duit do chuid íomhánna a athchumadh go díreach in MosaicView. Is féidir leat gile, codarsnacht, géire, leibhéil, sáithiú a athrú, éifeachtaí a chur i bhfeidhm (dubh agus bán, séipia, inbhéartú dathanna), cáilíocht comhbhrú a choigeartú, dathanna a bhaint, trédhearcacht a chur i bhfeidhm nó tiontú go doimhneachtaí datha éagsúla. Tá breathnadóir tiomnaithe ag roinnt socruithe a ligeann duit an toradh a fheiceáil i gcomhréir iomlán roimh chur i bhfeidhm. Léiríonn réamhamharc mionlothar an toradh i bhfíor-am san phríomhfhuinneog.",
     "create_icon": "Cruthaigh deilbhín",
     "create_icon_content": "Ligeann MosaicView duit comhaid deilbhín (.ico) a chruthú ó aon íomhá sa mhósáic.\n• Cliceáil ar dheis ar íomhá → 'Cruthaigh deilbhín'\n• Cuir imlíne timpeall ar an limistéar atá uait sa luchtaire (beidh an deilbhín cearnach go héigeantach)\n• Coigeartaigh trédhearcacht más gá\n• Deimhnigh: cuirtear an comhad .ico leis an mósáic go díreach\n• Tá gach taifeach caighdeánach (ó 16×16 go 256×256) sna comhaid .ico go huathoibríoch\n• Fad is atá comhad .ico sa mhósáic, tá sábháil i gcartlann CBZ curtha ar ceal, ós rud é nach dtacaítear le formáid ICO sna cartlanna sin. Easpórtáil an comhad .ico ar leithligh (Ctrl+C ansin greamaigh i bhfillteán Windows), ansin scrios é ón mósáic roimh shábháil.",
     "batch_convert": "Tiontú baisc",
@@ -1462,7 +1471,7 @@
     "scan": "Scan íomhá",
     "scan_content": "• Cliceáil an cnaipe \"Scan\" (colún na ndeilbhíní, roghchlár Comhad, nó deaschliceáil ar an mósáic) chun an fhuinneog scanta a oscailt. Rialaíonn MosaicView do scanóir go díreach (trí WIA, córas scanta Windows): roghnaigh an gléas, an taifeach (DPI), an modh datha (dath / liathscála / dubh agus bán), ansin cliceáil \"Scan\". Ní mór scanóir a bheith plugáilte isteach, ar siúl, agus a thiománaí suiteáilte ar Windows chun é a fheiceáil sa liosta.\n• Cuimhnítear ar an scanóir, an taifeach agus an modh datha a úsáideadh go deireanach, agus moltar iad go huathoibríoch arís an chéad uair eile a scanálann tú.\n• Ní chuirtear ar fáil ach scanadh leathanaigh iomláin agus easpórtáil mar JPG, ós rud é go bhfuil gach a bhfuil ag teastáil ag an bhfeidhmchlár cheana féin chun an íomhá a mhionathrú agus a thiontú ina dhiaidh sin.\n• Cuirtear an íomhá scanta leis an mósáic go huathoibríoch, tar éis na leathanach atá ann cheana. Is féidir leat ansin í a bhearradh, a dhíriú, a dhathanna a choigeartú, srl. cosúil le haon leathanach eile den mósáic\n• Rialaíonn an ghné seo an scanóir go díreach, gan dul trí bhogearraí an mhonaróra ná a fhuinneog cumraíochta féin a thaispeáint.\n• Ós rud é nach féidir ach le nasc amháin scanóir fisiceach a rialú ag am ar bith, ní féidir scanadh a dhéanamh ach i bpainéal amháin ag an am: má tá fuinneog scanta oscailte nó scanadh ar siúl i bpainéal amháin, fanann an cnaipe \"Scan\" liathchóirithe sa phainéal eile go dtí go gcríochnaítear an oibríocht.",
     "straighten": "Dírigh leathanach",
-    "straighten_content": "Dhá bhealach chun scanadh fiar a cheartú, ar fáil ón gcolún deilbhíní (deaschliceáil ar an deilbhín \"Dírigh\" chun modh a athrú), roghchlár na nÍomhánna, nó deaschliceáil ar an mósáic:\n• Díriú de láimh: osclaíonn amharcán tiomnaithe ina dtarraingíonn tú líne dhíreach ar an méid ba chóir a bheith cothrománach nó ingearach san íomhá; ríomhtar an uillinn cheartúcháin go huathoibríoch agus cuirtear i bhfeidhm ar an íomhá í, le lámha chun an líne a mhionchoigeartú.\n• Díriú uathoibríoch: braitheann sé an fiaradh leis féin (gan aon rud a tharraingt) agus dírítear an leathanach nó na leathanaigh roghnaithe go díreach; líontar na coirnéil fholmha a chruthaíonn an rothlú i mbán. Oibríonn sé ar roinnt leathanach ag an am céanna. Taispeánann fuinneog achoimre líon na leathanach a dírithe go rathúil agus liostaíonn sí iad siúd nár braitheadh fiaradh iontaofa dóibh."
+    "straighten_content": "Tá dírithe uathoibríoch (gan aon rud a tharraingt) ar fáil ón gcolún deilbhíní (cliceáil ar dheis ar an deilbhín \"Díriú\" chun modh a athrú), an roghchlár Íomhánna, nó cliceáil ar dheis ar an mósáic: braitheann sé an fiaradh leis féin agus dírítear an leathanach/na leathanaigh roghnaithe go díreach; líontar coirnéil fholmha a chruthaigh an rothlú le bán. Oibríonn ar go leor leathanach ag an am céanna. Taispeánann fuinneog achoimre cé mhéad leathanach a díríodh go rathúil agus liostaíonn siad sin nár aimsíodh fiaradh iontaofa dóibh.\n\nDéantar an díriú de láimh (líne tagartha a tharraingt) ón bpríomh-amharcán, féach an rannán Amharcán."
   },
   "misc": {
     "file_word": "comhad",

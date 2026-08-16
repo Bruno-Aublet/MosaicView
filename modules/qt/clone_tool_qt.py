@@ -740,7 +740,7 @@ class CloneViewerMixin:
             self._toolbar.refresh_undo_redo_state()
 
         except Exception:
-            dlg = MsgDialog(self, "messages.errors.clone_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.clone_failed.title",
                             "messages.errors.clone_failed.title")
             dlg.show_nonmodal()
 

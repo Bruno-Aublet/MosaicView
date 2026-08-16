@@ -202,8 +202,6 @@ def _populate_images_menu(menu: QMenu, callbacks: dict):
 
     _add_action(menu, _("context_menu.image.reduce_size"), callbacks.get("reduce_selected_images_size"),
                 enabled=has_img_sel)
-    _add_action(menu, _("dialogs.adjustments.window_title"), callbacks.get("show_image_adjustments_dialog"),
-                enabled=has_img_sel)
     _add_action(menu, _("context_menu.image.straighten_auto"), callbacks.get("deskew_selected"),
                 enabled=has_img_sel)
     menu.addSeparator()

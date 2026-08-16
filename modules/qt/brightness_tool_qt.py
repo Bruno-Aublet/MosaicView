@@ -338,7 +338,7 @@ class BrightnessViewerMixin:
         (image_viewer_qt.py) l'utilise à la place de ensure_image_loaded(entry)
         quand il est défini pour la page courante."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_adjustments
+        from modules.qt.image_processing_qt import apply_adjustments
 
         panel = self._toolbar._brightness_panel
         brightness, contrast = panel.brightness_value, panel.contrast_value
@@ -365,7 +365,7 @@ class BrightnessViewerMixin:
         """Relâchement d'un slider ou validation d'une spinbox : commit réel
         de la luminosité/contraste dans entry['bytes'] (pattern skill
         apply-image-operation, variante A complète) — réutilise
-        apply_image_adjustments() (adjustments_processing_qt.py), déjà
+        apply_image_adjustments() (image_processing_qt.py), déjà
         utilisée par le panneau Ajustements pour "Appliquer à la page
         courante". Devient sa propre entrée d'historique, comme un commit de
         netteté (pas de bouton "Valider" séparé, voir docstring de module).
@@ -380,7 +380,7 @@ class BrightnessViewerMixin:
         fois, pas d'un état "absolu" mémorisé) — comportement accepté
         explicitement, cohérent avec sharpness/unsharp."""
         from modules.qt import state as _state_module
-        from modules.qt.adjustments_processing_qt import apply_image_adjustments
+        from modules.qt.image_processing_qt import apply_image_adjustments
         from modules.qt.dialogs_qt import MsgDialog
 
         panel = self._toolbar._brightness_panel
@@ -430,7 +430,7 @@ class BrightnessViewerMixin:
             self._toolbar.refresh_undo_redo_state()
 
         except Exception as e:
-            dlg = MsgDialog(self, "messages.errors.brightness_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.brightness_failed.title",
                             "messages.errors.brightness_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()

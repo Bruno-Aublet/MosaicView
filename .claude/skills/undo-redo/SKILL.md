@@ -77,8 +77,6 @@ Cœur de la couche Qt (`undo_redo_qt.py:82`), appelé par `undo_action_qt`/`redo
 
 Distinct d'un vrai undo : restaure le sommet actuel de l'historique (`state.history[state.history_index]`) **sans décrémenter l'index** — utilisé quand une opération a été lancée, un `save_state()` a été appelé, mais l'opération elle-même est **annulée en cours de route** (ex. un aperçu de rotation refusé par l'utilisateur) et qu'il faut défaire les modifications déjà appliquées en mémoire sans que ça compte comme un "vrai" pas d'historique en plus. Câblé notamment dans le contrat de callbacks de fusion de pages (`_merge_callbacks()`, clé `"rollback"`, `panel_widget.py:1552` — voir skill `page-merge`).
 
-**Cas apparenté mais distinct — annulation en cours de lot du panneau d'ajustements** (skill `adjustments-panel`) : quand `_on_apply` traite plusieurs images en boucle et que l'utilisateur clique "Annuler" en cours de traitement, le panneau restaure les bytes/miniatures depuis un snapshot maison pris **avant tout `save_state`** plutôt que d'appeler `rollback_to_current_state_qt` — parce qu'aucun `save_state` n'a encore eu lieu à ce stade (il n'est appelé qu'une fois, avant/après la boucle entière si elle va jusqu'au bout). Ne pas supposer que ce cas passe par ce mécanisme générique.
-
 ## Câblage côté panneau — `PanelWidget`
 
 - **`save_state(force=False)`** (`panel_widget.py:1437`) — méthode d'instance, wrapper autour de `save_state_qt(self._state, self._refresh_toolbar_states, force=force)`. **Le point d'entrée à utiliser depuis n'importe quelle fonction métier du panneau** plutôt que d'appeler `save_state_qt` directement avec les bons arguments à chaque fois.

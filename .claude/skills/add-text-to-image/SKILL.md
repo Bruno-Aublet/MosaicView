@@ -30,7 +30,7 @@ Comme `crop_tool_qt.py`/`straighten_tool_qt.py`/`clone_tool_qt.py`, deux mixins 
 - **Détection du bloc sous la souris** (`_text_block_at`) : parcourt `_text_blocks` en ordre **inverse** (le dernier ajouté a priorité en cas de chevauchement), marge de tolérance 4px.
 - **Clic hors image** : coordonnées bornées via `_clamp_to_image` avant `add_text_block` — un bloc n'est jamais créé à une position aberrante hors des limites de l'image.
 - **Désélection de l'outil "text"** (icône re-cliquée, ou un autre outil activé) : les blocs **ne sont pas effacés** (même principe que le rectangle de crop conservé en gris) — `_text_set_frozen(True)` les fige (`overlay.setReadOnly(True)`, plus de focus possible, bordure grise). Resélectionner l'outil les rend à nouveau éditables.
-- **Mode simple page forcé à la sélection de l'outil** : couvert par la règle absolue et inconditionnelle de `_ViewerToolbar.set_active_tool` (tout en tête, s'applique aux 12 outils de la barre sans exception, voir skill `viewers` section "Sélection d'outil") — cette règle a d'ailleurs été généralisée à partir d'un bug repéré ICI en premier : `_TextBlock.img_pos` est stocké en pixels **image absolus** (voir `_text_widget_to_image`), pas en fractions relatives 0-1 comme le rectangle de crop (`crop_rel_x1`...), donc un bloc placé en mode double/continu (avant que la règle n'existe) n'était jamais résolu vers l'une des deux pages réelles et restait mal positionné une fois validé. Bug corrigé le 2026-08-15, puis la correction étendue à tous les outils de la barre plutôt que laissée spécifique au texte — voir `idees.txt` pour l'historique complet et la règle telle qu'elle s'applique désormais.
+- **Mode simple page forcé à la sélection de l'outil** : couvert par la règle absolue et inconditionnelle de `_ViewerToolbar.set_active_tool` (tout en tête, s'applique à tous les outils de la barre sans exception, voir skill `viewers` section "Sélection d'outil"). **Raison d'être de cette règle, propre à ce fichier** : `_TextBlock.img_pos` est stocké en pixels **image absolus** (voir `_text_widget_to_image`), pas en fractions relatives 0-1 comme le rectangle de crop (`crop_rel_x1`...) — sans ce forçage, un bloc placé en mode double/continu ne serait jamais résolu vers l'une des deux pages réelles et resterait mal positionné une fois validé.
 
 ## Formatage — `_TextOptionsPanel`
 
@@ -114,15 +114,13 @@ Trois crashs distincts rencontrés et corrigés en conditions réelles, tous dia
 
 ## Points d'entrée UI
 
-**Un seul point d'entrée depuis le 2026-08-14** : directement dans la visionneuse principale déjà ouverte, en sélectionnant l'icône Texte dans la barre d'outils flottante (`_ViewerToolbar`, `viewer_toolbar_qt.py` : `BTN_Text.png`, `tool_id="text"`, tooltip enrichi `viewer.toolbar_text_tooltip` + `dialogs.text_viewer.instruction` sur une seconde ligne). Il n'existe plus de point d'entrée dédié depuis la mosaïque qui ouvrirait directement la visionneuse avec cet outil présélectionné.
-
-**Nettoyage du 2026-08-14** (`idees.txt` #3, "NETTOYAGE DES COMMANDES REDONDANTES") : le menu contextuel (`context_menu.image.text`), l'entrée équivalente de la barre de menu (callback `"show_text_viewer"`/`"text"`), le bouton `"text"` de la colonne d'icônes (`icon_toolbar_qt.py`) et son tooltip `tooltip.text`, ainsi que la méthode `PanelWidget._text_selected_image()` (`panel_widget.py`) qui les orchestrait — tous supprimés. Même nettoyage que pour `page-crop`/`page-straighten`/`clone-zone`, dernier des 4 outils migrés à en bénéficier.
+**Un seul point d'entrée** : directement dans la visionneuse principale déjà ouverte, en sélectionnant l'icône Texte dans la barre d'outils flottante (`_ViewerToolbar`, `viewer_toolbar_qt.py` : `BTN_Text.png`, `tool_id="text"`, tooltip enrichi `viewer.toolbar_text_tooltip` + `dialogs.text_viewer.instruction` sur une seconde ligne). Il n'existe pas de point d'entrée dédié depuis la mosaïque qui ouvrirait directement la visionneuse avec cet outil présélectionné — pas de menu contextuel, pas d'entrée de barre de menu, pas de bouton dans la colonne d'icônes.
 
 ## Traductions
 
 `locales/*.json` : section `dialogs.text_viewer` — `instruction`, `size_label`/`color_label`, `bold_btn`/`italic_btn`/`underline_btn` (labels courts "G"/"I"/"S"), `pick_color_title` (via `_wt()`). Section `dialogs.color_picker` (6 clés, ajoutées v1.7.3 pour `_ColorPickerDialog`) : `basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`. `buttons.validate_text` (bouton flottant). `viewer.toolbar_text_tooltip` (icône barre d'outils). `messages.warnings.no_text_block`/`messages.errors.text_failed` (validation). Toutes propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR) — voir skill `add-translation`.
 
-**Clés mortes retirées** (ancienne fenêtre supprimée) : `dialogs.text_viewer.title`, `dialogs.text_viewer.apply_btn`. **Retirées le 2026-08-14** (ancien point d'entrée mosaïque supprimé) : `context_menu.image.text`, `tooltip.text`.
+**Clés mortes retirées** (ancienne fenêtre supprimée) : `dialogs.text_viewer.title`, `dialogs.text_viewer.apply_btn`, `context_menu.image.text`, `tooltip.text`.
 
 **Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que les 3 autres outils migrés, à signaler si une tâche touche à la documentation utilisateur (skill `user-guide`).
 
@@ -134,12 +132,12 @@ Trois crashs distincts rencontrés et corrigés en conditions réelles, tous dia
 
 ## Pièges connus (complément)
 
-- **Plus de point d'entrée depuis la mosaïque** (menu contextuel, barre de menu, colonne d'icônes) depuis le 2026-08-14 — ne pas chercher `PanelWidget._text_selected_image()`, elle a été supprimée avec ses 3 points d'appel ; l'outil texte ne s'atteint plus que depuis l'intérieur de la visionneuse déjà ouverte.
+- **Pas de point d'entrée depuis la mosaïque** (menu contextuel, barre de menu, colonne d'icônes) — ne pas chercher `PanelWidget._text_selected_image()`, elle n'existe pas ; l'outil texte ne s'atteint que depuis l'intérieur de la visionneuse déjà ouverte.
 
 ## Références croisées
 
 - `viewers` — architecture générale de la fusion progressive (mixins CanvasMixin/ViewerMixin, `_ViewerToolbar`, bouton "Valider" partagé, undo/redo unifié, persistance par page, piège overlays interactifs pan/zoom/resize) ; ce skill-ci ne documente que ce qui est spécifique à l'outil texte.
-- `page-crop`, `page-straighten`, `clone-zone` — les 3 autres outils migrés, même pattern de mixins, à comparer pour la complexité relative (crop/straighten = une seule géométrie par page, clone = pas de persistance, texte = N blocs persistés) ; même nettoyage des points d'entrée mosaïque le 2026-08-14.
+- `page-crop`, `page-straighten`, `clone-zone` — les 3 autres outils de la même famille, même pattern de mixins, à comparer pour la complexité relative (crop/straighten = une seule géométrie par page, clone = pas de persistance, texte = N blocs persistés) ; même absence de point d'entrée mosaïque.
 - `apply-image-operation` — pattern général d'invalidation de caches suivi ici en variante (A) complète.
 - `undo-redo` — mécanique de l'historique global de l'appli, seul niveau externe restant (plus d'historique interne séparé).
 - `comicinfo-metadata-editor` — mise à jour des dimensions/attributs de page dans `ComicInfo.xml` après validation.

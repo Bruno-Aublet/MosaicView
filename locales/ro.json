@@ -50,7 +50,6 @@
     "renumber_recommended": "Renumerotează (recomandat)",
     "ignore_and_save": "Ignoră și salvează",
     "open_without_rename": "Deschide fără redenumire",
-    "adjustments": "Luminozitate,\ncontrast etc.",
     "batch_cbr_to_cbz": "Conversie în bloc\n a fișierelor CBR în CBZ",
     "batch_pdf_to_cbz": "Conversie în lot\n a fișierelor PDF în CBZ",
     "batch_img_to_cbz": "Conversie în lot\n a imaginilor izolate în CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Toleranță:",
     "transparency_type_slider_tooltip": "Zonă: face transparentă zona de culoare uniformă din jurul pixelului apăsat. Global: afectează toți pixelii imaginii a căror culoare este apropiată de cea apăsată",
-    "transparency_tolerance_slider_tooltip": "Distanța maximă de culoare acceptată în jurul pixelului apăsat"
+    "transparency_tolerance_slider_tooltip": "Distanța maximă de culoare acceptată în jurul pixelului apăsat",
+    "toolbar_color_depth_tooltip": "Adancime culoare",
+    "toolbar_color_depth_instruction": "Alegeti o adancime, ajustarea se aplica imediat",
+    "color_depth_panel_restore": "Restabileste originalul",
+    "color_depth_panel_current_format": "Aceasta pagina este in prezent in format {format}.",
+    "toolbar_effects_tooltip": "Efecte",
+    "toolbar_effects_instruction": "Alegeți un efect, ajustarea se aplică imediat",
+    "effects_panel_restore": "Restabilește originalul",
+    "toolbar_image_mode_tooltip": "Mod imagine",
+    "toolbar_image_mode_instruction": "Alegeți un mod, ajustarea se aplică imediat",
+    "image_mode_panel_restore": "Restabilește originalul",
+    "toolbar_rotation_tooltip": "Rotație",
+    "toolbar_rotation_instruction": "Rotiți sau întoarceți pagina afișată"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Eroare",
         "message": "Transparența nu a putut fi aplicată."
+      },
+      "color_depth_failed": {
+        "title": "Eroare",
+        "message": "Nu s-a putut aplica adancimea de culoare: {error}"
+      },
+      "effect_failed": {
+        "title": "Eroare",
+        "message": "Efectul nu a putut fi aplicat: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Eroare",
+        "message": "Modul imagine nu a putut fi aplicat: {error}"
+      },
+      "rotation_failed": {
+        "title": "Eroare",
+        "message": "Rotația nu a putut fi aplicată: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Au fost detectate nume de fișiere identice. Deși salvarea este posibilă\ndin punct de vedere tehnic, acest lucru poate cauza probleme de citire în\nunele aplicații de citit benzi desenate (afișare incompletă, pagini\nlipsă etc.).\n\nSe recomandă renumerotarea paginilor înainte de salvare."
     },
     "adjustments": {
-      "window_title": "Ajustari imagine",
-      "title": "Ajustari pentru {count} {word}",
-      "word_image": "imagine",
-      "word_images": "imagini",
-      "apply_button": "Aplica",
-      "color_depth_section": "Adancime culoare",
-      "effects_section": "Efecte",
-      "sharpness_section": "Claritate",
-      "depth_unchanged": "Nu modifica",
       "depth_32bit": "32 biti (RGBA - culori + transparenta)",
       "depth_24bit": "24 biti (RGB - culori)",
       "depth_8bit": "8 biti (paleta PNG / tonuri de gri JPEG)",
       "depth_1bit": "1 bit (alb-negru)",
-      "compression_enable": "Activeaza recompresie",
-      "effect_none": "Fara efect",
       "effect_grayscale": "Tonuri de gri",
       "effect_sepia": "Sepia",
       "auto_levels_button": "Ajustare automată",
-      "reset_button": "Resetare",
       "preview_section": "Previzualizare",
       "effect_invert": "Inversarea culorilor",
-      "preview_warning": "Previzualizarea poate diferi de rezultatul final",
-      "image_mode_section": "Mod imagine",
       "image_mode_rgb": "RGB (culori)",
       "image_mode_rgba": "RGBA (culori + transparență)",
       "image_mode_l": "L (tonuri de gri)",
@@ -1383,13 +1396,11 @@
     "flatten": "Aplatizarea directoarelor",
     "flatten_content": "Dacă arhiva conține subdosare, folosiți 'Aplatizează dosarele' pentru a aduce toate imaginile la același nivel.",
     "viewer": "Vizualizator",
-    "viewer_content": "Faceți dublu clic pe o pagină pentru a deschide vizualizatorul:\n• Tastele ← →: navigare între pagini\n• Tasta D: comutare între 4 moduri de citire\n  - Pagină simplă: câte o pagină\n  - Pagini duble: pagina 1 singură, apoi 2-3, 4-5 etc.\n  - Pagini duble continue: pagina 1 singură, apoi 2-3, 3-4, 4-5 etc.\n  - Webtoon: pentru imagini verticale (webcomics), lățime limitată la 900px pentru a rămâne lizibilă; rotița mouse-ului derulează vertical în pagină, apoi schimbă pagina la atingerea marginii de sus/jos\n• Rotița mouse-ului: navigare rapidă (derulare verticală în pagină în modul Webtoon)\n• Ctrl+rotiță sau Ctrl+plus/minus: zoom (până la 1000% din dimensiunea reală a imaginii)\n• Ctrl+0: potrivire zoom la fereastră\n• Ctrl+1: zoom la 100% (dimensiunea reală în pixeli a imaginii)\n• Clic dreapta + tragere: deplasați imaginea afișată atunci când depășește fereastra\n• Tasta F11: ecran complet\n• Dublu clic: comutare ecran complet\n• Tasta Esc: anulare cadru de decupare / ieșire din vizualizator\n• Semn de carte: salvează automat pagina curentă la închiderea vizualizatorului (cu excepția primei și ultimei pagini). Apare o panglică roșie pe miniatura corespunzătoare din mozaic. La următoarea deschidere, un mesaj sugerează revenirea la această pagină. Se șterge automat la ultima pagină sau manual prin clic dreapta în vizualizator.",
+    "viewer_content": "Faceți dublu clic pe o pagină pentru a deschide vizualizatorul:\n• Tastele ← →: navigare între pagini\n• Tasta D: comutare între 4 moduri de citire\n  - Pagină simplă: o pagină la un moment dat\n  - Pagini duble: pagina 1 singură, apoi 2-3, 4-5 etc.\n  - Pagini duble continue: pagina 1 singură, apoi 2-3, 3-4, 4-5 etc.\n  - Webtoon: pentru imagini verticale (webcomics), lățime limitată la 900px pentru lizibilitate; rotița mouse-ului derulează vertical pagina, apoi schimbă pagina la partea de sus/jos\n• Rotița mouse-ului: navigare rapidă (derulare verticală în pagină în modul Webtoon)\n• Ctrl+Rotiță sau Ctrl+Plus/Minus: zoom (până la 1000% din dimensiunea reală a imaginii)\n• Ctrl+0: ajustează zoomul la fereastră\n• Ctrl+1: zoom la 100% (dimensiunea reală a pixelilor imaginii)\n• Clic dreapta + tragere: deplasează imaginea afișată (panoramare) când depășește fereastra\n• Tasta F11: ecran complet\n• Dublu clic: comută ecranul complet\n• Tasta Esc: anulează desenul curent (decupare, îndreptare, formă…) sau ieși din vizualizator\n• Semn de carte: salvează automat pagina curentă la închiderea vizualizatorului (cu excepția primei/ultimei pagini). O panglică roșie apare pe miniatura corespunzătoare din mozaic. La redeschidere, un mesaj propune revenirea la această pagină. Șters automat pe ultima pagină, sau manual prin clic dreapta în vizualizator.\n\nBara de instrumente flotantă: treceți mouse-ul peste partea superioară a imaginii pentru a o afișa (se ascunde singură după câteva secunde). Faceți clic pe o pictogramă pentru a activa instrumentul corespunzător:\n• Decupare: desenați un dreptunghi, ajustați-l din margini, validați\n• Îndreptare: desenați o linie pe ceea ce ar trebui să fie orizontal/vertical, corecția se aplică automat; clic dreapta pe pictogramă pentru a comuta la îndreptarea automată (detectează înclinarea singură, fără a desena nimic)\n• Rotație/oglindire: un clic rotește sau întoarce pagina\n• Clonare: Ctrl+clic pentru a alege punctul sursă, apoi pictați cu butonul mouse-ului apăsat pentru a duplica\n• Text: faceți clic pentru a plasa un bloc de text, alegeți fontul/dimensiunea/culoarea\n• Forme: desenați elipse, dreptunghiuri, linii sau săgeți, cu mânere pentru redimensionare\n• Cursoare (claritate, luminozitate/contrast, saturație, eliminare culori, compresie): rezultatul se afișează live în timp ce trageți\n• Niveluri: ajustați punctul negru/gamma/punctul alb cu cursoarele, sau preluați o culoare direct din imagine cu pipetele\n• Transparență: faceți clic pe o culoare din imagine pentru a o face transparentă\n• Adâncime de culoare, Efecte, Mod imagine: alegeți o opțiune făcând clic pe un buton radio, aplicată imediat\n\nValidați cu butonul „Validare” când apare, sau Esc pentru a anula. Fiecare modificare se alătură istoricului obișnuit Anulare/Refacere.",
     "join_pages": "Unirea paginilor",
     "join_pages_content": "Selectați mai multe pagini consecutive, clic dreapta → 'Uniți paginile selectate' pentru a uni paginile pe orizontală sau pe verticală. Formatul imaginii produse corespunde celui al paginilor sursă dacă toate sunt identice, în caz contrar PNG implicit. Veți putea alege să ștergeți sau să păstrați paginile originale.\n\nLocația noii pagini în mozaic:\n• Mod de renumerotare activ (automat sau manual): pagina ia locul primei pagini unite (locul ei, dacă paginile sursă sunt șterse, sau chiar înainte de ea, dacă sunt păstrate), și declanșează o renumerotare.\n• Mod OPRIT de renumerotare: pagina este adăugată la începutul mozaicului sub numele \"Unire_xxx\".",
     "split_pages": "Împărțirea paginilor",
     "split_pages_content": "Pentru a împărți automat paginile duble:\n• Selectați paginile de împărțit\n• Clic dreapta → 'Împarte paginile selectate'\n• Alegeți direcția (verticală sau orizontală)",
-    "crop": "Decuparea în vizualizator",
-    "crop_content": "În vizualizator, desenați un dreptunghi pe imagine pentru a defini o zonă de decupare:\n• Desenați dreptunghiul cu mouse-ul\n• Redimensionați-l trăgând marginile sau colțurile\n• Faceți clic pe 'Validează decuparea' pentru a aplica\n• Decuparea este aplicată imaginii curente\n• Tasta Esc: anulați cadrul de decupare",
     "shortcuts": "Comenzi rapide tastatură",
     "shortcuts_content": "• Ctrl+Z: Anulează ultima acțiune\n• Ctrl+Y: Refă acțiunea anulată\n• Ctrl+A: Selectează toate paginile\n• Ctrl+I: Inversează selecția\n• Ctrl+C: Copiază paginile selectate\n• Ctrl+X: Taie paginile selectate\n• Ctrl+V: Lipește paginile\n• Del: Șterge paginile selectate\n• Ctrl+rotița mouse-ului: Zoom (vizualizator) / dimensiune miniaturi (mozaic) / dimensiune pictograme (coloană pictograme)\n• Ctrl+0 (vizualizator): Potrivire zoom la fereastră\n• Ctrl+1 (vizualizator): Zoom la 100% (dimensiunea reală a imaginii)\n• Clic dreapta + tragere (vizualizator): Deplasează imaginea afișată\n• Ctrl+Alt+T: Exportă toate miniaturile afișate din mozaic\n• F5: Actualizează afișarea mozaicului\n• F11: Comută ecran complet (ieșire cu F11 sau ESC)",
     "dark_mode": "Mod întunecat",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Excepție: Fișierele temporare utilizate de clipboard-ul Windows (fișiere clipboard_XXXXX) sunt păstrate 12 ore după copiere, astfel încât să le puteți lipi chiar și după închiderea aplicației. După 12 ore, acestea sunt șterse automat.",
     "config_log_note": "Conversiile în lot (PDF în CBZ și CBR în CBZ) creează un fișier jurnal în caz de eroare. Aceste fișiere (Log_pdftocbz_.txt și Log_cbrtocbz_.txt) sunt păstrate chiar și după închiderea aplicației, pentru a putea fi consultate ulterior. Sunt eliminate doar prin butonul „Șterge fișierele temporare” de mai sus. Un fișier Log_scan.txt înregistrează în același mod fiecare scanare (scanerul utilizat, parametrii, rezultatul sau eroarea) — util pentru diagnosticarea unei probleme cu scanerul dumneavoastră.",
     "config_clipboard_cleared": "Fișierele din clipboard au fost șterse cu succes.",
-    "adjust_images": "Ajustarea imaginilor",
-    "adjust_images_content": "Această funcție vă permite să retușați imaginile direct în MosaicView. Puteți modifica luminozitatea, contrastul, claritatea, nivelurile, saturația, să aplicați efecte (alb-negru, sepia, inversarea culorilor), să ajustați calitatea compresiei, să eliminați culori, să aplicați transparență sau să convertiți la diferite adâncimi de culoare. Unele setări dispun de un vizualizator dedicat care vă permite să vedeți rezultatul la rezoluție completă înainte de aplicare. O previzualizare miniaturală arată rezultatul în timp real în fereastra principală.",
     "create_icon": "Creați o pictogramă",
     "create_icon_content": "MosaicView vă permite să creați fișiere pictogramă (.ico) din orice imagine din mozaic.\n• Clic dreapta pe o imagine → 'Creați o pictogramă'\n• Încadrați zona dorită în vizualizator (pictograma va fi obligatoriu pătrată)\n• Ajustați transparența dacă este necesar\n• Validați: fișierul .ico este adăugat direct în mozaic\n• Fișierele .ico conțin automat toate rezoluțiile standard (de la 16×16 la 256×256)\n• Cât timp există un fișier .ico în mozaic, salvarea într-o arhivă CBZ este blocată, deoarece formatul ICO nu este suportat de aceste arhive. Exportați fișierul .ico separat (Ctrl+C apoi lipiți într-un folder Windows), apoi ștergeți-l din mozaic înainte de a salva.",
     "batch_convert": "Conversie în lot",
@@ -1462,7 +1471,7 @@
     "scan": "Scanați o imagine",
     "scan_content": "• Faceți clic pe butonul „Scanare” (coloana de pictograme, meniul Fișier sau clic dreapta pe mozaic) pentru a deschide fereastra de scanare. MosaicView controlează direct scanerul dvs. (prin WIA, sistemul de scanare Windows): selectați dispozitivul, rezoluția (DPI), modul de culoare (culoare / tonuri de gri / alb-negru), apoi faceți clic pe „Scanare”. Un scaner trebuie să fie conectat, pornit și driverul său instalat pe Windows pentru a apărea în listă.\n• Ultimul scaner utilizat, rezoluția și modul de culoare alese sunt memorate și propuse automat din nou la următoarea scanare.\n• Sunt oferite doar scanarea paginii complete și exportul în JPG, întrucât aplicația are deja tot ce este necesar pentru retușarea și conversia imaginii ulterior.\n• Imaginea scanată este adăugată automat la mozaic, după paginile deja existente. O puteți apoi decupa, îndrepta, ajusta culorile etc., ca orice altă pagină a mozaicului\n• Această funcție controlează scanerul direct, fără a trece prin software-ul producătorului și fără a afișa propria fereastră de configurare a acestuia.\n• Deoarece un scaner fizic poate fi controlat doar de o singură conexiune la un moment dat, scanarea este posibilă doar într-un singur panou la un moment dat: dacă o fereastră de scanare este deschisă sau o scanare este în curs într-un panou, butonul „Scanează” rămâne dezactivat în celălalt panou până la finalizarea operațiunii.",
     "straighten": "Îndreptați o pagină",
-    "straighten_content": "Două metode pentru a corecta o scanare înclinată, accesibile din coloana de pictograme (clic dreapta pe pictograma „Îndreptare” pentru a schimba modul), meniul Imagini sau clic dreapta pe mozaic:\n• Îndreptare manuală: deschide un vizualizator dedicat în care trasați o linie dreaptă pe ceea ce ar trebui să fie orizontal sau vertical în imagine; unghiul de corecție este calculat automat și aplicat imaginii, cu mânere pentru a regla fin linia.\n• Îndreptare automată: detectează înclinarea singură (fără a trasa nimic) și îndreaptă direct pagina sau paginile selectate; colțurile goale create de rotație sunt umplute cu alb. Funcționează pe mai multe pagini simultan. O fereastră de rezumat arată câte pagini au fost îndreptate cu succes și le enumeră pe cele pentru care nu s-a putut detecta o înclinare fiabilă."
+    "straighten_content": "Îndreptarea automată (fără a desena nimic) este disponibilă din coloana de pictograme (clic dreapta pe pictograma „Îndreptare” pentru a comuta modul), din meniul Imagini, sau clic dreapta pe mozaic: detectează înclinarea singură și îndreaptă direct pagina/paginile selectate; colțurile goale create de rotație sunt umplute cu alb. Funcționează pe mai multe pagini simultan. O fereastră de rezumat indică câte pagini au fost îndreptate cu succes și le listează pe cele la care nu s-a putut detecta o înclinare fiabilă.\n\nÎndreptarea manuală (desenarea unei linii de referință) se face din vizualizatorul principal, vezi secțiunea Vizualizator."
   },
   "misc": {
     "file_word": "fișier",

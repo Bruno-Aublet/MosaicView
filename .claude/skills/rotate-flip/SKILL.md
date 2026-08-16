@@ -58,9 +58,17 @@ Tous convergent vers `MainWindow._image_transforms_callbacks()` (`panel_widget.p
 
 1. **Menu contextuel** (clic droit sur la mosaïque, voir skill `qt-context-menus`) — sous-menu "Rotation" dans `context_menus_qt.py:396-397` (rotation seulement, pas de miroir dans ce sous-menu) et `rot_menu` équivalent dans `menubar_qt.py:193-194`.
 2. **Barre de menu** — mêmes clés `context_menu.image.rotate_right`/`rotate_left`, menu Image.
-3. **Colonne d'icônes** (voir skill `icon-toolbar`) — boutons `rotate_left`/`rotate_right` (`icon_toolbar_qt.py:56-57`, icônes `BTN_Rotate_Left.png`/`BTN_Rotate_Right.png`), activés seulement si `has_selected_images()` (`_ACTIVATION_RULES`, `icon_toolbar_qt.py:137-138`), tooltips `tooltip.rotate_left`/`tooltip.rotate_right` (skill `qt-tooltips`).
+3. **Colonne d'icônes** (voir skill `icon-toolbar`) — boutons `rotate_left`/`rotate_right`/`flip_horizontal`/`flip_vertical` (`icon_toolbar_qt.py`, icônes `BTN_Rotate_Left.png`/`BTN_Rotate_Right.png`/`BTN_Mirror_Horizontal.png`/`BTN_Mirror_Vertical.png`), activés seulement si `has_selected_images()` (`_ACTIVATION_RULES`), tooltips `tooltip.rotate_left`/`tooltip.rotate_right`/`tooltip.mirror_horizontal`/`tooltip.mirror_vertical` (skill `qt-tooltips`).
 
-**Le miroir horizontal/vertical n'a pas de bouton dédié dans la colonne d'icônes** (`ICON_DEFINITIONS` ne liste que `rotate_left`/`rotate_right`) — uniquement accessible depuis les menus (barre de menu / menu contextuel), pas de raccourci icône. À vérifier avant de supposer qu'un bouton miroir existe déjà quelque part.
+**Le miroir horizontal/vertical a bien un bouton dédié dans la colonne d'icônes**, au même titre que la rotation — corrigé le 2026-08-16, ce skill décrivait auparavant à tort son absence (`ICON_DEFINITIONS` liste bien les 4 : `rotate_left`, `rotate_right`, `flip_horizontal`, `flip_vertical`, chacun avec sa règle d'activation et son callback). Ne pas supposer d'après une ancienne version de ce skill qu'une asymétrie persiste ici.
+
+## 4e point d'entrée UI — outil de la visionneuse principale (v1.7.6)
+
+Depuis la fin du chantier de fusion des visionneuses (idees.txt #3, skill `viewers`), un 4e point d'entrée existe : un outil "rotation" dans la barre d'outils flottante de la visionneuse principale (`rotation_tool_qt.py`, icône `BTN_Rotation.png` entre redressage et clonage), avec un panneau flottant à 4 boutons (rotation gauche/droite, miroir horizontal/vertical) appliqués à la page **actuellement affichée** dans la visionneuse — pas à `state.selected_indices` comme les 3 points d'entrée ci-dessus.
+
+**Ne réutilise PAS `rotate_selected_qt`/`flip_selected_qt`/`_run_transform`** (pensés pour un lot potentiellement volumineux, avec worker QThread/overlay de progression/bouton Annuler dédiés) : appelle directement `rotate_entry_data`/`flip_entry_data` de manière synchrone sur l'entrée de la page courante, puisqu'une seule page n'a pas besoin de cette machinerie de lot. Contrairement à `rotate_selected_qt`/`flip_selected_qt`, ce chemin fait l'invalidation de cache **complète** (variante A du skill `apply-image-operation`, pas la variante B partielle documentée plus haut) et appelle `render_mosaic()` lui-même, puisqu'il n'y a pas de worker pour s'en charger après coup. Voir skill `viewers`, section "Le cas de la rotation" (si présente) ou directement `rotation_tool_qt.py` pour le détail complet — ce skill-ci reste la référence pour `rotate_entry_data`/`flip_entry_data` elles-mêmes et les 3 points d'entrée orientés sélection multiple dans la mosaïque, pas pour ce 4e point d'entrée page-par-page.
+
+**Cette coexistence est volontaire, pas une redondance à nettoyer** (`idees.txt` #3, décision explicite) : contrairement aux 4 outils "macro" (crop/straighten/clone/texte) qui ont migré exclusivement dans la visionneuse lors de ce chantier, la rotation reste disponible aux deux endroits — elle garde un sens en sélection multiple depuis la mosaïque (icône colonne/menus), en plus du raccourci page par page depuis la visionneuse.
 
 ## Traductions
 
@@ -80,17 +88,16 @@ Clés dans `locales/fr.json` : `context_menu.image.rotate_right`/`rotate_left` (
 - **Un seul `save_state()` avant le lot, pas par image** — annuler restaure toutes les images du lot d'un coup à leur état d'avant, pas image par image. Ce n'est pas un bug : c'est voulu, cohérent avec l'affichage d'une seule barre de progression pour tout le lot.
 - **Pas de `force=True`** sur le `save_state()` initial, contrairement au pattern recommandé par le skill `apply-image-operation` pour les opérations anticipatives — si un bug de undo/redo est signalé sur rotation/miroir dans un scénario où l'état sélectionné est déjà identique au dernier snapshot (sélection suivie d'une rotation sans modification intermédiaire), vérifier ce point en premier.
 - **`flip_entry_data` ne valide pas `direction`** — toute valeur autre que `'horizontal'` tombe dans la branche verticale sans erreur ; un appelant qui passerait une valeur mal orthographiée échouerait silencieusement à faire ce qu'il pensait faire.
-- **Le miroir n'a pas de bouton dans la colonne d'icônes**, seulement dans les menus — ne pas supposer une symétrie totale avec la rotation dans l'UI.
 
 ## Références croisées
 
 - `apply-image-operation` — pattern général d'invalidation de cache/undo-redo pour toute fonction qui touche `entry['bytes']` ; rotation/miroir en est une variante particulière (voir section "Orchestration" ci-dessus pour les écarts précis). Le skill `apply-image-operation` référence déjà ce fichier comme exemple de la variante (B) d'invalidation partielle.
 - `undo-redo` — mécanique interne d'historique/snapshot/rollback utilisée par `save_state`/`rollback` ; explique pourquoi `entry["img"]`/`entry["bytes"]` ne doivent jamais être mutés en place.
 - `page-straighten` — la rotation **libre** (angle arbitraire) du redressement (`straighten_tool_qt.py`), un mécanisme totalement séparé qui ne partage aucun code avec ce skill malgré le mot "rotation" en commun ; comparer les deux sections "Application"/"Orchestration" pour les différences de `resample`/invalidation de cache/undo.
-- `viewers` — le redressement manuel est un outil de la barre d'outils flottante de la visionneuse principale (plus de fenêtre dédiée) ; voir aussi skill `page-straighten` pour le mécanisme de calcul d'angle lui-même.
-- `icon-toolbar` — boutons `rotate_left`/`rotate_right` de la colonne d'icônes, leur activation contextuelle et leurs tooltips.
+- `viewers` — le redressement manuel est un outil de la barre d'outils flottante de la visionneuse principale (plus de fenêtre dédiée) ; voir aussi skill `page-straighten` pour le mécanisme de calcul d'angle lui-même. Depuis v1.7.6, la visionneuse a aussi son propre outil "rotation" (4e point d'entrée UI, voir section dédiée plus haut) — coexiste avec les 3 points d'entrée orientés mosaïque documentés dans ce skill-ci, ne les remplace pas.
+- `icon-toolbar` — boutons `rotate_left`/`rotate_right`/`flip_horizontal`/`flip_vertical` de la colonne d'icônes, leur activation contextuelle et leurs tooltips.
 - `qt-context-menus` — sous-menu "Rotation" du clic droit.
-- `qt-tooltips` — tooltips des boutons de rotation dans la colonne d'icônes.
+- `qt-tooltips` — tooltips des boutons de rotation/miroir dans la colonne d'icônes et de l'outil de la visionneuse.
 - `mosaic-thumbnails` — `refresh_thumbnail`/`qt_pixmap_large` invalidés par le worker après chaque transformation.
 - `duplicate-detection` — `refresh_duplicate_overlay()` appelé en fin de traitement puisque `_hash` a été invalidé pour chaque entrée modifiée.
 - `comicinfo-metadata-editor` — mise à jour des dimensions de page dans `ComicInfo.xml` après une rotation (échange largeur/hauteur).

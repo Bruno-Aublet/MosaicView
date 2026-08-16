@@ -1601,7 +1601,7 @@ class TextViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
-                dlg = MsgDialog(self, "messages.errors.text_failed.title",
+                dlg = MsgDialog(self._center_parent, "messages.errors.text_failed.title",
                                 "messages.errors.text_failed.title")
                 dlg.show_nonmodal()
                 return
@@ -1672,7 +1672,7 @@ class TextViewerMixin:
             self._toolbar.refresh_undo_redo_state()
 
         except Exception:
-            dlg = MsgDialog(self, "messages.errors.text_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.text_failed.title",
                             "messages.errors.text_failed.title")
             dlg.show_nonmodal()
 

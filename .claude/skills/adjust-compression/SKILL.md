@@ -12,8 +12,8 @@ Outil de la barre d'outils flottante de la visionneuse principale (10e outil mig
 ## Où
 
 - UI : `compression_tool_qt.py` (`_CompressionOptionsPanel`, `CompressionCanvasMixin`, `CompressionViewerMixin`) — voir skill `viewers` pour le détail complet du panneau flottant, du grisage conditionnel de l'icône et de la mécanique preview/commit.
-- Détection de qualité : `adjustments_processing_qt.py::detect_jpeg_quality(image_bytes)`
-- Traitement : `adjustments_processing_qt.py::apply_adjustments()`, bloc `# ── Simulation compression JPEG ──` (tout dernier bloc de la fonction)
+- Détection de qualité : `image_processing_qt.py::detect_jpeg_quality(image_bytes)`
+- Traitement : `image_processing_qt.py::apply_adjustments()`, bloc `# ── Simulation compression JPEG ──` (tout dernier bloc de la fonction)
 - Détection du format compressible : `compression_tool_qt.py::is_compressible_entry(entry)`/`COMPRESSIBLE_EXTENSIONS = (".jpg", ".jpeg", ".webp", ".avif")`
 
 ## Détection de la qualité initiale/de resynchronisation
@@ -45,5 +45,4 @@ Pour changer le comportement de compression : modifier uniquement le bloc final 
 ## Références croisées
 
 - `viewers` — outil "compression" de la barre d'outils flottante de la visionneuse principale (section "Le cas de la compression") : panneau flottant, preview live, commit, grisage conditionnel de l'icône, undo/redo.
-- `adjustments-panel` — le panneau Ajustements classique dont cette fonction a été entièrement retirée (2026-08-15) ; toujours la source de vérité pour les 3 fonctions qui y restent (profondeur de couleur, mode d'image, effets — niveaux et transparence l'ont quitté à leur tour depuis).
 - `zip-compression` — homonyme trompeur : concerne la compression **ZIP** du CBZ final (STORED/DEFLATED), un mécanisme totalement différent et sans rapport avec la qualité JPEG d'une image individuelle.

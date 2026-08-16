@@ -50,7 +50,6 @@
     "renumber_recommended": "Promijeniti brojeve (preporučeno)",
     "ignore_and_save": "Ignoriraj i spremi",
     "open_without_rename": "Otvori bez preimenovanja",
-    "adjustments": "Svjetlina,\nkontrast itd.",
     "batch_cbr_to_cbz": "Skupna pretvorba\n CBR datoteka u CBZ",
     "batch_pdf_to_cbz": "Skupna pretvorba\n PDF datoteka u CBZ",
     "batch_img_to_cbz": "Skupna konverzija\n pojedinih slika u CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Globalno",
     "transparency_tolerance_panel_label": "Tolerancija:",
     "transparency_type_slider_tooltip": "Područje: čini prozirnim jedinstveno obojeno područje oko kliknutog piksela. Globalno: utječe na sve piksele slike čija je boja bliska kliknutoj",
-    "transparency_tolerance_slider_tooltip": "Maksimalna prihvaćena udaljenost boje oko kliknutog piksela"
+    "transparency_tolerance_slider_tooltip": "Maksimalna prihvaćena udaljenost boje oko kliknutog piksela",
+    "toolbar_color_depth_tooltip": "Dubina boje",
+    "toolbar_color_depth_instruction": "Odaberite dubinu, prilagodba se primjenjuje odmah",
+    "color_depth_panel_restore": "Vrati original",
+    "color_depth_panel_current_format": "Ova stranica trenutno je u formatu {format}.",
+    "toolbar_effects_tooltip": "Efekti",
+    "toolbar_effects_instruction": "Odaberite efekt, prilagodba se primjenjuje odmah",
+    "effects_panel_restore": "Vrati izvornik",
+    "toolbar_image_mode_tooltip": "Način slike",
+    "toolbar_image_mode_instruction": "Odaberite način, prilagodba se primjenjuje odmah",
+    "image_mode_panel_restore": "Vrati izvornik",
+    "toolbar_rotation_tooltip": "Rotacija",
+    "toolbar_rotation_instruction": "Zakrenite ili zrcalno okrenite prikazanu stranicu"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Pogreška",
         "message": "Prozirnost nije bilo moguće primijeniti."
+      },
+      "color_depth_failed": {
+        "title": "Greska",
+        "message": "Nije moguce primijeniti dubinu boje: {error}"
+      },
+      "effect_failed": {
+        "title": "Pogreška",
+        "message": "Efekt nije moguće primijeniti: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Pogreška",
+        "message": "Način slike nije moguće primijeniti: {error}"
+      },
+      "rotation_failed": {
+        "title": "Pogreška",
+        "message": "Rotaciju nije bilo moguće primijeniti: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Otkrivena su identična imena datoteka. Iako je spremanje tehnički\nmoguće, to može uzrokovati probleme s čitanjem u nekim aplikacijama\nza čitanje stripova (nepotpun prikaz, nedostajuće stranice itd.).\n\nPreporučuje se promijeniti brojeve stranica prije spremanja."
     },
     "adjustments": {
-      "window_title": "Prilagodbe slike",
-      "title": "Prilagodbe za {count} {word}",
-      "word_image": "slika",
-      "word_images": "slike",
-      "apply_button": "Primijeni",
-      "color_depth_section": "Dubina boje",
-      "effects_section": "Efekti",
-      "sharpness_section": "Ostrina",
-      "depth_unchanged": "Ne mijenjaj",
       "depth_32bit": "32 bita (RGBA - boje + prozirnost)",
       "depth_24bit": "24 bita (RGB - boje)",
       "depth_8bit": "8 bita (paleta PNG / sive nijanse JPEG)",
       "depth_1bit": "1 bit (crno-bijelo)",
-      "compression_enable": "Omoguci ponovnu kompresiju",
-      "effect_none": "Bez efekta",
       "effect_grayscale": "Nijanse sive",
       "effect_sepia": "Sepija",
       "auto_levels_button": "Automatsko podešavanje",
-      "reset_button": "Resetiraj",
       "preview_section": "Pregled",
       "effect_invert": "Inverzija boja",
-      "preview_warning": "Pretpregled se može razlikovati od konačnog rezultata",
-      "image_mode_section": "Način slike",
       "image_mode_rgb": "RGB (boje)",
       "image_mode_rgba": "RGBA (boje + prozirnost)",
       "image_mode_l": "L (nijanse sive)",
@@ -1383,13 +1396,11 @@
     "flatten": "Ravnanje mapa",
     "flatten_content": "Ako vaša arhiva sadrži podmape, koristite 'Ravnaj mape' za premještanje svih slika na istu razinu.",
     "viewer": "Preglednik",
-    "viewer_content": "Dvaput kliknite na stranicu da otvorite preglednik:\n• Tipke ← →: navigacija između stranica\n• Tipka D: prebacivanje između 4 načina čitanja\n  - Jedna stranica: jedna stranica odjednom\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5 itd.\n  - Kontinuirane dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5 itd.\n  - Webtoon: za okomite slike (web-stripovi), širina ograničena na 900px radi čitljivosti; kotačić miša pomiče stranicu okomito, a pri vrhu/dnu mijenja stranicu\n• Kotačić miša: brza navigacija (okomito pomicanje unutar stranice u načinu Webtoon)\n• Ctrl+kotačić ili Ctrl+plus/minus: zumiranje (do 1000% stvarne veličine slike)\n• Ctrl+0: prilagodi zumiranje prozoru\n• Ctrl+1: zumiranje na 100% (stvarna veličina piksela slike)\n• Desni klik + povlačenje: pomicanje prikazane slike kada premašuje prozor\n• Tipka F11: puni zaslon\n• Dvostruki klik: prebacivanje punog zaslona\n• Tipka Esc: otkaži okvir za izrezivanje / izlaz iz preglednika\n• Knjižna oznaka: automatski sprema trenutnu stranicu pri zatvaranju preglednika (osim prve i zadnje stranice). Crvena vrpca prikazuje se na odgovarajućoj sličici u mozaiku. Pri sljedećem otvaranju, poruka predlaže povratak na tu stranicu. Automatski se briše na zadnjoj stranici, ili ručno desnim klikom u pregledniku.",
+    "viewer_content": "Dvaput kliknite na stranicu da biste otvorili preglednik:\n• Tipke ← →: navigacija između stranica\n• Tipka D: prebacivanje između 4 načina čitanja\n  - Jedna stranica: jedna stranica odjednom\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5 itd.\n  - Neprekidne dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5 itd.\n  - Webtoon: za okomite slike (webcomics), širina ograničena na 900px radi čitljivosti; kotačić miša okomito pomiče stranicu, zatim mijenja stranicu pri vrhu/dnu\n• Kotačić miša: brza navigacija (okomito pomicanje stranice u Webtoon načinu)\n• Ctrl+kotačić ili Ctrl+Plus/Minus: zumiranje (do 1000% stvarne veličine slike)\n• Ctrl+0: prilagodi zumiranje prozoru\n• Ctrl+1: zumiranje na 100% (stvarna veličina piksela slike)\n• Desni klik + povlačenje: pomicanje prikazane slike (pomak) kada premašuje prozor\n• Tipka F11: puni zaslon\n• Dvoklik: prebacivanje punog zaslona\n• Tipka Esc: otkaži trenutno crtanje (izrezivanje, ravnanje, oblik…) ili napusti preglednik\n• Knjižna oznaka: automatski pamti trenutnu stranicu pri zatvaranju preglednika (osim prve/zadnje stranice). Crvena vrpca prikazuje se na odgovarajućoj sličici u mozaiku. Pri ponovnom otvaranju poruka predlaže povratak na tu stranicu. Automatski se briše na zadnjoj stranici, ili ručno desnim klikom u pregledniku.\n\nPlutajuća alatna traka: prijeđite mišem preko vrha slike da je prikažete (sama se skriva nakon nekoliko sekundi). Kliknite ikonu za aktiviranje odgovarajućeg alata:\n• Izrezivanje: nacrtajte pravokutnik, prilagodite ga rubovima, potvrdite\n• Ravnanje: nacrtajte crtu na ono što bi trebalo biti vodoravno/okomito, ispravak se primjenjuje automatski; desni klik na ikonu za prebacivanje na automatsko ravnanje (samo otkriva nagib, bez crtanja)\n• Rotacija/zrcaljenje: jedan klik rotira ili zrcali stranicu\n• Kloniranje: Ctrl+klik za odabir izvornog mjesta, zatim slikajte s pritisnutom tipkom miša za dupliciranje\n• Tekst: kliknite za postavljanje bloka teksta, odaberite font/veličinu/boju\n• Oblici: crtajte elipse, pravokutnike, linije ili strelice, s ručkama za promjenu veličine\n• Klizači (oštrina, svjetlina/kontrast, zasićenost, uklanjanje boja, kompresija): rezultat se prikazuje uživo dok povlačite\n• Razine: prilagodite crnu točku/gamu/bijelu točku klizačima, ili uzmite boju izravno sa slike pipetama\n• Prozirnost: kliknite boju na slici da je učinite prozirnom\n• Dubina boje, Efekti, Način slike: odaberite opciju klikom na radio gumb, primijenjeno odmah\n\nPotvrdite gumbom \"Potvrdi\" kada se pojavi, ili Esc za otkazivanje. Svaka promjena pridružuje se uobičajenoj povijesti Poništi/Ponovi.",
     "join_pages": "Spajanje stranica",
     "join_pages_content": "Odaberite nekoliko uzastopnih stranica, desni klik → 'Spoji odabrane stranice' za spajanje stranica vodoravno ili okomito. Format proizvedene slike odgovara formatu izvornih stranica ako su sve identične, inače PNG prema zadanim postavkama. Moći ćete odabrati brisanje ili zadržavanje izvornih stranica.\n\nPoložaj nove stranice u mozaiku:\n• Aktivni način ponovnog numeriranja (automatski ili ručni): stranica zauzima mjesto prve spojene stranice (njezino mjesto, ako se izvorne stranice izbrišu, ili točno prije nje, ako se zadrže), i pokreće ponovno numeriranje.\n• ISKLJUČENI način ponovnog numeriranja: stranica se dodaje na početak mozaika pod nazivom \"Spojeno_xxx\".",
     "split_pages": "Dijeljenje stranica",
     "split_pages_content": "Za automatsko dijeljenje dvostrukih stranica:\n• Odaberite stranice za dijeljenje\n• Desni klik → 'Podijeli odabrane stranice'\n• Odaberite smjer (okomito ili vodoravno)",
-    "crop": "Izrezivanje u pregledniku",
-    "crop_content": "U pregledniku, nacrtajte pravokutnik na slici za definiranje područja izrezivanja:\n• Nacrtajte pravokutnik mišem\n• Promijenite veličinu povlačenjem rubova ili kutova\n• Kliknite 'Potvrdi izrez' za primjenu\n• Izrezivanje se primjenjuje na trenutnu sliku\n• Tipka Escape: otkaz okvira za obrezivanje",
     "shortcuts": "Prečaci tipkovnice",
     "shortcuts_content": "• Ctrl+Z: Poništi zadnju radnju\n• Ctrl+Y: Ponovi poništenu radnju\n• Ctrl+A: Odaberi sve stranice\n• Ctrl+I: Obrni odabir\n• Ctrl+C: Kopiraj odabrane stranice\n• Ctrl+X: Izreži odabrane stranice\n• Ctrl+V: Zalijepi stranice\n• Del: Izbriši odabrane stranice\n• Ctrl+kotačić miša: Zumiranje (preglednik) / veličina sličica (mozaik) / veličina ikona (stupac ikona)\n• Ctrl+0 (preglednik): Prilagodi zumiranje prozoru\n• Ctrl+1 (preglednik): Zumiranje na 100% (stvarna veličina slike)\n• Desni klik + povlačenje (preglednik): Pomicanje prikazane slike\n• Ctrl+Alt+T: Izvezi sve prikazane sličice iz mozaika\n• F5: Ažuriraj prikaz mozaika\n• F11: Prebaci puni zaslon (izlaz s F11 ili ESC)",
     "dark_mode": "Tamni način",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Iznimka: Privremene datoteke koje koristi Windows meduspravljište (datoteke clipboard_XXXXX) čuvaju se 12 sati nakon kopiranja, kako biste ih mogli zalijepiti čak i nakon zatvaranja aplikacije. Nakon 12 sati automatski se brišu.",
     "config_log_note": "Skupne konverzije (PDF u CBZ i CBR u CBZ) izrađuju datoteku zapisnika u slučaju pogreške. Te datoteke (Log_pdftocbz_.txt i Log_cbrtocbz_.txt) čuvaju se i nakon zatvaranja aplikacije kako bi se kasnije mogle pregledati. Uklanjaju se samo pomoću gumba \"Izbriši privremene datoteke\" iznad. Datoteka Log_scan.txt na isti način bilježi svako skeniranje (korišteni skener, postavke, rezultat ili pogreška) — korisno za dijagnosticiranje problema sa skenerom.",
     "config_clipboard_cleared": "Datoteke meduspravilišta uspješno su obrisane.",
-    "adjust_images": "Prilagodba slika",
-    "adjust_images_content": "Ova funkcija omogućuje vam retuširanje slika izravno u MosaicView. Možete mijenjati svjetlinu, kontrast, oštrinu, razine, zasićenost, primjenjivati efekte (crno-bijelo, sepija, inverzija boja), podešavati kvalitetu kompresije, uklanjati boje, primjenjivati prozirnost ili pretvarati u različite dubine boja. Neke postavke imaju namjenski preglednik koji omogućuje pregled rezultata u punoj razlučivosti prije primjene. Sličica prikazuje rezultat u stvarnom vremenu u glavnom prozoru.",
     "create_icon": "Stvori ikonu",
     "create_icon_content": "MosaicView vam omogućuje stvaranje datoteka ikona (.ico) iz bilo koje slike u mozaiku.\n• Desni klik na sliku → 'Stvori ikonu'\n• Uokvirite željeno područje u pregledniku (ikona će obavezno biti kvadratna)\n• Po potrebi podesite prozirnost\n• Potvrdite: datoteka .ico dodaje se izravno u mozaik\n• Datoteke .ico automatski sadrže sve standardne rezolucije (od 16×16 do 256×256)\n• Dok god je u mozaiku prisutna datoteka .ico, spremanje u CBZ arhivu je blokirano jer format ICO nije podržan u tim arhivama. Izvezite datoteku .ico zasebno (Ctrl+C pa zalijepite u Windows mapu), zatim je izbrišite iz mozaika prije spremanja.",
     "batch_convert": "Skupna pretvorba",
@@ -1462,7 +1471,7 @@
     "scan": "Skeniraj sliku",
     "scan_content": "• Kliknite gumb „Skeniraj” (stupac ikona, izbornik Datoteka ili desni klik na mozaik) da biste otvorili prozor za skeniranje. MosaicView izravno upravlja vašim skenerom (putem WIA, sustava za skeniranje sustava Windows): odaberite uređaj, rezoluciju (DPI), način boje (boja / sivi tonovi / crno-bijelo), a zatim kliknite „Skeniraj”. Skener mora biti priključen, uključen i s instaliranim upravljačkim programom u sustavu Windows kako bi se pojavio na popisu.\n• Posljednje korišteni skener, razlučivost i odabrani way boja se pamte i automatski ponovno predlažu prilikom sljedećeg skeniranja.\n• Nudi se samo skeniranje cijele stranice i izvoz u JPG, budući da aplikacija već ima sve potrebno za naknadnu obradu i konverziju slike.\n• Skenirana slika automatski se dodaje mozaiku, nakon već postojećih stranica. Zatim je možete izrezati, poravnati, prilagoditi boje itd. kao i bilo koju drugu stranicu mozaika\n• Ova značajka izravno upravlja skenerom, bez korištenja softvera proizvođača ili prikazivanja njegovog vlastitog prozora za konfiguraciju.\n• Budući da fizičkim skenerom u svakom trenutku može upravljati samo jedna veza, skeniranje je moguće samo u jednom panelu odjednom: ako je u jednom panelu otvoren prozor za skeniranje ili je skeniranje u tijeku, gumb „Skeniraj” ostaje siv u drugom panelu do završetka operacije.",
     "straighten": "Ispravi stranicu",
-    "straighten_content": "Dva načina za ispravljanje nakrivljenog skena, dostupna iz stupca ikona (desni klik na ikonu \"Ispravi\" za promjenu načina rada), izbornika Slike ili desnim klikom na mozaik:\n• Ručno ispravljanje: otvara namjenski preglednik u kojem crtate ravnu liniju na onome što bi trebalo biti vodoravno ili okomito na slici; kut ispravka izračunava se automatski i primjenjuje na sliku, s ručkama za fino podešavanje linije.\n• Automatsko ispravljanje: samo otkriva nagib (bez crtanja) i izravno ispravlja odabranu stranicu ili stranice; prazni kutovi nastali rotacijom ispunjavaju se bijelom bojom. Radi na više stranica odjednom. Prozor sažetka prikazuje broj uspješno ispravljenih stranica i navodi one za koje nije otkriven pouzdan nagib."
+    "straighten_content": "Automatsko ravnanje (bez crtanja) dostupno je iz stupca ikona (desni klik na ikonu \"Poravnaj\" za promjenu načina), izbornika Slike, ili desni klik na mozaik: samostalno otkriva nagib i izravno ravna odabranu stranicu/stranice; prazni kutovi nastali rotacijom ispunjavaju se bijelom bojom. Radi na više stranica odjednom. Prozor sažetka prikazuje koliko je stranica uspješno poravnano i navodi one kod kojih nije otkriven pouzdan nagib.\n\nRučno ravnanje (crtanje referentne crte) obavlja se iz glavnog preglednika, pogledajte odjeljak Preglednik."
   },
   "misc": {
     "file_word": "datoteka",

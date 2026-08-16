@@ -50,7 +50,6 @@
     "renumber_recommended": "Przenumeruj (zalecane)",
     "ignore_and_save": "Ignoruj i zapisz",
     "open_without_rename": "Otwórz bez zmiany nazwy",
-    "adjustments": "Jasność,\nkontrast itp.",
     "batch_cbr_to_cbz": "Konwersja wsadowa\n plików CBR do CBZ",
     "batch_pdf_to_cbz": "Konwersja wsadowa\n plików PDF do CBZ",
     "batch_img_to_cbz": "Konwersja wsadowa\n pojedynczych obrazów do CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Globalnie",
     "transparency_tolerance_panel_label": "Tolerancja:",
     "transparency_type_slider_tooltip": "Obszar: sprawia, że jednolity kolorystycznie obszar wokół klikniętego piksela staje się przezroczysty. Globalnie: dotyczy wszystkich pikseli obrazu, których kolor jest zbliżony do klikniętego",
-    "transparency_tolerance_slider_tooltip": "Maksymalna akceptowana odległość koloru wokół klikniętego piksela"
+    "transparency_tolerance_slider_tooltip": "Maksymalna akceptowana odległość koloru wokół klikniętego piksela",
+    "toolbar_color_depth_tooltip": "Glebia koloru",
+    "toolbar_color_depth_instruction": "Wybierz glebie, zmiana zostanie zastosowana natychmiast",
+    "color_depth_panel_restore": "Przywroc oryginal",
+    "color_depth_panel_current_format": "Ta strona jest obecnie w formacie {format}.",
+    "toolbar_effects_tooltip": "Efekty",
+    "toolbar_effects_instruction": "Wybierz efekt, korekta zostanie zastosowana natychmiast",
+    "effects_panel_restore": "Przywróć oryginał",
+    "toolbar_image_mode_tooltip": "Tryb obrazu",
+    "toolbar_image_mode_instruction": "Wybierz tryb, korekta zostanie zastosowana natychmiast",
+    "image_mode_panel_restore": "Przywróć oryginał",
+    "toolbar_rotation_tooltip": "Obrót",
+    "toolbar_rotation_instruction": "Obróć lub odbij wyświetlaną stronę"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Błąd",
         "message": "Nie udało się zastosować przezroczystości."
+      },
+      "color_depth_failed": {
+        "title": "Blad",
+        "message": "Nie mozna zastosowac glebi koloru: {error}"
+      },
+      "effect_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się zastosować efektu: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Błąd",
+        "message": "Nie udało się zastosować trybu obrazu: {error}"
+      },
+      "rotation_failed": {
+        "title": "Błąd",
+        "message": "Nie można zastosować obrotu: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Wykryto identyczne nazwy plików. Chociaż zapisywanie jest technicznie\nmożliwe, może to powodować problemy z odczytem w niektórych aplikacjach\ndo czytania komiksów (niekompletne wyświetlanie, brakujące strony itp.).\n\nZaleca się ponowne numerowanie stron przed zapisaniem."
     },
     "adjustments": {
-      "window_title": "Dostosowania obrazu",
-      "title": "Dostosowania dla {count} {word}",
-      "word_image": "obraz",
-      "word_images": "obrazy",
-      "apply_button": "Zastosuj",
-      "color_depth_section": "Glebia koloru",
-      "effects_section": "Efekty",
-      "sharpness_section": "Ostrosc",
-      "depth_unchanged": "Nie zmieniaj",
       "depth_32bit": "32 bity (RGBA - kolory + przezroczystosc)",
       "depth_24bit": "24 bity (RGB - kolory)",
       "depth_8bit": "8 bitow (paleta PNG / skala szarosci JPEG)",
       "depth_1bit": "1 bit (czarno-bialy)",
-      "compression_enable": "Wlacz ponowna kompresje",
-      "effect_none": "Brak efektu",
       "effect_grayscale": "Odcienie szarosci",
       "effect_sepia": "Sepia",
       "auto_levels_button": "Automatyczna regulacja",
-      "reset_button": "Zresetuj",
       "preview_section": "Podgląd",
       "effect_invert": "Inwersja kolorów",
-      "preview_warning": "Podgląd może różnić się od wyniku końcowego",
-      "image_mode_section": "Tryb obrazu",
       "image_mode_rgb": "RGB (kolory)",
       "image_mode_rgba": "RGBA (kolory + przezroczystość)",
       "image_mode_l": "L (skala szarości)",
@@ -1383,13 +1396,11 @@
     "flatten": "Spłaszczanie katalogów",
     "flatten_content": "Jeśli archiwum zawiera podkatalogi, użyj 'Spłaszcz katalogi', aby przenieść wszystkie obrazy na ten sam poziom.",
     "viewer": "Przeglądarka",
-    "viewer_content": "Kliknij dwukrotnie stronę, aby otworzyć przeglądarkę:\n• Klawisze ← →: nawigacja między stronami\n• Klawisz D: przełączanie między 4 trybami czytania\n  - Pojedyncza strona: jedna strona naraz\n  - Podwójne strony: strona 1 sama, następnie 2-3, 4-5 itd.\n  - Ciągłe podwójne strony: strona 1 sama, następnie 2-3, 3-4, 4-5 itd.\n  - Webtoon: dla obrazów pionowych (webcomics), szerokość ograniczona do 900px dla czytelności; kółko myszy przewija stronę w pionie, a po osiągnięciu góry/dołu zmienia stronę\n• Kółko myszy: szybka nawigacja (przewijanie pionowe strony w trybie Webtoon)\n• Ctrl+kółko lub Ctrl+plus/minus: powiększenie (do 1000% rzeczywistego rozmiaru obrazu)\n• Ctrl+0: dopasuj powiększenie do okna\n• Ctrl+1: powiększenie do 100% (rzeczywisty rozmiar pikseli obrazu)\n• Kliknięcie prawym przyciskiem + przeciąganie: przesuń wyświetlany obraz, gdy przekracza okno\n• Klawisz F11: pełny ekran\n• Podwójne kliknięcie: przełącz pełny ekran\n• Klawisz Esc: anuluj ramkę przycinania / wyjdź z przeglądarki\n• Zakładka: automatycznie zapisuje bieżącą stronę przy zamykaniu przeglądarki (z wyjątkiem pierwszej i ostatniej strony). Na odpowiedniej miniaturze w mozaice pojawia się czerwona wstążka. Przy kolejnym otwarciu wiadomość sugeruje powrót do tej strony. Automatycznie usuwana na ostatniej stronie lub ręcznie poprzez kliknięcie prawym przyciskiem w przeglądarce.",
+    "viewer_content": "Kliknij dwukrotnie na stronę, aby otworzyć przeglądarkę:\n• Klawisze ← →: nawigacja między stronami\n• Klawisz D: przełączanie między 4 trybami odczytu\n  - Pojedyncza strona: jedna strona naraz\n  - Podwójne strony: strona 1 sama, potem 2-3, 4-5 itd.\n  - Ciągłe podwójne strony: strona 1 sama, potem 2-3, 3-4, 4-5 itd.\n  - Webtoon: dla obrazów pionowych (webcomics), szerokość ograniczona do 900px dla czytelności; kółko myszy przewija stronę w pionie, następnie zmienia stronę po dotarciu do góry/dołu\n• Kółko myszy: szybka nawigacja (przewijanie pionowe strony w trybie Webtoon)\n• Ctrl+kółko lub Ctrl+Plus/Minus: powiększenie (do 1000% rzeczywistego rozmiaru obrazu)\n• Ctrl+0: dopasuj powiększenie do okna\n• Ctrl+1: powiększenie 100% (rzeczywisty rozmiar pikseli obrazu)\n• Prawy przycisk myszy + przeciągnięcie: przesuń wyświetlany obraz (pan), gdy przekracza okno\n• Klawisz F11: pełny ekran\n• Podwójne kliknięcie: przełącz pełny ekran\n• Klawisz Esc: anuluj bieżące rysowanie (kadrowanie, prostowanie, kształt…) lub wyjdź z przeglądarki\n• Zakładka: automatycznie zapamiętuje bieżącą stronę przy zamknięciu przeglądarki (z wyjątkiem pierwszej/ostatniej strony). Czerwona wstążka pojawia się na odpowiedniej miniaturze w mozaice. Przy ponownym otwarciu komunikat proponuje powrót do tej strony. Usuwana automatycznie na ostatniej stronie, lub ręcznie przez prawy przycisk myszy w przeglądarce.\n\nPływający pasek narzędzi: najedź myszą na górę obrazu, aby go pokazać (chowa się sam po kilku sekundach). Kliknij ikonę, aby aktywować odpowiednie narzędzie:\n• Kadrowanie: narysuj prostokąt, dostosuj go za krawędzie, zatwierdź\n• Prostowanie: narysuj linię na tym, co powinno być poziome/pionowe, korekta stosowana jest automatycznie; kliknij prawym przyciskiem na ikonę, aby przełączyć na prostowanie automatyczne (wykrywa przechylenie samo, bez rysowania)\n• Obrót/odbicie: jedno kliknięcie obraca lub odwraca stronę\n• Klonowanie: Ctrl+klik, aby wybrać punkt źródłowy, następnie maluj z wciśniętym przyciskiem myszy, aby powielić\n• Tekst: kliknij, aby umieścić blok tekstu, wybierz czcionkę/rozmiar/kolor\n• Kształty: rysuj elipsy, prostokąty, linie lub strzałki, z uchwytami do zmiany rozmiaru\n• Suwaki (ostrość, jasność/kontrast, nasycenie, usuwanie kolorów, kompresja): wynik wyświetla się na żywo podczas przeciągania\n• Poziomy: dostosuj punkt czerni/gammę/punkt bieli suwakami, lub pobierz kolor bezpośrednio z obrazu za pomocą pipet\n• Przezroczystość: kliknij kolor na obrazie, aby uczynić go przezroczystym\n• Głębia koloru, Efekty, Tryb obrazu: wybierz opcję, klikając przycisk radiowy, zastosowane natychmiast\n\nZatwierdź przyciskiem „Zatwierdź”, gdy się pojawi, lub Esc, aby anulować. Każda zmiana dołącza do zwykłej historii Cofnij/Ponów.",
     "join_pages": "Łączenie stron",
     "join_pages_content": "Wybierz kilka kolejnych stron, kliknij prawym przyciskiem myszy → 'Połącz wybrane strony', aby połączyć strony poziomo lub pionowo. Format wynikowego obrazu odpowiada formatowi stron źródłowych, jeśli wszystkie są identyczne, w przeciwnym razie domyślnie PNG. Będziesz mógł wybrać, czy usunąć, czy zachować oryginalne strony.\n\nMiejsce nowej strony w mozaice:\n• Aktywny tryb ponownej numeracji (automatyczny lub ręczny): strona zajmuje miejsce pierwszej połączonej strony (jej miejsce, jeśli strony źródłowe zostaną usunięte, lub bezpośrednio przed nią, jeśli zostaną zachowane), i wywołuje ponowną numerację.\n• Tryb OFF ponownej numeracji: strona zostaje dodana na początku mozaiki pod nazwą \"Połączenie_xxx\".",
     "split_pages": "Dzielenie stron",
     "split_pages_content": "Aby automatycznie podzielić podwójne strony:\n• Zaznacz strony do podziału\n• Kliknij prawym przyciskiem → 'Podziel zaznaczone strony'\n• Wybierz kierunek (pionowy lub poziomy)",
-    "crop": "Kadrowanie w przeglądarce",
-    "crop_content": "W przeglądarce narysuj prostokąt na obrazie, aby zdefiniować obszar kadrowania:\n• Narysuj prostokąt myszą\n• Zmień jego rozmiar, przeciągając krawędzie lub rogi\n• Kliknij 'Zatwierdź kadrowanie', aby zastosować\n• Kadrowanie jest stosowane do bieżącego obrazu\n• Klawisz Esc: anuluj ramkę przycinania",
     "shortcuts": "Skróty klawiszowe",
     "shortcuts_content": "• Ctrl+Z: Cofnij ostatnią czynność\n• Ctrl+Y: Ponów cofniętą czynność\n• Ctrl+A: Zaznacz wszystkie strony\n• Ctrl+I: Odwróć zaznaczenie\n• Ctrl+C: Kopiuj zaznaczone strony\n• Ctrl+X: Wytnij zaznaczone strony\n• Ctrl+V: Wklej strony\n• Del: Usuń zaznaczone strony\n• Ctrl+kółko myszy: Powiększenie (przeglądarka) / rozmiar miniatur (mozaika) / rozmiar ikon (kolumna ikon)\n• Ctrl+0 (przeglądarka): Dopasuj powiększenie do okna\n• Ctrl+1 (przeglądarka): Powiększenie do 100% (rzeczywisty rozmiar obrazu)\n• Kliknięcie prawym przyciskiem + przeciąganie (przeglądarka): Przesuń wyświetlany obraz\n• Ctrl+Alt+T: Eksportuj wszystkie wyświetlane miniatury z mozaiki\n• F5: Odśwież widok mozaiki\n• F11: Przełącz pełny ekran (wyjdź za pomocą F11 lub ESC)",
     "dark_mode": "Tryb ciemny",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Wyjątek: Pliki tymczasowe używane przez schowek Windows (pliki clipboard_XXXXX) są przechowywane przez 12 godzin po skopiowaniu, dzięki czemu można je wkleić nawet po zamknięciu aplikacji. Po 12 godzinach są automatycznie usuwane.",
     "config_log_note": "Konwersje wsadowe (PDF na CBZ i CBR na CBZ) tworzą plik dziennika w przypadku błędu. Te pliki (Log_pdftocbz_.txt i Log_cbrtocbz_.txt) są zachowywane nawet po zamknięciu aplikacji, aby można je było później przejrzeć. Są usuwane wyłącznie za pomocą przycisku „Wyczyść pliki tymczasowe” powyżej. Plik Log_scan.txt rejestruje w ten sam sposób każde skanowanie (użyty skaner, ustawienia, wynik lub błąd) — przydatny do diagnozowania problemu ze skanerem.",
     "config_clipboard_cleared": "Pliki schowka zostały pomyślnie wyczyszczone.",
-    "adjust_images": "Regulacja obrazów",
-    "adjust_images_content": "Ta funkcja umożliwia retuszowanie obrazów bezpośrednio w MosaicView. Można modyfikować jasność, kontrast, ostrość, poziomy, nasycenie, stosować efekty (czarno-biały, sepia, inwersja kolorów), regulować jakość kompresji, usuwać kolory, stosować przezroczystość lub konwertować do różnych głębi kolorów. Niektóre ustawienia mają dedykowany podgląd umożliwiający wyświetlenie wyniku w pełnej rozdzielczości przed zastosowaniem. Miniaturka pokazuje wynik w czasie rzeczywistym w oknie głównym.",
     "create_icon": "Utwórz ikonę",
     "create_icon_content": "MosaicView umożliwia tworzenie plików ikon (.ico) z dowolnego obrazu w mozaice.\n• Kliknij prawym przyciskiem myszy na obraz → 'Utwórz ikonę'\n• Zaznacz żądany obszar w przeglądarce (ikona będzie obowiązkowo kwadratowa)\n• W razie potrzeby dostosuj przezroczystość\n• Zatwierdź: plik .ico zostaje dodany bezpośrednio do mozaiki\n• Pliki .ico automatycznie zawierają wszystkie standardowe rozdzielczości (od 16×16 do 256×256)\n• Dopóki w mozaice znajduje się plik .ico, zapisywanie do archiwum CBZ jest zablokowane, ponieważ format ICO nie jest obsługiwany przez te archiwa. Wyeksportuj plik .ico osobno (Ctrl+C, a następnie wklej do folderu Windows), a następnie usuń go z mozaiki przed zapisaniem.",
     "batch_convert": "Konwersja wsadowa",
@@ -1462,7 +1471,7 @@
     "scan": "Zeskanuj obraz",
     "scan_content": "• Kliknij przycisk „Skanuj” (kolumna ikon, menu Plik lub prawy przycisk myszy na mozaice), aby otworzyć okno skanowania. MosaicView steruje skanerem bezpośrednio (za pomocą WIA, systemu skanowania Windows): wybierz urządzenie, rozdzielczość (DPI), tryb koloru (kolor / skala szarości / czarno-białe), a następnie kliknij „Skanuj”. Aby skaner pojawił się na liście, musi być podłączony, włączony, a jego sterownik zainstalowany w systemie Windows.\n• Ostatnio używany skaner, rozdzielczość i wybrany tryb koloru są zapamiętywane i automatycznie proponowane ponownie przy kolejnym skanowaniu.\n• Oferowane jest wyłącznie skanowanie całej strony i eksport do formatu JPG, ponieważ aplikacja ma już wszystko, co potrzebne do retuszu i konwersji obrazu później.\n• Zeskanowany obraz jest automatycznie dodawany do mozaiki, po już istniejących stronach. Możesz go następnie przyciąć, wyprostować, dostosować kolory itd., tak jak każdą inną stronę mozaiki\n• Ta funkcja steruje skanerem bezpośrednio, bez użycia oprogramowania producenta i bez wyświetlania jego własnego okna konfiguracji.\n• Ponieważ fizyczny skaner może być obsługiwany tylko przez jedno połączenie naraz, skanowanie jest możliwe tylko w jednym panelu naraz: jeśli w jednym panelu otwarte jest okno skanowania lub trwa skanowanie, przycisk „Skanuj” pozostaje wyszarzony w drugim panelu aż do zakończenia operacji.",
     "straighten": "Wyprostuj stronę",
-    "straighten_content": "Dwa sposoby na poprawienie przekrzywionego skanu, dostępne z kolumny ikon (kliknij prawym przyciskiem myszy ikonę „Wyprostuj”, aby zmienić tryb), menu Obrazy lub kliknięcie prawym przyciskiem myszy na mozaice:\n• Ręczne prostowanie: otwiera dedykowaną przeglądarkę, w której rysujesz prostą linię na tym, co powinno być poziome lub pionowe na obrazie; kąt korekty jest obliczany automatycznie i stosowany do obrazu, z uchwytami do precyzyjnego dostrojenia linii.\n• Automatyczne prostowanie: samodzielnie wykrywa przekrzywienie (bez rysowania czegokolwiek) i bezpośrednio prostuje wybraną stronę lub strony; puste narożniki powstałe w wyniku obrotu są wypełniane bielą. Działa na wielu stronach jednocześnie. Okno podsumowania pokazuje liczbę pomyślnie wyprostowanych stron i wymienia te, dla których nie wykryto wiarygodnego przekrzywienia."
+    "straighten_content": "Automatyczne prostowanie (bez rysowania) jest dostępne z kolumny ikon (kliknij prawym przyciskiem na ikonę „Prostuj”, aby zmienić tryb), z menu Obrazy, lub prawym przyciskiem na mozaice: samodzielnie wykrywa przechylenie i prostuje bezpośrednio wybraną stronę/strony; puste narożniki powstałe wskutek obrotu są wypełniane bielą. Działa na wielu stronach jednocześnie. Okno podsumowania pokazuje, ile stron zostało pomyślnie wyprostowanych, i wymienia te, dla których nie udało się wykryć wiarygodnego przechylenia.\n\nRęczne prostowanie (rysowanie linii odniesienia) wykonuje się z głównej przeglądarki, patrz sekcja Przeglądarka."
   },
   "misc": {
     "file_word": "plik",

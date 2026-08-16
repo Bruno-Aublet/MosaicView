@@ -373,7 +373,7 @@ class CropViewerMixin:
             entry = state.images_data[self.current_idx]
             original_img = ensure_image_loaded(entry)
             if original_img is None:
-                dlg = MsgDialog(self, "messages.errors.crop_failed.title",
+                dlg = MsgDialog(self._center_parent, "messages.errors.crop_failed.title",
                                 "messages.errors.crop_failed.title")
                 dlg.show_nonmodal()
                 return
@@ -398,7 +398,7 @@ class CropViewerMixin:
             orig_y2 = int(crop_y2 / zoom_ratio)
 
             if orig_x2 <= orig_x1 or orig_y2 <= orig_y1:
-                dlg = MsgDialog(self, "messages.errors.crop_invalid.title",
+                dlg = MsgDialog(self._center_parent, "messages.errors.crop_invalid.title",
                                 "messages.errors.crop_invalid.message")
                 dlg.show_nonmodal()
                 return
@@ -437,6 +437,6 @@ class CropViewerMixin:
             self._toolbar.refresh_undo_redo_state()
 
         except Exception:
-            dlg = MsgDialog(self, "messages.errors.crop_failed.title",
+            dlg = MsgDialog(self._center_parent, "messages.errors.crop_failed.title",
                             "messages.errors.crop_failed.title")
             dlg.show_nonmodal()

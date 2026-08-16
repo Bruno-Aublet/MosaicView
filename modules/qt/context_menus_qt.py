@@ -417,11 +417,6 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
         _add_disabled(menu, _("context_menu.image.reduce_size"))
 
     if has_image_selection:
-        menu.addAction(_("dialogs.adjustments.window_title"), callbacks['show_image_adjustments_dialog'])
-    else:
-        _add_disabled(menu, _("dialogs.adjustments.window_title"))
-
-    if has_image_selection:
         menu.addAction(_("context_menu.image.straighten_auto"), callbacks['deskew_selected'])
     else:
         _add_disabled(menu, _("context_menu.image.straighten_auto"))

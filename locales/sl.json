@@ -50,7 +50,6 @@
     "renumber_recommended": "Ponovno oštevilči (priporočeno)",
     "ignore_and_save": "Prezri in shrani",
     "open_without_rename": "Odpri brez preimenovanja",
-    "adjustments": "Svetlost,\nkontrast itd.",
     "batch_cbr_to_cbz": "Paketna pretvorba\n datotek CBR v CBZ",
     "batch_pdf_to_cbz": "Skupinsko pretvarjanje\n datotek PDF v CBZ",
     "batch_img_to_cbz": "Paketna pretvorba\n posameznih slik v CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Globalno",
     "transparency_tolerance_panel_label": "Toleranca:",
     "transparency_type_slider_tooltip": "Območje: naredi prosojno enotno barvno območje okoli kliknjenega slikovnega elementa. Globalno: vpliva na vse slikovne elemente slike, katerih barva je blizu kliknjeni",
-    "transparency_tolerance_slider_tooltip": "Največja sprejeta barvna razdalja okoli kliknjenega slikovnega elementa"
+    "transparency_tolerance_slider_tooltip": "Največja sprejeta barvna razdalja okoli kliknjenega slikovnega elementa",
+    "toolbar_color_depth_tooltip": "Globina barve",
+    "toolbar_color_depth_instruction": "Izberite globino, prilagoditev se uporabi takoj",
+    "color_depth_panel_restore": "Obnovi izvirnik",
+    "color_depth_panel_current_format": "Ta stran je trenutno v formatu {format}.",
+    "toolbar_effects_tooltip": "Učinki",
+    "toolbar_effects_instruction": "Izberite učinek, prilagoditev se uporabi takoj",
+    "effects_panel_restore": "Obnovi izvirnik",
+    "toolbar_image_mode_tooltip": "Način slike",
+    "toolbar_image_mode_instruction": "Izberite način, prilagoditev se uporabi takoj",
+    "image_mode_panel_restore": "Obnovi izvirnik",
+    "toolbar_rotation_tooltip": "Vrtenje",
+    "toolbar_rotation_instruction": "Zavrtite ali zrcalite prikazano stran"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Napaka",
         "message": "Prosojnosti ni bilo mogoče uporabiti."
+      },
+      "color_depth_failed": {
+        "title": "Napaka",
+        "message": "Globine barve ni bilo mogoce uporabiti: {error}"
+      },
+      "effect_failed": {
+        "title": "Napaka",
+        "message": "Učinka ni bilo mogoče uporabiti: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Napaka",
+        "message": "Načina slike ni bilo mogoče uporabiti: {error}"
+      },
+      "rotation_failed": {
+        "title": "Napaka",
+        "message": "Vrtenja ni bilo mogoče uporabiti: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Zaznana so bila enaka imena datotek. Čeprav je shranjevanje tehnično\nmogoče, lahko to povzroči težave pri branju v nekaterih aplikacijah za\nbranje stripov (nepopoln prikaz, manjkajoče strani itd.).\n\nPriporočljivo je, da pred shranjevanjem ponovno oštevilčite strani."
     },
     "adjustments": {
-      "window_title": "Prilagoditve slike",
-      "title": "Prilagoditve za {count} {word}",
-      "word_image": "slika",
-      "word_images": "slike",
-      "apply_button": "Uporabi",
-      "color_depth_section": "Globina barve",
-      "effects_section": "Učinki",
-      "sharpness_section": "Ostrina",
-      "depth_unchanged": "Ne spremeni",
       "depth_32bit": "32 bitov (RGBA - barve + prosojnost)",
       "depth_24bit": "24 bitov (RGB - barve)",
       "depth_8bit": "8 bitov (paleta PNG / sivinskih odtenkov JPEG)",
       "depth_1bit": "1 bit (črno-belo)",
-      "compression_enable": "Omogoči ponovno stiskanje",
-      "effect_none": "Brez učinka",
       "effect_grayscale": "Odtenki sive",
       "effect_sepia": "Sepija",
       "auto_levels_button": "Samodejno prilagajanje",
-      "reset_button": "Ponastavi",
       "preview_section": "Predogled",
       "effect_invert": "Inverzija barv",
-      "preview_warning": "Predogled se lahko razlikuje od končnega rezultata",
-      "image_mode_section": "Način slike",
       "image_mode_rgb": "RGB (barve)",
       "image_mode_rgba": "RGBA (barve + prosojnost)",
       "image_mode_l": "L (odtenki sive)",
@@ -1383,13 +1396,11 @@
     "flatten": "Splošcenje map",
     "flatten_content": "Če vaš arhiv vsebuje podmape, uporabite 'Splošči mape', da prenesete vse slike na isto raven.",
     "viewer": "Pregledovalnik",
-    "viewer_content": "Dvokliknite na stran, da odprete pregledovalnik:\n• Tipke ← →: navigacija med stranmi\n• Tipka D: preklapljanje med 4 načini branja\n  - Ena stran: ena stran naenkrat\n  - Dvojne strani: stran 1 sama, nato 2-3, 4-5 itd.\n  - Neprekinjene dvojne strani: stran 1 sama, nato 2-3, 3-4, 4-5 itd.\n  - Webtoon: za navpične slike (spletni stripi), širina omejena na 900px zaradi berljivosti; kolesce miške pomika stran navpično, ob vrhu/dnu pa preklopi stran\n• Kolesce miške: hitra navigacija (navpično pomikanje po strani v načinu Webtoon)\n• Ctrl+kolesce ali Ctrl+plus/minus: povečava (do 1000 % dejanske velikosti slike)\n• Ctrl+0: prilagodi povečavo oknu\n• Ctrl+1: povečava na 100 % (dejanska velikost slikovnih pik slike)\n• Desni klik + vlečenje: premakni prikazano sliko, ko presega okno\n• Tipka F11: celozaslonski način\n• Dvoklik: preklop celozaslonskega načina\n• Tipka Esc: prekliči okvir obrezovanja / zapusti pregledovalnik\n• Zaznamek: samodejno shrani trenutno stran ob zapiranju pregledovalnika (razen prve in zadnje strani). Na ustrezni sličici v mozaiku se prikaže rdeč trak. Ob naslednjem odpiranju sporočilo predlaga vrnitev na to stran. Samodejno izbrisano na zadnji strani ali ročno z desnim klikom v pregledovalniku.",
+    "viewer_content": "Dvokliknite stran, da odprete pregledovalnik:\n• Tipki ← →: krmarjenje med stranmi\n• Tipka D: preklapljanje med 4 načini branja\n  - Ena stran: ena stran naenkrat\n  - Dvojne strani: stran 1 sama, nato 2-3, 4-5 itd.\n  - Neprekinjene dvojne strani: stran 1 sama, nato 2-3, 3-4, 4-5 itd.\n  - Webtoon: za navpične slike (spletni stripi), širina omejena na 900px za berljivost; miškin kolešček navpično drsi po strani, nato ob vrhu/dnu preklopi stran\n• Miškin kolešček: hitro krmarjenje (navpično drsenje po strani v načinu Webtoon)\n• Ctrl+kolešček ali Ctrl+Plus/Minus: povečava (do 1000% dejanske velikosti slike)\n• Ctrl+0: prilagodi povečavo oknu\n• Ctrl+1: povečava na 100% (dejanska velikost slikovnih pik)\n• Desni klik + vlečenje: premikanje prikazane slike (pomik), ko presega okno\n• Tipka F11: celozaslonski način\n• Dvoklik: preklop celozaslonskega načina\n• Tipka Esc: prekliči trenutno risanje (obrezovanje, poravnavanje, oblika…) ali zapusti pregledovalnik\n• Zaznamek: samodejno shrani trenutno stran ob zapiranju pregledovalnika (razen prve/zadnje strani). Na ustrezni sličici v mozaiku se prikaže rdeč trak. Ob ponovnem odpiranju sporočilo predlaga vrnitev na to stran. Samodejno izbrisano na zadnji strani, ali ročno z desnim klikom v pregledovalniku.\n\nPlavajoča orodna vrstica: pomaknite miško nad vrh slike, da se prikaže (sama se skrije po nekaj sekundah). Kliknite ikono za aktiviranje ustreznega orodja:\n• Obrezovanje: narišite pravokotnik, prilagodite ga po robovih, potrdite\n• Poravnavanje: narišite črto na to, kar naj bi bilo vodoravno/navpično, popravek se uporabi samodejno; desni klik na ikono za preklop na samodejno poravnavanje (samo zazna nagib, brez risanja)\n• Vrtenje/zrcaljenje: en klik zavrti ali zrcali stran\n• Kloniranje: Ctrl+klik za izbiro izvornega mesta, nato slikajte s pritisnjenim miškinim gumbom za podvajanje\n• Besedilo: kliknite za postavitev besedilnega bloka, izberite pisavo/velikost/barvo\n• Oblike: rišite elipse, pravokotnike, črte ali puščice, z ročaji za spreminjanje velikosti\n• Drsniki (ostrina, svetlost/kontrast, nasičenost, odstranjevanje barv, stiskanje): rezultat se prikazuje v živo med vlečenjem\n• Nivoji: prilagodite črno točko/gamo/belo točko z drsniki, ali zajemite barvo neposredno s slike s kapalkami\n• Prosojnost: kliknite barvo na sliki, da jo naredite prosojno\n• Barvna globina, Učinki, Način slike: izberite možnost s klikom na izbirni gumb, uporabljeno takoj\n\nPotrdite z gumbom »Potrdi«, ko se prikaže, ali Esc za preklic. Vsaka sprememba se pridruži običajni zgodovini Razveljavi/Uveljavi.",
     "join_pages": "Združevanje strani",
     "join_pages_content": "Izberite več zaporednih strani, desni klik → 'Združi izbrane strani' za združevanje strani vodoravno ali navpično. Format nastale slike ustreza formatu izvornih strani, če so vse enake, sicer privzeto PNG. Izbrali boste lahko, ali izbrišete ali obdržite izvirne strani.\n\nMesto nove strani v mozaiku:\n• Aktivni način preštevilčenja (samodejni ali ročni): stran prevzame mesto prve združene strani (njeno mesto, če so izvorne strani izbrisane, ali tik pred njo, če so ohranjene), in sproži preštevilčenje.\n• Izklopljen način preštevilčenja: stran se doda na začetek mozaika pod imenom \"Združeno_xxx\".",
     "split_pages": "Razdelitev strani",
     "split_pages_content": "Za samodejno razdelitev dvojnih strani:\n• Izberite strani za razdelitev\n• Desni klik → 'Razdeli izbrane strani'\n• Izberite smer (navpično ali vodoravno)",
-    "crop": "Obrezovanje v pregledovalniku",
-    "crop_content": "V pregledovalniku narišite pravokotnik na sliki, da določite območje obrezave:\n• Narišite pravokotnik z miško\n• Spremenite velikost s potegom robov ali kotov\n• Kliknite 'Potrdi obrezavo' za uporabo\n• Obrezava se uporabi na trenutni sliki\n• Tipka Esc: prekliči okvir za obrezovanje",
     "shortcuts": "Bližnjice na tipkovnici",
     "shortcuts_content": "• Ctrl+Z: Razveljavi zadnje dejanje\n• Ctrl+Y: Ponovi razveljavljeno dejanje\n• Ctrl+A: Izberi vse strani\n• Ctrl+I: Obrni izbor\n• Ctrl+C: Kopiraj izbrane strani\n• Ctrl+X: Izreži izbrane strani\n• Ctrl+V: Prilepi strani\n• Del: Izbriši izbrane strani\n• Ctrl+kolesce miške: Povečava (pregledovalnik) / velikost sličic (mozaik) / velikost ikon (stolpec ikon)\n• Ctrl+0 (pregledovalnik): Prilagodi povečavo oknu\n• Ctrl+1 (pregledovalnik): Povečava na 100 % (dejanska velikost slike)\n• Desni klik + vlečenje (pregledovalnik): Premakni prikazano sliko\n• Ctrl+Alt+T: Izvozi vse prikazane sličice iz mozaika\n• F5: Posodobi prikaz mozaika\n• F11: Preklopi celozaslonski način (izhod z F11 ali ESC)",
     "dark_mode": "Temni način",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Izjema: Začasne datoteke, ki jih uporablja odložišče Windows (datoteke clipboard_XXXXX), se hranijo 12 ur po kopiranju, tako da jih lahko prilepite tudi po zaprtju aplikacije. Po 12 urah se samodejno izbrišejo.",
     "config_log_note": "Paketne pretvorbe (PDF v CBZ in CBR v CBZ) v primeru napake ustvarijo dnevniško datoteko. Te datoteke (Log_pdftocbz_.txt in Log_cbrtocbz_.txt) so ohranjene tudi po zaprtju aplikacije, da jih je mogoče pozneje pregledati. Odstranijo se samo z gumbom »Izbriši začasne datoteke« zgoraj. Datoteka Log_scan.txt na enak način beleži vsako skeniranje (uporabljeni skener, nastavitve, rezultat ali napaka) — uporabno za diagnosticiranje težave s skenerjem.",
     "config_clipboard_cleared": "Datoteke odložišča so bile uspešno počiščene.",
-    "adjust_images": "Prilagajanje slik",
-    "adjust_images_content": "Ta funkcija vam omogoča retuširanje slik neposredno v MosaicView. Lahko spremenite svetlost, kontrast, ostrino, ravni, nasičenost, uporabite učinke (črno-belo, sepija, inverzija barv), prilagodite kakovost stiskanja, odstranite barve, uporabite prosojnost ali pretvorite v različne barvne globine. Nekatere nastavitve imajo namenski pregledovalnik, ki vam omogoča ogled rezultata v polni ločljivosti pred uporabo. Predogled sličice prikazuje rezultat v realnem času v glavnem oknu.",
     "create_icon": "Ustvari ikono",
     "create_icon_content": "MosaicView vam omogoča ustvarjanje datotek ikon (.ico) iz katere koli slike v mozaiku.\n• Z desnim gumbom miške kliknite na sliko → 'Ustvari ikono'\n• V pregledovalniku uokvirite želeno območje (ikona bo obvezno kvadratna)\n• Po potrebi prilagodite prosojnost\n• Potrdite: datoteka .ico se doda neposredno v mozaik\n• Datoteke .ico samodejno vsebujejo vse standardne ločljivosti (od 16×16 do 256×256)\n• Dokler je v mozaiku prisotna datoteka .ico, je shranjevanje v arhiv CBZ blokirano, saj format ICO ni podprt v teh arhivih. Izvozite datoteko .ico ločeno (Ctrl+C in prilepite v mapo Windows), nato jo pred shranjevanjem izbrišite iz mozaika.",
     "batch_convert": "Paketna pretvorba",
@@ -1462,7 +1471,7 @@
     "scan": "Skeniraj sliko",
     "scan_content": "• Kliknite gumb »Skeniraj« (stolpec ikon, meni Datoteka ali desni klik na mozaik), da odprete okno za skeniranje. MosaicView neposredno upravlja vaš optični bralnik (prek WIA, sistema za skeniranje v Windows): izberite napravo, ločljivost (DPI), barvni način (barvno / sivinsko / črno-belo) in nato kliknite »Skeniraj«. Da se optični bralnik prikaže na seznamu, mora biti priključen, vklopljen in imeti nameščen gonilnik v sistemu Windows.\n• Nazadnje uporabljeni skener, ločljivost in izbrani barvni način si aplikacija zapomni in ju samodejno znova predlaga ob naslednjem skeniranju.\n• Na voljo sta samo skeniranje cele strani in izvoz v JPG, saj ima aplikacija že vse potrebno za naknadno retuširanje in pretvorbo slike.\n• Skenirana slika se samodejno doda mozaiku, za že obstoječimi stranmi. Nato jo lahko obrežete, poravnate, prilagodite njene barve itd., kot katero koli drugo stran mozaika\n• Ta funkcija neposredno upravlja optični bralnik, brez uporabe programske opreme proizvajalca ali prikaza njegovega lastnega konfiguracijskega okna.\n• Ker lahko fizični skener hkrati upravlja samo ena povezava, je skeniranje mogoče samo v enem podoknu naenkrat: če je v enem podoknu odprto okno za skeniranje ali poteka skeniranje, gumb »Skeniraj« v drugem podoknu ostane siv do konca opravila.",
     "straighten": "Poravnaj stran",
-    "straighten_content": "Dva načina za popravljanje poševnega skena, dostopna iz stolpca ikon (desni klik na ikono \"Poravnaj\" za preklop načina), menija Slike ali z desnim klikom na mozaik:\n• Ročna poravnava: odpre namenski pregledovalnik, v katerem narišete ravno črto na tisto, kar naj bi bilo na sliki vodoravno ali navpično; kot popravka se izračuna samodejno in uporabi za sliko, z ročicami za natančno prilagoditev črte.\n• Samodejna poravnava: sama zazna nagib (brez risanja) in neposredno poravna izbrano stran ali strani; prazni koti, ki nastanejo zaradi vrtenja, se zapolnijo z belo. Deluje na več straneh hkrati. Okno s povzetkom prikaže število uspešno poravnanih strani in navede tiste, za katere ni bilo mogoče zaznati zanesljivega nagiba."
+    "straighten_content": "Samodejno poravnavanje (brez risanja) je na voljo v stolpcu ikon (desni klik na ikono »Poravnaj« za preklop načina), meniju Slike, ali desni klik na mozaik: samodejno zazna nagib in neposredno poravna izbrano stran/strani; prazni koti, ustvarjeni z vrtenjem, se zapolnijo z belo. Deluje na več straneh hkrati. Okno s povzetkom prikaže, koliko strani je bilo uspešno poravnanih, in navede tiste, pri katerih ni bilo mogoče zaznati zanesljivega nagiba.\n\nRočno poravnavanje (risanje referenčne črte) poteka iz glavnega pregledovalnika, glejte razdelek Pregledovalnik."
   },
   "misc": {
     "file_word": "datoteka",

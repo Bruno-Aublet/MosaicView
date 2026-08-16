@@ -50,7 +50,6 @@
     "renumber_recommended": "Neu nummerieren (empfohlen)",
     "ignore_and_save": "Ignorieren und speichern",
     "open_without_rename": "Öffnen ohne Umbenennung",
-    "adjustments": "Helligkeit,\nKontrast, usw.",
     "batch_cbr_to_cbz": "Stapelkonvertierung\n von CBR-Dateien in CBZ",
     "batch_pdf_to_cbz": "Stapelkonvertierung\n von PDF-Dateien in CBZ",
     "batch_img_to_cbz": "Stapelkonvertierung\n einzelner Bilder nach CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Toleranz:",
     "transparency_type_slider_tooltip": "Bereich: macht den einheitlich farbigen Bereich um das angeklickte Pixel transparent. Global: betrifft alle Pixel des Bildes, deren Farbe der angeklickten Farbe ähnelt",
-    "transparency_tolerance_slider_tooltip": "Maximal akzeptierter Farbabstand um das angeklickte Pixel"
+    "transparency_tolerance_slider_tooltip": "Maximal akzeptierter Farbabstand um das angeklickte Pixel",
+    "toolbar_color_depth_tooltip": "Farbtiefe",
+    "toolbar_color_depth_instruction": "Wählen Sie eine Tiefe, die Anpassung wird sofort angewendet",
+    "color_depth_panel_restore": "Original wiederherstellen",
+    "color_depth_panel_current_format": "Diese Seite ist derzeit in {format}.",
+    "toolbar_effects_tooltip": "Effekte",
+    "toolbar_effects_instruction": "Wählen Sie einen Effekt, die Anpassung wird sofort angewendet",
+    "effects_panel_restore": "Original wiederherstellen",
+    "toolbar_image_mode_tooltip": "Bildmodus",
+    "toolbar_image_mode_instruction": "Wählen Sie einen Modus, die Anpassung wird sofort angewendet",
+    "image_mode_panel_restore": "Original wiederherstellen",
+    "toolbar_rotation_tooltip": "Drehung",
+    "toolbar_rotation_instruction": "Drehen oder spiegeln Sie die angezeigte Seite"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Fehler",
         "message": "Transparenz konnte nicht angewendet werden."
+      },
+      "color_depth_failed": {
+        "title": "Fehler",
+        "message": "Farbtiefe konnte nicht angewendet werden: {error}"
+      },
+      "effect_failed": {
+        "title": "Fehler",
+        "message": "Der Effekt konnte nicht angewendet werden: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Fehler",
+        "message": "Der Bildmodus konnte nicht angewendet werden: {error}"
+      },
+      "rotation_failed": {
+        "title": "Fehler",
+        "message": "Drehung konnte nicht angewendet werden: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Identische Dateinamen wurden erkannt. Obwohl das Speichern technisch\nmöglich ist, kann dies zu Leseproblemen in einigen Comic-Reader-\nAnwendungen führen (unvollständige Anzeige, fehlende Seiten usw.).\n\nEs wird empfohlen, die Seiten vor dem Speichern neu zu nummerieren."
     },
     "adjustments": {
-      "window_title": "Bildanpassungen",
-      "title": "Anpassungen fur {count} {word}",
-      "word_image": "Bild",
-      "word_images": "Bilder",
-      "apply_button": "Anwenden",
-      "color_depth_section": "Farbtiefe",
-      "effects_section": "Effekte",
-      "sharpness_section": "Scharfe",
-      "depth_unchanged": "Nicht andern",
       "depth_32bit": "32 Bit (RGBA - Farben + Transparenz)",
       "depth_24bit": "24 Bit (RGB - Farben)",
       "depth_8bit": "8 Bit (PNG-Palette / JPEG-Graustufen)",
       "depth_1bit": "1 Bit (Schwarz und Weiss)",
-      "compression_enable": "Neukomprimierung aktivieren",
-      "effect_none": "Kein Effekt",
       "effect_grayscale": "Graustufen",
       "effect_sepia": "Sepia",
       "auto_levels_button": "Automatische Anpassung",
-      "reset_button": "Zurücksetzen",
       "preview_section": "Vorschau",
       "effect_invert": "Farbumkehr",
-      "preview_warning": "Vorschau kann vom Endergebnis abweichen",
-      "image_mode_section": "Bildmodus",
       "image_mode_rgb": "RGB (Farben)",
       "image_mode_rgba": "RGBA (Farben + Transparenz)",
       "image_mode_l": "L (Graustufen)",
@@ -1383,13 +1396,11 @@
     "flatten": "Verzeichnisse abflachen",
     "flatten_content": "Wenn Ihr Archiv Unterordner enthält, verwenden Sie 'Verzeichnisse abflachen', um alle Bilder auf die gleiche Ebene zu bringen.",
     "viewer": "Viewer",
-    "viewer_content": "Doppelklicken Sie auf eine Seite, um den Viewer zu öffnen:\n• Tasten ← →: Navigation zwischen den Seiten\n• Taste D: zwischen 4 Lesemodi wechseln\n  - Einzelseite: eine Seite nach der anderen\n  - Doppelseiten: Seite 1 allein, dann 2-3, 4-5 usw.\n  - Fortlaufende Doppelseiten: Seite 1 allein, dann 2-3, 3-4, 4-5 usw.\n  - Webtoon: für vertikale Bilder (Webcomics), Breite auf 900 px begrenzt, um lesbar zu bleiben; das Mausrad scrollt vertikal in der Seite, am oberen/unteren Rand wechselt es die Seite\n• Mausrad: schnelle Navigation (vertikales Scrollen in der Seite im Webtoon-Modus)\n• Strg+Rad oder Strg+Plus/Minus: Zoom (bis zu 1000% der tatsächlichen Bildgröße)\n• Strg+0: Zoom an Fenster anpassen\n• Strg+1: Zoom auf 100% (tatsächliche Pixelgröße des Bildes)\n• Rechtsklick + Ziehen: das angezeigte Bild verschieben, wenn es das Fenster überschreitet\n• Taste F11: Vollbild\n• Doppelklick: Vollbild umschalten\n• Esc-Taste: Zuschneiderahmen abbrechen / Viewer verlassen\n• Lesezeichen: speichert automatisch die aktuelle Seite beim Schließen des Viewers (außer erste und letzte Seite). Ein rotes Band erscheint auf der entsprechenden Miniaturansicht im Mosaik. Beim nächsten Öffnen schlägt eine Meldung vor, zu dieser Seite zurückzukehren. Wird auf der letzten Seite automatisch gelöscht oder manuell per Rechtsklick im Viewer.",
+    "viewer_content": "Doppelklicken Sie auf eine Seite, um den Betrachter zu öffnen:\n• Tasten ← →: zwischen Seiten navigieren\n• Taste D: zwischen 4 Lesemodi wechseln\n  - Einzelseite: eine Seite nach der anderen\n  - Doppelseiten: Seite 1 allein, dann 2-3, 4-5 usw.\n  - Fortlaufende Doppelseiten: Seite 1 allein, dann 2-3, 3-4, 4-5 usw.\n  - Webtoon: für vertikale Bilder (Webcomics), Breite auf 900px begrenzt für gute Lesbarkeit; das Mausrad scrollt vertikal in der Seite, wechselt dann oben/unten die Seite\n• Mausrad: schnelle Navigation (vertikales Scrollen in der Seite im Webtoon-Modus)\n• Strg+Mausrad oder Strg+Plus/Minus: Zoom (bis zu 1000% der tatsächlichen Bildgröße)\n• Strg+0: Zoom an das Fenster anpassen\n• Strg+1: Zoom auf 100% (tatsächliche Pixelgröße des Bildes)\n• Rechtsklick + Ziehen: das angezeigte Bild verschieben (Pan), wenn es über das Fenster hinausragt\n• Taste F11: Vollbild\n• Doppelklick: Vollbild umschalten\n• Taste Esc: aktuelle Werkzeugzeichnung abbrechen (Zuschnitt, Begradigung, Form…) oder Betrachter verlassen\n• Lesezeichen: speichert beim Schließen automatisch die aktuelle Seite (außer erste/letzte Seite). Ein rotes Band erscheint auf der entsprechenden Miniatur im Mosaik. Beim nächsten Öffnen schlägt eine Meldung vor, zu dieser Seite zurückzukehren. Automatische Löschung bei der letzten Seite, oder manuell per Rechtsklick im Betrachter.\n\nSchwebende Werkzeugleiste: Fahren Sie mit der Maus über den oberen Bildrand, um sie einzublenden (sie verbirgt sich nach wenigen Sekunden von selbst). Klicken Sie auf ein Symbol, um das entsprechende Werkzeug zu aktivieren:\n• Zuschnitt: Rechteck ziehen, an den Kanten anpassen, bestätigen\n• Begradigung: eine Linie auf das ziehen, was horizontal/vertikal sein sollte, die Korrektur wird automatisch angewendet; Rechtsklick auf das Symbol wechselt zur automatischen Begradigung (erkennt die Schräglage von selbst, ohne etwas zu zeichnen)\n• Drehen/Spiegeln: ein Klick dreht oder spiegelt die Seite\n• Klonen: Strg+Klick legt die Quellstelle fest, dann mit gedrückter Maustaste malen, um zu duplizieren\n• Text: klicken, um einen Textblock zu platzieren, Schriftart/Größe/Farbe wählen\n• Formen: Ellipsen, Rechtecke, Linien oder Pfeile zeichnen, mit Anfassern zum Anpassen der Größe\n• Regler (Schärfe, Helligkeit/Kontrast, Sättigung, Farben entfernen, Komprimierung): das Ergebnis wird live angezeigt, während Sie ziehen\n• Tonwerte: Schwarzpunkt/Gamma/Weißpunkt per Regler einstellen, oder mit den Pipetten direkt eine Farbe vom Bild aufnehmen\n• Transparenz: auf eine Farbe im Bild klicken, um sie transparent zu machen\n• Farbtiefe, Effekte, Bildmodus: eine Option per Radiobutton wählen, sofort angewendet\n\nBestätigen Sie mit der Schaltfläche „Bestätigen“, sobald sie erscheint, oder Esc zum Abbrechen. Jede Änderung reiht sich in den gewohnten Rückgängig/Wiederholen-Verlauf ein.",
     "join_pages": "Seiten verbinden",
     "join_pages_content": "Wählen Sie mehrere aufeinanderfolgende Seiten aus, Rechtsklick → 'Ausgewählte Seiten zusammenführen', um die Seiten horizontal oder vertikal zusammenzuführen. Das Format des erzeugten Bildes entspricht dem der Quellseiten, wenn sie alle identisch sind, andernfalls standardmäßig PNG. Sie können wählen, ob die ursprünglichen Seiten gelöscht oder beibehalten werden sollen.\n\nPosition der neuen Seite in der Mosaik:\n• Aktiver Umnummerierungsmodus (automatisch oder manuell): Die Seite nimmt den Platz der ersten zusammengeführten Seite ein (ihren Platz, wenn die Quellseiten gelöscht werden, oder direkt davor, wenn sie beibehalten werden), und löst eine Umnummerierung aus.\n• AUS-Modus für Umnummerierung: Die Seite wird am Anfang der Mosaik unter dem Namen \"Zusammengeführt_xxx\" hinzugefügt.",
     "split_pages": "Seiten teilen",
     "split_pages_content": "Um Doppelseiten automatisch zu teilen:\n• Wählen Sie die zu teilenden Seiten aus\n• Rechtsklick → 'Ausgewählte Seiten teilen'\n• Wählen Sie die Richtung (vertikal oder horizontal)",
-    "crop": "Zuschneiden im Viewer",
-    "crop_content": "Zeichnen Sie im Viewer ein Rechteck auf das Bild, um einen Zuschneidebereich zu definieren:\n• Zeichnen Sie das Rechteck mit der Maus\n• Ändern Sie die Größe durch Ziehen der Kanten oder Ecken\n• Klicken Sie auf 'Zuschnitt bestätigen' zum Anwenden\n• Der Zuschnitt wird auf das aktuelle Bild angewendet\n• Taste Esc: Zuschneiderahmen abbrechen",
     "shortcuts": "Tastenkombinationen",
     "shortcuts_content": "• Strg+Z: Letzte Aktion rückgängig machen\n• Strg+Y: Rückgängig gemachte Aktion wiederherstellen\n• Strg+A: Alle Seiten auswählen\n• Strg+I: Auswahl umkehren\n• Strg+C: Ausgewählte Seiten kopieren\n• Strg+X: Ausgewählte Seiten ausschneiden\n• Strg+V: Seiten einfügen\n• Entf: Ausgewählte Seiten löschen\n• Strg+Mausrad: Zoom (Viewer) / Miniaturgröße (Mosaik) / Symbolgröße (Symbolspalte)\n• Strg+0 (Viewer): Zoom an Fenster anpassen\n• Strg+1 (Viewer): Zoom auf 100% (tatsächliche Bildgröße)\n• Rechtsklick + Ziehen (Viewer): Angezeigtes Bild verschieben\n• Strg+Alt+T: Alle angezeigten Miniaturansichten aus dem Mosaik exportieren\n• F5: Mosaikansicht aktualisieren\n• F11: Vollbild umschalten (beenden mit F11 oder ESC)",
     "dark_mode": "Dunkler Modus",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Ausnahme: Temporare Dateien, die von der Windows-Zwischenablage verwendet werden (clipboard_XXXXX-Dateien), werden 12 Stunden nach dem Kopieren aufbewahrt, damit Sie sie auch nach dem Schliessen der Anwendung einfugen konnen. Nach 12 Stunden werden sie automatisch geloscht.",
     "config_log_note": "Stapelkonvertierungen (PDF zu CBZ und CBR zu CBZ) erstellen bei einem Fehler eine Protokolldatei. Diese Dateien (Log_pdftocbz_.txt und Log_cbrtocbz_.txt) bleiben auch nach dem Schließen der Anwendung erhalten, damit sie später eingesehen werden können. Sie werden nur über die Schaltfläche „Temporäre Dateien löschen“ oben entfernt. Eine Datei Log_scan.txt zeichnet auf dieselbe Weise jeden Scan auf (verwendeter Scanner, Einstellungen, Ergebnis oder Fehler) — nützlich, um ein Problem mit Ihrem Scanner zu diagnostizieren.",
     "config_clipboard_cleared": "Die Zwischenablage-Dateien wurden erfolgreich geloscht.",
-    "adjust_images": "Bildanpassung",
-    "adjust_images_content": "Mit dieser Funktion können Sie Ihre Bilder direkt in MosaicView bearbeiten. Sie können Helligkeit, Kontrast, Schärfe, Tonwerte und Sättigung anpassen, Effekte anwenden (Schwarzweiß, Sepia, Farbumkehr), die Komprimierungsqualität einstellen, Farben entfernen, Transparenz anwenden oder in verschiedene Farbtiefen konvertieren. Einige Einstellungen verfügen über einen dedizierten Viewer, der das Ergebnis vor der Anwendung in voller Auflösung anzeigt. Eine Miniaturvorschau zeigt das Ergebnis in Echtzeit im Hauptfenster.",
     "create_icon": "Symbol erstellen",
     "create_icon_content": "MosaicView ermöglicht das Erstellen von Symboldateien (.ico) aus beliebigen Bildern im Mosaik.\n• Rechtsklick auf ein Bild → 'Symbol erstellen'\n• Rahmen Sie den gewünschten Bereich im Viewer ein (das Symbol muss zwingend quadratisch sein)\n• Passen Sie die Transparenz bei Bedarf an\n• Bestätigen: Die .ico-Datei wird direkt zum Mosaik hinzugefügt\n• .ico-Dateien enthalten automatisch alle Standardauflösungen (von 16×16 bis 256×256)\n• Solange sich eine .ico-Datei im Mosaik befindet, ist das Speichern in einem CBZ-Archiv gesperrt, da das ICO-Format von diesen Archiven nicht unterstützt wird. Exportieren Sie die .ico-Datei separat (Ctrl+C und in einen Windows-Ordner einfügen), und löschen Sie sie dann aus dem Mosaik, bevor Sie speichern.",
     "batch_convert": "Stapelkonvertierung",
@@ -1462,7 +1471,7 @@
     "scan": "Ein Bild scannen",
     "scan_content": "• Klicken Sie auf die Schaltfläche „Scannen“ (Symbolspalte, Menü Datei oder Rechtsklick auf die Mosaik), um das Scanfenster zu öffnen. MosaicView steuert Ihren Scanner direkt (über WIA, das Windows-Scansystem): Wählen Sie das Gerät, die Auflösung (DPI), den Farbmodus (Farbe / Graustufen / Schwarzweiß) und klicken Sie dann auf „Scannen“. Ein Scanner muss angeschlossen, eingeschaltet und sein Treiber unter Windows installiert sein, um in der Liste zu erscheinen.\n• Der zuletzt verwendete Scanner, die Auflösung und der gewählte Farbmodus werden gespeichert und beim nächsten Scan automatisch wieder vorgeschlagen.\n• Es wird nur die Vollseiten-Scan- und JPG-Exportfunktion angeboten, da die Anwendung bereits alles Nötige für Bildbearbeitung und Formatkonvertierung danach mitbringt.\n• Das gescannte Bild wird automatisch zur Mosaik hinzugefügt, nach den bereits vorhandenen Seiten. Sie können es anschließend zuschneiden, begradigen, seine Farben anpassen usw., wie jede andere Seite der Mosaik\n• Diese Funktion steuert den Scanner direkt, ohne die Software des Herstellers zu verwenden oder dessen eigenes Konfigurationsfenster anzuzeigen.\n• Da ein physischer Scanner immer nur von einer Verbindung gleichzeitig gesteuert werden kann, ist das Scannen nur in jeweils einem Bereich möglich: Wenn in einem Bereich ein Scanfenster geöffnet ist oder ein Scan läuft, bleibt die Schaltfläche „Scannen“ im anderen Bereich bis zum Abschluss des Vorgangs ausgegraut.",
     "straighten": "Seite begradigen",
-    "straighten_content": "Zwei Methoden, um einen schräg gescannten Scan zu korrigieren, erreichbar über die Symbolspalte (Rechtsklick auf das Symbol „Begradigen“, um den Modus zu wechseln), das Menü Bilder oder Rechtsklick auf die Mosaik:\n• Manuelle Begradigung: öffnet einen eigenen Betrachter, in dem Sie eine gerade Linie auf das ziehen, was im Bild horizontal oder vertikal sein sollte; der Korrekturwinkel wird automatisch berechnet und auf das Bild angewendet, mit Griffpunkten zur Feinabstimmung der Linie.\n• Automatische Begradigung: erkennt die Schräglage von selbst (ohne etwas zu zeichnen) und begradigt direkt die ausgewählte(n) Seite(n); durch die Drehung entstehende leere Ecken werden weiß aufgefüllt. Funktioniert für mehrere Seiten gleichzeitig. Ein Zusammenfassungsfenster zeigt die Anzahl der erfolgreich begradigten Seiten und listet diejenigen auf, bei denen keine zuverlässige Schräglage erkannt werden konnte."
+    "straighten_content": "Die automatische Begradigung (ohne etwas zu zeichnen) ist über die Symbolspalte (Rechtsklick auf das Symbol „Begradigen“ zum Moduswechsel), das Menü Bilder oder Rechtsklick auf das Mosaik verfügbar: Sie erkennt die Schräglage von selbst und begradigt direkt die ausgewählte(n) Seite(n); durch die Drehung entstandene leere Ecken werden weiß aufgefüllt. Funktioniert mit mehreren Seiten gleichzeitig. Ein Zusammenfassungsfenster zeigt, wie viele Seiten erfolgreich begradigt wurden, und listet jene auf, bei denen keine zuverlässige Schräglage erkannt werden konnte.\n\nDie manuelle Begradigung (Ziehen einer Referenzlinie) erfolgt im Hauptbetrachter, siehe Abschnitt Betrachter."
   },
   "misc": {
     "file_word": "Datei",

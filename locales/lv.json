@@ -50,7 +50,6 @@
     "renumber_recommended": "Pārnumurēt (ieteicams)",
     "ignore_and_save": "Ignorēt un saglabāt",
     "open_without_rename": "Atvērt bez pārdēvēšanas",
-    "adjustments": "Spilgtums,\nkontrasts u.c.",
     "batch_cbr_to_cbz": "CBR failu paketes\n konvertēšana uz CBZ",
     "batch_pdf_to_cbz": "PDF failu pakešu\n konvertēšana uz CBZ",
     "batch_img_to_cbz": "Atsevišķu attēlu\n pakešu konvertēšana uz CBZ",
@@ -144,7 +143,19 @@
     "transparency_global_panel_label": "Globāli",
     "transparency_tolerance_panel_label": "Tolerance:",
     "transparency_type_slider_tooltip": "Zona: padara caurspīdīgu vienmērīgo krāsas zonu ap noklikšķināto pikseli. Globāli: ietekmē visus attēla pikseļus, kuru krāsa ir tuva noklikšķinātajai",
-    "transparency_tolerance_slider_tooltip": "Maksimālais pieņemtais krāsas attālums ap noklikšķināto pikseli"
+    "transparency_tolerance_slider_tooltip": "Maksimālais pieņemtais krāsas attālums ap noklikšķināto pikseli",
+    "toolbar_color_depth_tooltip": "Krasu dzilums",
+    "toolbar_color_depth_instruction": "Izvelieties dzilumu, pielagojums tiek piemerots uzreiz",
+    "color_depth_panel_restore": "Atjaunot originalu",
+    "color_depth_panel_current_format": "Sī lapa pasreiz ir formata {format}.",
+    "toolbar_effects_tooltip": "Efekti",
+    "toolbar_effects_instruction": "Izvēlieties efektu, pielāgojums tiek piemērots nekavējoties",
+    "effects_panel_restore": "Atjaunot oriģinālu",
+    "toolbar_image_mode_tooltip": "Attēla režīms",
+    "toolbar_image_mode_instruction": "Izvēlieties režīmu, pielāgojums tiek piemērots nekavējoties",
+    "image_mode_panel_restore": "Atjaunot oriģinālu",
+    "toolbar_rotation_tooltip": "Pagriešana",
+    "toolbar_rotation_instruction": "Pagrieziet vai spoguliski apgrieziet parādīto lapu"
   },
   "context_menu": {
     "viewer": {
@@ -620,6 +631,22 @@
       "transparency_failed": {
         "title": "Kļūda",
         "message": "Neizdevās piemērot caurspīdīgumu."
+      },
+      "color_depth_failed": {
+        "title": "Kluda",
+        "message": "Neizdevas piemerot krasu dzilumu: {error}"
+      },
+      "effect_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās piemērot efektu: {error}"
+      },
+      "image_mode_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās piemērot attēla režīmu: {error}"
+      },
+      "rotation_failed": {
+        "title": "Kļūda",
+        "message": "Neizdevās lietot pagriešanu: {error}"
       }
     },
     "info": {
@@ -1039,29 +1066,15 @@
       "message": "Ir atklāti identiski failu nosaukumi. Lai gan saglabāšana ir tehniski\niespējama, tas var izraisīt lasīšanas problēmas dažās komiksu lasīšanas\nlietotnēs (nepilnīgs attēlojums, trūkstošas lappuses u.c.).\n\nIeteicams pārnumurēt lappuses pirms saglabāšanas."
     },
     "adjustments": {
-      "window_title": "Attela pielaguojumi",
-      "title": "Pielaguojumi {count} {word}",
-      "word_image": "attels",
-      "word_images": "atteli",
-      "apply_button": "Lietot",
-      "color_depth_section": "Krasu dziļums",
-      "effects_section": "Efekti",
-      "sharpness_section": "Asums",
-      "depth_unchanged": "Nemainit",
       "depth_32bit": "32 biti (RGBA - krasas + caurspidugums)",
       "depth_24bit": "24 biti (RGB - krasas)",
       "depth_8bit": "8 biti (PNG palete / JPEG peleko toņi)",
       "depth_1bit": "1 bits (melnbalts)",
-      "compression_enable": "Iespejot atkartotu saspiesanu",
-      "effect_none": "Nav efekta",
       "effect_grayscale": "Peleku tonusi",
       "effect_sepia": "Sepija",
       "auto_levels_button": "Automātiska pielāgošana",
-      "reset_button": "Atiestatīt",
       "preview_section": "Priekšskatījums",
       "effect_invert": "Krāsu inversija",
-      "preview_warning": "Priekšskatījums var atšķirties no galīgā rezultāta",
-      "image_mode_section": "Attēla režīms",
       "image_mode_rgb": "RGB (krāsas)",
       "image_mode_rgba": "RGBA (krāsas + caurspīdīgums)",
       "image_mode_l": "L (pelēkā gamma)",
@@ -1383,13 +1396,11 @@
     "flatten": "Mapju izlīdzināšana",
     "flatten_content": "Ja jūsu arhīvs satur apakšmapes, izmantojiet 'Izlīdzināt mapes', lai pārvietotu visus attēlus uz vienu līmeni.",
     "viewer": "Skatītājs",
-    "viewer_content": "Veiciet dubultklikšķi uz lapas, lai atvērtu skatītāju:\n• Taustiņi ← →: navigācija starp lapām\n• Taustiņš D: pārslēgšanās starp 4 lasīšanas režīmiem\n  - Viena lapa: viena lapa vienlaikus\n  - Dubultās lapas: 1. lapa atsevišķi, tad 2-3, 4-5 utt.\n  - Nepārtrauktas dubultās lapas: 1. lapa atsevišķi, tad 2-3, 3-4, 4-5 utt.\n  - Webtoon: vertikāliem attēliem (tīmekļa komiksi), platums ierobežots līdz 900px, lai saglabātu salasāmību; peles ritenītis ritina lapu vertikāli, sasniedzot augšu/apakšu, notiek lappuses maiņa\n• Peles ritenītis: ātra navigācija (vertikāla ritināšana lapā Webtoon režīmā)\n• Ctrl+ritenītis vai Ctrl+plus/mīnus: tālummaiņa (līdz 1000% no attēla reālā izmēra)\n• Ctrl+0: pielāgot tālummaiņu logam\n• Ctrl+1: tālummaiņa 100% (attēla reālais pikseļu izmērs)\n• Labais klikšķis + vilkšana: pārvietot parādīto attēlu, kad tas pārsniedz logu\n• Taustiņš F11: pilnekrāna režīms\n• Dubultklikšķis: pārslēgt pilnekrāna režīmu\n• Esc taustiņš: atcelt apgriešanas rāmi / iziet no skatītāja\n• Grāmatzīme: automātiski saglabā pašreizējo lapu, aizverot skatītāju (izņemot pirmo un pēdējo lapu). Atbilstošajā mozaīkas sīktēlā parādās sarkana lente. Nākamajā atvēršanas reizē ziņojums iesaka atgriezties šajā lapā. Automātiski izdzēsts pēdējā lapā vai manuāli ar labo klikšķi skatītājā.",
+    "viewer_content": "Veiciet dubultklikšķi uz lapas, lai atvērtu skatītāju:\n• Taustiņi ← →: navigācija starp lapām\n• Taustiņš D: pārslēgšanās starp 4 lasīšanas režīmiem\n  - Viena lapa: viena lapa vienlaikus\n  - Dubultās lapas: 1. lapa viena, tad 2-3, 4-5 utt.\n  - Nepārtrauktas dubultās lapas: 1. lapa viena, tad 2-3, 3-4, 4-5 utt.\n  - Webtoon: vertikāliem attēliem (webcomics), platums ierobežots līdz 900px lasāmības nolūkos; peles ritenītis vertikāli ritina lapu, tad maina lapu augšā/apakšā\n• Peles ritenītis: ātra navigācija (vertikāla ritināšana lapā Webtoon režīmā)\n• Ctrl+Ritenītis vai Ctrl+Plus/Mīnus: tālummaiņa (līdz 1000% no attēla reālā izmēra)\n• Ctrl+0: pielāgot tālummaiņu logam\n• Ctrl+1: tālummaiņa 100% (attēla reālais pikseļu izmērs)\n• Labais klikšķis + vilkšana: pārvietot parādīto attēlu (panorāma), kad tas pārsniedz logu\n• Taustiņš F11: pilnekrāns\n• Dubultklikšķis: pārslēgt pilnekrānu\n• Taustiņš Esc: atcelt pašreizējo zīmēšanu (apgriešana, iztaisnošana, forma…) vai iziet no skatītāja\n• Grāmatzīme: automātiski saglabā pašreizējo lapu, aizverot skatītāju (izņemot pirmo/pēdējo lapu). Atbilstošajā sīktēlā mozaīkā parādās sarkana lente. Atkārtoti atverot, ziņojums iesaka atgriezties šajā lapā. Automātiski izdzēsts pēdējā lapā, vai manuāli ar labo klikšķi skatītājā.\n\nPeldošā rīkjosla: novietojiet peli virs attēla augšas, lai to parādītu (tā pati paslēpjas pēc dažām sekundēm). Noklikšķiniet uz ikonas, lai aktivizētu atbilstošo rīku:\n• Apgriešana: uzzīmējiet taisnstūri, pielāgojiet to pie malām, apstipriniet\n• Iztaisnošana: uzzīmējiet līniju uz tā, kam vajadzētu būt horizontālam/vertikālam, korekcija tiek piemērota automātiski; labais klikšķis uz ikonas, lai pārslēgtos uz automātisko iztaisnošanu (nosaka slīpumu pats, neko nezīmējot)\n• Pagriešana/spoguļošana: viens klikšķis pagriež vai apspoguļo lapu\n• Klonēšana: Ctrl+klikšķis, lai izvēlētos avota punktu, tad zīmējiet ar nospiestu peles pogu, lai dublicētu\n• Teksts: noklikšķiniet, lai novietotu teksta bloku, izvēlieties fontu/izmēru/krāsu\n• Formas: zīmējiet elipses, taisnstūrus, līnijas vai bultas, ar turekļiem izmēra maiņai\n• Slīdņi (asums, spilgtums/kontrasts, piesātinājums, krāsu noņemšana, saspiešana): rezultāts tiek rādīts tiešraidē vilkšanas laikā\n• Līmeņi: pielāgojiet melno punktu/gammu/balto punktu ar slīdņiem, vai ņemiet krāsu tieši no attēla ar pipetēm\n• Caurspīdīgums: noklikšķiniet uz krāsas attēlā, lai padarītu to caurspīdīgu\n• Krāsu dziļums, Efekti, Attēla režīms: izvēlieties opciju, noklikšķinot uz radio pogas, piemērots nekavējoties\n\nApstipriniet ar pogu \"Apstiprināt\", kad tā parādās, vai Esc, lai atceltu. Katra izmaiņa pievienojas ierastajai Atsaukt/Atkārtot vēsturei.",
     "join_pages": "Lappušu savienošana",
     "join_pages_content": "Atlasiet vairākas secīgas lapas, ar labo peles pogu noklikšķiniet → 'Apvienot atlasītās lapas', lai apvienotu lapas horizontāli vai vertikāli. Iegūtā attēla formāts atbilst avota lapu formātam, ja tās visas ir identiskas, pretējā gadījumā pēc noklusējuma PNG. Jūs varēsiet izvēlēties, vai dzēst vai saglabāt oriģinālās lapas.\n\nJaunās lapas vieta mozaīkā:\n• Aktīvs pārnumurēšanas režīms (automātisks vai manuāls): lapa ieņem pirmās apvienotās lapas vietu (tās vietu, ja avota lapas tiek dzēstas, vai tieši pirms tās, ja tās tiek saglabātas), un aktivizē pārnumurēšanu.\n• IZSLĒGTS pārnumurēšanas režīms: lapa tiek pievienota mozaīkas sākumā ar nosaukumu \"Savienotais_xxx\".",
     "split_pages": "Lappušu sadalīšana",
     "split_pages_content": "Lai automātiski sadalītu dubultlappuses:\n• Atlasiet lappuses, kas jāsadala\n• Ar peles labo pogu → 'Sadalīt atlasītās lappuses'\n• Izvēlieties virzienu (vertikāls vai horizontāls)",
-    "crop": "Apgriešana skatītājā",
-    "crop_content": "Skatītājā uzzīmējiet taisnstūri uz attēla, lai definētu apgriešanas zonu:\n• Uzzīmējiet taisnstūri ar peli\n• Mainiet tā izmēru, velkot malas vai stūrus\n• Noklikšķiniet uz 'Apstiprināt apgriešanu', lai lietotu\n• Apgriešana tiek lietota pašreizējam attēlam\n• Taustiņš Escape: atcelt apgriešanas rāmi",
     "shortcuts": "Īsinājumtaustiņi",
     "shortcuts_content": "• Ctrl+Z: Atsaukt pēdējo darbību\n• Ctrl+Y: Atkārtot atsaukto darbību\n• Ctrl+A: Atlasīt visas lapas\n• Ctrl+I: Apvērst atlasi\n• Ctrl+C: Kopēt atlasītās lapas\n• Ctrl+X: Izgriezt atlasītās lapas\n• Ctrl+V: Ielīmēt lapas\n• Del: Dzēst atlasītās lapas\n• Ctrl+peles ritenītis: Tālummaiņa (skatītājs) / sīktēla izmērs (mozaīka) / ikonas izmērs (ikonu kolonna)\n• Ctrl+0 (skatītājs): Pielāgot tālummaiņu logam\n• Ctrl+1 (skatītājs): Tālummaiņa 100% (attēla reālais izmērs)\n• Labais klikšķis + vilkšana (skatītājs): Pārvietot parādīto attēlu\n• Ctrl+Alt+T: Eksportēt visus mozaīkā parādītos sīktēlus\n• F5: Atjaunināt mozaīkas skatu\n• F11: Pārslēgt pilnekrāna režīmu (iziet ar F11 vai ESC)",
     "dark_mode": "Tumšais režīms",
@@ -1433,8 +1444,6 @@
     "config_clipboard_note": "Izņēmums: Pagaidu faili, ko izmanto Windows starliktuves (clipboard_XXXXX faili), tiek saglabāti 12 stundas pēc kopēšanas, lai jūs varētu tos ielīmēt pat pēc lietojumprogrammas aizvēršanas. Pēc 12 stundām tie tiek automātiski dzēsti.",
     "config_log_note": "Pakešu konversijas (PDF uz CBZ un CBR uz CBZ) kļūdas gadījumā izveido žurnāla failu. Šie faili (Log_pdftocbz_.txt un Log_cbrtocbz_.txt) tiek saglabāti arī pēc lietotnes aizvēršanas, lai tos varētu vēlāk apskatīt. Tie tiek noņemti tikai ar iepriekš redzamo pogu „Notīrīt pagaidu failus”. Fails Log_scan.txt tāpat reģistrē katru skenēšanu (izmantotais skeneris, iestatījumi, rezultāts vai kļūda) — noderīgi, lai diagnosticētu problēmu ar skeneri.",
     "config_clipboard_cleared": "Starpliktuvē saglabātie faili ir veiksmīgi notīrīti.",
-    "adjust_images": "Attēlu pielāgošana",
-    "adjust_images_content": "Šī funkcija ļauj retušēt attēlus tieši MosaicView. Varat mainīt spilgtumu, kontrastu, asumu, līmeņus, piesātinājumu, pielietot efektus (melnbalts, sepija, krāsu inversija), regulēt saspiešanas kvalitāti, noņemt krāsas, pielietot caurspīdīgumu vai konvertēt dažādos krāsu dziļumos. Dažiem iestatījumiem ir īpašs skatītājs, kas ļauj redzēt rezultātu pilnā izšķirtspējā pirms pielietošanas. Miniatūras priekšskatījums rāda rezultātu reāllaikā galvenajā logā.",
     "create_icon": "Izveidot ikonu",
     "create_icon_content": "MosaicView ļauj izveidot ikonas failus (.ico) no jebkura mozaīkas attēla.\n• Ar peles labo pogu noklikšķiniet uz attēla → 'Izveidot ikonu'\n• Skatītājā ierāmējiet vēlamo apgabalu (ikona obligāti būs kvadrātveida)\n• Ja nepieciešams, pielāgojiet caurspīdīgumu\n• Apstipriniet: .ico fails tiek pievienots tieši mozaīkai\n• .ico failos automātiski ir ietvertas visas standarta izšķirtspējas (no 16×16 līdz 256×256)\n• Kamēr mozaīkā atrodas .ico fails, saglabāšana CBZ arhīvā ir bloķēta, jo ICO formāts netiek atbalstīts šajos arhīvos. Eksportējiet .ico failu atsevišķi (Ctrl+C un ielīmējiet Windows mapē), pēc tam pirms saglabāšanas izdzēsiet to no mozaīkas.",
     "batch_convert": "Pakeškonvertēšana",
@@ -1462,7 +1471,7 @@
     "scan": "Skenēt attēlu",
     "scan_content": "• Noklikšķiniet uz pogas „Skenēt” (ikonu kolonna, izvēlne Fails vai peles labais klikšķis uz mozaīkas), lai atvērtu skenēšanas logu. MosaicView tieši vada jūsu skeneri (izmantojot WIA, Windows skenēšanas sistēmu): izvēlieties ierīci, izšķirtspēju (DPI), krāsu režīmu (krāsains / pelēktoņu / melnbalts) un pēc tam noklikšķiniet uz „Skenēt”. Lai skeneris parādītos sarakstā, tam jābūt pievienotam, ieslēgtam un tā draiverim jābūt instalētam Windows sistēmā.\n• Pēdējais izmantotais skeneris, izšķirtspēja un izvēlētais krāsu režīms tiek atcerēts un automātiski piedāvāts atkārtoti nākamajā skenēšanas reizē.\n• Tiek piedāvāta tikai pilnas lapas skenēšana un eksportēšana JPG formātā, jo lietotnei jau ir viss nepieciešamais attēla vēlākai apstrādei un formāta konvertēšanai.\n• Skenētais attēls automātiski tiek pievienots mozaīkai, aiz jau esošajām lapām. Pēc tam to var apgriezt, iztaisnot, pielāgot krāsas utt., tāpat kā jebkuru citu mozaīkas lapu\n• Šī funkcija tieši vada skeneri, neizmantojot ražotāja programmatūru un neparādot tā paša konfigurācijas logu.\n• Tā kā fizisku skeneri vienlaikus var vadīt tikai viens savienojums, skenēšana ir iespējama tikai vienā panelī vienlaikus: ja vienā panelī ir atvērts skenēšanas logs vai notiek skenēšana, poga „Skenēt” otrā panelī paliek pelēka, līdz darbība tiek pabeigta.",
     "straighten": "Iztaisnot lapu",
-    "straighten_content": "Divi veidi, kā izlabot slīpu skenējumu, pieejami no ikonu kolonnas (ar peles labo pogu noklikšķiniet uz ikonas „Iztaisnot“, lai pārslēgtu režīmu), izvēlnes Attēli vai ar peles labo pogu noklikšķinot uz mozaīkas:\n• Manuāla iztaisnošana: atver īpašu skatītāju, kurā uzzīmējat taisnu līniju uz to, kam attēlā vajadzētu būt horizontālam vai vertikālam; korekcijas leņķis tiek aprēķināts automātiski un pielietots attēlam, ar turekļiem, lai precīzi pielāgotu līniju.\n• Automātiska iztaisnošana: pati atklāj slīpumu (nekas nav jāzīmē) un tieši iztaisno atlasīto lapu vai lapas; tukšie stūri, kas radušies pagriežot, tiek aizpildīti baltā krāsā. Darbojas ar vairākām lapām vienlaikus. Kopsavilkuma logs parāda, cik lapas veiksmīgi iztaisnotas, un uzskaita tās, kurām neizdevās konstatēt uzticamu slīpumu."
+    "straighten_content": "Automātiskā iztaisnošana (neko nezīmējot) ir pieejama no ikonu kolonnas (labais klikšķis uz ikonas \"Iztaisnot\", lai mainītu režīmu), izvēlnes Attēli, vai labais klikšķis uz mozaīkas: tā pati nosaka slīpumu un tieši iztaisno atlasīto lapu(-as); tukšie stūri, kas radušies pagriešanas rezultātā, tiek aizpildīti ar baltu. Darbojas ar vairākām lapām vienlaikus. Kopsavilkuma logs parāda, cik lapas tika veiksmīgi iztaisnotas, un uzskaita tās, kurām neizdevās noteikt uzticamu slīpumu.\n\nManuālā iztaisnošana (atsauces līnijas zīmēšana) tiek veikta no galvenā skatītāja, skatīt sadaļu Skatītājs."
   },
   "misc": {
     "file_word": "fails",
