@@ -72,7 +72,9 @@
     "cancel_straighten": "Annuller retning",
     "cancel_text": "Annuller tekst",
     "cancel_shapes": "Annuller former",
-    "cancel_transparency": "Annuller gennemsigtighed"
+    "cancel_transparency": "Annuller gennemsigtighed",
+    "validate_paste_image": "Anvend indsætning",
+    "cancel_paste_image": "Annuller indsætning"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Vælg en tilstand, justeringen anvendes med det samme",
     "image_mode_panel_restore": "Gendan original",
     "toolbar_rotation_tooltip": "Rotation",
-    "toolbar_rotation_instruction": "Roter eller spejlvend den viste side"
+    "toolbar_rotation_instruction": "Roter eller spejlvend den viste side",
+    "toolbar_paste_image_tooltip": "Indsæt et billede",
+    "toolbar_paste_image_instruction": "Indsætter udklipsholderens billede på siden, håndtag til at ændre størrelse/rotere",
+    "toolbar_paste_image_disabled": "Udklipsholderen må kun indeholde ét billede"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Ingen gennemsigtighed anvendt",
         "message": "Klik først på en farve, der skal gøres gennemsigtig."
+      },
+      "no_pasted_image": {
+        "title": "Intet indsat billede",
+        "message": "Indsæt mindst ét billede først."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Inkompatibel visningstilstand",
+        "message": "Kopiering af en side kræver enkeltsidetilstand. Tryk på D for at skifte visningstilstand."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Fejl",
         "message": "Rotationen kunne ikke anvendes: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Fejl",
+        "message": "De indsatte billeder kunne ikke anvendes: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Udjævn mapper",
     "flatten_content": "Hvis dit arkiv indeholder undermapper, skal du bruge 'Udjævn mapper' for at flytte alle billeder til samme niveau.",
     "viewer": "Fremviser",
-    "viewer_content": "Dobbeltklik på en side for at åbne fremviseren:\n• Taster ← →: navigér mellem sider\n• Tast D: skift mellem 4 læsetilstande\n  - Enkeltside: én side ad gangen\n  - Dobbeltsider: side 1 alene, derefter 2-3, 4-5 osv.\n  - Løbende dobbeltsider: side 1 alene, derefter 2-3, 3-4, 4-5 osv.\n  - Webtoon: til lodrette billeder (webcomics), bredde begrænset til 900px for at forblive læsbar; musehjulet ruller lodret i siden, skifter derefter side ved top/bund\n• Musehjul: hurtig navigation (lodret rulning i siden i Webtoon-tilstand)\n• Ctrl+Musehjul eller Ctrl+Plus/Minus: zoom (op til 1000% af billedets reelle størrelse)\n• Ctrl+0: tilpas zoom til vinduet\n• Ctrl+1: zoom til 100% (billedets reelle pixelstørrelse)\n• Højreklik + træk: flyt det viste billede (panorér), når det overskrider vinduet\n• Tast F11: fuld skærm\n• Dobbeltklik: skift fuld skærm\n• Tast Esc: annullér den aktuelle tegning (beskæring, retning, form…) eller forlad fremviseren\n• Bogmærke: gemmer automatisk den aktuelle side ved lukning (undtagen første/sidste side). Et rødt bånd vises på den tilsvarende miniature i mosaikken. Ved genåbning foreslår en besked at vende tilbage til denne side. Slettes automatisk ved sidste side, eller manuelt via højreklik i fremviseren.\n\nFlydende værktøjslinje: hold musen over toppen af billedet for at få den frem (den skjuler sig selv efter et par sekunder). Klik på et ikon for at aktivere det tilsvarende værktøj:\n• Beskæring: tegn et rektangel, justér det via kanterne, bekræft\n• Retning: tegn en linje på det, der skal være vandret/lodret, korrektionen anvendes automatisk; højreklik på ikonet for at skifte til automatisk retning (registrerer hældningen selv, uden at tegne noget)\n• Rotation/spejlvending: ét klik roterer eller vender siden\n• Kloning: Ctrl+klik for at vælge kildepunktet, mal derefter med museknappen holdt nede for at duplikere\n• Tekst: klik for at placere en tekstblok, vælg skrifttype/størrelse/farve\n• Former: tegn ellipser, rektangler, linjer eller pile, med håndtag til at ændre størrelse\n• Skydere (skarphed, lysstyrke/kontrast, mætning, fjern farver, komprimering): resultatet vises live, mens du trækker\n• Niveauer: justér sortpunkt/gamma/hvidpunkt med skyderne, eller hent en farve direkte fra billedet med pipetterne\n• Gennemsigtighed: klik på en farve i billedet for at gøre den gennemsigtig\n• Farvedybde, Effekter, Billedtilstand: vælg en indstilling ved at klikke på en radioknap, anvendt øjeblikkeligt\n\nBekræft med knappen \"Bekræft\", når den vises, eller Esc for at annullere. Hver ændring føjes til den sædvanlige Fortryd/Gentag-historik.",
+    "viewer_content": "Dobbeltklik på en side for at åbne fremviseren:\n• Taster ← →: navigér mellem sider\n• Tast D: skift mellem 4 læsetilstande\n  - Enkeltside: én side ad gangen\n  - Dobbeltsider: side 1 alene, derefter 2-3, 4-5 osv.\n  - Løbende dobbeltsider: side 1 alene, derefter 2-3, 3-4, 4-5 osv.\n  - Webtoon: til lodrette billeder (webcomics), bredde begrænset til 900px for at forblive læsbar; musehjulet ruller lodret i siden, skifter derefter side ved top/bund\n• Musehjul: hurtig navigation (lodret rulning i siden i Webtoon-tilstand)\n• Ctrl+Musehjul eller Ctrl+Plus/Minus: zoom (op til 1000% af billedets reelle størrelse)\n• Ctrl+0: tilpas zoom til vinduet\n• Ctrl+1: zoom til 100% (billedets reelle pixelstørrelse)\n• Højreklik + træk: flyt det viste billede (panorér), når det overskrider vinduet\n• Tast F11: fuld skærm\n• Dobbeltklik: skift fuld skærm\n• Tast Esc: annullér den aktuelle tegning (beskæring, retning, form…) eller forlad fremviseren\n• Bogmærke: gemmer automatisk den aktuelle side ved lukning (undtagen første/sidste side). Et rødt bånd vises på den tilsvarende miniature i mosaikken. Ved genåbning foreslår en besked at vende tilbage til denne side. Slettes automatisk ved sidste side, eller manuelt via højreklik i fremviseren.\n\nFlydende værktøjslinje: hold musen over toppen af billedet for at få den frem (den skjuler sig selv efter et par sekunder). Klik på et ikon for at aktivere det tilsvarende værktøj:\n• Beskæring: tegn et rektangel, justér det via kanterne, bekræft\n• Retning: tegn en linje på det, der skal være vandret/lodret, korrektionen anvendes automatisk; højreklik på ikonet for at skifte til automatisk retning (registrerer hældningen selv, uden at tegne noget)\n• Rotation/spejlvending: ét klik roterer eller vender siden\n• Kloning: Ctrl+klik for at vælge kildepunktet, mal derefter med museknappen holdt nede for at duplikere\n• Tekst: klik for at placere en tekstblok, vælg skrifttype/størrelse/farve\n• Former: tegn ellipser, rektangler, linjer eller pile, med håndtag til at ændre størrelse\n• Skydere (skarphed, lysstyrke/kontrast, mætning, fjern farver, komprimering): resultatet vises live, mens du trækker\n• Niveauer: justér sortpunkt/gamma/hvidpunkt med skyderne, eller hent en farve direkte fra billedet med pipetterne\n• Gennemsigtighed: klik på en farve i billedet for at gøre den gennemsigtig\n• Farvedybde, Effekter, Billedtilstand: vælg en indstilling ved at klikke på en radioknap, anvendt øjeblikkeligt\n• Indsæt et billede: indsætter billedet fra udklipsholderen (ikonet aktiveres kun, hvis udklipsholderen indeholder et billede), med håndtag til at ændre størrelse/rotere som figurerne; virker også ved at trække en side fra en mosaik eller en fil fra Windows Stifinder direkte til visningen. Ctrl+C kopierer den viste side (kun i enkeltside- eller Webtoon-tilstand), Ctrl+V indsætter et billede, ligesom i mosaikken\n\nBekræft med knappen \"Bekræft\", når den vises, eller Esc for at annullere. Hver ændring føjes til den sædvanlige Fortryd/Gentag-historik.",
     "join_pages": "Sammensæt sider",
     "join_pages_content": "Vælg flere på hinanden følgende sider, højreklik → 'Sammensæt valgte sider' for at sammensætte siderne vandret eller lodret. Formatet af det resulterende billede svarer til kildesidernes format, hvis de alle er identiske, ellers PNG som standard. Du kan vælge at slette eller beholde de originale sider.\n\nPlacering af den nye side i mosaikken:\n• Aktiv omnummereringstilstand (automatisk eller manuel): siden overtager pladsen for den første sammensatte side (dens plads, hvis kildesiderne slettes, eller lige før den, hvis de beholdes), og udløser en omnummerering.\n• FRA-tilstand for omnummerering: siden tilføjes forrest i mosaikken under navnet \"Sammensætning_xxx\".",
     "split_pages": "Del sider",

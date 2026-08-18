@@ -72,7 +72,9 @@
     "cancel_straighten": "Peruuta suoristus",
     "cancel_text": "Peruuta teksti",
     "cancel_shapes": "Peruuta muodot",
-    "cancel_transparency": "Peruuta läpinäkyvyys"
+    "cancel_transparency": "Peruuta läpinäkyvyys",
+    "validate_paste_image": "Käytä liittämistä",
+    "cancel_paste_image": "Peruuta liittäminen"
   },
   "tabs": {
     "mosaic": "Mosaïque",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Valitse tila, säätö tulee voimaan välittömästi",
     "image_mode_panel_restore": "Palauta alkuperäinen",
     "toolbar_rotation_tooltip": "Kierto",
-    "toolbar_rotation_instruction": "Kierrä tai peilaa näytettyä sivua"
+    "toolbar_rotation_instruction": "Kierrä tai peilaa näytettyä sivua",
+    "toolbar_paste_image_tooltip": "Liitä kuva",
+    "toolbar_paste_image_instruction": "Liittää leikepöydän kuvan sivulle, kahvat koon muuttamiseen/kiertämiseen",
+    "toolbar_paste_image_disabled": "Leikepöydällä saa olla vain kuva"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Läpinäkyvyyttä ei sovellettu",
         "message": "Napsauta ensin väriä, josta tulee läpinäkyvä."
+      },
+      "no_pasted_image": {
+        "title": "Ei liitettyä kuvaa",
+        "message": "Liitä ensin vähintään yksi kuva."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Yhteensopimaton näyttötila",
+        "message": "Sivun kopiointi edellyttää yhden sivun tilaa. Vaihda näyttötilaa painamalla D."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Virhe",
         "message": "Kiertoa ei voitu käyttää: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Virhe",
+        "message": "Liitettyjä kuvia ei voitu käyttää: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Hakemistojen tasoitus",
     "flatten_content": "Jos arkistosi sisältää alikansioita, käytä 'Tasoita hakemistot' tuodaksesi kaikki kuvat samalle tasolle.",
     "viewer": "Katselin",
-    "viewer_content": "Avaa katselin kaksoisnapsauttamalla sivua:\n• Näppäimet ← →: siirry sivujen välillä\n• Näppäin D: vaihda 4 lukutilan välillä\n  - Yksi sivu: yksi sivu kerrallaan\n  - Kaksoissivut: sivu 1 yksin, sitten 2-3, 4-5 jne.\n  - Jatkuvat kaksoissivut: sivu 1 yksin, sitten 2-3, 3-4, 4-5 jne.\n  - Webtoon: pystysuuntaisille kuville (webcomics), leveys rajattu 900px:ään luettavuuden vuoksi; hiiren rulla vierittää sivua pystysuunnassa, vaihtaa sitten sivua ylä-/alareunassa\n• Hiiren rulla: nopea siirtyminen (pystyvieritys sivulla Webtoon-tilassa)\n• Ctrl+rulla tai Ctrl+Plus/Miinus: zoomaus (jopa 1000% kuvan todellisesta koosta)\n• Ctrl+0: sovita zoomaus ikkunaan\n• Ctrl+1: zoomaus 100% (kuvan todellinen pikselikoko)\n• Hiiren oikea painike + veto: siirrä näytettyä kuvaa (panorointi), kun se ylittää ikkunan\n• Näppäin F11: koko näyttö\n• Kaksoisnapsautus: vaihda koko näyttö\n• Näppäin Esc: peruuta käynnissä oleva piirto (rajaus, suoristus, muoto…) tai poistu katselimesta\n• Kirjanmerkki: tallentaa automaattisesti nykyisen sivun katselinta suljettaessa (paitsi ensimmäinen/viimeinen sivu). Punainen nauha näkyy vastaavassa pienoiskuvassa mosaiikissa. Uudelleen avattaessa viesti ehdottaa paluuta tälle sivulle. Poistuu automaattisesti viimeisellä sivulla, tai manuaalisesti hiiren oikealla painikkeella katselimessa.\n\nKelluva työkalurivi: vie hiiri kuvan yläreunan päälle näyttääksesi sen (se piiloutuu itsestään muutaman sekunnin kuluttua). Napsauta kuvaketta aktivoidaksesi vastaavan työkalun:\n• Rajaus: piirrä suorakulmio, säädä sitä reunoista, vahvista\n• Suoristus: piirrä viiva sille, minkä pitäisi olla vaaka-/pystysuora, korjaus tehdään automaattisesti; hiiren oikea painike kuvakkeella vaihtaa automaattiseen suoristukseen (havaitsee kallistuman itse, ilman piirtämistä)\n• Kierto/peilaus: yksi napsautus kiertää tai kääntää sivun\n• Kloonaus: Ctrl+napsautus valitsee lähdekohdan, maalaa sitten hiiren painike pohjassa monistaaksesi\n• Teksti: napsauta asettaaksesi tekstilohkon, valitse fontti/koko/väri\n• Muodot: piirrä ellipsejä, suorakulmioita, viivoja tai nuolia, kahvoilla koon muuttamiseen\n• Liukusäätimet (terävyys, kirkkaus/kontrasti, kylläisyys, värien poisto, pakkaus): tulos näkyy reaaliajassa vetäessäsi\n• Tasot: säädä mustapiste/gamma/valkopiste liukusäätimillä, tai poimi väri suoraan kuvasta pipeteillä\n• Läpinäkyvyys: napsauta kuvan väriä tehdäksesi siitä läpinäkyvän\n• Värisyvyys, Tehosteet, Kuvatila: valitse vaihtoehto napsauttamalla valintanappia, käytössä välittömästi\n\nVahvista \"Vahvista\"-painikkeella sen ilmestyessä, tai Esc peruuttaaksesi. Jokainen muutos liittyy tavalliseen Kumoa/Tee uudelleen -historiaan.",
+    "viewer_content": "Avaa katselin kaksoisnapsauttamalla sivua:\n• Näppäimet ← →: siirry sivujen välillä\n• Näppäin D: vaihda 4 lukutilan välillä\n  - Yksi sivu: yksi sivu kerrallaan\n  - Kaksoissivut: sivu 1 yksin, sitten 2-3, 4-5 jne.\n  - Jatkuvat kaksoissivut: sivu 1 yksin, sitten 2-3, 3-4, 4-5 jne.\n  - Webtoon: pystysuuntaisille kuville (webcomics), leveys rajattu 900px:ään luettavuuden vuoksi; hiiren rulla vierittää sivua pystysuunnassa, vaihtaa sitten sivua ylä-/alareunassa\n• Hiiren rulla: nopea siirtyminen (pystyvieritys sivulla Webtoon-tilassa)\n• Ctrl+rulla tai Ctrl+Plus/Miinus: zoomaus (jopa 1000% kuvan todellisesta koosta)\n• Ctrl+0: sovita zoomaus ikkunaan\n• Ctrl+1: zoomaus 100% (kuvan todellinen pikselikoko)\n• Hiiren oikea painike + veto: siirrä näytettyä kuvaa (panorointi), kun se ylittää ikkunan\n• Näppäin F11: koko näyttö\n• Kaksoisnapsautus: vaihda koko näyttö\n• Näppäin Esc: peruuta käynnissä oleva piirto (rajaus, suoristus, muoto…) tai poistu katselimesta\n• Kirjanmerkki: tallentaa automaattisesti nykyisen sivun katselinta suljettaessa (paitsi ensimmäinen/viimeinen sivu). Punainen nauha näkyy vastaavassa pienoiskuvassa mosaiikissa. Uudelleen avattaessa viesti ehdottaa paluuta tälle sivulle. Poistuu automaattisesti viimeisellä sivulla, tai manuaalisesti hiiren oikealla painikkeella katselimessa.\n\nKelluva työkalurivi: vie hiiri kuvan yläreunan päälle näyttääksesi sen (se piiloutuu itsestään muutaman sekunnin kuluttua). Napsauta kuvaketta aktivoidaksesi vastaavan työkalun:\n• Rajaus: piirrä suorakulmio, säädä sitä reunoista, vahvista\n• Suoristus: piirrä viiva sille, minkä pitäisi olla vaaka-/pystysuora, korjaus tehdään automaattisesti; hiiren oikea painike kuvakkeella vaihtaa automaattiseen suoristukseen (havaitsee kallistuman itse, ilman piirtämistä)\n• Kierto/peilaus: yksi napsautus kiertää tai kääntää sivun\n• Kloonaus: Ctrl+napsautus valitsee lähdekohdan, maalaa sitten hiiren painike pohjassa monistaaksesi\n• Teksti: napsauta asettaaksesi tekstilohkon, valitse fontti/koko/väri\n• Muodot: piirrä ellipsejä, suorakulmioita, viivoja tai nuolia, kahvoilla koon muuttamiseen\n• Liukusäätimet (terävyys, kirkkaus/kontrasti, kylläisyys, värien poisto, pakkaus): tulos näkyy reaaliajassa vetäessäsi\n• Tasot: säädä mustapiste/gamma/valkopiste liukusäätimillä, tai poimi väri suoraan kuvasta pipeteillä\n• Läpinäkyvyys: napsauta kuvan väriä tehdäksesi siitä läpinäkyvän\n• Värisyvyys, Tehosteet, Kuvatila: valitse vaihtoehto napsauttamalla valintanappia, käytössä välittömästi\n• Liitä kuva: liittää kuvan leikepöydältä (kuvake aktivoituu vain, jos leikepöydällä on kuva), kahvoilla koon muuttamiseen/kiertämiseen kuten muodoissa; toimii myös vetämällä sivun mosaiikista tai tiedoston Resurssienhallinnasta suoraan katseluohjelmaan. Ctrl+C kopioi näytettävän sivun (vain yhden sivun tai Webtoon-tilassa), Ctrl+V liittää kuvan, kuten mosaiikissa\n\nVahvista \"Vahvista\"-painikkeella sen ilmestyessä, tai Esc peruuttaaksesi. Jokainen muutos liittyy tavalliseen Kumoa/Tee uudelleen -historiaan.",
     "join_pages": "Sivujen yhdistäminen",
     "join_pages_content": "Valitse useita peräkkäisiä sivuja, napsauta hiiren oikealla painikkeella → 'Yhdistä valitut sivut' yhdistääksesi sivut vaaka- tai pystysuunnassa. Tuotetun kuvan muoto vastaa lähdesivujen muotoa, jos ne ovat kaikki identtisiä, muutoin oletuksena PNG. Voit valita, poistetaanko vai säilytetäänkö alkuperäiset sivut.\n\nUuden sivun sijainti mosaiikissa:\n• Aktiivinen uudelleennumerointitila (automaattinen tai manuaalinen): sivu ottaa ensimmäisen yhdistetyn sivun paikan (sen paikan, jos lähdesivut poistetaan, tai juuri sitä ennen, jos ne säilytetään), ja käynnistää uudelleennumeroinnin.\n• POIS-tila uudelleennumeroinnille: sivu lisätään mosaiikin alkuun nimellä \"Yhdistetty_xxx\".",
     "split_pages": "Sivujen jakaminen",

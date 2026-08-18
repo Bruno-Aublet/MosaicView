@@ -72,7 +72,9 @@
     "cancel_straighten": "Begradigung abbrechen",
     "cancel_text": "Text abbrechen",
     "cancel_shapes": "Formen abbrechen",
-    "cancel_transparency": "Transparenz abbrechen"
+    "cancel_transparency": "Transparenz abbrechen",
+    "validate_paste_image": "Einfügen übernehmen",
+    "cancel_paste_image": "Einfügen abbrechen"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Wählen Sie einen Modus, die Anpassung wird sofort angewendet",
     "image_mode_panel_restore": "Original wiederherstellen",
     "toolbar_rotation_tooltip": "Drehung",
-    "toolbar_rotation_instruction": "Drehen oder spiegeln Sie die angezeigte Seite"
+    "toolbar_rotation_instruction": "Drehen oder spiegeln Sie die angezeigte Seite",
+    "toolbar_paste_image_tooltip": "Bild einfügen",
+    "toolbar_paste_image_instruction": "Fügt das Bild aus der Zwischenablage auf die Seite ein, Griffe zum Skalieren/Drehen",
+    "toolbar_paste_image_disabled": "Die Zwischenablage darf nur ein Bild enthalten"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Keine Transparenz angewendet",
         "message": "Bitte klicken Sie zuerst auf eine Farbe, die transparent werden soll."
+      },
+      "no_pasted_image": {
+        "title": "Kein Bild eingefügt",
+        "message": "Bitte fügen Sie zuerst mindestens ein Bild ein."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Nicht unterstützter Anzeigemodus",
+        "message": "Zum Kopieren einer Seite ist der Einzelseitenmodus erforderlich. Drücken Sie D, um den Anzeigemodus zu wechseln."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Fehler",
         "message": "Drehung konnte nicht angewendet werden: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Fehler",
+        "message": "Die eingefügten Bilder konnten nicht angewendet werden: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Verzeichnisse abflachen",
     "flatten_content": "Wenn Ihr Archiv Unterordner enthält, verwenden Sie 'Verzeichnisse abflachen', um alle Bilder auf die gleiche Ebene zu bringen.",
     "viewer": "Viewer",
-    "viewer_content": "Doppelklicken Sie auf eine Seite, um den Betrachter zu öffnen:\n• Tasten ← →: zwischen Seiten navigieren\n• Taste D: zwischen 4 Lesemodi wechseln\n  - Einzelseite: eine Seite nach der anderen\n  - Doppelseiten: Seite 1 allein, dann 2-3, 4-5 usw.\n  - Fortlaufende Doppelseiten: Seite 1 allein, dann 2-3, 3-4, 4-5 usw.\n  - Webtoon: für vertikale Bilder (Webcomics), Breite auf 900px begrenzt für gute Lesbarkeit; das Mausrad scrollt vertikal in der Seite, wechselt dann oben/unten die Seite\n• Mausrad: schnelle Navigation (vertikales Scrollen in der Seite im Webtoon-Modus)\n• Strg+Mausrad oder Strg+Plus/Minus: Zoom (bis zu 1000% der tatsächlichen Bildgröße)\n• Strg+0: Zoom an das Fenster anpassen\n• Strg+1: Zoom auf 100% (tatsächliche Pixelgröße des Bildes)\n• Rechtsklick + Ziehen: das angezeigte Bild verschieben (Pan), wenn es über das Fenster hinausragt\n• Taste F11: Vollbild\n• Doppelklick: Vollbild umschalten\n• Taste Esc: aktuelle Werkzeugzeichnung abbrechen (Zuschnitt, Begradigung, Form…) oder Betrachter verlassen\n• Lesezeichen: speichert beim Schließen automatisch die aktuelle Seite (außer erste/letzte Seite). Ein rotes Band erscheint auf der entsprechenden Miniatur im Mosaik. Beim nächsten Öffnen schlägt eine Meldung vor, zu dieser Seite zurückzukehren. Automatische Löschung bei der letzten Seite, oder manuell per Rechtsklick im Betrachter.\n\nSchwebende Werkzeugleiste: Fahren Sie mit der Maus über den oberen Bildrand, um sie einzublenden (sie verbirgt sich nach wenigen Sekunden von selbst). Klicken Sie auf ein Symbol, um das entsprechende Werkzeug zu aktivieren:\n• Zuschnitt: Rechteck ziehen, an den Kanten anpassen, bestätigen\n• Begradigung: eine Linie auf das ziehen, was horizontal/vertikal sein sollte, die Korrektur wird automatisch angewendet; Rechtsklick auf das Symbol wechselt zur automatischen Begradigung (erkennt die Schräglage von selbst, ohne etwas zu zeichnen)\n• Drehen/Spiegeln: ein Klick dreht oder spiegelt die Seite\n• Klonen: Strg+Klick legt die Quellstelle fest, dann mit gedrückter Maustaste malen, um zu duplizieren\n• Text: klicken, um einen Textblock zu platzieren, Schriftart/Größe/Farbe wählen\n• Formen: Ellipsen, Rechtecke, Linien oder Pfeile zeichnen, mit Anfassern zum Anpassen der Größe\n• Regler (Schärfe, Helligkeit/Kontrast, Sättigung, Farben entfernen, Komprimierung): das Ergebnis wird live angezeigt, während Sie ziehen\n• Tonwerte: Schwarzpunkt/Gamma/Weißpunkt per Regler einstellen, oder mit den Pipetten direkt eine Farbe vom Bild aufnehmen\n• Transparenz: auf eine Farbe im Bild klicken, um sie transparent zu machen\n• Farbtiefe, Effekte, Bildmodus: eine Option per Radiobutton wählen, sofort angewendet\n\nBestätigen Sie mit der Schaltfläche „Bestätigen“, sobald sie erscheint, oder Esc zum Abbrechen. Jede Änderung reiht sich in den gewohnten Rückgängig/Wiederholen-Verlauf ein.",
+    "viewer_content": "Doppelklicken Sie auf eine Seite, um den Betrachter zu öffnen:\n• Tasten ← →: zwischen Seiten navigieren\n• Taste D: zwischen 4 Lesemodi wechseln\n  - Einzelseite: eine Seite nach der anderen\n  - Doppelseiten: Seite 1 allein, dann 2-3, 4-5 usw.\n  - Fortlaufende Doppelseiten: Seite 1 allein, dann 2-3, 3-4, 4-5 usw.\n  - Webtoon: für vertikale Bilder (Webcomics), Breite auf 900px begrenzt für gute Lesbarkeit; das Mausrad scrollt vertikal in der Seite, wechselt dann oben/unten die Seite\n• Mausrad: schnelle Navigation (vertikales Scrollen in der Seite im Webtoon-Modus)\n• Strg+Mausrad oder Strg+Plus/Minus: Zoom (bis zu 1000% der tatsächlichen Bildgröße)\n• Strg+0: Zoom an das Fenster anpassen\n• Strg+1: Zoom auf 100% (tatsächliche Pixelgröße des Bildes)\n• Rechtsklick + Ziehen: das angezeigte Bild verschieben (Pan), wenn es über das Fenster hinausragt\n• Taste F11: Vollbild\n• Doppelklick: Vollbild umschalten\n• Taste Esc: aktuelle Werkzeugzeichnung abbrechen (Zuschnitt, Begradigung, Form…) oder Betrachter verlassen\n• Lesezeichen: speichert beim Schließen automatisch die aktuelle Seite (außer erste/letzte Seite). Ein rotes Band erscheint auf der entsprechenden Miniatur im Mosaik. Beim nächsten Öffnen schlägt eine Meldung vor, zu dieser Seite zurückzukehren. Automatische Löschung bei der letzten Seite, oder manuell per Rechtsklick im Betrachter.\n\nSchwebende Werkzeugleiste: Fahren Sie mit der Maus über den oberen Bildrand, um sie einzublenden (sie verbirgt sich nach wenigen Sekunden von selbst). Klicken Sie auf ein Symbol, um das entsprechende Werkzeug zu aktivieren:\n• Zuschnitt: Rechteck ziehen, an den Kanten anpassen, bestätigen\n• Begradigung: eine Linie auf das ziehen, was horizontal/vertikal sein sollte, die Korrektur wird automatisch angewendet; Rechtsklick auf das Symbol wechselt zur automatischen Begradigung (erkennt die Schräglage von selbst, ohne etwas zu zeichnen)\n• Drehen/Spiegeln: ein Klick dreht oder spiegelt die Seite\n• Klonen: Strg+Klick legt die Quellstelle fest, dann mit gedrückter Maustaste malen, um zu duplizieren\n• Text: klicken, um einen Textblock zu platzieren, Schriftart/Größe/Farbe wählen\n• Formen: Ellipsen, Rechtecke, Linien oder Pfeile zeichnen, mit Anfassern zum Anpassen der Größe\n• Regler (Schärfe, Helligkeit/Kontrast, Sättigung, Farben entfernen, Komprimierung): das Ergebnis wird live angezeigt, während Sie ziehen\n• Tonwerte: Schwarzpunkt/Gamma/Weißpunkt per Regler einstellen, oder mit den Pipetten direkt eine Farbe vom Bild aufnehmen\n• Transparenz: auf eine Farbe im Bild klicken, um sie transparent zu machen\n• Farbtiefe, Effekte, Bildmodus: eine Option per Radiobutton wählen, sofort angewendet\n• Bild einfügen: fügt das Bild aus der Zwischenablage ein (das Symbol wird nur aktiv, wenn die Zwischenablage ein Bild enthält), mit Griffen zum Skalieren/Drehen wie bei Formen; funktioniert auch, wenn eine Seite aus einer Mosaik-Ansicht oder eine Datei aus dem Windows-Explorer direkt auf den Betrachter gezogen wird. Strg+C kopiert die angezeigte Seite (nur im Einzelseiten- oder Webtoon-Modus), Strg+V fügt ein Bild ein, wie in der Mosaik-Ansicht\n\nBestätigen Sie mit der Schaltfläche „Bestätigen“, sobald sie erscheint, oder Esc zum Abbrechen. Jede Änderung reiht sich in den gewohnten Rückgängig/Wiederholen-Verlauf ein.",
     "join_pages": "Seiten verbinden",
     "join_pages_content": "Wählen Sie mehrere aufeinanderfolgende Seiten aus, Rechtsklick → 'Ausgewählte Seiten zusammenführen', um die Seiten horizontal oder vertikal zusammenzuführen. Das Format des erzeugten Bildes entspricht dem der Quellseiten, wenn sie alle identisch sind, andernfalls standardmäßig PNG. Sie können wählen, ob die ursprünglichen Seiten gelöscht oder beibehalten werden sollen.\n\nPosition der neuen Seite in der Mosaik:\n• Aktiver Umnummerierungsmodus (automatisch oder manuell): Die Seite nimmt den Platz der ersten zusammengeführten Seite ein (ihren Platz, wenn die Quellseiten gelöscht werden, oder direkt davor, wenn sie beibehalten werden), und löst eine Umnummerierung aus.\n• AUS-Modus für Umnummerierung: Die Seite wird am Anfang der Mosaik unter dem Namen \"Zusammengeführt_xxx\" hinzugefügt.",
     "split_pages": "Seiten teilen",

@@ -72,7 +72,9 @@
     "cancel_straighten": "Hủy làm thẳng",
     "cancel_text": "Hủy văn bản",
     "cancel_shapes": "Hủy hình dạng",
-    "cancel_transparency": "Hủy độ trong suốt"
+    "cancel_transparency": "Hủy độ trong suốt",
+    "validate_paste_image": "Áp dụng dán",
+    "cancel_paste_image": "Hủy dán"
   },
   "tabs": {
     "mosaic": "Mosaic",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Chọn một chế độ, điều chỉnh sẽ được áp dụng ngay lập tức",
     "image_mode_panel_restore": "Khôi phục bản gốc",
     "toolbar_rotation_tooltip": "Xoay",
-    "toolbar_rotation_instruction": "Xoay hoặc lật trang đang hiển thị"
+    "toolbar_rotation_instruction": "Xoay hoặc lật trang đang hiển thị",
+    "toolbar_paste_image_tooltip": "Dán một hình ảnh",
+    "toolbar_paste_image_instruction": "Dán hình ảnh trong bảng tạm vào trang, dùng tay cầm để thay đổi kích thước/xoay",
+    "toolbar_paste_image_disabled": "Bảng tạm phải chỉ chứa một hình ảnh"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Chưa áp dụng độ trong suốt",
         "message": "Vui lòng nhấp vào một màu để làm trong suốt trước."
+      },
+      "no_pasted_image": {
+        "title": "Chưa dán hình ảnh nào",
+        "message": "Vui lòng dán ít nhất một hình ảnh trước."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Chế độ hiển thị không tương thích",
+        "message": "Sao chép một trang yêu cầu chế độ trang đơn. Nhấn D để đổi chế độ hiển thị."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Lỗi",
         "message": "Không thể áp dụng xoay: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Lỗi",
+        "message": "Không thể áp dụng các hình ảnh đã dán: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Làm phẳng thư mục",
     "flatten_content": "Nếu kho lưu trữ của bạn chứa thư mục con, hãy sử dụng 'Làm phẳng thư mục' để đưa tất cả ảnh về cùng một cấp.",
     "viewer": "Trình xem",
-    "viewer_content": "Nhấp đúp vào một trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 4 chế độ đọc\n  - Trang đơn: từng trang một\n  - Trang đôi: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Trang đôi liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n  - Webtoon: dành cho hình ảnh dọc (webcomics), chiều rộng giới hạn ở 900px để dễ đọc; con lăn chuột cuộn dọc trong trang, sau đó chuyển trang khi đến đầu/cuối\n• Con lăn chuột: điều hướng nhanh (cuộn dọc trong trang ở chế độ Webtoon)\n• Ctrl+Con lăn hoặc Ctrl+Cộng/Trừ: thu phóng (lên đến 1000% kích thước thực của ảnh)\n• Ctrl+0: điều chỉnh thu phóng vừa cửa sổ\n• Ctrl+1: thu phóng 100% (kích thước pixel thực của ảnh)\n• Nhấp chuột phải + kéo: di chuyển ảnh đang hiển thị (pan) khi nó vượt quá cửa sổ\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy bản vẽ hiện tại (cắt, làm thẳng, hình dạng…) hoặc thoát trình xem\n• Đánh dấu trang: tự động lưu trang hiện tại khi đóng trình xem (trừ trang đầu/cuối). Một dải ruy băng đỏ xuất hiện trên hình thu nhỏ tương ứng trong mosaic. Khi mở lại, một thông báo đề nghị quay lại trang này. Tự động xóa ở trang cuối, hoặc thủ công qua nhấp chuột phải trong trình xem.\n\nThanh công cụ nổi: di chuột lên phần trên của ảnh để hiển thị nó (tự ẩn sau vài giây). Nhấp vào biểu tượng để kích hoạt công cụ tương ứng:\n• Cắt: vẽ hình chữ nhật, điều chỉnh qua các cạnh, xác nhận\n• Làm thẳng: vẽ một đường trên thứ cần phải nằm ngang/dọc, việc điều chỉnh được áp dụng tự động; nhấp chuột phải vào biểu tượng để chuyển sang làm thẳng tự động (tự phát hiện độ nghiêng, không cần vẽ)\n• Xoay/lật: một cú nhấp xoay hoặc lật trang\n• Nhân bản: Ctrl+nhấp để chọn điểm nguồn, sau đó vẽ với nút chuột giữ để nhân đôi\n• Văn bản: nhấp để đặt một khối văn bản, chọn phông chữ/kích thước/màu sắc\n• Hình dạng: vẽ hình elip, hình chữ nhật, đường thẳng hoặc mũi tên, với các tay cầm để thay đổi kích thước\n• Thanh trượt (độ sắc nét, độ sáng/tương phản, độ bão hòa, loại bỏ màu, nén): kết quả hiển thị trực tiếp khi bạn kéo\n• Cấp độ: điều chỉnh điểm đen/gamma/điểm trắng bằng thanh trượt, hoặc lấy màu trực tiếp từ ảnh bằng ống hút màu\n• Độ trong suốt: nhấp vào một màu trên ảnh để làm cho nó trong suốt\n• Độ sâu màu, Hiệu ứng, Chế độ ảnh: chọn một tùy chọn bằng cách nhấp vào nút radio, áp dụng ngay lập tức\n\nXác nhận bằng nút \"Xác nhận\" khi nó xuất hiện, hoặc Esc để hủy. Mỗi thay đổi tham gia vào lịch sử Hoàn tác/Làm lại thông thường.",
+    "viewer_content": "Nhấp đúp vào một trang để mở trình xem:\n• Phím ← →: điều hướng giữa các trang\n• Phím D: chuyển đổi giữa 4 chế độ đọc\n  - Trang đơn: từng trang một\n  - Trang đôi: trang 1 riêng, sau đó 2-3, 4-5, v.v.\n  - Trang đôi liên tục: trang 1 riêng, sau đó 2-3, 3-4, 4-5, v.v.\n  - Webtoon: dành cho hình ảnh dọc (webcomics), chiều rộng giới hạn ở 900px để dễ đọc; con lăn chuột cuộn dọc trong trang, sau đó chuyển trang khi đến đầu/cuối\n• Con lăn chuột: điều hướng nhanh (cuộn dọc trong trang ở chế độ Webtoon)\n• Ctrl+Con lăn hoặc Ctrl+Cộng/Trừ: thu phóng (lên đến 1000% kích thước thực của ảnh)\n• Ctrl+0: điều chỉnh thu phóng vừa cửa sổ\n• Ctrl+1: thu phóng 100% (kích thước pixel thực của ảnh)\n• Nhấp chuột phải + kéo: di chuyển ảnh đang hiển thị (pan) khi nó vượt quá cửa sổ\n• Phím F11: toàn màn hình\n• Nhấp đúp: chuyển đổi toàn màn hình\n• Phím Esc: hủy bản vẽ hiện tại (cắt, làm thẳng, hình dạng…) hoặc thoát trình xem\n• Đánh dấu trang: tự động lưu trang hiện tại khi đóng trình xem (trừ trang đầu/cuối). Một dải ruy băng đỏ xuất hiện trên hình thu nhỏ tương ứng trong mosaic. Khi mở lại, một thông báo đề nghị quay lại trang này. Tự động xóa ở trang cuối, hoặc thủ công qua nhấp chuột phải trong trình xem.\n\nThanh công cụ nổi: di chuột lên phần trên của ảnh để hiển thị nó (tự ẩn sau vài giây). Nhấp vào biểu tượng để kích hoạt công cụ tương ứng:\n• Cắt: vẽ hình chữ nhật, điều chỉnh qua các cạnh, xác nhận\n• Làm thẳng: vẽ một đường trên thứ cần phải nằm ngang/dọc, việc điều chỉnh được áp dụng tự động; nhấp chuột phải vào biểu tượng để chuyển sang làm thẳng tự động (tự phát hiện độ nghiêng, không cần vẽ)\n• Xoay/lật: một cú nhấp xoay hoặc lật trang\n• Nhân bản: Ctrl+nhấp để chọn điểm nguồn, sau đó vẽ với nút chuột giữ để nhân đôi\n• Văn bản: nhấp để đặt một khối văn bản, chọn phông chữ/kích thước/màu sắc\n• Hình dạng: vẽ hình elip, hình chữ nhật, đường thẳng hoặc mũi tên, với các tay cầm để thay đổi kích thước\n• Thanh trượt (độ sắc nét, độ sáng/tương phản, độ bão hòa, loại bỏ màu, nén): kết quả hiển thị trực tiếp khi bạn kéo\n• Cấp độ: điều chỉnh điểm đen/gamma/điểm trắng bằng thanh trượt, hoặc lấy màu trực tiếp từ ảnh bằng ống hút màu\n• Độ trong suốt: nhấp vào một màu trên ảnh để làm cho nó trong suốt\n• Độ sâu màu, Hiệu ứng, Chế độ ảnh: chọn một tùy chọn bằng cách nhấp vào nút radio, áp dụng ngay lập tức\n• Dán một hình ảnh: dán hình ảnh từ bảng tạm (biểu tượng chỉ kích hoạt nếu bảng tạm chứa hình ảnh), với các tay cầm để thay đổi kích thước/xoay như hình dạng; cũng hoạt động bằng cách kéo một trang từ khảm hoặc tệp từ Windows Explorer trực tiếp vào trình xem. Ctrl+C sao chép trang đang xem (chỉ ở chế độ trang đơn hoặc Webtoon), Ctrl+V dán một hình ảnh, giống như trong khảm\n\nXác nhận bằng nút \"Xác nhận\" khi nó xuất hiện, hoặc Esc để hủy. Mỗi thay đổi tham gia vào lịch sử Hoàn tác/Làm lại thông thường.",
     "join_pages": "Ghép trang",
     "join_pages_content": "Chọn nhiều trang liên tiếp, nhấp chuột phải → 'Ghép các trang đã chọn' để ghép các trang theo chiều ngang hoặc chiều dọc. Định dạng của hình ảnh được tạo ra tương ứng với định dạng của các trang nguồn nếu chúng đều giống nhau, nếu không thì mặc định là PNG. Bạn sẽ có thể chọn xóa hoặc giữ lại các trang gốc.\n\nVị trí của trang mới trong bản khảm:\n• Chế độ đánh số lại đang hoạt động (tự động hoặc thủ công): trang sẽ chiếm vị trí của trang đầu tiên được ghép (vị trí của nó, nếu các trang nguồn bị xóa, hoặc ngay trước nó, nếu chúng được giữ lại), và kích hoạt việc đánh số lại.\n• Chế độ đánh số lại TẮT: trang được thêm vào phía trước bản khảm với tên \"Ghép_xxx\".",
     "split_pages": "Tách trang",

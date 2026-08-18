@@ -72,7 +72,9 @@
     "cancel_straighten": "Zrušiť narovnanie",
     "cancel_text": "Zrušiť text",
     "cancel_shapes": "Zrušiť tvary",
-    "cancel_transparency": "Zrušiť priehľadnosť"
+    "cancel_transparency": "Zrušiť priehľadnosť",
+    "validate_paste_image": "Použiť vloženie",
+    "cancel_paste_image": "Zrušiť vloženie"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Vyberte režim, úprava sa použije okamžite",
     "image_mode_panel_restore": "Obnoviť originál",
     "toolbar_rotation_tooltip": "Otočenie",
-    "toolbar_rotation_instruction": "Otočte alebo preklopte zobrazenú stránku"
+    "toolbar_rotation_instruction": "Otočte alebo preklopte zobrazenú stránku",
+    "toolbar_paste_image_tooltip": "Vložiť obrázok",
+    "toolbar_paste_image_instruction": "Vloží obrázok zo schránky na stránku, úchyty na zmenu veľkosti/otočenie",
+    "toolbar_paste_image_disabled": "Schránka musí obsahovať iba obrázok"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Nebola použitá žiadna priehľadnosť",
         "message": "Najskôr kliknite na farbu, ktorú chcete urobiť priehľadnou."
+      },
+      "no_pasted_image": {
+        "title": "Žiadny vložený obrázok",
+        "message": "Najprv vložte aspoň jeden obrázok."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Nekompatibilný režim zobrazenia",
+        "message": "Kopírovanie stránky vyžaduje režim jednej stránky. Stlačením D zmeníte režim zobrazenia."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Chyba",
         "message": "Otočenie sa nepodarilo použiť: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Chyba",
+        "message": "Vložené obrázky sa nepodarilo použiť: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Zrovnanie adresárov",
     "flatten_content": "Ak váš archív obsahuje podpriečinky, použite 'Zrovnať adresáre' pre presunutie všetkých obrázkov na rovnakú úroveň.",
     "viewer": "Prehliadač",
-    "viewer_content": "Dvojitým kliknutím na stránku otvoríte prehliadač:\n• Klávesy ← →: navigácia medzi stránkami\n• Klávesa D: prepínanie medzi 4 režimami čítania\n  - Jedna stránka: jedna stránka naraz\n  - Dvojité stránky: strana 1 samostatne, potom 2-3, 4-5 atď.\n  - Nepretržité dvojité stránky: strana 1 samostatne, potom 2-3, 3-4, 4-5 atď.\n  - Webtoon: pre zvislé obrázky (webcomics), šírka obmedzená na 900px pre zachovanie čitateľnosti; koliesko myši posúva stránku zvisle, potom prepne stránku hore/dole\n• Koliesko myši: rýchla navigácia (zvislé posúvanie stránky v režime Webtoon)\n• Ctrl+koliesko alebo Ctrl+Plus/Mínus: priblíženie (až 1000% skutočnej veľkosti obrázka)\n• Ctrl+0: prispôsobiť priblíženie oknu\n• Ctrl+1: priblíženie na 100% (skutočná veľkosť pixelov obrázka)\n• Pravé tlačidlo myši + ťahanie: posun zobrazeného obrázka (posúvanie), keď presahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojité kliknutie: prepnúť celú obrazovku\n• Klávesa Esc: zrušiť aktuálne kreslenie (orezanie, narovnanie, tvar…) alebo opustiť prehliadač\n• Záložka: automaticky uloží aktuálnu stránku pri zatvorení prehliadača (okrem prvej/poslednej stránky). Na zodpovedajúcej miniatúre v mozaike sa zobrazí červená stuha. Pri opätovnom otvorení správa navrhne návrat na túto stránku. Automaticky vymazané na poslednej stránke, alebo manuálne pravým kliknutím v prehliadači.\n\nPlávajúci panel nástrojov: prejdite myšou na hornú časť obrázka, aby sa zobrazil (sám sa skryje po niekoľkých sekundách). Kliknite na ikonu na aktiváciu zodpovedajúceho nástroja:\n• Orezanie: nakreslite obdĺžnik, upravte ho za okraje, potvrďte\n• Narovnanie: nakreslite čiaru na to, čo by malo byť vodorovné/zvislé, korekcia sa použije automaticky; pravým kliknutím na ikonu prepnete na automatické narovnanie (samo zistí naklonenie, bez kreslenia)\n• Otočenie/preklopenie: jedno kliknutie otočí alebo preklopí stránku\n• Klonovanie: Ctrl+klik na výber zdrojového bodu, potom maľujte s podržaným tlačidlom myši na duplikovanie\n• Text: kliknite na umiestnenie textového bloku, vyberte písmo/veľkosť/farbu\n• Tvary: kreslite elipsy, obdĺžniky, čiary alebo šípky, s úchytmi na zmenu veľkosti\n• Posuvníky (ostrosť, jas/kontrast, sýtosť, odstránenie farieb, kompresia): výsledok sa zobrazuje naživo počas ťahania\n• Úrovne: upravte čierny bod/gama/biely bod posuvníkmi, alebo odoberte farbu priamo z obrázka kvapkadlami\n• Priehľadnosť: kliknite na farbu na obrázku, aby sa stala priehľadnou\n• Farebná hĺbka, Efekty, Režim obrázka: vyberte možnosť kliknutím na prepínač, použité okamžite\n\nPotvrďte tlačidlom „Potvrdiť“, keď sa zobrazí, alebo Esc na zrušenie. Každá zmena sa pripojí k obvyklej histórii Späť/Znova.",
+    "viewer_content": "Dvojitým kliknutím na stránku otvoríte prehliadač:\n• Klávesy ← →: navigácia medzi stránkami\n• Klávesa D: prepínanie medzi 4 režimami čítania\n  - Jedna stránka: jedna stránka naraz\n  - Dvojité stránky: strana 1 samostatne, potom 2-3, 4-5 atď.\n  - Nepretržité dvojité stránky: strana 1 samostatne, potom 2-3, 3-4, 4-5 atď.\n  - Webtoon: pre zvislé obrázky (webcomics), šírka obmedzená na 900px pre zachovanie čitateľnosti; koliesko myši posúva stránku zvisle, potom prepne stránku hore/dole\n• Koliesko myši: rýchla navigácia (zvislé posúvanie stránky v režime Webtoon)\n• Ctrl+koliesko alebo Ctrl+Plus/Mínus: priblíženie (až 1000% skutočnej veľkosti obrázka)\n• Ctrl+0: prispôsobiť priblíženie oknu\n• Ctrl+1: priblíženie na 100% (skutočná veľkosť pixelov obrázka)\n• Pravé tlačidlo myši + ťahanie: posun zobrazeného obrázka (posúvanie), keď presahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojité kliknutie: prepnúť celú obrazovku\n• Klávesa Esc: zrušiť aktuálne kreslenie (orezanie, narovnanie, tvar…) alebo opustiť prehliadač\n• Záložka: automaticky uloží aktuálnu stránku pri zatvorení prehliadača (okrem prvej/poslednej stránky). Na zodpovedajúcej miniatúre v mozaike sa zobrazí červená stuha. Pri opätovnom otvorení správa navrhne návrat na túto stránku. Automaticky vymazané na poslednej stránke, alebo manuálne pravým kliknutím v prehliadači.\n\nPlávajúci panel nástrojov: prejdite myšou na hornú časť obrázka, aby sa zobrazil (sám sa skryje po niekoľkých sekundách). Kliknite na ikonu na aktiváciu zodpovedajúceho nástroja:\n• Orezanie: nakreslite obdĺžnik, upravte ho za okraje, potvrďte\n• Narovnanie: nakreslite čiaru na to, čo by malo byť vodorovné/zvislé, korekcia sa použije automaticky; pravým kliknutím na ikonu prepnete na automatické narovnanie (samo zistí naklonenie, bez kreslenia)\n• Otočenie/preklopenie: jedno kliknutie otočí alebo preklopí stránku\n• Klonovanie: Ctrl+klik na výber zdrojového bodu, potom maľujte s podržaným tlačidlom myši na duplikovanie\n• Text: kliknite na umiestnenie textového bloku, vyberte písmo/veľkosť/farbu\n• Tvary: kreslite elipsy, obdĺžniky, čiary alebo šípky, s úchytmi na zmenu veľkosti\n• Posuvníky (ostrosť, jas/kontrast, sýtosť, odstránenie farieb, kompresia): výsledok sa zobrazuje naživo počas ťahania\n• Úrovne: upravte čierny bod/gama/biely bod posuvníkmi, alebo odoberte farbu priamo z obrázka kvapkadlami\n• Priehľadnosť: kliknite na farbu na obrázku, aby sa stala priehľadnou\n• Farebná hĺbka, Efekty, Režim obrázka: vyberte možnosť kliknutím na prepínač, použité okamžite\n• Vložiť obrázok: vloží obrázok zo schránky (ikona sa aktivuje iba ak schránka obsahuje obrázok), s úchytmi na zmenu veľkosti/otočenie ako pri tvaroch; funguje aj presunutím stránky z mozaiky alebo súboru z Prieskumníka Windows priamo do prehliadača. Ctrl+C skopíruje zobrazenú stránku (iba v režime jednej stránky alebo Webtoon), Ctrl+V vloží obrázok, rovnako ako v mozaike\n\nPotvrďte tlačidlom „Potvrdiť“, keď sa zobrazí, alebo Esc na zrušenie. Každá zmena sa pripojí k obvyklej histórii Späť/Znova.",
     "join_pages": "Spojenie strán",
     "join_pages_content": "Vyberte niekoľko po sebe idúcich stránok, kliknite pravým tlačidlom → 'Spojiť vybrané stránky' na spojenie stránok vodorovne alebo zvisle. Formát výsledného obrázka zodpovedá formátu zdrojových stránok, ak sú všetky rovnaké, inak predvolene PNG. Budete si môcť vybrať, či zmazať, alebo zachovať pôvodné stránky.\n\nUmiestnenie novej stránky v mozaike:\n• Aktívny režim prečíslovania (automatický alebo manuálny): stránka zaujme miesto prvej spojenej stránky (jej miesto, ak sú zdrojové stránky zmazané, alebo priamo pred ňou, ak sú zachované), a spustí prečíslovanie.\n• Vypnutý režim prečíslovania: stránka sa pridá na začiatok mozaiky pod názvom \"Spojenie_xxx\".",
     "split_pages": "Rozdelenie strán",

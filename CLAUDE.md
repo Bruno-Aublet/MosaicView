@@ -19,6 +19,7 @@ Avant d'improviser une procédure ou de la reconstruire depuis zéro, vérifier 
 - **`page-straighten`** — redressement d'image, manuel (rotation libre) ou automatique (deskew, détection d'inclinaison par transformée de Hough)
 - **`add-text-to-image`** — ajout de texte riche sur une image
 - **`draw-shapes`** — dessin de formes géométriques (ellipse, rectangle, rectangle à coins arrondis, ligne, flèche) sur une image, dans la visionneuse principale
+- **`paste-image`** — collage d'une image (presse-papiers, glisser-déposer depuis une mosaïque ou l'Explorateur Windows) sur une page, dans la visionneuse principale
 - **`clone-zone`** — tampon de clonage dans la visionneuse principale
 - **`page-resize`** — redimensionnement des pages, détection des pages multiples
 - **`page-crop`** — recadrage dans la visionneuse principale
@@ -31,7 +32,7 @@ Avant d'improviser une procédure ou de la reconstruire depuis zéro, vérifier 
 - **`check-embedded-versions`** — versions des logiciels embarqués (7-Zip, UnRAR, PyMuPDF, Pillow)
 - **`user-guide`** — le mode d'emploi (fenêtre d'aide "?")
 - **`wilhelm-scream-easter-egg`** — l'easter egg sonore du cri de Wilhelm
-- **`viewers`** — la visionneuse plein-écran de lecture, seule restante, et sa barre d'outils flottante (16 outils migrés + les outils formes et rotation, plus aucune fenêtre plein écran annexe — chantier de fusion des visionneuses TERMINÉ, la fenêtre "Ajustements d'image" classique a été supprimée en totalité)
+- **`viewers`** — la visionneuse plein-écran de lecture, seule restante, et sa barre d'outils flottante (16 outils migrés + les outils formes, rotation et coller une image, plus aucune fenêtre plein écran annexe — chantier de fusion des visionneuses TERMINÉ, la fenêtre "Ajustements d'image" classique a été supprimée en totalité)
 - **`adjust-color-depth`** / **`adjust-compression`** / **`adjust-sharpness`** / **`adjust-brightness-contrast`** / **`adjust-levels`** / **`adjust-transparency`** / **`adjust-image-mode`** / **`adjust-remove-colors`** / **`adjust-saturation`** / **`adjust-effects`** — logique PIL de chaque fonction d'ajustement d'image, toutes migrées dans la barre d'outils de la visionneuse principale (voir skill `viewers`)
 - **`bookmarks`** — marque-pages (stockage global partagé entre panneaux)
 - **`zip-compression`** — mode/niveau de compression ZIP des CBZ

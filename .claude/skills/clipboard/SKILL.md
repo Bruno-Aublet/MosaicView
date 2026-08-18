@@ -7,16 +7,21 @@ description: Localiser ou modifier le copier/couper/coller vers/depuis le presse
 
 Presse-papiers **système Windows** (pas un presse-papiers interne à l'application) : passe par `win32clipboard`/`win32con` (pywin32), avec un dossier temporaire intermédiaire sur disque pour le copier/couper de pages. Fichier central unique : [modules/qt/clipboard_qt.py](../../../modules/qt/clipboard_qt.py).
 
-## Les 4 fonctions
+## Les fonctions
 
 | Fonction | Rôle | Ligne |
 |---|---|---|
-| `copy_to_system_clipboard(get_temp_dir_func, parent=None)` | Copie les pages sélectionnées (CF_HDROP) | [clipboard_qt.py:74](../../../modules/qt/clipboard_qt.py#L74) |
+| `copy_to_system_clipboard(get_temp_dir_func, parent=None)` | Copie les pages sélectionnées de la mosaïque, `state.selected_indices` (CF_HDROP) | [clipboard_qt.py:74](../../../modules/qt/clipboard_qt.py#L74) |
+| `copy_single_entry_to_system_clipboard(entry, get_temp_dir_func, parent=None)` | Copie UNE entrée précise, indépendamment de `state.selected_indices` — utilisée par le Ctrl+C dédié de la visionneuse (skill `paste-image`), où la page affichée peut diverger de la sélection de la mosaïque (CF_HDROP) | `clipboard_qt.py` |
 | `cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None)` | Copie puis supprime les pages sélectionnées de la mosaïque | [clipboard_qt.py:160](../../../modules/qt/clipboard_qt.py#L160) |
-| `paste_from_system_clipboard(parent, load_files_callback, save_state, render_mosaic, clear_selection, natural_sort_key)` | Colle des fichiers (CF_HDROP) ou une image bitmap (CF_DIB) | [clipboard_qt.py:183](../../../modules/qt/clipboard_qt.py#L183) |
+| `paste_from_system_clipboard(parent, load_files_callback, save_state, render_mosaic, clear_selection, natural_sort_key)` | Colle des fichiers (CF_HDROP) ou une image bitmap (CF_DIB) dans la mosaïque | [clipboard_qt.py:183](../../../modules/qt/clipboard_qt.py#L183) |
+| `clipboard_has_single_image() -> bool` | Test LECTURE SEULE (pas d'extraction) : le presse-papiers contient-il EXCLUSIVEMENT une image (CF_DIB, ou CF_HDROP à un seul fichier reconnu image) ? Utilisée par le grisage live de l'icône "Coller une image" (`QClipboard.dataChanged`, skill `paste-image`) | `clipboard_qt.py` |
+| `get_clipboard_single_image()` | Retourne l'objet PIL réel si `clipboard_has_single_image()` est vrai, sinon `None` — utilisée au moment de coller réellement (skill `paste-image`) | `clipboard_qt.py` |
 | `copy_archive_to_clipboard(parent)` | Copie le fichier archive courant entier (CF_HDROP) — pas les pages | [clipboard_qt.py:20](../../../modules/qt/clipboard_qt.py#L20) |
 
-Toutes les 4 sont appelées depuis des wrappers `PanelWidget._copy_selected` / `_cut_selected` / `_paste_ctrl_v` / `_copy_archive_to_clipboard` ([panel_widget.py:1786-1814](../../../modules/qt/panel_widget.py#L1786)), qui injectent les callbacks nécessaires (`self._get_temp_dir`, `self._canvas.render_mosaic`, `self.save_state`, `self._load_files`, `self._canvas._clear_selection_and_emit`).
+`copy_to_system_clipboard`/`copy_single_entry_to_system_clipboard` partagent un cœur commun, `_copy_entries_to_system_clipboard(entries, get_temp_dir_func, parent=None)` (écriture sur disque + pose du CF_HDROP) — ne jamais dupliquer cette logique pour un futur besoin de copie d'une liste d'entrées arbitraire, passer par cette fonction.
+
+`copy_to_system_clipboard`/`cut_selected`/`paste_from_system_clipboard`/`copy_archive_to_clipboard` sont appelées depuis des wrappers `PanelWidget._copy_selected` / `_cut_selected` / `_paste_ctrl_v` / `_copy_archive_to_clipboard` ([panel_widget.py:1786-1814](../../../modules/qt/panel_widget.py#L1786)), qui injectent les callbacks nécessaires (`self._get_temp_dir`, `self._canvas.render_mosaic`, `self.save_state`, `self._load_files`, `self._canvas._clear_selection_and_emit`). `copy_single_entry_to_system_clipboard`/`clipboard_has_single_image`/`get_clipboard_single_image` sont appelées directement depuis la visionneuse (`image_viewer_qt.py`/`viewer_toolbar_qt.py`, skill `paste-image`), pas de wrapper `PanelWidget` équivalent — la visionneuse n'a pas de `PanelWidget` sous-jacent au sens de la mosaïque.
 
 ## Ce que "copier" copie réellement
 
@@ -27,6 +32,10 @@ Toutes les 4 sont appelées depuis des wrappers `PanelWidget._copy_selected` / `
 - Si toutes les entrées sélectionnées sont invalides/dangereuses → aucun CF_HDROP n'est posé, seul l'avertissement s'affiche.
 
 `copy_archive_to_clipboard` est différent : il pose directement `state.current_file` (le chemin du CBZ/CBR ouvert) en CF_HDROP, sans extraction — copie l'archive **en tant que fichier**, indépendamment de toute sélection de pages.
+
+## `IMAGE_EXTS` — extensions reconnues comme "image"
+
+Constante module (`clipboard_qt.py`) : `('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')`. Une seule source de vérité, consommée par `paste_from_system_clipboard` (branche CF_HDROP), `clipboard_has_single_image()` et le `dragEnterEvent`/`dropEvent` de la visionneuse (skill `paste-image`) — ne jamais dupliquer cette liste ailleurs, importer `IMAGE_EXTS` depuis ce module.
 
 ## Coller — deux formats gérés
 
@@ -90,6 +99,7 @@ Jusqu'à sa correction, `PanelWidget._get_temp_dir()` ([panel_widget.py:747](../
 - **`panels`** — les raccourcis clavier globaux agissent sur `self._active_panel`, jamais sur un panneau fixe.
 - **`renumbering`** — coupe/collage ne déclenchent volontairement aucune renumérotation automatique, à comparer avec `drag-and-drop`/`page-merge` qui en déclenchent une.
 - **`drag-and-drop`** — autre mécanisme d'entrée/sortie de fichiers (CF_HDROP en drag-out), fichier séparé (`mosaic_canvas.py`), dossiers `drag_*` distincts des `clipboard_*`.
+- **`paste-image`** — Ctrl+C/Ctrl+V dédiés de la visionneuse principale et grisage live de son icône "Coller une image" consomment `copy_single_entry_to_system_clipboard`/`clipboard_has_single_image`/`get_clipboard_single_image`/`IMAGE_EXTS` (ce fichier) sans les réécrire.
 
 ## Pièges connus
 

@@ -72,7 +72,9 @@
     "cancel_straighten": "Prekliči poravnavo",
     "cancel_text": "Prekliči besedilo",
     "cancel_shapes": "Prekliči oblike",
-    "cancel_transparency": "Prekliči prosojnost"
+    "cancel_transparency": "Prekliči prosojnost",
+    "validate_paste_image": "Uveljavi lepljenje",
+    "cancel_paste_image": "Prekliči lepljenje"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Izberite način, prilagoditev se uporabi takoj",
     "image_mode_panel_restore": "Obnovi izvirnik",
     "toolbar_rotation_tooltip": "Vrtenje",
-    "toolbar_rotation_instruction": "Zavrtite ali zrcalite prikazano stran"
+    "toolbar_rotation_instruction": "Zavrtite ali zrcalite prikazano stran",
+    "toolbar_paste_image_tooltip": "Prilepi sliko",
+    "toolbar_paste_image_instruction": "Prilepi sliko iz odložišča na stran, ročice za spreminjanje velikosti/vrtenje",
+    "toolbar_paste_image_disabled": "Odložišče mora vsebovati samo sliko"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Prosojnost ni bila uporabljena",
         "message": "Najprej kliknite barvo, ki naj postane prosojna."
+      },
+      "no_pasted_image": {
+        "title": "Nobena slika ni prilepljena",
+        "message": "Najprej prilepite vsaj eno sliko."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Nezdružljiv način prikaza",
+        "message": "Kopiranje strani zahteva način ene strani. Pritisnite D za spremembo načina prikaza."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Napaka",
         "message": "Vrtenja ni bilo mogoče uporabiti: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Napaka",
+        "message": "Prilepljenih slik ni bilo mogoče uveljaviti: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Splošcenje map",
     "flatten_content": "Če vaš arhiv vsebuje podmape, uporabite 'Splošči mape', da prenesete vse slike na isto raven.",
     "viewer": "Pregledovalnik",
-    "viewer_content": "Dvokliknite stran, da odprete pregledovalnik:\n• Tipki ← →: krmarjenje med stranmi\n• Tipka D: preklapljanje med 4 načini branja\n  - Ena stran: ena stran naenkrat\n  - Dvojne strani: stran 1 sama, nato 2-3, 4-5 itd.\n  - Neprekinjene dvojne strani: stran 1 sama, nato 2-3, 3-4, 4-5 itd.\n  - Webtoon: za navpične slike (spletni stripi), širina omejena na 900px za berljivost; miškin kolešček navpično drsi po strani, nato ob vrhu/dnu preklopi stran\n• Miškin kolešček: hitro krmarjenje (navpično drsenje po strani v načinu Webtoon)\n• Ctrl+kolešček ali Ctrl+Plus/Minus: povečava (do 1000% dejanske velikosti slike)\n• Ctrl+0: prilagodi povečavo oknu\n• Ctrl+1: povečava na 100% (dejanska velikost slikovnih pik)\n• Desni klik + vlečenje: premikanje prikazane slike (pomik), ko presega okno\n• Tipka F11: celozaslonski način\n• Dvoklik: preklop celozaslonskega načina\n• Tipka Esc: prekliči trenutno risanje (obrezovanje, poravnavanje, oblika…) ali zapusti pregledovalnik\n• Zaznamek: samodejno shrani trenutno stran ob zapiranju pregledovalnika (razen prve/zadnje strani). Na ustrezni sličici v mozaiku se prikaže rdeč trak. Ob ponovnem odpiranju sporočilo predlaga vrnitev na to stran. Samodejno izbrisano na zadnji strani, ali ročno z desnim klikom v pregledovalniku.\n\nPlavajoča orodna vrstica: pomaknite miško nad vrh slike, da se prikaže (sama se skrije po nekaj sekundah). Kliknite ikono za aktiviranje ustreznega orodja:\n• Obrezovanje: narišite pravokotnik, prilagodite ga po robovih, potrdite\n• Poravnavanje: narišite črto na to, kar naj bi bilo vodoravno/navpično, popravek se uporabi samodejno; desni klik na ikono za preklop na samodejno poravnavanje (samo zazna nagib, brez risanja)\n• Vrtenje/zrcaljenje: en klik zavrti ali zrcali stran\n• Kloniranje: Ctrl+klik za izbiro izvornega mesta, nato slikajte s pritisnjenim miškinim gumbom za podvajanje\n• Besedilo: kliknite za postavitev besedilnega bloka, izberite pisavo/velikost/barvo\n• Oblike: rišite elipse, pravokotnike, črte ali puščice, z ročaji za spreminjanje velikosti\n• Drsniki (ostrina, svetlost/kontrast, nasičenost, odstranjevanje barv, stiskanje): rezultat se prikazuje v živo med vlečenjem\n• Nivoji: prilagodite črno točko/gamo/belo točko z drsniki, ali zajemite barvo neposredno s slike s kapalkami\n• Prosojnost: kliknite barvo na sliki, da jo naredite prosojno\n• Barvna globina, Učinki, Način slike: izberite možnost s klikom na izbirni gumb, uporabljeno takoj\n\nPotrdite z gumbom »Potrdi«, ko se prikaže, ali Esc za preklic. Vsaka sprememba se pridruži običajni zgodovini Razveljavi/Uveljavi.",
+    "viewer_content": "Dvokliknite stran, da odprete pregledovalnik:\n• Tipki ← →: krmarjenje med stranmi\n• Tipka D: preklapljanje med 4 načini branja\n  - Ena stran: ena stran naenkrat\n  - Dvojne strani: stran 1 sama, nato 2-3, 4-5 itd.\n  - Neprekinjene dvojne strani: stran 1 sama, nato 2-3, 3-4, 4-5 itd.\n  - Webtoon: za navpične slike (spletni stripi), širina omejena na 900px za berljivost; miškin kolešček navpično drsi po strani, nato ob vrhu/dnu preklopi stran\n• Miškin kolešček: hitro krmarjenje (navpično drsenje po strani v načinu Webtoon)\n• Ctrl+kolešček ali Ctrl+Plus/Minus: povečava (do 1000% dejanske velikosti slike)\n• Ctrl+0: prilagodi povečavo oknu\n• Ctrl+1: povečava na 100% (dejanska velikost slikovnih pik)\n• Desni klik + vlečenje: premikanje prikazane slike (pomik), ko presega okno\n• Tipka F11: celozaslonski način\n• Dvoklik: preklop celozaslonskega načina\n• Tipka Esc: prekliči trenutno risanje (obrezovanje, poravnavanje, oblika…) ali zapusti pregledovalnik\n• Zaznamek: samodejno shrani trenutno stran ob zapiranju pregledovalnika (razen prve/zadnje strani). Na ustrezni sličici v mozaiku se prikaže rdeč trak. Ob ponovnem odpiranju sporočilo predlaga vrnitev na to stran. Samodejno izbrisano na zadnji strani, ali ročno z desnim klikom v pregledovalniku.\n\nPlavajoča orodna vrstica: pomaknite miško nad vrh slike, da se prikaže (sama se skrije po nekaj sekundah). Kliknite ikono za aktiviranje ustreznega orodja:\n• Obrezovanje: narišite pravokotnik, prilagodite ga po robovih, potrdite\n• Poravnavanje: narišite črto na to, kar naj bi bilo vodoravno/navpično, popravek se uporabi samodejno; desni klik na ikono za preklop na samodejno poravnavanje (samo zazna nagib, brez risanja)\n• Vrtenje/zrcaljenje: en klik zavrti ali zrcali stran\n• Kloniranje: Ctrl+klik za izbiro izvornega mesta, nato slikajte s pritisnjenim miškinim gumbom za podvajanje\n• Besedilo: kliknite za postavitev besedilnega bloka, izberite pisavo/velikost/barvo\n• Oblike: rišite elipse, pravokotnike, črte ali puščice, z ročaji za spreminjanje velikosti\n• Drsniki (ostrina, svetlost/kontrast, nasičenost, odstranjevanje barv, stiskanje): rezultat se prikazuje v živo med vlečenjem\n• Nivoji: prilagodite črno točko/gamo/belo točko z drsniki, ali zajemite barvo neposredno s slike s kapalkami\n• Prosojnost: kliknite barvo na sliki, da jo naredite prosojno\n• Barvna globina, Učinki, Način slike: izberite možnost s klikom na izbirni gumb, uporabljeno takoj\n• Prilepi sliko: prilepi sliko iz odložišča (ikona se aktivira samo, če odložišče vsebuje sliko), z ročicami za spreminjanje velikosti/vrtenje kot pri oblikah; deluje tudi z vlečenjem strani iz mozaika ali datoteke iz Raziskovalca Windows neposredno na pregledovalnik. Ctrl+C kopira prikazano stran (samo v načinu ene strani ali Webtoon), Ctrl+V prilepi sliko, enako kot v mozaiku\n\nPotrdite z gumbom »Potrdi«, ko se prikaže, ali Esc za preklic. Vsaka sprememba se pridruži običajni zgodovini Razveljavi/Uveljavi.",
     "join_pages": "Združevanje strani",
     "join_pages_content": "Izberite več zaporednih strani, desni klik → 'Združi izbrane strani' za združevanje strani vodoravno ali navpično. Format nastale slike ustreza formatu izvornih strani, če so vse enake, sicer privzeto PNG. Izbrali boste lahko, ali izbrišete ali obdržite izvirne strani.\n\nMesto nove strani v mozaiku:\n• Aktivni način preštevilčenja (samodejni ali ročni): stran prevzame mesto prve združene strani (njeno mesto, če so izvorne strani izbrisane, ali tik pred njo, če so ohranjene), in sproži preštevilčenje.\n• Izklopljen način preštevilčenja: stran se doda na začetek mozaika pod imenom \"Združeno_xxx\".",
     "split_pages": "Razdelitev strani",

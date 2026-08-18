@@ -72,7 +72,9 @@
     "cancel_straighten": "Avbryt rätning",
     "cancel_text": "Avbryt text",
     "cancel_shapes": "Avbryt former",
-    "cancel_transparency": "Avbryt transparens"
+    "cancel_transparency": "Avbryt transparens",
+    "validate_paste_image": "Tillämpa inklistring",
+    "cancel_paste_image": "Avbryt inklistring"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Välj ett läge, justeringen tillämpas omedelbart",
     "image_mode_panel_restore": "Återställ original",
     "toolbar_rotation_tooltip": "Rotation",
-    "toolbar_rotation_instruction": "Rotera eller vänd den visade sidan"
+    "toolbar_rotation_instruction": "Rotera eller vänd den visade sidan",
+    "toolbar_paste_image_tooltip": "Klistra in en bild",
+    "toolbar_paste_image_instruction": "Klistrar in urklippsbilden på sidan, handtag för att ändra storlek/rotera",
+    "toolbar_paste_image_disabled": "Urklipp får bara innehålla en bild"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Ingen transparens tillämpad",
         "message": "Klicka först på en färg som ska göras transparent."
+      },
+      "no_pasted_image": {
+        "title": "Ingen inklistrad bild",
+        "message": "Klistra in minst en bild först."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Inkompatibelt visningsläge",
+        "message": "Att kopiera en sida kräver enkelsidesläge. Tryck på D för att ändra visningsläge."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Fel",
         "message": "Det gick inte att tillämpa rotationen: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Fel",
+        "message": "Kunde inte tillämpa de inklistrade bilderna: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Platta till mappar",
     "flatten_content": "Om ditt arkiv innehåller undermappar, använd 'Platta till mappar' för att flytta alla bilder till samma nivå.",
     "viewer": "Visare",
-    "viewer_content": "Dubbelklicka på en sida för att öppna visaren:\n• Tangenter ← →: navigera mellan sidor\n• Tangent D: växla mellan 4 läslägen\n  - Enkelsida: en sida i taget\n  - Dubbelsidor: sida 1 ensam, sedan 2-3, 4-5 osv.\n  - Löpande dubbelsidor: sida 1 ensam, sedan 2-3, 3-4, 4-5 osv.\n  - Webtoon: för vertikala bilder (webcomics), bredd begränsad till 900px för att förbli läsbar; mushjulet rullar vertikalt i sidan, byter sedan sida vid toppen/botten\n• Mushjul: snabb navigering (vertikal rullning i sidan i Webtoon-läge)\n• Ctrl+Mushjul eller Ctrl+Plus/Minus: zoom (upp till 1000% av bildens verkliga storlek)\n• Ctrl+0: anpassa zoom till fönstret\n• Ctrl+1: zoom till 100% (bildens verkliga pixelstorlek)\n• Högerklick + dra: flytta den visade bilden (panorera) när den överskrider fönstret\n• Tangent F11: helskärm\n• Dubbelklick: växla helskärm\n• Tangent Esc: avbryt pågående ritning (beskärning, uträtning, form…) eller lämna visaren\n• Bokmärke: sparar automatiskt aktuell sida vid stängning (utom första/sista sidan). Ett rött band visas på motsvarande miniatyr i mosaiken. Vid återöppning föreslår ett meddelande att återgå till denna sida. Tas bort automatiskt vid sista sidan, eller manuellt via högerklick i visaren.\n\nFlytande verktygsfält: håll musen över bildens övre kant för att visa det (det döljer sig självt efter några sekunder). Klicka på en ikon för att aktivera motsvarande verktyg:\n• Beskärning: rita en rektangel, justera den via kanterna, bekräfta\n• Uträtning: rita en linje på det som ska vara horisontellt/vertikalt, korrigeringen tillämpas automatiskt; högerklicka på ikonen för att växla till automatisk uträtning (upptäcker lutningen själv, utan att rita något)\n• Rotation/spegling: ett klick roterar eller vänder sidan\n• Kloning: Ctrl+klick för att välja källpunkten, måla sedan med musknappen nedtryckt för att duplicera\n• Text: klicka för att placera ett textblock, välj typsnitt/storlek/färg\n• Former: rita ellipser, rektanglar, linjer eller pilar, med handtag för att ändra storlek\n• Reglage (skärpa, ljusstyrka/kontrast, mättnad, ta bort färger, komprimering): resultatet visas live medan du drar\n• Nivåer: justera svartpunkt/gamma/vitpunkt med reglagen, eller hämta en färg direkt från bilden med pipetterna\n• Genomskinlighet: klicka på en färg i bilden för att göra den genomskinlig\n• Färgdjup, Effekter, Bildläge: välj ett alternativ genom att klicka på en radioknapp, tillämpas omedelbart\n\nBekräfta med knappen \"Bekräfta\" när den visas, eller Esc för att avbryta. Varje ändring läggs till i den vanliga Ångra/Gör om-historiken.",
+    "viewer_content": "Dubbelklicka på en sida för att öppna visaren:\n• Tangenter ← →: navigera mellan sidor\n• Tangent D: växla mellan 4 läslägen\n  - Enkelsida: en sida i taget\n  - Dubbelsidor: sida 1 ensam, sedan 2-3, 4-5 osv.\n  - Löpande dubbelsidor: sida 1 ensam, sedan 2-3, 3-4, 4-5 osv.\n  - Webtoon: för vertikala bilder (webcomics), bredd begränsad till 900px för att förbli läsbar; mushjulet rullar vertikalt i sidan, byter sedan sida vid toppen/botten\n• Mushjul: snabb navigering (vertikal rullning i sidan i Webtoon-läge)\n• Ctrl+Mushjul eller Ctrl+Plus/Minus: zoom (upp till 1000% av bildens verkliga storlek)\n• Ctrl+0: anpassa zoom till fönstret\n• Ctrl+1: zoom till 100% (bildens verkliga pixelstorlek)\n• Högerklick + dra: flytta den visade bilden (panorera) när den överskrider fönstret\n• Tangent F11: helskärm\n• Dubbelklick: växla helskärm\n• Tangent Esc: avbryt pågående ritning (beskärning, uträtning, form…) eller lämna visaren\n• Bokmärke: sparar automatiskt aktuell sida vid stängning (utom första/sista sidan). Ett rött band visas på motsvarande miniatyr i mosaiken. Vid återöppning föreslår ett meddelande att återgå till denna sida. Tas bort automatiskt vid sista sidan, eller manuellt via högerklick i visaren.\n\nFlytande verktygsfält: håll musen över bildens övre kant för att visa det (det döljer sig självt efter några sekunder). Klicka på en ikon för att aktivera motsvarande verktyg:\n• Beskärning: rita en rektangel, justera den via kanterna, bekräfta\n• Uträtning: rita en linje på det som ska vara horisontellt/vertikalt, korrigeringen tillämpas automatiskt; högerklicka på ikonen för att växla till automatisk uträtning (upptäcker lutningen själv, utan att rita något)\n• Rotation/spegling: ett klick roterar eller vänder sidan\n• Kloning: Ctrl+klick för att välja källpunkten, måla sedan med musknappen nedtryckt för att duplicera\n• Text: klicka för att placera ett textblock, välj typsnitt/storlek/färg\n• Former: rita ellipser, rektanglar, linjer eller pilar, med handtag för att ändra storlek\n• Reglage (skärpa, ljusstyrka/kontrast, mättnad, ta bort färger, komprimering): resultatet visas live medan du drar\n• Nivåer: justera svartpunkt/gamma/vitpunkt med reglagen, eller hämta en färg direkt från bilden med pipetterna\n• Genomskinlighet: klicka på en färg i bilden för att göra den genomskinlig\n• Färgdjup, Effekter, Bildläge: välj ett alternativ genom att klicka på en radioknapp, tillämpas omedelbart\n• Klistra in en bild: klistrar in bilden från urklipp (ikonen aktiveras endast om urklipp innehåller en bild), med handtag för att ändra storlek/rotera som formerna; fungerar även genom att dra en sida från en mosaik eller en fil från Utforskaren direkt till visaren. Ctrl+C kopierar den visade sidan (endast i enkelsides- eller Webtoon-läge), Ctrl+V klistrar in en bild, precis som i mosaiken\n\nBekräfta med knappen \"Bekräfta\" när den visas, eller Esc för att avbryta. Varje ändring läggs till i den vanliga Ångra/Gör om-historiken.",
     "join_pages": "Sammanfoga sidor",
     "join_pages_content": "Välj flera på varandra följande sidor, högerklicka → 'Sammanfoga valda sidor' för att sammanfoga sidorna horisontellt eller vertikalt. Formatet på den producerade bilden motsvarar källsidornas format om de alla är identiska, annars PNG som standard. Du kommer att kunna välja om du vill ta bort eller behålla originalsidorna.\n\nPlacering av den nya sidan i mosaiken:\n• Aktivt omnumreringsläge (automatiskt eller manuellt): sidan tar platsen för den första sammanfogade sidan (dess plats, om källsidorna tas bort, eller precis före den, om de behålls), och utlöser en omnumrering.\n• AV-läge för omnumrering: sidan läggs till längst fram i mosaiken under namnet \"Sammanfogad_xxx\".",
     "split_pages": "Dela sidor",

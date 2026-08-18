@@ -72,7 +72,9 @@
     "cancel_straighten": "Ikkanċella t-tiswija",
     "cancel_text": "Ikkanċella t-test",
     "cancel_shapes": "Ikkanċella l-forom",
-    "cancel_transparency": "Ikkanċella t-trasparenza"
+    "cancel_transparency": "Ikkanċella t-trasparenza",
+    "validate_paste_image": "Applika l-inkollament",
+    "cancel_paste_image": "Ikkanċella l-inkollament"
   },
   "tabs": {
     "mosaic": "Mużajk",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Agħżel modalità, l-aġġustament japplika immedjatament",
     "image_mode_panel_restore": "Irrestawra l-oriġinal",
     "toolbar_rotation_tooltip": "Rotazzjoni",
-    "toolbar_rotation_instruction": "Dawwar jew ħabbel il-paġna murija"
+    "toolbar_rotation_instruction": "Dawwar jew ħabbel il-paġna murija",
+    "toolbar_paste_image_tooltip": "Waħħal stampa",
+    "toolbar_paste_image_instruction": "Iwaħħal l-istampa tal-clipboard fuq il-paġna, manek biex tibdel id-daqs/iddur",
+    "toolbar_paste_image_disabled": "Il-clipboard għandu jkun fih biss stampa"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "L-ebda trasparenza ma ġiet applikata",
         "message": "Jekk jogħġbok ikklikkja l-ewwel fuq kulur biex tagħmlu trasparenti."
+      },
+      "no_pasted_image": {
+        "title": "L-ebda stampa mwaħħla",
+        "message": "Jekk jogħġbok waħħal mill-inqas stampa waħda l-ewwel."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Modalità ta' viżwalizzazzjoni inkompatibbli",
+        "message": "Biex tikkopja paġna teħtieġ il-modalità ta' paġna waħda. Agħfas D biex tibdel il-modalità ta' viżwalizzazzjoni."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Żball",
         "message": "Ma setgħetx tiġi applikata r-rotazzjoni: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Żball",
+        "message": "L-istampi mwaħħla ma setgħux jiġu applikati: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Saħħan id-direttorji",
     "flatten_content": "Jekk l-arkivju tiegħek fih sottofolders, uża 'Saħħan id-direttorji' biex tġib l-immaġini kollha fl-istess livell.",
     "viewer": "Visualizzatur",
-    "viewer_content": "Ikklikkja darbtejn fuq paġna biex tiftaħ il-viewer:\n• Buttuni ← →: navigazzjoni bejn il-paġni\n• Buttuna D: aqleb bejn 4 modi ta' qari\n  - Paġna waħda: paġna waħda kull darba\n  - Paġni doppji: paġna 1 waħedha, imbagħad 2-3, 4-5 eċċ.\n  - Paġni doppji kontinwi: paġna 1 waħedha, imbagħad 2-3, 3-4, 4-5 eċċ.\n  - Webtoon: għal stampi vertikali (webcomics), wisa' limitata għal 900px biex tibqa' leġġibbli; ir-rota tal-maws tiskrolja vertikalment fil-paġna, imbagħad tibdel il-paġna fil-quċċata/qiegħ\n• Rota tal-maws: navigazzjoni mgħaġġla (skroll vertikali fil-paġna fil-modalità Webtoon)\n• Ctrl+Rota jew Ctrl+Plus/Minus: zoom (sa 1000% tad-daqs reali tal-istampa)\n• Ctrl+0: adatta z-zoom għat-tieqa\n• Ctrl+1: zoom fuq 100% (id-daqs reali tal-pixels tal-istampa)\n• Klikk tal-lemin + iġbed: iċċaqlaq l-istampa murija (pan) meta taqbeż it-tieqa\n• Buttuna F11: skrin sħiħ\n• Klikk doppju: aqleb l-iskrin sħiħ\n• Buttuna Esc: ikkanċella t-tpinġija attwali (qtugħ, iddritjar, forma…) jew oħroġ mill-viewer\n• Sinjal: jissejvja awtomatikament il-paġna attwali meta tingħalaq il-viewer (ħlief l-ewwel/l-aħħar paġna). Tidher biċċa ħamra fuq il-minjatura korrispondenti fil-mosaic. Meta terġa' tinfetaħ, messaġġ jissuġġerixxi li tirritorna għal din il-paġna. Titħassar awtomatikament fl-aħħar paġna, jew manwalment permezz ta' klikk tal-lemin fil-viewer.\n\nToolbar li tgħum: qiegħed il-maws fuq il-parti ta' fuq tal-istampa biex turiha (taħbi lilha nfisha wara ftit sekondi). Ikklikkja fuq ikona biex tattiva l-għodda korrispondenti:\n• Qtugħ: iġbed rettangolu, aġġustah mit-truf, ikkonferma\n• Iddritjar: iġbed linja fuq dak li għandu jkun orizzontali/vertikali, il-korrezzjoni tiġi applikata awtomatikament; klikk tal-lemin fuq l-ikona biex taqleb għall-iddritjar awtomatiku (jinduna waħdu bl-inklinazzjoni, mingħajr ma jiġbed xejn)\n• Rotazzjoni/mera: klikk wieħed idur jew iħawwad il-paġna\n• Klonazzjoni: Ctrl+klikk biex tagħżel il-punt sors, imbagħad pittura biż-żarmatura tal-maws miżmuma biex tirriproduċi\n• Test: ikklikkja biex tqiegħed blokka test, agħżel tipa/daqs/kulur\n• Forom: iġbed ellissi, rettangoli, linji jew vleġeġ, b'manki biex tibdel id-daqs\n• Slajders (ħdejra, dawl/kuntrast, saturazzjoni, tneħħija tal-kuluri, kompressjoni): ir-riżultat jidher live waqt li tiġbed\n• Livelli: aġġusta l-punt iswed/gamma/punt abjad bl-islajders, jew ħu kulur direttament mill-istampa bil-pipetti\n• Trasparenza: ikklikkja fuq kulur fl-istampa biex tagħmlu trasparenti\n• Fond tal-kulur, Effetti, Modalità tal-istampa: agħżel għażla billi tikklikkja fuq buttuna radju, applikata immedjatament\n\nIkkonferma bil-buttuna \"Ikkonferma\" meta tidher, jew Esc biex tikkanċella. Kull bidla tingħaqad mal-istorja tas-soltu Ħassar/Erġa' agħmel.",
+    "viewer_content": "Ikklikkja darbtejn fuq paġna biex tiftaħ il-viewer:\n• Buttuni ← →: navigazzjoni bejn il-paġni\n• Buttuna D: aqleb bejn 4 modi ta' qari\n  - Paġna waħda: paġna waħda kull darba\n  - Paġni doppji: paġna 1 waħedha, imbagħad 2-3, 4-5 eċċ.\n  - Paġni doppji kontinwi: paġna 1 waħedha, imbagħad 2-3, 3-4, 4-5 eċċ.\n  - Webtoon: għal stampi vertikali (webcomics), wisa' limitata għal 900px biex tibqa' leġġibbli; ir-rota tal-maws tiskrolja vertikalment fil-paġna, imbagħad tibdel il-paġna fil-quċċata/qiegħ\n• Rota tal-maws: navigazzjoni mgħaġġla (skroll vertikali fil-paġna fil-modalità Webtoon)\n• Ctrl+Rota jew Ctrl+Plus/Minus: zoom (sa 1000% tad-daqs reali tal-istampa)\n• Ctrl+0: adatta z-zoom għat-tieqa\n• Ctrl+1: zoom fuq 100% (id-daqs reali tal-pixels tal-istampa)\n• Klikk tal-lemin + iġbed: iċċaqlaq l-istampa murija (pan) meta taqbeż it-tieqa\n• Buttuna F11: skrin sħiħ\n• Klikk doppju: aqleb l-iskrin sħiħ\n• Buttuna Esc: ikkanċella t-tpinġija attwali (qtugħ, iddritjar, forma…) jew oħroġ mill-viewer\n• Sinjal: jissejvja awtomatikament il-paġna attwali meta tingħalaq il-viewer (ħlief l-ewwel/l-aħħar paġna). Tidher biċċa ħamra fuq il-minjatura korrispondenti fil-mosaic. Meta terġa' tinfetaħ, messaġġ jissuġġerixxi li tirritorna għal din il-paġna. Titħassar awtomatikament fl-aħħar paġna, jew manwalment permezz ta' klikk tal-lemin fil-viewer.\n\nToolbar li tgħum: qiegħed il-maws fuq il-parti ta' fuq tal-istampa biex turiha (taħbi lilha nfisha wara ftit sekondi). Ikklikkja fuq ikona biex tattiva l-għodda korrispondenti:\n• Qtugħ: iġbed rettangolu, aġġustah mit-truf, ikkonferma\n• Iddritjar: iġbed linja fuq dak li għandu jkun orizzontali/vertikali, il-korrezzjoni tiġi applikata awtomatikament; klikk tal-lemin fuq l-ikona biex taqleb għall-iddritjar awtomatiku (jinduna waħdu bl-inklinazzjoni, mingħajr ma jiġbed xejn)\n• Rotazzjoni/mera: klikk wieħed idur jew iħawwad il-paġna\n• Klonazzjoni: Ctrl+klikk biex tagħżel il-punt sors, imbagħad pittura biż-żarmatura tal-maws miżmuma biex tirriproduċi\n• Test: ikklikkja biex tqiegħed blokka test, agħżel tipa/daqs/kulur\n• Forom: iġbed ellissi, rettangoli, linji jew vleġeġ, b'manki biex tibdel id-daqs\n• Slajders (ħdejra, dawl/kuntrast, saturazzjoni, tneħħija tal-kuluri, kompressjoni): ir-riżultat jidher live waqt li tiġbed\n• Livelli: aġġusta l-punt iswed/gamma/punt abjad bl-islajders, jew ħu kulur direttament mill-istampa bil-pipetti\n• Trasparenza: ikklikkja fuq kulur fl-istampa biex tagħmlu trasparenti\n• Fond tal-kulur, Effetti, Modalità tal-istampa: agħżel għażla billi tikklikkja fuq buttuna radju, applikata immedjatament\n• Waħħal stampa: iwaħħal l-istampa mill-clipboard (l-ikona tiġi attivata biss jekk il-clipboard fih stampa), b'manek biex tibdel id-daqs/iddur bħal figuri; jaħdem ukoll billi tiġbed paġna minn mosajk jew fajl minn Windows Explorer direttament fuq il-viewer. Ctrl+C jikkopja l-paġna murija (fil-modalità ta' paġna waħda jew Webtoon biss), Ctrl+V iwaħħal stampa, l-istess bħal fil-mosajk\n\nIkkonferma bil-buttuna \"Ikkonferma\" meta tidher, jew Esc biex tikkanċella. Kull bidla tingħaqad mal-istorja tas-soltu Ħassar/Erġa' agħmel.",
     "join_pages": "Waħħad il-paġni",
     "join_pages_content": "Agħżel diversi paġni konsekuttivi, klikkja bil-lemin → 'Għaqqad il-paġni magħżula' biex tgħaqqad il-paġni orizzontalment jew vertikalment. Il-format tal-immaġni prodotta jaqbel ma' dak tal-paġni sors jekk ilkoll identiċi, jekk le PNG b'mod awtomatiku. Tkun tista' tagħżel jekk tħassarx jew iżżomm il-paġni oriġinali.\n\nPost il-paġna l-ġdida fil-mosajk:\n• Modalità ta' numerazzjoni mill-ġdid attiva (awtomatika jew manwali): il-paġna tieħu post l-ewwel paġna magħquda (postha, jekk il-paġni sors jitħassru, jew eżatt qabilha, jekk jinżammu), u tqajjem numerazzjoni mill-ġdid.\n• Modalità OFF ta' numerazzjoni mill-ġdid: il-paġna tiżdied fil-quddiem tal-mosajk taħt l-isem \"Magħqud_xxx\".",
     "split_pages": "Aqsam il-paġni",

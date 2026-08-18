@@ -72,7 +72,9 @@
     "cancel_straighten": "Rechttrekken annuleren",
     "cancel_text": "Tekst annuleren",
     "cancel_shapes": "Vormen annuleren",
-    "cancel_transparency": "Transparantie annuleren"
+    "cancel_transparency": "Transparantie annuleren",
+    "validate_paste_image": "Plakken toepassen",
+    "cancel_paste_image": "Plakken annuleren"
   },
   "tabs": {
     "mosaic": "Mozaïek",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Kies een modus, de aanpassing wordt direct toegepast",
     "image_mode_panel_restore": "Origineel herstellen",
     "toolbar_rotation_tooltip": "Rotatie",
-    "toolbar_rotation_instruction": "Draai of spiegel de weergegeven pagina"
+    "toolbar_rotation_instruction": "Draai of spiegel de weergegeven pagina",
+    "toolbar_paste_image_tooltip": "Een afbeelding plakken",
+    "toolbar_paste_image_instruction": "Plakt de afbeelding uit het klembord op de pagina, grepen om te schalen/draaien",
+    "toolbar_paste_image_disabled": "Het klembord mag alleen een afbeelding bevatten"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Geen transparantie toegepast",
         "message": "Klik eerst op een kleur die transparant moet worden."
+      },
+      "no_pasted_image": {
+        "title": "Geen afbeelding geplakt",
+        "message": "Plak eerst ten minste één afbeelding."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Incompatibele weergavemodus",
+        "message": "Een pagina kopiëren vereist de enkelvoudige paginamodus. Druk op D om de weergavemodus te wijzigen."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Fout",
         "message": "Kon rotatie niet toepassen: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Fout",
+        "message": "De geplakte afbeeldingen konden niet worden toegepast: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Mappen afvlakken",
     "flatten_content": "Als uw archief submappen bevat, gebruik dan 'Mappen afvlakken' om alle afbeeldingen naar hetzelfde niveau te brengen.",
     "viewer": "Viewer",
-    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Toetsen ← →: navigeren tussen pagina's\n• Toets D: schakelen tussen 4 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, dan 2-3, 4-5, enz.\n  - Doorlopende dubbele pagina's: pagina 1 alleen, dan 2-3, 3-4, 4-5, enz.\n  - Webtoon: voor verticale afbeeldingen (webcomics), breedte beperkt tot 900px om leesbaar te blijven; het muiswiel scrollt verticaal in de pagina, wisselt daarna van pagina boven/onder\n• Muiswiel: snel navigeren (verticaal scrollen in de pagina in Webtoon-modus)\n• Ctrl+Muiswiel of Ctrl+Plus/Min: zoomen (tot 1000% van de werkelijke afbeeldingsgrootte)\n• Ctrl+0: zoom aanpassen aan het venster\n• Ctrl+1: zoom op 100% (werkelijke pixelgrootte van de afbeelding)\n• Rechtermuisknop + slepen: de weergegeven afbeelding verplaatsen (pan) wanneer deze het venster overschrijdt\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm in-/uitschakelen\n• Toets Esc: huidige tekening annuleren (bijsnijden, rechttrekken, vorm…) of viewer verlaten\n• Bladwijzer: onthoudt automatisch de huidige pagina bij het sluiten van de viewer (behalve eerste/laatste pagina). Er verschijnt een rood lint op de bijbehorende miniatuur in de mozaïek. Bij het opnieuw openen stelt een bericht voor om verder te gaan bij deze pagina. Automatisch verwijderd bij de laatste pagina, of handmatig via rechtermuisknop in de viewer.\n\nZwevende werkbalk: beweeg de muis naar de bovenkant van de afbeelding om hem te tonen (verdwijnt vanzelf na enkele seconden). Klik op een pictogram om het bijbehorende gereedschap te activeren:\n• Bijsnijden: teken een rechthoek, pas hem aan via de randen, bevestig\n• Rechttrekken: teken een lijn op wat horizontaal/verticaal zou moeten zijn, de correctie wordt automatisch toegepast; rechtermuisknop op het pictogram om over te schakelen naar automatisch rechttrekken (detecteert de scheefstand zelf, zonder iets te tekenen)\n• Draaien/spiegelen: één klik draait of spiegelt de pagina\n• Klonen: Ctrl+klik om het bronpunt te kiezen, schilder daarna met ingedrukte muisknop om te dupliceren\n• Tekst: klik om een tekstblok te plaatsen, kies lettertype/grootte/kleur\n• Vormen: teken ellipsen, rechthoeken, lijnen of pijlen, met handvatten om ze te vergroten/verkleinen\n• Schuifregelaars (scherpte, helderheid/contrast, verzadiging, kleuren verwijderen, compressie): het resultaat wordt live getoond terwijl u sleept\n• Niveaus: pas zwartpunt/gamma/witpunt aan met schuifregelaars, of neem een kleur rechtstreeks van de afbeelding met de pipetten\n• Transparantie: klik op een kleur in de afbeelding om deze transparant te maken\n• Kleurdiepte, Effecten, Afbeeldingsmodus: kies een optie door op een keuzerondje te klikken, direct toegepast\n\nBevestig met de knop \"Bevestigen\" zodra die verschijnt, of Esc om te annuleren. Elke wijziging voegt zich bij de gebruikelijke Ongedaan maken/Opnieuw-geschiedenis.",
+    "viewer_content": "Dubbelklik op een pagina om de viewer te openen:\n• Toetsen ← →: navigeren tussen pagina's\n• Toets D: schakelen tussen 4 leesmodi\n  - Enkele pagina: één pagina tegelijk\n  - Dubbele pagina's: pagina 1 alleen, dan 2-3, 4-5, enz.\n  - Doorlopende dubbele pagina's: pagina 1 alleen, dan 2-3, 3-4, 4-5, enz.\n  - Webtoon: voor verticale afbeeldingen (webcomics), breedte beperkt tot 900px om leesbaar te blijven; het muiswiel scrollt verticaal in de pagina, wisselt daarna van pagina boven/onder\n• Muiswiel: snel navigeren (verticaal scrollen in de pagina in Webtoon-modus)\n• Ctrl+Muiswiel of Ctrl+Plus/Min: zoomen (tot 1000% van de werkelijke afbeeldingsgrootte)\n• Ctrl+0: zoom aanpassen aan het venster\n• Ctrl+1: zoom op 100% (werkelijke pixelgrootte van de afbeelding)\n• Rechtermuisknop + slepen: de weergegeven afbeelding verplaatsen (pan) wanneer deze het venster overschrijdt\n• Toets F11: volledig scherm\n• Dubbelklik: volledig scherm in-/uitschakelen\n• Toets Esc: huidige tekening annuleren (bijsnijden, rechttrekken, vorm…) of viewer verlaten\n• Bladwijzer: onthoudt automatisch de huidige pagina bij het sluiten van de viewer (behalve eerste/laatste pagina). Er verschijnt een rood lint op de bijbehorende miniatuur in de mozaïek. Bij het opnieuw openen stelt een bericht voor om verder te gaan bij deze pagina. Automatisch verwijderd bij de laatste pagina, of handmatig via rechtermuisknop in de viewer.\n\nZwevende werkbalk: beweeg de muis naar de bovenkant van de afbeelding om hem te tonen (verdwijnt vanzelf na enkele seconden). Klik op een pictogram om het bijbehorende gereedschap te activeren:\n• Bijsnijden: teken een rechthoek, pas hem aan via de randen, bevestig\n• Rechttrekken: teken een lijn op wat horizontaal/verticaal zou moeten zijn, de correctie wordt automatisch toegepast; rechtermuisknop op het pictogram om over te schakelen naar automatisch rechttrekken (detecteert de scheefstand zelf, zonder iets te tekenen)\n• Draaien/spiegelen: één klik draait of spiegelt de pagina\n• Klonen: Ctrl+klik om het bronpunt te kiezen, schilder daarna met ingedrukte muisknop om te dupliceren\n• Tekst: klik om een tekstblok te plaatsen, kies lettertype/grootte/kleur\n• Vormen: teken ellipsen, rechthoeken, lijnen of pijlen, met handvatten om ze te vergroten/verkleinen\n• Schuifregelaars (scherpte, helderheid/contrast, verzadiging, kleuren verwijderen, compressie): het resultaat wordt live getoond terwijl u sleept\n• Niveaus: pas zwartpunt/gamma/witpunt aan met schuifregelaars, of neem een kleur rechtstreeks van de afbeelding met de pipetten\n• Transparantie: klik op een kleur in de afbeelding om deze transparant te maken\n• Kleurdiepte, Effecten, Afbeeldingsmodus: kies een optie door op een keuzerondje te klikken, direct toegepast\n• Een afbeelding plakken: plakt de afbeelding uit het klembord (het pictogram wordt alleen actief als het klembord een afbeelding bevat), met grepen om te schalen/draaien zoals bij vormen; werkt ook door een pagina van een mozaïek of een bestand uit Windows Verkenner rechtstreeks op de viewer te slepen. Ctrl+C kopieert de weergegeven pagina (alleen in de modus enkele pagina of Webtoon), Ctrl+V plakt een afbeelding, net als in het mozaïek\n\nBevestig met de knop \"Bevestigen\" zodra die verschijnt, of Esc om te annuleren. Elke wijziging voegt zich bij de gebruikelijke Ongedaan maken/Opnieuw-geschiedenis.",
     "join_pages": "Pagina's samenvoegen",
     "join_pages_content": "Selecteer meerdere opeenvolgende pagina's, rechtsklik → 'Geselecteerde pagina's samenvoegen' om de pagina's horizontaal of verticaal samen te voegen. Het formaat van de geproduceerde afbeelding komt overeen met dat van de bronpagina's als ze allemaal identiek zijn, anders standaard PNG. U kunt kiezen of u de originele pagina's wilt verwijderen of behouden.\n\nPlaats van de nieuwe pagina in de mozaïek:\n• Actieve hernummeringsmodus (automatisch of handmatig): de pagina neemt de plaats in van de eerste samengevoegde pagina (haar plaats, als de bronpagina's worden verwijderd, of vlak ervoor, als ze worden behouden), en activeert een hernummering.\n• UIT-modus voor hernummering: de pagina wordt vooraan de mozaïek toegevoegd onder de naam \"Samenvoeging_xxx\".",
     "split_pages": "Pagina's splitsen",

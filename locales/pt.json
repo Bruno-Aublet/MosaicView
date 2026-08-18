@@ -72,7 +72,9 @@
     "cancel_straighten": "Cancelar endireitamento",
     "cancel_text": "Cancelar texto",
     "cancel_shapes": "Cancelar formas",
-    "cancel_transparency": "Cancelar transparência"
+    "cancel_transparency": "Cancelar transparência",
+    "validate_paste_image": "Aplicar colagem",
+    "cancel_paste_image": "Cancelar colagem"
   },
   "tabs": {
     "mosaic": "Mosaico",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Escolha um modo, o ajuste aplica-se imediatamente",
     "image_mode_panel_restore": "Restaurar original",
     "toolbar_rotation_tooltip": "Rotação",
-    "toolbar_rotation_instruction": "Rode ou inverta a página exibida"
+    "toolbar_rotation_instruction": "Rode ou inverta a página exibida",
+    "toolbar_paste_image_tooltip": "Colar uma imagem",
+    "toolbar_paste_image_instruction": "Cola a imagem da área de transferência na página, alças para redimensionar/rodar",
+    "toolbar_paste_image_disabled": "A área de transferência deve conter apenas uma imagem"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Nenhuma transparência aplicada",
         "message": "Clique primeiro numa cor para a tornar transparente."
+      },
+      "no_pasted_image": {
+        "title": "Nenhuma imagem colada",
+        "message": "Cole pelo menos uma imagem primeiro."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Modo de exibição incompatível",
+        "message": "Copiar uma página requer o modo de página única. Pressione D para mudar o modo de exibição."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Erro",
         "message": "Não foi possível aplicar a rotação: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Erro",
+        "message": "Não foi possível aplicar as imagens coladas: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Nivelar as pastas",
     "flatten_content": "Se o seu arquivo contém subpastas, use 'Nivelar pastas' para trazer todas as imagens ao mesmo nível.",
     "viewer": "Visualizador",
-    "viewer_content": "Clique duas vezes numa página para abrir o visualizador:\n• Teclas ← →: navegar entre páginas\n• Tecla D: alternar entre 4 modos de leitura\n  - Página única: uma página de cada vez\n  - Páginas duplas: página 1 sozinha, depois 2-3, 4-5, etc.\n  - Páginas duplas contínuas: página 1 sozinha, depois 2-3, 3-4, 4-5, etc.\n  - Webtoon: para imagens verticais (webcomics), largura limitada a 900px para manter a legibilidade; a roda do rato desloca verticalmente a página, depois muda de página ao chegar ao topo/fundo\n• Roda do rato: navegação rápida (deslocamento vertical na página em modo Webtoon)\n• Ctrl+Roda ou Ctrl+Mais/Menos: zoom (até 1000% do tamanho real da imagem)\n• Ctrl+0: ajustar o zoom à janela\n• Ctrl+1: zoom a 100% (tamanho real dos pixels da imagem)\n• Clique direito + arrastar: deslocar a imagem exibida (pan) quando ultrapassa a janela\n• Tecla F11: ecrã inteiro\n• Duplo clique: alternar ecrã inteiro\n• Tecla Esc: cancelar o traçado em curso (recorte, endireitamento, forma…) ou sair do visualizador\n• Marcador: memoriza automaticamente a página atual ao fechar o visualizador (exceto primeira/última página). Uma fita vermelha aparece na miniatura correspondente no mosaico. Ao reabrir, uma mensagem propõe retomar nessa página. Eliminação automática na última página, ou manual através de clique direito no visualizador.\n\nBarra de ferramentas flutuante: passe o rato pela parte superior da imagem para a fazer aparecer (esconde-se sozinha após alguns segundos). Clique num ícone para ativar a ferramenta correspondente:\n• Recorte: trace um retângulo, ajuste-o pelos bordos, valide\n• Endireitamento: trace uma linha sobre o que deveria ser horizontal/vertical, a correção aplica-se automaticamente; clique direito no ícone para alternar para o endireitamento automático (deteta a inclinação sozinho, sem traçar nada)\n• Rotação/espelho: um clique roda ou inverte a página\n• Clonagem: Ctrl+clique para escolher o ponto de origem, depois pinte com o clique mantido para duplicar\n• Texto: clique para colocar um bloco de texto, escolha fonte/tamanho/cor\n• Formas: desenhe elipses, retângulos, linhas ou setas, com alças para redimensioná-las\n• Reguladores (nitidez, brilho/contraste, saturação, remoção de cores, compressão): o resultado é mostrado em direto enquanto arrasta\n• Níveis: ajuste ponto preto/gama/ponto branco com os reguladores, ou colha uma cor diretamente na imagem com os conta-gotas\n• Transparência: clique numa cor da imagem para a tornar transparente\n• Profundidade de cor, Efeitos, Modo de imagem: escolha uma opção clicando num botão de opção, aplicada imediatamente\n\nValide com o botão \"Validar\" quando aparecer, ou Esc para cancelar. Cada alteração junta-se ao histórico habitual de Anular/Refazer.",
+    "viewer_content": "Clique duas vezes numa página para abrir o visualizador:\n• Teclas ← →: navegar entre páginas\n• Tecla D: alternar entre 4 modos de leitura\n  - Página única: uma página de cada vez\n  - Páginas duplas: página 1 sozinha, depois 2-3, 4-5, etc.\n  - Páginas duplas contínuas: página 1 sozinha, depois 2-3, 3-4, 4-5, etc.\n  - Webtoon: para imagens verticais (webcomics), largura limitada a 900px para manter a legibilidade; a roda do rato desloca verticalmente a página, depois muda de página ao chegar ao topo/fundo\n• Roda do rato: navegação rápida (deslocamento vertical na página em modo Webtoon)\n• Ctrl+Roda ou Ctrl+Mais/Menos: zoom (até 1000% do tamanho real da imagem)\n• Ctrl+0: ajustar o zoom à janela\n• Ctrl+1: zoom a 100% (tamanho real dos pixels da imagem)\n• Clique direito + arrastar: deslocar a imagem exibida (pan) quando ultrapassa a janela\n• Tecla F11: ecrã inteiro\n• Duplo clique: alternar ecrã inteiro\n• Tecla Esc: cancelar o traçado em curso (recorte, endireitamento, forma…) ou sair do visualizador\n• Marcador: memoriza automaticamente a página atual ao fechar o visualizador (exceto primeira/última página). Uma fita vermelha aparece na miniatura correspondente no mosaico. Ao reabrir, uma mensagem propõe retomar nessa página. Eliminação automática na última página, ou manual através de clique direito no visualizador.\n\nBarra de ferramentas flutuante: passe o rato pela parte superior da imagem para a fazer aparecer (esconde-se sozinha após alguns segundos). Clique num ícone para ativar a ferramenta correspondente:\n• Recorte: trace um retângulo, ajuste-o pelos bordos, valide\n• Endireitamento: trace uma linha sobre o que deveria ser horizontal/vertical, a correção aplica-se automaticamente; clique direito no ícone para alternar para o endireitamento automático (deteta a inclinação sozinho, sem traçar nada)\n• Rotação/espelho: um clique roda ou inverte a página\n• Clonagem: Ctrl+clique para escolher o ponto de origem, depois pinte com o clique mantido para duplicar\n• Texto: clique para colocar um bloco de texto, escolha fonte/tamanho/cor\n• Formas: desenhe elipses, retângulos, linhas ou setas, com alças para redimensioná-las\n• Reguladores (nitidez, brilho/contraste, saturação, remoção de cores, compressão): o resultado é mostrado em direto enquanto arrasta\n• Níveis: ajuste ponto preto/gama/ponto branco com os reguladores, ou colha uma cor diretamente na imagem com os conta-gotas\n• Transparência: clique numa cor da imagem para a tornar transparente\n• Profundidade de cor, Efeitos, Modo de imagem: escolha uma opção clicando num botão de opção, aplicada imediatamente\n• Colar uma imagem: cola a imagem da área de transferência (o ícone só se ativa se a área de transferência contiver uma imagem), com alças para redimensioná-la/rodá-la como as formas; também funciona arrastando uma página de um mosaico ou um arquivo do Explorador do Windows diretamente para o visualizador. Ctrl+C copia a página exibida (apenas no modo página única ou Webtoon), Ctrl+V cola uma imagem, como no mosaico\n\nValide com o botão \"Validar\" quando aparecer, ou Esc para cancelar. Cada alteração junta-se ao histórico habitual de Anular/Refazer.",
     "join_pages": "Unir páginas",
     "join_pages_content": "Selecione várias páginas consecutivas, clique com o botão direito → 'Unir páginas selecionadas' para unir as páginas horizontal ou verticalmente. O formato da imagem produzida corresponde ao das páginas de origem se todas forem idênticas, caso contrário PNG por defeito. Poderá escolher eliminar ou manter as páginas originais.\n\nLocalização da nova página no mosaico:\n• Modo de renumeração ativo (automático ou manual): a página ocupa o lugar da primeira página unida (o seu lugar, se as páginas de origem forem eliminadas, ou imediatamente antes, se forem mantidas), e desencadeia uma renumeração.\n• Modo de renumeração OFF: a página é adicionada no início do mosaico com o nome \"União_xxx\".",
     "split_pages": "Dividir páginas",

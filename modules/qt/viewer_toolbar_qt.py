@@ -49,6 +49,7 @@ from modules.qt.remove_colors_tool_qt import _RemoveColorsOptionsPanel
 from modules.qt.compression_tool_qt import _CompressionOptionsPanel, is_compressible_entry
 from modules.qt.levels_tool_qt import _LevelsOptionsPanel
 from modules.qt.shapes_tool_qt import _ShapeOptionsPanel
+from modules.qt.clipboard_qt import clipboard_has_single_image
 from modules.qt.transparency_tool_qt import _TransparencyOptionsPanel
 from modules.qt.color_depth_tool_qt import _ColorDepthOptionsPanel
 from modules.qt.effects_tool_qt import _EffectsOptionsPanel
@@ -455,6 +456,24 @@ class _ViewerToolbar(QWidget):
         layout.addWidget(image_mode_btn)
         self._buttons["image_mode"] = image_mode_btn
 
+        # 17e outil, PREMIER outil entièrement NEUF depuis "shapes" (idees.txt
+        # #1, "VISIONNEUSE — NOUVEL OUTIL COLLER UNE IMAGE", PRIORITAIRE) :
+        # icône fixe, PAS de bi-mode, PAS de panneau d'options flottant dédié
+        # (décision explicite utilisateur : aucun réglage à part les poignées
+        # de manipulation + Valider/Annuler, même cas que "crop" dans
+        # _VALIDATE_KEYS). Grisée/désactivée en LIVE selon le contenu du
+        # presse-papiers système (une image seule requise, CF_DIB ou CF_HDROP
+        # à un seul fichier image — voir clipboard_qt.py::
+        # clipboard_has_single_image, réutilisée telle quelle) via
+        # QClipboard.dataChanged, PAS seulement une vérification au clic —
+        # voir _refresh_paste_image_button_state/_on_clipboard_changed plus
+        # bas. Bouton "Valider" partagé TOUJOURS VISIBLE tant que cet outil
+        # est actif (comme shapes/transparency), voir image_viewer_qt.py::
+        # _ViewerCanvas._ALWAYS_VISIBLE_VALIDATE_TOOLS.
+        paste_image_btn = _ToolButton(self, "BTN_PiP.png", tool_id="paste_image")
+        layout.addWidget(paste_image_btn)
+        self._buttons["paste_image"] = paste_image_btn
+
         self._separator = QFrame()
         self._separator.setFrameShape(QFrame.VLine)
         layout.addWidget(self._separator)
@@ -481,6 +500,7 @@ class _ViewerToolbar(QWidget):
         self._overlay_tip.track(color_depth_btn)
         self._overlay_tip.track(effects_btn)
         self._overlay_tip.track(image_mode_btn)
+        self._overlay_tip.track(paste_image_btn)
         self._overlay_tip.track(self._undo_btn)
         self._overlay_tip.track(self._redo_btn)
 
@@ -567,6 +587,40 @@ class _ViewerToolbar(QWidget):
         self.set_active_tool(None)
         self._update_sharpness_tooltip()
         self.refresh_undo_redo_state()
+
+        # Grisage LIVE de l'icône "Coller une image" selon le contenu du
+        # presse-papiers système (idees.txt #1) : écoute QClipboard.
+        # dataChanged plutôt qu'une simple vérification au clic, comme
+        # explicitement demandé — aucun mécanisme équivalent n'existait
+        # ailleurs dans l'application avant cet outil. Déconnecté dans
+        # ImageViewer.closeEvent (voir _disconnect_paste_image_clipboard_watch),
+        # même précaution que language_signal.changed (CLAUDE.md règle UI
+        # n°2) : cette barre est détruite avec la visionneuse, un signal Qt
+        # global (QApplication.clipboard()) qui reste connecté à un widget
+        # supprimé provoquerait un RuntimeError au prochain changement de
+        # presse-papiers.
+        from PySide6.QtWidgets import QApplication
+        self._clipboard = QApplication.clipboard()
+        self._clipboard.dataChanged.connect(self._refresh_paste_image_button_state)
+        self._refresh_paste_image_button_state()
+
+    def _refresh_paste_image_button_state(self):
+        """Grise/dégrise l'icône "paste_image" selon clipboard_has_single_image()
+        (voir clipboard_qt.py, réutilisée telle quelle plutôt que réécrite) —
+        appelée à la construction ET à chaque QClipboard.dataChanged, PAS
+        seulement au moment du clic sur l'icône (idees.txt #1, exigence
+        explicite : "nécessite d'écouter les changements du presse-papiers
+        système en direct")."""
+        self._buttons["paste_image"].set_enabled_state(clipboard_has_single_image())
+        self._update_paste_image_tooltip()
+
+    def disconnect_paste_image_clipboard_watch(self):
+        """Appelée UNIQUEMENT depuis ImageViewer.closeEvent — voir docstring
+        du connect() ci-dessus."""
+        try:
+            self._clipboard.dataChanged.disconnect(self._refresh_paste_image_button_state)
+        except (RuntimeError, TypeError):
+            pass
 
     # ── Thème / traduction ───────────────────────────────────────────────────
 
@@ -677,6 +731,7 @@ class _ViewerToolbar(QWidget):
             f"{_('viewer.toolbar_image_mode_instruction')}"
         )
         self._overlay_tip.track(self._buttons["image_mode"], image_mode_tip)
+        self._update_paste_image_tooltip()
         self._overlay_tip.track(self._undo_btn, _("viewer.toolbar_undo_tooltip"))
         self._overlay_tip.track(self._redo_btn, _("viewer.toolbar_redo_tooltip"))
         self._angle_panel.retranslate()
@@ -906,10 +961,42 @@ class _ViewerToolbar(QWidget):
         if tool_id == "straighten" and self._straighten_mode() == 1:
             self._viewer.perform_auto_straighten()
             return
+        # "Coller une image" (idees.txt #1) : voir paste_image_from_clipboard()
+        # ci-dessous — factorisée pour être réutilisée à l'identique par le
+        # raccourci Ctrl+V dédié de la visionneuse (voir ImageViewer.
+        # _paste_image_shortcut, image_viewer_qt.py).
+        if tool_id == "paste_image":
+            self.paste_image_from_clipboard()
+            return
         if self.active_tool == tool_id:
             self.set_active_tool(None)
         else:
             self.set_active_tool(tool_id)
+
+    def paste_image_from_clipboard(self):
+        """Colle immédiatement une NOUVELLE image du presse-papiers sur la
+        page affichée et active l'outil "paste_image" (idees.txt #1).
+        Contrairement aux autres outils (sélectionner l'icône n'active que le
+        mode de tracé), CHAQUE appel colle une image — plusieurs collages
+        doivent pouvoir s'accumuler avant validation (comme les formes), donc
+        rappeler cette méthode alors que l'outil est déjà actif ne le
+        désélectionne JAMAIS (contrairement au comportement standard de
+        _on_tool_clicked pour les autres icônes) : ce serait incohérent avec
+        le fait de vouloir coller une 2e image sans quitter puis rerentrer
+        dans l'outil. No-op silencieux si le presse-papiers ne contient pas
+        EXACTEMENT une image (voir clipboard_qt.py::clipboard_has_single_image/
+        get_clipboard_single_image, réutilisées telles quelles) — appelée
+        aussi bien par le clic sur l'icône (déjà grisée dans ce cas, voir
+        _ToolButton.mousePressEvent) que par le raccourci Ctrl+V dédié de la
+        visionneuse (ImageViewer._paste_image_shortcut, sans garde
+        équivalente à l'icône, donc le no-op silencieux est nécessaire ici)."""
+        from modules.qt.clipboard_qt import get_clipboard_single_image
+        img = get_clipboard_single_image()
+        if img is None:
+            return
+        if self.active_tool != "paste_image":
+            self.set_active_tool("paste_image")
+        self._viewer._canvas._add_pasted_image(img)
 
     def _on_tool_right_clicked(self, btn: "_ToolButton"):
         if btn._tool_id == "straighten":
@@ -1024,6 +1111,28 @@ class _ViewerToolbar(QWidget):
             tip = (
                 f"<b>{_('viewer.toolbar_compression_tooltip')}</b><br>"
                 f"{_('viewer.toolbar_compression_disabled')}"
+            )
+        self._overlay_tip.set_tracked_html(tip, btn)
+
+    def _update_paste_image_tooltip(self):
+        """Tooltip à deux états, même principe que
+        _update_compression_tooltip/_update_transparency_tooltip : texte
+        différent selon que l'icône est actuellement activée (le
+        presse-papiers contient une image seule) ou grisée (tout autre
+        contenu). Rappelé par _refresh_paste_image_button_state() à chaque
+        changement du presse-papiers (QClipboard.dataChanged), pas seulement
+        à la construction/au changement de langue comme les autres tooltips
+        statiques."""
+        btn = self._buttons["paste_image"]
+        if btn._enabled:
+            tip = (
+                f"<b>{_('viewer.toolbar_paste_image_tooltip')}</b><br>"
+                f"{_('viewer.toolbar_paste_image_instruction')}"
+            )
+        else:
+            tip = (
+                f"<b>{_('viewer.toolbar_paste_image_tooltip')}</b><br>"
+                f"{_('viewer.toolbar_paste_image_disabled')}"
             )
         self._overlay_tip.set_tracked_html(tip, btn)
 

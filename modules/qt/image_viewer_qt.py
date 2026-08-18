@@ -40,6 +40,7 @@ from modules.qt.compression_tool_qt import (
 )
 from modules.qt.levels_tool_qt import LevelsCanvasMixin, LevelsViewerMixin
 from modules.qt.shapes_tool_qt import ShapeCanvasMixin, ShapeViewerMixin
+from modules.qt.paste_image_tool_qt import PasteImageCanvasMixin, PasteImageViewerMixin
 from modules.qt.transparency_tool_qt import (
     TransparencyCanvasMixin, TransparencyViewerMixin, is_transparency_supported_entry,
 )
@@ -162,7 +163,7 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
                      TextCanvasMixin, SharpnessCanvasMixin, BrightnessCanvasMixin, SaturationCanvasMixin,
                      RemoveColorsCanvasMixin, CompressionCanvasMixin, LevelsCanvasMixin,
                      ShapeCanvasMixin, TransparencyCanvasMixin, ColorDepthCanvasMixin,
-                     EffectsCanvasMixin, ImageModeCanvasMixin, QLabel):
+                     EffectsCanvasMixin, ImageModeCanvasMixin, PasteImageCanvasMixin, QLabel):
     """
     QLabel utilisé comme zone d'affichage de l'image.
     Gère :
@@ -189,6 +190,14 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         self.setMinimumSize(1, 1)
         self.setMouseTracking(True)
         self.setFocusPolicy(Qt.NoFocus)
+        # Piste secondaire "Coller une image" (idees.txt #1) : glisser une
+        # page depuis n'importe quelle mosaïque (panel1/panel2) OU un fichier
+        # image depuis l'Explorateur Windows déclenche le même comportement
+        # qu'un collage — voir dragEnterEvent/dropEvent plus bas et
+        # paste_image_tool_qt.py::PasteImageCanvasMixin._add_pasted_image
+        # (point d'entrée déjà isolé à dessein pour ce jour-là, voir sa
+        # docstring de module).
+        self.setAcceptDrops(True)
 
         # Infos image affichée (pour conversion coordonnées → image originale)
         self.display_offset_x = 0
@@ -301,6 +310,12 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         # jamais migrer le code d'un outil dans image_viewer_qt.py).
         self._init_image_mode_state()
 
+        # État de l'outil "paste_image" (idees.txt #1, voir
+        # paste_image_tool_qt.py::PasteImageCanvasMixin, hérité par cette
+        # classe — CLAUDE.md : ne jamais migrer le code d'un outil dans
+        # image_viewer_qt.py).
+        self._init_paste_image_state()
+
     # Méthodes de l'outil "crop" (has_crop, clear_crop, _get_resize_mode...)
     # fournies par CropCanvasMixin (crop_tool_qt.py), de l'outil "straighten"
     # manuel (has_line, clear_line, set_line_end_from_angle...) fournies par
@@ -319,6 +334,7 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         "text": "buttons.validate_text",
         "shapes": "buttons.validate_shapes",
         "transparency": "buttons.validate_transparency",
+        "paste_image": "buttons.validate_paste_image",
     }
 
     # Bouton "Annuler" partagé (2026-08-15, demande explicite utilisateur) :
@@ -331,6 +347,7 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         "text": "buttons.cancel_text",
         "shapes": "buttons.cancel_shapes",
         "transparency": "buttons.cancel_transparency",
+        "paste_image": "buttons.cancel_paste_image",
     }
     _CANCEL_BTN_GAP = 10
 
@@ -341,7 +358,7 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
     # (13e outil migré, seul autre outil migré à accumuler un travail non
     # validé sur plusieurs gestes avant validation, comme crop/straighten/
     # text/shapes — contrairement à levels, voir transparency_tool_qt.py).
-    _ALWAYS_VISIBLE_VALIDATE_TOOLS = {"crop", "straighten", "text", "shapes", "transparency"}
+    _ALWAYS_VISIBLE_VALIDATE_TOOLS = {"crop", "straighten", "text", "shapes", "transparency", "paste_image"}
 
     def _validate_tool_has_work(self, tool: str) -> bool:
         """True s'il y a quelque chose à valider pour cet outil sur la page
@@ -357,6 +374,8 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             return self.has_shapes
         if tool == "transparency":
             return self._viewer.current_idx in self._viewer._transp_work_img_by_page
+        if tool == "paste_image":
+            return self.has_pasted_images
         return True
 
     def _ensure_validate_btn(self):
@@ -381,6 +400,19 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             )
             self._validate_btn.setStyleSheet(self._validate_btn_style_normal)
             self._validate_btn.setFixedWidth(200)
+            # Un QWidget nouvellement créé sans .move() explicite reste à la
+            # géométrie par défaut (0,0) — position illégitime, superposée au
+            # _mode_label, tant qu'aucun outil (qui déclencherait le calcul de
+            # position réel dans _update_validate_btn_state) n'a encore été
+            # sélectionné. Positionné ici sous la barre d'outils dès la
+            # construction pour qu'il n'existe jamais à une position fausse,
+            # en plus du .hide() (seul _reveal_/_conceal_validate_btn pilotent
+            # sa visibilité par la suite).
+            toolbar = self._viewer._toolbar
+            self._validate_btn.move(
+                max(0, (self.width() - self._validate_btn.width()) // 2),
+                toolbar.y() + toolbar.height() + 6)
+            self._validate_btn.hide()
 
     def _update_validate_btn_state(self):
         """Recalcule TOUT l'état du bouton "Valider" partagé — texte,
@@ -424,6 +456,8 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
                 w.clicked.connect(self._viewer.validate_shapes)
             elif tool == "transparency":
                 w.clicked.connect(self._viewer.validate_transparency)
+            elif tool == "paste_image":
+                w.clicked.connect(self._viewer.validate_paste_image)
             else:
                 w.clicked.connect(self._viewer.validate_straighten)
             self._validate_btn_connected_tool = tool
@@ -473,6 +507,7 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             "text": toolbar._text_panel,
             "shapes": toolbar._shapes_panel,
             "transparency": toolbar._transparency_panel,
+            "paste_image": None,
         }.get(tool)
         if panel is not None and panel.isVisible():
             panel_bottom = panel.y() + panel.height()
@@ -551,6 +586,18 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             self._cancel_btn.setStyleSheet(self._cancel_btn_style_disabled)
             self._cancel_btn.clicked.connect(
                 lambda: self._viewer._cancel_tool_work(self._viewer._toolbar.active_tool))
+            # Même raison que _ensure_validate_btn : sans .move() explicite,
+            # ce bouton nouvellement créé reste à la géométrie par défaut
+            # (0,0), position illégitime superposée au _mode_label. Positionné
+            # ici juste à droite de l'emplacement du bouton "Valider" (même
+            # calcul que _update_cancel_btn_state), en plus du .hide().
+            self._ensure_validate_btn()
+            v = self._validate_btn
+            toolbar = self._viewer._toolbar
+            self._cancel_btn.move(
+                v.x() + v.width() + self._CANCEL_BTN_GAP,
+                toolbar.y() + toolbar.height() + 6)
+            self._cancel_btn.hide()
 
     def _update_cancel_btn_state(self):
         """Jumeau de _update_validate_btn_state ci-dessus — mêmes garanties
@@ -675,6 +722,10 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         # Formes (outil "shapes", voir shapes_tool_qt.py::ShapeCanvasMixin.paint_shapes).
         self.paint_shapes(painter)
 
+        # Images collées (outil "paste_image", idees.txt #1, voir
+        # paste_image_tool_qt.py::PasteImageCanvasMixin.paint_pasted_images).
+        self.paint_pasted_images(painter)
+
         # Barre de progression verticale (mode Webtoon uniquement) : indique la
         # position de scroll dans une page qui dépasse de la fenêtre en hauteur.
         if self._viewer.page_mode == "webtoon" and self.display_height > self.height():
@@ -770,6 +821,10 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             self.transparency_pipette_click(event)
             return
 
+        if active_tool == "paste_image":
+            self.paste_image_mouse_press(event)
+            return
+
         if active_tool != "crop":
             return
 
@@ -787,7 +842,7 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
                 self.pan_offset_x += delta.x()
                 self.pan_offset_y += delta.y()
                 self._pan_start = event.position().toPoint()
-                if self.has_crop or self.has_text_blocks or self.has_shapes:
+                if self.has_crop or self.has_text_blocks or self.has_shapes or self.has_pasted_images:
                     self._viewer.display_image(keep_crop_rect=True)
                 else:
                     self.display_offset_x += delta.x()
@@ -822,6 +877,8 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
                 pass
             elif active_tool == "shapes":
                 self.shape_update_cursor(event)
+            elif active_tool == "paste_image":
+                self.paste_image_update_cursor(event)
             else:
                 self.setCursor(Qt.ArrowCursor)
             return
@@ -848,6 +905,12 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             if self._ignore_crop_events:
                 return
             self.shape_mouse_move(event)
+            return
+
+        if active_tool == "paste_image":
+            if self._ignore_crop_events:
+                return
+            self.paste_image_mouse_move(event)
             return
 
         if self._ignore_crop_events:
@@ -908,6 +971,10 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
 
         if self._viewer._toolbar.active_tool == "shapes":
             self.shape_mouse_release(event)
+            return
+
+        if self._viewer._toolbar.active_tool == "paste_image":
+            self.paste_image_mouse_release(event)
             return
 
         self.crop_mouse_release(event)
@@ -1005,6 +1072,83 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         if self.has_text_blocks:
             self.reposition_text_blocks()
 
+    # ── Drag & drop entrant (idees.txt #1, piste secondaire "Coller une
+    # image") : glisser une page depuis n'importe quelle mosaïque (panel1/
+    # panel2) OU un fichier image depuis l'Explorateur Windows déclenche le
+    # même comportement qu'un collage — même point d'entrée unique
+    # (_add_pasted_image) que Ctrl+V/l'icône "paste_image", voir sa docstring
+    # de module (paste_image_tool_qt.py) pour la raison de cette isolation. ──
+
+    def _drag_has_acceptable_image(self, mime) -> bool:
+        """True si ce QMimeData représente EXACTEMENT une image utilisable —
+        même exigence stricte que le presse-papiers (idees.txt #1 : "l'icône
+        n'est active QUE si le presse-papier contient EXCLUSIVEMENT une
+        image"), appliquée ici au drag plutôt qu'au Ctrl+V. Un drag INTERNE
+        depuis une mosaïque (mime "application/x-mosaicview-indices"/
+        "-panel") pose TOUJOURS aussi des URLs CF_HDROP en parallèle (voir
+        mosaic_canvas.py::_start_drag — chaque entrée sélectionnée est déjà
+        écrite sur disque pour permettre le drag-out vers l'Explorateur),
+        donc un seul chemin de code (mime.hasUrls()) couvre les deux
+        provenances (mosaïque ET Explorateur) sans avoir à distinguer les
+        deux mimes internes ni à lire state.images_data directement — on ne
+        lit jamais que le fichier réellement écrit sur disque, exactement
+        comme pour un drop externe classique. N'accepte qu'un SEUL fichier
+        image reconnu (même liste IMAGE_EXTS que le presse-papiers, voir
+        clipboard_qt.py) — plusieurs fichiers, ou un seul fichier non-image,
+        sont refusés."""
+        if not mime.hasUrls():
+            return False
+        urls = mime.urls()
+        if len(urls) != 1 or not urls[0].isLocalFile():
+            return False
+        import os
+        from modules.qt.clipboard_qt import IMAGE_EXTS
+        ext = os.path.splitext(urls[0].toLocalFile())[1].lower()
+        return ext in IMAGE_EXTS
+
+    def dragEnterEvent(self, event):
+        # Qt.CopyAction forcé (pas acceptProposedAction) — voir dropEvent :
+        # ce drag doit toujours se présenter comme un collage, jamais un
+        # déplacement, dès le survol.
+        if self._drag_has_acceptable_image(event.mimeData()):
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        if self._drag_has_acceptable_image(event.mimeData()):
+            event.setDropAction(Qt.CopyAction)
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        mime = event.mimeData()
+        if not self._drag_has_acceptable_image(mime):
+            event.ignore()
+            return
+        path = mime.urls()[0].toLocalFile()
+        try:
+            from PIL import Image
+            img = Image.open(path).convert("RGBA")
+        except Exception:
+            event.ignore()
+            return
+        # Qt.CopyAction forcé explicitement (pas acceptProposedAction) : ce
+        # drop doit toujours se comporter comme un COLLAGE, jamais comme un
+        # déplacement — même si le SO/modificateur clavier suggérait
+        # MoveAction, la page source ne doit jamais disparaître de sa
+        # mosaïque d'origine. mosaic_canvas.py::_start_drag ne supprime la
+        # page source que si son PROPRE dropEvent (réordonnancement/
+        # inter-panneaux) marque _drop_was_internal — jamais déclenché ici,
+        # cette fenêtre est une QDialog séparée de toute mosaïque.
+        event.setDropAction(Qt.CopyAction)
+        event.accept()
+        if self._viewer._toolbar.active_tool != "paste_image":
+            self._viewer._toolbar.set_active_tool("paste_image")
+        self._add_pasted_image(img)
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Barre d'outils flottante (fusion progressive des visionneuses — idees.txt #3)
@@ -1034,7 +1178,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
                    TextViewerMixin, SharpnessViewerMixin, BrightnessViewerMixin, SaturationViewerMixin,
                    RemoveColorsViewerMixin, CompressionViewerMixin, LevelsViewerMixin,
                    ShapeViewerMixin, TransparencyViewerMixin, ColorDepthViewerMixin,
-                   EffectsViewerMixin, ImageModeViewerMixin, QDialog):
+                   EffectsViewerMixin, ImageModeViewerMixin, PasteImageViewerMixin, QDialog):
     """
     Visionneuse d'images Qt.
     Reproduit à l'identique ImageViewer (tkinter) :
@@ -1105,6 +1249,14 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # géométrie). Voir shapes_tool_qt.py::ShapeViewerMixin. Volatile :
         # jamais persisté sur disque, perdu à la fermeture de la visionneuse.
         self._shapes_by_page: dict[int, list[tuple]] = {}
+
+        # Images collées en cours, conservées par page (idees.txt #1, outil
+        # "paste_image") — même principe que _shapes_by_page, mais valeur =
+        # liste de (png_bytes, ix1, iy1, ix2, iy2, angle) par page (bitmap
+        # sérialisé en PNG, pas juste une géométrie — voir
+        # paste_image_tool_qt.py::PasteImageViewerMixin). Volatile : jamais
+        # persisté sur disque, perdu à la fermeture de la visionneuse.
+        self._pasted_images_by_page: dict[int, list[tuple]] = {}
 
         # Images de travail RGBA en cours pour l'outil "transparency"
         # (13e outil migré, 8e et dernier mode d'ajustement), conservées par
@@ -1292,6 +1444,17 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         QShortcut(QKeySequence("Ctrl+-"),          self).activated.connect(lambda: self.adjust_zoom(-0.1))
         QShortcut(QKeySequence("Ctrl+0"),          self).activated.connect(self.fit_zoom_to_window)
         QShortcut(QKeySequence("Ctrl+1"),          self).activated.connect(self.reset_zoom)
+        # Ctrl+C / Ctrl+V (idees.txt #1 : "je copie une page [affichée dans la
+        # visionneuse], je vais plus loin, je colle la page dans une autre") :
+        # cette fenêtre est une QDialog séparée de la mosaïque, les
+        # raccourcis globaux (PanelWidget._copy_selected/_paste_ctrl_v,
+        # MosaicView.py, skill clipboard) ne l'atteignent jamais tant qu'elle
+        # a le focus. Ctrl+C copie la page COURAMMENT AFFICHÉE (self.current_idx),
+        # pas state.selected_indices (qui peut diverger — l'utilisateur
+        # navigue dans la visionneuse sans toucher à la sélection de la
+        # mosaïque) — voir _copy_current_page_shortcut.
+        QShortcut(QKeySequence("Ctrl+C"),          self).activated.connect(self._copy_current_page_shortcut)
+        QShortcut(QKeySequence("Ctrl+V"),          self).activated.connect(self._paste_image_shortcut)
 
         # ── Signal langue ─────────────────────────────────────────────────────
         from modules.qt.language_signal import language_signal
@@ -1421,6 +1584,10 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             return True
         if self._shapes_by_page:
             return True
+        if self._canvas.has_pasted_images:
+            return True
+        if self._pasted_images_by_page:
+            return True
         # Contrairement au crop/straighten/texte/formes (état vivant dans le
         # canvas de la page COURANTE, pas encore transféré dans son dict par
         # page), l'image de travail de transparency est déjà indexée par
@@ -1452,6 +1619,13 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._gif_timer.stop()
         self._name_hide_timer.stop()
         self._resize_timer.stop()
+        # Déconnexion du QClipboard.dataChanged global câblé pour griser/
+        # dégriser l'icône "Coller une image" en direct (idees.txt #1) —
+        # même précaution que language_signal.changed (CLAUDE.md règle UI
+        # n°2) : un signal Qt global qui reste connecté à cette barre après
+        # sa destruction provoquerait un RuntimeError au prochain changement
+        # de presse-papiers.
+        self._toolbar.disconnect_paste_image_clipboard_watch()
 
         self._save_bookmark(state)
 
@@ -1616,6 +1790,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._save_straighten_for_current_page()
             self._save_text_for_current_page()
             self._save_shapes_for_current_page()
+            self._save_paste_image_for_current_page()
             self.current_idx = img_indices[new_pos]
             if self.page_mode == "webtoon":
                 self._canvas.pan_offset_y = 0
@@ -1624,6 +1799,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._restore_straighten_for_page(self.current_idx)
             self._restore_text_for_page(self.current_idx)
             self._restore_shapes_for_page(self.current_idx)
+            self._restore_paste_image_for_page(self.current_idx)
             self._restore_transparency_for_page(self.current_idx)
             # Pas de persistance par page pour le clonage (voir idees.txt #3,
             # discussion du 3e outil migré) : la source Ctrl+cliquée est
@@ -1651,11 +1827,13 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._save_straighten_for_current_page()
             self._save_text_for_current_page()
             self._save_shapes_for_current_page()
+            self._save_paste_image_for_current_page()
             self.current_idx = img_indices[0]
             self._restore_crop_for_page(self.current_idx)
             self._restore_straighten_for_page(self.current_idx)
             self._restore_text_for_page(self.current_idx)
             self._restore_shapes_for_page(self.current_idx)
+            self._restore_paste_image_for_page(self.current_idx)
             self._restore_transparency_for_page(self.current_idx)
             self._reset_sharpness_preview()
             self._reset_brightness_preview()
@@ -1972,16 +2150,70 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         block = self._canvas._text_active_block()
         return block is not None and block.overlay.isVisible() and block.overlay.hasFocus()
 
+    # ── Outil "paste_image" : raccourcis clavier dédiés ─────────────────────────
+
+    def _copy_current_page_shortcut(self):
+        """Ctrl+C (idees.txt #1) — copie la page COURAMMENT AFFICHÉE dans la
+        visionneuse vers le presse-papiers système (CF_HDROP), pour qu'un
+        Ctrl+V ultérieur (ici ou ailleurs dans l'appli) la retrouve. Voir
+        clipboard_qt.py::copy_single_entry_to_system_clipboard, variante de
+        copy_to_system_clipboard qui ne dépend pas de state.selected_indices
+        (la page affichée dans la visionneuse peut diverger de la sélection
+        de la mosaïque).
+
+        Refuse (avertissement non-modal, PAS de copie) en mode "double" ou
+        "continuous" — décision explicite utilisateur : self.current_idx en
+        mode double/continuous correspond soit à la page GAUCHE soit à la
+        page DROITE de la paire combinée selon comment on y est arrivé (voir
+        display_image), ambigu pour l'utilisateur qui copie en pensant
+        obtenir une page précise visible à l'écran. Message renvoie vers la
+        touche D (bascule de mode, voir keyPressEvent) plutôt que de
+        deviner/forcer un mode à sa place."""
+        if self.page_mode in ("double", "continuous"):
+            from modules.qt.dialogs_qt import MsgDialog
+            dlg = MsgDialog(
+                self,
+                "messages.warnings.copy_page_requires_single_mode.title",
+                "messages.warnings.copy_page_requires_single_mode.message",
+            )
+            dlg.show_nonmodal()
+            return
+        from modules.qt import state as _state_module
+        from modules.qt.clipboard_qt import copy_single_entry_to_system_clipboard
+        from modules.qt.temp_files import get_mosaicview_temp_dir
+        state = self.callbacks.get('state') or _state_module.state
+        if not (0 <= self.current_idx < len(state.images_data)):
+            return
+        entry = state.images_data[self.current_idx]
+        copy_single_entry_to_system_clipboard(entry, get_mosaicview_temp_dir, self)
+
+    def _paste_image_shortcut(self):
+        """Ctrl+V (idees.txt #1) — voir _ViewerToolbar.paste_image_from_clipboard
+        (viewer_toolbar_qt.py), réutilisée telle quelle : cette QDialog est
+        séparée de la mosaïque, le Ctrl+V global (PanelWidget._paste_ctrl_v,
+        skill clipboard) ne l'atteint jamais tant qu'elle a le focus."""
+        self._toolbar.paste_image_from_clipboard()
+
     # ── Outil formes : déplacement clavier ────────────────────────────────────
 
     def _shape_key_nav(self, key) -> bool:
         """Déplace d'1px la forme sélectionnée si l'outil "shapes" est actif
-        et qu'une forme est sélectionnée — retourne True si la touche a été
-        consommée par ce déplacement (les QShortcut Left/Right cèdent alors
-        la priorité à la navigation de page, voir __init__)."""
-        if self._toolbar.active_tool != "shapes" or self._canvas._shape_active is None:
+        et qu'une forme est sélectionnée, OU l'image collée sélectionnée si
+        l'outil "paste_image" est actif (idees.txt #1 : "l'utilisateur la
+        place" — même mécanisme de déplacement clavier fin réutilisé tel
+        quel, les deux objets partagent les mêmes champs ix1/iy1/ix2/iy2) —
+        retourne True si la touche a été consommée par ce déplacement (les
+        QShortcut Left/Right cèdent alors la priorité à la navigation de
+        page, voir __init__)."""
+        active_tool = self._toolbar.active_tool
+        if active_tool == "shapes" and self._canvas._shape_active is not None:
+            obj = self._canvas._shape_active
+            on_changed = self._on_shapes_content_changed
+        elif active_tool == "paste_image" and self._canvas._pasted_image_active is not None:
+            obj = self._canvas._pasted_image_active
+            on_changed = self._on_paste_image_content_changed
+        else:
             return False
-        shape = self._canvas._shape_active
         dx = dy = 0
         if key == Qt.Key_Left:    dx = -1
         elif key == Qt.Key_Right: dx = 1
@@ -1989,10 +2221,10 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         elif key == Qt.Key_Down:  dy = 1
         else:
             return False
-        shape.ix1 += dx; shape.iy1 += dy
-        shape.ix2 += dx; shape.iy2 += dy
+        obj.ix1 += dx; obj.iy1 += dy
+        obj.ix2 += dx; obj.iy2 += dy
         self._canvas.update()
-        self._on_shapes_content_changed()
+        on_changed()
         return True
 
     # ── Bouton "Annuler" partagé (crop/straighten/text/shapes/transparency) ────
@@ -2025,6 +2257,10 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._on_shapes_content_changed()
         elif tool == "transparency":
             self._clear_transparency_work()  # rafraîchit déjà _update_validate_btn_state()
+        elif tool == "paste_image":
+            self._canvas.clear_pasted_images()
+            self._pasted_images_by_page.pop(self.current_idx, None)
+            self._on_paste_image_content_changed()
         self._canvas._update_validate_btn_state()
         self._canvas._update_cancel_btn_state()
 
@@ -2064,6 +2300,14 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._canvas.clear_shapes()
             self._shapes_by_page.pop(self.current_idx, None)
             self._on_shapes_content_changed()
+            self._canvas._update_cancel_btn_state()
+        elif self._canvas.has_pasted_images:
+            # Même principe que "shapes" ci-dessus (idees.txt #1) : Échap
+            # annule TOUTES les images collées de la page courante d'un coup,
+            # pas une seule à la fois.
+            self._canvas.clear_pasted_images()
+            self._pasted_images_by_page.pop(self.current_idx, None)
+            self._on_paste_image_content_changed()
             self._canvas._update_cancel_btn_state()
         elif self.current_idx in self._transp_work_img_by_page:
             # Travail de transparency en attente sur la page courante — testé
@@ -2116,6 +2360,18 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         if self._toolbar.active_tool == "transparency":
             if self.current_idx in self._transp_work_img_by_page:
                 self._clear_transparency_work()
+            return
+        if self._toolbar.active_tool == "paste_image":
+            # Même principe que "shapes" ci-dessous : efface UNIQUEMENT
+            # l'image collée actuellement sélectionnée (pas toutes celles de
+            # la page), comportement standard d'un éditeur graphique.
+            canvas = self._canvas
+            active = canvas._pasted_image_active
+            if active is not None and active in canvas._pasted_images:
+                canvas._pasted_images.remove(active)
+                canvas._pasted_image_active = None
+                canvas.update()
+                self._on_paste_image_content_changed()
             return
         if self._toolbar.active_tool != "shapes":
             return

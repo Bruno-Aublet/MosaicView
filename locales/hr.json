@@ -72,7 +72,9 @@
     "cancel_straighten": "Otkaži ispravljanje",
     "cancel_text": "Otkaži tekst",
     "cancel_shapes": "Otkaži oblike",
-    "cancel_transparency": "Otkaži prozirnost"
+    "cancel_transparency": "Otkaži prozirnost",
+    "validate_paste_image": "Primijeni lijepljenje",
+    "cancel_paste_image": "Odustani od lijepljenja"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Odaberite način, prilagodba se primjenjuje odmah",
     "image_mode_panel_restore": "Vrati izvornik",
     "toolbar_rotation_tooltip": "Rotacija",
-    "toolbar_rotation_instruction": "Zakrenite ili zrcalno okrenite prikazanu stranicu"
+    "toolbar_rotation_instruction": "Zakrenite ili zrcalno okrenite prikazanu stranicu",
+    "toolbar_paste_image_tooltip": "Zalijepi sliku",
+    "toolbar_paste_image_instruction": "Lijepi sliku iz međuspremnika na stranicu, ručke za promjenu veličine/rotaciju",
+    "toolbar_paste_image_disabled": "Međuspremnik mora sadržavati samo sliku"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Nije primijenjena prozirnost",
         "message": "Najprije kliknite boju koju želite učiniti prozirnom."
+      },
+      "no_pasted_image": {
+        "title": "Nema zalijepljene slike",
+        "message": "Najprije zalijepite barem jednu sliku."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Nekompatibilan način prikaza",
+        "message": "Kopiranje stranice zahtijeva način jedne stranice. Pritisnite D za promjenu načina prikaza."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Pogreška",
         "message": "Rotaciju nije bilo moguće primijeniti: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Pogreška",
+        "message": "Zalijepljene slike nije bilo moguće primijeniti: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Ravnanje mapa",
     "flatten_content": "Ako vaša arhiva sadrži podmape, koristite 'Ravnaj mape' za premještanje svih slika na istu razinu.",
     "viewer": "Preglednik",
-    "viewer_content": "Dvaput kliknite na stranicu da biste otvorili preglednik:\n• Tipke ← →: navigacija između stranica\n• Tipka D: prebacivanje između 4 načina čitanja\n  - Jedna stranica: jedna stranica odjednom\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5 itd.\n  - Neprekidne dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5 itd.\n  - Webtoon: za okomite slike (webcomics), širina ograničena na 900px radi čitljivosti; kotačić miša okomito pomiče stranicu, zatim mijenja stranicu pri vrhu/dnu\n• Kotačić miša: brza navigacija (okomito pomicanje stranice u Webtoon načinu)\n• Ctrl+kotačić ili Ctrl+Plus/Minus: zumiranje (do 1000% stvarne veličine slike)\n• Ctrl+0: prilagodi zumiranje prozoru\n• Ctrl+1: zumiranje na 100% (stvarna veličina piksela slike)\n• Desni klik + povlačenje: pomicanje prikazane slike (pomak) kada premašuje prozor\n• Tipka F11: puni zaslon\n• Dvoklik: prebacivanje punog zaslona\n• Tipka Esc: otkaži trenutno crtanje (izrezivanje, ravnanje, oblik…) ili napusti preglednik\n• Knjižna oznaka: automatski pamti trenutnu stranicu pri zatvaranju preglednika (osim prve/zadnje stranice). Crvena vrpca prikazuje se na odgovarajućoj sličici u mozaiku. Pri ponovnom otvaranju poruka predlaže povratak na tu stranicu. Automatski se briše na zadnjoj stranici, ili ručno desnim klikom u pregledniku.\n\nPlutajuća alatna traka: prijeđite mišem preko vrha slike da je prikažete (sama se skriva nakon nekoliko sekundi). Kliknite ikonu za aktiviranje odgovarajućeg alata:\n• Izrezivanje: nacrtajte pravokutnik, prilagodite ga rubovima, potvrdite\n• Ravnanje: nacrtajte crtu na ono što bi trebalo biti vodoravno/okomito, ispravak se primjenjuje automatski; desni klik na ikonu za prebacivanje na automatsko ravnanje (samo otkriva nagib, bez crtanja)\n• Rotacija/zrcaljenje: jedan klik rotira ili zrcali stranicu\n• Kloniranje: Ctrl+klik za odabir izvornog mjesta, zatim slikajte s pritisnutom tipkom miša za dupliciranje\n• Tekst: kliknite za postavljanje bloka teksta, odaberite font/veličinu/boju\n• Oblici: crtajte elipse, pravokutnike, linije ili strelice, s ručkama za promjenu veličine\n• Klizači (oštrina, svjetlina/kontrast, zasićenost, uklanjanje boja, kompresija): rezultat se prikazuje uživo dok povlačite\n• Razine: prilagodite crnu točku/gamu/bijelu točku klizačima, ili uzmite boju izravno sa slike pipetama\n• Prozirnost: kliknite boju na slici da je učinite prozirnom\n• Dubina boje, Efekti, Način slike: odaberite opciju klikom na radio gumb, primijenjeno odmah\n\nPotvrdite gumbom \"Potvrdi\" kada se pojavi, ili Esc za otkazivanje. Svaka promjena pridružuje se uobičajenoj povijesti Poništi/Ponovi.",
+    "viewer_content": "Dvaput kliknite na stranicu da biste otvorili preglednik:\n• Tipke ← →: navigacija između stranica\n• Tipka D: prebacivanje između 4 načina čitanja\n  - Jedna stranica: jedna stranica odjednom\n  - Dvostruke stranice: stranica 1 sama, zatim 2-3, 4-5 itd.\n  - Neprekidne dvostruke stranice: stranica 1 sama, zatim 2-3, 3-4, 4-5 itd.\n  - Webtoon: za okomite slike (webcomics), širina ograničena na 900px radi čitljivosti; kotačić miša okomito pomiče stranicu, zatim mijenja stranicu pri vrhu/dnu\n• Kotačić miša: brza navigacija (okomito pomicanje stranice u Webtoon načinu)\n• Ctrl+kotačić ili Ctrl+Plus/Minus: zumiranje (do 1000% stvarne veličine slike)\n• Ctrl+0: prilagodi zumiranje prozoru\n• Ctrl+1: zumiranje na 100% (stvarna veličina piksela slike)\n• Desni klik + povlačenje: pomicanje prikazane slike (pomak) kada premašuje prozor\n• Tipka F11: puni zaslon\n• Dvoklik: prebacivanje punog zaslona\n• Tipka Esc: otkaži trenutno crtanje (izrezivanje, ravnanje, oblik…) ili napusti preglednik\n• Knjižna oznaka: automatski pamti trenutnu stranicu pri zatvaranju preglednika (osim prve/zadnje stranice). Crvena vrpca prikazuje se na odgovarajućoj sličici u mozaiku. Pri ponovnom otvaranju poruka predlaže povratak na tu stranicu. Automatski se briše na zadnjoj stranici, ili ručno desnim klikom u pregledniku.\n\nPlutajuća alatna traka: prijeđite mišem preko vrha slike da je prikažete (sama se skriva nakon nekoliko sekundi). Kliknite ikonu za aktiviranje odgovarajućeg alata:\n• Izrezivanje: nacrtajte pravokutnik, prilagodite ga rubovima, potvrdite\n• Ravnanje: nacrtajte crtu na ono što bi trebalo biti vodoravno/okomito, ispravak se primjenjuje automatski; desni klik na ikonu za prebacivanje na automatsko ravnanje (samo otkriva nagib, bez crtanja)\n• Rotacija/zrcaljenje: jedan klik rotira ili zrcali stranicu\n• Kloniranje: Ctrl+klik za odabir izvornog mjesta, zatim slikajte s pritisnutom tipkom miša za dupliciranje\n• Tekst: kliknite za postavljanje bloka teksta, odaberite font/veličinu/boju\n• Oblici: crtajte elipse, pravokutnike, linije ili strelice, s ručkama za promjenu veličine\n• Klizači (oštrina, svjetlina/kontrast, zasićenost, uklanjanje boja, kompresija): rezultat se prikazuje uživo dok povlačite\n• Razine: prilagodite crnu točku/gamu/bijelu točku klizačima, ili uzmite boju izravno sa slike pipetama\n• Prozirnost: kliknite boju na slici da je učinite prozirnom\n• Dubina boje, Efekti, Način slike: odaberite opciju klikom na radio gumb, primijenjeno odmah\n• Zalijepi sliku: lijepi sliku iz međuspremnika (ikona se aktivira samo ako međuspremnik sadrži sliku), s ručkama za promjenu veličine/rotaciju kao kod oblika; radi i povlačenjem stranice iz mozaika ili datoteke iz Windows Explorera izravno na preglednik. Ctrl+C kopira prikazanu stranicu (samo u načinu jedne stranice ili Webtoon), Ctrl+V lijepi sliku, isto kao u mozaiku\n\nPotvrdite gumbom \"Potvrdi\" kada se pojavi, ili Esc za otkazivanje. Svaka promjena pridružuje se uobičajenoj povijesti Poništi/Ponovi.",
     "join_pages": "Spajanje stranica",
     "join_pages_content": "Odaberite nekoliko uzastopnih stranica, desni klik → 'Spoji odabrane stranice' za spajanje stranica vodoravno ili okomito. Format proizvedene slike odgovara formatu izvornih stranica ako su sve identične, inače PNG prema zadanim postavkama. Moći ćete odabrati brisanje ili zadržavanje izvornih stranica.\n\nPoložaj nove stranice u mozaiku:\n• Aktivni način ponovnog numeriranja (automatski ili ručni): stranica zauzima mjesto prve spojene stranice (njezino mjesto, ako se izvorne stranice izbrišu, ili točno prije nje, ako se zadrže), i pokreće ponovno numeriranje.\n• ISKLJUČENI način ponovnog numeriranja: stranica se dodaje na početak mozaika pod nazivom \"Spojeno_xxx\".",
     "split_pages": "Dijeljenje stranica",

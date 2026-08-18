@@ -48,7 +48,7 @@ Glisser des vignettes d'un panneau vers l'autre en split-view (voir skill `panel
 
 ### 3. Drag-out vers l'Explorateur Windows (CF_HDROP)
 
-Glisser des vignettes **hors de MosaicView**, vers l'Explorateur ou une autre application qui accepte des fichiers.
+Glisser des vignettes **hors de MosaicView**, vers l'Explorateur ou une autre application qui accepte des fichiers — mais aussi, en pratique, vers une fenêtre de la visionneuse principale de MosaicView elle-même (skill `paste-image`, outil "Coller une image") : `_start_drag()` écrit **toujours** chaque entrée sélectionnée sur disque et pose des URLs CF_HDROP, même pour un drag purement interne à l'appli (réordonnancement/inter-panneaux, voir flux 1/2 ci-dessus) — la visionneuse profite de ce fait pour accepter indifféremment une page glissée depuis panel1, panel2, ou un fichier glissé depuis l'Explorateur via un seul test (`mime.hasUrls()`), sans avoir besoin de distinguer les mimes internes `x-mosaicview-indices`/`-panel` de ce flux 3.
 
 - Construit dans `_start_drag()` (~ligne 1587-1615) : chaque entrée sélectionnée est écrite dans un dossier temporaire (`get_mosaicview_temp_dir()/drag_<uuid>/`), les `QUrl.fromLocalFile(...)` résultants sont posés sur `mime.setUrls(urls)`.
 - **Piège chemin court Windows** : `os.makedirs` peut renvoyer un chemin 8.3 (`PROPRI~1`) selon le profil utilisateur ; corrigé explicitement via `GetLongPathNameW` avant de construire les URLs (sinon l'appli cible reçoit un chemin qui peut ne pas résoudre proprement).
@@ -101,3 +101,7 @@ Trois autres endroits de l'appli ont leur propre petit mécanisme de D&D, sans r
 - **Bibliothèque** (`modules/qt/library_window.py`) :
   - Drag-*out* d'un ou plusieurs comics sélectionnés dans la table vers l'extérieur (CF_HDROP, `_do_drag`) — permet par exemple de glisser un comic de la Bibliothèque vers un panneau MosaicView (traité côté panneau comme un drop de fichier externe normal, flux 4 ci-dessus).
   - Drop-*in* limité aux fichiers `.mvdb` (ouvre cette base). Voir skill `library`.
+
+## D&D reçu par la visionneuse principale — profite du flux 3, ne dépend pas des mimes internes
+
+`_ViewerCanvas` (`image_viewer_qt.py`, skill `paste-image`) accepte un drop d'une page glissée depuis n'importe quel panneau (panel1/panel2) OU d'un fichier image glissé depuis l'Explorateur Windows — outil "Coller une image". Contrairement aux D&D locaux ci-dessus, ce n'est PAS un mécanisme indépendant : il exploite directement le fait que `_start_drag()` pose toujours des URLs CF_HDROP en parallèle des mimes internes (flux 3 ci-dessus), donc un seul test (`mime.hasUrls()`, une seule URL locale, extension image reconnue) couvre indifféremment une page de mosaïque ou un fichier externe, sans lire `x-mosaicview-indices`/`-panel` ni `state.images_data`. `Qt.CopyAction` forcé explicitement dans les handlers de la visionneuse — la page source n'est jamais retirée de sa mosaïque (`_drop_was_internal` n'est jamais déclenché par ce drop, propre à `MosaicCanvas.dropEvent`).

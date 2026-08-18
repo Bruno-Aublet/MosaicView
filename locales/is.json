@@ -72,7 +72,9 @@
     "cancel_straighten": "Hætta við réttingu",
     "cancel_text": "Hætta við texta",
     "cancel_shapes": "Hætta við form",
-    "cancel_transparency": "Hætta við gagnsæi"
+    "cancel_transparency": "Hætta við gagnsæi",
+    "validate_paste_image": "Beita límingu",
+    "cancel_paste_image": "Hætta við límingu"
   },
   "tabs": {
     "mosaic": "Mósaík",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Veldu ham, breytingin á sér stað samstundis",
     "image_mode_panel_restore": "Endurheimta upprunalega",
     "toolbar_rotation_tooltip": "Snúningur",
-    "toolbar_rotation_instruction": "Snúið eða speglið sýndri síðu"
+    "toolbar_rotation_instruction": "Snúið eða speglið sýndri síðu",
+    "toolbar_paste_image_tooltip": "Líma mynd",
+    "toolbar_paste_image_instruction": "Límir mynd úr klippiborði á síðuna, handföng til að breyta stærð/snúa",
+    "toolbar_paste_image_disabled": "Klippiborðið má aðeins innihalda mynd"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Ekkert gagnsæi hefur verið beitt",
         "message": "Smelltu fyrst á lit sem á að gera gagnsæjan."
+      },
+      "no_pasted_image": {
+        "title": "Engin mynd límd",
+        "message": "Vinsamlegast límdu að minnsta kosti eina mynd fyrst."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Ósamrýmanleg birtingarstilling",
+        "message": "Að afrita síðu krefst einnar síðu stillingar. Ýttu á D til að breyta birtingarstillingu."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Villa",
         "message": "Ekki tókst að beita snúningi: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Villa",
+        "message": "Ekki tókst að beita límdu myndunum: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Fletja möppur",
     "flatten_content": "Ef safnskráin þín inniheldur undirmöppur skaltu nota 'Fletja möppur' til að færa allar myndir á sama stig.",
     "viewer": "Skoðarinn",
-    "viewer_content": "Tvísmelltu á síðu til að opna skoðarann:\n• Örvatakkar ← →: fletta milli síðna\n• D-takki: skipta milli 4 lestrarstillinga\n  - Ein síða: ein síða í einu\n  - Tvöfaldar síður: síða 1 ein, síðan 2-3, 4-5 o.s.frv.\n  - Samfelldar tvöfaldar síður: síða 1 ein, síðan 2-3, 3-4, 4-5 o.s.frv.\n  - Webtoon: fyrir lóðréttar myndir (vefmyndasögur), breidd takmörkuð við 900px til að halda læsileika; músarhjólið skrollar lóðrétt í síðunni, skiptir svo um síðu efst/neðst\n• Músarhjól: hröð flakk (lóðrétt skrun í síðunni í Webtoon-stillingu)\n• Ctrl+músarhjól eða Ctrl+Plús/Mínus: aðdráttur (allt að 1000% af raunverulegri stærð myndarinnar)\n• Ctrl+0: laga aðdrátt að glugganum\n• Ctrl+1: aðdráttur á 100% (raunveruleg pixlastærð myndarinnar)\n• Hægrismellur + draga: færa sýnda mynd (pan) þegar hún fer yfir gluggann\n• F11-takki: fylla skjá\n• Tvísmella: víxla fylla skjá\n• Esc-takki: hætta við núverandi teikningu (skurð, réttingu, form…) eða fara úr skoðaranum\n• Bókamerki: vistar sjálfkrafa núverandi síðu þegar skoðarinn er lokaður (nema fyrsta/síðasta síða). Rautt borði birtist á samsvarandi smámynd í mósaíkinni. Við enduropnun stingur skilaboð upp á að fara aftur á þessa síðu. Eytt sjálfkrafa á síðustu síðu, eða handvirkt með hægrismelli í skoðaranum.\n\nFljótandi verkfærastika: farðu með músina yfir efsta hluta myndarinnar til að sýna hana (hún felur sig sjálf eftir nokkrar sekúndur). Smelltu á tákn til að virkja samsvarandi verkfæri:\n• Skurður: teiknaðu rétthyrning, stilltu hann með köntunum, staðfestu\n• Rétting: teiknaðu línu á það sem ætti að vera lárétt/lóðrétt, leiðréttingin er beitt sjálfkrafa; hægrismelltu á táknið til að skipta yfir í sjálfvirka réttingu (greinir hallann sjálf, án þess að teikna neitt)\n• Snúningur/spegla: einn smellur snýr eða speglar síðuna\n• Klónun: Ctrl+smellur til að velja upprunapunkt, málaðu svo með músarhnappinn niðri til að afrita\n• Texti: smelltu til að setja textablokk, veldu leturgerð/stærð/lit\n• Form: teiknaðu sporöskjur, rétthyrninga, línur eða örvar, með handföngum til að breyta stærð\n• Sleðar (skerpa, birta/skerpa, mettun, fjarlægja liti, þjöppun): niðurstaðan birtist í rauntíma á meðan þú dregur\n• Stig: stilltu svartpunkt/gamma/hvítpunkt með sleðunum, eða taktu lit beint úr myndinni með pípettunum\n• Gagnsæi: smelltu á lit í myndinni til að gera hann gagnsæjan\n• Litadýpt, Effektar, Myndastilling: veldu valkost með því að smella á valhnapp, tekur gildi samstundis\n\nStaðfestu með \"Staðfesta\"-hnappnum þegar hann birtist, eða Esc til að hætta við. Sérhver breyting bætist við venjulega Afturkalla/Endurgera-sögu.",
+    "viewer_content": "Tvísmelltu á síðu til að opna skoðarann:\n• Örvatakkar ← →: fletta milli síðna\n• D-takki: skipta milli 4 lestrarstillinga\n  - Ein síða: ein síða í einu\n  - Tvöfaldar síður: síða 1 ein, síðan 2-3, 4-5 o.s.frv.\n  - Samfelldar tvöfaldar síður: síða 1 ein, síðan 2-3, 3-4, 4-5 o.s.frv.\n  - Webtoon: fyrir lóðréttar myndir (vefmyndasögur), breidd takmörkuð við 900px til að halda læsileika; músarhjólið skrollar lóðrétt í síðunni, skiptir svo um síðu efst/neðst\n• Músarhjól: hröð flakk (lóðrétt skrun í síðunni í Webtoon-stillingu)\n• Ctrl+músarhjól eða Ctrl+Plús/Mínus: aðdráttur (allt að 1000% af raunverulegri stærð myndarinnar)\n• Ctrl+0: laga aðdrátt að glugganum\n• Ctrl+1: aðdráttur á 100% (raunveruleg pixlastærð myndarinnar)\n• Hægrismellur + draga: færa sýnda mynd (pan) þegar hún fer yfir gluggann\n• F11-takki: fylla skjá\n• Tvísmella: víxla fylla skjá\n• Esc-takki: hætta við núverandi teikningu (skurð, réttingu, form…) eða fara úr skoðaranum\n• Bókamerki: vistar sjálfkrafa núverandi síðu þegar skoðarinn er lokaður (nema fyrsta/síðasta síða). Rautt borði birtist á samsvarandi smámynd í mósaíkinni. Við enduropnun stingur skilaboð upp á að fara aftur á þessa síðu. Eytt sjálfkrafa á síðustu síðu, eða handvirkt með hægrismelli í skoðaranum.\n\nFljótandi verkfærastika: farðu með músina yfir efsta hluta myndarinnar til að sýna hana (hún felur sig sjálf eftir nokkrar sekúndur). Smelltu á tákn til að virkja samsvarandi verkfæri:\n• Skurður: teiknaðu rétthyrning, stilltu hann með köntunum, staðfestu\n• Rétting: teiknaðu línu á það sem ætti að vera lárétt/lóðrétt, leiðréttingin er beitt sjálfkrafa; hægrismelltu á táknið til að skipta yfir í sjálfvirka réttingu (greinir hallann sjálf, án þess að teikna neitt)\n• Snúningur/spegla: einn smellur snýr eða speglar síðuna\n• Klónun: Ctrl+smellur til að velja upprunapunkt, málaðu svo með músarhnappinn niðri til að afrita\n• Texti: smelltu til að setja textablokk, veldu leturgerð/stærð/lit\n• Form: teiknaðu sporöskjur, rétthyrninga, línur eða örvar, með handföngum til að breyta stærð\n• Sleðar (skerpa, birta/skerpa, mettun, fjarlægja liti, þjöppun): niðurstaðan birtist í rauntíma á meðan þú dregur\n• Stig: stilltu svartpunkt/gamma/hvítpunkt með sleðunum, eða taktu lit beint úr myndinni með pípettunum\n• Gagnsæi: smelltu á lit í myndinni til að gera hann gagnsæjan\n• Litadýpt, Effektar, Myndastilling: veldu valkost með því að smella á valhnapp, tekur gildi samstundis\n• Líma inn mynd: límir inn myndina úr klippiborðinu (táknmyndin virkjast aðeins ef klippiborðið inniheldur mynd), með handföngum til að breyta stærð/snúa eins og formunum; virkar líka með því að draga síðu úr mósaík eða skrá úr Windows Explorer beint á sýnirinn. Ctrl+C afritar sýndu síðuna (aðeins í einnar síðu eða Webtoon ham), Ctrl+V límir inn mynd, alveg eins og í mósaíkinni\n\nStaðfestu með \"Staðfesta\"-hnappnum þegar hann birtist, eða Esc til að hætta við. Sérhver breyting bætist við venjulega Afturkalla/Endurgera-sögu.",
     "join_pages": "Sameina síður",
     "join_pages_content": "Veldu nokkrar samliggjandi síður, hægrismelltu → 'Sameina valdar síður' til að sameina síðurnar lárétt eða lóðrétt. Snið útmyndarinnar samsvarar sniði upprunasíðnanna ef þær eru allar eins, annars PNG sjálfgefið. Þú getur valið hvort eyða á upprunalegu síðunum eða halda þeim.\n\nStaðsetning nýju síðunnar í mósaíkinni:\n• Virk endurnúmerunarstilling (sjálfvirk eða handvirk): síðan tekur sæti fyrstu sameinuðu síðunnar (sæti hennar, ef upprunasíður eru eyddar, eða rétt á undan henni, ef þær eru varðveittar), og kveikir á endurnúmerun.\n• SLÖKKT endurnúmerunarstilling: síðunni er bætt fremst í mósaíkina undir nafninu \"Sameining_xxx\".",
     "split_pages": "Skipta síðum",

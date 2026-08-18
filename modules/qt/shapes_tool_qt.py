@@ -127,6 +127,110 @@ def _arrow_head_len(thickness: int, zoom: float) -> int:
     return max(8, int(_ARROW_HEAD_LEN_IMG * zoom) + min(thickness, _ARROW_HEAD_MAX_ADD) * 2)
 
 
+_ROTATE_CURSOR_CACHE: QCursor | None = None
+
+
+def _build_rotate_cursor() -> QCursor:
+    """Curseur custom de rotation (arc + tête de flèche, sens horaire) —
+    remplace Qt.PointingHandCursor (retour utilisateur explicite : une main
+    de pointage standard ne se distingue pas assez visuellement des autres
+    curseurs pour signaler "ceci pivote"). Réutilisé À L'IDENTIQUE par
+    paste_image_tool_qt.py (idees.txt #1, "les remarques sont valables aussi
+    pour shapes" — mécanisme de poignées partagé entre les deux outils,
+    donc UNE SEULE fonction de curseur plutôt que deux dessins séparés).
+    Mis en cache au niveau module (dessiné une seule fois, jamais recalculé
+    par outil/instance) — un QCursor est immuable une fois construit."""
+    global _ROTATE_CURSOR_CACHE
+    if _ROTATE_CURSOR_CACHE is not None:
+        return _ROTATE_CURSOR_CACHE
+
+    from PySide6.QtGui import QPolygonF
+    from PySide6.QtCore import QPointF, QRectF
+
+    size = 28
+    canvas = QPixmap(size, size)
+    canvas.fill(Qt.transparent)
+    center = QPointF(size / 2, size / 2)
+    radius = size / 2 - 5
+
+    painter = QPainter(canvas)
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+    # Contour blanc large puis trait noir fin par-dessus (même principe de
+    # lisibilité double-contour que la croix de visée de _build_pipette_cursor,
+    # levels_tool_qt.py) — reste visible sur fond clair ET fond sombre.
+    arc_rect = QRectF(center.x() - radius, center.y() - radius, radius * 2, radius * 2)
+    span_deg = 270
+    for pen in (QPen(QColor(255, 255, 255, 230), 4), QPen(QColor(0, 0, 0, 230), 2)):
+        painter.setPen(pen)
+        painter.drawArc(arc_rect, 90 * 16, span_deg * 16)
+
+    # Tête de flèche au bout de l'arc (angle final = 90 - span, sens horaire
+    # Qt standard pour drawArc en degrés*16 anti-horaire depuis 3h) —
+    # positionnée tangente à l'arc pour indiquer le sens de rotation.
+    end_angle_rad = math.radians(90 - span_deg)
+    tip = QPointF(center.x() + radius * math.cos(end_angle_rad),
+                   center.y() - radius * math.sin(end_angle_rad))
+    tangent_rad = end_angle_rad - math.pi / 2
+    head_len = 7
+    head_angle = math.radians(28)
+    p1 = QPointF(tip.x() - head_len * math.cos(tangent_rad - head_angle),
+                 tip.y() + head_len * math.sin(tangent_rad - head_angle))
+    p2 = QPointF(tip.x() - head_len * math.cos(tangent_rad + head_angle),
+                 tip.y() + head_len * math.sin(tangent_rad + head_angle))
+    head = QPolygonF([tip, p1, p2])
+    painter.setPen(QPen(QColor(0, 0, 0, 230), 1))
+    painter.setBrush(QColor(255, 255, 255, 230))
+    painter.drawPolygon(head)
+    painter.end()
+
+    _ROTATE_CURSOR_CACHE = QCursor(canvas, size // 2, size // 2)
+    return _ROTATE_CURSOR_CACHE
+
+
+def _paint_out_of_page_bounds_overlay(painter, canvas, corners_widget: list) -> None:
+    """Grise la portion d'un objet manipulable (forme OU image collée) qui
+    dépasse des limites de la PAGE affichée (idees.txt #1, décision explicite
+    utilisateur : "la partie hors de l'image principale doit être grisée
+    afin de signifier à l'utilisateur qu'elle sera tronquée à l'aplatissage"
+    — s'applique aussi à shapes). `corners_widget` = les 4 coins de l'objet
+    en coordonnées ÉCRAN, DÉJÀ tournés (repère non tourné, indépendant de
+    tout painter.rotate() actif ailleurs) — un QPainterPath exact plutôt
+    qu'une simple bounding box axis-aligned, pour rester correct même avec
+    une rotation non nulle (un rectangle englobant axis-aligned grise trop
+    ou pas assez dès que l'objet est tourné). Le rectangle de la page vient
+    directement de `canvas.display_offset_x/y` + `display_width/height`
+    (mêmes coordonnées que le pixmap de page déjà dessiné dans paintEvent).
+    No-op si `canvas.display_width/height` ne sont pas encore valides (page
+    pas encore affichée)."""
+    if canvas.display_width <= 0 or canvas.display_height <= 0:
+        return
+    from PySide6.QtGui import QPainterPath
+    obj_path = QPainterPath()
+    obj_path.moveTo(corners_widget[0])
+    for pt in corners_widget[1:]:
+        obj_path.lineTo(pt)
+    obj_path.closeSubpath()
+
+    page_path = QPainterPath()
+    page_path.addRect(QRect(canvas.display_offset_x, canvas.display_offset_y,
+                             canvas.display_width, canvas.display_height))
+
+    out_of_bounds = obj_path.subtracted(page_path)
+    if out_of_bounds.isEmpty():
+        return
+    painter.save()
+    # Opacité relevée à 210/255 (précédemment 150 — retour utilisateur
+    # explicite : "pas assez marqué", un gris à 59% restait peu contrasté sur
+    # une image source colorée) + fine bordure pointillée rouge en plus du
+    # remplissage gris — même couleur d'alerte que les poignées de sélection
+    # (QColor("red")) déjà utilisée ailleurs dans cette barre, pour un signal
+    # net même sur un fond déjà sombre.
+    painter.setPen(QPen(QColor("red"), 1, Qt.PenStyle.DashLine))
+    painter.setBrush(QColor(60, 60, 60, 210))
+    painter.drawPath(out_of_bounds)
+    painter.restore()
+
+
 class _Shape:
     """Une forme posée sur la page — géométrie en coordonnées IMAGE (comme
     _TextBlock.img_pos/le rectangle de crop), reconvertie en coordonnées
@@ -649,11 +753,10 @@ class ShapeCanvasMixin:
         'top': Qt.SizeVerCursor,  'bottom': Qt.SizeVerCursor,
         'move': Qt.SizeAllCursor,
         'p1': Qt.CrossCursor, 'p2': Qt.CrossCursor,
-        # Qt n'a pas de curseur de rotation natif cross-plateforme —
-        # PointingHandCursor reste le plus distinct des curseurs de
-        # redimensionnement déjà utilisés ci-dessus, suffisant pour
-        # signaler "ce n'est pas un redimensionnement".
-        'rotate': Qt.PointingHandCursor,
+        # PAS d'entrée 'rotate' ici : Qt n'a pas de curseur de rotation natif
+        # cross-plateforme — voir _build_rotate_cursor() (module, curseur
+        # custom dessiné en QPainter), résolu explicitement dans
+        # shape_update_cursor plutôt que dans ce dict statique.
     }
 
     def _init_shape_state(self):
@@ -804,6 +907,25 @@ class ShapeCanvasMixin:
 
         if rotated:
             painter.restore()
+
+        # Grisage de la portion hors des limites de la page (idees.txt #1,
+        # décision explicite utilisateur, s'applique aussi à cet outil) —
+        # uniquement pour les formes FERMÉES (ellipse/rectangle/rectangle
+        # arrondi) : ligne/flèche n'ont pas de zone surfacique dont "la
+        # partie hors de l'image principale" aurait un sens visuel comparable
+        # (angle toujours 0.0 pour elles, voir _Shape.__init__ — rien à
+        # tourner ici non plus). Coins en repère ÉCRAN NON tourné, indépendant
+        # du save/translate/rotate déjà refermé ci-dessus.
+        if not shape.is_line_like():
+            rx1, ry1 = min(wx1, wx2), min(wy1, wy2)
+            rx2, ry2 = max(wx1, wx2), max(wy1, wy2)
+            if rotated:
+                center = self._shape_widget_center(shape)
+                corners = [self._shape_rotate_point_around(QPoint(x, y), center, shape.angle)
+                           for (x, y) in ((rx1, ry1), (rx2, ry1), (rx2, ry2), (rx1, ry2))]
+            else:
+                corners = [QPoint(rx1, ry1), QPoint(rx2, ry1), QPoint(rx2, ry2), QPoint(rx1, ry2)]
+            _paint_out_of_page_bounds_overlay(painter, self, corners)
 
     def _paint_arrow_head(self, painter, x1, y1, x2, y2, color, thickness):
         angle = math.atan2(y2 - y1, x2 - x1)
@@ -1083,12 +1205,49 @@ class ShapeCanvasMixin:
             local = self._shape_rotate_point_around(pos, center, -shape.angle)
             ix, iy = self._shape_widget_to_image(local)
 
+        # Poignées de COIN : redimensionnement à PROPORTIONS CONSERVÉES
+        # (idees.txt #1, décision explicite utilisateur, s'applique aussi à
+        # cet outil formes) — seules les 4 poignées de BORD (milieu, 'left'/
+        # 'right'/'top'/'bottom') redimensionnent librement en déformant.
+        # Le coin opposé à celui tiré reste FIXE (pivot), le ratio largeur/
+        # hauteur d'ORIGINE (avant ce drag, ox2-ox1 / oy2-oy1) est réappliqué
+        # à chaque mouvement en ne conservant que la plus grande des deux
+        # variations (largeur ou hauteur) demandées par la souris — évite un
+        # comportement erratique où la forme se met à "rétrécir" dans un axe
+        # dès que la souris s'approche du coin fixe.
+        if rm in ('tl', 'tr', 'bl', 'br'):
+            orig_w = abs(ox2 - ox1) or 1.0
+            orig_h = abs(oy2 - oy1) or 1.0
+            aspect = orig_w / orig_h
+            # Coin FIXE = celui opposé à celui tiré (pivot du redimensionnement).
+            fixed_x = ox1 if rm in ('tr', 'br') else ox2
+            fixed_y = oy1 if rm in ('bl', 'br') else oy2
+            # Direction (signe) de chaque axe déterminée par la position
+            # SOURIS par rapport au coin fixe — la magnitude, elle, est
+            # imposée par le ratio d'origine (seule la plus grande des deux
+            # variations demandées par la souris est retenue, l'autre axe en
+            # découle) : évite un comportement erratique où la forme se met
+            # à "rétrécir" dans un axe dès que la souris s'approche du coin
+            # fixe sur l'autre axe.
+            raw_w, raw_h = ix - fixed_x, iy - fixed_y
+            sign_x = -1 if rm in ('tl', 'bl') else 1
+            sign_y = -1 if rm in ('tl', 'tr') else 1
+            if abs(raw_w) >= abs(raw_h) * aspect:
+                new_w = max(1.0, abs(raw_w))
+                new_h = new_w / aspect
+            else:
+                new_h = max(1.0, abs(raw_h))
+                new_w = new_h * aspect
+            x1, y1, x2, y2 = ox1, oy1, ox2, oy2
+            if rm == 'tl':   x1, y1 = fixed_x + sign_x * new_w, fixed_y + sign_y * new_h
+            elif rm == 'tr': x2, y1 = fixed_x + sign_x * new_w, fixed_y + sign_y * new_h
+            elif rm == 'bl': x1, y2 = fixed_x + sign_x * new_w, fixed_y + sign_y * new_h
+            elif rm == 'br': x2, y2 = fixed_x + sign_x * new_w, fixed_y + sign_y * new_h
+            shape.ix1, shape.iy1, shape.ix2, shape.iy2 = x1, y1, x2, y2
+            return
+
         x1, y1, x2, y2 = ox1, oy1, ox2, oy2
-        if rm == 'tl':     x1, y1 = ix, iy
-        elif rm == 'tr':   x2, y1 = ix, iy
-        elif rm == 'bl':   x1, y2 = ix, iy
-        elif rm == 'br':   x2, y2 = ix, iy
-        elif rm == 'left':   x1 = ix
+        if rm == 'left':   x1 = ix
         elif rm == 'right':  x2 = ix
         elif rm == 'top':    y1 = iy
         elif rm == 'bottom': y2 = iy
@@ -1109,7 +1268,10 @@ class ShapeCanvasMixin:
                 # active (ses poignées, dont la rotation, ne sont pas
                 # dessinées) — même garde que _shape_at() lui-même.
                 mode = self._shape_resize_mode_at(hit, pos, check_rotate=False)
-        self.setCursor(QCursor(self._CURSORS.get(mode, Qt.ArrowCursor)))
+        if mode == 'rotate':
+            self.setCursor(_build_rotate_cursor())
+        else:
+            self.setCursor(QCursor(self._CURSORS.get(mode, Qt.ArrowCursor)))
 
     def shape_mouse_release(self, event) -> bool:
         handled = False

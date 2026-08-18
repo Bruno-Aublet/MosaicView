@@ -72,7 +72,9 @@
     "cancel_straighten": "Cancel straighten",
     "cancel_text": "Cancel text",
     "cancel_shapes": "Cancel shapes",
-    "cancel_transparency": "Cancel transparency"
+    "cancel_transparency": "Cancel transparency",
+    "validate_paste_image": "Apply paste",
+    "cancel_paste_image": "Cancel paste"
   },
   "tabs": {
     "mosaic": "Mosaic",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Choose a mode, the adjustment applies immediately",
     "image_mode_panel_restore": "Restore original",
     "toolbar_rotation_tooltip": "Rotation",
-    "toolbar_rotation_instruction": "Rotate or flip the displayed page"
+    "toolbar_rotation_instruction": "Rotate or flip the displayed page",
+    "toolbar_paste_image_tooltip": "Paste an image",
+    "toolbar_paste_image_instruction": "Pastes the clipboard image onto the page, handles to resize/rotate",
+    "toolbar_paste_image_disabled": "The clipboard must contain only an image"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "No transparency applied",
         "message": "Please click a color to make transparent first."
+      },
+      "no_pasted_image": {
+        "title": "No image pasted",
+        "message": "Please paste at least one image first."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Incompatible display mode",
+        "message": "Copying a page requires single page mode. Press D to change the display mode."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Error",
         "message": "Could not apply the rotation: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Error",
+        "message": "Could not apply the pasted images: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Flattening directories",
     "flatten_content": "If your archive contains subdirectories, use 'Flatten directories' to bring all images to the same level.",
     "viewer": "Viewer",
-    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 4 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n  - Webtoon: for vertical images (webcomics), width capped at 900px to stay readable; the mouse wheel scrolls vertically within the page, then turns the page once at the top/bottom\n• Mouse wheel: quick navigation (vertical scroll within the page in Webtoon mode)\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom (up to 1000% of the image's real size)\n• Ctrl+0: fit zoom to the window\n• Ctrl+1: zoom to 100% (real pixel size of the image)\n• Right-click + drag: pan the displayed image when it exceeds the window\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel the current tool's drawing (crop, straighten, shape…) or exit the viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer.\n\nFloating toolbar: hover over the top of the image to reveal it (it hides itself after a few seconds). Click an icon to activate the matching tool:\n• Crop: draw a rectangle, adjust it by its edges, validate\n• Straighten: draw a line on what should be horizontal/vertical, the correction applies automatically; right-click the icon to switch to automatic straightening (detects the skew on its own, no line to draw)\n• Rotate/flip: one click rotates or flips the page\n• Clone: Ctrl+click to set the source point, then paint with the mouse held down to duplicate\n• Text: click to place a text block, choose font/size/color\n• Shapes: draw ellipses, rectangles, lines or arrows, with handles to resize them\n• Sliders (sharpness, brightness/contrast, saturation, remove colors, compression): the result is shown live as you drag\n• Levels: adjust black point/gamma/white point with sliders, or pick a color directly on the image with the eyedroppers\n• Transparency: click a color on the image to make it transparent\n• Color depth, Effects, Image mode: pick an option by clicking a radio button, applied immediately\n\nValidate with the \"Validate\" button when it appears, or Esc to cancel. Every change joins the usual Undo/Redo history.",
+    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 4 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n  - Webtoon: for vertical images (webcomics), width capped at 900px to stay readable; the mouse wheel scrolls vertically within the page, then turns the page once at the top/bottom\n• Mouse wheel: quick navigation (vertical scroll within the page in Webtoon mode)\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom (up to 1000% of the image's real size)\n• Ctrl+0: fit zoom to the window\n• Ctrl+1: zoom to 100% (real pixel size of the image)\n• Right-click + drag: pan the displayed image when it exceeds the window\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel the current tool's drawing (crop, straighten, shape…) or exit the viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer.\n\nFloating toolbar: hover over the top of the image to reveal it (it hides itself after a few seconds). Click an icon to activate the matching tool:\n• Crop: draw a rectangle, adjust it by its edges, validate\n• Straighten: draw a line on what should be horizontal/vertical, the correction applies automatically; right-click the icon to switch to automatic straightening (detects the skew on its own, no line to draw)\n• Rotate/flip: one click rotates or flips the page\n• Clone: Ctrl+click to set the source point, then paint with the mouse held down to duplicate\n• Text: click to place a text block, choose font/size/color\n• Shapes: draw ellipses, rectangles, lines or arrows, with handles to resize them\n• Sliders (sharpness, brightness/contrast, saturation, remove colors, compression): the result is shown live as you drag\n• Levels: adjust black point/gamma/white point with sliders, or pick a color directly on the image with the eyedroppers\n• Transparency: click a color on the image to make it transparent\n• Color depth, Effects, Image mode: pick an option by clicking a radio button, applied immediately\n• Paste an image: pastes the image from the clipboard (the icon only lights up if the clipboard holds an image), with handles to resize/rotate it like shapes; also works by dragging a page from a mosaic or a file from Windows Explorer straight onto the viewer. Ctrl+C copies the page being viewed (single page or Webtoon mode only), Ctrl+V pastes an image, same as in the mosaic\n\nValidate with the \"Validate\" button when it appears, or Esc to cancel. Every change joins the usual Undo/Redo history.",
     "join_pages": "Joining pages",
     "join_pages_content": "Select multiple consecutive pages, right-click → 'Join selected pages' to join pages horizontally or vertically. The output image format matches the source pages' format if they are all identical, otherwise PNG by default. You'll be able to choose whether to delete or keep the original pages.\n\nWhere the new page lands in the mosaic:\n• Active renumbering mode (auto or manual): the page takes the place of the first joined page (its place, if source pages are deleted, or right before it, if they're kept), and triggers a renumbering.\n• OFF renumbering mode: the page is added at the front of the mosaic under the name \"Merged_xxx\".",
     "split_pages": "Splitting pages",

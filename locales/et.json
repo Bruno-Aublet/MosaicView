@@ -72,7 +72,9 @@
     "cancel_straighten": "Tühista sirgestamine",
     "cancel_text": "Tühista tekst",
     "cancel_shapes": "Tühista kujundid",
-    "cancel_transparency": "Tühista läbipaistvus"
+    "cancel_transparency": "Tühista läbipaistvus",
+    "validate_paste_image": "Rakenda kleepimine",
+    "cancel_paste_image": "Tühista kleepimine"
   },
   "tabs": {
     "mosaic": "Mosaiik",
@@ -155,7 +157,10 @@
     "toolbar_image_mode_instruction": "Valige režiim, kohandus rakendub kohe",
     "image_mode_panel_restore": "Taasta originaal",
     "toolbar_rotation_tooltip": "Pööramine",
-    "toolbar_rotation_instruction": "Pöörake või peegeldage kuvatud lehte"
+    "toolbar_rotation_instruction": "Pöörake või peegeldage kuvatud lehte",
+    "toolbar_paste_image_tooltip": "Kleebi pilt",
+    "toolbar_paste_image_instruction": "Kleebib lõikelaualt pildi lehele, sangad suuruse muutmiseks/pööramiseks",
+    "toolbar_paste_image_disabled": "Lõikelaud tohib sisaldada ainult pilti"
   },
   "context_menu": {
     "viewer": {
@@ -439,6 +444,14 @@
       "no_transparency_work": {
         "title": "Läbipaistvust ei rakendatud",
         "message": "Klõpsake kõigepealt värvil, mis muuta läbipaistvaks."
+      },
+      "no_pasted_image": {
+        "title": "Ühtegi pilti pole kleebitud",
+        "message": "Palun kleepige kõigepealt vähemalt üks pilt."
+      },
+      "copy_page_requires_single_mode": {
+        "title": "Ühildumatu kuvarežiim",
+        "message": "Lehe kopeerimine nõuab üksiklehe režiimi. Vajutage D, et muuta kuvarežiimi."
       }
     },
     "errors": {
@@ -647,6 +660,10 @@
       "rotation_failed": {
         "title": "Viga",
         "message": "Pööramist ei õnnestunud rakendada: {error}"
+      },
+      "paste_image_failed": {
+        "title": "Viga",
+        "message": "Kleebitud pilte ei õnnestunud rakendada: {error}"
       }
     },
     "info": {
@@ -1396,7 +1413,7 @@
     "flatten": "Kataloogide lamestamine",
     "flatten_content": "Kui teie arhiiv sisaldab alamkaustu, kasutage 'Lamesta kataloogid', et tuua kõik pildid samale tasandile.",
     "viewer": "Vaatur",
-    "viewer_content": "Vaataja avamiseks tehke leheküljel topeltklõps:\n• Klahvid ← →: lehekülgede vaheline liikumine\n• Klahv D: 4 lugemisrežiimi vahel vahetamine\n  - Üksik lehekülg: korraga üks lehekülg\n  - Topeltleheküljed: lehekülg 1 üksi, seejärel 2-3, 4-5 jne\n  - Pidevad topeltleheküljed: lehekülg 1 üksi, seejärel 2-3, 3-4, 4-5 jne\n  - Webtoon: vertikaalsete piltide jaoks (veebikoomiksid), laius piiratud 900px-ni loetavuse säilitamiseks; hiireratas kerib lehekülge vertikaalselt, seejärel vahetab lehekülge üleval/all\n• Hiireratas: kiire liikumine (vertikaalne kerimine leheküljel Webtoon-režiimis)\n• Ctrl+Ratas või Ctrl+Pluss/Miinus: suumimine (kuni 1000% pildi tegelikust suurusest)\n• Ctrl+0: sobita suum aknaga\n• Ctrl+1: suum 100% (pildi tegelik pikslisuurus)\n• Parem klõps + lohistamine: kuvatava pildi liigutamine (panoraam), kui see ületab akna\n• Klahv F11: täisekraan\n• Topeltklõps: täisekraani lülitamine\n• Klahv Esc: praeguse joonistuse tühistamine (kärpimine, sirgestamine, kuju…) või vaatajast väljumine\n• Järjehoidja: salvestab automaatselt praeguse lehekülje vaataja sulgemisel (välja arvatud esimene/viimane lehekülg). Vastaval pisipildil mosaiigis ilmub punane lint. Uuesti avamisel soovitab teade sellele leheküljele naasta. Automaatselt kustutatud viimasel leheküljel, või käsitsi paremklõpsuga vaatajas.\n\nUjuv tööriistariba: viige hiir pildi ülaosa kohale, et see kuvada (peidab end ise mõne sekundi pärast). Klõpsake ikoonil vastava tööriista aktiveerimiseks:\n• Kärpimine: joonistage ristkülik, reguleerige seda servadest, kinnitage\n• Sirgestamine: joonistage joon sellele, mis peaks olema horisontaalne/vertikaalne, korrektsioon rakendub automaatselt; paremklõps ikoonil automaatsele sirgestamisele lülitumiseks (tuvastab kaldenurga ise, ilma joonistamata)\n• Pööramine/peegeldamine: üks klõps pöörab või peegeldab lehekülge\n• Kloonimine: Ctrl+klõps lähtepunkti valimiseks, seejärel maalige hiirenuppu all hoides dubleerimiseks\n• Tekst: klõpsake tekstiploki paigutamiseks, valige font/suurus/värv\n• Kujundid: joonistage ellipseid, ristkülikuid, jooni või nooli, käepidemetega suuruse muutmiseks\n• Liugurid (teravus, heledus/kontrast, küllastus, värvide eemaldamine, tihendamine): tulemus kuvatakse reaalajas lohistamise ajal\n• Tasemed: reguleerige mustapunkti/gammat/valgepunkti liuguritega, või võtke värv otse pildilt pipettidega\n• Läbipaistvus: klõpsake pildil värvi, et muuta see läbipaistvaks\n• Värvisügavus, Efektid, Pildirežiim: valige valik raadionupul klõpsates, rakendub kohe\n\nKinnitage nupuga \"Kinnita\", kui see ilmub, või Esc tühistamiseks. Iga muudatus liitub tavapärase Võta tagasi/Tee uuesti ajalooga.",
+    "viewer_content": "Vaataja avamiseks tehke leheküljel topeltklõps:\n• Klahvid ← →: lehekülgede vaheline liikumine\n• Klahv D: 4 lugemisrežiimi vahel vahetamine\n  - Üksik lehekülg: korraga üks lehekülg\n  - Topeltleheküljed: lehekülg 1 üksi, seejärel 2-3, 4-5 jne\n  - Pidevad topeltleheküljed: lehekülg 1 üksi, seejärel 2-3, 3-4, 4-5 jne\n  - Webtoon: vertikaalsete piltide jaoks (veebikoomiksid), laius piiratud 900px-ni loetavuse säilitamiseks; hiireratas kerib lehekülge vertikaalselt, seejärel vahetab lehekülge üleval/all\n• Hiireratas: kiire liikumine (vertikaalne kerimine leheküljel Webtoon-režiimis)\n• Ctrl+Ratas või Ctrl+Pluss/Miinus: suumimine (kuni 1000% pildi tegelikust suurusest)\n• Ctrl+0: sobita suum aknaga\n• Ctrl+1: suum 100% (pildi tegelik pikslisuurus)\n• Parem klõps + lohistamine: kuvatava pildi liigutamine (panoraam), kui see ületab akna\n• Klahv F11: täisekraan\n• Topeltklõps: täisekraani lülitamine\n• Klahv Esc: praeguse joonistuse tühistamine (kärpimine, sirgestamine, kuju…) või vaatajast väljumine\n• Järjehoidja: salvestab automaatselt praeguse lehekülje vaataja sulgemisel (välja arvatud esimene/viimane lehekülg). Vastaval pisipildil mosaiigis ilmub punane lint. Uuesti avamisel soovitab teade sellele leheküljele naasta. Automaatselt kustutatud viimasel leheküljel, või käsitsi paremklõpsuga vaatajas.\n\nUjuv tööriistariba: viige hiir pildi ülaosa kohale, et see kuvada (peidab end ise mõne sekundi pärast). Klõpsake ikoonil vastava tööriista aktiveerimiseks:\n• Kärpimine: joonistage ristkülik, reguleerige seda servadest, kinnitage\n• Sirgestamine: joonistage joon sellele, mis peaks olema horisontaalne/vertikaalne, korrektsioon rakendub automaatselt; paremklõps ikoonil automaatsele sirgestamisele lülitumiseks (tuvastab kaldenurga ise, ilma joonistamata)\n• Pööramine/peegeldamine: üks klõps pöörab või peegeldab lehekülge\n• Kloonimine: Ctrl+klõps lähtepunkti valimiseks, seejärel maalige hiirenuppu all hoides dubleerimiseks\n• Tekst: klõpsake tekstiploki paigutamiseks, valige font/suurus/värv\n• Kujundid: joonistage ellipseid, ristkülikuid, jooni või nooli, käepidemetega suuruse muutmiseks\n• Liugurid (teravus, heledus/kontrast, küllastus, värvide eemaldamine, tihendamine): tulemus kuvatakse reaalajas lohistamise ajal\n• Tasemed: reguleerige mustapunkti/gammat/valgepunkti liuguritega, või võtke värv otse pildilt pipettidega\n• Läbipaistvus: klõpsake pildil värvi, et muuta see läbipaistvaks\n• Värvisügavus, Efektid, Pildirežiim: valige valik raadionupul klõpsates, rakendub kohe\n• Kleebi pilt: kleebib pildi lõikelaualt (ikoon aktiveerub ainult siis, kui lõikelaual on pilt), kus on suuruse muutmise/pööramise sangad nagu kujunditel; töötab ka lehe lohistamisel mosaiigist või faili lohistamisel Windows Explorerist otse vaaturisse. Ctrl+C kopeerib kuvatava lehe (ainult üksiklehe või Webtooni režiimis), Ctrl+V kleebib pildi, nagu mosaiigis\n\nKinnitage nupuga \"Kinnita\", kui see ilmub, või Esc tühistamiseks. Iga muudatus liitub tavapärase Võta tagasi/Tee uuesti ajalooga.",
     "join_pages": "Lehekülgede ühendamine",
     "join_pages_content": "Valige mitu järjestikust lehte, paremklõps → 'Ühenda valitud lehed', et ühendada lehed horisontaalselt või vertikaalselt. Väljundpildi formaat vastab lähtelehtede formaadile, kui need on kõik identsed, vastasel juhul vaikimisi PNG. Saate valida, kas kustutada või säilitada originaallehed.\n\nUue lehe asukoht mosaiigis:\n• Aktiivne ümbernummerdamise režiim (automaatne või käsitsi): leht võtab üle esimese ühendatud lehe koha (selle koha, kui lähtelehed kustutatakse, või vahetult enne seda, kui need säilitatakse), ja käivitab ümbernummerdamise.\n• VÄLJAS ümbernummerdamise režiim: leht lisatakse mosaiigi algusesse nimega \"Liitmine_xxx\".",
     "split_pages": "Lehekülgede tükeldamine",
