@@ -88,7 +88,7 @@ def copy_to_system_clipboard(get_temp_dir_func, parent=None):
 def copy_single_entry_to_system_clipboard(entry: dict, get_temp_dir_func, parent=None):
     """Copie UNE SEULE entrée (pas une sélection de la mosaïque) vers le
     presse-papiers Windows (CF_HDROP) — utilisée par Ctrl+C dans la
-    visionneuse principale (idees.txt #1 : "je copie une page [affichée], je
+    visionneuse principale (usage type : "je copie une page affichée, je
     vais plus loin, je colle la page dans une autre") : la page couramment
     affichée dans la visionneuse n'est pas forcément dans
     state.selected_indices (l'utilisateur peut naviguer dans la visionneuse
@@ -206,10 +206,8 @@ def cut_selected(get_temp_dir_func, render_mosaic, save_state, parent=None):
 # ─────────────────────────────────────────────────────────────────────────────
 
 # Extensions reconnues comme "image" pour un CF_HDROP à un seul fichier —
-# même liste que celle historiquement locale à paste_from_system_clipboard,
-# remontée au niveau module pour être réutilisée telle quelle par
-# clipboard_has_single_image() (outil "Coller une image" de la visionneuse,
-# idees.txt #1, voir paste_image_tool_qt.py) sans la dupliquer.
+# partagée entre paste_from_system_clipboard() et clipboard_has_single_image()
+# (outil "Coller une image" de la visionneuse, voir paste_image_tool_qt.py).
 IMAGE_EXTS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp',
               '.tiff', '.tif', '.ico', '.jfif', '.pjpeg', '.pjp', '.avif')
 
@@ -222,7 +220,7 @@ def clipboard_has_single_image() -> bool:
     Si le presse-papiers contient une image ET autre chose (plusieurs
     fichiers, un seul fichier non-image, une image accompagnée de texte),
     retourne False — pas de tentative de n'utiliser que la partie image
-    (idees.txt #1, décision explicite utilisateur). Lecture SEULE (n'ouvre le
+    (décision explicite utilisateur). Lecture SEULE (n'ouvre le
     presse-papiers que pour tester les formats disponibles, ne consomme/copie
     rien) — pensée pour être appelée en boucle depuis un handler
     QClipboard.dataChanged, contrairement à paste_from_system_clipboard qui

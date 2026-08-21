@@ -43,6 +43,9 @@
     "cancel_shapes": "Annuler les formes",
     "cancel_transparency": "Annuler la transparence",
     "cancel_paste_image": "Annuler le collage",
+    "save_crop_mask": "Enregistrer le masque",
+    "recall_crop_mask": "Rappeler le masque",
+    "forget_crop_mask": "Oublier le masque",
     "ok": "OK",
     "close": "Fermer",
     "apply_and_save": "Appliquer les modifications et sauvegarder le fichier",
@@ -137,12 +140,13 @@
     "toolbar_color_depth_instruction": "Choisissez une profondeur, l'ajustement s'applique immédiatement",
     "color_depth_panel_restore": "Restaurer l'original",
     "color_depth_panel_current_format": "Cette page est actuellement en {format}.",
+    "color_depth_panel_blocked_format": "Indisponible : le format {format} d'origine du fichier ne supporte pas cette profondeur.",
     "shape_color_tooltip": "Choisir la couleur du trait et du remplissage",
     "shape_fill_enabled_label": "Remplissage",
     "shape_pipette_tooltip": "Prélever une couleur sur la page affichée",
     "toolbar_transparency_tooltip": "Transparence",
     "toolbar_transparency_instruction": "Cliquez sur la couleur à rendre transparente",
-    "toolbar_transparency_disabled": "Disponible uniquement pour les images PNG, WebP, ICO et AVIF",
+    "toolbar_transparency_disabled": "Disponible uniquement pour les images PNG, WebP, ICO, AVIF et TIFF",
     "transparency_flood_panel_label": "Zone",
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Tolérance :",
@@ -160,7 +164,8 @@
     "effects_panel_restore": "Restaurer l'original",
     "toolbar_image_mode_tooltip": "Mode d'image",
     "toolbar_image_mode_instruction": "Choisissez un mode, l'ajustement s'applique immédiatement",
-    "image_mode_panel_restore": "Restaurer l'original"
+    "image_mode_panel_restore": "Restaurer l'original",
+    "image_mode_panel_blocked_format": "Indisponible : le format {format} d'origine du fichier ne supporte pas ce mode."
   },
   "context_menu": {
     "viewer": {
@@ -1149,6 +1154,9 @@
       "instruction": "Tracez une ligne droite sur ce qui doit être horizontal (ou vertical) dans l'image",
       "angle_label": "Angle :"
     },
+    "crop_mask": {
+      "label": "Masque de découpe"
+    },
     "clone_zone_viewer": {
       "title": "Clonage de Zone",
       "instruction": "Ctrl+clic : définir la source  •  Clic gauche : peindre la zone clonée",
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Mode manuel (tracer une ligne de référence)\nClic droit pour changer de mode",
     "straighten_mode_1": "Mode automatique (détection d'inclinaison)\nClic droit pour changer de mode",
     "sharpness_mode_0": "Renforce ou adoucit les détails de l'image\nClic droit pour passer en netteté adaptative",
-    "sharpness_mode_1": "Accentue les contours en épargnant les zones unies\nClic droit pour passer en netteté simple"
+    "sharpness_mode_1": "Accentue les contours en épargnant les zones unies\nClic droit pour passer en netteté simple",
+    "crop_mode_0": "Dessinez un rectangle sur la zone à conserver, puis validez\nClic droit pour passer en mode masque de découpe",
+    "crop_mode_1": "Mode masque de découpe : mémorisez un rectangle et rappelez-le sur les pages suivantes\nClic droit pour revenir au mode normal"
   },
   "help": {
     "title": "MosaicView - Mode d'emploi",
@@ -1415,7 +1425,7 @@
     "flatten": "Aplatir les répertoires",
     "flatten_content": "Si votre archive contient des sous-dossiers, utilisez 'Aplatir les répertoires' pour ramener toutes les images au même niveau.",
     "viewer": "Visionneuse",
-    "viewer_content": "Double-cliquez sur une page pour ouvrir la visionneuse :\n• Touches ← → : navigation entre les pages\n• Touche D : basculer entre 4 modes de lecture\n  - Page simple : une page à la fois\n  - Double pages : page 1 seule, puis 2-3, 4-5, etc.\n  - Double pages continues : page 1 seule, puis 2-3, 3-4, 4-5, etc.\n  - Webtoon : pour les images verticales (webcomics), largeur limitée à 900px pour rester lisible ; la molette scrolle verticalement dans la page, puis change de page une fois en haut/bas\n• Molette de la souris : navigation rapide (scroll vertical dans la page en mode Webtoon)\n• Ctrl+Molette ou Ctrl+Plus/Moins : zoom (jusqu'à 1000% de la taille réelle de l'image)\n• Ctrl+0 : ajuster le zoom à la taille de la fenêtre\n• Ctrl+1 : zoom à 100% (taille réelle des pixels de l'image)\n• Clic droit + glisser : déplacer l'image affichée (pan) quand elle dépasse de la fenêtre\n• Touche F11 : plein écran\n• Double-clic : basculer plein écran\n• Touche Échap : annuler le tracé en cours (recadrage, redressage, dessin de forme…) ou quitter la visionneuse\n• Marque-page : mémorise automatiquement la page courante à la fermeture (sauf première/dernière page). Un ruban rouge s'affiche sur la vignette correspondante dans la mosaïque. À la réouverture, un message propose de reprendre à cette page. Suppression automatique à la dernière page, ou manuelle via clic droit dans la visionneuse.\n\nBarre d'outils flottante : survolez le haut de l'image pour la faire apparaître (elle se masque seule après quelques secondes). Cliquez sur une icône pour activer l'outil correspondant :\n• Recadrage : tracez un rectangle, ajustez-le par ses bords, validez\n• Redressage : tracez une ligne sur ce qui doit être horizontal/vertical, la correction s'applique automatiquement ; clic droit sur l'icône pour basculer en redressage automatique (détecte l'inclinaison tout seul, sans rien tracer)\n• Rotation/miroir : un clic pivote ou retourne la page\n• Clonage : Ctrl+clic pour choisir la zone source, puis peignez au clic maintenu pour dupliquer\n• Texte : cliquez pour poser un bloc de texte, choisissez police/taille/couleur\n• Formes : dessinez ellipses, rectangles, lignes ou flèches, avec poignées pour les redimensionner\n• Réglettes (netteté, luminosité/contraste, saturation, suppression des couleurs, compression) : le résultat s'affiche en direct pendant que vous glissez le curseur\n• Niveaux : réglez point noir/gamma/point blanc à la réglette, ou prélevez une couleur directement sur l'image avec les pipettes\n• Transparence : cliquez sur une couleur de l'image pour la rendre transparente\n• Profondeur de couleur, Effets, Mode d'image : choisissez une option en cliquant sur un bouton radio, appliquée immédiatement\n• Coller une image : colle l'image du presse-papiers (icône active seulement si le presse-papiers contient une image), avec des poignées pour la redimensionner/pivoter comme les formes ; fonctionne aussi en glissant une page depuis une mosaïque ou un fichier depuis l'Explorateur Windows directement sur la visionneuse. Ctrl+C copie la page affichée (uniquement en mode page simple ou Webtoon), Ctrl+V colle une image, comme dans la mosaïque\n\nValidez avec le bouton \"Valider\" quand il apparaît, ou Échap pour annuler. Chaque modification rejoint l'historique Annuler/Refaire habituel.",
+    "viewer_content": "Double-cliquez sur une page pour ouvrir la visionneuse :\n• Touches ← → : navigation entre les pages\n• Touche D : basculer entre 4 modes de lecture\n  - Page simple : une page à la fois\n  - Double pages : page 1 seule, puis 2-3, 4-5, etc.\n  - Double pages continues : page 1 seule, puis 2-3, 3-4, 4-5, etc.\n  - Webtoon : pour les images verticales (webcomics), largeur limitée à 900px pour rester lisible ; la molette scrolle verticalement dans la page, puis change de page une fois en haut/bas\n• Molette de la souris : navigation rapide (scroll vertical dans la page en mode Webtoon)\n• Ctrl+Molette ou Ctrl+Plus/Moins : zoom (jusqu'à 1000% de la taille réelle de l'image)\n• Ctrl+0 : ajuster le zoom à la taille de la fenêtre\n• Ctrl+1 : zoom à 100% (taille réelle des pixels de l'image)\n• Clic droit + glisser : déplacer l'image affichée (pan) quand elle dépasse de la fenêtre\n• Touche F11 : plein écran\n• Double-clic : basculer plein écran\n• Touche Échap : annuler le tracé en cours (recadrage, redressage, dessin de forme…) ou quitter la visionneuse\n• Marque-page : mémorise automatiquement la page courante à la fermeture (sauf première/dernière page). Un ruban rouge s'affiche sur la vignette correspondante dans la mosaïque. À la réouverture, un message propose de reprendre à cette page. Suppression automatique à la dernière page, ou manuelle via clic droit dans la visionneuse.\n\nBarre d'outils flottante : survolez le haut de l'image pour la faire apparaître (elle se masque seule après quelques secondes). Cliquez sur une icône pour activer l'outil correspondant :\n• Recadrage : tracez un rectangle, ajustez-le par ses bords, validez ; clic droit sur l'icône pour basculer en mode masque de découpe (mémorisez un rectangle avec \"Enregistrer le masque\", puis rappelez-le tel quel sur les pages suivantes avec \"Rappeler le masque\" — pratique pour appliquer le même recadrage à plusieurs pages sans le retracer à chaque fois ; \"Oublier le masque\" efface la mémorisation, page par page uniquement)\n• Redressage : tracez une ligne sur ce qui doit être horizontal/vertical, la correction s'applique automatiquement ; clic droit sur l'icône pour basculer en redressage automatique (détecte l'inclinaison tout seul, sans rien tracer)\n• Rotation/miroir : un clic pivote ou retourne la page\n• Clonage : Ctrl+clic pour choisir la zone source, puis peignez au clic maintenu pour dupliquer\n• Texte : cliquez pour poser un bloc de texte, choisissez police/taille/couleur\n• Formes : dessinez ellipses, rectangles, lignes ou flèches, avec poignées pour les redimensionner\n• Réglettes (netteté, luminosité/contraste, saturation, suppression des couleurs, compression) : le résultat s'affiche en direct pendant que vous glissez le curseur\n• Niveaux : réglez point noir/gamma/point blanc à la réglette, ou prélevez une couleur directement sur l'image avec les pipettes\n• Transparence : cliquez sur une couleur de l'image pour la rendre transparente\n• Profondeur de couleur, Effets, Mode d'image : choisissez une option en cliquant sur un bouton radio, appliquée immédiatement\n• Coller une image : colle l'image du presse-papiers (icône active seulement si le presse-papiers contient une image), avec des poignées pour la redimensionner/pivoter comme les formes ; fonctionne aussi en glissant une page depuis une mosaïque ou un fichier depuis l'Explorateur Windows directement sur la visionneuse. Ctrl+C copie la page affichée (uniquement en mode page simple ou Webtoon), Ctrl+V colle une image, comme dans la mosaïque\n\nValidez avec le bouton \"Valider\" quand il apparaît, ou Échap pour annuler. Chaque modification rejoint l'historique Annuler/Refaire habituel.",
     "join_pages": "Joindre des pages",
     "join_pages_content": "Sélectionnez plusieurs pages consécutives, clic droit → 'Joindre les pages sélectionnées' pour joindre les pages horizontalement ou verticalement. Le format de l'image produite correspond à celui des pages sources si elles sont toutes identiques, sinon PNG par défaut. Vous pourrez choisir de supprimer ou conserver les pages d'origine.\n\nEmplacement de la nouvelle page dans la mosaïque :\n• Mode de renumérotation actif (auto ou manuel) : la page rejoint l'emplacement de la première page jointe (à sa place si les sources sont supprimées, juste avant sinon), et déclenche une renumérotation.\n• Mode de renumérotation OFF : la page est ajoutée en tête de mosaïque sous le nom \"Collage_xxx\".",
     "split_pages": "Scinder des pages",

@@ -35,7 +35,7 @@ class AppState:
         self.history_index = -1
 
         # Valeur de netteté commitée par la visionneuse (outil "sharpness" de
-        # la barre d'outils flottante, idees.txt #3), indexée par
+        # la barre d'outils flottante), indexée par
         # history_index APRÈS le commit — clé = (image_idx, history_index),
         # valeur = int. Sur state (pas sur ImageViewer) pour survivre à une
         # fermeture/réouverture de la visionneuse : l'historique undo/redo
@@ -49,7 +49,7 @@ class AppState:
 
         # Réglages de netteté adaptative (Unsharp Mask) commités par la
         # visionneuse (outil "sharpness" en mode unsharp de la barre d'outils
-        # flottante, idees.txt #3), indexés par history_index APRÈS le commit
+        # flottante), indexés par history_index APRÈS le commit
         # — même principe et même durée de vie que sharpness_value_by_
         # history_index ci-dessus, mais un tuple (radius, percent, threshold)
         # au lieu d'un int puisque l'Unsharp Mask a 3 réglettes indépendantes.
@@ -57,7 +57,7 @@ class AppState:
         self.unsharp_value_by_history_index: dict[tuple[int, int], tuple[float, int, int]] = {}
 
         # Réglages de luminosité/contraste commités par la visionneuse (outil
-        # "brightness" de la barre d'outils flottante, idees.txt #3), indexés
+        # "brightness" de la barre d'outils flottante), indexés
         # par history_index APRÈS le commit — même principe et même durée de
         # vie que sharpness_value_by_history_index ci-dessus, mais un tuple
         # (brightness, contrast) au lieu d'un int puisque ce mode a 2
@@ -67,7 +67,7 @@ class AppState:
         self.brightness_value_by_history_index: dict[tuple[int, int], tuple[int, int]] = {}
 
         # Valeur de saturation commitée par la visionneuse (outil "saturation"
-        # de la barre d'outils flottante, idees.txt #3), indexée par
+        # de la barre d'outils flottante), indexée par
         # history_index APRÈS le commit — même principe et même durée de vie
         # que sharpness_value_by_history_index ci-dessus. Contrairement à
         # sharpness, jamais relue pour resynchroniser le slider (voir
@@ -79,8 +79,8 @@ class AppState:
         self.saturation_value_by_history_index: dict[tuple[int, int], int] = {}
 
         # Valeur de suppression des couleurs commitée par la visionneuse
-        # (outil "remove_colors" de la barre d'outils flottante, idees.txt
-        # #3), indexée par history_index APRÈS le commit — même principe et
+        # (outil "remove_colors" de la barre d'outils flottante),
+        # indexée par history_index APRÈS le commit — même principe et
         # même durée de vie que sharpness_value_by_history_index ci-dessus.
         # Contrairement à sharpness, jamais relue pour resynchroniser le
         # slider (voir modules/qt/remove_colors_tool_qt.py::
@@ -93,7 +93,7 @@ class AppState:
         self.remove_colors_value_by_history_index: dict[tuple[int, int], int] = {}
 
         # Qualité JPEG cible commitée par la visionneuse (outil "compression"
-        # de la barre d'outils flottante, idees.txt #3), indexée par
+        # de la barre d'outils flottante), indexée par
         # history_index APRÈS le commit — même principe et même durée de vie
         # que sharpness_value_by_history_index ci-dessus. Contrairement à
         # saturation/remove_colors, RELUE pour resynchroniser le slider (comme
@@ -106,7 +106,7 @@ class AppState:
         self.compression_value_by_history_index: dict[tuple[int, int], int] = {}
 
         # Réglages de niveaux noir/blanc commités par la visionneuse (outil
-        # "levels" de la barre d'outils flottante, idees.txt #3), indexés par
+        # "levels" de la barre d'outils flottante), indexés par
         # history_index APRÈS le commit — même principe et même durée de vie
         # que sharpness_value_by_history_index ci-dessus, mais un tuple
         # (threshold, black_point, gamma, white_point) puisque ce mode a 4
@@ -118,15 +118,14 @@ class AppState:
         self.levels_value_by_history_index: dict[tuple[int, int], tuple[int, int, float, int]] = {}
 
         # Snapshot "avant premier changement" par page pour l'outil
-        # "color_depth" de la barre d'outils flottante (idees.txt #3, 1ère
-        # des 3 dernières fonctions migrées) — clé = image_idx, valeur =
-        # bytes d'origine. Contrairement aux dicts *_value_by_history_index
-        # ci-dessus (indexés par (page, history_index), RESYNCHRONISÉS à
-        # chaque changement de page/undo-redo), celui-ci n'est PAS dérivé de
-        # l'historique : il doit survivre à un changement de page ET à un
-        # Ctrl+Z/Ctrl+Y pendant que l'outil est actif (décision explicite
-        # utilisateur, 2026-08-16 — "sinon il y a un risque de confusion pour
-        # l'utilisateur"). Capturé au premier clic sur une profondeur pour
+        # "color_depth" de la barre d'outils flottante — clé = image_idx,
+        # valeur = bytes d'origine. Contrairement aux dicts
+        # *_value_by_history_index ci-dessus (indexés par (page,
+        # history_index), RESYNCHRONISÉS à chaque changement de page/undo-redo),
+        # celui-ci n'est PAS dérivé de l'historique : il doit survivre à un
+        # changement de page ET à un Ctrl+Z/Ctrl+Y pendant que l'outil est
+        # actif (sinon risque de confusion pour l'utilisateur). Capturé au
+        # premier clic sur une profondeur pour
         # une page donnée, jamais écrasé tant qu'il existe (un enchaînement
         # 32->24->8 bits garde le TOUT premier snapshot) ; retiré uniquement
         # quand "Restaurer l'original" est cliqué pour cette page. Sur state
@@ -136,9 +135,8 @@ class AppState:
         self.color_depth_original_bytes_by_page: dict[int, bytes] = {}
 
         # Même mécanisme que color_depth_original_bytes_by_page ci-dessus,
-        # pour l'outil "effects" de la barre d'outils flottante (idees.txt
-        # #3, 2e des 3 dernières fonctions migrées, cadrée explicitement sur
-        # le même modèle) — clé = image_idx, valeur = bytes d'origine avant
+        # pour l'outil "effects" de la barre d'outils flottante — clé =
+        # image_idx, valeur = bytes d'origine avant
         # le tout premier changement d'effet de la session. Survit au
         # changement de page ET à un Ctrl+Z/Ctrl+Y, retiré uniquement par
         # "Restaurer l'original". Voir modules/qt/effects_tool_qt.py.
@@ -154,9 +152,8 @@ class AppState:
         self.effect_key_by_page: dict[int, str] = {}
 
         # Même mécanisme que color_depth_original_bytes_by_page ci-dessus,
-        # pour l'outil "image_mode" de la barre d'outils flottante (idees.txt
-        # #3, 3e et DERNIÈRE des fonctions du panneau Ajustements classique
-        # migrées) — clé = image_idx, valeur = bytes d'origine avant le tout
+        # pour l'outil "image_mode" de la barre d'outils flottante — clé =
+        # image_idx, valeur = bytes d'origine avant le tout
         # premier changement de mode de la session. Survit au changement de
         # page ET à un Ctrl+Z/Ctrl+Y, retiré uniquement par "Restaurer
         # l'original". Contrairement à effect_key_by_page, pas besoin d'un

@@ -1,6 +1,5 @@
 """
-icon_toolbar_qt.py — Colonne d'icônes PNG (version PySide6)
-Reproduit fidèlement modules/icon_toolbar.py (tkinter).
+icon_toolbar_qt.py — Colonne d'icônes PNG.
 
 Pattern : IconToolbarQt(parent_widget, callbacks, state_getters, config, icons_dir)
 """
@@ -421,7 +420,7 @@ class _FooterBtn(QPushButton):
 
 # ── Widget grille ─────────────────────────────────────────────────────────────
 
-_ARROW_SIZE = 9   # demi-largeur des triangles (identique à drag_drop.py tkinter)
+_ARROW_SIZE = 9   # demi-largeur des triangles
 
 
 class _DropOverlay(QWidget):
@@ -636,7 +635,6 @@ class IconGrid(QWidget):
 class ThumbSizeSlider(QWidget):
     """
     Réglette horizontale 0-2 pour la taille des vignettes.
-    Reproduit fidèlement le tk.Scale de MosaicView.py :
       - 3 positions : small (0), normal (1), large (2)
       - Espace : cycle 0→1→2→0
       - Flèches : redirigées (ne changent pas la valeur)
@@ -1403,10 +1401,7 @@ class _IconConfigDialog(QDialog):
 # ── Barre d'icônes principale ─────────────────────────────────────────────────
 
 class IconToolbarQt(QWidget):
-    """
-    Colonne d'icônes PNG pour MosaicView Qt.
-    Reproduit fidèlement IconToolbar (tkinter).
-    """
+    """Colonne d'icônes PNG pour MosaicView."""
 
     _hover_color: str = "#cccccc"  # mis à jour par set_hover_color() au changement de thème
 

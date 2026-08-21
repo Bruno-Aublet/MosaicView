@@ -5,9 +5,7 @@ description: Localiser ou modifier la fonction "Compression" (qualité JPEG) de 
 
 # Ajustement "Compression" — MosaicView
 
-Outil de la barre d'outils flottante de la visionneuse principale (10e outil migré, 6e des 8 modes d'ajustement, v1.7.5). Pour l'orchestration générale de cette barre d'outils, voir skill `viewers`, section "Le cas de la compression".
-
-**Historique** : cette fonction vivait à l'origine dans le panneau Ajustements classique (section "Compression", colonne gauche) avec sa propre visionneuse dédiée (`AdjustmentViewerDialog` mode `'compression'`). Les deux ont été **entièrement retirées** le 2026-08-15 une fois la migration vers la barre d'outils validée — même principe déjà appliqué à sharpness/unsharp/brightness/saturation/remove_colors. Il n'existe donc plus qu'un seul chemin d'accès à cette fonction : l'icône "compression" de la barre d'outils de la visionneuse principale.
+Outil de la barre d'outils flottante de la visionneuse principale. Pour l'orchestration générale de cette barre d'outils, voir skill `viewers`, section "Le cas de la compression". Seul chemin d'accès à cette fonction : l'icône "compression" de la barre d'outils de la visionneuse principale.
 
 ## Où
 
@@ -22,7 +20,7 @@ Outil de la barre d'outils flottante de la visionneuse principale (10e outil mig
 
 Dans `compression_tool_qt.py`, cette fonction sert de valeur de **repli** dans `_reset_compression_preview()` : uniquement quand aucun commit de CET outil n'existe encore pour `(page, history_index)` courants (première ouverture de l'outil sur une page). Elle n'est jamais réutilisée ailleurs dans le pipeline d'application réelle.
 
-**Piège vécu et corrigé (2026-08-15)** : un premier jet de `perform_compression()` (commit du slider) tentait de resynchroniser le slider après chaque commit en rappelant `detect_jpeg_quality(entry['bytes'])` sur l'image tout juste recompressée, dans l'idée d'afficher la qualité "réelle" plutôt qu'une valeur cible qui diverge après plusieurs recompressions. Mais le mapping à 5 paliers est bien trop grossier pour cet usage : une compression à qualité 1 retombe dans le premier seuil (`avg_q < 15`) et ressort à 95, donnant l'impression trompeuse que rien n'a été appliqué. Corrigé : le slider reste sur la valeur CIBLE qui vient d'être commitée (`panel.value`), jamais resynchronisé sur une redétection EXIF après coup.
+**Piège** : ne jamais resynchroniser le slider après un commit en rappelant `detect_jpeg_quality(entry['bytes'])` sur l'image tout juste recompressée, dans l'idée d'afficher la qualité "réelle" plutôt que la valeur cible. Le mapping à 5 paliers est bien trop grossier pour cet usage : une compression à qualité 1 retombe dans le premier seuil (`avg_q < 15`) et ressort à 95, donnant l'impression trompeuse que rien n'a été appliqué. Le slider doit rester sur la valeur CIBLE qui vient d'être commitée (`panel.value`), jamais resynchronisé sur une redétection EXIF après coup.
 
 ## Application (`apply_adjustments()`)
 

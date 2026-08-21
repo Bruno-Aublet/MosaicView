@@ -1,7 +1,5 @@
 """
-context_menus_qt.py — Menus contextuels (clic droit) de MosaicView Qt.
-
-Reproduit fidèlement context_menus.py (tkinter) en PySide6.
+context_menus_qt.py — Menus contextuels (clic droit) de MosaicView.
 """
 
 import os
@@ -43,10 +41,7 @@ def _add_disabled(menu: QMenu, label: str) -> QAction:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def show_canvas_context_menu(global_pos, parent, callbacks: dict):
-    """
-    Menu clic droit sur une zone vide du canvas.
-    Reproduit fidèlement context_menus.show_canvas_context_menu().
-    """
+    """Menu clic droit sur une zone vide du canvas."""
     state = parent._state
 
     menu = _make_menu(parent)
@@ -185,6 +180,10 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
                        callbacks.get('delete_all_bookmarks', lambda: None))
     else:
         _add_disabled(menu, _("context_menu.canvas_with_file.delete_all_bookmarks"))
+
+    menu.addSeparator()
+
+    menu.addAction(_("menu.zip_compression"), callbacks.get('open_zip_compression_dialog', lambda: None))
 
     menu.addSeparator()
 
@@ -356,6 +355,7 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
     menu.addMenu(about_submenu)
 
     menu.exec(global_pos)
+    menu.deleteLater()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -363,10 +363,7 @@ def show_canvas_context_menu(global_pos, parent, callbacks: dict):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
-    """
-    Menu clic droit sur une vignette.
-    Reproduit fidèlement context_menus.show_context_menu().
-    """
+    """Menu clic droit sur une vignette."""
     state = parent._state
 
     # Sélectionne l'élément si pas déjà sélectionné
@@ -568,6 +565,7 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
         act.setShortcutVisibleInContextMenu(True)
 
     menu.exec(global_pos)
+    menu.deleteLater()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -581,6 +579,7 @@ def show_dir_context_menu(global_pos, parent, callbacks: dict):
     menu = _make_menu(parent)
     menu.addAction(_("context_menu.canvas_with_file.flatten"), callbacks['flatten_directories'])
     menu.exec(global_pos)
+    menu.deleteLater()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -631,9 +630,6 @@ def _build_system_submenu(parent, callbacks: dict) -> QMenu:
                     enabled=font_offset > min_font)
     _add_action_ctx(submenu, _("menu.increase_font"), callbacks.get('increase_font_size'),
                     enabled=font_offset < max_font)
-    submenu.addSeparator()
-
-    _add_action_ctx(submenu, _("menu.zip_compression"), callbacks.get('open_zip_compression_dialog'))
     submenu.addSeparator()
 
     _add_action_ctx(submenu, _("context_menu.canvas_with_file.help"), callbacks.get('show_user_guide'))

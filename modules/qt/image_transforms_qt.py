@@ -1,12 +1,7 @@
 """
-modules/qt/image_transforms_qt.py — Rotation et miroir (version PySide6)
+modules/qt/image_transforms_qt.py — Rotation et miroir (rotate_selected, flip_selected).
 
-Reproduit à l'identique le comportement de modules/image_transforms.py
-(fonctions rotate_selected et flip_selected) pour la version Qt.
-
-Différences avec la version tkinter :
-  - update_button_text → refresh_toolbar_states (callback Qt)
-  - opérations exécutées dans un QThread avec overlay de progression + bouton Annuler
+Opérations exécutées dans un QThread avec overlay de progression + bouton Annuler.
 """
 
 import threading

@@ -2,9 +2,7 @@
 modules/qt/transparency_tool_qt.py — Outil "transparence" de la barre
 d'outils flottante de la visionneuse principale (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 13e outil migré, 8e et
-DERNIER des 8 modes d'ajustement après sharpness/unsharp/brightness/
-saturation/remove_colors/compression/levels) : ce module contient toute la
+Fusion progressive des visionneuses : ce module contient toute la
 logique propre à l'outil "transparency" — état + geste souris de la pipette
 (mixin TransparencyCanvasMixin, hérité par _ViewerCanvas), commit de
 l'opération dans l'historique du panneau (mixin TransparencyViewerMixin,
@@ -13,26 +11,20 @@ hérité par ImageViewer), et le panneau flottant des contrôles
 deux mixins et brancher l'icône de la barre d'outils — voir CLAUDE.md règle
 "ne jamais migrer le code d'un outil dans image_viewer_qt.py".
 
-Une fois cet outil migré, AdjustmentViewerDialog/adjustments_viewers_qt.py
-n'héberge plus aucun mode — voir skill viewers, "Le mode restant de
-AdjustmentViewerDialog".
-
 Contrairement aux 6 modes preview-slider purs (sharpness/brightness/
 saturation/remove_colors/compression) : cet outil a un VRAI geste souris
 comme crop/straighten/clone/texte/levels — une pipette qui capte un clic sur
 l'image. Contrairement à levels (commit immédiat par clic, pas de bouton
 "Valider") : cet outil ACCUMULE plusieurs clics dans une image de travail en
-mémoire (comme l'ancien mode 'transparency' de AdjustmentViewerDialog, skill
-adjust-transparency) avant validation explicite — décision utilisateur
-2026-08-15, plus proche du pattern crop/straighten/text/shapes (bouton
-"Valider" partagé, persistance du travail non validé par page) que du
-pattern levels.
+mémoire avant validation explicite, plus proche du pattern
+crop/straighten/text/shapes (bouton "Valider" partagé, persistance du
+travail non validé par page) que du pattern levels.
 
-Panneau flottant à une seule ligne (idees.txt #3, décision 2026-08-15) :
+Panneau flottant à une seule ligne :
   bascule flood/global | réglette+spin tolérance || bouton pipette
 Réutilise à l'identique la logique PIL de _apply_transparency_click (skill
-adjust-transparency, ancien AdjustmentViewerDialog) : flood fill 4-connexe en
-pile (pas récursif) ou balayage global de toute l'image, tolérance testée en
+adjust-transparency) : flood fill 4-connexe en pile (pas récursif) ou
+balayage global de toute l'image, tolérance testée en
 distance de Chebyshev sur les 3 canaux RGB, seul le canal alpha est modifié
 (RGB jamais touché).
 
@@ -46,17 +38,14 @@ transparency) : perform_transparency() écrit l'image de travail dans
 entry['bytes'] (save_image_to_bytes, format selon l'extension d'origine —
 PNG/WEBP/AVIF/ICO), fait save_state(), vide l'image de travail de cette page.
 
-Échap/Suppr/Retour arrière (idees.txt #3, décision utilisateur 2026-08-15) :
-annule TOUT le travail en attente d'un coup (retour à l'image d'origine),
-PAS un undo clic par clic — pas de pile d'annulation locale comme l'ancien
-_transp_history de AdjustmentViewerDialog.
+Échap/Suppr/Retour arrière : annule TOUT le travail en attente d'un coup
+(retour à l'image d'origine), PAS un undo clic par clic — pas de pile
+d'annulation locale.
 
 Formats supportés — PNG/WEBP/ICO/AVIF uniquement (un canal alpha est requis) :
-même filtrage que l'ancien mode, voir _SUPPORTED_EXTS ci-dessous (dupliqué
-nulle part ailleurs, une seule constante, même nom que l'ancien
-adjustments_viewers_qt.py pour rester repérable). Icône de la barre grisée/
-désactivée sur une page d'un autre format — même mécanisme que compression
-(seul autre outil migré grisable, voir compression_tool_qt.py::
+voir _SUPPORTED_EXTS ci-dessous (dupliqué nulle part ailleurs, une seule
+constante). Icône de la barre grisée/désactivée sur une page d'un autre
+format — même mécanisme que compression (voir compression_tool_qt.py::
 is_compressible_entry et _ToolButton.set_enabled_state), pas un nouveau
 mécanisme.
 """
@@ -77,15 +66,16 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.clone_tool_qt import floating_options_panel_style
 
 
-# Formats supportés — un canal alpha est requis, mêmes extensions que
-# l'ancien mode 'transparency' de AdjustmentViewerDialog (skill
-# adjust-transparency, _SUPPORTED_EXTS).
-_SUPPORTED_EXTS = {'.png', '.webp', '.ico', '.avif'}
+# Formats supportés — un canal alpha est requis (skill adjust-transparency).
+# TIFF écrit nativement RGBA (voir save_image_to_bytes, entries.py). BMP
+# exclu : Pillow écrit bien un canal alpha 32-bit, mais ne le redétecte pas
+# à la relecture (header BMP classique ambigu sur la présence d'alpha,
+# contrairement à BITMAPV4/V5HEADER avec masques explicites).
+_SUPPORTED_EXTS = {'.png', '.webp', '.ico', '.avif', '.tiff', '.tif'}
 
 
 def is_transparency_supported_entry(entry: dict) -> bool:
-    """True si l'extension de l'entrée peut porter un canal alpha — même
-    définition que l'ancien mode 'transparency' de AdjustmentViewerDialog."""
+    """True si l'extension de l'entrée peut porter un canal alpha."""
     ext = entry.get("extension", "").lower()
     return ext in _SUPPORTED_EXTS
 
@@ -96,10 +86,9 @@ def is_transparency_supported_entry(entry: dict) -> bool:
 
 class _ClickableLabel(QLabel):
     """QLabel qui déclenche un callback au clic gauche — utilisé pour les
-    labels "Zone"/"Global" de la bascule flood/global (2026-08-15, retour
-    utilisateur : viser la petite poignée d'un slider 2 positions de 40px
-    était jugé "particulièrement dérangeant"). Le clic sur le label bascule
-    directement, sans avoir à viser le slider lui-même."""
+    labels "Zone"/"Global" de la bascule flood/global : viser la petite
+    poignée d'un slider 2 positions de 40px est peu confortable. Le clic sur
+    le label bascule directement, sans avoir à viser le slider lui-même."""
 
     def __init__(self, on_click):
         super().__init__()
@@ -113,7 +102,7 @@ class _ClickableLabel(QLabel):
 
 
 class _TransparencyOptionsPanel(QWidget):
-    """Panneau flottant à une seule ligne (idees.txt #3, décision 2026-08-15) :
+    """Panneau flottant à une seule ligne :
     label+mini-slider bascule flood/global | label+slider+spin tolérance ||
     séparateur | bouton pipette. Plus simple que _LevelsOptionsPanel (une
     seule pipette, pas de triplet noir/gamma/blanc à gérer) — tient sur une
@@ -124,9 +113,8 @@ class _TransparencyOptionsPanel(QWidget):
     pour ne pas interrompre un réglage en cours).
 
     La bascule flood/global est un QSlider 2 positions (0=flood, 1=global),
-    pas une checkbox — même widget que l'ancien _transp_type_slider de
-    AdjustmentViewerDialog (skill adjust-transparency), avec le label de
-    l'état inactif grisé (_update_type_labels).
+    pas une checkbox (skill adjust-transparency), avec le label de l'état
+    inactif grisé (_update_type_labels).
 
     PAS de bouton pipette (contrairement à levels, qui en a 2 à choisir
     parmi plusieurs gestes possibles) : dans cet outil, le clic sur l'image
@@ -171,10 +159,10 @@ class _TransparencyOptionsPanel(QWidget):
             self._cursor_pipette = self._build_pipette_cursor(icon_scaled)
 
         # ── Bascule flood/global ────────────────────────────────────────────
-        # Labels cliquables en plus du slider (2026-08-15, retour utilisateur
-        # : cliquer précisément sur la petite poignée d'un slider 2 positions
-        # de 40px était jugé "particulièrement dérangeant") — cliquer le
-        # label du côté voulu bascule directement le slider sur cette valeur,
+        # Labels cliquables en plus du slider : cliquer précisément sur la
+        # petite poignée d'un slider 2 positions de 40px est peu confortable
+        # — cliquer le label du côté voulu bascule directement le slider sur
+        # cette valeur,
         # sans avoir à viser la poignée elle-même. Le slider par glisser reste
         # utilisable en plus (pas retiré).
         self._flood_label = _ClickableLabel(lambda: self._type_slider.setValue(0))
@@ -337,11 +325,11 @@ class _TransparencyOptionsPanel(QWidget):
         self.move(max(0, x), y)
 
     def mousePressEvent(self, event):
-        # Piège corrigé (2026-08-15) : sans ce blindage, un clic sur une zone
-        # vide du panneau (marges entre les widgets, pas absorbée par un
-        # QSlider/QSpinBox enfant) "fuit" vers _ViewerCanvas en dessous
-        # (widget flottant enfant du canvas) et déclenchait un clic pipette
-        # sur l'image affichée dessous — même piège déjà documenté pour
+        # Sans ce blindage, un clic sur une zone vide du panneau (marges
+        # entre les widgets, pas absorbée par un QSlider/QSpinBox enfant)
+        # "fuit" vers _ViewerCanvas en dessous (widget flottant enfant du
+        # canvas) et déclenche un clic pipette sur l'image affichée dessous
+        # — même piège déjà documenté pour
         # _ToolButton/_ActionButton/_ViewerToolbar (skill viewers), jamais
         # reproduit ici puisque c'est le seul panneau flottant de cette barre
         # posé directement au-dessus d'un outil qui capte un clic sur l'image.
@@ -468,9 +456,7 @@ class TransparencyViewerMixin:
 
     Contrairement aux modes preview-slider et à levels : l'image de travail
     ACCUMULE plusieurs clics avant validation (bouton "Valider" partagé, voir
-    _ALWAYS_VISIBLE_VALIDATE_TOOLS), pas un commit immédiat par geste — décision
-    utilisateur 2026-08-15 (idees.txt #3), reproduisant le comportement de
-    l'ancien mode 'transparency' de AdjustmentViewerDialog (skill
+    _ALWAYS_VISIBLE_VALIDATE_TOOLS), pas un commit immédiat par geste (skill
     adjust-transparency, image de travail + bouton "Appliquer").
     """
 
@@ -494,10 +480,9 @@ class TransparencyViewerMixin:
     def _get_or_init_transp_work_img(self):
         """Retourne l'image de travail RGBA de la page courante, l'initialise
         depuis entry['bytes'] si elle n'existe pas encore (première mutation
-        de cette page depuis l'ouverture de l'outil) — même principe que
-        l'ancien _transp_work_img de AdjustmentViewerDialog (skill
-        adjust-transparency, initialisation "une seule fois au premier
-        affichage de chaque page")."""
+        de cette page depuis l'ouverture de l'outil) — initialisation une
+        seule fois au premier affichage de chaque page (skill
+        adjust-transparency)."""
         from modules.qt import state as _state_module
         work_img = self._transp_work_img_by_page.get(self.current_idx)
         if work_img is not None:
@@ -510,9 +495,8 @@ class TransparencyViewerMixin:
         return work_img
 
     def apply_transparency_click(self, px: int, py: int):
-        """Cœur de la logique — reprend à l'identique
-        _apply_transparency_click de l'ancien AdjustmentViewerDialog (skill
-        adjust-transparency) : flood fill 4-connexe en pile (pas récursif,
+        """Cœur de la logique (skill adjust-transparency) : flood fill
+        4-connexe en pile (pas récursif,
         évite un dépassement de pile Python sur de grandes zones) ou balayage
         global de toute l'image, tolérance testée en distance de Chebyshev
         (max des 3 deltas RGB), seul le canal alpha est modifié (RGB jamais
@@ -650,9 +634,8 @@ class TransparencyViewerMixin:
 
     def _clear_transparency_work(self):
         """Échap/Suppr/Retour arrière/bouton "Annuler" : annule TOUT le
-        travail en attente d'un coup pour la page courante (idees.txt #3,
-        décision explicite utilisateur 2026-08-15) — pas un undo clic par
-        clic. Retour à l'image d'origine (entry['bytes'] inchangé, l'image
+        travail en attente d'un coup pour la page courante — pas un undo
+        clic par clic. Retour à l'image d'origine (entry['bytes'] inchangé, l'image
         de travail est simplement jetée)."""
         self._transp_work_img_by_page.pop(self.current_idx, None)
         self._sharpness_preview_img = None

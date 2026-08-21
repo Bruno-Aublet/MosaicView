@@ -47,7 +47,8 @@ def _center_on_widget(dialog, parent):
 
 
 class MsgDialog(QDialog):
-    """Boîte de dialogue modale respectant thème et police courante.
+    """Boîte de dialogue non-modale (simple bouton OK) respectant thème et
+    police courante. Affichage via show_nonmodal().
 
     Paramètres
     ----------
@@ -136,10 +137,10 @@ class MsgDialog(QDialog):
 
 
 class ConfirmDialog(QDialog):
-    """Boîte de dialogue modale OK / Annuler respectant thème et police courante.
+    """Boîte de dialogue non-modale OK / Annuler respectant thème et police courante.
 
-    Retourne True si l'utilisateur clique OK, False sinon.
-    Utilisation : ConfirmDialog(parent, title_key, message_key).ask()
+    result_signal émet True si l'utilisateur clique OK, False sinon (Annuler
+    ou fermeture). Utilisation : ConfirmDialog(parent, title_key, message_key).ask_async(on_result)
     """
 
     result_signal = Signal(bool)   # True = OK, False = Annuler/fermeture
@@ -269,8 +270,8 @@ class ErrorDialog(QDialog):
     imprévue...), jamais aux simples validations utilisateur. False par défaut.
 
     Usage :
-        ErrorDialog(parent, title_text, message_text).exec()
-        ErrorDialog(parent, lambda: _wt("key.title"), lambda: _("key.msg")).exec()
+        ErrorDialog(parent, title_text, message_text).show_nonmodal()
+        ErrorDialog(parent, lambda: _wt("key.title"), lambda: _("key.msg")).show_nonmodal()
     """
 
     def __init__(self, parent, title, message, play_sound=False, ok_text_key: str = "buttons.ok"):
@@ -369,8 +370,8 @@ class InfoDialog(QDialog):
     Connecter linkActivated pour gérer les clics sur les liens.
 
     Usage :
-        InfoDialog(parent, title_text, message_text).exec()
-        InfoDialog(parent, lambda: _wt("key.title"), lambda: _("key.msg")).exec()
+        InfoDialog(parent, title_text, message_text).show_nonmodal()
+        InfoDialog(parent, lambda: _wt("key.title"), lambda: _("key.msg")).show_nonmodal()
     """
 
     def __init__(self, parent, title, message):
@@ -464,14 +465,14 @@ class QuestionYNCDialog(QDialog):
     """Boîte de dialogue Oui / Non / Annuler respectant thème et police.
 
     title et message peuvent être une str (figée) ou un callable () → str.
-    Retourne :
+    result_signal émet :
         "yes"    si l'utilisateur clique Oui
         "no"     si l'utilisateur clique Non
         "cancel" si l'utilisateur clique Annuler ou ferme la fenêtre
 
     Usage :
-        result = QuestionYNCDialog(parent, title_text, message_text).ask()
-        result = QuestionYNCDialog(parent, lambda: _wt("key"), lambda: build_msg()).ask()
+        QuestionYNCDialog(parent, title_text, message_text).ask_async(on_result)
+        QuestionYNCDialog(parent, lambda: _wt("key"), lambda: build_msg()).ask_async(on_result)
     """
 
     result_signal = Signal(str)   # "yes" | "no" | "cancel"
@@ -711,7 +712,6 @@ class ConfirmYNDialog(QDialog):
 # ─────────────────────────────────────────────────────────────────────────────
 
 def detect_duplicate_filenames_for_save(entries_to_check=None, state=None):
-    """Vérifie s'il y a des doublons de noms de fichiers dans les images."""
     if state is None:
         state = _state_module.state
     if entries_to_check is None:

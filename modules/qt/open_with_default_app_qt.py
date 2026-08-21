@@ -102,13 +102,10 @@ def open_file_with_default_app(
     Extrait le fichier de l'archive vers le dossier temporaire MosaicView,
     puis l'ouvre avec l'application Windows par défaut pour son extension.
 
-    Si state et on_modified_callback sont fournis, surveille le fichier temporaire :
-    toute modification du contenu est répercutée dans entry["bytes"] et state.modified
-    est mis à True, puis on_modified_callback() est appelé dans le thread Qt principal.
-
-    :param entry: dict depuis state.images_data (doit contenir "bytes" et "orig_name")
-    :param state: AppState courant (optionnel)
-    :param on_modified_callback: callable() appelé après mise à jour de entry["bytes"]
+    Si state et on_modified_callback sont fournis (tous deux optionnels),
+    surveille le fichier temporaire : toute modification du contenu est
+    répercutée dans entry["bytes"] et state.modified est mis à True, puis
+    on_modified_callback() est appelé dans le thread Qt principal.
     """
     raw: bytes | None = entry.get("bytes")
     if not raw:

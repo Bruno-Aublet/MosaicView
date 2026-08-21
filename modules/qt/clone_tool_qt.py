@@ -2,7 +2,7 @@
 modules/qt/clone_tool_qt.py — Outil de clonage de zone (tampon clone) de la
 barre d'outils flottante de la visionneuse principale (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 3e outil migré) : ce module
+Fusion progressive des visionneuses : ce module
 contient toute la logique propre à l'outil "clone" — état/interactions du
 canvas (mixin CloneCanvasMixin, hérité par _ViewerCanvas), commit du stroke
 dans l'historique du panneau (mixin CloneViewerMixin, hérité par ImageViewer),
@@ -27,7 +27,7 @@ from PIL import Image
 
 from PySide6.QtWidgets import (
     QWidget, QLabel, QHBoxLayout, QFrame, QPushButton, QButtonGroup,
-    QSlider, QSpinBox,
+    QSlider, QSpinBox, QRadioButton,
 )
 from PySide6.QtCore import Qt, QPoint
 from PySide6.QtGui import QPixmap, QCursor
@@ -121,12 +121,28 @@ def make_clone_crosshair_cursor(r_screen: int) -> QCursor:
     return QCursor(pm, cx, cy)
 
 
+class BlockableRadioButton(QRadioButton):
+    """QRadioButton qui ignore le clic quand self.blocked est vrai, tout en
+    restant setEnabled(True) — un radio setEnabled(False) cesse de recevoir
+    Enter/MouseMove, ce qui casserait un tooltip OverlayTooltip.track()
+    dessus. mousePressEvent intercepte avant que Qt ne coche le radio."""
+
+    def __init__(self):
+        super().__init__()
+        self.blocked = False
+
+    def mousePressEvent(self, event):
+        if self.blocked:
+            event.accept()
+            return
+        super().mousePressEvent(event)
+
+
 def floating_options_panel_style(theme, class_name: str) -> str:
     """Style de fond commun aux panneaux flottants d'options de la barre
     d'outils (angle de redressage, réglages du tampon de clonage) : sans
     bordure marquée, un panneau flottant transparent se fond visuellement
-    dans une image de fond claire ou blanche (signalé par l'utilisateur en
-    conditions réelles). Fond franc dédié (pas toolbar_bg, trop proche d'un
+    dans une image de fond claire ou blanche. Fond franc dédié (pas toolbar_bg, trop proche d'un
     fond de page clair/blanc typique d'une BD) + bordure nette dans la
     couleur de texte du thème."""
     panel_bg = "#3a3a3a" if _state_module.state.dark_mode else "#f0f0f0"
@@ -175,10 +191,9 @@ class _CloneOptionsPanel(QWidget):
 
         # Boutons texte checkable (bouton entier surligné à l'état actif),
         # plutôt que QRadioButton/QCheckBox : le rendu natif de ::indicator
-        # (cercle, puis carré) ne se dessinait pas correctement sur ce panneau
-        # à fond stylé (WA_StyledBackground) et les styles custom successifs
-        # sont restés peu lisibles (signalé par l'utilisateur en conditions
-        # réelles, plusieurs itérations). Un QPushButton checkable évite tout
+        # (cercle, puis carré) ne se dessine pas correctement sur ce panneau
+        # à fond stylé (WA_StyledBackground), et les styles custom restent peu
+        # lisibles. Un QPushButton checkable évite tout
         # indicateur séparé à styler : c'est le fond du bouton entier qui
         # marque l'état, même mécanisme déjà éprouvé que _ToolButton de la
         # barre d'outils (set_active/bordure). setAutoExclusive(True) +
@@ -253,11 +268,10 @@ class _CloneOptionsPanel(QWidget):
         # sub-page/add-page DOIVENT être stylés explicitement dès que
         # groove/handle le sont — sinon Qt applique un rendu par défaut
         # incohérent avec le reste (barre remplie de façon sombre et uniforme
-        # sur toute sa longueur, signalé par l'utilisateur en conditions
-        # réelles), au lieu de deux segments piste/parcouru distincts. Fond du
-        # widget lui-même explicitement transparent : un QSlider nu peut
-        # afficher un pavé de fond sombre hérité du style natif sinon (signalé
-        # par l'utilisateur en mode clair).
+        # sur toute sa longueur), au lieu de deux segments piste/parcouru
+        # distincts. Fond du widget lui-même explicitement transparent : un
+        # QSlider nu peut afficher un pavé de fond sombre hérité du style
+        # natif sinon.
         self._brush_slider.setStyleSheet(
             f"QSlider {{ background: transparent; }} "
             f"QSlider::groove:horizontal {{ height: 4px; background: {theme['separator']}; "
@@ -300,11 +314,10 @@ class _CloneOptionsPanel(QWidget):
         self.move(max(0, x), y)
 
     def mousePressEvent(self, event):
-        # Piège corrigé (2026-08-15, découvert sur le panneau de
-        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
-        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
-        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
-        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        # Sans ce blindage, un clic sur une zone vide du panneau "fuit" vers
+        # _ViewerCanvas en dessous — même piège déjà documenté pour
+        # _ToolButton/_ActionButton/_ViewerToolbar (skill viewers), appliqué
+        # par cohérence à tous les panneaux flottants.
         event.accept()
 
     def mouseReleaseEvent(self, event):
@@ -312,13 +325,13 @@ class _CloneOptionsPanel(QWidget):
 
     def enterEvent(self, event):
         # Suspend le timer d'auto-masquage de la barre (dont ce panneau suit
-        # désormais la visibilité, idees.txt #3 décision 2026-08-14) tant que
-        # la souris reste sur ce panneau — pas seulement redémarré à chaque
-        # mouvement, complètement arrêté (voir _ViewerToolbar.pause_hide).
+        # désormais la visibilité) tant que la souris reste sur ce panneau —
+        # pas seulement redémarré à chaque mouvement, complètement arrêté
+        # (voir _ViewerToolbar.pause_hide).
         self._viewer._toolbar.pause_hide()
         # Le curseur en croix (clone_update_cursor) est celui du CANVAS, pas
-        # celui de ce panneau — sans ce reset, il restait affiché par-dessus
-        # les contrôles du panneau (idees.txt #4), voir même piège corrigé sur
+        # celui de ce panneau — sans ce reset, il resterait affiché par-dessus
+        # les contrôles du panneau, même piège que
         # _TransparencyOptionsPanel/_LevelsOptionsPanel.
         self.setCursor(Qt.ArrowCursor)
 
@@ -724,7 +737,12 @@ class CloneViewerMixin:
 
             out_img = self._clone_work_img
             orig_mode = entry.get('_orig_mode', 'RGBA')
-            if orig_mode not in ('RGBA', 'LA', 'P') and entry.get('extension', '').lower() not in ('.png', '.webp', '.avif'):
+            # .bmp exclu : Pillow écrit bien un canal alpha 32-bit, mais ne le
+            # redétecte pas à la relecture (header BMP classique ambigu sur la
+            # présence d'alpha) — transparence non fiable, voir color_depth_tool_qt.py.
+            if orig_mode not in ('RGBA', 'LA', 'P') and entry.get('extension', '').lower() not in (
+                '.png', '.webp', '.avif', '.tiff', '.tif', '.ico'
+            ):
                 bg = Image.new('RGB', out_img.size, (255, 255, 255))
                 bg.paste(out_img, mask=out_img.split()[3])
                 out_img = bg

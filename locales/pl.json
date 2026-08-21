@@ -74,7 +74,10 @@
     "cancel_shapes": "Anuluj kształty",
     "cancel_transparency": "Anuluj przezroczystość",
     "validate_paste_image": "Zastosuj wklejenie",
-    "cancel_paste_image": "Anuluj wklejenie"
+    "cancel_paste_image": "Anuluj wklejenie",
+    "save_crop_mask": "Zapisz maskę",
+    "recall_crop_mask": "Przywróć maskę",
+    "forget_crop_mask": "Zapomnij maskę"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Pobierz kolor z wyświetlanej strony",
     "toolbar_transparency_tooltip": "Przezroczystość",
     "toolbar_transparency_instruction": "Kliknij kolor, który ma stać się przezroczysty",
-    "toolbar_transparency_disabled": "Dostępne tylko dla obrazów PNG, WebP, ICO i AVIF",
+    "toolbar_transparency_disabled": "Dostępne tylko dla obrazów PNG, WebP, ICO, AVIF i TIFF",
     "transparency_flood_panel_label": "Obszar",
     "transparency_global_panel_label": "Globalnie",
     "transparency_tolerance_panel_label": "Tolerancja:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Obróć lub odbij wyświetlaną stronę",
     "toolbar_paste_image_tooltip": "Wklej obraz",
     "toolbar_paste_image_instruction": "Wkleja obraz ze schowka na stronę, uchwyty do zmiany rozmiaru/obrotu",
-    "toolbar_paste_image_disabled": "Schowek musi zawierać wyłącznie obraz"
+    "toolbar_paste_image_disabled": "Schowek musi zawierać wyłącznie obraz",
+    "color_depth_panel_blocked_format": "Niedostępne: oryginalny format {format} pliku nie obsługuje tej głębi kolorów.",
+    "image_mode_panel_blocked_format": "Niedostępne: oryginalny format {format} pliku nie obsługuje tego trybu."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Zielony:",
       "blue_label": "Niebieski:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Maska przycinania"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Tryb ręczny (narysuj linię odniesienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
     "straighten_mode_1": "Tryb automatyczny (wykrywanie przekrzywienia)\nKliknij prawym przyciskiem, aby zmienić tryb",
     "sharpness_mode_0": "Wzmacnia lub łagodzi szczegóły obrazu\nKliknij prawym przyciskiem, aby przełączyć na ostrość adaptacyjną",
-    "sharpness_mode_1": "Podkreśla kontury, oszczędzając jednolite obszary\nKliknij prawym przyciskiem, aby przełączyć na zwykłą ostrość"
+    "sharpness_mode_1": "Podkreśla kontury, oszczędzając jednolite obszary\nKliknij prawym przyciskiem, aby przełączyć na zwykłą ostrość",
+    "crop_mode_0": "Narysuj prostokąt na obszarze do zachowania, a następnie zatwierdź\nKliknij prawym przyciskiem, aby przełączyć na tryb maski przycinania",
+    "crop_mode_1": "Tryb maski przycinania: zapamiętaj prostokąt i przywróć go na kolejnych stronach\nKliknij prawym przyciskiem, aby wrócić do trybu normalnego"
   },
   "help": {
     "title": "MosaicView - Instrukcja obsługi",
@@ -1413,7 +1423,7 @@
     "flatten": "Spłaszczanie katalogów",
     "flatten_content": "Jeśli archiwum zawiera podkatalogi, użyj 'Spłaszcz katalogi', aby przenieść wszystkie obrazy na ten sam poziom.",
     "viewer": "Przeglądarka",
-    "viewer_content": "Kliknij dwukrotnie na stronę, aby otworzyć przeglądarkę:\n• Klawisze ← →: nawigacja między stronami\n• Klawisz D: przełączanie między 4 trybami odczytu\n  - Pojedyncza strona: jedna strona naraz\n  - Podwójne strony: strona 1 sama, potem 2-3, 4-5 itd.\n  - Ciągłe podwójne strony: strona 1 sama, potem 2-3, 3-4, 4-5 itd.\n  - Webtoon: dla obrazów pionowych (webcomics), szerokość ograniczona do 900px dla czytelności; kółko myszy przewija stronę w pionie, następnie zmienia stronę po dotarciu do góry/dołu\n• Kółko myszy: szybka nawigacja (przewijanie pionowe strony w trybie Webtoon)\n• Ctrl+kółko lub Ctrl+Plus/Minus: powiększenie (do 1000% rzeczywistego rozmiaru obrazu)\n• Ctrl+0: dopasuj powiększenie do okna\n• Ctrl+1: powiększenie 100% (rzeczywisty rozmiar pikseli obrazu)\n• Prawy przycisk myszy + przeciągnięcie: przesuń wyświetlany obraz (pan), gdy przekracza okno\n• Klawisz F11: pełny ekran\n• Podwójne kliknięcie: przełącz pełny ekran\n• Klawisz Esc: anuluj bieżące rysowanie (kadrowanie, prostowanie, kształt…) lub wyjdź z przeglądarki\n• Zakładka: automatycznie zapamiętuje bieżącą stronę przy zamknięciu przeglądarki (z wyjątkiem pierwszej/ostatniej strony). Czerwona wstążka pojawia się na odpowiedniej miniaturze w mozaice. Przy ponownym otwarciu komunikat proponuje powrót do tej strony. Usuwana automatycznie na ostatniej stronie, lub ręcznie przez prawy przycisk myszy w przeglądarce.\n\nPływający pasek narzędzi: najedź myszą na górę obrazu, aby go pokazać (chowa się sam po kilku sekundach). Kliknij ikonę, aby aktywować odpowiednie narzędzie:\n• Kadrowanie: narysuj prostokąt, dostosuj go za krawędzie, zatwierdź\n• Prostowanie: narysuj linię na tym, co powinno być poziome/pionowe, korekta stosowana jest automatycznie; kliknij prawym przyciskiem na ikonę, aby przełączyć na prostowanie automatyczne (wykrywa przechylenie samo, bez rysowania)\n• Obrót/odbicie: jedno kliknięcie obraca lub odwraca stronę\n• Klonowanie: Ctrl+klik, aby wybrać punkt źródłowy, następnie maluj z wciśniętym przyciskiem myszy, aby powielić\n• Tekst: kliknij, aby umieścić blok tekstu, wybierz czcionkę/rozmiar/kolor\n• Kształty: rysuj elipsy, prostokąty, linie lub strzałki, z uchwytami do zmiany rozmiaru\n• Suwaki (ostrość, jasność/kontrast, nasycenie, usuwanie kolorów, kompresja): wynik wyświetla się na żywo podczas przeciągania\n• Poziomy: dostosuj punkt czerni/gammę/punkt bieli suwakami, lub pobierz kolor bezpośrednio z obrazu za pomocą pipet\n• Przezroczystość: kliknij kolor na obrazie, aby uczynić go przezroczystym\n• Głębia koloru, Efekty, Tryb obrazu: wybierz opcję, klikając przycisk radiowy, zastosowane natychmiast\n• Wklej obraz: wkleja obraz ze schowka (ikona aktywuje się tylko, gdy schowek zawiera obraz), z uchwytami do zmiany rozmiaru/obrotu jak w przypadku kształtów; działa też po przeciągnięciu strony z mozaiki lub pliku z Eksploratora Windows bezpośrednio na przeglądarkę. Ctrl+C kopiuje wyświetlaną stronę (tylko w trybie pojedynczej strony lub Webtoon), Ctrl+V wkleja obraz, tak jak w mozaice\n\nZatwierdź przyciskiem „Zatwierdź”, gdy się pojawi, lub Esc, aby anulować. Każda zmiana dołącza do zwykłej historii Cofnij/Ponów.",
+    "viewer_content": "Kliknij dwukrotnie na stronę, aby otworzyć przeglądarkę:\n• Klawisze ← →: nawigacja między stronami\n• Klawisz D: przełączanie między 4 trybami odczytu\n  - Pojedyncza strona: jedna strona naraz\n  - Podwójne strony: strona 1 sama, potem 2-3, 4-5 itd.\n  - Ciągłe podwójne strony: strona 1 sama, potem 2-3, 3-4, 4-5 itd.\n  - Webtoon: dla obrazów pionowych (webcomics), szerokość ograniczona do 900px dla czytelności; kółko myszy przewija stronę w pionie, następnie zmienia stronę po dotarciu do góry/dołu\n• Kółko myszy: szybka nawigacja (przewijanie pionowe strony w trybie Webtoon)\n• Ctrl+kółko lub Ctrl+Plus/Minus: powiększenie (do 1000% rzeczywistego rozmiaru obrazu)\n• Ctrl+0: dopasuj powiększenie do okna\n• Ctrl+1: powiększenie 100% (rzeczywisty rozmiar pikseli obrazu)\n• Prawy przycisk myszy + przeciągnięcie: przesuń wyświetlany obraz (pan), gdy przekracza okno\n• Klawisz F11: pełny ekran\n• Podwójne kliknięcie: przełącz pełny ekran\n• Klawisz Esc: anuluj bieżące rysowanie (kadrowanie, prostowanie, kształt…) lub wyjdź z przeglądarki\n• Zakładka: automatycznie zapamiętuje bieżącą stronę przy zamknięciu przeglądarki (z wyjątkiem pierwszej/ostatniej strony). Czerwona wstążka pojawia się na odpowiedniej miniaturze w mozaice. Przy ponownym otwarciu komunikat proponuje powrót do tej strony. Usuwana automatycznie na ostatniej stronie, lub ręcznie przez prawy przycisk myszy w przeglądarce.\n\nPływający pasek narzędzi: najedź myszą na górę obrazu, aby go pokazać (chowa się sam po kilku sekundach). Kliknij ikonę, aby aktywować odpowiednie narzędzie:\n• Kadrowanie: narysuj prostokąt, dostosuj go za krawędzie, zatwierdź; kliknij prawym przyciskiem na ikonie, aby przełączyć na tryb maski przycinania (zapamiętaj prostokąt przyciskiem \"Zapisz maskę\", a następnie przywróć go bez zmian na kolejnych stronach przyciskiem \"Przywróć maskę\" — przydatne do stosowania tego samego przycięcia na wielu stronach bez ponownego rysowania za każdym razem; \"Zapomnij maskę\" usuwa zapamiętaną maskę, tylko strona po stronie)\n• Prostowanie: narysuj linię na tym, co powinno być poziome/pionowe, korekta stosowana jest automatycznie; kliknij prawym przyciskiem na ikonę, aby przełączyć na prostowanie automatyczne (wykrywa przechylenie samo, bez rysowania)\n• Obrót/odbicie: jedno kliknięcie obraca lub odwraca stronę\n• Klonowanie: Ctrl+klik, aby wybrać punkt źródłowy, następnie maluj z wciśniętym przyciskiem myszy, aby powielić\n• Tekst: kliknij, aby umieścić blok tekstu, wybierz czcionkę/rozmiar/kolor\n• Kształty: rysuj elipsy, prostokąty, linie lub strzałki, z uchwytami do zmiany rozmiaru\n• Suwaki (ostrość, jasność/kontrast, nasycenie, usuwanie kolorów, kompresja): wynik wyświetla się na żywo podczas przeciągania\n• Poziomy: dostosuj punkt czerni/gammę/punkt bieli suwakami, lub pobierz kolor bezpośrednio z obrazu za pomocą pipet\n• Przezroczystość: kliknij kolor na obrazie, aby uczynić go przezroczystym\n• Głębia koloru, Efekty, Tryb obrazu: wybierz opcję, klikając przycisk radiowy, zastosowane natychmiast\n• Wklej obraz: wkleja obraz ze schowka (ikona aktywuje się tylko, gdy schowek zawiera obraz), z uchwytami do zmiany rozmiaru/obrotu jak w przypadku kształtów; działa też po przeciągnięciu strony z mozaiki lub pliku z Eksploratora Windows bezpośrednio na przeglądarkę. Ctrl+C kopiuje wyświetlaną stronę (tylko w trybie pojedynczej strony lub Webtoon), Ctrl+V wkleja obraz, tak jak w mozaice\n\nZatwierdź przyciskiem „Zatwierdź”, gdy się pojawi, lub Esc, aby anulować. Każda zmiana dołącza do zwykłej historii Cofnij/Ponów.",
     "join_pages": "Łączenie stron",
     "join_pages_content": "Wybierz kilka kolejnych stron, kliknij prawym przyciskiem myszy → 'Połącz wybrane strony', aby połączyć strony poziomo lub pionowo. Format wynikowego obrazu odpowiada formatowi stron źródłowych, jeśli wszystkie są identyczne, w przeciwnym razie domyślnie PNG. Będziesz mógł wybrać, czy usunąć, czy zachować oryginalne strony.\n\nMiejsce nowej strony w mozaice:\n• Aktywny tryb ponownej numeracji (automatyczny lub ręczny): strona zajmuje miejsce pierwszej połączonej strony (jej miejsce, jeśli strony źródłowe zostaną usunięte, lub bezpośrednio przed nią, jeśli zostaną zachowane), i wywołuje ponowną numerację.\n• Tryb OFF ponownej numeracji: strona zostaje dodana na początku mozaiki pod nazwą \"Połączenie_xxx\".",
     "split_pages": "Dzielenie stron",

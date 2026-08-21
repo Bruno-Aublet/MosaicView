@@ -1,6 +1,5 @@
 """
-batch_dialogs_qt.py — Conversion par lot (CBR→CBZ, PDF→CBZ, IMG→CBZ) pour PySide6.
-Reproduit exactement modules/batch_dialogs.py (tkinter), fenêtres comprises.
+batch_dialogs_qt.py — Conversion par lot (CBR→CBZ, PDF→CBZ, IMG→CBZ).
 Toutes les fenêtres supportent le changement de langue à la volée via language_signal.
 """
 

@@ -74,7 +74,10 @@
     "cancel_shapes": "Annulla forme",
     "cancel_transparency": "Annulla trasparenza",
     "validate_paste_image": "Applica incolla",
-    "cancel_paste_image": "Annulla incolla"
+    "cancel_paste_image": "Annulla incolla",
+    "save_crop_mask": "Salva maschera",
+    "recall_crop_mask": "Richiama maschera",
+    "forget_crop_mask": "Dimentica maschera"
   },
   "tabs": {
     "mosaic": "Mosaico",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Preleva un colore dalla pagina visualizzata",
     "toolbar_transparency_tooltip": "Trasparenza",
     "toolbar_transparency_instruction": "Fai clic sul colore da rendere trasparente",
-    "toolbar_transparency_disabled": "Disponibile solo per immagini PNG, WebP, ICO e AVIF",
+    "toolbar_transparency_disabled": "Disponibile solo per immagini PNG, WebP, ICO, AVIF e TIFF",
     "transparency_flood_panel_label": "Zona",
     "transparency_global_panel_label": "Globale",
     "transparency_tolerance_panel_label": "Tolleranza:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Ruota o capovolgi la pagina visualizzata",
     "toolbar_paste_image_tooltip": "Incolla un'immagine",
     "toolbar_paste_image_instruction": "Incolla l'immagine degli appunti sulla pagina, maniglie per ridimensionare/ruotare",
-    "toolbar_paste_image_disabled": "Gli appunti devono contenere solo un'immagine"
+    "toolbar_paste_image_disabled": "Gli appunti devono contenere solo un'immagine",
+    "color_depth_panel_blocked_format": "Non disponibile: il formato {format} originale del file non supporta questa profondità.",
+    "image_mode_panel_blocked_format": "Non disponibile: il formato {format} originale del file non supporta questa modalità."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Verde:",
       "blue_label": "Blu:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Maschera di ritaglio"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Modalità manuale (traccia una linea di riferimento)\nClic destro per cambiare modalità",
     "straighten_mode_1": "Modalità automatica (rilevamento inclinazione)\nClic destro per cambiare modalità",
     "sharpness_mode_0": "Rafforza o attenua i dettagli dell'immagine\nClic destro per passare alla nitidezza adattiva",
-    "sharpness_mode_1": "Accentua i contorni risparmiando le zone uniformi\nClic destro per passare alla nitidezza semplice"
+    "sharpness_mode_1": "Accentua i contorni risparmiando le zone uniformi\nClic destro per passare alla nitidezza semplice",
+    "crop_mode_0": "Tracciate un rettangolo sulla zona da conservare, poi validate\nClic destro per passare alla modalità maschera di ritaglio",
+    "crop_mode_1": "Modalità maschera di ritaglio: memorizzate un rettangolo e richiamatelo nelle pagine successive\nClic destro per tornare alla modalità normale"
   },
   "help": {
     "title": "MosaicView - Manuale utente",
@@ -1413,7 +1423,7 @@
     "flatten": "Appiattire le cartelle",
     "flatten_content": "Se il tuo archivio contiene sottocartelle, usa 'Appiattisci cartelle' per portare tutte le immagini allo stesso livello.",
     "viewer": "Visualizzatore",
-    "viewer_content": "Fate doppio clic su una pagina per aprire il visualizzatore:\n• Tasti ← →: navigare tra le pagine\n• Tasto D: passare tra 4 modalità di lettura\n  - Pagina singola: una pagina alla volta\n  - Pagine doppie: pagina 1 da sola, poi 2-3, 4-5, ecc.\n  - Pagine doppie continue: pagina 1 da sola, poi 2-3, 3-4, 4-5, ecc.\n  - Webtoon: per immagini verticali (webcomics), larghezza limitata a 900px per restare leggibile; la rotellina scorre verticalmente nella pagina, poi cambia pagina una volta in alto/basso\n• Rotellina del mouse: navigazione rapida (scorrimento verticale nella pagina in modalità Webtoon)\n• Ctrl+Rotellina o Ctrl+Più/Meno: zoom (fino al 1000% della dimensione reale dell'immagine)\n• Ctrl+0: adattare lo zoom alla finestra\n• Ctrl+1: zoom al 100% (dimensione reale dei pixel dell'immagine)\n• Clic destro + trascinamento: spostare l'immagine visualizzata (pan) quando supera la finestra\n• Tasto F11: schermo intero\n• Doppio clic: attivare/disattivare lo schermo intero\n• Tasto Esc: annullare il tracciato in corso (ritaglio, raddrizzamento, forma…) o uscire dal visualizzatore\n• Segnalibro: memorizza automaticamente la pagina corrente alla chiusura (tranne prima/ultima pagina). Un nastro rosso appare sulla miniatura corrispondente nel mosaico. Alla riapertura, un messaggio propone di riprendere da quella pagina. Eliminazione automatica all'ultima pagina, o manuale tramite clic destro nel visualizzatore.\n\nBarra degli strumenti flottante: passate il mouse sulla parte superiore dell'immagine per farla apparire (si nasconde da sola dopo qualche secondo). Cliccate su un'icona per attivare lo strumento corrispondente:\n• Ritaglio: tracciate un rettangolo, regolatelo dai bordi, validate\n• Raddrizzamento: tracciate una linea su ciò che dovrebbe essere orizzontale/verticale, la correzione si applica automaticamente; clic destro sull'icona per passare al raddrizzamento automatico (rileva l'inclinazione da solo, senza tracciare nulla)\n• Rotazione/specchio: un clic ruota o capovolge la pagina\n• Clonazione: Ctrl+clic per scegliere il punto sorgente, poi dipingete tenendo premuto il clic per duplicare\n• Testo: cliccate per posizionare un blocco di testo, scegliete font/dimensione/colore\n• Forme: disegnate ellissi, rettangoli, linee o frecce, con maniglie per ridimensionarle\n• Cursori (nitidezza, luminosità/contrasto, saturazione, rimozione colori, compressione): il risultato si vede in diretta mentre trascinate\n• Livelli: regolate punto nero/gamma/punto bianco con i cursori, o prelevate un colore direttamente dall'immagine con i contagocce\n• Trasparenza: cliccate su un colore dell'immagine per renderlo trasparente\n• Profondità colore, Effetti, Modalità immagine: scegliete un'opzione cliccando su un pulsante radio, applicata immediatamente\n• Incolla un'immagine: incolla l'immagine dagli appunti (l'icona si attiva solo se gli appunti contengono un'immagine), con maniglie per ridimensionarla/ruotarla come le forme; funziona anche trascinando una pagina da un mosaico o un file da Esplora risorse direttamente sul visualizzatore. Ctrl+C copia la pagina visualizzata (solo in modalità pagina singola o Webtoon), Ctrl+V incolla un'immagine, come nel mosaico\n\nValidate con il pulsante \"Valida\" quando appare, oppure Esc per annullare. Ogni modifica si unisce alla consueta cronologia Annulla/Ripristina.",
+    "viewer_content": "Fate doppio clic su una pagina per aprire il visualizzatore:\n• Tasti ← →: navigare tra le pagine\n• Tasto D: passare tra 4 modalità di lettura\n  - Pagina singola: una pagina alla volta\n  - Pagine doppie: pagina 1 da sola, poi 2-3, 4-5, ecc.\n  - Pagine doppie continue: pagina 1 da sola, poi 2-3, 3-4, 4-5, ecc.\n  - Webtoon: per immagini verticali (webcomics), larghezza limitata a 900px per restare leggibile; la rotellina scorre verticalmente nella pagina, poi cambia pagina una volta in alto/basso\n• Rotellina del mouse: navigazione rapida (scorrimento verticale nella pagina in modalità Webtoon)\n• Ctrl+Rotellina o Ctrl+Più/Meno: zoom (fino al 1000% della dimensione reale dell'immagine)\n• Ctrl+0: adattare lo zoom alla finestra\n• Ctrl+1: zoom al 100% (dimensione reale dei pixel dell'immagine)\n• Clic destro + trascinamento: spostare l'immagine visualizzata (pan) quando supera la finestra\n• Tasto F11: schermo intero\n• Doppio clic: attivare/disattivare lo schermo intero\n• Tasto Esc: annullare il tracciato in corso (ritaglio, raddrizzamento, forma…) o uscire dal visualizzatore\n• Segnalibro: memorizza automaticamente la pagina corrente alla chiusura (tranne prima/ultima pagina). Un nastro rosso appare sulla miniatura corrispondente nel mosaico. Alla riapertura, un messaggio propone di riprendere da quella pagina. Eliminazione automatica all'ultima pagina, o manuale tramite clic destro nel visualizzatore.\n\nBarra degli strumenti flottante: passate il mouse sulla parte superiore dell'immagine per farla apparire (si nasconde da sola dopo qualche secondo). Cliccate su un'icona per attivare lo strumento corrispondente:\n• Ritaglio: tracciate un rettangolo, regolatelo dai bordi, validate; clic destro sull'icona per passare alla modalità maschera di ritaglio (memorizzate un rettangolo con \"Salva maschera\", poi richiamatelo così com'è nelle pagine successive con \"Richiama maschera\" — comodo per applicare lo stesso ritaglio a più pagine senza ridisegnarlo ogni volta; \"Dimentica maschera\" cancella la memorizzazione, solo pagina per pagina)\n• Raddrizzamento: tracciate una linea su ciò che dovrebbe essere orizzontale/verticale, la correzione si applica automaticamente; clic destro sull'icona per passare al raddrizzamento automatico (rileva l'inclinazione da solo, senza tracciare nulla)\n• Rotazione/specchio: un clic ruota o capovolge la pagina\n• Clonazione: Ctrl+clic per scegliere il punto sorgente, poi dipingete tenendo premuto il clic per duplicare\n• Testo: cliccate per posizionare un blocco di testo, scegliete font/dimensione/colore\n• Forme: disegnate ellissi, rettangoli, linee o frecce, con maniglie per ridimensionarle\n• Cursori (nitidezza, luminosità/contrasto, saturazione, rimozione colori, compressione): il risultato si vede in diretta mentre trascinate\n• Livelli: regolate punto nero/gamma/punto bianco con i cursori, o prelevate un colore direttamente dall'immagine con i contagocce\n• Trasparenza: cliccate su un colore dell'immagine per renderlo trasparente\n• Profondità colore, Effetti, Modalità immagine: scegliete un'opzione cliccando su un pulsante radio, applicata immediatamente\n• Incolla un'immagine: incolla l'immagine dagli appunti (l'icona si attiva solo se gli appunti contengono un'immagine), con maniglie per ridimensionarla/ruotarla come le forme; funziona anche trascinando una pagina da un mosaico o un file da Esplora risorse direttamente sul visualizzatore. Ctrl+C copia la pagina visualizzata (solo in modalità pagina singola o Webtoon), Ctrl+V incolla un'immagine, come nel mosaico\n\nValidate con il pulsante \"Valida\" quando appare, oppure Esc per annullare. Ogni modifica si unisce alla consueta cronologia Annulla/Ripristina.",
     "join_pages": "Unire pagine",
     "join_pages_content": "Selezionare più pagine consecutive, clic destro → 'Unisci pagine selezionate' per unire le pagine orizzontalmente o verticalmente. Il formato dell'immagine prodotta corrisponde a quello delle pagine di origine se sono tutte identiche, altrimenti PNG per impostazione predefinita. Sarà possibile scegliere se eliminare o conservare le pagine originali.\n\nPosizione della nuova pagina nel mosaico:\n• Modalità di rinumerazione attiva (automatica o manuale): la pagina prende il posto della prima pagina unita (il suo posto, se le pagine di origine vengono eliminate, o subito prima, se vengono conservate), e avvia una rinumerazione.\n• Modalità di rinumerazione OFF: la pagina viene aggiunta all'inizio del mosaico con il nome \"Unione_xxx\".",
     "split_pages": "Dividere pagine",

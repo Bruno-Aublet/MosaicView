@@ -132,8 +132,8 @@ class _CapsWorker(QThread):
     device dans un thread séparé. Déclenché une seule fois par changement réel
     de sélection dans le combo (voir ScanDialog._on_device_changed) — jamais en
     parallèle d'un scan, pour éviter le conflit de connexion WIA documenté dans
-    le skill scan (device signalé "occupé" par une version antérieure qui
-    laissait cette connexion ouverte pendant le scan réel)."""
+    le skill scan (une connexion laissée ouverte pendant le scan réel fait
+    signaler le device comme "occupé")."""
 
     finished_ok = Signal(dict)
     failed      = Signal(str, str)
@@ -281,10 +281,9 @@ class ScanController:
         # Recherche du candidat ESCL dans un QThread dédié (avec son propre
         # pythoncom.CoInitialize()/CoUninitialize()), jamais en appel direct
         # depuis ce slot Qt — voir _EsclFallbackWorker : un appel COM synchrone
-        # sur le thread UI (jamais initialisé pour COM) corrompait l'état de
+        # sur le thread UI (jamais initialisé pour COM) corrompt l'état de
         # WIA.DeviceManager, faisant disparaître le device natif de
-        # DeviceInfos à l'ouverture suivante de ScanDialog (bug réel constaté,
-        # pas un défaut du driver HP comme supposé auparavant).
+        # DeviceInfos à l'ouverture suivante de ScanDialog.
         self._escl_lookup_worker = _EsclFallbackWorker(self._device_id)
         self._escl_lookup_worker.finished_ok.connect(
             lambda candidate: self._on_escl_lookup_done(candidate, message_key, play_sound)
@@ -855,11 +854,9 @@ class ScanDialog(QDialog):
         _log_scan_event(f"  Config read: scan_capabilities[{device_id}] from {cfg.get_config_file_path()}\n")
         cached_caps = cfg.get_scan_capabilities(device_id)
         if cached_caps:
-            # Cache HIT : PAS de relance de _CapsWorker derrière (contrairement
-            # à une version précédente qui rafraîchissait silencieusement le
-            # cache à chaque ouverture). Preuve en log (session du 2026-08-08) :
-            # une seule connexion _CapsWorker au device natif — isolée, sans
-            # conflit avec quoi que ce soit d'autre, terminée normalement —
+            # Cache HIT : PAS de relance de _CapsWorker derrière — une seule
+            # connexion _CapsWorker au device natif (même isolée, sans
+            # conflit avec quoi que ce soit d'autre, terminée normalement)
             # suffit à le faire disparaître de WIA.DeviceManager.DeviceInfos à
             # l'ouverture suivante de ScanDialog. Le driver HP ne semble tout
             # simplement pas supporter des connexions répétées rapprochées.

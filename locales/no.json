@@ -74,7 +74,10 @@
     "cancel_shapes": "Avbryt former",
     "cancel_transparency": "Avbryt gjennomsiktighet",
     "validate_paste_image": "Bruk innliming",
-    "cancel_paste_image": "Avbryt innliming"
+    "cancel_paste_image": "Avbryt innliming",
+    "save_crop_mask": "Lagre maske",
+    "recall_crop_mask": "Hent maske",
+    "forget_crop_mask": "Glem maske"
   },
   "tabs": {
     "mosaic": "Mosaikk",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Hent en farge fra den viste siden",
     "toolbar_transparency_tooltip": "Gjennomsiktighet",
     "toolbar_transparency_instruction": "Klikk på fargen som skal gjøres gjennomsiktig",
-    "toolbar_transparency_disabled": "Kun tilgjengelig for PNG-, WebP-, ICO- og AVIF-bilder",
+    "toolbar_transparency_disabled": "Kun tilgjengelig for PNG-, WebP-, ICO-, AVIF- og TIFF-bilder",
     "transparency_flood_panel_label": "Område",
     "transparency_global_panel_label": "Globalt",
     "transparency_tolerance_panel_label": "Toleranse:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Roter eller speilvend den viste siden",
     "toolbar_paste_image_tooltip": "Lim inn et bilde",
     "toolbar_paste_image_instruction": "Limer inn utklippstavlens bilde på siden, håndtak for å endre størrelse/rotere",
-    "toolbar_paste_image_disabled": "Utklippstavlen må bare inneholde ett bilde"
+    "toolbar_paste_image_disabled": "Utklippstavlen må bare inneholde ett bilde",
+    "color_depth_panel_blocked_format": "Utilgjengelig: filens opprinnelige {format}-format støtter ikke denne fargedybden.",
+    "image_mode_panel_blocked_format": "Utilgjengelig: filens opprinnelige {format}-format støtter ikke denne modusen."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Grønn:",
       "blue_label": "Blå:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Beskjæringsmaske"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Manuell modus (tegn en referanselinje)\nHøyreklikk for å bytte modus",
     "straighten_mode_1": "Automatisk modus (registrering av helning)\nHøyreklikk for å bytte modus",
     "sharpness_mode_0": "Forsterker eller mykner bildedetaljene\nHøyreklikk for å bytte til adaptiv skarphet",
-    "sharpness_mode_1": "Fremhever konturer og skåner jevne områder\nHøyreklikk for å bytte til enkel skarphet"
+    "sharpness_mode_1": "Fremhever konturer og skåner jevne områder\nHøyreklikk for å bytte til enkel skarphet",
+    "crop_mode_0": "Tegn et rektangel over området som skal beholdes, og bekreft\nHøyreklikk bytter til beskjæringsmaskemodus",
+    "crop_mode_1": "Beskjæringsmaskemodus: husk et rektangel og hent det på de neste sidene\nHøyreklikk går tilbake til normal modus"
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
@@ -1413,7 +1423,7 @@
     "flatten": "Flat ut mapper",
     "flatten_content": "Hvis arkivet ditt inneholder undermapper, bruk 'Flat ut mapper' for å bringe alle bildene til samme nivå.",
     "viewer": "Fremviser",
-    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← →: naviger mellom sider\n• Tast D: bytt mellom 4 lesemoduser\n  - Enkeltside: én side om gangen\n  - Dobbeltsider: side 1 alene, deretter 2-3, 4-5 osv.\n  - Løpende dobbeltsider: side 1 alene, deretter 2-3, 3-4, 4-5 osv.\n  - Webtoon: for vertikale bilder (webcomics), bredde begrenset til 900px for å forbli lesbar; musehjulet ruller vertikalt i siden, bytter deretter side ved topp/bunn\n• Musehjul: rask navigasjon (vertikal rulling i siden i Webtoon-modus)\n• Ctrl+Musehjul eller Ctrl+Pluss/Minus: zoom (opptil 1000% av bildets reelle størrelse)\n• Ctrl+0: tilpass zoom til vinduet\n• Ctrl+1: zoom til 100% (bildets reelle pikselstørrelse)\n• Høyreklikk + dra: flytt det viste bildet (panorer) når det overskrider vinduet\n• Tast F11: fullskjerm\n• Dobbeltklikk: veksle fullskjerm\n• Tast Esc: avbryt gjeldende tegning (beskjæring, retting, form…) eller forlat fremviseren\n• Bokmerke: lagrer automatisk gjeldende side ved lukking (unntatt første/siste side). Et rødt bånd vises på den tilsvarende miniatyren i mosaikken. Ved gjenåpning foreslår en melding å gå tilbake til denne siden. Slettes automatisk ved siste side, eller manuelt via høyreklikk i fremviseren.\n\nFlytende verktøylinje: hold musen over toppen av bildet for å vise den (den skjuler seg selv etter noen sekunder). Klikk på et ikon for å aktivere det tilsvarende verktøyet:\n• Beskjæring: tegn et rektangel, juster det via kantene, bekreft\n• Retting: tegn en linje på det som skal være vannrett/loddrett, korreksjonen brukes automatisk; høyreklikk på ikonet for å bytte til automatisk retting (oppdager skjevheten selv, uten å tegne noe)\n• Rotasjon/speiling: ett klikk roterer eller vender siden\n• Kloning: Ctrl+klikk for å velge kildepunktet, mal deretter med museknappen holdt nede for å duplisere\n• Tekst: klikk for å plassere en tekstblokk, velg skrift/størrelse/farge\n• Former: tegn ellipser, rektangler, linjer eller piler, med håndtak for å endre størrelse\n• Glidebrytere (skarphet, lysstyrke/kontrast, metning, fjern farger, komprimering): resultatet vises direkte mens du drar\n• Nivåer: juster svartpunkt/gamma/hvitpunkt med glidebryterne, eller hent en farge direkte fra bildet med pipettene\n• Gjennomsiktighet: klikk på en farge i bildet for å gjøre den gjennomsiktig\n• Fargedybde, Effekter, Bildemodus: velg et alternativ ved å klikke på en radioknapp, brukt umiddelbart\n• Lim inn et bilde: limer inn bildet fra utklippstavlen (ikonet aktiveres bare hvis utklippstavlen inneholder et bilde), med håndtak for å endre størrelse/rotere som formene; fungerer også ved å dra en side fra en mosaikk eller en fil fra Utforsker direkte til viseren. Ctrl+C kopierer siden som vises (kun i enkeltside- eller Webtoon-modus), Ctrl+V limer inn et bilde, akkurat som i mosaikken\n\nBekreft med knappen «Bekreft» når den vises, eller Esc for å avbryte. Hver endring føyes til den vanlige Angre/Gjør om-historikken.",
+    "viewer_content": "Dobbeltklikk på en side for å åpne fremviseren:\n• Taster ← →: naviger mellom sider\n• Tast D: bytt mellom 4 lesemoduser\n  - Enkeltside: én side om gangen\n  - Dobbeltsider: side 1 alene, deretter 2-3, 4-5 osv.\n  - Løpende dobbeltsider: side 1 alene, deretter 2-3, 3-4, 4-5 osv.\n  - Webtoon: for vertikale bilder (webcomics), bredde begrenset til 900px for å forbli lesbar; musehjulet ruller vertikalt i siden, bytter deretter side ved topp/bunn\n• Musehjul: rask navigasjon (vertikal rulling i siden i Webtoon-modus)\n• Ctrl+Musehjul eller Ctrl+Pluss/Minus: zoom (opptil 1000% av bildets reelle størrelse)\n• Ctrl+0: tilpass zoom til vinduet\n• Ctrl+1: zoom til 100% (bildets reelle pikselstørrelse)\n• Høyreklikk + dra: flytt det viste bildet (panorer) når det overskrider vinduet\n• Tast F11: fullskjerm\n• Dobbeltklikk: veksle fullskjerm\n• Tast Esc: avbryt gjeldende tegning (beskjæring, retting, form…) eller forlat fremviseren\n• Bokmerke: lagrer automatisk gjeldende side ved lukking (unntatt første/siste side). Et rødt bånd vises på den tilsvarende miniatyren i mosaikken. Ved gjenåpning foreslår en melding å gå tilbake til denne siden. Slettes automatisk ved siste side, eller manuelt via høyreklikk i fremviseren.\n\nFlytende verktøylinje: hold musen over toppen av bildet for å vise den (den skjuler seg selv etter noen sekunder). Klikk på et ikon for å aktivere det tilsvarende verktøyet:\n• Beskjæring: tegn et rektangel, juster det via kantene, bekreft; høyreklikk på ikonet for å bytte til beskjæringsmaskemodus (husk et rektangel med \"Lagre maske\", og hent det deretter tilbake uendret på de neste sidene med \"Hent maske\" — nyttig for å bruke samme beskjæring på flere sider uten å tegne det på nytt hver gang; \"Glem maske\" sletter den lagrede masken, kun side for side)\n• Retting: tegn en linje på det som skal være vannrett/loddrett, korreksjonen brukes automatisk; høyreklikk på ikonet for å bytte til automatisk retting (oppdager skjevheten selv, uten å tegne noe)\n• Rotasjon/speiling: ett klikk roterer eller vender siden\n• Kloning: Ctrl+klikk for å velge kildepunktet, mal deretter med museknappen holdt nede for å duplisere\n• Tekst: klikk for å plassere en tekstblokk, velg skrift/størrelse/farge\n• Former: tegn ellipser, rektangler, linjer eller piler, med håndtak for å endre størrelse\n• Glidebrytere (skarphet, lysstyrke/kontrast, metning, fjern farger, komprimering): resultatet vises direkte mens du drar\n• Nivåer: juster svartpunkt/gamma/hvitpunkt med glidebryterne, eller hent en farge direkte fra bildet med pipettene\n• Gjennomsiktighet: klikk på en farge i bildet for å gjøre den gjennomsiktig\n• Fargedybde, Effekter, Bildemodus: velg et alternativ ved å klikke på en radioknapp, brukt umiddelbart\n• Lim inn et bilde: limer inn bildet fra utklippstavlen (ikonet aktiveres bare hvis utklippstavlen inneholder et bilde), med håndtak for å endre størrelse/rotere som formene; fungerer også ved å dra en side fra en mosaikk eller en fil fra Utforsker direkte til viseren. Ctrl+C kopierer siden som vises (kun i enkeltside- eller Webtoon-modus), Ctrl+V limer inn et bilde, akkurat som i mosaikken\n\nBekreft med knappen «Bekreft» når den vises, eller Esc for å avbryte. Hver endring føyes til den vanlige Angre/Gjør om-historikken.",
     "join_pages": "Slå sammen sider",
     "join_pages_content": "Velg flere påfølgende sider, høyreklikk → 'Slå sammen valgte sider' for å slå sammen sidene horisontalt eller vertikalt. Formatet på det resulterende bildet samsvarer med kildesidenes format hvis de alle er identiske, ellers PNG som standard. Du vil kunne velge om du vil slette eller beholde de originale sidene.\n\nPlassering av den nye siden i mosaikken:\n• Aktiv omnummereringsmodus (automatisk eller manuell): siden tar plassen til den første sammenslåtte siden (dens plass, hvis kildesidene slettes, eller rett foran den, hvis de beholdes), og utløser en omnummerering.\n• AV-modus for omnummerering: siden legges til fremst i mosaikken under navnet \"Sammenslåing_xxx\".",
     "split_pages": "Del sider",

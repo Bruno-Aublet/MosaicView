@@ -1,7 +1,5 @@
 """
-modules/qt/split_dialog_qt.py — Scinder une page (version PySide6)
-
-Reproduit à l'identique le comportement de modules/split_dialog.py (tkinter).
+modules/qt/split_dialog_qt.py — Scinder une page.
 """
 
 import io

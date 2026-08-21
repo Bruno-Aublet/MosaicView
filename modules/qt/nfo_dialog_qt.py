@@ -321,7 +321,6 @@ class _NfoDialog(QDialog):
         if not filename.lower().endswith(".nfo"):
             filename += ".nfo"
 
-        # Vérifie les doublons dans la mosaïque
         if any(e.get("orig_name", "").lower() == filename.lower()
                for e in self._state.images_data):
             from modules.qt.dialogs_qt import ErrorDialog

@@ -5,7 +5,7 @@ description: Localiser ou modifier la numérisation d'images depuis un scanner p
 
 # Numérisation (scan) — MosaicView
 
-Pilote un scanner physique via WIA (Windows Image Acquisition) pour numériser une page et l'ajouter directement à la mosaïque, sans passer par le logiciel du fabricant. Ajouté en v1.7.0, testé et fonctionnel sur un HP ENVY 4520 — le comportement WIA varie significativement d'un fabricant à l'autre, voir section pièges COM plus bas si un autre scanner remonte des erreurs différentes.
+Pilote un scanner physique via WIA (Windows Image Acquisition) pour numériser une page et l'ajouter directement à la mosaïque, sans passer par le logiciel du fabricant. Testé et fonctionnel sur un HP ENVY 4520 — le comportement WIA varie significativement d'un fabricant à l'autre, voir section pièges COM plus bas si un autre scanner remonte des erreurs différentes.
 
 ## Deux fichiers
 
@@ -102,7 +102,7 @@ Flux dans `_on_device_changed()` (`scan_dialog_qt.py`) : le cache est consulté 
 
 ### Persistance des derniers réglages choisis (device/DPI/mode couleur) — `ConfigManager.get_scan_last_settings()`/`set_scan_last_settings()`
 
-**Distinct du cache de capacités ci-dessus** : `scan_capabilities` retient ce que le scanner *sait faire* (liste de résolutions/modes couleur possibles), pas ce que l'utilisateur *a choisi*. Avant l'ajout de ce mécanisme (2026-08-09), rien ne mémorisait le dernier DPI/mode couleur/device sélectionnés dans `ScanDialog` — chaque ouverture retombait sur `_DEFAULT_DPI = 300`, le mode couleur par défaut ("color"), et le premier device de la liste, même après avoir explicitement choisi 600 DPI en niveaux de gris la fois précédente. Piège vécu : ce comportement pouvait sembler être un cache alors que seules les *capacités* étaient mises en cache, pas la *sélection* — bien distinguer les deux si un futur bug ou une future question porte sur "pourquoi le scan repart sur X".
+**Distinct du cache de capacités ci-dessus** : `scan_capabilities` retient ce que le scanner *sait faire* (liste de résolutions/modes couleur possibles), pas ce que l'utilisateur *a choisi*. Sans `scan_last_settings`, chaque ouverture de `ScanDialog` retomberait sur `_DEFAULT_DPI = 300`, le mode couleur par défaut ("color"), et le premier device de la liste, sans mémoire du dernier DPI/mode couleur/device explicitement sélectionnés. Piège : ce comportement pourrait sembler être un cache alors que seules les *capacités* sont mises en cache, pas la *sélection* — bien distinguer les deux si un futur bug ou une future question porte sur "pourquoi le scan repart sur X".
 
 Réglage `scan_last_settings` dans `DEFAULT_CONFIG` (`config_manager.py`) : `{"device_id", "dpi", "color_mode"}`, un seul enregistrement (pas indexé par device comme `scan_capabilities` — un seul "dernier choix" global, quel que soit le scanner utilisé). API :
 - **`get_scan_last_settings() -> dict`** — `{}` si aucun scan n'a encore été lancé.

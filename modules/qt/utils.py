@@ -342,15 +342,7 @@ def get_support_email() -> str:
 
 
 def format_file_size(size_bytes):
-    """
-    Convertit une taille en octets en format lisible (o, Ko, Mo, Go, To).
-
-    Args:
-        size_bytes: Taille en octets (int)
-
-    Returns:
-        str: Taille formatée (ex: "1.5 Mo")
-    """
+    """Convertit une taille en octets en format lisible (ex: "1.5 Mo")."""
     if size_bytes < 1024:
         return f"{size_bytes} o"
     elif size_bytes < 1024 * 1024:
@@ -382,11 +374,7 @@ def safe_join(base, name):
 
     Protège contre la traversée de répertoire (Zip Slip) : un nom contenant
     "../", un chemin absolu ou une autre lettre de lecteur produit un chemin
-    hors de `base`.
-
-    Returns:
-        str: le chemin absolu sûr si `name` reste sous `base`.
-        None: si `name` tente de sortir de `base` (l'appelant doit ignorer l'entrée).
+    hors de `base`. Retourne None dans ce cas (l'appelant doit ignorer l'entrée).
     """
     base_real = os.path.realpath(base)
     dest = os.path.realpath(os.path.join(base_real, name))

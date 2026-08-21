@@ -1,5 +1,5 @@
 """
-MosaicCanvas — QGraphicsView remplaçant le tk.Canvas de canvas_rendering.py
+MosaicCanvas — QGraphicsView affichant la grille de vignettes de la mosaïque.
 
 Responsabilités :
   - Afficher la grille de vignettes (ThumbnailItem)
@@ -40,7 +40,7 @@ from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.tooltips_qt import get_tooltip_text, get_directory_tooltip_text, get_folder_up_tooltip_text
 from modules.qt.overlay_tooltip_qt import OverlayTooltip
 
-# ── Constantes (identiques à canvas_rendering.py) ─────────────────────────────
+# ── Constantes de mise en page de la grille ────────────────────────────────────
 PAD_X    = 10
 PAD_Y    = 10
 LABEL_H  = 30
@@ -64,13 +64,12 @@ def _apply_name_item_font(name_item: "QGraphicsTextItem", font: "QFont", name_w:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# get_visible_entries_qt — clone Qt de canvas_rendering.get_visible_entries()
+# get_visible_entries_qt
 # ═══════════════════════════════════════════════════════════════════════════════
 def get_visible_entries_qt(state) -> list[dict]:
     """
     Retourne la liste des entrées visibles dans le répertoire actuel.
-    Les entrées de dossiers virtuels sont créées à la volée (pas de ImageTk).
-    Identique à canvas_rendering.get_visible_entries() mais sans dépendance tkinter.
+    Les entrées de dossiers virtuels sont créées à la volée.
     """
     if state is None or not state.images_data:
         return []
@@ -150,8 +149,8 @@ def get_visible_entries_qt(state) -> list[dict]:
 # mauvais ordre (ex. le state global réassigné sur le panneau inactif juste avant
 # qu'un resize/relayout se déclenche sur le panneau actif) fait lire à un item la
 # taille de vignette (thumb_w/thumb_h) d'un AUTRE panneau — cadre de sélection et
-# grille visuellement corrompus. Diagnostiqué le 2026-08-14 (changement de langue
-# pendant l'ouverture du dropdown de langue en split-view).
+# grille visuellement corrompus (ex. changement de langue pendant l'ouverture
+# du dropdown de langue en split-view).
 #
 # Fix : quand une scene est fournie, retrouver le state via son/ses view(s)
 # (MosaicCanvas est un QGraphicsView, scene.views() les retourne) plutôt que de
@@ -184,8 +183,8 @@ def _cw(scene=None) -> int:
 def _ch(scene=None) -> int:
     return _th(scene) + PAD_Y * 2 + LABEL_H
 
-SEL_OUTLINE = QColor(0, 0, 255)       # bleu pur — identique à outline="blue" tkinter
-FOCUS_COLOR = QColor(128, 128, 128)   # gris — identique à outline="gray" tkinter
+SEL_OUTLINE = QColor(0, 0, 255)       # bleu pur
+FOCUS_COLOR = QColor(128, 128, 128)   # gris
 DROP_COLOR  = QColor(220, 30, 30)
 
 # ── Icône marque-page (chargée une seule fois) ────────────────────────────────
@@ -340,8 +339,7 @@ def invalidate_pixmap_cache(state=None):
 # ═══════════════════════════════════════════════════════════════════════════════
 class DirItem(QGraphicsItem):
     """
-    Représente un dossier virtuel ou l'entrée ".." dans la grille.
-    Reproduit le comportement de render_mosaic() tkinter pour les entrées is_dir / is_parent_dir.
+    Représente un dossier virtuel ou l'entrée ".." dans la grille (is_dir / is_parent_dir).
     - Icône centrée (directory.png ou folder_up.png) dans _tw() × _th()
     - Nom non-éditable centré sous l'icône (canvas text équivalent)
     - Cadre bleu de sélection (set_selected)
@@ -457,11 +455,11 @@ class DirItem(QGraphicsItem):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Widget d'édition du nom (reproduit make_name_text_widget de canvas_rendering.py)
+# Widget d'édition du nom
 # ═══════════════════════════════════════════════════════════════════════════════
 import math as _math
 
-CHARS_PER_LINE = 12   # identique à l'original
+CHARS_PER_LINE = 12
 
 class NameEdit(QTextEdit):
     """
@@ -605,7 +603,7 @@ class ThumbnailItem(QGraphicsItem):
     Représente une vignette dans la grille.
     Correspond à une entrée dans state.images_data (real_idx).
 
-    Rendu fidèle à canvas_rendering.py :
+    Rendu :
       - Image centrée dans _tw() × _th()
       - Cadre rouge si is_corrupted
       - Cadre bleu de sélection
@@ -898,8 +896,7 @@ class ThumbnailItem(QGraphicsItem):
 # ═══════════════════════════════════════════════════════════════════════════════
 class MosaicCanvas(QGraphicsView):
     """
-    Remplaçant du tk.Canvas + render_mosaic().
-    Reçoit l'état via _state_module.state (même pattern que tkinter).
+    Le canvas de la mosaïque. Reçoit l'état via _state_module.state.
     """
     status_changed = Signal()
 
@@ -1151,13 +1148,12 @@ class MosaicCanvas(QGraphicsView):
         sont bien à jour en mémoire (qt_pixmap_large déjà invalidé/reconstruit
         par render_mosaic()) mais restent visuellement périmés à l'écran
         jusqu'à un futur repaint naturel (d'où l'impression qu'"il faut
-        plusieurs undo/redo" pour voir la mise à jour). Diagnostiqué le
-        2026-08-14.
+        plusieurs undo/redo" pour voir la mise à jour).
 
         Cible UNIQUEMENT les items concernés (pas self.viewport().update()
         global) : sur un comics de 1500 pages, ne redessine que les quelques
         vignettes réellement modifiées par CETTE opération d'historique, pas
-        tout le viewport visible — demande explicite de l'utilisateur."""
+        tout le viewport visible."""
         real_indices = set(real_indices)
         if not real_indices:
             return
@@ -1166,16 +1162,13 @@ class MosaicCanvas(QGraphicsView):
                 # item.update() seul marque la zone sale côté scène, mais ne
                 # suffit pas à garantir un repaint effectif à l'écran quand la
                 # fenêtre top-level n'est pas active (ex. visionneuse ouverte
-                # par-dessus) — confirmé par diagnostic 2026-08-14 : le
-                # matching et l'appel avaient lieu, sans effet visuel. On
-                # force donc explicitement le viewport sur le rectangle
+                # par-dessus). On force donc explicitement le viewport sur le rectangle
                 # (converti scène → viewport) de CET item précis, pas tout le
                 # viewport — coût borné à cette seule vignette.
                 rect = self.mapFromScene(item.sceneBoundingRect()).boundingRect()
                 self.viewport().repaint(rect)
 
     def _apply_theme_bg(self):
-        """Applique la couleur de fond du canvas selon le thème (identique à l'original)."""
         st = self._state
         dark = st.dark_mode if st and hasattr(st, 'dark_mode') else False
         bg = "#2b2b2b" if dark else "#f5f5f5"
@@ -1205,7 +1198,7 @@ class MosaicCanvas(QGraphicsView):
         self._overlay_tip.hide_tooltip()
 
     def _show_empty_message(self):
-        """3 lignes centrées identiques à l'original (labels.empty_canvas_line1/2/3)."""
+        """Affiche 3 lignes centrées (labels.empty_canvas_line1/2/3)."""
         # Vide d'abord les anciens items (scene.clear() les a déjà supprimés)
         self._empty_items.clear()
 
@@ -1288,11 +1281,9 @@ class MosaicCanvas(QGraphicsView):
             item = item_by_entry_id.get(id(entry))
             if item is None:
                 continue  # entrée inconnue — ne devrait pas arriver
-            # Met à jour les indices
             item.real_idx   = real_idx
             item.visual_idx = real_idx
             entry["_real_idx"] = real_idx
-            # Repositionne
             col = real_idx % cols
             row = real_idx // cols
             item.setPos(col * _cw(self._scene) + PAD_X, row * _ch(self._scene) + PAD_Y)
@@ -1330,7 +1321,7 @@ class MosaicCanvas(QGraphicsView):
             self._scene.setSceneRect(self._scene.itemsBoundingRect().adjusted(-5, -5, PAD_X, PAD_Y))
 
     # ──────────────────────────────────────────────────────────────────────────
-    # Navigation dans les sous-dossiers (identique à MosaicView.py tkinter)
+    # Navigation dans les sous-dossiers
     # ──────────────────────────────────────────────────────────────────────────
     def navigate_to_directory(self, directory_name: str):
         """Entre dans un sous-dossier."""
@@ -1695,7 +1686,7 @@ class MosaicCanvas(QGraphicsView):
         )
         pixmap = first_item._pixmap.scaled(64, 64, Qt.KeepAspectRatio, Qt.SmoothTransformation) if first_item else QPixmap()
 
-        # Griser les vignettes sélectionnées pendant le drag (comme l'original tkinter)
+        # Griser les vignettes sélectionnées pendant le drag
         grayed_items: list[tuple] = []  # [(item, original_pixmap), ...]
         for real_idx in selected_reals:
             visual = st.real_to_visual.get(real_idx) if st else None
@@ -2094,7 +2085,7 @@ class MosaicCanvas(QGraphicsView):
         if new_visual is not None and new_visual != cur:
             item = self._item_by_visual(new_visual)
             if item:
-                # Les flèches déplacent uniquement le focus (comme dans l'original tkinter).
+                # Les flèches déplacent uniquement le focus.
                 # La sélection n'est PAS modifiée par la navigation clavier seule.
                 # Shift+flèche : étend la sélection. Sans modificateur : focus seul.
                 if event.modifiers() & Qt.ShiftModifier:

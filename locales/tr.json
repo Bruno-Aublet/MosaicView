@@ -74,7 +74,10 @@
     "cancel_shapes": "Şekilleri iptal et",
     "cancel_transparency": "Saydamlığı iptal et",
     "validate_paste_image": "Yapıştırmayı uygula",
-    "cancel_paste_image": "Yapıştırmayı iptal et"
+    "cancel_paste_image": "Yapıştırmayı iptal et",
+    "save_crop_mask": "Maskeyi kaydet",
+    "recall_crop_mask": "Maskeyi çağır",
+    "forget_crop_mask": "Maskeyi unut"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Görüntülenen sayfadan bir renk al",
     "toolbar_transparency_tooltip": "Saydamlık",
     "toolbar_transparency_instruction": "Saydam yapılacak rengi tıklayın",
-    "toolbar_transparency_disabled": "Yalnızca PNG, WebP, ICO ve AVIF görüntüleri için kullanılabilir",
+    "toolbar_transparency_disabled": "Yalnızca PNG, WebP, ICO, AVIF ve TIFF görüntüleri için kullanılabilir",
     "transparency_flood_panel_label": "Bölge",
     "transparency_global_panel_label": "Genel",
     "transparency_tolerance_panel_label": "Tolerans:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Görüntülenen sayfayı döndürün veya çevirin",
     "toolbar_paste_image_tooltip": "Bir görsel yapıştır",
     "toolbar_paste_image_instruction": "Pano görselini sayfaya yapıştırır, boyutlandırma/döndürme için tutamaçlar",
-    "toolbar_paste_image_disabled": "Pano yalnızca bir görsel içermelidir"
+    "toolbar_paste_image_disabled": "Pano yalnızca bir görsel içermelidir",
+    "color_depth_panel_blocked_format": "Kullanılamıyor: dosyanın özgün {format} biçimi bu renk derinliğini desteklemiyor.",
+    "image_mode_panel_blocked_format": "Kullanılamıyor: dosyanın özgün {format} biçimi bu modu desteklemiyor."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Yeşil:",
       "blue_label": "Mavi:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Kesme maskesi"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Manuel mod (bir referans çizgisi çizin)\nModu değiştirmek için sağ tıklayın",
     "straighten_mode_1": "Otomatik mod (eğim algılama)\nModu değiştirmek için sağ tıklayın",
     "sharpness_mode_0": "Görüntünün ayrıntılarını güçlendirir veya yumuşatır\nUyarlanabilir netliğe geçmek için sağ tıklayın",
-    "sharpness_mode_1": "Düz alanları koruyarak kenarları belirginleştirir\nBasit netliğe geçmek için sağ tıklayın"
+    "sharpness_mode_1": "Düz alanları koruyarak kenarları belirginleştirir\nBasit netliğe geçmek için sağ tıklayın",
+    "crop_mode_0": "Korunacak alanın üzerine bir dikdörtgen çizin, ardından onaylayın\nSağ tık kesme maskesi moduna geçirir",
+    "crop_mode_1": "Kesme maskesi modu: bir dikdörtgeni hafızaya alın ve sonraki sayfalarda çağırın\nSağ tık normal moda döndürür"
   },
   "help": {
     "title": "MosaicView - Kullanım Kılavuzu",
@@ -1413,7 +1423,7 @@
     "flatten": "Dizinleri düzleştirme",
     "flatten_content": "Arşiviniz alt klasörler içeriyorsa, tüm görüntüleri aynı seviyeye getirmek için 'Dizinleri düzleştir' seçeneğini kullanın.",
     "viewer": "Görüntüleyici",
-    "viewer_content": "Görüntüleyiciyi açmak için bir sayfaya çift tıklayın:\n• ← → tuşları: sayfalar arasında gezinme\n• D tuşu: 4 okuma modu arasında geçiş\n  - Tek sayfa: seferde bir sayfa\n  - Çift sayfalar: sayfa 1 tek başına, sonra 2-3, 4-5 vb.\n  - Sürekli çift sayfalar: sayfa 1 tek başına, sonra 2-3, 3-4, 4-5 vb.\n  - Webtoon: dikey görüntüler için (webcomics), okunabilirlik için genişlik 900px ile sınırlı; fare tekerleği sayfada dikey kaydırır, sonra üstte/altta sayfa değiştirir\n• Fare tekerleği: hızlı gezinme (Webtoon modunda sayfa içinde dikey kaydırma)\n• Ctrl+Tekerlek veya Ctrl+Artı/Eksi: yakınlaştırma (görüntünün gerçek boyutunun %1000'ine kadar)\n• Ctrl+0: yakınlaştırmayı pencereye uydur\n• Ctrl+1: %100 yakınlaştırma (görüntünün gerçek piksel boyutu)\n• Sağ tık + sürükleme: pencereyi aştığında görüntülenen resmi kaydırma (pan)\n• F11 tuşu: tam ekran\n• Çift tık: tam ekranı aç/kapat\n• Esc tuşu: geçerli çizimi iptal et (kırpma, düzeltme, şekil…) veya görüntüleyiciden çık\n• Yer imi: görüntüleyici kapanırken geçerli sayfayı otomatik olarak kaydeder (ilk/son sayfa hariç). Mozaikte ilgili küçük resimde kırmızı bir kurdele görünür. Yeniden açıldığında, bir mesaj bu sayfaya dönmeyi önerir. Son sayfada otomatik olarak silinir, veya görüntüleyicide sağ tıkla manuel olarak.\n\nYüzen araç çubuğu: görünmesi için fareyi görüntünün üstüne getirin (birkaç saniye sonra kendini gizler). İlgili aracı etkinleştirmek için bir simgeye tıklayın:\n• Kırpma: bir dikdörtgen çizin, kenarlarından ayarlayın, onaylayın\n• Düzeltme: yatay/dikey olması gereken şeyin üzerine bir çizgi çizin, düzeltme otomatik olarak uygulanır; otomatik düzeltmeye geçmek için simgeye sağ tıklayın (hiçbir şey çizmeden eğimi kendi kendine algılar)\n• Döndürme/çevirme: tek tıkla sayfayı döndürür veya çevirir\n• Klonlama: kaynak noktasını seçmek için Ctrl+tık, sonra çoğaltmak için fare düğmesini basılı tutarak boyayın\n• Metin: bir metin bloğu yerleştirmek için tıklayın, yazı tipi/boyut/renk seçin\n• Şekiller: elips, dikdörtgen, çizgi veya ok çizin, yeniden boyutlandırmak için tutamaçlarla\n• Kaydırıcılar (keskinlik, parlaklık/kontrast, doygunluk, renkleri kaldır, sıkıştırma): sürüklerken sonuç canlı olarak gösterilir\n• Seviyeler: kaydırıcılarla siyah nokta/gama/beyaz noktayı ayarlayın, veya damlalıklarla doğrudan görüntüden bir renk alın\n• Saydamlık: saydam yapmak için görüntüdeki bir renge tıklayın\n• Renk derinliği, Efektler, Görüntü modu: bir radyo düğmesine tıklayarak bir seçenek belirleyin, hemen uygulanır\n• Bir görsel yapıştır: panodaki görseli yapıştırır (simge yalnızca pano bir görsel içeriyorsa etkinleşir), şekillerde olduğu gibi boyutlandırma/döndürme için tutamaçlarla; bir mozaikten bir sayfayı veya Windows Gezgini'nden bir dosyayı doğrudan görüntüleyiciye sürükleyerek de çalışır. Ctrl+C görüntülenen sayfayı kopyalar (yalnızca tek sayfa veya Webtoon modunda), Ctrl+V mozaikte olduğu gibi bir görsel yapıştırır\n\nGöründüğünde \"Onayla\" düğmesiyle onaylayın, veya iptal için Esc. Her değişiklik olağan Geri Al/Yinele geçmişine katılır.",
+    "viewer_content": "Görüntüleyiciyi açmak için bir sayfaya çift tıklayın:\n• ← → tuşları: sayfalar arasında gezinme\n• D tuşu: 4 okuma modu arasında geçiş\n  - Tek sayfa: seferde bir sayfa\n  - Çift sayfalar: sayfa 1 tek başına, sonra 2-3, 4-5 vb.\n  - Sürekli çift sayfalar: sayfa 1 tek başına, sonra 2-3, 3-4, 4-5 vb.\n  - Webtoon: dikey görüntüler için (webcomics), okunabilirlik için genişlik 900px ile sınırlı; fare tekerleği sayfada dikey kaydırır, sonra üstte/altta sayfa değiştirir\n• Fare tekerleği: hızlı gezinme (Webtoon modunda sayfa içinde dikey kaydırma)\n• Ctrl+Tekerlek veya Ctrl+Artı/Eksi: yakınlaştırma (görüntünün gerçek boyutunun %1000'ine kadar)\n• Ctrl+0: yakınlaştırmayı pencereye uydur\n• Ctrl+1: %100 yakınlaştırma (görüntünün gerçek piksel boyutu)\n• Sağ tık + sürükleme: pencereyi aştığında görüntülenen resmi kaydırma (pan)\n• F11 tuşu: tam ekran\n• Çift tık: tam ekranı aç/kapat\n• Esc tuşu: geçerli çizimi iptal et (kırpma, düzeltme, şekil…) veya görüntüleyiciden çık\n• Yer imi: görüntüleyici kapanırken geçerli sayfayı otomatik olarak kaydeder (ilk/son sayfa hariç). Mozaikte ilgili küçük resimde kırmızı bir kurdele görünür. Yeniden açıldığında, bir mesaj bu sayfaya dönmeyi önerir. Son sayfada otomatik olarak silinir, veya görüntüleyicide sağ tıkla manuel olarak.\n\nYüzen araç çubuğu: görünmesi için fareyi görüntünün üstüne getirin (birkaç saniye sonra kendini gizler). İlgili aracı etkinleştirmek için bir simgeye tıklayın:\n• Kırpma: bir dikdörtgen çizin, kenarlarından ayarlayın, onaylayın; simgeye sağ tıklayın ve kesme maskesi moduna geçin (\"Maskeyi kaydet\" ile bir dikdörtgeni hafızaya alın, ardından sonraki sayfalarda \"Maskeyi çağır\" ile olduğu gibi çağırın — aynı kesmeyi her seferinde yeniden çizmeden birden fazla sayfaya uygulamak için kullanışlıdır; \"Maskeyi unut\" hafızadaki maskeyi siler, yalnızca sayfa sayfa)\n• Düzeltme: yatay/dikey olması gereken şeyin üzerine bir çizgi çizin, düzeltme otomatik olarak uygulanır; otomatik düzeltmeye geçmek için simgeye sağ tıklayın (hiçbir şey çizmeden eğimi kendi kendine algılar)\n• Döndürme/çevirme: tek tıkla sayfayı döndürür veya çevirir\n• Klonlama: kaynak noktasını seçmek için Ctrl+tık, sonra çoğaltmak için fare düğmesini basılı tutarak boyayın\n• Metin: bir metin bloğu yerleştirmek için tıklayın, yazı tipi/boyut/renk seçin\n• Şekiller: elips, dikdörtgen, çizgi veya ok çizin, yeniden boyutlandırmak için tutamaçlarla\n• Kaydırıcılar (keskinlik, parlaklık/kontrast, doygunluk, renkleri kaldır, sıkıştırma): sürüklerken sonuç canlı olarak gösterilir\n• Seviyeler: kaydırıcılarla siyah nokta/gama/beyaz noktayı ayarlayın, veya damlalıklarla doğrudan görüntüden bir renk alın\n• Saydamlık: saydam yapmak için görüntüdeki bir renge tıklayın\n• Renk derinliği, Efektler, Görüntü modu: bir radyo düğmesine tıklayarak bir seçenek belirleyin, hemen uygulanır\n• Bir görsel yapıştır: panodaki görseli yapıştırır (simge yalnızca pano bir görsel içeriyorsa etkinleşir), şekillerde olduğu gibi boyutlandırma/döndürme için tutamaçlarla; bir mozaikten bir sayfayı veya Windows Gezgini'nden bir dosyayı doğrudan görüntüleyiciye sürükleyerek de çalışır. Ctrl+C görüntülenen sayfayı kopyalar (yalnızca tek sayfa veya Webtoon modunda), Ctrl+V mozaikte olduğu gibi bir görsel yapıştırır\n\nGöründüğünde \"Onayla\" düğmesiyle onaylayın, veya iptal için Esc. Her değişiklik olağan Geri Al/Yinele geçmişine katılır.",
     "join_pages": "Sayfaları birleştirme",
     "join_pages_content": "Birden fazla ardışık sayfa seçin, sağ tıklayın → sayfaları yatay veya dikey olarak birleştirmek için 'Seçili sayfaları birleştir'. Üretilen görüntünün formatı, hepsi aynıysa kaynak sayfaların formatına uyar, aksi takdirde varsayılan olarak PNG olur. Orijinal sayfaları silmeyi veya tutmayı seçebileceksiniz.\n\nYeni sayfanın mozaikte konumu:\n• Aktif yeniden numaralandırma modu (otomatik veya manuel): sayfa, birleştirilen ilk sayfanın yerini alır (kaynak sayfalar silinirse onun yerini, tutulursa hemen öncesini), ve bir yeniden numaralandırma tetikler.\n• KAPALI yeniden numaralandırma modu: sayfa, mozaiğin başına \"Birlestirilmis_xxx\" adı altında eklenir.",
     "split_pages": "Sayfaları bölme",

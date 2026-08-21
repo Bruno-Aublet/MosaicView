@@ -78,7 +78,6 @@ class ConfigManager:
             # Utilise %APPDATA%\MosaicView (config persistante, distincte des fichiers temporaires)
             config_dir = os.path.join(os.environ["APPDATA"], "MosaicView")
 
-            # Crée le répertoire s'il n'existe pas
             if not os.path.exists(config_dir):
                 os.makedirs(config_dir, exist_ok=True)
 
@@ -91,7 +90,6 @@ class ConfigManager:
 
         self.config = self.DEFAULT_CONFIG.copy()
 
-        # Charge la configuration existante
         config_loaded = self.load_config()
 
         # Sauvegarde toujours pour :
@@ -457,23 +455,16 @@ class ConfigManager:
         Returns:
             True si la sauvegarde a réussi
         """
-        # Normalise le chemin
         filepath = os.path.abspath(filepath)
-
-        # Récupère la liste actuelle
         recent_files = self.get_recent_files().copy()
 
         # Retire le fichier s'il existe déjà (pour le remettre en premier)
         if filepath in recent_files:
             recent_files.remove(filepath)
 
-        # Ajoute en première position
         recent_files.insert(0, filepath)
-
-        # Limite au nombre maximum
         recent_files = recent_files[:max_files]
 
-        # Sauvegarde
         return self.set('recent_files', recent_files, save)
 
     def clean_recent_files(self, save=True):

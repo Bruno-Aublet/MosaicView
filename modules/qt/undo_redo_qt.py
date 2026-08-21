@@ -1,16 +1,9 @@
 """
-modules/qt/undo_redo_qt.py — Système Annuler/Refaire (version PySide6)
+modules/qt/undo_redo_qt.py — Système Annuler/Refaire.
 
-Reproduit à l'identique le comportement de modules/undo_redo.py +
-state_restore.py + les wrappers save_state/undo_action/redo_action
-définis dans MosaicView.py (version tkinter).
-
-Différences avec la version tkinter :
-  - rename_only : les NameEdit Qt sont recréés à chaque render_mosaic(),
-    donc pas d'optimisation possible — on appelle toujours render_mosaic()
-  - update_flatten_button → refresh_toolbar_states (callback passé à
-    restore_state_qt)
-  - update_positions → non nécessaire en Qt (render recrée tout)
+Les NameEdit Qt sont recréés à chaque render_mosaic() : pas d'optimisation
+possible pour un renommage seul, render_mosaic() est donc toujours appelé
+sans distinction de cas.
 
 Fonctions publiques :
   save_state_qt(state, refresh_toolbar_cb, force=False)
@@ -54,8 +47,7 @@ def _reload_thumb_qt(entry: dict, tw: int, th: int):
     retrouve encore rempli et reconstruit qt_pixmap_large à partir de cette
     QImage périmée au lieu de relire les bytes restaurés — la vignette reste
     alors figée sur l'état d'avant le undo indéfiniment, aucun repaint
-    (même forcé) ne peut corriger un cache dont la SOURCE est fausse.
-    Diagnostiqué le 2026-08-14."""
+    (même forcé) ne peut corriger un cache dont la SOURCE est fausse."""
     entry["qt_pixmap_large"] = None
     entry["qt_qimage_large"] = None
     entry["large_thumb_pil"] = None
@@ -72,9 +64,10 @@ def _build_new_entry_qt(entry_data: dict, tw: int, th: int) -> dict:
         "is_dir":           entry_data.get("is_dir", False),
         "is_corrupted":     entry_data.get("is_corrupted", False),
         "corruption_reason": entry_data.get("corruption_reason"),
-        # Champs Qt
         "qt_pixmap_large":  None,
-        # Champs tkinter absents en Qt (mis à None pour compatibilité state_restore)
+        # Champs toujours présents pour garder une forme de dict homogène
+        # entre toutes les entrées (consommés par ailleurs comme des champs
+        # optionnels via .get(), jamais requis ici) :
         "tk_img":           None,
         "name_entry":       None,
         "name_var":         None,
@@ -88,7 +81,7 @@ def _build_new_entry_qt(entry_data: dict, tw: int, th: int) -> dict:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# restore_state_qt — analogue Qt de state_restore.restore_state()
+# restore_state_qt
 # ─────────────────────────────────────────────────────────────────────────────
 
 def restore_state_qt(state,
@@ -97,11 +90,7 @@ def restore_state_qt(state,
                      clear_selection_cb,
                      update_tabs_cb,
                      refresh_toolbar_cb):
-    """Restaure un état depuis l'historique undo/redo.
-
-    Reproduit à l'identique la logique de state_restore.restore_state(),
-    adaptée pour Qt (pas de ImageTk, pas de tk.Text name_entry).
-    """
+    """Restaure un état depuis l'historique undo/redo."""
     tw = state.thumb_w
     th = state.thumb_h
 
@@ -116,7 +105,7 @@ def restore_state_qt(state,
     # pour forcer leur repaint immédiat après render_mosaic_cb() (voir plus
     # bas), sans attendre le prochain repaint naturel de la vue (peut être
     # différé si la fenêtre principale n'est pas active, ex. undo/redo
-    # déclenché depuis la visionneuse — diagnostiqué 2026-08-14).
+    # déclenché depuis la visionneuse).
     changed_entries = []
 
     for entry_data in target_entries:
@@ -145,6 +134,7 @@ def restore_state_qt(state,
             # Réutilise l'entrée existante
             entry = entries_by_id[original_id]
             entry["orig_name"]        = entry_data["orig_name"]
+            entry["extension"]        = entry_data["extension"]
             entry["is_corrupted"]     = entry_data.get("is_corrupted", False)
             entry["corruption_reason"] = entry_data.get("corruption_reason")
 
@@ -158,7 +148,6 @@ def restore_state_qt(state,
 
             del entries_by_id[original_id]
         else:
-            # Crée une nouvelle entrée
             entry = _build_new_entry_qt(entry_data, tw, th)
 
         new_images_data.append(entry)
@@ -274,7 +263,6 @@ def rollback_to_current_state_qt(state, render_mosaic_cb, clear_selection_cb,
 def save_state_qt(state, refresh_toolbar_cb, force=False):
     """Sauvegarde l'état courant dans l'historique.
 
-    Analogue à save_state() dans MosaicView.py tkinter.
     Appelle save_state_data() (logique data commune), puis refresh_toolbar
     pour mettre à jour les boutons Annuler/Refaire.
     Si force=True, sauvegarde même si l'état semble identique (ex. bytes=None).
@@ -285,10 +273,7 @@ def save_state_qt(state, refresh_toolbar_cb, force=False):
 
 def undo_action_qt(state, render_mosaic_cb, clear_selection_cb,
                    update_tabs_cb, refresh_toolbar_cb):
-    """Annule la dernière action.
-
-    Analogue à undo_action() dans MosaicView.py tkinter.
-    """
+    """Annule la dernière action."""
     saved_state = undo_data(state)
     if saved_state is None:
         return
@@ -299,10 +284,7 @@ def undo_action_qt(state, render_mosaic_cb, clear_selection_cb,
 
 def redo_action_qt(state, render_mosaic_cb, clear_selection_cb,
                    update_tabs_cb, refresh_toolbar_cb):
-    """Rétablit l'action annulée.
-
-    Analogue à redo_action() dans MosaicView.py tkinter.
-    """
+    """Rétablit l'action annulée."""
     saved_state = redo_data(state)
     if saved_state is None:
         return

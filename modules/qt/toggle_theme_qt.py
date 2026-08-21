@@ -1,6 +1,5 @@
 """
-toggle_theme_qt.py — Bascule entre thème clair et sombre (version PySide6).
-Analogue à modules/toggle_theme.py (tkinter).
+toggle_theme_qt.py — Bascule entre thème clair et sombre.
 
 Usage :
     from modules.qt.toggle_theme_qt import toggle_theme, apply_theme

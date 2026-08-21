@@ -2,9 +2,7 @@
 modules/qt/compression_tool_qt.py — Outil "compression" (qualité JPEG) de la
 barre d'outils flottante de la visionneuse principale (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 10e outil migré, 6e des 8
-modes d'ajustement après sharpness/unsharp/brightness/saturation/
-remove_colors) : ce module contient toute la logique propre à l'outil
+Fusion progressive des visionneuses : ce module contient toute la logique propre à l'outil
 "compression" — état + preview live (mixin CompressionCanvasMixin, hérité par
 _ViewerCanvas), commit de l'ajustement dans l'historique du panneau (mixin
 CompressionViewerMixin, hérité par ImageViewer), et le panneau flottant de la
@@ -16,12 +14,11 @@ Même famille de pattern que sharpness/brightness (une réglette, PAS de
 bi-mode, reste sur la valeur commitée après relâchement) — MAIS avec une
 différence propre à cet outil, absente des 5 précédents :
 
-**Grisage conditionnel de l'icône** (idees.txt #3, décision explicite) :
-contrairement aux 5 modes déjà migrés (toujours applicables quelle que soit
-l'image), la compression JPEG n'a de sens que si la page affichée est un
-JPEG/WEBP/AVIF (mêmes extensions que _has_compressible du panneau Ajustements
-classique, adjustments_dialog_qt.py). L'icône de la barre (_ToolButton) est
-grisée/désactivée sur toute autre page — voir _ToolButton.set_enabled_state
+**Grisage conditionnel de l'icône** : contrairement aux autres modes
+d'ajustement (toujours applicables quelle que soit l'image), la compression
+JPEG n'a de sens que si la page affichée est un JPEG/WEBP/AVIF. L'icône de
+la barre (_ToolButton) est grisée/désactivée sur toute autre page — voir
+_ToolButton.set_enabled_state
 (viewer_toolbar_qt.py) et ImageViewer._refresh_compression_button_state(),
 appelée à chaque changement de page (navigate) et à l'ouverture de la
 visionneuse. Le tooltip reste actif dans les deux états, avec un texte
@@ -29,18 +26,18 @@ différent (dispo/non dispo) — voir _update_compression_tooltip() dans
 viewer_toolbar_qt.py.
 
 **Le slider reste sur la valeur CIBLE appliquée après commit, PAS de
-resynchronisation EXIF** (revenu sur un premier jet, piège vécu 2026-08-15) :
-un premier jet tentait de resynchroniser le slider sur
+resynchronisation EXIF** : resynchroniser le slider sur
 detect_jpeg_quality(entry['bytes']) après chaque commit, dans l'idée
 d'afficher la qualité "réelle" de l'image plutôt qu'une valeur cible qui peut
-diverger après plusieurs recompressions successives. Mais detect_jpeg_quality
-a un mapping à 5 paliers bien trop grossier pour ça (prévu uniquement pour
-positionner le curseur au tout premier affichage, voir sa docstring dans le
-skill adjust-compression) : une compression à qualité 1 retombe dans son
-premier seuil et ressort à 95, donnant l'impression trompeuse que rien n'a
-été appliqué et qu'on ne peut plus rien compresser. Revenu au même principe
-que sharpness/brightness : le slider reste sur la valeur cible qui vient
-d'être appliquée. Voir perform_compression() et _reset_compression_preview().
+diverger après plusieurs recompressions successives, ne fonctionne pas :
+detect_jpeg_quality a un mapping à 5 paliers bien trop grossier pour ça
+(prévu uniquement pour positionner le curseur au tout premier affichage,
+voir sa docstring dans le skill adjust-compression) — une compression à
+qualité 1 retombe dans son premier seuil et ressort à 95, donnant
+l'impression trompeuse que rien n'a été appliqué et qu'on ne peut plus rien
+compresser. Même principe que sharpness/brightness : le slider reste sur la
+valeur cible qui vient d'être appliquée. Voir perform_compression() et
+_reset_compression_preview().
 detect_jpeg_quality() n'est utilisée ici que comme valeur de DÉPART (première
 ouverture de l'outil sur une page, aucun commit de CET outil encore fait à ce
 point d'historique) — jamais pour vérifier après coup ce qui vient d'être
@@ -48,13 +45,12 @@ appliqué.
 
 Contrairement au crop/straighten/clone/texte, cet outil n'a AUCUN overlay
 interactif ni geste souris sur le canvas : c'est une réglette avec preview
-temps réel (comme AdjustmentViewerDialog::_display_image en mode
-'compression'). CompressionCanvasMixin reste donc volontairement minimal
+temps réel. CompressionCanvasMixin reste donc volontairement minimal
 (pas de mousePress/Move/Release à gérer, pas de paint_* à appeler depuis
 paintEvent) — même raison que SharpnessCanvasMixin (sharpness).
 
 PAS de bouton "Valider" pour cet outil (même principe que sharpness/unsharp/
-brightness/saturation/remove_colors, décision actée idees.txt #3) : le
+brightness/saturation/remove_colors) : le
 preview PIL n'est visible que PENDANT le déplacement du slider (valueChanged) ;
 au relâchement du clic (sliderReleased), l'ajustement est commité
 automatiquement dans entry['bytes'] (perform_compression) et devient sa
@@ -79,15 +75,14 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 from modules.qt.clone_tool_qt import floating_options_panel_style
 
-# Extensions considérées compressibles — mêmes valeurs que _has_compressible
-# dans adjustments_dialog_qt.py, ne pas dupliquer une autre liste ailleurs.
+# Extensions considérées compressibles — ne pas dupliquer une autre liste
+# ailleurs.
 COMPRESSIBLE_EXTENSIONS = (".jpg", ".jpeg", ".webp", ".avif")
 
 
 def is_compressible_entry(entry: dict) -> bool:
     """True si l'extension de l'entrée est compatible avec la simulation de
-    compression JPEG (apply_adjustments, image_processing_qt.py) —
-    même définition que l'ancien panneau Ajustements classique (supprimé)."""
+    compression JPEG (apply_adjustments, image_processing_qt.py)."""
     ext = entry.get("extension", "").lower()
     return ext in COMPRESSIBLE_EXTENSIONS
 
@@ -199,11 +194,10 @@ class _CompressionOptionsPanel(QWidget):
         self.move(max(0, x), y)
 
     def mousePressEvent(self, event):
-        # Piège corrigé (2026-08-15, découvert sur le panneau de
-        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
-        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
-        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
-        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        # Sans ce blindage, un clic sur une zone vide du panneau "fuit" vers
+        # _ViewerCanvas en dessous — même piège déjà documenté pour
+        # _ToolButton/_ActionButton/_ViewerToolbar (skill viewers), appliqué
+        # par cohérence à tous les panneaux flottants.
         event.accept()
 
     def mouseReleaseEvent(self, event):
@@ -340,9 +334,8 @@ class CompressionViewerMixin:
         """Relâchement du slider ou validation de la spinbox : commit réel de
         la compression dans entry['bytes'] (pattern skill
         apply-image-operation, variante A complète) — réutilise
-        apply_image_adjustments() (image_processing_qt.py), déjà
-        utilisée par l'ancien panneau Ajustements pour "Appliquer à la page
-        courante". Devient sa propre entrée d'historique, comme un commit de
+        apply_image_adjustments() (image_processing_qt.py). Devient sa
+        propre entrée d'historique, comme un commit de
         remove_colors (pas de bouton "Valider" séparé, voir docstring de
         module).
 
@@ -350,8 +343,8 @@ class CompressionViewerMixin:
         (même principe que perform_sharpness()/perform_brightness()) : il
         reste sur la valeur CIBLE qui vient d'être appliquée, pour rester une
         indication visuelle fidèle du geste effectué. **Ne PAS resynchroniser
-        sur detect_jpeg_quality(entry['bytes']) après un commit** (piège
-        vécu, 2026-08-15) : cette fonction a un mapping à 5 paliers bien trop
+        sur detect_jpeg_quality(entry['bytes']) après un commit** : cette
+        fonction a un mapping à 5 paliers bien trop
         grossier pour être fiable en sortie de compression (ex. qualité 1
         réellement appliquée retombe dans son premier seuil et ressort à 95,
         laissant croire que rien n'a été appliqué) — sa docstring dans le
@@ -404,9 +397,8 @@ class CompressionViewerMixin:
             # inconditionnellement _canvas.clear_crop() — lequel remet aussi
             # pan_offset_x/y à 0 (crop_tool_qt.py::clear_crop, pensé pour
             # recentrer la vue quand on abandonne un crop). Sans ce flag, tout
-            # commit après un zoom+pan recentrait l'image sous les pieds de
-            # l'utilisateur (bug diagnostiqué sur levels, 2026-08-15, même
-            # cause ici — voir levels_tool_qt.py::perform_levels).
+            # commit après un zoom+pan recentrerait l'image sous les pieds de
+            # l'utilisateur — même cause que dans levels_tool_qt.py::perform_levels.
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             # Le slider NE revient PAS à une valeur fixe après commit (voir
@@ -429,7 +421,7 @@ class CompressionViewerMixin:
         _reset_sharpness_preview() : state.compression_value_by_history_index
         retrouve la valeur CIBLE commitée par CET outil sur (page,
         history_index) courants (pas une redétection EXIF, voir docstring de
-        perform_compression — piège vécu 2026-08-15) ; à défaut (page jamais
+        perform_compression) ; à défaut (page jamais
         compressée par cet outil à ce point d'historique — première
         ouverture, ou page/point d'historique où seul un AUTRE mécanisme a pu
         modifier le fichier), retombe sur detect_jpeg_quality(entry['bytes'])

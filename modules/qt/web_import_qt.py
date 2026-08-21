@@ -1,6 +1,5 @@
 """
-modules/qt/web_import_qt.py — Import d'images depuis le web (version PySide6).
-Reproduit à l'identique Modules_OLD/web_import_dialog.py et web_import_helpers.py.
+modules/qt/web_import_qt.py — Import d'images depuis le web.
 Règles UI Qt : thème, langue à la volée, police courante.
 """
 
@@ -738,7 +737,6 @@ def _disconnect_lang(dialog):
 class WebImportDialog(QDialog):
     """
     Fenêtre de dialogue pour saisir une URL et importer les images d'une page web.
-    Identique à Modules_OLD/web_import_dialog.py (tkinter).
     Supporte : thème courant, changement de langue à la volée, police courante.
     """
 

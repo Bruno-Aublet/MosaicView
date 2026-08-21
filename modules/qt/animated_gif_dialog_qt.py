@@ -1,7 +1,6 @@
 """
-modules/qt/animated_gif_dialog_qt.py — Création/édition de GIF animé (version PySide6)
+modules/qt/animated_gif_dialog_qt.py — Création/édition de GIF animé.
 
-Reproduit à l'identique le comportement de modules/animated_gif_dialog.py (tkinter).
 Toutes les fenêtres supportent :
   - le thème courant (clair/sombre)
   - le changement de langue à la volée via language_signal
@@ -659,12 +658,10 @@ class AnimatedGifDialog(QDialog):
             do_optimize = self._optimize_check.isChecked()
             total       = len(self._gif_images)
 
-            # Désactive les boutons et affiche la progression
             self._create_btn.setEnabled(False)
             self._cancel_btn.setEnabled(False)
             self._progress_lbl.setVisible(True)
 
-            # Charge toutes les images et calcule la taille max
             max_w, max_h = 0, 0
             temp_images  = []
             for i, entry in enumerate(self._gif_images):
@@ -696,7 +693,6 @@ class AnimatedGifDialog(QDialog):
                     canvas.paste(img, (x_off, y_off))
                 rgb_images.append(canvas)
 
-            # Quantize avec palette commune
             pil_images = []
             if rgb_images:
                 self._progress_lbl.setText(
@@ -749,7 +745,6 @@ class AnimatedGifDialog(QDialog):
             gif_bytes = img_bytes.getvalue()
             img_bytes.close()
 
-            # Nommage
             existing  = sum(1 for e in self._state.images_data
                             if e["orig_name"].startswith("Animated_"))
             gif_name  = f"Animated_{existing + 1}.gif"
@@ -770,7 +765,6 @@ class AnimatedGifDialog(QDialog):
             # Libère les frames PIL sources (entry["img"]) — plus nécessaires après création
             self._free_gif_images()
 
-            # Callbacks
             if self._callbacks.get("save_state"):
                 self._callbacks["save_state"]()
             if self._callbacks.get("render_mosaic"):
@@ -871,7 +865,6 @@ class AnimatedGifDialog(QDialog):
         self._cancel_btn.setFont(font)
         self._cancel_btn.setStyleSheet(btn_sty)
 
-        # Rafraîchit le style des vignettes
         self._thumbs_container.apply_theme_to_thumbs()
 
 

@@ -1,7 +1,5 @@
 """
-drop_handler_qt.py — Gestion du drop externe (fichiers / dossiers) pour PySide6.
-Reproduit exactement la logique de on_drop / _on_drop_impl / show_batch_drop_dialog
-de MosaicView.py (tkinter).
+drop_handler_qt.py — Gestion du drop externe (fichiers / dossiers).
 """
 
 import os

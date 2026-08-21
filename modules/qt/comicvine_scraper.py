@@ -42,8 +42,8 @@ def error_to_signal_payload(exc):
 
     Si `exc` est une ComicVineNetworkError, encode sa clé de traduction
     (préfixée) au lieu du message déjà résolu, pour permettre une retraduction
-    dynamique côté UI. Sinon, retourne str(exc) tel quel (comportement
-    historique, message technique ou déjà nettoyé par _redact_api_key)."""
+    dynamique côté UI. Sinon, retourne str(exc) tel quel (message technique,
+    déjà nettoyé par _redact_api_key si besoin)."""
     if isinstance(exc, ComicVineNetworkError):
         return _TRANSLATION_KEY_PREFIX + exc.translation_key
     return str(exc)
@@ -320,10 +320,8 @@ def get_issue_details(api_key, issue_id):
 
     meta = {}
 
-    # Titre de l'issue
     meta["title"] = (r.get("name") or "").strip()
 
-    # Série
     volume = r.get("volume") or {}
     meta["series"] = (volume.get("name") or "").strip()
     series_id = volume.get("id")
@@ -342,7 +340,6 @@ def get_issue_details(api_key, issue_id):
             if genre:
                 meta["genre"] = genre
 
-    # Numéro
     meta["number"] = (r.get("issue_number") or "").strip()
 
     # Date de couverture (cover_date = "YYYY-MM-DD")
@@ -353,10 +350,8 @@ def get_issue_details(api_key, issue_id):
         meta["month"] = parts[1].lstrip("0") if len(parts) >= 2 else ""
         meta["day"] = parts[2].lstrip("0") if len(parts) >= 3 else ""
 
-    # Résumé (nettoyer le HTML)
     meta["summary"] = _strip_html(r.get("description") or "")
 
-    # URL de la page ComicVine
     meta["web"] = r.get("site_detail_url") or ""
 
     # Crédits créatifs

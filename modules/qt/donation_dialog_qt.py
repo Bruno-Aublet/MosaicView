@@ -1,5 +1,4 @@
-# donation_dialog_qt.py — Fenêtre de donation PayPal pour MosaicView Qt
-# Reproduit fidèlement show_donation_dialog() de modules/about_dialogs.py (tkinter)
+# donation_dialog_qt.py — Fenêtre de donation PayPal pour MosaicView
 
 import os
 import webbrowser

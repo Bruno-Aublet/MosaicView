@@ -2,7 +2,7 @@
 modules/qt/text_tool_qt.py — Outil d'insertion de texte riche de la barre
 d'outils flottante de la visionneuse principale (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 4e outil migré) : ce module
+Fusion progressive des visionneuses : ce module
 contient toute la logique propre à l'outil "text" — état/interactions du
 canvas (mixin TextCanvasMixin, hérité par _ViewerCanvas), commit des blocs
 dans l'historique du panneau (mixin TextViewerMixin, hérité par ImageViewer),
@@ -16,7 +16,7 @@ Contrairement au crop/straighten (une seule géométrie par page) ou au clone
 (pas de persistance), l'outil texte gère N blocs simultanés par page — chacun
 un _RichTextOverlay (QTextEdit transparent) hébergé comme enfant du canvas.
 
-Décisions retenues (discussion idees.txt #3, session du 2026-08-12) :
+Décisions retenues :
   * Désélection de l'outil (retour à "aucun outil") : les blocs existants ne
     sont PAS effacés (même principe que le rectangle de crop) — ils sont
     figés (plus de focus clavier possible, plus de déplacement à la souris)
@@ -28,11 +28,10 @@ Décisions retenues (discussion idees.txt #3, session du 2026-08-12) :
     local à chaque _RichTextOverlay tant qu'il a le focus (comportement Qt
     standard, pas un système ajouté) : Ctrl+Z/Y du panneau n'agit que quand
     aucun bloc n'a le focus, et ne concerne que des validations déjà
-    commises. Plus d'historique interne par page à la ImageViewer comme dans
-    l'ancienne text_viewer_qt.py (le snapshot de blocs n'y était de toute
-    façon jamais relu) : la persistance du "travail non validé" se fait
-    entièrement via _text_blocks_by_page (contenu HTML + position), pas via
-    un second niveau d'undo.
+    commises. Pas d'historique interne par page à la ImageViewer : la
+    persistance du "travail non validé" se fait entièrement via
+    _text_blocks_by_page (contenu HTML + position), pas via un second niveau
+    d'undo.
   * Barre d'options rich text (police/taille/gras/italique/souligné/couleur) :
     panneau flottant sous la barre d'outils (_TextOptionsPanel, même
     mécanisme que _StraightenAnglePanel/_CloneOptionsPanel), visible
@@ -327,9 +326,8 @@ class _ColorPickerDialog(QDialog):
         self._hex_edit = QLineEdit()
         # setFixedHeight obligatoire : sans hauteur explicite, un QLineEdit
         # dans un layout peut s'étirer bien au-delà d'une ligne de texte si un
-        # addStretch() voisin absorbe l'espace dans le mauvais widget —
-        # texte écrasé/illisible sinon (signalé par l'utilisateur en
-        # conditions réelles, confirmé par print de la taille réelle).
+        # addStretch() voisin absorbe l'espace dans le mauvais widget — texte
+        # écrasé/illisible sinon.
         self._hex_edit.setFixedHeight(26)
         self._hex_edit.setMaximumWidth(120)
         self._hex_edit.editingFinished.connect(self._on_hex_edited)
@@ -509,9 +507,8 @@ class _ColorPickerDialog(QDialog):
         # dès qu'un stylesheet est actif quelque part dans la hiérarchie
         # (ici sur self, le QDialog), un style partiel ne posant QUE "color"
         # fait retomber QStyleSheetStyle sur un fond par défaut opaque sombre
-        # au lieu de laisser le label transparent (comportement Qt connu,
-        # signalé par l'utilisateur en conditions réelles — bandes noires
-        # sur tous les labels malgré une palette/theme corrects).
+        # au lieu de laisser le label transparent (comportement Qt connu) —
+        # bandes noires sur tous les labels malgré une palette/theme corrects.
         self._lbl_basic.setText(_("dialogs.color_picker.basic_colors_label"))
         self._lbl_basic.setFont(font)
         self._lbl_basic.setStyleSheet(f"color: {theme['text']}; background: transparent;")
@@ -531,10 +528,9 @@ class _ColorPickerDialog(QDialog):
         # les vrais QLineEdit (comme _hex_edit) — un QSpinBox est une classe
         # différente, même s'il héberge un QLineEdit interne, donc ce
         # sélecteur ne matchait jamais l'objet sur lequel il était posé.
-        # Résultat observé : les 4 spinbox R/V/B/Alpha restaient noires
-        # malgré setStyleSheet(input_style) (signalé par l'utilisateur en
-        # conditions réelles) alors que _hex_edit, un vrai QLineEdit, était
-        # déjà correct.
+        # Sans ce style dédié : les 4 spinbox R/V/B/Alpha resteraient noires
+        # malgré setStyleSheet(input_style), alors que _hex_edit, un vrai
+        # QLineEdit, est déjà correct.
         spinbox_style = (
             f"QSpinBox {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
             f"border: 1px solid #aaaaaa; padding: 2px 6px; }} "
@@ -607,12 +603,11 @@ class _RichTextOverlay(QTextEdit):
         # WrapAnywhere (pas WordWrap, pas NoWrap) : le texte doit revenir à la
         # ligne dès qu'il ATTEINT le bord droit de l'image, y compris en plein
         # milieu d'un mot — WordWrap seul ne coupe QU'ENTRE les mots, donc un
-        # mot unique très long (ex. du texte de test tapé sans espaces)
-        # continue de s'étendre indéfiniment sans jamais provoquer de saut de
-        # ligne (confirmé par prints debug : sz.width() croît sans limite au-
-        # delà de textWidth pendant que sz.height() reste figée à 1 ligne —
-        # symptôme "le texte défile et on perd le début" signalé par
-        # l'utilisateur en conditions réelles).
+        # mot unique très long (ex. du texte tapé sans espaces) continuerait
+        # de s'étendre indéfiniment sans jamais provoquer de saut de ligne
+        # (sz.width() croît sans limite au-delà de textWidth pendant que
+        # sz.height() reste figée à 1 ligne, le texte défile et le début
+        # devient invisible).
         self.setWordWrapMode(QTextOption.WrapMode.WrapAnywhere)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -642,20 +637,18 @@ class _RichTextOverlay(QTextEdit):
         # documentLayout().documentSize() plutôt que doc.size() : après un
         # setTextWidth() qui vient de changer le wrap, doc.size() peut encore
         # renvoyer une taille transitoire pas encore recalculée pour le
-        # nouveau textWidth — le widget restait alors plus petit que son
+        # nouveau textWidth — le widget resterait alors plus petit que son
         # contenu réellement wrappé, provoquant un défilement horizontal
         # interne masqué (barre cachée par ScrollBarAlwaysOff, mais le texte
-        # défilait quand même et le début tapé devenait invisible — signalé
-        # par l'utilisateur en conditions réelles).
+        # défilerait quand même et le début tapé deviendrait invisible).
         sz = doc.documentLayout().documentSize()
         # sz.width() vaut TOUJOURS textWidth une fois celui-ci fixé (largeur
-        # du layout, pas du contenu) — dès qu'un max_width était posé, le
-        # widget prenait immédiatement toute cette largeur au lieu de rester
-        # à la taille de son texte réel, ce qui faisait revenir le texte à la
-        # ligne bien avant d'avoir réellement atteint le bord de l'image.
-        # idealWidth() donne la largeur minimale réellement nécessaire au
-        # contenu, indépendamment de textWidth (signalé par l'utilisateur en
-        # conditions réelles).
+        # du layout, pas du contenu) — dès qu'un max_width est posé, le
+        # widget prendrait immédiatement toute cette largeur au lieu de
+        # rester à la taille de son texte réel, ce qui ferait revenir le
+        # texte à la ligne bien avant d'avoir réellement atteint le bord de
+        # l'image. idealWidth() donne la largeur minimale réellement
+        # nécessaire au contenu, indépendamment de textWidth.
         w_content = int(doc.idealWidth()) + 20
         w = min(w_content, self._max_width) if self._max_width > 0 else w_content
         w = max(w, 60)
@@ -685,8 +678,8 @@ class _RichTextOverlay(QTextEdit):
             return
 
         # Undo/redo de frappe natif Qt : reste local tant que ce bloc a le
-        # focus, jamais promu en point d'historique global (idees.txt #3,
-        # décision explicite — pas un second système ajouté, comportement
+        # focus, jamais promu en point d'historique global (décision
+        # explicite — pas un second système ajouté, comportement
         # standard de QTextEdit détourné vers document().undo()/redo() comme
         # dans n'importe quel champ de texte).
         if ctrl and key == Qt.Key.Key_Z:
@@ -705,7 +698,7 @@ class _RichTextOverlay(QTextEdit):
         self.activated.emit()
 
     def mouseDoubleClickEvent(self, event):
-        # Bloc figé (outil désélectionné, idees.txt #3) : un QTextEdit capte
+        # Bloc figé (outil désélectionné) : un QTextEdit capte
         # toujours ses événements souris tant qu'il est visible, même en lecture
         # seule — sans ce court-circuit, double-cliquer sur un bloc gris
         # n'atteindrait jamais _ViewerCanvas.mouseDoubleClickEvent et la
@@ -716,8 +709,8 @@ class _RichTextOverlay(QTextEdit):
         super().mouseDoubleClickEvent(event)
 
     def set_active_style(self, active: bool):
-        """Bordure bleue (actif, éditable) ou grise (figé, outil désélectionné,
-        idees.txt #3 — même principe que le rectangle de crop conservé en gris)."""
+        """Bordure bleue (actif, éditable) ou grise (figé, outil désélectionné
+        — même principe que le rectangle de crop conservé en gris)."""
         if active:
             self.setStyleSheet(
                 "QTextEdit { background: rgba(0,0,0,0); border: 1px dashed rgba(0,120,255,180); }"
@@ -760,10 +753,9 @@ class _TextBlock:
     pendant l'édition — un bloc édité à 68% de zoom doit rester lisible à sa
     taille apparente), donc le rendu final doit diviser par ce même facteur
     pour retrouver la taille réellement voulue par l'utilisateur en pixels
-    image. Sans cette compensation, un texte tapé à un zoom < 100% apparaît
+    image. Sans cette compensation, un texte tapé à un zoom < 100% apparaîtrait
     beaucoup plus petit qu'attendu une fois appliqué sur l'image à pleine
-    résolution (bug signalé par l'utilisateur en conditions réelles, zoom
-    68%)."""
+    résolution."""
 
     def __init__(self, overlay: _RichTextOverlay, img_x: int, img_y: int, display_scale: float = 1.0):
         self.overlay = overlay
@@ -775,10 +767,9 @@ class _TextBlock:
         # TEL QU'IL ÉTAIT à ce moment précis (un bloc quasi vide, quelques
         # pixels de haut), pas recalculé plus tard avec la hauteur finale
         # après plusieurs lignes de texte : recalculer ce décalage à chaque
-        # fois (écran comme rendu final) faisait dériver le bloc de plus en
-        # plus loin du point cliqué à mesure que le texte s'allongeait
-        # (signalé par l'utilisateur en conditions réelles). En pixels
-        # IMAGE (indépendant du zoom), pour être réutilisable tel quel par
+        # fois (écran comme rendu final) ferait dériver le bloc de plus en
+        # plus loin du point cliqué à mesure que le texte s'allonge. En
+        # pixels IMAGE (indépendant du zoom), pour être réutilisable tel quel par
         # le rendu final comme par l'affichage écran (une fois reconverti
         # au zoom courant pour l'écran).
         self.top_y_offset_img: int | None = None
@@ -800,8 +791,8 @@ class _TextBlock:
 class _TextOptionsPanel(QWidget):
     """Panneau flottant avec les contrôles de formatage (police, taille, gras,
     italique, souligné, couleur), affiché sous la barre d'outils UNIQUEMENT
-    quand l'outil "text" est actif ET qu'un bloc est actif (idees.txt #3,
-    décision explicite) — même principe de positionnement que
+    quand l'outil "text" est actif ET qu'un bloc est actif (décision
+    explicite) — même principe de positionnement que
     _StraightenAnglePanel/_CloneOptionsPanel."""
 
     def __init__(self, viewer: "ImageViewer"):
@@ -817,9 +808,8 @@ class _TextOptionsPanel(QWidget):
         # coalescence, taper rapidement empilait plusieurs callbacks différés
         # dans la queue Qt, dont certains s'exécutaient sur un
         # QTextCharFormat déjà périmé (le document ayant changé entre-temps)
-        # — provoquait un access violation natif dans fmt.fontFamily() au
-        # 3e/4e appel rapproché (signalé par l'utilisateur en conditions
-        # réelles). setSingleShot + start() redémarre le délai à chaque
+        # — provoquerait un access violation natif dans fmt.fontFamily() au
+        # 3e/4e appel rapproché. setSingleShot + start() redémarre le délai à chaque
         # appel : seul le DERNIER état demandé est effectivement synchronisé.
         self._sync_timer = None  # QTimer créé après construction complète du widget
         self._pending_sync_block = None
@@ -935,9 +925,9 @@ class _TextOptionsPanel(QWidget):
     def _apply_color_btn_style(self, theme):
         # Bordure dans la couleur de texte du thème (pas un gris fixe #aaaaaa,
         # quasi invisible sur fond noir en mode sombre) : sans elle, un texte
-        # par défaut noir (_text_color initial) rend le bouton indiscernable
-        # du fond du panneau lui-même — signalé par l'utilisateur en
-        # conditions réelles. Même principe que floating_options_panel_style.
+        # par défaut noir (_text_color initial) rendrait le bouton
+        # indiscernable du fond du panneau lui-même. Même principe que
+        # floating_options_panel_style.
         self._color_btn.setStyleSheet(
             f"QPushButton {{ background: {self._text_color.name()}; "
             f"border: 2px solid {theme['text']}; border-radius: 3px; }}"
@@ -1000,11 +990,10 @@ class _TextOptionsPanel(QWidget):
         self.move(max(0, x), y)
 
     def mousePressEvent(self, event):
-        # Piège corrigé (2026-08-15, découvert sur le panneau de
-        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
-        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
-        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
-        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        # Sans ce blindage, un clic sur une zone vide du panneau "fuit" vers
+        # _ViewerCanvas en dessous — même piège déjà documenté pour
+        # _ToolButton/_ActionButton/_ViewerToolbar (skill viewers), appliqué
+        # par cohérence à tous les panneaux flottants.
         event.accept()
 
     def mouseReleaseEvent(self, event):
@@ -1012,15 +1001,14 @@ class _TextOptionsPanel(QWidget):
 
     def enterEvent(self, event):
         # Suspend le timer d'auto-masquage de la barre (dont ce panneau suit
-        # désormais la visibilité, idees.txt #3 décision 2026-08-14) tant que
-        # la souris reste sur ce panneau — pas seulement redémarré à chaque
-        # mouvement, complètement arrêté (voir _ViewerToolbar.pause_hide).
+        # désormais la visibilité) tant que la souris reste sur ce panneau —
+        # pas seulement redémarré à chaque mouvement, complètement arrêté
+        # (voir _ViewerToolbar.pause_hide).
         self._viewer._toolbar.pause_hide()
         # Le curseur posé par text_update_cursor (ex. SizeAllCursor en survol
         # d'un bloc) est celui du CANVAS, pas celui de ce panneau — sans ce
-        # reset, il restait affiché par-dessus les contrôles du panneau
-        # (idees.txt #4), même piège corrigé sur
-        # _TransparencyOptionsPanel/_LevelsOptionsPanel.
+        # reset, il resterait affiché par-dessus les contrôles du panneau,
+        # même piège que _TransparencyOptionsPanel/_LevelsOptionsPanel.
         self.setCursor(Qt.ArrowCursor)
 
     def leaveEvent(self, event):
@@ -1218,11 +1206,11 @@ class _TextOptionsPanel(QWidget):
         # de taille explicite imposée (contrairement à l'avertissement de
         # position_dialog_on_parent sur adjustSize(), qui vise les fenêtres à
         # taille FIXE explicite — non applicable ici). ensurePolished() seul
-        # ne suffisait pas à faire calculer la vraie taille du layout à ce
-        # stade : dialog.height() valait encore une hauteur par défaut minime
-        # au moment du centrage, donc le calcul (ph - dialog.height()) // 2
-        # plaçait la fenêtre trop bas — elle grandissait ensuite vers le bas
-        # une fois affichée (signalé par l'utilisateur en conditions réelles).
+        # ne suffirait pas à faire calculer la vraie taille du layout à ce
+        # stade : dialog.height() vaudrait encore une hauteur par défaut
+        # minime au moment du centrage, donc le calcul (ph - dialog.height())
+        # // 2 placerait la fenêtre trop bas — elle grandirait ensuite vers
+        # le bas une fois affichée.
         dlg.adjustSize()
         from modules.qt.dialogs_qt import position_dialog_on_parent
         position_dialog_on_parent(dlg, self._viewer)
@@ -1289,20 +1277,17 @@ class TextCanvasMixin:
         # block.img_pos est le point cliqué par l'utilisateur — c'est le
         # DÉBUT horizontal du texte (bord gauche du widget), comme dans
         # n'importe quel éditeur de texte : on clique où on veut commencer à
-        # écrire, pas où on veut que le texte soit centré horizontalement
-        # (décision explicite de l'utilisateur, après une tentative de
-        # centrage horizontal qui a introduit d'autres problèmes : largeur
-        # de wrap mal calculée, dérive pendant la frappe). Le centrage
-        # VERTICAL, lui, reste voulu (l'utilisateur a confirmé que seul
-        # l'horizontal posait problème) : le point cliqué doit rester au
-        # milieu de la hauteur du bloc — mais TEL QU'ELLE ÉTAIT au moment du
-        # placement initial (voir _TextBlock.top_y_offset_img), jamais
-        # recalculé avec la hauteur courante : sinon le décalage grandit
-        # avec le texte tapé, et le rendu final (qui doit reproduire
-        # EXACTEMENT ce même décalage figé) recalculait alors une valeur
-        # différente à partir de la hauteur finale, aggravant l'écart avec
-        # chaque ligne supplémentaire (signalé par l'utilisateur en
-        # conditions réelles).
+        # écrire, pas où on veut que le texte soit centré horizontalement (un
+        # centrage horizontal introduirait d'autres problèmes : largeur de
+        # wrap mal calculée, dérive pendant la frappe). Le centrage VERTICAL,
+        # lui, reste voulu : le point cliqué doit rester au milieu de la
+        # hauteur du bloc — mais TEL QU'ELLE ÉTAIT au moment du placement
+        # initial (voir _TextBlock.top_y_offset_img), jamais recalculé avec
+        # la hauteur courante : sinon le décalage grandirait avec le texte
+        # tapé, et le rendu final (qui doit reproduire EXACTEMENT ce même
+        # décalage figé) recalculerait alors une valeur différente à partir
+        # de la hauteur finale, aggravant l'écart à chaque ligne
+        # supplémentaire.
         if block.top_y_offset_img is None:
             zoom_at_creation = block.display_scale or 1.0
             block.top_y_offset_img = int(round(
@@ -1398,7 +1383,7 @@ class TextCanvasMixin:
 
     def _text_set_frozen(self, frozen: bool):
         """Applique l'état figé/actif à tous les blocs — appelé à la
-        (dé)sélection de l'outil "text" (idees.txt #3, décision explicite :
+        (dé)sélection de l'outil "text" (décision explicite :
         les blocs restent affichés, gris, non éditables tant que l'outil
         n'est pas resélectionné)."""
         for b in self._text_blocks:
@@ -1412,11 +1397,10 @@ class TextCanvasMixin:
         # Un clic (sur un bloc existant OU une zone vide) pendant qu'un bloc
         # encore vide (jamais tapé) est actif ne doit pas le laisser traîner
         # indéfiniment — le retirer plutôt que d'en accumuler. Cliquer
-        # rapidement sur plusieurs zones sans taper faisait exploser le
-        # nombre de _RichTextOverlay vivants simultanément (chacun avec son
-        # focus/timer de sync en vol), terrain instable ayant provoqué des
-        # access violations natifs répétés dans sync_from_block (signalé par
-        # l'utilisateur en conditions réelles).
+        # rapidement sur plusieurs zones sans taper ferait exploser le nombre
+        # de _RichTextOverlay vivants simultanément (chacun avec son
+        # focus/timer de sync en vol), terrain instable pour des access
+        # violations natifs dans sync_from_block.
         active = self._text_active_block_ref
         if active is not None and active is not hit and active.is_empty():
             self._remove_block(active)
@@ -1429,13 +1413,11 @@ class TextCanvasMixin:
         else:
             ix, iy = self._text_widget_to_image(pos)
             # Clic hors de l'image (marges autour d'une image plus petite que
-            # le canvas) créait un bloc à des coordonnées négatives/hors
-            # limites — jamais borné jusqu'ici, contrairement au rectangle de
-            # crop (voir crop_tool_qt.py, même principe de clamp). Un bloc
-            # placé à une position aberrante restait un widget Qt valide mais
-            # positionné très loin de sa zone normale, terrain supplémentaire
-            # d'instabilité pour Qt (signalé par l'utilisateur en conditions
-            # réelles).
+            # le canvas) créerait un bloc à des coordonnées négatives/hors
+            # limites — sans clamp, contrairement au rectangle de crop (voir
+            # crop_tool_qt.py, même principe). Un bloc placé à une position
+            # aberrante reste un widget Qt valide mais positionné très loin
+            # de sa zone normale, terrain supplémentaire d'instabilité pour Qt.
             ix, iy = self._clamp_to_image(ix, iy)
             self.add_text_block(ix, iy)
         return True
@@ -1518,18 +1500,17 @@ class TextViewerMixin:
         # SYNCHRONEMENT depuis _RichTextOverlay.keyPressEvent (via
         # _on_contents_changed), donc en pleine réentrance dans le
         # traitement Qt natif de la frappe. Resynchroniser la barre
-        # d'options immédiatement à cet instant provoquait un access
-        # violation natif — et sans coalescence, taper rapidement empilait
+        # d'options immédiatement à cet instant provoquerait un access
+        # violation natif — et sans coalescence, taper rapidement empilerait
         # plusieurs callbacks différés s'exécutant sur un QTextCharFormat
         # déjà périmé (access violation dans fmt.fontFamily() au 3e/4e appel
-        # rapproché, signalé par l'utilisateur en conditions réelles).
+        # rapproché).
         panel = self._toolbar._text_panel
         active = self._canvas._text_active_block()
         if active is not None and panel.isVisible():
             panel.request_sync(active)
 
-    # ── Rendu final — tous les blocs → PIL (repris de l'ancienne
-    # text_viewer_qt.py::_render_all_blocks, comportement inchangé) ──────────
+    # ── Rendu final — tous les blocs → PIL ────────────────────────────────────
 
     def _text_render_all_blocks(self, base_img: Image.Image) -> Image.Image:
         img = base_img.copy()
@@ -1554,8 +1535,8 @@ class TextViewerMixin:
             # rendu final corresponde à la taille voulue par l'utilisateur en
             # pixels sur l'image native, indépendamment du zoom courant.
             # Sans cette compensation, un bloc édité à un zoom < 100% (ex.
-            # 68%) apparaît beaucoup plus petit qu'attendu une fois appliqué
-            # (bug signalé par l'utilisateur en conditions réelles).
+            # 68%) apparaîtrait beaucoup plus petit qu'attendu une fois
+            # appliqué.
             scale = 1.0 / (block.display_scale or 1.0)
             tw = max(int(sz.width() * scale), 1)
             th = max(int(sz.height() * scale), 1)
@@ -1582,9 +1563,8 @@ class TextViewerMixin:
             # la hauteur courante du widget (qui a grandi avec le texte tapé
             # et ne correspond plus à la position réellement affichée à
             # l'écran). Recalculer ce décalage ici avec la hauteur finale au
-            # lieu de réutiliser la valeur figée aggravait l'écart avec
-            # chaque ligne supplémentaire (signalé par l'utilisateur en
-            # conditions réelles).
+            # lieu de réutiliser la valeur figée aggraverait l'écart à chaque
+            # ligne supplémentaire.
             x = block.img_pos.x()
             y = block.img_pos.y() - (block.top_y_offset_img or 0)
             px = max(0, min(x, iw - 1))
@@ -1642,8 +1622,13 @@ class TextViewerMixin:
 
             orig_mode = entry.get('_orig_mode', 'RGBA')
             out_img = composed
+            # .bmp exclu : Pillow écrit bien un canal alpha 32-bit, mais ne le
+            # redétecte pas à la relecture (header BMP classique ambigu sur la
+            # présence d'alpha) — transparence non fiable, voir color_depth_tool_qt.py.
             if orig_mode not in ('RGBA', 'LA', 'P') and \
-                    entry.get('extension', '').lower() not in ('.png', '.webp', '.avif'):
+                    entry.get('extension', '').lower() not in (
+                        '.png', '.webp', '.avif', '.tiff', '.tif', '.ico'
+                    ):
                 bg = Image.new('RGB', out_img.size, (255, 255, 255))
                 bg.paste(out_img, mask=out_img.split()[3])
                 out_img = bg
@@ -1683,7 +1668,7 @@ class TextViewerMixin:
             # visibilité, pilotée uniquement par _ViewerToolbar.
             # show_and_schedule_hide/_on_hide_timeout (mécanisme unique, voir
             # image_viewer_qt.py::_update_validate_btn_state). Bouton
-            # "Annuler" jumeau rafraîchi juste à côté (2026-08-15).
+            # "Annuler" jumeau rafraîchi juste à côté.
             self._canvas._update_validate_btn_state()
             self._canvas._update_cancel_btn_state()
             self._text_blocks_by_page.pop(self.current_idx, None)
@@ -1695,7 +1680,7 @@ class TextViewerMixin:
                             "messages.errors.text_failed.title")
             dlg.show_nonmodal()
 
-    # ── Persistance par page (idees.txt #3, partie B) ────────────────────────
+    # ── Persistance par page ──────────────────────────────────────────────────
 
     def _save_text_for_current_page(self):
         """Mémorise les blocs de la page qu'on s'apprête à quitter (contenu

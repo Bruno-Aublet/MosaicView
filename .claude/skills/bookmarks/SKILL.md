@@ -40,7 +40,7 @@ Déclenchement : `_on_loading_finished()` (appelé après tout chargement, y com
 
 1. Lit `self._state.current_file` (état **du panneau**, pas global) — si vide, abandonne.
 2. **Garde-fou anti-répétition** : `self._bookmark_popup_shown_for` (attribut du panneau) mémorise le dernier fichier pour lequel le popup a déjà été proposé. Si `current_file` est identique, n'affiche rien — sinon le popup réapparaîtrait à chaque rechargement de la mosaïque au sein d'un même comics déjà ouvert (import de pages, Ctrl+V, drop de fichier), pas seulement à l'ouverture initiale.
-3. **Ce garde-fou est réinitialisé (`None`) dans `_close_bookmark_popup()`** (ligne ~1908), appelée uniquement lors de la fermeture explicite du fichier (`refresh_tabs` dans `_file_close_args`). Sans cette réinitialisation, rouvrir le même fichier après l'avoir fermé ne réaffiche jamais le popup (bug corrigé le 2026-07-15 — voir CHANGELOG [1.5.10]).
+3. **Ce garde-fou est réinitialisé (`None`) dans `_close_bookmark_popup()`** (ligne ~1908), appelée uniquement lors de la fermeture explicite du fichier (`refresh_tabs` dans `_file_close_args`). Sans cette réinitialisation, rouvrir le même fichier après l'avoir fermé ne réaffiche jamais le popup.
 4. Si un marque-page existe (`cfg.get_bookmark`) et que `page_idx` est dans les bornes de la mosaïque actuelle, construit et affiche `_BookmarkPopup` ; le bouton Oui ouvre la visionneuse directement sur la page mémorisée (`_open_image_viewer(real_idx)`).
 
 **Chaque `PanelWidget` a son propre `_bookmark_popup_shown_for` et `_bookmark_popup`** — c'est un état d'instance, pas global. Le popup lui-même est parenté au panneau qui l'a ouvert et centré dessus via `_center_on_widget`.

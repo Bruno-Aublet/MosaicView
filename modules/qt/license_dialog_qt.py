@@ -1,5 +1,4 @@
-# license_dialog_qt.py — Fenêtre de licence pour MosaicView Qt
-# Reproduit fidèlement show_license_dialog() de modules/about_dialogs.py (tkinter)
+# license_dialog_qt.py — Fenêtre de licence pour MosaicView
 
 import os
 import re

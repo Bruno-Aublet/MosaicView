@@ -1,7 +1,6 @@
 """
 modules/qt/pdf_loading_qt.py
-Chargement de fichiers PDF pour la version PySide6.
-Reproduit à l'identique pdf_loading.py (load_pdf + start_pdf_loading).
+Chargement de fichiers PDF.
 """
 
 import io

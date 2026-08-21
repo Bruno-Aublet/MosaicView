@@ -5,16 +5,16 @@ description: Localiser ou modifier la fonction "Mode d'image" (RGB/RGBA/L/LA/CMY
 
 # Ajustement "Mode d'image" — MosaicView
 
-**Migré dans la barre d'outils de la visionneuse principale le 2026-08-16** (16e et DERNIER outil migré, 3e des 3 dernières fonctions du panneau Ajustements classique — idees.txt #3, skill `viewers`). Une fois cette migration terminée, `AdjustmentsDialog`/`adjustments_dialog_qt.py` n'avait plus aucune section restante et a été supprimée en totalité — c'est la dernière étape du chantier de fusion des visionneuses, désormais clos : une seule fenêtre dans toute l'application pour la lecture ET l'édition d'image. Ce skill couvre la logique PIL (inchangée) et l'intégration dans la barre (nouvelle) — pour l'orchestration générale de la barre (auto-masquage, undo/redo unifié, forçage mode simple page), voir skill `viewers`.
+Il n'existe qu'une seule fenêtre dans toute l'application pour la lecture ET l'édition d'image — cette fonction vit dans la barre d'outils de la visionneuse principale, voir skill `viewers` pour l'orchestration générale de la barre (auto-masquage, undo/redo unifié, forçage mode simple page). Ce skill couvre la logique PIL et l'intégration dans la barre.
 
-**Cadré explicitement sur le même modèle que la profondeur de couleur** (skill `adjust-color-depth`, décision utilisateur 2026-08-16) — plus fidèlement qu'Effets (skill `adjust-effects`), qui a dû s'en écarter : Mode d'image a un vrai équivalent PIL détectable pour chaque option (contrairement aux effets), donc le pattern de verrouillage EST dérivé du mode réel de l'image, exactement comme color_depth. Groupe de `QRadioButton`, chaque clic commit IMMÉDIATEMENT, le radio choisi devient coché ET grisé (non re-cliquable), les autres restent cliquables. Un radio "Restaurer l'original" (`_restore_radio`) apparaît/s'active dès qu'au moins un changement a été fait, et restaure `entry['bytes']` à l'état d'avant le TOUT PREMIER changement de la session — nouveau commit, ne dépile pas l'historique.
+**Cadré explicitement sur le même modèle que la profondeur de couleur** (skill `adjust-color-depth`) — plus fidèlement qu'Effets (skill `adjust-effects`), qui s'en écarte : Mode d'image a un vrai équivalent PIL détectable pour chaque option (contrairement aux effets), donc le pattern de verrouillage EST dérivé du mode réel de l'image, exactement comme color_depth. Groupe de `QRadioButton`, chaque clic commit IMMÉDIATEMENT, le radio choisi devient coché ET grisé (non re-cliquable), les autres restent cliquables. Un radio "Restaurer l'original" (`_restore_radio`) apparaît/s'active dès qu'au moins un changement a été fait, et restaure `entry['bytes']` à l'état d'avant le TOUT PREMIER changement de la session — nouveau commit, ne dépile pas l'historique.
 
 ## Où
 
 - **UI (barre d'outils)** : `modules/qt/image_mode_tool_qt.py` — `_ImageModeOptionsPanel` (panneau flottant, 3 lignes de radios : Restaurer l'original + RGB + RGBA sur la 1ère, L + LA + CMYK sur la 2e, 1 bit + P sur la 3e), `ImageModeCanvasMixin` (vide, aucun geste souris/overlay), `ImageModeViewerMixin` (`perform_image_mode(key)`, `perform_restore_image_mode()`, `_sync_image_mode_panel()`)
-- **Icône de la barre** : `BTN_Image_Mode.png`, `tool_id="image_mode"` dans `viewer_toolbar_qt.py::_ViewerToolbar.__init__` — pas de bi-mode, pas de grisage conditionnel selon le format
-- **Traitement PIL (inchangé)** : `image_processing_qt.py::apply_adjustments()`, bloc `# ── Mode d'image ──` (après les niveaux, avant la profondeur de couleur) — même moteur partagé qu'avant la migration, seul l'appelant a changé
-- **Ancien emplacement (supprimé 2026-08-16)** : la section "Mode d'image" de l'ancien panneau classique `AdjustmentsDialog`/`adjustments_dialog_qt.py` (`_grp_image_mode`, `_mode_radios`, `_on_image_mode_changed`, `_disable_current_mode_radios`) a été entièrement retirée. `PIL_TO_MODE` a son équivalent propre dans `image_mode_tool_qt.py` (`_PIL_TO_MODE`), utilisé par le nouveau mécanisme de verrouillage plutôt que par une simple désactivation ponctuelle à la construction.
+- **Icône de la barre** : `BTN_Image_Mode.png`, `tool_id="image_mode"` dans `viewer_toolbar_qt.py::_ViewerToolbar.__init__` — pas de bi-mode. L'icône elle-même n'est jamais grisée, mais certains des 7 radios de mode peuvent l'être individuellement selon le format d'origine — voir section "Modes bloqués par format d'origine" plus bas.
+- **Traitement PIL** : `image_processing_qt.py::apply_adjustments()`, bloc `# ── Mode d'image ──` (après les niveaux, avant la profondeur de couleur)
+- `_PIL_TO_MODE` (`image_mode_tool_qt.py`) fait correspondre chaque mode PIL à sa clé de radio, utilisé par le mécanisme de verrouillage (voir plus bas).
 
 ## Valeurs possibles (`settings['image_mode']`)
 
@@ -39,13 +39,13 @@ if image_mode != 'unchanged':
         except Exception:
             pass
 ```
-Logique PIL strictement inchangée par la migration. Le cas générique (`else`) délègue directement à `img.convert(image_mode)` — **la clé UI doit donc être exactement un nom de mode PIL valide** pour tous les cas sauf `BW1`. Toute nouvelle option ajoutée à ce groupe de radios doit soit correspondre à un nom PIL exact (`RGB`, `L`, `CMYK`...), soit recevoir sa propre branche `if` dédiée comme `BW1`. L'exception est avalée silencieusement (`except Exception: pass`) — une conversion PIL impossible laisse l'image dans son mode précédent sans avertir l'utilisateur.
+Le cas générique (`else`) délègue directement à `img.convert(image_mode)` — **la clé UI doit donc être exactement un nom de mode PIL valide** pour tous les cas sauf `BW1`. Toute nouvelle option ajoutée à ce groupe de radios doit soit correspondre à un nom PIL exact (`RGB`, `L`, `CMYK`...), soit recevoir sa propre branche `if` dédiée comme `BW1`. L'exception est avalée silencieusement (`except Exception: pass`) — une conversion PIL impossible laisse l'image dans son mode précédent sans avertir l'utilisateur.
 
-**Écart par rapport à l'ancien panneau classique** : PAS de radio "Ne pas modifier"/`unchanged` dans `_ImageModeOptionsPanel` (contrairement à l'ancien panneau, qui en avait un). Le radio verrouillé sur le mode PIL réel joue déjà ce rôle — exactement comme pour Profondeur de couleur, cliquer un mode déjà actif n'aurait aucun effet, il est donc simplement grisé plutôt que proposé comme un 8e choix redondant. La valeur `'unchanged'` reste acceptée par `apply_adjustments()` comme défaut neutre (no-op) mais n'a plus de radio équivalent.
+**Pas de radio "Ne pas modifier"/`unchanged`** dans `_ImageModeOptionsPanel`. Le radio verrouillé sur le mode PIL réel joue déjà ce rôle — exactement comme pour Profondeur de couleur, cliquer un mode déjà actif n'aurait aucun effet, il est donc simplement grisé plutôt que proposé comme un 8e choix redondant. La valeur `'unchanged'` reste acceptée par `apply_adjustments()` comme défaut neutre (no-op) mais n'a pas de radio équivalent.
 
 ## `for_preview` — reconversion pour affichage
 
-N'a plus d'usage réel côté barre d'outils (pas de preview live pour cet outil, chaque clic commit directement avec `for_preview` implicite `False`) — comme pour Profondeur de couleur, `for_preview=True` reste utilisé par l'ancien mécanisme de preview 300×300, désormais mort pour cette section puisque le panneau Ajustements classique n'existe plus. Le comportement du flag lui-même est inchangé si jamais réinvoqué : ne montre jamais le mode PIL exact demandé pour `CMYK`, `P` ou `'1'` — toujours reconverti en RGB/RGBA/L affichable, `img.mode == '1'` passant par un buffer PNG intermédiaire.
+N'a pas d'usage réel côté barre d'outils (pas de preview live pour cet outil, chaque clic commit directement avec `for_preview` implicite `False`). Le comportement du flag lui-même : ne montre jamais le mode PIL exact demandé pour `CMYK`, `P` ou `'1'` — toujours reconverti en RGB/RGBA/L affichable, `img.mode == '1'` passant par un buffer PNG intermédiaire.
 
 ## Interaction avec Profondeur de couleur
 
@@ -62,9 +62,21 @@ Même piège `blockSignals` que `_ColorDepthOptionsPanel` : bloquer les signaux 
 
 `_restore_radio` n'appartient PAS à `self._group` (le `QButtonGroup` des 7 modes), `setAutoExclusive(False)` posé une fois pour toutes à sa création — même raison que `_ColorDepthOptionsPanel` : ce n'est pas un choix de MODE parmi d'autres, c'est une action "annuler tout" séparée.
 
-## Compression forcée en PNG
+## Modes bloqués par format d'origine
 
-Comme pour la profondeur de couleur, si le mode résultant est `RGBA`/`LA`/`P`/`'1'` et le fichier d'origine est JPEG, l'extension de sauvegarde est forcée à `.png` dans `apply_image_adjustments()` (JPEG ne supporte aucun de ces modes) — un seul garde-fou partagé, voir skill `adjust-color-depth`.
+Jamais de conversion silencieuse du format de fichier : un choix qui produirait une perte silencieuse à la sauvegarde reste impossible à sélectionner plutôt que dégradé après coup. `_BLOCKED_MODE_KEYS_BY_EXT` (`image_mode_tool_qt.py`) liste, par extension d'origine, l'ensemble des clés de mode à griser :
+
+| Extension | Modes bloqués | Raison |
+|---|---|---|
+| `.jpg`/`.jpeg`/`.jfif`/`.pjpeg`/`.pjp` | `RGBA`, `LA`, `P`, `BW1` | JPEG ne supporte ni la transparence, ni la palette indexée, ni le 1-bit bilevel |
+| `.gif` | `RGBA`, `LA`, `CMYK` | GIF n'a qu'une transparence binaire (pas de canal alpha réel) et ne supporte pas CMYK (Pillow lève une exception à la sauvegarde) |
+| `.bmp` | `RGBA`, `LA` | Pillow écrit bien un canal alpha 32-bit en BMP, mais ne le redétecte pas à la relecture (header BMP classique ambigu sur la présence d'alpha) — transparence non fiable |
+
+Même mécanisme que `adjust-color-depth` (même modèle de panneau) : `_sync_image_mode_panel()` calcule `blocked_keys`/`blocked_format_label` (extension réelle en majuscules, jamais un nom de format normalisé) à chaque resynchronisation ; `BlockableRadioButton.blocked` (`clone_tool_qt.py`) rejette le clic tout en gardant le radio `setEnabled(True)` (tooltip fonctionnel via `OverlayTooltip.track()` standard) ; property Qt `blocked` pour le style visuel ; `retranslate()` rejoue le tooltip via `_update_blocked_tooltips()`.
+
+## Garde-fou de dernier recours — compression forcée en PNG
+
+Comme pour la profondeur de couleur, si le mode résultant est `RGBA`/`LA`/`P`/`'1'` et le fichier d'origine est JPEG (`.jpg`/`.jpeg`/`.jfif`/`.pjpeg`/`.pjp`), l'extension de sauvegarde (et `entry['orig_name']`) sont mises à jour vers `.png` dans `apply_image_adjustments()`. Depuis le blocage UI ci-dessus, ce cas ne devrait normalement jamais se produire en pratique — filet de sécurité, un seul garde-fou partagé, voir skill `adjust-color-depth`.
 
 ## Snapshot "avant premier changement" — `state.image_mode_original_bytes_by_page`
 
@@ -72,12 +84,13 @@ Dict `{page_idx: bytes}` sur `state` (pas sur `ImageViewer`), même principe que
 
 ## Modifier cette fonction
 
-Nouvelle option de mode → ajouter le radio dans `_ImageModeOptionsPanel.__init__` (`_mode_radios`, `_MODE_KEYS`, `_ROW_FOR_KEY` pour la répartition sur les 3 lignes), une entrée dans `_MODE_LABEL_KEYS` (+ clé de traduction `dialogs.adjustments.image_mode_xxx`, déjà existante et réutilisée pour les 7 modes actuels), et si la clé UI ne correspond pas exactement à un nom de mode PIL, une branche `if`/`elif` dédiée dans le bloc `apply_adjustments()` (`image_processing_qt.py`, suivre le modèle de `BW1`). Ajouter aussi l'entrée correspondante dans `_PIL_TO_MODE` si le nouveau mode doit bénéficier du verrouillage automatique.
+Nouvelle option de mode → ajouter le radio dans `_ImageModeOptionsPanel.__init__` (`_mode_radios`, `_MODE_KEYS`, `_ROW_FOR_KEY` pour la répartition sur les 3 lignes), une entrée dans `_MODE_LABEL_KEYS` (+ clé de traduction `dialogs.adjustments.image_mode_xxx`, déjà existante et réutilisée pour les 7 modes actuels), et si la clé UI ne correspond pas exactement à un nom de mode PIL, une branche `if`/`elif` dédiée dans le bloc `apply_adjustments()` (`image_processing_qt.py`, suivre le modèle de `BW1`). Ajouter aussi l'entrée correspondante dans `_PIL_TO_MODE` si le nouveau mode doit bénéficier du verrouillage automatique. Pour bloquer un mode sur un nouveau format : ajouter/étendre une entrée dans `_BLOCKED_MODE_KEYS_BY_EXT` — vérifier d'abord (recherche web + test isolé hors app) ce que Pillow supporte réellement en écriture ET en relecture pour ce format avant de décider quoi bloquer.
 
 ## Références croisées
 
 - `viewers` — barre d'outils de la visionneuse, orchestration transversale (auto-masquage, undo/redo unifié, forçage mode simple page, mécanisme des boutons Valider/Annuler — non utilisés par cet outil, chaque clic est déjà un commit complet).
-- `adjust-color-depth` — réglage frère appliqué juste après, qui a le dernier mot en cas de cumul ; modèle de pattern (radios + commit immédiat + verrouillage dérivé du mode réel) sur lequel cet outil est cadré fidèlement.
-- `adjust-effects` — l'autre des 3 dernières fonctions migrées le même jour, cadrée sur le même modèle mais avec des écarts (pas de verrouillage dérivé de l'image, radio mémorisé par page).
+- `adjust-color-depth` — réglage frère appliqué juste après, qui a le dernier mot en cas de cumul ; modèle de pattern (radios + commit immédiat + verrouillage dérivé du mode réel, blocage par format) sur lequel cet outil est cadré fidèlement.
+- `adjust-effects` — cadrée sur le même modèle mais avec des écarts (pas de verrouillage dérivé de l'image, radio mémorisé par page).
 - `apply-image-operation` — pattern undo/redo, forçage `.png` sur JPEG incompatible.
-- `qt-tooltips` — `OverlayTooltip`, tooltip de l'icône `image_mode` de la barre.
+- `clone-zone` — héberge `BlockableRadioButton`, la classe partagée utilisée pour griser un radio tout en gardant son tooltip actif.
+- `qt-tooltips` — `OverlayTooltip`, tooltip de l'icône `image_mode` de la barre et des radios bloqués par format.

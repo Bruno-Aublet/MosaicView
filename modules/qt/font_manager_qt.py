@@ -35,7 +35,6 @@ class FontManagerQt:
         """Charge les polices depuis le dossier fonts/ via QFontDatabase."""
         fonts_dir = resource_path('fonts')
 
-        # pIqaD
         piqad_path = os.path.join(fonts_dir, _PIQAD_FILE)
         if os.path.isfile(piqad_path):
             fid = QFontDatabase.addApplicationFont(piqad_path)
@@ -44,7 +43,6 @@ class FontManagerQt:
                 if fams:
                     self.piqad_font_name = fams[0]
 
-        # Fallback système pIqaD
         if not self.piqad_font_name:
             available = QFontDatabase.families()
             for name in _PIQAD_FALLBACKS:
@@ -52,7 +50,6 @@ class FontManagerQt:
                     self.piqad_font_name = name
                     break
 
-        # Tengwar
         for tfile in _TENGWAR_FILES:
             tpath = os.path.join(fonts_dir, tfile)
             if os.path.isfile(tpath):
@@ -62,7 +59,6 @@ class FontManagerQt:
                     if fams:
                         self.tengwar_font_name = fams[0]
 
-        # Fallback système Tengwar
         if not self.tengwar_font_name:
             available = QFontDatabase.families()
             for name in _TENGWAR_FALLBACKS:
@@ -98,7 +94,6 @@ def get_font_manager() -> FontManagerQt | None:
 
 def get_current_font(size: int = 10, family: str = "Arial", bold: bool = False) -> QFont:
     """
-    Équivalent Qt de modules/fonts.py:get_current_font().
     Retourne le bon QFont selon la langue active :
       - tlh-piqad          → police pIqaD
       - sjn-tengwar / qya-tengwar → police Tengwar

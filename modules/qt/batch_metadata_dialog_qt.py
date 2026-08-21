@@ -783,7 +783,6 @@ class _BatchMetadataOrchestrator:
             pdf_manifest = _get_manifest("__pdf_manifest__")
 
             def _write_non_manifest(zf):
-                """Écrit les entrées avec bytes (couverture + XML metadata)."""
                 for entry in state.images_data:
                     if entry.get("orig_name") in MANIFEST_NAMES:
                         continue
@@ -792,7 +791,6 @@ class _BatchMetadataOrchestrator:
                     zf.writestr(entry["orig_name"], entry["bytes"])
 
             def _write_xml_only(zf):
-                """Écrit uniquement les entrées non-image (ComicInfo.xml)."""
                 for entry in state.images_data:
                     if entry.get("orig_name") in MANIFEST_NAMES:
                         continue

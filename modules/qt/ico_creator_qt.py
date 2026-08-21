@@ -1,7 +1,5 @@
 """
-modules/qt/ico_creator_qt.py — Création de fichiers .ico multi-résolution (version PySide6)
-
-Reproduit à l'identique le comportement de modules/ico_creator.py (tkinter).
+modules/qt/ico_creator_qt.py — Création de fichiers .ico multi-résolution.
 
 Deux phases :
   Phase A — découpe carrée + validation (zoom Ctrl+Molette)

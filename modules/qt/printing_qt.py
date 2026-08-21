@@ -206,13 +206,7 @@ class _PrintWorker(QThread):
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _print_images(images_to_print, parent, canvas):
-    """Imprime les images originales via Windows.
-
-    Args:
-        images_to_print : liste d'entrées `images_data` à imprimer
-        parent          : QWidget parent (pour les dialogues)
-        canvas          : QGraphicsView (pour l'overlay de progression)
-    """
+    """Imprime les images originales via Windows."""
     # ── Overlay de progression ───────────────────────────────────────────────
     _item_holder = []
 

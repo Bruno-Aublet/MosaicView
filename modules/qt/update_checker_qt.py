@@ -41,7 +41,6 @@ def _normalize(tag: str) -> str:
 
 
 def _is_newer(latest: str, current: str) -> bool:
-    """Retourne True si latest est strictement supérieur à current."""
     try:
         return Version(latest) > Version(current)
     except Exception:

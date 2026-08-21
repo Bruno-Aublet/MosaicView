@@ -82,11 +82,19 @@ l'indicateur doublons est forcé à l'état grisé/inactif.
    réglage par défaut du panneau.
 6. Recalcule l'icône (badge doublon grisé ou coloré) + tooltip + curseur de
    l'indicateur doublons via `has_any_duplicate(state)`.
-7. Si un tooltip est **déjà visible** au moment du `refresh()` (ex. juste après
-   un clic qui change l'état sous la souris), le contenu affiché est forcé à
-   jour immédiatement (`show_tooltip(...)`) plutôt que d'attendre le prochain
-   `MouseMove` — sinon le tooltip resterait affiché avec un texte obsolète
-   jusqu'au moindre mouvement de souris.
+7. Pour chacun des 3 indicateurs, après `set_tracked_html(...)`, appelle
+   `self._overlay_tip.force_refresh_visible(indicator)` — si le tooltip de
+   **cet** indicateur précis est actuellement affiché (ex. la souris est
+   dessus au moment du clic), son contenu est rafraîchi immédiatement plutôt
+   que d'attendre le prochain `MouseMove`. Voir skill `qt-tooltips` pour le
+   mécanisme général de `force_refresh_visible()`. **Ne jamais** remplacer cet
+   appel par un test `self._overlay_tip._label.isVisible()` : comme les 3
+   indicateurs partagent le même `OverlayTooltip` et que `refresh()` recalcule
+   les 3 à la suite dans un seul appel, `isVisible()` resterait vrai après
+   qu'un premier indicateur a déjà forcé son propre réaffichage — un second
+   indicateur ferait alors apparaître son tooltip à tort, même si la souris ne
+   l'a jamais survolé (ex. cliquer sur l'indicateur de renumérotation faisait
+   apparaître le tooltip des doublons).
 
 ## Tooltips — `OverlayTooltip` obligatoire
 
@@ -116,7 +124,10 @@ ZIP par défaut).
    `status_bar_qt.py` indépendant de la logique applicative.
 4. Dans `refresh()`, calculer texte/tooltip/curseur/couleur à partir de
    `state`, en respectant les règles UI n°1/2/3 (thème, police, retraduction)
-   à chaque appel — pas seulement à la création.
+   à chaque appel — pas seulement à la création. Terminer par
+   `self._overlay_tip.set_tracked_html(html, indicator)` puis
+   `self._overlay_tip.force_refresh_visible(indicator)`, comme les 3
+   indicateurs existants (voir point 7 ci-dessus).
 5. Ajouter les clés de traduction (`labels.xxx_indicator*`,
    `tooltip.xxx_indicator*`) dans tous les fichiers `locales/*.json` — voir
    skill `add-translation`.

@@ -2,7 +2,7 @@
 modules/qt/shapes_tool_qt.py — Outil "formes" (shapes) de la barre d'outils
 flottante de la visionneuse principale (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 12e outil migré) : ce
+Fusion progressive des visionneuses : ce
 module contient toute la logique propre à l'outil "shapes" — état/
 interactions du canvas (mixin ShapeCanvasMixin, hérité par _ViewerCanvas),
 commit des formes dans l'historique du panneau (mixin ShapeViewerMixin,
@@ -12,7 +12,7 @@ image_viewer_qt.py ne fait qu'hériter de ces deux mixins et brancher l'icône
 de la barre d'outils — voir CLAUDE.md règle "ne jamais migrer le code d'un
 outil dans image_viewer_qt.py".
 
-5 types de formes (idees.txt, décision utilisateur) :
+5 types de formes (décision utilisateur) :
   ellipse | rectangle | rectangle à coins arrondis | ligne | flèche
 Comme le texte, PLUSIEURS formes peuvent coexister sur une même page
 (_shapes, liste). Contrairement au texte (overlay QTextEdit natif), une
@@ -45,9 +45,9 @@ forme existe (décision explicite utilisateur — écart assumé par rapport aux
 image_viewer_qt.py::_ViewerCanvas._show_validate_btn pour l'implémentation
 partagée exacte de cette variante.
 
-Couleur UNIQUE (trait ET remplissage, pas deux couleurs séparées — retour
-utilisateur explicite après un premier jet à deux boutons de couleur jugé
-confus) : réutilisation telle quelle de _ColorPickerDialog (text_tool_qt.py)
+Couleur UNIQUE (trait ET remplissage, pas deux couleurs séparées — deux
+boutons de couleur distincts sont jugés confus) : réutilisation telle quelle
+de _ColorPickerDialog (text_tool_qt.py)
 — même sélecteur maison, un seul bouton couleur. Case à cocher "remplissage
 activé" : une vraie QCheckBox (contrairement au reste des toggles de ce
 panneau/de clone_tool_qt.py::_CloneOptionsPanel, qui utilisent des
@@ -96,17 +96,17 @@ SHAPE_TYPES = ("ellipse", "rectangle", "rounded_rectangle", "line", "arrow")
 _LINE_LIKE = ("line", "arrow")
 
 # Rayon des coins arrondis, en pixels IMAGE (indépendant du zoom, comme
-# l'épaisseur de trait) — pas configurable par l'utilisateur (idees.txt,
-# pas de contrôle dédié demandé), valeur fixe raisonnable.
+# l'épaisseur de trait) — pas configurable par l'utilisateur (pas de
+# contrôle dédié demandé), valeur fixe raisonnable.
 _ROUNDED_RADIUS_IMG = 18
 # Géométrie de la tête de flèche, en pixels IMAGE.
 _ARROW_HEAD_LEN_IMG = 22
 _ARROW_HEAD_ANGLE = math.radians(28)
-# Croissance de la tête avec l'épaisseur du trait, PLAFONNÉE (bug vécu : à
-# épaisseur max (40), une croissance linéaire sans plafond (+thickness*2)
-# donnait une tête disproportionnée occupant presque toute la longueur
-# tracée, rendant la flèche méconnaissable) — au-delà de _ARROW_HEAD_MAX_ADD,
-# le trait épaissit toujours mais la tête n'grandit plus.
+# Croissance de la tête avec l'épaisseur du trait, PLAFONNÉE : à épaisseur
+# max (40), une croissance linéaire sans plafond (+thickness*2) donnerait une
+# tête disproportionnée occupant presque toute la longueur tracée, rendant la
+# flèche méconnaissable — au-delà de _ARROW_HEAD_MAX_ADD, le trait épaissit
+# toujours mais la tête n'grandit plus.
 _ARROW_HEAD_MAX_ADD = 24
 
 
@@ -123,7 +123,7 @@ def _arrow_head_len(thickness: int, zoom: float) -> int:
     _paint_arrow_head, où le corps du trait doit reculer exactement de cette
     même valeur) et le rendu final PIL (ShapeViewerMixin._draw_one_shape, en
     coordonnées image donc zoom=1.0) : un écart entre deux calculs séparés
-    faisait déborder le corps du trait dans la tête d'un côté (bug vécu)."""
+    ferait déborder le corps du trait dans la tête d'un côté."""
     return max(8, int(_ARROW_HEAD_LEN_IMG * zoom) + min(thickness, _ARROW_HEAD_MAX_ADD) * 2)
 
 
@@ -135,7 +135,7 @@ def _build_rotate_cursor() -> QCursor:
     remplace Qt.PointingHandCursor (retour utilisateur explicite : une main
     de pointage standard ne se distingue pas assez visuellement des autres
     curseurs pour signaler "ceci pivote"). Réutilisé À L'IDENTIQUE par
-    paste_image_tool_qt.py (idees.txt #1, "les remarques sont valables aussi
+    paste_image_tool_qt.py ("les remarques sont valables aussi
     pour shapes" — mécanisme de poignées partagé entre les deux outils,
     donc UNE SEULE fonction de curseur plutôt que deux dessins séparés).
     Mis en cache au niveau module (dessiné une seule fois, jamais recalculé
@@ -189,7 +189,7 @@ def _build_rotate_cursor() -> QCursor:
 
 def _paint_out_of_page_bounds_overlay(painter, canvas, corners_widget: list) -> None:
     """Grise la portion d'un objet manipulable (forme OU image collée) qui
-    dépasse des limites de la PAGE affichée (idees.txt #1, décision explicite
+    dépasse des limites de la PAGE affichée (décision explicite
     utilisateur : "la partie hors de l'image principale doit être grisée
     afin de signifier à l'utilisateur qu'elle sera tronquée à l'aplatissage"
     — s'applique aussi à shapes). `corners_widget` = les 4 coins de l'objet
@@ -219,9 +219,8 @@ def _paint_out_of_page_bounds_overlay(painter, canvas, corners_widget: list) -> 
     if out_of_bounds.isEmpty():
         return
     painter.save()
-    # Opacité relevée à 210/255 (précédemment 150 — retour utilisateur
-    # explicite : "pas assez marqué", un gris à 59% restait peu contrasté sur
-    # une image source colorée) + fine bordure pointillée rouge en plus du
+    # Opacité à 210/255 : un gris plus faible reste peu contrasté sur une
+    # image source colorée. Fine bordure pointillée rouge en plus du
     # remplissage gris — même couleur d'alerte que les poignées de sélection
     # (QColor("red")) déjà utilisée ailleurs dans cette barre, pour un signal
     # net même sur un fond déjà sombre.
@@ -328,7 +327,7 @@ class _ShapeOptionsPanel(QWidget):
         # référence self._fill_enabled_cb, qui n'existe pas encore tant que
         # le reste du panneau n'est pas construit — setChecked(True) plus bas
         # dans la boucle émettrait toggled immédiatement et provoquerait un
-        # AttributeError (bug vécu). Connexion + coche différées en fin de
+        # AttributeError. Connexion + coche différées en fin de
         # __init__, une fois tous les widgets du panneau créés.
         self._shape_buttons: dict[str, QPushButton] = {}
         for shape_type in SHAPE_TYPES:
@@ -390,8 +389,8 @@ class _ShapeOptionsPanel(QWidget):
         # nécessite un style ::indicator EXPLICITE (posé dans _apply_theme)
         # pour rester visible sur ce panneau à fond stylé
         # (WA_StyledBackground) : un style ne posant que background/color
-        # laissait l'indicateur totalement invisible (bug vécu), voir
-        # _apply_theme pour le détail.
+        # laisse l'indicateur totalement invisible, voir _apply_theme pour
+        # le détail.
         self._fill_enabled_cb = QCheckBox()
         self._fill_enabled_cb.toggled.connect(self._on_fill_enabled_toggled)
         layout.addWidget(self._fill_enabled_cb)
@@ -528,8 +527,7 @@ class _ShapeOptionsPanel(QWidget):
         # Plat, SANS cadre/fond au repos — icône seule, comme _ToolButton de
         # la barre principale plutôt qu'un carré vide avec bordure autour
         # d'un dessin déjà complet (icône pipette_blanche.png trop chargée
-        # visuellement pour supporter un cadre en plus, retour utilisateur :
-        # "pourquoi as-tu mis la pipette dans un putain de carré ?"). Léger
+        # visuellement pour supporter un cadre en plus). Léger
         # surlignage seulement au survol ou à l'état armé (checked).
         pip_style = (
             f"QPushButton {{ background: transparent; border: 1px solid transparent; "
@@ -548,14 +546,13 @@ class _ShapeOptionsPanel(QWidget):
         # mais ici corrigée en stylant explicitement ::indicator au lieu de
         # remplacer le widget par un QPushButton checkable (une vraie case à
         # cocher reste la meilleure affordance visuelle pour "activer/
-        # désactiver", demande explicite utilisateur). État coché = une vraie
-        # coche (checkmark_white.png, générée en PIL) sur fond gris foncé FIXE
-        # (ni la couleur d'accent bleue — retour utilisateur : un carré bleu
-        # plein laissait croire à tort que le remplissage serait bleu — ni le
-        # fond clair du thème, qui rendait la coche blanche quasi invisible
-        # en thème clair, autre retour utilisateur) : un gris foncé neutre
-        # reste lisible dans les deux thèmes sans évoquer une couleur de
-        # remplissage réelle.
+        # désactiver"). État coché = une vraie coche (checkmark_white.png,
+        # générée en PIL) sur fond gris foncé FIXE — ni la couleur d'accent
+        # bleue (un carré bleu plein laisserait croire à tort que le
+        # remplissage sera bleu), ni le fond clair du thème (rendrait la
+        # coche blanche quasi invisible en thème clair) : un gris foncé
+        # neutre reste lisible dans les deux thèmes sans évoquer une couleur
+        # de remplissage réelle.
         from modules.qt.font_loader import resource_path
         checkmark_path = resource_path("icons/checkmark_white.png").replace("\\", "/")
         self._fill_enabled_cb.setStyleSheet(
@@ -611,11 +608,10 @@ class _ShapeOptionsPanel(QWidget):
         self.move(max(0, x), y)
 
     def mousePressEvent(self, event):
-        # Piège corrigé (2026-08-15, découvert sur le panneau de
-        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
-        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
-        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
-        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        # Sans ce blindage, un clic sur une zone vide du panneau "fuit" vers
+        # _ViewerCanvas en dessous — même piège déjà documenté pour
+        # _ToolButton/_ActionButton/_ViewerToolbar (skill viewers), appliqué
+        # par cohérence à tous les panneaux flottants.
         event.accept()
 
     def mouseReleaseEvent(self, event):
@@ -624,7 +620,7 @@ class _ShapeOptionsPanel(QWidget):
     def enterEvent(self, event):
         self._viewer._toolbar.pause_hide()
         # Le curseur posé par shape_update_cursor (poignées de
-        # redimensionnement/rotation) ou la pipette (idees.txt #4) est celui
+        # redimensionnement/rotation) ou la pipette est celui
         # du CANVAS, pas celui de ce panneau — sans ce reset, il restait
         # affiché par-dessus les contrôles du panneau, même piège corrigé sur
         # _TransparencyOptionsPanel/_LevelsOptionsPanel.
@@ -665,10 +661,9 @@ class _ShapeOptionsPanel(QWidget):
         self._update_fill_controls_enabled()
         self._deactivate_pipettes()
         # Répercute sur la forme SÉLECTIONNÉE déjà tracée (pas encore
-        # validée) — même principe que _on_thickness_changed/_set_color, qui
-        # le faisaient déjà correctement. Manquait ici (bug vécu : cocher/
-        # décocher "Remplissage" n'avait aucun effet visible tant qu'on ne
-        # retraçait pas une nouvelle forme).
+        # validée) — même principe que _on_thickness_changed/_set_color :
+        # sans ça, cocher/décocher "Remplissage" n'aurait aucun effet visible
+        # tant qu'on ne retrace pas une nouvelle forme.
         active = self._viewer._canvas._shape_active
         if active is not None:
             active.fill_enabled = checked and active.shape_type not in _LINE_LIKE
@@ -892,14 +887,13 @@ class ShapeCanvasMixin:
             angle = math.atan2(wy2 - wy1, wx2 - wx1)
             # Le corps du trait s'arrête AVANT la base du triangle de la
             # tête (pas jusqu'à la pointe x2,y2) — un trait épais dont le
-            # bout rond/carré atteint la pointe déborde visuellement des
-            # côtés du triangle et "avale" la tête, la rendant méconnaissable
-            # dès que thickness dépasse la largeur de sa base (bug vécu :
-            # pointe de flèche disparue en épaississant le trait). MÊME
-            # head_len que _paint_arrow_head (fonction module partagée
+            # bout rond/carré atteint la pointe déborderait visuellement des
+            # côtés du triangle et "avalerait" la tête, la rendant
+            # méconnaissable dès que thickness dépasse la largeur de sa base.
+            # MÊME head_len que _paint_arrow_head (fonction module partagée
             # _arrow_head_len, pas deux calculs séparés) — un écart entre les
-            # deux faisait déborder le corps DANS la tête d'un côté,
-            # décalant visuellement l'apparence de la pointe (bug vécu).
+            # deux ferait déborder le corps DANS la tête d'un côté, décalant
+            # visuellement l'apparence de la pointe.
             body_end_x = wx2 - head_len * 0.85 * math.cos(angle)
             body_end_y = wy2 - head_len * 0.85 * math.sin(angle)
             painter.drawLine(int(wx1), int(wy1), int(body_end_x), int(body_end_y))
@@ -908,8 +902,8 @@ class ShapeCanvasMixin:
         if rotated:
             painter.restore()
 
-        # Grisage de la portion hors des limites de la page (idees.txt #1,
-        # décision explicite utilisateur, s'applique aussi à cet outil) —
+        # Grisage de la portion hors des limites de la page (décision
+        # explicite utilisateur, s'applique aussi à cet outil) —
         # uniquement pour les formes FERMÉES (ellipse/rectangle/rectangle
         # arrondi) : ligne/flèche n'ont pas de zone surfacique dont "la
         # partie hors de l'image principale" aurait un sens visuel comparable
@@ -1206,7 +1200,7 @@ class ShapeCanvasMixin:
             ix, iy = self._shape_widget_to_image(local)
 
         # Poignées de COIN : redimensionnement à PROPORTIONS CONSERVÉES
-        # (idees.txt #1, décision explicite utilisateur, s'applique aussi à
+        # (décision explicite utilisateur, s'applique aussi à
         # cet outil formes) — seules les 4 poignées de BORD (milieu, 'left'/
         # 'right'/'top'/'bottom') redimensionnent librement en déformant.
         # Le coin opposé à celui tiré reste FIXE (pivot), le ratio largeur/
@@ -1361,7 +1355,7 @@ class ShapeViewerMixin:
         (selon has_shapes) — ne touche JAMAIS à sa visibilité, pilotée
         uniquement par _ViewerToolbar.show_and_schedule_hide/_on_hide_timeout
         (mécanisme unique, voir image_viewer_qt.py::_update_validate_btn_state).
-        Bouton "Annuler" jumeau rafraîchi juste à côté (2026-08-15)."""
+        Bouton "Annuler" jumeau rafraîchi juste à côté."""
         if self._toolbar.active_tool == "shapes":
             self._canvas._update_validate_btn_state()
             self._canvas._update_cancel_btn_state()
@@ -1459,7 +1453,7 @@ class ShapeViewerMixin:
             # zoom=1.0 ici car ce rendu travaille déjà en coordonnées image)
             # — pour que le rendu final aplati corresponde exactement à ce
             # qui a été validé visuellement (un écart entre deux calculs
-            # séparés faisait déborder le corps dans la tête, bug vécu).
+            # séparés ferait déborder le corps dans la tête).
             head_len = _arrow_head_len(thickness=thickness, zoom=1.0)
             body_end_x = shape.ix2 - head_len * 0.85 * math.cos(angle)
             body_end_y = shape.iy2 - head_len * 0.85 * math.sin(angle)
@@ -1515,8 +1509,13 @@ class ShapeViewerMixin:
 
             orig_mode = entry.get('_orig_mode', 'RGBA')
             out_img = composed
+            # .bmp exclu : Pillow écrit bien un canal alpha 32-bit, mais ne le
+            # redétecte pas à la relecture (header BMP classique ambigu sur la
+            # présence d'alpha) — transparence non fiable, voir color_depth_tool_qt.py.
             if orig_mode not in ('RGBA', 'LA', 'P') and \
-                    entry.get('extension', '').lower() not in ('.png', '.webp', '.avif'):
+                    entry.get('extension', '').lower() not in (
+                        '.png', '.webp', '.avif', '.tiff', '.tif', '.ico'
+                    ):
                 bg = Image.new('RGB', out_img.size, (255, 255, 255))
                 bg.paste(out_img, mask=out_img.split()[3])
                 out_img = bg
@@ -1556,10 +1555,10 @@ class ShapeViewerMixin:
             # Recalcule l'état vert/actif ↔ gris/inactif du bouton "Valider"
             # partagé maintenant que has_shapes vient de repasser à False
             # (clear_shapes() juste au-dessus) — sans cet appel, le bouton
-            # restait vert après validation alors qu'il n'y a plus rien à
-            # valider (bug vécu : _update_validate_btn_state() n'est
-            # normalement rappelé qu'au clic sur une forme/à un changement de
-            # sélection, jamais après un clear_shapes() programmatique).
+            # resterait vert après validation alors qu'il n'y a plus rien à
+            # valider : _update_validate_btn_state() n'est normalement
+            # rappelé qu'au clic sur une forme/à un changement de sélection,
+            # jamais après un clear_shapes() programmatique.
             self._on_shapes_content_changed()
 
         except Exception:

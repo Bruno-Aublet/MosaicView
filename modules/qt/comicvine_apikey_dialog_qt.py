@@ -42,13 +42,11 @@ class _ApiKeyDialog(QDialog):
         layout.setContentsMargins(30, 24, 30, 24)
         layout.setSpacing(14)
 
-        # Explication
         self._explanation = QLabel()
         self._explanation.setWordWrap(True)
         self._explanation.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._explanation)
 
-        # Instructions avec liens cliquables
         self._instructions = QLabel()
         self._instructions.setWordWrap(True)
         self._instructions.setOpenExternalLinks(True)
@@ -60,7 +58,6 @@ class _ApiKeyDialog(QDialog):
         ])
         layout.addWidget(self._instructions)
 
-        # Champ de saisie
         field_row = QHBoxLayout()
         field_row.setContentsMargins(0, 4, 0, 0)
         self._field_label = QLabel()
@@ -75,13 +72,11 @@ class _ApiKeyDialog(QDialog):
         field_row.addWidget(self._btn_toggle_visibility)
         layout.addLayout(field_row)
 
-        # Notice chiffrement
         self._encryption_notice = QLabel()
         self._encryption_notice.setWordWrap(True)
         self._encryption_notice.setAlignment(Qt.AlignCenter)
         layout.addWidget(self._encryption_notice)
 
-        # Message d'erreur (caché par défaut)
         self._error_label = QLabel()
         self._error_label.setAlignment(Qt.AlignCenter)
         self._error_label.hide()
@@ -89,7 +84,6 @@ class _ApiKeyDialog(QDialog):
 
         layout.addStretch()
 
-        # Boutons
         btn_row = QHBoxLayout()
         btn_row.setContentsMargins(0, 0, 0, 0)
         btn_row.addStretch()

@@ -78,7 +78,6 @@ def convert_image_data(entry, target_format, quality):
         if img is None:
             return None, f"{entry['orig_name']} : image non chargée"
 
-        # Récupère le DPI de l'image source (tuple (x, y) ou None)
         _raw_dpi = entry.get("dpi") or img.info.get("dpi")
         if _raw_dpi:
             if isinstance(_raw_dpi, (int, float)):
@@ -106,7 +105,6 @@ def convert_image_data(entry, target_format, quality):
         new_ext = ext_map.get(target_format, ".png")
         new_name = name_without_ext + new_ext
 
-        # Crée une copie de l'image pour la conversion
         converted_img = img.copy()
 
         # Conversion du mode CMYK/I/F → RGB
@@ -154,7 +152,6 @@ def convert_image_data(entry, target_format, quality):
             # PNG, BMP : pas de DPI via save()
             converted_img.save(img_bytes, format=target_format)
 
-        # Crée la nouvelle entrée
         img_bytes.seek(0)
         new_entry = {
             "orig_name": new_name,
@@ -335,14 +332,12 @@ def detect_merge_adjustment(positions_data):
     for row in rows:
         row.sort(key=lambda item: item["x"])
 
-    # Hauteurs dans chaque ligne horizontale
     for row in rows:
         if len(row) > 1:
             heights = [item["img"].height for item in row]
             if len(set(heights)) > 1:
                 return True, 'height', heights
 
-    # Largeurs entre les lignes
     if len(rows) > 1:
         row_widths = []
         for row in rows:
@@ -372,7 +367,6 @@ def merge_images_2d(positions_data, ask_adjustment_func=None):
     if not positions_data:
         return None
 
-    # Extrait les images et leurs positions
     items = []
     for i, pos_data in enumerate(positions_data):
         items.append({
@@ -398,17 +392,15 @@ def merge_images_2d(positions_data, ask_adjustment_func=None):
             current_row = [item]
     rows.append(current_row)
 
-    # Pour chaque ligne, trie les images par X (gauche à droite)
     for row in rows:
-        row.sort(key=lambda item: item["x"])
+        row.sort(key=lambda item: item["x"])  # trie chaque ligne par X (gauche à droite)
 
-    # Détecte les différences de dimensions
     need_adjustment = False
     adjustment_mode = 'keep_original'
     dimension_type = 'height'
     dimensions_list = []
 
-    # Vérifie les hauteurs dans chaque ligne horizontale
+    # Hauteurs dans chaque ligne horizontale
     for row in rows:
         if len(row) > 1:
             heights = [item["img"].height for item in row]
@@ -418,7 +410,7 @@ def merge_images_2d(positions_data, ask_adjustment_func=None):
                 dimensions_list = heights
                 break
 
-    # Vérifie les largeurs entre les lignes
+    # Largeurs entre les lignes
     if not need_adjustment and len(rows) > 1:
         row_widths = []
         for row in rows:
@@ -486,7 +478,6 @@ def merge_images_2d(positions_data, ask_adjustment_func=None):
             y_offset += rd["img"].height
         return merged_img
 
-    # Calcule les dimensions du canvas final
     min_x_real = min(rd["start_x_real"] for rd in row_data)
     max_width = max(rd["start_x_real"] - min_x_real + rd["img"].width for rd in row_data)
     total_height = sum(rd["img"].height for rd in row_data)

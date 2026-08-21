@@ -5,15 +5,13 @@ description: Localiser ou modifier la fonction "Suppression des couleurs" (effet
 
 # Ajustement "Suppression des couleurs" — MosaicView
 
-Outil de la barre d'outils flottante de la visionneuse principale (9e outil migré, 5e des 8 modes d'ajustement, v1.7.4, 2026-08-14) — voir skill `viewers`, section "Le cas de la suppression des couleurs", pour l'intégration dans la barre (panneau flottant, preview live, commit, undo/redo). Ce skill-ci ne couvre que la formule PIL elle-même, inchangée depuis la migration.
-
-**Ancien emplacement retiré** : la section "Suppression des couleurs" du panneau Ajustements classique et le mode `'remove_colors'` de l'ancienne visionneuse annexe `AdjustmentViewerDialog` ont été entièrement supprimés (2026-08-14) une fois la migration validée — plus aucune trace dans `adjustments_dialog_qt.py` ni `adjustments_viewers_qt.py`. Les clés de traduction `dialogs.adjustments.effect_remove_colors`/`remove_colors_intensity_label`, devenues orphelines, ont été retirées des 46 langues.
+Outil de la barre d'outils flottante de la visionneuse principale — voir skill `viewers`, section "Le cas de la suppression des couleurs", pour l'intégration dans la barre (panneau flottant, preview live, commit, undo/redo). Ce skill-ci ne couvre que la formule PIL elle-même.
 
 ## Où
 
 - UI : `modules/qt/remove_colors_tool_qt.py` — `_RemoveColorsOptionsPanel` (panneau flottant, réglette 0-100 + spinbox), `RemoveColorsCanvasMixin`/`RemoveColorsViewerMixin` (mixins hérités par `_ViewerCanvas`/`ImageViewer`, voir skill `viewers`)
 - Handler : `RemoveColorsViewerMixin.perform_remove_colors()` — commit réel au relâchement du slider/perte de focus de la spinbox, réutilise `apply_image_adjustments()`
-- Traitement : `image_processing_qt.py::apply_adjustments()`, bloc `# ── Suppression des couleurs ──` (seul moteur de calcul, partagé, inchangé par la migration)
+- Traitement : `image_processing_qt.py::apply_adjustments()`, bloc `# ── Suppression des couleurs ──` (seul moteur de calcul, partagé)
 - Comportement du slider après commit : reste sur la valeur appliquée (ne revient PAS à 0), même principe que brightness/saturation — voir skill `viewers`.
 
 ## Ce que fait réellement ce réglage
@@ -45,7 +43,7 @@ Contrairement à la plupart des autres réglages, il n'y a pas de "formule simpl
 
 ## Modifier cette fonction
 
-Le bloc entier est autonome dans `apply_adjustments()` (`if remove_int > 0:`) — toute modification de formule doit rester dans ce bloc. Si le curseur doit changer d'échelle ou de bornes, mettre à jour `remove_colors_tool_qt.py::_RemoveColorsOptionsPanel` (`_RANGE_MIN`/`_RANGE_MAX`), seule définition UI restante désormais que le panneau classique et le viewer annexe ont été retirés.
+Le bloc entier est autonome dans `apply_adjustments()` (`if remove_int > 0:`) — toute modification de formule doit rester dans ce bloc. Si le curseur doit changer d'échelle ou de bornes, mettre à jour `remove_colors_tool_qt.py::_RemoveColorsOptionsPanel` (`_RANGE_MIN`/`_RANGE_MAX`), seule définition UI de ce réglage.
 
 ## Références croisées
 

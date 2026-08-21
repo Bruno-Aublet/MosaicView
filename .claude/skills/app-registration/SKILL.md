@@ -39,9 +39,9 @@ Modifier le tuple `_SUPPORTED_EXTS` en tête de `app_registration_qt.py`. Deux r
 1. **La liste est exhaustive aux yeux de Windows** — piège vérifié en vrai : quand `SupportedTypes` existait avec seulement `.mvdb`, MosaicView a **disparu** du menu immédiat « Ouvrir avec » des `.cbz`/`.cbr`/etc. (Windows interprète « je déclare ce que je sais ouvrir » comme « je ne sais PAS ouvrir le reste »). Toute extension que l'appli sait ouvrir doit donc y figurer — en pratique, garder la liste alignée sur `_COMIC_EXTS` de `MosaicView.py::main()` (+ `.mvdb`). Si on ajoute un nouveau format d'archive/image à l'appli (voir skill `archive-image-loading`), penser à l'ajouter ici aussi.
 2. **Le code ne supprime jamais rien** : retirer une extension du tuple ne la retire pas du registre des machines où elle a déjà été écrite (le check d'idempotence ne vérifie que la présence des extensions attendues, pas l'absence d'extensions en trop). Pour un retrait effectif il faudrait une suppression explicite — à signaler à l'utilisateur si le cas se présente.
 
-## Sécurité (audit du 2026-07-16 — rien à corriger, propriétés à ne pas casser)
+## Sécurité — propriétés à ne pas casser
 
-Le mécanisme a été audité et jugé sain. Les propriétés suivantes sont **délibérées** — toute modification doit les préserver :
+Les propriétés suivantes sont **délibérées** — toute modification doit les préserver :
 
 - **HKCU uniquement, jamais HKLM, aucune élévation** : impossible d'affecter les autres comptes ou le système.
 - **Chemins quotés** : `expected = f'"{exe}" "%1"'` — les deux paires de guillemets sont **indispensables**. Sans guillemets autour de l'exe : détournement classique par chemin non quoté (`C:\Program.exe` intercepte `C:\Program Files\...`). Sans guillemets autour de `%1` : un nom de fichier avec espaces serait découpé en plusieurs arguments. Pas de problème d'échappement : le caractère `"` est interdit dans les noms de fichiers NTFS.

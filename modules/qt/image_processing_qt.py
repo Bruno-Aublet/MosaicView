@@ -1,11 +1,8 @@
 """
-modules/qt/image_processing_qt.py — Logique PIL pour les ajustements d'images
-(renommé depuis adjustments_processing_qt.py le 2026-08-16, voir idees.txt #3 :
-l'ancien nom référençait la fenêtre "Ajustements d'image", disparue le même
-jour, alors que ce fichier n'a jamais contenu de code Qt).
+modules/qt/image_processing_qt.py — Logique PIL pour les ajustements d'images.
 
 Indépendant de l'UI (pas de Qt). Moteur de calcul partagé par les outils de la
-barre d'outils flottante de la visionneuse principale (viewers, idees.txt #3) —
+barre d'outils flottante de la visionneuse principale (viewers) —
 sharpness_tool_qt.py, brightness_tool_qt.py, saturation_tool_qt.py,
 remove_colors_tool_qt.py, compression_tool_qt.py, levels_tool_qt.py,
 color_depth_tool_qt.py, effects_tool_qt.py, image_mode_tool_qt.py.
@@ -17,6 +14,7 @@ Fonctions publiques :
 """
 
 import io
+import os
 
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
@@ -187,10 +185,12 @@ def apply_adjustments(img, settings, for_preview=False):
     elif color_depth == '24':
         img = img.convert('RGB')  if img.mode != 'RGB'  else img
     elif color_depth == '8':
-        if original_ext in ('.jpg', '.jpeg'):
+        if original_ext in ('.jpg', '.jpeg', '.jfif', '.pjpeg', '.pjp'):
             img = img.convert('L')
         else:
-            img = img.convert('P', palette=Image.ADAPTIVE, colors=256).convert('RGB')
+            # Jamais de reconversion RGB silencieuse après coup — le choix
+            # "8 bits" doit rester réellement en mode P (palette).
+            img = img.convert('P', palette=Image.ADAPTIVE, colors=256)
     elif color_depth == '1':
         img = img.convert('L').point(lambda p: 255 if p > 128 else 0, '1')
         if for_preview:
@@ -279,17 +279,19 @@ def apply_image_adjustments(selected_entries, settings, callbacks=None):
             img = Image.open(io.BytesIO(entry['bytes']))
             img = apply_adjustments(img, settings_for_entry)
 
-            # JPEG ne supporte pas RGBA, LA, P ni le mode 1 bit → force PNG
+            # JPEG (et ses synonymes JFIF/PJPEG/PJP) ne supporte pas RGBA, LA,
+            # P ni le mode 1 bit → force PNG
             save_ext = original_ext
-            if img.mode in ('RGBA', 'LA', 'P', '1') and original_ext in ('.jpg', '.jpeg'):
+            if img.mode in ('RGBA', 'LA', 'P', '1') and original_ext in ('.jpg', '.jpeg', '.jfif', '.pjpeg', '.pjp'):
                 save_ext = '.png'
 
             entry['img'] = img
-            orig_ext = entry.get('extension')
             entry['extension'] = save_ext
             entry['bytes'] = save_image_to_bytes(entry)
-            entry['extension'] = orig_ext
             entry['img'] = None
+            if save_ext != original_ext:
+                base_name = os.path.splitext(entry.get('orig_name', ''))[0]
+                entry['orig_name'] = base_name + save_ext
             entry['_thumbnail'] = None
             entry['large_thumb_pil'] = None
             entry['qt_pixmap_large'] = None

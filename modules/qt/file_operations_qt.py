@@ -1,19 +1,13 @@
 """
-file_operations_qt.py — Opérations de sauvegarde/export pour la version PySide6.
+file_operations_qt.py — Opérations de sauvegarde/export.
 
-Implémente les 6 méthodes de sauvegarde de l'appli originale :
+Implémente les 6 méthodes de sauvegarde :
   1. save_as_cbz              — Enregistrer sous (nouveau fichier CBZ)
   2. save_selection_as_cbz    — Enregistrer la sélection en CBZ
   3. save_selection_to_folder — Exporter les pages sélectionnées (dossier ou fichier)
   4. create_cbz_from_images   — Créer une archive CBZ (mode images seules)
   5. apply_new_names          — Appliquer les modifications et sauvegarder le CBZ
   6. apply_new_names          — Appliquer les modifications et créer un CBZ (CBR/PDF → CBZ)
-
-Les dialogs Qt remplacent les Toplevel tkinter :
-  - InfoDialogClickablePath  ↔  InfoDialogWithClickablePath
-  - SaveSuccessDialog        ↔  SaveSuccessDialog
-  - DuplicateFilenameDialog  ↔  DuplicateFilenameDialog
-  - DuplicateNamesErrorDialog↔  DuplicateNamesErrorDialog
 """
 
 import os
@@ -106,10 +100,7 @@ def _open_folder(folder):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class InfoDialogClickablePath(QDialog):
-    """
-    Dialogue d'information avec chemin de fichier cliquable.
-    Équivalent Qt de InfoDialogWithClickablePath (tkinter).
-    """
+    """Dialogue d'information avec chemin de fichier cliquable."""
 
     def __init__(self, parent, title_key: str, message_key: str, filepath: str, on_done=None):
         super().__init__(parent)
@@ -188,7 +179,6 @@ class InfoDialogClickablePath(QDialog):
 class SaveSuccessDialog(QDialog):
     """
     Dialogue de sauvegarde réussie avec chemin cliquable et question de suppression.
-    Équivalent Qt de SaveSuccessDialog (tkinter).
     result = True si l'utilisateur choisit Oui (supprimer le fichier d'origine).
     """
 
@@ -305,10 +295,7 @@ class SaveSuccessDialog(QDialog):
 
 
 class DuplicateNamesErrorDialog(QDialog):
-    """
-    Dialogue d'erreur pour les noms de fichiers en double dans apply_new_names.
-    Équivalent Qt de DuplicateNamesErrorDialog (tkinter).
-    """
+    """Dialogue d'erreur pour les noms de fichiers en double dans apply_new_names."""
 
     def __init__(self, parent, message_func, title_key: str):
         super().__init__(parent)
@@ -373,7 +360,6 @@ class DuplicateNamesErrorDialog(QDialog):
 class DuplicateFilenameDialog(QDialog):
     """
     Dialogue pour les doublons de noms de fichiers lors d'une sauvegarde.
-    Équivalent Qt de DuplicateFilenameDialog (tkinter).
     result = "renumber" | "ignore" | None (annuler)
     """
 
@@ -479,7 +465,7 @@ class DuplicateFilenameDialog(QDialog):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# FileSavedDialog (équivalent show_files_saved_dialog tkinter)
+# FileSavedDialog
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class FileSavedDialog(QDialog):

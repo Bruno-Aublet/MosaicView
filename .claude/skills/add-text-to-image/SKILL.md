@@ -5,9 +5,9 @@ description: Localiser ou modifier l'ajout de texte sur une image (blocs de text
 
 # Ajout de texte sur une image — MosaicView
 
-4e outil migré (v1.7.3) dans la barre d'outils flottante de la visionneuse principale (`ImageViewer`, `image_viewer_qt.py`), après crop/straighten/clone — voir skill `viewers` (section "Fusion progressive") pour l'architecture générale en mixins et les décisions transversales. L'utilisateur clique sur l'image pour placer un ou plusieurs **blocs de texte riche** (police, taille, gras/italique/souligné, couleur avec alpha) superposés en transparence par-dessus l'image, déplaçables librement, puis "aplatis" (rendus définitivement) dans les pixels de l'image PIL au clic sur "Valider". Usage typique : ajouter une bulle de traduction, un titre, une légende ou une correction de texte directement sur une page scannée.
+Outil de la barre d'outils flottante de la visionneuse principale (`ImageViewer`, `image_viewer_qt.py`) — voir skill `viewers` pour l'architecture générale en mixins et les décisions transversales. L'utilisateur clique sur l'image pour placer un ou plusieurs **blocs de texte riche** (police, taille, gras/italique/souligné, couleur avec alpha) superposés en transparence par-dessus l'image, déplaçables librement, puis "aplatis" (rendus définitivement) dans les pixels de l'image PIL au clic sur "Valider". Usage typique : ajouter une bulle de traduction, un titre, une légende ou une correction de texte directement sur une page scannée.
 
-**L'ancienne fenêtre dédiée `TextViewerDialog`/`text_viewer_qt.py` a été entièrement supprimée** (v1.7.3, après migration complète et confirmation utilisateur) — plus aucune référence, plus d'historique interne séparé par fenêtre. Tout vit désormais dans `modules/qt/text_tool_qt.py`.
+Tout le mécanisme vit dans `modules/qt/text_tool_qt.py`, sans fenêtre dédiée séparée.
 
 ## Fichier unique — `modules/qt/text_tool_qt.py`
 
@@ -84,7 +84,7 @@ Entièrement synchrone (pas de worker QThread), suit le pattern (A) complet du s
 
 1. `validate_text()` (branché sur le bouton "Valider" flottant partagé, `_VALIDATE_KEYS["text"] = "buttons.validate_text"`, skill `viewers`) — si aucun bloc non vide, `MsgDialog` d'avertissement (`messages.warnings.no_text_block`) et arrêt ; sinon `perform_text()`.
 2. `save_state()` (undo global, sans `force=True`) avant modification.
-3. `composed = self._text_render_all_blocks(base_img)` puis conversion de mode source si nécessaire (`entry['_orig_mode']`, capturé une seule fois à la première application de texte sur la page — pas à l'ouverture de la visionneuse) : si le mode d'origine n'a pas de canal alpha **et** que le format de fichier ne le supporte pas (hors `.png`/`.webp`/`.avif`), aplatit sur fond blanc opaque avant sauvegarde.
+3. `composed = self._text_render_all_blocks(base_img)` puis conversion de mode source si nécessaire (`entry['_orig_mode']`, capturé une seule fois à la première application de texte sur la page — pas à l'ouverture de la visionneuse) : si le mode d'origine n'a pas de canal alpha **et** que le format de fichier ne le supporte pas de façon fiable (hors `.png`/`.webp`/`.avif`/`.tiff`/`.tif`/`.ico` — **`.bmp` volontairement exclu** malgré une écriture RGBA techniquement possible en Pillow, voir skill `adjust-color-depth`, transparence non fiable à la relecture), aplatit sur fond blanc opaque avant sauvegarde.
 4. Invalidation complète des caches (variante A du skill `apply-image-operation`), synchronisation `ComicInfo.xml` (skill `comicinfo-metadata-editor`), `state.modified = True`, `save_state(force=True)` après modification.
 5. `self._canvas.clear_text_blocks()` (tous les blocs de la page détruits, le texte est maintenant fusionné dans les pixels), `_text_blocks_by_page.pop(current_idx)`, `display_image()`, `self._toolbar.refresh_undo_redo_state()`.
 
@@ -93,7 +93,7 @@ Entièrement synchrone (pas de worker QThread), suit le pattern (A) complet du s
 Contrairement à l'ancienne `text_viewer_qt.py` (trois systèmes empilés), l'outil migré n'a que **deux** niveaux :
 
 1. **Undo natif de frappe Qt**, local à chaque `_RichTextOverlay` tant qu'il a le focus (`document().undo()/redo()`, détourné via `Ctrl+Z`/`Ctrl+Y` dans `_RichTextOverlay.keyPressEvent`) — comportement standard de `QTextEdit`, pas un système ajouté. Concerne uniquement la frappe non encore validée.
-2. **Historique global de l'appli** (`callbacks['save_state']`, skill `undo-redo`) — un seul point créé à la validation (clic sur "Valider"), comme crop/straighten/clone. Décision explicite (`idees.txt` #3, discussion de conception) : pas de point d'historique à chaque frappe.
+2. **Historique global de l'appli** (`callbacks['save_state']`, skill `undo-redo`) — un seul point créé à la validation (clic sur "Valider"), comme crop/straighten/clone. Décision explicite (discussion de conception) : pas de point d'historique à chaque frappe.
 
 Plus d'historique interne par page à la `ImageViewer` — l'ancienne `text_viewer_qt.py` en avait un (snapshot jamais relu de toute façon). La persistance du travail **non validé** (blocs en cours d'édition, changement de page) passe entièrement par `_text_blocks_by_page`, pas par un niveau d'undo.
 
@@ -122,9 +122,7 @@ Trois crashs distincts rencontrés et corrigés en conditions réelles, tous dia
 
 ## Traductions
 
-`locales/*.json` : section `dialogs.text_viewer` — `instruction`, `size_label`/`color_label`, `bold_btn`/`italic_btn`/`underline_btn` (labels courts "G"/"I"/"S"), `pick_color_title` (via `_wt()`). Section `dialogs.color_picker` (6 clés, ajoutées v1.7.3 pour `_ColorPickerDialog`) : `basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`. `buttons.validate_text` (bouton flottant). `viewer.toolbar_text_tooltip` (icône barre d'outils). `messages.warnings.no_text_block`/`messages.errors.text_failed` (validation). Toutes propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR) — voir skill `add-translation`.
-
-**Clés mortes retirées** (ancienne fenêtre supprimée) : `dialogs.text_viewer.title`, `dialogs.text_viewer.apply_btn`, `context_menu.image.text`, `tooltip.text`.
+`locales/*.json` : section `dialogs.text_viewer` — `instruction`, `size_label`/`color_label`, `bold_btn`/`italic_btn`/`underline_btn` (labels courts "G"/"I"/"S"), `pick_color_title` (via `_wt()`). Section `dialogs.color_picker` (6 clés, pour `_ColorPickerDialog`) : `basic_colors_label`/`hex_label`/`red_label`/`green_label`/`blue_label`/`alpha_label`. `buttons.validate_text` (bouton flottant). `viewer.toolbar_text_tooltip` (icône barre d'outils). `messages.warnings.no_text_block`/`messages.errors.text_failed` (validation). Toutes propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR) — voir skill `add-translation`.
 
 **Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que les 3 autres outils migrés, à signaler si une tâche touche à la documentation utilisateur (skill `user-guide`).
 

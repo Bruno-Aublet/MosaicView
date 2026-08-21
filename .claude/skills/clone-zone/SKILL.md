@@ -7,9 +7,9 @@ description: Localiser ou modifier le tampon de clonage (Ctrl+clic pour définir
 
 Outil de retouche classique (façon Photoshop/GIMP), intégré directement dans la **visionneuse principale de lecture** (`ImageViewer`, `modules/qt/image_viewer_qt.py`), pas une fenêtre séparée — l'utilisateur définit une **zone source** par Ctrl+clic, puis peint au clic gauche maintenu pour copier des pixels de cette zone source vers l'endroit peint, avec un pinceau circulaire de taille réglable. Usage typique : effacer un artefact de scan, une tache, un texte parasite, en le recouvrant avec une texture voisine plausible.
 
-**Ancienne fenêtre dédiée `CloneZoneViewerDialog`/`clone_zone_viewer_qt.py` entièrement supprimée** (v1.7.3+, 3e outil migré dans la fusion progressive des visionneuses — voir skill `viewers`). Tout le mécanisme (calcul de décalage source/destination, tamponnage PIL, undo/redo par stroke) a été porté à l'identique dans le nouveau module.
+Tout le mécanisme (calcul de décalage source/destination, tamponnage PIL, undo/redo par stroke) vit dans `modules/qt/clone_tool_qt.py`, sans fenêtre dédiée séparée.
 
-Distinct de `page-straighten` (rotation) et `add-text-to-image` (texte superposé) — même chantier de fusion (crop/straighten/clone déjà migrés, texte pas encore) mais **aucun code partagé**, chaque outil ayant son propre module.
+Distinct de `page-straighten` (rotation) et `add-text-to-image` (texte superposé) — chaque outil de la barre d'outils flottante a son propre module, **aucun code partagé** entre eux (voir skill `viewers` pour la règle architecturale).
 
 ## Module dédié — `modules/qt/clone_tool_qt.py`
 
@@ -107,9 +107,16 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 
 `make_clone_checker`/`_clone_refresh_display` — implémentation **indépendante**, sans fonction partagée avec `_compose_on_checkerboard`/`entries.py::_make_checkerboard_pil` (affichage normal hors stroke) — tuile plus fine (12px) et composition RGB directe sans repasser par le pipeline d'affichage standard.
 
+## Utilitaires partagés hébergés dans ce fichier — sans rapport avec le clonage lui-même
+
+`clone_tool_qt.py` héberge aussi deux éléments réutilisés par d'autres panneaux flottants de la barre, faute d'un module utilitaire dédié :
+
+- **`floating_options_panel_style(theme, class_name)`** — style de fond commun à tous les panneaux flottants d'options de la barre (bordure/fond selon le thème).
+- **`BlockableRadioButton(QRadioButton)`** — radio qui reste `setEnabled(True)` en permanence (continue de recevoir `Enter`/`MouseMove`, donc `OverlayTooltip.track()` fonctionne) mais ignore le clic quand son attribut `.blocked` est vrai (`mousePressEvent` intercepte avant que Qt ne coche le radio). Utilisé par `color_depth_tool_qt.py`/`image_mode_tool_qt.py` pour griser un choix de profondeur/mode incompatible avec le format d'origine du fichier tout en gardant son tooltip explicatif actif — voir skill `adjust-color-depth`, section "Profondeurs bloquées par format d'origine". Un `setEnabled(False)` classique aurait aussi coupé les événements souris, rendant le tooltip muet.
+
 ## Traductions
 
-`locales/fr.json`, section `clone_zone_viewer` : `title` (non résolue nulle part depuis la suppression de l'ancienne `QDialog` — orpheline mais pas retirée, à vérifier si elle est encore utilisée avant de la supprimer), `instruction` (réutilisée en tooltip enrichi de l'icône Clonage de la barre d'outils, voir skill `viewers`), `mode_label`/`mode_fixed`/`mode_relative`, `brush_size_label` — toutes réutilisées telles quelles par `_CloneOptionsPanel`. Clés v1.7.3+ : `viewer.toolbar_clone_tooltip`, `messages.errors.clone_failed.title`/`.message` — propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR), calquées sur le vocabulaire déjà attesté pour "clonage" dans `dialogs.clone_zone_viewer` de chaque fichier fictif (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) plutôt qu'improvisées. Voir skill `add-translation`.
+`locales/fr.json`, section `clone_zone_viewer` : `title` (clé orpheline, non résolue nulle part — à vérifier si elle est encore utilisée avant de la supprimer), `instruction` (réutilisée en tooltip enrichi de l'icône Clonage de la barre d'outils, voir skill `viewers`), `mode_label`/`mode_fixed`/`mode_relative`, `brush_size_label` — toutes réutilisées telles quelles par `_CloneOptionsPanel`. Également : `viewer.toolbar_clone_tooltip`, `messages.errors.clone_failed.title`/`.message` — propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR), calquées sur le vocabulaire déjà attesté pour "clonage" dans `dialogs.clone_zone_viewer` de chaque fichier fictif (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) plutôt qu'improvisées. Voir skill `add-translation`.
 
 **Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `page-straighten` et `add-text-to-image`, ces visionneuses/outils d'édition d'image partagent ce manque (skill `user-guide`).
 
@@ -147,3 +154,4 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 - `comicinfo-metadata-editor` — mise à jour des attributs de page dans `ComicInfo.xml` après un stroke.
 - `add-translation` — procédure complète de traduction, vocabulaire fictif "clonage" déjà établi (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) et réutilisé pour les nouvelles clés de la barre d'outils.
 - `user-guide` — absence actuelle de section dédiée, à vérifier si une tâche touche à ce fichier.
+- `adjust-color-depth` / `adjust-image-mode` — consommateurs de `BlockableRadioButton` (hébergé ici, voir section dédiée), pour griser leurs radios incompatibles avec le format d'origine.

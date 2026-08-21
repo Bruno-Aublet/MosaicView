@@ -606,11 +606,9 @@ def _read_device_capabilities(item, started_at) -> dict:
     # WIA peut être exposée par le driver de deux façons différentes (doc
     # Microsoft, WIA_IPS_XRES) : WIA_PROP_LIST (liste discrète, SubTypeValues)
     # OU WIA_PROP_RANGE (plage continue, SubTypeMin/SubTypeMax) — un driver qui
-    # choisit RANGE plutôt que LIST n'a jamais de SubTypeValues à lire, ce que
-    # la première version de cette fonction ne testait pas du tout (bug réel :
-    # sur le HP ENVY 4520, le driver expose la résolution en RANGE, donc
-    # l'ancien code retombait systématiquement sur le repli fixe, quelle que
-    # soit la vraie plage supportée par l'optique du capteur).
+    # choisit RANGE plutôt que LIST n'a jamais de SubTypeValues à lire ; il faut
+    # donc gérer les deux cas explicitement (ex. le HP ENVY 4520 expose sa
+    # résolution en RANGE, jamais en LIST).
     _log_scan_event(f"  Requesting: {WIA_IPS_XRES!r} supported values\n")
     values = None
     try:

@@ -57,11 +57,10 @@ Le son est joué **à la construction du dialogue**, avant même l'affichage —
 
 ### Sites d'appel actuels (`play_sound=True`)
 
-Grep `play_sound=True` pour la liste exhaustive à jour plutôt que de la considérer figée, mais au moment de la rédaction de ce skill, une quinzaine de sites répartis dans :
-- **`file_operations_qt.py`** (le plus grand nombre — échecs de sauvegarde/écriture CBZ, opérations fichier qui échouent de façon système).
-- **`clipboard_qt.py`** — échec de copie d'archive complète vers le presse-papiers système.
+Grep `play_sound=True` pour la liste exhaustive à jour plutôt que de la considérer figée, mais au moment de la rédaction de ce skill, 15 sites répartis dans 4 fichiers :
+- **`file_operations_qt.py`** (le plus grand nombre, 11 sites — échecs de sauvegarde/écriture CBZ, opérations fichier qui échouent de façon système).
 - **`printing_qt.py`** — erreur d'impression (2 sites).
-- **`web_import_qt.py`** — URL invalide ou échec réseau imprévu lors d'un import web.
+- **`clipboard_qt.py`** — échec de copie d'archive complète vers le presse-papiers système.
 - **`comicvine_update_check_qt.py`** — erreur lors de la vérification de mise à jour de métadonnées ComicVine.
 
 Tous partagent le même profil : une opération qui échoue pour une raison **système** (disque, réseau, presse-papiers Windows, imprimante) plutôt qu'une saisie ou un choix utilisateur incorrect.

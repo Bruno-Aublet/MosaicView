@@ -5,11 +5,11 @@ description: Localiser ou modifier les fichiers temporaires de MosaicView (extra
 
 # Fichiers temporaires — MosaicView
 
-Fichiers jetables, recréés à la demande, effacés à chaque fermeture de l'application. Distinct de la configuration persistante (marque-pages, réglages, clé API...), qui vit ailleurs depuis la v1.6.2 — voir skill `config-storage`. Ne jamais confondre les deux dossiers.
+Fichiers jetables, recréés à la demande, effacés à chaque fermeture de l'application. Distinct de la configuration persistante (marque-pages, réglages, clé API...), qui vit dans `%APPDATA%` — voir skill `config-storage`. Ne jamais confondre les deux dossiers.
 
 ## Emplacement — `%TEMP%\MosaicViewTemp\`
 
-N'a **pas** bougé lors du déménagement de la config vers `%APPDATA%` (v1.6.2) — c'est l'emplacement correct pour ce type de contenu, Windows est censé pouvoir le purger sans conséquence. Avant la v1.6.2, la config vivait ici aussi (par erreur architecturale) ; ce n'est plus le cas.
+C'est l'emplacement correct pour ce type de contenu, Windows est censé pouvoir le purger sans conséquence. La configuration persistante ne vit pas ici — voir skill `config-storage`.
 
 ## Fichier central — `modules/qt/temp_files.py`
 
@@ -20,7 +20,7 @@ Quatre fonctions, aucune classe :
 | `get_mosaicview_temp_dir()` | Retourne le chemin, le crée si absent | [temp_files.py:48](../../../modules/qt/temp_files.py#L48) |
 | `cleanup_all_temp_files(keep_logs=False)` | Vide le dossier (avec exceptions) | [temp_files.py:57](../../../modules/qt/temp_files.py#L57) |
 | `cleanup_stale_mei_dirs()` | Nettoie les dossiers `_MEI*` PyInstaller orphelins | [temp_files.py:12](../../../modules/qt/temp_files.py#L12) |
-| `cleanup_legacy_root_clipboard_dirs()` | Nettoie les dossiers `clipboard_*` orphelins laissés à la racine `%TEMP%` par les versions antérieures au fix de placement (voir skill `clipboard`) | [temp_files.py](../../../modules/qt/temp_files.py) |
+| `cleanup_legacy_root_clipboard_dirs()` | Nettoie les dossiers `clipboard_*` orphelins trouvés à la racine `%TEMP%` (hors de `MosaicViewTemp`, voir skill `clipboard`) | [temp_files.py](../../../modules/qt/temp_files.py) |
 
 **`get_mosaicview_temp_dir()` est le point de passage obligé** pour obtenir ce chemin — ne jamais reconstruire `os.path.join(tempfile.gettempdir(), "MosaicViewTemp")` à la main dans un nouveau module ; importer et appeler cette fonction (ou passer par le callback `get_mosaicview_temp_dir` déjà injecté dans plusieurs dialogues batch, voir plus bas).
 
@@ -33,11 +33,11 @@ Quatre fonctions, aucune classe :
 - **Dossiers `printjob_*`** — `printing_qt.py:46`, pages exportées temporairement pour impression.
 - **Dossiers `_MEI*`** — générés par PyInstaller en mode `--onefile` à chaque lancement (extraction de l'archive embarquée). `cleanup_stale_mei_dirs()` supprime ceux laissés par un plantage antérieur, en excluant le dossier de l'instance courante (`sys._MEIPASS`) et ceux encore verrouillés par une autre instance active (test par `os.rename` sur lui-même : échoue si verrouillé).
 
-## Nettoyage de migration — dossiers `clipboard_*` orphelins à la racine `%TEMP%`
+## Nettoyage — dossiers `clipboard_*` orphelins à la racine `%TEMP%`
 
-Avant son fix, `PanelWidget._get_temp_dir()` écrivait les dossiers `clipboard_*` directement à la racine `%TEMP%` au lieu de `%TEMP%\MosaicViewTemp\` (voir skill `clipboard`, section "Bug corrigé"). Tous les utilisateurs ayant utilisé copier/couper sur une version antérieure au fix ont potentiellement des dizaines de ces dossiers orphelins, jamais nettoyés puisque hors de portée de `cleanup_all_temp_files()`.
+Un dossier `clipboard_*` ne doit jamais légitimement se trouver ailleurs qu'à l'intérieur de `%TEMP%\MosaicViewTemp\` (voir skill `clipboard`) — s'en trouver un directement à la racine `%TEMP%` le qualifie d'orphelin.
 
-`cleanup_legacy_root_clipboard_dirs()` traite ce résidu : au lancement (appelée dans `MosaicView.py::main()` juste après `cleanup_stale_mei_dirs()`), elle balaie la racine `%TEMP%` (pas `MosaicViewTemp`) et supprime tout dossier dont le nom commence par `clipboard_`. Sans condition d'âge ni test de verrouillage — contrairement à `cleanup_stale_mei_dirs()`, ces dossiers ne peuvent plus être créés à cet endroit par aucune version corrigée, leur seule présence à la racine suffit à les qualifier d'orphelins.
+`cleanup_legacy_root_clipboard_dirs()` traite ce cas : au lancement (appelée dans `MosaicView.py::main()` juste après `cleanup_stale_mei_dirs()`), elle balaie la racine `%TEMP%` (pas `MosaicViewTemp`) et supprime tout dossier dont le nom commence par `clipboard_`. Sans condition d'âge ni test de verrouillage — contrairement à `cleanup_stale_mei_dirs()`, leur seule présence à la racine suffit à les qualifier d'orphelins.
 
 ## `cleanup_all_temp_files(keep_logs=False)` — ce qui est effacé, et ce qui ne l'est pas
 
@@ -45,7 +45,7 @@ Balaie tout le contenu de `MosaicViewTemp` et supprime chaque élément, **sauf*
 - Les logs de batch (`Log_pdftocbz_*`/`Log_cbrtocbz_*`/`Log_imgtocbz_*.txt`) si `keep_logs=True` (utilisé pendant l'exécution d'un batch, pour ne pas effacer son propre log en cours d'écriture).
 - Les dossiers `clipboard_*` de moins de 12h (`clipboard_max_age = 12 * 60 * 60`).
 
-**Depuis la v1.6.2**, cette fonction n'exclut plus `.mosaicview_config.json` de son balayage — cette exclusion a été retirée parce que le fichier de config ne vit structurellement plus dans ce dossier (déménagé vers `%APPDATA%`, voir skill `config-storage`). Si un jour ce fichier apparaît encore ici, ce n'est que le résidu d'une migration : `ConfigManager._migrate_from_temp()` le déplace au lancement suivant, avant que `cleanup_all_temp_files` ait la moindre chance de s'exécuter.
+Cette fonction n'exclut pas `.mosaicview_config.json` de son balayage — le fichier de config vit dans `%APPDATA%`, pas ici (voir skill `config-storage`). Si ce fichier apparaît malgré tout dans `MosaicViewTemp` (résidu d'une ancienne installation), `ConfigManager._migrate_from_temp()` le déplace au lancement suivant, avant que `cleanup_all_temp_files` ait la moindre chance de s'exécuter.
 
 Appelée automatiquement à la fermeture de l'application, et manuellement via `PanelWidget._clear_temp_files_with_message()` (bouton "Effacer les fichiers temporaires").
 
@@ -66,10 +66,10 @@ Appelée automatiquement à la fermeture de l'application, et manuellement via `
 
 ## Référencements croisés
 
-- **`config-storage`** — l'autre moitié de l'ancienne section fusionnée du mode d'emploi ; la config persistante, qui ne vit plus ici.
+- **`config-storage`** — la configuration persistante, qui ne vit pas ici mais dans `%APPDATA%`.
 - **`batch-processing`** — génère les logs `Log_*tocbz_*.txt` dans ce dossier.
 - **`drag-and-drop`** — génère les dossiers `drag_*` pour le drag-out CF_HDROP.
-- **`clipboard`** — génère les dossiers `clipboard_*` ; ancien bug de placement à la racine `%TEMP%` et son nettoyage de migration (`cleanup_legacy_root_clipboard_dirs()`) documentés ici et là-bas.
+- **`clipboard`** — génère les dossiers `clipboard_*` ; nettoyage des orphelins à la racine `%TEMP%` (`cleanup_legacy_root_clipboard_dirs()`) documenté ici et là-bas.
 - **`user-guide`** — section "Fichiers temporaires" du mode d'emploi.
 - **`single-instance`** — piège PyInstaller QtNetwork lié aux dossiers `_MEI*`.
 

@@ -5,7 +5,7 @@ description: Localiser ou modifier la fonction "Saturation" (formule PIL), migr�
 
 # Ajustement "Saturation" — MosaicView
 
-**Migrée dans la barre d'outils de la visionneuse principale (v1.7.4, 2026-08-14, 4e mode d'ajustement migré)** : l'ancienne section du panneau Ajustements classique (`adjustments_dialog_qt.py`, groupe `_grp_sat`) et le mode `'saturation'` de l'ancienne visionneuse annexe (`adjustments_viewers_qt.py`) ont été **entièrement retirés**. La saturation ne vit désormais que dans `modules/qt/saturation_tool_qt.py` (icône `BTN_Saturation.png` de `_ViewerToolbar`, panneau flottant `_SaturationOptionsPanel`) — voir skill `viewers`, section "Le cas de la saturation", pour l'UI/le flux complet (preview live, commit au relâchement, slider qui reste sur la valeur appliquée — corrigé le 2026-08-14, il revenait initialement à 0 par erreur). Ce skill-ci ne couvre que la formule PIL, inchangée.
+La saturation vit dans `modules/qt/saturation_tool_qt.py` (icône `BTN_Saturation.png` de `_ViewerToolbar`, panneau flottant `_SaturationOptionsPanel`) — voir skill `viewers`, section "Le cas de la saturation", pour l'UI/le flux complet (preview live, commit au relâchement, slider qui reste sur la valeur appliquée). Ce skill-ci ne couvre que la formule PIL.
 
 ## Où
 

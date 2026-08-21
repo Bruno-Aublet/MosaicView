@@ -74,7 +74,10 @@
     "cancel_shapes": "Batalkan bentuk",
     "cancel_transparency": "Batalkan transparansi",
     "validate_paste_image": "Terapkan tempel",
-    "cancel_paste_image": "Batalkan tempel"
+    "cancel_paste_image": "Batalkan tempel",
+    "save_crop_mask": "Simpan masker",
+    "recall_crop_mask": "Panggil masker",
+    "forget_crop_mask": "Lupakan masker"
   },
   "tabs": {
     "mosaic": "Mosaik",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Ambil warna dari halaman yang ditampilkan",
     "toolbar_transparency_tooltip": "Transparansi",
     "toolbar_transparency_instruction": "Klik warna yang ingin dibuat transparan",
-    "toolbar_transparency_disabled": "Hanya tersedia untuk gambar PNG, WebP, ICO, dan AVIF",
+    "toolbar_transparency_disabled": "Hanya tersedia untuk gambar PNG, WebP, ICO, AVIF, dan TIFF",
     "transparency_flood_panel_label": "Area",
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Toleransi:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Putar atau cerminkan halaman yang ditampilkan",
     "toolbar_paste_image_tooltip": "Tempel gambar",
     "toolbar_paste_image_instruction": "Menempelkan gambar clipboard ke halaman, gagang untuk mengubah ukuran/memutar",
-    "toolbar_paste_image_disabled": "Clipboard harus hanya berisi satu gambar"
+    "toolbar_paste_image_disabled": "Clipboard harus hanya berisi satu gambar",
+    "color_depth_panel_blocked_format": "Tidak tersedia: format {format} asli berkas tidak mendukung kedalaman warna ini.",
+    "image_mode_panel_blocked_format": "Tidak tersedia: format {format} asli berkas tidak mendukung mode ini."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Hijau:",
       "blue_label": "Biru:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Masker pemotongan"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Mode manual (gambar garis referensi)\nKlik kanan untuk mengganti mode",
     "straighten_mode_1": "Mode otomatis (deteksi kemiringan)\nKlik kanan untuk mengganti mode",
     "sharpness_mode_0": "Memperkuat atau melembutkan detail gambar\nKlik kanan untuk beralih ke ketajaman adaptif",
-    "sharpness_mode_1": "Menonjolkan tepi sambil menjaga area yang rata\nKlik kanan untuk beralih ke ketajaman sederhana"
+    "sharpness_mode_1": "Menonjolkan tepi sambil menjaga area yang rata\nKlik kanan untuk beralih ke ketajaman sederhana",
+    "crop_mode_0": "Gambar persegi panjang di atas area yang ingin dipertahankan, lalu konfirmasi\nKlik kanan untuk beralih ke mode masker pemotongan",
+    "crop_mode_1": "Mode masker pemotongan: ingat persegi panjang dan panggil kembali di halaman berikutnya\nKlik kanan untuk kembali ke mode normal"
   },
   "help": {
     "title": "MosaicView - Panduan Penggunaan",
@@ -1413,7 +1423,7 @@
     "flatten": "Ratakan direktori",
     "flatten_content": "Jika arsip Anda berisi sub-folder, gunakan 'Ratakan direktori' untuk membawa semua gambar ke tingkat yang sama.",
     "viewer": "Penampil",
-    "viewer_content": "Klik dua kali pada halaman untuk membuka penampil:\n• Tombol ← →: navigasi antar halaman\n• Tombol D: beralih antara 4 mode baca\n  - Halaman tunggal: satu halaman sekaligus\n  - Halaman ganda: halaman 1 sendiri, lalu 2-3, 4-5, dst.\n  - Halaman ganda berkelanjutan: halaman 1 sendiri, lalu 2-3, 3-4, 4-5, dst.\n  - Webtoon: untuk gambar vertikal (webcomics), lebar dibatasi 900px agar tetap terbaca; roda mouse menggulir vertikal dalam halaman, lalu berganti halaman saat mencapai atas/bawah\n• Roda mouse: navigasi cepat (gulir vertikal dalam halaman pada mode Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zoom (hingga 1000% dari ukuran asli gambar)\n• Ctrl+0: sesuaikan zoom dengan jendela\n• Ctrl+1: zoom 100% (ukuran piksel asli gambar)\n• Klik kanan + seret: menggeser gambar yang ditampilkan (pan) saat melebihi jendela\n• Tombol F11: layar penuh\n• Klik dua kali: alihkan layar penuh\n• Tombol Esc: batalkan gambar yang sedang dibuat (crop, luruskan, bentuk…) atau keluar dari penampil\n• Penanda: otomatis menyimpan halaman saat ini ketika penampil ditutup (kecuali halaman pertama/terakhir). Pita merah muncul pada thumbnail terkait di mosaik. Saat dibuka kembali, pesan menyarankan untuk kembali ke halaman ini. Otomatis dihapus pada halaman terakhir, atau manual melalui klik kanan di penampil.\n\nBilah alat mengambang: arahkan mouse ke bagian atas gambar untuk menampilkannya (tersembunyi otomatis setelah beberapa detik). Klik ikon untuk mengaktifkan alat yang sesuai:\n• Crop: gambar persegi panjang, sesuaikan melalui tepinya, konfirmasi\n• Luruskan: gambar garis pada apa yang seharusnya horizontal/vertikal, koreksi diterapkan otomatis; klik kanan pada ikon untuk beralih ke pelurusan otomatis (mendeteksi kemiringan sendiri, tanpa menggambar apa pun)\n• Rotasi/cerminkan: satu klik memutar atau membalik halaman\n• Kloning: Ctrl+klik untuk memilih titik sumber, lalu lukis dengan tombol mouse ditahan untuk menduplikasi\n• Teks: klik untuk menempatkan blok teks, pilih font/ukuran/warna\n• Bentuk: gambar elips, persegi panjang, garis, atau panah, dengan pegangan untuk mengubah ukuran\n• Penggeser (ketajaman, kecerahan/kontras, saturasi, hapus warna, kompresi): hasilnya ditampilkan secara langsung saat Anda menyeret\n• Level: sesuaikan titik hitam/gamma/titik putih dengan penggeser, atau ambil warna langsung dari gambar dengan pipet\n• Transparansi: klik warna pada gambar untuk membuatnya transparan\n• Kedalaman warna, Efek, Mode gambar: pilih opsi dengan mengklik tombol radio, diterapkan segera\n• Tempel gambar: menempelkan gambar dari clipboard (ikon hanya aktif jika clipboard berisi gambar), dengan gagang untuk mengubah ukuran/memutar seperti bentuk; juga berfungsi dengan menyeret halaman dari mosaik atau file dari Windows Explorer langsung ke penampil. Ctrl+C menyalin halaman yang ditampilkan (hanya dalam mode halaman tunggal atau Webtoon), Ctrl+V menempelkan gambar, sama seperti di mosaik\n\nKonfirmasi dengan tombol \"Konfirmasi\" saat muncul, atau Esc untuk membatalkan. Setiap perubahan bergabung dengan riwayat Urungkan/Ulangi yang biasa.",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka penampil:\n• Tombol ← →: navigasi antar halaman\n• Tombol D: beralih antara 4 mode baca\n  - Halaman tunggal: satu halaman sekaligus\n  - Halaman ganda: halaman 1 sendiri, lalu 2-3, 4-5, dst.\n  - Halaman ganda berkelanjutan: halaman 1 sendiri, lalu 2-3, 3-4, 4-5, dst.\n  - Webtoon: untuk gambar vertikal (webcomics), lebar dibatasi 900px agar tetap terbaca; roda mouse menggulir vertikal dalam halaman, lalu berganti halaman saat mencapai atas/bawah\n• Roda mouse: navigasi cepat (gulir vertikal dalam halaman pada mode Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zoom (hingga 1000% dari ukuran asli gambar)\n• Ctrl+0: sesuaikan zoom dengan jendela\n• Ctrl+1: zoom 100% (ukuran piksel asli gambar)\n• Klik kanan + seret: menggeser gambar yang ditampilkan (pan) saat melebihi jendela\n• Tombol F11: layar penuh\n• Klik dua kali: alihkan layar penuh\n• Tombol Esc: batalkan gambar yang sedang dibuat (crop, luruskan, bentuk…) atau keluar dari penampil\n• Penanda: otomatis menyimpan halaman saat ini ketika penampil ditutup (kecuali halaman pertama/terakhir). Pita merah muncul pada thumbnail terkait di mosaik. Saat dibuka kembali, pesan menyarankan untuk kembali ke halaman ini. Otomatis dihapus pada halaman terakhir, atau manual melalui klik kanan di penampil.\n\nBilah alat mengambang: arahkan mouse ke bagian atas gambar untuk menampilkannya (tersembunyi otomatis setelah beberapa detik). Klik ikon untuk mengaktifkan alat yang sesuai:\n• Crop: gambar persegi panjang, sesuaikan melalui tepinya, konfirmasi; klik kanan pada ikon untuk beralih ke mode masker pemotongan (ingat persegi panjang dengan \"Simpan masker\", lalu panggil kembali persis sama di halaman berikutnya dengan \"Panggil masker\" — berguna untuk menerapkan pemotongan yang sama ke beberapa halaman tanpa menggambar ulang setiap kali; \"Lupakan masker\" menghapus masker yang tersimpan, hanya per halaman)\n• Luruskan: gambar garis pada apa yang seharusnya horizontal/vertikal, koreksi diterapkan otomatis; klik kanan pada ikon untuk beralih ke pelurusan otomatis (mendeteksi kemiringan sendiri, tanpa menggambar apa pun)\n• Rotasi/cerminkan: satu klik memutar atau membalik halaman\n• Kloning: Ctrl+klik untuk memilih titik sumber, lalu lukis dengan tombol mouse ditahan untuk menduplikasi\n• Teks: klik untuk menempatkan blok teks, pilih font/ukuran/warna\n• Bentuk: gambar elips, persegi panjang, garis, atau panah, dengan pegangan untuk mengubah ukuran\n• Penggeser (ketajaman, kecerahan/kontras, saturasi, hapus warna, kompresi): hasilnya ditampilkan secara langsung saat Anda menyeret\n• Level: sesuaikan titik hitam/gamma/titik putih dengan penggeser, atau ambil warna langsung dari gambar dengan pipet\n• Transparansi: klik warna pada gambar untuk membuatnya transparan\n• Kedalaman warna, Efek, Mode gambar: pilih opsi dengan mengklik tombol radio, diterapkan segera\n• Tempel gambar: menempelkan gambar dari clipboard (ikon hanya aktif jika clipboard berisi gambar), dengan gagang untuk mengubah ukuran/memutar seperti bentuk; juga berfungsi dengan menyeret halaman dari mosaik atau file dari Windows Explorer langsung ke penampil. Ctrl+C menyalin halaman yang ditampilkan (hanya dalam mode halaman tunggal atau Webtoon), Ctrl+V menempelkan gambar, sama seperti di mosaik\n\nKonfirmasi dengan tombol \"Konfirmasi\" saat muncul, atau Esc untuk membatalkan. Setiap perubahan bergabung dengan riwayat Urungkan/Ulangi yang biasa.",
     "join_pages": "Gabungkan halaman",
     "join_pages_content": "Pilih beberapa halaman berurutan, klik kanan → 'Gabungkan halaman terpilih' untuk menggabungkan halaman secara horizontal atau vertikal. Format gambar yang dihasilkan sesuai dengan format halaman sumber jika semuanya identik, jika tidak PNG secara default. Anda akan dapat memilih untuk menghapus atau menyimpan halaman asli.\n\nLokasi halaman baru di mosaik:\n• Mode penomoran ulang aktif (otomatis atau manual): halaman mengambil tempat halaman pertama yang digabungkan (tempatnya, jika halaman sumber dihapus, atau tepat sebelumnya, jika dipertahankan), dan memicu penomoran ulang.\n• Mode penomoran ulang MATI: halaman ditambahkan di depan mosaik dengan nama \"Gabungan_xxx\".",
     "split_pages": "Pisahkan halaman",

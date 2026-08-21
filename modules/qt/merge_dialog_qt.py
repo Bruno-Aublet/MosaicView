@@ -1,7 +1,5 @@
 """
-modules/qt/merge_dialog_qt.py — Dialogue de fusion/jointure d'images (version PySide6)
-
-Reproduit à l'identique le comportement de modules/merge_dialog.py (tkinter).
+modules/qt/merge_dialog_qt.py — Dialogue de fusion/jointure d'images.
 """
 
 import io
@@ -961,8 +959,6 @@ class MergeDialog(QDialog):
         new_entry["img"] = merged_img
 
         merge_parent = self.parent()
-
-        # Ferme le dialogue de disposition
         self.close()
 
         # Étape 3 : demande si on supprime les fichiers sources (NON modal)

@@ -20,7 +20,7 @@ Malgré son nom, ce fichier **ne charge aucune police**. Il ne contient plus que
 - **`resource_path(relative_path)`** — résolution de chemins compatible PyInstaller (`sys._MEIPASS`), largement importée par de nombreux modules du projet, pas spécifique aux polices.
 - **`PIQAD_FONT_FILE`** / **`TENGWAR_FONT_FILES`** — noms des fichiers `.ttf` embarqués, utilisés par `user_guide_qt.py` (boutons "Exporter la police pIqaD/Tengwar" du mode d'emploi, simple `shutil.copy2` — voir skill `user-guide`).
 
-Il contenait historiquement sa propre version homonyme de `init_font_manager()` (installation de police au niveau système Windows via `AddFontResourceEx`/`ctypes`), du code mort de l'ère pré-Qt jamais appelé — **supprimé le 2026-07-16**. Le chargement de police réel est exclusivement dans `font_manager_qt.py`.
+Le chargement de police réel est exclusivement dans `font_manager_qt.py`.
 
 ## `get_current_font()` — la fonction à utiliser partout
 
@@ -130,7 +130,7 @@ Voir skill `icon-toolbar` pour le mécanisme général du footer (réglette vign
 ## Pièges connus
 
 - **Ne jamais construire un `QFont(...)` à la main dans un nouveau widget** — toujours `get_current_font()`, sinon le texte reste figé en Arial même si l'utilisateur passe en klingon pIqaD ou change la taille globale (règle CLAUDE.md n°3).
-- **`font_loader.py` ne charge aucune police malgré son nom** — il ne contient que `resource_path()` et les constantes de noms de fichiers `.ttf` ; le chargement réel est dans `font_manager_qt.py::init_font_manager()` (son ancienne homonyme morte dans `font_loader.py` a été supprimée le 2026-07-16).
+- **`font_loader.py` ne charge aucune police malgré son nom** — il ne contient que `resource_path()` et les constantes de noms de fichiers `.ttf` ; le chargement réel est dans `font_manager_qt.py::init_font_manager()`.
 - **L'offset de taille de police est global, pas par panneau** — contrairement à la plupart des autres réglages du projet ; un changement affecte panel1 et panel2 simultanément par construction de `_decrease_font_size`/`_increase_font_size` qui itèrent sur `_all_panels()`.
 - **Retraduction dynamique et police doivent toujours aller de pair** — voir règle CLAUDE.md n°2, piège "retraduction dynamique" : un `widget.setText(_('clé'))` sans `widget.setFont(get_current_font(taille))` juste à côté garde l'ancienne police (latine) pour les langues CSUR → glyphes illisibles après un changement de langue vers klingon/sindarin/quenya CSUR.
 - **Le combo langue utilise une taille de police fixe (`9`) indépendante de l'offset global** pour les items en police spéciale — ne pas supposer que ce combo suit automatiquement un changement de taille de police globale.

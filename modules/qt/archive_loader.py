@@ -1,9 +1,8 @@
 """
 modules/qt/archive_loader.py
-Chargement d'archives CBZ/CBR/EPUB pour la version PySide6.
-Remplace modules/archive_loading.py (version tkinter).
+Chargement d'archives CBZ/CBR/EPUB.
 
-Comportement reproduit à l'identique :
+Comportement :
   - Texte rouge centré sur le canvas pendant le chargement (pas QProgressDialog)
   - Texte mis à jour avec le pourcentage en temps réel
   - testzip (intégrité ZIP)
@@ -231,10 +230,7 @@ class _CorruptedImagesDialog(QDialog):
 
 
 def _detect_corrupted_qt(win, state=None):
-    """
-    Version Qt de detect_corrupted_images (sans tkinter).
-    Affiche un dialogue si des images corrompues sont trouvées.
-    """
+    """Détecte les images corrompues et affiche un dialogue si nécessaire."""
     if state is None:
         state = _state_module.state
     if not state:
@@ -898,8 +894,7 @@ _orphan_workers: list = []
 class ArchiveLoader(QObject):
     """
     Orchestre le chargement d'une ou plusieurs archives.
-    Pendant le chargement, affiche un texte rouge centré sur le canvas
-    (même comportement que la version tkinter).
+    Pendant le chargement, affiche un texte rouge centré sur le canvas.
 
     Usage :
         loader = ArchiveLoader(parent_window, canvas, state)

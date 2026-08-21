@@ -3,8 +3,7 @@ modules/qt/remove_colors_tool_qt.py — Outil "suppression des couleurs"
 (remove_colors) de la barre d'outils flottante de la visionneuse principale
 (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 9e outil migré, 5e des 8
-modes d'ajustement après sharpness/unsharp/brightness/saturation) : ce module
+Fusion progressive des visionneuses : ce module
 contient toute la logique propre à l'outil "remove_colors" — état + preview
 live (mixin RemoveColorsCanvasMixin, hérité par _ViewerCanvas), commit de
 l'ajustement dans l'historique du panneau (mixin RemoveColorsViewerMixin,
@@ -15,25 +14,21 @@ jamais migrer le code d'un outil dans image_viewer_qt.py".
 
 Même famille de pattern que brightness (brightness_tool_qt.py) : une seule
 réglette, PAS de bi-mode, slider/spinbox reste sur la valeur commitée après
-relâchement (ne revient PAS à 0 — comportement aligné sur brightness le
-2026-08-14, après correction du même écart sur saturation, jugé erroné).
-Module dédié séparé, pas ajouté dans sharpness_tool_qt.py. Seule différence
-de bornes : réglette 0..100 (pas -100..+100 comme saturation/sharpness) —
-reprend exactement la plage de l'ancien panneau Ajustements classique
-(settings['remove_colors_intensity'], section et panneau annexe retirés le
-2026-08-14 une fois cette migration validée — voir apply_adjustments()
-dans image_processing_qt.py, seul moteur de calcul restant, partagé).
+relâchement (ne revient PAS à 0, aligné sur brightness). Module dédié
+séparé, pas ajouté dans sharpness_tool_qt.py. Seule différence de bornes :
+réglette 0..100 (pas -100..+100 comme saturation/sharpness) — voir
+apply_adjustments() dans image_processing_qt.py, seul moteur de calcul
+restant, partagé (settings['remove_colors_intensity']).
 
 Contrairement au crop/straighten/clone/texte, cet outil n'a AUCUN overlay
 interactif ni geste souris sur le canvas : c'est une réglette avec preview
-temps réel (comme AdjustmentViewerDialog::_display_image en mode
-'remove_colors'). RemoveColorsCanvasMixin reste donc volontairement minimal
+temps réel. RemoveColorsCanvasMixin reste donc volontairement minimal
 (pas de mousePress/Move/Release à gérer, pas de paint_* à appeler depuis
 paintEvent) — même raison que SharpnessCanvasMixin (sharpness),
 BrightnessCanvasMixin et SaturationCanvasMixin.
 
 PAS de bouton "Valider" pour cet outil (même principe que sharpness/unsharp/
-brightness/saturation, décision actée idees.txt #3) : le preview PIL n'est
+brightness/saturation) : le preview PIL n'est
 visible que PENDANT le déplacement du slider (valueChanged) ; au relâchement
 du clic (sliderReleased), l'ajustement est commité automatiquement dans
 entry['bytes'] (perform_remove_colors) et devient sa propre entrée
@@ -167,11 +162,10 @@ class _RemoveColorsOptionsPanel(QWidget):
         self.move(max(0, x), y)
 
     def mousePressEvent(self, event):
-        # Piège corrigé (2026-08-15, découvert sur le panneau de
-        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
-        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
-        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
-        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        # Sans ce blindage, un clic sur une zone vide du panneau "fuit" vers
+        # _ViewerCanvas en dessous — même piège déjà documenté pour
+        # _ToolButton/_ActionButton/_ViewerToolbar (skill viewers), appliqué
+        # par cohérence à tous les panneaux flottants.
         event.accept()
 
     def mouseReleaseEvent(self, event):
@@ -367,9 +361,9 @@ class RemoveColorsViewerMixin:
             # inconditionnellement _canvas.clear_crop() — lequel remet aussi
             # pan_offset_x/y à 0 (crop_tool_qt.py::clear_crop, pensé pour
             # recentrer la vue quand on abandonne un crop). Sans ce flag, tout
-            # commit après un zoom+pan recentrait l'image sous les pieds de
-            # l'utilisateur (bug diagnostiqué sur levels, 2026-08-15, même
-            # cause ici — voir levels_tool_qt.py::perform_levels).
+            # commit après un zoom+pan recentrerait l'image sous les pieds de
+            # l'utilisateur — même cause que dans
+            # levels_tool_qt.py::perform_levels.
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             # Le slider NE revient PAS à 0 après commit (voir docstring de

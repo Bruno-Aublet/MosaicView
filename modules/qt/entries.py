@@ -43,7 +43,6 @@ def get_icon_pil_for_entry(entry, state=None):
     """Retourne l'image PIL brute de l'icône (sans conversion PhotoImage)"""
     ext = entry["extension"].lower()
 
-    # Si l'entrée est marquée comme corrompue, utilise l'icône spéciale
     if entry.get("is_corrupted"):
         icon_path = ICON_MAP.get("corrupted", DEFAULT_ICON)
     elif entry.get("is_parent_dir"):
@@ -70,12 +69,10 @@ def estimate_compression_rate(entry):
     """Estime le taux de compression pour les images JPG/JPEG/WEBP"""
     ext = entry.get("extension", "").lower()
 
-    # Ne fonctionne que pour JPG, JPEG, WEBP et AVIF
     if ext not in [".jpg", ".jpeg", ".webp", ".avif"]:
         return None
 
     try:
-        # Récupère les métadonnées sans charger l'image complète
         metadata = get_image_metadata(entry)
         if metadata is None:
             return None
@@ -84,17 +81,14 @@ def estimate_compression_rate(entry):
         if not img_bytes:
             return None
 
-        # Taille du fichier compressé
         compressed_size = len(img_bytes)
 
         # Taille théorique non compressée (largeur × hauteur × 3 bytes pour RGB)
         width, height = metadata["size"]
         uncompressed_size = width * height * 3
 
-        # Calcule le taux de compression (pourcentage de réduction)
         if uncompressed_size > 0:
             compression_rate = (1 - (compressed_size / uncompressed_size)) * 100
-            # Limite entre 0 et 100%
             compression_rate = max(0, min(100, compression_rate))
             return round(compression_rate, 1)
 
@@ -127,15 +121,12 @@ def _make_checkerboard_pil(w: int, h: int, tile: int = 8) -> Image.Image:
 
 def create_centered_thumbnail(img, thumb_w, thumb_h, background_color=None, checkerboard=False):
     """Crée une miniature centrée sur un fond transparent (ou damier si checkerboard=True)."""
-    # Redimensionne l'image en conservant le ratio
     img_thumb = img.copy()
     img_thumb.thumbnail((thumb_w, thumb_h), Image.Resampling.LANCZOS)
 
-    # Calcule la position pour centrer l'image
     x_offset = (thumb_w - img_thumb.width) // 2
     y_offset = (thumb_h - img_thumb.height) // 2
 
-    # Convertit l'image en RGBA si nécessaire pour gérer la transparence
     if img_thumb.mode != 'RGBA':
         img_thumb = img_thumb.convert('RGBA')
 
@@ -153,7 +144,6 @@ def create_centered_thumbnail(img, thumb_w, thumb_h, background_color=None, chec
         checker = _make_checkerboard_pil(img_thumb.width, img_thumb.height)
         background.paste(checker, (x_offset, y_offset))
 
-    # Colle l'image redimensionnée au centre du fond
     background.paste(img_thumb, (x_offset, y_offset), img_thumb)
 
     return background
@@ -188,7 +178,6 @@ def create_entry(file, data, image_exts):
     }
     if is_image and data is not None:
         try:
-            # Vérifie que les données ne sont pas vides
             if len(data) == 0:
                 raise ValueError("Fichier image vide")
 
@@ -197,7 +186,6 @@ def create_entry(file, data, image_exts):
             img = Image.open(io.BytesIO(data))
             img.load()  # Force le décodage — déclenche DecompressionBombError si trop grande
 
-            # Vérifie que l'image a des dimensions valides
             if img.width <= 0 or img.height <= 0:
                 raise ValueError(f"Dimensions invalides: {img.width}x{img.height}")
 
@@ -205,7 +193,6 @@ def create_entry(file, data, image_exts):
             entry["img_width"]  = img.width
             entry["img_height"] = img.height
 
-            # Extrait et stocke le DPI de l'image
             img_dpi = img.info.get('dpi')
             if img_dpi:
                 entry["dpi"] = img_dpi[0] if isinstance(img_dpi, tuple) else img_dpi
@@ -215,34 +202,29 @@ def create_entry(file, data, image_exts):
             # Détecte si c'est un GIF animé AVANT de copier l'image
             if entry_ext.lower() == '.gif' and hasattr(img, 'n_frames') and img.n_frames > 1:
                 entry["is_animated_gif"] = True
-                entry["gif_frame_count"] = img.n_frames  # LAZY LOADING : Stocke seulement le nombre de frames
+                # Lazy loading : ne stocke que le nombre de frames, pas les frames elles-mêmes
+                entry["gif_frame_count"] = img.n_frames
                 entry["gif_durations"] = []
 
-                # Extrait seulement les durées (léger en mémoire)
                 for frame_idx in range(img.n_frames):
                     img.seek(frame_idx)
-                    # Durée en millisecondes (défaut 100ms si non spécifié)
                     duration = img.info.get('duration', 100)
                     entry["gif_durations"].append(duration)
 
-                # Stocke TOUTES les métadonnées du GIF
                 entry["gif_loop"] = img.info.get('loop', 0)
                 entry["gif_disposal"] = img.info.get('disposal', 2)
                 entry["gif_comment"] = img.info.get('comment', b'').decode('utf-8', errors='ignore') if img.info.get('comment') else ""
-                entry["gif_optimize"] = True  # On suppose que le GIF était optimisé
+                entry["gif_optimize"] = True
 
-                # Repositionne sur la première frame pour l'affichage
-                img.seek(0)
-                # LAZY LOADING : On ne stocke PAS l'image complète au chargement
-                entry["img"] = None
+                img.seek(0)  # repositionne sur la première frame pour l'affichage
+                entry["img"] = None  # lazy loading : pas de chargement complet ici
             else:
                 entry["is_animated_gif"] = False
-                # LAZY LOADING : On ne stocke PAS l'image complète au chargement
                 entry["img"] = None
 
             entry["large_thumb_pil"] = None
         except Image.DecompressionBombError:
-            # Lire les dimensions sans déclencher à nouveau l'erreur
+            # Relit les dimensions sans MAX_IMAGE_PIXELS pour ne pas redéclencher l'erreur
             _saved = Image.MAX_IMAGE_PIXELS
             Image.MAX_IMAGE_PIXELS = None
             try:
@@ -262,7 +244,7 @@ def create_entry(file, data, image_exts):
             entry["is_corrupted"] = True
             entry["is_too_large"] = False
             entry["corruption_reason"] = str(e)
-            # Garde is_image = True pour que le fichier soit reconnu comme image corrompue
+            # is_image reste True pour que le fichier soit reconnu comme image corrompue
             entry["is_animated_gif"] = False
     else:
         entry["img"] = None
@@ -281,15 +263,13 @@ def create_entry(file, data, image_exts):
 def create_entry_from_file(filepath, image_exts):
     """Crée une entrée à partir d'un fichier sur le disque"""
     try:
-        # Vérifie que le fichier existe et est accessible
         if not os.path.exists(filepath):
             return None
 
         if not os.path.isfile(filepath):
             return None
 
-        # Limite la taille des fichiers à 500 Mo pour éviter les problèmes de mémoire
-        max_size = 500 * 1024 * 1024
+        max_size = 500 * 1024 * 1024  # 500 Mo, pour éviter les problèmes de mémoire
         file_size = os.path.getsize(filepath)
         if file_size > max_size:
             raise FileTooLargeError(filepath, file_size)
@@ -322,38 +302,28 @@ def create_entries_from_tiff(filepath, image_exts, add_prefix=False):
             with tifffile.TiffFile(filepath) as tif:
                 base_filename = os.path.splitext(os.path.basename(filepath))[0]
 
-                # Essaye d'extraire les SubIFDs s'ils existent
+                # Essaye d'extraire les SubIFDs s'ils existent, en plus des pages principales
                 all_pages = []
                 for main_page in tif.pages:
                     all_pages.append(main_page)
                     if hasattr(main_page, 'pages') and main_page.pages is not None and len(main_page.pages) > 0:
                         all_pages.extend(main_page.pages)
 
-                # Itère sur toutes les pages (incluant SubIFDs)
                 for page_num, page in enumerate(all_pages):
                     try:
-
-                        # Lit les données de la page
                         img_array = page.asarray()
-
-                        # Convertit en PIL Image
                         img = Image.fromarray(img_array)
 
-                        # Convertit en bytes JPEG
                         img_bytes = io.BytesIO()
                         if img.mode not in ('RGB', 'L'):
                             img = img.convert('RGB')
                         img.save(img_bytes, format='JPEG', quality=100)
                         img_bytes.seek(0)
 
-                        # Crée le nom de fichier
                         filename = f"{base_filename}_page_{page_num + 1:04d}.jpg"
-
-                        # Ajoute le préfixe NEW- si demandé
                         if add_prefix:
                             filename = "NEW-" + filename
 
-                        # Utilise create_entry
                         entry = create_entry(filename, img_bytes.getvalue(), image_exts)
                         entry["source"] = "tiff"
                         entry["tiff_page"] = page_num
@@ -363,7 +333,6 @@ def create_entries_from_tiff(filepath, image_exts, add_prefix=False):
                     except Exception:
                         continue
 
-                # Si une seule page, renomme
                 if len(entries) == 1 and not add_prefix:
                     entries[0]["orig_name"] = f"{base_filename}.jpg"
 
@@ -375,22 +344,20 @@ def create_entries_from_tiff(filepath, image_exts, add_prefix=False):
 
     # Fallback vers PIL si tifffile n'est pas disponible ou a échoué
     try:
-        # Vérifie que le fichier existe et est accessible
         if not os.path.exists(filepath):
             return entries
 
         if not os.path.isfile(filepath):
             return entries
 
-        # Limite la taille des fichiers à 500 Mo pour éviter les problèmes de mémoire
-        max_size = 500 * 1024 * 1024
+        max_size = 500 * 1024 * 1024  # 500 Mo, pour éviter les problèmes de mémoire
         file_size = os.path.getsize(filepath)
         if file_size > max_size:
             raise FileTooLargeError(filepath, file_size)
 
         base_filename = os.path.splitext(os.path.basename(filepath))[0]
 
-        # Méthode 1 : Essaye avec TiffImagePlugin pour accéder aux IFD
+        # Méthode 1 : TiffImagePlugin pour accéder aux IFD
         from PIL import TiffImagePlugin
 
         try:
@@ -404,23 +371,17 @@ def create_entries_from_tiff(filepath, image_exts, add_prefix=False):
                 try:
                     tiff.seek(page_num)
 
-                    # Convertit la frame en bytes
                     img_bytes = io.BytesIO()
-                    # Sauvegarde en JPEG pour cohérence avec les PDF
                     frame_copy = tiff.copy()
                     if frame_copy.mode not in ('RGB', 'L'):
                         frame_copy = frame_copy.convert('RGB')
-                    frame_copy.save(img_bytes, format='JPEG', quality=100)
+                    frame_copy.save(img_bytes, format='JPEG', quality=100)  # JPEG pour cohérence avec les PDF
                     img_bytes.seek(0)
 
-                    # Crée le nom de fichier
                     filename = f"{base_filename}_page_{page_num + 1:04d}.jpg"
-
-                    # Ajoute le préfixe NEW- si demandé (pour la fusion)
                     if add_prefix:
                         filename = "NEW-" + filename
 
-                    # Utilise create_entry pour créer l'entrée correctement
                     entry = create_entry(filename, img_bytes.getvalue(), image_exts)
                     entry["source"] = "tiff"
                     entry["tiff_page"] = page_num
@@ -440,7 +401,7 @@ def create_entries_from_tiff(filepath, image_exts, add_prefix=False):
         except FileTooLargeError:
             raise
         except Exception:
-            # Méthode 2 : Fallback avec Image.open standard
+            # Méthode 2 : fallback avec Image.open standard
             img = Image.open(filepath)
 
             from PIL import ImageSequence
@@ -448,7 +409,6 @@ def create_entries_from_tiff(filepath, image_exts, add_prefix=False):
             page_num = 0
             for frame in ImageSequence.Iterator(img):
                 try:
-                    # Convertit la frame en bytes
                     img_bytes = io.BytesIO()
                     frame_copy = frame.copy()
                     if frame_copy.mode not in ('RGB', 'L'):
@@ -473,7 +433,6 @@ def create_entries_from_tiff(filepath, image_exts, add_prefix=False):
 
             img.close()
 
-        # Si une seule page a été extraite, on renomme sans le suffixe _page_0001
         if len(entries) == 1 and not add_prefix:
             entries[0]["orig_name"] = f"{base_filename}.jpg"
 
@@ -496,29 +455,23 @@ def ensure_image_loaded(entry):
     Returns:
         L'objet PIL Image ou None en cas d'erreur
     """
-    # Si l'image est déjà chargée, on la retourne directement
     if entry.get("img") is not None:
         return entry["img"]
 
-    # Image déjà marquée corrompue : pas la peine de retenter
     if entry.get("is_corrupted"):
         return None
 
-    # Si on n'a pas de bytes ou que ce n'est pas une image, on ne peut rien faire
     if not entry.get("is_image") or entry.get("bytes") is None:
         return None
 
-    # Charge l'image depuis les bytes
     try:
-        # Gestion spéciale pour les GIF animés
         if entry.get("is_animated_gif"):
+            # Les durées/métadonnées GIF sont déjà stockées, on ne recharge que l'image de base
             img = Image.open(io.BytesIO(entry["bytes"]))
-            # Les frames sont déjà stockées, on recharge juste l'image de base
             img.seek(0)
             entry["img"] = img.copy()
             img.close()
         else:
-            # Image normale
             img = Image.open(io.BytesIO(entry["bytes"]))
             entry["img"] = img.copy()
             img.close()
@@ -555,30 +508,20 @@ def get_gif_frame(entry, frame_idx):
     Returns:
         PIL.Image: Frame convertie en RGBA, ou None en cas d'erreur
     """
-    # Vérifie que c'est bien un GIF animé
     if not entry.get("is_animated_gif"):
         return None
 
-    # Vérifie que l'index est valide
     frame_count = entry.get("gif_frame_count", 0)
     if frame_idx < 0 or frame_idx >= frame_count:
         return None
 
-    # Vérifie qu'on a les bytes
     if entry.get("bytes") is None:
         return None
 
     try:
-        # Charge le GIF depuis les bytes
         img = Image.open(io.BytesIO(entry["bytes"]))
-
-        # Se positionne sur la frame demandée
         img.seek(frame_idx)
-
-        # Copie et convertit la frame en RGBA
         frame = img.copy().convert("RGBA")
-
-        # Ferme l'image source pour libérer les ressources
         img.close()
 
         return frame
@@ -605,7 +548,6 @@ def get_image_metadata(entry):
         img = Image.open(io.BytesIO(entry["bytes"]))
 
         # Priorité au DPI stocké dans entry (notamment pour les PDF importés)
-        # Sinon, utilise le DPI des métadonnées de l'image
         dpi_value = entry.get("dpi") or img.info.get("dpi")
 
         metadata = {
@@ -614,7 +556,6 @@ def get_image_metadata(entry):
             "dpi": dpi_value,
             "format": img.format
         }
-        # Ferme l'image immédiatement pour libérer les ressources
         img.close()
         return metadata
     except Exception:
@@ -686,20 +627,19 @@ def save_image_to_bytes(entry):
     img_bytes = io.BytesIO()
     ext = entry.get("extension", ".jpg").lower()
 
-    # Récupère le DPI depuis entry (s'il existe)
     dpi_value = entry.get("dpi")
-    # Si dpi_value est un tuple, prend la première valeur
     if isinstance(dpi_value, tuple):
         dpi_value = dpi_value[0]
-    # Si pas de DPI dans entry, essaie de le récupérer depuis l'image PIL
     if not dpi_value:
+        # Pas de DPI dans entry : essaie de le récupérer depuis l'image PIL
         img_info_dpi = entry["img"].info.get("dpi")
         if img_info_dpi:
             dpi_value = img_info_dpi[0] if isinstance(img_info_dpi, tuple) else img_info_dpi
 
-    if ext in [".jpg", ".jpeg"]:
-        # JPEG : détecte la qualité originale et sauvegarde avec cette qualité
-        # Détecte la qualité depuis les bytes originaux
+    if ext in (".jpg", ".jpeg", ".jfif", ".pjpeg", ".pjp"):
+        # JFIF/PJPEG/PJP sont des variantes/synonymes historiques du format
+        # JPEG (JFIF = JPEG File Interchange Format, PJPEG/PJP = JPEG
+        # progressif) — mêmes contraintes d'encodage que .jpg/.jpeg.
         original_quality = 95
         if entry.get("bytes"):
             original_quality = detect_jpeg_quality(entry["bytes"])
@@ -712,24 +652,20 @@ def save_image_to_bytes(entry):
             rgb_img.paste(img_to_save, mask=img_to_save.split()[-1] if img_to_save.mode in ("RGBA", "LA") else None)
             img_to_save = rgb_img
 
-        # Sauvegarde avec DPI si disponible
         if dpi_value:
             img_to_save.save(img_bytes, format='JPEG', quality=original_quality, optimize=True, dpi=(dpi_value, dpi_value))
         else:
             img_to_save.save(img_bytes, format='JPEG', quality=original_quality, optimize=True)
     elif ext == ".png":
-        # Sauvegarde PNG avec DPI si disponible
         if dpi_value:
             entry["img"].save(img_bytes, format='PNG', optimize=True, dpi=(dpi_value, dpi_value))
         else:
             entry["img"].save(img_bytes, format='PNG', optimize=True)
     elif ext == ".webp":
-        # WEBP : détecte la qualité originale
         original_quality = 95
         if entry.get("bytes"):
             original_quality = detect_jpeg_quality(entry["bytes"])
 
-        # Sauvegarde WEBP avec DPI si disponible
         if dpi_value:
             entry["img"].save(img_bytes, format='WEBP', quality=original_quality, dpi=(dpi_value, dpi_value))
         else:
@@ -737,12 +673,10 @@ def save_image_to_bytes(entry):
     elif ext == ".gif":
         entry["img"].save(img_bytes, format='GIF')
     elif ext == ".avif":
-        # AVIF : détecte la qualité originale
         original_quality = 95
         if entry.get("bytes"):
             original_quality = detect_jpeg_quality(entry["bytes"])
 
-        # Sauvegarde AVIF avec DPI si disponible
         if dpi_value:
             entry["img"].save(img_bytes, format='AVIF', quality=original_quality, dpi=(dpi_value, dpi_value))
         else:
@@ -760,16 +694,39 @@ def save_image_to_bytes(entry):
             except Exception:
                 pass
 
+        # Pillow écrit nativement l'ICO dans les modes 1/L/P/RGB/RGBA — respecter
+        # le mode choisi par l'utilisateur (outils mode d'image/profondeur de
+        # couleur de la visionneuse) au lieu de le forcer en RGBA comme le fait
+        # ico_creator_qt.py (contexte différent : création d'une icône neuve,
+        # transparence voulue par défaut). Seuls LA et CMYK n'ont pas d'écriture
+        # ICO directe dans Pillow — convertis vers l'équivalent avec/sans alpha.
         img_to_save = entry["img"]
-        if img_to_save.mode != "RGBA":
+        if img_to_save.mode == "LA":
             img_to_save = img_to_save.convert("RGBA")
+        elif img_to_save.mode == "CMYK":
+            img_to_save = img_to_save.convert("RGB")
 
         if original_sizes:
             img_to_save.save(img_bytes, format='ICO', sizes=list(original_sizes))
         else:
             img_to_save.save(img_bytes, format='ICO')
-    else:
-        # Format par défaut : PNG pour les autres formats
+    elif ext == ".bmp":
+        # BMP écrit nativement 1/L/P/RGB/RGBA (RGBA -> BGRA 32 bits) — seuls
+        # LA et CMYK n'ont pas d'écriture BMP directe dans Pillow.
+        img_to_save = entry["img"]
+        if img_to_save.mode == "LA":
+            img_to_save = img_to_save.convert("RGBA")
+        elif img_to_save.mode == "CMYK":
+            img_to_save = img_to_save.convert("RGB")
+        img_to_save.save(img_bytes, format='BMP')
+    elif ext in (".tiff", ".tif"):
+        # TIFF accepte nativement tous les modes PIL rencontrés dans l'appli
+        # (1/L/LA/P/RGB/RGBA/CMYK) — aucune conversion nécessaire.
+        if dpi_value:
+            entry["img"].save(img_bytes, format='TIFF', dpi=(dpi_value, dpi_value))
+        else:
+            entry["img"].save(img_bytes, format='TIFF')
+    else:  # format par défaut : PNG pour les autres formats
         if dpi_value:
             entry["img"].save(img_bytes, format='PNG', dpi=(dpi_value, dpi_value))
         else:

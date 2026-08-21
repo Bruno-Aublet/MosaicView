@@ -3,15 +3,14 @@ modules/qt/color_depth_tool_qt.py — Outil "profondeur de couleur"
 (color_depth) de la barre d'outils flottante de la visionneuse principale
 (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 14e outil migré) : premier
-des 3 dernières fonctions du panneau Ajustements classique (adjustments_
-dialog_qt.py, AdjustmentsDialog) à migrer — profondeur de couleur, effets,
-mode d'image. Contrairement aux 8 modes d'ajustement déjà migrés
-(sharpness/unsharp/brightness/saturation/remove_colors/compression/levels/
-transparency, tous des réglettes ou un geste souris), c'est un groupe de
-QRadioButton (choix mutuellement exclusifs), sans overlay ni geste souris —
-mais avec un comportement de VERROUILLAGE inédit parmi les outils déjà
-migrés, décidé explicitement avec l'utilisateur le 2026-08-16 :
+Fusion progressive des visionneuses : ce module contient la logique de
+l'outil "profondeur de couleur" — profondeur de couleur, effets et mode
+d'image forment un trio de fonctions apparentées (voir effects_tool_qt.py,
+image_mode_tool_qt.py). Contrairement aux modes d'ajustement à réglette ou
+geste souris (sharpness/unsharp/brightness/saturation/remove_colors/
+compression/levels/transparency), c'est un groupe de QRadioButton (choix
+mutuellement exclusifs), sans overlay ni geste souris — mais avec un
+comportement de VERROUILLAGE propre à ce trio :
 
   - État initial (page affichée, aucun changement effectué) : radio
     "Restaurer l'original" grisé/inactif ; les 4 radios de profondeur (32/24/
@@ -31,7 +30,6 @@ migrés, décidé explicitement avec l'utilisateur le 2026-08-16 :
     un commit de CET outil) — ex. une page déjà en 8 bits affiche son radio
     "8 bits" grisé d'emblée ; il ne se réactive que si l'utilisateur clique
     sur un AUTRE choix (nouveau commit, qui change alors le mode réel).
-    Décision explicite utilisateur, 2026-08-16.
   - Phrase d'info en italique sous les radios (couleur de texte du thème,
     jamais de couleur vive — CLAUDE.md "détails de style annexes"), TOUJOURS
     visible, ex. "Cette page est actuellement en 24 bits." : sans elle, un
@@ -46,9 +44,9 @@ indexé par (page, history_index), RESYNCHRONISÉ à chaque changement de page/
 undo-redo — voir sharpness_tool_qt.py), l'état ici n'est PAS dérivé de
 l'historique undo/redo : c'est un snapshot "avant premier changement" par
 page, qui doit SURVIVRE au changement de page ET à un Ctrl+Z/Ctrl+Y pendant
-que l'outil est actif (décision explicite utilisateur, 2026-08-16 — "sinon il
-y a un risque de confusion pour l'utilisateur"). Stocké sur state (state.
-color_depth_original_bytes_by_page : dict[int, bytes]), PAS sur ImageViewer,
+que l'outil est actif (sinon risque de confusion pour l'utilisateur). Stocké
+sur state (state.color_depth_original_bytes_by_page : dict[int, bytes]),
+PAS sur ImageViewer,
 même raison que les dicts *_value_by_history_index (survivre à une fermeture/
 réouverture de la visionneuse tant que le fichier reste ouvert) — mais ici
 jamais vidé/réinitialisé au changement de page ni à un undo/redo, seulement
@@ -73,11 +71,9 @@ from PySide6.QtCore import Qt
 from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.clone_tool_qt import floating_options_panel_style
+from modules.qt.clone_tool_qt import floating_options_panel_style, BlockableRadioButton
 
-# Correspondance mode PIL -> clé depth, réutilisée telle quelle depuis
-# adjustments_dialog_qt.py::_disable_current_mode_radios (skill
-# adjust-color-depth) — pas dupliquée à la main. Ne couvre QUE les 4 modes
+# Correspondance mode PIL -> clé depth (skill adjust-color-depth). Ne couvre QUE les 4 modes
 # ayant un radio de profondeur équivalent dans ce panneau (RGBA/RGB/L/P/'1') ;
 # ne pilote QUE le grisage du radio correspondant, pas la phrase d'info
 # ci-dessous (voir _PIL_MODE_LABEL_KEYS, qui couvre tous les modes PIL,
@@ -92,16 +88,33 @@ _DEPTH_LABEL_KEYS = {
     '1':  'dialogs.adjustments.depth_1bit',
 }
 
+# Profondeurs bloquées par extension d'origine : le format ne change jamais
+# silencieusement à la sauvegarde, un choix incompatible reste impossible à
+# sélectionner plutôt que dégradé après coup. Le libellé affiché dans le
+# tooltip est dérivé de l'extension réelle du fichier (.jpg -> "JPG"), pas
+# stocké ici — un fichier .jpg reste "JPG" à l'écran, jamais "JPEG".
+_BLOCKED_DEPTH_KEYS_BY_EXT = {
+    '.jpg':   {'32', '1'},
+    '.jpeg':  {'32', '1'},
+    '.jfif':  {'32', '1'},
+    '.pjpeg': {'32', '1'},
+    '.pjp':   {'32', '1'},
+    '.gif':   {'32'},
+    # BMP écrit bien un canal alpha 32-bit, mais Pillow (comme la plupart des
+    # logiciels) ne le redétecte pas à la relecture — header BMP classique
+    # ambigu sur la présence d'alpha, contrairement à BITMAPV4/V5HEADER avec
+    # masques explicites. Transparence non fiable, donc bloquée.
+    '.bmp':   {'32'},
+}
+
 # Libellé de la phrase d'info ("Cette page est actuellement en ...") pour
-# TOUT mode PIL rencontrable (pas seulement les 4 profondeurs) — décision
-# explicite utilisateur, 2026-08-16 : un mode sans radio équivalent (LA,
-# CMYK) doit être affiché quand même, avec son nom de mode PIL brut plutôt
-# qu'un nombre de bits, et ne grise alors aucun radio de profondeur (déjà le
-# comportement de _PIL_TO_DEPTH ci-dessus, qui ne couvre pas ces modes).
-# Réutilise mécaniquement les libellés déjà validés du panneau Ajustements
-# classique (dialogs.adjustments.image_mode_*, skill adjust-image-mode) —
-# même principe que idees.txt "Traductions du panneau flottant réutilisées
-# quand possible" — plutôt que d'en retraduire des neufs dans les 46 langues.
+# TOUT mode PIL rencontrable (pas seulement les 4 profondeurs) : un mode
+# sans radio équivalent (LA, CMYK) doit être affiché quand même, avec son nom
+# de mode PIL brut plutôt qu'un nombre de bits, et ne grise alors aucun radio
+# de profondeur (déjà le comportement de _PIL_TO_DEPTH ci-dessus, qui ne
+# couvre pas ces modes). Réutilise les clés de traduction existantes
+# (dialogs.adjustments.image_mode_*, skill adjust-image-mode) plutôt que
+# d'en retraduire des neuves dans les 46 langues.
 _PIL_MODE_LABEL_KEYS = {
     'RGB':  'dialogs.adjustments.image_mode_rgb',
     'RGBA': 'dialogs.adjustments.image_mode_rgba',
@@ -138,26 +151,27 @@ class _ColorDepthOptionsPanel(QWidget):
         # phrase d'info (_update_info_label) sans redemander l'info à
         # l'appelant — mis à jour uniquement par sync_to_page_state.
         self._current_pil_mode: str | None = None
+        # Idem pour le tooltip des radios bloqués par format (retranslate()
+        # n'a pas accès aux paramètres de sync_to_page_state).
+        self._blocked_keys: set[str] = set()
+        self._blocked_format_label: str = ""
 
         outer = QVBoxLayout(self)
         outer.setContentsMargins(8, 4, 8, 4)
         outer.setSpacing(2)
 
-        # 2 lignes de radios (idees.txt #3, retour utilisateur 2026-08-16 —
-        # les 5 libellés complets ("32 bits (RGBA - couleurs + transparence)"
-        # etc.) rendaient une seule ligne bien trop large) — même principe de
-        # panneau multi-lignes que _LevelsOptionsPanel (seul autre panneau de
-        # cette barre à en avoir plusieurs), chaque ligne son propre
-        # QHBoxLayout empilé dans le QVBoxLayout englobant. Répartition :
-        # ligne 1 = Restaurer l'original + 32 bits + 24 bits, ligne 2 = 8
-        # bits + 1 bit — pas de découpage "logique" particulier au-delà
-        # d'équilibrer visuellement les 2 lignes (même esprit que le
-        # placement en colonnes de l'ancien panneau Ajustements classique,
-        # aujourd'hui supprimé : purement une question de mise en page).
-        # Lignes centrées via un stretch de chaque côté (même principe que
-        # _LevelsOptionsPanel.pip_row) — retour utilisateur 2026-08-16 : sans
-        # ça, les 2 lignes de longueurs différentes restaient alignées à
-        # gauche, visuellement décalées l'une par rapport à l'autre.
+        # 2 lignes de radios : les 5 libellés complets ("32 bits (RGBA -
+        # couleurs + transparence)" etc.) rendraient une seule ligne bien
+        # trop large — même principe de panneau multi-lignes que
+        # _LevelsOptionsPanel (seul autre panneau de cette barre à en avoir
+        # plusieurs), chaque ligne son propre QHBoxLayout empilé dans le
+        # QVBoxLayout englobant. Répartition : ligne 1 = Restaurer l'original
+        # + 32 bits + 24 bits, ligne 2 = 8 bits + 1 bit — pas de découpage
+        # "logique" particulier au-delà d'équilibrer visuellement les 2
+        # lignes. Lignes centrées via un stretch de chaque côté (même
+        # principe que _LevelsOptionsPanel.pip_row) : sans ça, les 2 lignes
+        # de longueurs différentes resteraient alignées à gauche,
+        # visuellement décalées l'une par rapport à l'autre.
         row1 = QHBoxLayout()
         row1.setContentsMargins(0, 0, 0, 0)
         row1.setSpacing(10)
@@ -171,10 +185,9 @@ class _ColorDepthOptionsPanel(QWidget):
         row2.addStretch(1)
 
         # "Restaurer l'original" n'appartient PAS au même QButtonGroup que les
-        # 4 profondeurs (retour utilisateur 2026-08-16, après plusieurs
-        # correctifs a posteriori insuffisants — setChecked(False)/
-        # setExclusive(False) temporaires ne faisaient que masquer le
-        # problème sans l'empêcher structurellement) : ce n'est pas un choix
+        # 4 profondeurs (setChecked(False)/setExclusive(False) temporaires ne
+        # feraient que masquer le problème sans l'empêcher structurellement)
+        # : ce n'est pas un choix
         # de PROFONDEUR parmi d'autres (il ne coexiste jamais visuellement
         # comme "sélectionné" avec un radio de profondeur, les deux ne
         # s'excluent pas au sens d'un vrai groupe de choix), c'est une action
@@ -195,10 +208,10 @@ class _ColorDepthOptionsPanel(QWidget):
         self._group = QButtonGroup(self)
         self._group.setExclusive(True)
 
-        self._depth_radios: dict[str, QRadioButton] = {}
+        self._depth_radios: dict[str, BlockableRadioButton] = {}
         _ROW_FOR_KEY = {'32': row1, '24': row1, '8': row2, '1': row2}
         for key in _DEPTH_KEYS:
-            radio = QRadioButton()
+            radio = BlockableRadioButton()
             radio.toggled.connect(lambda checked, k=key: self._on_depth_toggled(k, checked))
             _ROW_FOR_KEY[key].addWidget(radio)
             self._group.addButton(radio)
@@ -206,9 +219,14 @@ class _ColorDepthOptionsPanel(QWidget):
         row1.addStretch(1)
         row2.addStretch(1)
 
-        # Phrase d'info TOUJOURS visible (décision explicite utilisateur,
-        # 2026-08-16) : sans elle, un radio grisé n'explique pas pourquoi —
-        # italique, couleur de texte du thème (CLAUDE.md "détails de style
+        # viewer._toolbar n'existe pas encore ici (ce panneau est construit
+        # DEPUIS le constructeur de _ViewerToolbar) — le tracking se fait au
+        # premier sync_to_page_state(), une fois la toolbar assignée.
+        self._tooltip_tracked = False
+
+        # Phrase d'info TOUJOURS visible : sans elle, un radio grisé
+        # n'explique pas pourquoi — italique, couleur de texte du thème
+        # (CLAUDE.md "détails de style
         # annexes", jamais de couleur vive pour une info non bloquante).
         self._info_label = QLabel()
         self._info_label.setAlignment(Qt.AlignCenter)
@@ -223,33 +241,34 @@ class _ColorDepthOptionsPanel(QWidget):
         # documenté skill viewers/_CloneOptionsPanel et shapes_tool_qt.py) :
         # sur un panneau WA_StyledBackground, un style QRadioButton qui ne
         # pose que color/background laisse l'indicateur natif (la puce ronde)
-        # totalement invisible — d'où le crash visuel "boutons radio
-        # invisibles" constaté à l'usage. Accent bleu (comme le reste de la
+        # totalement invisible — d'où des boutons radio invisibles sans ce
+        # style explicite. Accent bleu (comme le reste de la
         # barre) pour l'état coché, gris atténué pour l'état désactivé (radio
         # déjà verrouillé après commit, ou "Restaurer l'original" avant tout
         # changement) — cohérent avec les autres accents de cette barre
         # (voir _RemoveColorsOptionsPanel::_apply_theme, accent = "#4a90d9").
-        # Piège corrigé (2026-08-16, diagnostiqué par prints après plusieurs
-        # fausses pistes sur l'état logique — isChecked() était déjà False
-        # partout, le bug était PUREMENT visuel) : QRadioButton::indicator:
-        # disabled remplissait l'indicateur avec background: theme['separator']
-        # même quand le radio n'était PAS coché — un cercle rempli d'une
-        # couleur pleine (même grise/neutre) se lit visuellement comme "coché"
-        # quel que soit l'état logique réel, d'où l'illusion d'un "Restaurer
-        # l'original" coché dès l'ouverture alors qu'il ne l'était jamais.
-        # Fix : l'état désactivé-non-coché ne change QUE la bordure (plus
-        # fine/grisée) et reste creux (background: theme['bg'], identique à
-        # l'état activé-non-coché) — seul :checked (avec ou sans :disabled)
-        # remplit l'indicateur d'une couleur pleine.
+        # Piège purement visuel, indépendant de l'état logique (isChecked()) :
+        # QRadioButton::indicator:disabled qui remplirait l'indicateur avec
+        # background: theme['separator'] même quand le radio n'est PAS coché
+        # — un cercle rempli d'une couleur pleine (même grise/neutre) se lit
+        # visuellement comme "coché" quel que soit l'état logique réel, d'où
+        # une illusion de "Restaurer l'original" coché dès l'ouverture alors
+        # qu'il ne l'est jamais. Fix : l'état désactivé-non-coché ne change
+        # QUE la bordure (plus fine/grisée) et reste creux (background:
+        # theme['bg'], identique à l'état activé-non-coché) — seul :checked
+        # (avec ou sans :disabled) remplit l'indicateur d'une couleur pleine.
         accent = "#4a90d9"
         radio_style = (
             f"QRadioButton {{ color: {theme['text']}; background: transparent; spacing: 6px; }} "
             f"QRadioButton:disabled {{ color: {theme['separator']}; }} "
+            f"QRadioButton[blocked=\"true\"] {{ color: {theme['separator']}; }} "
             f"QRadioButton::indicator {{ width: 14px; height: 14px; border-radius: 8px; "
             f"border: 1px solid {theme['text']}; background: {theme['bg']}; }} "
             f"QRadioButton::indicator:checked {{ background: {accent}; "
             f"border: 1px solid {theme['text']}; }} "
             f"QRadioButton::indicator:disabled {{ border: 1px solid {theme['separator']}; "
+            f"background: {theme['bg']}; }} "
+            f"QRadioButton[blocked=\"true\"]::indicator {{ border: 1px solid {theme['separator']}; "
             f"background: {theme['bg']}; }} "
             f"QRadioButton::indicator:checked:disabled {{ background: {accent}; "
             f"border: 1px solid {theme['separator']}; }}"
@@ -270,6 +289,7 @@ class _ColorDepthOptionsPanel(QWidget):
         italic_font.setItalic(True)
         self._info_label.setFont(italic_font)
         self._update_info_label()
+        self._update_blocked_tooltips()
 
     def _update_info_label(self):
         """Reconstruit le texte de la phrase d'info à partir du mode PIL
@@ -282,6 +302,24 @@ class _ColorDepthOptionsPanel(QWidget):
             self._info_label.setText(_("viewer.color_depth_panel_current_format", format=mode_text))
         else:
             self._info_label.setText("")
+
+    def _update_blocked_tooltips(self):
+        """Reconstruit le tooltip des radios bloqués par format à partir de
+        self._blocked_keys/_blocked_format_label mémorisés — appelée par
+        retranslate() (changement de langue) et par sync_to_page_state()."""
+        overlay_tip = self._viewer._toolbar._overlay_tip
+        if not self._tooltip_tracked:
+            for radio in self._depth_radios.values():
+                overlay_tip.track(radio, "")
+            self._tooltip_tracked = True
+
+        blocked_tip = (
+            f'<table style="max-width:360px;white-space:normal;">'
+            f'<tr><td>{_("viewer.color_depth_panel_blocked_format", format=self._blocked_format_label)}</td></tr>'
+            f'</table>'
+        )
+        for key, radio in self._depth_radios.items():
+            overlay_tip.set_tracked_html(blocked_tip if key in self._blocked_keys else "", radio)
 
     # ── Visibilité ────────────────────────────────────────────────────────────
 
@@ -325,45 +363,49 @@ class _ColorDepthOptionsPanel(QWidget):
     # ── Réglage ──────────────────────────────────────────────────────────────
 
     def sync_to_page_state(self, has_original_saved: bool, locked_key: str | None,
-                            pil_mode: str | None):
+                            pil_mode: str | None, blocked_keys: set[str] = frozenset(),
+                            blocked_format_label: str = ""):
         """Positionne les 5 radios sans déclencher de commit (blockSignals) —
         reflète l'état de la page courante : has_original_saved pilote
-        l'activation de "Restaurer l'original", locked_key (clé du mode PIL
-        courant parmi les 4 profondeurs, ou None si le mode réel n'a pas
-        d'équivalent — ex. LA/CMYK) pilote quel radio de profondeur est
-        coché+grisé, pil_mode (mode PIL brut) pilote la phrase d'info
-        (couvre tous les modes, y compris ceux sans radio équivalent). Appelé
-        au changement de page, à la sélection de l'outil, et après un
-        commit/une restauration/un undo-redo.
+        l'activation de "Restaurer l'original", locked_key pilote quel radio
+        de profondeur est coché+grisé, pil_mode pilote la phrase d'info,
+        blocked_keys grise en plus les profondeurs incompatibles avec le
+        format d'origine (blocked_format_label = nom de ce format, pour le
+        tooltip).
 
-        Piège corrigé (2026-08-16, crash vécu à l'usage) : bloquer les
-        signaux du QButtonGroup (self._group.blockSignals) NE bloque PAS le
-        signal toggled émis par chaque QRadioButton individuellement — un
-        setChecked() ici redéclenchait _on_depth_toggled()/_on_restore_
-        toggled() en pleine resynchronisation "silencieuse", donc un second
-        commit/une restauration en boucle avant même la fin de la
-        construction de la visionneuse (self._play_pause_btn pas encore créé
-        à ce stade). blockSignals doit être posé sur CHAQUE radio.
+        Bloquer les signaux du QButtonGroup ne bloque PAS le signal toggled
+        de chaque QRadioButton individuellement — sinon un setChecked() ici
+        redéclencherait un commit/une restauration en pleine resynchronisation.
 
-        _restore_radio N'EST PLUS dans self._group (voir __init__,
-        setAutoExclusive(False) permanent) : setChecked(False) dessus est
-        donc un simple décochage normal, sans contrainte d'exclusivité à
-        contourner — plus besoin de jouer avec setExclusive/setAutoExclusive
-        temporaires ici (les correctifs a posteriori précédents masquaient le
-        symptôme sans traiter la cause : le tout premier addButton() d'un
-        QButtonGroup exclusif coche automatiquement ce bouton)."""
+        Les radios bloqués par format restent setEnabled(True) (un widget
+        désactivé ne reçoit plus Enter/MouseMove, le tooltip OverlayTooltip.
+        track() ne se déclencherait jamais) : BlockableRadioButton.blocked
+        rejette le clic dans mousePressEvent, la property Qt "blocked"
+        pilote le style visuel (_apply_theme)."""
         all_radios = [self._restore_radio] + list(self._depth_radios.values())
         for radio in all_radios:
             radio.blockSignals(True)
         self._restore_radio.setEnabled(has_original_saved)
         self._restore_radio.setChecked(False)
         for key, radio in self._depth_radios.items():
-            radio.setEnabled(key != locked_key)
+            blocked = key in blocked_keys
+            radio.blocked = blocked
+            # setEnabled(True) tant que blocked : sinon Qt cesse d'envoyer
+            # Enter/MouseMove et le tooltip ne se déclenche plus jamais.
+            radio.setEnabled(blocked or key != locked_key)
             radio.setChecked(key == locked_key)
+            radio.setCursor(Qt.ArrowCursor if blocked else Qt.PointingHandCursor)
+            radio.setProperty("blocked", blocked)
+            radio.style().unpolish(radio)
+            radio.style().polish(radio)
         for radio in all_radios:
             radio.blockSignals(False)
         self._current_pil_mode = pil_mode
         self._update_info_label()
+
+        self._blocked_keys = set(blocked_keys)
+        self._blocked_format_label = blocked_format_label
+        self._update_blocked_tooltips()
 
     def _on_depth_toggled(self, key: str, checked: bool):
         if checked:
@@ -407,10 +449,8 @@ class ColorDepthViewerMixin:
     def perform_color_depth(self, key: str):
         """Clic sur un radio de profondeur : commit IMMÉDIAT dans
         entry['bytes'] (pattern skill apply-image-operation, variante A
-        complète) — réutilise apply_image_adjustments() (adjustments_
-        processing_qt.py), déjà utilisée par le panneau Ajustements classique
-        pour "Appliquer à la page courante". Devient sa propre entrée
-        d'historique.
+        complète) — réutilise apply_image_adjustments()
+        (image_processing_qt.py). Devient sa propre entrée d'historique.
 
         Avant ce commit, si aucun snapshot "avant premier changement" n'existe
         encore pour CETTE page (state.color_depth_original_bytes_by_page),
@@ -527,6 +567,8 @@ class ColorDepthViewerMixin:
 
         pil_mode = None
         locked_key = None
+        blocked_keys: set[str] = set()
+        blocked_format_label = ""
         if 0 <= self.current_idx < len(state.images_data):
             entry = state.images_data[self.current_idx]
             if entry.get('bytes'):
@@ -538,5 +580,11 @@ class ColorDepthViewerMixin:
                 except Exception:
                     pil_mode = None
                     locked_key = None
+            ext = entry.get('extension', '')
+            blocked = _BLOCKED_DEPTH_KEYS_BY_EXT.get(ext.lower())
+            if blocked:
+                blocked_keys = blocked
+                blocked_format_label = ext.lstrip('.').upper()
 
-        panel.sync_to_page_state(has_original_saved, locked_key, pil_mode)
+        panel.sync_to_page_state(has_original_saved, locked_key, pil_mode,
+                                  blocked_keys, blocked_format_label)

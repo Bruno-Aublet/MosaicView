@@ -1,6 +1,6 @@
 """
 modules/qt/menubar_qt.py
-Barre de menus Qt pour MosaicView (remplace modules/menubar.py tkinter).
+Barre de menus de MosaicView.
 
 5 menus : Fichier, Édition, Images, Archives, Système.
 Les items désactivés sont grisés. Les menus sont reconstruits à chaque ouverture
@@ -280,6 +280,9 @@ def _populate_archives_menu(menu: QMenu, callbacks: dict):
                 callbacks.get("delete_bookmark"), enabled=has_bookmark_for_current)
     _add_action(menu, _("context_menu.canvas_with_file.delete_all_bookmarks"),
                 callbacks.get("delete_all_bookmarks"), enabled=has_any_bookmark)
+    menu.addSeparator()
+
+    _add_action(menu, _("menu.zip_compression"), callbacks.get("open_zip_compression_dialog"))
 
 
 def _populate_language_menu(menu: QMenu, callbacks: dict):
@@ -476,9 +479,6 @@ def _populate_system_menu(menu: QMenu, callbacks: dict):
                 enabled=font_off > min_font)
     _add_action(menu, _("menu.increase_font"), callbacks.get("increase_font_size"),
                 enabled=font_off < max_font)
-    menu.addSeparator()
-
-    _add_action(menu, _("menu.zip_compression"), callbacks.get("open_zip_compression_dialog"))
     menu.addSeparator()
 
     _add_action(menu, _("context_menu.canvas_with_file.help"), callbacks.get("show_user_guide"))

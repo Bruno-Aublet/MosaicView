@@ -58,12 +58,13 @@ def _zip_compression_config(self):
 - À l'OK (`_on_ok`), appelle `self._config.set_zip_compression_level(...)` puis émet `result_signal(True)`.
 - Textes : `dialogs.zip_compression.window_title` (`_wt`, obligatoire pour un titre de fenêtre), `.title`, `.explanation`, `.level_label` dans les fichiers `locales/*.json`.
 
-## Deux points d'entrée pour ouvrir le dialogue
+## Trois points d'entrée pour ouvrir le dialogue
 
-1. **Menu** : `menu.zip_compression` ([menubar_qt.py:484](modules/qt/menubar_qt.py#L484)) + sous-menu clic droit ([context_menus_qt.py:646](modules/qt/context_menus_qt.py#L646)) → callback `open_zip_compression_dialog` câblé dans [menubar_callbacks_qt.py:143](modules/qt/menubar_callbacks_qt.py#L143) vers `mw._open_zip_compression_dialog`.
-2. **Clic droit sur l'indicateur ZIP de la statusbar** : `StatusBarQt.set_zip_right_click_callback()` ([status_bar_qt.py:138](modules/qt/status_bar_qt.py#L138)) → `PanelWidget._open_zip_compression_dialog()` ([panel_widget.py:1280-1296](modules/qt/panel_widget.py#L1280-L1296)), avec garde anti-double-ouverture (`existing.raise_()` si le dialogue est déjà ouvert) et rafraîchissement de la statusbar au résultat.
+1. **Barre de menus, menu Archives** : `menu.zip_compression` dans `_populate_archives_menu` ([menubar_qt.py](modules/qt/menubar_qt.py)) → callback `open_zip_compression_dialog` câblé dans [menubar_callbacks_qt.py:143](modules/qt/menubar_callbacks_qt.py#L143) vers `mw._open_zip_compression_dialog`.
+2. **Menu contextuel du canvas** (clic droit sur zone vide de la mosaïque) : `menu.zip_compression` dans `show_canvas_context_menu` ([context_menus_qt.py](modules/qt/context_menus_qt.py)), à plat parmi les actions liées à l'archive (marque-pages, etc.) — ce menu n'a pas de sous-menu "Archives" dédié.
+3. **Clic droit sur l'indicateur ZIP de la statusbar** : `StatusBarQt.set_zip_right_click_callback()` ([status_bar_qt.py:138](modules/qt/status_bar_qt.py#L138)) → `PanelWidget._open_zip_compression_dialog()` ([panel_widget.py:1280-1296](modules/qt/panel_widget.py#L1280-L1296)), avec garde anti-double-ouverture (`existing.raise_()` si le dialogue est déjà ouvert) et rafraîchissement de la statusbar au résultat.
 
-Les deux convergent vers la même méthode `PanelWidget._open_zip_compression_dialog()` — un seul endroit à modifier pour changer le comportement d'ouverture du dialogue, quel que soit le point d'entrée.
+Les trois convergent vers la même méthode `PanelWidget._open_zip_compression_dialog()` — un seul endroit à modifier pour changer le comportement d'ouverture du dialogue, quel que soit le point d'entrée.
 
 ## L'indicateur ZIP de la statusbar
 

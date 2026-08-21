@@ -74,7 +74,10 @@
     "cancel_shapes": "Atcelt formas",
     "cancel_transparency": "Atcelt caurspīdīgumu",
     "validate_paste_image": "Piemērot ielīmēšanu",
-    "cancel_paste_image": "Atcelt ielīmēšanu"
+    "cancel_paste_image": "Atcelt ielīmēšanu",
+    "save_crop_mask": "Saglabāt masku",
+    "recall_crop_mask": "Izsaukt masku",
+    "forget_crop_mask": "Aizmirst masku"
   },
   "tabs": {
     "mosaic": "Mozaīka",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Paņemt krāsu no attēlotās lapas",
     "toolbar_transparency_tooltip": "Caurspīdīgums",
     "toolbar_transparency_instruction": "Noklikšķiniet uz krāsas, kuru padarīt caurspīdīgu",
-    "toolbar_transparency_disabled": "Pieejams tikai PNG, WebP, ICO un AVIF attēliem",
+    "toolbar_transparency_disabled": "Pieejams tikai PNG, WebP, ICO, AVIF un TIFF attēliem",
     "transparency_flood_panel_label": "Zona",
     "transparency_global_panel_label": "Globāli",
     "transparency_tolerance_panel_label": "Tolerance:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Pagrieziet vai spoguliski apgrieziet parādīto lapu",
     "toolbar_paste_image_tooltip": "Ielīmēt attēlu",
     "toolbar_paste_image_instruction": "Ielīmē starpliktuves attēlu lapā, turi izmēra maiņai/pagriešanai",
-    "toolbar_paste_image_disabled": "Starpliktuvē drīkst būt tikai attēls"
+    "toolbar_paste_image_disabled": "Starpliktuvē drīkst būt tikai attēls",
+    "color_depth_panel_blocked_format": "Nav pieejams: faila sākotnējais {format} formāts neatbalsta šo krāsu dziļumu.",
+    "image_mode_panel_blocked_format": "Nav pieejams: faila sākotnējais {format} formāts neatbalsta šo režīmu."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Zaļš:",
       "blue_label": "Zils:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Apgriezuma maska"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Manuālais režīms (uzzīmējiet atsauces līniju)\nAr peles labo pogu nomainiet režīmu",
     "straighten_mode_1": "Automātiskais režīms (slīpuma noteikšana)\nAr peles labo pogu nomainiet režīmu",
     "sharpness_mode_0": "Pastiprina vai mīkstina attēla detaļas\nNoklikšķiniet ar labo peles pogu, lai pārslēgtos uz adaptīvo asumu",
-    "sharpness_mode_1": "Izceļ kontūras, saudzējot vienlaidu laukumus\nNoklikšķiniet ar labo peles pogu, lai pārslēgtos uz vienkāršo asumu"
+    "sharpness_mode_1": "Izceļ kontūras, saudzējot vienlaidu laukumus\nNoklikšķiniet ar labo peles pogu, lai pārslēgtos uz vienkāršo asumu",
+    "crop_mode_0": "Uzzīmējiet taisnstūri virs saglabājamā apgabala, tad apstipriniet\nPeles labā poga pārslēdz apgriezuma maskas režīmā",
+    "crop_mode_1": "Apgriezuma maskas režīms: iegaumējiet taisnstūri un izsauciet to nākamajās lapās\nPeles labā poga atgriežas normālā režīmā"
   },
   "help": {
     "title": "MosaicView - Lietošanas instrukcija",
@@ -1413,7 +1423,7 @@
     "flatten": "Mapju izlīdzināšana",
     "flatten_content": "Ja jūsu arhīvs satur apakšmapes, izmantojiet 'Izlīdzināt mapes', lai pārvietotu visus attēlus uz vienu līmeni.",
     "viewer": "Skatītājs",
-    "viewer_content": "Veiciet dubultklikšķi uz lapas, lai atvērtu skatītāju:\n• Taustiņi ← →: navigācija starp lapām\n• Taustiņš D: pārslēgšanās starp 4 lasīšanas režīmiem\n  - Viena lapa: viena lapa vienlaikus\n  - Dubultās lapas: 1. lapa viena, tad 2-3, 4-5 utt.\n  - Nepārtrauktas dubultās lapas: 1. lapa viena, tad 2-3, 3-4, 4-5 utt.\n  - Webtoon: vertikāliem attēliem (webcomics), platums ierobežots līdz 900px lasāmības nolūkos; peles ritenītis vertikāli ritina lapu, tad maina lapu augšā/apakšā\n• Peles ritenītis: ātra navigācija (vertikāla ritināšana lapā Webtoon režīmā)\n• Ctrl+Ritenītis vai Ctrl+Plus/Mīnus: tālummaiņa (līdz 1000% no attēla reālā izmēra)\n• Ctrl+0: pielāgot tālummaiņu logam\n• Ctrl+1: tālummaiņa 100% (attēla reālais pikseļu izmērs)\n• Labais klikšķis + vilkšana: pārvietot parādīto attēlu (panorāma), kad tas pārsniedz logu\n• Taustiņš F11: pilnekrāns\n• Dubultklikšķis: pārslēgt pilnekrānu\n• Taustiņš Esc: atcelt pašreizējo zīmēšanu (apgriešana, iztaisnošana, forma…) vai iziet no skatītāja\n• Grāmatzīme: automātiski saglabā pašreizējo lapu, aizverot skatītāju (izņemot pirmo/pēdējo lapu). Atbilstošajā sīktēlā mozaīkā parādās sarkana lente. Atkārtoti atverot, ziņojums iesaka atgriezties šajā lapā. Automātiski izdzēsts pēdējā lapā, vai manuāli ar labo klikšķi skatītājā.\n\nPeldošā rīkjosla: novietojiet peli virs attēla augšas, lai to parādītu (tā pati paslēpjas pēc dažām sekundēm). Noklikšķiniet uz ikonas, lai aktivizētu atbilstošo rīku:\n• Apgriešana: uzzīmējiet taisnstūri, pielāgojiet to pie malām, apstipriniet\n• Iztaisnošana: uzzīmējiet līniju uz tā, kam vajadzētu būt horizontālam/vertikālam, korekcija tiek piemērota automātiski; labais klikšķis uz ikonas, lai pārslēgtos uz automātisko iztaisnošanu (nosaka slīpumu pats, neko nezīmējot)\n• Pagriešana/spoguļošana: viens klikšķis pagriež vai apspoguļo lapu\n• Klonēšana: Ctrl+klikšķis, lai izvēlētos avota punktu, tad zīmējiet ar nospiestu peles pogu, lai dublicētu\n• Teksts: noklikšķiniet, lai novietotu teksta bloku, izvēlieties fontu/izmēru/krāsu\n• Formas: zīmējiet elipses, taisnstūrus, līnijas vai bultas, ar turekļiem izmēra maiņai\n• Slīdņi (asums, spilgtums/kontrasts, piesātinājums, krāsu noņemšana, saspiešana): rezultāts tiek rādīts tiešraidē vilkšanas laikā\n• Līmeņi: pielāgojiet melno punktu/gammu/balto punktu ar slīdņiem, vai ņemiet krāsu tieši no attēla ar pipetēm\n• Caurspīdīgums: noklikšķiniet uz krāsas attēlā, lai padarītu to caurspīdīgu\n• Krāsu dziļums, Efekti, Attēla režīms: izvēlieties opciju, noklikšķinot uz radio pogas, piemērots nekavējoties\n• Ielīmēt attēlu: ielīmē attēlu no starpliktuves (ikona aktivizējas tikai tad, ja starpliktuvē ir attēls), ar turiem izmēra maiņai/pagriešanai kā formām; darbojas arī, velkot lapu no mozaīkas vai failu no Windows Explorer tieši uz skatītāju. Ctrl+C kopē redzamo lapu (tikai vienas lapas vai Webtoon režīmā), Ctrl+V ielīmē attēlu, tāpat kā mozaīkā\n\nApstipriniet ar pogu \"Apstiprināt\", kad tā parādās, vai Esc, lai atceltu. Katra izmaiņa pievienojas ierastajai Atsaukt/Atkārtot vēsturei.",
+    "viewer_content": "Veiciet dubultklikšķi uz lapas, lai atvērtu skatītāju:\n• Taustiņi ← →: navigācija starp lapām\n• Taustiņš D: pārslēgšanās starp 4 lasīšanas režīmiem\n  - Viena lapa: viena lapa vienlaikus\n  - Dubultās lapas: 1. lapa viena, tad 2-3, 4-5 utt.\n  - Nepārtrauktas dubultās lapas: 1. lapa viena, tad 2-3, 3-4, 4-5 utt.\n  - Webtoon: vertikāliem attēliem (webcomics), platums ierobežots līdz 900px lasāmības nolūkos; peles ritenītis vertikāli ritina lapu, tad maina lapu augšā/apakšā\n• Peles ritenītis: ātra navigācija (vertikāla ritināšana lapā Webtoon režīmā)\n• Ctrl+Ritenītis vai Ctrl+Plus/Mīnus: tālummaiņa (līdz 1000% no attēla reālā izmēra)\n• Ctrl+0: pielāgot tālummaiņu logam\n• Ctrl+1: tālummaiņa 100% (attēla reālais pikseļu izmērs)\n• Labais klikšķis + vilkšana: pārvietot parādīto attēlu (panorāma), kad tas pārsniedz logu\n• Taustiņš F11: pilnekrāns\n• Dubultklikšķis: pārslēgt pilnekrānu\n• Taustiņš Esc: atcelt pašreizējo zīmēšanu (apgriešana, iztaisnošana, forma…) vai iziet no skatītāja\n• Grāmatzīme: automātiski saglabā pašreizējo lapu, aizverot skatītāju (izņemot pirmo/pēdējo lapu). Atbilstošajā sīktēlā mozaīkā parādās sarkana lente. Atkārtoti atverot, ziņojums iesaka atgriezties šajā lapā. Automātiski izdzēsts pēdējā lapā, vai manuāli ar labo klikšķi skatītājā.\n\nPeldošā rīkjosla: novietojiet peli virs attēla augšas, lai to parādītu (tā pati paslēpjas pēc dažām sekundēm). Noklikšķiniet uz ikonas, lai aktivizētu atbilstošo rīku:\n• Apgriešana: uzzīmējiet taisnstūri, pielāgojiet to pie malām, apstipriniet; ar peles labo pogu noklikšķiniet uz ikonas, lai pārslēgtos apgriezuma maskas režīmā (iegaumējiet taisnstūri ar \"Saglabāt masku\", pēc tam izsauciet to nemainītu nākamajās lapās ar \"Izsaukt masku\" — noderīgi, lai piemērotu to pašu apgriezumu vairākām lapām, katru reizi to neuzzīmējot no jauna; \"Aizmirst masku\" izdzēš iegaumēto masku, tikai lapu pēc lapas)\n• Iztaisnošana: uzzīmējiet līniju uz tā, kam vajadzētu būt horizontālam/vertikālam, korekcija tiek piemērota automātiski; labais klikšķis uz ikonas, lai pārslēgtos uz automātisko iztaisnošanu (nosaka slīpumu pats, neko nezīmējot)\n• Pagriešana/spoguļošana: viens klikšķis pagriež vai apspoguļo lapu\n• Klonēšana: Ctrl+klikšķis, lai izvēlētos avota punktu, tad zīmējiet ar nospiestu peles pogu, lai dublicētu\n• Teksts: noklikšķiniet, lai novietotu teksta bloku, izvēlieties fontu/izmēru/krāsu\n• Formas: zīmējiet elipses, taisnstūrus, līnijas vai bultas, ar turekļiem izmēra maiņai\n• Slīdņi (asums, spilgtums/kontrasts, piesātinājums, krāsu noņemšana, saspiešana): rezultāts tiek rādīts tiešraidē vilkšanas laikā\n• Līmeņi: pielāgojiet melno punktu/gammu/balto punktu ar slīdņiem, vai ņemiet krāsu tieši no attēla ar pipetēm\n• Caurspīdīgums: noklikšķiniet uz krāsas attēlā, lai padarītu to caurspīdīgu\n• Krāsu dziļums, Efekti, Attēla režīms: izvēlieties opciju, noklikšķinot uz radio pogas, piemērots nekavējoties\n• Ielīmēt attēlu: ielīmē attēlu no starpliktuves (ikona aktivizējas tikai tad, ja starpliktuvē ir attēls), ar turiem izmēra maiņai/pagriešanai kā formām; darbojas arī, velkot lapu no mozaīkas vai failu no Windows Explorer tieši uz skatītāju. Ctrl+C kopē redzamo lapu (tikai vienas lapas vai Webtoon režīmā), Ctrl+V ielīmē attēlu, tāpat kā mozaīkā\n\nApstipriniet ar pogu \"Apstiprināt\", kad tā parādās, vai Esc, lai atceltu. Katra izmaiņa pievienojas ierastajai Atsaukt/Atkārtot vēsturei.",
     "join_pages": "Lappušu savienošana",
     "join_pages_content": "Atlasiet vairākas secīgas lapas, ar labo peles pogu noklikšķiniet → 'Apvienot atlasītās lapas', lai apvienotu lapas horizontāli vai vertikāli. Iegūtā attēla formāts atbilst avota lapu formātam, ja tās visas ir identiskas, pretējā gadījumā pēc noklusējuma PNG. Jūs varēsiet izvēlēties, vai dzēst vai saglabāt oriģinālās lapas.\n\nJaunās lapas vieta mozaīkā:\n• Aktīvs pārnumurēšanas režīms (automātisks vai manuāls): lapa ieņem pirmās apvienotās lapas vietu (tās vietu, ja avota lapas tiek dzēstas, vai tieši pirms tās, ja tās tiek saglabātas), un aktivizē pārnumurēšanu.\n• IZSLĒGTS pārnumurēšanas režīms: lapa tiek pievienota mozaīkas sākumā ar nosaukumu \"Savienotais_xxx\".",
     "split_pages": "Lappušu sadalīšana",

@@ -1,12 +1,12 @@
 """
 modules/qt/tabs_qt.py
-Barre d'onglets Qt pour MosaicView (remplace modules/tabs.py tkinter).
+Barre d'onglets de MosaicView.
 
 Deux onglets :
   - Onglet mosaïque : affiche le nom du fichier ouvert + bouton X fermeture
   - Onglet Métadonnées : affiché si state.comic_metadata est non vide
 
-Utilise QWidget + QHBoxLayout (pas QTabWidget, pour correspondre au style tkinter).
+Utilise QWidget + QHBoxLayout (pas QTabWidget), pour un style d'onglet spécifique.
 """
 
 import os
@@ -322,8 +322,7 @@ class _PagesTableModel(QAbstractTableModel):
     wrappés Python, créés puis détruits à chaque rafraîchissement de l'onglet
     (chaque suppression/undo/redo), corrompent la table de bindings de shiboken
     quand ça s'entrelace avec le churn d'items de la mosaïque → access violation
-    différée dans BindingManager::releaseWrapper (crash diagnostiqué par pile
-    native, shiboken 6.10/6.11, juillet 2026).
+    différée dans BindingManager::releaseWrapper (shiboken 6.10/6.11).
     rows : [[(valeur, clé_de_tri|None) × 5], ...] (préparées par _PagesModelBuilder).
     """
 

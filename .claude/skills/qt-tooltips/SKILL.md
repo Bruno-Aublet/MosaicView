@@ -66,11 +66,12 @@ self._overlay_tip.track(self._multi_page_cb, _tip_html())
 ```
 Si le texte peut changer (langue, valeur dynamique), rappeler `set_tracked_html(...)` dans `_retranslate()` — même règle que tout texte affiché (voir CLAUDE.md, retraduction à la volée).
 
-**Piège — `set_tracked_html()` ne rafraîchit pas un tooltip déjà affiché à l'écran** : il ne fait que remplacer le texte stocké pour le widget ; le nouveau contenu n'apparaît qu'au prochain `Enter`/`MouseMove` détecté sur ce widget. Si le texte peut changer **sans que la souris bouge** — typiquement une icône bi-mode dont le tooltip dépend d'un état basculé par clic droit pendant que le curseur reste immobile dessus (ex. `_ViewerToolbar._update_straighten_tooltip`/`_update_sharpness_tooltip`, `viewer_toolbar_qt.py`, skill `viewers`) — l'ancien texte reste visible tant que l'utilisateur ne bouge pas la souris, ce qui est trompeur juste après le clic. Corrigé (v1.7.3+) par `force_refresh_visible(widget)` : réaffiche immédiatement le tooltip avec son texte à jour si et seulement s'il est déjà visible sur ce widget précis (no-op sinon). À appeler juste après `set_tracked_html(...)` dans tout handler de bascule d'état déclenché par un clic (pas un survol) :
+**Piège — `set_tracked_html()` ne rafraîchit pas un tooltip déjà affiché à l'écran** : il ne fait que remplacer le texte stocké pour le widget ; le nouveau contenu n'apparaît qu'au prochain `Enter`/`MouseMove` détecté sur ce widget. Si le texte peut changer **sans que la souris bouge** — typiquement une icône bi-mode dont le tooltip dépend d'un état basculé par clic droit pendant que le curseur reste immobile dessus (ex. `_ViewerToolbar._update_straighten_tooltip`/`_update_sharpness_tooltip`, `viewer_toolbar_qt.py`, skill `viewers`), ou un indicateur de la statusbar dont le `refresh()` est rappelé juste après un clic ailleurs dans la même barre (skill `status-bar`) — appeler `force_refresh_visible(widget)` juste après `set_tracked_html(...)` dans tout handler de bascule d'état déclenché par un clic (pas un survol) :
 ```python
 self._overlay_tip.set_tracked_html(tip, self._buttons["sharpness"])
 self._overlay_tip.force_refresh_visible(self._buttons["sharpness"])
 ```
+`force_refresh_visible(widget)` réaffiche immédiatement le tooltip avec son texte à jour si et seulement si le tooltip actuellement visible est bien celui de **ce** widget précis (no-op sinon — que le tooltip soit masqué, ou affiché pour un autre widget). `OverlayTooltip` mémorise pour quel widget le tooltip actuellement visible a été montré (`_visible_widget`, mis à jour par `show_tooltip(html, widget=...)`) — c'est cette info qui permet la comparaison. Ne jamais remplacer `force_refresh_visible(widget)` par un simple `if self._overlay_tip._label.isVisible(): self._overlay_tip.show_tooltip(html)` : `isVisible()` est vrai dès qu'un tooltip est affiché quel que soit le widget concerné, donc ce raccourci réaffiche le tooltip du mauvais widget dès que deux indicateurs/widgets suivis par le même `OverlayTooltip` peuvent voir leur `refresh()`/mise à jour de texte déclenchés l'un après l'autre dans la foulée d'un seul clic (ex. `StatusBar.refresh()`, qui recalcule les 3 indicateurs à la suite).
 
 ### 3. Cellules tronquées d'un `QTableWidget`
 
@@ -88,10 +89,9 @@ self._overlay_tip = OverlayTooltip(parent_widget)  # viewport() pour un QGraphic
 ```
 Penser à appeler `update_font()` quand la police change et `_apply_style()`/`apply_theme()` quand le thème change (déjà fait pour le canvas dans `_apply_theme_bg()` — reproduire le même câblage pour toute nouvelle instance).
 
-## Dette existante — ne pas reproduire
+## Pièges à ne pas reproduire
 
-Les `setToolTip()` morts suivants ont été retirés (v1.5.6+) — ne pas les recréer :
-- Items du sous-menu "Bases récentes" (`library_window.py`, `menubar_qt.py`) : un `setToolTip()` sur un `QAction` de `QMenu` ne s'affiche jamais dans l'usage normal d'un menu (le highlight au survol prend toute la place, pas de délai de hover).
-- Boutons undo/redo du créateur d'icônes (`ico_creator_qt.py::_make_icon_btn`) : le paramètre `tooltip` du helper n'était jamais renseigné par aucun de ses 4 appels, donc `setToolTip("")` ne pouvait rien afficher. Le paramètre a été retiré.
+- **`setToolTip()` sur un `QAction` de `QMenu`** : ne s'affiche jamais dans l'usage normal d'un menu (le highlight au survol prend toute la place, pas de délai de hover) — inutile de l'ajouter sur un item de menu, ex. le sous-menu "Bases récentes" (`library_window.py`, `menubar_qt.py`).
+- **Paramètre `tooltip` non renseigné** : si un helper de construction de bouton expose un paramètre `tooltip` optionnel (ex. `ico_creator_qt.py::_make_icon_btn`), vérifier qu'il est bien renseigné à chaque appel — un paramètre jamais passé ne sert à rien et doit être retiré plutôt que laissé mort dans la signature.
 
-Si un vrai tooltip est un jour voulu sur ces boutons/items, utiliser `OverlayTooltip` (méthode 2 ci-dessus), pas `setToolTip()`.
+Si un vrai tooltip est voulu sur ce type de bouton/item, utiliser `OverlayTooltip` (méthode 2 ci-dessus), pas `setToolTip()`.

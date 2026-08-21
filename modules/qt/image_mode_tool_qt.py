@@ -2,17 +2,13 @@
 modules/qt/image_mode_tool_qt.py — Outil "mode d'image" (image_mode) de la
 barre d'outils flottante de la visionneuse principale (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 16e et DERNIER outil
-migré) : 3e et DERNIÈRE des fonctions du panneau Ajustements classique
-(adjustments_dialog_qt.py, AdjustmentsDialog) à migrer — profondeur de
-couleur (faite), effets (faite), mode d'image (ce module). Une fois cette
-migration terminée, AdjustmentsDialog/adjustments_dialog_qt.py a disparu
-entièrement (2026-08-16, voir idees.txt #3 et skill viewers). Cadré
-explicitement sur le MÊME
-modèle que la profondeur de couleur (skill adjust-color-depth, décision
-utilisateur 2026-08-16) — contrairement à Effets, ce mode a un vrai
-équivalent PIL détectable, donc le pattern de verrouillage EST dérivé du mode
-réel de l'image, exactement comme color_depth_tool_qt.py :
+Fusion progressive des visionneuses : ce module contient l'outil "mode
+d'image", 3e d'un trio de fonctions apparentées avec color_depth_tool_qt.py
+et effects_tool_qt.py (profondeur de couleur, effets, mode d'image). Cadré
+sur le MÊME modèle que la profondeur de couleur (skill adjust-color-depth)
+— contrairement à Effets, ce mode a un vrai équivalent PIL détectable, donc
+le pattern de verrouillage EST dérivé du mode réel de l'image, exactement
+comme color_depth_tool_qt.py :
 
   - État initial (page affichée, aucun changement effectué) : radio
     "Restaurer l'original" grisé/inactif ; le radio correspondant au mode PIL
@@ -20,8 +16,7 @@ réel de l'image, exactement comme color_depth_tool_qt.py :
     l'ouverture du panneau (pas seulement après un commit de CET outil) —
     ex. une page déjà en RGBA affiche son radio "RGBA" grisé d'emblée ; les
     6 autres radios de mode restent actifs et cliquables. PAS de radio
-    "Ne pas modifier"/"unchanged" (écarté, contrairement à l'ancien panneau
-    classique) : un radio verrouillé sur le mode réel joue déjà ce rôle,
+    "Ne pas modifier"/"unchanged" : un radio verrouillé sur le mode réel joue déjà ce rôle,
     exactement comme pour la profondeur de couleur — cliquer un mode DÉJÀ
     actif n'aurait aucun effet, il est donc simplement grisé plutôt que
     proposé comme un 8e choix redondant.
@@ -48,12 +43,11 @@ jamais vidé/réinitialisé au changement de page ni à un undo/redo, seulement
 quand "Restaurer l'original" est cliqué pour cette page précise (ou à la
 fermeture du fichier).
 
-Interaction avec la profondeur de couleur (skill adjust-color-depth,
-inchangée par cette migration) : le bloc "Mode d'image" de apply_adjustments()
-(image_processing_qt.py) s'exécute toujours AVANT celui de la profondeur
-de couleur — si les deux outils sont utilisés sur la même page dans la
-visionneuse, la profondeur de couleur garde le dernier mot sur le mode PIL
-final, exactement comme avant la migration.
+Interaction avec la profondeur de couleur (skill adjust-color-depth) : le
+bloc "Mode d'image" de apply_adjustments() (image_processing_qt.py)
+s'exécute toujours AVANT celui de la profondeur de couleur — si les deux
+outils sont utilisés sur la même page dans la visionneuse, la profondeur de
+couleur garde le dernier mot sur le mode PIL final.
 
 Pas de bouton "Valider"/"Annuler" flottant (comme la profondeur de couleur et
 les effets) : chaque clic est déjà un commit complet, il ne peut jamais y
@@ -70,11 +64,9 @@ from PySide6.QtCore import Qt
 from modules.qt.localization import _
 from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
-from modules.qt.clone_tool_qt import floating_options_panel_style
+from modules.qt.clone_tool_qt import floating_options_panel_style, BlockableRadioButton
 
-# Correspondance mode PIL -> clé image_mode, réutilisée telle quelle depuis
-# adjustments_dialog_qt.py::_disable_current_mode_radios (skill
-# adjust-image-mode) — pas dupliquée à la main. Ne couvre QUE les 7 modes
+# Correspondance mode PIL -> clé image_mode (skill adjust-image-mode). Ne couvre QUE les 7 modes
 # ayant un radio équivalent dans ce panneau ; pilote UNIQUEMENT le grisage du
 # radio correspondant (pas de phrase d'info séparée ici, contrairement à
 # color_depth : les 7 radios couvrent déjà tous les modes PIL rencontrables
@@ -91,6 +83,25 @@ _MODE_LABEL_KEYS = {
     'CMYK': 'dialogs.adjustments.image_mode_cmyk',
     'BW1':  'dialogs.adjustments.image_mode_1',
     'P':    'dialogs.adjustments.image_mode_p',
+}
+
+# Modes bloqués par extension d'origine : le format ne change jamais
+# silencieusement à la sauvegarde, un choix incompatible reste impossible à
+# sélectionner plutôt que dégradé après coup. Le libellé affiché dans le
+# tooltip est dérivé de l'extension réelle du fichier (.jpg -> "JPG"), pas
+# stocké ici — un fichier .jpg reste "JPG" à l'écran, jamais "JPEG".
+_BLOCKED_MODE_KEYS_BY_EXT = {
+    '.jpg':   {'RGBA', 'LA', 'P', 'BW1'},
+    '.jpeg':  {'RGBA', 'LA', 'P', 'BW1'},
+    '.jfif':  {'RGBA', 'LA', 'P', 'BW1'},
+    '.pjpeg': {'RGBA', 'LA', 'P', 'BW1'},
+    '.pjp':   {'RGBA', 'LA', 'P', 'BW1'},
+    '.gif':   {'RGBA', 'LA', 'CMYK'},
+    # BMP écrit bien un canal alpha 32-bit, mais Pillow (comme la plupart des
+    # logiciels) ne le redétecte pas à la relecture — header BMP classique
+    # ambigu sur la présence d'alpha, contrairement à BITMAPV4/V5HEADER avec
+    # masques explicites. Transparence non fiable, donc bloquée.
+    '.bmp':   {'RGBA', 'LA'},
 }
 
 
@@ -115,14 +126,18 @@ class _ImageModeOptionsPanel(QWidget):
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setMouseTracking(True)
         self._viewer = viewer
+        # Mémorisés pour retraduire le tooltip des radios bloqués par format
+        # (retranslate() n'a pas accès aux paramètres de sync_to_page_state).
+        self._blocked_keys: set[str] = set()
+        self._blocked_format_label: str = ""
 
         outer = QVBoxLayout(self)
         outer.setContentsMargins(8, 4, 8, 4)
         outer.setSpacing(2)
 
         # 3 lignes de radios (7 modes aux libellés assez longs, ex. "RGBA
-        # (couleurs + transparence)" — même retour utilisateur que pour
-        # _ColorDepthOptionsPanel : une seule ligne serait bien trop large).
+        # (couleurs + transparence)" — même raison que _ColorDepthOptionsPanel
+        # : une seule ligne serait bien trop large).
         # Répartition : ligne 1 = Restaurer l'original + RGB + RGBA, ligne 2 =
         # L + LA + CMYK, ligne 3 = 1 bit + P — pas de découpage "logique"
         # particulier au-delà d'équilibrer visuellement les 3 lignes. Chaque
@@ -162,12 +177,12 @@ class _ImageModeOptionsPanel(QWidget):
         self._group = QButtonGroup(self)
         self._group.setExclusive(True)
 
-        self._mode_radios: dict[str, QRadioButton] = {}
+        self._mode_radios: dict[str, BlockableRadioButton] = {}
         _ROW_FOR_KEY = {'RGB': row1, 'RGBA': row1,
                         'L': row2, 'LA': row2, 'CMYK': row2,
                         'BW1': row3, 'P': row3}
         for key in _MODE_KEYS:
-            radio = QRadioButton()
+            radio = BlockableRadioButton()
             radio.toggled.connect(lambda checked, k=key: self._on_mode_toggled(k, checked))
             _ROW_FOR_KEY[key].addWidget(radio)
             self._group.addButton(radio)
@@ -175,6 +190,11 @@ class _ImageModeOptionsPanel(QWidget):
         row1.addStretch(1)
         row2.addStretch(1)
         row3.addStretch(1)
+
+        # viewer._toolbar n'existe pas encore ici (ce panneau est construit
+        # DEPUIS le constructeur de _ViewerToolbar) — le tracking se fait au
+        # premier sync_to_page_state(), une fois la toolbar assignée.
+        self._tooltip_tracked = False
 
         self.hide()
 
@@ -191,13 +211,13 @@ class _ImageModeOptionsPanel(QWidget):
         accent = "#4a90d9"
         radio_style = (
             f"QRadioButton {{ color: {theme['text']}; background: transparent; spacing: 6px; }} "
-            f"QRadioButton:disabled {{ color: {theme['separator']}; }} "
+            f"QRadioButton:disabled, QRadioButton[blocked=\"true\"] {{ color: {theme['separator']}; }} "
             f"QRadioButton::indicator {{ width: 14px; height: 14px; border-radius: 8px; "
             f"border: 1px solid {theme['text']}; background: {theme['bg']}; }} "
             f"QRadioButton::indicator:checked {{ background: {accent}; "
             f"border: 1px solid {theme['text']}; }} "
-            f"QRadioButton::indicator:disabled {{ border: 1px solid {theme['separator']}; "
-            f"background: {theme['bg']}; }} "
+            f"QRadioButton::indicator:disabled, QRadioButton[blocked=\"true\"]::indicator {{ "
+            f"border: 1px solid {theme['separator']}; background: {theme['bg']}; }} "
             f"QRadioButton::indicator:checked:disabled {{ background: {accent}; "
             f"border: 1px solid {theme['separator']}; }}"
         )
@@ -212,6 +232,25 @@ class _ImageModeOptionsPanel(QWidget):
         for key, radio in self._mode_radios.items():
             radio.setText(_(_MODE_LABEL_KEYS[key]))
             radio.setFont(font)
+        self._update_blocked_tooltips()
+
+    def _update_blocked_tooltips(self):
+        """Reconstruit le tooltip des radios bloqués par format à partir de
+        self._blocked_keys/_blocked_format_label mémorisés — appelée par
+        retranslate() (changement de langue) et par sync_to_page_state()."""
+        overlay_tip = self._viewer._toolbar._overlay_tip
+        if not self._tooltip_tracked:
+            for radio in self._mode_radios.values():
+                overlay_tip.track(radio, "")
+            self._tooltip_tracked = True
+
+        blocked_tip = (
+            f'<table style="max-width:360px;white-space:normal;">'
+            f'<tr><td>{_("viewer.image_mode_panel_blocked_format", format=self._blocked_format_label)}</td></tr>'
+            f'</table>'
+        )
+        for key, radio in self._mode_radios.items():
+            overlay_tip.set_tracked_html(blocked_tip if key in self._blocked_keys else "", radio)
 
     # ── Visibilité ────────────────────────────────────────────────────────────
 
@@ -254,30 +293,26 @@ class _ImageModeOptionsPanel(QWidget):
 
     # ── Réglage ──────────────────────────────────────────────────────────────
 
-    def sync_to_page_state(self, has_original_saved: bool, locked_key: str | None):
+    def sync_to_page_state(self, has_original_saved: bool, locked_key: str | None,
+                            blocked_keys: set[str] = frozenset(),
+                            blocked_format_label: str = ""):
         """Positionne les 8 radios sans déclencher de commit (blockSignals) —
-        reflète l'état de la page courante : has_original_saved pilote
-        l'activation de "Restaurer l'original", locked_key (clé du mode PIL
-        courant parmi les 7 modes, ou None si le mode réel n'a pas d'équivalent
-        — ne devrait normalement jamais arriver ici, les 7 clés couvrant tous
-        les modes PIL rencontrables) pilote quel radio de mode est
-        coché+grisé. Appelé au changement de page, à la sélection de l'outil,
-        et après un commit/une restauration/un undo-redo.
+        has_original_saved pilote "Restaurer l'original", locked_key pilote
+        quel radio de mode est coché+grisé, blocked_keys grise en plus les
+        modes incompatibles avec le format d'origine (blocked_format_label =
+        nom de ce format, pour le tooltip).
 
-        Même piège corrigé que _ColorDepthOptionsPanel (2026-08-16) :
-        bloquer les signaux du QButtonGroup NE bloque PAS le signal toggled
-        de chaque QRadioButton individuellement — blockSignals doit être posé
-        sur CHAQUE radio, sinon un setChecked() ici redéclenche
-        perform_image_mode()/perform_restore_image_mode() en pleine
-        resynchronisation silencieuse.
+        Bloquer les signaux du QButtonGroup ne bloque PAS le signal toggled
+        de chaque QRadioButton individuellement — sinon un setChecked() ici
+        redéclencherait un commit/une restauration en pleine resynchronisation.
+        setExclusive(False) temporaire : un QButtonGroup exclusif refuse
+        silencieusement de décocher un radio par setChecked(False) tant
+        qu'aucun autre n'est coché à sa place (cas locked_key=None).
 
-        Même piège corrigé que _EffectsOptionsPanel (2026-08-16, propre aux
-        panneaux sans radio "unchanged" séparé) : quand locked_key ne
-        correspond à AUCUN des 7 radios (théoriquement impossible ici, mais
-        gardé par cohérence/robustesse), aucun radio de mode ne doit rester
-        coché — un QButtonGroup exclusif refuse silencieusement de décocher
-        un radio par setChecked(False) tant qu'aucun autre bouton du groupe
-        n'est coché à sa place, d'où le setExclusive(False) temporaire."""
+        Les radios bloqués par format restent setEnabled(True) (sinon Qt
+        cesse d'envoyer Enter/MouseMove et le tooltip ne se déclenche plus) :
+        BlockableRadioButton.blocked rejette le clic dans mousePressEvent, la
+        property Qt "blocked" pilote le style visuel (_apply_theme)."""
         all_radios = [self._restore_radio] + list(self._mode_radios.values())
         for radio in all_radios:
             radio.blockSignals(True)
@@ -285,11 +320,21 @@ class _ImageModeOptionsPanel(QWidget):
         self._restore_radio.setChecked(False)
         self._group.setExclusive(False)
         for key, radio in self._mode_radios.items():
-            radio.setEnabled(key != locked_key)
+            blocked = key in blocked_keys
+            radio.blocked = blocked
+            radio.setEnabled(blocked or key != locked_key)
             radio.setChecked(key == locked_key)
+            radio.setCursor(Qt.ArrowCursor if blocked else Qt.PointingHandCursor)
+            radio.setProperty("blocked", blocked)
+            radio.style().unpolish(radio)
+            radio.style().polish(radio)
         self._group.setExclusive(True)
         for radio in all_radios:
             radio.blockSignals(False)
+
+        self._blocked_keys = set(blocked_keys)
+        self._blocked_format_label = blocked_format_label
+        self._update_blocked_tooltips()
 
     def _on_mode_toggled(self, key: str, checked: bool):
         if checked:
@@ -331,9 +376,8 @@ class ImageModeViewerMixin:
     def perform_image_mode(self, key: str):
         """Clic sur un radio de mode : commit IMMÉDIAT dans entry['bytes']
         (pattern skill apply-image-operation, variante A complète) —
-        réutilise apply_image_adjustments() (image_processing_qt.py), déjà
-        utilisée par l'ancien panneau Ajustements classique (supprimé) pour
-        "Appliquer à la page courante". Devient sa propre entrée d'historique.
+        réutilise apply_image_adjustments() (image_processing_qt.py). Devient
+        sa propre entrée d'historique.
 
         Avant ce commit, si aucun snapshot "avant premier changement" n'existe
         encore pour CETTE page (state.image_mode_original_bytes_by_page), on
@@ -450,6 +494,8 @@ class ImageModeViewerMixin:
         has_original_saved = self.current_idx in state.image_mode_original_bytes_by_page
 
         locked_key = None
+        blocked_keys: set[str] = set()
+        blocked_format_label = ""
         if 0 <= self.current_idx < len(state.images_data):
             entry = state.images_data[self.current_idx]
             if entry.get('bytes'):
@@ -459,5 +505,10 @@ class ImageModeViewerMixin:
                     locked_key = _PIL_TO_MODE.get(img.mode)
                 except Exception:
                     pass
+            ext = entry.get('extension', '')
+            blocked = _BLOCKED_MODE_KEYS_BY_EXT.get(ext.lower())
+            if blocked:
+                blocked_keys = blocked
+                blocked_format_label = ext.lstrip('.').upper()
 
-        panel.sync_to_page_state(has_original_saved, locked_key)
+        panel.sync_to_page_state(has_original_saved, locked_key, blocked_keys, blocked_format_label)

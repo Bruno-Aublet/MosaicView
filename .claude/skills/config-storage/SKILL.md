@@ -9,11 +9,11 @@ Stockage persistant de tous les réglages applicatifs, distinct des vrais fichie
 
 ## Emplacement — `%APPDATA%\MosaicView\`
 
-Depuis la v1.6.2. Deux fichiers y vivent :
+Deux fichiers y vivent :
 - `.mosaicview_config.json` — la config principale (voir `ConfigManager.CONFIG_FILENAME`, [modules/qt/config_manager.py:43](../../../modules/qt/config_manager.py#L43))
 - `.mosaicview_icon_toolbar.json` — config séparée de la barre d'icônes, volontairement non effacée par "reset aux valeurs par défaut" (voir section dédiée plus bas)
 
-**Avant la v1.6.2**, ces deux fichiers vivaient dans `%TEMP%\MosaicViewTemp\`, au même endroit que les vrais fichiers temporaires. Ce choix posait un problème réel : Windows purge périodiquement `%TEMP%` (Nettoyage de disque, Storage Sense), ce qui pouvait effacer silencieusement toute la config — y compris les marque-pages — sans avertissement. D'où le déménagement.
+**Pourquoi pas `%TEMP%`** : Windows purge périodiquement `%TEMP%` (Nettoyage de disque, Storage Sense), ce qui effacerait silencieusement toute la config — y compris les marque-pages — sans avertissement. `%APPDATA%` est fait pour survivre indéfiniment, contrairement à `%TEMP%`.
 
 ## Fichier central — `modules/qt/config_manager.py`
 
@@ -31,7 +31,7 @@ Créé avec `os.makedirs(exist_ok=True)` si absent. **Avant** le premier `load_c
 - Sinon, **déplace** (`shutil.move`, pas copie) `.mosaicview_config.json` et `.mosaicview_icon_toolbar.json` depuis `%TEMP%\MosaicViewTemp\` s'ils y existent encore.
 - Silencieuse (`except Exception: pass`) — une migration ratée ne doit jamais empêcher le démarrage de l'application ; dans le pire cas, l'utilisateur repart avec une config par défaut.
 
-**Piège pour toute modification touchant ce chemin** : ne jamais coder en dur `os.path.join(tempfile.gettempdir(), "MosaicViewTemp")` pour la config — c'est l'ancien emplacement, réservé aux vrais fichiers temporaires (skill `temp-files`). Toujours passer par `get_config_manager().config_dir` / `get_config_manager().get_config_file_path()`, jamais reconstruire le chemin à la main dans un nouveau call site (voir le piège historique documenté dans le mode d'emploi, section suivante).
+**Piège pour toute modification touchant ce chemin** : ne jamais coder en dur `os.path.join(tempfile.gettempdir(), "MosaicViewTemp")` pour la config — cet emplacement est réservé aux vrais fichiers temporaires (skill `temp-files`). Toujours passer par `get_config_manager().config_dir` / `get_config_manager().get_config_file_path()`, jamais reconstruire le chemin à la main dans un nouveau call site.
 
 ### Lecture/écriture
 

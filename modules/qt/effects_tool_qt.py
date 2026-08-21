@@ -2,18 +2,17 @@
 modules/qt/effects_tool_qt.py — Outil "effets" (effects) de la barre d'outils
 flottante de la visionneuse principale (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 15e outil migré) : 2e des 3
-dernières fonctions du panneau Ajustements classique (adjustments_dialog_qt.py,
-AdjustmentsDialog) à migrer — profondeur de couleur (faite), effets (ce
-module), mode d'image. Cadré explicitement sur le MÊME modèle que la
-profondeur de couleur (skill adjust-color-depth, décision utilisateur
-2026-08-16) : groupe de QRadioButton, commit IMMÉDIAT au clic, pas de preview
+Fusion progressive des visionneuses : ce module contient l'outil "effets",
+2e d'un trio de fonctions apparentées avec color_depth_tool_qt.py et
+image_mode_tool_qt.py (profondeur de couleur, effets, mode d'image). Cadré
+sur le MÊME modèle que la profondeur de couleur (skill adjust-color-depth)
+: groupe de QRadioButton, commit IMMÉDIAT au clic, pas de preview
 live (l'aperçu se fait directement dans la visionneuse) :
 
   - État initial (page affichée, aucun changement effectué) : radio
     "Restaurer l'original" grisé/inactif ; les 3 radios d'effet (Noir et
     blanc/Sépia/Inversion) actifs et cliquables, aucun coché. PAS de radio
-    "Aucun effet" (écarté explicitement, 2026-08-16) : il ferait double emploi
+    "Aucun effet" : il ferait double emploi
     avec "Restaurer l'original", qui joue déjà ce rôle — contrairement à la
     profondeur de couleur, dont les 4 profondeurs sont des transformations
     différentes de l'état d'origine sans notion de "pas de choix", "Aucun
@@ -228,7 +227,7 @@ class _EffectsOptionsPanel(QWidget):
         détectable dans le mode) — c'est une valeur mémorisée par page (voir
         state.effect_key_by_page dans EffectsViewerMixin._sync_effects_panel).
 
-        Même piège corrigé que _ColorDepthOptionsPanel (2026-08-16) :
+        Même piège que _ColorDepthOptionsPanel :
         bloquer les signaux du QButtonGroup NE bloque PAS le signal toggled
         de chaque QRadioButton individuellement — blockSignals doit être posé
         sur CHAQUE radio, sinon un setChecked() ici redéclenche
@@ -245,9 +244,9 @@ class _EffectsOptionsPanel(QWidget):
         sa place — Qt n'autorise à changer l'état "coché" d'un groupe
         exclusif qu'en cochant un autre membre, jamais en décochant
         explicitement celui déjà coché. Sans setExclusive(False) temporaire
-        ici, le radio du dernier effet appliqué restait donc visuellement
-        coché après une restauration, alors qu'aucun effet n'était plus en
-        cours (bug constaté à l'usage, 2026-08-16)."""
+        ici, le radio du dernier effet appliqué resterait donc visuellement
+        coché après une restauration, alors qu'aucun effet n'est plus en
+        cours."""
         all_radios = [self._restore_radio] + list(self._effect_radios.values())
         for radio in all_radios:
             radio.blockSignals(True)
@@ -301,9 +300,8 @@ class EffectsViewerMixin:
     def perform_effect(self, key: str):
         """Clic sur un radio d'effet : commit IMMÉDIAT dans entry['bytes']
         (pattern skill apply-image-operation, variante A complète) —
-        réutilise apply_image_adjustments() (image_processing_qt.py), déjà
-        utilisée par l'ancien panneau Ajustements classique (supprimé) pour
-        "Appliquer à la page courante". Devient sa propre entrée d'historique.
+        réutilise apply_image_adjustments() (image_processing_qt.py). Devient
+        sa propre entrée d'historique.
 
         Avant ce commit, si aucun snapshot "avant premier changement" n'existe
         encore pour CETTE page (state.effect_original_bytes_by_page), on le

@@ -223,8 +223,7 @@ def reset_to_defaults(win):
         # verticale — sans cet appel, l'icône bi-mode straighten/sharpness
         # d'une visionneuse principale déjà ouverte (tooltip + icône affichée
         # pour sharpness) resterait figée sur l'ancien mode malgré le reset
-        # de state.straighten_mode/sharpness_mode ci-dessus (bug préexistant
-        # pour straighten, corrigé ici en même temps que sharpness, 2026-08-14).
+        # de state.straighten_mode/sharpness_mode ci-dessus.
         p._refresh_open_image_viewers()
 
     # Ratio split inter-panneaux : remettre à 50/50.

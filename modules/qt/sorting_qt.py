@@ -1,6 +1,5 @@
 """
-sorting_qt.py — Tri des images (version PySide6).
-Reproduit fidèlement le comportement de show_sort_menu / sort_images de MosaicView.py (tkinter).
+sorting_qt.py — Tri des images (menu contextuel show_sort_menu, fonction sort_images).
 """
 
 from PySide6.QtWidgets import QMenu

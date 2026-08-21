@@ -2,8 +2,7 @@
 modules/qt/brightness_tool_qt.py — Outil "luminosité/contraste" (brightness)
 de la barre d'outils flottante de la visionneuse principale (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 6e outil migré, 3e des 8
-modes d'ajustement après sharpness/unsharp) : ce module contient toute la
+Fusion progressive des visionneuses : ce module contient toute la
 logique propre à l'outil "brightness" — état + preview live (mixin
 BrightnessCanvasMixin, hérité par _ViewerCanvas), commit de l'ajustement dans
 l'historique du panneau (mixin BrightnessViewerMixin, hérité par ImageViewer),
@@ -16,21 +15,18 @@ Même pattern que sharpness_tool_qt.py (sharpness/unsharp), avec 2
 différences :
   - Une seule icône, PAS de bi-mode (clic droit sans effet) : luminosité et
     contraste sont 2 réglettes indépendantes dans le MÊME panneau flottant
-    (reprend le principe déjà en place dans le panneau Ajustements classique
-    et l'ancien AdjustmentViewerDialog mode 'brightness' — les 2 réglages
-    partagent une seule section UI).
+    (les 2 réglages partagent une seule section UI).
   - Pas d'icône qui change (contrairement à sharpness/unsharp) : BTN_Brightness.png
     fixe.
 
 Contrairement au crop/straighten/clone/texte, cet outil n'a AUCUN overlay
 interactif ni geste souris sur le canvas : c'est 2 réglettes avec preview
-temps réel (comme AdjustmentViewerDialog::_display_image en mode 'brightness').
-BrightnessCanvasMixin reste donc volontairement minimal (pas de mousePress/
+temps réel. BrightnessCanvasMixin reste donc volontairement minimal (pas de mousePress/
 Move/Release à gérer, pas de paint_* à appeler depuis paintEvent) — même
 raison que SharpnessCanvasMixin (sharpness).
 
-PAS de bouton "Valider" pour cet outil (même principe que sharpness/unsharp,
-décision actée idees.txt #3) : le preview PIL n'est visible que PENDANT le
+PAS de bouton "Valider" pour cet outil (même principe que sharpness/unsharp) :
+le preview PIL n'est visible que PENDANT le
 déplacement d'un slider (valueChanged) ; au relâchement du clic
 (sliderReleased), l'ajustement est commité automatiquement dans
 entry['bytes'] (perform_brightness) et devient sa propre entrée d'historique
@@ -66,8 +62,7 @@ class _BrightnessOptionsPanel(QWidget):
     inséré dans le layout de ImageViewer, indépendant du timer d'auto-masquage
     de la barre pour ne pas interrompre un réglage en cours), mais 2 lignes
     label/slider/spin empilées verticalement (une par réglette) au lieu d'une
-    seule ligne — reprend la disposition du panneau Ajustements classique pour
-    ce même mode plutôt qu'une disposition horizontale inédite.
+    seule ligne.
 
     Réglette ET spinbox synchronisées pour chacune des 2 (même valeur, deux
     façons de la modifier — même principe que _SharpnessOptionsPanel). Pendant
@@ -198,11 +193,10 @@ class _BrightnessOptionsPanel(QWidget):
         self.move(max(0, x), y)
 
     def mousePressEvent(self, event):
-        # Piège corrigé (2026-08-15, découvert sur le panneau de
-        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
-        # vide du panneau (marges entre les widgets, pas absorbée par un
-        # QSlider/QSpinBox enfant) "fuit" vers _ViewerCanvas en dessous
-        # (widget flottant enfant du canvas) — même piège déjà documenté pour
+        # Sans ce blindage, un clic sur une zone vide du panneau (marges
+        # entre les widgets, pas absorbée par un QSlider/QSpinBox enfant)
+        # "fuit" vers _ViewerCanvas en dessous (widget flottant enfant du
+        # canvas) — même piège déjà documenté pour
         # _ToolButton/_ActionButton/_ViewerToolbar (skill viewers), appliqué
         # par cohérence à tous les panneaux flottants de cette barre.
         event.accept()
@@ -423,9 +417,9 @@ class BrightnessViewerMixin:
             # qui appelle inconditionnellement _canvas.clear_crop() — lequel
             # remet aussi pan_offset_x/y à 0 (crop_tool_qt.py::clear_crop,
             # pensé pour recentrer la vue quand on abandonne un crop). Sans ce
-            # flag, tout commit après un zoom+pan recentrait l'image sous les
-            # pieds de l'utilisateur (bug diagnostiqué sur levels, 2026-08-15,
-            # même cause ici — voir levels_tool_qt.py::perform_levels).
+            # flag, tout commit après un zoom+pan recentrerait l'image sous
+            # les pieds de l'utilisateur — même cause que dans
+            # levels_tool_qt.py::perform_levels.
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
 

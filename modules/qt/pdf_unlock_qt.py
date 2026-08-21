@@ -1,7 +1,6 @@
 """
 modules/qt/pdf_unlock_qt.py
-Déverrouillage de PDFs protégés (owner password) — version PySide6.
-Reproduit à l'identique pdf_unlock.py (show_pdf_unlock_dialog + _save_unlocked).
+Déverrouillage de PDFs protégés (owner password).
 """
 
 import os
@@ -199,7 +198,7 @@ class PdfUnlockDialog(QDialog):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Fonctions publiques — reproduit show_pdf_unlock_dialog + _save_unlocked
+# Fonctions publiques
 # ═══════════════════════════════════════════════════════════════════════════════
 def show_pdf_unlock_dialog(filepath: str, parent):
     """Affiche la fenêtre de proposition de déverrouillage (owner password)."""

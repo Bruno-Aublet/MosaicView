@@ -1,7 +1,5 @@
 """
-modules/qt/resize_dialog_qt.py — Redimensionnement d'images (version PySide6)
-
-Reproduit rigoureusement le comportement de Modules_OLD/resize_dialog.py (tkinter).
+modules/qt/resize_dialog_qt.py — Redimensionnement d'images.
 
 Deux fenêtres :
   - ResizeDialog      : fenêtre principale (dimensions custom + pourcentages prédéfinis)
@@ -452,7 +450,7 @@ class OutlierDialog(QDialog):
 # Dialogue principal de redimensionnement
 # ─────────────────────────────────────────────────────────────────────────────
 
-# État global mémorisé entre ouvertures (identique à l'original tkinter)
+# État global mémorisé entre ouvertures
 _multi_page_checkbox_state = True
 
 
@@ -905,7 +903,6 @@ class ResizeDialog(QDialog):
         global _multi_page_checkbox_state
         _multi_page_checkbox_state = bool(state)
         self._multi_page_state = bool(state)
-        # Affiche/cache le warning dimensions différentes
         if not self._same_dim and self._nb_files > 1:
             self._diff_dim_lbl.setVisible(not bool(state))
 
@@ -1162,7 +1159,6 @@ class ResizeDialog(QDialog):
             # ── Ferme la fenêtre et lance le worker ───────────────────────────
             self.close()
 
-            # Sauvegarde état avant
             save_state_fn()
 
             # Sauvegarde des bytes originaux pour restauration en cas d'annulation

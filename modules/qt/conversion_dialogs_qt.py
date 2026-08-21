@@ -1,7 +1,6 @@
 """
-modules/qt/conversion_dialogs_qt.py — Conversion de format d'images (version PySide6)
+modules/qt/conversion_dialogs_qt.py — Conversion de format d'images.
 
-Reproduit à l'identique le comportement de modules/conversion_dialogs.py (tkinter).
 Toutes les fenêtres supportent :
   - le thème courant (clair/sombre)
   - le changement de langue à la volée via language_signal

@@ -134,7 +134,6 @@ def _markdown_to_html(md: str, font_family: str, font_size: int, link_color: str
     ]
 
     for line in lines:
-        # Titres ## [1.x.y] - date
         m = re.match(r'^## (.+)$', line)
         if m:
             text = _esc(m.group(1))
@@ -144,7 +143,6 @@ def _markdown_to_html(md: str, font_family: str, font_size: int, link_color: str
             )
             continue
 
-        # Titre principal #
         m = re.match(r'^# (.+)$', line)
         if m:
             text = _esc(m.group(1))
@@ -154,12 +152,10 @@ def _markdown_to_html(md: str, font_family: str, font_size: int, link_color: str
             )
             continue
 
-        # Ligne vide
         if line.strip() == "":
             parts.append('<p style="margin:0; line-height:50%;">&nbsp;</p>')
             continue
 
-        # Puce -
         m = re.match(r'^- (.+)$', line)
         if m:
             inner = _inline(m.group(1), link_color)
@@ -168,7 +164,6 @@ def _markdown_to_html(md: str, font_family: str, font_size: int, link_color: str
             )
             continue
 
-        # Paragraphe normal
         parts.append(f'<p style="margin:2px 0;">{_inline(line, link_color)}</p>')
 
     parts.append('</div>')
@@ -189,7 +184,6 @@ def _inline(text: str, link_color: str) -> str:
     result = []
     last = 0
     for m in pattern.finditer(text):
-        # texte brut avant ce marqueur
         result.append(_html.escape(text[last:m.start()]))
         last = m.end()
 

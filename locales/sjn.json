@@ -74,7 +74,10 @@
     "cancel_shapes": "Haedh i sell",
     "cancel_transparency": "Haedh i rhimp",
     "validate_paste_image": "Orthertha i bhado",
-    "cancel_paste_image": "Haedh i bhado"
+    "cancel_paste_image": "Haedh i bhado",
+    "save_crop_mask": "Dortha i Sell",
+    "recall_crop_mask": "Chargo i Sell",
+    "forget_crop_mask": "Egledho i Sell"
   },
   "tabs": {
     "mosaic": "Mosaig",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Pedo i chalich i randir hen",
     "toolbar_transparency_tooltip": "Rhimp",
     "toolbar_transparency_instruction": "Nedhoro i maen a veninnen rhimp",
-    "toolbar_transparency_disabled": "Anann i randir PNG, WebP, ICO a AVIF eriol",
+    "toolbar_transparency_disabled": "Anann i randir PNG, WebP, ICO, AVIF a TIFF eriol",
     "transparency_flood_panel_label": "Ambar",
     "transparency_global_panel_label": "Govaded",
     "transparency_tolerance_panel_label": "Godreb :",
@@ -150,12 +153,14 @@
     "toolbar_color_depth_instruction": "Cil naeth, orthertha si trenarn",
     "color_depth_panel_restore": "Edledhio en genediol",
     "color_depth_panel_current_format": "Si tell na {format} bess.",
+    "color_depth_panel_blocked_format": "Ú-orthol Thîr {format} naeth hen.",
     "toolbar_effects_tooltip": "Goeliannath",
     "toolbar_effects_instruction": "Cil naeth goeliannen, orthertha si trenarn",
     "effects_panel_restore": "Edledhio en genediol",
     "toolbar_image_mode_tooltip": "Gwedh i ven",
     "toolbar_image_mode_instruction": "Cil gwedh, orthertha si trenarn",
     "image_mode_panel_restore": "Edledhio en genediol",
+    "image_mode_panel_blocked_format": "Ú-orthol Thîr {format} gwedh hen.",
     "toolbar_rotation_tooltip": "Covad",
     "toolbar_rotation_instruction": "Covado egor tarlango i randir hen",
     "toolbar_paste_image_tooltip": "Pado randir",
@@ -1332,6 +1337,9 @@
       "green_label": "Calen:",
       "blue_label": "Luin:",
       "alpha_label": "Alpha:"
+    },
+    "crop_mask": {
+      "label": "Sell dortha"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Modh dad-benn (tegitha lath eglerol)\nDago daerageb nan gweth dangwethad",
     "straighten_mode_1": "Modh auto-hired (cened i chair)\nDago daerageb nan gweth dangwethad",
     "sharpness_mode_0": "Ortha egor laed randir\nDago daerageb nan laeg Curu",
-    "sharpness_mode_1": "Egleria randir dan pêd i randir dulu\nDago daerageb nan laeg thent"
+    "sharpness_mode_1": "Egleria randir dan pêd i randir dulu\nDago daerageb nan laeg thent",
+    "crop_mode_0": "Cad sell nan i vast, hertha\nDago daerageb nan gweth dangwethad",
+    "crop_mode_1": "Modh dortha Sell: dortha sell a chargh nan i thelli a-govaded\nDago daerageb nan gweth dangwethad"
   },
   "help": {
     "title": "MosaicView - Bâd thuriol",
@@ -1413,7 +1423,7 @@
     "flatten": "Pelthaedi i gorvaraid",
     "flatten_content": "Pe i târ gerir and-gorvaraid, breitho 'Pelthaedi i gorvaraid' na brestegi nel i rendir na i andeb er.",
     "viewer": "Harthad",
-    "viewer_content": "Naru i tell na chad na laD chu':\n• Nótharon ← →: goheno rlinn telleir\n• Nótharon D: goheno pân 4 laD cham\n  - Tell er: tell ú ah ú\n  - Telleir edeb: tell 1 er, ab 2-3, 4-5, ath\n  - Telleir edeb tadol: tell 1 er, ab 2-3, 3-4, 4-5, ath\n  - Webtoon: an rendir tîr (webcomics), lath annui na 900px an gonad legib; roth megil belga tîr mi tell, ab goheno tell ne dâr/nu\n• Roth megil: goheno lim (belga tîr mi tell na laD cham Webtoon)\n• Ctrl+Roth egor Ctrl+Ah/Del: megil (adel 1000% i haered chent randir)\n• Ctrl+0: Adnortho i megil na chad\n• Ctrl+1: megil 100% (i haered pixel chent randir)\n• Nedhoro ledin egor tochenno: goheno i randir echui ir dartha vell chad\n• Nótharon F11: bâd rlinn\n• Nedhoro pân: goheno bâd rlinn\n• Nótharon Esc: Haedh i thennad si dartha (orchad, trenarna, tân…) egor govano na laD chu'\n• Tavor: hebeno lim i tell si dartha ir govano na laD chu' (egor pen tell erui a minui). Faen caran nuion na randir vinn i mîw. Ir echui adarthannen, i sadron suila govediad na tell hen. Delebannen lim na tell minui, egor pân nedhoro ledin na laD chu'.\n\nVagol eiconau tellui: dartho i roth trî i chad randir an gwelo hen (thenna ben erui abed thenidh). Nedhoro nagol an gonad i chair gwelog:\n• Orchad: latha sell, gwelo hen ben i remair, hertha\n• Trenarna: latha lath ben ass i pân ortheri egor pendrad; i chair dangwethad thenna hain auto; nedhoro daerageb an gweth trenarna auto-hired (cened i chair sen erui, ú-thegitha)\n• Rhóda/celeb: nagol er thenna egor delotha i tell\n• Hilweth: Ctrl+nedhoro an gwelo i onnas veren, ab paint as i roth belga an revail\n• Tegil: nedhoro an dagor tegil pel, gwelo caladh/lath/annon\n• Tanwath: latha ellipsau, sellau, lathau egor pilinnath, as remair an gweth hen\n• Slaidiath (lem, galos/gwathrad, annedil, dilio galassath, nudh): i vaeth cenima be dartha lín\n• Aicais: gwelo i chegin dû/gamma/chegin ninn as slaidiath, egor mabo galas ben i randir erui as i felain\n• Nith-cenim: nedhoro galas ben i randir an gonad hen nith-cenim\n• Naud galas, Cîr, Modh randir: gwelo aphad nedhoro na thôl radio, thenna phen\nPado randir: pado randir en thirendor (i venn dulu vi criol ceni thirendor bo dulu randir), tulu vi caro herin/reviad be dell; tulu vae na pado tell o mosaig nu vaer o Windows Explorer bo thiliad. Ctrl+C honom i tell tirniel (bo poel pân nîn na Webtoon), Ctrl+V pado randir, be mosaig\n\nHertha as i thôl \"Hertha\" ir echui, egor Esc an dregol. Pân gwaith govedig na i genediad Haedh/Adrevedui vell.",
+    "viewer_content": "Naru i tell na chad na laD chu':\n• Nótharon ← →: goheno rlinn telleir\n• Nótharon D: goheno pân 4 laD cham\n  - Tell er: tell ú ah ú\n  - Telleir edeb: tell 1 er, ab 2-3, 4-5, ath\n  - Telleir edeb tadol: tell 1 er, ab 2-3, 3-4, 4-5, ath\n  - Webtoon: an rendir tîr (webcomics), lath annui na 900px an gonad legib; roth megil belga tîr mi tell, ab goheno tell ne dâr/nu\n• Roth megil: goheno lim (belga tîr mi tell na laD cham Webtoon)\n• Ctrl+Roth egor Ctrl+Ah/Del: megil (adel 1000% i haered chent randir)\n• Ctrl+0: Adnortho i megil na chad\n• Ctrl+1: megil 100% (i haered pixel chent randir)\n• Nedhoro ledin egor tochenno: goheno i randir echui ir dartha vell chad\n• Nótharon F11: bâd rlinn\n• Nedhoro pân: goheno bâd rlinn\n• Nótharon Esc: Haedh i thennad si dartha (orchad, trenarna, tân…) egor govano na laD chu'\n• Tavor: hebeno lim i tell si dartha ir govano na laD chu' (egor pen tell erui a minui). Faen caran nuion na randir vinn i mîw. Ir echui adarthannen, i sadron suila govediad na tell hen. Delebannen lim na tell minui, egor pân nedhoro ledin na laD chu'.\n\nVagol eiconau tellui: dartho i roth trî i chad randir an gwelo hen (thenna ben erui abed thenidh). Nedhoro nagol an gonad i chair gwelog:\n• Orchad: latha sell, gwelo hen ben i remair, hertha; Modh dortha Sell\nDago daerageb nan gweth dangwethad\n• Trenarna: latha lath ben ass i pân ortheri egor pendrad; i chair dangwethad thenna hain auto; nedhoro daerageb an gweth trenarna auto-hired (cened i chair sen erui, ú-thegitha)\n• Rhóda/celeb: nagol er thenna egor delotha i tell\n• Hilweth: Ctrl+nedhoro an gwelo i onnas veren, ab paint as i roth belga an revail\n• Tegil: nedhoro an dagor tegil pel, gwelo caladh/lath/annon\n• Tanwath: latha ellipsau, sellau, lathau egor pilinnath, as remair an gweth hen\n• Slaidiath (lem, galos/gwathrad, annedil, dilio galassath, nudh): i vaeth cenima be dartha lín\n• Aicais: gwelo i chegin dû/gamma/chegin ninn as slaidiath, egor mabo galas ben i randir erui as i felain\n• Nith-cenim: nedhoro galas ben i randir an gonad hen nith-cenim\n• Naud galas, Cîr, Modh randir: gwelo aphad nedhoro na thôl radio, thenna phen\nPado randir: pado randir en thirendor (i venn dulu vi criol ceni thirendor bo dulu randir), tulu vi caro herin/reviad be dell; tulu vae na pado tell o mosaig nu vaer o Windows Explorer bo thiliad. Ctrl+C honom i tell tirniel (bo poel pân nîn na Webtoon), Ctrl+V pado randir, be mosaig\n\nHertha as i thôl \"Hertha\" ir echui, egor Esc an dregol. Pân gwaith govedig na i genediad Haedh/Adrevedui vell.",
     "join_pages": "Antha telleir",
     "join_pages_content": "Cíla lain bess i chuina, rîn i lîw a chuin → 'Modh bess cílina' na chuina bess sennas egor thennas. I celvad emma venna i chened o bess maded, qui pân genediar; egor PNG i modh hen pen. Cael cíla deleb egor gennad i bess hen.\n\nI tâl e bess vinui vi i emmadraith:\n• Modh athnimherad angerthad (angerthad egor mhaethen): i bess cael i tâl e minui chuina bess (i thâl, qui i bess hen deleb, egor athan nu, qui gennir), ar tortha athnimherad.\n• Modh athnimherad diestannen: i bess anta vi i minui i emmadraith an eneth \"Annediad_xxx\".",
     "split_pages": "Dagro telleir",

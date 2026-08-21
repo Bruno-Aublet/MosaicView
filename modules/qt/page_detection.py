@@ -7,7 +7,6 @@ ce qui s'adapte au contenu réel du comic (contrairement à un seuil absolu fixe
 
 
 def compute_reference_ratio(ratios):
-    """Calcule le ratio de référence (médiane des pages portrait) à partir d'une liste de ratios."""
     portrait_ratios = [r for r in ratios if 0 < r < 1]
     if portrait_ratios:
         portrait_ratios_sorted = sorted(portrait_ratios)
@@ -20,7 +19,6 @@ def compute_reference_ratio(ratios):
 
 
 def compute_auto_multipliers(ratios):
-    """Calcule les multiplicateurs de pages à partir d'une liste de ratios largeur/hauteur."""
     reference_ratio = compute_reference_ratio(ratios)
 
     multipliers = []

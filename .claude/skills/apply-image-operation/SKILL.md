@@ -60,7 +60,7 @@ if render:
 
 ## Pourquoi ce pattern exact
 
-Découvert lors de l'implémentation des ajustements d'image Qt (2026-03-14). Plusieurs bugs résolus en le respectant strictement : mosaïque ne se mettant pas à jour (`qt_pixmap_large` non invalidé), undo/redo impossible (`save_state` sans `force=True` ignoré), message de fermeture absent (`state.modified` non mis à `True`).
+Ce pattern exact évite plusieurs bugs récurrents : mosaïque ne se mettant pas à jour (`qt_pixmap_large` non invalidé), undo/redo impossible (`save_state` sans `force=True` ignoré), message de fermeture absent (`state.modified` non mis à `True`).
 
 **Toute nouvelle fonction qui modifie des bytes d'images (crop, resize, flip, conversion, etc.) doit suivre ce pattern exact — ne pas improviser une variante.**
 

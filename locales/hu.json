@@ -74,7 +74,10 @@
     "cancel_shapes": "Alakzatok megszakítása",
     "cancel_transparency": "Átlátszóság megszakítása",
     "validate_paste_image": "Beillesztés alkalmazása",
-    "cancel_paste_image": "Beillesztés megszakítása"
+    "cancel_paste_image": "Beillesztés megszakítása",
+    "save_crop_mask": "Maszk mentése",
+    "recall_crop_mask": "Maszk előhívása",
+    "forget_crop_mask": "Maszk elfelejtése"
   },
   "tabs": {
     "mosaic": "Mozaik",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Szín kiválasztása a megjelenített oldalról",
     "toolbar_transparency_tooltip": "Átlátszóság",
     "toolbar_transparency_instruction": "Kattintson az átlátszóvá teendő színre",
-    "toolbar_transparency_disabled": "Csak PNG, WebP, ICO és AVIF képekhez érhető el",
+    "toolbar_transparency_disabled": "Csak PNG, WebP, ICO, AVIF és TIFF képekhez érhető el",
     "transparency_flood_panel_label": "Terület",
     "transparency_global_panel_label": "Globális",
     "transparency_tolerance_panel_label": "Tűrés:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Forgassa el vagy tükrözze a megjelenített oldalt",
     "toolbar_paste_image_tooltip": "Kép beillesztése",
     "toolbar_paste_image_instruction": "Beilleszti a vágólap képét az oldalra, fogantyúk az átméretezéshez/forgatáshoz",
-    "toolbar_paste_image_disabled": "A vágólapnak csak egy képet szabad tartalmaznia"
+    "toolbar_paste_image_disabled": "A vágólapnak csak egy képet szabad tartalmaznia",
+    "color_depth_panel_blocked_format": "Nem elérhető: a fájl eredeti {format} formátuma nem támogatja ezt a színmélységet.",
+    "image_mode_panel_blocked_format": "Nem elérhető: a fájl eredeti {format} formátuma nem támogatja ezt a módot."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Zöld:",
       "blue_label": "Kék:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Vágási maszk"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Kézi mód (rajzoljon egy referenciavonalat)\nJobb kattintás a mód váltásához",
     "straighten_mode_1": "Automatikus mód (dőlésszög észlelése)\nJobb kattintás a mód váltásához",
     "sharpness_mode_0": "Erősíti vagy lágyítja a kép részleteit\nJobb kattintás az adaptív élességre váltáshoz",
-    "sharpness_mode_1": "Kiemeli a körvonalakat, kímélve az egységes felületeket\nJobb kattintás az egyszerű élességre váltáshoz"
+    "sharpness_mode_1": "Kiemeli a körvonalakat, kímélve az egységes felületeket\nJobb kattintás az egyszerű élességre váltáshoz",
+    "crop_mode_0": "Rajzoljon egy téglalapot a megtartandó területre, majd erősítse meg\nJobb kattintás a vágási maszk módba váltáshoz",
+    "crop_mode_1": "Vágási maszk mód: jegyezzen meg egy téglalapot, és hívja elő a következő oldalakon\nJobb kattintás a normál módba való visszatéréshez"
   },
   "help": {
     "title": "MosaicView - Útmutató",
@@ -1413,7 +1423,7 @@
     "flatten": "Könyvtárak egyengetése",
     "flatten_content": "Ha az archívum almappákat tartalmaz, használja a 'Mappák egyengetése' funkciót az összes kép ugyanarra a szintre hozásához.",
     "viewer": "Néző",
-    "viewer_content": "Kattintson duplán egy oldalra a megjelenítő megnyitásához:\n• ← → billentyűk: navigálás oldalak között\n• D billentyű: váltás 4 olvasási mód között\n  - Egyoldalas: egyszerre egy oldal\n  - Kettős oldalak: 1. oldal önmagában, majd 2-3, 4-5 stb.\n  - Folyamatos kettős oldalak: 1. oldal önmagában, majd 2-3, 3-4, 4-5 stb.\n  - Webtoon: függőleges képekhez (webcomics), a szélesség 900px-re korlátozva az olvashatóság érdekében; az egérgörgő függőlegesen görgeti az oldalt, majd fent/lent oldalt vált\n• Egérgörgő: gyors navigálás (függőleges görgetés az oldalon Webtoon módban)\n• Ctrl+Görgő vagy Ctrl+Plusz/Mínusz: nagyítás (a kép valós méretének akár 1000%-áig)\n• Ctrl+0: nagyítás igazítása az ablakhoz\n• Ctrl+1: nagyítás 100%-ra (a kép valós pixelmérete)\n• Jobb kattintás + húzás: a megjelenített kép mozgatása (pásztázás), ha meghaladja az ablakot\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: aktuális rajzolás megszakítása (vágás, egyenesítés, alakzat…) vagy kilépés a megjelenítőből\n• Könyvjelző: a megjelenítő bezárásakor automatikusan menti az aktuális oldalt (az első/utolsó oldal kivételével). Piros szalag jelenik meg a megfelelő bélyegképen a mozaikban. Újranyitáskor egy üzenet javasolja a visszatérést erre az oldalra. Automatikusan törlődik az utolsó oldalon, vagy manuálisan jobb kattintással a megjelenítőben.\n\nLebegő eszköztár: vigye az egeret a kép teteje fölé a megjelenítéséhez (néhány másodperc után magától elrejtőzik). Kattintson egy ikonra a megfelelő eszköz aktiválásához:\n• Vágás: rajzoljon egy téglalapot, igazítsa a szélein, hagyja jóvá\n• Egyenesítés: húzzon egy vonalat arra, aminek vízszintesnek/függőlegesnek kellene lennie, a javítás automatikusan alkalmazódik; jobb kattintás az ikonon az automatikus egyenesítésre váltáshoz (magától érzékeli a dőlést, rajzolás nélkül)\n• Forgatás/tükrözés: egy kattintás elforgatja vagy tükrözi az oldalt\n• Klónozás: Ctrl+kattintás a forráspont kiválasztásához, majd fessen lenyomott egérgombbal a duplikáláshoz\n• Szöveg: kattintson egy szövegblokk elhelyezéséhez, válasszon betűtípust/méretet/színt\n• Alakzatok: rajzoljon ellipsziseket, téglalapokat, vonalakat vagy nyilakat, fogantyúkkal az átméretezéshez\n• Csúszkák (élesség, fényerő/kontraszt, telítettség, színek eltávolítása, tömörítés): az eredmény élőben jelenik meg húzás közben\n• Szintek: állítsa be a feketepontot/gammát/fehérpontot a csúszkákkal, vagy vegyen fel egy színt közvetlenül a képről a pipettákkal\n• Átlátszóság: kattintson a kép egy színére, hogy átlátszóvá tegye\n• Színmélység, Effektek, Kép mód: válasszon egy opciót egy rádiógombra kattintva, azonnal alkalmazva\n• Kép beillesztése: beilleszti a vágólapon lévő képet (az ikon csak akkor aktiválódik, ha a vágólapon kép van), fogantyúkkal az átméretezéshez/forgatáshoz, akárcsak az alakzatoknál; akkor is működik, ha egy oldalt egy mozaikból vagy egy fájlt a Windows Intézőből közvetlenül a nézegetőre húz. A Ctrl+C másolja a megjelenített oldalt (csak egyoldalas vagy Webtoon módban), a Ctrl+V képet illeszt be, ugyanúgy, mint a mozaikban\n\nHagyja jóvá a \"Jóváhagyás\" gombbal, amikor megjelenik, vagy Esc a megszakításhoz. Minden módosítás csatlakozik a szokásos Visszavonás/Ismétlés előzményhez.",
+    "viewer_content": "Kattintson duplán egy oldalra a megjelenítő megnyitásához:\n• ← → billentyűk: navigálás oldalak között\n• D billentyű: váltás 4 olvasási mód között\n  - Egyoldalas: egyszerre egy oldal\n  - Kettős oldalak: 1. oldal önmagában, majd 2-3, 4-5 stb.\n  - Folyamatos kettős oldalak: 1. oldal önmagában, majd 2-3, 3-4, 4-5 stb.\n  - Webtoon: függőleges képekhez (webcomics), a szélesség 900px-re korlátozva az olvashatóság érdekében; az egérgörgő függőlegesen görgeti az oldalt, majd fent/lent oldalt vált\n• Egérgörgő: gyors navigálás (függőleges görgetés az oldalon Webtoon módban)\n• Ctrl+Görgő vagy Ctrl+Plusz/Mínusz: nagyítás (a kép valós méretének akár 1000%-áig)\n• Ctrl+0: nagyítás igazítása az ablakhoz\n• Ctrl+1: nagyítás 100%-ra (a kép valós pixelmérete)\n• Jobb kattintás + húzás: a megjelenített kép mozgatása (pásztázás), ha meghaladja az ablakot\n• F11 billentyű: teljes képernyő\n• Dupla kattintás: teljes képernyő váltása\n• Esc billentyű: aktuális rajzolás megszakítása (vágás, egyenesítés, alakzat…) vagy kilépés a megjelenítőből\n• Könyvjelző: a megjelenítő bezárásakor automatikusan menti az aktuális oldalt (az első/utolsó oldal kivételével). Piros szalag jelenik meg a megfelelő bélyegképen a mozaikban. Újranyitáskor egy üzenet javasolja a visszatérést erre az oldalra. Automatikusan törlődik az utolsó oldalon, vagy manuálisan jobb kattintással a megjelenítőben.\n\nLebegő eszköztár: vigye az egeret a kép teteje fölé a megjelenítéséhez (néhány másodperc után magától elrejtőzik). Kattintson egy ikonra a megfelelő eszköz aktiválásához:\n• Vágás: rajzoljon egy téglalapot, igazítsa a szélein, hagyja jóvá; az ikonra jobb gombbal kattintva átválthat vágási maszk módba (jegyezzen meg egy téglalapot a \"Maszk mentése\" gombbal, majd hívja elő változatlanul a következő oldalakon a \"Maszk előhívása\" gombbal — hasznos, ha ugyanazt a vágást több oldalra szeretné alkalmazni anélkül, hogy minden alkalommal újra megrajzolná; a \"Maszk elfelejtése\" törli a megjegyzett maszkot, csak oldalanként)\n• Egyenesítés: húzzon egy vonalat arra, aminek vízszintesnek/függőlegesnek kellene lennie, a javítás automatikusan alkalmazódik; jobb kattintás az ikonon az automatikus egyenesítésre váltáshoz (magától érzékeli a dőlést, rajzolás nélkül)\n• Forgatás/tükrözés: egy kattintás elforgatja vagy tükrözi az oldalt\n• Klónozás: Ctrl+kattintás a forráspont kiválasztásához, majd fessen lenyomott egérgombbal a duplikáláshoz\n• Szöveg: kattintson egy szövegblokk elhelyezéséhez, válasszon betűtípust/méretet/színt\n• Alakzatok: rajzoljon ellipsziseket, téglalapokat, vonalakat vagy nyilakat, fogantyúkkal az átméretezéshez\n• Csúszkák (élesség, fényerő/kontraszt, telítettség, színek eltávolítása, tömörítés): az eredmény élőben jelenik meg húzás közben\n• Szintek: állítsa be a feketepontot/gammát/fehérpontot a csúszkákkal, vagy vegyen fel egy színt közvetlenül a képről a pipettákkal\n• Átlátszóság: kattintson a kép egy színére, hogy átlátszóvá tegye\n• Színmélység, Effektek, Kép mód: válasszon egy opciót egy rádiógombra kattintva, azonnal alkalmazva\n• Kép beillesztése: beilleszti a vágólapon lévő képet (az ikon csak akkor aktiválódik, ha a vágólapon kép van), fogantyúkkal az átméretezéshez/forgatáshoz, akárcsak az alakzatoknál; akkor is működik, ha egy oldalt egy mozaikból vagy egy fájlt a Windows Intézőből közvetlenül a nézegetőre húz. A Ctrl+C másolja a megjelenített oldalt (csak egyoldalas vagy Webtoon módban), a Ctrl+V képet illeszt be, ugyanúgy, mint a mozaikban\n\nHagyja jóvá a \"Jóváhagyás\" gombbal, amikor megjelenik, vagy Esc a megszakításhoz. Minden módosítás csatlakozik a szokásos Visszavonás/Ismétlés előzményhez.",
     "join_pages": "Oldalak egyesítése",
     "join_pages_content": "Válasszon ki több egymást követő oldalt, jobb kattintás → 'Kijelölt oldalak egyesítése' az oldalak vízszintes vagy függőleges egyesítéséhez. A létrehozott kép formátuma megegyezik a forrásoldalakéval, ha azok mindegyike azonos, egyébként alapértelmezés szerint PNG. Választhat, hogy törli vagy megtartja az eredeti oldalakat.\n\nAz új oldal helye a mozaikban:\n• Aktív újraszámozási mód (automatikus vagy kézi): az oldal átveszi az első egyesített oldal helyét (annak helyét, ha a forrásoldalak törlődnek, vagy közvetlenül előtte, ha megmaradnak), és újraszámozást indít el.\n• KI újraszámozási mód: az oldal a mozaik elejéhez kerül \"Egyesítés_xxx\" néven.",
     "split_pages": "Oldalak felosztása",

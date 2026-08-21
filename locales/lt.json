@@ -74,7 +74,10 @@
     "cancel_shapes": "Atšaukti figūras",
     "cancel_transparency": "Atšaukti skaidrumą",
     "validate_paste_image": "Taikyti įklijavimą",
-    "cancel_paste_image": "Atšaukti įklijavimą"
+    "cancel_paste_image": "Atšaukti įklijavimą",
+    "save_crop_mask": "Išsaugoti kaukę",
+    "recall_crop_mask": "Iškviesti kaukę",
+    "forget_crop_mask": "Pamiršti kaukę"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Paimti spalvą iš rodomo puslapio",
     "toolbar_transparency_tooltip": "Skaidrumas",
     "toolbar_transparency_instruction": "Spustelėkite spalvą, kurią norite padaryti skaidrią",
-    "toolbar_transparency_disabled": "Galima naudoti tik PNG, WebP, ICO ir AVIF vaizdams",
+    "toolbar_transparency_disabled": "Galima naudoti tik PNG, WebP, ICO, AVIF ir TIFF vaizdams",
     "transparency_flood_panel_label": "Sritis",
     "transparency_global_panel_label": "Visuotinis",
     "transparency_tolerance_panel_label": "Tolerancija:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Pasukite arba apverskite rodomą puslapį",
     "toolbar_paste_image_tooltip": "Įklijuoti vaizdą",
     "toolbar_paste_image_instruction": "Įklijuoja mainų srities vaizdą į puslapį, rankenėlės dydžiui keisti/pasukti",
-    "toolbar_paste_image_disabled": "Mainų srityje turi būti tik vaizdas"
+    "toolbar_paste_image_disabled": "Mainų srityje turi būti tik vaizdas",
+    "color_depth_panel_blocked_format": "Nepasiekiama: originalus failo formatas {format} nepalaiko šio spalvų gylio.",
+    "image_mode_panel_blocked_format": "Nepasiekiama: originalus failo formatas {format} nepalaiko šio režimo."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Žalia:",
       "blue_label": "Mėlyna:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Apkarpymo kaukė"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Rankinis režimas (nubrėžkite atskaitos liniją)\nSpustelėkite dešiniuoju pele mygtuku, kad pakeistumėte režimą",
     "straighten_mode_1": "Automatinis režimas (nuolydžio aptikimas)\nSpustelėkite dešiniuoju pele mygtuku, kad pakeistumėte režimą",
     "sharpness_mode_0": "Sustiprina arba suminkština vaizdo detales\nSpustelėkite dešiniuoju pelės mygtuku, kad perjungtumėte į adaptyvųjį ryškumą",
-    "sharpness_mode_1": "Pabrėžia kontūrus tausodama vienalytes sritis\nSpustelėkite dešiniuoju pelės mygtuku, kad perjungtumėte į paprastą ryškumą"
+    "sharpness_mode_1": "Pabrėžia kontūrus tausodama vienalytes sritis\nSpustelėkite dešiniuoju pelės mygtuku, kad perjungtumėte į paprastą ryškumą",
+    "crop_mode_0": "Nubrėžkite stačiakampį virš išsaugotinos srities, tada patvirtinkite\nDešiniuoju pelės mygtuku perjungiama apkarpymo kaukės režimą",
+    "crop_mode_1": "Apkarpymo kaukės režimas: įsiminkite stačiakampį ir iškvieskite jį kituose puslapiuose\nDešiniuoju pelės mygtuku grįžtama į įprastą režimą"
   },
   "help": {
     "title": "MosaicView - Naudojimo instrukcija",
@@ -1413,7 +1423,7 @@
     "flatten": "Aplankų išlyginimas",
     "flatten_content": "Jei jūsų archyve yra poaplankai, naudokite 'Išlyginti aplankus', kad visus vaizdus perkeltumėte į tą patį lygį.",
     "viewer": "Žiūryklė",
-    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte peržiūros priemonę:\n• Klavišai ← →: naršymas tarp puslapių\n• Klavišas D: perjungimas tarp 4 skaitymo režimų\n  - Vienas puslapis: po vieną puslapį\n  - Dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 4-5 ir t. t.\n  - Nenutrūkstami dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 3-4, 4-5 ir t. t.\n  - Webtoon: vertikaliems paveikslėliams (webcomics), plotis apribotas iki 900px įskaitomumui; pelės ratukas slenka puslapį vertikaliai, tada pakeičia puslapį viršuje/apačioje\n• Pelės ratukas: greitas naršymas (vertikalus slinkimas puslapyje Webtoon režimu)\n• Ctrl+ratukas arba Ctrl+Plius/Minus: mastelis (iki 1000% tikrojo vaizdo dydžio)\n• Ctrl+0: pritaikyti mastelį prie lango\n• Ctrl+1: mastelis 100% (tikrasis vaizdo pikselių dydis)\n• Dešinysis paspaudimas + tempimas: rodomo vaizdo perkėlimas (slinkimas), kai jis viršija langą\n• Klavišas F11: viso ekrano režimas\n• Dvigubas spustelėjimas: perjungti viso ekrano režimą\n• Klavišas Esc: atšaukti dabartinį piešimą (apkarpymas, ištiesinimas, forma…) arba išeiti iš peržiūros priemonės\n• Žymė: automatiškai išsaugo dabartinį puslapį uždarant peržiūros priemonę (išskyrus pirmą/paskutinį puslapį). Atitinkamoje miniatiūroje mozaikoje pasirodo raudona juostelė. Vėl atidarius, pranešimas siūlo grįžti į šį puslapį. Automatiškai ištrinama paskutiniame puslapyje, arba rankiniu būdu dešiniuoju paspaudimu peržiūros priemonėje.\n\nPlaukiojanti įrankių juosta: užveskite pelę virš vaizdo viršaus, kad ji atsirastų (po kelių sekundžių ji pati pasislepia). Spustelėkite piktogramą, kad suaktyvintumėte atitinkamą įrankį:\n• Apkarpymas: nubrėžkite stačiakampį, sureguliuokite jį per kraštus, patvirtinkite\n• Ištiesinimas: nubrėžkite liniją ant to, kas turėtų būti horizontalu/vertikalu, korekcija pritaikoma automatiškai; dešiniuoju paspaudimu ant piktogramos perjunkite į automatinį ištiesinimą (aptinka pasvirimą pats, nieko nebrėžiant)\n• Sukimas/atspindėjimas: vienas paspaudimas pasuka arba apverčia puslapį\n• Klonavimas: Ctrl+paspaudimas pasirinkti šaltinio tašką, tada tapykite laikydami pelės mygtuką, kad dubliuotumėte\n• Tekstas: spustelėkite, kad įdėtumėte teksto bloką, pasirinkite šriftą/dydį/spalvą\n• Formos: piešite elipses, stačiakampius, linijas ar rodykles, su rankenėlėmis dydžiui keisti\n• Šliaužikliai (ryškumas, šviesumas/kontrastas, sodrumas, spalvų šalinimas, suspaudimas): rezultatas rodomas tiesiogiai tempiant\n• Lygiai: sureguliuokite juodąjį tašką/gama/baltąjį tašką šliaužikliais, arba paimkite spalvą tiesiai iš vaizdo pipetėmis\n• Skaidrumas: spustelėkite spalvą vaizde, kad ji taptų skaidri\n• Spalvų gylis, Efektai, Vaizdo režimas: pasirinkite parinktį spustelėdami pasirinkimo mygtuką, pritaikoma iš karto\n• Įklijuoti vaizdą: įklijuoja vaizdą iš mainų srities (piktograma aktyvinama tik jei mainų srityje yra vaizdas), su rankenėlėmis dydžiui keisti/pasukti kaip figūrose; taip pat veikia vilkant puslapį iš mozaikos ar failą iš Windows Explorer tiesiai į peržiūros priemonę. Ctrl+C kopijuoja rodomą puslapį (tik vieno puslapio arba Webtoon režimu), Ctrl+V įklijuoja vaizdą, kaip mozaikoje\n\nPatvirtinkite mygtuku „Patvirtinti“, kai jis pasirodys, arba Esc atšaukimui. Kiekvienas pakeitimas prisijungia prie įprastos Anuliuoti/Pakartoti istorijos.",
+    "viewer_content": "Dukart spustelėkite puslapį, kad atidarytumėte peržiūros priemonę:\n• Klavišai ← →: naršymas tarp puslapių\n• Klavišas D: perjungimas tarp 4 skaitymo režimų\n  - Vienas puslapis: po vieną puslapį\n  - Dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 4-5 ir t. t.\n  - Nenutrūkstami dvigubi puslapiai: 1 puslapis vienas, tada 2-3, 3-4, 4-5 ir t. t.\n  - Webtoon: vertikaliems paveikslėliams (webcomics), plotis apribotas iki 900px įskaitomumui; pelės ratukas slenka puslapį vertikaliai, tada pakeičia puslapį viršuje/apačioje\n• Pelės ratukas: greitas naršymas (vertikalus slinkimas puslapyje Webtoon režimu)\n• Ctrl+ratukas arba Ctrl+Plius/Minus: mastelis (iki 1000% tikrojo vaizdo dydžio)\n• Ctrl+0: pritaikyti mastelį prie lango\n• Ctrl+1: mastelis 100% (tikrasis vaizdo pikselių dydis)\n• Dešinysis paspaudimas + tempimas: rodomo vaizdo perkėlimas (slinkimas), kai jis viršija langą\n• Klavišas F11: viso ekrano režimas\n• Dvigubas spustelėjimas: perjungti viso ekrano režimą\n• Klavišas Esc: atšaukti dabartinį piešimą (apkarpymas, ištiesinimas, forma…) arba išeiti iš peržiūros priemonės\n• Žymė: automatiškai išsaugo dabartinį puslapį uždarant peržiūros priemonę (išskyrus pirmą/paskutinį puslapį). Atitinkamoje miniatiūroje mozaikoje pasirodo raudona juostelė. Vėl atidarius, pranešimas siūlo grįžti į šį puslapį. Automatiškai ištrinama paskutiniame puslapyje, arba rankiniu būdu dešiniuoju paspaudimu peržiūros priemonėje.\n\nPlaukiojanti įrankių juosta: užveskite pelę virš vaizdo viršaus, kad ji atsirastų (po kelių sekundžių ji pati pasislepia). Spustelėkite piktogramą, kad suaktyvintumėte atitinkamą įrankį:\n• Apkarpymas: nubrėžkite stačiakampį, sureguliuokite jį per kraštus, patvirtinkite; spustelėkite piktogramą dešiniuoju pelės mygtuku, kad perjungtumėte apkarpymo kaukės režimą (įsiminkite stačiakampį su \"Išsaugoti kaukę\", tada iškvieskite ją nepakeistą kituose puslapiuose su \"Iškviesti kaukę\" — naudinga taikant tą patį apkarpymą keliems puslapiams, kiekvieną kartą jų neperbraižant; \"Pamiršti kaukę\" ištrina įsimintą kaukę, tik pagal puslapį)\n• Ištiesinimas: nubrėžkite liniją ant to, kas turėtų būti horizontalu/vertikalu, korekcija pritaikoma automatiškai; dešiniuoju paspaudimu ant piktogramos perjunkite į automatinį ištiesinimą (aptinka pasvirimą pats, nieko nebrėžiant)\n• Sukimas/atspindėjimas: vienas paspaudimas pasuka arba apverčia puslapį\n• Klonavimas: Ctrl+paspaudimas pasirinkti šaltinio tašką, tada tapykite laikydami pelės mygtuką, kad dubliuotumėte\n• Tekstas: spustelėkite, kad įdėtumėte teksto bloką, pasirinkite šriftą/dydį/spalvą\n• Formos: piešite elipses, stačiakampius, linijas ar rodykles, su rankenėlėmis dydžiui keisti\n• Šliaužikliai (ryškumas, šviesumas/kontrastas, sodrumas, spalvų šalinimas, suspaudimas): rezultatas rodomas tiesiogiai tempiant\n• Lygiai: sureguliuokite juodąjį tašką/gama/baltąjį tašką šliaužikliais, arba paimkite spalvą tiesiai iš vaizdo pipetėmis\n• Skaidrumas: spustelėkite spalvą vaizde, kad ji taptų skaidri\n• Spalvų gylis, Efektai, Vaizdo režimas: pasirinkite parinktį spustelėdami pasirinkimo mygtuką, pritaikoma iš karto\n• Įklijuoti vaizdą: įklijuoja vaizdą iš mainų srities (piktograma aktyvinama tik jei mainų srityje yra vaizdas), su rankenėlėmis dydžiui keisti/pasukti kaip figūrose; taip pat veikia vilkant puslapį iš mozaikos ar failą iš Windows Explorer tiesiai į peržiūros priemonę. Ctrl+C kopijuoja rodomą puslapį (tik vieno puslapio arba Webtoon režimu), Ctrl+V įklijuoja vaizdą, kaip mozaikoje\n\nPatvirtinkite mygtuku „Patvirtinti“, kai jis pasirodys, arba Esc atšaukimui. Kiekvienas pakeitimas prisijungia prie įprastos Anuliuoti/Pakartoti istorijos.",
     "join_pages": "Puslapių sujungimas",
     "join_pages_content": "Pasirinkite kelis iš eilės einančius puslapius, dešiniuoju pelės klavišu spustelėkite → 'Sujungti pasirinktus puslapius', kad sujungtumėte puslapius horizontaliai arba vertikaliai. Sukurto vaizdo formatas atitinka šaltinio puslapių formatą, jei jie visi identiški, priešingu atveju pagal numatytuosius nustatymus PNG. Galėsite pasirinkti, ar ištrinti, ar palikti originalius puslapius.\n\nNaujo puslapio vieta mozaikoje:\n• Aktyvus numeravimo iš naujo režimas (automatinis arba rankinis): puslapis užima pirmo sujungto puslapio vietą (jo vietą, jei šaltinio puslapiai ištrinami, arba tiesiai prieš jį, jei jie paliekami), ir suaktyvina numeravimą iš naujo.\n• IŠJUNGTAS numeravimo iš naujo režimas: puslapis pridedamas mozaikos pradžioje pavadinimu \"Sujungimas_xxx\".",
     "split_pages": "Puslapių padalinimas",

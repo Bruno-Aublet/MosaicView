@@ -1,7 +1,5 @@
 """
-renumbering_qt.py — Renumérotation des pages (version PySide6)
-
-Reproduit fidèlement modules/renumbering.py (tkinter).
+renumbering_qt.py — Renumérotation des pages.
 
 Deux modes :
   - renumber_pages_auto_qt : auto-détection pages multiples via ratio w/h

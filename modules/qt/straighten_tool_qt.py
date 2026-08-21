@@ -3,7 +3,7 @@ modules/qt/straighten_tool_qt.py — Outil de redressement manuel (trait de
 référence) de la barre d'outils flottante de la visionneuse principale
 (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 2e outil migré) : ce module
+Fusion progressive des visionneuses : ce module
 contient toute la logique propre à l'outil "straighten" manuel — état/
 interactions du canvas (mixin StraightenCanvasMixin, hérité par
 _ViewerCanvas), commit de la rotation dans l'historique du panneau (mixin
@@ -119,11 +119,10 @@ class _StraightenAnglePanel(QWidget):
         self.move(max(0, x), y)
 
     def mousePressEvent(self, event):
-        # Piège corrigé (2026-08-15, découvert sur le panneau de
-        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
-        # vide du panneau "fuit" vers _ViewerCanvas en dessous — même piège
-        # déjà documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
-        # viewers), appliqué par cohérence à tous les panneaux flottants.
+        # Sans ce blindage, un clic sur une zone vide du panneau "fuit" vers
+        # _ViewerCanvas en dessous — même piège déjà documenté pour
+        # _ToolButton/_ActionButton/_ViewerToolbar (skill viewers), appliqué
+        # par cohérence à tous les panneaux flottants.
         event.accept()
 
     def mouseReleaseEvent(self, event):
@@ -131,14 +130,14 @@ class _StraightenAnglePanel(QWidget):
 
     def enterEvent(self, event):
         # Suspend le timer d'auto-masquage de la barre (dont ce panneau suit
-        # désormais la visibilité, idees.txt #3 décision 2026-08-14) tant que
-        # la souris reste sur ce panneau — pas seulement redémarré à chaque
-        # mouvement, complètement arrêté (voir _ViewerToolbar.pause_hide).
+        # désormais la visibilité) tant que la souris reste sur ce panneau —
+        # pas seulement redémarré à chaque mouvement, complètement arrêté
+        # (voir _ViewerToolbar.pause_hide).
         self._viewer._toolbar.pause_hide()
         # Le curseur posé par straighten_update_cursor (SizeAllCursor sur les
         # poignées, CrossCursor sinon) est celui du CANVAS, pas celui de ce
-        # panneau — sans ce reset, il restait affiché par-dessus la spinbox
-        # (idees.txt #4), même piège corrigé sur
+        # panneau — sans ce reset, il resterait affiché par-dessus la
+        # spinbox, même piège que
         # _TransparencyOptionsPanel/_LevelsOptionsPanel.
         self.setCursor(Qt.ArrowCursor)
 
@@ -251,7 +250,7 @@ class StraightenCanvasMixin:
         # has_line redevient faux) — ne touche JAMAIS à sa visibilité, pilotée
         # uniquement par _ViewerToolbar.show_and_schedule_hide/_on_hide_timeout
         # (mécanisme unique, voir image_viewer_qt.py::_update_validate_btn_state).
-        # Bouton "Annuler" jumeau rafraîchi juste à côté (2026-08-15).
+        # Bouton "Annuler" jumeau rafraîchi juste à côté.
         self._update_validate_btn_state()
         self._update_cancel_btn_state()
         self.update()
@@ -439,8 +438,7 @@ class StraightenViewerMixin:
 
     def _on_straighten_line_drawn(self, ix1, iy1, ix2, iy2):
         """Trait figé (relâchement de la souris) : calcule l'angle, alimente le
-        panneau flottant, active le bouton Valider (+ son jumeau Annuler,
-        2026-08-15)."""
+        panneau flottant, active le bouton Valider (+ son jumeau Annuler)."""
         self._toolbar._angle_panel.on_line_drawn(ix1, iy1, ix2, iy2)
         self._toolbar._angle_panel.set_visible_for_tool(self._toolbar.active_tool)
         self._canvas._update_validate_btn_state()
@@ -594,8 +592,7 @@ class StraightenViewerMixin:
     def _save_straighten_for_current_page(self):
         """Mémorise le trait de redressage de la page qu'on s'apprête à quitter
         (coordonnées image, indépendantes du zoom/pan) pour le restaurer si
-        l'utilisateur revient sur cette page — même principe que le crop
-        (idees.txt #3, partie B)."""
+        l'utilisateur revient sur cette page — même principe que le crop."""
         c = self._canvas
         if c._line_img_start is not None and c._line_img_end is not None:
             self._straighten_by_page[self.current_idx] = (c._line_img_start, c._line_img_end)

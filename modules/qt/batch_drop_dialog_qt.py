@@ -1,6 +1,5 @@
 """
 batch_drop_dialog_qt.py — Fenêtre de sélection du traitement batch pour dossiers droppés.
-Reproduit exactement modules/batch_drop_dialog.py (tkinter) pour PySide6.
 Règles UI Qt : thème, langue à la volée, police courante.
 """
 
@@ -43,7 +42,6 @@ def _disconnect_lang(dialog):
 class BatchDropDialog(QDialog):
     """
     Fenêtre de sélection du traitement batch pour des dossiers droppés.
-    Identique à modules/batch_drop_dialog.py (tkinter).
     Supporte : thème courant, changement de langue à la volée, police courante.
     """
 

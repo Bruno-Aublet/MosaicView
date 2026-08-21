@@ -55,11 +55,9 @@ Identifiants passés comme `sort_method` (string) — voir `get_sort_key` (`sort
 
 Chaque critère bascule indépendamment asc/desc au second clic — cliquer "Par nom" puis "Par poids" ne bascule pas l'ordre du poids (il repart en asc), seul un second clic consécutif sur le **même** critère bascule.
 
-## Clés de traduction — piège à connaître
+## Clés de traduction
 
 Les 3 points d'entrée UI utilisent la clé racine **`sort_menu.*`** (`sort_menu.sort_name`, `sort_menu.sort_type`, `sort_menu.sort_size`, `sort_menu.sort_width`, `sort_menu.sort_height`, `sort_menu.sort_resolution`, `sort_menu.sort_dpi`) pour le libellé des entrées de menu, et `menu.sort` pour le titre du sous-menu/bouton. Voir skill [[add-translation]] pour la procédure de traduction.
-
-**Piège détecté (2026-07-16)** : `locales/*.json` contient un **second** bloc de clés mortes sous `context_menu.image.sort_submenu` / `context_menu.image.sort_name` / `sort_type` / `sort_size` / `sort_width` / `sort_height` / `sort_resolution` / `sort_dpi` (ex. `locales/fr.json:121-128`) qui n'est référencé par **aucun** code Python actuel — seul le bloc `sort_menu.*` (ex. `locales/fr.json:194-202`) est réellement utilisé. Ne pas confondre les deux blocs lors d'une traduction ou d'un audit qualité ; le bloc `context_menu.image.sort_*` semble être un vestige d'une ancienne implémentation où le tri était intégré au menu contextuel `image` plutôt qu'affiché comme sous-menu séparé.
 
 ## Comment modifier le tri existant
 
@@ -76,7 +74,7 @@ Il faut toucher **6 points**, dans cet ordre :
 2. **`sorting_qt.py::show_sort_menu_qt`** — ajouter `menu.addAction(_("sort_menu.sort_mon_critere"), lambda: sort_method_cb("mon_critere"))`.
 3. **`context_menus_qt.py`** (bloc `sort_submenu`, ~ligne 261-267) — ajouter la même `addAction` avec la même clé de traduction et le même identifiant `sort_method`.
 4. **`menubar_qt.py`** (liste `[key, label_key]`, ~ligne 262-269) — ajouter le tuple `("mon_critere", "sort_menu.sort_mon_critere")`.
-5. **`locales/*.json`** — ajouter la clé `sort_menu.sort_mon_critere` dans **toutes** les langues (voir skill [[add-translation]] pour la procédure complète, y compris les langues fictives CSUR et l'arménien). Ne pas ajouter au bloc mort `context_menu.image.sort_*` (voir piège ci-dessus).
+5. **`locales/*.json`** — ajouter la clé `sort_menu.sort_mon_critere` dans **toutes** les langues (voir skill [[add-translation]] pour la procédure complète, y compris les langues fictives CSUR et l'arménien).
 6. Si le critère nécessite une métadonnée pas encore lue par `get_image_metadata()` (`entries.py:581`), l'ajouter à ce dictionnaire plutôt que de relire l'image ailleurs — c'est le point de passage unique pour les métadonnées légères d'image dans tout le projet.
 
 Aucun point undo/redo à modifier : `current_sort_method`/`current_sort_order` sont génériques (stockent n'importe quelle string), le nouveau critère est automatiquement pris en charge par le snapshot existant.

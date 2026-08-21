@@ -5,7 +5,7 @@ description: Localiser ou modifier la logique PIL de la fonction "Niveaux noir/b
 
 # Ajustement "Niveaux noir/blanc" — MosaicView
 
-**Migré dans la barre d'outils de la visionneuse principale (v1.7.5, 2026-08-15)** : ni le panneau Ajustements classique (section "Niveaux", groupe `_grp_levels` — 4 sliders + bouton Auto + bouton "Ajuster avec la visionneuse"), ni le mode `'levels'` de `AdjustmentViewerDialog` (pipettes, undo/redo local par page) n'existent plus. Seul point d'entrée désormais : l'icône "Niveaux" (`BTN_Levels.png`) de la barre d'outils flottante de `ImageViewer`, voir skill `viewers` section "Le cas des niveaux" pour l'intégration complète (panneau à 2 lignes/7 contrôles, pipettes, curseur custom, undo/redo unifié). **Ce skill-ci ne couvre que la formule PIL de traitement**, restée inchangée dans `image_processing_qt.py` — c'est le seul moteur de calcul, partagé, dont dépend le nouvel outil.
+Outil de la barre d'outils de la visionneuse principale. Seul point d'entrée : l'icône "Niveaux" (`BTN_Levels.png`) de la barre d'outils flottante de `ImageViewer`, voir skill `viewers` section "Le cas des niveaux" pour l'intégration complète (panneau à 2 lignes/7 contrôles, pipettes, curseur custom, undo/redo unifié). **Ce skill-ci ne couvre que la formule PIL de traitement**, dans `image_processing_qt.py` — c'est le seul moteur de calcul, partagé, dont dépend l'outil.
 
 ## Où
 
@@ -45,7 +45,7 @@ def compute_auto_levels(image_bytes):
 ```
 Calcule les valeurs de point noir/blanc via les percentiles 1%/99% de la luminance moyenne (`arr.mean(axis=1)` sur les 3 canaux, triés, indexés à `1%`/`99%` de la population de pixels). Clampé à `black ∈ [0, 254]`, `white ∈ [black+1, 255]` (garantit toujours `white > black`, évite une division par zéro dans la LUT). Retourne `(0, 255)` (= no-op) en cas d'exception.
 
-**Point d'entrée unique désormais** : `LevelsViewerMixin.perform_auto_levels()` (`levels_tool_qt.py`), appelé par le bouton "Auto" du panneau flottant — calcule sur la page réellement affichée dans la visionneuse (`entry['bytes']` courant, pas un aperçu figé), met à jour les 2 sliders point noir/point blanc, puis commit immédiatement (même geste qu'un clic pipette, pas de relâchement à attendre). Les deux anciens points d'entrée (`AdjustmentsDialog._on_auto_levels` du panneau classique, calcul sur la 1re image de la sélection + cas spécial multi-image ; `AdjustmentViewerDialog._on_auto_levels` de l'ancien viewer, undo local) ont disparu avec leurs fenêtres respectives.
+**Point d'entrée unique** : `LevelsViewerMixin.perform_auto_levels()` (`levels_tool_qt.py`), appelé par le bouton "Auto" du panneau flottant — calcule sur la page réellement affichée dans la visionneuse (`entry['bytes']` courant, pas un aperçu figé), met à jour les 2 sliders point noir/point blanc, puis commit immédiatement (même geste qu'un clic pipette, pas de relâchement à attendre).
 
 ## Pipettes — clic sur l'image dans la visionneuse principale
 
@@ -53,12 +53,12 @@ Comportement de référence identique à l'ancien mode `'levels'` (repris tel qu
 
 ## Modifier cette fonction
 
-- Formule seuil/LUT → blocs correspondants de `apply_adjustments()` (`image_processing_qt.py`) — inchangés depuis la migration, aucune divergence entre l'ancien et le nouveau point d'accès.
+- Formule seuil/LUT → blocs correspondants de `apply_adjustments()` (`image_processing_qt.py`).
 - Percentiles de l'auto-niveaux → `compute_auto_levels()` (actuellement 1%/99%, codés en dur `int(len(arr) * 0.01)`).
-- Comportement des pipettes/panneau flottant/undo — `levels_tool_qt.py`, voir skill `viewers` section "Le cas des niveaux" pour le détail complet (undo/redo unifié avec l'historique du panneau, plus d'historique local séparé comme l'ancien viewer).
+- Comportement des pipettes/panneau flottant/undo — `levels_tool_qt.py`, voir skill `viewers` section "Le cas des niveaux" pour le détail complet (undo/redo unifié avec l'historique du panneau).
 
 ## Références croisées
 
-- `viewers` — section "Le cas des niveaux" : intégration complète dans la barre d'outils (panneau 2 lignes/7 contrôles, pipettes, curseur custom, undo/redo unifié, pièges corrigés lors de la migration — hotspot du curseur, croix de visée pleine masquant le pixel visé, reset du pan après commit, police CSUR manquante sur 3 boutons).
+- `viewers` — section "Le cas des niveaux" : intégration complète dans la barre d'outils (panneau 2 lignes/7 contrôles, pipettes, curseur custom, undo/redo unifié — voir pièges connus : hotspot du curseur, croix de visée pleine masquant le pixel visé, reset du pan après commit, police CSUR manquante sur 3 boutons).
 - `adjust-brightness-contrast` — objectif visuel proche (assombrir/éclaircir) mais formule `ImageEnhance` distincte, appliquée plus tôt dans le pipeline.
 - `adjust-color-depth` — mode `'1'` (binarisation à seuil fixe 128), à ne pas confondre avec le seuil réglable de cette section.

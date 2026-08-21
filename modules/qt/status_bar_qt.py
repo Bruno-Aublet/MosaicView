@@ -150,7 +150,7 @@ class StatusBar(QWidget):
         self._duplicate_indicator._on_click = callback
 
     def refresh(self, state):
-        """Met à jour le texte selon l'état courant (reproduit canvas_rendering.update_status_bar)."""
+        """Met à jour le texte et les indicateurs selon l'état courant."""
         font9 = get_current_font(9)
         self._label.setFont(font9)
         self._renumber_indicator.setFont(font9)
@@ -200,10 +200,7 @@ class StatusBar(QWidget):
         self._renumber_indicator.setText(_(mode_key))
         tip_html = _format_tooltip(_(f"tooltip.renumber_indicator_{mode}"))
         self._overlay_tip.set_tracked_html(tip_html, self._renumber_indicator)
-        if self._overlay_tip._label.isVisible():
-            # Le tooltip est déjà affiché (ex. juste après un clic) : on force
-            # son contenu à jour immédiatement plutôt que d'attendre le prochain MouseMove
-            self._overlay_tip.show_tooltip(tip_html)
+        self._overlay_tip.force_refresh_visible(self._renumber_indicator)
 
         zip_state = getattr(state, "zip_compression_state", None)
         has_file = bool(state.images_data)
@@ -233,8 +230,7 @@ class StatusBar(QWidget):
         else:
             zip_tip_html = _format_tooltip(_(zip_tip_key, level=default_level)) if has_file else ""
         self._overlay_tip.set_tracked_html(zip_tip_html, self._zip_indicator)
-        if self._overlay_tip._label.isVisible():
-            self._overlay_tip.show_tooltip(zip_tip_html)
+        self._overlay_tip.force_refresh_visible(self._zip_indicator)
 
         from modules.qt.duplicate_detection_qt import has_any_duplicate
         self._set_duplicate_indicator_state(has_file and has_any_duplicate(state), has_file=has_file)
@@ -256,5 +252,4 @@ class StatusBar(QWidget):
         else:
             dup_tip_html = ""
         self._overlay_tip.set_tracked_html(dup_tip_html, self._duplicate_indicator)
-        if self._overlay_tip._label.isVisible():
-            self._overlay_tip.show_tooltip(dup_tip_html)
+        self._overlay_tip.force_refresh_visible(self._duplicate_indicator)

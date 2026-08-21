@@ -2,9 +2,8 @@
 modules/qt/rotation_tool_qt.py — Outil "rotation" de la barre d'outils
 flottante de la visionneuse principale (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, ajout après la fin du
-chantier des 16 outils migrés) : ce module contient le panneau flottant (4
-boutons d'action instantanée) et le commit de chaque opération sur la page
+Fusion progressive des visionneuses : ce module contient le panneau flottant
+(4 boutons d'action instantanée) et le commit de chaque opération sur la page
 courante — image_viewer_qt.py ne fait qu'hériter des deux mixins et brancher
 l'icône de la barre d'outils, voir CLAUDE.md règle "ne jamais migrer le code
 d'un outil dans image_viewer_qt.py".
@@ -66,7 +65,7 @@ from modules.qt.clone_tool_qt import floating_options_panel_style
 class _RotationOptionsPanel(QWidget):
     """Panneau flottant avec les 4 boutons d'action instantanée (rotation
     gauche, rotation droite, miroir horizontal, miroir vertical, dans cet
-    ordre — idees.txt), affiché sous la barre d'outils uniquement quand
+    ordre), affiché sous la barre d'outils uniquement quand
     l'outil "rotation" est actif — même principe de positionnement que
     _ColorDepthOptionsPanel/_EffectsOptionsPanel.
 
@@ -115,7 +114,7 @@ class _RotationOptionsPanel(QWidget):
         self.hide()
 
     # Icônes éclaircies en mode sombre (violet foncé sur fond gris foncé,
-    # peu lisible — signalé par l'utilisateur) : contrairement à
+    # peu lisible) : contrairement à
     # BTN_Sharpness.png/BTN_Unsharp.png (noir plein, _DARK_MODE_RECOLOR_ICONS
     # de viewer_toolbar_qt.py, remplacement par une couleur unie), ces icônes
     # sont en deux tons d'une même teinte — un remplacement uni aplatirait le

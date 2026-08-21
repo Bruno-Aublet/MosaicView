@@ -74,7 +74,10 @@
     "cancel_shapes": "Batal bentuk",
     "cancel_transparency": "Batal ketelusan",
     "validate_paste_image": "Guna pakai tampal",
-    "cancel_paste_image": "Batal tampal"
+    "cancel_paste_image": "Batal tampal",
+    "save_crop_mask": "Simpan topeng",
+    "recall_crop_mask": "Panggil topeng",
+    "forget_crop_mask": "Lupakan topeng"
   },
   "tabs": {
     "mosaic": "Mozek",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Ambil warna daripada halaman yang dipaparkan",
     "toolbar_transparency_tooltip": "Ketelusan",
     "toolbar_transparency_instruction": "Klik warna yang hendak dijadikan telus",
-    "toolbar_transparency_disabled": "Hanya tersedia untuk imej PNG, WebP, ICO dan AVIF",
+    "toolbar_transparency_disabled": "Hanya tersedia untuk imej PNG, WebP, ICO, AVIF dan TIFF",
     "transparency_flood_panel_label": "Kawasan",
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Toleransi:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Putar atau balikkan halaman yang dipaparkan",
     "toolbar_paste_image_tooltip": "Tampal imej",
     "toolbar_paste_image_instruction": "Menampal imej papan keratan pada halaman, pemegang untuk mengubah saiz/memutar",
-    "toolbar_paste_image_disabled": "Papan keratan mesti mengandungi hanya satu imej"
+    "toolbar_paste_image_disabled": "Papan keratan mesti mengandungi hanya satu imej",
+    "color_depth_panel_blocked_format": "Tidak tersedia: format {format} asal fail tidak menyokong kedalaman warna ini.",
+    "image_mode_panel_blocked_format": "Tidak tersedia: format {format} asal fail tidak menyokong mod ini."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Hijau:",
       "blue_label": "Biru:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Topeng pemotongan"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Mod manual (lukis garis rujukan)\nKlik kanan untuk menukar mod",
     "straighten_mode_1": "Mod automatik (pengesanan kecondongan)\nKlik kanan untuk menukar mod",
     "sharpness_mode_0": "Meningkatkan atau melembutkan perincian imej\nKlik kanan untuk bertukar kepada ketajaman adaptif",
-    "sharpness_mode_1": "Menonjolkan tepi sambil mengekalkan kawasan rata\nKlik kanan untuk bertukar kepada ketajaman ringkas"
+    "sharpness_mode_1": "Menonjolkan tepi sambil mengekalkan kawasan rata\nKlik kanan untuk bertukar kepada ketajaman ringkas",
+    "crop_mode_0": "Lukis segi empat tepat di atas kawasan yang ingin dikekalkan, kemudian sahkan\nKlik kanan untuk beralih ke mod topeng pemotongan",
+    "crop_mode_1": "Mod topeng pemotongan: ingat segi empat tepat dan panggil semula pada halaman seterusnya\nKlik kanan untuk kembali ke mod biasa"
   },
   "help": {
     "title": "MosaicView - Manual Pengguna",
@@ -1413,7 +1423,7 @@
     "flatten": "Meratakan direktori",
     "flatten_content": "Jika arkib anda mengandungi subfolder, gunakan 'Ratakan direktori' untuk membawa semua imej ke tahap yang sama.",
     "viewer": "Penonton",
-    "viewer_content": "Klik dua kali pada halaman untuk membuka pemapar:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: bertukar antara 4 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berkembar: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berkembar berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n  - Webtoon: untuk imej menegak (webcomics), lebar terhad kepada 900px untuk kekal boleh dibaca; roda tetikus menatal secara menegak dalam halaman, kemudian menukar halaman apabila sampai atas/bawah\n• Roda tetikus: navigasi pantas (tatal menegak dalam halaman dalam mod Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zum (sehingga 1000% saiz sebenar imej)\n• Ctrl+0: sesuaikan zum dengan tetingkap\n• Ctrl+1: zum pada 100% (saiz piksel sebenar imej)\n• Klik kanan + seret: gerakkan imej yang dipaparkan (pan) apabila melebihi tetingkap\n• Kekunci F11: skrin penuh\n• Klik dua kali: togol skrin penuh\n• Kekunci Esc: batalkan lukisan semasa (pangkas, luruskan, bentuk…) atau keluar dari pemapar\n• Penanda buku: menyimpan halaman semasa secara automatik apabila pemapar ditutup (kecuali halaman pertama/terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Apabila dibuka semula, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir, atau secara manual melalui klik kanan dalam pemapar.\n\nBar alat terapung: gerakkan tetikus ke atas bahagian atas imej untuk memaparkannya (ia menyembunyikan diri selepas beberapa saat). Klik ikon untuk mengaktifkan alat yang sepadan:\n• Pangkas: lukis segi empat tepat, laraskan melalui tepinya, sahkan\n• Luruskan: lukis garis pada apa yang sepatutnya mendatar/menegak, pembetulan digunakan secara automatik; klik kanan pada ikon untuk bertukar kepada pelurusan automatik (mengesan kecondongan sendiri, tanpa melukis apa-apa)\n• Putaran/cermin: satu klik memutar atau membalikkan halaman\n• Klonan: Ctrl+klik untuk memilih titik sumber, kemudian lukis dengan butang tetikus ditahan untuk menggandakan\n• Teks: klik untuk meletakkan blok teks, pilih fon/saiz/warna\n• Bentuk: lukis elips, segi empat tepat, garis atau anak panah, dengan pemegang untuk mengubah saiz\n• Penggelangsar (ketajaman, kecerahan/kontras, ketepuan, buang warna, mampatan): hasil dipaparkan secara langsung semasa anda menyeret\n• Aras: laraskan titik hitam/gama/titik putih dengan penggelangsar, atau ambil warna terus dari imej dengan pipet\n• Ketelusan: klik warna pada imej untuk menjadikannya lut sinar\n• Kedalaman warna, Kesan, Mod imej: pilih pilihan dengan mengklik butang radio, digunakan serta-merta\n• Tampal imej: menampal imej dari papan keratan (ikon hanya aktif jika papan keratan mengandungi imej), dengan pemegang untuk mengubah saiz/memutar seperti bentuk; turut berfungsi dengan menyeret halaman dari mozek atau fail dari Windows Explorer terus ke pemapar. Ctrl+C menyalin halaman yang dipaparkan (hanya dalam mod halaman tunggal atau Webtoon), Ctrl+V menampal imej, sama seperti dalam mozek\n\nSahkan dengan butang \"Sahkan\" apabila ia muncul, atau Esc untuk membatalkan. Setiap perubahan menyertai sejarah Buat asal/Buat semula yang biasa.",
+    "viewer_content": "Klik dua kali pada halaman untuk membuka pemapar:\n• Kekunci ← →: navigasi antara halaman\n• Kekunci D: bertukar antara 4 mod bacaan\n  - Halaman tunggal: satu halaman pada satu masa\n  - Halaman berkembar: halaman 1 sahaja, kemudian 2-3, 4-5, dll.\n  - Halaman berkembar berterusan: halaman 1 sahaja, kemudian 2-3, 3-4, 4-5, dll.\n  - Webtoon: untuk imej menegak (webcomics), lebar terhad kepada 900px untuk kekal boleh dibaca; roda tetikus menatal secara menegak dalam halaman, kemudian menukar halaman apabila sampai atas/bawah\n• Roda tetikus: navigasi pantas (tatal menegak dalam halaman dalam mod Webtoon)\n• Ctrl+Roda atau Ctrl+Plus/Minus: zum (sehingga 1000% saiz sebenar imej)\n• Ctrl+0: sesuaikan zum dengan tetingkap\n• Ctrl+1: zum pada 100% (saiz piksel sebenar imej)\n• Klik kanan + seret: gerakkan imej yang dipaparkan (pan) apabila melebihi tetingkap\n• Kekunci F11: skrin penuh\n• Klik dua kali: togol skrin penuh\n• Kekunci Esc: batalkan lukisan semasa (pangkas, luruskan, bentuk…) atau keluar dari pemapar\n• Penanda buku: menyimpan halaman semasa secara automatik apabila pemapar ditutup (kecuali halaman pertama/terakhir). Reben merah muncul pada lakaran kecil yang sepadan dalam mozek. Apabila dibuka semula, mesej mencadangkan untuk kembali ke halaman ini. Dipadam secara automatik pada halaman terakhir, atau secara manual melalui klik kanan dalam pemapar.\n\nBar alat terapung: gerakkan tetikus ke atas bahagian atas imej untuk memaparkannya (ia menyembunyikan diri selepas beberapa saat). Klik ikon untuk mengaktifkan alat yang sepadan:\n• Pangkas: lukis segi empat tepat, laraskan melalui tepinya, sahkan; klik kanan pada ikon untuk beralih ke mod topeng pemotongan (ingat segi empat tepat dengan \"Simpan topeng\", kemudian panggil semula seperti sedia ada pada halaman seterusnya dengan \"Panggil topeng\" — berguna untuk menggunakan pemotongan yang sama pada beberapa halaman tanpa melukis semula setiap kali; \"Lupakan topeng\" memadam topeng yang disimpan, hanya halaman demi halaman)\n• Luruskan: lukis garis pada apa yang sepatutnya mendatar/menegak, pembetulan digunakan secara automatik; klik kanan pada ikon untuk bertukar kepada pelurusan automatik (mengesan kecondongan sendiri, tanpa melukis apa-apa)\n• Putaran/cermin: satu klik memutar atau membalikkan halaman\n• Klonan: Ctrl+klik untuk memilih titik sumber, kemudian lukis dengan butang tetikus ditahan untuk menggandakan\n• Teks: klik untuk meletakkan blok teks, pilih fon/saiz/warna\n• Bentuk: lukis elips, segi empat tepat, garis atau anak panah, dengan pemegang untuk mengubah saiz\n• Penggelangsar (ketajaman, kecerahan/kontras, ketepuan, buang warna, mampatan): hasil dipaparkan secara langsung semasa anda menyeret\n• Aras: laraskan titik hitam/gama/titik putih dengan penggelangsar, atau ambil warna terus dari imej dengan pipet\n• Ketelusan: klik warna pada imej untuk menjadikannya lut sinar\n• Kedalaman warna, Kesan, Mod imej: pilih pilihan dengan mengklik butang radio, digunakan serta-merta\n• Tampal imej: menampal imej dari papan keratan (ikon hanya aktif jika papan keratan mengandungi imej), dengan pemegang untuk mengubah saiz/memutar seperti bentuk; turut berfungsi dengan menyeret halaman dari mozek atau fail dari Windows Explorer terus ke pemapar. Ctrl+C menyalin halaman yang dipaparkan (hanya dalam mod halaman tunggal atau Webtoon), Ctrl+V menampal imej, sama seperti dalam mozek\n\nSahkan dengan butang \"Sahkan\" apabila ia muncul, atau Esc untuk membatalkan. Setiap perubahan menyertai sejarah Buat asal/Buat semula yang biasa.",
     "join_pages": "Mencantum halaman",
     "join_pages_content": "Pilih beberapa halaman berturut-turut, klik kanan → 'Cantumkan halaman terpilih' untuk mencantumkan halaman secara mendatar atau menegak. Format imej yang dihasilkan sepadan dengan format halaman sumber jika semuanya sama, jika tidak PNG secara lalai. Anda akan dapat memilih untuk memadam atau mengekalkan halaman asal.\n\nLokasi halaman baharu dalam mozek:\n• Mod penomboran semula aktif (automatik atau manual): halaman mengambil tempat halaman pertama yang dicantumkan (tempatnya, jika halaman sumber dipadam, atau tepat sebelumnya, jika dikekalkan), dan mencetuskan penomboran semula.\n• Mod penomboran semula OFF: halaman ditambah di hadapan mozek dengan nama \"Cantuman_xxx\".",
     "split_pages": "Memisahkan halaman",

@@ -796,7 +796,6 @@ class _PreviewLabel(QLabel):
         w = self.width()
         if w < 1:
             return
-        # Calcule la hauteur selon le ratio de l'image
         ratio = self._src_pixmap.height() / max(self._src_pixmap.width(), 1)
         h = int(w * ratio)
         scaled = self._src_pixmap.scaled(w, h, Qt.KeepAspectRatio, Qt.SmoothTransformation)

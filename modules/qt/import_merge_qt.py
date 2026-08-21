@@ -1,7 +1,6 @@
 """
 modules/qt/import_merge_qt.py
-Fusion d'une archive CBZ/CBR dans le comics courant — version PySide6.
-Reproduit à l'identique import_merge.py (import_and_merge_archive).
+Fusion d'une archive CBZ/CBR dans le comics courant.
 """
 
 import tarfile
@@ -173,7 +172,6 @@ def import_and_merge_archive(filepath: str, win, canvas, state):
     state.merge_counter += 1
     merge_prefix = f"NEW{state.merge_counter:02d}-"
 
-    # Label rouge sur le canvas (comme l'original tkinter)
     item_holder        = []
     cancel_item_holder = [None]
     _worker_ref        = [None]

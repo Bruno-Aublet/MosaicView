@@ -1,15 +1,15 @@
 """
 MosaicView — version PySide6
-Point d'entrée principal (migration depuis tkinter)
+Point d'entrée principal.
 
 Architecture :
   - MosaicView.py     : fenêtre principale, layout, wiring des modules
   - modules/qt/panel_widget.py : panneau autonome (toolbar + canvas + menubar + statusbar)
   - modules/qt/       : modules UI Qt (canvas, menubar, toolbar, dialogs…)
-  - modules/          : modules logique métier inchangés (state, entries, localization…)
+  - modules/          : modules logique métier (state, entries, localization…)
 """
 
-__version__ = "1.8.0"
+__version__ = "1.8.1"
 
 import sys
 import os
@@ -354,15 +354,13 @@ class MainWindow(QMainWindow):
     def _toggle_theme(self):
         from modules.qt import state as _state_module
         from modules.qt.toggle_theme_qt import toggle_theme, apply_theme
-        # Bascule le thème une seule fois (via le panneau actif)
         toggle_theme(self._app_ref, self._active_panel._canvas,
                      self._active_panel._left_panel, self._active_panel._tab_bar)
         self._active_panel._metadata_tab.apply_theme()
         self._active_panel.apply_separator_theme()
         self._active_panel._update_status_bar()
-        # Synchronise dark_mode sur tous les autres panneaux et applique le thème
-        # (seule la partie par-panneau : apply_app_theme a déjà tourné une fois
-        # ci-dessus, via toggle_theme(), pas besoin de la rejouer par panneau)
+        # apply_theme (pas toggle_theme, qui a déjà tourné pour le panneau actif
+        # ci-dessus) pour ne pas re-basculer dark_mode une seconde fois par panneau.
         new_dark = self._active_panel._state.dark_mode
         for p in self._all_panels():
             if p is self._active_panel:
@@ -374,15 +372,12 @@ class MainWindow(QMainWindow):
             p.apply_separator_theme()
             p._update_status_bar()
         _state_module.state = self._active_panel._state
-        # Met à jour le bandeau de mise à jour si affiché
         for p in self._all_panels():
             p._retranslate_banner()
-        # Met à jour la couleur de bordure après changement de thème
         if self._split_active:
             self._set_frame_active(self._frame1, self._active_panel is self._panel)
             if self._frame2:
                 self._set_frame_active(self._frame2, self._active_panel is self._panel2)
-        # Notifie toutes les fenêtres secondaires (bibliothèque, dialogs ouverts)
         from modules.qt.language_signal import language_signal
         language_signal.emit(self._loc.get_current_language())
 
@@ -602,10 +597,7 @@ class MainWindow(QMainWindow):
         if not self._split_active or self._panel2 is None:
             return
 
-        # Sauvegarde le ratio
         self._save_split_ratio()
-
-        # Annule le chargement en cours dans panel2 (déconnecte les signaux)
         self._panel2._loader.cancel()
 
         # Masque le panneau 2 SANS le détruire ; il sera réutilisé au prochain
@@ -623,7 +615,6 @@ class MainWindow(QMainWindow):
         self._active_panel = self._panel
         self._set_frame_active(self._frame1, False)
 
-        # Retire les overrides mousePressEvent du frame1
         try:
             del self._frame1.mousePressEvent
         except AttributeError:
@@ -814,16 +805,13 @@ class MainWindow(QMainWindow):
             return
 
         # Une visionneuse avec du travail d'outil non validé (crop/straighten/
-        # clone, voir idees.txt #3) doit être traitée AVANT de fermer le
-        # fichier auquel elle se rapporte : sinon force_close_file() vide
-        # state.images_data pendant que la fermeture de la fenêtre principale
-        # se poursuit, et le dialogue de confirmation de la visionneuse
-        # n'apparaît qu'après coup, sur une BD déjà fermée (signalé par
-        # l'utilisateur en conditions réelles). On délègue à .close() de la
-        # visionneuse elle-même : son propre closeEvent affiche déjà le bon
-        # dialogue (ConfirmYNDialog, viewer.unvalidated_work_*) — pas de
-        # nouveau message à créer ici, juste amener la visionneuse au premier
-        # plan et bloquer la fermeture de l'appli tant qu'elle n'a pas statué.
+        # clone) doit être traitée AVANT de fermer le fichier auquel elle se
+        # rapporte : sinon force_close_file() vide state.images_data pendant
+        # que la fermeture de la fenêtre principale se poursuit, et le
+        # dialogue de confirmation de la visionneuse apparaît sur une BD déjà
+        # fermée. On délègue à .close() de la visionneuse elle-même : son
+        # propre closeEvent affiche déjà le bon dialogue (ConfirmYNDialog,
+        # viewer.unvalidated_work_*).
         from modules.qt.image_viewer_qt import image_viewer_refs
         for _viewer in list(image_viewer_refs):
             if _viewer._has_unvalidated_work():
@@ -872,11 +860,9 @@ class MainWindow(QMainWindow):
 
         from modules.qt import state as _state_module
 
-        # Si panel2 est ouvert, annule son loader avant tout
         if self._split_active and self._panel2 is not None:
             self._panel2._loader.cancel()
 
-        # Si panel2 est ouvert et a un fichier → le fermer en priorité
         if self._split_active and self._panel2 is not None:
             st2 = self._panel2._state
             # modified seul sans images ni archive = rien à sauvegarder (ex: toutes les
@@ -895,8 +881,7 @@ class MainWindow(QMainWindow):
                     )
                 finally:
                     _state_module.state = _prev
-                # closed=False signifie soit annulé soit fichier fermé → dans les 2 cas on ignore
-                self._close_event_handled = False  # permet au prochain clic de retraiter
+                self._close_event_handled = False
                 event.ignore()
                 return
 
@@ -909,7 +894,6 @@ class MainWindow(QMainWindow):
             **self._panel._file_close_args(),
         )
         if can_close:
-            # Fermer la fenêtre bibliothèque (et sa DB) si ouverte
             try:
                 from modules.qt.library_window import _library_window as _lib_win
                 if _lib_win is not None:
@@ -931,7 +915,6 @@ class MainWindow(QMainWindow):
         from PySide6.QtCore import QEvent, QTimer
         if (self._split_active
                 and event.type() == QEvent.MouseButtonPress):
-            # Détermine quel panneau contient le widget qui reçoit le clic
             widget = obj if hasattr(obj, 'isWidgetType') and obj.isWidgetType() else None
             if widget is not None:
                 if self._frame2 and self._frame2.isAncestorOf(widget):
@@ -1073,7 +1056,6 @@ def main():
         _set_titlebar_dark(focused_win, dark, force_repaint=True)
     app.focusWindowChanged.connect(_on_focus_window_changed)
 
-    # Vérification des mises à jour en arrière-plan
     from modules.qt.update_checker_qt import check_for_updates_on_startup
     check_for_updates_on_startup(win)
 

@@ -74,7 +74,10 @@
     "cancel_shapes": "Zrušit tvary",
     "cancel_transparency": "Zrušit průhlednost",
     "validate_paste_image": "Použít vložení",
-    "cancel_paste_image": "Zrušit vložení"
+    "cancel_paste_image": "Zrušit vložení",
+    "save_crop_mask": "Uložit masku",
+    "recall_crop_mask": "Vyvolat masku",
+    "forget_crop_mask": "Zapomenout masku"
   },
   "tabs": {
     "mosaic": "Mozaika",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Načíst barvu ze zobrazené stránky",
     "toolbar_transparency_tooltip": "Průhlednost",
     "toolbar_transparency_instruction": "Klikněte na barvu, kterou chcete zprůhlednit",
-    "toolbar_transparency_disabled": "K dispozici pouze pro obrázky PNG, WebP, ICO a AVIF",
+    "toolbar_transparency_disabled": "K dispozici pouze pro obrázky PNG, WebP, ICO, AVIF a TIFF",
     "transparency_flood_panel_label": "Oblast",
     "transparency_global_panel_label": "Globálně",
     "transparency_tolerance_panel_label": "Tolerance:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Otočte nebo překlopte zobrazenou stránku",
     "toolbar_paste_image_tooltip": "Vložit obrázek",
     "toolbar_paste_image_instruction": "Vloží obrázek ze schránky na stránku, úchyty pro změnu velikosti/otočení",
-    "toolbar_paste_image_disabled": "Schránka musí obsahovat pouze obrázek"
+    "toolbar_paste_image_disabled": "Schránka musí obsahovat pouze obrázek",
+    "color_depth_panel_blocked_format": "Nedostupné: původní formát souboru {format} tuto barevnou hloubku nepodporuje.",
+    "image_mode_panel_blocked_format": "Nedostupné: původní formát souboru {format} tento režim nepodporuje."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Zelená:",
       "blue_label": "Modrá:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Maska ořezu"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Ruční režim (nakreslete referenční čáru)\nPravým tlačítkem změníte režim",
     "straighten_mode_1": "Automatický režim (detekce zkosení)\nPravým tlačítkem změníte režim",
     "sharpness_mode_0": "Zvýrazní nebo změkčí detaily obrázku\nKlikněte pravým tlačítkem pro přepnutí na adaptivní ostrost",
-    "sharpness_mode_1": "Zvýrazní obrysy a šetří jednolité plochy\nKlikněte pravým tlačítkem pro přepnutí na jednoduchou ostrost"
+    "sharpness_mode_1": "Zvýrazní obrysy a šetří jednolité plochy\nKlikněte pravým tlačítkem pro přepnutí na jednoduchou ostrost",
+    "crop_mode_0": "Nakreslete obdélník na oblast, kterou chcete zachovat, a potvrďte\nKliknutí pravým tlačítkem přepne do režimu masky ořezu",
+    "crop_mode_1": "Režim masky ořezu: zapamatujte si obdélník a vyvolejte jej na dalších stránkách\nKliknutí pravým tlačítkem se vrátí do normálního režimu"
   },
   "help": {
     "title": "MosaicView - Nápověda",
@@ -1413,7 +1423,7 @@
     "flatten": "Sloučení adresářů",
     "flatten_content": "Pokud váš archiv obsahuje podadresáře, použijte 'Sloučit adresáře' pro přesunutí všech obrázků na stejnou úroveň.",
     "viewer": "Prohlížeč",
-    "viewer_content": "Dvojitým kliknutím na stránku otevřete prohlížeč:\n• Klávesy ← →: navigace mezi stránkami\n• Klávesa D: přepínání mezi 4 režimy čtení\n  - Jedna stránka: jedna stránka najednou\n  - Dvojité stránky: strana 1 samostatně, poté 2-3, 4-5 atd.\n  - Nepřetržité dvojité stránky: strana 1 samostatně, poté 2-3, 3-4, 4-5 atd.\n  - Webtoon: pro svislé obrázky (webcomics), šířka omezena na 900px pro zachování čitelnosti; kolečko myši posouvá stránku svisle, poté přepne stránku nahoře/dole\n• Kolečko myši: rychlá navigace (svislé posouvání stránky v režimu Webtoon)\n• Ctrl+kolečko nebo Ctrl+Plus/Mínus: přiblížení (až 1000% skutečné velikosti obrázku)\n• Ctrl+0: přizpůsobit přiblížení oknu\n• Ctrl+1: přiblížení na 100% (skutečná velikost pixelů obrázku)\n• Pravé tlačítko myši + tažení: posun zobrazeného obrázku (posouvání), když přesahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojité kliknutí: přepnout celou obrazovku\n• Klávesa Esc: zrušit aktuální kreslení (oříznutí, narovnání, tvar…) nebo opustit prohlížeč\n• Záložka: automaticky uloží aktuální stránku při zavření prohlížeče (kromě první/poslední stránky). Na odpovídající miniatuře v mozaice se zobrazí červená stuha. Při opětovném otevření zpráva navrhne návrat na tuto stránku. Automaticky smazáno na poslední stránce, nebo ručně pravým kliknutím v prohlížeči.\n\nPlovoucí panel nástrojů: najeďte myší na horní část obrázku, aby se zobrazil (sám se skryje po několika sekundách). Klikněte na ikonu pro aktivaci odpovídajícího nástroje:\n• Oříznutí: nakreslete obdélník, upravte jej za okraje, potvrďte\n• Narovnání: nakreslete čáru na to, co by mělo být vodorovné/svislé, korekce se použije automaticky; pravým kliknutím na ikonu přepnete na automatické narovnání (samo detekuje naklonění, bez kreslení)\n• Otočení/překlopení: jedno kliknutí otočí nebo překlopí stránku\n• Klonování: Ctrl+klik pro výběr zdrojového bodu, poté malujte s podrženým tlačítkem myši pro duplikaci\n• Text: klikněte pro umístění textového bloku, vyberte písmo/velikost/barvu\n• Tvary: kreslete elipsy, obdélníky, čáry nebo šipky, s úchyty pro změnu velikosti\n• Posuvníky (ostrost, jas/kontrast, sytost, odstranění barev, komprese): výsledek se zobrazuje živě během tažení\n• Úrovně: upravte černý bod/gama/bílý bod posuvníky, nebo odeberte barvu přímo z obrázku kapátky\n• Průhlednost: klikněte na barvu na obrázku, aby se stala průhlednou\n• Barevná hloubka, Efekty, Režim obrázku: vyberte možnost kliknutím na přepínač, použito okamžitě\n• Vložit obrázek: vloží obrázek ze schránky (ikona se aktivuje pouze pokud schránka obsahuje obrázek), s úchyty pro změnu velikosti/otočení jako u tvarů; funguje i přetažením stránky z mozaiky nebo souboru z Průzkumníka Windows přímo do prohlížeče. Ctrl+C zkopíruje zobrazenou stránku (pouze v režimu jedné stránky nebo Webtoon), Ctrl+V vloží obrázek, stejně jako v mozaice\n\nPotvrďte tlačítkem „Potvrdit“, jakmile se zobrazí, nebo Esc pro zrušení. Každá změna se připojí k obvyklé historii Zpět/Znovu.",
+    "viewer_content": "Dvojitým kliknutím na stránku otevřete prohlížeč:\n• Klávesy ← →: navigace mezi stránkami\n• Klávesa D: přepínání mezi 4 režimy čtení\n  - Jedna stránka: jedna stránka najednou\n  - Dvojité stránky: strana 1 samostatně, poté 2-3, 4-5 atd.\n  - Nepřetržité dvojité stránky: strana 1 samostatně, poté 2-3, 3-4, 4-5 atd.\n  - Webtoon: pro svislé obrázky (webcomics), šířka omezena na 900px pro zachování čitelnosti; kolečko myši posouvá stránku svisle, poté přepne stránku nahoře/dole\n• Kolečko myši: rychlá navigace (svislé posouvání stránky v režimu Webtoon)\n• Ctrl+kolečko nebo Ctrl+Plus/Mínus: přiblížení (až 1000% skutečné velikosti obrázku)\n• Ctrl+0: přizpůsobit přiblížení oknu\n• Ctrl+1: přiblížení na 100% (skutečná velikost pixelů obrázku)\n• Pravé tlačítko myši + tažení: posun zobrazeného obrázku (posouvání), když přesahuje okno\n• Klávesa F11: celá obrazovka\n• Dvojité kliknutí: přepnout celou obrazovku\n• Klávesa Esc: zrušit aktuální kreslení (oříznutí, narovnání, tvar…) nebo opustit prohlížeč\n• Záložka: automaticky uloží aktuální stránku při zavření prohlížeče (kromě první/poslední stránky). Na odpovídající miniatuře v mozaice se zobrazí červená stuha. Při opětovném otevření zpráva navrhne návrat na tuto stránku. Automaticky smazáno na poslední stránce, nebo ručně pravým kliknutím v prohlížeči.\n\nPlovoucí panel nástrojů: najeďte myší na horní část obrázku, aby se zobrazil (sám se skryje po několika sekundách). Klikněte na ikonu pro aktivaci odpovídajícího nástroje:\n• Oříznutí: nakreslete obdélník, upravte jej za okraje, potvrďte; kliknutím pravým tlačítkem na ikonu přepnete do režimu masky ořezu (zapamatujte si obdélník pomocí \"Uložit masku\", pak jej beze změny přivolejte na dalších stránkách pomocí \"Vyvolat masku\" — užitečné pro použití stejného ořezu na více stránkách bez nutnosti jej pokaždé znovu kreslit; \"Zapomenout masku\" vymaže zapamatovanou masku, pouze stránku po stránce)\n• Narovnání: nakreslete čáru na to, co by mělo být vodorovné/svislé, korekce se použije automaticky; pravým kliknutím na ikonu přepnete na automatické narovnání (samo detekuje naklonění, bez kreslení)\n• Otočení/překlopení: jedno kliknutí otočí nebo překlopí stránku\n• Klonování: Ctrl+klik pro výběr zdrojového bodu, poté malujte s podrženým tlačítkem myši pro duplikaci\n• Text: klikněte pro umístění textového bloku, vyberte písmo/velikost/barvu\n• Tvary: kreslete elipsy, obdélníky, čáry nebo šipky, s úchyty pro změnu velikosti\n• Posuvníky (ostrost, jas/kontrast, sytost, odstranění barev, komprese): výsledek se zobrazuje živě během tažení\n• Úrovně: upravte černý bod/gama/bílý bod posuvníky, nebo odeberte barvu přímo z obrázku kapátky\n• Průhlednost: klikněte na barvu na obrázku, aby se stala průhlednou\n• Barevná hloubka, Efekty, Režim obrázku: vyberte možnost kliknutím na přepínač, použito okamžitě\n• Vložit obrázek: vloží obrázek ze schránky (ikona se aktivuje pouze pokud schránka obsahuje obrázek), s úchyty pro změnu velikosti/otočení jako u tvarů; funguje i přetažením stránky z mozaiky nebo souboru z Průzkumníka Windows přímo do prohlížeče. Ctrl+C zkopíruje zobrazenou stránku (pouze v režimu jedné stránky nebo Webtoon), Ctrl+V vloží obrázek, stejně jako v mozaice\n\nPotvrďte tlačítkem „Potvrdit“, jakmile se zobrazí, nebo Esc pro zrušení. Každá změna se připojí k obvyklé historii Zpět/Znovu.",
     "join_pages": "Spojení stránek",
     "join_pages_content": "Vyberte několik po sobě jdoucích stránek, klepněte pravým tlačítkem → 'Spojit vybrané stránky' pro spojení stránek vodorovně nebo svisle. Formát výsledného obrázku odpovídá formátu zdrojových stránek, pokud jsou všechny stejné, jinak výchozím formátem je PNG. Budete si moci vybrat, zda smazat nebo zachovat původní stránky.\n\nUmístění nové stránky v mozaice:\n• Aktivní režim přečíslování (automatický nebo ruční): stránka zaujme místo první spojené stránky (její místo, pokud jsou zdrojové stránky smazány, nebo přímo před ní, pokud jsou zachovány), a spustí přečíslování.\n• Vypnutý režim přečíslování: stránka se přidá na začátek mozaiky pod názvem \"Spojeno_xxx\".",
     "split_pages": "Rozdělení stránek",

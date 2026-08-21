@@ -262,9 +262,9 @@ class PanelWidget(QWidget):
     Panneau autonome : colonne gauche (toolbar icônes) + zone centrale
     (menubar + onglets + canvas + statusbar).
 
-    Expose les mêmes attributs publics que MainWindow en exposait auparavant,
-    de sorte que tous les modules recevant ``mw`` en paramètre continuent
-    de fonctionner sans modification.
+    Expose les mêmes attributs publics que MainWindow, de sorte que tous les
+    modules recevant ``mw`` en paramètre fonctionnent indifféremment avec l'un
+    ou l'autre.
     """
 
     # Signal émis depuis le thread de surveillance des fichiers non-image
@@ -583,7 +583,6 @@ class PanelWidget(QWidget):
         # Insérer après la tab_bar (index 2 dans le layout)
         self._center_layout.insertWidget(2, banner)
 
-        # Appliquer thème + police + langue
         self._retranslate_banner()
 
         # Langue à la volée
@@ -1667,8 +1666,8 @@ class PanelWidget(QWidget):
         """Après un undo/redo déclenché hors de la visionneuse (icône colonne,
         menu, Ctrl+Z/Ctrl+Y du panneau) : rafraîchit l'affichage de toute
         visionneuse déjà ouverte sur ce panneau, dont l'image affichée vient
-        de changer sous ses pieds (un seul historique partagé — voir
-        idees.txt #3, undo/redo unifié)."""
+        de changer sous ses pieds (un seul historique partagé entre mosaïque
+        et visionneuse, undo/redo unifié)."""
         from modules.qt.image_viewer_qt import refresh_image_viewers_after_external_undo_redo
         refresh_image_viewers_after_external_undo_redo(self._state)
 

@@ -74,7 +74,10 @@
     "cancel_shapes": "Cealaigh na cruthanna",
     "cancel_transparency": "Cealaigh an trédhearcacht",
     "validate_paste_image": "Cuir greamú i bhfeidhm",
-    "cancel_paste_image": "Cealaigh greamú"
+    "cancel_paste_image": "Cealaigh greamú",
+    "save_crop_mask": "Sábháil masc",
+    "recall_crop_mask": "Gair masc",
+    "forget_crop_mask": "Dearmad masc"
   },
   "tabs": {
     "mosaic": "Mósáic",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Bailigh dath ón leathanach a thaispeántar",
     "toolbar_transparency_tooltip": "Trédhearcacht",
     "toolbar_transparency_instruction": "Cliceáil ar an dath atá le déanamh trédhearcach",
-    "toolbar_transparency_disabled": "Ar fáil d'íomhánna PNG, WebP, ICO agus AVIF amháin",
+    "toolbar_transparency_disabled": "Ar fáil d'íomhánna PNG, WebP, ICO, AVIF agus TIFF amháin",
     "transparency_flood_panel_label": "Ceantar",
     "transparency_global_panel_label": "Domhanda",
     "transparency_tolerance_panel_label": "Lamháltas:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Rothlaigh nó smearaigh an leathanach ar taispeáint",
     "toolbar_paste_image_tooltip": "Greamaigh íomhá",
     "toolbar_paste_image_instruction": "Greamaíonn sé íomhá an ghearrthaisce ar an leathanach, hanla le haghaidh athmhéadú/rothlú",
-    "toolbar_paste_image_disabled": "Ní mór don ghearrthaisce íomhá amháin a bheith ann"
+    "toolbar_paste_image_disabled": "Ní mór don ghearrthaisce íomhá amháin a bheith ann",
+    "color_depth_panel_blocked_format": "Níl ar fáil: ní thacaíonn formáid bhunaidh {format} an chomhaid leis an doimhneacht seo.",
+    "image_mode_panel_blocked_format": "Níl ar fáil: ní thacaíonn formáid bhunaidh {format} an chomhaid leis an mód seo."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Glas:",
       "blue_label": "Gorm:",
       "alpha_label": "Alfa:"
+    },
+    "crop_mask": {
+      "label": "Masc bearrtha"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Modh láimhe (tarraing líne tagartha)\nDeaschliceáil chun modh a athrú",
     "straighten_mode_1": "Modh uathoibríoch (braite fiaradh)\nDeaschliceáil chun modh a athrú",
     "sharpness_mode_0": "Neartaíonn nó boga sonraí na híomhá\nDeaschliceáil chun aistriú go géire oiriúnaitheach",
-    "sharpness_mode_1": "Cuireann sé béim ar imlínte agus na réimsí comhionanna á spáráil\nDeaschliceáil chun aistriú go géire shimplí"
+    "sharpness_mode_1": "Cuireann sé béim ar imlínte agus na réimsí comhionanna á spáráil\nDeaschliceáil chun aistriú go géire shimplí",
+    "crop_mode_0": "Tarraing dronuilleog ar an achar atá le coinneáil, ansin deimhnigh\nCliceáil ar dheis chun aistrigh go mód masc bearrtha",
+    "crop_mode_1": "Mód masc bearrtha: cuimhnigh ar dhronuilleog agus gair ar ais é ar na leathanaigh a leanann\nCliceáil ar dheis chun filleadh ar an ngnáthmhód"
   },
   "help": {
     "title": "MosaicView - Treoir",
@@ -1413,7 +1423,7 @@
     "flatten": "Comhadlanna a chomhréiteach",
     "flatten_content": "Má tá fochomhadlanna i do chartlann, úsáid 'Comhréitigh fillteáin' chun na híomhánna go léir a thabhairt chuig an leibhéal céanna.",
     "viewer": "Amharcóir",
-    "viewer_content": "Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: athraigh idir 4 mhodh léitheoireachta\n  - Leathanach singil: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 ina aonar, ansin 2-3, 4-5 srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 ina aonar, ansin 2-3, 3-4, 4-5 srl.\n  - Webtoon: le haghaidh íomhánna ingearacha (webcomics), leithead teoranta go 900px chun inléiteacht a choinneáil; scrollann roth na luiche go hingearach sa leathanach, ansin athraíonn sé leathanach ag an mbarr/bun\n• Roth na luiche: nascleanúint tapa (scrolláil ingearach sa leathanach i modh Webtoon)\n• Ctrl+Roth nó Ctrl+Móide/Lúide: súmáil (suas le 1000% de mhéid fíor na híomhá)\n• Ctrl+0: oiriúnaigh an súmáil don fhuinneog\n• Ctrl+1: súmáil ag 100% (fíormhéid picteilíní na híomhá)\n• Cliceáil dheis + tarraing: bog an íomhá arna taispeáint (pan) nuair a sháraíonn sí an fhuinneog\n• Eochair F11: lánscáileán\n• Cliceáil faoi dhó: athraigh lánscáileán\n• Eochair Esc: cealaigh an líníocht reatha (bearradh, díriú, cruth…) nó fág an t-amharcán\n• Leabharmharc: sábhálann sé an leathanach reatha go huathoibríoch nuair a dhúntar an t-amharcán (seachas an chéad/an leathanach deiridh). Taispeánann ribín dearg ar an mionsamhail chomhfhreagrach sa mósáic. Ar an chéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriosta go huathoibríoch ag an leathanach deiridh, nó de láimh trí chliceáil dheis san amharcán.\n\nBarra uirlisí ar snámh: cuir an luch os cionn bharr na híomhá chun í a thaispeáint (folaíonn sí í féin tar éis cúpla soicind). Cliceáil ar dheilbhín chun an uirlis chomhfhreagrach a ghníomhachtú:\n• Bearradh: tarraing dronuilleog, coigeartaigh í ag na himill, deimhnigh\n• Díriú: tarraing líne ar an rud ba chóir a bheith cothrománach/ingearach, cuirtear an ceartúchán i bhfeidhm go huathoibríoch; cliceáil dheis ar an deilbhín chun athrú go dtí dírithe uathoibríoch (braitheann sé an fiaradh leis féin, gan aon rud a tharraingt)\n• Rothlú/scáthánú: casann nó iompaíonn cliceáil amháin an leathanach\n• Clónáil: Ctrl+cliceáil chun an pointe foinse a roghnú, ansin péinteáil le cnaipe na luiche brúite chun dúbláil\n• Téacs: cliceáil chun bloc téacs a chur, roghnaigh cló/méid/dath\n• Cruthanna: tarraing éilipsí, dronuilleoga, línte nó saigheada, le lámha chun méid a athrú\n• Sleamhnáin (géire, gile/codarsnacht, sáithiú, baint dathanna, comhbhrú): taispeántar an toradh beo agus tú ag tarraingt\n• Leibhéil: coigeartaigh an pointe dubh/gáma/pointe bán leis na sleamhnáin, nó tóg dath díreach ón íomhá leis na braoisc\n• Trédhearcacht: cliceáil ar dhath san íomhá chun é a dhéanamh trédhearcach\n• Doimhneacht datha, Maisíochtaí, Modh íomhá: roghnaigh rogha trí chliceáil ar chnaipe raidió, curtha i bhfeidhm láithreach\n• Greamaigh íomhá: greamaíonn sé an íomhá ón ghearrthaisce (ní ghníomhaíonn an deilbhín ach amháin má tá íomhá sa ghearrthaisce), le hanlaí chun í a athmhéadú/rothlú cosúil leis na cruthanna; oibríonn sé freisin trí leathanach ó mhósáic nó comhad ó Windows Explorer a tharraingt díreach ar an amharcán. Cóipeálann Ctrl+C an leathanach a thaispeántar (i mód leathanach amháin nó Webtoon amháin), greamaíonn Ctrl+V íomhá, mar atá sa mhósáic\n\nDeimhnigh leis an gcnaipe \"Deimhnigh\" nuair a thaispeántar é, nó Esc chun cealú. Ceanglaíonn gach athrú leis an ngnáthstair Cealaigh/Athdhéan.",
+    "viewer_content": "Cliceáil faoi dhó ar leathanach chun an t-amharcán a oscailt:\n• Eochracha ← →: nascleanúint idir leathanaigh\n• Eochair D: athraigh idir 4 mhodh léitheoireachta\n  - Leathanach singil: leathanach amháin ag an am\n  - Leathanaigh dhúbailte: leathanach 1 ina aonar, ansin 2-3, 4-5 srl.\n  - Leathanaigh dhúbailte leanúnacha: leathanach 1 ina aonar, ansin 2-3, 3-4, 4-5 srl.\n  - Webtoon: le haghaidh íomhánna ingearacha (webcomics), leithead teoranta go 900px chun inléiteacht a choinneáil; scrollann roth na luiche go hingearach sa leathanach, ansin athraíonn sé leathanach ag an mbarr/bun\n• Roth na luiche: nascleanúint tapa (scrolláil ingearach sa leathanach i modh Webtoon)\n• Ctrl+Roth nó Ctrl+Móide/Lúide: súmáil (suas le 1000% de mhéid fíor na híomhá)\n• Ctrl+0: oiriúnaigh an súmáil don fhuinneog\n• Ctrl+1: súmáil ag 100% (fíormhéid picteilíní na híomhá)\n• Cliceáil dheis + tarraing: bog an íomhá arna taispeáint (pan) nuair a sháraíonn sí an fhuinneog\n• Eochair F11: lánscáileán\n• Cliceáil faoi dhó: athraigh lánscáileán\n• Eochair Esc: cealaigh an líníocht reatha (bearradh, díriú, cruth…) nó fág an t-amharcán\n• Leabharmharc: sábhálann sé an leathanach reatha go huathoibríoch nuair a dhúntar an t-amharcán (seachas an chéad/an leathanach deiridh). Taispeánann ribín dearg ar an mionsamhail chomhfhreagrach sa mósáic. Ar an chéad oscailt eile, molann teachtaireacht filleadh ar an leathanach seo. Scriosta go huathoibríoch ag an leathanach deiridh, nó de láimh trí chliceáil dheis san amharcán.\n\nBarra uirlisí ar snámh: cuir an luch os cionn bharr na híomhá chun í a thaispeáint (folaíonn sí í féin tar éis cúpla soicind). Cliceáil ar dheilbhín chun an uirlis chomhfhreagrach a ghníomhachtú:\n• Bearradh: tarraing dronuilleog, coigeartaigh í ag na himill, deimhnigh; cliceáil ar dheis ar an deilbhín chun aistrigh go mód masc bearrtha (cuimhnigh ar dhronuilleog le \"Sábháil masc\", ansin gair ar ais é ar an gcuma céanna ar na leathanaigh a leanann le \"Gair masc\" — áisiúil chun an bearradh céanna a chur i bhfeidhm ar leathanaigh iolracha gan é a tharraingt as an nua gach uair; scriosann \"Dearmad masc\" an masc sábháilte, leathanach ar leathanach amháin)\n• Díriú: tarraing líne ar an rud ba chóir a bheith cothrománach/ingearach, cuirtear an ceartúchán i bhfeidhm go huathoibríoch; cliceáil dheis ar an deilbhín chun athrú go dtí dírithe uathoibríoch (braitheann sé an fiaradh leis féin, gan aon rud a tharraingt)\n• Rothlú/scáthánú: casann nó iompaíonn cliceáil amháin an leathanach\n• Clónáil: Ctrl+cliceáil chun an pointe foinse a roghnú, ansin péinteáil le cnaipe na luiche brúite chun dúbláil\n• Téacs: cliceáil chun bloc téacs a chur, roghnaigh cló/méid/dath\n• Cruthanna: tarraing éilipsí, dronuilleoga, línte nó saigheada, le lámha chun méid a athrú\n• Sleamhnáin (géire, gile/codarsnacht, sáithiú, baint dathanna, comhbhrú): taispeántar an toradh beo agus tú ag tarraingt\n• Leibhéil: coigeartaigh an pointe dubh/gáma/pointe bán leis na sleamhnáin, nó tóg dath díreach ón íomhá leis na braoisc\n• Trédhearcacht: cliceáil ar dhath san íomhá chun é a dhéanamh trédhearcach\n• Doimhneacht datha, Maisíochtaí, Modh íomhá: roghnaigh rogha trí chliceáil ar chnaipe raidió, curtha i bhfeidhm láithreach\n• Greamaigh íomhá: greamaíonn sé an íomhá ón ghearrthaisce (ní ghníomhaíonn an deilbhín ach amháin má tá íomhá sa ghearrthaisce), le hanlaí chun í a athmhéadú/rothlú cosúil leis na cruthanna; oibríonn sé freisin trí leathanach ó mhósáic nó comhad ó Windows Explorer a tharraingt díreach ar an amharcán. Cóipeálann Ctrl+C an leathanach a thaispeántar (i mód leathanach amháin nó Webtoon amháin), greamaíonn Ctrl+V íomhá, mar atá sa mhósáic\n\nDeimhnigh leis an gcnaipe \"Deimhnigh\" nuair a thaispeántar é, nó Esc chun cealú. Ceanglaíonn gach athrú leis an ngnáthstair Cealaigh/Athdhéan.",
     "join_pages": "Leathanaigh a cheangal",
     "join_pages_content": "Roghnaigh roinnt leathanach as a chéile, deaschliceáil → 'Ceangail na leathanaigh roghnaithe' chun na leathanaigh a cheangal go cothrománach nó go hingearach. Meaitseálann formáid na híomhá a tháirgtear le formáid na leathanach foinseach má tá siad go léir comhionann, mura hea PNG mar réamhshocrú. Beidh tú in ann na leathanaigh bhunaidh a scriosadh nó a choinneáil.\n\nSuíomh an leathanaigh nua sa mósáic:\n• Mód athuimhrithe gníomhach (uathoibríoch nó de láimh): glacann an leathanach áit an chéad leathanaigh a ceanglaíodh (a áit, má scriostar na leathanaigh foinseacha, nó díreach roimhe, má choinnítear iad), agus spreagann sé athuimhriú.\n• Mód athuimhrithe AS: cuirtear an leathanach le tosach an mósáic faoin ainm \"Ceangal_xxx\".",
     "split_pages": "Leathanaigh a roinnt",

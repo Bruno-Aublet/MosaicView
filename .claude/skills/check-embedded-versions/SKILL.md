@@ -34,7 +34,7 @@ ls */*.exe */*.dll 2>/dev/null
 .venv/Scripts/python.exe -m pip list
 ```
 
-Croiser avec `requirements.txt` (liste de référence des dépendances du projet). Chercher parmi les résultats toute bibliothèque **avec du code natif qui décode des données externes** (archives, images, PDF, vidéo, audio, polices, XML...) absente du tableau ci-dessus. Si un nouveau composant est trouvé : l'auditer comme les autres **et proposer de l'ajouter au tableau et à l'état de référence de ce skill** (le skill doit se maintenir lui-même, sinon il répondra "tout est à jour" en ignorant le nouveau venu).
+Croiser avec `requirements.txt` (liste de référence des dépendances du projet). Chercher parmi les résultats toute bibliothèque **avec du code natif qui décode des données externes** (archives, images, PDF, vidéo, audio, polices, XML...) absente du tableau ci-dessus. Si un nouveau composant est trouvé : l'auditer comme les autres **et proposer de l'ajouter au tableau** (le skill doit se maintenir lui-même, sinon il répondra "tout est à jour" en ignorant le nouveau venu).
 
 ### 1. Versions actuellement présentes
 
@@ -49,11 +49,11 @@ Croiser avec `requirements.txt` (liste de référence des dépendances du projet
 
 Lancer `7z.exe`/`UnRAR.exe` sans argument est sans danger (affichage d'aide/bannière uniquement).
 
-**Piège vécu** : le repo a contenu deux environnements — `.venv` (le vrai, premier dans le PATH, celui qui compile) et un vieux `venv/` sans point, reliquat tkinter avec Pillow 9.5.0, supprimé le 2026-07-10. Toujours vérifier les versions dans **`.venv`** (et vérifier avec `where pyinstaller` que c'est bien lui qui gagne dans le PATH si un doute existe). Ne pas se fier à `requirements.txt` : il exprime des minima, pas ce qui est réellement installé.
+**Piège** : si plusieurs environnements Python coexistent dans le repo (ex. un reliquat d'un ancien environnement), toujours vérifier les versions dans **`.venv`** (le vrai, celui qui compile) — et vérifier avec `where pyinstaller` que c'est bien lui qui gagne dans le PATH si un doute existe. Ne pas se fier à `requirements.txt` : il exprime des minima, pas ce qui est réellement installé.
 
 ### 2. Dernières versions publiées — recherche web OBLIGATOIRE à chaque invocation
 
-**Règle absolue, sans exception : ne jamais répondre sur les dernières versions publiées sans avoir, PENDANT CETTE INVOCATION, effectivement appelé WebSearch/WebFetch.** La section "État de référence" en bas de ce fichier est un historique du dernier audit, PAS une source de vérité sur l'état actuel — elle se périme dès le lendemain (nouvelles versions, nouvelles CVE). L'avoir lue ne remplace jamais la recherche web. Si une session a répondu "tout est à jour" sans appeler WebSearch/WebFetch dans cette même conversation, c'est une erreur : le piège vécu est réel et s'est déjà produit une fois (audit répondu comme "à jour" sans vérification réelle, corrigé le 2026-07-10).
+**Règle absolue, sans exception : ne jamais répondre sur les dernières versions publiées sans avoir, PENDANT CETTE INVOCATION, effectivement appelé WebSearch/WebFetch.** Un audit précédent, même récent, n'est PAS une source de vérité sur l'état actuel — il se périme dès le lendemain (nouvelles versions, nouvelles CVE). S'en souvenir ne remplace jamais la recherche web. Répondre "tout est à jour" sans appeler WebSearch/WebFetch dans cette même conversation est une erreur, même si le dernier audit semble récent.
 
 Chercher sur le web (WebSearch/WebFetch), à chaque fois, même si l'état de référence semble récent :
 - 7-Zip : https://www.7-zip.org/ (page d'accueil affiche la dernière version stable)
@@ -76,6 +76,6 @@ Présenter un tableau version embarquée / dernière version / état (✅ récen
 - Après mise à jour : re-tester l'ouverture d'un CB7, d'un CBR, d'un PDF et d'un CBZ contenant du WebP (l'utilisateur exécute les tests, jamais lancer l'appli soi-même).
 - La mise à jour n'atteint les utilisateurs finaux qu'à la prochaine release compilée.
 
-## Piège vécu à ne pas reproduire
+## Piège à ne pas reproduire
 
-Le 2026-07-10, un audit a répondu "tout est à jour" sans avoir réellement appelé WebSearch/WebFetch pendant l'invocation — erreur corrigée le jour même (voir règle "recherche web OBLIGATOIRE" ci-dessus). Ne jamais se fier à un état mémorisé : toujours revérifier sur le web à chaque invocation, même si le dernier audit date d'hier.
+Répondre "tout est à jour" sans avoir réellement appelé WebSearch/WebFetch pendant l'invocation (voir règle "recherche web OBLIGATOIRE" ci-dessus). Ne jamais se fier à un état mémorisé : toujours revérifier sur le web à chaque invocation, même si le dernier audit date d'hier.

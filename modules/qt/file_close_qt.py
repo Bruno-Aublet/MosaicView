@@ -1,7 +1,6 @@
 """
 modules/qt/file_close_qt.py
-Fermeture de fichier/application — version PySide6.
-Reproduit à l'identique le comportement de modules/file_close.py + on_window_close().
+Fermeture de fichier/application.
 
 Comportement de la croix de fermeture :
   - Canvas vide → ferme l'application
@@ -396,8 +395,7 @@ def force_close_file(canvas, refresh_title, refresh_toolbar, refresh_tabs,
     gc.collect()
     gc.collect()  # 2e passe pour les cycles Python/Qt
 
-    # Tue uniquement le process PDF dédié à CE panneau — chaque panneau a le sien
-    # depuis la correction du bug "pipe broken" en double chargement PDF simultané.
+    # Tue uniquement le process PDF dédié à CE panneau — chaque panneau a le sien.
     pdf_shutdown_cb = getattr(canvas, '_pdf_shutdown_callback', None)
     if pdf_shutdown_cb is not None:
         pdf_shutdown_cb()

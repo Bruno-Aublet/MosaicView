@@ -168,20 +168,15 @@ class LocalizationManager:
             Code de langue (ex: 'fr', 'en') ou DEFAULT_LANGUAGE si non supporté
         """
         try:
-            # Obtient la locale du système
             system_locale = locale.getdefaultlocale()[0]
 
             if system_locale:
-                # Extrait le code de langue (ex: 'fr_FR' -> 'fr')
-                lang_code = system_locale.split('_')[0].lower()
-
-                # Vérifie si la langue est supportée
+                lang_code = system_locale.split('_')[0].lower()  # ex: 'fr_FR' -> 'fr'
                 if lang_code in self.AVAILABLE_LANGUAGES:
                     return lang_code
         except Exception:
             pass
 
-        # Retourne la langue par défaut si la détection échoue
         return self.DEFAULT_LANGUAGE
 
     def load_language_config(self):
@@ -229,7 +224,6 @@ class LocalizationManager:
                 lang_code = self.detect_system_language()
                 should_save_config = True  # Sauvegarder la langue détectée
 
-        # Vérifie que la langue est supportée
         if lang_code not in self.AVAILABLE_LANGUAGES:
             lang_code = self.DEFAULT_LANGUAGE
 
@@ -281,9 +275,7 @@ class LocalizationManager:
         if lang_code not in self.AVAILABLE_LANGUAGES:
             return False
 
-        # Charge la nouvelle langue
         if self.load_language(lang_code):
-            # Sauvegarde le choix
             self.save_language_config(lang_code)
             return True
         return False

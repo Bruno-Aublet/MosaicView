@@ -48,10 +48,10 @@ class _MouseTracker(QObject):
         html = self._html_map.get(obj, self._default_html)
         if t == QEvent.Enter:
             if html:
-                self._overlay.show_tooltip(html)
+                self._overlay.show_tooltip(html, widget=obj)
         elif t == QEvent.MouseMove:
             if html:
-                self._overlay.show_tooltip(html)
+                self._overlay.show_tooltip(html, widget=obj)
         elif t == QEvent.Leave:
             self._overlay.hide_tooltip()
         return False  # ne pas consommer l'événement
@@ -80,6 +80,7 @@ class OverlayTooltip:
         self.update_font()
         self._tracker = _MouseTracker(self)
         self._tracked_widgets: list = []
+        self._visible_widget = None
 
     def _apply_style(self):
         try:
@@ -97,7 +98,8 @@ class OverlayTooltip:
         )
 
     def apply_theme(self, dark: bool = False):
-        """Conservé pour compatibilité — le thème est désormais lu depuis state."""
+        """Réapplique le style et la police. Le paramètre `dark` est ignoré :
+        le thème clair/sombre est lu directement depuis state, pas passé en argument."""
         self._apply_style()
         self.update_font()
 
@@ -138,11 +140,11 @@ class OverlayTooltip:
         mis à jour par set_tracked_html() pendant que le curseur reste
         parfaitement immobile sur le widget (ex. juste après un clic droit)
         ne se rafraîchit qu'au prochain mouvement de souris détecté."""
-        if not self._label.isVisible():
+        if not self._label.isVisible() or self._visible_widget is not widget:
             return
         html = self._tracker._html_map.get(widget, self._tracker._default_html)
         if html:
-            self.show_tooltip(html)
+            self.show_tooltip(html, widget=widget)
 
     def untrack(self, widget):
         """Retire le suivi sur widget."""
@@ -166,11 +168,19 @@ class OverlayTooltip:
             y = cp.y() - h - 4
         self._label.move(max(0, x), max(0, y))
 
-    def show_tooltip(self, html: str):
-        """Affiche le tooltip avec le contenu HTML donné, près du curseur."""
+    def show_tooltip(self, html: str, widget=None):
+        """Affiche le tooltip avec le contenu HTML donné, près du curseur.
+
+        widget : widget pour lequel ce tooltip est affiché (None si non tracké,
+        ex. appel direct hors mécanisme track()). Mémorisé pour que
+        force_refresh_visible() puisse vérifier qu'il rafraîchit bien le
+        tooltip actuellement affiché, et pas celui d'un autre widget dont le
+        contenu vient d'être mis à jour pendant que ce tooltip-ci est visible."""
         if not html:
             self._label.hide()
+            self._visible_widget = None
             return
+        self._visible_widget = widget
         self._label.setText(html)
         # setStyleSheet réinitialise la police — on la réapplique systématiquement
         try:
@@ -184,8 +194,8 @@ class OverlayTooltip:
         self._label.show()
 
     def hide_tooltip(self):
-        """Cache le tooltip."""
         self._label.hide()
+        self._visible_widget = None
 
 
 class _FixedTooltipFilter(QObject):

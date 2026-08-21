@@ -2,10 +2,9 @@
 modules/qt/levels_tool_qt.py — Outil "niveaux noir/blanc" (levels) de la
 barre d'outils flottante de la visionneuse principale (image_viewer_qt.py).
 
-Fusion progressive des visionneuses (idees.txt #3, 11e outil migré, 7e des 8
-modes d'ajustement après sharpness/unsharp/brightness/saturation/
-remove_colors/compression) : ce module contient toute la logique propre à
-l'outil "levels" — état + geste souris des pipettes (mixin LevelsCanvasMixin,
+Fusion progressive des visionneuses : ce module contient toute la logique
+propre à l'outil "levels" — état + geste souris des pipettes (mixin
+LevelsCanvasMixin,
 hérité par _ViewerCanvas), commit de l'ajustement dans l'historique du
 panneau (mixin LevelsViewerMixin, hérité par ImageViewer), et le panneau
 flottant des 7 contrôles (_LevelsOptionsPanel). image_viewer_qt.py ne fait
@@ -17,13 +16,11 @@ Contrairement à sharpness/brightness/saturation/remove_colors/compression
 geste souris comme crop/straighten/clone/texte : les 2 pipettes (noire/
 blanche) captent la luminance du pixel cliqué sur l'image pour positionner
 respectivement le point noir et le point blanc — voir skill adjust-levels
-pour le comportement de référence (repris à l'identique de l'ancien mode
-'levels' de AdjustmentViewerDialog, adjustments_viewers_qt.py, qui reste la
-visionneuse annexe pour le seul mode restant après celui-ci : transparency).
+pour le comportement de référence.
 
-Panneau flottant à 7 contrôles (idees.txt #3, décision utilisateur
-2026-08-15), dans cet ordre (logique de lecture d'histogramme gauche→droite,
-noir avant blanc — convention universelle des logiciels de retouche) :
+Panneau flottant à 7 contrôles, dans cet ordre (logique de lecture
+d'histogramme gauche→droite, noir avant blanc — convention universelle des
+logiciels de retouche) :
   pipette noire | slider+spin point noir | slider+spin gamma |
   slider+spin point blanc | pipette blanche || slider+spin seuil | bouton Auto
 Le séparateur avant seuil marque que la binarisation (threshold) est un
@@ -92,9 +89,8 @@ from modules.qt.clone_tool_qt import floating_options_panel_style
 
 class _LevelsOptionsPanel(QWidget):
     """Panneau flottant avec les 7 contrôles de l'outil "niveaux", répartis
-    sur 2 lignes (idees.txt #3, revu le 2026-08-15 suite retour utilisateur —
-    la 1re version sur une seule ligne était jugée "bordélique", trop large,
-    et plusieurs sliders n'avaient aucun label visible) :
+    sur 2 lignes (une seule ligne serait trop large et laisserait plusieurs
+    sliders sans aucun label visible) :
       ligne 1 (réglages) : label+slider+spin point noir | label+slider+spin
         gamma | label+slider+spin point blanc | séparateur | label+slider+spin
         seuil | bouton Auto
@@ -162,23 +158,20 @@ class _LevelsOptionsPanel(QWidget):
                 return None
             return pm.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
-        # Curseurs custom pipette (icône 36×36 — agrandie suite retour
-        # utilisateur 2026-08-15, la taille 24×24 initiale était trop petite
-        # pour rester lisible/utilisable comme curseur). Hotspot en bas à
-        # gauche de l'icône — la pointe du dessin, l'endroit qui touche
-        # réellement le pixel visé, PAS (0, 0)/coin haut-gauche du bitmap qui
-        # ne correspond à rien de visuel sur cette icône : voir
-        # icons/pipette_noire.png, pointe clairement dans le coin bas-gauche
-        # du dessin. Piège vécu 2026-08-15 : avec un hotspot à (0,0), le clic
-        # était routé plusieurs dizaines de pixels au-dessus/à gauche de ce
-        # que l'utilisateur visait visuellement, assez pour rater un bouton
-        # de 26px de haut situé juste au-dessus de l'image et retomber sur le
-        # canvas en dessous.
+        # Curseurs custom pipette (icône 36×36, assez grande pour rester
+        # lisible/utilisable comme curseur). Hotspot en bas à gauche de
+        # l'icône — la pointe du dessin, l'endroit qui touche réellement le
+        # pixel visé, PAS (0, 0)/coin haut-gauche du bitmap qui ne correspond
+        # à rien de visuel sur cette icône : voir icons/pipette_noire.png,
+        # pointe clairement dans le coin bas-gauche du dessin. Avec un
+        # hotspot à (0,0), le clic serait routé plusieurs dizaines de pixels
+        # au-dessus/à gauche de ce que l'utilisateur vise visuellement, assez
+        # pour rater un bouton de 26px de haut situé juste au-dessus de
+        # l'image et retomber sur le canvas en dessous.
         #
         # Croix de visée ÉVIDÉE au centre (gap autour du hotspot, PAS une
         # croix pleine qui se rejoint au milieu) dessinée par-dessus l'icône,
-        # centrée EXACTEMENT sur ce hotspot — 2e retour utilisateur le même
-        # jour : une première version avec une croix pleine masquait
+        # centrée EXACTEMENT sur ce hotspot : une croix pleine masquerait
         # justement le pixel qu'on cherche à viser, rendant toute sélection
         # fine impossible. Convention Photoshop/GIMP : le point de capture
         # doit rester visible, entouré par la croix, pas recouvert par elle.
@@ -198,9 +191,8 @@ class _LevelsOptionsPanel(QWidget):
         font_btn = _get_current_font(11)
 
         # ── Point noir ───────────────────────────────────────────────────────
-        # Label ajouté le 2026-08-15 (absent de la 1re version) : sans lui,
-        # ce slider n'avait aucune indication visuelle de ce qu'il réglait,
-        # seulement sa pipette adjacente.
+        # Label : sans lui, ce slider n'aurait aucune indication visuelle de
+        # ce qu'il règle, seulement sa pipette adjacente.
         self._black_label = QLabel()
         layout.addWidget(self._black_label)
         self._black_slider = QSlider(Qt.Orientation.Horizontal)
@@ -243,7 +235,7 @@ class _LevelsOptionsPanel(QWidget):
         layout.addWidget(self._gamma_spin)
 
         # ── Point blanc ──────────────────────────────────────────────────────
-        # Label ajouté le 2026-08-15, même raison que point noir ci-dessus.
+        # Label : même raison que point noir ci-dessus.
         self._white_label = QLabel()
         layout.addWidget(self._white_label)
         self._white_slider = QSlider(Qt.Orientation.Horizontal)
@@ -264,13 +256,10 @@ class _LevelsOptionsPanel(QWidget):
         layout.addWidget(self._white_spin)
 
         # Ligne 2 : les 2 pipettes + bouton Auto, puis séparateur + Seuil,
-        # centrés (idees.txt #3, revu le 2026-08-15 — 1er jet jugé "affreux" :
-        # Auto descendu de la ligne 1 vers la ligne 2 aux côtés des pipettes ;
-        # 2e passage : Seuil descendu à son tour en fin de ligne 2, après les
-        # 3 contrôles noir/blanc — reste isolé par un séparateur comme sur la
-        # 1re version, cohérent avec le fait qu'il agit sur un traitement PIL
-        # INDÉPENDANT du triplet noir/gamma/blanc). Ligne entière centrée via
-        # un stretch de chaque côté plutôt qu'alignée à gauche.
+        # centrés. Seuil isolé par un séparateur en fin de ligne, cohérent
+        # avec le fait qu'il agit sur un traitement PIL INDÉPENDANT du
+        # triplet noir/gamma/blanc. Ligne entière centrée via un stretch de
+        # chaque côté plutôt qu'alignée à gauche.
         pip_row = QHBoxLayout()
         pip_row.setSpacing(10)
         outer.addLayout(pip_row)
@@ -336,16 +325,15 @@ class _LevelsOptionsPanel(QWidget):
         """Compose l'icône pipette (36×36) sur une toile 56×56 transparente,
         avec une croix de visée ÉVIDÉE (gap au centre, PAS de traits qui se
         rejoignent) dessinée au point de capture réel (le coin bas-gauche du
-        dessin, où se trouve la pointe) — 2 retours utilisateur 2026-08-15 :
-        icône trop petite (agrandie 24→36), et la 1re version de la croix
-        (pleine, bras collés au hotspot) masquait justement le pixel qu'on
-        cherche à viser. Le hotspot du QCursor pointe exactement sur le
-        centre du gap, pas un pixel arbitraire.
+        dessin, où se trouve la pointe) : une croix pleine, bras collés au
+        hotspot, masquerait justement le pixel qu'on cherche à viser. Le
+        hotspot du QCursor pointe exactement sur le centre du gap, pas un
+        pixel arbitraire.
 
         L'icône est décalée en diagonale par rapport au hotspot (pas collée
-        dans le coin de la toile comme le 1er jet) pour que son propre dessin
-        ne mange pas dans la zone du viseur : le hotspot dispose ainsi d'un
-        anneau dégagé tout autour, y compris du côté de la pipette."""
+        dans le coin de la toile) pour que son propre dessin ne mange pas
+        dans la zone du viseur : le hotspot dispose ainsi d'un anneau dégagé
+        tout autour, y compris du côté de la pipette."""
         from PySide6.QtGui import QPainter, QPen, QColor
 
         canvas_size = 56
@@ -455,10 +443,7 @@ class _LevelsOptionsPanel(QWidget):
         # Tooltips (OverlayTooltip obligatoire, skill qt-tooltips — jamais
         # setToolTip() natif) : réutilise l'instance déjà créée par la barre
         # principale (self._viewer._toolbar._overlay_tip) plutôt que d'en
-        # instancier une seconde sur ce panneau, demande explicite
-        # utilisateur 2026-08-15 (aucun contrôle du panneau n'avait de
-        # tooltip jusqu'ici). Pipettes : réutilise black_pipette_tooltip/
-        # white_pipette_tooltip déjà validés (ancien panneau AdjustmentViewerDialog).
+        # instancier une seconde sur ce panneau.
         tip = self._viewer._toolbar._overlay_tip
         tip.track(self._black_pip_btn, _("dialogs.levels_viewer.black_pipette_tooltip"))
         tip.track(self._white_pip_btn, _("dialogs.levels_viewer.white_pipette_tooltip"))
@@ -495,12 +480,11 @@ class _LevelsOptionsPanel(QWidget):
         self.move(max(0, x), y)
 
     def mousePressEvent(self, event):
-        # Piège corrigé (2026-08-15, découvert sur le panneau équivalent de
-        # transparency_tool_qt.py) : sans ce blindage, un clic sur une zone
-        # vide du panneau (marges entre les widgets, pas absorbée par un
-        # QSlider/QSpinBox/QPushButton enfant) "fuit" vers _ViewerCanvas en
-        # dessous (widget flottant enfant du canvas) et pouvait déclencher un
-        # clic pipette sur l'image affichée dessous — même piège déjà
+        # Sans ce blindage, un clic sur une zone vide du panneau (marges
+        # entre les widgets, pas absorbée par un QSlider/QSpinBox/QPushButton
+        # enfant) "fuit" vers _ViewerCanvas en dessous (widget flottant
+        # enfant du canvas) et pourrait déclencher un clic pipette sur
+        # l'image affichée dessous — même piège déjà
         # documenté pour _ToolButton/_ActionButton/_ViewerToolbar (skill
         # viewers). Ce panneau est concerné au même titre que celui de
         # transparency : seul autre panneau de la barre avec un vrai geste de
@@ -712,8 +696,7 @@ class LevelsCanvasMixin:
         """Appelé depuis _ViewerCanvas.mousePressEvent quand l'outil "levels"
         est actif ET qu'une pipette est armée (panel.active_pipette non None).
         Convertit la position écran en coordonnées image (en tenant compte du
-        zoom/pan courants, mêmes calculs que l'ancien _on_image_click de
-        AdjustmentViewerDialog, skill adjust-levels), lit la luminance du
+        zoom/pan courants, skill adjust-levels), lit la luminance du
         pixel, met à jour le slider correspondant, puis commit immédiatement
         (pas de relâchement à attendre pour ce geste, contrairement aux 4
         sliders)."""
@@ -731,8 +714,7 @@ class LevelsCanvasMixin:
         # display_offset_x/y et display_width/height décrivent le pixmap
         # actuellement affiché (résolution source, étiré par Qt à l'affichage
         # — voir paintEvent) : conversion écran → image identique au calcul
-        # de perform_crop() (crop_tool_qt.py), pas au calcul de l'ancien
-        # AdjustmentViewerDialog (widget/zoom séparés, non applicable ici).
+        # de perform_crop() (crop_tool_qt.py).
         if self.display_width <= 0 or self.display_height <= 0:
             return
         try:
@@ -819,8 +801,7 @@ class LevelsViewerMixin:
         (voir LevelsCanvasMixin.levels_pipette_click) : commit réel des
         niveaux dans entry['bytes'] (pattern skill apply-image-operation,
         variante A complète) — réutilise apply_image_adjustments()
-        (image_processing_qt.py), déjà utilisée par l'ancien panneau
-        Ajustements pour "Appliquer à la page courante". Devient sa propre
+        (image_processing_qt.py). Devient sa propre
         entrée d'historique, comme un commit de brightness (pas de bouton
         "Valider" séparé, voir docstring de module).
 
@@ -878,12 +859,10 @@ class LevelsViewerMixin:
             # inconditionnellement _canvas.clear_crop() — lequel remet aussi
             # pan_offset_x/y à 0 (crop_tool_qt.py::clear_crop, pensé pour
             # recentrer la vue quand on abandonne un crop). Sans ce flag, tout
-            # commit levels après un zoom+pan recentrait l'image sous les
-            # pieds de l'utilisateur (bug vécu 2026-08-15, diagnostiqué par
-            # prints : pan_offset passait de (-75,1351) à (0,0) entre l'avant
-            # et l'après de ce commit). Même bug latent sur brightness/
+            # commit levels après un zoom+pan recentrerait l'image sous les
+            # pieds de l'utilisateur. Même bug latent sur brightness/
             # saturation/etc. (display_image() sans keep_crop_rect aussi) —
-            # non corrigé ici, hors périmètre de cette migration.
+            # non corrigé, hors périmètre de ce module.
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
 
@@ -897,10 +876,9 @@ class LevelsViewerMixin:
         """Bouton "Auto" du panneau : calcule les points noir/blanc via
         compute_auto_levels (percentiles 1%/99%, skill adjust-levels) sur
         l'image RÉELLEMENT affichée (entry['bytes'] courant, pas un aperçu
-        figé — contrairement au bouton Auto du panneau Ajustements classique
-        qui calcule sur la 1re image de la sélection), met à jour les 2
-        sliders correspondants, puis commit immédiatement — même principe que
-        le clic pipette (un geste complet, pas de relâchement à attendre)."""
+        figé), met à jour les 2 sliders correspondants, puis commit
+        immédiatement — même principe que le clic pipette (un geste complet,
+        pas de relâchement à attendre)."""
         from modules.qt import state as _state_module
         from modules.qt.image_processing_qt import compute_auto_levels
         from modules.qt.dialogs_qt import MsgDialog

@@ -2,7 +2,7 @@
 modules/qt/paste_image_tool_qt.py — Outil "Coller une image" (paste_image) de
 la barre d'outils flottante de la visionneuse principale (image_viewer_qt.py).
 
-idees.txt #1 (VISIONNEUSE — NOUVEL OUTIL "COLLER UNE IMAGE", PRIORITAIRE) :
+Nouvel outil "Coller une image" de la visionneuse :
 colle une image provenant du presse-papiers système (bitmap CF_DIB ou fichier
 image unique CF_HDROP, voir modules.qt.clipboard_qt::clipboard_has_single_image/
 get_clipboard_single_image, réutilisées telles quelles plutôt que réécrites)
@@ -18,8 +18,8 @@ rendu écran dessine un QPixmap tourné/mis à l'échelle au lieu de tracer un
 contour, et le rendu final PIL colle un calque RGBA tourné au lieu d'un
 ImageDraw.
 
-Pas de panneau d'options flottant dédié (décision explicite utilisateur,
-idees.txt #1 : "pas d'autres réglages que ceux déjà donnés") — contrairement
+Pas de panneau d'options flottant dédié (décision explicite utilisateur :
+"pas d'autres réglages que ceux déjà donnés") — contrairement
 à shapes/text/clone/straighten, cet outil n'a ni couleur, ni épaisseur, ni
 mode à régler : seules les poignées (redimensionnement/rotation/déplacement)
 et les boutons "Valider"/"Annuler" flottants partagés pilotent le travail en
@@ -33,7 +33,7 @@ A complète, undo/redo unifié, un seul point d'historique).
 
 Point d'entrée UNIQUE pour l'instant : l'icône "Coller" de la barre (grisée/
 dégrisée selon le contenu live du presse-papiers, voir _refresh_paste_image_
-button_state / QClipboard.dataChanged). Piste secondaire de idees.txt #1
+button_state / QClipboard.dataChanged). Piste secondaire envisagée
 (glisser-déposer une page de la mosaïque vers la visionneuse) volontairement
 PAS implémentée ici — mais le point d'entrée est isolé à dessein :
 ShapeCanvasMixin/_add_pasted_image(pil_img) est le seul point qui crée et
@@ -143,7 +143,7 @@ class PasteImageCanvasMixin:
     def _add_pasted_image(self, pil_img: Image.Image):
         """Point d'entrée UNIQUE pour poser une nouvelle image collée sur la
         page — voir docstring de module pour la raison de cette isolation
-        (futur drag & drop de page, idees.txt #1, piste secondaire). Centrée
+        (futur drag & drop de page, piste secondaire). Centrée
         sur la page affichée, taille initiale = un quart de la page (moitié
         de chaque dimension), ratio d'aspect de l'image source préservé."""
         state = self._viewer.callbacks.get('state') or _state_module.state
@@ -233,8 +233,8 @@ class PasteImageCanvasMixin:
         if rotated:
             painter.restore()
 
-        # Grisage de la portion hors des limites de la page (idees.txt #1,
-        # décision explicite utilisateur — signale ce qui sera tronqué à
+        # Grisage de la portion hors des limites de la page (décision
+        # explicite utilisateur — signale ce qui sera tronqué à
         # l'aplatissage). Coins calculés en repère ÉCRAN NON tourné (indépendant
         # du save/translate/rotate déjà refermé ci-dessus) — même convention
         # d'angle que _shape_rotate_point_around (sens horaire QPainter).
@@ -388,7 +388,7 @@ class PasteImageCanvasMixin:
             ix, iy = self._paste_widget_to_image(local)
 
         # Poignées de COIN : redimensionnement à PROPORTIONS CONSERVÉES
-        # (idees.txt #1, décision explicite utilisateur) — seules les 4
+        # (décision explicite utilisateur) — seules les 4
         # poignées de BORD (milieu) redimensionnent librement en déformant.
         # Même logique que ShapeCanvasMixin._apply_shape_resize
         # (shapes_tool_qt.py), dupliquée ici plutôt que partagée : les deux
@@ -543,8 +543,13 @@ class PasteImageViewerMixin:
 
             orig_mode = entry.get('_orig_mode', 'RGBA')
             out_img = composed
+            # .bmp exclu : Pillow écrit bien un canal alpha 32-bit, mais ne le
+            # redétecte pas à la relecture (header BMP classique ambigu sur la
+            # présence d'alpha) — transparence non fiable, voir color_depth_tool_qt.py.
             if orig_mode not in ('RGBA', 'LA', 'P') and \
-                    entry.get('extension', '').lower() not in ('.png', '.webp', '.avif'):
+                    entry.get('extension', '').lower() not in (
+                        '.png', '.webp', '.avif', '.tiff', '.tif', '.ico'
+                    ):
                 bg = Image.new('RGB', out_img.size, (255, 255, 255))
                 bg.paste(out_img, mask=out_img.split()[3])
                 out_img = bg

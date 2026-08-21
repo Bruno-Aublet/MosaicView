@@ -74,7 +74,10 @@
     "cancel_shapes": "Cancel shapes",
     "cancel_transparency": "Cancel transparency",
     "validate_paste_image": "Apply paste",
-    "cancel_paste_image": "Cancel paste"
+    "cancel_paste_image": "Cancel paste",
+    "save_crop_mask": "Save mask",
+    "recall_crop_mask": "Recall mask",
+    "forget_crop_mask": "Forget mask"
   },
   "tabs": {
     "mosaic": "Mosaic",
@@ -140,7 +143,7 @@
     "shape_pipette_tooltip": "Pick a color from the displayed page",
     "toolbar_transparency_tooltip": "Transparency",
     "toolbar_transparency_instruction": "Click the color to make transparent",
-    "toolbar_transparency_disabled": "Only available for PNG, WebP, ICO and AVIF images",
+    "toolbar_transparency_disabled": "Only available for PNG, WebP, ICO, AVIF and TIFF images",
     "transparency_flood_panel_label": "Area",
     "transparency_global_panel_label": "Global",
     "transparency_tolerance_panel_label": "Tolerance:",
@@ -160,7 +163,9 @@
     "toolbar_rotation_instruction": "Rotate or flip the displayed page",
     "toolbar_paste_image_tooltip": "Paste an image",
     "toolbar_paste_image_instruction": "Pastes the clipboard image onto the page, handles to resize/rotate",
-    "toolbar_paste_image_disabled": "The clipboard must contain only an image"
+    "toolbar_paste_image_disabled": "The clipboard must contain only an image",
+    "color_depth_panel_blocked_format": "Unavailable: the file's original {format} format does not support this depth.",
+    "image_mode_panel_blocked_format": "Unavailable: the file's original {format} format does not support this mode."
   },
   "context_menu": {
     "viewer": {
@@ -1332,6 +1337,9 @@
       "green_label": "Green:",
       "blue_label": "Blue:",
       "alpha_label": "Alpha:"
+    },
+    "crop_mask": {
+      "label": "Crop mask"
     }
   },
   "tooltip": {
@@ -1397,7 +1405,9 @@
     "straighten_mode_0": "Manual mode (draw a reference line)\nRight-click to change mode",
     "straighten_mode_1": "Automatic mode (skew detection)\nRight-click to change mode",
     "sharpness_mode_0": "Enhances or softens the image details\nRight-click to switch to adaptive sharpness",
-    "sharpness_mode_1": "Accentuates edges while sparing flat areas\nRight-click to switch to simple sharpness"
+    "sharpness_mode_1": "Accentuates edges while sparing flat areas\nRight-click to switch to simple sharpness",
+    "crop_mode_0": "Draw a rectangle on the area to keep, then validate\nRight-click to switch to crop mask mode",
+    "crop_mode_1": "Crop mask mode: memorize a rectangle and recall it on the following pages\nRight-click to return to normal mode"
   },
   "help": {
     "title": "MosaicView - User Manual",
@@ -1413,7 +1423,7 @@
     "flatten": "Flattening directories",
     "flatten_content": "If your archive contains subdirectories, use 'Flatten directories' to bring all images to the same level.",
     "viewer": "Viewer",
-    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 4 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n  - Webtoon: for vertical images (webcomics), width capped at 900px to stay readable; the mouse wheel scrolls vertically within the page, then turns the page once at the top/bottom\n• Mouse wheel: quick navigation (vertical scroll within the page in Webtoon mode)\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom (up to 1000% of the image's real size)\n• Ctrl+0: fit zoom to the window\n• Ctrl+1: zoom to 100% (real pixel size of the image)\n• Right-click + drag: pan the displayed image when it exceeds the window\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel the current tool's drawing (crop, straighten, shape…) or exit the viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer.\n\nFloating toolbar: hover over the top of the image to reveal it (it hides itself after a few seconds). Click an icon to activate the matching tool:\n• Crop: draw a rectangle, adjust it by its edges, validate\n• Straighten: draw a line on what should be horizontal/vertical, the correction applies automatically; right-click the icon to switch to automatic straightening (detects the skew on its own, no line to draw)\n• Rotate/flip: one click rotates or flips the page\n• Clone: Ctrl+click to set the source point, then paint with the mouse held down to duplicate\n• Text: click to place a text block, choose font/size/color\n• Shapes: draw ellipses, rectangles, lines or arrows, with handles to resize them\n• Sliders (sharpness, brightness/contrast, saturation, remove colors, compression): the result is shown live as you drag\n• Levels: adjust black point/gamma/white point with sliders, or pick a color directly on the image with the eyedroppers\n• Transparency: click a color on the image to make it transparent\n• Color depth, Effects, Image mode: pick an option by clicking a radio button, applied immediately\n• Paste an image: pastes the image from the clipboard (the icon only lights up if the clipboard holds an image), with handles to resize/rotate it like shapes; also works by dragging a page from a mosaic or a file from Windows Explorer straight onto the viewer. Ctrl+C copies the page being viewed (single page or Webtoon mode only), Ctrl+V pastes an image, same as in the mosaic\n\nValidate with the \"Validate\" button when it appears, or Esc to cancel. Every change joins the usual Undo/Redo history.",
+    "viewer_content": "Double-click on a page to open the viewer:\n• ← → keys: navigate between pages\n• D key: switch between 4 reading modes\n  - Single page: one page at a time\n  - Double pages: page 1 alone, then 2-3, 4-5, etc.\n  - Continuous double pages: page 1 alone, then 2-3, 3-4, 4-5, etc.\n  - Webtoon: for vertical images (webcomics), width capped at 900px to stay readable; the mouse wheel scrolls vertically within the page, then turns the page once at the top/bottom\n• Mouse wheel: quick navigation (vertical scroll within the page in Webtoon mode)\n• Ctrl+Wheel or Ctrl+Plus/Minus: zoom (up to 1000% of the image's real size)\n• Ctrl+0: fit zoom to the window\n• Ctrl+1: zoom to 100% (real pixel size of the image)\n• Right-click + drag: pan the displayed image when it exceeds the window\n• F11 key: fullscreen\n• Double-click: toggle fullscreen\n• Esc key: cancel the current tool's drawing (crop, straighten, shape…) or exit the viewer\n• Bookmark: automatically saves the current page when closing the viewer (except the first and last pages). A red ribbon appears on the corresponding thumbnail in the mosaic. On the next opening, a message suggests returning to this page. Automatically deleted on the last page, or manually via right-click in the viewer.\n\nFloating toolbar: hover over the top of the image to reveal it (it hides itself after a few seconds). Click an icon to activate the matching tool:\n• Crop: draw a rectangle, adjust it by its edges, validate; right-click the icon to switch to crop mask mode (memorize a rectangle with \"Save mask\", then recall it as-is on the following pages with \"Recall mask\" — handy for applying the same crop to several pages without redrawing it each time; \"Forget mask\" clears the memorized rectangle, page by page only)\n• Straighten: draw a line on what should be horizontal/vertical, the correction applies automatically; right-click the icon to switch to automatic straightening (detects the skew on its own, no line to draw)\n• Rotate/flip: one click rotates or flips the page\n• Clone: Ctrl+click to set the source point, then paint with the mouse held down to duplicate\n• Text: click to place a text block, choose font/size/color\n• Shapes: draw ellipses, rectangles, lines or arrows, with handles to resize them\n• Sliders (sharpness, brightness/contrast, saturation, remove colors, compression): the result is shown live as you drag\n• Levels: adjust black point/gamma/white point with sliders, or pick a color directly on the image with the eyedroppers\n• Transparency: click a color on the image to make it transparent\n• Color depth, Effects, Image mode: pick an option by clicking a radio button, applied immediately\n• Paste an image: pastes the image from the clipboard (the icon only lights up if the clipboard holds an image), with handles to resize/rotate it like shapes; also works by dragging a page from a mosaic or a file from Windows Explorer straight onto the viewer. Ctrl+C copies the page being viewed (single page or Webtoon mode only), Ctrl+V pastes an image, same as in the mosaic\n\nValidate with the \"Validate\" button when it appears, or Esc to cancel. Every change joins the usual Undo/Redo history.",
     "join_pages": "Joining pages",
     "join_pages_content": "Select multiple consecutive pages, right-click → 'Join selected pages' to join pages horizontally or vertically. The output image format matches the source pages' format if they are all identical, otherwise PNG by default. You'll be able to choose whether to delete or keep the original pages.\n\nWhere the new page lands in the mosaic:\n• Active renumbering mode (auto or manual): the page takes the place of the first joined page (its place, if source pages are deleted, or right before it, if they're kept), and triggers a renumbering.\n• OFF renumbering mode: the page is added at the front of the mosaic under the name \"Merged_xxx\".",
     "split_pages": "Splitting pages",

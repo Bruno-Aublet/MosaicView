@@ -33,7 +33,6 @@ def line_to_correction(ix1, iy1, ix2, iy2):
     # mais l'axe Y écran est vers le bas (anti-mathématique) → compensé par la formule ci-dessous.
     abs_angle = abs(angle_deg)
     if abs_angle <= 45:
-        # Trait plutôt horizontal → correction = angle_deg (pas de signe -)
         return angle_deg, 'h', None
     # Trait plutôt vertical → angle par rapport à la verticale
     if angle_deg >= 0:

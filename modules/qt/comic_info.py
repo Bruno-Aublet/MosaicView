@@ -72,9 +72,6 @@ def _serialize_comic_xml(root, original_bytes=None):
 
 
 def parse_comic_info_xml(xml_data):
-    """
-    Parse les données XML ComicInfo et retourne un dictionnaire avec les métadonnées
-    """
     try:
         root = _safe_fromstring(xml_data)
         metadata = {}
@@ -141,10 +138,8 @@ def parse_comic_info_xml(xml_data):
 
 
 def read_comic_info(filepath):
-    """
-    Lit les métadonnées ComicInfo.xml depuis une archive CBZ/CBR
-    Retourne un dictionnaire avec les métadonnées ou None si non trouvé
-    """
+    """Retourne un dictionnaire de métadonnées, ou None si aucun ComicInfo.xml
+    n'est trouvé dans l'archive (CBZ/CBR/CBT)."""
     try:
         ext = os.path.splitext(filepath)[1].lower()
 
@@ -365,9 +360,6 @@ def get_current_image_count(state):
 
 
 def has_comic_info_entry(state):
-    """
-    Vérifie si un fichier ComicInfo.xml existe dans images_data.
-    """
     return any(entry.get('orig_name', '').lower().endswith('comicinfo.xml') for entry in state.images_data)
 
 

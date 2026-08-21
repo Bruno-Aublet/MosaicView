@@ -5,7 +5,7 @@ description: Localiser ou modifier les fonctions "Netteté" et "Netteté adaptat
 
 # Ajustements "Netteté" et "Netteté adaptative" — MosaicView
 
-Deux réglages distincts mais étroitement liés (tous deux affectent la netteté perçue) — **indépendants dans le code** : deux blocs séparés dans `settings`, appliqués l'un après l'autre par la même fonction de traitement. Partagent un seul et même emplacement UI, bi-mode, dans la barre d'outils flottante de la visionneuse principale (v1.7.4) — plus aucun panneau ni visionneuse dédiés depuis le retrait de l'ancien panneau Ajustements classique pour ces deux réglages (voir section UI plus bas). L'ancien panneau Ajustements classique (`AdjustmentsDialog`) a lui-même été supprimé en totalité le 2026-08-16, une fois ses 3 dernières fonctions (profondeur de couleur, effets, mode d'image) migrées à leur tour — voir skill `viewers`.
+Deux réglages distincts mais étroitement liés (tous deux affectent la netteté perçue) — **indépendants dans le code** : deux blocs séparés dans `settings`, appliqués l'un après l'autre par la même fonction de traitement. Partagent un seul et même emplacement UI, bi-mode, dans la barre d'outils flottante de la visionneuse principale (voir section UI plus bas) — il n'existe pas de fenêtre d'ajustements séparée dans l'application, voir skill `viewers`.
 
 ## Formule PIL (`image_processing_qt.py::apply_adjustments()`)
 
@@ -33,9 +33,9 @@ Wrapper direct de `PIL.ImageFilter.UnsharpMask`. Bornes : `unsharp_radius` (0.5-
 
 **Différence fonctionnelle avec la netteté simple positive** : Unsharp Mask a un seuil (`threshold`) qui ignore les variations de contraste locales trop faibles (évite d'amplifier le bruit dans les zones plates), alors que `ImageEnhance.Sharpness` amplifie uniformément. Les deux peuvent être cumulés (les deux blocs s'appliquent l'un après l'autre dans le pipeline) — pas de garde-fou empêchant de combiner les deux, c'est un choix créatif laissé à l'utilisateur.
 
-## UI — barre d'outils de la visionneuse principale (v1.7.4), seul point d'accès
+## UI — barre d'outils de la visionneuse principale, seul point d'accès
 
-**Historique** : les deux réglages vivaient à l'origine dans le panneau Ajustements classique (`adjustments_dialog_qt.py`, sections `_grp_sharp`/`_grp_unsharp`) et dans `AdjustmentViewerDialog` (`adjustments_viewers_qt.py`, modes `'sharpness'`/`'unsharp'`). Les deux ont migré vers la barre d'outils flottante de la visionneuse principale (skill `viewers`, section "Le cas de la netteté") en deux passes séparées — sharpness d'abord, puis unsharp — et **l'ancien panneau/visionneuse ont été entièrement retirés à chaque fois**, pas seulement redirigés (voir CHANGELOG.md [1.7.4]). Ces attributs/modes n'existent donc plus nulle part dans le code actuel — ne pas les chercher ni les recréer.
+Les deux réglages vivent dans la barre d'outils flottante de la visionneuse principale (skill `viewers`, section "Le cas de la netteté").
 
 - Module : `modules/qt/sharpness_tool_qt.py`.
 - Icône bi-mode unique dans la barre (`state.sharpness_mode` 0=sharpness/1=unsharp, clic droit pour basculer, icône elle-même changée `BTN_Sharpness.png`/`BTN_Unsharp.png`) — détail complet du mécanisme (preview live, commit auto au relâchement, undo/redo par point d'historique, persistance après changement de page/undo-redo) dans le skill `viewers`, section "Le cas de la netteté". Ce skill-ci ne couvre que la formule PIL et ses bornes, pas l'intégration UI.
@@ -49,7 +49,7 @@ Le slider radius (`_UnsharpOptionsPanel._radius_slider`, `viewer_toolbar_qt.py`/
 ## Modifier ces fonctions
 
 - Changer l'intensité/la formule de la netteté simple → bloc `if sharpness != 0` de `apply_adjustments()` (`image_processing_qt.py`).
-- Changer les bornes ou le comportement de l'Unsharp Mask → bloc `if unsharp_percent > 0` de la même fonction, **et** les bornes des sliders dans `_UnsharpOptionsPanel` (`sharpness_tool_qt.py`) — un seul endroit UI à mettre à jour désormais (plus deux dialogs à synchroniser comme du temps de l'ancien panneau).
+- Changer les bornes ou le comportement de l'Unsharp Mask → bloc `if unsharp_percent > 0` de la même fonction, **et** les bornes des sliders dans `_UnsharpOptionsPanel` (`sharpness_tool_qt.py`).
 - Changer l'apparence/le comportement des panneaux flottants (réglettes, tooltips, positionnement) → `_SharpnessOptionsPanel`/`_UnsharpOptionsPanel` dans `sharpness_tool_qt.py`, voir skill `viewers`.
 
 ## Références croisées
