@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Lipește imaginea din clipboard pe pagină, mânere pentru redimensionare/rotire",
     "toolbar_paste_image_disabled": "Clipboard-ul trebuie să conțină doar o imagine",
     "color_depth_panel_blocked_format": "Indisponibil: formatul {format} original al fișierului nu acceptă această adâncime.",
-    "image_mode_panel_blocked_format": "Indisponibil: formatul {format} original al fișierului nu acceptă acest mod."
+    "image_mode_panel_blocked_format": "Indisponibil: formatul {format} original al fișierului nu acceptă acest mod.",
+    "toolbar_macro_record_tooltip": "Înregistrează",
+    "toolbar_macro_record_instruction": "Pornește înregistrarea unei macrocomenzi pe pagina afișată",
+    "toolbar_macro_play_tooltip": "Redă",
+    "toolbar_macro_play_instruction": "Redă o macrocomandă înregistrată pe pagina afișată",
+    "macro_read_interrupted_title": "Macrocomandă întreruptă",
+    "macro_read_interrupted_message": "Redarea macrocomenzii a fost întreruptă prin închiderea vizualizatorului. Toate modificările deja aplicate de această redare au fost anulate."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Luminozitate, contrast, culori...",
       "refresh_mosaic": "Reîmprospătează mozaicul (F5)",
       "create_ico": "Creează fișier .ico",
-      "straighten_auto": "Îndreaptă imaginea automat"
+      "straighten_auto": "Îndreaptă imaginea automat",
+      "read_macro": "Redă o macrocomandă"
     },
     "canvas_no_file": {
       "open": "Deschide CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Îndreptare automată în curs...\n{percent}%"
+    "deskewing": "Îndreptare automată în curs...\n{percent}%",
+    "macro_preparing": "Se pregătește redarea..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Mască de decupare"
+    },
+    "macro_record": {
+      "title": "Înregistrează o macrocomandă",
+      "btn_stop": "Finalizează",
+      "btn_cancel": "Anulează",
+      "name_dialog_title": "Denumește macrocomanda",
+      "name_label": "Nume:",
+      "name_placeholder": "Numele macrocomenzii",
+      "description_label": "Descriere:",
+      "description_placeholder": "Descriere (opțională)",
+      "btn_save": "Salvează"
+    },
+    "macro_read": {
+      "title": "Redă o macrocomandă",
+      "btn_rename": "Redenumește",
+      "btn_delete": "Șterge",
+      "btn_complete": "Completează",
+      "btn_play": "Redă",
+      "corrupt_title": "Fișier de macrocomandă ilizibil",
+      "corrupt_message": "Unul sau mai multe fișiere de macrocomandă nu au putut fi citite și nu apar în listă: {files}",
+      "report_title": "Redare finalizată",
+      "report_message": "Pagini procesate cu succes: {ok}\nPagini procesate parțial: {partial}\nPagini eșuate: {failed}",
+      "no_macros": "Nu a fost înregistrată încă nicio macrocomandă.",
+      "btn_pick_file": "Alege un fișier",
+      "pick_file_title": "Alege o macrocomandă",
+      "hint_record_from_viewer": "Macrocomenzile se înregistrează din vizualizator.",
+      "report_failed_line": "{page}: eșuat la pasul « {step} »",
+      "report_partial_line": "{page}: {applied} pas(e) aplicate, eșuat la « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Numele macrocomenzii nu poate fi gol.",
+      "too_long": "Numele macrocomenzii nu trebuie să depășească 30 de caractere.",
+      "invalid_chars": "Acest nume conține caractere care nu sunt permise într-un nume de fișier.",
+      "reserved_name": "Acest nume este rezervat de Windows și nu poate fi utilizat.",
+      "duplicate": "Există deja o macrocomandă cu acest nume."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Accentuează sau atenuează detaliile imaginii\nClic dreapta pentru a comuta la claritatea adaptivă",
     "sharpness_mode_1": "Accentuează contururile cruțând zonele uniforme\nClic dreapta pentru a comuta la claritatea simplă",
     "crop_mode_0": "Trasați un dreptunghi peste zona de păstrat, apoi validați\nClic dreapta pentru a comuta la modul mască de decupare",
-    "crop_mode_1": "Mod mască de decupare: memorați un dreptunghi și rechemați-l pe paginile următoare\nClic dreapta pentru a reveni la modul normal"
+    "crop_mode_1": "Mod mască de decupare: memorați un dreptunghi și rechemați-l pe paginile următoare\nClic dreapta pentru a reveni la modul normal",
+    "read_macro_selected": "Redă o macrocomandă pe paginile selectate"
   },
   "help": {
     "title": "MosaicView - Manual utilizator",
@@ -1498,7 +1542,9 @@
     "scan": "Scanați o imagine",
     "scan_content": "• Faceți clic pe butonul „Scanare” (coloana de pictograme, meniul Fișier sau clic dreapta pe mozaic) pentru a deschide fereastra de scanare. MosaicView controlează direct scanerul dvs. (prin WIA, sistemul de scanare Windows): selectați dispozitivul, rezoluția (DPI), modul de culoare (culoare / tonuri de gri / alb-negru), apoi faceți clic pe „Scanare”. Un scaner trebuie să fie conectat, pornit și driverul său instalat pe Windows pentru a apărea în listă.\n• Ultimul scaner utilizat, rezoluția și modul de culoare alese sunt memorate și propuse automat din nou la următoarea scanare.\n• Sunt oferite doar scanarea paginii complete și exportul în JPG, întrucât aplicația are deja tot ce este necesar pentru retușarea și conversia imaginii ulterior.\n• Imaginea scanată este adăugată automat la mozaic, după paginile deja existente. O puteți apoi decupa, îndrepta, ajusta culorile etc., ca orice altă pagină a mozaicului\n• Această funcție controlează scanerul direct, fără a trece prin software-ul producătorului și fără a afișa propria fereastră de configurare a acestuia.\n• Deoarece un scaner fizic poate fi controlat doar de o singură conexiune la un moment dat, scanarea este posibilă doar într-un singur panou la un moment dat: dacă o fereastră de scanare este deschisă sau o scanare este în curs într-un panou, butonul „Scanează” rămâne dezactivat în celălalt panou până la finalizarea operațiunii.",
     "straighten": "Îndreptați o pagină",
-    "straighten_content": "Îndreptarea automată (fără a desena nimic) este disponibilă din coloana de pictograme (clic dreapta pe pictograma „Îndreptare” pentru a comuta modul), din meniul Imagini, sau clic dreapta pe mozaic: detectează înclinarea singură și îndreaptă direct pagina/paginile selectate; colțurile goale create de rotație sunt umplute cu alb. Funcționează pe mai multe pagini simultan. O fereastră de rezumat indică câte pagini au fost îndreptate cu succes și le listează pe cele la care nu s-a putut detecta o înclinare fiabilă.\n\nÎndreptarea manuală (desenarea unei linii de referință) se face din vizualizatorul principal, vezi secțiunea Vizualizator."
+    "straighten_content": "Îndreptarea automată (fără a desena nimic) este disponibilă din coloana de pictograme (clic dreapta pe pictograma „Îndreptare” pentru a comuta modul), din meniul Imagini, sau clic dreapta pe mozaic: detectează înclinarea singură și îndreaptă direct pagina/paginile selectate; colțurile goale create de rotație sunt umplute cu alb. Funcționează pe mai multe pagini simultan. O fereastră de rezumat indică câte pagini au fost îndreptate cu succes și le listează pe cele la care nu s-a putut detecta o înclinare fiabilă.\n\nÎndreptarea manuală (desenarea unei linii de referință) se face din vizualizatorul principal, vezi secțiunea Vizualizator.",
+    "macro": "Macrocomenzi",
+    "macro_content": "Instrumentul Macrocomenzi (pictogramele «Înregistrează»/«Redă» din bara de instrumente a vizualizatorului) înregistrează o secvență de acțiuni efectuate pe o pagină și o redă identic pe una sau mai multe altele — din vizualizator sau, pentru mai multe pagini, din mozaic (meniul Imagini, clic dreapta, coloana de pictograme). O fereastră de raport final listează paginile procesate cu succes, parțial sau eșuate, cu motivul fiecărui eșec."
   },
   "misc": {
     "file_word": "fișier",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Încearcă cu driverul generic Windows",
     "open_log": "Deschide jurnalul de scanare",
     "reveal_log": "Afișează jurnalul de scanare în Explorer"
+  },
+  "macro": {
+    "step_rotate": "Rotație: {angle}°",
+    "step_flip": "Oglindire {direction}",
+    "step_levels": "Niveluri: punct negru {black_point}, gama {gamma}, punct alb {white_point}, prag {threshold}",
+    "step_crop": "Decupare",
+    "step_straighten": "Îndreptare: {angle}°",
+    "step_straighten_auto": "Îndreptare automată",
+    "step_clone": "Clonare: {stroke_points} punct(e) pictat(e)",
+    "step_text": "Text: {count} bloc(uri)",
+    "step_shapes": "Forme: {count} formă/forme",
+    "step_brightness": "Luminozitate {brightness}, contrast {contrast}",
+    "step_saturation": "Saturație: {saturation}",
+    "step_remove_colors": "Eliminare culori: intensitate {intensity}",
+    "step_compression": "Compresie: calitate {quality}",
+    "step_sharpness": "Claritate: {value}",
+    "step_unsharp": "Claritate adaptivă: rază {radius}, intensitate {percent}, prag {threshold}",
+    "step_color_depth": "Adâncime de culoare: {key}",
+    "step_effect": "Efect: {key}",
+    "step_image_mode": "Mod imagine: {key}",
+    "step_restore_color_depth": "Restabilește adâncimea de culoare originală",
+    "step_restore_effect": "Restabilește efectul original",
+    "step_restore_image_mode": "Restabilește modul de imagine original",
+    "step_transparency": "Transparență: {count} clic(uri)",
+    "step_paste_image": "Imagine lipită: {count} imagine/imagini"
   }
 }

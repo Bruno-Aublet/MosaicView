@@ -302,8 +302,10 @@ class RemoveColorsViewerMixin:
             original.copy(), {'remove_colors_intensity': value}, for_preview=True)
         self.display_image(keep_crop_rect=True)
 
-    def perform_remove_colors(self):
-        """Relâchement du slider ou validation de la spinbox : commit réel de
+    def perform_remove_colors(self, skip_history: bool = False):
+        """skip_history : propagé à apply_image_adjustments().
+
+        Relâchement du slider ou validation de la spinbox : commit réel de
         la suppression des couleurs dans entry['bytes'] (pattern skill
         apply-image-operation, variante A complète) — réutilise
         apply_image_adjustments() (image_processing_qt.py), déjà utilisée
@@ -334,7 +336,8 @@ class RemoveColorsViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             apply_image_adjustments(
-                [entry], {'remove_colors_intensity': value}, callbacks=self.callbacks)
+                [entry], {'remove_colors_intensity': value}, callbacks=self.callbacks,
+                skip_history=skip_history)
 
             # apply_image_adjustments() vient de faire save_state(force=True)
             # en interne : state.history_index pointe maintenant sur CE
@@ -369,12 +372,18 @@ class RemoveColorsViewerMixin:
             # Le slider NE revient PAS à 0 après commit (voir docstring de
             # perform_remove_colors) — reste sur la valeur qui vient d'être
             # appliquée, même principe que perform_brightness().
+            self._macro_record_step(
+                "remove_colors", {"intensity": value},
+                "macro.step_remove_colors", {"intensity": value},
+            )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.remove_colors_failed.title",
                             "messages.errors.remove_colors_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
     def _reset_remove_colors_preview(self):
         """Annule le preview visuel en cours (drag non relâché) et

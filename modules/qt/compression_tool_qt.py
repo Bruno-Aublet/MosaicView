@@ -330,8 +330,12 @@ class CompressionViewerMixin:
             original.copy(), {'compression_quality': value}, for_preview=True)
         self.display_image(keep_crop_rect=True)
 
-    def perform_compression(self):
-        """Relâchement du slider ou validation de la spinbox : commit réel de
+    def perform_compression(self, skip_history: bool = False):
+        """skip_history : propagé à apply_image_adjustments(). Le garde
+        is_compressible_entry/value>=100 ci-dessous sert aussi de condition
+        d'échec pour une macro lue sur une page cible incompatible.
+
+        Relâchement du slider ou validation de la spinbox : commit réel de
         la compression dans entry['bytes'] (pattern skill
         apply-image-operation, variante A complète) — réutilise
         apply_image_adjustments() (image_processing_qt.py). Devient sa
@@ -367,8 +371,9 @@ class CompressionViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             if not is_compressible_entry(entry) or value >= 100:
-                return
-            apply_image_adjustments([entry], {'compression_quality': value}, callbacks=self.callbacks)
+                return False
+            apply_image_adjustments([entry], {'compression_quality': value}, callbacks=self.callbacks,
+                                     skip_history=skip_history)
 
             # apply_image_adjustments() vient de faire save_state(force=True)
             # en interne : state.history_index pointe maintenant sur CE
@@ -404,12 +409,18 @@ class CompressionViewerMixin:
             # Le slider NE revient PAS à une valeur fixe après commit (voir
             # docstring ci-dessus) — reste sur la valeur qui vient d'être
             # appliquée (panel.value déjà à jour, rien à repositionner).
+            self._macro_record_step(
+                "compression", {"quality": value},
+                "macro.step_compression", {"quality": value},
+            )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.compression_failed.title",
                             "messages.errors.compression_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
     def _reset_compression_preview(self):
         """Annule le preview visuel en cours (drag non relâché) et

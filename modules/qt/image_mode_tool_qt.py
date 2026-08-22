@@ -373,8 +373,10 @@ class ImageModeViewerMixin:
     (_ViewerCanvas), self.callbacks, self.current_idx, self._toolbar (avec
     _image_mode_panel)."""
 
-    def perform_image_mode(self, key: str):
-        """Clic sur un radio de mode : commit IMMÉDIAT dans entry['bytes']
+    def perform_image_mode(self, key: str, skip_history: bool = False):
+        """skip_history : propagé à apply_image_adjustments().
+
+        Clic sur un radio de mode : commit IMMÉDIAT dans entry['bytes']
         (pattern skill apply-image-operation, variante A complète) —
         réutilise apply_image_adjustments() (image_processing_qt.py). Devient
         sa propre entrée d'historique.
@@ -394,12 +396,13 @@ class ImageModeViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
-                return
+                return False
 
             if self.current_idx not in state.image_mode_original_bytes_by_page:
                 state.image_mode_original_bytes_by_page[self.current_idx] = entry['bytes']
 
-            apply_image_adjustments([entry], {'image_mode': key}, callbacks=self.callbacks)
+            apply_image_adjustments([entry], {'image_mode': key}, callbacks=self.callbacks,
+                                     skip_history=skip_history)
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -414,20 +417,29 @@ class ImageModeViewerMixin:
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             self._sync_image_mode_panel()
+            self._macro_record_step(
+                "image_mode", {"key": key},
+                "macro.step_image_mode", {"key": key},
+            )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.image_mode_failed.title",
                             "messages.errors.image_mode_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
-    def perform_restore_image_mode(self):
+    def perform_restore_image_mode(self, skip_history: bool = False, _skip_macro_capture: bool = False):
         """Clic sur "Restaurer l'original" : restaure entry['bytes'] au
         snapshot capturé avant le tout premier changement de mode de cette
         session d'outil sur cette page — un NOUVEAU commit (ajoute une entrée
         undo/redo, ne dépile pas l'historique), pas un undo. Retire ensuite
         l'entrée du dict pour cette page : un nouveau clic sur un mode
-        recommencera un nouveau snapshot."""
+        recommencera un nouveau snapshot.
+
+        skip_history/_skip_macro_capture : voir
+        ColorDepthViewerMixin.perform_restore_color_depth (même contrat)."""
         from modules.qt import state as _state_module
         from modules.qt.dialogs_qt import MsgDialog
 
@@ -436,12 +448,12 @@ class ImageModeViewerMixin:
 
         original_bytes = state.image_mode_original_bytes_by_page.get(self.current_idx)
         if original_bytes is None:
-            return
+            return False
 
         try:
             entry = state.images_data[self.current_idx]
             save_state = self.callbacks.get("save_state")
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
 
             entry['bytes'] = original_bytes
@@ -449,7 +461,7 @@ class ImageModeViewerMixin:
             entry['qt_pixmap_large'] = None
             entry['qt_qimage_large'] = None
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state(force=True)
 
             del state.image_mode_original_bytes_by_page[self.current_idx]
@@ -467,12 +479,19 @@ class ImageModeViewerMixin:
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             self._sync_image_mode_panel()
+            if not _skip_macro_capture:
+                self._macro_record_step(
+                    "restore_image_mode", {},
+                    "macro.step_restore_image_mode", {},
+                )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.image_mode_failed.title",
                             "messages.errors.image_mode_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
     def _sync_image_mode_panel(self):
         """Resynchronise les 8 radios sur l'état de la page COURANTE — appelé

@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Beilleszti a vágólap képét az oldalra, fogantyúk az átméretezéshez/forgatáshoz",
     "toolbar_paste_image_disabled": "A vágólapnak csak egy képet szabad tartalmaznia",
     "color_depth_panel_blocked_format": "Nem elérhető: a fájl eredeti {format} formátuma nem támogatja ezt a színmélységet.",
-    "image_mode_panel_blocked_format": "Nem elérhető: a fájl eredeti {format} formátuma nem támogatja ezt a módot."
+    "image_mode_panel_blocked_format": "Nem elérhető: a fájl eredeti {format} formátuma nem támogatja ezt a módot.",
+    "toolbar_macro_record_tooltip": "Rögzítés",
+    "toolbar_macro_record_instruction": "Elindítja egy makró rögzítését a megjelenített oldalon",
+    "toolbar_macro_play_tooltip": "Lejátszás",
+    "toolbar_macro_play_instruction": "Lejátssza a rögzített makrót a megjelenített oldalon",
+    "macro_read_interrupted_title": "Makró megszakítva",
+    "macro_read_interrupted_message": "A makró lejátszása megszakadt a nézegető bezárása miatt. Az ezen lejátszás által már alkalmazott összes módosítás visszavonásra került."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Fényerő, kontraszt, színek...",
       "refresh_mosaic": "Mozaik frissítése (F5)",
       "create_ico": ".ico fájl létrehozása",
-      "straighten_auto": "Kép automatikus kiegyenesítése"
+      "straighten_auto": "Kép automatikus kiegyenesítése",
+      "read_macro": "Makró lejátszása"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF megnyitása",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Automatikus kiegyenesítés folyamatban...\n{percent}%"
+    "deskewing": "Automatikus kiegyenesítés folyamatban...\n{percent}%",
+    "macro_preparing": "Lejátszás előkészítése..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Vágási maszk"
+    },
+    "macro_record": {
+      "title": "Makró rögzítése",
+      "btn_stop": "Befejezés",
+      "btn_cancel": "Mégse",
+      "name_dialog_title": "Makró elnevezése",
+      "name_label": "Név:",
+      "name_placeholder": "Makró neve",
+      "description_label": "Leírás:",
+      "description_placeholder": "Leírás (nem kötelező)",
+      "btn_save": "Mentés"
+    },
+    "macro_read": {
+      "title": "Makró lejátszása",
+      "btn_rename": "Átnevezés",
+      "btn_delete": "Törlés",
+      "btn_complete": "Kiegészítés",
+      "btn_play": "Lejátszás",
+      "corrupt_title": "Olvashatatlan makrófájl",
+      "corrupt_message": "Egy vagy több makrófájlt nem sikerült beolvasni, ezek nem jelennek meg a listában: {files}",
+      "report_title": "Lejátszás befejezve",
+      "report_message": "Sikeresen feldolgozott oldalak: {ok}\nRészben feldolgozott oldalak: {partial}\nSikertelen oldalak: {failed}",
+      "no_macros": "Még nincs rögzített makró.",
+      "btn_pick_file": "Fájl kiválasztása",
+      "pick_file_title": "Makró kiválasztása",
+      "hint_record_from_viewer": "A makrókat a megjelenítőből lehet rögzíteni.",
+      "report_failed_line": "{page}: sikertelen a(z) « {step} » lépésnél",
+      "report_partial_line": "{page}: {applied} lépés alkalmazva, sikertelen « {step} »-nál"
+    },
+    "macro_name_error": {
+      "empty": "A makró neve nem lehet üres.",
+      "too_long": "A makró neve nem haladhatja meg a 30 karaktert.",
+      "invalid_chars": "Ez a név fájlnévben nem engedélyezett karaktereket tartalmaz.",
+      "reserved_name": "Ez a nevet a Windows fenntartja, nem használható.",
+      "duplicate": "Már létezik ilyen nevű makró."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Erősíti vagy lágyítja a kép részleteit\nJobb kattintás az adaptív élességre váltáshoz",
     "sharpness_mode_1": "Kiemeli a körvonalakat, kímélve az egységes felületeket\nJobb kattintás az egyszerű élességre váltáshoz",
     "crop_mode_0": "Rajzoljon egy téglalapot a megtartandó területre, majd erősítse meg\nJobb kattintás a vágási maszk módba váltáshoz",
-    "crop_mode_1": "Vágási maszk mód: jegyezzen meg egy téglalapot, és hívja elő a következő oldalakon\nJobb kattintás a normál módba való visszatéréshez"
+    "crop_mode_1": "Vágási maszk mód: jegyezzen meg egy téglalapot, és hívja elő a következő oldalakon\nJobb kattintás a normál módba való visszatéréshez",
+    "read_macro_selected": "Makró lejátszása a kijelölt oldalakon"
   },
   "help": {
     "title": "MosaicView - Útmutató",
@@ -1498,7 +1542,9 @@
     "scan": "Kép beolvasása",
     "scan_content": "• Kattintson a „Beolvasás” gombra (ikonoszlop, Fájl menü, vagy jobb kattintás a mozaikon) a beolvasási ablak megnyitásához. A MosaicView közvetlenül vezérli a szkennert (a WIA-n, a Windows beolvasó rendszerén keresztül): válassza ki az eszközt, a felbontást (DPI), a színmódot (színes / szürkeárnyalatos / fekete-fehér), majd kattintson a „Beolvasás” gombra. A listában való megjelenéshez a szkennernek csatlakoztatva, bekapcsolva kell lennie, illesztőprogramjának pedig telepítve kell lennie a Windows rendszeren.\n• A legutóbb használt szkenner, a felbontás és a kiválasztott színmód megjegyzésre kerül, és a következő szkennelésnél automatikusan újra felajánlásra kerül.\n• Csak a teljes oldalas szkennelés és a JPG formátumú exportálás érhető el, mivel az alkalmazás már rendelkezik mindennel, ami a képek utólagos retusálásához és formátumkonvertálásához szükséges.\n• A beolvasott kép automatikusan hozzáadódik a mozaikhoz, a már meglévő oldalak után. Ezután körbevághatja, kiegyenesítheti, színeit módosíthatja stb., mint a mozaik bármely más oldalát\n• Ez a funkció közvetlenül vezérli a szkennert, a gyártó szoftverének használata vagy annak saját beállítási ablakának megjelenítése nélkül.\n• Mivel egy fizikai szkennert egyszerre csak egy kapcsolat vezérelhet, a szkennelés egyszerre csak az egyik panelen lehetséges: ha az egyik panelen nyitva van a szkennelési ablak vagy folyamatban van a szkennelés, a „Szkennelés” gomb a másik panelen szürkén marad a művelet befejezéséig.",
     "straighten": "Oldal kiegyenesítése",
-    "straighten_content": "Az automatikus egyenesítés (rajzolás nélkül) elérhető az ikonoszlopból (jobb kattintás az „Egyenesítés” ikonra a mód váltásához), a Képek menüből, vagy jobb kattintással a mozaikon: magától érzékeli a dőlést és közvetlenül egyenesíti a kiválasztott oldal(ak)at; a forgatás által létrehozott üres sarkokat fehérrel tölti ki. Több oldalon egyszerre működik. Egy összefoglaló ablak mutatja, hány oldalt sikerült egyenesíteni, és felsorolja azokat, amelyeknél nem sikerült megbízható dőlést érzékelni.\n\nA manuális egyenesítés (referenciavonal rajzolása) a fő megjelenítőből történik, lásd a Megjelenítő szakaszt."
+    "straighten_content": "Az automatikus egyenesítés (rajzolás nélkül) elérhető az ikonoszlopból (jobb kattintás az „Egyenesítés” ikonra a mód váltásához), a Képek menüből, vagy jobb kattintással a mozaikon: magától érzékeli a dőlést és közvetlenül egyenesíti a kiválasztott oldal(ak)at; a forgatás által létrehozott üres sarkokat fehérrel tölti ki. Több oldalon egyszerre működik. Egy összefoglaló ablak mutatja, hány oldalt sikerült egyenesíteni, és felsorolja azokat, amelyeknél nem sikerült megbízható dőlést érzékelni.\n\nA manuális egyenesítés (referenciavonal rajzolása) a fő megjelenítőből történik, lásd a Megjelenítő szakaszt.",
+    "macro": "Makrók",
+    "macro_content": "A Makró eszköz («Rögzítés»/«Lejátszás» ikonok a megjelenítő eszköztárán) rögzíti egy oldalon végrehajtott műveletsort, és azonosan lejátssza egy vagy több másik oldalon — a megjelenítőből, vagy több oldal esetén a mozaikból (Képek menü, jobb kattintás, ikonoszlop). A záró jelentésablak felsorolja a sikeresen, részlegesen vagy sikertelenül feldolgozott oldalakat, minden hiba okával."
   },
   "misc": {
     "file_word": "fájl",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Kísérlet a Windows általános illesztőprogramjával",
     "open_log": "Szkennelési napló megnyitása",
     "reveal_log": "Szkennelési napló megjelenítése a Intézőben"
+  },
+  "macro": {
+    "step_rotate": "Forgatás: {angle}°",
+    "step_flip": "Tükrözés {direction}",
+    "step_levels": "Szintek: feketepont {black_point}, gamma {gamma}, fehérpont {white_point}, küszöb {threshold}",
+    "step_crop": "Kivágás",
+    "step_straighten": "Kiegyenesítés: {angle}°",
+    "step_straighten_auto": "Automatikus kiegyenesítés",
+    "step_clone": "Klónozás: {stroke_points} pont festve",
+    "step_text": "Szöveg: {count} blokk",
+    "step_shapes": "Alakzatok: {count} alakzat",
+    "step_brightness": "Fényerő {brightness}, kontraszt {contrast}",
+    "step_saturation": "Telítettség: {saturation}",
+    "step_remove_colors": "Színek eltávolítása: intenzitás {intensity}",
+    "step_compression": "Tömörítés: minőség {quality}",
+    "step_sharpness": "Élesség: {value}",
+    "step_unsharp": "Adaptív élesítés: sugár {radius}, mérték {percent}, küszöb {threshold}",
+    "step_color_depth": "Színmélység: {key}",
+    "step_effect": "Effekt: {key}",
+    "step_image_mode": "Képmód: {key}",
+    "step_restore_color_depth": "Eredeti színmélység visszaállítása",
+    "step_restore_effect": "Eredeti effekt visszaállítása",
+    "step_restore_image_mode": "Eredeti képmód visszaállítása",
+    "step_transparency": "Átlátszóság: {count} kattintás",
+    "step_paste_image": "Beillesztett kép: {count} kép"
   }
 }

@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Pano görselini sayfaya yapıştırır, boyutlandırma/döndürme için tutamaçlar",
     "toolbar_paste_image_disabled": "Pano yalnızca bir görsel içermelidir",
     "color_depth_panel_blocked_format": "Kullanılamıyor: dosyanın özgün {format} biçimi bu renk derinliğini desteklemiyor.",
-    "image_mode_panel_blocked_format": "Kullanılamıyor: dosyanın özgün {format} biçimi bu modu desteklemiyor."
+    "image_mode_panel_blocked_format": "Kullanılamıyor: dosyanın özgün {format} biçimi bu modu desteklemiyor.",
+    "toolbar_macro_record_tooltip": "Kaydet",
+    "toolbar_macro_record_instruction": "Görüntülenen sayfada bir makro kaydını başlatır",
+    "toolbar_macro_play_tooltip": "Oynat",
+    "toolbar_macro_play_instruction": "Görüntülenen sayfada kaydedilmiş bir makroyu oynatır",
+    "macro_read_interrupted_title": "Makro kesildi",
+    "macro_read_interrupted_message": "Görüntüleyicinin kapatılması makro oynatımını kesti. Bu oynatma tarafından zaten uygulanan tüm değişiklikler geri alındı."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Parlaklık, kontrast, renkler...",
       "refresh_mosaic": "Mozaiği yenile (F5)",
       "create_ico": ".ico dosyası oluştur",
-      "straighten_auto": "Görüntüyü otomatik olarak düzelt"
+      "straighten_auto": "Görüntüyü otomatik olarak düzelt",
+      "read_macro": "Bir makro oynat"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF Aç",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Otomatik düzeltme devam ediyor...\n{percent}%"
+    "deskewing": "Otomatik düzeltme devam ediyor...\n{percent}%",
+    "macro_preparing": "Oynatma hazırlanıyor..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Kesme maskesi"
+    },
+    "macro_record": {
+      "title": "Bir makro kaydet",
+      "btn_stop": "Bitir",
+      "btn_cancel": "İptal",
+      "name_dialog_title": "Makroyu adlandır",
+      "name_label": "Ad:",
+      "name_placeholder": "Makro adı",
+      "description_label": "Açıklama:",
+      "description_placeholder": "Açıklama (isteğe bağlı)",
+      "btn_save": "Kaydet"
+    },
+    "macro_read": {
+      "title": "Bir makro oynat",
+      "btn_rename": "Yeniden adlandır",
+      "btn_delete": "Sil",
+      "btn_complete": "Tamamla",
+      "btn_play": "Oynat",
+      "corrupt_title": "Okunamayan makro dosyası",
+      "corrupt_message": "Bir veya daha fazla makro dosyası okunamadı ve listede görünmüyor: {files}",
+      "report_title": "Oynatma tamamlandı",
+      "report_message": "Başarıyla işlenen sayfalar: {ok}\nKısmen işlenen sayfalar: {partial}\nBaşarısız sayfalar: {failed}",
+      "no_macros": "Henüz kaydedilmiş bir makro yok.",
+      "btn_pick_file": "Dosya seç",
+      "pick_file_title": "Makro seç",
+      "hint_record_from_viewer": "Makrolar görüntüleyiciden kaydedilir.",
+      "report_failed_line": "{page}: « {step} » adımında başarısız oldu",
+      "report_partial_line": "{page}: {applied} adım uygulandı, « {step} » adımında başarısız oldu"
+    },
+    "macro_name_error": {
+      "empty": "Makro adı boş olamaz.",
+      "too_long": "Makro adı 30 karakteri geçmemelidir.",
+      "invalid_chars": "Bu ad, dosya adında izin verilmeyen karakterler içeriyor.",
+      "reserved_name": "Bu ad Windows tarafından ayrılmıştır ve kullanılamaz.",
+      "duplicate": "Bu ada sahip bir makro zaten var."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Görüntünün ayrıntılarını güçlendirir veya yumuşatır\nUyarlanabilir netliğe geçmek için sağ tıklayın",
     "sharpness_mode_1": "Düz alanları koruyarak kenarları belirginleştirir\nBasit netliğe geçmek için sağ tıklayın",
     "crop_mode_0": "Korunacak alanın üzerine bir dikdörtgen çizin, ardından onaylayın\nSağ tık kesme maskesi moduna geçirir",
-    "crop_mode_1": "Kesme maskesi modu: bir dikdörtgeni hafızaya alın ve sonraki sayfalarda çağırın\nSağ tık normal moda döndürür"
+    "crop_mode_1": "Kesme maskesi modu: bir dikdörtgeni hafızaya alın ve sonraki sayfalarda çağırın\nSağ tık normal moda döndürür",
+    "read_macro_selected": "Seçili sayfalarda bir makro oynat"
   },
   "help": {
     "title": "MosaicView - Kullanım Kılavuzu",
@@ -1498,7 +1542,9 @@
     "scan": "Bir görüntü tara",
     "scan_content": "• Tarama penceresini açmak için \"Tara\" düğmesine (simge sütunu, Dosya menüsü veya mozaik üzerinde sağ tıklama) tıklayın. MosaicView tarayıcınızı doğrudan yönetir (Windows'un tarama sistemi olan WIA aracılığıyla): cihazı, çözünürlüğü (DPI), renk modunu (renkli / gri tonlama / siyah beyaz) seçin, ardından \"Tara\" düğmesine tıklayın. Bir tarayıcının listede görünmesi için bağlı, açık olması ve sürücüsünün Windows'a yüklenmiş olması gerekir.\n• Son kullanılan tarayıcı, çözünürlük ve seçilen renk modu hatırlanır ve bir sonraki taramada otomatik olarak yeniden önerilir.\n• Yalnızca tam sayfa tarama ve JPG olarak dışa aktarma sunulur, çünkü uygulama daha sonraki görüntü rötuşu ve format dönüştürme için gereken her şeye zaten sahiptir.\n• Taranan görüntü, mevcut sayfaların ardından otomatik olarak mozaiğe eklenir. Ardından, mozaiğin diğer sayfaları gibi onu kırpabilir, düzeltebilir, renklerini ayarlayabilirsiniz vb.\n• Bu özellik, üretici yazılımını kullanmadan veya kendi yapılandırma penceresini göstermeden tarayıcıyı doğrudan yönetir.\n• Fiziksel bir tarayıcı aynı anda yalnızca tek bir bağlantı tarafından kontrol edilebildiğinden, tarama işlemi yalnızca tek bir panelde mümkündür: bir panelde tarama penceresi açıksa veya tarama devam ediyorsa, işlem tamamlanana kadar diğer paneldeki \"Tara\" düğmesi gri kalır.",
     "straighten": "Bir sayfayı düzelt",
-    "straighten_content": "Otomatik düzeltme (hiçbir şey çizmeden) simge sütunundan (moda geçmek için \"Düzelt\" simgesine sağ tıklayın), Görüntüler menüsünden veya mozaiğe sağ tıklayarak kullanılabilir: eğimi kendi kendine algılar ve seçilen sayfayı/sayfaları doğrudan düzeltir; döndürme ile oluşan boş köşeler beyazla doldurulur. Aynı anda birden fazla sayfada çalışır. Bir özet penceresi kaç sayfanın başarıyla düzeltildiğini gösterir ve güvenilir bir eğim algılanamayan sayfaları listeler.\n\nManuel düzeltme (referans çizgisi çizme) ana görüntüleyiciden yapılır, Görüntüleyici bölümüne bakın."
+    "straighten_content": "Otomatik düzeltme (hiçbir şey çizmeden) simge sütunundan (moda geçmek için \"Düzelt\" simgesine sağ tıklayın), Görüntüler menüsünden veya mozaiğe sağ tıklayarak kullanılabilir: eğimi kendi kendine algılar ve seçilen sayfayı/sayfaları doğrudan düzeltir; döndürme ile oluşan boş köşeler beyazla doldurulur. Aynı anda birden fazla sayfada çalışır. Bir özet penceresi kaç sayfanın başarıyla düzeltildiğini gösterir ve güvenilir bir eğim algılanamayan sayfaları listeler.\n\nManuel düzeltme (referans çizgisi çizme) ana görüntüleyiciden yapılır, Görüntüleyici bölümüne bakın.",
+    "macro": "Makrolar",
+    "macro_content": "Makro aracı (görüntüleyici araç çubuğundaki «Kaydet»/«Oynat» simgeleri) bir sayfada gerçekleştirilen bir eylem dizisini kaydeder ve bunu bir veya birkaç başka sayfada aynen tekrar oynatır — görüntüleyiciden veya birden çok sayfa için mozaikten (Görüntüler menüsü, sağ tık, simge sütunu). Son bir rapor penceresi, başarıyla, kısmen veya başarısız olarak işlenen sayfaları, her başarısızlığın nedeniyle birlikte listeler."
   },
   "misc": {
     "file_word": "dosya",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Windows genel sürücüsüyle dene",
     "open_log": "Tarama günlüğünü aç",
     "reveal_log": "Tarama günlüğünü Gezginde göster"
+  },
+  "macro": {
+    "step_rotate": "Döndürme: {angle}°",
+    "step_flip": "Ayna {direction}",
+    "step_levels": "Seviyeler: siyah nokta {black_point}, gama {gamma}, beyaz nokta {white_point}, eşik {threshold}",
+    "step_crop": "Kırpma",
+    "step_straighten": "Düzeltme: {angle}°",
+    "step_straighten_auto": "Otomatik düzeltme",
+    "step_clone": "Klonlama: {stroke_points} nokta boyandı",
+    "step_text": "Metin: {count} blok",
+    "step_shapes": "Şekiller: {count} şekil",
+    "step_brightness": "Parlaklık {brightness}, kontrast {contrast}",
+    "step_saturation": "Doygunluk: {saturation}",
+    "step_remove_colors": "Renk kaldırma: yoğunluk {intensity}",
+    "step_compression": "Sıkıştırma: kalite {quality}",
+    "step_sharpness": "Netlik: {value}",
+    "step_unsharp": "Uyarlanabilir netlik: yarıçap {radius}, güç {percent}, eşik {threshold}",
+    "step_color_depth": "Renk derinliği: {key}",
+    "step_effect": "Efekt: {key}",
+    "step_image_mode": "Görüntü modu: {key}",
+    "step_restore_color_depth": "Orijinal renk derinliğini geri yükle",
+    "step_restore_effect": "Orijinal efekti geri yükle",
+    "step_restore_image_mode": "Orijinal görüntü modunu geri yükle",
+    "step_transparency": "Saydamlık: {count} tıklama",
+    "step_paste_image": "Yapıştırılan görüntü: {count} görüntü"
   }
 }

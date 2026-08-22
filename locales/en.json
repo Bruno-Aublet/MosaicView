@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Pastes the clipboard image onto the page, handles to resize/rotate",
     "toolbar_paste_image_disabled": "The clipboard must contain only an image",
     "color_depth_panel_blocked_format": "Unavailable: the file's original {format} format does not support this depth.",
-    "image_mode_panel_blocked_format": "Unavailable: the file's original {format} format does not support this mode."
+    "image_mode_panel_blocked_format": "Unavailable: the file's original {format} format does not support this mode.",
+    "toolbar_macro_record_tooltip": "Record",
+    "toolbar_macro_record_instruction": "Starts recording a macro on the displayed page",
+    "toolbar_macro_play_tooltip": "Play",
+    "toolbar_macro_play_instruction": "Replays a recorded macro on the displayed page",
+    "macro_read_interrupted_title": "Macro interrupted",
+    "macro_read_interrupted_message": "Macro playback was interrupted by closing the viewer. All changes already applied by this playback have been undone."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Brightness, contrast, colors...",
       "refresh_mosaic": "Refresh mosaic (F5)",
       "create_ico": "Create .ico file",
-      "straighten_auto": "Straighten the image automatically"
+      "straighten_auto": "Straighten the image automatically",
+      "read_macro": "Play a macro"
     },
     "canvas_no_file": {
       "open": "Open CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Automatic straightening in progress...\n{percent}%"
+    "deskewing": "Automatic straightening in progress...\n{percent}%",
+    "macro_preparing": "Preparing playback..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Crop mask"
+    },
+    "macro_record": {
+      "title": "Record a macro",
+      "btn_stop": "Finish",
+      "btn_cancel": "Cancel",
+      "name_dialog_title": "Name the macro",
+      "name_label": "Name:",
+      "name_placeholder": "Macro name",
+      "description_label": "Description:",
+      "description_placeholder": "Description (optional)",
+      "btn_save": "Save"
+    },
+    "macro_read": {
+      "title": "Play a macro",
+      "btn_rename": "Rename",
+      "btn_delete": "Delete",
+      "btn_complete": "Complete",
+      "btn_play": "Play",
+      "corrupt_title": "Unreadable macro file",
+      "corrupt_message": "One or more macro files could not be read and do not appear in the list: {files}",
+      "report_title": "Playback finished",
+      "report_message": "Pages processed successfully: {ok}\nPartially processed pages: {partial}\nFailed pages: {failed}",
+      "no_macros": "No macro recorded yet.",
+      "btn_pick_file": "Choose a file",
+      "pick_file_title": "Choose a macro",
+      "hint_record_from_viewer": "Macros are recorded from the viewer.",
+      "report_failed_line": "{page}: failed at step « {step} »",
+      "report_partial_line": "{page}: {applied} step(s) applied, failed at step « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "The macro name cannot be empty.",
+      "too_long": "The macro name must not exceed 30 characters.",
+      "invalid_chars": "This name contains characters not allowed in a file name.",
+      "reserved_name": "This name is reserved by Windows and cannot be used.",
+      "duplicate": "A macro with this name already exists."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Enhances or softens the image details\nRight-click to switch to adaptive sharpness",
     "sharpness_mode_1": "Accentuates edges while sparing flat areas\nRight-click to switch to simple sharpness",
     "crop_mode_0": "Draw a rectangle on the area to keep, then validate\nRight-click to switch to crop mask mode",
-    "crop_mode_1": "Crop mask mode: memorize a rectangle and recall it on the following pages\nRight-click to return to normal mode"
+    "crop_mode_1": "Crop mask mode: memorize a rectangle and recall it on the following pages\nRight-click to return to normal mode",
+    "read_macro_selected": "Play a macro on the selected pages"
   },
   "help": {
     "title": "MosaicView - User Manual",
@@ -1498,7 +1542,9 @@
     "scan": "Scan an image",
     "scan_content": "• Click the “Scan” button (icon column, File menu, or right-click on the mosaic) to open the scanning window. MosaicView drives your scanner directly (via WIA, the Windows scanning system): select the device, the resolution (DPI), the color mode (color / grayscale / black and white), then click “Scan”. A scanner must be plugged in, powered on, and its driver installed on Windows to appear in the list.\n• The last scanner used, resolution, and color mode you chose are remembered and automatically proposed again the next time you scan.\n• Only full-page scanning and exporting as JPG are offered, as the application already has everything needed for image editing and format conversion afterwards.\n• The scanned image is automatically added to the mosaic, after the pages already present. You can then crop it, straighten it, adjust its colors, etc. like any other page in the mosaic\n• This feature drives the scanner directly, without going through the manufacturer's software or displaying its own configuration window.\n• Since a physical scanner can only be driven by one connection at a time, scanning is only possible in one panel at a time: if a scan window is open or a scan is in progress in one panel, the \"Scan\" button stays grayed out in the other panel until the operation finishes.",
     "straighten": "Straighten a page",
-    "straighten_content": "Automatic straightening (no line to draw) is available from the icon column (right-click the \"Straighten\" icon to switch mode), the Images menu, or right-clicking the mosaic: it detects the skew on its own and straightens the selected page(s) directly; empty corners created by the rotation are filled in white. Works on several pages at once. A summary window shows how many pages were straightened successfully and lists the ones where no reliable skew could be detected.\n\nManual straightening (drawing a reference line) is done from the main viewer, see the Viewer section."
+    "straighten_content": "Automatic straightening (no line to draw) is available from the icon column (right-click the \"Straighten\" icon to switch mode), the Images menu, or right-clicking the mosaic: it detects the skew on its own and straightens the selected page(s) directly; empty corners created by the rotation are filled in white. Works on several pages at once. A summary window shows how many pages were straightened successfully and lists the ones where no reliable skew could be detected.\n\nManual straightening (drawing a reference line) is done from the main viewer, see the Viewer section.",
+    "macro": "Macros",
+    "macro_content": "The Macros tool («Record»/«Play» icons in the viewer toolbar) records a sequence of actions performed on a page and replays it identically on one or several others — from the viewer, or for several pages at once, from the mosaic (Images menu, right-click, icon column). A final report window lists pages processed successfully, partially, or failed, with the reason for each failure."
   },
   "misc": {
     "file_word": "file",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Try with the generic Windows driver",
     "open_log": "Open scan log",
     "reveal_log": "Show scan log in Explorer"
+  },
+  "macro": {
+    "step_rotate": "Rotation: {angle}°",
+    "step_flip": "Mirror {direction}",
+    "step_levels": "Levels: black point {black_point}, gamma {gamma}, white point {white_point}, threshold {threshold}",
+    "step_crop": "Crop",
+    "step_straighten": "Straighten: {angle}°",
+    "step_straighten_auto": "Automatic straighten",
+    "step_clone": "Clone: {stroke_points} point(s) painted",
+    "step_text": "Text: {count} block(s)",
+    "step_shapes": "Shapes: {count} shape(s)",
+    "step_brightness": "Brightness {brightness}, contrast {contrast}",
+    "step_saturation": "Saturation: {saturation}",
+    "step_remove_colors": "Remove colors: intensity {intensity}",
+    "step_compression": "Compression: quality {quality}",
+    "step_sharpness": "Sharpness: {value}",
+    "step_unsharp": "Adaptive sharpness: radius {radius}, amount {percent}, threshold {threshold}",
+    "step_color_depth": "Color depth: {key}",
+    "step_effect": "Effect: {key}",
+    "step_image_mode": "Image mode: {key}",
+    "step_restore_color_depth": "Restore original color depth",
+    "step_restore_effect": "Restore original effect",
+    "step_restore_image_mode": "Restore original image mode",
+    "step_transparency": "Transparency: {count} click(s)",
+    "step_paste_image": "Pasted image: {count} image(s)"
   }
 }

@@ -589,8 +589,10 @@ class SharpnessViewerMixin:
             original.copy(), {'sharpness': value}, for_preview=True)
         self.display_image(keep_crop_rect=True)
 
-    def perform_sharpness(self):
-        """Relâchement du slider : commit réel de la netteté dans
+    def perform_sharpness(self, skip_history: bool = False):
+        """skip_history : propagé à apply_image_adjustments().
+
+        Relâchement du slider : commit réel de la netteté dans
         entry['bytes'] (pattern skill apply-image-operation, variante A
         complète) — réutilise apply_image_adjustments() (image_processing_qt.py).
         Devient sa propre entrée d'historique,
@@ -620,7 +622,8 @@ class SharpnessViewerMixin:
 
         try:
             entry = state.images_data[self.current_idx]
-            apply_image_adjustments([entry], {'sharpness': value}, callbacks=self.callbacks)
+            apply_image_adjustments([entry], {'sharpness': value}, callbacks=self.callbacks,
+                                     skip_history=skip_history)
 
             # apply_image_adjustments() vient de faire save_state(force=True)
             # en interne : state.history_index pointe maintenant sur CE
@@ -654,12 +657,18 @@ class SharpnessViewerMixin:
             # levels_tool_qt.py::perform_levels.
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
+            self._macro_record_step(
+                "sharpness", {"value": value},
+                "macro.step_sharpness", {"value": value},
+            )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.sharpness_failed.title",
                             "messages.errors.sharpness_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
     def _reset_sharpness_preview(self):
         """Annule le preview visuel en cours (drag non relâché) et
@@ -726,8 +735,10 @@ class SharpnessViewerMixin:
             for_preview=True)
         self.display_image(keep_crop_rect=True)
 
-    def perform_unsharp(self):
-        """Équivalent de perform_sharpness() pour les 3 réglettes unsharp :
+    def perform_unsharp(self, skip_history: bool = False):
+        """skip_history : propagé à apply_image_adjustments().
+
+        Équivalent de perform_sharpness() pour les 3 réglettes unsharp :
         commit réel dans entry['bytes'] au relâchement d'un slider ou à la
         validation d'une spinbox, réutilise apply_image_adjustments().
         Les réglettes ne reviennent PAS à leurs valeurs par défaut après ce
@@ -750,7 +761,7 @@ class SharpnessViewerMixin:
                 'unsharp_radius': radius,
                 'unsharp_percent': percent,
                 'unsharp_threshold': threshold,
-            }, callbacks=self.callbacks)
+            }, callbacks=self.callbacks, skip_history=skip_history)
 
             # Même principe que perform_sharpness() : mémorisé sur state (PAS
             # sur self/ImageViewer) pour survivre à une fermeture/réouverture
@@ -780,12 +791,19 @@ class SharpnessViewerMixin:
             # levels_tool_qt.py::perform_levels.
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
+            self._macro_record_step(
+                "unsharp", {"radius": radius, "percent": percent, "threshold": threshold},
+                "macro.step_unsharp",
+                {"radius": radius, "percent": percent, "threshold": threshold},
+            )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.unsharp_failed.title",
                             "messages.errors.unsharp_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
     def _reset_unsharp_preview(self):
         """Équivalent de _reset_sharpness_preview() pour les 3 réglettes

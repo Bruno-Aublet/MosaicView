@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Lijepi sliku iz međuspremnika na stranicu, ručke za promjenu veličine/rotaciju",
     "toolbar_paste_image_disabled": "Međuspremnik mora sadržavati samo sliku",
     "color_depth_panel_blocked_format": "Nedostupno: izvorni format datoteke {format} ne podržava ovu dubinu boje.",
-    "image_mode_panel_blocked_format": "Nedostupno: izvorni format datoteke {format} ne podržava ovaj način rada."
+    "image_mode_panel_blocked_format": "Nedostupno: izvorni format datoteke {format} ne podržava ovaj način rada.",
+    "toolbar_macro_record_tooltip": "Snimi",
+    "toolbar_macro_record_instruction": "Pokreće snimanje makronaredbe na prikazanoj stranici",
+    "toolbar_macro_play_tooltip": "Reproduciraj",
+    "toolbar_macro_play_instruction": "Reproducira snimljenu makronaredbu na prikazanoj stranici",
+    "macro_read_interrupted_title": "Makronaredba prekinuta",
+    "macro_read_interrupted_message": "Reprodukcija makronaredbe prekinuta je zatvaranjem preglednika. Sve promjene koje je ta reprodukcija već primijenila su poništene."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Svjetlina, kontrast, boje...",
       "refresh_mosaic": "Osvježi mozaik (F5)",
       "create_ico": "Stvori .ico datoteku",
-      "straighten_auto": "Automatski ispravi sliku"
+      "straighten_auto": "Automatski ispravi sliku",
+      "read_macro": "Reproduciraj makronaredbu"
     },
     "canvas_no_file": {
       "open": "Otvori CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Automatsko ispravljanje u tijeku...\n{percent}%"
+    "deskewing": "Automatsko ispravljanje u tijeku...\n{percent}%",
+    "macro_preparing": "Priprema reprodukcije..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Maska obrezivanja"
+    },
+    "macro_record": {
+      "title": "Snimi makronaredbu",
+      "btn_stop": "Završi",
+      "btn_cancel": "Odustani",
+      "name_dialog_title": "Imenuj makronaredbu",
+      "name_label": "Naziv:",
+      "name_placeholder": "Naziv makronaredbe",
+      "description_label": "Opis:",
+      "description_placeholder": "Opis (neobavezno)",
+      "btn_save": "Spremi"
+    },
+    "macro_read": {
+      "title": "Reproduciraj makronaredbu",
+      "btn_rename": "Preimenuj",
+      "btn_delete": "Izbriši",
+      "btn_complete": "Dopuni",
+      "btn_play": "Reproduciraj",
+      "corrupt_title": "Nečitljiva datoteka makronaredbe",
+      "corrupt_message": "Jedna ili više datoteka makronaredbi nije se moglo pročitati i ne pojavljuju se na popisu: {files}",
+      "report_title": "Reprodukcija završena",
+      "report_message": "Uspješno obrađene stranice: {ok}\nDjelomično obrađene stranice: {partial}\nNeuspjele stranice: {failed}",
+      "no_macros": "Još nijedan makro nije snimljen.",
+      "btn_pick_file": "Odaberi datoteku",
+      "pick_file_title": "Odaberi makro",
+      "hint_record_from_viewer": "Makri se snimaju iz preglednika.",
+      "report_failed_line": "{page}: neuspjeh u koraku « {step} »",
+      "report_partial_line": "{page}: primijenjeno {applied} koraka, neuspjeh u « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Naziv makronaredbe ne smije biti prazan.",
+      "too_long": "Naziv makronaredbe ne smije premašiti 30 znakova.",
+      "invalid_chars": "Ovaj naziv sadrži znakove koji nisu dopušteni u nazivu datoteke.",
+      "reserved_name": "Ovaj naziv je rezerviran od strane sustava Windows i ne može se koristiti.",
+      "duplicate": "Makronaredba s ovim nazivom već postoji."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Pojačava ili ublažava detalje slike\nDesni klik za prebacivanje na prilagodljivu oštrinu",
     "sharpness_mode_1": "Naglašava obrise štedeći ujednačena područja\nDesni klik za prebacivanje na jednostavnu oštrinu",
     "crop_mode_0": "Nacrtajte pravokutnik na području koje želite zadržati, zatim potvrdite\nDesni klik prebacuje u način maske obrezivanja",
-    "crop_mode_1": "Način maske obrezivanja: zapamtite pravokutnik i pozovite ga na sljedećim stranicama\nDesni klik vraća u normalni način"
+    "crop_mode_1": "Način maske obrezivanja: zapamtite pravokutnik i pozovite ga na sljedećim stranicama\nDesni klik vraća u normalni način",
+    "read_macro_selected": "Reproduciraj makronaredbu na odabranim stranicama"
   },
   "help": {
     "title": "MosaicView - Upute za korištenje",
@@ -1498,7 +1542,9 @@
     "scan": "Skeniraj sliku",
     "scan_content": "• Kliknite gumb „Skeniraj” (stupac ikona, izbornik Datoteka ili desni klik na mozaik) da biste otvorili prozor za skeniranje. MosaicView izravno upravlja vašim skenerom (putem WIA, sustava za skeniranje sustava Windows): odaberite uređaj, rezoluciju (DPI), način boje (boja / sivi tonovi / crno-bijelo), a zatim kliknite „Skeniraj”. Skener mora biti priključen, uključen i s instaliranim upravljačkim programom u sustavu Windows kako bi se pojavio na popisu.\n• Posljednje korišteni skener, razlučivost i odabrani way boja se pamte i automatski ponovno predlažu prilikom sljedećeg skeniranja.\n• Nudi se samo skeniranje cijele stranice i izvoz u JPG, budući da aplikacija već ima sve potrebno za naknadnu obradu i konverziju slike.\n• Skenirana slika automatski se dodaje mozaiku, nakon već postojećih stranica. Zatim je možete izrezati, poravnati, prilagoditi boje itd. kao i bilo koju drugu stranicu mozaika\n• Ova značajka izravno upravlja skenerom, bez korištenja softvera proizvođača ili prikazivanja njegovog vlastitog prozora za konfiguraciju.\n• Budući da fizičkim skenerom u svakom trenutku može upravljati samo jedna veza, skeniranje je moguće samo u jednom panelu odjednom: ako je u jednom panelu otvoren prozor za skeniranje ili je skeniranje u tijeku, gumb „Skeniraj” ostaje siv u drugom panelu do završetka operacije.",
     "straighten": "Ispravi stranicu",
-    "straighten_content": "Automatsko ravnanje (bez crtanja) dostupno je iz stupca ikona (desni klik na ikonu \"Poravnaj\" za promjenu načina), izbornika Slike, ili desni klik na mozaik: samostalno otkriva nagib i izravno ravna odabranu stranicu/stranice; prazni kutovi nastali rotacijom ispunjavaju se bijelom bojom. Radi na više stranica odjednom. Prozor sažetka prikazuje koliko je stranica uspješno poravnano i navodi one kod kojih nije otkriven pouzdan nagib.\n\nRučno ravnanje (crtanje referentne crte) obavlja se iz glavnog preglednika, pogledajte odjeljak Preglednik."
+    "straighten_content": "Automatsko ravnanje (bez crtanja) dostupno je iz stupca ikona (desni klik na ikonu \"Poravnaj\" za promjenu načina), izbornika Slike, ili desni klik na mozaik: samostalno otkriva nagib i izravno ravna odabranu stranicu/stranice; prazni kutovi nastali rotacijom ispunjavaju se bijelom bojom. Radi na više stranica odjednom. Prozor sažetka prikazuje koliko je stranica uspješno poravnano i navodi one kod kojih nije otkriven pouzdan nagib.\n\nRučno ravnanje (crtanje referentne crte) obavlja se iz glavnog preglednika, pogledajte odjeljak Preglednik.",
+    "macro": "Makronaredbe",
+    "macro_content": "Alat Makronaredbe (ikone «Snimi»/«Reproduciraj» na alatnoj traci preglednika) snima niz radnji izvedenih na stranici i reproducira ih identično na jednoj ili više drugih — iz preglednika ili, za više stranica, iz mozaika (izbornik Slike, desni klik, stupac ikona). Prozor konačnog izvješća prikazuje stranice obrađene uspješno, djelomično ili neuspješno, s razlogom svakog neuspjeha."
   },
   "misc": {
     "file_word": "datoteka",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Pokušaj s generičkim Windows upravljačkim programom",
     "open_log": "Otvori zapisnik skeniranja",
     "reveal_log": "Prikaži zapisnik skeniranja u Exploreru"
+  },
+  "macro": {
+    "step_rotate": "Rotacija: {angle}°",
+    "step_flip": "Zrcaljenje {direction}",
+    "step_levels": "Razine: crna točka {black_point}, gama {gamma}, bijela točka {white_point}, prag {threshold}",
+    "step_crop": "Obrezivanje",
+    "step_straighten": "Ispravljanje: {angle}°",
+    "step_straighten_auto": "Automatsko ispravljanje",
+    "step_clone": "Kloniranje: naslikano {stroke_points} točka/e",
+    "step_text": "Tekst: {count} blok(ova)",
+    "step_shapes": "Oblici: {count} oblik(a)",
+    "step_brightness": "Svjetlina {brightness}, kontrast {contrast}",
+    "step_saturation": "Zasićenost: {saturation}",
+    "step_remove_colors": "Uklanjanje boja: intenzitet {intensity}",
+    "step_compression": "Kompresija: kvaliteta {quality}",
+    "step_sharpness": "Oštrina: {value}",
+    "step_unsharp": "Adaptivna oštrina: radijus {radius}, jačina {percent}, prag {threshold}",
+    "step_color_depth": "Dubina boje: {key}",
+    "step_effect": "Efekt: {key}",
+    "step_image_mode": "Način slike: {key}",
+    "step_restore_color_depth": "Vrati izvornu dubinu boje",
+    "step_restore_effect": "Vrati izvorni efekt",
+    "step_restore_image_mode": "Vrati izvorni način slike",
+    "step_transparency": "Prozirnost: {count} klik(a)",
+    "step_paste_image": "Zalijepljena slika: {count} slika(e)"
   }
 }

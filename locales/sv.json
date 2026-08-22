@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Klistrar in urklippsbilden på sidan, handtag för att ändra storlek/rotera",
     "toolbar_paste_image_disabled": "Urklipp får bara innehålla en bild",
     "color_depth_panel_blocked_format": "Inte tillgängligt: filens ursprungliga {format}-format stöder inte detta färgdjup.",
-    "image_mode_panel_blocked_format": "Inte tillgängligt: filens ursprungliga {format}-format stöder inte detta läge."
+    "image_mode_panel_blocked_format": "Inte tillgängligt: filens ursprungliga {format}-format stöder inte detta läge.",
+    "toolbar_macro_record_tooltip": "Spela in",
+    "toolbar_macro_record_instruction": "Startar inspelning av ett makro på den visade sidan",
+    "toolbar_macro_play_tooltip": "Spela upp",
+    "toolbar_macro_play_instruction": "Spelar upp ett inspelat makro på den visade sidan",
+    "macro_read_interrupted_title": "Makro avbrutet",
+    "macro_read_interrupted_message": "Uppspelningen av makrot avbröts genom att stänga visaren. Alla ändringar som redan gjorts av denna uppspelning har ångrats."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Ljusstyrka, kontrast, färger...",
       "refresh_mosaic": "Uppdatera mosaiken (F5)",
       "create_ico": "Skapa .ico-fil",
-      "straighten_auto": "Räta bilden automatiskt"
+      "straighten_auto": "Räta bilden automatiskt",
+      "read_macro": "Spela upp ett makro"
     },
     "canvas_no_file": {
       "open": "Öppna CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Automatisk rätning pågår...\n{percent}%"
+    "deskewing": "Automatisk rätning pågår...\n{percent}%",
+    "macro_preparing": "Förbereder uppspelning..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Beskärningsmask"
+    },
+    "macro_record": {
+      "title": "Spela in ett makro",
+      "btn_stop": "Avsluta",
+      "btn_cancel": "Avbryt",
+      "name_dialog_title": "Namnge makrot",
+      "name_label": "Namn:",
+      "name_placeholder": "Makronamn",
+      "description_label": "Beskrivning:",
+      "description_placeholder": "Beskrivning (valfritt)",
+      "btn_save": "Spara"
+    },
+    "macro_read": {
+      "title": "Spela upp ett makro",
+      "btn_rename": "Byt namn",
+      "btn_delete": "Ta bort",
+      "btn_complete": "Komplettera",
+      "btn_play": "Spela upp",
+      "corrupt_title": "Oläsbar makrofil",
+      "corrupt_message": "En eller flera makrofiler kunde inte läsas och visas inte i listan: {files}",
+      "report_title": "Uppspelning slutförd",
+      "report_message": "Sidor bearbetade med lyckat resultat: {ok}\nDelvis bearbetade sidor: {partial}\nMisslyckade sidor: {failed}",
+      "no_macros": "Inget makro har spelats in än.",
+      "btn_pick_file": "Välj en fil",
+      "pick_file_title": "Välj ett makro",
+      "hint_record_from_viewer": "Makron spelas in från visaren.",
+      "report_failed_line": "{page}: misslyckades vid steg « {step} »",
+      "report_partial_line": "{page}: {applied} steg tillämpade, misslyckades vid « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Makrots namn får inte vara tomt.",
+      "too_long": "Makrots namn får inte överstiga 30 tecken.",
+      "invalid_chars": "Detta namn innehåller tecken som inte är tillåtna i ett filnamn.",
+      "reserved_name": "Detta namn är reserverat av Windows och kan inte användas.",
+      "duplicate": "Ett makro med detta namn finns redan."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Förstärker eller mjukar upp bildens detaljer\nHögerklicka för att växla till adaptiv skärpa",
     "sharpness_mode_1": "Framhäver konturer och skonar enhetliga ytor\nHögerklicka för att växla till enkel skärpa",
     "crop_mode_0": "Rita en rektangel över området som ska behållas och bekräfta\nHögerklick växlar till beskärningsmaskläge",
-    "crop_mode_1": "Beskärningsmaskläge: kom ihåg en rektangel och återkalla den på följande sidor\nHögerklick återgår till normalt läge"
+    "crop_mode_1": "Beskärningsmaskläge: kom ihåg en rektangel och återkalla den på följande sidor\nHögerklick återgår till normalt läge",
+    "read_macro_selected": "Spela upp ett makro på de valda sidorna"
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
@@ -1498,7 +1542,9 @@
     "scan": "Skanna en bild",
     "scan_content": "• Klicka på knappen ”Skanna” (ikonkolumnen, menyn Arkiv eller högerklick på mosaiken) för att öppna skanningsfönstret. MosaicView styr din skanner direkt (via WIA, Windows skanningssystem): välj enhet, upplösning (DPI), färgläge (färg / gråskala / svartvitt) och klicka sedan på ”Skanna”. En skanner måste vara ansluten, påslagen och dess drivrutin installerad i Windows för att visas i listan.\n• Den senast använda skannern, upplösningen och det valda färgläget memoreras och föreslås automatiskt igen vid nästa skanning.\n• Endast helsidesskanning och export som JPG erbjuds, eftersom programmet redan har allt som behövs för bildretuschering och formatkonvertering efteråt.\n• Den skannade bilden läggs automatiskt till i mosaiken, efter de sidor som redan finns. Du kan sedan beskära den, räta ut den, justera dess färger osv. som vilken annan sida som helst i mosaiken\n• Den här funktionen styr skannern direkt, utan att gå via tillverkarens programvara eller visa dess egna konfigurationsfönster.\n• Eftersom en fysisk skanner bara kan styras av en anslutning åt gången är skanning bara möjlig i en panel åt gången: om ett skanningsfönster är öppet eller en skanning pågår i en panel förblir knappen ”Skanna” gråmarkerad i den andra panelen tills åtgärden är klar.",
     "straighten": "Räta en sida",
-    "straighten_content": "Automatisk uträtning (utan att rita något) är tillgänglig från ikonkolumnen (högerklicka på ikonen \"Räta ut\" för att växla läge), menyn Bilder, eller högerklick på mosaiken: den upptäcker lutningen själv och rätar direkt ut den/de valda sidan/sidorna; tomma hörn som skapas av rotationen fylls i vitt. Fungerar på flera sidor samtidigt. Ett sammanfattningsfönster visar hur många sidor som rätades ut framgångsrikt och listar de där ingen pålitlig lutning kunde upptäckas.\n\nManuell uträtning (att rita en referenslinje) görs från huvudvisaren, se avsnittet Visare."
+    "straighten_content": "Automatisk uträtning (utan att rita något) är tillgänglig från ikonkolumnen (högerklicka på ikonen \"Räta ut\" för att växla läge), menyn Bilder, eller högerklick på mosaiken: den upptäcker lutningen själv och rätar direkt ut den/de valda sidan/sidorna; tomma hörn som skapas av rotationen fylls i vitt. Fungerar på flera sidor samtidigt. Ett sammanfattningsfönster visar hur många sidor som rätades ut framgångsrikt och listar de där ingen pålitlig lutning kunde upptäckas.\n\nManuell uträtning (att rita en referenslinje) görs från huvudvisaren, se avsnittet Visare.",
+    "macro": "Makron",
+    "macro_content": "Makroverktyget (ikonerna «Spela in»/«Spela upp» i visarens verktygsfält) spelar in en sekvens av åtgärder på en sida och spelar upp den identiskt på en eller flera andra — från visaren eller, för flera sidor, från mosaiken (menyn Bilder, högerklick, ikonkolumnen). Ett slutligt rapportfönster listar sidor som behandlats framgångsrikt, delvis eller misslyckats, med orsaken till varje misslyckande."
   },
   "misc": {
     "file_word": "fil",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Försök med Windows generiska drivrutin",
     "open_log": "Öppna skanningsloggen",
     "reveal_log": "Visa skanningsloggen i Utforskaren"
+  },
+  "macro": {
+    "step_rotate": "Rotation: {angle}°",
+    "step_flip": "Spegling {direction}",
+    "step_levels": "Nivåer: svartpunkt {black_point}, gamma {gamma}, vitpunkt {white_point}, tröskel {threshold}",
+    "step_crop": "Beskärning",
+    "step_straighten": "Rätning: {angle}°",
+    "step_straighten_auto": "Automatisk rätning",
+    "step_clone": "Kloning: {stroke_points} punkt(er) målade",
+    "step_text": "Text: {count} block",
+    "step_shapes": "Former: {count} form(er)",
+    "step_brightness": "Ljusstyrka {brightness}, kontrast {contrast}",
+    "step_saturation": "Mättnad: {saturation}",
+    "step_remove_colors": "Färgborttagning: intensitet {intensity}",
+    "step_compression": "Komprimering: kvalitet {quality}",
+    "step_sharpness": "Skärpa: {value}",
+    "step_unsharp": "Adaptiv skärpa: radie {radius}, styrka {percent}, tröskel {threshold}",
+    "step_color_depth": "Färgdjup: {key}",
+    "step_effect": "Effekt: {key}",
+    "step_image_mode": "Bildläge: {key}",
+    "step_restore_color_depth": "Återställ ursprungligt färgdjup",
+    "step_restore_effect": "Återställ ursprunglig effekt",
+    "step_restore_image_mode": "Återställ ursprungligt bildläge",
+    "step_transparency": "Transparens: {count} klick",
+    "step_paste_image": "Inklistrad bild: {count} bild(er)"
   }
 }

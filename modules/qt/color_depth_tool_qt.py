@@ -446,8 +446,10 @@ class ColorDepthViewerMixin:
     (_ViewerCanvas), self.callbacks, self.current_idx, self._toolbar (avec
     _color_depth_panel)."""
 
-    def perform_color_depth(self, key: str):
-        """Clic sur un radio de profondeur : commit IMMÉDIAT dans
+    def perform_color_depth(self, key: str, skip_history: bool = False):
+        """skip_history : propagé à apply_image_adjustments().
+
+        Clic sur un radio de profondeur : commit IMMÉDIAT dans
         entry['bytes'] (pattern skill apply-image-operation, variante A
         complète) — réutilise apply_image_adjustments()
         (image_processing_qt.py). Devient sa propre entrée d'historique.
@@ -467,12 +469,13 @@ class ColorDepthViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
-                return
+                return False
 
             if self.current_idx not in state.color_depth_original_bytes_by_page:
                 state.color_depth_original_bytes_by_page[self.current_idx] = entry['bytes']
 
-            apply_image_adjustments([entry], {'color_depth': key}, callbacks=self.callbacks)
+            apply_image_adjustments([entry], {'color_depth': key}, callbacks=self.callbacks,
+                                     skip_history=skip_history)
 
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -487,20 +490,33 @@ class ColorDepthViewerMixin:
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             self._sync_color_depth_panel()
+            self._macro_record_step(
+                "color_depth", {"key": key},
+                "macro.step_color_depth", {"key": key},
+            )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.color_depth_failed.title",
                             "messages.errors.color_depth_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
-    def perform_restore_color_depth(self):
+    def perform_restore_color_depth(self, skip_history: bool = False, _skip_macro_capture: bool = False):
         """Clic sur "Restaurer l'original" : restaure entry['bytes'] au
         snapshot capturé avant le tout premier changement de profondeur de
         cette session d'outil sur cette page — un NOUVEAU commit (ajoute une
         entrée undo/redo, ne dépile pas l'historique), pas un undo. Retire
         ensuite l'entrée du dict pour cette page : un nouveau clic sur une
-        profondeur recommencera un nouveau snapshot."""
+        profondeur recommencera un nouveau snapshot.
+
+        skip_history : propagé à apply_image_adjustments(). _skip_macro_capture
+        (réservé au lecteur de macro) : le snapshot color_depth_original_
+        bytes_by_page n'est valable que pour la page d'enregistrement — à la
+        lecture, la restauration est gérée autrement par
+        run_macro_on_entries, donc cette méthode ne doit pas re-capturer
+        d'étape dans ce cas."""
         from modules.qt import state as _state_module
         from modules.qt.dialogs_qt import MsgDialog
 
@@ -509,12 +525,12 @@ class ColorDepthViewerMixin:
 
         original_bytes = state.color_depth_original_bytes_by_page.get(self.current_idx)
         if original_bytes is None:
-            return
+            return False
 
         try:
             entry = state.images_data[self.current_idx]
             save_state = self.callbacks.get("save_state")
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
 
             entry['bytes'] = original_bytes
@@ -522,7 +538,7 @@ class ColorDepthViewerMixin:
             entry['qt_pixmap_large'] = None
             entry['qt_qimage_large'] = None
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state(force=True)
 
             del state.color_depth_original_bytes_by_page[self.current_idx]
@@ -539,13 +555,20 @@ class ColorDepthViewerMixin:
 
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
+            if not _skip_macro_capture:
+                self._macro_record_step(
+                    "restore_color_depth", {},
+                    "macro.step_restore_color_depth", {},
+                )
             self._sync_color_depth_panel()
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.color_depth_failed.title",
                             "messages.errors.color_depth_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
     def _sync_color_depth_panel(self):
         """Resynchronise les 5 radios sur l'état de la page COURANTE — appelé

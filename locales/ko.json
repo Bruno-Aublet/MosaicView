@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "클립보드의 이미지를 페이지에 붙여넣습니다. 크기 조절/회전 핸들",
     "toolbar_paste_image_disabled": "클립보드에는 이미지만 있어야 합니다",
     "color_depth_panel_blocked_format": "사용 불가: 파일의 원본 {format} 형식은 이 색상 심도를 지원하지 않습니다.",
-    "image_mode_panel_blocked_format": "사용 불가: 파일의 원본 {format} 형식은 이 모드를 지원하지 않습니다."
+    "image_mode_panel_blocked_format": "사용 불가: 파일의 원본 {format} 형식은 이 모드를 지원하지 않습니다.",
+    "toolbar_macro_record_tooltip": "녹화",
+    "toolbar_macro_record_instruction": "표시된 페이지에서 매크로 녹화를 시작합니다",
+    "toolbar_macro_play_tooltip": "재생",
+    "toolbar_macro_play_instruction": "표시된 페이지에서 녹화된 매크로를 재생합니다",
+    "macro_read_interrupted_title": "매크로가 중단되었습니다",
+    "macro_read_interrupted_message": "뷰어를 닫아 매크로 재생이 중단되었습니다. 이 재생에서 이미 적용된 모든 변경 사항이 취소되었습니다."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "밝기, 대비, 색상...",
       "refresh_mosaic": "모자이크 새로고침 (F5)",
       "create_ico": ".ico 파일 만들기",
-      "straighten_auto": "이미지를 자동으로 보정"
+      "straighten_auto": "이미지를 자동으로 보정",
+      "read_macro": "매크로 재생"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF 열기",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "자동 보정 진행 중...\n{percent}%"
+    "deskewing": "자동 보정 진행 중...\n{percent}%",
+    "macro_preparing": "재생 준비 중..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "크롭 마스크"
+    },
+    "macro_record": {
+      "title": "매크로 녹화",
+      "btn_stop": "완료",
+      "btn_cancel": "취소",
+      "name_dialog_title": "매크로 이름 지정",
+      "name_label": "이름:",
+      "name_placeholder": "매크로 이름",
+      "description_label": "설명:",
+      "description_placeholder": "설명(선택 사항)",
+      "btn_save": "저장"
+    },
+    "macro_read": {
+      "title": "매크로 재생",
+      "btn_rename": "이름 바꾸기",
+      "btn_delete": "삭제",
+      "btn_complete": "이어서 녹화",
+      "btn_play": "재생",
+      "corrupt_title": "읽을 수 없는 매크로 파일",
+      "corrupt_message": "하나 이상의 매크로 파일을 읽을 수 없어 목록에 표시되지 않습니다: {files}",
+      "report_title": "재생 완료",
+      "report_message": "성공적으로 처리된 페이지: {ok}\n부분적으로 처리된 페이지: {partial}\n실패한 페이지: {failed}",
+      "no_macros": "아직 기록된 매크로가 없습니다.",
+      "btn_pick_file": "파일 선택",
+      "pick_file_title": "매크로 선택",
+      "hint_record_from_viewer": "매크로는 뷰어에서 기록됩니다.",
+      "report_failed_line": "{page}: 『{step}』 단계에서 실패",
+      "report_partial_line": "{page}: {applied}개 단계 적용됨, 『{step}』에서 실패"
+    },
+    "macro_name_error": {
+      "empty": "매크로 이름은 비워 둘 수 없습니다.",
+      "too_long": "매크로 이름은 30자를 초과할 수 없습니다.",
+      "invalid_chars": "이 이름에는 파일 이름에 허용되지 않는 문자가 포함되어 있습니다.",
+      "reserved_name": "이 이름은 Windows에서 예약되어 있어 사용할 수 없습니다.",
+      "duplicate": "이 이름의 매크로가 이미 존재합니다."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "이미지의 디테일을 강화하거나 부드럽게 합니다\n적응형 선명도로 전환하려면 우클릭하세요",
     "sharpness_mode_1": "균일한 영역은 유지하면서 윤곽선을 강조합니다\n단순 선명도로 전환하려면 우클릭하세요",
     "crop_mode_0": "남길 영역에 사각형을 그린 다음 확인하세요\n우클릭하면 크롭 마스크 모드로 전환됩니다",
-    "crop_mode_1": "크롭 마스크 모드: 사각형을 기억해 두고 다음 페이지에서 불러옵니다\n우클릭하면 일반 모드로 돌아갑니다"
+    "crop_mode_1": "크롭 마스크 모드: 사각형을 기억해 두고 다음 페이지에서 불러옵니다\n우클릭하면 일반 모드로 돌아갑니다",
+    "read_macro_selected": "선택한 페이지에서 매크로 재생"
   },
   "help": {
     "title": "MosaicView - 사용 방법",
@@ -1498,7 +1542,9 @@
     "scan": "이미지 스캔",
     "scan_content": "• \"스캔\" 버튼(아이콘 열, 파일 메뉴 또는 모자이크 위에서 마우스 오른쪽 버튼 클릭)을 클릭하여 스캔 창을 엽니다. MosaicView는 스캐너를 직접 제어합니다(Windows의 스캔 시스템인 WIA 사용): 장치, 해상도(DPI), 색상 모드(컬러 / 회색조 / 흑백)를 선택한 다음 \"스캔\"을 클릭하세요. 목록에 표시되려면 스캐너가 연결되어 있고 전원이 켜져 있으며 드라이버가 Windows에 설치되어 있어야 합니다.\n• 마지막으로 사용한 스캐너, 해상도, 선택한 색상 모드가 기억되어 다음 스캔 시 자동으로 다시 제안됩니다.\n• 애플리케이션이 이후 이미지 보정 및 형식 변환에 필요한 모든 기능을 이미 갖추고 있으므로, 전체 페이지 스캔과 JPG로 내보내기만 제공됩니다.\n• 스캔된 이미지는 이미 존재하는 페이지 뒤에 자동으로 모자이크에 추가됩니다. 이후 모자이크의 다른 페이지와 마찬가지로 자르기, 똑바로 하기, 색상 조정 등을 할 수 있습니다\n• 이 기능은 제조업체의 소프트웨어를 거치지 않고 자체 구성 창을 표시하지 않으면서 스캐너를 직접 제어합니다.\n• 실제 스캐너는 한 번에 하나의 연결로만 제어할 수 있으므로, 스캔은 한 번에 하나의 패널에서만 가능합니다. 한 패널에서 스캔 창이 열려 있거나 스캔이 진행 중이면, 작업이 끝날 때까지 다른 패널의 “스캔” 버튼은 비활성화된 상태로 남습니다.",
     "straighten": "페이지 보정하기",
-    "straighten_content": "자동 수평 맞추기(아무것도 그리지 않음)는 아이콘 열(\"수평 맞추기\" 아이콘을 우클릭하여 모드 전환), 이미지 메뉴, 또는 모자이크에서 우클릭을 통해 사용할 수 있습니다: 스스로 기울기를 감지하고 선택한 페이지를 직접 수평으로 맞춥니다; 회전으로 생긴 빈 모서리는 흰색으로 채워집니다. 여러 페이지에서 동시에 작동합니다. 요약 창에는 성공적으로 수평이 맞춰진 페이지 수와 신뢰할 수 있는 기울기를 감지할 수 없었던 페이지 목록이 표시됩니다.\n\n수동 수평 맞추기(기준선 그리기)는 메인 뷰어에서 수행됩니다. 뷰어 섹션을 참조하세요."
+    "straighten_content": "자동 수평 맞추기(아무것도 그리지 않음)는 아이콘 열(\"수평 맞추기\" 아이콘을 우클릭하여 모드 전환), 이미지 메뉴, 또는 모자이크에서 우클릭을 통해 사용할 수 있습니다: 스스로 기울기를 감지하고 선택한 페이지를 직접 수평으로 맞춥니다; 회전으로 생긴 빈 모서리는 흰색으로 채워집니다. 여러 페이지에서 동시에 작동합니다. 요약 창에는 성공적으로 수평이 맞춰진 페이지 수와 신뢰할 수 있는 기울기를 감지할 수 없었던 페이지 목록이 표시됩니다.\n\n수동 수평 맞추기(기준선 그리기)는 메인 뷰어에서 수행됩니다. 뷰어 섹션을 참조하세요.",
+    "macro": "매크로",
+    "macro_content": "매크로 도구(뷰어 도구 모음의 「기록」/「재생」 아이콘)는 페이지에서 수행한 일련의 작업을 기록하고 하나 또는 여러 다른 페이지에서 동일하게 재생합니다 — 뷰어에서, 또는 여러 페이지의 경우 모자이크(이미지 메뉴, 오른쪽 클릭, 아이콘 열)에서 실행할 수 있습니다. 최종 보고서 창에는 성공, 부분 성공 또는 실패한 페이지가 각 실패 이유와 함께 나열됩니다."
   },
   "misc": {
     "file_word": "개의 파일",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Windows 범용 드라이버로 시도",
     "open_log": "스캔 로그 열기",
     "reveal_log": "탐색기에서 스캔 로그 표시"
+  },
+  "macro": {
+    "step_rotate": "회전: {angle}°",
+    "step_flip": "미러 {direction}",
+    "step_levels": "레벨: 검정점 {black_point}, 감마 {gamma}, 흰점 {white_point}, 임계값 {threshold}",
+    "step_crop": "자르기",
+    "step_straighten": "기울기 보정: {angle}°",
+    "step_straighten_auto": "자동 기울기 보정",
+    "step_clone": "복제: {stroke_points}개 지점 칠함",
+    "step_text": "텍스트: {count}개 블록",
+    "step_shapes": "도형: {count}개 도형",
+    "step_brightness": "밝기 {brightness}, 대비 {contrast}",
+    "step_saturation": "채도: {saturation}",
+    "step_remove_colors": "색상 제거: 강도 {intensity}",
+    "step_compression": "압축: 품질 {quality}",
+    "step_sharpness": "선명도: {value}",
+    "step_unsharp": "적응형 선명도: 반경 {radius}, 강도 {percent}, 임계값 {threshold}",
+    "step_color_depth": "색 농도: {key}",
+    "step_effect": "효과: {key}",
+    "step_image_mode": "이미지 모드: {key}",
+    "step_restore_color_depth": "원래 색 농도로 복원",
+    "step_restore_effect": "원래 효과로 복원",
+    "step_restore_image_mode": "원래 이미지 모드로 복원",
+    "step_transparency": "투명도: {count}회 클릭",
+    "step_paste_image": "붙여넣은 이미지: {count}개"
   }
 }

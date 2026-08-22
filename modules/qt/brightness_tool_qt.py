@@ -355,8 +355,10 @@ class BrightnessViewerMixin:
             for_preview=True)
         self.display_image(keep_crop_rect=True)
 
-    def perform_brightness(self):
-        """Relâchement d'un slider ou validation d'une spinbox : commit réel
+    def perform_brightness(self, skip_history: bool = False):
+        """skip_history : propagé à apply_image_adjustments().
+
+        Relâchement d'un slider ou validation d'une spinbox : commit réel
         de la luminosité/contraste dans entry['bytes'] (pattern skill
         apply-image-operation, variante A complète) — réutilise
         apply_image_adjustments() (image_processing_qt.py), déjà
@@ -389,7 +391,7 @@ class BrightnessViewerMixin:
             entry = state.images_data[self.current_idx]
             apply_image_adjustments(
                 [entry], {'brightness': brightness, 'contrast': contrast},
-                callbacks=self.callbacks)
+                callbacks=self.callbacks, skip_history=skip_history)
 
             # apply_image_adjustments() vient de faire save_state(force=True)
             # en interne : state.history_index pointe maintenant sur CE
@@ -422,12 +424,18 @@ class BrightnessViewerMixin:
             # levels_tool_qt.py::perform_levels.
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
+            self._macro_record_step(
+                "brightness", {"brightness": brightness, "contrast": contrast},
+                "macro.step_brightness", {"brightness": brightness, "contrast": contrast},
+            )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.brightness_failed.title",
                             "messages.errors.brightness_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
     def _reset_brightness_preview(self):
         """Annule le preview visuel en cours (drag non relâché) et

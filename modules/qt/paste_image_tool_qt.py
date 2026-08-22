@@ -511,7 +511,8 @@ class PasteImageViewerMixin:
             return
         self.perform_paste_image()
 
-    def perform_paste_image(self):
+    def perform_paste_image(self, skip_history: bool = False) -> bool:
+        """skip_history : saute les 2 save_state, laissés à l'appelant."""
         import io as _io
         from modules.qt import state as _state_module
         from modules.qt.entries import save_image_to_bytes
@@ -526,17 +527,18 @@ class PasteImageViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
-                dlg = MsgDialog(self._center_parent, "messages.errors.paste_image_failed.title",
-                                "messages.errors.paste_image_failed.title")
-                dlg.show_nonmodal()
-                return
+                if not skip_history:
+                    dlg = MsgDialog(self._center_parent, "messages.errors.paste_image_failed.title",
+                                    "messages.errors.paste_image_failed.title")
+                    dlg.show_nonmodal()
+                return False
 
             base_img_raw = Image.open(_io.BytesIO(entry['bytes']))
             if '_orig_mode' not in entry:
                 entry['_orig_mode'] = base_img_raw.mode
             base_img = base_img_raw.convert('RGBA')
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
 
             composed = self._pasted_images_render_all(base_img)
@@ -568,7 +570,7 @@ class PasteImageViewerMixin:
             _pidx = get_page_image_index(state, entry)
             if _pidx is not None:
                 update_page_entries_in_xml_data(state, [(_pidx, entry)])
-            if save_state:
+            if save_state and not skip_history:
                 save_state(force=True)
 
             real_idx = entry.get("_real_idx")
@@ -582,16 +584,62 @@ class PasteImageViewerMixin:
             if update_btn:
                 update_btn()
 
+            pasted_payload = []
+            if not skip_history:
+                # Bitmap PNG + géométrie en pixels absolus de chaque image
+                # collée, capturés AVANT clear_pasted_images() ci-dessous.
+                import base64 as _base64
+                for p in self._canvas._pasted_images:
+                    buf = _io.BytesIO()
+                    p.pil_img.save(buf, format="PNG")
+                    pasted_payload.append({
+                        "png_b64": _base64.b64encode(buf.getvalue()).decode("ascii"),
+                        "ix1": p.ix1, "iy1": p.iy1, "ix2": p.ix2, "iy2": p.iy2,
+                        "angle": p.angle,
+                    })
+
             self._canvas.clear_pasted_images()
             self._pasted_images_by_page.pop(self.current_idx, None)
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             self._on_paste_image_content_changed()
+            if pasted_payload:
+                self._macro_record_step(
+                    "paste_image", {"images": pasted_payload},
+                    "macro.step_paste_image", {"count": len(pasted_payload)},
+                )
+            return True
 
         except Exception:
+            if skip_history:
+                return False
             dlg = MsgDialog(self._center_parent, "messages.errors.paste_image_failed.title",
                             "messages.errors.paste_image_failed.title")
             dlg.show_nonmodal()
+            return False
+
+    def perform_paste_image_step(self, params: dict) -> bool:
+        """Rejoue les images collées depuis un payload de macro : décode
+        chaque bitmap PNG, reconstruit des _PastedImage injectées dans
+        _canvas._pasted_images, puis délègue à perform_paste_image()."""
+        import base64 as _base64
+        import io as _io
+        from modules.qt.paste_image_tool_qt import _PastedImage
+
+        images = params.get("images")
+        if not images:
+            return False
+
+        self._canvas.clear_pasted_images()
+        for img_data in images:
+            pil_img = Image.open(_io.BytesIO(_base64.b64decode(img_data["png_b64"])))
+            self._canvas._pasted_images.append(_PastedImage(
+                pil_img, img_data["ix1"], img_data["iy1"],
+                img_data["ix2"], img_data["iy2"],
+                angle=img_data.get("angle", 0.0),
+            ))
+
+        return self.perform_paste_image(skip_history=True)
 
     # ── Persistance par page ──────────────────────────────────────────────────
     # Contrairement aux formes (tuples légers), une image collée porte un

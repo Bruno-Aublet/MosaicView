@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Ielīmē starpliktuves attēlu lapā, turi izmēra maiņai/pagriešanai",
     "toolbar_paste_image_disabled": "Starpliktuvē drīkst būt tikai attēls",
     "color_depth_panel_blocked_format": "Nav pieejams: faila sākotnējais {format} formāts neatbalsta šo krāsu dziļumu.",
-    "image_mode_panel_blocked_format": "Nav pieejams: faila sākotnējais {format} formāts neatbalsta šo režīmu."
+    "image_mode_panel_blocked_format": "Nav pieejams: faila sākotnējais {format} formāts neatbalsta šo režīmu.",
+    "toolbar_macro_record_tooltip": "Ierakstīt",
+    "toolbar_macro_record_instruction": "Sāk makro ierakstīšanu attēlotajā lapā",
+    "toolbar_macro_play_tooltip": "Atskaņot",
+    "toolbar_macro_play_instruction": "Atskaņo ierakstītu makro attēlotajā lapā",
+    "macro_read_interrupted_title": "Makro pārtraukts",
+    "macro_read_interrupted_message": "Makro atskaņošana tika pārtraukta, aizverot skatītāju. Visas izmaiņas, ko šī atskaņošana jau bija piemērojusi, ir atsauktas."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Spilgtums, kontrasts, krāsas...",
       "refresh_mosaic": "Atsvaidzināt mozaīku (F5)",
       "create_ico": "Izveidot .ico failu",
-      "straighten_auto": "Iztaisnot attēlu automātiski"
+      "straighten_auto": "Iztaisnot attēlu automātiski",
+      "read_macro": "Atskaņot makro"
     },
     "canvas_no_file": {
       "open": "Atvērt CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Notiek automātiska iztaisnošana...\n{percent}%"
+    "deskewing": "Notiek automātiska iztaisnošana...\n{percent}%",
+    "macro_preparing": "Notiek atskaņošanas sagatavošana..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Apgriezuma maska"
+    },
+    "macro_record": {
+      "title": "Ierakstīt makro",
+      "btn_stop": "Pabeigt",
+      "btn_cancel": "Atcelt",
+      "name_dialog_title": "Nosaukt makro",
+      "name_label": "Nosaukums:",
+      "name_placeholder": "Makro nosaukums",
+      "description_label": "Apraksts:",
+      "description_placeholder": "Apraksts (neobligāts)",
+      "btn_save": "Saglabāt"
+    },
+    "macro_read": {
+      "title": "Atskaņot makro",
+      "btn_rename": "Pārdēvēt",
+      "btn_delete": "Dzēst",
+      "btn_complete": "Papildināt",
+      "btn_play": "Atskaņot",
+      "corrupt_title": "Nelasāms makro fails",
+      "corrupt_message": "Vienu vai vairākus makro failus nevarēja nolasīt, un tie neparādās sarakstā: {files}",
+      "report_title": "Atskaņošana pabeigta",
+      "report_message": "Veiksmīgi apstrādātas lapas: {ok}\nDaļēji apstrādātas lapas: {partial}\nNeizdevušās lapas: {failed}",
+      "no_macros": "Vēl nav ierakstīts neviens makro.",
+      "btn_pick_file": "Izvēlēties failu",
+      "pick_file_title": "Izvēlēties makro",
+      "hint_record_from_viewer": "Makro tiek ierakstīti no skatītāja.",
+      "report_failed_line": "{page}: neizdevās darbībā « {step} »",
+      "report_partial_line": "{page}: pielietotas {applied} darbības, neizdevās « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Makro nosaukums nevar būt tukšs.",
+      "too_long": "Makro nosaukums nedrīkst pārsniegt 30 rakstzīmes.",
+      "invalid_chars": "Šajā nosaukumā ir rakstzīmes, kas nav atļautas faila nosaukumā.",
+      "reserved_name": "Šo nosaukumu ir rezervējis Windows, un to nevar izmantot.",
+      "duplicate": "Makro ar šādu nosaukumu jau pastāv."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Pastiprina vai mīkstina attēla detaļas\nNoklikšķiniet ar labo peles pogu, lai pārslēgtos uz adaptīvo asumu",
     "sharpness_mode_1": "Izceļ kontūras, saudzējot vienlaidu laukumus\nNoklikšķiniet ar labo peles pogu, lai pārslēgtos uz vienkāršo asumu",
     "crop_mode_0": "Uzzīmējiet taisnstūri virs saglabājamā apgabala, tad apstipriniet\nPeles labā poga pārslēdz apgriezuma maskas režīmā",
-    "crop_mode_1": "Apgriezuma maskas režīms: iegaumējiet taisnstūri un izsauciet to nākamajās lapās\nPeles labā poga atgriežas normālā režīmā"
+    "crop_mode_1": "Apgriezuma maskas režīms: iegaumējiet taisnstūri un izsauciet to nākamajās lapās\nPeles labā poga atgriežas normālā režīmā",
+    "read_macro_selected": "Atskaņot makro atlasītajās lapās"
   },
   "help": {
     "title": "MosaicView - Lietošanas instrukcija",
@@ -1498,7 +1542,9 @@
     "scan": "Skenēt attēlu",
     "scan_content": "• Noklikšķiniet uz pogas „Skenēt” (ikonu kolonna, izvēlne Fails vai peles labais klikšķis uz mozaīkas), lai atvērtu skenēšanas logu. MosaicView tieši vada jūsu skeneri (izmantojot WIA, Windows skenēšanas sistēmu): izvēlieties ierīci, izšķirtspēju (DPI), krāsu režīmu (krāsains / pelēktoņu / melnbalts) un pēc tam noklikšķiniet uz „Skenēt”. Lai skeneris parādītos sarakstā, tam jābūt pievienotam, ieslēgtam un tā draiverim jābūt instalētam Windows sistēmā.\n• Pēdējais izmantotais skeneris, izšķirtspēja un izvēlētais krāsu režīms tiek atcerēts un automātiski piedāvāts atkārtoti nākamajā skenēšanas reizē.\n• Tiek piedāvāta tikai pilnas lapas skenēšana un eksportēšana JPG formātā, jo lietotnei jau ir viss nepieciešamais attēla vēlākai apstrādei un formāta konvertēšanai.\n• Skenētais attēls automātiski tiek pievienots mozaīkai, aiz jau esošajām lapām. Pēc tam to var apgriezt, iztaisnot, pielāgot krāsas utt., tāpat kā jebkuru citu mozaīkas lapu\n• Šī funkcija tieši vada skeneri, neizmantojot ražotāja programmatūru un neparādot tā paša konfigurācijas logu.\n• Tā kā fizisku skeneri vienlaikus var vadīt tikai viens savienojums, skenēšana ir iespējama tikai vienā panelī vienlaikus: ja vienā panelī ir atvērts skenēšanas logs vai notiek skenēšana, poga „Skenēt” otrā panelī paliek pelēka, līdz darbība tiek pabeigta.",
     "straighten": "Iztaisnot lapu",
-    "straighten_content": "Automātiskā iztaisnošana (neko nezīmējot) ir pieejama no ikonu kolonnas (labais klikšķis uz ikonas \"Iztaisnot\", lai mainītu režīmu), izvēlnes Attēli, vai labais klikšķis uz mozaīkas: tā pati nosaka slīpumu un tieši iztaisno atlasīto lapu(-as); tukšie stūri, kas radušies pagriešanas rezultātā, tiek aizpildīti ar baltu. Darbojas ar vairākām lapām vienlaikus. Kopsavilkuma logs parāda, cik lapas tika veiksmīgi iztaisnotas, un uzskaita tās, kurām neizdevās noteikt uzticamu slīpumu.\n\nManuālā iztaisnošana (atsauces līnijas zīmēšana) tiek veikta no galvenā skatītāja, skatīt sadaļu Skatītājs."
+    "straighten_content": "Automātiskā iztaisnošana (neko nezīmējot) ir pieejama no ikonu kolonnas (labais klikšķis uz ikonas \"Iztaisnot\", lai mainītu režīmu), izvēlnes Attēli, vai labais klikšķis uz mozaīkas: tā pati nosaka slīpumu un tieši iztaisno atlasīto lapu(-as); tukšie stūri, kas radušies pagriešanas rezultātā, tiek aizpildīti ar baltu. Darbojas ar vairākām lapām vienlaikus. Kopsavilkuma logs parāda, cik lapas tika veiksmīgi iztaisnotas, un uzskaita tās, kurām neizdevās noteikt uzticamu slīpumu.\n\nManuālā iztaisnošana (atsauces līnijas zīmēšana) tiek veikta no galvenā skatītāja, skatīt sadaļu Skatītājs.",
+    "macro": "Makro",
+    "macro_content": "Makro rīks (skatītāja rīkjoslas ikonas «Ierakstīt»/«Atskaņot») ieraksta lapā veiktu darbību secību un atskaņo to identiski vienā vai vairākās citās lapās — no skatītāja vai, vairākām lapām, no mozaīkas (izvēlne Attēli, labais klikšķis, ikonu kolonna). Gala pārskata logs uzskaita lapas, kas apstrādātas veiksmīgi, daļēji vai neveiksmīgi, ar katras neveiksmes iemeslu."
   },
   "misc": {
     "file_word": "fails",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Mēģināt ar vispārīgo Windows draiveri",
     "open_log": "Atvērt skenēšanas žurnālu",
     "reveal_log": "Rādīt skenēšanas žurnālu pārlūkā Explorer"
+  },
+  "macro": {
+    "step_rotate": "Pagriešana: {angle}°",
+    "step_flip": "Spoguļattēls {direction}",
+    "step_levels": "Līmeņi: melnais punkts {black_point}, gamma {gamma}, baltais punkts {white_point}, slieksnis {threshold}",
+    "step_crop": "Apgriešana",
+    "step_straighten": "Iztaisnošana: {angle}°",
+    "step_straighten_auto": "Automātiska iztaisnošana",
+    "step_clone": "Klonēšana: nokrāsoti {stroke_points} punkti",
+    "step_text": "Teksts: {count} bloks(i)",
+    "step_shapes": "Formas: {count} forma(s)",
+    "step_brightness": "Spilgtums {brightness}, kontrasts {contrast}",
+    "step_saturation": "Piesātinājums: {saturation}",
+    "step_remove_colors": "Krāsu noņemšana: intensitāte {intensity}",
+    "step_compression": "Saspiešana: kvalitāte {quality}",
+    "step_sharpness": "Asums: {value}",
+    "step_unsharp": "Adaptīvais asums: rādiuss {radius}, stiprums {percent}, slieksnis {threshold}",
+    "step_color_depth": "Krāsu dziļums: {key}",
+    "step_effect": "Efekts: {key}",
+    "step_image_mode": "Attēla režīms: {key}",
+    "step_restore_color_depth": "Atjaunot sākotnējo krāsu dziļumu",
+    "step_restore_effect": "Atjaunot sākotnējo efektu",
+    "step_restore_image_mode": "Atjaunot sākotnējo attēla režīmu",
+    "step_transparency": "Caurspīdīgums: {count} klikšķis/i",
+    "step_paste_image": "Ielīmēts attēls: {count} attēls(i)"
   }
 }

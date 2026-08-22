@@ -83,6 +83,31 @@
     "mosaic": "Mosaïque",
     "metadata": "Métadonnées"
   },
+  "macro": {
+    "step_rotate": "Rotation : {angle}°",
+    "step_flip": "Miroir {direction}",
+    "step_levels": "Niveaux : point noir {black_point}, gamma {gamma}, point blanc {white_point}, seuil {threshold}",
+    "step_crop": "Recadrage",
+    "step_straighten": "Redressement : {angle}°",
+    "step_straighten_auto": "Redressement automatique",
+    "step_clone": "Clonage : {stroke_points} point(s) peints",
+    "step_text": "Texte : {count} bloc(s)",
+    "step_shapes": "Formes : {count} forme(s)",
+    "step_brightness": "Luminosité {brightness}, contraste {contrast}",
+    "step_saturation": "Saturation : {saturation}",
+    "step_remove_colors": "Suppression des couleurs : intensité {intensity}",
+    "step_compression": "Compression : qualité {quality}",
+    "step_sharpness": "Netteté : {value}",
+    "step_unsharp": "Netteté adaptative : rayon {radius}, intensité {percent}, seuil {threshold}",
+    "step_color_depth": "Profondeur de couleur : {key}",
+    "step_effect": "Effet : {key}",
+    "step_image_mode": "Mode d'image : {key}",
+    "step_restore_color_depth": "Restaurer la profondeur de couleur d'origine",
+    "step_restore_effect": "Restaurer l'effet d'origine",
+    "step_restore_image_mode": "Restaurer le mode d'image d'origine",
+    "step_transparency": "Transparence : {count} clic(s)",
+    "step_paste_image": "Image collée : {count} image(s)"
+  },
   "viewer": {
     "title": "Visionneuse",
     "mode_single": "Page simple  [D]",
@@ -165,7 +190,13 @@
     "toolbar_image_mode_tooltip": "Mode d'image",
     "toolbar_image_mode_instruction": "Choisissez un mode, l'ajustement s'applique immédiatement",
     "image_mode_panel_restore": "Restaurer l'original",
-    "image_mode_panel_blocked_format": "Indisponible : le format {format} d'origine du fichier ne supporte pas ce mode."
+    "image_mode_panel_blocked_format": "Indisponible : le format {format} d'origine du fichier ne supporte pas ce mode.",
+    "toolbar_macro_record_tooltip": "Enregistrer",
+    "toolbar_macro_record_instruction": "Démarre l'enregistrement d'une macro sur la page affichée",
+    "toolbar_macro_play_tooltip": "Lire",
+    "toolbar_macro_play_instruction": "Rejoue une macro enregistrée sur la page affichée",
+    "macro_read_interrupted_title": "Macro interrompue",
+    "macro_read_interrupted_message": "La lecture de la macro a été interrompue par la fermeture de la visionneuse. Toutes les modifications déjà appliquées par cette lecture ont été annulées."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +251,8 @@
       "save_to_folder": "Exporter les pages sélectionnées",
       "adjustments": "Luminosité, contraste, couleurs...",
       "refresh_mosaic": "Rafraîchir la mosaïque (F5)",
-      "straighten_auto": "Redresser l'image automatiquement"
+      "straighten_auto": "Redresser l'image automatiquement",
+      "read_macro": "Lire une macro"
     },
     "canvas_no_file": {
       "open": "Ouvrir CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +929,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Redressage automatique en cours...\n{percent}%"
+    "deskewing": "Redressage automatique en cours...\n{percent}%",
+    "macro_preparing": "Préparation de la lecture..."
   },
   "dialogs": {
     "duplicates": {
@@ -1157,6 +1190,41 @@
     "crop_mask": {
       "label": "Masque de découpe"
     },
+    "macro_record": {
+      "title": "Enregistrer une macro",
+      "btn_stop": "Terminer",
+      "btn_cancel": "Annuler",
+      "name_dialog_title": "Nommer la macro",
+      "name_label": "Nom :",
+      "name_placeholder": "Nom de la macro",
+      "description_label": "Description :",
+      "description_placeholder": "Description (optionnelle)",
+      "btn_save": "Enregistrer"
+    },
+    "macro_read": {
+      "title": "Lire une macro",
+      "btn_rename": "Renommer",
+      "btn_delete": "Supprimer",
+      "btn_complete": "Compléter",
+      "btn_play": "Lire",
+      "corrupt_title": "Fichier de macro illisible",
+      "corrupt_message": "Un ou plusieurs fichiers de macro n'ont pas pu être lus et n'apparaissent pas dans la liste : {files}",
+      "report_title": "Lecture terminée",
+      "report_message": "Pages traitées avec succès : {ok}\nPages partiellement traitées : {partial}\nPages en échec : {failed}",
+      "no_macros": "Aucune macro enregistrée pour l'instant.",
+      "btn_pick_file": "Choisir un fichier",
+      "pick_file_title": "Choisir une macro",
+      "hint_record_from_viewer": "Les macros s'enregistrent depuis la visionneuse.",
+      "report_failed_line": "{page} : échec à l'étape « {step} »",
+      "report_partial_line": "{page} : {applied} étape(s) appliquée(s), échec à l'étape « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Le nom de la macro ne peut pas être vide.",
+      "too_long": "Le nom de la macro ne doit pas dépasser 30 caractères.",
+      "invalid_chars": "Ce nom contient des caractères non autorisés dans un nom de fichier.",
+      "reserved_name": "Ce nom est réservé par Windows et ne peut pas être utilisé.",
+      "duplicate": "Une macro porte déjà ce nom."
+    },
     "clone_zone_viewer": {
       "title": "Clonage de Zone",
       "instruction": "Ctrl+clic : définir la source  •  Clic gauche : peindre la zone clonée",
@@ -1386,6 +1454,7 @@
     "source_loose": "Image libre",
     "source_web": "Image web",
     "straighten": "Redresser l'image automatiquement",
+    "read_macro_selected": "Lire une macro sur les pages sélectionnées",
     "batch_cb7_to_cbz": "Convertit en CBZ tous les fichiers CB7 contenus\ndans un répertoire et ses sous-répertoires.",
     "batch_cb7_permanent_delete": "ATTENTION : si cette option est cochée,\nles fichiers CB7 originaux seront définitivement\nsupprimés après leur conversion, sans possibilité\nde récupération. Assurez-vous de disposer\nd'une sauvegarde si nécessaire.",
     "batch_cbt_to_cbz": "Convertit en CBZ tous les fichiers CBT contenus\ndans un répertoire et ses sous-répertoires.",
@@ -1498,7 +1567,9 @@
     "zip_compression": "Compression ZIP",
     "zip_compression_content": "MosaicView permet de choisir le taux de compression ZIP appliqué à chaque enregistrement d'un CBZ, accessible via l'indicateur dans la barre de statut, le menu Système, ou le menu contextuel (clic droit sur le canvas).\n\nLe taux par défaut est 0 (aucune compression) : les images d'une BD sont déjà compressées par leur propre format (JPEG, PNG, WebP...), donc compresser l'archive ZIP par-dessus n'apporte aucun gain de place, mais ralentit nettement l'enregistrement et la lecture. Il est possible de modifier ce taux, mais c'est déconseillé, sauf besoin spécifique.\n\nL'indicateur dans la barre de statut affiche l'état réel de compression du fichier ouvert : « 0 » si le fichier n'est pas compressé, « 1 » s'il est compressé (le format ZIP ne permet pas de connaître le taux d'origine exact), ou « -- » si le fichier n'est pas un CBZ. Un clic gauche sur l'indicateur propose de réenregistrer le fichier (ou de le convertir en CBZ) au taux par défaut, quand cela a un sens. Un clic droit ouvre la fenêtre de réglage du taux par défaut.",
     "straighten": "Redresser une page",
-    "straighten_content": "Le redressage automatique (sans rien tracer) est accessible depuis la colonne d'icônes (clic droit sur l'icône « Redresser » pour basculer entre les deux modes), le menu Images, ou le clic droit sur la mosaïque : il détecte l'inclinaison tout seul et redresse directement la ou les pages sélectionnées ; les coins vides créés par la rotation sont comblés en blanc. Fonctionne sur plusieurs pages à la fois. Une fenêtre de résumé indique le nombre de pages redressées avec succès et liste celles pour lesquelles aucune inclinaison fiable n'a pu être détectée.\n\nLe redressage manuel (tracer une ligne de référence) se fait depuis la visionneuse principale, voir la section Visionneuse."
+    "straighten_content": "Le redressage automatique (sans rien tracer) est accessible depuis la colonne d'icônes (clic droit sur l'icône « Redresser » pour basculer entre les deux modes), le menu Images, ou le clic droit sur la mosaïque : il détecte l'inclinaison tout seul et redresse directement la ou les pages sélectionnées ; les coins vides créés par la rotation sont comblés en blanc. Fonctionne sur plusieurs pages à la fois. Une fenêtre de résumé indique le nombre de pages redressées avec succès et liste celles pour lesquelles aucune inclinaison fiable n'a pu être détectée.\n\nLe redressage manuel (tracer une ligne de référence) se fait depuis la visionneuse principale, voir la section Visionneuse.",
+    "macro": "Macros",
+    "macro_content": "L'outil Macros (icônes «Enregistrer»/«Lire» de la barre d'outils de la visionneuse) enregistre une séquence d'actions faite sur une page et la rejoue à l'identique sur une ou plusieurs autres — depuis la visionneuse ou, pour plusieurs pages, depuis la mosaïque (menu Images, clic droit, colonne d'icônes). Une fenêtre de rapport final liste les pages traitées avec succès, partiellement ou en échec, avec la raison de chaque échec."
   },
   "misc": {
     "file_word": "fichier",

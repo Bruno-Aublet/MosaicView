@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Limer inn utklippstavlens bilde på siden, håndtak for å endre størrelse/rotere",
     "toolbar_paste_image_disabled": "Utklippstavlen må bare inneholde ett bilde",
     "color_depth_panel_blocked_format": "Utilgjengelig: filens opprinnelige {format}-format støtter ikke denne fargedybden.",
-    "image_mode_panel_blocked_format": "Utilgjengelig: filens opprinnelige {format}-format støtter ikke denne modusen."
+    "image_mode_panel_blocked_format": "Utilgjengelig: filens opprinnelige {format}-format støtter ikke denne modusen.",
+    "toolbar_macro_record_tooltip": "Ta opp",
+    "toolbar_macro_record_instruction": "Starter opptak av en makro på den viste siden",
+    "toolbar_macro_play_tooltip": "Spill av",
+    "toolbar_macro_play_instruction": "Spiller av en innspilt makro på den viste siden",
+    "macro_read_interrupted_title": "Makro avbrutt",
+    "macro_read_interrupted_message": "Avspillingen av makroen ble avbrutt ved å lukke fremviseren. Alle endringer som allerede var utført av denne avspillingen, er tilbakestilt."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Lysstyrke, kontrast, farger...",
       "refresh_mosaic": "Oppdater mosaikken (F5)",
       "create_ico": "Opprett .ico-fil",
-      "straighten_auto": "Rett bildet automatisk"
+      "straighten_auto": "Rett bildet automatisk",
+      "read_macro": "Spill av en makro"
     },
     "canvas_no_file": {
       "open": "Åpne CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Automatisk retting pågår...\n{percent}%"
+    "deskewing": "Automatisk retting pågår...\n{percent}%",
+    "macro_preparing": "Forbereder avspilling..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Beskjæringsmaske"
+    },
+    "macro_record": {
+      "title": "Ta opp en makro",
+      "btn_stop": "Fullfør",
+      "btn_cancel": "Avbryt",
+      "name_dialog_title": "Gi makroen et navn",
+      "name_label": "Navn:",
+      "name_placeholder": "Makronavn",
+      "description_label": "Beskrivelse:",
+      "description_placeholder": "Beskrivelse (valgfritt)",
+      "btn_save": "Lagre"
+    },
+    "macro_read": {
+      "title": "Spill av en makro",
+      "btn_rename": "Gi nytt navn",
+      "btn_delete": "Slett",
+      "btn_complete": "Fullfør",
+      "btn_play": "Spill av",
+      "corrupt_title": "Uleselig makrofil",
+      "corrupt_message": "En eller flere makrofiler kunne ikke leses og vises ikke i listen: {files}",
+      "report_title": "Avspilling fullført",
+      "report_message": "Sider behandlet med hell: {ok}\nDelvis behandlede sider: {partial}\nMislykkede sider: {failed}",
+      "no_macros": "Ingen makro er registrert ennå.",
+      "btn_pick_file": "Velg en fil",
+      "pick_file_title": "Velg et makro",
+      "hint_record_from_viewer": "Makroer spilles inn fra fremviseren.",
+      "report_failed_line": "{page}: mislyktes ved trinn « {step} »",
+      "report_partial_line": "{page}: {applied} trinn utført, mislyktes ved « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Makronavnet kan ikke være tomt.",
+      "too_long": "Makronavnet må ikke overstige 30 tegn.",
+      "invalid_chars": "Dette navnet inneholder tegn som ikke er tillatt i et filnavn.",
+      "reserved_name": "Dette navnet er reservert av Windows og kan ikke brukes.",
+      "duplicate": "Det finnes allerede en makro med dette navnet."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Forsterker eller mykner bildedetaljene\nHøyreklikk for å bytte til adaptiv skarphet",
     "sharpness_mode_1": "Fremhever konturer og skåner jevne områder\nHøyreklikk for å bytte til enkel skarphet",
     "crop_mode_0": "Tegn et rektangel over området som skal beholdes, og bekreft\nHøyreklikk bytter til beskjæringsmaskemodus",
-    "crop_mode_1": "Beskjæringsmaskemodus: husk et rektangel og hent det på de neste sidene\nHøyreklikk går tilbake til normal modus"
+    "crop_mode_1": "Beskjæringsmaskemodus: husk et rektangel og hent det på de neste sidene\nHøyreklikk går tilbake til normal modus",
+    "read_macro_selected": "Spill av en makro på de valgte sidene"
   },
   "help": {
     "title": "MosaicView - Bruksanvisning",
@@ -1498,7 +1542,9 @@
     "scan": "Skann et bilde",
     "scan_content": "• Klikk på knappen «Skann» (ikonkolonnen, menyen Fil eller høyreklikk på mosaikken) for å åpne skanningsvinduet. MosaicView styrer skanneren din direkte (via WIA, Windows' skannesystem): velg enheten, oppløsningen (DPI), fargemodus (farge / gråtoner / svart-hvitt), og klikk deretter på «Skann». En skanner må være koblet til, slått på, og driveren installert i Windows for å vises i listen.\n• Den sist brukte skanneren, oppløsningen og fargemodusen du valgte, huskes og foreslås automatisk på nytt neste gang du skanner.\n• Kun full-sideskanning og eksport som JPG tilbys, siden applikasjonen allerede har alt som trengs for bilderetusjering og formatkonvertering etterpå.\n• Det skannede bildet legges automatisk til i mosaikken, etter de allerede eksisterende sidene. Du kan deretter beskjære det, rette det opp, justere fargene osv. som enhver annen side i mosaikken\n• Denne funksjonen styrer skanneren direkte, uten å gå via produsentens programvare eller vise dens eget konfigurasjonsvindu.\n• Siden en fysisk skanner bare kan styres av én tilkobling om gangen, er skanning bare mulig i ett panel om gangen: hvis et skannevindu er åpent eller en skanning pågår i det ene panelet, forblir knappen «Skann» grået ut i det andre panelet til operasjonen er fullført.",
     "straighten": "Rett en side",
-    "straighten_content": "Automatisk retting (uten å tegne noe) er tilgjengelig fra ikonkolonnen (høyreklikk på ikonet «Rett» for å bytte modus), menyen Bilder, eller høyreklikk på mosaikken: den oppdager skjevheten selv og retter direkte den/de valgte siden(e); tomme hjørner skapt av rotasjonen fylles med hvitt. Fungerer på flere sider samtidig. Et oppsummeringsvindu viser hvor mange sider som ble rettet vellykket, og lister dem der ingen pålitelig skjevhet kunne oppdages.\n\nManuell retting (tegne en referanselinje) gjøres fra hovedfremviseren, se avsnittet Fremviser."
+    "straighten_content": "Automatisk retting (uten å tegne noe) er tilgjengelig fra ikonkolonnen (høyreklikk på ikonet «Rett» for å bytte modus), menyen Bilder, eller høyreklikk på mosaikken: den oppdager skjevheten selv og retter direkte den/de valgte siden(e); tomme hjørner skapt av rotasjonen fylles med hvitt. Fungerer på flere sider samtidig. Et oppsummeringsvindu viser hvor mange sider som ble rettet vellykket, og lister dem der ingen pålitelig skjevhet kunne oppdages.\n\nManuell retting (tegne en referanselinje) gjøres fra hovedfremviseren, se avsnittet Fremviser.",
+    "macro": "Makroer",
+    "macro_content": "Makroverktøyet (ikonene «Ta opp»/«Spill av» i fremviserens verktøylinje) tar opp en sekvens med handlinger utført på en side og spiller den av identisk på en eller flere andre — fra fremviseren eller, for flere sider, fra mosaikken (menyen Bilder, høyreklikk, ikonkolonnen). Et avsluttende rapportvindu lister sider behandlet vellykket, delvis eller mislyktes, med årsaken til hver feil."
   },
   "misc": {
     "file_word": "fil",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Prøv med Windows' generiske driver",
     "open_log": "Åpne skanneloggen",
     "reveal_log": "Vis skanneloggen i Utforsker"
+  },
+  "macro": {
+    "step_rotate": "Rotasjon: {angle}°",
+    "step_flip": "Speiling {direction}",
+    "step_levels": "Nivåer: svartpunkt {black_point}, gamma {gamma}, hvitpunkt {white_point}, terskel {threshold}",
+    "step_crop": "Beskjæring",
+    "step_straighten": "Retting: {angle}°",
+    "step_straighten_auto": "Automatisk retting",
+    "step_clone": "Kloning: {stroke_points} punkt(er) malt",
+    "step_text": "Tekst: {count} blokk(er)",
+    "step_shapes": "Former: {count} form(er)",
+    "step_brightness": "Lysstyrke {brightness}, kontrast {contrast}",
+    "step_saturation": "Metning: {saturation}",
+    "step_remove_colors": "Fargefjerning: intensitet {intensity}",
+    "step_compression": "Komprimering: kvalitet {quality}",
+    "step_sharpness": "Skarphet: {value}",
+    "step_unsharp": "Adaptiv skarphet: radius {radius}, styrke {percent}, terskel {threshold}",
+    "step_color_depth": "Fargedybde: {key}",
+    "step_effect": "Effekt: {key}",
+    "step_image_mode": "Bildemodus: {key}",
+    "step_restore_color_depth": "Gjenopprett opprinnelig fargedybde",
+    "step_restore_effect": "Gjenopprett opprinnelig effekt",
+    "step_restore_image_mode": "Gjenopprett opprinnelig bildemodus",
+    "step_transparency": "Gjennomsiktighet: {count} klikk",
+    "step_paste_image": "Limt inn bilde: {count} bilde(r)"
   }
 }

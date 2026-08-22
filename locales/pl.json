@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Wkleja obraz ze schowka na stronę, uchwyty do zmiany rozmiaru/obrotu",
     "toolbar_paste_image_disabled": "Schowek musi zawierać wyłącznie obraz",
     "color_depth_panel_blocked_format": "Niedostępne: oryginalny format {format} pliku nie obsługuje tej głębi kolorów.",
-    "image_mode_panel_blocked_format": "Niedostępne: oryginalny format {format} pliku nie obsługuje tego trybu."
+    "image_mode_panel_blocked_format": "Niedostępne: oryginalny format {format} pliku nie obsługuje tego trybu.",
+    "toolbar_macro_record_tooltip": "Nagrywaj",
+    "toolbar_macro_record_instruction": "Rozpoczyna nagrywanie makra na wyświetlanej stronie",
+    "toolbar_macro_play_tooltip": "Odtwórz",
+    "toolbar_macro_play_instruction": "Odtwarza nagrane makro na wyświetlanej stronie",
+    "macro_read_interrupted_title": "Makro przerwane",
+    "macro_read_interrupted_message": "Odtwarzanie makra zostało przerwane przez zamknięcie przeglądarki. Wszystkie zmiany już zastosowane przez to odtwarzanie zostały cofnięte."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Jasność, kontrast, kolory...",
       "refresh_mosaic": "Odśwież mozaikę (F5)",
       "create_ico": "Utwórz plik .ico",
-      "straighten_auto": "Wyprostuj obraz automatycznie"
+      "straighten_auto": "Wyprostuj obraz automatycznie",
+      "read_macro": "Odtwórz makro"
     },
     "canvas_no_file": {
       "open": "Otwórz CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Trwa automatyczne prostowanie...\n{percent}%"
+    "deskewing": "Trwa automatyczne prostowanie...\n{percent}%",
+    "macro_preparing": "Przygotowywanie odtwarzania..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Maska przycinania"
+    },
+    "macro_record": {
+      "title": "Nagraj makro",
+      "btn_stop": "Zakończ",
+      "btn_cancel": "Anuluj",
+      "name_dialog_title": "Nazwij makro",
+      "name_label": "Nazwa:",
+      "name_placeholder": "Nazwa makra",
+      "description_label": "Opis:",
+      "description_placeholder": "Opis (opcjonalny)",
+      "btn_save": "Zapisz"
+    },
+    "macro_read": {
+      "title": "Odtwórz makro",
+      "btn_rename": "Zmień nazwę",
+      "btn_delete": "Usuń",
+      "btn_complete": "Uzupełnij",
+      "btn_play": "Odtwórz",
+      "corrupt_title": "Nieczytelny plik makra",
+      "corrupt_message": "Jednego lub kilku plików makr nie udało się odczytać i nie pojawiają się one na liście: {files}",
+      "report_title": "Odtwarzanie zakończone",
+      "report_message": "Strony przetworzone pomyślnie: {ok}\nStrony przetworzone częściowo: {partial}\nStrony zakończone niepowodzeniem: {failed}",
+      "no_macros": "Nie nagrano jeszcze żadnego makra.",
+      "btn_pick_file": "Wybierz plik",
+      "pick_file_title": "Wybierz makro",
+      "hint_record_from_viewer": "Makra nagrywa się z poziomu przeglądarki.",
+      "report_failed_line": "{page}: niepowodzenie w kroku « {step} »",
+      "report_partial_line": "{page}: zastosowano {applied} krok(ów), niepowodzenie w « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Nazwa makra nie może być pusta.",
+      "too_long": "Nazwa makra nie może przekraczać 30 znaków.",
+      "invalid_chars": "Ta nazwa zawiera znaki niedozwolone w nazwie pliku.",
+      "reserved_name": "Ta nazwa jest zarezerwowana przez system Windows i nie może być użyta.",
+      "duplicate": "Makro o tej nazwie już istnieje."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Wzmacnia lub łagodzi szczegóły obrazu\nKliknij prawym przyciskiem, aby przełączyć na ostrość adaptacyjną",
     "sharpness_mode_1": "Podkreśla kontury, oszczędzając jednolite obszary\nKliknij prawym przyciskiem, aby przełączyć na zwykłą ostrość",
     "crop_mode_0": "Narysuj prostokąt na obszarze do zachowania, a następnie zatwierdź\nKliknij prawym przyciskiem, aby przełączyć na tryb maski przycinania",
-    "crop_mode_1": "Tryb maski przycinania: zapamiętaj prostokąt i przywróć go na kolejnych stronach\nKliknij prawym przyciskiem, aby wrócić do trybu normalnego"
+    "crop_mode_1": "Tryb maski przycinania: zapamiętaj prostokąt i przywróć go na kolejnych stronach\nKliknij prawym przyciskiem, aby wrócić do trybu normalnego",
+    "read_macro_selected": "Odtwórz makro na wybranych stronach"
   },
   "help": {
     "title": "MosaicView - Instrukcja obsługi",
@@ -1498,7 +1542,9 @@
     "scan": "Zeskanuj obraz",
     "scan_content": "• Kliknij przycisk „Skanuj” (kolumna ikon, menu Plik lub prawy przycisk myszy na mozaice), aby otworzyć okno skanowania. MosaicView steruje skanerem bezpośrednio (za pomocą WIA, systemu skanowania Windows): wybierz urządzenie, rozdzielczość (DPI), tryb koloru (kolor / skala szarości / czarno-białe), a następnie kliknij „Skanuj”. Aby skaner pojawił się na liście, musi być podłączony, włączony, a jego sterownik zainstalowany w systemie Windows.\n• Ostatnio używany skaner, rozdzielczość i wybrany tryb koloru są zapamiętywane i automatycznie proponowane ponownie przy kolejnym skanowaniu.\n• Oferowane jest wyłącznie skanowanie całej strony i eksport do formatu JPG, ponieważ aplikacja ma już wszystko, co potrzebne do retuszu i konwersji obrazu później.\n• Zeskanowany obraz jest automatycznie dodawany do mozaiki, po już istniejących stronach. Możesz go następnie przyciąć, wyprostować, dostosować kolory itd., tak jak każdą inną stronę mozaiki\n• Ta funkcja steruje skanerem bezpośrednio, bez użycia oprogramowania producenta i bez wyświetlania jego własnego okna konfiguracji.\n• Ponieważ fizyczny skaner może być obsługiwany tylko przez jedno połączenie naraz, skanowanie jest możliwe tylko w jednym panelu naraz: jeśli w jednym panelu otwarte jest okno skanowania lub trwa skanowanie, przycisk „Skanuj” pozostaje wyszarzony w drugim panelu aż do zakończenia operacji.",
     "straighten": "Wyprostuj stronę",
-    "straighten_content": "Automatyczne prostowanie (bez rysowania) jest dostępne z kolumny ikon (kliknij prawym przyciskiem na ikonę „Prostuj”, aby zmienić tryb), z menu Obrazy, lub prawym przyciskiem na mozaice: samodzielnie wykrywa przechylenie i prostuje bezpośrednio wybraną stronę/strony; puste narożniki powstałe wskutek obrotu są wypełniane bielą. Działa na wielu stronach jednocześnie. Okno podsumowania pokazuje, ile stron zostało pomyślnie wyprostowanych, i wymienia te, dla których nie udało się wykryć wiarygodnego przechylenia.\n\nRęczne prostowanie (rysowanie linii odniesienia) wykonuje się z głównej przeglądarki, patrz sekcja Przeglądarka."
+    "straighten_content": "Automatyczne prostowanie (bez rysowania) jest dostępne z kolumny ikon (kliknij prawym przyciskiem na ikonę „Prostuj”, aby zmienić tryb), z menu Obrazy, lub prawym przyciskiem na mozaice: samodzielnie wykrywa przechylenie i prostuje bezpośrednio wybraną stronę/strony; puste narożniki powstałe wskutek obrotu są wypełniane bielą. Działa na wielu stronach jednocześnie. Okno podsumowania pokazuje, ile stron zostało pomyślnie wyprostowanych, i wymienia te, dla których nie udało się wykryć wiarygodnego przechylenia.\n\nRęczne prostowanie (rysowanie linii odniesienia) wykonuje się z głównej przeglądarki, patrz sekcja Przeglądarka.",
+    "macro": "Makra",
+    "macro_content": "Narzędzie Makra (ikony «Nagraj»/«Odtwórz» na pasku narzędzi przeglądarki) nagrywa sekwencję działań wykonanych na stronie i odtwarza ją identycznie na jednej lub kilku innych — z przeglądarki lub, dla wielu stron, z mozaiki (menu Obrazy, prawy przycisk myszy, kolumna ikon). Okno raportu końcowego wyświetla strony przetworzone pomyślnie, częściowo lub z błędem, wraz z przyczyną każdego błędu."
   },
   "misc": {
     "file_word": "plik",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Spróbuj z ogólnym sterownikiem Windows",
     "open_log": "Otwórz dziennik skanowania",
     "reveal_log": "Pokaż dziennik skanowania w Eksploratorze"
+  },
+  "macro": {
+    "step_rotate": "Obrót: {angle}°",
+    "step_flip": "Odbicie {direction}",
+    "step_levels": "Poziomy: punkt czerni {black_point}, gamma {gamma}, punkt bieli {white_point}, próg {threshold}",
+    "step_crop": "Przycinanie",
+    "step_straighten": "Prostowanie: {angle}°",
+    "step_straighten_auto": "Automatyczne prostowanie",
+    "step_clone": "Klonowanie: namalowano {stroke_points} punkt(ów)",
+    "step_text": "Tekst: {count} blok(ów)",
+    "step_shapes": "Kształty: {count} kształt(ów)",
+    "step_brightness": "Jasność {brightness}, kontrast {contrast}",
+    "step_saturation": "Nasycenie: {saturation}",
+    "step_remove_colors": "Usuwanie kolorów: intensywność {intensity}",
+    "step_compression": "Kompresja: jakość {quality}",
+    "step_sharpness": "Ostrość: {value}",
+    "step_unsharp": "Ostrość adaptacyjna: promień {radius}, siła {percent}, próg {threshold}",
+    "step_color_depth": "Głębia koloru: {key}",
+    "step_effect": "Efekt: {key}",
+    "step_image_mode": "Tryb obrazu: {key}",
+    "step_restore_color_depth": "Przywróć oryginalną głębię koloru",
+    "step_restore_effect": "Przywróć oryginalny efekt",
+    "step_restore_image_mode": "Przywróć oryginalny tryb obrazu",
+    "step_transparency": "Przezroczystość: {count} kliknięcie/kliknięcia",
+    "step_paste_image": "Wklejony obraz: {count} obraz(y)"
   }
 }

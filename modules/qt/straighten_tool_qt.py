@@ -461,15 +461,17 @@ class StraightenViewerMixin:
             return
         self.perform_straighten()
 
-    def perform_straighten(self):
+    def perform_straighten(self, skip_history: bool = False, override_angle=None) -> bool:
+        """override_angle : angle direct (lecture headless d'une macro),
+        au lieu de _angle_panel.pending_angle (aucun tracé souris en lecture)."""
         from PIL import Image
         from modules.qt import state as _state_module
         from modules.qt.entries import ensure_image_loaded, save_image_to_bytes
         from modules.qt.dialogs_qt import MsgDialog
 
-        angle = self._toolbar._angle_panel.pending_angle
+        angle = override_angle if override_angle is not None else self._toolbar._angle_panel.pending_angle
         if angle is None or abs(angle) < 0.001:
-            return
+            return False
 
         state = self.callbacks.get('state') or _state_module.state
         save_state    = self.callbacks.get("save_state")
@@ -481,12 +483,13 @@ class StraightenViewerMixin:
             entry = state.images_data[self.current_idx]
             original_img = ensure_image_loaded(entry)
             if original_img is None:
-                dlg = MsgDialog(self._center_parent, "messages.errors.straighten_failed.title",
-                                "messages.errors.straighten_failed.title")
-                dlg.show_nonmodal()
-                return
+                if override_angle is None:
+                    dlg = MsgDialog(self._center_parent, "messages.errors.straighten_failed.title",
+                                    "messages.errors.straighten_failed.title")
+                    dlg.show_nonmodal()
+                return False
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
 
             rotated = original_img.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC)
@@ -504,7 +507,7 @@ class StraightenViewerMixin:
             _pidx = get_page_image_index(state, entry)
             if _pidx is not None:
                 update_page_entries_in_xml_data(state, [(_pidx, entry)])
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -516,24 +519,38 @@ class StraightenViewerMixin:
                 render_mosaic()
             if update_btn:
                 update_btn()
-            self._canvas.clear_line()
-            self._toolbar._angle_panel.reset()
-            self._straighten_by_page.pop(self.current_idx, None)
+            if override_angle is None:
+                self._canvas.clear_line()
+                self._toolbar._angle_panel.reset()
+                self._straighten_by_page.pop(self.current_idx, None)
             self.display_image()
             self._toolbar.refresh_undo_redo_state()
+            if override_angle is None:
+                self._macro_record_step(
+                    "straighten", {"angle": angle},
+                    "macro.step_straighten", {"angle": angle},
+                )
+            return True
 
         except Exception:
+            if override_angle is not None:
+                return False
             dlg = MsgDialog(self._center_parent, "messages.errors.straighten_failed.title",
                             "messages.errors.straighten_failed.title")
             dlg.show_nonmodal()
 
-    def perform_auto_straighten(self):
+    def perform_auto_straighten(self, skip_history: bool = False) -> bool:
         """Redressement automatique (deskew) de la page actuellement affichée,
         déclenché par un clic gauche sur l'icône Redressage de la barre
         d'outils quand state.straighten_mode == 1 (bascule par clic droit).
         Contrairement au traitement par lot de deskew_selected_qt (skill
         page-straighten), s'applique uniquement à cette page, pas à la
-        sélection de la mosaïque, et reste synchrone (une seule image)."""
+        sélection de la mosaïque, et reste synchrone (une seule image).
+
+        Exception à la règle générale "pixels/valeurs absolues figées" des
+        macros : l'angle dépend du contenu de la page, donc la macro capture
+        l'action elle-même (recalculée à chaque page), pas un angle figé
+        comme pour le redressement manuel (perform_straighten)."""
         from modules.qt import state as _state_module
         from modules.qt.dialogs_qt import MsgDialog
 
@@ -546,18 +563,19 @@ class StraightenViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             if not entry.get("is_image") or entry.get("is_corrupted"):
-                return
+                return False
 
             from modules.qt.deskew import detect_skew_angle, deskew_entry_data
 
             angle = detect_skew_angle(entry)
             if angle is None or abs(angle) < 0.001:
-                dlg = MsgDialog(self._center_parent, "messages.warnings.no_skew_detected.title",
-                                "messages.warnings.no_skew_detected.message")
-                dlg.show_nonmodal()
-                return
+                if not skip_history:
+                    dlg = MsgDialog(self._center_parent, "messages.warnings.no_skew_detected.title",
+                                    "messages.warnings.no_skew_detected.message")
+                    dlg.show_nonmodal()
+                return False
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
 
             ok = deskew_entry_data(entry, state)
@@ -566,10 +584,10 @@ class StraightenViewerMixin:
                 # branche ne devrait pas se produire en pratique (aucun état
                 # à annuler puisque rien n'a encore été modifié), gardée par
                 # cohérence avec le contrat de deskew_entry_data.
-                return
+                return False
 
             state.modified = True
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -583,11 +601,20 @@ class StraightenViewerMixin:
                 update_btn()
             self.display_image()
             self._toolbar.refresh_undo_redo_state()
+            if not skip_history:
+                self._macro_record_step(
+                    "straighten_auto", {},
+                    "macro.step_straighten_auto", {},
+                )
+            return True
 
         except Exception:
+            if skip_history:
+                return False
             dlg = MsgDialog(self._center_parent, "messages.errors.straighten_failed.title",
                             "messages.errors.straighten_failed.title")
             dlg.show_nonmodal()
+            return False
 
     def _save_straighten_for_current_page(self):
         """Mémorise le trait de redressage de la page qu'on s'apprête à quitter

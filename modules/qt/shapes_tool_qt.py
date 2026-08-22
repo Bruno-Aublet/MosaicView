@@ -1477,7 +1477,8 @@ class ShapeViewerMixin:
             return
         self.perform_shapes()
 
-    def perform_shapes(self):
+    def perform_shapes(self, skip_history: bool = False) -> bool:
+        """skip_history : saute les 2 save_state, laissés à l'appelant."""
         import io as _io
         from modules.qt import state as _state_module
         from modules.qt.entries import save_image_to_bytes
@@ -1492,17 +1493,18 @@ class ShapeViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
-                dlg = MsgDialog(self._center_parent, "messages.errors.shapes_failed.title",
-                                "messages.errors.shapes_failed.title")
-                dlg.show_nonmodal()
-                return
+                if not skip_history:
+                    dlg = MsgDialog(self._center_parent, "messages.errors.shapes_failed.title",
+                                    "messages.errors.shapes_failed.title")
+                    dlg.show_nonmodal()
+                return False
 
             base_img_raw = Image.open(_io.BytesIO(entry['bytes']))
             if '_orig_mode' not in entry:
                 entry['_orig_mode'] = base_img_raw.mode
             base_img = base_img_raw.convert('RGBA')
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
 
             composed = self._shapes_render_all(base_img)
@@ -1534,7 +1536,7 @@ class ShapeViewerMixin:
             _pidx = get_page_image_index(state, entry)
             if _pidx is not None:
                 update_page_entries_in_xml_data(state, [(_pidx, entry)])
-            if save_state:
+            if save_state and not skip_history:
                 save_state(force=True)
 
             real_idx = entry.get("_real_idx")
@@ -1548,6 +1550,22 @@ class ShapeViewerMixin:
             if update_btn:
                 update_btn()
 
+            shapes_payload = []
+            if not skip_history:
+                # Géométrie en pixels absolus de chaque forme, capturée
+                # AVANT clear_shapes() ci-dessous qui vide _canvas._shapes.
+                shapes_payload = [
+                    {
+                        "shape_type": s.shape_type,
+                        "ix1": s.ix1, "iy1": s.iy1, "ix2": s.ix2, "iy2": s.iy2,
+                        "color": s.color.name(),
+                        "fill_enabled": s.fill_enabled,
+                        "thickness": s.thickness,
+                        "angle": s.angle,
+                    }
+                    for s in self._canvas._shapes
+                ]
+
             self._canvas.clear_shapes()
             self._shapes_by_page.pop(self.current_idx, None)
             self.display_image(keep_crop_rect=True)
@@ -1560,11 +1578,41 @@ class ShapeViewerMixin:
             # rappelé qu'au clic sur une forme/à un changement de sélection,
             # jamais après un clear_shapes() programmatique.
             self._on_shapes_content_changed()
+            if shapes_payload:
+                self._macro_record_step(
+                    "shapes", {"shapes": shapes_payload},
+                    "macro.step_shapes", {"count": len(shapes_payload)},
+                )
+            return True
 
         except Exception:
+            if skip_history:
+                return False
             dlg = MsgDialog(self._center_parent, "messages.errors.shapes_failed.title",
                             "messages.errors.shapes_failed.title")
             dlg.show_nonmodal()
+            return False
+
+    def perform_shapes_step(self, params: dict) -> bool:
+        """Rejoue les formes depuis un payload de macro : reconstruit des
+        _Shape injectées dans _canvas._shapes, puis délègue à
+        perform_shapes() pour le rendu et le commit."""
+        from PySide6.QtGui import QColor
+        from modules.qt.shapes_tool_qt import _Shape
+
+        shapes = params.get("shapes")
+        if not shapes:
+            return False
+
+        self._canvas.clear_shapes()
+        for s in shapes:
+            self._canvas._shapes.append(_Shape(
+                s["shape_type"], s["ix1"], s["iy1"], s["ix2"], s["iy2"],
+                QColor(s["color"]), s["fill_enabled"], s["thickness"],
+                angle=s.get("angle", 0.0),
+            ))
+
+        return self.perform_shapes(skip_history=True)
 
     # ── Persistance par page ──────────────────────────────────────────────────
 

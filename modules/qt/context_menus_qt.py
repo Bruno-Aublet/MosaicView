@@ -418,6 +418,11 @@ def show_image_context_menu(global_pos, real_idx: int, parent, callbacks: dict):
     else:
         _add_disabled(menu, _("context_menu.image.straighten_auto"))
 
+    if has_image_selection:
+        menu.addAction(_("context_menu.image.read_macro"), callbacks['read_macro_selected'])
+    else:
+        _add_disabled(menu, _("context_menu.image.read_macro"))
+
     menu.addSeparator()
 
     if has_image_selection:

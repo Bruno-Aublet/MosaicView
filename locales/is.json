@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Límir mynd úr klippiborði á síðuna, handföng til að breyta stærð/snúa",
     "toolbar_paste_image_disabled": "Klippiborðið má aðeins innihalda mynd",
     "color_depth_panel_blocked_format": "Ekki í boði: upprunalegt {format}-snið skráarinnar styður ekki þetta litadýpt.",
-    "image_mode_panel_blocked_format": "Ekki í boði: upprunalegt {format}-snið skráarinnar styður ekki þessa stillingu."
+    "image_mode_panel_blocked_format": "Ekki í boði: upprunalegt {format}-snið skráarinnar styður ekki þessa stillingu.",
+    "toolbar_macro_record_tooltip": "Taka upp",
+    "toolbar_macro_record_instruction": "Byrjar upptöku á fjölvi á sýndri síðu",
+    "toolbar_macro_play_tooltip": "Spila",
+    "toolbar_macro_play_instruction": "Spilar upptekið fjölvi á sýndri síðu",
+    "macro_read_interrupted_title": "Fjölvi rofið",
+    "macro_read_interrupted_message": "Afspilun fjölvans var rofin þegar skoðaranum var lokað. Öllum breytingum sem þessi afspilun hafði þegar gert hefur verið hætt við."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Birtustig, andstæða, litir...",
       "refresh_mosaic": "Endurglæða mósaík (F5)",
       "create_ico": "Búa til .ico skrá",
-      "straighten_auto": "Rétta myndina sjálfkrafa"
+      "straighten_auto": "Rétta myndina sjálfkrafa",
+      "read_macro": "Spila fjölvi"
     },
     "canvas_no_file": {
       "open": "Opna CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Sjálfvirk rétting í gangi...\n{percent}%"
+    "deskewing": "Sjálfvirk rétting í gangi...\n{percent}%",
+    "macro_preparing": "Undirbý afspilun..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Skurðgríma"
+    },
+    "macro_record": {
+      "title": "Taka upp fjölvi",
+      "btn_stop": "Ljúka",
+      "btn_cancel": "Hætta við",
+      "name_dialog_title": "Nefna fjölvið",
+      "name_label": "Nafn:",
+      "name_placeholder": "Nafn fjölvis",
+      "description_label": "Lýsing:",
+      "description_placeholder": "Lýsing (valfrjálst)",
+      "btn_save": "Vista"
+    },
+    "macro_read": {
+      "title": "Spila fjölvi",
+      "btn_rename": "Endurnefna",
+      "btn_delete": "Eyða",
+      "btn_complete": "Ljúka við",
+      "btn_play": "Spila",
+      "corrupt_title": "Ólæsileg fjölvaskrá",
+      "corrupt_message": "Ekki var hægt að lesa eina eða fleiri fjölvaskrár og þær birtast ekki á listanum: {files}",
+      "report_title": "Afspilun lokið",
+      "report_message": "Síður unnar með árangri: {ok}\nSíður unnar að hluta: {partial}\nSíður sem mistókust: {failed}",
+      "no_macros": "Ekkert fjölvi hefur enn verið tekið upp.",
+      "btn_pick_file": "Velja skrá",
+      "pick_file_title": "Velja fjölva",
+      "hint_record_from_viewer": "Fjölvar eru teknir upp úr skoðaranum.",
+      "report_failed_line": "{page}: mistókst í skrefi « {step} »",
+      "report_partial_line": "{page}: {applied} skref beitt, mistókst í « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Nafn fjölvis má ekki vera autt.",
+      "too_long": "Nafn fjölvis má ekki fara yfir 30 stafi.",
+      "invalid_chars": "Þetta nafn inniheldur stafi sem eru ekki leyfðir í skráarnafni.",
+      "reserved_name": "Þetta nafn er frátekið af Windows og er ekki hægt að nota.",
+      "duplicate": "Fjölvi með þessu nafni er þegar til."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Styrkir eða mýkir smáatriði myndarinnar\nHægrismelltu til að skipta yfir í aðlögunarhæfa skerpu",
     "sharpness_mode_1": "Undirstrikar útlínur án þess að hafa áhrif á jöfn svæði\nHægrismelltu til að skipta yfir í einfalda skerpu",
     "crop_mode_0": "Teiknaðu rétthyrning yfir svæðið sem á að halda, staðfestu svo\nHægrismelltu til að skipta yfir í skurðgrímu-ham",
-    "crop_mode_1": "Skurðgrímu-hamur: mundu rétthyrning og notaðu hann aftur á næstu síðum\nHægrismelltu til að fara aftur í venjulegan ham"
+    "crop_mode_1": "Skurðgrímu-hamur: mundu rétthyrning og notaðu hann aftur á næstu síðum\nHægrismelltu til að fara aftur í venjulegan ham",
+    "read_macro_selected": "Spila fjölvi á völdum síðum"
   },
   "help": {
     "title": "MosaicView - Notkunarleiðbeiningar",
@@ -1498,7 +1542,9 @@
     "scan": "Skanna mynd",
     "scan_content": "• Smelltu á hnappinn „Skanna“ (táknmyndadálkur, valmyndin Skrá eða hægrismelltu á mósaíkið) til að opna skönnunargluggann. MosaicView stjórnar skannanum þínum beint (í gegnum WIA, skönnunarkerfi Windows): veldu tækið, upplausnina (DPI), litastillingu (litur / gráskali / svarthvítt) og smelltu síðan á „Skanna“. Skanni verður að vera tengdur, kveikt á honum og rekillinn uppsettur í Windows til að hann birtist á listanum.\n• Síðasti skanninn sem notaður var, upplausnin og valinn litahamur eru vistuð og stungið sjálfkrafa upp á þeim aftur í næstu skönnun.\n• Aðeins heilsíðuskönnun og útflutningur sem JPG er í boði, þar sem forritið hefur nú þegar allt sem þarf til að lagfæra og umbreyta myndinni á eftir.\n• Skannaða myndin bætist sjálfkrafa við mósaíkið, á eftir þeim síðum sem þegar eru til staðar. Þú getur síðan skorið hana til, rétt hana af, stillt liti hennar o.s.frv. eins og hverja aðra síðu í mósaíkinu\n• Þessi eiginleiki stjórnar skannanum beint, án þess að fara í gegnum hugbúnað framleiðandans eða sýna hans eigin stillingaglugga.\n• Þar sem aðeins ein tenging getur stjórnað eðlislægum skanna í einu, er skönnun aðeins möguleg í einum spjaldhluta í einu: ef skönnunargluggi er opinn eða skönnun í gangi í einum spjaldhluta, helst hnappurinn „Skanna“ grár í hinum spjaldhlutanum þar til aðgerðinni er lokið.",
     "straighten": "Rétta síðu",
-    "straighten_content": "Sjálfvirk rétting (án þess að teikna neitt) er í boði úr táknadálknum (hægrismelltu á táknið \"Rétta\" til að skipta um stillingu), Myndir-valmyndinni, eða hægrismelltu á mósaíkina: hún greinir hallann sjálf og réttir beint valda síðu/síður; tóm horn sem myndast við snúninginn eru fyllt hvítu. Virkar á margar síður í einu. Samantektargluggi sýnir hversu margar síður voru réttar með góðum árangri og telur upp þær þar sem enginn áreiðanlegur halli fannst.\n\nHandvirk rétting (teikna viðmiðunarlínu) fer fram úr aðalskoðaranum, sjá kaflann Skoðari."
+    "straighten_content": "Sjálfvirk rétting (án þess að teikna neitt) er í boði úr táknadálknum (hægrismelltu á táknið \"Rétta\" til að skipta um stillingu), Myndir-valmyndinni, eða hægrismelltu á mósaíkina: hún greinir hallann sjálf og réttir beint valda síðu/síður; tóm horn sem myndast við snúninginn eru fyllt hvítu. Virkar á margar síður í einu. Samantektargluggi sýnir hversu margar síður voru réttar með góðum árangri og telur upp þær þar sem enginn áreiðanlegur halli fannst.\n\nHandvirk rétting (teikna viðmiðunarlínu) fer fram úr aðalskoðaranum, sjá kaflann Skoðari.",
+    "macro": "Fjölvi",
+    "macro_content": "Fjölva-verkfærið (táknin «Taka upp»/«Spila» á verkfærastiku skoðarans) tekur upp röð aðgerða á síðu og spilar hana eins á einni eða fleiri öðrum — úr skoðaranum eða, fyrir margar síður, úr mósaíkinni (valmynd Myndir, hægrismella, táknadálkur). Loka skýrslugluggi telur upp síður sem unnu tókst, að hluta eða mistókst, með ástæðu hvers misheppnaðs tilviks."
   },
   "misc": {
     "file_word": "skrá",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Prófa með almennum Windows-rekli",
     "open_log": "Opna skönnunarannál",
     "reveal_log": "Sýna skönnunarannál í Skráasafni"
+  },
+  "macro": {
+    "step_rotate": "Snúningur: {angle}°",
+    "step_flip": "Spegla {direction}",
+    "step_levels": "Þrep: svartur punktur {black_point}, gamma {gamma}, hvítur punktur {white_point}, þröskuldur {threshold}",
+    "step_crop": "Skerðing",
+    "step_straighten": "Rétting: {angle}°",
+    "step_straighten_auto": "Sjálfvirk rétting",
+    "step_clone": "Klónun: {stroke_points} punktur/punktar málaðir",
+    "step_text": "Texti: {count} blokk(ir)",
+    "step_shapes": "Form: {count} form",
+    "step_brightness": "Birta {brightness}, birtuskil {contrast}",
+    "step_saturation": "Litmettun: {saturation}",
+    "step_remove_colors": "Litafjarlæging: styrkur {intensity}",
+    "step_compression": "Þjöppun: gæði {quality}",
+    "step_sharpness": "Skerpa: {value}",
+    "step_unsharp": "Aðlögunarhæf skerpa: geisli {radius}, styrkur {percent}, þröskuldur {threshold}",
+    "step_color_depth": "Litadýpt: {key}",
+    "step_effect": "Áhrif: {key}",
+    "step_image_mode": "Myndhamur: {key}",
+    "step_restore_color_depth": "Endurheimta upprunalega litadýpt",
+    "step_restore_effect": "Endurheimta upprunaleg áhrif",
+    "step_restore_image_mode": "Endurheimta upprunalegan myndham",
+    "step_transparency": "Gegnsæi: {count} smellur/smellir",
+    "step_paste_image": "Límd mynd: {count} mynd(ir)"
   }
 }

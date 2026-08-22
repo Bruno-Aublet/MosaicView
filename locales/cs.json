@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Vloží obrázek ze schránky na stránku, úchyty pro změnu velikosti/otočení",
     "toolbar_paste_image_disabled": "Schránka musí obsahovat pouze obrázek",
     "color_depth_panel_blocked_format": "Nedostupné: původní formát souboru {format} tuto barevnou hloubku nepodporuje.",
-    "image_mode_panel_blocked_format": "Nedostupné: původní formát souboru {format} tento režim nepodporuje."
+    "image_mode_panel_blocked_format": "Nedostupné: původní formát souboru {format} tento režim nepodporuje.",
+    "toolbar_macro_record_tooltip": "Nahrát",
+    "toolbar_macro_record_instruction": "Spustí nahrávání makra na zobrazené stránce",
+    "toolbar_macro_play_tooltip": "Přehrát",
+    "toolbar_macro_play_instruction": "Přehraje nahrané makro na zobrazené stránce",
+    "macro_read_interrupted_title": "Makro přerušeno",
+    "macro_read_interrupted_message": "Přehrávání makra bylo přerušeno zavřením prohlížeče. Všechny změny, které toto přehrávání již provedlo, byly vráceny zpět."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Jas, kontrast, barvy...",
       "refresh_mosaic": "Obnovit mozaiku (F5)",
       "create_ico": "Vytvořit soubor .ico",
-      "straighten_auto": "Narovnat obrázek automaticky"
+      "straighten_auto": "Narovnat obrázek automaticky",
+      "read_macro": "Přehrát makro"
     },
     "canvas_no_file": {
       "open": "Otevřít CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Probíhá automatické narovnání...\n{percent}%"
+    "deskewing": "Probíhá automatické narovnání...\n{percent}%",
+    "macro_preparing": "Příprava přehrávání..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Maska ořezu"
+    },
+    "macro_record": {
+      "title": "Nahrát makro",
+      "btn_stop": "Dokončit",
+      "btn_cancel": "Zrušit",
+      "name_dialog_title": "Pojmenovat makro",
+      "name_label": "Název:",
+      "name_placeholder": "Název makra",
+      "description_label": "Popis:",
+      "description_placeholder": "Popis (volitelný)",
+      "btn_save": "Uložit"
+    },
+    "macro_read": {
+      "title": "Přehrát makro",
+      "btn_rename": "Přejmenovat",
+      "btn_delete": "Odstranit",
+      "btn_complete": "Doplnit",
+      "btn_play": "Přehrát",
+      "corrupt_title": "Nečitelný soubor makra",
+      "corrupt_message": "Jeden nebo více souborů maker se nepodařilo přečíst a nezobrazují se v seznamu: {files}",
+      "report_title": "Přehrávání dokončeno",
+      "report_message": "Úspěšně zpracované stránky: {ok}\nČástečně zpracované stránky: {partial}\nNeúspěšné stránky: {failed}",
+      "no_macros": "Zatím nebylo nahráno žádné makro.",
+      "btn_pick_file": "Vybrat soubor",
+      "pick_file_title": "Vybrat makro",
+      "hint_record_from_viewer": "Makra se nahrávají z prohlížeče.",
+      "report_failed_line": "{page}: selhalo v kroku « {step} »",
+      "report_partial_line": "{page}: použito {applied} kroků, selhalo v « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Název makra nesmí být prázdný.",
+      "too_long": "Název makra nesmí přesáhnout 30 znaků.",
+      "invalid_chars": "Tento název obsahuje znaky, které nejsou v názvu souboru povoleny.",
+      "reserved_name": "Tento název je vyhrazen systémem Windows a nelze jej použít.",
+      "duplicate": "Makro s tímto názvem již existuje."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Zvýrazní nebo změkčí detaily obrázku\nKlikněte pravým tlačítkem pro přepnutí na adaptivní ostrost",
     "sharpness_mode_1": "Zvýrazní obrysy a šetří jednolité plochy\nKlikněte pravým tlačítkem pro přepnutí na jednoduchou ostrost",
     "crop_mode_0": "Nakreslete obdélník na oblast, kterou chcete zachovat, a potvrďte\nKliknutí pravým tlačítkem přepne do režimu masky ořezu",
-    "crop_mode_1": "Režim masky ořezu: zapamatujte si obdélník a vyvolejte jej na dalších stránkách\nKliknutí pravým tlačítkem se vrátí do normálního režimu"
+    "crop_mode_1": "Režim masky ořezu: zapamatujte si obdélník a vyvolejte jej na dalších stránkách\nKliknutí pravým tlačítkem se vrátí do normálního režimu",
+    "read_macro_selected": "Přehrát makro na vybraných stránkách"
   },
   "help": {
     "title": "MosaicView - Nápověda",
@@ -1498,7 +1542,9 @@
     "scan": "Naskenovat obrázek",
     "scan_content": "• Klikněte na tlačítko „Skenovat“ (sloupec ikon, nabídka Soubor nebo pravé tlačítko myši na mozaice) a otevřete okno skenování. MosaicView řídí váš skener přímo (přes WIA, skenovací systém Windows): vyberte zařízení, rozlišení (DPI), barevný režim (barevně / odstíny šedi / černobíle) a poté klikněte na „Skenovat“. Aby se skener zobrazil v seznamu, musí být připojen, zapnutý a musí mít nainstalovaný ovladač ve Windows.\n• Naposledy použitý skener, rozlišení a zvolený barevný režim se zapamatují a při příštím skenování se automaticky znovu nabídnou.\n• Nabízeno je pouze skenování celé strany a export do JPG, protože aplikace už má vše potřebné pro následné retušování a konverzi obrázku.\n• Naskenovaný obrázek se automaticky přidá do mozaiky, za již existující stránky. Poté jej můžete oříznout, narovnat, upravit barvy atd. jako kteroukoli jinou stránku mozaiky\n• Tato funkce řídí skener přímo, bez použití softwaru výrobce a bez zobrazení jeho vlastního konfiguračního okna.\n• Protože fyzický skener může být ovládán vždy jen jedním připojením, je skenování možné vždy jen v jednom panelu: pokud je v jednom panelu otevřeno okno skenování nebo probíhá skenování, zůstává tlačítko „Skenovat“ v druhém panelu šedé až do dokončení operace.",
     "straighten": "Narovnat stránku",
-    "straighten_content": "Automatické narovnání (bez kreslení) je dostupné ze sloupce ikon (klikněte pravým tlačítkem na ikonu „Narovnat“ pro přepnutí režimu), z nabídky Obrázky, nebo pravým kliknutím na mozaiku: samo detekuje naklonění a přímo narovná vybranou stránku/stránky; prázdné rohy vzniklé otočením se vyplní bílou. Funguje na více stránkách najednou. Souhrnné okno zobrazuje, kolik stránek bylo úspěšně narovnáno, a vypisuje ty, u kterých se nepodařilo detekovat spolehlivé naklonění.\n\nRuční narovnání (kreslení referenční čáry) se provádí z hlavního prohlížeče, viz sekce Prohlížeč."
+    "straighten_content": "Automatické narovnání (bez kreslení) je dostupné ze sloupce ikon (klikněte pravým tlačítkem na ikonu „Narovnat“ pro přepnutí režimu), z nabídky Obrázky, nebo pravým kliknutím na mozaiku: samo detekuje naklonění a přímo narovná vybranou stránku/stránky; prázdné rohy vzniklé otočením se vyplní bílou. Funguje na více stránkách najednou. Souhrnné okno zobrazuje, kolik stránek bylo úspěšně narovnáno, a vypisuje ty, u kterých se nepodařilo detekovat spolehlivé naklonění.\n\nRuční narovnání (kreslení referenční čáry) se provádí z hlavního prohlížeče, viz sekce Prohlížeč.",
+    "macro": "Makra",
+    "macro_content": "Nástroj Makra (ikony «Nahrát»/«Přehrát» na panelu nástrojů prohlížeče) nahraje sekvenci akcí provedených na stránce a přehraje ji identicky na jedné či více dalších — z prohlížeče nebo pro více stránek z mozaiky (nabídka Obrázky, pravé tlačítko, sloupec ikon). Závěrečné okno se zprávou uvádí stránky zpracované úspěšně, částečně nebo s chybou, s důvodem každé chyby."
   },
   "misc": {
     "file_word": "soubor",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Zkusit s obecným ovladačem Windows",
     "open_log": "Otevřít protokol skenování",
     "reveal_log": "Zobrazit protokol skenování v Průzkumníkovi"
+  },
+  "macro": {
+    "step_rotate": "Otočení: {angle}°",
+    "step_flip": "Zrcadlení {direction}",
+    "step_levels": "Úrovně: černý bod {black_point}, gama {gamma}, bílý bod {white_point}, práh {threshold}",
+    "step_crop": "Oříznutí",
+    "step_straighten": "Narovnání: {angle}°",
+    "step_straighten_auto": "Automatické narovnání",
+    "step_clone": "Klonování: namalováno {stroke_points} bod(ů)",
+    "step_text": "Text: {count} blok(y)",
+    "step_shapes": "Tvary: {count} tvar(y)",
+    "step_brightness": "Jas {brightness}, kontrast {contrast}",
+    "step_saturation": "Sytost: {saturation}",
+    "step_remove_colors": "Odstranění barev: intenzita {intensity}",
+    "step_compression": "Komprese: kvalita {quality}",
+    "step_sharpness": "Ostrost: {value}",
+    "step_unsharp": "Adaptivní ostrost: poloměr {radius}, síla {percent}, práh {threshold}",
+    "step_color_depth": "Barevná hloubka: {key}",
+    "step_effect": "Efekt: {key}",
+    "step_image_mode": "Režim obrazu: {key}",
+    "step_restore_color_depth": "Obnovit původní barevnou hloubku",
+    "step_restore_effect": "Obnovit původní efekt",
+    "step_restore_image_mode": "Obnovit původní režim obrazu",
+    "step_transparency": "Průhlednost: {count} kliknutí",
+    "step_paste_image": "Vložený obrázek: {count} obrázek/obrázky"
   }
 }

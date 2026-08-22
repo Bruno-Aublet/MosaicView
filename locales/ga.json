@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Greamaíonn sé íomhá an ghearrthaisce ar an leathanach, hanla le haghaidh athmhéadú/rothlú",
     "toolbar_paste_image_disabled": "Ní mór don ghearrthaisce íomhá amháin a bheith ann",
     "color_depth_panel_blocked_format": "Níl ar fáil: ní thacaíonn formáid bhunaidh {format} an chomhaid leis an doimhneacht seo.",
-    "image_mode_panel_blocked_format": "Níl ar fáil: ní thacaíonn formáid bhunaidh {format} an chomhaid leis an mód seo."
+    "image_mode_panel_blocked_format": "Níl ar fáil: ní thacaíonn formáid bhunaidh {format} an chomhaid leis an mód seo.",
+    "toolbar_macro_record_tooltip": "Taifead",
+    "toolbar_macro_record_instruction": "Tosaíonn sé ag taifeadadh macra ar an leathanach a thaispeántar",
+    "toolbar_macro_play_tooltip": "Seinn",
+    "toolbar_macro_play_instruction": "Seinneann sé macra taifeadta ar an leathanach a thaispeántar",
+    "macro_read_interrupted_title": "Cuireadh isteach ar an macra",
+    "macro_read_interrupted_message": "Cuireadh isteach ar sheinm an macra tríd an amharcán a dhúnadh. Cuireadh na hathruithe go léir a chuir an seinm seo i bhfeidhm cheana ar ceal."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Gile, codarsnacht, dathanna...",
       "refresh_mosaic": "Athnuaigh an mósáic (F5)",
       "create_ico": "Cruthaigh comhad .ico",
-      "straighten_auto": "Dírigh an íomhá go huathoibríoch"
+      "straighten_auto": "Dírigh an íomhá go huathoibríoch",
+      "read_macro": "Seinn macra"
     },
     "canvas_no_file": {
       "open": "Oscail CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Dírúchán uathoibríoch ar siúl...\n{percent}%"
+    "deskewing": "Dírúchán uathoibríoch ar siúl...\n{percent}%",
+    "macro_preparing": "Ag ullmhú don athimirt..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Masc bearrtha"
+    },
+    "macro_record": {
+      "title": "Taifead macra",
+      "btn_stop": "Críochnaigh",
+      "btn_cancel": "Cealaigh",
+      "name_dialog_title": "Ainmnigh an macra",
+      "name_label": "Ainm:",
+      "name_placeholder": "Ainm an mhacra",
+      "description_label": "Cur síos:",
+      "description_placeholder": "Cur síos (roghnach)",
+      "btn_save": "Sábháil"
+    },
+    "macro_read": {
+      "title": "Seinn macra",
+      "btn_rename": "Athainmnigh",
+      "btn_delete": "Scrios",
+      "btn_complete": "Comhlánaigh",
+      "btn_play": "Seinn",
+      "corrupt_title": "Comhad macra doléite",
+      "corrupt_message": "Níorbh fhéidir comhad macra amháin nó níos mó a léamh agus ní léirítear iad sa liosta: {files}",
+      "report_title": "Seinm críochnaithe",
+      "report_message": "Leathanaigh próiseáilte go rathúil: {ok}\nLeathanaigh próiseáilte go páirteach: {partial}\nLeathanaigh a theip orthu: {failed}",
+      "no_macros": "Níor taifeadadh maicréasa fós.",
+      "btn_pick_file": "Roghnaigh comhad",
+      "pick_file_title": "Roghnaigh maicréas",
+      "hint_record_from_viewer": "Taifeadtar maicréasa ón amharcán.",
+      "report_failed_line": "{page}: theip ag céim « {step} »",
+      "report_partial_line": "{page}: cuireadh {applied} céim i bhfeidhm, theip ag « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Ní féidir le hainm an mhacra a bheith folamh.",
+      "too_long": "Níor cheart d'ainm an mhacra a bheith níos faide ná 30 carachtar.",
+      "invalid_chars": "Tá carachtair san ainm seo nach gceadaítear in ainm comhaid.",
+      "reserved_name": "Tá an t-ainm seo curtha in áirithe ag Windows agus ní féidir é a úsáid.",
+      "duplicate": "Tá macra leis an ainm seo ann cheana féin."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Neartaíonn nó boga sonraí na híomhá\nDeaschliceáil chun aistriú go géire oiriúnaitheach",
     "sharpness_mode_1": "Cuireann sé béim ar imlínte agus na réimsí comhionanna á spáráil\nDeaschliceáil chun aistriú go géire shimplí",
     "crop_mode_0": "Tarraing dronuilleog ar an achar atá le coinneáil, ansin deimhnigh\nCliceáil ar dheis chun aistrigh go mód masc bearrtha",
-    "crop_mode_1": "Mód masc bearrtha: cuimhnigh ar dhronuilleog agus gair ar ais é ar na leathanaigh a leanann\nCliceáil ar dheis chun filleadh ar an ngnáthmhód"
+    "crop_mode_1": "Mód masc bearrtha: cuimhnigh ar dhronuilleog agus gair ar ais é ar na leathanaigh a leanann\nCliceáil ar dheis chun filleadh ar an ngnáthmhód",
+    "read_macro_selected": "Seinn macra ar na leathanaigh roghnaithe"
   },
   "help": {
     "title": "MosaicView - Treoir",
@@ -1498,7 +1542,9 @@
     "scan": "Scan íomhá",
     "scan_content": "• Cliceáil an cnaipe \"Scan\" (colún na ndeilbhíní, roghchlár Comhad, nó deaschliceáil ar an mósáic) chun an fhuinneog scanta a oscailt. Rialaíonn MosaicView do scanóir go díreach (trí WIA, córas scanta Windows): roghnaigh an gléas, an taifeach (DPI), an modh datha (dath / liathscála / dubh agus bán), ansin cliceáil \"Scan\". Ní mór scanóir a bheith plugáilte isteach, ar siúl, agus a thiománaí suiteáilte ar Windows chun é a fheiceáil sa liosta.\n• Cuimhnítear ar an scanóir, an taifeach agus an modh datha a úsáideadh go deireanach, agus moltar iad go huathoibríoch arís an chéad uair eile a scanálann tú.\n• Ní chuirtear ar fáil ach scanadh leathanaigh iomláin agus easpórtáil mar JPG, ós rud é go bhfuil gach a bhfuil ag teastáil ag an bhfeidhmchlár cheana féin chun an íomhá a mhionathrú agus a thiontú ina dhiaidh sin.\n• Cuirtear an íomhá scanta leis an mósáic go huathoibríoch, tar éis na leathanach atá ann cheana. Is féidir leat ansin í a bhearradh, a dhíriú, a dhathanna a choigeartú, srl. cosúil le haon leathanach eile den mósáic\n• Rialaíonn an ghné seo an scanóir go díreach, gan dul trí bhogearraí an mhonaróra ná a fhuinneog cumraíochta féin a thaispeáint.\n• Ós rud é nach féidir ach le nasc amháin scanóir fisiceach a rialú ag am ar bith, ní féidir scanadh a dhéanamh ach i bpainéal amháin ag an am: má tá fuinneog scanta oscailte nó scanadh ar siúl i bpainéal amháin, fanann an cnaipe \"Scan\" liathchóirithe sa phainéal eile go dtí go gcríochnaítear an oibríocht.",
     "straighten": "Dírigh leathanach",
-    "straighten_content": "Tá dírithe uathoibríoch (gan aon rud a tharraingt) ar fáil ón gcolún deilbhíní (cliceáil ar dheis ar an deilbhín \"Díriú\" chun modh a athrú), an roghchlár Íomhánna, nó cliceáil ar dheis ar an mósáic: braitheann sé an fiaradh leis féin agus dírítear an leathanach/na leathanaigh roghnaithe go díreach; líontar coirnéil fholmha a chruthaigh an rothlú le bán. Oibríonn ar go leor leathanach ag an am céanna. Taispeánann fuinneog achoimre cé mhéad leathanach a díríodh go rathúil agus liostaíonn siad sin nár aimsíodh fiaradh iontaofa dóibh.\n\nDéantar an díriú de láimh (líne tagartha a tharraingt) ón bpríomh-amharcán, féach an rannán Amharcán."
+    "straighten_content": "Tá dírithe uathoibríoch (gan aon rud a tharraingt) ar fáil ón gcolún deilbhíní (cliceáil ar dheis ar an deilbhín \"Díriú\" chun modh a athrú), an roghchlár Íomhánna, nó cliceáil ar dheis ar an mósáic: braitheann sé an fiaradh leis féin agus dírítear an leathanach/na leathanaigh roghnaithe go díreach; líontar coirnéil fholmha a chruthaigh an rothlú le bán. Oibríonn ar go leor leathanach ag an am céanna. Taispeánann fuinneog achoimre cé mhéad leathanach a díríodh go rathúil agus liostaíonn siad sin nár aimsíodh fiaradh iontaofa dóibh.\n\nDéantar an díriú de láimh (líne tagartha a tharraingt) ón bpríomh-amharcán, féach an rannán Amharcán.",
+    "macro": "Maicréasa",
+    "macro_content": "Taifeadann an uirlis Maicréas (deilbhíní «Taifead»/«Athimirt» ar bharra uirlisí an amharcáin) sraith gníomhartha a rinneadh ar leathanach agus athimríonn í go comhionann ar leathanach amháin nó ar roinnt eile — ón amharcán, nó do roinnt leathanach, ón mósáic (roghchlár Íomhánna, deaschliceáil, colún deilbhíní). Liostaíonn fuinneog tuairisce deiridh na leathanaigh a próiseáladh go rathúil, go páirteach nó gur theip orthu, in éineacht le cúis gach teipe."
   },
   "misc": {
     "file_word": "comhad",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Bain triail as tiománaí ginearálta Windows",
     "open_log": "Oscail logchomhad an scanta",
     "reveal_log": "Taispeáin logchomhad an scanta san Explorer"
+  },
+  "macro": {
+    "step_rotate": "Rothlú: {angle}°",
+    "step_flip": "Scáthán {direction}",
+    "step_levels": "Leibhéil: pointe dubh {black_point}, gáma {gamma}, pointe bán {white_point}, tairseach {threshold}",
+    "step_crop": "Bearradh",
+    "step_straighten": "Díriú: {angle}°",
+    "step_straighten_auto": "Díriú uathoibríoch",
+    "step_clone": "Clónáil: {stroke_points} pointe péinteáilte",
+    "step_text": "Téacs: {count} bhloc",
+    "step_shapes": "Cruthanna: {count} chruth",
+    "step_brightness": "Gile {brightness}, codarsnacht {contrast}",
+    "step_saturation": "Sáithiú: {saturation}",
+    "step_remove_colors": "Baint dathanna: déine {intensity}",
+    "step_compression": "Comhbhrú: cáilíocht {quality}",
+    "step_sharpness": "Géire: {value}",
+    "step_unsharp": "Géire oiriúnaitheach: ga {radius}, neart {percent}, tairseach {threshold}",
+    "step_color_depth": "Doimhneacht datha: {key}",
+    "step_effect": "Éifeacht: {key}",
+    "step_image_mode": "Mód íomhá: {key}",
+    "step_restore_color_depth": "Athchóirigh an doimhneacht datha bhunaidh",
+    "step_restore_effect": "Athchóirigh an éifeacht bhunaidh",
+    "step_restore_image_mode": "Athchóirigh an mód íomhá bunaidh",
+    "step_transparency": "Trédhearcacht: {count} chliceáil",
+    "step_paste_image": "Íomhá greamaithe: {count} íomhá"
   }
 }

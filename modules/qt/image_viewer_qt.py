@@ -45,6 +45,7 @@ from modules.qt.transparency_tool_qt import (
 from modules.qt.color_depth_tool_qt import ColorDepthCanvasMixin, ColorDepthViewerMixin
 from modules.qt.effects_tool_qt import EffectsCanvasMixin, EffectsViewerMixin
 from modules.qt.image_mode_tool_qt import ImageModeCanvasMixin, ImageModeViewerMixin
+from modules.qt.macro_tool_qt import MacroCanvasMixin, MacroViewerMixin
 # La barre d'outils elle-même (composant transversal, pas un outil) — même
 # principe de séparation, voir viewer_toolbar_qt.py.
 from modules.qt.viewer_toolbar_qt import _ViewerToolbar
@@ -158,7 +159,8 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
                      TextCanvasMixin, SharpnessCanvasMixin, BrightnessCanvasMixin, SaturationCanvasMixin,
                      RemoveColorsCanvasMixin, CompressionCanvasMixin, LevelsCanvasMixin,
                      ShapeCanvasMixin, TransparencyCanvasMixin, ColorDepthCanvasMixin,
-                     EffectsCanvasMixin, ImageModeCanvasMixin, PasteImageCanvasMixin, QLabel):
+                     EffectsCanvasMixin, ImageModeCanvasMixin, PasteImageCanvasMixin,
+                     MacroCanvasMixin, QLabel):
     """
     QLabel utilisé comme zone d'affichage de l'image.
     Gère :
@@ -247,6 +249,7 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         self._init_effects_state()
         self._init_image_mode_state()
         self._init_paste_image_state()
+        self._init_macro_state()
 
     # Méthodes de l'outil "crop" (has_crop, clear_crop, _get_resize_mode...)
     # fournies par CropCanvasMixin (crop_tool_qt.py), de l'outil "straighten"
@@ -954,6 +957,8 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
+        if self._viewer._macro_lock_overlay.isVisible():
+            self._viewer._macro_lock_overlay.resize(self.size())
         if self._validate_btn_visible and self._validate_btn is not None:
             # Le bouton est déjà visible — recalcule seulement sa position
             # (la fenêtre vient de changer de taille), ne touche pas à sa
@@ -1120,7 +1125,8 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
                    TextViewerMixin, SharpnessViewerMixin, BrightnessViewerMixin, SaturationViewerMixin,
                    RemoveColorsViewerMixin, CompressionViewerMixin, LevelsViewerMixin,
                    ShapeViewerMixin, TransparencyViewerMixin, ColorDepthViewerMixin,
-                   EffectsViewerMixin, ImageModeViewerMixin, PasteImageViewerMixin, QDialog):
+                   EffectsViewerMixin, ImageModeViewerMixin, PasteImageViewerMixin,
+                   MacroViewerMixin, QDialog):
     """
     Visionneuse d'images Qt.
     Fonctionnalités :
@@ -1179,6 +1185,22 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # chaque changement de page (voir navigate()). Voir clone_tool_qt.py::
         # CloneViewerMixin, hérité par cette classe.
         self._init_clone_viewer_state()
+
+        # État de l'outil "macros" — True pendant qu'une fenêtre Enregistrer/
+        # Lire est ouverte sur CE panneau. Pilote le grisage réciproque des 2
+        # boutons de la barre (_ViewerToolbar.refresh_macro_buttons_state) :
+        # pas de lecture/enregistrement concurrent dans le même panneau,
+        # l'autre panneau reste indépendant.
+        self._macro_recording = False
+        self._macro_reading = False
+        self._macro_steps: list = []
+        self._macro_redo_stack: list = []
+        self._macro_record_dialog = None
+        self._macro_page_idx: int | None = None
+        self._macro_transparency_clicks: list = []
+        self._macro_clone_points: list = []
+        self._macro_complete_name: str | None = None
+        self._macro_complete_description: str = ""
 
         # Blocs de texte en cours, conservés par page — même principe que
         # _crop_by_page/_straighten_by_page, mais valeur = liste de blocs
@@ -1275,6 +1297,9 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._toolbar = _ViewerToolbar(self)
         if self._initial_tool in ("crop", "straighten", "clone", "text"):
             self._toolbar.set_active_tool(self._initial_tool)
+
+        from modules.qt.macro_tool_qt import _MacroReadLockOverlay
+        self._macro_lock_overlay = _MacroReadLockOverlay(self._canvas)
         # Synchronise le slider/spinbox de netteté sur la valeur déjà commitée
         # pour cette page à ce point d'historique, si applicable (ex. fermer
         # la visionneuse après un ajustement puis la rouvrir sur la même page
@@ -1357,32 +1382,45 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # déplace au clavier (flèches seules, pas de widget de saisie en
         # concurrence — voir shapes_tool_qt.py::ShapeCanvasMixin.shape_key_press),
         # priorité sur la navigation de page tant qu'une forme est active.
-        QShortcut(QKeySequence(Qt.Key_Left),       self).activated.connect(
+        sc_left = QShortcut(QKeySequence(Qt.Key_Left), self)
+        sc_left.activated.connect(
             lambda: None if self._shape_key_nav(Qt.Key_Left) or self._text_block_has_focus()
             else self.navigate(-1))
-        QShortcut(QKeySequence(Qt.Key_Right),      self).activated.connect(
+        sc_right = QShortcut(QKeySequence(Qt.Key_Right), self)
+        sc_right.activated.connect(
             lambda: None if self._shape_key_nav(Qt.Key_Right) or self._text_block_has_focus()
             else self.navigate(1))
-        QShortcut(QKeySequence(Qt.Key_Up),         self).activated.connect(
-            lambda: self._shape_key_nav(Qt.Key_Up))
-        QShortcut(QKeySequence(Qt.Key_Down),       self).activated.connect(
-            lambda: self._shape_key_nav(Qt.Key_Down))
-        QShortcut(QKeySequence(Qt.Key_Escape),     self).activated.connect(self._on_escape)
+        sc_up = QShortcut(QKeySequence(Qt.Key_Up), self)
+        sc_up.activated.connect(lambda: self._shape_key_nav(Qt.Key_Up))
+        sc_down = QShortcut(QKeySequence(Qt.Key_Down), self)
+        sc_down.activated.connect(lambda: self._shape_key_nav(Qt.Key_Down))
+        sc_escape = QShortcut(QKeySequence(Qt.Key_Escape), self)
+        sc_escape.activated.connect(self._on_escape)
         # Suppr/Del : efface le tracé de forme en cours (pas encore posé) s'il
         # y en a un, sinon la forme SÉLECTIONNÉE (pas toutes, contrairement à
         # Échap sans tracé en cours — voir _on_escape) — comportement standard
         # attendu de cette touche dans un éditeur graphique.
-        QShortcut(QKeySequence(Qt.Key_Delete),     self).activated.connect(self._on_shape_delete_key)
-        QShortcut(QKeySequence(Qt.Key_Backspace),  self).activated.connect(self._on_shape_delete_key)
-        QShortcut(QKeySequence(Qt.Key_F11),        self).activated.connect(self.toggle_fullscreen)
+        sc_delete = QShortcut(QKeySequence(Qt.Key_Delete), self)
+        sc_delete.activated.connect(self._on_shape_delete_key)
+        sc_backspace = QShortcut(QKeySequence(Qt.Key_Backspace), self)
+        sc_backspace.activated.connect(self._on_shape_delete_key)
+        sc_f11 = QShortcut(QKeySequence(Qt.Key_F11), self)
+        sc_f11.activated.connect(self.toggle_fullscreen)
 
-        QShortcut(QKeySequence("Ctrl+Z"),          self).activated.connect(self._undo_and_refresh)
-        QShortcut(QKeySequence("Ctrl+Shift+Z"),    self).activated.connect(self._redo_and_refresh)
-        QShortcut(QKeySequence("Ctrl+Y"),          self).activated.connect(self._redo_and_refresh)
-        QShortcut(QKeySequence("Ctrl++"),          self).activated.connect(lambda: self.adjust_zoom(0.1))
-        QShortcut(QKeySequence("Ctrl+-"),          self).activated.connect(lambda: self.adjust_zoom(-0.1))
-        QShortcut(QKeySequence("Ctrl+0"),          self).activated.connect(self.fit_zoom_to_window)
-        QShortcut(QKeySequence("Ctrl+1"),          self).activated.connect(self.reset_zoom)
+        sc_undo = QShortcut(QKeySequence("Ctrl+Z"), self)
+        sc_undo.activated.connect(self._undo_and_refresh)
+        sc_redo1 = QShortcut(QKeySequence("Ctrl+Shift+Z"), self)
+        sc_redo1.activated.connect(self._redo_and_refresh)
+        sc_redo2 = QShortcut(QKeySequence("Ctrl+Y"), self)
+        sc_redo2.activated.connect(self._redo_and_refresh)
+        sc_zoom_in = QShortcut(QKeySequence("Ctrl++"), self)
+        sc_zoom_in.activated.connect(lambda: self.adjust_zoom(0.1))
+        sc_zoom_out = QShortcut(QKeySequence("Ctrl+-"), self)
+        sc_zoom_out.activated.connect(lambda: self.adjust_zoom(-0.1))
+        sc_zoom_fit = QShortcut(QKeySequence("Ctrl+0"), self)
+        sc_zoom_fit.activated.connect(self.fit_zoom_to_window)
+        sc_zoom_reset = QShortcut(QKeySequence("Ctrl+1"), self)
+        sc_zoom_reset.activated.connect(self.reset_zoom)
         # Ctrl+C / Ctrl+V (usage type : "je copie une page affichée dans la
         # visionneuse, je vais plus loin, je colle la page dans une autre") :
         # cette fenêtre est une QDialog séparée de la mosaïque, les
@@ -1392,8 +1430,19 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # pas state.selected_indices (qui peut diverger — l'utilisateur
         # navigue dans la visionneuse sans toucher à la sélection de la
         # mosaïque) — voir _copy_current_page_shortcut.
-        QShortcut(QKeySequence("Ctrl+C"),          self).activated.connect(self._copy_current_page_shortcut)
-        QShortcut(QKeySequence("Ctrl+V"),          self).activated.connect(self._paste_image_shortcut)
+        sc_copy = QShortcut(QKeySequence("Ctrl+C"), self)
+        sc_copy.activated.connect(self._copy_current_page_shortcut)
+        sc_paste = QShortcut(QKeySequence("Ctrl+V"), self)
+        sc_paste.activated.connect(self._paste_image_shortcut)
+
+        # Liste gardée pour pouvoir tout désactiver d'un coup pendant une
+        # lecture de macro (voir _macro_set_locked_for_reading) : seule la
+        # croix de fermeture de la fenêtre doit rester utilisable.
+        self._macro_lockable_shortcuts = [
+            sc_left, sc_right, sc_up, sc_down, sc_escape, sc_delete, sc_backspace,
+            sc_f11, sc_undo, sc_redo1, sc_redo2, sc_zoom_in, sc_zoom_out,
+            sc_zoom_fit, sc_zoom_reset, sc_copy, sc_paste,
+        ]
 
         # ── Signal langue ─────────────────────────────────────────────────────
         from modules.qt.language_signal import language_signal
@@ -1540,6 +1589,21 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             super().closeEvent(event)
             return
 
+        if getattr(self, '_macro_reading', False):
+            # Fermeture manuelle pendant une lecture de macro : rollback
+            # complet de tout ce que cette lecture a déjà appliqué (pas de
+            # confirmation, pas de commit dans l'historique — la lecture
+            # n'aura jamais eu lieu du point de vue de l'undo/redo). Le
+            # dialogue est parenté au panneau, pas à self : cette fenêtre est
+            # en train de se fermer et serait détruite avec lui sinon.
+            from modules.qt import macro_engine
+            macro_engine.rollback_macro_reading(self)
+            self._macro_reading = False
+            self._toolbar.refresh_macro_buttons_state()
+            dlg = MsgDialog(self._center_parent, "viewer.macro_read_interrupted_title",
+                            "viewer.macro_read_interrupted_message")
+            dlg.show_nonmodal()
+
         if self._has_unvalidated_work() and not self._close_confirmed:
             event.ignore()
             dlg = ConfirmYNDialog(
@@ -1567,7 +1631,8 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # de presse-papiers.
         self._toolbar.disconnect_paste_image_clipboard_watch()
 
-        self._save_bookmark(state)
+        if not getattr(self, '_macro_read_transient_viewer', False):
+            self._save_bookmark(state)
 
         for entry in state.images_data:
             if entry.get("is_image"):
@@ -1695,6 +1760,10 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         return p == pos
 
     def navigate(self, delta: int):
+        # Navigation bloquée pendant un enregistrement de macro : une macro
+        # s'enregistre toujours sur une seule page de référence par session.
+        if getattr(self, '_macro_recording', False):
+            return
         img_indices = self.get_image_indices()
         if not img_indices:
             return
@@ -1961,6 +2030,11 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         if fn:
             fn()
         self._refresh_after_undo_redo()
+        # Pendant un enregistrement de macro, Ctrl+Z retire aussi la dernière
+        # étape capturée — la liste live de _MacroRecordDialog doit suivre
+        # exactement l'état de l'historique.
+        if getattr(self, '_macro_recording', False):
+            self._macro_pop_last_step()
 
     def _redo_and_refresh(self):
         if self._block_undo_redo_for_unvalidated_work():
@@ -1969,6 +2043,8 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         if fn:
             fn()
         self._refresh_after_undo_redo()
+        if getattr(self, '_macro_recording', False):
+            self._macro_redo_last_step()
 
     def _block_undo_redo_for_unvalidated_work(self) -> bool:
         """True si Ctrl+Z/Ctrl+Y (et les boutons undo/redo de la barre,

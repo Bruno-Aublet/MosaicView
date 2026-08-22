@@ -454,6 +454,25 @@ class _ViewerToolbar(QWidget):
         layout.addWidget(paste_image_btn)
         self._buttons["paste_image"] = paste_image_btn
 
+        # Outil "macros" : 2 icônes séparées (pas un bi-mode), actions
+        # instantanées (comme undo/redo, _ActionButton) qui ouvrent une
+        # fenêtre non modale — aucun overlay, aucun geste souris (voir
+        # macro_tool_qt.py). Entourées d'un QFrame commun pour signifier
+        # visuellement qu'elles forment un sous-groupe distinct de la barre.
+        self._macro_group = QFrame()
+        macro_group_layout = QHBoxLayout(self._macro_group)
+        macro_group_layout.setContentsMargins(3, 2, 3, 2)
+        macro_group_layout.setSpacing(2)
+
+        self._macro_record_btn = _ActionButton(
+            "BTN_Macro_Record.png", self._on_macro_record_clicked)
+        macro_group_layout.addWidget(self._macro_record_btn)
+        self._macro_play_btn = _ActionButton(
+            "BTN_Macro_Play.png", self._on_macro_play_clicked)
+        macro_group_layout.addWidget(self._macro_play_btn)
+
+        layout.addWidget(self._macro_group)
+
         self._separator = QFrame()
         self._separator.setFrameShape(QFrame.VLine)
         layout.addWidget(self._separator)
@@ -481,6 +500,8 @@ class _ViewerToolbar(QWidget):
         self._overlay_tip.track(effects_btn)
         self._overlay_tip.track(image_mode_btn)
         self._overlay_tip.track(paste_image_btn)
+        self._overlay_tip.track(self._macro_record_btn)
+        self._overlay_tip.track(self._macro_play_btn)
         self._overlay_tip.track(self._undo_btn)
         self._overlay_tip.track(self._redo_btn)
 
@@ -524,6 +545,7 @@ class _ViewerToolbar(QWidget):
         self.set_active_tool(None)
         self._update_sharpness_tooltip()
         self.refresh_undo_redo_state()
+        self.refresh_macro_buttons_state()
 
         # Grisage LIVE de l'icône "Coller une image" selon le contenu du
         # presse-papiers système : écoute QClipboard.dataChanged plutôt
@@ -570,6 +592,11 @@ class _ViewerToolbar(QWidget):
             # (_DARK_MODE_RECOLOR_ICONS) si le thème change pendant que la
             # visionneuse reste ouverte — no-op pour les autres icônes.
             btn._load_icon()
+        self._macro_group.setStyleSheet(
+            f"QFrame {{ border: 1px solid {theme['separator']}; border-radius: 5px; }}"
+        )
+        self._macro_record_btn._apply_style()
+        self._macro_play_btn._apply_style()
         self._undo_btn._apply_style()
         self._redo_btn._apply_style()
         self._crop_mask_panel._apply_theme()
@@ -664,6 +691,16 @@ class _ViewerToolbar(QWidget):
         )
         self._overlay_tip.track(self._buttons["image_mode"], image_mode_tip)
         self._update_paste_image_tooltip()
+        macro_record_tip = (
+            f"<b>{_('viewer.toolbar_macro_record_tooltip')}</b><br>"
+            f"{_('viewer.toolbar_macro_record_instruction')}"
+        )
+        self._overlay_tip.track(self._macro_record_btn, macro_record_tip)
+        macro_play_tip = (
+            f"<b>{_('viewer.toolbar_macro_play_tooltip')}</b><br>"
+            f"{_('viewer.toolbar_macro_play_instruction')}"
+        )
+        self._overlay_tip.track(self._macro_play_btn, macro_play_tip)
         self._overlay_tip.track(self._undo_btn, _("viewer.toolbar_undo_tooltip"))
         self._overlay_tip.track(self._redo_btn, _("viewer.toolbar_redo_tooltip"))
         self._angle_panel.retranslate()
@@ -682,6 +719,25 @@ class _ViewerToolbar(QWidget):
         self._color_depth_panel.retranslate()
         self._effects_panel.retranslate()
         self._image_mode_panel.retranslate()
+
+    # ── Macros ────────────────────────────────────────────────────────────────
+
+    def _on_macro_record_clicked(self):
+        self._viewer.open_macro_record_dialog()
+
+    def _on_macro_play_clicked(self):
+        self._viewer.open_macro_read_dialog()
+
+    def refresh_macro_buttons_state(self):
+        """Grisage réciproque : impossible d'enregistrer ou de lire une macro
+        dans ce panneau pendant qu'une lecture y est déjà en cours, et
+        impossible de lire pendant qu'un enregistrement y est en cours. Rien
+        n'empêche l'autre panneau (indépendant) de faire l'un ou l'autre en
+        même temps."""
+        recording = getattr(self._viewer, '_macro_recording', False)
+        reading = getattr(self._viewer, '_macro_reading', False)
+        self._macro_record_btn.set_enabled_state(not reading)
+        self._macro_play_btn.set_enabled_state(not recording and not reading)
 
     # ── Undo/Redo ─────────────────────────────────────────────────────────────
 
@@ -880,8 +936,13 @@ class _ViewerToolbar(QWidget):
         # Redressement en mode automatique (state.straighten_mode == 1, bascule
         # par clic droit — voir _on_tool_right_clicked) : le clic gauche ne
         # sélectionne pas un outil de tracé (rien à tracer en auto), il lance
-        # directement le deskew sur la page actuellement affichée.
+        # directement le deskew sur la page actuellement affichée. L'icône
+        # doit malgré tout devenir l'outil actif (comme pour le clic droit,
+        # voir _on_tool_right_clicked) — sinon l'outil précédemment
+        # sélectionné reste visuellement actif alors que straighten est
+        # celui qui vient d'agir.
         if tool_id == "straighten" and self._straighten_mode() == 1:
+            self.set_active_tool("straighten")
             self._viewer.perform_auto_straighten()
             return
         # "Coller une image" : voir paste_image_from_clipboard()

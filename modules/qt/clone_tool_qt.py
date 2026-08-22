@@ -625,6 +625,9 @@ class CloneViewerMixin:
             else:
                 self._clone_stroke_snapshot = self._clone_work_img
             self._clone_stroke_dirty = True
+            # Premier point peint de CE stroke, en pixels absolus de l'image
+            # source — jamais recalculé/mis à l'échelle à la lecture.
+            self._macro_clone_points = [(ix, iy)]
             # En mode double page/continu/webtoon, un stroke effectif force le
             # retour en simple page — même règle que le crop/straighten
             # (déclenchée seulement à la fin d'un geste effectif, pas à la
@@ -635,6 +638,12 @@ class CloneViewerMixin:
         src_x, src_y = canvas._get_effective_clone_source(ix, iy)
         self._clone_apply_stamp(ix, iy, src_x, src_y)
         canvas._clone_stroke_last_dest = (ix, iy)
+
+        # Capture macro : un point par frame réellement affichée (même
+        # throttle que l'affichage ci-dessous, pas chaque pixel du stroke) —
+        # suffisant pour reproduire fidèlement le tracé sans alourdir le JSON.
+        if getattr(self, '_macro_recording', False):
+            self._macro_clone_points.append((ix, iy))
 
         if self._clone_display_timer.elapsed() >= 33:
             self._clone_refresh_display()
@@ -713,13 +722,15 @@ class CloneViewerMixin:
         offset_y = (ch - final_h) // 2 + canvas.pan_offset_y
         canvas.set_pixmap_and_geometry(pixmap, offset_x, offset_y, final_w, final_h)
 
-    def _on_clone_paint_end(self):
+    def _on_clone_paint_end(self, skip_history: bool = False) -> bool:
         """Relâchement du clic gauche : commit du stroke dans entry['bytes']
         et dans l'historique unique du panneau (save_state avant + après,
         même pattern que perform_crop/perform_straighten — pas d'historique
-        local séparé comme dans l'ancienne CloneZoneViewerDialog)."""
+        local séparé comme dans l'ancienne CloneZoneViewerDialog).
+
+        skip_history : saute les 2 save_state, laissés à l'appelant."""
         if not self._clone_stroke_dirty:
-            return
+            return False
 
         state = self.callbacks.get('state') or _state_module.state
         save_state    = self.callbacks.get("save_state")
@@ -730,7 +741,7 @@ class CloneViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
 
             self._clone_refresh_display()
@@ -761,7 +772,7 @@ class CloneViewerMixin:
             _pidx = get_page_image_index(state, entry)
             if _pidx is not None:
                 update_page_entries_in_xml_data(state, [(_pidx, entry)])
-            if save_state:
+            if save_state and not skip_history:
                 save_state(force=True)
 
             real_idx = entry.get("_real_idx")
@@ -777,35 +788,84 @@ class CloneViewerMixin:
 
             self._toolbar.refresh_undo_redo_state()
 
+            if not skip_history:
+                # Payload en pixels absolus — source du stroke + points peints
+                # (throttle d'affichage, pas chaque pixel) + diamètre du
+                # pinceau. Chaque stroke = sa propre étape.
+                source = self._canvas._clone_stroke_start_src
+                points = getattr(self, '_macro_clone_points', [])
+                if source is not None and points:
+                    self._macro_record_step(
+                        "clone",
+                        {
+                            "mode": self._canvas._clone_mode,
+                            "brush_diam_px": self._canvas._clone_brush_radius,
+                            "source_px": [source[0], source[1]],
+                            "points_px": [[p[0], p[1]] for p in points],
+                        },
+                        "macro.step_clone",
+                        {"stroke_points": len(points)},
+                    )
+
+            # Prépare le prochain stroke : mode fixe repart du même point
+            # source, mode relatif avance le point source du déplacement
+            # effectué.
+            canvas = self._canvas
+            if canvas._clone_mode != 'fixed':
+                if (canvas._clone_stroke_start_dest is not None and
+                        canvas._clone_stroke_last_dest is not None and
+                        canvas._clone_stroke_start_src is not None):
+                    ddx = canvas._clone_stroke_last_dest[0] - canvas._clone_stroke_start_dest[0]
+                    ddy = canvas._clone_stroke_last_dest[1] - canvas._clone_stroke_start_dest[1]
+                    canvas._clone_source_img = (
+                        canvas._clone_stroke_start_src[0] + ddx,
+                        canvas._clone_stroke_start_src[1] + ddy,
+                    )
+
+            canvas._clone_stroke_start_dest = None
+            canvas._clone_stroke_start_src = None
+            canvas._clone_stroke_last_dest = None
+            self._clone_work_img = None
+            self._clone_checker_bg = None
+            self._clone_stroke_snapshot = None
+            self._clone_bytes_before_stroke = None
+            self._clone_stroke_dirty = False
+
+            # Reprend l'affichage normal depuis les bytes committés (invalide
+            # le pixmap "aperçu direct" utilisé pendant le stroke).
+            self.display_image()
+            return True
+
         except Exception:
+            if skip_history:
+                return False
             dlg = MsgDialog(self._center_parent, "messages.errors.clone_failed.title",
                             "messages.errors.clone_failed.title")
             dlg.show_nonmodal()
+            return False
 
-        # Prépare le prochain stroke : mode fixe repart du même point source,
-        # mode relatif avance le point source du déplacement effectué — même
-        # principe que l'ancienne clone_zone_viewer_qt.py::_on_paint_end.
+    def perform_clone_step(self, params: dict) -> bool:
+        """Rejoue un stroke complet depuis un payload de macro (source_px +
+        points_px en pixels absolus) : pose l'état du canvas puis appelle
+        _on_clone_paint_stroke() point par point, sans passer par un
+        événement souris réel — _on_clone_paint_stroke() ne dépend déjà que
+        de coordonnées image et de l'état du canvas (_clone_source_img/
+        _clone_mode/_clone_brush_radius), jamais d'un vrai geste souris."""
         canvas = self._canvas
-        if canvas._clone_mode != 'fixed':
-            if (canvas._clone_stroke_start_dest is not None and
-                    canvas._clone_stroke_last_dest is not None and
-                    canvas._clone_stroke_start_src is not None):
-                ddx = canvas._clone_stroke_last_dest[0] - canvas._clone_stroke_start_dest[0]
-                ddy = canvas._clone_stroke_last_dest[1] - canvas._clone_stroke_start_dest[1]
-                canvas._clone_source_img = (
-                    canvas._clone_stroke_start_src[0] + ddx,
-                    canvas._clone_stroke_start_src[1] + ddy,
-                )
+        source_px = params.get("source_px")
+        points_px = params.get("points_px")
+        if not source_px or not points_px:
+            return False
 
-        canvas._clone_stroke_start_dest = None
-        canvas._clone_stroke_start_src = None
-        canvas._clone_stroke_last_dest = None
-        self._clone_work_img = None
-        self._clone_checker_bg = None
-        self._clone_stroke_snapshot = None
-        self._clone_bytes_before_stroke = None
+        canvas._clone_mode = params.get("mode", "fixed")
+        canvas.set_clone_brush_radius(params.get("brush_diam_px", 20))
+        canvas._clone_source_img = (source_px[0], source_px[1])
         self._clone_stroke_dirty = False
 
-        # Reprend l'affichage normal depuis les bytes committés (invalide le
-        # pixmap "aperçu direct" utilisé pendant le stroke).
-        self.display_image()
+        for px, py in points_px:
+            self._on_clone_paint_stroke(px, py)
+            if not self._clone_stroke_dirty:
+                return False
+
+        canvas._clone_painting = False
+        return self._on_clone_paint_end(skip_history=True)

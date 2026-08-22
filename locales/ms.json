@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Menampal imej papan keratan pada halaman, pemegang untuk mengubah saiz/memutar",
     "toolbar_paste_image_disabled": "Papan keratan mesti mengandungi hanya satu imej",
     "color_depth_panel_blocked_format": "Tidak tersedia: format {format} asal fail tidak menyokong kedalaman warna ini.",
-    "image_mode_panel_blocked_format": "Tidak tersedia: format {format} asal fail tidak menyokong mod ini."
+    "image_mode_panel_blocked_format": "Tidak tersedia: format {format} asal fail tidak menyokong mod ini.",
+    "toolbar_macro_record_tooltip": "Rakam",
+    "toolbar_macro_record_instruction": "Memulakan rakaman makro pada halaman yang dipaparkan",
+    "toolbar_macro_play_tooltip": "Main",
+    "toolbar_macro_play_instruction": "Memainkan makro yang dirakam pada halaman yang dipaparkan",
+    "macro_read_interrupted_title": "Makro terganggu",
+    "macro_read_interrupted_message": "Main balik makro terganggu kerana pemapar ditutup. Semua perubahan yang telah dilaksanakan oleh main balik ini telah dibuat asal."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Kecerahan, kontras, warna...",
       "refresh_mosaic": "Muat semula mozek (F5)",
       "create_ico": "Buat fail .ico",
-      "straighten_auto": "Luruskan imej secara automatik"
+      "straighten_auto": "Luruskan imej secara automatik",
+      "read_macro": "Mainkan makro"
     },
     "canvas_no_file": {
       "open": "Buka CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Pelurusan automatik sedang berjalan...\n{percent}%"
+    "deskewing": "Pelurusan automatik sedang berjalan...\n{percent}%",
+    "macro_preparing": "Menyediakan main semula..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Topeng pemotongan"
+    },
+    "macro_record": {
+      "title": "Rakam makro",
+      "btn_stop": "Selesai",
+      "btn_cancel": "Batal",
+      "name_dialog_title": "Namakan makro",
+      "name_label": "Nama:",
+      "name_placeholder": "Nama makro",
+      "description_label": "Penerangan:",
+      "description_placeholder": "Penerangan (pilihan)",
+      "btn_save": "Simpan"
+    },
+    "macro_read": {
+      "title": "Mainkan makro",
+      "btn_rename": "Namakan semula",
+      "btn_delete": "Padam",
+      "btn_complete": "Lengkapkan",
+      "btn_play": "Main",
+      "corrupt_title": "Fail makro tidak boleh dibaca",
+      "corrupt_message": "Satu atau lebih fail makro tidak dapat dibaca dan tidak muncul dalam senarai: {files}",
+      "report_title": "Main balik selesai",
+      "report_message": "Halaman berjaya diproses: {ok}\nHalaman diproses sebahagian: {partial}\nHalaman gagal: {failed}",
+      "no_macros": "Belum ada makro yang dirakam.",
+      "btn_pick_file": "Pilih fail",
+      "pick_file_title": "Pilih makro",
+      "hint_record_from_viewer": "Makro dirakam dari pemapar.",
+      "report_failed_line": "{page}: gagal pada langkah « {step} »",
+      "report_partial_line": "{page}: {applied} langkah digunakan, gagal pada « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Nama makro tidak boleh kosong.",
+      "too_long": "Nama makro tidak boleh melebihi 30 aksara.",
+      "invalid_chars": "Nama ini mengandungi aksara yang tidak dibenarkan dalam nama fail.",
+      "reserved_name": "Nama ini dikhaskan oleh Windows dan tidak boleh digunakan.",
+      "duplicate": "Makro dengan nama ini sudah wujud."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Meningkatkan atau melembutkan perincian imej\nKlik kanan untuk bertukar kepada ketajaman adaptif",
     "sharpness_mode_1": "Menonjolkan tepi sambil mengekalkan kawasan rata\nKlik kanan untuk bertukar kepada ketajaman ringkas",
     "crop_mode_0": "Lukis segi empat tepat di atas kawasan yang ingin dikekalkan, kemudian sahkan\nKlik kanan untuk beralih ke mod topeng pemotongan",
-    "crop_mode_1": "Mod topeng pemotongan: ingat segi empat tepat dan panggil semula pada halaman seterusnya\nKlik kanan untuk kembali ke mod biasa"
+    "crop_mode_1": "Mod topeng pemotongan: ingat segi empat tepat dan panggil semula pada halaman seterusnya\nKlik kanan untuk kembali ke mod biasa",
+    "read_macro_selected": "Mainkan makro pada halaman yang dipilih"
   },
   "help": {
     "title": "MosaicView - Manual Pengguna",
@@ -1498,7 +1542,9 @@
     "scan": "Imbas satu imej",
     "scan_content": "• Klik butang \"Imbas\" (lajur ikon, menu Fail, atau klik kanan pada mozek) untuk membuka tetingkap pengimbasan. MosaicView mengawal pengimbas anda secara langsung (melalui WIA, sistem pengimbasan Windows): pilih peranti, resolusi (DPI), mod warna (warna / skala kelabu / hitam putih), kemudian klik \"Imbas\". Pengimbas mesti disambungkan, dihidupkan, dan pemacunya dipasang pada Windows untuk muncul dalam senarai.\n• Pengimbas, resolusi dan mod warna terakhir yang dipilih akan diingati dan dicadangkan semula secara automatik pada imbasan seterusnya.\n• Hanya pengimbasan satu muka surat penuh dan eksport ke JPG yang ditawarkan, kerana aplikasi sudah mempunyai semua yang diperlukan untuk suntingan dan penukaran format imej selepas itu.\n• Imej yang diimbas secara automatik ditambah ke mozek, selepas halaman yang sudah ada. Anda kemudian boleh memangkasnya, meluruskannya, melaraskan warnanya dll. seperti mana-mana halaman mozek yang lain\n• Ciri ini mengawal pengimbas secara langsung, tanpa melalui perisian pengeluar atau memaparkan tetingkap konfigurasinya sendiri.\n• Oleh kerana pengimbas fizikal hanya boleh dikawal oleh satu sambungan pada satu masa, pengimbasan hanya boleh dilakukan dalam satu panel pada satu masa: jika tetingkap pengimbasan dibuka atau pengimbasan sedang berjalan dalam satu panel, butang \"Imbas\" kekal kelabu dalam panel yang lain sehingga operasi selesai.",
     "straighten": "Luruskan halaman",
-    "straighten_content": "Pelurusan automatik (tanpa melukis apa-apa) tersedia dari lajur ikon (klik kanan pada ikon \"Luruskan\" untuk menukar mod), menu Imej, atau klik kanan pada mozek: ia mengesan kecondongan sendiri dan meluruskan halaman yang dipilih secara langsung; sudut kosong yang dicipta oleh putaran diisi dengan putih. Berfungsi pada beberapa halaman serentak. Tetingkap ringkasan menunjukkan berapa banyak halaman berjaya diluruskan dan menyenaraikan yang mana kecondongan yang boleh dipercayai tidak dapat dikesan.\n\nPelurusan manual (melukis garis rujukan) dilakukan dari pemapar utama, lihat bahagian Pemapar."
+    "straighten_content": "Pelurusan automatik (tanpa melukis apa-apa) tersedia dari lajur ikon (klik kanan pada ikon \"Luruskan\" untuk menukar mod), menu Imej, atau klik kanan pada mozek: ia mengesan kecondongan sendiri dan meluruskan halaman yang dipilih secara langsung; sudut kosong yang dicipta oleh putaran diisi dengan putih. Berfungsi pada beberapa halaman serentak. Tetingkap ringkasan menunjukkan berapa banyak halaman berjaya diluruskan dan menyenaraikan yang mana kecondongan yang boleh dipercayai tidak dapat dikesan.\n\nPelurusan manual (melukis garis rujukan) dilakukan dari pemapar utama, lihat bahagian Pemapar.",
+    "macro": "Makro",
+    "macro_content": "Alat Makro (ikon «Rakam»/«Main» pada bar alat pemapar) merakam satu urutan tindakan yang dilakukan pada satu halaman dan memainkannya semula secara sama pada satu atau beberapa halaman lain — daripada pemapar atau, untuk beberapa halaman, daripada mozek (menu Imej, klik kanan, lajur ikon). Tetingkap laporan akhir menyenaraikan halaman yang diproses dengan jayanya, sebahagiannya atau gagal, berserta sebab setiap kegagalan."
   },
   "misc": {
     "file_word": "fail",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Cuba dengan pemacu generik Windows",
     "open_log": "Buka log imbasan",
     "reveal_log": "Tunjukkan log imbasan dalam Explorer"
+  },
+  "macro": {
+    "step_rotate": "Putaran: {angle}°",
+    "step_flip": "Cermin {direction}",
+    "step_levels": "Aras: titik hitam {black_point}, gamma {gamma}, titik putih {white_point}, ambang {threshold}",
+    "step_crop": "Pangkas",
+    "step_straighten": "Luruskan: {angle}°",
+    "step_straighten_auto": "Pelurusan automatik",
+    "step_clone": "Klon: {stroke_points} titik dicat",
+    "step_text": "Teks: {count} blok",
+    "step_shapes": "Bentuk: {count} bentuk",
+    "step_brightness": "Kecerahan {brightness}, kontras {contrast}",
+    "step_saturation": "Ketepuan: {saturation}",
+    "step_remove_colors": "Penyingkiran warna: keamatan {intensity}",
+    "step_compression": "Mampatan: kualiti {quality}",
+    "step_sharpness": "Ketajaman: {value}",
+    "step_unsharp": "Ketajaman adaptif: jejari {radius}, kekuatan {percent}, ambang {threshold}",
+    "step_color_depth": "Kedalaman warna: {key}",
+    "step_effect": "Kesan: {key}",
+    "step_image_mode": "Mod imej: {key}",
+    "step_restore_color_depth": "Pulihkan kedalaman warna asal",
+    "step_restore_effect": "Pulihkan kesan asal",
+    "step_restore_image_mode": "Pulihkan mod imej asal",
+    "step_transparency": "Ketelusan: {count} klik",
+    "step_paste_image": "Imej ditampal: {count} imej"
   }
 }

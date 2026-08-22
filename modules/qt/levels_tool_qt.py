@@ -796,7 +796,7 @@ class LevelsViewerMixin:
             for_preview=True)
         self.display_image(keep_crop_rect=True)
 
-    def perform_levels(self):
+    def perform_levels(self, skip_history: bool = False):
         """Relâchement d'un slider, validation d'une spinbox, OU clic pipette
         (voir LevelsCanvasMixin.levels_pipette_click) : commit réel des
         niveaux dans entry['bytes'] (pattern skill apply-image-operation,
@@ -811,7 +811,9 @@ class LevelsViewerMixin:
         commit applique un ajustement ADDITIONNEL par-dessus l'image déjà
         modifiée (le calcul PIL repart de entry['bytes'] courant à chaque
         fois, pas d'un état "absolu" mémorisé) — comportement accepté
-        explicitement, cohérent avec brightness/sharpness."""
+        explicitement, cohérent avec brightness/sharpness.
+
+        skip_history : propagé à apply_image_adjustments()."""
         from modules.qt import state as _state_module
         from modules.qt.image_processing_qt import apply_image_adjustments
         from modules.qt.dialogs_qt import MsgDialog
@@ -831,7 +833,7 @@ class LevelsViewerMixin:
                 [entry],
                 {'threshold': threshold, 'black_point': black_point,
                  'gamma': gamma, 'white_point': white_point},
-                callbacks=self.callbacks)
+                callbacks=self.callbacks, skip_history=skip_history)
 
             # apply_image_adjustments() vient de faire save_state(force=True)
             # en interne : state.history_index pointe maintenant sur CE
@@ -865,12 +867,22 @@ class LevelsViewerMixin:
             # non corrigé, hors périmètre de ce module.
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
+            self._macro_record_step(
+                "levels",
+                {"threshold": threshold, "black_point": black_point,
+                 "gamma": gamma, "white_point": white_point},
+                "macro.step_levels",
+                {"threshold": threshold, "black_point": black_point,
+                 "gamma": gamma, "white_point": white_point},
+            )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.levels_failed.title",
                             "messages.errors.levels_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
     def perform_auto_levels(self):
         """Bouton "Auto" du panneau : calcule les points noir/blanc via

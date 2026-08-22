@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Plakt de afbeelding uit het klembord op de pagina, grepen om te schalen/draaien",
     "toolbar_paste_image_disabled": "Het klembord mag alleen een afbeelding bevatten",
     "color_depth_panel_blocked_format": "Niet beschikbaar: het oorspronkelijke {format}-formaat van het bestand ondersteunt deze kleurdiepte niet.",
-    "image_mode_panel_blocked_format": "Niet beschikbaar: het oorspronkelijke {format}-formaat van het bestand ondersteunt deze modus niet."
+    "image_mode_panel_blocked_format": "Niet beschikbaar: het oorspronkelijke {format}-formaat van het bestand ondersteunt deze modus niet.",
+    "toolbar_macro_record_tooltip": "Opnemen",
+    "toolbar_macro_record_instruction": "Start de opname van een macro op de weergegeven pagina",
+    "toolbar_macro_play_tooltip": "Afspelen",
+    "toolbar_macro_play_instruction": "Speelt een opgenomen macro af op de weergegeven pagina",
+    "macro_read_interrupted_title": "Macro onderbroken",
+    "macro_read_interrupted_message": "Het afspelen van de macro werd onderbroken doordat de viewer werd gesloten. Alle wijzigingen die door dit afspelen al waren toegepast, zijn ongedaan gemaakt."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Helderheid, contrast, kleuren...",
       "refresh_mosaic": "Mozaïek vernieuwen (F5)",
       "create_ico": ".ico-bestand aanmaken",
-      "straighten_auto": "Afbeelding automatisch rechtzetten"
+      "straighten_auto": "Afbeelding automatisch rechtzetten",
+      "read_macro": "Een macro afspelen"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF openen",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Automatisch rechtzetten bezig...\n{percent}%"
+    "deskewing": "Automatisch rechtzetten bezig...\n{percent}%",
+    "macro_preparing": "Weergave voorbereiden..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Bijsnijdmasker"
+    },
+    "macro_record": {
+      "title": "Een macro opnemen",
+      "btn_stop": "Voltooien",
+      "btn_cancel": "Annuleren",
+      "name_dialog_title": "Macro benoemen",
+      "name_label": "Naam:",
+      "name_placeholder": "Naam van de macro",
+      "description_label": "Beschrijving:",
+      "description_placeholder": "Beschrijving (optioneel)",
+      "btn_save": "Opslaan"
+    },
+    "macro_read": {
+      "title": "Een macro afspelen",
+      "btn_rename": "Hernoemen",
+      "btn_delete": "Verwijderen",
+      "btn_complete": "Aanvullen",
+      "btn_play": "Afspelen",
+      "corrupt_title": "Onleesbaar macrobestand",
+      "corrupt_message": "Een of meer macrobestanden konden niet worden gelezen en verschijnen niet in de lijst: {files}",
+      "report_title": "Afspelen voltooid",
+      "report_message": "Succesvol verwerkte pagina's: {ok}\nGedeeltelijk verwerkte pagina's: {partial}\nMislukte pagina's: {failed}",
+      "no_macros": "Nog geen macro opgenomen.",
+      "btn_pick_file": "Een bestand kiezen",
+      "pick_file_title": "Een macro kiezen",
+      "hint_record_from_viewer": "Macro's worden opgenomen vanuit de viewer.",
+      "report_failed_line": "{page}: mislukt bij stap « {step} »",
+      "report_partial_line": "{page}: {applied} stap(pen) toegepast, mislukt bij « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "De naam van de macro mag niet leeg zijn.",
+      "too_long": "De naam van de macro mag niet langer zijn dan 30 tekens.",
+      "invalid_chars": "Deze naam bevat tekens die niet zijn toegestaan in een bestandsnaam.",
+      "reserved_name": "Deze naam is gereserveerd door Windows en kan niet worden gebruikt.",
+      "duplicate": "Er bestaat al een macro met deze naam."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Versterkt of verzacht de details van de afbeelding\nRechtsklikken om over te schakelen naar adaptieve scherpte",
     "sharpness_mode_1": "Benadrukt contouren met behoud van vlakke gebieden\nRechtsklikken om over te schakelen naar eenvoudige scherpte",
     "crop_mode_0": "Teken een rechthoek over het te behouden gebied en bevestig\nRechtsklik om over te schakelen naar de bijsnijdmasker-modus",
-    "crop_mode_1": "Bijsnijdmasker-modus: onthoud een rechthoek en roep het op voor de volgende pagina's\nRechtsklik om terug te keren naar de normale modus"
+    "crop_mode_1": "Bijsnijdmasker-modus: onthoud een rechthoek en roep het op voor de volgende pagina's\nRechtsklik om terug te keren naar de normale modus",
+    "read_macro_selected": "Een macro afspelen op de geselecteerde pagina's"
   },
   "help": {
     "title": "MosaicView - Gebruiksaanwijzing",
@@ -1498,7 +1542,9 @@
     "scan": "Een afbeelding scannen",
     "scan_content": "• Klik op de knop 'Scannen' (pictogramkolom, menu Bestand of rechtsklik op de mozaïek) om het scanvenster te openen. MosaicView bestuurt uw scanner rechtstreeks (via WIA, het scansysteem van Windows): selecteer het apparaat, de resolutie (DPI), de kleurmodus (kleur / grijstinten / zwart-wit) en klik vervolgens op 'Scannen'. Een scanner moet aangesloten en ingeschakeld zijn en het stuurprogramma moet op Windows zijn geïnstalleerd om in de lijst te verschijnen.\n• De laatst gebruikte scanner, resolutie en gekozen kleurmodus worden onthouden en bij de volgende scan automatisch opnieuw voorgesteld.\n• Alleen volledige paginascans en export als JPG worden aangeboden, aangezien de toepassing al alles heeft wat nodig is om de afbeelding daarna te bewerken en te converteren.\n• De gescande afbeelding wordt automatisch toegevoegd aan de mozaïek, na de reeds aanwezige pagina's. U kunt deze vervolgens bijsnijden, recht zetten, de kleuren aanpassen enz., zoals elke andere pagina van de mozaïek\n• Deze functie bestuurt de scanner rechtstreeks, zonder gebruik te maken van de software van de fabrikant of diens eigen configuratievenster weer te geven.\n• Omdat een fysieke scanner slechts door één verbinding tegelijk kan worden aangestuurd, is scannen maar in één paneel tegelijk mogelijk: als in een paneel een scanvenster open staat of een scan bezig is, blijft de knop “Scannen” in het andere paneel grijs totdat de bewerking is voltooid.",
     "straighten": "Pagina rechtzetten",
-    "straighten_content": "Automatisch rechttrekken (zonder iets te tekenen) is beschikbaar vanuit de pictogramkolom (rechtermuisknop op het pictogram \"Rechttrekken\" om van modus te wisselen), het menu Afbeeldingen, of rechtermuisknop op de mozaïek: het detecteert de scheefstand zelf en trekt de geselecteerde pagina('s) direct recht; lege hoeken die door de rotatie ontstaan worden wit opgevuld. Werkt op meerdere pagina's tegelijk. Een samenvattingsvenster toont hoeveel pagina's succesvol zijn rechtgetrokken en somt op waar geen betrouwbare scheefstand kon worden gedetecteerd.\n\nHandmatig rechttrekken (een referentielijn tekenen) gebeurt vanuit de hoofdviewer, zie de sectie Viewer."
+    "straighten_content": "Automatisch rechttrekken (zonder iets te tekenen) is beschikbaar vanuit de pictogramkolom (rechtermuisknop op het pictogram \"Rechttrekken\" om van modus te wisselen), het menu Afbeeldingen, of rechtermuisknop op de mozaïek: het detecteert de scheefstand zelf en trekt de geselecteerde pagina('s) direct recht; lege hoeken die door de rotatie ontstaan worden wit opgevuld. Werkt op meerdere pagina's tegelijk. Een samenvattingsvenster toont hoeveel pagina's succesvol zijn rechtgetrokken en somt op waar geen betrouwbare scheefstand kon worden gedetecteerd.\n\nHandmatig rechttrekken (een referentielijn tekenen) gebeurt vanuit de hoofdviewer, zie de sectie Viewer.",
+    "macro": "Macro's",
+    "macro_content": "De Macro-tool (pictogrammen «Opnemen»/«Afspelen» in de werkbalk van de viewer) legt een reeks acties op een pagina vast en speelt deze identiek af op een of meerdere andere — vanuit de viewer of, voor meerdere pagina's, vanuit de mozaïekweergave (menu Afbeeldingen, rechtermuisklik, pictogramkolom). Een eindrapportvenster toont pagina's die succesvol, gedeeltelijk of mislukt verwerkt zijn, met de reden voor elke mislukking."
   },
   "misc": {
     "file_word": "bestand",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Proberen met het generieke Windows-stuurprogramma",
     "open_log": "Scanlogboek openen",
     "reveal_log": "Scanlogboek weergeven in Verkenner"
+  },
+  "macro": {
+    "step_rotate": "Rotatie: {angle}°",
+    "step_flip": "Spiegelen {direction}",
+    "step_levels": "Niveaus: zwartpunt {black_point}, gamma {gamma}, witpunt {white_point}, drempel {threshold}",
+    "step_crop": "Uitsnijden",
+    "step_straighten": "Rechttrekken: {angle}°",
+    "step_straighten_auto": "Automatisch rechttrekken",
+    "step_clone": "Klonen: {stroke_points} punt(en) geschilderd",
+    "step_text": "Tekst: {count} blok(ken)",
+    "step_shapes": "Vormen: {count} vorm(en)",
+    "step_brightness": "Helderheid {brightness}, contrast {contrast}",
+    "step_saturation": "Verzadiging: {saturation}",
+    "step_remove_colors": "Kleuren verwijderen: intensiteit {intensity}",
+    "step_compression": "Compressie: kwaliteit {quality}",
+    "step_sharpness": "Scherpte: {value}",
+    "step_unsharp": "Adaptieve scherpte: straal {radius}, sterkte {percent}, drempel {threshold}",
+    "step_color_depth": "Kleurdiepte: {key}",
+    "step_effect": "Effect: {key}",
+    "step_image_mode": "Afbeeldingsmodus: {key}",
+    "step_restore_color_depth": "Oorspronkelijke kleurdiepte herstellen",
+    "step_restore_effect": "Oorspronkelijk effect herstellen",
+    "step_restore_image_mode": "Oorspronkelijke afbeeldingsmodus herstellen",
+    "step_transparency": "Transparantie: {count} klik(ken)",
+    "step_paste_image": "Geplakte afbeelding: {count} afbeelding(en)"
   }
 }

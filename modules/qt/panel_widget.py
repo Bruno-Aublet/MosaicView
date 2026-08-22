@@ -1485,14 +1485,17 @@ class PanelWidget(QWidget):
         cfg = get_config_manager()
         if cfg:
             cfg.remove_bookmark(filepath)
-            self._on_bookmark_changed(None)
+            for p in getattr(self._main_window, "_all_panels", lambda: [self])():
+                if p._state.current_file == filepath:
+                    p._on_bookmark_changed(None)
 
     def _delete_all_bookmarks(self):
         from modules.qt.config_manager import get_config_manager
         cfg = get_config_manager()
         if cfg:
             cfg.clear_bookmarks()
-            self._on_bookmark_changed(None)
+            for p in getattr(self._main_window, "_all_panels", lambda: [self])():
+                p._on_bookmark_changed(None)
 
     def _warn_flatten_required_renumber(self):
         _WarnDialog(

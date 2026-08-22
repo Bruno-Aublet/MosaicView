@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Dán hình ảnh trong bảng tạm vào trang, dùng tay cầm để thay đổi kích thước/xoay",
     "toolbar_paste_image_disabled": "Bảng tạm phải chỉ chứa một hình ảnh",
     "color_depth_panel_blocked_format": "Không khả dụng: định dạng {format} gốc của tệp không hỗ trợ độ sâu màu này.",
-    "image_mode_panel_blocked_format": "Không khả dụng: định dạng {format} gốc của tệp không hỗ trợ chế độ này."
+    "image_mode_panel_blocked_format": "Không khả dụng: định dạng {format} gốc của tệp không hỗ trợ chế độ này.",
+    "toolbar_macro_record_tooltip": "Ghi lại",
+    "toolbar_macro_record_instruction": "Bắt đầu ghi lại một macro trên trang đang hiển thị",
+    "toolbar_macro_play_tooltip": "Phát lại",
+    "toolbar_macro_play_instruction": "Phát lại một macro đã ghi trên trang đang hiển thị",
+    "macro_read_interrupted_title": "Macro bị gián đoạn",
+    "macro_read_interrupted_message": "Việc phát lại macro đã bị gián đoạn do đóng trình xem. Tất cả các thay đổi mà lần phát lại này đã áp dụng đều đã được hoàn tác."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Độ sáng, độ tương phản, màu sắc...",
       "refresh_mosaic": "Làm mới bảng ghép (F5)",
       "create_ico": "Tạo tệp .ico",
-      "straighten_auto": "Làm thẳng ảnh tự động"
+      "straighten_auto": "Làm thẳng ảnh tự động",
+      "read_macro": "Phát lại một macro"
     },
     "canvas_no_file": {
       "open": "Mở CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Đang làm thẳng tự động...\n{percent}%"
+    "deskewing": "Đang làm thẳng tự động...\n{percent}%",
+    "macro_preparing": "Đang chuẩn bị phát..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Mặt nạ cắt"
+    },
+    "macro_record": {
+      "title": "Ghi lại một macro",
+      "btn_stop": "Hoàn tất",
+      "btn_cancel": "Hủy",
+      "name_dialog_title": "Đặt tên cho macro",
+      "name_label": "Tên:",
+      "name_placeholder": "Tên macro",
+      "description_label": "Mô tả:",
+      "description_placeholder": "Mô tả (tùy chọn)",
+      "btn_save": "Lưu"
+    },
+    "macro_read": {
+      "title": "Phát lại một macro",
+      "btn_rename": "Đổi tên",
+      "btn_delete": "Xóa",
+      "btn_complete": "Hoàn thiện",
+      "btn_play": "Phát lại",
+      "corrupt_title": "Tệp macro không đọc được",
+      "corrupt_message": "Một hoặc nhiều tệp macro không thể đọc được và không xuất hiện trong danh sách: {files}",
+      "report_title": "Phát lại đã hoàn tất",
+      "report_message": "Các trang xử lý thành công: {ok}\nCác trang xử lý một phần: {partial}\nCác trang thất bại: {failed}",
+      "no_macros": "Chưa có macro nào được ghi lại.",
+      "btn_pick_file": "Chọn tệp",
+      "pick_file_title": "Chọn macro",
+      "hint_record_from_viewer": "Macro được ghi lại từ trình xem.",
+      "report_failed_line": "{page}: thất bại ở bước « {step} »",
+      "report_partial_line": "{page}: đã áp dụng {applied} bước, thất bại ở « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Tên macro không được để trống.",
+      "too_long": "Tên macro không được vượt quá 30 ký tự.",
+      "invalid_chars": "Tên này chứa các ký tự không được phép trong tên tệp.",
+      "reserved_name": "Tên này được Windows dành riêng và không thể sử dụng.",
+      "duplicate": "Đã tồn tại một macro với tên này."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Tăng cường hoặc làm mềm chi tiết của hình ảnh\nNhấp chuột phải để chuyển sang độ nét thích ứng",
     "sharpness_mode_1": "Làm nổi bật đường viền trong khi giữ nguyên vùng phẳng\nNhấp chuột phải để chuyển sang độ nét đơn giản",
     "crop_mode_0": "Vẽ một hình chữ nhật lên vùng cần giữ lại, sau đó xác nhận\nNhấp chuột phải để chuyển sang chế độ mặt nạ cắt",
-    "crop_mode_1": "Chế độ mặt nạ cắt: ghi nhớ một hình chữ nhật và gọi lại nó trên các trang tiếp theo\nNhấp chuột phải để quay lại chế độ bình thường"
+    "crop_mode_1": "Chế độ mặt nạ cắt: ghi nhớ một hình chữ nhật và gọi lại nó trên các trang tiếp theo\nNhấp chuột phải để quay lại chế độ bình thường",
+    "read_macro_selected": "Phát lại một macro trên các trang đã chọn"
   },
   "help": {
     "title": "MosaicView - Hướng dẫn sử dụng",
@@ -1498,7 +1542,9 @@
     "scan": "Quét một hình ảnh",
     "scan_content": "• Nhấp vào nút \"Quét\" (cột biểu tượng, menu Tệp, hoặc nhấp chuột phải trên bức khảm) để mở cửa sổ quét. MosaicView điều khiển trực tiếp máy quét của bạn (thông qua WIA, hệ thống quét của Windows): chọn thiết bị, độ phân giải (DPI), chế độ màu (màu / thang xám / đen trắng), sau đó nhấp vào \"Quét\". Máy quét phải được cắm điện, bật nguồn và đã cài đặt trình điều khiển trên Windows để xuất hiện trong danh sách.\n• Máy quét, độ phân giải và chế độ màu đã chọn lần cuối sẽ được ghi nhớ và tự động đề xuất lại vào lần quét tiếp theo.\n• Chỉ hỗ trợ quét toàn trang và xuất ra định dạng JPG, vì ứng dụng đã có sẵn mọi thứ cần thiết để chỉnh sửa và chuyển đổi định dạng ảnh sau đó.\n• Hình ảnh đã quét được tự động thêm vào bức khảm, sau các trang đã có sẵn. Sau đó bạn có thể cắt, làm thẳng, điều chỉnh màu sắc, v.v. như bất kỳ trang nào khác của bức khảm\n• Tính năng này điều khiển trực tiếp máy quét, không thông qua phần mềm của nhà sản xuất cũng không hiển thị cửa sổ cấu hình riêng của nó.\n• Vì máy quét vật lý chỉ có thể được điều khiển bởi một kết nối tại một thời điểm, việc quét chỉ có thể thực hiện trên một khung cùng lúc: nếu cửa sổ quét đang mở hoặc đang quét trong một khung, nút \"Quét\" vẫn bị mờ ở khung còn lại cho đến khi thao tác hoàn tất.",
     "straighten": "Làm thẳng một trang",
-    "straighten_content": "Làm thẳng tự động (không cần vẽ) có sẵn từ cột biểu tượng (nhấp chuột phải vào biểu tượng \"Làm thẳng\" để chuyển chế độ), menu Hình ảnh, hoặc nhấp chuột phải vào mosaic: nó tự phát hiện độ nghiêng và làm thẳng trực tiếp trang được chọn; các góc trống do xoay tạo ra được lấp đầy bằng màu trắng. Hoạt động trên nhiều trang cùng lúc. Một cửa sổ tóm tắt cho biết bao nhiêu trang đã được làm thẳng thành công và liệt kê những trang không thể phát hiện độ nghiêng đáng tin cậy.\n\nLàm thẳng thủ công (vẽ một đường tham chiếu) được thực hiện từ trình xem chính, xem phần Trình xem."
+    "straighten_content": "Làm thẳng tự động (không cần vẽ) có sẵn từ cột biểu tượng (nhấp chuột phải vào biểu tượng \"Làm thẳng\" để chuyển chế độ), menu Hình ảnh, hoặc nhấp chuột phải vào mosaic: nó tự phát hiện độ nghiêng và làm thẳng trực tiếp trang được chọn; các góc trống do xoay tạo ra được lấp đầy bằng màu trắng. Hoạt động trên nhiều trang cùng lúc. Một cửa sổ tóm tắt cho biết bao nhiêu trang đã được làm thẳng thành công và liệt kê những trang không thể phát hiện độ nghiêng đáng tin cậy.\n\nLàm thẳng thủ công (vẽ một đường tham chiếu) được thực hiện từ trình xem chính, xem phần Trình xem.",
+    "macro": "Macro",
+    "macro_content": "Công cụ Macro (biểu tượng «Ghi»/«Phát» trên thanh công cụ trình xem) ghi lại một chuỗi hành động thực hiện trên một trang và phát lại giống hệt trên một hoặc nhiều trang khác — từ trình xem hoặc, đối với nhiều trang, từ chế độ khảm (menu Hình ảnh, nhấp chuột phải, cột biểu tượng). Cửa sổ báo cáo cuối cùng liệt kê các trang được xử lý thành công, một phần hoặc thất bại, kèm lý do của mỗi lỗi."
   },
   "misc": {
     "file_word": "tệp",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Thử với trình điều khiển chung của Windows",
     "open_log": "Mở nhật ký quét",
     "reveal_log": "Hiển thị nhật ký quét trong Explorer"
+  },
+  "macro": {
+    "step_rotate": "Xoay: {angle}°",
+    "step_flip": "Lật {direction}",
+    "step_levels": "Mức: điểm đen {black_point}, gamma {gamma}, điểm trắng {white_point}, ngưỡng {threshold}",
+    "step_crop": "Cắt xén",
+    "step_straighten": "Làm thẳng: {angle}°",
+    "step_straighten_auto": "Làm thẳng tự động",
+    "step_clone": "Nhân bản: đã tô {stroke_points} điểm",
+    "step_text": "Văn bản: {count} khối",
+    "step_shapes": "Hình dạng: {count} hình",
+    "step_brightness": "Độ sáng {brightness}, độ tương phản {contrast}",
+    "step_saturation": "Độ bão hòa: {saturation}",
+    "step_remove_colors": "Loại bỏ màu: cường độ {intensity}",
+    "step_compression": "Nén: chất lượng {quality}",
+    "step_sharpness": "Độ sắc nét: {value}",
+    "step_unsharp": "Độ sắc nét thích ứng: bán kính {radius}, cường độ {percent}, ngưỡng {threshold}",
+    "step_color_depth": "Độ sâu màu: {key}",
+    "step_effect": "Hiệu ứng: {key}",
+    "step_image_mode": "Chế độ ảnh: {key}",
+    "step_restore_color_depth": "Khôi phục độ sâu màu gốc",
+    "step_restore_effect": "Khôi phục hiệu ứng gốc",
+    "step_restore_image_mode": "Khôi phục chế độ ảnh gốc",
+    "step_transparency": "Độ trong suốt: {count} lần nhấp",
+    "step_paste_image": "Ảnh đã dán: {count} ảnh"
   }
 }

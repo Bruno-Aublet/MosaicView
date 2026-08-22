@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Įklijuoja mainų srities vaizdą į puslapį, rankenėlės dydžiui keisti/pasukti",
     "toolbar_paste_image_disabled": "Mainų srityje turi būti tik vaizdas",
     "color_depth_panel_blocked_format": "Nepasiekiama: originalus failo formatas {format} nepalaiko šio spalvų gylio.",
-    "image_mode_panel_blocked_format": "Nepasiekiama: originalus failo formatas {format} nepalaiko šio režimo."
+    "image_mode_panel_blocked_format": "Nepasiekiama: originalus failo formatas {format} nepalaiko šio režimo.",
+    "toolbar_macro_record_tooltip": "Įrašyti",
+    "toolbar_macro_record_instruction": "Pradeda makrokomandos įrašymą rodomame puslapyje",
+    "toolbar_macro_play_tooltip": "Groti",
+    "toolbar_macro_play_instruction": "Atkuria įrašytą makrokomandą rodomame puslapyje",
+    "macro_read_interrupted_title": "Makrokomanda nutraukta",
+    "macro_read_interrupted_message": "Makrokomandos atkūrimas buvo nutrauktas uždarius peržiūros priemonę. Visi šio atkūrimo jau pritaikyti pakeitimai buvo anuliuoti."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Ryškumas, kontrastas, spalvos...",
       "refresh_mosaic": "Atnaujinti mozaiką (F5)",
       "create_ico": "Sukurti .ico failą",
-      "straighten_auto": "Ištiesinti vaizdą automatiškai"
+      "straighten_auto": "Ištiesinti vaizdą automatiškai",
+      "read_macro": "Atkurti makrokomandą"
     },
     "canvas_no_file": {
       "open": "Atidaryti CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Vyksta automatinis ištiesinimas...\n{percent}%"
+    "deskewing": "Vyksta automatinis ištiesinimas...\n{percent}%",
+    "macro_preparing": "Ruošiamasi atkūrimui..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Apkarpymo kaukė"
+    },
+    "macro_record": {
+      "title": "Įrašyti makrokomandą",
+      "btn_stop": "Baigti",
+      "btn_cancel": "Atšaukti",
+      "name_dialog_title": "Pavadinti makrokomandą",
+      "name_label": "Pavadinimas:",
+      "name_placeholder": "Makrokomandos pavadinimas",
+      "description_label": "Aprašymas:",
+      "description_placeholder": "Aprašymas (neprivalomas)",
+      "btn_save": "Išsaugoti"
+    },
+    "macro_read": {
+      "title": "Atkurti makrokomandą",
+      "btn_rename": "Pervadinti",
+      "btn_delete": "Ištrinti",
+      "btn_complete": "Papildyti",
+      "btn_play": "Groti",
+      "corrupt_title": "Neperskaitomas makrokomandos failas",
+      "corrupt_message": "Vieno ar kelių makrokomandų failų nepavyko perskaityti, jie nerodomi sąraše: {files}",
+      "report_title": "Atkūrimas baigtas",
+      "report_message": "Sėkmingai apdoroti puslapiai: {ok}\nIš dalies apdoroti puslapiai: {partial}\nNepavykę puslapiai: {failed}",
+      "no_macros": "Kol kas neįrašytas nė vienas makrokomanda.",
+      "btn_pick_file": "Pasirinkti failą",
+      "pick_file_title": "Pasirinkti makrokomandą",
+      "hint_record_from_viewer": "Makrokomandos įrašomos iš peržiūros priemonės.",
+      "report_failed_line": "{page}: nepavyko ties « {step} »",
+      "report_partial_line": "{page}: pritaikyta {applied} veiksmų, nepavyko ties « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Makrokomandos pavadinimas negali būti tuščias.",
+      "too_long": "Makrokomandos pavadinimas neturi viršyti 30 simbolių.",
+      "invalid_chars": "Šiame pavadinime yra simbolių, neleidžiamų failo pavadinime.",
+      "reserved_name": "Šis pavadinimas yra rezervuotas „Windows“ ir negali būti naudojamas.",
+      "duplicate": "Makrokomanda tokiu pavadinimu jau egzistuoja."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Sustiprina arba suminkština vaizdo detales\nSpustelėkite dešiniuoju pelės mygtuku, kad perjungtumėte į adaptyvųjį ryškumą",
     "sharpness_mode_1": "Pabrėžia kontūrus tausodama vienalytes sritis\nSpustelėkite dešiniuoju pelės mygtuku, kad perjungtumėte į paprastą ryškumą",
     "crop_mode_0": "Nubrėžkite stačiakampį virš išsaugotinos srities, tada patvirtinkite\nDešiniuoju pelės mygtuku perjungiama apkarpymo kaukės režimą",
-    "crop_mode_1": "Apkarpymo kaukės režimas: įsiminkite stačiakampį ir iškvieskite jį kituose puslapiuose\nDešiniuoju pelės mygtuku grįžtama į įprastą režimą"
+    "crop_mode_1": "Apkarpymo kaukės režimas: įsiminkite stačiakampį ir iškvieskite jį kituose puslapiuose\nDešiniuoju pelės mygtuku grįžtama į įprastą režimą",
+    "read_macro_selected": "Atkurti makrokomandą pasirinktuose puslapiuose"
   },
   "help": {
     "title": "MosaicView - Naudojimo instrukcija",
@@ -1498,7 +1542,9 @@
     "scan": "Nuskaityti vaizdą",
     "scan_content": "• Spustelėkite mygtuką „Nuskaityti“ (piktogramų stulpelis, meniu Failas arba dešiniuoju pelės mygtuku spustelėję mozaiką), kad atidarytumėte nuskaitymo langą. „MosaicView“ tiesiogiai valdo jūsų skaitytuvą (naudodama WIA, „Windows“ nuskaitymo sistemą): pasirinkite įrenginį, skiriamąją gebą (DPI), spalvų režimą (spalvota / pilkos spalvos atspalviai / nespalvota), tada spustelėkite „Nuskaityti“. Kad skaitytuvas atsirastų sąraše, jis turi būti prijungtas, įjungtas, o jo tvarkyklė – įdiegta sistemoje „Windows“.\n• Paskutinis naudotas skeneris, raiška ir pasirinktas spalvų režimas įsimenami ir automatiškai pasiūlomi vėl kito skenavimo metu.\n• Siūlomas tik viso puslapio skenavimas ir eksportavimas JPG formatu, nes programoje jau yra viskas, kas reikalinga tolesniam vaizdo retušavimui ir formato konvertavimui.\n• Nuskaitytas vaizdas automatiškai pridedamas prie mozaikos, po jau esamų puslapių. Vėliau galite jį apkirpti, ištiesinti, koreguoti spalvas ir pan., kaip ir bet kurį kitą mozaikos puslapį\n• Ši funkcija tiesiogiai valdo skaitytuvą, nenaudodama gamintojo programinės įrangos ir nerodydama jo paties konfigūracijos lango.\n• Kadangi fizinį skenerį vienu metu gali valdyti tik vienas ryšys, skenuoti galima tik viename skydelyje vienu metu: jei viename skydelyje atidarytas skenavimo langas arba vyksta skenavimas, mygtukas „Skenuoti“ kitame skydelyje lieka pilkas, kol operacija bus baigta.",
     "straighten": "Ištiesinti puslapį",
-    "straighten_content": "Automatinis ištiesinimas (nieko nebrėžiant) pasiekiamas iš piktogramų stulpelio (spustelėkite dešiniuoju pelės mygtuku piktogramą „Ištiesinti“, kad pakeistumėte režimą), meniu Vaizdai, arba dešiniuoju paspaudimu ant mozaikos: jis pats aptinka pasvirimą ir tiesiogiai ištiesina pasirinktą puslapį (-ius); dėl pasukimo atsiradę tušti kampai užpildomi baltai. Veikia su keliais puslapiais vienu metu. Suvestinės langas rodo, kiek puslapių buvo sėkmingai ištiesinta, ir išvardija tuos, kuriuose nepavyko aptikti patikimo pasvirimo.\n\nRankinis ištiesinimas (atskaitos linijos brėžimas) atliekamas iš pagrindinės peržiūros priemonės, žr. skyrių Peržiūros priemonė."
+    "straighten_content": "Automatinis ištiesinimas (nieko nebrėžiant) pasiekiamas iš piktogramų stulpelio (spustelėkite dešiniuoju pelės mygtuku piktogramą „Ištiesinti“, kad pakeistumėte režimą), meniu Vaizdai, arba dešiniuoju paspaudimu ant mozaikos: jis pats aptinka pasvirimą ir tiesiogiai ištiesina pasirinktą puslapį (-ius); dėl pasukimo atsiradę tušti kampai užpildomi baltai. Veikia su keliais puslapiais vienu metu. Suvestinės langas rodo, kiek puslapių buvo sėkmingai ištiesinta, ir išvardija tuos, kuriuose nepavyko aptikti patikimo pasvirimo.\n\nRankinis ištiesinimas (atskaitos linijos brėžimas) atliekamas iš pagrindinės peržiūros priemonės, žr. skyrių Peržiūros priemonė.",
+    "macro": "Makrokomandos",
+    "macro_content": "Makrokomandų įrankis (žiūryklės įrankių juostos piktogramos «Įrašyti»/«Leisti») įrašo puslapyje atliktų veiksmų seką ir identiškai atkuria ją viename ar keliuose kituose puslapiuose — iš žiūryklės arba, keliems puslapiams, iš mozaikos (meniu Vaizdai, dešinysis paspaudimas, piktogramų stulpelis). Galutinės ataskaitos lange nurodomi sėkmingai, iš dalies ar nesėkmingai apdoroti puslapiai kartu su kiekvienos nesėkmės priežastimi."
   },
   "misc": {
     "file_word": "failas",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Bandyti su bendrine „Windows“ tvarkykle",
     "open_log": "Atverti nuskaitymo žurnalą",
     "reveal_log": "Rodyti nuskaitymo žurnalą naršyklėje „Explorer“"
+  },
+  "macro": {
+    "step_rotate": "Pasukimas: {angle}°",
+    "step_flip": "Veidrodinis atspindys {direction}",
+    "step_levels": "Lygiai: juodas taškas {black_point}, gama {gamma}, baltas taškas {white_point}, slenkstis {threshold}",
+    "step_crop": "Apkirpimas",
+    "step_straighten": "Ištiesinimas: {angle}°",
+    "step_straighten_auto": "Automatinis ištiesinimas",
+    "step_clone": "Klonavimas: nudažyta {stroke_points} taškų",
+    "step_text": "Tekstas: {count} blokas(-ai)",
+    "step_shapes": "Formos: {count} forma(-os)",
+    "step_brightness": "Ryškumas {brightness}, kontrastas {contrast}",
+    "step_saturation": "Sodrumas: {saturation}",
+    "step_remove_colors": "Spalvų šalinimas: intensyvumas {intensity}",
+    "step_compression": "Suspaudimas: kokybė {quality}",
+    "step_sharpness": "Ryškinimas: {value}",
+    "step_unsharp": "Adaptyvusis ryškinimas: spindulys {radius}, stiprumas {percent}, slenkstis {threshold}",
+    "step_color_depth": "Spalvų gylis: {key}",
+    "step_effect": "Efektas: {key}",
+    "step_image_mode": "Vaizdo režimas: {key}",
+    "step_restore_color_depth": "Atkurti pradinį spalvų gylį",
+    "step_restore_effect": "Atkurti pradinį efektą",
+    "step_restore_image_mode": "Atkurti pradinį vaizdo režimą",
+    "step_transparency": "Skaidrumas: {count} paspaudimas/-ai",
+    "step_paste_image": "Įklijuotas vaizdas: {count} vaizdas(-ai)"
   }
 }

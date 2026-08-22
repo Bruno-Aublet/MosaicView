@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "クリップボードの画像をページに貼り付けます。ハンドルでサイズ変更/回転",
     "toolbar_paste_image_disabled": "クリップボードには画像のみが含まれている必要があります",
     "color_depth_panel_blocked_format": "利用不可：ファイルの元の{format}形式はこの色深度をサポートしていません。",
-    "image_mode_panel_blocked_format": "利用不可：ファイルの元の{format}形式はこのモードをサポートしていません。"
+    "image_mode_panel_blocked_format": "利用不可：ファイルの元の{format}形式はこのモードをサポートしていません。",
+    "toolbar_macro_record_tooltip": "記録",
+    "toolbar_macro_record_instruction": "表示中のページでマクロの記録を開始します",
+    "toolbar_macro_play_tooltip": "再生",
+    "toolbar_macro_play_instruction": "表示中のページで記録済みのマクロを再生します",
+    "macro_read_interrupted_title": "マクロが中断されました",
+    "macro_read_interrupted_message": "ビューアーを閉じたため、マクロの再生が中断されました。この再生によってすでに適用されていた変更はすべて元に戻されました。"
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "明るさ、コントラスト、色...",
       "refresh_mosaic": "モザイクを更新 (F5)",
       "create_ico": ".icoファイルを作成",
-      "straighten_auto": "画像を自動で補正"
+      "straighten_auto": "画像を自動で補正",
+      "read_macro": "マクロを再生"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDFを開く",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "自動補正を実行中...\n{percent}%"
+    "deskewing": "自動補正を実行中...\n{percent}%",
+    "macro_preparing": "再生を準備しています..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "クロップマスク"
+    },
+    "macro_record": {
+      "title": "マクロを記録",
+      "btn_stop": "完了",
+      "btn_cancel": "キャンセル",
+      "name_dialog_title": "マクロに名前を付ける",
+      "name_label": "名前:",
+      "name_placeholder": "マクロの名前",
+      "description_label": "説明:",
+      "description_placeholder": "説明（任意）",
+      "btn_save": "保存"
+    },
+    "macro_read": {
+      "title": "マクロを再生",
+      "btn_rename": "名前を変更",
+      "btn_delete": "削除",
+      "btn_complete": "追加記録",
+      "btn_play": "再生",
+      "corrupt_title": "読み取れないマクロファイル",
+      "corrupt_message": "1つ以上のマクロファイルを読み取れず、リストに表示されません: {files}",
+      "report_title": "再生完了",
+      "report_message": "正常に処理されたページ: {ok}\n部分的に処理されたページ: {partial}\n失敗したページ: {failed}",
+      "no_macros": "まだマクロが記録されていません。",
+      "btn_pick_file": "ファイルを選ぶ",
+      "pick_file_title": "マクロを選ぶ",
+      "hint_record_from_viewer": "マクロはビューアーから記録されます。",
+      "report_failed_line": "{page}：「{step}」のステップで失敗",
+      "report_partial_line": "{page}：{applied}個のステップを適用、「{step}」で失敗"
+    },
+    "macro_name_error": {
+      "empty": "マクロ名を空にすることはできません。",
+      "too_long": "マクロ名は30文字を超えることはできません。",
+      "invalid_chars": "この名前にはファイル名で使用できない文字が含まれています。",
+      "reserved_name": "この名前はWindowsによって予約されており、使用できません。",
+      "duplicate": "この名前のマクロはすでに存在します。"
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "画像のディテールを強調または和らげます\n右クリックでアダプティブシャープネスに切り替え",
     "sharpness_mode_1": "均一な領域を保ちながら輪郭を強調します\n右クリックでシンプルなシャープネスに切り替え",
     "crop_mode_0": "残す部分に矩形を描き、確定してください\n右クリックでクロップマスクモードに切り替わります",
-    "crop_mode_1": "クロップマスクモード：矩形を記憶し、次のページで呼び出します\n右クリックで通常モードに戻ります"
+    "crop_mode_1": "クロップマスクモード：矩形を記憶し、次のページで呼び出します\n右クリックで通常モードに戻ります",
+    "read_macro_selected": "選択したページでマクロを再生"
   },
   "help": {
     "title": "MosaicView - 使用方法",
@@ -1498,7 +1542,9 @@
     "scan": "画像をスキャン",
     "scan_content": "• 「スキャン」ボタン（アイコン列、ファイルメニュー、またはモザイク上での右クリック）をクリックしてスキャンウィンドウを開きます。MosaicViewはスキャナーを直接制御します（WindowsのスキャンシステムであるWIAを使用）：デバイス、解像度（DPI）、カラーモード（カラー／グレースケール／白黒）を選択し、「スキャン」をクリックします。リストに表示されるには、スキャナーが接続され、電源が入っており、Windowsにドライバーがインストールされている必要があります。\n• 最後に使用したスキャナー、解像度、選択したカラーモードは記憶され、次回のスキャン時に自動的に再び提案されます。\n• アプリには後で画像を修整・変換するための機能がすべて揃っているため、提供されるのはページ全体のスキャンとJPGでの書き出しのみです。\n• スキャンした画像は、既存のページの後に自動的にモザイクへ追加されます。その後、モザイクの他のページと同様に、切り抜き、傾き補正、色調整などができます\n• この機能はメーカーのソフトウェアを経由せず、独自の設定ウィンドウも表示せずに、スキャナーを直接制御します。\n• 物理的なスキャナーは一度に1つの接続でしか操作できないため、スキャンは一度に1つのパネルでのみ可能です。片方のパネルでスキャンウィンドウが開いているか、スキャンが実行中の場合、操作が完了するまでもう一方のパネルの「スキャン」ボタンはグレー表示のままになります。",
     "straighten": "ページを補正する",
-    "straighten_content": "自動傾き補正（何も描かずに）は、アイコン列（「傾き補正」アイコンを右クリックしてモードを切り替え）、画像メニュー、またはモザイクの右クリックから利用できます：自動的に傾きを検出し、選択したページを直接補正します；回転によってできた空白の角は白で埋められます。複数ページを同時に処理できます。要約ウィンドウには、正常に補正されたページ数と、信頼できる傾きが検出できなかったページの一覧が表示されます。\n\n手動傾き補正（基準線を描く）はメインビューアーから行います。ビューアーのセクションを参照してください。"
+    "straighten_content": "自動傾き補正（何も描かずに）は、アイコン列（「傾き補正」アイコンを右クリックしてモードを切り替え）、画像メニュー、またはモザイクの右クリックから利用できます：自動的に傾きを検出し、選択したページを直接補正します；回転によってできた空白の角は白で埋められます。複数ページを同時に処理できます。要約ウィンドウには、正常に補正されたページ数と、信頼できる傾きが検出できなかったページの一覧が表示されます。\n\n手動傾き補正（基準線を描く）はメインビューアーから行います。ビューアーのセクションを参照してください。",
+    "macro": "マクロ",
+    "macro_content": "マクロツール（ビューアーのツールバーにある「記録」「再生」アイコン）は、ページ上で行った一連の操作を記録し、1つまたは複数の別のページで同一に再生します。ビューアーから、または複数ページの場合はモザイク（画像メニュー、右クリック、アイコン列）から実行できます。最終レポートウィンドウには、成功・部分的成功・失敗したページが、失敗理由とともに一覧表示されます。"
   },
   "misc": {
     "file_word": "個のファイル",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Windowsの汎用ドライバーで試す",
     "open_log": "スキャンログを開く",
     "reveal_log": "スキャンログをエクスプローラーで表示"
+  },
+  "macro": {
+    "step_rotate": "回転: {angle}°",
+    "step_flip": "反転 {direction}",
+    "step_levels": "レベル: 黒点 {black_point}、ガンマ {gamma}、白点 {white_point}、しきい値 {threshold}",
+    "step_crop": "切り抜き",
+    "step_straighten": "傾き補正: {angle}°",
+    "step_straighten_auto": "自動傾き補正",
+    "step_clone": "クローン: {stroke_points} 点を描画",
+    "step_text": "テキスト: {count} 個のブロック",
+    "step_shapes": "図形: {count} 個の図形",
+    "step_brightness": "明るさ {brightness}、コントラスト {contrast}",
+    "step_saturation": "彩度: {saturation}",
+    "step_remove_colors": "色の除去: 強度 {intensity}",
+    "step_compression": "圧縮: 品質 {quality}",
+    "step_sharpness": "シャープネス: {value}",
+    "step_unsharp": "適応シャープネス: 半径 {radius}、強さ {percent}、しきい値 {threshold}",
+    "step_color_depth": "色深度: {key}",
+    "step_effect": "エフェクト: {key}",
+    "step_image_mode": "画像モード: {key}",
+    "step_restore_color_depth": "元の色深度に戻す",
+    "step_restore_effect": "元のエフェクトに戻す",
+    "step_restore_image_mode": "元の画像モードに戻す",
+    "step_transparency": "透明度: {count} 回クリック",
+    "step_paste_image": "貼り付けた画像: {count} 枚"
   }
 }

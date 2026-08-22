@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Cola a imagem da área de transferência na página, alças para redimensionar/rodar",
     "toolbar_paste_image_disabled": "A área de transferência deve conter apenas uma imagem",
     "color_depth_panel_blocked_format": "Indisponível: o formato {format} original do ficheiro não suporta esta profundidade.",
-    "image_mode_panel_blocked_format": "Indisponível: o formato {format} original do ficheiro não suporta este modo."
+    "image_mode_panel_blocked_format": "Indisponível: o formato {format} original do ficheiro não suporta este modo.",
+    "toolbar_macro_record_tooltip": "Gravar",
+    "toolbar_macro_record_instruction": "Inicia a gravação de uma macro na página exibida",
+    "toolbar_macro_play_tooltip": "Reproduzir",
+    "toolbar_macro_play_instruction": "Reproduz uma macro gravada na página exibida",
+    "macro_read_interrupted_title": "Macro interrompida",
+    "macro_read_interrupted_message": "A reprodução da macro foi interrompida ao fechar o visualizador. Todas as alterações já aplicadas por esta reprodução foram desfeitas."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Brilho, contraste, cores...",
       "refresh_mosaic": "Atualizar o mosaico (F5)",
       "create_ico": "Criar arquivo .ico",
-      "straighten_auto": "Endireitar a imagem automaticamente"
+      "straighten_auto": "Endireitar a imagem automaticamente",
+      "read_macro": "Reproduzir uma macro"
     },
     "canvas_no_file": {
       "open": "Abrir CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Endireitamento automático em curso...\n{percent}%"
+    "deskewing": "Endireitamento automático em curso...\n{percent}%",
+    "macro_preparing": "Preparando a reprodução..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Máscara de recorte"
+    },
+    "macro_record": {
+      "title": "Gravar uma macro",
+      "btn_stop": "Concluir",
+      "btn_cancel": "Cancelar",
+      "name_dialog_title": "Nomear a macro",
+      "name_label": "Nome:",
+      "name_placeholder": "Nome da macro",
+      "description_label": "Descrição:",
+      "description_placeholder": "Descrição (opcional)",
+      "btn_save": "Guardar"
+    },
+    "macro_read": {
+      "title": "Reproduzir uma macro",
+      "btn_rename": "Renomear",
+      "btn_delete": "Eliminar",
+      "btn_complete": "Completar",
+      "btn_play": "Reproduzir",
+      "corrupt_title": "Ficheiro de macro ilegível",
+      "corrupt_message": "Um ou mais ficheiros de macro não puderam ser lidos e não aparecem na lista: {files}",
+      "report_title": "Reprodução concluída",
+      "report_message": "Páginas processadas com sucesso: {ok}\nPáginas processadas parcialmente: {partial}\nPáginas com falha: {failed}",
+      "no_macros": "Ainda não há macros gravadas.",
+      "btn_pick_file": "Escolher um arquivo",
+      "pick_file_title": "Escolher uma macro",
+      "hint_record_from_viewer": "As macros são gravadas a partir do visualizador.",
+      "report_failed_line": "{page}: falhou na etapa « {step} »",
+      "report_partial_line": "{page}: {applied} etapa(s) aplicada(s), falhou em « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "O nome da macro não pode estar vazio.",
+      "too_long": "O nome da macro não deve exceder 30 caracteres.",
+      "invalid_chars": "Este nome contém caracteres não permitidos num nome de ficheiro.",
+      "reserved_name": "Este nome está reservado pelo Windows e não pode ser utilizado.",
+      "duplicate": "Já existe uma macro com este nome."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Reforça ou suaviza os detalhes da imagem\nClique com o botão direito para mudar para a nitidez adaptativa",
     "sharpness_mode_1": "Acentua os contornos preservando as zonas uniformes\nClique com o botão direito para mudar para a nitidez simples",
     "crop_mode_0": "Trace um retângulo sobre a zona a manter, depois valide\nClique direito para passar ao modo de máscara de recorte",
-    "crop_mode_1": "Modo de máscara de recorte: memorize um retângulo e reutilize-o nas páginas seguintes\nClique direito para voltar ao modo normal"
+    "crop_mode_1": "Modo de máscara de recorte: memorize um retângulo e reutilize-o nas páginas seguintes\nClique direito para voltar ao modo normal",
+    "read_macro_selected": "Reproduzir uma macro nas páginas selecionadas"
   },
   "help": {
     "title": "MosaicView - Manual do utilizador",
@@ -1498,7 +1542,9 @@
     "scan": "Digitalizar uma imagem",
     "scan_content": "• Clique no botão «Digitalizar» (coluna de ícones, menu Ficheiro, ou clique direito no mosaico) para abrir a janela de digitalização. O MosaicView controla diretamente o seu scanner (através do WIA, o sistema de digitalização do Windows): selecione o dispositivo, a resolução (DPI), o modo de cor (cor / tons de cinzento / preto e branco) e clique em «Digitalizar». Um scanner tem de estar ligado, ativo e com o respetivo controlador instalado no Windows para aparecer na lista.\n• O último scanner utilizado, a resolução e o modo de cor escolhidos são memorizados e propostos automaticamente novamente na próxima digitalização.\n• Só são oferecidas a digitalização de página inteira e a exportação em JPG, já que a aplicação já dispõe de tudo o necessário para retocar e converter a imagem depois.\n• A imagem digitalizada é automaticamente adicionada ao mosaico, a seguir às páginas já existentes. Pode depois recortá-la, endireitá-la, ajustar as suas cores, etc., como qualquer outra página do mosaico\n• Esta funcionalidade controla o scanner diretamente, sem passar pelo software do fabricante nem mostrar a sua própria janela de configuração.\n• Como um scanner físico só pode ser controlado por uma ligação de cada vez, a digitalização só é possível num painel de cada vez: se uma janela de digitalização estiver aberta ou uma digitalização estiver em curso num painel, o botão «Digitalizar» permanece desativado no outro painel até ao fim da operação.",
     "straighten": "Endireitar uma página",
-    "straighten_content": "O endireitamento automático (sem traçar nada) está disponível a partir da coluna de ícones (clique direito no ícone «Endireitar» para alternar o modo), do menu Imagens, ou clique direito no mosaico: deteta a inclinação sozinho e endireita diretamente a(s) página(s) selecionada(s); os cantos vazios criados pela rotação são preenchidos a branco. Funciona em várias páginas ao mesmo tempo. Uma janela de resumo indica quantas páginas foram endireitadas com sucesso e lista aquelas em que não foi possível detetar uma inclinação fiável.\n\nO endireitamento manual (traçar uma linha de referência) é feito a partir do visualizador principal, veja a secção Visualizador."
+    "straighten_content": "O endireitamento automático (sem traçar nada) está disponível a partir da coluna de ícones (clique direito no ícone «Endireitar» para alternar o modo), do menu Imagens, ou clique direito no mosaico: deteta a inclinação sozinho e endireita diretamente a(s) página(s) selecionada(s); os cantos vazios criados pela rotação são preenchidos a branco. Funciona em várias páginas ao mesmo tempo. Uma janela de resumo indica quantas páginas foram endireitadas com sucesso e lista aquelas em que não foi possível detetar uma inclinação fiável.\n\nO endireitamento manual (traçar uma linha de referência) é feito a partir do visualizador principal, veja a secção Visualizador.",
+    "macro": "Macros",
+    "macro_content": "A ferramenta Macros (ícones «Gravar»/«Reproduzir» da barra de ferramentas do visualizador) grava uma sequência de ações feitas numa página e reproduz-a de forma idêntica numa ou várias outras — a partir do visualizador ou, para várias páginas, a partir do mosaico (menu Imagens, clique direito, coluna de ícones). Uma janela de relatório final lista as páginas processadas com sucesso, parcialmente ou com falha, com o motivo de cada falha."
   },
   "misc": {
     "file_word": "ficheiro",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Tentar com o driver genérico do Windows",
     "open_log": "Abrir o registo de digitalização",
     "reveal_log": "Mostrar o registo de digitalização no Explorador"
+  },
+  "macro": {
+    "step_rotate": "Rotação: {angle}°",
+    "step_flip": "Espelho {direction}",
+    "step_levels": "Níveis: ponto preto {black_point}, gama {gamma}, ponto branco {white_point}, limiar {threshold}",
+    "step_crop": "Recorte",
+    "step_straighten": "Endireitamento: {angle}°",
+    "step_straighten_auto": "Endireitamento automático",
+    "step_clone": "Clonagem: {stroke_points} ponto(s) pintados",
+    "step_text": "Texto: {count} bloco(s)",
+    "step_shapes": "Formas: {count} forma(s)",
+    "step_brightness": "Brilho {brightness}, contraste {contrast}",
+    "step_saturation": "Saturação: {saturation}",
+    "step_remove_colors": "Remoção de cores: intensidade {intensity}",
+    "step_compression": "Compressão: qualidade {quality}",
+    "step_sharpness": "Nitidez: {value}",
+    "step_unsharp": "Nitidez adaptativa: raio {radius}, intensidade {percent}, limiar {threshold}",
+    "step_color_depth": "Profundidade de cor: {key}",
+    "step_effect": "Efeito: {key}",
+    "step_image_mode": "Modo de imagem: {key}",
+    "step_restore_color_depth": "Restaurar a profundidade de cor original",
+    "step_restore_effect": "Restaurar o efeito original",
+    "step_restore_image_mode": "Restaurar o modo de imagem original",
+    "step_transparency": "Transparência: {count} clique(s)",
+    "step_paste_image": "Imagem colada: {count} imagem/imagens"
   }
 }

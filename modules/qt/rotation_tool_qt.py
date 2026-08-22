@@ -238,7 +238,7 @@ class RotationViewerMixin:
     image_viewer_qt.py. Suppose que l'hôte a déjà self._canvas
     (_ViewerCanvas), self.callbacks, self.current_idx, self._toolbar."""
 
-    def perform_rotate(self, angle: int):
+    def perform_rotate(self, angle: int, skip_history: bool = False):
         """Clic sur rotation gauche/droite : commit IMMÉDIAT dans
         entry['bytes'] via rotate_entry_data() (image_ops.py, skill
         rotate-flip), déjà utilisée par la colonne d'icônes/barre de menus/
@@ -246,66 +246,84 @@ class RotationViewerMixin:
         uniquement à la page courante — pas de worker QThread ni de barre de
         progression, une seule page se traite en synchrone.
         angle: 90 pour rotation gauche (anti-horaire), -90 pour rotation
-        droite (horaire) — même convention que rotate_selected_qt()."""
+        droite (horaire) — même convention que rotate_selected_qt().
+        skip_history : voir _commit_rotation_op()."""
         from modules.qt import state as _state_module
         from modules.qt.image_ops import rotate_entry_data
         from modules.qt.dialogs_qt import MsgDialog
 
         state = self.callbacks.get('state') or _state_module.state
-        self._commit_rotation_op(
+        ok = self._commit_rotation_op(
             lambda entry: rotate_entry_data(entry, angle, state),
             state,
             "messages.errors.rotation_failed",
+            skip_history=skip_history,
         )
+        if ok:
+            self._macro_record_step(
+                "rotate", {"angle": angle},
+                "macro.step_rotate", {"angle": angle},
+            )
+        return ok
 
-    def perform_flip(self, direction: str):
+    def perform_flip(self, direction: str, skip_history: bool = False):
         """Clic sur miroir horizontal/vertical : commit IMMÉDIAT dans
         entry['bytes'] via flip_entry_data() (image_ops.py, skill
         rotate-flip), même principe que perform_rotate() ci-dessus.
-        direction: 'horizontal' ou 'vertical'."""
+        direction: 'horizontal' ou 'vertical'.
+        skip_history : voir perform_rotate()."""
         from modules.qt import state as _state_module
         from modules.qt.image_ops import flip_entry_data
         from modules.qt.dialogs_qt import MsgDialog
 
         state = self.callbacks.get('state') or _state_module.state
-        self._commit_rotation_op(
+        ok = self._commit_rotation_op(
             lambda entry: flip_entry_data(entry, direction, state),
             state,
             "messages.errors.rotation_failed",
+            skip_history=skip_history,
         )
+        if ok:
+            self._macro_record_step(
+                "flip", {"direction": direction},
+                "macro.step_flip", {"direction": direction},
+            )
+        return ok
 
-    def _commit_rotation_op(self, op, state, error_key: str):
+    def _commit_rotation_op(self, op, state, error_key: str, skip_history: bool = False) -> bool:
         """Squelette de commit partagé par perform_rotate()/perform_flip() :
         save_state (avant) -> opération -> invalidation complète des caches
         (skill apply-image-operation, variante A — rotate_entry_data/
         flip_entry_data ne font qu'une invalidation partielle, voir docstring
         de module) -> save_state(force=True) (après) -> render_mosaic ->
         rafraîchissement de l'affichage/undo-redo. Même structure que
-        ColorDepthViewerMixin.perform_color_depth()."""
+        ColorDepthViewerMixin.perform_color_depth().
+        skip_history=True saute les 2 save_state, laissés à l'appelant (macro_
+        engine.py). Retourne True si le commit a réellement eu lieu."""
         from modules.qt.dialogs_qt import MsgDialog
 
         if not (0 <= self.current_idx < len(state.images_data)):
-            return
+            return False
         entry = state.images_data[self.current_idx]
         if not entry.get('bytes'):
-            return
+            return False
 
         save_state = self.callbacks.get("save_state")
         render = self.callbacks.get("render_mosaic")
 
         try:
-            if save_state:
+            if save_state and not skip_history:
                 save_state(force=True)
 
             if not op(entry):
-                return
+                return False
 
             entry['_thumbnail'] = None
             entry['qt_pixmap_large'] = None
             entry['qt_qimage_large'] = None
             state.modified = True
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state(force=True)
             if render:
                 render()
@@ -316,9 +334,11 @@ class RotationViewerMixin:
 
             self.display_image()
             self._toolbar.refresh_undo_redo_state()
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.rotation_failed.title",
                             "messages.errors.rotation_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False

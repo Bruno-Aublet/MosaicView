@@ -165,7 +165,13 @@
     "toolbar_rotation_instruction": "Rondole ar helda i fána hanwa",
     "toolbar_paste_image_tooltip": "Pata emma",
     "toolbar_paste_image_instruction": "Pata i emma ambartello mi parma, mahtar an ahyalë/nyelië",
-    "toolbar_paste_image_disabled": "I ambar mauya samë erya emma"
+    "toolbar_paste_image_disabled": "I ambar mauya samë erya emma",
+    "toolbar_macro_record_tooltip": "Harya",
+    "toolbar_macro_record_instruction": "Yesta harya i carëli parmassë tanaina",
+    "toolbar_macro_play_tooltip": "Ata-carë",
+    "toolbar_macro_play_instruction": "Ata-carë i carëli hariéva parmassë tanaina",
+    "macro_read_interrupted_title": "Carëli hariéva avahaina",
+    "macro_read_interrupted_message": "I ata-carë i carëli hariéva avahaina i tyalë hauta írë. Ilyë vistar carnë sina ata-carëssë nurtainë nar."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Calima, contrasta, culini...",
       "refresh_mosaic": "Envinyata i mosaic (F5)",
       "create_ico": "Carë .ico quetta",
-      "straighten_auto": "Lempina tanna autómatavë"
+      "straighten_auto": "Lempina tanna autómatavë",
+      "read_macro": "Ata-carë carëli hariéva"
     },
     "canvas_no_file": {
       "open": "Panya CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Autómata lempina...\n{percent}%"
+    "deskewing": "Autómata lempina...\n{percent}%",
+    "macro_preparing": "Ata-carë carastaina..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Cantalë haryaina"
+    },
+    "macro_record": {
+      "title": "Harya carëli",
+      "btn_stop": "Metta",
+      "btn_cancel": "Avahaila",
+      "name_dialog_title": "Anta esse i carëlin",
+      "name_label": "Esse :",
+      "name_placeholder": "Esse i carëlion",
+      "description_label": "Quenta :",
+      "description_placeholder": "Quenta (lá maura)",
+      "btn_save": "Harya"
+    },
+    "macro_read": {
+      "title": "Ata-carë carëli",
+      "btn_rename": "Vista esse",
+      "btn_delete": "Nauta",
+      "btn_complete": "Metta",
+      "btn_play": "Ata-carë",
+      "corrupt_title": "Tengwa carëlion lá lertanwa",
+      "corrupt_message": "Er hya rimbë tengwar carëlion lá polir ná tencelnë ar lá caitar mi i lesta: {files}",
+      "report_title": "Ata-carë métima",
+      "report_message": "Parmar carnë alassëanen : {ok}\nParmar carnë bID únótimë : {partial}\nParmar úcarnë : {failed}",
+      "no_macros": "Lá ëa carëli hariéva.",
+      "btn_pick_file": "Cilë parma",
+      "pick_file_title": "Cilë carëli hariéva",
+      "hint_record_from_viewer": "Carëli hariéva ná hariéva i tyalello.",
+      "report_failed_line": "{page}: úcarnë mir « {step} »",
+      "report_partial_line": "{page}: {applied} carë carnë, úcarnë mir « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Esse i carëlion lá polë ná lusta.",
+      "too_long": "Esse i carëlion lá polë tenna nelde deg ontar.",
+      "invalid_chars": "Esse sina samë tengwar lá lávina tengwa nossë.",
+      "reserved_name": "Esse sina ná Windowen, lá polë ná yuhtaina.",
+      "duplicate": "Carëli exë samë esse sina yá."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Ortanë hya milya i emma\nForma hya tyalie i laica Curwë",
     "sharpness_mode_1": "Tereva i rembë an vanya nostalë\nForma hya tyalie i laica þinta",
     "crop_mode_0": "Canta cantalë ter i lango, tur\nForma hya tyalie quetie",
-    "crop_mode_1": "Módel harya Cantalë: harya cantalë ar tanna sa mi pelli entar\nForma hya tyalie quetie"
+    "crop_mode_1": "Módel harya Cantalë: harya cantalë ar tanna sa mi pelli entar\nForma hya tyalie quetie",
+    "read_macro_selected": "Ata-carë carëli hariéva i parmassen cilnë"
   },
   "help": {
     "title": "MosaicView - Nottië návaren",
@@ -1498,7 +1542,9 @@
     "scan": "Cenilë emma",
     "scan_content": "• Pusta i \"Cenila\" tanwa (cenilion yando, i Parma nomessë, ar pusta faila i vosaicessë) yesta i cenilë windo. MosaicView cenila i cenil lelya (WIA nossenen, Windowo cenilë nossë): cilë i harma, i calmë (DPI), i ninqe lië (ninqe / sindë / morë ar ninquë), ar pusta \"Cenila\". I cenil ná lantea, naina, ar i harma parma hepis Windowessë an tencelë lestassë.\n• I cenil récina metëmë, i calmë, ar i ninqe lië cilina hepinar, ar antinar enó automatikwa i mettë cenilelenna.\n• Erya i cenilë windo ar i essë JPG tanwa antinar, an i tamna ëar ilya i mereva emma tyalië ar vistië apa cenilë.\n• I emma cenilëa anna i vosaicenna vinta, apa i sómëa parmar. Ela pole cilë, sinta, ar quernë ninqion, ve exë vosaic parma.\n• Vinta hína cenila i cenil, uas mahtëa i carmo harma allo ar uas anta insa windo.\n• An i véra cenil pole ná lelyaina min sam' er, cenilë pole ná er windonna er lú: qui cenilë windo panta ëa egor cenilë martëa windo, i \"Cenila\" tanwa mahta insë windonna tenna i carmë tyeltëa.",
     "straighten": "Lempina emma",
-    "straighten_content": "Autómata lempina (álo teke) hirna as i tanwion nomessë (forma hya tyalie i 'Lempina' tanwë an vista i lé), i aicassë Emmaron, hya forma hya tyalie i mápessë: cenna i cendo erya (álo teke) ar lempina rincë i emma hya emmalí cillë; i núra rembina carainë ninqua enyalëo antaina ninquessë. Yesta leperya emmalínen. Minya fenda tanwë manen ranyalí emmali lempinë alcarissë ar nótë i úner cendo hirna.\n\nNorma lempina (tekë tanna cendëo) carna i minya centuvassë, cena i lé Centuva."
+    "straighten_content": "Autómata lempina (álo teke) hirna as i tanwion nomessë (forma hya tyalie i 'Lempina' tanwë an vista i lé), i aicassë Emmaron, hya forma hya tyalie i mápessë: cenna i cendo erya (álo teke) ar lempina rincë i emma hya emmalí cillë; i núra rembina carainë ninqua enyalëo antaina ninquessë. Yesta leperya emmalínen. Minya fenda tanwë manen ranyalí emmali lempinë alcarissë ar nótë i úner cendo hirna.\n\nNorma lempina (tekë tanna cendëo) carna i minya centuvassë, cena i lé Centuva.",
+    "macro": "Carëli hariéva",
+    "macro_content": "I carma Carëli hariéva (tancar «Harya»/«Ata-carë» i tyalëo tanwavë) haryë carëli carnë parmassë ar ata-carë tai imya parma erya hya rimbë — i tyalëllo hya, rimbë parmar, i musaicollo (menu Tyeller, hyarya-nutë, ikoni tulcë). I métima quantalëo windo listar parmar carnë alassëanen, únótimë hya úcarnë, ar quenta ilya úcarnëo."
   },
   "misc": {
     "file_word": "parma",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Yesta harma Windows ilyaron",
     "open_log": "Panya i parma Cenilë",
     "reveal_log": "Tana i parma Cenilë mi Explorer"
+  },
+  "macro": {
+    "step_rotate": "Winë : {angle}°",
+    "step_flip": "Hyelma {direction}",
+    "step_levels": "Teltanne : morna emma {black_point}, gamma {gamma}, ninqua emma {white_point}, telume {threshold}",
+    "step_crop": "Píta",
+    "step_straighten": "Lempina : {angle}°",
+    "step_straighten_auto": "Lempina autómata",
+    "step_clone": "Lúmequenta : {stroke_points} nutië",
+    "step_text": "Tecië : {count} canta",
+    "step_shapes": "Cantalë : {count} canta",
+    "step_brightness": "Cala {brightness}, racca {contrast}",
+    "step_saturation": "Cuivëa : {saturation}",
+    "step_remove_colors": "Culienen faireva : handa {intensity}",
+    "step_compression": "Nuttalë : mára {quality}",
+    "step_sharpness": "Laica : {value}",
+    "step_unsharp": "Laica autómata : ranco {radius}, handa {percent}, telume {threshold}",
+    "step_color_depth": "Núta karneva : {key}",
+    "step_effect": "Carma : {key}",
+    "step_image_mode": "Canta i ondonya : {key}",
+    "step_restore_color_depth": "Enyalë núta karneva minya",
+    "step_restore_effect": "Enyalë carma minya",
+    "step_restore_image_mode": "Enyalë canta i ondonya minya",
+    "step_transparency": "Calima : {count} nutië",
+    "step_paste_image": "Emma patanwa : {count} emma"
   }
 }

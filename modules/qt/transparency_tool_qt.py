@@ -492,35 +492,52 @@ class TransparencyViewerMixin:
         original = Image.open(io.BytesIO(entry['bytes']))
         work_img = original.convert('RGBA')
         self._transp_work_img_by_page[self.current_idx] = work_img
+        # Nouveau travail en attente sur cette page : repart d'une liste de
+        # clics vide pour la capture macro (voir apply_transparency_click).
+        self._macro_transparency_clicks = []
         return work_img
 
-    def apply_transparency_click(self, px: int, py: int):
+    def apply_transparency_click(self, px: int | None, py: int | None,
+                                  override_type: str | None = None,
+                                  override_tolerance: int | None = None,
+                                  override_color: tuple | None = None) -> bool:
         """Cœur de la logique (skill adjust-transparency) : flood fill
         4-connexe en pile (pas récursif,
         évite un dépassement de pile Python sur de grandes zones) ou balayage
         global de toute l'image, tolérance testée en distance de Chebyshev
         (max des 3 deltas RGB), seul le canal alpha est modifié (RGB jamais
         touché — la couleur d'origine reste techniquement présente sous la
-        transparence)."""
+        transparence).
+
+        Les override_* (lecture headless d'une macro) remplacent la lecture
+        du panel. En mode "global" via override_color, px/py peuvent être
+        None : la macro ne capture aucune position pour ce mode (voir
+        _macro_transparency_clicks), seule la couleur de référence compte."""
         work_img = self._get_or_init_transp_work_img()
         img_w, img_h = work_img.size
-        if px < 0 or py < 0 or px >= img_w or py >= img_h:
-            return
-
-        pixels = work_img.load()
-        ref = pixels[px, py]
-        if ref[3] == 0:
-            return
 
         panel = self._toolbar._transparency_panel
-        tol = panel.tolerance
+        transparency_type = override_type if override_type is not None else panel.transparency_type
+        tol = override_tolerance if override_tolerance is not None else panel.tolerance
+
+        if override_color is not None:
+            ref = tuple(override_color) + (255,)
+        else:
+            if px is None or py is None or px < 0 or py < 0 or px >= img_w or py >= img_h:
+                return False
+            pixels = work_img.load()
+            ref = pixels[px, py]
+            if ref[3] == 0:
+                return False
+
+        pixels = work_img.load()
 
         def _in_tolerance(c):
             return (abs(c[0] - ref[0]) <= tol and
                     abs(c[1] - ref[1]) <= tol and
                     abs(c[2] - ref[2]) <= tol)
 
-        if panel.transparency_type == "global":
+        if transparency_type == "global":
             for y in range(img_h):
                 for x in range(img_w):
                     c = pixels[x, y]
@@ -546,6 +563,21 @@ class TransparencyViewerMixin:
         self._canvas._update_validate_btn_state()
         self._canvas._update_cancel_btn_state()
 
+        # Mode "zone" : la position du clic reste indispensable (point de
+        # départ de la propagation locale), capturée en pixels absolus. Mode
+        # "global" : la position n'a jamais influencé le résultat (elle ne
+        # sert qu'à lire une couleur de référence, appliquée à toute
+        # l'image) — la macro capture donc la couleur RGB, pas la position.
+        if override_type is None and getattr(self, '_macro_recording', False):
+            click = {"type": transparency_type, "tolerance": tol}
+            if transparency_type == "global":
+                click["color"] = [ref[0], ref[1], ref[2]]
+            else:
+                click["px"] = px
+                click["py"] = py
+            self._macro_transparency_clicks.append(click)
+        return True
+
     def _update_transparency_preview(self):
         """Affiche l'image de travail courante (accumulée, pas encore
         commitée) — même rôle que _update_levels_preview mais sans recalcul
@@ -566,19 +598,21 @@ class TransparencyViewerMixin:
             return
         self.perform_transparency()
 
-    def perform_transparency(self):
+    def perform_transparency(self, skip_history: bool = False) -> bool:
         """Bouton "Valider" : commit réel de l'image de travail dans
         entry['bytes'] (pattern skill apply-image-operation) — sauvegarde au
         format selon l'extension d'origine (ICO/WEBP/AVIF/PNG), même
         correspondance que l'ancien _apply_transparency (skill
-        adjust-transparency). Devient sa propre entrée d'historique."""
+        adjust-transparency). Devient sa propre entrée d'historique.
+
+        skip_history : saute les 2 save_state, laissés à l'appelant."""
         from modules.qt import state as _state_module
         from modules.qt.entries import save_image_to_bytes
         from modules.qt.dialogs_qt import MsgDialog
 
         work_img = self._transp_work_img_by_page.get(self.current_idx)
         if work_img is None:
-            return
+            return False
 
         state = self.callbacks.get('state') or _state_module.state
         save_state = self.callbacks.get("save_state")
@@ -589,7 +623,7 @@ class TransparencyViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
 
             entry["img"] = work_img.copy()
@@ -606,7 +640,7 @@ class TransparencyViewerMixin:
             _pidx = get_page_image_index(state, entry)
             if _pidx is not None:
                 update_page_entries_in_xml_data(state, [(_pidx, entry)])
-            if save_state:
+            if save_state and not skip_history:
                 save_state(force=True)
 
             real_idx = entry.get("_real_idx")
@@ -627,10 +661,50 @@ class TransparencyViewerMixin:
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
 
+            clicks = self._macro_transparency_clicks
+            self._macro_transparency_clicks = []
+            if not skip_history and clicks:
+                self._macro_record_step(
+                    "transparency", {"clicks": clicks},
+                    "macro.step_transparency", {"count": len(clicks)},
+                )
+            return True
+
         except Exception:
+            if skip_history:
+                return False
             dlg = MsgDialog(self._center_parent, "messages.errors.transparency_failed.title",
                             "messages.errors.transparency_failed.message")
             dlg.show_nonmodal()
+            return False
+
+    def perform_transparency_step(self, params: dict) -> bool:
+        """Rejoue tous les clics accumulés d'un payload de macro, puis
+        valide. Un clic échoué (pixel hors image, référence transparente,
+        etc.) arrête cette étape — pas de rollback partiel des clics déjà
+        appliqués, seul le save_state global de la lecture couvre l'annulation."""
+        from modules.qt import state as _state_module
+
+        clicks = params.get("clicks")
+        if not clicks:
+            return False
+
+        state = self.callbacks.get('state') or _state_module.state
+        entry = state.images_data[self.current_idx]
+        if not is_transparency_supported_entry(entry):
+            return False
+
+        for click in clicks:
+            ok = self.apply_transparency_click(
+                click.get("px"), click.get("py"),
+                override_type=click["type"],
+                override_tolerance=click["tolerance"],
+                override_color=click.get("color"),
+            )
+            if not ok:
+                return False
+
+        return self.perform_transparency(skip_history=True)
 
     def _clear_transparency_work(self):
         """Échap/Suppr/Retour arrière/bouton "Annuler" : annule TOUT le
@@ -638,6 +712,7 @@ class TransparencyViewerMixin:
         clic par clic. Retour à l'image d'origine (entry['bytes'] inchangé, l'image
         de travail est simplement jetée)."""
         self._transp_work_img_by_page.pop(self.current_idx, None)
+        self._macro_transparency_clicks = []
         self._sharpness_preview_img = None
         self._canvas._update_validate_btn_state()
         self._canvas._update_cancel_btn_state()

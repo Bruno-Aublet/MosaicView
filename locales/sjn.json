@@ -165,7 +165,13 @@
     "toolbar_rotation_instruction": "Covado egor tarlango i randir hen",
     "toolbar_paste_image_tooltip": "Pado randir",
     "toolbar_paste_image_instruction": "Pado randir en thirendor or i dell, tulu vi caro herin/reviad",
-    "toolbar_paste_image_disabled": "Ir thirendor bo dulu randir erui"
+    "toolbar_paste_image_disabled": "Ir thirendor bo dulu randir erui",
+    "toolbar_macro_record_tooltip": "Tirith",
+    "toolbar_macro_record_instruction": "Yesta tirith i thennad ar i thell thíriel",
+    "toolbar_macro_play_tooltip": "Adrevedui",
+    "toolbar_macro_play_instruction": "Adrevedio i thennad tirith ar i thell thíriel",
+    "macro_read_interrupted_title": "Thennad tirith haedhannen",
+    "macro_read_interrupted_message": "I adrevedui i thennad tirith haedhannen an i laD chu' hertha. Pân i choadar carnen han i adrevedui hen haedhannen vell."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Galad, gwahan, cuil...",
       "refresh_mosaic": "Edro i mosaic (F5)",
       "create_ico": "Bâd .ico parf",
-      "straighten_auto": "Trenarna tâl auto-hired"
+      "straighten_auto": "Trenarna tâl auto-hired",
+      "read_macro": "Adrevedio thennad tirith"
     },
     "canvas_no_file": {
       "open": "Edro CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Trenarn auto-hired ah:\n{percent}%"
+    "deskewing": "Trenarn auto-hired ah:\n{percent}%",
+    "macro_preparing": "Adrevedui aphadannen..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Sell dortha"
+    },
+    "macro_record": {
+      "title": "Tirith thennad",
+      "btn_stop": "Methedo",
+      "btn_cancel": "Haedh",
+      "name_dialog_title": "Anno eneth an i thennad",
+      "name_label": "Eneth :",
+      "name_placeholder": "Eneth i thennad",
+      "description_label": "Pennas :",
+      "description_placeholder": "Pennas (ú-boe)",
+      "btn_save": "Tirith"
+    },
+    "macro_read": {
+      "title": "Adrevedio thennad",
+      "btn_rename": "Athanno eneth",
+      "btn_delete": "Deleb",
+      "btn_complete": "Methedo",
+      "btn_play": "Adrevedui",
+      "corrupt_title": "Faif thennad ú-legib",
+      "corrupt_message": "Er egor rimm faif thennad ú-lelthannen ar ú-genir mi i nith: {files}",
+      "report_title": "Adrevedui gwannen",
+      "report_message": "Telleir carnen vaeth : {ok}\nTelleir bID carnen : {partial}\nTelleir luthen : {failed}",
+      "no_macros": "Thennad tirith ú-boe.",
+      "btn_pick_file": "Wivo faif",
+      "pick_file_title": "Wivo thennad tirith",
+      "hint_record_from_viewer": "Thennad tirith tirthannen ar i laD chu'.",
+      "report_failed_line": "{page}: luthen ar « {step} »",
+      "report_partial_line": "{page}: {applied} thennad carnen, luthen ar « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Eneth i thennad ú-boe ael chîm.",
+      "too_long": "Eneth i thennad ú-boe orthoro neled deg dail ochwib.",
+      "invalid_chars": "Eneth hen ceven tîw ú-vaer an eneth faif.",
+      "reserved_name": "Eneth hen ceven Windows, ú-lelthannen.",
+      "duplicate": "Thennad eraid ceven eneth hen sui ben."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Ortha egor laed randir\nDago daerageb nan laeg Curu",
     "sharpness_mode_1": "Egleria randir dan pêd i randir dulu\nDago daerageb nan laeg thent",
     "crop_mode_0": "Cad sell nan i vast, hertha\nDago daerageb nan gweth dangwethad",
-    "crop_mode_1": "Modh dortha Sell: dortha sell a chargh nan i thelli a-govaded\nDago daerageb nan gweth dangwethad"
+    "crop_mode_1": "Modh dortha Sell: dortha sell a chargh nan i thelli a-govaded\nDago daerageb nan gweth dangwethad",
+    "read_macro_selected": "Adrevedio thennad tirith ar i telleir thelthen"
   },
   "help": {
     "title": "MosaicView - Bâd thuriol",
@@ -1498,7 +1542,9 @@
     "scan": "Cenatha randir",
     "scan_content": "• Podo an chîn \"Ceno\" (i thand genoer, i lend Ambar, egor podo dhelig vo i vosaic) an athrado i host Chenatha. MosaicView cenatha i Chenor lîn erui (thand WIA, thand cened Windows): mede i genor, i ninnas (DPI), i chalich (chalich / lith-mith / morn a nimp), a podo \"Ceno\". I genor tolel, vaded, a i thand dînen anann Windows an tolthad vo i lest.\n• I genor cheniannen thent, i ninnas, a i chalich haeðent tirin, a podin ennas nedh vosaic pathad.\n• I chenatha nedh vosaic pathad a i thelthad an JPG erui podannen, an i chest anna erin hain chenatha egor faeg i thand randir apa.\n• I randir cenannen anna vo i vosaic dad, apa i genoer ceniannen. Danno cenatha, tirio, egor faeg i venel, sui genor benn i vosaic.\n• I chest hen cenatha i genor erui, ú-erin i harn i chenor egor tolthad i thand dínen.\n• Ir i chenor dínen ú-erin cenatha ben unin luith erui, i chenatha erin ben paned erui: ir i host chenatha panno egor chenatha ceria vi paned, i chîn \"Ceno\" dâd ú-erin vi paned hen tenna i chest bo.",
     "straighten": "Trenarna randir",
-    "straighten_content": "Trenarn auto-hired (ú-thegitha) gwestannen na i vagol eiconau (dago daerageb ben i eicon 'Trenarna' an gweth dangwethad), i lend Randirain, egor dago daerageb ben i chair: cened i chair sen erui (ú-thegitha) a trenarna bân i randir/randirain gwestannen; i chegin cuil iannen ben i gwethad hain linnannen gwen. Man i lû ah pân randirain hâd. Er fenestra crist tiro i nifred randirain trenarnannen vaeth a i lend re ú-cenir chair veleg.\n\nTrenarn dad-benn (latha bân dad-benn) qaSta' na i harthad ereb, tiro i lend Harthad."
+    "straighten_content": "Trenarn auto-hired (ú-thegitha) gwestannen na i vagol eiconau (dago daerageb ben i eicon 'Trenarna' an gweth dangwethad), i lend Randirain, egor dago daerageb ben i chair: cened i chair sen erui (ú-thegitha) a trenarna bân i randir/randirain gwestannen; i chegin cuil iannen ben i gwethad hain linnannen gwen. Man i lû ah pân randirain hâd. Er fenestra crist tiro i nifred randirain trenarnannen vaeth a i lend re ú-cenir chair veleg.\n\nTrenarn dad-benn (latha bân dad-benn) qaSta' na i harthad ereb, tiro i lend Harthad.",
+    "macro": "Thennad tirith",
+    "macro_content": "I orthor thennad tirith (eiconau «Tirith»/«Adrevedui» mi lûr formen laD chu') tirithatha thennad orthol ar er tell ar adrevedio hen sui ben ar er egor rimm tell erui — o laD chu' egor, an rimm tell, o mosaig (menu Celbin, nIH-click, roth eiconau). Thúr methedol dartho i nith tell orthol vaeth, bID egor luthen, as raeg pân luthad."
   },
   "misc": {
     "file_word": "bâr",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Athrado thand Windows velui",
     "open_log": "Edro ambar Chenatha",
     "reveal_log": "Cheno ambar Chenatha mi Explorer"
+  },
+  "macro": {
+    "step_rotate": "Misto : {angle}°",
+    "step_flip": "Celedhril {direction}",
+    "step_levels": "Lin : peg morn {black_point}, gamma {gamma}, peg nimp {white_point}, dû {threshold}",
+    "step_crop": "Orchad",
+    "step_straighten": "Trenarn : {angle}°",
+    "step_straighten_auto": "Trenarn auto-hired",
+    "step_clone": "Glawar : {stroke_points} nedhoro lathannen",
+    "step_text": "Parth : {count} sell",
+    "step_shapes": "Sell : {count} sell",
+    "step_brightness": "Galad {brightness}, glass {contrast}",
+    "step_saturation": "Gwathren : {saturation}",
+    "step_remove_colors": "Calad hethro : rist {intensity}",
+    "step_compression": "Nudh : maer {quality}",
+    "step_sharpness": "Laeg : {value}",
+    "step_unsharp": "Laeg auto-hired : ang {radius}, rist {percent}, dû {threshold}",
+    "step_color_depth": "Naeth i chaew : {key}",
+    "step_effect": "Goeliant : {key}",
+    "step_image_mode": "Gwedh i ven : {key}",
+    "step_restore_color_depth": "Adnortho naeth i chaew i vinui",
+    "step_restore_effect": "Adnortho i goeliant vinui",
+    "step_restore_image_mode": "Adnortho gwedh i ven vinui",
+    "step_transparency": "Rhimp : {count} nedhoro",
+    "step_paste_image": "Randir padannen : {count} randir"
   }
 }

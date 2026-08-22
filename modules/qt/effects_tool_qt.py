@@ -297,8 +297,10 @@ class EffectsViewerMixin:
     (_ViewerCanvas), self.callbacks, self.current_idx, self._toolbar (avec
     _effects_panel)."""
 
-    def perform_effect(self, key: str):
-        """Clic sur un radio d'effet : commit IMMÉDIAT dans entry['bytes']
+    def perform_effect(self, key: str, skip_history: bool = False):
+        """skip_history : propagé à apply_image_adjustments().
+
+        Clic sur un radio d'effet : commit IMMÉDIAT dans entry['bytes']
         (pattern skill apply-image-operation, variante A complète) —
         réutilise apply_image_adjustments() (image_processing_qt.py). Devient
         sa propre entrée d'historique.
@@ -320,12 +322,13 @@ class EffectsViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
-                return
+                return False
 
             if self.current_idx not in state.effect_original_bytes_by_page:
                 state.effect_original_bytes_by_page[self.current_idx] = entry['bytes']
 
-            apply_image_adjustments([entry], {'effect': key}, callbacks=self.callbacks)
+            apply_image_adjustments([entry], {'effect': key}, callbacks=self.callbacks,
+                                     skip_history=skip_history)
             state.effect_key_by_page[self.current_idx] = key
 
             real_idx = entry.get("_real_idx")
@@ -341,20 +344,29 @@ class EffectsViewerMixin:
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             self._sync_effects_panel()
+            self._macro_record_step(
+                "effect", {"key": key},
+                "macro.step_effect", {"key": key},
+            )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.effect_failed.title",
                             "messages.errors.effect_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
-    def perform_restore_effect(self):
+    def perform_restore_effect(self, skip_history: bool = False, _skip_macro_capture: bool = False):
         """Clic sur "Restaurer l'original" : restaure entry['bytes'] au
         snapshot capturé avant le tout premier changement d'effet de cette
         session d'outil sur cette page — un NOUVEAU commit (ajoute une entrée
         undo/redo, ne dépile pas l'historique), pas un undo. Retire ensuite
         l'entrée du dict pour cette page (et la clé d'effet mémorisée) : un
-        nouveau clic sur un effet recommencera un nouveau snapshot."""
+        nouveau clic sur un effet recommencera un nouveau snapshot.
+
+        skip_history/_skip_macro_capture : voir
+        ColorDepthViewerMixin.perform_restore_color_depth (même contrat)."""
         from modules.qt import state as _state_module
         from modules.qt.dialogs_qt import MsgDialog
 
@@ -363,12 +375,12 @@ class EffectsViewerMixin:
 
         original_bytes = state.effect_original_bytes_by_page.get(self.current_idx)
         if original_bytes is None:
-            return
+            return False
 
         try:
             entry = state.images_data[self.current_idx]
             save_state = self.callbacks.get("save_state")
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
 
             entry['bytes'] = original_bytes
@@ -376,7 +388,7 @@ class EffectsViewerMixin:
             entry['qt_pixmap_large'] = None
             entry['qt_qimage_large'] = None
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state(force=True)
 
             del state.effect_original_bytes_by_page[self.current_idx]
@@ -395,12 +407,19 @@ class EffectsViewerMixin:
             self.display_image(keep_crop_rect=True)
             self._toolbar.refresh_undo_redo_state()
             self._sync_effects_panel()
+            if not _skip_macro_capture:
+                self._macro_record_step(
+                    "restore_effect", {},
+                    "macro.step_restore_effect", {},
+                )
+            return True
 
         except Exception as e:
             dlg = MsgDialog(self._center_parent, "messages.errors.effect_failed.title",
                             "messages.errors.effect_failed.message",
                             message_kwargs={"error": str(e)})
             dlg.show_nonmodal()
+            return False
 
     def _sync_effects_panel(self):
         """Resynchronise les 4 radios sur l'état MÉMORISÉ de la page

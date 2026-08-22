@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "將剪貼簿中的圖片貼到頁面上，使用控點調整大小/旋轉",
     "toolbar_paste_image_disabled": "剪貼簿中必須只包含一張圖片",
     "color_depth_panel_blocked_format": "無法使用：檔案的原始{format}格式不支援此色彩深度。",
-    "image_mode_panel_blocked_format": "無法使用：檔案的原始{format}格式不支援此模式。"
+    "image_mode_panel_blocked_format": "無法使用：檔案的原始{format}格式不支援此模式。",
+    "toolbar_macro_record_tooltip": "錄製",
+    "toolbar_macro_record_instruction": "在目前顯示的頁面上開始錄製巨集",
+    "toolbar_macro_play_tooltip": "播放",
+    "toolbar_macro_play_instruction": "在目前顯示的頁面上播放已錄製的巨集",
+    "macro_read_interrupted_title": "巨集已中斷",
+    "macro_read_interrupted_message": "由於關閉了檢視器，巨集的播放已中斷。此次播放已套用的所有變更均已還原。"
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "亮度、對比度、顏色...",
       "refresh_mosaic": "重新整理拼圖 (F5)",
       "create_ico": "建立 .ico 檔案",
-      "straighten_auto": "自動校正影像"
+      "straighten_auto": "自動校正影像",
+      "read_macro": "播放巨集"
     },
     "canvas_no_file": {
       "open": "開啟 CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "自動校正進行中...\n{percent}%"
+    "deskewing": "自動校正進行中...\n{percent}%",
+    "macro_preparing": "正在準備播放..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "裁剪遮罩"
+    },
+    "macro_record": {
+      "title": "錄製巨集",
+      "btn_stop": "完成",
+      "btn_cancel": "取消",
+      "name_dialog_title": "命名巨集",
+      "name_label": "名稱:",
+      "name_placeholder": "巨集名稱",
+      "description_label": "描述:",
+      "description_placeholder": "描述（選填）",
+      "btn_save": "儲存"
+    },
+    "macro_read": {
+      "title": "播放巨集",
+      "btn_rename": "重新命名",
+      "btn_delete": "刪除",
+      "btn_complete": "繼續錄製",
+      "btn_play": "播放",
+      "corrupt_title": "無法讀取的巨集檔案",
+      "corrupt_message": "一個或多個巨集檔案無法讀取，未顯示於清單中：{files}",
+      "report_title": "播放完成",
+      "report_message": "成功處理的頁面：{ok}\n部分處理的頁面：{partial}\n失敗的頁面：{failed}",
+      "no_macros": "尚未錄製任何巨集。",
+      "btn_pick_file": "選擇檔案",
+      "pick_file_title": "選擇巨集",
+      "hint_record_from_viewer": "巨集是從檢視器中錄製的。",
+      "report_failed_line": "{page}: 在步驟「{step}」失敗",
+      "report_partial_line": "{page}: 已套用 {applied} 個步驟, 在「{step}」失敗"
+    },
+    "macro_name_error": {
+      "empty": "巨集名稱不能為空。",
+      "too_long": "巨集名稱不能超過30個字元。",
+      "invalid_chars": "此名稱包含檔案名稱中不允許的字元。",
+      "reserved_name": "此名稱由 Windows 保留，無法使用。",
+      "duplicate": "已存在同名的巨集。"
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "增強或柔化影像細節\n按右鍵切換為自適應銳化",
     "sharpness_mode_1": "在保留平坦區域的同時強化邊緣\n按右鍵切換為簡單銳化",
     "crop_mode_0": "在要保留的區域上繪製一個矩形，然後確認\n右鍵點擊切換到裁剪遮罩模式",
-    "crop_mode_1": "裁剪遮罩模式：記住一個矩形並在後續頁面中呼叫它\n右鍵點擊返回正常模式"
+    "crop_mode_1": "裁剪遮罩模式：記住一個矩形並在後續頁面中呼叫它\n右鍵點擊返回正常模式",
+    "read_macro_selected": "在選取的頁面上播放巨集"
   },
   "help": {
     "title": "MosaicView - 使用說明",
@@ -1498,7 +1542,9 @@
     "scan": "掃描圖像",
     "scan_content": "• 點擊「掃描」按鈕（圖示欄、檔案選單，或在馬賽克上按右鍵）以開啟掃描視窗。MosaicView 直接控制您的掃描器（透過 WIA，即 Windows 的掃描系統）：選擇裝置、解析度（DPI）、色彩模式（彩色 / 灰階 / 黑白），然後點擊「掃描」。掃描器必須已連接、已開機，且其驅動程式已在 Windows 上安裝，才能出現在清單中。\n• 上次使用的掃描器、解析度和選擇的色彩模式會被記住，並在下次掃描時自動重新推薦。\n• 僅提供整頁掃描並匯出為 JPG，因為應用程式已具備後續修圖與格式轉換所需的一切功能。\n• 掃描的圖像會自動加入馬賽克中，位於已有頁面之後。之後您可以像馬賽克中的任何其他頁面一樣對其進行裁切、校正、調整色彩等操作\n• 此功能直接控制掃描器，無需透過製造商的軟體，也不會顯示其自帶的設定視窗。\n• 由於實體掃描器一次只能由一個連線控制, 因此一次只能在一個面板中進行掃描: 如果一個面板中開啟了掃描視窗或正在掃描, 另一個面板中的「掃描」按鈕會保持灰顯, 直到該操作完成。",
     "straighten": "校正頁面",
-    "straighten_content": "自動校正（無需繪製任何內容）可從圖示欄（右鍵點擊「校正」圖示切換模式）、圖片選單或右鍵點擊馬賽克使用：它會自動偵測傾斜並直接校正所選頁面；旋轉產生的空白角落將以白色填滿。可同時處理多個頁面。摘要視窗顯示成功校正的頁面數量，並列出無法可靠偵測到傾斜的頁面。\n\n手動校正（繪製參考線）在主檢視器中進行，請參閱檢視器部分。"
+    "straighten_content": "自動校正（無需繪製任何內容）可從圖示欄（右鍵點擊「校正」圖示切換模式）、圖片選單或右鍵點擊馬賽克使用：它會自動偵測傾斜並直接校正所選頁面；旋轉產生的空白角落將以白色填滿。可同時處理多個頁面。摘要視窗顯示成功校正的頁面數量，並列出無法可靠偵測到傾斜的頁面。\n\n手動校正（繪製參考線）在主檢視器中進行，請參閱檢視器部分。",
+    "macro": "巨集",
+    "macro_content": "巨集工具（檢視器工具列上的「錄製」/「播放」圖示）會錄製在某一頁上執行的一系列動作，並在一個或多個其他頁面上完全相同地重播 — 可從檢視器操作，若涉及多頁，也可從拼貼視圖（影像選單、右鍵選單、圖示欄）操作。最終報告視窗會列出成功、部分成功或失敗處理的頁面，並說明每次失敗的原因。"
   },
   "misc": {
     "file_word": "檔案",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "嘗試使用 Windows 通用驅動程式",
     "open_log": "開啟掃描記錄",
     "reveal_log": "在檔案總管中顯示掃描記錄"
+  },
+  "macro": {
+    "step_rotate": "旋轉：{angle}°",
+    "step_flip": "鏡射 {direction}",
+    "step_levels": "色階：黑場 {black_point}，伽瑪 {gamma}，白場 {white_point}，閾值 {threshold}",
+    "step_crop": "裁切",
+    "step_straighten": "拉直：{angle}°",
+    "step_straighten_auto": "自動拉直",
+    "step_clone": "仿製：已繪製 {stroke_points} 個點",
+    "step_text": "文字：{count} 個區塊",
+    "step_shapes": "形狀：{count} 個形狀",
+    "step_brightness": "亮度 {brightness}，對比度 {contrast}",
+    "step_saturation": "飽和度：{saturation}",
+    "step_remove_colors": "移除顏色：強度 {intensity}",
+    "step_compression": "壓縮：品質 {quality}",
+    "step_sharpness": "銳利化：{value}",
+    "step_unsharp": "自適應銳利化：半徑 {radius}，強度 {percent}，閾值 {threshold}",
+    "step_color_depth": "色彩深度：{key}",
+    "step_effect": "效果：{key}",
+    "step_image_mode": "影像模式：{key}",
+    "step_restore_color_depth": "還原原始色彩深度",
+    "step_restore_effect": "還原原始效果",
+    "step_restore_image_mode": "還原原始影像模式",
+    "step_transparency": "透明度：{count} 次點擊",
+    "step_paste_image": "貼上的影像：{count} 張"
   }
 }

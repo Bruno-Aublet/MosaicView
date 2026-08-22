@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Fügt das Bild aus der Zwischenablage auf die Seite ein, Griffe zum Skalieren/Drehen",
     "toolbar_paste_image_disabled": "Die Zwischenablage darf nur ein Bild enthalten",
     "color_depth_panel_blocked_format": "Nicht verfügbar: Das ursprüngliche {format}-Format der Datei unterstützt diese Farbtiefe nicht.",
-    "image_mode_panel_blocked_format": "Nicht verfügbar: Das ursprüngliche {format}-Format der Datei unterstützt diesen Modus nicht."
+    "image_mode_panel_blocked_format": "Nicht verfügbar: Das ursprüngliche {format}-Format der Datei unterstützt diesen Modus nicht.",
+    "toolbar_macro_record_tooltip": "Aufnehmen",
+    "toolbar_macro_record_instruction": "Startet die Aufnahme eines Makros auf der angezeigten Seite",
+    "toolbar_macro_play_tooltip": "Abspielen",
+    "toolbar_macro_play_instruction": "Spielt ein aufgezeichnetes Makro auf der angezeigten Seite ab",
+    "macro_read_interrupted_title": "Makro unterbrochen",
+    "macro_read_interrupted_message": "Die Makrowiedergabe wurde durch das Schließen des Viewers unterbrochen. Alle bereits von dieser Wiedergabe vorgenommenen Änderungen wurden rückgängig gemacht."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Helligkeit, Kontrast, Farben...",
       "refresh_mosaic": "Mosaik aktualisieren (F5)",
       "create_ico": ".ico-Datei erstellen",
-      "straighten_auto": "Bild automatisch begradigen"
+      "straighten_auto": "Bild automatisch begradigen",
+      "read_macro": "Makro abspielen"
     },
     "canvas_no_file": {
       "open": "CBZ/CBR/CB7/CBT/PDF öffnen",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Automatische Begradigung läuft...\n{percent}%"
+    "deskewing": "Automatische Begradigung läuft...\n{percent}%",
+    "macro_preparing": "Wiedergabe wird vorbereitet..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Zuschnittmaske"
+    },
+    "macro_record": {
+      "title": "Makro aufnehmen",
+      "btn_stop": "Beenden",
+      "btn_cancel": "Abbrechen",
+      "name_dialog_title": "Makro benennen",
+      "name_label": "Name:",
+      "name_placeholder": "Makroname",
+      "description_label": "Beschreibung:",
+      "description_placeholder": "Beschreibung (optional)",
+      "btn_save": "Speichern"
+    },
+    "macro_read": {
+      "title": "Makro abspielen",
+      "btn_rename": "Umbenennen",
+      "btn_delete": "Löschen",
+      "btn_complete": "Ergänzen",
+      "btn_play": "Abspielen",
+      "corrupt_title": "Unlesbare Makrodatei",
+      "corrupt_message": "Eine oder mehrere Makrodateien konnten nicht gelesen werden und erscheinen nicht in der Liste: {files}",
+      "report_title": "Wiedergabe abgeschlossen",
+      "report_message": "Erfolgreich verarbeitete Seiten: {ok}\nTeilweise verarbeitete Seiten: {partial}\nFehlgeschlagene Seiten: {failed}",
+      "no_macros": "Noch keine Makro aufgezeichnet.",
+      "btn_pick_file": "Datei wählen",
+      "pick_file_title": "Makro wählen",
+      "hint_record_from_viewer": "Makros werden im Betrachter aufgezeichnet.",
+      "report_failed_line": "{page}: fehlgeschlagen bei Schritt « {step} »",
+      "report_partial_line": "{page}: {applied} Schritt(e) angewendet, fehlgeschlagen bei « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Der Makroname darf nicht leer sein.",
+      "too_long": "Der Makroname darf 30 Zeichen nicht überschreiten.",
+      "invalid_chars": "Dieser Name enthält Zeichen, die in einem Dateinamen nicht zulässig sind.",
+      "reserved_name": "Dieser Name ist von Windows reserviert und kann nicht verwendet werden.",
+      "duplicate": "Ein Makro mit diesem Namen existiert bereits."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Verstärkt oder mildert die Bilddetails\nRechtsklick, um zur adaptiven Schärfe zu wechseln",
     "sharpness_mode_1": "Betont Konturen und schont einheitliche Flächen\nRechtsklick, um zur einfachen Schärfe zu wechseln",
     "crop_mode_0": "Ziehen Sie ein Rechteck über den zu behaltenden Bereich und bestätigen Sie\nRechtsklick wechselt in den Zuschnittmasken-Modus",
-    "crop_mode_1": "Zuschnittmasken-Modus: merken Sie sich ein Rechteck und rufen Sie es auf den folgenden Seiten ab\nRechtsklick kehrt zum normalen Modus zurück"
+    "crop_mode_1": "Zuschnittmasken-Modus: merken Sie sich ein Rechteck und rufen Sie es auf den folgenden Seiten ab\nRechtsklick kehrt zum normalen Modus zurück",
+    "read_macro_selected": "Makro auf den ausgewählten Seiten abspielen"
   },
   "help": {
     "title": "MosaicView - Benutzerhandbuch",
@@ -1498,7 +1542,9 @@
     "scan": "Ein Bild scannen",
     "scan_content": "• Klicken Sie auf die Schaltfläche „Scannen“ (Symbolspalte, Menü Datei oder Rechtsklick auf die Mosaik), um das Scanfenster zu öffnen. MosaicView steuert Ihren Scanner direkt (über WIA, das Windows-Scansystem): Wählen Sie das Gerät, die Auflösung (DPI), den Farbmodus (Farbe / Graustufen / Schwarzweiß) und klicken Sie dann auf „Scannen“. Ein Scanner muss angeschlossen, eingeschaltet und sein Treiber unter Windows installiert sein, um in der Liste zu erscheinen.\n• Der zuletzt verwendete Scanner, die Auflösung und der gewählte Farbmodus werden gespeichert und beim nächsten Scan automatisch wieder vorgeschlagen.\n• Es wird nur die Vollseiten-Scan- und JPG-Exportfunktion angeboten, da die Anwendung bereits alles Nötige für Bildbearbeitung und Formatkonvertierung danach mitbringt.\n• Das gescannte Bild wird automatisch zur Mosaik hinzugefügt, nach den bereits vorhandenen Seiten. Sie können es anschließend zuschneiden, begradigen, seine Farben anpassen usw., wie jede andere Seite der Mosaik\n• Diese Funktion steuert den Scanner direkt, ohne die Software des Herstellers zu verwenden oder dessen eigenes Konfigurationsfenster anzuzeigen.\n• Da ein physischer Scanner immer nur von einer Verbindung gleichzeitig gesteuert werden kann, ist das Scannen nur in jeweils einem Bereich möglich: Wenn in einem Bereich ein Scanfenster geöffnet ist oder ein Scan läuft, bleibt die Schaltfläche „Scannen“ im anderen Bereich bis zum Abschluss des Vorgangs ausgegraut.",
     "straighten": "Seite begradigen",
-    "straighten_content": "Die automatische Begradigung (ohne etwas zu zeichnen) ist über die Symbolspalte (Rechtsklick auf das Symbol „Begradigen“ zum Moduswechsel), das Menü Bilder oder Rechtsklick auf das Mosaik verfügbar: Sie erkennt die Schräglage von selbst und begradigt direkt die ausgewählte(n) Seite(n); durch die Drehung entstandene leere Ecken werden weiß aufgefüllt. Funktioniert mit mehreren Seiten gleichzeitig. Ein Zusammenfassungsfenster zeigt, wie viele Seiten erfolgreich begradigt wurden, und listet jene auf, bei denen keine zuverlässige Schräglage erkannt werden konnte.\n\nDie manuelle Begradigung (Ziehen einer Referenzlinie) erfolgt im Hauptbetrachter, siehe Abschnitt Betrachter."
+    "straighten_content": "Die automatische Begradigung (ohne etwas zu zeichnen) ist über die Symbolspalte (Rechtsklick auf das Symbol „Begradigen“ zum Moduswechsel), das Menü Bilder oder Rechtsklick auf das Mosaik verfügbar: Sie erkennt die Schräglage von selbst und begradigt direkt die ausgewählte(n) Seite(n); durch die Drehung entstandene leere Ecken werden weiß aufgefüllt. Funktioniert mit mehreren Seiten gleichzeitig. Ein Zusammenfassungsfenster zeigt, wie viele Seiten erfolgreich begradigt wurden, und listet jene auf, bei denen keine zuverlässige Schräglage erkannt werden konnte.\n\nDie manuelle Begradigung (Ziehen einer Referenzlinie) erfolgt im Hauptbetrachter, siehe Abschnitt Betrachter.",
+    "macro": "Makros",
+    "macro_content": "Das Makro-Werkzeug (Symbole «Aufnehmen»/«Abspielen» in der Symbolleiste des Betrachters) zeichnet eine Aktionsfolge auf einer Seite auf und spielt sie identisch auf einer oder mehreren anderen ab — aus dem Betrachter oder, für mehrere Seiten, aus der Mosaikansicht (Menü Bilder, Rechtsklick, Symbolspalte). Ein abschließendes Berichtsfenster listet erfolgreich, teilweise oder fehlgeschlagen verarbeitete Seiten mit dem jeweiligen Grund auf."
   },
   "misc": {
     "file_word": "Datei",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Mit dem generischen Windows-Treiber versuchen",
     "open_log": "Scan-Protokoll öffnen",
     "reveal_log": "Scan-Protokoll im Explorer anzeigen"
+  },
+  "macro": {
+    "step_rotate": "Drehung: {angle}°",
+    "step_flip": "Spiegelung {direction}",
+    "step_levels": "Tonwerte: Schwarzpunkt {black_point}, Gamma {gamma}, Weißpunkt {white_point}, Schwellenwert {threshold}",
+    "step_crop": "Zuschneiden",
+    "step_straighten": "Begradigung: {angle}°",
+    "step_straighten_auto": "Automatische Begradigung",
+    "step_clone": "Klonen: {stroke_points} Punkt(e) gemalt",
+    "step_text": "Text: {count} Block/Blöcke",
+    "step_shapes": "Formen: {count} Form(en)",
+    "step_brightness": "Helligkeit {brightness}, Kontrast {contrast}",
+    "step_saturation": "Sättigung: {saturation}",
+    "step_remove_colors": "Farben entfernen: Intensität {intensity}",
+    "step_compression": "Komprimierung: Qualität {quality}",
+    "step_sharpness": "Schärfe: {value}",
+    "step_unsharp": "Adaptive Schärfe: Radius {radius}, Stärke {percent}, Schwellenwert {threshold}",
+    "step_color_depth": "Farbtiefe: {key}",
+    "step_effect": "Effekt: {key}",
+    "step_image_mode": "Bildmodus: {key}",
+    "step_restore_color_depth": "Ursprüngliche Farbtiefe wiederherstellen",
+    "step_restore_effect": "Ursprünglichen Effekt wiederherstellen",
+    "step_restore_image_mode": "Ursprünglichen Bildmodus wiederherstellen",
+    "step_transparency": "Transparenz: {count} Klick(s)",
+    "step_paste_image": "Eingefügtes Bild: {count} Bild(er)"
   }
 }

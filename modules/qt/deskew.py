@@ -23,6 +23,15 @@ _MIN_INLIERS = 3
 # s'accorde pas sur une inclinaison commune et l'angle n'est pas retenu.
 _MAX_ANGLE_STD_DEG = 2.0
 
+# Une médiane retenue à 45° (ou -45°) pile, à cette tolérance près, est
+# rejetée plutôt qu'appliquée : sur un scan de bande dessinée, un motif
+# graphique (hachures, trame de fond en diagonale) aligné sur la grille de
+# pixels produit ce même angle exact avec un consensus parfait (écart-type
+# quasi nul), indiscernable statistiquement d'une vraie inclinaison — sauf
+# qu'une vraie inclinaison de scan tombe presque toujours sur un angle
+# quelconque, jamais pile 45°.
+_SUSPECT_ANGLE_TOLERANCE_DEG = 0.1
+
 
 def detect_skew_angle(entry):
     """Détecte l'angle d'inclinaison d'une entrée image via la transformée de Hough
@@ -40,7 +49,13 @@ def detect_skew_angle(entry):
     gray = np.array(img.convert("L"))
     h, w = gray.shape[:2]
 
-    edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+    # Seuils Canny volontairement élevés (au lieu des 50/150 usuels) : un scan
+    # de bande dessinée porte souvent un grain de papier/trame d'impression
+    # dense qui, avec des seuils plus permissifs, produit un nombre de faux
+    # contours largement supérieur aux vrais traits du dessin — Hough peut
+    # alors "coudre" ce bruit en fausses lignes longues, majoritairement à 45°
+    # (angle le plus favorisé par la grille de pixels carrée).
+    edges = cv2.Canny(gray, 150, 300, apertureSize=3)
     min_line_length = min(w, h) / 2
     lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=100,
                              minLineLength=min_line_length, maxLineGap=20)
@@ -94,6 +109,9 @@ def detect_skew_angle(entry):
     std = float(np.std(inliers))
     median = float(np.median(inliers))
     if std > _MAX_ANGLE_STD_DEG:
+        return None
+
+    if abs(abs(median) - 45.0) <= _SUSPECT_ANGLE_TOLERANCE_DEG:
         return None
 
     return median

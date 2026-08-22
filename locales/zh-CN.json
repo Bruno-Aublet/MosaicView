@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "将剪贴板中的图像粘贴到页面上，使用手柄调整大小/旋转",
     "toolbar_paste_image_disabled": "剪贴板中必须只包含一张图像",
     "color_depth_panel_blocked_format": "不可用：文件的原始{format}格式不支持此颜色深度。",
-    "image_mode_panel_blocked_format": "不可用：文件的原始{format}格式不支持此模式。"
+    "image_mode_panel_blocked_format": "不可用：文件的原始{format}格式不支持此模式。",
+    "toolbar_macro_record_tooltip": "录制",
+    "toolbar_macro_record_instruction": "在当前显示的页面上开始录制宏",
+    "toolbar_macro_play_tooltip": "播放",
+    "toolbar_macro_play_instruction": "在当前显示的页面上播放已录制的宏",
+    "macro_read_interrupted_title": "宏已中断",
+    "macro_read_interrupted_message": "由于关闭了查看器，宏的播放被中断。此次播放已应用的所有更改均已撤销。"
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "亮度、对比度、颜色...",
       "refresh_mosaic": "刷新拼图 (F5)",
       "create_ico": "创建 .ico 文件",
-      "straighten_auto": "自动校正图像"
+      "straighten_auto": "自动校正图像",
+      "read_macro": "播放宏"
     },
     "canvas_no_file": {
       "open": "打开 CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "自动校正进行中...\n{percent}%"
+    "deskewing": "自动校正进行中...\n{percent}%",
+    "macro_preparing": "正在准备播放..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "裁切遮罩"
+    },
+    "macro_record": {
+      "title": "录制宏",
+      "btn_stop": "完成",
+      "btn_cancel": "取消",
+      "name_dialog_title": "命名宏",
+      "name_label": "名称:",
+      "name_placeholder": "宏名称",
+      "description_label": "描述:",
+      "description_placeholder": "描述（可选）",
+      "btn_save": "保存"
+    },
+    "macro_read": {
+      "title": "播放宏",
+      "btn_rename": "重命名",
+      "btn_delete": "删除",
+      "btn_complete": "继续录制",
+      "btn_play": "播放",
+      "corrupt_title": "无法读取的宏文件",
+      "corrupt_message": "一个或多个宏文件无法读取，未显示在列表中：{files}",
+      "report_title": "播放完成",
+      "report_message": "成功处理的页面：{ok}\n部分处理的页面：{partial}\n失败的页面：{failed}",
+      "no_macros": "尚未录制任何宏。",
+      "btn_pick_file": "选择文件",
+      "pick_file_title": "选择宏",
+      "hint_record_from_viewer": "宏是从查看器中录制的。",
+      "report_failed_line": "{page}: 在步骤「{step}」失败",
+      "report_partial_line": "{page}: 已应用 {applied} 个步骤, 在「{step}」失败"
+    },
+    "macro_name_error": {
+      "empty": "宏名称不能为空。",
+      "too_long": "宏名称不能超过30个字符。",
+      "invalid_chars": "此名称包含文件名中不允许的字符。",
+      "reserved_name": "此名称由 Windows 保留，无法使用。",
+      "duplicate": "已存在同名的宏。"
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "增强或柔化图像细节\n右键点击切换到自适应锐化",
     "sharpness_mode_1": "在保留平坦区域的同时强化边缘\n右键点击切换到简单锐化",
     "crop_mode_0": "在要保留的区域上绘制一个矩形，然后确认\n右键单击切换到裁切遮罩模式",
-    "crop_mode_1": "裁切遮罩模式：记住一个矩形并在后续页面中调用它\n右键单击返回正常模式"
+    "crop_mode_1": "裁切遮罩模式：记住一个矩形并在后续页面中调用它\n右键单击返回正常模式",
+    "read_macro_selected": "在选中的页面上播放宏"
   },
   "help": {
     "title": "MosaicView - 使用说明",
@@ -1498,7 +1542,9 @@
     "scan": "扫描图像",
     "scan_content": "• 点击\"扫描\"按钮（图标栏、文件菜单，或在马赛克上右键点击）以打开扫描窗口。MosaicView 直接控制您的扫描仪（通过 WIA，即 Windows 的扫描系统）：选择设备、分辨率（DPI）、颜色模式（彩色 / 灰度 / 黑白），然后点击\"扫描\"。扫描仪必须已连接、已开机，并且其驱动程序已在 Windows 上安装，才能出现在列表中。\n• 上次使用的扫描仪、分辨率和选择的颜色模式会被记住，并在下次扫描时自动重新推荐。\n• 仅提供整页扫描并导出为 JPG，因为应用程序已具备后续修图和格式转换所需的一切功能。\n• 扫描的图像会自动添加到马赛克中，位于已有页面之后。之后您可以像马赛克中的任何其他页面一样对其进行裁剪、校正、调整颜色等操作\n• 此功能直接控制扫描仪，无需通过制造商的软件，也不会显示其自带的配置窗口。\n• 由于物理扫描仪一次只能由一个连接控制, 因此一次只能在一个面板中进行扫描: 如果一个面板中打开了扫描窗口或正在进行扫描, 另一个面板中的“扫描”按钮将保持灰显, 直到该操作完成。",
     "straighten": "校正页面",
-    "straighten_content": "自动校正（无需绘制任何内容）可从图标列（右键点击\"校正\"图标切换模式）、图像菜单或右键点击马赛克使用：它会自动检测倾斜并直接校正所选页面；旋转产生的空白角落将以白色填充。可同时处理多个页面。摘要窗口显示成功校正的页面数量，并列出无法可靠检测到倾斜的页面。\n\n手动校正（绘制参考线）在主查看器中进行，请参阅查看器部分。"
+    "straighten_content": "自动校正（无需绘制任何内容）可从图标列（右键点击\"校正\"图标切换模式）、图像菜单或右键点击马赛克使用：它会自动检测倾斜并直接校正所选页面；旋转产生的空白角落将以白色填充。可同时处理多个页面。摘要窗口显示成功校正的页面数量，并列出无法可靠检测到倾斜的页面。\n\n手动校正（绘制参考线）在主查看器中进行，请参阅查看器部分。",
+    "macro": "宏",
+    "macro_content": "宏工具（查看器工具栏中的「录制」/「播放」图标）会录制在某一页上执行的一系列操作，并在一个或多个其他页面上完全相同地重放 — 可从查看器中操作，若涉及多页，也可从拼图视图（图像菜单、右键菜单、图标栏）中操作。最终报告窗口会列出成功、部分成功或失败处理的页面，并说明每次失败的原因。"
   },
   "misc": {
     "file_word": "文件",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "尝试使用 Windows 通用驱动程序",
     "open_log": "打开扫描日志",
     "reveal_log": "在资源管理器中显示扫描日志"
+  },
+  "macro": {
+    "step_rotate": "旋转：{angle}°",
+    "step_flip": "镜像 {direction}",
+    "step_levels": "色阶：黑场 {black_point}，伽马 {gamma}，白场 {white_point}，阈值 {threshold}",
+    "step_crop": "裁剪",
+    "step_straighten": "拉直：{angle}°",
+    "step_straighten_auto": "自动拉直",
+    "step_clone": "克隆：已绘制 {stroke_points} 个点",
+    "step_text": "文本：{count} 个文本块",
+    "step_shapes": "形状：{count} 个形状",
+    "step_brightness": "亮度 {brightness}，对比度 {contrast}",
+    "step_saturation": "饱和度：{saturation}",
+    "step_remove_colors": "去除颜色：强度 {intensity}",
+    "step_compression": "压缩：质量 {quality}",
+    "step_sharpness": "锐化：{value}",
+    "step_unsharp": "自适应锐化：半径 {radius}，强度 {percent}，阈值 {threshold}",
+    "step_color_depth": "颜色深度：{key}",
+    "step_effect": "效果：{key}",
+    "step_image_mode": "图像模式：{key}",
+    "step_restore_color_depth": "恢复原始颜色深度",
+    "step_restore_effect": "恢复原始效果",
+    "step_restore_image_mode": "恢复原始图像模式",
+    "step_transparency": "透明度：{count} 次点击",
+    "step_paste_image": "粘贴的图像：{count} 张"
   }
 }

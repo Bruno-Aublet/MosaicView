@@ -640,7 +640,11 @@ class CropViewerMixin:
             return
         self.perform_crop()
 
-    def perform_crop(self):
+    def perform_crop(self, skip_history: bool = False, override_px=None) -> bool:
+        """skip_history : saute les 2 save_state, laissés à l'appelant.
+        override_px=(x1,y1,x2,y2) : utilise ces pixels directement au lieu de
+        c._crop_start/c._crop_end (lecture headless d'une macro, aucun tracé
+        souris). Retourne True si le crop a réellement eu lieu."""
         from modules.qt import state as _state_module
         from modules.qt.entries import ensure_image_loaded, save_image_to_bytes
         from modules.qt.dialogs_qt import MsgDialog
@@ -655,37 +659,48 @@ class CropViewerMixin:
             entry = state.images_data[self.current_idx]
             original_img = ensure_image_loaded(entry)
             if original_img is None:
-                dlg = MsgDialog(self._center_parent, "messages.errors.crop_failed.title",
-                                "messages.errors.crop_failed.title")
-                dlg.show_nonmodal()
-                return
-
-            c = self._canvas
-            crop_x1 = c._crop_start.x() - c.display_offset_x
-            crop_y1 = c._crop_start.y() - c.display_offset_y
-            crop_x2 = c._crop_end.x()   - c.display_offset_x
-            crop_y2 = c._crop_end.y()   - c.display_offset_y
-
-            crop_x1 = max(0, min(crop_x1, c.display_width))
-            crop_y1 = max(0, min(crop_y1, c.display_height))
-            crop_x2 = max(0, min(crop_x2, c.display_width))
-            crop_y2 = max(0, min(crop_y2, c.display_height))
+                if override_px is None:
+                    dlg = MsgDialog(self._center_parent, "messages.errors.crop_failed.title",
+                                    "messages.errors.crop_failed.title")
+                    dlg.show_nonmodal()
+                return False
 
             img_w, img_h = original_img.size
-            zoom_ratio = self.zoom_level
 
-            orig_x1 = int(crop_x1 / zoom_ratio)
-            orig_y1 = int(crop_y1 / zoom_ratio)
-            orig_x2 = int(crop_x2 / zoom_ratio)
-            orig_y2 = int(crop_y2 / zoom_ratio)
+            if override_px is not None:
+                orig_x1, orig_y1, orig_x2, orig_y2 = override_px
+            else:
+                c = self._canvas
+                crop_x1 = c._crop_start.x() - c.display_offset_x
+                crop_y1 = c._crop_start.y() - c.display_offset_y
+                crop_x2 = c._crop_end.x()   - c.display_offset_x
+                crop_y2 = c._crop_end.y()   - c.display_offset_y
+
+                crop_x1 = max(0, min(crop_x1, c.display_width))
+                crop_y1 = max(0, min(crop_y1, c.display_height))
+                crop_x2 = max(0, min(crop_x2, c.display_width))
+                crop_y2 = max(0, min(crop_y2, c.display_height))
+
+                zoom_ratio = self.zoom_level
+
+                orig_x1 = int(crop_x1 / zoom_ratio)
+                orig_y1 = int(crop_y1 / zoom_ratio)
+                orig_x2 = int(crop_x2 / zoom_ratio)
+                orig_y2 = int(crop_y2 / zoom_ratio)
 
             if orig_x2 <= orig_x1 or orig_y2 <= orig_y1:
-                dlg = MsgDialog(self._center_parent, "messages.errors.crop_invalid.title",
-                                "messages.errors.crop_invalid.message")
-                dlg.show_nonmodal()
-                return
+                if override_px is None:
+                    dlg = MsgDialog(self._center_parent, "messages.errors.crop_invalid.title",
+                                    "messages.errors.crop_invalid.message")
+                    dlg.show_nonmodal()
+                return False
 
-            if save_state:
+            # Rectangle hors des dimensions de la page cible = échec pour
+            # cette page, jamais de clamp silencieux.
+            if override_px is not None and (orig_x2 > img_w or orig_y2 > img_h):
+                return False
+
+            if save_state and not skip_history:
                 save_state()
 
             cropped = original_img.crop((orig_x1, orig_y1, orig_x2, orig_y2))
@@ -701,7 +716,7 @@ class CropViewerMixin:
             _pidx = get_page_image_index(state, entry)
             if _pidx is not None:
                 update_page_entries_in_xml_data(state, [(_pidx, entry)])
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
             real_idx = entry.get("_real_idx")
             if canvas is not None and real_idx is not None:
@@ -713,21 +728,26 @@ class CropViewerMixin:
                 render_mosaic()
             if update_btn:
                 update_btn()
-            # En mode masque de découpe, valider enregistre automatiquement
-            # le masque (décision explicite) : le bouton "Enregistrer le
-            # masque" ne sert plus alors qu'à mémoriser un rectangle AVANT
-            # validation (ex. pour l'ajuster ensuite sans perdre la
-            # mémorisation). Appelé avant clear_crop() : c'est le rectangle
-            # qui vient d'être validé (encore dans crop_rel_*), pas un
-            # nouveau tracé sur la page suivante.
-            if self._toolbar._crop_mode() == 1:
-                self.save_crop_mask()
-            self._canvas.clear_crop()
-            self._crop_by_page.pop(self.current_idx, None)
+
+            if override_px is None:
+                # Mode masque : valider enregistre aussi le masque.
+                if self._toolbar._crop_mode() == 1:
+                    self.save_crop_mask()
+                self._canvas.clear_crop()
+                self._crop_by_page.pop(self.current_idx, None)
             self.display_image()
             self._toolbar.refresh_undo_redo_state()
+            if override_px is None:
+                # Pixels absolus, PAS crop_rel_* (relatif, utilisé hors macro).
+                self._macro_record_step(
+                    "crop", {"px": [orig_x1, orig_y1, orig_x2, orig_y2]},
+                    "macro.step_crop", {},
+                )
+            return True
 
         except Exception:
+            if override_px is not None:
+                return False
             dlg = MsgDialog(self._center_parent, "messages.errors.crop_failed.title",
                             "messages.errors.crop_failed.title")
             dlg.show_nonmodal()

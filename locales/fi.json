@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Liittää leikepöydän kuvan sivulle, kahvat koon muuttamiseen/kiertämiseen",
     "toolbar_paste_image_disabled": "Leikepöydällä saa olla vain kuva",
     "color_depth_panel_blocked_format": "Ei käytettävissä: tiedoston alkuperäinen {format}-muoto ei tue tätä värisyvyyttä.",
-    "image_mode_panel_blocked_format": "Ei käytettävissä: tiedoston alkuperäinen {format}-muoto ei tue tätä tilaa."
+    "image_mode_panel_blocked_format": "Ei käytettävissä: tiedoston alkuperäinen {format}-muoto ei tue tätä tilaa.",
+    "toolbar_macro_record_tooltip": "Tallenna",
+    "toolbar_macro_record_instruction": "Aloittaa makron tallennuksen näytetylle sivulle",
+    "toolbar_macro_play_tooltip": "Toista",
+    "toolbar_macro_play_instruction": "Toistaa tallennetun makron näytetylle sivulle",
+    "macro_read_interrupted_title": "Makro keskeytyi",
+    "macro_read_interrupted_message": "Makron toisto keskeytyi katselimen sulkemisen vuoksi. Kaikki tämän toiston jo tekemät muutokset on peruutettu."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Kirkkaus, kontrasti, värit...",
       "refresh_mosaic": "Päivitä mosaiikki (F5)",
       "create_ico": "Luo .ico-tiedosto",
-      "straighten_auto": "Suorista kuva automaattisesti"
+      "straighten_auto": "Suorista kuva automaattisesti",
+      "read_macro": "Toista makro"
     },
     "canvas_no_file": {
       "open": "Avaa CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Automaattinen suoristus käynnissä...\n{percent}%"
+    "deskewing": "Automaattinen suoristus käynnissä...\n{percent}%",
+    "macro_preparing": "Valmistellaan toistoa..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Rajausmaski"
+    },
+    "macro_record": {
+      "title": "Tallenna makro",
+      "btn_stop": "Lopeta",
+      "btn_cancel": "Peruuta",
+      "name_dialog_title": "Nimeä makro",
+      "name_label": "Nimi:",
+      "name_placeholder": "Makron nimi",
+      "description_label": "Kuvaus:",
+      "description_placeholder": "Kuvaus (valinnainen)",
+      "btn_save": "Tallenna"
+    },
+    "macro_read": {
+      "title": "Toista makro",
+      "btn_rename": "Nimeä uudelleen",
+      "btn_delete": "Poista",
+      "btn_complete": "Täydennä",
+      "btn_play": "Toista",
+      "corrupt_title": "Lukukelvoton makrotiedosto",
+      "corrupt_message": "Yhtä tai useampaa makrotiedostoa ei voitu lukea, eivätkä ne näy luettelossa: {files}",
+      "report_title": "Toisto valmis",
+      "report_message": "Onnistuneesti käsitellyt sivut: {ok}\nOsittain käsitellyt sivut: {partial}\nEpäonnistuneet sivut: {failed}",
+      "no_macros": "Yhtään makroa ei ole vielä tallennettu.",
+      "btn_pick_file": "Valitse tiedosto",
+      "pick_file_title": "Valitse makro",
+      "hint_record_from_viewer": "Makrot tallennetaan katselimesta.",
+      "report_failed_line": "{page}: epäonnistui vaiheessa « {step} »",
+      "report_partial_line": "{page}: {applied} vaihetta sovellettu, epäonnistui vaiheessa « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Makron nimi ei voi olla tyhjä.",
+      "too_long": "Makron nimi ei saa ylittää 30 merkkiä.",
+      "invalid_chars": "Tämä nimi sisältää merkkejä, jotka eivät ole sallittuja tiedostonimessä.",
+      "reserved_name": "Tämä nimi on Windowsin varaama, eikä sitä voi käyttää.",
+      "duplicate": "Tämän niminen makro on jo olemassa."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Vahvistaa tai pehmentää kuvan yksityiskohtia\nOikea napsautus vaihtaa mukautuvaan terävyyteen",
     "sharpness_mode_1": "Korostaa ääriviivoja säästäen tasaiset alueet\nOikea napsautus vaihtaa yksinkertaiseen terävyyteen",
     "crop_mode_0": "Piirrä suorakulmio säilytettävän alueen päälle ja vahvista\nHiiren oikea painike vaihtaa rajausmaskitilaan",
-    "crop_mode_1": "Rajausmaskitila: tallenna suorakulmio ja palauta se seuraavilla sivuilla\nHiiren oikea painike palaa normaalitilaan"
+    "crop_mode_1": "Rajausmaskitila: tallenna suorakulmio ja palauta se seuraavilla sivuilla\nHiiren oikea painike palaa normaalitilaan",
+    "read_macro_selected": "Toista makro valituilla sivuilla"
   },
   "help": {
     "title": "MosaicView - Käyttöohje",
@@ -1498,7 +1542,9 @@
     "scan": "Skannaa kuva",
     "scan_content": "• Napsauta „Skannaa”-painiketta (kuvakesarake, Tiedosto-valikko tai hiiren oikea painike mosaiikissa) avataksesi skannausikkunan. MosaicView ohjaa skanneriasi suoraan (WIA:n, Windowsin skannausjärjestelmän, kautta): valitse laite, tarkkuus (DPI), väritila (väri / harmaasävy / mustavalkoinen) ja napsauta sitten „Skannaa”. Skannerin täytyy olla kytkettynä, päällä ja sen ohjaimen asennettuna Windowsiin, jotta se näkyy luettelossa.\n• Viimeksi käytetty skanneri, tarkkuus ja valittu väritila muistetaan ja ehdotetaan automaattisesti uudelleen seuraavalla skannauskerralla.\n• Tarjolla on vain koko sivun skannaus ja vienti JPG-muodossa, sillä sovelluksessa on jo kaikki tarvittava kuvan jälkikäsittelyyn ja muodon muuntamiseen.\n• Skannattu kuva lisätään automaattisesti mosaiikkiin jo olemassa olevien sivujen jälkeen. Voit sen jälkeen rajata sitä, suoristaa sen, säätää sen värejä jne. kuten mitä tahansa muuta mosaiikin sivua\n• Tämä toiminto ohjaa skanneria suoraan, käyttämättä valmistajan ohjelmistoa tai näyttämättä sen omaa asetusikkunaa.\n• Koska fyysistä skanneria voi ohjata kerrallaan vain yksi yhteys, skannaus on mahdollista vain yhdessä paneelissa kerrallaan: jos skannausikkuna on auki tai skannaus on käynnissä toisessa paneelissa, ”Skannaa”-painike pysyy harmaana toisessa paneelissa, kunnes toimenpide on valmis.",
     "straighten": "Suorista sivu",
-    "straighten_content": "Automaattinen suoristus (ilman piirtämistä) on saatavilla kuvakesarakkeesta (napsauta hiiren oikealla painikkeella \"Suorista\"-kuvaketta vaihtaaksesi tilaa), Kuvat-valikosta tai hiiren oikealla painikkeella mosaiikissa: se havaitsee kallistuman itse ja suoristaa suoraan valitun sivun/sivut; kierrosta syntyneet tyhjät kulmat täytetään valkoisella. Toimii useilla sivuilla kerralla. Yhteenvetoikkuna näyttää, kuinka monta sivua suoristettiin onnistuneesti, ja luettelee ne, joissa luotettavaa kallistumaa ei havaittu.\n\nManuaalinen suoristus (viitteellisen viivan piirtäminen) tehdään pääkatselimesta, katso Katselin-osio."
+    "straighten_content": "Automaattinen suoristus (ilman piirtämistä) on saatavilla kuvakesarakkeesta (napsauta hiiren oikealla painikkeella \"Suorista\"-kuvaketta vaihtaaksesi tilaa), Kuvat-valikosta tai hiiren oikealla painikkeella mosaiikissa: se havaitsee kallistuman itse ja suoristaa suoraan valitun sivun/sivut; kierrosta syntyneet tyhjät kulmat täytetään valkoisella. Toimii useilla sivuilla kerralla. Yhteenvetoikkuna näyttää, kuinka monta sivua suoristettiin onnistuneesti, ja luettelee ne, joissa luotettavaa kallistumaa ei havaittu.\n\nManuaalinen suoristus (viitteellisen viivan piirtäminen) tehdään pääkatselimesta, katso Katselin-osio.",
+    "macro": "Makrot",
+    "macro_content": "Makrotyökalu (kuvakkeet «Tallenna»/«Toista» katselimen työkalurivillä) tallentaa sivulla tehdyn toimintosarjan ja toistaa sen identtisenä yhdellä tai useammalla muulla sivulla — katselimesta tai, useammalle sivulle, mosaiikista (Kuvat-valikko, hiiren oikea painike, kuvakesarake). Lopullinen raporttinäkymä listaa onnistuneesti, osittain tai epäonnistuneesti käsitellyt sivut sekä kunkin epäonnistumisen syyn."
   },
   "misc": {
     "file_word": "tiedosto",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Yritä Windowsin yleisellä ajurilla",
     "open_log": "Avaa skannauksen loki",
     "reveal_log": "Näytä skannauksen loki Resurssienhallinnassa"
+  },
+  "macro": {
+    "step_rotate": "Kierto: {angle}°",
+    "step_flip": "Peilaus {direction}",
+    "step_levels": "Tasot: mustapiste {black_point}, gamma {gamma}, valkopiste {white_point}, kynnysarvo {threshold}",
+    "step_crop": "Rajaus",
+    "step_straighten": "Suoristus: {angle}°",
+    "step_straighten_auto": "Automaattinen suoristus",
+    "step_clone": "Kloonaus: {stroke_points} maalattua pistettä",
+    "step_text": "Teksti: {count} lohko(a)",
+    "step_shapes": "Muodot: {count} muoto(a)",
+    "step_brightness": "Kirkkaus {brightness}, kontrasti {contrast}",
+    "step_saturation": "Kylläisyys: {saturation}",
+    "step_remove_colors": "Värien poisto: voimakkuus {intensity}",
+    "step_compression": "Pakkaus: laatu {quality}",
+    "step_sharpness": "Terävyys: {value}",
+    "step_unsharp": "Adaptiivinen terävyys: säde {radius}, voimakkuus {percent}, kynnysarvo {threshold}",
+    "step_color_depth": "Värisyvyys: {key}",
+    "step_effect": "Tehoste: {key}",
+    "step_image_mode": "Kuvatila: {key}",
+    "step_restore_color_depth": "Palauta alkuperäinen värisyvyys",
+    "step_restore_effect": "Palauta alkuperäinen tehoste",
+    "step_restore_image_mode": "Palauta alkuperäinen kuvatila",
+    "step_transparency": "Läpinäkyvyys: {count} napsautusta",
+    "step_paste_image": "Liitetty kuva: {count} kuva(a)"
   }
 }

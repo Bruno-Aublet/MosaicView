@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Kleebib lõikelaualt pildi lehele, sangad suuruse muutmiseks/pööramiseks",
     "toolbar_paste_image_disabled": "Lõikelaud tohib sisaldada ainult pilti",
     "color_depth_panel_blocked_format": "Pole saadaval: faili algne {format} vorming ei toeta seda värvisügavust.",
-    "image_mode_panel_blocked_format": "Pole saadaval: faili algne {format} vorming ei toeta seda režiimi."
+    "image_mode_panel_blocked_format": "Pole saadaval: faili algne {format} vorming ei toeta seda režiimi.",
+    "toolbar_macro_record_tooltip": "Salvesta",
+    "toolbar_macro_record_instruction": "Alustab makro salvestamist kuvataval lehel",
+    "toolbar_macro_play_tooltip": "Esita",
+    "toolbar_macro_play_instruction": "Esitab salvestatud makro kuvataval lehel",
+    "macro_read_interrupted_title": "Makro katkestati",
+    "macro_read_interrupted_message": "Makro esitamine katkestati vaaturi sulgemise tõttu. Kõik selle esituse poolt juba rakendatud muudatused on tühistatud."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Heledus, kontrast, värvid...",
       "refresh_mosaic": "Värskenda mosaiiki (F5)",
       "create_ico": "Loo .ico fail",
-      "straighten_auto": "Sirgesta pilt automaatselt"
+      "straighten_auto": "Sirgesta pilt automaatselt",
+      "read_macro": "Esita makro"
     },
     "canvas_no_file": {
       "open": "Ava CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Automaatne sirgestamine käib...\n{percent}%"
+    "deskewing": "Automaatne sirgestamine käib...\n{percent}%",
+    "macro_preparing": "Esitust ettevalmistamine..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Kärpemask"
+    },
+    "macro_record": {
+      "title": "Salvesta makro",
+      "btn_stop": "Lõpeta",
+      "btn_cancel": "Loobu",
+      "name_dialog_title": "Anna makrole nimi",
+      "name_label": "Nimi:",
+      "name_placeholder": "Makro nimi",
+      "description_label": "Kirjeldus:",
+      "description_placeholder": "Kirjeldus (valikuline)",
+      "btn_save": "Salvesta"
+    },
+    "macro_read": {
+      "title": "Esita makro",
+      "btn_rename": "Nimeta ümber",
+      "btn_delete": "Kustuta",
+      "btn_complete": "Täienda",
+      "btn_play": "Esita",
+      "corrupt_title": "Loetamatu makrofail",
+      "corrupt_message": "Üht või mitut makrofaili ei õnnestunud lugeda ja need ei ilmu loendisse: {files}",
+      "report_title": "Esitamine lõpetatud",
+      "report_message": "Edukalt töödeldud lehed: {ok}\nOsaliselt töödeldud lehed: {partial}\nEbaõnnestunud lehed: {failed}",
+      "no_macros": "Ühtegi makrot pole veel salvestatud.",
+      "btn_pick_file": "Vali fail",
+      "pick_file_title": "Vali makro",
+      "hint_record_from_viewer": "Makrod salvestatakse vaaturist.",
+      "report_failed_line": "{page}: nurjus sammul « {step} »",
+      "report_partial_line": "{page}: rakendati {applied} sammu, nurjus sammul « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "Makro nimi ei tohi olla tühi.",
+      "too_long": "Makro nimi ei tohi ületada 30 tähemärki.",
+      "invalid_chars": "See nimi sisaldab märke, mis pole failinimes lubatud.",
+      "reserved_name": "See nimi on Windowsi poolt reserveeritud ja seda ei saa kasutada.",
+      "duplicate": "Selle nimega makro on juba olemas."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Tugevdab või pehmendab pildi detaile\nParemklõps lülitumiseks adaptiivsele teravusele",
     "sharpness_mode_1": "Rõhutab kontuure, säästes ühtlasi alasid\nParemklõps lülitumiseks lihtsale teravusele",
     "crop_mode_0": "Joonistage ristkülik alale, mis tuleb säilitada, seejärel kinnitage\nParemklikk lülitab kärpemaski režiimile",
-    "crop_mode_1": "Kärpemaski režiim: jätke ristkülik meelde ja kutsuge see esile järgmistel lehekülgedel\nParemklikk naaseb tavarežiimi"
+    "crop_mode_1": "Kärpemaski režiim: jätke ristkülik meelde ja kutsuge see esile järgmistel lehekülgedel\nParemklikk naaseb tavarežiimi",
+    "read_macro_selected": "Esita makro valitud lehtedel"
   },
   "help": {
     "title": "MosaicView - Kasutusjuhend",
@@ -1498,7 +1542,9 @@
     "scan": "Skaneeri pilt",
     "scan_content": "• Klõpsake nuppu „Skaneeri” (ikoonitulp, menüü Fail või paremklõps mosaiigil), et avada skaneerimisaken. MosaicView juhib teie skannerit otse (WIA, Windowsi skaneerimissüsteemi kaudu): valige seade, eraldusvõime (DPI), värvirežiim (värviline / halltoonid / must-valge) ja klõpsake seejärel „Skaneeri”. Loendis kuvamiseks peab skanner olema ühendatud, sisse lülitatud ja selle draiver peab olema Windowsis installitud.\n• Viimati kasutatud skänner, eraldusvõime ja valitud värvirežiim jäetakse meelde ning pakutakse järgmisel skannimisel automaatselt uuesti.\n• Pakutakse ainult täislehe skannimist ja JPG-vormingus eksportimist, kuna rakendusel on juba olemas kõik vajalik pildi hilisemaks töötlemiseks ja vormingu teisendamiseks.\n• Skaneeritud pilt lisatakse automaatselt mosaiigile, juba olemasolevate lehtede järele. Seejärel saate seda kärpida, sirgeks lüüa, värve kohandada jne, nagu iga teist mosaiigi lehte\n• See funktsioon juhib skannerit otse, ilma tootja tarkvara kasutamata või selle enda seadistusakent kuvamata.\n• Kuna füüsilist skannerit saab korraga juhtida ainult üks ühendus, on skannimine võimalik korraga ainult ühes paneelis: kui ühes paneelis on skannimisaken avatud või käib skannimine, jääb nupp „Skanni” teises paneelis halliks kuni toimingu lõppemiseni.",
     "straighten": "Sirgesta leht",
-    "straighten_content": "Automaatne sirgestamine (ilma joonistamata) on saadaval ikoonide veerust (paremklõps ikoonil \"Sirgesta\" režiimi vahetamiseks), menüüst Pildid, või paremklõpsuga mosaiigil: see tuvastab kaldenurga ise ja sirgestab otse valitud lehekülje/leheküljed; pööramisest tekkinud tühjad nurgad täidetakse valgega. Töötab mitme leheküljega korraga. Kokkuvõtteaken näitab, mitu lehekülge sirgestati edukalt, ja loetleb need, kus usaldusväärset kaldenurka ei tuvastatud.\n\nKäsitsi sirgestamine (võrdlusjoone joonistamine) toimub peavaatajast, vaadake jaotist Vaataja."
+    "straighten_content": "Automaatne sirgestamine (ilma joonistamata) on saadaval ikoonide veerust (paremklõps ikoonil \"Sirgesta\" režiimi vahetamiseks), menüüst Pildid, või paremklõpsuga mosaiigil: see tuvastab kaldenurga ise ja sirgestab otse valitud lehekülje/leheküljed; pööramisest tekkinud tühjad nurgad täidetakse valgega. Töötab mitme leheküljega korraga. Kokkuvõtteaken näitab, mitu lehekülge sirgestati edukalt, ja loetleb need, kus usaldusväärset kaldenurka ei tuvastatud.\n\nKäsitsi sirgestamine (võrdlusjoone joonistamine) toimub peavaatajast, vaadake jaotist Vaataja.",
+    "macro": "Makrod",
+    "macro_content": "Makrotööriist (vaaturi tööriistariba ikoonid «Salvesta»/«Esita») salvestab lehel tehtud toimingute jada ja esitab selle identsena ühel või mitmel teisel lehel — vaaturist või mitme lehe puhul mosaiigist (menüü Pildid, paremklõps, ikoonitulp). Lõplik aruandeaken loetleb lehed, mis töödeldi edukalt, osaliselt või ebaõnnestunult, koos iga ebaõnnestumise põhjusega."
   },
   "misc": {
     "file_word": "fail",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Proovi Windowsi üldise draiveriga",
     "open_log": "Ava skannimislogi",
     "reveal_log": "Näita skannimislogi Exploreris"
+  },
+  "macro": {
+    "step_rotate": "Pööramine: {angle}°",
+    "step_flip": "Peegeldus {direction}",
+    "step_levels": "Tasemed: mustpunkt {black_point}, gamma {gamma}, valgepunkt {white_point}, lävi {threshold}",
+    "step_crop": "Kärpimine",
+    "step_straighten": "Sirgestamine: {angle}°",
+    "step_straighten_auto": "Automaatne sirgestamine",
+    "step_clone": "Kloonimine: {stroke_points} punkti värvitud",
+    "step_text": "Tekst: {count} plokk(i)",
+    "step_shapes": "Kujundid: {count} kujund(it)",
+    "step_brightness": "Heledus {brightness}, kontrast {contrast}",
+    "step_saturation": "Küllastus: {saturation}",
+    "step_remove_colors": "Värvide eemaldamine: intensiivsus {intensity}",
+    "step_compression": "Tihendamine: kvaliteet {quality}",
+    "step_sharpness": "Teravus: {value}",
+    "step_unsharp": "Adaptiivne teravus: raadius {radius}, tugevus {percent}, lävi {threshold}",
+    "step_color_depth": "Värvisügavus: {key}",
+    "step_effect": "Efekt: {key}",
+    "step_image_mode": "Pildirežiim: {key}",
+    "step_restore_color_depth": "Taasta algne värvisügavus",
+    "step_restore_effect": "Taasta algne efekt",
+    "step_restore_image_mode": "Taasta algne pildirežiim",
+    "step_transparency": "Läbipaistvus: {count} klõps(u)",
+    "step_paste_image": "Kleebitud pilt: {count} pilt(i)"
   }
 }

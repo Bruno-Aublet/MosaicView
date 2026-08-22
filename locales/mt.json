@@ -165,7 +165,13 @@
     "toolbar_paste_image_instruction": "Iwaħħal l-istampa tal-clipboard fuq il-paġna, manek biex tibdel id-daqs/iddur",
     "toolbar_paste_image_disabled": "Il-clipboard għandu jkun fih biss stampa",
     "color_depth_panel_blocked_format": "Mhux disponibbli: il-format oriġinali {format} tal-fajl ma jappoġġax din il-fond tal-kulur.",
-    "image_mode_panel_blocked_format": "Mhux disponibbli: il-format oriġinali {format} tal-fajl ma jappoġġax din il-modalità."
+    "image_mode_panel_blocked_format": "Mhux disponibbli: il-format oriġinali {format} tal-fajl ma jappoġġax din il-modalità.",
+    "toolbar_macro_record_tooltip": "Irrekordja",
+    "toolbar_macro_record_instruction": "Jibda r-reġistrazzjoni ta' makro fuq il-paġna murija",
+    "toolbar_macro_play_tooltip": "Ilgħab",
+    "toolbar_macro_play_instruction": "Idoqq makro rreġistrat fuq il-paġna murija",
+    "macro_read_interrupted_title": "Il-makro ġie interrott",
+    "macro_read_interrupted_message": "Ir-riproduzzjoni tal-makro ġiet interrotta minħabba l-għeluq tal-viewer. Il-bidliet kollha diġà applikati minn din ir-riproduzzjoni ġew annullati."
   },
   "context_menu": {
     "viewer": {
@@ -220,7 +226,8 @@
       "adjustments": "Luminożità, kontrast, kuluri...",
       "refresh_mosaic": "Aġġorna l-mużajk (F5)",
       "create_ico": "Oħloq fajl .ico",
-      "straighten_auto": "Iddritta l-immaġni awtomatikament"
+      "straighten_auto": "Iddritta l-immaġni awtomatikament",
+      "read_macro": "Idoqq makro"
     },
     "canvas_no_file": {
       "open": "Iftaħ CBZ/CBR/CB7/CBT/PDF",
@@ -897,7 +904,8 @@
     "zip_indicator_stored": "ZIP: 0",
     "zip_indicator_deflated": "ZIP: 1",
     "zip_indicator_na": "ZIP: --",
-    "deskewing": "Tiddirizzar awtomatiku għaddej...\n{percent}%"
+    "deskewing": "Tiddirizzar awtomatiku għaddej...\n{percent}%",
+    "macro_preparing": "Qed titħejja r-riproduzzjoni..."
   },
   "dialogs": {
     "convert": {
@@ -1340,6 +1348,41 @@
     },
     "crop_mask": {
       "label": "Maskra tal-qtugħ"
+    },
+    "macro_record": {
+      "title": "Irrekordja makro",
+      "btn_stop": "Lesta",
+      "btn_cancel": "Ikkanċella",
+      "name_dialog_title": "Semmi l-makro",
+      "name_label": "Isem:",
+      "name_placeholder": "Isem tal-makro",
+      "description_label": "Deskrizzjoni:",
+      "description_placeholder": "Deskrizzjoni (mhux obbligatorja)",
+      "btn_save": "Issejvja"
+    },
+    "macro_read": {
+      "title": "Idoqq makro",
+      "btn_rename": "Semmi mill-ġdid",
+      "btn_delete": "Ħassar",
+      "btn_complete": "Ikkompleta",
+      "btn_play": "Ilgħab",
+      "corrupt_title": "Fajl tal-makro illeġġibbli",
+      "corrupt_message": "Fajl wieħed jew aktar tal-makro ma setgħux jinqraw u ma jidhrux fil-lista: {files}",
+      "report_title": "Ir-riproduzzjoni tlestiet",
+      "report_message": "Paġni pproċessati b'suċċess: {ok}\nPaġni pproċessati parzjalment: {partial}\nPaġni li fallew: {failed}",
+      "no_macros": "Għadha ma ġiet irrekordjata l-ebda makro.",
+      "btn_pick_file": "Agħżel fajl",
+      "pick_file_title": "Agħżel makro",
+      "hint_record_from_viewer": "Il-makros jiġu rrekordjati mill-viewer.",
+      "report_failed_line": "{page}: falla fil-pass « {step} »",
+      "report_partial_line": "{page}: {applied} pass(i) applikati, falla fi « {step} »"
+    },
+    "macro_name_error": {
+      "empty": "L-isem tal-makro ma jistax ikun vojt.",
+      "too_long": "L-isem tal-makro m'għandux jaqbeż it-30 karattru.",
+      "invalid_chars": "Dan l-isem fih karattri li mhumiex permessi f'isem ta' fajl.",
+      "reserved_name": "Dan l-isem huwa riżervat minn Windows u ma jistax jintuża.",
+      "duplicate": "Diġà jeżisti makro b'dan l-isem."
     }
   },
   "tooltip": {
@@ -1407,7 +1450,8 @@
     "sharpness_mode_0": "Issaħħaħ jew tirħi d-dettalji tal-immaġini\nIklikkja bil-lemin biex taqleb għall-ħidra adattiva",
     "sharpness_mode_1": "Tenfasizza l-konturi filwaqt li tħares iż-żoni uniformi\nIklikkja bil-lemin biex taqleb għall-ħidra sempliċi",
     "crop_mode_0": "Iġbed rettangolu fuq iż-żona li trid iżżomm, imbagħad ikkonferma\nKlikk tal-lemin biex taqleb għall-mod tal-maskra tal-qtugħ",
-    "crop_mode_1": "Mod tal-maskra tal-qtugħ: żomm rettangolu f'moħħok u seħħel lura fil-paġni li jmiss\nKlikk tal-lemin biex tirritorna għall-mod normali"
+    "crop_mode_1": "Mod tal-maskra tal-qtugħ: żomm rettangolu f'moħħok u seħħel lura fil-paġni li jmiss\nKlikk tal-lemin biex tirritorna għall-mod normali",
+    "read_macro_selected": "Idoqq makro fuq il-paġni magħżula"
   },
   "help": {
     "title": "MosaicView - Manwal tal-utent",
@@ -1498,7 +1542,9 @@
     "scan": "Skennja immaġni",
     "scan_content": "• Ikklikkja l-buttuna \"Skennja\" (kolonna tal-ikoni, menu Fajl, jew klikk bil-lemin fuq il-mosajk) biex tiftaħ it-tieqa tal-iskennjar. MosaicView jimmaniġġja l-iskener tiegħek direttament (permezz ta' WIA, is-sistema ta' skennjar ta' Windows): agħżel it-tagħmir, ir-riżoluzzjoni (DPI), il-modalità tal-kulur (kulur / skala griża / iswed u abjad), imbagħad ikklikkja \"Skennja\". Skener irid ikun imqabbad, mixgħul, u s-sewwieq tiegħu installat fuq Windows biex jidher fil-lista.\n• L-iskener, ir-riżoluzzjoni u l-mod tal-kulur użati l-aħħar jiġu mfakkra u proposti awtomatikament mill-ġdid fl-iskennjar li jmiss.\n• Jiġu offruti biss l-iskennjar ta' paġna sħiħa u l-esportazzjoni bħala JPG, peress li l-applikazzjoni diġà għandha kulma jinħtieġ għar-ritokkar u l-konverżjoni tal-format tal-immaġni wara.\n• L-immaġni skennjata tiżdied awtomatikament mal-mosajk, wara l-paġni li diġà jeżistu. Imbagħad tista' taqtagħha, tiddrittaha, taġġusta l-kuluri tagħha, eċċ. bħal kwalunkwe paġna oħra tal-mosajk\n• Din il-funzjoni timmaniġġja l-iskener direttament, mingħajr ma tgħaddi mis-softwer tal-manifattur jew turi t-tieqa ta' konfigurazzjoni tiegħu stess.\n• Peress li skener fiżiku jista' jiġi kkontrollat biss minn konnessjoni waħda kull darba, l-iskennjar huwa possibbli biss f'panel wieħed kull darba: jekk tieqa tal-iskennjar tkun miftuħa jew skennjar ikun għaddej f'panel wieħed, il-buttuna \"Skennja\" tibqa' griża fil-panel l-ieħor sakemm l-operazzjoni tispiċċa.",
     "straighten": "Iddritta paġna",
-    "straighten_content": "L-iddritjar awtomatiku (mingħajr ma tiġbed xejn) huwa disponibbli mill-kolonna tal-ikoni (klikk tal-lemin fuq l-ikona \"Iddritja\" biex tibdel il-modalità), il-menu Stampi, jew klikk tal-lemin fuq il-mosaic: jinduna waħdu bl-inklinazzjoni u jiddritja direttament il-paġna/paġni magħżula; l-irkejjen vojta maħluqa mir-rotazzjoni jimtlew bl-abjad. Jaħdem fuq diversi paġni f'daqqa. Tieqa ta' sommarju turi kemm paġni ġew iddritjati b'suċċess u telenka dawk fejn ma nstabet l-ebda inklinazzjoni affidabbli.\n\nL-iddritjar manwali (li tiġbed linja ta' referenza) isir mill-viewer prinċipali, ara t-taqsima Viewer."
+    "straighten_content": "L-iddritjar awtomatiku (mingħajr ma tiġbed xejn) huwa disponibbli mill-kolonna tal-ikoni (klikk tal-lemin fuq l-ikona \"Iddritja\" biex tibdel il-modalità), il-menu Stampi, jew klikk tal-lemin fuq il-mosaic: jinduna waħdu bl-inklinazzjoni u jiddritja direttament il-paġna/paġni magħżula; l-irkejjen vojta maħluqa mir-rotazzjoni jimtlew bl-abjad. Jaħdem fuq diversi paġni f'daqqa. Tieqa ta' sommarju turi kemm paġni ġew iddritjati b'suċċess u telenka dawk fejn ma nstabet l-ebda inklinazzjoni affidabbli.\n\nL-iddritjar manwali (li tiġbed linja ta' referenza) isir mill-viewer prinċipali, ara t-taqsima Viewer.",
+    "macro": "Makros",
+    "macro_content": "L-għodda tal-Makros (l-ikoni «Irrekordja»/«Ilgħab» fil-barra tal-għodod tal-viewer) tirrekordja sekwenza ta' azzjonijiet li saru fuq paġna u terġa' tilgħabha identikament fuq waħda jew aktar oħra — mill-viewer jew, għal bosta paġni, mill-mosajk (menu Immaġnijiet, klikk tal-lemin, kolonna tal-ikoni). Tieqa ta' rapport finali telenka l-paġni pproċessati b'suċċess, parzjalment jew li fallew, bir-raġuni ta' kull falliment."
   },
   "misc": {
     "file_word": "fajl",
@@ -2050,5 +2096,30 @@
     "escl_fallback_button": "Ipprova bid-driver ġeneriku ta' Windows",
     "open_log": "Iftaħ il-log tal-iskennjar",
     "reveal_log": "Uri l-log tal-iskennjar fl-Explorer"
+  },
+  "macro": {
+    "step_rotate": "Rotazzjoni: {angle}°",
+    "step_flip": "Mera {direction}",
+    "step_levels": "Livelli: punt iswed {black_point}, gamma {gamma}, punt abjad {white_point}, limitu {threshold}",
+    "step_crop": "Qtugħ",
+    "step_straighten": "Iddritjar: {angle}°",
+    "step_straighten_auto": "Iddritjar awtomatiku",
+    "step_clone": "Klonazzjoni: {stroke_points} punt(i) miżbugħa",
+    "step_text": "Test: {count} blokk(i)",
+    "step_shapes": "Forom: {count} forma/forom",
+    "step_brightness": "Dawl {brightness}, kuntrast {contrast}",
+    "step_saturation": "Saturazzjoni: {saturation}",
+    "step_remove_colors": "Tneħħija tal-kuluri: intensità {intensity}",
+    "step_compression": "Kompressjoni: kwalità {quality}",
+    "step_sharpness": "Ħruf: {value}",
+    "step_unsharp": "Ħruf adattiv: raġġ {radius}, saħħa {percent}, limitu {threshold}",
+    "step_color_depth": "Fond tal-kulur: {key}",
+    "step_effect": "Effett: {key}",
+    "step_image_mode": "Modalità tal-immaġni: {key}",
+    "step_restore_color_depth": "Irrestawra l-fond tal-kulur oriġinali",
+    "step_restore_effect": "Irrestawra l-effett oriġinali",
+    "step_restore_image_mode": "Irrestawra l-modalità tal-immaġni oriġinali",
+    "step_transparency": "Trasparenza: {count} klikk",
+    "step_paste_image": "Immaġni mwaħħla: {count} immaġni"
   }
 }

@@ -56,10 +56,8 @@ Déclenchement : `_on_loading_finished()` (appelé après tout chargement, y com
 
 Deux actions exposées à trois endroits (menu Fichier de la menubar, menu contextuel canvas avec fichier ouvert, menu contextuel sur une vignette) :
 
-- **Supprimer le marque-page** (`delete_bookmark` → `panel_widget.py::_delete_current_bookmark`, ligne ~1394) : actif seulement si `cfg.get_bookmark(state.current_file)` n'est pas `None`.
-- **Supprimer tous les marque-pages** (`delete_all_bookmarks` → `_delete_all_bookmarks`, ligne ~1404) : actif seulement si `cfg.has_any_bookmark()`.
-
-Les deux appellent ensuite `self._on_bookmark_changed(None)` (ligne ~1516) pour synchroniser `_is_bookmarked=False` sur toutes les entrées et rafraîchir l'overlay.
+- **Supprimer le marque-page** (`delete_bookmark` → `panel_widget.py::_delete_current_bookmark`, ligne ~1394) : actif seulement si `cfg.get_bookmark(state.current_file)` n'est pas `None`. Après suppression en config, rafraîchit l'overlay (`_on_bookmark_changed(None)`) sur **tous les panneaux ouverts dont `current_file` correspond au fichier concerné** (via `self._main_window._all_panels()`), pas seulement le panneau d'où l'action a été lancée.
+- **Supprimer tous les marque-pages** (`delete_all_bookmarks` → `_delete_all_bookmarks`, ligne ~1404) : actif seulement si `cfg.has_any_bookmark()`. Après `cfg.clear_bookmarks()`, rafraîchit l'overlay sur **tous les panneaux ouverts sans condition** (chaque marque-page en config étant effacé, peu importe quel comics est ouvert dans quel panneau).
 
 Call sites de la logique d'activation/désactivation (dupliquée trois fois, à garder synchronisée si le comportement change) :
 - `menubar_qt.py` ligne ~276 (menu Fichier)
@@ -70,5 +68,5 @@ Call sites de la logique d'activation/désactivation (dupliquée trois fois, à 
 
 - **Ne pas confondre `page_idx` (position parmi les images) et l'index brut dans `images_data`** — toujours passer par `img_indices = [i for i, e in enumerate(...) if e.get("is_image")]` pour convertir dans un sens ou l'autre.
 - **Le garde-fou `_bookmark_popup_shown_for` doit être réinitialisé à chaque fermeture réelle du fichier**, jamais lors d'un simple rechargement de mosaïque (import, Ctrl+V, drop) — sinon soit le popup réapparaît de façon intempestive à chaque rechargement, soit il ne réapparaît jamais après une fermeture/réouverture. Point d'ajustement unique : `_close_bookmark_popup()`.
-- **État par panneau vs config globale** : `current_file`, `_bookmark_popup`, `_bookmark_popup_shown_for` sont propres à chaque `PanelWidget` ; le dict `bookmarks` en config est partagé entre les deux panneaux. Un marque-page posé dans un panneau est donc immédiatement visible dans l'autre si le même fichier y est ouvert.
+- **État par panneau vs config globale** : `current_file`, `_bookmark_popup`, `_bookmark_popup_shown_for` sont propres à chaque `PanelWidget` ; le dict `bookmarks` en config est partagé entre les deux panneaux. La config seule ne suffit pas à synchroniser l'affichage : l'overlay visuel (`_is_bookmarked` + `refresh_bookmark_overlay`) est un état en mémoire propre à chaque panneau, donc toute suppression de marque-page doit explicitement rafraîchir l'overlay des autres panneaux concernés (voir section "Suppression manuelle" ci-dessus) — se contenter d'écrire en config sans le faire laisse le ruban affiché à tort dans l'autre panneau jusqu'à un rechargement.
 - **Diagnostiquer un bug de popup qui n'apparaît pas** : instrumenter avec des prints (règle CLAUDE.md, jamais de fix à l'aveugle) dans `_on_loading_finished`, `_maybe_show_bookmark_popup` (chaque `return` anticipé) et `ArchiveLoader.load`/`_on_finished` — utile pour distinguer un vrai double-chargement d'un simple garde-fou qui bloque à tort.

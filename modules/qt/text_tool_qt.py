@@ -1585,7 +1585,8 @@ class TextViewerMixin:
             return
         self.perform_text()
 
-    def perform_text(self):
+    def perform_text(self, skip_history: bool = False) -> bool:
+        """skip_history : saute les 2 save_state, laissés à l'appelant."""
         import io as _io
         from modules.qt import state as _state_module
         from modules.qt.entries import save_image_to_bytes
@@ -1600,10 +1601,11 @@ class TextViewerMixin:
         try:
             entry = state.images_data[self.current_idx]
             if not entry.get('bytes'):
-                dlg = MsgDialog(self._center_parent, "messages.errors.text_failed.title",
-                                "messages.errors.text_failed.title")
-                dlg.show_nonmodal()
-                return
+                if not skip_history:
+                    dlg = MsgDialog(self._center_parent, "messages.errors.text_failed.title",
+                                    "messages.errors.text_failed.title")
+                    dlg.show_nonmodal()
+                return False
 
             base_img_raw = Image.open(_io.BytesIO(entry['bytes']))
             # Mode d'origine (pour la reconversion en sortie plus bas) — posé
@@ -1615,7 +1617,7 @@ class TextViewerMixin:
                 entry['_orig_mode'] = base_img_raw.mode
             base_img = base_img_raw.convert('RGBA')
 
-            if save_state:
+            if save_state and not skip_history:
                 save_state()
 
             composed = self._text_render_all_blocks(base_img)
@@ -1647,7 +1649,7 @@ class TextViewerMixin:
             _pidx = get_page_image_index(state, entry)
             if _pidx is not None:
                 update_page_entries_in_xml_data(state, [(_pidx, entry)])
-            if save_state:
+            if save_state and not skip_history:
                 save_state(force=True)
 
             real_idx = entry.get("_real_idx")
@@ -1660,6 +1662,23 @@ class TextViewerMixin:
                 render_mosaic()
             if update_btn:
                 update_btn()
+
+            blocks_payload = []
+            if not skip_history:
+                # HTML riche + géométrie en pixels absolus de chaque bloc,
+                # capturés AVANT clear_text_blocks() ci-dessous. Même filtre
+                # is_empty() que _text_render_all_blocks ci-dessus.
+                blocks_payload = [
+                    {
+                        "html": b.html(),
+                        "img_x": b.img_pos.x(), "img_y": b.img_pos.y(),
+                        "top_y_offset_img": b.top_y_offset_img or 0,
+                        "display_scale": b.display_scale,
+                        "max_width": b.overlay._max_width,
+                    }
+                    for b in self._canvas._text_blocks
+                    if not b.is_empty()
+                ]
 
             self._canvas.clear_text_blocks()
             self._toolbar._text_panel.set_visible_for_tool(self._toolbar.active_tool)
@@ -1674,11 +1693,43 @@ class TextViewerMixin:
             self._text_blocks_by_page.pop(self.current_idx, None)
             self.display_image()
             self._toolbar.refresh_undo_redo_state()
+            if blocks_payload:
+                self._macro_record_step(
+                    "text", {"blocks": blocks_payload},
+                    "macro.step_text", {"count": len(blocks_payload)},
+                )
+            return True
 
         except Exception:
+            if skip_history:
+                return False
             dlg = MsgDialog(self._center_parent, "messages.errors.text_failed.title",
                             "messages.errors.text_failed.title")
             dlg.show_nonmodal()
+            return False
+
+    def perform_text_step(self, params: dict) -> bool:
+        """Rejoue les blocs de texte depuis un payload de macro : reconstruit
+        des _TextBlock/_RichTextOverlay (jamais affichés) injectés dans
+        _canvas._text_blocks, puis délègue à perform_text() pour le rendu et
+        le commit."""
+        from modules.qt.text_tool_qt import _RichTextOverlay, _TextBlock
+
+        blocks = params.get("blocks")
+        if not blocks:
+            return False
+
+        self._canvas.clear_text_blocks()
+        for b in blocks:
+            overlay = _RichTextOverlay(self._canvas)
+            overlay.setHtml(b["html"])
+            overlay.set_max_width(b.get("max_width", -1))
+            block = _TextBlock(overlay, b["img_x"], b["img_y"],
+                                display_scale=b.get("display_scale", 1.0))
+            block.top_y_offset_img = b.get("top_y_offset_img", 0)
+            self._canvas._text_blocks.append(block)
+
+        return self.perform_text(skip_history=True)
 
     # ── Persistance par page ──────────────────────────────────────────────────
 

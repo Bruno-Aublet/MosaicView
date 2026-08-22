@@ -247,12 +247,17 @@ def compute_auto_levels(image_bytes):
 # Application réelle aux images de la mosaïque
 # ─────────────────────────────────────────────────────────────────────────────
 
-def apply_image_adjustments(selected_entries, settings, callbacks=None):
+def apply_image_adjustments(selected_entries, settings, callbacks=None, skip_history=False):
     """Applique les ajustements aux images sélectionnées et met à jour state.
 
     callbacks : dict avec les clés :
       save_state      : callable
       render_mosaic   : callable
+
+    skip_history=True : saute les 2 save_state ci-dessous, laissés à la charge
+    de l'appelant (lecture headless d'une macro, macro_engine.py — un seul
+    save_state global pour toute la lecture plutôt qu'un par outil). Le reste
+    du traitement (formule PIL, invalidation de caches) est inchangé.
     """
     from modules.qt.entries import save_image_to_bytes
 
@@ -265,7 +270,7 @@ def apply_image_adjustments(selected_entries, settings, callbacks=None):
         return
 
     # Sauvegarde l'état AVANT modification (pour le undo) — sans force, évite le doublon
-    if save_state:
+    if save_state and not skip_history:
         save_state()
 
     for entry in selected_entries:
@@ -310,7 +315,7 @@ def apply_image_adjustments(selected_entries, settings, callbacks=None):
         update_page_entries_in_xml_data(state, pairs)
 
     # Sauvegarde l'état APRÈS modification (pour le redo)
-    if save_state:
+    if save_state and not skip_history:
         save_state(force=True)
 
     if render:

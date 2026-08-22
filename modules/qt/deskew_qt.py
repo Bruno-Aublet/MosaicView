@@ -271,17 +271,15 @@ def deskew_selected_qt(callbacks):
     if not state.selected_indices:
         return
 
-    entries = [
-        state.images_data[idx]
-        for idx in sorted(state.selected_indices)
-        if idx < len(state.images_data) and state.images_data[idx].get("is_image")
-        and not state.images_data[idx].get("is_corrupted")
-    ]
+    entries = []
+    for idx in sorted(state.selected_indices):
+        if idx < len(state.images_data) and state.images_data[idx].get("is_image") \
+                and not state.images_data[idx].get("is_corrupted"):
+            entry = state.images_data[idx]
+            entry["_real_idx"] = idx
+            entries.append(entry)
     if not entries:
         return
-
-    for i, entry in enumerate(entries):
-        entry["_real_idx"] = sorted(state.selected_indices)[i]
 
     callbacks['save_state']()
     _run_deskew(entries, callbacks)

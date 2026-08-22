@@ -22,6 +22,7 @@ from modules.qt.resize_dialog_qt       import reduce_selected_images_size_qt as 
 from modules.qt.merge_dialog_qt        import open_merge_window as _open_merge_window_qt
 from modules.qt.ico_creator_qt         import create_ico_from_selected as _create_ico_qt
 from modules.qt.deskew_qt              import deskew_selected_qt as _deskew_selected_qt
+from modules.qt.macro_tool_qt          import read_macro_on_selection_qt as _read_macro_on_selection_qt
 from modules.qt.web_import_qt          import show_web_import_dialog as _show_web_import_dialog
 from modules.qt.scan_dialog_qt         import (
     show_scan_dialog as _show_scan_dialog,
@@ -103,6 +104,7 @@ def build_menubar_callbacks(mw) -> dict:
         "flip_selected_vertical":   lambda: _flip_selected_qt('vertical',   mw._image_transforms_callbacks()),
         "reduce_selected_images_size":   lambda: _resize_qt(mw, mw._resize_callbacks()),
         "deskew_selected":               lambda: _deskew_selected_qt(mw._deskew_callbacks()),
+        "read_macro_selected":           lambda: _read_macro_on_selection_qt(mw, mw._image_viewer_callbacks()),
         "convert_selected_images":  lambda: _convert_selected_images_qt(mw, mw._conversion_callbacks()),
         "open_merge_window":        lambda: _open_merge_window_qt(mw, mw._merge_callbacks()),
         "split_page":               lambda: _split_page_qt(mw, mw._split_page_callbacks()),
