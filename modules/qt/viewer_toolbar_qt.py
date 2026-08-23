@@ -30,7 +30,7 @@ contraste suffisant par leur propre couleur/contour.
 
 from PIL import Image, ImageEnhance
 
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QFrame, QLabel
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QFrame, QLabel
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QPixmap, QColor
 
@@ -291,9 +291,9 @@ class _ViewerToolbar(QWidget):
     le layout (son apparition/disparition ne redimensionne jamais l'image).
 
     Auto-masquée après 3 secondes d'inactivité (état "aucun outil" ou outil actif :
-    même règle), réapparaît au survol des 10% supérieurs du canvas. Un seul outil
-    actif à la fois ; re-cliquer sur l'icône active désélectionne (retour à
-    "aucun outil")."""
+    même règle), réapparaît au survol de la zone haute du canvas (voir
+    _hover_zone_height). Un seul outil actif à la fois ; re-cliquer sur l'icône
+    active désélectionne (retour à "aucun outil")."""
 
     HOVER_ZONE_RATIO = 0.10
     AUTO_HIDE_MS = 3000
@@ -308,162 +308,73 @@ class _ViewerToolbar(QWidget):
         self._viewer = viewer
         self.active_tool: str | None = None
         # True tant que la souris est dans une zone protégée (barre, panneau
-        # d'options, ou 10% supérieurs du canvas) — évite de redémarrer le
-        # timer à CHAQUE mouvement hors zone : resume_hide() ne doit
+        # d'options, ou la zone haute du canvas, voir _hover_zone_height) —
+        # évite de redémarrer le timer à CHAQUE mouvement hors zone : resume_hide() ne doit
         # s'exécuter qu'une seule fois, à la sortie réelle, pas en continu
         # tant qu'on reste hors zone.
         self._in_protected_zone = False
 
-        layout = QHBoxLayout(self)
-        layout.setContentsMargins(6, 4, 6, 4)
-        layout.setSpacing(4)
+        # Layout à lignes (voir _rewrap_groups) — lignes pré-créées, jamais
+        # détruites, seulement masquées quand inutilisées.
+        self._root_layout = QVBoxLayout(self)
+        self._root_layout.setContentsMargins(6, 4, 6, 4)
+        self._root_layout.setSpacing(4)
+        self._row_spacing = 6
 
         self._buttons: dict[str, _ToolButton] = {}
-        crop_btn = _ToolButton(self, "BTN_Crop.png", tool_id="crop")
-        layout.addWidget(crop_btn)
-        self._buttons["crop"] = crop_btn
+        self._groups: list[QFrame] = []
+        self._rows: list[QWidget] = []
+        self._row_layouts: list[QHBoxLayout] = []
 
-        straighten_btn = _ToolButton(self, "BTN_Straighten.png", tool_id="straighten")
-        layout.addWidget(straighten_btn)
-        self._buttons["straighten"] = straighten_btn
+        def _new_group() -> tuple[QFrame, QHBoxLayout]:
+            # Nom de groupe = repère interne, jamais affiché dans l'UI.
+            frame = QFrame()
+            frame_layout = QHBoxLayout(frame)
+            frame_layout.setContentsMargins(3, 2, 3, 2)
+            frame_layout.setSpacing(2)
+            self._groups.append(frame)
+            return frame, frame_layout
 
-        # Icône "rotation" : icône fixe, PAS de bi-mode, PAS de grisage
-        # conditionnel — 4 boutons d'action instantanée dans son panneau
-        # flottant, aucune nouvelle logique métier (réutilise
-        # rotate_entry_data/flip_entry_data telles quelles, voir
-        # rotation_tool_qt.py).
-        rotation_btn = _ToolButton(self, "BTN_Rotation.png", tool_id="rotation")
-        layout.addWidget(rotation_btn)
-        self._buttons["rotation"] = rotation_btn
+        def _add_tool(group_layout: QHBoxLayout, icon_filename: str, tool_id: str) -> _ToolButton:
+            btn = _ToolButton(self, icon_filename, tool_id=tool_id)
+            group_layout.addWidget(btn)
+            self._buttons[tool_id] = btn
+            return btn
 
-        clone_btn = _ToolButton(self, "BTN_Clone_Zone.png", tool_id="clone")
-        layout.addWidget(clone_btn)
-        self._buttons["clone"] = clone_btn
+        # Transformation de page.
+        self._transform_group, transform_layout = _new_group()
+        _add_tool(transform_layout, "BTN_Crop.png", "crop")
+        _add_tool(transform_layout, "BTN_Straighten.png", "straighten")
+        _add_tool(transform_layout, "BTN_Rotation.png", "rotation")
 
-        text_btn = _ToolButton(self, "BTN_Text.png", tool_id="text")
-        layout.addWidget(text_btn)
-        self._buttons["text"] = text_btn
+        # Ajout de contenu.
+        self._content_group, content_layout = _new_group()
+        _add_tool(content_layout, "BTN_Shapes.png", "shapes")
+        _add_tool(content_layout, "BTN_PiP.png", "paste_image")
+        _add_tool(content_layout, "BTN_Clone_Zone.png", "clone")
+        _add_tool(content_layout, "BTN_Text.png", "text")
 
-        # Icône bi-mode sharpness/unsharp :
-        # icône par défaut = sharpness ; clic droit bascule vers unsharp et
-        # change l'icône affichée (voir _on_tool_right_clicked et
-        # _toggle_sharpness_mode). Les deux modes sont pleinement implémentés
-        # (voir sharpness_tool_qt.py::_SharpnessOptionsPanel/_UnsharpOptionsPanel).
-        sharpness_btn = _ToolButton(self, "BTN_Sharpness.png", tool_id="sharpness")
-        layout.addWidget(sharpness_btn)
-        self._buttons["sharpness"] = sharpness_btn
+        # Retouche pixel (tonalité/couleur).
+        self._pixel_group, pixel_layout = _new_group()
+        _add_tool(pixel_layout, "BTN_Brightness.png", "brightness")
+        _add_tool(pixel_layout, "BTN_Levels.png", "levels")
+        _add_tool(pixel_layout, "BTN_Saturation.png", "saturation")
+        _add_tool(pixel_layout, "BTN_Remove_Colors.png", "remove_colors")
+        _add_tool(pixel_layout, "BTN_Effects.png", "effects")
 
-        # Icône fixe, PAS de bi-mode (contrairement à sharpness/unsharp) — les 2
-        # réglettes luminosité/contraste partagent un seul panneau flottant
-        # (voir brightness_tool_qt.py::_BrightnessOptionsPanel).
-        brightness_btn = _ToolButton(self, "BTN_Brightness.png", tool_id="brightness")
-        layout.addWidget(brightness_btn)
-        self._buttons["brightness"] = brightness_btn
+        # Netteté / qualité technique.
+        self._technical_group, technical_layout = _new_group()
+        sharpness_btn = _add_tool(technical_layout, "BTN_Sharpness.png", "sharpness")
+        _add_tool(technical_layout, "BTN_Transparency.png", "transparency")
+        _add_tool(technical_layout, "BTN_Compression.png", "compression")
 
-        # Icône fixe, PAS de bi-mode — une seule réglette (même famille que
-        # sharpness, contrairement à brightness qui a 2 réglettes ; voir
-        # saturation_tool_qt.py::_SaturationOptionsPanel).
-        saturation_btn = _ToolButton(self, "BTN_Saturation.png", tool_id="saturation")
-        layout.addWidget(saturation_btn)
-        self._buttons["saturation"] = saturation_btn
+        # Structure de l'image.
+        self._structure_group, structure_layout = _new_group()
+        _add_tool(structure_layout, "BTN_Color_Depth.png", "color_depth")
+        _add_tool(structure_layout, "BTN_Image_Mode.png", "image_mode")
 
-        # Icône fixe, PAS de bi-mode — une seule réglette (même famille que
-        # saturation/sharpness, mais bornes 0..100 au lieu de -100..+100 ;
-        # voir remove_colors_tool_qt.py::_RemoveColorsOptionsPanel).
-        remove_colors_btn = _ToolButton(self, "BTN_Remove_Colors.png", tool_id="remove_colors")
-        layout.addWidget(remove_colors_btn)
-        self._buttons["remove_colors"] = remove_colors_btn
-
-        # Icône fixe, PAS de bi-mode — une seule réglette (même famille que
-        # saturation/sharpness/remove_colors), MAIS grisée/désactivée quand la
-        # page affichée n'est pas JPEG/WEBP/AVIF (voir compression_tool_qt.py,
-        # _ToolButton.set_enabled_state, et
-        # ImageViewer._refresh_compression_button_state).
-        compression_btn = _ToolButton(self, "BTN_Compression.png", tool_id="compression")
-        layout.addWidget(compression_btn)
-        self._buttons["compression"] = compression_btn
-
-        # Icône fixe, PAS de bi-mode — mais SEUL outil de ce groupe avec un
-        # vrai geste souris sur le canvas (2 pipettes), contrairement aux
-        # autres modes d'ajustement (réglette(s) pure(s)) — voir
-        # levels_tool_qt.py::_LevelsOptionsPanel.
-        levels_btn = _ToolButton(self, "BTN_Levels.png", tool_id="levels")
-        layout.addWidget(levels_btn)
-        self._buttons["levels"] = levels_btn
-
-        # 12e outil migré : icône fixe, PAS de bi-mode —
-        # plusieurs formes coexistantes par page (comme le texte), poignées
-        # de redimensionnement façon crop pour les formes fermées, 2 points
-        # d'extrémité pour ligne/flèche. Bouton "Valider" partagé TOUJOURS
-        # VISIBLE tant que cet outil est actif (vert/actif dès qu'une forme
-        # existe, gris/inactif sinon) — seul outil migré avec ce comportement,
-        # voir image_viewer_qt.py::_ViewerCanvas._ALWAYS_VISIBLE_VALIDATE_TOOLS.
-        shapes_btn = _ToolButton(self, "BTN_Shapes.png", tool_id="shapes")
-        layout.addWidget(shapes_btn)
-        self._buttons["shapes"] = shapes_btn
-
-        # Icône fixe, PAS de bi-mode — vrai geste souris (pipette,
-        # comme levels), MAIS accumule plusieurs clics avant validation
-        # explicite (bouton "Valider" partagé TOUJOURS VISIBLE, comme crop/
-        # straighten/text/shapes — contrairement à levels), et grisée/
-        # désactivée sur une page qui n'est pas PNG/WEBP/ICO/AVIF (comme
-        # compression) — voir transparency_tool_qt.py::
-        # _TransparencyOptionsPanel.
-        transparency_btn = _ToolButton(self, "BTN_Transparency.png", tool_id="transparency")
-        layout.addWidget(transparency_btn)
-        self._buttons["transparency"] = transparency_btn
-
-        # Icône fixe, PAS de bi-mode, PAS de grisage
-        # conditionnel (contrairement à compression/transparency — la
-        # profondeur de couleur s'applique quel que soit le format source).
-        # Comportement de verrouillage — voir
-        # color_depth_tool_qt.py::_ColorDepthOptionsPanel.
-        color_depth_btn = _ToolButton(self, "BTN_Color_Depth.png", tool_id="color_depth")
-        layout.addWidget(color_depth_btn)
-        self._buttons["color_depth"] = color_depth_btn
-
-        # Icône fixe, PAS de bi-mode, PAS de grisage conditionnel. Même
-        # comportement de verrouillage que color_depth, SAUF que le radio
-        # verrouillé est mémorisé par page (state.effect_key_by_page) plutôt
-        # que dérivé du mode PIL réel — voir effects_tool_qt.py.
-        effects_btn = _ToolButton(self, "BTN_Effects.png", tool_id="effects")
-        layout.addWidget(effects_btn)
-        self._buttons["effects"] = effects_btn
-
-        # Icône fixe, PAS de bi-mode, PAS de grisage conditionnel. Même
-        # comportement de verrouillage que color_depth (dérivé du mode PIL
-        # réel de l'image, contrairement à effects) — voir
-        # image_mode_tool_qt.py.
-        image_mode_btn = _ToolButton(self, "BTN_Image_Mode.png", tool_id="image_mode")
-        layout.addWidget(image_mode_btn)
-        self._buttons["image_mode"] = image_mode_btn
-
-        # Outil "Coller une image" : icône fixe, PAS de bi-mode, PAS de
-        # panneau d'options flottant dédié (aucun réglage à part les poignées
-        # de manipulation + Valider/Annuler, même cas que "crop" dans
-        # _VALIDATE_KEYS). Grisée/désactivée en LIVE selon le contenu du
-        # presse-papiers système (une image seule requise, CF_DIB ou CF_HDROP
-        # à un seul fichier image — voir clipboard_qt.py::
-        # clipboard_has_single_image, réutilisée telle quelle) via
-        # QClipboard.dataChanged, PAS seulement une vérification au clic —
-        # voir _refresh_paste_image_button_state/_on_clipboard_changed plus
-        # bas. Bouton "Valider" partagé TOUJOURS VISIBLE tant que cet outil
-        # est actif (comme shapes/transparency), voir image_viewer_qt.py::
-        # _ViewerCanvas._ALWAYS_VISIBLE_VALIDATE_TOOLS.
-        paste_image_btn = _ToolButton(self, "BTN_PiP.png", tool_id="paste_image")
-        layout.addWidget(paste_image_btn)
-        self._buttons["paste_image"] = paste_image_btn
-
-        # Outil "macros" : 2 icônes séparées (pas un bi-mode), actions
-        # instantanées (comme undo/redo, _ActionButton) qui ouvrent une
-        # fenêtre non modale — aucun overlay, aucun geste souris (voir
-        # macro_tool_qt.py). Entourées d'un QFrame commun pour signifier
-        # visuellement qu'elles forment un sous-groupe distinct de la barre.
-        self._macro_group = QFrame()
-        macro_group_layout = QHBoxLayout(self._macro_group)
-        macro_group_layout.setContentsMargins(3, 2, 3, 2)
-        macro_group_layout.setSpacing(2)
-
+        # Macros — groupe déjà cadré avant cette réorganisation.
+        self._macro_group, macro_group_layout = _new_group()
         self._macro_record_btn = _ActionButton(
             "BTN_Macro_Record.png", self._on_macro_record_clicked)
         macro_group_layout.addWidget(self._macro_record_btn)
@@ -471,35 +382,37 @@ class _ViewerToolbar(QWidget):
             "BTN_Macro_Play.png", self._on_macro_play_clicked)
         macro_group_layout.addWidget(self._macro_play_btn)
 
-        layout.addWidget(self._macro_group)
-
-        self._separator = QFrame()
-        self._separator.setFrameShape(QFrame.VLine)
-        layout.addWidget(self._separator)
-
+        # Undo/redo — cadré désormais comme les autres groupes, le séparateur
+        # QFrame.VLine précédent n'a plus lieu d'être.
+        self._undo_redo_group, undo_redo_layout = _new_group()
         self._undo_btn = _ActionButton("BTN_Batch_Undo.png", self._on_undo_clicked)
-        layout.addWidget(self._undo_btn)
+        undo_redo_layout.addWidget(self._undo_btn)
         self._redo_btn = _ActionButton("BTN_Batch_Redo.png", self._on_redo_clicked)
-        layout.addWidget(self._redo_btn)
+        undo_redo_layout.addWidget(self._redo_btn)
+
+        # Lignes pré-créées (voir _rewrap_groups), jamais détruites, montrées/
+        # masquées selon le nombre réellement utilisé. Au plus un groupe par
+        # ligne dans le pire des cas, donc autant de lignes que de groupes.
+        for _i in range(len(self._groups)):
+            row_widget = QWidget()
+            row_layout = QHBoxLayout(row_widget)
+            row_layout.setContentsMargins(0, 0, 0, 0)
+            row_layout.setSpacing(self._row_spacing)
+            row_layout.addStretch(1)
+            row_layout.addStretch(1)
+            self._root_layout.addWidget(row_widget)
+            row_widget.hide()
+            self._rows.append(row_widget)
+            self._row_layouts.append(row_layout)
 
         self._overlay_tip = OverlayTooltip(self.window())
-        self._overlay_tip.track(crop_btn)
-        self._overlay_tip.track(straighten_btn)
-        self._overlay_tip.track(rotation_btn)
-        self._overlay_tip.track(clone_btn)
-        self._overlay_tip.track(text_btn)
-        self._overlay_tip.track(sharpness_btn)
-        self._overlay_tip.track(brightness_btn)
-        self._overlay_tip.track(saturation_btn)
-        self._overlay_tip.track(remove_colors_btn)
-        self._overlay_tip.track(compression_btn)
-        self._overlay_tip.track(levels_btn)
-        self._overlay_tip.track(shapes_btn)
-        self._overlay_tip.track(transparency_btn)
-        self._overlay_tip.track(color_depth_btn)
-        self._overlay_tip.track(effects_btn)
-        self._overlay_tip.track(image_mode_btn)
-        self._overlay_tip.track(paste_image_btn)
+        for _tid in (
+            "crop", "straighten", "rotation", "shapes", "paste_image", "clone",
+            "text", "brightness", "levels", "saturation", "remove_colors",
+            "effects", "sharpness", "transparency", "compression",
+            "color_depth", "image_mode",
+        ):
+            self._overlay_tip.track(self._buttons[_tid])
         self._overlay_tip.track(self._macro_record_btn)
         self._overlay_tip.track(self._macro_play_btn)
         self._overlay_tip.track(self._undo_btn)
@@ -541,6 +454,9 @@ class _ViewerToolbar(QWidget):
             sharpness_btn.set_icon_filename("BTN_Unsharp.png")
 
         self._apply_theme()
+        # Agencement calculé dès la construction (largeur de la fenêtre à
+        # l'ouverture), pas seulement au premier resize.
+        self.update_layout_for_width(viewer._canvas.width())
         self.hide()
         self.set_active_tool(None)
         self._update_sharpness_tooltip()
@@ -584,7 +500,6 @@ class _ViewerToolbar(QWidget):
         self.setStyleSheet(
             f"_ViewerToolbar {{ background: {theme['toolbar_bg']}; border-radius: 6px; }}"
         )
-        self._separator.setStyleSheet(f"color: {theme['separator']};")
         for btn in self._buttons.values():
             btn._apply_style()
             # Recharge l'icône : nécessaire pour que sharpness/unsharp
@@ -592,9 +507,14 @@ class _ViewerToolbar(QWidget):
             # (_DARK_MODE_RECOLOR_ICONS) si le thème change pendant que la
             # visionneuse reste ouverte — no-op pour les autres icônes.
             btn._load_icon()
-        self._macro_group.setStyleSheet(
-            f"QFrame {{ border: 1px solid {theme['separator']}; border-radius: 5px; }}"
-        )
+        # Même style sobre pour les 7 groupes, sans couleur différenciée.
+        group_style = f"QFrame {{ border: 1px solid {theme['separator']}; border-radius: 5px; }}"
+        for group in (
+            self._transform_group, self._content_group, self._pixel_group,
+            self._technical_group, self._structure_group, self._macro_group,
+            self._undo_redo_group,
+        ):
+            group.setStyleSheet(group_style)
         self._macro_record_btn._apply_style()
         self._macro_play_btn._apply_style()
         self._undo_btn._apply_style()
@@ -1189,6 +1109,97 @@ class _ViewerToolbar(QWidget):
 
     # ── Positionnement / visibilité ──────────────────────────────────────────
 
+    def _plan_rows(self, max_width: int) -> list[list[QFrame]]:
+        """Répartit les groupes en lignes de largeur équilibrée (pas juste
+        "remplir la ligne au maximum") : détermine le nombre de lignes
+        nécessaires par remplissage glouton, puis redécoupe en visant une
+        largeur cible égale par ligne — sans jamais couper un groupe."""
+        spacing = self._row_spacing
+        widths = [g.sizeHint().width() for g in self._groups]
+
+        def row_width(ws: list[int]) -> int:
+            return sum(ws) + spacing * (len(ws) - 1) if ws else 0
+
+        n_rows = 1
+        acc = 0
+        for w in widths:
+            new_acc = w if acc == 0 else acc + spacing + w
+            if new_acc > max_width and acc > 0:
+                n_rows += 1
+                acc = w
+            else:
+                acc = new_acc
+
+        if n_rows <= 1:
+            return [list(self._groups)] if self._groups else []
+
+        target = (sum(widths) + spacing * (len(widths) - 1)) / n_rows
+        rows: list[list[QFrame]] = []
+        remaining_groups = list(self._groups)
+        remaining_widths = list(widths)
+        row_num = 0
+        while remaining_groups:
+            # n_rows n'est qu'une ESTIMATION (calcul glouton ci-dessus) pour
+            # fixer la cible d'équilibrage — pas une garantie. La dernière
+            # ligne doit rester bornée par max_width comme les autres, sinon
+            # un groupe de fin de liste plus large que la moyenne peut faire
+            # déborder une "dernière ligne fourre-tout" au-delà de la fenêtre.
+            rows_left_after = max(n_rows - row_num - 1, 0)
+            cur_groups: list[QFrame] = []
+            cur_widths: list[int] = []
+            i = 0
+            while i < len(remaining_widths):
+                w = remaining_widths[i]
+                if row_width(cur_widths + [w]) > max_width and cur_widths:
+                    break
+                cur_groups.append(remaining_groups[i])
+                cur_widths.append(w)
+                i += 1
+                if (row_width(cur_widths) >= target and rows_left_after > 0
+                        and len(remaining_widths) - i >= rows_left_after):
+                    break
+            if not cur_groups:
+                # Un groupe seul dépasse déjà max_width : il reste seul sur
+                # sa ligne et déborde tel quel (cas limite accepté).
+                cur_groups = [remaining_groups[0]]
+                i = 1
+            rows.append(cur_groups)
+            remaining_groups = remaining_groups[i:]
+            remaining_widths = remaining_widths[i:]
+            row_num += 1
+        return rows
+
+    def _rewrap_groups(self, max_width: int):
+        """Répartit les groupes sur les lignes pré-créées — jamais de groupe
+        coupé en deux entre lignes. removeWidget explicite avant setParent :
+        sans lui, un groupe reste compté dans son ancienne ligne (sizeHint
+        du layout faussé)."""
+        for row_layout in self._row_layouts:
+            for group in self._groups:
+                row_layout.removeWidget(group)
+        for group in self._groups:
+            group.setParent(None)
+        for row_widget in self._rows:
+            row_widget.hide()
+
+        if max_width <= 0:
+            max_width = 1
+
+        for row_index, row_groups in enumerate(self._plan_rows(max_width)):
+            row_layout = self._row_layouts[row_index]
+            self._rows[row_index].show()
+            for group in row_groups:
+                row_layout.insertWidget(row_layout.count() - 1, group)
+                group.show()  # setParent(None) plus haut a caché le groupe
+        for row_layout in self._row_layouts:
+            row_layout.invalidate()
+        self._root_layout.invalidate()
+        self._root_layout.activate()
+
+    def update_layout_for_width(self, canvas_width: int):
+        self._rewrap_groups(canvas_width)
+        self.reposition()
+
     def reposition(self):
         self.adjustSize()
         canvas = self._viewer._canvas
@@ -1201,6 +1212,11 @@ class _ViewerToolbar(QWidget):
         self.reposition()
         self.show()
         self.raise_()
+        # Bouton play/pause GIF : repositionné sous la barre qui vient de
+        # réapparaître, pour ne jamais rester chevauché par elle (voir
+        # image_viewer_qt.py::ImageViewer._reposition_gif_play_btn).
+        if self._viewer.is_animated_gif:
+            self._viewer._reposition_gif_play_btn()
         # Les panneaux d'options flottants (angle straighten, réglages clone,
         # formatage texte, réglette sharpness) réapparaissent avec la barre —
         # même zone de survol plutôt qu'une zone de survol dédiée à chacun.
@@ -1258,6 +1274,12 @@ class _ViewerToolbar(QWidget):
         self._color_depth_panel.hide()
         self._effects_panel.hide()
         self._image_mode_panel.hide()
+        # Bouton play/pause GIF : la barre vient de se masquer, il peut
+        # reprendre sa position par défaut dans le coin (voir
+        # _reposition_gif_play_btn — retombe sur y=10 quand la barre est
+        # invisible).
+        if self._viewer.is_animated_gif:
+            self._viewer._reposition_gif_play_btn()
         # Le bouton "Valider" partagé disparaît ICI, et UNIQUEMENT ici
         # (mécanisme unique de masquage, symétrique de show_and_schedule_hide
         # — voir image_viewer_qt.py::_update_validate_btn_state pour la règle
@@ -1269,8 +1291,8 @@ class _ViewerToolbar(QWidget):
 
     def pause_hide(self):
         """Suspend le décompte du masquage automatique tant que la souris
-        reste dans une zone protégée (barre, un panneau d'options, ou les
-        10% supérieurs du canvas) : le
+        reste dans une zone protégée (barre, un panneau d'options, ou la
+        zone haute du canvas, voir _hover_zone_height) : le
         timer ne doit PAS continuer à courir/se redémarrer en boucle pendant
         qu'on reste dans ces zones, il doit être complètement arrêté tant
         qu'on y reste, et ne recommencer à décompter qu'à la SORTIE (voir
@@ -1302,6 +1324,14 @@ class _ViewerToolbar(QWidget):
         pause_hide/resume_hide)."""
         self.pause_hide()
 
+    def _hover_zone_height(self, canvas_height: int) -> int:
+        """S'élargit au-delà de HOVER_ZONE_RATIO (10% du canvas) quand la
+        barre grandit sur plusieurs lignes — sinon sa moitié basse resterait
+        hors de sa propre zone de déclenchement au survol."""
+        base = canvas_height * self.HOVER_ZONE_RATIO
+        toolbar_h = self.sizeHint().height()
+        return int(max(base, toolbar_h + 8))  # +8 = marge d'ancrage de reposition()
+
     def on_canvas_mouse_move(self, pos_y: int, canvas_height: int):
         if canvas_height <= 0:
             return
@@ -1324,7 +1354,7 @@ class _ViewerToolbar(QWidget):
                 or self._color_depth_panel.underMouse() or self._effects_panel.underMouse()
                 or self._image_mode_panel.underMouse()):
             return
-        in_hover_zone = pos_y <= canvas_height * self.HOVER_ZONE_RATIO
+        in_hover_zone = pos_y <= self._hover_zone_height(canvas_height)
         if in_hover_zone:
             if not self.isVisible():
                 self.show_and_schedule_hide()
@@ -1333,7 +1363,7 @@ class _ViewerToolbar(QWidget):
             self.resume_hide()
 
     def mousePressEvent(self, event):
-        # Une zone vide de la barre (marges, séparateur) ne doit rien
+        # Une zone vide de la barre (marges entre les groupes) ne doit rien
         # déclencher côté canvas — même raison que _ToolButton/_ActionButton.
         event.accept()
 

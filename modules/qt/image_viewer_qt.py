@@ -968,6 +968,8 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             self._update_cancel_btn_state()
         if self._viewer._toolbar.isVisible():
             self._viewer._toolbar.reposition()
+        if self._viewer.is_animated_gif:
+            self._viewer._reposition_gif_play_btn()
         angle_panel = self._viewer._toolbar._angle_panel
         if angle_panel.isVisible():
             angle_panel.reposition()
@@ -1538,6 +1540,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._zoom_label.setText(f"{int(self.zoom_level * 100)}%")
         self._zoom_label.adjustSize()
         self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
+        self._toolbar.update_layout_for_width(self._canvas.width())
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -1838,6 +1841,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._save_shapes_for_current_page()
             self._save_paste_image_for_current_page()
             self.current_idx = img_indices[0]
+            self._check_clear_bookmark_on_last_page(img_indices, 0)
             self._restore_crop_for_page(self.current_idx)
             self._restore_straighten_for_page(self.current_idx)
             self._restore_text_for_page(self.current_idx)
@@ -2469,6 +2473,24 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
 
     # ── GIF animé ─────────────────────────────────────────────────────────────
 
+    def _reposition_gif_play_btn(self):
+        """Positionne le bouton play/pause GIF en (10, 10) par défaut, sauf
+        si la barre d'outils flottante — ancrée elle aussi en haut du canvas
+        et centrée horizontalement — chevauche RÉELLEMENT son rectangle à
+        cette position (elle peut tenir sur une seule ligne courte qui ne
+        déborde pas jusqu'à x=10..50 selon la largeur du canvas) : dans ce
+        cas seulement, le bouton descend sous elle, comme le bouton
+        "Valider" (voir _update_validate_btn_state)."""
+        from PySide6.QtCore import QRect
+        btn = self._play_pause_btn
+        default_rect = QRect(10, 10, btn.width(), btn.height())
+        toolbar = self._toolbar
+        if toolbar.isVisible() and toolbar.geometry().intersects(default_rect):
+            y = toolbar.y() + toolbar.height() + 6
+        else:
+            y = 10
+        btn.move(10, y)
+
     def toggle_gif_playback(self):
         if not self.is_animated_gif:
             return
@@ -2623,7 +2645,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self.gif_durations = entry.get("gif_durations", [])
             self.gif_current_frame = 0
             self._play_pause_btn.setText("▶")
-            self._play_pause_btn.move(10, 10)
+            self._reposition_gif_play_btn()
             self._play_pause_btn.show()
             self._play_pause_btn.raise_()
         else:

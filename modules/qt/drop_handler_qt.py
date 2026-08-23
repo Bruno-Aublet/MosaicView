@@ -4,34 +4,8 @@ drop_handler_qt.py — Gestion du drop externe (fichiers / dossiers).
 
 import os
 
-from PySide6.QtWidgets import QMessageBox
-from PySide6.QtCore import QTimer
-
 from modules.qt.localization import _, _wt
-
-
-def _show_centered_msgbox(parent, title, text, icon=QMessageBox.NoIcon):
-    from modules.qt.dialogs_qt import _center_on_widget
-    from modules.qt.font_manager_qt import get_current_font as _get_current_font
-    from modules.qt.state import get_current_theme
-    mb = QMessageBox(parent)
-    mb.setWindowTitle(title)
-    mb.setText(text)
-    if icon != QMessageBox.NoIcon:
-        mb.setIcon(icon)
-    theme = get_current_theme()
-    mb.setStyleSheet(
-        f"QMessageBox {{ background: {theme['bg']}; color: {theme['text']}; }}"
-        f"QLabel {{ background: {theme['bg']}; color: {theme['text']}; }}"
-        f"QPushButton {{ background: {theme['toolbar_bg']}; color: {theme['text']}; "
-        f"border: 1px solid #aaaaaa; padding: 4px 8px; }}"
-        f"QPushButton:hover {{ background: {theme['separator']}; }}"
-    )
-    font = _get_current_font(10)
-    mb.setFont(font)
-    mb.setModal(False)
-    mb.show()
-    QTimer.singleShot(0, lambda: _center_on_widget(mb, parent))
+from modules.qt.dialogs_qt import ErrorDialog
 
 
 def handle_dropped_paths(parent, paths: list, load_files_callback, batch_callbacks: dict,
@@ -54,10 +28,9 @@ def handle_dropped_paths(parent, paths: list, load_files_callback, batch_callbac
     files = [p for p in paths if not os.path.isdir(p)]
 
     if dirs and files:
-        _show_centered_msgbox(parent,
-            _wt("dialogs.batch_drop.mixed_drop_title"),
-            _("dialogs.batch_drop.mixed_drop_message"),
-            QMessageBox.Warning)
+        ErrorDialog(parent,
+            lambda: _wt("dialogs.batch_drop.mixed_drop_title"),
+            lambda: _("dialogs.batch_drop.mixed_drop_message")).show_nonmodal()
         return
 
     if dirs:
@@ -97,9 +70,9 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            _show_centered_msgbox(parent,
-                _wt("dialogs.batch_cbr.no_cbr_title"),
-                _("dialogs.batch_cbr.no_cbr_message").format(directory=", ".join(dirs)))
+            ErrorDialog(parent,
+                lambda: _wt("dialogs.batch_cbr.no_cbr_title"),
+                lambda d=dirs: _("dialogs.batch_cbr.no_cbr_message").format(directory=", ".join(d))).show_nonmodal()
             return
         batch_convert_cbr_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
 
@@ -112,9 +85,9 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            _show_centered_msgbox(parent,
-                _wt("dialogs.batch_cb7.no_cb7_title"),
-                _("dialogs.batch_cb7.no_cb7_message").format(directory=", ".join(dirs)))
+            ErrorDialog(parent,
+                lambda: _wt("dialogs.batch_cb7.no_cb7_title"),
+                lambda d=dirs: _("dialogs.batch_cb7.no_cb7_message").format(directory=", ".join(d))).show_nonmodal()
             return
         batch_convert_cb7_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
 
@@ -127,18 +100,17 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            _show_centered_msgbox(parent,
-                _wt("dialogs.batch_cbt.no_cbt_title"),
-                _("dialogs.batch_cbt.no_cbt_message").format(directory=", ".join(dirs)))
+            ErrorDialog(parent,
+                lambda: _wt("dialogs.batch_cbt.no_cbt_title"),
+                lambda d=dirs: _("dialogs.batch_cbt.no_cbt_message").format(directory=", ".join(d))).show_nonmodal()
             return
         batch_convert_cbt_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
 
     def _make_batch_pdf():
         if not PDF_AVAILABLE:
-            _show_centered_msgbox(parent,
-                _wt("dialogs.batch_pdf.pymupdf_required_title"),
-                _("dialogs.batch_pdf.pymupdf_required_message"),
-                QMessageBox.Warning)
+            ErrorDialog(parent,
+                lambda: _wt("dialogs.batch_pdf.pymupdf_required_title"),
+                lambda: _("dialogs.batch_pdf.pymupdf_required_message")).show_nonmodal()
             return
         files = []
         for d in dirs:
@@ -148,9 +120,9 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            _show_centered_msgbox(parent,
-                _wt("dialogs.batch_pdf.no_pdf_title"),
-                _("dialogs.batch_pdf.no_pdf_message").format(directory=", ".join(dirs)))
+            ErrorDialog(parent,
+                lambda: _wt("dialogs.batch_pdf.no_pdf_title"),
+                lambda d=dirs: _("dialogs.batch_pdf.no_pdf_message").format(directory=", ".join(d))).show_nonmodal()
             return
         batch_convert_pdf_to_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
 
@@ -163,9 +135,9 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            _show_centered_msgbox(parent,
-                _wt("dialogs.batch_img.no_img_title"),
-                _("dialogs.batch_img.no_img_message").format(directory=", ".join(dirs)))
+            ErrorDialog(parent,
+                lambda: _wt("dialogs.batch_img.no_img_title"),
+                lambda d=dirs: _("dialogs.batch_img.no_img_message").format(directory=", ".join(d))).show_nonmodal()
             return
         mode_dlg = _ImgModeDialog(parent)
 
@@ -190,9 +162,9 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
         from modules.qt.archive_loader import _natural_sort_key
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            _show_centered_msgbox(parent,
-                _wt("dialogs.batch_metadata.no_files_title"),
-                _("dialogs.batch_metadata.no_files_message").format(directory=", ".join(dirs)))
+            ErrorDialog(parent,
+                lambda: _wt("dialogs.batch_metadata.no_files_title"),
+                lambda d=dirs: _("dialogs.batch_metadata.no_files_message").format(directory=", ".join(d))).show_nonmodal()
             return
         from modules.qt.batch_metadata_dialog_qt import show_batch_metadata_dialog
         show_batch_metadata_dialog(parent, files, dirs, batch_callbacks)
@@ -225,9 +197,9 @@ def _show_batch_drop_dialog(parent, dirs: list, batch_callbacks: dict):
                         files.append(os.path.join(dirpath, fn))
         files.sort(key=lambda f: _natural_sort_key(os.path.basename(f).lower()))
         if not files:
-            _show_centered_msgbox(parent,
-                _wt("dialogs.batch_recompress.no_files_title"),
-                _("dialogs.batch_recompress.no_files_message").format(directory=", ".join(dirs)))
+            ErrorDialog(parent,
+                lambda: _wt("dialogs.batch_recompress.no_files_title"),
+                lambda d=dirs: _("dialogs.batch_recompress.no_files_message").format(directory=", ".join(d))).show_nonmodal()
             return
         batch_recompress_cbz_confirm(parent, files, dirs[0], batch_callbacks, directories=dirs)
 

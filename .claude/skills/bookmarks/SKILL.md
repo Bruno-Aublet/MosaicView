@@ -24,23 +24,23 @@ Toutes normalisent la clé via `os.path.abspath(filepath)`. Le dict est **partag
 
 ## Écriture — `image_viewer_qt.py`
 
-`ImageViewerQt.closeEvent()` (ligne ~733) appelle `_save_bookmark(state)` (ligne ~762) à **chaque fermeture** de la visionneuse principale :
+`ImageViewer.closeEvent()` appelle `_save_bookmark(state)` à **chaque fermeture** de la visionneuse principale :
 - Ne sauvegarde rien si la page courante est la première (`current_pos == 0`) ou la dernière (`current_pos >= last_pos`) — pas de marque-page utile en début/fin de lecture.
 - Sinon `cfg.set_bookmark(filepath, current_pos)` puis appelle le callback `on_bookmark_changed(real_idx)` pour rafraîchir l'icône dans la mosaïque immédiatement (sans attendre une réouverture).
 
-`_check_clear_bookmark_on_last_page()` (ligne ~907) est appelée à chaque changement de page dans la visionneuse : si la nouvelle page affichée est la dernière, **supprime automatiquement** le marque-page existant (`cfg.remove_bookmark` + `on_bookmark_changed(None)`) — la lecture est considérée terminée.
+`_check_clear_bookmark_on_last_page()` est appelée par `navigate()` à chaque changement de page réussi (nouvelle page trouvée dans `img_indices`) **et** dans son cas de repli (page courante disparue de `img_indices`, ex. suppression de la page affichée depuis la mosaïque pendant que la visionneuse reste ouverte — repositionnement forcé sur la première page) : si la nouvelle page affichée est la dernière, **supprime automatiquement** le marque-page existant (`cfg.remove_bookmark` + `on_bookmark_changed(None)`) — la lecture est considérée terminée. **Piège** : ces deux points d'appel doivent rester synchronisés — un appel de `navigate()` qui omettrait celui-ci laisserait le marque-page en place à tort dans ce cas de repli.
 
 Il n'y a pas de bouton "poser un marque-page" dédié : c'est entièrement automatique, basé sur la page affichée au moment de la fermeture de la visionneuse.
 
 ## Popup "reprendre la lecture ?" — `panel_widget.py`
 
-Classe `_BookmarkPopup` (ligne ~150) : `QDialog` non-modal minimal (message + boutons Oui/Non), respecte thème/langue/police comme toute fenêtre Qt de l'appli (voir règles UI CLAUDE.md).
+Classe `_BookmarkPopup` : `QDialog` non-modal minimal (message + boutons Oui/Non), respecte thème/langue/police comme toute fenêtre Qt de l'appli (voir règles UI CLAUDE.md).
 
-Déclenchement : `_on_loading_finished()` (appelé après tout chargement, y compris rechargements) appelle `_maybe_show_bookmark_popup()` (ligne ~1857) :
+Déclenchement : `_on_loading_finished()` (appelé après tout chargement, y compris rechargements) appelle `_maybe_show_bookmark_popup()` :
 
 1. Lit `self._state.current_file` (état **du panneau**, pas global) — si vide, abandonne.
 2. **Garde-fou anti-répétition** : `self._bookmark_popup_shown_for` (attribut du panneau) mémorise le dernier fichier pour lequel le popup a déjà été proposé. Si `current_file` est identique, n'affiche rien — sinon le popup réapparaîtrait à chaque rechargement de la mosaïque au sein d'un même comics déjà ouvert (import de pages, Ctrl+V, drop de fichier), pas seulement à l'ouverture initiale.
-3. **Ce garde-fou est réinitialisé (`None`) dans `_close_bookmark_popup()`** (ligne ~1908), appelée uniquement lors de la fermeture explicite du fichier (`refresh_tabs` dans `_file_close_args`). Sans cette réinitialisation, rouvrir le même fichier après l'avoir fermé ne réaffiche jamais le popup.
+3. **Ce garde-fou est réinitialisé (`None`) dans `_close_bookmark_popup()`**, appelée uniquement lors de la fermeture explicite du fichier (`refresh_tabs` dans `_file_close_args`). Sans cette réinitialisation, rouvrir le même fichier après l'avoir fermé ne réaffiche jamais le popup.
 4. Si un marque-page existe (`cfg.get_bookmark`) et que `page_idx` est dans les bornes de la mosaïque actuelle, construit et affiche `_BookmarkPopup` ; le bouton Oui ouvre la visionneuse directement sur la page mémorisée (`_open_image_viewer(real_idx)`).
 
 **Chaque `PanelWidget` a son propre `_bookmark_popup_shown_for` et `_bookmark_popup`** — c'est un état d'instance, pas global. Le popup lui-même est parenté au panneau qui l'a ouvert et centré dessus via `_center_on_widget`.
@@ -48,21 +48,18 @@ Déclenchement : `_on_loading_finished()` (appelé après tout chargement, y com
 ## Icône visuelle dans la mosaïque — `mosaic_canvas.py`
 
 - `entry["_is_bookmarked"]` (bool) sur chaque entrée d'`images_data` marque la page bookmarkée. Une seule page peut être `True` à la fois (mono-marque-page par archive).
-- `refresh_bookmark_overlay(bookmarked_real_idx)` (ligne ~960) : parcourt tous les `ThumbnailItem`, met à jour le flag et ne force un repaint (`item.update()`) que sur les items dont l'état a réellement changé — pas de reconstruction complète de la scène.
-- Rendu dans `ThumbnailItem.paint()` (ligne ~741) : pixmap `icons/Bookmark Ribbon.png`, coin supérieur droit de la vignette, `setOpacity(0.85)`, taille `max(32, tw // 2)`.
-- `_init_bookmark_overlay()` dans `panel_widget.py` (ligne ~1827) initialise `_is_bookmarked` à l'ouverture d'un fichier à partir de la config — avec une garde spécifique : si une entrée porte déjà `_is_bookmarked=True` en mémoire (ex. import/collage en cours de session), elle est préservée telle quelle au lieu d'être recalculée par position, car `page_idx` est une position figée qui se décale dès qu'une page est insérée avant elle.
+- `refresh_bookmark_overlay(bookmarked_real_idx)` : parcourt tous les `ThumbnailItem`, met à jour le flag et ne force un repaint (`item.update()`) que sur les items dont l'état a réellement changé — pas de reconstruction complète de la scène.
+- Rendu dans `ThumbnailItem.paint()` : pixmap `icons/Bookmark Ribbon.png`, coin supérieur droit de la vignette, `setOpacity(0.85)`, taille `max(32, tw // 2)`.
+- `_init_bookmark_overlay()` dans `panel_widget.py` initialise `_is_bookmarked` à l'ouverture d'un fichier à partir de la config — avec une garde spécifique : si une entrée porte déjà `_is_bookmarked=True` en mémoire (ex. import/collage en cours de session), elle est préservée telle quelle au lieu d'être recalculée par position, car `page_idx` est une position figée qui se décale dès qu'une page est insérée avant elle.
 
 ## Suppression manuelle — menus
 
 Deux actions exposées à trois endroits (menu Fichier de la menubar, menu contextuel canvas avec fichier ouvert, menu contextuel sur une vignette) :
 
-- **Supprimer le marque-page** (`delete_bookmark` → `panel_widget.py::_delete_current_bookmark`, ligne ~1394) : actif seulement si `cfg.get_bookmark(state.current_file)` n'est pas `None`. Après suppression en config, rafraîchit l'overlay (`_on_bookmark_changed(None)`) sur **tous les panneaux ouverts dont `current_file` correspond au fichier concerné** (via `self._main_window._all_panels()`), pas seulement le panneau d'où l'action a été lancée.
-- **Supprimer tous les marque-pages** (`delete_all_bookmarks` → `_delete_all_bookmarks`, ligne ~1404) : actif seulement si `cfg.has_any_bookmark()`. Après `cfg.clear_bookmarks()`, rafraîchit l'overlay sur **tous les panneaux ouverts sans condition** (chaque marque-page en config étant effacé, peu importe quel comics est ouvert dans quel panneau).
+- **Supprimer le marque-page** (`delete_bookmark` → `panel_widget.py::_delete_current_bookmark`) : actif seulement si `cfg.get_bookmark(state.current_file)` n'est pas `None`. Après suppression en config, rafraîchit l'overlay (`_on_bookmark_changed(None)`) sur **tous les panneaux ouverts dont `current_file` correspond au fichier concerné** (via `self._main_window._all_panels()`), pas seulement le panneau d'où l'action a été lancée.
+- **Supprimer tous les marque-pages** (`delete_all_bookmarks` → `_delete_all_bookmarks`) : actif seulement si `cfg.has_any_bookmark()`. Après `cfg.clear_bookmarks()`, rafraîchit l'overlay sur **tous les panneaux ouverts sans condition** (chaque marque-page en config étant effacé, peu importe quel comics est ouvert dans quel panneau).
 
-Call sites de la logique d'activation/désactivation (dupliquée trois fois, à garder synchronisée si le comportement change) :
-- `menubar_qt.py` ligne ~276 (menu Fichier)
-- `context_menus_qt.py` ligne ~162 (menu contextuel canvas, fichier ouvert)
-- `context_menus_qt.py` ligne ~504 (menu contextuel vignette)
+Call sites de la logique d'activation/désactivation (dupliquée trois fois, à garder synchronisée si le comportement change) : `menubar_qt.py` (menu Fichier), `context_menus_qt.py` (menu contextuel canvas avec fichier ouvert, et menu contextuel sur une vignette).
 
 ## Pièges connus
 

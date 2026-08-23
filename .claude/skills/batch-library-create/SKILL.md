@@ -5,7 +5,7 @@ description: Localiser ou modifier la création d'une Bibliothèque à partir de
 
 # Création de bibliothèque en lot — MosaicView
 
-Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en premier** pour l'architecture commune). **Le plus atypique des 8** : ne vit dans **aucun** des 3 fichiers batch dédiés (`batch_dialogs_qt.py`, `batch_metadata_dialog_qt.py`, `batch_drop_dialog_qt.py`) — sa logique complète tient dans une seule fonction interne, `_make_batch_library` (`drop_handler_qt.py:202-210`), qui se contente d'ouvrir la fenêtre Bibliothèque existante (skill `library`) avec son dialogue de création pré-rempli.
+Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en premier** pour l'architecture commune). **Le plus atypique des 8** : ne vit dans **aucun** des 3 fichiers batch dédiés (`batch_dialogs_qt.py`, `batch_metadata_dialog_qt.py`, `batch_drop_dialog_qt.py`) — sa logique complète tient dans une seule fonction interne, `_make_batch_library` (`drop_handler_qt.py:172-181`), qui se contente d'ouvrir la fenêtre Bibliothèque existante (skill `library`) avec son dialogue de création pré-rempli.
 
 ## Seul des 8 traitements accessible uniquement par drop, jamais par menu
 
@@ -13,7 +13,7 @@ Un des 8 traitements par lot du projet (skill `batch-processing`, **à lire en p
 
 ## Aucun scan de fichiers, aucune confirmation, aucune progression propre
 
-**Différence structurelle totale avec les 7 autres flux batch** : pas de `os.walk` pour compter des fichiers, pas de `_ConfirmDialog`/`_RecompressConfirmDialog`, pas de `_ProgressDialog`/`_ThreadSignals`/`threading.Thread`, pas de log, pas de fenêtre de résumé dédiée. `_make_batch_library` (`drop_handler_qt.py:202`) :
+**Différence structurelle totale avec les 7 autres flux batch** : pas de `os.walk` pour compter des fichiers, pas de `_ConfirmDialog`/`_RecompressConfirmDialog`, pas de `_ProgressDialog`/`_ThreadSignals`/`threading.Thread`, pas de log, pas de fenêtre de résumé dédiée. `_make_batch_library` (`drop_handler_qt.py:172`) :
 
 ```python
 def _make_batch_library():
