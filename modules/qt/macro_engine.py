@@ -205,6 +205,8 @@ def apply_step_to_entry(viewer, step: dict) -> bool:
         return viewer.perform_auto_straighten(skip_history=True)
     if tool == "clone":
         return viewer.perform_clone_step(p)
+    if tool == "blur":
+        return viewer.perform_blur_step(p)
     if tool == "text":
         return viewer.perform_text_step(p)
     if tool == "shapes":

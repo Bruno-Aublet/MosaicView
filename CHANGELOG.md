@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.4] - 2026-09-06 - Blur stamp tool in the main viewer, batch metadata fetch cover fix
+
+- Added a "Blur stamp" tool to the main viewer's floating toolbar: paint over any part of a page to permanently blur it, with independent sliders for the brush's size and its strength (how strong the blur itself is inside that brush), meant chiefly for reliably hiding text or other content beyond recognition. Like the clone stamp, each stroke commits immediately as its own undo/redo step; passing over the same spot again stacks more blur on top rather than resetting it.
+- REPOSITORY ONLY: Added a `blur-stamp` Claude Code skill (87 total) documenting the new tool above, and updated the `clone-zone` and `viewers` skills to reflect it.
+- Fixed the batch ComicVine metadata import window not clearing the bottom cover preview (the first issue of the previously selected series) when moving on to the next file, leaving it displayed until a new series search completed.
+- Fixed a harmless but noisy `RuntimeWarning` sometimes printed to the console when closing the ComicVine metadata window.
+
 ## [1.8.3] - 2026-08-23 - Main viewer toolbar rework, external drop and bookmark fixes, animated GIF
 
 - The main viewer's floating toolbar has been reorganized: its tools are now grouped by purpose (page transforms, adding content, color/tone adjustments, sharpness/quality, image format) inside subtle framed sections, the same visual grouping already used for the macro tools. The toolbar also now automatically adjusts to the width of the viewer window, wrapping onto a second row (or more) when needed instead of hiding tools off-screen the way it used to on a narrower window — a whole group always stays together on the same row, and rows are balanced to a similar width rather than one being packed full and the next nearly empty.

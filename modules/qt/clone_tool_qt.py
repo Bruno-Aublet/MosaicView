@@ -840,7 +840,7 @@ class CloneViewerMixin:
             if skip_history:
                 return False
             dlg = MsgDialog(self._center_parent, "messages.errors.clone_failed.title",
-                            "messages.errors.clone_failed.title")
+                            "messages.errors.clone_failed.message")
             dlg.show_nonmodal()
             return False
 

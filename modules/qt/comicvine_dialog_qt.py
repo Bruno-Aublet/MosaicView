@@ -3,6 +3,7 @@
 
 import os
 import urllib.request
+import warnings
 
 from PySide6.QtWidgets import (
     QDialog, QStackedWidget, QWidget, QVBoxLayout, QHBoxLayout,
@@ -544,10 +545,16 @@ class _ComicVineDialog(QDialog):
         isRunning() ne repasse à False qu'une fois run() retourné : test fiable."""
         if worker is None or worker in _ComicVineDialog._dying_workers:
             return
-        # Détache les slots UI : la donnée téléchargée par ce worker est périmée
+        # Détache les slots UI : la donnée téléchargée par ce worker est périmée.
+        # disconnect() sans slot connecté lève un RuntimeWarning (pas une
+        # exception) sous PySide6 — inoffensif mais bruyant en console pour un
+        # worker déjà parqué/déconnecté ; on le neutralise explicitement plutôt
+        # que de compter sur le try/except, qui ne l'attrape pas.
         for sig in ('finished', 'error'):
             try:
-                getattr(worker, sig).disconnect()
+                with warnings.catch_warnings():
+                    warnings.simplefilter('ignore', RuntimeWarning)
+                    getattr(worker, sig).disconnect()
             except (RuntimeError, TypeError):
                 pass
         if worker.isRunning():

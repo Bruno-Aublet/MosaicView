@@ -28,6 +28,7 @@ from modules.qt.crop_tool_qt import CropCanvasMixin, CropViewerMixin
 from modules.qt.straighten_tool_qt import StraightenCanvasMixin, StraightenViewerMixin
 from modules.qt.rotation_tool_qt import RotationCanvasMixin, RotationViewerMixin
 from modules.qt.clone_tool_qt import CloneCanvasMixin, CloneViewerMixin
+from modules.qt.blur_tool_qt import BlurCanvasMixin, BlurViewerMixin
 from modules.qt.text_tool_qt import TextCanvasMixin, TextViewerMixin
 from modules.qt.sharpness_tool_qt import SharpnessCanvasMixin, SharpnessViewerMixin
 from modules.qt.brightness_tool_qt import BrightnessCanvasMixin, BrightnessViewerMixin
@@ -156,6 +157,7 @@ class _CancelButton(QPushButton):
 # ─────────────────────────────────────────────────────────────────────────────
 
 class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin, CloneCanvasMixin,
+                     BlurCanvasMixin,
                      TextCanvasMixin, SharpnessCanvasMixin, BrightnessCanvasMixin, SaturationCanvasMixin,
                      RemoveColorsCanvasMixin, CompressionCanvasMixin, LevelsCanvasMixin,
                      ShapeCanvasMixin, TransparencyCanvasMixin, ColorDepthCanvasMixin,
@@ -236,6 +238,7 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         self._init_straighten_state()
         self._init_rotation_state()
         self._init_clone_state()
+        self._init_blur_state()
         self._init_text_state()
         self._init_adjustments_state()      # sharpness_tool_qt.py::SharpnessCanvasMixin
         self._init_brightness_state()
@@ -746,6 +749,10 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             self.clone_mouse_press(event)
             return
 
+        if active_tool == "blur":
+            self.blur_mouse_press(event)
+            return
+
         if active_tool == "text":
             self.text_mouse_press(event)
             return
@@ -807,6 +814,8 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
                 self.straighten_update_cursor(event)
             elif active_tool == "clone":
                 self.clone_update_cursor(event)
+            elif active_tool == "blur":
+                self.blur_update_cursor(event)
             elif active_tool == "text":
                 self.text_update_cursor(event)
             elif active_tool == "levels":
@@ -838,6 +847,12 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             if self._ignore_crop_events:
                 return
             self.clone_mouse_move(event)
+            return
+
+        if active_tool == "blur":
+            if self._ignore_crop_events:
+                return
+            self.blur_mouse_move(event)
             return
 
         if active_tool == "text":
@@ -910,6 +925,10 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             self.clone_mouse_release(event)
             return
 
+        if self._viewer._toolbar.active_tool == "blur":
+            self.blur_mouse_release(event)
+            return
+
         if self._viewer._toolbar.active_tool == "text":
             self.text_mouse_release(event)
             return
@@ -979,6 +998,9 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         clone_panel = self._viewer._toolbar._clone_panel
         if clone_panel.isVisible():
             clone_panel.reposition()
+        blur_panel = self._viewer._toolbar._blur_panel
+        if blur_panel.isVisible():
+            blur_panel.reposition()
         text_panel = self._viewer._toolbar._text_panel
         if text_panel.isVisible():
             text_panel.reposition()
@@ -1124,6 +1146,7 @@ def _floating_options_panel_style(theme, class_name: str) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 
 class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, CloneViewerMixin,
+                   BlurViewerMixin,
                    TextViewerMixin, SharpnessViewerMixin, BrightnessViewerMixin, SaturationViewerMixin,
                    RemoveColorsViewerMixin, CompressionViewerMixin, LevelsViewerMixin,
                    ShapeViewerMixin, TransparencyViewerMixin, ColorDepthViewerMixin,
@@ -1188,6 +1211,13 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         # CloneViewerMixin, hérité par cette classe.
         self._init_clone_viewer_state()
 
+        # État de l'outil "blur" — même principe que l'outil "clone"
+        # ci-dessus : aucun dict par page, chaque coup de tampon est déjà
+        # commité (bytes + save_state) dès son relâchement, rien "en attente
+        # de validation" à faire survivre à un changement de page. Voir
+        # blur_tool_qt.py::BlurViewerMixin, hérité par cette classe.
+        self._init_blur_viewer_state()
+
         # État de l'outil "macros" — True pendant qu'une fenêtre Enregistrer/
         # Lire est ouverte sur CE panneau. Pilote le grisage réciproque des 2
         # boutons de la barre (_ViewerToolbar.refresh_macro_buttons_state) :
@@ -1201,6 +1231,7 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._macro_page_idx: int | None = None
         self._macro_transparency_clicks: list = []
         self._macro_clone_points: list = []
+        self._macro_blur_points: list = []
         self._macro_complete_name: str | None = None
         self._macro_complete_description: str = ""
 

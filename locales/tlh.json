@@ -97,6 +97,10 @@
     "toolbar_straighten_tooltip": "nIt chenmoH",
     "toolbar_crop_instruction": "pe'meH latlhmey wa'DIch yIchenmoH; lo'laH.",
     "toolbar_clone_tooltip": "tIngmeH",
+    "toolbar_blur_tooltip": "bochmoHmeH nIH",
+    "toolbar_blur_instruction": "poS HIj yIchu' : Daq yIbochmoH",
+    "blur_brush_size_label": "Huj :",
+    "blur_strength_label": "HoS :",
     "toolbar_text_tooltip": "mu'mey",
     "toolbar_sharpness_tooltip": "pe'vIl",
     "toolbar_unsharp_tooltip": "pe'vIl mach",
@@ -616,6 +620,10 @@
       "clone_failed": {
         "title": "Qagh",
         "message": "cha'nob tInglaHbe': {error}"
+      },
+      "blur_failed": {
+        "title": "Qagh",
+        "message": "bochmoHlaHbe'."
       },
       "text_failed": {
         "title": "Qagh",
@@ -1220,7 +1228,7 @@
     },
     "clone_zone_viewer": {
       "title": "Daq tIngmeH Qu'",
-      "instruction": "Ctrl+HIj : pagh wab yIwIv  •  poS HIj : daq tInglu'bogh yIcha'",
+      "instruction": "Ctrl+HIj : pagh wab yIwIv  •  poS HIj : Daq tInglu'bogh yIcha'",
       "mode_label": "pagh wab :",
       "mode_fixed": "pagh wab Sum",
       "mode_relative": "pagh wab Huj",
@@ -1467,7 +1475,7 @@
     "flatten": "vo'mey chuHmoH",
     "flatten_content": "per vo' puSmey tu'lu'chugh, 'vo'mey chuHmoH' lo' 'ej Hoch cha'nobmey wa' chen Daq yIvIH.",
     "viewer": "leghwI'",
-    "viewer_content": "ghItlh yIchu'chu' 'e' laD chu'moH:\n• ← → mIw: ghItlh choHmoH\n• D nagh: laD cham loS choHmoH\n  - ghItlh wa': wa' ghItlh poH Hoch\n  - cha' ghItlhmey: ghItlh wa' neH, vaj 2-3, 4-5, latlh\n  - cha' ghItlhmey taH: ghItlh wa' neH, vaj 2-3, 3-4, 4-5, latlh\n  - Webtoon: cha'nobmey tIng (webcomics) DoS, laD meH 900px chuq neH; Sut yopwaH ghItlh tIng nagh, 'ej Dung joq bIng bIng ghItlh choHmoH\n• Sut yopwaH: ghItlh choHmoH tlhoy (Webtoon mIw Daq ghItlh tIng nagh)\n• Ctrl+Sut pagh Ctrl+chap/pav: tIn choHmoH (nItebHom chIch 1000% tIn ngo')\n• Ctrl+0: SIbogh tIn choHmoH\n• Ctrl+1: tIn 100% (nItebHom pIxel tIn)\n• nIH nagh yIchu' 'ej yIteq: nItebHom cha'lu'pu' teq nuq SIbogh Doj\n• F11 nagh: Hoch bang\n• cha'logh yIchu': Hoch bang choHmoH\n• Esc nagh: qeq DaH qonta' bIHarghaH (pe'meH, chu'moH, meH…) pagh laD chu' mej\n• marmey: laD chu' SoQmoH ghItlh DaH (wa' je Hoch ghItlh chIch). Doch Doq tu'lu' vaj ghItlh nItebHom veb. reH poSmoHlaHbe' vaj mu' jang ghItlh ghoS. Hoch ghItlh motlh tlhoS, pagh nIH nagh laD chu'.\n\nToolbar tlhoy: cha'nob Dung Daq Sut yIlan 'e' cha'moH (puH cha' rIt bIHarghaH). nagh nIH yIchu' 'ej meH lo'laH yIchu'moH:\n• pe'meH: latlhmey yor yIchenmoH 'ej pe'meH Daq yIchoH; tInghach choH 'ej tIHmey pagh vI'mey yIvIH; 'pe'meH lo'laH' yIbuS; meyrI' pol mIw\nnIH Qap mIw choHmeH\n• chu'moH: qeq pIw choHmoH lujmoH Daq van De' cha' pagh ngo' Sam DichHa'; SIbI'be' choH; nIH Qap nagh yIchu' chu'moH DichHa' mIw choHmoH (pagh van, DichHa' Sam 'e' chIch)\n• jIH/HaSta: wa' nIH yIchu' ghItlh jIHmoH pagh HaSta\n• leghwI' rurmoH: Ctrl+nIH yIchu' Dung De' Sammo ', 'ej nIH pum tlhab yIteq rurmoHmeH\n• ghItlh: nIH yIchu' ghItlh block lanmeH, HaSta/tIn/Doq yIwIv\n• meH: ellipse, yor, tIHmey pagh QIn yIchenmoH, ghom tInghach choHmeH\n• Sut (Doj, wov/Segh, poch, rIt teq, machmoHghach): tIH tera' De' legh SutlaHtaHvIS\n• gham: SuD tIH/gamma/chIS tIH yIvIH Sut lo', pagh Doq yIqem cha'nob mo' pipette lo'\n• wovmoH: cha'nob Doq wa' yIchu' wovmoHmeH\n• yIqaD tIn, meH tI', laD cham: radio nIH yIchu' wa' wIv, SIbI' lo'lu'\ncha'nob lan: De'mey De'wI' bInpu'bogh Daq vo' cha'nob lanlu' ('ach cha'nob neH ghajbogh De'mey De'wI' bInpu'bogh Daq luq lanlu'), Doch chen rur nItlhmey tIn/tIchqu' chenmoHmeH; mozaik vo' ghItlh joq Windows Explorer vo' De'wI' legh mIw Daq tuQmoHlu'taHvIS je Qapla'. Ctrl+C ghItlh legh lanlu' (wa' nugh joq Webtoon mIw neH), Ctrl+V cha'nob lan, mozaik rur\n\n'lo'laH' nIH yIchu' cha'lu'DI', pagh Esc bIHarghaHmeH. Hoch choH qaStaHvIS vangHa'/vI'ang qonta' chelmoH.",
+    "viewer_content": "ghItlh yIchu'chu' 'e' laD chu'moH:\n• ← → mIw: ghItlh choHmoH\n• D nagh: laD cham loS choHmoH\n  - ghItlh wa': wa' ghItlh poH Hoch\n  - cha' ghItlhmey: ghItlh wa' neH, vaj 2-3, 4-5, latlh\n  - cha' ghItlhmey taH: ghItlh wa' neH, vaj 2-3, 3-4, 4-5, latlh\n  - Webtoon: cha'nobmey tIng (webcomics) DoS, laD meH 900px chuq neH; Sut yopwaH ghItlh tIng nagh, 'ej Dung joq bIng bIng ghItlh choHmoH\n• Sut yopwaH: ghItlh choHmoH tlhoy (Webtoon mIw Daq ghItlh tIng nagh)\n• Ctrl+Sut pagh Ctrl+chap/pav: tIn choHmoH (nItebHom chIch 1000% tIn ngo')\n• Ctrl+0: SIbogh tIn choHmoH\n• Ctrl+1: tIn 100% (nItebHom pIxel tIn)\n• nIH nagh yIchu' 'ej yIteq: nItebHom cha'lu'pu' teq nuq SIbogh Doj\n• F11 nagh: Hoch bang\n• cha'logh yIchu': Hoch bang choHmoH\n• Esc nagh: qeq DaH qonta' bIHarghaH (pe'meH, chu'moH, meH…) pagh laD chu' mej\n• marmey: laD chu' SoQmoH ghItlh DaH (wa' je Hoch ghItlh chIch). Doch Doq tu'lu' vaj ghItlh nItebHom veb. reH poSmoHlaHbe' vaj mu' jang ghItlh ghoS. Hoch ghItlh motlh tlhoS, pagh nIH nagh laD chu'.\n\nToolbar tlhoy: cha'nob Dung Daq Sut yIlan 'e' cha'moH (puH cha' rIt bIHarghaH). nagh nIH yIchu' 'ej meH lo'laH yIchu'moH:\n• pe'meH: latlhmey yor yIchenmoH 'ej pe'meH Daq yIchoH; tInghach choH 'ej tIHmey pagh vI'mey yIvIH; 'pe'meH lo'laH' yIbuS; meyrI' pol mIw\nnIH Qap mIw choHmeH\n• chu'moH: qeq pIw choHmoH lujmoH Daq van De' cha' pagh ngo' Sam DichHa'; SIbI'be' choH; nIH Qap nagh yIchu' chu'moH DichHa' mIw choHmoH (pagh van, DichHa' Sam 'e' chIch)\n• jIH/HaSta: wa' nIH yIchu' ghItlh jIHmoH pagh HaSta\n• leghwI' rurmoH: Ctrl+nIH yIchu' Dung De' Sammo ', 'ej nIH pum tlhab yIteq rurmoHmeH\n• bochmoHmeH nIH: poS HIj yIchu' 'ej Daq yIbochmoH (Huj HoS je choH)\n• ghItlh: nIH yIchu' ghItlh block lanmeH, HaSta/tIn/Doq yIwIv\n• meH: ellipse, yor, tIHmey pagh QIn yIchenmoH, ghom tInghach choHmeH\n• Sut (Doj, wov/Segh, poch, rIt teq, machmoHghach): tIH tera' De' legh SutlaHtaHvIS\n• gham: SuD tIH/gamma/chIS tIH yIvIH Sut lo', pagh Doq yIqem cha'nob mo' pipette lo'\n• wovmoH: cha'nob Doq wa' yIchu' wovmoHmeH\n• yIqaD tIn, meH tI', laD cham: radio nIH yIchu' wa' wIv, SIbI' lo'lu'\ncha'nob lan: De'mey De'wI' bInpu'bogh Daq vo' cha'nob lanlu' ('ach cha'nob neH ghajbogh De'mey De'wI' bInpu'bogh Daq luq lanlu'), Doch chen rur nItlhmey tIn/tIchqu' chenmoHmeH; mozaik vo' ghItlh joq Windows Explorer vo' De'wI' legh mIw Daq tuQmoHlu'taHvIS je Qapla'. Ctrl+C ghItlh legh lanlu' (wa' nugh joq Webtoon mIw neH), Ctrl+V cha'nob lan, mozaik rur\n\n'lo'laH' nIH yIchu' cha'lu'DI', pagh Esc bIHarghaHmeH. Hoch choH qaStaHvIS vangHa'/vI'ang qonta' chelmoH.",
     "join_pages": "ghItlhmey qIpmoH",
     "join_pages_content": "chaH pIm mInDu' choH, nIH jIH → 'wIv mInDu' qIp' qIp mInDu' Hop joq poH. cha' rurmey chaw'moH De'wI' mInDu' Suv rur, pagh PNG motlh. DaSov yIchoH pagh yIpol mInDu'.\n\nmIw De' vinya mInD Daq emmavaina:\n• vIqraq mIw lo' (nIH jIH joq mahtaina): mInD tlhap Daq wa'DIch qIp mInD (Daq, mInDu' choHlu'DI', pagh Daq pa' choHlu'DI'be'), 'ej vIqraq chu'.\n• vIqraq mIw qIl: mInD lan Daq po' emmavaina pong \"qIp_xxx\".",
     "split_pages": "ghItlhmey mobmoH",
@@ -2105,6 +2113,7 @@
     "step_straighten": "nIt chenmoH : {angle}°",
     "step_straighten_auto": "nIt chenmoH chu'moH",
     "step_clone": "tIngmeH : {stroke_points} nIH lan",
+    "step_blur": "bochmoHmeH : {stroke_points} nIH lan",
     "step_text": "mu'mey : {count} block",
     "step_shapes": "Doch chen : {count} chen",
     "step_brightness": "wov'a' {brightness}, mI' {contrast}",

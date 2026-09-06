@@ -468,6 +468,7 @@ class _BatchMetadataOrchestrator:
             return
         dlg._stack.setCurrentIndex(0)
         dlg._page1.set_cover(None)
+        dlg._page1.clear_first_issue_cover()
         dlg._page1.set_filename("")
         dlg._page1.set_search_term("")
         dlg._page1._table.setRowCount(0)

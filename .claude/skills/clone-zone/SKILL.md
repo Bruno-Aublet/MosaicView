@@ -145,6 +145,7 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 
 ## Références croisées
 
+- `blur-stamp` — architecture jumelle (peinture continue, commit par stroke, pas de bouton "Valider", image de travail séparée, throttle d'affichage ~30fps) ; principale différence : pas de zone source à définir, masque circulaire sans dégradé assumé (censure), deux réglages indépendants taille/puissance plutôt qu'un seul.
 - `page-straighten` — architecture la plus proche dans le projet (outil migré dans son propre module, undo/redo unifié avec le panneau, plus de fenêtre dédiée) ; comparer les deux pour la différence de philosophie de validation (une opération validée une fois vs peinture continue commitée en continu).
 - `page-crop` — même famille d'outils de la barre, partage le bouton "Valider" flottant avec `page-straighten` mais pas avec le clonage (qui n'en a pas besoin) ; même absence de point d'entrée mosaïque.
 - `add-text-to-image` — autre implémentation indépendante du fond damier de transparence, aucune fonction partagée avec celle-ci.

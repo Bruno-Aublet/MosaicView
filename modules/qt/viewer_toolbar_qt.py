@@ -42,6 +42,7 @@ from modules.qt.crop_tool_qt import _CropMaskPanel
 from modules.qt.straighten_tool_qt import _StraightenAnglePanel
 from modules.qt.rotation_tool_qt import _RotationOptionsPanel
 from modules.qt.clone_tool_qt import _CloneOptionsPanel
+from modules.qt.blur_tool_qt import _BlurOptionsPanel
 from modules.qt.text_tool_qt import _TextOptionsPanel
 from modules.qt.sharpness_tool_qt import _SharpnessOptionsPanel, _UnsharpOptionsPanel
 from modules.qt.brightness_tool_qt import _BrightnessOptionsPanel
@@ -352,6 +353,7 @@ class _ViewerToolbar(QWidget):
         _add_tool(content_layout, "BTN_Shapes.png", "shapes")
         _add_tool(content_layout, "BTN_PiP.png", "paste_image")
         _add_tool(content_layout, "BTN_Clone_Zone.png", "clone")
+        _add_tool(content_layout, "BTN_Blur.png", "blur")
         _add_tool(content_layout, "BTN_Text.png", "text")
 
         # Retouche pixel (tonalité/couleur).
@@ -408,7 +410,7 @@ class _ViewerToolbar(QWidget):
         self._overlay_tip = OverlayTooltip(self.window())
         for _tid in (
             "crop", "straighten", "rotation", "shapes", "paste_image", "clone",
-            "text", "brightness", "levels", "saturation", "remove_colors",
+            "blur", "text", "brightness", "levels", "saturation", "remove_colors",
             "effects", "sharpness", "transparency", "compression",
             "color_depth", "image_mode",
         ):
@@ -429,6 +431,7 @@ class _ViewerToolbar(QWidget):
         self._angle_panel = _StraightenAnglePanel(viewer)
         self._rotation_panel = _RotationOptionsPanel(viewer)
         self._clone_panel = _CloneOptionsPanel(viewer)
+        self._blur_panel = _BlurOptionsPanel(viewer)
         self._text_panel = _TextOptionsPanel(viewer)
         self._sharpness_panel = _SharpnessOptionsPanel(viewer)
 
@@ -523,6 +526,7 @@ class _ViewerToolbar(QWidget):
         self._angle_panel._apply_theme()
         self._rotation_panel._apply_theme()
         self._clone_panel._apply_theme()
+        self._blur_panel._apply_theme()
         self._text_panel._apply_theme()
         self._sharpness_panel._apply_theme()
         self._unsharp_panel._apply_theme()
@@ -554,6 +558,11 @@ class _ViewerToolbar(QWidget):
             f"{_('dialogs.clone_zone_viewer.instruction')}"
         )
         self._overlay_tip.track(self._buttons["clone"], clone_tip)
+        blur_tip = (
+            f"<b>{_('viewer.toolbar_blur_tooltip')}</b><br>"
+            f"{_('viewer.toolbar_blur_instruction')}"
+        )
+        self._overlay_tip.track(self._buttons["blur"], blur_tip)
         text_tip = (
             f"<b>{_('viewer.toolbar_text_tooltip')}</b><br>"
             f"{_('dialogs.text_viewer.instruction')}"
@@ -626,6 +635,7 @@ class _ViewerToolbar(QWidget):
         self._angle_panel.retranslate()
         self._rotation_panel.retranslate()
         self._clone_panel.retranslate()
+        self._blur_panel.retranslate()
         self._text_panel.retranslate()
         self._sharpness_panel.retranslate()
         self._unsharp_panel.retranslate()
@@ -725,6 +735,9 @@ class _ViewerToolbar(QWidget):
         # l'image) : la source Ctrl+cliquée est effacée dès qu'on quitte l'outil.
         if previous_tool == "clone" and tool_id != "clone":
             canvas.clear_clone_source()
+        # Même principe que le clonage ci-dessus, mais rien à effacer à la
+        # désélection : pas de source/marqueur pour cet outil.
+        self._blur_panel.set_visible_for_tool(tool_id)
         # Les blocs de texte tracés sur la page courante ne sont pas effacés en
         # désélectionnant l'outil (comme le crop/straighten) — ils sont figés
         # (plus de focus/édition possible) et grisés (décision
@@ -1227,6 +1240,7 @@ class _ViewerToolbar(QWidget):
         self._angle_panel.set_visible_for_tool(self.active_tool)
         self._rotation_panel.set_visible_for_tool(self.active_tool)
         self._clone_panel.set_visible_for_tool(self.active_tool)
+        self._blur_panel.set_visible_for_tool(self.active_tool)
         self._text_panel.set_visible_for_tool(self.active_tool)
         self._sharpness_panel.set_visible_for_tool(self.active_tool)
         self._unsharp_panel.set_visible_for_tool(self.active_tool)
@@ -1261,6 +1275,7 @@ class _ViewerToolbar(QWidget):
         self._angle_panel.hide()
         self._rotation_panel.hide()
         self._clone_panel.hide()
+        self._blur_panel.hide()
         self._text_panel.hide()
         self._sharpness_panel.hide()
         self._unsharp_panel.hide()
@@ -1345,7 +1360,7 @@ class _ViewerToolbar(QWidget):
         # propre état pendant qu'il a la souris.
         if (self._crop_mask_panel.underMouse()
                 or self._angle_panel.underMouse() or self._rotation_panel.underMouse()
-                or self._clone_panel.underMouse()
+                or self._clone_panel.underMouse() or self._blur_panel.underMouse()
                 or self._text_panel.underMouse() or self._sharpness_panel.underMouse()
                 or self._unsharp_panel.underMouse() or self._brightness_panel.underMouse()
                 or self._saturation_panel.underMouse() or self._remove_colors_panel.underMouse()

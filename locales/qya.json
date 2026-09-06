@@ -97,6 +97,10 @@
     "toolbar_straighten_tooltip": "Lempina",
     "toolbar_crop_instruction": "Tirë cantalë pëtalë yesta; ta manta.",
     "toolbar_clone_tooltip": "Lúmequenta",
+    "toolbar_blur_tooltip": "Huita orë",
+    "toolbar_blur_instruction": "Hyarya tec : carë i huitaina ërë",
+    "blur_brush_size_label": "Quantë :",
+    "blur_strength_label": "Túrë :",
     "toolbar_text_tooltip": "Tecië",
     "toolbar_sharpness_tooltip": "Laica",
     "toolbar_unsharp_tooltip": "Laica Curwë",
@@ -616,6 +620,10 @@
       "clone_failed": {
         "title": "Russë",
         "message": "Úma lúmequenta i fána: {error}"
+      },
+      "blur_failed": {
+        "title": "Russë",
+        "message": "Úma huita."
       },
       "text_failed": {
         "title": "Russë",
@@ -1467,7 +1475,7 @@
     "flatten": "Lanya i aldasseli",
     "flatten_content": "Ai raincelma lyéva harya aldasseli, nota 'Lanya i aldasseli' an horya illi fánar at anwa erë.",
     "viewer": "Centuva",
-    "viewer_content": "Tyalë atta ata-nyérëa parma i-panya tyalië:\n• Tencelli ← →: telien imbe parmar\n• Tencel D: vista imbe 4 nótielë\n  - Parma erya: parma minya lú illumë\n  - Attëa parmar: parma 1 erinqua, tá 2-3, 4-5, ar hyaner\n  - Attëa parmar vórimar: parma 1 erinqua, tá 2-3, 3-4, 4-5, ar hyaner\n  - Webtoon: parmalis tyelpëva (webcomics), lenya nu 900px an tenna hanya; cirya lelehta ulya tyelpëo mir parma, tá vistëa parma nurtallo/telcollo\n• Cirya lelehta: telien lintë (ulya tyelpëo mir parma Webtoon-nótesse)\n• Ctrl+Cirya ar Ctrl+Ar/Únë: tyalië (tenna 1000% mí handa nelet emman)\n• Ctrl+0: Panya tyalië ammen\n• Ctrl+1: tyalië 100% (handa pixel nelet emman)\n• Faila ledya ar hate: hehta i emma tanwa írë ammen lá\n• Tencel F11: minya cemen\n• Atta-nyérëa: vista minya cemen\n• Tencel Esc: Avahaila i sina tecë (píta, lempina, canta…) hya auta i tyalë\n• Parma-tanwa: hepë auta i parma sina írë i tyalë auta (apa minya ar métima parma). Carnë landa cenima mí parmavorn handa fánar. Ilya nyérë i tyalë, quetta hyara nauva enta parma. Nurta métima parmasse, egor faila ledya i tyalë.\n\nTáma-lehta vílima: panya i cirya or i-yúva emman an cena sa (nurtëa sé apa quëalúmi). Nutë tancilë an tulta i véra táma:\n• Píta: hosta canta, tinta sa as i pelli, tér; Módel harya Cantalë\nForma hya tyalie quetie\n• Lempina: hosta lá as i má naa hyapaxëa hya orta; i cendo naa carna autómatavë; nutë tancilë forma an vista lempina autómata (cenna i cendo erya, álo teke)\n• Vilya/cilmë: er nutë vilya hya cilmë i parma\n• Ranyalë: Ctrl+nutë an cilë i tundo, tá ninca as i lelehta tanwa an ata-carë\n• Tecë: nutë an panya tecelëo canta, cilë tengwesta/nelet/karnë\n• Emmali: hosta ellipsi, canta, lá hya pilin, as máli an vista nelet\n\n• Rúcina (naite, calina/parpanwa, ninquelë, hehta karneli, mattéa): i vaeth cenima lá írë quatta\n• Nótielë: vista i more nómë/gamma/ninqua nómë as i rúcini, hya mape karnë ranco mir emma as i tuscar\n• Vistanwa: nutë karnë emmassë an carë sa vistanwa\n• Karnë sangwa, Vistar, Emma nótesse: cilë aphad nutëo formavë tanwesse, carna sí\nPata emma: pata i emma ambartello (i tanwa nauva quanta yando emma ná ambartello), mahtar an ahyalë/nyelië ve i emmar; carë yando pata parma ambarello alda hya parma Windows Explorerello mi cenil. Ctrl+C samna i parma cennaina (minya lambë hya Webtoon lambenna erya), Ctrl+V pata emma, ve mi alda\n\nTérë as i tanwe \"Tér\" írë cena sa, hya Esc an avahaila. Ilya vistalë ná hosta mir i véla Nurta/Ata-carë.",
+    "viewer_content": "Tyalë atta ata-nyérëa parma i-panya tyalië:\n• Tencelli ← →: telien imbe parmar\n• Tencel D: vista imbe 4 nótielë\n  - Parma erya: parma minya lú illumë\n  - Attëa parmar: parma 1 erinqua, tá 2-3, 4-5, ar hyaner\n  - Attëa parmar vórimar: parma 1 erinqua, tá 2-3, 3-4, 4-5, ar hyaner\n  - Webtoon: parmalis tyelpëva (webcomics), lenya nu 900px an tenna hanya; cirya lelehta ulya tyelpëo mir parma, tá vistëa parma nurtallo/telcollo\n• Cirya lelehta: telien lintë (ulya tyelpëo mir parma Webtoon-nótesse)\n• Ctrl+Cirya ar Ctrl+Ar/Únë: tyalië (tenna 1000% mí handa nelet emman)\n• Ctrl+0: Panya tyalië ammen\n• Ctrl+1: tyalië 100% (handa pixel nelet emman)\n• Faila ledya ar hate: hehta i emma tanwa írë ammen lá\n• Tencel F11: minya cemen\n• Atta-nyérëa: vista minya cemen\n• Tencel Esc: Avahaila i sina tecë (píta, lempina, canta…) hya auta i tyalë\n• Parma-tanwa: hepë auta i parma sina írë i tyalë auta (apa minya ar métima parma). Carnë landa cenima mí parmavorn handa fánar. Ilya nyérë i tyalë, quetta hyara nauva enta parma. Nurta métima parmasse, egor faila ledya i tyalë.\n\nTáma-lehta vílima: panya i cirya or i-yúva emman an cena sa (nurtëa sé apa quëalúmi). Nutë tancilë an tulta i véra táma:\n• Píta: hosta canta, tinta sa as i pelli, tér; Módel harya Cantalë\nForma hya tyalie quetie\n• Lempina: hosta lá as i má naa hyapaxëa hya orta; i cendo naa carna autómatavë; nutë tancilë forma an vista lempina autómata (cenna i cendo erya, álo teke)\n• Vilya/cilmë: er nutë vilya hya cilmë i parma\n• Ranyalë: Ctrl+nutë an cilë i tundo, tá ninca as i lelehta tanwa an ata-carë\n• Huita orë: Hyarya tec, carë i huitaina ërë (quantë ar tûrë ninca separië)\n• Tecë: nutë an panya tecelëo canta, cilë tengwesta/nelet/karnë\n• Emmali: hosta ellipsi, canta, lá hya pilin, as máli an vista nelet\n\n• Rúcina (naite, calina/parpanwa, ninquelë, hehta karneli, mattéa): i vaeth cenima lá írë quatta\n• Nótielë: vista i more nómë/gamma/ninqua nómë as i rúcini, hya mape karnë ranco mir emma as i tuscar\n• Vistanwa: nutë karnë emmassë an carë sa vistanwa\n• Karnë sangwa, Vistar, Emma nótesse: cilë aphad nutëo formavë tanwesse, carna sí\nPata emma: pata i emma ambartello (i tanwa nauva quanta yando emma ná ambartello), mahtar an ahyalë/nyelië ve i emmar; carë yando pata parma ambarello alda hya parma Windows Explorerello mi cenil. Ctrl+C samna i parma cennaina (minya lambë hya Webtoon lambenna erya), Ctrl+V pata emma, ve mi alda\n\nTérë as i tanwe \"Tér\" írë cena sa, hya Esc an avahaila. Ilya vistalë ná hosta mir i véla Nurta/Ata-carë.",
     "join_pages": "Oacë parmar",
     "join_pages_content": "Cilë lië pitya i hilyala, formë telpina → 'Oantëa cílina pitya' oantëasë pitya i tereva hya i tana. I tanwa emma i nauva véla i cenima pitya emma qui ilyar tá ve, hya PNG i minya norma. Nauva cilë avatyar hya sávë i yára pitya.\n\nI vinya pitya sata mí i emmavaina:\n• Vala rinwë norma (cenima hya mahtaina): i pitya camë i sata minya oantëa pitya (i sata, qui i yára pitya avatyaina, hya nó tanen, qui sávëa), ar antëa rinwë.\n• Úma rinwë norma: i pitya antaina mi i yesta i emmavaina nossë \"Oacëa_xxx\".",
     "split_pages": "Rahta parmar",
@@ -2105,6 +2113,7 @@
     "step_straighten": "Lempina : {angle}°",
     "step_straighten_auto": "Lempina autómata",
     "step_clone": "Lúmequenta : {stroke_points} nutië",
+    "step_blur": "Huitë : {stroke_points} nutië",
     "step_text": "Tecië : {count} canta",
     "step_shapes": "Cantalë : {count} canta",
     "step_brightness": "Cala {brightness}, racca {contrast}",
