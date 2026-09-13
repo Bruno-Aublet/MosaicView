@@ -291,6 +291,22 @@ class BlurCanvasMixin:
         self._blur_brush_radius = _BlurOptionsPanel._BRUSH_SIZE_DEFAULT
         self._blur_strength = _BlurOptionsPanel._STRENGTH_DEFAULT
         self._blur_brush_cursor = None
+        # Dernier point flouté (coordonnées image), point de départ d'une
+        # éventuelle ligne droite Shift+clic — persiste entre deux strokes
+        # distincts (contrairement à _blur_paint_last, remis à None à chaque
+        # relâchement), remis à None au changement de page (voir
+        # image_viewer_qt.py, à côté de clear_clone_source()).
+        self._blur_last_point_img: tuple | None = None
+        # Mode "aperçu de ligne droite" (Shift maintenu pendant le clic) :
+        # aucune application de flou tant que le clic n'est pas relâché,
+        # juste un aperçu redessiné à chaque mouvement (paint_blur_line_preview).
+        # _blur_line_end en coordonnées IMAGE (pas widget) comme
+        # _blur_last_point_img : reconverti en widget à chaque paintEvent,
+        # sinon un zoom/pan pendant que Shift est maintenu désynchroniserait
+        # l'extrémité affichée de l'image (voir skill viewers, piège
+        # transversal "overlays interactifs qui se désynchronisent...").
+        self._blur_line_mode = False
+        self._blur_line_end: tuple | None = None
 
     def set_blur_brush_radius(self, r: int):
         self._blur_brush_radius = r
@@ -310,14 +326,49 @@ class BlurCanvasMixin:
         iy = (pt.y() - self.display_offset_y) / zoom
         return ix, iy
 
+    def _blur_image_to_widget(self, ix: float, iy: float) -> QPoint:
+        zoom = self._viewer.zoom_level or 1.0
+        return QPoint(int(self.display_offset_x + ix * zoom),
+                       int(self.display_offset_y + iy * zoom))
+
+    # ── Rendu (appelé depuis _ViewerCanvas.paintEvent) ──────────────────────
+
+    def paint_blur_line_preview(self, painter):
+        """Ligne droite en pointillés pendant un aperçu Shift+clic (voir
+        _init_blur_state) — à appeler en fin de paintEvent, après l'image.
+        Rien tant que le clic n'est pas relâché : le flou n'est appliqué qu'au
+        relâchement (_blur_apply_line), même principe que le rubber-band de
+        crop ou le trait de redressage manuel."""
+        if not self._blur_line_mode or self._blur_last_point_img is None or self._blur_line_end is None:
+            return
+        from PySide6.QtGui import QPen, QColor
+        start = self._blur_image_to_widget(*self._blur_last_point_img)
+        end = self._blur_image_to_widget(*self._blur_line_end)
+        pen = QPen(QColor("red"), 2, Qt.PenStyle.DashLine)
+        painter.setPen(pen)
+        painter.drawLine(start, end)
+
     # ── Événements souris (appelés depuis _ViewerCanvas.mousePress/Move/ReleaseEvent) ──
 
     def blur_mouse_press(self, event) -> bool:
         pos = event.position().toPoint()
         self._blur_painting = True
         self._blur_paint_last = pos
+
+        shift_down = bool(event.modifiers() & Qt.ShiftModifier)
+        if shift_down and self._blur_last_point_img is not None:
+            # Shift déjà enfoncé au clic et un point de départ existe : pas
+            # d'application immédiate, juste l'amorce de l'aperçu de ligne
+            # droite (voir paint_blur_line_preview) — appliqué seulement au
+            # relâchement (blur_mouse_release).
+            self._blur_line_mode = True
+            self._blur_line_end = self._blur_widget_to_image(pos)
+            self.update()
+            return True
+
         ix, iy = self._blur_widget_to_image(pos)
         self._viewer._on_blur_paint_stroke(ix, iy)
+        self._blur_last_point_img = (ix, iy)
         return True
 
     def blur_update_cursor(self, event):
@@ -328,10 +379,37 @@ class BlurCanvasMixin:
         self.setCursor(self._blur_brush_cursor)
 
     def blur_mouse_move(self, event) -> bool:
-        """Retourne True si géré (bouton gauche enfoncé, outil blur actif)."""
+        """Retourne True si géré (bouton gauche enfoncé, outil blur actif).
+
+        L'état de Shift est revérifié à chaque mouvement (pas seulement figé
+        au clic) : la contrainte de ligne droite ne tient que tant que Shift
+        reste enfoncé pendant tout le geste. Bascule dans les deux sens :
+        - Shift enfoncé en cours de stroke libre → passe en aperçu de ligne,
+          point de départ = dernier point réellement peint jusque-là.
+        - Shift relâché en cours d'aperçu de ligne → abandonne l'aperçu (rien
+          n'est appliqué de force) et reprend un stroke libre à partir d'ici.
+        """
         if not self._blur_painting:
             return False
         pos = event.position().toPoint()
+        shift_down = bool(event.modifiers() & Qt.ShiftModifier)
+
+        if shift_down and self._blur_last_point_img is not None:
+            self._blur_line_mode = True
+            self._blur_line_end = self._blur_widget_to_image(pos)
+            self.update()
+            return True
+
+        if self._blur_line_mode:
+            # Shift relâché : abandon de l'aperçu, reprise en stroke libre à
+            # partir de la position actuelle (rien n'est peint sur l'ancienne
+            # trajectoire d'aperçu).
+            self._blur_line_mode = False
+            self._blur_line_end = None
+            self._blur_paint_last = pos
+            self.update()
+            return True
+
         # Interpolation si déplacement rapide, même principe que le clonage
         # (clone_tool_qt.py::CloneCanvasMixin.clone_mouse_move) — sans ça, un
         # déplacement rapide de la souris laisse des trous non floutés dans
@@ -350,10 +428,12 @@ class BlurCanvasMixin:
                     iy = self._blur_paint_last.y() + int(dy * t)
                     iix2, iiy2 = self._blur_widget_to_image(QPoint(ix, iy))
                     self._viewer._on_blur_paint_stroke(iix2, iiy2)
+                    self._blur_last_point_img = (iix2, iiy2)
                 self._blur_paint_last = pos
         else:
             iix, iiy = self._blur_widget_to_image(pos)
             self._viewer._on_blur_paint_stroke(iix, iiy)
+            self._blur_last_point_img = (iix, iiy)
             self._blur_paint_last = pos
         return True
 
@@ -363,6 +443,31 @@ class BlurCanvasMixin:
             return False
         self._blur_painting = False
         self._blur_paint_last = None
+
+        if self._blur_line_mode:
+            # Relâchement en aperçu de ligne droite : applique le flou le
+            # long de toute la droite dernier point → point de relâchement,
+            # d'un coup (rien n'a été peint pendant le déplacement de
+            # l'aperçu) — même pas d'interpolation que le stroke libre, pour
+            # ne laisser aucun trou le long du segment.
+            self._blur_line_mode = False
+            if self._blur_line_end is not None:
+                end_ix, end_iy = self._blur_line_end
+            else:
+                end_ix, end_iy = self._blur_widget_to_image(event.position().toPoint())
+            self._blur_line_end = None
+            start_ix, start_iy = self._blur_last_point_img
+            dx = end_ix - start_ix
+            dy = end_iy - start_iy
+            dist = (dx * dx + dy * dy) ** 0.5
+            step_img = max(1.0, self._blur_brush_radius * 0.5)
+            steps = max(1, int(dist / step_img))
+            for i in range(1, steps + 1):
+                t = i / steps
+                self._viewer._on_blur_paint_stroke(start_ix + dx * t, start_iy + dy * t)
+            self._blur_last_point_img = (end_ix, end_iy)
+            self.update()
+
         self._viewer._on_blur_paint_end()
         return True
 

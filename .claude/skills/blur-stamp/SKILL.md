@@ -1,6 +1,6 @@
 ---
 name: blur-stamp
-description: Localiser ou modifier le tampon de flou (peinture au clic maintenu pour flouter des pixels, taille et puissance réglables séparément), outil "blur" de la barre d'outils flottante de la visionneuse principale. Utiliser dès qu'une tâche touche à blur_tool_qt.py, BlurCanvasMixin, BlurViewerMixin, _BlurOptionsPanel, ou au bouton/menu "Tampon de flou".
+description: Localiser ou modifier le tampon de flou (peinture au clic maintenu pour flouter des pixels, taille et puissance réglables séparément, ligne droite au Shift+clic), outil "blur" de la barre d'outils flottante de la visionneuse principale. Utiliser dès qu'une tâche touche à blur_tool_qt.py, BlurCanvasMixin, BlurViewerMixin, _BlurOptionsPanel, ou au bouton/menu "Tampon de flou".
 ---
 
 # Tampon de flou — MosaicView
@@ -15,7 +15,7 @@ Architecturalement calqué sur `clone-zone` (même famille de pattern : peinture
 
 Tout le mécanisme (état/interactions souris + commit dans l'historique + panneau de réglages + rendu pur) tient dans ce seul module, conformément à la règle CLAUDE.md "ne jamais migrer le code d'un outil dans `image_viewer_qt.py`" :
 
-- **`BlurCanvasMixin`** (hérité par `_ViewerCanvas`, `image_viewer_qt.py`) — état du pinceau (`_blur_brush_radius`, `_blur_strength`), gestion souris (`blur_mouse_press`/`blur_mouse_move`/`blur_mouse_release`, délégation depuis les handlers réels de `_ViewerCanvas`), curseur en cercle (`blur_update_cursor`). **Aucun overlay dessiné** — contrairement au clonage (marqueur de source), rien à resynchroniser au pan/zoom/resize en dehors du curseur lui-même, qui suit nativement la souris.
+- **`BlurCanvasMixin`** (hérité par `_ViewerCanvas`, `image_viewer_qt.py`) — état du pinceau (`_blur_brush_radius`, `_blur_strength`), gestion souris (`blur_mouse_press`/`blur_mouse_move`/`blur_mouse_release`, délégation depuis les handlers réels de `_ViewerCanvas`), curseur en cercle (`blur_update_cursor`), aperçu de la ligne droite Shift+clic (`paint_blur_line_preview`, voir section dédiée). Contrairement au clonage (marqueur de source fixe), rien à resynchroniser au pan/zoom/resize en dehors du curseur et de cet aperçu, qui suivent nativement la souris.
 - **`BlurViewerMixin`** (hérité par `ImageViewer`) — peinture effective (`_on_blur_paint_stroke`, `_blur_apply_stamp`), aperçu pendant le stroke (`_blur_refresh_display`), commit final (`_on_blur_paint_end`), rejeu depuis une macro (`perform_blur_step`).
 - **`_BlurOptionsPanel`** (`QWidget`) — panneau flottant de réglages (taille du pinceau, puissance du flou), affiché sous la barre d'outils quand l'outil est actif.
 - **`make_blur_brush_cursor`** — fonction de rendu pure (curseur en cercle simple, sans croix centrale contrairement au curseur cible du clonage — pas de notion de "point exact visé" ici, tout le disque est traité identiquement).
@@ -62,6 +62,20 @@ Même principe que `clone_tool_qt.py::_clone_work_img` : une copie PIL RGBA (`se
 
 Même mécanisme que `clone_tool_qt.py::CloneCanvasMixin.clone_mouse_move` : si la souris se déplace plus vite qu'un pas de `max(1, zoom * brush_radius * 0.5)` pixels widget entre deux événements, le code interpole plusieurs points intermédiaires et applique le flou à chacun — sans ça, un mouvement rapide laisserait des trous non floutés dans le trait.
 
+## Ligne droite au clavier — Shift, `_blur_last_point_img`/`_blur_line_mode`
+
+Maintenir Shift pendant le geste contraint le flou à une ligne droite au lieu du tracé libre de la souris, en repartant du **dernier point flouté** (`BlurCanvasMixin._blur_last_point_img`, coordonnées image) — qu'il vienne d'un stroke tout juste terminé ou d'un simple clic isolé plus tôt. Cet état persiste entre deux strokes distincts (contrairement à `_blur_paint_last`, remis à `None` à chaque relâchement) ; remis à `None` par `ImageViewer` au changement de page, aux mêmes endroits que `clear_clone_source()`.
+
+`_blur_line_end` (l'autre extrémité, sous la souris pendant l'aperçu) est lui aussi stocké en coordonnées **image**, pas widget, et reconverti par `_blur_image_to_widget` uniquement dans `paint_blur_line_preview` — comme `_blur_last_point_img`, conformément au pattern documenté dans le skill `viewers` (section "overlays interactifs qui se désynchronisent de l'image au pan/zoom/resize") : sans ça, zoomer ou redimensionner la fenêtre pendant que Shift est maintenu désynchroniserait l'extrémité affichée de l'aperçu par rapport à l'image sous-jacente.
+
+L'état de Shift (`event.modifiers() & Qt.ShiftModifier`) est revérifié à **chaque** `blur_mouse_move`, pas seulement figé au clic — la contrainte ne tient que tant que la touche reste enfoncée pendant tout le geste :
+
+- **Shift enfoncé + point de départ connu** → `_blur_line_mode = True` : aucune application de flou tant que le clic n'est pas relâché, seul un aperçu en pointillés rouges (`paint_blur_line_preview`, appelée depuis `_ViewerCanvas.paintEvent`) est redessiné entre le dernier point et la position courante (`_blur_line_end`). Le flou n'est appliqué qu'au relâchement (`blur_mouse_release`), d'un coup, en interpolant tous les points le long du segment (pas de dégradé ni de trou, même principe que l'interpolation du tracé libre).
+- **Shift relâché en cours d'aperçu** → abandonne l'aperçu sans rien appliquer sur la trajectoire affichée, reprend un stroke libre normal à partir de la position actuelle.
+- **Shift enfoncé en cours de stroke libre** → bascule vers l'aperçu de ligne, point de départ = dernier point réellement peint jusque-là.
+- **Un clic isolé (sans Shift) suivi d'un Shift+clic isolé ailleurs** : comme il n'y a pas eu de mouvement pendant le second clic, aucun aperçu n'est visible, mais le relâchement applique quand même la ligne droite entre les deux points.
+- **Touche Échap** pendant un aperçu de ligne en cours (`ImageViewer._on_escape`) annule l'aperçu sans rien appliquer — avant la branche clonage/crop/straighten dans l'ordre de priorité de ce handler.
+
 ## Throttle d'affichage — `_blur_display_timer`, ~30 fps
 
 Même mécanisme que le clonage (`_blur_display_timer`, `QElapsedTimer`) : le pixmap affiché n'est rafraîchi que si au moins 33 ms se sont écoulées depuis le dernier rafraîchissement — l'image de travail PIL, elle, est modifiée à **chaque** point peint sans throttle (seul l'affichage est retardé).
@@ -86,9 +100,9 @@ Le curseur en cercle (`make_blur_brush_cursor`) est reconstruit dynamiquement à
 
 ## Traductions
 
-`locales/fr.json` : `viewer.toolbar_blur_tooltip`/`toolbar_blur_instruction`, `viewer.blur_brush_size_label`/`blur_strength_label`, `messages.errors.blur_failed.title`/`.message`, `macro.step_blur` — propagées aux 46 fichiers de langue (40 naturelles + tlh/sjn/qya latin + 3 CSUR). Aucun mot existant pour "flou" dans les 3 lexiques de langues fictives au moment de l'ajout — néologismes construits sur des racines déjà attestées dans chaque fichier (tlh `boch`=trouble/sale + causatif `-moH`, sjn/qya racine `hui-`=brume/ombre) plutôt qu'improvisés sans méthode. Voir skill `add-translation`.
+`locales/fr.json` : `viewer.toolbar_blur_tooltip`/`toolbar_blur_instruction`, `viewer.blur_brush_size_label`/`blur_strength_label`, `messages.errors.blur_failed.title`/`.message`, `macro.step_blur`, plus la puce "Tampon de flou" de `help.viewer_content` — propagées aux 45 fichiers de langue cibles (42 naturelles/latines dont tlh/sjn/qya + 3 CSUR). Néologisme "flou" construit sur des racines déjà attestées dans chaque lexique de langue fictive (tlh `boch`=trouble/sale + causatif `-moH`, sjn/qya racine `hui-`=brume/ombre) plutôt qu'improvisé sans méthode ; le raccourci Shift/ligne droite (`_blur_last_point_img`, voir section dédiée) réutilise dans ces 3 langues un vocabulaire "maintenir"/"ligne droite"/"droit" déjà confirmé ailleurs dans chaque fichier (`Tach`/`Hyarya`=maintenir, `lath`/`renta`+`thala`=ligne droite/droit) — voir les mémoires `reference_sjn_sindarin_glossary`/`reference_qya_quenya_glossary`/`reference_tlh_klingon_glossary`. Formulation minimale pour tlh (`Shift HIj : nIt lut yIcha'`), faute de mot attesté pour "maintenir une touche" dans ce fichier — grammaire non garantie, voir le lexique klingon pour le détail. Voir skill `add-translation`.
 
-**Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `clone-zone`/`page-straighten`/`add-text-to-image`.
+Documenté dans le mode d'emploi (`user_guide_qt.py`) au sein de la section "Visionneuse" (`help.viewer_content`, pas de section dédiée), avec la barre d'outils flottante et les autres outils — voir skill `user-guide`.
 
 ## Comment étendre
 
@@ -106,16 +120,17 @@ Le curseur en cercle (`make_blur_brush_cursor`) est reconstruit dynamiquement à
 - **Cercle plein sans dégradé — décision assumée**, ne pas "améliorer" en ajoutant un flou de bord sans confirmation explicite (voir intro).
 - **Le flou s'accumule volontairement** — repasser sur une zone déjà floutée l'assombrit davantage ; ce n'est pas un bug à corriger.
 - **`_VALIDATE_KEYS` n'a pas d'entrée `"blur"`** — ne pas en ajouter une par réflexe en copiant le pattern crop/straighten : cet outil n'a jamais besoin du bouton "Valider" flottant.
-- **Aucune section dédiée dans le mode d'emploi.**
+- **Pas de section dédiée dans le mode d'emploi** — documenté comme une puce parmi d'autres dans la section "Visionneuse" (`help.viewer_content`), pas dans une `_CollapsibleSection` à part.
 - **Pas de point d'entrée depuis la mosaïque.**
+- **Ligne droite Shift+clic** : le point de départ (`_blur_last_point_img`) est celui du dernier flou réellement appliqué, pas une notion séparée à maintenir à la main — ne pas réintroduire un état parallèle en modifiant ce mécanisme.
 
 ## Références croisées
 
-- `clone-zone` — architecture jumelle (peinture continue, commit par stroke, pas de bouton "Valider", image de travail séparée, throttle d'affichage ~30fps) ; principale différence : pas de zone source à définir, masque circulaire sans dégradé assumé (censure), deux réglages indépendants taille/puissance plutôt qu'un seul.
+- `clone-zone` — architecture jumelle (peinture continue, commit par stroke, pas de bouton "Valider", image de travail séparée, throttle d'affichage ~30fps, **même mécanisme de ligne droite Shift+clic** — voir sa section dédiée) ; principale différence : pas de zone source à définir, masque circulaire sans dégradé assumé (censure), deux réglages indépendants taille/puissance plutôt qu'un seul.
 - `viewers` — architecture générale de la barre d'outils flottante (règle des modules séparés, groupe "ajout de contenu").
 - `apply-image-operation` — pattern général de modification de `entry['bytes']`.
 - `undo-redo` — mécanique de l'historique global de l'appli.
 - `macro-tool` — moteur d'enregistrement/lecture de macros, `perform_blur_step` en est un consommateur.
 - `comicinfo-metadata-editor` — mise à jour des attributs de page dans `ComicInfo.xml` après un stroke.
 - `add-translation` — procédure complète de traduction, néologismes "flou" construits pour tlh/sjn/qya.
-- `user-guide` — absence actuelle de section dédiée, à vérifier si une tâche touche à ce fichier.
+- `user-guide` — structure des sections du mode d'emploi ; ce tampon est documenté dans la section "Visionneuse", pas dans une section dédiée.

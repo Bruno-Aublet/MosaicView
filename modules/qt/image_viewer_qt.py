@@ -667,6 +667,14 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
         # clone_tool_qt.py::CloneCanvasMixin.paint_clone_marker).
         self.paint_clone_marker(painter)
 
+        # Aperçu de ligne droite du tampon de clonage (Shift+clic, voir
+        # clone_tool_qt.py::CloneCanvasMixin.paint_clone_line_preview).
+        self.paint_clone_line_preview(painter)
+
+        # Aperçu de ligne droite du tampon de flou (Shift+clic, voir
+        # blur_tool_qt.py::BlurCanvasMixin.paint_blur_line_preview).
+        self.paint_blur_line_preview(painter)
+
         # Formes (outil "shapes", voir shapes_tool_qt.py::ShapeCanvasMixin.paint_shapes).
         self.paint_shapes(painter)
 
@@ -1848,6 +1856,12 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             # Ctrl+cliquée est simplement effacée, aucun travail en attente
             # à restaurer.
             self._canvas.clear_clone_source()
+            # Idem pour le flou : pas de travail en attente à restaurer, mais
+            # le dernier point flouté (point de départ d'une éventuelle ligne
+            # droite Shift+clic) ne doit pas survivre à un changement de page.
+            self._canvas._blur_last_point_img = None
+            self._canvas._blur_line_mode = False
+            self._canvas._blur_line_end = None
             # Idem pour la netteté et la
             # luminosité/contraste : pas de persistance par
             # page — le relâchement du slider commit déjà tout, donc changer
@@ -1891,6 +1905,9 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._sync_effects_panel()
             self._sync_image_mode_panel()
             self._canvas.clear_clone_source()
+            self._canvas._blur_last_point_img = None
+            self._canvas._blur_line_mode = False
+            self._canvas._blur_line_end = None
             self.display_image(keep_crop_rect=True)
 
     def _check_clear_bookmark_on_last_page(self, img_indices, current_pos):
@@ -2326,11 +2343,29 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
             self._toolbar._angle_panel.reset()
             self._straighten_by_page.pop(self.current_idx, None)
             self._canvas._update_cancel_btn_state()
+        elif self._canvas._clone_line_mode:
+            # Annule l'aperçu de ligne droite en cours (Shift+clic maintenu)
+            # sans effacer la source Ctrl+cliquée elle-même — rien n'a encore
+            # été appliqué, contrairement à un stroke normal déjà commité au
+            # relâchement. Vérifié AVANT _clone_source_img : sinon Échap
+            # effacerait toute la source au lieu de juste annuler l'aperçu.
+            self._canvas._clone_line_mode = False
+            self._canvas._clone_line_end = None
+            self._canvas._clone_painting = False
+            self._canvas.update()
         elif self._canvas._clone_source_img is not None:
             # Efface la source Ctrl+cliquée — rien d'autre à annuler pour cet
             # outil (le clonage n'a pas de "travail en
             # attente de validation" : chaque coup de tampon est déjà commité).
             self._canvas.clear_clone_source()
+        elif self._canvas._blur_line_mode:
+            # Annule l'aperçu de ligne droite en cours (Shift+clic maintenu) —
+            # rien n'a encore été appliqué, contrairement à un stroke normal
+            # déjà commité au relâchement.
+            self._canvas._blur_line_mode = False
+            self._canvas._blur_line_end = None
+            self._canvas._blur_painting = False
+            self._canvas.update()
         elif self._canvas.has_text_blocks:
             self._canvas.clear_text_blocks()
             self._toolbar._text_panel.set_visible_for_tool(self._toolbar.active_tool)

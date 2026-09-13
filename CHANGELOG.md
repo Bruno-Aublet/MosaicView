@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.8.5] - 2026-09-13 - Straight-line shortcut for the blur stamp and clone stamp tools
+
+- The main viewer's blur stamp and clone stamp tools now support drawing a straight line: hold Shift while dragging to preview it and apply it on release, or Shift-click right after a first click to draw one instantly between the two points.
+
 ## [1.8.4] - 2026-09-06 - Blur stamp tool in the main viewer, batch metadata fetch cover fix
 
 - Added a "Blur stamp" tool to the main viewer's floating toolbar: paint over any part of a page to permanently blur it, with independent sliders for the brush's size and its strength (how strong the blur itself is inside that brush), meant chiefly for reliably hiding text or other content beyond recognition. Like the clone stamp, each stroke commits immediately as its own undo/redo step; passing over the same spot again stacks more blur on top rather than resetting it.

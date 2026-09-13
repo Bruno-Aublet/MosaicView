@@ -404,10 +404,21 @@ class CloneCanvasMixin:
         self._clone_mode = 'fixed'          # 'fixed' ou 'relative'
         self._clone_brush_radius = 20
         self._clone_crosshair_cursor = None
+        # Dernier point peint (coordonnées image), point de départ d'une
+        # éventuelle ligne droite Shift+clic — même mécanisme que
+        # blur_tool_qt.py::BlurCanvasMixin._blur_last_point_img. Persiste
+        # entre deux strokes distincts, remis à None par clear_clone_source()
+        # (déjà appelé au changement de page).
+        self._clone_last_point_img: tuple | None = None
+        self._clone_line_mode = False
+        self._clone_line_end: tuple | None = None  # coordonnées image
 
     def clear_clone_source(self):
         self._clone_source_img = None
         self._clone_marker_widget = None
+        self._clone_last_point_img = None
+        self._clone_line_mode = False
+        self._clone_line_end = None
         self.update()
 
     def _get_effective_clone_source(self, dest_x: float, dest_y: float) -> tuple:
@@ -486,6 +497,22 @@ class CloneCanvasMixin:
             r_screen = max(1, int(self._clone_brush_radius * (self._viewer.zoom_level or 1.0) / 2))
             self._draw_clone_marker(painter, clone_marker, r_screen)
 
+    def paint_clone_line_preview(self, painter):
+        """Ligne droite en pointillés pendant un aperçu Shift+clic (voir
+        _init_clone_state) — à appeler en fin de paintEvent, après l'image et
+        paint_clone_marker. Même principe que
+        blur_tool_qt.py::BlurCanvasMixin.paint_blur_line_preview : rien tant
+        que le clic n'est pas relâché, le tamponnage n'est appliqué qu'au
+        relâchement (clone_mouse_release)."""
+        if not self._clone_line_mode or self._clone_last_point_img is None or self._clone_line_end is None:
+            return
+        from PySide6.QtGui import QPen, QColor
+        start = self._clone_image_to_widget(*self._clone_last_point_img)
+        end = self._clone_image_to_widget(*self._clone_line_end)
+        pen = QPen(QColor("red"), 2, Qt.PenStyle.DashLine)
+        painter.setPen(pen)
+        painter.drawLine(start, end)
+
     # ── Événements souris (appelés depuis _ViewerCanvas.mousePress/Move/ReleaseEvent) ──
 
     def clone_mouse_press(self, event) -> bool:
@@ -504,9 +531,23 @@ class CloneCanvasMixin:
             self._clone_painting = True
             self._clone_paint_last = pos
             ix, iy = self._clone_widget_to_image(pos)
+
+            shift_down = bool(event.modifiers() & Qt.ShiftModifier)
+            if shift_down and self._clone_last_point_img is not None:
+                # Shift déjà enfoncé au clic et un point de départ existe :
+                # pas d'application immédiate, juste l'amorce de l'aperçu de
+                # ligne droite (voir paint_clone_line_preview) — appliqué
+                # seulement au relâchement (clone_mouse_release), même
+                # mécanisme que blur_tool_qt.py::BlurCanvasMixin.
+                self._clone_line_mode = True
+                self._clone_line_end = (ix, iy)
+                self.update()
+                return True
+
             src_x, src_y = self._get_effective_clone_source(ix, iy)
             self._clone_live_marker_widget = self._clone_image_to_widget(src_x, src_y)
             self._viewer._on_clone_paint_stroke(ix, iy)
+            self._clone_last_point_img = (ix, iy)
         return True
 
     def clone_update_cursor(self, event):
@@ -523,10 +564,34 @@ class CloneCanvasMixin:
             self.setCursor(Qt.CrossCursor)
 
     def clone_mouse_move(self, event) -> bool:
-        """Retourne True si géré (bouton gauche enfoncé, outil clone actif)."""
+        """Retourne True si géré (bouton gauche enfoncé, outil clone actif).
+
+        L'état de Shift est revérifié à chaque mouvement (pas seulement figé
+        au clic), même mécanisme que blur_tool_qt.py::BlurCanvasMixin.
+        blur_mouse_move : la contrainte de ligne droite ne tient que tant que
+        Shift reste enfoncé pendant tout le geste, avec bascule dans les deux
+        sens (Shift pressé/relâché en cours de stroke)."""
         if not self._clone_painting:
             return False
         pos = event.position().toPoint()
+        shift_down = bool(event.modifiers() & Qt.ShiftModifier)
+
+        if shift_down and self._clone_last_point_img is not None:
+            self._clone_line_mode = True
+            self._clone_line_end = self._clone_widget_to_image(pos)
+            self.update()
+            return True
+
+        if self._clone_line_mode:
+            # Shift relâché : abandon de l'aperçu, reprise en stroke libre à
+            # partir de la position actuelle (rien n'est peint sur l'ancienne
+            # trajectoire d'aperçu).
+            self._clone_line_mode = False
+            self._clone_line_end = None
+            self._clone_paint_last = pos
+            self.update()
+            return True
+
         src_x, src_y = self._get_effective_clone_source(*self._clone_widget_to_image(pos))
         self._clone_live_marker_widget = self._clone_image_to_widget(src_x, src_y)
         self.update()
@@ -547,10 +612,12 @@ class CloneCanvasMixin:
                     iy = self._clone_paint_last.y() + int(dy * t)
                     iix2, iiy2 = self._clone_widget_to_image(QPoint(ix, iy))
                     self._viewer._on_clone_paint_stroke(iix2, iiy2)
+                    self._clone_last_point_img = (iix2, iiy2)
                 self._clone_paint_last = pos
         else:
             iix, iiy = self._clone_widget_to_image(pos)
             self._viewer._on_clone_paint_stroke(iix, iiy)
+            self._clone_last_point_img = (iix, iiy)
             self._clone_paint_last = pos
         return True
 
@@ -560,6 +627,31 @@ class CloneCanvasMixin:
             return False
         self._clone_painting = False
         self._clone_paint_last = None
+
+        if self._clone_line_mode:
+            # Relâchement en aperçu de ligne droite : applique le tampon le
+            # long de toute la droite dernier point -> point de relâchement,
+            # d'un coup — même principe que
+            # blur_tool_qt.py::BlurCanvasMixin.blur_mouse_release. Le calcul
+            # de la source effective (_get_effective_clone_source) reste
+            # inchangé : le premier point interpolé démarre le stroke
+            # normalement (pose _clone_stroke_start_dest/_start_src dans
+            # _on_clone_paint_stroke), le décalage source/dest s'applique donc
+            # tel quel le long du segment.
+            self._clone_line_mode = False
+            end_ix, end_iy = self._clone_line_end
+            self._clone_line_end = None
+            start_ix, start_iy = self._clone_last_point_img
+            dx = end_ix - start_ix
+            dy = end_iy - start_iy
+            dist = (dx * dx + dy * dy) ** 0.5
+            step_img = max(1.0, self._clone_brush_radius * 0.5)
+            steps = max(1, int(dist / step_img))
+            for i in range(1, steps + 1):
+                t = i / steps
+                self._viewer._on_clone_paint_stroke(start_ix + dx * t, start_iy + dy * t)
+            self._clone_last_point_img = (end_ix, end_iy)
+
         self._clone_live_marker_widget = None
         self._viewer._on_clone_paint_end()
         self.update()

@@ -1,6 +1,6 @@
 ---
 name: clone-zone
-description: Localiser ou modifier le tampon de clonage (Ctrl+clic pour définir la zone source, peinture au clic maintenu pour dupliquer des pixels), outil "clone" de la barre d'outils flottante de la visionneuse principale. Utiliser dès qu'une tâche touche à clone_tool_qt.py, CloneCanvasMixin, CloneViewerMixin, _CloneOptionsPanel, ou au bouton/menu "Clonage de zone".
+description: Localiser ou modifier le tampon de clonage (Ctrl+clic pour définir la zone source, peinture au clic maintenu pour dupliquer des pixels, ligne droite au Shift+clic), outil "clone" de la barre d'outils flottante de la visionneuse principale. Utiliser dès qu'une tâche touche à clone_tool_qt.py, CloneCanvasMixin, CloneViewerMixin, _CloneOptionsPanel, ou au bouton/menu "Clonage de zone".
 ---
 
 # Tampon de clonage — MosaicView
@@ -77,6 +77,20 @@ Contrairement au crop/straighten (qui lisent `ensure_image_loaded(entry)` et app
 
 Si la souris se déplace plus vite qu'un pas de `max(1, zoom * brush_radius * 0.5)` pixels widget entre deux événements de mouvement, le code interpole plusieurs points intermédiaires (`steps = dist / step`) et appelle `_on_clone_paint_stroke` pour chacun — sans ça, un mouvement rapide laisserait des trous non peints entre deux positions successives de la souris (le pinceau "sauterait" plutôt que de tracer un trait continu).
 
+## Ligne droite au clavier — Shift, `_clone_last_point_img`/`_clone_line_mode`
+
+Même mécanisme que `blur_tool_qt.py::BlurCanvasMixin` (voir skill `blur-stamp`, section dédiée) : maintenir Shift pendant le geste contraint le tamponnage à une ligne droite au lieu du tracé libre de la souris, en repartant du **dernier point peint** (`CloneCanvasMixin._clone_last_point_img`, coordonnées image) — qu'il vienne d'un stroke tout juste terminé ou d'un simple clic isolé plus tôt. Ne concerne que la branche "peindre" de `clone_mouse_press` (clic simple sur une source déjà définie), jamais la branche Ctrl+clic qui définit la source elle-même.
+
+`_clone_last_point_img` et `_clone_line_end` (l'autre extrémité, sous la souris pendant l'aperçu) sont remis à `None` par `clear_clone_source()` — donc automatiquement aux 3 endroits qui l'appellent déjà (2 navigations de page + Échap quand aucun aperçu de ligne n'est en cours, voir plus bas), sans code de reset dupliqué comme pour le flou (qui n'a pas de fonction `clear_*` équivalente).
+
+L'état de Shift est revérifié à **chaque** `clone_mouse_move`, pas seulement figé au clic — bascule dans les deux sens (Shift pressé/relâché en cours de geste) exactement comme le flou :
+
+- **Shift enfoncé + point de départ connu** → `_clone_line_mode = True` : aucun tamponnage tant que le clic n'est pas relâché, seul un aperçu en pointillés rouges (`paint_clone_line_preview`, appelée depuis `_ViewerCanvas.paintEvent` juste après `paint_clone_marker`) est redessiné entre le dernier point et la position courante (`_clone_line_end`, coordonnées image comme `_clone_last_point_img` — pas widget, pour rester synchronisé au pan/zoom/resize, voir skill `viewers`). Le tamponnage n'est appliqué qu'au relâchement (`clone_mouse_release`), d'un coup, en interpolant tous les points le long du segment.
+- **Shift relâché en cours d'aperçu** → abandonne l'aperçu sans rien peindre sur la trajectoire affichée, reprend un stroke libre normal à partir de la position actuelle.
+- **Touche Échap** pendant un aperçu de ligne en cours (`ImageViewer._on_escape`) annule l'aperçu sans effacer la source Ctrl+cliquée — cette branche est vérifiée **avant** celle qui efface la source (`_clone_source_img is not None`), sinon Échap effacerait toute la source au lieu de juste annuler l'aperçu de ligne.
+
+**Calcul de la source pendant la ligne** : inchangé, `_get_effective_clone_source` s'applique normalement — le premier point interpolé du segment démarre le stroke comme d'habitude (pose `_clone_stroke_start_dest`/`_clone_stroke_start_src` dans `_on_clone_paint_stroke`), le décalage source/destination habituel s'applique donc tel quel le long de toute la ligne, dans les deux modes fixe/relatif sans distinction supplémentaire.
+
 ## Throttle d'affichage — `_clone_display_timer`, ~30 fps
 
 `_on_clone_paint_stroke` ne rafraîchit le pixmap affiché (`_clone_refresh_display`) que si au moins 33 ms se sont écoulées depuis le dernier rafraîchissement (`QElapsedTimer`) — l'image de travail PIL, elle, est modifiée à **chaque** point peint sans throttle (le tamponnage réel n'est jamais retardé, seul l'affichage l'est). `_on_clone_paint_end` appelle `_clone_refresh_display()` une dernière fois en début de commit pour rattraper un point que le throttle aurait sauté. Sans ce throttle, un stroke rapide avec un gros pinceau recomposerait le damier de transparence et reconvertirait toute l'image en `QPixmap` à chaque point peint individuel, bien plus vite que l'écran ne peut afficher — coûteux pour un gain visuel nul.
@@ -116,9 +130,9 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 
 ## Traductions
 
-`locales/fr.json`, section `clone_zone_viewer` : `title` (clé orpheline, non résolue nulle part — à vérifier si elle est encore utilisée avant de la supprimer), `instruction` (réutilisée en tooltip enrichi de l'icône Clonage de la barre d'outils, voir skill `viewers`), `mode_label`/`mode_fixed`/`mode_relative`, `brush_size_label` — toutes réutilisées telles quelles par `_CloneOptionsPanel`. Également : `viewer.toolbar_clone_tooltip`, `messages.errors.clone_failed.title`/`.message` — propagées aux 45 langues (39 naturelles + tlh/sjn/qya latin + 3 CSUR), calquées sur le vocabulaire déjà attesté pour "clonage" dans `dialogs.clone_zone_viewer` de chaque fichier fictif (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) plutôt qu'improvisées. Voir skill `add-translation`.
+`locales/fr.json`, section `clone_zone_viewer` : `title` (clé orpheline, non résolue nulle part — à vérifier si elle est encore utilisée avant de la supprimer), `instruction` (réutilisée en tooltip enrichi de l'icône Clonage de la barre d'outils, voir skill `viewers` — inclut désormais un 3e segment `Shift : ligne droite`), `mode_label`/`mode_fixed`/`mode_relative`, `brush_size_label` — toutes réutilisées telles quelles par `_CloneOptionsPanel`. Également : `viewer.toolbar_clone_tooltip`, `messages.errors.clone_failed.title`/`.message`, plus la puce "Clonage" de `help.viewer_content` — propagées aux 45 fichiers de langue cibles (42 naturelles/latines dont tlh/sjn/qya + 3 CSUR), calquées sur le vocabulaire déjà attesté pour "clonage" dans `dialogs.clone_zone_viewer` de chaque fichier fictif (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) plutôt qu'improvisées. Le raccourci Shift/ligne droite réutilise dans ces 3 langues le même vocabulaire "maintenir"/"ligne droite" déjà confirmé pour le tampon de flou (`Tach`/`Hyarya`=maintenir, `lath`/`renta`+`thala`=ligne droite/droit — voir skill `blur-stamp` et les mémoires de lexique correspondantes), avec la même formulation minimale non garantie pour tlh (`Shift HIj : nIt lut yIcha'`), faute de mot attesté pour "maintenir une touche". Voir skill `add-translation`.
 
-**Absent du mode d'emploi** (`user_guide_qt.py`) — même situation que `page-straighten` et `add-text-to-image`, ces visionneuses/outils d'édition d'image partagent ce manque (skill `user-guide`).
+Documenté dans le mode d'emploi (`user_guide_qt.py`) au sein de la section "Visionneuse" (`help.viewer_content`, pas de section dédiée), avec la barre d'outils flottante et les autres outils — voir skill `user-guide`.
 
 ## Comment étendre
 
@@ -140,12 +154,13 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 - **Curseur du panneau flottant** — `_CloneOptionsPanel` doit réinitialiser le curseur posé par `clone_update_cursor` sur le canvas (`enterEvent`/`_check_really_left`), sinon il reste affiché par-dessus le panneau au survol.
 - **Marqueur de source à resynchroniser après pan, zoom, ET redimensionnement** — géré en tête de `paint_clone_marker`, appelée automatiquement par Qt via `paintEvent` dans les trois cas ; ne pas dupliquer l'appel dans chaque handler séparément.
 - **`_VALIDATE_KEYS` n'a pas d'entrée `"clone"`** — ne pas en ajouter une par réflexe en copiant le pattern crop/straighten : cet outil n'a jamais besoin du bouton "Valider" flottant, l'application est immédiate.
-- **Aucune section dédiée dans le mode d'emploi.**
+- **Pas de section dédiée dans le mode d'emploi** — documenté comme une puce parmi d'autres dans la section "Visionneuse" (`help.viewer_content`), pas dans une `_CollapsibleSection` à part.
 - **Pas de point d'entrée depuis la mosaïque** (menu contextuel, barre de menu, colonne d'icônes) — ne pas chercher `PanelWidget._clone_selected_image()`, elle n'existe pas ; le clonage ne s'atteint que depuis l'intérieur de la visionneuse déjà ouverte.
+- **Ligne droite Shift+clic** : le point de départ (`_clone_last_point_img`) est celui du dernier point réellement peint, pas une notion séparée à maintenir à la main ; ne concerne que la branche "peindre" de `clone_mouse_press`, jamais Ctrl+clic (définition de la source) — voir section dédiée.
 
 ## Références croisées
 
-- `blur-stamp` — architecture jumelle (peinture continue, commit par stroke, pas de bouton "Valider", image de travail séparée, throttle d'affichage ~30fps) ; principale différence : pas de zone source à définir, masque circulaire sans dégradé assumé (censure), deux réglages indépendants taille/puissance plutôt qu'un seul.
+- `blur-stamp` — architecture jumelle (peinture continue, commit par stroke, pas de bouton "Valider", image de travail séparée, throttle d'affichage ~30fps, **même mécanisme de ligne droite Shift+clic** — voir sa section dédiée pour le détail, identique ici à `_clone_last_point_img`/`_clone_line_mode`/`_clone_line_end` près) ; principale différence : pas de zone source à définir, masque circulaire sans dégradé assumé (censure), deux réglages indépendants taille/puissance plutôt qu'un seul.
 - `page-straighten` — architecture la plus proche dans le projet (outil migré dans son propre module, undo/redo unifié avec le panneau, plus de fenêtre dédiée) ; comparer les deux pour la différence de philosophie de validation (une opération validée une fois vs peinture continue commitée en continu).
 - `page-crop` — même famille d'outils de la barre, partage le bouton "Valider" flottant avec `page-straighten` mais pas avec le clonage (qui n'en a pas besoin) ; même absence de point d'entrée mosaïque.
 - `add-text-to-image` — autre implémentation indépendante du fond damier de transparence, aucune fonction partagée avec celle-ci.
@@ -154,5 +169,5 @@ Le marqueur visuel de la source (`_clone_marker_widget`, dérivé de `_clone_sou
 - `undo-redo` — mécanique de l'historique global de l'appli, unique niveau depuis la migration (plus d'historique interne séparé).
 - `comicinfo-metadata-editor` — mise à jour des attributs de page dans `ComicInfo.xml` après un stroke.
 - `add-translation` — procédure complète de traduction, vocabulaire fictif "clonage" déjà établi (tlh `tIngmeH`, sjn `Glawar`, qya `Lúmequenta`) et réutilisé pour les nouvelles clés de la barre d'outils.
-- `user-guide` — absence actuelle de section dédiée, à vérifier si une tâche touche à ce fichier.
+- `user-guide` — structure des sections du mode d'emploi ; ce tampon est documenté dans la section "Visionneuse", pas dans une section dédiée.
 - `adjust-color-depth` / `adjust-image-mode` — consommateurs de `BlockableRadioButton` (hébergé ici, voir section dédiée), pour griser leurs radios incompatibles avec le format d'origine.

@@ -71,6 +71,7 @@ Chaque langue fictive existe en version latine et en alphabet natif (encodage CS
 1. Comparer les clés du bloc ajouté dans chaque langue à celles du français (aucune manquante, aucune en trop).
 2. Valider que le JSON de tous les fichiers modifiés se parse sans exception (`json.load`).
 3. Pour tlh/sjn/qya (et leurs variantes CSUR) : vérification qualité décrite ci-dessus.
+4. **Après un ajout par concaténation** (une phrase ajoutée à la fin d'une ligne existante — ex. une puce d'un texte multi-lignes comme `help.viewer_content` — plutôt qu'une nouvelle clé) : scanner chaque fichier modifié à la recherche d'une répétition immédiate d'un segment de texte (motif `AA`, le même long segment collé deux fois de suite). Un script relancé par erreur sur un fichier déjà modifié par un ajout précédent produit ce doublon silencieusement — le JSON reste valide et rien ne le signale autrement qu'une relecture ciblée. Piège vécu sur l'ajout du raccourci Shift/ligne droite du tampon de flou et du clonage : 38 fichiers de langue se sont retrouvés avec la phrase Shift du flou dupliquée à l'identique dans la même ligne, sans qu'aucune autre vérification (JSON valide, diff --stat à 2 lignes par fichier) ne le détecte.
 
 ## Traductions dans index.html
 

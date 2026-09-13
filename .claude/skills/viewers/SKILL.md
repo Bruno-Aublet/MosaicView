@@ -381,6 +381,8 @@ Les outils crop/straighten/clone de la visionneuse principale dessinent chacun u
 2. **Zoom** (molette, `Ctrl+Plus`/`Ctrl+Minus`, `Ctrl+0`, `Ctrl+1`) — reconversion après tout changement de `_zoom`/`zoom_level`.
 3. **Redimensionnement de la fenêtre** — cas le plus facile à oublier (pas de `resizeEvent` par défaut sur `QWidget`) ; le plus sûr est de faire la reconversion en tête de `paintEvent` lui-même (Qt le rappelle automatiquement dans les trois cas ci-dessus), comme fait `_ViewerCanvas.paintEvent` pour les 3 overlays existants, plutôt que de dupliquer l'appel dans chaque handler séparément.
 
+Même exigence pour un overlay **transitoire** (qui n'existe que pendant un geste, pas affiché en dehors) : l'aperçu de ligne droite du tampon de flou (Shift+clic, `BlurCanvasMixin.paint_blur_line_preview`, voir skill `blur-stamp`) stocke ses deux extrémités en coordonnées image et les reconvertit dans `paintEvent`, exactement comme les 3 overlays persistants ci-dessus — la nature transitoire de l'aperçu ne dispense pas de la reconversion.
+
 ## Raccourcis clavier zoom
 
 - `Ctrl+Plus` / `Ctrl+Minus` : `adjust_zoom(+0.1)` / `adjust_zoom(-0.1)` (pas de bouton +/- à l'écran, Ctrl+molette aussi disponible).
