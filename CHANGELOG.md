@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.8.6] - 2026-09-20 - ComicVine sorting, drag-and-drop between panels, main viewer toolbar positioning, and other minor bug fixes
+
+- Fixed the year, issue count and issue number columns in the ComicVine series/issue picker windows sorting alphabetically instead of naturally (e.g. 1, 10, 2, 3 instead of 1, 2, 3, 10), now using an alphanumeric sort that also handles non-numeric prefixes/suffixes (e.g. "Annual 2" before "Annual 10").
+- Fixed a page dragged from one panel to the other in split view not showing up in the destination panel, when that panel had its automatic page renumbering turned off: the page had in fact been moved correctly and would appear after manually refreshing the mosaic.
+- Fixed a crash that could happen when displaying a fallback icon for a file whose own icon couldn't be loaded.
+- Fixed some of the Library window's error messages staying stuck in the previous language if the language was changed while one of them was still on screen.
+- Fixed a selected tool's options panel in the main viewer sometimes ending up with a large gap above it, or partly hidden behind the toolbar, after resizing the window (for example entering or leaving fullscreen) while that tool was active.
+- Removed a small piece of dead code left over in the .ico creator window's module.
+
 ## [1.8.5] - 2026-09-13 - Straight-line shortcut for the blur stamp and clone stamp tools
 
 - The main viewer's blur stamp and clone stamp tools now support drawing a straight line: hold Shift while dragging to preview it and apply it on release, or Shift-click right after a first click to draw one instantly between the two points.

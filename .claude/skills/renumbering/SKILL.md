@@ -25,7 +25,7 @@ Persisté **par panneau** (`renumber_mode` pour le panneau 1, `renumber_mode_pan
 
 | Valeur | Nom | Comportement |
 |---|---|---|
-| `0` | OFF | Aucune renumérotation automatique. Les déclenchements automatiques (drag & drop, merge, cross-panel) sont no-op. La renumérotation manuelle reste possible via le menu/bouton. |
+| `0` | OFF | Aucune renumérotation automatique — `orig_name` n'est jamais réécrit par un déclenchement automatique (drag & drop, merge, cross-panel). La mosaïque du panneau concerné est quand même redessinée par `_renumber_no_save` (voir plus bas), seule la renumérotation elle-même est sautée. La renumérotation manuelle reste possible via le menu/bouton. |
 | `1` | Auto (défaut) | Détection des pages doubles/triples via ratio largeur/hauteur (`compute_auto_multipliers`). Si la 1ère page est détectée comme multiple, ouvre `_FirstPageDialog` pour trancher (voir plus bas). |
 | `2` | Simple | Numérotation séquentielle stricte, une image = un numéro, aucune détection de page multiple. |
 
@@ -73,7 +73,7 @@ Deux points d'entrée Qt dans `renumbering_qt.py`, tous deux **non-modaux et li�
 `panel_widget.py` orchestre ces deux fonctions selon le mode courant :
 
 - **`_renumber_pages_auto()` / `_renumber_pages()`** — appelées par le menu/bouton dédié quand l'utilisateur déclenche *explicitement* "Renuméroter" (auto ou simple), avec `save_state_func=self.save_state` (crée un point undo dédié). Bloquées si l'archive a une structure en sous-dossiers (`_has_subdirectory_structure()` → avertissement `_warn_flatten_required_renumber`, il faut aplatir d'abord).
-- **`_renumber_no_save(on_done=None)`** — variante utilisée par les déclenchements **automatiques** après une autre opération qui a déjà son propre point undo (drag & drop, merge, cross-panel) : `save_state_func=None` pour ne pas créer un second point undo redondant. Respecte le mode courant (`0` = no-op immédiat, `1` = auto avec dialogue éventuel, `2` = simple). C'est la fonction à utiliser comme modèle pour tout nouveau déclenchement automatique.
+- **`_renumber_no_save(on_done=None)`** — variante utilisée par les déclenchements **automatiques** après une autre opération qui a déjà son propre point undo (drag & drop, merge, cross-panel) : `save_state_func=None` pour ne pas créer un second point undo redondant. Respecte le mode courant (`1` = auto avec dialogue éventuel, `2` = simple, `0` = pas de renumérotation). C'est la fonction à utiliser comme modèle pour tout nouveau déclenchement automatique. **Point important** : c'est aussi le seul endroit qui redessine la mosaïque (`render_mosaic()`) après ce genre d'opération — y compris en mode OFF, où il faut donc bien l'appeler explicitement avant `on_done()`/`finish()` plutôt que de traiter ce mode comme un no-op complet ; l'omettre laisse `images_data` à jour en mémoire mais la mosaïque visuellement périmée jusqu'à un rafraîchissement manuel (F5).
 - **`_renumber_btn_action()` / `_toggle_renumber_mode()`** — gèrent le bouton icône : clic gauche déclenche l'action du mode courant (no-op si OFF), clic droit fait tourner le mode (0→1→2→0) et persiste via `_renumber_config().set_renumber_mode()`.
 
 ### Points de déclenchement automatique (`_renumber_no_save`)

@@ -7,7 +7,7 @@ description: Localiser ou modifier la création de fichiers .ico multi-résoluti
 
 Fenêtre dédiée à 2 phases qui transforme une image **sélectionnée** de la mosaïque en un fichier `.ico` Windows multi-résolution (16/32/48/64/128/256 px), inséré comme nouvelle entrée juste après l'image source. Usage typique : générer une icône d'application ou de raccourci à partir d'une image existante, sans quitter MosaicView.
 
-**Fichier unique — `modules/qt/ico_creator_qt.py`** (~1180 lignes), une seule classe `QDialog` (`IcoCreatorDialog`) qui reconstruit entièrement son contenu entre les deux phases (`_build_phase_a()`/`_build_phase_b()`, widget de phase précédent détruit et remplacé, pas deux fenêtres séparées).
+**Fichier unique — `modules/qt/ico_creator_qt.py`** (~1170 lignes), une seule classe `QDialog` (`IcoCreatorDialog`) qui reconstruit entièrement son contenu entre les deux phases (`_build_phase_a()`/`_build_phase_b()`, widget de phase précédent détruit et remplacé, pas deux fenêtres séparées).
 
 ## Phase A — découpe carrée
 
@@ -28,7 +28,7 @@ Que la validation vienne du crop ou du "sans découper", le résultat est systé
 Objectif : rendre transparentes les zones de fond de l'image 256×256 (typiquement un fond uni autour du sujet), affichée sur un damier gris pour visualiser l'alpha en temps réel.
 
 - **Pipette** (`_btn_pipette`, bouton bascule) : active `_TransparencyCanvas.pipette_active`, change le curseur en croix. Un clic gauche dans cet état déclenche `_on_pipette_click(img_x, img_y)`.
-- **Algorithme flood-fill 4-connexe** — `_apply_transparency(px, py, tolerance)` (`ico_creator_qt.py:1085`) : lit la couleur RGB du pixel cliqué comme référence, puis propage par une pile explicite (pas de récursion, évite tout risque de dépassement de pile Python sur une grande zone à 256×256 = jusqu'à 65536 pixels) aux 4 voisins directs (haut/bas/gauche/droite, pas les diagonales) tant que leur écart de couleur (`max(abs(dr), abs(dg), abs(db))`, distance de Chebyshev, pas euclidienne) reste sous la **tolérance** réglée par curseur. Chaque pixel accepté voit son canal alpha mis à `0` directement via `pixels[cx, cy] = (pr, pg, pb, 0)` (mutation en place du buffer PIL `.load()`, pas de `putpixel` un par un — plus rapide sur une grande zone).
+- **Algorithme flood-fill 4-connexe** — `_apply_transparency(px, py, tolerance)` (`ico_creator_qt.py:1074`) : lit la couleur RGB du pixel cliqué comme référence, puis propage par une pile explicite (pas de récursion, évite tout risque de dépassement de pile Python sur une grande zone à 256×256 = jusqu'à 65536 pixels) aux 4 voisins directs (haut/bas/gauche/droite, pas les diagonales) tant que leur écart de couleur (`max(abs(dr), abs(dg), abs(db))`, distance de Chebyshev, pas euclidienne) reste sous la **tolérance** réglée par curseur. Chaque pixel accepté voit son canal alpha mis à `0` directement via `pixels[cx, cy] = (pr, pg, pb, 0)` (mutation en place du buffer PIL `.load()`, pas de `putpixel` un par un — plus rapide sur une grande zone).
 - **Piège** : un pixel déjà transparent (`ref[3] == 0`) au point cliqué fait sortir immédiatement de la fonction sans rien faire — cliquer une seconde fois sur une zone déjà rendue transparente est un no-op silencieux, pas une erreur.
 - **Tolérance** (`FocusSlider`, 0 à 255, défaut 15) — réglable en direct avant chaque clic pipette, pas de prévisualisation en overlay pendant l'ajustement du slider (l'effet n'apparaît qu'au clic suivant).
 - **Undo/redo local à la phase B** (`_undo_stack_b`/`_redo_stack_b`) : contrairement à la phase A qui ne stocke que 3 flottants, ici chaque entrée est une **copie complète** de l'image PIL 256×256 (`self._ico_img_rgba.copy()`) — capturée avant chaque application de pipette (`_on_pipette_click` → `_undo_push_b`). Coût mémoire plus élevé mais nécessaire puisqu'un flood-fill n'est pas décrit par une poignée de paramètres réutilisables comme un simple rectangle.
@@ -38,11 +38,11 @@ Objectif : rendre transparentes les zones de fond de l'image 256×256 (typiqueme
 
 Les boutons Undo/Redo de la barre du bas sont **physiquement différents par phase** (`_btn_undo_a`/`_btn_redo_a` vs `_btn_undo_b`/`_btn_redo_b`, reconstruits à chaque `_build_phase_a`/`_build_phase_b`) mais `_undo()`/`_redo()` sont des méthodes **uniques** sur `IcoCreatorDialog` qui aiguillent selon `self._phase` (`'a'` ou `'b'`) vers la pile appropriée — pas de confusion possible entre les deux car les piles ne sont jamais consultées hors de la phase à laquelle elles appartiennent.
 
-## Nommage automatique — `_get_ico_name` (`ico_creator_qt.py:550`)
+## Nommage automatique — `_get_ico_name` (`ico_creator_qt.py:539`)
 
 Motif `ICO{NNN}_{nom_original}.ico`, `NNN` sur 3 chiffres. Le numéro est calculé en scannant **toutes** les entrées déjà présentes dans `images_data` à la recherche du motif `^ICO(\d+)_` (regex insensible à la casse) et en prenant le maximum existant + 1 — garantit l'absence de collision même après plusieurs créations successives ou une suppression partielle, sans compteur persistant séparé à synchroniser.
 
-## Validation finale — `_on_validate_final` (`ico_creator_qt.py:1119`)
+## Validation finale — `_on_validate_final` (`ico_creator_qt.py:1108`)
 
 1. `self._ico_img_rgba.save(buf, format="ICO", sizes=_ICO_SIZES)` — **Pillow génère lui-même les 6 résolutions** (16/32/48/64/128/256) à partir de la seule image 256×256 travaillée, un seul appel `save()` produit le fichier `.ico` multi-résolution complet ; pas de redimensionnement manuel par résolution dans ce fichier.
 2. Construction d'un **nouvel objet entrée** (`new_entry`, dict minimal : `orig_name`/`extension`/`bytes`/`img`/`is_image`/`thumb`/`img_id`/`qt_pixmap_large`) — **pas** via `create_entry()` (skill `archive-image-loading`), contrairement au point de passage habituel du projet pour créer une entrée ; champs volontairement réduits au strict nécessaire pour l'affichage immédiat dans la mosaïque.
@@ -65,7 +65,7 @@ Une fois inséré dans la mosaïque, un `.ico` reste une entrée `is_image: True
 
 ## Points d'entrée UI
 
-Trois, tous nécessitant **exactement une seule** image sélectionnée (`create_ico_from_selected`, `ico_creator_qt.py:1163` — retourne silencieusement, sans message d'erreur, si la sélection est vide, multiple, invalide ou corrompue ; contrairement à `page-resize`/`page-crop` qui affichent des `MsgDialog` dédiés pour ces cas) :
+Trois, tous nécessitant **exactement une seule** image sélectionnée (`create_ico_from_selected`, `ico_creator_qt.py:1152` — retourne silencieusement, sans message d'erreur, si la sélection est vide, multiple, invalide ou corrompue ; contrairement à `page-resize`/`page-crop` qui affichent des `MsgDialog` dédiés pour ces cas) :
 
 1. **Menu contextuel** (clic droit mosaïque, skill `qt-context-menus`) — `context_menus_qt.py:462`, clé `context_menu.image.create_ico`.
 2. **Barre de menu** — `menubar_qt.py:226`, même clé.

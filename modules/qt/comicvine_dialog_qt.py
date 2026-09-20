@@ -2,6 +2,7 @@
 # Inspiré de comic-vine-scraper par Cory Banack (Apache 2.0)
 
 import os
+import re
 import urllib.request
 import warnings
 
@@ -18,6 +19,18 @@ from modules.qt.state import get_current_theme
 from modules.qt.font_manager_qt import get_current_font as _get_current_font
 
 _DATA_ROLE = Qt.UserRole   # stocke l'index dans _series_data / _issues_data
+
+_ISSUE_NUM_SPLIT_RE = re.compile(r"\d+(?:\.\d+)?|\D+")
+
+
+class _NaturalSortItem(QTableWidgetItem):
+    def __lt__(self, other):
+        return self._sort_key() < other._sort_key() if isinstance(other, _NaturalSortItem) \
+            else self.text() < other.text()
+
+    def _sort_key(self):
+        segments = _ISSUE_NUM_SPLIT_RE.findall(self.text())
+        return [(0, float(s)) if s[0].isdigit() else (1, s.lower()) for s in segments]
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -994,10 +1007,10 @@ class _Page1Series(QWidget):
             name_item = QTableWidgetItem(s.get("name", ""))
             name_item.setData(_DATA_ROLE, idx)          # ← index original
             self._table.setItem(row, 0, name_item)
-            year_item = QTableWidgetItem(str(s.get("start_year", "")))
+            year_item = _NaturalSortItem(str(s.get("start_year", "")))
             year_item.setTextAlignment(Qt.AlignCenter)
             self._table.setItem(row, 1, year_item)
-            count_item = QTableWidgetItem(str(s.get("issue_count", "")))
+            count_item = _NaturalSortItem(str(s.get("issue_count", "")))
             count_item.setTextAlignment(Qt.AlignCenter)
             self._table.setItem(row, 2, count_item)
             self._table.setItem(row, 3, QTableWidgetItem(s.get("publisher", "")))
@@ -1373,7 +1386,7 @@ class _Page2Issues(QWidget):
         for idx, iss in enumerate(issues):
             row = self._table.rowCount()
             self._table.insertRow(row)
-            num_item = QTableWidgetItem(str(iss.get("issue_number", "")))
+            num_item = _NaturalSortItem(str(iss.get("issue_number", "")))
             num_item.setTextAlignment(Qt.AlignCenter)
             num_item.setData(_DATA_ROLE, idx)
             self._table.setItem(row, 0, num_item)

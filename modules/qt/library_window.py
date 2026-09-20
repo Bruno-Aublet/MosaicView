@@ -2605,7 +2605,7 @@ class LibraryWindow(QWidget):
             panel._load_files([abs_path])
             panel._library_window = self
         except Exception as e:
-            self._show_error(_('library.open_file_error_message', error=str(e)))
+            self._show_error(lambda err=str(e): _('library.open_file_error_message', error=err))
 
     def _open_in_explorer(self):
         if not self._db:
@@ -2630,7 +2630,7 @@ class LibraryWindow(QWidget):
         try:
             os.startfile(abs_path)
         except Exception as e:
-            self._show_error(_('library.open_file_error_message', error=str(e)))
+            self._show_error(lambda err=str(e): _('library.open_file_error_message', error=err))
 
     # ── Actions DB ────────────────────────────────────────────────────────
 
@@ -3392,7 +3392,7 @@ class LibraryWindow(QWidget):
             _cleanup()
             new_path = os.path.splitext(source_path)[0] + ".cbz"
             if os.path.exists(new_path):
-                self._show_error(_('library.convert_to_cbz_target_exists', path=new_path))
+                self._show_error(lambda p=new_path: _('library.convert_to_cbz_target_exists', path=p))
                 return _finish(None)
             comp_level = _gcm().get_zip_compression_level()
             try:
@@ -3401,7 +3401,7 @@ class LibraryWindow(QWidget):
                         if entry.get("bytes") is not None and not entry.get("is_dir"):
                             zf.writestr(entry["orig_name"], entry["bytes"])
             except Exception as e:
-                self._show_error(_('library.convert_to_cbz_error_message', error=str(e)))
+                self._show_error(lambda err=str(e): _('library.convert_to_cbz_error_message', error=err))
                 return _finish(None)
 
             def _after_choice(delete_original: bool):
@@ -3412,7 +3412,7 @@ class LibraryWindow(QWidget):
                             _safe_delete(source_path)
                         deleted_old = True
                     except Exception as e:
-                        self._show_error(_('messages.errors.delete_error', error=str(e)))
+                        self._show_error(lambda err=str(e): _('messages.errors.delete_error', error=err))
                 db.reindex_files([new_path])
                 if deleted_old:
                     db.remove_by_id(old_id)
@@ -3825,7 +3825,7 @@ class LibraryWindow(QWidget):
         if self._is_loading():
             return
         if not self._rows:
-            self._show_error(_('library.export_no_data'), play_sound=False)
+            self._show_error(lambda: _('library.export_no_data'), play_sound=False)
             return
         default_name = (self._db.name if self._db else '') + '.xlsx'
         path, _filter = QFileDialog.getSaveFileName(
@@ -3976,9 +3976,12 @@ class LibraryWindow(QWidget):
             dlg.activateWindow()
         except Exception as e:
             _hide_ct(self._right_panel, _export_holder)
-            self._show_error(_('library.export_error', error=str(e)))
+            self._show_error(lambda err=str(e): _('library.export_error', error=err))
 
-    def _show_error(self, msg: str, play_sound: bool = True):
+    def _show_error(self, msg, play_sound: bool = True):
+        """msg : str figée (jamais retraduite si la langue change pendant que
+        l'erreur est affichée) ou callable () -> str (retraduite correctement).
+        Préférer un lambda quand msg vient d'une clé de traduction."""
         from modules.qt.dialogs_qt import ErrorDialog
         dlg = ErrorDialog(self, lambda: _wt('library.open_file_error_title'), msg, play_sound=play_sound)
         dlg.show()

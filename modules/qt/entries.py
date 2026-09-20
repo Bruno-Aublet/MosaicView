@@ -60,7 +60,7 @@ def get_icon_pil_for_entry(entry, state=None):
         except Exception:
             # Si même l'icône par défaut n'existe pas, crée une image vide
             tw, th = (state.thumb_w, state.thumb_h) if state else (150, 200)
-        img = Image.new('RGB', (tw, th), color='gray')
+            img = Image.new('RGB', (tw, th), color='gray')
     return img
 
 

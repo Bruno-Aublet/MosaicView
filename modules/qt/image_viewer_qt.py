@@ -997,59 +997,41 @@ class _ViewerCanvas(CropCanvasMixin, StraightenCanvasMixin, RotationCanvasMixin,
             self._viewer._toolbar.reposition()
         if self._viewer.is_animated_gif:
             self._viewer._reposition_gif_play_btn()
-        angle_panel = self._viewer._toolbar._angle_panel
-        if angle_panel.isVisible():
-            angle_panel.reposition()
-        rotation_panel = self._viewer._toolbar._rotation_panel
-        if rotation_panel.isVisible():
-            rotation_panel.reposition()
-        clone_panel = self._viewer._toolbar._clone_panel
-        if clone_panel.isVisible():
-            clone_panel.reposition()
-        blur_panel = self._viewer._toolbar._blur_panel
-        if blur_panel.isVisible():
-            blur_panel.reposition()
-        text_panel = self._viewer._toolbar._text_panel
-        if text_panel.isVisible():
-            text_panel.reposition()
-        sharpness_panel = self._viewer._toolbar._sharpness_panel
-        if sharpness_panel.isVisible():
-            sharpness_panel.reposition()
-        unsharp_panel = self._viewer._toolbar._unsharp_panel
-        if unsharp_panel.isVisible():
-            unsharp_panel.reposition()
-        brightness_panel = self._viewer._toolbar._brightness_panel
-        if brightness_panel.isVisible():
-            brightness_panel.reposition()
-        saturation_panel = self._viewer._toolbar._saturation_panel
-        if saturation_panel.isVisible():
-            saturation_panel.reposition()
-        remove_colors_panel = self._viewer._toolbar._remove_colors_panel
-        if remove_colors_panel.isVisible():
-            remove_colors_panel.reposition()
-        compression_panel = self._viewer._toolbar._compression_panel
-        if compression_panel.isVisible():
-            compression_panel.reposition()
-        levels_panel = self._viewer._toolbar._levels_panel
-        if levels_panel.isVisible():
-            levels_panel.reposition()
-        shapes_panel = self._viewer._toolbar._shapes_panel
-        if shapes_panel.isVisible():
-            shapes_panel.reposition()
-        transparency_panel = self._viewer._toolbar._transparency_panel
-        if transparency_panel.isVisible():
-            transparency_panel.reposition()
-        color_depth_panel = self._viewer._toolbar._color_depth_panel
-        if color_depth_panel.isVisible():
-            color_depth_panel.reposition()
-        effects_panel = self._viewer._toolbar._effects_panel
-        if effects_panel.isVisible():
-            effects_panel.reposition()
-        image_mode_panel = self._viewer._toolbar._image_mode_panel
-        if image_mode_panel.isVisible():
-            image_mode_panel.reposition()
+        self.reposition_all_tool_panels()
         if self.has_text_blocks:
             self.reposition_text_blocks()
+
+    def reposition_all_tool_panels(self):
+        """Repositionne tous les panneaux d'options flottants visibles sous la
+        barre d'outils — leur y dépend de _toolbar.height(), qui change quand
+        la barre change de nombre de lignes. Appelée depuis resizeEvent (à
+        chaque redimensionnement réactif) ET depuis
+        ImageViewer._on_resize_debounced juste après _toolbar.update_layout_
+        for_width() : ce dernier recalcule les lignes de la barre mais ne
+        repositionne aucun panneau lui-même, sans quoi un panneau reste
+        placé sous l'ancien nombre de lignes de la barre (espace trop grand
+        ou chevauchement selon le sens du redimensionnement)."""
+        for panel in (
+            self._viewer._toolbar._angle_panel,
+            self._viewer._toolbar._rotation_panel,
+            self._viewer._toolbar._clone_panel,
+            self._viewer._toolbar._blur_panel,
+            self._viewer._toolbar._text_panel,
+            self._viewer._toolbar._sharpness_panel,
+            self._viewer._toolbar._unsharp_panel,
+            self._viewer._toolbar._brightness_panel,
+            self._viewer._toolbar._saturation_panel,
+            self._viewer._toolbar._remove_colors_panel,
+            self._viewer._toolbar._compression_panel,
+            self._viewer._toolbar._levels_panel,
+            self._viewer._toolbar._shapes_panel,
+            self._viewer._toolbar._transparency_panel,
+            self._viewer._toolbar._color_depth_panel,
+            self._viewer._toolbar._effects_panel,
+            self._viewer._toolbar._image_mode_panel,
+        ):
+            if panel.isVisible():
+                panel.reposition()
 
     # ── Drag & drop entrant (piste secondaire de l'outil "Coller une
     # image") : glisser une page depuis n'importe quelle mosaïque (panel1/
@@ -1580,6 +1562,9 @@ class ImageViewer(CropViewerMixin, StraightenViewerMixin, RotationViewerMixin, C
         self._zoom_label.adjustSize()
         self._zoom_label.move(self.width() - self._zoom_label.width() - 10, 10)
         self._toolbar.update_layout_for_width(self._canvas.width())
+        self._canvas.reposition_all_tool_panels()
+        self._canvas._update_validate_btn_state()
+        self._canvas._update_cancel_btn_state()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

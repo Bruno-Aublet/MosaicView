@@ -1394,6 +1394,12 @@ class PanelWidget(QWidget):
 
         mode = getattr(self._state, "renumber_mode", 1)
         if mode == 0:
+            # Ne renumérote pas, mais le rendu reste dû : cette méthode est le
+            # point d'entrée commun après une opération qui a modifié
+            # images_data (ex. drop inter-panneaux) — sans ce render_mosaic,
+            # la mosaïque reste visuellement périmée tant qu'aucun autre
+            # évènement ne la redessine.
+            self._render_mosaic()
             finish()
             return
         if mode == 1:
